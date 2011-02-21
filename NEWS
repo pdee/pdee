@@ -1,6 +1,31 @@
 Python Mode News
 ================
 
+New in version 6.0.12
+---------------------
+
+- `py-partial-expression' reconsidered.
+   Beside common moves like `defun', `statement' specific Python-mode edits are delivered:
+
+  `py-expression' and `py-partial-expression'. 
+
+  Statement below is considered composed of two `py-expression' 
+
+  a = ['spam', 'eggs', 100, 1234]
+  |_| |_________________________|
+
+  Assigment operator and all inside comments is ignored.
+
+  `py-partial-expression' would match six sections
+
+   a = ['spam', 'eggs', 100, 1234]
+  |_|   |_____|  |____| |__| |__|
+       |_________________________|
+
+  When traversing code, `py-partial-expression' climbs down and up
+  all levels encountered, i.e. at opening `[' `py-expression' would return ['spam', 'eggs', 100, 1234], while one char behind at `''
+  it yields `'spam','
+
 New in version 6.0.11
 ---------------------
 

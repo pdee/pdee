@@ -836,7 +836,9 @@ def main(argv):
 
 (defun py-beginning-of-expression-base ()
   (goto-char 227)
-  (assert (eq 221 (py-beginning-of-expression)) nil "py-beginning-of-expression-test failed"))
+  (assert (eq 221 (py-beginning-of-expression)) nil "py-beginning-of-expression-test #1 failed")
+  (assert (eq 205 (py-beginning-of-expression)) nil "py-beginning-of-expression-test #2 failed")
+  (assert (eq 177 (py-beginning-of-expression)) nil "py-beginning-of-expression-test #3 failed"))
 
 (defun py-end-of-expression-test (&optional arg load-branch-function)
   (interactive "p")
@@ -853,8 +855,15 @@ def main(argv):
     (py-bug-tests-intern 'py-end-of-expression-base arg teststring)))
 
 (defun py-end-of-expression-base ()
+  (goto-char 49)
+  (assert (eq 60 (py-end-of-expression)) nil "py-end-of-expression-test failed")
+  (goto-char 69)
+  (assert (eq 72 (py-end-of-expression)) nil "py-end-of-expression-test failed")
+  (assert (eq 85 (py-end-of-expression)) nil "py-end-of-expression-test failed")
+  (assert (eq 94 (py-end-of-expression)) nil "py-end-of-expression-test failed")
+  (assert (eq 108 (py-end-of-expression)) nil "py-end-of-expression-test failed")
   (goto-char 225)
-  (assert (eq 232 (py-end-of-expression)) nil "py-beginning-of-expression-test failed"))
+  (assert (eq 232 (py-end-of-expression)) nil "py-end-of-expression-test failed"))
 
 (defun py-expression-index-test (&optional arg load-branch-function)
   (interactive "p")
@@ -866,7 +875,8 @@ b = a[0].split(':')[1]
 
 (defun py-expression-index-base ()
   (goto-char 58)
-  (assert (eq 71 (py-end-of-expression)) nil "py-expression-index-test failed"))
+  (assert (eq 71 (py-end-of-expression)) nil "py-expression-index-test failed")
+)
 
 (defun py-insert-super-python2-test (&optional arg load-branch-function)
   (interactive "p")
@@ -1014,11 +1024,11 @@ if foo:
 
 (defun py-partial-expression-base ()
   (goto-char 102)
-  (assert (eq 99 (py-beginning-of-partial-expression)) nil "py-partial-expression-test #1 failed")
-  (assert (eq 130 (py-end-of-partial-expression)) nil "py-partial-expression-test #2 failed")
+  (assert (eq 100 (py-beginning-of-partial-expression)) nil "py-partial-expression-test #1 failed")
+  (assert (eq 108 (py-end-of-partial-expression)) nil "py-partial-expression-test #2 failed")
   (goto-char 178)
-  (assert (eq 81 (py-beginning-of-partial-expression)) nil "py-partial-expression-test #3 failed")
-  (assert (eq 242 (py-end-of-partial-expression)) nil "py-partial-expression-test #3 failed")
+  (assert (eq 177 (py-beginning-of-partial-expression)) nil "py-partial-expression-test #3 failed")
+  (assert (eq 181 (py-end-of-partial-expression)) nil "py-partial-expression-test #3 failed")
   )
 
 (defun py-execute-block-test (&optional arg load-branch-function)

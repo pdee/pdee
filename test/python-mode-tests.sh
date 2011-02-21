@@ -711,6 +711,8 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-mark-block-misbehave-lp:949310-test) nil \"py-mark-block-misbehave-lp:949310-test not detected as command\")" \
 -eval "(assert (commandp 'py-mark-partial-expression) nil \"py-mark-partial-expression not detected as command\")" \
 -eval "(message \"commandp tests done\")" \
+--funcall py-expression-index-test \
+--funcall py-indent-after-assigment-test \
 --funcall py-execute-buffer-python3-switch-test \
 --funcall py-execute-buffer-python2-switch-test \
 --funcall py-guess-indent-offset-dont-detect-indent-of-2-lp-1027389-test \
@@ -840,14 +842,9 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall assignment-after-block-test \
 --funcall py-beginning-of-clause-test \
 --funcall py-end-of-clause-test \
---funcall py-beginning-of-expression-test \
---funcall py-end-of-expression-test \
---funcall py-expression-index-test \
---funcall py-indent-after-assigment-test \
 --funcall leave-dict-test \
 --funcall eofs-attribut-test \
 --funcall args-list-first-line-indent-test \
---funcall py-partial-expression-test \
 --funcall close-block-test \
 --funcall py-shift-block-test \
 --funcall nesting-if-test \
@@ -987,3 +984,6 @@ est \
 --funcall py-ipython-complete-lp:927136-test \
 --funcall augmented-assigment-test \
 --funcall py-smart-operator-test \
+--funcall py-beginning-of-expression-test \
+--funcall py-end-of-expression-test \
+--funcall py-partial-expression-test \

@@ -2240,7 +2240,7 @@ for x in y:
 
 # This only seems to happen when point is in the first quote of a string literal which is the last thing on a line.
 
-  somevar = some string.some_property()
+  somevar = some_string.some_property()
   # point at first quote works
 
   somevar = \"a\" + \"b\"

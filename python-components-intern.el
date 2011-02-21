@@ -428,6 +428,7 @@ will work.
 
 (defun py-beginning-of-expression-p ()
   "Returns position, if cursor is at the beginning of a expression, nil otherwise. "
+  (interactive) 
   (let ((orig (point))
         erg)
     (save-excursion

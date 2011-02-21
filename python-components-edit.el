@@ -63,6 +63,48 @@ Returns value of `py-smart-indentation'. "
   (when (interactive-p) (message "py-smart-indentation: %s" py-smart-indentation))
   py-smart-indentation)
 
+(defun py-toggle-sexp-function ()
+  "Opens customization "
+  (interactive)
+  (customize-variable 'py-sexp-function))
+
+;;; Smart operator
+(defalias 'toggle-py-smart-operator 'py-toggle-smart-operator)
+(defun py-toggle-smart-operator (&optional arg)
+  "If `py-smart-operator-mode-p' should be on or off.
+
+Returns value of `py-smart-operator-mode-p' switched to. "
+  (interactive)
+  (let ((arg (or arg (if py-smart-operator-mode-p -1 1))))
+    (if (< 0 arg)
+        (progn
+          (setq py-smart-operator-mode-p t)
+          (smart-operator-mode 1))
+      (setq py-smart-operator-mode-p nil)
+      (smart-operator-mode 1))
+    (when (interactive-p) (message "py-smart-operator-mode-p: %s" py-smart-operator-mode-p))
+    py-smart-operator-mode-p))
+
+(defun py-smart-operator-mode-on (&optional arg)
+  "Make sure, `py-smart-operator-mode-p' is on.
+
+Returns value of `py-smart-operator-mode-p'. "
+  (interactive "p")
+  (let ((arg (or arg 1)))
+    (toggle-py-smart-operator-mode-p arg))
+  (when (interactive-p) (message "py-smart-operator-mode-p: %s" py-smart-operator-mode-p))
+  py-smart-operator-mode-p)
+
+(defun py-smart-operator-mode-off (&optional arg)
+  "Make sure, `py-smart-operator-mode-p' is off.
+
+Returns value of `py-smart-operator-mode-p'. "
+  (interactive "p")
+  (let ((arg (if arg (- arg) -1)))
+    (toggle-py-smart-operator-mode-p arg))
+  (when (interactive-p) (message "py-smart-operator-mode-p: %s" py-smart-operator-mode-p))
+  py-smart-operator-mode-p)
+
 ;;;
 (defun py-insert-default-shebang ()
   "Insert in buffer shebang of installed default Python. "
