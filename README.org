@@ -1,4 +1,4 @@
-* Welcome to Python Developers Emacs Environment - PDEE
+* Welcome to Python Development Emacs Environment - PDEE
 
 Originating from Grabriele Lanaros's
 `emacs-for-python', PDEE collects and customizes
