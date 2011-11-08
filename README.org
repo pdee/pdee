@@ -27,7 +27,9 @@ what's needed.
     - Choice of available basic python-modes.
 
 *** Editing Packages
-    
+
+    - Open Next Line: C-o will open a line under the cursor (very
+      similar to vim o)
     - Auto Completion: Auto complete anything in Emacs
     - Yasnippet: Snippets on steroids
     - Parentheses pairing (Custom): Bug-free parentheses pairing using
