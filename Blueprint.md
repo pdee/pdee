@@ -12,7 +12,7 @@ pythoneers like to write single-file scripts, all the following features should 
 
 ## Code Completion
 
-This one is hard, and there are multiple solutions:
+This one is complex, and there are multiple approaches:
 
 ropemacs: this one provides the best completion probably but it suffers of some problems. 
                  1) slowness 
