@@ -20,4 +20,4 @@
 	  )
 
 
-(provide 'epy-bindings)
+(provide 'pdee-bindings)

@@ -1,17 +1,17 @@
-;; epy-python.el - setup of python stuff
+;; pdee-python.el - setup of python stuff
 
 ;; fgallina/python.el
-(require 'python (concat epy-install-dir "extensions/python.el"))
+(require 'python (concat pdee-install-dir "extensions/python.el"))
 
 ;; pymacs
-(require 'pymacs (concat epy-install-dir "extensions/pymacs.el"))
+(require 'pymacs (concat pdee-install-dir "extensions/pymacs.el"))
 
 (defun setup-ropemacs ()
   "Setup the ropemacs harness"
   (setenv "PYTHONPATH"
           (concat
            (getenv "PYTHONPATH") path-separator
-           (concat epy-install-dir "python-libs/")))
+           (concat pdee-install-dir "python-libs/")))
   (pymacs-load "ropemacs" "rope-")
   
   ;; Stops from erroring if there's a syntax err
@@ -39,7 +39,7 @@
   )
 
 ;; Ipython integration with fgallina/python.el
-(defun epy-setup-ipython ()
+(defun pdee-setup-ipython ()
   "Setup ipython integration with python-mode"
   (interactive)
   (setq
@@ -80,12 +80,12 @@ The CMDLINE should be something like:
     ))
 
 
-(when (load-file (concat epy-install-dir "extensions/flymake-patch.el"))
+(when (load-file (concat pdee-install-dir "extensions/flymake-patch.el"))
   (setq flymake-info-line-regex
         (append flymake-info-line-regex '("unused$" "^redefinition" "used$")))
   (load-library "flymake-cursor"))
 
-(defun epy-setup-checker (cmdline)
+(defun pdee-setup-checker (cmdline)
   (add-to-list 'flymake-allowed-file-name-masks
                (list "\\.py\\'" (apply-partially 'flymake-command-parse cmdline)))
   )
@@ -127,4 +127,4 @@ The CMDLINE should be something like:
 (add-hook 'python-mode-hook '(lambda () 
      (define-key python-mode-map "\C-m" 'newline-and-indent)))
 
-(provide 'epy-python)
+(provide 'pdee-python)

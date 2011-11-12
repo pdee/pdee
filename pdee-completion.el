@@ -1,4 +1,4 @@
-;;; epy-completion.el --- A few common completion tricks
+;;; pdee-completion.el --- A few common completion tricks
 
 ;; Pairing parentheses
 
@@ -17,7 +17,7 @@
 ;; Live completion with auto-complete
 ;; (see http://cx4a.org/software/auto-complete/)
 (require 'auto-complete-config nil t)
-(add-to-list 'ac-dictionary-directories (concat epy-install-dir "elpa-to-submit/auto-complete/dict/"))
+(add-to-list 'ac-dictionary-directories (concat pdee-install-dir "elpa-to-submit/auto-complete/dict/"))
 ;; Do What I Mean mode
 (setq ac-dwim t)
 (ac-config-default)
@@ -32,7 +32,7 @@
 
 
 ;; Disabling Yasnippet completion 
-(defun epy-snips-from-table (table)
+(defun pdee-snips-from-table (table)
   (with-no-warnings
     (let ((hashtab (ac-yasnippet-table-hash table))
           (parent (ac-yasnippet-table-parent table))
@@ -43,15 +43,15 @@
       (identity candidates)
       )))
 
-(defun epy-get-all-snips ()
+(defun pdee-get-all-snips ()
   (require 'yasnippet) ;; FIXME: find a way to conditionally load it
   (let (candidates)
     (maphash
-     (lambda (kk vv) (push (epy-snips-from-table vv) candidates)) yas/tables)
+     (lambda (kk vv) (push (pdee-snips-from-table vv) candidates)) yas/tables)
     (apply 'append candidates))
   )
 
-;;(setq ac-ignores (concatenate 'list ac-ignores (epy-get-all-snips)))
+;;(setq ac-ignores (concatenate 'list ac-ignores (pdee-get-all-snips)))
 
 ;; ropemacs Integration with auto-completion
 (defun ac-ropemacs-candidates ()
@@ -78,5 +78,5 @@
 (add-hook 'python-mode-hook 'ac-python-mode-setup)
 (add-hook 'rope-open-project-hook 'ac-nropemacs-setup)
 
-(provide 'epy-completion)
-;;; epy-completion.el ends here
+(provide 'pdee-completion)
+;;; pdee-completion.el ends here
