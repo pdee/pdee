@@ -1,18 +1,18 @@
-* Welcome to the best collection of emacs extensions ever
+* Welcome to Python Development Emacs Environment - PDEE
 
-I'm collecting and customizing the perfect environment for python
-developement, using the most beautiful emacs customization to obtain a
-really modern and exciting (yet stable) way to edit text files.
+Originating from Grabriele Lanaros's
+`emacs-for-python', PDEE collects and customizes
+resources reachable from Emacs to obtain a really
+modern and exciting (yet stable) way to edit Python
+files.
 
-In the package are included also a lot of other packages and
-configurations, it's an upstart for clean emacs installations, these
-configuration however are very similar to emacs-starter-kit and I
-suggest you to give it a try, emacs-for-python is designed to work
-with it (instruction below).
+Configurations are similar to emacs-starter-kit,
+(instruction below).
 
 ** Features 
-The package is splitted in various files, in this way it's very easy
-to include what you really need.
+
+Coming with a bunch of files, PDEE makes it easy to run
+what's needed.
 
 *** Python Related
 
@@ -21,17 +21,16 @@ to include what you really need.
     - Flymake + pyflakes (Custom): Highlight errors on the fly, improved
       from the standard version
     - Virtualenv : Original, In-development tool for using virtualenv in
-      emacs.
+      Emacs.
     - Custom Yasnippet Snippets
     - Cython Mode: a mode for highlighting cython files
-    - latest python.el (fgallina/python.el)
+    - Choice of available basic python-modes.
 
 *** Editing Packages
-    
+
     - Open Next Line: C-o will open a line under the cursor (very
       similar to vim o)
-    - Auto Completion: Wonderful package for auto complete anything in
-      emacs
+    - Auto Completion: Auto complete anything in Emacs
     - Yasnippet: Snippets on steroids
     - Parentheses pairing (Custom): Bug-free parentheses pairing using
       skeletons.
@@ -106,6 +105,18 @@ instead of a python one. To enable the feature put this line in your .emacs:
 
 : (epy-setup-ipython)
 
+*** line highlighting
+You may wanto to disable this feature or to set another color, to do
+so, drop one of the following lines in your .emacs
+: (global-hl-line-mode nil) ;; To disable
+: (set-face-background 'hl-line "black") ;; change with the color that you like
+:                                        ;; for a list of colors: http://raebear.net/comp/emacscolors.html
+
+*** disabling the auto-pairing of parenthesis
+To disable the auto-pairing, drop the following line:
+: (setq skeleton-pair nil) 
+
+
 ** Installation with emacs-starter-kit
 I've built up a little fork of emacs starter kit that is greatly
 integrated with emacs-for-python, it seems the best solution to me!
@@ -125,3 +136,4 @@ GNU GPL license, described in the file COPYING.
 Generally each file has its own license and copyright notice (most, if
 not all of packages are GPL), the license of rope (GPL) is in
 rope-dist/COPYING.
+
