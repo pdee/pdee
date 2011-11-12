@@ -51,31 +51,24 @@ what's needed.
 
 ** Installation
 
-Put the emacs-for-python directory in .emacs.d directory (or any
+Put the pdee directory in .emacs.d directory (or any
 other), the add this line in your .emacs, it will enable all the
-features of emacs-for-python package (editing configuration,
+features of pdee package (editing configuration,
 keybindings, python stuff etc...)
 
-: (load-file "/path/to/emacs-for-python/epy-init.el")
+: (load-file "/path/to/pdee/pdee-init.el")
 
 You may want to enable only some of the features provided by
-emacs-for-python, in this case just enable some of them:
+pdee, in this case just enable some of them:
 
-: (add-to-list 'load-path "path/to/emacs-for-python/") ;; tell where to load the various files
-: (require 'epy-setup) ;; It will setup other loads, it is required!
-: (require 'epy-python) ;; If you want the python facilities [optional]
-: (require 'epy-completion) ;; If you want the autocompletion settings [optional]
-: (require 'epy-editing) ;; For configurations related to editing [optional]
-: (require 'epy-bindings) ;; For my suggested keybindings [optional]
+: (add-to-list 'load-path "path/to/pdee/") ;; tell where to load the various files
+: (require 'pdee-setup) ;; It will setup other loads, it is required!
+: (require 'pdee-python) ;; If you want the python facilities [optional]
+: (require 'pdee-completion) ;; If you want the autocompletion settings [optional]
+: (require 'pdee-editing) ;; For configurations related to editing [optional]
+: (require 'pdee-bindings) ;; For my suggested keybindings [optional]
 
 For further information and usage suggestions check:
-
-- [[https://github.com/gabrielelanaro/emacs-for-python/wiki]]
-- [[http://wiki.github.com/gabrielelanaro/emacs-for-python/workflow]]
-
-There is another nice tutorial on how to install emacs-for-python
-here:
-[[http://maddemcode.com/python/emacs-and-python-the-definitive-answer/]] 
 
 *** Configuring the _flymake_ checker
 New in version 0.3:
@@ -86,7 +79,7 @@ The good news is that it is extremely simple to configure your own
 command, for example to configure the pyflakes checker install it and
 put in your customization file (.emacs):
 
-: (epy-setup-checker "pyflakes %f")
+: (pdee-setup-checker "pyflakes %f")
 
 Obviously you can substitute the ``"pyflakes %f"`` with wathever you
 want, you just have to keep in mind that ``%f`` will be substituted
@@ -95,7 +88,7 @@ with the file which is being checked.
 *** Adding the django snippets
 The django snippets comes as an option, you can load them using:
 
-: (epy-django-snippets)
+: (pdee-django-snippets)
 
 As a command using M-x or putting it in your .emacs.
 *** ipython integration 
@@ -103,7 +96,7 @@ Ipython can be integrated with python-mode. Clicking on the
 Python->Start interpreter menu entry will spawn an ipython shell
 instead of a python one. To enable the feature put this line in your .emacs:
 
-: (epy-setup-ipython)
+: (pdee-setup-ipython)
 
 *** line highlighting
 You may wanto to disable this feature or to set another color, to do
@@ -116,16 +109,6 @@ so, drop one of the following lines in your .emacs
 To disable the auto-pairing, drop the following line:
 : (setq skeleton-pair nil) 
 
-
-** Installation with emacs-starter-kit
-I've built up a little fork of emacs starter kit that is greatly
-integrated with emacs-for-python, it seems the best solution to me!
-
-The repo is at this address: [[http://github.com/gabrielelanaro/emacs-starter-kit]]
-
-Remember that customization to emacs-starter-kit are done to a
-custom.el file, and so you can substitute your distribution of
-emacs-starter-kit and you have to copy just your customization file.
 
 ** License
 
