@@ -11,9 +11,12 @@
   :type 'string
   :group 'python)
 
-(unless pdee-install-dir
-  (message "pdee-install-dir %s" (concat "not found, use " (expand-file-name "~/")))
-  (setq pdee-install-dir (concat (expand-file-name "~/") "pdee")))
+(defcustom pdee-unload-first t
+  "If previosly loaded python- and related modes shall unloaded first, avoiding conflicts. "
+  :type 'string
+  :group 'python)
+
+(unless pdee-install-dir (message "pdee-install-dir must be set. Do M-x customize pdee-install-dir RET")) 
 
 (add-to-list 'load-path pdee-install-dir)
 
@@ -26,6 +29,12 @@
                    )
                  )
   (add-to-list 'load-path (concat pdee-install-dir relpath)))
+
+(when pdee-unload-first
+  (when (featurep 'ipython) (unload-feature 'ipython t))
+  (when (featurep 'python-mode) (unload-feature 'python-mode t))
+    (when (featurep 'pymacs) (unload-feature 'pymacs t))
+  (when (featurep 'pycomplete) (unload-feature 'pycomplete t)))
 
 (require 'pdee-python)
 (require 'pdee-completion)
