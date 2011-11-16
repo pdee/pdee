@@ -11,7 +11,8 @@
   (setenv "PYTHONPATH"
           (concat
            (getenv "PYTHONPATH") path-separator
-           (concat pdee-install-dir "python-libs/")))
+           (concat (expand-file-name pdee-install-dir) "python-libs/")))
+  (message (getenv "PYTHONPATH"))
   (pymacs-load "ropemacs" "rope-")
   
   ;; Stops from erroring if there's a syntax err
