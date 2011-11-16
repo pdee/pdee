@@ -16,18 +16,15 @@
   :type 'string
   :group 'python)
 
-(unless pdee-install-dir (message "pdee-install-dir must be set. Do M-x customize pdee-install-dir RET")) 
-
-(add-to-list 'load-path pdee-install-dir)
+(when (ignore-errors pdee-install-dir)
+  (add-to-list 'load-path pdee-install-dir))
 
 ;; Adding paths to the variable load-path
 (dolist (relpath '(""
                    "extensions/"
                    "extensions/yasnippet"
                    "extensions/auto-complete"
-		   "extensions/eproject"
-                   )
-                 )
+		   "extensions/eproject"))
   (add-to-list 'load-path (concat pdee-install-dir relpath)))
 
 (when pdee-unload-first
