@@ -51,22 +51,20 @@ what's needed.
 
 ** Installation
 
-Put the pdee directory in .emacs.d directory (or any
-other), the add this line in your .emacs, it will enable all the
-features of pdee package (editing configuration,
-keybindings, python stuff etc...)
+Make sure, the path is set and the PDEE init file gets
+loaded, add these lines to your Emacs initialisation
+file:
 
-Make sure, the path is set and have the init loaded
-: (add-to-list 'load-path "path/to/pdee/") 
-: (load-file "/path/to/pdee/pdee-init.el")
+(add-to-list 'load-path "path/to/pdee/") 
+(load-file "/path/to/pdee/pdee-init.el")
 
 You may want to enable only some of the features provided by
 pdee, in this case just enable some of them:
 
-: (require 'pdee-python) ;; If you want the python facilities [optional]
-: (require 'pdee-completion) ;; If you want the autocompletion settings [optional]
-: (require 'pdee-editing) ;; For configurations related to editing [optional]
-: (require 'pdee-bindings) ;; For my suggested keybindings [optional]
+(require 'pdee-python) ;; If you want the python facilities [optional]
+(require 'pdee-completion) ;; If you want the autocompletion settings [optional]
+(require 'pdee-editing) ;; For configurations related to editing [optional]
+(require 'pdee-bindings) ;; For my suggested keybindings [optional]
 
 For further information and usage suggestions check:
 
@@ -79,7 +77,7 @@ The good news is that it is extremely simple to configure your own
 command, for example to configure the pyflakes checker install it and
 put in your customization file (.emacs):
 
-: (pdee-setup-checker "pyflakes %f")
+(pdee-setup-checker "pyflakes %f")
 
 Obviously you can substitute the ``"pyflakes %f"`` with wathever you
 want, you just have to keep in mind that ``%f`` will be substituted
@@ -88,7 +86,7 @@ with the file which is being checked.
 *** Adding the django snippets
 The django snippets comes as an option, you can load them using:
 
-: (pdee-django-snippets)
+(pdee-django-snippets)
 
 As a command using M-x or putting it in your .emacs.
 *** ipython integration 
@@ -96,18 +94,18 @@ Ipython can be integrated with python-mode. Clicking on the
 Python->Start interpreter menu entry will spawn an ipython shell
 instead of a python one. To enable the feature put this line in your .emacs:
 
-: (pdee-setup-ipython)
+(pdee-setup-ipython)
 
 *** line highlighting
 You may wanto to disable this feature or to set another color, to do
 so, drop one of the following lines in your .emacs
-: (global-hl-line-mode nil) ;; To disable
-: (set-face-background 'hl-line "black") ;; change with the color that you like
-:                                        ;; for a list of colors: http://raebear.net/comp/emacscolors.html
+(global-hl-line-mode nil) ;; To disable
+(set-face-background 'hl-line "black") ;; change with the color that you like
+;; for a list of colors: http://raebear.net/comp/emacscolors.html
 
 *** disabling the auto-pairing of parenthesis
 To disable the auto-pairing, drop the following line:
-: (setq skeleton-pair nil) 
+(setq skeleton-pair nil) 
 
 
 ** License
