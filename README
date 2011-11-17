@@ -55,7 +55,8 @@ Make sure, the path is set and the PDEE init file gets
 loaded, add these lines to your Emacs initialisation
 file:
 
-(add-to-list 'load-path "path/to/pdee/") 
+(add-to-list 'load-path "path/to/pdee/")
+(defvar pdee-install-dir "path/to/pdee/")
 (load-file "/path/to/pdee/pdee-init.el")
 
 You may want to enable only some of the features provided by
