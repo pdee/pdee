@@ -6,8 +6,12 @@
   "Python Language's support for Emacs."
   :group 'languages)
 
-(defcustom pdee-install-dir nil
-  "Directory where PDEE should be installed. Must end with a slash. "
+;; Auto-detect installation dir from load-file-name if the lisp file
+;; is not compiled; else from bytecomp-filename
+(defcustom pdee-install-dir (file-name-directory (or load-file-name
+						     (when (boundp 'bytecomp-filename)
+						       bytecomp-filename)))
+"Directory where PDEE should be installed. Must end with a slash. "
   :type 'string
   :group 'python)
 
