@@ -2,3 +2,8 @@
 *.elc
 *.pyc
 commit.txt
+*.patch
+python-modes/xemacs-lp-python-mode/website/*
+MANIFEST*
+befehle.txt
+LICENSE
