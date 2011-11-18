@@ -1,22 +1,21 @@
 ### Python mode flavors handling
 
-Major flavors known which should receive a
-names-component to discern
+Branch names
 
-Shipped GNU Python mode - gnu
+gnu - Shipped GNU Python mode
 
-Shipped XEmacs mode     - xpm
+xps - Shipped XEmacs mode    
 
-XEmacs branch           - xem
+xem - XEmacs branch          
 
-Fabian E Gallina        - fg
+fg - Fabian E Gallina's python.el       
 
-Dave Love               - dl
+dl - Dave Love' python.el              
 
-Python-mode.el          - pme
+pme - Python-mode.el         
 
-Python-components-mode  - pcm
+pcm - Python-components-mode 
 
-PDEE modularized        - pdem
+pdem - PDEE modularized       
 
-the PDEE default        - pdee
+pdee - the PDEE default       
