@@ -2,20 +2,21 @@
 
 Branch names
 
-gnu - Shipped GNU Python mode
-
-xps - Shipped XEmacs mode    
-
-xem - XEmacs branch          
+dl - Dave Love' python.el              
 
 fg - Fabian E Gallina's python.el       
 
-dl - Dave Love' python.el              
-
-pme - Python-mode.el         
+gnu - Shipped GNU Python mode
 
 pcm - Python-components-mode 
 
+pdee - the PDEE default       
+
 pdem - PDEE modularized       
 
-pdee - the PDEE default       
+pme - Python-mode.el         
+
+xem - XEmacs branch          
+
+xps - Shipped XEmacs mode    
+
