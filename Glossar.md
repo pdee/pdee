@@ -2,9 +2,9 @@
 
 Branch names
 
-dl - Dave Love' python.el              
+dl - Dave Love's python.el              
 
-fg - Fabian E Gallina's python.el       
+fg - Fabian E. Gallina's python.el       
 
 gnu - Shipped GNU Python mode
 
