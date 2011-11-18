@@ -2,9 +2,9 @@
 
 Branch names
 
-dl - Dave Love's python.el              
+loveshack - Dave Love's python.el              
 
-fg - Fabian E. Gallina's python.el       
+fgallina - Fabian E. Gallina's python.el       
 
 gnu - Shipped GNU Python mode
 
@@ -12,11 +12,11 @@ pcm - Python-components-mode
 
 pdee - the PDEE default       
 
-pdem - PDEE modularized       
+pdee-modularized-mode - PDEE modularized       
 
-pme - Python-mode.el         
+python-mode-el - python-mode.el from launchpad         
 
-xem - XEmacs branch          
+xemacs-lp-python-mode - XEmacs branch          
 
-xps - Shipped XEmacs mode    
+xemacs-mode-shipped - Shipped XEmacs mode    
 
