@@ -16,7 +16,7 @@ pdee-modularized-mode - PDEE modularized
 
 python-mode-el - python-mode.el from launchpad         
 
-xemacs-lp-python-mode - XEmacs branch          
+xemacs-lp-python-mode - XEmacs branch https://code.launchpad.net/~a-roehler/python-mode/XEmacs-compat-test          
 
 xemacs-mode-shipped - Shipped XEmacs mode    
 
