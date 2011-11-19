@@ -4652,9 +4652,11 @@ This function is appropriate for `comint-output-filter-functions'."
           (message "%s" cmd)
         (message "%s" "Could not detect Python on your system")))))
 
-(defun py-process-name (&optional name)
+(defun py-process-name (&optional name dedicated)
   "Return the name of the running Python process, `get-process' willsee it. "
-  (let* ((name (or name py-shell-name))
+  (let* ((name (if dedicated
+                   (make-temp-name (concat (or name py-shell-name) "-"))
+                 (or name py-shell-name)))
          (erg (if (string= "ipython" name)
                   "IPython"
                 (capitalize name))))
@@ -4671,7 +4673,18 @@ This function is appropriate for `comint-output-filter-functions'."
   (setq shell-dirtrackp t)
   (add-hook 'comint-input-filter-functions 'shell-directory-tracker nil t))
 
-(defun py-shell (&optional argprompt)
+(defalias 'py-dedicated-shell 'py-shell-dedicated)
+(defun py-shell-dedicated (&optional argprompt)
+   "Start an interactive Python interpreter in another window.
+
+With optional \\[universal-argument] user is prompted by
+`py-choose-shell' for command and options to pass to the Python
+interpreter.
+"
+  (interactive "P")
+  (py-shell argprompt t))
+
+(defun py-shell (&optional argprompt dedicated)
   "Start an interactive Python interpreter in another window.
 
 With optional \\[universal-argument] user is prompted by
@@ -4685,7 +4698,7 @@ interpreter.
     (when (null py-shell-name)
       (py-guess-default-python)))
   (let ((args py-python-command-args)
-        (py-process-name (py-process-name)))
+        (py-process-name (py-process-name py-shell-name dedicated)))
     ;; comint
     (if (not (equal (buffer-name) py-process-name))
         (switch-to-buffer-other-window
@@ -4776,6 +4789,63 @@ interpreter.
   (interactive)
   (let ((py-shell-name "jython"))
     (py-shell argprompt)))
+
+(defun python-dedicated (&optional argprompt)
+  "Start an unique Python interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python interpreter. "
+  (interactive)
+  (let ((py-shell-name "python"))
+    (py-shell argprompt t)))
+
+(defun python2-dedicated (&optional argprompt)
+  "Start an unique Python2 interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python2 interpreter. "
+  (interactive)
+  (let ((py-shell-name "python2"))
+    (py-shell argprompt t)))
+
+(defun python2.7-dedicated (&optional argprompt)
+  "Start an unique Python2.7 interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python2.7 interpreter. "
+  (interactive)
+  (let ((py-shell-name "python2.7"))
+    (py-shell argprompt t)))
+
+(defun python3-dedicated (&optional argprompt)
+  "Start an unique Python3 interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python3 interpreter. "
+  (interactive)
+  (let ((py-shell-name "python3"))
+    (py-shell argprompt t)))
+
+(defun python3.2-dedicated (&optional argprompt)
+  "Start an unique Python3.2 interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python3.2 interpreter. "
+  (interactive)
+  (let ((py-shell-name "python3.2"))
+    (py-shell argprompt t)))
+
+(defun ipython-dedicated (&optional argprompt)
+  "Start an unique IPython interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the IPython interpreter. "
+  (interactive)
+  (let ((py-shell-name "ipython"))
+    (py-shell argprompt t)))
+
+(defun jython-dedicated (&optional argprompt)
+  "Start an unique Jython interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Jython interpreter. "
+  (interactive)
+  (let ((py-shell-name "jython"))
+    (py-shell argprompt t)))
+
 
 (declare-function compilation-shell-minor-mode "compile" (&optional arg))
 
