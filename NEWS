@@ -3,6 +3,10 @@ Python Mode News
 New in version 6.0.4
 --------------------
 
+- Python shells and executing forms may be called as
+  dedicated process. See commands available \w suffix
+  "-dedicated".
+
 - Pymacs works right out-of-the-box now
 
 - py-complete fixed - M-TAB completes Python forms

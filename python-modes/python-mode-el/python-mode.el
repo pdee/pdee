@@ -2566,7 +2566,9 @@ class C(B):
                 (py-line-backward-maybe)
                 (py-compute-indentation orig origline closing line inside repeat))
                ((looking-at py-block-or-clause-re)
-                (+ (current-indentation) py-indent-offset))
+                (if (< (py-count-lines) origline)
+                    (+ (current-indentation) py-indent-offset)
+                  (py-compute-indentation orig origline closing line inside t)))
                ((looking-at py-block-closing-keywords-re)
                 (py-beginning-of-block)
                 (current-indentation))
@@ -2578,16 +2580,19 @@ class C(B):
                             (nth 1 (parse-partial-sexp (point-min) (point)))
                           (nth 1 (syntax-ppss)))))
                 (py-compute-indentation orig origline closing line inside repeat))
-               ((not (py-beginning-of-statement-p))(eq (point) orig)
-                (if (bobp)
-                    (current-column)
-                  (py-line-backward-maybe)
-                  (py-compute-indentation orig origline closing line inside repeat)))
                ((not (py-beginning-of-statement-p))
                 (if (bobp)
                     (current-column)
+                  (if (eq (point) orig)
+                      (progn
+                        (py-line-backward-maybe)
+                        (py-compute-indentation orig origline closing line inside repeat))
                   (py-beginning-of-statement)
-                  (py-compute-indentation orig origline closing line inside repeat)))
+                    (py-compute-indentation orig origline closing line inside repeat))))
+               ((py-statement-opens-block-p)
+                (if (< (py-count-lines) origline)
+                    (+ py-indent-offset (current-indentation))
+                  (py-compute-indentation orig origline closing line inside t)))
                ((and (< (py-count-lines) origline)(looking-at py-assignment-re))
                 (current-indentation))
                ((looking-at py-assignment-re)
@@ -3008,28 +3013,23 @@ i.e. the limit on how far back to scan."
       erg)))
 
 (defun py-count-lines (&optional start end)
-  "Count lines in accessible part of buffer.
-
-If no optional arguments are given but region is active,
-use the region.
-Else count from point-min until curser position - (point)
+  "Count lines in buffer, optional without given boundaries.
+Ignores common region.
 
 See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
   (interactive)
-  (lexical-let ((beg (cond (start)
-                           ((region-active-p)
-                            (region-beginning))
+  (save-restriction
+    (widen)
+    (let ((beg (cond (start)
                            (t (point-min))))
                 (end (cond (end)
-                           ((region-active-p)
-                            (region-end))
                            (t (point))))
                 erg)
     (if (featurep 'xemacs)
         (setq erg (count-lines beg end))
       (setq erg (1+ (count-matches "[\n\C-m]" beg end))))
     (when (interactive-p) (message "%s" erg))
-    erg))
+      erg)))
 
 (defun py-which-function ()
   "Return the name of the function or class, if curser is in, return nil otherwise. "
