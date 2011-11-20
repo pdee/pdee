@@ -17,3 +17,9 @@ We can use cedet as our project management platform. We should determine what it
 ### Custom Project Management
 
 A custom library designed for python development is for sure a suitable solution. We shall see if it's convenient.
+
+Features:
+- unit-test-mode (highlight failures)
+- unit-test-discovery
+- code browser
+
