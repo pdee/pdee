@@ -4900,7 +4900,6 @@ Ignores setting of `py-shell-switch-buffers-on-execute', output-buffer will bein
 
 (defun py-execute-base (start end &optional async shell)
   "Adapt the variables used in the process. "
-  (when (buffer-file-name)(setq py-execute-directory (file-name-directory (buffer-file-name))))
   (let* ((regbuf (current-buffer))
 	 (name-raw (or shell (py-choose-shell)))
          (name (py-process-name name-raw))
@@ -4921,7 +4920,8 @@ Ignores setting of `py-shell-switch-buffers-on-execute', output-buffer will bein
     (py-execute-intern start end regbuf procbuf proc temp file filebuf name)))
 
 (defun py-execute-intern (start end &optional regbuf procbuf proc temp file filebuf name)
-  (let ((pec (if (string-match "Python3" name)
+  (let ((py-execute-directory (or py-execute-directory (ignore-errors (file-name-directory (buffer-file-name))) (getenv "HOME")))
+        (pec (if (string-match "Python3" name)
          (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" file file)
          (format "execfile(r'%s') # PYTHON-MODE\n" file)))
         shell)
@@ -5170,7 +5170,9 @@ Unicode strings like u'\xA9' "
           (when (looking-at "[^/\n\r]+")
             (replace-match "#! ")))
       (insert (concat py-shebang-startstring " " erg "\n")))
-    (insert (concat "import os; os.chdir(\"" py-execute-directory "\")"))))
+    (end-of-line)
+    (newline)
+    (insert (concat "import os; os.chdir(\"" (or py-execute-directory (file-name-directory (buffer-file-name)) (getenv "HOME")) "\")"))))
 
 (defun py-insert-coding ()
   (goto-char (point-min))
