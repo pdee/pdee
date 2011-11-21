@@ -4664,6 +4664,7 @@ interpreter.
 With optional \\[universal-argument] user is prompted by
 `py-choose-shell' for command and options to pass to the Python
 interpreter.
+Returns variable `py-process-name' used by function `get-process'.
 "
   (interactive "P")
   ;; Set or select the shell if not ready
@@ -4705,7 +4706,9 @@ interpreter.
     (use-local-map py-shell-map)
     ;; ToDo: has only effect \w IPython
     (add-hook 'py-shell-hook 'py-dirstack-hook)
-    (run-hooks 'py-shell-hook)))
+    (run-hooks 'py-shell-hook)
+    (when (interactive-p) (message "%s" py-process-name))
+    py-process-name))
 
 (defalias 'iyp 'ipython)
 (defalias 'ipy 'ipython)
@@ -4871,24 +4874,25 @@ Ignores setting of `py-shell-switch-buffers-on-execute', output-buffer will bein
   (interactive "r\nP")
   (py-execute-base start end async))
 
-(defun py-execute-base (start end &optional async shell)
+(defun py-execute-region-dedicated (start end &optional async shell)
+  "Get the region processed by an unique Python interpreter. "
+  (interactive "r\nP")
+  (py-execute-base start end async shell t))
+
+(defun py-execute-base (start end &optional async shell dedicated)
   "Adapt the variables used in the process. "
   (let* ((regbuf (current-buffer))
 	 (name-raw (or shell (py-choose-shell)))
          (name (py-process-name name-raw))
-	 (buf-and-proc (progn
-                         (and (buffer-live-p (get-buffer (concat "*" name "*")))
-                              (processp (get-process name))
-                              (buffer-name (get-buffer (concat "*" name "*"))))))
-         (procbuf (or buf-and-proc
-                      (progn
-                        (setq py-shell-name name-raw)
-                        (py-shell)
-                        (buffer-name (get-buffer name)))))
-         (proc (get-process name))
          (temp (make-temp-name name))
          (file (concat (expand-file-name temp py-temp-directory) ".py"))
-         (filebuf (get-buffer-create file)))
+         (filebuf (get-buffer-create file))
+         (proc (if dedicated
+                   (get-process (py-shell nil dedicated))
+                 (get-process name)))
+         (procbuf (if dedicated
+                      (buffer-name (get-buffer (current-buffer)))
+                    (buffer-name (get-buffer (concat "*" name "*"))))))
     (set-buffer regbuf)
     (py-execute-intern start end regbuf procbuf proc temp file filebuf name)))
 
