@@ -1071,6 +1071,12 @@ set in py-execute-region and used in py-jump-to-exception.")
     table)
   "`py-mode-syntax-table' with backslash given whitespace syntax.")
 
+(defface py-XXX-tag-face
+  '((t (:inherit font-lock-string-face)))
+  "XXX\\|TODO\\|FIXME "
+  :group 'python)
+(defvar py-XXX-tag-face 'py-XXX-tag-face)
+
 ;; ;; Face for None, True, False, self, and Ellipsis
 (defface py-pseudo-keyword-face
   '((t (:inherit font-lock-keyword-face)))
