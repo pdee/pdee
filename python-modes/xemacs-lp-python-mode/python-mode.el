@@ -4607,6 +4607,16 @@ Used for determining the default in the next one.")
 (defvar py-output-buffer "*Python Output*")
 (make-variable-buffer-local 'py-output-buffer)
 
+
+(defvar py-execute-keep-temporary-file-p nil
+  "For tests only. Excute functions delete temporary files default. ")
+
+(defun py-toggle-execute-keep-temporary-file-p ()
+  (interactive)
+  (setq py-execute-keep-temporary-file-p
+        (not py-execute-keep-temporary-file-p))
+  (when (interactive-p) (message "py-execute-keep-temporary-file-p: %s" py-execute-keep-temporary-file-p)))
+
 (defun py-comint-output-filter-function (string)
   "Watch output for Python prompt and exec next file waiting in queue.
 This function is appropriate for `comint-output-filter-functions'."
@@ -4947,7 +4957,8 @@ Ignores setting of `py-shell-switch-buffers-on-execute', output-buffer will bein
               (pop-to-buffer regbuf)
               (message "Output buffer: %s" procbuf))
             (sit-for 0.1)
-            (delete-file file))
+            (unless py-execute-keep-temporary-file-p
+              (delete-file file)))
         (message "File not readable: %s" "Do you have write permissions?"))))))
 
 (defun py-execute-string (string &optional async)
