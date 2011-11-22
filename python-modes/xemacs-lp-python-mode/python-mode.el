@@ -5251,11 +5251,11 @@ This may be preferable to `\\[py-execute-buffer]' because:
           (save-some-buffers (not py-ask-about-save) nil)
           (py-execute-string
            (if (string-match "\\.py$" file)
-               (let ((f (file-name-sans-extension
-                         (file-name-nondirectory file))))
-                 (format "if globals().has_key('%s'):\n    reload(%s)\nelse:\n    import %s\n"
-                         f f f))
-             (format "execfile(r'%s')\n" file))
+               (let ((m (py-qualified-module-name (expand-file-name file))))
+		 (format "import sys\nif sys.modules.has_key('%s'):\n reload(%s)\nelse:\n import %s\n"
+                         m m m))
+             ;; (format "execfile(r'%s')\n" file)
+             (py-which-execute-file-command file))
            async))
       ;; else
       (py-execute-buffer async))))
