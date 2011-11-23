@@ -4186,7 +4186,7 @@ Travels right-margin comments. "
         done erg cui)
     (while (and (or (not done)(eq origline (py-count-lines)))
                 (not (eval stop)))
-      (setq erg (funcall function))
+      (funcall function)
       (when (and (looking-at regexp)(if maxindent
                                       (< (current-indentation) maxindent)t))
         (setq erg (point))
