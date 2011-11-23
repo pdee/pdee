@@ -5260,6 +5260,21 @@ This may be preferable to `\\[py-execute-buffer]' because:
       ;; else
       (py-execute-buffer async))))
 
+(defun py-qualified-module-name (file)
+  "Find the qualified module name for filename FILE.
+
+Basically, this goes down the directory tree as long as there are __init__.py files there."
+  (let ((rec #'(lambda (d f)
+		 (let* ((dir (file-name-directory d))
+			(initpy (concat dir "__init__.py")))
+		   (if (file-exists-p initpy)
+		       (let ((d2 (directory-file-name d)))
+			 (funcall rec (file-name-directory d2)
+				(concat (file-name-nondirectory d2) "." f)))
+		     f)))))
+    (funcall rec (file-name-directory file)
+	     (file-name-sans-extension (file-name-nondirectory file)))))
+
 (defun py-execute-buffer (&optional async)
   "Send the contents of the buffer to a Python interpreter.
 If the file local variable `py-master-file' is non-nil, execute the
