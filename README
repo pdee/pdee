@@ -1,0 +1,121 @@
+* Welcome to Python Development Emacs Environment - PDEE
+
+Originating from Grabriele Lanaros's
+`emacs-for-python', PDEE collects and customizes
+resources reachable from Emacs to obtain a really
+modern and exciting (yet stable) way to edit Python
+files.
+
+Configurations are similar to emacs-starter-kit,
+(instruction below).
+
+** Features 
+
+Coming with a bunch of files, PDEE makes it easy to run
+what's needed.
+
+*** Python Related
+
+    - Ropemacs (Custom) : A refactoring library
+    - Auto Completion with rope (Custom) : Tested to work well with Rope
+    - Flymake + pyflakes (Custom): Highlight errors on the fly, improved
+      from the standard version
+    - Virtualenv : Original, In-development tool for using virtualenv in
+      Emacs.
+    - Custom Yasnippet Snippets
+    - Cython Mode: a mode for highlighting cython files
+    - Choice of available basic python-modes.
+
+*** Editing Packages
+
+    - Open Next Line: C-o will open a line under the cursor (very
+      similar to vim o)
+    - Auto Completion: Auto complete anything in Emacs
+    - Yasnippet: Snippets on steroids
+    - Parentheses pairing (Custom): Bug-free parentheses pairing using
+      skeletons.
+    - smart-operator: Automatically adds spaces around arithmetic operators.
+
+*** Configurations
+
+    - ido activation
+    - ibuffer instead of buffer menu
+    - eshell configuration
+
+*** Keybindings
+
+    - Copy-Cut-Paste from clipboard with Super-C Super-X Super-V    
+    - Calc Mode remapping to M-c
+    - M-Tab remapped to C-Tab to avoid collisions with the desktop
+      manager
+
+** Installation
+
+Make sure, the path is set and the PDEE init file gets
+loaded, add these lines to your Emacs initialisation
+file:
+
+(add-to-list 'load-path "path/to/pdee/")
+(defvar pdee-install-dir "path/to/pdee/")
+(load-file "/path/to/pdee/pdee-init.el")
+
+You may want to enable only some of the features provided by
+pdee, in this case just enable some of them:
+
+(require 'pdee-python) ;; If you want the python facilities [optional]
+(require 'pdee-completion) ;; If you want the autocompletion settings [optional]
+(require 'pdee-editing) ;; For configurations related to editing [optional]
+(require 'pdee-bindings) ;; For my suggested keybindings [optional]
+
+For further information and usage suggestions check:
+
+*** Configuring the _flymake_ checker
+New in version 0.3:
+I changed the way you configure your checkers, now there is no
+predefined checker and you have to configure it by your own.
+
+The good news is that it is extremely simple to configure your own
+command, for example to configure the pyflakes checker install it and
+put in your customization file (.emacs):
+
+(pdee-setup-checker "pyflakes %f")
+
+Obviously you can substitute the ``"pyflakes %f"`` with wathever you
+want, you just have to keep in mind that ``%f`` will be substituted
+with the file which is being checked.
+
+*** Adding the django snippets
+The django snippets comes as an option, you can load them using:
+
+(pdee-django-snippets)
+
+As a command using M-x or putting it in your .emacs.
+*** ipython integration 
+Ipython can be integrated with python-mode. Clicking on the
+Python->Start interpreter menu entry will spawn an ipython shell
+instead of a python one. To enable the feature put this line in your .emacs:
+
+(pdee-setup-ipython)
+
+*** line highlighting
+You may wanto to disable this feature or to set another color, to do
+so, drop one of the following lines in your .emacs
+(global-hl-line-mode nil) ;; To disable
+(set-face-background 'hl-line "black") ;; change with the color that you like
+;; for a list of colors: http://raebear.net/comp/emacscolors.html
+
+*** disabling the auto-pairing of parenthesis
+To disable the auto-pairing, drop the following line:
+(setq skeleton-pair nil) 
+
+
+** License
+
+This is mostly a distribution with some little tweaks, with respect of
+the licenses, my tweaks are distributed according to the term of the
+GNU GPL license, described in the file COPYING.
+
+Generally each file has its own license and copyright notice (most, if
+not all of packages are GPL), the license of rope (GPL) is in
+rope-dist/COPYING.
+
