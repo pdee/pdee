@@ -1,4 +1,4 @@
-# Diskussions when developing
+# Diskussions
 
 ### Costum group
 
