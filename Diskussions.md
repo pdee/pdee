@@ -12,11 +12,11 @@ We can use Launchpad for releases and Github for coding to get the best of both 
 
 ### Project Management
 
-- CEDET
+CEDET
 
 We can use cedet as our project management platform. We should determine what it provides and if its features are suitable for python development.
 
-- Custom Project Management
+Custom Project Management
 
 A custom library designed for python development is for sure a suitable solution. We shall see if it's convenient.
 
