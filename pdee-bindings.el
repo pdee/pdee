@@ -19,5 +19,28 @@
 	    (define-key python-mode-map "\C-c\C-d" 'rope-show-calltip))
 	  )
 
+;; Editing bindings
+(global-set-key (kbd "M-<up>") 'move-text-up)
+(global-set-key (kbd "M-<down>") 'move-text-down)
+
+;; ibuffer by default
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+
+;; duplicate a line
+(global-set-key (kbd "C-c y") 'djcb-duplicate-line)
+
+;; duplicate a line and comment the first
+(global-set-key (kbd "C-c c")(lambda()(interactive)(djcb-duplicate-line t)))
+
+(global-set-key (kbd "C-c l") 'mark-line)
+
+(add-hook 'python-mode-hook
+	  (lambda ()
+	    (define-key python-mode-map (kbd "M-<right>")
+	      'balle-python-shift-right)
+	    (define-key python-mode-map (kbd "M-<left>")
+	      'balle-python-shift-left))
+	  )
+
 
 (provide 'pdee-bindings)
