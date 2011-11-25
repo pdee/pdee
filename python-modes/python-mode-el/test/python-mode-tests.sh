@@ -153,6 +153,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall wrongly-highlighted-as-keywords-lp-885144-test \
 --funcall glitch-when-indenting-lists-lp-886473-test \
 --funcall incorrect-use-of-region-in-py-shift-left-lp:875951-test \
+--funcall indentation-keyword-lp-885143-test \
 \
 --funcall multiline-list-indent-test \
 --funcall py-beginning-of-block-test \

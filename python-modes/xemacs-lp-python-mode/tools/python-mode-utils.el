@@ -58,8 +58,8 @@
       (dolist (ele py-shells)
         (if force
             (progn
-              (insert (concat "(defun " ele "-dedicated (&optional argprompt)
-  \"Start an unique "))
+              (insert (concat "(defun " ele " (&optional argprompt)
+  \"Start an "))
               (if (string= "ipython" ele)
                   (insert "IPython")
                 (insert (capitalize ele)))
@@ -72,10 +72,12 @@
               (insert (concat " interpreter. \"
   (interactive)
   (let ((py-shell-name \"" ele "\"))
-    (py-shell argprompt t)))\n\n")))
+    (local-unset-key [tab])
+    (define-key py-shell-map [tab] 'py-shell-complete)
+    (py-shell argprompt)))\n\n")))
           (unless (commandp (car (read-from-string ele)))
             (insert (concat "(defun " ele " (&optional argprompt)
-  \"Start an unique "))
+  \"Start an "))
             (if (string= "ipython" ele)
                 (insert "IPython")
               (insert (capitalize ele)))
@@ -88,7 +90,9 @@
             (insert (concat " interpreter. \"
   (interactive)
   (let ((py-shell-name \"" ele "\"))
-    (py-shell argprompt t)))\n\n")))))))
+    (local-unset-key [tab])
+    (define-key py-shell-map [tab] 'py-shell-complete)
+    (py-shell argprompt)))\n\n")))))))
   (emacs-lisp-mode)
   (switch-to-buffer (current-buffer)))
 

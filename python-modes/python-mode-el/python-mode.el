@@ -1240,7 +1240,7 @@ Currently-active file is at the head of the list.")
 If a numeric
 argument ARG is provided, that many colons are inserted
 non-electrically.
-With universal-prefix-key C-u a \"#\"
+With \\[universal-argument] C-u a \"#\"
 Electric behavior is inhibited inside a string or
 comment."
   (interactive "*P")
@@ -1272,7 +1272,7 @@ If a numeric argument ARG is provided, that many colons are inserted
 non-electrically.
 
 Electric behavior is inhibited inside a string or
-comment or by universal prefix C-u."
+comment or by universal prefix \\[universal-argument]."
   (interactive "*P")
   (cond ((not py-electric-colon-active-p)
          (self-insert-command (prefix-numeric-value arg)))
@@ -4633,7 +4633,6 @@ Used for determining the default in the next one.")
 (defvar py-output-buffer "*Python Output*")
 (make-variable-buffer-local 'py-output-buffer)
 
-
 (defvar py-execute-keep-temporary-file-p nil
   "For tests only. Excute functions delete temporary files default. ")
 
@@ -4670,9 +4669,11 @@ This function is appropriate for `comint-output-filter-functions'."
 
 (defun py-process-name (&optional name dedicated)
   "Return the name of the running Python process, `get-process' willsee it. "
-  (let* ((name (if dedicated
-                   (make-temp-name (concat (or name py-shell-name) "-"))
-                 (or name py-shell-name)))
+  (let* ((name (cond (dedicated
+                      (make-temp-name (concat (or name py-shell-name) "-")))
+                     ((string-match "-" (buffer-name))
+                      (replace-regexp-in-string "\*" "" (buffer-name)))
+                     (t (or name py-shell-name))))
          (erg (if (string= "ipython" name)
                   "IPython"
                 (capitalize name))))
@@ -4752,69 +4753,86 @@ Returns variable `py-process-name' used by function `get-process'.
     (when (interactive-p) (message "%s" py-process-name))
     py-process-name))
 
-(defalias 'iyp 'ipython)
-(defalias 'ipy 'ipython)
-(defun ipython (&optional argprompt)
-  "Start an interactive Ipython interpreter in another window.
+;;; Python named shells
+(defun python (&optional argprompt)
+  "Start an Python interpreter in another window.
    With optional \\[universal-argument] user is prompted
-    for options to pass to the Ipython interpreter. "
+    for options to pass to the Python interpreter. "
+  (interactive)
+  (let ((py-shell-name "python"))
+    (local-unset-key [tab])
+    (define-key py-shell-map [tab] 'py-shell-complete)
+    (py-shell argprompt)))
+
+(defun python2 (&optional argprompt)
+  "Start an Python2 interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python2 interpreter. "
+  (interactive)
+  (let ((py-shell-name "python2"))
+    (local-unset-key [tab])
+    (define-key py-shell-map [tab] 'py-shell-complete)
+    (py-shell argprompt)))
+
+(defun python2.7 (&optional argprompt)
+  "Start an Python2.7 interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python2.7 interpreter. "
+  (interactive)
+  (let ((py-shell-name "python2.7"))
+    (local-unset-key [tab])
+    (define-key py-shell-map [tab] 'py-shell-complete)
+    (py-shell argprompt)))
+
+(defun python3 (&optional argprompt)
+  "Start an Python3 interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python3 interpreter. "
+  (interactive)
+  (let ((py-shell-name "python3"))
+    (local-unset-key [tab])
+    (define-key py-shell-map [tab] 'py-shell-complete)
+    (py-shell argprompt)))
+
+(defun python3.2 (&optional argprompt)
+  "Start an Python3.2 interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python3.2 interpreter. "
+  (interactive)
+  (let ((py-shell-name "python3.2"))
+    (local-unset-key [tab])
+    (define-key py-shell-map [tab] 'py-shell-complete)
+    (py-shell argprompt)))
+
+(defun ipython (&optional argprompt)
+  "Start an IPython interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the IPython interpreter. "
   (interactive)
   (let ((py-shell-name "ipython"))
     (local-unset-key [tab])
     (define-key py-shell-map [tab] 'ipython-complete)
     (py-shell argprompt)))
 
-(defun python2 (&optional argprompt)
-  "Start an interactive Python2 interpreter in another window.
-  With optional \\[universal-argument] user is prompted
-    for options to pass to the Python2 interpreter.
-    "
-  (interactive)
-  (let ((py-shell-name "python2"))
-    (py-shell argprompt)))
-
-(defun python3 (&optional argprompt)
-  "Start an interactive Python3 interpreter in another window.
-  With optional \\[universal-argument] user is prompted
-    for options to pass to the Python3 interpreter.
-    "
-  (interactive)
-  (let ((py-shell-name "python3"))
-    (py-shell argprompt)))
-
-(defun python2.7 (&optional argprompt)
-  "Start an interactive Python2.7 interpreter in another window.
-  With optional \\[universal-argument] user is prompted
-    for options to pass to the Python2.7 interpreter.
-    "
-  (interactive)
-  (let ((py-shell-name "python2.7"))
-    (py-shell argprompt)))
-
-(defun python (&optional argprompt)
-  "Start an interactive Python interpreter in another window.
-  With optional \\[universal-argument] user is prompted
-    for options to pass to the Python interpreter.
-    "
-  (interactive)
-  (let ((py-shell-name "python"))
-    (py-shell argprompt)))
-
 (defun jython (&optional argprompt)
-  "Start an interactive Jython interpreter in another window.
-  With optional \\[universal-argument] user is prompted
-    for options to pass to the Jython interpreter.
-    "
+  "Start an Jython interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Jython interpreter. "
   (interactive)
   (let ((py-shell-name "jython"))
+    (local-unset-key [tab])
+    (define-key py-shell-map [tab] 'py-shell-complete)
     (py-shell argprompt)))
 
+;;; Python dedicated shells
 (defun python-dedicated (&optional argprompt)
   "Start an unique Python interpreter in another window.
    With optional \\[universal-argument] user is prompted
     for options to pass to the Python interpreter. "
   (interactive)
   (let ((py-shell-name "python"))
+    (local-unset-key [tab])
+    (define-key py-shell-map [tab] 'py-shell-complete)
     (py-shell argprompt t)))
 
 (defun python2-dedicated (&optional argprompt)
@@ -4823,6 +4841,8 @@ Returns variable `py-process-name' used by function `get-process'.
     for options to pass to the Python2 interpreter. "
   (interactive)
   (let ((py-shell-name "python2"))
+    (local-unset-key [tab])
+    (define-key py-shell-map [tab] 'py-shell-complete)
     (py-shell argprompt t)))
 
 (defun python2.7-dedicated (&optional argprompt)
@@ -4831,6 +4851,8 @@ Returns variable `py-process-name' used by function `get-process'.
     for options to pass to the Python2.7 interpreter. "
   (interactive)
   (let ((py-shell-name "python2.7"))
+    (local-unset-key [tab])
+    (define-key py-shell-map [tab] 'py-shell-complete)
     (py-shell argprompt t)))
 
 (defun python3-dedicated (&optional argprompt)
@@ -4839,6 +4861,8 @@ Returns variable `py-process-name' used by function `get-process'.
     for options to pass to the Python3 interpreter. "
   (interactive)
   (let ((py-shell-name "python3"))
+    (local-unset-key [tab])
+    (define-key py-shell-map [tab] 'py-shell-complete)
     (py-shell argprompt t)))
 
 (defun python3.2-dedicated (&optional argprompt)
@@ -4847,6 +4871,8 @@ Returns variable `py-process-name' used by function `get-process'.
     for options to pass to the Python3.2 interpreter. "
   (interactive)
   (let ((py-shell-name "python3.2"))
+    (local-unset-key [tab])
+    (define-key py-shell-map [tab] 'py-shell-complete)
     (py-shell argprompt t)))
 
 (defun ipython-dedicated (&optional argprompt)
@@ -4855,6 +4881,8 @@ Returns variable `py-process-name' used by function `get-process'.
     for options to pass to the IPython interpreter. "
   (interactive)
   (let ((py-shell-name "ipython"))
+    (local-unset-key [tab])
+    (define-key py-shell-map [tab] 'ipython-complete)
     (py-shell argprompt t)))
 
 (defun jython-dedicated (&optional argprompt)
@@ -4863,8 +4891,12 @@ Returns variable `py-process-name' used by function `get-process'.
     for options to pass to the Jython interpreter. "
   (interactive)
   (let ((py-shell-name "jython"))
+    (local-unset-key [tab])
+    (define-key py-shell-map [tab] 'py-shell-complete)
     (py-shell argprompt t)))
 
+
+;; Code execution commands
 (declare-function compilation-shell-minor-mode "compile" (&optional arg))
 
 (defcustom py-remove-cwd-from-path t
@@ -4876,9 +4908,6 @@ without the user's realization (e.g. to perform completion)."
   :type 'boolean
   :group 'python
   :version "23.3")
-
-
-;; Code execution commands
 (defvar py-execute-directory nil
   "Stores the file's directory-name py-execute-... functions act upon. ")
 
@@ -6434,6 +6463,21 @@ Interactively, prompt for name."
 ;;         printit (\"_emacs_out ()\")
 ;; ")
 
+(defun py-send-receive (string)
+  "Send STRING to inferior Python (if any) and return result.
+The result is what follows `_emacs_out' in the output.
+This is a no-op if `python-check-comint-prompt' returns nil."
+  (py-send-string string)
+  (let ((proc (python-proc)))
+    (with-current-buffer (process-buffer proc)
+      (when (python-check-comint-prompt proc)
+	(set (make-local-variable 'python-preoutput-result) nil)
+                    (accept-process-output proc py-send-receive-delay)
+        (if (null python-preoutput-result)
+          (message "No output from: %s, maybe set `py-send-receive-delay' onto a higher value " string))
+	(prog1 python-preoutput-result
+	  (kill-local-variable 'python-preoutput-result))))))
+
 (defun py-find-function (name)
   "Find source of definition of function NAME.
 Interactively, prompt for name."
@@ -6457,21 +6501,6 @@ Interactively, prompt for name."
     (when (integerp line)
       (goto-char (point-min))
       (forward-line (1- line)))))
-
-(defun py-send-receive (string)
-  "Send STRING to inferior Python (if any) and return result.
-The result is what follows `_emacs_out' in the output.
-This is a no-op if `python-check-comint-prompt' returns nil."
-  (py-send-string string)
-  (let ((proc (python-proc)))
-    (with-current-buffer (process-buffer proc)
-      (when (python-check-comint-prompt proc)
-	(set (make-local-variable 'python-preoutput-result) nil)
-                    (accept-process-output proc py-send-receive-delay)
-        (if (null python-preoutput-result)
-          (message "No output from: %s, maybe set `py-send-receive-delay' onto a higher value " string))
-	(prog1 python-preoutput-result
-	  (kill-local-variable 'python-preoutput-result))))))
 
 (defun py-find-imports ()
   "Find top-level imports, updating `python-imports'."
@@ -7138,7 +7167,7 @@ Uses `python-imports' to load modules against which to complete."
       (let ((map (copy-keymap comint-mode-map)))
         (substitute-key-definition 'complete-symbol 'completion-at-point
                                      map global-map)
-        ;; (define-key map [tab] 'py-complete)
+        (define-key map [tab] 'py-shell-complete)
         (define-key map (kbd "RET") 'comint-send-input)
         (define-key map "\C-c-" 'py-up-exception)
         (define-key map "\C-c=" 'py-down-exception)
@@ -8447,88 +8476,7 @@ Uses `python-beginning-of-block', `python-end-of-block'."
 ;; definition (separate from BicycleRepairMan).  Complicated by
 ;; finding the right qualified name.
 
-;;; Completion.
 
-;; http://lists.gnu.org/archive/html/bug-gnu-emacs/2008-01/msg00076.html
-(defvar python-imports "None"
-  "String of top-level import statements updated by `python-find-imports'.")
-(make-variable-buffer-local 'python-imports)
-
-;; Fixme: Should font-lock try to run this when it deals with an import?
-;; Maybe not a good idea if it gets run multiple times when the
-;; statement is being edited, and is more likely to end up with
-;; something syntactically incorrect.
-;; However, what we should do is to trundle up the block tree from point
-;; to extract imports that appear to be in scope, and add those.
-(defun python-find-imports ()
-  "Find top-level imports, updating `python-imports'."
-  (interactive)
-  (save-excursion
-      (let (lines)
-	(goto-char (point-min))
-	(while (re-search-forward "^import\\>[ \n\t]\\|^from\\>[ \n\t]" nil t)
-	  (unless (syntax-ppss-context (syntax-ppss))
-	    (let ((start (line-beginning-position)))
-	      ;; Skip over continued lines.
-	      (while (and (eq ?\\ (char-before (line-end-position)))
-			  (= 0 (forward-line 1)))
-		t)
-	      (push (buffer-substring start (line-beginning-position 2))
-		    lines))))
-	(setq python-imports
-	      (if lines
-		  (apply #'concat
-;; This is probably best left out since you're unlikely to need the
-;; doc for a function in the buffer and the import will lose if the
-;; Python sub-process' working directory isn't the same as the
-;; buffer's.
-;; 			 (if buffer-file-name
-;; 			     (concat
-;; 			      "import "
-;; 			      (file-name-sans-extension
-;; 			       (file-name-nondirectory buffer-file-name))))
-			 (nreverse lines))
-		"None"))
-	(when lines
-	  (set-text-properties 0 (length python-imports) nil python-imports)
-	  ;; The output ends up in the wrong place if the string we
-	  ;; send contains newlines (from the imports).
-	  (setq python-imports
-		(replace-regexp-in-string "\n" "\\n"
-					  (format "%S" python-imports) t t))))))
-
-;; Fixme: This fails the first time if the sub-process isn't already
-;; running.  Presumably a timing issue with i/o to the process.
-(defun python-symbol-completions (symbol)
-  "Return a list of completions of the string SYMBOL from Python process.
-The list is sorted.
-Uses `python-imports' to load modules against which to complete."
-  (when (stringp symbol)
-    (let ((completions
-	   (condition-case ()
-	       (car (read-from-string
-		     (python-send-receive
-		      (format "emacs.complete(%S,%s)"
-			      (substring-no-properties symbol)
-			      python-imports))))
-	     (error nil))))
-      (sort
-       ;; We can get duplicates from the above -- don't know why.
-       (delete-dups completions)
-       #'string<))))
-
-(defun py-completion-at-point ()
-  (let ((end (point))
-	(start (save-excursion
-		 (and (re-search-backward
-		       (rx (or buffer-start (regexp "[^[:alnum:]._]"))
-			   (group (1+ (regexp "[[:alnum:]._]"))) point)
-		       nil t)
-		      (match-beginning 1)))))
-    (when start
-      (list start end
-            (completion-table-dynamic 'python-symbol-completions)))))
-
 ;;; FFAP support
 
 (defun python-module-path (module)
@@ -8943,30 +8891,129 @@ filter."
 (defun python-sentinel (proc msg)
   (setq overlay-arrow-position nil))
 
-;; Author: Lukasz Pankowski, patch sent for lp:328836
+;; from pycomplete.el
+(defun py-find-global-imports ()
+  (save-excursion
+    (let (first-class-or-def imports)
+      (goto-char (point-min))
+      (setq first-class-or-def
+	    (re-search-forward "^ *\\(def\\|class\\) " nil t))
+      (goto-char (point-min))
+      (while (re-search-forward
+	      "^\\(import \\|from \\([A-Za-z_][A-Za-z_0-9]*\\) import \\).*"
+	      nil t)
+	(setq imports (append imports
+			      (list (buffer-substring
+				     (match-beginning 0)
+				     (match-end 0))))))
+      imports)))
+
+;;; Code Completion.
+
+;; http://lists.gnu.org/archive/html/bug-gnu-emacs/2008-01/msg00076.html
+(defvar python-imports "None"
+  "String of top-level import statements updated by `python-find-imports'.")
+(make-variable-buffer-local 'python-imports)
+
+;; Fixme: Should font-lock try to run this when it deals with an import?
+;; Maybe not a good idea if it gets run multiple times when the
+;; statement is being edited, and is more likely to end up with
+;; something syntactically incorrect.
+;; However, what we should do is to trundle up the block tree from point
+;; to extract imports that appear to be in scope, and add those.
+(defun python-find-imports ()
+  "Find top-level imports, updating `python-imports'."
+  (interactive)
+  (save-excursion
+      (let (lines)
+	(goto-char (point-min))
+	(while (re-search-forward "^import\\>[ \n\t]\\|^from\\>[ \n\t]" nil t)
+	  (unless (syntax-ppss-context (syntax-ppss))
+	    (let ((start (line-beginning-position)))
+	      ;; Skip over continued lines.
+	      (while (and (eq ?\\ (char-before (line-end-position)))
+			  (= 0 (forward-line 1)))
+		t)
+	      (push (buffer-substring start (line-beginning-position 2))
+		    lines))))
+	(setq python-imports
+	      (if lines
+		  (apply #'concat
+;; This is probably best left out since you're unlikely to need the
+;; doc for a function in the buffer and the import will lose if the
+;; Python sub-process' working directory isn't the same as the
+;; buffer's.
+;; 			 (if buffer-file-name
+;; 			     (concat
+;; 			      "import "
+;; 			      (file-name-sans-extension
+;; 			       (file-name-nondirectory buffer-file-name))))
+			 (nreverse lines))
+		"None"))
+	(when lines
+	  (set-text-properties 0 (length python-imports) nil python-imports)
+	  ;; The output ends up in the wrong place if the string we
+	  ;; send contains newlines (from the imports).
+	  (setq python-imports
+		(replace-regexp-in-string "\n" "\\n"
+					  (format "%S" python-imports) t t))))))
+
+;; Fixme: This fails the first time if the sub-process isn't already
+;; running.  Presumably a timing issue with i/o to the process.
+(defun python-symbol-completions (symbol)
+  "Return a list of completions of the string SYMBOL from Python process.
+The list is sorted.
+Uses `python-imports' to load modules against which to complete."
+  (when (stringp symbol)
+    (let ((completions
+	   (condition-case ()
+	       (car (read-from-string
+		     (python-send-receive
+		      (format "emacs.complete(%S,%s)"
+			      (substring-no-properties symbol)
+			      python-imports))))
+	     (error nil))))
+      (sort
+       ;; We can get duplicates from the above -- don't know why.
+       (delete-dups completions)
+       #'string<))))
+
+(defun py-completion-at-point ()
+  (let ((end (point))
+	(start (save-excursion
+		 (and (re-search-backward
+		       (rx (or buffer-start (regexp "[^[:alnum:]._]"))
+			   (group (1+ (regexp "[[:alnum:]._]"))) point)
+		       nil t)
+		      (match-beginning 1)))))
+    (when start
+      (list start end
+            (completion-table-dynamic 'python-symbol-completions)))))
+
+;;; Python Shell Complete
+;; Author: Lukasz Pankowski
+
 (defvar py-shell-input-lines nil
   "Collect input lines send interactively to the Python process in
 order to allow injecting completion command between keyboard interrupt
 and resending the lines later. The lines are stored in reverse order")
 
 ;; need to clear py-shell-input-lines if primary prompt found
-
-;; (defun py-comint-output-filter-function (string)
-;;   "Watch output for Python prompt and exec next file waiting in queue.
-;; This function is appropriate for `comint-output-filter-functions'."
-;;   ;; TBD: this should probably use split-string
-;;   (when (and (or (string-equal string ">>> ")
-;; 		 (and (>= (length string) 5)
-;; 		      (string-equal (substring string -5) "\n>>> ")))
-;; 	     (or (setq py-shell-input-lines nil)
-;; 		 py-file-queue))
-;;     (pop-to-buffer (current-buffer))
-;;     (py-safe (delete-file (car py-file-queue)))
-;;     (setq py-file-queue (cdr py-file-queue))
-;;     (if py-file-queue
-;; 	(let ((pyproc (get-buffer-process (current-buffer))))
-;; 	  (py-execute-file pyproc (car py-file-queue))))
-;;     ))
+(defun py-comint-output-filter-function (string)
+  "Watch output for Python prompt and exec next file waiting in queue.
+This function is appropriate for `comint-output-filter-functions'."
+  ;; TBD: this should probably use split-string
+  (when (and (or (string-equal string ">>> ")
+		 (and (>= (length string) 5)
+		      (string-equal (substring string -5) "\n>>> ")))
+	     (or (setq py-shell-input-lines nil)
+		 py-file-queue))
+    (pop-to-buffer (current-buffer))
+    (py-safe (delete-file (car py-file-queue)))
+    (setq py-file-queue (cdr py-file-queue))
+    (if py-file-queue
+	(let ((pyproc (get-buffer-process (current-buffer))))
+	  (py-execute-file pyproc (car py-file-queue))))))
 
 (defun py-shell-simple-send (proc string)
   (setq py-shell-input-lines (cons string py-shell-input-lines))
@@ -9037,34 +9084,15 @@ and resending the lines later. The lines are stored in reverse order")
 	  (display-completion-list (sort candidates 'string<)))
 	'listed)))))
 
-;; from pycomplete.el
-(defun py-find-global-imports ()
-  (save-excursion
-    (let (first-class-or-def imports)
-      (goto-char (point-min))
-      (setq first-class-or-def
-	    (re-search-forward "^ *\\(def\\|class\\) " nil t))
-      (goto-char (point-min))
-      (while (re-search-forward
-	      "^\\(import \\|from \\([A-Za-z_][A-Za-z_0-9]*\\) import \\).*"
-	      nil t)
-	(setq imports (append imports
-			      (list (buffer-substring
-				     (match-beginning 0)
-				     (match-end 0))))))
-      imports)))
-
 (defun py-shell-execute-string-now (string)
   "Send to Python interpreter process PROC \"exec STRING in {}\".
 and return collected output"
-  (let* ((proc
-          ;; (get-process py-which-bufname)
-          (get-process (py-process-name)))
+  (let* ((proc (get-process py-which-bufname))
 	 (cmd (format "exec '''%s''' in {}"
 		      (mapconcat 'identity (split-string string "\n") "\\n")))
-         (procbuf (process-buffer proc))
-         (outbuf (get-buffer-create " *pyshellcomplete-output*"))
-         (lines (reverse py-shell-input-lines)))
+	(procbuf (process-buffer proc))
+	(outbuf (get-buffer-create " *pyshellcomplete-output*"))
+	(lines (reverse py-shell-input-lines)))
     (if (and proc (not py-file-queue))
 	(unwind-protect
 	    (condition-case nil
@@ -9090,35 +9118,72 @@ and return collected output"
 		      (while (not comint-redirect-completed) ; wait for output
 			(accept-process-output proc 1)))
 		    (signal 'quit nil)))
-          (if (with-current-buffer procbuf comint-redirect-completed)
-              (while lines
-                (with-current-buffer procbuf
-                  (py-shell-redirect-send-command-to-process
-                   (car lines) outbuf proc nil t))
-                (accept-process-output proc 1)
-                (setq lines (cdr lines))))))))
+	    (if (with-current-buffer procbuf comint-redirect-completed)
+		(while lines
+		  (with-current-buffer procbuf
+		    (py-shell-redirect-send-command-to-process
+		     (car lines) outbuf proc nil t))
+		  (accept-process-output proc 1)
+		  (setq lines (cdr lines))))))))
 
 (defun py-dot-word-before-point ()
   (buffer-substring
    (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point))
    (point)))
 
-(defun py-send-receive (string)
-  "Send STRING to inferior Python (if any) and return result.
-The result is what follows `_emacs_out' in the output.
-This is a no-op if `python-check-comint-prompt' returns nil."
-  (python-send-string string)
-  (let ((proc (py-proc)))
-    (with-current-buffer (process-buffer proc)
-      (when (python-check-comint-prompt proc)
-	(set (make-local-variable 'python-preoutput-result) nil)
-	(while (progn
-		 (accept-process-output proc 5)
-		 (null python-preoutput-result)))
-	(prog1 python-preoutput-result
-	  (kill-local-variable 'python-preoutput-result))))))
+;;;###autoload
+(defun py-shell-complete ()
+  "Complete word before point, if any. Otherwise insert TAB. "
+  (interactive)
+  (let ((word (py-dot-word-before-point))
+	result)
+    (if (equal word "")
+	(tab-to-tab-stop)	   ; non nil so the completion is over
+      (setq result (py-shell-execute-string-now (format "
+def print_completions(namespace, text, prefix=''):
+   for name in namespace:
+       if name.startswith(text):
+           print prefix + name
 
-;; IPython Completion start
+def complete(text):
+    import __builtin__
+    import __main__
+    if '.' in text:
+        terms = text.split('.')
+        try:
+            if hasattr(__main__, terms[0]):
+                obj = getattr(__main__, terms[0])
+            else:
+                obj = getattr(__builtin__, terms[0])
+            for term in terms[1:-1]:
+                obj = getattr(obj, term)
+            print_completions(dir(obj), terms[-1], text[:text.rfind('.') + 1])
+        except AttributeError:
+            pass
+    else:
+        import keyword
+        print_completions(keyword.kwlist, text)
+        print_completions(dir(__builtin__), text)
+        print_completions(dir(__main__), text)
+complete('%s')
+" word)))
+      (if (eq result nil)
+	  (message "Could not do completion as the Python process is busy")
+	(let ((comint-completion-addsuffix nil)
+	      (completions (if (split-string "\n" "\n")
+			       (split-string result "\n" t) ; XEmacs
+			     (split-string result "\n"))))
+	  (py-shell-dynamic-simple-complete word completions))))))
+
+;; (add-hook 'py-shell-hook
+;;           '(lambda ()
+;;              (require 'py-shell-complete) ; nil t)
+;;              (when (functionp 'py-shell-complete)
+;;                ;; this should be set in py-shell
+;;                (setq comint-input-sender 'py-shell-simple-send)
+;;                (local-set-key [tab] 'py-shell-complete))))
+
+;;; IPython Shell Complete
 
 ;; see also
 ;; http://lists.gnu.org/archive/html/bug-gnu-emacs/2008-01/msg00076.html
@@ -9128,59 +9193,6 @@ This is a no-op if `python-check-comint-prompt' returns nil."
   "The string send to ipython to query for all possible completions")
 
 (setq ipython-completion-command-string                                   "print(';'.join(__IP.Completer.all_completions('%s'))) #PYTHON-MODE SILENT\n")
-
-(defun py-shell-complete ()
-  "Try to complete the python symbol before point. Only knows about the stuff
-in the current *Python* session."
-  (interactive)
-  (let* ((completion-command-string ipython-completion-command-string)
-         (ugly-return nil)
-         (sep ";")
-         (python-process (or (get-buffer-process (current-buffer))
-                                        ;XXX hack for .py buffers
-                             (get-process py-which-bufname)))
-         ;; XXX currently we go backwards to find the beginning of an
-         ;; expression part; a more powerful approach in the future might be
-         ;; to let ipython have the complete line, so that context can be used
-         ;; to do things like filename completion etc.
-         (beg (save-excursion (skip-chars-backward "a-z0-9A-Z_." (point-at-bol))
-                              (point)))
-         (end (point))
-         (pattern (buffer-substring-no-properties beg end))
-         (completions nil)
-         (completion-table nil)
-         completion
-         (comint-output-filter-functions
-          (append comint-output-filter-functions
-                  '(ansi-color-filter-apply
-                    (lambda (string)
-                                        ;(message (format "DEBUG filtering: %s" string))
-                      (setq ugly-return (concat ugly-return string))
-                      (delete-region comint-last-output-start
-                                     (process-mark (get-buffer-process (current-buffer)))))))))
-                                        ;(message (format "#DEBUG pattern: '%s'" pattern))
-    (process-send-string python-process
-                         (format completion-command-string pattern))
-    (accept-process-output python-process)
-
-                                        ;(message (format "DEBUG return: %s" ugly-return))
-    (setq completions
-          (split-string (substring ugly-return 0 (position ?\n ugly-return)) sep))
-    (setq completion-table (loop for str in completions
-                                 collect (list str nil)))
-    (setq completion (try-completion pattern completion-table))
-    (cond ((eq completion t))
-          ((null completion)
-           (message "Can't find completion for \"%s\"" pattern)
-           (ding))
-          ((not (string= pattern completion))
-           (delete-region beg end)
-           (insert completion))
-          (t
-           (message "Making completion list...")
-           (with-output-to-temp-buffer "*Python Completions*"
-             (display-completion-list (all-completions pattern completion-table)))
-           (message "Making completion list...%s" "done")))))
 
 (defun ipython-complete ()
   "Try to complete the python symbol before point. Only knows about the stuff
