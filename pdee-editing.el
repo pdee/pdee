@@ -1,6 +1,4 @@
-;; ibuffer by default
 
-(global-set-key (kbd "C-x C-b") 'ibuffer)
 ;; Ido mode with fuzzy matching
 (require 'ido)
 (ido-mode t)
@@ -13,7 +11,7 @@
 
 ;; Auto Completion
 (require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories 
+(add-to-list 'ac-dictionary-directories
 	     (concat pdee-install-dir "auto-complete/ac-dict"))
 (ac-config-default)
 
@@ -50,12 +48,6 @@ original" (interactive)
       (concat (if (= 0 (forward-line 1)) "" "\n") str "\n"))
     (forward-line -1)))
 
-;; duplicate a line
-(global-set-key (kbd "C-c y") 'djcb-duplicate-line)
-
-;; duplicate a line and comment the first
-(global-set-key (kbd "C-c c")(lambda()(interactive)(djcb-duplicate-line t)))
-
 ;; Mark whole line
 (defun mark-line (&optional arg)
   "Marks a line"
@@ -63,8 +55,6 @@ original" (interactive)
   (beginning-of-line)
   (push-mark (point) nil t)
   (end-of-line))
-
-(global-set-key (kbd "C-c l") 'mark-line)
 
 
 ; code copied from http://stackoverflow.com/questions/2423834/move-line-region-up-and-down-in-emacs
@@ -130,17 +120,6 @@ original" (interactive)
   (python-indent-shift-right start end))
   (setq deactivate-mark nil)
 )
-
-(global-set-key (kbd "M-<up>") 'move-text-up)
-(global-set-key (kbd "M-<down>") 'move-text-down)
-
-(add-hook 'python-mode-hook
-	  (lambda ()
-	    (define-key python-mode-map (kbd "M-<right>")
-	      'balle-python-shift-right)
-	    (define-key python-mode-map (kbd "M-<left>")
-	      'balle-python-shift-left))
-	  )
 
 ;; Other useful stuff
 
