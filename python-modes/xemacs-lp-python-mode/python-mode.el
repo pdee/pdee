@@ -161,7 +161,7 @@
             ["Help on symbol" py-describe-symbol]
             ["Complete symbol" completion-at-point]
             ["Find function" py-find-function]
-            ["Update imports" py-find-imports]))
+            ["Update imports" py-update-imports]))
         map))
 
 ;;; Intern
@@ -4645,8 +4645,8 @@ This function is appropriate for `comint-output-filter-functions'."
   "Return the name of the running Python process, `get-process' willsee it. "
   (let* ((name (cond (dedicated
                       (make-temp-name (concat (or name py-shell-name) "-")))
-                     ((string-match "-" (buffer-name))
-                      (replace-regexp-in-string "\*" "" (buffer-name)))
+                     ;; ((string-match "\*" (buffer-name))
+                     ;; (replace-regexp-in-string "\*" "" (buffer-name)))
                      (t (or name py-shell-name))))
          (erg (if (string= "ipython" name)
                   "IPython"
@@ -4927,6 +4927,7 @@ Ignores setting of `py-shell-switch-buffers-on-execute', output-buffer will bein
 (defun py-execute-base (start end &optional async shell dedicated)
   "Adapt the variables used in the process. "
   (let* ((regbuf (current-buffer))
+         (strg (buffer-substring-no-properties start end))
 	 (name-raw (or shell (py-choose-shell)))
          (name (py-process-name name-raw))
          (temp (make-temp-name name))
@@ -4934,14 +4935,15 @@ Ignores setting of `py-shell-switch-buffers-on-execute', output-buffer will bein
          (filebuf (get-buffer-create file))
          (proc (if dedicated
                    (get-process (py-shell nil dedicated))
-                 (get-process name)))
+                 (get-process (py-shell))))
          (procbuf (if dedicated
                       (buffer-name (get-buffer (current-buffer)))
                     (buffer-name (get-buffer (concat "*" name "*"))))))
-    (set-buffer regbuf)
-    (py-execute-intern start end regbuf procbuf proc temp file filebuf name)))
+    ;; py-shell might kill temp-buffer, bug?
+    ;; (set-buffer regbuf)
+    (py-execute-intern start end strg procbuf proc temp file filebuf name)))
 
-(defun py-execute-intern (start end &optional regbuf procbuf proc temp file filebuf name)
+(defun py-execute-intern (start end &optional strg procbuf proc temp file filebuf name)
   (let ((py-execute-directory (or py-execute-directory (ignore-errors (file-name-directory (buffer-file-name))) (getenv "HOME")))
         (pec (if (string-match "Python3" name)
          (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" file file)
@@ -4949,8 +4951,8 @@ Ignores setting of `py-shell-switch-buffers-on-execute', output-buffer will bein
         shell)
     (set-buffer filebuf)
     (erase-buffer)
-    ;; (switch-to-buffer (current-buffer))
-    (insert-buffer-substring regbuf start end)
+    ;; (insert-buffer-substring regbuf start end)
+    (insert strg)
     (setq start (py-fix-start (point-min)(point-max)))
     (py-insert-coding)
     (py-if-needed-insert-shell name)
@@ -4983,11 +4985,13 @@ Ignores setting of `py-shell-switch-buffers-on-execute', output-buffer will bein
                 (progn
                   (pop-to-buffer procbuf)
                   (goto-char (point-max)))
-              (pop-to-buffer regbuf)
+              (when (buffer-live-p regbuf) (pop-to-buffer regbuf))
               (message "Output buffer: %s" procbuf))
             (sit-for 0.1)
             (unless py-execute-keep-temporary-file-p
-              (delete-file file)))
+              (delete-file file)
+              (when (buffer-live-p file)
+                (kill-buffer file))))
         (message "File not readable: %s" "Do you have write permissions?"))))))
 
 (defun py-execute-string (string &optional async)
@@ -6503,7 +6507,25 @@ Interactively, prompt for name."
 	  (setq python-imports
 		(replace-regexp-in-string "\n" "\\n"
 					  (format "%S" python-imports) t t)))))
-  (when (interactive-p) (message "%s" (car (read-from-string python-imports)))))
+  (when (interactive-p) (message "%s" (car (read-from-string python-imports))))
+  python-imports)
+
+(defun py-update-imports ()
+  "Returns `python-imports'.
+Imports done are displayed in message buffer. "
+  (interactive)
+  (save-excursion
+    (let ((oldbuf (current-buffer))
+          (orig (point))
+          erg)
+      (mapc 'py-execute-string (split-string (car (read-from-string (py-find-imports))) "\n" t))
+      (setq erg (car (read-from-string python-imports)))
+      (set-buffer oldbuf)
+      (goto-char orig)
+      (when (interactive-p)
+        (switch-to-buffer (current-buffer))
+        (message "%s" erg))
+      erg)))
 
 ;;; python-components-extensions.el
 
