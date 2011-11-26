@@ -17,7 +17,12 @@
 
 (defcustom pdee-unload-first t
   "If previosly loaded python- and related modes shall unloaded first, avoiding conflicts. "
-  :type 'string
+  :type 'boolean
+  :group 'python)
+
+(defcustom pdee-load-all t
+  "Load all the pdee libraries at initialization (reccomended)"
+  :type 'boolean
   :group 'python)
 
 (when (ignore-errors pdee-install-dir)
@@ -37,9 +42,10 @@
     (when (featurep 'pymacs) (unload-feature 'pymacs t))
   (when (featurep 'pycomplete) (unload-feature 'pycomplete t)))
 
-(require 'pdee-python)
-(require 'pdee-completion)
-(require 'pdee-editing)
-(require 'pdee-bindings)
+(when pdee-load-all
+  (require 'pdee-python)
+  (require 'pdee-completion)
+  (require 'pdee-editing)
+  (require 'pdee-bindings))
 
 (provide 'pdee-init)
