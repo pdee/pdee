@@ -141,4 +141,9 @@ original" (interactive)
 (setq linum-format "%4d")
 (global-linum-mode 1)
 
+;; Code Folding
+(add-hook 'python-mode-hook
+          (lambda nil
+            (hs-minor-mode t)))
+
 (provide 'pdee-editing)
