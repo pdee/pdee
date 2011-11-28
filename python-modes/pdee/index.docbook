@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+ "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"
+[
+  <!ENTITY epm '<application>Emacs Python Mode</application>'>
+
+]>
+<book>
+<bookinfo>
+  <title> &epm; Documentation</title>
+  <authorgroup>
+    <author>
+      <firstname>Andreas</firstname>
+      <surname>R&ouml;hler</surname>
+    </author>
+    <author>
+      <firstname>Gabriele</firstname>
+      <surname>Lanaro</surname>
+    </author>
+    </author>
+  </authorgroup>
+  
+  <!-- TRANS:ROLES_OF_TRANSLATORS -->
+<copyright>
+    <year>2011</year>
+    <holder>the &epm; development team</holder>
+  </copyright>
+  <legalnotice>
+    <para>&epm; Tutorial is distributed under free software license GPLv3
+alongside with the source code it's reffering to. </para>
+  </legalnotice>
+  <date>2011-11</date>
+  <releaseinfo>0.9</releaseinfo>
+  <abstract>
+    <para>&epm; utilities to edit, test and run programs in Python language.</para>
+  </abstract>
+  <keywordset>
+    <keyword>Emacs</keyword>
+    <keyword>Python</keyword>
+    <keyword>epm</keyword>
+    <keyword>help dialog</keyword>
+  </keywordset>
+</bookinfo>&epmintro; &epmchap1; &;
+&epmchap2; &epmcredits;</book>
+
+<!--
+
+Local Variables:
+
+mode: sgml
+
+sgml-minimize-attributes:nil
+
+sgml-general-insert-case:lower
+
+sgml-indent-step:0
+
+sgml-indent-data:nil
+
+End:
+
+-->

@@ -1,0 +1,6 @@
+Put the respective lines into your Emacs initialisation file:
+
+(add-to-list 'load-path "PATH/TO/PYTHON-MODE/") 
+(setq py-install-directory "PATH/TO/PYTHON-MODE/")
+(require 'python-mode)
+

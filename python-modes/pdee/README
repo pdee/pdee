@@ -1,0 +1,46 @@
+
+python-mode.el - major mode for editing Python source
+has been splitted into python-components-...el files.
+
+python-components-...el also are composed of stuff from
+python.el
+
+The following files are required from 
+
+https://code.launchpad.net/s-x-emacs-werkstatt/
+
+thingatpt-utils-base.el
+thingatpt-highlight.el
+misc-utils.el
+beg-end.el
+ar-comment-lor.el
+thingatpt-python-expressions.el
+
+also recommended:
+
+thing-at-point-markup.el
+thingatpt-utils-test.el
+
+Get everyting with
+
+bzr branch lp:s-x-emacs-werkstatt
+
+
+New features:
+
+* imenu enabled
+* use of skeletons inserting electric loops
+* faster editing with `py-indent-forward-line' and others
+
+Beside python-components-...el this project
+contains the following files:
+
+    * doctest-mode.el - major mode for editing doctest files
+    * pycomplete.el - support for Python symbol completion (Emacs Lisp side)
+    * pycomplete.py - support for Python symbol completion (Python side)
+
+;; section below should go into an info file 
+
+Highlighting `py-variable-name-face' is set to nil by default.
+Call M-x customize-face to activate it, use `font-lock-variable-name-face' for example.
+
