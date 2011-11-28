@@ -1,6 +1,6 @@
-Just add two lines to your Emacs initialisation file:
+Add the respective lines to your Emacs initialisation file:
 
-(add-to-list 'load-path "path/to/pdee/") 
-(defvar pdee-install-dir "path/to/pdee/")
-(load-file "/path/to/pdee/pdee-init.el")
+(add-to-list 'load-path "PATH/TO/PDEE/") 
+(setq pdee-install-dir "PATH/TO/PDEE/")
+(load-file "/PATH/TO/PDEE/pdee-init.el")
 

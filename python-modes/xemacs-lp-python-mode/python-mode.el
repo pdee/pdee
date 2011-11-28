@@ -4611,6 +4611,7 @@ Used for determining the default in the next one.")
   "For tests only. Excute functions delete temporary files default. ")
 
 (defun py-toggle-execute-keep-temporary-file-p ()
+  "Toggle py-execute-keep-temporary-file-p "
   (interactive)
   (setq py-execute-keep-temporary-file-p
         (not py-execute-keep-temporary-file-p))
