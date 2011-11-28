@@ -35,6 +35,7 @@ what's needed.
     - Parentheses pairing (Custom): Bug-free parentheses pairing using
       skeletons.
     - smart-operator: Automatically adds spaces around arithmetic operators.
+    - code folding
 
 *** Configurations
 
@@ -48,6 +49,7 @@ what's needed.
     - Calc Mode remapping to M-c
     - M-Tab remapped to C-Tab to avoid collisions with the desktop
       manager
+    - Code fonding Super-<up> Super-<down> Super-<left> Super-<right>
 
 ** Installation
 
