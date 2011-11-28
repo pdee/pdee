@@ -1,10 +1,73 @@
-*~
+# gitignore liftet from Org master git repository.
+
+# ...by ignoring everything created by 'make', 'make doc', `make info'
+#    `make html_manual', `make release'
+
+*.aux
+*.bak
+*.cp
+*.cps
+*.diff
+*.dvi
 *.elc
-*.pyc
-commit.txt
+*.fn
+*.fns
+*.html
+*.info
+*.ky
+*.kys
+*.log
 *.patch
-python-modes/xemacs-lp-python-mode/website/*
+*.pdf
+*.pg
+*.pgs
+*.ps
+*.toc
+*.tp
+*.vr
+*.vrs
+orgcard_letter.tex
+orgcard.txt
+org
+org-install.el
+org-*.tar.gz
+org-*.zip
+manual
+org_dual_license.texi
+ORGWEBPAGE/Changes.txt
+
+# aspell word and replacement lists
+
+.aspell.org.pws
+.aspell.org.prepl
+
+# allow tmp and test directories that will not be tracked
+
+test
+t
+auto
+tmp
+TODO
+
+# and collateral damage from Emacs
+
+*~
+.DS_Store
+*#
+.#*
+
+#
+# Local variables:
+# fill-column: 72
+# mode: conf
+# End:
+/UTILITIES/x11idle
+
+commit.txt
+
+website/*
 MANIFEST*
 befehle.txt
 LICENSE
 build
+.gitignore
