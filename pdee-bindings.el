@@ -39,8 +39,16 @@
 	    (define-key python-mode-map (kbd "M-<right>")
 	      'balle-python-shift-right)
 	    (define-key python-mode-map (kbd "M-<left>")
-	      'balle-python-shift-left))
+	      'balle-python-shift-left)
+	    )
 	  )
 
-
+(add-hook 'hs-minor-mode-hook 
+	  (lambda ()
+	    (define-key hs-minor-mode-map (kbd "<s-right>") 'hs-show-block)
+	    (define-key hs-minor-mode-map (kbd "<s-down>") 'hs-show-all)
+	    (define-key hs-minor-mode-map (kbd "<s-left>") 'hs-hide-block)
+	    (define-key hs-minor-mode-map (kbd "<s-up>") 'hs-hide-all)
+	    )
+	  )
 (provide 'pdee-bindings)
