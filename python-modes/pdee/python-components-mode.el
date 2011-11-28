@@ -1176,7 +1176,7 @@ Currently-active file is at the head of the list.")
 (require 'python-components-completion)
 (require 'python-named-shells)
 (require 'python-dedicated-shells)
-(require 'py-shell-complete)
+(require 'python-shell-complete)
 ;;(require 'components-shell-completion)
 
 (require 'python-mode-test)
