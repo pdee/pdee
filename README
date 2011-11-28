@@ -9,7 +9,7 @@ files.
 Configurations are similar to emacs-starter-kit,
 (instruction below).
 
-** Features 
+** Features
 
 Coming with a bunch of files, PDEE makes it easy to run
 what's needed.
@@ -44,7 +44,7 @@ what's needed.
 
 *** Keybindings
 
-    - Copy-Cut-Paste from clipboard with Super-C Super-X Super-V    
+    - Copy-Cut-Paste from clipboard with Super-C Super-X Super-V
     - Calc Mode remapping to M-c
     - M-Tab remapped to C-Tab to avoid collisions with the desktop
       manager
@@ -55,12 +55,15 @@ Make sure, the path is set and the PDEE init file gets
 loaded, add these lines to your Emacs initialisation
 file:
 
-(add-to-list 'load-path "path/to/pdee/") 
+(add-to-list 'load-path "path/to/pdee/")
+(defvar pdee-install-dir "path/to/pdee/")
 (load-file "/path/to/pdee/pdee-init.el")
 
 You may want to enable only some of the features provided by
 pdee, in this case just enable some of them:
 
+(setq pdee-load-all nil)
+(require 'pdee-init)   ;; Set up pdee load paths
 (require 'pdee-python) ;; If you want the python facilities [optional]
 (require 'pdee-completion) ;; If you want the autocompletion settings [optional]
 (require 'pdee-editing) ;; For configurations related to editing [optional]
@@ -89,7 +92,7 @@ The django snippets comes as an option, you can load them using:
 (pdee-django-snippets)
 
 As a command using M-x or putting it in your .emacs.
-*** ipython integration 
+*** ipython integration
 Ipython can be integrated with python-mode. Clicking on the
 Python->Start interpreter menu entry will spawn an ipython shell
 instead of a python one. To enable the feature put this line in your .emacs:
@@ -105,7 +108,7 @@ so, drop one of the following lines in your .emacs
 
 *** disabling the auto-pairing of parenthesis
 To disable the auto-pairing, drop the following line:
-(setq skeleton-pair nil) 
+(setq skeleton-pair nil)
 
 
 ** License
@@ -117,4 +120,3 @@ GNU GPL license, described in the file COPYING.
 Generally each file has its own license and copyright notice (most, if
 not all of packages are GPL), the license of rope (GPL) is in
 rope-dist/COPYING.
-

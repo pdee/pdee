@@ -1,7 +1,7 @@
 ;; pdee-python.el - setup of python stuff
 
 ;; fgallina/python.el
-(require 'python (concat pdee-install-dir "extensions/python.el"))
+(require 'python (concat pdee-install-dir "python-modes/fgallina/python.el"))
 
 ;; pymacs
 (require 'pymacs (concat pdee-install-dir "extensions/pymacs.el"))
@@ -14,7 +14,7 @@
            (concat (expand-file-name pdee-install-dir) "python-libs/")))
   (message (getenv "PYTHONPATH"))
   (pymacs-load "ropemacs" "rope-")
-  
+
   ;; Stops from erroring if there's a syntax err
   (setq ropemacs-codeassist-maxfixes 3)
 
@@ -26,7 +26,7 @@
   (setq ropemacs-autoimport-modules '("os" "shutil" "sys" "logging"
 				      "django.*"))
 
- 
+
 
   ;; Adding hook to automatically open a rope project if there is one
   ;; in the current or in the upper level directory
@@ -58,11 +58,11 @@
 
 (defun flymake-create-copy-file ()
   "Create a copy local file"
-  (let* ((temp-file (flymake-init-create-temp-buffer-copy 
+  (let* ((temp-file (flymake-init-create-temp-buffer-copy
                      'flymake-create-temp-inplace)))
-    (file-relative-name 
-     temp-file 
-     (file-name-directory buffer-file-name))))     
+    (file-relative-name
+     temp-file
+     (file-name-directory buffer-file-name))))
 
 (defun flymake-command-parse (cmdline)
   "Parses the command line CMDLINE in a format compatible
@@ -107,12 +107,12 @@ The CMDLINE should be something like:
        "Activate a Virtual Environment specified by PATH" t)
      (autoload 'virtualenv-workon "virtualenv"
        "Activate a Virtual Environment present using virtualenvwrapper" t)
-     
-     
+
+
      ;; Not on all modes, please
      (add-hook 'python-mode-hook 'flymake-find-file-hook)
 
-     
+
      )
   )
 ;; Cython Mode
@@ -125,7 +125,7 @@ The CMDLINE should be something like:
 ;; Py3 files
 (add-to-list 'auto-mode-alist '("\\.py3\\'" . python-mode))
 
-(add-hook 'python-mode-hook '(lambda () 
+(add-hook 'python-mode-hook '(lambda ()
      (define-key python-mode-map "\C-m" 'newline-and-indent)))
 
 (provide 'pdee-python)
