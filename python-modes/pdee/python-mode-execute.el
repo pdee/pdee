@@ -2,11 +2,6 @@
 
 ;; Maintainer: Andreas Roehler <andreas.roehler@online.de>
 
-;; Python-components-mode started from python-mode.el
-;; and python.el, where Tim Peters, Barry A. Warsaw,
-;; Skip Montanaro, Ken Manheimer, Dave Love and many
-;; others wrote major parts.
-
 ;; Keywords: languages, processes
 
 ;; This program is free software; you can redistribute it and/or modify

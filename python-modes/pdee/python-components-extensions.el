@@ -3,11 +3,6 @@
 ;; Maintainer: Andreas Roehler <andreas.roehler@online.de>
 ;; Keywords: lisp
 
-;; Python-components-mode started from python-mode.el
-;; and python.el, where Tim Peters, Barry A. Warsaw,
-;; Skip Montanaro, Ken Manheimer, Dave Love and many
-;; others wrote major parts.
-
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or

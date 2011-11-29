@@ -23,11 +23,6 @@
 ;; Created: Nov 2003
 ;; Keywords: languages
 
-;; Python-components-mode started from python-mode.el
-;; and python.el. Tim Peters, Barry A. Warsaw, Skip
-;; Montanaro, Ken Manheimer, Dave Love and many others
-;; wrote major parts.
-
 ;; Extractions done in order to make forms available for python-mode.el
 ;; Thanks to Dave Love providing that stuff.
 

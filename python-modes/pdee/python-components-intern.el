@@ -19,11 +19,6 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
-;; Python-components-mode started from python-mode.el
-;; and python.el. Tim Peters, Barry A. Warsaw, Skip
-;; Montanaro, Ken Manheimer, Dave Love and many others
-;; wrote major parts.
-
 ;;
 
 ;;; Code:
