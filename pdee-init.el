@@ -22,8 +22,8 @@
   :type 'boolean
   :group 'pdee)
 
-(defcustom pdee-load-all t
-  "Load all the pdee libraries at initialization (reccomended)"
+(defcustom pdee-load-all nil
+  "Load all the pdee libraries at initialization, default is nil. "
   :type 'boolean
   :group 'pdee)
 
