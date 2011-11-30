@@ -640,9 +640,12 @@ Default is nil. "
   :group 'python)
 
 (defcustom py-encoding-string " # -*- coding: utf-8 -*-"
-  "Default string specifying encoding in the heading of file. "
+  "Default string specifying encoding of a Python file. "
   :type 'string
   :group 'python)
+
+(defvar py-encoding-string-re "^[ \t]*#[ \t]*-\\*-[ \t]*coding:.+-\\*-"
+  "Matches encoding string of a Python file. ")
 
 (setq symbol-definition-start-re "^[ \t]*(\\(defun\\|defvar\\|defcustom\\)")
 (defcustom py-shebang-startstring "#! /bin/env"
@@ -4637,6 +4640,7 @@ Used for determining the default in the next one.")
   "For tests only. Excute functions delete temporary files default. ")
 
 (defun py-toggle-execute-keep-temporary-file-p ()
+  "Toggle py-execute-keep-temporary-file-p "
   (interactive)
   (setq py-execute-keep-temporary-file-p
         (not py-execute-keep-temporary-file-p))
@@ -4953,6 +4957,7 @@ Ignores setting of `py-shell-switch-buffers-on-execute', output-buffer will bein
 (defun py-execute-base (start end &optional async shell dedicated)
   "Adapt the variables used in the process. "
   (let* ((regbuf (current-buffer))
+         (py-execute-directory (or (ignore-errors (file-name-directory (buffer-file-name))) (getenv "HOME")))
          (strg (buffer-substring-no-properties start end))
 	 (name-raw (or shell (py-choose-shell)))
          (name (py-process-name name-raw))
@@ -4967,10 +4972,10 @@ Ignores setting of `py-shell-switch-buffers-on-execute', output-buffer will bein
                     (buffer-name (get-buffer (concat "*" name "*"))))))
     ;; py-shell might kill temp-buffer, bug?
     ;; (set-buffer regbuf)
-    (py-execute-intern start end strg procbuf proc temp file filebuf name)))
+    (py-execute-intern strg procbuf proc temp file filebuf name py-execute-directory)))
 
-(defun py-execute-intern (start end &optional strg procbuf proc temp file filebuf name)
-  (let ((py-execute-directory (or py-execute-directory (ignore-errors (file-name-directory (buffer-file-name))) (getenv "HOME")))
+(defun py-execute-intern (strg &optional procbuf proc temp file filebuf name py-execute-directory)
+  (let (
         (pec (if (string-match "Python3" name)
          (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" file file)
          (format "execfile(r'%s') # PYTHON-MODE\n" file)))
@@ -4979,9 +4984,11 @@ Ignores setting of `py-shell-switch-buffers-on-execute', output-buffer will bein
     (erase-buffer)
     ;; (insert-buffer-substring regbuf start end)
     (insert strg)
-    (setq start (py-fix-start (point-min)(point-max)))
-    (py-insert-coding)
+    (py-fix-start (point-min)(point-max))
     (py-if-needed-insert-shell name)
+    (py-insert-coding)
+    (py-insert-execute-directory)
+    (switch-to-buffer (current-buffer))
     (cond
      (async
       ;; User explicitly wants this to run in its own async subprocess
@@ -5216,20 +5223,34 @@ Unicode strings like u'\xA9' "
                    (py-choose-shell-by-import)
                    py-shell-name))))
     (goto-char (point-min))
-    (if (string-match (concat "^" erg) "ipython")
-        (progn
-          (shell-command "type ipython" t)
-          (switch-to-buffer (current-buffer))
-          (when (looking-at "[^/\n\r]+")
-            (replace-match "#! ")))
-      (insert (concat py-shebang-startstring " " erg "\n")))
+    (while (empty-line-p) (delete-region (point) (1+ (line-end-position))))
+    (unless (looking-at py-shebang-regexp)
+      (if (string-match (concat "^" erg) "ipython")
+          (progn
+            (shell-command "type ipython" t)
+            (switch-to-buffer (current-buffer))
+            (when (looking-at "[^/\n\r]+")
+              (replace-match "#! ")))
+        (insert (concat py-shebang-startstring " " erg "\n"))))
     (end-of-line)
+    (newline)))
+
+(defun py-insert-execute-directory ()
+  (goto-char (point-min)) 
+  (if (re-search-forward py-encoding-string-re nil (quote move))
+      (progn
+        (newline)
+        (insert (concat "import os; os.chdir(\"" py-execute-directory "\")\n")))
+    (goto-char (point-min))
+    (forward-line 2)
     (newline)
-    (insert (concat "import os; os.chdir(\"" (or py-execute-directory (file-name-directory (buffer-file-name)) (getenv "HOME")) "\")"))))
+    (insert (concat "import os; os.chdir(\"" py-execute-directory "\")\n"))))
 
 (defun py-insert-coding ()
+  ;; (switch-to-buffer (current-buffer))
   (goto-char (point-min))
-  (unless (re-search-forward (concat "^" (regexp-quote py-encoding-string)) nil t 1)
+  (unless (re-search-forward py-encoding-string-re nil t)
+  (goto-char (point-min))
     (if (re-search-forward py-shebang-regexp nil t 1)
         (progn
           (newline)
@@ -5535,14 +5556,12 @@ Optional OUTPUT-BUFFER and ERROR-BUFFER might be given.')
 "
   (interactive "fDatei:")
   (let ((coding-system-for-read 'utf-8)
-        (coding-system-for-write 'utf-8))
-    (if output-buffer
-        (progn
-          (set-buffer (get-buffer-create output-buffer))
-          (erase-buffer)
-          (shell-command (concat "python " filename) output-buffer error-buffer))
-      (with-temp-buffer
-        (shell-command (concat "python " filename) output-buffer error-buffer)))))
+        (coding-system-for-write 'utf-8)
+        (output-buffer (or output-buffer (make-temp-name "py-process-file-output"))))
+    (unless (buffer-live-p output-buffer)
+      (set-buffer (get-buffer-create output-buffer)))
+    (shell-command (concat "python " filename) output-buffer error-buffer)
+    (when (interactive-p) (switch-to-buffer output-buffer))))
 
 (defun py-exec-execfile-region (start end &optional async)
   "Execute the region in a Python interpreter. "
@@ -5708,13 +5727,13 @@ comint believe the user typed this string so that
         (cmd (cond (cmd)
                    (py-exec-command)
                    (t (py-which-execute-file-command filename)))))
-    ;;    (unwind-protect
-    ;;        (save-excursion
-    ;;          (set-buffer procbuf)
-    ;;          (goto-char (point-max))
-    ;;          (move-marker (process-mark proc) (point))
-    ;;          (funcall (process-filter proc) proc msg))
-    ;;      (set-buffer curbuf)
+    (unwind-protect
+        (save-excursion
+          (set-buffer procbuf)
+          (goto-char (point-max))
+          (move-marker (process-mark proc) (point))
+          (funcall (process-filter proc) proc msg)))
+    (set-buffer curbuf)
     (set-buffer procbuf)
     (process-send-string proc cmd)))
 
@@ -5837,7 +5856,7 @@ bottom) of the trackback stack is encountered."
 
 ;; pdbtrack constants
 (defconst py-pdbtrack-stack-entry-regexp
-   "^> \\(.*\\)(\\([0-9]+\\))\\([?a-zA-Z0-9_<>]+\\)()"
+   (concat ".*\\("py-shell-input-prompt-1-regexp">\\|^>\\) \\(.*\\)(\\([0-9]+\\))\\([?a-zA-Z0-9_<>()]+\\)()")
   "Regular expression pdbtrack uses to find a stack trace entry.")
 
 ;; ipython.el
