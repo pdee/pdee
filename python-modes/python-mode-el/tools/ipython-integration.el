@@ -122,73 +122,72 @@
 (require 'executable)
 (require 'ansi-color)
 
-                     ipython-command))
-    ;; XXX load python-mode, so that we can screw around with its variables
-    ;; this has the disadvantage that python-mode is loaded even if no
-    ;; python-file is ever edited etc. but it means that `py-shell' works
-    ;; without loading a python-file first. Obviously screwing around with
-    ;; python-mode's variables like this is a mess, but well.
-    (require 'python-mode)
-    ;; turn on ansi colors for ipython and activate completion
-    ;; (defun ipython-shell-hook ()
-    ;;   ;; the following is to synchronize dir-changes
-    ;;   (make-local-variable 'shell-dirstack)
-    ;;   (setq shell-dirstack nil)
-    ;;   (make-local-variable 'shell-last-dir)
-    ;;   (setq shell-last-dir nil)
-    ;;   (make-local-variable 'shell-dirtrackp)
-    ;;   (setq shell-dirtrackp t)
-    ;;   (add-hook 'comint-input-filter-functions 'shell-directory-tracker nil t)
-    ;; 
-    ;;   (ansi-color-for-comint-mode-on)
-    ;;   (define-key py-shell-map [tab] 'ipython-complete)
-    ;;   ;; Add this so that tab-completion works both in X11 frames and inside
-    ;;   ;; terminals (such as when emacs is called with -nw).
-    ;;   (define-key py-shell-map "\t" 'ipython-complete)
-    ;;   ;;XXX this is really just a cheap hack, it only completes symbols in the
-    ;;   ;;interactive session -- useful nonetheless.
-    ;;   (define-key py-mode-map [(meta tab)] 'ipython-complete)
-    ;; 
-    ;;   )
+;; XXX load python-mode, so that we can screw around with its variables
+;; this has the disadvantage that python-mode is loaded even if no
+;; python-file is ever edited etc. but it means that `py-shell' works
+;; without loading a python-file first. Obviously screwing around with
+;; python-mode's variables like this is a mess, but well.
+(require 'python-mode)
+;; turn on ansi colors for ipython and activate completion
+;; (defun ipython-shell-hook ()
+;;   ;; the following is to synchronize dir-changes
+;;   (make-local-variable 'shell-dirstack)
+;;   (setq shell-dirstack nil)
+;;   (make-local-variable 'shell-last-dir)
+;;   (setq shell-last-dir nil)
+;;   (make-local-variable 'shell-dirtrackp)
+;;   (setq shell-dirtrackp t)
+;;   (add-hook 'comint-input-filter-functions 'shell-directory-tracker nil t)
+;;
+;;   (ansi-color-for-comint-mode-on)
+;;   (define-key py-shell-map [tab] 'ipython-complete)
+;;   ;; Add this so that tab-completion works both in X11 frames and inside
+;;   ;; terminals (such as when emacs is called with -nw).
+;;   (define-key py-shell-map "\t" 'ipython-complete)
+;;   ;;XXX this is really just a cheap hack, it only completes symbols in the
+;;   ;;interactive session -- useful nonetheless.
+;;   (define-key py-mode-map [(meta tab)] 'ipython-complete)
+;;
+;;)
 ;;    (add-hook 'py-shell-hook 'ipython-shell-hook)
-    ;; Regular expression that describes tracebacks for IPython in context and
-    ;; verbose mode.
+;; Regular expression that describes tracebacks for IPython in context and
+;; verbose mode.
 
-    ;;Adapt python-mode settings for ipython.
-    ;; (this works for %xmode 'verbose' or 'context')
+;;Adapt python-mode settings for ipython.
+;; (this works for %xmode 'verbose' or 'context')
 
-    ;; XXX putative regexps for syntax errors; unfortunately the
-    ;;     current python-mode traceback-line-re scheme is too primitive,
-    ;;     so it's either matching syntax errors, *or* everything else
-    ;;     (XXX: should ask Fernando for a change)
-    ;;"^   File \"\\(.*?\\)\", line \\([0-9]+\\).*\n.*\n.*\nSyntaxError:"
-    ;;^   File \"\\(.*?\\)\", line \\([0-9]+\\)"
+;; XXX putative regexps for syntax errors; unfortunately the
+;;     current python-mode traceback-line-re scheme is too primitive,
+;;     so it's either matching syntax errors, *or* everything else
+;;     (XXX: should ask Fernando for a change)
+;;"^   File \"\\(.*?\\)\", line \\([0-9]+\\).*\n.*\n.*\nSyntaxError:"
+;;^   File \"\\(.*?\\)\", line \\([0-9]+\\)"
 
-    (setq py-traceback-line-re
-          "\\(^[^\t >].+?\\.py\\).*\n   +[0-9]+[^\00]*?\n-+> \\([0-9]+\\)+")
+(setq py-traceback-line-re
+      "\\(^[^\t >].+?\\.py\\).*\n +[0-9]+[^\00]*?\n-+> \\([0-9]+\\)+")
 
-    ;; Recognize the ipython pdb, whose prompt is 'ipdb>' or  'ipydb>'
-    ;;instead of '(Pdb)'
-    (setq py-pdbtrack-input-prompt "\n[(<]*[Ii]?[Pp]y?db[>)]+ ")
-    (setq pydb-pydbtrack-input-prompt "\n[(]*ipydb[>)]+ ")
+;; Recognize the ipython pdb, whose prompt is 'ipdb>' or 'ipydb>'
+;;instead of '(Pdb)'
+(setq py-pdbtrack-input-prompt "\n[(<]*[Ii]?[Pp]y?db[>)]+ ")
+(setq pydb-pydbtrack-input-prompt "\n[(]*ipydb[>)]+ ")
 
-    (setq py-shell-input-prompt-1-regexp "^In \\[[0-9]+\\]: *"
-          py-shell-input-prompt-2-regexp "^   [.][.][.]+: *" )
-    ;; select a suitable color-scheme
-    (unless (member "--colors" py-python-command-args)
-      (setq py-python-command-args
-            (nconc py-python-command-args
-                   (list "--colors"
-                         (cond
-                           ((eq frame-background-mode 'dark)
-                            "Linux")
-                           ((eq frame-background-mode 'light)
-                            "LightBG")
-                           (t ; default (backg-mode isn't always set by XEmacs)
-                            "LightBG"))))))
-    (unless (equal ipython-backup-of-py-python-command py-python-command)
-      (setq ipython-backup-of-py-python-command py-python-command))
-    (setq py-python-command ipython-command))
+(setq py-shell-input-prompt-1-regexp "^In \\[[0-9]+\\]: *"
+      py-shell-input-prompt-2-regexp "^   [.][.][.]+: *")
+;; select a suitable color-scheme
+(unless (member "--colors" py-python-command-args)
+  (setq py-python-command-args
+        (nconc py-python-command-args
+               (list "--colors"
+                     (cond
+                      ((eq frame-background-mode 'dark)
+                       "Linux")
+                      ((eq frame-background-mode 'light)
+                       "LightBG")
+                      (t ; default (backg-mode isn't always set by XEmacs)
+                       "LightBG"))))))
+(unless (equal ipython-backup-of-py-python-command py-python-command)
+  (setq ipython-backup-of-py-python-command py-python-command))
+(setq py-python-command ipython-command)
 
 ;; MODIFY py-shell so that it loads the editing history
 (defadvice py-shell (around py-shell-with-history)
