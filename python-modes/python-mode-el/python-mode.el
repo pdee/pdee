@@ -1395,7 +1395,8 @@ When called interactivly with \\[universal-argument], ignore dedenting rules for
 \(e.g. return, raise, break, continue, pass)
 
 This function is normally used by `indent-line-function' resp.
-\\[indent-for-tab-command]."
+\\[indent-for-tab-command].
+Returns current indentation "
   (interactive "P")
   (let ((ci (current-indentation))
         (indent (py-compute-indentation))
@@ -1424,7 +1425,9 @@ This function is normally used by `indent-line-function' resp.
                 (t (beginning-of-line)
                    (delete-horizontal-space)
                    (indent-to indent)))
-        (insert-tab)))))
+        (insert-tab))))
+  (message "%s" (current-indentation))
+  (current-indentation))
 
 (defun py-newline-and-indent ()
   "Add a newline and indent to outmost reasonable indent.
@@ -5236,7 +5239,7 @@ Unicode strings like u'\xA9' "
     (newline)))
 
 (defun py-insert-execute-directory ()
-  (goto-char (point-min)) 
+  (goto-char (point-min))
   (if (re-search-forward py-encoding-string-re nil (quote move))
       (progn
         (newline)
