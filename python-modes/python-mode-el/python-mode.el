@@ -5292,7 +5292,7 @@ See also doku of variable `py-master-file' "
           (setq py-master-file (match-string-no-properties 2))))))
   (when (interactive-p) (message "%s" py-master-file)))
 
-(defun py-execute-import-or-reload (&optional async)
+(defun py-execute-import-or-reload (&optional async dedicated)
   "Import the current buffer's file in a Python interpreter.
 
 If the file has already been imported, then do reload instead to get
@@ -5327,16 +5327,19 @@ This may be preferable to `\\[py-execute-buffer]' because:
   (let ((file (buffer-file-name (current-buffer))))
     (if file
         (progn
+          (py-choose-shell)
+          (let ((proc (if dedicated
+                          (get-process (py-shell nil dedicated))
+                        (get-process (py-shell)))))
           ;; Maybe save some buffers
           (save-some-buffers (not py-ask-about-save) nil)
-          (py-execute-string
+            (py-execute-file proc file
            (if (string-match "\\.py$" file)
                (let ((m (py-qualified-module-name (expand-file-name file))))
 		 (format "import sys\nif sys.modules.has_key('%s'):\n reload(%s)\nelse:\n import %s\n"
                          m m m))
              ;; (format "execfile(r'%s')\n" file)
-             (py-which-execute-file-command file))
-           async))
+                               (py-which-execute-file-command file)))))
       ;; else
       (py-execute-buffer async))))
 
@@ -5722,8 +5725,8 @@ comint believe the user typed this string so that
 `kill-output-from-shell' does The Right Thing."
   (let ((curbuf (current-buffer))
         (procbuf (process-buffer proc))
-                                        ;       (comint-scroll-to-bottom-on-output t)
-        (msg (format "## executing temporary file %s...\n" filename))
+        (comint-scroll-to-bottom-on-output t)
+        (msg (format "## executing %s...\n" filename))
         (cmd (cond (cmd)
                    (py-exec-command)
                    (t (py-which-execute-file-command filename)))))
@@ -5735,7 +5738,9 @@ comint believe the user typed this string so that
           (funcall (process-filter proc) proc msg)))
     (set-buffer curbuf)
     (set-buffer procbuf)
-    (process-send-string proc cmd)))
+    (process-send-string proc cmd)
+    (goto-char (process-mark proc))
+    (comint-send-input)))
 
 (defun py-postprocess-output-buffer (buf)
   "Highlight exceptions found in BUF.
@@ -5856,7 +5861,7 @@ bottom) of the trackback stack is encountered."
 
 ;; pdbtrack constants
 (defconst py-pdbtrack-stack-entry-regexp
-   (concat ".*\\("py-shell-input-prompt-1-regexp">\\|^>\\) \\(.*\\)(\\([0-9]+\\))\\([?a-zA-Z0-9_<>()]+\\)()")
+   (concat ".*\\("py-shell-input-prompt-1-regexp">\\|>\\) *\\(.*\\)(\\([0-9]+\\))\\([?a-zA-Z0-9_<>()]+\\)()")
   "Regular expression pdbtrack uses to find a stack trace entry.")
 
 ;; ipython.el
@@ -5873,13 +5878,13 @@ bottom) of the trackback stack is encountered."
 ;; The debugger outputs program-location lines that look like this:
 ;;    (/usr/bin/zonetab2pot.py:15): makePOT")
 
-(defconst py-pdbtrack-marker-regexp-file-group 1
+(defconst py-pdbtrack-marker-regexp-file-group 2
   "Group position in gud-pydb-marker-regexp that matches the file name.")
 
-(defconst py-pdbtrack-marker-regexp-line-group 2
+(defconst py-pdbtrack-marker-regexp-line-group 3
   "Group position in gud-pydb-marker-regexp that matches the line number.")
 
-(defconst py-pdbtrack-marker-regexp-funcname-group 3
+(defconst py-pdbtrack-marker-regexp-funcname-group 4
   "Group position in gud-pydb-marker-regexp that matches the function name.")
 
 (defconst py-pdbtrack-track-range 10000
