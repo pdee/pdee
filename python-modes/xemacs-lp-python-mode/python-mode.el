@@ -85,7 +85,6 @@
         (define-key map [(super backspace)] 'py-dedent)
         ;; (define-key map [(control return)] 'py-newline-and-dedent)
         ;; indentation level modifiers
-        (define-key map [(meta i)] 'py-indent-line-new)
         (define-key map [(control c)(control l)] 'py-shift-left)
         (define-key map [(control c)(control r)] 'py-shift-right)
         (define-key map [(control c)(<)] 'py-shift-left)
