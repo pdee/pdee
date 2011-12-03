@@ -1,9 +1,4 @@
-;; pdee-python.el - setup of python stuff
-
-;; fgallina/python.el
-(require 'python (concat pdee-install-dir "python-modes/fgallina/python.el"))
-
-;; pymacs
+;;; Pymacs
 (require 'pymacs (concat pdee-install-dir "extensions/pymacs.el"))
 
 (defun setup-ropemacs ()
@@ -39,7 +34,7 @@
                     )))
   )
 
-;; Ipython integration with fgallina/python.el
+;;; Ipython integration
 (defun pdee-setup-ipython ()
   "Setup ipython integration with python-mode"
   (interactive)
@@ -52,9 +47,8 @@
    python-shell-completion-string-code "';'.join(__IP.complete('''%s'''))\n")
   )
 
-;;=========================================================
-;; Flymake additions, I have to put this one somwhere else?
-;;=========================================================
+;;; Flymake additions, I have to put this one somwhere else?
+
 
 (defun flymake-create-copy-file ()
   "Create a copy local file"
@@ -115,7 +109,7 @@ The CMDLINE should be something like:
 
      )
   )
-;; Cython Mode
+;;; Cython Mode
 (autoload 'cython-mode "cython-mode" "Mode for editing Cython source files")
 
 (add-to-list 'auto-mode-alist '("\\.pyx\\'" . cython-mode))
