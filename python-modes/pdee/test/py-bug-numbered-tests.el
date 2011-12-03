@@ -111,6 +111,7 @@
          'wrongly-highlighted-as-keywords-lp-885144-test
          'glitch-when-indenting-lists-lp-886473-test
          'indentation-keyword-lp-885143-test
+         'indentation-bug-inside-docstrings-lp-899455-test
          'py-shell-complete-lp-328836-test
          'py-shebang-consider-ipython-lp-849293-test
          'UnicodeEncodeError-lp:550661-test
@@ -906,6 +907,7 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
     (py-bug-tests-intern 'indent-triplequoted-to-itself-lp:752252-base arg teststring)))
 
 (defun indent-triplequoted-to-itself-lp:752252-base ()
+  (sit-for 0.1) 
   (assert (eq 4 (py-compute-indentation)) nil "indent-triplequoted-to-itself-lp:752252-test failed"))
 
 (defun multiline-listings-indent-lp:761946-test (&optional arg load-branch-function)
@@ -1999,7 +2001,6 @@ def foo(bar, baz):
     (py-newline-and-indent)
     (assert (eq 69 (point))  nil "glitch-when-indenting-lists-lp-886473-test failed"))
 
-
 (defun keywords-in-identifiers-highlighted-incorrectly-lp:888338-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
@@ -2016,7 +2017,6 @@ def possibly_break():
   (goto-char 55)
   (assert (eq (get-char-property (point) 'face) 'font-lock-function-name-face) nil "keywords-in-identifiers-highlighted-incorrectly-lp:888338-test failed"))
 
-
 (defun indentation-keyword-lp-885143-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
@@ -2030,7 +2030,6 @@ import sys
     (goto-char 48)
     (assert (eq 0 (py-compute-indentation))  nil "indentation-keyword-lp-885143-test failed"))
 
-
 (defun py-shell-complete-lp-328836-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
@@ -2042,11 +2041,41 @@ import sys
 
 (defun py-shell-complete-lp-328836-base ()
   (python-dedicated)
-  (goto-char (point-max)) 
+  (goto-char (point-max))
   (insert "pri")
   (py-shell-complete)
   (assert (looking-back "print") nil "py-shell-complete-lp-328836-test failed"))
 
+(defun indentation-bug-inside-docstrings-lp-899455-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+def foo():
+    \"\"\"This is my docstring.
+
+    There are many others like it, but this one is mine. My docstring is my
+    best friend. It is my life. I must master it as I must master my life.
+    Without me, my docstring is useless. Without my docstring, I am useless.
+    I must write my docstring true. I must write clearer than my enemy, who
+    is trying to confuse me. I must enlighten him before he enlightens me. I
+    will. Before Guido I swear this creed: my docstring and myself are
+    defenders of my codebase, we are the masters of our enemy, we are the
+    saviors of my life. So be it, until there is no enemy, but peace. Amen.
+
+    `foo`: str or None
+        If None then baz.
+
+    \"\"\"
+
+"))
+  (when load-branch-function (funcall load-branch-function))
+  (py-bug-tests-intern 'indentation-bug-inside-docstrings-lp-899455-base arg teststring)))
+
+(defun indentation-bug-inside-docstrings-lp-899455-base ()
+    (goto-char 742)
+    (sit-for 0.1) 
+    (assert (eq 8 (py-compute-indentation)) nil "indentation-bug-inside-docstrings-lp-899455-test failed"))
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
