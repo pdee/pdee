@@ -578,9 +578,8 @@ class OrderedDict1(dict):
 
 (defun py-insert-super-python2-base ()
     (ignore-errors (py-insert-super))
-    (back-to-indentation)
     (sit-for 0.1) 
-    (assert (looking-at "super(OrderedDict1, self).__init__(d={})") nil "py-insert-super-python2-test failed"))
+    (assert (looking-back "super(OrderedDict1, self).__init__(d={})") nil "py-insert-super-python2-test failed"))
 
 (defun py-insert-super-python3-test (&optional arg load-branch-function)
   (interactive "p")
@@ -619,9 +618,8 @@ def foo( self, bar=False ):  # version 12345
   (py-bug-tests-intern 'indent-after-assigment-base arg teststring)))
 
 (defun indent-after-assigment-base ()
-    (forward-line -1)
-    (py-indent-line)
-    (assert (eq 4 (current-column)) nil "indent-after-assigment-test failed"))
+    (goto-char 185)
+    (assert (eq 4 (py-compute-indentation)) nil "py-indent-after-assigment-test failed"))
 
 (defun leave-dict-test (&optional arg load-branch-function)
   (interactive "p")

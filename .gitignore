@@ -65,9 +65,21 @@ TODO
 
 commit.txt
 
+python-modes/pdee/CREDITS
+python-modes/pdee/NEWS
+python-modes/pdee/ToDo
+
+pdee/ToDo
+pdee/NEWS
+pdee/CREDITS
+
 website/*
 MANIFEST*
 befehle.txt
 LICENSE
 build
+.gitignore
+doc/
+tools/
+
 .gitignore
