@@ -1198,12 +1198,10 @@ Currently-active file is at the head of the list.")
 
 (defun py-electric-comment (arg)
   "Insert a comment. If starting a comment, indent accordingly.
-If a numeric
-argument ARG is provided, that many colons are inserted
+
+If a numeric argument ARG is provided, that many colons are inserted
 non-electrically.
-With \\[universal-argument] C-u a \"#\"
-Electric behavior is inhibited inside a string or
-comment."
+With \\[universal-argument] \"#\" electric behavior is inhibited inside a string or comment."
   (interactive "*P")
   (if py-electric-comment-p
       (if (ignore-errors (eq 4 (car-safe arg)))
@@ -1214,7 +1212,10 @@ comment."
           (insert "#"))
         (let ((orig (copy-marker (point)))
               (indent (py-compute-indentation)))
-          (unless (or (eq (current-indentation) indent)(looking-back "#[ \t]*"))
+          (unless 
+              ;; (or 
+               (eq (current-indentation) indent)
+            ;; (looking-back "#[ \t]*"))
             (goto-char orig)
             (beginning-of-line)
             (delete-horizontal-space)
