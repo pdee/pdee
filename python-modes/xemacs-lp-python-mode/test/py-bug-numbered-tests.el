@@ -713,7 +713,11 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
     (py-bug-tests-intern 'fore-00007F-breaks-indentation-lp:328788 arg teststring)))
 
 (defun fore-00007F-breaks-indentation-lp:328788 ()
+  (switch-to-buffer (current-buffer)) 
   (goto-char 34)
+  (sit-for 1)
+  (message "%s" (point))
+  (message "%s" (py-compute-indentation))
   (assert (eq 8 (py-compute-indentation)) nil "fore-00007F-breaks-indentation-test #1 failed")
   (goto-char 121)
   (assert (eq 8 (py-compute-indentation)) nil "fore-00007F-breaks-indentation-test #2 failed"))
@@ -907,7 +911,7 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
     (py-bug-tests-intern 'indent-triplequoted-to-itself-lp:752252-base arg teststring)))
 
 (defun indent-triplequoted-to-itself-lp:752252-base ()
-  (sit-for 0.1) 
+  (sit-for 0.1)
   (assert (eq 4 (py-compute-indentation)) nil "indent-triplequoted-to-itself-lp:752252-test failed"))
 
 (defun multiline-listings-indent-lp:761946-test (&optional arg load-branch-function)
@@ -2074,7 +2078,7 @@ def foo():
 
 (defun indentation-bug-inside-docstrings-lp-899455-base ()
     (goto-char 742)
-    (sit-for 0.1) 
+    (sit-for 0.1)
     (assert (eq 8 (py-compute-indentation)) nil "indentation-bug-inside-docstrings-lp-899455-test failed"))
 
 (provide 'py-bug-numbered-tests)

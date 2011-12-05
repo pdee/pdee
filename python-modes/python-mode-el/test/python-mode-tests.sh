@@ -78,6 +78,7 @@ TESTFILE="py-bug-numbered-tests.el"
 TESTFILE2="python-mode-test.el"
 
 echo "\$PYMACS: $PYMACS"
+echo "\$PYTHONMODE: $PYTHONMODE"
 
 $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'python-mode)(unload-feature 'python-mode t))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$TESTDIR/\")" --eval "(setq py-install-directory \"..\")" -load "$PYMACS" -load $CCCMDS -load $COMINT -load $SHELL -load $ANSICOLOR -load $CLMACS -load $BYTECOMP -load $CUSTOM -load "../$HIGHL" -load $PYTHONMODE -load "$PDIR/$TESTFILE" -load "$PDIR/$TESTFILE2" --eval "(quietly-read-abbrev-file (expand-file-name \"~/.abbrev_defs\"))" \
 --funcall nested-dictionaries-indent-lp:328791-test \

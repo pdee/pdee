@@ -821,6 +821,10 @@ Default is `t'."
   "Mode commands will set this. ")
 (make-variable-buffer-local 'py-exec-command)
 
+(defvar py-exec-string-command nil
+  "Mode commands will set this. ")
+(make-variable-buffer-local 'py-exec-string-command)
+
 (defvar py-which-bufname "Python")
 (make-variable-buffer-local 'py-which-bufname)
 
@@ -937,6 +941,8 @@ subsequent py-up-exception needs the line number where the region
 started, in order to jump to the correct file line.  This variable is
 set in py-execute-region and used in py-jump-to-exception.")
 
+(defvar match-paren-no-use-syntax-pps nil)
+
 (defsubst py-keep-region-active ()
   "Keep the region active in XEmacs."
   ;; Ignore byte-compiler warnings you might see.  Also note that
@@ -997,6 +1003,9 @@ set in py-execute-region and used in py-jump-to-exception.")
   "Matches the beginning of a compound statement. ")
 
 (defconst py-minor-block-re "[ \t]*\\<\\(for\\|if\\|try\\)\\>[: \n\t]"
+  "Matches the beginning of an `if' or `try' block. ")
+
+(defconst py-try-block-re "[ \t]*\\<try\\>[: \n\t]"
   "Matches the beginning of an `if' or `try' block. ")
 
 (defconst py-class-re "[ \t]*\\<\\(class\\)\\>[ \n\t]"
@@ -1279,10 +1288,10 @@ Returns column reached. "
             (if (< 0 remains)
                 (delete-char (- remains))
               (indent-line-to (- (current-indentation) py-indent-offset))))
-        (delete-char (- 1)))))
+        (delete-char (- 1))))
   (setq erg (current-column))
   (when (interactive-p) (message "%s" erg))
-  erg)
+    erg))
 
 (defun py-electric-delete (&optional arg)
   "Delete following character or levels of whitespace.
@@ -1448,10 +1457,9 @@ With optional argument GLOBAL change the global value of `py-indent-offset'. "
                              (current-indentation))))
              (firstindent (progn (py-beginning-of-block)
                                  (current-indentation)))
-             (guessed (- lastindent firstindent))
-             erg)
+             (guessed (- lastindent firstindent)))
         (if (py-guessed-sanity-check)
-            (setq erg guessed)
+            (setq py-indent-offset guessed)
           ;; no indent between statements at point
           (setq firstindent (progn
                               (py-beginning-of-def-or-class)
@@ -1462,7 +1470,7 @@ With optional argument GLOBAL change the global value of `py-indent-offset'. "
         (when (and (py-guessed-sanity-check) (/= guessed (default-value 'py-indent-offset)))
           (funcall (if global 'kill-local-variable 'make-local-variable)
                    'py-indent-offset)
-          (setq py-indent-offset indent)
+          (setq py-indent-offset guessed)
           (unless (= tab-width py-indent-offset)
             (setq indent-tabs-mode nil)))
         (when (interactive-p)
@@ -1600,7 +1608,7 @@ COUNT defaults to `py-indent-offset',
 use \[universal-argument] to specify a different value.
 
 Returns outmost indentation reached. "
-  (in1teractive "*P")
+  (interactive "*P")
   (let ((erg (py-shift-forms-base "paragraph" (- (or arg py-indent-offset)))))
     (when (interactive-p) (message "%s" erg))
     erg))
@@ -1866,14 +1874,6 @@ initial line; and comment lines beginning in column 1 are ignored."
       (when (interactive-p) (message "%s" erg))
       erg)))
 
-(defun py-beginning-of-clause-position ()
-  "Returns beginning of clause position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (py-beginning-of-clause)))
-      (when (interactive-p) (message "%s" erg))
-      erg)))
-
 (defun py-beginning-of-line-position ()
   "Returns beginning of line position. "
   (interactive)
@@ -1927,14 +1927,6 @@ initial line; and comment lines beginning in column 1 are ignored."
   (interactive)
   (save-excursion
     (let ((erg (py-end-of-class)))
-      (when (interactive-p) (message "%s" erg))
-      erg)))
-
-(defun py-end-of-clause-position ()
-  "Returns end of clause position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (py-end-of-clause)))
       (when (interactive-p) (message "%s" erg))
       erg)))
 
@@ -5160,9 +5152,9 @@ Unicode strings like u'\\xA9' "
     (insert cmd)
     (comint-send-input)
 ;;    (ipython-send-and-indent)
-    (when (< 1 lines)
+    ;; (when (< 1 lines)
 ;;      (goto-char (point-max))
-      (comint-send-input))
+    ;; (comint-send-input))
     ))
 
 (defun py-execute-region-in-shell (start end &optional async)
@@ -6144,7 +6136,8 @@ Useful for newly defined symbol, not known to python yet. "
             (insert erg)))))))
 
 (defun ar-py-find-imports ()
-  (let ((erg
+  (let* (imports
+         (erg
     (save-excursion
       (goto-char (point-min))
       (while (re-search-forward
@@ -7215,8 +7208,6 @@ of the first definition found."
 
 ;;; python-components-completion.el
 
-;; Fixme: This fails the first time if the sub-process isn't already
-;; running.  Presumably a timing issue with i/o to the process.
 (defun python-symbol-completions (symbol)
   "Return a list of completions of the string SYMBOL from Python process.
 The list is sorted.
@@ -7282,7 +7273,8 @@ Returns the specified Python resp. Jython shell command name. "
   (interactive)
   ;; look for an interpreter specified in the first line
   ;; similar to set-auto-mode (files.el)
-  (let ((interpreter (save-excursion
+  (let* (erg
+        (interpreter (save-excursion
                        (goto-char (point-min))
                        (when (looking-at py-shebang-regexp)
                          (setq erg (match-string-no-properties 0))
@@ -7347,7 +7339,8 @@ If no arg given and py-shell-name not set yet, shell is set according to `py-she
                     (t
                      (if (string-match "python" py-shell-name)
                          "jython"
-                       "python")))))
+                       "python"))))
+        msg)
     (if (string-match "python" name)
         (setq py-shell-name name
               py-which-bufname (capitalize name)
@@ -7358,7 +7351,7 @@ If no arg given and py-shell-name not set yet, shell is set according to `py-she
             msg "Jython"
             mode-name (capitalize name)))
     (force-mode-line-update)
-    (message "Using the %s shell" py-shell-name)
+    (message "Using the %s shell, %s" msg py-shell-name)
     (setq py-output-buffer (format "*%s Output*" py-which-bufname))))
 
 (defalias 'py-which-shell 'py-choose-shell)
@@ -7380,6 +7373,18 @@ With \\[universal-argument]) user is prompted to specify a reachable Python vers
     (when (interactive-p) (message "%s" erg))
     (setq py-shell-name erg)
     erg))
+
+
+(defvar inferior-python-mode-map
+  (let ((map (make-sparse-keymap)))
+    ;; This will inherit from comint-mode-map.
+    (define-key map "\C-c\C-l" 'py-load-file)
+    (define-key map "\C-c\C-v" 'python-check)
+    ;; Note that we _can_ still use these commands which send to the
+    ;; Python process even at the prompt iff we have a normal prompt,
+    ;; i.e. '>>> ' and not '... '.  See the comment before
+    ;; py-send-region.  Fixme: uncomment these if we address that.
+    map))
 
 (defun python-mode ()
   "Major mode for editing Python files.
@@ -7829,17 +7834,6 @@ local value.")
      1 2))
   "`compilation-error-regexp-alist' for inferior Python.")
 
-(defvar inferior-python-mode-map
-  (let ((map (make-sparse-keymap)))
-    ;; This will inherit from comint-mode-map.
-    (define-key map "\C-c\C-l" 'py-load-file)
-    (define-key map "\C-c\C-v" 'python-check)
-    ;; Note that we _can_ still use these commands which send to the
-    ;; Python process even at the prompt iff we have a normal prompt,
-    ;; i.e. '>>> ' and not '... '.  See the comment before
-    ;; py-send-region.  Fixme: uncomment these if we address that.
-    map))
-
 (defvar inferior-python-mode-syntax-table
   (let ((st (make-syntax-table py-mode-syntax-table)))
     ;; Don't get confused by apostrophes in the process's output (e.g. if
@@ -8137,18 +8131,6 @@ behavior, change `python-remove-cwd-from-path' to nil."
       ;; `python-send-command''s call to `compilation-forget-errors'.
       (compilation-fake-loc orig-start f))))
 
-(defun py-send-string (string)
-  "Evaluate STRING in inferior Python process."
-  (interactive "sPython command: ")
-  (comint-send-string (python-proc) string)
-  (unless (string-match "\n\\'" string)
-    ;; Make sure the text is properly LF-terminated.
-    (comint-send-string (python-proc) "\n"))
-  (when (string-match "\n[ \t].*\n?\\'" string)
-    ;; If the string contains a final indented line, add a second newline so
-    ;; as to make sure we terminate the multiline instruction.
-    (comint-send-string (python-proc) "\n")))
-
 (defun py-send-buffer ()
   "Send the current buffer to the inferior Python process."
   (interactive)
@@ -8401,13 +8383,6 @@ The criterion is either a match for `jython-mode' via
 (defvar eldoc-documentation-function)
 (defvar python-mode-running)            ;Dynamically scoped var.
 
-(define-derived-mode jython-mode python-mode  "Jython"
-  "Major mode for editing Jython files.
-Like `python-mode', but sets up parameters for Jython subprocesses.
-Runs `jython-mode-hook' after `python-mode-hook'."
-  :group 'python
-  (set (make-local-variable 'python-command) python-jython-command))
-
 
 
 ;; pdbtrack features
@@ -8613,81 +8588,6 @@ comint believe the user typed this string so that
 (defvar python-imports "None"
   "String of top-level import statements updated by `py-find-imports'.")
 (make-variable-buffer-local 'python-imports)
-
-;; Fixme: Should font-lock try to run this when it deals with an import?
-;; Maybe not a good idea if it gets run multiple times when the
-;; statement is being edited, and is more likely to end up with
-;; something syntactically incorrect.
-;; However, what we should do is to trundle up the block tree from point
-;; to extract imports that appear to be in scope, and add those.
-(defun py-find-imports ()
-  "Find top-level imports, updating `python-imports'."
-  (interactive)
-  (save-excursion
-      (let (lines)
-	(goto-char (point-min))
-	(while (re-search-forward "^import\\>[ \n\t]\\|^from\\>[ \n\t]" nil t)
-	  (unless (syntax-ppss-context (syntax-ppss))
-	    (let ((start (line-beginning-position)))
-	      ;; Skip over continued lines.
-	      (while (and (eq ?\\ (char-before (line-end-position)))
-			  (= 0 (forward-line 1)))
-		t)
-	      (push (buffer-substring start (line-beginning-position 2))
-		    lines))))
-	(setq python-imports
-	      (if lines
-		  (apply #'concat
-;; This is probably best left out since you're unlikely to need the
-;; doc for a function in the buffer and the import will lose if the
-;; Python sub-process' working directory isn't the same as the
-;; buffer's.
-;; 			 (if buffer-file-name
-;; 			     (concat
-;; 			      "import "
-;; 			      (file-name-sans-extension
-;; 			       (file-name-nondirectory buffer-file-name))))
-			 (nreverse lines))
-		"None"))
-	(when lines
-	  (set-text-properties 0 (length python-imports) nil python-imports)
-	  ;; The output ends up in the wrong place if the string we
-	  ;; send contains newlines (from the imports).
-	  (setq python-imports
-		(replace-regexp-in-string "\n" "\\n"
-					  (format "%S" python-imports) t t))))))
-
-;; Fixme: This fails the first time if the sub-process isn't already
-;; running.  Presumably a timing issue with i/o to the process.
-(defun python-symbol-completions (symbol)
-  "Return a list of completions of the string SYMBOL from Python process.
-The list is sorted.
-Uses `python-imports' to load modules against which to complete."
-  (when (stringp symbol)
-    (let ((completions
-	   (condition-case ()
-	       (car (read-from-string
-		     (python-send-receive
-		      (format "emacs.complete(%S,%s)"
-			      (substring-no-properties symbol)
-			      python-imports))))
-	     (error nil))))
-      (sort
-       ;; We can get duplicates from the above -- don't know why.
-       (delete-dups completions)
-       #'string<))))
-
-(defun py-completion-at-point ()
-  (let ((end (point))
-	(start (save-excursion
-		 (and (re-search-backward
-		       (rx (or buffer-start (regexp "[^[:alnum:]._]"))
-			   (group (1+ (regexp "[[:alnum:]._]"))) point)
-		       nil t)
-		      (match-beginning 1)))))
-    (when start
-      (list start end
-            (completion-table-dynamic 'python-symbol-completions)))))
 
 ;;; Python Shell Complete
 ;; Author: Lukasz Pankowski
@@ -8698,21 +8598,21 @@ order to allow injecting completion command between keyboard interrupt
 and resending the lines later. The lines are stored in reverse order")
 
 ;; need to clear py-shell-input-lines if primary prompt found
-(defun py-comint-output-filter-function (string)
-  "Watch output for Python prompt and exec next file waiting in queue.
-This function is appropriate for `comint-output-filter-functions'."
-  ;; TBD: this should probably use split-string
-  (when (and (or (string-equal string ">>> ")
-		 (and (>= (length string) 5)
-		      (string-equal (substring string -5) "\n>>> ")))
-	     (or (setq py-shell-input-lines nil)
-		 py-file-queue))
-    (pop-to-buffer (current-buffer))
-    (py-safe (delete-file (car py-file-queue)))
-    (setq py-file-queue (cdr py-file-queue))
-    (if py-file-queue
-	(let ((pyproc (get-buffer-process (current-buffer))))
-	  (py-execute-file pyproc (car py-file-queue))))))
+;; (defun py-comint-output-filter-function (string)
+;;   "Watch output for Python prompt and exec next file waiting in queue.
+;; This function is appropriate for `comint-output-filter-functions'."
+;;   ;; TBD: this should probably use split-string
+;;   (when (and (or (string-equal string ">>> ")
+;; 		 (and (>= (length string) 5)
+;; 		      (string-equal (substring string -5) "\n>>> ")))
+;; 	     (or (setq py-shell-input-lines nil)
+;; 		 py-file-queue))
+;;     (pop-to-buffer (current-buffer))
+;;     (py-safe (delete-file (car py-file-queue)))
+;;     (setq py-file-queue (cdr py-file-queue))
+;;     (if py-file-queue
+;; 	(let ((pyproc (get-buffer-process (current-buffer))))
+;; 	  (py-execute-file pyproc (car py-file-queue))))))
 
 (defun py-shell-simple-send (proc string)
   (setq py-shell-input-lines (cons string py-shell-input-lines))
@@ -8730,7 +8630,9 @@ This function is appropriate for `comint-output-filter-functions'."
   ;; XEmacs
 
   (make-variable-buffer-local 'comint-redirect-completed)
+  (defvar py-shell-redirect-output-buffer nil)
   (make-variable-buffer-local 'py-shell-redirect-output-buffer)
+  (defvar py-shell-redirect-orginal-output-filter nil)
   (make-variable-buffer-local 'py-shell-redirect-orginal-output-filter)
 
   (defun py-shell-redirect-filter-function (proc string)
