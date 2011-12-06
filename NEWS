@@ -3,14 +3,15 @@ Python Mode News
 New in version 6.0.4
 --------------------
 
+- Listing of available commands in org-mode and reST
+  format in directory "doc"
+
 - Python shells and executing forms may be called as
   dedicated process. See commands available \w suffix
   "-dedicated".
 
-- Pymacs works right out-of-the-box now
-
-- py-complete fixed - M-TAB completes Python forms
-  Code merged from python.el and pycomplete.el
+- completion fixed: M-TAB completes in Python buffer, TAB
+  completes in Python shells
 
 - py-down-FORM-lc commands
   Goto beginning of line following end of FORM.

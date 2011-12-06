@@ -80,3 +80,5 @@ LICENSE
 build
 .gitignore
 
+python-modes/pdee/tools/python-shell-install-example-buffer.el
+
