@@ -2466,6 +2466,7 @@ When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
                     (progn
                       (forward-line -1)
                       (end-of-line)
+                      (skip-chars-backward " \t\r\n\f") 
                       (if (< (nth 2 (if (featurep 'xemacs)
                                         (parse-partial-sexp (point-min) (point))
                                       (syntax-ppss))) (line-beginning-position))

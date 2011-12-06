@@ -112,6 +112,7 @@
          'glitch-when-indenting-lists-lp-886473-test
          'indentation-keyword-lp-885143-test
          'indentation-bug-inside-docstrings-lp-899455-test
+         'another-indentation-bug-inside-docstrings-lp:900684-test
          'py-shell-complete-lp-328836-test
          'py-shebang-consider-ipython-lp-849293-test
          'UnicodeEncodeError-lp:550661-test
@@ -2080,6 +2081,24 @@ def foo():
     (goto-char 742)
     (sit-for 0.1)
     (assert (eq 8 (py-compute-indentation)) nil "indentation-bug-inside-docstrings-lp-899455-test failed"))
+
+(defun another-indentation-bug-inside-docstrings-lp:900684-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+def is_x_day(date):
+    \"\"\"Return True if given date is the X-day.
+
+    \"\"\"
+"))
+  (when load-branch-function (funcall load-branch-function))
+  (py-bug-tests-intern 'another-indentation-bug-inside-docstrings-lp:900684-base arg teststring)))
+
+(defun another-indentation-bug-inside-docstrings-lp:900684-base ()
+    (goto-char 116)
+    (sit-for 0.1) 
+    (assert (eq 4 (py-compute-indentation)) nil "another-indentation-bug-inside-docstrings-lp:900684-test failed"))
+
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

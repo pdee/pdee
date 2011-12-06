@@ -154,6 +154,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall wrongly-highlighted-as-keywords-lp-885144-test \
 --funcall glitch-when-indenting-lists-lp-886473-test \
 --funcall indentation-bug-inside-docstrings-lp-899455-test \
+--funcall another-indentation-bug-inside-docstrings-lp:900684-test \
 --funcall incorrect-use-of-region-in-py-shift-left-lp:875951-test \
 --funcall indentation-keyword-lp-885143-test \
 \
