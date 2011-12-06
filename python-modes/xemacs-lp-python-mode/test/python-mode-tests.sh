@@ -30,8 +30,8 @@ PDIR=`pwd`
 
 
 # write PATH-TO-EMACS source code directory here
-# EMACS_SOURCE_DIR="$HOME/emacs-20110426"
 EMACS_SOURCE_DIR=
+EMACS_SOURCE_DIR="$HOME/emacs-20110426"
 
 # python-mode file to load
 if [ -s "../python-components-mode.el" ];
@@ -79,11 +79,11 @@ TESTFILE2="python-mode-test.el"
 
 echo "\$PYMACS: $PYMACS"
 echo "\$PYTHONMODE: $PYTHONMODE"
+echo "\$PDIR/\$TESTFILE: $PDIR/$TESTFILE"
 
-$EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'python-mode)(unload-feature 'python-mode t))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$TESTDIR/\")" --eval "(setq py-install-directory \"..\")" -load "$PYMACS" -load $CCCMDS -load $COMINT -load $SHELL -load $ANSICOLOR -load $CLMACS -load $BYTECOMP -load $CUSTOM -load "../$HIGHL" -load $PYTHONMODE -load "$PDIR/$TESTFILE" -load "$PDIR/$TESTFILE2" --eval "(quietly-read-abbrev-file (expand-file-name \"~/.abbrev_defs\"))" \
+$EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'python)(unload-feature 'python t))" --eval "(when (featurep 'python-mode)(unload-feature 'python-mode t))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$TESTDIR/\")" --eval "(setq py-install-directory \"..\")" -load "$PYMACS" -load $CCCMDS -load $COMINT -load $SHELL -load $ANSICOLOR -load $CLMACS -load $BYTECOMP -load $CUSTOM -load "../$HIGHL" -load $PYTHONMODE -load "$PDIR/$TESTFILE" -load "$PDIR/$TESTFILE2" --eval "(quietly-read-abbrev-file (expand-file-name \"~/.abbrev_defs\"))" \
 --funcall nested-dictionaries-indent-lp:328791-test \
 --funcall triple-quoted-string-dq-lp:302834-test \
---funcall fore-00007F-breaks-indentation-lp:328788-test \
 --funcall dq-in-tqs-string-lp:328813-test \
 --funcall py-current-defun-lp:328846-test \
 --funcall cls-pseudo-keyword-lp:328849-test \
@@ -157,6 +157,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall another-indentation-bug-inside-docstrings-lp:900684-test \
 --funcall incorrect-use-of-region-in-py-shift-left-lp:875951-test \
 --funcall indentation-keyword-lp-885143-test \
+--funcall fore-00007F-breaks-indentation-lp:328788-test \
 \
 --funcall multiline-list-indent-test \
 --funcall py-beginning-of-block-test \

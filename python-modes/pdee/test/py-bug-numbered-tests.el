@@ -126,8 +126,8 @@
         (set-buffer (get-buffer-create (replace-regexp-in-string "-base$" "-test" (prin1-to-string testname))))
         (switch-to-buffer (current-buffer))
         (erase-buffer)
-        (insert teststring)
         (fundamental-mode)
+        (insert teststring)
         (python-mode)
         (funcall testname)
         (message "%s" (concat (replace-regexp-in-string "-base$" "-test" (prin1-to-string testname)) " passed"))
@@ -705,20 +705,20 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
   (interactive "p")
   (let ((teststring "class a:
     def __init__(self):
-        self.StyleSetSpec(self.STYLE_FIELD,
-\"fore:#00007F\" )
-            self.StyleSetSpec(self.STYLE_FIELD,
-\"fore:#00007F\" )
+        self.StyleSetSpec(self.STYLE_FIELD, \"fore:#00007F\" )
+            self.StyleSetSpec(self.STYLE_FIELD, \"fore:#00007F\" )
 "))
     (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'fore-00007F-breaks-indentation-lp:328788 arg teststring)))
 
 (defun fore-00007F-breaks-indentation-lp:328788 ()
-  (switch-to-buffer (current-buffer)) 
+  (switch-to-buffer (current-buffer))
   (goto-char 34)
-  (sit-for 1)
-  (message "%s" (point))
-  (message "%s" (py-compute-indentation))
+  (sit-for 0.1)
+  (message "Pos: %s" (point))
+  (message "(py-compute-indentation): %s" (py-compute-indentation))
+  (message "%s" (describe-function 'py-compute-indentation))
+  ;; (debug-on-entry 'py-compute-indentation)
   (assert (eq 8 (py-compute-indentation)) nil "fore-00007F-breaks-indentation-test #1 failed")
   (goto-char 121)
   (assert (eq 8 (py-compute-indentation)) nil "fore-00007F-breaks-indentation-test #2 failed"))
@@ -2096,7 +2096,7 @@ def is_x_day(date):
 
 (defun another-indentation-bug-inside-docstrings-lp:900684-base ()
     (goto-char 116)
-    (sit-for 0.1) 
+    (sit-for 0.1)
     (assert (eq 4 (py-compute-indentation)) nil "another-indentation-bug-inside-docstrings-lp:900684-test failed"))
 
 

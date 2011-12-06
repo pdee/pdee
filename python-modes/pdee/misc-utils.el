@@ -144,7 +144,7 @@ If no string is delivered but region is active, strip region.
 
 (defun ar-in-string-or-comment-p ()
   "Returns beginning position if inside a string or comment, nil otherwise. "
-  (interactive) 
+  (interactive)
   (let* ((erg (nth 8 (if (featurep 'xemacs)
                          (parse-partial-sexp (point-min) (point))
                        (syntax-ppss))))
@@ -800,9 +800,19 @@ also insert a newline. "
     (when (interactive-p) (message "%s" erg))
     erg))
 
-(defvar symbol-definition-start-re "^[ \t]*(\\(defun\\|defvar\\|defcustom\\)")
-;; (setq symbol-definition-start-re "^[ \t]*(\\(defun\\|defvar\\|defcustom\\)")
-(make-variable-buffer-local 'symbol-definition-start-re)
+(defun ar-goto-function-name-atpt ()
+  "Returns function name beginning position. "
+  (interactive)
+
+  (let ((erg (progn
+               (beginning-of-defun)
+               (when (looking-at (concat "\\(" function-definition-start-re "\\) +\\(\\(\\w+\\|\\s_+\\)*\\)")))
+               (goto-char (match-beginning 2)))))
+    (when (interactive-p) (message "%s" erg))
+    erg))
+
+(defvar symbol-definition-start-re "^[ \t]*(\\(defun\\|defvar\\|defcustom\\|defconst\\|setq\\)")
+;; (setq symbol-definition-start-re "^[ \t]*(\\(defun\\|defvar\\|defcustom\\|defconst\\|setq\\)")
 
 (defun ar-symbol-name-atpt ()
   "The name of the symbol definition at point. "
@@ -819,3 +829,5 @@ also insert a newline. "
 
 (provide 'misc-utils)
 ;;; misc-utils.el ends here
+
+

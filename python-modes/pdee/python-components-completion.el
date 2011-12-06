@@ -30,7 +30,7 @@ Uses `python-imports' to load modules against which to complete."
   (when (stringp symbol)
     (let ((python-imports (or
                            python-imports
-                           (python-find-imports)
+                           (py-find-imports)
                            "\"import string, re, sys, os, pdb, random, time\\n\""))
           (completions
 	   (condition-case ()

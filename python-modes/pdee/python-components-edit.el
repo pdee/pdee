@@ -38,60 +38,6 @@
          (sheb (concat "#! " erg)))
     (insert sheb)))
 
-(defun py-electric-comment (arg)
-  "Insert a comment. If starting a comment, indent accordingly.
-If a numeric
-argument ARG is provided, that many colons are inserted
-non-electrically.
-With universal-prefix-key C-u a \"#\"
-Electric behavior is inhibited inside a string or
-comment."
-  (interactive "*P")
-  (if py-electric-comment-p
-      (if (ignore-errors (eq 4 (car-safe arg)))
-          (insert "#")
-        (when (and (eq last-command 'py-electric-comment) (looking-back " "))
-          (forward-char -1))
-        (if (interactive-p) (self-insert-command (prefix-numeric-value arg))
-          (insert "#"))
-        (let ((orig (copy-marker (point)))
-              (indent (py-compute-indentation)))
-          (unless (or (eq (current-indentation) indent)(looking-back "#[ \t]*"))
-            (goto-char orig)
-            (beginning-of-line)
-            (delete-horizontal-space)
-            (indent-to indent)
-            (goto-char orig))
-          (when py-electric-comment-add-space-p
-            (unless (looking-at "[ \t]")
-              (insert " "))))
-        (setq last-command this-command))
-    (self-insert-command (prefix-numeric-value arg))))
-
-(defun py-electric-colon (arg)
-  "If `py-electric-colon-active-p' is non-nil only:
-Insert a colon and indent accordingly.
-If a numeric argument ARG is provided, that many colons are inserted
-non-electrically.
-
-Electric behavior is inhibited inside a string or
-comment or by universal prefix C-u."
-  (interactive "*P")
-  (cond ((not py-electric-colon-active-p)
-         (self-insert-command (prefix-numeric-value arg)))
-        ((eq 4 (prefix-numeric-value arg))
-         (self-insert-command 1))
-        (t (self-insert-command (prefix-numeric-value arg))
-           (unless (py-in-string-or-comment-p)
-             (let ((orig (copy-marker (point)))
-                   (indent (py-compute-indentation)))
-               (unless (or (eq (current-indentation) indent)
-                           (and (py-top-level-form-p)(< (current-indentation) indent)))
-                 (beginning-of-line)
-                 (delete-horizontal-space)
-                 (indent-to indent))
-               (goto-char orig))))))
-
 (defun py-top-level-form-p ()
   "Return non-nil, if line starts with a top level definition.
 
@@ -104,78 +50,10 @@ Used by `py-electric-colon', which will not indent than. "
       erg))
 
 
-;; Electric deletion
-(defun py-electric-backspace (&optional arg)
-  "Delete preceding character or level of indentation.
-With ARG do that ARG times.
-
-Returns column reached. "
-  (interactive "*p")
-  (let ((arg (or arg 1))
-        erg)
-    (dotimes (i arg)
-      (if (looking-back "^[ \t]+")
-          (let* ((remains (% (current-column) py-indent-offset)))
-            (if (< 0 remains)
-                (delete-char (- remains))
-              (indent-line-to (- (current-indentation) py-indent-offset))))
-        (delete-char (- 1)))))
-  (setq erg (current-column))
-  (when (interactive-p) (message "%s" erg))
-  erg)
-
-(defun py-electric-delete (&optional arg)
-  "Delete following character or levels of whitespace.
-
-With ARG do that ARG times. "
-  (interactive "*p")
-  (let ((arg (or arg 1)))
-    (dotimes (i arg)
-      (if (and (or (bolp)(looking-back "^[ \t]+")) (looking-at "[ \t]+"))
-          (let* ((remains (% (+ (current-column) (- (match-end 0)(match-beginning 0))) py-indent-offset)))
-            (if (< 0 remains)
-                (delete-char remains)
-              (delete-char py-indent-offset)))
-        (delete-char 1)))))
-
-;; (defun py-electric-delete (arg)
-;;   "Delete preceding or following character or levels of whitespace.
-;;
-;; The behavior of this function depends on the variable
-;; `delete-key-deletes-forward'.  If this variable is nil (or does not
-;; exist, as in older Emacsen and non-XEmacs versions), then this
-;; function behaves identically to \\[c-electric-backspace].
-;;
-;; If `delete-key-deletes-forward' is non-nil and is supported in your
-;; Emacs, then deletion occurs in the forward direction, by calling the
-;; function in `py-delete-function'.
-;;
-;; \\[universal-argument] (programmatically, argument ARG) specifies the
-;; number of characters to delete (default is 1)."
-;;   (interactive "*p")
-;;   (if (or (and (fboundp 'delete-forward-p) ;XEmacs 21
-;;                (delete-forward-p))
-;;           (and (boundp 'delete-key-deletes-forward) ;XEmacs 20
-;;                delete-key-deletes-forward))
-;;       (funcall py-delete-function arg)
-;;     (py-electric-backspace arg)))
-
-;; required for pending-del and delsel modes
-(put 'py-electric-colon 'delete-selection t) ;delsel
-(put 'py-electric-colon 'pending-delete t) ;pending-del
-(put 'py-electric-backspace 'delete-selection 'supersede) ;delsel
-(put 'py-electric-backspace 'pending-delete 'supersede) ;pending-del
-(put 'py-electric-delete 'delete-selection 'supersede) ;delsel
-(put 'py-electric-delete 'pending-delete 'supersede) ;pending-del
-
-
 (defun py-indent-line-outmost (&optional arg)
-  "Indent the current line to the outmost reasonable indent according to Python rules.
-With optional universal ARG C-u an indent with length `py-indent-offset' is inserted unconditionally.
-write
+  "Indent the current line to the outmost reasonable indent.
 
-for example.
-"
+With optional \\[universal-argument] an indent with length `py-indent-offset' is inserted unconditionally "
   (interactive "*P")
   (let* ((need (py-compute-indentation (point)))
          (cui (current-indentation))
@@ -191,13 +69,15 @@ for example.
 
 (defun py-indent-line (&optional arg)
   "Indent the current line according to Python rules.
+
 When called interactivly with \\[universal-argument], ignore dedenting rules for block closing statements
 \(e.g. return, raise, break, continue, pass)
 
 This function is normally used by `indent-line-function' resp.
-\\[indent-for-tab-command]."
+\\[indent-for-tab-command].
+Returns current indentation "
   (interactive "P")
-  (let ((ci (current-indentation))
+  (let ((cui (current-indentation))
         (indent (py-compute-indentation))
         (col (current-column)))
     (if (interactive-p)
@@ -208,23 +88,33 @@ This function is normally used by `indent-line-function' resp.
               (indent-to (+ indent py-indent-offset)))
           (indent-to indent))
       (if py-tab-indent
-          (cond ((eq indent col)
+          (cond ((eq indent cui)
                  (when (eq this-command last-command)
                    (beginning-of-line)
-                   (delete-horizontal-space)))
-                ((< col indent)
+                   (delete-horizontal-space)
+                   (if (<= (line-beginning-position) (+ (point) (- col cui)))
+                       (forward-char (- col cui))
+                     (beginning-of-line))))
+                ((< cui indent)
                  (if (eq this-command last-command)
                      (progn
                        (beginning-of-line)
                        (delete-horizontal-space)
-                       (indent-to (+ (* (/ col py-indent-offset) py-indent-offset) py-indent-offset)))
+                       (indent-to (+ (* (/ cui py-indent-offset) py-indent-offset) py-indent-offset))
+                       (forward-char (- col cui)))
                    (beginning-of-line)
                    (delete-horizontal-space)
-                   (indent-to indent)))
+                   (indent-to indent)
+                   (forward-char (- col cui))))
                 (t (beginning-of-line)
                    (delete-horizontal-space)
-                   (indent-to indent)))
-        (insert-tab)))))
+                   (indent-to indent)
+                   (if (<= (line-beginning-position) (+ (point) (- col cui)))
+                       (forward-char (- col cui))
+                     (beginning-of-line))))
+        (insert-tab))))
+  (message "%s" (current-indentation))
+  (current-indentation))
 
 (defun py-newline-and-indent ()
   "Add a newline and indent to outmost reasonable indent.
@@ -261,13 +151,15 @@ Returns column. "
     (when (interactive-p) (message "%s" erg))
     erg))
 
+(defun py-guessed-sanity-check (guessed)
+  (and (>= guessed 2)(<= guessed 8)(eq 0 (% guessed 2))))
+
 (defun py-guess-indent-offset (&optional global)
   "Guess a value for, and change, `py-indent-offset'.
 
 By default, make a buffer-local copy of `py-indent-offset' with the
 new value.
-With optional argument GLOBAL,
-change the global value of `py-indent-offset'. "
+With optional argument GLOBAL change the global value of `py-indent-offset'. "
   (interactive "P")
   (save-excursion
     (save-restriction
@@ -280,21 +172,20 @@ change the global value of `py-indent-offset'. "
                              (current-indentation))))
              (firstindent (progn (py-beginning-of-block)
                                  (current-indentation)))
-             (guessed (- lastindent firstindent))
-             erg)
-        (if (py-guessed-sanity-check)
-            (setq erg guessed)
+             (guessed (- lastindent firstindent)))
+        (if (py-guessed-sanity-check guessed)
+            (setq py-indent-offset guessed)
           ;; no indent between statements at point
           (setq firstindent (progn
                               (py-beginning-of-def-or-class)
                               (current-indentation)))
           (setq guessed (- lastindent firstindent))
-          (when (py-guessed-sanity-check)
+          (when (py-guessed-sanity-check guessed)
             (setq py-indent-offset guessed)))
-        (when (and (py-guessed-sanity-check) (/= guessed (default-value 'py-indent-offset)))
+        (when (and (py-guessed-sanity-check guessed) (/= guessed (default-value 'py-indent-offset)))
           (funcall (if global 'kill-local-variable 'make-local-variable)
                    'py-indent-offset)
-          (setq py-indent-offset indent)
+          (setq py-indent-offset guessed)
           (unless (= tab-width py-indent-offset)
             (setq indent-tabs-mode nil)))
         (when (interactive-p)
@@ -302,9 +193,6 @@ change the global value of `py-indent-offset'. "
                    (if global "Global" "Local")
                    py-indent-offset))
         py-indent-offset))))
-
-(defun py-guessed-sanity-check ()
-  (and (>= guessed 2)(<= guessed 8)(eq 0 (% guessed 2))))
 
 (defun py-comment-indent-function ()
   "Python version of `comment-indent-function'."
@@ -323,6 +211,7 @@ change the global value of `py-indent-offset'. "
 
 (defun py-narrow-to-defun (&optional class)
   "Make text outside current defun invisible.
+
 The defun visible is the one that contains point or follows point.
 Optional CLASS is passed directly to `py-beginning-of-def-or-class'."
   (interactive "P")
@@ -431,7 +320,7 @@ COUNT defaults to `py-indent-offset',
 use \[universal-argument] to specify a different value.
 
 Returns outmost indentation reached. "
-  (in1teractive "*P")
+  (interactive "*P")
   (let ((erg (py-shift-forms-base "paragraph" (- (or arg py-indent-offset)))))
     (when (interactive-p) (message "%s" erg))
     erg))
@@ -673,14 +562,6 @@ initial line; and comment lines beginning in column 1 are ignored."
       (when (interactive-p) (message "%s" erg))
       erg)))
 
-(defun py-beginning-of-clause-position ()
-  "Returns beginning of clause position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (py-beginning-of-clause)))
-      (when (interactive-p) (message "%s" erg))
-      erg)))
-
 (defun py-beginning-of-def-position ()
   "Returns beginning of def position. "
   (interactive)
@@ -758,14 +639,6 @@ initial line; and comment lines beginning in column 1 are ignored."
   (interactive)
   (save-excursion
     (let ((erg (py-end-of-class)))
-      (when (interactive-p) (message "%s" erg))
-      erg)))
-
-(defun py-end-of-clause-position ()
-  "Returns end of clause position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (py-end-of-clause)))
       (when (interactive-p) (message "%s" erg))
       erg)))
 
@@ -854,6 +727,7 @@ See also py-bounds-of-statements "
 (defalias 'py-copy-declarations 'py-declarations)
 (defun py-declarations ()
   "Copy and mark assigments resp. statements in current level which don't open blocks or start with a keyword.
+
 See also `py-statements', which is more general, taking also simple statements starting with a keyword. "
   (interactive)
   (let* ((bounds (py-bounds-of-declarations))
@@ -868,6 +742,7 @@ See also `py-statements', which is more general, taking also simple statements s
 
 (defun py-kill-declarations ()
   "Delete variables declared in current level.
+
 Store deleted variables in kill-ring "
   (interactive "*")
   (let* ((bounds (py-bounds-of-declarations))
@@ -925,8 +800,7 @@ Indented same level, which don't open blocks. "
 
 (defalias 'py-backward-statements 'py-beginning-of-statements)
 (defun py-beginning-of-statements ()
-  "Got to the beginning of statements in current level which don't open blocks.
-"
+  "Got to the beginning of statements in current level which don't open blocks. "
   (interactive)
   (let* ((bounds (py-bounds-of-statements))
          (erg (car bounds)))
@@ -946,7 +820,9 @@ Indented same level, which don't open blocks. "
 
 (defalias 'py-copy-statements 'py-statements)
 (defun py-statements ()
-  "Copy and mark simple statements in current level which don't open blocks. More general than py-declarations, which would stop at keywords like a print-statement. "
+  "Copy and mark simple statements in current level which don't open blocks.
+
+More general than py-declarations, which would stop at keywords like a print-statement. "
   (interactive)
   (let* ((bounds (py-bounds-of-statements))
          (beg (car bounds))
@@ -960,6 +836,7 @@ Indented same level, which don't open blocks. "
 
 (defun py-kill-statements ()
   "Delete statements declared in current level.
+
 Store deleted statements in kill-ring "
   (interactive "*")
   (let* ((bounds (py-bounds-of-statements))
@@ -1161,6 +1038,7 @@ Store deleted statements in kill-ring "
 
 (defun py-fill-paragraph (&optional justify)
   "Like \\[fill-paragraph], but handle Python comments and strings.
+
 If any of the current line is a comment, fill the comment or the
 paragraph of it that point is in, preserving the comment's indentation
 and initial `#'s.
@@ -1192,6 +1070,7 @@ If point is inside a string, narrow to that string and fill.
 
 (defun py-insert-super ()
   "Insert a function \"super()\" from current environment.
+
 As example given in Python v3.1 documentation » The Python Standard Library »
 
 class C(B):

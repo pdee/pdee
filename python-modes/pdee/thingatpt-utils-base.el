@@ -3840,31 +3840,50 @@ it defaults to `<', otherwise it defaults to `string<'."
       (if messages (message "Reordering buffer... Done"))))
   nil)
 
-
 (defun ar-th-delim (thing &optional arg beg-char end-char iact)
-  "Process begin and end of region according to value of 
+  "Process begin and end of region according to value of
   `delim-action'
   If no region is active, process borders of THING-at-point
   according to value of delim-action-beginning- resp. -end-position
   Default is symbol-at.
   With \C-u or arg `escaped' to `t': insert escaped doublequotes"
   (interactive "*p")
-  (ignore-errors 
-    (save-restriction
-      (let* ((pos (copy-marker (point))) 
-             (bounds (ar-th-bounds thing)) 
-             (beg (car bounds))
-             (end (copy-marker (cdr bounds)))
-             (begstr (or beg-char th-beg-delimiter))
-             (endstr (or end-char th-end-delimiter)))
+  (save-restriction
+    (let ((orig (point))
+          done narrow)
+      (if (if (featurep 'xemacs)
+              (region-active-p)
+            (use-region-p))
+          (progn
+            (narrow-to-region (region-beginning) (region-end))
+            (goto-char (point-min))
+            (setq orig (point)))
+        (setq narrow t))
+      (ar-th-delim-intern narrow)
+      ;; (forward-char 1)
+      (while (and (or (not done) (< orig (point))) (funcall (intern-soft (concat "ar-forward-" (prin1-to-string thing) "-atpt"))))
+        (ar-th-delim-intern)
+        (forward-char 1)
+        (setq done t)))))
+
+(defun ar-th-delim-intern (&optional narrow)
+  (ignore-errors
+    (let* ((pos (copy-marker (point)))
+           (bounds (ar-th-bounds thing))
+           (beg (car bounds))
+           (end (copy-marker (cdr bounds)))
+           (begstr (or beg-char th-beg-delimiter))
+           (endstr (or end-char th-end-delimiter)))
+      (when narrow (narrow-to-region beg end))
+      (when beg
         (goto-char beg)
         (delim-slash-function arg)
         (insert begstr)
         (goto-char end)
         (delim-slash-function arg)
         (insert endstr)
-        (when iact (message "%s" bounds)
-              (goto-char pos))))))
+        (setq done t)
+        (when iact (message "%s" bounds))))))
 
 (defun delim-slash-function (arg)
   " "
@@ -3873,7 +3892,7 @@ it defaults to `<', otherwise it defaults to `string<'."
   (when (eq arg 4)
     (insert "\\\\")))
 
- 
+;;;###autoload 
 (defun ar-th-base-copy-or (kind arg &optional iact)
   " "
   (let* ((expr (format "%s" kind))

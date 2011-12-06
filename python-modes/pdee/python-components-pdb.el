@@ -24,7 +24,7 @@
 
 ;; pdbtrack constants
 (defconst py-pdbtrack-stack-entry-regexp
-   "^> \\(.*\\)(\\([0-9]+\\))\\([?a-zA-Z0-9_<>]+\\)()"
+   (concat ".*\\("py-shell-input-prompt-1-regexp">\\|>\\) *\\(.*\\)(\\([0-9]+\\))\\([?a-zA-Z0-9_<>()]+\\)()")
   "Regular expression pdbtrack uses to find a stack trace entry.")
 
 ;; ipython.el
@@ -42,13 +42,13 @@
 ;;    (/usr/bin/zonetab2pot.py:15): makePOT")
 
 
-(defconst py-pdbtrack-marker-regexp-file-group 1
+(defconst py-pdbtrack-marker-regexp-file-group 2
   "Group position in gud-pydb-marker-regexp that matches the file name.")
 
-(defconst py-pdbtrack-marker-regexp-line-group 2
+(defconst py-pdbtrack-marker-regexp-line-group 3
   "Group position in gud-pydb-marker-regexp that matches the line number.")
 
-(defconst py-pdbtrack-marker-regexp-funcname-group 3
+(defconst py-pdbtrack-marker-regexp-funcname-group 4
   "Group position in gud-pydb-marker-regexp that matches the function name.")
 
 (defconst py-pdbtrack-track-range 10000
@@ -65,7 +65,7 @@
          (second (if (string-match ".+.py$" (buffer-file-name))
                      (buffer-file-name) (replace-regexp-in-string "^\\([^ ]+\\) +\\(.+\\)$" "\\2" (car gud-pdb-history))))
          (erg (concat first " " second)))
-    (push erg gud-pdb-history)))
+    (push erg gud-pdb-history))) 
 
 (defun py-pdbtrack-overlay-arrow (activation)
   "Activate or de arrow at beginning-of-line in current buffer."
@@ -129,7 +129,6 @@ script, and set to python-mode, and pdbtrack will find it.)"
             (setq target_buffer (cadr target))
             (setq target_fname (buffer-file-name target_buffer))
             (switch-to-buffer-other-window target_buffer)
-;;            (goto-line target_lineno)
             (goto-char (point-min))
             (forward-line target_lineno)
             (message "pdbtrack: line %s, file %s" target_lineno target_fname)
@@ -151,15 +150,17 @@ If we're unable find the source code we return a string describing the
 problem as best as we can determine."
 
   (if (and (not (string-match py-pdbtrack-stack-entry-regexp block))
-	   (not (string-match py-pydbtrack-stack-entry-regexp block)))
+           ;; pydb integration still to be done
+           ;; (not (string-match py-pydbtrack-stack-entry-regexp block))
+           )
       "Traceback cue not found"
     (let* ((filename (match-string
-		      py-pdbtrack-marker-regexp-file-group block))
+                      py-pdbtrack-marker-regexp-file-group block))
            (lineno (string-to-number (match-string
-				   py-pdbtrack-marker-regexp-line-group
-				   block)))
+                                      py-pdbtrack-marker-regexp-line-group
+                                      block)))
            (funcname (match-string py-pdbtrack-marker-regexp-funcname-group
-				   block))
+                                   block))
            funcbuffer)
 
       (cond ((file-exists-p filename)
@@ -177,17 +178,13 @@ problem as best as we can determine."
                              (max (point-min)
                                   (string-match "^\\([^#]\\|#[^#]\\|#$\\)"
                                                 (buffer-substring (point-min)
-                                                                  (point-max)))
-                                  ))))))
+                                                                  (point-max)))))))))
              (list lineno funcbuffer))
 
             ((= (elt filename 0) ?\<)
              (format "(Non-file source: '%s')" filename))
 
-            (t (format "Not found: %s(), %s" funcname filename)))
-      )
-    )
-  )
+            (t (format "Not found: %s(), %s" funcname filename))))))
 
 (defun py-pdbtrack-grub-for-buffer (funcname lineno)
   "Find most recent buffer itself named or having function funcname.
@@ -215,6 +212,7 @@ named for funcname or define a function funcname."
 
 ;; pdbtrack functions
 (defun py-pdbtrack-toggle-stack-tracking (arg)
+  "Set variable `py-pdbtrack-do-tracking-p'. "
   (interactive "P")
   (if (not (get-buffer-process (current-buffer)))
       (error "No process associated with buffer '%s'" (current-buffer)))

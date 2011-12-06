@@ -24,13 +24,12 @@
 
 (defun py-fetch-docu ()
   "Lookup in current buffer for the doku for the symbol at point.
+
 Useful for newly defined symbol, not known to python yet. "
   (interactive)
   (let* ((symb (prin1-to-string (symbol-at-point)))
          (args (py-expression))
-
-
-        erg)
+         erg)
     (save-restriction
       (widen)
       (goto-char (point-min))
@@ -45,23 +44,23 @@ Useful for newly defined symbol, not known to python yet. "
             (when (interactive-p) (switch-to-buffer (current-buffer)))
             (insert erg)))))))
 
-
 (defun ar-py-find-imports ()
-  (interactive)
-  (let ((erg
-         (save-excursion
-           (goto-char (point-min))
-           (while (re-search-forward
-                   "^import *[A-Za-z_][A-Za-z_0-9].*\\|^from +[A-Za-z_][A-Za-z_0-9]+ +import .*" nil t)
-             (setq imports
-                   (concat
-                    imports
-                    (buffer-substring-no-properties (match-beginning 0) (match-end 0)) "\n"))))))
+  (let* (imports
+         (erg
+          (save-excursion
+            (goto-char (point-min))
+            (while (re-search-forward
+                    "^import *[A-Za-z_][A-Za-z_0-9].*\\|^from +[A-Za-z_][A-Za-z_0-9]+ +import .*" nil t)
+              (setq imports
+                    (concat
+                     imports
+                     (buffer-substring-no-properties (match-beginning 0) (match-end 0)) "\n"))))))
     (when (interactive-p) (message "%s" erg))
     erg))
 
 (defalias 'py-help-at-point 'py-describe-symbol)
 (defun py-describe-symbol ()
+  "Print help on symbol at point. "
   (interactive)
   (lexical-let* ((sym (prin1-to-string (symbol-at-point)))
                  (origfile (buffer-file-name))
@@ -87,9 +86,6 @@ Useful for newly defined symbol, not known to python yet. "
     (py-process-file file "*Python-Help*")
     (when (file-readable-p file)
       (delete-file file))))
-
-
-
 
 
 ;; Documentation functions
@@ -390,7 +386,6 @@ Obscure:  When python-mode is first loaded, it looks for all bindings
 to newline-and-indent in the global keymap, and shadows them with
 local bindings to py-newline-and-indent."))
 
-
 ;; (require 'info-look)
 ;; The info-look package does not always provide this function (it
 ;; appears this is the case with XEmacs 21.1)
@@ -423,7 +418,6 @@ Interactively, prompt for name."
                             nil nil symbol))
          (sourcefile (py-send-string (concat "inspect.getsourcefile (inspect.getmodule (" symbol ")))")))
          (sourceline (py-send-string (concat "inspect.getsourcelines (" symbol ")))")))))))
-
 
   ;; (let* ((loc (py-send-receive (format "emacs.location_of (%S, %s)"
   ;;       				   name python-imports)))
@@ -461,6 +455,7 @@ Interactively, prompt for name."
 
 (defun py-find-function (name)
   "Find source of definition of function NAME.
+
 Interactively, prompt for name."
   (interactive
    (let ((symbol (with-syntax-table py-dotted-expression-syntax-table
@@ -485,6 +480,7 @@ Interactively, prompt for name."
 
 (defun py-send-receive (string)
   "Send STRING to inferior Python (if any) and return result.
+
 The result is what follows `_emacs_out' in the output.
 This is a no-op if `python-check-comint-prompt' returns nil."
   (py-send-string string)
@@ -530,6 +526,7 @@ This is a no-op if `python-check-comint-prompt' returns nil."
 
 (defun py-update-imports ()
   "Returns `python-imports'.
+
 Imports done are displayed in message buffer. "
   (interactive)
   (save-excursion
@@ -545,5 +542,5 @@ Imports done are displayed in message buffer. "
         (message "%s" erg))
       erg)))
 
-(provide 'python-components-help) 
+(provide 'python-components-help)
 ;;; python-components-help.el ends here

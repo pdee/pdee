@@ -53,7 +53,7 @@ http://docs.python.org/reference/compound_stmts.html"
     erg))
 
 (defun py-beginning-of-try-block ()
-  "Looks up for nearest opening try-block, i.e. compound statement
+  "Looks up for nearest opening try-block, i.e. compound statement.
 
 Returns position reached, if any, nil otherwise.
 
@@ -68,6 +68,7 @@ http://docs.python.org/reference/compound_stmts.html"
 (defalias 'py-goto-beyond-block 'py-end-of-block)
 (defun py-end-of-block ()
   "Go to the end of a compound statement.
+
 Returns position reached, if any, nil otherwise.
 
 Referring python program structures see for example:
@@ -82,6 +83,7 @@ http://docs.python.org/reference/compound_stmts.html"
 (defalias 'py-backward-block-or-clause 'py-beginning-of-block-or-clause)
 (defun py-beginning-of-block-or-clause (&optional arg indent)
   "Looks up for nearest opening clause or block.
+
 With universal argument looks for next compound statements
 i.e. blocks only.
 
@@ -102,8 +104,8 @@ http://docs.python.org/reference/compound_stmts.html"
 (defalias 'py-goto-beyond-block-or-clause 'py-end-of-block-or-clause)
 (defun py-end-of-block-or-clause (&optional arg)
   "Without arg, go to the end of a compound statement.
-With arg , move point to end of clause at point.
 
+With arg , move point to end of clause at point.
 Returns position reached, if any, nil otherwise.
 
 Referring python program structures see for example:
@@ -121,6 +123,7 @@ http://docs.python.org/reference/compound_stmts.html"
 (defalias 'py-previous-class 'py-beginning-of-class)
 (defun py-beginning-of-class ()
   "Move point to start of next `class'.
+
 See also `py-beginning-of-def-or-class'.
 Returns position reached, if any, nil otherwise."
   (interactive)
@@ -146,6 +149,7 @@ Returns position reached, if any, nil otherwise."
 (defun py-beginning-of-clause ()
   "Looks up for nearest opening clause, i.e. a compound statements
 subform.
+
 Returns position reached, if any, nil otherwise.
 
 Referring python program structures see for example:
@@ -159,6 +163,7 @@ http://docs.python.org/reference/compound_stmts.html"
 (defalias 'py-goto-beyond-clause 'py-end-of-clause)
 (defun py-end-of-clause ()
   "Without arg, go to the end of a compound statement.
+
 With arg , move point to end of clause at point.
 
 Returns position reached, if any, nil otherwise.
@@ -173,7 +178,8 @@ http://docs.python.org/reference/compound_stmts.html"
 ;; Method Definition or Class
 (defun py-beginning-of-def ()
   "Move point to start of `def'.
-Returns position reached, if any, nil otherwise."
+
+Returns position reached, if any, nil otherwise "
   (interactive)
   (let ((erg (ignore-errors (cdr (py-go-to-keyword py-def-re -1)))))
     (when (interactive-p) (message "%s" erg))
@@ -192,8 +198,9 @@ Returns position reached, if any, nil otherwise."
 (defalias 'py-previous-def-or-class 'py-beginning-of-def-or-class)
 (defun py-beginning-of-def-or-class (&optional arg)
   "Move point to start of `def' or `class', whatever is next.
+
 With optional universal arg CLASS, move to the beginn of class definition.
-Returns position reached, if any, nil otherwise. "
+Returns position reached, if any, nil otherwise "
   (interactive "P")
   (let* ((regexp (if (eq 4 (prefix-numeric-value arg))
                      py-class-re
@@ -210,6 +217,7 @@ Returns position reached, if any, nil otherwise. "
 (defalias 'py-next-def-or-class 'py-end-of-def-or-class)
 (defun py-end-of-def-or-class (&optional arg)
   "Move point beyond next `def' or `class' definition.
+
 With optional universal arg, move to the end of class exclusively.
 Returns position reached, if any, nil otherwise."
   (interactive "P")
@@ -224,6 +232,7 @@ Returns position reached, if any, nil otherwise."
 (defalias 'py-backward-expression 'py-beginning-of-expression)
 (defun py-beginning-of-expression (&optional orig origline done)
   "Go to the beginning of a compound python expression.
+
 A a compound python expression might be concatenated by \".\" operator, thus composed by minor python expressions.
 
 Expression here is conceived as the syntactical component of a statement in Python. See http://docs.python.org/reference
@@ -283,6 +292,7 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
 (defalias 'py-forward-expression 'py-end-of-expression)
 (defun py-end-of-expression (&optional orig origline done)
   "Go to the end of a compound python expression.
+
 A a compound python expression might be concatenated by \".\" operator, thus composed by minor python expressions.
 
 Expression here is conceived as the syntactical component of a statement in Python. See http://docs.python.org/reference
@@ -359,11 +369,10 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
 (defalias 'py-beginning-of-minor-expression 'py-beginning-of-partial-expression)
 (defun py-beginning-of-partial-expression (&optional orig origline done)
   "Go to the beginning of a minor python expression.
-\".\" operators delimit a minor expression on their level.
 
+\".\" operators delimit a minor expression on their level.
 Expression here is conceived as the syntactical component of a statement in Python. See http://docs.python.org/reference
-Operators however are left aside resp. limit py-expression designed for edit-purposes.
-"
+Operators however are left aside resp. limit py-expression designed for edit-purposes. "
   (interactive)
   (save-restriction
     (widen)
@@ -414,10 +423,9 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
 (defalias 'py-end-of-minor-expression 'py-end-of-partial-expression)
 (defun py-end-of-partial-expression (&optional orig origline done)
   "Go to the end of a minor python expression.
+
 \".\" operators delimit a minor expression on their level.
-
 Expression here is conceived as the syntactical component of a statement in Python. See http://docs.python.org/reference
-
 Operators however are left aside resp. limit py-expression designed for edit-purposes. "
   (interactive)
   (save-restriction
@@ -729,37 +737,41 @@ http://docs.python.org/reference/compound_stmts.html
 ;; Mark forms
 (defun py-mark-expression ()
   "Mark expression at point.
-  Returns beginning and end positions of marked area, a cons. "
+
+Returns beginning and end positions of marked area, a cons. "
   (interactive)
   (py-mark-base "expression")
   (exchange-point-and-mark))
 
 (defun py-mark-partial-expression ()
   "Mark partial-expression at point.
-  Returns beginning and end positions of marked area, a cons.
-\".\" operators delimit a partial-expression expression on it's level, that's the difference to compound expressions.
- "
+
+Returns beginning and end positions of marked area, a cons.
+\".\" operators delimit a partial-expression expression on it's level, that's the difference to compound expressions. "
   (interactive)
   (py-mark-base "partial-expression")
   (exchange-point-and-mark))
 
 (defun py-mark-statement ()
   "Mark statement at point.
-  Returns beginning and end positions of marked area, a cons. "
+
+Returns beginning and end positions of marked area, a cons. "
   (interactive)
   (py-mark-base "statement")
   (exchange-point-and-mark))
 
 (defun py-mark-block ()
   "Mark block at point.
-  Returns beginning and end positions of marked area, a cons. "
+
+Returns beginning and end positions of marked area, a cons. "
   (interactive)
   (py-mark-base "block")
   (exchange-point-and-mark))
 
 (defun py-mark-block-or-clause ()
   "Mark block-or-clause at point.
-  Returns beginning and end positions of marked area, a cons. "
+
+Returns beginning and end positions of marked area, a cons. "
   (interactive)
   (py-mark-base "block-or-clause")
   (exchange-point-and-mark))
@@ -798,12 +810,16 @@ Returns beginning and end positions of marked area, a cons."
 
 (defun py-mark-clause ()
   "Mark clause at point.
-  Returns beginning and end positions of marked area, a cons. "
+
+Returns beginning and end positions of marked area, a cons. "
   (interactive)
   (py-mark-base "clause")
   (exchange-point-and-mark))
 
 (defun py-beginning-of-decorator ()
+  "Go to the beginning of a decorator. 
+
+Returns position if succesful " 
   (interactive)
   (back-to-indentation)
   (while (and (not (looking-at "@\\w+"))(not (empty-line-p))(not (bobp))(forward-line -1))
@@ -813,6 +829,9 @@ Returns beginning and end positions of marked area, a cons."
     erg))
 
 (defun py-end-of-decorator ()
+    "Go to the end of a decorator. 
+
+Returns position if succesful " 
   (interactive)
   (let ((orig (point)) erg)
     (unless (looking-at "@\\w+")
@@ -862,7 +881,8 @@ Returns beginning and end positions of marked area, a cons."
 (defalias 'py-expression 'py-copy-expression)
 (defun py-copy-expression ()
   "Mark expression at point.
-  Returns beginning and end positions of marked area, a cons. "
+
+Returns beginning and end positions of marked area, a cons. "
   (interactive)
   (let ((erg (py-mark-base "expression")))
     (kill-new (buffer-substring-no-properties (car erg) (cdr erg)))))
@@ -871,7 +891,8 @@ Returns beginning and end positions of marked area, a cons."
 (defalias 'py-minor-expression 'py-partial-expression)
 (defun py-copy-partial-expression ()
   "Mark partial-expression at point.
-  Returns beginning and end positions of marked area, a cons.
+
+Returns beginning and end positions of marked area, a cons.
 
 \".\" operators delimit a partial-expression expression on it's level, that's the difference to compound expressions.
 
@@ -906,7 +927,7 @@ while `py-expression' would copy and return
 
 Also for existing commands a shorthand is defined:
 
-(defalias 'py-statement 'py-copy-statement)"
+\(defalias 'py-statement 'py-copy-statement)"
 
   (interactive)
   (let ((erg (py-mark-base "partial-expression")))
@@ -915,7 +936,8 @@ Also for existing commands a shorthand is defined:
 (defalias 'py-statement 'py-copy-statement)
 (defun py-copy-statement ()
   "Mark statement at point.
-  Returns beginning and end positions of marked area, a cons. "
+
+Returns beginning and end positions of marked area, a cons. "
   (interactive)
   (let ((erg (py-mark-base "statement")))
     (kill-new (buffer-substring-no-properties (car erg) (cdr erg)))))
@@ -923,7 +945,8 @@ Also for existing commands a shorthand is defined:
 (defalias 'py-block 'py-copy-block)
 (defun py-copy-block ()
   "Mark block at point.
-  Returns beginning and end positions of marked area, a cons. "
+
+Returns beginning and end positions of marked area, a cons. "
   (interactive)
   (let ((erg (py-mark-base "block")))
     (kill-new (buffer-substring-no-properties (car erg) (cdr erg)))))
@@ -931,7 +954,8 @@ Also for existing commands a shorthand is defined:
 (defalias 'py-block-or-clause 'py-copy-block-or-clause)
 (defun py-copy-block-or-clause ()
   "Mark block-or-clause at point.
-  Returns beginning and end positions of marked area, a cons. "
+
+Returns beginning and end positions of marked area, a cons. "
   (interactive)
   (let ((erg (py-mark-base "block-or-clause")))
     (kill-new (buffer-substring-no-properties (car erg) (cdr erg)))))
@@ -998,50 +1022,57 @@ Returns beginning and end positions of marked area, a cons."
 
 (defun py-kill-statement ()
   "Delete statement at point.
-  Stores data in kill ring. Might be yanked back using `C-y'. "
-  (interactive)
+
+Stores data in kill ring. Might be yanked back using `C-y'. "
+  (interactive "*")
   (let ((erg (py-mark-base "statement")))
     (kill-region (car erg) (cdr erg))))
 
 (defun py-kill-block ()
   "Delete block at point.
-  Stores data in kill ring. Might be yanked back using `C-y'. "
-  (interactive)
+
+Stores data in kill ring. Might be yanked back using `C-y'. "
+  (interactive "*")
   (let ((erg (py-mark-base "block")))
     (kill-region (car erg) (cdr erg))))
 
 (defun py-kill-block-or-clause ()
   "Delete block-or-clause at point.
-  Stores data in kill ring. Might be yanked back using `C-y'. "
-  (interactive)
+
+Stores data in kill ring. Might be yanked back using `C-y'. "
+  (interactive "*")
   (let ((erg (py-mark-base "block-or-clause")))
     (kill-region (region-beginning) (region-end))))
 
 (defun py-kill-def-or-class ()
   "Delete def-or-class at point.
-  Stores data in kill ring. Might be yanked back using `C-y'. "
-  (interactive)
+
+Stores data in kill ring. Might be yanked back using `C-y'. "
+  (interactive "*")
   (let ((erg (py-mark-base "def-or-class")))
     (kill-region (car erg) (cdr erg))))
 
 (defun py-kill-class ()
   "Delete class at point.
-  Stores data in kill ring. Might be yanked back using `C-y'. "
-  (interactive)
+
+Stores data in kill ring. Might be yanked back using `C-y'. "
+  (interactive "*")
   (let ((erg (py-mark-base "class")))
     (kill-region (car erg) (cdr erg))))
 
 (defun py-kill-def ()
   "Delete def at point.
-  Stores data in kill ring. Might be yanked back using `C-y'. "
-  (interactive)
+
+Stores data in kill ring. Might be yanked back using `C-y'. "
+  (interactive "*")
   (let ((erg (py-mark-base "def")))
     (kill-region (car erg) (cdr erg))))
 
 (defun py-kill-clause ()
   "Delete clause at point.
-  Stores data in kill ring. Might be yanked back using `C-y'. "
-  (interactive)
+
+Stores data in kill ring. Might be yanked back using `C-y'. "
+  (interactive "*")
   (let ((erg (py-mark-base "clause")))
     (kill-region (car erg) (cdr erg))))
 
@@ -1049,6 +1080,7 @@ Returns beginning and end positions of marked area, a cons."
 
 (defun py-forward-line (&optional arg)
   "Goes to end of line after forward move.
+
 Travels right-margin comments. "
   (interactive "p")
   (let ((arg (or arg 1)))
@@ -1249,20 +1281,11 @@ Return beginning position, nil if not inside."
             (when iact (message "%s" last))
             last))))))
 
-(defun py-code-followed-by-string-or-comment-p ()
-  (interactive)
-  (let ((pos (point))
-        (erg (progn (end-of-line)
-                    (skip-chars-backward " \t")
-                    (py-leave-comment-or-string-backward))))
-    (goto-char pos)
-    (when (interactive-p) (message "%s" erg))
-    erg))
-
 ;; Complementary left corner commands start
 (defun py-down-block-lc ()
   "Goto beginning of line following end of block.
-  Returns position reached, if successful, nil otherwise.
+
+Returns position reached, if successful, nil otherwise.
 
 \"-lc\" stands for \"left-corner\" - a complementary command travelling left, whilst `py-end-of-block' stops at right corner.
 
@@ -1279,7 +1302,8 @@ See also `py-down-block': down from current definition to next beginning of bloc
 
 (defun py-down-clause-lc ()
   "Goto beginning of line following end of clause.
-  Returns position reached, if successful, nil otherwise.
+
+Returns position reached, if successful, nil otherwise.
 
 \"-lc\" stands for \"left-corner\" - a complementary command travelling left, whilst `py-end-of-clause' stops at right corner.
 
@@ -1296,7 +1320,8 @@ See also `py-down-clause': down from current definition to next beginning of cla
 
 (defun py-down-def-lc ()
   "Goto beginning of line following end of def.
-  Returns position reached, if successful, nil otherwise.
+
+Returns position reached, if successful, nil otherwise.
 
 \"-lc\" stands for \"left-corner\" - a complementary command travelling left, whilst `py-end-of-def' stops at right corner.
 
@@ -1313,7 +1338,8 @@ See also `py-down-def': down from current definition to next beginning of def be
 
 (defun py-down-class-lc ()
   "Goto beginning of line following end of class.
-  Returns position reached, if successful, nil otherwise.
+
+Returns position reached, if successful, nil otherwise.
 
 \"-lc\" stands for \"left-corner\" - a complementary command travelling left, whilst `py-end-of-class' stops at right corner.
 
@@ -1330,7 +1356,8 @@ See also `py-down-class': down from current definition to next beginning of clas
 
 (defun py-down-statement-lc ()
   "Goto beginning of line following end of statement.
-  Returns position reached, if successful, nil otherwise.
+
+Returns position reached, if successful, nil otherwise.
 
 \"-lc\" stands for \"left-corner\" - a complementary command travelling left, whilst `py-end-of-statement' stops at right corner.
 
@@ -1451,8 +1478,8 @@ Returns indentation if def-or-class found, nil otherwise. "
 ;; ripped from cc-mode
 (defun py-forward-into-nomenclature (&optional arg)
   "Move forward to end of a nomenclature section or word.
-With \\[universal-argument] (programmatically, optional argument ARG),
-do it that many times.
+
+With \\[universal-argument] (programmatically, optional argument ARG), do it that many times.
 
 A `nomenclature' is a fancy way of saying AWordWithMixedCaseNotUnderscores."
   (interactive "p")
@@ -1470,6 +1497,7 @@ A `nomenclature' is a fancy way of saying AWordWithMixedCaseNotUnderscores."
 
 (defun py-backward-into-nomenclature (&optional arg)
   "Move backward to beginning of a nomenclature section or word.
+
 With optional ARG, move that many times.  If ARG is negative, move
 forward.
 
@@ -1481,6 +1509,7 @@ A `nomenclature' is a fancy way of saying AWordWithMixedCaseNotUnderscores."
 
 (defun match-paren (&optional arg)
   "Go to the matching brace, bracket or parenthesis if on its counterpart.
+
 Otherwise insert the character, the key is assigned to, here `%'.
 With universal arg \C-u insert a `%'. "
   (interactive "P")

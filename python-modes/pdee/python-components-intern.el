@@ -37,7 +37,8 @@
 (defalias 'py-count-indentation 'py-compute-indentation)
 (defun py-compute-indentation (&optional orig origline closing line inside repeat)
   "Compute Python indentation.
- When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
+
+When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
 `raise', `break', `continue', and `pass' force one level of dedenting."
   (interactive "P")
   (save-excursion
@@ -71,10 +72,24 @@
                 (current-indentation))
                ;; (py-in-triplequoted-string-p)
                ((and (nth 3 pps)(nth 8 pps))
-                (ignore-errors (goto-char (nth 2 pps)))
-                (py-line-backward-maybe)
-                (back-to-indentation)
-                (py-compute-indentation orig origline closing line inside repeat))
+                (if (eq origline (py-count-lines))
+                    (progn
+                      (forward-line -1)
+                      (end-of-line)
+                      (skip-chars-backward " \t\r\n\f") 
+                      (if (< (nth 2 (if (featurep 'xemacs)
+                                        (parse-partial-sexp (point-min) (point))
+                                      (syntax-ppss))) (line-beginning-position))
+                          (current-indentation)
+                        (ignore-errors (goto-char (nth 2 pps)))
+                        (py-line-backward-maybe)
+                        (back-to-indentation)
+                        (py-compute-indentation orig origline closing line inside repeat)))
+
+                  (ignore-errors (goto-char (nth 2 pps)))
+                  (py-line-backward-maybe)
+                  (back-to-indentation)
+                  (py-compute-indentation orig origline closing line inside repeat)))
                ((and (looking-at "\"\"\"\\|'''")(not (bobp)))
                 (py-beginning-of-statement)
                 (py-compute-indentation orig origline closing line inside repeat))
@@ -251,8 +266,8 @@
 (defalias 'pios 'py-indentation-of-statement)
 (defalias 'ios 'py-indentation-of-statement)
 (defun py-indentation-of-statement ()
-  (interactive)
   "Returns the indenation of the statement at point. "
+  (interactive)
   (let ((erg (save-excursion
                (back-to-indentation)
                (or (py-beginning-of-statement-p)
@@ -264,6 +279,7 @@
 (defalias 'py-in-list-p 'py-list-beginning-position)
 (defun py-list-beginning-position (&optional start)
   "Return lists beginning position, nil if not inside.
+
 Optional ARG indicates a start-position for `parse-partial-sexp'."
   (interactive)
   (let* ((ppstart (or start (point-min)))
@@ -276,6 +292,7 @@ Optional ARG indicates a start-position for `parse-partial-sexp'."
 
 (defun py-end-of-list-position (&optional arg)
   "Return end position, nil if not inside.
+
 Optional ARG indicates a start-position for `parse-partial-sexp'."
   (interactive)
   (let* ((ppstart (or arg (point-min)))
@@ -299,9 +316,9 @@ Optional ARG indicates a start-position for `parse-partial-sexp'."
     (or (py-preceding-line-backslashed-p)
         (< 0 (py-nesting-level)))))
 
- (defun py-preceding-line-backslashed-p ()
-  (interactive)
+(defun py-preceding-line-backslashed-p ()
   "Return t if preceding line is a backslashed continuation line. "
+  (interactive)
   (save-excursion
     (beginning-of-line)
     (skip-chars-backward " \t\r\n\f")
@@ -311,8 +328,8 @@ Optional ARG indicates a start-position for `parse-partial-sexp'."
       erg)))
 
 (defun py-current-line-backslashed-p ()
-  (interactive)
   "Return t if current line is a backslashed continuation line. "
+  (interactive)
   (save-excursion
     (end-of-line)
     (skip-chars-backward " \t\r\n\f")
@@ -393,6 +410,7 @@ Optional ARG indicates a start-position for `parse-partial-sexp'."
 
 (defun py-in-statement-p ()
   "Returns list of beginning and end-position if inside.
+
 Result is useful for booleans too: (when (py-in-statement-p)...)
 will work.
 "
@@ -408,8 +426,8 @@ will work.
         erg))))
 
 (defun py-beginning-of-expression-p ()
-  (interactive)
   "Returns position, if cursor is at the beginning of a expression, nil otherwise. "
+  (interactive)
   (let ((orig (point)))
     (save-excursion
       (py-end-of-expression)
@@ -420,8 +438,8 @@ will work.
         orig))))
 
 (defun py-beginning-of-partial-expression-p ()
-  (interactive)
   "Returns position, if cursor is at the beginning of a expression, nil otherwise. "
+  (interactive)
   (let ((orig (point)))
     (save-excursion
       (py-end-of-partial-expression)
@@ -432,8 +450,8 @@ will work.
         orig))))
 
 (defun py-beginning-of-statement-p ()
-  (interactive)
   "Returns position, if cursor is at the beginning of a statement, nil otherwise. "
+  (interactive)
   (let ((orig (point)))
     (save-excursion
       (py-end-of-statement)
@@ -445,12 +463,13 @@ will work.
 
 (defalias 'py-beginning-of-block-p 'py-statement-opens-block-p)
 (defun py-statement-opens-block-p (&optional regexp)
-  (interactive)
   "Return position if the current statement opens a block
 in stricter or wider sense.
+
 For stricter sense specify regexp. "
+  (interactive)
   (let* ((regexp (or regexp py-block-re))
-        (erg (py-statement-opens-base regexp)))
+         (erg (py-statement-opens-base regexp)))
     (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -561,7 +580,6 @@ See customizable variables `py-current-defun-show' and `py-current-defun-delay'.
         (when iact (message (prin1-to-string erg)))
         erg))))
 
-;; electric characters
 (defun py-outdent-p ()
   "Returns non-nil if the current line should dedent one level."
   (save-excursion
@@ -578,6 +596,7 @@ See customizable variables `py-current-defun-show' and `py-current-defun-delay'.
 
 (defun py-sort-imports ()
   "Sort multiline imports.
+
 Put point inside the parentheses of a multiline import and hit
 \\[py-sort-imports] to sort the imports lexicographically"
   (interactive)

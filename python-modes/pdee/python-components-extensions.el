@@ -93,8 +93,8 @@ With \\[universal argument] just indent.
 
 (defun py-dedent (&optional arg)
   "Dedent line according to `py-indent-offset'.
-With arg, do it that many times.
 
+With arg, do it that many times.
 If point is between indent levels, dedent to next level.
 Return indentation reached, if dedent done, nil otherwise.
 
@@ -133,6 +133,7 @@ Affected by `py-dedent-keep-relative-column'. "
 
 (defun py-close-def ()
   "Set indent level to that of beginning of function definition.
+
 If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline. "
   (interactive "*")
   (let ((erg (py-close-intern py-def-re)))
@@ -141,6 +142,7 @@ If final line isn't empty and `py-close-block-provides-newline' non-nil, insert 
 
 (defun py-close-class ()
   "Set indent level to that of beginning of class definition.
+
 If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline. "
   (interactive "*")
   (let ((erg (py-close-intern py-class-re)))
@@ -149,6 +151,7 @@ If final line isn't empty and `py-close-block-provides-newline' non-nil, insert 
 
 (defun py-close-clause ()
   "Set indent level to that of beginning of clause definition.
+
 If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline. "
   (interactive "*")
   (let ((erg (py-close-intern py-clause-re)))
@@ -157,6 +160,7 @@ If final line isn't empty and `py-close-block-provides-newline' non-nil, insert 
 
 (defun py-close-block ()
   "Set indent level to that of beginning of block definition.
+
 If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline. "
   (interactive "*")
   (let ((erg (py-close-intern py-block-re)))
@@ -165,7 +169,8 @@ If final line isn't empty and `py-close-block-provides-newline' non-nil, insert 
 
 (defun py-class-at-point ()
   "Return class definition as string.
- With interactive call, send it to the message buffer too. "
+
+With interactive call, send it to the message buffer too. "
   (interactive)
   (save-excursion
     (let* ((beg (ar-py-beginning-of-class))
@@ -176,7 +181,8 @@ If final line isn't empty and `py-close-block-provides-newline' non-nil, insert 
 
 (defun ar-py-function-at-point ()
   "Return functions definition as string.
- With interactive call, send it to the message buffer too. "
+
+With interactive call, send it to the message buffer too. "
   (interactive)
   (save-excursion
     (let* ((beg (ar-py-beginning-of-function))
@@ -241,7 +247,8 @@ If final line isn't empty and `py-close-block-provides-newline' non-nil, insert 
 
 (defun ar-py-match-paren ()
   "Goto to the opening or closing of block before or after point.
- With arg, do it that many times.
+
+With arg, do it that many times.
  Closes unclosed block if jumping from beginning. "
   (interactive)
   (let ((cuc (current-column))
