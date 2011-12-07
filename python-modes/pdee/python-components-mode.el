@@ -1424,12 +1424,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed"
   ;; Set the default shell if not already set
   (when (null py-shell-name)
     (py-toggle-shells (py-choose-shell)))
-  (unless py-install-directory
-    (cond ((file-name-directory buffer-file-name)
-           (setq py-install-directory (file-name-directory buffer-file-name)))
-          (default-directory
-            (setq py-install-directory default-directory))))
-  (py-set-load-path)
+  ;; (py-set-load-path)
   (when py-load-pymacs-p (py-load-pymacs)
         (find-file (concat py-install-directory "/completion/pycomplete.el"))
         (eval-buffer)
@@ -1448,8 +1443,8 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed"
     'completion-at-point)
   ;; (add-hook 'completion-at-point-functions
   ;; 'python-shell-completion-complete-at-point nil 'local)
-  (add-to-list (make-local-variable 'comint-dynamic-complete-functions)
-               'python-shell-completion-complete-at-point)
+  ;; (add-to-list (make-local-variable 'comint-dynamic-complete-functions)
+  ;; 'python-shell-completion-complete-at-point)
   (define-key inferior-python-mode-map (kbd "<tab>")
     'python-shell-completion-complete-or-indent)
   ;; shell-complete end

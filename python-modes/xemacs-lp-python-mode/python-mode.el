@@ -503,6 +503,8 @@ See original source: http://pymacs.progiciels-bpi.ca"
 Pymacs has been written by François Pinard and many others.
 See original source: http://pymacs.progiciels-bpi.ca"
   (interactive)
+  (if (or (not (boundp 'py-install-directory)) (not (stringp py-install-directory)))
+      (error "`py-install-directory' not set, see INSTALL")
   (load (concat py-install-directory "/pymacs/pymacs.el") nil t)
   (add-to-list 'load-path (concat py-install-directory "/pymacs/pymacs.el"))
   (setenv "PYMACS_PYTHON" "python2.7")
@@ -511,23 +513,22 @@ See original source: http://pymacs.progiciels-bpi.ca"
   (autoload 'pymacs-eval "pymacs")
   (autoload 'pymacs-exec "pymacs")
   (autoload 'pymacs-load "pymacs")
-  (require 'pymacs))
+    (require 'pymacs)))
 
 (defun py-set-load-path ()
-  "Include the python-mode directory inclusiv needed subdirs.
-
-If `py-install-directory' isn't set, guess from buffer-file-name. "
+  "Include needed subdirs of python-mode directory. "
+  (interactive)
   (cond (py-install-directory
          (add-to-list 'load-path (expand-file-name py-install-directory))
          (add-to-list 'load-path (concat (expand-file-name py-install-directory) "/completion"))
          (add-to-list 'load-path (concat py-install-directory "/pymacs"))
          (add-to-list 'load-path (concat (expand-file-name py-install-directory) "/test"))
          (add-to-list 'load-path (concat (expand-file-name py-install-directory) "/tools")))
-        (t (setq py-install-directory
-                 (file-name-directory (buffer-file-name (car (find-function-noselect 'python-mode)))))))
-  (when (interactive-p) (message "%s" load-path)))
+        (t (error "Please set `py-install-directory', see INSTALL"))
+        (when (interactive-p) (message "%s" load-path))))
 
-(py-set-load-path)
+;; don't require `py-install-directory' for now
+(when (boundp 'py-install-directory) (py-set-load-path))
 
 ;; user definable variables
 ;; vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
@@ -7499,12 +7500,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed"
   ;; Set the default shell if not already set
   (when (null py-shell-name)
     (py-toggle-shells (py-choose-shell)))
-  (unless py-install-directory
-    (cond ((file-name-directory buffer-file-name)
-           (setq py-install-directory (file-name-directory buffer-file-name)))
-          (default-directory
-            (setq py-install-directory default-directory))))
-  (py-set-load-path)
+  ;; (py-set-load-path)
   (when py-load-pymacs-p (py-load-pymacs)
     (find-file (concat py-install-directory "/completion/pycomplete.el"))
     (eval-buffer)
