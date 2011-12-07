@@ -497,39 +497,6 @@ See original source: http://pymacs.progiciels-bpi.ca"
 :type 'boolean
 :group 'python)
 
-(defun py-load-pymacs ()
-  "Load Pymacs as delivered with python-mode.el.
-
-Pymacs has been written by François Pinard and many others.
-See original source: http://pymacs.progiciels-bpi.ca"
-  (interactive)
-  (if (or (not (boundp 'py-install-directory)) (not (stringp py-install-directory)))
-      (error "`py-install-directory' not set, see INSTALL")
-  (load (concat py-install-directory "/pymacs/pymacs.el") nil t)
-  (add-to-list 'load-path (concat py-install-directory "/pymacs/pymacs.el"))
-  (setenv "PYMACS_PYTHON" "python2.7")
-  (autoload 'pymacs-apply "pymacs")
-  (autoload 'pymacs-call "pymacs")
-  (autoload 'pymacs-eval "pymacs")
-  (autoload 'pymacs-exec "pymacs")
-  (autoload 'pymacs-load "pymacs")
-    (require 'pymacs)))
-
-(defun py-set-load-path ()
-  "Include needed subdirs of python-mode directory. "
-  (interactive)
-  (cond (py-install-directory
-         (add-to-list 'load-path (expand-file-name py-install-directory))
-         (add-to-list 'load-path (concat (expand-file-name py-install-directory) "/completion"))
-         (add-to-list 'load-path (concat py-install-directory "/pymacs"))
-         (add-to-list 'load-path (concat (expand-file-name py-install-directory) "/test"))
-         (add-to-list 'load-path (concat (expand-file-name py-install-directory) "/tools")))
-        (t (error "Please set `py-install-directory', see INSTALL"))
-        (when (interactive-p) (message "%s" load-path))))
-
-;; don't require `py-install-directory' for now
-(when (boundp 'py-install-directory) (py-set-load-path))
-
 ;; user definable variables
 ;; vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 (defcustom py-close-provides-newline t
@@ -1169,32 +1136,6 @@ Currently-active file is at the head of the list.")
   :type 'string
   :group 'python)
 (make-variable-buffer-local 'py-shell-name)
-
-;;; reassambled code inserted below
-;; (eval-when-compile
-;;   (add-to-list 'load-path default-directory))
-;; (require 'python-components-edit)
-;; (require 'python-components-intern)
-;; (require 'python-components-move)
-;; (require 'python-mode-execute)
-;; (require 'python-mode-send)
-;; (require 'python-components-pdb)
-;; ;;(require 'python-components-skeletons)
-;; (require 'python-components-help)
-;; (require 'python-components-extensions)
-;; ;; (require 'thingatpt-python-expressions)
-;; (require 'python-components-imenu)
-;; (require 'python-components-completion)
-
-;;(require 'components-shell-completion)
-
-;;; python-components-edit.el
-
-;; (defcustom py-just-one-whitespace nil
-;;   "If filling functions should normalize whitespaces in region. "
-
-;;   :type 'boolean
-;;   :group 'python)
 
 (defvar py-keywords "\\<\\(ArithmeticError\\|AssertionError\\|AttributeError\\|BaseException\\|BufferError\\|BytesWarning\\|DeprecationWarning\\|EOFError\\|Ellipsis\\|EnvironmentError\\|Exception\\|False\\|FloatingPointError\\|FutureWarning\\|GeneratorExit\\|IOError\\|ImportError\\|ImportWarning\\|IndentationError\\|IndexError\\|KeyError\\|KeyboardInterrupt\\|LookupError\\|MemoryError\\|NameError\\|NoneNotImplementedError\\|NotImplemented\\|OSError\\|OverflowError\\|PendingDeprecationWarning\\|ReferenceError\\|RuntimeError\\|RuntimeWarning\\|StandardError\\|StopIteration\\|SyntaxError\\|SyntaxWarning\\|SystemError\\|SystemExit\\|TabError\\|True\\|TypeError\\|UnboundLocalError\\|UnicodeDecodeError\\|UnicodeEncodeError\\|UnicodeError\\|UnicodeTranslateError\\|UnicodeWarning\\|UserWarning\\|ValueError\\|Warning\\|ZeroDivisionError\\|__debug__\\|__import__\\|__name__\\|abs\\|all\\|and\\|any\\|apply\\|as\\|assert\\|basestring\\|bin\\|bool\\|break\\|buffer\\|bytearray\\|callable\\|chr\\|class\\|classmethod\\|cmp\\|coerce\\|compile\\|complex\\|continue\\|copyright\\|credits\\|def\\|del\\|delattr\\|dict\\|dir\\|divmod\\|elif\\|else\\|enumerate\\|eval\\|except\\|exec\\|execfile\\|exit\\|file\\|filter\\|float\\|for\\|format\\|from\\|getattr\\|global\\|globals\\|hasattr\\|hash\\|help\\|hex\\|id\\|if\\|import\\|in\\|input\\|int\\|intern\\|is\\|isinstance\\|issubclass\\|iter\\|lambda\\|len\\|license\\|list\\|locals\\|long\\|map\\|max\\|memoryview\\|min\\|next\\|not\\|object\\|oct\\|open\\|or\\|ord\\|pass\\|pow\\|print\\|property\\|quit\\|raise\\|range\\|raw_input\\|reduce\\|reload\\|repr\\|return\\|round\\|set\\|setattr\\|slice\\|sorted\\|staticmethod\\|str\\|sum\\|super\\|tuple\\|type\\|unichr\\|unicode\\|vars\\|while\\|with\\|xrange\\|yield\\|zip\\|\\)\\>"
   "Contents like py-fond-lock-keyword")
@@ -2441,7 +2382,7 @@ When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
                     (progn
                       (forward-line -1)
                       (end-of-line)
-                      (skip-chars-backward " \t\r\n\f") 
+                      (skip-chars-backward " \t\r\n\f")
                       (if (< (nth 2 (if (featurep 'xemacs)
                                         (parse-partial-sexp (point-min) (point))
                                       (syntax-ppss))) (line-beginning-position))
@@ -5398,7 +5339,7 @@ Basically, this goes down the directory tree as long as there are __init__.py fi
 
 If the file local variable `py-master-file' is non-nil, execute the
 named file instead of the buffer's file.
-If there is a *Python* process buffer, it is used.  
+If there is a *Python* process buffer, it is used.
 If a clipping restriction is in effect, only the accessible portion of the buffer is sent. A trailing newline will be supplied if needed.
 
 See the `\\[py-execute-region]' docs for an account of some
@@ -7501,10 +7442,10 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed"
   (when (null py-shell-name)
     (py-toggle-shells (py-choose-shell)))
   ;; (py-set-load-path)
-  (when py-load-pymacs-p (py-load-pymacs)
-    (find-file (concat py-install-directory "/completion/pycomplete.el"))
-    (eval-buffer)
-    (kill-buffer "pycomplete.el"))
+  ;; (when py-load-pymacs-p (py-load-pymacs)
+  ;; (find-file (concat py-install-directory "/completion/pycomplete.el"))
+  ;; (eval-buffer)
+  ;; (kill-buffer "pycomplete.el"))
   (add-hook 'python-mode-hook 'py-beg-of-defun-function)
   (add-hook 'python-mode-hook 'py-end-of-defun-function)
   (set (make-local-variable 'eldoc-documentation-function)
@@ -8793,7 +8734,7 @@ complete('%s')
 (setq ipython-completion-command-string                                   "print(';'.join(__IP.Completer.all_completions('%s'))) #PYTHON-MODE SILENT\n")
 
 (defun ipython-complete ()
-  "Complete the python symbol before point. 
+  "Complete the python symbol before point.
 
 Only knows about the stuff in the current *Python* session."
   (interactive "*")
