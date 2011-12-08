@@ -3,6 +3,16 @@ Python Mode News
 New in version 6.0.4
 --------------------
 
+- outline-(minor-)mode enabled providing regular
+  expressions. Customize `py-outline-minor-mode-p' to
+  switch it on with python-mode
+
+- Hook delivered to start hs-minor-mode from python-mode
+  Customize `py-hide-show-minor-mode-p'
+  Key setting example:
+  (global-set-key [(super s)] 'hs-hide-all)
+  (global-set-key [(super S)] 'hs-show-all)
+
 - Listing of available commands in org-mode and reST
   format in directory "doc"
 

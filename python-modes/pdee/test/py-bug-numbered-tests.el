@@ -1936,6 +1936,7 @@ pri
 (defun py-complete-lp:858621-base ()
     (goto-char 52)
     (completion-at-point)
+    (sit-for 0.1) 
     (assert (eq 54 (point)) nil "py-complete-lp:858621-test failed"))
 
 (defun indentation-after-line-with-keyword-lp-883073-test (&optional arg load-branch-function)
