@@ -115,8 +115,8 @@ This function is appropriate for `comint-output-filter-functions'."
   "Return the name of the running Python process, `get-process' willsee it. "
   (let* ((name (cond (dedicated
                       (make-temp-name (concat (or name py-shell-name) "-")))
-                     ;; ((string-match "\*" (buffer-name))
-                     ;; (replace-regexp-in-string "\*" "" (buffer-name)))
+                     ((string-match "\*" (buffer-name))
+                      (replace-regexp-in-string "\*" "" (buffer-name)))
                      (t (or name py-shell-name))))
          (erg (if (string= "ipython" name)
                   "IPython"
@@ -1077,7 +1077,9 @@ comint believe the user typed this string so that
     (set-buffer procbuf)
     (process-send-string proc cmd)
     (goto-char (process-mark proc))
-    (comint-send-input)))
+    ;; doubles prompt
+    ;; (comint-send-input)
+    ))
 
 (defun py-postprocess-output-buffer (buf)
   "Highlight exceptions found in BUF.

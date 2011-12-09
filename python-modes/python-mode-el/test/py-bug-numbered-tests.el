@@ -564,7 +564,6 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
 ##   directory consisting of just .txt and .lorien files.
 ")
     (when arg (switch-to-buffer (current-buffer)))
-    (python-mode)
     (font-lock-mode 1)
     (font-lock-fontify-buffer)
     (goto-char 100)
@@ -627,7 +626,6 @@ print u'\\xA9'
 
 (defun UnicodeEncodeError-lp:550661-base ()
   (let ((py-shell-switch-buffers-on-execute t))
-    (python-mode)
     (goto-char 48)
     (push-mark)
     (end-of-line)
