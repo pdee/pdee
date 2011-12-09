@@ -523,6 +523,20 @@ See original source: http://pymacs.progiciels-bpi.ca"
 :type 'boolean
 :group 'python)
 
+(defcustom py-hide-show-minor-mode-p  nil
+ "If hide-show minor-mode should be on, default is nil. "
+
+:type 'boolean
+:group 'python
+)
+
+(defcustom py-outline-minor-mode-p  nil
+ "If outline minor-mode should be on, default is nil. "
+
+:type 'boolean
+:group 'python
+)
+
 ;; user definable variables
 ;; vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 (defcustom py-close-provides-newline t
@@ -605,12 +619,8 @@ Default is nil. "
   :type 'string
   :group 'python)
 
-;; (setq py-shebang-regexp "#![ \t]?\\([^ \t\n]+\\)[^ \t\n]*\\([ijp]ython[^ \t\n]*$\\)")
-
-(defcustom py-shebang-regexp "#![ \t]?\\([^ \t\n]+\\)[^ \t\n]*\\([iptj]ython[^ \t\n]*$\\)"
-  "Detecting the shell in head of file. "
-  :type 'regexp
-  :group 'python)
+(defvar py-shebang-regexp "#![ \t]?\\([^ \t\n]+\\)[ \t]*\\([iptj]+ython\\>\\)"
+    "Detecting the shell in head of file. ")
 
 (defcustom py-python-command-args '("-i")
   "*List of string arguments to be used when starting a Python shell."
@@ -885,7 +895,8 @@ to select the appropriate python interpreter mode for a file.")
     "for"      "if"     "while"   "finally" "try"
     "with"
     )
-  "*Keywords that can be hidden by hide-show"
+  "Keywords composing visible heads.
+Also used by (minor-)outline-mode "
   :type '(repeat string)
   :group 'python)
 
@@ -7391,6 +7402,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed"
   (make-local-variable 'indent-line-function)
   (make-local-variable 'add-log-current-defun-function)
   (make-local-variable 'fill-paragraph-function)
+  (make-local-variable 'outline-regexp)
   ;;
   (set-syntax-table py-mode-syntax-table)
   ;; from python.el, version "22.1"
@@ -7411,6 +7423,12 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed"
         comment-indent-function 'py-comment-indent-function
         indent-region-function 'py-indent-region
         indent-line-function 'py-indent-line
+        outline-regexp (concat (if py-hide-show-hide-docstrings
+                                   "^\\s-*\"\"\"\\|" "")
+                               (mapconcat 'identity
+                                          (mapcar #'(lambda (x) (concat "^\\s-*" x "\\>"))
+                                                  py-hide-show-keywords)
+                                          "\\|"))
         ;; tell add-log.el how to find the current function/method/variable
         add-log-current-defun-function 'py-current-defun
 
@@ -7474,6 +7492,10 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed"
   ;; (kill-buffer "pycomplete.el"))
   (add-hook 'python-mode-hook 'py-beg-of-defun-function)
   (add-hook 'python-mode-hook 'py-end-of-defun-function)
+  (when py-hide-show-minor-mode-p
+    (add-hook 'python-mode-hook '(lambda ()(hs-minor-mode 1))))
+  (when py-outline-minor-mode-p
+    (add-hook 'python-mode-hook '(lambda ()(outline-minor-mode 1))))
   (set (make-local-variable 'eldoc-documentation-function)
        #'python-eldoc-function)
   (add-hook 'eldoc-mode-hook

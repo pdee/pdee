@@ -113,10 +113,10 @@
          'indentation-keyword-lp-885143-test
          'indentation-bug-inside-docstrings-lp-899455-test
          'another-indentation-bug-inside-docstrings-lp:900684-test
-         'py-shell-complete-lp-328836-test
          'py-shebang-consider-ipython-lp-849293-test
-         'UnicodeEncodeError-lp:550661-test
          'py-shebang-ipython-env-lp-849293-test
+         'UnicodeEncodeError-lp:550661-test
+         'py-shell-complete-lp-328836-test
 
          )))
 
@@ -636,7 +636,7 @@ print u'\\xA9'
     (when (looking-back comint-prompt-regexp)
       (goto-char (1- (match-beginning 0))))
     (sit-for 0.1)
-    (assert (looking-back "©") nil "UnicodeEncodeError-lp:550661-test failed")))
+    (assert (or (looking-back "©")(looking-at "©")) nil "UnicodeEncodeError-lp:550661-test failed")))
 
 (defun indentation-of-continuation-lines-lp:691185-test (&optional arg load-branch-function)
   "With ARG greater 1 keep test buffer open.
@@ -1936,7 +1936,7 @@ pri
 (defun py-complete-lp:858621-base ()
     (goto-char 52)
     (completion-at-point)
-    (sit-for 0.1) 
+    (sit-for 0.1)
     (assert (eq 54 (point)) nil "py-complete-lp:858621-test failed"))
 
 (defun indentation-after-line-with-keyword-lp-883073-test (&optional arg load-branch-function)

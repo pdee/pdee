@@ -593,12 +593,8 @@ Default is nil. "
   :type 'string
   :group 'python)
 
-;; (setq py-shebang-regexp "#![ \t]?\\([^ \t\n]+\\)[^ \t\n]*\\([ijp]ython[^ \t\n]*$\\)")
-
-(defcustom py-shebang-regexp "#![ \t]?\\([^ \t\n]+\\)[^ \t\n]*\\([iptj]ython[^ \t\n]*$\\)"
-  "Detecting the shell in head of file. "
-  :type 'regexp
-  :group 'python)
+(defvar py-shebang-regexp "#![ \t]?\\([^ \t\n]+\\)[ \t\n]*\\([iptj]ython[^ \t\n]*$\\)"
+  "Detecting the shell in head of file. ")
 
 (defcustom py-python-command-args '("-i")
   "*List of string arguments to be used when starting a Python shell."
