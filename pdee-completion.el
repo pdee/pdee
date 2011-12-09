@@ -10,9 +10,12 @@
 (global-set-key "\"" 'skeleton-pair-insert-maybe)
 
 ;; Just python
-(add-hook 'python-mode-hook 
-	  (lambda () 
-	    (define-key python-mode-map "'" 'skeleton-pair-insert-maybe)))
+(add-hook 'python-mode-hook
+	  (lambda ()
+	    (cond ((boundp 'python-mode-map)
+                   (define-key python-mode-map "'" 'skeleton-pair-insert-maybe))
+                  ((boundp 'py-mode-map)
+                   (define-key py-mode-map "'" 'skeleton-pair-insert-maybe)))))
 
 ;; Live completion with auto-complete
 ;; (see http://cx4a.org/software/auto-complete/)
@@ -31,7 +34,7 @@
 (define-key ac-complete-mode-map "\M-p" 'ac-previous)
 
 
-;; Disabling Yasnippet completion 
+;; Disabling Yasnippet completion
 (defun pdee-snips-from-table (table)
   (with-no-warnings
     (let ((hashtab (ac-yasnippet-table-hash table))

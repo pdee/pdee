@@ -82,3 +82,5 @@ build
 
 python-modes/pdee/tools/python-shell-install-example-buffer.el
 
+# Bytecodes
+*.pyc
