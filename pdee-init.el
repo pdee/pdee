@@ -221,4 +221,12 @@ The CMDLINE should be something like:
                    ((boundp 'py-mode-map)
                     (define-key py-mode-map "\C-m" 'newline-and-indent)))))
 
+;; Rope bindings
+(add-hook 'python-mode-hook
+	  (lambda ()
+	    (define-key python-mode-map "\C-ci" 'rope-auto-import)
+	    (define-key python-mode-map "\C-c\C-d" 'rope-show-calltip))
+	  )
+
+
 (provide 'pdee-init)
