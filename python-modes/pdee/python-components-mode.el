@@ -674,6 +674,7 @@ so if you want to defeat the automagic configuration, you must also
 set `py-smart-indentation' to nil in your `python-mode-hook'."
   :type 'boolean
   :group 'python)
+(make-variable-buffer-local 'py-smart-indentation)
 
 (defcustom py-align-multiline-strings-p t
   "*Flag describing how multi-line triple quoted strings are aligned.

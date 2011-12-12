@@ -1794,8 +1794,10 @@ if maxdepth == 0 or depth < maxdepth:
   (py-bug-tests-intern 'py-compute-indentation-wrong-at-eol-lp-858043-base arg teststring)))
 
 (defun py-compute-indentation-wrong-at-eol-lp-858043-base ()
-    (goto-char 132)
-    (assert (eq 4 (py-compute-indentation)) nil "py-compute-indentation-wrong-at-eol-lp-858043-test failed"))
+  (setq py-smart-indentation nil)
+  (setq py-indent-offset 4)
+  (goto-char 132)
+  (assert (eq 4 (py-compute-indentation)) nil "py-compute-indentation-wrong-at-eol-lp-858043-test failed"))
 
 (defun comment-indentation-level-lp-869854-test (&optional arg load-branch-function)
   (interactive "p")

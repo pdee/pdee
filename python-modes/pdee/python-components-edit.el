@@ -154,7 +154,7 @@ Returns column. "
 (defun py-guessed-sanity-check (guessed)
   (and (>= guessed 2)(<= guessed 8)(eq 0 (% guessed 2))))
 
-(defun py-guess-indent-offset (&optional global)
+(defun py-guess-indent-offset (&optional global orig)
   "Guess a value for, and change, `py-indent-offset'.
 
 By default, make a buffer-local copy of `py-indent-offset' with the
@@ -164,13 +164,16 @@ With optional argument GLOBAL change the global value of `py-indent-offset'. "
   (save-excursion
     (save-restriction
       (widen)
+      (when orig (goto-char orig))
       (let* ((lastindent (if
                              (py-beginning-of-statement-p)
                              (current-indentation)
                            (progn
                              (py-beginning-of-statement)
                              (current-indentation))))
-             (firstindent (progn (py-beginning-of-block)
+             (firstindent (progn
+                            (while (and (<= lastindent (current-indentation))
+                                        (py-beginning-of-statement)))
                                  (current-indentation)))
              (guessed (- lastindent firstindent)))
         (if (py-guessed-sanity-check guessed)
