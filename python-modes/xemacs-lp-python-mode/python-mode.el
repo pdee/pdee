@@ -658,6 +658,7 @@ so if you want to defeat the automagic configuration, you must also
 set `py-smart-indentation' to nil in your `python-mode-hook'."
   :type 'boolean
   :group 'python)
+(make-variable-buffer-local 'py-smart-indentation)
 
 (defcustom py-align-multiline-strings-p t
   "*Flag describing how multi-line triple quoted strings are aligned.
@@ -1368,7 +1369,7 @@ When indent is set back manually, this is honoured in following lines. "
           (newline)
           (setq erg (indent-to-column (py-compute-indentation))))
       (beginning-of-line)
-      (insert-char ?\n 1)
+      (newline) 
       (setq erg (move-to-column (py-compute-indentation))))
     (when (and (looking-at "[ \t]+")
                (nth 1 (if (featurep 'xemacs)
@@ -1392,7 +1393,7 @@ Returns column. "
     (when (interactive-p) (message "%s" erg))
     erg))
 
-(defun py-guess-indent-offset (&optional global)
+(defun py-guess-indent-offset (&optional global orig)
   "Guess a value for, and change, `py-indent-offset'.
 
 By default, make a buffer-local copy of `py-indent-offset' with the
@@ -1402,25 +1403,28 @@ With optional argument GLOBAL change the global value of `py-indent-offset'. "
   (save-excursion
     (save-restriction
       (widen)
+      (when orig (goto-char orig))
       (let* ((lastindent (if
                              (py-beginning-of-statement-p)
                              (current-indentation)
                            (progn
                              (py-beginning-of-statement)
                              (current-indentation))))
-             (firstindent (progn (py-beginning-of-block)
+             (firstindent (progn
+                            (while (and (<= lastindent (current-indentation))
+                                        (py-beginning-of-statement)))
                                  (current-indentation)))
              (guessed (- lastindent firstindent)))
-        (if (py-guessed-sanity-check)
+        (if (py-guessed-sanity-check guessed)
             (setq py-indent-offset guessed)
           ;; no indent between statements at point
           (setq firstindent (progn
                               (py-beginning-of-def-or-class)
                               (current-indentation)))
           (setq guessed (- lastindent firstindent))
-          (when (py-guessed-sanity-check)
+          (when (py-guessed-sanity-check guessed)
             (setq py-indent-offset guessed)))
-        (when (and (py-guessed-sanity-check) (/= guessed (default-value 'py-indent-offset)))
+        (when (and (py-guessed-sanity-check guessed) (/= guessed (default-value 'py-indent-offset)))
           (funcall (if global 'kill-local-variable 'make-local-variable)
                    'py-indent-offset)
           (setq py-indent-offset guessed)
@@ -2384,7 +2388,7 @@ When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
                      (eq origline (py-count-lines)))
                 (current-indentation))
                ((and (bobp)(py-statement-opens-block-p))
-                (+ py-indent-offset (current-indentation)))
+                (+ (if py-smart-indentation (py-guess-indent-offset nil orig) py-indent-offset) (current-indentation)))
                ((and (bobp)(not (py-statement-opens-block-p)))
                 (current-indentation))
                ;; (py-in-triplequoted-string-p)
@@ -2429,7 +2433,8 @@ When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
                 (setq line t)
                 (py-compute-indentation orig origline closing line inside repeat))
                ;; lists
-               ((and (nth 1 pps) inside (not line))
+               ((nth 1 pps)
+                (cond ((and inside (not line))
                 (when (and (eq (point) orig) (looking-at "[ \t]*\\()\\)[ \t]*$"))
                   (setq closing (match-beginning 0)))
                 (save-excursion
@@ -2461,17 +2466,17 @@ When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
                    (t (back-to-indentation)
                       (py-beginning-of-statement)
                       (py-compute-indentation orig origline closing line inside repeat)))))
-               ((and (nth 1 pps) (not inside) line)
+                      ((and (not inside) line)
                 (py-beginning-of-statement)
                 (py-compute-indentation orig origline closing line inside repeat))
-               ((and (nth 1 pps) (not inside))
+                      ((not inside)
                 (progn (goto-char (+ py-lhs-inbound-indent (nth 1 pps)))
                        (when (looking-at "[ \t]+")
                          (goto-char (match-end 0)))
                        (current-column)))
-               ((nth 1 pps)
+                      (t
                 (goto-char (nth 1 pps))
-                (py-compute-indentation orig origline closing line inside repeat))
+                       (py-compute-indentation orig origline closing line inside repeat))))
                ((py-preceding-line-backslashed-p)
                 (progn
                   (py-beginning-of-statement)
@@ -2490,7 +2495,7 @@ When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
                   (current-indentation)))
                ((and (looking-at py-block-closing-keywords-re)(eq (py-count-lines) origline))
                 (py-beginning-of-block-or-clause)
-                (+ (current-indentation) py-indent-offset))
+                (+  (if py-smart-indentation (py-guess-indent-offset nil orig) py-indent-offset)(current-indentation)))
                ((looking-at py-block-closing-keywords-re)
                 (py-beginning-of-block-or-clause nil (current-indentation))
                 (current-indentation))
@@ -2506,13 +2511,11 @@ When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
                        (car (py-clause-lookup-keyword py-else-re -1 (current-indentation))))
                       ((looking-at py-elif-re)
                        (car (py-clause-lookup-keyword py-elif-re -1)))))
-               ((and (looking-at py-block-re)(eq origline (py-count-lines)))
-                (py-line-backward-maybe)
-                (py-compute-indentation orig origline closing line inside repeat))
                ((looking-at py-block-or-clause-re)
-                (if (< (py-count-lines) origline)
-                    (+ (current-indentation) py-indent-offset)
-                  (py-compute-indentation orig origline closing line inside t)))
+                (cond ((eq origline (py-count-lines))
+                       (py-line-backward-maybe)
+                       (py-compute-indentation orig origline closing line inside t))
+                      (t (+ (if py-smart-indentation (py-guess-indent-offset nil orig) py-indent-offset)(current-indentation)))))
                ((looking-at py-block-closing-keywords-re)
                 (py-beginning-of-block)
                 (current-indentation))
@@ -2535,7 +2538,7 @@ When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
                     (py-compute-indentation orig origline closing line inside repeat))))
                ((py-statement-opens-block-p)
                 (if (< (py-count-lines) origline)
-                    (+ py-indent-offset (current-indentation))
+                    (+ (if py-smart-indentation (py-guess-indent-offset nil orig) py-indent-offset) (current-indentation))
                   (py-compute-indentation orig origline closing line inside t)))
                ((and (< (py-count-lines) origline)(looking-at py-assignment-re))
                 (current-indentation))
@@ -2545,7 +2548,7 @@ When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
                ((and (eq origline (py-count-lines))
                      (save-excursion (and (setq erg (py-go-to-keyword py-block-or-clause-re -1))
                                           (ignore-errors (< orig (py-end-of-block-or-clause))))))
-                (+ (car erg) py-indent-offset))
+                (+ (car erg) (if py-smart-indentation (py-guess-indent-offset nil orig) py-indent-offset)))
                ((and (eq origline (py-count-lines))
                      (py-beginning-of-statement-p))
                 (py-beginning-of-statement)
