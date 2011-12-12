@@ -214,13 +214,6 @@ The CMDLINE should be something like:
 ;; Py3 files
 (add-to-list 'auto-mode-alist '("\\.py3\\'" . python-mode))
 
-(add-hook 'python-mode-hook
-          '(lambda ()
-             (cond ((boundp 'python-mode-map)
-                    (define-key python-mode-map "\C-m" 'newline-and-indent))
-                   ((boundp 'py-mode-map)
-                    (define-key py-mode-map "\C-m" 'newline-and-indent)))))
-
 ;; Rope bindings
 (add-hook 'python-mode-hook
 	  (lambda ()
