@@ -1432,7 +1432,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed"
         (save-excursion
           (save-restriction
             (widen)
-            (switch-to-buffer (current-buffer))
+            ;; (switch-to-buffer (current-buffer))
             (while (and (not (eobp))
                         (or
                          (let ((erg (syntax-ppss)))

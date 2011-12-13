@@ -187,7 +187,7 @@ With optional argument GLOBAL change the global value of `py-indent-offset'. "
                                   (py-beginning-of-block)
                                   (current-indentation)))
               (setq guessed (- lastindent firstindent)))
-            (if (and (py-guessed-sanity-check guessed) (/= guessed py-indent-offset))
+            (if (py-guessed-sanity-check guessed)
                 (progn
                   (funcall (if global 'kill-local-variable 'make-local-variable)
                            'py-indent-offset)
