@@ -39,8 +39,34 @@
   (const :tag "xemacs-mode-shipped" xemacs-mode-shipped))
   :group 'pdee)
 
-(defvar py-install-directory (concat pdee-install-dir  "python-modes/"  (prin1-to-string pdee-default-mode) "/")
+(defvar py-install-directory (concat (expand-file-name pdee-install-dir)  "python-modes/"  (prin1-to-string pdee-default-mode) "/")
   "The directory, where core python-modes for choice reside. ")
+
+(setq py-install-directory (concat (expand-file-name pdee-install-dir)  "python-modes/"  (prin1-to-string pdee-default-mode) "/"))
+
+
+;; Adding paths to the variable load-path
+(dolist (relpath '(""
+                   "extensions/"
+                   "extensions/yasnippet"
+                   "extensions/auto-complete"
+		   "extensions/eproject"))
+  (add-to-list 'load-path (concat pdee-install-dir relpath)))
+
+(defun unload-python-components ()
+  (interactive)
+      (when (featurep 'python-components-mode) (unload-feature 'python-components-mode t))
+    (when (featurep 'python-components-edit) (unload-feature 'python-components-edit t))
+  (when (featurep 'python-components-intern) (unload-feature 'python-components-intern t))
+  (when (featurep 'python-components-move)(unload-feature 'python-components-move t))
+  (when (featurep 'python-components-shell)(unload-feature 'python-components-shell t))
+  (when (featurep 'python-components-pdb)(unload-feature 'python-components-pdb t))
+  (when (featurep 'python-components-skeletons)(unload-feature 'python-components-skeletons t))
+  (when (featurep 'python-components-help)(unload-feature 'python-components-help t))
+  (when (featurep 'python-components-test)(unload-feature 'python-components-test t))
+  (when (featurep 'python-components-extensions)(unload-feature 'python-components-extensions t))
+  (when (featurep 'python-components-imenu)(unload-feature 'python-components-imenu t))
+  (when (featurep 'python-describe-symbol)(unload-feature 'python-describe-symbol t)))
 
 (defun pdee-set-mode (&optional branch)
   "Select a python-mode to use. See `pdee-default-mode' for available choices.
@@ -51,7 +77,7 @@ When called without arguments, default mode is switched on. "
   (let ((branch (if (eq 4 (prefix-numeric-value branch))
                     (read-from-minibuffer "pdee-default-mode: " pdee-default-mode)
                   (or branch (prin1-to-string pdee-default-mode)))))
-    (unless (string-match ".+/$" branch)
+    (unless (string-match ".+/$" branch)    
       (setq branch (concat branch "/")))
     (setq py-install-directory (concat pdee-install-dir "python-modes/" branch))
     (add-to-list 'load-path py-install-directory)
@@ -73,25 +99,20 @@ When called without arguments, default mode is switched on. "
 (when (ignore-errors pdee-install-dir)
 (add-to-list 'load-path pdee-install-dir))
 
-;; Adding paths to the variable load-path
-(dolist (relpath '(""
-                   "extensions/"
-                   "extensions/yasnippet"
-                   "extensions/auto-complete"
-		   "extensions/eproject"))
-  (add-to-list 'load-path (concat pdee-install-dir relpath)))
-
 (when pdee-unload-first
   (when (featurep 'ipython) (unload-feature 'ipython t))
   (when (featurep 'python-mode) (unload-feature 'python-mode t))
-    (when (featurep 'pymacs) (unload-feature 'pymacs t))
-  (when (featurep 'pycomplete) (unload-feature 'pycomplete t)))
+  (when (featurep 'pymacs) (unload-feature 'pymacs t))
+  (when (featurep 'pycomplete) (unload-feature 'pycomplete t))
+  (unload-python-components))
 
-(when pdee-load-all
-  (require 'pdee-python)
+
+(if pdee-load-all
+  (require 'python)
   (require 'pdee-completion)
   (require 'pdee-editing)
-  (require 'pdee-bindings))
+  (require 'pdee-bindings)
+  (require 'python))
 
 ;;; Pymacs
 (require 'pymacs (concat pdee-install-dir "extensions/pymacs.el"))
@@ -112,11 +133,8 @@ When called without arguments, default mode is switched on. "
   (setq ropemacs-guess-project t)
   (setq ropemacs-enable-autoimport t)
 
-
   (setq ropemacs-autoimport-modules '("os" "shutil" "sys" "logging"
 				      "django.*"))
-
-
 
   ;; Adding hook to automatically open a rope project if there is one
   ;; in the current or in the upper level directory
@@ -144,7 +162,6 @@ When called without arguments, default mode is switched on. "
 
 ;;; Flymake additions, I have to put this one somwhere else?
 
-
 (defun flymake-create-copy-file ()
   "Create a copy local file"
   (let* ((temp-file (flymake-init-create-temp-buffer-copy
@@ -169,7 +186,6 @@ The CMDLINE should be something like:
     (list (first cmdline-subst) (rest cmdline-subst))
     ))
 
-
 (when (load-file (concat pdee-install-dir "extensions/flymake-patch.el"))
   (setq flymake-info-line-regex
         (append flymake-info-line-regex '("unused$" "^redefinition" "used$")))
@@ -179,7 +195,6 @@ The CMDLINE should be something like:
   (add-to-list 'flymake-allowed-file-name-masks
                (list "\\.py\\'" (apply-partially 'flymake-command-parse cmdline)))
   )
-
 
 ;; Python or python mode?
 (eval-after-load 'python
@@ -197,10 +212,8 @@ The CMDLINE should be something like:
      (autoload 'virtualenv-workon "virtualenv"
        "Activate a Virtual Environment present using virtualenvwrapper" t)
 
-
      ;; Not on all modes, please
      (add-hook 'python-mode-hook 'flymake-find-file-hook)
-
 
      )
   )
@@ -220,6 +233,5 @@ The CMDLINE should be something like:
 	    (define-key python-mode-map "\C-ci" 'rope-auto-import)
 	    (define-key python-mode-map "\C-c\C-d" 'rope-show-calltip))
 	  )
-
 
 (provide 'pdee-init)

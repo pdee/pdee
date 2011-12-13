@@ -1404,14 +1404,16 @@ With optional argument GLOBAL change the global value of `py-indent-offset'. "
     (save-restriction
       (widen)
       (when orig (goto-char orig))
-      (let* ((lastindent (if
+      (let ((lastindent (if
                              (py-beginning-of-statement-p)
                              (current-indentation)
                            (progn
                              (py-beginning-of-statement)
-                             (current-indentation))))
-             (firstindent (progn
+                            (current-indentation)))))
+        (unless (eq 0 lastindent)
+          (let* ((firstindent (progn
                             (while (and (<= lastindent (current-indentation))
+                                            (not (bobp)) 
                                         (py-beginning-of-statement)))
                                  (current-indentation)))
              (guessed (- lastindent firstindent)))
@@ -1429,14 +1431,14 @@ With optional argument GLOBAL change the global value of `py-indent-offset'. "
                    'py-indent-offset)
           (setq py-indent-offset guessed)
           (unless (= tab-width py-indent-offset)
-            (setq indent-tabs-mode nil)))
+                (setq indent-tabs-mode nil)))))
         (when (interactive-p)
           (message "%s value of py-indent-offset:  %d"
                    (if global "Global" "Local")
                    py-indent-offset))
         py-indent-offset))))
 
-(defun py-guessed-sanity-check ()
+(defun py-guessed-sanity-check (guessed)
   (and (>= guessed 2)(<= guessed 8)(eq 0 (% guessed 2))))
 
 (defun py-comment-indent-function ()
