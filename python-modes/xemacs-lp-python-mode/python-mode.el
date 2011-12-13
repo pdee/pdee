@@ -7450,19 +7450,23 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed"
                   (skip-chars-backward " \t\n"))
                 nil))
   ;; Now do the automagical guessing
-  (if py-smart-indentation
-      (let ((offset py-indent-offset))
-        ;; Nil if this fails to guess a good value
-        (if (and (ignore-errors (py-guess-indent-offset))
-                 (<= py-indent-offset 8)
-                 (>= py-indent-offset 2))
-            (setq offset py-indent-offset))
-        (setq py-indent-offset offset)
-        ;; Only turn indent-tabs-mode off if tab-width !=
-        ;; py-indent-offset.  Never turn it on, because the user must
-        ;; have explicitly turned it off.
-        (if (/= tab-width py-indent-offset)
-            (setq indent-tabs-mode nil))))
+  (when py-smart-indentation
+    (if (bobp)
+        (save-excursion
+          (save-restriction
+            (widen)
+            (switch-to-buffer (current-buffer))
+            (while (and (not (eobp))
+                        (or
+                         (let ((erg (syntax-ppss)))
+                           (or (nth 1 erg) (nth 8 erg)))
+                         (eq 0 (current-indentation))))
+              (forward-line 1))
+            (back-to-indentation)
+            (py-guess-indent-offset)))
+      (py-guess-indent-offset)))
+  (when (/= tab-width py-indent-offset)
+    (setq indent-tabs-mode nil))
   ;; Set the default shell if not already set
   (when (null py-shell-name)
     (py-toggle-shells (py-choose-shell)))
