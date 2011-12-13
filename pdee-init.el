@@ -108,11 +108,9 @@ When called without arguments, default mode is switched on. "
 
 
 (if pdee-load-all
-  (require 'python)
   (require 'pdee-completion)
   (require 'pdee-editing)
-  (require 'pdee-bindings)
-  (require 'python))
+)
 
 ;;; Pymacs
 (require 'pymacs (concat pdee-install-dir "extensions/pymacs.el"))
