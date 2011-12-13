@@ -115,6 +115,7 @@
          'another-indentation-bug-inside-docstrings-lp:900684-test
          'py-shebang-consider-ipython-lp-849293-test
          'py-shebang-ipython-env-lp-849293-test
+         'indent-offset-not-guessed-when-loading-lp:902890-test
          'UnicodeEncodeError-lp:550661-test
          'py-shell-complete-lp-328836-test
 
@@ -2099,6 +2100,23 @@ def is_x_day(date):
     (goto-char 116)
     (sit-for 0.1)
     (assert (eq 4 (py-compute-indentation)) nil "another-indentation-bug-inside-docstrings-lp:900684-test failed"))
+
+(defun indent-offset-not-guessed-when-loading-lp:902890-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+#! /usr/bin/python
+# -*- coding: utf-8 -*-
+def main():
+  if len(sys.argv)==1:
+    usage()
+    sys.exit()
+"))
+  (when load-branch-function (funcall load-branch-function))
+  (py-bug-tests-intern 'indent-offset-not-guessed-when-loading-lp:902890-base arg teststring)))
+
+(defun indent-offset-not-guessed-when-loading-lp:902890-base ()
+    (assert (eq 2 py-indent-offset) nil "indent-offset-not-guessed-when-loading-lp:902890-test failed"))
 
 
 (provide 'py-bug-numbered-tests)
