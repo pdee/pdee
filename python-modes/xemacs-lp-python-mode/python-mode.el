@@ -3013,7 +3013,11 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
           erg)))))
 
 (defconst py-help-address "python-mode@python.org"
-  "Address accepting submission of bug reports.")
+  "List dealing with usage and developing python-mode.
+
+Also accepts submission of bug reports, whilst a ticket at
+http://launchpad.net/python-mode
+is preferable for that. ")
 
 ;;; python-components-move.el
 
