@@ -475,6 +475,15 @@ If you ignore the location `M-x py-guess-pdb-path' might display it.
 :group 'python
 )
 
+(defcustom py-start-run-py-shell  t
+ "If `python-mode' should start a python-shell, `py-shell'. Default is `t'.
+
+A running python-shell presently is needed by complete-functions. "
+
+:type 'boolean
+:group 'python
+)
+
 (defcustom py-outline-minor-mode-p  nil
  "If outline minor-mode should be on, default is nil. "
 
@@ -1480,6 +1489,12 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed"
    (if python-mode-hook
        'python-mode-hook
      'py-mode-hook))
+  (when py-start-run-py-shell
+    (unless (get-process (py-process-name))
+      (let ((oldbuf  (current-buffer)))
+        (save-excursion 
+        (py-shell)
+        (set-buffer oldbuf)))))
   (when (interactive-p) (message "python-mode loaded from: %s" "python-mode.el")))
 
 (defadvice pdb (before gud-query-cmdline activate)

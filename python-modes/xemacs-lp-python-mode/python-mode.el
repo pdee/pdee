@@ -511,6 +511,15 @@ See original source: http://pymacs.progiciels-bpi.ca"
 :group 'python
 )
 
+(defcustom py-start-run-py-shell  t
+ "If `python-mode' should start a python-shell, `py-shell'. Default is `t'.
+
+A running python-shell presently is needed by complete-functions. "
+
+:type 'boolean
+:group 'python
+)
+
 ;; user definable variables
 ;; vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 (defcustom py-close-provides-newline t
@@ -7471,10 +7480,10 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed"
   (when (null py-shell-name)
     (py-toggle-shells (py-choose-shell)))
   ;; (py-set-load-path)
-  ;; (when py-load-pymacs-p (py-load-pymacs)
-  ;; (find-file (concat py-install-directory "/completion/pycomplete.el"))
-  ;; (eval-buffer)
-  ;; (kill-buffer "pycomplete.el"))
+  (when py-load-pymacs-p (py-load-pymacs)
+        (find-file (concat py-install-directory "/completion/pycomplete.el"))
+        (eval-buffer)
+        (kill-buffer "pycomplete.el"))
   (add-hook 'python-mode-hook 'py-beg-of-defun-function)
   (add-hook 'python-mode-hook 'py-end-of-defun-function)
   (when py-hide-show-minor-mode-p
@@ -7503,6 +7512,12 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed"
    (if python-mode-hook
        'python-mode-hook
      'py-mode-hook))
+  (when py-start-run-py-shell
+    (unless (get-process (py-process-name))
+      (let ((oldbuf  (current-buffer)))
+        (save-excursion 
+        (py-shell)
+        (set-buffer oldbuf)))))
   (when (interactive-p) (message "python-mode loaded from: %s" "python-mode.el")))
 
 (defadvice pdb (before gud-query-cmdline activate)
