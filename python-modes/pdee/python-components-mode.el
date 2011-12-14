@@ -592,12 +592,14 @@ Default is nil. "
   "Function used for completion in buffers. "
   :type '(choice (const :tag "py-completion-at-point" py-completion-at-point)
 		 (const :tag "Pymacs based py-complete" py-complete)
+                 (const :tag "py-shell-complete" py-shell-complete)
                  (const :tag "IPython's ipython-complete" ipython-complete))
   :group 'python)
 
 (defcustom py-shell-complete-function 'py-completion-at-point
   "Function used for completion in buffers. "
   :type '(choice (const :tag "py-completion-at-point" py-completion-at-point)
+                 (const :tag "py-shell-complete" py-shell-complete)
 		 (const :tag "Pymacs based py-complete" py-complete)
                  (const :tag "IPython's ipython-complete" ipython-complete))
   :group 'python)
@@ -1492,7 +1494,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed"
   (when py-start-run-py-shell
     (unless (get-process (py-process-name))
       (let ((oldbuf  (current-buffer)))
-        (save-excursion 
+        (save-excursion
         (py-shell)
         (set-buffer oldbuf)))))
   (when (interactive-p) (message "python-mode loaded from: %s" "python-mode.el")))
@@ -2806,11 +2808,6 @@ and return collected output"
                    (car lines) outbuf proc nil t))
                 (accept-process-output proc 1)
                 (setq lines (cdr lines))))))))
-
-(defun py-dot-word-before-point ()
-  (buffer-substring
-   (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point))
-   (point)))
 
 (defun py-proc ()
   "Return the current Python process.

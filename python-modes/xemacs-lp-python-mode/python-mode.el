@@ -578,6 +578,7 @@ Default is nil. "
   "Function used for completion in buffers. "
   :type '(choice (const :tag "py-completion-at-point" py-completion-at-point)
 		 (const :tag "Pymacs based py-complete" py-complete)
+                 (const :tag "py-shell-complete" py-shell-complete)
                  (const :tag "IPython's ipython-complete" ipython-complete))
   :group 'python)
 
@@ -3010,25 +3011,6 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
           (setq erg nil)
           (when (interactive-p) (message "%s" "Not inside a function or class"))
           erg)))))
-
-(defun py-symbol-near-point ()
-  "Return the first textual item to the nearest point."
-  ;; alg stolen from etag.el
-  (save-excursion
-    (with-syntax-table py-dotted-expression-syntax-table
-      (if (or (bobp) (not (memq (char-syntax (char-before)) '(?w ?_))))
-          (while (not (looking-at "\\sw\\|\\s_\\|\\'"))
-            (forward-char 1)))
-      (while (looking-at "\\sw\\|\\s_")
-        (forward-char 1))
-      (if (re-search-backward "\\sw\\|\\s_" nil t)
-          (progn (forward-char 1)
-                 (buffer-substring (point)
-                                   (progn (forward-sexp -1)
-                                          (while (looking-at "\\s'")
-                                            (forward-char 1))
-                                          (point))))
-        nil))))
 
 (defconst py-help-address "python-mode@python.org"
   "Address accepting submission of bug reports.")
@@ -7197,16 +7179,13 @@ Uses `python-imports' to load modules against which to complete."
        #'string<))))
 
 (defun py-completion-at-point ()
-  (let ((end (point))
-	(start (save-excursion
-		 (and (re-search-backward
-		       (rx (or buffer-start (regexp "[^[:alnum:]._]"))
-			   (group (1+ (regexp "[[:alnum:]._]"))) point)
-		       nil t)
-		      (match-beginning 1)))))
-    (when start
-      (list start end
-            (completion-table-dynamic 'python-symbol-completions)))))
+  (interactive "*")
+  (let* ((start (when (skip-chars-backward "[[:alnum:]_]")(point)))
+         (end (progn (skip-chars-forward "[[:alnum:]_]")(point)))
+         (completion (when start
+                       (python-symbol-completions (buffer-substring-no-properties start end)))))
+    (when completion (delete-region start end)
+          (insert (car completion)))))
 
 (defvar py-mode-output-map nil
   "Keymap used in *Python Output* buffers.")

@@ -478,22 +478,6 @@ Interactively, prompt for name."
       (goto-char (point-min))
       (forward-line (1- line)))))
 
-(defun py-send-receive (string)
-  "Send STRING to inferior Python (if any) and return result.
-
-The result is what follows `_emacs_out' in the output.
-This is a no-op if `python-check-comint-prompt' returns nil."
-  (py-send-string string)
-  (let ((proc (python-proc)))
-    (with-current-buffer (process-buffer proc)
-      (when (python-check-comint-prompt proc)
-	(set (make-local-variable 'python-preoutput-result) nil)
-                    (accept-process-output proc py-send-receive-delay)
-        (if (null python-preoutput-result)
-          (message "No output from: %s, maybe set `py-send-receive-delay' onto a higher value " string))
-	(prog1 python-preoutput-result
-	  (kill-local-variable 'python-preoutput-result))))))
-
 (defun py-find-imports ()
   "Find top-level imports, updating `python-imports'."
   (interactive)

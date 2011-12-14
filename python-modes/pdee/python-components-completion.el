@@ -20,7 +20,6 @@
 ;; This completion code was been written by Dave Love
 ;;; Code:
 
-
 ;; Fixme: This fails the first time if the sub-process isn't already
 ;; running.  Presumably a timing issue with i/o to the process.
 (defun python-symbol-completions (symbol)
@@ -47,19 +46,12 @@ Uses `python-imports' to load modules against which to complete."
 
 (defun py-completion-at-point ()
   (interactive "*")
-  (let* ((end (point))
-         (start (save-excursion
-                  (and (re-search-backward
-                        (rx (or buffer-start (regexp "[^[:alnum:]._]"))
-                            (group (1+ (regexp "[[:alnum:]._]"))) point)
-                        nil t)
-                       (match-beginning 1))))
+  (let* ((start (when (skip-chars-backward "[[:alnum:]_]")(point)))
+         (end (progn (skip-chars-forward "[[:alnum:]_]")(point)))
          (completion (when start
-                        (python-symbol-completions (buffer-substring-no-properties start end)))))
+                       (python-symbol-completions (buffer-substring-no-properties start end)))))
     (when completion (delete-region start end)
           (insert (car completion)))))
-    ;; (list start end
-    ;; (completion-table-dynamic 'python-symbol-completions)))))
 
 ;; https://github.com/fgallina/python.el
 (defun python-shell-completion-complete-or-indent ()
