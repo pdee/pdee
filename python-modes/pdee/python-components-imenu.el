@@ -103,7 +103,7 @@ When non-nil, arguments are printed."
 (defun py-switch-imenu-index-function ()
   "For development only. Good old renamed `py-imenu-create-index'-function hangs with medium size files already. Working `py-imenu-create-index-new' is active by default.
 
-Switch between classic index machine `py-imenu-create-index'-function and new `py-imenu-create-index-new'. 
+Switch between classic index machine `py-imenu-create-index'-function and new `py-imenu-create-index-new'.
 
 The former may provide a more detailed report, thus delivering two different index-machines is considered. "
   (interactive)
@@ -240,17 +240,19 @@ of the first definition found."
         (end (cond (end)
                    (t (point-max))))
         (first t)
-        inside-class index-alist vars thisend)
+        index-alist vars thisend)
     (goto-char beg)
     (while (and (re-search-forward "^[ \t]*\\(?:\\(def\\|class\\)\\)[ \t]+\\(?:\\(\\sw+\\)\\)" end 'move 1)(not (py-in-string-or-comment-p)))
       (let ((pos (match-beginning 0))
             (name (match-string-no-properties 2))
-            sublist)
+            thisend (py-end-of-class-position)
+            sublist inside-class first)
         (when (string= "class" (match-string-no-properties 1))
           (setq name (concat "class " name)
                 inside-class t
                 first t
-                classname name))
+                classname name
+                ))
         (cond ((and first inside-class)
                (push (cons name pos) index-alist)
                (setq first nil))
@@ -258,14 +260,13 @@ of the first definition found."
                (progn (push (cons (concat " " name) pos) sublist)))
               (t (push (cons name pos) index-alist)))
         ;; now inside class only
-        (while (and (re-search-forward "^[ \t]*\\(?:\\(def\\|class\\)\\)[ \t]+\\(?:\\(\\sw+\\)\\)" end 'move 1)(not (py-in-string-or-comment-p))(not (string= "class" (match-string-no-properties 1))))
+        (while (and (re-search-forward "^[ \t]*\\(?:\\(def\\|class\\)\\)[ \t]+\\(?:\\(\\sw+\\)\\)" thisend 'move 1)(not (py-in-string-or-comment-p))(not (string= "class" (match-string-no-properties 1))))
           (let ((pos (match-beginning 0))
                 (name (match-string-no-properties 2)))
             (push (cons (concat " " name) pos) sublist)))
         (push (cons classname sublist) index-alist)
         (when (string= "class" (match-string-no-properties 1))
-            (goto-char (match-beginning 0)
-          ))))
+          (goto-char (match-beginning 0)))))
     ;;    (message "Funktionen und Klassen: %s" index-alist)
     ;; Look for module variables.
     (goto-char (point-min))

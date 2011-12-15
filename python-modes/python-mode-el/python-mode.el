@@ -1925,6 +1925,14 @@ initial line; and comment lines beginning in column 1 are ignored."
       (when (interactive-p) (message "%s" erg))
       erg)))
 
+(defun py-end-of-def-or-class-position ()
+  "Returns end of def resp. class position, non-greedy. "
+  (interactive)
+  (save-excursion
+    (let ((erg (py-end-of-def-or-class)))
+      (when (interactive-p) (message "%s" erg))
+      erg)))
+
 (defun py-end-of-line-position ()
   "Returns end of line position. "
   (interactive)
