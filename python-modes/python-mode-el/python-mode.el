@@ -7522,11 +7522,14 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed"
        'python-mode-hook
      'py-mode-hook))
   (when py-start-run-py-shell
+    ;; py-shell may split window, provide restore
+    (window-configuration-to-register 213465879)
     (unless (get-process (py-process-name))
       (let ((oldbuf  (current-buffer)))
         (save-excursion 
         (py-shell)
-        (set-buffer oldbuf)))))
+          (set-buffer oldbuf))))
+    (jump-to-register 213465879))
   (when (interactive-p) (message "python-mode loaded from: %s" "python-mode.el")))
 
 (defadvice pdb (before gud-query-cmdline activate)
