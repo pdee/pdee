@@ -234,19 +234,21 @@ of the first definition found."
 
 (defun py-imenu-create-index-new (&optional beg end)
   "`imenu-create-index-function' for Python. "
+  (set (make-local-variable 'imenu-max-items) 40)
   (let ((orig (point))
         (beg (cond (beg)
                    (t (point-min))))
         (end (cond (end)
                    (t (point-max))))
         (first t)
+        (imenu-max-items 100)
         index-alist vars thisend)
     (goto-char beg)
     (while (and (re-search-forward "^[ \t]*\\(?:\\(def\\|class\\)\\)[ \t]+\\(?:\\(\\sw+\\)\\)" end 'move 1)(not (py-in-string-or-comment-p)))
       (let ((pos (match-beginning 0))
             (name (match-string-no-properties 2))
-            thisend (py-end-of-class-position)
-            sublist inside-class first)
+            (thisend (save-match-data (py-end-of-def-or-class-position)))
+            sublist inside-class first classname)
         (when (string= "class" (match-string-no-properties 1))
           (setq name (concat "class " name)
                 inside-class t
