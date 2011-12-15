@@ -617,36 +617,37 @@ http://docs.python.org/reference/compound_stmts.html
               (forward-line 1))
             (py-end-of-statement orig origline done))
            ;; inside string
-           ((and (nth 3 pps)(nth 8 pps)(nth 2 pps))
-            (goto-char (nth 2 pps))
-            (when (looking-at "\"\"\"\\|'''")
-              (goto-char (match-end 0))
-              (while (and (re-search-forward (match-string-no-properties 0) nil (quote move) 1)(py-escaped))))
-            (setq done t)
-            (end-of-line)
-            (skip-chars-backward " \t\r\n\f" (line-beginning-position))
-            (setq erg (point))
-            (py-end-of-statement orig origline done))
-           ;; in comment
-           ((and (nth 8 pps)(nth 4 pps))
-            (if (eobp)
-                nil
-              (forward-line 1)
-              (end-of-line)
-              (skip-chars-backward " \t\r\n\f" (line-beginning-position))
-              (setq erg (point))
-              (setq done t)
-              (py-end-of-statement orig origline done)))
            ((nth 8 pps)
-            (goto-char (nth 8 pps))
-            (when (looking-at "\"\"\"\\|'''\\|\"\\|'")
-              (goto-char (match-end 0)))
-            (while (and (re-search-forward "[^\\]\"\"\"\\|[^\\]'''\\|[^\\]\"\\|[^\\]'" nil (quote move) 1)
-                        (nth 3
-                             (if (featurep 'xemacs)
-                                 (parse-partial-sexp (point-min) (point))
-                               (syntax-ppss)))(setq done t)))
-            (py-end-of-statement orig origline done))
+            (cond ((and (nth 3 pps)(nth 2 pps))
+                   (goto-char (nth 2 pps))
+                   (when (looking-at "\"\"\"\\|'''")
+                     (goto-char (match-end 0))
+                     (while (and (re-search-forward (match-string-no-properties 0) nil (quote move) 1)(py-escaped))))
+                   (setq done t)
+                   (end-of-line)
+                   (skip-chars-backward " \t\r\n\f" (line-beginning-position))
+                   (setq erg (point))
+                   (py-end-of-statement orig origline done))
+                  ;; in comment
+                  ((nth 4 pps)
+                   (if (eobp)
+                       nil
+                     (forward-line 1)
+                     (end-of-line)
+                     (skip-chars-backward " \t\r\n\f" (line-beginning-position))
+                     (setq erg (point))
+                     (setq done t)
+                     (py-end-of-statement orig origline done)))
+                  (t
+                   (goto-char (nth 8 pps))
+                   (when (looking-at "\"\"\"\\|'''\\|\"\\|'")
+                     (goto-char (match-end 0)))
+                   (while (and (re-search-forward "[^\\]\"\"\"\\|[^\\]'''\\|[^\\]\"\\|[^\\]'" nil (quote move) 1)
+                               (nth 3
+                                    (if (featurep 'xemacs)
+                                        (parse-partial-sexp (point-min) (point))
+                                      (syntax-ppss)))(setq done t)))
+                   (py-end-of-statement orig origline done))))
            ((nth 3 pps)
             (when (looking-at "\"\"\"\\|'''\\|\"\\|'")
               (goto-char (match-end 0)))
@@ -661,7 +662,7 @@ http://docs.python.org/reference/compound_stmts.html
            ;;  (forward-line 1)
            ;;
            ;;  (py-end-of-statement orig origline done))
-           ((and (looking-at "[ \t]*#")(looking-back "^[ \t]*")(not done))
+           ((and (looking-at "[ \t]*#")(looking-back "^[ \t]*"))
             (while (and (looking-at "[ \t]*#") (forward-line 1)(not (eobp))
                         (beginning-of-line))
               (setq done t))
@@ -687,26 +688,26 @@ http://docs.python.org/reference/compound_stmts.html
                     (setq done t)
                     (py-end-of-statement orig origline done))
                 (goto-char orig))))
-           ((and (eq (point) orig)(not (looking-at "[ \t]*$")))
-            (end-of-line)
-            (py-beginning-of-comment)
-            (skip-chars-backward " \t")
-            (if (< orig (point))
-                (py-end-of-statement orig origline t)
-              (py-forward-line)
-              (py-end-of-statement orig origline done)))
-           ((and (eq orig (point))(looking-at "[ \t]*$")(not (eobp)))
-            (py-forward-line)
-            (end-of-line)
-            (skip-chars-backward " \t\r\n\f" (line-beginning-position))
-            (setq done t)
-            (py-end-of-statement orig origline done))
-           ((and (eq orig (point))(not (eobp)))
-            (py-forward-line)
-            (py-end-of-statement orig origline done))
+           ((eq (point) orig)
+            (cond ((not (looking-at "[ \t]*$"))
+                   (end-of-line)
+                   (py-beginning-of-comment)
+                   (skip-chars-backward " \t")
+                   (if (< orig (point))
+                       (py-end-of-statement orig origline t)
+                     (py-forward-line)
+                     (py-end-of-statement orig origline done)))
+                  ((and (looking-at "[ \t]*$")(not (eobp)))
+                   (py-forward-line)
+                   (setq done t)
+                   (py-end-of-statement orig origline done))
+                  ((not (eobp))
+                   (py-forward-line)
+                   (py-end-of-statement orig origline done))))
            ((and (bolp) (not (empty-line-p)))
             (end-of-line)
             (skip-chars-backward " \t\r\n\f" (line-beginning-position))
+            (py-beginning-of-comment) 
             (setq done t)
             (py-end-of-statement orig origline done))
            ((looking-at "\\.\\([A-Za-z_][A-Za-z_0-9]*\\)")
@@ -817,9 +818,9 @@ Returns beginning and end positions of marked area, a cons. "
   (exchange-point-and-mark))
 
 (defun py-beginning-of-decorator ()
-  "Go to the beginning of a decorator. 
+  "Go to the beginning of a decorator.
 
-Returns position if succesful " 
+Returns position if succesful "
   (interactive)
   (back-to-indentation)
   (while (and (not (looking-at "@\\w+"))(not (empty-line-p))(not (bobp))(forward-line -1))
@@ -829,9 +830,9 @@ Returns position if succesful "
     erg))
 
 (defun py-end-of-decorator ()
-    "Go to the end of a decorator. 
+    "Go to the end of a decorator.
 
-Returns position if succesful " 
+Returns position if succesful "
   (interactive)
   (let ((orig (point)) erg)
     (unless (looking-at "@\\w+")
@@ -1090,7 +1091,7 @@ Travels right-margin comments. "
     (py-beginning-of-comment)
     (skip-chars-backward " \t")))
 
-(defun py-beginning-of-comment (&optional count)
+(defun py-beginning-of-comment ()
   "Go to the beginning of current line's comment, if any. "
   (interactive)
   (save-restriction
