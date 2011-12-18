@@ -198,15 +198,17 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-end-of-print-statement-test \
 --funcall nested-try-test \
 --funcall nested-if-test \
---funcall nested-try-finally-test \
 --funcall py-shebang-consider-ipython-lp-849293-test \
---funcall py-insert-super-python2-test \
 --funcall py-insert-super-python3-test \
 --funcall UnicodeEncodeError-python3-test \
 --funcall UnicodeEncodeError-lp:550661-test \
+--funcall py-shell-complete-test \
+--funcall py-completion-at-point-test \
 --funcall py-shebang-ipython-env-lp-849293-test \
 --funcall py-execute-block-test \
 --funcall master-file-not-honored-lp:794850-test \
+--funcall py-insert-super-python2-test \
+--funcall nested-try-finally-test \
 
 else
 

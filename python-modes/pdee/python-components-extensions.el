@@ -25,16 +25,16 @@
 
 ;;; Code:
 
-(unless py-mode-map
-  (setq py-mode-map (make-sparse-keymap)))
-
-(define-key py-mode-map [(super s)] 'suche-settrace)
-(define-key py-mode-map  [(super I)] 'py-indent-line)
-(define-key py-mode-map  [(super i)] 'py-indent-forward-line)
-(define-key py-mode-map [(control meta n)]  'py-end-of-block)
-(define-key py-mode-map [(control meta p)] 'py-beginning-of-block)
-(define-key py-mode-map [(control return)] 'py-newline-and-dedent)
-(define-key py-mode-map [(super backspace)] 'py-dedent-forward-line)
+;; (unless py-mode-map
+;;   (setq py-mode-map (make-sparse-keymap)))
+;; 
+;; (define-key py-mode-map [(super s)] 'suche-settrace)
+;; (define-key py-mode-map  [(super I)] 'py-indent-line)
+;; (define-key py-mode-map  [(super i)] 'py-indent-forward-line)
+;; (define-key py-mode-map [(control meta n)]  'py-end-of-block)
+;; (define-key py-mode-map [(control meta p)] 'py-beginning-of-block)
+;; (define-key py-mode-map [(control return)] 'py-newline-and-dedent)
+;; (define-key py-mode-map [(super backspace)] 'py-dedent-forward-line)
 
 (defcustom py-match-paren-mode nil
   "*Non-nil means, cursor will jump to beginning or end of a block.

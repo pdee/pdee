@@ -51,7 +51,6 @@
   :type 'string
   :group 'convenience)
 
-;;;###autoload
 (defun rstrip (str &optional chars-after)
   "Return a string or change region with trailing characters
  removed. Defaults to the value uof
@@ -132,7 +131,6 @@ If no string is delivered but region is active, strip region.
         (message "%s" (looking-at empty-line-p-chars)))
       (looking-at empty-line-p-chars))))
 
-;;;###autoload
 (unless (functionp 'in-string-p)
   (defun in-string-p (&optional pos)
     (let ((orig (or pos (point))))

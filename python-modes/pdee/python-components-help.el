@@ -113,7 +113,7 @@ Useful for newly defined symbol, not known to python yet. "
                 keys (concat
                       "Key(s): "
                       (mapconcat 'key-description
-                                 (where-is-internal func py-mode-map)
+                                 (where-is-internal func python-mode-map)
                                  ", "))))
          ((equal funckind "v")          ; variable
           (setq funcdoc (documentation-property func 'variable-documentation)

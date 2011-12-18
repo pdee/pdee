@@ -714,9 +714,6 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
   (switch-to-buffer (current-buffer))
   (goto-char 34)
   (sit-for 0.1)
-  (message "Pos: %s" (point))
-  (message "(py-compute-indentation): %s" (py-compute-indentation))
-  (message "%s" (describe-function 'py-compute-indentation))
   ;; (debug-on-entry 'py-compute-indentation)
   (assert (eq 8 (py-compute-indentation)) nil "fore-00007F-breaks-indentation-test #1 failed")
   (goto-char 121)
@@ -2117,7 +2114,6 @@ def main():
 
 (defun indent-offset-not-guessed-when-loading-lp:902890-base ()
     (assert (eq 2 py-indent-offset) nil "indent-offset-not-guessed-when-loading-lp:902890-test failed"))
-
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

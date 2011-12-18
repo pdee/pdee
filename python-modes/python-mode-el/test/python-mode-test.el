@@ -74,6 +74,8 @@
          'nested-try-test
          'nested-if-test
          'nested-try-finally-test
+         'py-shell-complete-test
+         'py-completion-at-point-test
          'UnicodeEncodeError-python3-test
 
          )))
@@ -922,6 +924,33 @@ def my_fun():
 (defun nested-try-finally-base ()
     (goto-char 431)
     (assert (eq 12 (py-compute-indentation)) nil "nested-try-finally-test failed"))
+
+
+(defun py-completion-at-point-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+pri"))
+  (when load-branch-function (funcall load-branch-function))
+  (py-bug-tests-intern 'py-completion-at-point-base arg teststring)))
+
+(defun py-completion-at-point-base ()
+    (py-completion-at-point)
+    (sit-for 0.1) 
+    (assert (looking-back "print") nil "py-completion-at-point-test failed"))
+
+(defun py-shell-complete-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+impo"))
+  (when load-branch-function (funcall load-branch-function))
+  (py-bug-tests-intern 'py-shell-complete-base arg teststring)))
+
+(defun py-shell-complete-base ()
+    (py-shell-complete)
+    (sit-for 0.1) 
+    (assert (looking-back "import") nil "py-completion-at-point-test failed"))
 
 (provide 'python-mode-test)
 ;;; python-mode-test.el ends here

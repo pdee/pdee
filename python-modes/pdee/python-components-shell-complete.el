@@ -186,7 +186,6 @@ and return collected output"
    (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point))
    (point)))
 
-;;;###autoload
 (defun py-shell-complete (&optional arg)
   "Complete word before point, if any. Otherwise insert TAB.
 With prefix argument \\[universal-argument] a TAB is inserted. "

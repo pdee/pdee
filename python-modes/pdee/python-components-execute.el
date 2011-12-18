@@ -188,7 +188,7 @@ Returns variable `py-process-name' used by function `get-process'.
     (add-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file)
     (setq py-pdbtrack-do-tracking-p t)
     ;;
-    (set-syntax-table py-mode-syntax-table)
+    (set-syntax-table python-mode-syntax-table)
     (ansi-color-for-comint-mode-on)
     (use-local-map py-shell-map)
     ;; ToDo: has only effect \w IPython
@@ -196,8 +196,6 @@ Returns variable `py-process-name' used by function `get-process'.
     (run-hooks 'py-shell-hook)
     (when (interactive-p) (message "%s" py-process-name))
     py-process-name))
-
-(declare-function compilation-shell-minor-mode "compile" (&optional arg))
 
 (defcustom py-remove-cwd-from-path t
   "Whether to allow loading of Python modules from the current directory.
@@ -283,11 +281,12 @@ Ignores setting of `py-shell-switch-buffers-on-execute', output-buffer will bein
     (set-buffer filebuf)
     (erase-buffer)
     (insert strg)
+    ;; (switch-to-buffer (current-buffer))
     (py-fix-start (point-min)(point-max))
     (py-if-needed-insert-shell name)
     (py-insert-coding)
     (py-insert-execute-directory)
-    (switch-to-buffer (current-buffer))
+
     (cond
      (async
       ;; User explicitly wants this to run in its own async subprocess
