@@ -76,6 +76,7 @@
          'nested-try-finally-test
          'py-shell-complete-test
          'py-completion-at-point-test
+         'tqs-list-error-test
          'UnicodeEncodeError-python3-test
 
          )))
@@ -207,7 +208,7 @@
 
 (defun py-electric-backspace-base ()
   (goto-char 232)
-  (py-newline-and-indent) 
+  (py-newline-and-indent)
   (assert (eq 241 (point)) nil "py-electric-backspace test #1 failed")
   (py-electric-backspace)
   (assert (eq 4 (current-column)) nil "py-electric-backspace test #2 failed")
@@ -238,20 +239,27 @@
 # -\*- coding: utf-8 -\*-\n
 print('\\xA9')"))
   (when load-branch-function (funcall load-branch-function))
-  (py-bug-tests-intern 'UnicodeEncodeError-python3-base arg teststring)))
+  (py-bug-tests-intern 'UnicodeEncodeError-python3-base 2 teststring)))
 
 (defun UnicodeEncodeError-python3-base ()
-  (goto-char 50)
-  (push-mark)
-  (end-of-line)
-  (py-choose-shell)
-  (py-execute-region (line-beginning-position) (point))
-  (goto-char (point-max))
-  (sit-for 0.1)
-  (or (looking-at "©")
-      (when (looking-back comint-prompt-regexp)
-        (goto-char (1- (match-beginning 0))))
-      (sit-for 0.1))
+  (let ((comint-use-prompt-regexp t)
+        (comint-prompt-regexp py-shell-input-prompt-1-regexp))
+    (goto-char 50)
+    (push-mark)
+    (end-of-line)
+    (py-choose-shell)
+    (message "%s" py-shell-name)
+    (py-execute-region (line-beginning-position) (point))
+    ;; (switch-to-buffer (concat "*" (capitalize py-shell-name) "*")) 
+    (set-buffer (concat "*" (capitalize py-shell-name) "*"))
+    (unless (eq (point) (point-max)) (goto-char (point-max)))
+    (sit-for 0.1)
+    (message "%s" comint-prompt-regexp)
+    (or (looking-at "©")
+        (when (looking-back comint-prompt-regexp)
+          (goto-char (1- (match-beginning 0))))
+        (sit-for 0.1)))
+  (message "%s %s" (point) (buffer-name))
   (assert (looking-back "©") nil "UnicodeEncodeError-python3-test failed"))
 
 (defun dict-error-test (&optional arg load-branch-function)
@@ -580,7 +588,7 @@ class OrderedDict1(dict):
 
 (defun py-insert-super-python2-base ()
     (ignore-errors (py-insert-super))
-    (sit-for 0.1) 
+    (sit-for 0.1)
     (assert (looking-back "super(OrderedDict1, self).__init__(d={})") nil "py-insert-super-python2-test failed"))
 
 (defun py-insert-super-python3-test (&optional arg load-branch-function)
@@ -711,7 +719,7 @@ if foo:
   (let ((teststring "if True:
     print \"asdf\""))
   (when load-branch-function (funcall load-branch-function))
-  (py-bug-tests-intern 'py-execute-block-base arg teststring)))
+  (py-bug-tests-intern 'py-execute-block-base 2 teststring)))
 
 (defun py-execute-block-base ()
   (beginning-of-line)
@@ -828,6 +836,7 @@ somme errors
 
 (defun py-end-of-print-statement-base ()
     (goto-char 66)
+    (sit-for 0.1)
     (assert (eq 146 (py-end-of-statement)) nil "py-end-of-print-statement-test failed"))
 
 (defun nested-try-test (&optional arg load-branch-function)
@@ -932,11 +941,11 @@ def my_fun():
 # -*- coding: utf-8 -*-
 pri"))
   (when load-branch-function (funcall load-branch-function))
-  (py-bug-tests-intern 'py-completion-at-point-base arg teststring)))
+  (py-bug-tests-intern 'py-completion-at-point-base 2 teststring)))
 
 (defun py-completion-at-point-base ()
     (py-completion-at-point)
-    (sit-for 0.1) 
+    (sit-for 0.1)
     (assert (looking-back "print") nil "py-completion-at-point-test failed"))
 
 (defun py-shell-complete-test (&optional arg load-branch-function)
@@ -945,12 +954,31 @@ pri"))
 # -*- coding: utf-8 -*-
 impo"))
   (when load-branch-function (funcall load-branch-function))
-  (py-bug-tests-intern 'py-shell-complete-base arg teststring)))
+  (py-bug-tests-intern 'py-shell-complete-base 2 teststring)))
 
 (defun py-shell-complete-base ()
     (py-shell-complete)
-    (sit-for 0.1) 
+    (sit-for 0.1)
     (assert (looking-back "import") nil "py-completion-at-point-test failed"))
+
+(defun tqs-list-error-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+class foo(bar, baz):
+    \"\"\"
+    foo is an ABC for matrix containers; i.e.,
+    \\\"\\\"\\\"containers of a finite number of orig
+\"\"\"
+    pass
+"))
+  (when load-branch-function (funcall load-branch-function))
+  (py-bug-tests-intern 'tqs-list-error-base 2 teststring)))
+
+(defun tqs-list-error-base ()
+    (goto-char 90)
+    (sit-for 0.1)
+    (assert (eq 175 (py-end-of-statement)) nil "tqs-list-error-test failed"))
 
 (provide 'python-mode-test)
 ;;; python-mode-test.el ends here

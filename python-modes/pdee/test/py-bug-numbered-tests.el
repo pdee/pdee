@@ -134,9 +134,9 @@
         (message "%s" (concat (replace-regexp-in-string "-base$" "-test" (prin1-to-string testname)) " passed"))
         (unless (< 1 arg)
           (set-buffer-modified-p 'nil)
-          (cond ((processp (get-process "Python3")) (kill-process "Python3"))
-                ((processp (get-process "Python2")) (kill-process "Python2"))
-                ((processp (get-process "Python")) (ignore-errors (kill-process "Python"))))
+          ;; (cond ((processp (get-process "Python3")) (kill-process "Python3"))
+          ;; ((processp (get-process "Python2")) (kill-process "Python2"))
+          ;; ((processp (get-process "Python")) (ignore-errors (kill-process "Python"))))
           (kill-buffer (current-buffer))))
     (with-temp-buffer
       (let ((font-lock-verbose nil))
@@ -360,8 +360,10 @@ class f():
 (defun beg-end-of-defun-lp:303622 ()
   (goto-char 13)
   (py-end-of-def-or-class)
+  (sit-for 0.1) 
   (assert (eq 275 (point)) nil "beg-end-of-defun-lp:303622-test #1 failed!")
   (beginning-of-defun)
+  (sit-for 0.1) 
   (assert (eq 2 (point)) nil "beg-end-of-defun-lp:303622-test #2 failed!"))
 
 (defun dq-in-tqs-string-lp:328813-test (&optional arg load-branch-function)
@@ -623,7 +625,7 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
 print u'\\xA9'
 "))
     (when load-branch-function (funcall load-branch-function))
-    (py-bug-tests-intern 'UnicodeEncodeError-lp:550661-base arg teststring)))
+    (py-bug-tests-intern 'UnicodeEncodeError-lp:550661-base 2 teststring)))
 
 (defun UnicodeEncodeError-lp:550661-base ()
   (let ((py-shell-switch-buffers-on-execute t))
@@ -1580,7 +1582,7 @@ if foo:
     print \"hello\"
 "))
   (when load-branch-function (funcall load-branch-function))
-  (py-bug-tests-intern 'execute-indented-code-lp:828314-base arg teststring)))
+  (py-bug-tests-intern 'execute-indented-code-lp:828314-base 2 teststring)))
 
 (defun execute-indented-code-lp:828314-base ()
   (let ((debug-on-error t))
@@ -1929,7 +1931,7 @@ def foo():
 pri
 "))
   (when load-branch-function (funcall load-branch-function))
-  (py-bug-tests-intern 'py-complete-lp:858621-base arg teststring)))
+  (py-bug-tests-intern 'py-complete-lp:858621-base 2 teststring)))
 
 (defun py-complete-lp:858621-base ()
     (goto-char 52)
@@ -2041,7 +2043,7 @@ import sys
 
 "))
   (when load-branch-function (funcall load-branch-function))
-  (py-bug-tests-intern 'py-shell-complete-lp-328836-base arg teststring)))
+  (py-bug-tests-intern 'py-shell-complete-lp-328836-base 2 teststring)))
 
 (defun py-shell-complete-lp-328836-base ()
   (python-dedicated)

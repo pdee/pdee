@@ -737,6 +737,53 @@ Currently-active file is at the head of the list.")
 (defvar python-command py-shell-name)
 
 
+
+(defun py-load-pymacs ()
+  "Load Pymacs as delivered with python-mode.el.
+
+Pymacs has been written by François Pinard and many others.
+See original source: http://pymacs.progiciels-bpi.ca"
+  (interactive)
+  (if (or (not (boundp 'py-install-directory)) (not (stringp py-install-directory)))
+      (error "`py-install-directory' not set, see INSTALL")
+    (load (concat py-install-directory "/pymacs/pymacs.el") nil t)
+    (add-to-list 'load-path (concat py-install-directory "/pymacs/pymacs.el"))
+    (setenv "PYMACS_PYTHON" "python2.7")
+    (autoload 'pymacs-apply "pymacs")
+    (autoload 'pymacs-call "pymacs")
+    (autoload 'pymacs-eval "pymacs")
+    (autoload 'pymacs-exec "pymacs")
+    (autoload 'pymacs-load "pymacs")
+    (require 'pymacs)))
+
+(defun py-guess-py-install-directory ()
+  (interactive)
+  (let* ((bufn (buffer-file-name))
+         (erg (when (or (string-match "python-mode.el" bufn)(string-match "python-components-mode.el" bufn)) (file-name-directory (buffer-file-name)))))
+    (when erg
+      (add-to-list 'load-path erg)
+      (setq py-install-directory erg)
+      (when (interactive-p) (message "%s" erg))
+      erg)))
+
+(defun py-set-load-path ()
+  "Include needed subdirs of python-mode directory. "
+  (interactive)
+  (cond (py-install-directory
+         (add-to-list 'load-path (expand-file-name py-install-directory))
+         (add-to-list 'load-path (concat (expand-file-name py-install-directory) "/completion"))
+         (add-to-list 'load-path (concat py-install-directory "/pymacs"))
+         (add-to-list 'load-path (concat (expand-file-name py-install-directory) "/test"))
+         (add-to-list 'load-path (concat (expand-file-name py-install-directory) "/tools")))
+        ((when py-guess-py-install-directory-p
+         (py-guess-py-install-directory)))
+        (t (error "Please set `py-install-directory', see INSTALL"))
+        (when (interactive-p) (message "%s" load-path))))
+
+(when (boundp 'py-install-directory) (py-set-load-path))
+;; don't require `py-install-directory' for now
+(py-set-load-path)
+
 (add-to-list 'interpreter-mode-alist (cons (purecopy "jython") 'jython-mode))
 (add-to-list 'interpreter-mode-alist (cons (purecopy "python") 'python-mode))
 (add-to-list 'auto-mode-alist (cons (purecopy "\\.py\\'")  'python-mode))
@@ -3203,6 +3250,30 @@ Interactively, prompt for the name with completion."
 ;; (setq pdb-path '/usr/lib/python2.7/pdb.py
 ;;      gud-pdb-command-name (symbol-name pdb-path))
 
+
+(eval-when-compile
+  (add-to-list 'load-path default-directory))
+(require 'python-components-edit)
+(require 'python-components-intern)
+(require 'python-components-move)
+(require 'python-components-execute)
+(require 'python-components-send)
+(require 'python-components-pdb)
+;;(require 'python-components-skeletons)
+(require 'python-components-help)
+(require 'python-components-extensions)
+;; (require 'thingatpt-python-expressions)
+(require 'python-components-imenu)
+(require 'python-components-completion)
+(require 'python-components-named-shells)
+(require 'python-components-dedicated-shells)
+(require 'python-components-shell-complete)
+(require 'python-components-electric)
+
+;;(require 'components-shell-completion)
+
+(require 'python-mode-test)
+
 (define-derived-mode python-mode fundamental-mode "Python"
   "Major mode for editing Python files.
 
@@ -3370,52 +3441,6 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
       (when (interactive-p) (message "%s" "pdb.py not found, please customize `pdb-path'")))
     (concat "'" erg)))
 
-(defun py-load-pymacs ()
-  "Load Pymacs as delivered with python-mode.el.
-
-Pymacs has been written by François Pinard and many others.
-See original source: http://pymacs.progiciels-bpi.ca"
-  (interactive)
-  (if (or (not (boundp 'py-install-directory)) (not (stringp py-install-directory)))
-      (error "`py-install-directory' not set, see INSTALL")
-    (load (concat py-install-directory "/pymacs/pymacs.el") nil t)
-    (add-to-list 'load-path (concat py-install-directory "/pymacs/pymacs.el"))
-    (setenv "PYMACS_PYTHON" "python2.7")
-    (autoload 'pymacs-apply "pymacs")
-    (autoload 'pymacs-call "pymacs")
-    (autoload 'pymacs-eval "pymacs")
-    (autoload 'pymacs-exec "pymacs")
-    (autoload 'pymacs-load "pymacs")
-    (require 'pymacs)))
-
-(defun py-guess-py-install-directory ()
-  (interactive)
-  (let* ((bufn (buffer-file-name))
-         (erg (when (or (string-match "python-mode.el" bufn)(string-match "python-components-mode.el" bufn)) (file-name-directory (buffer-file-name)))))
-    (when erg
-      (add-to-list 'load-path erg)
-      (setq py-install-directory erg)
-      (when (interactive-p) (message "%s" erg))
-      erg)))
-
-(defun py-set-load-path ()
-  "Include needed subdirs of python-mode directory. "
-  (interactive)
-  (cond (py-install-directory
-         (add-to-list 'load-path (expand-file-name py-install-directory))
-         (add-to-list 'load-path (concat (expand-file-name py-install-directory) "/completion"))
-         (add-to-list 'load-path (concat py-install-directory "/pymacs"))
-         (add-to-list 'load-path (concat (expand-file-name py-install-directory) "/test"))
-         (add-to-list 'load-path (concat (expand-file-name py-install-directory) "/tools")))
-        ((when py-guess-py-install-directory-p
-         (py-guess-py-install-directory)))
-        (t (error "Please set `py-install-directory', see INSTALL"))
-        (when (interactive-p) (message "%s" load-path))))
-
-(when (boundp 'py-install-directory) (py-set-load-path))
-;; don't require `py-install-directory' for now
-(py-set-load-path)
-
 (unless (featurep 'xemacs)
   (ignore-errors (require 'highlight-indentation)))
 
@@ -3436,29 +3461,6 @@ See original source: http://pymacs.progiciels-bpi.ca"
 ;; (custom-add-option 'python-mode-hook 'turn-on-eldoc-mode)
 (custom-add-option 'python-mode-hook 'abbrev-mode)
 ;; (custom-add-option 'python-mode-hook 'py-setup-brm)
-
-(eval-when-compile
-  (add-to-list 'load-path default-directory))
-(require 'python-components-edit)
-(require 'python-components-intern)
-(require 'python-components-move)
-(require 'python-components-execute)
-(require 'python-components-send)
-(require 'python-components-pdb)
-;;(require 'python-components-skeletons)
-(require 'python-components-help)
-(require 'python-components-extensions)
-;; (require 'thingatpt-python-expressions)
-(require 'python-components-imenu)
-(require 'python-components-completion)
-(require 'python-components-named-shells)
-(require 'python-components-dedicated-shells)
-(require 'python-components-shell-complete)
-(require 'python-components-electric)
-
-;;(require 'components-shell-completion)
-
-(require 'python-mode-test)
 
 (if py-mode-output-map
     nil
