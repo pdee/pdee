@@ -250,7 +250,7 @@ print('\\xA9')"))
     (py-choose-shell)
     (message "%s" py-shell-name)
     (py-execute-region (line-beginning-position) (point))
-    ;; (switch-to-buffer (concat "*" (capitalize py-shell-name) "*")) 
+    ;; (switch-to-buffer (concat "*" (capitalize py-shell-name) "*"))
     (set-buffer (concat "*" (capitalize py-shell-name) "*"))
     (unless (eq (point) (point-max)) (goto-char (point-max)))
     (sit-for 0.1)
@@ -934,7 +934,6 @@ def my_fun():
     (goto-char 431)
     (assert (eq 12 (py-compute-indentation)) nil "nested-try-finally-test failed"))
 
-
 (defun py-completion-at-point-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
@@ -979,6 +978,27 @@ class foo(bar, baz):
     (goto-char 90)
     (sit-for 0.1)
     (assert (eq 175 (py-end-of-statement)) nil "tqs-list-error-test failed"))
+
+;; (defun index-menu-test (&optional arg load-branch-function)
+;;   (interactive "p")
+;;   (let ((teststring "#! /usr/bin/env python
+;; # -*- coding: utf-8 -*-
+;; 
+;; class OrderedDict1(dict):
+;;     \"\"\"
+;;     This implementation of a dictionary keeps track of the order
+;;     in which keys were inserted.
+;;     \"\"\"
+;; 
+;;     def __init__(self, d={}):
+;;         self._keys = d.keys()
+;;         dict.__init__(self, d)
+;; "))
+;;   (when load-branch-function (funcall load-branch-function))
+;;   (py-bug-tests-intern 'index-menu-base arg teststring)))
+
+;; (defun index-menu-base ()
+;;   (assert (string= "IM-Python" (nth 2 (nth 2 (cadr (current-local-map))))) nil "index-menu-test failed"))
 
 (provide 'python-mode-test)
 ;;; python-mode-test.el ends here

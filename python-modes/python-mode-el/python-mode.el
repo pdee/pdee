@@ -7412,7 +7412,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
 (defun py-guess-py-install-directory ()
   (interactive)
   (let* ((bufn (buffer-file-name))
-         (erg (when (or (string-match "python-mode.el" bufn)(string-match "python-components-mode.el" bufn)) (file-name-directory (buffer-file-name))))) 
+         (erg (when (or (string-match "python-mode.el" bufn)(string-match "python-components-mode.el" bufn)) (file-name-directory (buffer-file-name)))))
     (when erg
       (add-to-list 'load-path erg)
       (setq py-install-directory erg)
@@ -7455,7 +7455,7 @@ py-shell-name\t\tshell command to invoke Python interpreter
 py-temp-directory\t\tdirectory used for temp files (if needed)
 py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
 
-\\{py-mode-map}"
+\\{python-mode-map}"
   :group 'python
   (set (make-local-variable 'font-lock-defaults)
        '(python-font-lock-keywords nil nil nil nil
@@ -7522,22 +7522,14 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
        'py-beginning-of-def-or-class)
   ;; (set (make-local-variable 'end-of-defun-function) 'python-end-of-defun)
   (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class)
-
   (add-hook 'which-func-functions 'python-which-func nil t)
-  ;; add the menu
-  (if py-menu
-      (easy-menu-add py-menu))
-  ;; Emacs 19 requires this
-  (if (boundp 'comment-multi-line)
-      (setq comment-multi-line nil))
   (when (ignore-errors (require 'imenu))
-    ;; (setq imenu-create-index-function #'python-imenu-create-index)
     (setq imenu-create-index-function #'py-imenu-create-index-new)
+    ;;    (setq imenu-create-index-function #'py-imenu-create-index)
     (setq imenu-generic-expression py-imenu-generic-expression)
     (when (fboundp 'imenu-add-to-menubar)
       (imenu-add-to-menubar (format "%s-%s" "IM" mode-name))
       (remove-hook 'imenu-add-menubar-index 'python-mode-hook)))
-
   (set (make-local-variable 'eldoc-documentation-function)
        #'python-eldoc-function)
   (add-hook 'eldoc-mode-hook
@@ -7547,11 +7539,6 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   ;; 'python-completion-at-point nil 'local)
   (add-hook 'completion-at-point-functions
             py-complete-function nil 'local)
-  (define-key inferior-python-mode-map [remap complete-symbol]
-    'completion-at-point)
-  (define-key inferior-python-mode-map (kbd "<tab>")
-    'python-shell-completion-complete-or-indent)
-
   (set (make-local-variable 'skeleton-further-elements)
        '((< '(backward-delete-char-untabify (min python-indent
                                                  (current-column))))
@@ -7584,6 +7571,17 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
         (find-file (concat py-install-directory "/completion/pycomplete.el"))
         (eval-buffer)
         (kill-buffer "pycomplete.el"))
+  (define-key inferior-python-mode-map (kbd "<tab>")
+    'python-shell-completion-complete-or-indent)
+  ;; add the menu
+  (if py-menu
+      (easy-menu-add py-menu))
+  ;; shell-complete end
+  ;; Run the mode hook.  Note that py-mode-hook is deprecated.
+  (run-mode-hooks
+   (if python-mode-hook
+       'python-mode-hook
+     'py-mode-hook))
   (when py-start-run-py-shell
     ;; py-shell may split window, provide restore
     (window-configuration-to-register 213465879)
