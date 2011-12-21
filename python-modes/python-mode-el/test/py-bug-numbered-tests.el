@@ -116,6 +116,7 @@
          'py-shebang-consider-ipython-lp-849293-test
          'py-shebang-ipython-env-lp-849293-test
          'indent-offset-not-guessed-when-loading-lp:902890-test
+         'from-__future__-import-absolute_import-mishighlighted-lp-907084-test
          'UnicodeEncodeError-lp:550661-test
          'py-shell-complete-lp-328836-test
 
@@ -360,10 +361,10 @@ class f():
 (defun beg-end-of-defun-lp:303622 ()
   (goto-char 13)
   (py-end-of-def-or-class)
-  (sit-for 0.1) 
+  (sit-for 0.1)
   (assert (eq 275 (point)) nil "beg-end-of-defun-lp:303622-test #1 failed!")
   (beginning-of-defun)
-  (sit-for 0.1) 
+  (sit-for 0.1)
   (assert (eq 2 (point)) nil "beg-end-of-defun-lp:303622-test #2 failed!"))
 
 (defun dq-in-tqs-string-lp:328813-test (&optional arg load-branch-function)
@@ -698,6 +699,7 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
     (sit-for 0.1)
     (assert (eq (get-char-property (point) 'face) 'font-lock-string-face) nil "class-treated-as-keyword-lp:709478d 1th test failed")
     (goto-char 57)
+    ;; (assert (if (get-char-property (point) 'face)(eq (get-char-property (point) 'face) 'py-variable-name-face)t) nil "class-treated-as-keyword-lp:709478-test 2th failed")))
     (assert (eq (get-char-property (point) 'face) 'py-variable-name-face) nil "class-treated-as-keyword-lp:709478-test 2th failed")))
 
 (defun fore-00007F-breaks-indentation-lp:328788-test (&optional arg load-branch-function)
@@ -1114,7 +1116,7 @@ list.\"\"\"
   (let ((font-lock-verbose nil))
     (goto-char 7)
     (font-lock-fontify-buffer)
-    (sit-for 0.1)
+    ;; (sit-for 0.1)
     (assert (eq (get-char-property (point) 'face) 'py-class-name-face) nil "class-highlighted-as-keywords-lp:798287-test failed")))
 
 (defun indent-function-arglist-lp:800088-test (&optional arg load-branch-function)
@@ -2116,6 +2118,21 @@ def main():
 
 (defun indent-offset-not-guessed-when-loading-lp:902890-base ()
     (assert (eq 2 py-indent-offset) nil "indent-offset-not-guessed-when-loading-lp:902890-test failed"))
+
+(defun from-__future__-import-absolute_import-mishighlighted-lp-907084-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import
+"))
+  (when load-branch-function (funcall load-branch-function))
+  (py-bug-tests-intern 'from-__future__-import-absolute_import-mishighlighted-lp-907084-base arg teststring)))
+
+(defun from-__future__-import-absolute_import-mishighlighted-lp-907084-base ()
+  (font-lock-fontify-buffer)
+  (goto-char 82)
+  (assert (not (eq (get-char-property (point) 'face) 'font-lock-keyword-face)) nil "from-__future__-import-absolute_import-mishighlighted-lp-907084-test failed"))
+
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

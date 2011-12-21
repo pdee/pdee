@@ -828,6 +828,13 @@ also insert a newline. "
     (when (interactive-p) (message "%s" erg))
     erg))
 
+(defun ar-face-atpt ()
+  "Report and return face at point. "
+  (interactive)
+  (let ((erg (get-char-property (point) 'face)))
+    (when (interactive-p) (message "%s" erg))
+    erg))
+
 (provide 'misc-utils)
 ;;; misc-utils.el ends here
 

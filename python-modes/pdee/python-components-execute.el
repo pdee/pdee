@@ -79,8 +79,6 @@ element matches `py-shell-name'."
   "Caches (directory . file) pair used in the last `py-load-file' command.
 Used for determining the default in the next one.")
 
-(autoload 'comint-get-source "comint")
-
 (defvar py-exception-buffer nil)
 
 (defvar py-output-buffer "*Python Output*")

@@ -33,7 +33,7 @@
 (require 'ansi-color)
 (require 'cc-cmds)
 (require 'shell)
-(require 'help-fns)
+;; (require 'help-fns)
 
 (defgroup python nil
   "Support for the Python programming language, <http://www.python.org/>"
@@ -789,175 +789,8 @@ See original source: http://pymacs.progiciels-bpi.ca"
 (add-to-list 'auto-mode-alist (cons (purecopy "\\.py\\'")  'python-mode))
 (add-to-list 'same-window-buffer-names (purecopy "*Python*"))
 
-;;; Font lock
-(defvar python-font-lock-keywords
-  (let ((kw1 (mapconcat 'identity
-                        '("and"      "assert"   "break"     "class"
-                          "continue" "def"      "del"       "elif"
-                          "else"     "except"   "for"       "from"
-                          "global"   "if"       "import"    "in"
-                          "is"       "lambda"   "not"       "or"
-                          "pass"     "raise"    "as"        "return"
-                          "while"    "with"    "yield")
-                        "\\|"))
-        (kw2 (mapconcat 'identity
-                        '("else:" "except:" "finally:" "try:" "lambda:")
-                        "\\|"))
-        (kw3 (mapconcat 'identity
-                        ;; Don't include Ellipsis in this list, since it is
-                        ;; already defined as a pseudo keyword.
-                        '("__debug__"
-                          "__import__" "__name__" "abs" "all" "any" "apply"
-                          "basestring" "bin" "bool" "buffer" "bytearray"
-                          "callable" "chr" "classmethod" "cmp" "coerce"
-                          "compile" "complex" "copyright" "credits"
-                          "delattr" "dict" "dir" "divmod" "enumerate" "eval"
-                          "exec" "execfile" "exit" "file" "filter" "float"
-                          "format" "getattr" "globals" "hasattr" "hash" "help"
-                          "hex" "id" "input" "int" "intern" "isinstance"
-                          "issubclass" "iter" "len" "license" "list" "locals"
-                          "long" "map" "max" "memoryview" "min" "next"
-                          "object" "oct" "open" "ord" "pow" "print" "property"
-                          "quit" "range" "raw_input" "reduce" "reload" "repr"
-                          "round" "set" "setattr" "slice" "sorted"
-                          "staticmethod" "str" "sum" "super" "tuple" "type"
-                          "unichr" "unicode" "vars" "xrange" "zip"
-
-                          "bin" "bytearray" "bytes" "format"
-
-                          "memoryview" "next" "print")
-                        "\\|"))
-        (kw4 (mapconcat 'identity
-                        ;; Exceptions and warnings
-                        '("ArithmeticError" "AssertionError"
-                          "AttributeError" "BaseException" "BufferError"
-                          "BytesWarning" "DeprecationWarning" "EOFError"
-                          "EnvironmentError" "Exception"
-                          "FloatingPointError" "FutureWarning" "GeneratorExit"
-                          "IOError" "ImportError" "ImportWarning"
-                          "IndentationError" "IndexError"
-                          "KeyError" "KeyboardInterrupt" "LookupError"
-                          "MemoryError" "NameError" "NotImplemented"
-                          "NotImplementedError" "OSError" "OverflowError"
-                          "PendingDeprecationWarning" "ReferenceError"
-                          "RuntimeError" "RuntimeWarning" "StandardError"
-                          "StopIteration" "SyntaxError" "SyntaxWarning"
-                          "SystemError" "SystemExit" "TabError" "TypeError"
-                          "UnboundLocalError" "UnicodeDecodeError"
-                          "UnicodeEncodeError" "UnicodeError"
-                          "UnicodeTranslateError" "UnicodeWarning"
-                          "UserWarning" "ValueError" "Warning"
-                          "ZeroDivisionError")
-                        "\\|")))
-    (list
-     ;; decorators
-     '("^[ \t]*\\(@[a-zA-Z_][a-zA-Z_0-9.]+\\)\\((.+)\\)?" 1 'py-decorators-face)
-     ;; keywords
-     (cons (concat "\\<\\(" kw1 "\\)\\>[ \n\t(]") 1)
-     ;; builtins when they don't appear as object attributes
-     (list (concat "\\([ \t(]\\|^\\)\\<\\(" kw3 "\\)\\>[ \n\t(]") 2
-           'py-builtins-face)
-     ;; block introducing keywords with immediately following colons.
-     ;; Yes "except" is in both lists.
-     (cons (concat "\\<\\(" kw2 "\\)[ \n\t(]") 1)
-     ;; Exceptions
-     (list (concat "\\<\\(" kw4 "\\)[ \n\t:,()]") 1 'py-exception-name-face)
-     ;; raise stmts
-     '("\\<raise[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_.]*\\)" 1 py-exception-name-face)
-     ;; except clauses
-     '("\\<except[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_.]*\\)" 1 py-exception-name-face)
-     ;; classes
-     '("\\<class[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_]*\\)" 1 py-class-name-face)
-     ;; functions
-     '("\\<def[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_]*\\)"
-       1 font-lock-function-name-face)
-     ;; pseudo-keywords
-     '("\\<\\(self\\|cls\\|Ellipsis\\|True\\|False\\|None\\)\\>"
-       1 py-pseudo-keyword-face)
-     '("[ \t]*\\(_\\{0,2\\}[a-zA-Z][a-zA-Z_0-9.]+_\\{0,2\\}\\) *\\(+\\|-\\|*\\|*\\*\\|/\\|//\\|&\\|%\\||\\|\\^\\|>>\\|<<\\)? ?=[^=\n]"
-       1 py-variable-name-face)
-     ;; XXX, TODO, and FIXME tags
-     '("XXX\\|TODO\\|FIXME" 0 py-XXX-tag-face t)
-     ;; special marking for string escapes and percent substitutes;
-     ;; loops adapted from lisp-mode in font-lock.el
-     ;; '((lambda (bound)
-     ;;     (catch 'found
-     ;;       (while (re-search-forward
-     ;;               (concat
-     ;;                "\\(\\\\\\\\\\|\\\\x..\\|\\\\u....\\|\\\\U........\\|"
-     ;;                "\\\\[0-9][0-9]*\\|\\\\[abfnrtv\"']\\)") bound t)
-     ;;         (let ((face (get-text-property (1- (point)) 'face)))
-     ;;           (when (or (and (listp face) (memq 'font-lock-string-face face))
-     ;;                     (eq 'font-lock-string-face face))
-     ;;             (throw 'found t))))))
-     ;;   (1 'font-lock-regexp-grouping-backslash prepend))
-     ;; '((lambda (bound)
-     ;;     (catch 'found
-     ;;       (while (re-search-forward "\\(%[^(]\\|%([^)]*).\\)" bound t)
-     ;;         (let ((face (get-text-property (1- (point)) 'face)))
-     ;;           (when (or (and (listp face) (memq 'font-lock-string-face face))
-     ;;                     (eq 'font-lock-string-face face))
-     ;;             (throw 'found t))))))
-     ;;   (1 'font-lock-regexp-grouping-construct prepend))
-     ))
-  "Additional expressions to highlight in Python mode.")
-
-(defconst python-font-lock-syntactic-keywords
-  ;; Make outer chars of matching triple-quote sequences into generic
-  ;; string delimiters.  Fixme: Is there a better way?
-  ;; First avoid a sequence preceded by an odd number of backslashes.
-  `((,(concat "\\(?:\\([RUru]\\)[Rr]?\\|^\\|[^\\]\\(?:\\\\.\\)*\\)" ;Prefix.
-              "\\(?:\\('\\)'\\('\\)\\|\\(?2:\"\\)\"\\(?3:\"\\)\\)")
-     (1 (python-quote-syntax 1) nil lax)
-     (2 (python-quote-syntax 2))
-     (3 (python-quote-syntax 3)))
-    ;; This doesn't really help.
-;   (,(rx (and ?\\ (group ?\n))) (1 " "))
-    ))
-
-;;; Syntax
-(defun python-quote-syntax (n)
-  "Put `syntax-table' property correctly on triple quote.
-Used for syntactic keywords.  N is the match number (1, 2 or 3)."
-  ;; Given a triple quote, we have to check the context to know
-  ;; whether this is an opening or closing triple or whether it's
-  ;; quoted anyhow, and should be ignored.  (For that we need to do
-  ;; the same job as `syntax-ppss' to be correct and it seems to be OK
-  ;; to use it here despite initial worries.)  We also have to sort
-  ;; out a possible prefix -- well, we don't _have_ to, but I think it
-  ;; should be treated as part of the string.
-
-  ;; Test cases:
-  ;;  ur"""ar""" x='"' # """
-  ;; x = ''' """ ' a
-  ;; '''
-  ;; x '"""' x """ \"""" x
-  (save-excursion
-    (goto-char (match-beginning 0))
-    (cond
-     ;; Consider property for the last char if in a fenced string.
-     ((= n 3)
-      (let* ((font-lock-syntactic-keywords nil)
-	     (syntax (syntax-ppss)))
-	(when (eq t (nth 3 syntax))	; after unclosed fence
-	  (goto-char (nth 8 syntax))	; fence position
-	  (skip-chars-forward "uUrR")	; skip any prefix
-	  ;; Is it a matching sequence?
-	  (if (eq (char-after) (char-after (match-beginning 2)))
-	      (eval-when-compile (string-to-syntax "|"))))))
-     ;; Consider property for initial char, accounting for prefixes.
-     ((or (and (= n 2)			; leading quote (not prefix)
-	       (not (match-end 1)))     ; prefix is null
-	  (and (= n 1)			; prefix
-	       (match-end 1)))          ; non-empty
-      (let ((font-lock-syntactic-keywords nil))
-	(unless (eq 'string (syntax-ppss-context (syntax-ppss)))
-	  (eval-when-compile (string-to-syntax "|")))))
-     ;; Otherwise (we're in a non-matching string) the property is
-     ;; nil, which is OK.
-)))
-
 ;;; Python specialized rx
+
 (eval-when-compile
   (defconst python-rx-constituents
     (list
@@ -991,9 +824,203 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
           (rx-to-string (car regexps) t)))))
 
 
+;;; Font-lock and syntax
+
+(defun python-info-ppss-context (type &optional syntax-ppss)
+  "Return non-nil if point is on TYPE using SYNTAX-PPSS.
+TYPE can be 'comment, 'string or 'paren.  It returns the start
+character address of the specified TYPE."
+  (let ((ppss (or syntax-ppss (syntax-ppss))))
+    (case type
+      ('comment
+       (and (nth 4 ppss)
+            (nth 8 ppss)))
+      ('string
+       (nth 8 ppss))
+      ('paren
+       (nth 1 ppss))
+      (t nil))))
+
+(defvar python-font-lock-keywords
+  ;; Keywords
+  `(,(rx symbol-start
+         (or "and" "del" "from" "not" "while" "as" "elif" "global" "or" "with"
+             "assert" "else" "if" "pass" "yield" "break" "import"
+             "print" "exec" "in" "continue" "finally" "is"
+             "return" "def" "for" "lambda" "try" "self")
+         symbol-end)
+    ;; functions
+    (,(rx symbol-start "def" (1+ space) (group (1+ (or word ?_))))
+     (1 font-lock-function-name-face))
+    ;; classes
+    (,(rx symbol-start "class" (1+ space) (group (1+ (or word ?_))))
+     (1 font-lock-type-face))
+    (,(rx symbol-start
+          "class"
+          symbol-end)
+     . py-class-name-face)
+    ;; exception names
+    (,(rx symbol-start
+          (or "raise" "except")
+          symbol-end) . py-exception-name-face)
+    ;; Constants
+    (,(rx symbol-start
+          ;; copyright, license, credits, quit, exit are added by the
+          ;; site module and since they are not intended to be used in
+          ;; programs they are not added here either.
+          (or "None" "True" "False" "__debug__" "NotImplemented")
+          symbol-end) . font-lock-constant-face)
+    (,(rx symbol-start
+          (or "cls" "self" "cls" "Ellipsis" "True" "False" "None")
+          symbol-end) . py-pseudo-keyword-face)
+    ;; Decorators.
+    (,(rx line-start (* (any " \t")) (group "@" (1+ (or word ?_))
+                                            (0+ "." (1+ (or word ?_)))))
+     (1 py-decorators-face))
+    ;; '("[ \t]*\\(_\\{0,2\\}[a-zA-Z][a-zA-Z_0-9.]+_\\{0,2\\}\\) *\\(+\\|-\\|*\\|*\\*\\|/\\|//\\|&\\|%\\||\\|\\^\\|>>\\|<<\\)? ?=[^=\n]"
+    (,(python-rx line-start (* (any " \t"))(group (** 0 2 "_") word (0+ (or word ?_))(** 0 2 "_"))(* (any " \t")) assignment-operator)
+     1 py-variable-name-face)
+
+    ;; Builtin Exceptions
+    (,(rx symbol-start
+          (or "ArithmeticError" "AssertionError" "AttributeError"
+              "BaseException" "BufferError" "BytesWarning" "DeprecationWarning"
+              "EOFError" "EnvironmentError" "Exception" "FloatingPointError"
+              "FutureWarning" "GeneratorExit" "IOError" "ImportError"
+              "ImportWarning" "IndentationError" "IndexError" "KeyError"
+              "KeyboardInterrupt" "LookupError" "MemoryError" "NameError"
+              "NotImplementedError" "OSError" "OverflowError"
+              "PendingDeprecationWarning" "ReferenceError" "RuntimeError"
+              "RuntimeWarning" "StandardError" "StopIteration" "SyntaxError"
+              "SyntaxWarning" "SystemError" "SystemExit" "TabError" "TypeError"
+              "UnboundLocalError" "UnicodeDecodeError" "UnicodeEncodeError"
+              "UnicodeError" "UnicodeTranslateError" "UnicodeWarning"
+              "UserWarning" "ValueError" "Warning" "ZeroDivisionError")
+          symbol-end) . py-exception-name-face)
+    ;; Builtins
+    (,(rx symbol-start
+          (or "_" "__doc__" "__import__" "__name__" "__package__" "abs" "all"
+              "any" "apply" "basestring" "bin" "bool" "buffer" "bytearray"
+              "bytes" "callable" "chr" "classmethod" "cmp" "coerce" "compile"
+              "complex" "delattr" "dict" "dir" "divmod" "enumerate" "eval"
+              "execfile" "file" "filter" "float" "format" "frozenset"
+              "getattr" "globals" "hasattr" "hash" "help" "hex" "id" "input"
+              "int" "intern" "isinstance" "issubclass" "iter" "len" "list"
+              "locals" "long" "map" "max" "min" "next" "object" "oct" "open"
+              "ord" "pow" "print" "property" "range" "raw_input" "reduce"
+              "reload" "repr" "reversed" "round" "set" "setattr" "slice"
+              "sorted" "staticmethod" "str" "sum" "super" "tuple" "type"
+              "unichr" "unicode" "vars" "xrange" "zip")
+          symbol-end) . font-lock-builtin-face)
+    ;; asignations
+    ;; support for a = b = c = 5
+    (,(lambda (limit)
+        (let ((re (python-rx (group (+ (any word ?. ?_)))
+                             (? ?\[ (+ (not (any ?\]))) ?\]) (* space)
+                             assignment-operator)))
+          (when (re-search-forward re limit t)
+            (while (and (python-info-ppss-context 'paren)
+                        (re-search-forward re limit t)))
+            (if (and (not (python-info-ppss-context 'paren))
+                     (not (equal (char-after (point-marker)) ?=)))
+                t
+              (set-match-data nil)))))
+     (1 font-lock-variable-name-face nil nil))
+    ;; support for a, b, c = (1, 2, 3)
+    (,(lambda (limit)
+        (let ((re (python-rx (group (+ (any word ?. ?_))) (* space)
+                             (* ?, (* space) (+ (any word ?. ?_)) (* space))
+                             ?, (* space) (+ (any word ?. ?_)) (* space)
+                             assignment-operator)))
+          (when (and (re-search-forward re limit t)
+                     (goto-char (nth 3 (match-data))))
+            (while (and (python-info-ppss-context 'paren)
+                        (re-search-forward re limit t))
+              (goto-char (nth 3 (match-data))))
+            (if (not (python-info-ppss-context 'paren))
+                t
+              (set-match-data nil)))))
+     (1 font-lock-variable-name-face nil nil))))
+
+(defconst python-font-lock-syntactic-keywords
+  ;; Make outer chars of matching triple-quote sequences into generic
+  ;; string delimiters.  Fixme: Is there a better way?
+  ;; First avoid a sequence preceded by an odd number of backslashes.
+  `((,(concat "\\(?:\\([RUru]\\)[Rr]?\\|^\\|[^\\]\\(?:\\\\.\\)*\\)" ;Prefix.
+            "\\(?:\\('\\)'\\('\\)\\|\\(?2:\"\\)\"\\(?3:\"\\)\\)")
+     (3 (python-quote-syntax)))))
+
+(defun python-quote-syntax ()
+  "Put `syntax-table' property correctly on triple quote.
+Used for syntactic keywords.  N is the match number (1, 2 or 3)."
+  ;; Given a triple quote, we have to check the context to know
+  ;; whether this is an opening or closing triple or whether it's
+  ;; quoted anyhow, and should be ignored.  (For that we need to do
+  ;; the same job as `syntax-ppss' to be correct and it seems to be OK
+  ;; to use it here despite initial worries.)  We also have to sort
+  ;; out a possible prefix -- well, we don't _have_ to, but I think it
+  ;; should be treated as part of the string.
+
+  ;; Test cases:
+  ;;  ur"""ar""" x='"' # """
+  ;; x = ''' """ ' a
+  ;; '''
+  ;; x '"""' x """ \"""" x
+  (save-excursion
+    (goto-char (match-beginning 0))
+    (let ((syntax (save-match-data (syntax-ppss))))
+      (cond
+       ((eq t (nth 3 syntax))           ; after unclosed fence
+        ;; Consider property for the last char if in a fenced string.
+        (goto-char (nth 8 syntax))	; fence position
+        (skip-chars-forward "uUrR")	; skip any prefix
+        ;; Is it a matching sequence?
+        (if (eq (char-after) (char-after (match-beginning 2)))
+            (put-text-property (match-beginning 3) (match-end 3)
+                               'syntax-table (string-to-syntax "|"))))
+       ((match-end 1)
+        ;; Consider property for initial char, accounting for prefixes.
+        (put-text-property (match-beginning 1) (match-end 1)
+                           'syntax-table (string-to-syntax "|")))
+       (t
+        ;; Consider property for initial char, accounting for prefixes.
+        (put-text-property (match-beginning 2) (match-end 2)
+                           'syntax-table (string-to-syntax "|"))))
+      )))
+
+(defvar python-mode-syntax-table
+  (let ((table (make-syntax-table)))
+    ;; Give punctuation syntax to ASCII that normally has symbol
+    ;; syntax or has word syntax and isn't a letter.
+    (let ((symbol (string-to-syntax "_"))
+	  (sst (standard-syntax-table)))
+      (dotimes (i 128)
+	(unless (= i ?_)
+	  (if (equal symbol (aref sst i))
+	      (modify-syntax-entry i "." table)))))
+    (modify-syntax-entry ?$ "." table)
+    (modify-syntax-entry ?% "." table)
+    ;; exceptions
+    (modify-syntax-entry ?# "<" table)
+    (modify-syntax-entry ?\n ">" table)
+    (modify-syntax-entry ?' "\"" table)
+    (modify-syntax-entry ?` "$" table)
+    table)
+  "Syntax table for Python files.")
+
+(defvar python-dotty-syntax-table
+  (let ((table (make-syntax-table python-mode-syntax-table)))
+    (modify-syntax-entry ?. "w" table)
+    (modify-syntax-entry ?_ "w" table)
+    table)
+  "Dotty syntax table for Python files.
+It makes underscores and dots word constituent chars.")
+
+
+
 ;;; Keymap
-(defvar py-mode-map)
-(setq py-mode-map
+(defvar python-mode-map)
+(setq python-mode-map
       (let ((map (make-sparse-keymap)))
         ;; Mostly taken from python-mode.el.
         (define-key map [(:)] 'py-electric-colon)
@@ -3377,7 +3404,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
           (py-shell)
           (set-buffer oldbuf))))
     (jump-to-register 213465879))
-  (when (interactive-p) (message "python-mode loaded from: %s" "python-mode.el")))
+  (when (interactive-p) (message "python-mode loaded from: %s" "python-components-mode.el")))
 
 
 (defun py-guess-pdb-path ()
@@ -3813,7 +3840,6 @@ in a buffer that doesn't have a local value of `python-buffer'."
 ;;;; Context-sensitive help.
 
 (defvar view-return-to-alist)
-;; (eval-when-compile (autoload 'help-buffer "help-fns"))
 
 (defvar python-imports)			; forward declaration
 (make-variable-buffer-local 'python-imports)
