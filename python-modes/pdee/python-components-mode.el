@@ -679,7 +679,7 @@ set in py-execute-region and used in py-jump-to-exception.")
 
 (defface py-class-name-face
   '((t (:inherit font-lock-type-face)))
-  "Face for builtins like TypeError, object, open, and exec."
+  "Face for classes."
   :group 'python)
 (defvar py-class-name-face 'py-class-name-face)
 
@@ -853,13 +853,8 @@ character address of the specified TYPE."
     (,(rx symbol-start "def" (1+ space) (group (1+ (or word ?_))))
      (1 font-lock-function-name-face))
     ;; classes
-    (,(rx symbol-start "class" (1+ space) (group (1+ (or word ?_))))
-     (1 font-lock-type-face))
-    (,(rx symbol-start
-          "class"
-          symbol-end)
-     . py-class-name-face)
-    ;; exception names
+    (,(rx symbol-start (group "class") (1+ space) (group (1+ (or word ?_))))
+     (1 font-lock-keyword-face) (2 py-class-name-face))
     (,(rx symbol-start
           (or "raise" "except")
           symbol-end) . py-exception-name-face)

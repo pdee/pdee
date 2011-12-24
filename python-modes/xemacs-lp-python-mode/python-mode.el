@@ -1093,7 +1093,7 @@ set in py-execute-region and used in py-jump-to-exception.")
 
 (defface py-class-name-face
   '((t (:inherit font-lock-type-face)))
-  "Face for builtins like TypeError, object, open, and exec."
+  "Face for classes."
   :group 'python)
 (defvar py-class-name-face 'py-class-name-face)
 
@@ -4376,7 +4376,6 @@ See also `py-down-statement': down from current definition to next beginning of 
 
 ;; Complementary left corner commands end
 
-
 ;;; Py-down commands start
 (defun py-down-statement ()
   "Go to the beginning of next statement below in buffer.
@@ -4398,7 +4397,6 @@ Returns indentation if statement found, nil otherwise. "
           (setq erg (current-column)))))
     (when (interactive-p) (message "%s" erg))
     erg))
-
 
 (defun py-down-block ()
   "Go to the beginning of next block below in buffer.

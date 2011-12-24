@@ -1221,7 +1221,7 @@ set in py-execute-region and used in py-jump-to-exception.")
 
 (defface py-class-name-face
   '((t (:inherit font-lock-type-face)))
-  "Face for builtins like TypeError, object, open, and exec."
+  "Face for classes."
   :group 'python)
 (defvar py-class-name-face 'py-class-name-face)
 
