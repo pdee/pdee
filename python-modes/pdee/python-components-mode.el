@@ -3361,20 +3361,20 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (set (make-local-variable 'tab-width) 8)
   ;; Now do the automagical guessing
   (when py-smart-indentation
-    ;; (if (bobp)
-    ;;     (save-excursion
-    ;;       (save-restriction
-    ;;         (widen)
-    ;;         ;; (switch-to-buffer (current-buffer))
-    ;;         (while (and (not (eobp))
-    ;;                     (or
-    ;;                      (let ((erg (syntax-ppss)))
-    ;;                        (or (nth 1 erg) (nth 8 erg)))
-    ;;                      (eq 0 (current-indentation))))
-    ;;           (forward-line 1))
-    ;;         (back-to-indentation)
-    ;;         (py-guess-indent-offset)))
-    (add-hook 'python-mode-hook 'py-guess-indent-offset))
+    (if (bobp)
+        (save-excursion
+          (save-restriction
+            (widen)
+            ;; (switch-to-buffer (current-buffer))
+            (while (and (not (eobp))
+                        (or
+                         (let ((erg (syntax-ppss)))
+                           (or (nth 1 erg) (nth 8 erg)))
+                         (eq 0 (current-indentation))))
+              (forward-line 1))
+            (back-to-indentation)
+            (py-guess-indent-offset)))
+      (py-guess-indent-offset)))
   (when (/= tab-width py-indent-offset)
     (setq indent-tabs-mode nil))
   ;; Set the default shell if not already set
@@ -3390,6 +3390,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   ;; add the menu
   (if py-menu
       (easy-menu-add py-menu))
+  (when py-hide-show-minor-mode-p (hs-minor-mode 1))
   ;; shell-complete end
   ;; Run the mode hook.  Note that py-mode-hook is deprecated.
   (run-mode-hooks

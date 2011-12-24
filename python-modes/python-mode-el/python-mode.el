@@ -1250,6 +1250,11 @@ Currently-active file is at the head of the list.")
   :group 'python
   :type 'hook)
 
+(defcustom imenu-create-index-p t
+  "Non-nil means Python mode creates and displays an index menu of functions and global variables. "
+  :type 'boolean
+  :group 'python)
+
 ;; credits to python.el
 (defun py-beg-of-defun-function ()
   (set (make-local-variable 'beginning-of-defun-function)
@@ -7495,8 +7500,8 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   ;;      (rx (* space) (or "class" "def" "elif" "else" "except" "finally"
   ;;       		 "for" "if" "try" "while" "with")
   ;;          symbol-end))
-  ;; (set (make-local-variable 'outline-heading-end-regexp) ":\\s-*\n")
-  ;; (set (make-local-variable 'outline-level) #'python-outline-level)
+  (set (make-local-variable 'outline-heading-end-regexp) ":\\s-*\n")
+  (set (make-local-variable 'outline-level) #'python-outline-level)
   (set (make-local-variable 'open-paren-in-column-0-is-defun-start) nil)
   (set (make-local-variable 'outline-regexp)
        (concat (if py-hide-show-hide-docstrings
@@ -7522,7 +7527,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   ;; (set (make-local-variable 'end-of-defun-function) 'python-end-of-defun)
   (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class)
   (add-hook 'which-func-functions 'python-which-func nil t)
-  (when (ignore-errors (require 'imenu))
+  (when (and imenu-create-index-p (ignore-errors (require 'imenu)))
     (setq imenu-create-index-function #'py-imenu-create-index-new)
     ;;    (setq imenu-create-index-function #'py-imenu-create-index)
     (setq imenu-generic-expression py-imenu-generic-expression)
@@ -7538,10 +7543,6 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   ;; 'python-completion-at-point nil 'local)
   (add-hook 'completion-at-point-functions
             py-complete-function nil 'local)
-  (set (make-local-variable 'skeleton-further-elements)
-       '((< '(backward-delete-char-untabify (min python-indent
-                                                 (current-column))))
-         (^ '(- (1+ (current-indentation))))))
   ;; Python defines TABs as being 8-char wide.
   (set (make-local-variable 'tab-width) 8)
   ;; Now do the automagical guessing
@@ -7575,6 +7576,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   ;; add the menu
   (if py-menu
       (easy-menu-add py-menu))
+  (when py-hide-show-minor-mode-p (hs-minor-mode 1))
   ;; shell-complete end
   ;; Run the mode hook.  Note that py-mode-hook is deprecated.
   (run-mode-hooks

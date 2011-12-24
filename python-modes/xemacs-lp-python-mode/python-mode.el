@@ -1122,6 +1122,11 @@ Currently-active file is at the head of the list.")
   :group 'python
   :type 'hook)
 
+(defcustom imenu-create-index-p t
+  "Non-nil means Python mode creates and displays an index menu of functions and global variables. "
+  :type 'boolean
+  :group 'python)
+
 ;; credits to python.el
 (defun py-beg-of-defun-function ()
   (set (make-local-variable 'beginning-of-defun-function)
@@ -7431,9 +7436,9 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed"
   (if (boundp 'comment-multi-line)
       (setq comment-multi-line nil))
   ;; Install Imenu if available
-  (when (ignore-errors (require 'imenu))
+    (when (and imenu-create-index-p (ignore-errors (require 'imenu)))
     (setq imenu-create-index-function #'py-imenu-create-index-new)
-    ;;    (setq imenu-create-index-function #'py-imenu-create-index)
+    ;; (setq imenu-create-index-function #'py-imenu-create-index)
     (setq imenu-generic-expression py-imenu-generic-expression)
     (when (fboundp 'imenu-add-to-menubar)
       (imenu-add-to-menubar (format "%s-%s" "IM" mode-name))
