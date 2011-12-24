@@ -1360,7 +1360,7 @@ Returns indentation if statement found, nil otherwise. "
         (when (setq erg (py-end-of-statement))
           (if (< orig (setq erg (py-beginning-of-statement-position)))
               (goto-char erg)
-            (while (and (setq erg (py-end-of-statement))(py-in-string-or-comment-p)))
+            (setq erg (py-end-of-statement))
             (when erg
               (py-beginning-of-statement))))
         (when erg
@@ -1377,9 +1377,12 @@ Returns indentation if block found, nil otherwise. "
          erg)
     (if (eobp)
         (setq erg nil)
-      (while (and (setq erg (py-down-statement))(or (py-in-string-or-comment-p)(not (looking-at py-block-re))))))
-    (when (interactive-p) (message "%s" erg))
-    erg))
+      (while (and (re-search-forward py-block-re nil (quote move))
+                  (nth 8 (if (featurep 'xemacs)
+                             (parse-partial-sexp ppstart (point))
+                           (syntax-ppss)))))
+      (when (interactive-p) (message "%s" erg))
+      erg)))
 
 (defun py-down-clause ()
   "Go to the beginning of next clause below in buffer.
@@ -1390,7 +1393,7 @@ Returns indentation if clause found, nil otherwise. "
          erg)
     (if (eobp)
         (setq erg nil)
-      (while (and (setq erg (py-down-statement))(or (py-in-string-or-comment-p)(not (looking-at py-clause-re))))))
+      (while (and (setq erg (py-down-statement))(not (looking-at py-clause-re)))))
     (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -1403,7 +1406,7 @@ Returns indentation if block-or-clause found, nil otherwise. "
          erg)
     (if (eobp)
         (setq erg nil)
-      (while (and (setq erg (py-down-statement))(or (py-in-string-or-comment-p)(not (looking-at py-block-or-clause-re))))))
+      (while (and (setq erg (py-down-statement))(not (looking-at py-block-or-clause-re)))))
     (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -1416,7 +1419,7 @@ Returns indentation if def found, nil otherwise. "
          erg)
     (if (eobp)
         (setq erg nil)
-      (while (and (setq erg (py-down-statement))(or (py-in-string-or-comment-p)(not (looking-at py-def-re))))))
+      (while (and (setq erg (py-down-statement))(not (looking-at py-def-re)))))
     (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -1429,7 +1432,7 @@ Returns indentation if class found, nil otherwise. "
          erg)
     (if (eobp)
         (setq erg nil)
-      (while (and (setq erg (py-down-statement))(or (py-in-string-or-comment-p)(not (looking-at py-class-re))))))
+      (while (and (setq erg (py-down-statement))(not (looking-at py-class-re)))))
     (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -1442,7 +1445,7 @@ Returns indentation if def-or-class found, nil otherwise. "
          erg)
     (if (eobp)
         (setq erg nil)
-      (while (and (setq erg (py-down-statement))(or (py-in-string-or-comment-p)(not (looking-at py-def-or-class-re))))))
+      (while (and (setq erg (py-down-statement))(not (looking-at py-def-or-class-re)))))
     (when (interactive-p) (message "%s" erg))
     erg))
 ;; Py-down commands end

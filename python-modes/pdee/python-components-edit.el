@@ -162,42 +162,28 @@ new value.
 With optional argument GLOBAL change the global value of `py-indent-offset'. "
   (interactive "P")
   (save-excursion
-    (save-restriction
-      (widen)
-      (when orig (goto-char orig))
-      (when (< (current-column) (current-indentation))
-        (back-to-indentation))
-      (let ((lastindent (if
-                            (py-beginning-of-statement-p)
-                            (current-indentation)
-                          (progn
-                            (py-beginning-of-statement)
-                            (current-indentation)))))
-        (if (eq 0 lastindent)
-            (setq py-indent-offset (default-value 'py-indent-offset))
-          (let* ((firstindent (progn
-                                (while (and (<= lastindent (current-indentation))
-                                            (not (bobp))
-                                            (py-beginning-of-statement)))
-                                (current-indentation)))
-                 (guessed (- lastindent firstindent)))
-            (unless (py-guessed-sanity-check guessed)
-              ;; no indent between statements at point
-              (setq firstindent (progn
-                                  (py-beginning-of-block)
-                                  (current-indentation)))
-              (setq guessed (- lastindent firstindent)))
-            (if (py-guessed-sanity-check guessed)
+    (let ((lastindent (cond
+                       ((py-beginning-of-block-p)
+                        (current-indentation))
+                       ((py-beginning-of-block)
+                        (current-indentation))
+                       ((py-down-block)))))
+      (if lastindent
+          (progn
+            (py-down-statement)
+            (if (py-guessed-sanity-check (setq erg (abs (- lastindent (current-indentation)))))
                 (progn
                   (funcall (if global 'kill-local-variable 'make-local-variable)
                            'py-indent-offset)
-                  (setq py-indent-offset guessed))
-              (setq py-indent-offset (default-value 'py-indent-offset))))))))
-  (when (interactive-p)
-    (message "%s value of py-indent-offset:  %d"
-             (if global "Global" "Local")
-             py-indent-offset))
-  py-indent-offset)
+                  (setq py-indent-offset erg))
+              (setq py-indent-offset (default-value 'py-indent-offset))))
+        ;; no block, no indent
+        (setq py-indent-offset (default-value 'py-indent-offset)))
+      (when (interactive-p)
+        (message "%s value of py-indent-offset:  %d"
+                 (if global "Global" "Local")
+                 py-indent-offset))
+      py-indent-offset)))
 
 (defun py-comment-indent-function ()
   "Python version of `comment-indent-function'."

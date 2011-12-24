@@ -988,25 +988,28 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
                            'syntax-table (string-to-syntax "|"))))
       )))
 
-(defvar python-mode-syntax-table
-  (let ((table (make-syntax-table)))
-    ;; Give punctuation syntax to ASCII that normally has symbol
-    ;; syntax or has word syntax and isn't a letter.
-    (let ((symbol (string-to-syntax "_"))
-	  (sst (standard-syntax-table)))
-      (dotimes (i 128)
-	(unless (= i ?_)
-	  (if (equal symbol (aref sst i))
-	      (modify-syntax-entry i "." table)))))
-    (modify-syntax-entry ?$ "." table)
-    (modify-syntax-entry ?% "." table)
-    ;; exceptions
-    (modify-syntax-entry ?# "<" table)
-    (modify-syntax-entry ?\n ">" table)
-    (modify-syntax-entry ?' "\"" table)
-    (modify-syntax-entry ?` "$" table)
-    table)
-  "Syntax table for Python files.")
+(defvar python-mode-syntax-table nil
+    "Syntax table for Python files.")
+
+(setq python-mode-syntax-table
+      (let ((table (make-syntax-table)))
+        ;; Give punctuation syntax to ASCII that normally has symbol
+        ;; syntax or has word syntax and isn't a letter.
+        (let ((symbol (string-to-syntax "_"))
+              (sst (standard-syntax-table)))
+          (dotimes (i 128)
+            (unless (= i ?_)
+              (if (equal symbol (aref sst i))
+                  (modify-syntax-entry i "." table)))))
+        (modify-syntax-entry ?$ "." table)
+        (modify-syntax-entry ?% "." table)
+        ;; exceptions
+        (modify-syntax-entry ?# "<" table)
+        (modify-syntax-entry ?\n ">" table)
+        (modify-syntax-entry ?' "\"" table)
+        (modify-syntax-entry ?` "$" table)
+        (modify-syntax-entry ?_ "w" table)
+        table))
 
 (defvar python-dotty-syntax-table
   (let ((table (make-syntax-table python-mode-syntax-table)))
@@ -1015,7 +1018,6 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
     table)
   "Dotty syntax table for Python files.
 It makes underscores and dots word constituent chars.")
-
 
 
 ;;; Keymap
@@ -1290,6 +1292,11 @@ See also `\\[python-guess-indent]'"
 
 (defcustom python-guess-indent t
   "Non-nil means Python mode guesses `python-indent' for the buffer."
+  :type 'boolean
+  :group 'python)
+
+(defcustom imenu-create-index-p t
+  "Non-nil means Python mode creates and displays an index menu of functions and global variables. "
   :type 'boolean
   :group 'python)
 
@@ -3222,7 +3229,6 @@ Interactively, prompt for the name with completion."
 ;; (setq pdb-path '/usr/lib/python2.7/pdb.py
 ;;      gud-pdb-command-name (symbol-name pdb-path))
 
-
 (eval-when-compile
   (add-to-list 'load-path default-directory))
 (require 'python-components-edit)
@@ -3305,11 +3311,11 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
                   (skip-chars-backward " \t\n"))
                 nil))
   ;; (set (make-local-variable 'outline-regexp)
-  ;;      (rx (* space) (or "class" "def" "elif" "else" "except" "finally"
-  ;;       		 "for" "if" "try" "while" "with")
-  ;;          symbol-end))
-  ;; (set (make-local-variable 'outline-heading-end-regexp) ":\\s-*\n")
-  ;; (set (make-local-variable 'outline-level) #'python-outline-level)
+  ;; (rx (* space) (or "class" "def" "elif" "else" "except" "finally"
+  ;; "for" "if" "try" "while" "with")
+  ;; symbol-end))
+  (set (make-local-variable 'outline-heading-end-regexp) ":\\s-*\n")
+  (set (make-local-variable 'outline-level) #'python-outline-level)
   (set (make-local-variable 'open-paren-in-column-0-is-defun-start) nil)
   (set (make-local-variable 'outline-regexp)
        (concat (if py-hide-show-hide-docstrings
@@ -3335,9 +3341,9 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   ;; (set (make-local-variable 'end-of-defun-function) 'python-end-of-defun)
   (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class)
   (add-hook 'which-func-functions 'python-which-func nil t)
-  (when (ignore-errors (require 'imenu))
+  (when (and imenu-create-index-p (ignore-errors (require 'imenu)))
     (setq imenu-create-index-function #'py-imenu-create-index-new)
-    ;;    (setq imenu-create-index-function #'py-imenu-create-index)
+    ;; (setq imenu-create-index-function #'py-imenu-create-index)
     (setq imenu-generic-expression py-imenu-generic-expression)
     (when (fboundp 'imenu-add-to-menubar)
       (imenu-add-to-menubar (format "%s-%s" "IM" mode-name))
@@ -3360,20 +3366,20 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (set (make-local-variable 'tab-width) 8)
   ;; Now do the automagical guessing
   (when py-smart-indentation
-    (if (bobp)
-        (save-excursion
-          (save-restriction
-            (widen)
-            ;; (switch-to-buffer (current-buffer))
-            (while (and (not (eobp))
-                        (or
-                         (let ((erg (syntax-ppss)))
-                           (or (nth 1 erg) (nth 8 erg)))
-                         (eq 0 (current-indentation))))
-              (forward-line 1))
-            (back-to-indentation)
-            (py-guess-indent-offset)))
-      (py-guess-indent-offset)))
+    ;; (if (bobp)
+    ;;     (save-excursion
+    ;;       (save-restriction
+    ;;         (widen)
+    ;;         ;; (switch-to-buffer (current-buffer))
+    ;;         (while (and (not (eobp))
+    ;;                     (or
+    ;;                      (let ((erg (syntax-ppss)))
+    ;;                        (or (nth 1 erg) (nth 8 erg)))
+    ;;                      (eq 0 (current-indentation))))
+    ;;           (forward-line 1))
+    ;;         (back-to-indentation)
+    ;;         (py-guess-indent-offset)))
+    (add-hook 'python-mode-hook 'py-guess-indent-offset))
   (when (/= tab-width py-indent-offset)
     (setq indent-tabs-mode nil))
   ;; Set the default shell if not already set
@@ -3881,12 +3887,7 @@ in a buffer that doesn't have a local value of `python-buffer'."
 		(replace-regexp-in-string "\n" "\\n"
 					  (format "%S" python-imports) t t))))))
 
-(defvar outline-heading-end-regexp)
-(defvar eldoc-documentation-function)
-(defvar python-mode-running)            ;Dynamically scoped var.
-
 
-
 ;; Author: Lukasz Pankowski, patch sent for lp:328836
 (defvar py-shell-input-lines nil
   "Collect input lines send interactively to the Python process in

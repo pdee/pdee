@@ -129,24 +129,29 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
     map)
   "Keymap used in *Python* shell buffers.")
 
-(defvar python-mode-syntax-table
-  (let ((table (make-syntax-table)))
-    ;; Give punctuation syntax to ASCII that normally has symbol
-    ;; syntax or has word syntax and isn't a letter.
-    (let ((symbol (string-to-syntax "_"))
-	  (sst (standard-syntax-table)))
-      (dotimes (i 128)
-	(unless (= i ?_)
-	  (if (equal symbol (aref sst i))
-	      (modify-syntax-entry i "." table)))))
-    (modify-syntax-entry ?$ "." table)
-    (modify-syntax-entry ?% "." table)
-    ;; exceptions
-    (modify-syntax-entry ?# "<" table)
-    (modify-syntax-entry ?\n ">" table)
-    (modify-syntax-entry ?' "\"" table)
-    (modify-syntax-entry ?` "$" table)
-    table))
+(defvar python-mode-syntax-table nil
+    "Syntax table for Python files.")
+
+(setq python-mode-syntax-table
+      (let ((table (make-syntax-table)))
+        ;; Give punctuation syntax to ASCII that normally has symbol
+        ;; syntax or has word syntax and isn't a letter.
+        (let ((symbol (string-to-syntax "_"))
+              (sst (standard-syntax-table)))
+          (dotimes (i 128)
+            (unless (= i ?_)
+              (if (equal symbol (aref sst i))
+                  (modify-syntax-entry i "." table)))))
+        (modify-syntax-entry ?$ "." table)
+        (modify-syntax-entry ?% "." table)
+        ;; exceptions
+        (modify-syntax-entry ?# "<" table)
+        (modify-syntax-entry ?\n ">" table)
+        (modify-syntax-entry ?' "\"" table)
+        (modify-syntax-entry ?` "$" table)
+        (modify-syntax-entry ?_ "w" table)
+        table))
+
 
 (defvar py-menu)
 (defvar py-mode-map
@@ -1534,42 +1539,30 @@ new value.
 With optional argument GLOBAL change the global value of `py-indent-offset'. "
   (interactive "P")
   (save-excursion
-    (save-restriction
-      (widen)
-      (when orig (goto-char orig))
-      (when (< (current-column) (current-indentation))
-        (back-to-indentation))
+    (goto-char (point-min))
       (let ((lastindent (if
                              (py-beginning-of-statement-p)
                              (current-indentation)
                            (progn
-                             (py-beginning-of-statement)
-                            (current-indentation)))))
-        (if (eq 0 lastindent)
-            (setq py-indent-offset (default-value 'py-indent-offset))
-          (let* ((firstindent (progn
-                            (while (and (<= lastindent (current-indentation))
-                                            (not (bobp))
-                                        (py-beginning-of-statement)))
-                                 (current-indentation)))
-             (guessed (- lastindent firstindent)))
-            (unless (py-guessed-sanity-check guessed)
-          ;; no indent between statements at point
-          (setq firstindent (progn
-                                  (py-beginning-of-block)
-                              (current-indentation)))
-              (setq guessed (- lastindent firstindent)))
-            (if (py-guessed-sanity-check guessed)
+                          (py-down-statement)
+                          (current-indentation)))))
+        (while (and (eq lastindent (current-indentation))
+                  (not (eobp))
+                  (setq erg (point))
+                  (py-down-statement)
+                  (< erg (point))
+                    (not (py-guessed-sanity-check (setq erg (abs (- lastindent (current-indentation))))))))
+      (if (py-guessed-sanity-check erg)
                 (progn
           (funcall (if global 'kill-local-variable 'make-local-variable)
                    'py-indent-offset)
-              (setq py-indent-offset guessed))
-              (setq py-indent-offset (default-value 'py-indent-offset))))))))
+              (setq py-indent-offset erg))
+        (setq py-indent-offset (default-value 'py-indent-offset)))
         (when (interactive-p)
           (message "%s value of py-indent-offset:  %d"
                    (if global "Global" "Local")
                    py-indent-offset))
-  py-indent-offset)
+      py-indent-offset)))
 
 (defun py-guessed-sanity-check (guessed)
   (and (>= guessed 2)(<= guessed 8)(eq 0 (% guessed 2))))
@@ -4489,7 +4482,7 @@ Returns indentation if statement found, nil otherwise. "
         (when (setq erg (py-end-of-statement))
           (if (< orig (setq erg (py-beginning-of-statement-position)))
               (goto-char erg)
-            (while (and (setq erg (py-end-of-statement))(py-in-string-or-comment-p)))
+            (setq erg (py-end-of-statement))
             (when erg
               (py-beginning-of-statement))))
         (when erg
@@ -4506,9 +4499,12 @@ Returns indentation if block found, nil otherwise. "
          erg)
     (if (eobp)
         (setq erg nil)
-      (while (and (setq erg (py-down-statement))(or (py-in-string-or-comment-p)(not (looking-at py-block-re))))))
+      (while (and (re-search-forward py-block-re nil (quote move))
+                  (nth 8 (if (featurep 'xemacs)
+                             (parse-partial-sexp ppstart (point))
+                           (syntax-ppss)))))
     (when (interactive-p) (message "%s" erg))
-    erg))
+      erg)))
 
 (defun py-down-clause ()
   "Go to the beginning of next clause below in buffer.
@@ -4519,7 +4515,7 @@ Returns indentation if clause found, nil otherwise. "
          erg)
     (if (eobp)
         (setq erg nil)
-      (while (and (setq erg (py-down-statement))(or (py-in-string-or-comment-p)(not (looking-at py-clause-re))))))
+      (while (and (setq erg (py-down-statement))(not (looking-at py-clause-re)))))
     (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -4532,7 +4528,7 @@ Returns indentation if block-or-clause found, nil otherwise. "
          erg)
     (if (eobp)
         (setq erg nil)
-      (while (and (setq erg (py-down-statement))(or (py-in-string-or-comment-p)(not (looking-at py-block-or-clause-re))))))
+      (while (and (setq erg (py-down-statement))(not (looking-at py-block-or-clause-re)))))
     (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -4545,7 +4541,7 @@ Returns indentation if def found, nil otherwise. "
          erg)
     (if (eobp)
         (setq erg nil)
-      (while (and (setq erg (py-down-statement))(or (py-in-string-or-comment-p)(not (looking-at py-def-re))))))
+      (while (and (setq erg (py-down-statement))(not (looking-at py-def-re)))))
     (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -4558,7 +4554,7 @@ Returns indentation if class found, nil otherwise. "
          erg)
     (if (eobp)
         (setq erg nil)
-      (while (and (setq erg (py-down-statement))(or (py-in-string-or-comment-p)(not (looking-at py-class-re))))))
+      (while (and (setq erg (py-down-statement))(not (looking-at py-class-re)))))
     (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -4571,7 +4567,7 @@ Returns indentation if def-or-class found, nil otherwise. "
          erg)
     (if (eobp)
         (setq erg nil)
-      (while (and (setq erg (py-down-statement))(or (py-in-string-or-comment-p)(not (looking-at py-def-or-class-re))))))
+      (while (and (setq erg (py-down-statement))(not (looking-at py-def-or-class-re)))))
     (when (interactive-p) (message "%s" erg))
     erg))
 ;; Py-down commands end
@@ -7165,44 +7161,43 @@ of the first definition found."
     (nreverse index-alist)))
 
 (defvar imenu-max-items)
+(defun py-imenu-create-index-new-intern (&optional thisend)
+  (let* ((pos (match-beginning 0))
+         (name (match-string-no-properties 2))
+         (classname (concat "class " name))
+         (thisend (or thisend (save-match-data (py-end-of-def-or-class-position))))
+         sublist)
+    (while (and (re-search-forward "^[ \t]*\\(?:\\(def\\|class\\)\\)[ \t]+\\(?:\\(\\sw+\\)\\)" (or thisend end) t 1)(not (py-in-string-or-comment-p)))
+      (let* ((pos (match-beginning 0))
+             (name (match-string-no-properties 2))
+             (classname (concat "class " name))
+             (thisend (or thisend (save-match-data (py-end-of-def-or-class-position)))))
+        (if (string= "class" (match-string-no-properties 1))
+            (py-imenu-create-index-new-intern (save-match-data (py-end-of-def-or-class-position)))
+          (push (cons (concat " " name) pos) sublist))))
+    (if classname
+        (progn
+          (setq sublist (nreverse sublist))
+          (push (cons classname pos) sublist)
+          (push (cons classname sublist) index-alist))
+      (push sublist index-alist))))
+
 (defun py-imenu-create-index-new (&optional beg end)
   "`imenu-create-index-function' for Python. "
-  (set (make-local-variable 'imenu-max-items) 40)
+  (set (make-local-variable 'imenu-max-items) 99)
   (let ((orig (point))
         (beg (cond (beg)
                    (t (point-min))))
         (end (cond (end)
                    (t (point-max))))
-        (first t)
-        (imenu-max-items 100)
-        index-alist vars thisend)
+        index-alist vars thisend sublist classname)
     (goto-char beg)
-    (while (and (re-search-forward "^[ \t]*\\(?:\\(def\\|class\\)\\)[ \t]+\\(?:\\(\\sw+\\)\\)" end 'move 1)(not (py-in-string-or-comment-p)))
+    (while (and (re-search-forward "^[ \t]*\\(?:\\(def\\|class\\)\\)[ \t]+\\(?:\\(\\sw+\\)\\)" end t 1)(not (py-in-string-or-comment-p)))
+      (if (save-match-data (string= "class" (match-string-no-properties 1)))
+          (py-imenu-create-index-new-intern)
         (let ((pos (match-beginning 0))
-            (name (match-string-no-properties 2))
-            (thisend (save-match-data (py-end-of-def-or-class-position)))
-            sublist inside-class first classname)
-          (when (string= "class" (match-string-no-properties 1))
-            (setq name (concat "class " name)
-                inside-class t
-                first t
-                classname name
-                ))
-          (cond ((and first inside-class)
-                 (push (cons name pos) index-alist)
-                 (setq first nil))
-                (inside-class
-               (progn (push (cons (concat " " name) pos) sublist)))
-              (t (push (cons name pos) index-alist)))
-        ;; now inside class only
-        (while (and (re-search-forward "^[ \t]*\\(?:\\(def\\|class\\)\\)[ \t]+\\(?:\\(\\sw+\\)\\)" thisend 'move 1)(not (py-in-string-or-comment-p))(not (string= "class" (match-string-no-properties 1))))
-          (let ((pos (match-beginning 0))
-                (name (match-string-no-properties 2)))
-            (push (cons (concat " " name) pos) sublist)))
-        (push (cons classname sublist) index-alist)
-        (when (string= "class" (match-string-no-properties 1))
-          (goto-char (match-beginning 0)))))
-    ;;    (message "Funktionen und Klassen: %s" index-alist)
+              (name (match-string-no-properties 2)))
+          (push (cons (concat " " name) pos) sublist))))
     ;; Look for module variables.
     (goto-char (point-min))
     (while (re-search-forward "^\\(\\sw+\\)[ \t]*=" end t)
@@ -7217,6 +7212,7 @@ of the first definition found."
             index-alist))
     (goto-char orig)
     index-alist))
+
 
 ;;; python-components-completion.el
 
