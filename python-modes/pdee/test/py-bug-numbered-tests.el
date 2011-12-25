@@ -117,6 +117,7 @@
          'py-shebang-ipython-env-lp-849293-test
          'indent-offset-not-guessed-when-loading-lp:902890-test
          'from-__future__-import-absolute_import-mishighlighted-lp-907084-test
+         'automatic-indentation-is-broken-lp-889643-test
          'UnicodeEncodeError-lp:550661-test
          'py-shell-complete-lp-328836-test
 
@@ -2132,6 +2133,19 @@ from __future__ import absolute_import
   (font-lock-fontify-buffer)
   (goto-char 82)
   (assert (not (eq (get-char-property (point) 'face) 'font-lock-keyword-face)) nil "from-__future__-import-absolute_import-mishighlighted-lp-907084-test failed"))
+
+
+(defun automatic-indentation-is-broken-lp-889643-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"))
+  (when load-branch-function (funcall load-branch-function))
+  (py-bug-tests-intern 'automatic-indentation-is-broken-lp-889643-base arg teststring)))
+
+(defun automatic-indentation-is-broken-lp-889643-base ()
+  (assert (eq (key-binding (kbd "RET")) 'py-newline-and-indent) nil "automatic-indentation-is-broken-lp-889643-test failed"))
 
 
 (provide 'py-bug-numbered-tests)

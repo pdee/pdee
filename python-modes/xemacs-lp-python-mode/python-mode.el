@@ -60,9 +60,9 @@
 
 ;;; Bindings
 
-(defvar py-mode-map nil)
+(defvar python-mode-map nil)
 
-(setq py-mode-map
+(setq python-mode-map
       (let ((map (make-sparse-keymap)))
         ;; electric keys
         (define-key map [(:)] 'py-electric-colon)
@@ -6176,7 +6176,7 @@ Useful for newly defined symbol, not known to python yet. "
                 keys (concat
                       "Key(s): "
                       (mapconcat 'key-description
-                                 (where-is-internal func py-mode-map)
+                                 (where-is-internal func python-mode-map)
                                  ", "))))
          ((equal funckind "v")          ; variable
           (setq funcdoc (documentation-property func 'variable-documentation)
@@ -6592,21 +6592,21 @@ Imports done are displayed in message buffer. "
 
 ;;; python-components-extensions.el
 
-(unless py-mode-map
-  (setq py-mode-map (make-sparse-keymap)))
+(unless python-mode-map
+  (setq python-mode-map (make-sparse-keymap)))
 
-(define-key py-mode-map [(super s)] 'suche-settrace)
-(define-key py-mode-map  [(super I)] 'py-indent-line)
-(define-key py-mode-map  [(super i)] 'py-indent-forward-line)
-(define-key py-mode-map [(control meta n)]  'py-end-of-block)
-(define-key py-mode-map [(control meta p)] 'py-beginning-of-block)
-(define-key py-mode-map [(control return)] 'py-newline-and-dedent)
-(define-key py-mode-map [(super backspace)] 'py-dedent-forward-line)
+(define-key python-mode-map [(super s)] 'suche-settrace)
+(define-key python-mode-map  [(super I)] 'py-indent-line)
+(define-key python-mode-map  [(super i)] 'py-indent-forward-line)
+(define-key python-mode-map [(control meta n)]  'py-end-of-block)
+(define-key python-mode-map [(control meta p)] 'py-beginning-of-block)
+(define-key python-mode-map [(control return)] 'py-newline-and-dedent)
+(define-key python-mode-map [(super backspace)] 'py-dedent-forward-line)
 
 (defcustom py-match-paren-mode nil
   "*Non-nil means, cursor will jump to beginning or end of a block.
 This vice versa, to beginning first.
-Sets `py-match-paren-key' in py-mode-map.
+Sets `py-match-paren-key' in python-mode-map.
 Customize `py-match-paren-key' which key to use. "
   :type 'boolean
   :group 'python)
@@ -6809,7 +6809,7 @@ With interactive call, send it to the message buffer too. "
   (if (or arg (not py-match-paren-mode))
       (progn
 	(setq py-match-paren-mode t)
-        ;; 	(define-key py-mode-map (kbd (concat "<" py-match-paren-key ">")) 'py-match-paren))
+        ;; 	(define-key python-mode-map (kbd (concat "<" py-match-paren-key ">")) 'py-match-paren))
         (setq py-match-paren-mode nil))))
 
 (defun ar-py-match-paren ()
@@ -7373,7 +7373,7 @@ This mode knows about Python indentation, tokens, comments and
 continuation lines.  Paragraphs are separated by blank lines only.
 
 COMMANDS
-\\{py-mode-map}
+\\{python-mode-map}
 VARIABLES
 
 py-indent-offset\t\tindentation increment
@@ -7428,7 +7428,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed"
         add-log-current-defun-function 'py-current-defun
 
         fill-paragraph-function 'py-fill-paragraph)
-  (use-local-map py-mode-map)
+  (use-local-map python-mode-map)
   ;; add the menu
   (if py-menu
       (easy-menu-add py-menu))

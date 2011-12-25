@@ -154,7 +154,8 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
 
 
 (defvar py-menu)
-(defvar py-mode-map
+(defvar python-mode-map)
+(setq python-mode-map
   (let ((map (make-sparse-keymap)))
     ;; Mostly taken from python-mode.el.
     (define-key map [(:)] 'py-electric-colon)
@@ -172,7 +173,6 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
     (define-key map [(control meta e)] 'py-end-of-def-or-class)
     (define-key map [(control j)] 'py-newline-and-indent)
     ;; Most Pythoneers expect RET `py-newline-and-indent'
-    ;; (define-key map (kbd "RET") 'py-newline-and-dedent)
     (define-key map (kbd "RET") 'py-newline-and-indent)
     (define-key map [(super backspace)] 'py-dedent)
     ;; (define-key map [(control return)] 'py-newline-and-dedent)
@@ -6331,7 +6331,7 @@ Useful for newly defined symbol, not known to python yet. "
                 keys (concat
                       "Key(s): "
                       (mapconcat 'key-description
-                                 (where-is-internal func py-mode-map)
+                                 (where-is-internal func python-mode-map)
                                  ", "))))
          ((equal funckind "v")          ; variable
           (setq funcdoc (documentation-property func 'variable-documentation)
@@ -6682,7 +6682,7 @@ Imports done are displayed in message buffer. "
 (defcustom py-match-paren-mode nil
   "*Non-nil means, cursor will jump to beginning or end of a block.
 This vice versa, to beginning first.
-Sets `py-match-paren-key' in py-mode-map.
+Sets `py-match-paren-key' in python-mode-map.
 Customize `py-match-paren-key' which key to use. "
   :type 'boolean
   :group 'python)
