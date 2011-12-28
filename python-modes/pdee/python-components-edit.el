@@ -679,32 +679,32 @@ See also py-bounds-of-statements "
          (orig (point))
          last beg end)
     (when orig-indent
-      (setq beg (point))
-      (while (and (setq last beg)
-                  (setq beg
-                        (when (py-beginning-of-statement)
-                          (line-beginning-position)))
-                  (not (py-in-string-p))
-                  (not (py-beginning-of-block-p))
-                  (eq (current-indentation) orig-indent)))
-      (setq beg last)
+      (setq beg (line-beginning-position))
+      ;; look upward first
+      (while (and
+              (progn
+                (unless (py-beginning-of-statement-p)
+                  (py-beginning-of-statement))
+                (line-beginning-position))
+              (py-beginning-of-statement)
+              (not (py-beginning-of-block-p))
+              (eq (current-indentation) orig-indent))
+        (setq beg (line-beginning-position)))
       (goto-char orig)
-      (setq end (line-end-position))
       (while (and (setq last (line-end-position))
                   (setq end (py-down-statement))
                   (not (py-beginning-of-block-p))
-                  (not (looking-at py-keywords))
-                  (not (looking-at "pdb\."))
-                  (not (py-in-string-p))
                   (eq (py-indentation-of-statement) orig-indent)))
       (setq end last)
-      (goto-char orig)
+      (goto-char beg)
       (if (and beg end)
           (progn
             (when (interactive-p) (message "%s %s" beg end))
             (cons beg end))
         (when (interactive-p) (message "%s" nil))
         nil))))
+
+
 
 (defalias 'py-backward-declarations 'py-beginning-of-declarations)
 (defun py-beginning-of-declarations ()
