@@ -629,8 +629,8 @@ See original source: http://pymacs.progiciels-bpi.ca"
 :group 'python
 )
 
-(defcustom py-outline-minor-mode-p  nil
- "If outline minor-mode should be on, default is nil. "
+(defcustom py-outline-minor-mode-p  t
+ "If outline minor-mode should be on, default is `t'. "
 
 :type 'boolean
 :group 'python
@@ -7590,6 +7590,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
           (py-shell)
           (set-buffer oldbuf))))
     (jump-to-register 213465879))
+  (when py-outline-minor-mode-p (outline-minor-mode 1))
   (when (interactive-p) (message "python-mode loaded from: %s" "python-mode.el")))
 
 (defadvice pdb (before gud-query-cmdline activate)

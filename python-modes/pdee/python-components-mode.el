@@ -63,8 +63,8 @@ A running python-shell presently is needed by complete-functions. "
 :group 'python
 )
 
-(defcustom py-outline-minor-mode-p  nil
- "If outline minor-mode should be on, default is nil. "
+(defcustom py-outline-minor-mode-p  t
+ "If outline minor-mode should be on, default is `t'. "
 
 :type 'boolean
 :group 'python
@@ -2921,7 +2921,7 @@ END lie."
   "`outline-level' function for Python mode.
 The level is the number of `python-indent' steps of indentation
 of current line."
-  (1+ (/ (current-indentation) python-indent)))
+  (1+ (/ (current-indentation) py-indent-offset)))
 
 ;; Fixme: Consider top-level assignments, imports, &c.
 (defun python-current-defun (&optional length-limit)
@@ -3407,6 +3407,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
           (py-shell)
           (set-buffer oldbuf))))
     (jump-to-register 213465879))
+  (when py-outline-minor-mode-p (outline-minor-mode 1))
   (when (interactive-p) (message "python-mode loaded from: %s" "python-components-mode.el")))
 
 
