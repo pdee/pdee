@@ -941,11 +941,16 @@ character address of the specified TYPE."
   ;; Make outer chars of matching triple-quote sequences into generic
   ;; string delimiters.  Fixme: Is there a better way?
   ;; First avoid a sequence preceded by an odd number of backslashes.
-  `((,(concat "\\(?:\\([RUru]\\)[Rr]?\\|^\\|[^\\]\\(?:\\\\.\\)*\\)" ;Prefix.
-            "\\(?:\\('\\)'\\('\\)\\|\\(?2:\"\\)\"\\(?3:\"\\)\\)")
-     (3 (python-quote-syntax)))))
+  `((,(concat "\\(?:^\\|[^\\]\\(?:\\\\.\\)*\\)" ;Prefix.
+            "\\(?:\\('\\)\\('\\)\\('\\)\\|\\(?1:\"\\)\\(?2:\"\\)\\(?3:\"\\)\\)")
+     (1 (python-quote-syntax 1) nil lax)
+     (2 (python-quote-syntax 2))
+     (3 (python-quote-syntax 3)))
+    ;; This doesn't really help.
+;;;     (,(rx (and ?\\ (group ?\n))) (1 " "))
+    ))
 
-(defun python-quote-syntax ()
+(defun python-quote-syntax (n)
   "Put `syntax-table' property correctly on triple quote.
 Used for syntactic keywords.  N is the match number (1, 2 or 3)."
   ;; Given a triple quote, we have to check the context to know
@@ -963,24 +968,27 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
   ;; x '"""' x """ \"""" x
   (save-excursion
     (goto-char (match-beginning 0))
-    (let ((syntax (save-match-data (syntax-ppss))))
       (cond
-       ((eq t (nth 3 syntax))           ; after unclosed fence
         ;; Consider property for the last char if in a fenced string.
+     ((= n 3)
+      (let* ((font-lock-syntactic-keywords nil)
+	     (syntax (syntax-ppss)))
+	(when (eq t (nth 3 syntax))	; after unclosed fence
         (goto-char (nth 8 syntax))	; fence position
-        (skip-chars-forward "uUrR")	; skip any prefix
+	  ;; (skip-chars-forward "uUrR")	; skip any prefix
         ;; Is it a matching sequence?
         (if (eq (char-after) (char-after (match-beginning 2)))
-            (put-text-property (match-beginning 3) (match-end 3)
-                               'syntax-table (string-to-syntax "|"))))
-       ((match-end 1)
+	      (eval-when-compile (string-to-syntax "|"))))))
         ;; Consider property for initial char, accounting for prefixes.
-        (put-text-property (match-beginning 1) (match-end 1)
-                           'syntax-table (string-to-syntax "|")))
-       (t
-        ;; Consider property for initial char, accounting for prefixes.
-        (put-text-property (match-beginning 2) (match-end 2)
-                           'syntax-table (string-to-syntax "|"))))
+     ((or (and (= n 2)			; leading quote (not prefix)
+	       (not (match-end 1)))     ; prefix is null
+	  (and (= n 1)			; prefix
+	       (match-end 1)))          ; non-empty
+      (let ((font-lock-syntactic-keywords nil))
+	(unless (eq 'string (syntax-ppss-context (syntax-ppss)))
+	  (eval-when-compile (string-to-syntax "|")))))
+     ;; Otherwise (we're in a non-matching string) the property is
+     ;; nil, which is OK.
       )))
 
 (defvar python-mode-syntax-table nil

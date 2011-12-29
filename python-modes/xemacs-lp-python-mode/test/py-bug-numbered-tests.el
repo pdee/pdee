@@ -118,6 +118,7 @@
          'indent-offset-not-guessed-when-loading-lp:902890-test
          'from-__future__-import-absolute_import-mishighlighted-lp-907084-test
          'automatic-indentation-is-broken-lp-889643-test
+         'chars-uU-preceding-triple-quoted-get-string-face-lp-909517-test
          'UnicodeEncodeError-lp:550661-test
          'py-shell-complete-lp-328836-test
 
@@ -2134,7 +2135,6 @@ from __future__ import absolute_import
   (goto-char 82)
   (assert (not (eq (get-char-property (point) 'face) 'font-lock-keyword-face)) nil "from-__future__-import-absolute_import-mishighlighted-lp-907084-test failed"))
 
-
 (defun automatic-indentation-is-broken-lp-889643-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
@@ -2147,6 +2147,18 @@ from __future__ import absolute_import
 (defun automatic-indentation-is-broken-lp-889643-base ()
   (assert (eq (key-binding (kbd "RET")) 'py-newline-and-indent) nil "automatic-indentation-is-broken-lp-889643-test failed"))
 
+(defun chars-uU-preceding-triple-quoted-get-string-face-lp-909517-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+u\"hi\" and u\"\"\"d\"\"\"
+"))
+  (when load-branch-function (funcall load-branch-function))
+  (py-bug-tests-intern 'chars-uU-preceding-triple-quoted-get-string-face-lp-909517-base arg teststring)))
+
+(defun chars-uU-preceding-triple-quoted-get-string-face-lp-909517-base ()
+    (goto-char 58)
+    (assert (eq nil (get-char-property (point) 'face)) nil "chars-uU-preceding-triple-quoted-get-string-face-lp-909517-test failed"))
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
