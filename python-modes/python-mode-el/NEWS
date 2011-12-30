@@ -3,6 +3,10 @@ Python Mode News
 New in version 6.0.4
 --------------------
 
+- Python shell starts with `python-mode'
+  that's needed by completion for now
+  boolean customizable `py-start-run-py-shell'
+
 - outline-(minor-)mode enabled providing regular
   expressions. Customize `py-outline-minor-mode-p' to
   switch it on with python-mode
@@ -34,10 +38,7 @@ New in version 6.0.4
   implemented also for "clause", "def", "class",
   "statement".
   Go to the beginning of next block below
-  current level. 
-
-
-
+  current level.
 
 New in version 6.0.3
 --------------------
