@@ -87,6 +87,14 @@ See original source: http://pymacs.progiciels-bpi.ca"
 :type 'boolean
 :group 'python)
 
+(defcustom py-report-level-p nil
+ "If indenting functions should report reached indent level. 
+
+Default is nil. "
+
+:type 'boolean
+:group 'python)
+
 (defcustom py-close-provides-newline t
   "If a newline is inserted, when line after block isn't empty. Default is non-nil. "
   :type 'boolean

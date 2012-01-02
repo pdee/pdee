@@ -1,5 +1,11 @@
 Python Mode News
 ================
+New in version 6.0.5
+--------------------
+
+- new boolean `py-report-level-p'
+  if `t', reached indent level is messaged
+
 New in version 6.0.4
 --------------------
 

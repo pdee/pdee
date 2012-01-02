@@ -113,7 +113,7 @@ Returns current indentation "
                        (forward-char (- col cui))
                      (beginning-of-line))))
         (insert-tab))))
-  (message "%s" (current-indentation))
+  (when (and (interactive-p) py-report-level-p)(message "%s" (current-indentation)))
   (current-indentation))
 
 (defun py-newline-and-indent ()
@@ -130,14 +130,13 @@ When indent is set back manually, this is honoured in following lines. "
       (insert-char ?\n 1)
       (insert (make-string (setq erg (py-compute-indentation)) ?\ ))
       ;; (move-to-column erg)
-      (when (looking-at "\\([ \t]+\\)") (delete-region (match-beginning 1) (match-end 1)))
-      )
+      (when (looking-at "\\([ \t]+\\)") (delete-region (match-beginning 1) (match-end 1))))
     (when (and (looking-at "[ \t]+")
                (nth 1 (if (featurep 'xemacs)
                           (parse-partial-sexp (point-min) (point))
                         (syntax-ppss))))
       (delete-region (match-beginning 0) (match-end 0)))
-    (when (interactive-p) (message "%s" erg))
+    (when (and (interactive-p) py-report-level-p) (message "%s" erg))
     erg))
 
 (defalias 'py-newline-and-close-block 'py-newline-and-dedent)
@@ -151,7 +150,7 @@ Returns column. "
     (when (< 0 cui)
       (setq erg (- (py-compute-indentation) py-indent-offset))
       (indent-to-column erg))
-    (when (interactive-p) (message "%s" erg))
+    (when (and (interactive-p) py-report-level-p) (message "%s" erg))
     erg))
 
 (defun py-guessed-sanity-check (guessed)
@@ -226,7 +225,7 @@ If no region is active, current line is dedented.
 Returns indentation reached. "
   (interactive "p")
   (let ((erg (py-shift-intern (- count) start end)))
-    (when (interactive-p) (message "%s" erg))
+    (when (and (interactive-p) py-report-level-p) (message "%s" erg))
     erg))
 
 (defalias 'py-shift-region-right 'py-shift-right)
@@ -237,7 +236,7 @@ If no region is active, current line is indented.
 Returns indentation reached. "
   (interactive "p")
   (let ((erg (py-shift-intern count beg end)))
-    (when (interactive-p) (message "%s" erg))
+    (when (and (interactive-p) py-report-level-p) (message "%s" erg))
     erg))
 
 (defun py-shift-intern (count &optional start end)
@@ -304,7 +303,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "paragraph" (or arg py-indent-offset))))
-        (when (interactive-p) (message "%s" erg))
+        (when (and (interactive-p) py-report-level-p) (message "%s" erg))
     erg))
 
 (defun py-shift-paragraph-left (&optional arg)
@@ -316,7 +315,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "paragraph" (- (or arg py-indent-offset)))))
-    (when (interactive-p) (message "%s" erg))
+    (when (and (interactive-p) py-report-level-p) (message "%s" erg))
     erg))
 
 (defun py-shift-block-right (&optional arg)
@@ -328,7 +327,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "block" (or arg py-indent-offset))))
-        (when (interactive-p) (message "%s" erg))
+        (when (and (interactive-p) py-report-level-p) (message "%s" erg))
     erg))
 
 (defun py-shift-block-left (&optional arg)
@@ -340,7 +339,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "block" (- (or arg py-indent-offset)))))
-    (when (interactive-p) (message "%s" erg))
+    (when (and (interactive-p) py-report-level-p) (message "%s" erg))
     erg))
 
 (defun py-shift-clause-right (&optional arg)
@@ -352,7 +351,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "clause" (or arg py-indent-offset))))
-        (when (interactive-p) (message "%s" erg))
+        (when (and (interactive-p) py-report-level-p) (message "%s" erg))
     erg))
 
 (defun py-shift-clause-left (&optional arg)
@@ -364,7 +363,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "clause" (- (or arg py-indent-offset)))))
-    (when (interactive-p) (message "%s" erg))
+    (when (and (interactive-p) py-report-level-p) (message "%s" erg))
     erg))
 
 (defun py-shift-def-right (&optional arg)
@@ -376,7 +375,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "def" (or arg py-indent-offset))))
-        (when (interactive-p) (message "%s" erg))
+        (when (and (interactive-p) py-report-level-p) (message "%s" erg))
     erg))
 
 (defun py-shift-def-left (&optional arg)
@@ -388,7 +387,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "def" (- (or arg py-indent-offset)))))
-    (when (interactive-p) (message "%s" erg))
+    (when (and (interactive-p) py-report-level-p) (message "%s" erg))
     erg))
 
 (defun py-shift-class-right (&optional arg)
@@ -400,7 +399,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "class" (or arg py-indent-offset))))
-        (when (interactive-p) (message "%s" erg))
+        (when (and (interactive-p) py-report-level-p) (message "%s" erg))
     erg))
 
 (defun py-shift-class-left (&optional arg)
@@ -412,7 +411,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "class" (- (or arg py-indent-offset)))))
-    (when (interactive-p) (message "%s" erg))
+    (when (and (interactive-p) py-report-level-p) (message "%s" erg))
     erg))
 
 (defun py-shift-line-right (&optional arg)
@@ -424,7 +423,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "line" (or arg py-indent-offset))))
-        (when (interactive-p) (message "%s" erg))
+        (when (and (interactive-p) py-report-level-p) (message "%s" erg))
     erg))
 
 (defun py-shift-line-left (&optional arg)
@@ -436,7 +435,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "line" (- (or arg py-indent-offset)))))
-    (when (interactive-p) (message "%s" erg))
+    (when (and (interactive-p) py-report-level-p) (message "%s" erg))
     erg))
 
 (defun py-shift-statement-right (&optional arg)
@@ -448,7 +447,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "statement" (or arg py-indent-offset))))
-        (when (interactive-p) (message "%s" erg))
+        (when (and (interactive-p) py-report-level-p) (message "%s" erg))
     erg))
 
 (defun py-shift-statement-left (&optional arg)
@@ -460,7 +459,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "statement" (- (or arg py-indent-offset)))))
-    (when (interactive-p) (message "%s" erg))
+    (when (and (interactive-p) py-report-level-p) (message "%s" erg))
     erg))
 
 (defun py-indent-region (start end &optional indent-offset)
