@@ -489,7 +489,7 @@ If you ignore the location `M-x py-guess-pdb-path' might display it.
 
 (defcustom py-load-pymacs-p  nil
  "If Pymacs as delivered with python-mode.el shall be loaded.
-Default is non-nil.
+Default is nil.
 
 Pymacs has been written by François Pinard and many others.
 See original source: http://pymacs.progiciels-bpi.ca"
