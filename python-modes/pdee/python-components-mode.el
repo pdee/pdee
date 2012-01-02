@@ -791,6 +791,23 @@ See original source: http://pymacs.progiciels-bpi.ca"
 
 ;;; Python specialized rx
 
+(defconst python-compilation-regexp-alist
+  ;; FIXME: maybe these should move to compilation-error-regexp-alist-alist.
+  ;;   The first already is (for CAML), but the second isn't.  Anyhow,
+  ;;   these are specific to the inferior buffer.  -- fx
+  `((,(rx line-start (1+ (any " \t")) "File \""
+	  (group (1+ (not (any "\"<")))) ; avoid `<stdin>' &c
+	  "\", line " (group (1+ digit)))
+     1 2)
+    (,(rx " in file " (group (1+ not-newline)) " on line "
+	  (group (1+ digit)))
+     1 2)
+    ;; pdb stack trace
+    (,(rx line-start "> " (group (1+ (not (any "(\"<"))))
+	  "(" (group (1+ digit)) ")" (1+ (not (any "("))) "()")
+     1 2))
+  "`compilation-error-regexp-alist' for inferior Python.")
+
 (eval-when-compile
   (defconst python-rx-constituents
     (list
@@ -831,15 +848,14 @@ See original source: http://pymacs.progiciels-bpi.ca"
 TYPE can be 'comment, 'string or 'paren.  It returns the start
 character address of the specified TYPE."
   (let ((ppss (or syntax-ppss (syntax-ppss))))
-    (case type
-      ('comment
-       (and (nth 4 ppss)
-            (nth 8 ppss)))
-      ('string
-       (nth 8 ppss))
-      ('paren
-       (nth 1 ppss))
-      (t nil))))
+    (cond ((eq type 'comment)
+           (and (nth 4 ppss)
+                (nth 8 ppss)))
+          ((eq type 'string)
+           (nth 8 ppss))
+          ((eq type 'paren)
+           (nth 1 ppss))
+          (t nil))))
 
 (defvar python-font-lock-keywords
   ;; Keywords
@@ -1153,6 +1169,11 @@ It makes underscores and dots word constituent chars.")
 ;; eric has items including: (un)indent, (un)comment, restart script,
 ;; run script, debug script; also things for profiling, unit testing.
 
+(add-hook 'python-mode-hook
+          (lambda ()
+            (define-key python-mode-map [(meta p)] 'py-beginning-of-statement)
+            (define-key python-mode-map [(meta n)] 'py-end-of-statement)))
+
 (defvar python-shell-map
   (let ((map (copy-keymap comint-mode-map)))
     (define-key map [tab]   'tab-to-tab-stop)
@@ -1362,7 +1383,7 @@ mode buffer is visited during an Emacs session.  After that, use
 
 ;; for toggling between CPython and JPython
 (defvar python-which-shell nil)
-(defvar python-which-args  python-python-command-args)
+(defvar python-which-args python-python-command-args)
 (defvar python-which-bufname "Python")
 (make-variable-buffer-local 'python-which-shell)
 (make-variable-buffer-local 'python-which-args)
@@ -1524,7 +1545,7 @@ Set `python-indent' locally to the value guessed."
 		    ;; following a key.
 		    (if (or backslash colon)
 			(+ python-indent (current-column))
-			(current-column))
+                      (current-column))
 		  ;; Otherwise indent relative to statement start, one
 		  ;; level per bracketing level.
 		  (goto-char (1+ open-start))
@@ -1772,7 +1793,7 @@ reached start of buffer."
 		     ;; Not sure why it was like this -- fails in case of
 		     ;; last internal function followed by first
 		     ;; non-def statement of the main body.
-;; 		     (and def-line (= in ci))
+                     ;; 		     (and def-line (= in ci))
 		     (= in ci)
 		     (< in ci)))
 	       (not (python-in-string/comment)))
@@ -2014,15 +2035,15 @@ don't move and return nil.  Otherwise return t."
 
 ;; For possibily speeding this up, here's the top of the ELP profile
 ;; for rescanning pydoc.py (2.2k lines, 90kb):
-;; Function Name                         Call Count  Elapsed Time  Average Time
+;; Function Name Call Count Elapsed Time Average Time
 ;; ====================================  ==========  =============  ============
-;; python-imenu-create-index             156         2.430906      0.0155827307
-;; python-end-of-defun                   155         1.2718260000  0.0082053290
-;; python-end-of-block                   155         1.1898689999  0.0076765741
-;; python-next-statement                 2970        1.024717      0.0003450225
-;; python-end-of-statement               2970        0.4332190000  0.0001458649
-;; python-beginning-of-defun             265         0.0918479999  0.0003465962
-;; python-skip-comments/blanks           3125        0.0753319999  2.410...e-05
+;; python-imenu-create-index 156 2.430906 0.0155827307
+;; python-end-of-defun 155 1.2718260000 0.0082053290
+;; python-end-of-block 155 1.1898689999 0.0076765741
+;; python-next-statement 2970 1.024717 0.0003450225
+;; python-end-of-statement 2970 0.4332190000 0.0001458649
+;; python-beginning-of-defun 265 0.0918479999 0.0003465962
+;; python-skip-comments/blanks 3125 0.0753319999 2.410...e-05
 
 (defvar python-recursing)
 (defun python-imenu-create-index ()
@@ -2194,23 +2215,6 @@ Use \\[python-set-proc] to set the default value from a buffer with a
 local value.")
 (make-variable-buffer-local 'python-buffer)
 
-(defconst python-compilation-regexp-alist
-  ;; FIXME: maybe these should move to compilation-error-regexp-alist-alist.
-  ;;   The first already is (for CAML), but the second isn't.  Anyhow,
-  ;;   these are specific to the inferior buffer.  -- fx
-  `((,(rx line-start (1+ (any " \t")) "File \""
-	  (group (1+ (not (any "\"<")))) ; avoid `<stdin>' &c
-	  "\", line " (group (1+ digit)))
-     1 2)
-    (,(rx " in file " (group (1+ not-newline)) " on line "
-	  (group (1+ digit)))
-     1 2)
-    ;; pdb stack trace
-    (,(rx line-start "> " (group (1+ (not (any "(\"<"))))
-	  "(" (group (1+ digit)) ")" (1+ (not (any "("))) "()")
-     1 2))
-  "`compilation-error-regexp-alist' for inferior Python.")
-
 (defvar inferior-python-mode-map
   (let ((map (make-sparse-keymap)))
     ;; This will inherit from comint-mode-map.
@@ -2240,9 +2244,9 @@ local value.")
 (defvar python--prompt-regexp nil)
 
 (defun python--set-prompt-regexp ()
-  (let ((prompt  (cdr-safe (or (assoc python-python-command
-				      python-shell-prompt-alist)
-			       (assq t python-shell-prompt-alist))))
+  (let ((prompt (cdr-safe (or (assoc python-python-command
+                                     python-shell-prompt-alist)
+                              (assq t python-shell-prompt-alist))))
 	(cprompt (cdr-safe (or (assoc python-python-command
 				      python-shell-continuation-prompt-alist)
 			       (assq t python-shell-continuation-prompt-alist)))))
@@ -2672,7 +2676,7 @@ will."
 	(help-print-return-message))))
   (comint-redirect-send-command-to-process (format "emacs.ehelp(%S, %s)"
 						   symbol python-imports)
-   "*Help*" (python-proc) nil nil))
+                                           "*Help*" (python-proc) nil nil))
 
 (add-to-list 'debug-ignored-errors "^No symbol")
 
@@ -2991,38 +2995,38 @@ Uses `python-beginning-of-block', `python-end-of-block'."
   "Find top-level imports, updating `python-imports'."
   (interactive)
   (save-excursion
-      (let (lines)
-	(goto-char (point-min))
-	(while (re-search-forward "^import\\>\\|^from\\>" nil t)
-	  (unless (syntax-ppss-context (syntax-ppss))
-	    (let ((start (line-beginning-position)))
-	      ;; Skip over continued lines.
-	      (while (and (eq ?\\ (char-before (line-end-position)))
-			  (= 0 (forward-line 1)))
-		t)
-	      (push (buffer-substring start (line-beginning-position 2))
-		    lines))))
-	(setq python-imports
-	      (if lines
-		  (apply #'concat
-;; This is probably best left out since you're unlikely to need the
-;; doc for a function in the buffer and the import will lose if the
-;; Python sub-process' working directory isn't the same as the
-;; buffer's.
-;; 			 (if buffer-file-name
-;; 			     (concat
-;; 			      "import "
-;; 			      (file-name-sans-extension
-;; 			       (file-name-nondirectory buffer-file-name))))
-			 (nreverse lines))
-		"None"))
-	(when lines
-	  (set-text-properties 0 (length python-imports) nil python-imports)
-	  ;; The output ends up in the wrong place if the string we
-	  ;; send contains newlines (from the imports).
-	  (setq python-imports
-		(replace-regexp-in-string "\n" "\\n"
-					  (format "%S" python-imports) t t))))))
+    (let (lines)
+      (goto-char (point-min))
+      (while (re-search-forward "^import\\>\\|^from\\>" nil t)
+        (unless (syntax-ppss-context (syntax-ppss))
+          (let ((start (line-beginning-position)))
+            ;; Skip over continued lines.
+            (while (and (eq ?\\ (char-before (line-end-position)))
+                        (= 0 (forward-line 1)))
+              t)
+            (push (buffer-substring start (line-beginning-position 2))
+                  lines))))
+      (setq python-imports
+            (if lines
+                (apply #'concat
+                       ;; This is probably best left out since you're unlikely to need the
+                       ;; doc for a function in the buffer and the import will lose if the
+                       ;; Python sub-process' working directory isn't the same as the
+                       ;; buffer's.
+                       ;; 			 (if buffer-file-name
+                       ;; 			     (concat
+                       ;; 			      "import "
+                       ;; 			      (file-name-sans-extension
+                       ;; 			       (file-name-nondirectory buffer-file-name))))
+                       (nreverse lines))
+              "None"))
+      (when lines
+        (set-text-properties 0 (length python-imports) nil python-imports)
+        ;; The output ends up in the wrong place if the string we
+        ;; send contains newlines (from the imports).
+        (setq python-imports
+              (replace-regexp-in-string "\n" "\\n"
+                                        (format "%S" python-imports) t t))))))
 
 ;; Fixme: This fails the first time if the sub-process isn't already
 ;; running.  Presumably a timing issue with i/o to the process.
@@ -3112,19 +3116,19 @@ the if condition."
 
 (eval-when-compile
   ;; Define a user-level skeleton and add it to the abbrev table.
-(defmacro def-python-skeleton (name &rest elements)
-  (let* ((name (symbol-name name))
-	 (function (intern (concat "python-insert-" name))))
-    `(progn
-       ;; Usual technique for inserting a skeleton, but expand
-       ;; to the original abbrev instead if in a comment or string.
-       (when python-use-skeletons
-         (define-abbrev python-mode-abbrev-table ,name ""
-           ',function
-           nil t))                      ; system abbrev
-       (define-skeleton ,function
-	 ,(format "Insert Python \"%s\" template." name)
-	 ,@elements)))))
+  (defmacro def-python-skeleton (name &rest elements)
+    (let* ((name (symbol-name name))
+           (function (intern (concat "python-insert-" name))))
+      `(progn
+         ;; Usual technique for inserting a skeleton, but expand
+         ;; to the original abbrev instead if in a comment or string.
+         (when python-use-skeletons
+           (define-abbrev python-mode-abbrev-table ,name ""
+             ',function
+             nil t))                      ; system abbrev
+         (define-skeleton ,function
+           ,(format "Insert Python \"%s\" template." name)
+           ,@elements)))))
 (put 'def-python-skeleton 'lisp-indent-function 2)
 
 ;; From `skeleton-further-elements' set below:
@@ -3134,7 +3138,7 @@ the if condition."
 ;;       beginning of indentation.
 
 (def-python-skeleton if
-  "Condition: "
+    "Condition: "
   "if " str ":" \n
   > -1	   ; Fixme: I don't understand the spurious space this removes.
   _ \n
@@ -3153,19 +3157,19 @@ the if condition."
   > _ \n)
 
 (def-python-skeleton while
-  "Condition: "
+    "Condition: "
   "while " str ":" \n
   > -1 _ \n
   '(python-else) | ^)
 
 (def-python-skeleton for
-  "Target, %s: "
+    "Target, %s: "
   "for " str " in " (skeleton-read "Expression, %s: ") ":" \n
   > -1 _ \n
   '(python-else) | ^)
 
 (def-python-skeleton try/except
-  nil
+    nil
   "try:" \n
   > -1 _ \n
   ("Exception, %s: "
@@ -3180,21 +3184,21 @@ the if condition."
   "Target, %s: " ", " str | -2)
 
 (def-python-skeleton try/finally
-  nil
+    nil
   "try:" \n
   > -1 _ \n
   < "finally:" \n
   > _ \n)
 
 (def-python-skeleton def
-  "Name: "
+    "Name: "
   "def " str " (" ("Parameter, %s: " (unless (equal ?\( (char-before)) ", ")
-		     str) "):" \n
-  "\"\"\"" - "\"\"\"" \n     ; Fixme:  extra space inserted -- why?).
-  > _ \n)
+                   str) "):" \n
+                   "\"\"\"" - "\"\"\"" \n     ; Fixme:  extra space inserted -- why?).
+                   > _ \n)
 
 (def-python-skeleton class
-  "Name: "
+    "Name: "
   "class " str " (" ("Inheritance, %s: "
 		     (unless (equal ?\( (char-before)) ", ")
 		     str)
@@ -3489,11 +3493,11 @@ Returns the specified Python resp. Jython shell command name. "
   ;; look for an interpreter specified in the first line
   ;; similar to set-auto-mode (files.el)
   (let* (erg
-        (interpreter (save-excursion
-                       (goto-char (point-min))
-                       (when (looking-at py-shebang-regexp)
-                         (setq erg (match-string-no-properties 0))
-                         (substring erg (string-match "[ijp]+ython" erg))))))
+         (interpreter (save-excursion
+                        (goto-char (point-min))
+                        (when (looking-at py-shebang-regexp)
+                          (setq erg (match-string-no-properties 0))
+                          (substring erg (string-match "[ijp]+ython" erg))))))
     (when (interactive-p) (message "%s" interpreter))
     interpreter))
 
@@ -3696,7 +3700,7 @@ This function does not modify point or mark."
       (goto-char here))))
 
 (make-obsolete 'jpython-mode 'jython-mode nil)
-(define-derived-mode jython-mode python-mode  "Jython"
+(define-derived-mode jython-mode python-mode "Jython"
   "Major mode for editing Jython files.
 Like `python-mode', but sets up parameters for Jython subprocesses.
 Runs `jython-mode-hook' after `python-mode-hook'."
@@ -3711,8 +3715,7 @@ Runs `jython-mode-hook' after `python-mode-hook'."
 
 (let ((modes '(("jython" . jython-mode)
                ("python" . python-mode)
-               ("python3" . python-mode)
-               )))
+               ("python3" . python-mode))))
   (while modes
     (when (not (assoc (car modes) interpreter-mode-alist))
       (push (car modes) interpreter-mode-alist))

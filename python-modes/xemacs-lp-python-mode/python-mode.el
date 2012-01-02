@@ -50,7 +50,7 @@
   :group 'languages
   :prefix "py-")
 
-(defconst py-version "6.0.4")
+(defconst py-version "6.0.5")
 
 (defsubst py-in-string-or-comment-p ()
   "Return beginning position if point is in a Python literal (a comment or string)."
