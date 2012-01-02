@@ -119,6 +119,7 @@
          'from-__future__-import-absolute_import-mishighlighted-lp-907084-test
          'automatic-indentation-is-broken-lp-889643-test
          'chars-uU-preceding-triple-quoted-get-string-face-lp-909517-test
+         'wrong-type-argument-lp-901541-test
          'UnicodeEncodeError-lp:550661-test
          'py-shell-complete-lp-328836-test
 
@@ -676,8 +677,7 @@ This docstring isn't indented, test should pass anyway.
 
 (defun goto-beginning-of-tqs-lp:735328 ()
   (goto-char 84)
-  (indent-to (py-compute-indentation))
-  (assert (eq 4 (current-column)) nil "goto-beginning-of-tqs-lp:735328-test failed")
+  (assert (eq 0 (py-compute-indentation)) nil "goto-beginning-of-tqs-lp:735328-test failed")
   )
 
 (defun class-treated-as-keyword-lp:709478-test (&optional arg load-branch-function)
@@ -2159,6 +2159,30 @@ u\"hi\" and u\"\"\"d\"\"\"
 (defun chars-uU-preceding-triple-quoted-get-string-face-lp-909517-base ()
     (goto-char 58)
     (assert (eq nil (get-char-property (point) 'face)) nil "chars-uU-preceding-triple-quoted-get-string-face-lp-909517-test failed"))
+
+(defun wrong-type-argument-lp-901541-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+# source: argparse.py
+# Author: Steven J. Bethard <steven.bethard@gmail.com>.
+
+\"\"\"Command-line parsing library
+
+This module is an optparse-inspired command-line parsing library that:
+
+    - handles both optional and positional arguments
+    - produces highly informative usage messages
+    - supports parsers that dispatch to sub-parsers
+\"\"\"
+"))
+  (when load-branch-function (funcall load-branch-function))
+  (py-bug-tests-intern 'wrong-type-argument-lp-901541-base arg teststring)))
+
+(defun wrong-type-argument-lp-901541-base ()
+    (goto-char 385)
+    (assert (eq 4 (py-compute-indentation)) nil "wrong-type-argument-lp-901541-test failed"))
+
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
