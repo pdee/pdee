@@ -163,6 +163,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall automatic-indentation-is-broken-lp-889643-test \
 --funcall chars-uU-preceding-triple-quoted-get-string-face-lp-909517-test \
 --funcall wrong-type-argument-lp-901541-test \
+--funcall py-pychecker-run-missing-lp-910783-test \
 \
 --funcall multiline-list-indent-test \
 --funcall py-beginning-of-block-test \

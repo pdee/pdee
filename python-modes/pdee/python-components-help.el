@@ -526,5 +526,75 @@ Imports done are displayed in message buffer. "
         (message "%s" erg))
       erg)))
 
+;;; Pychecker
+;; hack for GNU Emacs
+;; (unless (fboundp 'read-shell-command)
+  ;; (defalias 'read-shell-command 'read-string))
+
+(defun py-pychecker-run (command)
+  "*Run pychecker (default on the file currently visited)."
+  (interactive
+   (let ((default
+           (if (buffer-file-name)
+               (format "%s %s %s" py-pychecker-command
+                       (mapconcat 'identity py-pychecker-command-args " ")
+                       (buffer-file-name))
+             (format "%s %s" py-pychecker-command
+                     (mapconcat 'identity py-pychecker-command-args " "))))
+         (last (when py-pychecker-history
+                 (let* ((lastcmd (car py-pychecker-history))
+                        (cmd (cdr (reverse (split-string lastcmd))))
+                        (newcmd (reverse (cons (buffer-file-name) cmd))))
+                   (mapconcat 'identity newcmd " ")))))
+
+     (list
+      (if (fboundp 'read-shell-command)
+          (read-shell-command "Run pychecker like this: "
+                              (if last
+                                  last
+                                default)
+                              'py-pychecker-history)
+        (read-string "Run pychecker like this: "
+                     (if last
+                         last
+                       default)
+                     'py-pychecker-history)))))
+  (save-some-buffers (not py-ask-about-save) nil)
+  (if (fboundp 'compilation-start)
+      ;; Emacs.
+      (compilation-start command)
+    ;; XEmacs.
+    (when (featurep 'xemacs)
+      (compile-internal command "No more errors"))))
+
+;; the python-el way
+(defcustom python-check-command "pychecker --stdlib"
+  "Command used to check a Python file."
+  :type 'string
+  :group 'python)
+
+(defvar python-saved-check-command nil
+  "Internal use.")
+
+;; After `sgml-validate-command'.
+(defun python-check (command)
+  "Check a Python file (default current buffer's file).
+Runs COMMAND, a shell command, as if by `compile'.
+See `python-check-command' for the default."
+  (interactive
+   (list (read-string "Checker command: "
+		      (or python-saved-check-command
+			  (concat python-check-command " "
+				  (let ((name (buffer-file-name)))
+				    (if name
+					(file-name-nondirectory name))))))))
+  (setq python-saved-check-command command)
+  (require 'compile)                    ;To define compilation-* variables.
+  (save-some-buffers (not compilation-ask-about-save) nil)
+  (let ((compilation-error-regexp-alist
+	 (cons '("(\\([^,]+\\), line \\([0-9]+\\))" 1 2)
+	       compilation-error-regexp-alist)))
+    (compilation-start command)))
+
 (provide 'python-components-help)
 ;;; python-components-help.el ends here

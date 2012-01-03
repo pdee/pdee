@@ -120,6 +120,7 @@
          'automatic-indentation-is-broken-lp-889643-test
          'chars-uU-preceding-triple-quoted-get-string-face-lp-909517-test
          'wrong-type-argument-lp-901541-test
+         'py-pychecker-run-missing-lp-910783-test
          'UnicodeEncodeError-lp:550661-test
          'py-shell-complete-lp-328836-test
 
@@ -2182,6 +2183,19 @@ This module is an optparse-inspired command-line parsing library that:
 (defun wrong-type-argument-lp-901541-base ()
     (goto-char 385)
     (assert (eq 4 (py-compute-indentation)) nil "wrong-type-argument-lp-901541-test failed"))
+
+
+(defun py-pychecker-run-missing-lp-910783-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"))
+  (when load-branch-function (funcall load-branch-function))
+  (py-bug-tests-intern 'py-pychecker-run-missing-lp-910783-base arg teststring)))
+
+(defun py-pychecker-run-missing-lp-910783-base ()
+    (assert (commandp 'py-pychecker-run) nil "py-pychecker-run-missing-lp-910783-test failed"))
 
 
 (provide 'py-bug-numbered-tests)

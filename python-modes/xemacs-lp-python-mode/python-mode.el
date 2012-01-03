@@ -8848,5 +8848,42 @@ Only knows about the stuff in the current *Python* session."
              (display-completion-list (all-completions pattern completion-table)))
            (message "Making completion list...%s" "done")))))
 
+;;; Pychecker
+(defun py-pychecker-run (command)
+  "*Run pychecker (default on the file currently visited)."
+  (interactive
+   (let ((default
+           (if (buffer-file-name)
+           (format "%s %s %s" py-pychecker-command
+                   (mapconcat 'identity py-pychecker-command-args " ")
+                       (buffer-file-name))
+             (format "%s %s" py-pychecker-command
+                     (mapconcat 'identity py-pychecker-command-args " "))))
+         (last (when py-pychecker-history
+                 (let* ((lastcmd (car py-pychecker-history))
+                        (cmd (cdr (reverse (split-string lastcmd))))
+                        (newcmd (reverse (cons (buffer-file-name) cmd))))
+                   (mapconcat 'identity newcmd " ")))))
+
+     (list
+      (if (fboundp 'read-shell-command)
+          (read-shell-command "Run pychecker like this: "
+                              (if last
+                                  last
+                                default)
+                              'py-pychecker-history)
+        (read-string "Run pychecker like this: "
+                     (if last
+                         last
+                       default)
+                     'py-pychecker-history)))))
+  (save-some-buffers (not py-ask-about-save) nil)
+  (if (fboundp 'compilation-start)
+      ;; Emacs.
+      (compilation-start command)
+    ;; XEmacs.
+    (when (featurep 'xemacs)
+      (compile-internal command "No more errors"))))
+
 (provide 'python-mode)
 ;;; python-mode.el ends here

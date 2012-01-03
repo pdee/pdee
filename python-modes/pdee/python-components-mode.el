@@ -2154,35 +2154,6 @@ Repeat ARG times."
       (indent-to indent))))
 (put 'python-backspace 'delete-selection 'supersede)
 
-;;;; pychecker
-
-(defcustom python-check-command "pychecker --stdlib"
-  "Command used to check a Python file."
-  :type 'string
-  :group 'python)
-
-(defvar python-saved-check-command nil
-  "Internal use.")
-
-;; After `sgml-validate-command'.
-(defun python-check (command)
-  "Check a Python file (default current buffer's file).
-Runs COMMAND, a shell command, as if by `compile'.
-See `python-check-command' for the default."
-  (interactive
-   (list (read-string "Checker command: "
-		      (or python-saved-check-command
-			  (concat python-check-command " "
-				  (let ((name (buffer-file-name)))
-				    (if name
-					(file-name-nondirectory name))))))))
-  (setq python-saved-check-command command)
-  (require 'compile)                    ;To define compilation-* variables.
-  (save-some-buffers (not compilation-ask-about-save) nil)
-  (let ((compilation-error-regexp-alist
-	 (cons '("(\\([^,]+\\), line \\([0-9]+\\))" 1 2)
-	       compilation-error-regexp-alist)))
-    (compilation-start command)))
 
 ;;;; Inferior mode stuff (following cmuscheme).
 
