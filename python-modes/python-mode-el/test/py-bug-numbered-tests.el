@@ -1940,7 +1940,7 @@ pri
 
 (defun py-complete-lp:858621-base ()
     (goto-char 52)
-    (completion-at-point)
+    (ignore-errors (completion-at-point))
     (sit-for 0.1)
     (assert (eq 54 (point)) nil "py-complete-lp:858621-test failed"))
 
