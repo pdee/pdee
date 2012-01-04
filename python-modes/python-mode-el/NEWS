@@ -3,6 +3,12 @@ Python Mode News
 New in version 6.0.5
 --------------------
 
+- py-number-face,
+  visible only when customized and `py-use-number-face-p' is `t',
+  inherits default face
+  With large files fontifying numbers may cause a delay
+  Credits to github.com/fgallina/python.el/issues42
+
 - new boolean `py-report-level-p'
   if `t', reached indent level is messaged
 

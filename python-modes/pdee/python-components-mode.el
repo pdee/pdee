@@ -47,53 +47,59 @@
   :type 'string
   :group 'python)
 
-(defcustom py-hide-show-minor-mode-p  nil
- "If hide-show minor-mode should be on, default is nil. "
+(defcustom py-hide-show-minor-mode-p nil
+  "If hide-show minor-mode should be on, default is nil. "
 
-:type 'boolean
-:group 'python
-)
+  :type 'boolean
+  :group 'python)
 
-(defcustom py-start-run-py-shell  t
- "If `python-mode' should start a python-shell, `py-shell'. Default is `t'.
+(defcustom py-use-number-face-p nil
+  "If digits incl. hex-digits should get an own py-number-face.
+
+Default is nil. With large files fontifying numbers may cause a
+delay. Setting of `py-use-number-face-p' has visible effect only
+when `py-number-face' was customized differently than inherited
+default face. "
+  :type 'boolean
+  :group 'python)
+
+(defcustom py-start-run-py-shell t
+  "If `python-mode' should start a python-shell, `py-shell'. Default is `t'.
 
 A running python-shell presently is needed by complete-functions. "
 
-:type 'boolean
-:group 'python
-)
+  :type 'boolean
+  :group 'python)
 
-(defcustom py-outline-minor-mode-p  t
- "If outline minor-mode should be on, default is `t'. "
+(defcustom py-outline-minor-mode-p t
+  "If outline minor-mode should be on, default is `t'. "
 
-:type 'boolean
-:group 'python
-)
+  :type 'boolean
+  :group 'python)
 
-(defcustom py-guess-py-install-directory-p  t
- "If in cases, `py-install-directory' isn't set,  `py-set-load-path'should guess it from `buffer-file-name'. "
+(defcustom py-guess-py-install-directory-p t
+  "If in cases, `py-install-directory' isn't set,  `py-set-load-path'should guess it from `buffer-file-name'. "
 
-:type 'boolean
-:group 'python
-)
+  :type 'boolean
+  :group 'python)
 
-(defcustom py-load-pymacs-p  nil
- "If Pymacs as delivered with python-mode.el shall be loaded.
+(defcustom py-load-pymacs-p nil
+  "If Pymacs as delivered with python-mode.el shall be loaded.
 Default is nil.
 
 Pymacs has been written by François Pinard and many others.
 See original source: http://pymacs.progiciels-bpi.ca"
 
-:type 'boolean
-:group 'python)
+  :type 'boolean
+  :group 'python)
 
 (defcustom py-report-level-p nil
- "If indenting functions should report reached indent level. 
+  "If indenting functions should report reached indent level.
 
 Default is nil. "
 
-:type 'boolean
-:group 'python)
+  :type 'boolean
+  :group 'python)
 
 (defcustom py-close-provides-newline t
   "If a newline is inserted, when line after block isn't empty. Default is non-nil. "
@@ -199,12 +205,11 @@ Default is nil. "
   :group 'python
   :tag "Jython Command Args")
 
-(defcustom py-cleanup-temporary  t
- "If temporary buffers and files used by functions executing region  should be deleted afterwards. "
+(defcustom py-cleanup-temporary t
+  "If temporary buffers and files used by functions executing region should be deleted afterwards. "
 
-:type 'boolean
-:group 'python
-)
+  :type 'boolean
+  :group 'python)
 
 (defcustom py-lhs-inbound-indent 1
   "When line starts a multiline-assignment: How many colums indent should be more than opening bracket, brace or parenthesis. "
@@ -671,6 +676,13 @@ set in py-execute-region and used in py-jump-to-exception.")
   :group 'python)
 (defvar py-variable-name-face 'py-variable-name-face)
 
+(defface py-number-face
+  '((t (:inherit default)))
+  ;; '((t (:inherit 'font-lock-variable-name-face)))
+  "Highlight numbers. "
+  :group 'python)
+(defvar py-number-face 'py-number-face)
+
 ;; PEP 318 decorators
 (defface py-decorators-face
   '((t (:inherit font-lock-keyword-face)))
@@ -865,6 +877,10 @@ character address of the specified TYPE."
            (nth 1 ppss))
           (t nil))))
 
+;; Credits to github.com/fgallina/python.el/issues42
+(defvar font-lock-number "[0-9]+\\([eE][+-]?[0-9]*\\)?")
+(defvar font-lock-hexnumber "0[xX][0-9a-fA-F]+")
+
 (defvar python-font-lock-keywords
   ;; Keywords
   `(,(rx symbol-start
@@ -882,6 +898,10 @@ character address of the specified TYPE."
     (,(rx symbol-start
           (or "raise" "except")
           symbol-end) . py-exception-name-face)
+    (when py-use-number-face-p
+      (,(rx symbol-start (1+ (or (any digit)(any hex-digit))) symbol-end) . py-number-face))
+    ;; font-lock-hexnumber, font-lock-number
+    ;; +     '("\\([0-9]+\\([eE][+-]?[0-9]*\\)?\\|0[xX][0-9a-fA-F]+\\)" . py-number-face)
     ;; Constants
     (,(rx symbol-start
           ;; copyright, license, credits, quit, exit are added by the
@@ -896,6 +916,7 @@ character address of the specified TYPE."
     (,(rx line-start (* (any " \t")) (group "@" (1+ (or word ?_))
                                             (0+ "." (1+ (or word ?_)))))
      (1 py-decorators-face))
+    ;; '("\\_<raise[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_.]*\\)" 1 py-exception-name-face)
     ;; '("[ \t]*\\(_\\{0,2\\}[a-zA-Z][a-zA-Z_0-9.]+_\\{0,2\\}\\) *\\(+\\|-\\|*\\|*\\*\\|/\\|//\\|&\\|%\\||\\|\\^\\|>>\\|<<\\)? ?=[^=\n]"
     (,(python-rx line-start (* (any " \t"))(group (** 0 2 "_") word (0+ (or word ?_))(** 0 2 "_"))(* (any " \t")) assignment-operator)
      1 py-variable-name-face)

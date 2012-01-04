@@ -349,7 +349,6 @@ This function does not modify point or mark."
 
 
 ;;; Font-lock and syntax
-
 (defvar python-font-lock-keywords
   (let ((kw1 (mapconcat 'identity
                         '("and"      "assert"   "break"     "class"
@@ -424,6 +423,8 @@ This function does not modify point or mark."
      (list (concat "\\_<\\(" kw4 "\\)[ \n\t:,()]") 1 'py-exception-name-face)
      ;; raise stmts
      '("\\_<raise[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_.]*\\)" 1 py-exception-name-face)
+     ;; font-lock-hexnumber, font-lock-number
+     '("\\([0-9]+\\([eE][+-]?[0-9]*\\)?\\|0[xX][0-9a-fA-F]+\\)" 1 py-number-face)
      ;; except clauses
      '("\\_<except[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_.]*\\)" 1 py-exception-name-face)
      ;; classes
@@ -604,16 +605,15 @@ If you ignore the location `M-x py-guess-pdb-path' might display it.
   :type 'string
   :group 'python)
 
-(defcustom py-guess-py-install-directory-p  t
- "If in cases, `py-install-directory' isn't set,  `py-set-load-path'should guess it from `buffer-file-name'. "
+(defcustom py-guess-py-install-directory-p t
+  "If in cases, `py-install-directory' isn't set,  `py-set-load-path'should guess it from `buffer-file-name'. "
 
-:type 'boolean
-:group 'python
-)
+  :type 'boolean
+  :group 'python)
 
 (defcustom py-load-pymacs-p  nil
  "If Pymacs as delivered with python-mode.el shall be loaded.
-Default is non-nil.
+Default is nil.
 
 Pymacs has been written by François Pinard and many others.
 See original source: http://pymacs.progiciels-bpi.ca"
@@ -622,35 +622,42 @@ See original source: http://pymacs.progiciels-bpi.ca"
 :group 'python)
 
 (defcustom py-report-level-p nil
- "If indenting functions should report reached indent level.
+  "If indenting functions should report reached indent level.
 
 Default is nil. "
 
-:type 'boolean
-:group 'python)
+  :type 'boolean
+  :group 'python)
 
-(defcustom py-hide-show-minor-mode-p  nil
- "If hide-show minor-mode should be on, default is nil. "
+(defcustom py-hide-show-minor-mode-p nil
+  "If hide-show minor-mode should be on, default is nil. "
 
-:type 'boolean
-:group 'python
-)
+  :type 'boolean
+  :group 'python)
 
-(defcustom py-outline-minor-mode-p  t
- "If outline minor-mode should be on, default is `t'. "
+(defcustom py-use-number-face-p nil
+  "If digits incl. hex-digits should get an own py-number-face.
 
-:type 'boolean
-:group 'python
-)
+Default is nil. With large files fontifying numbers may cause a
+delay. Setting of `py-use-number-face-p' has visible effect only
+when `py-number-face' was customized differently than inherited
+default face. "
+  :type 'boolean
+  :group 'python)
 
-(defcustom py-start-run-py-shell  t
- "If `python-mode' should start a python-shell, `py-shell'. Default is `t'.
+(defcustom py-outline-minor-mode-p t
+  "If outline minor-mode should be on, default is `t'. "
+
+  :type 'boolean
+  :group 'python)
+
+(defcustom py-start-run-py-shell t
+  "If `python-mode' should start a python-shell, `py-shell'. Default is `t'.
 
 A running python-shell presently is needed by complete-functions. "
 
-:type 'boolean
-:group 'python
-)
+  :type 'boolean
+  :group 'python)
 
 ;; user definable variables
 ;; vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
@@ -1191,6 +1198,13 @@ set in py-execute-region and used in py-jump-to-exception.")
     (modify-syntax-entry ?\\ " " table)
     table)
   "`py-mode-syntax-table' with backslash given whitespace syntax.")
+
+(defface py-number-face
+  '((t (:inherit default)))
+  ;; '((t (:inherit 'font-lock-variable-name-face)))
+  "Highlight numbers. "
+  :group 'python)
+(defvar py-number-face 'py-number-face)
 
 (defface py-XXX-tag-face
   '((t (:inherit font-lock-string-face)))
