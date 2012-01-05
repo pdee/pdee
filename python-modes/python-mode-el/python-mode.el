@@ -1294,229 +1294,119 @@ This function does not modify point or mark."
 (defvar python-font-lock-keywords nil
   "Additional expressions to highlight in Python mode.")
 
-(if py-use-number-face-p
-    (setq python-font-lock-keywords
-          (let ((kw1 (mapconcat 'identity
-                                '("and"      "assert"   "break"     "class"
-                                  "continue" "def"      "del"       "elif"
-                                  "else"     "except"   "for"       "from"
-                                  "global"   "if"       "import"    "in"
-                                  "is"       "lambda"   "not"       "or"
-                                  "pass"     "raise"    "as"        "return"
-                                  "while"    "with"    "yield")
-                                "\\|"))
-                (kw2 (mapconcat 'identity
-                                '("else:" "except:" "finally:" "try:" "lambda:")
-                                "\\|"))
-                (kw3 (mapconcat 'identity
-                                ;; Don't include Ellipsis in this list, since it is
-                                ;; already defined as a pseudo keyword.
-                                '("__debug__"
-                                  "__import__" "__name__" "abs" "all" "any" "apply"
-                                  "basestring" "bin" "bool" "buffer" "bytearray"
-                                  "callable" "chr" "classmethod" "cmp" "coerce"
-                                  "compile" "complex" "copyright" "credits"
-                                  "delattr" "dict" "dir" "divmod" "enumerate" "eval"
-                                  "exec" "execfile" "exit" "file" "filter" "float"
-                                  "format" "getattr" "globals" "hasattr" "hash" "help"
-                                  "hex" "id" "input" "int" "intern" "isinstance"
-                                  "issubclass" "iter" "len" "license" "list" "locals"
-                                  "long" "map" "max" "memoryview" "min" "next"
-                                  "object" "oct" "open" "ord" "pow" "print" "property"
-                                  "quit" "range" "raw_input" "reduce" "reload" "repr"
-                                  "round" "set" "setattr" "slice" "sorted"
-                                  "staticmethod" "str" "sum" "super" "tuple" "type"
-                                  "unichr" "unicode" "vars" "xrange" "zip"
+(setq python-font-lock-keywords
+      (let ((kw1 (mapconcat 'identity
+                            '("and"      "assert"   "break"     "class"
+                              "continue" "def"      "del"       "elif"
+                              "else"     "except"   "for"       "from"
+                              "global"   "if"       "import"    "in"
+                              "is"       "lambda"   "not"       "or"
+                              "pass"     "raise"    "as"        "return"
+                              "while"    "with"    "yield")
+                            "\\|"))
+            (kw2 (mapconcat 'identity
+                            '("else:" "except:" "finally:" "try:" "lambda:")
+                            "\\|"))
+            (kw3 (mapconcat 'identity
+                            ;; Don't include Ellipsis in this list, since it is
+                            ;; already defined as a pseudo keyword.
+                            '("__debug__"
+                              "__import__" "__name__" "abs" "all" "any" "apply"
+                              "basestring" "bin" "bool" "buffer" "bytearray"
+                              "callable" "chr" "classmethod" "cmp" "coerce"
+                              "compile" "complex" "copyright" "credits"
+                              "delattr" "dict" "dir" "divmod" "enumerate" "eval"
+                              "exec" "execfile" "exit" "file" "filter" "float"
+                              "format" "getattr" "globals" "hasattr" "hash" "help"
+                              "hex" "id" "input" "int" "intern" "isinstance"
+                              "issubclass" "iter" "len" "license" "list" "locals"
+                              "long" "map" "max" "memoryview" "min" "next"
+                              "object" "oct" "open" "ord" "pow" "print" "property"
+                              "quit" "range" "raw_input" "reduce" "reload" "repr"
+                              "round" "set" "setattr" "slice" "sorted"
+                              "staticmethod" "str" "sum" "super" "tuple" "type"
+                              "unichr" "unicode" "vars" "xrange" "zip"
 
-                                  "bin" "bytearray" "bytes" "format"
+                              "bin" "bytearray" "bytes" "format"
 
-                                  "memoryview" "next" "print")
-                                "\\|"))
-                (kw4 (mapconcat 'identity
-                                ;; Exceptions and warnings
-                                '("ArithmeticError" "AssertionError"
-                                  "AttributeError" "BaseException" "BufferError"
-                                  "BytesWarning" "DeprecationWarning" "EOFError"
-                                  "EnvironmentError" "Exception"
-                                  "FloatingPointError" "FutureWarning" "GeneratorExit"
-                                  "IOError" "ImportError" "ImportWarning"
-                                  "IndentationError" "IndexError"
-                                  "KeyError" "KeyboardInterrupt" "LookupError"
-                                  "MemoryError" "NameError" "NotImplemented"
-                                  "NotImplementedError" "OSError" "OverflowError"
-                                  "PendingDeprecationWarning" "ReferenceError"
-                                  "RuntimeError" "RuntimeWarning" "StandardError"
-                                  "StopIteration" "SyntaxError" "SyntaxWarning"
-                                  "SystemError" "SystemExit" "TabError" "TypeError"
-                                  "UnboundLocalError" "UnicodeDecodeError"
-                                  "UnicodeEncodeError" "UnicodeError"
-                                  "UnicodeTranslateError" "UnicodeWarning"
-                                  "UserWarning" "ValueError" "Warning"
-                                  "ZeroDivisionError")
-                                "\\|")))
-            (list
-             ;; decorators
-             '("^[ \t]*\\(@[a-zA-Z_][a-zA-Z_0-9.]+\\)\\((.+)\\)?" 1 'py-decorators-face)
-             ;; keywords
-             (cons (concat "\\_<\\(" kw1 "\\)\\_>[ \n\t(]") 1)
-             ;; builtins when they don't appear as object attributes
-             (list (concat "\\([ \t(]\\|^\\)\\_<\\(" kw3 "\\)\\_>[ \n\t(]") 2
-                   'py-builtins-face)
-             ;; block introducing keywords with immediately following colons.
-             ;; Yes "except" is in both lists.
-             (cons (concat "\\_<\\(" kw2 "\\)[ \n\t(]") 1)
-             ;; Exceptions
-             (list (concat "\\_<\\(" kw4 "\\)[ \n\t:,()]") 1 'py-exception-name-face)
-             ;; raise stmts
-             '("\\_<raise[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_.]*\\)" 1 py-exception-name-face)
-             ;; font-lock-hexnumber, font-lock-number
-             '("\\([0-9]+\\([eE][+-]?[0-9]*\\)?\\|0[xX][0-9a-fA-F]+\\)" 1 py-number-face)
-             ;; except clauses
-             '("\\_<except[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_.]*\\)" 1 py-exception-name-face)
-             ;; classes
-             '("\\_<class[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_]*\\)" 1 py-class-name-face)
-             ;; functions
-             '("\\_<def[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_]*\\)"
-               1 font-lock-function-name-face)
-             ;; pseudo-keywords
-             '("\\_<\\(self\\|cls\\|Ellipsis\\|True\\|False\\|None\\)\\_>"
-               1 py-pseudo-keyword-face)
-             '("[ \t]*\\(_\\{0,2\\}[a-zA-Z][a-zA-Z_0-9.]+_\\{0,2\\}\\) *\\(+\\|-\\|*\\|*\\*\\|/\\|//\\|&\\|%\\||\\|\\^\\|>>\\|<<\\)? ?=[^=\n]"
-               1 py-variable-name-face)
-             ;; XXX, TODO, and FIXME tags
-             '("XXX\\|TODO\\|FIXME" 0 py-XXX-tag-face t)
-             ;; special marking for string escapes and percent substitutes;
-             ;; loops adapted from lisp-mode in font-lock.el
-             ;; '((lambda (bound)
-             ;;     (catch 'found
-             ;;       (while (re-search-forward
-             ;;               (concat
-             ;;                "\\(\\\\\\\\\\|\\\\x..\\|\\\\u....\\|\\\\U........\\|"
-             ;;                "\\\\[0-9][0-9]*\\|\\\\[abfnrtv\"']\\)") bound t)
-             ;;         (let ((face (get-text-property (1- (point)) 'face)))
-             ;;           (when (or (and (listp face) (memq 'font-lock-string-face face))
-             ;;                     (eq 'font-lock-string-face face))
-             ;;             (throw 'found t))))))
-             ;;   (1 'font-lock-regexp-grouping-backslash prepend))
-             ;; '((lambda (bound)
-             ;;     (catch 'found
-             ;;       (while (re-search-forward "\\(%[^(]\\|%([^)]*).\\)" bound t)
-             ;;         (let ((face (get-text-property (1- (point)) 'face)))
-             ;;           (when (or (and (listp face) (memq 'font-lock-string-face face))
-             ;;                     (eq 'font-lock-string-face face))
-             ;;             (throw 'found t))))))
-             ;;   (1 'font-lock-regexp-grouping-construct prepend))
-             )))
-  (setq python-font-lock-keywords
-        (let ((kw1 (mapconcat 'identity
-                              '("and"      "assert"   "break"     "class"
-                                "continue" "def"      "del"       "elif"
-                                "else"     "except"   "for"       "from"
-                                "global"   "if"       "import"    "in"
-                                "is"       "lambda"   "not"       "or"
-                                "pass"     "raise"    "as"        "return"
-                                "while"    "with"    "yield")
-                              "\\|"))
-              (kw2 (mapconcat 'identity
-                              '("else:" "except:" "finally:" "try:" "lambda:")
-                              "\\|"))
-              (kw3 (mapconcat 'identity
-                              ;; Don't include Ellipsis in this list, since it is
-                              ;; already defined as a pseudo keyword.
-                              '("__debug__"
-                                "__import__" "__name__" "abs" "all" "any" "apply"
-                                "basestring" "bin" "bool" "buffer" "bytearray"
-                                "callable" "chr" "classmethod" "cmp" "coerce"
-                                "compile" "complex" "copyright" "credits"
-                                "delattr" "dict" "dir" "divmod" "enumerate" "eval"
-                                "exec" "execfile" "exit" "file" "filter" "float"
-                                "format" "getattr" "globals" "hasattr" "hash" "help"
-                                "hex" "id" "input" "int" "intern" "isinstance"
-                                "issubclass" "iter" "len" "license" "list" "locals"
-                                "long" "map" "max" "memoryview" "min" "next"
-                                "object" "oct" "open" "ord" "pow" "print" "property"
-                                "quit" "range" "raw_input" "reduce" "reload" "repr"
-                                "round" "set" "setattr" "slice" "sorted"
-                                "staticmethod" "str" "sum" "super" "tuple" "type"
-                                "unichr" "unicode" "vars" "xrange" "zip"
+                              "memoryview" "next" "print")
+                            "\\|"))
+            (kw4 (mapconcat 'identity
+                            ;; Exceptions and warnings
+                            '("ArithmeticError" "AssertionError"
+                              "AttributeError" "BaseException" "BufferError"
+                              "BytesWarning" "DeprecationWarning" "EOFError"
+                              "EnvironmentError" "Exception"
+                              "FloatingPointError" "FutureWarning" "GeneratorExit"
+                              "IOError" "ImportError" "ImportWarning"
+                              "IndentationError" "IndexError"
+                              "KeyError" "KeyboardInterrupt" "LookupError"
+                              "MemoryError" "NameError" "NotImplemented"
+                              "NotImplementedError" "OSError" "OverflowError"
+                              "PendingDeprecationWarning" "ReferenceError"
+                              "RuntimeError" "RuntimeWarning" "StandardError"
+                              "StopIteration" "SyntaxError" "SyntaxWarning"
+                              "SystemError" "SystemExit" "TabError" "TypeError"
+                              "UnboundLocalError" "UnicodeDecodeError"
+                              "UnicodeEncodeError" "UnicodeError"
+                              "UnicodeTranslateError" "UnicodeWarning"
+                              "UserWarning" "ValueError" "Warning"
+                              "ZeroDivisionError")
+                            "\\|")))
+        (list
+         ;; decorators
+         '("^[ \t]*\\(@[a-zA-Z_][a-zA-Z_0-9.]+\\)\\((.+)\\)?" 1 'py-decorators-face)
+         ;; keywords
+         (cons (concat "\\_<\\(" kw1 "\\)\\_>[ \n\t(]") 1)
+         ;; builtins when they don't appear as object attributes
+         (list (concat "\\([ \t(]\\|^\\)\\_<\\(" kw3 "\\)\\_>[ \n\t(]") 2
+               'py-builtins-face)
+         ;; block introducing keywords with immediately following colons.
+         ;; Yes "except" is in both lists.
+         (cons (concat "\\_<\\(" kw2 "\\)[ \n\t(]") 1)
+         ;; Exceptions
+         (list (concat "\\_<\\(" kw4 "\\)[ \n\t:,()]") 1 'py-exception-name-face)
+         ;; raise stmts
+         '("\\_<raise[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_.]*\\)" 1 py-exception-name-face)
+         ;; except clauses
+         '("\\_<except[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_.]*\\)" 1 py-exception-name-face)
+         ;; classes
+         '("\\_<class[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_]*\\)" 1 py-class-name-face)
+         ;; functions
+         '("\\_<def[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_]*\\)"
+           1 font-lock-function-name-face)
+         ;; pseudo-keywords
+         '("\\_<\\(self\\|cls\\|Ellipsis\\|True\\|False\\|None\\)\\_>"
+           1 py-pseudo-keyword-face)
+         '("[ \t]*\\(_\\{0,2\\}[a-zA-Z][a-zA-Z_0-9.]+_\\{0,2\\}\\) *\\(+\\|-\\|*\\|*\\*\\|/\\|//\\|&\\|%\\||\\|\\^\\|>>\\|<<\\)? ?=[^=\n]"
+           1 py-variable-name-face)
+         ;; XXX, TODO, and FIXME tags
+         '("XXX\\|TODO\\|FIXME" 0 py-XXX-tag-face t)
+         ;; special marking for string escapes and percent substitutes;
+         ;; loops adapted from lisp-mode in font-lock.el
+         ;; '((lambda (bound)
+         ;;     (catch 'found
+         ;;       (while (re-search-forward
+         ;;               (concat
+         ;;                "\\(\\\\\\\\\\|\\\\x..\\|\\\\u....\\|\\\\U........\\|"
+         ;;                "\\\\[0-9][0-9]*\\|\\\\[abfnrtv\"']\\)") bound t)
+         ;;         (let ((face (get-text-property (1- (point)) 'face)))
+         ;;           (when (or (and (listp face) (memq 'font-lock-string-face face))
+         ;;                     (eq 'font-lock-string-face face))
+         ;;             (throw 'found t))))))
+         ;;   (1 'font-lock-regexp-grouping-backslash prepend))
+         ;; '((lambda (bound)
+         ;;     (catch 'found
+         ;;       (while (re-search-forward "\\(%[^(]\\|%([^)]*).\\)" bound t)
+         ;;         (let ((face (get-text-property (1- (point)) 'face)))
+         ;;           (when (or (and (listp face) (memq 'font-lock-string-face face))
+         ;;                     (eq 'font-lock-string-face face))
+         ;;             (throw 'found t))))))
+         ;;   (1 'font-lock-regexp-grouping-construct prepend))
+         )))
 
-                                "bin" "bytearray" "bytes" "format"
-
-                                "memoryview" "next" "print")
-                              "\\|"))
-              (kw4 (mapconcat 'identity
-                              ;; Exceptions and warnings
-                              '("ArithmeticError" "AssertionError"
-                                "AttributeError" "BaseException" "BufferError"
-                                "BytesWarning" "DeprecationWarning" "EOFError"
-                                "EnvironmentError" "Exception"
-                                "FloatingPointError" "FutureWarning" "GeneratorExit"
-                                "IOError" "ImportError" "ImportWarning"
-                                "IndentationError" "IndexError"
-                                "KeyError" "KeyboardInterrupt" "LookupError"
-                                "MemoryError" "NameError" "NotImplemented"
-                                "NotImplementedError" "OSError" "OverflowError"
-                                "PendingDeprecationWarning" "ReferenceError"
-                                "RuntimeError" "RuntimeWarning" "StandardError"
-                                "StopIteration" "SyntaxError" "SyntaxWarning"
-                                "SystemError" "SystemExit" "TabError" "TypeError"
-                                "UnboundLocalError" "UnicodeDecodeError"
-                                "UnicodeEncodeError" "UnicodeError"
-                                "UnicodeTranslateError" "UnicodeWarning"
-                                "UserWarning" "ValueError" "Warning"
-                                "ZeroDivisionError")
-                              "\\|")))
-          (list
-           ;; decorators
-           '("^[ \t]*\\(@[a-zA-Z_][a-zA-Z_0-9.]+\\)\\((.+)\\)?" 1 'py-decorators-face)
-           ;; keywords
-           (cons (concat "\\_<\\(" kw1 "\\)\\_>[ \n\t(]") 1)
-           ;; builtins when they don't appear as object attributes
-           (list (concat "\\([ \t(]\\|^\\)\\_<\\(" kw3 "\\)\\_>[ \n\t(]") 2
-                 'py-builtins-face)
-           ;; block introducing keywords with immediately following colons.
-           ;; Yes "except" is in both lists.
-           (cons (concat "\\_<\\(" kw2 "\\)[ \n\t(]") 1)
-           ;; Exceptions
-           (list (concat "\\_<\\(" kw4 "\\)[ \n\t:,()]") 1 'py-exception-name-face)
-           ;; raise stmts
-           '("\\_<raise[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_.]*\\)" 1 py-exception-name-face)
-           ;; except clauses
-           '("\\_<except[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_.]*\\)" 1 py-exception-name-face)
-           ;; classes
-           '("\\_<class[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_]*\\)" 1 py-class-name-face)
-           ;; functions
-           '("\\_<def[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_]*\\)"
-             1 font-lock-function-name-face)
-           ;; pseudo-keywords
-           '("\\_<\\(self\\|cls\\|Ellipsis\\|True\\|False\\|None\\)\\_>"
-             1 py-pseudo-keyword-face)
-           '("[ \t]*\\(_\\{0,2\\}[a-zA-Z][a-zA-Z_0-9.]+_\\{0,2\\}\\) *\\(+\\|-\\|*\\|*\\*\\|/\\|//\\|&\\|%\\||\\|\\^\\|>>\\|<<\\)? ?=[^=\n]"
-             1 py-variable-name-face)
-           ;; XXX, TODO, and FIXME tags
-           '("XXX\\|TODO\\|FIXME" 0 py-XXX-tag-face t)
-           ;; special marking for string escapes and percent substitutes;
-           ;; loops adapted from lisp-mode in font-lock.el
-           ;; '((lambda (bound)
-           ;;     (catch 'found
-           ;;       (while (re-search-forward
-           ;;               (concat
-           ;;                "\\(\\\\\\\\\\|\\\\x..\\|\\\\u....\\|\\\\U........\\|"
-           ;;                "\\\\[0-9][0-9]*\\|\\\\[abfnrtv\"']\\)") bound t)
-           ;;         (let ((face (get-text-property (1- (point)) 'face)))
-           ;;           (when (or (and (listp face) (memq 'font-lock-string-face face))
-           ;;                     (eq 'font-lock-string-face face))
-           ;;             (throw 'found t))))))
-           ;;   (1 'font-lock-regexp-grouping-backslash prepend))
-           ;; '((lambda (bound)
-           ;;     (catch 'found
-           ;;       (while (re-search-forward "\\(%[^(]\\|%([^)]*).\\)" bound t)
-           ;;         (let ((face (get-text-property (1- (point)) 'face)))
-           ;;           (when (or (and (listp face) (memq 'font-lock-string-face face))
-           ;;                     (eq 'font-lock-string-face face))
-           ;;             (throw 'found t))))))
-           ;;   (1 'font-lock-regexp-grouping-construct prepend))
-           ))))
+(when py-use-number-face-p
+  (add-to-list 'python-font-lock-keywords '("\\([0-9]+\\([eE][+-]?[0-9]*\\)?\\|0[xX][0-9a-fA-F]+\\)" 1 py-number-face)))
 
 (defconst py-font-lock-syntactic-keywords
   '(("[^\\]\\\\\\(?:\\\\\\\\\\)*\\(\\s\"\\)\\1\\(\\1\\)"
@@ -2382,7 +2272,7 @@ initial line; and comment lines beginning in column 1 are ignored."
       (when (interactive-p) (message "%s" erg))
       erg)))
 
-;;; Declarations 
+;;; Declarations
 (defun py-bounds-of-declarations ()
   "Bounds of consecutive multitude of assigments resp. statements around point.
 

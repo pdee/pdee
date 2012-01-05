@@ -882,8 +882,7 @@ character address of the specified TYPE."
 (defvar font-lock-hexnumber "0[xX][0-9a-fA-F]+")
 
 (defvar python-font-lock-keywords)
-(if py-use-number-face-p
-    (setq python-font-lock-keywords
+(setq python-font-lock-keywords
       ;; Keywords
       `(,(rx symbol-start
              (or "and" "del" "from" "not" "while" "as" "elif" "global" "or" "with"
@@ -900,9 +899,6 @@ character address of the specified TYPE."
         (,(rx symbol-start
               (or "raise" "except")
               symbol-end) . py-exception-name-face)
-        (,(rx symbol-start (1+ (or (any digit)(any hex-digit))) symbol-end) . py-number-face)
-        ;; font-lock-hexnumber, font-lock-number
-        ;; +     '("\\([0-9]+\\([eE][+-]?[0-9]*\\)?\\|0[xX][0-9a-fA-F]+\\)" . py-number-face)
         ;; Constants
         (,(rx symbol-start
               ;; copyright, license, credits, quit, exit are added by the
@@ -983,104 +979,8 @@ character address of the specified TYPE."
                   (set-match-data nil)))))
          (1 font-lock-variable-name-face nil nil))))
 
-  (setq python-font-lock-keywords
-    ;; Keywords
-    `(,(rx symbol-start
-           (or "and" "del" "from" "not" "while" "as" "elif" "global" "or" "with"
-               "assert" "else" "if" "pass" "yield" "break" "import"
-               "print" "exec" "in" "continue" "finally" "is"
-               "return" "def" "for" "lambda" "try" "self")
-           symbol-end)
-      ;; functions
-      (,(rx symbol-start "def" (1+ space) (group (1+ (or word ?_))))
-       (1 font-lock-function-name-face))
-      ;; classes
-      (,(rx symbol-start (group "class") (1+ space) (group (1+ (or word ?_))))
-       (1 font-lock-keyword-face) (2 py-class-name-face))
-      (,(rx symbol-start
-            (or "raise" "except")
-            symbol-end) . py-exception-name-face)
-      ;; font-lock-hexnumber, font-lock-number
-      ;; +     '("\\([0-9]+\\([eE][+-]?[0-9]*\\)?\\|0[xX][0-9a-fA-F]+\\)" . py-number-face)
-      ;; Constants
-      (,(rx symbol-start
-            ;; copyright, license, credits, quit, exit are added by the
-            ;; site module and since they are not intended to be used in
-            ;; programs they are not added here either.
-            (or "None" "True" "False" "__debug__" "NotImplemented")
-            symbol-end) . font-lock-constant-face)
-      (,(rx symbol-start
-            (or "cls" "self" "cls" "Ellipsis" "True" "False" "None")
-            symbol-end) . py-pseudo-keyword-face)
-      ;; Decorators.
-      (,(rx line-start (* (any " \t")) (group "@" (1+ (or word ?_))
-                                              (0+ "." (1+ (or word ?_)))))
-       (1 py-decorators-face))
-      ;; '("\\_<raise[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_.]*\\)" 1 py-exception-name-face)
-      ;; '("[ \t]*\\(_\\{0,2\\}[a-zA-Z][a-zA-Z_0-9.]+_\\{0,2\\}\\) *\\(+\\|-\\|*\\|*\\*\\|/\\|//\\|&\\|%\\||\\|\\^\\|>>\\|<<\\)? ?=[^=\n]"
-      (,(python-rx line-start (* (any " \t"))(group (** 0 2 "_") word (0+ (or word ?_))(** 0 2 "_"))(* (any " \t")) assignment-operator)
-       1 py-variable-name-face)
-
-      ;; Builtin Exceptions
-      (,(rx symbol-start
-            (or "ArithmeticError" "AssertionError" "AttributeError"
-                "BaseException" "BufferError" "BytesWarning" "DeprecationWarning"
-                "EOFError" "EnvironmentError" "Exception" "FloatingPointError"
-                "FutureWarning" "GeneratorExit" "IOError" "ImportError"
-                "ImportWarning" "IndentationError" "IndexError" "KeyError"
-                "KeyboardInterrupt" "LookupError" "MemoryError" "NameError"
-                "NotImplementedError" "OSError" "OverflowError"
-                "PendingDeprecationWarning" "ReferenceError" "RuntimeError"
-                "RuntimeWarning" "StandardError" "StopIteration" "SyntaxError"
-                "SyntaxWarning" "SystemError" "SystemExit" "TabError" "TypeError"
-                "UnboundLocalError" "UnicodeDecodeError" "UnicodeEncodeError"
-                "UnicodeError" "UnicodeTranslateError" "UnicodeWarning"
-                "UserWarning" "ValueError" "Warning" "ZeroDivisionError")
-            symbol-end) . py-exception-name-face)
-      ;; Builtins
-      (,(rx symbol-start
-            (or "_" "__doc__" "__import__" "__name__" "__package__" "abs" "all"
-                "any" "apply" "basestring" "bin" "bool" "buffer" "bytearray"
-                "bytes" "callable" "chr" "classmethod" "cmp" "coerce" "compile"
-                "complex" "delattr" "dict" "dir" "divmod" "enumerate" "eval"
-                "execfile" "file" "filter" "float" "format" "frozenset"
-                "getattr" "globals" "hasattr" "hash" "help" "hex" "id" "input"
-                "int" "intern" "isinstance" "issubclass" "iter" "len" "list"
-                "locals" "long" "map" "max" "min" "next" "object" "oct" "open"
-                "ord" "pow" "print" "property" "range" "raw_input" "reduce"
-                "reload" "repr" "reversed" "round" "set" "setattr" "slice"
-                "sorted" "staticmethod" "str" "sum" "super" "tuple" "type"
-                "unichr" "unicode" "vars" "xrange" "zip")
-            symbol-end) . font-lock-builtin-face)
-      ;; asignations
-      ;; support for a = b = c = 5
-      (,(lambda (limit)
-          (let ((re (python-rx (group (+ (any word ?. ?_)))
-                               (? ?\[ (+ (not (any ?\]))) ?\]) (* space)
-                               assignment-operator)))
-            (when (re-search-forward re limit t)
-              (while (and (python-info-ppss-context 'paren)
-                          (re-search-forward re limit t)))
-              (if (and (not (python-info-ppss-context 'paren))
-                       (not (equal (char-after (point-marker)) ?=)))
-                  t
-                (set-match-data nil)))))
-       (1 font-lock-variable-name-face nil nil))
-      ;; support for a, b, c = (1, 2, 3)
-      (,(lambda (limit)
-          (let ((re (python-rx (group (+ (any word ?. ?_))) (* space)
-                               (* ?, (* space) (+ (any word ?. ?_)) (* space))
-                               ?, (* space) (+ (any word ?. ?_)) (* space)
-                               assignment-operator)))
-            (when (and (re-search-forward re limit t)
-                       (goto-char (nth 3 (match-data))))
-              (while (and (python-info-ppss-context 'paren)
-                          (re-search-forward re limit t))
-                (goto-char (nth 3 (match-data))))
-              (if (not (python-info-ppss-context 'paren))
-                  t
-                (set-match-data nil)))))
-       (1 font-lock-variable-name-face nil nil)))))
+(when py-use-number-face-p
+  (add-to-list 'python-font-lock-keywords '("\\([0-9]+\\([eE][+-]?[0-9]*\\)?\\|0[xX][0-9a-fA-F]+\\)" 1 py-number-face)))
 
 (defconst python-font-lock-syntactic-keywords
   ;; Make outer chars of matching triple-quote sequences into generic
