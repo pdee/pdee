@@ -888,6 +888,11 @@ set in py-execute-region and used in py-jump-to-exception.")
   "[ \t]+File \"\\([^\"]+\\)\", line \\([0-9]+\\)"
   "Regular expression that describes tracebacks.")
 
+(defvar py-ipython-traceback-line-re
+  "^\\([^ \t>]+>[^0-9]+\\)\\([0-9]+\\)"
+  "Regular expression that describes tracebacks.")
+(setq py-ipython-traceback-line-re   "^\\([^ \t>]+>[^0-9]+\\)\\([0-9]+\\)")
+
 (defconst py-assignment-re "\\<\\w+\\>[ \t]*\\(=\\|+=\\|*=\\|%=\\|&=\\|^=\\|<<=\\|-=\\|/=\\|**=\\||=\\|>>=\\|//=\\)"
   "If looking at the beginning of an assignment. ")
 
@@ -5988,6 +5993,10 @@ comint believe the user typed this string so that
     ))
 
 ;;: Subprocess utilities and filters
+(defvar py-last-exeption-buffer nil
+  "Internal use only - when `py-up-exception' is called in
+source-buffer, this will deliver the exception-buffer again. ")
+
 (defun py-postprocess-output-buffer (buf)
   "Highlight exceptions found in BUF.
 If an exception occurred return t, otherwise return nil.  BUF must exist."
@@ -6033,6 +6042,7 @@ If an exception occurred return t, otherwise return nil.  BUF must exist."
     (forward-line (1- line))
     (message "Jumping to exception in file %s on line %d" file line)))
 
+
 (defun py-down-exception (&optional bottom)
   "Go to the next line down in the traceback.
 
@@ -6040,11 +6050,7 @@ With \\[univeral-argument] (programmatically, optional argument
 BOTTOM), jump to the bottom (innermost) exception in the exception
 stack."
   (interactive "P")
-  (let* ((proc (get-process "Python"))
-         (buffer (if proc "*Python*" py-output-buffer)))
-    (if bottom
-        (py-find-next-exception 'eob buffer 're-search-backward "Bottom")
-      (py-find-next-exception 'eol buffer 're-search-forward "Bottom"))))
+  (py-find-next-exception-prepare 'down (when (eq 4 (prefix-numeric-value top)) "BOTTOM")))
 
 (defun py-up-exception (&optional top)
   "Go to the previous line up in the traceback.
@@ -6052,11 +6058,27 @@ stack."
 With \\[universal-argument] (programmatically, optional argument TOP)
 jump to the top (outermost) exception in the exception stack."
   (interactive "P")
-  (let* ((proc (get-process "Python"))
-         (buffer (if proc "*Python*" py-output-buffer)))
-    (if top
-        (py-find-next-exception 'bob buffer 're-search-forward "Top")
-      (py-find-next-exception 'bol buffer 're-search-backward "Top"))))
+  (unless py-last-exeption-buffer (setq py-last-exeption-buffer (current-buffer))) 
+  (py-find-next-exception-prepare 'up (when (eq 4 (prefix-numeric-value top)) "TOP")))
+
+(defun py-find-next-exception-prepare (direction start)
+  "Setup exception regexps depending from kind of Python shell. "
+  (let* ((name (get-process (substring (buffer-name (current-buffer)) 1 -1)))
+         (buffer (cond (name (buffer-name (current-buffer)))
+                       ((buffer-live-p (get-buffer py-output-buffer))
+                        py-output-buffer)
+                       (py-last-exeption-buffer (buffer-name py-last-exeption-buffer))
+                       (t (error "Don't see exeption buffer"))))
+         (py-traceback-line-re (if (string-match "IP" buffer) py-ipython-traceback-line-re py-traceback-line-re)))
+    (when buffer (set-buffer (get-buffer buffer)))
+    (switch-to-buffer (current-buffer)) 
+    (if (eq direction 'up)
+        (if (string= start "TOP")
+            (py-find-next-exception 'bob buffer 're-search-forward "Top")
+          (py-find-next-exception 'bol buffer 're-search-backward "Top"))
+      (if (string= start "BOTTOM")
+          (py-find-next-exception 'eob buffer 're-search-backward "Bottom")
+        (py-find-next-exception 'eol buffer 're-search-forward "Bottom")))))
 
 (defun py-find-next-exception (start buffer searchdir errwhere)
   "Find the next Python exception and jump to the code that caused it.
@@ -6066,15 +6088,21 @@ for an exception.  SEARCHDIR is a function, either
 to search.  ERRWHERE is used in an error message if the limit (top or
 bottom) of the trackback stack is encountered."
   (let (file line)
-    (save-excursion
-      (set-buffer buffer)
-      (goto-char (py-point start))
-      (if (funcall searchdir py-traceback-line-re nil t)
+    (goto-char (py-point start))
+    (when (funcall searchdir py-traceback-line-re nil t)
+      (setq py-last-exeption-buffer (current-buffer))
+      (if (save-match-data (string-match "File" py-traceback-line-re))
           (setq file (match-string 1)
-                line (string-to-number (match-string 2)))))
-    (if (and file line)
-        (py-jump-to-exception file line py-line-number-offset)
-      (error "%s of traceback" errwhere))))
+                line (string-to-number (match-string 2)))
+        ;; file and line-number are in different lines
+        (setq line (string-to-number (match-string 2))
+              file
+              (progn (re-search-backward "\\(^[^\t >]+\\)[ \t]+in[ \t]+\\([^ \t\n]+\\)" nil t 1) (match-string-no-properties 1))))
+      (when (string-match ".+\.pyc" file)
+        (setq file (substring file 0 -1)))
+      (if (and file line)
+          (py-jump-to-exception file line py-line-number-offset)
+        (error "%s of traceback" errwhere)))))
 
 ;;; python-mode-send.el
 
