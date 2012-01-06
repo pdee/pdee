@@ -5961,7 +5961,6 @@ Optional OUTPUT-BUFFER and ERROR-BUFFER might be given.')
           (end (py-end-of-statement)))
       (py-execute-region beg end))))
 
-;; Python subprocess utilities and filters
 (defun py-execute-file (proc filename &optional cmd)
   "Send to Python interpreter process PROC, in Python version 2.. \"execfile('FILENAME')\".
 Make that process's buffer visible and force display.  Also make
@@ -5988,6 +5987,7 @@ comint believe the user typed this string so that
     ;; (comint-send-input)
     ))
 
+;;: Subprocess utilities and filters
 (defun py-postprocess-output-buffer (buf)
   "Highlight exceptions found in BUF.
 If an exception occurred return t, otherwise return nil.  BUF must exist."
@@ -6030,7 +6030,7 @@ If an exception occurred return t, otherwise return nil.  BUF must exist."
     (unless(eq major-mode 'python-mode)
         (python-mode))
     (goto-char (point-min))
-    (forward-line line)
+    (forward-line (1- line))
     (message "Jumping to exception in file %s on line %d" file line)))
 
 (defun py-down-exception (&optional bottom)
