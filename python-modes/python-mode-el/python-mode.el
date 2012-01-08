@@ -891,7 +891,6 @@ set in py-execute-region and used in py-jump-to-exception.")
 (defvar py-ipython-traceback-line-re
   "^\\([^ \t>]+>[^0-9]+\\)\\([0-9]+\\)"
   "Regular expression that describes tracebacks.")
-(setq py-ipython-traceback-line-re   "^\\([^ \t>]+>[^0-9]+\\)\\([0-9]+\\)")
 
 (defconst py-assignment-re "\\<\\w+\\>[ \t]*\\(=\\|+=\\|*=\\|%=\\|&=\\|^=\\|<<=\\|-=\\|/=\\|**=\\||=\\|>>=\\|//=\\)"
   "If looking at the beginning of an assignment. ")
@@ -6050,7 +6049,7 @@ With \\[univeral-argument] (programmatically, optional argument
 BOTTOM), jump to the bottom (innermost) exception in the exception
 stack."
   (interactive "P")
-  (py-find-next-exception-prepare 'down (when (eq 4 (prefix-numeric-value top)) "BOTTOM")))
+  (py-find-next-exception-prepare 'down (when (eq 4 (prefix-numeric-value bottom)) "BOTTOM")))
 
 (defun py-up-exception (&optional top)
   "Go to the previous line up in the traceback.

@@ -584,7 +584,6 @@ set in py-execute-region and used in py-jump-to-exception.")
 (defvar py-ipython-traceback-line-re
   "^\\([^ \t>]+>[^0-9]+\\)\\([0-9]+\\)"
   "Regular expression that describes tracebacks.")
-(setq py-ipython-traceback-line-re   "^\\([^ \t>]+>[^0-9]+\\)\\([0-9]+\\)")
 
 (defvar py-traceback-line-re
   "[ \t]+File \"\\([^\"]+\\)\", line \\([0-9]+\\)"
