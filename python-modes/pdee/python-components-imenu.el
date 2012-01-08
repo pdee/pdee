@@ -268,7 +268,7 @@ of the first definition found."
           (py-imenu-create-index-new-intern)
         (let ((pos (match-beginning 0))
               (name (match-string-no-properties 2)))
-          (push (cons (concat " " name) pos) sublist))))
+          (push (cons name pos) index-alist))))
     ;; Look for module variables.
     (goto-char (point-min))
     (while (re-search-forward "^\\(\\sw+\\)[ \t]*=" end t)
