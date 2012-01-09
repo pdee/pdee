@@ -6104,7 +6104,7 @@ bottom) of the trackback stack is encountered."
                   (setq line (string-to-number (match-string-no-properties 1))
                         pos (point)
                         file (progn
-                               (when (re-search-backward "\\(^[^\t >]+\\)[ \t]+in[ \t]+\\([^ \t\n]+\\)" nil t 1)
+                               (when (re-search-backward "\\(^[^\t >]+\\)>?[ \t]+in[ \t]+\\([^ \t\n]+\\)" nil t 1)
                                  (match-string-no-properties 1)))))
                 (when (string-match ".+\.pyc" file)
                   (setq file (substring file 0 -1)))
