@@ -884,13 +884,11 @@ set in py-execute-region and used in py-jump-to-exception.")
 ;;    "\\)")
 ;;   "Regular expression matching lines not to dedent after.")
 
-(defvar py-traceback-line-re
-  "[ \t]+File \"\\([^\"]+\\)\", line \\([0-9]+\\)"
-  "Regular expression that describes tracebacks.")
 
-(defvar py-ipython-traceback-line-re
-  "^\\([^ \t>]+>[^0-9]+\\)\\([0-9]+\\)"
-  "Regular expression that describes tracebacks.")
+(defvar py-traceback-line-re
+  "^In \\[[0-9]+\\]: *\\|^>>>\\|^[^ \t>]+>[^0-9]+\\([0-9]+\\)\\|^[ \t]+File \"\\([^\"]+\\)\", line \\([0-9]+\\)"
+  "Regular expression that describes tracebacks.
+Inludes Python shell-prompt in order to stop further searches. ")
 
 (defconst py-assignment-re "\\<\\w+\\>[ \t]*\\(=\\|+=\\|*=\\|%=\\|&=\\|^=\\|<<=\\|-=\\|/=\\|**=\\||=\\|>>=\\|//=\\)"
   "If looking at the beginning of an assignment. ")
@@ -6057,7 +6055,7 @@ stack."
 With \\[universal-argument] (programmatically, optional argument TOP)
 jump to the top (outermost) exception in the exception stack."
   (interactive "P")
-  (unless py-last-exeption-buffer (setq py-last-exeption-buffer (current-buffer))) 
+  (unless py-last-exeption-buffer (setq py-last-exeption-buffer (current-buffer)))
   (py-find-next-exception-prepare 'up (when (eq 4 (prefix-numeric-value top)) "TOP")))
 
 (defun py-find-next-exception-prepare (direction start)
@@ -6067,10 +6065,9 @@ jump to the top (outermost) exception in the exception stack."
                        ((buffer-live-p (get-buffer py-output-buffer))
                         py-output-buffer)
                        (py-last-exeption-buffer (buffer-name py-last-exeption-buffer))
-                       (t (error "Don't see exeption buffer"))))
-         (py-traceback-line-re (if (string-match "IP" buffer) py-ipython-traceback-line-re py-traceback-line-re)))
+                       (t (error "Don't see exeption buffer")))))
     (when buffer (set-buffer (get-buffer buffer)))
-    (switch-to-buffer (current-buffer)) 
+    (switch-to-buffer (current-buffer))
     (if (eq direction 'up)
         (if (string= start "TOP")
             (py-find-next-exception 'bob buffer 're-search-forward "Top")
@@ -6086,22 +6083,39 @@ for an exception.  SEARCHDIR is a function, either
 `re-search-backward' or `re-search-forward' indicating the direction
 to search.  ERRWHERE is used in an error message if the limit (top or
 bottom) of the trackback stack is encountered."
-  (let (file line)
+  (let ((orig (point))
+        (origline (py-count-lines))
+        file line pos)
     (goto-char (py-point start))
-    (when (funcall searchdir py-traceback-line-re nil t)
-      (setq py-last-exeption-buffer (current-buffer))
-      (if (save-match-data (string-match "File" py-traceback-line-re))
-          (setq file (match-string 1)
-                line (string-to-number (match-string 2)))
-        ;; file and line-number are in different lines
-        (setq line (string-to-number (match-string 2))
-              file
-              (progn (re-search-backward "\\(^[^\t >]+\\)[ \t]+in[ \t]+\\([^ \t\n]+\\)" nil t 1) (match-string-no-properties 1))))
-      (when (string-match ".+\.pyc" file)
-        (setq file (substring file 0 -1)))
-      (if (and file line)
-          (py-jump-to-exception file line py-line-number-offset)
-        (error "%s of traceback" errwhere)))))
+    (if (funcall searchdir py-traceback-line-re nil t)
+        (if (save-match-data (eq (py-count-lines) origline))
+            (progn
+              (forward-line (if (string= errwhere "Top") -1 1))
+              (py-find-next-exception start buffer searchdir errwhere))
+          (if (not (save-match-data (string-match "^In \\[[0-9]+\\]: *\\|^>>>" (match-string-no-properties 0))))
+              (progn
+                (setq py-last-exeption-buffer (current-buffer))
+                (if (save-match-data (string-match "File" (match-string-no-properties 0)))
+                    (progn
+                      (setq file (match-string-no-properties 2)
+                            pos (point)
+                            line (string-to-number (match-string-no-properties 3))))
+                  ;; file and line-number are in different lines
+                  (setq line (string-to-number (match-string-no-properties 1))
+                        pos (point)
+                        file (progn
+                               (when (re-search-backward "\\(^[^\t >]+\\)[ \t]+in[ \t]+\\([^ \t\n]+\\)" nil t 1)
+                                 (match-string-no-properties 1)))))
+                (when (string-match ".+\.pyc" file)
+                  (setq file (substring file 0 -1)))
+                (when (string= errwhere "Bottom") (goto-char pos))
+                (if (and file line)
+                    (if (and (string= "<stdin>" file) (eq 1 line))
+                        (error "%s of traceback" errwhere)
+                      (py-jump-to-exception file line py-line-number-offset))
+                  (error "%s of traceback" errwhere)))
+            (goto-char orig)
+            (error "%s of traceback" errwhere))))))
 
 ;;; python-mode-send.el
 

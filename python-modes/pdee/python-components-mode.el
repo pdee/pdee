@@ -581,13 +581,10 @@ set in py-execute-region and used in py-jump-to-exception.")
 ;;    "\\)")
 ;;   "Regular expression matching lines not to dedent after.")
 
-(defvar py-ipython-traceback-line-re
-  "^\\([^ \t>]+>[^0-9]+\\)\\([0-9]+\\)"
-  "Regular expression that describes tracebacks.")
-
 (defvar py-traceback-line-re
-  "[ \t]+File \"\\([^\"]+\\)\", line \\([0-9]+\\)"
-  "Regular expression that describes tracebacks.")
+  "^In \\[[0-9]+\\]: *\\|^>>>\\|^[^ \t>]+>[^0-9]+\\([0-9]+\\)\\|^[ \t]+File \"\\([^\"]+\\)\", line \\([0-9]+\\)"
+  "Regular expression that describes tracebacks. 
+Inludes Python shell-prompt in order to stop further searches. ")
 
 (defconst py-assignment-re "\\<\\w+\\>[ \t]*\\(=\\|+=\\|*=\\|%=\\|&=\\|^=\\|<<=\\|-=\\|/=\\|**=\\||=\\|>>=\\|//=\\)"
   "If looking at the beginning of an assignment. ")
