@@ -886,7 +886,7 @@ set in py-execute-region and used in py-jump-to-exception.")
 
 
 (defvar py-traceback-line-re
-  "^In \\[[0-9]+\\]: *\\|^>>>\\|^[^ \t>]+>[^0-9]+\\([0-9]+\\)\\|^[ \t]+File \"\\([^\"]+\\)\", line \\([0-9]+\\)"
+  "^IPython\\|^In \\[[0-9]+\\]: *\\|^>>>\\|^[^ \t>]+>[^0-9]+\\([0-9]+\\)\\|^[ \t]+File \"\\([^\"]+\\)\", line \\([0-9]+\\)"
   "Regular expression that describes tracebacks.
 Inludes Python shell-prompt in order to stop further searches. ")
 
@@ -6067,7 +6067,7 @@ bottom) of the trackback stack is encountered."
             (progn
               (forward-line (if (string= errwhere "Top") -1 1))
               (py-find-next-exception start buffer searchdir errwhere))
-          (if (not (save-match-data (string-match "^In \\[[0-9]+\\]: *\\|^>>>" (match-string-no-properties 0))))
+          (if (not (save-match-data (string-match "^IPython\\|^In \\[[0-9]+\\]: *\\|^>>>" (match-string-no-properties 0))))
               (progn
                 (setq py-last-exeption-buffer (current-buffer))
                 (if (save-match-data (string-match "File" (match-string-no-properties 0)))
