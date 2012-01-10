@@ -1107,16 +1107,20 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
     (define-key map [(delete)] 'py-electric-delete)
     (define-key map [(backspace)] 'py-electric-backspace)
     (define-key map [(control backspace)] 'py-hungry-delete-backwards)
-    ;; moving point
-    (define-key map [(control c)(control n)] 'py-end-of-statement)
+        (define-key map [(control c) (delete)] 'py-hungry-delete-forward)
     (define-key map [(control c)(control a)] 'py-mark-statement)
+        ;; moving point
     (define-key map [(control c)(control p)] 'py-beginning-of-statement)
+        (define-key map [(control c)(control n)] 'py-end-of-statement)
     (define-key map [(control c)(control u)] 'py-beginning-of-block)
     (define-key map [(control c)(control q)] 'py-end-of-block)
-    (define-key map [(control c) (delete)] 'py-hungry-delete-forward)
+        (define-key map [(control meta a)] 'py-beginning-of-def-or-class)
     (define-key map [(control meta e)] 'py-end-of-def-or-class)
+
+        (define-key map [(control i)] 'py-indent-forward-line)
     (define-key map [(control j)] 'py-newline-and-indent)
     ;; Most Pythoneers expect RET `py-newline-and-indent'
+        ;; (define-key map (kbd "RET") 'py-newline-and-dedent)
     (define-key map (kbd "RET") 'py-newline-and-indent)
     (define-key map [(super backspace)] 'py-dedent)
     ;; (define-key map [(control return)] 'py-newline-and-dedent)
@@ -1143,7 +1147,6 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
     (define-key map [(control c)(\#)] 'py-comment-region)
     (define-key map [(control c)(\?)] 'py-describe-mode)
     (define-key map [(control c)(control e)] 'py-describe-symbol)
-    (define-key map [(control meta a)] 'py-beginning-of-def-or-class)
     (define-key map [(control c)(-)] 'py-up-exception)
     (define-key map [(control c)(=)] 'py-down-exception)
     (define-key map [(control x) (n) (d)] 'py-narrow-to-defun)
@@ -7823,9 +7826,11 @@ These are Python temporary files awaiting execution."
 (add-hook 'kill-emacs-hook 'py-kill-emacs-hook)
 (add-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file)
 
-(add-hook 'python-mode-hook '(lambda ()(set (make-local-variable 'beginning-of-defun-function) 'py-beginning-of-def-or-class)))
-
-(add-hook 'python-mode-hook '(lambda ()(set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class)))
+(add-hook 'python-mode-hook
+          (lambda ()
+            (defvar py-mode-map python-mode-map))
+          (set (make-local-variable 'beginning-of-defun-function) 'py-beginning-of-def-or-class)
+          (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class))
 
 ;; Add a designator to the minor mode strings
 (or (assq 'py-pdbtrack-is-tracking-p minor-mode-alist)

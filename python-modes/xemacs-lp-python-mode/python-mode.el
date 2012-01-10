@@ -7570,8 +7570,8 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed"
   ;; from python.el, version "22.1"
   (set (make-local-variable 'font-lock-defaults)
        '(python-font-lock-keywords nil nil nil nil
-                               (font-lock-syntactic-keywords
-                                . py-font-lock-syntactic-keywords)))
+                                   (font-lock-syntactic-keywords
+                                    . py-font-lock-syntactic-keywords)))
   (setq major-mode 'python-mode
         mode-name "Python"
         local-abbrev-table python-mode-abbrev-table
@@ -7603,7 +7603,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed"
   (if (boundp 'comment-multi-line)
       (setq comment-multi-line nil))
   ;; Install Imenu if available
-    (when (and imenu-create-index-p (ignore-errors (require 'imenu)))
+  (when (and imenu-create-index-p (ignore-errors (require 'imenu)))
     (setq imenu-create-index-function #'py-imenu-create-index-new)
     ;; (setq imenu-create-index-function #'py-imenu-create-index)
     (setq imenu-generic-expression py-imenu-generic-expression)
@@ -7656,8 +7656,11 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed"
         (find-file (concat py-install-directory "/completion/pycomplete.el"))
         (eval-buffer)
         (kill-buffer "pycomplete.el"))
-  (add-hook 'python-mode-hook 'py-beg-of-defun-function)
-  (add-hook 'python-mode-hook 'py-end-of-defun-function)
+  (add-hook 'python-mode-hook
+            (lambda ()
+              (defvar py-mode-map python-mode-map))
+            (set (make-local-variable 'beginning-of-defun-function) 'py-beginning-of-def-or-class)
+            (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class))
   (when py-hide-show-minor-mode-p
     (add-hook 'python-mode-hook '(lambda ()(hs-minor-mode 1))))
   (when py-outline-minor-mode-p
@@ -7688,9 +7691,9 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed"
     ;; py-shell may split window, provide restore
     (window-configuration-to-register 213465879)
     (unless (get-process (py-process-name))
-      (let ((oldbuf  (current-buffer)))
+      (let ((oldbuf (current-buffer)))
         (save-excursion
-        (py-shell)
+          (py-shell)
           (set-buffer oldbuf))))
     (jump-to-register 213465879))
   (when py-outline-minor-mode-p (outline-minor-mode 1))

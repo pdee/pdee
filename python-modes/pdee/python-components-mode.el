@@ -1081,14 +1081,16 @@ It makes underscores and dots word constituent chars.")
         (define-key map [(delete)] 'py-electric-delete)
         (define-key map [(backspace)] 'py-electric-backspace)
         (define-key map [(control backspace)] 'py-hungry-delete-backwards)
-        ;; moving point
-        (define-key map [(control c)(control n)] 'py-end-of-statement)
+        (define-key map [(control c) (delete)] 'py-hungry-delete-forward)
         (define-key map [(control c)(control a)] 'py-mark-statement)
+        ;; moving point
         (define-key map [(control c)(control p)] 'py-beginning-of-statement)
+        (define-key map [(control c)(control n)] 'py-end-of-statement)
         (define-key map [(control c)(control u)] 'py-beginning-of-block)
         (define-key map [(control c)(control q)] 'py-end-of-block)
-        (define-key map [(control c) (delete)] 'py-hungry-delete-forward)
+        (define-key map [(control meta a)] 'py-beginning-of-def-or-class)
         (define-key map [(control meta e)] 'py-end-of-def-or-class)
+
         (define-key map [(control i)] 'py-indent-forward-line)
         (define-key map [(control j)] 'py-newline-and-indent)
         ;; Most Pythoneers expect RET `py-newline-and-indent'
@@ -1119,7 +1121,6 @@ It makes underscores and dots word constituent chars.")
         (define-key map [(control c)(\#)] 'py-comment-region)
         (define-key map [(control c)(\?)] 'py-describe-mode)
         (define-key map [(control c)(control e)] 'py-describe-symbol)
-        (define-key map [(control meta a)] 'py-beginning-of-def-or-class)
         (define-key map [(control c)(-)] 'py-up-exception)
         (define-key map [(control c)(=)] 'py-down-exception)
         (define-key map [(control x) (n) (d)] 'py-narrow-to-defun)
@@ -1204,7 +1205,10 @@ It makes underscores and dots word constituent chars.")
 (add-hook 'python-mode-hook
           (lambda ()
             (define-key python-mode-map [(meta p)] 'py-beginning-of-statement)
-            (define-key python-mode-map [(meta n)] 'py-end-of-statement)))
+            (define-key python-mode-map [(meta n)] 'py-end-of-statement)
+            (defvar py-mode-map python-mode-map))
+          (set (make-local-variable 'beginning-of-defun-function) 'py-beginning-of-def-or-class)
+          (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class))
 
 (defvar python-shell-map
   (let ((map (copy-keymap comint-mode-map)))
@@ -3742,9 +3746,9 @@ These are Python temporary files awaiting execution."
 ;; hook doesn't get unloaded
 (defalias 'python-pdbtrack-track-stack-file 'py-pdbtrack-track-stack-file)
 
-(add-hook 'python-mode-hook '(lambda ()(set (make-local-variable 'beginning-of-defun-function) 'py-beginning-of-def-or-class)))
-
-(add-hook 'python-mode-hook '(lambda ()(set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class)))
+;; (add-hook 'python-mode-hook '(lambda ()(set (make-local-variable 'beginning-of-defun-function) 'py-beginning-of-def-or-class)))
+;;
+;; (add-hook 'python-mode-hook '(lambda ()(set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class)))
 
 ;; Add a designator to the minor mode strings
 (or (assq 'py-pdbtrack-is-tracking-p minor-mode-alist)
