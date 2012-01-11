@@ -7522,17 +7522,20 @@ With \\[universal-argument]) user is prompted to specify a reachable Python vers
 Pymacs has been written by François Pinard and many others.
 See original source: http://pymacs.progiciels-bpi.ca"
   (interactive)
+  (let ((pyshell (py-choose-shell)))
   (if (or (not (boundp 'py-install-directory)) (not (stringp py-install-directory)))
       (error "`py-install-directory' not set, see INSTALL")
     (add-to-list 'load-path (concat py-install-directory "/pymacs"))
     (load (concat py-install-directory "/pymacs/pymacs.el") nil t)
-    (setenv "PYMACS_PYTHON" (py-choose-shell))
+      (setenv "PYMACS_PYTHON" (if (string-match "IP" pyshell)
+                                  "python"
+                                pyshell))
     (autoload 'pymacs-apply "pymacs")
     (autoload 'pymacs-call "pymacs")
     (autoload 'pymacs-eval "pymacs")
     (autoload 'pymacs-exec "pymacs")
     (autoload 'pymacs-load "pymacs")
-    (require 'pymacs)))
+      (require 'pymacs))))
 
 (defun py-guess-py-install-directory ()
   (interactive)
