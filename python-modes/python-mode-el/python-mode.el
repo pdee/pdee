@@ -1117,7 +1117,7 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
         (define-key map [(control meta a)] 'py-beginning-of-def-or-class)
     (define-key map [(control meta e)] 'py-end-of-def-or-class)
 
-        (define-key map [(control i)] 'py-indent-forward-line)
+    ;; (define-key map [(meta i)] 'py-indent-forward-line)
     (define-key map [(control j)] 'py-newline-and-indent)
     ;; Most Pythoneers expect RET `py-newline-and-indent'
         ;; (define-key map (kbd "RET") 'py-newline-and-dedent)
