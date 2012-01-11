@@ -6116,8 +6116,12 @@ bottom) of the trackback stack is encountered."
                   (error "%s of traceback" errwhere))
                 (when (string= errwhere "Bottom") (goto-char pos))
                 (if (and file line)
-                    (if (or (and (string= "<stdin>" file) (eq 1 line))
-                            (string-match "<ipython-input" file))
+                    (if
+                        ;; (or
+                        (and (string= "<stdin>" file) (eq 1 line))
+                        ;; string-match "<..." above leaves file nil already
+                        ;; (string-match "<ipython" file)
+                        ;;)
                         (error "%s of traceback" errwhere)
                       (py-jump-to-exception file line py-line-number-offset))
                   (error "%s of traceback" errwhere)))
