@@ -6130,25 +6130,21 @@ bottom) of the trackback stack is encountered."
                       (setq file (match-string-no-properties 2)
                             pos (point)
                             line (string-to-number (match-string-no-properties 3))))
+                  (save-excursion
                   ;; file and line-number are in different lines
                   (setq line (string-to-number (match-string-no-properties 1))
                         pos (point)
                         file (progn
                                (when (and (re-search-backward "\\(^IPython\\|^In \\[[0-9]+\\]: *\\|^>>>\\|^[^\t >]+\\)>?[ \t]+in[ \t]+\\([^ \t\n]+\\)" nil t 1)
                                           (not (save-match-data (string-match "<\\|^IPython\\|^In \\[[0-9]+\\]: *\\|^>>>" (match-string-no-properties 1)))))
-                                 (match-string-no-properties 1)))))
+                                   (match-string-no-properties 1))))))
                 (if file
                 (when (string-match ".+\.pyc" file)
                   (setq file (substring file 0 -1)))
                   (error "%s of traceback" errwhere))
-                (when (string= errwhere "Bottom") (goto-char pos))
                 (if (and file line)
                     (if
-                        ;; (or
                         (and (string= "<stdin>" file) (eq 1 line))
-                        ;; string-match "<..." above leaves file nil already
-                        ;; (string-match "<ipython" file)
-                        ;;)
                         (error "%s of traceback" errwhere)
                       (py-jump-to-exception file line py-line-number-offset))
                   (error "%s of traceback" errwhere)))

@@ -5,7 +5,7 @@ New in version 6.0.5
 
 - `py-shell-name' accepts PATH/TO/EXECUTABLE 
   in addition to name of an installed default Python-Shell.
-  Beside customize permits installing commands like
+  Permits installing commands like
   (defun python-XYZ-shell (&optional argprompt)
     "Start an Python-XYZ interpreter ... "
     (interactive)
