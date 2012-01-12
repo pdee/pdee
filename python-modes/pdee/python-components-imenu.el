@@ -21,11 +21,6 @@
 
 ;; Imenu definitions
 
-;; (defcustom index-function-list (list 'py-imenu-create-index-function 'py-imenu-create-index-new)
-;;   " "
-;;   :type '(repeat function)
-;;   :group 'python)
-
 (defvar py-imenu-class-regexp
   (concat                               ; <<classes>>
    "\\("                                ;
@@ -93,12 +88,6 @@ alternative for finding the index.")
 ;; generic-python-expression, really.
 (defvar py-imenu-generic-regexp nil)
 (defvar py-imenu-generic-parens nil)
-
-(defcustom py-imenu-show-method-args-p nil
-  "*Controls echoing of arguments of functions & methods in the Imenu buffer.
-When non-nil, arguments are printed."
-  :type 'boolean
-  :group 'python)
 
 (defun py-switch-imenu-index-function ()
   "For development only. Good old renamed `py-imenu-create-index'-function hangs with medium size files already. Working `py-imenu-create-index-new' is active by default.

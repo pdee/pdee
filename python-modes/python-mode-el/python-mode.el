@@ -39,7 +39,7 @@
 (unless (featurep 'xemacs)
   (require 'highlight-indentation))
 
-(defgroup python nil
+(defgroup python-mode nil
   "Support for the Python programming language, <http://www.python.org/>"
   :group 'languages
   :prefix "py-")
@@ -53,7 +53,7 @@
 `\\[py-guess-indent-offset]' can usually guess a good value when
 you're editing someone else's Python code."
   :type 'integer
-  :group 'python)
+  :group 'python-mode)
 (make-variable-buffer-local 'py-indent-offset)
 
 (defcustom pdb-path '/usr/lib/python2.7/pdb.py
@@ -62,7 +62,7 @@ you're editing someone else's Python code."
 If you ignore the location `M-x py-guess-pdb-path' might display it.
 "
   :type 'variable
-  :group 'python)
+  :group 'python-mode)
 
 (defun py-guess-pdb-path ()
   "If py-pdb-path isn't set, find location of pdb.py. "
@@ -80,13 +80,13 @@ If you ignore the location `M-x py-guess-pdb-path' might display it.
 (defcustom py-install-directory nil
   "Directory where python-mode.el and it's subdirectories should be installed. Needed for completion and other environment stuff only. "
   :type 'string
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-guess-py-install-directory-p t
   "If in cases, `py-install-directory' isn't set,  `py-set-load-path'should guess it from `buffer-file-name'. "
 
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-load-pymacs-p  nil
  "If Pymacs as delivered with python-mode.el shall be loaded.
@@ -96,7 +96,7 @@ Pymacs has been written by François Pinard and many others.
 See original source: http://pymacs.progiciels-bpi.ca"
 
 :type 'boolean
-:group 'python)
+:group 'python-mode)
 
 (defcustom py-report-level-p nil
   "If indenting functions should report reached indent level.
@@ -104,19 +104,19 @@ See original source: http://pymacs.progiciels-bpi.ca"
 Default is nil. "
 
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-hide-show-minor-mode-p nil
   "If hide-show minor-mode should be on, default is nil. "
 
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-outline-minor-mode-p t
   "If outline minor-mode should be on, default is `t'. "
 
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-start-run-py-shell t
   "If `python-mode' should start a python-shell, `py-shell'. Default is `t'.
@@ -124,7 +124,7 @@ Default is nil. "
 A running python-shell presently is needed by complete-functions. "
 
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-use-number-face-p nil
   "If digits incl. hex-digits should get an own py-number-face.
@@ -134,60 +134,60 @@ delay. Setting of `py-use-number-face-p' has visible effect only
 when `py-number-face' was customized differently than inherited
 default face. "
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 ;; vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 (defcustom py-close-provides-newline t
   "If a newline is inserted, when line after block isn't empty. Default is non-nil. "
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 (make-variable-buffer-local 'py-close-provides-newline)
 
 (defcustom py-dedent-keep-relative-column t
   "If point should follow dedent or kind of electric move to end of line. Default is t - keep relative position. "
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-indent-honors-multiline-listing nil
   "If `t', indents to 1+ column of opening delimiter. If `nil', indent adds one level to the beginning of statement. Default is `nil'. "
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-indent-honors-inline-comment nil
   "If non-nil, indents to column of inlined comment start.
 Default is nil. "
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-closing-list-dedents-bos nil
   "If non-nil, closing parentesis dedents onto column of statement, otherwise keeps additional `py-indent-offset', default is nil "
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-electric-colon-active-p nil
   "`py-electric-colon' feature.  Default is `nil'. See lp:837065 for discussions. "
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-electric-comment-p t
   "If \"#\" should call `py-electric-comment'. Default is `t'. "
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-electric-comment-add-space-p nil
   "If py-electric-comment should add a space.  Default is `nil'. "
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-mark-decorators nil
   "If py-mark-def-or-class functions should mark decorators too. Default is `nil'. "
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-tab-indent t
   "*Non-nil means TAB in Python mode calls `py-indent-line'."
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-complete-function 'py-shell-complete
   "Function used for completion in buffers. "
@@ -195,19 +195,19 @@ Default is nil. "
 		 (const :tag "Pymacs based py-complete" py-complete)
                  (const :tag "py-shell-complete" py-shell-complete)
                  (const :tag "IPython's ipython-complete" ipython-complete))
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-shell-complete-function 'py-completion-at-point
   "Function used for completion in buffers. "
   :type '(choice (const :tag "py-completion-at-point" py-completion-at-point)
 		 (const :tag "Pymacs based py-complete" py-complete)
                  (const :tag "IPython's ipython-complete" ipython-complete))
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-encoding-string " # -*- coding: utf-8 -*-"
   "Default string specifying encoding of a Python file. "
   :type 'string
-  :group 'python)
+  :group 'python-mode)
 
 (defvar py-encoding-string-re "^[ \t]*#[ \t]*-\\*-[ \t]*coding:.+-\\*-"
   "Matches encoding string of a Python file. ")
@@ -217,7 +217,7 @@ Default is nil. "
 (defcustom py-shebang-startstring "#! /bin/env"
   "Detecting the shell in head of file. "
   :type 'string
-  :group 'python)
+  :group 'python-mode)
 
 (defvar py-shebang-regexp "#![ \t]?\\([^ \t\n]+\\)[ \t]?\\([iptj]+ython[^ \t\n]*\\)"
   "Detecting the shell in head of file. ")
@@ -225,7 +225,7 @@ Default is nil. "
 (defcustom py-python-command-args '("-i")
   "*List of string arguments to be used when starting a Python shell."
   :type '(repeat string)
-  :group 'python)
+  :group 'python-mode)
 (make-variable-buffer-local 'py-python-command-args)
 
 (set-default 'py-python-command-args  '("-i"))
@@ -247,13 +247,13 @@ Default is nil. "
 (defcustom py-lhs-inbound-indent 1
   "When line starts a multiline-assignment: How many colums indent should be more than opening bracket, brace or parenthesis. "
   :type 'integer
-  :group 'python)
+  :group 'python-mode)
 (make-variable-buffer-local 'py-lhs-inbound-indent)
 
 (defcustom py-rhs-inbound-indent 1
   "When inside a multiline-assignment: How many colums indent should be more than opening bracket, brace or parenthesis. "
   :type 'integer
-  :group 'python)
+  :group 'python-mode)
 (make-variable-buffer-local 'py-rhs-inbound-indent)
 
 (defcustom py-continuation-offset 2
@@ -261,7 +261,7 @@ Default is nil. "
 Continuation lines are those that immediately follow a backslash
 terminated line. "
   :type 'integer
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-smart-indentation t
   "*Should `python-mode' try to automagically set some indentation variables?
@@ -283,7 +283,7 @@ Note that both these settings occur *after* `python-mode-hook' is run,
 so if you want to defeat the automagic configuration, you must also
 set `py-smart-indentation' to nil in your `python-mode-hook'."
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 (make-variable-buffer-local 'py-smart-indentation)
 
 (defcustom py-align-multiline-strings-p t
@@ -293,7 +293,7 @@ preceding line's indentation.  When this flag is nil, continuation
 lines are aligned to column zero."
   :type '(choice (const :tag "Align under preceding line" t)
                  (const :tag "Align to column zero" nil))
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-block-comment-prefix "##"
   "*String used by \\[comment-region] to comment out a block of code.
@@ -302,12 +302,12 @@ that the indentation commands won't get confused (i.e., the string
 should be of the form `#x...' where `x' is not a blank or a tab, and
 `...' is arbitrary).  However, this string should not end in whitespace."
   :type 'string
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-indent-comments t
   "When t, comment lines are indented. "
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-temp-directory
   (let ((ok '(lambda (x)
@@ -328,7 +328,7 @@ By default, the first directory from this list that exists and that you
 can write into: the value (if any) of the environment variable TMPDIR,
 /usr/tmp, /tmp, /var/tmp, or the current directory."
   :type 'string
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-beep-if-tab-change t
   "*Ring the bell if `tab-width' is changed.
@@ -342,7 +342,7 @@ equal <number>, `tab-width' is set to <number>, a message saying so is
 displayed in the echo area, and if `py-beep-if-tab-change' is non-nil
 the Emacs bell is also rung as a warning."
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-jump-on-exception t
   "*Jump to innermost exception frame in *Python Output* buffer.
@@ -350,23 +350,23 @@ When this variable is non-nil and an exception occurs when running
 Python code synchronously in a subprocess, jump immediately to the
 source code of the innermost traceback frame."
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-ask-about-save t
   "If not nil, ask about which buffers to save before executing some code.
 Otherwise, all modified buffers are saved without asking."
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-backspace-function 'backward-delete-char-untabify
   "*Function called by `py-electric-backspace' when deleting backwards."
   :type 'function
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-delete-function 'delete-char
   "*Function called by `py-electric-delete' when deleting forwards."
   :type 'function
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-pdbtrack-do-tracking-p t
   "*Controls whether the pdbtrack feature is enabled or not.
@@ -376,13 +376,13 @@ Python program, pdbtrack notices the pdb prompt and displays the
 source file and line that the program is stopped at, much the same way
 as gud-mode does for debugging C programs with gdb."
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 (make-variable-buffer-local 'py-pdbtrack-do-tracking-p)
 
 (defcustom py-pdbtrack-minor-mode-string " PDB"
   "*String to use in the minor mode list when pdbtrack is enabled."
   :type 'string
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-import-check-point-max
   20000
@@ -399,7 +399,7 @@ file heading imports to see if they look Java-like."
   '("java" "javax")
   "Imported packages that imply `jython-mode'."
   :type '(repeat string)
-  :group 'python)
+  :group 'python-mode)
 (make-obsolete-variable 'py-jpython-packages 'py-jython-packages nil)
 
 (defcustom py-current-defun-show  t
@@ -408,19 +408,19 @@ file heading imports to see if they look Java-like."
 Default is `t'."
 
 :type 'boolean
-:group 'python)
+:group 'python-mode)
 
 (defcustom py-current-defun-delay  2
  "When called interactively, `py-current-defun' should wait PY-WHICH-FUNC-DELAY seconds at the definition name found, before returning to previous position. "
 
 :type 'number
-:group 'python)
+:group 'python-mode)
 
 (defcustom py-send-receive-delay  5
  "Seconds to wait for output, used by `python-send-receive'. "
 
 :type 'number
-:group 'python)
+:group 'python-mode)
 
 (defvar py-exec-command nil
   "Mode commands will set this. ")
@@ -448,7 +448,7 @@ variable section, e.g.:
 
 "
   :type 'string
-  :group 'python)
+  :group 'python-mode)
 (make-variable-buffer-local 'py-master-file)
 
 (defvar py-pychecker-history nil)
@@ -474,23 +474,23 @@ to select the appropriate python interpreter mode for a file.")
 (defcustom py-shell-input-prompt-1-regexp "^>>> "
   "*A regular expression to match the input prompt of the shell."
   :type 'string
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-shell-input-prompt-2-regexp "^[.][.][.] "
   "*A regular expression to match the input prompt of the shell after the
   first line of input."
   :type 'string
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-shell-switch-buffers-on-execute t
   "When non-nil switch to the Python output buffer. "
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-split-windows-on-execute t
   "When non-nil split windows, make Python output buffer other. "
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-hide-show-keywords
   '(
@@ -501,12 +501,12 @@ to select the appropriate python interpreter mode for a file.")
   "Keywords composing visible heads.
 Also used by (minor-)outline-mode "
   :type '(repeat string)
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-hide-show-hide-docstrings t
   "*Controls if doc strings can be hidden by hide-show"
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom python-mode-hook nil
   "Hook run when entering Python mode."
@@ -516,12 +516,12 @@ Also used by (minor-)outline-mode "
 (defcustom imenu-create-index-p t
   "Non-nil means Python mode creates and displays an index menu of functions and global variables. "
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-shell-name "python"
   "A PATH/TO/EXECUTABLE or default value `py-shell' may look for, if no shell is specified by command. "
   :type 'string
-  :group 'python)
+  :group 'python-mode)
 (make-variable-buffer-local 'py-shell-name)
 
 (defcustom py-source-modes '(python-mode jython-mode)
@@ -530,7 +530,7 @@ Also used by (minor-)outline-mode "
 If a file is loaded into a buffer that is in one of these major modes, it is considered Python source by `py-load-file', which uses the
 value to determine defaults."
   :type '(repeat function)
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-shell-prompt-alist
   '(("ipython" . "^In \\[[0-9]+\\]: *")
@@ -542,8 +542,7 @@ REGEXP is a regular expression matching the Python prompt.
 PROGRAM can also be t, which specifies the default when no other
 element matches `py-shell-name'."
   :type 'string
-  :group 'python
-  :version "24.1")
+  :group 'python)
 
 (defcustom py-shell-continuation-prompt-alist
   '(("ipython" . "^   [.][.][.]+: *")
@@ -556,8 +555,7 @@ continued lines.
 PROGRAM can also be t, which specifies the default when no other
 element matches `py-shell-name'."
   :type 'string
-  :group 'python
-  :version "24.1")
+  :group 'python)
 
 ;; ipython.el
 (defvar ipython-de-input-prompt-regexp "\\(?:
@@ -587,7 +585,7 @@ This vice versa, to beginning first.
 Sets `py-match-paren-key' in python-mode-map.
 Customize `py-match-paren-key' which key to use. "
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-match-paren-key "%"
   "*String used by \\[comment-region] to comment out a block of code.
@@ -596,12 +594,12 @@ that the indentation commands won't get confused (i.e., the string
 should be of the form `#x...' where `x' is not a blank or a tab, and
 `...' is arbitrary).  However, this string should not end in whitespace."
   :type 'string
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-kill-empty-line t
   "*If t, py-indent-forward-line kills empty lines. "
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-remove-cwd-from-path t
   "Whether to allow loading of Python modules from the current directory.
@@ -610,13 +608,13 @@ an inferior Python process.  This is the default, for security
 reasons, as it is easy for the Python process to be started
 without the user's realization (e.g. to perform completion)."
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-imenu-show-method-args-p nil
   "*Controls echoing of arguments of functions & methods in the Imenu buffer.
 When non-nil, arguments are printed."
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom python-default-interpreter 'cpython
   "*Which Python interpreter is used by default.
@@ -635,12 +633,12 @@ mode buffer is visited during an Emacs session.  After that, use
 \\[py-toggle-shells] to change the interpreter shell."
   :type '(choice (const :tag "Python (a.k.a. CPython)" cpython)
 		 (const :tag "JPython" jpython))
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom python-python-command-args '("-i")
   "*List of string arguments to be used when starting a Python shell."
   :type '(repeat string)
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom python-jython-command-args '("-i")
   "*List of string arguments to be used when starting a Jython shell."
@@ -660,13 +658,13 @@ program is stopped in a pop-up buffer.  It's similar to what
 gud-mode does for debugging C programs with gdb, but without
 having to restart the program."
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 (make-variable-buffer-local 'python-pdbtrack-do-tracking-p)
 
 (defcustom python-pdbtrack-minor-mode-string " PDB"
   "*Minor-mode sign to be displayed when pdbtrack is active."
   :type 'string
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom python-shell-prompt-alist
   '(("ipython" . "^In \\[[0-9]+\\]: *")
@@ -678,7 +676,7 @@ REGEXP is a regular expression matching the Python prompt.
 PROGRAM can also be t, which specifies the default when no other
 element matches `python-python-command'."
   :type 'string
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom python-shell-continuation-prompt-alist
   '(("ipython" . "^   [.][.][.]+: *")
@@ -691,7 +689,7 @@ continued lines.
 PROGRAM can also be t, which specifies the default when no other
 element matches `python-python-command'."
   :type 'string
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom python-python-command "python"
   "Shell command to run Python interpreter.
@@ -709,7 +707,7 @@ Any arguments can't contain whitespace."
   "Input matching this regexp is not saved on the history list.
 Default ignores all inputs of 0, 1, or 2 non-blank characters."
   :type 'regexp
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom python-remove-cwd-from-path t
   "Whether to allow loading of Python modules from the current directory.
@@ -727,68 +725,68 @@ without the user's realization (e.g. to perform completion)."
 If a file is loaded into a buffer that is in one of these major modes, it is considered Python source by `py-load-file', which uses the
 value to determine defaults."
   :type '(repeat function)
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom python-jython-packages '("java" "javax" "org" "com")
   "Packages implying `jython-mode'.
 If these are imported near the beginning of the buffer, `python-mode'
 actually punts to `jython-mode'."
   :type '(repeat string)
-  :group 'python)
+  :group 'python-mode)
 
 
 (defface py-number-face
   '((t (:inherit default)))
   ;; '((t (:inherit 'font-lock-variable-name-face)))
   "Highlight numbers. "
-  :group 'python)
+  :group 'python-mode)
 (defvar py-number-face 'py-number-face)
 
 (defface py-XXX-tag-face
   '((t (:inherit font-lock-string-face)))
   "XXX\\|TODO\\|FIXME "
-  :group 'python)
+  :group 'python-mode)
 (defvar py-XXX-tag-face 'py-XXX-tag-face)
 
 ;; ;; Face for None, True, False, self, and Ellipsis
 (defface py-pseudo-keyword-face
   '((t (:inherit font-lock-keyword-face)))
   "Face for pseudo keywords in Python mode, like self, True, False, Ellipsis."
-  :group 'python)
+  :group 'python-mode)
 (defvar py-pseudo-keyword-face 'py-pseudo-keyword-face)
 
 (defface py-variable-name-face
   '((t (:inherit default)))
   ;; '((t (:inherit 'font-lock-variable-name-face)))
   "Face method decorators."
-  :group 'python)
+  :group 'python-mode)
 (defvar py-variable-name-face 'py-variable-name-face)
 
 ;; PEP 318 decorators
 (defface py-decorators-face
   '((t (:inherit font-lock-keyword-face)))
   "Face method decorators."
-  :group 'python)
+  :group 'python-mode)
 (defvar py-decorators-face 'py-decorators-face)
 
 ;; Face for builtins
 (defface py-builtins-face
   '((t (:inherit font-lock-builtin-face)))
   "Face for builtins like TypeError, object, open, and exec."
-  :group 'python)
+  :group 'python-mode)
 (defvar py-builtins-face 'py-builtins-face)
 
 (defface py-class-name-face
   '((t (:inherit font-lock-type-face)))
   "Face for classes."
-  :group 'python)
+  :group 'python-mode)
 (defvar py-class-name-face 'py-class-name-face)
 
 ;; XXX, TODO, and FIXME comments and such
 (defface py-exception-name-face
   '((t (:inherit font-lock-builtin-face)))
   "."
-  :group 'python)
+  :group 'python-mode)
 (defvar py-exception-name-face 'py-exception-name-face)
 
 ;; ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1264,6 +1262,8 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
         ["pychecker-run" py-pychecker-run :help "Run pychecker"]
         ["Debugger" pdb :help "Run pdb under GUD"]
         "-"
+            ["Customize Python mode" (customize-group 'python-mode)
+             :help "Open the customization buffer for Python mode"]
         ["Help on symbol" py-describe-symbol
          :help "Use pydoc on symbol at point"]
         ["Complete symbol" completion-at-point
