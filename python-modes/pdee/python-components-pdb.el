@@ -27,21 +27,6 @@
    (concat ".*\\("py-shell-input-prompt-1-regexp">\\|>\\) *\\(.*\\)(\\([0-9]+\\))\\([?a-zA-Z0-9_<>()]+\\)()")
   "Regular expression pdbtrack uses to find a stack trace entry.")
 
-;; ipython.el
-;; Recognize the ipython pdb, whose prompt is 'ipdb>' or  'ipydb>'
-;;instead of '(Pdb)'
-(setq py-pdbtrack-input-prompt "\n[(<]*[Ii]?[Pp]y?db[>)]+ ")
-(setq pydb-pydbtrack-input-prompt "\n[(]*ipydb[>)]+ ")
-
-;; pydb-328837.diff
-;; (defconst py-pydbtrack-stack-entry-regexp
-;;   "^(\\([-a-zA-Z0-9_/.]*\\):\\([0-9]+\\)):[ \t]?\\(.*\n\\)"
-;;   "Regular expression pdbtrack uses to find a stack trace entry for pydb.
-;;
-;; The debugger outputs program-location lines that look like this:
-;;    (/usr/bin/zonetab2pot.py:15): makePOT")
-
-
 (defconst py-pdbtrack-marker-regexp-file-group 2
   "Group position in gud-pydb-marker-regexp that matches the file name.")
 

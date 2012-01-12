@@ -367,6 +367,22 @@ as gud-mode does for debugging C programs with gdb."
   :type 'string
   :group 'python)
 
+;; ipython.el
+;; Recognize the ipython pdb, whose prompt is 'ipdb>' or  'ipydb>'
+;;instead of '(Pdb)'
+(defvar py-pdbtrack-input-prompt)
+(setq py-pdbtrack-input-prompt "^[(<]*[Ii]?[Pp]y?db[>)]+ ")
+(defvar py-pydbtrack-input-prompt)
+(setq py-pydbtrack-input-prompt "^[(]*ipydb[>)]+ ")
+
+;; pydb-328837.diff
+;; (defconst py-pydbtrack-stack-entry-regexp
+;;   "^(\\([-a-zA-Z0-9_/.]*\\):\\([0-9]+\\)):[ \t]?\\(.*\n\\)"
+;;   "Regular expression pdbtrack uses to find a stack trace entry for pydb.
+;;
+;; The debugger outputs program-location lines that look like this:
+;;    (/usr/bin/zonetab2pot.py:15): makePOT")
+
 (defcustom py-import-check-point-max
   20000
   "Maximum number of characters to search for a Java-ish import statement.
@@ -462,6 +478,22 @@ to select the appropriate python interpreter mode for a file.")
   first line of input."
   :type 'string
   :group 'python)
+
+
+;; ipython.el
+(defvar ipython-de-input-prompt-regexp "\\(?:
+In \\[[0-9]+\\]: *.*
+----+> \\(.*
+\\)[\n]?\\)\\|\\(?:
+In \\[[0-9]+\\]: *\\(.*
+\\)\\)\\|^[ ]\\{3\\}[.]\\{3,\\}: *\\(.*
+\\)"
+  "A regular expression to match the IPython input prompt and the python
+command after it. The first match group is for a command that is rewritten,
+the second for a 'normal' command, and the third for a multiline command.")
+
+(defvar ipython-de-output-prompt-regexp "^Out\\[[0-9]+\\]: "
+  "A regular expression to match the output prompt of IPython.")
 
 (defcustom py-shell-switch-buffers-on-execute t
   "When non-nil switch to the Python output buffer. "

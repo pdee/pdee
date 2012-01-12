@@ -164,10 +164,12 @@ Returns variable `py-process-name' used by function `get-process'.
         (switch-to-buffer-other-window
          (apply 'make-comint py-process-name py-shell-name nil args))
       (apply 'make-comint py-process-name py-shell-name nil args))
-    (make-local-variable 'comint-prompt-regexp)
-    (setq comint-prompt-regexp (concat py-shell-input-prompt-1-regexp "\\|"
-                                       py-shell-input-prompt-2-regexp "\\|"
-                                       "^([Pp]db) "))
+    (set (make-local-variable 'comint-prompt-regexp)
+	 (concat "\\("
+		 (mapconcat 'identity
+			    (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
+			    "\\|")
+		 "\\)"))
     (add-hook 'comint-output-filter-functions
               'py-comint-output-filter-function)
     (setq comint-input-sender 'py-shell-simple-send)

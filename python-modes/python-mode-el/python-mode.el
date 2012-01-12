@@ -559,6 +559,21 @@ element matches `py-shell-name'."
   :group 'python
   :version "24.1")
 
+;; ipython.el
+(defvar ipython-de-input-prompt-regexp "\\(?:
+In \\[[0-9]+\\]: *.*
+----+> \\(.*
+\\)[\n]?\\)\\|\\(?:
+In \\[[0-9]+\\]: *\\(.*
+\\)\\)\\|^[ ]\\{3\\}[.]\\{3,\\}: *\\(.*
+\\)"
+  "A regular expression to match the IPython input prompt and the python
+command after it. The first match group is for a command that is rewritten,
+the second for a 'normal' command, and the third for a multiline command.")
+
+(defvar ipython-de-output-prompt-regexp "^Out\\[[0-9]+\\]: "
+  "A regular expression to match the output prompt of IPython.")
+
 (defcustom py-cleanup-temporary  t
  "If temporary buffers and files used by functions executing region  should be deleted afterwards. "
 
@@ -999,6 +1014,41 @@ Currently-active file is at the head of the list.")
 (defvar inferior-python-mode-abbrev-table nil
   "Not in use.")
 (define-abbrev-table 'inferior-python-mode-abbrev-table ())
+
+;; pdbtrack constants
+(defconst py-pdbtrack-stack-entry-regexp
+   (concat ".*\\("py-shell-input-prompt-1-regexp">\\|>\\) *\\(.*\\)(\\([0-9]+\\))\\([?a-zA-Z0-9_<>()]+\\)()")
+  "Regular expression pdbtrack uses to find a stack trace entry.")
+
+;; ipython.el
+;; Recognize the ipython pdb, whose prompt is 'ipdb>' or  'ipydb>'
+;;instead of '(Pdb)'
+(defvar py-pdbtrack-input-prompt)
+(setq py-pdbtrack-input-prompt "^[(<]*[Ii]?[Pp]y?db[>)]+ ")
+(defvar py-pydbtrack-input-prompt)
+(setq py-pydbtrack-input-prompt "^[(]*ipydb[>)]+ ")
+
+;; pydb-328837.diff
+;; (defconst py-pydbtrack-stack-entry-regexp
+;;   "^(\\([-a-zA-Z0-9_/.]*\\):\\([0-9]+\\)):[ \t]?\\(.*\n\\)"
+;;   "Regular expression pdbtrack uses to find a stack trace entry for pydb.
+;;
+;; The debugger outputs program-location lines that look like this:
+;;    (/usr/bin/zonetab2pot.py:15): makePOT")
+
+(defconst py-pdbtrack-marker-regexp-file-group 2
+  "Group position in gud-pydb-marker-regexp that matches the file name.")
+
+(defconst py-pdbtrack-marker-regexp-line-group 3
+  "Group position in gud-pydb-marker-regexp that matches the line number.")
+
+(defconst py-pdbtrack-marker-regexp-funcname-group 4
+  "Group position in gud-pydb-marker-regexp that matches the function name.")
+
+(defconst py-pdbtrack-track-range 10000
+  "Max number of characters from end of buffer to search for stack entry.")
+
+(defvar py-pdbtrack-is-tracking-p nil)
 
 ;;; Bindings
 (add-to-list 'auto-mode-alist (cons (purecopy "\\.py\\'")  'python-mode))
@@ -4922,10 +4972,15 @@ Returns variable `py-process-name' used by function `get-process'.
         (switch-to-buffer-other-window
          (apply 'make-comint py-process-name py-shell-name nil args))
       (apply 'make-comint py-process-name py-shell-name nil args))
-    (make-local-variable 'comint-prompt-regexp)
-    (setq comint-prompt-regexp (concat py-shell-input-prompt-1-regexp "\\|"
-                                       py-shell-input-prompt-2-regexp "\\|"
-                                       "^([Pp]db) "))
+    (set (make-local-variable 'comint-prompt-regexp)
+	 (concat "\\("
+		 (mapconcat 'identity
+			    (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
+			    "\\|")
+		 "\\)"))
+    ;; (setq comint-prompt-regexp (concat py-shell-input-prompt-1-regexp "\\|"
+    ;;                                    py-shell-input-prompt-2-regexp "\\|"
+    ;;                                    "^([Pp]db) "))
     (add-hook 'comint-output-filter-functions
               'py-comint-output-filter-function)
     (setq comint-input-sender 'py-shell-simple-send)
@@ -6160,40 +6215,6 @@ bottom) of the trackback stack is encountered."
 
 ;;; python-components-pdb.el
 
-;; pdbtrack constants
-(defconst py-pdbtrack-stack-entry-regexp
-   (concat ".*\\("py-shell-input-prompt-1-regexp">\\|>\\) *\\(.*\\)(\\([0-9]+\\))\\([?a-zA-Z0-9_<>()]+\\)()")
-  "Regular expression pdbtrack uses to find a stack trace entry.")
-
-;; ipython.el
-;; Recognize the ipython pdb, whose prompt is 'ipdb>' or  'ipydb>'
-;;instead of '(Pdb)'
-(defvar py-pdbtrack-input-prompt)
-(setq py-pdbtrack-input-prompt "\n[(<]*[Ii]?[Pp]y?db[>)]+ ")
-(defvar pydb-pydbtrack-input-prompt)
-(setq pydb-pydbtrack-input-prompt "\n[(]*ipydb[>)]+ ")
-
-;; pydb-328837.diff
-;; (defconst py-pydbtrack-stack-entry-regexp
-;;   "^(\\([-a-zA-Z0-9_/.]*\\):\\([0-9]+\\)):[ \t]?\\(.*\n\\)"
-;;   "Regular expression pdbtrack uses to find a stack trace entry for pydb.
-;;
-;; The debugger outputs program-location lines that look like this:
-;;    (/usr/bin/zonetab2pot.py:15): makePOT")
-
-(defconst py-pdbtrack-marker-regexp-file-group 2
-  "Group position in gud-pydb-marker-regexp that matches the file name.")
-
-(defconst py-pdbtrack-marker-regexp-line-group 3
-  "Group position in gud-pydb-marker-regexp that matches the line number.")
-
-(defconst py-pdbtrack-marker-regexp-funcname-group 4
-  "Group position in gud-pydb-marker-regexp that matches the function name.")
-
-(defconst py-pdbtrack-track-range 10000
-  "Max number of characters from end of buffer to search for stack entry.")
-
-(defvar py-pdbtrack-is-tracking-p nil)
 
 ;;; Pdbtrack
 
