@@ -3,7 +3,16 @@ Python Mode News
 New in version 6.0.5
 --------------------
 
-- py-number-face,
+- `py-shell-name' accepts PATH/TO/EXECUTABLE 
+  in addition to name of an installed default Python-Shell.
+  Beside customize permits installing commands like
+  (defun python-XYZ-shell (&optional argprompt)
+    "Start an Python-XYZ interpreter ... "
+    (interactive)
+    (let ((py-shell-name "PATH/TO/PYTHON-XYZ"))
+      (py-shell argprompt)))
+
+- new `py-number-face',
   visible only when customized and `py-use-number-face-p' is `t',
   inherits default face
   With large files fontifying numbers may cause a delay

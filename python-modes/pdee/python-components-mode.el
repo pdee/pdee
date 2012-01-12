@@ -777,7 +777,7 @@ Currently-active file is at the head of the list.")
      (make-obsolete-variable 'py-mode-hook 'python-mode-hook nil))
 
 (defcustom py-shell-name "python"
-  "A default value `py-shell' may look for, if no shell is specified by command. "
+  "A PATH/TO/EXECUTABLE or default value `py-shell' may look for, if no shell is specified by command. "
   :type 'string
   :group 'python)
 (make-variable-buffer-local 'py-shell-name)
