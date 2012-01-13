@@ -7710,8 +7710,10 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
     (py-toggle-shells (py-choose-shell)))
   ;; (py-set-load-path)
   (when py-load-pymacs-p (py-load-pymacs)
+        (unwind-protect
+            (progn
         (find-file (concat py-install-directory "/completion/pycomplete.el"))
-        (eval-buffer)
+              (eval-buffer)))
         (kill-buffer "pycomplete.el"))
   (define-key inferior-python-mode-map (kbd "<tab>")
     'python-shell-completion-complete-or-indent)

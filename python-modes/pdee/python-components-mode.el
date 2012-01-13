@@ -93,6 +93,13 @@ See original source: http://pymacs.progiciels-bpi.ca"
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-pymacs-set-$PYTHONPATH-p t
+  "If `py-load-pymacs-p' is non-nil, `py-load-pymacs' will extend
+`$PYTHONPATH', default is non-nil, ."
+
+  :type 'boolean
+  :group 'python-mode)
+
 (defcustom py-report-level-p nil
   "If indenting functions should report reached indent level.
 
@@ -1051,7 +1058,8 @@ Currently-active file is at the head of the list.")
 Pymacs has been written by François Pinard and many others.
 See original source: http://pymacs.progiciels-bpi.ca"
   (interactive)
-  (let ((pyshell (py-choose-shell)))
+  (let ((pyshell (py-choose-shell))
+        (path (getenv "PYTHONPATH")))
     (if (or (not (boundp 'py-install-directory)) (not (stringp py-install-directory)))
         (error "`py-install-directory' not set, see INSTALL")
       (add-to-list 'load-path (concat py-install-directory "/pymacs"))
@@ -1064,7 +1072,12 @@ See original source: http://pymacs.progiciels-bpi.ca"
       (autoload 'pymacs-eval "pymacs")
       (autoload 'pymacs-exec "pymacs")
       (autoload 'pymacs-load "pymacs")
-      (require 'pymacs))))
+      (require 'pymacs))
+    ;; Python side
+    (when py-pymacs-set-$PYTHONPATH-p
+      (setenv "PYTHONPATH" (concat
+                            (if path (concat path path-separator))
+                            (expand-file-name py-install-directory) "/pymacs")))))
 
 (defun py-guess-py-install-directory ()
   (interactive)
@@ -3513,8 +3526,10 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
     (py-toggle-shells (py-choose-shell)))
   ;; (py-set-load-path)
   (when py-load-pymacs-p (py-load-pymacs)
-        (find-file (concat py-install-directory "/completion/pycomplete.el"))
-        (eval-buffer)
+        (unwind-protect
+            (progn
+              (find-file (concat py-install-directory "/completion/pycomplete.el"))
+              (eval-buffer)))
         (kill-buffer "pycomplete.el"))
   (define-key inferior-python-mode-map (kbd "<tab>")
     'python-shell-completion-complete-or-indent)
