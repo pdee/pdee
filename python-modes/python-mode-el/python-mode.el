@@ -1293,7 +1293,10 @@ POSITION can be one of the following symbols:
   bos -- beginning of statement
 
 This function does not modify point or mark."
-  (let ((here (point)))
+  (let (erg)
+    (save-excursion
+      (setq erg
+            (progn
     (cond
      ((eq position 'bol) (beginning-of-line))
      ((eq position 'eol) (end-of-line))
@@ -1304,10 +1307,8 @@ This function does not modify point or mark."
      ((eq position 'eob) (goto-char (point-max)))
      ((eq position 'boi) (back-to-indentation))
      ((eq position 'bos) (py-beginning-of-statement))
-     (t (error "Unknown buffer position requested: %s" position)))
-    (prog1
-        (point)
-      (goto-char here))))
+               (t (error "Unknown buffer position requested: %s" position))) (point))))
+    erg))
 
 
 ;;; Python specialized rx

@@ -33,57 +33,6 @@
         (not py-execute-keep-temporary-file-p))
   (when (interactive-p) (message "py-execute-keep-temporary-file-p: %s" py-execute-keep-temporary-file-p)))
 
-(defcustom py-source-modes '(python-mode jython-mode)
-  "Used to determine if a buffer contains Python source code.
-If a file is loaded into a buffer that is in one of these major modes,
-it is considered Python source by `py-load-file', which uses the
-value to determine defaults."
-  :type '(repeat function)
-  :group 'python)
-
-(defcustom py-shell-prompt-alist
-  '(("ipython" . "^In \\[[0-9]+\\]: *")
-    (t . "^>>> "))
-  "Alist of Python input prompts.
-Each element has the form (PROGRAM . REGEXP), where PROGRAM is
-the value of `py-shell-name' for the python process and
-REGEXP is a regular expression matching the Python prompt.
-PROGRAM can also be t, which specifies the default when no other
-element matches `py-shell-name'."
-  :type 'string
-  :group 'python
-  :version "24.1")
-
-(defcustom py-shell-continuation-prompt-alist
-  '(("ipython" . "^   [.][.][.]+: *")
-    (t . "^[.][.][.] "))
-  "Alist of Python continued-line prompts.
-Each element has the form (PROGRAM . REGEXP), where PROGRAM is
-the value of `py-shell-name' for the python process and
-REGEXP is a regular expression matching the Python prompt for
-continued lines.
-PROGRAM can also be t, which specifies the default when no other
-element matches `py-shell-name'."
-  :type 'string
-  :group 'python
-  :version "24.1")
-
-(defcustom py-cleanup-temporary  t
- "If temporary buffers and files used by functions executing region  should be deleted afterwards. "
-
-:type 'boolean
-:group 'python
-)
-
-(defvar py-prev-dir/file nil
-  "Caches (directory . file) pair used in the last `py-load-file' command.
-Used for determining the default in the next one.")
-
-(defvar py-exception-buffer nil)
-
-(defvar py-output-buffer "*Python Output*")
-(make-variable-buffer-local 'py-output-buffer)
-
 (defun py-comint-output-filter-function (string)
   "Watch output for Python prompt and exec next file waiting in queue.
 This function is appropriate for `comint-output-filter-functions'."

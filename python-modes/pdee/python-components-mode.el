@@ -3800,22 +3800,22 @@ POSITION can be one of the following symbols:
   bos -- beginning of statement
 
 This function does not modify point or mark."
-  (let ((here (point)))
-    (cond
-     ((eq position 'bol) (beginning-of-line))
-     ((eq position 'eol) (end-of-line))
-     ((eq position 'bod) (py-beginning-of-def-or-class 'either))
-     ((eq position 'eod) (py-end-of-def-or-class 'either))
-     ;; Kind of funny, I know, but useful for py-up-exception.
-     ((eq position 'bob) (goto-char (point-min)))
-     ((eq position 'eob) (goto-char (point-max)))
-     ((eq position 'boi) (back-to-indentation))
-     ((eq position 'bos) (py-beginning-of-statement))
-     (t (error "Unknown buffer position requested: %s" position))
-     )
-    (prog1
-        (point)
-      (goto-char here))))
+  (let (erg)
+    (save-excursion
+      (setq erg
+            (progn
+              (cond
+               ((eq position 'bol) (beginning-of-line))
+               ((eq position 'eol) (end-of-line))
+               ((eq position 'bod) (py-beginning-of-def-or-class 'either))
+               ((eq position 'eod) (py-end-of-def-or-class 'either))
+               ;; Kind of funny, I know, but useful for py-up-exception.
+               ((eq position 'bob) (goto-char (point-min)))
+               ((eq position 'eob) (goto-char (point-max)))
+               ((eq position 'boi) (back-to-indentation))
+               ((eq position 'bos) (py-beginning-of-statement))
+               (t (error "Unknown buffer position requested: %s" position))) (point))))
+    erg))
 
 (make-obsolete 'jpython-mode 'jython-mode nil)
 (define-derived-mode jython-mode python-mode "Jython"
