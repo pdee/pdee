@@ -393,8 +393,6 @@ print ''' \"\"\" \"Hi!\" I'm a doc string \"\"\" '''
     (let ((erg (get-char-property (point) 'face)))
       (insert "\"")
       (font-lock-fontify-buffer)
-      ;; (message "%s" erg)
-      ;; (message "%s" (get-char-property (point) 'face))
       (assert (eq erg (get-char-property (point) 'face)) nil "dq-in-tqs-string-lp:328813-test failed ")
       (goto-char 122))))
 
@@ -1992,7 +1990,7 @@ latest_sum = 5
   (py-bug-tests-intern 'wrongly-highlighted-as-keywords-lp-885144-base arg teststring)))
 
 (defun wrongly-highlighted-as-keywords-lp-885144-base ()
-  (font-lock-fontify-buffer)
+  (font-lock-fontify-buffer) 
   (goto-char 55)
   (sit-for 0.1)
   (assert (eq (get-char-property (point) 'face) 'py-variable-name-face) nil "wrongly-highlighted-as-keywords-lp-885144-test failed"))

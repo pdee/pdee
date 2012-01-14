@@ -33,7 +33,6 @@
 (require 'ansi-color)
 (require 'cc-cmds)
 (require 'shell)
-;; (require 'help-fns)
 
 (defgroup python-mode nil
   "Support for the Python programming language, <http://www.python.org/>"
@@ -44,6 +43,7 @@
 
 (defcustom py-install-directory nil
   "Directory where python-mode.el and it's subdirectories should be installed. Needed for completion and other environment stuff only. "
+
   :type 'string
   :group 'python-mode)
 
@@ -89,13 +89,6 @@ Default is nil.
 
 Pymacs has been written by François Pinard and many others.
 See original source: http://pymacs.progiciels-bpi.ca"
-
-  :type 'boolean
-  :group 'python-mode)
-
-(defcustom py-pymacs-set-$PYTHONPATH-p t
-  "If `py-load-pymacs-p' is non-nil, `py-load-pymacs' will extend
-`$PYTHONPATH', default is non-nil, ."
 
   :type 'boolean
   :group 'python-mode)
@@ -206,10 +199,11 @@ Default is nil. "
 (set-default 'py-python-command-args  '("-i"))
 
 (make-obsolete-variable 'py-jpython-command-args 'py-jython-command-args nil)
+
 (defcustom py-jython-command-args '("-i")
   "*List of string arguments to be used when starting a Jython shell."
   :type '(repeat string)
-  :group 'python
+  :group 'python-mode
   :tag "Jython Command Args")
 
 (defcustom py-cleanup-temporary t
@@ -398,8 +392,7 @@ CPython or a Jython shell), it looks at the so-called `shebang' line
 -- i.e. #! line.  If that's not available, it looks at some of the
 file heading imports to see if they look Java-like."
   :type 'integer
-  :group 'python
-  )
+  :group 'python-mode)
 
 (defcustom py-jython-packages
   '("java" "javax")
@@ -408,25 +401,25 @@ file heading imports to see if they look Java-like."
   :group 'python-mode)
 (make-obsolete-variable 'py-jpython-packages 'py-jython-packages nil)
 
-(defcustom py-current-defun-show  t
- "If `py-current-defun' should jump to the definition, highlight it while waiting PY-WHICH-FUNC-DELAY seconds, before returning to previous position.
+(defcustom py-current-defun-show t
+  "If `py-current-defun' should jump to the definition, highlight it while waiting PY-WHICH-FUNC-DELAY seconds, before returning to previous position.
 
 Default is `t'."
 
-:type 'boolean
-:group 'python-mode)
+  :type 'boolean
+  :group 'python-mode)
 
-(defcustom py-current-defun-delay  2
- "When called interactively, `py-current-defun' should wait PY-WHICH-FUNC-DELAY seconds at the definition name found, before returning to previous position. "
+(defcustom py-current-defun-delay 2
+  "When called interactively, `py-current-defun' should wait PY-WHICH-FUNC-DELAY seconds at the definition name found, before returning to previous position. "
 
-:type 'number
-:group 'python-mode)
+  :type 'number
+  :group 'python-mode)
 
-(defcustom py-send-receive-delay  5
- "Seconds to wait for output, used by `python-send-receive'. "
+(defcustom py-send-receive-delay 5
+  "Seconds to wait for output, used by `python-send-receive'. "
 
-:type 'number
-:group 'python-mode)
+  :type 'number
+  :group 'python-mode)
 
 (defvar py-exec-command nil
   "Mode commands will set this. ")
@@ -460,13 +453,13 @@ variable section, e.g.:
 (defcustom py-pychecker-command "pychecker"
   "*Shell command used to run Pychecker."
   :type 'string
-  :group 'python
+  :group 'python-mode
   :tag "Pychecker Command")
 
 (defcustom py-pychecker-command-args '("--stdlib")
   "*List of string arguments to be passed to pychecker."
   :type '(repeat string)
-  :group 'python
+  :group 'python-mode
   :tag "Pychecker Command Args")
 
 (defvar py-shell-alist
@@ -560,16 +553,16 @@ element matches `py-shell-name'."
   :type 'string
   :group 'python-mode)
 
-(defcustom py-cleanup-temporary  t
- "If temporary buffers and files used by functions executing region  should be deleted afterwards. "
+(defcustom py-cleanup-temporary t
+  "If temporary buffers and files used by functions executing region should be deleted afterwards. "
 
-:type 'boolean
-:group 'python
-)
+  :type 'boolean
+  :group 'python-mode)
 
 (defcustom python-mode-hook nil
   "Hook run when entering Python mode."
-  :group 'python
+
+  :group 'python-mode
   :type 'hook)
 
 (defcustom py-shell-name "python"
@@ -590,7 +583,7 @@ element matches `py-shell-name'."
 (defcustom python-indent 4
   "Number of columns for a unit of indentation in Python mode.
 See also `\\[python-guess-indent]'"
-  :group 'python
+  :group 'python-mode
   :type 'integer)
 (put 'python-indent 'safe-local-variable 'integerp)
 
@@ -627,7 +620,7 @@ are always indented in lines with preceding comments."
   "Number of columns of additional indentation for continuation lines.
 Continuation lines follow a backslash-terminated line starting a
 statement."
-  :group 'python
+  :group 'python-mode
   :type 'integer)
 
 (defcustom python-default-interpreter 'cpython
@@ -657,7 +650,7 @@ mode buffer is visited during an Emacs session.  After that, use
 (defcustom python-jython-command-args '("-i")
   "*List of string arguments to be used when starting a Jython shell."
   :type '(repeat string)
-  :group 'python
+  :group 'python-mode
   :tag "JPython Command Args")
 
 ;; for toggling between CPython and JPython
@@ -716,13 +709,13 @@ element matches `python-python-command'."
 (defcustom python-python-command "python"
   "Shell command to run Python interpreter.
 Any arguments can't contain whitespace."
-  :group 'python
+  :group 'python-mode
   :type 'string)
 
 (defcustom python-jython-command "jython"
   "Shell command to run Jython interpreter.
 Any arguments can't contain whitespace."
-  :group 'python
+  :group 'python-mode
   :type 'string)
 
 (defcustom inferior-python-filter-regexp "\\`\\s-*\\S-?\\S-?\\s-*\\'"
@@ -1058,12 +1051,19 @@ Currently-active file is at the head of the list.")
 Pymacs has been written by François Pinard and many others.
 See original source: http://pymacs.progiciels-bpi.ca"
   (interactive)
-  (let ((pyshell (py-choose-shell))
-        (path (getenv "PYTHONPATH")))
+  (let* ((pyshell (py-choose-shell))
+         (path (getenv "PYTHONPATH"))
+         (pymacs-installed-p
+          (string-match (expand-file-name (concat py-install-directory "/Pymacs")) path)))
+    ;; Python side
+    (unless pymacs-installed-p
+      (setenv "PYTHONPATH" (concat
+                            (if path (concat path path-separator))
+                            (expand-file-name py-install-directory) "/Pymacs")))
+
     (if (or (not (boundp 'py-install-directory)) (not (stringp py-install-directory)))
         (error "`py-install-directory' not set, see INSTALL")
-      (add-to-list 'load-path (concat py-install-directory "/pymacs"))
-      (load (concat py-install-directory "/pymacs/pymacs.el") nil t)
+      (load (concat py-install-directory "/pymacs.el") nil t)
       (setenv "PYMACS_PYTHON" (if (string-match "IP" pyshell)
                                   "python"
                                 pyshell))
@@ -1073,11 +1073,11 @@ See original source: http://pymacs.progiciels-bpi.ca"
       (autoload 'pymacs-exec "pymacs")
       (autoload 'pymacs-load "pymacs")
       (require 'pymacs))
-    ;; Python side
-    (when py-pymacs-set-$PYTHONPATH-p
-      (setenv "PYTHONPATH" (concat
-                            (if path (concat path path-separator))
-                            (expand-file-name py-install-directory) "/pymacs")))))
+    (unwind-protect
+        (progn
+          (find-file (concat py-install-directory "/completion/pycomplete.el"))
+          (eval-buffer)))
+    (kill-buffer "pycomplete.el")))
 
 (defun py-guess-py-install-directory ()
   (interactive)
@@ -1095,7 +1095,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
   (cond (py-install-directory
          (add-to-list 'load-path (expand-file-name py-install-directory))
          (add-to-list 'load-path (concat (expand-file-name py-install-directory) "/completion"))
-         (add-to-list 'load-path (concat py-install-directory "/pymacs"))
+         ;; (add-to-list 'load-path (concat py-install-directory "/pymacs"))
          (add-to-list 'load-path (concat (expand-file-name py-install-directory) "/test"))
          (add-to-list 'load-path (concat (expand-file-name py-install-directory) "/tools")))
         ((when py-guess-py-install-directory-p
@@ -2448,7 +2448,7 @@ For running multiple processes in multiple buffers, see `run-python' and
 `python-buffer'.
 
 \\{inferior-python-mode-map}"
-  :group 'python
+  :group 'python-mode
   (require 'ansi-color) ; for ipython
   (setq mode-line-process '(":%s"))
   (set (make-local-variable 'comint-input-filter) 'python-input-filter)
@@ -2782,46 +2782,46 @@ Otherwise inherits from `python-mode-syntax-table'.")
 ;; Fixme: Should this actually be used instead of info-look, i.e. be
 ;; bound to C-h S?  [Probably not, since info-look may work in cases
 ;; where this doesn't.]
-(defun python-describe-symbol (symbol)
-  "Get help on SYMBOL using `help'.
-Interactively, prompt for symbol.
-
-Symbol may be anything recognized by the interpreter's `help'
-command -- e.g. `CALLS' -- not just variables in scope in the
-interpreter.  This only works for Python version 2.2 or newer
-since earlier interpreters don't support `help'.
-
-In some cases where this doesn't find documentation, \\[info-lookup-symbol]
-will."
-  ;; Note that we do this in the inferior process, not a separate one, to
-  ;; ensure the environment is appropriate.
-  (interactive
-   (let ((symbol (with-syntax-table python-dotty-syntax-table
-		   (current-word)))
-	 (enable-recursive-minibuffers t))
-     (list (read-string (if symbol
-			    (format "Describe symbol (default %s): " symbol)
-			  "Describe symbol: ")
-			nil nil symbol))))
-  (if (equal symbol "") (error "No symbol"))
-  ;; Ensure we have a suitable help buffer.
-  ;; Fixme: Maybe process `Related help topics' a la help xrefs and
-  ;; allow C-c C-f in help buffer.
-  (let ((temp-buffer-show-hook		; avoid xref stuff
-	 (lambda ()
-	   (toggle-read-only 1)
-	   (setq view-return-to-alist
-		 (list (cons (selected-window) help-return-method))))))
-    (with-output-to-temp-buffer (help-buffer)
-      (with-current-buffer standard-output
- 	;; Fixme: Is this actually useful?
-	(help-setup-xref (list 'python-describe-symbol symbol)
-			 (called-interactively-p 'interactive))
-	(set (make-local-variable 'comint-redirect-subvert-readonly) t)
-	(help-print-return-message))))
-  (comint-redirect-send-command-to-process (format "emacs.ehelp(%S, %s)"
-						   symbol python-imports)
-                                           "*Help*" (python-proc) nil nil))
+;; (defun python-describe-symbol (symbol)
+;;   "Get help on SYMBOL using `help'.
+;; Interactively, prompt for symbol.
+;;
+;; Symbol may be anything recognized by the interpreter's `help'
+;; command -- e.g. `CALLS' -- not just variables in scope in the
+;; interpreter.  This only works for Python version 2.2 or newer
+;; since earlier interpreters don't support `help'.
+;;
+;; In some cases where this doesn't find documentation, \\[info-lookup-symbol]
+;; will."
+;;   ;; Note that we do this in the inferior process, not a separate one, to
+;;   ;; ensure the environment is appropriate.
+;;   (interactive
+;;    (let ((symbol (with-syntax-table python-dotty-syntax-table
+;; 		   (current-word)))
+;; 	 (enable-recursive-minibuffers t))
+;;      (list (read-string (if symbol
+;; 			    (format "Describe symbol (default %s): " symbol)
+;; 			  "Describe symbol: ")
+;; 			nil nil symbol))))
+;;   (if (equal symbol "") (error "No symbol"))
+;;   ;; Ensure we have a suitable help buffer.
+;;   ;; Fixme: Maybe process `Related help topics' a la help xrefs and
+;;   ;; allow C-c C-f in help buffer.
+;;   (let ((temp-buffer-show-hook		; avoid xref stuff
+;; 	 (lambda ()
+;; 	   (toggle-read-only 1)
+;; 	   (setq view-return-to-alist
+;; 		 (list (cons (selected-window) help-return-method))))))
+;;     (with-output-to-temp-buffer (help-buffer)
+;;       (with-current-buffer standard-output
+;;  	;; Fixme: Is this actually useful?
+;; 	(help-setup-xref (list 'python-describe-symbol symbol)
+;; 			 (called-interactively-p 'interactive))
+;; 	(set (make-local-variable 'comint-redirect-subvert-readonly) t)
+;; 	(help-print-return-message))))
+;;   (comint-redirect-send-command-to-process (format "emacs.ehelp(%S, %s)"
+;; 						   symbol python-imports)
+;;                                            "*Help*" (python-proc) nil nil))
 
 (add-to-list 'debug-ignored-errors "^No symbol")
 
@@ -3413,7 +3413,7 @@ py-temp-directory\t\tdirectory used for temp files (if needed)
 py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
 
 \\{python-mode-map}"
-  :group 'python
+  :group 'python-mode
   (set (make-local-variable 'font-lock-defaults)
        '(python-font-lock-keywords nil nil nil nil
 				   (font-lock-syntactic-keywords
@@ -3525,12 +3525,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (when (null py-shell-name)
     (py-toggle-shells (py-choose-shell)))
   ;; (py-set-load-path)
-  (when py-load-pymacs-p (py-load-pymacs)
-        (unwind-protect
-            (progn
-              (find-file (concat py-install-directory "/completion/pycomplete.el"))
-              (eval-buffer)))
-        (kill-buffer "pycomplete.el"))
+  (when py-load-pymacs-p (py-load-pymacs))
   (define-key inferior-python-mode-map (kbd "<tab>")
     'python-shell-completion-complete-or-indent)
   ;; add the menu
@@ -3736,7 +3731,7 @@ With \\[universal-argument]) user is prompted to specify a reachable Python vers
 
 (define-derived-mode python2-mode python-mode "Python2"
   "Edit and run code used by Python version 2 series. "
-  :group 'Python
+  :group 'python-mode
   :abbrev nil
   (set (make-local-variable 'py-exec-command) '(format "execfile(r'%s') # PYTHON-MODE\n" filename))
   (set (make-local-variable 'py-exec-string-command) '(format "exec(r'%s') # PYTHON-MODE\n" string))
@@ -3744,7 +3739,7 @@ With \\[universal-argument]) user is prompted to specify a reachable Python vers
 
 (define-derived-mode python3-mode python-mode "Python3"
   "Edit and run code used by Python version 3 series. "
-  :group 'Python
+  :group 'python-mode
   :abbrev nil
   (set (make-local-variable 'py-exec-command) '(format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" file file))
   (set (make-local-variable 'py-exec-string-command) '(format "exec(r'(%s)') # PYTHON-MODE\n" string))
@@ -3837,7 +3832,8 @@ This function does not modify point or mark."
   "Major mode for editing Jython files.
 Like `python-mode', but sets up parameters for Jython subprocesses.
 Runs `jython-mode-hook' after `python-mode-hook'."
-  :group 'python
+
+  :group 'python-mode
   (py-toggle-shells "jython"))
 
 ;; It's handy to add recognition of Python files to the

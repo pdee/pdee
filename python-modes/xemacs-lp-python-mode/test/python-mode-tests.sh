@@ -72,7 +72,7 @@ ANSICOLOR="${EMACS_SOURCE_DIR}/lisp/ansi-color.el"
 COMINT="${EMACS_SOURCE_DIR}/lisp/comint.el"
 CCCMDS="${EMACS_SOURCE_DIR}/lisp/progmodes/cc-cmds.el"
 SHELL="${EMACS_SOURCE_DIR}/lisp/shell.el"
-PYMACS="../pymacs/pymacs.el"
+PYMACS="../pymacs.el"
 # file holding the tests
 TESTFILE="py-bug-numbered-tests.el"
 TESTFILE2="python-mode-test.el"
