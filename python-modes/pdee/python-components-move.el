@@ -1448,9 +1448,7 @@ Returns indentation if def-or-class found, nil otherwise. "
       (while (and (setq erg (py-down-statement))(not (looking-at py-def-or-class-re)))))
     (when (interactive-p) (message "%s" erg))
     erg))
-;; Py-down commands end
 
-;; ripped from cc-mode
 (defun py-forward-into-nomenclature (&optional arg)
   "Move forward to end of a nomenclature section or word.
 
@@ -1458,17 +1456,22 @@ With \\[universal-argument] (programmatically, optional argument ARG), do it tha
 
 A `nomenclature' is a fancy way of saying AWordWithMixedCaseNotUnderscores."
   (interactive "p")
-  (let ((case-fold-search nil))
+  (or arg (setq arg 1))
+  (let ((case-fold-search nil)
+        erg)
     (if (> arg 0)
-        (re-search-forward
-         "\\(\\W\\|[_]\\)*\\([A-Z]*[a-z0-9]*\\)"
-         (point-max) t arg)
+        (setq erg (re-search-forward
+                   "\\(\\W\\|[_]\\)*\\([[:alnum:]]*\\)"
+                   (point-max) t arg))
       (while (and (< arg 0)
-                  (re-search-backward
-                   "\\(\\W\\|[a-z0-9]\\)[A-Z]+\\|\\(\\W\\|[_]\\)\\w+"
-                   (point-min) 0))
+                  (setq erg (re-search-backward
+                             "\\(\\W\\|[[:alnum:]]+\\)[A-Z]+\\|\\(\\W\\|[_]\\)\\w+"
+                             (point-min) 0)))
         (forward-char 1)
-        (setq arg (1+ arg))))))
+        (setq arg (1+ arg)))
+      (when erg (setq erg (1+ erg))))
+    (when (and py-report-position-p (interactive-p)) (message "%s" erg))
+    erg))
 
 (defun py-backward-into-nomenclature (&optional arg)
   "Move backward to beginning of a nomenclature section or word.

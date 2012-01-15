@@ -88,18 +88,26 @@ If you ignore the location `M-x py-guess-pdb-path' might display it.
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-load-pymacs-p nil
-  "If Pymacs as delivered with python-mode.el shall be loaded.
+(defcustom py-load-pymacs-p  nil
+ "If Pymacs as delivered with python-mode.el shall be loaded.
 Default is nil.
 
 Pymacs has been written by François Pinard and many others.
 See original source: http://pymacs.progiciels-bpi.ca"
 
-  :type 'boolean
-  :group 'python-mode)
+:type 'boolean
+:group 'python-mode)
 
 (defcustom py-report-level-p nil
   "If indenting functions should report reached indent level.
+
+Default is nil. "
+
+  :type 'boolean
+  :group 'python-mode)
+
+(defcustom py-report-position-p nil
+  "If functions moving point like `py-forward-into-nomenclature' should report reached position.
 
 Default is nil. "
 
@@ -234,14 +242,15 @@ Default is nil. "
 (defcustom py-jython-command-args '("-i")
   "*List of string arguments to be used when starting a Jython shell."
   :type '(repeat string)
-  :group 'python-mode
+  :group 'python
   :tag "Jython Command Args")
 
-(defcustom py-cleanup-temporary t
-  "If temporary buffers and files used by functions executing region should be deleted afterwards. "
+(defcustom py-cleanup-temporary  t
+ "If temporary buffers and files used by functions executing region  should be deleted afterwards. "
 
-  :type 'boolean
-  :group 'python-mode)
+:type 'boolean
+:group 'python
+)
 
 (defcustom py-lhs-inbound-indent 1
   "When line starts a multiline-assignment: How many colums indent should be more than opening bracket, brace or parenthesis. "
@@ -391,7 +400,8 @@ CPython or a Jython shell), it looks at the so-called `shebang' line
 -- i.e. #! line.  If that's not available, it looks at some of the
 file heading imports to see if they look Java-like."
   :type 'integer
-  :group 'python-mode)
+  :group 'python
+  )
 
 (defcustom py-jython-packages
   '("java" "javax")
@@ -400,25 +410,25 @@ file heading imports to see if they look Java-like."
   :group 'python-mode)
 (make-obsolete-variable 'py-jpython-packages 'py-jython-packages nil)
 
-(defcustom py-current-defun-show t
-  "If `py-current-defun' should jump to the definition, highlight it while waiting PY-WHICH-FUNC-DELAY seconds, before returning to previous position.
+(defcustom py-current-defun-show  t
+ "If `py-current-defun' should jump to the definition, highlight it while waiting PY-WHICH-FUNC-DELAY seconds, before returning to previous position.
 
 Default is `t'."
 
-  :type 'boolean
-  :group 'python-mode)
+:type 'boolean
+:group 'python-mode)
 
-(defcustom py-current-defun-delay 2
-  "When called interactively, `py-current-defun' should wait PY-WHICH-FUNC-DELAY seconds at the definition name found, before returning to previous position. "
+(defcustom py-current-defun-delay  2
+ "When called interactively, `py-current-defun' should wait PY-WHICH-FUNC-DELAY seconds at the definition name found, before returning to previous position. "
 
-  :type 'number
-  :group 'python-mode)
+:type 'number
+:group 'python-mode)
 
-(defcustom py-send-receive-delay 5
-  "Seconds to wait for output, used by `python-send-receive'. "
+(defcustom py-send-receive-delay  5
+ "Seconds to wait for output, used by `python-send-receive'. "
 
-  :type 'number
-  :group 'python-mode)
+:type 'number
+:group 'python-mode)
 
 (defvar py-exec-command nil
   "Mode commands will set this. ")
@@ -454,13 +464,13 @@ variable section, e.g.:
 (defcustom py-pychecker-command "pychecker"
   "*Shell command used to run Pychecker."
   :type 'string
-  :group 'python-mode
+  :group 'python
   :tag "Pychecker Command")
 
 (defcustom py-pychecker-command-args '("--stdlib")
   "*List of string arguments to be passed to pychecker."
   :type '(repeat string)
-  :group 'python-mode
+  :group 'python
   :tag "Pychecker Command Args")
 
 (defvar py-shell-alist
@@ -508,7 +518,7 @@ Also used by (minor-)outline-mode "
 
 (defcustom python-mode-hook nil
   "Hook run when entering Python mode."
-  :group 'python-mode
+  :group 'python
   :type 'hook)
 
 (defcustom imenu-create-index-p t
@@ -540,7 +550,7 @@ REGEXP is a regular expression matching the Python prompt.
 PROGRAM can also be t, which specifies the default when no other
 element matches `py-shell-name'."
   :type 'string
-  :group 'python-mode)
+  :group 'python)
 
 (defcustom py-shell-continuation-prompt-alist
   '(("ipython" . "^   [.][.][.]+: *")
@@ -553,7 +563,7 @@ continued lines.
 PROGRAM can also be t, which specifies the default when no other
 element matches `py-shell-name'."
   :type 'string
-  :group 'python-mode)
+  :group 'python)
 
 ;; ipython.el
 (defvar ipython-de-input-prompt-regexp "\\(?:
@@ -570,11 +580,12 @@ the second for a 'normal' command, and the third for a multiline command.")
 (defvar ipython-de-output-prompt-regexp "^Out\\[[0-9]+\\]: "
   "A regular expression to match the output prompt of IPython.")
 
-(defcustom py-cleanup-temporary t
-  "If temporary buffers and files used by functions executing region should be deleted afterwards. "
+(defcustom py-cleanup-temporary  t
+ "If temporary buffers and files used by functions executing region  should be deleted afterwards. "
 
-  :type 'boolean
-  :group 'python-mode)
+:type 'boolean
+:group 'python
+)
 
 (defcustom py-match-paren-mode nil
   "*Non-nil means, cursor will jump to beginning or end of a block.
@@ -640,7 +651,7 @@ mode buffer is visited during an Emacs session.  After that, use
 (defcustom python-jython-command-args '("-i")
   "*List of string arguments to be used when starting a Jython shell."
   :type '(repeat string)
-  :group 'python-mode
+  :group 'python
   :tag "JPython Command Args")
 
 (defcustom python-pdbtrack-do-tracking-p t
@@ -691,13 +702,13 @@ element matches `python-python-command'."
 (defcustom python-python-command "python"
   "Shell command to run Python interpreter.
 Any arguments can't contain whitespace."
-  :group 'python-mode
+  :group 'python
   :type 'string)
 
 (defcustom python-jython-command "jython"
   "Shell command to run Jython interpreter.
 Any arguments can't contain whitespace."
-  :group 'python-mode
+  :group 'python
   :type 'string)
 
 (defcustom inferior-python-filter-regexp "\\`\\s-*\\S-?\\S-?\\s-*\\'"
@@ -713,7 +724,8 @@ an inferior Python process.  This is the default, for security
 reasons, as it is easy for the Python process to be started
 without the user's realization (e.g. to perform completion)."
   :type 'boolean
-  :group 'python-mode)
+  :group 'python
+  :version "23.3")
 
 (defcustom python-source-modes '(python-mode jython-mode)
   "Used to determine if a buffer contains Python source code.
@@ -4808,17 +4820,22 @@ With \\[universal-argument] (programmatically, optional argument ARG), do it tha
 
 A `nomenclature' is a fancy way of saying AWordWithMixedCaseNotUnderscores."
   (interactive "p")
-  (let ((case-fold-search nil))
+  (or arg (setq arg 1))
+  (let ((case-fold-search nil)
+        erg)
     (if (> arg 0)
-        (re-search-forward
-         "\\(\\W\\|[_]\\)*\\([A-Z]*[a-z0-9]*\\)"
-         (point-max) t arg)
+        (setq erg (re-search-forward
+                   "\\(\\W\\|[_]\\)*\\([[:alnum:]]*\\)"
+                   (point-max) t arg))
       (while (and (< arg 0)
-                  (re-search-backward
-                   "\\(\\W\\|[a-z0-9]\\)[A-Z]+\\|\\(\\W\\|[_]\\)\\w+"
-                   (point-min) 0))
+                  (setq erg (re-search-backward
+                             "\\(\\W\\|[[:alnum:]]+\\)[A-Z]+\\|\\(\\W\\|[_]\\)\\w+"
+                             (point-min) 0)))
         (forward-char 1)
-        (setq arg (1+ arg))))))
+        (setq arg (1+ arg)))
+      (when erg (setq erg (1+ erg))))
+    (when (and py-report-position-p (interactive-p)) (message "%s" erg))
+    erg))
 
 (defun py-backward-into-nomenclature (&optional arg)
   "Move backward to beginning of a nomenclature section or word.
@@ -7532,19 +7549,11 @@ With \\[universal-argument]) user is prompted to specify a reachable Python vers
 Pymacs has been written by François Pinard and many others.
 See original source: http://pymacs.progiciels-bpi.ca"
   (interactive)
-  (let* ((pyshell (py-choose-shell))
-         (path (getenv "PYTHONPATH"))
-         (pymacs-installed-p
-          (string-match (expand-file-name (concat py-install-directory "/Pymacs")) path)))
-    ;; Python side
-    (unless pymacs-installed-p
-      (setenv "PYTHONPATH" (concat
-                            (if path (concat path path-separator))
-                            (expand-file-name py-install-directory) "/Pymacs")))
-
+  (let ((pyshell (py-choose-shell)))
   (if (or (not (boundp 'py-install-directory)) (not (stringp py-install-directory)))
       (error "`py-install-directory' not set, see INSTALL")
-      (load (concat py-install-directory "/pymacs.el") nil t)
+    (add-to-list 'load-path (concat py-install-directory "/pymacs"))
+    (load (concat py-install-directory "/pymacs/pymacs.el") nil t)
       (setenv "PYMACS_PYTHON" (if (string-match "IP" pyshell)
                                   "python"
                                 pyshell))
@@ -7553,12 +7562,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
     (autoload 'pymacs-eval "pymacs")
     (autoload 'pymacs-exec "pymacs")
     (autoload 'pymacs-load "pymacs")
-      (require 'pymacs))
-  (unwind-protect
-      (progn
-        (find-file (concat py-install-directory "/completion/pycomplete.el"))
-        (eval-buffer)))
-    (kill-buffer "pycomplete.el")))
+      (require 'pymacs))))
 
 (defun py-guess-py-install-directory ()
   (interactive)
@@ -7607,7 +7611,7 @@ py-temp-directory\t\tdirectory used for temp files (if needed)
 py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
 
 \\{python-mode-map}"
-  :group 'python-mode
+  :group 'python
   (set (make-local-variable 'font-lock-defaults)
        '(python-font-lock-keywords nil nil nil nil
 				   (font-lock-syntactic-keywords
@@ -7714,7 +7718,12 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (when (null py-shell-name)
     (py-toggle-shells (py-choose-shell)))
   ;; (py-set-load-path)
-  (when py-load-pymacs-p (py-load-pymacs))
+  (when py-load-pymacs-p (py-load-pymacs)
+        (unwind-protect
+            (progn
+        (find-file (concat py-install-directory "/completion/pycomplete.el"))
+              (eval-buffer)))
+        (kill-buffer "pycomplete.el"))
   (define-key inferior-python-mode-map (kbd "<tab>")
     'python-shell-completion-complete-or-indent)
   ;; add the menu
@@ -7750,7 +7759,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
 
 (define-derived-mode python2-mode python-mode "Python2"
   "Edit and run code used by Python version 2 series. "
-  :group 'python-mode
+  :group 'Python
   :abbrev nil
   (set (make-local-variable 'py-exec-command) '(format "execfile(r'%s') # PYTHON-MODE\n" filename))
   (set (make-local-variable 'py-exec-string-command) '(format "exec(r'%s') # PYTHON-MODE\n" string))
@@ -7758,7 +7767,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
 
 (define-derived-mode python3-mode python-mode "Python3"
   "Edit and run code used by Python version 3 series. "
-  :group 'python-mode
+  :group 'Python
   :abbrev nil
   (set (make-local-variable 'py-exec-command) '(format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" file file))
   (set (make-local-variable 'py-exec-string-command) '(format "exec(r'(%s)') # PYTHON-MODE\n" string))
@@ -7820,7 +7829,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   "Major mode for editing Jython files.
 Like `python-mode', but sets up parameters for Jython subprocesses.
 Runs `jython-mode-hook' after `python-mode-hook'."
-  :group 'python-mode
+  :group 'python
   (py-toggle-shells "jython"))
 
 ;; It's handy to add recognition of Python files to the
@@ -8002,7 +8011,7 @@ For running multiple processes in multiple buffers, see `run-python' and
 `python-buffer'.
 
 \\{inferior-python-mode-map}"
-  :group 'python-mode
+  :group 'python
   (require 'ansi-color) ; for ipython
   (setq mode-line-process '(":%s"))
   (set (make-local-variable 'comint-input-filter) 'python-input-filter)

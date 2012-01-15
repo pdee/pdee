@@ -106,6 +106,14 @@ Default is nil. "
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-report-position-p nil
+  "If functions moving point like `py-forward-into-nomenclature' should report reached position.
+
+Default is nil. "
+
+  :type 'boolean
+  :group 'python-mode)
+
 (defcustom py-hide-show-minor-mode-p nil
   "If hide-show minor-mode should be on, default is nil. "
 
@@ -734,7 +742,6 @@ actually punts to `jython-mode'."
   :type '(repeat string)
   :group 'python-mode)
 
-
 (defface py-number-face
   '((t (:inherit default)))
   ;; '((t (:inherit 'font-lock-variable-name-face)))
@@ -896,7 +903,6 @@ set in py-execute-region and used in py-jump-to-exception.")
 ;;               "\\|")
 ;;    "\\)")
 ;;   "Regular expression matching lines not to dedent after.")
-
 
 (defvar py-traceback-line-re
   "^IPython\\|^In \\[[0-9]+\\]: *\\|^>>>\\|^[^ \t>]+>[^0-9]+\\([0-9]+\\)\\|^[ \t]+File \"\\([^\"]+\\)\", line \\([0-9]+\\)"
@@ -4785,17 +4791,22 @@ With \\[universal-argument] (programmatically, optional argument ARG), do it tha
 
 A `nomenclature' is a fancy way of saying AWordWithMixedCaseNotUnderscores."
   (interactive "p")
-  (let ((case-fold-search nil))
+  (or arg (setq arg 1))
+  (let ((case-fold-search nil)
+        erg)
     (if (> arg 0)
-        (re-search-forward
-         "\\(\\W\\|[_]\\)*\\([A-Z]*[a-z0-9]*\\)"
-         (point-max) t arg)
+        (setq erg (re-search-forward
+                   "\\(\\W\\|[_]\\)*\\([[:alnum:]]*\\)"
+                   (point-max) t arg))
       (while (and (< arg 0)
-                  (re-search-backward
-                   "\\(\\W\\|[a-z0-9]\\)[A-Z]+\\|\\(\\W\\|[_]\\)\\w+"
-                   (point-min) 0))
+                  (setq erg (re-search-backward
+                             "\\(\\W\\|[[:alnum:]]+\\)[A-Z]+\\|\\(\\W\\|[_]\\)\\w+"
+                             (point-min) 0)))
         (forward-char 1)
-        (setq arg (1+ arg))))))
+        (setq arg (1+ arg)))
+      (when erg (setq erg (1+ erg))))
+    (when (and py-report-position-p (interactive-p)) (message "%s" erg))
+    erg))
 
 (defun py-backward-into-nomenclature (&optional arg)
   "Move backward to beginning of a nomenclature section or word.
@@ -6069,7 +6080,6 @@ If an exception occurred return t, otherwise return nil.  BUF must exist."
     (forward-line (1- line))
     (message "Jumping to exception in file %s on line %d" file line)))
 
-
 (defun py-down-exception (&optional bottom)
   "Go to the next line down in the traceback.
 
@@ -6182,7 +6192,6 @@ bottom) of the trackback stack is encountered."
     (comint-send-string (python-proc) "\n")))
 
 ;;; python-components-pdb.el
-
 
 ;;; Pdbtrack
 

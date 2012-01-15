@@ -121,6 +121,7 @@
          'chars-uU-preceding-triple-quoted-get-string-face-lp-909517-test
          'wrong-type-argument-lp-901541-test
          'py-pychecker-run-missing-lp-910783-test
+         'py-forward-into-nomenclature-lp-916818-test
          'UnicodeEncodeError-lp:550661-test
          'py-shell-complete-lp-328836-test
 
@@ -1990,7 +1991,7 @@ latest_sum = 5
   (py-bug-tests-intern 'wrongly-highlighted-as-keywords-lp-885144-base arg teststring)))
 
 (defun wrongly-highlighted-as-keywords-lp-885144-base ()
-  (font-lock-fontify-buffer) 
+  (font-lock-fontify-buffer)
   (goto-char 55)
   (sit-for 0.1)
   (assert (eq (get-char-property (point) 'face) 'py-variable-name-face) nil "wrongly-highlighted-as-keywords-lp-885144-test failed"))
@@ -2195,6 +2196,19 @@ This module is an optparse-inspired command-line parsing library that:
 (defun py-pychecker-run-missing-lp-910783-base ()
     (assert (commandp 'py-pychecker-run) nil "py-pychecker-run-missing-lp-910783-test failed"))
 
+
+(defun py-forward-into-nomenclature-lp-916818-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+print \"\"\"Es müßte 'asdf\" heißen.\"\"\"
+"))
+    (when load-branch-function (funcall load-branch-function))
+    (py-bug-tests-intern 'py-forward-into-nomenclature-lp-916818-base arg teststring)))
+
+(defun py-forward-into-nomenclature-lp-916818-base ()
+  (goto-char 61)
+  (assert (eq 65 (py-forward-into-nomenclature)) nil "py-forward-into-nomenclature-lp-916818-test failed"))
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
