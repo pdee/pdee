@@ -823,7 +823,7 @@ also insert a newline. "
                    (widen)
                    (re-search-backward "^(" nil (quote move) 1)
                    ;; (when (looking-at (concat "\\(" symbol-definition-start-re "\\) +\\(\\(\\w+\\|\\s_+\\)*\\)"))
-                   (when (looking-at "(\\([[:alpha:]-]+\\) +\\([[:alpha:]-]+\\)")
+                   (when (looking-at "(\\([[:alpha:]-]+\\) +\\([[:graph:]]+\\)")
                      (match-string-no-properties 2)))))))
     (when (interactive-p) (message "%s" erg))
     erg))

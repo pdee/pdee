@@ -62,7 +62,7 @@ for options to pass to the Python3 interpreter. "
   (interactive)
   (let ((py-shell-name "python3"))
     (local-unset-key [tab])
-    (define-key py-shell-map [tab] 'py-shell-complete)
+    (define-key py-shell-map [tab] 'py-completion-at-point)
     (py-shell argprompt)))
 
 (defun python3.2 (&optional argprompt)
@@ -73,7 +73,7 @@ for options to pass to the Python3.2 interpreter. "
   (interactive)
   (let ((py-shell-name "python3.2"))
     (local-unset-key [tab])
-    (define-key py-shell-map [tab] 'py-shell-complete)
+    (define-key py-shell-map [tab] 'py-completion-at-point)
     (py-shell argprompt)))
 
 
