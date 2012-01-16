@@ -85,7 +85,9 @@ for options to pass to the Python3.2 interpreter. "
 With optional \\[universal-argument] user is prompted
 for options to pass to the IPython interpreter. "
   (interactive)
-  (let ((py-shell-name "ipython"))
+  (let* ((py-shell-name "ipython")
+         (ipython-version (string-to-number (substring (shell-command-to-string "ipython -V") 2 -1))))
+    (setq ipython-completion-command-string (if (< ipython-version 11) ipython0.10-completion-command-string ipython0.11-completion-command-string))
     (local-unset-key [tab])
     (define-key py-shell-map [tab] 'ipython-complete)
     (py-shell argprompt)))

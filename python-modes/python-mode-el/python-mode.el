@@ -5082,7 +5082,9 @@ for options to pass to the Python3.2 interpreter. "
 With optional \\[universal-argument] user is prompted
 for options to pass to the IPython interpreter. "
   (interactive)
-  (let ((py-shell-name "ipython"))
+  (let* ((py-shell-name "ipython")
+         (ipython-version (string-to-number (substring (shell-command-to-string "ipython -V") 2 -1))))
+    (setq ipython-completion-command-string (if (< ipython-version 11) ipython0.10-completion-command-string ipython0.11-completion-command-string))
     (local-unset-key [tab])
     (define-key py-shell-map [tab] 'ipython-complete)
     (py-shell argprompt)))
@@ -8888,11 +8890,21 @@ complete('%s')
 ;; see also
 ;; http://lists.gnu.org/archive/html/bug-gnu-emacs/2008-01/msg00076.html
 
-(defvar ipython-completion-command-string
-  "print(';'.join(get_ipython().Completer.all_completions('%s'))) #PYTHON-MODE SILENT\n"
+(defvar ipython-completion-command-string nil
+  "Either ipython0.10-completion-command-string or ipython0.11-completion-command-string.
+
+ipython0.11-completion-command-string also covers version 0.12")
+;; (make-variable-buffer-local 'ipython-completion-command-string)
+
+(defvar ipython0.10-completion-command-string
+  "print(';'.join(__IP.Completer.all_completions('%s'))) #PYTHON-MODE SILENT\n"
   "The string send to ipython to query for all possible completions")
 
-(setq ipython-completion-command-string                                   "print(';'.join(__IP.Completer.all_completions('%s'))) #PYTHON-MODE SILENT\n")
+;; (setq ipython0.10-completion-command-string "print(';'.join(__IP.Completer.all_completions('%s'))) #PYTHON-MODE SILENT\n")
+
+(defvar ipython0.11-completion-command-string
+  "print(';'.join(get_ipython().Completer.all_completions('%s'))) #PYTHON-MODE SILENT\n"
+  "The string send to ipython to query for all possible completions")
 
 (defun ipython-complete ()
   "Complete the python symbol before point.

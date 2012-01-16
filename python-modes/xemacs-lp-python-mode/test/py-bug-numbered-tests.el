@@ -2210,5 +2210,23 @@ print \"\"\"Es müßte 'asdf\" heißen.\"\"\"
   (goto-char 61)
   (assert (eq 65 (py-forward-into-nomenclature)) nil "py-forward-into-nomenclature-lp-916818-test failed"))
 
+(defun tab-completion-in-Ipython-buffers-lp-916869-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"))
+  (when load-branch-function (funcall load-branch-function))
+  (py-bug-tests-intern 'tab-completion-in-Ipython-buffers-lp-916869-base arg teststring)))
+
+(defun tab-completion-in-Ipython-buffers-lp-916869-base ()
+  (ipython-dedicated)
+  (goto-char (point-max))
+  (insert "pri")
+  (ipython-complete)
+  (sit-for 0.1) 
+  (assert (looking-back "print") nil "tab-completion-in-Ipython-buffers-lp-916869-test failed"))
+
+
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
