@@ -6,9 +6,6 @@ resources reachable from Emacs to obtain a really
 modern and exciting (yet stable) way to edit Python
 files.
 
-Configurations are similar to emacs-starter-kit,
-(instruction below).
-
 ** Features
 
 Coming with a bunch of files, PDEE makes it easy to run
@@ -37,20 +34,6 @@ what's needed.
     - smart-operator: Automatically adds spaces around arithmetic operators.
     - code folding
 
-*** Configurations
-
-    - ido activation
-    - ibuffer instead of buffer menu
-    - eshell configuration
-
-*** Keybindings
-
-    - Copy-Cut-Paste from clipboard with Super-C Super-X Super-V
-    - Calc Mode remapping to M-c
-    - M-Tab remapped to C-Tab to avoid collisions with the desktop
-      manager
-    - Code fonding Super-<up> Super-<down> Super-<left> Super-<right>
-
 ** Installation
 
 Make sure, the path is set and the PDEE init file gets
@@ -61,25 +44,11 @@ file:
 (defvar pdee-install-dir "path/to/pdee/")
 (load-file "/path/to/pdee/pdee-init.el")
 
-You may want to enable only some of the features provided by
-pdee, in this case just enable some of them:
-
-(setq pdee-load-all nil)
-(require 'pdee-init)   ;; Set up pdee load paths
-(require 'pdee-python) ;; If you want the python facilities [optional]
-(require 'pdee-completion) ;; If you want the autocompletion settings [optional]
-(require 'pdee-editing) ;; For configurations related to editing [optional]
-(require 'pdee-bindings) ;; For my suggested keybindings [optional]
-
-For further information and usage suggestions check:
+Maybe have a look at the following issues too
 
 *** Configuring the _flymake_ checker
-New in version 0.3:
-I changed the way you configure your checkers, now there is no
-predefined checker and you have to configure it by your own.
 
-The good news is that it is extremely simple to configure your own
-command, for example to configure the pyflakes checker install it and
+To configure the pyflakes checker install it and
 put in your customization file (.emacs):
 
 (pdee-setup-checker "pyflakes %f")
@@ -92,26 +61,6 @@ with the file which is being checked.
 The django snippets comes as an option, you can load them using:
 
 (pdee-django-snippets)
-
-As a command using M-x or putting it in your .emacs.
-*** ipython integration
-Ipython can be integrated with python-mode. Clicking on the
-Python->Start interpreter menu entry will spawn an ipython shell
-instead of a python one. To enable the feature put this line in your .emacs:
-
-(pdee-setup-ipython)
-
-*** line highlighting
-You may wanto to disable this feature or to set another color, to do
-so, drop one of the following lines in your .emacs
-(global-hl-line-mode nil) ;; To disable
-(set-face-background 'hl-line "black") ;; change with the color that you like
-;; for a list of colors: http://raebear.net/comp/emacscolors.html
-
-*** disabling the auto-pairing of parenthesis
-To disable the auto-pairing, drop the following line:
-(setq skeleton-pair nil)
-
 
 ** License
 
