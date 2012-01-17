@@ -114,6 +114,12 @@ Default is nil. "
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-extensions "py-extensions.el"
+  "File where extensions to python-mode.el should be installed. Used by virtualenv support. "
+
+  :type 'string
+  :group 'python-mode)
+
 (defcustom py-hide-show-minor-mode-p nil
   "If hide-show minor-mode should be on, default is nil. "
 
@@ -795,6 +801,21 @@ actually punts to `jython-mode'."
   "."
   :group 'python-mode)
 (defvar py-exception-name-face 'py-exception-name-face)
+
+(defcustom py-use-local-default nil
+  "If `t', py-shell will use `py-shell-local-path' instead
+  of default Python.
+
+Making switch between several virtualenv's easier,
+ Python-mode should deliver an installer, so named-shells pointing to virtualenv's will be available. "
+  :type 'boolean
+  :group 'python-mode)
+
+(defcustom py-shell-local-path ""
+  "If `py-use-local-default' is non-nil, `py-shell' will use EXECUTABLE indicated here incl. path. "
+
+  :type 'string
+  :group 'python-mode)
 
 ;; ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ;; NO USER DEFINABLE VARIABLES BEYOND THIS POINT
@@ -1588,7 +1609,7 @@ Otherwise inherits from `py-mode-syntax-table'.")
 (defun py-insert-default-shebang ()
   "Insert in buffer shebang of installed default Python. "
   (interactive "*")
-  (let* ((erg (py-python-default-environment))
+  (let* ((erg (py-python-current-environment))
          (sheb (concat "#! " erg)))
     (insert sheb)))
 
@@ -4952,6 +4973,18 @@ This function is appropriate for `comint-output-filter-functions'."
   (setq shell-dirtrackp t)
   (add-hook 'comint-input-filter-functions 'shell-directory-tracker nil t))
 
+(defun py-set-shell-completion-environment ()
+  "Sets `...-completion-command-string' and `py-complete-function'. "
+  (interactive)
+  (local-unset-key [tab])
+  (cond ((string-match "ipython" py-shell-name)
+         (setq ipython-version (string-to-number (substring (shell-command-to-string (concat py-shell-name " -V")) 2 -1)))
+         (setq ipython-completion-command-string (if (< ipython-version 11) ipython0.10-completion-command-string ipython0.11-completion-command-string))
+         (define-key py-shell-map [tab] 'ipython-complete))
+        ((string-match "python3" py-shell-name)
+         (define-key py-shell-map [tab] 'py-completion-at-point))
+        (t (define-key py-shell-map [tab] 'py-shell-complete))))
+
 (defalias 'py-dedicated-shell 'py-shell-dedicated)
 (defun py-shell-dedicated (&optional argprompt)
    "Start an interactive Python interpreter in another window.
@@ -4977,12 +5010,21 @@ Returns variable `py-process-name' used by function `get-process'.
       (py-choose-shell '(4))
     (when (null py-shell-name)
       (py-guess-default-python)))
-  (let ((args py-python-command-args)
-        (py-process-name (py-process-name py-shell-name dedicated)))
+  (let* ((args py-python-command-args)
+         (py-shell-name (if py-use-local-default
+                            (if (not (string= "" py-shell-local-path))
+                                (expand-file-name py-shell-local-path)
+                              (message "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'"))
+                          py-shell-name))
+         (py-process-name (py-process-name py-shell-name dedicated))ipython-version version)
     ;; comint
+    (when py-use-local-default
+      ;; adapt completion function, named shells provide this
+      (local-unset-key [tab])
+      (py-set-shell-completion-environment))
     (if (not (equal (buffer-name) py-process-name))
-        (switch-to-buffer-other-window
-         (apply 'make-comint py-process-name py-shell-name nil args))
+        (set-buffer (get-buffer-create
+                     (apply 'make-comint py-process-name py-shell-name nil args)))
       (apply 'make-comint py-process-name py-shell-name nil args))
     (set (make-local-variable 'comint-prompt-regexp)
 	 (concat "\\("
@@ -4990,9 +5032,6 @@ Returns variable `py-process-name' used by function `get-process'.
 			    (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
 			    "\\|")
 		 "\\)"))
-    ;; (setq comint-prompt-regexp (concat py-shell-input-prompt-1-regexp "\\|"
-    ;;                                    py-shell-input-prompt-2-regexp "\\|"
-    ;;                                    "^([Pp]db) "))
     (add-hook 'comint-output-filter-functions
               'py-comint-output-filter-function)
     (setq comint-input-sender 'py-shell-simple-send)
@@ -5017,7 +5056,9 @@ Returns variable `py-process-name' used by function `get-process'.
     ;; ToDo: has only effect \w IPython
     (add-hook 'py-shell-hook 'py-dirstack-hook)
     (run-hooks 'py-shell-hook)
-    (when (interactive-p) (message "%s" py-process-name))
+    (when (interactive-p)
+      (message "%s" py-process-name)
+      (switch-to-buffer (current-buffer)))
     py-process-name))
 
 ;;; Python named shells
@@ -5082,12 +5123,11 @@ for options to pass to the Python3.2 interpreter. "
 With optional \\[universal-argument] user is prompted
 for options to pass to the IPython interpreter. "
   (interactive)
-  (let* ((py-shell-name "ipython")
-         (ipython-version (string-to-number (substring (shell-command-to-string "ipython -V") 2 -1))))
-    (setq ipython-completion-command-string (if (< ipython-version 11) ipython0.10-completion-command-string ipython0.11-completion-command-string))
-    (local-unset-key [tab])
-    (define-key py-shell-map [tab] 'ipython-complete)
-    (py-shell argprompt)))
+  (let* ((py-shell-name "ipython"))
+    (py-set-shell-completion-environment)
+    (py-shell argprompt)
+    (when (interactive-p) (switch-to-buffer (current-buffer))
+          (goto-char (point-max)))))
 
 (defun jython (&optional argprompt)
   "Start an Jython interpreter in another window.
@@ -7459,8 +7499,9 @@ return `jython', otherwise return nil."
                         'jython))))
     mode))
 
+(defalias 'py-version 'py-which-python)
 (defun py-which-python ()
-  "Returns version of Python of current default environment, a number. "
+  "Returns version of Python of current environment, a number. "
   (interactive)
   (let* ((cmd (py-choose-shell))
          (erg (shell-command-to-string (concat cmd " --version")))
@@ -7472,8 +7513,8 @@ return `jython', otherwise return nil."
         (message "%s" "Could not detect Python on your system")))
     (string-to-number version)))
 
-(defun py-python-default-environment ()
-  "Returns path of Python default installation. "
+(defun py-python-current-environment ()
+  "Returns path of current Python installation. "
   (interactive)
   (let* ((cmd (py-choose-shell))
          (denv (shell-command-to-string (concat "type " cmd)))
@@ -7527,6 +7568,10 @@ With \\[universal-argument]) user is prompted to specify a reachable Python vers
   (interactive "P")
   (let ((erg (cond ((eq 4 (prefix-numeric-value arg))
                     (read-from-minibuffer "Python Shell: " py-shell-name))
+                   (py-use-local-default
+                    (if (not (string= "" py-shell-local-path))
+                        (expand-file-name py-shell-local-path)
+                      (message "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'")))
                    ((py-choose-shell-by-shebang))
                    ((py-choose-shell-by-import))
                    (t py-shell-name))))
@@ -7887,7 +7932,102 @@ These are Python temporary files awaiting execution."
 (defvar py-default-interpreter py-shell-name)
 (defvar python-command py-shell-name)
 
-;;;; Utility stuff
+;;; Virtualenv
+
+(defun py-toggle-local-default-use ()
+  (interactive)
+  "Toggle boolean value of `py-use-local-default'.
+
+Returns `py-use-local-default'
+
+See also `py-install-local-shells'
+Installing named virualenv shells is the preffered way, 
+as it leaves your system default unchanged."
+  (setq py-use-local-default (not py-use-local-default))
+  (when (interactive-p) (message "py-use-local-default set to %s" py-use-local-default))
+  py-use-local-default)
+
+
+(defvar py-shell-template "
+\(defun NAME (&optional argprompt)
+  \"Start an DOCNAME interpreter in another window.
+
+With optional \\\\[universal-argument] user is prompted
+for options to pass to the DOCNAME interpreter. \"
+  (interactive \"P\")
+  (let\* ((py-shell-name \"FULLNAME\"))
+    (py-set-shell-completion-environment)
+    (py-shell argprompt)
+    (when (interactive-p) (switch-to-buffer (current-buffer))
+          (goto-char (point-max)))))
+")
+
+(setq py-shell-template "
+\(defun NAME (&optional argprompt)
+  \"Start an DOCNAME interpreter in another window.
+
+With optional \\\\[universal-argument] user is prompted
+for options to pass to the DOCNAME interpreter. \"
+  (interactive \"P\")
+  (let\* ((py-shell-name \"FULLNAME\"))
+    (py-set-shell-completion-environment)
+    (py-shell argprompt)
+    (when (interactive-p) (switch-to-buffer (current-buffer))
+          (goto-char (point-max)))))
+")
+
+(defun py-install-search-local ()
+  (interactive)
+  (let ((erg (split-string (shell-command-to-string (concat "find " default-directory " -maxdepth 9 -type f -name \"*python\"")))))))
+
+;; (defun py-install-local-epdfree ()
+;;   (interactive)
+;;   (py-install-local-shells "MY-PATH/epdfree"))
+
+(defun py-install-local-shells (&optional local path-prefix)
+  "Builds Python-shell commands from executable found in LOCAL.
+
+If LOCAL is empty, shell-command `find' searches beneath current directory.
+Eval resulting buffer to install it, see customizable `py-extensions'. "
+  (interactive)
+  (let* ((local-dir (if local
+                             (expand-file-name local)
+                           (read-from-minibuffer "Virtualenv directory: " default-directory)))
+         (path-separator (if (string-match "/" local-dir)
+                             "/"
+                           "\\" t))
+         (shells (split-string (shell-command-to-string (concat "find " local-dir " -maxdepth 9 -type f -executable -name \"*python\""))))
+         erg newshell prefix akt end orig)
+    (set-buffer (get-buffer-create py-extensions))
+    (erase-buffer)
+    (switch-to-buffer (current-buffer))
+    (dolist (elt shells)
+      (setq prefix "")
+      (setq curexe (substring elt (1+ (string-match "/[^/]+$" elt))))
+      (setq aktpath (substring elt 0 (1+ (string-match "/[^/]+$" elt))))
+      (dolist (prf (split-string aktpath (regexp-quote path-separator)))
+        (unless (string= "" prf)
+          (setq prefix (concat prefix (substring prf 0 1)))))
+      (setq orig (point))
+      (insert py-shell-template)
+      (setq end (point))
+      (goto-char orig)
+      (when (re-search-forward "\\<NAME\\>" end t 1)
+        (replace-match (concat prefix "-" (substring elt (1+ (save-match-data (string-match "/[^/]+$" elt)))))t))
+      (goto-char orig)
+      (while (search-forward "DOCNAME" end t 1)
+        (replace-match (if (string= "ipython" curexe)
+                           "IPython"
+                         (capitalize curexe)) t))
+      (goto-char orig)
+      (when (search-forward "FULLNAME" end t 1)
+        (replace-match elt t))
+      (goto-char (point-max)))
+    (emacs-lisp-mode)
+    (if (file-readable-p (concat py-install-directory "/" py-extensions))
+        (find-file (concat py-install-directory "/" py-extensions)))))
+
+;;; Utility stuff
 
 ;; for toggling between CPython and JPython
 (defvar python-which-shell nil)

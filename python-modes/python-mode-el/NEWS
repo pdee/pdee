@@ -3,6 +3,23 @@ Python Mode News
 New in version 6.0.5
 --------------------
 
+- support local environments like `virtualenv'
+
+  M-x `py-install-local-shells' called in a
+  dired-buffer installs named shells from locally found
+  executables.
+  See customizable `py-extensions'.  Or install like this:
+  (py-install-local-shells "MY-PATH/EXECUTABLE")
+
+  Alternatively edit/install `py-shell-template', giving
+  `py-shell-name' the full path incl. executable
+                 
+  If calls to common `py-shell' should use local executable
+  instead of default system Python set
+  `py-use-local-default' alongside with
+  `py-shell-local-path' 
+  see command `py-toggle-local-default-use'
+
 - `py-shell-name' accepts PATH/TO/EXECUTABLE 
   in addition to name of an installed default Python-Shell.
   Permits installing commands like

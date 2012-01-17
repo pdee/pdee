@@ -47,6 +47,12 @@
   :type 'string
   :group 'python-mode)
 
+(defcustom py-extensions "py-extensions.el"
+  "File where extensions to python-mode.el should be installed. Used by virtualenv support. "
+
+  :type 'string
+  :group 'python-mode)
+
 (defcustom py-hide-show-minor-mode-p nil
   "If hide-show minor-mode should be on, default is nil. "
 
@@ -789,6 +795,21 @@ should be of the form `#x...' where `x' is not a blank or a tab, and
   "*Controls echoing of arguments of functions & methods in the Imenu buffer.
 When non-nil, arguments are printed."
   :type 'boolean
+  :group 'python-mode)
+
+(defcustom py-use-local-default nil
+  "If `t', py-shell will use `py-shell-local-path' instead
+  of default Python.
+
+Making switch between several virtualenv's easier,
+ Python-mode should deliver an installer, so named-shells pointing to virtualenv's will be available. "
+  :type 'boolean
+  :group 'python-mode)
+
+(defcustom py-shell-local-path ""
+  "If `py-use-local-default' is non-nil, `py-shell' will use EXECUTABLE indicated here incl. path. "
+
+  :type 'string
   :group 'python-mode)
 
 ;; ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -3654,8 +3675,9 @@ return `jython', otherwise return nil."
                         'jython))))
     mode))
 
+(defalias 'py-version 'py-which-python)
 (defun py-which-python ()
-  "Returns version of Python of current default environment, a number. "
+  "Returns version of Python of current environment, a number. "
   (interactive)
   (let* ((cmd (py-choose-shell))
          (erg (shell-command-to-string (concat cmd " --version")))
@@ -3667,8 +3689,8 @@ return `jython', otherwise return nil."
         (message "%s" "Could not detect Python on your system")))
     (string-to-number version)))
 
-(defun py-python-default-environment ()
-  "Returns path of Python default installation. "
+(defun py-python-current-environment ()
+  "Returns path of current Python installation. "
   (interactive)
   (let* ((cmd (py-choose-shell))
          (denv (shell-command-to-string (concat "type " cmd)))
@@ -3708,6 +3730,19 @@ If no arg given and py-shell-name not set yet, shell is set according to `py-she
     (message "Using the %s shell, %s" msg py-shell-name)
     (setq py-output-buffer (format "*%s Output*" py-which-bufname))))
 
+(defun py-toggle-local-default-use ()
+  (interactive)
+  "Toggle boolean value of `py-use-local-default'.
+
+Returns `py-use-local-default'
+
+See also `py-install-local-shells'
+Installing named virualenv shells is the preffered way, 
+as it leaves your system default unchanged."
+  (setq py-use-local-default (not py-use-local-default))
+  (when (interactive-p) (message "py-use-local-default set to %s" py-use-local-default))
+  py-use-local-default)
+
 (defalias 'py-which-shell 'py-choose-shell)
 (defun py-choose-shell (&optional arg)
   "Looks for an appropriate mode function.
@@ -3721,6 +3756,10 @@ With \\[universal-argument]) user is prompted to specify a reachable Python vers
   (interactive "P")
   (let ((erg (cond ((eq 4 (prefix-numeric-value arg))
                     (read-from-minibuffer "Python Shell: " py-shell-name))
+                   (py-use-local-default
+                    (if (not (string= "" py-shell-local-path))
+                        (expand-file-name py-shell-local-path)
+                      (message "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'")))
                    ((py-choose-shell-by-shebang))
                    ((py-choose-shell-by-import))
                    (t py-shell-name))))

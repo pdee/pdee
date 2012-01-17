@@ -92,6 +92,18 @@ interpreter.
   (interactive "P")
   (py-shell argprompt t))
 
+(defun py-set-shell-completion-environment ()
+  "Sets `...-completion-command-string' and `py-complete-function'. "
+  (interactive)
+  (local-unset-key [tab])
+  (cond ((string-match "ipython" py-shell-name)
+         (setq ipython-version (string-to-number (substring (shell-command-to-string (concat py-shell-name " -V")) 2 -1)))
+         (setq ipython-completion-command-string (if (< ipython-version 11) ipython0.10-completion-command-string ipython0.11-completion-command-string))
+         (define-key py-shell-map [tab] 'ipython-complete))
+        ((string-match "python3" py-shell-name)
+         (define-key py-shell-map [tab] 'py-completion-at-point))
+        (t (define-key py-shell-map [tab] 'py-shell-complete))))
+
 (defun py-shell (&optional argprompt dedicated)
   "Start an interactive Python interpreter in another window.
 
@@ -106,12 +118,21 @@ Returns variable `py-process-name' used by function `get-process'.
       (py-choose-shell '(4))
     (when (null py-shell-name)
       (py-guess-default-python)))
-  (let ((args py-python-command-args)
-        (py-process-name (py-process-name py-shell-name dedicated)))
+  (let* ((args py-python-command-args)
+         (py-shell-name (if py-use-local-default
+                            (if (not (string= "" py-shell-local-path))
+                                (expand-file-name py-shell-local-path)
+                              (message "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'"))
+                          py-shell-name))
+         (py-process-name (py-process-name py-shell-name dedicated))ipython-version version)
     ;; comint
+    (when py-use-local-default
+      ;; adapt completion function, named shells provide this
+      (local-unset-key [tab])
+      (py-set-shell-completion-environment))
     (if (not (equal (buffer-name) py-process-name))
-        (switch-to-buffer-other-window
-         (apply 'make-comint py-process-name py-shell-name nil args))
+        (set-buffer (get-buffer-create
+                     (apply 'make-comint py-process-name py-shell-name nil args)))
       (apply 'make-comint py-process-name py-shell-name nil args))
     (set (make-local-variable 'comint-prompt-regexp)
 	 (concat "\\("
@@ -143,7 +164,9 @@ Returns variable `py-process-name' used by function `get-process'.
     ;; ToDo: has only effect \w IPython
     (add-hook 'py-shell-hook 'py-dirstack-hook)
     (run-hooks 'py-shell-hook)
-    (when (interactive-p) (message "%s" py-process-name))
+    (when (interactive-p)
+      (message "%s" py-process-name)
+      (switch-to-buffer (current-buffer)))
     py-process-name))
 
 (defcustom py-remove-cwd-from-path t
