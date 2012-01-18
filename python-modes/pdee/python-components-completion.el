@@ -50,8 +50,11 @@ Uses `python-imports' to load modules against which to complete."
          (end (progn (skip-chars-forward "[[:alnum:]_]")(point)))
          (completion (when start
                        (python-symbol-completions (buffer-substring-no-properties start end)))))
-    (when completion (delete-region start end)
-          (insert (car completion)))))
+    (if completion
+        (progn
+          (delete-region start end)
+          (insert (car completion)))
+      (tab-to-tab-stop))))
 
 ;; https://github.com/fgallina/python.el
 (defun python-shell-completion-complete-or-indent ()

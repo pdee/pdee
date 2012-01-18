@@ -67,8 +67,11 @@
     (cond ((null completions) ; no matching symbol
            (message "Can't find completion for \"%s\"" symbol)
            (ding))
-          ((null (cdr completions)) ; sole completion
-           (insert (car completions)))
+          ((null (cdr completions))
+           (if (string= "" (car completions))
+               (tab-to-tab-stop)
+             ;; sole completion
+             (insert (car completions))))
           (t
            (message "Making completion list...")
            (with-output-to-temp-buffer "*PythonCompletions*"

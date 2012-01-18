@@ -1391,6 +1391,16 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
         (modify-syntax-entry ?_ "w" table)
         table))
 
+;; An auxiliary syntax table which places underscore and dot in the
+;; symbol class for simplicity
+(defvar py-dotted-expression-syntax-table nil
+  "Syntax table used to identify Python dotted expressions.")
+(when (not py-dotted-expression-syntax-table)
+  (setq py-dotted-expression-syntax-table
+        (copy-syntax-table python-mode-syntax-table))
+  (modify-syntax-entry ?_ "_" py-dotted-expression-syntax-table)
+  (modify-syntax-entry ?. "_" py-dotted-expression-syntax-table))
+
 (defvar python-dotty-syntax-table
   (let ((table (make-syntax-table python-mode-syntax-table)))
     (modify-syntax-entry ?. "w" table)
