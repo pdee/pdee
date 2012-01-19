@@ -28,8 +28,6 @@ With optional \\[universal-argument] user is prompted
 for options to pass to the Python interpreter. "
   (interactive)
   (let ((py-shell-name "python"))
-    (local-unset-key [tab])
-    (define-key py-shell-map [tab] 'py-shell-complete)
     (py-shell argprompt t)))
 
 (defun python2-dedicated (&optional argprompt)
@@ -39,8 +37,6 @@ With optional \\[universal-argument] user is prompted
 for options to pass to the Python2 interpreter. "
   (interactive)
   (let ((py-shell-name "python2"))
-    (local-unset-key [tab])
-    (define-key py-shell-map [tab] 'py-shell-complete)
     (py-shell argprompt t)))
 
 (defun python2.7-dedicated (&optional argprompt)
@@ -50,8 +46,6 @@ With optional \\[universal-argument] user is prompted
 for options to pass to the Python2.7 interpreter. "
   (interactive)
   (let ((py-shell-name "python2.7"))
-    (local-unset-key [tab])
-    (define-key py-shell-map [tab] 'py-shell-complete)
     (py-shell argprompt t)))
 
 (defun python3-dedicated (&optional argprompt)
@@ -61,8 +55,6 @@ With optional \\[universal-argument] user is prompted
 for options to pass to the Python3 interpreter. "
   (interactive)
   (let ((py-shell-name "python3"))
-    (local-unset-key [tab])
-    (define-key py-shell-map [tab] 'py-shell-complete)
     (py-shell argprompt t)))
 
 (defun python3.2-dedicated (&optional argprompt)
@@ -72,8 +64,6 @@ With optional \\[universal-argument] user is prompted
 for options to pass to the Python3.2 interpreter. "
   (interactive)
   (let ((py-shell-name "python3.2"))
-    (local-unset-key [tab])
-    (define-key py-shell-map [tab] 'py-shell-complete)
     (py-shell argprompt t)))
 
 (defun ipython-dedicated (&optional argprompt)
@@ -83,8 +73,6 @@ With optional \\[universal-argument] user is prompted
 for options to pass to the IPython interpreter. "
   (interactive)
   (let ((py-shell-name "ipython"))
-    (local-unset-key [tab])
-    (define-key py-shell-map [tab] 'ipython-complete)
     (py-shell argprompt t)))
 
 (defun jython-dedicated (&optional argprompt)
@@ -94,8 +82,6 @@ With optional \\[universal-argument] user is prompted
 for options to pass to the Jython interpreter. "
   (interactive)
   (let ((py-shell-name "jython"))
-    (local-unset-key [tab])
-    (define-key py-shell-map [tab] 'py-shell-complete)
     (py-shell argprompt t)))
 
 (provide 'python-components-dedicated-shells)
