@@ -104,7 +104,7 @@ interpreter.
          (define-key py-shell-map [tab] 'py-completion-at-point))
         (t (define-key py-shell-map [tab] 'py-shell-complete))))
 
-(defun py-shell (&optional argprompt dedicated)
+(defun py-shell (&optional argprompt dedicated pyshellname)
   "Start an interactive Python interpreter in another window.
 
 With optional \\[universal-argument] user is prompted by
@@ -113,22 +113,22 @@ interpreter.
 Returns variable `py-process-name' used by function `get-process'.
 "
   (interactive "P")
-  ;; Set or select the shell if not ready
-  (if (eq 4 (prefix-numeric-value argprompt))
-      (py-choose-shell '(4))
-    (when (null py-shell-name)
-      (py-guess-default-python)))
-  (let* ((args py-python-command-args)
-         (py-shell-name (if py-use-local-default
-                            (if (not (string= "" py-shell-local-path))
-                                (expand-file-name py-shell-local-path)
-                              (message "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'"))
-                          py-shell-name))
+  (let* ((py-shell-name
+          (cond ((eq 4 (prefix-numeric-value argprompt))
+                 (py-choose-shell '(4)))
+                (py-use-local-default
+                 (if (not (string= "" py-shell-local-path))
+                     (expand-file-name py-shell-local-path)
+                   (message "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'")))
+                (pyshellname pyshellname)
+                ((or (string= "" py-shell-name)(null py-shell-name))
+                 (py-guess-default-python))))
+         (args py-python-command-args)
          (py-process-name (py-process-name py-shell-name dedicated))ipython-version version)
     ;; comint
     (when py-use-local-default
       ;; adapt completion function, named shells provide this
-      (local-unset-key [tab])
+      ;; (local-unset-key [tab])
       (py-set-shell-completion-environment))
     (if (not (equal (buffer-name) py-process-name))
         (set-buffer (get-buffer-create
@@ -154,6 +154,7 @@ Returns variable `py-process-name' used by function `get-process'.
     (comint-read-input-ring t)
     (set-process-sentinel (get-buffer-process (current-buffer))
                           #'shell-write-history-on-exit)
+    (switch-to-buffer (current-buffer))
     ;; pdbtrack
     (add-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file)
     (setq py-pdbtrack-do-tracking-p t)
@@ -166,6 +167,7 @@ Returns variable `py-process-name' used by function `get-process'.
     (run-hooks 'py-shell-hook)
     (when (or py-shell-switch-buffers-on-execute (interactive-p))
       (switch-to-buffer (current-buffer)))
+    (goto-char (point-max))
     py-process-name))
 
 (defcustom py-remove-cwd-from-path t

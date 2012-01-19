@@ -5063,133 +5063,117 @@ Returns variable `py-process-name' used by function `get-process'.
 ;;; Python named shells
 (defun python (&optional argprompt)
   "Start an Python interpreter in another window.
-
-With optional \\[universal-argument] user is prompted
-for options to pass to the Python interpreter. "
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python interpreter. "
   (interactive)
-  (let ((py-shell-name "python"))
-    (py-shell argprompt)))
+  (py-set-shell-completion-environment)
+  (py-shell argprompt nil "python"))
 
 (defun python2 (&optional argprompt)
   "Start an Python2 interpreter in another window.
-
-With optional \\[universal-argument] user is prompted
-for options to pass to the Python2 interpreter. "
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python2 interpreter. "
   (interactive)
-  (let ((py-shell-name "python2"))
-    (py-shell argprompt)))
+  (py-set-shell-completion-environment)
+  (py-shell argprompt nil "python2"))
 
 (defun python2.7 (&optional argprompt)
   "Start an Python2.7 interpreter in another window.
-
-With optional \\[universal-argument] user is prompted
-for options to pass to the Python2.7 interpreter. "
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python2.7 interpreter. "
   (interactive)
-  (let ((py-shell-name "python2.7"))
-    (py-shell argprompt)))
+  (py-set-shell-completion-environment)
+  (py-shell argprompt nil "python2.7"))
 
 (defun python3 (&optional argprompt)
   "Start an Python3 interpreter in another window.
-
-With optional \\[universal-argument] user is prompted
-for options to pass to the Python3 interpreter. "
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python3 interpreter. "
   (interactive)
-  (let ((py-shell-name "python3"))
-    (py-shell argprompt)))
+  (py-set-shell-completion-environment)
+  (py-shell argprompt nil "python3"))
 
 (defun python3.2 (&optional argprompt)
   "Start an Python3.2 interpreter in another window.
-
-With optional \\[universal-argument] user is prompted
-for options to pass to the Python3.2 interpreter. "
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python3.2 interpreter. "
   (interactive)
-  (let ((py-shell-name "python3.2"))
-    (py-shell argprompt)))
+  (py-set-shell-completion-environment)
+  (py-shell argprompt nil "python3.2"))
 
+(defalias 'iyp 'ipython)
+(defalias 'ipy 'ipython)
 (defun ipython (&optional argprompt)
   "Start an IPython interpreter in another window.
-
-With optional \\[universal-argument] user is prompted
-for options to pass to the IPython interpreter. "
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the IPython interpreter. "
   (interactive)
-  (let* ((py-shell-name "ipython"))
-    (py-set-shell-completion-environment)
-    (py-shell argprompt)
-    (when (interactive-p) (switch-to-buffer (current-buffer))
-          (goto-char (point-max)))))
+  (py-set-shell-completion-environment)
+  (py-shell argprompt nil "ipython"))
 
 (defun jython (&optional argprompt)
   "Start an Jython interpreter in another window.
-
-With optional \\[universal-argument] user is prompted
-for options to pass to the Jython interpreter. "
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Jython interpreter. "
   (interactive)
-  (let ((py-shell-name "jython"))
-    (py-shell argprompt)))
+  (py-set-shell-completion-environment)
+  (py-shell argprompt nil "jython"))
 
-;;; Python dedicated shells
 (defun python-dedicated (&optional argprompt)
-  "Start an unique Python interpreter in another window.
-
-With optional \\[universal-argument] user is prompted
-for options to pass to the Python interpreter. "
+  "Start an Python dedicated interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python interpreter. "
   (interactive)
-  (let ((py-shell-name "python"))
-    (py-shell argprompt t)))
+  (py-set-shell-completion-environment)
+  (py-shell argprompt t "python"))
 
 (defun python2-dedicated (&optional argprompt)
-  "Start an unique Python2 interpreter in another window.
-
-With optional \\[universal-argument] user is prompted
-for options to pass to the Python2 interpreter. "
+  "Start an Python2 dedicated interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python2 interpreter. "
   (interactive)
-  (let ((py-shell-name "python2"))
-    (py-shell argprompt t)))
+  (py-set-shell-completion-environment)
+  (py-shell argprompt t "python2"))
 
 (defun python2.7-dedicated (&optional argprompt)
-  "Start an unique Python2.7 interpreter in another window.
-
-With optional \\[universal-argument] user is prompted
-for options to pass to the Python2.7 interpreter. "
+  "Start an Python2.7 dedicated interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python2.7 interpreter. "
   (interactive)
-  (let ((py-shell-name "python2.7"))
-    (py-shell argprompt t)))
+  (py-set-shell-completion-environment)
+  (py-shell argprompt t "python2.7"))
 
 (defun python3-dedicated (&optional argprompt)
-  "Start an unique Python3 interpreter in another window.
-
-With optional \\[universal-argument] user is prompted
-for options to pass to the Python3 interpreter. "
+  "Start an Python3 dedicated interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python3 interpreter. "
   (interactive)
-  (let ((py-shell-name "python3"))
-    (py-shell argprompt t)))
+  (py-set-shell-completion-environment)
+  (py-shell argprompt t "python3"))
 
 (defun python3.2-dedicated (&optional argprompt)
-  "Start an unique Python3.2 interpreter in another window.
-
-With optional \\[universal-argument] user is prompted
-for options to pass to the Python3.2 interpreter. "
+  "Start an Python3.2 dedicated interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python3.2 interpreter. "
   (interactive)
-  (let ((py-shell-name "python3.2"))
-    (py-shell argprompt t)))
+  (py-set-shell-completion-environment)
+  (py-shell argprompt t "python3.2"))
 
 (defun ipython-dedicated (&optional argprompt)
-  "Start an unique IPython interpreter in another window.
-
-With optional \\[universal-argument] user is prompted
-for options to pass to the IPython interpreter. "
+  "Start an IPython dedicated interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the IPython interpreter. "
   (interactive)
-  (let ((py-shell-name "ipython"))
-    (py-shell argprompt t)))
+  (py-set-shell-completion-environment)
+  (py-shell argprompt t "ipython"))
 
 (defun jython-dedicated (&optional argprompt)
-  "Start an unique Jython interpreter in another window.
-
-With optional \\[universal-argument] user is prompted
-for options to pass to the Jython interpreter. "
+  "Start an Jython dedicated interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Jython interpreter. "
   (interactive)
-  (let ((py-shell-name "jython"))
-    (py-shell argprompt t)))
+  (py-set-shell-completion-environment)
+  (py-shell argprompt t "jython"))
 
 
 ;; Code execution commands

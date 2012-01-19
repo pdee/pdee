@@ -20,85 +20,65 @@
 
 ;;; Commentary:
 ;;; Code:
+
 (defun python (&optional argprompt)
   "Start an Python interpreter in another window.
-
-With optional  \\[universal-argument] user is prompted
-for options to pass to the Python interpreter. "
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python interpreter. "
   (interactive)
-  (let ((py-shell-name "python"))
-    (local-unset-key [tab])
-    (define-key py-shell-map [tab] 'py-shell-complete)
-    (py-shell argprompt)))
+  (py-set-shell-completion-environment)
+  (py-shell argprompt nil "python"))
 
 (defun python2 (&optional argprompt)
   "Start an Python2 interpreter in another window.
-
-With optional \\[universal-argument] user is prompted
-for options to pass to the Python2 interpreter. "
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python2 interpreter. "
   (interactive)
-  (let ((py-shell-name "python2"))
-    (local-unset-key [tab])
-    (define-key py-shell-map [tab] 'py-shell-complete)
-    (py-shell argprompt)))
+  (py-set-shell-completion-environment)
+  (py-shell argprompt nil "python2"))
 
 (defun python2.7 (&optional argprompt)
   "Start an Python2.7 interpreter in another window.
-
-With optional \\[universal-argument] user is prompted
-for options to pass to the Python2.7 interpreter. "
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python2.7 interpreter. "
   (interactive)
-  (let ((py-shell-name "python2.7"))
-    (local-unset-key [tab])
-    (define-key py-shell-map [tab] 'py-shell-complete)
-    (py-shell argprompt)))
+  (py-set-shell-completion-environment)
+  (py-shell argprompt nil "python2.7"))
 
 (defun python3 (&optional argprompt)
   "Start an Python3 interpreter in another window.
-
-With optional \\[universal-argument] user is prompted
-for options to pass to the Python3 interpreter. "
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python3 interpreter. "
   (interactive)
-  (let ((py-shell-name "python3"))
-    (local-unset-key [tab])
-    (define-key py-shell-map [tab] 'py-completion-at-point)
-    (py-shell argprompt)))
+  (py-set-shell-completion-environment)
+  (py-shell argprompt nil "python3"))
 
 (defun python3.2 (&optional argprompt)
   "Start an Python3.2 interpreter in another window.
-
-With optional \\[universal-argument] user is prompted
-for options to pass to the Python3.2 interpreter. "
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python3.2 interpreter. "
   (interactive)
-  (let ((py-shell-name "python3.2"))
-    (local-unset-key [tab])
-    (define-key py-shell-map [tab] 'py-completion-at-point)
-    (py-shell argprompt)))
+  (py-set-shell-completion-environment)
+  (py-shell argprompt nil "python3.2"))
 
 (defalias 'iyp 'ipython)
 (defalias 'ipy 'ipython)
 (defun ipython (&optional argprompt)
   "Start an IPython interpreter in another window.
-
-With optional \\[universal-argument] user is prompted
-for options to pass to the IPython interpreter. "
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the IPython interpreter. "
   (interactive)
-  (let* ((py-shell-name "ipython"))
-    (py-set-shell-completion-environment)
-    (py-shell argprompt)
-    (when (interactive-p) (switch-to-buffer (current-buffer))
-          (goto-char (point-max)))))
+  (py-set-shell-completion-environment)
+  (py-shell argprompt nil "ipython"))
 
 (defun jython (&optional argprompt)
   "Start an Jython interpreter in another window.
-
-With optional \\[universal-argument] user is prompted
-for options to pass to the Jython interpreter. "
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Jython interpreter. "
   (interactive)
-  (let ((py-shell-name "jython"))
-    (local-unset-key [tab])
-    (define-key py-shell-map [tab] 'py-shell-complete)
-    (py-shell argprompt)))
+  (py-set-shell-completion-environment)
+  (py-shell argprompt nil "jython"))
+
 
 ;;; Installer
 

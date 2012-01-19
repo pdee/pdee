@@ -2221,7 +2221,9 @@ print \"\"\"Es müßte 'asdf\" heißen.\"\"\"
 
 (defun tab-completion-in-Ipython-buffers-lp-916869-base ()
   (ipython-dedicated)
+  (switch-to-buffer (current-buffer)) 
   (goto-char (point-max))
+  (sit-for 0.1) 
   (insert "pri")
   (ipython-complete)
   (sit-for 0.1) 
