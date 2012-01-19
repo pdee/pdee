@@ -164,8 +164,7 @@ Returns variable `py-process-name' used by function `get-process'.
     ;; ToDo: has only effect \w IPython
     (add-hook 'py-shell-hook 'py-dirstack-hook)
     (run-hooks 'py-shell-hook)
-    (when (interactive-p)
-      (message "%s" py-process-name)
+    (when (or py-shell-switch-buffers-on-execute (interactive-p))
       (switch-to-buffer (current-buffer)))
     py-process-name))
 

@@ -5027,8 +5027,7 @@ Returns variable `py-process-name' used by function `get-process'.
     ;; ToDo: has only effect \w IPython
     (add-hook 'py-shell-hook 'py-dirstack-hook)
     (run-hooks 'py-shell-hook)
-    (when (interactive-p)
-      (message "%s" py-process-name)
+    (when (or py-shell-switch-buffers-on-execute (interactive-p))
       (switch-to-buffer (current-buffer)))
     py-process-name))
 
@@ -7409,8 +7408,11 @@ Uses `python-imports' to load modules against which to complete."
          (end (progn (skip-chars-forward "[[:alnum:]_]")(point)))
          (completion (when start
                        (python-symbol-completions (buffer-substring-no-properties start end)))))
-    (when completion (delete-region start end)
-          (insert (car completion)))))
+    (if completion
+        (progn
+          (delete-region start end)
+          (insert (car completion)))
+      (tab-to-tab-stop))))
 
 (defvar py-mode-output-map nil
   "Keymap used in *Python Output* buffers.")
