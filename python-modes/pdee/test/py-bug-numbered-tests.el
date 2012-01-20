@@ -2183,7 +2183,6 @@ This module is an optparse-inspired command-line parsing library that:
     (goto-char 385)
     (assert (eq 4 (py-compute-indentation)) nil "wrong-type-argument-lp-901541-test failed"))
 
-
 (defun py-pychecker-run-missing-lp-910783-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
@@ -2195,7 +2194,6 @@ This module is an optparse-inspired command-line parsing library that:
 
 (defun py-pychecker-run-missing-lp-910783-base ()
     (assert (commandp 'py-pychecker-run) nil "py-pychecker-run-missing-lp-910783-test failed"))
-
 
 (defun py-forward-into-nomenclature-lp-916818-test (&optional arg load-branch-function)
   (interactive "p")
@@ -2221,14 +2219,13 @@ print \"\"\"Es müßte 'asdf\" heißen.\"\"\"
 
 (defun tab-completion-in-Ipython-buffers-lp-916869-base ()
   (ipython-dedicated)
-  (switch-to-buffer (current-buffer)) 
+  (switch-to-buffer (current-buffer))
   (goto-char (point-max))
-  (sit-for 0.1) 
+  (sit-for 0.1)
   (insert "pri")
   (ipython-complete)
-  (sit-for 0.1) 
+  (sit-for 0.1)
   (assert (looking-back "print") nil "tab-completion-in-Ipython-buffers-lp-916869-test failed"))
-
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

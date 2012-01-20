@@ -218,6 +218,17 @@ Default is nil. "
                  (const :tag "IPython's ipython-complete" ipython-complete))
   :group 'python-mode)
 
+
+(defcustom ipython-complete-function 'py-completion-at-point
+  "Function used for completion in IPython shell buffers.
+
+Default is `py-completion-at-point', as `ipython-complete' raises the prompt counter when completion done "
+  :type '(choice (const :tag "py-completion-at-point" py-completion-at-point)
+                 (const :tag "py-shell-complete" py-shell-complete)
+		 (const :tag "Pymacs based py-complete" py-complete)
+                 (const :tag "IPython's ipython-complete" ipython-complete))
+  :group 'python-mode)
+
 (defcustom py-encoding-string " # -*- coding: utf-8 -*-"
   "Default string specifying encoding of a Python file. "
   :type 'string
@@ -4954,10 +4965,12 @@ This function is appropriate for `comint-output-filter-functions'."
   "Return the name of the running Python process, `get-process' willsee it. "
   (let* ((name (cond (dedicated
                       (make-temp-name (concat (or name py-shell-name) "-")))
+                     (name name)
                      ((string-match "\*" (buffer-name))
                       (replace-regexp-in-string "\*" "" (buffer-name)))
-                     (t (or name py-shell-name))))
-         (erg (if (string= "ipython" name)
+                     (t py-shell-name)))
+         (erg (if (or (string= "ipython" name)
+                      (string= "IPython" name))
                   "IPython"
                 (capitalize name))))
     erg))
@@ -4996,7 +5009,7 @@ interpreter.
   (interactive "P")
   (py-shell argprompt t))
 
-(defun py-shell (&optional argprompt dedicated)
+(defun py-shell (&optional argprompt dedicated pyshellname)
   "Start an interactive Python interpreter in another window.
 
 With optional \\[universal-argument] user is prompted by
@@ -5005,23 +5018,22 @@ interpreter.
 Returns variable `py-process-name' used by function `get-process'.
 "
   (interactive "P")
-  ;; Set or select the shell if not ready
-  (if (eq 4 (prefix-numeric-value argprompt))
-      (py-choose-shell '(4))
-    (when (null py-shell-name)
-      (py-guess-default-python)))
-  (let* ((args py-python-command-args)
-         (py-shell-name (if py-use-local-default
+  (let* ((py-shell-name
+          (cond ((eq 4 (prefix-numeric-value argprompt))
+                 (py-choose-shell '(4)))
+                (py-use-local-default
                             (if (not (string= "" py-shell-local-path))
                                 (expand-file-name py-shell-local-path)
-                              (message "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'"))
-                          py-shell-name))
-         (py-process-name (py-process-name py-shell-name dedicated))ipython-version version)
+                   (message "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'")))
+                (pyshellname pyshellname)
+                ((stringp py-shell-name) py-shell-name)
+                ((or (string= "" py-shell-name)(null py-shell-name))
+                 (py-guess-default-python))))
+         (args py-python-command-args)
+         (py-process-name (py-process-name py-shell-name dedicated))
+         ipython-version version)
+    (py-set-shell-completion-environment)
     ;; comint
-    (when py-use-local-default
-      ;; adapt completion function, named shells provide this
-      (local-unset-key [tab])
-      (py-set-shell-completion-environment))
     (if (not (equal (buffer-name) py-process-name))
         (set-buffer (get-buffer-create
                      (apply 'make-comint py-process-name py-shell-name nil args)))
@@ -5058,6 +5070,7 @@ Returns variable `py-process-name' used by function `get-process'.
     (run-hooks 'py-shell-hook)
     (when (or py-shell-switch-buffers-on-execute (interactive-p))
       (switch-to-buffer (current-buffer)))
+    (goto-char (point-max))
     py-process-name))
 
 ;;; Python named shells
@@ -8933,7 +8946,6 @@ and return collected output"
    (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point))
    (point)))
 
-;;;###autoload
 (defun py-shell-complete ()
   "Complete word before point, if any. Otherwise insert TAB. "
   (interactive)
@@ -9015,33 +9027,26 @@ Only knows about the stuff in the current *Python* session."
          (ugly-return nil)
          (sep ";")
          (python-process (or (get-buffer-process (current-buffer))
-                                        ;XXX hack for .py buffers
                              (get-process py-which-bufname)))
-         ;; XXX currently we go backwards to find the beginning of an
-         ;; expression part; a more powerful approach in the future might be
-         ;; to let ipython have the complete line, so that context can be used
-         ;; to do things like filename completion etc.
          (beg (save-excursion (skip-chars-backward "a-z0-9A-Z_." (point-at-bol))
                               (point)))
          (end (point))
          (pattern (buffer-substring-no-properties beg end))
          (completions nil)
          (completion-table nil)
-         completion
          (comint-output-filter-functions
           (append comint-output-filter-functions
                   '(ansi-color-filter-apply
                     (lambda (string)
-                                        ;(message (format "DEBUG filtering: %s" string))
                       (setq ugly-return (concat ugly-return string))
                       (delete-region comint-last-output-start
-                                     (process-mark (get-buffer-process (current-buffer)))))))))
-                                        ;(message (format "#DEBUG pattern: '%s'" pattern))
+                                     (process-mark (get-buffer-process (current-buffer))))))))
+         completion)
+    ;; (save-excursion
+    ;; (setq python-process (get-process (ipython-dedicated))))
     (process-send-string python-process
                          (format completion-command-string pattern))
     (accept-process-output python-process)
-
-                                        ;(message (format "DEBUG return: %s" ugly-return))
     (setq completions
           (split-string (substring ugly-return 0 (position ?\n ugly-return)) sep))
     (setq completion-table (loop for str in completions

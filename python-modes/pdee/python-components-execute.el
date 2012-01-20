@@ -62,10 +62,12 @@ This function is appropriate for `comint-output-filter-functions'."
   "Return the name of the running Python process, `get-process' willsee it. "
   (let* ((name (cond (dedicated
                       (make-temp-name (concat (or name py-shell-name) "-")))
+                     (name name)
                      ((string-match "\*" (buffer-name))
                       (replace-regexp-in-string "\*" "" (buffer-name)))
-                     (t (or name py-shell-name))))
-         (erg (if (string= "ipython" name)
+                     (t py-shell-name)))
+         (erg (if (or (string= "ipython" name)
+                      (string= "IPython" name))
                   "IPython"
                 (capitalize name))))
     erg))
@@ -99,7 +101,8 @@ interpreter.
   (cond ((string-match "ipython" py-shell-name)
          (setq ipython-version (string-to-number (substring (shell-command-to-string (concat py-shell-name " -V")) 2 -1)))
          (setq ipython-completion-command-string (if (< ipython-version 11) ipython0.10-completion-command-string ipython0.11-completion-command-string))
-         (define-key py-shell-map [tab] 'ipython-complete))
+         ;; (define-key py-shell-map [tab] 'ipython-complete))
+         (define-key py-shell-map [tab] ipython-complete-function))
         ((string-match "python3" py-shell-name)
          (define-key py-shell-map [tab] 'py-completion-at-point))
         (t (define-key py-shell-map [tab] 'py-shell-complete))))
@@ -121,15 +124,14 @@ Returns variable `py-process-name' used by function `get-process'.
                      (expand-file-name py-shell-local-path)
                    (message "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'")))
                 (pyshellname pyshellname)
+                ((stringp py-shell-name) py-shell-name)
                 ((or (string= "" py-shell-name)(null py-shell-name))
                  (py-guess-default-python))))
          (args py-python-command-args)
-         (py-process-name (py-process-name py-shell-name dedicated))ipython-version version)
+         (py-process-name (py-process-name py-shell-name dedicated))
+         ipython-version version)
+    (py-set-shell-completion-environment)
     ;; comint
-    (when py-use-local-default
-      ;; adapt completion function, named shells provide this
-      ;; (local-unset-key [tab])
-      (py-set-shell-completion-environment))
     (if (not (equal (buffer-name) py-process-name))
         (set-buffer (get-buffer-create
                      (apply 'make-comint py-process-name py-shell-name nil args)))
@@ -154,7 +156,6 @@ Returns variable `py-process-name' used by function `get-process'.
     (comint-read-input-ring t)
     (set-process-sentinel (get-buffer-process (current-buffer))
                           #'shell-write-history-on-exit)
-    (switch-to-buffer (current-buffer))
     ;; pdbtrack
     (add-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file)
     (setq py-pdbtrack-do-tracking-p t)

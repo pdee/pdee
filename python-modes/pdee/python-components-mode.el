@@ -183,6 +183,17 @@ Default is nil. "
                  (const :tag "IPython's ipython-complete" ipython-complete))
   :group 'python-mode)
 
+(defcustom ipython-complete-function 'py-completion-at-point
+  "Function used for completion in IPython shell buffers.
+
+Default is `py-completion-at-point', as `ipython-complete' raises the prompt counter when completion done "
+  :type '(choice (const :tag "py-completion-at-point" py-completion-at-point)
+                 (const :tag "py-shell-complete" py-shell-complete)
+		 (const :tag "Pymacs based py-complete" py-complete)
+                 (const :tag "IPython's ipython-complete" ipython-complete))
+  :group 'python-mode)
+;; (setq ipython-complete-function 'py-completion-at-point)
+
 (defcustom py-encoding-string " # -*- coding: utf-8 -*-"
   "Default string specifying encoding of a Python file. "
   :type 'string
@@ -3747,7 +3758,7 @@ If no arg given and py-shell-name not set yet, shell is set according to `py-she
 Returns `py-use-local-default'
 
 See also `py-install-local-shells'
-Installing named virualenv shells is the preffered way, 
+Installing named virualenv shells is the preffered way,
 as it leaves your system default unchanged."
   (setq py-use-local-default (not py-use-local-default))
   (when (interactive-p) (message "py-use-local-default set to %s" py-use-local-default))
@@ -4289,6 +4300,49 @@ ipython0.11-completion-command-string also covers version 0.12")
   "print(';'.join(get_ipython().Completer.all_completions('%s'))) #PYTHON-MODE SILENT\n"
   "The string send to ipython to query for all possible completions")
 
+(defun py-shell-complete ()
+  "Complete word before point, if any. Otherwise insert TAB. "
+  (interactive)
+  (let ((word (py-dot-word-before-point))
+	result)
+    (if (equal word "")
+	(tab-to-tab-stop)	   ; non nil so the completion is over
+      (setq result (py-shell-execute-string-now (format "
+def print_completions(namespace, text, prefix=''):
+   for name in namespace:
+       if name.startswith(text):
+           print prefix + name
+
+def complete(text):
+    import __builtin__
+    import __main__
+    if '.' in text:
+        terms = text.split('.')
+        try:
+            if hasattr(__main__, terms[0]):
+                obj = getattr(__main__, terms[0])
+            else:
+                obj = getattr(__builtin__, terms[0])
+            for term in terms[1:-1]:
+                obj = getattr(obj, term)
+            print_completions(dir(obj), terms[-1], text[:text.rfind('.') + 1])
+        except AttributeError:
+            pass
+    else:
+        import keyword
+        print_completions(keyword.kwlist, text)
+        print_completions(dir(__builtin__), text)
+        print_completions(dir(__main__), text)
+complete('%s')
+" word)))
+      (if (eq result nil)
+	  (message "Could not do completion as the Python process is busy")
+	(let ((comint-completion-addsuffix nil)
+	      (completions (if (split-string "\n" "\n")
+			       (split-string result "\n" t) ; XEmacs
+			     (split-string result "\n"))))
+	  (py-shell-dynamic-simple-complete word completions))))))
+
 ;; (defun py-shell-complete ()
 ;;   "Try to complete the python symbol before point. Only knows about the stuff
 ;; in the current *Python* session."
@@ -4322,7 +4376,7 @@ ipython0.11-completion-command-string also covers version 0.12")
 ;;     (process-send-string python-process
 ;;                          (format completion-command-string pattern))
 ;;     (accept-process-output python-process)
-;;
+;;     
 ;;                                         ;(message (format "DEBUG return: %s" ugly-return))
 ;;     (setq completions
 ;;           (split-string (substring ugly-return 0 (position ?\n ugly-return)) sep))
@@ -4351,33 +4405,26 @@ Only knows about the stuff in the current *Python* session."
          (ugly-return nil)
          (sep ";")
          (python-process (or (get-buffer-process (current-buffer))
-                                        ;XXX hack for .py buffers
                              (get-process py-which-bufname)))
-         ;; XXX currently we go backwards to find the beginning of an
-         ;; expression part; a more powerful approach in the future might be
-         ;; to let ipython have the complete line, so that context can be used
-         ;; to do things like filename completion etc.
          (beg (save-excursion (skip-chars-backward "a-z0-9A-Z_." (point-at-bol))
                               (point)))
          (end (point))
          (pattern (buffer-substring-no-properties beg end))
          (completions nil)
          (completion-table nil)
-         completion
          (comint-output-filter-functions
           (append comint-output-filter-functions
                   '(ansi-color-filter-apply
                     (lambda (string)
-                                        ;(message (format "DEBUG filtering: %s" string))
                       (setq ugly-return (concat ugly-return string))
                       (delete-region comint-last-output-start
-                                     (process-mark (get-buffer-process (current-buffer)))))))))
-                                        ;(message (format "#DEBUG pattern: '%s'" pattern))
+                                     (process-mark (get-buffer-process (current-buffer))))))))
+         completion)
+    ;; (save-excursion
+    ;; (setq python-process (get-process (ipython-dedicated))))
     (process-send-string python-process
                          (format completion-command-string pattern))
     (accept-process-output python-process)
-
-                                        ;(message (format "DEBUG return: %s" ugly-return))
     (setq completions
           (split-string (substring ugly-return 0 (position ?\n ugly-return)) sep))
     (setq completion-table (loop for str in completions
