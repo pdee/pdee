@@ -2208,7 +2208,7 @@ print \"\"\"Es müsste \"müßte\" heißen.\"\"\"
 
 (defun py-forward-into-nomenclature-lp-916818-base ()
   (goto-char 61)
-  (assert (eq 67 (py-forward-into-nomenclature)) nil "py-forward-into-nomenclature-lp-916818-test failed"))
+  (assert (eq 68 (py-forward-into-nomenclature)) nil "py-forward-into-nomenclature-lp-916818-test failed"))
 
 (defun tab-completion-in-Ipython-buffers-lp-916869-test (&optional arg load-branch-function)
   (interactive "p")
@@ -2241,13 +2241,13 @@ def SomeFunction(arg):
 
 (defun py-forward-into-nomenclature-jumps-over-CamelCased-words-lp:919540-base ()
     (goto-char 52)
-    (assert (eq 57 (py-forward-into-nomenclature)) nil "py-forward-into-nomenclature-jumps-over-CamelCased-words-lp:919540-test failed"))
+    (assert (eq 56 (py-forward-into-nomenclature)) nil "py-forward-into-nomenclature-jumps-over-CamelCased-words-lp:919540-test failed"))
 
 (defun py-backward-into-nomenclature-caps-names-lp:919541-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
-return SOME_CONSTANT + blah
+return SOME_Constant + blah
 "))
   (when load-branch-function (funcall load-branch-function))
   (py-bug-tests-intern 'py-backward-into-nomenclature-caps-names-lp:919541-base arg teststring)))

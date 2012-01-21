@@ -1461,24 +1461,38 @@ A `nomenclature' is a fancy way of saying AWordWithMixedCaseNotUnderscores."
         (orig (point))
         erg)
     (if (> arg 0)
-        (setq erg (re-search-forward
-                   ;; Albatross
-                   ;; "\\(\\W\\|[_]\\)*\\([A-Z]*[a-z0-9]*\\)"
-                   "\\(\\W\\|[_]\\)*\\([A-Z]*[[:lower:][:digit:]]*\\)"
-                   (point-max) t arg))
+        (while (and (not (eobp)) (> arg 0))
+          (setq erg (re-search-forward "\\(\\W+\\|[_]+\\)\\|\\([A-Z]*[[:lower:][:digit:]ß]*\\)" nil t 1))
+          ;; (or
+          ;;  (or (not (eq 0 (skip-chars-forward "[[:blank:][:punct:]\n\r]")))
+          ;;      (not (eq 0 (skip-chars-forward "_"))))
+          ;;  (or (and
+          ;;       (not (eq 0 (skip-chars-forward "[:upper:]")))
+          ;;       (not (eq 0 (skip-chars-forward "[[:lower:][:digit:]]")))))
+          ;;  (not (eq 0 (skip-chars-forward "[[:lower:][:digit:]]"))))
+          ;; (skip-chars-forward " \t\r\n\f")
+          (skip-chars-forward "^[[:alnum:]ß]")
+          (setq arg (1- arg)))
       (while (and (not (bobp)) (< arg 0))
-        (when (or (skip-chars-backward "[[:blank:][:punct:]]")
-                  (skip-chars-backward "_"))
+        (when (not (eq 0 (skip-chars-backward "[[:blank:][:punct:]\n\r\f_]")))
+
           (forward-char -1))
         (or
          (not (eq 0 (skip-chars-backward "[:upper:]")))
-         (not (eq 0 (skip-chars-backward "[:lower:]")))
-         (skip-chars-backward "[:digit:]"))
+         (not (eq 0 (skip-chars-backward "[[:lower:][:digit:]ß]")))
+         (skip-chars-backward "[[:lower:][:digit:]ß]"))
         (setq arg (1+ arg))))
     (if (< (point) orig)
-        (setq erg (point))
-      (when erg
-        (setq erg (1+ erg))))
+        (progn
+          (when (looking-back "[[:upper:]]")
+            ;; (looking-back "[[:blank:]]"
+            (forward-char -1))
+          (if (looking-at "[[:alnum:]ß]")
+              (setq erg (point))
+            (setq erg nil)))
+      (if (and (< orig (point)) (not (eobp)))
+          (setq erg (point))
+        (setq erg nil)))
     (when (and py-report-position-p (or iact (interactive-p))) (message "%s" erg))
     erg))
 
