@@ -1449,7 +1449,7 @@ Returns indentation if def-or-class found, nil otherwise. "
     (when (interactive-p) (message "%s" erg))
     erg))
 
-(defun py-forward-into-nomenclature (&optional arg)
+(defun py-forward-into-nomenclature (&optional arg iact)
   "Move forward to end of a nomenclature section or word.
 
 With \\[universal-argument] (programmatically, optional argument ARG), do it that many times.
@@ -1461,7 +1461,9 @@ A `nomenclature' is a fancy way of saying AWordWithMixedCaseNotUnderscores."
         erg)
     (if (> arg 0)
         (setq erg (re-search-forward
-                   "\\(\\W\\|[_]\\)*\\([[:alnum:]]*\\)"
+                   ;; Albatross
+                   ;; "\\(\\W\\|[_]\\)*\\([A-Z]*[a-z0-9]*\\)"
+                   "\\(\\W\\|[_]\\)*\\([A-Z]*[[:lower:][:digit:]]*\\)"
                    (point-max) t arg))
       (while (and (< arg 0)
                   (setq erg (re-search-backward
@@ -1470,7 +1472,7 @@ A `nomenclature' is a fancy way of saying AWordWithMixedCaseNotUnderscores."
         (forward-char 1)
         (setq arg (1+ arg)))
       (when erg (setq erg (1+ erg))))
-    (when (and py-report-position-p (interactive-p)) (message "%s" erg))
+    (when (and py-report-position-p (or iact (interactive-p))) (message "%s" erg))
     erg))
 
 (defun py-backward-into-nomenclature (&optional arg)
@@ -1481,7 +1483,7 @@ forward.
 
 A `nomenclature' is a fancy way of saying AWordWithMixedCaseNotUnderscores."
   (interactive "p")
-  (py-forward-into-nomenclature (- arg)))
+  (py-forward-into-nomenclature (- arg) arg))
 
 (defalias 'py-match-paren 'match-paren)
 

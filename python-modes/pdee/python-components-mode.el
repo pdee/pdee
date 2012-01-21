@@ -174,6 +174,7 @@ Default is nil. "
                  (const :tag "py-shell-complete" py-shell-complete)
                  (const :tag "IPython's ipython-complete" ipython-complete))
   :group 'python-mode)
+(make-variable-buffer-local 'py-complete-function)
 
 (defcustom py-shell-complete-function 'py-completion-at-point
   "Function used for completion in buffers. "
@@ -3654,10 +3655,9 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
 
 (setq py-shell-map
       (let ((map (copy-keymap comint-mode-map)))
-        ;; (substitute-key-definition 'complete-symbol 'completion-at-point
-        ;; (substitute-key-definition 'complete-symbol 'py-completion-at-point
-        ;; map global-map)
-        (define-key map [tab] 'py-shell-complete)
+        (substitute-key-definition 'complete-symbol 'completion-at-point
+                                   map global-map)
+        ;; (define-key map [tab] 'py-shell-complete)
         (define-key map (kbd "RET") 'comint-send-input)
         (define-key map "\C-c-" 'py-up-exception)
         (define-key map "\C-c=" 'py-down-exception)

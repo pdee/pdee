@@ -122,6 +122,7 @@
          'wrong-type-argument-lp-901541-test
          'py-pychecker-run-missing-lp-910783-test
          'py-forward-into-nomenclature-lp-916818-test
+         'py-forward-into-nomenclature-jumps-over-CamelCased-words-lp:919540-test
          'UnicodeEncodeError-lp:550661-test
          'py-shell-complete-lp-328836-test
 
@@ -2199,14 +2200,14 @@ This module is an optparse-inspired command-line parsing library that:
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
-print \"\"\"Es müßte 'asdf\" heißen.\"\"\"
+print \"\"\"Es müsste \"müßte\" heißen.\"\"\"
 "))
     (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-forward-into-nomenclature-lp-916818-base arg teststring)))
 
 (defun py-forward-into-nomenclature-lp-916818-base ()
   (goto-char 61)
-  (assert (eq 65 (py-forward-into-nomenclature)) nil "py-forward-into-nomenclature-lp-916818-test failed"))
+  (assert (eq 66 (py-forward-into-nomenclature)) nil "py-forward-into-nomenclature-lp-916818-test failed"))
 
 (defun tab-completion-in-Ipython-buffers-lp-916869-test (&optional arg load-branch-function)
   (interactive "p")
@@ -2226,6 +2227,35 @@ print \"\"\"Es müßte 'asdf\" heißen.\"\"\"
   (ipython-complete)
   (sit-for 0.1)
   (assert (looking-back "print") nil "tab-completion-in-Ipython-buffers-lp-916869-test failed"))
+
+(defun py-forward-into-nomenclature-jumps-over-CamelCased-words-lp:919540-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+def SomeFunction(arg):
+    pass
+"))
+  (when load-branch-function (funcall load-branch-function))
+  (py-bug-tests-intern 'py-forward-into-nomenclature-jumps-over-CamelCased-words-lp:919540-base arg teststring)))
+
+(defun py-forward-into-nomenclature-jumps-over-CamelCased-words-lp:919540-base ()
+    (goto-char 52)
+    (assert (eq 56 (py-forward-into-nomenclature)) nil "py-forward-into-nomenclature-jumps-over-CamelCased-words-lp:919540-test failed"))
+
+
+(defun py-backward-into-nomenclature-caps-names-lp:919541-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+return SOME_CONSTANT + blah
+"))
+  (when load-branch-function (funcall load-branch-function))
+  (py-bug-tests-intern 'py-backward-into-nomenclature-caps-names-lp:919541-base arg teststring)))
+
+(defun py-backward-into-nomenclature-caps-names-lp:919541-base ()
+    (goto-char 64)
+    (assert (eq 1 (py-backward-into-nomenclature)) nil "py-backward-into-nomenclature-caps-names-lp:919541-test failed"))
+
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
