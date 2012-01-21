@@ -4825,6 +4825,7 @@ A `nomenclature' is a fancy way of saying AWordWithMixedCaseNotUnderscores."
   (interactive "p")
   (or arg (setq arg 1))
   (let ((case-fold-search nil)
+        (orig (point))
         erg)
     (if (> arg 0)
         (setq erg (re-search-forward
@@ -4832,13 +4833,19 @@ A `nomenclature' is a fancy way of saying AWordWithMixedCaseNotUnderscores."
                    ;; "\\(\\W\\|[_]\\)*\\([A-Z]*[a-z0-9]*\\)"
                    "\\(\\W\\|[_]\\)*\\([A-Z]*[[:lower:][:digit:]]*\\)"
                    (point-max) t arg))
-      (while (and (< arg 0)
-                  (setq erg (re-search-backward
-                             "\\(\\W\\|[[:alnum:]]+\\)[A-Z]+\\|\\(\\W\\|[_]\\)\\w+"
-                             (point-min) 0)))
-        (forward-char 1)
-        (setq arg (1+ arg)))
-      (when erg (setq erg (1+ erg))))
+      (while (and (not (bobp)) (< arg 0))
+        (when (or (skip-chars-backward "[[:blank:][:punct:]]")
+                  (skip-chars-backward "_"))
+          (forward-char -1))
+        (or
+         (not (eq 0 (skip-chars-backward "[:upper:]")))
+         (not (eq 0 (skip-chars-backward "[:lower:]")))
+         (skip-chars-backward "[:digit:]"))
+        (setq arg (1+ arg))))
+    (if (< (point) orig)
+        (setq erg (point))
+      (when erg
+        (setq erg (1+ erg))))
     (when (and py-report-position-p (or iact (interactive-p))) (message "%s" erg))
     erg))
 
@@ -4850,7 +4857,8 @@ forward.
 
 A `nomenclature' is a fancy way of saying AWordWithMixedCaseNotUnderscores."
   (interactive "p")
-  (py-forward-into-nomenclature (- arg)))
+  (setq arg (or arg 1))
+  (py-forward-into-nomenclature (- arg) arg))
 
 (defalias 'py-match-paren 'match-paren)
 

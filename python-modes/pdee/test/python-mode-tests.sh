@@ -166,6 +166,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-pychecker-run-missing-lp-910783-test \
 --funcall py-forward-into-nomenclature-lp-916818-test \
 --funcall py-forward-into-nomenclature-jumps-over-CamelCased-words-lp:919540-test \
+--funcall py-backward-into-nomenclature-caps-names-lp:919541-test \
 \
 --funcall multiline-list-indent-test \
 --funcall py-beginning-of-block-test \
