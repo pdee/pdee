@@ -545,7 +545,9 @@ The timer is used only if `post-gc-hook' is not available.")
                         (if (or (null python) (equal python ""))
                             "python"
                           python))
-                      "-c" (concat "import sys;"
+                      "-c" (concat "import sys, os;"
+                                   ; Leave '' as first element in Python's path
+                                   " sys.path.insert(1, os.getenv('PYMACS_INSTALL_DIR'));"
                                    " from Pymacs.pymacs import main;"
                                    " main(*sys.argv[1:])")
                       (append
