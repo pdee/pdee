@@ -9065,6 +9065,8 @@ Only knows about the stuff in the current *Python* session."
          completion)
     ;; (save-excursion
     ;; (setq python-process (get-process (ipython-dedicated))))
+    (if (string= pattern "")
+        (tab-to-tab-stop)
     (process-send-string python-process
                          (format completion-command-string pattern))
     (accept-process-output python-process)
@@ -9084,7 +9086,7 @@ Only knows about the stuff in the current *Python* session."
            (message "Making completion list...")
            (with-output-to-temp-buffer "*Python Completions*"
              (display-completion-list (all-completions pattern completion-table)))
-           (message "Making completion list...%s" "done")))))
+             (message "Making completion list...%s" "done"))))))
 
 ;;; Pychecker
 (defun py-pychecker-run (command)
