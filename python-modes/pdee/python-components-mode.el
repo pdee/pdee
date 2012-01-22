@@ -184,10 +184,46 @@ Default is nil. "
                  (const :tag "IPython's ipython-complete" ipython-complete))
   :group 'python-mode)
 
-(defcustom ipython-complete-function 'py-completion-at-point
+(defcustom ipython-complete-function 'ipython-complete
   "Function used for completion in IPython shell buffers.
 
-Default is `py-completion-at-point', as `ipython-complete' raises the prompt counter when completion done "
+Minor bug: `ipython-complete' raises the prompt counter when completion done
+
+Richard Everson commented:
+
+    I don't know how to stop IPython from incrementing the prompt
+    counter, but using py-completion-at-point just hangs emacs for
+    me. If I start with a new IPython shell, then
+
+    In [1]: import sys
+
+    In [2]: sys.pa
+
+    then M-x py-completion-at-point, hoping to complete to sys.path, Emacs
+    hangs.  Escaping out of it shows that the \*Python\* buffer has the
+    contents:
+
+    >>> Traceback (most recent call last):
+      File \"<stdin>\", line 1, in <module>
+    NameError: name 'nil' is not defined
+    >>> =
+    [ ... ]
+
+    On the other hand, IPython's interaction and completion itself is pretty
+    impressive (for versions greater than 0.10 at least): it inserts the
+    correct indentation for for, if, etc and it will show completions even
+    within a loop.  Here's an example from a terminal shell:
+
+    In [1]:
+
+    In [1]: for i in range(3):
+       ...:     print i, sys.p<------------ Pressed tab here; indentation inser=
+    ted automatically
+    sys.path                 sys.path_importer_cache  sys.prefix
+    sys.path_hooks           sys.platform             sys.py3kwarning
+       ...:     print i, sys.path<------------ Pressed tab again
+    sys.path                 sys.path_hooks           sys.path_importer_cache
+"
   :type '(choice (const :tag "py-completion-at-point" py-completion-at-point)
                  (const :tag "py-shell-complete" py-shell-complete)
 		 (const :tag "Pymacs based py-complete" py-complete)
@@ -4357,8 +4393,8 @@ Only knows about the stuff in the current *Python* session."
                               (point)))
          (end (point))
          (pattern (buffer-substring-no-properties beg end))
-         (completions nil)
-         (completion-table nil)
+         (comint-output-filter-functions
+          (delq 'py-comint-output-filter-function comint-output-filter-functions))
          (comint-output-filter-functions
           (append comint-output-filter-functions
                   '(ansi-color-filter-apply
@@ -4366,7 +4402,7 @@ Only knows about the stuff in the current *Python* session."
                       (setq ugly-return (concat ugly-return string))
                       (delete-region comint-last-output-start
                                      (process-mark (get-buffer-process (current-buffer))))))))
-         completion)
+         completion completions completion-table)
     ;; (save-excursion
     ;; (setq python-process (get-process (ipython-dedicated))))
     (if (string= pattern "")
