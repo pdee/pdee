@@ -49,9 +49,9 @@ This function is appropriate for `comint-output-filter-functions'."
           (py-execute-file pyproc (car py-file-queue))))))
 
 (defun py-guess-default-python ()
-  "If any Python is installed. Used by `py-shell' if `py-shell-name' is neither selected nor has a customized default value. "
+  "Defaults to \"python\", if guessing didn't succeed. "
   (interactive)
-  (let* ((cmd (or (py-choose-shell) "python"))
+  (let* ((cmd (or py-shell-name (py-choose-shell) "python"))
          (erg (executable-find cmd)))
     (when (interactive-p)
       (if erg

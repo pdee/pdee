@@ -5012,9 +5012,9 @@ This function is appropriate for `comint-output-filter-functions'."
           (py-execute-file pyproc (car py-file-queue))))))
 
 (defun py-guess-default-python ()
-  "If any Python is installed. Used by `py-shell' if `py-shell-name' is neither selected nor has a customized default value. "
+  "Defaults to \"python\", if guessing didn't succeed. "
   (interactive)
-  (let* ((cmd (or (py-choose-shell) "python"))
+  (let* ((cmd (or py-shell-name (py-choose-shell) "python"))
          (erg (executable-find cmd)))
     (when (interactive-p)
       (if erg
@@ -7591,8 +7591,8 @@ If no arg given and py-shell-name not set yet, shell is set according to `py-she
 (defalias 'py-which-shell 'py-choose-shell)
 (defun py-choose-shell (&optional arg)
   "Looks for an appropriate mode function.
+
 This does the following:
- - reads py-shell-name
  - look for an interpreter with `py-choose-shell-by-shebang'
  - examine imports using `py-choose-shell-by-import'
  - default to the variable `py-shell-name'

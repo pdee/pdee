@@ -3803,8 +3803,8 @@ as it leaves your system default unchanged."
 (defalias 'py-which-shell 'py-choose-shell)
 (defun py-choose-shell (&optional arg)
   "Looks for an appropriate mode function.
+
 This does the following:
- - reads py-shell-name
  - look for an interpreter with `py-choose-shell-by-shebang'
  - examine imports using `py-choose-shell-by-import'
  - default to the variable `py-shell-name'
