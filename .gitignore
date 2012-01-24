@@ -83,10 +83,10 @@ build
 python-modes/pdee/py-process-name.el
 python-modes/pdee/py-set-shell-completion-environment.el
 python-modes/pdee/py-shell.el
-python-modes/pdee/tools/python-mode-utils.el
-python-modes/python-mode-el/tools/python-mode-utils.el
-python-modes/xemacs-lp-python-mode/tools/python-mode-utils.e
-python-modes/pdee/tools/python-shell-install-example-buffer.el
+python-modes/pdee/tools/*
+python-modes/python-mode-el/tools/*
+python-modes/xemacs-lp-python-mode/tools/*
+python-modes/pdee/tools/*
 
 # Bytecodes
 *.pyc
