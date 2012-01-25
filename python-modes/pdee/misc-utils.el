@@ -32,7 +32,6 @@
 
 ;;; Code:
 
-
 ;; string-strip stuff starts here
 (defalias 'string-strip 'strip)
 (defalias 'string-strip-right 'rstrip)
@@ -835,7 +834,17 @@ also insert a newline. "
     (when (interactive-p) (message "%s" erg))
     erg))
 
+(defun ar-byte-compile-file (&optional file)
+  "When compiling, it fixes indent and trailing whitespace. "
+  (interactive "*")
+  (let ((orig (point))
+        (tab-always-indent t))
+    (save-excursion
+      (delete-trailing-whitespace)
+      (mark-whole-buffer)
+      (indent-for-tab-command)
+      (byte-compile-file (or file (buffer-file-name))))
+    (goto-char orig)))
+
 (provide 'misc-utils)
 ;;; misc-utils.el ends here
-
-
