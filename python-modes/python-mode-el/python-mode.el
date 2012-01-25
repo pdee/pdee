@@ -1903,24 +1903,23 @@ new value.
 With optional argument GLOBAL change the global value of `py-indent-offset'. "
   (interactive "P")
   (save-excursion
-    (goto-char (point-min))
-    (let ((lastindent (if
-                          (py-beginning-of-statement-p)
-                          (current-indentation)
-                        (progn
-                          (py-down-statement)
-                          (current-indentation)))))
-      (while (and (eq lastindent (current-indentation))
-                  (not (eobp))
-                  (setq erg (point))
-                  (py-down-statement)
-                  (< erg (point))
-                  (not (py-guessed-sanity-check (setq erg (abs (- lastindent (current-indentation))))))))
-      (if (py-guessed-sanity-check erg)
+    (let ((lastindent (cond
+                       ((py-beginning-of-block-p)
+                        (current-indentation))
+                       ((py-beginning-of-block)
+                        (current-indentation))
+                       ((py-down-block))))
+          erg)
+      (if lastindent
           (progn
-            (funcall (if global 'kill-local-variable 'make-local-variable)
-                     'py-indent-offset)
-            (setq py-indent-offset erg))
+            (py-down-statement)
+            (if (py-guessed-sanity-check (setq erg (abs (- lastindent (current-indentation)))))
+                (progn
+                  (funcall (if global 'kill-local-variable 'make-local-variable)
+                           'py-indent-offset)
+                  (setq py-indent-offset erg))
+              (setq py-indent-offset (default-value 'py-indent-offset))))
+        ;; no block, no indent
         (setq py-indent-offset (default-value 'py-indent-offset)))
       (when (interactive-p)
         (message "%s value of py-indent-offset:  %d"

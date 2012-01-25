@@ -162,7 +162,8 @@ With optional argument GLOBAL change the global value of `py-indent-offset'. "
                         (current-indentation))
                        ((py-beginning-of-block)
                         (current-indentation))
-                       ((py-down-block)))))
+                       ((py-down-block))))
+          erg)
       (if lastindent
           (progn
             (py-down-statement)
