@@ -1515,7 +1515,6 @@ It makes underscores and dots word constituent chars.")
         (define-key map [(control c)(control b)] 'py-submit-bug-report)
         (define-key map [(control c)(control v)] 'py-version)
         (define-key map [(control c)(control w)] 'py-pychecker-run)
-        (define-key map [(control c)(c)] 'py-compute-indentation)
         (if (featurep 'xemacs)
             (define-key map [(meta tab)] 'py-complete)
           (substitute-key-definition 'complete-symbol 'completion-at-point

@@ -13,14 +13,14 @@ New in version 6.0.5
 
   Alternatively edit/install `py-shell-template', giving
   `py-shell-name' the full path incl. executable
-                 
+
   If calls to common `py-shell' should use local executable
   instead of default system Python set
   `py-use-local-default' alongside with
-  `py-shell-local-path' 
+  `py-shell-local-path'
   see command `py-toggle-local-default-use'
 
-- `py-shell-name' accepts PATH/TO/EXECUTABLE 
+- `py-shell-name' accepts PATH/TO/EXECUTABLE
   in addition to name of an installed default Python-Shell.
   Permits installing commands like
   (defun python-XYZ-shell (&optional argprompt)
@@ -28,6 +28,22 @@ New in version 6.0.5
     (interactive)
     (let ((py-shell-name "PATH/TO/PYTHON-XYZ"))
       (py-shell argprompt)))
+
+- new command `py-execute-region-default' forces the
+  systems default Python interpreter to execute, ignores
+  shebang
+
+  related functions redesigned, `async' argument dropped
+  `py-execute-region' now reads:
+
+  (defun py-execute-region (start end &optional shell dedicated)
+    "Send the region to a Python interpreter.
+
+  When called with \\[univeral-argument], execution through `default-value' of `py-shell-name' is forced.
+  When called with \\[univeral-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
+
+  When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument. "
+  [ ... ]
 
 - new `py-number-face',
   visible only when customized and `py-use-number-face-p' is `t',
