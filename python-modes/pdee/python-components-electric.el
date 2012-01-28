@@ -95,7 +95,7 @@ Returns column reached. "
               (indent-line-to (- (current-indentation) py-indent-offset))))
         (delete-char (- 1))))
     (setq erg (current-column))
-    (when (and (interactive-p) py-report-level-p) (message "%s" erg))
+    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
 
 (defun py-electric-delete (&optional arg)

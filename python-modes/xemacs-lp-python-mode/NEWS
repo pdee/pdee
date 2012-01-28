@@ -29,6 +29,13 @@ New in version 6.0.5
     (let ((py-shell-name "PATH/TO/PYTHON-XYZ"))
       (py-shell argprompt)))
 
+-  new commands `indent-tabs-mode', `toggle-indent-tabs-mode', 
+  `indent-tabs-mode-on', `indent-tabs-mode-off'
+
+  feature after a request at Stack Exchange asked Jul
+  13 '11 at 13:23 saying
+  `tab-width' now follows `py-indent-offset'
+
 - new command `py-execute-region-default' forces the
   systems default Python interpreter to execute, ignores
   shebang

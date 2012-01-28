@@ -177,7 +177,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-end-of-def-test \
 --funcall py-beginning-of-def-or-class-test \
 --funcall py-end-of-def-or-class-test \
---funcall py-electric-backspace-test \
 --funcall py-electric-delete-test \
 --funcall dict-error-test \
 --funcall near-bob-beginning-of-statement-test \
@@ -207,17 +206,19 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall nested-if-test \
 --funcall py-shebang-consider-ipython-lp-849293-test \
 --funcall py-insert-super-python3-test \
---funcall UnicodeEncodeError-python3-test \
 --funcall UnicodeEncodeError-lp:550661-test \
 --funcall py-shell-complete-test \
 --funcall py-completion-at-point-test \
 --funcall py-shebang-ipython-env-lp-849293-test \
---funcall py-execute-block-test \
 --funcall master-file-not-honored-lp:794850-test \
---funcall tqs-list-error-test \
---funcall py-end-of-print-statement-test \
 --funcall py-insert-super-python2-test \
 --funcall nested-try-finally-test \
+--funcall py-electric-backspace-test \
+--funcall UnicodeEncodeError-python3-test \
+--funcall py-execute-block-test \
+--funcall tqs-list-error-test \
+--funcall py-end-of-print-statement-test \
+
 
 else
 

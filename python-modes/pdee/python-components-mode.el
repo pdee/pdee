@@ -99,8 +99,8 @@ See original source: http://pymacs.progiciels-bpi.ca"
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-report-level-p nil
-  "If indenting functions should report reached indent level.
+(defcustom py-verbose-p nil
+  "If functions should report results.
 
 Default is nil. "
 
@@ -248,7 +248,7 @@ Richard Everson commented:
   :group 'python-mode)
 
 (defvar py-shebang-regexp "#![ \t]?\\([^ \t\n]+\\)[ \t]?\\([iptj]+ython[^ \t\n]*\\)"
-    "Detecting the shell in head of file. ")
+  "Detecting the shell in head of file. ")
 
 (setq py-shebang-regexp "#![ \t]?\\([^ \t\n]+\\)[ \t]?\\([iptj]+ython[^ \t\n]*\\)")
 
@@ -303,11 +303,9 @@ to `python-mode':
        guess can't be made (perhaps because you are visiting a new
        file), then the value in `py-indent-offset' is used.
 
-    2. `indent-tabs-mode' is turned off if `py-indent-offset' does not
-       equal `tab-width' (`indent-tabs-mode' is never turned on by
-       Python mode).  This means that for newly written code, tabs are
-       only inserted in indentation if one tab is one indentation
-       level, otherwise only spaces are used.
+    2. `tab-width' is setq to `py-indent-offset' if not equal
+       already. `indent-tabs-mode' inserts one tab one
+       indentation level, otherwise spaces are used.
 
 Note that both these settings occur *after* `python-mode-hook' is run,
 so if you want to defeat the automagic configuration, you must also
@@ -341,6 +339,7 @@ you're editing someone else's Python code."
   :type 'integer
   :group 'python-mode)
 (make-variable-buffer-local 'py-indent-offset)
+(put 'py-indent-offset 'safe-local-variable 'integerp)
 
 (defcustom pdb-path '/usr/lib/python2.7/pdb.py
   "Where to find pdb.py. Edit this according to your system.
@@ -642,15 +641,10 @@ element matches `py-shell-name'."
 (defvar py-default-interpreter py-shell-name)
 (defvar python-command py-shell-name)
 
-(defcustom python-indent 4
-  "Number of columns for a unit of indentation in Python mode.
-See also `\\[python-guess-indent]'"
-  :group 'python-mode
-  :type 'integer)
-(put 'python-indent 'safe-local-variable 'integerp)
+
 
 (defcustom python-guess-indent t
-  "Non-nil means Python mode guesses `python-indent' for the buffer."
+  "Non-nil means Python mode guesses `py-indent-offset' for the buffer."
   :type 'boolean
   :group 'python-mode)
 
@@ -1176,7 +1170,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
          (add-to-list 'load-path (concat (expand-file-name py-install-directory) "/test"))
          (add-to-list 'load-path (concat (expand-file-name py-install-directory) "/tools")))
         ((when py-guess-py-install-directory-p
-         (py-guess-py-install-directory)))
+           (py-guess-py-install-directory)))
         (t (error "Please set `py-install-directory', see INSTALL"))
         (when (interactive-p) (message "%s" load-path))))
 
@@ -1216,7 +1210,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
                                        "except" "finally" "for" "while" "with")
                                    symbol-end))
      `(decorator            . ,(rx line-start (* space) ?@ (any letter ?_)
-                                    (* (any word ?_))))
+                                   (* (any word ?_))))
      `(defun                . ,(rx symbol-start (or "def" "class") symbol-end))
      `(symbol-name          . ,(rx (any letter ?_) (* (any word ?_))))
      `(open-paren           . ,(rx (or "{" "[" "(")))
@@ -1231,14 +1225,14 @@ See original source: http://pymacs.progiciels-bpi.ca"
     "Additional Python specific sexps for `python-rx'"))
 
 (defmacro python-rx (&rest regexps)
- "Python mode specialized rx macro which supports common python named REGEXPS."
- (let ((rx-constituents (append python-rx-constituents rx-constituents)))
-   (cond ((null regexps)
-          (error "No regexp"))
-         ((cdr regexps)
-          (rx-to-string `(and ,@regexps) t))
-         (t
-          (rx-to-string (car regexps) t)))))
+  "Python mode specialized rx macro which supports common python named REGEXPS."
+  (let ((rx-constituents (append python-rx-constituents rx-constituents)))
+    (cond ((null regexps)
+           (error "No regexp"))
+          ((cdr regexps)
+           (rx-to-string `(and ,@regexps) t))
+          (t
+           (rx-to-string (car regexps) t)))))
 
 
 ;;; Font-lock and syntax
@@ -1393,18 +1387,18 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
   ;; x '"""' x """ \"""" x
   (save-excursion
     (goto-char (match-beginning 0))
-      (cond
-        ;; Consider property for the last char if in a fenced string.
+    (cond
+     ;; Consider property for the last char if in a fenced string.
      ((= n 3)
       (let* ((font-lock-syntactic-keywords nil)
 	     (syntax (syntax-ppss)))
 	(when (eq t (nth 3 syntax))	; after unclosed fence
-        (goto-char (nth 8 syntax))	; fence position
+          (goto-char (nth 8 syntax))	; fence position
 	  ;; (skip-chars-forward "uUrR")	; skip any prefix
-        ;; Is it a matching sequence?
-        (if (eq (char-after) (char-after (match-beginning 2)))
+          ;; Is it a matching sequence?
+          (if (eq (char-after) (char-after (match-beginning 2)))
 	      (eval-when-compile (string-to-syntax "|"))))))
-        ;; Consider property for initial char, accounting for prefixes.
+     ;; Consider property for initial char, accounting for prefixes.
      ((or (and (= n 2)			; leading quote (not prefix)
 	       (not (match-end 1)))     ; prefix is null
 	  (and (= n 1)			; prefix
@@ -1414,10 +1408,10 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
 	  (eval-when-compile (string-to-syntax "|")))))
      ;; Otherwise (we're in a non-matching string) the property is
      ;; nil, which is OK.
-)))
+     )))
 
 (defvar python-mode-syntax-table nil
-    "Syntax table for Python files.")
+  "Syntax table for Python files.")
 
 (setq python-mode-syntax-table
       (let ((table (make-syntax-table)))
@@ -1756,7 +1750,7 @@ Currently-active file is at the head of the list.")
 
 (defun python-guess-indent ()
   "Guess step for indentation of current buffer.
-Set `python-indent' locally to the value guessed."
+Set `py-indent-offset' locally to the value guessed."
   (interactive)
   (save-excursion
     (save-restriction
@@ -1777,10 +1771,10 @@ Set `python-indent' locally to the value guessed."
 		(if (and indent (>= indent 2) (<= indent 8)) ; sanity check
 		    (setq done t))))))
 	(when done
-	  (when (/= indent (default-value 'python-indent))
-	    (set (make-local-variable 'python-indent) indent)
-	    (unless (= tab-width python-indent)
-	      (setq indent-tabs-mode nil)))
+	  (when (/= indent (default-value 'py-indent-offset))
+	    (set (make-local-variable 'py-indent-offset) indent)
+	    (unless (= tab-width py-indent-offset)
+	      (setq tab-width py-indent-offset)))
 	  indent)))))
 
 ;; Alist of possible indentations and start of statement they would
@@ -1840,13 +1834,13 @@ Set `python-indent' locally to the value guessed."
 		    ;; Extra level if we're backslash-continued or
 		    ;; following a key.
 		    (if (or backslash colon)
-			(+ python-indent (current-column))
+			(+ py-indent-offset (current-column))
                       (current-column))
 		  ;; Otherwise indent relative to statement start, one
 		  ;; level per bracketing level.
 		  (goto-char (1+ open-start))
 		  (python-beginning-of-statement)
-		  (+ (current-indentation) (* (car syntax) python-indent))))
+		  (+ (current-indentation) (* (car syntax) py-indent-offset))))
 	    ;; Otherwise backslash-continued.
 	    (forward-line -1)
 	    (if (python-continuation-line-p)
@@ -1858,7 +1852,7 @@ Set `python-indent' locally to the value guessed."
 	      (python-beginning-of-statement)
 	      (+ (current-indentation) python-continuation-offset
 		 (if (python-open-block-statement-p t)
-		     python-indent
+		     py-indent-offset
 		   0))))))
        ((bobp) 0)
        ;; Fixme: Like python-mode.el; not convinced by this.
@@ -1950,7 +1944,7 @@ corresponding block opening (or nil)."
 			     (if (progn (python-end-of-statement)
 					(python-skip-comments/blanks t)
 					(eq ?: (char-before)))
-				 (setq indent (+ python-indent indent)))))
+				 (setq indent (+ py-indent-offset indent)))))
 	(push (cons indent initial) levels))
        ;; Only one possibility for comment line immediately following
        ;; another.
@@ -3116,7 +3110,7 @@ the string's indentation."
 
 (defun python-shift-left (start end &optional count)
   "Shift lines in region COUNT (the prefix arg) columns to the left.
-COUNT defaults to `python-indent'.  If region isn't active, just shift
+COUNT defaults to `py-indent-offset'.  If region isn't active, just shift
 current line.  The region shifted includes the lines in which START and
 END lie.  It is an error if any lines in the region are indented less than
 COUNT columns."
@@ -3126,7 +3120,7 @@ COUNT columns."
      (list (line-beginning-position) (line-end-position) current-prefix-arg)))
   (if count
       (setq count (prefix-numeric-value count))
-    (setq count python-indent))
+    (setq count py-indent-offset))
   (when (> count 0)
     (save-excursion
       (goto-char start)
@@ -3141,7 +3135,7 @@ COUNT columns."
 
 (defun python-shift-right (start end &optional count)
   "Shift lines in region COUNT (the prefix arg) columns to the right.
-COUNT defaults to `python-indent'.  If region isn't active, just shift
+COUNT defaults to `py-indent-offset'.  If region isn't active, just shift
 current line.  The region shifted includes the lines in which START and
 END lie."
   (interactive
@@ -3150,12 +3144,12 @@ END lie."
      (list (line-beginning-position) (line-end-position) current-prefix-arg)))
   (if count
       (setq count (prefix-numeric-value count))
-    (setq count python-indent))
+    (setq count py-indent-offset))
   (indent-rigidly start end count))
 
 (defun python-outline-level ()
   "`outline-level' function for Python mode.
-The level is the number of `python-indent' steps of indentation
+The level is the number of `py-indent-offset' steps of indentation
 of current line."
   (1+ (/ (current-indentation) py-indent-offset)))
 
@@ -3552,11 +3546,6 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (set (make-local-variable 'add-log-current-defun-function) 'py-current-defun)
   (set (make-local-variable 'paragraph-start) "\\s-*$")
   (set (make-local-variable 'fill-paragraph-function) 'py-fill-paragraph)
-
-  ;; (set (make-local-variable 'indent-line-function) #'python-indent-line)
-  ;; (set (make-local-variable 'indent-region-function) #'python-indent-region)
-
-  ;; (set (make-local-variable 'fill-paragraph-function) 'python-fill-paragraph)
   (set (make-local-variable 'require-final-newline) mode-require-final-newline)
   (make-local-variable 'python-saved-check-command)
   ;; (set (make-local-variable 'beginning-of-defun-function)
@@ -3584,11 +3573,11 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
             py-complete-function nil 'local)
   (when python-use-skeletons
     (set (make-local-variable 'skeleton-further-elements)
-         '((< '(backward-delete-char-untabify (min python-indent
+         '((< '(backward-delete-char-untabify (min py-indent-offset
                                                    (current-column))))
            (^ '(- (1+ (current-indentation)))))))
   ;; Python defines TABs as being 8-char wide.
-  (set (make-local-variable 'tab-width) 8)
+  (set (make-local-variable 'tab-width) py-indent-offset)
   ;; Now do the automagical guessing
   (when py-smart-indentation
     (if (bobp)
@@ -3605,8 +3594,6 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
             (back-to-indentation)
             (py-guess-indent-offset)))
       (py-guess-indent-offset)))
-  (when (/= tab-width py-indent-offset)
-    (setq indent-tabs-mode nil))
   ;; Set the default shell if not already set
   (when (null py-shell-name)
     (py-toggle-shells (py-choose-shell)))
@@ -3664,10 +3651,10 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
 
 ;; (custom-add-option 'python-mode-hook 'py-imenu-create-index)
 (custom-add-option 'python-mode-hook 'py-imenu-create-index-new)
-(custom-add-option 'python-mode-hook
-		   (lambda ()
-		     "Turn off Indent Tabs mode."
-		     (setq indent-tabs-mode nil)))
+;; (custom-add-option 'python-mode-hook
+;; 		   (lambda ()
+;; 		     "Turn off Indent Tabs mode."
+;; 		     (setq indent-tabs-mode nil)))
 ;; (custom-add-option 'python-mode-hook 'turn-on-eldoc-mode)
 (custom-add-option 'python-mode-hook 'abbrev-mode)
 ;; (custom-add-option 'python-mode-hook 'py-setup-brm)
@@ -4095,38 +4082,38 @@ in a buffer that doesn't have a local value of `python-buffer'."
   "Find top-level imports, updating `python-imports'."
   (interactive)
   (save-excursion
-      (let (lines)
-	(goto-char (point-min))
-	(while (re-search-forward "^import\\>[ \n\t]\\|^from\\>[ \n\t]" nil t)
-	  (unless (syntax-ppss-context (syntax-ppss))
-	    (let ((start (line-beginning-position)))
-	      ;; Skip over continued lines.
-	      (while (and (eq ?\\ (char-before (line-end-position)))
-			  (= 0 (forward-line 1)))
-		t)
-	      (push (buffer-substring start (line-beginning-position 2))
-		    lines))))
-	(setq python-imports
-	      (if lines
-		  (apply #'concat
-;; This is probably best left out since you're unlikely to need the
-;; doc for a function in the buffer and the import will lose if the
-;; Python sub-process' working directory isn't the same as the
-;; buffer's.
-;; 			 (if buffer-file-name
-;; 			     (concat
-;; 			      "import "
-;; 			      (file-name-sans-extension
-;; 			       (file-name-nondirectory buffer-file-name))))
-			 (nreverse lines))
-		"None"))
-	(when lines
-	  (set-text-properties 0 (length python-imports) nil python-imports)
-	  ;; The output ends up in the wrong place if the string we
-	  ;; send contains newlines (from the imports).
-	  (setq python-imports
-		(replace-regexp-in-string "\n" "\\n"
-					  (format "%S" python-imports) t t))))))
+    (let (lines)
+      (goto-char (point-min))
+      (while (re-search-forward "^import\\>[ \n\t]\\|^from\\>[ \n\t]" nil t)
+        (unless (syntax-ppss-context (syntax-ppss))
+          (let ((start (line-beginning-position)))
+            ;; Skip over continued lines.
+            (while (and (eq ?\\ (char-before (line-end-position)))
+                        (= 0 (forward-line 1)))
+              t)
+            (push (buffer-substring start (line-beginning-position 2))
+                  lines))))
+      (setq python-imports
+            (if lines
+                (apply #'concat
+                       ;; This is probably best left out since you're unlikely to need the
+                       ;; doc for a function in the buffer and the import will lose if the
+                       ;; Python sub-process' working directory isn't the same as the
+                       ;; buffer's.
+                       ;; 			 (if buffer-file-name
+                       ;; 			     (concat
+                       ;; 			      "import "
+                       ;; 			      (file-name-sans-extension
+                       ;; 			       (file-name-nondirectory buffer-file-name))))
+                       (nreverse lines))
+              "None"))
+      (when lines
+        (set-text-properties 0 (length python-imports) nil python-imports)
+        ;; The output ends up in the wrong place if the string we
+        ;; send contains newlines (from the imports).
+        (setq python-imports
+              (replace-regexp-in-string "\n" "\\n"
+                                        (format "%S" python-imports) t t))))))
 
 
 ;; Author: Lukasz Pankowski, patch sent for lp:328836

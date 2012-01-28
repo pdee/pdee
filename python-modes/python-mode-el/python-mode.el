@@ -98,7 +98,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-report-level-p nil
+(defcustom py-verbose-p nil
   "If indenting functions should report reached indent level.
 
 Default is nil. "
@@ -1738,7 +1738,7 @@ Returns column reached. "
               (indent-line-to (- (current-indentation) py-indent-offset))))
         (delete-char (- 1))))
     (setq erg (current-column))
-    (when (and (interactive-p) py-report-level-p) (message "%s" erg))
+    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
 
 (defun py-electric-delete (&optional arg)
@@ -1849,7 +1849,7 @@ Returns current indentation "
                        (forward-char (- col cui))
                      (beginning-of-line))))
         (insert-tab))))
-  (when (and (interactive-p) py-report-level-p)(message "%s" (current-indentation)))
+  (when (and (interactive-p) py-verbose-p)(message "%s" (current-indentation)))
   (current-indentation))
 
 (defun py-newline-and-indent ()
@@ -1872,7 +1872,7 @@ When indent is set back manually, this is honoured in following lines. "
                           (parse-partial-sexp (point-min) (point))
                         (syntax-ppss))))
       (delete-region (match-beginning 0) (match-end 0)))
-    (when (and (interactive-p) py-report-level-p) (message "%s" erg))
+    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
 
 (defalias 'py-newline-and-close-block 'py-newline-and-dedent)
@@ -1886,8 +1886,44 @@ Returns column. "
     (when (< 0 cui)
       (setq erg (- (py-compute-indentation) py-indent-offset))
       (indent-to-column erg))
-    (when (and (interactive-p) py-report-level-p) (message "%s" erg))
+    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
+
+
+(defun toggle-indent-tabs-mode ()
+  "Toggle `indent-tabs-mode'.
+
+Returns value of `indent-tabs-mode' switched to. "
+  (interactive)
+  (when
+      (setq indent-tabs-mode (not indent-tabs-mode))
+    (setq tab-width py-indent-offset))
+  (when (and py-verbose-p (interactive-p)) (message "indent-tabs-mode %s  py-indent-offset %s" indent-tabs-mode py-indent-offset))
+  indent-tabs-mode)
+
+(defun indent-tabs-mode (arg &optional iact)
+  "With positive ARG switch `indent-tabs-mode' on.
+
+With negative ARG switch `indent-tabs-mode' off.
+Returns value of `indent-tabs-mode' switched to. "
+  (interactive "p")
+  (if (< 0 arg)
+      (progn
+        (setq indent-tabs-mode t)
+        (setq tab-width py-indent-offset))
+    (setq indent-tabs-mode nil))
+  (when (and py-verbose-p (or iact (interactive-p))) (message "indent-tabs-mode %s   py-indent-offset %s" indent-tabs-mode py-indent-offset))
+  indent-tabs-mode)
+
+(defun indent-tabs-mode-on (arg)
+  "Switch `indent-tabs-mode' on. "
+  (interactive "p")
+  (indent-tabs-mode (abs arg)(interactive-p)))
+
+(defun indent-tabs-mode-off (arg)
+  "Switch `indent-tabs-mode' on. "
+  (interactive "p")
+  (indent-tabs-mode (- (abs arg))(interactive-p)))
 
 (defun py-guess-indent-offset (&optional global orig)
   "Guess a value for, and change, `py-indent-offset'.
@@ -1967,7 +2003,7 @@ If no region is active, current line is dedented.
 Returns indentation reached. "
   (interactive "p")
   (let ((erg (py-shift-intern (- count) start end)))
-    (when (and (interactive-p) py-report-level-p) (message "%s" erg))
+    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
 
 (defalias 'py-shift-region-right 'py-shift-right)
@@ -1978,7 +2014,7 @@ If no region is active, current line is indented.
 Returns indentation reached. "
   (interactive "p")
   (let ((erg (py-shift-intern count beg end)))
-    (when (and (interactive-p) py-report-level-p) (message "%s" erg))
+    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
 
 (defun py-shift-intern (count &optional start end)
@@ -2038,7 +2074,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "paragraph" (or arg py-indent-offset))))
-    (when (and (interactive-p) py-report-level-p) (message "%s" erg))
+    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
 
 (defun py-shift-paragraph-left (&optional arg)
@@ -2050,7 +2086,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "paragraph" (- (or arg py-indent-offset)))))
-    (when (and (interactive-p) py-report-level-p) (message "%s" erg))
+    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
 
 (defun py-shift-block-right (&optional arg)
@@ -2062,7 +2098,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "block" (or arg py-indent-offset))))
-    (when (and (interactive-p) py-report-level-p) (message "%s" erg))
+    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
 
 (defun py-shift-block-left (&optional arg)
@@ -2074,7 +2110,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "block" (- (or arg py-indent-offset)))))
-    (when (and (interactive-p) py-report-level-p) (message "%s" erg))
+    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
 
 (defun py-shift-clause-right (&optional arg)
@@ -2086,7 +2122,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "clause" (or arg py-indent-offset))))
-    (when (and (interactive-p) py-report-level-p) (message "%s" erg))
+    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
 
 (defun py-shift-clause-left (&optional arg)
@@ -2098,7 +2134,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "clause" (- (or arg py-indent-offset)))))
-    (when (and (interactive-p) py-report-level-p) (message "%s" erg))
+    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
 
 (defun py-shift-def-right (&optional arg)
@@ -2110,7 +2146,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "def" (or arg py-indent-offset))))
-    (when (and (interactive-p) py-report-level-p) (message "%s" erg))
+    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
 
 (defun py-shift-def-left (&optional arg)
@@ -2122,7 +2158,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "def" (- (or arg py-indent-offset)))))
-    (when (and (interactive-p) py-report-level-p) (message "%s" erg))
+    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
 
 (defun py-shift-class-right (&optional arg)
@@ -2134,7 +2170,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "class" (or arg py-indent-offset))))
-    (when (and (interactive-p) py-report-level-p) (message "%s" erg))
+    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
 
 (defun py-shift-class-left (&optional arg)
@@ -2146,7 +2182,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "class" (- (or arg py-indent-offset)))))
-    (when (and (interactive-p) py-report-level-p) (message "%s" erg))
+    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
 
 (defun py-shift-line-right (&optional arg)
@@ -2158,7 +2194,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "line" (or arg py-indent-offset))))
-    (when (and (interactive-p) py-report-level-p) (message "%s" erg))
+    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
 
 (defun py-shift-line-left (&optional arg)
@@ -2170,7 +2206,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "line" (- (or arg py-indent-offset)))))
-    (when (and (interactive-p) py-report-level-p) (message "%s" erg))
+    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
 
 (defun py-shift-statement-right (&optional arg)
@@ -2182,7 +2218,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "statement" (or arg py-indent-offset))))
-    (when (and (interactive-p) py-report-level-p) (message "%s" erg))
+    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
 
 (defun py-shift-statement-left (&optional arg)
@@ -2194,7 +2230,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "statement" (- (or arg py-indent-offset)))))
-    (when (and (interactive-p) py-report-level-p) (message "%s" erg))
+    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
 
 (defun py-indent-region (start end &optional indent-offset)
@@ -7731,7 +7767,7 @@ py-temp-directory\t\tdirectory used for temp files (if needed)
 py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
 
 \\{python-mode-map}"
-  :group 'python
+  :group 'python-mode
   (set (make-local-variable 'font-lock-defaults)
        '(python-font-lock-keywords nil nil nil nil
 				   (font-lock-syntactic-keywords
@@ -7784,11 +7820,6 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (set (make-local-variable 'add-log-current-defun-function) 'py-current-defun)
   (set (make-local-variable 'paragraph-start) "\\s-*$")
   (set (make-local-variable 'fill-paragraph-function) 'py-fill-paragraph)
-
-  ;; (set (make-local-variable 'indent-line-function) #'python-indent-line)
-  ;; (set (make-local-variable 'indent-region-function) #'python-indent-region)
-
-  ;; (set (make-local-variable 'fill-paragraph-function) 'python-fill-paragraph)
   (set (make-local-variable 'require-final-newline) mode-require-final-newline)
   (make-local-variable 'python-saved-check-command)
   ;; (set (make-local-variable 'beginning-of-defun-function)
@@ -7815,7 +7846,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (add-hook 'completion-at-point-functions
             py-complete-function nil 'local)
   ;; Python defines TABs as being 8-char wide.
-  (set (make-local-variable 'tab-width) 8)
+  (set (make-local-variable 'tab-width) py-indent-offset)
   ;; Now do the automagical guessing
   (when py-smart-indentation
     (if (bobp)
@@ -7832,8 +7863,6 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
             (back-to-indentation)
             (py-guess-indent-offset)))
       (py-guess-indent-offset)))
-  (when (/= tab-width py-indent-offset)
-    (setq indent-tabs-mode nil))
   ;; Set the default shell if not already set
   (when (null py-shell-name)
     (py-toggle-shells (py-choose-shell)))
