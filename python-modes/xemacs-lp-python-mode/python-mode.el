@@ -4899,17 +4899,20 @@ A `nomenclature' is a fancy way of saying AWordWithMixedCaseNotUnderscores."
         erg)
     (if (> arg 0)
         (while (and (not (eobp)) (> arg 0))
-          (setq erg (re-search-forward "\\(\\W+\\|[_]+\\)\\|\\([A-Z]*[[:lower:][:digit:]ß]*\\)" nil t 1))
-          ;; (or
-          ;;  (or (not (eq 0 (skip-chars-forward "[[:blank:][:punct:]\n\r]")))
-          ;;      (not (eq 0 (skip-chars-forward "_"))))
-          ;;  (or (and
-          ;;       (not (eq 0 (skip-chars-forward "[:upper:]")))
-          ;;       (not (eq 0 (skip-chars-forward "[[:lower:][:digit:]]")))))
-          ;;  (not (eq 0 (skip-chars-forward "[[:lower:][:digit:]]"))))
-          ;; (skip-chars-forward " \t\r\n\f")
-          (skip-chars-forward "^[[:alnum:]ß]")
-          (setq arg (1- arg)))
+          ;; (setq erg (re-search-forward "\\(\\W+[_[:lower:][:digit:]ß]+\\)" nil t 1))
+          (cond
+           ((or (not (eq 0 (skip-chars-forward "[[:blank:][:punct:]\n\r]")))
+                (not (eq 0 (skip-chars-forward "_"))))
+            (when (or
+                   (< 1 (skip-chars-forward "[:upper:]"))
+                   (not (eq 0 (skip-chars-forward "[[:lower:][:digit:]ß]")))
+                   (not (eq 0 (skip-chars-forward "[[:lower:][:digit:]]"))))
+              (setq arg (1- arg))))
+           ((or
+             (< 1 (skip-chars-forward "[:upper:]"))
+             (not (eq 0 (skip-chars-forward "[[:lower:][:digit:]ß]")))
+             (not (eq 0 (skip-chars-forward "[[:lower:][:digit:]]"))))
+            (setq arg (1- arg)))))
       (while (and (not (bobp)) (< arg 0))
         (when (not (eq 0 (skip-chars-backward "[[:blank:][:punct:]\n\r\f_]")))
 

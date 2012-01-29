@@ -2174,14 +2174,20 @@ This module is an optparse-inspired command-line parsing library that:
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
+def doSomething(blah)
 print \"\"\"Es müsste \"müßte\" heißen.\"\"\"
 "))
     (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-forward-into-nomenclature-lp-916818-base arg teststring)))
 
 (defun py-forward-into-nomenclature-lp-916818-base ()
-  (goto-char 61)
-  (assert (eq 68 (py-forward-into-nomenclature)) nil "py-forward-into-nomenclature-lp-916818-test failed"))
+  (goto-char 48)
+  (assert (eq 51 (py-forward-into-nomenclature)) nil "py-forward-into-nomenclature-test #1 failed")
+  (assert (eq 54 (py-forward-into-nomenclature)) nil "py-forward-into-nomenclature-test #2 failed")
+  (assert (eq 63 (py-forward-into-nomenclature)) nil "py-forward-into-nomenclature-test #3 failed")
+  (assert (eq 68 (py-forward-into-nomenclature)) nil "py-forward-into-nomenclature-test #4 failed")
+  (goto-char 88)
+  (assert (eq 95 (py-forward-into-nomenclature)) nil "py-forward-into-nomenclature-lp-916818-test #5 failed"))
 
 (defun tab-completion-in-Ipython-buffers-lp-916869-test (&optional arg load-branch-function)
   (interactive "p")
