@@ -28,7 +28,7 @@
 *.vrs
 orgcard_letter.tex
 orgcard.txt
-org
+
 org-install.el
 org-*.tar.gz
 org-*.zip
@@ -65,14 +65,6 @@ TODO
 
 commit.txt
 
-python-modes/pdee/CREDITS
-python-modes/pdee/NEWS
-python-modes/pdee/ToDo
-
-pdee/ToDo
-pdee/NEWS
-pdee/CREDITS
-
 website/*
 MANIFEST*
 befehle.txt
@@ -83,10 +75,10 @@ build
 python-modes/pdee/py-process-name.el
 python-modes/pdee/py-set-shell-completion-environment.el
 python-modes/pdee/py-shell.el
-python-modes/pdee/tools/*
-python-modes/python-mode-el/tools/*
-python-modes/xemacs-lp-python-mode/tools/*
-python-modes/pdee/tools/*
+python-modes/pdee/devel/*
+python-modes/python-mode-el/devel/*
+python-modes/xemacs-lp-python-mode/devel/*
+python-modes/pdee/devel/*
 
 # Bytecodes
 *.pyc

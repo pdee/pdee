@@ -25,13 +25,13 @@
 ;;; Major changes to previous version:
 ;; Make comment-start, comment-end buffer-local
 
-;;; Commentary: 
+;;; Commentary:
 
 ;; Further rewrite of comment-lor.el.
 ;; It's suffix `-lor' means `line-or-region': If no
-;;  active region exists, line is commented or uncommented. 
+;;  active region exists, line is commented or uncommented.
 
-;; Thus taking action to mark a region is no longer needed, 
+;; Thus taking action to mark a region is no longer needed,
 ;; which saves keystrokes.
 
 ;; Set out to fix a bug occuring in all Emacsen, reported at
@@ -59,21 +59,21 @@
 ;;             (copy/do-not-copy) /  \
 ;;                               /    \
 ;;                        comment uncomment
-;;                       /\               
-;;                      /  \              
-;;                     /    \             
-;;                plain indent 
+;;                       /\
+;;                      /  \
+;;                     /    \
+;;                plain indent
 ;;               /\               /\
 ;;              /  \             /  \
 ;;             /    \           /    \
-;;     span-line single span-line single 
+;;     span-line single span-line single
 ;;        /\        /\        /\        /\
 ;;       /  \      /  \      /  \      /  \
 ;;      /    \    /    \    /    \    /    \
 ;;
 ;;  ------------ boxed not-boxed ----------------
 
-;; ToDo: 
+;; ToDo:
 
 ;; lor-Comment-uncomment detects only selected
 ;; comment-style, i.e. "/* */" or "//" in C. When
@@ -90,7 +90,7 @@
 (require 'beg-end)
 (require 'thing-at-point-utils)
 
-;; defvars below should be set already, here just to be sure 
+;; defvars below should be set already, here just to be sure
 (defvar comment-end "")
 (make-variable-buffer-local 'comment-end)
 (defvar comment-start ";")
@@ -113,7 +113,7 @@
   "If nil, `comment-' does not comment out empty lines. "
   :type '(choice (const :tag "No" nil)
                  (const :tag "Yes" t)
-  :group 'comment))
+                 :group 'comment))
 
 (defcustom ar-indent-comment-lor nil
   "If after commenting (indent-according-to-mode) is called. "
@@ -149,7 +149,7 @@
 
 ;; The following should be set in C-mode
 
-(defalias 'ar-comment-toggle-c-style-lor 'ar-c-toggle-comment-style-lor) 
+(defalias 'ar-comment-toggle-c-style-lor 'ar-c-toggle-comment-style-lor)
 (defun ar-c-toggle-comment-style-lor ()
   "Change the C default comment style"
   (interactive)
@@ -158,7 +158,7 @@
         (set (make-local-variable 'comment-start) "/* ")
         (set (make-local-variable 'comment-end) " */")
         (when (interactive-p) (message "comment-start: %s comment-end: %s" comment-start comment-end)))
-    (progn 
+    (progn
       (set (make-local-variable 'comment-start) "/")
       (set (make-local-variable 'comment-end) "")
       (set (make-local-variable 'comment-add) 1))
@@ -215,7 +215,7 @@
     (ar-comment-base-lor nil t nil beg end copy)))
 
 (defun ar-comment-base-lor (indent box span &optional beg end copy)
-  (let* ((orig (point)) 
+  (let* ((orig (point))
          (beg (cond ((and beg end) beg)
 		    ((region-active-p)
                      (region-beginning))
@@ -236,7 +236,7 @@
 	 first column)
     (when copy
       (back-to-indentation)
-      (setq column (current-column)) 
+      (setq column (current-column))
       (copy-region-as-kill beg end))
     (cond (span
            (if (and span (not comment-end-not-empty))
@@ -261,12 +261,12 @@ Comments spanning multiple lines need comment-end string")
   (let (last done)
     (while (< (line-end-position) (1+ end))
       (let ((add (or add 0)))
-        (if indent 
+        (if indent
             (back-to-indentation)
           (beginning-of-line))
         (unless (and span done)
           (ar-comment-start-insert comment-start add)
-;; (delete-region (point) (progn (skip-chars-forward " \t")(point)))
+          ;; (delete-region (point) (progn (skip-chars-forward " \t")(point)))
           (setq done t))
         (when comment-end-not-empty
           (goto-char (line-end-position))
@@ -297,7 +297,7 @@ Comments spanning multiple lines need comment-end string")
          (comment-fill-char (substring (string-strip comment-start) -1))
          comment-fill-column)
     (if (< 0 (- min-col length-comment-start))
-        (progn 
+        (progn
           (setq min-col (- min-col length-comment-start))
           (setq max-col (+ max-col length-comment-end)))
       (setq max-col (+ max-col length-comment-start length-comment-end)))
@@ -318,7 +318,7 @@ Comments spanning multiple lines need comment-end string")
 
 (defun ar-comment-set-head-foot-lor (beg end min-col max-col add length-comment-start length-comment-end comment-fill-column comment-fill-char)
   (goto-char beg)
-  (beginning-of-line) 
+  (beginning-of-line)
   (newline)
   (forward-line -1)
   (indent-to-column min-col)
@@ -340,7 +340,7 @@ Comments spanning multiple lines need comment-end string")
     (while (<= (line-end-position) end)
       (back-to-indentation)
       (let ((poscol (current-column)))
-        (when (< poscol min-col) (setq min-col poscol)) 
+        (when (< poscol min-col) (setq min-col poscol))
         (end-of-line)
         (skip-chars-backward " \t")
         (setq poscol (current-column))
@@ -370,8 +370,8 @@ Comments spanning multiple lines need comment-end string")
   (while (<= (line-end-position) end)
     (beginning-of-line)
     (let ((pos (save-excursion (progn (move-to-column min-col t) (point))))
-                  (no-padding (or (string= "" comment-padding)
-                                  (eq 0 comment-padding)))) 
+          (no-padding (or (string= "" comment-padding)
+                          (eq 0 comment-padding))))
       (skip-chars-forward " \t" pos)
       (when (< (current-column) min-col) (indent-to-column min-col))
       (ar-comment-start-insert comment-start add)
@@ -390,29 +390,29 @@ Comments spanning multiple lines need comment-end string")
   "Insert a comment after code on current line. "
   (interactive "*")
   (let* ((add comment-add)
-                 (continue (ar-comment-atpt))
-                 (col (or col 
-                          (if continue
-                              (progn (goto-char
-                                      (ar-comment-beginning-position-atpt))
-                                     ;; needed for //
-                                     (while (looking-back (regexp-quote comment-start))
-                                       (goto-char (match-beginning 0)))
-                                     (current-column)) 
-                            (end-of-line) 
-                            (skip-chars-backward " \t")
-                            (if (looking-at " ")
-                                (forward-char 1)
-                              (insert " "))
-                            (current-column)))))
+         (continue (ar-comment-atpt))
+         (col (or col
+                  (if continue
+                      (progn (goto-char
+                              (ar-comment-beginning-position-atpt))
+                             ;; needed for //
+                             (while (looking-back (regexp-quote comment-start))
+                               (goto-char (match-beginning 0)))
+                             (current-column))
+                    (end-of-line)
+                    (skip-chars-backward " \t")
+                    (if (looking-at " ")
+                        (forward-char 1)
+                      (insert " "))
+                    (current-column)))))
     (when continue
-      (end-of-line) 
+      (end-of-line)
       (newline)
       (indent-to-column col))
     (ar-comment-start-insert comment-start add)
     (ar-comment-inl-endform-lor)))
 
-(defun ar-comment-inl-endform-lor (&optional span) 
+(defun ar-comment-inl-endform-lor (&optional span)
   (save-excursion
     (unless (and (string= "" comment-end) (not span))
       (insert comment-end)))
@@ -437,10 +437,10 @@ Comments spanning multiple lines need comment-end string")
         column)
     (when copy
       (back-to-indentation)
-      (setq column (current-column)) 
+      (setq column (current-column))
       (copy-region-as-kill beg end))
     (ar-uncomment-intern-lor beg end add)
-    (when ar-indent-uncomment-lor (indent-according-to-mode)) 
+    (when ar-indent-uncomment-lor (indent-according-to-mode))
     (if ar-comment-stay-on-line-lor
         (goto-char end)
       (forward-line 1))
@@ -499,15 +499,15 @@ Calls `comment' at the end of line as `ar-comment-right-margin-lor'.
 Comments empty lines ignoring value of `ar-comment-empty-lines-lor'"
   (interactive "*P")
   (let ((copy (or copy (eq 4 (prefix-numeric-value copy))))
-                (beg (cond ((and beg end) (copy-marker beg))
-                           ((region-active-p)
-                            (region-beginning))
-                           (t (line-beginning-position))))
-                (end (cond ((and beg end)
-                            (copy-marker end))
-                           ((region-active-p)
-                            (copy-marker (region-end)))
-                           (t (copy-marker (line-end-position))))))
+        (beg (cond ((and beg end) (copy-marker beg))
+                   ((region-active-p)
+                    (region-beginning))
+                   (t (line-beginning-position))))
+        (end (cond ((and beg end)
+                    (copy-marker end))
+                   ((region-active-p)
+                    (copy-marker (region-end)))
+                   (t (copy-marker (line-end-position))))))
     (goto-char beg)
     (while (and (empty-line-p) (not (eobp)))
       (forward-line 1))
@@ -525,23 +525,23 @@ region is commented alltogether. "
   (interactive "*P")
   (save-match-data
     (let ((copy (or copy (eq 4 (prefix-numeric-value copy))))
-                  (beg (cond ((and beg end) beg)
-                             ((region-active-p)
-                              (region-beginning))
-                             (t (line-beginning-position))))
-                  (end (cond ((and beg end)
-                              (copy-marker end))
-                             ((region-active-p)
-                              (copy-marker (region-end)))
-                             (t (copy-marker (line-end-position))))))
+          (beg (cond ((and beg end) beg)
+                     ((region-active-p)
+                      (region-beginning))
+                     (t (line-beginning-position))))
+          (end (cond ((and beg end)
+                      (copy-marker end))
+                     ((region-active-p)
+                      (copy-marker (region-end)))
+                     (t (copy-marker (line-end-position))))))
       (goto-char beg)
       (back-to-indentation)
       (setq beg (point))
-      (cond 
+      (cond
        ((ar-in-comment-p-lor)
         (funcall ar-uncomment-function-lor copy beg end))
        ((empty-line-p)
-	(forward-line 1)) 
+	(forward-line 1))
        (t (funcall ar-comment-function-lor copy beg end))))))
 
 (defun ar-comment-start-insert (comment-start &optional add indent no-padding)

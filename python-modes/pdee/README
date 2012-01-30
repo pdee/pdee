@@ -7,7 +7,9 @@ See also commands list delivered in directory doc.
 List virtualenv related `M-x virtualenv- TAB'
 resp. Pymacs commands `M-x pymacs-'  
 
-Open an installed shell by specifying it's name like
+Commands related to a specific shell start with
+it's name as `ipython-complete'.
+Open an installed shell by 
 
 M-x SHELL
 
@@ -23,4 +25,3 @@ Install a local shell by evaluating
 (defun MY-LOCAL-SHELL ()
   (interactive)
   (py-shell nil DEDICATED PATH-TO-LOCAL-SHELL))
-

@@ -45,27 +45,30 @@
 (defun finds-base (oldbuf file orgname reSTname directory-in directory-out)
   (save-restriction
     (let (commandslist)
-      (widen)
+      ;; (widen)
       (goto-char (point-min))
-      (eval-buffer)
-      (while (re-search-forward "^(defun +\\([[:alnum:]-]+\\)" nil t 1)
-        (goto-char (match-beginning 1))
+      ;; (eval-buffer)
+      (while (not (eobp))
         (when (commandp (symbol-at-point))
           (lexical-let* ((name (symbol-at-point))
                          (docu (documentation name)))
             (unless docu (message "don't see docu string for %s" (prin1-to-string name)))
             (add-to-list 'commandslist (cons (prin1-to-string name) docu))
             ;; (message "%s" (car commandslist))
-            (end-of-defun))))
+            ;; (end-of-defun)
+))
+        (forward-line 1))
       (setq commandslist (nreverse commandslist))
       (with-temp-buffer
         (switch-to-buffer (current-buffer))
-        (insert (concat ";; a list of " oldbuf " commands
-\(setq " oldbuf "-commands (quote "))
+        (insert (concat ";; a list of " "python-mode-el" " commands
+\(setq " "python-mode-el" "-commands (quote "))
         (insert (prin1-to-string commandslist))
         (insert "))")
         (eval-buffer)
-        (write-file (concat directory-out "commands-" (concat (substring oldbuf 0 (string-match "\\." oldbuf)) ".el"))))
+        (write-file (concat directory-out "commands-" "python-mode-el"
+                            ;; (concat (substring oldbuf 0 (string-match "\\." oldbuf)) ".el")
+)))
       (with-temp-buffer
         ;; org
         (insert (concat (capitalize (substring oldbuf 0 (string-match "\." oldbuf))) " commands" "\n\n"))
