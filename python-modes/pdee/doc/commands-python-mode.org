@@ -1,10 +1,5 @@
-Python-Mode commands
+ commands
 
-* py-load-pymacs
-   Load Pymacs as delivered with python-mode.el.
-
-Pymacs has been written by François Pinard and many others.
-See original source: http://pymacs.progiciels-bpi.ca
 * py-insert-default-shebang
    Insert in buffer shebang of installed default Python. 
 * py-electric-comment
@@ -50,6 +45,19 @@ When indent is set back manually, this is honoured in following lines.
 * py-newline-and-dedent
    Add a newline and indent to one level below current.
 Returns column. 
+* toggle-indent-tabs-mode
+   Toggle `indent-tabs-mode'.
+
+Returns value of `indent-tabs-mode' switched to. 
+* indent-tabs-mode
+   With positive ARG switch `indent-tabs-mode' on.
+
+With negative ARG switch `indent-tabs-mode' off.
+Returns value of `indent-tabs-mode' switched to. 
+* indent-tabs-mode-on
+   Switch `indent-tabs-mode' on. 
+* indent-tabs-mode-off
+   Switch `indent-tabs-mode' on. 
 * py-guess-indent-offset
    Guess a value for, and change, `py-indent-offset'.
 
@@ -73,6 +81,13 @@ If no region is active, current line is indented.
 Returns indentation reached. 
 * py-shift-paragraph-right
    Indent paragraph by COUNT spaces.
+
+COUNT defaults to `py-indent-offset',
+use [universal-argument] to specify a different value.
+
+Returns outmost indentation reached. 
+* py-shift-paragraph-left
+   Dedent paragraph by COUNT spaces.
 
 COUNT defaults to `py-indent-offset',
 use [universal-argument] to specify a different value.
@@ -218,6 +233,8 @@ initial line; and comment lines beginning in column 1 are ignored.
    Returns end of def position. 
 * py-end-of-class-position
    Returns end of class position. 
+* py-end-of-def-or-class-position
+   Returns end of def resp. class position, non-greedy. 
 * py-end-of-line-position
    Returns end of line position. 
 * py-end-of-statement-position
@@ -655,10 +672,6 @@ Travels right-margin comments.
    Go to the beginning of a list.
 Optional ARG indicates a start-position for `parse-partial-sexp'.
 Return beginning position, nil if not inside.
-* py-beginning-of-list
-   Go to beginning of any parentized, braced or bracketed expression in statement. 
-* py-end-of-list
-   Go to end of any parentized, braced or bracketed expression in statement. 
 * py-down-block-lc
    Goto beginning of line following end of block.
 
@@ -748,7 +761,9 @@ With universal arg  insert a `%'.
 * py-toggle-execute-keep-temporary-file-p
    Toggle py-execute-keep-temporary-file-p 
 * py-guess-default-python
-   If any Python is installed. Used by `py-shell' if `py-shell-name' is neither selected nor has a customized default value. 
+   Defaults to "python", if guessing didn't succeed. 
+* py-set-shell-completion-environment
+   Sets `...-completion-command-string' and `py-complete-function'. 
 * py-shell-dedicated
    Start an interactive Python interpreter in another window.
 
@@ -766,97 +781,85 @@ Returns variable `py-process-name' used by function `get-process'.
 
 * python
    Start an Python interpreter in another window.
-
-With optional C-u user is prompted
-for options to pass to the Python interpreter. 
+   With optional C-u user is prompted
+    for options to pass to the Python interpreter. 
 * python2
    Start an Python2 interpreter in another window.
-
-With optional C-u user is prompted
-for options to pass to the Python2 interpreter. 
-* python2\.7
-   Start an Python2.7 interpreter in another window.
-
-With optional C-u user is prompted
-for options to pass to the Python2.7 interpreter. 
+   With optional C-u user is prompted
+    for options to pass to the Python2 interpreter. 
 * python3
    Start an Python3 interpreter in another window.
-
-With optional C-u user is prompted
-for options to pass to the Python3 interpreter. 
-* python3\.2
-   Start an Python3.2 interpreter in another window.
-
-With optional C-u user is prompted
-for options to pass to the Python3.2 interpreter. 
+   With optional C-u user is prompted
+    for options to pass to the Python3 interpreter. 
 * ipython
    Start an IPython interpreter in another window.
-
-With optional C-u user is prompted
-for options to pass to the IPython interpreter. 
+   With optional C-u user is prompted
+    for options to pass to the IPython interpreter. 
 * jython
    Start an Jython interpreter in another window.
-
-With optional C-u user is prompted
-for options to pass to the Jython interpreter. 
+   With optional C-u user is prompted
+    for options to pass to the Jython interpreter. 
 * python-dedicated
-   Start an unique Python interpreter in another window.
-
-With optional C-u user is prompted
-for options to pass to the Python interpreter. 
+   Start an Python dedicated interpreter in another window.
+   With optional C-u user is prompted
+    for options to pass to the Python interpreter. 
 * python2-dedicated
-   Start an unique Python2 interpreter in another window.
-
-With optional C-u user is prompted
-for options to pass to the Python2 interpreter. 
-* python2\.7-dedicated
-   Start an unique Python2.7 interpreter in another window.
-
-With optional C-u user is prompted
-for options to pass to the Python2.7 interpreter. 
+   Start an Python2 dedicated interpreter in another window.
+   With optional C-u user is prompted
+    for options to pass to the Python2 interpreter. 
 * python3-dedicated
-   Start an unique Python3 interpreter in another window.
-
-With optional C-u user is prompted
-for options to pass to the Python3 interpreter. 
-* python3\.2-dedicated
-   Start an unique Python3.2 interpreter in another window.
-
-With optional C-u user is prompted
-for options to pass to the Python3.2 interpreter. 
+   Start an Python3 dedicated interpreter in another window.
+   With optional C-u user is prompted
+    for options to pass to the Python3 interpreter. 
 * ipython-dedicated
-   Start an unique IPython interpreter in another window.
-
-With optional C-u user is prompted
-for options to pass to the IPython interpreter. 
+   Start an IPython dedicated interpreter in another window.
+   With optional C-u user is prompted
+    for options to pass to the IPython interpreter. 
 * jython-dedicated
-   Start an unique Jython interpreter in another window.
-
-With optional C-u user is prompted
-for options to pass to the Jython interpreter. 
+   Start an Jython dedicated interpreter in another window.
+   With optional C-u user is prompted
+    for options to pass to the Jython interpreter. 
 * py-which-execute-file-command
    Return the command appropriate to Python version.
 
 Per default it's "(format "execfile(r'%s') # PYTHON-MODE\n" filename)" for Python 2 series.
 * py-execute-region-no-switch
-   Send the region to a common shell calling a Python interpreter.
+   Send the region to a Python interpreter.
 
 Ignores setting of `py-shell-switch-buffers-on-execute', buffer with region stays current.
  
 * py-execute-region-switch
-   Send the region to a common shell calling a Python interpreter.
+   Send the region to a Python interpreter.
 
 Ignores setting of `py-shell-switch-buffers-on-execute', output-buffer will being switched to.
 
 * py-execute-region
-   Send the region to a common shell calling a Python interpreter. 
+   Send the region to a Python interpreter.
+
+When called with M-x univeral-argument, execution through `default-value' of `py-shell-name' is forced.
+When called with M-x univeral-argument followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
+
+When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument. 
+* py-execute-region-default
+   Send the region to the systems default Python interpreter.
+See also `py-execute-region'. 
 * py-execute-region-dedicated
-   Get the region processed by an unique Python interpreter. 
+   Get the region processed by an unique Python interpreter.
+
+When called with M-x univeral-argument, execution through `default-value' of `py-shell-name' is forced.
+When called with M-x univeral-argument followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
+
+When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument. 
+* py-execute-region-default-dedicated
+   Send the region to an unique shell of systems default Python. 
 * py-execute-string
    Send the argument STRING to a Python interpreter.
 
-See the `M-x py-execute-region' docs for an account of some
-subtleties, including the use of the optional ASYNC argument.
+See also `py-execute-region'. 
+* py-execute-string-dedicated
+   Send the argument STRING to an unique Python interpreter.
+
+See also `py-execute-region'. 
 * py-shell-command-on-region
    Execute region in a shell.
 
@@ -873,6 +876,9 @@ Caveat: Can't be used for expressions containing
 Unicode strings like u'\xA9' 
 * py-send-region-ipython
    Execute the region through an ipython shell. 
+* ipython-send-and-indent
+   Send the current line to IPython, and calculate the indentation for
+the next line.
 * py-execute-region-in-shell
    Execute the region in a Python shell. 
 * py-fetch-py-master-file
@@ -894,8 +900,7 @@ If the file local variable `py-master-file' is non-nil, import or
 reload the named file instead of the buffer's file.  The file may be
 saved based on the value of `py-execute-import-or-reload-save-p'.
 
-See the `M-x py-execute-region' docs for an account of some
-subtleties, including the use of the optional ASYNC argument.
+See also `M-x py-execute-region'.
 
 This may be preferable to `M-x py-execute-buffer' because:
 
@@ -909,11 +914,10 @@ This may be preferable to `M-x py-execute-buffer' because:
 
 If the file local variable `py-master-file' is non-nil, execute the
 named file instead of the buffer's file.
-If there is a *Python* process buffer, it is used.  
+If there is a *Python* process buffer, it is used.
 If a clipping restriction is in effect, only the accessible portion of the buffer is sent. A trailing newline will be supplied if needed.
 
-See the `M-x py-execute-region' docs for an account of some
-subtleties, including the use of the optional ASYNC argument.
+See also `M-x py-execute-region'. 
 * py-execute-buffer-no-switch
    Like `py-execute-buffer', but ignores setting of `py-shell-switch-buffers-on-execute'.
 
@@ -934,20 +938,9 @@ Ignores setting of `py-shell-switch-buffers-on-execute', output-buffer will not 
    Send the region to a common shell calling the python2 interpreter. 
 * py-execute-region-python2-switch
    Send the region to a common shell calling the python2 interpreter.
-
 Ignores setting of `py-shell-switch-buffers-on-execute', output-buffer will being switched to. 
 * py-execute-region-python2-no-switch
    Send the region to a common shell calling the python2 interpreter.
-
-Ignores setting of `py-shell-switch-buffers-on-execute', output-buffer will not being switched to.
-* py-execute-region-python2\.7
-   Send the region to a common shell calling the python2.7 interpreter. 
-* py-execute-region-python2\.7-switch
-   Send the region to a common shell calling the python2.7 interpreter.
-
-Ignores setting of `py-shell-switch-buffers-on-execute', output-buffer will being switched to. 
-* py-execute-region-python2\.7-no-switch
-   Send the region to a common shell calling the python2.7 interpreter.
 
 Ignores setting of `py-shell-switch-buffers-on-execute', output-buffer will not being switched to.
 * py-execute-region-python3
@@ -958,16 +951,6 @@ Ignores setting of `py-shell-switch-buffers-on-execute', output-buffer will not 
 Ignores setting of `py-shell-switch-buffers-on-execute', output-buffer will being switched to. 
 * py-execute-region-python3-no-switch
    Send the region to a common shell calling the python3 interpreter.
-
-Ignores setting of `py-shell-switch-buffers-on-execute', output-buffer will not being switched to.
-* py-execute-region-python3\.2
-   Send the region to a common shell calling the python3.2 interpreter. 
-* py-execute-region-python3\.2-switch
-   Send the region to a common shell calling the python3.2 interpreter.
-
-Ignores setting of `py-shell-switch-buffers-on-execute', output-buffer will being switched to. 
-* py-execute-region-python3\.2-no-switch
-   Send the region to a common shell calling the python3.2 interpreter.
 
 Ignores setting of `py-shell-switch-buffers-on-execute', output-buffer will not being switched to.
 * py-execute-region-ipython
@@ -1045,6 +1028,8 @@ jump to the top (outermost) exception in the exception stack.
    Lookup in current buffer for the doku for the symbol at point.
 
 Useful for newly defined symbol, not known to python yet. 
+* python-find-imports
+   Find top-level imports, updating `python-imports'.
 * py-describe-symbol
    Print help on symbol at point. 
 * py-describe-mode
@@ -1053,8 +1038,6 @@ Useful for newly defined symbol, not known to python yet.
    Find source of definition of function NAME.
 
 Interactively, prompt for name.
-* py-find-imports
-   Find top-level imports, updating `python-imports'.
 * py-update-imports
    Returns `python-imports'.
 
@@ -1097,29 +1080,27 @@ If final line isn't empty and `py-close-block-provides-newline' non-nil, insert 
    Return class definition as string.
 
 With interactive call, send it to the message buffer too. 
-* ar-py-function-at-point
+* py-function-at-point
    Return functions definition as string.
 
 With interactive call, send it to the message buffer too. 
-* ar-py-beginning-of-function
-   Jump to the beginning of defun. Returns point. 
-* ar-py-beginning-of-class
-   Jump to the beginning of class definition. Returns column. 
-* ar-py-end-of-function
+* py-beginning-of-function
+   Jump to the beginning of function. Returns point. 
+* py-end-of-function
    Jump to the end of function. 
-* ar-py-line-at-point
+* py-line-at-point
    Return line as string.
   With interactive call, send it to the message buffer too. 
-* ar-py-looking-at-keywords-p
+* py-looking-at-keywords-p
    If looking at a python keyword. Returns t or nil. 
-* ar-py-match-paren-mode
+* py-match-paren-mode
    py-match-paren-mode nil oder t
-* ar-py-match-paren
+* py-match-paren
    Goto to the opening or closing of block before or after point.
 
 With arg, do it that many times.
  Closes unclosed block if jumping from beginning. 
-* ar-py-documentation
+* py-documentation
    Launch PyDOC on the Word at Point
 * eva
    Put "eval(...)" forms around strings at point. 
@@ -1135,14 +1116,16 @@ With arg, do it that many times.
 Switch between classic index machine `py-imenu-create-index'-function and new `py-imenu-create-index-new'.
 
 The former may provide a more detailed report, thus delivering two different index-machines is considered. 
+* py-completion-at-point
+   
 * py-choose-shell-by-shebang
    Choose shell by looking at #! on the first line.
 
 Returns the specified Python resp. Jython shell command name. 
 * py-which-python
-   Returns version of Python of current default environment, a number. 
-* py-python-default-environment
-   Returns path of Python default installation. 
+   Returns version of Python of current environment, a number. 
+* py-python-current-environment
+   Returns path of current Python installation. 
 * py-toggle-shells
    Toggles between the CPython and Jython default interpreter.
 
@@ -1151,95 +1134,22 @@ With C-u) user is prompted for the command to use.
 If no arg given and py-shell-name not set yet, shell is set according to `py-shell-name' 
 * py-choose-shell
    Looks for an appropriate mode function.
+
 This does the following:
- - reads py-shell-name
  - look for an interpreter with `py-choose-shell-by-shebang'
  - examine imports using `py-choose-shell-by-import'
- - default to the variable `py-shell-name'
+ - if not successful, return default value of `py-shell-name'
 
 With C-u) user is prompted to specify a reachable Python version.
-* python-mode
-   Major mode for editing Python files.
+* py-load-pymacs
+   Load Pymacs as delivered with python-mode.el.
 
-To submit a problem report, enter `M-x py-submit-bug-report' from a
-`python-mode' buffer.  Do `M-x py-describe-mode' for detailed
-documentation.  To see what version of `python-mode' you are running,
-enter `M-x py-version'.
-
-This mode knows about Python indentation, tokens, comments and
-continuation lines.  Paragraphs are separated by blank lines only.
-
-COMMANDS
-key             binding
----             -------
-
-C-c             Prefix Command
-C-j             py-newline-and-indent
-RET             py-newline-and-indent
-C-x             Prefix Command
-ESC             Prefix Command
-#               py-electric-comment
-:               py-electric-colon
-s-I             py-indent-line
-s-i             py-indent-forward-line
-s-s             suche-settrace
-<C-backspace>   py-hungry-delete-backwards
-<C-return>      py-newline-and-dedent
-<backspace>     py-electric-backspace
-<delete>        py-electric-delete
-<s-backspace>   py-dedent-forward-line
-
-C-x n           Prefix Command
-
-C-M-a           py-beginning-of-def-or-class
-C-M-e           py-end-of-def-or-class
-C-M-h           py-mark-def-or-class
-M-TAB           completion-at-point
-C-M-n           py-end-of-block
-C-M-p           py-beginning-of-block
-C-M-x           py-execute-def-or-class
-
-C-c C-a         py-mark-statement
-C-c C-b         py-submit-bug-report
-C-c C-c         py-execute-buffer
-C-c C-d         py-pdbtrack-toggle-stack-tracking
-C-c C-e         py-describe-symbol
-C-c C-f         py-sort-imports
-C-c C-k         py-mark-block-or-clause
-C-c C-l         py-shift-left
-C-c RET         py-execute-import-or-reload
-C-c C-n         py-end-of-statement
-C-c C-p         py-beginning-of-statement
-C-c C-q         py-end-of-block
-C-c C-r         py-shift-right
-C-c C-s         py-execute-string
-C-c C-t         py-toggle-shells
-C-c C-u         py-beginning-of-block
-C-c C-v         py-version
-C-c C-w         py-pychecker-run
-C-c !           py-shell
-C-c #           py-comment-region
-C-c -           py-up-exception
-C-c :           py-guess-indent-offset
-C-c <           py-shift-left
-C-c =           py-down-exception
-C-c >           py-shift-right
-C-c ?           py-describe-mode
-C-c c           py-compute-indentation
-C-c |           py-execute-region
-C-c <delete>    py-hungry-delete-forward
-C-c <tab>       py-indent-region
-
-C-x n d         py-narrow-to-defun
-
-
-VARIABLES
-
-py-indent-offset		indentation increment
-py-block-comment-prefix		comment string used by `comment-region'
-py-shell-name		shell command to invoke Python interpreter
-py-temp-directory		directory used for temp files (if needed)
-py-beep-if-tab-change		ring the bell if `tab-width' is changed
+Pymacs has been written by François Pinard and many others.
+See original source: http://pymacs.progiciels-bpi.ca
+* py-guess-py-install-directory
+   
+* py-set-load-path
+   Include needed subdirs of python-mode directory. 
 * py-def-or-class-beginning-position
    Returns beginning position of function or class definition. 
 * py-def-or-class-end-position
@@ -1252,6 +1162,15 @@ py-beep-if-tab-change		ring the bell if `tab-width' is changed
    Returns beginning position of code in line. 
 * py-version
    Echo the current version of `python-mode' in the minibuffer.
+* py-toggle-local-default-use
+   
+* py-install-search-local
+   
+* py-install-local-shells
+   Builds Python-shell commands from executable found in LOCAL.
+
+If LOCAL is empty, shell-command `find' searches beneath current directory.
+Eval resulting buffer to install it, see customizable `py-extensions'. 
 * run-python
    Run an inferior Python process, input and output via buffer *Python*.
 
@@ -1299,14 +1218,21 @@ If the current buffer has a local value of `python-buffer', set the
 default (global) value to that.  The associated Python process is
 the one that gets input from M-x py-send-region et al when used
 in a buffer that doesn't have a local value of `python-buffer'.
-* py-shell-redirect-send-command-to-process
-   Send COMMAND to PROCESS, with output to OUTPUT-BUFFER.
-With prefix arg, echo output in process buffer.
-
-If NO-DISPLAY is non-nil, do not show the output buffer.
+* python-send-string
+   Evaluate STRING in inferior Python process.
 * py-shell-complete
    Complete word before point, if any. Otherwise insert TAB. 
 * ipython-complete
-   Complete the python symbol before point. 
+   Complete the python symbol before point.
 
 Only knows about the stuff in the current *Python* session.
+* py-pychecker-run
+   *Run pychecker (default on the file currently visited).
+* virtualenv-current
+   barfs the current activated virtualenv
+* virtualenv-activate
+   Activate the virtualenv located in DIR
+* virtualenv-deactivate
+   Deactivate the current virtual enviroment
+* virtualenv-workon
+   Issue a virtualenvwrapper-like virtualenv-workon command
