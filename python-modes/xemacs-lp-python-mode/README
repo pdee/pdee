@@ -1,3 +1,26 @@
-This is branched from
+Most python-mode.el commands start with prefix `py-'
 
-https://code.launchpad.net/~a-roehler/python-mode/XEmacs-compat-test
+`M-x py- TAB'
+displays a list of them in completion-buffer. 
+See also commands list delivered in directory doc.
+
+List virtualenv related `M-x virtualenv- TAB'
+resp. Pymacs commands `M-x pymacs-'  
+
+Open an installed shell by specifying it's name like
+
+M-x SHELL
+
+With prefix C-u user is prompted to specify a PATH-TO-LOCAL-SHELL
+Also evaluating
+
+(py-shell nil DEDICATED PATH-TO-LOCAL-SHELL)
+
+if DEDICATED is set to `t', shell will get an unique name.
+
+Install a local shell by evaluating
+
+(defun MY-LOCAL-SHELL ()
+  (interactive)
+  (py-shell nil DEDICATED PATH-TO-LOCAL-SHELL))
+

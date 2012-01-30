@@ -115,7 +115,6 @@ If LOCAL is non-nil, do so locally for the current buffer only."
     (remove-hook 'post-command-hook 'highlight-thing-hook t)
     (delete-overlay highlight-thing-overlay))))
 
-;;;###autoload
 (defun highlight-thing-minor-mode (&optional arg)
   "Toggle highlight-thing minor mode.
 With ARG, turn minor mode on if ARG is positive, off otherwise.

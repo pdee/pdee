@@ -1263,13 +1263,13 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (ignore-errors (looking-at "{"))
            (list (match-beginning 0)(match-end 0))
-         (beginning-of-form-base "{" "}" nil 'move 1 nil 'ar-syntax))))
+         (beginning-of-form-base "{" "}" nil 'move 1 nil 'ar-syntax t))))
 
 (put 'braced 'end-op-at
      (lambda ()
        (when (looking-at "{")
          (goto-char (match-end 0))
-         (end-of-form-base "{" "}" nil 'move 1 nil 'ar-syntax))))
+         (end-of-form-base "{" "}" nil 'move 1 nil 'ar-syntax t))))
 
 (put 'braced 'forward-op-at
      (lambda ()
@@ -1283,19 +1283,19 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 
 (put 'bracketed 'beginning-op-at
      (lambda ()
-       (if (ignore-errors (looking-at "\\\["))
+       (if (ignore-errors (looking-at "\\\\\\\["))
            (list (match-beginning 0)(match-end 0))
-         (beginning-of-form-base "\[" "]" nil 'move 1 nil t 'ar-syntax))))
+         (beginning-of-form-base "\\\[" "]" nil 'move 1 nil t 'ar-syntax t))))
 
 (put 'bracketed 'end-op-at
      (lambda ()
-       (when (looking-at "\\\[")
+       (when (looking-at "\\\\\\\[")
          (goto-char (match-end 0))
-         (end-of-form-base "\[" "]" nil 'move 1 nil t 'ar-syntax))))
+         (end-of-form-base "\\\[" "]" nil 'move 1 nil t 'ar-syntax t))))
 
 (put 'bracketed 'forward-op-at
      (lambda ()
-       (skip-chars-forward "^\[")(point)))
+       (skip-chars-forward "^\\\[")(point)))
 
 (put 'bracketed 'backward-op-at
      (lambda ()
@@ -1307,13 +1307,13 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (ignore-errors (looking-at "<"))
            (list (match-beginning 0)(match-end 0))
-         (beginning-of-form-base "<" ">" nil 'move 1 nil 'ar-syntax))))
+         (beginning-of-form-base "<" ">" nil 'move 1 nil 'ar-syntax t))))
 
 (put 'lesser-angled 'end-op-at
      (lambda ()
        (when (looking-at "<")
          (goto-char (match-end 0))
-         (end-of-form-base "<" ">" nil 'move 1 nil 'ar-syntax))))
+         (end-of-form-base "<" ">" nil 'move 1 nil 'ar-syntax t))))
 
 (put 'lesser-angled 'forward-op-at
      (lambda ()
@@ -1329,13 +1329,13 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (ignore-errors (looking-at ">"))
            (list (match-beginning 0)(match-end 0))
-         (beginning-of-form-base ">" "<" nil 'move 1 nil 'ar-syntax))))
+         (beginning-of-form-base ">" "<" nil 'move 1 nil 'ar-syntax t))))
 
 (put 'greater-angled 'end-op-at
      (lambda ()
        (when (looking-at ">")
          (goto-char (match-end 0))
-         (end-of-form-base ">" "<" nil 'move 1 nil 'ar-syntax))))
+         (end-of-form-base ">" "<" nil 'move 1 nil 'ar-syntax t))))
 
 (put 'greater-angled 'forward-op-at
      (lambda ()
@@ -1351,13 +1351,13 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (ignore-errors (looking-at "‘"))
            (list (match-beginning 0)(match-end 0))
-         (beginning-of-form-base "‘" "’" nil 'move 1 nil 'ar-syntax))))
+         (beginning-of-form-base "‘" "’" nil 'move 1 nil 'ar-syntax t))))
 
 (put 'left-right-singlequoted 'end-op-at
      (lambda ()
        (when (looking-at "‘")
          (goto-char (match-end 0))
-         (end-of-form-base "‘" "’" nil 'move 1 nil 'ar-syntax))))
+         (end-of-form-base "‘" "’" nil 'move 1 nil 'ar-syntax t))))
 
 (put 'left-right-singlequoted 'forward-op-at
      (lambda ()
@@ -1373,13 +1373,13 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (ignore-errors (looking-at "("))
            (list (match-beginning 0)(match-end 0))
-         (beginning-of-form-base "(" ")" nil 'move 1 nil 'ar-syntax))))
+         (beginning-of-form-base "(" ")" nil 'move 1 nil 'ar-syntax t))))
 
 (put 'parentized 'end-op-at
      (lambda ()
        (when (looking-at "(")
          (goto-char (match-end 0))
-         (end-of-form-base "(" ")" nil 'move 1 nil 'ar-syntax))))
+         (end-of-form-base "(" ")" nil 'move 1 nil 'ar-syntax t))))
 
 (put 'parentized 'forward-op-at
      (lambda ()

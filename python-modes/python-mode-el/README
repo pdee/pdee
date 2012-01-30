@@ -1,16 +1,26 @@
-This is branched from 
+Most python-mode.el commands start with prefix `py-'
 
-https://code.launchpad.net/~python-mode-devs/python-mode/python-mode
+`M-x py- TAB'
+displays a list of them in completion-buffer. 
+See also commands list delivered in directory doc.
 
-The original project contains basically:
+List virtualenv related `M-x virtualenv- TAB'
+resp. Pymacs commands `M-x pymacs-'  
 
-    * python-mode.el - major mode for editing Python source
-    * column-marker.el
-    * highlight-indentation.el
-    * doctest-mode.el - major mode for editing doctest files
-    * pycomplete.el - support for Python symbol completion (Emacs Lisp side)
-    * pycomplete.py - support for Python symbol completion (Python side)
+Open an installed shell by specifying it's name like
 
+M-x SHELL
 
-Remaining files provide tests and tools for developers
+With prefix C-u user is prompted to specify a PATH-TO-LOCAL-SHELL
+Also evaluating
+
+(py-shell nil DEDICATED PATH-TO-LOCAL-SHELL)
+
+if DEDICATED is set to `t', shell will get an unique name.
+
+Install a local shell by evaluating
+
+(defun MY-LOCAL-SHELL ()
+  (interactive)
+  (py-shell nil DEDICATED PATH-TO-LOCAL-SHELL))
 

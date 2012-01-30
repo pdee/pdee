@@ -21,7 +21,7 @@
 ;; Foundation, Inc., 51 Franklin Street, Fifth Floor,
 ;; Boston, MA 02110-1301, USA.
 
-;;; Major changes to previous version: 
+;;; Major changes to previous version:
 ;;  Checks for inside comment deactivated, circle-call-bugs
 
 ;;; Commentary:
@@ -34,13 +34,13 @@
 
 ;; FixMe: `ar-in-comment-p-atpt' uses
 ;; thingatpt-utils-base while required from
- 
+
 (require 'misc-utils)
 
 ;;; Code:
 
 ;; (setq begstr "\\bcase\\b\\|\\bfor\\b\\|\\bfunction\\b\\|\\bif\\b\\|\\bselect\\b\\|\\buntil\\b\\|\\bwhile\\b")
-;; (setq endstr "\\bdone\\b\\|\\besac\\b\\|\\bfi\\b") 
+;; (setq endstr "\\bdone\\b\\|\\besac\\b\\|\\bfi\\b")
 
 ;; (defun set-beginning-of-form ()
 ;;   "Set `beginning-of-form' as `beginning-of-defun-function'."
@@ -74,7 +74,7 @@ If not at the beginning or the end, to opening first. "
 	(t (beginning-of-form)
 	   (when iact (message "%s" (point))) (point))))
 
-(defun beginning-of-form (&optional bound noerror count comment) 
+(defun beginning-of-form (&optional bound noerror count comment)
   "Goto opening of a programming structure in this level.
 Reads strings as arguments from minibuffer.
  Don't use this from a program, use `beginning-of-form-base' instead. "
@@ -117,28 +117,28 @@ Set comment to `t' if forms inside comments should match - also for processing c
 
 (defun ar-escaped (&optional iact)
   "Return t if char is preceded by an odd number of backslashes. "
-  (interactive "p") 
+  (interactive "p")
   (let ((orig (point))
         erg)
     (goto-char (match-beginning 0))
     (setq erg (< 0 (abs (% (skip-chars-backward "\\\\")2))))
-    (goto-char orig) 
+    (goto-char orig)
     (when iact (message "%s" erg))
     erg))
 
 (defun ar-syntax (&optional arg)
   "Return t if char meant as syntax-symbol. "
-  (interactive "p") 
+  (interactive "p")
   (let ((orig (point))
         erg)
     (goto-char (match-beginning 0))
     (setq erg (looking-back "\\\\s"))
-    (goto-char orig) 
+    (goto-char orig)
     (when arg (message "%s" erg))
     erg))
 
 ;; should `parse-sexp-ignore-comments' be used?
-(defun beginning-of-form-base (begstr &optional endstr bound noerror count comment regexp condition)
+(defun beginning-of-form-base (begstr &optional endstr bound noerror count comment regexp condition string)
   "Goto opening of a programming structure in this level.
 Takes strings as arguments for search.
 Set comment to `t' if forms inside comments should match - also for processing comments itself.
@@ -147,7 +147,7 @@ Set 7th argument REGEXP t, if beg/end-str are regular expressions.
   (let* ((searchform (cond ((and (string= begstr endstr))
                             begstr)
                            ((and begstr endstr)
-                            (progn 
+                            (progn
                               (setq regexp t)
                               (concat begstr "\\|" endstr)))
                            (t begstr)))
@@ -161,22 +161,22 @@ Set 7th argument REGEXP t, if beg/end-str are regular expressions.
       (cond
        ((and (looking-back searchform)
              (goto-char (match-beginning 0)))
-        (beginning-of-form-base-intern begstr endstr comment))
+        (beginning-of-form-base-intern begstr endstr comment string))
        ((and (or regexp (and begstr endstr))
              (re-search-backward searchform bound noerror count))
-        (beginning-of-form-base-intern begstr endstr comment))
+        (beginning-of-form-base-intern begstr endstr comment string))
        ((and (not regexp) (not (and begstr endstr))
              (search-backward searchform bound noerror count)
              (goto-char (match-beginning 0)))
-        (beginning-of-form-base-intern begstr endstr comment))
+        (beginning-of-form-base-intern begstr endstr comment string))
        (t (goto-char (point-min)))))
     (when (and beg-pos-delimiter end-pos-delimiter)
       (list beg-pos-delimiter end-pos-delimiter))))
 
-(defun beginning-of-form-base-intern (begstr endstr comment)
+(defun beginning-of-form-base-intern (begstr endstr comment string)
   (let ((pps (parse-partial-sexp (point-min) (point))))
     ;; in string
-    (if (and (nth 3 pps)(nth 8 pps))
+    (if (and (not string) (nth 3 pps)(nth 8 pps))
         (goto-char (nth 8 pps))
       (unless (save-match-data (and condition (funcall condition)))
         (save-match-data
@@ -197,7 +197,7 @@ Set 7th argument REGEXP t, if beg/end-str are regular expressions.
         (setq beg-pos-delimiter (match-beginning 0))
         (setq end-pos-delimiter (match-end 0))))))
 
-(defun end-of-form-base (begstr endstr &optional bound noerror count comment regexp condition)
+(defun end-of-form-base (begstr endstr &optional bound noerror count comment regexp condition string)
   "Goto closing of a programming structure in this level.
 As it stops one char after form, go one char back onto the last char of form.
 Set comment to `t' if forms inside comments should match - also for processing comments itself.
@@ -208,7 +208,7 @@ Optional arg CONDITION expects a function whose return value - `t' or a number -
   (let* ((searchform (cond ((string= begstr endstr)
                             endstr)
                            ((and begstr endstr)
-                            (progn 
+                            (progn
                               (setq regexp t)
                               (concat begstr "\\|" endstr)))
                            (t endstr)))
@@ -221,20 +221,20 @@ Optional arg CONDITION expects a function whose return value - `t' or a number -
          (< 0 nesting) (not (eobp)))
       (if (and (looking-at searchform)
                (goto-char (match-end 0)))
-          (end-of-form-base-intern begstr endstr comment)
+          (end-of-form-base-intern begstr endstr comment string)
         (if (re-search-forward searchform bound noerror count)
             (progn
-              (end-of-form-base-intern begstr endstr comment)
+              (end-of-form-base-intern begstr endstr comment string)
               (goto-char (1+ (match-beginning 0)))))))
     (if (and beg-pos-delimiter end-pos-delimiter)
         (list beg-pos-delimiter end-pos-delimiter)
       (goto-char orig)
       nil)))
 
-(defun end-of-form-base-intern (begstr endstr comment)
+(defun end-of-form-base-intern (begstr endstr comment string)
   (let ((pps (parse-partial-sexp (point-min) (point))))
     ;; in string
-    (if (and (nth 3 pps)(nth 8 pps))
+    (if (and (not string) (nth 3 pps)(nth 8 pps))
         (progn
           (forward-char 1)
           (while (and (setq pps (parse-partial-sexp (point-min) (point)))(nth 3 pps)(nth 8 pps))
@@ -262,23 +262,23 @@ Optional arg CONDITION expects a function whose return value - `t' or a number -
 
 (defvar be-match-paren-mode nil)
 
-(defun be-match-paren-mode (&optional iact) 
-  "Toggle be-match-paren-mode. 
+(defun be-match-paren-mode (&optional iact)
+  "Toggle be-match-paren-mode.
 If on, inserting of `be-match-paren-char', default is \"%\", moves to the matching opening/closing.
-With arg, insert the charakter the key is on 
+With arg, insert the charakter the key is on
 Key per default is \"%\" as with elisp's `match-paren'. "
   (interactive "p")
   (if be-match-paren-mode
-      (progn 
+      (progn
         (setq be-match-paren-mode nil)
-;;        (define-key be-mode-map "%" 'self-insert-command)
+        ;;        (define-key be-mode-map "%" 'self-insert-command)
         (when iact (message "be-match-paren-mode: %s" be-match-paren-mode)))
     (setq be-match-paren-mode t)
-;;    (define-key be-mode-map "%" 'be-match-paren)
+    ;;    (define-key be-mode-map "%" 'be-match-paren)
     (when iact (message "be-match-paren-mode: %s" be-match-paren-mode))))
 
-(defun beg-end-match-paren (begstr endstr &optional ins) 
-  "Go to the matching opening/closing. 
+(defun beg-end-match-paren (begstr endstr &optional ins)
+  "Go to the matching opening/closing.
 First to opening, unless cursor is already there.
 With arg, insert the charakter of `sh-match-paren-char'.
 Key per default is \"%\" as with elisp's `match-paren'. "
@@ -292,7 +292,7 @@ Key per default is \"%\" as with elisp's `match-paren'. "
            (match-paren arg))
           (t (beginning-of-form-base begstr endstr bound noerror count comment)))))
 
-(defun in-form-base (begstr endstr &optional beg end count comment regexp condition) 
+(defun in-form-base (begstr endstr &optional beg end count comment regexp condition)
   "Parse a structure. Return level of nesting, `nil' if not inside.
 Takes strings as arguments for search.
 Set comment to `t' if forms inside comments should match - also for processing comments itself.
@@ -315,7 +315,7 @@ Set 8th argument REGEXP t, if beg/end-str are regular expressions.
                             (concat "\\(" begstr "\\)\\|\\(" endstr "\\)"))
                            (begstr begstr)
                            (endstr endstr)))
-         (orig (point)) 
+         (orig (point))
          beg-pos-delimiter end-pos-delimiter)
     (goto-char beg)
     (while
@@ -344,10 +344,10 @@ Set 8th argument REGEXP t, if beg/end-str are regular expressions.
 
 ;; Fixme: Instead use of condition `ar-in-comment-p-atpt' is hard-corded for the moment
 (defun ar-in-delimiter-base (regexp &optional condition guess-delimiter)
-  "REGEXP expected of an unary delimiter, for example 
+  "REGEXP expected of an unary delimiter, for example
 \"\\\\\\\"\\\\\\\"\\\\\\\"\\\\|'''\\\\|\\\\\\\"\\\\|'\" indicating string delimiters in Python.
 Optional second arg --a number, nil or `t'-- if interactively called. "
-  (let ((orig (point)) 
+  (let ((orig (point))
         (count 0)
         ;;        (regexp (replace-regexp-in-string "\"" "\\\\\""  regexp))
         tell beglist)
@@ -360,14 +360,14 @@ Optional second arg --a number, nil or `t'-- if interactively called. "
                             (setq count (1+ count))
                             (match-string-no-properties 0)))
                (delimiter-p (stringp delimiter)))
-                    (if delimiter-p
-                        (progn
-                          (setq delimiter (concat "\\([^\\]\\)" (replace-regexp-in-string "\"" "\\\\\""  delimiter)))
-                          (setq beglist (list (match-beginning 0) (match-end 0)))
-                          (goto-char (match-end 0))
-                          (ar-in-delimiter-intern count orig beglist delimiter-p delimiter))
-                      (setq regxep (concat "[^\\]" regexp))
-                      (ar-in-delimiter-intern count orig beglist nil regexp)))))))
+          (if delimiter-p
+              (progn
+                (setq delimiter (concat "\\([^\\]\\)" (replace-regexp-in-string "\"" "\\\\\""  delimiter)))
+                (setq beglist (list (match-beginning 0) (match-end 0)))
+                (goto-char (match-end 0))
+                (ar-in-delimiter-intern count orig beglist delimiter-p delimiter))
+            (setq regxep (concat "[^\\]" regexp))
+            (ar-in-delimiter-intern count orig beglist nil regexp)))))))
 
 (defun ar-in-delimiter-intern (count orig beglist &optional first old)
   (let (done name this)

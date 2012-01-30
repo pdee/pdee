@@ -1,46 +1,26 @@
+Most python-mode.el commands start with prefix `py-'
 
-python-mode.el - major mode for editing Python source
-has been splitted into python-components-...el files.
+`M-x py- TAB'
+displays a list of them in completion-buffer. 
+See also commands list delivered in directory doc.
 
-python-components-...el also are composed of stuff from
-python.el
+List virtualenv related `M-x virtualenv- TAB'
+resp. Pymacs commands `M-x pymacs-'  
 
-The following files are required from 
+Open an installed shell by specifying it's name like
 
-https://code.launchpad.net/s-x-emacs-werkstatt/
+M-x SHELL
 
-thingatpt-utils-base.el
-thingatpt-highlight.el
-misc-utils.el
-beg-end.el
-ar-comment-lor.el
-thingatpt-python-expressions.el
+With prefix C-u user is prompted to specify a PATH-TO-LOCAL-SHELL
+Also evaluating
 
-also recommended:
+(py-shell nil DEDICATED PATH-TO-LOCAL-SHELL)
 
-thing-at-point-markup.el
-thingatpt-utils-test.el
+if DEDICATED is set to `t', shell will get an unique name.
 
-Get everyting with
+Install a local shell by evaluating
 
-bzr branch lp:s-x-emacs-werkstatt
-
-
-New features:
-
-* imenu enabled
-* use of skeletons inserting electric loops
-* faster editing with `py-indent-forward-line' and others
-
-Beside python-components-...el this project
-contains the following files:
-
-    * doctest-mode.el - major mode for editing doctest files
-    * pycomplete.el - support for Python symbol completion (Emacs Lisp side)
-    * pycomplete.py - support for Python symbol completion (Python side)
-
-;; section below should go into an info file 
-
-Highlighting `py-variable-name-face' is set to nil by default.
-Call M-x customize-face to activate it, use `font-lock-variable-name-face' for example.
+(defun MY-LOCAL-SHELL ()
+  (interactive)
+  (py-shell nil DEDICATED PATH-TO-LOCAL-SHELL))
 
