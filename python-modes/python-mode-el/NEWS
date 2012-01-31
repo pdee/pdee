@@ -61,6 +61,8 @@ New in version 6.0.5
 - new boolean `py-report-level-p'
   if `t', reached indent level is messaged
 
+- py-execute-buffer-dedicated, py-execute-buffer-switch-dedicated
+
 New in version 6.0.4
 --------------------
 

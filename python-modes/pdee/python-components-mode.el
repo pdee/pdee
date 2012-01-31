@@ -398,8 +398,7 @@ source code of the innermost traceback frame."
   :group 'python-mode)
 
 (defcustom py-ask-about-save t
-  "If not nil, ask about which buffers to save before executing some code.
-Otherwise, all modified buffers are saved without asking."
+  "If not nil, ask about which buffers to save before executing some code. Otherwise don't call savings at this point. "
   :type 'boolean
   :group 'python-mode)
 
@@ -1513,8 +1512,6 @@ It makes underscores and dots word constituent chars.")
             (define-key map [(meta tab)] 'py-complete)
           (substitute-key-definition 'complete-symbol 'completion-at-point
                                      map global-map))
-
-        ;; shadow global bindings for newline-and-indent
         (easy-menu-define py-menu map "Python Mode menu"
           '("Python"
             :help "Python-specific features"
@@ -3787,7 +3784,7 @@ as it leaves your system default unchanged."
   py-use-local-default)
 
 (defalias 'py-which-shell 'py-choose-shell)
-(defun py-choose-shell (&optional arg)
+(defun py-choose-shell (&optional arg pyshell dedicated)
   "Looks for an appropriate mode function.
 
 This does the following:
@@ -3795,19 +3792,24 @@ This does the following:
  - examine imports using `py-choose-shell-by-import'
  - if not successful, return default value of `py-shell-name'
 
-With \\[universal-argument]) user is prompted to specify a reachable Python version."
+With \\[universal-argument]) user is prompted to specify a reachable Python version.
+Returns executable command as a string, or nil, if no executable found. "
   (interactive "P")
-  (let ((erg (cond ((eq 4 (prefix-numeric-value arg))
-                    (read-from-minibuffer "Python Shell: " py-shell-name))
-                   (py-use-local-default
-                    (if (not (string= "" py-shell-local-path))
-                        (expand-file-name py-shell-local-path)
-                      (message "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'")))
-                   ((py-choose-shell-by-shebang))
-                   ((py-choose-shell-by-import))
-                   (t (default-value 'py-shell-name)))))
-    (when (interactive-p) (message "%s" erg))
-    (setq py-shell-name erg)
+  (let* ((erg (cond ((eq 4 (prefix-numeric-value arg))
+                     (read-from-minibuffer "Python Shell: " py-shell-name))
+                    (py-use-local-default
+                     (if (not (string= "" py-shell-local-path))
+                         (expand-file-name py-shell-local-path)
+                       (message "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'")))
+                    ((py-choose-shell-by-shebang))
+                    ((py-choose-shell-by-import))
+                    (t (default-value 'py-shell-name))))
+         (cmd (executable-find erg)))
+    (if cmd
+        (when (interactive-p)
+          (message "%s" cmd))
+      (when (interactive-p) (message "%s" "Could not detect Python on your sys
+tem")))
     erg))
 
 (defadvice pdb (before gud-query-cmdline activate)

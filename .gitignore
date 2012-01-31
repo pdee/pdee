@@ -71,6 +71,7 @@ befehle.txt
 LICENSE
 build
 .gitignore
+python-modes/python-mode-el/devel/fundocu2infoformats.el
 
 python-modes/pdee/py-process-name.el
 python-modes/pdee/py-set-shell-completion-environment.el

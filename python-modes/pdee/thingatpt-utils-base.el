@@ -1263,13 +1263,13 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (ignore-errors (looking-at "{"))
            (list (match-beginning 0)(match-end 0))
-         (beginning-of-form-base "{" "}" nil 'move 1 nil 'ar-syntax t))))
+         (beginning-of-form-base "{" "}" nil 'move 1 nil nil 'ar-syntax t))))
 
 (put 'braced 'end-op-at
      (lambda ()
        (when (looking-at "{")
          (goto-char (match-end 0))
-         (end-of-form-base "{" "}" nil 'move 1 nil 'ar-syntax t))))
+         (end-of-form-base "{" "}" nil 'move 1 nil nil 'ar-syntax t))))
 
 (put 'braced 'forward-op-at
      (lambda ()
@@ -1307,13 +1307,13 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (ignore-errors (looking-at "<"))
            (list (match-beginning 0)(match-end 0))
-         (beginning-of-form-base "<" ">" nil 'move 1 nil 'ar-syntax t))))
+         (beginning-of-form-base "<" ">" nil 'move 1 nil nil 'ar-syntax t))))
 
 (put 'lesser-angled 'end-op-at
      (lambda ()
        (when (looking-at "<")
          (goto-char (match-end 0))
-         (end-of-form-base "<" ">" nil 'move 1 nil 'ar-syntax t))))
+         (end-of-form-base "<" ">" nil 'move 1 nil nil 'ar-syntax t))))
 
 (put 'lesser-angled 'forward-op-at
      (lambda ()
@@ -1329,13 +1329,13 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (ignore-errors (looking-at ">"))
            (list (match-beginning 0)(match-end 0))
-         (beginning-of-form-base ">" "<" nil 'move 1 nil 'ar-syntax t))))
+         (beginning-of-form-base ">" "<" nil 'move 1 nil nil 'ar-syntax t))))
 
 (put 'greater-angled 'end-op-at
      (lambda ()
        (when (looking-at ">")
          (goto-char (match-end 0))
-         (end-of-form-base ">" "<" nil 'move 1 nil 'ar-syntax t))))
+         (end-of-form-base ">" "<" nil 'move 1 nil nil 'ar-syntax t))))
 
 (put 'greater-angled 'forward-op-at
      (lambda ()
@@ -1351,13 +1351,13 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (ignore-errors (looking-at "‘"))
            (list (match-beginning 0)(match-end 0))
-         (beginning-of-form-base "‘" "’" nil 'move 1 nil 'ar-syntax t))))
+         (beginning-of-form-base "‘" "’" nil 'move 1 nil nil 'ar-syntax t))))
 
 (put 'left-right-singlequoted 'end-op-at
      (lambda ()
        (when (looking-at "‘")
          (goto-char (match-end 0))
-         (end-of-form-base "‘" "’" nil 'move 1 nil 'ar-syntax t))))
+         (end-of-form-base "‘" "’" nil 'move 1 nil nil 'ar-syntax t))))
 
 (put 'left-right-singlequoted 'forward-op-at
      (lambda ()
@@ -1373,13 +1373,13 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (ignore-errors (looking-at "("))
            (list (match-beginning 0)(match-end 0))
-         (beginning-of-form-base "(" ")" nil 'move 1 nil 'ar-syntax t))))
+         (beginning-of-form-base "(" ")" nil 'move 1 nil nil 'ar-syntax t))))
 
 (put 'parentized 'end-op-at
      (lambda ()
        (when (looking-at "(")
          (goto-char (match-end 0))
-         (end-of-form-base "(" ")" nil 'move 1 nil 'ar-syntax t))))
+         (end-of-form-base "(" ")" nil 'move 1 nil nil 'ar-syntax t))))
 
 (put 'parentized 'forward-op-at
      (lambda ()
@@ -1406,7 +1406,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (let* ((backslashed "\\")
               (erg (looking-at backslashed)))
-         (when erg 
+         (when erg
            (goto-char (match-end 0))
            (setq erg (end-of-form-base backslashed backslashed nil 'move 1 nil t)))
          erg)))
@@ -1427,7 +1427,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
              bounds)
          (while (and (not (eobp))
                      (progn (forward-char -1) t)
-                     (skip-chars-backward "^\\") 
+                     (skip-chars-backward "^\\")
                      (not (car-safe (ar-in-delimiter-base backslashed)))))
          (unless (bobp)
            (setq bounds (beginning-of-form-base backslashed backslashed nil 'move 1 nil t))
@@ -1447,7 +1447,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (let* ((dollared "\\$")
               (erg (looking-at dollared)))
-         (when erg 
+         (when erg
            (goto-char (match-end 0))
            (setq erg (end-of-form-base dollared dollared nil 'move 1 nil t)))
          erg)))
@@ -1468,7 +1468,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
              bounds)
          (while (and (not (eobp))
                      (progn (forward-char -1) t)
-                     (skip-chars-backward "^\\$") 
+                     (skip-chars-backward "^\\$")
                      (not (car-safe (ar-in-delimiter-base dollared)))))
          (unless (bobp)
            (setq bounds (beginning-of-form-base dollared dollared nil 'move 1 nil t))
@@ -1488,7 +1488,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (let* ((doublequoted "\"")
               (erg (looking-at doublequoted)))
-         (when erg 
+         (when erg
            (goto-char (match-end 0))
            (setq erg (end-of-form-base doublequoted doublequoted nil 'move 1 nil t 'ar-escaped)))
          erg)))
@@ -1509,7 +1509,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
              bounds)
          (while (and (not (eobp))
                      (progn (forward-char -1) t)
-                     (skip-chars-backward "^\"") 
+                     (skip-chars-backward "^\"")
                      (not (car-safe (ar-in-delimiter-base doublequoted)))))
          (unless (bobp)
            (setq bounds (beginning-of-form-base doublequoted doublequoted nil 'move 1 nil t))
@@ -1529,7 +1529,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (let* ((equalized "=")
               (erg (looking-at equalized)))
-         (when erg 
+         (when erg
            (goto-char (match-end 0))
            (setq erg (end-of-form-base equalized equalized nil 'move 1 nil t)))
          erg)))
@@ -1550,7 +1550,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
              bounds)
          (while (and (not (eobp))
                      (progn (forward-char -1) t)
-                     (skip-chars-backward "^=") 
+                     (skip-chars-backward "^=")
                      (not (car-safe (ar-in-delimiter-base equalized)))))
          (unless (bobp)
            (setq bounds (beginning-of-form-base equalized equalized nil 'move 1 nil t))
@@ -1570,7 +1570,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (let* ((hyphened "-")
               (erg (looking-at hyphened)))
-         (when erg 
+         (when erg
            (goto-char (match-end 0))
            (setq erg (end-of-form-base hyphened hyphened nil 'move 1 nil t)))
          erg)))
@@ -1591,7 +1591,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
              bounds)
          (while (and (not (eobp))
                      (progn (forward-char -1) t)
-                     (skip-chars-backward "^-") 
+                     (skip-chars-backward "^-")
                      (not (car-safe (ar-in-delimiter-base hyphened)))))
          (unless (bobp)
            (setq bounds (beginning-of-form-base hyphened hyphened nil 'move 1 nil t))
@@ -1611,7 +1611,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (let* ((quoted "\"\\|'")
               (erg (looking-at quoted)))
-         (when erg 
+         (when erg
            (goto-char (match-end 0))
            (setq erg (end-of-form-base quoted quoted nil 'move 1 nil t)))
          erg)))
@@ -1632,7 +1632,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
              bounds)
          (while (and (not (eobp))
                      (progn (forward-char -1) t)
-                     (skip-chars-backward "^\"\\|'") 
+                     (skip-chars-backward "^\"\\|'")
                      (not (car-safe (ar-in-delimiter-base quoted)))))
          (unless (bobp)
            (setq bounds (beginning-of-form-base quoted quoted nil 'move 1 nil t))
@@ -1652,7 +1652,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (let* ((singlequoted "'")
               (erg (looking-at singlequoted)))
-         (when erg 
+         (when erg
            (goto-char (match-end 0))
            (setq erg (end-of-form-base singlequoted singlequoted nil 'move 1 nil t)))
          erg)))
@@ -1673,7 +1673,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
              bounds)
          (while (and (not (eobp))
                      (progn (forward-char -1) t)
-                     (skip-chars-backward "^'") 
+                     (skip-chars-backward "^'")
                      (not (car-safe (ar-in-delimiter-base singlequoted)))))
          (unless (bobp)
            (setq bounds (beginning-of-form-base singlequoted singlequoted nil 'move 1 nil t))
@@ -1693,7 +1693,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (let* ((slashed "/")
               (erg (looking-at slashed)))
-         (when erg 
+         (when erg
            (goto-char (match-end 0))
            (setq erg (end-of-form-base slashed slashed nil 'move 1 nil t)))
          erg)))
@@ -1714,7 +1714,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
              bounds)
          (while (and (not (eobp))
                      (progn (forward-char -1) t)
-                     (skip-chars-backward "^/") 
+                     (skip-chars-backward "^/")
                      (not (car-safe (ar-in-delimiter-base slashed)))))
          (unless (bobp)
            (setq bounds (beginning-of-form-base slashed slashed nil 'move 1 nil t))
@@ -1734,7 +1734,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (let* ((underscored "_")
               (erg (looking-at underscored)))
-         (when erg 
+         (when erg
            (goto-char (match-end 0))
            (setq erg (end-of-form-base underscored underscored nil 'move 1 nil t)))
          erg)))
@@ -1755,7 +1755,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
              bounds)
          (while (and (not (eobp))
                      (progn (forward-char -1) t)
-                     (skip-chars-backward "^_") 
+                     (skip-chars-backward "^_")
                      (not (car-safe (ar-in-delimiter-base underscored)))))
          (unless (bobp)
            (setq bounds (beginning-of-form-base underscored underscored nil 'move 1 nil t))
@@ -1775,7 +1775,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (let* ((whitespaced " ")
               (erg (looking-at whitespaced)))
-         (when erg 
+         (when erg
            (goto-char (match-end 0))
            (setq erg (end-of-form-base whitespaced whitespaced nil 'move 1 nil t)))
          erg)))
@@ -1796,7 +1796,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
              bounds)
          (while (and (not (eobp))
                      (progn (forward-char -1) t)
-                     (skip-chars-backward "^ ") 
+                     (skip-chars-backward "^ ")
                      (not (car-safe (ar-in-delimiter-base whitespaced)))))
          (unless (bobp)
            (setq bounds (beginning-of-form-base whitespaced whitespaced nil 'move 1 nil t))
@@ -1820,7 +1820,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (let* ((backslashed "\\")
               (erg (looking-at backslashed)))
-         (when erg 
+         (when erg
            (goto-char (match-end 0))
            (setq erg (end-of-form-base backslashed backslashed nil 'move 1 nil t)))
          erg)))
@@ -1841,7 +1841,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
              bounds)
          (while (and (not (eobp))
                      (progn (forward-char -1) t)
-                     (skip-chars-backward "^\\") 
+                     (skip-chars-backward "^\\")
                      (not (car-safe (ar-in-delimiter-base backslashed)))))
          (unless (bobp)
            (setq bounds (beginning-of-form-base backslashed backslashed nil 'move 1 nil t))
@@ -1861,7 +1861,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (let* ((dollared "\\$")
               (erg (looking-at dollared)))
-         (when erg 
+         (when erg
            (goto-char (match-end 0))
            (setq erg (end-of-form-base dollared dollared nil 'move 1 nil t)))
          erg)))
@@ -1882,7 +1882,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
              bounds)
          (while (and (not (eobp))
                      (progn (forward-char -1) t)
-                     (skip-chars-backward "^\\$") 
+                     (skip-chars-backward "^\\$")
                      (not (car-safe (ar-in-delimiter-base dollared)))))
          (unless (bobp)
            (setq bounds (beginning-of-form-base dollared dollared nil 'move 1 nil t))
@@ -1902,7 +1902,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (let* ((doublequoted "\"")
               (erg (looking-at doublequoted)))
-         (when erg 
+         (when erg
            (goto-char (match-end 0))
            (setq erg (end-of-form-base doublequoted doublequoted nil 'move 1 nil t 'ar-escaped)))
          erg)))
@@ -1923,7 +1923,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
              bounds)
          (while (and (not (eobp))
                      (progn (forward-char -1) t)
-                     (skip-chars-backward "^\"") 
+                     (skip-chars-backward "^\"")
                      (not (car-safe (ar-in-delimiter-base doublequoted)))))
          (unless (bobp)
            (setq bounds (beginning-of-form-base doublequoted doublequoted nil 'move 1 nil t))
@@ -1943,7 +1943,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (let* ((equalized "=")
               (erg (looking-at equalized)))
-         (when erg 
+         (when erg
            (goto-char (match-end 0))
            (setq erg (end-of-form-base equalized equalized nil 'move 1 nil t)))
          erg)))
@@ -1964,7 +1964,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
              bounds)
          (while (and (not (eobp))
                      (progn (forward-char -1) t)
-                     (skip-chars-backward "^=") 
+                     (skip-chars-backward "^=")
                      (not (car-safe (ar-in-delimiter-base equalized)))))
          (unless (bobp)
            (setq bounds (beginning-of-form-base equalized equalized nil 'move 1 nil t))
@@ -1984,7 +1984,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (let* ((hyphened "-")
               (erg (looking-at hyphened)))
-         (when erg 
+         (when erg
            (goto-char (match-end 0))
            (setq erg (end-of-form-base hyphened hyphened nil 'move 1 nil t)))
          erg)))
@@ -2005,7 +2005,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
              bounds)
          (while (and (not (eobp))
                      (progn (forward-char -1) t)
-                     (skip-chars-backward "^-") 
+                     (skip-chars-backward "^-")
                      (not (car-safe (ar-in-delimiter-base hyphened)))))
          (unless (bobp)
            (setq bounds (beginning-of-form-base hyphened hyphened nil 'move 1 nil t))
@@ -2025,7 +2025,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (let* ((quoted "\"\\|'")
               (erg (looking-at quoted)))
-         (when erg 
+         (when erg
            (goto-char (match-end 0))
            (setq erg (end-of-form-base quoted quoted nil 'move 1 nil t)))
          erg)))
@@ -2046,7 +2046,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
              bounds)
          (while (and (not (eobp))
                      (progn (forward-char -1) t)
-                     (skip-chars-backward "^\"\\|'") 
+                     (skip-chars-backward "^\"\\|'")
                      (not (car-safe (ar-in-delimiter-base quoted)))))
          (unless (bobp)
            (setq bounds (beginning-of-form-base quoted quoted nil 'move 1 nil t))
@@ -2066,7 +2066,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (let* ((singlequoted "'")
               (erg (looking-at singlequoted)))
-         (when erg 
+         (when erg
            (goto-char (match-end 0))
            (setq erg (end-of-form-base singlequoted singlequoted nil 'move 1 nil t)))
          erg)))
@@ -2087,7 +2087,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
              bounds)
          (while (and (not (eobp))
                      (progn (forward-char -1) t)
-                     (skip-chars-backward "^'") 
+                     (skip-chars-backward "^'")
                      (not (car-safe (ar-in-delimiter-base singlequoted)))))
          (unless (bobp)
            (setq bounds (beginning-of-form-base singlequoted singlequoted nil 'move 1 nil t))
@@ -2107,7 +2107,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (let* ((slashed "/")
               (erg (looking-at slashed)))
-         (when erg 
+         (when erg
            (goto-char (match-end 0))
            (setq erg (end-of-form-base slashed slashed nil 'move 1 nil t)))
          erg)))
@@ -2128,7 +2128,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
              bounds)
          (while (and (not (eobp))
                      (progn (forward-char -1) t)
-                     (skip-chars-backward "^/") 
+                     (skip-chars-backward "^/")
                      (not (car-safe (ar-in-delimiter-base slashed)))))
          (unless (bobp)
            (setq bounds (beginning-of-form-base slashed slashed nil 'move 1 nil t))
@@ -2148,7 +2148,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (let* ((underscored "_")
               (erg (looking-at underscored)))
-         (when erg 
+         (when erg
            (goto-char (match-end 0))
            (setq erg (end-of-form-base underscored underscored nil 'move 1 nil t)))
          erg)))
@@ -2169,7 +2169,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
              bounds)
          (while (and (not (eobp))
                      (progn (forward-char -1) t)
-                     (skip-chars-backward "^_") 
+                     (skip-chars-backward "^_")
                      (not (car-safe (ar-in-delimiter-base underscored)))))
          (unless (bobp)
            (setq bounds (beginning-of-form-base underscored underscored nil 'move 1 nil t))
@@ -2189,7 +2189,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (let* ((whitespaced " ")
               (erg (looking-at whitespaced)))
-         (when erg 
+         (when erg
            (goto-char (match-end 0))
            (setq erg (end-of-form-base whitespaced whitespaced nil 'move 1 nil t)))
          erg)))
@@ -2210,7 +2210,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
              bounds)
          (while (and (not (eobp))
                      (progn (forward-char -1) t)
-                     (skip-chars-backward "^ ") 
+                     (skip-chars-backward "^ ")
                      (not (car-safe (ar-in-delimiter-base whitespaced)))))
          (unless (bobp)
            (setq bounds (beginning-of-form-base whitespaced whitespaced nil 'move 1 nil t))

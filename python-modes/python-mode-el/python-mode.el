@@ -413,8 +413,7 @@ source code of the innermost traceback frame."
   :group 'python-mode)
 
 (defcustom py-ask-about-save t
-  "If not nil, ask about which buffers to save before executing some code.
-Otherwise, all modified buffers are saved without asking."
+  "If not nil, ask about which buffers to save before executing some code. Otherwise don't call savings at this point. "
   :type 'boolean
   :group 'python-mode)
 
@@ -863,8 +862,7 @@ Making switch between several virtualenv's easier,
   :type 'string
   :group 'python-mode)
 
-;; ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-;; NO USER DEFINABLE VARIABLES BEYOND THIS POINT
+;;; NO USER DEFINABLE VARIABLES BEYOND THIS POINT
 
 (defvar py-execute-directory nil
   "Stores the file's directory-name py-execute-... functions act upon. ")
@@ -5353,13 +5351,14 @@ When called from a programm, it accepts a string specifying a shell which will b
   (interactive "r")
   (py-execute-base start end (default-value 'py-shell-name) t))
 
-(defun py-execute-base (start end &optional shell dedicated)
+(defun py-execute-base (start end &optional shell dedicated switch)
   "Adapt the variables used in the process. "
   (let* ((shell (if (eq 4 (prefix-numeric-value shell))
                     (read-from-minibuffer "Python shell: " (default-value 'py-shell-name))
                   (when (stringp shell)
                     shell)))
          (regbuf (current-buffer))
+         (py-shell-switch-buffers-on-execute switch)
          (py-execute-directory (or (ignore-errors (file-name-directory (buffer-file-name))) (getenv "HOME")))
          (strg (buffer-substring-no-properties start end))
 	 (name-raw (or shell (py-choose-shell)))
@@ -5710,7 +5709,7 @@ See also doku of variable `py-master-file' "
           (setq py-master-file (match-string-no-properties 2))))))
   (when (interactive-p) (message "%s" py-master-file)))
 
-(defun py-execute-import-or-reload (&optional py-shell-name dedicated)
+(defun py-execute-import-or-reload (&optional argprompt shell dedicated)
   "Import the current buffer's file in a Python interpreter.
 
 If the file has already been imported, then do reload instead to get
@@ -5741,23 +5740,22 @@ This may be preferable to `\\[py-execute-buffer]' because:
              (buffer (or (get-file-buffer filename)
                          (find-file-noselect filename))))
         (set-buffer buffer)))
-  (let ((file (buffer-file-name (current-buffer))))
+  (let ((shell (or shell (py-choose-shell argprompt shell dedicated)))
+        (file (buffer-file-name (current-buffer))))
     (if file
-        (progn
-          (py-choose-shell)
-          (let ((proc (if dedicated
-                          (get-process (py-shell nil dedicated))
-                        (get-process (py-shell)))))
-            ;; Maybe save some buffers
-            (save-some-buffers (not py-ask-about-save) nil)
-            (py-execute-file proc file
-                             (if (string-match "\\.py$" file)
-                                 (let ((m (py-qualified-module-name (expand-file-name file))))
-                                   (format "import sys\nif sys.modules.has_key('%s'):\n reload(%s)\nelse:\n import %s\n"
-                                           m m m))
-                               ;; (format "execfile(r'%s')\n" file)
-                               (py-which-execute-file-command file)))))
-      ;; else
+        (let ((proc (or
+                     (ignore-errors (get-process (file-name-directory shell)))
+                     (get-process (py-shell argprompt dedicated (or shell (default-value 'py-shell-name)))))))
+          ;; Maybe save some buffers
+          (when py-ask-about-save
+            (save-some-buffers))
+          (py-execute-file proc file
+                           (if (string-match "\\.py$" file)
+                               (let ((m (py-qualified-module-name (expand-file-name file))))
+                                 (format "import sys\nif sys.modules.has_key('%s'):\n reload(%s)\nelse:\n import %s\n"
+                                         m m m))
+                             ;; (format "execfile(r'%s')\n" file)
+                             (py-which-execute-file-command file))))
       (py-execute-buffer py-shell-name))))
 
 (defun py-qualified-module-name (file)
@@ -5775,7 +5773,49 @@ Basically, this goes down the directory tree as long as there are __init__.py fi
     (funcall rec (file-name-directory file)
 	     (file-name-sans-extension (file-name-nondirectory file)))))
 
-(defun py-execute-buffer (&optional shell)
+
+(defun py-execute-buffer-dedicated (&optional shell)
+  "Send the contents of the buffer to a unique Python interpreter.
+
+If the file local variable `py-master-file' is non-nil, execute the
+named file instead of the buffer's file.
+
+If a clipping restriction is in effect, only the accessible portion of the buffer is sent. A trailing newline will be supplied if needed.
+
+With \\[univeral-argument] user is prompted to specify another then default shell.
+See also `\\[py-execute-region]'. "
+  (interactive "P")
+  (py-execute-buffer-base shell t))
+
+(defun py-execute-buffer-switch (&optional shell)
+  "Send the contents of the buffer to a Python interpreter and switches to output.
+
+If the file local variable `py-master-file' is non-nil, execute the
+named file instead of the buffer's file.
+If there is a *Python* process buffer, it is used.
+If a clipping restriction is in effect, only the accessible portion of the buffer is sent. A trailing newline will be supplied if needed.
+
+With \\[univeral-argument] user is prompted to specify another then default shell.
+See also `\\[py-execute-region]'. "
+  (interactive "P")
+  (py-execute-buffer-base shell dedicated t))
+
+(defalias 'py-execute-buffer-switch-dedicated 'py-execute-buffer-dedicated-switch)
+(defun py-execute-buffer-dedicated-switch (&optional shell)
+  "Send the contents of the buffer to an unique Python interpreter.
+
+Ignores setting of `py-shell-switch-buffers-on-execute'.
+If the file local variable `py-master-file' is non-nil, execute the
+named file instead of the buffer's file.
+
+If a clipping restriction is in effect, only the accessible portion of the buffer is sent. A trailing newline will be supplied if needed.
+
+With \\[univeral-argument] user is prompted to specify another then default shell.
+See also `\\[py-execute-region]'. "
+  (interactive "P")
+  (py-execute-buffer-base shell t t))
+
+(defun py-execute-buffer (&optional shell dedicated switch)
   "Send the contents of the buffer to a Python interpreter.
 
 If the file local variable `py-master-file' is non-nil, execute the
@@ -5783,17 +5823,22 @@ named file instead of the buffer's file.
 If there is a *Python* process buffer, it is used.
 If a clipping restriction is in effect, only the accessible portion of the buffer is sent. A trailing newline will be supplied if needed.
 
+With \\[univeral-argument] user is prompted to specify another then default shell.
 See also `\\[py-execute-region]'. "
   (interactive "P")
+  (py-execute-buffer-base shell dedicated switch))
+
+(defun py-execute-buffer-base (&optional shell dedicated switch)
+  "Honor `py-master-file'. "
   (save-excursion
-    (let ((old-buffer (current-buffer)))
-      (or py-master-file (py-fetch-py-master-file))
+    (let ((py-master-file (or py-master-file (py-fetch-py-master-file)))
+          (py-shell-switch-buffers-on-execute switch))
       (if py-master-file
           (let* ((filename (expand-file-name py-master-file))
                  (buffer (or (get-file-buffer filename)
                              (find-file-noselect filename))))
             (set-buffer buffer)))
-      (py-execute-region (point-min) (point-max) py-shell-name))))
+      (py-execute-region (point-min) (point-max) shell))))
 
 (defun py-execute-buffer-no-switch (&optional shell)
   "Like `py-execute-buffer', but ignores setting of `py-shell-switch-buffers-on-execute'.
@@ -5809,22 +5854,6 @@ Buffer called from is current afterwards again."
                              (find-file-noselect filename))))
             (set-buffer buffer)))
       (py-execute-region-no-switch (point-min) (point-max) py-shell-name))))
-
-(defun py-execute-buffer-switch (&optional shell)
-  "Like `py-execute-buffer', but ignores setting of `py-shell-switch-buffers-on-execute', output-buffer will being switched to. "
-  (interactive "P")
-  (let ((shell (if (eq 4 (prefix-numeric-value arg))
-                   (read-from-minibuffer "Shell: " (default-value 'py-shell-name))
-                 py-shell-name)))
-    (save-excursion
-      (let ((old-buffer (current-buffer)))
-        (or py-master-file (py-fetch-py-master-file))
-        (if py-master-file
-            (let* ((filename (expand-file-name py-master-file))
-                   (buffer (or (get-file-buffer filename)
-                               (find-file-noselect filename))))
-              (set-buffer buffer)))
-        (py-execute-region-switch (point-min) (point-max) shell)))))
 
 ;;; Specifying shells start
 (defun py-execute-region-python (start end)
