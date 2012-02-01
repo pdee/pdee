@@ -398,7 +398,8 @@ source code of the innermost traceback frame."
   :group 'python-mode)
 
 (defcustom py-ask-about-save t
-  "If not nil, ask about which buffers to save before executing some code. Otherwise don't call savings at this point. "
+  "If not nil, ask about which buffers to save before executing some code.
+Otherwise, all modified buffers are saved without asking."
   :type 'boolean
   :group 'python-mode)
 

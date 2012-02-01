@@ -207,8 +207,7 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 Ignores setting of `py-shell-switch-buffers-on-execute', buffer with region stays current.
  "
   (interactive "r\nP")
-  (let ((py-shell-switch-buffers-on-execute nil))
-    (py-execute-base start end py-shell-name)))
+  (py-execute-base start end py-shell-name))
 
 (defun py-execute-region-switch (start end &optional shell)
   "Send the region to a Python interpreter.
@@ -216,8 +215,7 @@ Ignores setting of `py-shell-switch-buffers-on-execute', buffer with region stay
 Ignores setting of `py-shell-switch-buffers-on-execute', output-buffer will being switched to.
 "
   (interactive "r\nP")
-  (let ((py-shell-switch-buffers-on-execute t))
-    (py-execute-base start end py-shell-name)))
+    (py-execute-base start end py-shell-name nil t))
 
 (defun py-execute-region (start end &optional shell dedicated switch)
   "Send the region to a Python interpreter.
@@ -644,8 +642,7 @@ This may be preferable to `\\[py-execute-buffer]' because:
                      (ignore-errors (get-process (file-name-directory shell)))
                      (get-process (py-shell argprompt dedicated (or shell (default-value 'py-shell-name)))))))
           ;; Maybe save some buffers
-          (when py-ask-about-save
-            (save-some-buffers))
+          (save-some-buffers (not py-ask-about-save) nil)
           (py-execute-file proc file
                            (if (string-match "\\.py$" file)
                                (let ((m (py-qualified-module-name (expand-file-name file))))

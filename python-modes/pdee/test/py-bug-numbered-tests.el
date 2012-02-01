@@ -628,16 +628,15 @@ print u'\\xA9'
     (py-bug-tests-intern 'UnicodeEncodeError-lp:550661-base 2 teststring)))
 
 (defun UnicodeEncodeError-lp:550661-base ()
-  (let ((py-shell-switch-buffers-on-execute t))
     (goto-char 48)
     (push-mark)
     (end-of-line)
-    (py-execute-region (line-beginning-position) (point))
+    (py-execute-region-switch (line-beginning-position) (point))
     (sit-for 0.2)
     (when (looking-back comint-prompt-regexp)
       (goto-char (1- (match-beginning 0))))
     (sit-for 0.1)
-    (assert (or (looking-back "©")(looking-at "©")) nil "UnicodeEncodeError-lp:550661-test failed")))
+    (assert (or (looking-back "©")(looking-at "©")) nil "UnicodeEncodeError-lp:550661-test failed"))
 
 (defun indentation-of-continuation-lines-lp:691185-test (&optional arg load-branch-function)
   "With ARG greater 1 keep test buffer open.
