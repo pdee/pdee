@@ -215,7 +215,7 @@ Ignores setting of `py-shell-switch-buffers-on-execute', buffer with region stay
 Ignores setting of `py-shell-switch-buffers-on-execute', output-buffer will being switched to.
 "
   (interactive "r\nP")
-    (py-execute-base start end py-shell-name nil t))
+  (py-execute-base start end py-shell-name nil t))
 
 (defun py-execute-region (start end &optional shell dedicated switch)
   "Send the region to a Python interpreter.
@@ -646,8 +646,9 @@ This may be preferable to `\\[py-execute-buffer]' because:
           (py-execute-file proc file
                            (if (string-match "\\.py$" file)
                                (let ((m (py-qualified-module-name (expand-file-name file))))
-                                 (format "import sys\nif sys.modules.has_key('%s'):\n reload(%s)\nelse:\n import %s\n"
-                                         m m m))
+                                 (if (string-match "python2" (file-name-nondirectory shell))
+                                     (format "import sys\nif sys.modules.has_key('%s'):\n reload(%s)\nelse:\n import %s\n" m m m)
+                                   (format "import sys,imp\nif'%s' in sys.modules:\n imp.reload(%s)\nelse:\n import %s\n" m m m)))
                              ;; (format "execfile(r'%s')\n" file)
                              (py-which-execute-file-command file))))
       (py-execute-buffer py-shell-name))))
