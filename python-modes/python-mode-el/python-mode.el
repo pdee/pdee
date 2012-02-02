@@ -5379,48 +5379,45 @@ When called from a programm, it accepts a string specifying a shell which will b
          (proc (get-process (py-shell nil dedicated shell)))
          (procbuf (if dedicated
                       (buffer-name (get-buffer (current-buffer)))
-                    (buffer-name (get-buffer (concat "*" name "*"))))))
-    ;; py-shell might kill temp-buffer, bug?
-    ;; (set-buffer regbuf)
+                    (buffer-name (get-buffer (concat "*" name "*")))))
+         (pec (if (string-match "Python3" name)
+                  (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" file file)
+                (format "execfile(r'%s') # PYTHON-MODE\n" file)))
+         (wholebuf (when (boundp 'wholebuf) wholebuf)))
     (py-execute-intern strg procbuf proc temp file filebuf name py-execute-directory)))
 
 (defun py-execute-intern (strg &optional procbuf proc temp file filebuf name py-execute-directory)
-  (let (
-        (pec (if (string-match "Python3" name)
-                 (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" file file)
-               (format "execfile(r'%s') # PYTHON-MODE\n" file))))
-    (set-buffer filebuf)
-    (erase-buffer)
-    (insert strg)
-    ;; (switch-to-buffer (current-buffer))
+  (set-buffer filebuf)
+  (erase-buffer)
+  (insert strg)
+  (unless wholebuf
     (py-fix-start (point-min)(point-max))
     (py-if-needed-insert-shell name)
     (py-insert-coding)
-    (py-insert-execute-directory)
-    (cond
-     (proc
-      ;; use the existing python shell
-      (set-buffer filebuf)
-      (write-region (point-min) (point-max) file nil t nil 'ask)
-      (set-buffer-modified-p 'nil)
-      (kill-buffer filebuf)
-      (sit-for 0.1)
-      (if (file-readable-p file)
-          (progn
-            (py-execute-file proc file pec)
-            (setq py-exception-buffer (cons file (current-buffer)))
-            (if py-shell-switch-buffers-on-execute
-                (progn
-                  (pop-to-buffer procbuf)
-                  (goto-char (point-max)))
-              (when (buffer-live-p regbuf) (pop-to-buffer regbuf))
-              (message "Output buffer: %s" procbuf))
-            (sit-for 0.1)
-            (unless py-execute-keep-temporary-file-p
-              (delete-file file)
-              (when (buffer-live-p file)
-                (kill-buffer file))))
-        (message "File not readable: %s" "Do you have write permissions?"))))))
+    (py-insert-execute-directory))
+  (cond
+   (proc
+    (set-buffer filebuf)
+    (write-region (point-min) (point-max) file nil t nil 'ask)
+    (set-buffer-modified-p 'nil)
+    (kill-buffer filebuf)
+    (sit-for 0.1)
+    (if (file-readable-p file)
+        (progn
+          (py-execute-file proc file pec)
+          (setq py-exception-buffer (cons file (current-buffer)))
+          (if py-shell-switch-buffers-on-execute
+              (progn
+                (pop-to-buffer procbuf)
+                (goto-char (point-max)))
+            (when (buffer-live-p regbuf) (pop-to-buffer regbuf))
+            (message "Output buffer: %s" procbuf))
+          (sit-for 0.1)
+          (unless py-execute-keep-temporary-file-p
+            (delete-file file)
+            (when (buffer-live-p file)
+              (kill-buffer file))))
+      (message "File not readable: %s" "Do you have write permissions?")))))
 
 (defun py-execute-string (&optional string shell dedicated)
   "Send the argument STRING to a Python interpreter.
@@ -5835,7 +5832,8 @@ If a clipping restriction is in effect, only the accessible portion of the buffe
 With \\[univeral-argument] user is prompted to specify another then default shell.
 See also `\\[py-execute-region]'. "
   (interactive "P")
-  (py-execute-buffer-base shell dedicated switch))
+  (let ((wholebuf t))
+    (py-execute-buffer-base shell dedicated switch)))
 
 (defun py-execute-buffer-base (&optional shell dedicated switch)
   "Honor `py-master-file'. "
