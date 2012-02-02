@@ -7668,22 +7668,34 @@ This does the following:
  - examine imports using `py-choose-shell-by-import'
  - if not successful, return default value of `py-shell-name'
 
-With \\[universal-argument]) user is prompted to specify a reachable Python version.
+With \\[universal-argument] user is prompted to specify a reachable Python version.
+\\[universal-argument] followed by numerical arg 2 or 3 opens a respective Python shell.
+\\[universal-argument] followed by numerical arg 5 opens a Jython shell.
+
+When called interactively, selected Python Shell is switched to.
+
+Should you need more shells to select, extend this command by adding inside the first cond:
+
+                    ((eq NUMBER (prefix-numeric-value arg))
+                     \"MY-PATH-TO-SHELL\")
+
 Returns executable command as a string, or nil, if no executable found. "
   (interactive "P")
   (let* ((erg (cond ((eq 4 (prefix-numeric-value arg))
-                     (read-from-minibuffer "Python Shell: " py-shell-name))
-                    (py-use-local-default
-                     (if (not (string= "" py-shell-local-path))
-                         (expand-file-name py-shell-local-path)
-                       (message "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'")))
-                    ((py-choose-shell-by-shebang))
-                    ((py-choose-shell-by-import))
+                     (read-from-minibuffer "Python Shell: "
+                                           py-shell-name))
+                    ((eq 2 (prefix-numeric-value arg))
+                     "python2")
+                    ((eq 3 (prefix-numeric-value arg))
+                     "python3")
+                    ((eq 5 (prefix-numeric-value arg))
+                     "jython")
                     (t (default-value 'py-shell-name))))
          (cmd (executable-find erg)))
     (if cmd
         (when (interactive-p)
-          (message "%s" cmd))
+          (message "%s" cmd)
+          (py-shell cmd))
       (when (interactive-p) (message "%s" "Could not detect Python on your sys
 tem")))
     erg))

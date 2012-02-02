@@ -584,6 +584,18 @@ Also used by (minor-)outline-mode "
   :group 'python-mode)
 (make-variable-buffer-local 'py-shell-name)
 
+(defcustom py-shell-toggle-1 py-shell-name
+  "A PATH/TO/EXECUTABLE or default value used by `py-toggle-shells'. "
+  :type 'string
+  :group 'python-mode)
+(make-variable-buffer-local 'py-shell-toggle-1)
+
+(defcustom py-shell-toggle-2 "python3"
+  "A PATH/TO/EXECUTABLE or default value used by `py-toggle-shells'. "
+  :type 'string
+  :group 'python-mode)
+(make-variable-buffer-local 'py-shell-toggle-2)
+
 (defcustom py-source-modes '(python-mode jython-mode)
   "Used to determine if a buffer contains Python source code.
 
@@ -1887,7 +1899,6 @@ Returns column. "
       (indent-to-column erg))
     (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
-
 
 (defun toggle-indent-tabs-mode ()
   "Toggle `indent-tabs-mode'.
@@ -5772,7 +5783,6 @@ Basically, this goes down the directory tree as long as there are __init__.py fi
     (funcall rec (file-name-directory file)
 	     (file-name-sans-extension (file-name-nondirectory file)))))
 
-
 (defun py-execute-buffer-dedicated (&optional shell)
   "Send the contents of the buffer to a unique Python interpreter.
 
@@ -7652,51 +7662,89 @@ return `jython', otherwise return nil."
         (message "%s" "Could not detect Python on your system")))
     erg))
 
-(defalias 'python-toggle-shells 'py-toggle-shells)
-(defun py-toggle-shells (&optional arg)
-  "Toggles between the CPython and Jython default interpreter.
+(defalias 'python-toggle-shells 'py-switch-shells)
+(defalias 'py-toggle-shells 'py-switch-shells)
+(defun py-switch-shells (&optional arg)
+  "Toggles between the interpreter customized in `py-shell-toggle-1' resp. `py-shell-toggle-2'. Was hard-coded CPython and Jython in earlier versions, now starts with Python2 and Python3 by default.
 
 ARG might be a python-version string to set to.
-With \\[universal-argument]) user is prompted for the command to use.
-If no arg given and py-shell-name not set yet, shell is set according to `py-shell-name' "
+
+\\[universal-argument] `py-toggle-shells' prompts to specify a reachable Python command.
+\\[universal-argument] followed by numerical arg 2 or 3, `py-toggle-shells' opens a respective Python shell.
+\\[universal-argument] followed by numerical arg 5 opens a Jython shell.
+
+Should you need more shells to select, extend this command by adding inside the first cond:
+
+                    ((eq NUMBER (prefix-numeric-value arg))
+                     \"MY-PATH-TO-SHELL\")
+"
   (interactive "P")
-  (let ((name (cond ((eq 4 (prefix-numeric-value arg))
-                     (read-from-minibuffer "Python Shell and args:"))
-                    ((ignore-errors (stringp arg))
-                     arg)
-                    (t
-                     (if (string-match "python" py-shell-name)
-                         "jython"
-                       "python"))))
-        msg)
-    (if (string-match "python" name)
-        (setq py-shell-name name
-              py-which-bufname (capitalize name)
-              msg "CPython"
-              mode-name (capitalize name))
-      (setq py-shell-name name
-            py-which-bufname (capitalize name)
-            msg "Jython"
-            mode-name (capitalize name)))
-    (force-mode-line-update)
-    (message "Using the %s shell, %s" msg py-shell-name)
-    (setq py-output-buffer (format "*%s Output*" py-which-bufname))))
+  (let ((name (cond ((eq 2 (prefix-numeric-value arg))
+                     "python2")
+                    ((eq 3 (prefix-numeric-value arg))
+                     "python3")
+                    ((eq 4 (prefix-numeric-value arg))
+                     (read-from-minibuffer "Python Shell: " py-shell-name))
+                    ((eq 5 (prefix-numeric-value arg))
+                     "jython")
+                    (t (if (string-match py-shell-name
+                                         py-shell-toggle-1)
+                           py-shell-toggle-2
+                         py-shell-toggle-1))))
+        erg)
+    (cond ((or (string= "ipython" name)
+               (string= "IPython" name))
+           (setq py-shell-name name
+                 py-which-bufname "IPython"
+                 msg "IPython"
+                 mode-name "IPython"))
+          ((string-match "python3" name)
+           (setq py-shell-name name
+                 py-which-bufname (capitalize name)
+                 msg "CPython"
+                 mode-name (capitalize name)))
+          ((string-match "jython" name)
+           (setq py-shell-name name
+                 py-which-bufname (capitalize name)
+                 msg "Jython"
+                 mode-name (capitalize name)))
+          ((string-match "python" name)
+           (setq py-shell-name name
+                 py-which-bufname (concat (capitalize name) "2")
+                 msg "CPython"
+                 mode-name (concat (capitalize name) "2")))
+          (t
+           (setq py-shell-name name
+                 py-which-bufname name
+                 msg name
+                 mode-name name)))
+    (setq erg (executable-find py-shell-name))
+    (if erg
+        (progn
+          (force-mode-line-update)
+          (when (interactive-p)
+            (message "Using the %s shell, %s" msg erg))
+          (setq py-output-buffer (format "*%s Output*" py-which-bufname)))
+      (error (concat "Could not detect " py-shell-name " on your sys
+tem")))))
 
 (defalias 'py-which-shell 'py-choose-shell)
 (defun py-choose-shell (&optional arg pyshell dedicated)
-  "Looks for an appropriate mode function.
+  "Return an appropriate executable as a string.
+
+Returns nil, if no executable found.
 
 This does the following:
  - look for an interpreter with `py-choose-shell-by-shebang'
  - examine imports using `py-choose-shell-by-import'
  - if not successful, return default value of `py-shell-name'
 
-With \\[universal-argument]) user is prompted to specify a reachable Python version.
-Returns executable command as a string, or nil, if no executable found. "
-  (interactive "P")
-  (let* ((erg (cond ((eq 4 (prefix-numeric-value arg))
-                     (read-from-minibuffer "Python Shell: " py-shell-name))
-                    (py-use-local-default
+When interactivly called, messages the shell name, Emacs would in the given circtumstances.
+
+To change the default Python interpreter, use `py-switch-shell'.
+"
+  (interactive)
+  (let* ((erg (cond (py-use-local-default
                      (if (not (string= "" py-shell-local-path))
                          (expand-file-name py-shell-local-path)
                        (message "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'")))
@@ -7707,8 +7755,8 @@ Returns executable command as a string, or nil, if no executable found. "
     (if cmd
         (when (interactive-p)
           (message "%s" cmd))
-      (when (interactive-p) (message "%s" "Could not detect Python on your sys
-tem")))
+      (error "Could not detect Python on your sys
+tem"))
     erg))
 
 (defvar inferior-python-mode-map

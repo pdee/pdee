@@ -20,6 +20,9 @@ New in version 6.0.5
   `py-shell-local-path'
   see command `py-toggle-local-default-use'
 
+- `py-toggle-shells' alias of more powerful `py-switch-shells'
+  Toggles between the interpreter customized in `py-shell-toggle-1' resp. `py-shell-toggle-2'. Was hard-coded CPython and Jython in earlier versions, now starts with Python2 and Python3 by default.
+
 - `py-shell-name' accepts PATH/TO/EXECUTABLE
   in addition to name of an installed default Python-Shell.
   Permits installing commands like
