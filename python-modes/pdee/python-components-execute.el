@@ -107,13 +107,15 @@ interpreter.
          (define-key py-shell-map [tab] 'py-completion-at-point))
         (t (define-key py-shell-map [tab] 'py-shell-complete))))
 
-(defun py-shell (&optional argprompt dedicated pyshellname)
+(defun py-shell (&optional argprompt dedicated pyshellname switch)
   "Start an interactive Python interpreter in another window.
 
 With optional \\[universal-argument] user is prompted by
 `py-choose-shell' for command and options to pass to the Python
 interpreter.
 Returns variable `py-process-name' used by function `get-process'.
+Optional string PYSHELLNAME overrides default `py-shell-name'.
+Optional symbol SWITCH ('switch/'noswitch) precedes `py-shell-switch-buffers-on-execute'
 "
   (interactive "P")
   (let* ((py-shell-name
@@ -128,8 +130,7 @@ Returns variable `py-process-name' used by function `get-process'.
                 ((stringp py-shell-name) py-shell-name)
                 ((or (string= "" py-shell-name)(null py-shell-name))
                  ;; (py-guess-default-python)
-                 (py-choose-shell)
-                 )))
+                 (py-choose-shell))))
          (args py-python-command-args)
          (py-process-name (py-process-name py-shell-name dedicated))
          ipython-version version)
@@ -169,7 +170,8 @@ Returns variable `py-process-name' used by function `get-process'.
     ;; ToDo: has only effect \w IPython
     (add-hook 'py-shell-hook 'py-dirstack-hook)
     (run-hooks 'py-shell-hook)
-    (when (or py-shell-switch-buffers-on-execute (interactive-p))
+    (when (or (eq switch 'switch)
+              (and (not (eq switch 'noswitch)) (or (interactive-p) py-shell-switch-buffers-on-execute)))
       (switch-to-buffer (current-buffer)))
     (goto-char (point-max))
     py-process-name))
@@ -201,21 +203,21 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
     (when (interactive-p) (message "%s" (prin1-to-string cmd)))
     cmd))
 
-(defun py-execute-region-no-switch (start end &optional shell)
+(defun py-execute-region-no-switch (start end &optional shell dedicated)
   "Send the region to a Python interpreter.
 
 Ignores setting of `py-shell-switch-buffers-on-execute', buffer with region stays current.
  "
   (interactive "r\nP")
-  (py-execute-base start end py-shell-name))
+  (py-execute-base start end py-shell-name dedicated 'noswitch))
 
-(defun py-execute-region-switch (start end &optional shell)
+(defun py-execute-region-switch (start end &optional shell dedicated)
   "Send the region to a Python interpreter.
 
 Ignores setting of `py-shell-switch-buffers-on-execute', output-buffer will being switched to.
 "
   (interactive "r\nP")
-  (py-execute-base start end py-shell-name nil t))
+  (py-execute-base start end py-shell-name dedicated 'switch))
 
 (defun py-execute-region (start end &optional shell dedicated switch)
   "Send the region to a Python interpreter.
@@ -223,7 +225,10 @@ Ignores setting of `py-shell-switch-buffers-on-execute', output-buffer will bein
 When called with \\[univeral-argument], execution through `default-value' of `py-shell-name' is forced.
 When called with \\[univeral-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
 
-When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument. "
+When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
+
+Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)
+"
   (interactive "r\nP")
   (let ((shell (cond ((eq 4 (prefix-numeric-value shell)) (default-value py-shell-name))
                      ((and (numberp shell) (not (eq 1 (prefix-numeric-value shell))))
@@ -302,7 +307,8 @@ When called from a programm, it accepts a string specifying a shell which will b
         (progn
           (py-execute-file proc file pec)
           (setq py-exception-buffer (cons file (current-buffer)))
-          (if py-shell-switch-buffers-on-execute
+          (if (or (eq switch 'switch)
+                  (and (not (eq switch 'noswitch)) py-shell-switch-buffers-on-execute))
               (progn
                 (pop-to-buffer procbuf)
                 (goto-char (point-max)))
@@ -678,7 +684,7 @@ See also `\\[py-execute-region]'. "
   (interactive "P")
   (py-execute-buffer-base shell t))
 
-(defun py-execute-buffer-switch (&optional shell)
+(defun py-execute-buffer-switch (&optional shell dedicated)
   "Send the contents of the buffer to a Python interpreter and switches to output.
 
 If the file local variable `py-master-file' is non-nil, execute the
@@ -689,9 +695,9 @@ If a clipping restriction is in effect, only the accessible portion of the buffe
 With \\[univeral-argument] user is prompted to specify another then default shell.
 See also `\\[py-execute-region]'. "
   (interactive "P")
-  (py-execute-buffer-base shell dedicated t))
+  (py-execute-buffer-base shell dedicated 'switch))
 
-(defun py-execute-buffer-no-switch (&optional shell)
+(defun py-execute-buffer-no-switch (&optional shell dedicated)
   "Send the contents of the buffer to a Python interpreter but don't switch to output.
 
 If the file local variable `py-master-file' is non-nil, execute the
@@ -702,9 +708,7 @@ If a clipping restriction is in effect, only the accessible portion of the buffe
 With \\[univeral-argument] user is prompted to specify another then default shell.
 See also `\\[py-execute-region]'. "
   (interactive "P")
-  (let (py-shell-switch-buffers-on-execute)
-    (py-execute-buffer-base shell dedicated)))
-
+  (py-execute-buffer-base shell dedicated 'noswitch))
 
 (defalias 'py-execute-buffer-switch-dedicated 'py-execute-buffer-dedicated-switch)
 (defun py-execute-buffer-dedicated-switch (&optional shell)
@@ -719,7 +723,7 @@ If a clipping restriction is in effect, only the accessible portion of the buffe
 With \\[univeral-argument] user is prompted to specify another then default shell.
 See also `\\[py-execute-region]'. "
   (interactive "P")
-  (py-execute-buffer-base shell t t))
+  (py-execute-buffer-base shell t 'switch))
 
 (defun py-execute-buffer (&optional shell dedicated switch)
   "Send the contents of the buffer to a Python interpreter.
@@ -730,7 +734,10 @@ If there is a *Python* process buffer, it is used.
 If a clipping restriction is in effect, only the accessible portion of the buffer is sent. A trailing newline will be supplied if needed.
 
 With \\[univeral-argument] user is prompted to specify another then default shell.
-See also `\\[py-execute-region]'. "
+
+When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
+
+Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch) "
   (interactive "P")
   (let ((wholebuf t))
     (py-execute-buffer-base shell dedicated switch)))

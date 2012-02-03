@@ -3473,7 +3473,6 @@ Interactively, prompt for the name with completion."
 (require 'python-components-imenu)
 (require 'python-components-completion)
 (require 'python-components-named-shells)
-(require 'python-components-dedicated-shells)
 (require 'python-components-shell-complete)
 (require 'python-components-electric)
 (require 'virtualenv)

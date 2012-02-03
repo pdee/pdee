@@ -21,141 +21,303 @@
 ;;; Commentary:
 ;;; Code:
 
-(defun python (&optional argprompt)
-  "Start an Python interpreter in another window.
+;;; Python named shells
+(defun python (&optional argprompt dedicated switch)
+  "Start an Python interpreter.    
+
+   With optional \\[universal-argument] user is prompted for `py-python-command-args'.
+   Optional DEDICATED SWITCH are provided for use from programs. "
+  (interactive "P")
+  (py-set-shell-completion-environment)
+  (py-shell argprompt dedicated "python" switch))
+
+(defun ipython (&optional argprompt dedicated switch)
+  "Start an IPython interpreter.    
+
+   With optional \\[universal-argument] user is prompted for `py-python-command-args'.
+   Optional DEDICATED SWITCH are provided for use from programs. "
+  (interactive "P")
+  (py-set-shell-completion-environment)
+  (py-shell argprompt dedicated "ipython" switch))
+
+(defun python3 (&optional argprompt dedicated switch)
+  "Start an Python3 interpreter.    
+
+   With optional \\[universal-argument] user is prompted for `py-python-command-args'.
+   Optional DEDICATED SWITCH are provided for use from programs. "
+  (interactive "P")
+  (py-set-shell-completion-environment)
+  (py-shell argprompt dedicated "python3" switch))
+
+(defun python2 (&optional argprompt dedicated switch)
+  "Start an Python2 interpreter.    
+
+   With optional \\[universal-argument] user is prompted for `py-python-command-args'.
+   Optional DEDICATED SWITCH are provided for use from programs. "
+  (interactive "P")
+  (py-set-shell-completion-environment)
+  (py-shell argprompt dedicated "python2" switch))
+
+(defun python2.7 (&optional argprompt dedicated switch)
+  "Start an Python2.7 interpreter.    
+
+   With optional \\[universal-argument] user is prompted for `py-python-command-args'.
+   Optional DEDICATED SWITCH are provided for use from programs. "
+  (interactive "P")
+  (py-set-shell-completion-environment)
+  (py-shell argprompt dedicated "python2.7" switch))
+
+(defun jython (&optional argprompt dedicated switch)
+  "Start an Jython interpreter.    
+
+   With optional \\[universal-argument] user is prompted for `py-python-command-args'.
+   Optional DEDICATED SWITCH are provided for use from programs. "
+  (interactive "P")
+  (py-set-shell-completion-environment)
+  (py-shell argprompt dedicated "jython" switch))
+
+(defun python3.2 (&optional argprompt dedicated switch)
+  "Start an Python3.2 interpreter.    
+
+   With optional \\[universal-argument] user is prompted for `py-python-command-args'.
+   Optional DEDICATED SWITCH are provided for use from programs. "
+  (interactive "P")
+  (py-set-shell-completion-environment)
+  (py-shell argprompt dedicated "python3.2" switch))
+
+;; dedicated
+(defun python-dedicated (&optional argprompt switch)
+  "Start an unique Python interpreter in another window.
    With optional \\[universal-argument] user is prompted
     for options to pass to the Python interpreter. "
-  (interactive)
+  (interactive "P")
   (py-set-shell-completion-environment)
-  (py-shell argprompt nil "python"))
+  (py-shell argprompt t "python" switch))
 
-(defun python2 (&optional argprompt)
-  "Start an Python2 interpreter in another window.
-   With optional \\[universal-argument] user is prompted
-    for options to pass to the Python2 interpreter. "
-  (interactive)
-  (py-set-shell-completion-environment)
-  (py-shell argprompt nil "python2"))
-
-(defun python2.7 (&optional argprompt)
-  "Start an Python2.7 interpreter in another window.
-   With optional \\[universal-argument] user is prompted
-    for options to pass to the Python2.7 interpreter. "
-  (interactive)
-  (py-set-shell-completion-environment)
-  (py-shell argprompt nil "python2.7"))
-
-(defun python3 (&optional argprompt)
-  "Start an Python3 interpreter in another window.
-   With optional \\[universal-argument] user is prompted
-    for options to pass to the Python3 interpreter. "
-  (interactive)
-  (py-set-shell-completion-environment)
-  (py-shell argprompt nil "python3"))
-
-(defun python3.2 (&optional argprompt)
-  "Start an Python3.2 interpreter in another window.
-   With optional \\[universal-argument] user is prompted
-    for options to pass to the Python3.2 interpreter. "
-  (interactive)
-  (py-set-shell-completion-environment)
-  (py-shell argprompt nil "python3.2"))
-
-(defalias 'iyp 'ipython)
-(defalias 'ipy 'ipython)
-(defun ipython (&optional argprompt)
-  "Start an IPython interpreter in another window.
+(defun ipython-dedicated (&optional argprompt switch)
+  "Start an unique IPython interpreter in another window.
    With optional \\[universal-argument] user is prompted
     for options to pass to the IPython interpreter. "
-  (interactive)
+  (interactive "P")
   (py-set-shell-completion-environment)
-  (py-shell argprompt nil "ipython"))
+  (py-shell argprompt t "ipython" switch))
 
-(defun jython (&optional argprompt)
-  "Start an Jython interpreter in another window.
+(defun python3-dedicated (&optional argprompt switch)
+  "Start an unique Python3 interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python3 interpreter. "
+  (interactive "P")
+  (py-set-shell-completion-environment)
+  (py-shell argprompt t "python3" switch))
+
+(defun python2-dedicated (&optional argprompt switch)
+  "Start an unique Python2 interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python2 interpreter. "
+  (interactive "P")
+  (py-set-shell-completion-environment)
+  (py-shell argprompt t "python2" switch))
+
+(defun python2.7-dedicated (&optional argprompt switch)
+  "Start an unique Python2.7 interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python2.7 interpreter. "
+  (interactive "P")
+  (py-set-shell-completion-environment)
+  (py-shell argprompt t "python2.7" switch))
+
+(defun jython-dedicated (&optional argprompt switch)
+  "Start an unique Jython interpreter in another window.
    With optional \\[universal-argument] user is prompted
     for options to pass to the Jython interpreter. "
-  (interactive)
+  (interactive "P")
   (py-set-shell-completion-environment)
-  (py-shell argprompt nil "jython"))
+  (py-shell argprompt t "jython" switch))
 
+(defun python3.2-dedicated (&optional argprompt switch)
+  "Start an unique Python3.2 interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python3.2 interpreter. "
+  (interactive "P")
+  (py-set-shell-completion-environment)
+  (py-shell argprompt t "python3.2" switch))
 
-;;; Installer
+;; switch
+(defun python-switch (&optional argprompt dedicated)
+  "Switch to Python interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python interpreter. "
+  (interactive "P")
+  (py-set-shell-completion-environment)
+  (py-shell argprompt t "python" switch))
 
-(defvar py-shell-template "
-\(defun NAME (&optional argprompt)
-  \"Start an DOCNAME interpreter in another window.
+(defun ipython-switch (&optional argprompt dedicated)
+  "Switch to IPython interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the IPython interpreter. "
+  (interactive "P")
+  (py-set-shell-completion-environment)
+  (py-shell argprompt t "ipython" switch))
 
-With optional \\\\[universal-argument] user is prompted
-for options to pass to the DOCNAME interpreter. \"
-  (interactive \"P\")
-  (let\* ((py-shell-name \"FULLNAME\"))
-    (py-set-shell-completion-environment)
-    (py-shell argprompt)
-    (when (interactive-p) (switch-to-buffer (current-buffer))
-          (goto-char (point-max)))))
-")
+(defun python3-switch (&optional argprompt dedicated)
+  "Switch to Python3 interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python3 interpreter. "
+  (interactive "P")
+  (py-set-shell-completion-environment)
+  (py-shell argprompt t "python3" switch))
 
-(setq py-shell-template "
-\(defun NAME (&optional argprompt)
-  \"Start an DOCNAME interpreter in another window.
+(defun python2-switch (&optional argprompt dedicated)
+  "Switch to Python2 interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python2 interpreter. "
+  (interactive "P")
+  (py-set-shell-completion-environment)
+  (py-shell argprompt t "python2" switch))
 
-With optional \\\\[universal-argument] user is prompted
-for options to pass to the DOCNAME interpreter. \"
-  (interactive \"P\")
-  (let\* ((py-shell-name \"FULLNAME\"))
-    (py-set-shell-completion-environment)
-    (py-shell argprompt)
-    (when (interactive-p) (switch-to-buffer (current-buffer))
-          (goto-char (point-max)))))
-")
+(defun python2.7-switch (&optional argprompt dedicated)
+  "Switch to Python2.7 interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python2.7 interpreter. "
+  (interactive "P")
+  (py-set-shell-completion-environment)
+  (py-shell argprompt t "python2.7" switch))
 
-(defun py-install-search-local ()
-  (interactive)
-  (let ((erg (split-string (shell-command-to-string (concat "find " default-directory " -maxdepth 9 -type f -name \"*python\"")))))))
+(defun jython-switch (&optional argprompt dedicated)
+  "Switch to Jython interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Jython interpreter. "
+  (interactive "P")
+  (py-set-shell-completion-environment)
+  (py-shell argprompt t "jython" switch))
 
-(defun py-install-local-shells (&optional local path-prefix)
-  "Builds Python-shell commands from executable found in LOCAL.
+(defun python3.2-switch (&optional argprompt dedicated)
+  "Switch to Python3.2 interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python3.2 interpreter. "
+  (interactive "P")
+  (py-set-shell-completion-environment)
+  (py-shell argprompt t "python3.2" switch))
 
-If LOCAL is empty, shell-command `find' searches beneath current directory.
-Eval resulting buffer to install it, see customizable `py-extensions'. "
-  (interactive)
-  (let* ((local-dir (if local
-                        (expand-file-name local)
-                      (read-from-minibuffer "Virtualenv directory: " default-directory)))
-         (path-separator (if (string-match "/" local-dir)
-                             "/"
-                           "\\" t))
-         (shells (split-string (shell-command-to-string (concat "find " local-dir " -maxdepth 9 -type f -executable -name \"*python\""))))
-         erg newshell prefix akt end orig)
-    (set-buffer (get-buffer-create py-extensions))
-    (erase-buffer)
-    (switch-to-buffer (current-buffer))
-    (dolist (elt shells)
-      (setq prefix "")
-      (setq curexe (substring elt (1+ (string-match "/[^/]+$" elt))))
-      (setq aktpath (substring elt 0 (1+ (string-match "/[^/]+$" elt))))
-      (dolist (prf (split-string aktpath (regexp-quote path-separator)))
-        (unless (string= "" prf)
-          (setq prefix (concat prefix (substring prf 0 1)))))
-      (setq orig (point))
-      (insert py-shell-template)
-      (setq end (point))
-      (goto-char orig)
-      (when (re-search-forward "\\<NAME\\>" end t 1)
-        (replace-match (concat prefix "-" (substring elt (1+ (save-match-data (string-match "/[^/]+$" elt)))))t))
-      (goto-char orig)
-      (while (search-forward "DOCNAME" end t 1)
-        (replace-match (if (string= "ipython" curexe)
-                           "IPython"
-                         (capitalize curexe)) t))
-      (goto-char orig)
-      (when (search-forward "FULLNAME" end t 1)
-        (replace-match elt t))
-      (goto-char (point-max)))
-    (emacs-lisp-mode)
-    (if (file-readable-p (concat py-install-directory "/" py-extensions))
-        (find-file (concat py-install-directory "/" py-extensions)))))
+(defun python-no-switch (&optional argprompt dedicated)
+  "Open an Python interpreter in another window, but do not switch to it.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python interpreter. "
+  (interactive "P")
+  (py-set-shell-completion-environment)
+  (py-shell argprompt dedicated "python" 'noswitch))
+
+(defun ipython-no-switch (&optional argprompt dedicated)
+  "Open an IPython interpreter in another window, but do not switch to it.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the IPython interpreter. "
+  (interactive "P")
+  (py-set-shell-completion-environment)
+  (py-shell argprompt dedicated "ipython" 'noswitch))
+
+(defun python3-no-switch (&optional argprompt dedicated)
+  "Open an Python3 interpreter in another window, but do not switch to it.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python3 interpreter. "
+  (interactive "P")
+  (py-set-shell-completion-environment)
+  (py-shell argprompt dedicated "python3" 'noswitch))
+
+(defun python2-no-switch (&optional argprompt dedicated)
+  "Open an Python2 interpreter in another window, but do not switch to it.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python2 interpreter. "
+  (interactive "P")
+  (py-set-shell-completion-environment)
+  (py-shell argprompt dedicated "python2" 'noswitch))
+
+(defun python2.7-no-switch (&optional argprompt dedicated)
+  "Open an Python2.7 interpreter in another window, but do not switch to it.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python2.7 interpreter. "
+  (interactive "P")
+  (py-set-shell-completion-environment)
+  (py-shell argprompt dedicated "python2.7" 'noswitch))
+
+(defun jython-no-switch (&optional argprompt dedicated)
+  "Open an Jython interpreter in another window, but do not switch to it.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Jython interpreter. "
+  (interactive "P")
+  (py-set-shell-completion-environment)
+  (py-shell argprompt dedicated "jython" 'noswitch))
+
+(defun python3.2-no-switch (&optional argprompt dedicated)
+  "Open an Python3.2 interpreter in another window, but do not switch to it.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python3.2 interpreter. "
+  (interactive "P")
+  (py-set-shell-completion-environment)
+  (py-shell argprompt dedicated "python3.2" 'noswitch))
+
+(defalias 'python-dedicated-switch 'python-switch-dedicated)
+(defun python-switch-dedicated (&optional argprompt)
+  "Switch to an unique Python interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python interpreter. "
+  (interactive "P")
+  (py-set-shell-completion-environment)
+  (py-shell argprompt t "python" 'switch))
+
+(defalias 'ipython-dedicated-switch 'ipython-switch-dedicated)
+(defun ipython-switch-dedicated (&optional argprompt)
+  "Switch to an unique IPython interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the IPython interpreter. "
+  (interactive "P")
+  (py-set-shell-completion-environment)
+  (py-shell argprompt t "ipython" 'switch))
+
+(defalias 'python3-dedicated-switch 'python3-switch-dedicated)
+(defun python3-switch-dedicated (&optional argprompt)
+  "Switch to an unique Python3 interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python3 interpreter. "
+  (interactive "P")
+  (py-set-shell-completion-environment)
+  (py-shell argprompt t "python3" 'switch))
+
+(defalias 'python2-dedicated-switch 'python2-switch-dedicated)
+(defun python2-switch-dedicated (&optional argprompt)
+  "Switch to an unique Python2 interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python2 interpreter. "
+  (interactive "P")
+  (py-set-shell-completion-environment)
+  (py-shell argprompt t "python2" 'switch))
+
+(defalias 'python2.7-dedicated-switch 'python2.7-switch-dedicated)
+(defun python2.7-switch-dedicated (&optional argprompt)
+  "Switch to an unique Python2.7 interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python2.7 interpreter. "
+  (interactive "P")
+  (py-set-shell-completion-environment)
+  (py-shell argprompt t "python2.7" 'switch))
+
+(defalias 'jython-dedicated-switch 'jython-switch-dedicated)
+(defun jython-switch-dedicated (&optional argprompt)
+  "Switch to an unique Jython interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Jython interpreter. "
+  (interactive "P")
+  (py-set-shell-completion-environment)
+  (py-shell argprompt t "jython" 'switch))
+
+(defalias 'python3.2-dedicated-switch 'python3.2-switch-dedicated)
+(defun python3.2-switch-dedicated (&optional argprompt)
+  "Switch to an unique Python3.2 interpreter in another window.
+   With optional \\[universal-argument] user is prompted
+    for options to pass to the Python3.2 interpreter. "
+  (interactive "P")
+  (py-set-shell-completion-environment)
+  (py-shell argprompt t "python3.2" 'switch))
+
 
 (provide 'python-components-named-shells)
 ;;; python-components-named-shells.el ends here
