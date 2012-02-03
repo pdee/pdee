@@ -1588,6 +1588,71 @@ It makes underscores and dots word constituent chars.")
              :help "Try to find source definition of function at point"]
             ["Update imports" py-update-imports
              :help "Update list of top-level imports for completion"]))
+        ;; Python shell menu
+        (easy-menu-define py-menu map "Python Shells"
+          '("Py-Shell"
+            :help "Python Shells"
+            
+            ["Switch to interpreter" py-shell
+             :help "Switch to `inferior' Python in separate buffer"]
+            ["python" python
+             :help "Start an Python interpreter.
+
+Optional C-u prompts for options to pass to the Python interpreter. See `py-python-command-args'."]
+            ["ipython" ipython
+             :help "Start an IPython interpreter.
+
+Optional C-u prompts for options to pass to the IPython interpreter. See `py-python-command-args'."]
+            ["python3" python3
+             :help "Start an Python3 interpreter.
+
+Optional C-u prompts for options to pass to the Python3 interpreter. See `py-python-command-args'."]
+            ["python2" python2
+             :help "Start an Python2 interpreter.
+
+Optional C-u prompts for options to pass to the Python2 interpreter. See `py-python-command-args'."]
+            ["python2.7" python2.7
+             :help "Start an Python2.7 interpreter.
+
+Optional C-u prompts for options to pass to the Python2.7 interpreter. See `py-python-command-args'."]
+            ["jython" jython
+             :help "Start an Jython interpreter.
+
+Optional C-u prompts for options to pass to the Jython interpreter. See `py-python-command-args'."]
+            ["python3.2" python3.2
+             :help "Start an Python3.2 interpreter.
+
+Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'."]
+            "-" ["python-dedicated" python-dedicated
+                 :help "Start an unique Python interpreter in another window.
+
+Optional C-u prompts for options to pass to the Python interpreter. See `py-python-command-args'."]
+            ["ipython-dedicated" ipython-dedicated
+             :help "Start an unique IPython interpreter in another window.
+
+Optional C-u prompts for options to pass to the IPython interpreter. See `py-python-command-args'."]
+            ["python3-dedicated" python3-dedicated
+             :help "Start an unique Python3 interpreter in another window.
+
+Optional C-u prompts for options to pass to the Python3 interpreter. See `py-python-command-args'."]
+            ["python2-dedicated" python2-dedicated
+             :help "Start an unique Python2 interpreter in another window.
+
+Optional C-u prompts for options to pass to the Python2 interpreter. See `py-python-command-args'."]
+            ["python2.7-dedicated" python2.7-dedicated
+             :help "Start an unique Python2.7 interpreter in another window.
+
+Optional C-u prompts for options to pass to the Python2.7 interpreter. See `py-python-command-args'."]
+            ["jython-dedicated" jython-dedicated
+             :help "Start an unique Jython interpreter in another window.
+
+Optional C-u prompts for options to pass to the Jython interpreter. See `py-python-command-args'."]
+            ["python3.2-dedicated" python3.2-dedicated
+             :help "Start an unique Python3.2 interpreter in another window.
+
+Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'."]
+            ))
+        
         map))
 ;; Fixme: add toolbar stuff for useful things like symbol help, send
 ;; region, at least.  (Shouldn't be specific to Python, obviously.)
