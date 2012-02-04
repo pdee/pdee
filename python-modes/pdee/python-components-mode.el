@@ -1582,10 +1582,20 @@ Go to end of class definition "]
         (easy-menu-define py-menu map "Python Tools"
           '("Py Tools"
             :help "Python mode tools"
-            ("Templates..."
-             :help "Expand templates for compound statements"
-             :filter (lambda (&rest junk)
-                       (abbrev-table-menu python-mode-abbrev-table)))
+            ("Skeletons..."
+             :help "See also templates in YASnippet")
+            ["if" py-if
+             :help "Inserts if-statement"]
+            ["py-else" py-else
+             :help "Inserts else-statement"]
+            ["py-while" py-while
+             :help "Inserts while-statement"]
+            ["py-for" py-for
+             :help "Inserts for-statement"]
+            ["py-try/finally" py-try/finally
+             :help "Inserts py-try/finally-statement"]
+            ["py-try/except" py-try/except
+             :help "Inserts py-try/except-statement"]
             "-"
             ["Import/reload file" py-execute-import-or-reload
              :help "`py-execute-import-or-reload'
@@ -3571,7 +3581,6 @@ Interactively, prompt for the name with completion."
 (require 'python-components-execute)
 (require 'python-components-send)
 (require 'python-components-pdb)
-;;(require 'python-components-skeletons)
 (require 'python-components-help)
 (require 'python-components-extensions)
 ;; (require 'thingatpt-python-expressions)
@@ -3582,7 +3591,7 @@ Interactively, prompt for the name with completion."
 (require 'python-components-electric)
 (require 'virtualenv)
 ;;(require 'components-shell-completion)
-
+(require 'python-components-skeletons)
 (require 'python-mode-test)
 
 (define-derived-mode python-mode fundamental-mode "Python"
@@ -3685,11 +3694,10 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   ;; 'python-completion-at-point nil 'local)
   (add-hook 'completion-at-point-functions
             py-complete-function nil 'local)
-  (when python-use-skeletons
-    (set (make-local-variable 'skeleton-further-elements)
-         '((< '(backward-delete-char-untabify (min py-indent-offset
-                                                   (current-column))))
-           (^ '(- (1+ (current-indentation)))))))
+  (set (make-local-variable 'skeleton-further-elements)
+       '((< '(backward-delete-char-untabify (min py-indent-offset
+                                                 (current-column))))
+         (^ '(- (1+ (current-indentation))))))
   ;; Python defines TABs as being 8-char wide.
   (set (make-local-variable 'tab-width) py-indent-offset)
   ;; Now do the automagical guessing
@@ -3712,7 +3720,12 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (when (null py-shell-name)
     (py-toggle-shells (py-choose-shell)))
   ;; (py-set-load-path)
-  (when py-load-pymacs-p (py-load-pymacs))
+  (when py-load-pymacs-p (py-load-pymacs)
+        (unwind-protect
+            (progn
+              (find-file (concat py-install-directory "/completion/pycomplete.el"))
+              (eval-buffer)))
+        (kill-buffer "pycomplete.el"))
   (define-key inferior-python-mode-map (kbd "<tab>")
     'python-shell-completion-complete-or-indent)
   ;; add the menu

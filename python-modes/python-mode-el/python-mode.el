@@ -1346,10 +1346,20 @@ Go to end of class definition "]
         (easy-menu-define py-menu map "Python Tools"
           '("Py Tools"
             :help "Python mode tools"
-            ("Templates..."
-             :help "Expand templates for compound statements"
-             :filter (lambda (&rest junk)
-                       (abbrev-table-menu python-mode-abbrev-table)))
+            ("Skeletons..."
+             :help "See also templates in YASnippet")
+            ["if" py-if
+             :help "Inserts if-statement"]
+            ["py-else" py-else
+             :help "Inserts else-statement"]
+            ["py-while" py-while
+             :help "Inserts while-statement"]
+            ["py-for" py-for
+             :help "Inserts for-statement"]
+            ["py-try/finally" py-try/finally
+             :help "Inserts py-try/finally-statement"]
+            ["py-try/except" py-try/except
+             :help "Inserts py-try/except-statement"]
             "-"
             ["Import/reload file" py-execute-import-or-reload
              :help "`py-execute-import-or-reload'
@@ -8223,6 +8233,10 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   ;; 'python-completion-at-point nil 'local)
   (add-hook 'completion-at-point-functions
             py-complete-function nil 'local)
+  (set (make-local-variable 'skeleton-further-elements)
+       '((< '(backward-delete-char-untabify (min py-indent-offset
+                                                 (current-column))))
+         (^ '(- (1+ (current-indentation))))))
   ;; Python defines TABs as being 8-char wide.
   (set (make-local-variable 'tab-width) py-indent-offset)
   ;; Now do the automagical guessing
@@ -9609,6 +9623,85 @@ Only knows about the stuff in the current *Python* session."
     ;; XEmacs.
     (when (featurep 'xemacs)
       (compile-internal command "No more errors"))))
+
+;;; python-mode skeletons
+;; Derived from python.el, where it's instrumented as abbrev
+;; Original code authored by Dave Love AFAIK
+
+(define-skeleton py-else
+  "Auxiliary skeleton."
+  nil
+  (unless (eq ?y (read-char "Add `else' clause? (y for yes or RET for no) "))
+    (signal 'quit t))
+  < "else:" \n)
+
+(define-skeleton py-if
+  "If condition "
+  "if " "if " str ":" \n
+  _ \n
+  ("other condition, %s: "
+   < "elif " str ":" \n
+   > _ \n nil)
+  '(py-else) | ^)
+
+(define-skeleton py-else
+  "Auxiliary skeleton."
+  nil
+  (unless (eq ?y (read-char "Add `else' clause? (y for yes or RET for no) "))
+    (signal 'quit t))
+  "else:" \n
+  > _ \n)
+
+(define-skeleton py-while
+  "Condition: "
+  "while " "while " str ":" \n
+  > -1 _ \n
+  '(py-else) | ^)
+
+(define-skeleton py-for
+  "Target, %s: "
+  "for " "for " str " in " (skeleton-read "Expression, %s: ") ":" \n
+  > -1 _ \n
+  '(py-else) | ^)
+
+(define-skeleton py-try/except
+  "Py-try/except skeleton "
+  "try:" "try:" \n
+  > -1 _ \n
+  ("Exception, %s: "
+   < "except " str '(python-target) ":" \n
+   > _ \n nil)
+  < "except:" \n
+  > _ \n
+  '(py-else) | ^)
+
+(define-skeleton py-target
+  "Auxiliary skeleton."
+  "Target, %s: " ", " str | -2)
+
+(define-skeleton py-try/finally
+  "Py-try/finally skeleton "
+  "try:" \n
+  > -1 _ \n
+  < "finally:" \n
+  > _ \n)
+
+(define-skeleton py-def
+  "Name: "
+  "def " str " (" ("Parameter, %s: " (unless (equal ?\( (char-before)) ", ")
+                   str) "):" \n
+                   "\"\"\"" - "\"\"\"" \n     ; Fixme:  extra space inserted -- why?).
+                   > _ \n)
+
+(define-skeleton py-class
+  "Name: "
+  "class " str " (" ("Inheritance, %s: "
+		     (unless (equal ?\( (char-before)) ", ")
+		     str)
+  & ")" | -2				; close list or remove opening
+  ":" \n
+  "\"\"\"" - "\"\"\"" \n
+  > _ \n)
 
 ;;; Virtualenv --- Switching virtual python enviroments seamlessly
 ;; Thanks Gabriele Lanaro and all working on that
