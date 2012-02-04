@@ -1289,131 +1289,174 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
             (define-key map [(meta tab)] 'py-complete)
           (substitute-key-definition 'complete-symbol 'completion-at-point
                                      map global-map))
-        (easy-menu-define py-menu map "Python Mode menu"
-          '("Python"
+        (easy-menu-define py-menu map "Python Mode Commands"
+          '("Py Commands"
             :help "Python-specific features"
             ["Execute statement" py-execute-statement
-             :help "Send statement at point to Python interpreter. "]
+             :help "`py-execute-statement'
+Send statement at point to Python interpreter. "]
             ["Execute block" py-execute-block
-             :help "Send compound statement at point to Python interpreter. "]
+             :help "`py-execute-block'
+Send compound statement at point to Python interpreter. "]
             ["Execute def" py-execute-def
-             :help "Send function at point to Python interpreter. "]
+             :help "`py-execute-def'
+Send function at point to Python interpreter. "]
             ["Execute region" py-execute-region
-             :help "Send region to Python interpreter. "]
+             :help "`py-execute-region'
+Send region to Python interpreter. "]
             ["Execute buffer" py-execute-buffer
-             :help "Send buffer to Python interpreter. "]
+             :help "`py-execute-buffer'
+Send buffer to Python interpreter. "]
             "-"
             ["Copy block" py-copy-block
-             :help "Copy innermost compound statement at point"]
+             :help "`py-copy-block'
+Copy innermost compound statement at point"]
             ["Copy def-or-class" py-copy-def-or-class
-             :help "Copy innermost definition at point"]
+             :help "`py-copy-def-or-class'
+Copy innermost definition at point"]
             ["Copy statement" py-copy-statement
-             :help "Copy statement at point"]
+             :help "`py-copy-statement'
+Copy statement at point"]
             ["Copy expression" py-copy-expression
-             :help "Copy expression at point"]
+             :help "`py-copy-expression'
+Copy expression at point"]
             ["Copy partial-expression" py-copy-partial-expression
-             :help "\".\" operators delimit a partial-expression expression on it's level"]
+             :help "`py-copy-partial-expression'
+\".\" operators delimit a partial-expression expression on it's level"]
             "-"
             ["Beginning of block" py-beginning-of-block
-             :help "Go to start of innermost compound statement at point"]
+             :help "`py-beginning-of-block'
+Go to start of innermost compound statement at point"]
             ["End of block" py-end-of-block
-             :help "Go to end of innermost compound statement at point"]
+             :help "`py-end-of-block'
+Go to end of innermost compound statement at point"]
             ["Beginning of Def-or-Class" py-beginning-of-def-or-class
-             :help "Go to start of innermost definition at point"]
+             :help "`py-beginning-of-def-or-class'
+Go to start of innermost definition at point"]
             ["End of Def-or-Class" py-end-of-def-or-class
-             :help "Go to end of innermost function definition at point"]
-            ["Beginning of-class" beginning-of-class
-             :help "Go to start of class definition "]
+             :help "`py-end-of-def-or-class'
+Go to end of innermost function definition at point"]
+            ["Beginning of-class" py-beginning-of-class
+             :help "`py-beginning-of-class'
+Go to start of class definition "]
             ["End of Class" py-end-of-class
-             :help "Go to end of class definition "]
-            "-"
+             :help "`py-end-of-class'
+Go to end of class definition "]
+            "-"))
+        (easy-menu-define py-menu map "Python Tools"
+          '("Py Tools"
+            :help "Python mode tools"
             ("Templates..."
              :help "Expand templates for compound statements"
              :filter (lambda (&rest junk)
                        (abbrev-table-menu python-mode-abbrev-table)))
             "-"
             ["Import/reload file" py-execute-import-or-reload
-             :help "Load into inferior Python session"]
+             :help "`py-execute-import-or-reload'
+Load into inferior Python session"]
             ["Set default process" py-set-proc
-             :help "Make buffer's inferior process the default"
+             :help "`py-set-proc'
+Make buffer's inferior process the default"
              :active (buffer-live-p py-buffer)]
-            ["pychecker-run" py-pychecker-run :help "Run pychecker"]
-            ["Debugger" pdb :help "Run pdb under GUD"]
+            ["pychecker-run" py-pychecker-run
+             :help "`py-pychecker-run'
+Run pychecker"]
+            ["Debugger" pdb
+             :help "`pdb'
+Run pdb under GUD"]
             "-"
             ["Customize Python mode" (customize-group 'python-mode)
              :help "Open the customization buffer for Python mode"]
             ["Help on symbol" py-describe-symbol
-             :help "Use pydoc on symbol at point"]
+             :help "`py-describe-symbol'
+Use pydoc on symbol at point"]
             ["Complete symbol" completion-at-point
-             :help "Complete (qualified) symbol before point"]
+             :help "`completion-at-point'
+Complete (qualified) symbol before point"]
             ["Find function" py-find-function
-             :help "Try to find source definition of function at point"]
+             :help "`py-find-function'
+Try to find source definition of function at point"]
             ["Update imports" py-update-imports
-             :help "Update list of top-level imports for completion"]))
+             :help "`py-update-imports'
+Update list of top-level imports for completion"]))
         ;; Python shell menu
         (easy-menu-define py-menu map "Python Shells"
           '("Py-Shell"
             :help "Python Shells"
 
-            ["Switch to interpreter" py-shell
-             :help "Switch to `inferior' Python in separate buffer"]
+            ["Default interpreter" py-shell
+             :help "`py-shell'
+Switch to `inferior' Python in separate buffer"]
             ["python" python
-             :help "Start an Python interpreter.
+             :help "`python'
+Start an Python interpreter.
 
 Optional C-u prompts for options to pass to the Python interpreter. See `py-python-command-args'."]
             ["ipython" ipython
-             :help "Start an IPython interpreter.
+             :help "`ipython'
+Start an IPython interpreter.
 
 Optional C-u prompts for options to pass to the IPython interpreter. See `py-python-command-args'."]
             ["python3" python3
-             :help "Start an Python3 interpreter.
+             :help "`python3'
+Start an Python3 interpreter.
 
 Optional C-u prompts for options to pass to the Python3 interpreter. See `py-python-command-args'."]
             ["python2" python2
-             :help "Start an Python2 interpreter.
+             :help "`python2'
+Start an Python2 interpreter.
 
 Optional C-u prompts for options to pass to the Python2 interpreter. See `py-python-command-args'."]
             ["python2.7" python2.7
-             :help "Start an Python2.7 interpreter.
+             :help "`python2.7'
+Start an Python2.7 interpreter.
 
 Optional C-u prompts for options to pass to the Python2.7 interpreter. See `py-python-command-args'."]
             ["jython" jython
-             :help "Start an Jython interpreter.
+             :help "`jython'
+Start an Jython interpreter.
 
 Optional C-u prompts for options to pass to the Jython interpreter. See `py-python-command-args'."]
             ["python3.2" python3.2
-             :help "Start an Python3.2 interpreter.
+             :help "`python3.2'
+Start an Python3.2 interpreter.
 
 Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'."]
             "-" ["python-dedicated" python-dedicated
-                 :help "Start an unique Python interpreter in another window.
+                 :help "`python-dedicated'
+Start an unique Python interpreter in another window.
 
 Optional C-u prompts for options to pass to the Python interpreter. See `py-python-command-args'."]
             ["ipython-dedicated" ipython-dedicated
-             :help "Start an unique IPython interpreter in another window.
+             :help "`ipython-dedicated'
+Start an unique IPython interpreter in another window.
 
 Optional C-u prompts for options to pass to the IPython interpreter. See `py-python-command-args'."]
             ["python3-dedicated" python3-dedicated
-             :help "Start an unique Python3 interpreter in another window.
+             :help "`python3-dedicated'
+Start an unique Python3 interpreter in another window.
 
 Optional C-u prompts for options to pass to the Python3 interpreter. See `py-python-command-args'."]
             ["python2-dedicated" python2-dedicated
-             :help "Start an unique Python2 interpreter in another window.
+             :help "`python2-dedicated'
+Start an unique Python2 interpreter in another window.
 
 Optional C-u prompts for options to pass to the Python2 interpreter. See `py-python-command-args'."]
             ["python2.7-dedicated" python2.7-dedicated
-             :help "Start an unique Python2.7 interpreter in another window.
+             :help "`python2'.7-dedicated
+Start an unique Python2.7 interpreter in another window.
 
 Optional C-u prompts for options to pass to the Python2.7 interpreter. See `py-python-command-args'."]
             ["jython-dedicated" jython-dedicated
-             :help "Start an unique Jython interpreter in another window.
+             :help "`jython-dedicated'
+Start an unique Jython interpreter in another window.
 
 Optional C-u prompts for options to pass to the Jython interpreter. See `py-python-command-args'."]
             ["python3.2-dedicated" python3.2-dedicated
-             :help "Start an unique Python3.2 interpreter in another window.
+             :help "`python3.2-dedicated'
+Start an unique Python3.2 interpreter in another window.
 
-Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'."]
-            ))
+Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'."]))
         map))
 
 ;;; Intern
