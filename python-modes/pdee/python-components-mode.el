@@ -2860,7 +2860,7 @@ behavior, change `python-remove-cwd-from-path' to nil."
 	 (command
           ;; IPython puts the FakeModule module into __main__ so
           ;; emacs.eexecfile becomes useless.
-          (if (string-match "^ipython" python-command)
+          (if (string-match "^ipython" py-shell-name)
               (format "execfile %S" f)
             (format "emacs.eexecfile(%S)" f)))
 	 (orig-start (copy-marker start)))
@@ -3091,7 +3091,7 @@ instance.  Assumes an inferior Python is running."
 (defun python-after-info-look ()
   "Set up info-look for Python.
 Used with `eval-after-load'."
-  (let* ((version (let ((s (shell-command-to-string (concat python-command
+  (let* ((version (let ((s (shell-command-to-string (concat py-shell-name
 							    " -V"))))
 		    (string-match "^Python \\([0-9]+\\.[0-9]+\\>\\)" s)
 		    (match-string 1 s)))
@@ -3450,6 +3450,12 @@ Interactively, prompt for name."
   ;; Only expand in code.
   :enable-function (lambda () (not (python-in-string/comment))))
 
+;; From `skeleton-further-elements' set below:
+;;  `<': outdent a level;
+;;  `^': delete indentation on current line and also previous newline.
+;;       Not quite like `delete-indentation'.  Assumes point is at
+;;       beginning of indentation.
+
 (eval-when-compile
   ;; Define a user-level skeleton and add it to the abbrev table.
   (defmacro def-python-skeleton (name &rest elements)
@@ -3467,11 +3473,6 @@ Interactively, prompt for name."
            ,@elements)))))
 (put 'def-python-skeleton 'lisp-indent-function 2)
 
-;; From `skeleton-further-elements' set below:
-;;  `<': outdent a level;
-;;  `^': delete indentation on current line and also previous newline.
-;;       Not quite like `delete-indentation'.  Assumes point is at
-;;       beginning of indentation.
 
 (def-python-skeleton if
     "Condition: "
@@ -4538,15 +4539,22 @@ complete('%s')
 (defun ipython-complete ()
   "Complete the python symbol before point.
 
-Only knows about the stuff in the current *Python* session."
+Returns the completed symbol, a string, if successful, nil otherwise."
   (interactive "*")
-  (let* ((completion-command-string ipython-completion-command-string)
+  (let* ((oldbuf (current-buffer))
          (ugly-return nil)
          (sep ";")
+         (py-which-bufname (cond ((get-buffer-process "IPython")
+                                  "IPython")
+                                 ((string-match "[Ii][Pp]ython" py-shell-name)
+                                  py-shell-name)
+                                 (t "ipython")))
          (python-process (or (get-buffer-process (current-buffer))
-                             (get-process py-which-bufname)))
-         (beg (save-excursion (skip-chars-backward "a-z0-9A-Z_." (point-at-bol))
-                              (point)))
+                             (get-process py-which-bufname)
+                             (get-process (py-shell nil nil py-which-bufname 'noswitch))))
+
+         (beg (progn (set-buffer oldbuf)(save-excursion (skip-chars-backward "a-z0-9A-Z_." (point-at-bol))
+                                                        (point))))
          (end (point))
          (pattern (buffer-substring-no-properties beg end))
          (comint-output-filter-functions
@@ -4559,12 +4567,12 @@ Only knows about the stuff in the current *Python* session."
                       (delete-region comint-last-output-start
                                      (process-mark (get-buffer-process (current-buffer))))))))
          completion completions completion-table)
-    ;; (save-excursion
-    ;; (setq python-process (get-process (ipython-dedicated))))
     (if (string= pattern "")
         (tab-to-tab-stop)
       (process-send-string python-process
-                           (format completion-command-string pattern))
+                           (format (py-set-ipython-completion-command-string py-which-bufname) pattern))
+      ;; (message "python-process %s" python-process)
+      ;; (message "%s" (py-set-ipython-completion-command-string py-which-bufname))
       (accept-process-output python-process)
       (setq completions
             (split-string (substring ugly-return 0 (position ?\n ugly-return)) sep))
@@ -4582,7 +4590,8 @@ Only knows about the stuff in the current *Python* session."
              (message "Making completion list...")
              (with-output-to-temp-buffer "*Python Completions*"
                (display-completion-list (all-completions pattern completion-table)))
-             (message "Making completion list...%s" "done"))))))
+             (message "Making completion list...%s" "done"))))
+    completion))
 
 ;; Completion start
 

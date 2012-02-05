@@ -5212,6 +5212,27 @@ This function is appropriate for `comint-output-filter-functions'."
          (define-key py-shell-map [tab] 'py-completion-at-point))
         (t (define-key py-shell-map [tab] 'py-shell-complete))))
 
+(defun py-set-ipython-completion-command-string (&optional pyshellname)
+  "Set and return `ipython-completion-command-string'. "
+  (interactive)
+  (let* ((pyshellname (or pyshellname py-shell-name))
+         (ipython-version
+          (when (string-match "ipython" pyshellname)
+            (string-to-number (substring (shell-command-to-string (concat pyshellname " -V")) 2 -1)))))
+    (when ipython-version
+      (setq ipython-completion-command-string (if (< ipython-version 11) ipython0.10-completion-command-string ipython0.11-completion-command-string))
+      ipython-completion-command-string)))
+
+(defun py-set-python-shell-keys ()
+  " "
+  (interactive)
+  (local-unset-key [tab])
+  (cond ((string-match "ipython" py-shell-name)
+         (define-key py-shell-map [tab] ipython-complete-function))
+        ((string-match "python3" py-shell-name)
+         (define-key py-shell-map [tab] 'py-completion-at-point))
+        (t (define-key py-shell-map [tab] 'py-shell-complete))))
+
 (defalias 'py-dedicated-shell 'py-shell-dedicated)
 (defun py-shell-dedicated (&optional argprompt)
   "Start an interactive Python interpreter in another window.
@@ -8852,7 +8873,7 @@ behavior, change `python-remove-cwd-from-path' to nil."
 	 (command
           ;; IPython puts the FakeModule module into __main__ so
           ;; emacs.eexecfile becomes useless.
-          (if (string-match "^ipython" python-command)
+          (if (string-match "^ipython" py-shell-name)
               (format "execfile %S" f)
             (format "emacs.eexecfile(%S)" f)))
 	 (orig-start (copy-marker start)))
@@ -9029,7 +9050,7 @@ instance.  Assumes an inferior Python is running."
   "Set up info-look for Python.
 
 Used with `eval-after-load'."
-  (let* ((version (let ((s (shell-command-to-string (concat python-command
+  (let* ((version (let ((s (shell-command-to-string (concat py-shell-name
 							    " -V"))))
 		    (string-match "^Python \\([0-9]+\\.[0-9]+\\>\\)" s)
 		    (match-string 1 s)))
@@ -9541,15 +9562,22 @@ ipython0.11-completion-command-string also covers version 0.12")
 (defun ipython-complete ()
   "Complete the python symbol before point.
 
-Only knows about the stuff in the current *Python* session."
+Returns the completed symbol, a string, if successful, nil otherwise."
   (interactive "*")
-  (let* ((completion-command-string ipython-completion-command-string)
+  (let* ((oldbuf (current-buffer))
          (ugly-return nil)
          (sep ";")
+         (py-which-bufname (cond ((get-buffer-process "IPython")
+                                  "IPython")
+                                 ((string-match "[Ii][Pp]ython" py-shell-name)
+                                  py-shell-name)
+                                 (t "ipython")))
          (python-process (or (get-buffer-process (current-buffer))
-                             (get-process py-which-bufname)))
-         (beg (save-excursion (skip-chars-backward "a-z0-9A-Z_." (point-at-bol))
-                              (point)))
+                             (get-process py-which-bufname)
+                             (get-process (py-shell nil nil py-which-bufname 'noswitch))))
+
+         (beg (progn (set-buffer oldbuf)(save-excursion (skip-chars-backward "a-z0-9A-Z_." (point-at-bol))
+                                                        (point))))
          (end (point))
          (pattern (buffer-substring-no-properties beg end))
          (comint-output-filter-functions
@@ -9562,12 +9590,12 @@ Only knows about the stuff in the current *Python* session."
                       (delete-region comint-last-output-start
                                      (process-mark (get-buffer-process (current-buffer))))))))
          completion completions completion-table)
-    ;; (save-excursion
-    ;; (setq python-process (get-process (ipython-dedicated))))
     (if (string= pattern "")
         (tab-to-tab-stop)
       (process-send-string python-process
-                           (format completion-command-string pattern))
+                           (format (py-set-ipython-completion-command-string py-which-bufname) pattern))
+      ;; (message "python-process %s" python-process)
+      ;; (message "%s" (py-set-ipython-completion-command-string py-which-bufname))
       (accept-process-output python-process)
       (setq completions
             (split-string (substring ugly-return 0 (position ?\n ugly-return)) sep))
@@ -9585,7 +9613,8 @@ Only knows about the stuff in the current *Python* session."
              (message "Making completion list...")
              (with-output-to-temp-buffer "*Python Completions*"
                (display-completion-list (all-completions pattern completion-table)))
-             (message "Making completion list...%s" "done"))))))
+             (message "Making completion list...%s" "done"))))
+    completion))
 
 ;;; Pychecker
 (defun py-pychecker-run (command)

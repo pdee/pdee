@@ -19,6 +19,7 @@
 ;;; Commentary: Derived from GNU python.el, where it's instrumented as abbrev; errors are mine
 
 ;;; Code:
+
 (define-skeleton py-else
   "Auxiliary skeleton."
   nil

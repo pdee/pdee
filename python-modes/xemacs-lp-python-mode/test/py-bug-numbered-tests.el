@@ -2234,5 +2234,17 @@ return SOME_Constant + blah
   (goto-char 64)
   (assert (eq 60 (py-backward-into-nomenclature)) nil "py-backward-into-nomenclature-caps-names-lp:919541-test failed"))
 
+(defun py-ipython-complete-lp:927136-test (&optional arg load-branch-function)
+  (interactive "p")
+  (py-shell nil nil "ipython" 'noswitch)
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+impo"))
+    (when load-branch-function (funcall load-branch-function))
+    (py-bug-tests-intern 'py-ipython-complete-lp:927136-base arg teststring)))
+
+(defun py-ipython-complete-lp:927136-base ()
+  (assert (string= "import" (ipython-complete)) nil "py-ipython-complete-lp:927136-test failed"))
+
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
