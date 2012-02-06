@@ -860,7 +860,8 @@ Returns beginning and end positions of marked area, a cons. "
     (kill-new (buffer-substring-no-properties (car erg) (cdr erg)))))
 
 (defalias 'py-partial-expression 'py-copy-partial-expression)
-(defalias 'py-minor-expression 'py-partial-expression)
+(defalias 'py-copy-minor-expression 'py-copy-partial-expression)
+(defalias 'py-minor-expression 'py-copy-partial-expression)
 (defun py-copy-partial-expression ()
   "Mark partial-expression at point.
 

@@ -1336,12 +1336,49 @@ Go to start of innermost definition at point"]
             ["End of Def-or-Class" py-end-of-def-or-class
              :help "`py-end-of-def-or-class'
 Go to end of innermost function definition at point"]
-            ["Beginning of-class" py-beginning-of-class
+            ["Beginning of class" py-beginning-of-class
              :help "`py-beginning-of-class'
 Go to start of class definition "]
-            ["End of Class" py-end-of-class
+            ["End of class" py-end-of-class
              :help "`py-end-of-class'
 Go to end of class definition "]
+            ["Beginning of expression" py-beginning-of-expression
+             :help "Go to the beginning of a compound python expression.
+
+A a compound python expression might be concatenated by \".\" operator, thus composed by minor python expressions.
+
+Expression here is conceived as the syntactical component of a statement in Python. See http://docs.python.org/reference
+Operators however are left aside resp. limit py-expression designed for edit-purposes."]
+            ["End of expression" py-end-of-expression
+             :help "`py-end-of-minor-expression'
+Go to the end of a compound python expression.
+
+A a compound python expression might be concatenated by \".\" operator, thus composed by minor python expressions.
+
+Expression here is conceived as the syntactical component of a statement in Python. See http://docs.python.org/reference
+Operators however are left aside resp. limit py-expression designed for edit-purposes."]
+            ["Beginning of minor expression" py-beginning-of-minor-expression
+             :help "`py-beginning-of-minor-expression'
+Go to start of an minor expression
+
+Expression here is conceived as the syntactical component of a statement in Python. See http://docs.python.org/reference
+Operators however are left aside resp. limit py-expression designed for edit-purposes."]
+            ["End of minor-expression" py-end-of-minor-expression
+             :help "`py-end-of-minor-expression'
+Go to end of an minor-expression
+
+Expression here is conceived as the syntactical component of a statement in Python. See http://docs.python.org/reference
+Operators however are left aside resp. limit py-expression designed for edit-purposes."]
+            ["Backward into nomenclature" py-backward-into-nomenclature
+             :help " `py-backward-into-nomenclature'
+Go to backward in nomenclature
+
+A nomenclature is a fancy way of saying AWordWithMixedCaseNotUnderscores. "]
+            ["Forward into nomenclature" py-forward-into-nomenclature
+             :help " `py-forward-into-nomenclature'
+Go to forward in nomenclature
+
+A nomenclature is a fancy way of saying AWordWithMixedCaseNotUnderscores. "]
             "-"))
         (easy-menu-define py-menu map "Python Tools"
           '("Py Tools"
@@ -4442,8 +4479,8 @@ Returns beginning and end positions of marked area, a cons. "
   (let ((erg (py-mark-base "expression")))
     (kill-new (buffer-substring-no-properties (car erg) (cdr erg)))))
 
-(defalias 'py-partial-expression 'py-copy-partial-expression)
-(defalias 'py-minor-expression 'py-partial-expression)
+(defalias 'py-partial-expression 'py-copy-minor-expression)
+(defalias 'py-copy-minor-expression 'py-copy-partial-expression)
 (defun py-copy-partial-expression ()
   "Mark partial-expression at point.
 
