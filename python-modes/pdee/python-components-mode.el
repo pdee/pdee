@@ -1661,12 +1661,39 @@ Complete (qualified) symbol before point"]
 Try to find source definition of function at point"]
             ["Update imports" py-update-imports
              :help "`py-update-imports'
-Update list of top-level imports for completion"]))
+Update list of top-level imports for completion"]
+            "-"
+            ["Pymacs apply" pymacs-apply
+             :help "`pymacs-apply'
+Return the result of calling a Python function FUNCTION over ARGUMENTS.
+FUNCTION is a string denoting the Python function, ARGUMENTS is a list of
+Lisp expressions.  Immutable Lisp constants are converted to Python
+equivalents, other structures are converted into Lisp handles. "]
+            ["Pymacs call" pymacs-call
+             :help "`pymacs-call'
+             Return the result of calling a Python function FUNCTION over ARGUMENTS.
+FUNCTION is a string denoting the Python function, ARGUMENTS are separate
+Lisp expressions, one per argument.  Immutable Lisp constants are converted
+to Python equivalents, other structures are converted into Lisp handles. "]
+            ["Pymacs eval" pymacs-eval
+             :help "`pymacs-eval'
+             Compile TEXT as a Python expression, and return its value."]
+            ["Pymacs exec" pymacs-exec
+             :help "`pymacs-exec'
+             Compile and execute TEXT as a sequence of Python statements.
+This functionality is experimental, and does not appear to be useful. "]
+            ["Pymacs load" pymacs-load
+             :help "`pymacs-load'
+             Import the Python module named MODULE into Emacs.
+Each function in the Python module is made available as an Emacs function.
+The Lisp name of each function is the concatenation of PREFIX with
+the Python name, in which underlines are replaced by dashes.  If PREFIX is
+not given, it defaults to MODULE followed by a dash.
+If NOERROR is not nil, do not raise error when the module is not found. "]))
         ;; Python shell menu
         (easy-menu-define py-menu map "Python Shells"
           '("Py-Shell"
             :help "Python Shells"
-
             ["Default interpreter" py-shell
              :help "`py-shell'
 Switch to `inferior' Python in separate buffer"]

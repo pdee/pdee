@@ -1320,7 +1320,7 @@ Copy statement at point"]
             ["Copy expression" py-copy-expression
              :help "`py-copy-expression'
 Copy expression at point"]
-            ["Copy partial-expression" py-copy-partial-expression
+            ["Copy minor expression" py-copy-partial-expression
              :help "`py-copy-partial-expression'
 \".\" operators delimit a partial-expression expression on it's level"]
             "-"
@@ -1425,12 +1425,39 @@ Complete (qualified) symbol before point"]
 Try to find source definition of function at point"]
             ["Update imports" py-update-imports
              :help "`py-update-imports'
-Update list of top-level imports for completion"]))
+Update list of top-level imports for completion"]
+            "-"
+            ["Pymacs apply" pymacs-apply
+             :help "`pymacs-apply'
+Return the result of calling a Python function FUNCTION over ARGUMENTS.
+FUNCTION is a string denoting the Python function, ARGUMENTS is a list of
+Lisp expressions.  Immutable Lisp constants are converted to Python
+equivalents, other structures are converted into Lisp handles. "]
+            ["Pymacs call" pymacs-call
+             :help "`pymacs-call'
+             Return the result of calling a Python function FUNCTION over ARGUMENTS.
+FUNCTION is a string denoting the Python function, ARGUMENTS are separate
+Lisp expressions, one per argument.  Immutable Lisp constants are converted
+to Python equivalents, other structures are converted into Lisp handles. "]
+            ["Pymacs eval" pymacs-eval
+             :help "`pymacs-eval'
+             Compile TEXT as a Python expression, and return its value."]
+            ["Pymacs exec" pymacs-exec
+             :help "`pymacs-exec'
+             Compile and execute TEXT as a sequence of Python statements.
+This functionality is experimental, and does not appear to be useful. "]
+            ["Pymacs load" pymacs-load
+             :help "`pymacs-load'
+             Import the Python module named MODULE into Emacs.
+Each function in the Python module is made available as an Emacs function.
+The Lisp name of each function is the concatenation of PREFIX with
+the Python name, in which underlines are replaced by dashes.  If PREFIX is
+not given, it defaults to MODULE followed by a dash.
+If NOERROR is not nil, do not raise error when the module is not found. "]))
         ;; Python shell menu
         (easy-menu-define py-menu map "Python Shells"
           '("Py-Shell"
             :help "Python Shells"
-
             ["Default interpreter" py-shell
              :help "`py-shell'
 Switch to `inferior' Python in separate buffer"]
@@ -5261,7 +5288,7 @@ This function is appropriate for `comint-output-filter-functions'."
       ipython-completion-command-string)))
 
 (defun py-set-python-shell-keys ()
-  " "
+ " "
   (interactive)
   (local-unset-key [tab])
   (cond ((string-match "ipython" py-shell-name)
@@ -5749,37 +5776,37 @@ When called from a programm, it accepts a string specifying a shell which will b
     (py-execute-intern strg procbuf proc temp file filebuf name py-execute-directory)))
 
 (defun py-execute-intern (strg &optional procbuf proc temp file filebuf name py-execute-directory)
-  (set-buffer filebuf)
-  (erase-buffer)
-  (insert strg)
+    (set-buffer filebuf)
+    (erase-buffer)
+    (insert strg)
   (unless wholebuf
     (py-fix-start (point-min)(point-max))
     (py-if-needed-insert-shell name)
     (py-insert-coding)
     (py-insert-execute-directory))
-  (cond
-   (proc
-    (set-buffer filebuf)
-    (write-region (point-min) (point-max) file nil t nil 'ask)
-    (set-buffer-modified-p 'nil)
-    (kill-buffer filebuf)
-    (sit-for 0.1)
-    (if (file-readable-p file)
-        (progn
-          (py-execute-file proc file pec)
-          (setq py-exception-buffer (cons file (current-buffer)))
+    (cond
+     (proc
+      (set-buffer filebuf)
+      (write-region (point-min) (point-max) file nil t nil 'ask)
+      (set-buffer-modified-p 'nil)
+      (kill-buffer filebuf)
+      (sit-for 0.1)
+      (if (file-readable-p file)
+          (progn
+            (py-execute-file proc file pec)
+            (setq py-exception-buffer (cons file (current-buffer)))
           (if (or (eq switch 'switch)
                   (and (not (eq switch 'noswitch)) py-shell-switch-buffers-on-execute))
-              (progn
-                (pop-to-buffer procbuf)
-                (goto-char (point-max)))
-            (when (buffer-live-p regbuf) (pop-to-buffer regbuf))
-            (message "Output buffer: %s" procbuf))
-          (sit-for 0.1)
-          (unless py-execute-keep-temporary-file-p
-            (delete-file file)
-            (when (buffer-live-p file)
-              (kill-buffer file))))
+                (progn
+                  (pop-to-buffer procbuf)
+                  (goto-char (point-max)))
+              (when (buffer-live-p regbuf) (pop-to-buffer regbuf))
+              (message "Output buffer: %s" procbuf))
+            (sit-for 0.1)
+            (unless py-execute-keep-temporary-file-p
+              (delete-file file)
+              (when (buffer-live-p file)
+                (kill-buffer file))))
       (message "File not readable: %s" "Do you have write permissions?")))))
 
 (defun py-execute-string (&optional string shell dedicated)
@@ -8103,11 +8130,11 @@ To change the default Python interpreter, use `py-switch-shell'.
 "
   (interactive)
   (let* ((erg (cond (py-use-local-default
-                     (if (not (string= "" py-shell-local-path))
-                         (expand-file-name py-shell-local-path)
-                       (message "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'")))
-                    ((py-choose-shell-by-shebang))
-                    ((py-choose-shell-by-import))
+                    (if (not (string= "" py-shell-local-path))
+                        (expand-file-name py-shell-local-path)
+                      (message "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'")))
+                   ((py-choose-shell-by-shebang))
+                   ((py-choose-shell-by-import))
                     (t (default-value 'py-shell-name))))
          (cmd (executable-find erg)))
     (if cmd
@@ -9602,9 +9629,9 @@ Returns the completed symbol, a string, if successful, nil otherwise."
          (ugly-return nil)
          (sep ";")
          (py-which-bufname (cond ((get-buffer-process "IPython")
-                                  "IPython")
+                               "IPython")
                                  ((string-match "[Ii][Pp]ython" py-shell-name)
-                                  py-shell-name)
+                                               py-shell-name)
                                  (t "ipython")))
          (python-process (or (get-buffer-process (current-buffer))
                              (get-process py-which-bufname)
@@ -9612,7 +9639,7 @@ Returns the completed symbol, a string, if successful, nil otherwise."
                                (setq done (not done))
                                (get-process (py-shell nil nil (downcase py-which-bufname) 'noswitch)))))
          (beg (progn (set-buffer oldbuf)(save-excursion (skip-chars-backward "a-z0-9A-Z_." (point-at-bol))
-                                                        (point))))
+                              (point))))
          (end (point))
          (pattern (buffer-substring-no-properties beg end))
          (comint-output-filter-functions
@@ -9642,7 +9669,7 @@ Returns the completed symbol, a string, if successful, nil otherwise."
              ;; workaround: if an (I)Python shell didn't run
              ;; before, first completion are not delivered
              (if done (ipython-complete done)
-               (message "Can't find completion for \"%s\"" pattern)
+             (message "Can't find completion for \"%s\"" pattern)
                (ding)))
             ((not (string= pattern completion))
              (delete-region beg end)
@@ -9703,11 +9730,11 @@ Returns the completed symbol, a string, if successful, nil otherwise."
   < "else:" \n)
 
 (define-skeleton py-if
-  "If condition "
+    "If condition "
   "if " "if " str ":" \n
   _ \n
   ("other condition, %s: "
-   < "elif " str ":" \n
+  < "elif " str ":" \n
    > _ \n nil)
   '(py-else) | ^)
 
@@ -9720,19 +9747,19 @@ Returns the completed symbol, a string, if successful, nil otherwise."
   > _ \n)
 
 (define-skeleton py-while
-  "Condition: "
+    "Condition: "
   "while " "while " str ":" \n
   > -1 _ \n
   '(py-else) | ^)
 
 (define-skeleton py-for
-  "Target, %s: "
+    "Target, %s: "
   "for " "for " str " in " (skeleton-read "Expression, %s: ") ":" \n
   > -1 _ \n
   '(py-else) | ^)
 
 (define-skeleton py-try/except
-  "Py-try/except skeleton "
+    "Py-try/except skeleton "
   "try:" "try:" \n
   > -1 _ \n
   ("Exception, %s: "
@@ -9747,21 +9774,21 @@ Returns the completed symbol, a string, if successful, nil otherwise."
   "Target, %s: " ", " str | -2)
 
 (define-skeleton py-try/finally
-  "Py-try/finally skeleton "
+    "Py-try/finally skeleton "
   "try:" \n
   > -1 _ \n
   < "finally:" \n
   > _ \n)
 
 (define-skeleton py-def
-  "Name: "
+    "Name: "
   "def " str " (" ("Parameter, %s: " (unless (equal ?\( (char-before)) ", ")
                    str) "):" \n
                    "\"\"\"" - "\"\"\"" \n     ; Fixme:  extra space inserted -- why?).
                    > _ \n)
 
 (define-skeleton py-class
-  "Name: "
+    "Name: "
   "class " str " (" ("Inheritance, %s: "
 		     (unless (equal ?\( (char-before)) ", ")
 		     str)
