@@ -115,7 +115,7 @@ script, and set to python-mode, and pdbtrack will find it.)"
             (setq target_fname (buffer-file-name target_buffer))
             (switch-to-buffer-other-window target_buffer)
             (goto-char (point-min))
-            (forward-line target_lineno)
+            (forward-line (1- target_lineno))
             (message "pdbtrack: line %s, file %s" target_lineno target_fname)
             (py-pdbtrack-overlay-arrow t)
             (pop-to-buffer origbuf t)
