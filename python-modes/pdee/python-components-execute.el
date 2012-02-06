@@ -119,7 +119,7 @@ interpreter.
       ipython-completion-command-string)))
 
 (defun py-set-python-shell-keys ()
- " "
+  " "
   (interactive)
   (local-unset-key [tab])
   (cond ((string-match "ipython" py-shell-name)
@@ -139,7 +139,7 @@ Optional string PYSHELLNAME overrides default `py-shell-name'.
 Optional symbol SWITCH ('switch/'noswitch) precedes `py-shell-switch-buffers-on-execute'
 "
   (interactive "P")
-  (let* ((py-shell-name
+  (let* ((psn
           (cond ((eq 4 (prefix-numeric-value argprompt))
                  (py-choose-shell '(4)))
                 ;; already in py-choose-shell
@@ -153,14 +153,14 @@ Optional symbol SWITCH ('switch/'noswitch) precedes `py-shell-switch-buffers-on-
                  ;; (py-guess-default-python)
                  (py-choose-shell))))
          (args py-python-command-args)
-         (py-process-name (py-process-name py-shell-name dedicated))
+         (py-process-name (py-process-name psn dedicated))
          ipython-version version)
     (py-set-shell-completion-environment)
     ;; comint
     (if (not (equal (buffer-name) py-process-name))
         (set-buffer (get-buffer-create
-                     (apply 'make-comint py-process-name py-shell-name nil args)))
-      (apply 'make-comint py-process-name py-shell-name nil args))
+                     (apply 'make-comint py-process-name psn nil args)))
+      (apply 'make-comint py-process-name psn nil args))
     (set (make-local-variable 'comint-prompt-regexp)
 	 (concat "\\("
 		 (mapconcat 'identity
@@ -171,12 +171,12 @@ Optional symbol SWITCH ('switch/'noswitch) precedes `py-shell-switch-buffers-on-
               'py-comint-output-filter-function)
     (setq comint-input-sender 'py-shell-simple-send)
     (setq comint-input-ring-file-name
-          (if (string-equal py-shell-name "ipython")
+          (if (string-equal psn "ipython")
               (if (getenv "IPYTHONDIR")
                   (concat (getenv "IPYTHONDIR") "/history") "~/.ipython/history")
             (if (getenv "PYTHONHISTORY")
-                (concat (getenv "PYTHONHISTORY") "/" py-shell-name "_history")
-              (concat "~/." py-shell-name "_history"))))
+                (concat (getenv "PYTHONHISTORY") "/" psn "_history")
+              (concat "~/." psn "_history"))))
     ;; (message "comint-input-ring-file-name: %s" comint-input-ring-file-name)
     (comint-read-input-ring t)
     (set-process-sentinel (get-buffer-process (current-buffer))

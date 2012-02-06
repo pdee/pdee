@@ -4536,12 +4536,13 @@ complete('%s')
 			     (split-string result "\n"))))
 	  (py-shell-dynamic-simple-complete word completions))))))
 
-(defun ipython-complete ()
+(defun ipython-complete (&optional done)
   "Complete the python symbol before point.
 
 Returns the completed symbol, a string, if successful, nil otherwise."
   (interactive "*")
-  (let* ((oldbuf (current-buffer))
+  (let* ((done done)
+         (oldbuf (current-buffer))
          (ugly-return nil)
          (sep ";")
          (py-which-bufname (cond ((get-buffer-process "IPython")
@@ -4551,8 +4552,9 @@ Returns the completed symbol, a string, if successful, nil otherwise."
                                  (t "ipython")))
          (python-process (or (get-buffer-process (current-buffer))
                              (get-process py-which-bufname)
-                             (get-process (py-shell nil nil py-which-bufname 'noswitch))))
-
+                             (progn
+                               (setq done (not done))
+                               (get-process (py-shell nil nil (downcase py-which-bufname) 'noswitch)))))
          (beg (progn (set-buffer oldbuf)(save-excursion (skip-chars-backward "a-z0-9A-Z_." (point-at-bol))
                                                         (point))))
          (end (point))
@@ -4570,7 +4572,7 @@ Returns the completed symbol, a string, if successful, nil otherwise."
     (if (string= pattern "")
         (tab-to-tab-stop)
       (process-send-string python-process
-                           (format (py-set-ipython-completion-command-string py-which-bufname) pattern))
+                           (format (py-set-ipython-completion-command-string (downcase (process-name python-process))) pattern))
       ;; (message "python-process %s" python-process)
       ;; (message "%s" (py-set-ipython-completion-command-string py-which-bufname))
       (accept-process-output python-process)
@@ -4581,8 +4583,11 @@ Returns the completed symbol, a string, if successful, nil otherwise."
       (setq completion (try-completion pattern completion-table))
       (cond ((eq completion t))
             ((null completion)
-             (message "Can't find completion for \"%s\"" pattern)
-             (ding))
+             ;; workaround: if an (I)Python shell didn't run
+             ;; before, first completion are not delivered
+             (if done (ipython-complete done)
+               (message "Can't find completion for \"%s\"" pattern)
+               (ding)))
             ((not (string= pattern completion))
              (delete-region beg end)
              (insert completion))
@@ -4597,4 +4602,4 @@ Returns the completed symbol, a string, if successful, nil otherwise."
 
 (provide 'python-components-mode)
 (provide 'python-mode)
-;;; python-components-mode.el ends her
+;;; python-components-mode.el ends here
