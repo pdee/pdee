@@ -1607,12 +1607,12 @@ Expression here is conceived as the syntactical component of a statement in Pyth
 Operators however are left aside resp. limit py-expression designed for edit-purposes."]
             ["Backward into nomenclature" py-backward-into-nomenclature
              :help " `py-backward-into-nomenclature'
-Go to backward in nomenclature
+Go backward into nomenclature
 
 A nomenclature is a fancy way of saying AWordWithMixedCaseNotUnderscores. "]
             ["Forward into nomenclature" py-forward-into-nomenclature
              :help " `py-forward-into-nomenclature'
-Go to forward in nomenclature
+Go forward into nomenclature
 
 A nomenclature is a fancy way of saying AWordWithMixedCaseNotUnderscores. "]
             "-"))
