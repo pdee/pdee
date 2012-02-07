@@ -8507,21 +8507,6 @@ These are Python temporary files awaiting execution."
 (defvar py-default-interpreter py-shell-name)
 (defvar python-command py-shell-name)
 
-;;; Virtualenv
-
-(defun py-toggle-local-default-use ()
-  (interactive)
-  "Toggle boolean value of `py-use-local-default'.
-
-Returns `py-use-local-default'
-
-See also `py-install-local-shells'
-Installing named virualenv shells is the preffered way,
-as it leaves your system default unchanged."
-  (setq py-use-local-default (not py-use-local-default))
-  (when (interactive-p) (message "py-use-local-default set to %s" py-use-local-default))
-  py-use-local-default)
-
 (defvar py-shell-template "
 \(defun NAME (&optional argprompt)
   \"Start an DOCNAME interpreter in another window.
@@ -9867,10 +9852,10 @@ Returns the completed symbol, a string, if successful, nil otherwise."
   (setq virtualenv-old-exec-path exec-path)
 
   (setenv "VIRTUAL_ENV" dir)
-  (virtualenv-add-to-path (concat dir "/bin"))
-  (add-to-list 'exec-path (concat dir "/bin"))
+  (virtualenv-add-to-path (concat dir "bin"))
+  (add-to-list 'exec-path (concat dir "bin"))
 
-  (setq virtualenv-name (file-name-nondirectory dir))
+  (setq virtualenv-name dir)
 
   (message (concat "Virtualenv '" virtualenv-name "' activated.")))
 
@@ -9906,6 +9891,19 @@ Returns the completed symbol, a string, if successful, nil otherwise."
   "Issue a virtualenvwrapper-like virtualenv-workon command"
   (interactive (list (completing-read "Virtualenv: " (virtualenv-workon-complete))))
   (virtualenv-activate (concat (getenv "WORKON_HOME") "/" name)))
+
+(defun py-toggle-local-default-use ()
+  (interactive)
+  "Toggle boolean value of `py-use-local-default'.
+
+Returns `py-use-local-default'
+
+See also `py-install-local-shells'
+Installing named virualenv shells is the preffered way,
+as it leaves your system default unchanged."
+  (setq py-use-local-default (not py-use-local-default))
+  (when (interactive-p) (message "py-use-local-default set to %s" py-use-local-default))
+  py-use-local-default)
 
 (provide 'python-mode)
 ;;; python-mode.el ends here

@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2010 Gabriele Lanaro
 
-;; Author: Gabriele Lanaro <gabriele.lanaro@gmail.com>
+;; Original Author: Gabriele Lanaro <gabriele.lanaro@gmail.com>
 ;; Version: 0.1
 ;; Url: http://github.com/gabrielelanaro/emacs-starter-kit
 
@@ -91,10 +91,10 @@
   (setq virtualenv-old-exec-path exec-path)
 
   (setenv "VIRTUAL_ENV" dir)
-  (virtualenv-add-to-path (concat dir "/bin"))
-  (add-to-list 'exec-path (concat dir "/bin"))
+  (virtualenv-add-to-path (concat dir "bin"))
+  (add-to-list 'exec-path (concat dir "bin"))
 
-  (setq virtualenv-name (file-name-nondirectory dir))
+  (setq virtualenv-name dir)
 
   (message (concat "Virtualenv '" virtualenv-name "' activated.")))
 
