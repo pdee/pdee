@@ -1379,7 +1379,54 @@ A nomenclature is a fancy way of saying AWordWithMixedCaseNotUnderscores. "]
 Go forward into nomenclature
 
 A nomenclature is a fancy way of saying AWordWithMixedCaseNotUnderscores. "]
-            "-"))
+            "-"
+            ["Down statement lc" py-down-statement-lc
+             :help "`py-down-statement-lc'
+Goto beginning of line following end of statement.
+
+Returns position reached, if successful, nil otherwise.
+
+\"-lc\" stands for \"left-corner\" - a complementary command travelling left, whilst `py-end-of-statement' stops at right corner.
+
+See also `py-down-statement': down from current definition to next beginning of statement below. "]
+            ["Down block lc" py-down-block-lc
+             :help "`py-down-block-lc'
+Goto beginning of line following end of block.
+
+Returns position reached, if successful, nil otherwise.
+
+\"-lc\" stands for \"left-corner\" - a complementary command travelling left, whilst `py-end-of-block' stops at right corner.
+
+See also `py-down-block': down from current definition to next beginning of block below. "]
+            ["Down def lc" py-down-def-lc
+             :help "`py-down-def-lc'
+Goto beginning of line following end of def.
+
+Returns position reached, if successful, nil otherwise.
+
+\"-lc\" stands for \"left-corner\" - a complementary command travelling left, whilst `py-end-of-def' stops at right corner.
+
+See also `py-down-def': down from current definition to next beginning of def below.
+ "]
+            ["Down statement" py-down-statement
+             :help "`py-down-statement'
+
+Go to the beginning of next statement below in buffer.
+
+Returns indentation if statement found, nil otherwise. "]
+            ["Down block" py-down-block
+             :help "`py-down-block'
+
+Go to the beginning of next block below in buffer.
+
+Returns indentation if block found, nil otherwise. "]
+            ["Down def" py-down-def
+             :help "`py-down-def'
+
+Go to the beginning of next function definition below in buffer.
+
+Returns indentation if found, nil otherwise. "]
+            ))
         (easy-menu-define py-menu map "Python Tools"
           '("Py Tools"
             :help "Python mode tools"

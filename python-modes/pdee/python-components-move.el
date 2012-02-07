@@ -94,9 +94,9 @@ http://docs.python.org/reference/compound_stmts.html"
   (interactive "P")
 
   (let* ((regexp (if arg
-                    py-block-re
-                  py-block-or-clause-re))
-        (erg (ignore-errors (cdr (py-go-to-keyword regexp -1 indent)))))
+                     py-block-re
+                   py-block-or-clause-re))
+         (erg (ignore-errors (cdr (py-go-to-keyword regexp -1 indent)))))
     (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -695,16 +695,16 @@ http://docs.python.org/reference/compound_stmts.html
           ;; (message "%s" erg)
           erg)))))
 
-  (defun py-goto-statement-below ()
-    "Goto beginning of next statement. "
-    (interactive)
-    (let ((orig (point))
-          (erg (py-end-of-statement)))
-      (py-beginning-of-statement)
-      (when (< (point) orig)
-        (goto-char erg)
-        (py-end-of-statement)
-        (py-beginning-of-statement))))
+(defun py-goto-statement-below ()
+  "Goto beginning of next statement. "
+  (interactive)
+  (let ((orig (point))
+        (erg (py-end-of-statement)))
+    (py-beginning-of-statement)
+    (when (< (point) orig)
+      (goto-char erg)
+      (py-end-of-statement)
+      (py-beginning-of-statement))))
 
 ;; Mark forms
 (defun py-mark-expression ()
@@ -765,7 +765,7 @@ With universal argument or `py-mark-decorators' set to `t' decorators are marked
 Returns beginning and end positions of marked area, a cons."
 
   (interactive "P")
-    (let ((py-mark-decorators (or arg py-mark-decorators)))
+  (let ((py-mark-decorators (or arg py-mark-decorators)))
     (py-mark-base "class" py-mark-decorators)
     (exchange-point-and-mark)))
 
@@ -776,7 +776,7 @@ With universal argument or `py-mark-decorators' set to `t' decorators are marked
 Returns beginning and end positions of marked area, a cons."
 
   (interactive "P")
-    (let ((py-mark-decorators (or arg py-mark-decorators)))
+  (let ((py-mark-decorators (or arg py-mark-decorators)))
     (py-mark-base "def" py-mark-decorators)
     (exchange-point-and-mark)))
 
@@ -801,7 +801,7 @@ Returns position if succesful "
     erg))
 
 (defun py-end-of-decorator ()
-    "Go to the end of a decorator.
+  "Go to the end of a decorator.
 
 Returns position if succesful "
   (interactive)
@@ -840,7 +840,7 @@ Returns position if succesful "
     (when py-mark-decorators
       (save-excursion
         (when (setq erg (py-beginning-of-decorator))
-        (setq beg erg))))
+          (setq beg erg))))
     (setq end (funcall endform))
     (push-mark beg t t)
     (unless end (when (< beg (point))
@@ -894,7 +894,7 @@ def usage():
 while `py-expression' would copy and return
 
 (
-        os.path.basename(sys.argv[0]))
+ os.path.basename(sys.argv[0]))
 
 ;;;;;
 
@@ -1069,9 +1069,9 @@ Travels right-margin comments. "
   (save-restriction
     (widen)
     (let ((pps
-                   (if (featurep 'xemacs)
-                       (parse-partial-sexp (line-beginning-position) (point))
-                     (syntax-ppss))))
+           (if (featurep 'xemacs)
+               (parse-partial-sexp (line-beginning-position) (point))
+             (syntax-ppss))))
       (when (nth 4 pps)
         (goto-char
          (nth 8 pps))))))
@@ -1270,8 +1270,8 @@ See also `py-down-block': down from current definition to next beginning of bloc
         (forward-line 1)
         (beginning-of-line)
         (setq erg (point))))
-  (when (interactive-p) (message "%s" erg))
-  erg))
+    (when (interactive-p) (message "%s" erg))
+    erg))
 
 (defun py-down-clause-lc ()
   "Goto beginning of line following end of clause.
@@ -1288,8 +1288,8 @@ See also `py-down-clause': down from current definition to next beginning of cla
         (forward-line 1)
         (beginning-of-line)
         (setq erg (point))))
-  (when (interactive-p) (message "%s" erg))
-  erg))
+    (when (interactive-p) (message "%s" erg))
+    erg))
 
 (defun py-down-def-lc ()
   "Goto beginning of line following end of def.
@@ -1306,8 +1306,8 @@ See also `py-down-def': down from current definition to next beginning of def be
         (forward-line 1)
         (beginning-of-line)
         (setq erg (point))))
-  (when (interactive-p) (message "%s" erg))
-  erg))
+    (when (interactive-p) (message "%s" erg))
+    erg))
 
 (defun py-down-class-lc ()
   "Goto beginning of line following end of class.
@@ -1324,8 +1324,8 @@ See also `py-down-class': down from current definition to next beginning of clas
         (forward-line 1)
         (beginning-of-line)
         (setq erg (point))))
-  (when (interactive-p) (message "%s" erg))
-  erg))
+    (when (interactive-p) (message "%s" erg))
+    erg))
 
 (defun py-down-statement-lc ()
   "Goto beginning of line following end of statement.
@@ -1342,8 +1342,8 @@ See also `py-down-statement': down from current definition to next beginning of 
         (forward-line 1)
         (beginning-of-line)
         (setq erg (point))))
-  (when (interactive-p) (message "%s" erg))
-  erg))
+    (when (interactive-p) (message "%s" erg))
+    erg))
 
 ;; Complementary left corner commands end
 
@@ -1412,9 +1412,9 @@ Returns indentation if block-or-clause found, nil otherwise. "
     erg))
 
 (defun py-down-def ()
-  "Go to the beginning of next def below in buffer.
+  "Go to the beginning of next function definition below in buffer.
 
-Returns indentation if def found, nil otherwise. "
+Returns indentation if found, nil otherwise. "
   (interactive)
   (let* ((orig (point))
          erg)
