@@ -5787,7 +5787,7 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)
                      ((and (numberp shell) (not (eq 1 (prefix-numeric-value shell))))
                       (read-from-minibuffer "(path-to-)shell-name: " (default-value 'py-shell-name)))
                      (t shell))))
-    (py-execute-base start end shell dedicated)))
+    (py-execute-base start end shell dedicated switch)))
 
 (defun py-execute-region-default (start end &optional dedicated)
   "Send the region to the systems default Python interpreter.
@@ -5830,49 +5830,53 @@ When called from a programm, it accepts a string specifying a shell which will b
          (temp (make-temp-name name))
          (file (concat (expand-file-name temp py-temp-directory) ".py"))
          (filebuf (get-buffer-create file))
-         (proc (get-process (py-shell nil dedicated shell)))
+         (proc (get-process (py-shell nil dedicated (or shell (downcase name)))))
          (procbuf (if dedicated
                       (buffer-name (get-buffer (current-buffer)))
                     (buffer-name (get-buffer (concat "*" name "*")))))
          (pec (if (string-match "Python3" name)
                   (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" file file)
                 (format "execfile(r'%s') # PYTHON-MODE\n" file)))
-         (wholebuf (when (boundp 'wholebuf) wholebuf)))
+         (wholebuf (when (boundp 'wholebuf) wholebuf))
+         (comint-scroll-to-bottom-on-output t))
     (py-execute-intern strg procbuf proc temp file filebuf name py-execute-directory)))
 
 (defun py-execute-intern (strg &optional procbuf proc temp file filebuf name py-execute-directory)
-  (set-buffer filebuf)
-  (erase-buffer)
-  (insert strg)
-  (unless wholebuf
-    (py-fix-start (point-min)(point-max))
-    (py-if-needed-insert-shell name)
-    (py-insert-coding)
-    (py-insert-execute-directory))
-  (cond
-   (proc
+  "Returns position of output start when successful. "
+  (let (erg)
     (set-buffer filebuf)
-    (write-region (point-min) (point-max) file nil t nil 'ask)
-    (set-buffer-modified-p 'nil)
-    (kill-buffer filebuf)
-    (sit-for 0.1)
-    (if (file-readable-p file)
-        (progn
-          (py-execute-file proc file pec)
-          (setq py-exception-buffer (cons file (current-buffer)))
-          (if (or (eq switch 'switch)
-                  (and (not (eq switch 'noswitch)) py-shell-switch-buffers-on-execute))
-              (progn
-                (pop-to-buffer procbuf)
-                (goto-char (point-max)))
-            (when (buffer-live-p regbuf) (pop-to-buffer regbuf))
-            (message "Output buffer: %s" procbuf))
-          (sit-for 0.1)
-          (unless py-execute-keep-temporary-file-p
-            (delete-file file)
-            (when (buffer-live-p file)
-              (kill-buffer file))))
-      (message "File not readable: %s" "Do you have write permissions?")))))
+    (erase-buffer)
+    (insert strg)
+    (unless wholebuf
+      (py-fix-start (point-min)(point-max))
+      (py-if-needed-insert-shell name)
+      (py-insert-coding)
+      (py-insert-execute-directory))
+    (cond
+     (proc
+      (set-buffer filebuf)
+      (write-region (point-min) (point-max) file nil t nil 'ask)
+      (set-buffer-modified-p 'nil)
+      (kill-buffer filebuf)
+      (sit-for 0.1)
+      (if (file-readable-p file)
+          (progn
+            (setq erg (py-execute-file proc file pec))
+            (setq py-exception-buffer (cons file (current-buffer)))
+            (if (or (eq switch 'switch)
+                    (and (not (eq switch 'noswitch)) py-shell-switch-buffers-on-execute))
+                (progn
+                  (pop-to-buffer procbuf)
+                  (goto-char (point-max)))
+              (when (buffer-live-p regbuf) (pop-to-buffer regbuf))
+              (message "Output buffer: %s" procbuf))
+            (sit-for 0.1)
+            (unless py-execute-keep-temporary-file-p
+              (delete-file file)
+              (when (buffer-live-p file)
+                (kill-buffer file)))
+            erg)
+        (message "File not readable: %s" "Do you have write permissions?"))))))
 
 (defun py-execute-string (&optional string shell dedicated)
   "Send the argument STRING to a Python interpreter.
@@ -6303,7 +6307,7 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch) "
                  (buffer (or (get-file-buffer filename)
                              (find-file-noselect filename))))
             (set-buffer buffer)))
-      (py-execute-region (point-min) (point-max) shell))))
+      (py-execute-region (point-min) (point-max) shell dedicated switch))))
 
 (defun py-execute-buffer-no-switch (&optional shell dedicated)
   "Send the contents of the buffer to a Python interpreter but don't switch to output.
@@ -6665,29 +6669,30 @@ Optional OUTPUT-BUFFER and ERROR-BUFFER might be given.')
 
 (defun py-execute-file (proc filename &optional cmd)
   "Send to Python interpreter process PROC, in Python version 2.. \"execfile('FILENAME')\".
+
 Make that process's buffer visible and force display.  Also make
 comint believe the user typed this string so that
-`kill-output-from-shell' does The Right Thing."
+`kill-output-from-shell' does The Right Thing.
+Returns position where output starts. "
   (let ((curbuf (current-buffer))
         (procbuf (process-buffer proc))
         (comint-scroll-to-bottom-on-output t)
         (msg (format "## executing %s...\n" filename))
         (cmd (cond (cmd)
                    (py-exec-command)
-                   (t (py-which-execute-file-command filename)))))
+                   (t (py-which-execute-file-command filename))))
+        erg)
     (unwind-protect
         (save-excursion
           (set-buffer procbuf)
-          (goto-char (point-max))
+          ;; (switch-to-buffer (current-buffer))
           (move-marker (process-mark proc) (point))
           (funcall (process-filter proc) proc msg)))
-    (set-buffer curbuf)
     (set-buffer procbuf)
     (process-send-string proc cmd)
+    (setq erg (point))
     (goto-char (process-mark proc))
-    ;; doubles prompt
-    ;; (comint-send-input)
-    ))
+    erg))
 
 ;;: Subprocess utilities and filters
 (defvar py-last-exeption-buffer nil

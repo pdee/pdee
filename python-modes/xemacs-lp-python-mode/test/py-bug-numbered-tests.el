@@ -124,6 +124,7 @@
          'py-forward-into-nomenclature-lp-916818-test
          'py-forward-into-nomenclature-jumps-over-CamelCased-words-lp:919540-test
          'py-backward-into-nomenclature-caps-names-lp:919541-test
+         'execute-buffer-ipython-fails-lp:928087-test
          'UnicodeEncodeError-lp:550661-test
          'py-shell-complete-lp-328836-test)))
 
@@ -2250,13 +2251,13 @@ impo"))
   (let ((teststring "#! /usr/bin/env ipython
 # -*- coding: utf-8 -*-
 print 4 + 5
+print u'\\xA9'
 "))
     (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'execute-buffer-ipython-fails-lp:928087-base arg teststring)))
 
 (defun execute-buffer-ipython-fails-lp:928087-base ()
-  (py-execute-buffer)
-  (assert nil "execute-buffer-ipython-fails-lp:928087-test failed"))
+  (assert (numberp (py-execute-buffer)) nil "execute-buffer-ipython-fails-lp:928087-test failed"))
 
 
 (provide 'py-bug-numbered-tests)
