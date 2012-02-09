@@ -1331,5 +1331,241 @@ bottom) of the trackback stack is encountered."
             (goto-char orig)
             (error "%s of traceback" errwhere))))))
 
+;;; Python execute with
+(defun py-execute-buffer-python (&optional dedicated switch)
+  "Execute buffer through a Python interpreter.
+
+With \\[universal-argument] use an unique Python interpreter. "
+  (interactive "P")
+  (let ((wholebuf t))
+  (py-execute-buffer-base "python" dedicated switch)))
+
+(defun py-execute-buffer-ipython (&optional dedicated switch)
+  "Execute buffer through an IPython interpreter.
+
+With \\[universal-argument] use an unique IPython interpreter. "
+  (interactive "P")
+  (let ((wholebuf t))
+  (py-execute-buffer-base "ipython" dedicated switch)))
+
+(defun py-execute-buffer-python3 (&optional dedicated switch)
+  "Execute buffer through a Python3 interpreter.
+
+With \\[universal-argument] use an unique Python3 interpreter. "
+  (interactive "P")
+  (let ((wholebuf t))
+  (py-execute-buffer-base "python3" dedicated switch)))
+
+(defun py-execute-buffer-python2 (&optional dedicated switch)
+  "Execute buffer through a Python2 interpreter.
+
+With \\[universal-argument] use an unique Python2 interpreter. "
+  (interactive "P")
+  (let ((wholebuf t))
+  (py-execute-buffer-base "python2" dedicated switch)))
+
+(defun py-execute-buffer-python2.7 (&optional dedicated switch)
+  "Execute buffer through a Python2.7 interpreter.
+
+With \\[universal-argument] use an unique Python2.7 interpreter. "
+  (interactive "P")
+  (let ((wholebuf t))
+  (py-execute-buffer-base "python2.7" dedicated switch)))
+
+(defun py-execute-buffer-jython (&optional dedicated switch)
+  "Execute buffer through a Jython interpreter.
+
+With \\[universal-argument] use an unique Jython interpreter. "
+  (interactive "P")
+  (let ((wholebuf t))
+  (py-execute-buffer-base "jython" dedicated switch)))
+
+(defun py-execute-buffer-python3.2 (&optional dedicated switch)
+  "Execute buffer through a Python3.2 interpreter.
+
+With \\[universal-argument] use an unique Python3.2 interpreter. "
+  (interactive "P")
+  (let ((wholebuf t))
+  (py-execute-buffer-base "python3.2" dedicated switch)))
+
+;; dedicated
+(defun py-execute-buffer-python-dedicated (&optional switch)
+  "Execute buffer through an unique Python interpreter.
+
+Optional \\[universal-argument] forces switch to output buffer, ignores `py-shell-switch-buffers-on-execute'. "
+  (interactive "P")
+  (let ((wholebuf t))
+  (py-execute-buffer-base "python" t switch)))
+
+(defun py-execute-buffer-ipython-dedicated (&optional switch)
+  "Execute buffer through an unique IPython interpreter.
+
+Optional \\[universal-argument] forces switch to output buffer, ignores `py-shell-switch-buffers-on-execute'. "
+  (interactive "P")
+  (let ((wholebuf t))
+  (py-execute-buffer-base "ipython" t switch)))
+
+(defun py-execute-buffer-python3-dedicated (&optional switch)
+  "Execute buffer through an unique Python3 interpreter.
+
+Optional \\[universal-argument] forces switch to output buffer, ignores `py-shell-switch-buffers-on-execute'. "
+  (interactive "P")
+  (let ((wholebuf t))
+  (py-execute-buffer-base "python3" t switch)))
+
+(defun py-execute-buffer-python2-dedicated (&optional switch)
+  "Execute buffer through an unique Python2 interpreter.
+
+Optional \\[universal-argument] forces switch to output buffer, ignores `py-shell-switch-buffers-on-execute'. "
+  (interactive "P")
+  (let ((wholebuf t))
+  (py-execute-buffer-base "python2" t switch)))
+
+(defun py-execute-buffer-python2.7-dedicated (&optional switch)
+  "Execute buffer through an unique Python2.7 interpreter.
+
+Optional \\[universal-argument] forces switch to output buffer, ignores `py-shell-switch-buffers-on-execute'. "
+  (interactive "P")
+  (let ((wholebuf t))
+  (py-execute-buffer-base "python2.7" t switch)))
+
+(defun py-execute-buffer-jython-dedicated (&optional switch)
+  "Execute buffer through an unique Jython interpreter.
+
+Optional \\[universal-argument] forces switch to output buffer, ignores `py-shell-switch-buffers-on-execute'. "
+  (interactive "P")
+  (let ((wholebuf t))
+  (py-execute-buffer-base "jython" t switch)))
+
+(defun py-execute-buffer-python3.2-dedicated (&optional switch)
+  "Execute buffer through an unique Python3.2 interpreter.
+
+Optional \\[universal-argument] forces switch to output buffer, ignores `py-shell-switch-buffers-on-execute'. "
+  (interactive "P")
+  (let ((wholebuf t))
+  (py-execute-buffer-base "python3.2" t switch)))
+
+;; switch
+(defun py-execute-buffer-python-switch (&optional dedicated)
+  "Execute buffer through a Python interpreter and switch to output buffer.
+
+Ignores `py-shell-switch-buffers-on-execute'.
+Optional \\[universal-argument] makes Python run as an unique process. "
+  (interactive "P")
+  (let ((wholebuf t))
+  (py-execute-buffer-base "python" dedicated 'switch)))
+
+(defun py-execute-buffer-ipython-switch (&optional dedicated)
+  "Execute buffer through an IPython interpreter and switch to output buffer.
+
+Ignores `py-shell-switch-buffers-on-execute'.
+Optional \\[universal-argument] makesn IPython run as an unique process. "
+  (interactive "P")
+  (let ((wholebuf t))
+  (py-execute-buffer-base "ipython" dedicated 'switch)))
+
+(defun py-execute-buffer-python3-switch (&optional dedicated)
+  "Execute buffer through a Python3 interpreter and switch to output buffer.
+
+Ignores `py-shell-switch-buffers-on-execute'.
+Optional \\[universal-argument] makes Python3 run as an unique process. "
+  (interactive "P")
+  (let ((wholebuf t))
+  (py-execute-buffer-base "python3" dedicated 'switch)))
+
+(defun py-execute-buffer-python2-switch (&optional dedicated)
+  "Execute buffer through a Python2 interpreter and switch to output buffer.
+
+Ignores `py-shell-switch-buffers-on-execute'.
+Optional \\[universal-argument] makes Python2 run as an unique process. "
+  (interactive "P")
+  (let ((wholebuf t))
+  (py-execute-buffer-base "python2" dedicated 'switch)))
+
+(defun py-execute-buffer-python2.7-switch (&optional dedicated)
+  "Execute buffer through a Python2.7 interpreter and switch to output buffer.
+
+Ignores `py-shell-switch-buffers-on-execute'.
+Optional \\[universal-argument] makes Python2.7 run as an unique process. "
+  (interactive "P")
+  (let ((wholebuf t))
+  (py-execute-buffer-base "python2.7" dedicated 'switch)))
+
+(defun py-execute-buffer-jython-switch (&optional dedicated)
+  "Execute buffer through a Jython interpreter and switch to output buffer.
+
+Ignores `py-shell-switch-buffers-on-execute'.
+Optional \\[universal-argument] makes Jython run as an unique process. "
+  (interactive "P")
+  (let ((wholebuf t))
+  (py-execute-buffer-base "jython" dedicated 'switch)))
+
+(defun py-execute-buffer-python3.2-switch (&optional dedicated)
+  "Execute buffer through a Python3.2 interpreter and switch to output buffer.
+
+Ignores `py-shell-switch-buffers-on-execute'.
+Optional \\[universal-argument] makes Python3.2 run as an unique process. "
+  (interactive "P")
+  (let ((wholebuf t))
+  (py-execute-buffer-base "python3.2" dedicated 'switch)))
+
+;; dedicated-switch
+(defun py-execute-buffer-python-dedicated-switch (&optional dedicated)
+  "Execute buffer through an unique Python interpreter.
+
+Switch to output buffer; ignores `py-shell-switch-buffers-on-execute'. "
+  (interactive)
+  (let ((wholebuf t))
+  (py-execute-buffer-base "python" t 'switch)))
+
+(defun py-execute-buffer-ipython-dedicated-switch (&optional dedicated)
+  "Execute buffer through an unique IPython interpreter.
+
+Switch to output buffer; ignores `py-shell-switch-buffers-on-execute'. "
+  (interactive)
+  (let ((wholebuf t))
+  (py-execute-buffer-base "ipython" t 'switch)))
+
+(defun py-execute-buffer-python3-dedicated-switch (&optional dedicated)
+  "Execute buffer through an unique Python3 interpreter.
+
+Switch to output buffer; ignores `py-shell-switch-buffers-on-execute'. "
+  (interactive)
+  (let ((wholebuf t))
+  (py-execute-buffer-base "python3" t 'switch)))
+
+(defun py-execute-buffer-python2-dedicated-switch (&optional dedicated)
+  "Execute buffer through an unique Python2 interpreter.
+
+Switch to output buffer; ignores `py-shell-switch-buffers-on-execute'. "
+  (interactive)
+  (let ((wholebuf t))
+  (py-execute-buffer-base "python2" t 'switch)))
+
+(defun py-execute-buffer-python2.7-dedicated-switch (&optional dedicated)
+  "Execute buffer through an unique Python2.7 interpreter.
+
+Switch to output buffer; ignores `py-shell-switch-buffers-on-execute'. "
+  (interactive)
+  (let ((wholebuf t))
+  (py-execute-buffer-base "python2.7" t 'switch)))
+
+(defun py-execute-buffer-jython-dedicated-switch (&optional dedicated)
+  "Execute buffer through an unique Jython interpreter.
+
+Switch to output buffer; ignores `py-shell-switch-buffers-on-execute'. "
+  (interactive)
+  (let ((wholebuf t))
+  (py-execute-buffer-base "jython" t 'switch)))
+
+(defun py-execute-buffer-python3.2-dedicated-switch (&optional dedicated)
+  "Execute buffer through an unique Python3.2 interpreter.
+
+Switch to output buffer; ignores `py-shell-switch-buffers-on-execute'. "
+  (interactive)
+  (let ((wholebuf t))
+  (py-execute-buffer-base "python3.2" t 'switch)))
+
+
 (provide 'python-components-execute)
 ;;; python-components-execute.el ends here
