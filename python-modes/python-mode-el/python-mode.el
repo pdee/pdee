@@ -1289,8 +1289,100 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
             (define-key map [(meta tab)] 'py-complete)
           (substitute-key-definition 'complete-symbol 'completion-at-point
                                      map global-map))
+        (easy-menu-define py-menu map "Python Tools"
+          '("PyTools"
+            :help "Python mode tools"
+            ("Skeletons..."
+             :help "See also templates in YASnippet")
+            ["if" py-if
+             :help "Inserts if-statement"]
+            ["py-else" py-else
+             :help "Inserts else-statement"]
+            ["py-while" py-while
+             :help "Inserts while-statement"]
+            ["py-for" py-for
+             :help "Inserts for-statement"]
+            ["py-try/finally" py-try/finally
+             :help "Inserts py-try/finally-statement"]
+            ["py-try/except" py-try/except
+             :help "Inserts py-try/except-statement"]
+            "-"
+            ["Import/reload file" py-execute-import-or-reload
+             :help "`py-execute-import-or-reload'
+Load into inferior Python session"]
+            ["Set default process" py-set-proc
+             :help "`py-set-proc'
+Make buffer's inferior process the default"
+             :active (buffer-live-p py-buffer)]
+            ["pychecker-run" py-pychecker-run
+             :help "`py-pychecker-run'
+Run pychecker"]
+            ["Debugger" pdb
+             :help "`pdb'
+Run pdb under GUD"]
+            "-"
+            ["Customize Python mode" (customize-group 'python-mode)
+             :help "Open the customization buffer for Python mode"]
+            ["Help on symbol" py-describe-symbol
+             :help "`py-describe-symbol'
+Use pydoc on symbol at point"]
+            ["Complete symbol" completion-at-point
+             :help "`completion-at-point'
+Complete (qualified) symbol before point"]
+            ["Find function" py-find-function
+             :help "`py-find-function'
+Try to find source definition of function at point"]
+            ["Update imports" py-update-imports
+             :help "`py-update-imports'
+Update list of top-level imports for completion"]
+            "-"
+            ["Pymacs apply" pymacs-apply
+             :help "`pymacs-apply'
+Return the result of calling a Python function FUNCTION over ARGUMENTS.
+FUNCTION is a string denoting the Python function, ARGUMENTS is a list of
+Lisp expressions.  Immutable Lisp constants are converted to Python
+equivalents, other structures are converted into Lisp handles. "]
+            ["Pymacs call" pymacs-call
+             :help "`pymacs-call'
+             Return the result of calling a Python function FUNCTION over ARGUMENTS.
+FUNCTION is a string denoting the Python function, ARGUMENTS are separate
+Lisp expressions, one per argument.  Immutable Lisp constants are converted
+to Python equivalents, other structures are converted into Lisp handles. "]
+            ["Pymacs eval" pymacs-eval
+             :help "`pymacs-eval'
+             Compile TEXT as a Python expression, and return its value."]
+            ["Pymacs exec" pymacs-exec
+             :help "`pymacs-exec'
+             Compile and execute TEXT as a sequence of Python statements.
+This functionality is experimental, and does not appear to be useful. "]
+            ["Pymacs load" pymacs-load
+             :help "`pymacs-load'
+             Import the Python module named MODULE into Emacs.
+Each function in the Python module is made available as an Emacs function.
+The Lisp name of each function is the concatenation of PREFIX with
+the Python name, in which underlines are replaced by dashes.  If PREFIX is
+not given, it defaults to MODULE followed by a dash.
+If NOERROR is not nil, do not raise error when the module is not found. "]))
         (easy-menu-define py-menu map "Python Mode Commands"
-          '("Py Commands"
+          '("PyExec"
+            :help "Python-specific features"
+            ["Execute statement" py-execute-statement
+             :help "`py-execute-statement'
+Send statement at point to Python interpreter. "]
+            ["Execute block" py-execute-block
+             :help "`py-execute-block'
+Send compound statement at point to Python interpreter. "]
+            ["Execute def" py-execute-def
+             :help "`py-execute-def'
+Send function at point to Python interpreter. "]
+            ["Execute region" py-execute-region
+             :help "`py-execute-region'
+Send region to Python interpreter. "]
+            ["Execute buffer" py-execute-buffer
+             :help "`py-execute-buffer'
+Send buffer to Python interpreter. "]))
+        (easy-menu-define py-menu map "Python Mode Commands"
+          '("PyEdit"
             :help "Python-specific features"
             ["Execute statement" py-execute-statement
              :help "`py-execute-statement'
@@ -1427,83 +1519,9 @@ Go to the beginning of next function definition below in buffer.
 
 Returns indentation if found, nil otherwise. "]
             ))
-        (easy-menu-define py-menu map "Python Tools"
-          '("Py Tools"
-            :help "Python mode tools"
-            ("Skeletons..."
-             :help "See also templates in YASnippet")
-            ["if" py-if
-             :help "Inserts if-statement"]
-            ["py-else" py-else
-             :help "Inserts else-statement"]
-            ["py-while" py-while
-             :help "Inserts while-statement"]
-            ["py-for" py-for
-             :help "Inserts for-statement"]
-            ["py-try/finally" py-try/finally
-             :help "Inserts py-try/finally-statement"]
-            ["py-try/except" py-try/except
-             :help "Inserts py-try/except-statement"]
-            "-"
-            ["Import/reload file" py-execute-import-or-reload
-             :help "`py-execute-import-or-reload'
-Load into inferior Python session"]
-            ["Set default process" py-set-proc
-             :help "`py-set-proc'
-Make buffer's inferior process the default"
-             :active (buffer-live-p py-buffer)]
-            ["pychecker-run" py-pychecker-run
-             :help "`py-pychecker-run'
-Run pychecker"]
-            ["Debugger" pdb
-             :help "`pdb'
-Run pdb under GUD"]
-            "-"
-            ["Customize Python mode" (customize-group 'python-mode)
-             :help "Open the customization buffer for Python mode"]
-            ["Help on symbol" py-describe-symbol
-             :help "`py-describe-symbol'
-Use pydoc on symbol at point"]
-            ["Complete symbol" completion-at-point
-             :help "`completion-at-point'
-Complete (qualified) symbol before point"]
-            ["Find function" py-find-function
-             :help "`py-find-function'
-Try to find source definition of function at point"]
-            ["Update imports" py-update-imports
-             :help "`py-update-imports'
-Update list of top-level imports for completion"]
-            "-"
-            ["Pymacs apply" pymacs-apply
-             :help "`pymacs-apply'
-Return the result of calling a Python function FUNCTION over ARGUMENTS.
-FUNCTION is a string denoting the Python function, ARGUMENTS is a list of
-Lisp expressions.  Immutable Lisp constants are converted to Python
-equivalents, other structures are converted into Lisp handles. "]
-            ["Pymacs call" pymacs-call
-             :help "`pymacs-call'
-             Return the result of calling a Python function FUNCTION over ARGUMENTS.
-FUNCTION is a string denoting the Python function, ARGUMENTS are separate
-Lisp expressions, one per argument.  Immutable Lisp constants are converted
-to Python equivalents, other structures are converted into Lisp handles. "]
-            ["Pymacs eval" pymacs-eval
-             :help "`pymacs-eval'
-             Compile TEXT as a Python expression, and return its value."]
-            ["Pymacs exec" pymacs-exec
-             :help "`pymacs-exec'
-             Compile and execute TEXT as a sequence of Python statements.
-This functionality is experimental, and does not appear to be useful. "]
-            ["Pymacs load" pymacs-load
-             :help "`pymacs-load'
-             Import the Python module named MODULE into Emacs.
-Each function in the Python module is made available as an Emacs function.
-The Lisp name of each function is the concatenation of PREFIX with
-the Python name, in which underlines are replaced by dashes.  If PREFIX is
-not given, it defaults to MODULE followed by a dash.
-If NOERROR is not nil, do not raise error when the module is not found. "]))
         ;; Python shell menu
         (easy-menu-define py-menu map "Python Shells"
-          '("Py-Shell"
+          '("PyShell"
             :help "Python Shells"
             ["Default interpreter" py-shell
              :help "`py-shell'
@@ -8350,7 +8368,8 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
     ;;    (setq imenu-create-index-function #'py-imenu-create-index)
     (setq imenu-generic-expression py-imenu-generic-expression)
     (when (fboundp 'imenu-add-to-menubar)
-      (imenu-add-to-menubar (format "%s-%s" "IM" mode-name))
+      ;; (imenu-add-to-menubar (format "%s-%s" "IM" mode-name))
+      (imenu-add-to-menubar "PyIndex")
       (remove-hook 'imenu-add-menubar-index 'python-mode-hook)))
   (set (make-local-variable 'eldoc-documentation-function)
        #'python-eldoc-function)
@@ -8383,9 +8402,9 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
             (back-to-indentation)
             (py-guess-indent-offset)))
       (py-guess-indent-offset)))
-  ;; Set the default shell if not already set
-  (when (null py-shell-name)
-    (py-toggle-shells (py-choose-shell)))
+  ;; don't think needed now
+  ;; (when (null py-shell-name)
+  ;; (py-toggle-shells (py-choose-shell)))
   ;; (py-set-load-path)
   (when py-load-pymacs-p (py-load-pymacs)
         (unwind-protect
@@ -8548,11 +8567,11 @@ These are Python temporary files awaiting execution."
   (message "Using `python-mode' version %s" py-version)
   (py-keep-region-active))
 
-(defvar py-python-command py-shell-name)
-(defvar py-jpython-command py-shell-name)
-(defvar py-jython-command py-shell-name)
-(defvar py-default-interpreter py-shell-name)
-(defvar python-command py-shell-name)
+(defvaralias 'py-python-command 'py-shell-name)
+(defvaralias 'py-jpython-command 'py-shell-name)
+(defvaralias 'py-jython-command 'py-shell-name)
+(defvaralias 'py-default-interpreter 'py-shell-name)
+(defvaralias 'python-command 'py-shell-name)
 
 (defvar py-shell-template "
 \(defun NAME (&optional argprompt)

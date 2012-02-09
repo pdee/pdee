@@ -125,31 +125,30 @@
          'py-forward-into-nomenclature-jumps-over-CamelCased-words-lp:919540-test
          'py-backward-into-nomenclature-caps-names-lp:919541-test
          'UnicodeEncodeError-lp:550661-test
-         'py-shell-complete-lp-328836-test
-
-         )))
+         'py-shell-complete-lp-328836-test)))
 
 (defun py-bug-tests-intern (testname &optional arg teststring)
-  (if arg
-      (progn
-        (set-buffer (get-buffer-create (replace-regexp-in-string "-base$" "-test" (prin1-to-string testname))))
-        (switch-to-buffer (current-buffer))
-        (erase-buffer)
-        (fundamental-mode)
-        (insert teststring)
-        (python-mode)
-        (funcall testname)
-        (message "%s" (concat (replace-regexp-in-string "-base$" "-test" (prin1-to-string testname)) " passed"))
-        (unless (< 1 arg)
-          (set-buffer-modified-p 'nil)
-          ;; (cond ((processp (get-process "Python3")) (kill-process "Python3"))
-          ;; ((processp (get-process "Python2")) (kill-process "Python2"))
-          ;; ((processp (get-process "Python")) (ignore-errors (kill-process "Python"))))
-          (kill-buffer (current-buffer))))
-    (with-temp-buffer
-      (let ((font-lock-verbose nil))
-        (insert teststring)
-        (funcall testname)))))
+  (let (py-load-pymacs-p)
+    (if arg
+        (progn
+          (set-buffer (get-buffer-create (replace-regexp-in-string "-base$" "-test" (prin1-to-string testname))))
+          (switch-to-buffer (current-buffer))
+          (erase-buffer)
+          (fundamental-mode)
+          (insert teststring)
+          (python-mode)
+          (funcall testname)
+          (message "%s" (concat (replace-regexp-in-string "-base$" "-test" (prin1-to-string testname)) " passed"))
+          (unless (< 1 arg)
+            (set-buffer-modified-p 'nil)
+            ;; (cond ((processp (get-process "Python3")) (kill-process "Python3"))
+            ;; ((processp (get-process "Python2")) (kill-process "Python2"))
+            ;; ((processp (get-process "Python")) (ignore-errors (kill-process "Python"))))
+            (kill-buffer (current-buffer))))
+      (with-temp-buffer
+        (let ((font-lock-verbose nil))
+          (insert teststring)
+          (funcall testname))))))
 
 (defvar python-mode-teststring "class OrderedDict1(dict):
     \"\"\"
@@ -2245,6 +2244,20 @@ impo"))
 
 (defun py-ipython-complete-lp:927136-base ()
   (assert (string= "import" (ipython-complete)) nil "py-ipython-complete-lp:927136-test failed"))
+
+(defun execute-buffer-ipython-fails-lp:928087-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env ipython
+# -*- coding: utf-8 -*-
+print 4 + 5
+"))
+    (when load-branch-function (funcall load-branch-function))
+    (py-bug-tests-intern 'execute-buffer-ipython-fails-lp:928087-base arg teststring)))
+
+(defun execute-buffer-ipython-fails-lp:928087-base ()
+  (py-execute-buffer)
+  (assert nil "execute-buffer-ipython-fails-lp:928087-test failed"))
+
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
