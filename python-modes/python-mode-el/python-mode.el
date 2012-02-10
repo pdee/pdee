@@ -1382,22 +1382,6 @@ Send region to Python interpreter. "]
              :help "`py-execute-buffer'
 Send buffer to Python interpreter. "]
             "-"
-            ["Execute statement" py-execute-statement
-             :help "`py-execute-statement'
-Send statement at point to Python interpreter. "]
-            ["Execute block" py-execute-block
-             :help "`py-execute-block'
-Send compound statement at point to Python interpreter. "]
-            ["Execute def" py-execute-def
-             :help "`py-execute-def'
-Send function at point to Python interpreter. "]
-            ["Execute region" py-execute-region
-             :help "`py-execute-region'
-Send region to Python interpreter. "]
-            ["Execute buffer" py-execute-buffer
-             :help "`py-execute-buffer'
-Send buffer to Python interpreter. "]
-            "-"
             ["py-execute-buffer-python" py-execute-buffer-python
              :help "  Execute buffer through a Python interpreter.
 
@@ -5468,7 +5452,7 @@ This function is appropriate for `comint-output-filter-functions'."
       ipython-completion-command-string)))
 
 (defun py-set-python-shell-keys ()
-  " "
+ " "
   (interactive)
   (local-unset-key [tab])
   (cond ((string-match "ipython" py-shell-name)
@@ -5945,15 +5929,15 @@ When called from a programm, it accepts a string specifying a shell which will b
          (temp (make-temp-name name))
          (file (concat (expand-file-name temp py-temp-directory) ".py"))
          (filebuf (get-buffer-create file))
-         (proc (get-process (py-shell nil dedicated (or shell (downcase name)))))
+       (proc (get-process (py-shell nil dedicated (or shell (downcase name)))))
          (procbuf (if dedicated
                       (buffer-name (get-buffer (current-buffer)))
                     (buffer-name (get-buffer (concat "*" name "*")))))
          (pec (if (string-match "Python3" name)
                   (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" file file)
                 (format "execfile(r'%s') # PYTHON-MODE\n" file)))
-         (wholebuf (when (boundp 'wholebuf) wholebuf))
-         (comint-scroll-to-bottom-on-output t))
+       (wholebuf (when (boundp 'wholebuf) wholebuf))
+       (comint-scroll-to-bottom-on-output t))
     (py-execute-intern strg procbuf proc temp file filebuf name py-execute-directory)))
 
 (defun py-execute-intern (strg &optional procbuf proc temp file filebuf name py-execute-directory)
@@ -5962,11 +5946,11 @@ When called from a programm, it accepts a string specifying a shell which will b
     (set-buffer filebuf)
     (erase-buffer)
     (insert strg)
-    (unless wholebuf
-      (py-fix-start (point-min)(point-max))
-      (py-if-needed-insert-shell name)
-      (py-insert-coding)
-      (py-insert-execute-directory))
+  (unless wholebuf
+    (py-fix-start (point-min)(point-max))
+    (py-if-needed-insert-shell name)
+    (py-insert-coding)
+    (py-insert-execute-directory))
     (cond
      (proc
       (set-buffer filebuf)
@@ -5978,8 +5962,8 @@ When called from a programm, it accepts a string specifying a shell which will b
           (progn
             (setq erg (py-execute-file proc file pec))
             (setq py-exception-buffer (cons file (current-buffer)))
-            (if (or (eq switch 'switch)
-                    (and (not (eq switch 'noswitch)) py-shell-switch-buffers-on-execute))
+          (if (or (eq switch 'switch)
+                  (and (not (eq switch 'noswitch)) py-shell-switch-buffers-on-execute))
                 (progn
                   (pop-to-buffer procbuf)
                   (goto-char (point-max)))
@@ -6444,7 +6428,7 @@ See also `\\[py-execute-region]'. "
 With \\[universal-argument] use an unique Python interpreter. "
   (interactive "P")
   (let ((wholebuf t))
-    (py-execute-buffer-base "python" dedicated switch)))
+  (py-execute-buffer-base "python" dedicated switch)))
 
 (defun py-execute-buffer-ipython (&optional dedicated switch)
   "Execute buffer through an IPython interpreter.
@@ -6452,7 +6436,7 @@ With \\[universal-argument] use an unique Python interpreter. "
 With \\[universal-argument] use an unique IPython interpreter. "
   (interactive "P")
   (let ((wholebuf t))
-    (py-execute-buffer-base "ipython" dedicated switch)))
+  (py-execute-buffer-base "ipython" dedicated switch)))
 
 (defun py-execute-buffer-python3 (&optional dedicated switch)
   "Execute buffer through a Python3 interpreter.
@@ -6460,7 +6444,7 @@ With \\[universal-argument] use an unique IPython interpreter. "
 With \\[universal-argument] use an unique Python3 interpreter. "
   (interactive "P")
   (let ((wholebuf t))
-    (py-execute-buffer-base "python3" dedicated switch)))
+  (py-execute-buffer-base "python3" dedicated switch)))
 
 (defun py-execute-buffer-python2 (&optional dedicated switch)
   "Execute buffer through a Python2 interpreter.
@@ -6468,7 +6452,7 @@ With \\[universal-argument] use an unique Python3 interpreter. "
 With \\[universal-argument] use an unique Python2 interpreter. "
   (interactive "P")
   (let ((wholebuf t))
-    (py-execute-buffer-base "python2" dedicated switch)))
+  (py-execute-buffer-base "python2" dedicated switch)))
 
 (defun py-execute-buffer-python2.7 (&optional dedicated switch)
   "Execute buffer through a Python2.7 interpreter.
@@ -6476,7 +6460,7 @@ With \\[universal-argument] use an unique Python2 interpreter. "
 With \\[universal-argument] use an unique Python2.7 interpreter. "
   (interactive "P")
   (let ((wholebuf t))
-    (py-execute-buffer-base "python2.7" dedicated switch)))
+  (py-execute-buffer-base "python2.7" dedicated switch)))
 
 (defun py-execute-buffer-jython (&optional dedicated switch)
   "Execute buffer through a Jython interpreter.
@@ -6484,7 +6468,7 @@ With \\[universal-argument] use an unique Python2.7 interpreter. "
 With \\[universal-argument] use an unique Jython interpreter. "
   (interactive "P")
   (let ((wholebuf t))
-    (py-execute-buffer-base "jython" dedicated switch)))
+  (py-execute-buffer-base "jython" dedicated switch)))
 
 (defun py-execute-buffer-python3.2 (&optional dedicated switch)
   "Execute buffer through a Python3.2 interpreter.
@@ -6492,7 +6476,7 @@ With \\[universal-argument] use an unique Jython interpreter. "
 With \\[universal-argument] use an unique Python3.2 interpreter. "
   (interactive "P")
   (let ((wholebuf t))
-    (py-execute-buffer-base "python3.2" dedicated switch)))
+  (py-execute-buffer-base "python3.2" dedicated switch)))
 
 ;; dedicated
 (defun py-execute-buffer-python-dedicated (&optional switch)
@@ -6501,7 +6485,7 @@ With \\[universal-argument] use an unique Python3.2 interpreter. "
 Optional \\[universal-argument] forces switch to output buffer, ignores `py-shell-switch-buffers-on-execute'. "
   (interactive "P")
   (let ((wholebuf t))
-    (py-execute-buffer-base "python" t switch)))
+  (py-execute-buffer-base "python" t switch)))
 
 (defun py-execute-buffer-ipython-dedicated (&optional switch)
   "Execute buffer through an unique IPython interpreter.
@@ -6509,7 +6493,7 @@ Optional \\[universal-argument] forces switch to output buffer, ignores `py-shel
 Optional \\[universal-argument] forces switch to output buffer, ignores `py-shell-switch-buffers-on-execute'. "
   (interactive "P")
   (let ((wholebuf t))
-    (py-execute-buffer-base "ipython" t switch)))
+  (py-execute-buffer-base "ipython" t switch)))
 
 (defun py-execute-buffer-python3-dedicated (&optional switch)
   "Execute buffer through an unique Python3 interpreter.
@@ -6517,7 +6501,7 @@ Optional \\[universal-argument] forces switch to output buffer, ignores `py-shel
 Optional \\[universal-argument] forces switch to output buffer, ignores `py-shell-switch-buffers-on-execute'. "
   (interactive "P")
   (let ((wholebuf t))
-    (py-execute-buffer-base "python3" t switch)))
+  (py-execute-buffer-base "python3" t switch)))
 
 (defun py-execute-buffer-python2-dedicated (&optional switch)
   "Execute buffer through an unique Python2 interpreter.
@@ -6525,7 +6509,7 @@ Optional \\[universal-argument] forces switch to output buffer, ignores `py-shel
 Optional \\[universal-argument] forces switch to output buffer, ignores `py-shell-switch-buffers-on-execute'. "
   (interactive "P")
   (let ((wholebuf t))
-    (py-execute-buffer-base "python2" t switch)))
+  (py-execute-buffer-base "python2" t switch)))
 
 (defun py-execute-buffer-python2.7-dedicated (&optional switch)
   "Execute buffer through an unique Python2.7 interpreter.
@@ -6533,7 +6517,7 @@ Optional \\[universal-argument] forces switch to output buffer, ignores `py-shel
 Optional \\[universal-argument] forces switch to output buffer, ignores `py-shell-switch-buffers-on-execute'. "
   (interactive "P")
   (let ((wholebuf t))
-    (py-execute-buffer-base "python2.7" t switch)))
+  (py-execute-buffer-base "python2.7" t switch)))
 
 (defun py-execute-buffer-jython-dedicated (&optional switch)
   "Execute buffer through an unique Jython interpreter.
@@ -6541,7 +6525,7 @@ Optional \\[universal-argument] forces switch to output buffer, ignores `py-shel
 Optional \\[universal-argument] forces switch to output buffer, ignores `py-shell-switch-buffers-on-execute'. "
   (interactive "P")
   (let ((wholebuf t))
-    (py-execute-buffer-base "jython" t switch)))
+  (py-execute-buffer-base "jython" t switch)))
 
 (defun py-execute-buffer-python3.2-dedicated (&optional switch)
   "Execute buffer through an unique Python3.2 interpreter.
@@ -6549,7 +6533,7 @@ Optional \\[universal-argument] forces switch to output buffer, ignores `py-shel
 Optional \\[universal-argument] forces switch to output buffer, ignores `py-shell-switch-buffers-on-execute'. "
   (interactive "P")
   (let ((wholebuf t))
-    (py-execute-buffer-base "python3.2" t switch)))
+  (py-execute-buffer-base "python3.2" t switch)))
 
 ;; switch
 (defun py-execute-buffer-python-switch (&optional dedicated)
@@ -6559,7 +6543,7 @@ Ignores `py-shell-switch-buffers-on-execute'.
 Optional \\[universal-argument] makes Python run as an unique process. "
   (interactive "P")
   (let ((wholebuf t))
-    (py-execute-buffer-base "python" dedicated 'switch)))
+  (py-execute-buffer-base "python" dedicated 'switch)))
 
 (defun py-execute-buffer-ipython-switch (&optional dedicated)
   "Execute buffer through an IPython interpreter and switch to output buffer.
@@ -6568,7 +6552,7 @@ Ignores `py-shell-switch-buffers-on-execute'.
 Optional \\[universal-argument] makesn IPython run as an unique process. "
   (interactive "P")
   (let ((wholebuf t))
-    (py-execute-buffer-base "ipython" dedicated 'switch)))
+  (py-execute-buffer-base "ipython" dedicated 'switch)))
 
 (defun py-execute-buffer-python3-switch (&optional dedicated)
   "Execute buffer through a Python3 interpreter and switch to output buffer.
@@ -6577,7 +6561,7 @@ Ignores `py-shell-switch-buffers-on-execute'.
 Optional \\[universal-argument] makes Python3 run as an unique process. "
   (interactive "P")
   (let ((wholebuf t))
-    (py-execute-buffer-base "python3" dedicated 'switch)))
+  (py-execute-buffer-base "python3" dedicated 'switch)))
 
 (defun py-execute-buffer-python2-switch (&optional dedicated)
   "Execute buffer through a Python2 interpreter and switch to output buffer.
@@ -6586,7 +6570,7 @@ Ignores `py-shell-switch-buffers-on-execute'.
 Optional \\[universal-argument] makes Python2 run as an unique process. "
   (interactive "P")
   (let ((wholebuf t))
-    (py-execute-buffer-base "python2" dedicated 'switch)))
+  (py-execute-buffer-base "python2" dedicated 'switch)))
 
 (defun py-execute-buffer-python2.7-switch (&optional dedicated)
   "Execute buffer through a Python2.7 interpreter and switch to output buffer.
@@ -6595,7 +6579,7 @@ Ignores `py-shell-switch-buffers-on-execute'.
 Optional \\[universal-argument] makes Python2.7 run as an unique process. "
   (interactive "P")
   (let ((wholebuf t))
-    (py-execute-buffer-base "python2.7" dedicated 'switch)))
+  (py-execute-buffer-base "python2.7" dedicated 'switch)))
 
 (defun py-execute-buffer-jython-switch (&optional dedicated)
   "Execute buffer through a Jython interpreter and switch to output buffer.
@@ -6604,7 +6588,7 @@ Ignores `py-shell-switch-buffers-on-execute'.
 Optional \\[universal-argument] makes Jython run as an unique process. "
   (interactive "P")
   (let ((wholebuf t))
-    (py-execute-buffer-base "jython" dedicated 'switch)))
+  (py-execute-buffer-base "jython" dedicated 'switch)))
 
 (defun py-execute-buffer-python3.2-switch (&optional dedicated)
   "Execute buffer through a Python3.2 interpreter and switch to output buffer.
@@ -6613,7 +6597,7 @@ Ignores `py-shell-switch-buffers-on-execute'.
 Optional \\[universal-argument] makes Python3.2 run as an unique process. "
   (interactive "P")
   (let ((wholebuf t))
-    (py-execute-buffer-base "python3.2" dedicated 'switch)))
+  (py-execute-buffer-base "python3.2" dedicated 'switch)))
 
 ;; dedicated-switch
 (defun py-execute-buffer-python-dedicated-switch (&optional dedicated)
@@ -6622,7 +6606,7 @@ Optional \\[universal-argument] makes Python3.2 run as an unique process. "
 Switch to output buffer; ignores `py-shell-switch-buffers-on-execute'. "
   (interactive)
   (let ((wholebuf t))
-    (py-execute-buffer-base "python" t 'switch)))
+  (py-execute-buffer-base "python" t 'switch)))
 
 (defun py-execute-buffer-ipython-dedicated-switch (&optional dedicated)
   "Execute buffer through an unique IPython interpreter.
@@ -6630,7 +6614,7 @@ Switch to output buffer; ignores `py-shell-switch-buffers-on-execute'. "
 Switch to output buffer; ignores `py-shell-switch-buffers-on-execute'. "
   (interactive)
   (let ((wholebuf t))
-    (py-execute-buffer-base "ipython" t 'switch)))
+  (py-execute-buffer-base "ipython" t 'switch)))
 
 (defun py-execute-buffer-python3-dedicated-switch (&optional dedicated)
   "Execute buffer through an unique Python3 interpreter.
@@ -6638,7 +6622,7 @@ Switch to output buffer; ignores `py-shell-switch-buffers-on-execute'. "
 Switch to output buffer; ignores `py-shell-switch-buffers-on-execute'. "
   (interactive)
   (let ((wholebuf t))
-    (py-execute-buffer-base "python3" t 'switch)))
+  (py-execute-buffer-base "python3" t 'switch)))
 
 (defun py-execute-buffer-python2-dedicated-switch (&optional dedicated)
   "Execute buffer through an unique Python2 interpreter.
@@ -6646,7 +6630,7 @@ Switch to output buffer; ignores `py-shell-switch-buffers-on-execute'. "
 Switch to output buffer; ignores `py-shell-switch-buffers-on-execute'. "
   (interactive)
   (let ((wholebuf t))
-    (py-execute-buffer-base "python2" t 'switch)))
+  (py-execute-buffer-base "python2" t 'switch)))
 
 (defun py-execute-buffer-python2.7-dedicated-switch (&optional dedicated)
   "Execute buffer through an unique Python2.7 interpreter.
@@ -6654,7 +6638,7 @@ Switch to output buffer; ignores `py-shell-switch-buffers-on-execute'. "
 Switch to output buffer; ignores `py-shell-switch-buffers-on-execute'. "
   (interactive)
   (let ((wholebuf t))
-    (py-execute-buffer-base "python2.7" t 'switch)))
+  (py-execute-buffer-base "python2.7" t 'switch)))
 
 (defun py-execute-buffer-jython-dedicated-switch (&optional dedicated)
   "Execute buffer through an unique Jython interpreter.
@@ -6662,7 +6646,7 @@ Switch to output buffer; ignores `py-shell-switch-buffers-on-execute'. "
 Switch to output buffer; ignores `py-shell-switch-buffers-on-execute'. "
   (interactive)
   (let ((wholebuf t))
-    (py-execute-buffer-base "jython" t 'switch)))
+  (py-execute-buffer-base "jython" t 'switch)))
 
 (defun py-execute-buffer-python3.2-dedicated-switch (&optional dedicated)
   "Execute buffer through an unique Python3.2 interpreter.
@@ -6670,7 +6654,7 @@ Switch to output buffer; ignores `py-shell-switch-buffers-on-execute'. "
 Switch to output buffer; ignores `py-shell-switch-buffers-on-execute'. "
   (interactive)
   (let ((wholebuf t))
-    (py-execute-buffer-base "python3.2" t 'switch)))
+  (py-execute-buffer-base "python3.2" t 'switch)))
 
 
 
@@ -8552,11 +8536,11 @@ To change the default Python interpreter, use `py-switch-shell'.
 "
   (interactive)
   (let* ((erg (cond (py-use-local-default
-                     (if (not (string= "" py-shell-local-path))
-                         (expand-file-name py-shell-local-path)
-                       (message "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'")))
-                    ((py-choose-shell-by-shebang))
-                    ((py-choose-shell-by-import))
+                    (if (not (string= "" py-shell-local-path))
+                        (expand-file-name py-shell-local-path)
+                      (message "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'")))
+                   ((py-choose-shell-by-shebang))
+                   ((py-choose-shell-by-import))
                     (t (default-value 'py-shell-name))))
          (cmd (executable-find erg)))
     (if cmd
@@ -10037,9 +10021,9 @@ Returns the completed symbol, a string, if successful, nil otherwise."
          (ugly-return nil)
          (sep ";")
          (py-which-bufname (cond ((get-buffer-process "IPython")
-                                  "IPython")
+                               "IPython")
                                  ((string-match "[Ii][Pp]ython" py-shell-name)
-                                  py-shell-name)
+                                               py-shell-name)
                                  (t "ipython")))
          (python-process (or (get-buffer-process (current-buffer))
                              (get-process py-which-bufname)
@@ -10047,7 +10031,7 @@ Returns the completed symbol, a string, if successful, nil otherwise."
                                (setq done (not done))
                                (get-process (py-shell nil nil (downcase py-which-bufname) 'noswitch)))))
          (beg (progn (set-buffer oldbuf)(save-excursion (skip-chars-backward "a-z0-9A-Z_." (point-at-bol))
-                                                        (point))))
+                              (point))))
          (end (point))
          (pattern (buffer-substring-no-properties beg end))
          (comint-output-filter-functions
@@ -10077,7 +10061,7 @@ Returns the completed symbol, a string, if successful, nil otherwise."
              ;; workaround: if an (I)Python shell didn't run
              ;; before, first completion are not delivered
              (if done (ipython-complete done)
-               (message "Can't find completion for \"%s\"" pattern)
+             (message "Can't find completion for \"%s\"" pattern)
                (ding)))
             ((not (string= pattern completion))
              (delete-region beg end)
@@ -10138,11 +10122,11 @@ Returns the completed symbol, a string, if successful, nil otherwise."
   < "else:" \n)
 
 (define-skeleton py-if
-  "If condition "
+    "If condition "
   "if " "if " str ":" \n
   _ \n
   ("other condition, %s: "
-   < "elif " str ":" \n
+  < "elif " str ":" \n
    > _ \n nil)
   '(py-else) | ^)
 
@@ -10155,19 +10139,19 @@ Returns the completed symbol, a string, if successful, nil otherwise."
   > _ \n)
 
 (define-skeleton py-while
-  "Condition: "
+    "Condition: "
   "while " "while " str ":" \n
   > -1 _ \n
   '(py-else) | ^)
 
 (define-skeleton py-for
-  "Target, %s: "
+    "Target, %s: "
   "for " "for " str " in " (skeleton-read "Expression, %s: ") ":" \n
   > -1 _ \n
   '(py-else) | ^)
 
 (define-skeleton py-try/except
-  "Py-try/except skeleton "
+    "Py-try/except skeleton "
   "try:" "try:" \n
   > -1 _ \n
   ("Exception, %s: "
@@ -10182,21 +10166,21 @@ Returns the completed symbol, a string, if successful, nil otherwise."
   "Target, %s: " ", " str | -2)
 
 (define-skeleton py-try/finally
-  "Py-try/finally skeleton "
+    "Py-try/finally skeleton "
   "try:" \n
   > -1 _ \n
   < "finally:" \n
   > _ \n)
 
 (define-skeleton py-def
-  "Name: "
+    "Name: "
   "def " str " (" ("Parameter, %s: " (unless (equal ?\( (char-before)) ", ")
                    str) "):" \n
                    "\"\"\"" - "\"\"\"" \n     ; Fixme:  extra space inserted -- why?).
                    > _ \n)
 
 (define-skeleton py-class
-  "Name: "
+    "Name: "
   "class " str " (" ("Inheritance, %s: "
 		     (unless (equal ?\( (char-before)) ", ")
 		     str)
