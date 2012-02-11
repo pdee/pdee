@@ -46,7 +46,7 @@ This function is appropriate for `comint-output-filter-functions'."
     (setq py-file-queue (cdr py-file-queue))
     (if py-file-queue
         (let ((pyproc (get-buffer-process (current-buffer))))
-          (py-execute-file pyproc (car py-file-queue))))))
+          (py-execute-file-base pyproc (car py-file-queue))))))
 
 (defun py-guess-default-python ()
   "Defaults to \"python\", if guessing didn't succeed. "
@@ -329,7 +329,7 @@ When called from a programm, it accepts a string specifying a shell which will b
       (sit-for 0.1)
       (if (file-readable-p file)
           (progn
-            (setq erg (py-execute-file proc file pec))
+            (setq erg (py-execute-file-base proc file pec))
             (setq py-exception-buffer (cons file (current-buffer)))
             (if (or (eq switch 'switch)
                     (and (not (eq switch 'noswitch)) py-shell-switch-buffers-on-execute))
@@ -671,7 +671,7 @@ This may be preferable to `\\[py-execute-buffer]' because:
                      (get-process (py-shell argprompt dedicated (or shell (default-value 'py-shell-name)))))))
           ;; Maybe save some buffers
           (save-some-buffers (not py-ask-about-save) nil)
-          (py-execute-file proc file
+          (py-execute-file-base proc file
                            (if (string-match "\\.py$" file)
                                (let ((m (py-qualified-module-name (expand-file-name file))))
                                  (if (string-match "python2" (file-name-nondirectory shell))
@@ -1104,7 +1104,36 @@ Optional OUTPUT-BUFFER and ERROR-BUFFER might be given.')
           (end (py-end-of-statement)))
       (py-execute-region beg end))))
 
-(defun py-execute-file (proc filename &optional cmd)
+(defun py-execute-file (&optional filename shell dedicated switch)
+  (interactive "fFile: ")
+  (let* ((regbuf (current-buffer))
+         (file (or (expand-file-name filename) (when (ignore-errors (file-readable-p (buffer-file-name))) (buffer-file-name))))
+         (shell (or shell (progn (with-temp-buffer (insert-file file)(py-choose-shell)))))
+         (name (py-process-name shell))
+         (proc (get-process (py-shell nil dedicated (or shell (downcase name)))))
+         (procbuf (if dedicated
+                      (buffer-name (get-buffer (current-buffer)))
+                    (buffer-name (get-buffer (concat "*" name "*")))))
+         (pec (if (string-match "Python3" name)
+                  (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" file file)
+                (format "execfile(r'%s') # PYTHON-MODE\n" file)))
+         (comint-scroll-to-bottom-on-output t))
+    (if (file-readable-p file)
+        (progn
+          (setq erg (py-execute-file-base proc file pec))
+          (setq py-exception-buffer (cons file (current-buffer)))
+          (if (or (eq switch 'switch)
+                  (and (not (eq switch 'noswitch)) py-shell-switch-buffers-on-execute))
+              (progn
+                (pop-to-buffer procbuf)
+                (goto-char (point-max)))
+            (when (buffer-live-p regbuf) (pop-to-buffer regbuf))
+            (message "Output buffer: %s" procbuf))
+          (sit-for 0.1)
+          erg)
+      (message "File not readable: %s" "Do you have write permissions?"))))
+
+(defun py-execute-file-base (proc filename &optional cmd)
   "Send to Python interpreter process PROC, in Python version 2.. \"execfile('FILENAME')\".
 
 Make that process's buffer visible and force display.  Also make
@@ -1124,14 +1153,13 @@ Returns position where output starts. "
           (set-buffer procbuf)
           ;; (switch-to-buffer (current-buffer))
           (move-marker (process-mark proc) (point))
+          (goto-char (point-max)) 
           (funcall (process-filter proc) proc msg)))
     (set-buffer procbuf)
     (process-send-string proc cmd)
     (setq erg (point))
     (goto-char (process-mark proc))
     erg))
-
-;;; Py-send stuff liftet from python.el, alternates py-execute...
 
 (defun python-send-command (command)
   "Like `python-send-string' but resets `compilation-shell-minor-mode'."
