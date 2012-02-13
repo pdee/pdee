@@ -653,8 +653,6 @@ element matches `py-shell-name'."
 (defvar py-default-interpreter py-shell-name)
 (defvar python-command py-shell-name)
 
-
-
 (defcustom python-guess-indent t
   "Non-nil means Python mode guesses `py-indent-offset' for the buffer."
   :type 'boolean
@@ -857,6 +855,25 @@ When non-nil, arguments are printed."
 
 Making switch between several virtualenv's easier,
  Python-mode should deliver an installer, so named-shells pointing to virtualenv's will be available. "
+  :type 'boolean
+  :group 'python-mode)
+
+(defcustom python-load-extended-executes-p  t
+  "If commands from `python-extended-executes.el' should be loaded.
+
+Default is `t'.
+Provides commands executing buffers code at different conditions, thus avoids customization of `py-shell-name', `py-shell-switch-buffers-on-execute'. "
+
+  :type 'boolean
+  :group 'python-mode)
+
+(defcustom python-extended-executes-menu-p  t
+  "If the menu listing commands from `python-extended-executes.el' should be installed.
+
+Default is `t'.
+If `t', `python-extended-executes.el' should get loaded to deliver the commands offered by this menu - see `python-load-extended-executes-p'.
+Provides commands executing buffers code at different conditions, thus avoids customization of `py-shell-name', `py-shell-switch-buffers-on-execute'. "
+
   :type 'boolean
   :group 'python-mode)
 
@@ -4230,7 +4247,6 @@ Interactively, prompt for name."
            ,@elements)))))
 (put 'def-python-skeleton 'lisp-indent-function 2)
 
-
 (def-python-skeleton if
     "Condition: "
   "if " str ":" \n
@@ -4330,6 +4346,17 @@ Interactively, prompt for the name with completion."
 
 ;; (setq pdb-path '/usr/lib/python2.7/pdb.py
 ;;      gud-pdb-command-name (symbol-name pdb-path))
+
+(defun py-execute-prepare (form &optional shell dedicated switch)
+  "Used by python-extended-executes ."
+  (save-excursion
+    (let ((beg (prog1
+                   (or (funcall (intern-soft (concat "py-beginning-of-" form "-p")))
+
+                       (funcall (intern-soft (concat "py-beginning-of-" form)))
+                       (push-mark))))
+          (end (funcall (intern-soft (concat "py-end-of-" form)))))
+      (py-execute-base beg end shell dedicated switch))))
 
 (eval-when-compile
   (add-to-list 'load-path default-directory))
@@ -4457,6 +4484,8 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
        '((< '(backward-delete-char-untabify (min py-indent-offset
                                                  (current-column))))
          (^ '(- (1+ (current-indentation))))))
+  (when python-load-extended-executes-p
+    (add-hook 'python-mode-hook '(lambda ()(load (concat py-install-directory "/python-extended-executes.el") nil t))))
   ;; Python defines TABs as being 8-char wide.
   (set (make-local-variable 'tab-width) py-indent-offset)
   ;; Now do the automagical guessing

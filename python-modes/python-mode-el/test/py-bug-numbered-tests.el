@@ -1567,7 +1567,7 @@ if foo:
     (goto-char 28)
     (push-mark)
     (progn
-      (py-execute-region (point) (progn (end-of-line)(point)))
+      (py-execute-base (point) (progn (end-of-line)(point)))
       (when (interactive-p) (message "%s" "execute-indented-code-lp:828314-test passed")))))
 
 (defun wrong-indentation-of-function-arguments-lp:840891-test (&optional arg load-branch-function)

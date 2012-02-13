@@ -869,6 +869,25 @@ Making switch between several virtualenv's easier,
   :type 'boolean
   :group 'python-mode)
 
+(defcustom python-load-extended-executes-p  t
+  "If commands from `python-extended-executes.el' should be loaded.
+
+Default is `t'.
+Provides commands executing buffers code at different conditions, thus avoids customization of `py-shell-name', `py-shell-switch-buffers-on-execute'. "
+
+  :type 'boolean
+  :group 'python-mode)
+
+(defcustom python-extended-executes-menu-p  t
+  "If the menu listing commands from `python-extended-executes.el' should be installed.
+
+Default is `t'.
+If `t', `python-extended-executes.el' should get loaded to deliver the commands offered by this menu - see `python-load-extended-executes-p'.
+Provides commands executing buffers code at different conditions, thus avoids customization of `py-shell-name', `py-shell-switch-buffers-on-execute'. "
+
+  :type 'boolean
+  :group 'python-mode)
+
 (defcustom py-shell-local-path ""
   "If `py-use-local-default' is non-nil, `py-shell' will use EXECUTABLE indicated here incl. path. "
 
@@ -1901,7 +1920,6 @@ With \\[universal-argument] use an unique IPython interpreter. "]
 With \\[universal-argument] use an unique Python3 interpreter. "]
              ["py-execute-buffer-python2-switch" py-execute-buffer-python2-switch
               :help "  Execute buffer through a Python2 interpreter.
-
 With \\[universal-argument] use an unique Python2 interpreter. "]
              ["py-execute-buffer-python2.7-switch" py-execute-buffer-python2.7-switch
               :help "  Execute buffer through a Python2.7 interpreter.
@@ -2487,6 +2505,18 @@ Otherwise inherits from `py-mode-syntax-table'.")
         (copy-syntax-table py-mode-syntax-table))
   (modify-syntax-entry ?_ "_" py-dotted-expression-syntax-table)
   (modify-syntax-entry ?. "_" py-dotted-expression-syntax-table))
+
+
+(defun py-execute-prepare (form &optional shell dedicated switch)
+  "Used by python-extended-executes ."
+  (save-excursion
+    (let ((beg (prog1
+                   (or (eval (funcall (intern-soft (concat "py-beginning-of-" form "-p"))))
+
+                       (eval (funcall (intern-soft (concat "py-beginning-of-" form))))
+                       (push-mark))))
+          (end (eval (funcall (intern-soft (concat "py-end-of-" form))))))
+      (py-execute-base beg end shell dedicated switch))))
 
 ;; credits to python.el
 (defun py-beg-of-defun-function ()
@@ -3199,59 +3229,19 @@ initial line; and comment lines beginning in column 1 are ignored."
       (when (interactive-p) (message "%s" erg))
       erg)))
 
-(defun py-beginning-of-block-position ()
-  "Returns beginning of block position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (py-beginning-of-block)))
-      (when (interactive-p) (message "%s" erg))
-      erg)))
-
-(defun py-beginning-of-clause-position ()
-  "Returns beginning of clause position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (py-beginning-of-clause)))
-      (when (interactive-p) (message "%s" erg))
-      erg)))
-
-(defun py-beginning-of-def-position ()
-  "Returns beginning of def position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (py-beginning-of-def)))
-      (when (interactive-p) (message "%s" erg))
-      erg)))
-
-(defun py-beginning-of-class-position ()
-  "Returns beginning of class position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (py-beginning-of-class)))
-      (when (interactive-p) (message "%s" erg))
-      erg)))
-
-(defun py-beginning-of-line-position ()
-  "Returns beginning of line position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (py-beginning-of-line)))
-      (when (interactive-p) (message "%s" erg))
-      erg)))
-
-(defun py-beginning-of-statement-position ()
-  "Returns beginning of statement position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (py-beginning-of-statement)))
-      (when (interactive-p) (message "%s" erg))
-      erg)))
-
 (defun py-end-of-paragraph-position ()
   "Returns end of paragraph position. "
   (interactive)
   (save-excursion
     (let ((erg (py-end-of-paragraph)))
+      (when (interactive-p) (message "%s" erg))
+      erg)))
+
+(defun py-beginning-of-block-position ()
+  "Returns beginning of block position. "
+  (interactive)
+  (save-excursion
+    (let ((erg (py-beginning-of-block)))
       (when (interactive-p) (message "%s" erg))
       erg)))
 
@@ -3263,11 +3253,43 @@ initial line; and comment lines beginning in column 1 are ignored."
       (when (interactive-p) (message "%s" erg))
       erg)))
 
+(defun py-beginning-of-clause-position ()
+  "Returns beginning of clause position. "
+  (interactive)
+  (save-excursion
+    (let ((erg (py-beginning-of-clause)))
+      (when (interactive-p) (message "%s" erg))
+      erg)))
+
 (defun py-end-of-clause-position ()
   "Returns end of clause position. "
   (interactive)
   (save-excursion
     (let ((erg (py-end-of-clause)))
+      (when (interactive-p) (message "%s" erg))
+      erg)))
+
+(defun py-beginning-of-block-or-clause-position ()
+  "Returns beginning of block-or-clause position. "
+  (interactive)
+  (save-excursion
+    (let ((erg (py-beginning-of-block-or-clause)))
+      (when (interactive-p) (message "%s" erg))
+      erg)))
+
+(defun py-end-of-block-or-clause-position ()
+  "Returns end of block-or-clause position. "
+  (interactive)
+  (save-excursion
+    (let ((erg (py-end-of-block-or-clause)))
+      (when (interactive-p) (message "%s" erg))
+      erg)))
+
+(defun py-beginning-of-def-position ()
+  "Returns beginning of def position. "
+  (interactive)
+  (save-excursion
+    (let ((erg (py-beginning-of-def)))
       (when (interactive-p) (message "%s" erg))
       erg)))
 
@@ -3279,6 +3301,14 @@ initial line; and comment lines beginning in column 1 are ignored."
       (when (interactive-p) (message "%s" erg))
       erg)))
 
+(defun py-beginning-of-class-position ()
+  "Returns beginning of class position. "
+  (interactive)
+  (save-excursion
+    (let ((erg (py-beginning-of-class)))
+      (when (interactive-p) (message "%s" erg))
+      erg)))
+
 (defun py-end-of-class-position ()
   "Returns end of class position. "
   (interactive)
@@ -3287,11 +3317,27 @@ initial line; and comment lines beginning in column 1 are ignored."
       (when (interactive-p) (message "%s" erg))
       erg)))
 
+(defun py-beginning-of-def-or-class-position ()
+  "Returns beginning of def-or-class position. "
+  (interactive)
+  (save-excursion
+    (let ((erg (py-beginning-of-def-or-class)))
+      (when (interactive-p) (message "%s" erg))
+      erg)))
+
 (defun py-end-of-def-or-class-position ()
-  "Returns end of def resp. class position, non-greedy. "
+  "Returns end of def-or-class position. "
   (interactive)
   (save-excursion
     (let ((erg (py-end-of-def-or-class)))
+      (when (interactive-p) (message "%s" erg))
+      erg)))
+
+(defun py-beginning-of-line-position ()
+  "Returns beginning of line position. "
+  (interactive)
+  (save-excursion
+    (let ((erg (py-beginning-of-line)))
       (when (interactive-p) (message "%s" erg))
       erg)))
 
@@ -3303,6 +3349,14 @@ initial line; and comment lines beginning in column 1 are ignored."
       (when (interactive-p) (message "%s" erg))
       erg)))
 
+(defun py-beginning-of-statement-position ()
+  "Returns beginning of statement position. "
+  (interactive)
+  (save-excursion
+    (let ((erg (py-beginning-of-statement)))
+      (when (interactive-p) (message "%s" erg))
+      erg)))
+
 (defun py-end-of-statement-position ()
   "Returns end of statement position. "
   (interactive)
@@ -3310,6 +3364,197 @@ initial line; and comment lines beginning in column 1 are ignored."
     (let ((erg (py-end-of-statement)))
       (when (interactive-p) (message "%s" erg))
       erg)))
+
+(defun py-beginning-of-expression-position ()
+  "Returns beginning of expression position. "
+  (interactive)
+  (save-excursion
+    (let ((erg (py-beginning-of-expression)))
+      (when (interactive-p) (message "%s" erg))
+      erg)))
+
+(defun py-end-of-expression-position ()
+  "Returns end of expression position. "
+  (interactive)
+  (save-excursion
+    (let ((erg (py-end-of-expression)))
+      (when (interactive-p) (message "%s" erg))
+      erg)))
+
+(defun py-beginning-of-minor-expression-position ()
+  "Returns beginning of minor-expression position. "
+  (interactive)
+  (save-excursion
+    (let ((erg (py-beginning-of-minor-expression)))
+      (when (interactive-p) (message "%s" erg))
+      erg)))
+
+(defun py-end-of-minor-expression-position ()
+  "Returns end of minor-expression position. "
+  (interactive)
+  (save-excursion
+    (let ((erg (py-end-of-minor-expression)))
+      (when (interactive-p) (message "%s" erg))
+      erg)))
+
+;;; Bounds
+(defun py-bounds-of-statement (&optional position)
+  "Returns bounds of statement at point.
+
+With optional POSITION, a number, report bounds of statement at POSITION.
+Returns a list, whose car is beg, cdr - end."
+  (interactive)
+  (save-excursion
+    (save-restriction
+      (widen)
+      (when position (goto-char position))
+      (let ((beg (py-beginning-of-statement-position))
+            (end (py-end-of-statement-position)))
+        (if (and beg end)
+            (when (interactive-p) (message "%s" (list beg end)))
+          (list beg end))))))
+
+(defun py-bounds-of-block (&optional position)
+  "Returns bounds of block at point.
+
+With optional POSITION, a number, report bounds of block at POSITION.
+Returns a list, whose car is beg, cdr - end."
+  (interactive)
+  (save-excursion
+    (save-restriction
+      (widen)
+      (when position (goto-char position))
+      (let ((beg (py-beginning-of-block-position))
+            (end (py-end-of-block-position)))
+        (if (and beg end)
+            (when (interactive-p) (message "%s" (list beg end)))
+          (list beg end))))))
+
+(defun py-bounds-of-clause (&optional position)
+  "Returns bounds of clause at point.
+
+With optional POSITION, a number, report bounds of clause at POSITION.
+Returns a list, whose car is beg, cdr - end."
+  (interactive)
+  (save-excursion
+    (save-restriction
+      (widen)
+      (when position (goto-char position))
+      (let ((beg (py-beginning-of-clause-position))
+            (end (py-end-of-clause-position)))
+        (if (and beg end)
+            (when (interactive-p) (message "%s" (list beg end)))
+          (list beg end))))))
+
+(defun py-bounds-of-block-or-clause (&optional position)
+  "Returns bounds of block-or-clause at point.
+
+With optional POSITION, a number, report bounds of block-or-clause at POSITION.
+Returns a list, whose car is beg, cdr - end."
+  (interactive)
+  (save-excursion
+    (save-restriction
+      (widen)
+      (when position (goto-char position))
+      (let ((beg (py-beginning-of-block-or-clause-position))
+            (end (py-end-of-block-or-clause-position)))
+        (if (and beg end)
+            (when (interactive-p) (message "%s" (list beg end)))
+          (list beg end))))))
+
+(defun py-bounds-of-def (&optional position)
+  "Returns bounds of def at point.
+
+With optional POSITION, a number, report bounds of def at POSITION.
+Returns a list, whose car is beg, cdr - end."
+  (interactive)
+  (save-excursion
+    (save-restriction
+      (widen)
+      (when position (goto-char position))
+      (let ((beg (py-beginning-of-def-position))
+            (end (py-end-of-def-position)))
+        (if (and beg end)
+            (when (interactive-p) (message "%s" (list beg end)))
+          (list beg end))))))
+
+(defun py-bounds-of-class (&optional position)
+  "Returns bounds of class at point.
+
+With optional POSITION, a number, report bounds of class at POSITION.
+Returns a list, whose car is beg, cdr - end."
+  (interactive)
+  (save-excursion
+    (save-restriction
+      (widen)
+      (when position (goto-char position))
+      (let ((beg (py-beginning-of-class-position))
+            (end (py-end-of-class-position)))
+        (if (and beg end)
+            (when (interactive-p) (message "%s" (list beg end)))
+          (list beg end))))))
+
+(defun py-bounds-of-region ()
+  "Returns bounds of region at point.
+
+Returns a list, whose car is beg, cdr - end."
+  (interactive)
+  (save-excursion
+    (save-restriction
+      (widen)
+      (let ((beg (region-beginning))
+            (end (region-end)))
+        (if (and beg end)
+            (when (interactive-p) (message "%s" (list beg end)))
+          (list beg end))))))
+
+(defun py-bounds-of-buffer (&optional position)
+  "Returns bounds of buffer at point.
+
+With optional POSITION, a number, report bounds of buffer at POSITION.
+Returns a list, whose car is beg, cdr - end."
+  (interactive)
+  (save-excursion
+    (save-restriction
+      (widen)
+      (when position (goto-char position))
+      (let ((beg (py-beginning-of-buffer-position))
+            (end (py-end-of-buffer-position)))
+        (if (and beg end)
+            (when (interactive-p) (message "%s" (list beg end)))
+          (list beg end))))))
+
+(defun py-bounds-of-expression (&optional position)
+  "Returns bounds of expression at point.
+
+With optional POSITION, a number, report bounds of expression at POSITION.
+Returns a list, whose car is beg, cdr - end."
+  (interactive)
+  (save-excursion
+    (save-restriction
+      (widen)
+      (when position (goto-char position))
+      (let ((beg (py-beginning-of-expression-position))
+            (end (py-end-of-expression-position)))
+        (if (and beg end)
+            (when (interactive-p) (message "%s" (list beg end)))
+          (list beg end))))))
+
+(defun py-bounds-of-minor-expression (&optional position)
+  "Returns bounds of minor-expression at point.
+
+With optional POSITION, a number, report bounds of minor-expression at POSITION.
+Returns a list, whose car is beg, cdr - end."
+  (interactive)
+  (save-excursion
+    (save-restriction
+      (widen)
+      (when position (goto-char position))
+      (let ((beg (py-beginning-of-minor-expression-position))
+            (end (py-end-of-minor-expression-position)))
+        (if (and beg end)
+            (when (interactive-p) (message "%s" (list beg end)))
+          (list beg end))))))
 
 ;;; Declarations
 (defun py-bounds-of-declarations ()
@@ -6923,8 +7168,19 @@ When called from a programm, it accepts a string specifying a shell which will b
 
 Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch) "
   (interactive "P")
-  (let ((wholebuf t))
-    (py-execute-buffer-base shell dedicated switch)))
+  (save-excursion
+    (let ((wholebuf t)
+          (py-master-file (or py-master-file (py-fetch-py-master-file)))
+          (py-shell-switch-buffers-on-execute switch)
+          beg end)
+      (when py-master-file
+        (let* ((filename (expand-file-name py-master-file))
+               (buffer (or (get-file-buffer filename)
+                           (find-file-noselect filename))))
+          (set-buffer buffer)))
+      (setq beg (point-min))
+      (setq end (point-max))
+      (py-execute-region beg end shell dedicated switch))))
 
 (defun py-execute-buffer-base (&optional shell dedicated switch)
   "Honor `py-master-file'. "
@@ -9265,11 +9521,13 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (when (and imenu-create-index-p (ignore-errors (require 'imenu)))
     (setq imenu-create-index-function #'py-imenu-create-index-new)
     ;;    (setq imenu-create-index-function #'py-imenu-create-index)
-    (setq imenu-generic-expression py-imenu-generic-expression)
-    (when (fboundp 'imenu-add-to-menubar)
-      ;; (imenu-add-to-menubar (format "%s-%s" "IM" mode-name))
-      (imenu-add-to-menubar "PyIndex")
-      (remove-hook 'imenu-add-menubar-index 'python-mode-hook)))
+    (setq imenu-generic-expression py-imenu-generic-expression))
+  (when (fboundp 'imenu-add-to-menubar)
+    ;; (imenu-add-to-menubar (format "%s-%s" "IM" mode-name))
+    (imenu-add-to-menubar "PyIndex")
+    ;; (remove-hook 'imenu-add-menubar-index 'python-mode-hook)
+    (add-hook imenu-create-index-function 'python-mode-hook)
+    )
   (set (make-local-variable 'eldoc-documentation-function)
        #'python-eldoc-function)
   (add-hook 'eldoc-mode-hook
@@ -9283,6 +9541,8 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
        '((< '(backward-delete-char-untabify (min py-indent-offset
                                                  (current-column))))
          (^ '(- (1+ (current-indentation))))))
+  (when python-load-extended-executes-p
+    (add-hook 'python-mode-hook '(lambda ()(load (concat py-install-directory "/python-extended-executes.el") nil t))))
   ;; Python defines TABs as being 8-char wide.
   (set (make-local-variable 'tab-width) py-indent-offset)
   ;; Now do the automagical guessing
@@ -9677,7 +9937,7 @@ For running multiple processes in multiple buffers, see `run-python' and
 `python-buffer'.
 
 \\{inferior-python-mode-map}"
-  :group 'python
+  :group 'python-mode
   (require 'ansi-color) ; for ipython
   (setq mode-line-process '(":%s"))
   (set (make-local-variable 'comint-input-filter) 'python-input-filter)
