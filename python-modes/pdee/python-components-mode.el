@@ -867,16 +867,6 @@ Provides commands executing buffers code at different conditions, thus avoids cu
   :type 'boolean
   :group 'python-mode)
 
-(defcustom python-extended-executes-menu-p  t
-  "If the menu listing commands from `python-extended-executes.el' should be installed.
-
-Default is `t'.
-If `t', `python-extended-executes.el' should get loaded to deliver the commands offered by this menu - see `python-load-extended-executes-p'.
-Provides commands executing buffers code at different conditions, thus avoids customization of `py-shell-name', `py-shell-switch-buffers-on-execute'. "
-
-  :type 'boolean
-  :group 'python-mode)
-
 (defcustom py-shell-local-path ""
   "If `py-use-local-default' is non-nil, `py-shell' will use EXECUTABLE indicated here incl. path. "
 
