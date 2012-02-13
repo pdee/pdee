@@ -118,8 +118,8 @@ If no string is delivered but region is active, strip region.
 ;; string-strip stuff ends here
 (defcustom empty-line-p-chars "^[ \t\r]*$"
   "Empty-line-p-chars."
- :type 'regexp
- :group 'convenience)
+  :type 'regexp
+  :group 'convenience)
 
 (unless (functionp 'empty-line-p)
   (defun empty-line-p (&optional iact)
@@ -147,8 +147,8 @@ If no string is delivered but region is active, strip region.
   (let* ((erg (nth 8 (if (featurep 'xemacs)
                          (parse-partial-sexp (point-min) (point))
                        (syntax-ppss))))
-         (la (unless erg (when (or (looking-at "\"")(looking-at comment-start-skip)))
-                     (match-beginning 0))))
+         (la (unless erg (when (or (looking-at "\"")(looking-at comment-start-skip))
+                           (match-beginning 0)))))
     (setq erg (or erg la))
     (when (interactive-p) (message "%s" erg))
     erg))
@@ -266,7 +266,7 @@ if narrowed, nil otherwise. "
       (when (< (point) orig)
         (when (interactive-p) (message "%s" (point)))
         (point)
-))))
+        ))))
 
 (defalias 'defun-end-position 'function-end-position)
 (defun function-end-position ()
@@ -274,10 +274,10 @@ if narrowed, nil otherwise. "
   (interactive)
   (save-excursion
     (let ((orig (point)))
-          (end-of-defun)
-          (when (< orig (point))
-            (when (interactive-p) (message "%s" (point)))
-            (point)))))
+      (end-of-defun)
+      (when (< orig (point))
+        (when (interactive-p) (message "%s" (point)))
+        (point)))))
 
 (defalias 'copy-defun 'copy-function)
 (defun copy-function ()
@@ -301,18 +301,18 @@ if narrowed, nil otherwise. "
 (defalias 'kill-defun 'kill-function)
 (defun kill-function ()
   (interactive)
-    (save-excursion
-      ;; don't go backward, if already at beginning
-      (when
-          (or
-           (looking-at (if defun-prompt-regexp
-                           (concat "^\\s(\\|"
-                                   "\\(" defun-prompt-regexp "\\)\\s(")
-                         "^\\s("))
-           (eq (current-column) 0))
-        (end-of-line))
-      (kill-region
-       (function-beginning-position) (function-end-position))))
+  (save-excursion
+    ;; don't go backward, if already at beginning
+    (when
+        (or
+         (looking-at (if defun-prompt-regexp
+                         (concat "^\\s(\\|"
+                                 "\\(" defun-prompt-regexp "\\)\\s(")
+                       "^\\s("))
+         (eq (current-column) 0))
+      (end-of-line))
+    (kill-region
+     (function-beginning-position) (function-end-position))))
 
 (defun ar-name-of-defun-atpt (&optional pos)
   "Return name of function definition at point.
@@ -633,11 +633,11 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
                     (region-beginning))
                    (t (point-min))))
         (end (cond (end)
-               ((buffer-narrowed-p)
-                (point-max))
-               ((region-active-p)
-                (copy-marker (region-end)))
-               (t (point))))
+                   ((buffer-narrowed-p)
+                    (point-max))
+                   ((region-active-p)
+                    (copy-marker (region-end)))
+                   (t (point))))
         erg)
     (if (featurep 'xemacs)
         (setq erg (count-lines beg end))
