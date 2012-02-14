@@ -939,26 +939,26 @@ set in py-execute-region and used in py-jump-to-exception.")
   "Regular expression matching a blank or comment line.")
 
 (defconst py-block-closing-keywords-re
-  "[ \t]*\\<\\(return\\|raise\\|break\\|continue\\|pass\\)\\>[ \n\t]"
+  "[ \t]*\\_<\\(return\\|raise\\|break\\|continue\\|pass\\)\\_>[ \n\t]"
   "Matches the beginning of a class, method or compound statement. ")
 
 (defconst py-finally-re
-  "[ \t]*\\<finally\\>[: \n\t]"
+  "[ \t]*\\_<finally\\_>[: \n\t]"
   "Regular expression matching keyword which closes a try-block. ")
 
 (defconst py-except-re
-  "[ \t]*\\<except\\>[: \n\t]"
+  "[ \t]*\\_<except\\_>[: \n\t]"
   "Regular expression matching keyword which composes a try-block. ")
 
 (defconst py-else-re
-  "[ \t]*\\<else\\>[: \n\t]"
+  "[ \t]*\\_<else\\_>[: \n\t]"
   "Regular expression matching keyword which closes a for- if- or try-block. ")
 
 (defconst py-return-re
-  ".*:?[ \t]*\\<\\(return\\)\\>[ \n\t]"
+  ".*:?[ \t]*\\_<\\(return\\)\\_>[ \n\t]"
   "Regular expression matching keyword which typically closes a function. ")
 
-(defconst py-no-outdent-re "\\(try:\\|except\\(\\s +.*\\)?:\\|while\\s +.*:\\|for\\s +.*:\\|if\\s +.*:\\|elif\\s +.*:\\)\\([ 	]*\\<\\(return\\|raise\\|break\\|continue\\|pass\\)\\>[ 	\n]\\)")
+(defconst py-no-outdent-re "\\(try:\\|except\\(\\s +.*\\)?:\\|while\\s +.*:\\|for\\s +.*:\\|if\\s +.*:\\|elif\\s +.*:\\)\\([ 	]*\\_<\\(return\\|raise\\|break\\|continue\\|pass\\)\\_>[ 	\n]\\)")
 
 ;; (defconst py-no-outdent-re
 ;;   (concat
@@ -982,43 +982,43 @@ Inludes Python shell-prompt in order to stop further searches. ")
 ;; (setq py-traceback-line-re
 ;; "^IPython\\|^In \\[[0-9]+\\]: *\\|^>>>\\|^[^ \t>]+>[^0-9]+\\([0-9]+\\)\\|^[ \t]+File \"\\([^\"]+\\)\", line \\([0-9]+\\)")
 
-(defconst py-assignment-re "\\<\\w+\\>[ \t]*\\(=\\|+=\\|*=\\|%=\\|&=\\|^=\\|<<=\\|-=\\|/=\\|**=\\||=\\|>>=\\|//=\\)"
+(defconst py-assignment-re "\\_<\\w+\\_>[ \t]*\\(=\\|+=\\|*=\\|%=\\|&=\\|^=\\|<<=\\|-=\\|/=\\|**=\\||=\\|>>=\\|//=\\)"
   "If looking at the beginning of an assignment. ")
 
-(defconst py-block-re "[ \t]*\\<\\(class\\|def\\|for\\|if\\|try\\|while\\|with\\)\\>[: \n\t]"
+(defconst py-block-re "[ \t]*\\_<\\(class\\|def\\|for\\|if\\|try\\|while\\|with\\)\\_>[: \n\t]"
   "Matches the beginning of a compound statement. ")
 
-(defconst py-minor-block-re "[ \t]*\\<\\(for\\|if\\|try\\)\\>[: \n\t]"
+(defconst py-minor-block-re "[ \t]*\\_<\\(for\\|if\\|try\\)\\_>[: \n\t]"
   "Matches the beginning of an `if' or `try' block. ")
 
-(defconst py-try-block-re "[ \t]*\\<try\\>[: \n\t]"
+(defconst py-try-block-re "[ \t]*\\_<try\\_>[: \n\t]"
   "Matches the beginning of an `if' or `try' block. ")
 
-(defconst py-class-re "[ \t]*\\<\\(class\\)\\>[ \n\t]"
+(defconst py-class-re "[ \t]*\\_<\\(class\\)\\_>[ \n\t]"
   "Matches the beginning of a class definition. ")
 
-(defconst py-def-or-class-re "[ \t]*\\<\\(def\\|class\\)\\>[ \n\t]"
+(defconst py-def-or-class-re "[ \t]*\\_<\\(def\\|class\\)\\_>[ \n\t]"
   "Matches the beginning of a class- or functions definition. ")
 
-(defconst py-def-re "[ \t]*\\<\\(def\\)\\>[ \n\t]"
+(defconst py-def-re "[ \t]*\\_<\\(def\\)\\_>[ \n\t]"
   "Matches the beginning of a functions definition. ")
 
-(defconst py-block-or-clause-re "[ \t]*\\<\\(if\\|else\\|elif\\|while\\|for\\|def\\|class\\|try\\|except\\|finally\\|with\\)\\>[: \n\t]"
+(defconst py-block-or-clause-re "[ \t]*\\_<\\(if\\|else\\|elif\\|while\\|for\\|def\\|class\\|try\\|except\\|finally\\|with\\)\\_>[: \n\t]"
   "Matches the beginning of a compound statement or it's clause. ")
 
-(defconst py-clause-re "[ \t]*\\<\\(else\\|elif\\|except\\|finally\\)\\>[: \n\t]"
+(defconst py-clause-re "[ \t]*\\_<\\(else\\|elif\\|except\\|finally\\)\\_>[: \n\t]"
   "Matches the beginning of a compound statement's clause. ")
 
-(defconst py-elif-re "[ \t]*\\<\\elif\\>[: \n\t]"
+(defconst py-elif-re "[ \t]*\\_<\\elif\\_>[: \n\t]"
   "Matches the beginning of a compound if-statement's clause exclusively. ")
 
-(defconst py-try-clause-re "[ \t]*\\<\\(except\\|else\\|finally\\)\\>[: \n\t]"
+(defconst py-try-clause-re "[ \t]*\\_<\\(except\\|else\\|finally\\)\\_>[: \n\t]"
   "Matches the beginning of a compound try-statement's clause. ")
 
-(defconst py-if-re "[ \t]*\\<if\\>[ \n\t]"
+(defconst py-if-re "[ \t]*\\_<if\\_>[ \n\t]"
   "Matches the beginning of a compound statement saying `if'. ")
 
-(defconst py-try-re "[ \t]*\\<try\\>[: \n\t]"
+(defconst py-try-re "[ \t]*\\_<try\\_>[: \n\t]"
   "Matches the beginning of a compound statement saying `try'. " )
 
 ;; GNU's syntax-ppss-context
@@ -1142,7 +1142,7 @@ Pymacs has been written by François Pinard and many others.
 See original source: http://pymacs.progiciels-bpi.ca"
   (interactive)
   (let* ((pyshell (py-choose-shell))
-         (path (getenv "PYTHONPATH"))
+         (path (or (getenv "PYTHONPATH") ""))
          (pymacs-installed-p
           (string-match (expand-file-name (concat py-install-directory "/Pymacs")) path)))
     ;; Python side
@@ -3522,6 +3522,7 @@ print version_info >= (2, 2) and version_info < (3, 0)\""))))
 
 (defun run-python (&optional cmd noshow new)
   "Run an inferior Python process, input and output via buffer *Python*.
+
 CMD is the Python command to run.  NOSHOW non-nil means don't
 show the buffer automatically.
 
@@ -3556,7 +3557,7 @@ behavior, change `python-remove-cwd-from-path' to nil."
                 (append (python-args-to-list cmd) '("-i")
                         (if python-remove-cwd-from-path
                             '("-c" "import sys; sys.path.remove('')"))))
-               (path (getenv "PYTHONPATH"))
+               (path (or (getenv "PYTHONPATH") ""))
                (process-environment	; to import emacs.py
                 (cons (concat "PYTHONPATH="
                               (if path (concat path path-separator))
@@ -3857,7 +3858,7 @@ instance.  Assumes an inferior Python is running."
 Used with `eval-after-load'."
   (let* ((version (let ((s (shell-command-to-string (concat py-shell-name
                                                             " -V"))))
-                    (string-match "^Python \\([0-9]+\\.[0-9]+\\>\\)" s)
+                    (string-match "^Python \\([0-9]+\\.[0-9]+\\_>\\)" s)
                     (match-string 1 s)))
          ;; Whether info files have a Python version suffix, e.g. in Debian.
          (versioned
@@ -4104,7 +4105,7 @@ Uses `python-beginning-of-block', `python-end-of-block'."
   (save-excursion
     (let (lines)
       (goto-char (point-min))
-      (while (re-search-forward "^import\\>\\|^from\\>" nil t)
+      (while (re-search-forward "^import\\_>\\|^from\\_>" nil t)
         (unless (syntax-ppss-context (syntax-ppss))
           (let ((start (line-beginning-position)))
             ;; Skip over continued lines.
@@ -4415,7 +4416,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
                 (concat (if py-hide-show-hide-docstrings
                             "^\\s-*\"\"\"\\|" "")
                         (mapconcat 'identity
-                                   (mapcar #'(lambda (x) (concat "^\\s-*" x "\\>"))
+                                   (mapcar #'(lambda (x) (concat "^\\s-*" x "\\_>"))
                                            py-hide-show-keywords)
                                    "\\|"))
                 ;; end regex
@@ -4438,7 +4439,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
        (concat (if py-hide-show-hide-docstrings
                    "^\\s-*\"\"\"\\|" "")
                (mapconcat 'identity
-                          (mapcar #'(lambda (x) (concat "^\\s-*" x "\\>"))
+                          (mapcar #'(lambda (x) (concat "^\\s-*" x "\\_>"))
                                   py-hide-show-keywords)
                           "\\|")))
   (set (make-local-variable 'add-log-current-defun-function) 'py-current-defun)
@@ -5032,7 +5033,7 @@ in a buffer that doesn't have a local value of `python-buffer'."
   (save-excursion
     (let (lines)
       (goto-char (point-min))
-      (while (re-search-forward "^import\\>[ \n\t]\\|^from\\>[ \n\t]" nil t)
+      (while (re-search-forward "^import\\_>[ \n\t]\\|^from\\_>[ \n\t]" nil t)
         (unless (syntax-ppss-context (syntax-ppss))
           (let ((start (line-beginning-position)))
             ;; Skip over continued lines.

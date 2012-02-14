@@ -859,7 +859,6 @@ failed: %s' %
     (py-bug-tests-intern 'indent-after-return-lp:745208 arg teststring)))
 
 (defun indent-after-return-lp:745208 ()
-  (goto-char (point-max))
   (assert (eq 8 (py-compute-indentation)) nil "indent-after-return-lp:745208-test failed"))
 
 (defun keep-assignements-column-lp:748198-test (&optional arg load-branch-function)
