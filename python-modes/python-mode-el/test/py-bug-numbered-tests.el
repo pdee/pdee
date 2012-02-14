@@ -52,7 +52,7 @@
          'fill-paragraph-problems-lp:710373-test
          'nested-indents-lp:328775-test
          'previous-statement-lp:637955-test
-         'inbound-indentation-multiline-assignement-lp:629916-test
+         'inbound-indentation-multiline-assignment-lp:629916-test
          'indentation-of-continuation-lines-lp:691185-test
          ;; test passes only when run from edebug
          ;; assistance appreciated
@@ -61,7 +61,7 @@
          'class-treated-as-keyword-lp:709478-test
          'py-decorators-face-lp:744335-test
          'indent-after-return-lp:745208-test
-         'keep-assignements-column-lp:748198-test
+         'keep-assignments-column-lp:748198-test
          'indent-triplequoted-to-itself-lp:752252-test
          'multiline-listings-indent-lp:761946-test
          'new-page-char-causes-loop-lp:762498-test
@@ -490,7 +490,7 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
       (font-lock-fontify-buffer)
       (assert (eq erg (get-char-property (point) 'face)) "Being stuck inside triple-quoted-string. Did not reach beginning of class."))))
 
-(defun inbound-indentation-multiline-assignement-lp:629916-test (&optional arg load-branch-function)
+(defun inbound-indentation-multiline-assignment-lp:629916-test (&optional arg load-branch-function)
   "With ARG greater 1 keep test buffer open.
 If no `load-branch-function' is specified, make sure the appropriate branch is loaded. Otherwise default python-mode will be checked."
   (interactive "p")
@@ -500,14 +500,14 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
         (x_long_long_long_long == X) &
         (y_long_long_long_long == Y)])
 "))
-    (py-bug-tests-intern 'inbound-indentation-multiline-assignement-lp:629916 arg teststring)))
+    (py-bug-tests-intern 'inbound-indentation-multiline-assignment-lp:629916 arg teststring)))
 
-(defun inbound-indentation-multiline-assignement-lp:629916 ()
+(defun inbound-indentation-multiline-assignment-lp:629916 ()
   (let ((py-indent-honors-multiline-listing t))
     (goto-char 33)
-    (assert (eq 4 (py-compute-indentation)) nil "inbound-indentation-multiline-assignement-lp:629916-test #1 failed")
+    (assert (eq 4 (py-compute-indentation)) nil "inbound-indentation-multiline-assignment-lp:629916-test #1 failed")
     (goto-char 62)
-    (assert (eq 8 (current-indentation)) nil "inbound-indentation-multiline-assignement-lp:629916-test #2 failed")))
+    (assert (eq 8 (current-indentation)) nil "inbound-indentation-multiline-assignment-lp:629916-test #2 failed")))
 
 (defun previous-statement-lp:637955-test (&optional arg load-branch-function)
   "With ARG greater 1 keep test buffer open.
@@ -861,7 +861,7 @@ failed: %s' %
 (defun indent-after-return-lp:745208 ()
   (assert (eq 8 (py-compute-indentation)) nil "indent-after-return-lp:745208-test failed"))
 
-(defun keep-assignements-column-lp:748198-test (&optional arg load-branch-function)
+(defun keep-assignments-column-lp:748198-test (&optional arg load-branch-function)
   "With ARG greater 1 keep test buffer open.
 If no `load-branch-function' is specified, make sure the appropriate branch is loaded. Otherwise default python-mode will be checked."
   (interactive "p")
@@ -870,9 +870,9 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
           c=3)
 "))
     (when load-branch-function (funcall load-branch-function))
-    (py-bug-tests-intern 'keep-assignements-column-lp:748198 arg teststring)))
+    (py-bug-tests-intern 'keep-assignments-column-lp:748198 arg teststring)))
 
-(defun keep-assignements-column-lp:748198 ()
+(defun keep-assignments-column-lp:748198 ()
   (goto-char 45)
   (py-newline-and-indent)
   (assert (eq 0 (current-column)) nil "py-vor test failed"))

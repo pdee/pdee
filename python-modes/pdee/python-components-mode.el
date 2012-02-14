@@ -1142,9 +1142,9 @@ Pymacs has been written by François Pinard and many others.
 See original source: http://pymacs.progiciels-bpi.ca"
   (interactive)
   (let* ((pyshell (py-choose-shell))
-         (path (or (getenv "PYTHONPATH") ""))
+         (path (getenv "PYTHONPATH"))
          (pymacs-installed-p
-          (string-match (expand-file-name (concat py-install-directory "/Pymacs")) path)))
+          (ignore-errors (string-match (expand-file-name (concat py-install-directory "/Pymacs")) path))))
     ;; Python side
     (unless pymacs-installed-p
       (setenv "PYTHONPATH" (concat
@@ -3557,7 +3557,7 @@ behavior, change `python-remove-cwd-from-path' to nil."
                 (append (python-args-to-list cmd) '("-i")
                         (if python-remove-cwd-from-path
                             '("-c" "import sys; sys.path.remove('')"))))
-               (path (or (getenv "PYTHONPATH") ""))
+               (path (getenv "PYTHONPATH"))
                (process-environment	; to import emacs.py
                 (cons (concat "PYTHONPATH="
                               (if path (concat path path-separator))

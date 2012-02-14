@@ -47,12 +47,12 @@
          'near-bob-beginning-of-statement-test
          'bob-beginning-of-statement-test
          'honor-comments-indent-test
-         'assignement-indent-test
+         'assignment-indent-test
          'if-elif-test
          'if-elif-bob-test
          'try-else-clause-test
          'try-except-test
-         'assignement-after-block-test
+         'assignment-after-block-test
          'py-beginning-of-clause-test
          'py-end-of-clause-test
          'py-beginning-of-expression-test
@@ -354,17 +354,17 @@ print u'\xA9'
   (goto-char 18)
   (assert (eq 4 (py-compute-indentation)) nil "first-line-offset-test failed"))
 
-(defun assignement-indent-test (&optional arg load-branch-function)
+(defun assignment-indent-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring "def foo():
 sammlung = []
 "))
     (when load-branch-function (funcall load-branch-function))
-    (py-bug-tests-intern 'assignement-indent-base arg teststring)))
+    (py-bug-tests-intern 'assignment-indent-base arg teststring)))
 
-(defun assignement-indent-base ()
+(defun assignment-indent-base ()
   (goto-char 12)
-  (assert (eq 4 (py-compute-indentation)) nil "assignement-indent-test failed"))
+  (assert (eq 4 (py-compute-indentation)) nil "assignment-indent-test failed"))
 
 (defun if-elif-test (&optional arg load-branch-function)
   (interactive "p")
@@ -442,7 +442,7 @@ def _commit_on_success(*args, **kw):
   (goto-char 434)
   (assert (eq 4 (py-compute-indentation)) nil "try-except-test failed"))
 
-(defun assignement-after-block-test (&optional arg load-branch-function)
+(defun assignment-after-block-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring "
 if x > 0:
@@ -455,11 +455,11 @@ a = \"asdf\"
 b = \"asdf\"
 "))
     (when load-branch-function (funcall load-branch-function))
-    (py-bug-tests-intern 'assignement-after-block-base arg teststring)))
+    (py-bug-tests-intern 'assignment-after-block-base arg teststring)))
 
-(defun assignement-after-block-base ()
+(defun assignment-after-block-base ()
   (forward-line -1)
-  (assert (eq 0 (py-compute-indentation)) nil "assignement-after-block-test failed"))
+  (assert (eq 0 (py-compute-indentation)) nil "assignment-after-block-test failed"))
 
 (defun py-beginning-of-clause-test (&optional arg load-branch-function)
   (interactive "p")
