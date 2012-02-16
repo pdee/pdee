@@ -1,0 +1,10 @@
+An effective way users may contribute is telling
+us how Python-mode is used and which command is missed
+still.
+
+For people who want to dig into the code:
+Python-mode is build around the notion of statement.
+Running `py-end-of-statement',
+`py-beginning-of-statement' with edebug should deliver
+a way of understanding.
+

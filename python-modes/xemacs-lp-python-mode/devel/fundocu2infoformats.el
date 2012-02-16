@@ -62,7 +62,7 @@
       (while (and (not (eobp))(re-search-forward "^(defun [[:alpha:]]" nil t 1))
         (when (commandp (symbol-at-point))
           (let* ((name (symbol-at-point))
-                (docu (documentation name)))
+                 (docu (documentation name)))
             (unless docu (message "don't see docu string for %s" (prin1-to-string name)))
             (add-to-list 'commandslist (cons (prin1-to-string name) docu))
             ;; (message "%s" (car commandslist))
