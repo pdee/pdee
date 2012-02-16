@@ -858,14 +858,14 @@ Making switch between several virtualenv's easier,
   :type 'boolean
   :group 'python-mode)
 
-(defcustom python-load-extended-executes-p  t
-  "If commands from `python-extended-executes.el' should be loaded.
-
-Default is `t'.
-Provides commands executing buffers code at different conditions, thus avoids customization of `py-shell-name', `py-shell-switch-buffers-on-execute'. "
-
-  :type 'boolean
-  :group 'python-mode)
+;; (defcustom python-load-extended-executes-p  t
+;;   "If commands from `python-extended-executes.el' should be loaded.
+;; 
+;; Default is `t'.
+;; Provides commands executing buffers code at different conditions, thus avoids customization of `py-shell-name', `py-shell-switch-buffers-on-execute'. "
+;; 
+;;   :type 'boolean
+;;   :group 'python-mode)
 
 (defcustom py-shell-local-path ""
   "If `py-use-local-default' is non-nil, `py-shell' will use EXECUTABLE indicated here incl. path. "
@@ -4373,6 +4373,7 @@ Interactively, prompt for the name with completion."
 (require 'virtualenv)
 ;;(require 'components-shell-completion)
 (require 'python-components-skeletons)
+(require 'python-extended-executes)
 (require 'python-mode-test)
 
 (define-derived-mode python-mode fundamental-mode "Python"
@@ -4480,8 +4481,8 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
        '((< '(backward-delete-char-untabify (min py-indent-offset
                                                  (current-column))))
          (^ '(- (1+ (current-indentation))))))
-  (when python-load-extended-executes-p
-    (add-hook 'python-mode-hook '(lambda ()(load (concat py-install-directory "/python-extended-executes.el") nil t))))
+  ;; (when python-load-extended-executes-p
+  ;;   (add-hook 'python-mode-hook '(lambda ()(load (concat py-install-directory "/python-extended-executes.el") nil t))))
   ;; Python defines TABs as being 8-char wide.
   (set (make-local-variable 'tab-width) py-indent-offset)
   ;; Now do the automagical guessing
