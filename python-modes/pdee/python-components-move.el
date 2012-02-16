@@ -575,7 +575,9 @@ http://docs.python.org/reference/compound_stmts.html
 (defalias 'py-next-statement 'py-end-of-statement)
 (defalias 'py-forward-statement 'py-end-of-statement)
 (defun py-end-of-statement (&optional orig origline done)
-  "Go to the point just beyond the final line of the current statement. "
+  "Go to the last char of current statement.
+
+To go just beyond the final line of the current statement, use `py-down-statement-lc'. "
   (interactive)
   (save-restriction
     (widen)

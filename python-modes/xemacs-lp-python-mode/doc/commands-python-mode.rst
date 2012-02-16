@@ -2,6 +2,12 @@ Python-mode commands
 
 ====================
 
+py-guess-pdb-path
+
+-----------------
+
+If py-pdb-path isn't set, find location of pdb.py. 
+
 highlight-indentation-on
 
 ------------------------
@@ -1077,7 +1083,9 @@ py-end-of-statement
 
 -------------------
 
-Go to the point just beyond the final line of the current statement. 
+Go to the last char of current statement.
+
+To go just beyond the final line of the current statement, use `py-down-statement-lc'. 
 
 py-goto-statement-below
 
@@ -1220,7 +1228,7 @@ def usage():
 while `py-expression' would copy and return
 
 (
-        os.path.basename(sys.argv[0]))
+ os.path.basename(sys.argv[0]))
 
 ;;;;;
 
@@ -1482,9 +1490,9 @@ py-down-def
 
 -----------
 
-Go to the beginning of next def below in buffer.
+Go to the beginning of next function definition below in buffer.
 
-Returns indentation if def found, nil otherwise. 
+Returns indentation if found, nil otherwise. 
 
 py-down-class
 
@@ -2250,6 +2258,12 @@ Lookup in current buffer for the doku for the symbol at point.
 
 Useful for newly defined symbol, not known to python yet. 
 
+py-find-imports
+
+---------------
+
+Find top-level imports, updating `python-imports'.
+
 python-find-imports
 
 -------------------
@@ -2354,59 +2368,14 @@ Return class definition as string.
 
 With interactive call, send it to the message buffer too. 
 
-py-function-at-point
-
---------------------
-
-Return functions definition as string.
-
-With interactive call, send it to the message buffer too. 
-
-py-beginning-of-function
-
-------------------------
-
-Jump to the beginning of function. Returns point. 
-
-py-end-of-function
-
-------------------
-
-Jump to the end of function. 
-
-py-line-at-point
-
-----------------
-
-Return line as string.
-  With interactive call, send it to the message buffer too. 
-
-py-looking-at-keywords-p
-
-------------------------
-
-If looking at a python keyword. Returns t or nil. 
-
-py-match-paren-mode
-
--------------------
-
-py-match-paren-mode nil oder t
-
 py-match-paren
 
 --------------
 
-Goto to the opening or closing of block before or after point.
+Go to the matching brace, bracket or parenthesis if on its counterpart.
 
-With arg, do it that many times.
- Closes unclosed block if jumping from beginning. 
-
-py-documentation
-
-----------------
-
-Launch PyDOC on the Word at Point
+Otherwise insert the character, the key is assigned to, here `%'.
+With universal arg  insert a `%'. 
 
 eva
 
@@ -2560,21 +2529,6 @@ py-version
 ----------
 
 Echo the current version of `python-mode' in the minibuffer.
-
-py-install-search-local
-
------------------------
-
-
-
-py-install-local-shells
-
------------------------
-
-Builds Python-shell commands from executable found in LOCAL.
-
-If LOCAL is empty, shell-command `find' searches beneath current directory.
-Eval resulting buffer to install it, see customizable `py-extensions'. 
 
 run-python
 
