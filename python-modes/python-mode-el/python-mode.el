@@ -9104,13 +9104,10 @@ See original source: http://pymacs.progiciels-bpi.ca"
 
 (defun py-guess-py-install-directory ()
   (interactive)
-  (let* ((bufn (buffer-file-name))
-         (erg (when (or (string-match "python-mode.el" bufn)(string-match "python-components-mode.el" bufn)) (file-name-directory (buffer-file-name)))))
+  (let ((erg (file-name-directory (locate-library "python-mode"))))
     (when erg
-      (add-to-list 'load-path erg)
-      (setq py-install-directory erg)
-      (when (interactive-p) (message "%s" erg))
-      erg)))
+      (when (interactive-p) (message "Setting py-install-directory to: %s" erg))
+      (setq py-install-directory erg))))
 
 (defun py-set-load-path ()
   "Include needed subdirs of python-mode directory. "
@@ -9122,7 +9119,9 @@ See original source: http://pymacs.progiciels-bpi.ca"
          (add-to-list 'load-path (concat (expand-file-name py-install-directory) "/test"))
          (add-to-list 'load-path (concat (expand-file-name py-install-directory) "/tools")))
         ((when py-guess-py-install-directory-p
-           (py-guess-py-install-directory)))
+           (let ((guessed-py-install-directory (py-guess-py-install-directory)))
+             (when guessed-py-install-directory
+               (add-to-list 'load-path guessed-py-install-directory)))))
         (t (error "Please set `py-install-directory', see INSTALL"))
         (when (interactive-p) (message "%s" load-path))))
 
