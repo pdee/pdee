@@ -2155,6 +2155,12 @@ Go to start of class definition "]
             ["End of class" py-end-of-class
              :help "`py-end-of-class'
 Go to end of class definition "]
+            ["Beginning of statement" py-beginning-of-statement
+             :help "`py-beginning-of-statement'
+Go to start of a Python statement"]
+            ["End of statement" py-end-of-statement
+             :help "`py-end-of-statement'
+Go to end of a Python statement"]
             ["Beginning of expression" py-beginning-of-expression
              :help "Go to the beginning of a compound python expression.
 
