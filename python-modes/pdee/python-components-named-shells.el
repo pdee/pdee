@@ -36,8 +36,9 @@ Optional \\[universal-argument] prompts for options to pass to the Python interp
 Optional \\[universal-argument] prompts for options to pass to the IPython interpreter. See `py-python-command-args'.
    Optional DEDICATED SWITCH are provided for use from programs. "
   (interactive "P")
-  (py-set-shell-completion-environment)
-  (py-shell argprompt dedicated "ipython" switch))
+  (let ((py-shell-name "ipython"))
+    ;; (py-set-shell-completion-environment)
+    (py-shell argprompt dedicated "ipython" switch)))
 
 (defun python3 (&optional argprompt dedicated switch)
   "Start an Python3 interpreter.

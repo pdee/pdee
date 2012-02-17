@@ -118,16 +118,6 @@ interpreter.
       (setq ipython-completion-command-string (if (< ipython-version 11) ipython0.10-completion-command-string ipython0.11-completion-command-string))
       ipython-completion-command-string)))
 
-(defun py-set-python-shell-keys ()
-  " "
-  (interactive)
-  (local-unset-key [tab])
-  (cond ((string-match "ipython" py-shell-name)
-         (define-key py-shell-map [tab] ipython-complete-function))
-        ((string-match "python3" py-shell-name)
-         (define-key py-shell-map [tab] 'py-completion-at-point))
-        (t (define-key py-shell-map [tab] 'py-shell-complete))))
-
 (defun py-shell (&optional argprompt dedicated pyshellname switch)
   "Start an interactive Python interpreter in another window.
 

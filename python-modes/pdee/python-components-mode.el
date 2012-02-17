@@ -176,61 +176,6 @@ Default is nil. "
   :group 'python-mode)
 (make-variable-buffer-local 'py-complete-function)
 
-(defcustom py-shell-complete-function 'py-completion-at-point
-  "Function used for completion in buffers. "
-  :type '(choice (const :tag "py-completion-at-point" py-completion-at-point)
-                 (const :tag "py-shell-complete" py-shell-complete)
-		 (const :tag "Pymacs based py-complete" py-complete)
-                 (const :tag "IPython's ipython-complete" ipython-complete))
-  :group 'python-mode)
-
-(defcustom ipython-complete-function 'ipython-complete
-  "Function used for completion in IPython shell buffers.
-
-Minor bug: `ipython-complete' raises the prompt counter when completion done
-
-Richard Everson commented:
-
-    I don't know how to stop IPython from incrementing the prompt
-    counter, but using py-completion-at-point just hangs emacs for
-    me. If I start with a new IPython shell, then
-
-    In [1]: import sys
-
-    In [2]: sys.pa
-
-    then M-x py-completion-at-point, hoping to complete to sys.path, Emacs
-    hangs.  Escaping out of it shows that the \*Python\* buffer has the
-    contents:
-
-    >>> Traceback (most recent call last):
-      File \"<stdin>\", line 1, in <module>
-    NameError: name 'nil' is not defined
-    >>> =
-    [ ... ]
-
-    On the other hand, IPython's interaction and completion itself is pretty
-    impressive (for versions greater than 0.10 at least): it inserts the
-    correct indentation for for, if, etc and it will show completions even
-    within a loop.  Here's an example from a terminal shell:
-
-    In [1]:
-
-    In [1]: for i in range(3):
-       ...:     print i, sys.p<------------ Pressed tab here; indentation inser=
-    ted automatically
-    sys.path                 sys.path_importer_cache  sys.prefix
-    sys.path_hooks           sys.platform             sys.py3kwarning
-       ...:     print i, sys.path<------------ Pressed tab again
-    sys.path                 sys.path_hooks           sys.path_importer_cache
-"
-  :type '(choice (const :tag "py-completion-at-point" py-completion-at-point)
-                 (const :tag "py-shell-complete" py-shell-complete)
-		 (const :tag "Pymacs based py-complete" py-complete)
-                 (const :tag "IPython's ipython-complete" ipython-complete))
-  :group 'python-mode)
-;; (setq ipython-complete-function 'py-completion-at-point)
-
 (defcustom py-encoding-string " # -*- coding: utf-8 -*-"
   "Default string specifying encoding of a Python file. "
   :type 'string
@@ -860,10 +805,10 @@ Making switch between several virtualenv's easier,
 
 ;; (defcustom python-load-extended-executes-p  t
 ;;   "If commands from `python-extended-executes.el' should be loaded.
-;; 
+;;
 ;; Default is `t'.
 ;; Provides commands executing buffers code at different conditions, thus avoids customization of `py-shell-name', `py-shell-switch-buffers-on-execute'. "
-;; 
+;;
 ;;   :type 'boolean
 ;;   :group 'python-mode)
 
@@ -4591,7 +4536,6 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
       (let ((map (copy-keymap comint-mode-map)))
         (substitute-key-definition 'complete-symbol 'completion-at-point
                                    map global-map)
-        ;; (define-key map [tab] 'py-shell-complete)
         (define-key map (kbd "RET") 'comint-send-input)
         (define-key map "\C-c-" 'py-up-exception)
         (define-key map "\C-c=" 'py-down-exception)
