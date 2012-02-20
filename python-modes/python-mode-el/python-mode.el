@@ -6231,17 +6231,18 @@ This function is appropriate for `comint-output-filter-functions'."
   (setq shell-dirtrackp t)
   (add-hook 'comint-input-filter-functions 'shell-directory-tracker nil t))
 
-(defun py-set-shell-completion-environment ()
+(defun py-set-shell-completion-environment (&optional pyshellname)
   "Sets `...-completion-command-string' and `py-complete-function'. "
   (interactive)
-  (local-unset-key [tab])
-  (cond ((string-match "ipython" py-shell-name)
-         (setq ipython-version (string-to-number (substring (shell-command-to-string (concat py-shell-name " -V")) 2 -1)))
-         (setq ipython-completion-command-string (if (< ipython-version 11) ipython0.10-completion-command-string ipython0.11-completion-command-string))
-         (define-key py-shell-map [tab] 'ipython-complete))
-        ((string-match "python3" py-shell-name)
-         (define-key py-shell-map [tab] 'py-completion-at-point))
-        (t (define-key py-shell-map [tab] 'py-shell-complete))))
+  (let ((pyshellname (or pyshellname py-shell-name)))
+    (local-unset-key [tab])
+    (cond ((string-match "ipython" pyshellname)
+           (setq ipython-version (string-to-number (substring (shell-command-to-string (concat py-shell-name " -V")) 2 -1)))
+           (setq ipython-completion-command-string (if (< ipython-version 11) ipython0.10-completion-command-string ipython0.11-completion-command-string))
+           (define-key py-shell-map [tab] 'ipython-complete))
+          ((string-match "python3" pyshellname)
+           (define-key py-shell-map [tab] 'py-completion-at-point))
+          (t (define-key py-shell-map [tab] 'py-shell-complete)))))
 
 (defun py-set-ipython-completion-command-string (&optional pyshellname)
   "Set and return `ipython-completion-command-string'. "
@@ -6276,7 +6277,7 @@ Optional string PYSHELLNAME overrides default `py-shell-name'.
 Optional symbol SWITCH ('switch/'noswitch) precedes `py-shell-switch-buffers-on-execute'
 "
   (interactive "P")
-  (let* ((py-shell-name
+  (let* ((psn
           (cond ((eq 4 (prefix-numeric-value argprompt))
                  (py-choose-shell '(4)))
                 ;; already in py-choose-shell
@@ -6287,16 +6288,17 @@ Optional symbol SWITCH ('switch/'noswitch) precedes `py-shell-switch-buffers-on-
                 (pyshellname pyshellname)
                 ((stringp py-shell-name) py-shell-name)
                 ((or (string= "" py-shell-name)(null py-shell-name))
-                 (py-guess-default-python))))
+                 ;; (py-guess-default-python)
+                 (py-choose-shell))))
          (args py-python-command-args)
-         (py-process-name (py-process-name py-shell-name dedicated))
+         (py-process-name (py-process-name psn dedicated))
          ipython-version version)
-    (py-set-shell-completion-environment)
+    (py-set-shell-completion-environment pyshellname)
     ;; comint
     (if (not (equal (buffer-name) py-process-name))
         (set-buffer (get-buffer-create
-                     (apply 'make-comint py-process-name py-shell-name nil args)))
-      (apply 'make-comint py-process-name py-shell-name nil args))
+                     (apply 'make-comint py-process-name psn nil args)))
+      (apply 'make-comint py-process-name psn nil args))
     (set (make-local-variable 'comint-prompt-regexp)
 	 (concat "\\("
 		 (mapconcat 'identity
@@ -6307,12 +6309,12 @@ Optional symbol SWITCH ('switch/'noswitch) precedes `py-shell-switch-buffers-on-
               'py-comint-output-filter-function)
     (setq comint-input-sender 'py-shell-simple-send)
     (setq comint-input-ring-file-name
-          (if (string-equal py-shell-name "ipython")
+          (if (string-equal psn "ipython")
               (if (getenv "IPYTHONDIR")
                   (concat (getenv "IPYTHONDIR") "/history") "~/.ipython/history")
             (if (getenv "PYTHONHISTORY")
-                (concat (getenv "PYTHONHISTORY") "/" py-shell-name "_history")
-              (concat "~/." py-shell-name "_history"))))
+                (concat (getenv "PYTHONHISTORY") "/" psn "_history")
+              (concat "~/." psn "_history"))))
     ;; (message "comint-input-ring-file-name: %s" comint-input-ring-file-name)
     (comint-read-input-ring t)
     (set-process-sentinel (get-buffer-process (current-buffer))
@@ -6331,6 +6333,8 @@ Optional symbol SWITCH ('switch/'noswitch) precedes `py-shell-switch-buffers-on-
               (and (not (eq switch 'noswitch)) (or (interactive-p) py-shell-switch-buffers-on-execute)))
       (switch-to-buffer (current-buffer)))
     (goto-char (point-max))
+    ;; executing through IPython might fail first time otherwise
+    (when (string-equal psn "ipython") (sit-for 0.1))
     py-process-name))
 
 (defalias 'iyp 'ipython)
@@ -6714,7 +6718,6 @@ When called from a programm, it accepts a string specifying a shell which will b
                   (when (stringp shell)
                     shell)))
          (regbuf (current-buffer))
-         (py-shell-switch-buffers-on-execute switch)
          (py-execute-directory (or (ignore-errors (file-name-directory (buffer-file-name))) (getenv "HOME")))
          (strg (buffer-substring-no-properties start end))
 	 (name-raw (or shell (py-choose-shell)))
@@ -9361,6 +9364,7 @@ These are Python temporary files awaiting execution."
   (message "Using `python-mode' version %s" py-version)
   (py-keep-region-active))
 
+(defvaralias 'python-python-command-args 'py-python-command-args)
 (defvaralias 'py-python-command 'py-shell-name)
 (defvaralias 'py-jpython-command 'py-shell-name)
 (defvaralias 'py-jython-command 'py-shell-name)

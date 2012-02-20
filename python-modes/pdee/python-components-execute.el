@@ -94,18 +94,18 @@ interpreter.
   (interactive "P")
   (py-shell argprompt t))
 
-(defun py-set-shell-completion-environment ()
+(defun py-set-shell-completion-environment (&optional pyshellname)
   "Sets `...-completion-command-string' and `py-complete-function'. "
   (interactive)
-  (local-unset-key [tab])
-  (cond ((string-match "ipython" py-shell-name)
-         (setq ipython-version (string-to-number (substring (shell-command-to-string (concat py-shell-name " -V")) 2 -1)))
-         (setq ipython-completion-command-string (if (< ipython-version 11) ipython0.10-completion-command-string ipython0.11-completion-command-string))
-         ;; (define-key py-shell-map [tab] 'ipython-complete))
-         (define-key py-shell-map [tab] ipython-complete-function))
-        ((string-match "python3" py-shell-name)
-         (define-key py-shell-map [tab] 'py-completion-at-point))
-        (t (define-key py-shell-map [tab] 'py-shell-complete))))
+  (let ((pyshellname (or pyshellname py-shell-name)))
+    (local-unset-key [tab])
+    (cond ((string-match "ipython" pyshellname)
+           (setq ipython-version (string-to-number (substring (shell-command-to-string (concat py-shell-name " -V")) 2 -1)))
+           (setq ipython-completion-command-string (if (< ipython-version 11) ipython0.10-completion-command-string ipython0.11-completion-command-string))
+           (define-key py-shell-map [tab] 'ipython-complete))
+          ((string-match "python3" pyshellname)
+           (define-key py-shell-map [tab] 'py-completion-at-point))
+          (t (define-key py-shell-map [tab] 'py-shell-complete)))))
 
 (defun py-set-ipython-completion-command-string (&optional pyshellname)
   "Set and return `ipython-completion-command-string'. "
@@ -145,7 +145,7 @@ Optional symbol SWITCH ('switch/'noswitch) precedes `py-shell-switch-buffers-on-
          (args py-python-command-args)
          (py-process-name (py-process-name psn dedicated))
          ipython-version version)
-    (py-set-shell-completion-environment)
+    (py-set-shell-completion-environment pyshellname)
     ;; comint
     (if (not (equal (buffer-name) py-process-name))
         (set-buffer (get-buffer-create
@@ -185,6 +185,8 @@ Optional symbol SWITCH ('switch/'noswitch) precedes `py-shell-switch-buffers-on-
               (and (not (eq switch 'noswitch)) (or (interactive-p) py-shell-switch-buffers-on-execute)))
       (switch-to-buffer (current-buffer)))
     (goto-char (point-max))
+    ;; executing through IPython might fail first time otherwise
+    (when (string-equal psn "ipython") (sit-for 0.1))
     py-process-name))
 
 (defcustom py-remove-cwd-from-path t
@@ -281,7 +283,6 @@ Ignores setting of `py-shell-switch-buffers-on-execute', output-buffer will bein
                   (when (stringp shell)
                     shell)))
          (regbuf (current-buffer))
-         (py-shell-switch-buffers-on-execute switch)
          (py-execute-directory (or (ignore-errors (file-name-directory (buffer-file-name))) (getenv "HOME")))
          (strg (buffer-substring-no-properties start end))
          (name-raw (or shell (py-choose-shell)))

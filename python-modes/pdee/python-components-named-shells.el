@@ -37,7 +37,7 @@ Optional \\[universal-argument] prompts for options to pass to the IPython inter
    Optional DEDICATED SWITCH are provided for use from programs. "
   (interactive "P")
   (let ((py-shell-name "ipython"))
-    ;; (py-set-shell-completion-environment)
+    (py-set-shell-completion-environment)
     (py-shell argprompt dedicated "ipython" switch)))
 
 (defun python3 (&optional argprompt dedicated switch)

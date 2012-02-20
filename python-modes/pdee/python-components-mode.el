@@ -5217,6 +5217,10 @@ ipython0.11-completion-command-string also covers version 0.12")
 
 ;; (setq ipython0.10-completion-command-string "print(';'.join(__IP.Completer.all_completions('%s'))) #PYTHON-MODE SILENT\n")
 
+;; https://github.com/ipython
+;; commit 1dd379d857f836c9e8af4576cecaeb413fcba4e5
+;; Date:   Tue Feb 14 19:47:04 2012 -0800
+;; "print(';'.join(get_ipython().complete('%s', '%s')[1])) #PYTHON-MODE SILENT\n"
 (defvar ipython0.11-completion-command-string
   "print(';'.join(get_ipython().Completer.all_completions('%s'))) #PYTHON-MODE SILENT\n"
   "The string send to ipython to query for all possible completions")
@@ -5278,29 +5282,42 @@ Returns the completed symbol, a string, if successful, nil otherwise."
                                  ((string-match "[Ii][Pp]ython" py-shell-name)
                                   py-shell-name)
                                  (t "ipython")))
-         (python-process (or (get-buffer-process (current-buffer))
-                             (get-process py-which-bufname)
-                             (progn
-                               (setq done (not done))
-                               (get-process (py-shell nil nil (downcase py-which-bufname) 'noswitch)))))
+
+         ;;)
+         ;;)
          (beg (progn (set-buffer oldbuf)(save-excursion (skip-chars-backward "a-z0-9A-Z_." (point-at-bol))
                                                         (point))))
          (end (point))
          (pattern (buffer-substring-no-properties beg end))
          (comint-output-filter-functions
           (delq 'py-comint-output-filter-function comint-output-filter-functions))
+         (python-process
+          (get-process (py-shell nil t (downcase py-which-bufname))))
+         (expandbuf (progn
+                      (switch-to-buffer (current-buffer))
+                      (current-buffer)))
          (comint-output-filter-functions
           (append comint-output-filter-functions
                   '(ansi-color-filter-apply
                     (lambda (string)
+                      (message "%s" "comint-output-filter-functions:")
+                      (message "comint-last-output-start %s" comint-last-output-start)
+                      (message "(current-buffer) %s" (current-buffer))
+                      (message "expandbuf: %s" expandbuf)
                       (setq ugly-return (concat ugly-return string))
-                      (delete-region comint-last-output-start
-                                     (process-mark (get-buffer-process (current-buffer))))))))
+                      ;; (delete-region comint-last-output-start
+                                     ;; (process-mark (get-buffer-process (current-buffer))))))))
+                      (setq ugly-return (concat ugly-return string))
+                      ""))))
+                      ;; (process-mark (get-buffer-process expandbuf)))))))
          completion completions completion-table)
     (if (string= pattern "")
         (tab-to-tab-stop)
       (process-send-string python-process
-                           (format (py-set-ipython-completion-command-string (downcase (process-name python-process))) pattern))
+                           (format
+                            ;; (py-set-ipython-completion-command-string (downcase (process-name python-process))) pattern))
+                            ;; completion-command-string should be ste by shell already
+                            ipython-completion-command-string pattern))
       ;; (message "python-process %s" python-process)
       ;; (message "%s" (py-set-ipython-completion-command-string py-which-bufname))
       (accept-process-output python-process)
@@ -5308,6 +5325,8 @@ Returns the completed symbol, a string, if successful, nil otherwise."
             (split-string (substring ugly-return 0 (position ?\n ugly-return)) sep))
       (setq completion-table (loop for str in completions
                                    collect (list str nil)))
+      (set-buffer oldbuf)
+      (switch-to-buffer (current-buffer))
       (setq completion (try-completion pattern completion-table))
       (cond ((eq completion t))
             ((null completion)
