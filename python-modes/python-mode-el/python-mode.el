@@ -6679,7 +6679,7 @@ When called from a programm, it accepts a string specifying a shell which will b
 Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)
 "
   (interactive "r\nP")
-  (let ((shell (cond ((eq 4 (prefix-numeric-value shell)) (default-value py-shell-name))
+  (let ((shell (cond ((eq 4 (prefix-numeric-value shell)) (default-value 'py-shell-name))
                      ((and (numberp shell) (not (eq 1 (prefix-numeric-value shell))))
                       (read-from-minibuffer "(path-to-)shell-name: " (default-value 'py-shell-name)))
                      (t shell))))
@@ -6699,7 +6699,7 @@ When called with \\[univeral-argument] followed by a number different from 4 and
 
 When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument. "
   (interactive "r\nP")
-  (let ((shell (cond ((eq 4 (prefix-numeric-value shell)) (default-value py-shell-name))
+  (let ((shell (cond ((eq 4 (prefix-numeric-value shell)) (default-value 'py-shell-name))
                      ((and (numberp shell) (not (eq 1 (prefix-numeric-value shell))))
                       (read-from-minibuffer "(path-to-)shell-name: " (default-value 'py-shell-name)))
                      (t shell))))
@@ -10505,8 +10505,6 @@ Returns the completed symbol, a string, if successful, nil otherwise."
         (tab-to-tab-stop)
       (process-send-string python-process
                            (format (py-set-ipython-completion-command-string (downcase (process-name python-process))) pattern))
-      ;; (message "python-process %s" python-process)
-      ;; (message "%s" (py-set-ipython-completion-command-string py-which-bufname))
       (accept-process-output python-process)
       (setq completions
             (split-string (substring ugly-return 0 (position ?\n ugly-return)) sep))
