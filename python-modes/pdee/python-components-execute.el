@@ -102,7 +102,7 @@ interpreter.
     (cond ((string-match "ipython" pyshellname)
            (setq ipython-version (string-to-number (substring (shell-command-to-string (concat py-shell-name " -V")) 2 -1)))
            (setq ipython-completion-command-string (if (< ipython-version 11) ipython0.10-completion-command-string ipython0.11-completion-command-string))
-           (define-key py-shell-map [tab] 'ipython-complete))
+           (define-key py-shell-map [tab] ipython-complete-function))
           ((string-match "python3" pyshellname)
            (define-key py-shell-map [tab] 'py-completion-at-point))
           (t (define-key py-shell-map [tab] 'py-shell-complete)))))

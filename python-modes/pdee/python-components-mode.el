@@ -176,6 +176,54 @@ Default is nil. "
   :group 'python-mode)
 (make-variable-buffer-local 'py-complete-function)
 
+(defcustom ipython-complete-function 'ipython-complete
+  "Function used for completion in IPython shell buffers.
+
+Minor bug: `ipython-complete' raises the prompt counter when completion done
+
+Richard Everson commented:
+
+    I don't know how to stop IPython from incrementing the prompt
+    counter, but using py-completion-at-point just hangs emacs for
+    me. If I start with a new IPython shell, then
+
+    In [1]: import sys
+
+    In [2]: sys.pa
+
+    then M-x py-completion-at-point, hoping to complete to sys.path, Emacs
+    hangs.  Escaping out of it shows that the \*Python\* buffer has the
+    contents:
+
+    >>> Traceback (most recent call last):
+      File \"<stdin>\", line 1, in <module>
+    NameError: name 'nil' is not defined
+    >>> =
+    [ ... ]
+
+    On the other hand, IPython's interaction and completion itself is pretty
+    impressive (for versions greater than 0.10 at least): it inserts the
+    correct indentation for for, if, etc and it will show completions even
+    within a loop.  Here's an example from a terminal shell:
+
+    In [1]:
+
+    In [1]: for i in range(3):
+       ...:     print i, sys.p<------------ Pressed tab here; indentation inser=
+    ted automatically
+    sys.path                 sys.path_importer_cache  sys.prefix
+    sys.path_hooks           sys.platform             sys.py3kwarning
+       ...:     print i, sys.path<------------ Pressed tab again
+    sys.path                 sys.path_hooks           sys.path_importer_cache
+"
+  :type '(choice (const :tag "py-completion-at-point" py-completion-at-point)
+                 (const :tag "py-shell-complete" py-shell-complete)
+		 (const :tag "Pymacs based py-complete" py-complete)
+                 (const :tag "IPython's ipython-complete" ipython-complete))
+  :group 'python-mode)
+;; (setq ipython-complete-function 'py-completion-at-point)
+(make-variable-buffer-local 'ipython-complete-function)
+
 (defcustom py-encoding-string " # -*- coding: utf-8 -*-"
   "Default string specifying encoding of a Python file. "
   :type 'string
@@ -5268,52 +5316,117 @@ complete('%s')
 			     (split-string result "\n"))))
 	  (py-shell-dynamic-simple-complete word completions))))))
 
+
+;; (defun ipython-complete (&optional done)
+;;   "Complete the python symbol before point.
+;; 
+;; If no completion available, insert a TAB.
+;; Returns the completed symbol, a string, if successful, nil otherwise."
+;;   (interactive "*p")
+;;   (let* ((done done)
+;;          (oldbuf (current-buffer))
+;;          (ugly-return nil)
+;;          (sep ";")
+;;          (end (point))
+;;          (beg (save-excursion (skip-chars-backward "a-z0-9A-Z_." (point-at-bol))(point)))
+;;          (pattern (buffer-substring-no-properties beg end)))
+;;     (if (string= "" pattern)
+;;         (message "%s" "Can't complete the empty string")
+;;       (let* ((py-which-bufname (cond ((get-buffer-process "IPython")
+;;                                       "IPython")
+;;                                      ((string-match "[Ii][Pp]ython" py-shell-name)
+;;                                       py-shell-name)
+;;                                      (t "ipython")))
+;;              (comint-output-filter-functions
+;;               (delq 'py-comint-output-filter-function comint-output-filter-functions))
+;;              (python-process
+;;               (get-process (py-shell nil nil (generate-new-buffer-name (downcase py-which-bufname)))))
+;;              (expandbuf (progn
+;;                           (switch-to-buffer (current-buffer))
+;;                           (current-buffer)))
+;;              (comint-output-filter-functions
+;;               (append comint-output-filter-functions
+;;                       '(ansi-color-filter-apply
+;;                         (lambda (string)
+;;                           (setq ugly-return (concat ugly-return string))
+;;                           (setq ugly-return (concat ugly-return string))
+;;                           ""))))
+;;              completion completions completion-table)
+;;         (if (string= pattern "")
+;;             (tab-to-tab-stop)
+;;           (process-send-string python-process
+;;                                (format
+;;                                 ipython-completion-command-string pattern))
+;;           (accept-process-output python-process)
+;;           (setq completions
+;;                 (split-string (substring ugly-return 0 (position ?\n ugly-return)) sep))
+;;           (setq completion-table (loop for str in completions
+;;                                        collect (list str nil)))
+;;           ;; (kill-process python-process)
+;;           ;; (kill-buffer-unconditional)
+;;           ;; (set-buffer oldbuf)
+;;           ;; (switch-to-buffer (current-buffer))
+;;           (setq completion (try-completion pattern completion-table))
+;;           (cond ((eq completion t))
+;;                 ((null completion)
+;;                  ;; workaround: if an (I)Python shell didn't run
+;;                  ;; before, first completion are not delivered
+;;                  (if done (ipython-complete done)
+;;                    (message "Can't find completion for \"%s\"" pattern)
+;;                    (ding)))
+;;                 ((not (string= pattern completion))
+;;                  (delete-region beg end)
+;;                  (insert completion))
+;;                 (t
+;;                  (message "Making completion list...")
+;;                  (with-output-to-temp-buffer "*Python Completions*"
+;;                    (display-completion-list (all-completions pattern completion-table)))
+;;                  (message "Making completion list...%s" "done"))))
+;;         completion))))
+
 (defun ipython-complete (&optional done)
   "Complete the python symbol before point.
 
 If no completion available, insert a TAB.
 Returns the completed symbol, a string, if successful, nil otherwise."
-  (interactive "*p")
+  (interactive "*")
   (let* ((done done)
          (oldbuf (current-buffer))
          (ugly-return nil)
          (sep ";")
-         (end (point))
-         (beg (save-excursion (skip-chars-backward "a-z0-9A-Z_." (point-at-bol))(point)))
-         (pattern (buffer-substring-no-properties beg end)))
-    (if (string= "" pattern)
-        (message "%s" "Can't complete the empty string")
-      (let* ((py-which-bufname (cond ((get-buffer-process "IPython")
+         (py-which-bufname (cond ((get-buffer-process "IPython")
                                       "IPython")
                                      ((string-match "[Ii][Pp]ython" py-shell-name)
                                       py-shell-name)
                                      (t "ipython")))
+         (python-process (or (get-buffer-process (current-buffer))
+                             (get-process py-which-bufname)
+                             (progn
+                               (setq done (not done))
+                               (get-process (py-shell nil nil (downcase py-which-bufname) 'noswitch)))))
+         (beg (progn (set-buffer oldbuf)(save-excursion (skip-chars-backward "a-z0-9A-Z_." (point-at-bol))
+                                                        (point))))
+         (end (point))
+         (pattern (buffer-substring-no-properties beg end))
              (comint-output-filter-functions
               (delq 'py-comint-output-filter-function comint-output-filter-functions))
-             (python-process
-              (get-process (py-shell nil t (downcase py-which-bufname))))
-             (expandbuf (progn
-                          (switch-to-buffer (current-buffer))
-                          (current-buffer)))
              (comint-output-filter-functions
               (append comint-output-filter-functions
                       '(ansi-color-filter-apply
                         (lambda (string)
                           (setq ugly-return (concat ugly-return string))
-                          (setq ugly-return (concat ugly-return string))
-                          ""))))
+                      (delete-region comint-last-output-start
+                                     (process-mark (get-buffer-process (current-buffer))))))))
              completion completions completion-table)
         (if (string= pattern "")
             (tab-to-tab-stop)
           (process-send-string python-process
-                               (format
-                                ipython-completion-command-string pattern))
+                           (format (py-set-ipython-completion-command-string (downcase (process-name python-process))) pattern))
           (accept-process-output python-process)
           (setq completions
                 (split-string (substring ugly-return 0 (position ?\n ugly-return)) sep))
           (setq completion-table (loop for str in completions
                                        collect (list str nil)))
-          (set-buffer oldbuf)
           (setq completion (try-completion pattern completion-table))
           (cond ((eq completion t))
                 ((null completion)
@@ -5330,7 +5443,7 @@ Returns the completed symbol, a string, if successful, nil otherwise."
                  (with-output-to-temp-buffer "*Python Completions*"
                    (display-completion-list (all-completions pattern completion-table)))
                  (message "Making completion list...%s" "done"))))
-        completion))))
+    completion))
 
 (provide 'python-components-mode)
 (provide 'python-mode)
