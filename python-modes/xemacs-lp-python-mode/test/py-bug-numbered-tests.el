@@ -887,7 +887,8 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
     (py-bug-tests-intern 'indent-triplequoted-to-itself-lp:752252-base arg teststring)))
 
 (defun indent-triplequoted-to-itself-lp:752252-base ()
-  (sit-for 0.1)
+  (sit-for 0.2)
+  (message "(py-compute-indentation): %s" (py-compute-indentation))
   (assert (eq 4 (py-compute-indentation)) nil "indent-triplequoted-to-itself-lp:752252-test failed"))
 
 (defun multiline-listings-indent-lp:761946-test (&optional arg load-branch-function)
@@ -2258,6 +2259,37 @@ print u'\\xA9'
 (defun execute-buffer-ipython-fails-lp:928087-base ()
   (assert (numberp (py-execute-buffer)) nil "execute-buffer-ipython-fails-lp:928087-test failed"))
 
+(defun fourth-level-blocks-indent-incorrectly-lp-939577-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+for x in y:
+    for z in l:
+        for r in t:
+                pass # <--- indents here. Pressing <backspace> dedents eight spaces (i.e. you can go to column 0 in two presess)
+
+        # It seems to happen with all blocks:
+
+while 1:
+    while 1:
+        while 1:
+                pass
+
+        # and when you mix them:
+
+try:
+    if True:
+        while True:
+                pass
+")
+        py-smart-indentation)
+    (when load-branch-function (funcall load-branch-function))
+    (py-bug-tests-intern 'fourth-level-blocks-indent-incorrectly-lp-939577-base arg teststring)))
+
+(defun fourth-level-blocks-indent-incorrectly-lp-939577-base ()
+  (goto-char 112)
+  (assert (eq 12 (py-compute-indentation)) nil "fourth-level-blocks-indent-incorrectly-lp-939577-test failed"))
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
+

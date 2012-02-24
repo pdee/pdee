@@ -27,10 +27,10 @@
   "Accepts the output of `parse-partial-sexp'. "
   (interactive)
   (let* ((pps (or (ignore-errors (nth 0 pps))
-                 (if (featurep 'xemacs)
-                     (parse-partial-sexp (point-min) (point))
-                   (syntax-ppss))))
-        (erg (nth 0 pps)))
+                  (if (featurep 'xemacs)
+                      (parse-partial-sexp (point-min) (point))
+                    (syntax-ppss))))
+         (erg (nth 0 pps)))
     (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -76,10 +76,10 @@ When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
                     (progn
                       (forward-line -1)
                       (end-of-line)
-                      (skip-chars-backward " \t\r\n\f") 
+                      (skip-chars-backward " \t\r\n\f")
                       (if (ignore-errors (< (nth 2 (if (featurep 'xemacs)
-                                        (parse-partial-sexp (point-min) (point))
-                                      (syntax-ppss))) (line-beginning-position)))
+                                                       (parse-partial-sexp (point-min) (point))
+                                                     (syntax-ppss))) (line-beginning-position)))
                           (current-indentation)
                         (ignore-errors (goto-char (nth 2 pps)))
                         (py-line-backward-maybe)
@@ -110,47 +110,47 @@ When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
                ;; lists
                ((nth 1 pps)
                 (cond ((and inside (not line))
-                (when (and (eq (point) orig) (looking-at "[ \t]*\\()\\)[ \t]*$"))
-                  (setq closing (match-beginning 0)))
-                (save-excursion
-                  (goto-char (nth 1 pps))
-                  (setq this-line (py-count-lines))
-                  (cond
-                   ((< 0 (- origline this-line))
-                    (if (< 1 (- origline this-line))
-                        (if closing
-                            (if py-closing-list-dedents-bos
-                                (current-indentation)
-                              (+ (current-indentation) py-indent-offset))
-                          (py-fetch-previous-indent orig))
-                      (cond ((looking-at "\\s([ \t]*$")
-                             (if
-                                 (progn
-                                   (save-excursion
-                                     (back-to-indentation)
-                                     (looking-at py-block-or-clause-re)))
-                                 (progn
-                                   (back-to-indentation)
-                                   (+ (current-column) (* 2 py-indent-offset)))
-                               (back-to-indentation)
-                               (+ (current-column) py-indent-offset)))
-                            ((looking-at "\\s([ \t]*\\([^ \t]+.*\\)$")
-                             (goto-char (match-beginning 1))
-                             (current-column))
-                            (t (+ (current-column) (* (nth 0 pps)))))))
-                   (t (back-to-indentation)
-                      (py-beginning-of-statement)
-                      (py-compute-indentation orig origline closing line inside repeat)))))
+                       (when (and (eq (point) orig) (looking-at "[ \t]*\\()\\)[ \t]*$"))
+                         (setq closing (match-beginning 0)))
+                       (save-excursion
+                         (goto-char (nth 1 pps))
+                         (setq this-line (py-count-lines))
+                         (cond
+                          ((< 0 (- origline this-line))
+                           (if (< 1 (- origline this-line))
+                               (if closing
+                                   (if py-closing-list-dedents-bos
+                                       (current-indentation)
+                                     (+ (current-indentation) py-indent-offset))
+                                 (py-fetch-previous-indent orig))
+                             (cond ((looking-at "\\s([ \t]*$")
+                                    (if
+                                        (progn
+                                          (save-excursion
+                                            (back-to-indentation)
+                                            (looking-at py-block-or-clause-re)))
+                                        (progn
+                                          (back-to-indentation)
+                                          (+ (current-column) (* 2 py-indent-offset)))
+                                      (back-to-indentation)
+                                      (+ (current-column) py-indent-offset)))
+                                   ((looking-at "\\s([ \t]*\\([^ \t]+.*\\)$")
+                                    (goto-char (match-beginning 1))
+                                    (current-column))
+                                   (t (+ (current-column) (* (nth 0 pps)))))))
+                          (t (back-to-indentation)
+                             (py-beginning-of-statement)
+                             (py-compute-indentation orig origline closing line inside repeat)))))
                       ((and (not inside) line)
-                (py-beginning-of-statement)
-                (py-compute-indentation orig origline closing line inside repeat))
+                       (py-beginning-of-statement)
+                       (py-compute-indentation orig origline closing line inside repeat))
                       ((not inside)
-                (progn (goto-char (+ py-lhs-inbound-indent (nth 1 pps)))
-                       (when (looking-at "[ \t]+")
-                         (goto-char (match-end 0)))
-                       (current-column)))
+                       (progn (goto-char (+ py-lhs-inbound-indent (nth 1 pps)))
+                              (when (looking-at "[ \t]+")
+                                (goto-char (match-end 0)))
+                              (current-column)))
                       (t
-                (goto-char (nth 1 pps))
+                       (goto-char (nth 1 pps))
                        (py-compute-indentation orig origline closing line inside repeat))))
                ((py-preceding-line-backslashed-p)
                 (progn
@@ -176,19 +176,20 @@ When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
                 (current-indentation))
                ((and (looking-at py-elif-re) (eq (py-count-lines) origline))
                 (py-line-backward-maybe)
-                (car (py-clause-lookup-keyword py-elif-re -1)))
+                (car (py-clause-lookup-keyword py-elif-re -1 nil orig origline)))
                ((and (looking-at py-clause-re)(eq origline (py-count-lines)))
                 (cond ((looking-at py-finally-re)
-                       (car (py-clause-lookup-keyword py-finally-re -1)))
+                       (car (py-clause-lookup-keyword py-finally-re -1 nil orig origline)))
                       ((looking-at py-except-re)
-                       (car (py-clause-lookup-keyword py-except-re -1)))
+                       (car (py-clause-lookup-keyword py-except-re -1 nil orig origline)))
                       ((looking-at py-else-re)
-                       (car (py-clause-lookup-keyword py-else-re -1 (current-indentation))))
+                       ;; (car (py-clause-lookup-keyword py-else-re -1 (current-indentation))))
+                       (car (py-clause-lookup-keyword py-else-re -1 nil orig origline)))
                       ((looking-at py-elif-re)
-                       (car (py-clause-lookup-keyword py-elif-re -1)))))
+                       (car (py-clause-lookup-keyword py-elif-re -1 nil orig origline)))))
                ((looking-at py-block-or-clause-re)
                 (cond ((eq origline (py-count-lines))
-                (py-line-backward-maybe)
+                       (py-line-backward-maybe)
                        (py-compute-indentation orig origline closing line inside t))
                       (t (+ (if py-smart-indentation (py-guess-indent-offset nil orig) py-indent-offset)(current-indentation)))))
                ((looking-at py-block-closing-keywords-re)
@@ -681,7 +682,7 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
           erg)))))
 
 (defconst py-help-address "python-mode@python.org"
- "List dealing with usage and developing python-mode.
+  "List dealing with usage and developing python-mode.
 
 Also accepts submission of bug reports, whilst a ticket at
 http://launchpad.net/python-mode

@@ -170,6 +170,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-forward-into-nomenclature-jumps-over-CamelCased-words-lp:919540-test \
 --funcall py-backward-into-nomenclature-caps-names-lp:919541-test \
 --funcall execute-buffer-ipython-fails-lp:928087-test \
+--funcall fourth-level-blocks-indent-incorrectly-lp-939577-test \
 \
 --funcall multiline-list-indent-test \
 --funcall py-beginning-of-block-test \

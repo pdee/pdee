@@ -1078,24 +1078,27 @@ Travels right-margin comments. "
         (goto-char
          (nth 8 pps))))))
 
-(defun py-clause-lookup-keyword (regexp arg &optional indent)
+(defun py-clause-lookup-keyword (regexp arg &optional indent orig origline)
   "Returns a list, whose car is indentation, cdr position. "
-  (let ((orig (point))
-        (origline (py-count-lines))
-        (stop (if (< 0 arg)'(eobp)'(bobp)))
-        (function (if (< 0 arg) 'py-end-of-statement 'py-beginning-of-statement))
-        (count 1)
-        (maxindent (or indent (current-indentation)))
-        (complement-re
-         (cond ((or (string-match "finally" regexp)
-                    (string-match "except" regexp))
-                py-try-re)
-               ((string-match "elif" regexp)
-                py-if-re)
-               ((string-match "else" regexp)
-                py-minor-block-re)))
-        (first t)
-        erg done)
+  (let* ((orig (or orig (point)))
+         (origline (or origline (py-count-lines)))
+         (stop (if (< 0 arg)'(eobp)'(bobp)))
+         (function (if (< 0 arg) 'py-end-of-statement 'py-beginning-of-statement))
+         (count 1)
+         (maxindent (cond (indent indent)
+                          ((< (py-count-lines) origline)
+                           (current-indentation))
+                          (t 0)))
+         (complement-re
+          (cond ((or (string-match "finally" regexp)
+                     (string-match "except" regexp))
+                 py-try-re)
+                ((string-match "elif" regexp)
+                 py-if-re)
+                ((string-match "else" regexp)
+                 py-minor-block-re)))
+         (first t)
+         erg done strict)
     (while (and (not (eval stop))
                 (< 0 count)
                 (or done (setq erg (funcall function))))
@@ -1103,13 +1106,15 @@ Travels right-margin comments. "
       (when (and first (< maxindent (current-indentation)))
         (setq maxindent (current-indentation))
         (setq first nil))
-      (when (< (current-indentation) maxindent)
+      (when (if strict
+                (< (current-indentation) maxindent)
+              (<= (current-indentation) maxindent))
         (unless (looking-at py-block-or-clause-re)
           (setq maxindent (current-indentation)))
         ;; (message "%s %s" count indent)
         ;; nesting
         (cond
-         ((and (looking-at "\\<finally\\>[: \n\t]")(save-match-data (string-match regexp "finally")))
+         ((and (looking-at "\\_<finally\\>[: \n\t]")(save-match-data (string-match regexp "finally")))
           (setq indent (current-indentation))
           (while
               (and
@@ -1117,15 +1122,15 @@ Travels right-margin comments. "
                (funcall function)
                (setq done t)
                (not (and (eq indent (current-indentation)) (looking-at "try"))))))
-         ((and (looking-at "\\<expcept\\>[: \n\t]")(save-match-data (string-match "else" regexp)))
-          (setq indent (current-indentation))
-          (setq count (1+ count))
-          (while
-              (and
-               (not (eval stop))
-               (funcall function)
-               (setq done t)
-               (not (and (eq indent (current-indentation)) (looking-at "try\\|if"))))))
+         ;; ((and (looking-at "\\<except\\>[: \n\t]")(save-match-data (string-match "else" regexp)))
+         ;;  (setq indent (current-indentation))
+         ;;  (setq count (1+ count))
+         ;;  (while
+         ;;      (and
+         ;;       (not (eval stop))
+         ;;       (funcall function)
+         ;;       (setq done t)
+         ;;       (not (and (eq indent (current-indentation)) (looking-at "try\\|if"))))))
          ((and (looking-at "\\<else\\>[: \n\t]")(save-match-data (string-match "else" regexp)))
           (setq indent (current-indentation))
           (setq count (1+ count))
@@ -1135,7 +1140,16 @@ Travels right-margin comments. "
                (funcall function)
                (setq done t)
                (not (and (eq indent (current-indentation)) (looking-at "try\\|if"))))))
-         ((and (looking-at "\\<elif\\>[ \n\t]")(save-match-data (string-match "elif" regexp)))
+         ((and (looking-at "\\_<else\\>[: \n\t]")(save-match-data (string-match "else" regexp)))
+          (setq indent (current-indentation))
+          (setq count (1+ count))
+          (while
+              (and
+               (not (eval stop))
+               (funcall function)
+               (setq done t)
+               (not (and (eq indent (current-indentation)) (looking-at "try\\|if"))))))
+         ((and (looking-at "\\_<elif\\>[ \n\t]")(save-match-data (string-match "elif" regexp)))
           (setq indent (current-indentation))
           (while
               (and
@@ -1145,10 +1159,15 @@ Travels right-margin comments. "
                ;; doesn't mean nesting yet
                (setq count (1- count))
                (not (and (eq indent (current-indentation)) (looking-at "if"))))))
-         ((and (looking-at complement-re)(< (current-indentation) maxindent))
+         ((and (looking-at complement-re)(<= (current-indentation) maxindent))
           (setq count (1- count)))
-         (t (when (and (string-match "except" regexp)(looking-at py-block-re))
-              (setq count (1- count)))))))
+         (t (cond ((and (string-match "except" regexp)(looking-at py-block-re))
+                   (setq count (1- count)))
+                  ((and (string-match "else" regexp)(looking-at "except"))
+                   (current-indentation))
+                  (t
+                   (setq strict t)
+                   ))))))
     (when erg
       (if (looking-at py-def-or-class-re)
           (setq erg (cons (+ (current-indentation) py-indent-offset) erg))
@@ -1163,8 +1182,7 @@ Travels right-margin comments. "
         (function (if (< 0 arg) 'py-end-of-statement 'py-beginning-of-statement))
         (maxindent maxindent)
         done erg cui)
-    (while (and (or (not done)(eq origline (py-count-lines)))
-                (not (eval stop)))
+    (while (and (not done) (not (eval stop)))
       (funcall function)
       (when (and (looking-at regexp)(if maxindent
                                         (< (current-indentation) maxindent)t))
