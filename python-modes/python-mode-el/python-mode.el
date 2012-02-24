@@ -1407,6 +1407,8 @@ Run pychecker"]
              :help "`pdb'
 Run pdb under GUD"]
             "-"
+            ["Toggle py-smart-indentation" toggle-py-smart-indentation
+             :help "See also `py-smart-indentation-on', `-off' "]
             ["Customize Python mode" (customize-group 'python-mode)
              :help "Open the customization buffer for Python mode"]
             ["Help on symbol" py-describe-symbol
@@ -2578,7 +2580,6 @@ Otherwise inherits from `py-mode-syntax-table'.")
         (copy-syntax-table py-mode-syntax-table))
   (modify-syntax-entry ?_ "_" py-dotted-expression-syntax-table)
   (modify-syntax-entry ?. "_" py-dotted-expression-syntax-table))
-
 
 (defun py-execute-prepare (form &optional shell dedicated switch)
   "Used by python-extended-executes ."
@@ -6696,7 +6697,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python3.2 int
   (py-set-shell-completion-environment)
   (py-shell argprompt t "python3.2" 'switch))
 
-
 
 ;;; Code execution commands
 (declare-function compilation-shell-minor-mode "compile" (&optional arg))
@@ -9063,6 +9063,38 @@ To change the default Python interpreter, use `py-switch-shell'.
       (error "Could not detect Python on your sys
 tem"))
     erg))
+
+(defun toggle-py-smart-indentation (&optional arg)
+  "If `py-smart-indentation' should be on or off.
+
+Returns value of `py-smart-indentation' switched to. "
+  (interactive)
+  (let ((arg (or arg (if py-smart-indentation -1 1))))
+    (if (< 0 arg)
+        (setq py-smart-indentation t)
+      (setq py-smart-indentation nil)))
+  (when (interactive-p) (message "py-smart-indentation: %s" py-smart-indentation))
+  py-smart-indentation)
+
+(defun py-smart-indentation-on (&optional arg)
+  "Make sure, `py-smart-indentation' is on.
+
+Returns value of `py-smart-indentation'. "
+  (interactive "p")
+  (let ((arg (or arg 1)))
+    (toggle-py-smart-indentation arg))
+  (when (interactive-p) (message "py-smart-indentation: %s" py-smart-indentation))
+  py-smart-indentation)
+
+(defun py-smart-indentation-off (&optional arg)
+  "Make sure, `py-smart-indentation' is off.
+
+Returns value of `py-smart-indentation'. "
+  (interactive "p")
+  (let ((arg (if arg (- arg) -1)))
+    (toggle-py-smart-indentation arg))
+  (when (interactive-p) (message "py-smart-indentation: %s" py-smart-indentation))
+  py-smart-indentation)
 
 (defvar inferior-python-mode-map
   (let ((map (make-sparse-keymap)))

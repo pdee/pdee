@@ -1556,6 +1556,8 @@ Run pychecker"]
              :help "`pdb'
 Run pdb under GUD"]
             "-"
+            ["Toggle py-smart-indentation" toggle-py-smart-indentation 
+             :help "See also `py-smart-indentation-on', `-off' "]
             ["Customize Python mode" (customize-group 'python-mode)
              :help "Open the customization buffer for Python mode"]
             ["Help on symbol" py-describe-symbol
