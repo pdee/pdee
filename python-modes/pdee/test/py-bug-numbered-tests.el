@@ -968,12 +968,12 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
 # character following the open paren.
 
 def foo():
-    thing = call_it(with_something,"))
+    thing = call_it(with_something,
+"))
     (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'indent-open-paren-not-last-lp:771291-base arg teststring)))
 
 (defun indent-open-paren-not-last-lp:771291-base ()
-  (newline-and-indent)
   (assert (eq 20 (py-compute-indentation)) nil "indent-open-paren-not-last-lp:771291-test failed"))
 
 (defun wrong-indent-after-else-lp:772610-test (&optional arg load-branch-function)
@@ -1026,8 +1026,7 @@ except:
     (py-bug-tests-intern 'unbalanced-parentheses-lp:784645-base arg teststring)))
 
 (defun unbalanced-parentheses-lp:784645-base ()
-  (goto-char 27)
-  (newline-and-indent)
+  (goto-char 40)
   (assert (eq 4 (py-compute-indentation)) nil "unbalanced-parentheses-lp:784645-test failed"))
 
 (defun explicitly-indent-in-list-lp:785018-test (&optional arg load-branch-function)

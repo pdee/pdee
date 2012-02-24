@@ -2789,52 +2789,69 @@ With optional \\[universal-argument] an indent with length `py-indent-offset' is
              (delete-horizontal-space)
              (indent-to need))))))
 
+(defvar py-indent-line-indent nil
+  "Used internal by `py-indent-line'")
+
+(defun py-indent-line-intern ()
+  ;; (when (prefix-numeric-value arg) (message "%s" (prefix-numeric-value arg)))
+  (unless (eq this-command last-command)(setq py-indent-line-indent (py-compute-indentation)))
+  (if py-tab-indent
+      (cond ((eq py-indent-line-indent cui)
+             (when (eq this-command last-command)
+               (beginning-of-line)
+               (delete-horizontal-space)
+               (if (<= (line-beginning-position) (+ (point) (- col cui)))
+                   (forward-char (- col cui))
+                 (beginning-of-line))))
+            ((< cui py-indent-line-indent)
+             (if (eq this-command last-command)
+                 (progn
+                   (beginning-of-line)
+                   (delete-horizontal-space)
+                   (indent-to (+ (* (/ cui py-indent-offset) py-indent-offset) py-indent-offset))
+                   (forward-char (- col cui)))
+               (beginning-of-line)
+               (delete-horizontal-space)
+               (indent-to py-indent-line-indent)
+               (forward-char (- col cui))))
+            (t (beginning-of-line)
+               (delete-horizontal-space)
+               (indent-to py-indent-line-indent)
+               (if (<= (line-beginning-position) (+ (point) (- col cui)))
+                   (forward-char (- col cui))
+                 (beginning-of-line))))
+    (insert-tab))
+  (message "py-indent-line-indent: %s" py-indent-line-indent))
+
 (defun py-indent-line (&optional arg)
   "Indent the current line according to Python rules.
 
 When called interactivly with \\[universal-argument], ignore dedenting rules for block closing statements
 \(e.g. return, raise, break, continue, pass)
 
+An optional \\[universal-argument] followed by a numeric argument neither 1 nor 4 will switch off `py-smart-indentation' for this execution. This permits to correct allowed but unwanted indents.
+Similar to `toggle-py-smart-indentation' resp. `py-smart-indentation-off' followed by TAB.
+
 This function is normally used by `indent-line-function' resp.
 \\[indent-for-tab-command].
 Returns current indentation "
   (interactive "P")
   (let ((cui (current-indentation))
-        (indent (py-compute-indentation))
-        (col (current-column)))
+        (col (current-column))
+        (psi py-smart-indentation))
     (if (interactive-p)
         (progn
-          (beginning-of-line)
-          (delete-horizontal-space)
-          (if (eq 4 (prefix-numeric-value arg))
-              (indent-to (+ indent py-indent-offset)))
-          (indent-to indent))
-      (if py-tab-indent
-          (cond ((eq indent cui)
-                 (when (eq this-command last-command)
-                   (beginning-of-line)
-                   (delete-horizontal-space)
-                   (if (<= (line-beginning-position) (+ (point) (- col cui)))
-                       (forward-char (- col cui))
-                     (beginning-of-line))))
-                ((< cui indent)
-                 (if (eq this-command last-command)
-                     (progn
-                       (beginning-of-line)
-                       (delete-horizontal-space)
-                       (indent-to (+ (* (/ cui py-indent-offset) py-indent-offset) py-indent-offset))
-                       (forward-char (- col cui)))
-                   (beginning-of-line)
-                   (delete-horizontal-space)
-                   (indent-to indent)
-                   (forward-char (- col cui))))
-                (t (beginning-of-line)
-                   (delete-horizontal-space)
-                   (indent-to indent)
-                   (if (<= (line-beginning-position) (+ (point) (- col cui)))
-                       (forward-char (- col cui))
-                     (beginning-of-line))))
-        (insert-tab))))
+          (setq py-indent-line-indent (py-compute-indentation))
+          (cond ((eq 4 (prefix-numeric-value arg))
+                 (beginning-of-line)
+                 (delete-horizontal-space)
+                 (indent-to (+ py-indent-line-indent py-indent-offset)))
+                ((not (eq 1 (prefix-numeric-value arg)))
+                 (py-smart-indentation-off)
+                 (py-indent-line-intern)
+                 (setq py-smart-indentation psi))
+                (t (indent-to py-indent-line-indent))))
+      (py-indent-line-intern)))
   (when (and (interactive-p) py-verbose-p)(message "%s" (current-indentation)))
   (current-indentation))
 
@@ -4173,7 +4190,10 @@ When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
                   (current-indentation)))
                ((and (looking-at py-block-closing-keywords-re)(eq (py-count-lines) origline))
                 (py-beginning-of-block-or-clause)
-                (+  (if py-smart-indentation (py-guess-indent-offset nil orig) py-indent-offset)(current-indentation)))
+                (+
+                 (if py-smart-indentation (py-guess-indent-offset nil orig) py-indent-offset)
+                 ;; py-indent-offset
+                 (current-indentation)))
                ((looking-at py-block-closing-keywords-re)
                 (py-beginning-of-block-or-clause nil (current-indentation))
                 (current-indentation))
@@ -9064,7 +9084,8 @@ To change the default Python interpreter, use `py-switch-shell'.
 tem"))
     erg))
 
-(defun toggle-py-smart-indentation (&optional arg)
+(defalias 'toggle-py-smart-indentation 'py-toggle-smart-indentation)
+(defun py-toggle-smart-indentation (&optional arg)
   "If `py-smart-indentation' should be on or off.
 
 Returns value of `py-smart-indentation' switched to. "
@@ -9072,9 +9093,10 @@ Returns value of `py-smart-indentation' switched to. "
   (let ((arg (or arg (if py-smart-indentation -1 1))))
     (if (< 0 arg)
         (setq py-smart-indentation t)
-      (setq py-smart-indentation nil)))
-  (when (interactive-p) (message "py-smart-indentation: %s" py-smart-indentation))
-  py-smart-indentation)
+      (setq py-smart-indentation nil)
+      (setq py-indent-offset (default-value 'py-indent-offset)))
+    (when (interactive-p) (message "py-smart-indentation: %s" py-smart-indentation))
+    py-smart-indentation))
 
 (defun py-smart-indentation-on (&optional arg)
   "Make sure, `py-smart-indentation' is on.

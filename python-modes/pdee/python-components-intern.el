@@ -170,7 +170,10 @@ When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
                   (current-indentation)))
                ((and (looking-at py-block-closing-keywords-re)(eq (py-count-lines) origline))
                 (py-beginning-of-block-or-clause)
-                (+  (if py-smart-indentation (py-guess-indent-offset nil orig) py-indent-offset)(current-indentation)))
+                (+  
+                 (if py-smart-indentation (py-guess-indent-offset nil orig) py-indent-offset)
+                 ;; py-indent-offset
+                 (current-indentation)))
                ((looking-at py-block-closing-keywords-re)
                 (py-beginning-of-block-or-clause nil (current-indentation))
                 (current-indentation))
