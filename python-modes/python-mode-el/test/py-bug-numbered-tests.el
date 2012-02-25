@@ -2280,8 +2280,7 @@ try:
     if True:
         while True:
                 pass
-")
-        py-smart-indentation)
+"))
     (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'fourth-level-blocks-indent-incorrectly-lp-939577-base arg teststring)))
 

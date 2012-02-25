@@ -254,7 +254,8 @@ With optional argument GLOBAL change the global value of `py-indent-offset'. "
           erg)
       (if lastindent
           (progn
-            (py-down-statement)
+            ;; (py-down-statement)
+            (py-beginning-of-block-or-clause)
             (if (py-guessed-sanity-check (setq erg (abs (- lastindent (current-indentation)))))
                 (progn
                   (funcall (if global 'kill-local-variable 'make-local-variable)
