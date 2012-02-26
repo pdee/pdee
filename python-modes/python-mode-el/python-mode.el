@@ -2927,6 +2927,29 @@ Returns value of `indent-tabs-mode' switched to. "
   (interactive "p")
   (indent-tabs-mode (- (abs arg))(interactive-p)))
 
+;;; Guess indent offset
+(defun py-guessed-sanity-check (guessed)
+  (and (>= guessed 2)(<= guessed 8)(eq 0 (% guessed 2))))
+
+(defun py-guess-indent-offset-intern ()
+  (if (and firstindent erg (not (eq firstindent erg)))
+      (progn
+        (setq guessed (abs (- firstindent erg)))
+        (if (py-guessed-sanity-check guessed)
+            (setq py-indent-offset guessed)
+          (setq py-indent-offset (default-value 'py-indent-offset))))
+    (setq py-indent-offset (default-value 'py-indent-offset)))
+  (setq done t))
+
+(defun py-guess-check ()
+  (if (ignore-errors (< firstindent (setq erg (py-down-statement))))
+      (py-guess-indent-offset-intern)
+    ;; must search upward for something probable
+    (goto-char orig)
+    ;; repeat first upward
+    (setq firstindent (if (py-beginning-of-block-p)(current-indentation)(when (py-beginning-of-block)(current-indentation))))
+    (setq erg (when (py-beginning-of-block)(current-indentation)))))
+
 (defun py-guess-indent-offset (&optional global orig)
   "Guess a value for, and change, `py-indent-offset'.
 
@@ -2935,34 +2958,28 @@ new value.
 With optional argument GLOBAL change the global value of `py-indent-offset'. "
   (interactive "P")
   (save-excursion
-    (let ((lastindent (cond
-                       ((py-beginning-of-block-p)
-                        (current-indentation))
-                       ((py-beginning-of-block)
-                        (current-indentation))
-                       ((py-down-block))))
-          erg)
-      (if lastindent
+    (let ((orig (point)) firstindent erg done guessed)
+      (back-to-indentation)
+      (if (py-beginning-of-block-p)
           (progn
-            ;; (py-down-statement)
-            (py-beginning-of-block-or-clause)
-            (if (py-guessed-sanity-check (setq erg (abs (- lastindent (current-indentation)))))
-                (progn
-                  (funcall (if global 'kill-local-variable 'make-local-variable)
-                           'py-indent-offset)
-                  (setq py-indent-offset erg))
-              (setq py-indent-offset (default-value 'py-indent-offset))))
-        ;; no block, no indent
-        (setq py-indent-offset (default-value 'py-indent-offset)))
+            (setq firstindent (current-column))
+            (py-guess-check))
+        (if (setq firstindent (when (py-beginning-of-block)(current-indentation)))
+            (py-guess-check)
+          (unless (and firstindent erg)
+            (goto-char orig)
+            (when (setq firstindent (py-down-block))
+              (setq erg (py-down-statement))))))
+      (unless done (py-guess-indent-offset-intern))
+      (funcall (if global 'kill-local-variable 'make-local-variable)
+               'py-indent-offset)
       (when (interactive-p)
         (message "%s value of py-indent-offset:  %d"
                  (if global "Global" "Local")
                  py-indent-offset))
       py-indent-offset)))
 
-(defun py-guessed-sanity-check (guessed)
-  (and (>= guessed 2)(<= guessed 8)(eq 0 (% guessed 2))))
-
+;;;
 (defun py-comment-indent-function ()
   "Python version of `comment-indent-function'."
   ;; This is required when filladapt is turned off.  Without it, when
@@ -4439,43 +4456,144 @@ will work.
         (when (interactive-p) (message "%s" erg))
         erg))))
 
-(defun py-beginning-of-expression-p ()
-  "Returns position, if cursor is at the beginning of a expression, nil otherwise. "
+;;; Beginning-of- p
+(defun py-beginning-of-paragraph-p ()
+  "Returns position, if cursor is at the beginning of a paragraph, nil otherwise. "
   (interactive)
-  (let ((orig (point)))
+  (let ((orig (point))
+        erg)
     (save-excursion
-      (py-end-of-expression)
-      (py-beginning-of-expression)
-      (when (or (eq orig (point)))
-        (when (interactive-p)
-          (message "%s" orig))
-        orig))))
+      (py-end-of-paragraph)
+      (py-beginning-of-paragraph)
+      (when (eq orig (point))
+        (setq erg orig))
+      (when (interactive-p)
+        (message "%s" erg))
+      erg)))
 
-(defun py-beginning-of-partial-expression-p ()
-  "Returns position, if cursor is at the beginning of a expression, nil otherwise. "
+(defun py-beginning-of-line-p ()
+  "Returns position, if cursor is at the beginning of a line, nil otherwise. "
   (interactive)
-  (let ((orig (point)))
+  (let ((orig (point))
+        erg)
     (save-excursion
-      (py-end-of-partial-expression)
-      (py-beginning-of-partial-expression)
-      (when (or (eq orig (point)))
-        (when (interactive-p)
-          (message "%s" orig))
-        orig))))
+      (py-end-of-line)
+      (py-beginning-of-line)
+      (when (eq orig (point))
+        (setq erg orig))
+      (when (interactive-p)
+        (message "%s" erg))
+      erg)))
 
 (defun py-beginning-of-statement-p ()
   "Returns position, if cursor is at the beginning of a statement, nil otherwise. "
   (interactive)
-  (let ((orig (point)))
+  (let ((orig (point))
+        erg)
     (save-excursion
       (py-end-of-statement)
       (py-beginning-of-statement)
-      (when (or (eq orig (point)))
-        (when (interactive-p)
-          (message "%s" orig))
-        orig))))
+      (when (eq orig (point))
+        (setq erg orig))
+      (when (interactive-p)
+        (message "%s" erg))
+      erg)))
 
-(defalias 'py-beginning-of-block-p 'py-statement-opens-block-p)
+(defun py-beginning-of-expression-p ()
+  "Returns position, if cursor is at the beginning of a expression, nil otherwise. "
+  (interactive)
+  (let ((orig (point))
+        erg)
+    (save-excursion
+      (py-end-of-expression)
+      (py-beginning-of-expression)
+      (when (eq orig (point))
+        (setq erg orig))
+      (when (interactive-p)
+        (message "%s" erg))
+      erg)))
+
+(defun py-beginning-of-minor-expression-p ()
+  "Returns position, if cursor is at the beginning of a minor-expression, nil otherwise. "
+  (interactive)
+  (let ((orig (point))
+        erg)
+    (save-excursion
+      (py-end-of-minor-expression)
+      (py-beginning-of-minor-expression)
+      (when (eq orig (point))
+        (setq erg orig))
+      (when (interactive-p)
+        (message "%s" erg))
+      erg)))
+
+(defun py-beginning-of-block-p ()
+  "Returns position, if cursor is at the beginning of a block, nil otherwise. "
+  (interactive)
+  (let (erg)
+    (when (and (looking-at py-block-re)
+               (not (py-in-string-or-comment-p)))
+      (setq erg (point)))
+    (when (interactive-p)
+      (message "%s" erg))
+    erg))
+
+(defun py-beginning-of-clause-p ()
+  "Returns position, if cursor is at the beginning of a clause, nil otherwise. "
+  (interactive)
+  (let (erg)
+    (when (and (looking-at py-clause-re)
+               (not (py-in-string-or-comment-p)))
+      (setq erg (point)))
+    (when (interactive-p)
+      (message "%s" erg))
+    erg))
+
+(defun py-beginning-of-block-or-clause-p ()
+  "Returns position, if cursor is at the beginning of a block-or-clause, nil otherwise. "
+  (interactive)
+  (let (erg)
+    (when (and (looking-at py-block-or-clause-re)
+               (not (py-in-string-or-comment-p)))
+      (setq erg (point)))
+    (when (interactive-p)
+      (message "%s" erg))
+    erg))
+
+(defun py-beginning-of-def-p ()
+  "Returns position, if cursor is at the beginning of a def, nil otherwise. "
+  (interactive)
+  (let (erg)
+    (when (and (looking-at py-def-re)
+               (not (py-in-string-or-comment-p)))
+      (setq erg (point)))
+    (when (interactive-p)
+      (message "%s" erg))
+    erg))
+
+(defun py-beginning-of-class-p ()
+  "Returns position, if cursor is at the beginning of a class, nil otherwise. "
+  (interactive)
+  (let (erg)
+    (when (and (looking-at py-class-re)
+               (not (py-in-string-or-comment-p)))
+      (setq erg (point)))
+    (when (interactive-p)
+      (message "%s" erg))
+    erg))
+
+(defun py-beginning-of-def-or-class-p ()
+  "Returns position, if cursor is at the beginning of a def-or-class, nil otherwise. "
+  (interactive)
+  (let (erg)
+    (when (and (looking-at py-def-or-class-re)
+               (not (py-in-string-or-comment-p)))
+      (setq erg (point)))
+    (when (interactive-p)
+      (message "%s" erg))
+    erg))
+
+;;; Opens- p
 (defun py-statement-opens-block-p (&optional regexp)
   "Return position if the current statement opens a block
 in stricter or wider sense.
@@ -4500,31 +4618,26 @@ For stricter sense specify regexp. "
     (when (interactive-p) (message "%s" erg))
     erg))
 
-(defalias 'py-beginning-of-clause-p 'py-statement-opens-clause-p)
 (defun py-statement-opens-clause-p ()
   "Return position if the current statement opens block or clause. "
   (interactive)
   (py-statement-opens-base py-clause-re))
 
-(defalias 'py-beginning-of-block-or-clause-p 'py-statement-opens-block-or-clause-p)
 (defun py-statement-opens-block-or-clause-p ()
   "Return position if the current statement opens block or clause. "
   (interactive)
   (py-statement-opens-base py-block-or-clause-re))
 
-(defalias 'py-beginning-of-class-p 'py-statement-opens-class-p)
 (defun py-statement-opens-class-p ()
   "Return `t' if the statement opens a functions or class definition, nil otherwise. "
   (interactive)
   (py-statement-opens-base py-class-re))
 
-(defalias 'py-beginning-of-def-p 'py-statement-opens-def-p)
 (defun py-statement-opens-def-p ()
   "Return `t' if the statement opens a functions or class definition, nil otherwise. "
   (interactive)
   (py-statement-opens-base py-def-re))
 
-(defalias 'py-beginning-of-def-or-class-p 'py-statement-opens-def-or-class-p)
 (defun py-statement-opens-def-or-class-p ()
   "Return `t' if the statement opens a functions or class definition, nil otherwise. "
   (interactive)
@@ -6082,6 +6195,8 @@ Returns indentation if block found, nil otherwise. "
                   (nth 8 (if (featurep 'xemacs)
                              (parse-partial-sexp ppstart (point))
                            (syntax-ppss)))))
+      (back-to-indentation)
+      (when (looking-at py-block-re) (setq erg (current-indentation)))
       (when (interactive-p) (message "%s" erg))
       erg)))
 
@@ -9234,7 +9349,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
                 (concat (if py-hide-show-hide-docstrings
                             "^\\s-*\"\"\"\\|" "")
                         (mapconcat 'identity
-                                   (mapcar #'(lambda (x) (concat "^\\s-*" x "\\>"))
+                                   (mapcar #'(lambda (x) (concat "^\\s-*" x "\\_>"))
                                            py-hide-show-keywords)
                                    "\\|"))
                 ;; end regex
@@ -9257,7 +9372,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
        (concat (if py-hide-show-hide-docstrings
                    "^\\s-*\"\"\"\\|" "")
                (mapconcat 'identity
-                          (mapcar #'(lambda (x) (concat "^\\s-*" x "\\>"))
+                          (mapcar #'(lambda (x) (concat "^\\s-*" x "\\_>"))
                                   py-hide-show-keywords)
                           "\\|")))
   (set (make-local-variable 'add-log-current-defun-function) 'py-current-defun)
@@ -9280,8 +9395,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
     ;; (imenu-add-to-menubar (format "%s-%s" "IM" mode-name))
     (imenu-add-to-menubar "PyIndex")
     ;; (remove-hook 'imenu-add-menubar-index 'python-mode-hook)
-    (add-hook imenu-create-index-function 'python-mode-hook)
-    )
+    (add-hook imenu-create-index-function 'python-mode-hook))
   (set (make-local-variable 'eldoc-documentation-function)
        #'python-eldoc-function)
   (add-hook 'eldoc-mode-hook
@@ -9299,26 +9413,20 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   ;;   (add-hook 'python-mode-hook '(lambda ()(load (concat py-install-directory "/python-extended-executes.el") nil t))))
   ;; Python defines TABs as being 8-char wide.
   (set (make-local-variable 'tab-width) py-indent-offset)
-  ;; Now do the automagical guessing
-  (when py-smart-indentation
-    (if (bobp)
-        (save-excursion
-          (save-restriction
-            (widen)
-            ;; (switch-to-buffer (current-buffer))
-            (while (and (not (eobp))
-                        (or
-                         (let ((erg (syntax-ppss)))
-                           (or (nth 1 erg) (nth 8 erg)))
-                         (eq 0 (current-indentation))))
-              (forward-line 1))
-            (back-to-indentation)
-            (py-guess-indent-offset)))
-      (py-guess-indent-offset)))
-  ;; don't think needed now
-  ;; (when (null py-shell-name)
-  ;; (py-toggle-shells (py-choose-shell)))
-  ;; (py-set-load-path)
+  ;; (when py-smart-indentation
+  ;;   (if (bobp)
+  ;;       (save-excursion
+  ;;         (save-restriction
+  ;;           (widen)
+  ;;           (while (and (not (eobp))
+  ;;                       (or
+  ;;                        (let ((erg (syntax-ppss)))
+  ;;                          (or (nth 1 erg) (nth 8 erg)))
+  ;;                        (eq 0 (current-indentation))))
+  ;;             (forward-line 1))
+  ;;           (back-to-indentation)
+  ;;           (py-guess-indent-offset)))
+  ;;     (py-guess-indent-offset)))
   (when py-load-pymacs-p (py-load-pymacs)
         (unwind-protect
             (progn

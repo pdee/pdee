@@ -234,8 +234,28 @@ Returns value of `indent-tabs-mode' switched to. "
   (interactive "p")
   (indent-tabs-mode (- (abs arg))(interactive-p)))
 
+;;; Guess indent offset
 (defun py-guessed-sanity-check (guessed)
   (and (>= guessed 2)(<= guessed 8)(eq 0 (% guessed 2))))
+
+(defun py-guess-indent-offset-intern ()
+  (if (and firstindent erg (not (eq firstindent erg)))
+      (progn
+        (setq guessed (abs (- firstindent erg)))
+        (if (py-guessed-sanity-check guessed)
+            (setq py-indent-offset guessed)
+          (setq py-indent-offset (default-value 'py-indent-offset))))
+    (setq py-indent-offset (default-value 'py-indent-offset)))
+  (setq done t))
+
+(defun py-guess-check ()
+  (if (ignore-errors (< firstindent (setq erg (py-down-statement))))
+      (py-guess-indent-offset-intern)
+    ;; must search upward for something probable
+    (goto-char orig)
+    ;; repeat first upward
+    (setq firstindent (if (py-beginning-of-block-p)(current-indentation)(when (py-beginning-of-block)(current-indentation))))
+    (setq erg (when (py-beginning-of-block)(current-indentation)))))
 
 (defun py-guess-indent-offset (&optional global orig)
   "Guess a value for, and change, `py-indent-offset'.
@@ -245,30 +265,28 @@ new value.
 With optional argument GLOBAL change the global value of `py-indent-offset'. "
   (interactive "P")
   (save-excursion
-    (let ((lastindent (cond
-                       ((py-beginning-of-block-p)
-                        (current-indentation))
-                       ((py-beginning-of-block)
-                        (current-indentation))
-                       ((py-down-block))))
-          erg)
-      (if lastindent
+    (let ((orig (point)) firstindent erg done guessed)
+      (back-to-indentation)
+      (if (py-beginning-of-block-p)
           (progn
-            ;; (py-down-statement)
-            (py-beginning-of-block-or-clause)
-            (if (py-guessed-sanity-check (setq erg (abs (- lastindent (current-indentation)))))
-                (progn
-                  (funcall (if global 'kill-local-variable 'make-local-variable)
-                           'py-indent-offset)
-                  (setq py-indent-offset erg))
-              (setq py-indent-offset (default-value 'py-indent-offset))))
-        ;; no block, no indent
-        (setq py-indent-offset (default-value 'py-indent-offset)))
+            (setq firstindent (current-column))
+            (py-guess-check))
+        (if (setq firstindent (when (py-beginning-of-block)(current-indentation)))
+            (py-guess-check)
+          (unless (and firstindent erg)
+            (goto-char orig)
+            (when (setq firstindent (py-down-block))
+              (setq erg (py-down-statement))))))
+      (unless done (py-guess-indent-offset-intern))
+      (funcall (if global 'kill-local-variable 'make-local-variable)
+               'py-indent-offset)
       (when (interactive-p)
         (message "%s value of py-indent-offset:  %d"
                  (if global "Global" "Local")
                  py-indent-offset))
       py-indent-offset)))
+
+;;;
 
 (defun py-comment-indent-function ()
   "Python version of `comment-indent-function'."

@@ -155,7 +155,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall indent-after-multiple-except-statements-lp:883815-test \
 --funcall wrongly-highlighted-as-keywords-lp-885144-test \
 --funcall glitch-when-indenting-lists-lp-886473-test \
---funcall indentation-bug-inside-docstrings-lp-899455-test \
 --funcall another-indentation-bug-inside-docstrings-lp:900684-test \
 --funcall incorrect-use-of-region-in-py-shift-left-lp:875951-test \
 --funcall indentation-keyword-lp-885143-test \
@@ -164,7 +163,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall from-__future__-import-absolute_import-mishighlighted-lp-907084-test \
 --funcall automatic-indentation-is-broken-lp-889643-test \
 --funcall chars-uU-preceding-triple-quoted-get-string-face-lp-909517-test \
---funcall wrong-type-argument-lp-901541-test \
 --funcall py-pychecker-run-missing-lp-910783-test \
 --funcall py-forward-into-nomenclature-lp-916818-test \
 --funcall py-forward-into-nomenclature-jumps-over-CamelCased-words-lp:919540-test \
@@ -213,6 +211,8 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall UnicodeEncodeError-lp:550661-test \
 --funcall py-shell-complete-test \
 --funcall py-completion-at-point-test \
+--funcall wrong-type-argument-lp-901541-test \
+--funcall indentation-bug-inside-docstrings-lp-899455-test \
 --funcall py-shebang-ipython-env-lp-849293-test \
 --funcall master-file-not-honored-lp:794850-test \
 --funcall py-insert-super-python2-test \

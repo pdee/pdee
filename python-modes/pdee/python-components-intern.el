@@ -170,7 +170,7 @@ When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
                   (current-indentation)))
                ((and (looking-at py-block-closing-keywords-re)(eq (py-count-lines) origline))
                 (py-beginning-of-block-or-clause)
-                (+  
+                (+
                  (if py-smart-indentation (py-guess-indent-offset nil orig) py-indent-offset)
                  ;; py-indent-offset
                  (current-indentation)))
@@ -424,43 +424,144 @@ will work.
         (when (interactive-p) (message "%s" erg))
         erg))))
 
-(defun py-beginning-of-expression-p ()
-  "Returns position, if cursor is at the beginning of a expression, nil otherwise. "
+;;; Beginning-of- p
+(defun py-beginning-of-paragraph-p ()
+  "Returns position, if cursor is at the beginning of a paragraph, nil otherwise. "
   (interactive)
-  (let ((orig (point)))
+  (let ((orig (point))
+        erg)
     (save-excursion
-      (py-end-of-expression)
-      (py-beginning-of-expression)
-      (when (or (eq orig (point)))
-        (when (interactive-p)
-          (message "%s" orig))
-        orig))))
+      (py-end-of-paragraph)
+      (py-beginning-of-paragraph)
+      (when (eq orig (point))
+        (setq erg orig))
+      (when (interactive-p)
+        (message "%s" erg))
+      erg)))
 
-(defun py-beginning-of-partial-expression-p ()
-  "Returns position, if cursor is at the beginning of a expression, nil otherwise. "
+(defun py-beginning-of-line-p ()
+  "Returns position, if cursor is at the beginning of a line, nil otherwise. "
   (interactive)
-  (let ((orig (point)))
+  (let ((orig (point))
+        erg)
     (save-excursion
-      (py-end-of-partial-expression)
-      (py-beginning-of-partial-expression)
-      (when (or (eq orig (point)))
-        (when (interactive-p)
-          (message "%s" orig))
-        orig))))
+      (py-end-of-line)
+      (py-beginning-of-line)
+      (when (eq orig (point))
+        (setq erg orig))
+      (when (interactive-p)
+        (message "%s" erg))
+      erg)))
 
 (defun py-beginning-of-statement-p ()
   "Returns position, if cursor is at the beginning of a statement, nil otherwise. "
   (interactive)
-  (let ((orig (point)))
+  (let ((orig (point))
+        erg)
     (save-excursion
       (py-end-of-statement)
       (py-beginning-of-statement)
-      (when (or (eq orig (point)))
-        (when (interactive-p)
-          (message "%s" orig))
-        orig))))
+      (when (eq orig (point))
+        (setq erg orig))
+      (when (interactive-p)
+        (message "%s" erg))
+      erg)))
 
-(defalias 'py-beginning-of-block-p 'py-statement-opens-block-p)
+(defun py-beginning-of-expression-p ()
+  "Returns position, if cursor is at the beginning of a expression, nil otherwise. "
+  (interactive)
+  (let ((orig (point))
+        erg)
+    (save-excursion
+      (py-end-of-expression)
+      (py-beginning-of-expression)
+      (when (eq orig (point))
+        (setq erg orig))
+      (when (interactive-p)
+        (message "%s" erg))
+      erg)))
+
+(defun py-beginning-of-minor-expression-p ()
+  "Returns position, if cursor is at the beginning of a minor-expression, nil otherwise. "
+  (interactive)
+  (let ((orig (point))
+        erg)
+    (save-excursion
+      (py-end-of-minor-expression)
+      (py-beginning-of-minor-expression)
+      (when (eq orig (point))
+        (setq erg orig))
+      (when (interactive-p)
+        (message "%s" erg))
+      erg)))
+
+(defun py-beginning-of-block-p ()
+  "Returns position, if cursor is at the beginning of a block, nil otherwise. "
+  (interactive)
+  (let (erg)
+    (when (and (looking-at py-block-re)
+               (not (py-in-string-or-comment-p)))
+      (setq erg (point)))
+    (when (interactive-p)
+      (message "%s" erg))
+    erg))
+
+(defun py-beginning-of-clause-p ()
+  "Returns position, if cursor is at the beginning of a clause, nil otherwise. "
+  (interactive)
+  (let (erg)
+    (when (and (looking-at py-clause-re)
+               (not (py-in-string-or-comment-p)))
+      (setq erg (point)))
+    (when (interactive-p)
+      (message "%s" erg))
+    erg))
+
+(defun py-beginning-of-block-or-clause-p ()
+  "Returns position, if cursor is at the beginning of a block-or-clause, nil otherwise. "
+  (interactive)
+  (let (erg)
+    (when (and (looking-at py-block-or-clause-re)
+               (not (py-in-string-or-comment-p)))
+      (setq erg (point)))
+    (when (interactive-p)
+      (message "%s" erg))
+    erg))
+
+(defun py-beginning-of-def-p ()
+  "Returns position, if cursor is at the beginning of a def, nil otherwise. "
+  (interactive)
+  (let (erg)
+    (when (and (looking-at py-def-re)
+               (not (py-in-string-or-comment-p)))
+      (setq erg (point)))
+    (when (interactive-p)
+      (message "%s" erg))
+    erg))
+
+(defun py-beginning-of-class-p ()
+  "Returns position, if cursor is at the beginning of a class, nil otherwise. "
+  (interactive)
+  (let (erg)
+    (when (and (looking-at py-class-re)
+               (not (py-in-string-or-comment-p)))
+      (setq erg (point)))
+    (when (interactive-p)
+      (message "%s" erg))
+    erg))
+
+(defun py-beginning-of-def-or-class-p ()
+  "Returns position, if cursor is at the beginning of a def-or-class, nil otherwise. "
+  (interactive)
+  (let (erg)
+    (when (and (looking-at py-def-or-class-re)
+               (not (py-in-string-or-comment-p)))
+      (setq erg (point)))
+    (when (interactive-p)
+      (message "%s" erg))
+    erg))
+
+;;; Opens
 (defun py-statement-opens-block-p (&optional regexp)
   "Return position if the current statement opens a block
 in stricter or wider sense.
@@ -485,31 +586,26 @@ For stricter sense specify regexp. "
     (when (interactive-p) (message "%s" erg))
     erg))
 
-(defalias 'py-beginning-of-clause-p 'py-statement-opens-clause-p)
 (defun py-statement-opens-clause-p ()
   "Return position if the current statement opens block or clause. "
   (interactive)
   (py-statement-opens-base py-clause-re))
 
-(defalias 'py-beginning-of-block-or-clause-p 'py-statement-opens-block-or-clause-p)
 (defun py-statement-opens-block-or-clause-p ()
   "Return position if the current statement opens block or clause. "
   (interactive)
   (py-statement-opens-base py-block-or-clause-re))
 
-(defalias 'py-beginning-of-class-p 'py-statement-opens-class-p)
 (defun py-statement-opens-class-p ()
   "Return `t' if the statement opens a functions or class definition, nil otherwise. "
   (interactive)
   (py-statement-opens-base py-class-re))
 
-(defalias 'py-beginning-of-def-p 'py-statement-opens-def-p)
 (defun py-statement-opens-def-p ()
   "Return `t' if the statement opens a functions or class definition, nil otherwise. "
   (interactive)
   (py-statement-opens-base py-def-re))
 
-(defalias 'py-beginning-of-def-or-class-p 'py-statement-opens-def-or-class-p)
 (defun py-statement-opens-def-or-class-p ()
   "Return `t' if the statement opens a functions or class definition, nil otherwise. "
   (interactive)

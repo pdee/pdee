@@ -4458,11 +4458,13 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (when (and imenu-create-index-p (ignore-errors (require 'imenu)))
     (setq imenu-create-index-function #'py-imenu-create-index-new)
     ;; (setq imenu-create-index-function #'py-imenu-create-index)
-    (setq imenu-generic-expression py-imenu-generic-expression)
+    (setq imenu-generic-expression py-imenu-generic-expression))
     (when (fboundp 'imenu-add-to-menubar)
       ;; (imenu-add-to-menubar (format "%s-%s" "IM" mode-name))
       (imenu-add-to-menubar "PyIndex")
-      (remove-hook 'imenu-add-menubar-index 'python-mode-hook)))
+    ;; (remove-hook 'imenu-add-menubar-index 'python-mode-hook)
+    (add-hook imenu-create-index-function 'python-mode-hook)
+    )
   (set (make-local-variable 'eldoc-documentation-function)
        #'python-eldoc-function)
   (add-hook 'eldoc-mode-hook
@@ -4481,25 +4483,20 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   ;; Python defines TABs as being 8-char wide.
   (set (make-local-variable 'tab-width) py-indent-offset)
   ;; Now do the automagical guessing
-  (when py-smart-indentation
-    (if (bobp)
-        (save-excursion
-          (save-restriction
-            (widen)
-            ;; (switch-to-buffer (current-buffer))
-            (while (and (not (eobp))
-                        (or
-                         (let ((erg (syntax-ppss)))
-                           (or (nth 1 erg) (nth 8 erg)))
-                         (eq 0 (current-indentation))))
-              (forward-line 1))
-            (back-to-indentation)
-            (py-guess-indent-offset)))
-      (py-guess-indent-offset)))
-  ;; don't think needed now
-  ;; (when (null py-shell-name)
-  ;; (py-toggle-shells (py-choose-shell)))
-  ;; (py-set-load-path)
+  ;; (when py-smart-indentation
+  ;;   (if (bobp)
+  ;;       (save-excursion
+  ;;         (save-restriction
+  ;;           (widen)
+  ;;           (while (and (not (eobp))
+  ;;                       (or
+  ;;                        (let ((erg (syntax-ppss)))
+  ;;                          (or (nth 1 erg) (nth 8 erg)))
+  ;;                        (eq 0 (current-indentation))))
+  ;;             (forward-line 1))
+  ;;           (back-to-indentation)
+  ;;           (py-guess-indent-offset)))
+  ;;     (py-guess-indent-offset)))
   (when py-load-pymacs-p (py-load-pymacs)
         (unwind-protect
             (progn

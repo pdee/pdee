@@ -1402,6 +1402,8 @@ Returns indentation if block found, nil otherwise. "
                   (nth 8 (if (featurep 'xemacs)
                              (parse-partial-sexp ppstart (point))
                            (syntax-ppss)))))
+      (back-to-indentation)
+      (when (looking-at py-block-re) (setq erg (current-indentation)))
       (when (interactive-p) (message "%s" erg))
       erg)))
 
