@@ -959,6 +959,15 @@ indent-width will be guessed from current major-mode"
       (message "highlight-indentation OFF"))
     (font-lock-fontify-buffer)))
 
+(defcustom py-underscore-word-syntax-p t
+  "If underscore chars should be of syntax-class `word', not of `symbol'.
+
+Underscores in word-class makes `forward-word' etc. travel the indentifiers. Default is `t'.
+
+See bug report at launchpad, lp:940812 "
+  :type 'boolean
+  :group 'python-mode)
+
 ;;; highlight-indentation.el ends here
 
 ;;; NO USER DEFINABLE VARIABLES BEYOND THIS POINT
@@ -1311,7 +1320,8 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
         (modify-syntax-entry ?\n ">" table)
         (modify-syntax-entry ?' "\"" table)
         (modify-syntax-entry ?` "$" table)
-        (modify-syntax-entry ?_ "w" table)
+        (when py-underscore-word-syntax-p
+          (modify-syntax-entry ?_ "w" table))
         table))
 
 (defvar py-menu)

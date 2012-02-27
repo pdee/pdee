@@ -851,6 +851,15 @@ Making switch between several virtualenv's easier,
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-underscore-word-syntax-p t
+  "If underscore chars should be of syntax-class `word', not of `symbol'.
+
+Underscores in word-class makes `forward-word' etc. travel the indentifiers. Default is `t'.
+
+See bug report at launchpad, lp:940812 "
+  :type 'boolean
+  :group 'python-mode)
+
 ;; (defcustom python-load-extended-executes-p  t
 ;;   "If commands from `python-extended-executes.el' should be loaded.
 ;;
@@ -1441,13 +1450,15 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
         (modify-syntax-entry ?\n ">" table)
         (modify-syntax-entry ?' "\"" table)
         (modify-syntax-entry ?` "$" table)
-        (modify-syntax-entry ?_ "w" table)
+        (when py-underscore-word-syntax-p
+          (modify-syntax-entry ?_ "w" table))
         table))
 
 ;; An auxiliary syntax table which places underscore and dot in the
 ;; symbol class for simplicity
 (defvar py-dotted-expression-syntax-table nil
   "Syntax table used to identify Python dotted expressions.")
+
 (when (not py-dotted-expression-syntax-table)
   (setq py-dotted-expression-syntax-table
         (copy-syntax-table python-mode-syntax-table))
@@ -1497,7 +1508,7 @@ It makes underscores and dots word constituent chars.")
         (define-key map [(control c)(>)] 'py-shift-right)
         (define-key map [(control c)(tab)] 'py-indent-region)
         (define-key map [(control c)(:)] 'py-guess-indent-offset)
-        
+
         ;; subprocess commands
         (define-key map [(control c)(control c)] 'py-execute-buffer)
         (define-key map [(control c)(control m)] 'py-execute-import-or-reload)
@@ -4483,7 +4494,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   ;;   (add-hook 'python-mode-hook '(lambda ()(load (concat py-install-directory "/python-extended-executes.el") nil t))))
   ;; Python defines TABs as being 8-char wide.
   (set (make-local-variable 'tab-width) py-indent-offset)
-  ;; Now guess `py-indent-offset' 
+  ;; Now guess `py-indent-offset'
   (when py-smart-indentation
     (if (bobp)
         (save-excursion
@@ -5315,7 +5326,6 @@ complete('%s')
 			       (split-string result "\n" t) ; XEmacs
 			     (split-string result "\n"))))
 	  (py-shell-dynamic-simple-complete word completions))))))
-
 
 ;; (defun ipython-complete (&optional done)
 ;;   "Complete the python symbol before point.
