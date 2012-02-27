@@ -169,6 +169,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-backward-into-nomenclature-caps-names-lp:919541-test \
 --funcall execute-buffer-ipython-fails-lp:928087-test \
 --funcall fourth-level-blocks-indent-incorrectly-lp-939577-test \
+--funcall py-mark-expression-marks-too-much-lp-941140-test \
 \
 --funcall multiline-list-indent-test \
 --funcall py-beginning-of-block-test \
@@ -211,6 +212,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall UnicodeEncodeError-lp:550661-test \
 --funcall py-shell-complete-test \
 --funcall py-completion-at-point-test \
+--funcall py-smart-indent-eight-test \
 --funcall wrong-type-argument-lp-901541-test \
 --funcall indentation-bug-inside-docstrings-lp-899455-test \
 --funcall py-shebang-ipython-env-lp-849293-test \

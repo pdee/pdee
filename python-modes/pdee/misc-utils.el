@@ -147,7 +147,7 @@ If no string is delivered but region is active, strip region.
   (let* ((erg (nth 8 (if (featurep 'xemacs)
                          (parse-partial-sexp (point-min) (point))
                        (syntax-ppss))))
-         (la (unless erg (when (or (looking-at "\"")(looking-at comment-start-skip))
+         (la (unless erg (when (or (looking-at "\"")(looking-at comment-start)(looking-at comment-start-skip))
                            (match-beginning 0)))))
     (setq erg (or erg la))
     (when (interactive-p) (message "%s" erg))

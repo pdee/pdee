@@ -2057,6 +2057,8 @@ def foo():
 
 (defun indentation-bug-inside-docstrings-lp-899455-base ()
   (goto-char 742)
+  (message "%s" "indentation-bug-inside-docstrings-lp-899455-test")
+  (message "(py-compute-indentation) should 8: %s" (py-compute-indentation))
   (sit-for 0.2)
   (assert (eq 8 (py-compute-indentation)) nil "indentation-bug-inside-docstrings-lp-899455-test failed"))
 
@@ -2092,7 +2094,7 @@ def main():
     (py-bug-tests-intern 'indent-offset-not-guessed-when-loading-lp:902890-base arg teststring)))
 
 (defun indent-offset-not-guessed-when-loading-lp:902890-base ()
-  "This doesn't check precisely the feature requested. " 
+  "This doesn't check precisely the feature requested. "
   (assert (eq 2 (py-guess-indent-offset)) nil "indent-offset-not-guessed-when-loading-lp:902890-test failed"))
 
 (defun from-__future__-import-absolute_import-mishighlighted-lp-907084-test (&optional arg load-branch-function)
@@ -2155,7 +2157,9 @@ This module is an optparse-inspired command-line parsing library that:
 
 (defun wrong-type-argument-lp-901541-base ()
   (goto-char 385)
-  (sit-for 0.1) 
+  (sit-for 0.1)
+  (message "%s" "wrong-type-argument-lp-901541-test")
+  (message "(py-compute-indentation): should 4: %s" (py-compute-indentation))
   (assert (eq 4 (py-compute-indentation)) nil "wrong-type-argument-lp-901541-test failed"))
 
 (defun py-pychecker-run-missing-lp-910783-test (&optional arg load-branch-function)
@@ -2276,6 +2280,36 @@ for x in y:
   (goto-char 108)
   (assert (eq 12 (py-compute-indentation)) nil "fourth-level-blocks-indent-incorrectly-lp-939577-test failed"))
 
+(defun py-mark-expression-marks-too-much-lp-941140-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -\*-
+  somevar = \"some string\"
+  # some code
+
+# when point is on the first quote, calling py-mark-expression marks the next several lines, no matter what they are.
+
+# This only seems to happen when point is in the first quote of a string literal which is the last thing on a
+line.
+
+  somevar = \"some string\".some_property()
+  # point at first quote works
+
+  somevar = \"a\" + \"b\"
+  # works at quote before a, fails at quote before b
+
+I am using version 6.0.4
+
+"))
+  (when load-branch-function (funcall load-branch-function))
+  (py-bug-tests-intern 'py-mark-expression-marks-too-much-lp-941140-base arg teststring)))
+
+(defun py-mark-expression-marks-too-much-lp-941140-base ()
+  (goto-char 60)
+  (assert (eq 73 (cdr (py-expression))) nil "py-mark-expression-marks-too-much-lp-941140-test failed")
+  (goto-char 417)
+  (assert (eq 420 (cdr (py-expression))) nil "py-mark-expression-marks-too-much-lp-941140-test failed")
+)
+
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
-

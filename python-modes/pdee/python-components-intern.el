@@ -401,11 +401,17 @@ Optional ARG indicates a start-position for `parse-partial-sexp'."
     (when (interactive-p) (message "%s" erg))
     erg))
 
-(defsubst py-in-string-or-comment-p ()
-  "Return beginning position if point is in a Python literal (a comment or string)."
-  (nth 8 (if (featurep 'xemacs)
-             (parse-partial-sexp (point-min) (point))
-           (syntax-ppss))))
+(defun py-in-string-or-comment-p ()
+  "Returns beginning position if inside a string or comment, nil otherwise. "
+  (interactive)
+  (let* ((erg (nth 8 (if (featurep 'xemacs)
+                         (parse-partial-sexp (point-min) (point))
+                       (syntax-ppss))))
+         (la (unless erg (when (or (looking-at "\"")(looking-at comment-start)(looking-at comment-start-skip))
+                           (match-beginning 0)))))
+    (setq erg (or erg la))
+    (when (interactive-p) (message "%s" erg))
+    erg))
 
 (defun py-in-statement-p ()
   "Returns list of beginning and end-position if inside.
@@ -430,11 +436,13 @@ will work.
   (interactive)
   (let ((orig (point))
         erg)
-    (save-excursion
-      (py-end-of-paragraph)
-      (py-beginning-of-paragraph)
-      (when (eq orig (point))
-        (setq erg orig))
+    (if (and (bolp) (looking-at paragraph-separate))
+        (setq erg (point))
+      (save-excursion
+        (py-end-of-paragraph)
+        (py-beginning-of-paragraph)
+        (when (eq orig (point))
+          (setq erg orig)))
       (when (interactive-p)
         (message "%s" erg))
       erg)))
@@ -471,15 +479,24 @@ will work.
   "Returns position, if cursor is at the beginning of a expression, nil otherwise. "
   (interactive)
   (let ((orig (point))
+        (pps (if (featurep 'xemacs)
+                 (parse-partial-sexp (point-min) (point))
+               (syntax-ppss)))
         erg)
-    (save-excursion
-      (py-end-of-expression)
-      (py-beginning-of-expression)
-      (when (eq orig (point))
-        (setq erg orig))
-      (when (interactive-p)
-        (message "%s" erg))
-      erg)))
+    (unless (and (setq erg (py-in-string-or-comment-p))
+                 (eq erg orig)
+                 (not (nth 1 pps)))
+      (setq erg nil)
+      (unless (or (nth 1 pps)(nth 3 pps)(nth 8 pps)
+                  (looking-at ".?[ \t]*\\(=\\|:\\|+\\|-\\|*\\|/\\|//\\|&\\|%\\||\\|\^\\|>>\\|<<\\)"))
+        (save-excursion
+          (py-end-of-expression)
+          (py-beginning-of-expression)
+          (when (eq orig (point))
+            (setq erg orig)))))
+    (when (interactive-p)
+      (message "%s" erg))
+    erg))
 
 (defun py-beginning-of-minor-expression-p ()
   "Returns position, if cursor is at the beginning of a minor-expression, nil otherwise. "

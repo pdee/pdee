@@ -1497,6 +1497,7 @@ It makes underscores and dots word constituent chars.")
         (define-key map [(control c)(>)] 'py-shift-right)
         (define-key map [(control c)(tab)] 'py-indent-region)
         (define-key map [(control c)(:)] 'py-guess-indent-offset)
+        
         ;; subprocess commands
         (define-key map [(control c)(control c)] 'py-execute-buffer)
         (define-key map [(control c)(control m)] 'py-execute-import-or-reload)
@@ -1507,6 +1508,7 @@ It makes underscores and dots word constituent chars.")
         (define-key map [(control c)(control t)] 'py-toggle-shells)
         (define-key map [(control meta h)] 'py-mark-def-or-class)
         (define-key map [(control c)(control k)] 'py-mark-block-or-clause)
+        (define-key map [(control c)(.)] 'py-expression)
         ;; Miscellaneous
         (define-key map [(control c)(control d)] 'py-pdbtrack-toggle-stack-tracking)
         (define-key map [(control c)(control f)] 'py-sort-imports)
@@ -1556,7 +1558,7 @@ Run pychecker"]
              :help "`pdb'
 Run pdb under GUD"]
             "-"
-            ["Toggle py-smart-indentation" toggle-py-smart-indentation 
+            ["Toggle py-smart-indentation" toggle-py-smart-indentation
              :help "See also `py-smart-indentation-on', `-off' "]
             ["Customize Python mode" (customize-group 'python-mode)
              :help "Open the customization buffer for Python mode"]
@@ -4459,12 +4461,11 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
     (setq imenu-create-index-function #'py-imenu-create-index-new)
     ;; (setq imenu-create-index-function #'py-imenu-create-index)
     (setq imenu-generic-expression py-imenu-generic-expression))
-    (when (fboundp 'imenu-add-to-menubar)
-      ;; (imenu-add-to-menubar (format "%s-%s" "IM" mode-name))
-      (imenu-add-to-menubar "PyIndex")
+  (when (fboundp 'imenu-add-to-menubar)
+    ;; (imenu-add-to-menubar (format "%s-%s" "IM" mode-name))
+    (imenu-add-to-menubar "PyIndex")
     ;; (remove-hook 'imenu-add-menubar-index 'python-mode-hook)
-    (add-hook imenu-create-index-function 'python-mode-hook)
-    )
+    (add-hook imenu-create-index-function 'python-mode-hook))
   (set (make-local-variable 'eldoc-documentation-function)
        #'python-eldoc-function)
   (add-hook 'eldoc-mode-hook
@@ -4482,21 +4483,21 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   ;;   (add-hook 'python-mode-hook '(lambda ()(load (concat py-install-directory "/python-extended-executes.el") nil t))))
   ;; Python defines TABs as being 8-char wide.
   (set (make-local-variable 'tab-width) py-indent-offset)
-  ;; Now do the automagical guessing
-  ;; (when py-smart-indentation
-  ;;   (if (bobp)
-  ;;       (save-excursion
-  ;;         (save-restriction
-  ;;           (widen)
-  ;;           (while (and (not (eobp))
-  ;;                       (or
-  ;;                        (let ((erg (syntax-ppss)))
-  ;;                          (or (nth 1 erg) (nth 8 erg)))
-  ;;                        (eq 0 (current-indentation))))
-  ;;             (forward-line 1))
-  ;;           (back-to-indentation)
-  ;;           (py-guess-indent-offset)))
-  ;;     (py-guess-indent-offset)))
+  ;; Now guess `py-indent-offset' 
+  (when py-smart-indentation
+    (if (bobp)
+        (save-excursion
+          (save-restriction
+            (widen)
+            (while (and (not (eobp))
+                        (or
+                         (let ((erg (syntax-ppss)))
+                           (or (nth 1 erg) (nth 8 erg)))
+                         (eq 0 (current-indentation))))
+              (forward-line 1))
+            (back-to-indentation)
+            (py-guess-indent-offset)))
+      (py-guess-indent-offset)))
   (when py-load-pymacs-p (py-load-pymacs)
         (unwind-protect
             (progn

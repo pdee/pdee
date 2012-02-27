@@ -246,6 +246,8 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
         (goto-char (1- (match-beginning 0)))
         (skip-chars-backward " \t\r\n\f")
         (forward-char -1))
+      (when (looking-back "[\])}]")
+        (forward-char -1))
       (let ((orig (or orig (point)))
             (cui (current-indentation))
             (origline (or origline (py-count-lines)))
@@ -258,10 +260,9 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
               (cond
                ;; if in string
                ((and (nth 3 pps)(nth 8 pps)
-                     (save-excursion
-                       (ignore-errors
-                         (goto-char (nth 2 pps)))))
-                (goto-char (nth 2 pps))
+                     (goto-char (nth 8 pps)))
+                (unless (looking-back "\\(=\\|:\\|+\\|-\\|*\\|/\\|//\\|&\\|%\\||\\|\^\\|>>\\|<<\\)[ \t]*")
+                  (goto-char (nth 2 pps)))
                 (py-beginning-of-expression orig origline))
                ;; comments left, as strings are done
                ((nth 8 pps)
@@ -319,15 +320,18 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
             (forward-line 1))
           (py-end-of-expression orig origline done))
          ;; inside string
-         ((nth 3 pps)
+         ((py-in-string-p)
           (when (looking-at "\"\"\"\\|'''\\|\"\\|'")
-            (goto-char (match-end 0)))
+            (goto-char (match-end 0))
+            (setq done t))
+          ;; (re-search-forward "[^\\]\"\"\"\\|[^\\]'''\\|[^\\]\"\\|[^\\]'" nil (quote move) 1)
           (while
-              (and (re-search-forward "[^\\]\"\"\"\\|[^\\]'''\\|[^\\]\"\\|[^\\]'" nil (quote move) 1)
-                   (nth 3
-                        (if (featurep 'xemacs)
-                            (parse-partial-sexp (point-min) (point))
-                          (syntax-ppss)))))
+              (nth 3
+                   (if (featurep 'xemacs)
+                       (parse-partial-sexp (point-min) (point))
+                     (syntax-ppss)))
+            (setq done t)
+            (forward-char 1))
           (py-end-of-expression orig origline done))
          ;; in comment
          ((nth 4 pps)
@@ -708,88 +712,145 @@ To go just beyond the final line of the current statement, use `py-down-statemen
       (py-end-of-statement)
       (py-beginning-of-statement))))
 
-;; Mark forms
-(defun py-mark-expression ()
-  "Mark expression at point.
+;;; Mark forms
+(defun py-mark-base (form &optional py-mark-decorators)
+  (let* ((begform (intern-soft (concat "py-beginning-of-" form)))
+         (endform (intern-soft (concat "py-end-of-" form)))
+         (begcheckform (intern-soft (concat "py-beginning-of-" form "-p")))
+         (orig (point))
+         beg end erg)
+    (setq beg (if
+                  (setq beg (funcall begcheckform))
+                  beg
+                (funcall begform)))
+    (when py-mark-decorators
+      (save-excursion
+        (when (setq erg (py-beginning-of-decorator))
+          (setq beg erg))))
+    (setq end (funcall endform))
+    (push-mark beg t t)
+    (unless end (when (< beg (point))
+                  (setq end (point))))
+    (when (interactive-p) (message "%s %s" beg end))
+    (cons beg end)))
+
+(defun py-mark-paragraph ()
+  "Mark paragraph at point.
 
 Returns beginning and end positions of marked area, a cons. "
-  (interactive)
-  (py-mark-base "expression")
-  (exchange-point-and-mark))
-
-(defun py-mark-partial-expression ()
-  "Mark partial-expression at point.
-
-Returns beginning and end positions of marked area, a cons.
-\".\" operators delimit a partial-expression expression on it's level, that's the difference to compound expressions. "
-  (interactive)
-  (py-mark-base "partial-expression")
-  (exchange-point-and-mark))
-
-(defun py-mark-statement ()
-  "Mark statement at point.
-
-Returns beginning and end positions of marked area, a cons. "
-  (interactive)
-  (py-mark-base "statement")
-  (exchange-point-and-mark))
+  (let (erg)
+    (setq erg (py-mark-base "paragraph"))
+    (exchange-point-and-mark)
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
 
 (defun py-mark-block ()
   "Mark block at point.
 
 Returns beginning and end positions of marked area, a cons. "
-  (interactive)
-  (py-mark-base "block")
-  (exchange-point-and-mark))
-
-(defun py-mark-block-or-clause ()
-  "Mark block-or-clause at point.
-
-Returns beginning and end positions of marked area, a cons. "
-  (interactive)
-  (py-mark-base "block-or-clause")
-  (exchange-point-and-mark))
-
-(defun py-mark-def-or-class (&optional arg)
-  "Mark def-or-class at point.
-
-With universal argument or `py-mark-decorators' set to `t' decorators are marked too.
-Returns beginning and end positions of marked area, a cons."
-  (interactive "P")
-  (let ((py-mark-decorators (or (eq 4 (prefix-numeric-value arg))  py-mark-decorators)))
-    (py-mark-base "def-or-class" py-mark-decorators)
-    (exchange-point-and-mark)))
-
-(defun py-mark-class (&optional arg)
-  "Mark class at point.
-
-With universal argument or `py-mark-decorators' set to `t' decorators are marked too.
-Returns beginning and end positions of marked area, a cons."
-
-  (interactive "P")
-  (let ((py-mark-decorators (or arg py-mark-decorators)))
-    (py-mark-base "class" py-mark-decorators)
-    (exchange-point-and-mark)))
-
-(defun py-mark-def (&optional arg)
-  "Mark def at point.
-
-With universal argument or `py-mark-decorators' set to `t' decorators are marked too.
-Returns beginning and end positions of marked area, a cons."
-
-  (interactive "P")
-  (let ((py-mark-decorators (or arg py-mark-decorators)))
-    (py-mark-base "def" py-mark-decorators)
-    (exchange-point-and-mark)))
+  (let (erg)
+    (setq erg (py-mark-base "block"))
+    (exchange-point-and-mark)
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
 
 (defun py-mark-clause ()
   "Mark clause at point.
 
 Returns beginning and end positions of marked area, a cons. "
-  (interactive)
-  (py-mark-base "clause")
-  (exchange-point-and-mark))
+  (let (erg)
+    (setq erg (py-mark-base "clause"))
+    (exchange-point-and-mark)
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
 
+(defun py-mark-block-or-clause ()
+  "Mark block-or-clause at point.
+
+Returns beginning and end positions of marked area, a cons. "
+  (let (erg)
+    (setq erg (py-mark-base "block-or-clause"))
+    (exchange-point-and-mark)
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defun py-mark-def (&optional arg)
+  "Mark def at point.
+
+With \\[universal argument] or `py-mark-decorators' set to `t', decorators are marked too.
+Returns beginning and end positions of marked area, a cons. "
+  (let ((py-mark-decorators (or arg py-mark-decorators))
+        erg)
+    (py-mark-base "def" py-mark-decorators)
+    (exchange-point-and-mark)
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defun py-mark-class (&optional arg)
+  "Mark class at point.
+
+With \\[universal argument] or `py-mark-decorators' set to `t', decorators are marked too.
+Returns beginning and end positions of marked area, a cons. "
+  (let ((py-mark-decorators (or arg py-mark-decorators))
+        erg)
+    (py-mark-base "def" py-mark-decorators)
+    (exchange-point-and-mark)
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defun py-mark-def-or-class (&optional arg)
+  "Mark def-or-class at point.
+
+With \\[universal argument] or `py-mark-decorators' set to `t', decorators are marked too.
+Returns beginning and end positions of marked area, a cons. "
+  (let ((py-mark-decorators (or arg py-mark-decorators))
+        erg)
+    (py-mark-base "def" py-mark-decorators)
+    (exchange-point-and-mark)
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defun py-mark-line ()
+  "Mark line at point.
+
+Returns beginning and end positions of marked area, a cons. "
+  (let (erg)
+    (setq erg (py-mark-base "line"))
+    (exchange-point-and-mark)
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defun py-mark-statement ()
+  "Mark statement at point.
+
+Returns beginning and end positions of marked area, a cons. "
+  (let (erg)
+    (setq erg (py-mark-base "statement"))
+    (exchange-point-and-mark)
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defun py-mark-expression ()
+  "Mark expression at point.
+
+Returns beginning and end positions of marked area, a cons. "
+  (let (erg)
+    (setq erg (py-mark-base "expression"))
+    (exchange-point-and-mark)
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defun py-mark-minor-expression ()
+  "Mark minor-expression at point.
+
+Returns beginning and end positions of marked area, a cons. "
+  (let (erg)
+    (setq erg (py-mark-base "minor-expression"))
+    (exchange-point-and-mark)
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+;;; Decorator
 (defun py-beginning-of-decorator ()
   "Go to the beginning of a decorator.
 
@@ -829,28 +890,7 @@ Returns position if succesful "
       (when (interactive-p) (message "%s" erg))
       erg)))
 
-(defun py-mark-base (form &optional py-mark-decorators)
-  (let* ((begform (intern-soft (concat "py-beginning-of-" form)))
-         (endform (intern-soft (concat "py-end-of-" form)))
-         (begcheckform (intern-soft (concat "py-beginning-of-" form "-p")))
-         (orig (point))
-         beg end erg)
-    (setq beg (if
-                  (setq beg (funcall begcheckform))
-                  beg
-                (funcall begform)))
-    (when py-mark-decorators
-      (save-excursion
-        (when (setq erg (py-beginning-of-decorator))
-          (setq beg erg))))
-    (setq end (funcall endform))
-    (push-mark beg t t)
-    (unless end (when (< beg (point))
-                  (setq end (point))))
-    (when (interactive-p) (message "%s %s" beg end))
-    (cons beg end)))
-
-;; Copying
+;;; Copying
 
 (defalias 'py-expression 'py-copy-expression)
 (defun py-copy-expression ()
@@ -859,7 +899,9 @@ Returns position if succesful "
 Returns beginning and end positions of marked area, a cons. "
   (interactive)
   (let ((erg (py-mark-base "expression")))
-    (kill-new (buffer-substring-no-properties (car erg) (cdr erg)))))
+    (kill-new (buffer-substring-no-properties (car erg) (cdr erg)))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
 
 (defalias 'py-partial-expression 'py-copy-partial-expression)
 (defalias 'py-copy-minor-expression 'py-copy-partial-expression)

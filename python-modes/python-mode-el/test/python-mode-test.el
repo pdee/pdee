@@ -979,6 +979,23 @@ class foo(bar, baz):
   (sit-for 0.1)
   (assert (eq 175 (py-end-of-statement)) nil "tqs-list-error-test failed"))
 
+(defun py-smart-indent-eight-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((py-smart-indentation t)
+        (teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+for x in y:
+    for z in l:
+        for r in t:
+                pass # <--- indents here. Pressing <backspace> dedents eight spaces (i.e. you can go to column 0 in two presess)
+"))
+    (when load-branch-function (funcall load-branch-function))
+    (py-bug-tests-intern 'py-smart-indent-eight-base arg teststring)))
+
+(defun py-smart-indent-eight-base ()
+  (goto-char 112)
+  (assert (eq 16 (py-compute-indentation)) nil "py-smart-indent-eight-test failed"))
+
 ;; (defun index-menu-test (&optional arg load-branch-function)
 ;;   (interactive "p")
 ;;   (let ((teststring "#! /usr/bin/env python
