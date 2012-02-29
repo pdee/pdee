@@ -2976,7 +2976,7 @@ Returns `py-indent-offset'"
                                (setq firstindent (progn (py-beginning-of-block)(current-indentation)))
                              (when (eq origline (py-count-lines))
                                (setq firstindent (progn (py-beginning-of-block)(current-indentation))))
-                             (when (< firstindent (py-down-statement))
+                             (when (ignore-errors (< firstindent (py-down-statement)))
                                (current-indentation)))))))
            (guessed (when erg (abs (- firstindent erg)))))
       (if (and guessed (py-guessed-sanity-check guessed))
@@ -12280,7 +12280,6 @@ as it leaves your system default unchanged."
   (save-excursion
     (let ((wholebuf t)
           (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          (py-shell-switch-buffers-on-execute switch)
           beg end)
       (when py-master-file
         (let* ((filename (expand-file-name py-master-file))
@@ -12289,7 +12288,7 @@ as it leaves your system default unchanged."
           (set-buffer buffer)))
       (setq beg (point-min))
       (setq end (point-max))
-      (py-execute-region beg end nil nil nil))))
+      (py-execute-region beg end "python" nil nil))))
 
 (defun py-execute-buffer-python-switch ()
   "Send buffer at point to Python interpreter. "
@@ -12297,7 +12296,6 @@ as it leaves your system default unchanged."
   (save-excursion
     (let ((wholebuf t)
           (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          (py-shell-switch-buffers-on-execute switch)
           beg end)
       (when py-master-file
         (let* ((filename (expand-file-name py-master-file))
@@ -12306,7 +12304,7 @@ as it leaves your system default unchanged."
           (set-buffer buffer)))
       (setq beg (point-min))
       (setq end (point-max))
-      (py-execute-region beg end nil nil 'switch))))
+      (py-execute-region beg end "python" nil 'switch))))
 
 (defun py-execute-buffer-python-noswitch ()
   "Send buffer at point to Python interpreter. "
@@ -12314,7 +12312,6 @@ as it leaves your system default unchanged."
   (save-excursion
     (let ((wholebuf t)
           (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          (py-shell-switch-buffers-on-execute switch)
           beg end)
       (when py-master-file
         (let* ((filename (expand-file-name py-master-file))
@@ -12323,7 +12320,7 @@ as it leaves your system default unchanged."
           (set-buffer buffer)))
       (setq beg (point-min))
       (setq end (point-max))
-      (py-execute-region beg end nil nil 'noswitch))))
+      (py-execute-region beg end "python" nil 'noswitch))))
 
 (defun py-execute-buffer-python-dedicated ()
   "Send buffer at point to Python interpreter. "
@@ -12331,7 +12328,6 @@ as it leaves your system default unchanged."
   (save-excursion
     (let ((wholebuf t)
           (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          (py-shell-switch-buffers-on-execute switch)
           beg end)
       (when py-master-file
         (let* ((filename (expand-file-name py-master-file))
@@ -12340,7 +12336,7 @@ as it leaves your system default unchanged."
           (set-buffer buffer)))
       (setq beg (point-min))
       (setq end (point-max))
-      (py-execute-region beg end nil t nil))))
+      (py-execute-region beg end "python" t nil))))
 
 (defun py-execute-buffer-python-dedicated-switch ()
   "Send buffer at point to Python interpreter. "
@@ -12348,7 +12344,6 @@ as it leaves your system default unchanged."
   (save-excursion
     (let ((wholebuf t)
           (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          (py-shell-switch-buffers-on-execute switch)
           beg end)
       (when py-master-file
         (let* ((filename (expand-file-name py-master-file))
@@ -12357,7 +12352,7 @@ as it leaves your system default unchanged."
           (set-buffer buffer)))
       (setq beg (point-min))
       (setq end (point-max))
-      (py-execute-region beg end nil t 'switch))))
+      (py-execute-region beg end "python" t 'switch))))
 
 (defun py-execute-buffer-ipython ()
   "Send buffer at point to IPython interpreter. "
@@ -12365,7 +12360,6 @@ as it leaves your system default unchanged."
   (save-excursion
     (let ((wholebuf t)
           (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          (py-shell-switch-buffers-on-execute switch)
           beg end)
       (when py-master-file
         (let* ((filename (expand-file-name py-master-file))
@@ -12374,7 +12368,7 @@ as it leaves your system default unchanged."
           (set-buffer buffer)))
       (setq beg (point-min))
       (setq end (point-max))
-      (py-execute-region beg end nil nil nil))))
+      (py-execute-region beg end "ipython" nil nil))))
 
 (defun py-execute-buffer-ipython-switch ()
   "Send buffer at point to IPython interpreter. "
@@ -12382,7 +12376,6 @@ as it leaves your system default unchanged."
   (save-excursion
     (let ((wholebuf t)
           (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          (py-shell-switch-buffers-on-execute switch)
           beg end)
       (when py-master-file
         (let* ((filename (expand-file-name py-master-file))
@@ -12391,7 +12384,7 @@ as it leaves your system default unchanged."
           (set-buffer buffer)))
       (setq beg (point-min))
       (setq end (point-max))
-      (py-execute-region beg end nil nil 'switch))))
+      (py-execute-region beg end "ipython" nil 'switch))))
 
 (defun py-execute-buffer-ipython-noswitch ()
   "Send buffer at point to IPython interpreter. "
@@ -12399,7 +12392,6 @@ as it leaves your system default unchanged."
   (save-excursion
     (let ((wholebuf t)
           (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          (py-shell-switch-buffers-on-execute switch)
           beg end)
       (when py-master-file
         (let* ((filename (expand-file-name py-master-file))
@@ -12408,7 +12400,7 @@ as it leaves your system default unchanged."
           (set-buffer buffer)))
       (setq beg (point-min))
       (setq end (point-max))
-      (py-execute-region beg end nil nil 'noswitch))))
+      (py-execute-region beg end "ipython" nil 'noswitch))))
 
 (defun py-execute-buffer-ipython-dedicated ()
   "Send buffer at point to IPython interpreter. "
@@ -12416,7 +12408,6 @@ as it leaves your system default unchanged."
   (save-excursion
     (let ((wholebuf t)
           (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          (py-shell-switch-buffers-on-execute switch)
           beg end)
       (when py-master-file
         (let* ((filename (expand-file-name py-master-file))
@@ -12425,7 +12416,7 @@ as it leaves your system default unchanged."
           (set-buffer buffer)))
       (setq beg (point-min))
       (setq end (point-max))
-      (py-execute-region beg end nil t nil))))
+      (py-execute-region beg end "ipython" t nil))))
 
 (defun py-execute-buffer-ipython-dedicated-switch ()
   "Send buffer at point to IPython interpreter. "
@@ -12433,7 +12424,6 @@ as it leaves your system default unchanged."
   (save-excursion
     (let ((wholebuf t)
           (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          (py-shell-switch-buffers-on-execute switch)
           beg end)
       (when py-master-file
         (let* ((filename (expand-file-name py-master-file))
@@ -12442,7 +12432,7 @@ as it leaves your system default unchanged."
           (set-buffer buffer)))
       (setq beg (point-min))
       (setq end (point-max))
-      (py-execute-region beg end nil t 'switch))))
+      (py-execute-region beg end "ipython" t 'switch))))
 
 (defun py-execute-buffer-python3 ()
   "Send buffer at point to Python3 interpreter. "
@@ -12450,7 +12440,6 @@ as it leaves your system default unchanged."
   (save-excursion
     (let ((wholebuf t)
           (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          (py-shell-switch-buffers-on-execute switch)
           beg end)
       (when py-master-file
         (let* ((filename (expand-file-name py-master-file))
@@ -12459,7 +12448,7 @@ as it leaves your system default unchanged."
           (set-buffer buffer)))
       (setq beg (point-min))
       (setq end (point-max))
-      (py-execute-region beg end nil nil nil))))
+      (py-execute-region beg end "python3" nil nil))))
 
 (defun py-execute-buffer-python3-switch ()
   "Send buffer at point to Python3 interpreter. "
@@ -12467,7 +12456,6 @@ as it leaves your system default unchanged."
   (save-excursion
     (let ((wholebuf t)
           (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          (py-shell-switch-buffers-on-execute switch)
           beg end)
       (when py-master-file
         (let* ((filename (expand-file-name py-master-file))
@@ -12476,7 +12464,7 @@ as it leaves your system default unchanged."
           (set-buffer buffer)))
       (setq beg (point-min))
       (setq end (point-max))
-      (py-execute-region beg end nil nil 'switch))))
+      (py-execute-region beg end "python3" nil 'switch))))
 
 (defun py-execute-buffer-python3-noswitch ()
   "Send buffer at point to Python3 interpreter. "
@@ -12484,7 +12472,6 @@ as it leaves your system default unchanged."
   (save-excursion
     (let ((wholebuf t)
           (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          (py-shell-switch-buffers-on-execute switch)
           beg end)
       (when py-master-file
         (let* ((filename (expand-file-name py-master-file))
@@ -12493,7 +12480,7 @@ as it leaves your system default unchanged."
           (set-buffer buffer)))
       (setq beg (point-min))
       (setq end (point-max))
-      (py-execute-region beg end nil nil 'noswitch))))
+      (py-execute-region beg end "python3" nil 'noswitch))))
 
 (defun py-execute-buffer-python3-dedicated ()
   "Send buffer at point to Python3 interpreter. "
@@ -12501,7 +12488,6 @@ as it leaves your system default unchanged."
   (save-excursion
     (let ((wholebuf t)
           (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          (py-shell-switch-buffers-on-execute switch)
           beg end)
       (when py-master-file
         (let* ((filename (expand-file-name py-master-file))
@@ -12510,7 +12496,7 @@ as it leaves your system default unchanged."
           (set-buffer buffer)))
       (setq beg (point-min))
       (setq end (point-max))
-      (py-execute-region beg end nil t nil))))
+      (py-execute-region beg end "python3" t nil))))
 
 (defun py-execute-buffer-python3-dedicated-switch ()
   "Send buffer at point to Python3 interpreter. "
@@ -12518,7 +12504,6 @@ as it leaves your system default unchanged."
   (save-excursion
     (let ((wholebuf t)
           (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          (py-shell-switch-buffers-on-execute switch)
           beg end)
       (when py-master-file
         (let* ((filename (expand-file-name py-master-file))
@@ -12527,7 +12512,7 @@ as it leaves your system default unchanged."
           (set-buffer buffer)))
       (setq beg (point-min))
       (setq end (point-max))
-      (py-execute-region beg end nil t 'switch))))
+      (py-execute-region beg end "python3" t 'switch))))
 
 (defun py-execute-buffer-python2 ()
   "Send buffer at point to Python2 interpreter. "
@@ -12535,7 +12520,6 @@ as it leaves your system default unchanged."
   (save-excursion
     (let ((wholebuf t)
           (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          (py-shell-switch-buffers-on-execute switch)
           beg end)
       (when py-master-file
         (let* ((filename (expand-file-name py-master-file))
@@ -12544,7 +12528,7 @@ as it leaves your system default unchanged."
           (set-buffer buffer)))
       (setq beg (point-min))
       (setq end (point-max))
-      (py-execute-region beg end nil nil nil))))
+      (py-execute-region beg end "python2" nil nil))))
 
 (defun py-execute-buffer-python2-switch ()
   "Send buffer at point to Python2 interpreter. "
@@ -12552,7 +12536,6 @@ as it leaves your system default unchanged."
   (save-excursion
     (let ((wholebuf t)
           (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          (py-shell-switch-buffers-on-execute switch)
           beg end)
       (when py-master-file
         (let* ((filename (expand-file-name py-master-file))
@@ -12561,7 +12544,7 @@ as it leaves your system default unchanged."
           (set-buffer buffer)))
       (setq beg (point-min))
       (setq end (point-max))
-      (py-execute-region beg end nil nil 'switch))))
+      (py-execute-region beg end "python2" nil 'switch))))
 
 (defun py-execute-buffer-python2-noswitch ()
   "Send buffer at point to Python2 interpreter. "
@@ -12569,7 +12552,6 @@ as it leaves your system default unchanged."
   (save-excursion
     (let ((wholebuf t)
           (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          (py-shell-switch-buffers-on-execute switch)
           beg end)
       (when py-master-file
         (let* ((filename (expand-file-name py-master-file))
@@ -12578,7 +12560,7 @@ as it leaves your system default unchanged."
           (set-buffer buffer)))
       (setq beg (point-min))
       (setq end (point-max))
-      (py-execute-region beg end nil nil 'noswitch))))
+      (py-execute-region beg end "python2" nil 'noswitch))))
 
 (defun py-execute-buffer-python2-dedicated ()
   "Send buffer at point to Python2 interpreter. "
@@ -12586,7 +12568,6 @@ as it leaves your system default unchanged."
   (save-excursion
     (let ((wholebuf t)
           (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          (py-shell-switch-buffers-on-execute switch)
           beg end)
       (when py-master-file
         (let* ((filename (expand-file-name py-master-file))
@@ -12595,7 +12576,7 @@ as it leaves your system default unchanged."
           (set-buffer buffer)))
       (setq beg (point-min))
       (setq end (point-max))
-      (py-execute-region beg end nil t nil))))
+      (py-execute-region beg end "python2" t nil))))
 
 (defun py-execute-buffer-python2-dedicated-switch ()
   "Send buffer at point to Python2 interpreter. "
@@ -12603,7 +12584,6 @@ as it leaves your system default unchanged."
   (save-excursion
     (let ((wholebuf t)
           (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          (py-shell-switch-buffers-on-execute switch)
           beg end)
       (when py-master-file
         (let* ((filename (expand-file-name py-master-file))
@@ -12612,7 +12592,7 @@ as it leaves your system default unchanged."
           (set-buffer buffer)))
       (setq beg (point-min))
       (setq end (point-max))
-      (py-execute-region beg end nil t 'switch))))
+      (py-execute-region beg end "python2" t 'switch))))
 
 (defun py-execute-buffer-python2.7 ()
   "Send buffer at point to Python2.7 interpreter. "
@@ -12620,7 +12600,6 @@ as it leaves your system default unchanged."
   (save-excursion
     (let ((wholebuf t)
           (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          (py-shell-switch-buffers-on-execute switch)
           beg end)
       (when py-master-file
         (let* ((filename (expand-file-name py-master-file))
@@ -12629,7 +12608,7 @@ as it leaves your system default unchanged."
           (set-buffer buffer)))
       (setq beg (point-min))
       (setq end (point-max))
-      (py-execute-region beg end nil nil nil))))
+      (py-execute-region beg end "python2.7" nil nil))))
 
 (defun py-execute-buffer-python2.7-switch ()
   "Send buffer at point to Python2.7 interpreter. "
@@ -12637,7 +12616,6 @@ as it leaves your system default unchanged."
   (save-excursion
     (let ((wholebuf t)
           (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          (py-shell-switch-buffers-on-execute switch)
           beg end)
       (when py-master-file
         (let* ((filename (expand-file-name py-master-file))
@@ -12646,7 +12624,7 @@ as it leaves your system default unchanged."
           (set-buffer buffer)))
       (setq beg (point-min))
       (setq end (point-max))
-      (py-execute-region beg end nil nil 'switch))))
+      (py-execute-region beg end "python2.7" nil 'switch))))
 
 (defun py-execute-buffer-python2.7-noswitch ()
   "Send buffer at point to Python2.7 interpreter. "
@@ -12654,7 +12632,6 @@ as it leaves your system default unchanged."
   (save-excursion
     (let ((wholebuf t)
           (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          (py-shell-switch-buffers-on-execute switch)
           beg end)
       (when py-master-file
         (let* ((filename (expand-file-name py-master-file))
@@ -12663,7 +12640,7 @@ as it leaves your system default unchanged."
           (set-buffer buffer)))
       (setq beg (point-min))
       (setq end (point-max))
-      (py-execute-region beg end nil nil 'noswitch))))
+      (py-execute-region beg end "python2.7" nil 'noswitch))))
 
 (defun py-execute-buffer-python2.7-dedicated ()
   "Send buffer at point to Python2.7 interpreter. "
@@ -12671,7 +12648,6 @@ as it leaves your system default unchanged."
   (save-excursion
     (let ((wholebuf t)
           (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          (py-shell-switch-buffers-on-execute switch)
           beg end)
       (when py-master-file
         (let* ((filename (expand-file-name py-master-file))
@@ -12680,7 +12656,7 @@ as it leaves your system default unchanged."
           (set-buffer buffer)))
       (setq beg (point-min))
       (setq end (point-max))
-      (py-execute-region beg end nil t nil))))
+      (py-execute-region beg end "python2.7" t nil))))
 
 (defun py-execute-buffer-python2.7-dedicated-switch ()
   "Send buffer at point to Python2.7 interpreter. "
@@ -12688,7 +12664,6 @@ as it leaves your system default unchanged."
   (save-excursion
     (let ((wholebuf t)
           (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          (py-shell-switch-buffers-on-execute switch)
           beg end)
       (when py-master-file
         (let* ((filename (expand-file-name py-master-file))
@@ -12697,7 +12672,7 @@ as it leaves your system default unchanged."
           (set-buffer buffer)))
       (setq beg (point-min))
       (setq end (point-max))
-      (py-execute-region beg end nil t 'switch))))
+      (py-execute-region beg end "python2.7" t 'switch))))
 
 (defun py-execute-buffer-jython ()
   "Send buffer at point to Jython interpreter. "
@@ -12705,7 +12680,6 @@ as it leaves your system default unchanged."
   (save-excursion
     (let ((wholebuf t)
           (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          (py-shell-switch-buffers-on-execute switch)
           beg end)
       (when py-master-file
         (let* ((filename (expand-file-name py-master-file))
@@ -12714,7 +12688,7 @@ as it leaves your system default unchanged."
           (set-buffer buffer)))
       (setq beg (point-min))
       (setq end (point-max))
-      (py-execute-region beg end nil nil nil))))
+      (py-execute-region beg end "jython" nil nil))))
 
 (defun py-execute-buffer-jython-switch ()
   "Send buffer at point to Jython interpreter. "
@@ -12722,7 +12696,6 @@ as it leaves your system default unchanged."
   (save-excursion
     (let ((wholebuf t)
           (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          (py-shell-switch-buffers-on-execute switch)
           beg end)
       (when py-master-file
         (let* ((filename (expand-file-name py-master-file))
@@ -12731,7 +12704,7 @@ as it leaves your system default unchanged."
           (set-buffer buffer)))
       (setq beg (point-min))
       (setq end (point-max))
-      (py-execute-region beg end nil nil 'switch))))
+      (py-execute-region beg end "jython" nil 'switch))))
 
 (defun py-execute-buffer-jython-noswitch ()
   "Send buffer at point to Jython interpreter. "
@@ -12739,7 +12712,6 @@ as it leaves your system default unchanged."
   (save-excursion
     (let ((wholebuf t)
           (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          (py-shell-switch-buffers-on-execute switch)
           beg end)
       (when py-master-file
         (let* ((filename (expand-file-name py-master-file))
@@ -12748,7 +12720,7 @@ as it leaves your system default unchanged."
           (set-buffer buffer)))
       (setq beg (point-min))
       (setq end (point-max))
-      (py-execute-region beg end nil nil 'noswitch))))
+      (py-execute-region beg end "jython" nil 'noswitch))))
 
 (defun py-execute-buffer-jython-dedicated ()
   "Send buffer at point to Jython interpreter. "
@@ -12756,7 +12728,6 @@ as it leaves your system default unchanged."
   (save-excursion
     (let ((wholebuf t)
           (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          (py-shell-switch-buffers-on-execute switch)
           beg end)
       (when py-master-file
         (let* ((filename (expand-file-name py-master-file))
@@ -12765,7 +12736,7 @@ as it leaves your system default unchanged."
           (set-buffer buffer)))
       (setq beg (point-min))
       (setq end (point-max))
-      (py-execute-region beg end nil t nil))))
+      (py-execute-region beg end "jython" t nil))))
 
 (defun py-execute-buffer-jython-dedicated-switch ()
   "Send buffer at point to Jython interpreter. "
@@ -12773,7 +12744,6 @@ as it leaves your system default unchanged."
   (save-excursion
     (let ((wholebuf t)
           (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          (py-shell-switch-buffers-on-execute switch)
           beg end)
       (when py-master-file
         (let* ((filename (expand-file-name py-master-file))
@@ -12782,7 +12752,7 @@ as it leaves your system default unchanged."
           (set-buffer buffer)))
       (setq beg (point-min))
       (setq end (point-max))
-      (py-execute-region beg end nil t 'switch))))
+      (py-execute-region beg end "jython" t 'switch))))
 
 (defun py-execute-buffer-python3.2 ()
   "Send buffer at point to Python3.2 interpreter. "
@@ -12790,7 +12760,6 @@ as it leaves your system default unchanged."
   (save-excursion
     (let ((wholebuf t)
           (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          (py-shell-switch-buffers-on-execute switch)
           beg end)
       (when py-master-file
         (let* ((filename (expand-file-name py-master-file))
@@ -12799,7 +12768,7 @@ as it leaves your system default unchanged."
           (set-buffer buffer)))
       (setq beg (point-min))
       (setq end (point-max))
-      (py-execute-region beg end nil nil nil))))
+      (py-execute-region beg end "python3.2" nil nil))))
 
 (defun py-execute-buffer-python3.2-switch ()
   "Send buffer at point to Python3.2 interpreter. "
@@ -12807,7 +12776,6 @@ as it leaves your system default unchanged."
   (save-excursion
     (let ((wholebuf t)
           (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          (py-shell-switch-buffers-on-execute switch)
           beg end)
       (when py-master-file
         (let* ((filename (expand-file-name py-master-file))
@@ -12816,7 +12784,7 @@ as it leaves your system default unchanged."
           (set-buffer buffer)))
       (setq beg (point-min))
       (setq end (point-max))
-      (py-execute-region beg end nil nil 'switch))))
+      (py-execute-region beg end "python3.2" nil 'switch))))
 
 (defun py-execute-buffer-python3.2-noswitch ()
   "Send buffer at point to Python3.2 interpreter. "
@@ -12824,7 +12792,6 @@ as it leaves your system default unchanged."
   (save-excursion
     (let ((wholebuf t)
           (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          (py-shell-switch-buffers-on-execute switch)
           beg end)
       (when py-master-file
         (let* ((filename (expand-file-name py-master-file))
@@ -12833,7 +12800,7 @@ as it leaves your system default unchanged."
           (set-buffer buffer)))
       (setq beg (point-min))
       (setq end (point-max))
-      (py-execute-region beg end nil nil 'noswitch))))
+      (py-execute-region beg end "python3.2" nil 'noswitch))))
 
 (defun py-execute-buffer-python3.2-dedicated ()
   "Send buffer at point to Python3.2 interpreter. "
@@ -12841,7 +12808,6 @@ as it leaves your system default unchanged."
   (save-excursion
     (let ((wholebuf t)
           (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          (py-shell-switch-buffers-on-execute switch)
           beg end)
       (when py-master-file
         (let* ((filename (expand-file-name py-master-file))
@@ -12850,7 +12816,7 @@ as it leaves your system default unchanged."
           (set-buffer buffer)))
       (setq beg (point-min))
       (setq end (point-max))
-      (py-execute-region beg end nil t nil))))
+      (py-execute-region beg end "python3.2" t nil))))
 
 (defun py-execute-buffer-python3.2-dedicated-switch ()
   "Send buffer at point to Python3.2 interpreter. "
@@ -12858,7 +12824,6 @@ as it leaves your system default unchanged."
   (save-excursion
     (let ((wholebuf t)
           (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          (py-shell-switch-buffers-on-execute switch)
           beg end)
       (when py-master-file
         (let* ((filename (expand-file-name py-master-file))
@@ -12867,7 +12832,7 @@ as it leaves your system default unchanged."
           (set-buffer buffer)))
       (setq beg (point-min))
       (setq end (point-max))
-      (py-execute-region beg end nil t 'switch))))
+      (py-execute-region beg end "python3.2" t 'switch))))
 
 (defun py-execute-expression-python ()
   "Send expression at point to Python interpreter. "
