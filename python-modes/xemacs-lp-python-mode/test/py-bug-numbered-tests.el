@@ -716,9 +716,9 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
   (goto-char 34)
   (sit-for 0.1)
   ;; (debug-on-entry 'py-compute-indentation)
-  (assert (eq 8 (py-compute-indentation)) nil "fore-00007F-breaks-indentation-test #1 failed")
+  (assert (eq 8 (py-compute-indentation)) nil "fore-00007F-breaks-indentation-lp:328788-test #1 failed")
   (goto-char 121)
-  (assert (eq 8 (py-compute-indentation)) nil "fore-00007F-breaks-indentation-test #2 failed"))
+  (assert (eq 8 (py-compute-indentation)) nil "fore-00007F-breaks-indentation-lp:328788-test #2 failed"))
 
 (defun exceptions-not-highlighted-lp:473525-test (&optional arg load-branch-function)
   "With ARG greater 1 keep test buffer open.
@@ -2271,14 +2271,17 @@ print u'\\xA9'
 for x in y:
     for z in l:
         for r in t:
-            pass # <--- indents here. Pressing <backspace> dedents eight spaces (i.e. you can go to column 0 in two presess)
+                pass # <--- indents here. Pressing <backspace> dedents eight spaces (i.e. you can go to column 0 in two presess)
 "))
     (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'fourth-level-blocks-indent-incorrectly-lp-939577-base arg teststring)))
 
 (defun fourth-level-blocks-indent-incorrectly-lp-939577-base ()
-  (goto-char 108)
-  (assert (eq 12 (py-compute-indentation)) nil "fourth-level-blocks-indent-incorrectly-lp-939577-test failed"))
+  (goto-char 88)
+  (assert (eq 4 (py-guess-indent-offset)) nil "fourth-level-blocks-indent-incorrectly-lp-939577-test failed")
+  (goto-char 225)
+  (assert (eq 8 (py-guess-indent-offset)) nil "fourth-level-blocks-indent-incorrectly-lp-939577-test failed")
+  )
 
 (defun py-mark-expression-marks-too-much-lp-941140-test (&optional arg load-branch-function)
   (interactive "p")
@@ -2301,15 +2304,15 @@ line.
 I am using version 6.0.4
 
 "))
-  (when load-branch-function (funcall load-branch-function))
-  (py-bug-tests-intern 'py-mark-expression-marks-too-much-lp-941140-base arg teststring)))
+    (when load-branch-function (funcall load-branch-function))
+    (py-bug-tests-intern 'py-mark-expression-marks-too-much-lp-941140-base arg teststring)))
 
 (defun py-mark-expression-marks-too-much-lp-941140-base ()
   (goto-char 60)
   (assert (eq 73 (cdr (py-expression))) nil "py-mark-expression-marks-too-much-lp-941140-test failed")
   (goto-char 417)
   (assert (eq 420 (cdr (py-expression))) nil "py-mark-expression-marks-too-much-lp-941140-test failed")
-)
+  )
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

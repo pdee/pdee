@@ -994,7 +994,7 @@ for x in y:
 
 (defun py-smart-indent-eight-base ()
   (goto-char 112)
-  (assert (eq 16 (py-compute-indentation)) nil "py-smart-indent-eight-test failed"))
+  (assert (eq 12 (py-compute-indentation)) nil "py-smart-indent-eight-test failed"))
 
 ;; (defun index-menu-test (&optional arg load-branch-function)
 ;;   (interactive "p")

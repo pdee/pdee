@@ -564,14 +564,28 @@ the second for a 'normal' command, and the third for a multiline command.")
     "for"      "if"     "while"   "finally" "try"
     "with"
     )
-  "Keywords composing visible heads.
-Also used by (minor-)outline-mode "
+  "Keywords composing visible heads. "
   :type '(repeat string)
   :group 'python-mode)
 
 (defcustom py-hide-show-hide-docstrings t
   "*Controls if doc strings can be hidden by hide-show"
   :type 'boolean
+  :group 'python-mode)
+
+(defcustom py-hide-comments-when-hiding-all t
+  "*Hide the comments too when you do an `hs-hide-all'."
+  :type 'boolean
+  :group 'python-mode)
+
+(defcustom py-outline-mode-keywords
+  '(
+    "class"    "def"    "elif"    "else"    "except"
+    "for"      "if"     "while"   "finally" "try"
+    "with"
+    )
+  "Keywords composing visible heads. "
+  :type '(repeat string)
   :group 'python-mode)
 
 (defcustom py-source-modes '(python-mode jython-mode)
@@ -4423,6 +4437,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (set (make-local-variable 'comment-indent-function) #'py-comment-indent-function)
   (set (make-local-variable 'indent-region-function) 'py-indent-region)
   (set (make-local-variable 'indent-line-function) 'py-indent-line)
+  (set (make-local-variable 'hs-hide-comments-when-hiding-all) 'py-hide-comments-when-hiding-all)
   (add-to-list 'hs-special-modes-alist
                (list
                 'python-mode
@@ -4450,11 +4465,9 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (set (make-local-variable 'outline-level) #'python-outline-level)
   (set (make-local-variable 'open-paren-in-column-0-is-defun-start) nil)
   (set (make-local-variable 'outline-regexp)
-       (concat (if py-hide-show-hide-docstrings
-                   "^\\s-*\"\"\"\\|" "")
-               (mapconcat 'identity
+       (concat (mapconcat 'identity
                           (mapcar #'(lambda (x) (concat "^\\s-*" x "\\_>"))
-                                  py-hide-show-keywords)
+                                  py-outline-mode-keywords)
                           "\\|")))
   (set (make-local-variable 'add-log-current-defun-function) 'py-current-defun)
   (set (make-local-variable 'paragraph-start) "\\s-*$")
@@ -4495,20 +4508,20 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   ;; Python defines TABs as being 8-char wide.
   (set (make-local-variable 'tab-width) py-indent-offset)
   ;; Now guess `py-indent-offset'
-  (when py-smart-indentation
-    (if (bobp)
-        (save-excursion
-          (save-restriction
-            (widen)
-            (while (and (not (eobp))
-                        (or
-                         (let ((erg (syntax-ppss)))
-                           (or (nth 1 erg) (nth 8 erg)))
-                         (eq 0 (current-indentation))))
-              (forward-line 1))
-            (back-to-indentation)
-            (py-guess-indent-offset)))
-      (py-guess-indent-offset)))
+  ;; (when py-smart-indentation
+  ;;   (if (bobp)
+  ;;       (save-excursion
+  ;;         (save-restriction
+  ;;           (widen)
+  ;;           (while (and (not (eobp))
+  ;;                       (or
+  ;;                        (let ((erg (syntax-ppss)))
+  ;;                          (or (nth 1 erg) (nth 8 erg)))
+  ;;                        (eq 0 (current-indentation))))
+  ;;             (forward-line 1))
+  ;;           (back-to-indentation)
+  ;;           (py-guess-indent-offset)))
+  ;;     (py-guess-indent-offset)))
   (when py-load-pymacs-p (py-load-pymacs)
         (unwind-protect
             (progn
