@@ -6467,14 +6467,19 @@ This function is appropriate for `comint-output-filter-functions'."
 
 (defun py-process-name (&optional name dedicated)
   "Return the name of the running Python process, `get-process' willsee it. "
-  (let* ((name (cond (dedicated
-                      (make-temp-name (concat (or name py-shell-name) "-")))
-                     (name name)
-                     ((string-match "\*" (buffer-name))
-                      (replace-regexp-in-string "\*" "" (buffer-name)))
-                     (t py-shell-name)))
-         (erg (if (or (string= "ipython" name)
-                      (string= "IPython" name))
+  (let* ((thisname (if name
+                       (if (string-match "/" name)
+                           (substring name (progn (string-match "\\(.+\\)/\\(.+\\)$" name) (match-beginning 2)))
+
+                         name)
+                     (substring py-shell-name (or (string-match "/.+$" py-shell-name) 0))))
+         (name (cond (dedicated
+                      (make-temp-name (concat thisname "-")))
+                     ;; ((string-match "\*" (buffer-name))
+                     ;; (replace-regexp-in-string "\*" "" (buffer-name)))
+                     (t thisname)))
+         (erg (if (or (string-match "ipython" name)
+                      (string-match "IPython" name))
                   "IPython"
                 (capitalize name))))
     erg))
@@ -7444,7 +7449,6 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch) "
   (save-excursion
     (let ((wholebuf t)
           (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          (py-shell-switch-buffers-on-execute switch)
           beg end)
       (when py-master-file
         (let* ((filename (expand-file-name py-master-file))
