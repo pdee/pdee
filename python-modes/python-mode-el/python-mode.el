@@ -968,6 +968,13 @@ See bug report at launchpad, lp:940812 "
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-edit-only-p nil
+  "When `t' Python-mode will not take resort nor check for installed Python executables. Default is nil.
+
+See bug report at launchpad, lp:944093. "
+  :type 'boolean
+  :group 'python-mode)
+
 ;;; highlight-indentation.el ends here
 
 ;;; NO USER DEFINABLE VARIABLES BEYOND THIS POINT
@@ -6459,7 +6466,7 @@ This function is appropriate for `comint-output-filter-functions'."
   "Defaults to \"python\", if guessing didn't succeed. "
   (interactive)
   (let* ((cmd (or py-shell-name (py-choose-shell) "python"))
-         (erg (executable-find cmd)))
+         (erg (if py-edit-only-p cmd (executable-find cmd))))
     (when (interactive-p)
       (if erg
           (message "%s" cmd)
@@ -9218,7 +9225,9 @@ Should you need more shells to select, extend this command by adding inside the 
                  py-which-bufname name
                  msg name
                  mode-name name)))
-    (setq erg (executable-find py-shell-name))
+    (if py-edit-only-p
+        (setq erg py-shell-name)
+      (setq erg (executable-find py-shell-name)))
     (if erg
         (progn
           (force-mode-line-update)
@@ -9251,12 +9260,12 @@ To change the default Python interpreter, use `py-switch-shell'.
                     ((py-choose-shell-by-shebang))
                     ((py-choose-shell-by-import))
                     (t (default-value 'py-shell-name))))
-         (cmd (executable-find erg)))
+         (cmd (if py-edit-only-p erg
+                (executable-find erg))))
     (if cmd
         (when (interactive-p)
           (message "%s" cmd))
-      (error "Could not detect Python on your sys
-tem"))
+      (when (interactive-p) (message "%s" "Could not detect Python on your system. Maybe set `py-edit-only-p'?")))
     erg))
 
 (defalias 'toggle-py-smart-indentation 'py-toggle-smart-indentation)

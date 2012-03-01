@@ -52,7 +52,7 @@ This function is appropriate for `comint-output-filter-functions'."
   "Defaults to \"python\", if guessing didn't succeed. "
   (interactive)
   (let* ((cmd (or py-shell-name (py-choose-shell) "python"))
-         (erg (executable-find cmd)))
+         (erg (if py-edit-only-p cmd (executable-find cmd))))
     (when (interactive-p)
       (if erg
           (message "%s" cmd)
