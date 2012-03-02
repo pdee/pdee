@@ -252,7 +252,6 @@ Richard Everson commented:
 (make-variable-buffer-local 'py-python-command-args)
 
 (set-default 'py-python-command-args  '("-i"))
-
 (make-obsolete-variable 'py-jpython-command-args 'py-jython-command-args nil)
 
 (defcustom py-jython-command-args '("-i")
@@ -261,11 +260,12 @@ Richard Everson commented:
   :group 'python-mode
   :tag "Jython Command Args")
 
-(defcustom py-cleanup-temporary t
-  "If temporary buffers and files used by functions executing region should be deleted afterwards. "
+(defcustom py-message-executing-temporary-file t
+  "If execute functions using a temporary file should message it. Default is `t'.
 
+Messaging increments the prompt counter of IPython shell. "
   :type 'boolean
-  :group 'python-mode)
+  :group 'python)
 
 (defcustom py-lhs-inbound-indent 1
   "When line starts a multiline-assignment: How many colums indent should be more than opening bracket, brace or parenthesis. "
@@ -278,6 +278,11 @@ Richard Everson commented:
   :type 'integer
   :group 'python-mode)
 (make-variable-buffer-local 'py-rhs-inbound-indent)
+
+(defcustom py-cleanup-temporary t
+  "If temporary buffers and files used by functions executing region should be deleted afterwards. "
+  :type 'boolean
+  :group 'python-mode)
 
 (defcustom py-continuation-offset 2
   "*Additional amount of offset to give for some continuation lines.
@@ -559,11 +564,9 @@ the second for a 'normal' command, and the third for a multiline command.")
   :group 'python-mode)
 
 (defcustom py-hide-show-keywords
-  '(
-    "class"    "def"    "elif"    "else"    "except"
+  '("class"    "def"    "elif"    "else"    "except"
     "for"      "if"     "while"   "finally" "try"
-    "with"
-    )
+    "with")
   "Keywords composing visible heads. "
   :type '(repeat string)
   :group 'python-mode)
@@ -579,11 +582,9 @@ the second for a 'normal' command, and the third for a multiline command.")
   :group 'python-mode)
 
 (defcustom py-outline-mode-keywords
-  '(
-    "class"    "def"    "elif"    "else"    "except"
+  '("class"    "def"    "elif"    "else"    "except"
     "for"      "if"     "while"   "finally" "try"
-    "with"
-    )
+    "with")
   "Keywords composing visible heads. "
   :type '(repeat string)
   :group 'python-mode)
@@ -619,12 +620,6 @@ continued lines.
 PROGRAM can also be t, which specifies the default when no other
 element matches `py-shell-name'."
   :type 'string
-  :group 'python-mode)
-
-(defcustom py-cleanup-temporary t
-  "If temporary buffers and files used by functions executing region should be deleted afterwards. "
-
-  :type 'boolean
   :group 'python-mode)
 
 (defcustom python-mode-hook nil
@@ -1058,8 +1053,7 @@ Inludes Python shell-prompt in order to stop further searches. ")
     (cond
      ((equal s "|") '(15))
      ((equal s "_") '(3))
-     (t (error "Unhandled string: %s" s))))
-  )
+     (t (error "Unhandled string: %s" s)))))
 
 ;; (defvar py-help-mode-syntax-table
 ;;   (let ((st (make-syntax-table py-mode-syntax-table)))
@@ -1217,8 +1211,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
                 (find-file (concat py-install-directory "completion/pycomplete.el"))
                 (eval-buffer)))
           (kill-buffer "pycomplete.el"))
-      (error "`py-install-directory' not set, see INSTALL")
-      )))
+      (error "`py-install-directory' not set, see INSTALL"))))
 
 (defun py-guess-py-install-directory ()
   (interactive)
@@ -4634,8 +4627,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (mapc #' (lambda (key)
              (define-key py-mode-output-map key
                #'(lambda () (interactive) (beep))))
-           (where-is-internal 'self-insert-command))
-  )
+           (where-is-internal 'self-insert-command)))
 
 (defvar py-shell-map nil
   "Keymap used in *Python* shell buffers.")

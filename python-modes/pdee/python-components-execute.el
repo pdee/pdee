@@ -1157,16 +1157,18 @@ Returns position where output starts. "
                    (py-exec-command)
                    (t (py-which-execute-file-command filename))))
         erg)
-    (unwind-protect
-        (save-excursion
-          (set-buffer procbuf)
-          ;; (switch-to-buffer (current-buffer))
-          (move-marker (process-mark proc) (point))
-          (goto-char (point-max))
-          (funcall (process-filter proc) proc msg)))
+    (when py-verbose-p
+      (unwind-protect
+          (save-excursion
+            (set-buffer procbuf)
+            ;; (switch-to-buffer (current-buffer))
+            ;; (move-marker (process-mark proc) (point))
+            ;; (goto-char (point-max))
+            (funcall (process-filter proc) proc msg))))
     (set-buffer procbuf)
     (process-send-string proc cmd)
-    (setq erg (point))
+    (setq erg (progn (looking-at "[^\n\t\f\r ]+")(match-string-no-properties 0)))
+    ;; (setq erg (point))
     (goto-char (process-mark proc))
     erg))
 

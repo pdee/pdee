@@ -286,15 +286,13 @@ Richard Everson commented:
 (defcustom py-jython-command-args '("-i")
   "*List of string arguments to be used when starting a Jython shell."
   :type '(repeat string)
-  :group 'python
+  :group 'python-mode
   :tag "Jython Command Args")
 
-(defcustom py-cleanup-temporary  t
-  "If temporary buffers and files used by functions executing region  should be deleted afterwards. "
-
+(defcustom py-cleanup-temporary t
+  "If temporary buffers and files used by functions executing region should be deleted afterwards. "
   :type 'boolean
-  :group 'python
-  )
+  :group 'python-mode)
 
 (defcustom py-lhs-inbound-indent 1
   "When line starts a multiline-assignment: How many colums indent should be more than opening bracket, brace or parenthesis. "
@@ -444,8 +442,7 @@ CPython or a Jython shell), it looks at the so-called `shebang' line
 -- i.e. #! line.  If that's not available, it looks at some of the
 file heading imports to see if they look Java-like."
   :type 'integer
-  :group 'python
-  )
+  :group 'python-mode)
 
 (defcustom py-jython-packages
   '("java" "javax")
@@ -508,13 +505,13 @@ variable section, e.g.:
 (defcustom py-pychecker-command "pychecker"
   "*Shell command used to run Pychecker."
   :type 'string
-  :group 'python
+  :group 'python-mode
   :tag "Pychecker Command")
 
 (defcustom py-pychecker-command-args '("--stdlib")
   "*List of string arguments to be passed to pychecker."
   :type '(repeat string)
-  :group 'python
+  :group 'python-mode
   :tag "Pychecker Command Args")
 
 (defvar py-shell-alist
@@ -545,11 +542,9 @@ to select the appropriate python interpreter mode for a file.")
   :group 'python-mode)
 
 (defcustom py-hide-show-keywords
-  '(
-    "class"    "def"    "elif"    "else"    "except"
+  '("class"    "def"    "elif"    "else"    "except"
     "for"      "if"     "while"   "finally" "try"
-    "with"
-    )
+    "with")
   "Keywords composing visible heads.
 Also used by (minor-)outline-mode "
   :type '(repeat string)
@@ -562,7 +557,7 @@ Also used by (minor-)outline-mode "
 
 (defcustom python-mode-hook nil
   "Hook run when entering Python mode."
-  :group 'python
+  :group 'python-mode
   :type 'hook)
 
 (defcustom imenu-create-index-p t
@@ -636,13 +631,6 @@ the second for a 'normal' command, and the third for a multiline command.")
 (defvar ipython-de-output-prompt-regexp "^Out\\[[0-9]+\\]: "
   "A regular expression to match the output prompt of IPython.")
 
-(defcustom py-cleanup-temporary  t
-  "If temporary buffers and files used by functions executing region  should be deleted afterwards. "
-
-  :type 'boolean
-  :group 'python
-  )
-
 (defcustom py-match-paren-mode nil
   "*Non-nil means, cursor will jump to beginning or end of a block.
 This vice versa, to beginning first.
@@ -707,7 +695,7 @@ mode buffer is visited during an Emacs session.  After that, use
 (defcustom python-jython-command-args '("-i")
   "*List of string arguments to be used when starting a Jython shell."
   :type '(repeat string)
-  :group 'python
+  :group 'python-mode
   :tag "JPython Command Args")
 
 (defcustom python-pdbtrack-do-tracking-p t
@@ -758,13 +746,13 @@ element matches `python-python-command'."
 (defcustom python-python-command "python"
   "Shell command to run Python interpreter.
 Any arguments can't contain whitespace."
-  :group 'python
+  :group 'python-mode
   :type 'string)
 
 (defcustom python-jython-command "jython"
   "Shell command to run Jython interpreter.
 Any arguments can't contain whitespace."
-  :group 'python
+  :group 'python-mode
   :type 'string)
 
 (defcustom inferior-python-filter-regexp "\\`\\s-*\\S-?\\S-?\\s-*\\'"
@@ -780,7 +768,7 @@ an inferior Python process.  This is the default, for security
 reasons, as it is easy for the Python process to be started
 without the user's realization (e.g. to perform completion)."
   :type 'boolean
-  :group 'python
+  :group 'python-mode
   :version "23.3")
 
 (defcustom python-source-modes '(python-mode jython-mode)
@@ -886,7 +874,7 @@ Making switch between several virtualenv's easier,
 Toggle buffer local status via `M-x highlight-indentation' during session. "
 
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 (make-variable-buffer-local 'highlight-indentation)
 
 (defvar highlight-indent-active nil)
@@ -7733,13 +7721,14 @@ Returns position where output starts. "
                    (py-exec-command)
                    (t (py-which-execute-file-command filename))))
         erg)
-    (unwind-protect
-        (save-excursion
-          (set-buffer procbuf)
-          ;; (switch-to-buffer (current-buffer))
-          (move-marker (process-mark proc) (point))
-          (goto-char (point-max))
-          (funcall (process-filter proc) proc msg)))
+    (when py-verbose-p
+      (unwind-protect
+          (save-excursion
+            (set-buffer procbuf)
+            ;; (switch-to-buffer (current-buffer))
+            (move-marker (process-mark proc) (point))
+            (goto-char (point-max))
+            (funcall (process-filter proc) proc msg))))
     (set-buffer procbuf)
     (process-send-string proc cmd)
     (setq erg (point))
@@ -7921,8 +7910,7 @@ bottom) of the trackback stack is encountered."
          (setq py-pdbtrack-is-tracking-p t))
         (overlay-arrow-position
          (setq overlay-arrow-position nil)
-         (setq py-pdbtrack-is-tracking-p nil))
-        ))
+         (setq py-pdbtrack-is-tracking-p nil))))
 
 (defun py-pdbtrack-track-stack-file (text)
   "Show the file indicated by the pdb stack entry line, in a separate window.
@@ -8018,17 +8006,13 @@ problem as best as we can determine."
                              (max (point-min)
                                   (string-match "^\\([^#]\\|#[^#]\\|#$\\)"
                                                 (buffer-substring (point-min)
-                                                                  (point-max)))
-                                  ))))))
+                                                                  (point-max)))))))))
              (list lineno funcbuffer))
 
             ((= (elt filename 0) ?\<)
              (format "(Non-file source: '%s')" filename))
 
-            (t (format "Not found: %s(), %s" funcname filename)))
-      )
-    )
-  )
+            (t (format "Not found: %s(), %s" funcname filename))))))
 
 (defun py-pdbtrack-grub-for-buffer (funcname lineno)
   "Find most recent buffer itself named or having function funcname.
@@ -8220,8 +8204,7 @@ Useful for newly defined symbol, not known to python yet. "
         (setq start end))
       (princ (substitute-command-keys (substring str start))))
     (if (featurep 'xemacs) (print-help-return-message)
-      (help-print-return-message))
-    ))
+      (help-print-return-message))))
 
 (defun py-describe-mode ()
   "Dump long form of Python-mode docs."
@@ -8811,8 +8794,7 @@ With arg, do it that many times.
    "[ \t]*:"                            ; and the final :
    "\\)"                                ; >>classes<<
    )
-  "Regexp for Python classes for use with the Imenu package."
-  )
+  "Regexp for Python classes for use with the Imenu package.")
 
 (defvar py-imenu-method-regexp
   (concat                               ; <<methods and functions>>
@@ -8827,8 +8809,7 @@ With arg, do it that many times.
    "[ \t]*:"                            ; and then the :
    "\\)"                                ; >>methods and functions<<
    )
-  "Regexp for Python methods/functions for use with the Imenu package."
-  )
+  "Regexp for Python methods/functions for use with the Imenu package.")
 
 (defvar py-imenu-method-no-arg-parens '(2 8)
   "Indices into groups of the Python regexp for use with Imenu.
@@ -8855,8 +8836,7 @@ information.")
    (concat
     py-imenu-class-regexp
     "\\|"                               ; or...
-    py-imenu-method-regexp
-    )
+    py-imenu-method-regexp)
    py-imenu-method-no-arg-parens)
   "Generic Python expression which may be used directly with Imenu.
 Used by setting the variable `imenu-generic-expression' to this value.
@@ -9097,8 +9077,7 @@ Uses `python-imports' to load modules against which to complete."
   (mapc #' (lambda (key)
              (define-key py-mode-output-map key
                #'(lambda () (interactive) (beep))))
-           (where-is-internal 'self-insert-command))
-  )
+           (where-is-internal 'self-insert-command)))
 
 (setq py-shell-map
       (let ((map (copy-keymap comint-mode-map)))
@@ -9372,8 +9351,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
                 (find-file (concat py-install-directory "completion/pycomplete.el"))
                 (eval-buffer)))
           (kill-buffer "pycomplete.el"))
-      (error "`py-install-directory' not set, see INSTALL")
-      )))
+      (error "`py-install-directory' not set, see INSTALL"))))
 
 (defun py-guess-py-install-directory ()
   (interactive)
@@ -9637,7 +9615,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   "Major mode for editing Jython files.
 Like `python-mode', but sets up parameters for Jython subprocesses.
 Runs `jython-mode-hook' after `python-mode-hook'."
-  :group 'python
+  :group 'python-mode
   (py-toggle-shells "jython"))
 
 ;; It's handy to add recognition of Python files to the
@@ -9648,8 +9626,7 @@ Runs `jython-mode-hook' after `python-mode-hook'."
 
 (let ((modes '(("jython" . jython-mode)
                ("python" . python-mode)
-               ("python3" . python-mode)
-               )))
+               ("python3" . python-mode))))
   (while modes
     (when (not (assoc (car modes) interpreter-mode-alist))
       (push (car modes) interpreter-mode-alist))
@@ -10459,9 +10436,7 @@ find it."
             (python-pdbtrack-overlay-arrow t)
             (pop-to-buffer origbuf t)
             ;; in large shell buffers, above stuff may cause point to lag output
-            (goto-char procmark)
-            )))))
-  )
+            (goto-char procmark)))))))
 
 (defun python-pdbtrack-get-source-buffer (block)
   "Return line number and buffer of code indicated by block's traceback text.
@@ -10499,17 +10474,13 @@ problem."
                                (max (point-min)
                                     (string-match "^\\([^#]\\|#[^#]\\|#$\\)"
                                                   (buffer-substring
-                                                   (point-min) (point-max)))
-                                    )))))))
+                                                   (point-min) (point-max))))))))))
              (list lineno funcbuffer))
 
             ((= (elt filename 0) ?\<)
              (format "(Non-file source: '%s')" filename))
 
-            (t (format "Not found: %s(), %s" funcname filename)))
-      )
-    )
-  )
+            (t (format "Not found: %s(), %s" funcname filename))))))
 
 (defun python-pdbtrack-grub-for-buffer (funcname lineno)
   "Find recent python-mode buffer named, or having function named funcname."
