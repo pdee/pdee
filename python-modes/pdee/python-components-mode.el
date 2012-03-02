@@ -1551,7 +1551,6 @@ It makes underscores and dots word constituent chars.")
         (define-key map [(control c)(>)] 'py-shift-right)
         (define-key map [(control c)(tab)] 'py-indent-region)
         (define-key map [(control c)(:)] 'py-guess-indent-offset)
-
         ;; subprocess commands
         (define-key map [(control c)(control c)] 'py-execute-buffer)
         (define-key map [(control c)(control m)] 'py-execute-import-or-reload)
@@ -1601,10 +1600,6 @@ It makes underscores and dots word constituent chars.")
             ["Import/reload file" py-execute-import-or-reload
              :help "`py-execute-import-or-reload'
 Load into inferior Python session"]
-            ["Set default process" py-set-proc
-             :help "`py-set-proc'
-Make buffer's inferior process the default"
-             :active (buffer-live-p py-buffer)]
             ["pychecker-run" py-pychecker-run
              :help "`py-pychecker-run'
 Run pychecker"]

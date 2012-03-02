@@ -1401,10 +1401,6 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
             ["Import/reload file" py-execute-import-or-reload
              :help "`py-execute-import-or-reload'
 Load into inferior Python session"]
-            ["Set default process" py-set-proc
-             :help "`py-set-proc'
-Make buffer's inferior process the default"
-             :active (buffer-live-p py-buffer)]
             ["pychecker-run" py-pychecker-run
              :help "`py-pychecker-run'
 Run pychecker"]
