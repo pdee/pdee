@@ -77,6 +77,7 @@
          'py-shell-complete-test
          'py-completion-at-point-test
          'tqs-list-error-test
+         'py-install-directory-path-test
          'UnicodeEncodeError-python3-test
 
          )))
@@ -995,6 +996,15 @@ for x in y:
 (defun py-smart-indent-eight-base ()
   (goto-char 112)
   (assert (eq 12 (py-compute-indentation)) nil "py-smart-indent-eight-test failed"))
+
+(defun py-install-directory-path-test (&optional arg)
+  (interactive "p")
+  (py-bug-tests-intern 'py-install-directory-path-base arg ""))
+
+(defun py-install-directory-path-base ()
+  "See if `py-install-directory' is set when required. "
+  (assert (py-install-directory-check) nil "`py-install-directory' not valid. See INSTALL. "))
+
 
 ;; (defun index-menu-test (&optional arg load-branch-function)
 ;;   (interactive "p")

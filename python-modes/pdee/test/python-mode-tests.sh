@@ -219,6 +219,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall master-file-not-honored-lp:794850-test \
 --funcall py-insert-super-python2-test \
 --funcall nested-try-finally-test \
+--funcall py-install-directory-path-test \
 --funcall py-electric-backspace-test \
 --funcall UnicodeEncodeError-python3-test \
 --funcall py-ipython-complete-lp:927136-test \

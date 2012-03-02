@@ -41,7 +41,7 @@
 
 (defconst py-version "This is experimental `python-components-mode' not released yet, see https://code.launchpad.net/~a-roehler/python-mode/python-mode-components")
 
-(defcustom py-install-directory nil
+(defcustom py-install-directory ""
   "Directory where python-mode.el and it's subdirectories should be installed. Needed for completion and other environment stuff only. "
 
   :type 'string
@@ -1158,6 +1158,31 @@ Currently-active file is at the head of the list.")
 
 
 
+(defun py-normalize-py-install-directory ()
+  "Make sure `py-install-directory' ends with a file-path separator.
+
+Returns `py-install-directory' "
+  (interactive)
+  (let* ((file-separator-char (if (or (string-match "windows" (prin1-to-string system-type))
+                                      (string-match "ms-dos" (prin1-to-string system-type)))
+                                  "\\"
+                                "\/"))
+         (erg (if (string-match (concat file-separator-char "$") py-install-directory)
+                  py-install-directory
+                (concat py-install-directory file-separator-char))))
+    (setq py-install-directory erg)
+    (when (interactive-p) (message "%s" erg))
+    erg))
+
+(defun py-install-directory-check ()
+  "Do some sanity check for `py-install-directory'.
+
+Returns `t' if successful. "
+  (interactive)
+  (let ((erg (and (boundp 'py-install-directory) (stringp py-install-directory) (< 1 (length py-install-directory)))))
+    (when (interactive-p) (message "py-install-directory-check: %s" erg))
+    erg))
+
 (defun py-load-pymacs ()
   "Load Pymacs as delivered with python-mode.el.
 
@@ -1166,31 +1191,34 @@ See original source: http://pymacs.progiciels-bpi.ca"
   (interactive)
   (let* ((pyshell (py-choose-shell))
          (path (getenv "PYTHONPATH"))
+         (py-install-directory (py-normalize-py-install-directory))
          (pymacs-installed-p
-          (ignore-errors (string-match (expand-file-name (concat py-install-directory "/Pymacs")) path))))
+          (ignore-errors (string-match (expand-file-name (concat py-install-directory "Pymacs")) path))))
     ;; Python side
     (unless pymacs-installed-p
       (setenv "PYTHONPATH" (concat
                             (if path (concat path path-separator))
-                            (expand-file-name py-install-directory) "/Pymacs")))
+                            (expand-file-name py-install-directory) "Pymacs")))
 
-    (if (or (not (boundp 'py-install-directory)) (not (stringp py-install-directory)))
-        (error "`py-install-directory' not set, see INSTALL")
-      (load (concat py-install-directory "/pymacs.el") nil t)
-      (setenv "PYMACS_PYTHON" (if (string-match "IP" pyshell)
-                                  "python"
-                                pyshell))
-      (autoload 'pymacs-apply "pymacs")
-      (autoload 'pymacs-call "pymacs")
-      (autoload 'pymacs-eval "pymacs")
-      (autoload 'pymacs-exec "pymacs")
-      (autoload 'pymacs-load "pymacs")
-      (require 'pymacs))
-    (unwind-protect
+    (if (py-install-directory-check)
         (progn
-          (find-file (concat py-install-directory "/completion/pycomplete.el"))
-          (eval-buffer)))
-    (kill-buffer "pycomplete.el")))
+          (load (concat py-install-directory "pymacs.el") nil t)
+          (setenv "PYMACS_PYTHON" (if (string-match "IP" pyshell)
+                                      "python"
+                                    pyshell))
+          (autoload 'pymacs-apply "pymacs")
+          (autoload 'pymacs-call "pymacs")
+          (autoload 'pymacs-eval "pymacs")
+          (autoload 'pymacs-exec "pymacs")
+          (autoload 'pymacs-load "pymacs")
+          (require 'pymacs)
+          (unwind-protect
+              (progn
+                (find-file (concat py-install-directory "completion/pycomplete.el"))
+                (eval-buffer)))
+          (kill-buffer "pycomplete.el"))
+      (error "`py-install-directory' not set, see INSTALL")
+      )))
 
 (defun py-guess-py-install-directory ()
   (interactive)
@@ -1202,20 +1230,21 @@ See original source: http://pymacs.progiciels-bpi.ca"
 (defun py-set-load-path ()
   "Include needed subdirs of python-mode directory. "
   (interactive)
-  (cond (py-install-directory
-         (add-to-list 'load-path (expand-file-name py-install-directory))
-         (add-to-list 'load-path (concat (expand-file-name py-install-directory) "/completion"))
-         ;; (add-to-list 'load-path (concat py-install-directory "/pymacs"))
-         (add-to-list 'load-path (concat (expand-file-name py-install-directory) "/test"))
-         (add-to-list 'load-path (concat (expand-file-name py-install-directory) "/tools")))
-        ((when py-guess-py-install-directory-p
-           (let ((guessed-py-install-directory (py-guess-py-install-directory)))
-             (when guessed-py-install-directory
-               (add-to-list 'load-path guessed-py-install-directory)))))
-        (t (error "Please set `py-install-directory', see INSTALL"))
-        (when (interactive-p) (message "%s" load-path))))
+  (let ((py-install-directory (py-normalize-py-install-directory)))
+    (cond (py-install-directory
+           (add-to-list 'load-path (expand-file-name py-install-directory))
+           (add-to-list 'load-path (concat (expand-file-name py-install-directory) "completion"))
+           ;; (add-to-list 'load-path (concat py-install-directory "/pymacs"))
+           (add-to-list 'load-path (concat (expand-file-name py-install-directory) "test"))
+           (add-to-list 'load-path (concat (expand-file-name py-install-directory) "tools")))
+          ((when py-guess-py-install-directory-p
+             (let ((guessed-py-install-directory (py-guess-py-install-directory)))
+               (when guessed-py-install-directory
+                 (add-to-list 'load-path guessed-py-install-directory)))))
+          (t (error "Please set `py-install-directory', see INSTALL"))
+          (when (interactive-p) (message "%s" load-path)))))
 
-(when (boundp 'py-install-directory) (py-set-load-path))
+;; (when (boundp 'py-install-directory) (py-set-load-path))
 ;; don't require `py-install-directory' for now
 (py-set-load-path)
 
@@ -4515,24 +4544,24 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   ;; Python defines TABs as being 8-char wide.
   (set (make-local-variable 'tab-width) py-indent-offset)
   ;; Now guess `py-indent-offset'
-  ;; (when py-smart-indentation
-  ;;   (if (bobp)
-  ;;       (save-excursion
-  ;;         (save-restriction
-  ;;           (widen)
-  ;;           (while (and (not (eobp))
-  ;;                       (or
-  ;;                        (let ((erg (syntax-ppss)))
-  ;;                          (or (nth 1 erg) (nth 8 erg)))
-  ;;                        (eq 0 (current-indentation))))
-  ;;             (forward-line 1))
-  ;;           (back-to-indentation)
-  ;;           (py-guess-indent-offset)))
-  ;;     (py-guess-indent-offset)))
+  (when py-smart-indentation
+    (if (bobp)
+        (save-excursion
+          (save-restriction
+            (widen)
+            (while (and (not (eobp))
+                        (or
+                         (let ((erg (syntax-ppss)))
+                           (or (nth 1 erg) (nth 8 erg)))
+                         (eq 0 (current-indentation))))
+              (forward-line 1))
+            (back-to-indentation)
+            (py-guess-indent-offset)))
+      (py-guess-indent-offset)))
   (when py-load-pymacs-p (py-load-pymacs)
         (unwind-protect
             (progn
-              (find-file (concat py-install-directory "/completion/pycomplete.el"))
+              (find-file (concat py-install-directory "completion/pycomplete.el"))
               (eval-buffer)))
         (kill-buffer "pycomplete.el"))
   (define-key inferior-python-mode-map (kbd "<tab>")
