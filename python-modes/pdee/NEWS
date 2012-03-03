@@ -55,7 +55,7 @@ New in version 6.0.5
   Credits to github.com/fgallina/python.el/issues42
 
 - new boolean `py-verbose-p'
-  if `t', reached indent level is messaged
+  if `t', reached indent level etc. is messaged
 
 - new commands py-execute-buffer-dedicated, py-execute-buffer-switch  -dedicated
 

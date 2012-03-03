@@ -1,3 +1,9 @@
+Customize default Python shell as `py-shell-name'
+
+`py-shell-name' might be an installed executable as
+shell command `type' would display, but also a
+PATH/TO/(I)PYTHON, of a virtualenv for example
+
 Most python-mode.el commands start with prefix `py-'
 
 `M-x py- TAB'

@@ -11,6 +11,8 @@ Python-mode commands
 Optional argument INDENT-WIDTH specifies which indentation
 level (spaces only) should be highlighted, if omitted
 indent-width will be guessed from current major-mode
+* py-in-string-or-comment-p
+   Returns beginning position if inside a string or comment, nil otherwise. 
 * py-insert-default-shebang
    Insert in buffer shebang of installed default Python. 
 * py-electric-comment
@@ -47,6 +49,9 @@ With optional C-u an indent with length `py-indent-offset' is inserted unconditi
 When called interactivly with C-u, ignore dedenting rules for block closing statements
 (e.g. return, raise, break, continue, pass)
 
+An optional C-u followed by a numeric argument neither 1 nor 4 will switch off `py-smart-indentation' for this execution. This permits to correct allowed but unwanted indents.
+Similar to `toggle-py-smart-indentation' resp. `py-smart-indentation-off' followed by TAB.
+
 This function is normally used by `indent-line-function' resp.
 TAB.
 Returns current indentation 
@@ -74,7 +79,10 @@ Returns value of `indent-tabs-mode' switched to.
 
 By default, make a buffer-local copy of `py-indent-offset' with the
 new value.
-With optional argument GLOBAL change the global value of `py-indent-offset'. 
+With optional argument GLOBAL change the global value of `py-indent-offset'.
+
+Indent might be guessed savely only from beginning of a block.
+Returns `py-indent-offset'
 * py-narrow-to-defun
    Make text outside current defun invisible.
 
@@ -403,12 +411,28 @@ Optional ARG indicates a start-position for `parse-partial-sexp'.
 Result is useful for booleans too: (when (py-in-statement-p)...)
 will work.
 
-* py-beginning-of-expression-p
-   Returns position, if cursor is at the beginning of a expression, nil otherwise. 
-* py-beginning-of-partial-expression-p
-   Returns position, if cursor is at the beginning of a expression, nil otherwise. 
+* py-beginning-of-paragraph-p
+   Returns position, if cursor is at the beginning of a paragraph, nil otherwise. 
+* py-beginning-of-line-p
+   Returns position, if cursor is at the beginning of a line, nil otherwise. 
 * py-beginning-of-statement-p
    Returns position, if cursor is at the beginning of a statement, nil otherwise. 
+* py-beginning-of-expression-p
+   Returns position, if cursor is at the beginning of a expression, nil otherwise. 
+* py-beginning-of-minor-expression-p
+   Returns position, if cursor is at the beginning of a minor-expression, nil otherwise. 
+* py-beginning-of-block-p
+   Returns position, if cursor is at the beginning of a block, nil otherwise. 
+* py-beginning-of-clause-p
+   Returns position, if cursor is at the beginning of a clause, nil otherwise. 
+* py-beginning-of-block-or-clause-p
+   Returns position, if cursor is at the beginning of a block-or-clause, nil otherwise. 
+* py-beginning-of-def-p
+   Returns position, if cursor is at the beginning of a def, nil otherwise. 
+* py-beginning-of-class-p
+   Returns position, if cursor is at the beginning of a class, nil otherwise. 
+* py-beginning-of-def-or-class-p
+   Returns position, if cursor is at the beginning of a def-or-class, nil otherwise. 
 * py-statement-opens-block-p
    Return position if the current statement opens a block
 in stricter or wider sense.
@@ -579,46 +603,6 @@ http://docs.python.org/reference/compound_stmts.html
 To go just beyond the final line of the current statement, use `py-down-statement-lc'. 
 * py-goto-statement-below
    Goto beginning of next statement. 
-* py-mark-expression
-   Mark expression at point.
-
-Returns beginning and end positions of marked area, a cons. 
-* py-mark-partial-expression
-   Mark partial-expression at point.
-
-Returns beginning and end positions of marked area, a cons.
-"." operators delimit a partial-expression expression on it's level, that's the difference to compound expressions. 
-* py-mark-statement
-   Mark statement at point.
-
-Returns beginning and end positions of marked area, a cons. 
-* py-mark-block
-   Mark block at point.
-
-Returns beginning and end positions of marked area, a cons. 
-* py-mark-block-or-clause
-   Mark block-or-clause at point.
-
-Returns beginning and end positions of marked area, a cons. 
-* py-mark-def-or-class
-   Mark def-or-class at point.
-
-With universal argument or `py-mark-decorators' set to `t' decorators are marked too.
-Returns beginning and end positions of marked area, a cons.
-* py-mark-class
-   Mark class at point.
-
-With universal argument or `py-mark-decorators' set to `t' decorators are marked too.
-Returns beginning and end positions of marked area, a cons.
-* py-mark-def
-   Mark def at point.
-
-With universal argument or `py-mark-decorators' set to `t' decorators are marked too.
-Returns beginning and end positions of marked area, a cons.
-* py-mark-clause
-   Mark clause at point.
-
-Returns beginning and end positions of marked area, a cons. 
 * py-beginning-of-decorator
    Go to the beginning of a decorator.
 
@@ -842,8 +826,6 @@ With universal arg  insert a `%'.
    Sets `...-completion-command-string' and `py-complete-function'. 
 * py-set-ipython-completion-command-string
    Set and return `ipython-completion-command-string'. 
-* py-set-python-shell-keys
-    
 * py-shell-dedicated
    Start an interactive Python interpreter in another window.
 
@@ -1323,6 +1305,26 @@ When interactivly called, messages the shell name, Emacs would in the given circ
 
 To change the default Python interpreter, use `py-switch-shell'.
 
+* py-toggle-smart-indentation
+   If `py-smart-indentation' should be on or off.
+
+Returns value of `py-smart-indentation' switched to. 
+* py-smart-indentation-on
+   Make sure, `py-smart-indentation' is on.
+
+Returns value of `py-smart-indentation'. 
+* py-smart-indentation-off
+   Make sure, `py-smart-indentation' is off.
+
+Returns value of `py-smart-indentation'. 
+* py-normalize-py-install-directory
+   Make sure `py-install-directory' ends with a file-path separator.
+
+Returns `py-install-directory' 
+* py-install-directory-check
+   Do some sanity check for `py-install-directory'.
+
+Returns `t' if successful. 
 * py-load-pymacs
    Load Pymacs as delivered with python-mode.el.
 
@@ -1398,6 +1400,7 @@ in a buffer that doesn't have a local value of `python-buffer'.
 * ipython-complete
    Complete the python symbol before point.
 
+If no completion available, insert a TAB.
 Returns the completed symbol, a string, if successful, nil otherwise.
 * py-pychecker-run
    *Run pychecker (default on the file currently visited).
