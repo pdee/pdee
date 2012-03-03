@@ -28,9 +28,6 @@ PDIR=`pwd`
 if [ -s "python-components-mode.el" ];
     then
     PYTHONMODE="python-components-mode.el"
-elif [ -s "python-joined-mode.el" ];
-then
-    PYTHONMODE="python-joined-mode.el"
 else
     PYTHONMODE="python-mode.el"
 fi
