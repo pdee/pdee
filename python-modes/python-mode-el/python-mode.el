@@ -42,7 +42,7 @@
   :group 'languages
   :prefix "py-")
 
-(defconst py-version "6.0.5")
+(defconst py-version "6.0.6")
 
 
 ;;; User definable variables
