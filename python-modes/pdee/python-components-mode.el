@@ -554,14 +554,26 @@ the second for a 'normal' command, and the third for a multiline command.")
   "A regular expression to match the output prompt of IPython.")
 
 (defcustom py-shell-switch-buffers-on-execute t
-  "When non-nil switch to the Python output buffer. "
+  "When non-nil switch to the Python output buffer. 
+
+Has effect only if `py-split-windows-on-execute-p' is nil - otherwise focus moves anyway. "
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-split-windows-on-execute t
-  "When non-nil split windows, make Python output buffer other. "
+(defcustom py-split-windows-on-execute-p t
+  "When non-nil split windows, put focus into Python output buffer. 
+
+When `t', overrides setting of `py-shell-switch-buffers-on-execute'. "
   :type 'boolean
   :group 'python-mode)
+
+(defcustom py-split-windows-on-execute-function 'split-window-vertically
+  "How window should get splitted to display results of py-execute-... functions. "
+  :type '(choice (const :tag "split-window-vertically" split-window-vertically)
+		 (const :tag "split-window-horizontally" split-window-horizontally)
+                 )
+  :group 'python-mode)
+(make-variable-buffer-local 'py-split-windows-on-execute-function)
 
 (defcustom py-hide-show-keywords
   '("class"    "def"    "elif"    "else"    "except"

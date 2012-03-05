@@ -33,6 +33,75 @@
         (not py-execute-keep-temporary-file-p))
   (when (interactive-p) (message "py-execute-keep-temporary-file-p: %s" py-execute-keep-temporary-file-p)))
 
+;;; Split-Windows-On-Execute forms
+(defalias 'toggle-py-split-windows-on-execute 'py-toggle-split-windows-on-execute)
+(defun py-toggle-split-windows-on-execute (&optional arg)
+  "If `py-split-windows-on-execute-p' should be on or off.
+
+  Returns value of `py-split-windows-on-execute-p' switched to. "
+  (interactive)
+  (let ((arg (or arg (if py-split-windows-on-execute-p -1 1))))
+    (if (< 0 arg)
+        (setq py-split-windows-on-execute-p t)
+      (setq py-split-windows-on-execute-p nil))
+    (when (interactive-p) (message "py-split-windows-on-execute-p: %s" py-split-windows-on-execute-p))
+    py-split-windows-on-execute-p))
+
+(defun py-split-windows-on-execute-on (&optional arg)
+  "Make sure, `py-split-windows-on-execute-p' is on.
+
+Returns value of `py-split-windows-on-execute-p'. "
+  (interactive "p")
+  (let ((arg (or arg 1)))
+    (toggle-py-split-windows-on-execute arg))
+  (when (interactive-p) (message "py-split-windows-on-execute-p: %s" py-split-windows-on-execute-p))
+  py-split-windows-on-execute-p)
+
+(defun py-split-windows-on-execute-off (&optional arg)
+  "Make sure, `py-split-windows-on-execute-p' is off.
+
+Returns value of `py-split-windows-on-execute-p'. "
+  (interactive "p")
+  (let ((arg (if arg (- arg) -1)))
+    (toggle-py-split-windows-on-execute arg))
+  (when (interactive-p) (message "py-split-windows-on-execute-p: %s" py-split-windows-on-execute-p))
+  py-split-windows-on-execute-p)
+
+;;; Shell-Switch-Buffers-On-Execute forms
+(defalias 'toggle-py-shell-switch-buffers-on-execute 'py-toggle-shell-switch-buffers-on-execute)
+(defun py-toggle-shell-switch-buffers-on-execute (&optional arg)
+  "If `py-shell-switch-buffers-on-execute' should be on or off.
+
+  Returns value of `py-shell-switch-buffers-on-execute' switched to. "
+  (interactive)
+  (let ((arg (or arg (if py-shell-switch-buffers-on-execute -1 1))))
+    (if (< 0 arg)
+        (setq py-shell-switch-buffers-on-execute t)
+      (setq py-shell-switch-buffers-on-execute nil))
+    (when (interactive-p) (message "py-shell-switch-buffers-on-execute: %s" py-shell-switch-buffers-on-execute))
+    py-shell-switch-buffers-on-execute))
+
+(defun py-shell-switch-buffers-on-execute-on (&optional arg)
+  "Make sure, `py-shell-switch-buffers-on-execute' is on.
+
+Returns value of `py-shell-switch-buffers-on-execute'. "
+  (interactive "p")
+  (let ((arg (or arg 1)))
+    (toggle-py-shell-switch-buffers-on-execute arg))
+  (when (interactive-p) (message "py-shell-switch-buffers-on-execute: %s" py-shell-switch-buffers-on-execute))
+  py-shell-switch-buffers-on-execute)
+
+(defun py-shell-switch-buffers-on-execute-off (&optional arg)
+  "Make sure, `py-shell-switch-buffers-on-execute' is off.
+
+Returns value of `py-shell-switch-buffers-on-execute'. "
+  (interactive "p")
+  (let ((arg (if arg (- arg) -1)))
+    (toggle-py-shell-switch-buffers-on-execute arg))
+  (when (interactive-p) (message "py-shell-switch-buffers-on-execute: %s" py-shell-switch-buffers-on-execute))
+  py-shell-switch-buffers-on-execute)
+
+;;;
 (defun py-comint-output-filter-function (string)
   "Watch output for Python prompt and exec next file waiting in queue.
 This function is appropriate for `comint-output-filter-functions'."
@@ -308,7 +377,8 @@ Ignores setting of `py-shell-switch-buffers-on-execute', output-buffer will bein
 
 (defun py-execute-intern (strg &optional procbuf proc temp file filebuf name py-execute-directory)
   "Returns position of output start when successful. "
-  (let (erg)
+  (let ((pop-up-windows py-shell-switch-buffers-on-execute)
+        erg)
     (set-buffer filebuf)
     (erase-buffer)
     (insert strg)
@@ -328,13 +398,38 @@ Ignores setting of `py-shell-switch-buffers-on-execute', output-buffer will bein
           (progn
             (setq erg (py-execute-file-base proc file pec))
             (setq py-exception-buffer (cons file (current-buffer)))
-            (if (or (eq switch 'switch)
-                    (and (not (eq switch 'noswitch)) py-shell-switch-buffers-on-execute))
-                (progn
-                  (pop-to-buffer procbuf)
-                  (goto-char (point-max)))
-              (when (buffer-live-p regbuf) (pop-to-buffer regbuf))
-              (message "Output buffer: %s" procbuf))
+            (set-buffer regbuf)
+            (cond ((eq switch 'switch)
+                   (if py-split-windows-on-execute-p
+                       (progn
+                         (delete-other-windows)
+                         (funcall py-split-windows-on-execute-function))
+                     (set-buffer regbuf)
+                     (message "current-buffer: %s" (current-buffer)))
+                   (set-buffer procbuf)
+                   (switch-to-buffer (current-buffer))
+                   (goto-char (point-max)))
+                  ((eq switch 'noswitch)
+                   (when py-split-windows-on-execute-p
+                     (delete-other-windows)
+                     (funcall py-split-windows-on-execute-function))
+                   (set-buffer regbuf)
+                   (switch-to-buffer (current-buffer))
+                   (message "current-buffer: %s" (current-buffer)))
+                  ((and py-shell-switch-buffers-on-execute py-split-windows-on-execute-p)
+                   (switch-to-buffer (current-buffer))
+                   (delete-other-windows)
+                   (funcall py-split-windows-on-execute-function)
+                   (switch-to-buffer regbuf)
+                   (pop-to-buffer procbuf))
+                  (py-split-windows-on-execute-p
+                   (delete-other-windows)
+                   (funcall py-split-windows-on-execute-function)
+                   (pop-to-buffer procbuf)
+                   (set-buffer procbuf)
+                   (message "current-buffer: %s" (current-buffer))
+                   ))
+            (message "Output buffer: %s" procbuf)
             (sit-for 0.1)
             (unless py-execute-keep-temporary-file-p
               (delete-file file)

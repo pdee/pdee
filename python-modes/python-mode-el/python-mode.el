@@ -532,14 +532,26 @@ to select the appropriate python interpreter mode for a file.")
   :group 'python-mode)
 
 (defcustom py-shell-switch-buffers-on-execute t
-  "When non-nil switch to the Python output buffer. "
+  "When non-nil switch to the Python output buffer.
+
+Has effect only if `py-split-windows-on-execute-p' is nil - otherwise focus moves anyway. "
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-split-windows-on-execute t
-  "When non-nil split windows, make Python output buffer other. "
+(defcustom py-split-windows-on-execute-p t
+  "When non-nil split windows, put focus into Python output buffer.
+
+When `t', overrides setting of `py-shell-switch-buffers-on-execute'. "
   :type 'boolean
   :group 'python-mode)
+
+(defcustom py-split-windows-on-execute-function 'split-window-vertically
+  "How window should get splitted to display results of py-execute-... functions. "
+  :type '(choice (const :tag "split-window-vertically" split-window-vertically)
+		 (const :tag "split-window-horizontally" split-window-horizontally)
+                 )
+  :group 'python-mode)
+(make-variable-buffer-local 'py-split-windows-on-execute-function)
 
 (defcustom py-hide-show-keywords
   '("class"    "def"    "elif"    "else"    "except"
@@ -963,8 +975,6 @@ See bug report at launchpad, lp:944093. "
   :type 'boolean
   :group 'python-mode)
 
-;;; highlight-indentation.el ends here
-
 ;;; NO USER DEFINABLE VARIABLES BEYOND THIS POINT
 
 (defvar py-execute-directory nil
@@ -1237,7 +1247,7 @@ Currently-active file is at the head of the list.")
      (2 (python-quote-syntax 2))
      (3 (python-quote-syntax 3)))
     ;; This doesn't really help.
-;;;     (,(rx (and ?\\ (group ?\n))) (1 " "))
+    ;;     (,(rx (and ?\\ (group ?\n))) (1 " "))
     ))
 
 (defun python-quote-syntax (n)
@@ -5701,7 +5711,6 @@ Returns position if succesful "
       erg)))
 
 ;;; Copying
-
 (defalias 'py-expression 'py-copy-expression)
 (defun py-copy-expression ()
   "Mark expression at point.
@@ -5903,7 +5912,6 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
     (kill-region (car erg) (cdr erg))))
 
 ;;; Helper functions
-
 (defun py-forward-line (&optional arg)
   "Goes to end of line after forward move.
 
@@ -6434,7 +6442,6 @@ Takes a list, INDENT and START position. "
           last))))
 
 ;;; python-mode-execute.el
-
 (defun py-toggle-execute-keep-temporary-file-p ()
   "Toggle py-execute-keep-temporary-file-p "
   (interactive)
@@ -6997,7 +7004,8 @@ When called from a programm, it accepts a string specifying a shell which will b
 
 (defun py-execute-intern (strg &optional procbuf proc temp file filebuf name py-execute-directory)
   "Returns position of output start when successful. "
-  (let (erg)
+  (let ((pop-up-windows py-shell-switch-buffers-on-execute)
+        erg)
     (set-buffer filebuf)
     (erase-buffer)
     (insert strg)
@@ -7017,13 +7025,38 @@ When called from a programm, it accepts a string specifying a shell which will b
           (progn
             (setq erg (py-execute-file-base proc file pec))
             (setq py-exception-buffer (cons file (current-buffer)))
-            (if (or (eq switch 'switch)
-                    (and (not (eq switch 'noswitch)) py-shell-switch-buffers-on-execute))
-                (progn
-                  (pop-to-buffer procbuf)
-                  (goto-char (point-max)))
-              (when (buffer-live-p regbuf) (pop-to-buffer regbuf))
-              (message "Output buffer: %s" procbuf))
+            (set-buffer regbuf)
+            (cond ((eq switch 'switch)
+                   (if py-split-windows-on-execute-p
+                       (progn
+                         (delete-other-windows)
+                         (funcall py-split-windows-on-execute-function))
+                     (set-buffer regbuf)
+                     (message "current-buffer: %s" (current-buffer)))
+                   (set-buffer procbuf)
+                   (switch-to-buffer (current-buffer))
+                   (goto-char (point-max)))
+                  ((eq switch 'noswitch)
+                   (when py-split-windows-on-execute-p
+                     (delete-other-windows)
+                     (funcall py-split-windows-on-execute-function))
+                   (set-buffer regbuf)
+                   (switch-to-buffer (current-buffer))
+                   (message "current-buffer: %s" (current-buffer)))
+                  ((and py-shell-switch-buffers-on-execute py-split-windows-on-execute-p)
+                   (switch-to-buffer (current-buffer))
+                   (delete-other-windows)
+                   (funcall py-split-windows-on-execute-function)
+                   (switch-to-buffer regbuf)
+                   (pop-to-buffer procbuf))
+                  (py-split-windows-on-execute-p
+                   (delete-other-windows)
+                   (funcall py-split-windows-on-execute-function)
+                   (pop-to-buffer procbuf)
+                   (set-buffer procbuf)
+                   (message "current-buffer: %s" (current-buffer))
+                   ))
+            (message "Output buffer: %s" procbuf)
             (sit-for 0.1)
             (unless py-execute-keep-temporary-file-p
               (delete-file file)
@@ -9288,6 +9321,75 @@ Returns value of `py-smart-indentation'. "
   (when (interactive-p) (message "py-smart-indentation: %s" py-smart-indentation))
   py-smart-indentation)
 
+;;; Split-Windows-On-Execute forms
+(defalias 'toggle-py-split-windows-on-execute 'py-toggle-split-windows-on-execute)
+(defun py-toggle-split-windows-on-execute (&optional arg)
+  "If `py-split-windows-on-execute-p' should be on or off.
+
+  Returns value of `py-split-windows-on-execute-p' switched to. "
+  (interactive)
+  (let ((arg (or arg (if py-split-windows-on-execute-p -1 1))))
+    (if (< 0 arg)
+        (setq py-split-windows-on-execute-p t)
+      (setq py-split-windows-on-execute-p nil))
+    (when (interactive-p) (message "py-split-windows-on-execute-p: %s" py-split-windows-on-execute-p))
+    py-split-windows-on-execute-p))
+
+(defun py-split-windows-on-execute-on (&optional arg)
+  "Make sure, `py-split-windows-on-execute-p' is on.
+
+Returns value of `py-split-windows-on-execute-p'. "
+  (interactive "p")
+  (let ((arg (or arg 1)))
+    (toggle-py-split-windows-on-execute arg))
+  (when (interactive-p) (message "py-split-windows-on-execute-p: %s" py-split-windows-on-execute-p))
+  py-split-windows-on-execute-p)
+
+(defun py-split-windows-on-execute-off (&optional arg)
+  "Make sure, `py-split-windows-on-execute-p' is off.
+
+Returns value of `py-split-windows-on-execute-p'. "
+  (interactive "p")
+  (let ((arg (if arg (- arg) -1)))
+    (toggle-py-split-windows-on-execute arg))
+  (when (interactive-p) (message "py-split-windows-on-execute-p: %s" py-split-windows-on-execute-p))
+  py-split-windows-on-execute-p)
+
+;;; Shell-Switch-Buffers-On-Execute forms
+(defalias 'toggle-py-shell-switch-buffers-on-execute 'py-toggle-shell-switch-buffers-on-execute)
+(defun py-toggle-shell-switch-buffers-on-execute (&optional arg)
+  "If `py-shell-switch-buffers-on-execute' should be on or off.
+
+  Returns value of `py-shell-switch-buffers-on-execute' switched to. "
+  (interactive)
+  (let ((arg (or arg (if py-shell-switch-buffers-on-execute -1 1))))
+    (if (< 0 arg)
+        (setq py-shell-switch-buffers-on-execute t)
+      (setq py-shell-switch-buffers-on-execute nil))
+    (when (interactive-p) (message "py-shell-switch-buffers-on-execute: %s" py-shell-switch-buffers-on-execute))
+    py-shell-switch-buffers-on-execute))
+
+(defun py-shell-switch-buffers-on-execute-on (&optional arg)
+  "Make sure, `py-shell-switch-buffers-on-execute' is on.
+
+Returns value of `py-shell-switch-buffers-on-execute'. "
+  (interactive "p")
+  (let ((arg (or arg 1)))
+    (toggle-py-shell-switch-buffers-on-execute arg))
+  (when (interactive-p) (message "py-shell-switch-buffers-on-execute: %s" py-shell-switch-buffers-on-execute))
+  py-shell-switch-buffers-on-execute)
+
+(defun py-shell-switch-buffers-on-execute-off (&optional arg)
+  "Make sure, `py-shell-switch-buffers-on-execute' is off.
+
+Returns value of `py-shell-switch-buffers-on-execute'. "
+  (interactive "p")
+  (let ((arg (if arg (- arg) -1)))
+    (toggle-py-shell-switch-buffers-on-execute arg))
+  (when (interactive-p) (message "py-shell-switch-buffers-on-execute: %s" py-shell-switch-buffers-on-execute))
+  py-shell-switch-buffers-on-execute)
+
+;;;
 (defvar inferior-python-mode-map
   (let ((map (make-sparse-keymap)))
     ;; This will inherit from comint-mode-map.

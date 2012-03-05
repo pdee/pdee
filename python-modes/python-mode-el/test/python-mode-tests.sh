@@ -206,7 +206,16 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall nesting-if-test \
 --funcall nested-try-test \
 --funcall nested-if-test \
+--funcall py-mark-statement-commandp-test \
+--funcall py-mark-block-commandp-test \
+--funcall py-mark-clause-commandp-test \
+--funcall py-mark-block-or-clause-commandp-test \
 --funcall py-mark-def-commandp-test \
+--funcall py-mark-class-commandp-test \
+--funcall py-mark-region-commandp-test \
+--funcall py-mark-buffer-commandp-test \
+--funcall py-mark-expression-commandp-test \
+--funcall py-mark-minor-expression-commandp-test \
 --funcall py-shebang-consider-ipython-lp-849293-test \
 --funcall py-insert-super-python3-test \
 --funcall UnicodeEncodeError-lp:550661-test \
