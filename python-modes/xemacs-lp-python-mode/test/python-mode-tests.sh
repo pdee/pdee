@@ -167,7 +167,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-forward-into-nomenclature-lp-916818-test \
 --funcall py-forward-into-nomenclature-jumps-over-CamelCased-words-lp:919540-test \
 --funcall py-backward-into-nomenclature-caps-names-lp:919541-test \
---funcall execute-buffer-ipython-fails-lp:928087-test \
 --funcall fourth-level-blocks-indent-incorrectly-lp-939577-test \
 --funcall py-mark-expression-marks-too-much-lp-941140-test \
 \
@@ -207,6 +206,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall nesting-if-test \
 --funcall nested-try-test \
 --funcall nested-if-test \
+--funcall py-mark-def-commandp-test \
 --funcall py-shebang-consider-ipython-lp-849293-test \
 --funcall py-insert-super-python3-test \
 --funcall UnicodeEncodeError-lp:550661-test \
@@ -215,6 +215,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-smart-indent-eight-test \
 --funcall wrong-type-argument-lp-901541-test \
 --funcall indentation-bug-inside-docstrings-lp-899455-test \
+--funcall execute-buffer-ipython-fails-lp:928087-test \
 --funcall py-shebang-ipython-env-lp-849293-test \
 --funcall master-file-not-honored-lp:794850-test \
 --funcall py-insert-super-python2-test \

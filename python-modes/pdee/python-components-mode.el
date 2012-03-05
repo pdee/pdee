@@ -1130,8 +1130,15 @@ Inludes Python shell-prompt in order to stop further searches. ")
   "Queue of Python temp files awaiting execution.
 Currently-active file is at the head of the list.")
 
-(defvar python-mode-abbrev-table nil)
-(define-abbrev-table 'python-mode-abbrev-table ())
+;; (defvar python-mode-abbrev-table nil)
+(define-abbrev-table 'python-mode-abbrev-table ()
+  "Abbrev table for Python mode."
+  :case-fixed t
+  ;; Allow / inside abbrevs.
+  :regexp "\\(?:^\\|[^/]\\)\\<\\([[:word:]/]+\\)\\W*")
+;; Only expand in code.
+
+;; (define-abbrev-table 'python-mode-abbrev-table ())
 
 (defvar inferior-python-mode-abbrev-table nil
   "Not in use.")
@@ -4280,10 +4287,10 @@ Interactively, prompt for name."
       `(progn
          ;; Usual technique for inserting a skeleton, but expand
          ;; to the original abbrev instead if in a comment or string.
-         (when python-use-skeletons
-           (define-abbrev python-mode-abbrev-table ,name ""
-             ',function
-             nil t))                      ; system abbrev
+         ;; (when python-use-skeletons
+         ;;   (define-abbrev python-mode-abbrev-table ,name ""
+         ;;     ',function
+         ;;     nil t))                      ; system abbrev
          (define-skeleton ,function
            ,(format "Insert Python \"%s\" template." name)
            ,@elements)))))
@@ -4363,21 +4370,22 @@ Interactively, prompt for name."
   "Default template to expand by `python-expand-template'.
 Updated on each expansion.")
 
-(defun python-expand-template (name)
-  "Expand template named NAME.
-Interactively, prompt for the name with completion."
-  (interactive
-   (list (completing-read (format "Template to expand (default %s): "
-				  python-default-template)
-			  python-mode-abbrev-table nil t nil nil
-                          python-default-template)))
-  (if (equal "" name)
-      (setq name python-default-template)
-    (setq python-default-template name))
-  (let ((sym (abbrev-symbol name python-mode-abbrev-table)))
-    (if sym
-        (abbrev-insert sym)
-      (error "Undefined template: %s" name))))
+;; python.el function
+;; (defun python-expand-template (name)
+;;   "Expand template named NAME.
+;; Interactively, prompt for the name with completion."
+;;   (interactive
+;;    (list (completing-read (format "Template to expand (default %s): "
+;; 				  python-default-template)
+;; 			  python-mode-abbrev-table nil t nil nil
+;;                           python-default-template)))
+;;   (if (equal "" name)
+;;       (setq name python-default-template)
+;;     (setq python-default-template name))
+;;   (let ((sym (abbrev-symbol name python-mode-abbrev-table)))
+;;     (if sym
+;;         (abbrev-insert sym)
+;;       (error "Undefined template: %s" name))))
 
 ;;;; Modes.
 
@@ -4444,7 +4452,8 @@ py-temp-directory\t\tdirectory used for temp files (if needed)
 py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
 
 \\{python-mode-map}"
-  :group 'python-mode
+  :group 'python
+  :abbrev t
   (set (make-local-variable 'font-lock-defaults)
        '(python-font-lock-keywords nil nil nil nil
 				   (font-lock-syntactic-keywords

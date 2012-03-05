@@ -77,6 +77,7 @@
          'py-shell-complete-test
          'py-completion-at-point-test
          'tqs-list-error-test
+         'py-mark-def-commandp-test
          'py-install-directory-path-test
          'UnicodeEncodeError-python3-test
 
@@ -1005,6 +1006,17 @@ for x in y:
   "See if `py-install-directory' is set when required. "
   (assert (py-install-directory-check) nil "`py-install-directory' not valid. See INSTALL. "))
 
+(defun py-mark-def-commandp-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"))
+  (when load-branch-function (funcall load-branch-function))
+  (py-bug-tests-intern 'py-mark-def-commandp-base arg teststring)))
+
+(defun py-mark-def-commandp-base ()
+    (assert (commandp 'py-mark-def) nil "py-mark-def-commandp-test failed"))
 
 ;; (defun index-menu-test (&optional arg load-branch-function)
 ;;   (interactive "p")

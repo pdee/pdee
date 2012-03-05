@@ -5537,6 +5537,7 @@ To go just beyond the final line of the current statement, use `py-down-statemen
   "Mark paragraph at point.
 
 Returns beginning and end positions of marked area, a cons. "
+  (interactive)
   (let (erg)
     (setq erg (py-mark-base "paragraph"))
     (exchange-point-and-mark)
@@ -5547,6 +5548,7 @@ Returns beginning and end positions of marked area, a cons. "
   "Mark block at point.
 
 Returns beginning and end positions of marked area, a cons. "
+  (interactive)
   (let (erg)
     (setq erg (py-mark-base "block"))
     (exchange-point-and-mark)
@@ -5557,6 +5559,7 @@ Returns beginning and end positions of marked area, a cons. "
   "Mark clause at point.
 
 Returns beginning and end positions of marked area, a cons. "
+  (interactive)
   (let (erg)
     (setq erg (py-mark-base "clause"))
     (exchange-point-and-mark)
@@ -5567,6 +5570,7 @@ Returns beginning and end positions of marked area, a cons. "
   "Mark block-or-clause at point.
 
 Returns beginning and end positions of marked area, a cons. "
+  (interactive)
   (let (erg)
     (setq erg (py-mark-base "block-or-clause"))
     (exchange-point-and-mark)
@@ -5578,6 +5582,7 @@ Returns beginning and end positions of marked area, a cons. "
 
 With \\[universal argument] or `py-mark-decorators' set to `t', decorators are marked too.
 Returns beginning and end positions of marked area, a cons. "
+  (interactive)
   (let ((py-mark-decorators (or arg py-mark-decorators))
         erg)
     (py-mark-base "def" py-mark-decorators)
@@ -5590,6 +5595,7 @@ Returns beginning and end positions of marked area, a cons. "
 
 With \\[universal argument] or `py-mark-decorators' set to `t', decorators are marked too.
 Returns beginning and end positions of marked area, a cons. "
+  (interactive)
   (let ((py-mark-decorators (or arg py-mark-decorators))
         erg)
     (py-mark-base "def" py-mark-decorators)
@@ -5602,6 +5608,7 @@ Returns beginning and end positions of marked area, a cons. "
 
 With \\[universal argument] or `py-mark-decorators' set to `t', decorators are marked too.
 Returns beginning and end positions of marked area, a cons. "
+  (interactive)
   (let ((py-mark-decorators (or arg py-mark-decorators))
         erg)
     (py-mark-base "def" py-mark-decorators)
@@ -5613,6 +5620,7 @@ Returns beginning and end positions of marked area, a cons. "
   "Mark line at point.
 
 Returns beginning and end positions of marked area, a cons. "
+  (interactive)
   (let (erg)
     (setq erg (py-mark-base "line"))
     (exchange-point-and-mark)
@@ -5623,6 +5631,7 @@ Returns beginning and end positions of marked area, a cons. "
   "Mark statement at point.
 
 Returns beginning and end positions of marked area, a cons. "
+  (interactive)
   (let (erg)
     (setq erg (py-mark-base "statement"))
     (exchange-point-and-mark)
@@ -5633,6 +5642,7 @@ Returns beginning and end positions of marked area, a cons. "
   "Mark expression at point.
 
 Returns beginning and end positions of marked area, a cons. "
+  (interactive)
   (let (erg)
     (setq erg (py-mark-base "expression"))
     (exchange-point-and-mark)
@@ -5643,6 +5653,7 @@ Returns beginning and end positions of marked area, a cons. "
   "Mark minor-expression at point.
 
 Returns beginning and end positions of marked area, a cons. "
+  (interactive)
   (let (erg)
     (setq erg (py-mark-base "minor-expression"))
     (exchange-point-and-mark)

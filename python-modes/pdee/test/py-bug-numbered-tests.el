@@ -2262,7 +2262,7 @@ print u'\\xA9'
     (py-bug-tests-intern 'execute-buffer-ipython-fails-lp:928087-base arg teststring)))
 
 (defun execute-buffer-ipython-fails-lp:928087-base ()
-  (assert (numberp (py-execute-buffer)) nil "execute-buffer-ipython-fails-lp:928087-test failed"))
+  (assert (py-execute-buffer) nil "execute-buffer-ipython-fails-lp:928087-test failed"))
 
 (defun fourth-level-blocks-indent-incorrectly-lp-939577-test (&optional arg load-branch-function)
   (interactive "p")
