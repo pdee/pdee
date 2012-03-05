@@ -5,8 +5,9 @@ New in version 6.0.6
 --------------------
 
 - new commands `py-toggle-split-windows-on-execute', ...-on, ...-off
-- new `py-toggle-shell-switch-buffers-on-execute', ...-on, ...-off
-
+  `py-toggle-shell-switch-buffers-on-execute', ...-on, ...-off
+  allow `py-execute-buffer' etc. to split/not-split windows,
+  move cursor onto output or not
 
 New in version 6.0.5
 --------------------

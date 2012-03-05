@@ -532,16 +532,13 @@ to select the appropriate python interpreter mode for a file.")
   :group 'python-mode)
 
 (defcustom py-shell-switch-buffers-on-execute t
-  "When non-nil switch to the Python output buffer.
+  "When non-nil switch to the Python output buffer. "
 
-Has effect only if `py-split-windows-on-execute-p' is nil - otherwise focus moves anyway. "
   :type 'boolean
   :group 'python-mode)
 
 (defcustom py-split-windows-on-execute-p t
-  "When non-nil split windows, put focus into Python output buffer.
-
-When `t', overrides setting of `py-shell-switch-buffers-on-execute'. "
+  "When non-nil split windows. "
   :type 'boolean
   :group 'python-mode)
 
@@ -7046,17 +7043,17 @@ When called from a programm, it accepts a string specifying a shell which will b
                   ((and py-shell-switch-buffers-on-execute py-split-windows-on-execute-p)
                    (switch-to-buffer (current-buffer))
                    (delete-other-windows)
-                   (funcall py-split-windows-on-execute-function)
                    (switch-to-buffer regbuf)
                    (pop-to-buffer procbuf))
                   (py-split-windows-on-execute-p
                    (delete-other-windows)
-                   (funcall py-split-windows-on-execute-function)
                    (pop-to-buffer procbuf)
                    (set-buffer procbuf)
-                   (message "current-buffer: %s" (current-buffer))
-                   ))
-            (message "Output buffer: %s" procbuf)
+                   (funcall py-split-windows-on-execute-function)
+                   (switch-to-buffer regbuf)))
+            (unless (string= (buffer-name (current-buffer)) procbuf)(message "Output buffer: %s" procbuf))
+            ;; (message "py-shell-switch-buffers-on-execute:  %s"  py-shell-switch-buffers-on-execute)
+            ;; (message "py-split-windows-on-execute-p: %s" py-split-windows-on-execute-p)
             (sit-for 0.1)
             (unless py-execute-keep-temporary-file-p
               (delete-file file)
