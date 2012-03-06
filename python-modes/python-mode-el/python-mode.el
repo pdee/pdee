@@ -6619,8 +6619,13 @@ Optional symbol SWITCH ('switch/'noswitch) precedes `py-shell-switch-buffers-on-
     ;; ToDo: has only effect \w IPython
     (add-hook 'py-shell-hook 'py-dirstack-hook)
     (run-hooks 'py-shell-hook)
+    (when py-split-windows-on-execute-p
+      (funcall py-split-windows-on-execute-function))
     (when (or (eq switch 'switch)
-              (and (not (eq switch 'noswitch)) (or (interactive-p) py-shell-switch-buffers-on-execute-p)))
+              (and (not (eq switch 'noswitch))
+                   (interactive-p)
+                   ;; (or (interactive-p) py-shell-switch-buffers-on-execute-p)
+                   ))
       (switch-to-buffer (current-buffer)))
     (goto-char (point-max))
     ;; executing through IPython might fail first time otherwise
