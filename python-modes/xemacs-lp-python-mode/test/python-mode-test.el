@@ -725,7 +725,7 @@ if foo:
 
 (defun py-execute-block-base ()
   (beginning-of-line)
-  (let ((py-shell-switch-buffers-on-execute nil)
+  (let ((py-shell-switch-buffers-on-execute-p nil)
         (py-cleanup-temporary nil))
     (assert (py-execute-block) nil "py-execute-block-test failed")))
 
@@ -751,7 +751,7 @@ print u'\\xA9'
 
 (defun no-switch-no-split-base ()
   (let ((oldbuf (current-buffer))
-        py-split-windows-on-execute py-shell-switch-buffers-on-execute)
+        py-split-windows-on-execute py-shell-switch-buffers-on-execute-p)
     (goto-char 49)
     (push-mark)
     (end-of-line)
