@@ -64,6 +64,7 @@ If you ignore the location `M-x py-guess-pdb-path' might display it.
 
 (defun py-guess-pdb-path ()
   "If py-pdb-path isn't set, find location of pdb.py. "
+  (interactive)
   (let ((ele (split-string (shell-command-to-string "whereis python")))
         erg)
     (while (or (not erg)(string= "" erg))
@@ -8141,6 +8142,7 @@ Useful for newly defined symbol, not known to python yet. "
             (insert erg)))))))
 
 (defun py-find-imports ()
+  (interactive)
   (let* (imports
          (erg
           (save-excursion
