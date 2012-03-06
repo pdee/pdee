@@ -900,6 +900,11 @@ See bug report at launchpad, lp:944093. "
   :type 'string
   :group 'python-mode)
 
+(defcustom py-ipython-execute-delay 0.3
+  "Delay needed by execute functions when no IPython shell is running. "
+  :type 'float
+  :group 'python-mode)
+
 ;; ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ;; NO USER DEFINABLE VARIABLES BEYOND THIS POINT
 

@@ -390,56 +390,56 @@ Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will be
       (py-if-needed-insert-shell name)
       (py-insert-coding)
       (py-insert-execute-directory))
-    (cond
-     (proc
-      (set-buffer filebuf)
-      (write-region (point-min) (point-max) file nil t nil 'ask)
-      (set-buffer-modified-p 'nil)
-      (kill-buffer filebuf)
-      (sit-for 0.1)
-      (if (file-readable-p file)
-          (progn
-            (setq erg (py-execute-file-base proc file pec))
-            (setq py-exception-buffer (cons file (current-buffer)))
-            (set-buffer regbuf)
-            (cond ((eq switch 'switch)
-                   (if py-split-windows-on-execute-p
-                       (progn
-                         (delete-other-windows)
-                         (funcall py-split-windows-on-execute-function))
-                     (set-buffer regbuf)
-                     (message "current-buffer: %s" (current-buffer)))
-                   (set-buffer procbuf)
-                   (switch-to-buffer (current-buffer))
-                   (goto-char (point-max)))
-                  ((eq switch 'noswitch)
-                   (when py-split-windows-on-execute-p
-                     (delete-other-windows)
-                     (funcall py-split-windows-on-execute-function))
+    (set-buffer filebuf)
+    (write-region (point-min) (point-max) file nil t nil 'ask)
+    (set-buffer-modified-p 'nil)
+    (kill-buffer filebuf)
+    (if (file-readable-p file)
+        (progn
+          (when (string-match "IPython" (process-name proc))
+            (unless (get-process "IPython")
+              (sit-for py-ipython-execute-delay)))
+          (setq erg (py-execute-file-base proc file pec))
+          (setq py-exception-buffer (cons file (current-buffer)))
+          (set-buffer regbuf)
+          (cond ((eq switch 'switch)
+                 (if py-split-windows-on-execute-p
+                     (progn
+                       (delete-other-windows)
+                       (funcall py-split-windows-on-execute-function))
                    (set-buffer regbuf)
-                   (switch-to-buffer (current-buffer))
                    (message "current-buffer: %s" (current-buffer)))
-                  ((and py-shell-switch-buffers-on-execute-p py-split-windows-on-execute-p)
-                   (switch-to-buffer (current-buffer))
+                 (set-buffer procbuf)
+                 (switch-to-buffer (current-buffer))
+                 (goto-char (point-max)))
+                ((eq switch 'noswitch)
+                 (when py-split-windows-on-execute-p
                    (delete-other-windows)
-                   (switch-to-buffer regbuf)
-                   (pop-to-buffer procbuf))
-                  (py-split-windows-on-execute-p
-                   (delete-other-windows)
-                   (pop-to-buffer procbuf)
-                   (set-buffer procbuf)
-                   (funcall py-split-windows-on-execute-function)
-                   (switch-to-buffer regbuf)))
-            (unless (string= (buffer-name (current-buffer)) procbuf)(message "Output buffer: %s" procbuf))
-            ;; (message "py-shell-switch-buffers-on-execute:  %s"  py-shell-switch-buffers-on-execute-p)
-            ;; (message "py-split-windows-on-execute-p: %s" py-split-windows-on-execute-p)
-            (sit-for 0.1)
-            (unless py-execute-keep-temporary-file-p
-              (delete-file file)
-              (when (buffer-live-p file)
-                (kill-buffer file)))
-            erg)
-        (message "File not readable: %s" "Do you have write permissions?"))))))
+                   (funcall py-split-windows-on-execute-function))
+                 (set-buffer regbuf)
+                 (switch-to-buffer (current-buffer))
+                 (message "current-buffer: %s" (current-buffer)))
+                ((and py-shell-switch-buffers-on-execute-p py-split-windows-on-execute-p)
+                 (switch-to-buffer (current-buffer))
+                 (delete-other-windows)
+                 (switch-to-buffer regbuf)
+                 (pop-to-buffer procbuf))
+                (py-split-windows-on-execute-p
+                 (delete-other-windows)
+                 (pop-to-buffer procbuf)
+                 (set-buffer procbuf)
+                 (funcall py-split-windows-on-execute-function)
+                 (switch-to-buffer regbuf)))
+          (unless (string= (buffer-name (current-buffer)) procbuf)(message "Output buffer: %s" procbuf))
+          ;; (message "py-shell-switch-buffers-on-execute:  %s"  py-shell-switch-buffers-on-execute-p)
+          ;; (message "py-split-windows-on-execute-p: %s" py-split-windows-on-execute-p)
+          (sit-for 0.1)
+          (unless py-execute-keep-temporary-file-p
+            (delete-file file)
+            (when (buffer-live-p file)
+              (kill-buffer file)))
+          erg)
+      (message "%s not readable. %s" file "Do you have write permissions?"))))
 
 (defun py-execute-string (&optional string shell dedicated)
   "Send the argument STRING to a Python interpreter.
@@ -1259,13 +1259,10 @@ Returns position where output starts. "
       (unwind-protect
           (save-excursion
             (set-buffer procbuf)
-            ;; (switch-to-buffer (current-buffer))
-            ;; (move-marker (process-mark proc) (point))
-            ;; (goto-char (point-max))
             (funcall (process-filter proc) proc msg))))
     (set-buffer procbuf)
     (process-send-string proc cmd)
-    (setq erg (progn (looking-at "[^\n\t\f\r ]+")(match-string-no-properties 0)))
+    ;; (setq erg (progn (looking-at "[^\n\t\f\r ]+")(match-string-no-properties 0)))
     ;; (setq erg (point))
     (goto-char (process-mark proc))
     erg))
@@ -1468,5 +1465,5 @@ bottom) of the trackback stack is encountered."
             (goto-char orig)
             (error "%s of traceback" errwhere))))))
 
-(provide 'python-components-execute)
-;;; python-components-execute.el ends here
+(provide 'python-components-execute);
+;; python-components-execute.el ends here
