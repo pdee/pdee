@@ -1370,6 +1370,7 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
         (define-key map [(control c)(control t)] 'py-toggle-shells)
         (define-key map [(control meta h)] 'py-mark-def-or-class)
         (define-key map [(control c)(control k)] 'py-mark-block-or-clause)
+        (define-key map [(control c)(.)] 'py-expression)
         ;; Miscellaneous
         (define-key map [(control c)(control d)] 'py-pdbtrack-toggle-stack-tracking)
         (define-key map [(control c)(control f)] 'py-sort-imports)
@@ -2291,8 +2292,9 @@ Optional C-u prompts for options to pass to the Jython interpreter. See `py-pyth
 Start an Python3.2 interpreter.
 
 Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'."]
-            "-" ["python-dedicated" python-dedicated
-                 :help "`python-dedicated'
+            "-"
+            ["python-dedicated" python-dedicated
+             :help "`python-dedicated'
 Start an unique Python interpreter in another window.
 
 Optional C-u prompts for options to pass to the Python interpreter. See `py-python-command-args'."]
@@ -2325,7 +2327,24 @@ Optional C-u prompts for options to pass to the Jython interpreter. See `py-pyth
              :help "`python3.2-dedicated'
 Start an unique Python3.2 interpreter in another window.
 
-Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'."]))
+Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'."]
+            "-"
+
+            ["Toggle split-windows-on-execute" py-toggle-split-windows-on-execute
+             :help "Switch boolean `py-split-windows-on-execute-p'."]
+            ["Switch split-windows-on-execute ON" py-split-windows-on-execute-on
+             :help "Switch `py-split-windows-on-execute-p' ON. "]
+            ["Switch split-windows-on-execute OFF" py-split-windows-on-execute-on
+             :help "Switch `py-split-windows-on-execute-p' OFF. "]
+
+            ["Toggle shell-switch-buffers-on-execute" py-toggle-shell-switch-buffers-on-execute
+             :help "Switch boolean `py-shell-switch-buffers-on-execute-p'."]
+            ["Switch shell-switch-buffers-on-execute ON" py-shell-switch-buffers-on-execute-on
+             :help "Switch `py-shell-switch-buffers-on-execute-p' ON. "]
+            ["Switch shell-switch-buffers-on-execute OFF" py-shell-switch-buffers-on-execute-on
+             :help "Switch `py-shell-switch-buffers-on-execute-p' OFF. "]
+
+            ))
         map))
 
 ;;; Intern
@@ -9342,13 +9361,12 @@ Returns value of `py-split-windows-on-execute-p'. "
   (when (interactive-p) (message "py-split-windows-on-execute-p: %s" py-split-windows-on-execute-p))
   py-split-windows-on-execute-p)
 
-(defun py-split-windows-on-execute-off (&optional arg)
+(defun py-split-windows-on-execute-off ()
   "Make sure, `py-split-windows-on-execute-p' is off.
 
 Returns value of `py-split-windows-on-execute-p'. "
-  (interactive "p")
-  (let ((arg (if arg (- arg) -1)))
-    (toggle-py-split-windows-on-execute arg))
+  (interactive)
+  (toggle-py-split-windows-on-execute -1)
   (when (interactive-p) (message "py-split-windows-on-execute-p: %s" py-split-windows-on-execute-p))
   py-split-windows-on-execute-p)
 
@@ -9376,13 +9394,12 @@ Returns value of `py-shell-switch-buffers-on-execute-p'. "
   (when (interactive-p) (message "py-shell-switch-buffers-on-execute: %s" py-shell-switch-buffers-on-execute-p))
   py-shell-switch-buffers-on-execute-p)
 
-(defun py-shell-switch-buffers-on-execute-off (&optional arg)
+(defun py-shell-switch-buffers-on-execute-off ()
   "Make sure, `py-shell-switch-buffers-on-execute-p' is off.
 
 Returns value of `py-shell-switch-buffers-on-execute-p'. "
-  (interactive "p")
-  (let ((arg (if arg (- arg) -1)))
-    (toggle-py-shell-switch-buffers-on-execute arg))
+  (interactive)
+  (toggle-py-shell-switch-buffers-on-execute -1)
   (when (interactive-p) (message "py-shell-switch-buffers-on-execute: %s" py-shell-switch-buffers-on-execute-p))
   py-shell-switch-buffers-on-execute-p)
 

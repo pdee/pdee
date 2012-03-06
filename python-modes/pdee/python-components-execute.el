@@ -57,13 +57,12 @@ Returns value of `py-split-windows-on-execute-p'. "
   (when (interactive-p) (message "py-split-windows-on-execute-p: %s" py-split-windows-on-execute-p))
   py-split-windows-on-execute-p)
 
-(defun py-split-windows-on-execute-off (&optional arg)
+(defun py-split-windows-on-execute-off ()
   "Make sure, `py-split-windows-on-execute-p' is off.
 
 Returns value of `py-split-windows-on-execute-p'. "
-  (interactive "p")
-  (let ((arg (if arg (- arg) -1)))
-    (toggle-py-split-windows-on-execute arg))
+  (interactive)
+  (toggle-py-split-windows-on-execute -1)
   (when (interactive-p) (message "py-split-windows-on-execute-p: %s" py-split-windows-on-execute-p))
   py-split-windows-on-execute-p)
 
@@ -91,13 +90,12 @@ Returns value of `py-shell-switch-buffers-on-execute-p'. "
   (when (interactive-p) (message "py-shell-switch-buffers-on-execute: %s" py-shell-switch-buffers-on-execute-p))
   py-shell-switch-buffers-on-execute-p)
 
-(defun py-shell-switch-buffers-on-execute-off (&optional arg)
+(defun py-shell-switch-buffers-on-execute-off ()
   "Make sure, `py-shell-switch-buffers-on-execute-p' is off.
 
 Returns value of `py-shell-switch-buffers-on-execute-p'. "
-  (interactive "p")
-  (let ((arg (if arg (- arg) -1)))
-    (toggle-py-shell-switch-buffers-on-execute arg))
+  (interactive)
+  (toggle-py-shell-switch-buffers-on-execute -1)
   (when (interactive-p) (message "py-shell-switch-buffers-on-execute: %s" py-shell-switch-buffers-on-execute-p))
   py-shell-switch-buffers-on-execute-p)
 

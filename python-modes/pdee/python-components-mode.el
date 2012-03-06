@@ -1666,7 +1666,10 @@ Each function in the Python module is made available as an Emacs function.
 The Lisp name of each function is the concatenation of PREFIX with
 the Python name, in which underlines are replaced by dashes.  If PREFIX is
 not given, it defaults to MODULE followed by a dash.
-If NOERROR is not nil, do not raise error when the module is not found. "]))
+If NOERROR is not nil, do not raise error when the module is not found. "]
+
+            ))
+
         (easy-menu-define py-menu map "Execute Python"
           `("PyExec"
             :help "Python-specific features"
@@ -1782,7 +1785,7 @@ Switch to output buffer; ignores `py-shell-switch-buffers-on-execute-p'. "]
              ["py-execute-statement-python3.2-dedicated-switch" py-execute-statement-python3.2-dedicated-switch
               :help "Execute statement through a unique Python3.2 interpreter.
 Switch to output buffer; ignores `py-shell-switch-buffers-on-execute-p'. "]
-             );; block
+             )
 
             ("Execute block ... "
              :help "Execute block functions"
@@ -1873,7 +1876,7 @@ Switch to output buffer; ignores `py-shell-switch-buffers-on-execute-p'. "]
              ["py-execute-block-python3.2-dedicated-switch" py-execute-block-python3.2-dedicated-switch
               :help "Execute block through a unique Python3.2 interpreter.
 Switch to output buffer; ignores `py-shell-switch-buffers-on-execute-p'. "]
-             );; def
+             )
 
             ("Execute def ... "
              :help "Execute def functions"
@@ -2499,7 +2502,8 @@ Optional C-u prompts for options to pass to the Jython interpreter. See `py-pyth
 Start an Python3.2 interpreter.
 
 Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'."]
-            "-" ["python-dedicated" python-dedicated
+            "-"
+            ["python-dedicated" python-dedicated
                  :help "`python-dedicated'
 Start an unique Python interpreter in another window.
 
@@ -2533,7 +2537,24 @@ Optional C-u prompts for options to pass to the Jython interpreter. See `py-pyth
              :help "`python3.2-dedicated'
 Start an unique Python3.2 interpreter in another window.
 
-Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'."]))
+Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'."]
+            "-"
+
+            ["Toggle split-windows-on-execute" py-toggle-split-windows-on-execute
+             :help "Switch boolean `py-split-windows-on-execute-p'."]
+            ["Switch split-windows-on-execute ON" py-split-windows-on-execute-on
+             :help "Switch `py-split-windows-on-execute-p' ON. "]
+            ["Switch split-windows-on-execute OFF" py-split-windows-on-execute-off
+             :help "Switch `py-split-windows-on-execute-p' OFF. "]
+
+            ["Toggle shell-switch-buffers-on-execute" py-toggle-shell-switch-buffers-on-execute
+             :help "Switch boolean `py-shell-switch-buffers-on-execute-p'."]
+            ["Switch shell-switch-buffers-on-execute ON" py-shell-switch-buffers-on-execute-on
+             :help "Switch `py-shell-switch-buffers-on-execute-p' ON. "]
+            ["Switch shell-switch-buffers-on-execute OFF" py-shell-switch-buffers-on-execute-on
+             :help "Switch `py-shell-switch-buffers-on-execute-p' OFF. "]
+
+                        ))
         map))
 ;; Fixme: add toolbar stuff for useful things like symbol help, send
 ;; region, at least.  (Shouldn't be specific to Python, obviously.)
