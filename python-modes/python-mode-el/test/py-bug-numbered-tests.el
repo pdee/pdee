@@ -125,6 +125,14 @@
          'py-forward-into-nomenclature-jumps-over-CamelCased-words-lp:919540-test
          'py-backward-into-nomenclature-caps-names-lp:919541-test
          'execute-buffer-ipython-fails-lp:928087-test
+
+         'py-shell-invoking-python-lp:835151-test
+         'py-shell-invoking-ipython-lp:835151-test
+         'py-shell-invoking-python3-lp:835151-test
+         'py-shell-invoking-python2-lp:835151-test
+         'py-shell-invoking-python2.7-lp:835151-test
+         'py-shell-invoking-jython-lp:835151-test
+
          'UnicodeEncodeError-lp:550661-test
          'py-shell-complete-lp-328836-test)))
 
@@ -2315,6 +2323,79 @@ I am using version 6.0.4
   (goto-char 417)
   (assert (eq 420 (cdr (py-expression))) nil "py-mark-expression-marks-too-much-lp-941140-test failed")
   )
+
+;;; Py-shell tests
+(defun py-shell-invoking-python-lp:835151-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring "print(\"py-shell-name: python\")"))
+    (when load-branch-function (funcall load-branch-function))
+    (py-bug-tests-intern 'py-shell-invoking-python-lp:835151-base arg teststring)))
+
+(defun py-shell-invoking-python-lp:835151-base ()
+  (setq py-shell-name "python")
+  (assert (markerp (py-execute-buffer)) nil "py-shell-invoking-python-lp:835151-test failed"))
+
+(defun py-shell-invoking-ipython-lp:835151-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring "print(\"py-shell-name: ipython\")"))
+    (when load-branch-function (funcall load-branch-function))
+    (py-bug-tests-intern 'py-shell-invoking-ipython-lp:835151-base arg teststring)))
+
+(defun py-shell-invoking-ipython-lp:835151-base ()
+  (setq py-shell-name "ipython")
+  (assert (markerp (py-execute-buffer)) nil "py-shell-invoking-ipython-lp:835151-test failed"))
+
+(defun py-shell-invoking-python3-lp:835151-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring "print(\"py-shell-name: python3\")"))
+    (when load-branch-function (funcall load-branch-function))
+    (py-bug-tests-intern 'py-shell-invoking-python3-lp:835151-base arg teststring)))
+
+(defun py-shell-invoking-python3-lp:835151-base ()
+  (setq py-shell-name "python3")
+  (assert (markerp (py-execute-buffer)) nil "py-shell-invoking-python3-lp:835151-test failed"))
+
+(defun py-shell-invoking-python2-lp:835151-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring "print(\"py-shell-name: python2\")"))
+    (when load-branch-function (funcall load-branch-function))
+    (py-bug-tests-intern 'py-shell-invoking-python2-lp:835151-base arg teststring)))
+
+(defun py-shell-invoking-python2-lp:835151-base ()
+  (setq py-shell-name "python2")
+  (assert (markerp (py-execute-buffer)) nil "py-shell-invoking-python2-lp:835151-test failed"))
+
+(defun py-shell-invoking-python2.7-lp:835151-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring "print(\"py-shell-name: python2.7\")"))
+    (when load-branch-function (funcall load-branch-function))
+    (py-bug-tests-intern 'py-shell-invoking-python2.7-lp:835151-base arg teststring)))
+
+(defun py-shell-invoking-python2.7-lp:835151-base ()
+  (setq py-shell-name "python2.7")
+  (assert (markerp (py-execute-buffer)) nil "py-shell-invoking-python2.7-lp:835151-test failed"))
+
+(defun py-shell-invoking-jython-lp:835151-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring "print(\"py-shell-name: jython\")"))
+    (when load-branch-function (funcall load-branch-function))
+    (py-bug-tests-intern 'py-shell-invoking-jython-lp:835151-base arg teststring)))
+
+(defun py-shell-invoking-jython-lp:835151-base ()
+  (setq py-shell-name "jython")
+  (assert (markerp (py-execute-buffer)) nil "py-shell-invoking-jython-lp:835151-test failed"))
+
+(defun py-shell-invoking-python3.2-lp:835151-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring "print(\"py-shell-name: python3.2\")"))
+    (when load-branch-function (funcall load-branch-function))
+    (py-bug-tests-intern 'py-shell-invoking-python3.2-lp:835151-base arg teststring)))
+
+(defun py-shell-invoking-python3.2-lp:835151-base ()
+  (setq py-shell-name "python3.2")
+  (assert (markerp (py-execute-buffer)) nil "py-shell-invoking-python3.2-lp:835151-test failed"))
+
+
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

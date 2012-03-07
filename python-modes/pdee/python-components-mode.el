@@ -4841,6 +4841,7 @@ With \\[universal-argument] 4 is called `py-switch-shells' see docu there.
                          (message "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'")))
                       ((py-choose-shell-by-shebang))
                       ((py-choose-shell-by-import))
+                      (py-shell-name py-shell-name)
                       (t (default-value 'py-shell-name))))
            (cmd (if py-edit-only-p erg
                   (executable-find erg))))

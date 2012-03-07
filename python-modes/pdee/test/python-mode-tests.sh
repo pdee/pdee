@@ -889,6 +889,12 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-execute-minor-expression-python3.2-noswitch-commandp-test \
 --funcall py-execute-minor-expression-python3.2-dedicated-commandp-test \
 --funcall py-execute-minor-expression-python3.2-dedicated-switch-commandp-test \
+--funcall py-shell-invoking-python-lp:835151-test \
+--funcall py-shell-invoking-ipython-lp:835151-test \
+--funcall py-shell-invoking-python3-lp:835151-test \
+--funcall py-shell-invoking-python2-lp:835151-test \
+--funcall py-shell-invoking-python2.7-lp:835151-test \
+--funcall py-shell-invoking-jython-lp:835151-test \
 --funcall py-mark-minor-expression-commandp-test \
 --funcall py-shebang-consider-ipython-lp-849293-test \
 --funcall py-insert-super-python3-test \
