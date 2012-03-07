@@ -900,17 +900,16 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall indentation-bug-inside-docstrings-lp-899455-test \
 --funcall execute-buffer-ipython-fails-lp:928087-test \
 --funcall py-shebang-ipython-env-lp-849293-test \
---funcall master-file-not-honored-lp:794850-test \
 --funcall py-insert-super-python2-test \
 --funcall nested-try-finally-test \
 --funcall py-install-directory-path-test \
---funcall py-electric-backspace-test \
 --funcall UnicodeEncodeError-python3-test \
 --funcall py-ipython-complete-lp:927136-test \
 --funcall py-execute-block-test \
 --funcall tqs-list-error-test \
 --funcall py-end-of-print-statement-test \
-
+--funcall master-file-not-honored-lp:794850-test \
+--funcall py-electric-backspace-test \
 
 else
 

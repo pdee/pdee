@@ -1465,7 +1465,10 @@ Each function in the Python module is made available as an Emacs function.
 The Lisp name of each function is the concatenation of PREFIX with
 the Python name, in which underlines are replaced by dashes.  If PREFIX is
 not given, it defaults to MODULE followed by a dash.
-If NOERROR is not nil, do not raise error when the module is not found. "]))
+If NOERROR is not nil, do not raise error when the module is not found. "]
+
+            ))
+
         (easy-menu-define py-menu map "Execute Python"
           `("PyExec"
             :help "Python-specific features"
@@ -1581,7 +1584,7 @@ Switch to output buffer; ignores `py-shell-switch-buffers-on-execute-p'. "]
              ["py-execute-statement-python3.2-dedicated-switch" py-execute-statement-python3.2-dedicated-switch
               :help "Execute statement through a unique Python3.2 interpreter.
 Switch to output buffer; ignores `py-shell-switch-buffers-on-execute-p'. "]
-             );; block
+             )
 
             ("Execute block ... "
              :help "Execute block functions"
@@ -1672,7 +1675,7 @@ Switch to output buffer; ignores `py-shell-switch-buffers-on-execute-p'. "]
              ["py-execute-block-python3.2-dedicated-switch" py-execute-block-python3.2-dedicated-switch
               :help "Execute block through a unique Python3.2 interpreter.
 Switch to output buffer; ignores `py-shell-switch-buffers-on-execute-p'. "]
-             );; def
+             )
 
             ("Execute def ... "
              :help "Execute def functions"
@@ -2340,14 +2343,14 @@ Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-p
              :help "Switch boolean `py-split-windows-on-execute-p'."]
             ["Switch split-windows-on-execute ON" py-split-windows-on-execute-on
              :help "Switch `py-split-windows-on-execute-p' ON. "]
-            ["Switch split-windows-on-execute OFF" py-split-windows-on-execute-on
+            ["Switch split-windows-on-execute OFF" py-split-windows-on-execute-off
              :help "Switch `py-split-windows-on-execute-p' OFF. "]
 
             ["Toggle shell-switch-buffers-on-execute" py-toggle-shell-switch-buffers-on-execute
              :help "Switch boolean `py-shell-switch-buffers-on-execute-p'."]
             ["Switch shell-switch-buffers-on-execute ON" py-shell-switch-buffers-on-execute-on
              :help "Switch `py-shell-switch-buffers-on-execute-p' ON. "]
-            ["Switch shell-switch-buffers-on-execute OFF" py-shell-switch-buffers-on-execute-on
+            ["Switch shell-switch-buffers-on-execute OFF" py-shell-switch-buffers-on-execute-off
              :help "Switch `py-shell-switch-buffers-on-execute-p' OFF. "]
 
             ))
@@ -6572,7 +6575,8 @@ Optional string PYSHELLNAME overrides default `py-shell-name'.
 Optional symbol SWITCH ('switch/'noswitch) precedes `py-shell-switch-buffers-on-execute-p'
 "
   (interactive "P")
-  (let* ((psn
+  (let* ((oldbuf (current-buffer))
+         (psn
           (cond ((eq 4 (prefix-numeric-value argprompt))
                  (py-choose-shell '(4)))
                 ;; already in py-choose-shell
@@ -6628,13 +6632,14 @@ Optional symbol SWITCH ('switch/'noswitch) precedes `py-shell-switch-buffers-on-
       (funcall py-split-windows-on-execute-function))
     (when (or (eq switch 'switch)
               (and (not (eq switch 'noswitch))
-                   (interactive-p)
                    ;; (or (interactive-p) py-shell-switch-buffers-on-execute-p)
-                   ))
+                   py-shell-switch-buffers-on-execute-p))
       (switch-to-buffer (current-buffer)))
     (goto-char (point-max))
     ;; executing through IPython might fail first time otherwise
     (when (string-equal psn "ipython") (sit-for 0.1))
+    (when (and py-verbose-p (interactive-p) (not (equal (buffer-name) oldbuf)))
+      (message "%s" (buffer-name)))
     py-process-name))
 
 (defalias 'iyp 'ipython)

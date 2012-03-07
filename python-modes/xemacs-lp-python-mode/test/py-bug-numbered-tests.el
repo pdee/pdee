@@ -2057,8 +2057,8 @@ def foo():
 
 (defun indentation-bug-inside-docstrings-lp-899455-base ()
   (goto-char 742)
-  (message "%s" "indentation-bug-inside-docstrings-lp-899455-test")
-  (message "(py-compute-indentation) should 8: %s" (py-compute-indentation))
+  ;; (message "%s" "indentation-bug-inside-docstrings-lp-899455-test")
+  ;; (message "(py-compute-indentation) should 8: %s" (py-compute-indentation))
   (sit-for 0.2)
   (assert (eq 8 (py-compute-indentation)) nil "indentation-bug-inside-docstrings-lp-899455-test failed"))
 
@@ -2158,8 +2158,8 @@ This module is an optparse-inspired command-line parsing library that:
 (defun wrong-type-argument-lp-901541-base ()
   (goto-char 385)
   (sit-for 0.1)
-  (message "%s" "wrong-type-argument-lp-901541-test")
-  (message "(py-compute-indentation): should 4: %s" (py-compute-indentation))
+  ;; (message "%s" "wrong-type-argument-lp-901541-test")
+  ;; (message "(py-compute-indentation): should 4: %s" (py-compute-indentation))
   (assert (eq 4 (py-compute-indentation)) nil "wrong-type-argument-lp-901541-test failed"))
 
 (defun py-pychecker-run-missing-lp-910783-test (&optional arg load-branch-function)
@@ -2262,7 +2262,9 @@ print u'\\xA9'
     (py-bug-tests-intern 'execute-buffer-ipython-fails-lp:928087-base arg teststring)))
 
 (defun execute-buffer-ipython-fails-lp:928087-base ()
-  (assert (py-execute-buffer) nil "execute-buffer-ipython-fails-lp:928087-test failed"))
+  (let (py-split-windows-on-execute-p
+        py-shell-switch-buffers-on-execute-p)
+    (assert (py-execute-buffer) nil "execute-buffer-ipython-fails-lp:928087-test failed")))
 
 (defun fourth-level-blocks-indent-incorrectly-lp-939577-test (&optional arg load-branch-function)
   (interactive "p")

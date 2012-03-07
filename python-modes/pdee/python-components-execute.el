@@ -201,7 +201,8 @@ Optional string PYSHELLNAME overrides default `py-shell-name'.
 Optional symbol SWITCH ('switch/'noswitch) precedes `py-shell-switch-buffers-on-execute-p'
 "
   (interactive "P")
-  (let* ((psn
+  (let* ((oldbuf (current-buffer)) 
+         (psn
           (cond ((eq 4 (prefix-numeric-value argprompt))
                  (py-choose-shell '(4)))
                 ;; already in py-choose-shell
@@ -257,13 +258,14 @@ Optional symbol SWITCH ('switch/'noswitch) precedes `py-shell-switch-buffers-on-
       (funcall py-split-windows-on-execute-function))
     (when (or (eq switch 'switch)
               (and (not (eq switch 'noswitch))
-                   (interactive-p)
                    ;; (or (interactive-p) py-shell-switch-buffers-on-execute-p)
-                   ))
+                   py-shell-switch-buffers-on-execute-p))
       (switch-to-buffer (current-buffer)))
     (goto-char (point-max))
     ;; executing through IPython might fail first time otherwise
     (when (string-equal psn "ipython") (sit-for 0.1))
+    (when (and py-verbose-p (interactive-p) (not (equal (buffer-name) oldbuf)))
+      (message "%s" (buffer-name)))
     py-process-name))
 
 (defcustom py-remove-cwd-from-path t
@@ -1264,7 +1266,7 @@ Returns position where output starts. "
     (process-send-string proc cmd)
     ;; (setq erg (progn (looking-at "[^\n\t\f\r ]+")(match-string-no-properties 0)))
     ;; (setq erg (point))
-    (goto-char (process-mark proc))
+    (setq erg (goto-char (process-mark proc)))
     erg))
 
 (defun python-send-command (command)

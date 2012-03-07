@@ -2556,7 +2556,7 @@ Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-p
              :help "Switch boolean `py-shell-switch-buffers-on-execute-p'."]
             ["Switch shell-switch-buffers-on-execute ON" py-shell-switch-buffers-on-execute-on
              :help "Switch `py-shell-switch-buffers-on-execute-p' ON. "]
-            ["Switch shell-switch-buffers-on-execute OFF" py-shell-switch-buffers-on-execute-on
+            ["Switch shell-switch-buffers-on-execute OFF" py-shell-switch-buffers-on-execute-off
              :help "Switch `py-shell-switch-buffers-on-execute-p' OFF. "]
 
                         ))
