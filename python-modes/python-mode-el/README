@@ -4,6 +4,8 @@ Customize default Python shell as `py-shell-name'
 shell command `type' would display, but also a
 PATH/TO/(I)PYTHON, of a virtualenv for example
 
+To change the Python default shell see also INSTALL
+
 Most python-mode.el commands start with prefix `py-'
 
 `M-x py- TAB'
