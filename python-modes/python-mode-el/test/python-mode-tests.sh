@@ -31,7 +31,7 @@ PDIR=`pwd`
 
 # write PATH-TO-EMACS source code directory here
 EMACS_SOURCE_DIR=
-EMACS_SOURCE_DIR="$HOME/emacs-20110426"
+EMACS_SOURCE_DIR="$HOME/emacs-23.4"
 
 # python-mode file to load
 if [ -s "../python-components-mode.el" ];
@@ -83,7 +83,7 @@ echo "\$PYMACS: $PYMACS"
 echo "\$PYTHONMODE: $PYTHONMODE"
 echo "\$PDIR/\$TESTFILE: $PDIR/$TESTFILE"
 
-$EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'python)(unload-feature 'python t))" --eval "(when (featurep 'python-mode)(unload-feature 'python-mode t))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$TESTDIR/\")" --eval "(setq py-install-directory \"..\")" -load "$PYMACS" -load $CCCMDS -load $COMINT -load $SHELL -load $ANSICOLOR -load $CLMACS -load $BYTECOMP -load $CUSTOM -load $SKEL -load "../$HIGHL" -load "../$CEXEC" -load $PYTHONMODE -load "$PDIR/$TESTFILE" -load "$PDIR/$TESTFILE2" --eval "(quietly-read-abbrev-file (expand-file-name \"~/.abbrev_defs\"))" \
+$EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'python)(unload-feature 'python t))" --eval "(when (featurep 'python-mode)(unload-feature 'python-mode t))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$TESTDIR/\")" --eval "(setq py-install-directory \"..\")" -load "$PYMACS" -load $CCCMDS -load $COMINT -load $SHELL -load $ANSICOLOR -load $CLMACS -load $BYTECOMP -load $CUSTOM -load $SKEL -load "../$HIGHL" -load $PYTHONMODE -load "$PDIR/$TESTFILE" -load "$PDIR/$TESTFILE2" --eval "(quietly-read-abbrev-file (expand-file-name \"~/.abbrev_defs\"))" \
 --funcall nested-dictionaries-indent-lp:328791-test \
 --funcall triple-quoted-string-dq-lp:302834-test \
 --funcall dq-in-tqs-string-lp:328813-test \

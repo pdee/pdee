@@ -9300,23 +9300,25 @@ This does the following:
 
 When interactivly called, messages the shell name, Emacs would in the given circtumstances.
 
-To change the default Python interpreter, use `py-switch-shell'.
+With \\[universal-argument] 4 is called `py-switch-shells' see docu there.
 "
-  (interactive)
-  (let* ((erg (cond (py-use-local-default
-                     (if (not (string= "" py-shell-local-path))
-                         (expand-file-name py-shell-local-path)
-                       (message "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'")))
-                    ((py-choose-shell-by-shebang))
-                    ((py-choose-shell-by-import))
-                    (t (default-value 'py-shell-name))))
-         (cmd (if py-edit-only-p erg
-                (executable-find erg))))
-    (if cmd
-        (when (interactive-p)
-          (message "%s" cmd))
-      (when (interactive-p) (message "%s" "Could not detect Python on your system. Maybe set `py-edit-only-p'?")))
-    erg))
+  (interactive "P")
+  (if (eq 4 (prefix-numeric-value arg))
+      (py-switch-shells '(4))
+    (let* ((erg (cond (py-use-local-default
+                       (if (not (string= "" py-shell-local-path))
+                           (expand-file-name py-shell-local-path)
+                         (message "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'")))
+                      ((py-choose-shell-by-shebang))
+                      ((py-choose-shell-by-import))
+                      (t (default-value 'py-shell-name))))
+           (cmd (if py-edit-only-p erg
+                  (executable-find erg))))
+      (if cmd
+          (when (interactive-p)
+            (message "%s" cmd))
+        (when (interactive-p) (message "%s" "Could not detect Python on your system. Maybe set `py-edit-only-p'?")))
+      erg)))
 
 (defalias 'toggle-py-smart-indentation 'py-toggle-smart-indentation)
 (defun py-toggle-smart-indentation (&optional arg)
