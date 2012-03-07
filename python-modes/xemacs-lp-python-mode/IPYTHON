@@ -6,16 +6,7 @@ Put the respective lines into your Emacs initialisation file:
 
 To change the Python default shell use 
 
-M-x customize-variable py-shell-name 
-
-or write 
-
-(setq py-shell-name "MY-PYTHON")
-resp.
-(setq py-shell-name "PATH/TO/MY-PYTHON")
-
-IPython users for example may insert "ipython" with
-M-x customize-variable py-shell-name 
+M-x customize-variable py-shell-name ipython
 
 or in init-file
 
