@@ -6066,8 +6066,7 @@ Travels right-margin comments. "
         (function (if (< 0 arg) 'py-end-of-statement 'py-beginning-of-statement))
         (maxindent maxindent)
         done erg cui)
-    (while (and (or (not done)(eq origline (py-count-lines)))
-                (not (eval stop)))
+    (while (and (not done) (not (eval stop)))
       (funcall function)
       (when (and (looking-at regexp)(if maxindent
                                         (< (current-indentation) maxindent)t))

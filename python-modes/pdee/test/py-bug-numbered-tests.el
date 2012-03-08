@@ -133,14 +133,21 @@
          'py-shell-invoking-python2.7-lp:835151-test
          'py-shell-invoking-jython-lp:835151-test
 
+         'py-mark-block-clause-misbehave-lp-949310-test
+         'py-mark-clause-misbehave-lp-949310-test
+         'py-mark-block-misbehave-lp-949310-test
+
          'UnicodeEncodeError-lp:550661-test
          'py-shell-complete-lp-328836-test)))
 
 (defun py-bug-tests-intern (testname &optional arg teststring)
-  (let (py-load-pymacs-p)
+  (let (py-load-pymacs-p
+        py-split-windows-on-execute-p
+        py-shell-switch-buffers-on-execute-p)
     (if arg
         (progn
           (set-buffer (get-buffer-create (replace-regexp-in-string "-base$" "-test" (prin1-to-string testname))))
+          (delete-other-windows)
           (switch-to-buffer (current-buffer))
           (erase-buffer)
           (fundamental-mode)
@@ -156,6 +163,7 @@
             (kill-buffer (current-buffer))))
       (with-temp-buffer
         (let ((font-lock-verbose nil))
+          (delete-other-windows)
           (insert teststring)
           (funcall testname))))))
 
@@ -2395,6 +2403,44 @@ I am using version 6.0.4
   (setq py-shell-name "python3.2")
   (assert (markerp (py-execute-buffer)) nil "py-shell-invoking-python3.2-lp:835151-test failed"))
 
+(defun py-mark-block-clause-misbehave-lp-949310-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring " if foo:
+    try:
+        pass
+"))
+    (when load-branch-function (funcall load-branch-function))
+    (py-bug-tests-intern 'py-mark-block-clause-misbehave-lp-949310-base arg teststring)))
+
+(defun py-mark-block-clause-misbehave-lp-949310-base ()
+  (goto-char 15)
+  (assert (eq 14 (car (py-mark-block-or-clause))) nil "py-mark-block-clause-misbehave-lp-949310-test failed"))
+
+(defun py-mark-clause-misbehave-lp-949310-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring " if foo:
+    try:
+        pass
+"))
+    (when load-branch-function (funcall load-branch-function))
+    (py-bug-tests-intern 'py-mark-clause-misbehave-lp-949310-base arg teststring)))
+
+(defun py-mark-clause-misbehave-lp-949310-base ()
+  (goto-char 15)
+  (assert (eq 14 (car (py-mark-block-or-clause))) nil "py-mark-clause-misbehave-lp-949310-test failed"))
+
+(defun py-mark-block-misbehave-lp-949310-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring " if foo:
+    try:
+        pass
+"))
+    (when load-branch-function (funcall load-branch-function))
+    (py-bug-tests-intern 'py-mark-block-misbehave-lp-949310-base arg teststring)))
+
+(defun py-mark-block-misbehave-lp-949310-base ()
+  (goto-char 15)
+  (assert (eq 14 (car (py-mark-block-or-clause))) nil "py-mark-block-misbehave-lp-949310-test failed"))
 
 
 (provide 'py-bug-numbered-tests)

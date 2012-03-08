@@ -895,6 +895,9 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-shell-invoking-python2-lp:835151-test \
 --funcall py-shell-invoking-python2.7-lp:835151-test \
 --funcall py-shell-invoking-jython-lp:835151-test \
+--funcall py-mark-block-clause-misbehave-lp-949310-test \
+--funcall py-mark-clause-misbehave-lp-949310-test \
+--funcall py-mark-block-misbehave-lp-949310-test \
 --funcall py-mark-minor-expression-commandp-test \
 --funcall py-shebang-consider-ipython-lp-849293-test \
 --funcall py-insert-super-python3-test \
@@ -910,8 +913,8 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall nested-try-finally-test \
 --funcall py-install-directory-path-test \
 --funcall UnicodeEncodeError-python3-test \
---funcall py-ipython-complete-lp:927136-test \
 --funcall py-execute-block-test \
+--funcall py-ipython-complete-lp:927136-test \
 --funcall tqs-list-error-test \
 --funcall py-end-of-print-statement-test \
 --funcall master-file-not-honored-lp:794850-test \
