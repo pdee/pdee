@@ -901,7 +901,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-mark-minor-expression-commandp-test \
 --funcall py-shebang-consider-ipython-lp-849293-test \
 --funcall py-insert-super-python3-test \
---funcall UnicodeEncodeError-lp:550661-test \
+--funcall UnicodeEncodeError-lp-550661-test \
 --funcall py-shell-complete-test \
 --funcall py-completion-at-point-test \
 --funcall py-smart-indent-eight-test \

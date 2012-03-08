@@ -137,7 +137,7 @@
          'py-mark-clause-misbehave-lp-949310-test
          'py-mark-block-misbehave-lp-949310-test
 
-         'UnicodeEncodeError-lp:550661-test
+         'UnicodeEncodeError-lp-550661-test
          'py-shell-complete-lp-328836-test)))
 
 (defun py-bug-tests-intern (testname &optional arg teststring)
@@ -634,16 +634,16 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
   (py-hungry-delete-forward)
   (assert (looking-at "#") nil "hungry-delete-backwards test failed"))
 
-(defun UnicodeEncodeError-lp:550661-test (&optional arg load-branch-function)
+(defun UnicodeEncodeError-lp-550661-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
 # -\*- coding: utf-8 -\*-
 print u'\\xA9'
 "))
     (when load-branch-function (funcall load-branch-function))
-    (py-bug-tests-intern 'UnicodeEncodeError-lp:550661-base 2 teststring)))
+    (py-bug-tests-intern 'UnicodeEncodeError-lp-550661-base 2 teststring)))
 
-(defun UnicodeEncodeError-lp:550661-base ()
+(defun UnicodeEncodeError-lp-550661-base ()
   (goto-char 48)
   (push-mark)
   (end-of-line)
@@ -652,7 +652,7 @@ print u'\\xA9'
   (when (looking-back comint-prompt-regexp)
     (goto-char (1- (match-beginning 0))))
   (sit-for 0.1)
-  (assert (or (looking-back "©")(looking-at "©")) nil "UnicodeEncodeError-lp:550661-test failed"))
+  (assert (or (looking-back "©")(looking-at "©")) nil "UnicodeEncodeError-lp-550661-test failed"))
 
 (defun indentation-of-continuation-lines-lp:691185-test (&optional arg load-branch-function)
   "With ARG greater 1 keep test buffer open.
