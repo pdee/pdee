@@ -362,7 +362,7 @@ Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will be
                   (when (stringp shell)
                     shell)))
          (regbuf (current-buffer))
-         (py-execute-directory (or (ignore-errors (file-name-directory (buffer-file-name))) (getenv "HOME")))
+         (py-execute-directory (or (ignore-errors (file-name-directory (buffer-file-name)))(getenv "WORKON_HOME")(getenv "HOME")))
          (strg (buffer-substring-no-properties start end))
          (name-raw (or shell (py-choose-shell)))
          (name (py-process-name name-raw))

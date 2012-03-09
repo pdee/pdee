@@ -7015,7 +7015,7 @@ When called from a programm, it accepts a string specifying a shell which will b
                   (when (stringp shell)
                     shell)))
          (regbuf (current-buffer))
-         (py-execute-directory (or (ignore-errors (file-name-directory (buffer-file-name))) (getenv "HOME")))
+         (py-execute-directory (or (ignore-errors (file-name-directory (buffer-file-name)))(getenv "WORKON_HOME")(getenv "HOME")))
          (strg (buffer-substring-no-properties start end))
 	 (name-raw (or shell (py-choose-shell)))
          (name (py-process-name name-raw))

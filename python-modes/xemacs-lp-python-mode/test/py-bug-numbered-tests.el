@@ -140,32 +140,59 @@
          'UnicodeEncodeError-lp-550661-test
          'py-shell-complete-lp-328836-test)))
 
-(defun py-bug-tests-intern (testname &optional arg teststring)
-  (let (py-load-pymacs-p
-        py-split-windows-on-execute-p
-        py-shell-switch-buffers-on-execute-p)
-    (if arg
-        (progn
-          (set-buffer (get-buffer-create (replace-regexp-in-string "-base$" "-test" (prin1-to-string testname))))
-          (delete-other-windows)
-          (switch-to-buffer (current-buffer))
-          (erase-buffer)
-          (fundamental-mode)
-          (insert teststring)
-          (python-mode)
-          (funcall testname)
-          (message "%s" (concat (replace-regexp-in-string "-base$" "-test" (prin1-to-string testname)) " passed"))
-          (unless (< 1 arg)
-            (set-buffer-modified-p 'nil)
-            ;; (cond ((processp (get-process "Python3")) (kill-process "Python3"))
-            ;; ((processp (get-process "Python2")) (kill-process "Python2"))
-            ;; ((processp (get-process "Python")) (ignore-errors (kill-process "Python"))))
-            (kill-buffer (current-buffer))))
-      (with-temp-buffer
-        (let ((font-lock-verbose nil))
-          (delete-other-windows)
-          (insert teststring)
-          (funcall testname))))))
+(defmacro py-bug-tests-intern (testname &optional arg teststring)
+  `(let (py-load-pymacs-p
+         py-split-windows-on-execute-p
+         py-shell-switch-buffers-on-execute-p)
+     (if ,arg
+         (progn
+           (set-buffer (get-buffer-create (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname))))
+           (delete-other-windows)
+           (switch-to-buffer (current-buffer))
+           (erase-buffer)
+           (fundamental-mode)
+           (insert ,teststring)
+           (python-mode)
+           (funcall ,testname)
+           (message "%s" (concat (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname)) " passed"))
+           (unless (< 1 ,arg)
+             (set-buffer-modified-p 'nil)
+             ;; (cond ((processp (get-process "Python3")) (kill-process "Python3"))
+             ;; ((processp (get-process "Python2")) (kill-process "Python2"))
+             ;; ((processp (get-process "Python")) (ignore-errors (kill-process "Python"))))
+             (kill-buffer (current-buffer))))
+       (with-temp-buffer
+         (let ((font-lock-verbose nil))
+           (delete-other-windows)
+           (insert ,teststring)
+           (funcall ,testname))))))
+
+;; (defun py-bug-tests-intern (testname &optional arg teststring)
+;;   (let (py-load-pymacs-p
+;;         py-split-windows-on-execute-p
+;;         py-shell-switch-buffers-on-execute-p)
+;;     (if arg
+;;         (progn
+;;           (set-buffer (get-buffer-create (replace-regexp-in-string "-base$" "-test" (prin1-to-string testname))))
+;;           (delete-other-windows)
+;;           (switch-to-buffer (current-buffer))
+;;           (erase-buffer)
+;;           (fundamental-mode)
+;;           (insert teststring)
+;;           (python-mode)
+;;           (funcall testname)
+;;           (message "%s" (concat (replace-regexp-in-string "-base$" "-test" (prin1-to-string testname)) " passed"))
+;;           (unless (< 1 arg)
+;;             (set-buffer-modified-p 'nil)
+;;             ;; (cond ((processp (get-process "Python3")) (kill-process "Python3"))
+;;             ;; ((processp (get-process "Python2")) (kill-process "Python2"))
+;;             ;; ((processp (get-process "Python")) (ignore-errors (kill-process "Python"))))
+;;             (kill-buffer (current-buffer))))
+;;       (with-temp-buffer
+;;         (let ((font-lock-verbose nil))
+;;           (delete-other-windows)
+;;           (insert teststring)
+;;           (funcall testname))))))
 
 (defvar python-mode-teststring "class OrderedDict1(dict):
     \"\"\"
@@ -2441,7 +2468,6 @@ I am using version 6.0.4
 (defun py-mark-block-misbehave-lp-949310-base ()
   (goto-char 15)
   (assert (eq 14 (car (py-mark-block-or-clause))) nil "py-mark-block-misbehave-lp-949310-test failed"))
-
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
