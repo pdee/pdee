@@ -6652,6 +6652,8 @@ Optional symbol SWITCH ('switch/'noswitch) precedes `py-shell-switch-buffers-on-
                                     "\*" ""
                                     py-buffer-name buffer)))))
       (py-set-shell-completion-environment pyshellname)
+      (when py-split-windows-on-execute-p
+        (funcall py-split-windows-on-execute-function))
       ;; comint
       (if buffer
           (set-buffer (get-buffer-create
@@ -6686,11 +6688,22 @@ Optional symbol SWITCH ('switch/'noswitch) precedes `py-shell-switch-buffers-on-
       (use-local-map py-shell-map)
       (add-hook 'py-shell-hook 'py-dirstack-hook)
       (run-hooks 'py-shell-hook)
-      (when (or (eq switch 'switch)
-                (and (not (eq switch 'noswitch))
-                     py-shell-switch-buffers-on-execute-p))
-        (switch-to-buffer (current-buffer)))
+      (cond ((or (eq switch 'switch)
+                 (and (not (eq switch 'noswitch))
+                      py-shell-switch-buffers-on-execute-p))
+             (switch-to-buffer (current-buffer)))
+            ((and py-split-windows-on-execute-p
+                  (or (eq switch 'noswitch)
+                      (not (eq switch 'switch))))
+             (pop-to-buffer (current-buffer))
+             (delete-other-windows)
+             (when py-split-windows-on-execute-p
+               (funcall py-split-windows-on-execute-function))
+             ;; (message (buffer-name (current-buffer)))
+             (set-buffer oldbuf)
+             (switch-to-buffer (current-buffer))))
       (goto-char (point-max))
+      (when (and py-verbose-p (interactive-p)) (message py-buffer-name))
       py-buffer-name)))
 
 (defalias 'iyp 'ipython)
@@ -10873,9 +10886,13 @@ and return collected output"
 (defun py-shell-complete ()
   "Complete word before point, if any. Otherwise insert TAB. "
   (interactive)
+  ;; make sure, a process exists
+  (unless (and (processp (get-process (py-process-name py-shell-name)))
+               (buffer-live-p (get-buffer (py-process-name py-shell-name))))
+    (py-shell nil nil py-shell-name))
   (let ((word (py-dot-word-before-point))
 	result)
-    (if (equal word "")
+    (if (string= word "")
 	(tab-to-tab-stop)	   ; non nil so the completion is over
       (setq result (py-shell-execute-string-now (format "
 def print_completions(namespace, text, prefix=''):

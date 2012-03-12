@@ -273,6 +273,8 @@ Optional symbol SWITCH ('switch/'noswitch) precedes `py-shell-switch-buffers-on-
                                     "\*" ""
                                     py-buffer-name buffer)))))
       (py-set-shell-completion-environment pyshellname)
+      (when py-split-windows-on-execute-p
+        (funcall py-split-windows-on-execute-function))
       ;; comint
       (if buffer
           (set-buffer (get-buffer-create
@@ -307,11 +309,22 @@ Optional symbol SWITCH ('switch/'noswitch) precedes `py-shell-switch-buffers-on-
       (use-local-map py-shell-map)
       (add-hook 'py-shell-hook 'py-dirstack-hook)
       (run-hooks 'py-shell-hook)
-      (when (or (eq switch 'switch)
-                (and (not (eq switch 'noswitch))
-                     py-shell-switch-buffers-on-execute-p))
-        (switch-to-buffer (current-buffer)))
+      (cond ((or (eq switch 'switch)
+                 (and (not (eq switch 'noswitch))
+                      py-shell-switch-buffers-on-execute-p))
+             (switch-to-buffer (current-buffer)))
+            ((and py-split-windows-on-execute-p
+                  (or (eq switch 'noswitch)
+                      (not (eq switch 'switch))))
+             (pop-to-buffer (current-buffer))
+             (delete-other-windows) 
+             (when py-split-windows-on-execute-p
+               (funcall py-split-windows-on-execute-function))
+             ;; (message (buffer-name (current-buffer)))
+             (set-buffer oldbuf)
+             (switch-to-buffer (current-buffer))))
       (goto-char (point-max))
+      (when (and py-verbose-p (interactive-p)) (message py-buffer-name)) 
       py-buffer-name)))
 
 (defcustom py-remove-cwd-from-path t
