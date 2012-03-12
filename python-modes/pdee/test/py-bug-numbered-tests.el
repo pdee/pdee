@@ -144,28 +144,23 @@
   `(let (py-load-pymacs-p
          py-split-windows-on-execute-p
          py-shell-switch-buffers-on-execute-p)
-     (if ,arg
-         (progn
-           (set-buffer (get-buffer-create (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname))))
-           (delete-other-windows)
-           (switch-to-buffer (current-buffer))
-           (erase-buffer)
-           (fundamental-mode)
-           (insert ,teststring)
-           (python-mode)
-           (funcall ,testname)
-           (message "%s" (concat (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname)) " passed"))
-           (unless (< 1 ,arg)
-             (set-buffer-modified-p 'nil)
-             ;; (cond ((processp (get-process "Python3")) (kill-process "Python3"))
-             ;; ((processp (get-process "Python2")) (kill-process "Python2"))
-             ;; ((processp (get-process "Python")) (ignore-errors (kill-process "Python"))))
-             (kill-buffer (current-buffer))))
-       (with-temp-buffer
-         (let ((font-lock-verbose nil))
-           (delete-other-windows)
-           (insert ,teststring)
-           (funcall ,testname))))))
+     (set-buffer (get-buffer-create (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname))))
+     ;; (with-temp-buffer
+     (switch-to-buffer (current-buffer))
+     (delete-other-windows)
+     (erase-buffer)
+     (fundamental-mode)
+     (insert ,teststring)
+     (python-mode)
+     (funcall ,testname)
+     (message "%s" (concat (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname)) " passed"))
+     (unless (< 1 arg)
+       (set-buffer-modified-p 'nil)
+       ;; (cond ((processp (get-process "Python3")) (kill-process "Python3"))
+       ;; ((processp (get-process "Python2")) (kill-process "Python2"))
+       ;; ((processp (get-process "Python")) (ignore-errors (kill-process "Python"))))
+       (kill-buffer (current-buffer)))))
+;; )
 
 ;; (defun py-bug-tests-intern (testname &optional arg teststring)
 ;;   (let (py-load-pymacs-p
@@ -1610,7 +1605,8 @@ if foo:
     (push-mark)
     (progn
       (py-execute-base (point) (progn (end-of-line)(point)))
-      (when (interactive-p) (message "%s" "execute-indented-code-lp:828314-test passed")))))
+      ;; (when (interactive-p) (message "%s" "execute-indented-code-lp:828314-test passed"))
+      )))
 
 (defun wrong-indentation-of-function-arguments-lp:840891-test (&optional arg load-branch-function)
   (interactive "p")
@@ -2285,6 +2281,7 @@ return SOME_Constant + blah
 (defun py-ipython-complete-lp:927136-test (&optional arg load-branch-function)
   (interactive "p")
   (py-shell nil nil "ipython" 'noswitch)
+  (sit-for 0.1)
   (let ((teststring "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 impo"))

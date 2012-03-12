@@ -127,8 +127,7 @@ With optional \\[universal-argument] an indent with length `py-indent-offset' is
                (if (<= (line-beginning-position) (+ (point) (- col cui)))
                    (forward-char (- col cui))
                  (beginning-of-line))))
-    (insert-tab))
-  (message "py-indent-line-indent: %s" py-indent-line-indent))
+    (insert-tab)))
 
 (defun py-indent-line (&optional arg)
   "Indent the current line according to Python rules.

@@ -409,26 +409,26 @@ local bindings to py-newline-and-indent."))
 Interactively, prompt for name."
   (interactive
    (let* ((symbol (with-syntax-table py-dotted-expression-syntax-table
-		   (current-word)))
-	 (enable-recursive-minibuffers t)
+                    (current-word)))
+          (enable-recursive-minibuffers t)
 
-         (list (read-string (if symbol
-                                (format "Find location of (default %s): " symbol)
-                              "Find location of: ")
-                            nil nil symbol))
-         (sourcefile (py-send-string (concat "inspect.getsourcefile (inspect.getmodule (" symbol ")))")))
-         (sourceline (py-send-string (concat "inspect.getsourcelines (" symbol ")))")))))))
+          (list (read-string (if symbol
+                                 (format "Find location of (default %s): " symbol)
+                               "Find location of: ")
+                             nil nil symbol))
+          (sourcefile (py-send-string (concat "inspect.getsourcefile (inspect.getmodule (" symbol ")))")))
+          (sourceline (py-send-string (concat "inspect.getsourcelines (" symbol ")))")))))))
 
-  ;; (let* ((loc (py-send-receive (format "emacs.location_of (%S, %s)"
-  ;;       				   name python-imports)))
-  ;;        (loc (car (read-from-string loc)))
-  ;;        (file (car loc))
-  ;;        (line (cdr loc)))
-  ;;   (unless file (error "Don't know where `%s' is defined" name))
-  ;;   (pop-to-buffer (find-file-noselect file))
-  ;;   (when (integerp line)
-  ;;     (goto-char (point-min))
-  ;;     (forward-line (1- line)))))
+;; (let* ((loc (py-send-receive (format "emacs.location_of (%S, %s)"
+;;       				   name python-imports)))
+;;        (loc (car (read-from-string loc)))
+;;        (file (car loc))
+;;        (line (cdr loc)))
+;;   (unless file (error "Don't know where `%s' is defined" name))
+;;   (pop-to-buffer (find-file-noselect file))
+;;   (when (integerp line)
+;;     (goto-char (point-min))
+;;     (forward-line (1- line)))))
 
 ;; (python-find-template "#! /bin/env python
 ;;  # -*- coding: utf-8 -*-
@@ -468,7 +468,7 @@ Interactively, prompt for name."
   (unless python-imports
     (error "Not called from buffer visiting Python file"))
   (let* ((loc (py-send-receive (format "emacs.location_of (%S, %s)"
-					   name python-imports)))
+                                       name python-imports)))
 	 (loc (car (read-from-string loc)))
 	 (file (car loc))
 	 (line (cdr loc)))
@@ -529,7 +529,7 @@ Imports done are displayed in message buffer. "
 ;;; Pychecker
 ;; hack for GNU Emacs
 ;; (unless (fboundp 'read-shell-command)
-  ;; (defalias 'read-shell-command 'read-string))
+;; (defalias 'read-shell-command 'read-string))
 
 (defun py-pychecker-run (command)
   "*Run pychecker (default on the file currently visited)."
@@ -595,6 +595,45 @@ See `python-check-command' for the default."
 	 (cons '("(\\([^,]+\\), line \\([0-9]+\\))" 1 2)
 	       compilation-error-regexp-alist)))
     (compilation-start command)))
+
+;;; from string-strip.el --- Strip CHARS from STRING
+
+;; (setq strip-chars-before  "[ \t\r\n]*")
+(defcustom strip-chars-before  "[ \t\r\n]*"
+  "Regexp indicating which chars shall be stripped before STRING - which is defined by `string-chars-preserve'."
+
+  :type 'string
+  :group 'convenience)
+
+;; (setq strip-chars-after  "[ \t\r\n]*")
+(defcustom strip-chars-after  "[ \t\r\n]*\\'"
+  "Regexp indicating which chars shall be stripped after STRING - which is defined by `string-chars-preserve'."
+
+  :type 'string
+  :group 'convenience)
+
+(defcustom string-chars-preserve "\\(.*?\\)"
+  "Chars preserved of STRING.
+`strip-chars-after' and
+`strip-chars-before' indicate what class of chars to strip."
+  :type 'string
+  :group 'convenience)
+
+(defun string-strip (str &optional chars-before chars-after chars-preserve)
+  "Return a copy of STR, CHARS removed.
+`CHARS-BEFORE' and `CHARS-AFTER' default is \"[ \t\r\n]*\",
+i.e. spaces, tabs, carriage returns, newlines and newpages.
+`CHARS-PRESERVE' must be a parentized expression,
+it defaults to \"\\(.*?\\)\""
+  (let ((s-c-b (or chars-before
+                   strip-chars-before))
+        (s-c-a (or chars-after
+                   strip-chars-after))
+        (s-c-p (or chars-preserve
+                   string-chars-preserve)))
+    (string-match
+     (concat "\\`[" s-c-b"]*" s-c-p "[" s-c-a "]*\\'") str)
+    (match-string 1 str)))
 
 (provide 'python-components-help)
 ;;; python-components-help.el ends here

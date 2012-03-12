@@ -37,7 +37,7 @@ Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
   (let ((erg (ignore-errors (cdr (py-go-to-keyword py-block-re -1 indent)))))
-    (when (interactive-p) (message "%s" erg))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
 (defun py-beginning-of-if-block ()
@@ -49,7 +49,7 @@ Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
   (let ((erg (ignore-errors (cdr (py-go-to-keyword py-if-re -1)))))
-    (when (interactive-p) (message "%s" erg))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
 (defun py-beginning-of-try-block ()
@@ -61,7 +61,7 @@ Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
   (let ((erg (ignore-errors (cdr (py-go-to-keyword py-try-block-re -1)))))
-    (when (interactive-p) (message "%s" erg))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
 (defalias 'py-forward-block 'py-end-of-block)
@@ -97,7 +97,7 @@ http://docs.python.org/reference/compound_stmts.html"
                      py-block-re
                    py-block-or-clause-re))
          (erg (ignore-errors (cdr (py-go-to-keyword regexp -1 indent)))))
-    (when (interactive-p) (message "%s" erg))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
 (defalias 'py-forward-block-or-clause 'py-end-of-block-or-clause)
@@ -128,7 +128,7 @@ See also `py-beginning-of-def-or-class'.
 Returns position reached, if any, nil otherwise."
   (interactive)
   (let ((erg (ignore-errors (cdr (py-go-to-keyword py-class-re -1)))))
-    (when (interactive-p) (message "%s" erg))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
 (defalias 'py-forward-class 'py-end-of-class)
@@ -156,7 +156,7 @@ Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
   (let ((erg (ignore-errors (cdr (py-go-to-keyword py-block-or-clause-re -1)))))
-    (when (interactive-p) (message "%s" erg))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
 (defalias 'py-forward-clause 'py-end-of-clause)
@@ -182,7 +182,7 @@ http://docs.python.org/reference/compound_stmts.html"
 Returns position reached, if any, nil otherwise "
   (interactive)
   (let ((erg (ignore-errors (cdr (py-go-to-keyword py-def-re -1)))))
-    (when (interactive-p) (message "%s" erg))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
 (defun py-end-of-def (&optional iact)
@@ -209,7 +209,7 @@ Returns position reached, if any, nil otherwise "
          (erg
           (when (looking-at regexp)
             res)))
-    (when (interactive-p) (message "%s" (prin1-to-string erg)))
+    (when (and py-verbose-p (interactive-p)) (message "%s" (prin1-to-string erg)))
     erg))
 
 (defalias 'end-of-def-or-class 'py-end-of-def-or-class)
@@ -287,7 +287,7 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
                ((looking-at py-expression-looking-regexp)
                 (point))
                (t (unless (and (looking-at "[ \t]*#") (looking-back "^[ \t]*"))(point)))))
-        (when (interactive-p) (message "%s" erg))
+        (when (and py-verbose-p (interactive-p)) (message "%s" erg))
         erg))))
 
 (defalias 'py-forward-expression 'py-end-of-expression)
@@ -365,7 +365,7 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
           (py-end-of-expression orig origline done)))
         (unless (eq (point) orig)
           (setq erg (point)))
-        (when (interactive-p) (message "%s" erg))
+        (when (and py-verbose-p (interactive-p)) (message "%s" erg))
         erg))))
 
 ;; Partial- or Minor Expression
@@ -420,7 +420,7 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
                ((looking-at py-minor-expression-looking-regexp)
                 (point))
                (t (unless (and (looking-at "[ \t]*#") (looking-back "^[ \t]*"))(point)))))
-        (when (interactive-p) (message "%s" erg))
+        (when (and py-verbose-p (interactive-p)) (message "%s" erg))
         erg))))
 
 (defalias 'py-forward-partial-expression 'py-end-of-partial-expression)
@@ -498,7 +498,7 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
           (py-end-of-partial-expression orig origline done)))
         (unless (eq (point) orig)
           (setq erg (point)))
-        (when (interactive-p) (message "%s" erg))
+        (when (and py-verbose-p (interactive-p)) (message "%s" erg))
         erg))))
 
 ;; Statement
@@ -572,7 +572,7 @@ http://docs.python.org/reference/compound_stmts.html
           (py-beginning-of-statement orig origline done)))
         (unless (and (looking-at "[ \t]*#") (looking-back "^[ \t]*"))
           (when (< (point) orig)(setq erg (point))))
-        (when (interactive-p) (message "%s" erg))
+        (when (and py-verbose-p (interactive-p)) (message "%s" erg))
         erg))))
 
 (defalias 'py-statement-forward 'py-end-of-statement)
@@ -697,7 +697,7 @@ To go just beyond the final line of the current statement, use `py-down-statemen
                         (nth 4 (syntax-ppss)))
                       (eq 0 (current-column)))
             (setq erg (point)))
-          (when (interactive-p) (message "%s" erg))
+          (when (and py-verbose-p (interactive-p)) (message "%s" erg))
           ;; (message "%s" erg)
           erg)))))
 
@@ -731,7 +731,7 @@ To go just beyond the final line of the current statement, use `py-down-statemen
     (push-mark beg t t)
     (unless end (when (< beg (point))
                   (setq end (point))))
-    (when (interactive-p) (message "%s %s" beg end))
+    (when (and py-verbose-p (interactive-p)) (message "%s %s" beg end))
     (cons beg end)))
 
 (defun py-mark-paragraph ()
@@ -871,7 +871,7 @@ Returns position if succesful "
   (while (and (not (looking-at "@\\w+"))(not (empty-line-p))(not (bobp))(forward-line -1))
     (back-to-indentation))
   (let ((erg (when (looking-at "@\\w+")(match-beginning 0))))
-    (when (interactive-p) (message "%s" erg))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
 (defun py-end-of-decorator ()
@@ -898,7 +898,7 @@ Returns position if succesful "
           (forward-list))
         (when (< orig (point))
           (setq erg (point))))
-      (when (interactive-p) (message "%s" erg))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 ;;; Copying
@@ -1343,7 +1343,7 @@ See also `py-down-block': down from current definition to next beginning of bloc
         (forward-line 1)
         (beginning-of-line)
         (setq erg (point))))
-    (when (interactive-p) (message "%s" erg))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
 (defun py-down-clause-lc ()
@@ -1361,7 +1361,7 @@ See also `py-down-clause': down from current definition to next beginning of cla
         (forward-line 1)
         (beginning-of-line)
         (setq erg (point))))
-    (when (interactive-p) (message "%s" erg))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
 (defun py-down-def-lc ()
@@ -1379,7 +1379,7 @@ See also `py-down-def': down from current definition to next beginning of def be
         (forward-line 1)
         (beginning-of-line)
         (setq erg (point))))
-    (when (interactive-p) (message "%s" erg))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
 (defun py-down-class-lc ()
@@ -1397,7 +1397,7 @@ See also `py-down-class': down from current definition to next beginning of clas
         (forward-line 1)
         (beginning-of-line)
         (setq erg (point))))
-    (when (interactive-p) (message "%s" erg))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
 (defun py-down-statement-lc ()
@@ -1415,7 +1415,7 @@ See also `py-down-statement': down from current definition to next beginning of 
         (forward-line 1)
         (beginning-of-line)
         (setq erg (point))))
-    (when (interactive-p) (message "%s" erg))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
 ;; Complementary left corner commands end
@@ -1439,7 +1439,7 @@ Returns indentation if statement found, nil otherwise. "
               (py-beginning-of-statement))))
         (when erg
           (setq erg (current-column)))))
-    (when (interactive-p) (message "%s" erg))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
 (defun py-down-block ()
@@ -1457,7 +1457,7 @@ Returns indentation if block found, nil otherwise. "
                            (syntax-ppss)))))
       (back-to-indentation)
       (when (looking-at py-block-re) (setq erg (current-indentation)))
-      (when (interactive-p) (message "%s" erg))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py-down-clause ()
@@ -1470,7 +1470,7 @@ Returns indentation if clause found, nil otherwise. "
     (if (eobp)
         (setq erg nil)
       (while (and (setq erg (py-down-statement))(not (looking-at py-clause-re)))))
-    (when (interactive-p) (message "%s" erg))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
 (defun py-down-block-or-clause ()
@@ -1483,7 +1483,7 @@ Returns indentation if block-or-clause found, nil otherwise. "
     (if (eobp)
         (setq erg nil)
       (while (and (setq erg (py-down-statement))(not (looking-at py-block-or-clause-re)))))
-    (when (interactive-p) (message "%s" erg))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
 (defun py-down-def ()
@@ -1496,7 +1496,7 @@ Returns indentation if found, nil otherwise. "
     (if (eobp)
         (setq erg nil)
       (while (and (setq erg (py-down-statement))(not (looking-at py-def-re)))))
-    (when (interactive-p) (message "%s" erg))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
 (defun py-down-class ()
@@ -1509,7 +1509,7 @@ Returns indentation if class found, nil otherwise. "
     (if (eobp)
         (setq erg nil)
       (while (and (setq erg (py-down-statement))(not (looking-at py-class-re)))))
-    (when (interactive-p) (message "%s" erg))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
 (defun py-down-def-or-class ()
@@ -1522,7 +1522,7 @@ Returns indentation if def-or-class found, nil otherwise. "
     (if (eobp)
         (setq erg nil)
       (while (and (setq erg (py-down-statement))(not (looking-at py-def-or-class-re)))))
-    (when (interactive-p) (message "%s" erg))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
 (defun py-forward-into-nomenclature (&optional arg iact)

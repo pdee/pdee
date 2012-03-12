@@ -644,13 +644,13 @@ element matches `py-shell-name'."
 (make-variable-buffer-local 'py-shell-name)
 
 (defcustom py-shell-toggle-1 py-shell-name
-  "A PATH/TO/EXECUTABLE or default value used by `py-toggle-shells'. "
+  "A PATH/TO/EXECUTABLE or default value used by `py-toggle-shell'. "
   :type 'string
   :group 'python-mode)
 (make-variable-buffer-local 'py-shell-toggle-1)
 
 (defcustom py-shell-toggle-2 "python3"
-  "A PATH/TO/EXECUTABLE or default value used by `py-toggle-shells'. "
+  "A PATH/TO/EXECUTABLE or default value used by `py-toggle-shell'. "
   :type 'string
   :group 'python-mode)
 (make-variable-buffer-local 'py-shell-toggle-2)
@@ -1227,11 +1227,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
           (autoload 'pymacs-exec "pymacs")
           (autoload 'pymacs-load "pymacs")
           (require 'pymacs)
-          (unwind-protect
-              (progn
-                (find-file (concat py-install-directory "completion/pycomplete.el"))
-                (eval-buffer)))
-          (kill-buffer "pycomplete.el"))
+          (load (concat py-install-directory "completion/pycomplete.el") nil t))
       (error "`py-install-directory' not set, see INSTALL"))))
 
 (defun py-guess-py-install-directory ()
@@ -1579,7 +1575,7 @@ It makes underscores and dots word constituent chars.")
         (define-key map [(control c)(|)] 'py-execute-region)
         (define-key map [(control meta x)] 'py-execute-def-or-class)
         (define-key map [(control c)(!)] 'py-shell)
-        (define-key map [(control c)(control t)] 'py-toggle-shells)
+        (define-key map [(control c)(control t)] 'py-toggle-shell)
         (define-key map [(control meta h)] 'py-mark-def-or-class)
         (define-key map [(control c)(control k)] 'py-mark-block-or-clause)
         (define-key map [(control c)(.)] 'py-expression)
@@ -2509,7 +2505,7 @@ Start an Python3.2 interpreter.
 Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'."]
             "-"
             ["python-dedicated" python-dedicated
-                 :help "`python-dedicated'
+             :help "`python-dedicated'
 Start an unique Python interpreter in another window.
 
 Optional C-u prompts for options to pass to the Python interpreter. See `py-python-command-args'."]
@@ -2559,7 +2555,7 @@ Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-p
             ["Switch shell-switch-buffers-on-execute OFF" py-shell-switch-buffers-on-execute-off
              :help "Switch `py-shell-switch-buffers-on-execute-p' OFF. "]
 
-                        ))
+            ))
         map))
 ;; Fixme: add toolbar stuff for useful things like symbol help, send
 ;; region, at least.  (Shouldn't be specific to Python, obviously.)
@@ -2570,7 +2566,7 @@ Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-p
           (lambda ()
             (define-key python-mode-map [(meta p)] 'py-beginning-of-statement)
             (define-key python-mode-map [(meta n)] 'py-end-of-statement)
-            (defvar py-mode-map python-mode-map))
+            )
           (set (make-local-variable 'beginning-of-defun-function) 'py-beginning-of-def-or-class)
           (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class))
 
@@ -4487,8 +4483,7 @@ py-temp-directory\t\tdirectory used for temp files (if needed)
 py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
 
 \\{python-mode-map}"
-  :group 'python
-  :abbrev t
+  :group 'python-mode
   (set (make-local-variable 'font-lock-defaults)
        '(python-font-lock-keywords nil nil nil nil
 				   (font-lock-syntactic-keywords
@@ -4588,12 +4583,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
             (back-to-indentation)
             (py-guess-indent-offset)))
       (py-guess-indent-offset)))
-  (when py-load-pymacs-p (py-load-pymacs)
-        (unwind-protect
-            (progn
-              (find-file (concat py-install-directory "completion/pycomplete.el"))
-              (eval-buffer)))
-        (kill-buffer "pycomplete.el"))
+  (when py-load-pymacs-p (py-load-pymacs))
   (define-key inferior-python-mode-map (kbd "<tab>")
     'python-shell-completion-complete-or-indent)
   ;; add the menu
@@ -4602,6 +4592,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (when py-hide-show-minor-mode-p (hs-minor-mode 1))
   ;; shell-complete end
   ;; Run the mode hook.  Note that py-mode-hook is deprecated.
+  (defvar py-mode-map python-mode-map)
   (run-mode-hooks
    (if python-mode-hook
        'python-mode-hook
@@ -4737,14 +4728,14 @@ return `jython', otherwise return nil."
         (message "%s" "Could not detect Python on your system")))
     erg))
 
-(defalias 'py-toggle-shells 'py-switch-shells)
-(defun py-switch-shells (&optional arg)
+(defalias 'py-toggle-shell 'py-switch-shell)
+(defun py-switch-shell (&optional arg)
   "Toggles between the interpreter customized in `py-shell-toggle-1' resp. `py-shell-toggle-2'. Was hard-coded CPython and Jython in earlier versions, now starts with Python2 and Python3 by default.
 
 ARG might be a python-version string to set to.
 
-\\[universal-argument] `py-toggle-shells' prompts to specify a reachable Python command.
-\\[universal-argument] followed by numerical arg 2 or 3, `py-toggle-shells' opens a respective Python shell.
+\\[universal-argument] `py-toggle-shell' prompts to specify a reachable Python command.
+\\[universal-argument] followed by numerical arg 2 or 3, `py-toggle-shell' opens a respective Python shell.
 \\[universal-argument] followed by numerical arg 5 opens a Jython shell.
 
 Should you need more shells to select, extend this command by adding inside the first cond:
@@ -4797,6 +4788,12 @@ Should you need more shells to select, extend this command by adding inside the 
       (setq erg (executable-find py-shell-name)))
     (if erg
         (progn
+          (unless (string= (buffer-name (current-buffer)) py-which-bufname)
+            (unless (buffer-live-p py-which-bufname)
+              (py-shell nil dedicated py-shell-name)
+              (set-buffer (get-buffer-create py-which-bufname))
+              (when py-shell-switch-buffers-on-execute-p
+                (switch-to-buffer (current-buffer)) )))
           (force-mode-line-update)
           (when (interactive-p)
             (message "Using the %s shell, %s" msg erg))
@@ -4830,11 +4827,11 @@ This does the following:
 
 When interactivly called, messages the shell name, Emacs would in the given circtumstances.
 
-With \\[universal-argument] 4 is called `py-switch-shells' see docu there.
+With \\[universal-argument] 4 is called `py-switch-shell' see docu there.
 "
   (interactive "P")
   (if (eq 4 (prefix-numeric-value arg))
-      (py-switch-shells '(4))
+      (py-switch-shell '(4))
     (let* ((erg (cond (py-use-local-default
                        (if (not (string= "" py-shell-local-path))
                            (expand-file-name py-shell-local-path)
@@ -4867,7 +4864,7 @@ With \\[universal-argument] 4 is called `py-switch-shells' see docu there.
   :abbrev nil
   (set (make-local-variable 'py-exec-command) '(format "execfile(r'%s') # PYTHON-MODE\n" filename))
   (set (make-local-variable 'py-exec-string-command) '(format "exec(r'%s') # PYTHON-MODE\n" string))
-  (py-toggle-shells "python2"))
+  (py-toggle-shell "python2"))
 
 (define-derived-mode python3-mode python-mode "Python3"
   "Edit and run code used by Python version 3 series. "
@@ -4875,7 +4872,7 @@ With \\[universal-argument] 4 is called `py-switch-shells' see docu there.
   :abbrev nil
   (set (make-local-variable 'py-exec-command) '(format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" file file))
   (set (make-local-variable 'py-exec-string-command) '(format "exec(r'(%s)') # PYTHON-MODE\n" string))
-  (py-toggle-shells "python3"))
+  (py-toggle-shell "python3"))
 
 ;; Utilities
 
@@ -4966,7 +4963,7 @@ Like `python-mode', but sets up parameters for Jython subprocesses.
 Runs `jython-mode-hook' after `python-mode-hook'."
 
   :group 'python-mode
-  (py-toggle-shells "jython"))
+  (py-toggle-shell "jython"))
 
 ;; It's handy to add recognition of Python files to the
 ;; interpreter-mode-alist and to auto-mode-alist.  With the former, we
@@ -5277,11 +5274,13 @@ and resending the lines later. The lines are stored in reverse order")
   "Send to Python interpreter process PROC \"exec STRING in {}\".
 and return collected output"
   (let* ((proc
-          ;; (get-process py-which-bufname)
           (get-process (py-process-name)))
+         (procbuf (if (buffer-live-p (get-buffer (process-buffer proc)))
+                      (get-buffer (process-buffer proc))
+                    (py-shell nil nil py-shell-name)
+                    (py-shell-execute-string-now string)))
 	 (cmd (format "exec '''%s''' in {}"
 		      (mapconcat 'identity (split-string string "\n") "\\n")))
-         (procbuf (process-buffer proc))
          (outbuf (get-buffer-create " *pyshellcomplete-output*"))
          (lines (reverse py-shell-input-lines)))
     (if (and proc (not py-file-queue))
@@ -5371,10 +5370,14 @@ ipython0.11-completion-command-string also covers version 0.12")
 (defun py-shell-complete ()
   "Complete word before point, if any. Otherwise insert TAB. "
   (interactive)
+  ;; make sure, a process exists
+  (unless (and (processp (get-process (py-process-name py-shell-name)))
+               (buffer-live-p (get-buffer (py-process-name py-shell-name))))
+    (py-shell nil nil py-shell-name))
   (let ((word (py-dot-word-before-point))
-	result)
+        result)
     (if (string= word "")
-	(tab-to-tab-stop)	   ; non nil so the completion is over
+        (tab-to-tab-stop)	   ; non nil so the completion is over
       (setq result (py-shell-execute-string-now (format "
 def print_completions(namespace, text, prefix=''):
    for name in namespace:
@@ -5404,12 +5407,12 @@ def complete(text):
 complete('%s')
 " word)))
       (if (eq result nil)
-	  (message "Could not do completion as the Python process is busy")
-	(let ((comint-completion-addsuffix nil)
-	      (completions (if (split-string "\n" "\n")
-			       (split-string result "\n" t) ; XEmacs
-			     (split-string result "\n"))))
-	  (py-shell-dynamic-simple-complete word completions))))))
+          (message "Could not do completion as the Python process is busy")
+        (let ((comint-completion-addsuffix nil)
+              (completions (if (split-string "\n" "\n")
+                               (split-string result "\n" t) ; XEmacs
+                             (split-string result "\n"))))
+          (py-shell-dynamic-simple-complete word completions))))))
 
 ;; (defun ipython-complete (&optional done)
 ;;   "Complete the python symbol before point.

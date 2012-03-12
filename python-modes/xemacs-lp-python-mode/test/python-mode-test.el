@@ -252,7 +252,7 @@ print('\\xA9')"))
     (push-mark)
     (end-of-line)
     (py-choose-shell)
-    (message "%s" py-shell-name)
+    ;; (message "%s" py-shell-name)
     (py-execute-region (line-beginning-position) (point))
     ;; (switch-to-buffer (concat "*" (capitalize py-shell-name) "*"))
     (set-buffer (concat "*" (capitalize py-shell-name) "*"))
@@ -262,7 +262,7 @@ print('\\xA9')"))
         (when (looking-back comint-prompt-regexp)
           (goto-char (1- (match-beginning 0))))
         (sit-for 0.1)))
-  (message "%s %s" (point) (buffer-name))
+  ;; (message "%s %s" (point) (buffer-name))
   (assert (looking-back "©") nil "UnicodeEncodeError-python3-test failed"))
 
 (defun dict-error-test (&optional arg load-branch-function)
@@ -303,7 +303,8 @@ pst
   ;;  (assert (string= (expand-abbrev) "pst") nil "py-expand-abbrev-pst-pdb.set_trace-test failed"))
   ;; (assert (expand-abbrev) nil "py-expand-abbrev-pst-pdb.set_trace-test failed"))
   (progn (looking-back "pdb.set_trace()")
-         (message "Looking back: %s" (match-string-no-properties 0)))
+         ;; (message "Looking back: %s" (match-string-no-properties 0))
+         )
   (assert (looking-back "pdb.set_trace()")
           ;;          (message "%s" (match-string-no-properties 1))
           nil "py-expand-abbrev-pst-pdb.set_trace-test failed"))
@@ -838,8 +839,8 @@ somme errors
     (py-bug-tests-intern 'py-end-of-print-statement-base arg teststring)))
 
 (defun py-end-of-print-statement-base ()
+  (switch-to-buffer (current-buffer))
   (goto-char 66)
-  (sit-for 0.1)
   (assert (eq 146 (py-end-of-statement)) nil "py-end-of-print-statement-test failed"))
 
 (defun nested-try-test (&optional arg load-branch-function)
@@ -979,13 +980,10 @@ class foo(bar, baz):
     (py-bug-tests-intern 'tqs-list-error-base 2 teststring)))
 
 (defun tqs-list-error-base ()
+  (switch-to-buffer (current-buffer))
   (goto-char 90)
-  (message "(current-buffer): %s" (current-buffer) )
-  (message "Soll: 90 %s" (point) )
-  (message "(py-end-of-statement): %s" (py-end-of-statement))
   (sit-for 0.1)
-  (message "Soll 175: %s" (point))
-  (assert (eq 175 (point)) nil "tqs-list-error-test failed"))
+  (assert (eq 175 (py-end-of-statement)) nil "tqs-list-error-test failed"))
 
 (defun py-smart-indent-eight-test (&optional arg load-branch-function)
   (interactive "p")
@@ -1011,124 +1009,6 @@ for x in y:
 (defun py-install-directory-path-base ()
   "See if `py-install-directory' is set when required. "
   (assert (py-install-directory-check) nil "`py-install-directory' not valid. See INSTALL. "))
-
-;;; Commandp tests
-(defun py-mark-statement-commandp-test (&optional arg load-branch-function)
-  (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-
-"))
-    (when load-branch-function (funcall load-branch-function))
-    (py-bug-tests-intern 'py-mark-statement-commandp-base arg teststring)))
-
-(defun py-mark-statement-commandp-base ()
-  (assert (commandp 'py-mark-def) nil "py-mark-statement-commandp-test failed"))
-
-(defun py-mark-block-commandp-test (&optional arg load-branch-function)
-  (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-
-"))
-    (when load-branch-function (funcall load-branch-function))
-    (py-bug-tests-intern 'py-mark-block-commandp-base arg teststring)))
-
-(defun py-mark-block-commandp-base ()
-  (assert (commandp 'py-mark-def) nil "py-mark-block-commandp-test failed"))
-
-(defun py-mark-clause-commandp-test (&optional arg load-branch-function)
-  (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-
-"))
-    (when load-branch-function (funcall load-branch-function))
-    (py-bug-tests-intern 'py-mark-clause-commandp-base arg teststring)))
-
-(defun py-mark-clause-commandp-base ()
-  (assert (commandp 'py-mark-def) nil "py-mark-clause-commandp-test failed"))
-
-(defun py-mark-block-or-clause-commandp-test (&optional arg load-branch-function)
-  (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-
-"))
-    (when load-branch-function (funcall load-branch-function))
-    (py-bug-tests-intern 'py-mark-block-or-clause-commandp-base arg teststring)))
-
-(defun py-mark-block-or-clause-commandp-base ()
-  (assert (commandp 'py-mark-def) nil "py-mark-block-or-clause-commandp-test failed"))
-
-(defun py-mark-def-commandp-test (&optional arg load-branch-function)
-  (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-
-"))
-    (when load-branch-function (funcall load-branch-function))
-    (py-bug-tests-intern 'py-mark-def-commandp-base arg teststring)))
-
-(defun py-mark-def-commandp-base ()
-  (assert (commandp 'py-mark-def) nil "py-mark-def-commandp-test failed"))
-
-(defun py-mark-class-commandp-test (&optional arg load-branch-function)
-  (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-
-"))
-    (when load-branch-function (funcall load-branch-function))
-    (py-bug-tests-intern 'py-mark-class-commandp-base arg teststring)))
-
-(defun py-mark-class-commandp-base ()
-  (assert (commandp 'py-mark-def) nil "py-mark-class-commandp-test failed"))
-
-(defun py-mark-region-commandp-test (&optional arg load-branch-function)
-  (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-
-"))
-    (when load-branch-function (funcall load-branch-function))
-    (py-bug-tests-intern 'py-mark-region-commandp-base arg teststring)))
-
-(defun py-mark-region-commandp-base ()
-  (assert (commandp 'py-mark-def) nil "py-mark-region-commandp-test failed"))
-
-(defun py-mark-buffer-commandp-test (&optional arg load-branch-function)
-  (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-
-"))
-    (when load-branch-function (funcall load-branch-function))
-    (py-bug-tests-intern 'py-mark-buffer-commandp-base arg teststring)))
-
-(defun py-mark-buffer-commandp-base ()
-  (assert (commandp 'py-mark-def) nil "py-mark-buffer-commandp-test failed"))
-
-(defun py-mark-expression-commandp-test (&optional arg load-branch-function)
-  (interactive "p")
-  (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
-    (py-bug-tests-intern 'py-mark-expression-commandp-base arg teststring)))
-
-(defun py-mark-expression-commandp-base ()
-  (assert (commandp 'py-mark-def) nil "py-mark-expression-commandp-test failed"))
-
-(defun py-mark-minor-expression-commandp-test (&optional arg load-branch-function)
-  (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-
-"))
-    (when load-branch-function (funcall load-branch-function))
-    (py-bug-tests-intern 'py-mark-minor-expression-commandp-base arg teststring)))
-
-(defun py-mark-minor-expression-commandp-base ()
-  (assert (commandp 'py-mark-def) nil "py-mark-minor-expression-commandp-test failed"))
 
 ;;; Commandp tests
 (defun py-guess-pdb-path-commandp-test (&optional arg load-branch-function)
@@ -3786,14 +3666,14 @@ for x in y:
 (defun py-python-current-environment-commandp-base ()
   (assert (commandp 'py-python-current-environment) nil "py-python-current-environment-commandp-test failed"))
 
-(defun py-switch-shells-commandp-test (&optional arg load-branch-function)
+(defun py-switch-shell-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
     (when load-branch-function (funcall load-branch-function))
-    (py-bug-tests-intern 'py-switch-shells-commandp-base arg teststring)))
+    (py-bug-tests-intern 'py-switch-shell-commandp-base arg teststring)))
 
-(defun py-switch-shells-commandp-base ()
-  (assert (commandp 'py-switch-shells) nil "py-switch-shells-commandp-test failed"))
+(defun py-switch-shell-commandp-base ()
+  (assert (commandp 'py-switch-shell) nil "py-switch-shell-commandp-test failed"))
 
 (defun py-choose-shell-commandp-test (&optional arg load-branch-function)
   (interactive "p")

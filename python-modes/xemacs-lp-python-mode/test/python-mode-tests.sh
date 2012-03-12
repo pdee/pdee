@@ -138,7 +138,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall closing-list-lp:826144-test \
 --funcall py-electric-comment-add-space-lp:828398-test \
 --funcall py-electric-comment-add-space-t-lp:828398-test \
---funcall execute-indented-code-lp:828314-test \
 --funcall wrong-indentation-of-function-arguments-lp:840891-test \
 --funcall wrong-guess-for-py-indent-offset-lp-852052-test \
 --funcall indent-match-import-pkg-lp-852500-test \
@@ -501,7 +500,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-choose-shell-by-shebang-commandp-test \
 --funcall py-which-python-commandp-test \
 --funcall py-python-current-environment-commandp-test \
---funcall py-switch-shells-commandp-test \
+--funcall py-switch-shell-commandp-test \
 --funcall py-choose-shell-commandp-test \
 --funcall py-toggle-smart-indentation-commandp-test \
 --funcall py-smart-indentation-on-commandp-test \
@@ -889,36 +888,37 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-execute-minor-expression-python3.2-noswitch-commandp-test \
 --funcall py-execute-minor-expression-python3.2-dedicated-commandp-test \
 --funcall py-execute-minor-expression-python3.2-dedicated-switch-commandp-test \
---funcall py-shell-invoking-python-lp:835151-test \
---funcall py-shell-invoking-ipython-lp:835151-test \
---funcall py-shell-invoking-python3-lp:835151-test \
---funcall py-shell-invoking-python2-lp:835151-test \
---funcall py-shell-invoking-python2.7-lp:835151-test \
---funcall py-shell-invoking-jython-lp:835151-test \
 --funcall py-mark-block-clause-misbehave-lp-949310-test \
 --funcall py-mark-clause-misbehave-lp-949310-test \
 --funcall py-mark-block-misbehave-lp-949310-test \
 --funcall py-mark-minor-expression-commandp-test \
 --funcall py-shebang-consider-ipython-lp-849293-test \
 --funcall py-insert-super-python3-test \
---funcall UnicodeEncodeError-lp-550661-test \
---funcall py-shell-complete-test \
---funcall py-completion-at-point-test \
+--funcall py-shell-invoking-python-lp:835151-test \
+--funcall py-shell-invoking-ipython-lp:835151-test \
+--funcall py-shell-invoking-python3-lp:835151-test \
+--funcall py-shell-invoking-python2-lp:835151-test \
+--funcall py-shell-invoking-python2.7-lp:835151-test \
+--funcall py-shell-invoking-jython-lp:835151-test \
 --funcall py-smart-indent-eight-test \
 --funcall wrong-type-argument-lp-901541-test \
 --funcall indentation-bug-inside-docstrings-lp-899455-test \
---funcall execute-buffer-ipython-fails-lp:928087-test \
 --funcall py-shebang-ipython-env-lp-849293-test \
 --funcall py-insert-super-python2-test \
 --funcall nested-try-finally-test \
 --funcall py-install-directory-path-test \
---funcall UnicodeEncodeError-python3-test \
+--funcall execute-indented-code-lp:828314-test \
 --funcall py-execute-block-test \
---funcall py-ipython-complete-lp:927136-test \
+--funcall py-shell-complete-test \
+--funcall py-completion-at-point-test \
 --funcall tqs-list-error-test \
---funcall py-end-of-print-statement-test \
+--funcall py-ipython-complete-lp:927136-test \
 --funcall master-file-not-honored-lp:794850-test \
+--funcall execute-buffer-ipython-fails-lp:928087-test \
 --funcall py-electric-backspace-test \
+--funcall UnicodeEncodeError-lp-550661-test \
+--funcall UnicodeEncodeError-python3-test \
+--funcall py-end-of-print-statement-test \
 
 else
 
