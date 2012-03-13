@@ -125,9 +125,17 @@ This function is appropriate for `comint-output-filter-functions'."
           (message "%s" cmd)
         (message "%s" "Could not detect Python on your system")))))
 
+(defun py-separator-char ()
+  "Return the file-path separator char from current machine.
+Returns char found. "
+  (interactive)
+  (let ((erg (replace-regexp-in-string "\n" "" (shell-command-to-string (concat py-shell-name " -c \"import os; print '%s' % os.sep,\"")))))
+    (when (interactive-p) (message "Separator-char: %s" erg))
+    erg))
+
 (defun py-process-name (&optional name dedicated nostars)
   "Return the name of the running Python process, `get-process' willsee it. "
-  (let* ((sepchar (replace-regexp-in-string "\n" "" (shell-command-to-string (concat py-shell-name " -c \"import os; print '%s' % os.sep,\""))))
+  (let* ((sepchar (py-separator-char))
          (thisname (if name
                        (if (string-match sepchar name)
                            (substring name (progn (string-match (concat "\\(.+\\)" sepchar "\\(.+\\)$") name) (match-beginning 2)))
@@ -194,15 +202,24 @@ interpreter.
 
 (defun py-shell-name-prepare (name)
   "Return an appropriate name to display in modeline. "
-  (let ((erg
-         (cond ((string-match "ipython" name)
-                (replace-regexp-in-string "ipython" "IPython" name))
-               ((string-match "jython" name)
-                (replace-regexp-in-string "jython" "Jython" name))
-               ((string-match "python" name)
-                (replace-regexp-in-string "python" "Python" name))
-               (t name))))
-    (unless (string-match "^\*" erg) (setq erg (concat "*" erg "*")))
+  (let (prefix erg)
+    (when (string-match sepchar name)
+      (setq prefix "ND")
+      (setq name (substring name (1+ (string-match (concat sepchar "[^" sepchar "]*$") name)))))
+    (setq erg
+          (cond ((string-match "ipython" name)
+                 (replace-regexp-in-string "ipython" "IPython" name))
+                ((string-match "jython" name)
+                 (replace-regexp-in-string "jython" "Jython" name))
+                ((string-match "python" name)
+                 (replace-regexp-in-string "python" "Python" name))
+                (t name)))
+    (cond ((and prefix (string-match "^\*" erg))
+           (setq erg (replace-regexp-in-string "^\*" (concat "*" prefix " ") erg)))
+          (prefix
+           (setq erg (concat "*" prefix " " erg "*")))
+
+          (t (setq erg (concat "*" erg "*"))))
     erg))
 
 (defun py-shell (&optional argprompt dedicated pyshellname switch)
@@ -218,7 +235,8 @@ Optional string PYSHELLNAME overrides default `py-shell-name'.
 Optional symbol SWITCH ('switch/'noswitch) precedes `py-shell-switch-buffers-on-execute-p'
 "
   (interactive "P")
-  (let ((args py-python-command-args)
+  (let ((sepchar (py-separator-char))
+        (args py-python-command-args)
         (oldbuf (current-buffer)))
     (let* ((buffer
             (when argprompt
@@ -253,7 +271,7 @@ Optional symbol SWITCH ('switch/'noswitch) precedes `py-shell-switch-buffers-on-
                         (replace-regexp-in-string
                          "\*" ""
                          buffer))))
-                  (pyshellname pyshellname)
+                  (pyshellname (expand-file-name pyshellname))
                   ((stringp py-shell-name)
                    py-shell-name)
                   ((or (string= "" py-shell-name)(null py-shell-name))
@@ -267,19 +285,24 @@ Optional symbol SWITCH ('switch/'noswitch) precedes `py-shell-switch-buffers-on-
            (py-buffer-name-prepare (unless buffer
                                      (py-shell-name-prepare py-process-name)))
            (py-buffer-name (or buffer py-buffer-name-prepare))
-           (pyshellname (downcase (replace-regexp-in-string
-                                   "<\\([0-9]+\\)>" ""
-                                   (replace-regexp-in-string
-                                    "\*" ""
-                                    py-buffer-name buffer)))))
-      (py-set-shell-completion-environment pyshellname)
+           (executable (cond (buffer
+                              (downcase (replace-regexp-in-string
+                                         "<\\([0-9]+\\)>" ""
+                                         (replace-regexp-in-string
+                                          "\*" ""
+                                          py-buffer-name buffer))))
+                             (pyshellname pyshellname)
+                             (t py-shell-name)))
+           ;; (expand-file-name "~/arbeit/python/Python-3.2.2/python"))
+           )
+      (py-set-shell-completion-environment executable)
       (when py-split-windows-on-execute-p
         (funcall py-split-windows-on-execute-function))
       ;; comint
       (if buffer
           (set-buffer (get-buffer-create
-                       (apply 'make-comint-in-buffer py-buffer-name py-buffer-name pyshellname nil args)))
-        (set-buffer (apply 'make-comint-in-buffer py-buffer-name py-buffer-name pyshellname nil args)))
+                       (apply 'make-comint-in-buffer py-buffer-name py-buffer-name executable nil args)))
+        (set-buffer (apply 'make-comint-in-buffer py-buffer-name py-buffer-name executable nil args)))
       (set (make-local-variable 'comint-prompt-regexp)
            (concat "\\("
                    (mapconcat 'identity
