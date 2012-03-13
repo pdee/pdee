@@ -6523,9 +6523,9 @@ Returns char found. "
     (when (interactive-p) (message "Separator-char: %s" erg))
     erg))
 
-(defun py-process-name (&optional name dedicated)
+(defun py-process-name (&optional name dedicated nostars)
   "Return the name of the running Python process, `get-process' willsee it. "
-  (let* ((sepchar (replace-regexp-in-string "\n" "" (shell-command-to-string (concat py-shell-name " -c \"import os; print '%s' % os.sep,\""))))
+  (let* ((sepchar (py-separator-char))
          (thisname (if name
                        (if (string-match sepchar name)
                            (substring name (progn (string-match (concat "\\(.+\\)" sepchar "\\(.+\\)$") name) (match-beginning 2)))
@@ -6541,6 +6541,7 @@ Returns char found. "
                       (string-match "IPython" name))
                   "IPython"
                 (capitalize name))))
+    (unless (or nostars (string-match "^\*" erg))(setq erg (concat "*" erg "*")))
     erg))
 
 ;; from ipython.el
