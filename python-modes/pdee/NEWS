@@ -9,6 +9,21 @@ New in version 6.0.6
   allow `py-execute-buffer' etc. to split/not-split windows,
   move cursor onto output or not
 
+- Behavior of C-u M-x `py-shell' closer to common shell
+
+  C-u 4 prompts for a buffer,
+  i.e. when a "*Python*" shell is running,
+  C-u M-x `py-shell' opens a "*Python<2>*" per default
+  C-u 2 M-x py-shell promts for command-arguments as known from 5th-series
+
+- `py-intend-tabs-mode' sets default of `indent-tabs-mode', lp:953765
+
+-- New boolean variable `py-intend-tabs-mode'
+  Permits value independent from Emacs-wide `indent-tabs-mode' 
+  Commands `py-toggle-indent-tabs-mode', ...-on, ...-off
+  menu PyTools "Toggle indent-tabs-mode"
+
+
 New in version 6.0.5
 --------------------
 

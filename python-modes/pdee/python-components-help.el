@@ -140,7 +140,7 @@ Useful for newly defined symbol, not known to python yet. "
     ))
 
 (defun py-describe-mode ()
-  "Dump long form of Python-mode docs."
+  "Dump long form of `python-mode' docs."
   (interactive)
   (py-dump-help-string "Major mode for editing Python files.
 Knows about Python indentation, tokens, comments and continuation lines.
@@ -167,6 +167,7 @@ variable docs begin with `->'.
 
 @VARIABLES
 
+py-install-directory\twherefrom `python-mode' looks for extensions 
 py-indent-offset\tindentation increment
 py-block-comment-prefix\tcomment string used by comment-region
 
@@ -174,6 +175,7 @@ py-shell-name\tshell command to invoke Python interpreter
 py-temp-directory\tdirectory used for temp files (if needed)
 
 py-beep-if-tab-change\tring the bell if tab-width is changed
+%v:py-install-directory
 %v:py-indent-offset
 %v:py-block-comment-prefix
 %v:py-shell-name
@@ -221,7 +223,7 @@ computing the proper indentation for the next line.
 
 Continuation Lines and Statements
 
-The Python-mode commands generally work on statements instead of on
+The `python-mode' commands generally work on statements instead of on
 individual lines, where a `statement' is a comment or blank line, or a
 code line and all of its following continuation lines (if any)
 considered as a single logical unit.  The commands in this mode
@@ -246,7 +248,7 @@ Primarily for reindenting existing code:
 
 Unlike most programming languages, Python uses indentation, and only
 indentation, to specify block structure.  Hence the indentation supplied
-automatically by Python-mode is just an educated guess:  only you know
+automatically by `python-mode' is just an educated guess:  only you know
 the block structure you intend, so only you can supply correct
 indentation.
 
@@ -264,11 +266,11 @@ to
 \tif a > 0:
 \t c = d
 \t _
-Python-mode cannot know whether that's what you intended, or whether
+`python-mode' cannot know whether that's what you intended, or whether
 \tif a > 0:
 \t c = d
 \t_
-was your intent.  In general, Python-mode either reproduces the
+was your intent.  In general, `python-mode' either reproduces the
 indentation of the (closest code or indenting-comment) preceding
 statement, or adds an extra py-indent-offset blanks if the preceding
 statement has `:' as its last significant (non-whitespace and non-

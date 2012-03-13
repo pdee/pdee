@@ -322,6 +322,11 @@ terminated line. "
   :type 'integer
   :group 'python-mode)
 
+(defcustom py-indent-tabs-mode nil
+  "Python-mode starts `indent-tabs-mode' with the value specified here, default is nil. "
+  :type 'boolean
+  :group 'python-mode)
+
 (defcustom py-smart-indentation t
   "*Should `python-mode' try to automagically set some indentation variables?
 When this variable is non-nil, two things happen when a buffer is set
@@ -863,7 +868,7 @@ actually punts to `jython-mode'."
   of default Python.
 
 Making switch between several virtualenv's easier,
- Python-mode should deliver an installer, so named-shells pointing to virtualenv's will be available. "
+ `python-mode' should deliver an installer, so named-shells pointing to virtualenv's will be available. "
   :type 'boolean
   :group 'python-mode)
 
@@ -975,7 +980,7 @@ See bug report at launchpad, lp:940812 "
   :group 'python-mode)
 
 (defcustom py-edit-only-p nil
-  "When `t' Python-mode will not take resort nor check for installed Python executables. Default is nil.
+  "When `t' `python-mode' will not take resort nor check for installed Python executables. Default is nil.
 
 See bug report at launchpad, lp:944093. "
   :type 'boolean
@@ -1432,6 +1437,10 @@ Run pdb under GUD"]
             "-"
             ["Toggle py-smart-indentation" toggle-py-smart-indentation
              :help "See also `py-smart-indentation-on', `-off' "]
+
+            ["Toggle indent-tabs-mode" py-toggle-indent-tabs-mode
+             :help "See also `py-indent-tabs-mode-on', `-off' "]
+
             ["Customize Python mode" (customize-group 'python-mode)
              :help "Open the customization buffer for Python mode"]
             ["Help on symbol" py-describe-symbol
@@ -2941,7 +2950,8 @@ Returns column. "
     (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
 
-(defun toggle-indent-tabs-mode ()
+
+(defun py-toggle-indent-tabs-mode ()
   "Toggle `indent-tabs-mode'.
 
 Returns value of `indent-tabs-mode' switched to. "
@@ -2952,7 +2962,7 @@ Returns value of `indent-tabs-mode' switched to. "
   (when (and py-verbose-p (interactive-p)) (message "indent-tabs-mode %s  py-indent-offset %s" indent-tabs-mode py-indent-offset))
   indent-tabs-mode)
 
-(defun indent-tabs-mode (arg &optional iact)
+(defun py-indent-tabs-mode (arg &optional iact)
   "With positive ARG switch `indent-tabs-mode' on.
 
 With negative ARG switch `indent-tabs-mode' off.
@@ -2966,12 +2976,12 @@ Returns value of `indent-tabs-mode' switched to. "
   (when (and py-verbose-p (or iact (interactive-p))) (message "indent-tabs-mode %s   py-indent-offset %s" indent-tabs-mode py-indent-offset))
   indent-tabs-mode)
 
-(defun indent-tabs-mode-on (arg)
+(defun py-indent-tabs-mode-on (arg)
   "Switch `indent-tabs-mode' on. "
   (interactive "p")
   (indent-tabs-mode (abs arg)(interactive-p)))
 
-(defun indent-tabs-mode-off (arg)
+(defun py-indent-tabs-mode-off (arg)
   "Switch `indent-tabs-mode' on. "
   (interactive "p")
   (indent-tabs-mode (- (abs arg))(interactive-p)))
@@ -7075,7 +7085,8 @@ When called from a programm, it accepts a string specifying a shell which will b
 
 (defun py-execute-base (start end &optional shell dedicated switch)
   "Adapt the variables used in the process. "
-  (let* ((shell (if (eq 4 (prefix-numeric-value shell))
+  (let* ((pop-up-windows py-shell-switch-buffers-on-execute-p)
+         (shell (if (eq 4 (prefix-numeric-value shell))
                     (read-from-minibuffer "Python shell: " (default-value 'py-shell-name))
                   (when (stringp shell)
                     shell)))
@@ -7087,7 +7098,8 @@ When called from a programm, it accepts a string specifying a shell which will b
          (temp (make-temp-name name))
          (file (concat (expand-file-name temp py-temp-directory) ".py"))
          (filebuf (get-buffer-create file))
-         (proc (get-process (py-shell nil dedicated (or shell (downcase name)))))
+         (proc (or (get-process name)
+                   (get-process (py-shell nil dedicated (or shell (downcase name-raw))))))
          (procbuf (if dedicated
                       (buffer-name (get-buffer (current-buffer)))
                     (buffer-name (get-buffer (concat "*" name "*")))))
@@ -7095,13 +7107,8 @@ When called from a programm, it accepts a string specifying a shell which will b
                   (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" file file)
                 (format "execfile(r'%s') # PYTHON-MODE\n" file)))
          (wholebuf (when (boundp 'wholebuf) wholebuf))
-         (comint-scroll-to-bottom-on-output t))
-    (py-execute-intern strg procbuf proc temp file filebuf name py-execute-directory)))
-
-(defun py-execute-intern (strg &optional procbuf proc temp file filebuf name py-execute-directory)
-  "Returns position of output start when successful. "
-  (let ((pop-up-windows py-shell-switch-buffers-on-execute-p)
-        erg)
+         (comint-scroll-to-bottom-on-output t)
+         erg)
     (set-buffer filebuf)
     (erase-buffer)
     (insert strg)
@@ -7117,7 +7124,7 @@ When called from a programm, it accepts a string specifying a shell which will b
     (if (file-readable-p file)
         (progn
           (when (string-match "IPython" (process-name proc))
-            (unless (get-process "IPython")
+            (unless (get-process "*IPython*")
               (sit-for py-ipython-execute-delay)))
           (setq erg (py-execute-file-base proc file pec))
           (setq py-exception-buffer (cons file (current-buffer)))
@@ -7127,8 +7134,7 @@ When called from a programm, it accepts a string specifying a shell which will b
                      (progn
                        (delete-other-windows)
                        (funcall py-split-windows-on-execute-function))
-                   (set-buffer regbuf)
-                   (message "current-buffer: %s" (current-buffer)))
+                   (set-buffer regbuf))
                  (set-buffer procbuf)
                  (switch-to-buffer (current-buffer))
                  (goto-char (point-max)))
@@ -7138,7 +7144,8 @@ When called from a programm, it accepts a string specifying a shell which will b
                    (funcall py-split-windows-on-execute-function))
                  (set-buffer regbuf)
                  (switch-to-buffer (current-buffer))
-                 (message "current-buffer: %s" (current-buffer)))
+                 ;; (message "current-buffer: %s" (current-buffer))
+                 )
                 ((and py-shell-switch-buffers-on-execute-p py-split-windows-on-execute-p)
                  (switch-to-buffer (current-buffer))
                  (delete-other-windows)
@@ -7150,9 +7157,8 @@ When called from a programm, it accepts a string specifying a shell which will b
                  (set-buffer procbuf)
                  (funcall py-split-windows-on-execute-function)
                  (switch-to-buffer regbuf)))
-          (unless (string= (buffer-name (current-buffer)) procbuf)(message "Output buffer: %s" procbuf))
-          ;; (message "py-shell-switch-buffers-on-execute:  %s"  py-shell-switch-buffers-on-execute-p)
-          ;; (message "py-split-windows-on-execute-p: %s" py-split-windows-on-execute-p)
+          (unless (string= (buffer-name (current-buffer)) procbuf)
+            (when py-verbose-p (message "Output buffer: %s" procbuf)))
           (sit-for 0.1)
           (unless py-execute-keep-temporary-file-p
             (delete-file file)
@@ -8342,7 +8348,7 @@ Useful for newly defined symbol, not known to python yet. "
       (help-print-return-message))))
 
 (defun py-describe-mode ()
-  "Dump long form of Python-mode docs."
+  "Dump long form of `python-mode' docs."
   (interactive)
   (py-dump-help-string "Major mode for editing Python files.
 Knows about Python indentation, tokens, comments and continuation lines.
@@ -8369,6 +8375,7 @@ variable docs begin with `->'.
 
 @VARIABLES
 
+py-install-directory\twherefrom `python-mode' looks for extensions
 py-indent-offset\tindentation increment
 py-block-comment-prefix\tcomment string used by comment-region
 
@@ -8376,6 +8383,7 @@ py-shell-name\tshell command to invoke Python interpreter
 py-temp-directory\tdirectory used for temp files (if needed)
 
 py-beep-if-tab-change\tring the bell if tab-width is changed
+%v:py-install-directory
 %v:py-indent-offset
 %v:py-block-comment-prefix
 %v:py-shell-name
@@ -8423,7 +8431,7 @@ computing the proper indentation for the next line.
 
 Continuation Lines and Statements
 
-The Python-mode commands generally work on statements instead of on
+The `python-mode' commands generally work on statements instead of on
 individual lines, where a `statement' is a comment or blank line, or a
 code line and all of its following continuation lines (if any)
 considered as a single logical unit.  The commands in this mode
@@ -8448,7 +8456,7 @@ Primarily for reindenting existing code:
 
 Unlike most programming languages, Python uses indentation, and only
 indentation, to specify block structure.  Hence the indentation supplied
-automatically by Python-mode is just an educated guess:  only you know
+automatically by `python-mode' is just an educated guess:  only you know
 the block structure you intend, so only you can supply correct
 indentation.
 
@@ -8466,11 +8474,11 @@ to
 \tif a > 0:
 \t c = d
 \t _
-Python-mode cannot know whether that's what you intended, or whether
+`python-mode' cannot know whether that's what you intended, or whether
 \tif a > 0:
 \t c = d
 \t_
-was your intent.  In general, Python-mode either reproduces the
+was your intent.  In general, `python-mode' either reproduces the
 indentation of the (closest code or indenting-comment) preceding
 statement, or adds an extra py-indent-offset blanks if the preceding
 statement has `:' as its last significant (non-whitespace and non-
@@ -9660,13 +9668,34 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   ;; (set (make-local-variable 'end-of-defun-function) 'python-end-of-defun)
   (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class)
   (add-hook 'which-func-functions 'python-which-func nil t)
-  (if (and imenu-create-index-p (fboundp 'imenu-add-to-menubar)(ignore-errors (require 'imenu)))
-      (progn
-        (setq imenu-create-index-function #'py-imenu-create-index-new)
-        (setq imenu-generic-expression py-imenu-generic-expression)
-        (imenu-add-to-menubar "PyIndex")
-        (add-hook imenu-create-index-function 'python-mode-hook))
-    (remove-hook 'imenu-add-menubar-index 'python-mode-hook))
+  (remove-hook 'python-mode-hook 'imenu-add-menubar-index)
+  (remove-hook 'python-mode-hook
+               (lambda ()
+                 "Turn off Indent Tabs mode."
+                 (setq indent-tabs-mode nil)))
+  (remove-hook 'python-mode-hook 'python-setup-brm)
+  (add-hook 'python-mode-hook
+            (lambda ()
+              ;; (define-key python-mode-map [(meta p)] 'py-beginning-of-statement)
+              ;; (define-key python-mode-map [(meta n)] 'py-end-of-statement))
+              (set (make-local-variable 'beginning-of-defun-function) 'py-beginning-of-def-or-class)
+              (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class)))
+  (custom-add-option 'python-mode-hook 'py-imenu-create-index-new)
+  (custom-add-option 'python-mode-hook
+                     (lambda ()
+                       "Toggle Indent Tabs mode."
+                       (setq indent-tabs-mode py-indent-tabs-mode)))
+  (custom-add-option 'python-mode-hook 'abbrev-mode)
+  (custom-add-option 'python-mode-hook
+                     (lambda ()
+                       "Toggle Indent Tabs mode."
+                       (setq indent-tabs-mode py-indent-tabs-mode)))
+  (custom-add-option 'python-mode-hook 'abbrev-mode)
+  (when (and imenu-create-index-p (fboundp 'imenu-add-to-menubar)(ignore-errors (require 'imenu)))
+    (setq imenu-create-index-function #'py-imenu-create-index-new)
+    (setq imenu-generic-expression py-imenu-generic-expression)
+    (imenu-add-to-menubar "PyIndex")
+    (add-hook 'python-mode-hook imenu-create-index-function))
   (set (make-local-variable 'eldoc-documentation-function)
        #'python-eldoc-function)
   (add-hook 'eldoc-mode-hook
@@ -9683,6 +9712,9 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   ;; (when python-load-extended-executes-p
   ;;   (add-hook 'python-mode-hook '(lambda ()(load (concat py-install-directory "/python-extended-executes.el") nil t))))
   ;; Python defines TABs as being 8-char wide.
+  (add-hook 'python-mode-hook
+            '(lambda ()
+               (setq indent-tabs-mode py-indent-tabs-mode)))
   (set (make-local-variable 'tab-width) py-indent-offset)
   ;; Now guess `py-indent-offset'
   (when py-smart-indentation
@@ -9838,11 +9870,12 @@ These are Python temporary files awaiting execution."
 (add-hook 'kill-emacs-hook 'py-kill-emacs-hook)
 (add-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file)
 
-(add-hook 'python-mode-hook
-          (lambda ()
-            (defvar py-mode-map python-mode-map))
-          (set (make-local-variable 'beginning-of-defun-function) 'py-beginning-of-def-or-class)
-          (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class))
+;; inside python-mode already
+;; (add-hook 'python-mode-hook
+;;           (lambda ()
+;;             (defvar py-mode-map python-mode-map))
+;;           (set (make-local-variable 'beginning-o1f-defun-function) 'py-beginning-of-def-or-class)
+;;           (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class))
 
 ;; Add a designator to the minor mode strings
 (or (assq 'py-pdbtrack-is-tracking-p minor-mode-alist)
@@ -9954,7 +9987,7 @@ Eval resulting buffer to install it, see customizable `py-extensions'. "
 ;; Add a designator to the minor mode strings
 (or (assq 'python-pdbtrack-is-tracking-p minor-mode-alist)
     (push '(python-pdbtrack-is-tracking-p python-pdbtrack-minor-mode-string)
-	  minor-mode-alist))
+          minor-mode-alist))
 
 ;; Bind python-file-queue before installing the kill-emacs-hook.
 (defvar python-file-queue nil
@@ -10005,15 +10038,15 @@ local value.")
   ;;   The first already is (for CAML), but the second isn't.  Anyhow,
   ;;   these are specific to the inferior buffer.  -- fx
   `((,(rx line-start (1+ (any " \t")) "File \""
-	  (group (1+ (not (any "\"<")))) ; avoid `<stdin>' &c
-	  "\", line " (group (1+ digit)))
+          (group (1+ (not (any "\"<")))) ; avoid `<stdin>' &c
+          "\", line " (group (1+ digit)))
      1 2)
     (,(rx " in file " (group (1+ not-newline)) " on line "
-	  (group (1+ digit)))
+          (group (1+ digit)))
      1 2)
     ;; pdb stack trace
     (,(rx line-start "> " (group (1+ (not (any "(\"<"))))
-	  "(" (group (1+ digit)) ")" (1+ (not (any "("))) "()")
+          "(" (group (1+ digit)) ")" (1+ (not (any "("))) "()")
      1 2))
   "`compilation-error-regexp-alist' for inferior Python.")
 
@@ -10033,17 +10066,17 @@ local value.")
 
 (defun python--set-prompt-regexp ()
   (let ((prompt  (cdr-safe (or (assoc python-python-command
-				      python-shell-prompt-alist)
-			       (assq t python-shell-prompt-alist))))
-	(cprompt (cdr-safe (or (assoc python-python-command
-				      python-shell-continuation-prompt-alist)
-			       (assq t python-shell-continuation-prompt-alist)))))
+                                      python-shell-prompt-alist)
+                               (assq t python-shell-prompt-alist))))
+        (cprompt (cdr-safe (or (assoc python-python-command
+                                      python-shell-continuation-prompt-alist)
+                               (assq t python-shell-continuation-prompt-alist)))))
     (set (make-local-variable 'comint-prompt-regexp)
-	 (concat "\\("
-		 (mapconcat 'identity
-			    (delq nil (list prompt cprompt "^([Pp]db) "))
-			    "\\|")
-		 "\\)"))
+         (concat "\\("
+                 (mapconcat 'identity
+                            (delq nil (list prompt cprompt "^([Pp]db) "))
+                            "\\|")
+                 "\\)"))
     (set (make-local-variable 'python--prompt-regexp) prompt)))
 
 ;; Fixme: This should inherit some stuff from `python-mode', but I'm
@@ -10072,7 +10105,7 @@ For running multiple processes in multiple buffers, see `run-python' and
   (setq mode-line-process '(":%s"))
   (set (make-local-variable 'comint-input-filter) 'python-input-filter)
   (add-hook 'comint-preoutput-filter-functions #'python-preoutput-filter
-	    nil t)
+            nil t)
   (python--set-prompt-regexp)
   (set (make-local-variable 'compilation-error-regexp-alist)
        python-compilation-regexp-alist)
@@ -10087,11 +10120,11 @@ Don't save anything for STR matching `inferior-python-filter-regexp'."
 (defun python-args-to-list (string)
   (let ((where (string-match "[ \t]" string)))
     (cond ((null where) (list string))
-	  ((not (= where 0))
-	   (cons (substring string 0 where)
-		 (python-args-to-list (substring string (+ 1 where)))))
-	  (t (let ((pos (string-match "[^ \t]" string)))
-	       (if pos (python-args-to-list (substring string pos))))))))
+          ((not (= where 0))
+           (cons (substring string 0 where)
+                 (python-args-to-list (substring string (+ 1 where)))))
+          (t (let ((pos (string-match "[^ \t]" string)))
+               (if pos (python-args-to-list (substring string pos))))))))
 
 (defvar python-preoutput-continuation nil
   "If non-nil, funcall this when `python-preoutput-filter' sees `_emacs_ok'.")
@@ -10155,8 +10188,8 @@ Don't save anything for STR matching `inferior-python-filter-regexp'."
   "Check that CMD runs a suitable version of Python."
   ;; Fixme:  Check on Jython.
   (unless (or python-version-checked
-	      (equal 0 (string-match (regexp-quote python-python-command)
-				     cmd)))
+              (equal 0 (string-match (regexp-quote python-python-command)
+                                     cmd)))
     (unless (shell-command-to-string cmd)
       (error "Can't run Python command `%s'" cmd))
     (let* ((res (shell-command-to-string
@@ -10164,7 +10197,7 @@ Don't save anything for STR matching `inferior-python-filter-regexp'."
                          " -c \"from sys import version_info;\
 print version_info >= (2, 2) and version_info < (3, 0)\""))))
       (unless (string-match "True" res)
-	(error "Only Python versions >= 2.2 and < 3.0 are supported")))
+        (error "Only Python versions >= 2.2 and < 3.0 are supported")))
     (setq python-version-checked t)))
 
 ;;; Py-send stuff liftet from python.el, alternates py-execute-...
@@ -10190,8 +10223,8 @@ By default, Emacs inhibits the loading of Python modules from the
 current working directory, for security reasons.  To disable this
 behavior, change `python-remove-cwd-from-path' to nil."
   (interactive (if current-prefix-arg
-		   (list (read-string "Run Python: " python-command) nil t)
-		 (list python-command)))
+                   (list (read-string "Run Python: " python-command) nil t)
+                 (list python-command)))
   (require 'ansi-color) ; for ipython
   (unless cmd (setq cmd python-command))
   (python-check-version cmd)
@@ -10201,23 +10234,23 @@ behavior, change `python-remove-cwd-from-path' to nil."
   ;; invoked.  Would support multiple processes better.
   (when (or new (not (comint-check-proc python-buffer)))
     (with-current-buffer
-	(let* ((cmdlist
-		(append (python-args-to-list cmd) '("-i")
-			(if python-remove-cwd-from-path
-			    '("-c" "import sys; sys.path.remove('')"))))
+        (let* ((cmdlist
+                (append (python-args-to-list cmd) '("-i")
+                        (if python-remove-cwd-from-path
+                            '("-c" "import sys; sys.path.remove('')"))))
                (path (getenv "PYTHONPATH"))
-	       (process-environment	; to import emacs.py
-		(cons (concat "PYTHONPATH="
-			      (if path (concat path path-separator))
-			      data-directory)
-		      process-environment))
+               (process-environment	; to import emacs.py
+                (cons (concat "PYTHONPATH="
+                              (if path (concat path path-separator))
+                              data-directory)
+                      process-environment))
                ;; If we use a pipe, unicode characters are not printed
                ;; correctly (Bug#5794) and IPython does not work at
                ;; all (Bug#5390).
-	       (process-connection-type t))
-	  (apply 'make-comint-in-buffer "Python"
-		 (generate-new-buffer "*Python*")
-		 (car cmdlist) nil (cdr cmdlist)))
+               (process-connection-type t))
+          (apply 'make-comint-in-buffer "Python"
+                 (generate-new-buffer "*Python*")
+                 (car cmdlist) nil (cdr cmdlist)))
       (setq-default python-buffer (current-buffer))
       (setq python-buffer (current-buffer))
       (accept-process-output (get-buffer-process python-buffer) 5)
@@ -10270,20 +10303,20 @@ behavior, change `python-remove-cwd-from-path' to nil."
   ;; non-ASCII.
   (interactive "r")
   (let* ((f (make-temp-file "py"))
-	 (command
+         (command
           ;; IPython puts the FakeModule module into __main__ so
           ;; emacs.eexecfile becomes useless.
           (if (string-match "^ipython" py-shell-name)
               (format "execfile %S" f)
             (format "emacs.eexecfile(%S)" f)))
-	 (orig-start (copy-marker start)))
+         (orig-start (copy-marker start)))
     (when (save-excursion
-	    (goto-char start)
-	    (/= 0 (current-indentation))) ; need dummy block
+            (goto-char start)
+            (/= 0 (current-indentation))) ; need dummy block
       (save-excursion
-	(goto-char orig-start)
-	;; Wrong if we had indented code at buffer start.
-	(set-marker orig-start (line-beginning-position 0)))
+        (goto-char orig-start)
+        ;; Wrong if we had indented code at buffer start.
+        (set-marker orig-start (line-beginning-position 0)))
       (write-region "if True:\n" nil f nil 'nomsg))
     (write-region start end f t 'nomsg)
     (python-send-command command)
@@ -10328,19 +10361,19 @@ Treating it as a module keeps the global namespace clean, provides
 function location information for debugging, and supports users of
 module-qualified names."
   (interactive (comint-get-source "Load Python file: " python-prev-dir/file
-				  python-source-modes
-				  t))	; because execfile needs exact name
+                                  python-source-modes
+                                  t))	; because execfile needs exact name
   (comint-check-source file-name)     ; Check to see if buffer needs saving.
   (setq python-prev-dir/file (cons (file-name-directory file-name)
-				   (file-name-nondirectory file-name)))
+                                   (file-name-nondirectory file-name)))
   (with-current-buffer (process-buffer (python-proc)) ;Runs python if needed.
     ;; Fixme: I'm not convinced by this logic from python-mode.el.
     (python-send-command
      (if (string-match "\\.py\\'" file-name)
-	 (let ((module (file-name-sans-extension
-			(file-name-nondirectory file-name))))
-	   (format "emacs.eimport(%S,%S)"
-		   module (file-name-directory file-name)))
+         (let ((module (file-name-sans-extension
+                        (file-name-nondirectory file-name))))
+           (format "emacs.eimport(%S,%S)"
+                   module (file-name-directory file-name)))
        (format "execfile(%S)" file-name)))
     (message "%s loaded" file-name)))
 
@@ -10353,8 +10386,8 @@ See variable `python-buffer'.  Starts a new process if necessary."
   (unless (comint-check-proc python-buffer)
     (run-python nil t))
   (get-buffer-process (if (derived-mode-p 'inferior-python-mode)
-			  (current-buffer)
-			python-buffer)))
+                          (current-buffer)
+                        python-buffer)))
 
 (defun py-set-proc ()
   "Set the default value of `python-buffer' to correspond to this buffer.
@@ -10394,12 +10427,12 @@ This is a no-op if `python-check-comint-prompt' returns nil."
   (let ((proc (python-proc)))
     (with-current-buffer (process-buffer proc)
       (when (python-check-comint-prompt proc)
-	(set (make-local-variable 'python-preoutput-result) nil)
-	(while (progn
-		 (accept-process-output proc 5)
-		 (null python-preoutput-result)))
-	(prog1 python-preoutput-result
-	  (kill-local-variable 'python-preoutput-result))))))
+        (set (make-local-variable 'python-preoutput-result) nil)
+        (while (progn
+                 (accept-process-output proc 5)
+                 (null python-preoutput-result)))
+        (prog1 python-preoutput-result
+          (kill-local-variable 'python-preoutput-result))))))
 
 (defun python-check-comint-prompt (&optional proc)
   "Return non-nil if and only if there's a normal prompt in the inferior buffer.
@@ -10409,8 +10442,8 @@ information etc.  If PROC is non-nil, check the buffer for that process."
   (with-current-buffer (process-buffer (or proc (python-proc)))
     (save-excursion
       (save-match-data
-	(re-search-backward (concat python--prompt-regexp " *\\=")
-			    nil t)))))
+        (re-search-backward (concat python--prompt-regexp " *\\=")
+                            nil t)))))
 
 ;; Fixme:  Is there anything reasonable we can do with random methods?
 ;; (Currently only works with functions.)
@@ -10420,27 +10453,27 @@ information etc.  If PROC is non-nil, check the buffer for that process."
 Only works when point is in a function name, not its arg list, for
 instance.  Assumes an inferior Python is running."
   (let ((symbol (with-syntax-table python-dotty-syntax-table
-		  (current-word))))
+                  (current-word))))
     ;; This is run from timers, so inhibit-quit tends to be set.
     (with-local-quit
       ;; First try the symbol we're on.
       (or (and symbol
-	       (python-send-receive (format "emacs.eargs(%S, %s)"
-					    symbol python-imports)))
-	  ;; Try moving to symbol before enclosing parens.
-	  (let ((s (syntax-ppss)))
-	    (unless (zerop (car s))
-	      (when (eq ?\( (char-after (nth 1 s)))
-		(save-excursion
-		  (goto-char (nth 1 s))
-		  (skip-syntax-backward "-")
-		  (let ((point (point)))
-		    (skip-chars-backward "a-zA-Z._")
-		    (if (< (point) point)
-			(python-send-receive
-			 (format "emacs.eargs(%S, %s)"
-				 (buffer-substring-no-properties (point) point)
-				 python-imports))))))))))))
+               (python-send-receive (format "emacs.eargs(%S, %s)"
+                                            symbol python-imports)))
+          ;; Try moving to symbol before enclosing parens.
+          (let ((s (syntax-ppss)))
+            (unless (zerop (car s))
+              (when (eq ?\( (char-after (nth 1 s)))
+                (save-excursion
+                  (goto-char (nth 1 s))
+                  (skip-syntax-backward "-")
+                  (let ((point (point)))
+                    (skip-chars-backward "a-zA-Z._")
+                    (if (< (point) point)
+                        (python-send-receive
+                         (format "emacs.eargs(%S, %s)"
+                                 (buffer-substring-no-properties (point) point)
+                                 python-imports))))))))))))
 
 ;;; Info-look functionality.
 
@@ -10451,20 +10484,20 @@ instance.  Assumes an inferior Python is running."
 
 Used with `eval-after-load'."
   (let* ((version (let ((s (shell-command-to-string (concat py-shell-name
-							    " -V"))))
-		    (string-match "^Python \\([0-9]+\\.[0-9]+\\>\\)" s)
-		    (match-string 1 s)))
-	 ;; Whether info files have a Python version suffix, e.g. in Debian.
-	 (versioned
-	  (with-temp-buffer
-	    (with-no-warnings (Info-mode))
-	    (condition-case ()
-		;; Don't use `info' because it would pop-up a *info* buffer.
-		(with-no-warnings
-		  (Info-goto-node (format "(python%s-lib)Miscellaneous Index"
-					  version))
-		  t)
-	      (error nil)))))
+                                                            " -V"))))
+                    (string-match "^Python \\([0-9]+\\.[0-9]+\\>\\)" s)
+                    (match-string 1 s)))
+         ;; Whether info files have a Python version suffix, e.g. in Debian.
+         (versioned
+          (with-temp-buffer
+            (with-no-warnings (Info-mode))
+            (condition-case ()
+                ;; Don't use `info' because it would pop-up a *info* buffer.
+                (with-no-warnings
+                  (Info-goto-node (format "(python%s-lib)Miscellaneous Index"
+                                          version))
+                  t)
+              (error nil)))))
     (info-lookup-maybe-add-help
      :mode 'python-mode
      :regexp "[[:alnum:]_]+"
@@ -10474,27 +10507,27 @@ Used with `eval-after-load'."
      ;; (Miscellaneous in -ref first prefers lookup of keywords, for
      ;; instance.)
      (if versioned
-	 ;; The empty prefix just gets us highlighted terms.
-	 `((,(concat "(python" version "-ref)Miscellaneous Index") nil "")
-	   (,(concat "(python" version "-ref)Module Index" nil ""))
-	   (,(concat "(python" version "-ref)Function-Method-Variable Index"
-		     nil ""))
-	   (,(concat "(python" version "-ref)Class-Exception-Object Index"
-		     nil ""))
-	   (,(concat "(python" version "-lib)Module Index" nil ""))
-	   (,(concat "(python" version "-lib)Class-Exception-Object Index"
-		     nil ""))
-	   (,(concat "(python" version "-lib)Function-Method-Variable Index"
-		     nil ""))
-	   (,(concat "(python" version "-lib)Miscellaneous Index" nil "")))
+         ;; The empty prefix just gets us highlighted terms.
+         `((,(concat "(python" version "-ref)Miscellaneous Index") nil "")
+           (,(concat "(python" version "-ref)Module Index" nil ""))
+           (,(concat "(python" version "-ref)Function-Method-Variable Index"
+                     nil ""))
+           (,(concat "(python" version "-ref)Class-Exception-Object Index"
+                     nil ""))
+           (,(concat "(python" version "-lib)Module Index" nil ""))
+           (,(concat "(python" version "-lib)Class-Exception-Object Index"
+                     nil ""))
+           (,(concat "(python" version "-lib)Function-Method-Variable Index"
+                     nil ""))
+           (,(concat "(python" version "-lib)Miscellaneous Index" nil "")))
        '(("(python-ref)Miscellaneous Index" nil "")
-	 ("(python-ref)Module Index" nil "")
-	 ("(python-ref)Function-Method-Variable Index" nil "")
-	 ("(python-ref)Class-Exception-Object Index" nil "")
-	 ("(python-lib)Module Index" nil "")
-	 ("(python-lib)Class-Exception-Object Index" nil "")
-	 ("(python-lib)Function-Method-Variable Index" nil "")
-	 ("(python-lib)Miscellaneous Index" nil ""))))))
+         ("(python-ref)Module Index" nil "")
+         ("(python-ref)Function-Method-Variable Index" nil "")
+         ("(python-ref)Class-Exception-Object Index" nil "")
+         ("(python-lib)Module Index" nil "")
+         ("(python-lib)Class-Exception-Object Index" nil "")
+         ("(python-lib)Function-Method-Variable Index" nil "")
+         ("(python-lib)Miscellaneous Index" nil ""))))))
 (eval-after-load "info-look" '(python-after-info-look))
 
 ;;; Miscellany.
@@ -10512,21 +10545,21 @@ The criterion is either a match for `jython-mode' via
       (widen)
       (goto-char (point-min))
       (let ((interpreter (if (looking-at auto-mode-interpreter-regexp)
-			     (match-string 2))))
-	(if (and interpreter (eq 'jython-mode
-				 (cdr (assoc (file-name-nondirectory
-					      interpreter)
-					     interpreter-mode-alist))))
-	    (jython-mode)
-	  (if (catch 'done
-		(while (re-search-forward
-			(rx line-start (or "import" "from") (1+ space)
-			    (group (1+ (not (any " \t\n.")))))
-			(+ (point-min) 10000) ; Probably not worth customizing.
-			t)
-		  (if (member (match-string 1) python-jython-packages)
-		      (throw 'done t))))
-	      (jython-mode)))))))
+                             (match-string 2))))
+        (if (and interpreter (eq 'jython-mode
+                                 (cdr (assoc (file-name-nondirectory
+                                              interpreter)
+                                             interpreter-mode-alist))))
+            (jython-mode)
+          (if (catch 'done
+                (while (re-search-forward
+                        (rx line-start (or "import" "from") (1+ space)
+                            (group (1+ (not (any " \t\n.")))))
+                        (+ (point-min) 10000) ; Probably not worth customizing.
+                        t)
+                  (if (member (match-string 1) python-jython-packages)
+                      (throw 'done t))))
+              (jython-mode)))))))
 
 ;;; Modes
 
@@ -10545,14 +10578,14 @@ The criterion is either a match for `jython-mode' via
 This function is appropriate for `comint-output-filter-functions'."
   ;; TBD: this should probably use split-string
   (when (and (string-match python--prompt-regexp string)
-	     python-file-queue)
+             python-file-queue)
     (condition-case nil
         (delete-file (car python-file-queue))
       (error nil))
     (setq python-file-queue (cdr python-file-queue))
     (if python-file-queue
-	(let ((pyproc (get-buffer-process (current-buffer))))
-	  (python-execute-file pyproc (car python-file-queue))))))
+        (let ((pyproc (get-buffer-process (current-buffer))))
+          (python-execute-file pyproc (car python-file-queue))))))
 
 (defun python-pdbtrack-overlay-arrow (activation)
   "Activate or deactivate arrow at beginning-of-line in current buffer."
@@ -10595,7 +10628,7 @@ find it."
   ;; 'where' (aka 'w') PDB command to reveal the overlay arrow.
 
   (let* ((origbuf (current-buffer))
-	 (currproc (get-buffer-process origbuf)))
+         (currproc (get-buffer-process origbuf)))
 
     (if (not (and currproc python-pdbtrack-do-tracking-p))
         (python-pdbtrack-overlay-arrow nil)
@@ -10699,16 +10732,16 @@ Make that process's buffer visible and force display.  Also make
 comint believe the user typed this string so that
 `kill-output-from-shell' does The Right Thing."
   (let ((curbuf (current-buffer))
-	(procbuf (process-buffer proc))
+        (procbuf (process-buffer proc))
                                         ;	(comint-scroll-to-bottom-on-output t)
-	(msg (format "## working on region in file %s...\n" filename))
+        (msg (format "## working on region in file %s...\n" filename))
         ;; add some comment, so that we can filter it out of history
-	(cmd (format "execfile(r'%s') # PYTHON-MODE\n" filename)))
+        (cmd (format "execfile(r'%s') # PYTHON-MODE\n" filename)))
     (unwind-protect
-	(with-current-buffer procbuf
-	  (goto-char (point-max))
-	  (move-marker (process-mark proc) (point))
-	  (funcall (process-filter proc) proc msg))
+        (with-current-buffer procbuf
+          (goto-char (point-max))
+          (move-marker (process-mark proc) (point))
+          (funcall (process-filter proc) proc msg))
       (set-buffer curbuf))
     (process-send-string proc cmd)))
 
@@ -10718,15 +10751,15 @@ comint believe the user typed this string so that
     (let (first-class-or-def imports)
       (goto-char (point-min))
       (setq first-class-or-def
-	    (re-search-forward "^ *\\(def\\|class\\) " nil t))
+            (re-search-forward "^ *\\(def\\|class\\) " nil t))
       (goto-char (point-min))
       (while (re-search-forward
-	      "^\\(import \\|from \\([A-Za-z_][A-Za-z_0-9]*\\) import \\).*"
-	      nil t)
-	(setq imports (append imports
-			      (list (buffer-substring
-				     (match-beginning 0)
-				     (match-end 0))))))
+              "^\\(import \\|from \\([A-Za-z_][A-Za-z_0-9]*\\) import \\).*"
+              nil t)
+        (setq imports (append imports
+                              (list (buffer-substring
+                                     (match-beginning 0)
+                                     (match-end 0))))))
       imports)))
 
 ;;; Code Completion.
@@ -10768,11 +10801,11 @@ and resending the lines later. The lines are stored in reverse order")
 (if (functionp 'comint-redirect-send-command-to-process)
     (progn
       (defalias
-	'py-shell-redirect-send-command-to-process
-	'comint-redirect-send-command-to-process)
+        'py-shell-redirect-send-command-to-process
+        'comint-redirect-send-command-to-process)
       (defalias
-	'py-shell-dynamic-simple-complete
-	'comint-dynamic-simple-complete))
+        'py-shell-dynamic-simple-complete
+        'comint-dynamic-simple-complete))
 
   ;; XEmacs
 
@@ -10784,20 +10817,20 @@ and resending the lines later. The lines are stored in reverse order")
 
   (defun py-shell-redirect-filter-function (proc string)
     (let ((procbuf (process-buffer proc))
-	  outbuf prompt-pos)
+          outbuf prompt-pos)
       (with-current-buffer procbuf
-	(setq outbuf py-shell-redirect-output-buffer
-	      prompt-pos (string-match comint-prompt-regexp string)))
+        (setq outbuf py-shell-redirect-output-buffer
+              prompt-pos (string-match comint-prompt-regexp string)))
       (if prompt-pos
-	  (setq string (substring string 0 prompt-pos)))
+          (setq string (substring string 0 prompt-pos)))
       (save-excursion
-	(set-buffer outbuf)
-	(goto-char (point-max))
-	(insert string))
+        (set-buffer outbuf)
+        (goto-char (point-max))
+        (insert string))
       (if prompt-pos
-	  (with-current-buffer procbuf
-	    (set-process-filter proc py-shell-redirect-orginal-output-filter)
-	    (setq comint-redirect-completed t))))
+          (with-current-buffer procbuf
+            (set-process-filter proc py-shell-redirect-orginal-output-filter)
+            (setq comint-redirect-completed t))))
     "")
 
   (defun py-shell-redirect-send-command-to-process
@@ -10806,8 +10839,8 @@ and resending the lines later. The lines are stored in reverse order")
     ;; prepear
     (with-current-buffer (process-buffer process)
       (setq comint-redirect-completed nil
-	    py-shell-redirect-output-buffer (get-buffer output-buffer)
-	    py-shell-redirect-orginal-output-filter (process-filter process)))
+            py-shell-redirect-output-buffer (get-buffer output-buffer)
+            py-shell-redirect-orginal-output-filter (process-filter process)))
     (set-process-filter process 'py-shell-redirect-filter-function)
     ;; run
     (comint-simple-send process command))
@@ -10816,21 +10849,21 @@ and resending the lines later. The lines are stored in reverse order")
     (let ((completion (try-completion stub (mapcar 'list candidates))))
       (cond
        ((null completion)
-	nil)
+        nil)
        ((eq completion t)
-	(message "Sole completion")
-	'sole)
+        (message "Sole completion")
+        'sole)
        ((> (length completion) (length stub))
-	(insert (substring completion (length stub)))
-	(if (eq (try-completion completion (mapcar 'list candidates)) t)
-	    (progn (message "Completed")
-		   'sole)
-	  (message "Partially completed")
-	  'partial))
+        (insert (substring completion (length stub)))
+        (if (eq (try-completion completion (mapcar 'list candidates)) t)
+            (progn (message "Completed")
+                   'sole)
+          (message "Partially completed")
+          'partial))
        (t
-	(with-output-to-temp-buffer "*Completions*"
-	  (display-completion-list (sort candidates 'string<)))
-	'listed)))))
+        (with-output-to-temp-buffer "*Completions*"
+          (display-completion-list (sort candidates 'string<)))
+        'listed)))))
 
 (defun py-shell-execute-string-now (string)
   "Send to Python interpreter process PROC \"exec STRING in {}\".
@@ -10841,35 +10874,35 @@ and return collected output"
                       (get-buffer (process-buffer proc))
                     (py-shell nil nil py-shell-name)
                     (py-shell-execute-string-now string)))
-	 (cmd (format "exec '''%s''' in {}"
-		      (mapconcat 'identity (split-string string "\n") "\\n")))
+         (cmd (format "exec '''%s''' in {}"
+                      (mapconcat 'identity (split-string string "\n") "\\n")))
          (outbuf (get-buffer-create " *pyshellcomplete-output*"))
          (lines (reverse py-shell-input-lines)))
     (if (and proc (not py-file-queue))
-	(unwind-protect
-	    (condition-case nil
-		(progn
-		  (if lines
-		      (with-current-buffer procbuf
-			(py-shell-redirect-send-command-to-process
-			 "\C-c" outbuf proc nil t)
-			;; wait for output
-			(while (not comint-redirect-completed)
-			  (accept-process-output proc 1))))
-		  (with-current-buffer outbuf
-		    (delete-region (point-min) (point-max)))
-		  (with-current-buffer procbuf
-		    (py-shell-redirect-send-command-to-process
-		     cmd outbuf proc nil t)
-		    (while (not comint-redirect-completed) ; wait for output
-		      (accept-process-output proc 1)))
-		  (with-current-buffer outbuf
-		    (buffer-substring (point-min) (point-max))))
-	      (quit (with-current-buffer procbuf
-		      (interrupt-process proc comint-ptyp)
-		      (while (not comint-redirect-completed) ; wait for output
-			(accept-process-output proc 1)))
-		    (signal 'quit nil)))
+        (unwind-protect
+            (condition-case nil
+                (progn
+                  (if lines
+                      (with-current-buffer procbuf
+                        (py-shell-redirect-send-command-to-process
+                         "\C-c" outbuf proc nil t)
+                        ;; wait for output
+                        (while (not comint-redirect-completed)
+                          (accept-process-output proc 1))))
+                  (with-current-buffer outbuf
+                    (delete-region (point-min) (point-max)))
+                  (with-current-buffer procbuf
+                    (py-shell-redirect-send-command-to-process
+                     cmd outbuf proc nil t)
+                    (while (not comint-redirect-completed) ; wait for output
+                      (accept-process-output proc 1)))
+                  (with-current-buffer outbuf
+                    (buffer-substring (point-min) (point-max))))
+              (quit (with-current-buffer procbuf
+                      (interrupt-process proc comint-ptyp)
+                      (while (not comint-redirect-completed) ; wait for output
+                        (accept-process-output proc 1)))
+                    (signal 'quit nil)))
           (if (with-current-buffer procbuf comint-redirect-completed)
               (while lines
                 (with-current-buffer procbuf
@@ -10891,9 +10924,9 @@ and return collected output"
                (buffer-live-p (get-buffer (py-process-name py-shell-name))))
     (py-shell nil nil py-shell-name))
   (let ((word (py-dot-word-before-point))
-	result)
+        result)
     (if (string= word "")
-	(tab-to-tab-stop)	   ; non nil so the completion is over
+        (tab-to-tab-stop)	   ; non nil so the completion is over
       (setq result (py-shell-execute-string-now (format "
 def print_completions(namespace, text, prefix=''):
    for name in namespace:
@@ -10923,12 +10956,12 @@ def complete(text):
 complete('%s')
 " word)))
       (if (eq result nil)
-	  (message "Could not do completion as the Python process is busy")
-	(let ((comint-completion-addsuffix nil)
-	      (completions (if (split-string "\n" "\n")
-			       (split-string result "\n" t) ; XEmacs
-			     (split-string result "\n"))))
-	  (py-shell-dynamic-simple-complete word completions))))))
+          (message "Could not do completion as the Python process is busy")
+        (let ((comint-completion-addsuffix nil)
+              (completions (if (split-string "\n" "\n")
+                               (split-string result "\n" t) ; XEmacs
+                             (split-string result "\n"))))
+          (py-shell-dynamic-simple-complete word completions))))))
 
 ;; (add-hook 'py-shell-hook
 ;;           '(lambda ()
@@ -11129,8 +11162,8 @@ Returns the completed symbol, a string, if successful, nil otherwise."
 (define-skeleton py-class
   "Name: "
   "class " str " (" ("Inheritance, %s: "
-		     (unless (equal ?\( (char-before)) ", ")
-		     str)
+                     (unless (equal ?\( (char-before)) ", ")
+                     str)
   & ")" | -2				; close list or remove opening
   ":" \n
   "\"\"\"" - "\"\"\"" \n
@@ -11185,7 +11218,7 @@ Returns the completed symbol, a string, if successful, nil otherwise."
 (defun virtualenv-add-to-path (dir)
   "Add the specified path element to the Emacs PATH"
   (setenv "PATH"
-	  (virtualenv-append-path dir
+          (virtualenv-append-path dir
                                   (getenv "PATH"))))
 
 (defun virtualenv-current ()

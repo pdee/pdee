@@ -198,7 +198,7 @@ Returns column. "
     (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
 
-(defun toggle-indent-tabs-mode ()
+(defun py-toggle-indent-tabs-mode ()
   "Toggle `indent-tabs-mode'.
 
 Returns value of `indent-tabs-mode' switched to. "
@@ -209,7 +209,7 @@ Returns value of `indent-tabs-mode' switched to. "
   (when (and py-verbose-p (interactive-p)) (message "indent-tabs-mode %s  py-indent-offset %s" indent-tabs-mode py-indent-offset))
   indent-tabs-mode)
 
-(defun indent-tabs-mode (arg &optional iact)
+(defun py-indent-tabs-mode (arg &optional iact)
   "With positive ARG switch `indent-tabs-mode' on.
 
 With negative ARG switch `indent-tabs-mode' off.
@@ -223,12 +223,12 @@ Returns value of `indent-tabs-mode' switched to. "
   (when (and py-verbose-p (or iact (interactive-p))) (message "indent-tabs-mode %s   py-indent-offset %s" indent-tabs-mode py-indent-offset))
   indent-tabs-mode)
 
-(defun indent-tabs-mode-on (arg)
+(defun py-indent-tabs-mode-on (arg)
   "Switch `indent-tabs-mode' on. "
   (interactive "p")
   (indent-tabs-mode (abs arg)(interactive-p)))
 
-(defun indent-tabs-mode-off (arg)
+(defun py-indent-tabs-mode-off (arg)
   "Switch `indent-tabs-mode' on. "
   (interactive "p")
   (indent-tabs-mode (- (abs arg))(interactive-p)))

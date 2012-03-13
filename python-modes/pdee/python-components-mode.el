@@ -291,6 +291,11 @@ terminated line. "
   :type 'integer
   :group 'python-mode)
 
+(defcustom py-indent-tabs-mode nil
+  "Python-mode starts `indent-tabs-mode' with the value specified here, default is nil. "
+  :type 'boolean
+  :group 'python-mode)
+
 (defcustom py-smart-indentation t
   "*Should `python-mode' try to automagically set some indentation variables?
 When this variable is non-nil, two things happen when a buffer is set
@@ -865,7 +870,7 @@ When non-nil, arguments are printed."
   of default Python.
 
 Making switch between several virtualenv's easier,
- Python-mode should deliver an installer, so named-shells pointing to virtualenv's will be available. "
+ `python-mode' should deliver an installer, so named-shells pointing to virtualenv's will be available. "
   :type 'boolean
   :group 'python-mode)
 
@@ -879,7 +884,7 @@ See bug report at launchpad, lp:940812 "
   :group 'python-mode)
 
 (defcustom py-edit-only-p nil
-  "When `t' Python-mode will not take resort nor check for installed Python executables. Default is nil.
+  "When `t' `python-mode' will not take resort nor check for installed Python executables. Default is nil.
 
 See bug report at launchpad, lp:944093. "
   :type 'boolean
@@ -1626,6 +1631,10 @@ Run pdb under GUD"]
             "-"
             ["Toggle py-smart-indentation" toggle-py-smart-indentation
              :help "See also `py-smart-indentation-on', `-off' "]
+
+            ["Toggle indent-tabs-mode" py-toggle-indent-tabs-mode
+             :help "See also `py-indent-tabs-mode-on', `-off' "]
+
             ["Customize Python mode" (customize-group 'python-mode)
              :help "Open the customization buffer for Python mode"]
             ["Help on symbol" py-describe-symbol
@@ -2561,6 +2570,11 @@ Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-p
 ;; region, at least.  (Shouldn't be specific to Python, obviously.)
 ;; eric has items including: (un)indent, (un)comment, restart script,
 ;; run script, debug script; also things for profiling, unit testing.
+
+(defcustom python-mode-hook nil
+  "Hook run when entering Python mode."
+  :group 'python
+  :type 'hook)
 
 (add-hook 'python-mode-hook
           (lambda ()
@@ -4544,13 +4558,37 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   ;; (set (make-local-variable 'end-of-defun-function) 'python-end-of-defun)
   (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class)
   (add-hook 'which-func-functions 'python-which-func nil t)
-  (if (and imenu-create-index-p (fboundp 'imenu-add-to-menubar)(ignore-errors (require 'imenu)))
-      (progn
-        (setq imenu-create-index-function #'py-imenu-create-index-new)
-        (setq imenu-generic-expression py-imenu-generic-expression)
-        (imenu-add-to-menubar "PyIndex")
-        (add-hook imenu-create-index-function 'python-mode-hook))
-    (remove-hook 'imenu-add-menubar-index 'python-mode-hook))
+  (remove-hook 'python-mode-hook 'imenu-add-menubar-index)
+  (remove-hook 'python-mode-hook
+               (lambda ()
+                 "Turn off Indent Tabs mode."
+                 (setq indent-tabs-mode nil)))
+  ;; (remove-hook 'python-mode-hook 'abbrev-mode)
+  (remove-hook 'python-mode-hook 'python-setup-brm)
+
+  (add-hook 'python-mode-hook
+            (lambda ()
+              (define-key python-mode-map [(meta p)] 'py-beginning-of-statement)
+              (define-key python-mode-map [(meta n)] 'py-end-of-statement))
+            (set (make-local-variable 'beginning-of-defun-function) 'py-beginning-of-def-or-class)
+            (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class))
+
+  (custom-add-option 'python-mode-hook 'py-imenu-create-index-new)
+  (custom-add-option 'python-mode-hook
+                     (lambda ()
+                       "Toggle Indent Tabs mode."
+                       (setq indent-tabs-mode py-indent-tabs-mode)))
+  (custom-add-option 'python-mode-hook 'abbrev-mode)
+  (custom-add-option 'python-mode-hook
+                     (lambda ()
+                       "Toggle Indent Tabs mode."
+                       (setq indent-tabs-mode py-indent-tabs-mode)))
+  (custom-add-option 'python-mode-hook 'abbrev-mode)
+  (when (and imenu-create-index-p (fboundp 'imenu-add-to-menubar)(ignore-errors (require 'imenu)))
+    (setq imenu-create-index-function #'py-imenu-create-index-new)
+    (setq imenu-generic-expression py-imenu-generic-expression)
+    (imenu-add-to-menubar "PyIndex")
+    (add-hook 'python-mode-hook imenu-create-index-function))
   (set (make-local-variable 'eldoc-documentation-function)
        #'python-eldoc-function)
   (add-hook 'eldoc-mode-hook
@@ -4567,6 +4605,9 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   ;; (when python-load-extended-executes-p
   ;;   (add-hook 'python-mode-hook '(lambda ()(load (concat py-install-directory "/python-extended-executes.el") nil t))))
   ;; Python defines TABs as being 8-char wide.
+  (add-hook 'python-mode-hook
+            '(lambda ()
+               (setq indent-tabs-mode py-indent-tabs-mode)))
   (set (make-local-variable 'tab-width) py-indent-offset)
   ;; Now guess `py-indent-offset'
   (when py-smart-indentation
@@ -4634,16 +4675,6 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
 
 (defun py-end-of-defun-function ()
   (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class))
-
-;; (custom-add-option 'python-mode-hook 'py-imenu-create-index)
-(custom-add-option 'python-mode-hook 'py-imenu-create-index-new)
-;; (custom-add-option 'python-mode-hook
-;; 		   (lambda ()
-;; 		     "Turn off Indent Tabs mode."
-;; 		     (setq indent-tabs-mode nil)))
-;; (custom-add-option 'python-mode-hook 'turn-on-eldoc-mode)
-(custom-add-option 'python-mode-hook 'abbrev-mode)
-;; (custom-add-option 'python-mode-hook 'py-setup-brm)
 
 (if py-mode-output-map
     nil

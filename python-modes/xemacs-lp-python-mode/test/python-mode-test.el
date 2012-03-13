@@ -1144,7 +1144,7 @@ for x in y:
     (py-bug-tests-intern 'toggle-indent-tabs-mode-commandp-base arg teststring)))
 
 (defun toggle-indent-tabs-mode-commandp-base ()
-  (assert (commandp 'toggle-indent-tabs-mode) nil "toggle-indent-tabs-mode-commandp-test failed"))
+  (assert (commandp 'py-toggle-indent-tabs-mode) nil "toggle-indent-tabs-mode-commandp-test failed"))
 
 (defun indent-tabs-mode-commandp-test (&optional arg load-branch-function)
   (interactive "p")
@@ -1153,7 +1153,7 @@ for x in y:
     (py-bug-tests-intern 'indent-tabs-mode-commandp-base arg teststring)))
 
 (defun indent-tabs-mode-commandp-base ()
-  (assert (commandp 'indent-tabs-mode) nil "indent-tabs-mode-commandp-test failed"))
+  (assert (commandp 'py-indent-tabs-mode) nil "indent-tabs-mode-commandp-test failed"))
 
 (defun indent-tabs-mode-on-commandp-test (&optional arg load-branch-function)
   (interactive "p")
@@ -1162,7 +1162,7 @@ for x in y:
     (py-bug-tests-intern 'indent-tabs-mode-on-commandp-base arg teststring)))
 
 (defun indent-tabs-mode-on-commandp-base ()
-  (assert (commandp 'indent-tabs-mode-on) nil "indent-tabs-mode-on-commandp-test failed"))
+  (assert (commandp 'py-indent-tabs-mode-on) nil "indent-tabs-mode-on-commandp-test failed"))
 
 (defun indent-tabs-mode-off-commandp-test (&optional arg load-branch-function)
   (interactive "p")
@@ -1171,7 +1171,7 @@ for x in y:
     (py-bug-tests-intern 'indent-tabs-mode-off-commandp-base arg teststring)))
 
 (defun indent-tabs-mode-off-commandp-base ()
-  (assert (commandp 'indent-tabs-mode-off) nil "indent-tabs-mode-off-commandp-test failed"))
+  (assert (commandp 'py-indent-tabs-mode-off) nil "indent-tabs-mode-off-commandp-test failed"))
 
 (defun py-guess-indent-offset-commandp-test (&optional arg load-branch-function)
   (interactive "p")

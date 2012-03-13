@@ -317,14 +317,14 @@ Optional symbol SWITCH ('switch/'noswitch) precedes `py-shell-switch-buffers-on-
                   (or (eq switch 'noswitch)
                       (not (eq switch 'switch))))
              (pop-to-buffer (current-buffer))
-             (delete-other-windows) 
+             (delete-other-windows)
              (when py-split-windows-on-execute-p
                (funcall py-split-windows-on-execute-function))
              ;; (message (buffer-name (current-buffer)))
              (set-buffer oldbuf)
              (switch-to-buffer (current-buffer))))
       (goto-char (point-max))
-      (when (and py-verbose-p (interactive-p)) (message py-buffer-name)) 
+      (when (and py-verbose-p (interactive-p)) (message py-buffer-name))
       py-buffer-name)))
 
 (defcustom py-remove-cwd-from-path t
@@ -416,7 +416,8 @@ Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will be
 
 (defun py-execute-base (start end &optional shell dedicated switch)
   "Adapt the variables used in the process. "
-  (let* ((shell (if (eq 4 (prefix-numeric-value shell))
+  (let* ((pop-up-windows py-shell-switch-buffers-on-execute-p)
+         (shell (if (eq 4 (prefix-numeric-value shell))
                     (read-from-minibuffer "Python shell: " (default-value 'py-shell-name))
                   (when (stringp shell)
                     shell)))
@@ -437,13 +438,8 @@ Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will be
                   (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" file file)
                 (format "execfile(r'%s') # PYTHON-MODE\n" file)))
          (wholebuf (when (boundp 'wholebuf) wholebuf))
-         (comint-scroll-to-bottom-on-output t))
-    (py-execute-intern strg procbuf proc temp file filebuf name py-execute-directory)))
-
-(defun py-execute-intern (strg &optional procbuf proc temp file filebuf name py-execute-directory)
-  "Returns position of output start when successful. "
-  (let ((pop-up-windows py-shell-switch-buffers-on-execute-p)
-        erg)
+         (comint-scroll-to-bottom-on-output t)
+         erg)
     (set-buffer filebuf)
     (erase-buffer)
     (insert strg)
@@ -469,9 +465,7 @@ Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will be
                      (progn
                        (delete-other-windows)
                        (funcall py-split-windows-on-execute-function))
-                   (set-buffer regbuf)
-                   ;; (message "current-buffer: %s" (current-buffer))
-                   )
+                   (set-buffer regbuf))
                  (set-buffer procbuf)
                  (switch-to-buffer (current-buffer))
                  (goto-char (point-max)))
@@ -496,8 +490,6 @@ Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will be
                  (switch-to-buffer regbuf)))
           (unless (string= (buffer-name (current-buffer)) procbuf)
             (when py-verbose-p (message "Output buffer: %s" procbuf)))
-          ;; (message "py-shell-switch-buffers-on-execute:  %s"  py-shell-switch-buffers-on-execute-p)
-          ;; (message "py-split-windows-on-execute-p: %s" py-split-windows-on-execute-p)
           (sit-for 0.1)
           (unless py-execute-keep-temporary-file-p
             (delete-file file)
