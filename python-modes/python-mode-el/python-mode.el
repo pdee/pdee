@@ -1507,11 +1507,15 @@ Send statement at point to Python interpreter. "]
             ["Execute buffer" py-execute-buffer
              :help "`py-execute-buffer'
        Send buffer at point to Python interpreter. "]
+
             ["Execute file" py-execute-file
              :help "`py-execute-file'
        Send file at point to Python interpreter. "]
-            ;; statement
+            ["Execute line" py-execute-line
+             :help "`py-execute-line'
+       Send current line from beginning of indent to Python interpreter. "]
 
+            ;; statement
             ("Execute statement ... "
              :help "Execute statement functions"
              ["py-execute-statement-python" py-execute-statement-python
@@ -6538,10 +6542,10 @@ Returns char found. "
                      ;; (replace-regexp-in-string "\*" "" (buffer-name)))
                      (t thisname)))
          (erg (cond ((or (string-match "ipython" name)
-                      (string-match "IPython" name))
-                  "IPython")
+                         (string-match "IPython" name))
+                     "IPython")
                     (name)
-                )))
+                    )))
     (unless (or nostars (string-match "^\*" erg))(setq erg (concat "*" erg "*")))
     erg))
 
@@ -7748,7 +7752,7 @@ Optional OUTPUT-BUFFER and ERROR-BUFFER might be given.')
       (with-temp-buffer
         (shell-command (concat "python " exec-execfile) output-buffer error-buffer)))))
 
-;; Execute forms at point
+;;; Execute forms at point
 (defun py-execute-block ()
   "Send python-form at point as is to Python interpreter. "
   (interactive)
@@ -7848,7 +7852,17 @@ Optional OUTPUT-BUFFER and ERROR-BUFFER might be given.')
           (end (py-end-of-statement)))
       (py-execute-region beg end))))
 
+;;;
+(defun py-execute-line ()
+  "Send current line from beginning of indent to Python interpreter. "
+  (interactive)
+  (save-excursion
+    (let ((beg (progn (back-to-indentation)
+                      (point))))
+      (py-execute-region beg (line-end-position)))))
+
 (defun py-execute-file (&optional filename shell dedicated switch)
+  "When called interactively, user is prompted for filename. "
   (interactive "fFile: ")
   (let* ((regbuf (current-buffer))
          (file (or (expand-file-name filename) (when (ignore-errors (file-readable-p (buffer-file-name))) (buffer-file-name))))
@@ -9265,6 +9279,7 @@ Uses `python-imports' to load modules against which to complete."
        #'string<))))
 
 (defun py-completion-at-point ()
+  "An alternative completion, similar the way python.el does it. "
   (interactive "*")
   (let* ((start (when (skip-chars-backward "[[:alnum:]_]")(point)))
          (end (progn (skip-chars-forward "[[:alnum:]_]")(point)))
@@ -9383,7 +9398,7 @@ Should you need more shells to select, extend this command by adding inside the 
                     ((eq 4 (prefix-numeric-value arg))
                      (string-strip
                       (read-from-minibuffer "Python Shell: " py-shell-name) "\" " "\" "
-))
+                      ))
                     ((eq 5 (prefix-numeric-value arg))
                      "jython")
                     (t (if (string-match py-shell-name

@@ -23,6 +23,7 @@ New in version 6.0.6
   Commands `py-toggle-indent-tabs-mode', ...-on, ...-off
   menu PyTools "Toggle indent-tabs-mode"
 
+- py-execute-line, new command
 
 New in version 6.0.5
 --------------------

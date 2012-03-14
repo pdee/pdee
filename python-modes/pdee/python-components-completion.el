@@ -45,6 +45,7 @@ Uses `python-imports' to load modules against which to complete."
        #'string<))))
 
 (defun py-completion-at-point ()
+  "An alternative completion, similar the way python.el does it. "
   (interactive "*")
   (let* ((start (when (skip-chars-backward "[[:alnum:]_]")(point)))
          (end (progn (skip-chars-forward "[[:alnum:]_]")(point)))

@@ -1701,11 +1701,15 @@ If NOERROR is not nil, do not raise error when the module is not found. "]
             ["Execute buffer" py-execute-buffer
              :help "`py-execute-buffer'
        Send buffer at point to Python interpreter. "]
+
             ["Execute file" py-execute-file
              :help "`py-execute-file'
        Send file at point to Python interpreter. "]
-            ;; statement
+            ["Execute line" py-execute-line
+             :help "`py-execute-line'
+       Send current line from beginning of indent to Python interpreter. "]
 
+            ;; statement
             ("Execute statement ... "
              :help "Execute statement functions"
              ["py-execute-statement-python" py-execute-statement-python

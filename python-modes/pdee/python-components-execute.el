@@ -1295,8 +1295,16 @@ Optional OUTPUT-BUFFER and ERROR-BUFFER might be given.')
       (py-execute-region beg end))))
 
 ;;;
+(defun py-execute-line ()
+  "Send current line from beginning of indent to Python interpreter. "
+  (interactive)
+  (save-excursion
+    (let ((beg (progn (back-to-indentation)
+                      (point))))
+      (py-execute-region beg (line-end-position)))))
 
 (defun py-execute-file (&optional filename shell dedicated switch)
+  "When called interactively, user is prompted for filename. "
   (interactive "fFile: ")
   (let* ((regbuf (current-buffer))
          (file (or (expand-file-name filename) (when (ignore-errors (file-readable-p (buffer-file-name))) (buffer-file-name))))
