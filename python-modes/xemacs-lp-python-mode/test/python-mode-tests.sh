@@ -907,10 +907,13 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-insert-super-python2-test \
 --funcall nested-try-finally-test \
 --funcall py-install-directory-path-test \
+--funcall py-separator-char-test \
 --funcall execute-indented-code-lp:828314-test \
+--funcall switch-windows-on-execute-p-test \
 --funcall py-execute-block-test \
 --funcall py-shell-complete-test \
 --funcall py-completion-at-point-test \
+--funcall split-windows-on-execute-p-test \
 --funcall tqs-list-error-test \
 --funcall py-ipython-complete-lp:927136-test \
 --funcall master-file-not-honored-lp:794850-test \

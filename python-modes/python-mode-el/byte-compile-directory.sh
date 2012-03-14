@@ -27,18 +27,14 @@ PDIR=`pwd`
 # python-mode file to load
 if [ -s "python-components-mode.el" ];
     then
-    PYTHONMODE="python-components-mode.el"
-else
-    PYTHONMODE="python-mode.el"
+    PYTHONMODE='python-components-mode.el'
+    else
+    PYTHONMODE='python-mode.el'
 fi
 
 EMACS=emacs
-PYMACSDIR=pymacs
+PYMACSDIR=Pymacs
 
-$EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'python-mode)(unload-feature 'python-mode t))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$PYMACSDIR/\")" -load "$PDIR/$PYMACSDIR/pymacs.el" -load "$PDIR/$PYTHONMODE" --eval '(byte-recompile-directory default-directory 0 t)'
-
-cd $PDIR/test && sleep 1 &&
-echo $PWD && 
-$EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'python-mode)(unload-feature 'python-mode t))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$PDIR/PYMACSDIR/\")" -load "$PDIR/$PYMACSDIR/pymacs.el" -load "$PDIR/$PYTHONMODE" --eval '(byte-recompile-directory default-directory 0 t)'
+$EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'python-mode)(unload-feature 'python-mode t))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$PYMACSDIR/\")" -load "$PDIR/pymacs.el" -load "$PDIR/$PYTHONMODE" --eval '(byte-recompile-directory default-directory 0 t)'
 
 

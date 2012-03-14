@@ -156,11 +156,7 @@
      (message "%s" (concat (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname)) " passed"))
      (unless (< 1 arg)
        (set-buffer-modified-p 'nil)
-       ;; (cond ((processp (get-process "Python3")) (kill-process "Python3"))
-       ;; ((processp (get-process "Python2")) (kill-process "Python2"))
-       ;; ((processp (get-process "Python")) (ignore-errors (kill-process "Python"))))
        (kill-buffer (current-buffer)))))
-;; )
 
 ;; (defun py-bug-tests-intern (testname &optional arg teststring)
 ;;   (let (py-load-pymacs-p

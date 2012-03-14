@@ -4780,7 +4780,9 @@ Should you need more shells to select, extend this command by adding inside the 
                     ((eq 3 (prefix-numeric-value arg))
                      "python3")
                     ((eq 4 (prefix-numeric-value arg))
-                     (read-from-minibuffer "Python Shell: " py-shell-name))
+                     (string-strip
+                      (read-from-minibuffer "Python Shell: " py-shell-name) "\" " "\" "
+))
                     ((eq 5 (prefix-numeric-value arg))
                      "jython")
                     (t (if (string-match py-shell-name
@@ -4796,41 +4798,48 @@ Should you need more shells to select, extend this command by adding inside the 
                  mode-name "IPython"))
           ((string-match "python3" name)
            (setq py-shell-name name
-                 py-which-bufname (capitalize name)
+                 py-which-bufname (py-shell-name-prepare name)
                  msg "CPython"
-                 mode-name (capitalize name)))
+                 mode-name (py-shell-name-prepare name)))
           ((string-match "jython" name)
            (setq py-shell-name name
-                 py-which-bufname (capitalize name)
+                 py-which-bufname (py-shell-name-prepare name)
                  msg "Jython"
-                 mode-name (capitalize name)))
+                 mode-name (py-shell-name-prepare name)))
           ((string-match "python" name)
            (setq py-shell-name name
-                 py-which-bufname (concat (capitalize name) "2")
+                 py-which-bufname (py-shell-name-prepare name)
                  msg "CPython"
-                 mode-name (concat (capitalize name) "2")))
+                 mode-name py-which-bufname))
           (t
            (setq py-shell-name name
                  py-which-bufname name
                  msg name
                  mode-name name)))
-    (if py-edit-only-p
-        (setq erg py-shell-name)
-      (setq erg (executable-find py-shell-name)))
+    ;; py-edit-only-p has no interpreter
+    ;; (if py-edit-only-p
+    ;; (setq erg py-shell-name)
+    (setq erg (executable-find py-shell-name))
+    ;;)
     (if erg
         (progn
-          (unless (string= (buffer-name (current-buffer)) py-which-bufname)
-            (unless (buffer-live-p py-which-bufname)
-              (py-shell nil dedicated py-shell-name)
-              (set-buffer (get-buffer-create py-which-bufname))
-              (when py-shell-switch-buffers-on-execute-p
-                (switch-to-buffer (current-buffer)) )))
           (force-mode-line-update)
           (when (interactive-p)
             (message "Using the %s shell, %s" msg erg))
           (setq py-output-buffer (format "*%s Output*" py-which-bufname)))
       (error (concat "Could not detect " py-shell-name " on your sys
 tem")))))
+
+          ;; (unless (string= (buffer-name (current-buffer)) py-which-bufname)
+          ;;   (unless (buffer-live-p py-which-bufname)
+          ;;     (py-shell nil nil py-shell-name)
+          ;;     (set-buffer (get-buffer-create py-which-bufname))
+          ;;     (when py-shell-switch-buffers-on-execute-p
+          ;;       (switch-to-buffer (current-buffer)) )))
+
+
+
+
 
 (defun py-toggle-local-default-use ()
   (interactive)
@@ -5036,6 +5045,18 @@ These are Python temporary files awaiting execution."
 (or (assq 'py-pdbtrack-is-tracking-p minor-mode-alist)
     (push '(py-pdbtrack-is-tracking-p py-pdbtrack-minor-mode-string)
           minor-mode-alist))
+
+(defun py-python-version (&optional executable verbose)
+  "Returns versions number of a Python EXECUTABLE, string.
+
+If no EXECUTABLE given, `py-shell-name' is used.
+Interactively output of `--version' is displayed. "
+  (interactive)
+  (let* ((executable (or executable py-shell-name))
+         (erg (string-strip (shell-command-to-string (concat executable " --version")))))
+    (when (interactive-p) (message "%s" erg))
+    (unless verbose (setq erg (cadr (split-string erg))))
+    erg))
 
 (defun py-version ()
   "Echo the current version of `python-mode' in the minibuffer."
@@ -5447,70 +5468,6 @@ complete('%s')
 
 ;; (defun ipython-complete (&optional done)
 ;;   "Complete the python symbol before point.
-;;
-;; If no completion available, insert a TAB.
-;; Returns the completed symbol, a string, if successful, nil otherwise."
-;;   (interactive "*p")
-;;   (let* ((done done)
-;;          (oldbuf (current-buffer))
-;;          (ugly-return nil)
-;;          (sep ";")
-;;          (end (point))
-;;          (beg (save-excursion (skip-chars-backward "a-z0-9A-Z_." (point-at-bol))(point)))
-;;          (pattern (buffer-substring-no-properties beg end)))
-;;     (if (string= "" pattern)
-;;         (message "%s" "Can't complete the empty string")
-;;       (let* ((py-which-bufname (cond ((get-buffer-process "IPython")
-;;                                       "IPython")
-;;                                      ((string-match "[Ii][Pp]ython" py-shell-name)
-;;                                       py-shell-name)
-;;                                      (t "ipython")))
-;;              (comint-output-filter-functions
-;;               (delq 'py-comint-output-filter-function comint-output-filter-functions))
-;;              (python-process
-;;               (get-process (py-shell nil nil (generate-new-buffer-name (downcase py-which-bufname)))))
-;;              (expandbuf (progn
-;;                           (switch-to-buffer (current-buffer))
-;;                           (current-buffer)))
-;;              (comint-output-filter-functions
-;;               (append comint-output-filter-functions
-;;                       '(ansi-color-filter-apply
-;;                         (lambda (string)
-;;                           (setq ugly-return (concat ugly-return string))
-;;                           (setq ugly-return (concat ugly-return string))
-;;                           ""))))
-;;              completion completions completion-table)
-;;         (if (string= pattern "")
-;;             (tab-to-tab-stop)
-;;           (process-send-string python-process
-;;                                (format
-;;                                 ipython-completion-command-string pattern))
-;;           (accept-process-output python-process)
-;;           (setq completions
-;;                 (split-string (substring ugly-return 0 (position ?\n ugly-return)) sep))
-;;           (setq completion-table (loop for str in completions
-;;                                        collect (list str nil)))
-;;           ;; (kill-process python-process)
-;;           ;; (kill-buffer-unconditional)
-;;           ;; (set-buffer oldbuf)
-;;           ;; (switch-to-buffer (current-buffer))
-;;           (setq completion (try-completion pattern completion-table))
-;;           (cond ((eq completion t))
-;;                 ((null completion)
-;;                  ;; workaround: if an (I)Python shell didn't run
-;;                  ;; before, first completion are not delivered
-;;                  (if done (ipython-complete done)
-;;                    (message "Can't find completion for \"%s\"" pattern)
-;;                    (ding)))
-;;                 ((not (string= pattern completion))
-;;                  (delete-region beg end)
-;;                  (insert completion))
-;;                 (t
-;;                  (message "Making completion list...")
-;;                  (with-output-to-temp-buffer "*Python Completions*"
-;;                    (display-completion-list (all-completions pattern completion-table)))
-;;                  (message "Making completion list...%s" "done"))))
-;;         completion))))
 
 (defun ipython-complete (&optional done)
   "Complete the python symbol before point.

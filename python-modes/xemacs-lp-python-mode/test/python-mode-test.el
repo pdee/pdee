@@ -78,6 +78,9 @@
          'py-completion-at-point-test
          'tqs-list-error-test
          'py-mark-def-commandp-test
+         'py-separator-char-test
+         'split-windows-on-execute-p-test
+         'switch-windows-on-execute-p-test
          'py-install-directory-path-test
          'UnicodeEncodeError-python3-test
 
@@ -113,6 +116,29 @@
             ])
 "
   "String used for tests by python-mode-test.el")
+
+;;;
+
+;; (defun index-menu-test (&optional arg load-branch-function)
+;;   (interactive "p")
+;;   (let ((teststring "#! /usr/bin/env python
+;; # -*- coding: utf-8 -*-
+;;
+;; class OrderedDict1(dict):
+;;     \"\"\"
+;;     This implementation of a dictionary keeps track of the order
+;;     in which keys were inserted.
+;;     \"\"\"
+;;
+;;     def __init__(self, d={}):
+;;         self._keys = d.keys()
+;;         dict.__init__(self, d)
+;; "))
+;;   (when load-branch-function (funcall load-branch-function))
+;;   (py-bug-tests-intern 'index-menu-base arg teststring)))
+
+;; (defun index-menu-base ()
+;;   (assert (string= "IM-Python" (nth 2 (nth 2 (cadr (current-local-map))))) nil "index-menu-test failed"))
 
 (defun py-beginning-of-block-test (&optional arg load-branch-function)
   (interactive "p")
@@ -7158,28 +7184,45 @@ for x in y:
 (defun py-execute-minor-expression-python3.2-dedicated-switch-commandp-base ()
   (assert (commandp 'py-execute-minor-expression-python3.2-dedicated-switch) nil "py-execute-minor-expression-python3.2-dedicated-switch-commandp-test failed"))
 
-;;;
+(defun py-separator-char-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring ""))
+  (when load-branch-function (funcall load-branch-function))
+  (py-bug-tests-intern 'py-separator-char-base arg teststring)))
 
-;; (defun index-menu-test (&optional arg load-branch-function)
-;;   (interactive "p")
-;;   (let ((teststring "#! /usr/bin/env python
-;; # -*- coding: utf-8 -*-
-;;
-;; class OrderedDict1(dict):
-;;     \"\"\"
-;;     This implementation of a dictionary keeps track of the order
-;;     in which keys were inserted.
-;;     \"\"\"
-;;
-;;     def __init__(self, d={}):
-;;         self._keys = d.keys()
-;;         dict.__init__(self, d)
-;; "))
-;;   (when load-branch-function (funcall load-branch-function))
-;;   (py-bug-tests-intern 'index-menu-base arg teststring)))
+(defun py-separator-char-base ()
+    (assert (stringp (py-separator-char)) nil "py-separator-char-test failed"))
 
-;; (defun index-menu-base ()
-;;   (assert (string= "IM-Python" (nth 2 (nth 2 (cadr (current-local-map))))) nil "index-menu-test failed"))
+(defun switch-windows-on-execute-p-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+print(\"I'm the `switch-windows-on-execute-p-test'\")
+"))
+  (when load-branch-function (funcall load-branch-function))
+  (py-bug-tests-intern 'switch-windows-on-execute-p-base arg teststring)))
+
+(defun switch-windows-on-execute-p-base ()
+  (let ((py-shell-switch-buffers-on-execute-p t)
+        (erg (buffer-name)))
+    (assert (py-execute-buffer) nil "switch-windows-on-execute-p-test failed")))
+
+(defun split-windows-on-execute-p-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+print(\"I'm the `split-windows-on-execute-p-test'\")
+"))
+  (when load-branch-function (funcall load-branch-function))
+  (py-bug-tests-intern 'split-windows-on-execute-p-base arg teststring)))
+
+(defun split-windows-on-execute-p-base ()
+  (let ((py-split-windows-on-execute-p t)
+        (py-split-windows-on-execute-function 'split-window-vertically)
+        (py-shell-switch-buffers-on-execute-p t)
+        (erg (current-window-configuration)))
+    (py-execute-buffer)
+    (assert (not (window-full-height-p)) nil "split-windows-on-execute-p-test failed")))
 
 (provide 'python-mode-test)
 ;;; python-mode-test.el ends here

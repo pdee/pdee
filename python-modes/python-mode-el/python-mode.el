@@ -6519,13 +6519,13 @@ This function is appropriate for `comint-output-filter-functions'."
   "Return the file-path separator char from current machine.
 Returns char found. "
   (interactive)
-  (let ((erg (replace-regexp-in-string "\n" "" (shell-command-to-string (concat py-shell-name " -c \"import os; print '%s' % os.sep,\"")))))
+  (let ((erg (replace-regexp-in-string "\n" "" (shell-command-to-string (concat py-shell-name " -c \"import os; print(os.sep)\"")))))
     (when (interactive-p) (message "Separator-char: %s" erg))
     erg))
 
-(defun py-process-name (&optional name dedicated nostars)
+(defun py-process-name (&optional name dedicated nostars sepchar)
   "Return the name of the running Python process, `get-process' willsee it. "
-  (let* ((sepchar (py-separator-char))
+  (let* ((sepchar (or sepchar (py-separator-char)))
          (thisname (if name
                        (if (string-match sepchar name)
                            (substring name (progn (string-match (concat "\\(.+\\)" sepchar "\\(.+\\)$") name) (match-beginning 2)))
@@ -6537,10 +6537,11 @@ Returns char found. "
                      ;; ((string-match "\*" (buffer-name))
                      ;; (replace-regexp-in-string "\*" "" (buffer-name)))
                      (t thisname)))
-         (erg (if (or (string-match "ipython" name)
-                      (string-match "IPython" name))
-                  "IPython"
-                (capitalize name))))
+         (erg (cond ((or (string-match "ipython" name)
+                         (string-match "IPython" name))
+                     "IPython")
+                    (name)
+                    )))
     (unless (or nostars (string-match "^\*" erg))(setq erg (concat "*" erg "*")))
     erg))
 
@@ -6590,12 +6591,14 @@ interpreter.
   (interactive "P")
   (py-shell argprompt t))
 
-(defun py-shell-name-prepare (name)
-  "Return an appropriate name to display in modeline. "
-  (let (prefix erg)
+(defun py-shell-name-prepare (name &optional sepchar)
+  "Return an appropriate name to display in modeline.
+SEPCHAR is the file-path separator of your system. "
+  (let ((sepchar (or sepchar (py-separator-char)))
+        prefix erg)
     (when (string-match sepchar name)
       (setq prefix "ND")
-      (setq name (substring name (1+ (string-match (concat sepchar "[^" sepchar "]*$") name)))))
+      (setq name (py-python-version name t)))
     (setq erg
           (cond ((string-match "ipython" name)
                  (replace-regexp-in-string "ipython" "IPython" name))
@@ -6612,7 +6615,7 @@ interpreter.
           (t (setq erg (concat "*" erg "*"))))
     erg))
 
-(defun py-shell (&optional argprompt dedicated pyshellname switch)
+(defun py-shell (&optional argprompt dedicated pyshellname switch sepchar)
   "Start an interactive Python interpreter in another window.
 
 Interactively, \\[universal-argument] 4 prompts for a buffer.
@@ -6625,7 +6628,7 @@ Optional string PYSHELLNAME overrides default `py-shell-name'.
 Optional symbol SWITCH ('switch/'noswitch) precedes `py-shell-switch-buffers-on-execute-p'
 "
   (interactive "P")
-  (let ((sepchar (py-separator-char))
+  (let ((sepchar (or sepchar (py-separator-char)))
         (args py-python-command-args)
         (oldbuf (current-buffer)))
     (let* ((buffer
@@ -6635,7 +6638,7 @@ Optional symbol SWITCH ('switch/'noswitch) precedes `py-shell-switch-buffers-on-
                 (setq buffer
                       (prog1
                           (read-buffer "Py-Shell buffer: "
-                                       (generate-new-buffer-name (py-shell-name-prepare (or pyshellname py-shell-name))))
+                                       (generate-new-buffer-name (py-shell-name-prepare (or pyshellname py-shell-name) sepchar)))
                         (if (file-remote-p default-directory)
                             ;; It must be possible to declare a local default-directory.
                             (setq default-directory
@@ -6673,7 +6676,7 @@ Optional symbol SWITCH ('switch/'noswitch) precedes `py-shell-switch-buffers-on-
               (when py-use-local-default
                 (error "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'"))))
            (py-buffer-name-prepare (unless buffer
-                                     (py-shell-name-prepare py-process-name)))
+                                     (py-shell-name-prepare py-process-name sepchar)))
            (py-buffer-name (or buffer py-buffer-name-prepare))
            (executable (cond (buffer
                               (downcase (replace-regexp-in-string
@@ -7107,27 +7110,25 @@ When called from a programm, it accepts a string specifying a shell which will b
   (interactive "r")
   (py-execute-base start end (default-value 'py-shell-name) t))
 
-(defun py-execute-base (start end &optional shell dedicated switch)
+(defun py-execute-base (start end &optional shell dedicated switch nostars sepchar)
   "Adapt the variables used in the process. "
   (let* ((pop-up-windows py-shell-switch-buffers-on-execute-p)
-         (shell (if (eq 4 (prefix-numeric-value shell))
-                    (read-from-minibuffer "Python shell: " (default-value 'py-shell-name))
-                  (when (stringp shell)
-                    shell)))
+         (shell (or shell (py-choose-shell)))
          (regbuf (current-buffer))
          (py-execute-directory (or (ignore-errors (file-name-directory (buffer-file-name)))(getenv "WORKON_HOME")(getenv "HOME")))
          (strg (buffer-substring-no-properties start end))
-	 (name-raw (or shell (py-choose-shell)))
-         (name (py-process-name name-raw))
+         (sepchar (or sepchar (py-separator-char)))
+         ;; (name-raw (or shell (py-choose-shell)))
+         (name (py-shell-name-prepare shell sepchar))
          (temp (make-temp-name name))
          (file (concat (expand-file-name temp py-temp-directory) ".py"))
          (filebuf (get-buffer-create file))
          (proc (or (get-process name)
-                   (get-process (py-shell nil dedicated (or shell (downcase name-raw))))))
+                   (get-process (py-shell nil dedicated (or shell (downcase shell)) switch sepchar))))
          (procbuf (if dedicated
                       (buffer-name (get-buffer (current-buffer)))
-                    (buffer-name (get-buffer (concat "*" name "*")))))
-         (pec (if (string-match "Python3" name)
+                    (buffer-name (get-buffer (py-process-name name dedicated nostars sepchar)))))
+         (pec (if (string-match "Python *3" name)
                   (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" file file)
                 (format "execfile(r'%s') # PYTHON-MODE\n" file)))
          (wholebuf (when (boundp 'wholebuf) wholebuf))
@@ -7152,7 +7153,7 @@ When called from a programm, it accepts a string specifying a shell which will b
               (sit-for py-ipython-execute-delay)))
           (setq erg (py-execute-file-base proc file pec))
           (setq py-exception-buffer (cons file (current-buffer)))
-          (set-buffer regbuf)
+          ;; (set-buffer regbuf)
           (cond ((eq switch 'switch)
                  (if py-split-windows-on-execute-p
                      (progn
@@ -7167,12 +7168,11 @@ When called from a programm, it accepts a string specifying a shell which will b
                    (delete-other-windows)
                    (funcall py-split-windows-on-execute-function))
                  (set-buffer regbuf)
-                 (switch-to-buffer (current-buffer))
-                 ;; (message "current-buffer: %s" (current-buffer))
-                 )
+                 (switch-to-buffer (current-buffer)))
                 ((and py-shell-switch-buffers-on-execute-p py-split-windows-on-execute-p)
+                 ;; (delete-other-windows)
+                 (funcall py-split-windows-on-execute-function)
                  (switch-to-buffer (current-buffer))
-                 (delete-other-windows)
                  (switch-to-buffer regbuf)
                  (pop-to-buffer procbuf))
                 (py-split-windows-on-execute-p
@@ -7180,7 +7180,12 @@ When called from a programm, it accepts a string specifying a shell which will b
                  (pop-to-buffer procbuf)
                  (set-buffer procbuf)
                  (funcall py-split-windows-on-execute-function)
-                 (switch-to-buffer regbuf)))
+                 (switch-to-buffer regbuf))
+                (py-shell-switch-buffers-on-execute-p
+                 (set-buffer procbuf)
+                 (switch-to-buffer (current-buffer))
+                 ;; (delete-other-windows)
+                 ))
           (unless (string= (buffer-name (current-buffer)) procbuf)
             (when py-verbose-p (message "Output buffer: %s" procbuf)))
           (sit-for 0.1)
@@ -7848,7 +7853,7 @@ Optional OUTPUT-BUFFER and ERROR-BUFFER might be given.')
   (let* ((regbuf (current-buffer))
          (file (or (expand-file-name filename) (when (ignore-errors (file-readable-p (buffer-file-name))) (buffer-file-name))))
          (shell (or shell (progn (with-temp-buffer (insert-file file)(py-choose-shell)))))
-         (name (py-process-name shell))
+         (name (py-process-name shell dedicated nostars sepchar))
          (proc (get-process (py-shell nil dedicated (or shell (downcase name)))))
          (procbuf (if dedicated
                       (buffer-name (get-buffer (current-buffer)))
@@ -7867,7 +7872,7 @@ Optional OUTPUT-BUFFER and ERROR-BUFFER might be given.')
                 (pop-to-buffer procbuf)
                 (goto-char (point-max)))
             (when (buffer-live-p regbuf) (pop-to-buffer regbuf))
-            (message "Output buffer: %s" procbuf))
+            (when py-verbose-p (message "Output buffer: %s" procbuf)))
           (sit-for 0.1)
           erg)
       (message "File not readable: %s" "Do you have write permissions?"))))
@@ -8889,6 +8894,47 @@ With arg, do it that many times.
       (when (eq (point) cuc)
 	(py-end-of-block)))))
 
+;;; from string-strip.el --- Strip CHARS from STRING
+
+;; (setq strip-chars-before  "[ \t\r\n]*")
+(defcustom strip-chars-before  "[ \t\r\n]*"
+  "Regexp indicating which chars shall be stripped before STRING - which is defined by `string-chars-preserve'."
+
+  :type 'string
+  :group 'convenience)
+
+;; (setq strip-chars-after  "[ \t\r\n]*")
+(defcustom strip-chars-after  "[ \t\r\n]*\\'"
+  "Regexp indicating which chars shall be stripped after STRING - which is defined by `string-chars-preserve'."
+
+  :type 'string
+  :group 'convenience)
+
+(defcustom string-chars-preserve "\\(.*?\\)"
+  "Chars preserved of STRING.
+`strip-chars-after' and
+`strip-chars-before' indicate what class of chars to strip."
+  :type 'string
+  :group 'convenience)
+
+(defun string-strip (str &optional chars-before chars-after chars-preserve)
+  "Return a copy of STR, CHARS removed.
+`CHARS-BEFORE' and `CHARS-AFTER' default is \"[ \t\r\n]*\",
+i.e. spaces, tabs, carriage returns, newlines and newpages.
+`CHARS-PRESERVE' must be a parentized expression,
+it defaults to \"\\(.*?\\)\""
+  (let ((s-c-b (or chars-before
+                   strip-chars-before))
+        (s-c-a (or chars-after
+                   strip-chars-after))
+        (s-c-p (or chars-preserve
+                   string-chars-preserve)))
+    (string-match
+     (concat "\\`[" s-c-b"]*" s-c-p "[" s-c-a "]*\\'") str)
+    (match-string 1 str)))
+
+;;;
+
 (defalias 'druck 'py-printform-insert)
 (defun py-printform-insert (&optional arg)
   "Inserts a print statement out of current `(car kill-ring)' by default, inserts ARG instead if delivered. "
@@ -9320,8 +9366,8 @@ return `jython', otherwise return nil."
 
 ARG might be a python-version string to set to.
 
-\\[universal-argument] `py-toggle-shells' prompts to specify a reachable Python command.
-\\[universal-argument] followed by numerical arg 2 or 3, `py-toggle-shells' opens a respective Python shell.
+\\[universal-argument] `py-toggle-shell' prompts to specify a reachable Python command.
+\\[universal-argument] followed by numerical arg 2 or 3, `py-toggle-shell' opens a respective Python shell.
 \\[universal-argument] followed by numerical arg 5 opens a Jython shell.
 
 Should you need more shells to select, extend this command by adding inside the first cond:
@@ -9335,7 +9381,9 @@ Should you need more shells to select, extend this command by adding inside the 
                     ((eq 3 (prefix-numeric-value arg))
                      "python3")
                     ((eq 4 (prefix-numeric-value arg))
-                     (read-from-minibuffer "Python Shell: " py-shell-name))
+                     (string-strip
+                      (read-from-minibuffer "Python Shell: " py-shell-name) "\" " "\" "
+                      ))
                     ((eq 5 (prefix-numeric-value arg))
                      "jython")
                     (t (if (string-match py-shell-name
@@ -9351,27 +9399,29 @@ Should you need more shells to select, extend this command by adding inside the 
                  mode-name "IPython"))
           ((string-match "python3" name)
            (setq py-shell-name name
-                 py-which-bufname (capitalize name)
+                 py-which-bufname (py-shell-name-prepare name)
                  msg "CPython"
-                 mode-name (capitalize name)))
+                 mode-name (py-shell-name-prepare name)))
           ((string-match "jython" name)
            (setq py-shell-name name
-                 py-which-bufname (capitalize name)
+                 py-which-bufname (py-shell-name-prepare name)
                  msg "Jython"
-                 mode-name (capitalize name)))
+                 mode-name (py-shell-name-prepare name)))
           ((string-match "python" name)
            (setq py-shell-name name
-                 py-which-bufname (concat (capitalize name) "2")
+                 py-which-bufname (py-shell-name-prepare name)
                  msg "CPython"
-                 mode-name (concat (capitalize name) "2")))
+                 mode-name py-which-bufname))
           (t
            (setq py-shell-name name
                  py-which-bufname name
                  msg name
                  mode-name name)))
-    (if py-edit-only-p
-        (setq erg py-shell-name)
-      (setq erg (executable-find py-shell-name)))
+    ;; py-edit-only-p has no interpreter
+    ;; (if py-edit-only-p
+    ;; (setq erg py-shell-name)
+    (setq erg (executable-find py-shell-name))
+    ;;)
     (if erg
         (progn
           (force-mode-line-update)
@@ -9394,11 +9444,11 @@ This does the following:
 
 When interactivly called, messages the shell name, Emacs would in the given circtumstances.
 
-With \\[universal-argument] 4 is called `py-switch-shells' see docu there.
+With \\[universal-argument] 4 is called `py-switch-shell' see docu there.
 "
   (interactive "P")
   (if (eq 4 (prefix-numeric-value arg))
-      (py-switch-shells '(4))
+      (py-switch-shell '(4))
     (let* ((erg (cond (py-use-local-default
                        (if (not (string= "" py-shell-local-path))
                            (expand-file-name py-shell-local-path)
@@ -9905,6 +9955,18 @@ These are Python temporary files awaiting execution."
 (or (assq 'py-pdbtrack-is-tracking-p minor-mode-alist)
     (push '(py-pdbtrack-is-tracking-p py-pdbtrack-minor-mode-string)
           minor-mode-alist))
+
+(defun py-python-version (&optional executable verbose)
+  "Returns versions number of a Python EXECUTABLE, string.
+
+If no EXECUTABLE given, `py-shell-name' is used.
+Interactively output of `--version' is displayed. "
+  (interactive)
+  (let* ((executable (or executable py-shell-name))
+         (erg (string-strip (shell-command-to-string (concat executable " --version")))))
+    (when (interactive-p) (message "%s" erg))
+    (unless verbose (setq erg (cadr (split-string erg))))
+    erg))
 
 (defun py-version ()
   "Echo the current version of `python-mode' in the minibuffer."
