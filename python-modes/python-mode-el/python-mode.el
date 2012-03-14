@@ -6538,10 +6538,10 @@ Returns char found. "
                      ;; (replace-regexp-in-string "\*" "" (buffer-name)))
                      (t thisname)))
          (erg (cond ((or (string-match "ipython" name)
-                         (string-match "IPython" name))
-                     "IPython")
+                      (string-match "IPython" name))
+                  "IPython")
                     (name)
-                    )))
+                )))
     (unless (or nostars (string-match "^\*" erg))(setq erg (concat "*" erg "*")))
     erg))
 
@@ -6664,7 +6664,7 @@ Optional symbol SWITCH ('switch/'noswitch) precedes `py-shell-switch-buffers-on-
                         (replace-regexp-in-string
                          "\*" ""
                          buffer))))
-                  (pyshellname (expand-file-name pyshellname))
+                  (pyshellname pyshellname)
                   ((stringp py-shell-name)
                    py-shell-name)
                   ((or (string= "" py-shell-name)(null py-shell-name))
@@ -9383,7 +9383,7 @@ Should you need more shells to select, extend this command by adding inside the 
                     ((eq 4 (prefix-numeric-value arg))
                      (string-strip
                       (read-from-minibuffer "Python Shell: " py-shell-name) "\" " "\" "
-                      ))
+))
                     ((eq 5 (prefix-numeric-value arg))
                      "jython")
                     (t (if (string-match py-shell-name

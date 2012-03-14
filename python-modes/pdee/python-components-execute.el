@@ -274,7 +274,7 @@ Optional symbol SWITCH ('switch/'noswitch) precedes `py-shell-switch-buffers-on-
                         (replace-regexp-in-string
                          "\*" ""
                          buffer))))
-                  (pyshellname (expand-file-name pyshellname))
+                  (pyshellname pyshellname)
                   ((stringp py-shell-name)
                    py-shell-name)
                   ((or (string= "" py-shell-name)(null py-shell-name))
