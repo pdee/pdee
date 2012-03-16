@@ -6769,8 +6769,8 @@ Optional symbol SWITCH ('switch/'noswitch) precedes `py-shell-switch-buffers-on-
              (pop-to-buffer (current-buffer))
              (delete-other-windows)
              (when (and py-split-windows-on-execute-p
-                        (or (and (eq py-split-windows-on-execute-function 'split-window-vertically) window-full-height-p)
-                            (and (eq py-split-windows-on-execute-function 'split-window-horizontally) window-full-width-p)))
+                        (or (and (eq py-split-windows-on-execute-function 'split-window-vertically) (window-full-height-p))
+                            (and (eq py-split-windows-on-execute-function 'split-window-horizontally) (window-full-width-p))))
                (funcall py-split-windows-on-execute-function))
              ;; (message (buffer-name (current-buffer)))
              (set-buffer oldbuf)

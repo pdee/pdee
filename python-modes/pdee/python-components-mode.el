@@ -953,9 +953,9 @@ Used for determining the default in the next one.")
 (defvar py-not-partial-expression-skip-regexp " \\.=:#\t\r\n\f"
   "py-partial-expression assumes chars indicated may not compose a py-partial-expression, skip it. ")
 
-(defvar py-partial-expression-looking-regexp "[^ .=:#\t\r\n\f)]"
+(defvar py-partial-expression-looking-regexp "[^ .=:#\t\r\n\f]"
   "py-partial-expression assumes chars indicated possible composing a py-partial-expression, when looking-at or -back. ")
-;; (setq py-partial-expression-looking-regexp "[^ .=:#\t\r\n\f)]")
+(setq py-partial-expression-looking-regexp "[^ .=:#\t\r\n\f")
 
 (defvar py-not-partial-expression-regexp "[ .=:#\t\r\n\f)]"
   "py-partial-expression assumes chars indicated probably will not compose a py-partial-expression. ")
