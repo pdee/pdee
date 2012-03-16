@@ -363,8 +363,6 @@ Returns indentation reached. "
 ;; make general form below work also in these cases
 (defalias 'py-beginning-of-paragraph 'backward-paragraph)
 (defalias 'py-end-of-paragraph 'forward-paragraph)
-(defalias 'py-beginning-of-line 'beginning-of-line)
-(defalias 'py-end-of-line 'end-of-line)
 
 ;; Shifting forms start
 (defun py-shift-forms-base (form arg &optional beg end)
@@ -792,19 +790,19 @@ initial line; and comment lines beginning in column 1 are ignored."
       (when (interactive-p) (message "%s" erg))
       erg)))
 
-(defun py-beginning-of-minor-expression-position ()
-  "Returns beginning of minor-expression position. "
+(defun py-beginning-of-partial-expression-position ()
+  "Returns beginning of partial-expression position. "
   (interactive)
   (save-excursion
-    (let ((erg (py-beginning-of-minor-expression)))
+    (let ((erg (py-beginning-of-partial-expression)))
       (when (interactive-p) (message "%s" erg))
       erg)))
 
-(defun py-end-of-minor-expression-position ()
-  "Returns end of minor-expression position. "
+(defun py-end-of-partial-expression-position ()
+  "Returns end of partial-expression position. "
   (interactive)
   (save-excursion
-    (let ((erg (py-end-of-minor-expression)))
+    (let ((erg (py-end-of-partial-expression)))
       (when (interactive-p) (message "%s" erg))
       erg)))
 
@@ -951,18 +949,18 @@ Returns a list, whose car is beg, cdr - end."
             (when (interactive-p) (message "%s" (list beg end)))
           (list beg end))))))
 
-(defun py-bounds-of-minor-expression (&optional position)
-  "Returns bounds of minor-expression at point.
+(defun py-bounds-of-partial-expression (&optional position)
+  "Returns bounds of partial-expression at point.
 
-With optional POSITION, a number, report bounds of minor-expression at POSITION.
+With optional POSITION, a number, report bounds of partial-expression at POSITION.
 Returns a list, whose car is beg, cdr - end."
   (interactive)
   (save-excursion
     (save-restriction
       (widen)
       (when position (goto-char position))
-      (let ((beg (py-beginning-of-minor-expression-position))
-            (end (py-end-of-minor-expression-position)))
+      (let ((beg (py-beginning-of-partial-expression-position))
+            (end (py-end-of-partial-expression-position)))
         (if (and beg end)
             (when (interactive-p) (message "%s" (list beg end)))
           (list beg end))))))

@@ -370,7 +370,7 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
 
 ;; Partial- or Minor Expression
 (defalias 'py-backward-partial-expression 'py-beginning-of-partial-expression)
-(defalias 'py-beginning-of-minor-expression 'py-beginning-of-partial-expression)
+(defalias 'py-beginning-of-partial-expression 'py-beginning-of-partial-expression)
 (defun py-beginning-of-partial-expression (&optional orig origline done)
   "Go to the beginning of a minor python expression.
 
@@ -412,19 +412,19 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
                   (end-of-line)
                   (py-beginning-of-partial-expression orig origline)))
                ((nth 1 pps)
-                (skip-chars-backward py-minor-expression-backward-regexp)
+                (skip-chars-backward py-partial-expression-backward-regexp)
                 (point))
-               ((and (eq (point) orig) (not (bobp)) (looking-back py-minor-expression-looking-regexp))
-                (skip-chars-backward py-minor-expression-skip-regexp)
+               ((and (eq (point) orig) (not (bobp)) (looking-back py-partial-expression-looking-regexp))
+                (skip-chars-backward py-partial-expression-skip-regexp)
                 (py-beginning-of-partial-expression orig origline))
-               ((looking-at py-minor-expression-looking-regexp)
+               ((looking-at py-partial-expression-looking-regexp)
                 (point))
                (t (unless (and (looking-at "[ \t]*#") (looking-back "^[ \t]*"))(point)))))
         (when (and py-verbose-p (interactive-p)) (message "%s" erg))
         erg))))
 
 (defalias 'py-forward-partial-expression 'py-end-of-partial-expression)
-(defalias 'py-end-of-minor-expression 'py-end-of-partial-expression)
+(defalias 'py-end-of-partial-expression 'py-end-of-partial-expression)
 (defun py-end-of-partial-expression (&optional orig origline done)
   "Go to the end of a minor python expression.
 
@@ -486,12 +486,12 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
           (when (< 0 (skip-chars-forward " \t\r\n\f"))
             (forward-char 1))
           (py-end-of-partial-expression orig origline done))
-         ((and (not done)(looking-at py-minor-expression-looking-regexp)(not (eobp)))
-          (skip-chars-forward py-minor-expression-forward-regexp)
+         ((and (not done)(looking-at py-partial-expression-looking-regexp)(not (eobp)))
+          (skip-chars-forward py-partial-expression-forward-regexp)
           (setq done t)
           (py-end-of-partial-expression orig origline done))
-         ((and (not done)(looking-at py-not-minor-expression-regexp)(not (eobp)))
-          (skip-chars-forward py-not-minor-expression-skip-regexp)
+         ((and (not done)(looking-at py-not-partial-expression-regexp)(not (eobp)))
+          (skip-chars-forward py-not-partial-expression-skip-regexp)
           (py-end-of-partial-expression orig origline done))
          ((and (eq (point) orig) (not (eobp)))
           (forward-char 1)
@@ -501,7 +501,36 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
         (when (and py-verbose-p (interactive-p)) (message "%s" erg))
         erg))))
 
-;; Statement
+;;; Line
+(defun py-beginning-of-line ()
+  "Go to beginning-of-line, return position.
+
+If already at beginning-of-line and not at BOB, go to beginning of previous line. "
+  (interactive)
+  (let ((erg (unless (bobp)
+               (if (bolp)
+                   (progn
+                     (forward-line -1)
+                     (progn (beginning-of-line)(point)))
+                 (progn (beginning-of-line)(point))))))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defun py-end-of-line ()
+  "Go to end-of-line, return position.
+
+If already at end-of-line and not at EOB, go to end of next line. "
+  (interactive)
+  (let ((erg (unless (eobp)
+               (if (eolp)
+                   (progn
+                     (forward-line 1)
+                     (progn (end-of-line)(point)))
+                 (progn (end-of-line)(point))))))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+;;; Statement
 (defalias 'py-backward-statement 'py-beginning-of-statement)
 (defalias 'py-previous-statement 'py-beginning-of-statement)
 (defalias 'py-statement-backward 'py-beginning-of-statement)
@@ -850,13 +879,13 @@ Returns beginning and end positions of marked area, a cons. "
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
-(defun py-mark-minor-expression ()
-  "Mark minor-expression at point.
+(defun py-mark-partial-expression ()
+  "Mark partial-expression at point.
 
 Returns beginning and end positions of marked area, a cons. "
   (interactive)
   (let (erg)
-    (setq erg (py-mark-base "minor-expression"))
+    (setq erg (py-mark-base "partial-expression"))
     (exchange-point-and-mark)
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
@@ -915,8 +944,8 @@ Returns beginning and end positions of marked area, a cons. "
     erg))
 
 (defalias 'py-partial-expression 'py-copy-partial-expression)
-(defalias 'py-copy-minor-expression 'py-copy-partial-expression)
-(defalias 'py-minor-expression 'py-copy-partial-expression)
+(defalias 'py-copy-partial-expression 'py-copy-partial-expression)
+(defalias 'py-partial-expression 'py-copy-partial-expression)
 (defun py-copy-partial-expression ()
   "Mark partial-expression at point.
 
@@ -1038,7 +1067,7 @@ Returns beginning and end positions of marked area, a cons."
   (let ((erg (py-mark-base "expression")))
     (kill-region (car erg) (cdr erg))))
 
-(defalias 'py-kill-minor-expression 'py-kill-partial-expression)
+(defalias 'py-kill-partial-expression 'py-kill-partial-expression)
 (defun py-kill-partial-expression ()
   "Delete partial-expression at point.
   Stores data in kill ring. Might be yanked back using `C-y'.

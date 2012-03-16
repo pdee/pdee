@@ -42,15 +42,7 @@
          (orgname (concat (substring oldbuf 0 (string-match "\\." oldbuf)) ".org"))
          (reSTname (concat (substring oldbuf 0 (string-match "\\." oldbuf)) ".rst"))
          (directory-in (or directory-in (and (not (string= "" py-devel-directory-in)) py-devel-directory-in) default-directory))
-         (directory-out (or directory-out (expand-file-name finds-directory-out)))
-         (directory-out-prepare
-          (if directory-out
-              (if
-                  (string-match ".+/$" directory-out)
-                  directory-out
-                (concat directory-out "/"))
-            default-directory))
-         (directory-out (unless (and directory-out (string-match ".*/doc" directory-out))  (concat directory-out-prepare "doc/"))))
+         (directory-out (or directory-out (expand-file-name finds-directory-out))))
     (finds-base oldbuf orgname reSTname directory-in directory-out)))
 
 (defun finds-base (oldbuf orgname reSTname directory-in directory-out)

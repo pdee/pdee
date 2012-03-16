@@ -450,16 +450,10 @@ will work.
 (defun py-beginning-of-line-p ()
   "Returns position, if cursor is at the beginning of a line, nil otherwise. "
   (interactive)
-  (let ((orig (point))
-        erg)
-    (save-excursion
-      (py-end-of-line)
-      (py-beginning-of-line)
-      (when (eq orig (point))
-        (setq erg orig))
+  (let ((erg (when (bolp)(point))))
       (when (interactive-p)
         (message "%s" erg))
-      erg)))
+      erg))
 
 (defun py-beginning-of-statement-p ()
   "Returns position, if cursor is at the beginning of a statement, nil otherwise. "
@@ -498,14 +492,14 @@ will work.
       (message "%s" erg))
     erg))
 
-(defun py-beginning-of-minor-expression-p ()
-  "Returns position, if cursor is at the beginning of a minor-expression, nil otherwise. "
+(defun py-beginning-of-partial-expression-p ()
+  "Returns position, if cursor is at the beginning of a partial-expression, nil otherwise. "
   (interactive)
   (let ((orig (point))
         erg)
     (save-excursion
-      (py-end-of-minor-expression)
-      (py-beginning-of-minor-expression)
+      (py-end-of-partial-expression)
+      (py-beginning-of-partial-expression)
       (when (eq orig (point))
         (setq erg orig))
       (when (interactive-p)

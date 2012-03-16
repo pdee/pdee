@@ -23,7 +23,15 @@ New in version 6.0.6
   Commands `py-toggle-indent-tabs-mode', ...-on, ...-off
   menu PyTools "Toggle indent-tabs-mode"
 
-- py-execute-line, new command
+- Extended py-execute-... forms provided for "line"
+
+- new commands py-beginning/end-of-line
+  while introduced for internal reasons --because of it's
+  return values-- they allow repeats, i.e. when already
+  at end-of-line, jumping to next end etc. 
+
+- new boolean `py-force-py-shell-name-p'
+  When `t', execution with Python specified in `py-shell-name' is en  forced, shebang will have no effect. Default is nil.
 
 New in version 6.0.5
 --------------------
