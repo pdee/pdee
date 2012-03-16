@@ -891,10 +891,10 @@ See bug report at launchpad, lp:944093. "
   :group 'python-mode)
 
 (defcustom py-force-py-shell-name-p nil
- "When `t', execution with kind of Python specified in `py-shell-name' is enforced, possibly shebang doesn't take precedence. "
+  "When `t', execution with kind of Python specified in `py-shell-name' is enforced, possibly shebang doesn't take precedence. "
 
-:type 'boolean
-:group 'python-mode)
+  :type 'boolean
+  :group 'python-mode)
 
 ;; (defcustom python-load-extended-executes-p  t
 ;;   "If commands from `python-extended-executes.el' should be loaded.
@@ -955,7 +955,7 @@ Used for determining the default in the next one.")
 
 (defvar py-partial-expression-looking-regexp "[^ .=:#\t\r\n\f]"
   "py-partial-expression assumes chars indicated possible composing a py-partial-expression, when looking-at or -back. ")
-(setq py-partial-expression-looking-regexp "[^ .=:#\t\r\n\f")
+(setq py-partial-expression-looking-regexp "[^ .=:#\t\r\n\f]")
 
 (defvar py-not-partial-expression-regexp "[ .=:#\t\r\n\f)]"
   "py-partial-expression assumes chars indicated probably will not compose a py-partial-expression. ")

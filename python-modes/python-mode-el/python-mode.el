@@ -5222,7 +5222,6 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
 
 ;;; Partial- or Minor Expression
 (defalias 'py-backward-partial-expression 'py-beginning-of-partial-expression)
-(defalias 'py-beginning-of-partial-expression 'py-beginning-of-partial-expression)
 (defun py-beginning-of-partial-expression (&optional orig origline done)
   "Go to the beginning of a minor python expression.
 
@@ -5276,7 +5275,6 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
         erg))))
 
 (defalias 'py-forward-partial-expression 'py-end-of-partial-expression)
-(defalias 'py-end-of-partial-expression 'py-end-of-partial-expression)
 (defun py-end-of-partial-expression (&optional orig origline done)
   "Go to the end of a minor python expression.
 
@@ -5326,17 +5324,21 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
           (skip-chars-backward " \t\r\n\f")
           (py-end-of-partial-expression orig origline done))
          ((and (nth 1 pps) (<= orig (nth 1 pps)))
-          (goto-char (nth 1 pps))
-          (let ((parse-sexp-ignore-comments t))
-            (forward-list)
-            (setq done t)
-            (py-end-of-partial-expression orig origline done)))
+          (goto-char (nth 1 pps))(forward-list)
+          (point))
+         ((and (not done)(ignore-errors (<= orig (nth 2 pps))))
+          (goto-char (nth 2 pps))
+          (setq done t)
+          (skip-chars-forward py-partial-expression-forward-regexp)
+          (py-end-of-partial-expression orig origline done))
          ((and (looking-at "\\.")(< orig (point)))
           (point))
          ((and (not done)(looking-at "\\.\\|=\\|:\\|+\\|-\\|*\\|/\\|//\\|&\\|%\\||\\|\^\\|>>\\|<<\\|<\\|<=\\|>\\|>=\\|==\\|!="))
           (goto-char (match-end 0))
           (when (< 0 (skip-chars-forward " \t\r\n\f"))
             (forward-char 1))
+          (skip-chars-forward py-partial-expression-forward-regexp)
+          (setq done t)
           (py-end-of-partial-expression orig origline done))
          ((and (not done)(looking-at py-partial-expression-looking-regexp)(not (eobp)))
           (skip-chars-forward py-partial-expression-forward-regexp)
@@ -5344,6 +5346,8 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
           (py-end-of-partial-expression orig origline done))
          ((and (not done)(looking-at py-not-partial-expression-regexp)(not (eobp)))
           (skip-chars-forward py-not-partial-expression-skip-regexp)
+          (skip-chars-forward py-partial-expression-forward-regexp)
+          (setq done t)
           (py-end-of-partial-expression orig origline done))
          ((and (eq (point) orig) (not (eobp)))
           (forward-char 1)
