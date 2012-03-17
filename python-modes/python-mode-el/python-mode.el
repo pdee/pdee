@@ -1116,7 +1116,7 @@ Inludes Python shell-prompt in order to stop further searches. ")
   "Matches the beginning of a compound statement. ")
 
 (defconst py-minor-block-re "[ \t]*\\_<\\(for\\|if\\|try\\)\\_>[: \n\t]"
-  "Matches the beginning of an `if' or `try' block. ")
+  "Matches the beginning of an `for', `if' or `try' block. ")
 
 (defconst py-try-block-re "[ \t]*\\_<try\\_>[: \n\t]"
   "Matches the beginning of an `if' or `try' block. ")
@@ -2405,7 +2405,7 @@ This function does not modify point or mark."
               (cond
                ((eq position 'bol) (beginning-of-line))
                ((eq position 'eol) (end-of-line))
-               ((eq position 'bod) (py-beginning-of-def-or-class 'either))
+               ((eq position 'bod) (py-beginning-of-def-or-class))
                ((eq position 'eod) (py-end-of-def-or-class 'either))
                ;; Kind of funny, I know, but useful for py-up-exception.
                ((eq position 'bob) (goto-char (point-min)))
@@ -4274,7 +4274,7 @@ When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
                  ;; py-indent-offset
                  (current-indentation)))
                ((looking-at py-block-closing-keywords-re)
-                (py-beginning-of-block-or-clause nil (current-indentation))
+                (py-beginning-of-block-or-clause (current-indentation))
                 (current-indentation))
                ((and (looking-at py-elif-re) (eq (py-count-lines) origline))
                 (py-line-backward-maybe)
@@ -4288,7 +4288,9 @@ When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
                        ;; (car (py-clause-lookup-keyword py-else-re -1 (current-indentation))))
                        (car (py-clause-lookup-keyword py-else-re -1 nil orig origline)))
                       ((looking-at py-elif-re)
-                       (car (py-clause-lookup-keyword py-elif-re -1 nil orig origline)))))
+                       (car (py-clause-lookup-keyword py-elif-re -1 nil orig origline)))
+                      ;; maybe at if, try, with
+                      (t (car (py-clause-lookup-keyword py-block-or-clause-re -1 nil orig origline)))))
                ((looking-at py-block-or-clause-re)
                 (cond ((eq origline (py-count-lines))
                        (py-line-backward-maybe)
@@ -4710,9 +4712,10 @@ and `pass'.  This doesn't catch embedded statements."
         (looking-at py-block-closing-keywords-re)
       (goto-char here))))
 
-(defun py-end-base (regexp orig &optional iact)
+(defun py-end-base (regexp &optional orig)
   "Used internal by functions going to the end forms. "
-  (let ((erg (if (py-statement-opens-block-p regexp)
+  (let ((orig (or orig (point)))
+        (erg (if (py-statement-opens-block-p regexp)
                  (point)
                (py-go-to-keyword regexp -1)
                (when (py-statement-opens-block-p regexp)
@@ -4725,12 +4728,11 @@ and `pass'.  This doesn't catch embedded statements."
           (forward-line 1)
           (setq erg (py-travel-current-indent (cons ind (point)))))
       (py-look-downward-for-beginning regexp)
-      (unless (eobp)(py-end-base regexp orig iact)))
+      (unless (eobp)(py-end-base regexp orig)))
     (if (< orig (point))
         (setq erg (point))
       (setq erg (py-look-downward-for-beginning regexp))
-      (when erg (py-end-base regexp orig iact)))
-    (when iact (message "%s" erg))
+      (when erg (py-end-base regexp orig)))
     erg))
 
 (defun py-look-downward-for-beginning (regexp)
@@ -4754,7 +4756,7 @@ See customizable variables `py-current-defun-show' and `py-current-defun-delay'.
   (save-restriction
     (widen)
     (save-excursion
-      (let ((erg (when (py-beginning-of-def-or-class 'either)
+      (let ((erg (when (py-beginning-of-def-or-class)
                    (forward-word 1)
                    (skip-chars-forward " \t")
                    (prin1-to-string (symbol-at-point)))))
@@ -4876,209 +4878,226 @@ Also accepts submission of bug reports, whilst a ticket at
 http://launchpad.net/python-mode
 is preferable for that. ")
 
-;;; Block
-(defalias 'py-previous-block 'py-beginning-of-block)
-(defalias 'py-goto-block-up 'py-beginning-of-block)
-(defalias 'py-backward-block 'py-beginning-of-block)
-(defun py-beginning-of-block (&optional indent)
-  "Looks up for nearest opening block, i.e. compound statement
+;;; Forms start described by a regular-expression
 
-Returns position reached, if any, nil otherwise.
+(defun py-beginning-of-block (&optional indent)
+  "Returns beginning of block if successful, nil otherwise.
 
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
   (let ((erg (ignore-errors (cdr (py-go-to-keyword py-block-re -1 indent)))))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
-(defun py-beginning-of-if-block ()
-  "Looks up for nearest opening if-block, i.e. compound statement
+(defun py-end-of-block ()
+  "Go to the end of block.
 
 Returns position reached, if any, nil otherwise.
 
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
-  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-if-re -1)))))
+  (let* ((orig (point))
+         (erg (py-end-base py-block-re orig)))
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
-(defun py-beginning-of-try-block ()
-  "Looks up for nearest opening try-block, i.e. compound statement.
+(defun py-beginning-of-clause (&optional indent)
+  "Returns beginning of clause if successful, nil otherwise.
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html"
+  (interactive)
+  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-clause-re -1 indent)))))
+    erg))
+
+(defun py-end-of-clause ()
+  "Go to the end of clause.
 
 Returns position reached, if any, nil otherwise.
 
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
-  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-try-block-re -1)))))
+  (let* ((orig (point))
+         (erg (py-end-base py-clause-re orig)))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defun py-beginning-of-block-or-clause (&optional indent)
+  "Returns beginning of block-or-clause if successful, nil otherwise.
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html"
+  (interactive)
+  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-block-or-clause-re -1 indent)))))
+    erg))
+
+(defun py-end-of-block-or-clause ()
+  "Go to the end of block-or-clause.
+
+Returns position reached, if any, nil otherwise.
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html"
+  (interactive)
+  (let* ((orig (point))
+         (erg (py-end-base py-block-or-clause-re orig)))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defun py-beginning-of-def (&optional indent)
+  "Returns beginning of def if successful, nil otherwise.
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html"
+  (interactive)
+  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-def-re -1 indent)))))
+    erg))
+
+(defun py-end-of-def ()
+  "Go to the end of def.
+
+Returns position reached, if any, nil otherwise.
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html"
+  (interactive)
+  (let* ((orig (point))
+         (erg (py-end-base py-def-re orig)))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defun py-beginning-of-class (&optional indent)
+  "Returns beginning of class if successful, nil otherwise.
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html"
+  (interactive)
+  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-class-re -1 indent)))))
+    erg))
+
+(defun py-end-of-class ()
+  "Go to the end of class.
+
+Returns position reached, if any, nil otherwise.
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html"
+  (interactive)
+  (let* ((orig (point))
+         (erg (py-end-base py-class-re orig)))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defun py-beginning-of-def-or-class (&optional indent)
+  "Returns beginning of def-or-class if successful, nil otherwise.
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html"
+  (interactive)
+  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-def-or-class-re -1 indent)))))
+    erg))
+
+(defun py-end-of-def-or-class ()
+  "Go to the end of def-or-class.
+
+Returns position reached, if any, nil otherwise.
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html"
+  (interactive)
+  (let* ((orig (point))
+         (erg (py-end-base py-def-or-class-re orig)))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defun py-beginning-of-if-block (&optional indent)
+  "Returns beginning of if-block if successful, nil otherwise.
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html"
+  (interactive)
+  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-if-block-re -1 indent)))))
+    erg))
+
+(defun py-end-of-if-block ()
+  "Go to the end of if-block.
+
+Returns position reached, if any, nil otherwise.
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html"
+  (interactive)
+  (let* ((orig (point))
+         (erg (py-end-base py-if-block-re orig)))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defun py-beginning-of-try-block (&optional indent)
+  "Returns beginning of try-block if successful, nil otherwise.
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html"
+  (interactive)
+  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-try-block-re -1 indent)))))
+    erg))
+
+(defun py-end-of-try-block ()
+  "Go to the end of try-block.
+
+Returns position reached, if any, nil otherwise.
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html"
+  (interactive)
+  (let* ((orig (point))
+         (erg (py-end-base py-try-block-re orig)))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defun py-beginning-of-minor-block (&optional indent)
+  "Returns beginning of minor-block if successful, nil otherwise.
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html"
+  (interactive)
+  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-minor-block-re -1 indent)))))
+    erg))
+
+(defun py-end-of-minor-block ()
+  "Go to the end of minor-block.
+
+Returns position reached, if any, nil otherwise.
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html"
+  (interactive)
+  (let* ((orig (point))
+         (erg (py-end-base py-minor-block-re orig)))
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
 (defalias 'py-forward-block 'py-end-of-block)
-(defalias 'py-goto-beyond-block 'py-end-of-block)
-(defun py-end-of-block ()
-  "Go to the end of a compound statement.
-
-Returns position reached, if any, nil otherwise.
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
-  (interactive)
-  (let ((orig (point)))
-    (py-end-base py-block-re orig (interactive-p))))
-
-;;; Block or clause
+(defalias 'py-forward-block-or-clause 'py-end-of-block-or-clause)
+(defalias 'py-forward-class 'py-end-of-class)
+(defalias 'py-forward-clause 'py-end-of-clause)
+(defalias 'end-of-def-or-class 'py-end-of-def-or-class)
+(defalias 'py-forward-def-or-class 'py-end-of-def-or-class)
+(defalias 'py-previous-block 'py-beginning-of-block)
+(defalias 'py-goto-block-up 'py-beginning-of-block)
+(defalias 'py-backward-block 'py-beginning-of-block)
 (defalias 'py-previous-block-or-clause 'py-beginning-of-block-or-clause)
 (defalias 'py-goto-block-or-clause-up 'py-beginning-of-block-or-clause)
 (defalias 'py-backward-block-or-clause 'py-beginning-of-block-or-clause)
-(defun py-beginning-of-block-or-clause (&optional arg indent)
-  "Looks up for nearest opening clause or block.
-
-With universal argument looks for next compound statements
-i.e. blocks only.
-
-Returns position reached, if any, nil otherwise.
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
-  (interactive "P")
-
-  (let* ((regexp (if arg
-                     py-block-re
-                   py-block-or-clause-re))
-         (erg (ignore-errors (cdr (py-go-to-keyword regexp -1 indent)))))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-    erg))
-
-(defalias 'py-forward-block-or-clause 'py-end-of-block-or-clause)
-(defalias 'py-goto-beyond-block-or-clause 'py-end-of-block-or-clause)
-(defun py-end-of-block-or-clause (&optional arg)
-  "Without arg, go to the end of a compound statement.
-
-With arg , move point to end of clause at point.
-Returns position reached, if any, nil otherwise.
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
-  (interactive "P")
-  (let ((regexp (if arg
-                    py-block-re
-                  py-block-or-clause-re))
-        (orig (point)))
-    (py-end-base regexp orig (interactive-p))))
-
-;;; Class
 (defalias 'beginning-of-class 'py-beginning-of-class)
 (defalias 'py-backward-class 'py-beginning-of-class)
 (defalias 'py-previous-class 'py-beginning-of-class)
-(defun py-beginning-of-class ()
-  "Move point to start of next `class'.
-
-See also `py-beginning-of-def-or-class'.
-Returns position reached, if any, nil otherwise."
-  (interactive)
-  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-class-re -1)))))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-    erg))
-
-(defalias 'py-forward-class 'py-end-of-class)
-(defalias 'py-next-class 'py-end-of-class)
-(defun py-end-of-class (&optional iact)
-  "Move point beyond next method definition.
-
-Returns position reached, if any, nil otherwise."
-  (interactive "p")
-  (let ((orig (point))
-        (regexp py-class-re))
-    (py-end-base regexp orig iact)))
-
-;;; Clause
 (defalias 'py-previous-clause 'py-beginning-of-clause)
 (defalias 'py-goto-clause-up 'py-beginning-of-clause)
 (defalias 'py-backward-clause 'py-beginning-of-clause)
-(defun py-beginning-of-clause ()
-  "Looks up for nearest opening clause, i.e. a compound statements
-subform.
-
-Returns position reached, if any, nil otherwise.
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
-  (interactive)
-  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-block-or-clause-re -1)))))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-    erg))
-
-(defalias 'py-forward-clause 'py-end-of-clause)
-(defalias 'py-goto-beyond-clause 'py-end-of-clause)
-(defun py-end-of-clause ()
-  "Without arg, go to the end of a compound statement.
-
-With arg , move point to end of clause at point.
-
-Returns position reached, if any, nil otherwise.
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
-  (interactive)
-  (let ((regexp py-block-or-clause-re)
-        (orig (point)))
-    (py-end-base regexp orig (interactive-p))))
-
-;;; Method Definition or Class
-(defun py-beginning-of-def ()
-  "Move point to start of `def'.
-
-Returns position reached, if any, nil otherwise "
-  (interactive)
-  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-def-re -1)))))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-    erg))
-
-(defun py-end-of-def (&optional iact)
-  "Move point beyond next method definition.
-
-Returns position reached, if any, nil otherwise."
-  (interactive "p")
-  (let* ((orig (point))
-         (regexp py-def-re))
-    (py-end-base regexp orig iact)))
-
 (defalias 'py-backward-def-or-class 'py-beginning-of-def-or-class)
 (defalias 'py-previous-def-or-class 'py-beginning-of-def-or-class)
-(defun py-beginning-of-def-or-class (&optional arg)
-  "Move point to start of `def' or `class', whatever is next.
-
-With optional universal arg CLASS, move to the beginn of class definition.
-Returns position reached, if any, nil otherwise "
-  (interactive "P")
-  (let* ((regexp (if (eq 4 (prefix-numeric-value arg))
-                     py-class-re
-                   py-def-or-class-re))
-         (res (ignore-errors (cdr (py-go-to-keyword regexp -1))))
-         (erg
-          (when (looking-at regexp)
-            res)))
-    (when (and py-verbose-p (interactive-p)) (message "%s" (prin1-to-string erg)))
-    erg))
-
-(defalias 'end-of-def-or-class 'py-end-of-def-or-class)
-(defalias 'py-forward-def-or-class 'py-end-of-def-or-class)
-(defalias 'py-next-def-or-class 'py-end-of-def-or-class)
-(defun py-end-of-def-or-class (&optional arg)
-  "Move point beyond next `def' or `class' definition.
-
-With optional universal arg, move to the end of class exclusively.
-Returns position reached, if any, nil otherwise."
-  (interactive "P")
-  (let* ((orig (point))
-         (regexp
-          (cond ((eq 4 (prefix-numeric-value arg))
-                 py-class-re)
-                (t py-def-or-class-re))))
-    (py-end-base regexp orig (interactive-p))))
 
 ;;; Expression
 (defalias 'py-backward-expression 'py-beginning-of-expression)
@@ -5142,7 +5161,6 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
         (when (and py-verbose-p (interactive-p)) (message "%s" erg))
         erg))))
 
-(defalias 'py-forward-expression 'py-end-of-expression)
 (defun py-end-of-expression (&optional orig origline done)
   "Go to the end of a compound python expression.
 
@@ -8689,7 +8707,7 @@ Affected by `py-dedent-keep-relative-column'. "
 (defun py-close-intern (regexp)
   "Core function, internal used only. "
   (let ((cui (ignore-errors (car (py-go-to-keyword regexp -1)))))
-    (py-end-base regexp (point) (interactive-p))
+    (py-end-base regexp (point))
     (forward-line 1)
     (if py-close-provides-newline
         (unless (empty-line-p) (split-line))
@@ -9787,7 +9805,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   "Returns beginning position of function or class definition. "
   (interactive)
   (let ((here (point))
-        (pos (progn (py-beginning-of-def-or-class 'either)(point))))
+        (pos (progn (py-beginning-of-def-or-class)(point))))
     (prog1
         (point)
       (when (and py-verbose-p (interactive-p)) (message "%s" pos))

@@ -1032,7 +1032,7 @@ Inludes Python shell-prompt in order to stop further searches. ")
   "Matches the beginning of a compound statement. ")
 
 (defconst py-minor-block-re "[ \t]*\\_<\\(for\\|if\\|try\\)\\_>[: \n\t]"
-  "Matches the beginning of an `if' or `try' block. ")
+  "Matches the beginning of an `for', `if' or `try' block. ")
 
 (defconst py-try-block-re "[ \t]*\\_<try\\_>[: \n\t]"
   "Matches the beginning of an `if' or `try' block. ")
@@ -1049,8 +1049,11 @@ Inludes Python shell-prompt in order to stop further searches. ")
 (defconst py-block-or-clause-re "[ \t]*\\_<\\(if\\|else\\|elif\\|while\\|for\\|def\\|class\\|try\\|except\\|finally\\|with\\)\\_>[: \n\t]"
   "Matches the beginning of a compound statement or it's clause. ")
 
-(defconst py-clause-re "[ \t]*\\_<\\(else\\|elif\\|except\\|finally\\)\\_>[: \n\t]"
+(defconst py-clause-re "[ \t]*\\_<\\(if\\|else\\|elif\\|while\\|for\\|def\\|class\\|try\\|except\\|finally\\|with\\)\\_>[: \n\t]"
   "Matches the beginning of a compound statement's clause. ")
+
+;; (defconst py-clause-re "[ \t]*\\_<\\(else\\|elif\\|except\\|finally\\)\\_>[: \n\t]"
+;; "Matches the beginning of a compound statement's clause. ")
 
 (defconst py-elif-re "[ \t]*\\_<\\elif\\_>[: \n\t]"
   "Matches the beginning of a compound if-statement's clause exclusively. ")
@@ -4882,7 +4885,8 @@ Updated on each expansion.")
 (require 'virtualenv)
 ;;(require 'components-shell-completion)
 (require 'python-components-skeletons)
-(require 'python-components-forms)
+(require 'python-components-re-forms)
+(require 'python-components-exec-forms)
 (require 'python-extended-executes)
 (require 'python-mode-test)
 
@@ -5325,7 +5329,7 @@ With \\[universal-argument] 4 is called `py-switch-shell' see docu there.
   "Returns beginning position of function or class definition. "
   (interactive)
   (let ((here (point))
-        (pos (progn (py-beginning-of-def-or-class 'either)(point))))
+        (pos (progn (py-beginning-of-def-or-class)(point))))
     (prog1
         (point)
       (when (interactive-p) (message "%s" pos))
@@ -5391,7 +5395,7 @@ This function does not modify point or mark."
               (cond
                ((eq position 'bol) (beginning-of-line))
                ((eq position 'eol) (end-of-line))
-               ((eq position 'bod) (py-beginning-of-def-or-class 'either))
+               ((eq position 'bod) (py-beginning-of-def-or-class))
                ((eq position 'eod) (py-end-of-def-or-class 'either))
                ;; Kind of funny, I know, but useful for py-up-exception.
                ((eq position 'bob) (goto-char (point-min)))

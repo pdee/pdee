@@ -27,7 +27,7 @@
 
 ;; (unless py-mode-map
 ;;   (setq py-mode-map (make-sparse-keymap)))
-;; 
+;;
 ;; (define-key py-mode-map [(super s)] 'suche-settrace)
 ;; (define-key py-mode-map  [(super I)] 'py-indent-line)
 ;; (define-key py-mode-map  [(super i)] 'py-indent-forward-line)
@@ -58,7 +58,7 @@ should be of the form `#x...' where `x' is not a blank or a tab, and
   :type 'boolean
   :group 'python)
 
-(defun py-indent-forward-line (&optional arg) 
+(defun py-indent-forward-line (&optional arg)
   "Indent and move one line forward to next indentation.
 Returns column of line reached.
 
@@ -78,7 +78,7 @@ With \\[universal argument] just indent.
             (progn (forward-line 1))
             (when (and py-kill-empty-line (empty-line-p) (not (looking-at "[ \t]*\n[[:alpha:]]")) (not (eobp)))
               (delete-region (line-beginning-position) (line-end-position)))))))
-    (back-to-indentation) 
+    (back-to-indentation)
     (when (or (eq 4 (prefix-numeric-value arg)) (< orig (point))) (setq erg (current-column)))
     (when (interactive-p) (message "%s" erg))
     erg))
@@ -123,7 +123,7 @@ Affected by `py-dedent-keep-relative-column'. "
 (defun py-close-intern (regexp)
   "Core function, internal used only. "
   (let ((cui (ignore-errors (car (py-go-to-keyword regexp -1)))))
-    (py-end-base regexp (point) (interactive-p))
+    (py-end-base regexp (point))
     (forward-line 1)
     (if py-close-provides-newline
         (unless (empty-line-p) (split-line))
@@ -202,7 +202,7 @@ With interactive call, send it to the message buffer too. "
   "Jump to the beginning of class definition. Returns column. "
   (interactive "p")
   (let ((pos (ar-py-beginning-of-def-or-class t count)))
-        (when (interactive-p) (message "%s" pos))
+    (when (interactive-p) (message "%s" pos))
     pos))
 
 (defun ar-py-end-of-function (&optional class count)
@@ -286,13 +286,13 @@ With arg, do it that many times.
 
 (unless (functionp 'empty-line-p)
   (defun empty-line-p (&optional bound noerror count)
-  "Returns t if cursor is at an empty line, nil otherwise."
-  (interactive)
-  (save-excursion
-    (beginning-of-line)
-    (when (interactive-p)
-      (message "%s" (looking-at empty-line-p-chars)))
-    (looking-at empty-line-p-chars))))
+    "Returns t if cursor is at an empty line, nil otherwise."
+    (interactive)
+    (save-excursion
+      (beginning-of-line)
+      (when (interactive-p)
+        (message "%s" (looking-at empty-line-p-chars)))
+      (looking-at empty-line-p-chars))))
 
 (defun ar-py-documentation (w)
   "Launch PyDOC on the Word at Point"
@@ -331,7 +331,7 @@ With arg, do it that many times.
     (goto-char orig)
     (insert "pdb.set_trace()")))
 
-(defalias 'druck 'py-printform-insert)  
+(defalias 'druck 'py-printform-insert)
 (defun py-printform-insert (&optional arg)
   "Inserts a print statement out of current `(car kill-ring)' by default, inserts ARG instead if delivered. "
   (interactive "*")
@@ -346,7 +346,7 @@ With arg, do it that many times.
   (lexical-let* ((name (thing-at-point 'word))
                  (form (cond ((eq major-mode 'python-mode)
                               (concat "print \"" name ": %s \" % " name)))))
-    (delete-region (line-beginning-position) (line-end-position)) 
+    (delete-region (line-beginning-position) (line-end-position))
     (insert form))
   (forward-line 1)
   (back-to-indentation))

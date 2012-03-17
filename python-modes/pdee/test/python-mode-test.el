@@ -224,8 +224,8 @@
     (py-bug-tests-intern 'py-end-of-def-or-class-base arg teststring)))
 
 (defun py-end-of-def-or-class-base ()
-  (py-beginning-of-def-or-class t)
-  (py-end-of-def-or-class t)
+  (py-beginning-of-def-or-class)
+  (py-end-of-def-or-class)
   (assert (eq (point) 556) nil "py-end-of-def-or-class-test failed"))
 
 (defun py-electric-backspace-test (&optional arg load-branch-function)
@@ -516,8 +516,8 @@ def main(argv):
     (py-bug-tests-intern 'py-beginning-of-clause-base arg teststring)))
 
 (defun py-beginning-of-clause-base ()
-  (goto-char 295)
-  (assert (eq 267 (py-beginning-of-clause)) "py-beginning-of-clause-test failed"))
+  (goto-char 364)
+  (assert (eq 346 (py-beginning-of-clause)) "py-beginning-of-clause-test failed"))
 
 (defun py-end-of-clause-test (&optional arg load-branch-function)
   (interactive "p")
@@ -544,8 +544,8 @@ def main(argv):
     (py-bug-tests-intern 'py-end-of-clause-base arg teststring)))
 
 (defun py-end-of-clause-base ()
-  (goto-char 295)
-  (assert (eq 337 (py-end-of-clause)) "py-end-of-clause-test failed"))
+  (goto-char 364)
+  (assert (eq 412 (py-end-of-clause)) "py-end-of-clause-test failed"))
 
 (defun py-beginning-of-expression-test (&optional arg load-branch-function)
   (interactive "p")
