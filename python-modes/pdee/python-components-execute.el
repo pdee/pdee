@@ -198,7 +198,7 @@ interpreter.
                      "IPython")
                     (name)
                     )))
-    (unless (or nostars (string-match "^\*" erg))(setq erg (concat "*" erg "*")))
+    ;; (unless (or nostars (string-match "^\*" erg))(setq erg (concat "*" erg "*")))
     erg))
 
 (defun py-buffer-name-prepare (name &optional sepchar)

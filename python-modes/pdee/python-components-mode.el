@@ -5831,10 +5831,10 @@ ipython0.11-completion-command-string also covers version 0.12")
 (defun py-shell-complete ()
   "Complete word before point, if any. Otherwise insert TAB. "
   (interactive)
-  ;; make sure, a process exists
-  (unless (and (processp (get-process (py-process-name py-shell-name)))
-               (buffer-live-p (get-buffer (py-process-name py-shell-name))))
-    (py-shell nil nil py-shell-name))
+  ;; make sure, a process exists 
+  ;; (unless (and (processp (get-process (py-process-name py-shell-name)))
+  ;;              (buffer-live-p (get-buffer (py-process-name py-shell-name))))
+  ;;   (py-shell nil nil py-shell-name))
   (let ((word (py-dot-word-before-point))
         result)
     (if (string= word "")

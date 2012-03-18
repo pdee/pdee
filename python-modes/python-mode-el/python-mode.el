@@ -1039,7 +1039,7 @@ Used for determining the default in the next one.")
 (defvar py-not-partial-expression-skip-regexp " \\.=:#\t\r\n\f"
   "py-partial-expression assumes chars indicated may not compose a py-partial-expression, skip it. ")
 
-(defvar py-partial-expression-looking-regexp "[^ .=:#\t\r\n\f)]"
+(defvar py-partial-expression-looking-regexp "[^ .=:#\t\r\n\f]"
   "py-partial-expression assumes chars indicated possible composing a py-partial-expression, when looking-at or -back. ")
 ;; (setq py-partial-expression-looking-regexp "[^ .=:#\t\r\n\f)]")
 
@@ -6594,7 +6594,7 @@ Returns char found. "
                      "IPython")
                     (name)
                     )))
-    (unless (or nostars (string-match "^\*" erg))(setq erg (concat "*" erg "*")))
+    ;; (unless (or nostars (string-match "^\*" erg))(setq erg (concat "*" erg "*")))
     erg))
 
 ;; from ipython.el
@@ -10949,9 +10949,9 @@ and return collected output"
   "Complete word before point, if any. Otherwise insert TAB. "
   (interactive)
   ;; make sure, a process exists
-  (unless (and (processp (get-process (py-process-name py-shell-name)))
-               (buffer-live-p (get-buffer (py-process-name py-shell-name))))
-    (py-shell nil nil py-shell-name))
+  ;; (unless (and (processp (get-process (py-process-name py-shell-name)))
+  ;;              (buffer-live-p (get-buffer (py-process-name py-shell-name))))
+  ;;   (py-shell nil nil py-shell-name))
   (let ((word (py-dot-word-before-point))
         result)
     (if (string= word "")
