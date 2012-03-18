@@ -81,6 +81,7 @@
          'py-separator-char-test
          'split-windows-on-execute-p-test
          'switch-windows-on-execute-p-test
+         'py-menu-pyshell-test
          'py-install-directory-path-test
          'UnicodeEncodeError-python3-test
 
@@ -7223,6 +7224,18 @@ print(\"I'm the `split-windows-on-execute-p-test'\")
         (erg (current-window-configuration)))
     (py-execute-buffer)
     (assert (not (window-full-height-p)) nil "split-windows-on-execute-p-test failed")))
+
+(defun py-menu-pyshell-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+print(\"I'm the `py-menu-pyshell-test'\")
+"))
+    (when load-branch-function (funcall load-branch-function))
+    (py-bug-tests-intern 'py-menu-pyshell-base arg teststring)))
+
+(defun py-menu-pyshell-base ()
+  (assert (string= "PyShell" (prin1-to-string (car (nth 2 (nth 1 (cdr python-mode-map)))))) nil "py-menu-pyshell-test failed"))
 
 (provide 'python-mode-test)
 ;;; python-mode-test.el ends here

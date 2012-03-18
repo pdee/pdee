@@ -846,5 +846,14 @@ also insert a newline. "
       (byte-compile-file (or file (buffer-file-name))))
     (goto-char orig)))
 
+(defun until-found (search-string liste)
+  "Search liste for search-string until found. " 
+   (let ((liste liste) element)
+     (while liste
+       (if (member search-string (car liste))
+           (setq element (car liste) liste nil))
+       (setq liste (cdr liste)))
+     element))
+
 (provide 'misc-utils)
 ;;; misc-utils.el ends here

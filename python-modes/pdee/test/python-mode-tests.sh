@@ -168,6 +168,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-backward-into-nomenclature-caps-names-lp:919541-test \
 --funcall fourth-level-blocks-indent-incorrectly-lp-939577-test \
 --funcall py-mark-expression-marks-too-much-lp-941140-test \
+--funcall py-indent-comments-nil-ignored-lp-958721-test \
 \
 --funcall multiline-list-indent-test \
 --funcall py-beginning-of-block-test \
@@ -909,6 +910,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-shell-complete-test \
 --funcall py-completion-at-point-test \
 --funcall split-windows-on-execute-p-test \
+--funcall py-menu-pyshell-test \
 --funcall tqs-list-error-test \
 --funcall py-ipython-complete-lp:927136-test \
 --funcall master-file-not-honored-lp:794850-test \

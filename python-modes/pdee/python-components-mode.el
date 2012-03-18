@@ -955,7 +955,7 @@ Used for determining the default in the next one.")
 
 (defvar py-partial-expression-looking-regexp "[^ .=:#\t\r\n\f]"
   "py-partial-expression assumes chars indicated possible composing a py-partial-expression, when looking-at or -back. ")
-(setq py-partial-expression-looking-regexp "[^ .=:#\t\r\n\f]")
+;; (setq py-partial-expression-looking-regexp "[^ .=:#\t\r\n\f]")
 
 (defvar py-not-partial-expression-regexp "[ .=:#\t\r\n\f)]"
   "py-partial-expression assumes chars indicated probably will not compose a py-partial-expression. ")
@@ -2979,6 +2979,8 @@ Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-p
 
             ))
         map))
+
+(defvar py-mode-map python-mode-map)
 ;; Fixme: add toolbar stuff for useful things like symbol help, send
 ;; region, at least.  (Shouldn't be specific to Python, obviously.)
 ;; eric has items including: (un)indent, (un)comment, restart script,
@@ -2989,13 +2991,25 @@ Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-p
   :group 'python
   :type 'hook)
 
+;;; Hooks
+(remove-hook 'python-mode-hook 'python-setup-brm)
+;; (remove-hook 'python-mode-hook
+;; (lambda ()
+;; "Turn off Indent Tabs mode."
+;; (setq indent-tabs-mode nil)))
+
 (add-hook 'python-mode-hook
           (lambda ()
             (define-key python-mode-map [(meta p)] 'py-beginning-of-statement)
             (define-key python-mode-map [(meta n)] 'py-end-of-statement)
-            )
-          (set (make-local-variable 'beginning-of-defun-function) 'py-beginning-of-def-or-class)
-          (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class))
+            (setq indent-tabs-mode py-indent-tabs-mode)
+            (set (make-local-variable 'beginning-of-defun-function) 'py-beginning-of-def-or-class)
+            (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class)
+            ))
+
+(add-hook 'eldoc-mode-hook
+          (lambda () (run-python nil t)) ; need it running
+          nil t)
 
 (defvar python-shell-map
   (let ((map (copy-keymap comint-mode-map)))
@@ -4889,6 +4903,7 @@ Updated on each expansion.")
 (require 'python-components-exec-forms)
 (require 'python-extended-executes)
 (require 'python-mode-test)
+(require 'column-marker)
 
 (define-derived-mode python-mode fundamental-mode "Python"
   "Major mode for editing Python files.
@@ -4973,56 +4988,23 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   ;; (set (make-local-variable 'end-of-defun-function) 'python-end-of-defun)
   (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class)
   (add-hook 'which-func-functions 'python-which-func nil t)
+  (add-hook 'completion-at-point-functions
+            py-complete-function nil 'local)
+  (set (make-local-variable 'beginning-of-defun-function) 'py-beginning-of-def-or-class)
+  (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class)
+  (set (make-local-variable 'eldoc-documentation-function)
+       #'python-eldoc-function)
+  (set (make-local-variable 'skeleton-further-elements)
+       '((< '(backward-delete-char-untabify (min py-indent-offset
+                                                 (current-column))))
+         (^ '(- (1+ (current-indentation))))))
+  (set (make-local-variable 'tab-width) py-indent-offset)
   (remove-hook 'python-mode-hook 'imenu-add-menubar-index)
-  (remove-hook 'python-mode-hook
-               (lambda ()
-                 "Turn off Indent Tabs mode."
-                 (setq indent-tabs-mode nil)))
-  ;; (remove-hook 'python-mode-hook 'abbrev-mode)
-  (remove-hook 'python-mode-hook 'python-setup-brm)
-  (add-hook 'python-mode-hook
-            (lambda ()
-              (define-key python-mode-map [(meta p)] 'py-beginning-of-statement)
-              (define-key python-mode-map [(meta n)] 'py-end-of-statement))
-            (set (make-local-variable 'beginning-of-defun-function) 'py-beginning-of-def-or-class)
-            (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class))
-
-  (custom-add-option 'python-mode-hook 'py-imenu-create-index-new)
-  (custom-add-option 'python-mode-hook
-                     (lambda ()
-                       "Toggle Indent Tabs mode."
-                       (setq indent-tabs-mode py-indent-tabs-mode)))
-  (custom-add-option 'python-mode-hook 'abbrev-mode)
-  (custom-add-option 'python-mode-hook
-                     (lambda ()
-                       "Toggle Indent Tabs mode."
-                       (setq indent-tabs-mode py-indent-tabs-mode)))
-  (custom-add-option 'python-mode-hook 'abbrev-mode)
   (when (and imenu-create-index-p (fboundp 'imenu-add-to-menubar)(ignore-errors (require 'imenu)))
     (setq imenu-create-index-function #'py-imenu-create-index-new)
     (setq imenu-generic-expression py-imenu-generic-expression)
     (imenu-add-to-menubar "PyIndex")
     (add-hook 'python-mode-hook imenu-create-index-function))
-  (set (make-local-variable 'eldoc-documentation-function)
-       #'python-eldoc-function)
-  (add-hook 'eldoc-mode-hook
-	    (lambda () (run-python nil t)) ; need it running
-	    nil t)
-  ;; (add-hook 'completion-at-point-functions
-  ;; 'python-completion-at-point nil 'local)
-  (add-hook 'completion-at-point-functions
-            py-complete-function nil 'local)
-  (set (make-local-variable 'skeleton-further-elements)
-       '((< '(backward-delete-char-untabify (min py-indent-offset
-                                                 (current-column))))
-         (^ '(- (1+ (current-indentation))))))
-  ;; (when python-load-extended-executes-p
-  ;;   (add-hook 'python-mode-hook '(lambda ()(load (concat py-install-directory "/python-extended-executes.el") nil t))))
-  ;; Python defines TABs as being 8-char wide.
-  (add-hook 'python-mode-hook
-            '(lambda ()
-               (setq indent-tabs-mode py-indent-tabs-mode)))
-  (set (make-local-variable 'tab-width) py-indent-offset)
   ;; Now guess `py-indent-offset'
   (when py-smart-indentation
     (if (bobp)
@@ -5047,11 +5029,10 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (when py-hide-show-minor-mode-p (hs-minor-mode 1))
   ;; shell-complete end
   ;; Run the mode hook.  Note that py-mode-hook is deprecated.
-  (defvar py-mode-map python-mode-map)
-  (run-mode-hooks
-   (if python-mode-hook
-       'python-mode-hook
-     'py-mode-hook))
+  ;; (run-mode-hooks
+  ;; (if python-mode-hook
+  ;; 'python-mode-hook
+  ;; 'py-mode-hook))
   (when py-start-run-py-shell
     ;; py-shell may split window, provide restore
     (window-configuration-to-register 213465879)
@@ -5061,6 +5042,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
           (py-shell)
           (set-buffer oldbuf))))
     (jump-to-register 213465879))
+  (run-mode-hooks 'python-mode-hook)
   (when py-outline-minor-mode-p (outline-minor-mode 1))
   (when (interactive-p) (message "python-mode loaded from: %s" "python-components-mode.el")))
 
@@ -5831,7 +5813,7 @@ ipython0.11-completion-command-string also covers version 0.12")
 (defun py-shell-complete ()
   "Complete word before point, if any. Otherwise insert TAB. "
   (interactive)
-  ;; make sure, a process exists 
+  ;; make sure, a process exists
   ;; (unless (and (processp (get-process (py-process-name py-shell-name)))
   ;;              (buffer-live-p (get-buffer (py-process-name py-shell-name))))
   ;;   (py-shell nil nil py-shell-name))

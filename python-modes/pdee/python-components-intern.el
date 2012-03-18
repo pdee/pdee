@@ -102,6 +102,8 @@ When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
                       (current-column)
                     (forward-char -1)
                     (py-compute-indentation orig origline closing line inside repeat))))
+               ((and (looking-at "[ \t]*#") (looking-back "^[ \t]*")(not py-indent-comments)(eq origline (py-count-lines)))
+                0)
                ((and (looking-at "[ \t]*#") (looking-back "^[ \t]*")(not (eq (line-beginning-position) (point-min))))
                 (forward-line -1)
                 (end-of-line)

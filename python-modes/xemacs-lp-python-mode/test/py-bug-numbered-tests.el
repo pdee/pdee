@@ -125,6 +125,7 @@
          'py-forward-into-nomenclature-jumps-over-CamelCased-words-lp:919540-test
          'py-backward-into-nomenclature-caps-names-lp:919541-test
          'execute-buffer-ipython-fails-lp:928087-test
+         'py-indent-comments-nil-ignored-lp-958721-test
 
          'py-shell-invoking-python-lp:835151-test
          'py-shell-invoking-ipython-lp:835151-test
@@ -2461,6 +2462,23 @@ I am using version 6.0.4
 (defun py-mark-block-misbehave-lp-949310-base ()
   (goto-char 15)
   (assert (eq 14 (car (py-mark-block-or-clause))) nil "py-mark-block-misbehave-lp-949310-test failed"))
+
+(defun py-indent-comments-nil-ignored-lp-958721-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let (py-indent-comments 
+        (teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+if x > 0:
+    for i in range(100):
+        # print i
+"))
+  (when load-branch-function (funcall load-branch-function))
+  (py-bug-tests-intern 'py-indent-comments-nil-ignored-lp-958721-base arg teststring)))
+
+(defun py-indent-comments-nil-ignored-lp-958721-base ()
+  (goto-char 83)
+  (assert (eq 0 (py-compute-indentation)) nil "py-indent-comments-nil-ignored-lp-958721-test failed"))
+
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
