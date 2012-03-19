@@ -335,7 +335,7 @@ With arg, do it that many times.
 (defun py-printform-insert (&optional arg)
   "Inserts a print statement out of current `(car kill-ring)' by default, inserts ARG instead if delivered. "
   (interactive "*")
-  (lexical-let* ((name (string-strip (or arg (car kill-ring))))
+  (let* ((name (string-strip (or arg (car kill-ring))))
                  (form (cond ((eq major-mode 'python-mode)
                               (concat "print \"" name ": %s \" % " name)))))
     (insert form)))
@@ -343,7 +343,7 @@ With arg, do it that many times.
 (defun py-line-to-printform-python2 (&optional arg)
   "Transforms the item on current in a print statement. "
   (interactive "*")
-  (lexical-let* ((name (thing-at-point 'word))
+  (let* ((name (thing-at-point 'word))
                  (form (cond ((eq major-mode 'python-mode)
                               (concat "print \"" name ": %s \" % " name)))))
     (delete-region (line-beginning-position) (line-end-position))

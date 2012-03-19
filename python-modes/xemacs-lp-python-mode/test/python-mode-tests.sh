@@ -294,9 +294,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-indentation-of-statement-commandp-test \
 --funcall py-list-beginning-position-commandp-test \
 --funcall py-end-of-list-position-commandp-test \
---funcall py-preceding-line-backslashed-p-commandp-test \
---funcall py-current-line-backslashed-p-commandp-test \
---funcall py-escaped-commandp-test \
 --funcall py-in-triplequoted-string-p-commandp-test \
 --funcall py-in-string-p-commandp-test \
 --funcall py-in-statement-p-commandp-test \
@@ -889,7 +886,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-mark-block-misbehave-lp-949310-test \
 --funcall py-mark-partial-expression-commandp-test \
 --funcall py-shebang-consider-ipython-lp-849293-test \
---funcall py-insert-super-python3-test \
+--funcall py-insert-super-python2-test \
 --funcall py-shell-invoking-python-lp:835151-test \
 --funcall py-shell-invoking-ipython-lp:835151-test \
 --funcall py-shell-invoking-python3-lp:835151-test \
@@ -910,7 +907,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-shell-complete-test \
 --funcall py-completion-at-point-test \
 --funcall split-windows-on-execute-p-test \
---funcall py-menu-pyshell-test \
 --funcall tqs-list-error-test \
 --funcall py-ipython-complete-lp:927136-test \
 --funcall master-file-not-honored-lp:794850-test \
@@ -919,6 +915,8 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall UnicodeEncodeError-lp-550661-test \
 --funcall UnicodeEncodeError-python3-test \
 --funcall py-end-of-print-statement-test \
+--funcall py-insert-super-python3-test \
+--funcall py-menu-pyshell-test \
 
 else
 

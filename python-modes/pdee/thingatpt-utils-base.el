@@ -32,7 +32,7 @@
 ;; For example `ar-alnum-atpt' will return all
 ;; alpha-numerical chars below and around cursor as a
 ;; string. `ar-bounds-of-alnum-atpt' returns the
-;; borders of that string as a list and so on. 
+;; borders of that string as a list and so on.
 
 ;; Presently for a given THING the following is
 ;; implemented:
@@ -115,7 +115,7 @@
 ;; thing-at-point functions at the end
 ;; position. Otherwise, when cursor stops after word
 ;; (THING) as does `forward-word', `ar-word-atpt' would return
-;; nil. 
+;; nil.
 
 ;; To see other features, maybe try `ar-separate-list-atpt'
 ;; or `ar-comment-list-atpt' while point is inside a
@@ -128,7 +128,7 @@
 ;; are the kill-fns). Call th-test, th-mv-test
 ;; or th-delimtest over text. That-delimtest
 ;; changes but restores the buffer. Customize the speed
-;; of execution via `ar-th-test-delay' 
+;; of execution via `ar-th-test-delay'
 
 ;; Diffs to basics of required thingatpt.el:
 ;; `bounds-of-thing-at-point' is replaced by a new
@@ -145,7 +145,7 @@
 
 ;; If calling from a program `bounds-of-THING-atpt' is
 ;; recommended as an entry-point. It delivers a list
-;; with beg and end positions.  
+;; with beg and end positions.
 
 ;; In case of trouble, please send me a bug report. Any
 ;; ideas and comments welcome.
@@ -194,7 +194,7 @@
 
 ;; With universal argument [(control u)] delimiters --i.e. doublequotes, slashes, whatever-- are stripped.
 
-;; 
+;;
 
 ;; THING as a buffer substring is determined by
 ;; move-functions specified for thingatpt, called
@@ -204,12 +204,12 @@
 ;; thing-at-point functions that way. You need the
 ;; caller and both move forms:
 
-;; (defun MY-FORM-atpt (&optional arg) 
+;; (defun MY-FORM-atpt (&optional arg)
 ;;   " "
 ;;   (interactive "p")
 ;;   (ar-th 'MY-FORM arg))
 
-;; (put 'MY-FORM 'beginning-op-at 
+;; (put 'MY-FORM 'beginning-op-at
 ;;            (lambda () MY-FORWARD-MOVE-CODE))
 
 ;; (put 'MY-FORM 'end-op-at
@@ -225,18 +225,18 @@
 ;;        (search-backward "AAA" nil 'move 1)
 ;;        ;; step chars of search expression back
 ;;        (forward-char 3)))
-;; 
+;;
 ;; (put 'MY-FORM 'end-op-at
 ;;      (lambda ()
 ;;        (search-forward "BBB" nil 'move 1)
 ;;        (forward-char -3)))
 ;; together with the functions definition above, it's ready.
-;; M-x MY-FORM-atpt 
-;; (while point inside) you should see: 
-;; " Luckily detected a lot of things! " 
+;; M-x MY-FORM-atpt
+;; (while point inside) you should see:
+;; " Luckily detected a lot of things! "
 ;; in the minibuffer.
 
-;; Some keys 
+;; Some keys
 
 ;; (define-key emacs-lisp-mode-map [(control c)(q)] 'ar-parentized-forward-atpt)
 ;; (define-key emacs-lisp-mode-map [(super c)())] 'ar-symbol-parentize-atpt)
@@ -269,16 +269,16 @@
   :type 'boolean
   :group 'convenience)
 
-(defcustom ar-newlines-separate-after 1 
-  "How many newlines at-th-separate should insert at the end" 
-  
-  :type 'number 
+(defcustom ar-newlines-separate-after 1
+  "How many newlines at-th-separate should insert at the end"
+
+  :type 'number
   :group 'convenience)
 
-(defcustom ar-newlines-separate-before 1 
-  "How many newlines at-th-separate should insert at the end" 
-  
-  :type 'number 
+(defcustom ar-newlines-separate-before 1
+  "How many newlines at-th-separate should insert at the end"
+
+  :type 'number
   :group 'convenience)
 
 ;; (defvar th-orig 0
@@ -286,7 +286,7 @@
 
 (when (featurep 'xemacs)
   (defcustom alnum "\\sw"
-    "Rexexp to specify the character class 
+    "Rexexp to specify the character class
 Follows word-syntax. Use something like
    \"[a-zA-ZäöüßÄÖÜ0-9]\" maybe instead.
 `unibyte' and `multibyte' class is unused i.e. set to \".\""
@@ -295,7 +295,7 @@ Follows word-syntax. Use something like
 
 (when (featurep 'xemacs)
   (defcustom alpha "[a-zA-ZäöüßÄÖÜ]"
-    "Rexexp to specify the character class 
+    "Rexexp to specify the character class
 Change it, if you want to pick strings differently.
 XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
     :type 'regexp
@@ -303,7 +303,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 
 (when (featurep 'xemacs)
   (defcustom ascii "[\000-\177]"
-    "Rexexp to specify the character class 
+    "Rexexp to specify the character class
 Change it, if you want to pick strings differently.
 XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
     :type 'regexp
@@ -311,7 +311,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 
 (when (featurep 'xemacs)
   (defcustom blank "[ \t]"
-    "Rexexp to specify the character class 
+    "Rexexp to specify the character class
 Change it, if you want to pick strings differently.
 XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
     :type 'regexp
@@ -319,7 +319,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 
 (when (featurep 'xemacs)
   (defcustom cntrl "[\000-\006]\016-\037]"
-    "Rexexp to specify the character class 
+    "Rexexp to specify the character class
 Change it, if you want to pick strings differently.
 XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
     :type 'regexp
@@ -327,7 +327,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 
 (when (featurep 'xemacs)
   (defcustom digit "[0-9]"
-    "Rexexp to specify the character class 
+    "Rexexp to specify the character class
 Change it, if you want to pick strings differently.
 XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
     :type 'regexp
@@ -335,7 +335,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 
 (when (featurep 'xemacs)
   (defcustom graph "[\041-\177\241-\377]"
-    "Rexexp to specify the character class 
+    "Rexexp to specify the character class
 Change it, if you want to pick strings differently.
 XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
     :type 'regexp
@@ -343,7 +343,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 
 (when (featurep 'xemacs)
   (defcustom lower "[a-zäöüß]"
-    "Rexexp to specify the character class 
+    "Rexexp to specify the character class
 Change it, if you want to pick strings differently.
 XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
     :type 'regexp
@@ -351,7 +351,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 
 (when (featurep 'xemacs)
   (defcustom multibyte "[.]"
-    "Rexexp to specify the character class 
+    "Rexexp to specify the character class
 Change it, if you want to pick strings differently.
 XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
     :type 'regexp
@@ -359,7 +359,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 
 (when (featurep 'xemacs)
   (defcustom nonascii "[^\040-\177]"
-    "Rexexp to specify the character class 
+    "Rexexp to specify the character class
 Change it, if you want to pick strings differently.
 XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
     :type 'regexp
@@ -367,7 +367,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 
 (when (featurep 'xemacs)
   (defcustom print "[\041-\177\241-\377]"
-    "Rexexp to specify the character class 
+    "Rexexp to specify the character class
 Change it, if you want to pick strings differently.
 XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
     :type 'regexp
@@ -375,7 +375,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 
 (when (featurep 'xemacs)
   (defcustom punct "[.,-_:;?!]"
-    "Rexexp to specify the character class 
+    "Rexexp to specify the character class
 Change it, if you want to pick strings differently.
 XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
     :type 'regexp
@@ -383,7 +383,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 
 (when (featurep 'xemacs)
   (defcustom space "[ \t]"
-    "Rexexp to specify the character class 
+    "Rexexp to specify the character class
 Change it, if you want to pick strings differently.
 XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
     :type 'regexp
@@ -391,7 +391,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 
 (when (featurep 'xemacs)
   (defcustom unibyte "[.]"
-    "Rexexp to specify the character class 
+    "Rexexp to specify the character class
 Change it, if you want to pick strings differently.
 XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
     :type 'regexp
@@ -399,7 +399,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 
 (when (featurep 'xemacs)
   (defcustom upper "[A-ZÄÖÜ]"
-    "Rexexp to specify the character class 
+    "Rexexp to specify the character class
 Change it, if you want to pick strings differently.
 XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
     :type 'regexp
@@ -407,7 +407,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 
 (when (featurep 'xemacs)
   (defcustom xdigit "[0-9.,]"
-    "Rexexp to specify the character class 
+    "Rexexp to specify the character class
 Change it, if you want to pick strings differently.
 XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
     :type 'regexp
@@ -421,10 +421,10 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (featurep 'xemacs)
            (progn
-             (while 
+             (while
                  (and (not (bobp))(looking-at alnum))
                (forward-char -1))
-             (unless (bobp) (forward-char 1))) 
+             (unless (bobp) (forward-char 1)))
          (when
              (looking-at "[[:alnum:]]")
            (skip-chars-backward "[:alnum:]")(point)))))
@@ -433,7 +433,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (featurep 'xemacs)
            (progn (forward-char 1)
-                  (while 
+                  (while
                       (looking-at alnum)
                     (forward-char 1)))
 	 (skip-chars-forward "[:alnum:]")(point))))
@@ -443,12 +443,12 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
        (if (featurep 'xemacs)
            (progn
 	     (cond ((looking-at alnum)
-		    (while 
+		    (while
 			(looking-at alnum)
 		      (forward-char 1)))
 		   (t (while (not (looking-at alnum))
 			(forward-char 1))
-		      (while 
+		      (while
 			  (looking-at alnum)
 			(forward-char 1))))
 	     (forward-char -1))
@@ -459,12 +459,12 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
        (if (featurep 'xemacs)
            (progn
 	     (cond ((looking-at alnum)
-		    (while 
+		    (while
 			(looking-at alnum)
 		      (forward-char -1)))
 		   (t (while (not (looking-at alnum))
 			(forward-char -1))
-		      (while 
+		      (while
 			  (looking-at alnum)
 			(forward-char -1))))
 	     (forward-char 1))
@@ -481,10 +481,10 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (featurep 'xemacs)
            (progn
-             (while 
+             (while
                  (and (not (bobp))(looking-at alpha))
                (forward-char -1))
-             (unless (bobp) (forward-char 1))) 
+             (unless (bobp) (forward-char 1)))
          (when
              (looking-at "[[:alpha:]]")
            (skip-chars-backward "[:alpha:]")(point)))))
@@ -493,7 +493,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (featurep 'xemacs)
            (progn (forward-char 1)
-                  (while 
+                  (while
                       (looking-at alpha)
                     (forward-char 1)))
 	 (skip-chars-forward "[:alpha:]")(point))))
@@ -503,12 +503,12 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
        (if (featurep 'xemacs)
            (progn
 	     (cond ((looking-at alpha)
-		    (while 
+		    (while
 			(looking-at alpha)
 		      (forward-char 1)))
 		   (t (while (not (looking-at alpha))
 			(forward-char 1))
-		      (while 
+		      (while
 			  (looking-at alpha)
 			(forward-char 1))))
 	     (forward-char -1))
@@ -519,12 +519,12 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
        (if (featurep 'xemacs)
            (progn
 	     (cond ((looking-at alpha)
-		    (while 
+		    (while
 			(looking-at alpha)
 		      (forward-char -1)))
 		   (t (while (not (looking-at alpha))
 			(forward-char -1))
-		      (while 
+		      (while
 			  (looking-at alpha)
 			(forward-char -1))))
 	     (forward-char 1))
@@ -541,10 +541,10 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (featurep 'xemacs)
            (progn
-             (while 
+             (while
                  (and (not (bobp))(looking-at ascii))
                (forward-char -1))
-             (unless (bobp) (forward-char 1))) 
+             (unless (bobp) (forward-char 1)))
          (when
              (looking-at "[[:ascii:]]")
            (skip-chars-backward "[:ascii:]")(point)))))
@@ -553,7 +553,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (featurep 'xemacs)
            (progn (forward-char 1)
-                  (while 
+                  (while
                       (looking-at ascii)
                     (forward-char 1)))
 	 (skip-chars-forward "[:ascii:]")(point))))
@@ -563,12 +563,12 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
        (if (featurep 'xemacs)
            (progn
 	     (cond ((looking-at ascii)
-		    (while 
+		    (while
 			(looking-at ascii)
 		      (forward-char 1)))
 		   (t (while (not (looking-at ascii))
 			(forward-char 1))
-		      (while 
+		      (while
 			  (looking-at ascii)
 			(forward-char 1))))
 	     (forward-char -1))
@@ -579,12 +579,12 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
        (if (featurep 'xemacs)
            (progn
 	     (cond ((looking-at ascii)
-		    (while 
+		    (while
 			(looking-at ascii)
 		      (forward-char -1)))
 		   (t (while (not (looking-at ascii))
 			(forward-char -1))
-		      (while 
+		      (while
 			  (looking-at ascii)
 			(forward-char -1))))
 	     (forward-char 1))
@@ -601,10 +601,10 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (featurep 'xemacs)
            (progn
-             (while 
+             (while
                  (and (not (bobp))(looking-at blank))
                (forward-char -1))
-             (unless (bobp) (forward-char 1))) 
+             (unless (bobp) (forward-char 1)))
          (when
              (looking-at "[[:blank:]]")
            (skip-chars-backward "[:blank:]")(point)))))
@@ -613,7 +613,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (featurep 'xemacs)
            (progn (forward-char 1)
-                  (while 
+                  (while
                       (looking-at blank)
                     (forward-char 1)))
 	 (skip-chars-forward "[:blank:]")(point))))
@@ -623,12 +623,12 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
        (if (featurep 'xemacs)
            (progn
 	     (cond ((looking-at blank)
-		    (while 
+		    (while
 			(looking-at blank)
 		      (forward-char 1)))
 		   (t (while (not (looking-at blank))
 			(forward-char 1))
-		      (while 
+		      (while
 			  (looking-at blank)
 			(forward-char 1))))
 	     (forward-char -1))
@@ -639,12 +639,12 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
        (if (featurep 'xemacs)
            (progn
 	     (cond ((looking-at blank)
-		    (while 
+		    (while
 			(looking-at blank)
 		      (forward-char -1)))
 		   (t (while (not (looking-at blank))
 			(forward-char -1))
-		      (while 
+		      (while
 			  (looking-at blank)
 			(forward-char -1))))
 	     (forward-char 1))
@@ -661,10 +661,10 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (featurep 'xemacs)
            (progn
-             (while 
+             (while
                  (and (not (bobp))(looking-at cntrl))
                (forward-char -1))
-             (unless (bobp) (forward-char 1))) 
+             (unless (bobp) (forward-char 1)))
          (when
              (looking-at "[[:cntrl:]]")
            (skip-chars-backward "[:cntrl:]")(point)))))
@@ -673,7 +673,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (featurep 'xemacs)
            (progn (forward-char 1)
-                  (while 
+                  (while
                       (looking-at cntrl)
                     (forward-char 1)))
 	 (skip-chars-forward "[:cntrl:]")(point))))
@@ -683,12 +683,12 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
        (if (featurep 'xemacs)
            (progn
 	     (cond ((looking-at cntrl)
-		    (while 
+		    (while
 			(looking-at cntrl)
 		      (forward-char 1)))
 		   (t (while (not (looking-at cntrl))
 			(forward-char 1))
-		      (while 
+		      (while
 			  (looking-at cntrl)
 			(forward-char 1))))
 	     (forward-char -1))
@@ -699,12 +699,12 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
        (if (featurep 'xemacs)
            (progn
 	     (cond ((looking-at cntrl)
-		    (while 
+		    (while
 			(looking-at cntrl)
 		      (forward-char -1)))
 		   (t (while (not (looking-at cntrl))
 			(forward-char -1))
-		      (while 
+		      (while
 			  (looking-at cntrl)
 			(forward-char -1))))
 	     (forward-char 1))
@@ -721,10 +721,10 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (featurep 'xemacs)
            (progn
-             (while 
+             (while
                  (and (not (bobp))(looking-at digit))
                (forward-char -1))
-             (unless (bobp) (forward-char 1))) 
+             (unless (bobp) (forward-char 1)))
          (when
              (looking-at "[[:digit:]]")
            (skip-chars-backward "[:digit:]")(point)))))
@@ -733,7 +733,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (featurep 'xemacs)
            (progn (forward-char 1)
-                  (while 
+                  (while
                       (looking-at digit)
                     (forward-char 1)))
 	 (skip-chars-forward "[:digit:]")(point))))
@@ -743,12 +743,12 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
        (if (featurep 'xemacs)
            (progn
 	     (cond ((looking-at digit)
-		    (while 
+		    (while
 			(looking-at digit)
 		      (forward-char 1)))
 		   (t (while (not (looking-at digit))
 			(forward-char 1))
-		      (while 
+		      (while
 			  (looking-at digit)
 			(forward-char 1))))
 	     (forward-char -1))
@@ -759,12 +759,12 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
        (if (featurep 'xemacs)
            (progn
 	     (cond ((looking-at digit)
-		    (while 
+		    (while
 			(looking-at digit)
 		      (forward-char -1)))
 		   (t (while (not (looking-at digit))
 			(forward-char -1))
-		      (while 
+		      (while
 			  (looking-at digit)
 			(forward-char -1))))
 	     (forward-char 1))
@@ -781,10 +781,10 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (featurep 'xemacs)
            (progn
-             (while 
+             (while
                  (and (not (bobp))(looking-at graph))
                (forward-char -1))
-             (unless (bobp) (forward-char 1))) 
+             (unless (bobp) (forward-char 1)))
          (when
              (looking-at "[[:graph:]]")
            (skip-chars-backward "[:graph:]")(point)))))
@@ -793,7 +793,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (featurep 'xemacs)
            (progn (forward-char 1)
-                  (while 
+                  (while
                       (looking-at graph)
                     (forward-char 1)))
 	 (skip-chars-forward "[:graph:]")(point))))
@@ -803,12 +803,12 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
        (if (featurep 'xemacs)
            (progn
 	     (cond ((looking-at graph)
-		    (while 
+		    (while
 			(looking-at graph)
 		      (forward-char 1)))
 		   (t (while (not (looking-at graph))
 			(forward-char 1))
-		      (while 
+		      (while
 			  (looking-at graph)
 			(forward-char 1))))
 	     (forward-char -1))
@@ -819,12 +819,12 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
        (if (featurep 'xemacs)
            (progn
 	     (cond ((looking-at graph)
-		    (while 
+		    (while
 			(looking-at graph)
 		      (forward-char -1)))
 		   (t (while (not (looking-at graph))
 			(forward-char -1))
-		      (while 
+		      (while
 			  (looking-at graph)
 			(forward-char -1))))
 	     (forward-char 1))
@@ -841,10 +841,10 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (featurep 'xemacs)
            (progn
-             (while 
+             (while
                  (and (not (bobp))(looking-at lower))
                (forward-char -1))
-             (unless (bobp) (forward-char 1))) 
+             (unless (bobp) (forward-char 1)))
          (when
              (looking-at "[[:lower:]]")
            (skip-chars-backward "[:lower:]")(point)))))
@@ -853,7 +853,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (featurep 'xemacs)
            (progn (forward-char 1)
-                  (while 
+                  (while
                       (looking-at lower)
                     (forward-char 1)))
 	 (skip-chars-forward "[:lower:]")(point))))
@@ -863,12 +863,12 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
        (if (featurep 'xemacs)
            (progn
 	     (cond ((looking-at lower)
-		    (while 
+		    (while
 			(looking-at lower)
 		      (forward-char 1)))
 		   (t (while (not (looking-at lower))
 			(forward-char 1))
-		      (while 
+		      (while
 			  (looking-at lower)
 			(forward-char 1))))
 	     (forward-char -1))
@@ -879,12 +879,12 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
        (if (featurep 'xemacs)
            (progn
 	     (cond ((looking-at lower)
-		    (while 
+		    (while
 			(looking-at lower)
 		      (forward-char -1)))
 		   (t (while (not (looking-at lower))
 			(forward-char -1))
-		      (while 
+		      (while
 			  (looking-at lower)
 			(forward-char -1))))
 	     (forward-char 1))
@@ -901,10 +901,10 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (featurep 'xemacs)
            (progn
-             (while 
+             (while
                  (and (not (bobp))(looking-at nonascii))
                (forward-char -1))
-             (unless (bobp) (forward-char 1))) 
+             (unless (bobp) (forward-char 1)))
          (when
              (looking-at "[[:nonascii:]]")
            (skip-chars-backward "[:nonascii:]")(point)))))
@@ -913,7 +913,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (featurep 'xemacs)
            (progn (forward-char 1)
-                  (while 
+                  (while
                       (looking-at nonascii)
                     (forward-char 1)))
 	 (skip-chars-forward "[:nonascii:]")(point))))
@@ -923,12 +923,12 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
        (if (featurep 'xemacs)
            (progn
 	     (cond ((looking-at nonascii)
-		    (while 
+		    (while
 			(looking-at nonascii)
 		      (forward-char 1)))
 		   (t (while (not (looking-at nonascii))
 			(forward-char 1))
-		      (while 
+		      (while
 			  (looking-at nonascii)
 			(forward-char 1))))
 	     (forward-char -1))
@@ -939,12 +939,12 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
        (if (featurep 'xemacs)
            (progn
 	     (cond ((looking-at nonascii)
-		    (while 
+		    (while
 			(looking-at nonascii)
 		      (forward-char -1)))
 		   (t (while (not (looking-at nonascii))
 			(forward-char -1))
-		      (while 
+		      (while
 			  (looking-at nonascii)
 			(forward-char -1))))
 	     (forward-char 1))
@@ -961,10 +961,10 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (featurep 'xemacs)
            (progn
-             (while 
+             (while
                  (and (not (bobp))(looking-at print))
                (forward-char -1))
-             (unless (bobp) (forward-char 1))) 
+             (unless (bobp) (forward-char 1)))
          (when
              (looking-at "[[:print:]]")
            (skip-chars-backward "[:print:]")(point)))))
@@ -973,7 +973,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (featurep 'xemacs)
            (progn (forward-char 1)
-                  (while 
+                  (while
                       (looking-at print)
                     (forward-char 1)))
 	 (skip-chars-forward "[:print:]")(point))))
@@ -983,12 +983,12 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
        (if (featurep 'xemacs)
            (progn
 	     (cond ((looking-at print)
-		    (while 
+		    (while
 			(looking-at print)
 		      (forward-char 1)))
 		   (t (while (not (looking-at print))
 			(forward-char 1))
-		      (while 
+		      (while
 			  (looking-at print)
 			(forward-char 1))))
 	     (forward-char -1))
@@ -999,12 +999,12 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
        (if (featurep 'xemacs)
            (progn
 	     (cond ((looking-at print)
-		    (while 
+		    (while
 			(looking-at print)
 		      (forward-char -1)))
 		   (t (while (not (looking-at print))
 			(forward-char -1))
-		      (while 
+		      (while
 			  (looking-at print)
 			(forward-char -1))))
 	     (forward-char 1))
@@ -1021,10 +1021,10 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (featurep 'xemacs)
            (progn
-             (while 
+             (while
                  (and (not (bobp))(looking-at punct))
                (forward-char -1))
-             (unless (bobp) (forward-char 1))) 
+             (unless (bobp) (forward-char 1)))
          (when
              (looking-at "[[:punct:]]")
            (skip-chars-backward "[:punct:]")(point)))))
@@ -1033,7 +1033,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (featurep 'xemacs)
            (progn (forward-char 1)
-                  (while 
+                  (while
                       (looking-at punct)
                     (forward-char 1)))
 	 (skip-chars-forward "[:punct:]")(point))))
@@ -1043,12 +1043,12 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
        (if (featurep 'xemacs)
            (progn
 	     (cond ((looking-at punct)
-		    (while 
+		    (while
 			(looking-at punct)
 		      (forward-char 1)))
 		   (t (while (not (looking-at punct))
 			(forward-char 1))
-		      (while 
+		      (while
 			  (looking-at punct)
 			(forward-char 1))))
 	     (forward-char -1))
@@ -1059,12 +1059,12 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
        (if (featurep 'xemacs)
            (progn
 	     (cond ((looking-at punct)
-		    (while 
+		    (while
 			(looking-at punct)
 		      (forward-char -1)))
 		   (t (while (not (looking-at punct))
 			(forward-char -1))
-		      (while 
+		      (while
 			  (looking-at punct)
 			(forward-char -1))))
 	     (forward-char 1))
@@ -1081,10 +1081,10 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (featurep 'xemacs)
            (progn
-             (while 
+             (while
                  (and (not (bobp))(looking-at space))
                (forward-char -1))
-             (unless (bobp) (forward-char 1))) 
+             (unless (bobp) (forward-char 1)))
          (when
              (looking-at "[[:space:]]")
            (skip-chars-backward "[:space:]")(point)))))
@@ -1093,7 +1093,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (featurep 'xemacs)
            (progn (forward-char 1)
-                  (while 
+                  (while
                       (looking-at space)
                     (forward-char 1)))
 	 (skip-chars-forward "[:space:]")(point))))
@@ -1103,12 +1103,12 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
        (if (featurep 'xemacs)
            (progn
 	     (cond ((looking-at space)
-		    (while 
+		    (while
 			(looking-at space)
 		      (forward-char 1)))
 		   (t (while (not (looking-at space))
 			(forward-char 1))
-		      (while 
+		      (while
 			  (looking-at space)
 			(forward-char 1))))
 	     (forward-char -1))
@@ -1119,12 +1119,12 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
        (if (featurep 'xemacs)
            (progn
 	     (cond ((looking-at space)
-		    (while 
+		    (while
 			(looking-at space)
 		      (forward-char -1)))
 		   (t (while (not (looking-at space))
 			(forward-char -1))
-		      (while 
+		      (while
 			  (looking-at space)
 			(forward-char -1))))
 	     (forward-char 1))
@@ -1141,10 +1141,10 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (featurep 'xemacs)
            (progn
-             (while 
+             (while
                  (and (not (bobp))(looking-at upper))
                (forward-char -1))
-             (unless (bobp) (forward-char 1))) 
+             (unless (bobp) (forward-char 1)))
          (when
              (looking-at "[[:upper:]]")
            (skip-chars-backward "[:upper:]")(point)))))
@@ -1153,7 +1153,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (featurep 'xemacs)
            (progn (forward-char 1)
-                  (while 
+                  (while
                       (looking-at upper)
                     (forward-char 1)))
 	 (skip-chars-forward "[:upper:]")(point))))
@@ -1163,12 +1163,12 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
        (if (featurep 'xemacs)
            (progn
 	     (cond ((looking-at upper)
-		    (while 
+		    (while
 			(looking-at upper)
 		      (forward-char 1)))
 		   (t (while (not (looking-at upper))
 			(forward-char 1))
-		      (while 
+		      (while
 			  (looking-at upper)
 			(forward-char 1))))
 	     (forward-char -1))
@@ -1179,12 +1179,12 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
        (if (featurep 'xemacs)
            (progn
 	     (cond ((looking-at upper)
-		    (while 
+		    (while
 			(looking-at upper)
 		      (forward-char -1)))
 		   (t (while (not (looking-at upper))
 			(forward-char -1))
-		      (while 
+		      (while
 			  (looking-at upper)
 			(forward-char -1))))
 	     (forward-char 1))
@@ -1201,10 +1201,10 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (featurep 'xemacs)
            (progn
-             (while 
+             (while
                  (and (not (bobp))(looking-at xdigit))
                (forward-char -1))
-             (unless (bobp) (forward-char 1))) 
+             (unless (bobp) (forward-char 1)))
          (when
              (looking-at "[[:xdigit:]]")
            (skip-chars-backward "[:xdigit:]")(point)))))
@@ -1213,7 +1213,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (if (featurep 'xemacs)
            (progn (forward-char 1)
-                  (while 
+                  (while
                       (looking-at xdigit)
                     (forward-char 1)))
 	 (skip-chars-forward "[:xdigit:]")(point))))
@@ -1223,12 +1223,12 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
        (if (featurep 'xemacs)
            (progn
 	     (cond ((looking-at xdigit)
-		    (while 
+		    (while
 			(looking-at xdigit)
 		      (forward-char 1)))
 		   (t (while (not (looking-at xdigit))
 			(forward-char 1))
-		      (while 
+		      (while
 			  (looking-at xdigit)
 			(forward-char 1))))
 	     (forward-char -1))
@@ -1239,12 +1239,12 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
        (if (featurep 'xemacs)
            (progn
 	     (cond ((looking-at xdigit)
-		    (while 
+		    (while
 			(looking-at xdigit)
 		      (forward-char -1)))
 		   (t (while (not (looking-at xdigit))
 			(forward-char -1))
-		      (while 
+		      (while
 			  (looking-at xdigit)
 			(forward-char -1))))
 	     (forward-char 1))
@@ -2244,7 +2244,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 ;; Angled
 (put 'angled-no-nest 'beginning-op-at
      (lambda ()
-       (let ((orig (point)) 
+       (let ((orig (point))
              (forward-form (cond ((equal (char-after) ?>) "<")
                                  ((equal (char-after) ?<) ">"))))
          (if (ignore-errors (looking-at "[<>]"))
@@ -2321,7 +2321,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 ;; Comment
 (put 'comment 'beginning-op-at
      (lambda ()
-       (let* ((orig (point)) 
+       (let* ((orig (point))
               (nesting (not (or (string= "" comment-end)(eq 10 comment-end))))
               (erg (when nesting
                      (if (looking-at comment-start)
@@ -2335,10 +2335,10 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
                        (setq erg (nth 8 (syntax-ppss)))
                        (goto-char erg)
                        (skip-chars-backward " \t\r\n\f")))
-           (skip-chars-forward " \t\r\n\f") 
+           (skip-chars-forward " \t\r\n\f")
            (setq erg (point)))
          ;; (while (and (not (bobp))(forward-line -1)(looking-at (concat "[ \t]*" (regexp-quote comment-start))))
-         ;;   (setq erg (point)))) 
+         ;;   (setq erg (point))))
          (when erg (goto-char erg))
          erg)))
 
@@ -2355,7 +2355,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
            (when
                (looking-at (concat "[ \t]*" (regexp-quote comment-start)))
              (setq erg (line-end-position))
-             (while (and (not (eobp))(forward-line 1)(looking-at (concat "[ \t]*" (regexp-quote comment-start)))) 
+             (while (and (not (eobp))(forward-line 1)(looking-at (concat "[ \t]*" (regexp-quote comment-start))))
                (setq erg (line-end-position)))))
          erg)))
 
@@ -2374,7 +2374,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 ;; Author: Francis J. Wright <F.J.Wright at qmul.ac.uk>
 ;; URL: http://centaur.maths.qmul.ac.uk/Emacs/
 (defcustom ar-csv-separator-atpt ";"
-  "Char to distinguish datasets in a `comma`-separated row" 
+  "Char to distinguish datasets in a `comma`-separated row"
   :type 'string
   :group 'convenience)
 ;; (when (boundp 'csv-separators)
@@ -2396,7 +2396,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
        (when
            (and (not (eq 32 (if (featurep 'xemacs)
                                 (encode-char (char-after) 'ucs)
-                              (char-after)))) 
+                              (char-after))))
                 (or (bobp)
                     (eq 32 (if (featurep 'xemacs)
                                (encode-char (char-before) 'ucs)
@@ -2404,7 +2404,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
          (forward-char 1)
          ;; as the bounds-function checks position, correct it
          ;; (setq th-orig 1)
-         ) 
+         )
        (skip-chars-backward "0-9 .-")
        (skip-chars-forward " ")(point)))
 
@@ -2423,7 +2423,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (let ((begdel (concat (regexp-quote th-beg-delimiter) ar-delimiters-atpt))
              pos)
-         (cond ((looking-at "[({\\[]")) 
+         (cond ((looking-at "[({\\[]"))
                ((looking-at "]")
                 (beginning-of-form-base "[" "]" nil 'move nil nil t))
                ((looking-at "}")
@@ -2441,7 +2441,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
                (t (while (and (not (bobp))(re-search-backward (concat "[" begdel "]") nil 'move 1)(looking-at "\""))
                     (re-search-backward (concat "[" begdel "]") nil 'move 1))
                   (if (looking-at (concat "[" begdel "]"))
-                      (ar-set-delimiter-zeichen) 
+                      (ar-set-delimiter-zeichen)
                     (setq ar-delimiter-zeichen-atpt nil)))))))
 
 (put 'delimited 'end-op-at
@@ -2455,8 +2455,8 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
               (forward-list))
              (t (forward-char 1)
                 (search-forward (char-to-string ar-delimiter-zeichen-atpt) nil nil 1)))))
-  
-  (defun ar-set-delimiter-zeichen ()
+
+(defun ar-set-delimiter-zeichen ()
   (setq ar-delimiter-zeichen-atpt
         (if (featurep 'xemacs)
             (encode-char (char-after) 'ucs)
@@ -2492,26 +2492,26 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
        (when
            (looking-at "[^ \t]")
          (re-search-backward "[,;][[:graph:]]\\|<[[:graph:]]\\|^[[:graph:]]\\|[^[:graph:]][[:graph:]]" (line-beginning-position) t 1)
-         (when (looking-at "[[:space:];,<]") 
-           (forward-char 1))))) 
-  
-  (put 'email 'end-op-at 
-  (lambda ()
-    (when (looking-at "[ <]\\{0,1\\}\\([\041-\132\136-\176]+@[\041-\132\136-\176]+\\)[;,> \t\n]*")
-    (goto-char (match-end 1))
-    (skip-chars-backward "[[:punct:]]"))(point)))
+         (when (looking-at "[[:space:];,<]")
+           (forward-char 1)))))
+
+(put 'email 'end-op-at
+     (lambda ()
+       (when (looking-at "[ <]\\{0,1\\}\\([\041-\132\136-\176]+@[\041-\132\136-\176]+\\)[;,> \t\n]*")
+         (goto-char (match-end 1))
+         (skip-chars-backward "[[:punct:]]"))(point)))
 
 ;; Filename
 (if (featurep 'xemacs)
-    (defcustom thingatpt-file-name-chars "-~/A-Za-z0-9ÄÖÜäöüß_.$?={}#%,: " 
+    (defcustom thingatpt-file-name-chars "-~/A-Za-z0-9ÄÖÜäöüß_.$?={}#%,: "
       "Characters forseen in filenames. "
       :type 'string
       :group 'convenience)
-  
-  (defcustom thingatpt-file-name-chars "-~/[:alnum:]_.$?={}#%,:" 
+
+  (defcustom thingatpt-file-name-chars "-~/[:alnum:]_.$?={}#%,:"
     "Characters forseen in filenames. "
     :type 'string
-    :group 'convenience)) 
+    :group 'convenience))
 
 (put 'filename 'beginning-op-at
      (lambda ()
@@ -2545,7 +2545,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (end-of-defun)
        (when (string= major-mode "emacs-lisp-mode")
-         (skip-chars-backward " \t\r\n"))(point))) 
+         (skip-chars-backward " \t\r\n"))(point)))
 
 ;; IP
 (put 'ip 'beginning-op-at
@@ -2575,12 +2575,12 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 (put 'line 'end-op-at (lambda () (end-of-line)(point)))
 
 ;; Markup
-(defcustom markup-startstring-atpt "<[^<>]+>" 
+(defcustom markup-startstring-atpt "<[^<>]+>"
   "Defining the beginning of a markup using ar-markup-atpt functions. "
   :type 'string
   :group 'convenience)
 
-(defcustom markup-endstring-atpt "</[^<>]+>" 
+(defcustom markup-endstring-atpt "</[^<>]+>"
   "Defining the end of a markup using ar-markup-atpt functions. "
   :type 'string
   :group 'convenience)
@@ -2593,10 +2593,10 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 
 (put 'markup 'end-op-at
      (lambda ()
-       (lexical-let ((this-end (when (looking-at markup-startstring-atpt) 
-                                 (match-string-no-properties 0))))
+       (let ((this-end (when (looking-at markup-startstring-atpt)
+                         (match-string-no-properties 0))))
          (when (stringp this-end)
-           (setq this-end (replace-regexp-in-string "<" "</" this-end)) 
+           (setq this-end (replace-regexp-in-string "<" "</" this-end))
            (end-of-form-base markup-startstring-atpt this-end nil 'move nil nil t)))))
 
 ;; Markup-no-nest
@@ -2609,7 +2609,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 ;;            (forward-char -1))
 ;;          (when (ignore-errors (looking-at markup-startstring-atpt))
 ;;            (point)))))
-;; 
+;;
 ;; (put 'markup-no-nest 'end-op-at
 ;;      (lambda ()
 ;;        (when (ignore-errors (looking-at markup-startstring-atpt))
@@ -2628,7 +2628,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 
 (put 'ml-data 'end-op-at
      (lambda ()
-       (when (ignore-errors (looking-at markup-startstring-atpt)) 
+       (when (ignore-errors (looking-at markup-startstring-atpt))
          (end-of-form-base markup-startstring-atpt markup-endstring-atpt nil 'move nil nil t)
          (re-search-backward markup-endstring-atpt nil 'move 1))))
 
@@ -2690,7 +2690,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
        (when (looking-at (concat "[" ar-name-chars-atpt "]"))
          (skip-chars-forward ar-name-chars-atpt)
          ;; name may contain char `:' but not at the end, as
-         ;; messages tend to insert it there 
+         ;; messages tend to insert it there
          (skip-chars-forward ar-name-chars-atpt)
          (skip-chars-backward ":")
          (point))))
@@ -2735,13 +2735,13 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
        (when
            (and (looking-at "[0-9 \t.()-]")
                 (not (eq (char-before) ?+)))
-         (re-search-backward "[^0-9 \t.()-][0-9 ()\t-]+" (line-beginning-position) nil 1) (forward-char 1)(point)))) 
+         (re-search-backward "[^0-9 \t.()-][0-9 ()\t-]+" (line-beginning-position) nil 1) (forward-char 1)(point))))
 
 (put 'phone 'end-op-at
      (lambda ()
        (when
            (looking-at "[0-9;, \t()-]")
-         (re-search-forward "[0-9 \t.()-]+[^0-9 \t-]" (1+ (line-end-position)) nil 1) (forward-char -1))(point))) 
+         (re-search-forward "[0-9 \t.()-]+[^0-9 \t-]" (1+ (line-end-position)) nil 1) (forward-char -1))(point)))
 
 ;; Region
 (defvar ar-region-end-atpt nil)
@@ -2778,7 +2778,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
        (if ar-use-parse-partial-sexp
            (let* ((pps (parse-partial-sexp (point-min) (point)))
                   (pos8 (nth 8 pps)))
-             (when (nth 3 pps) 
+             (when (nth 3 pps)
                (goto-char pos8)))
          (when
              (re-search-backward "\\([^\\\\]\\)\\(\"\\)" nil 'move 1)
@@ -2790,14 +2790,14 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (forward-char 1)
        (if ar-use-parse-partial-sexp
-           (let* ((orig (point)) 
+           (let* ((orig (point))
                   (pps (parse-partial-sexp (point-min) (point)))
                   (char (char-to-string (nth 3 pps)))
                   (done t))
              (progn
                (while (and (not (eobp)) (prog1 done (forward-char 1))
                            (setq done (skip-chars-forward (concat "^" char)))
-                           
+
                            (nth 5 (parse-partial-sexp orig (point)))))
                (when (and (< orig (point))(looking-at char))
                  (list (match-beginning 0) (match-end 0)))))
@@ -2813,11 +2813,11 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (when (looking-at ar-beginning-sh-struct-atpt)
          (sh-end-of-form)
-         (forward-char 1)(point)))) 
+         (forward-char 1)(point))))
 
 (put 'sh-struct 'forward-op-at
      (lambda ()
-       (re-search-forward ar-beginning-sh-struct-atpt nil 'move 1))) 
+       (re-search-forward ar-beginning-sh-struct-atpt nil 'move 1)))
 
 (put 'sh-struct 'backward-op-at
      (lambda ()
@@ -2846,8 +2846,8 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (let* ((triplequoted "\"\"\"\\|'''")
               (erg (looking-at triplequoted)))
-         (when erg 
-           (setq triplequoted (match-string-no-properties 0)) 
+         (when erg
+           (setq triplequoted (match-string-no-properties 0))
            (goto-char (match-end 0))
            (setq erg (end-of-form-base triplequoted triplequoted nil 'move 1 nil nil 'ar-escaped)))
          erg)))
@@ -2885,7 +2885,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (let* ((triplequoted-dq "\"\"\"")
               (erg (looking-at triplequoted-dq)))
-         (when erg 
+         (when erg
            (goto-char (match-end 0))
            (while (and (search-forward triplequoted-dq nil 'move 1)
                        (ar-in-delimiter-base triplequoted-dq)))
@@ -2917,7 +2917,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
      (lambda ()
        (let* ((triplequoted-sq "'''")
               (erg (looking-at triplequoted-sq)))
-         (when erg 
+         (when erg
            (goto-char (match-end 0))
            (while (and (search-forward triplequoted-sq nil 'move 1)
                        (ar-in-delimiter-base triplequoted-sq)))
@@ -2942,7 +2942,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 (put 'url 'beginning-op-at (get 'url 'beginning-op))
 
 (defcustom url-at-point-chars ":/?#[]@!$&()*+,;=[:alnum:]-._~"
-  "Chars which might compose a URL. " 
+  "Chars which might compose a URL. "
   :type 'string
   :group 'convenience)
 
@@ -2961,7 +2961,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 
 (put 'word 'end-op-at
      (lambda () (and (looking-back "\\W")(looking-at "\\w"))
-       (forward-word 1)(point))) 
+       (forward-word 1)(point)))
 
 ;; Word-alpha-only
 (put 'word-alpha-only 'beginning-op-at
@@ -2973,12 +2973,12 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 (put 'word-alpha-only 'end-op-at
      (lambda () (when (and (looking-back "[^[:alpha:]]")(looking-at "[[:alpha:]]"))
                   (skip-chars-forward "[:alpha:]")
-                  (point)))) 
+                  (point))))
 
 (defun ar-in-string-p (&optional condition)
   "In inside a double- triple- or singlequoted string,
-  parsed by regexp, not syntax related `parse-partial-sexp'. 
-  
+  parsed by regexp, not syntax related `parse-partial-sexp'.
+
   Optional arg CONDITION accepts a function. If CONDITION returns `t', results of in-string-p at this point are discarded, search continuous.
   Returns beginning-delimiter positions, a list. "
   (interactive)
@@ -2986,7 +2986,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
         erg)
     (if tq
         (setq erg tq)
-      (setq erg (or 
+      (setq erg (or
                  (ar-in-doublequoted-p-atpt condition)
                  (ar-in-singlequoted-p-atpt condition)))
       (when (car-safe erg)
@@ -3009,7 +3009,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 (put 'begin-end-quoted 'end-op-at
      (lambda ()
        (when (ignore-errors (looking-at "\\begin{quote}"))
-         (goto-char (match-end 0)) 
+         (goto-char (match-end 0))
          (end-of-form-base "\\begin{quote}" "\\end{quote}" nil (quote move) 1 nil nil nil))))
 
 
@@ -3023,7 +3023,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 (put 'blok 'end-op-at
      (lambda ()
        (when (ignore-errors (looking-at "{%"))
-         (goto-char (match-end 0)) 
+         (goto-char (match-end 0))
          (end-of-form-base "{%" "%}" nil (quote move) 1 nil t nil))))
 
 
@@ -3037,7 +3037,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 (put 'double-backslashed 'end-op-at
      (lambda ()
        (when (ignore-errors (looking-at "\\\\"))
-         (goto-char (match-end 0)) 
+         (goto-char (match-end 0))
          (end-of-form-base "\\\\" "\\\\" nil (quote move) 1 nil nil (quote ar-escaped)))))
 
 
@@ -3051,7 +3051,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 (put 'doubleslashed 'end-op-at
      (lambda ()
        (when (ignore-errors (looking-at "//"))
-         (goto-char (match-end 0)) 
+         (goto-char (match-end 0))
          (end-of-form-base "//" "//" nil (quote move) 1 nil nil (quote ar-escaped)))))
 
 
@@ -3065,7 +3065,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 (put 'doubleslashed-paren 'end-op-at
      (lambda ()
        (when (ignore-errors (looking-at "\\\\\\\\("))
-         (goto-char (match-end 0)) 
+         (goto-char (match-end 0))
          (end-of-form-base "\\\\\\\\(" "\\\\\\\\)" nil (quote move) 1 nil nil (quote ar-escaped)))))
 
 
@@ -3079,7 +3079,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 (put 'tabledata-p 'end-op-at
      (lambda ()
        (when (ignore-errors (looking-at "<td[^>]*>"))
-         (goto-char (match-end 0)) 
+         (goto-char (match-end 0))
          (end-of-form-base "<td[^>]*>" "</td>" nil (quote move) 1 nil nil nil))))
 
 
@@ -3093,7 +3093,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 (put 'slashed-paren 'end-op-at
      (lambda ()
        (when (ignore-errors (looking-at "\\\\("))
-         (goto-char (match-end 0)) 
+         (goto-char (match-end 0))
          (end-of-form-base "\\\\(" "\\\\)" nil (quote move) 1 nil nil (quote ar-escaped)))))
 
 
@@ -3107,7 +3107,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 (put 'xsl-stylesheet-p 'end-op-at
      (lambda ()
        (when (ignore-errors (looking-at "<xsl:stylesheet[^<]+>.*$"))
-         (goto-char (match-end 0)) 
+         (goto-char (match-end 0))
          (end-of-form-base "<xsl:stylesheet[^<]+>.*$" "</xsl:stylesheet>" nil (quote move) 1 nil nil nil))))
 
 
@@ -3121,7 +3121,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 (put 'xsl-template-p 'end-op-at
      (lambda ()
        (when (ignore-errors (looking-at "<xsl:template[^<]+>.*$"))
-         (goto-char (match-end 0)) 
+         (goto-char (match-end 0))
          (end-of-form-base "<xsl:template[^<]+>.*$" "</xsl:template>" nil (quote move) 1 nil nil nil))))
 
 
@@ -3129,32 +3129,32 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 
 ;; ar-insert-thingatpt-th-funktionen start
 
-(defun ar-th (thing &optional arg no-delimiters iact) 
+(defun ar-th (thing &optional arg no-delimiters iact)
   "Returns a buffer substring according to THING.
   THING may be a well known form as `symbol',
   `list', `sexp', `defun' or a newly defined THING.
-  When mark-thingatpt is `t' - the default - a found THING 
+  When mark-thingatpt is `t' - the default - a found THING
   is set as current region, enabling further action on them
-  
+
   If ARG is greater 1, the arg-th thing forward is return, with
-  negative value before 
+  negative value before
   If NO-DELIMITERS, set by user functions
   with universal-argument for example, THING returned is
   stripped by delimiters resp. markup "
   (let ((no-delimiters (or no-delimiters (eq 4 (prefix-numeric-value arg))))
         (arg (or arg (setq arg 1))))
-    (when (symbolp arg) (setq arg '-1)) 
+    (when (symbolp arg) (setq arg '-1))
     (if (and (not (eq 1 arg))(not (eq 4 (prefix-numeric-value arg))))
         (when (or (< 1 arg) (> 1 arg))
           (ar-th-forward thing arg (interactive-p)))
       (condition-case nil
           (let* ((bounds (ar-th-bounds thing no-delimiters))
-                 (type 
+                 (type
                   (when (and
                          (car bounds)(cdr bounds))
                     (buffer-substring-no-properties (car bounds) (cdr bounds))))
                  (old-zmacs (when (featurep 'xemacs) zmacs-regions)))
-            
+
             (when (and (stringp type) (or thing-copy-region iact))
               (when (featurep 'xemacs) (setq zmacs-regions t))
               (ar-th-mark thing bounds))
@@ -3171,7 +3171,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 
   A boolean value NO-DELIMITERS says if THING boundaries should extend to markups, delimiters or not.
   Call THING by his name, i.e. ar-word-atpt etc. IACT is t, if function has been called interactively "
-  (ignore-errors 
+  (ignore-errors
     (save-excursion
       (let* ((orig (point))
              (beg (funcall (get thing 'beginning-op-at)))
@@ -3194,27 +3194,27 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
             (cons beg end)))))))
 
 (defun ar-th-beg (thing &optional arg iact)
-  (condition-case nil 
+  (condition-case nil
       (let* ((bounds (ar-th-bounds thing arg))
 	     (beg (car bounds)))
 	(when iact
 	  (message "   %s " beg)
-          (kill-new (format "%s" beg))) 
+          (kill-new (format "%s" beg)))
 	beg)
     (error nil)))
 
 (defun ar-th-end (thing &optional arg iact)
-  (condition-case nil 
+  (condition-case nil
       (let* ((bounds (ar-th-bounds thing arg))
 	     (end (cdr bounds)))
 	(when iact
-	  (message "   %s "  end)) 
+	  (message "   %s "  end))
 	end)
     (error nil)))
 
 (defun ar-th-gotobeg (thing &optional arg iact)
   "Goto char beginning, core function "
-  (condition-case nil 
+  (condition-case nil
       (let* ((bounds (ar-th-bounds thing arg))
 	     (beg (car bounds)))
 	(when iact
@@ -3225,7 +3225,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 
 (defun ar-th-gotoend (thing &optional arg iact)
   "Goto char end, core function "
-  (condition-case nil 
+  (condition-case nil
       (let* ((bounds (ar-th-bounds thing arg))
 	     (end (cdr bounds)))
 	(when iact
@@ -3235,7 +3235,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
     (error nil)))
 
 (defun ar-th-length (thing &optional arg iact)
-  (ignore-errors 
+  (ignore-errors
     (let* ((bounds (ar-th-bounds thing arg))
            (length (abs (- (car bounds) (cdr bounds)))))
       (when iact
@@ -3291,7 +3291,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
 
 (defun ar-th-escape (thing &optional iact)
   " "
-  (condition-case nil 
+  (condition-case nil
       (let ((escaped (regexp-quote (buffer-substring-no-properties (ar-th-beg thing)(ar-th-end thing)))))
 	(when escaped
           (progn
@@ -3302,7 +3302,7 @@ XEmacs-users: `unibyte' and `multibyte' class is unused i.e. set to \".\""
     (error nil)))
 
 (defun ar-th-copy (thing &optional arg iact)
-  (condition-case nil 
+  (condition-case nil
       (let ((newcopy (ar-th thing)))
 	(when newcopy
           (progn
@@ -3357,26 +3357,26 @@ Inspired by stuff like `paredit-splice-sexp-killing-backward'; however, instead 
 
 "
   (let ((outer (ar-th-bounds thing))
-        inner) 
+        inner)
     (when (eq (point) (car outer))(forward-char 1))
     (skip-syntax-forward "^(")
-    (setq inner (point)) 
+    (setq inner (point))
     (goto-char (cdr outer))
     (if (< 0 (skip-syntax-backward "^)"))
-        (progn 
+        (progn
           (delete-region (point) (cdr outer)))
-      (delete-char -1) 
+      (delete-char -1)
       (goto-char inner)
       (delete-region (car outer) (point)))))
 
-(defun ar-th-comment (thing &optional arg iact) 
+(defun ar-th-comment (thing &optional arg iact)
   "Comment or uncomment THING "
-  (condition-case nil 
+  (condition-case nil
       (let* ((bounds (ar-th-bounds thing))
 	     (beg (car bounds))
 	     (end (cdr bounds)))
 	(if (and beg end)
-	    (progn 
+	    (progn
 	      (goto-char beg)
               ;;               (if (functionp 'ar-comment-indent-lor)
               ;;                   (ar-comment-indent-lor arg beg end)
@@ -3385,9 +3385,9 @@ Inspired by stuff like `paredit-splice-sexp-killing-backward'; however, instead 
               nil)))
     (error nil)))
 
-(defun ar-th-delete-in-region (thing beg end &optional iact) 
+(defun ar-th-delete-in-region (thing beg end &optional iact)
   "Delete THING in region. Delete line, if empty afterwards. "
-  (condition-case nil 
+  (condition-case nil
       (save-excursion
         (goto-char beg)
         (while (< (ar-th-forward thing) end)
@@ -3397,9 +3397,9 @@ Inspired by stuff like `paredit-splice-sexp-killing-backward'; however, instead 
             (when (empty-line-p)
               (delete-region (line-beginning-position) (1+ (line-end-position)))))))))
 
-(defun ar-th-mark (thing &optional bounds) 
+(defun ar-th-mark (thing &optional bounds)
   " "
-  (condition-case nil 
+  (condition-case nil
       (let* ((bounds (or bounds (ar-th-bounds thing))))
 	(goto-char (car bounds))
 	(push-mark (point) t t)
@@ -3408,7 +3408,7 @@ Inspired by stuff like `paredit-splice-sexp-killing-backward'; however, instead 
     (error nil)))
 
 ;; uses sgml-tag from sgml-mode.el
-(defun ar-th-hide (thing &optional beg end) 
+(defun ar-th-hide (thing &optional beg end)
   "Hide visibility of existing things at point. "
   (let ((modified (buffer-modified-p))
         (inhibit-read-only t) bounds)
@@ -3417,12 +3417,12 @@ Inspired by stuff like `paredit-splice-sexp-killing-backward'; however, instead 
       (setq beg (car bounds))
       (setq end (cdr bounds)))
     (if (and beg end)
-        (progn 
+        (progn
           (put-text-property beg end 'category 'sgml-tag)
           (set-buffer-modified-p modified))
       (error (concat "No " (format "%s" thing) " at point!")))))
 
-(defun ar-th-separate (thing &optional arg iact) 
+(defun ar-th-separate (thing &optional arg iact)
   " "
   (condition-case nil
       (let* ((bounds (ar-th-bounds thing))
@@ -3442,7 +3442,7 @@ Inspired by stuff like `paredit-splice-sexp-killing-backward'; however, instead 
         (list beg end))
     (error nil)))
 
-(defun ar-th-show (thing &optional beg end) 
+(defun ar-th-show (thing &optional beg end)
   "Remove invisibility of existing things at point. "
   (let ((modified (buffer-modified-p))
         (inhibit-read-only t) bounds)
@@ -3451,14 +3451,14 @@ Inspired by stuff like `paredit-splice-sexp-killing-backward'; however, instead 
       (setq beg (car bounds))
       (setq end (cdr bounds)))
     (if (and beg end)
-        (progn 
+        (progn
           (remove-text-properties beg end '(category nil))
           (set-buffer-modified-p modified))
       (error (concat "No " (format "%s" thing) " at point!")))))
 
-(defun ar-th-hide-show (thing &optional beg end) 
+(defun ar-th-hide-show (thing &optional beg end)
   "Toggle visibility of existing things at point. "
-  (interactive) 
+  (interactive)
   (let ((modified (buffer-modified-p))
         (inhibit-read-only t) erg bounds)
     (unless (and beg end)
@@ -3500,18 +3500,18 @@ With optional arg IACT, the resulting list is sent to the message-buffer too. "
         (message "%s" "nil")))
     erg))
 
-(defun ar-th-kill (thing &optional arg iact) 
+(defun ar-th-kill (thing &optional arg iact)
   " "
-  (condition-case nil 
-      (let* ((bounds (ar-th-bounds thing)) 
+  (condition-case nil
+      (let* ((bounds (ar-th-bounds thing))
 	     (beg (car bounds))
 	     (end (cdr bounds)))
 	(kill-region beg end))
     (error nil)))
 
-(defun ar-th-kill-backward (thing &optional arg iact) 
+(defun ar-th-kill-backward (thing &optional arg iact)
   " "
-  (ar-th-backward thing arg iact) 
+  (ar-th-backward thing arg iact)
   (condition-case nil
       (let* ((bounds (ar-th-bounds thing))
              (beg (car bounds))
@@ -3519,27 +3519,27 @@ With optional arg IACT, the resulting list is sent to the message-buffer too. "
         (kill-region beg end))
     (error nil)))
 
-(defun ar-th-commatize (thing &optional arg iact) 
+(defun ar-th-commatize (thing &optional arg iact)
   " "
-  (condition-case nil 
-      (let* ((bounds (ar-th-bounds thing)) 
+  (condition-case nil
+      (let* ((bounds (ar-th-bounds thing))
 	     (beg (car bounds))
 	     (end (cdr bounds)))
 	(goto-char end)
         (insert ","))
     (error nil)))
 
-(defun ar-th-quote (thing &optional arg iact) 
+(defun ar-th-quote (thing &optional arg iact)
   " "
-  (condition-case nil 
-      (let* ((bounds (ar-th-bounds thing)) 
+  (condition-case nil
+      (let* ((bounds (ar-th-bounds thing))
 	     (beg (car bounds))
 	     (end (cdr bounds)))
         (goto-char beg)
         (insert "'"))
     (error nil)))
 
-(defun ar-th-forward (thing &optional arg iact) 
+(defun ar-th-forward (thing &optional arg iact)
   "Return args THING from point, if any, searches backward with negative argument. "
   (ignore-errors
     (let* ((orig (point))
@@ -3567,7 +3567,7 @@ With optional arg IACT, the resulting list is sent to the message-buffer too. "
               (setq ep (cdr bounds))
               (if (and ep (< orig (1- ep)))
                   (progn
-                    (when iact 
+                    (when iact
                       (push-mark ep)
                       (goto-char ap)
                       (exchange-point-and-mark)
@@ -3589,7 +3589,7 @@ With optional arg IACT, the resulting list is sent to the message-buffer too. "
               (while
                   (and (not (bobp))(not (setq bounds (ar-th-bounds thing))))
                 (forward-char -1))))
-          (setq arg (1+ arg))) 
+          (setq arg (1+ arg)))
         (setq ap (car bounds))
         (setq ep (cdr bounds))
         (if (and ap (< ap orig))
@@ -3630,7 +3630,7 @@ With optional arg IACT, the resulting list is sent to the message-buffer too. "
                (list thisbeg thisend))))
     (widen)))
 
-(defun ar-th-backward (thing &optional arg iact) 
+(defun ar-th-backward (thing &optional arg iact)
   "Returns beg and end of THING before point as a list. "
   (condition-case nil
       (ar-th-forward thing (- (or arg 1)) iact)
@@ -3638,7 +3638,7 @@ With optional arg IACT, the resulting list is sent to the message-buffer too. "
 
 (defun ar-th-before (thing &optional arg iact)
   " "
-  (let* ((arg (or arg -1)) 
+  (let* ((arg (or arg -1))
          (bounds-point-at (ar-th-bounds thing))
          (beg (car-safe bounds-point-at))
          bounds)
@@ -3648,8 +3648,8 @@ With optional arg IACT, the resulting list is sent to the message-buffer too. "
 
 (defun ar-th-bounds-before (thing &optional arg iact)
   " "
-  (save-excursion 
-    (let* ((arg (or arg -1)) 
+  (save-excursion
+    (let* ((arg (or arg -1))
 	   (bounds-point-at (ar-th-bounds thing))
 	   (beg (car-safe bounds-point-at))
 	   (bounds
@@ -3663,8 +3663,8 @@ With optional arg IACT, the resulting list is sent to the message-buffer too. "
 
 (defun ar-th-before-beg-pos (thing &optional arg iact)
   " "
-  (save-excursion 
-    (let* ((arg (or arg -1)) 
+  (save-excursion
+    (let* ((arg (or arg -1))
            (bounds-point-at (ar-th-bounds thing))
            (beg (car-safe bounds-point-at))
            bounds)
@@ -3675,8 +3675,8 @@ With optional arg IACT, the resulting list is sent to the message-buffer too. "
 
 (defun ar-th-before-end-pos (thing &optional arg iact)
   " "
-  (save-excursion 
-    (let* ((arg (or arg -1)) 
+  (save-excursion
+    (let* ((arg (or arg -1))
            (bounds-point-at (ar-th-bounds thing))
            (beg (car-safe bounds-point-at))
            bounds)
@@ -3687,7 +3687,7 @@ With optional arg IACT, the resulting list is sent to the message-buffer too. "
 
 (defun ar-th-after (thing &optional arg iact)
   " "
-  (let* ((arg (or arg 1)) 
+  (let* ((arg (or arg 1))
          (bounds-point-at (ar-th-bounds thing))
          (end (cdr-safe bounds-point-at))
          bounds)
@@ -3697,8 +3697,8 @@ With optional arg IACT, the resulting list is sent to the message-buffer too. "
 
 (defun ar-th-bounds-after (thing &optional no-delimiters iact)
   " "
-  (save-excursion 
-    (let ((bounds 
+  (save-excursion
+    (let ((bounds
            (progn
              (ar-th-forward thing no-delimiters)
              (ar-th-bounds thing no-delimiters))))
@@ -3706,8 +3706,8 @@ With optional arg IACT, the resulting list is sent to the message-buffer too. "
 
 (defun ar-th-after-beg-pos (thing &optional arg iact)
   " "
-  (save-excursion 
-    (let* ((arg (or arg 1)) 
+  (save-excursion
+    (let* ((arg (or arg 1))
            (bounds-point-at (ar-th-bounds thing))
            (end (cdr-safe bounds-point-at))
            bounds)
@@ -3719,8 +3719,8 @@ With optional arg IACT, the resulting list is sent to the message-buffer too. "
 
 (defun ar-th-after-end-pos (thing &optional arg iact)
   " "
-  (save-excursion 
-    (let* ((arg (or arg 1)) 
+  (save-excursion
+    (let* ((arg (or arg 1))
            (bounds-point-at (ar-th-bounds thing))
            (end (cdr-safe bounds-point-at))
            bounds)
@@ -3832,7 +3832,7 @@ it defaults to `<', otherwise it defaults to `string<'."
 	  (if messages (message "Sorting records..."))
 	  (setq sort-lists
 		(sort sort-lists
-                      (lambda (a b) 
+                      (lambda (a b)
                         (< (string-to-number (buffer-substring-no-properties (caar a) (cdar a)))(string-to-number (buffer-substring-no-properties (caar b)(cdar b)))))))
 	  (if reverse (setq sort-lists (nreverse sort-lists)))
 	  (if messages (message "Reordering buffer..."))
@@ -3892,13 +3892,13 @@ it defaults to `<', otherwise it defaults to `string<'."
   (when (eq arg 4)
     (insert "\\\\")))
 
-;;;###autoload 
+;;;###autoload
 (defun ar-th-base-copy-or (kind arg &optional iact)
   " "
   (let* ((expr (format "%s" kind))
          (arg (if arg (prefix-numeric-value arg) 1))
          (suffix
-          (when (or (member kind ar-atpt-delimlist) 
+          (when (or (member kind ar-atpt-delimlist)
                     ;; (loop for e in ar-atpt-delimlist-unpaired if (member kind e) return e))
                     (member kind ar-atpt-delimlist-unpaired))
             (if (string-match "e$" expr)
@@ -3909,7 +3909,7 @@ it defaults to `<', otherwise it defaults to `string<'."
             (setq erg (funcall (intern-soft (concat "ar-" expr "-region-atpt")) arg))
           (setq erg (funcall (intern-soft (concat "ar-" expr suffix "-atpt")) arg)))
       (setq erg (funcall (intern-soft (concat "ar-kill-" expr suffix "-atpt")) arg)))))
-     
+
 ;; ar-python-triplequote-raw start
 
 (defun ar-th-triplequote (thing &optional arg iact)
@@ -4040,25 +4040,25 @@ it defaults to `<', otherwise it defaults to `string<'."
     (goto-char beg)
     (insert startstring)
     (goto-char (1+ end))))
-          
+
 
 
 ;; ar-insert-thingatpt-syntax-funktionen start
 
-(defun ar-syntax-class-atpt (&optional pos) 
+(defun ar-syntax-class-atpt (&optional pos)
   "Return the syntax class part of the syntax at point. "
   (interactive)
-  (let* ((pos (or pos (point))) 
+  (let* ((pos (or pos (point)))
          (erg (logand (car (syntax-after pos)) 65535)))
     (when (interactive-p) (message "%s" erg)) erg))
 
-(defun syntax-class-bfpt () 
+(defun syntax-class-bfpt ()
   "Return the syntax class part of the syntax at point. "
   (interactive)
   (let ((erg (logand (car (syntax-after (1- (point)))) 65535)))
     (when (interactive-p) (message "%s" erg)) erg))
 
-(defun ar-syntax-atpt (&optional docu pos) 
+(defun ar-syntax-atpt (&optional docu pos)
   (interactive)
   (when pos
     (goto-char pos))
@@ -4097,7 +4097,7 @@ it defaults to `<', otherwise it defaults to `string<'."
         (forward-char 1))
       (message "%s" erg))))
 
-(defun syntax-bfpt () 
+(defun syntax-bfpt ()
   (interactive)
   (let ((stax (syntax-after (1- (point)))))
     (when (interactive-p)

@@ -147,16 +147,6 @@ A running python-shell presently is needed by complete-functions. "
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-use-number-face-p nil
-  "If digits incl. hex-digits should get an own py-number-face.
-
-Default is nil. With large files fontifying numbers may cause a
-delay. Setting of `py-use-number-face-p' has visible effect only
-when `py-number-face' was customized differently than inherited
-default face. "
-  :type 'boolean
-  :group 'python-mode)
-
 ;; vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 (defcustom py-close-provides-newline t
   "If a newline is inserted, when line after block isn't empty. Default is non-nil. "
@@ -583,7 +573,7 @@ Also used by (minor-)outline-mode "
   :group 'python-mode
   :type 'hook)
 
-(defcustom imenu-create-index-p t
+(defcustom py-imenu-create-index-p t
   "Non-nil means Python mode creates and displays an index menu of functions and global variables. "
   :type 'boolean
   :group 'python-mode)
@@ -2406,7 +2396,7 @@ This function does not modify point or mark."
                ((eq position 'bol) (beginning-of-line))
                ((eq position 'eol) (end-of-line))
                ((eq position 'bod) (py-beginning-of-def-or-class))
-               ((eq position 'eod) (py-end-of-def-or-class 'either))
+               ((eq position 'eod) (py-end-of-def-or-class))
                ;; Kind of funny, I know, but useful for py-up-exception.
                ((eq position 'bob) (goto-char (point-min)))
                ((eq position 'eob) (goto-char (point-max)))
@@ -2418,156 +2408,152 @@ This function does not modify point or mark."
 
 ;;; Python specialized rx
 
-;; (eval-when-compile
-;;   (defconst python-rx-constituents
-;;     (list
-;;      `(block-start          . ,(rx symbol-start
-;;                                    (or "def" "class" "if" "elif" "else" "try"
-;;                                        "except" "finally" "for" "while" "with")
-;;                                    symbol-end))
-;;      `(decorator            . ,(rx line-start (* space) ?@ (any letter ?_)
-;;                                     (* (any word ?_))))
-;;      `(defun                . ,(rx symbol-start (or "def" "class") symbol-end))
-;;      `(symbol-name          . ,(rx (any letter ?_) (* (any word ?_))))
-;;      `(open-paren           . ,(rx (or "{" "[" "(")))
-;;      `(close-paren          . ,(rx (or "}" "]" ")")))
-;;      `(simple-operator      . ,(rx (any ?+ ?- ?/ ?& ?^ ?~ ?| ?* ?< ?> ?= ?%)))
-;;      `(not-simple-operator  . ,(rx (not (any ?+ ?- ?/ ?& ?^ ?~ ?| ?* ?< ?> ?= ?%))))
-;;      `(operator             . ,(rx (or "+" "-" "/" "&" "^" "~" "|" "*" "<" ">"
-;;                                        "=" "%" "**" "//" "<<" ">>" "<=" "!="
-;;                                        "==" ">=" "is" "not")))
-;;      `(assignment-operator  . ,(rx (or "=" "+=" "-=" "*=" "/=" "//=" "%=" "**="
-;;                                        ">>=" "<<=" "&=" "^=" "|="))))
-;;     "Additional Python specific sexps for `python-rx'"))
+(eval-when-compile
+  (defconst python-rx-constituents
+    (list
+     `(block-start          . ,(rx symbol-start
+                                   (or "def" "class" "if" "elif" "else" "try"
+                                       "except" "finally" "for" "while" "with")
+                                   symbol-end))
+     `(decorator            . ,(rx line-start (* space) ?@ (any letter ?_)
+                                   (* (any word ?_))))
+     `(defun                . ,(rx symbol-start (or "def" "class") symbol-end))
+     `(symbol-name          . ,(rx (any letter ?_) (* (any word ?_))))
+     `(open-paren           . ,(rx (or "{" "[" "(")))
+     `(close-paren          . ,(rx (or "}" "]" ")")))
+     `(simple-operator      . ,(rx (any ?+ ?- ?/ ?& ?^ ?~ ?| ?* ?< ?> ?= ?%)))
+     `(not-simple-operator  . ,(rx (not (any ?+ ?- ?/ ?& ?^ ?~ ?| ?* ?< ?> ?= ?%))))
+     `(operator             . ,(rx (or "+" "-" "/" "&" "^" "~" "|" "*" "<" ">"
+                                       "=" "%" "**" "//" "<<" ">>" "<=" "!="
+                                       "==" ">=" "is" "not")))
+     `(assignment-operator  . ,(rx (or "=" "+=" "-=" "*=" "/=" "//=" "%=" "**="
+                                       ">>=" "<<=" "&=" "^=" "|="))))
+    "Additional Python specific sexps for `python-rx'"))
 
-;; (defmacro python-rx (&rest regexps)
-;;  "Python mode specialized rx macro which supports common python named REGEXPS."
-;;  (let ((rx-constituents (append python-rx-constituents rx-constituents)))
-;;    (cond ((null regexps)
-;;           (error "No regexp"))
-;;          ((cdr regexps)
-;;           (rx-to-string `(and ,@regexps) t))
-;;          (t
-;;           (rx-to-string (car regexps) t)))))
+(defmacro python-rx (&rest regexps)
+  "Python mode specialized rx macro which supports common python named REGEXPS."
+  (let ((rx-constituents (append python-rx-constituents rx-constituents)))
+    (cond ((null regexps)
+           (error "No regexp"))
+          ((cdr regexps)
+           (rx-to-string `(and ,@regexps) t))
+          (t
+           (rx-to-string (car regexps) t)))))
 
 
 ;;; Font-lock and syntax
+(defun python-info-ppss-context (type &optional syntax-ppss)
+  "Return non-nil if point is on TYPE using SYNTAX-PPSS.
+TYPE can be 'comment, 'string or 'paren.  It returns the start
+character address of the specified TYPE."
+  (let ((ppss (or syntax-ppss (syntax-ppss))))
+    (cond ((eq type 'comment)
+           (and (nth 4 ppss)
+                (nth 8 ppss)))
+          ((eq type 'string)
+           (nth 8 ppss))
+          ((eq type 'paren)
+           (nth 1 ppss))
+          (t nil))))
+
 (defvar python-font-lock-keywords nil
   "Additional expressions to highlight in Python mode.")
 
 (setq python-font-lock-keywords
-      (let ((kw1 (mapconcat 'identity
-                            '("and"      "assert"   "break"     "class"
-                              "continue" "def"      "del"       "elif"
-                              "else"     "except"   "for"       "from"
-                              "global"   "if"       "import"    "in"
-                              "is"       "lambda"   "not"       "or"
-                              "pass"     "raise"    "as"        "return"
-                              "while"    "with"    "yield")
-                            "\\|"))
-            (kw2 (mapconcat 'identity
-                            '("else:" "except:" "finally:" "try:" "lambda:")
-                            "\\|"))
-            (kw3 (mapconcat 'identity
-                            ;; Don't include Ellipsis in this list, since it is
-                            ;; already defined as a pseudo keyword.
-                            '("__debug__"
-                              "__import__" "__name__" "abs" "all" "any" "apply"
-                              "basestring" "bin" "bool" "buffer" "bytearray"
-                              "callable" "chr" "classmethod" "cmp" "coerce"
-                              "compile" "complex" "copyright" "credits"
-                              "delattr" "dict" "dir" "divmod" "enumerate" "eval"
-                              "exec" "execfile" "exit" "file" "filter" "float"
-                              "format" "getattr" "globals" "hasattr" "hash" "help"
-                              "hex" "id" "input" "int" "intern" "isinstance"
-                              "issubclass" "iter" "len" "license" "list" "locals"
-                              "long" "map" "max" "memoryview" "min" "next"
-                              "object" "oct" "open" "ord" "pow" "print" "property"
-                              "quit" "range" "raw_input" "reduce" "reload" "repr"
-                              "round" "set" "setattr" "slice" "sorted"
-                              "staticmethod" "str" "sum" "super" "tuple" "type"
-                              "unichr" "unicode" "vars" "xrange" "zip"
+      ;; Keywords
+      `(,(rx symbol-start
+             (or "and" "del" "from" "not" "while" "as" "elif" "global" "or" "with"
+                 "assert" "else" "if" "pass" "yield" "break" "import"
+                 "print" "exec" "in" "continue" "finally" "is"
+                 "return" "def" "for" "lambda" "try" "self")
+             symbol-end)
+        ;; functions
+        (,(rx symbol-start "def" (1+ space) (group (1+ (or word ?_))))
+         (1 font-lock-function-name-face))
+        ;; classes
+        (,(rx symbol-start (group "class") (1+ space) (group (1+ (or word ?_))))
+         (1 font-lock-keyword-face) (2 py-class-name-face))
+        (,(rx symbol-start
+              (or "raise" "except")
+              symbol-end) . py-exception-name-face)
+        ;; Constants
+        (,(rx symbol-start
+              (or "None" "True" "False" "__debug__" "NotImplemented")
+              symbol-end) . font-lock-constant-face)
+        ;; Numbers
+        (,(rx symbol-start (or (1+ digit) (1+ hex-digit)) symbol-end) . py-number-face)
+        (,(rx symbol-start
+              (or "cls" "self" "cls" "Ellipsis" "True" "False" "None")
+              symbol-end) . py-pseudo-keyword-face)
+        ;; Decorators.
+        (,(rx line-start (* (any " \t")) (group "@" (1+ (or word ?_))
+                                                (0+ "." (1+ (or word ?_)))))
+         (1 py-decorators-face))
+        ;; '("\\_<raise[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_.]*\\)" 1 py-exception-name-face)
+        ;; '("[ \t]*\\(_\\{0,2\\}[a-zA-Z][a-zA-Z_0-9.]+_\\{0,2\\}\\) *\\(+\\|-\\|*\\|*\\*\\|/\\|//\\|&\\|%\\||\\|\\^\\|>>\\|<<\\)? ?=[^=\n]"
+        (,(python-rx line-start (* (any " \t"))(group (** 0 2 "_") word (0+ (or word ?_))(** 0 2 "_"))(* (any " \t")) assignment-operator)
+         1 py-variable-name-face)
 
-                              "bin" "bytearray" "bytes" "format"
-
-                              "memoryview" "next" "print")
-                            "\\|"))
-            (kw4 (mapconcat 'identity
-                            ;; Exceptions and warnings
-                            '("ArithmeticError" "AssertionError"
-                              "AttributeError" "BaseException" "BufferError"
-                              "BytesWarning" "DeprecationWarning" "EOFError"
-                              "EnvironmentError" "Exception"
-                              "FloatingPointError" "FutureWarning" "GeneratorExit"
-                              "IOError" "ImportError" "ImportWarning"
-                              "IndentationError" "IndexError"
-                              "KeyError" "KeyboardInterrupt" "LookupError"
-                              "MemoryError" "NameError" "NotImplemented"
-                              "NotImplementedError" "OSError" "OverflowError"
-                              "PendingDeprecationWarning" "ReferenceError"
-                              "RuntimeError" "RuntimeWarning" "StandardError"
-                              "StopIteration" "SyntaxError" "SyntaxWarning"
-                              "SystemError" "SystemExit" "TabError" "TypeError"
-                              "UnboundLocalError" "UnicodeDecodeError"
-                              "UnicodeEncodeError" "UnicodeError"
-                              "UnicodeTranslateError" "UnicodeWarning"
-                              "UserWarning" "ValueError" "Warning"
-                              "ZeroDivisionError")
-                            "\\|")))
-        (list
-         ;; decorators
-         '("^[ \t]*\\(@[a-zA-Z_][a-zA-Z_0-9.]+\\)\\((.+)\\)?" 1 'py-decorators-face)
-         ;; keywords
-         (cons (concat "\\_<\\(" kw1 "\\)\\_>[ \n\t(]") 1)
-         ;; builtins when they don't appear as object attributes
-         (list (concat "\\([ \t(]\\|^\\)\\_<\\(" kw3 "\\)\\_>[ \n\t(]") 2
-               'py-builtins-face)
-         ;; block introducing keywords with immediately following colons.
-         ;; Yes "except" is in both lists.
-         (cons (concat "\\_<\\(" kw2 "\\)[ \n\t(]") 1)
-         ;; Exceptions
-         (list (concat "\\_<\\(" kw4 "\\)[ \n\t:,()]") 1 'py-exception-name-face)
-         ;; raise stmts
-         '("\\_<raise[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_.]*\\)" 1 py-exception-name-face)
-         ;; except clauses
-         '("\\_<except[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_.]*\\)" 1 py-exception-name-face)
-         ;; classes
-         '("\\_<class[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_]*\\)" 1 py-class-name-face)
-         ;; functions
-         '("\\_<def[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_]*\\)"
-           1 font-lock-function-name-face)
-         ;; pseudo-keywords
-         '("\\_<\\(self\\|cls\\|Ellipsis\\|True\\|False\\|None\\)\\_>"
-           1 py-pseudo-keyword-face)
-         '("[ \t]*\\(_\\{0,2\\}[a-zA-Z][a-zA-Z_0-9.]+_\\{0,2\\}\\) *\\(+\\|-\\|*\\|*\\*\\|/\\|//\\|&\\|%\\||\\|\\^\\|>>\\|<<\\)? ?=[^=\n]"
-           1 py-variable-name-face)
-         ;; XXX, TODO, and FIXME tags
-         '("XXX\\|TODO\\|FIXME" 0 py-XXX-tag-face t)
-         ;; special marking for string escapes and percent substitutes;
-         ;; loops adapted from lisp-mode in font-lock.el
-         ;; '((lambda (bound)
-         ;;     (catch 'found
-         ;;       (while (re-search-forward
-         ;;               (concat
-         ;;                "\\(\\\\\\\\\\|\\\\x..\\|\\\\u....\\|\\\\U........\\|"
-         ;;                "\\\\[0-9][0-9]*\\|\\\\[abfnrtv\"']\\)") bound t)
-         ;;         (let ((face (get-text-property (1- (point)) 'face)))
-         ;;           (when (or (and (listp face) (memq 'font-lock-string-face face))
-         ;;                     (eq 'font-lock-string-face face))
-         ;;             (throw 'found t))))))
-         ;;   (1 'font-lock-regexp-grouping-backslash prepend))
-         ;; '((lambda (bound)
-         ;;     (catch 'found
-         ;;       (while (re-search-forward "\\(%[^(]\\|%([^)]*).\\)" bound t)
-         ;;         (let ((face (get-text-property (1- (point)) 'face)))
-         ;;           (when (or (and (listp face) (memq 'font-lock-string-face face))
-         ;;                     (eq 'font-lock-string-face face))
-         ;;             (throw 'found t))))))
-         ;;   (1 'font-lock-regexp-grouping-construct prepend))
-         )))
-
-(when py-use-number-face-p
-  (add-to-list 'python-font-lock-keywords '("\\([0-9]+\\([eE][+-]?[0-9]*\\)?\\|0[xX][0-9a-fA-F]+\\)" 1 py-number-face)))
+        ;; Builtin Exceptions
+        (,(rx symbol-start
+              (or "ArithmeticError" "AssertionError" "AttributeError"
+                  "BaseException" "BufferError" "BytesWarning" "DeprecationWarning"
+                  "EOFError" "EnvironmentError" "Exception" "FloatingPointError"
+                  "FutureWarning" "GeneratorExit" "IOError" "ImportError"
+                  "ImportWarning" "IndentationError" "IndexError" "KeyError"
+                  "KeyboardInterrupt" "LookupError" "MemoryError" "NameError"
+                  "NotImplementedError" "OSError" "OverflowError"
+                  "PendingDeprecationWarning" "ReferenceError" "RuntimeError"
+                  "RuntimeWarning" "StandardError" "StopIteration" "SyntaxError"
+                  "SyntaxWarning" "SystemError" "SystemExit" "TabError" "TypeError"
+                  "UnboundLocalError" "UnicodeDecodeError" "UnicodeEncodeError"
+                  "UnicodeError" "UnicodeTranslateError" "UnicodeWarning"
+                  "UserWarning" "ValueError" "Warning" "ZeroDivisionError")
+              symbol-end) . py-exception-name-face)
+        ;; Builtins
+        (,(rx symbol-start
+              (or "_" "__doc__" "__import__" "__name__" "__package__" "abs" "all"
+                  "any" "apply" "basestring" "bin" "bool" "buffer" "bytearray"
+                  "bytes" "callable" "chr" "classmethod" "cmp" "coerce" "compile"
+                  "complex" "delattr" "dict" "dir" "divmod" "enumerate" "eval"
+                  "execfile" "file" "filter" "float" "format" "frozenset"
+                  "getattr" "globals" "hasattr" "hash" "help" "hex" "id" "input"
+                  "int" "intern" "isinstance" "issubclass" "iter" "len" "list"
+                  "locals" "long" "map" "max" "min" "next" "object" "oct" "open"
+                  "ord" "pow" "print" "property" "range" "raw_input" "reduce"
+                  "reload" "repr" "reversed" "round" "set" "setattr" "slice"
+                  "sorted" "staticmethod" "str" "sum" "super" "tuple" "type"
+                  "unichr" "unicode" "vars" "xrange" "zip")
+              symbol-end) . font-lock-builtin-face)
+        ;; asignations
+        ;; support for a = b = c = 5
+        (,(lambda (limit)
+            (let ((re (python-rx (group (+ (any word ?. ?_)))
+                                 (? ?\[ (+ (not (any ?\]))) ?\]) (* space)
+                                 assignment-operator)))
+              (when (re-search-forward re limit t)
+                (while (and (python-info-ppss-context 'paren)
+                            (re-search-forward re limit t)))
+                (if (and (not (python-info-ppss-context 'paren))
+                         (not (equal (char-after (point-marker)) ?=)))
+                    t
+                  (set-match-data nil)))))
+         (1 font-lock-variable-name-face nil nil))
+        ;; support for a, b, c = (1, 2, 3)
+        (,(lambda (limit)
+            (let ((re (python-rx (group (+ (any word ?. ?_))) (* space)
+                                 (* ?, (* space) (+ (any word ?. ?_)) (* space))
+                                 ?, (* space) (+ (any word ?. ?_)) (* space)
+                                 assignment-operator)))
+              (when (and (re-search-forward re limit t)
+                         (goto-char (nth 3 (match-data))))
+                (while (and (python-info-ppss-context 'paren)
+                            (re-search-forward re limit t))
+                  (goto-char (nth 3 (match-data))))
+                (if (not (python-info-ppss-context 'paren))
+                    t
+                  (set-match-data nil)))))
+         (1 font-lock-variable-name-face nil nil))))
 
 (defconst py-font-lock-syntactic-keywords
   '(("[^\\]\\\\\\(?:\\\\\\\\\\)*\\(\\s\"\\)\\1\\(\\1\\)"
@@ -2715,7 +2701,7 @@ If a numeric argument ARG is provided, that many colons are inserted
 non-electrically.
 With \\[universal-argument] \"#\" electric behavior is inhibited inside a string or comment."
   (interactive "*P")
-  (if py-electric-comment-p
+  (if (and py-indent-comments py-electric-comment-p)
       (if (ignore-errors (eq 4 (car-safe arg)))
           (insert "#")
         (when (and (eq last-command 'py-electric-comment) (looking-back " "))
@@ -4101,7 +4087,9 @@ As example given in Python v3.1 documentation » The Python Standard Library »
 class C(B):
     def method(self, arg):
         super().method(arg) # This does the same thing as:
-                               # super(C, self).method(arg)"
+                               # super(C, self).method(arg)
+
+Returns the string inserted. "
   (interactive "*")
   (let* ((orig (point))
          (funcname (progn
@@ -4109,18 +4097,21 @@ class C(B):
                      (when (looking-at (concat py-def-re " *\\([^(]+\\) *(\\(?:[^),]*\\),? *\\([^)]*\\))"))
                        (match-string-no-properties 2))))
          (args (match-string-no-properties 3))
-         (erg (py-which-python))
-         classname)
-    (if (< erg 3)
+         (ver (py-which-python))
+         classname erg)
+    (if (< ver 3)
         (progn
           (py-beginning-of-class)
           (when (looking-at (concat py-class-re " *\\([^( ]+\\)"))
             (setq classname (match-string-no-properties 2)))
           (goto-char orig)
+          (setq erg (concat "super(" classname ", self)." funcname "(" args ")"))
           ;; super(C, self).method(arg)"
-          (insert (concat "super(" classname ", self)." funcname "(" args ")")))
+          (insert erg))
       (goto-char orig)
-      (insert (concat "super()." funcname "(" args ")")))))
+      (setq erg (concat "super()." funcname "(" args ")"))
+      (insert erg))
+    erg))
 
 (defun py-nesting-level (&optional pps)
   "Accepts the output of `parse-partial-sexp'. "
@@ -4429,26 +4420,21 @@ Optional ARG indicates a start-position for `parse-partial-sexp'."
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
-(defun py-current-line-backslashed-p ()
-  "Return t if current line is a backslashed continuation line. "
-  (interactive)
-  (save-excursion
-    (end-of-line)
-    (skip-chars-backward " \t\r\n\f")
-    (let ((erg (and (eq (char-before (point)) ?\\ )
-                    (py-escaped))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-      erg)))
 
-(defun py-escaped (&optional iact)
+(defmacro py-current-line-backslashed-p ()
+  "Return t if current line is a backslashed continuation line. "
+  `(save-excursion
+     (end-of-line)
+     (skip-chars-backward " \t\r\n\f")
+     (let ((erg (and (eq (char-before (point)) ?\\ )
+                     (py-escaped))))
+       erg)))
+
+(defmacro py-escaped ()
   "Return t if char is preceded by an odd number of backslashes. "
-  (interactive "p")
-  (lexical-let ((orig (point))
-                erg)
-    (setq erg (< 0 (abs (% (skip-chars-backward "\\\\")2))))
-    (goto-char orig)
-    (when iact (message "%s" erg))
-    erg))
+  `(save-excursion
+     (let ((erg (< 0 (% (abs (skip-chars-backward "\\\\")) 2))))
+       erg)))
 
 (defun py-in-comment-p ()
   "Return the beginning of current line's comment, if inside. "
@@ -9710,7 +9696,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
                        "Toggle Indent Tabs mode."
                        (setq indent-tabs-mode py-indent-tabs-mode)))
   (custom-add-option 'python-mode-hook 'abbrev-mode)
-  (when (and imenu-create-index-p (fboundp 'imenu-add-to-menubar)(ignore-errors (require 'imenu)))
+  (when (and py-imenu-create-index-p (fboundp 'imenu-add-to-menubar)(ignore-errors (require 'imenu)))
     (setq imenu-create-index-function #'py-imenu-create-index-new)
     (setq imenu-generic-expression py-imenu-generic-expression)
     (imenu-add-to-menubar "PyIndex")
@@ -9817,7 +9803,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   "Returns end position of function or class definition. "
   (interactive)
   (let ((here (point))
-        (pos (progn (py-end-of-def-or-class 'either) (point))))
+        (pos (progn (py-end-of-def-or-class) (point))))
     (prog1
         (point)
       (when (and py-verbose-p (interactive-p)) (message "%s" pos))

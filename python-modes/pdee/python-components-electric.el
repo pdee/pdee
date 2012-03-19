@@ -54,7 +54,7 @@ If a numeric argument ARG is provided, that many colons are inserted
 non-electrically.
 With \\[universal-argument] \"#\" electric behavior is inhibited inside a string or comment."
   (interactive "*P")
-  (if py-electric-comment-p
+  (if (and py-indent-comments py-electric-comment-p)
       (if (ignore-errors (eq 4 (car-safe arg)))
           (insert "#")
         (when (and (eq last-command 'py-electric-comment) (looking-back " "))

@@ -59,16 +59,6 @@
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-use-number-face-p nil
-  "If digits incl. hex-digits should get an own py-number-face.
-
-Default is nil. With large files fontifying numbers may cause a
-delay. Setting of `py-use-number-face-p' has visible effect only
-when `py-number-face' was customized differently than inherited
-default face. "
-  :type 'boolean
-  :group 'python-mode)
-
 (defcustom py-start-run-py-shell t
   "If `python-mode' should start a python-shell, `py-shell'. Default is `t'.
 
@@ -674,7 +664,7 @@ element matches `py-shell-name'."
   :type 'boolean
   :group 'python-mode)
 
-(defcustom imenu-create-index-p t
+(defcustom py-imenu-create-index-p t
   "Non-nil means Python mode creates and displays an index menu of functions and global variables. "
   :type 'boolean
   :group 'python-mode)
@@ -1330,25 +1320,42 @@ See original source: http://pymacs.progiciels-bpi.ca"
 
 
 ;;; Font-lock and syntax
+;;; Python specialized rx
 
-(defun python-info-ppss-context (type &optional syntax-ppss)
-  "Return non-nil if point is on TYPE using SYNTAX-PPSS.
-TYPE can be 'comment, 'string or 'paren.  It returns the start
-character address of the specified TYPE."
-  (let ((ppss (or syntax-ppss (syntax-ppss))))
-    (cond ((eq type 'comment)
-           (and (nth 4 ppss)
-                (nth 8 ppss)))
-          ((eq type 'string)
-           (nth 8 ppss))
-          ((eq type 'paren)
-           (nth 1 ppss))
-          (t nil))))
+(eval-when-compile
+  (defconst python-rx-constituents
+    (list
+     `(block-start          . ,(rx symbol-start
+                                   (or "def" "class" "if" "elif" "else" "try"
+                                       "except" "finally" "for" "while" "with")
+                                   symbol-end))
+     `(decorator            . ,(rx line-start (* space) ?@ (any letter ?_)
+                                   (* (any word ?_))))
+     `(defun                . ,(rx symbol-start (or "def" "class") symbol-end))
+     `(symbol-name          . ,(rx (any letter ?_) (* (any word ?_))))
+     `(open-paren           . ,(rx (or "{" "[" "(")))
+     `(close-paren          . ,(rx (or "}" "]" ")")))
+     `(simple-operator      . ,(rx (any ?+ ?- ?/ ?& ?^ ?~ ?| ?* ?< ?> ?= ?%)))
+     `(not-simple-operator  . ,(rx (not (any ?+ ?- ?/ ?& ?^ ?~ ?| ?* ?< ?> ?= ?%))))
+     `(operator             . ,(rx (or "+" "-" "/" "&" "^" "~" "|" "*" "<" ">"
+                                       "=" "%" "**" "//" "<<" ">>" "<=" "!="
+                                       "==" ">=" "is" "not")))
+     `(assignment-operator  . ,(rx (or "=" "+=" "-=" "*=" "/=" "//=" "%=" "**="
+                                       ">>=" "<<=" "&=" "^=" "|="))))
+    "Additional Python specific sexps for `python-rx'"))
 
-;; Credits to github.com/fgallina/python.el/issues42
-(defvar font-lock-number "[0-9]+\\([eE][+-]?[0-9]*\\)?")
-(defvar font-lock-hexnumber "0[xX][0-9a-fA-F]+")
+(defmacro python-rx (&rest regexps)
+  "Python mode specialized rx macro which supports common python named REGEXPS."
+  (let ((rx-constituents (append python-rx-constituents rx-constituents)))
+    (cond ((null regexps)
+           (error "No regexp"))
+          ((cdr regexps)
+           (rx-to-string `(and ,@regexps) t))
+          (t
+           (rx-to-string (car regexps) t)))))
 
+
+;;; Font-lock and syntax
 (defvar python-font-lock-keywords)
 (setq python-font-lock-keywords
       ;; Keywords
@@ -1369,11 +1376,10 @@ character address of the specified TYPE."
               symbol-end) . py-exception-name-face)
         ;; Constants
         (,(rx symbol-start
-              ;; copyright, license, credits, quit, exit are added by the
-              ;; site module and since they are not intended to be used in
-              ;; programs they are not added here either.
               (or "None" "True" "False" "__debug__" "NotImplemented")
               symbol-end) . font-lock-constant-face)
+        ;; Numbers
+        (,(rx symbol-start (or (1+ digit) (1+ hex-digit)) symbol-end) . py-number-face)
         (,(rx symbol-start
               (or "cls" "self" "cls" "Ellipsis" "True" "False" "None")
               symbol-end) . py-pseudo-keyword-face)
@@ -1447,23 +1453,113 @@ character address of the specified TYPE."
                   (set-match-data nil)))))
          (1 font-lock-variable-name-face nil nil))))
 
-(when py-use-number-face-p
-  (add-to-list 'python-font-lock-keywords '("\\([0-9]+\\([eE][+-]?[0-9]*\\)?\\|0[xX][0-9a-fA-F]+\\)" 1 py-number-face)))
+;; (defvar python-font-lock-keywords
+;;   ;; Keywords
+;;   `(,(rx symbol-start
+;;          (or "and" "del" "from" "not" "while" "as" "elif" "global" "or" "with"
+;;              "assert" "else" "if" "pass" "yield" "break" "except" "import"
+;;              "print" "class" "exec" "in" "raise" "continue" "finally" "is"
+;;              "return" "def" "for" "lambda" "try" "self")
+;;          symbol-end)
+;;     ;; functions
+;;     (,(rx symbol-start "def" (1+ space) (group (1+ (or word ?_))))
+;;      (1 font-lock-function-name-face))
+;;     ;; classes
+;;     (,(rx symbol-start "class" (1+ space) (group (1+ (or word ?_))))
+;;      (1 font-lock-type-face))
+;;     ;; Constants
+;;     (,(rx symbol-start
+;;           ;; copyright, license, credits, quit, exit are added by the
+;;           ;; site module and since they are not intended to be used in
+;;           ;; programs they are not added here either.
+;;           (or "None" "True" "False" "Ellipsis" "__debug__" "NotImplemented")
+;;           symbol-end) . font-lock-constant-face)
+;;     ;; Decorators.
+;;     (,(rx line-start (* (any " \t")) (group "@" (1+ (or word ?_))
+;;                                             (0+ "." (1+ (or word ?_)))))
+;;      (1 py-decorators-face))
+;;     ;; Numbers
+;;     (,(rx symbol-start (or (1+ digit) (1+ hex-digit)) symbol-end) . py-number-face)
+;;     ;; Pseudo-keyword
+;;     (,(rx symbol-start
+;;           (or "cls" "self" "cls" "Ellipsis" "True" "False" "None")
+;;           symbol-end) . py-pseudo-keyword-face)
+;;     ;; classes
+;;     (,(rx symbol-start (group "class") (1+ space) (group (1+ (or word ?_))))
+;;      (1 font-lock-keyword-face) (2 py-class-name-face))
+;;     (,(rx symbol-start
+;;           (or "raise" "except")
+;;           symbol-end) . py-exception-name-face)
+;;     ;; Builtin Exceptions
+;;     (,(rx symbol-start
+;;           (or "ArithmeticError" "AssertionError" "AttributeError"
+;;               "BaseException" "BufferError" "BytesWarning" "DeprecationWarning"
+;;               "EOFError" "EnvironmentError" "Exception" "FloatingPointError"
+;;               "FutureWarning" "GeneratorExit" "IOError" "ImportError"
+;;               "ImportWarning" "IndentationError" "IndexError" "KeyError"
+;;               "KeyboardInterrupt" "LookupError" "MemoryError" "NameError"
+;;               "NotImplementedError" "OSError" "OverflowError"
+;;               "PendingDeprecationWarning" "ReferenceError" "RuntimeError"
+;;               "RuntimeWarning" "StandardError" "StopIteration" "SyntaxError"
+;;               "SyntaxWarning" "SystemError" "SystemExit" "TabError" "TypeError"
+;;               "UnboundLocalError" "UnicodeDecodeError" "UnicodeEncodeError"
+;;               "UnicodeError" "UnicodeTranslateError" "UnicodeWarning"
+;;               "UserWarning" "ValueError" "Warning" "ZeroDivisionError")
+;;           symbol-end) . font-lock-type-face)
+;;     ;; Builtins
+;;     (,(rx symbol-start
+;;           (or "_" "__doc__" "__import__" "__name__" "__package__" "abs" "all"
+;;               "any" "apply" "basestring" "bin" "bool" "buffer" "bytearray"
+;;               "bytes" "callable" "chr" "classmethod" "cmp" "coerce" "compile"
+;;               "complex" "delattr" "dict" "dir" "divmod" "enumerate" "eval"
+;;               "execfile" "file" "filter" "float" "format" "frozenset"
+;;               "getattr" "globals" "hasattr" "hash" "help" "hex" "id" "input"
+;;               "int" "intern" "isinstance" "issubclass" "iter" "len" "list"
+;;               "locals" "long" "map" "max" "min" "next" "object" "oct" "open"
+;;               "ord" "pow" "print" "property" "range" "raw_input" "reduce"
+;;               "reload" "repr" "reversed" "round" "set" "setattr" "slice"
+;;               "sorted" "staticmethod" "str" "sum" "super" "tuple" "type"
+;;               "unichr" "unicode" "vars" "xrange" "zip")
+;;           symbol-end) . font-lock-builtin-face)
+;;     ;; asignations
+;;     ;; support for a = b = c = 5
+;;     (,(lambda (limit)
+;;         (let ((re (python-rx (group (+ (any word ?. ?_)))
+;;                              (? ?\[ (+ (not (any  ?\]))) ?\]) (* space)
+;;                              assignment-operator)))
+;;           (when (re-search-forward re limit t)
+;;             (while (and (python-info-ppss-context 'paren)
+;;                         (re-search-forward re limit t)))
+;;             (if (and (not (python-info-ppss-context 'paren))
+;;                      (not (equal (char-after (point-marker)) ?=)))
+;;                 t
+;;               (set-match-data nil)))))
+;;      (1 font-lock-variable-name-face nil nil))
+;;     ;; support for a, b, c = (1, 2, 3)
+;;     (,(lambda (limit)
+;;         (let ((re (python-rx (group (+ (any word ?. ?_))) (* space)
+;;                              (* ?, (* space) (+ (any word ?. ?_)) (* space))
+;;                              ?, (* space) (+ (any word ?. ?_)) (* space)
+;;                              assignment-operator)))
+;;           (when (and (re-search-forward re limit t)
+;;                      (goto-char (nth 3 (match-data))))
+;;             (while (and (python-info-ppss-context 'paren)
+;;                         (re-search-forward re limit t))
+;;               (goto-char (nth 3 (match-data))))
+;;             (if (not (python-info-ppss-context 'paren))
+;;                 t
+;;               (set-match-data nil)))))
+;;      (1 font-lock-variable-name-face nil nil))))
 
 (defconst python-font-lock-syntactic-keywords
   ;; Make outer chars of matching triple-quote sequences into generic
   ;; string delimiters.  Fixme: Is there a better way?
   ;; First avoid a sequence preceded by an odd number of backslashes.
-  `((,(concat "\\(?:^\\|[^\\]\\(?:\\\\.\\)*\\)" ;Prefix.
-              "\\(?:\\('\\)\\('\\)\\('\\)\\|\\(?1:\"\\)\\(?2:\"\\)\\(?3:\"\\)\\)")
-     (1 (python-quote-syntax 1) nil lax)
-     (2 (python-quote-syntax 2))
-     (3 (python-quote-syntax 3)))
-    ;; This doesn't really help.
-;;;     (,(rx (and ?\\ (group ?\n))) (1 " "))
-    ))
+  `((,(concat "\\(?:\\([RUru]\\)[Rr]?\\|^\\|[^\\]\\(?:\\\\.\\)*\\)" ;Prefix.
+              "\\(?:\\('\\)'\\('\\)\\|\\(?2:\"\\)\"\\(?3:\"\\)\\)")
+     (3 (python-quote-syntax)))))
 
-(defun python-quote-syntax (n)
+(defun python-quote-syntax ()
   "Put `syntax-table' property correctly on triple quote.
 Used for syntactic keywords.  N is the match number (1, 2 or 3)."
   ;; Given a triple quote, we have to check the context to know
@@ -1481,52 +1577,143 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
   ;; x '"""' x """ \"""" x
   (save-excursion
     (goto-char (match-beginning 0))
-    (cond
-     ;; Consider property for the last char if in a fenced string.
-     ((= n 3)
-      (let* ((font-lock-syntactic-keywords nil)
-	     (syntax (syntax-ppss)))
-	(when (eq t (nth 3 syntax))	; after unclosed fence
-          (goto-char (nth 8 syntax))	; fence position
-	  ;; (skip-chars-forward "uUrR")	; skip any prefix
-          ;; Is it a matching sequence?
-          (if (eq (char-after) (char-after (match-beginning 2)))
-	      (eval-when-compile (string-to-syntax "|"))))))
-     ;; Consider property for initial char, accounting for prefixes.
-     ((or (and (= n 2)			; leading quote (not prefix)
-	       (not (match-end 1)))     ; prefix is null
-	  (and (= n 1)			; prefix
-	       (match-end 1)))          ; non-empty
-      (let ((font-lock-syntactic-keywords nil))
-	(unless (eq 'string (syntax-ppss-context (syntax-ppss)))
-	  (eval-when-compile (string-to-syntax "|")))))
-     ;; Otherwise (we're in a non-matching string) the property is
-     ;; nil, which is OK.
-     )))
+    (let ((syntax (save-match-data (syntax-ppss))))
+      (cond
+       ((eq t (nth 3 syntax))           ; after unclosed fence
+        ;; Consider property for the last char if in a fenced string.
+        (goto-char (nth 8 syntax))	; fence position
+        (skip-chars-forward "uUrR")	; skip any prefix
+        ;; Is it a matching sequence?
+        (if (eq (char-after) (char-after (match-beginning 2)))
+            (put-text-property (match-beginning 3) (match-end 3)
+                               'syntax-table (string-to-syntax "|"))))
+       ((match-end 1)
+        ;; Consider property for initial char, accounting for prefixes.
+        (put-text-property (match-beginning 1) (match-end 1)
+                           'syntax-table (string-to-syntax "|")))
+       (t
+        ;; Consider property for initial char, accounting for prefixes.
+        (put-text-property (match-beginning 2) (match-end 2)
+                           'syntax-table (string-to-syntax "|"))))
+      )))
 
-(defvar python-mode-syntax-table nil
+(defvar python-mode-syntax-table
+  (let ((table (make-syntax-table)))
+    ;; Give punctuation syntax to ASCII that normally has symbol
+    ;; syntax or has word syntax and isn't a letter.
+    (let ((symbol (string-to-syntax "_"))
+	  (sst (standard-syntax-table)))
+      (dotimes (i 128)
+	(unless (= i ?_)
+	  (if (equal symbol (aref sst i))
+	      (modify-syntax-entry i "." table)))))
+    (modify-syntax-entry ?$ "." table)
+    (modify-syntax-entry ?% "." table)
+    ;; exceptions
+    (modify-syntax-entry ?# "<" table)
+    (modify-syntax-entry ?\n ">" table)
+    (modify-syntax-entry ?' "\"" table)
+    (modify-syntax-entry ?` "$" table)
+    table)
   "Syntax table for Python files.")
 
-(setq python-mode-syntax-table
-      (let ((table (make-syntax-table)))
-        ;; Give punctuation syntax to ASCII that normally has symbol
-        ;; syntax or has word syntax and isn't a letter.
-        (let ((symbol (string-to-syntax "_"))
-              (sst (standard-syntax-table)))
-          (dotimes (i 128)
-            (unless (= i ?_)
-              (if (equal symbol (aref sst i))
-                  (modify-syntax-entry i "." table)))))
-        (modify-syntax-entry ?$ "." table)
-        (modify-syntax-entry ?% "." table)
-        ;; exceptions
-        (modify-syntax-entry ?# "<" table)
-        (modify-syntax-entry ?\n ">" table)
-        (modify-syntax-entry ?' "\"" table)
-        (modify-syntax-entry ?` "$" table)
-        (when py-underscore-word-syntax-p
-          (modify-syntax-entry ?_ "w" table))
-        table))
+(defun python-info-ppss-context (type &optional syntax-ppss)
+  "Return non-nil if point is on TYPE using SYNTAX-PPSS.
+TYPE can be 'comment, 'string or 'paren.  It returns the start
+character address of the specified TYPE."
+  (let ((ppss (or syntax-ppss (syntax-ppss))))
+    (cond ((eq type 'comment)
+           (and (nth 4 ppss)
+                (nth 8 ppss)))
+          ((eq type 'string)
+           (nth 8 ppss))
+          ((eq type 'paren)
+           (nth 1 ppss))
+          (t nil))))
+
+;; ;; Credits to github.com/fgallina/python.el/issues42
+;; (defvar font-lock-number "[0-9]+\\([eE][+-]?[0-9]*\\)?")
+;; (defvar font-lock-hexnumber "0[xX][0-9a-fA-F]+")
+;;
+
+;;
+;; (defconst python-font-lock-syntactic-keywords
+;;   ;; Make outer chars of matching triple-quote sequences into generic
+;;   ;; string delimiters.  Fixme: Is there a better way?
+;;   ;; First avoid a sequence preceded by an odd number of backslashes.
+;;   `((,(concat "\\(?:^\\|[^\\]\\(?:\\\\.\\)*\\)" ;Prefix.
+;;               "\\(?:\\('\\)\\('\\)\\('\\)\\|\\(?1:\"\\)\\(?2:\"\\)\\(?3:\"\\)\\)")
+;;      (1 (python-quote-syntax 1) nil lax)
+;;      (2 (python-quote-syntax 2))
+;;      (3 (python-quote-syntax 3)))
+;;     ;; This doesn't really help.
+;; ;;;     (,(rx (and ?\\ (group ?\n))) (1 " "))
+;;     ))
+;;
+;; (defun python-quote-syntax (n)
+;;   "Put `syntax-table' property correctly on triple quote.
+;; Used for syntactic keywords.  N is the match number (1, 2 or 3)."
+;;   ;; Given a triple quote, we have to check the context to know
+;;   ;; whether this is an opening or closing triple or whether it's
+;;   ;; quoted anyhow, and should be ignored.  (For that we need to do
+;;   ;; the same job as `syntax-ppss' to be correct and it seems to be OK
+;;   ;; to use it here despite initial worries.)  We also have to sort
+;;   ;; out a possible prefix -- well, we don't _have_ to, but I think it
+;;   ;; should be treated as part of the string.
+;;
+;;   ;; Test cases:
+;;   ;;  ur"""ar""" x='"' # """
+;;   ;; x = ''' """ ' a
+;;   ;; '''
+;;   ;; x '"""' x """ \"""" x
+;;   (save-excursion
+;;     (goto-char (match-beginning 0))
+;;     (cond
+;;      ;; Consider property for the last char if in a fenced string.
+;;      ((= n 3)
+;;       (let* ((font-lock-syntactic-keywords nil)
+;;              (syntax (syntax-ppss)))
+;;         (when (eq t (nth 3 syntax))	; after unclosed fence
+;;           (goto-char (nth 8 syntax))	; fence position
+;;           ;; (skip-chars-forward "uUrR")	; skip any prefix
+;;           ;; Is it a matching sequence?
+;;           (if (eq (char-after) (char-after (match-beginning 2)))
+;;               (eval-when-compile (string-to-syntax "|"))))))
+;;      ;; Consider property for initial char, accounting for prefixes.
+;;      ((or (and (= n 2)			; leading quote (not prefix)
+;;                (not (match-end 1)))     ; prefix is null
+;;           (and (= n 1)			; prefix
+;;                (match-end 1)))          ; non-empty
+;;       (let ((font-lock-syntactic-keywords nil))
+;;         (unless (eq 'string (syntax-ppss-context (syntax-ppss)))
+;;           (eval-when-compile (string-to-syntax "|")))))
+;;      ;; Otherwise (we're in a non-matching string) the property is
+;;      ;; nil, which is OK.
+;;      )))
+;;
+;; (defvar python-mode-syntax-table nil
+;;   "Syntax table for Python files.")
+;;
+;; (setq python-mode-syntax-table
+;;       (let ((table (make-syntax-table)))
+;;         ;; Give punctuation syntax to ASCII that normally has symbol
+;;         ;; syntax or has word syntax and isn't a letter.
+;;         (let ((symbol (string-to-syntax "_"))
+;;               (sst (standard-syntax-table)))
+;;           (dotimes (i 128)
+;;             (unless (= i ?_)
+;;               (if (equal symbol (aref sst i))
+;;                   (modify-syntax-entry i "." table)))))
+;;         (modify-syntax-entry ?$ "." table)
+;;         (modify-syntax-entry ?% "." table)
+;;         ;; exceptions
+;;         (modify-syntax-entry ?# "<" table)
+;;         (modify-syntax-entry ?\n ">" table)
+;;         (modify-syntax-entry ?' "\"" table)
+;;         (modify-syntax-entry ?` "$" table)
+;;         (when py-underscore-word-syntax-p
+;;           (modify-syntax-entry ?_ "w" table))
+;;         table))
 
 ;; An auxiliary syntax table which places underscore and dot in the
 ;; symbol class for simplicity
@@ -4982,16 +5169,11 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (set (make-local-variable 'require-final-newline) mode-require-final-newline)
   (make-local-variable 'python-saved-check-command)
   ;; (set (make-local-variable 'beginning-of-defun-function)
-  ;; 'python-beginning-of-defun)
-  (set (make-local-variable 'beginning-of-defun-function)
-       'py-beginning-of-def-or-class)
-  ;; (set (make-local-variable 'end-of-defun-function) 'python-end-of-defun)
-  (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class)
+  ;;      'py-beginning-of-def-or-class)
+  ;; (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class)
   (add-hook 'which-func-functions 'python-which-func nil t)
   (add-hook 'completion-at-point-functions
             py-complete-function nil 'local)
-  (set (make-local-variable 'beginning-of-defun-function) 'py-beginning-of-def-or-class)
-  (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class)
   (set (make-local-variable 'eldoc-documentation-function)
        #'python-eldoc-function)
   (set (make-local-variable 'skeleton-further-elements)
@@ -5000,7 +5182,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
          (^ '(- (1+ (current-indentation))))))
   (set (make-local-variable 'tab-width) py-indent-offset)
   (remove-hook 'python-mode-hook 'imenu-add-menubar-index)
-  (when (and imenu-create-index-p (fboundp 'imenu-add-to-menubar)(ignore-errors (require 'imenu)))
+  (when (and py-imenu-create-index-p (fboundp 'imenu-add-to-menubar)(ignore-errors (require 'imenu)))
     (setq imenu-create-index-function #'py-imenu-create-index-new)
     (setq imenu-generic-expression py-imenu-generic-expression)
     (imenu-add-to-menubar "PyIndex")
@@ -5065,12 +5247,12 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (ignore-errors (require 'highlight-indentation)))
 
 ;; credits to python.el
-(defun py-beg-of-defun-function ()
-  (set (make-local-variable 'beginning-of-defun-function)
-       'py-beginning-of-def-or-class))
-
-(defun py-end-of-defun-function ()
-  (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class))
+;; (defun py-beg-of-defun-function ()
+;;   (set (make-local-variable 'beginning-of-defun-function)
+;;        'py-beginning-of-def-or-class))
+;;
+;; (defun py-end-of-defun-function ()
+;;   (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class))
 
 (if py-mode-output-map
     nil
@@ -5321,7 +5503,7 @@ With \\[universal-argument] 4 is called `py-switch-shell' see docu there.
   "Returns end position of function or class definition. "
   (interactive)
   (let ((here (point))
-        (pos (progn (py-end-of-def-or-class 'either) (point))))
+        (pos (progn (py-end-of-def-or-class) (point))))
     (prog1
         (point)
       (when (interactive-p) (message "%s" pos))
@@ -5378,7 +5560,7 @@ This function does not modify point or mark."
                ((eq position 'bol) (beginning-of-line))
                ((eq position 'eol) (end-of-line))
                ((eq position 'bod) (py-beginning-of-def-or-class))
-               ((eq position 'eod) (py-end-of-def-or-class 'either))
+               ((eq position 'eod) (py-end-of-def-or-class))
                ;; Kind of funny, I know, but useful for py-up-exception.
                ((eq position 'bob) (goto-char (point-min)))
                ((eq position 'eob) (goto-char (point-max)))
@@ -5427,10 +5609,6 @@ These are Python temporary files awaiting execution."
 
 ;; hook doesn't get unloaded
 (defalias 'python-pdbtrack-track-stack-file 'py-pdbtrack-track-stack-file)
-
-;; (add-hook 'python-mode-hook '(lambda ()(set (make-local-variable 'beginning-of-defun-function) 'py-beginning-of-def-or-class)))
-;;
-;; (add-hook 'python-mode-hook '(lambda ()(set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class)))
 
 ;; Add a designator to the minor mode strings
 (or (assq 'py-pdbtrack-is-tracking-p minor-mode-alist)

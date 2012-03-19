@@ -330,26 +330,37 @@ Optional ARG indicates a start-position for `parse-partial-sexp'."
       (when (interactive-p) (message "%s" erg))
       erg)))
 
-(defun py-current-line-backslashed-p ()
+(defmacro py-current-line-backslashed-p ()
   "Return t if current line is a backslashed continuation line. "
-  (interactive)
-  (save-excursion
-    (end-of-line)
-    (skip-chars-backward " \t\r\n\f")
-    (let ((erg (and (eq (char-before (point)) ?\\ )
-                    (py-escaped))))
-      (when (interactive-p) (message "%s" erg))
-      erg)))
+  `(save-excursion
+     (end-of-line)
+     (skip-chars-backward " \t\r\n\f")
+     (let ((erg (and (eq (char-before (point)) ?\\ )
+                     (py-escaped))))
+       erg)))
 
-(defun py-escaped (&optional iact)
+;; (defun py-current-line-backslashed-p ()
+;;   "Return t if current line is a backslashed continuation line. "
+;;   (interactive)
+;;   (save-excursion
+;;     (end-of-line)
+;;     (skip-chars-backward " \t\r\n\f")
+;;     (let ((erg (and (eq (char-before (point)) ?\\ )
+;;                     (py-escaped))))
+;;       (when (interactive-p) (message "%s" erg))
+;;       erg)))
+
+(defmacro py-escaped ()
   "Return t if char is preceded by an odd number of backslashes. "
-  (interactive "p")
-  (lexical-let ((orig (point))
-                erg)
-    (setq erg (< 0 (abs (% (skip-chars-backward "\\\\")2))))
-    (goto-char orig)
-    (when iact (message "%s" erg))
-    erg))
+  `(save-excursion
+     (let ((erg (< 0 (% (abs (skip-chars-backward "\\\\")) 2))))
+       erg)))
+
+;; (defun py-escaped ()
+;;   "Return t if char is preceded by an odd number of backslashes. "
+;;   (save-excursion
+;;     (let ((erg (< 0 (% (abs (skip-chars-backward "\\\\")) 2))))
+;;       erg)))
 
 (defun py-in-comment-p ()
   "Return the beginning of current line's comment, if inside. "

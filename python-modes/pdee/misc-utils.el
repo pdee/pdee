@@ -855,5 +855,57 @@ also insert a newline. "
        (setq liste (cdr liste)))
      element))
 
+(defun ar-trace-all-functions (&optional beg end)
+  "Get all functions traced, `untrace-all' disables it. "
+  (interactive)
+  (when (string-match ".gnu-emacs-all-cvs" (buffer-file-name)) (emacs-lisp-mode))
+  (let ((beg (cond (beg)
+		   ((region-active-p)
+		    (region-beginning))
+		   (t (point-min))))
+	(end (cond (end (copy-marker end))
+		   ((region-active-p)
+		    (copy-marker (region-end)))
+		   (t (copy-marker (point-max)))))
+        (last-pos-line 1)
+        this-pos-line)
+    (save-excursion
+      (catch 'fehler
+        (goto-char beg)
+        (while (and (not (eobp))
+                    (< (point) end))
+          (setq last-pos-line (count-lines 1 (point)))
+          (message "%s" last-pos-line)
+          (forward-sexp 1)
+          ;; in comment
+	  (while (nth 4 (parse-partial-sexp (line-beginning-position) (point)))
+	    (forward-line 1)
+	    (end-of-line))
+          (message "point %s" (point))
+          (setq this-pos-line (count-lines 1 (point)))
+          (save-excursion
+            (beginning-of-defun)
+            (when (looking-at "(defun")
+              (search-forward "(defun" (line-end-position) t 1)
+              (skip-chars-forward " \t\r\n")
+              (trace-function (symbol-at-point))))))))
+  (message "%s" " Finished!"))
+
+(defun ar-max-trace ()
+  "Detect greatest count in trace-buffer.
+
+Jumps to position, returns count, a number. "
+  (interactive) 
+  (let ((erg 0)
+        pos)
+  (goto-char (point-min))
+  (while (re-search-forward "\\(| \\)+\\([0-9]+\\)" nil (quote move) 1)
+    (when (< erg (string-to-number (match-string-no-properties 2)))
+      (setq erg (string-to-number (match-string-no-properties 2)))
+      (setq pos (point))))
+  (goto-char pos)
+  (when (interactive-p) (message "%s" erg))
+  erg))
+
 (provide 'misc-utils)
 ;;; misc-utils.el ends here

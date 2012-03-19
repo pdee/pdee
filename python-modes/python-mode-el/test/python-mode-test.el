@@ -602,7 +602,13 @@ b = a[0].split(':')[1]
 (defun py-insert-super-python2-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python2
-# -*- coding: utf-8 -*-
+# -\*- coding: utf-8 -\*-
+# As example given in Python v3.1 documentation » The Python Standard Library »
+#
+# class C(B):
+#     def method(self, arg):
+#         super().method(arg) # This does the same thing as:
+#                                # super(C, self).method(arg)\"
 
 class OrderedDict1(dict):
     \"\"\"
@@ -625,7 +631,13 @@ class OrderedDict1(dict):
 (defun py-insert-super-python3-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python3
-# -*- coding: utf-8 -*-
+# -\*- coding: utf-8 -\*-
+# As example given in Python v3.1 documentation » The Python Standard Library »
+#
+# class C(B):
+#     def method(self, arg):
+#         super().method(arg) # This does the same thing as:
+#                                # super(C, self).method(arg)\"
 
 class OrderedDict1(dict):
     \"\"\"
@@ -641,9 +653,7 @@ class OrderedDict1(dict):
     (py-bug-tests-intern 'py-insert-super-python3-base arg teststring)))
 
 (defun py-insert-super-python3-base ()
-  (py-insert-super)
-  (back-to-indentation)
-  (assert (looking-at "super(OrderedDict1, self).__init__(d={})") "py-insert-super-python3-test failed"))
+  (assert (string= (py-insert-super) "super().__init__(d={})") nil "py-insert-super-python3-test failed"))
 
 (defun py-indent-after-assigment-test (&optional arg load-branch-function)
   (interactive "p")
@@ -1829,33 +1839,6 @@ for x in y:
 
 (defun py-end-of-list-position-commandp-base ()
   (assert (commandp 'py-end-of-list-position) nil "py-end-of-list-position-commandp-test failed"))
-
-(defun py-preceding-line-backslashed-p-commandp-test (&optional arg load-branch-function)
-  (interactive "p")
-  (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
-    (py-bug-tests-intern 'py-preceding-line-backslashed-p-commandp-base arg teststring)))
-
-(defun py-preceding-line-backslashed-p-commandp-base ()
-  (assert (commandp 'py-preceding-line-backslashed-p) nil "py-preceding-line-backslashed-p-commandp-test failed"))
-
-(defun py-current-line-backslashed-p-commandp-test (&optional arg load-branch-function)
-  (interactive "p")
-  (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
-    (py-bug-tests-intern 'py-current-line-backslashed-p-commandp-base arg teststring)))
-
-(defun py-current-line-backslashed-p-commandp-base ()
-  (assert (commandp 'py-current-line-backslashed-p) nil "py-current-line-backslashed-p-commandp-test failed"))
-
-(defun py-escaped-commandp-test (&optional arg load-branch-function)
-  (interactive "p")
-  (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
-    (py-bug-tests-intern 'py-escaped-commandp-base arg teststring)))
-
-(defun py-escaped-commandp-base ()
-  (assert (commandp 'py-escaped) nil "py-escaped-commandp-test failed"))
 
 (defun py-in-triplequoted-string-p-commandp-test (&optional arg load-branch-function)
   (interactive "p")

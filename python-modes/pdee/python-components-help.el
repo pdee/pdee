@@ -62,15 +62,15 @@ Useful for newly defined symbol, not known to python yet. "
 (defun py-describe-symbol ()
   "Print help on symbol at point. "
   (interactive)
-  (lexical-let* ((sym (prin1-to-string (symbol-at-point)))
-                 (origfile (buffer-file-name))
-                 (temp (make-temp-name (buffer-name)))
-                 (file (concat (expand-file-name temp py-temp-directory) ".py"))
-                 (cmd (py-find-imports))
-                 (no-quotes (save-excursion
-                              (skip-chars-backward "A-Za-z_0-9.")
-                              (and (looking-at "[A-Za-z_0-9.]+")
-                                   (string-match "\\." (match-string-no-properties 0))))))
+  (let* ((sym (prin1-to-string (symbol-at-point)))
+         (origfile (buffer-file-name))
+         (temp (make-temp-name (buffer-name)))
+         (file (concat (expand-file-name temp py-temp-directory) ".py"))
+         (cmd (py-find-imports))
+         (no-quotes (save-excursion
+                      (skip-chars-backward "A-Za-z_0-9.")
+                      (and (looking-at "[A-Za-z_0-9.]+")
+                           (string-match "\\." (match-string-no-properties 0))))))
     (setq cmd (concat "import pydoc\n"
                       cmd))
     (if no-quotes
@@ -167,7 +167,7 @@ variable docs begin with `->'.
 
 @VARIABLES
 
-py-install-directory\twherefrom `python-mode' looks for extensions 
+py-install-directory\twherefrom `python-mode' looks for extensions
 py-indent-offset\tindentation increment
 py-block-comment-prefix\tcomment string used by comment-region
 

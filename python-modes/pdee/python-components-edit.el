@@ -1381,7 +1381,9 @@ As example given in Python v3.1 documentation » The Python Standard Library »
 class C(B):
     def method(self, arg):
         super().method(arg) # This does the same thing as:
-                               # super(C, self).method(arg)"
+                               # super(C, self).method(arg)
+
+Returns the string inserted. "
   (interactive "*")
   (let* ((orig (point))
          (funcname (progn
@@ -1389,18 +1391,21 @@ class C(B):
                      (when (looking-at (concat py-def-re " *\\([^(]+\\) *(\\(?:[^),]*\\),? *\\([^)]*\\))"))
                        (match-string-no-properties 2))))
          (args (match-string-no-properties 3))
-         (erg (py-which-python))
-         classname)
-    (if (< erg 3)
+         (ver (py-which-python))
+         classname erg)
+    (if (< ver 3)
         (progn
           (py-beginning-of-class)
-          (when (looking-at (concat py-class-re " *\\([^( ]+\\)"))
+          (when (looking-at (concat py-class-re " *\\([^( ]+\\)")) 
             (setq classname (match-string-no-properties 2)))
           (goto-char orig)
+          (setq erg (concat "super(" classname ", self)." funcname "(" args ")"))
           ;; super(C, self).method(arg)"
-          (insert (concat "super(" classname ", self)." funcname "(" args ")")))
+          (insert erg))
       (goto-char orig)
-      (insert (concat "super()." funcname "(" args ")")))))
+      (setq erg (concat "super()." funcname "(" args ")"))
+      (insert erg))
+    erg))
 
 (provide 'python-components-edit)
 ;;; python-components-edit.el ends here
