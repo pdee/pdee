@@ -23,7 +23,7 @@
 ;;
 
 ;;; Code:
-
+(require 'python-components-macros)
 ;; Expression
 (defalias 'py-backward-expression 'py-beginning-of-expression)
 (defun py-beginning-of-expression (&optional orig origline done)

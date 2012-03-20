@@ -288,7 +288,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-comment-region-commandp-test \
 --funcall py-fill-paragraph-commandp-test \
 --funcall py-insert-super-commandp-test \
---funcall py-nesting-level-commandp-test \
 --funcall py-compute-indentation-commandp-test \
 --funcall py-continuation-offset-commandp-test \
 --funcall py-indentation-of-statement-commandp-test \

@@ -1786,15 +1786,6 @@ for x in y:
 (defun py-insert-super-commandp-base ()
   (assert (commandp 'py-insert-super) nil "py-insert-super-commandp-test failed"))
 
-(defun py-nesting-level-commandp-test (&optional arg load-branch-function)
-  (interactive "p")
-  (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
-    (py-bug-tests-intern 'py-nesting-level-commandp-base arg teststring)))
-
-(defun py-nesting-level-commandp-base ()
-  (assert (commandp 'py-nesting-level) nil "py-nesting-level-commandp-test failed"))
-
 (defun py-compute-indentation-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))

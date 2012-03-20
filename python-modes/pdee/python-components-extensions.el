@@ -18,23 +18,7 @@
 
 ;;; Commentary:
 
-;; Rewrite of python-mode.el started with functions
-;; below, which are obsolet partly due to success on
-;; the main line
-;; Just kept for notice for the moment
-
-;;; Code:
-
-;; (unless py-mode-map
-;;   (setq py-mode-map (make-sparse-keymap)))
-;;
-;; (define-key py-mode-map [(super s)] 'suche-settrace)
-;; (define-key py-mode-map  [(super I)] 'py-indent-line)
-;; (define-key py-mode-map  [(super i)] 'py-indent-forward-line)
-;; (define-key py-mode-map [(control meta n)]  'py-end-of-block)
-;; (define-key py-mode-map [(control meta p)] 'py-beginning-of-block)
-;; (define-key py-mode-map [(control return)] 'py-newline-and-dedent)
-;; (define-key py-mode-map [(super backspace)] 'py-dedent-forward-line)
+(require 'python-components-macros)
 
 (defcustom py-match-paren-mode nil
   "*Non-nil means, cursor will jump to beginning or end of a block.
@@ -284,15 +268,15 @@ With arg, do it that many times.
       (when (interactive-p) (message "%s" erg))
       erg)))
 
-(unless (functionp 'empty-line-p)
-  (defun empty-line-p (&optional bound noerror count)
-    "Returns t if cursor is at an empty line, nil otherwise."
-    (interactive)
-    (save-excursion
-      (beginning-of-line)
-      (when (interactive-p)
-        (message "%s" (looking-at empty-line-p-chars)))
-      (looking-at empty-line-p-chars))))
+;; (unless (functionp 'empty-line-p)
+;;   (defun empty-line-p (&optional bound noerror count)
+;;     "Returns t if cursor is at an empty line, nil otherwise."
+;;     (interactive)
+;;     (save-excursion
+;;       (beginning-of-line)
+;;       (when (interactive-p)
+;;         (message "%s" (looking-at empty-line-p-chars)))
+;;       (looking-at empty-line-p-chars))))
 
 (defun ar-py-documentation (w)
   "Launch PyDOC on the Word at Point"
@@ -336,16 +320,16 @@ With arg, do it that many times.
   "Inserts a print statement out of current `(car kill-ring)' by default, inserts ARG instead if delivered. "
   (interactive "*")
   (let* ((name (string-strip (or arg (car kill-ring))))
-                 (form (cond ((eq major-mode 'python-mode)
-                              (concat "print \"" name ": %s \" % " name)))))
+         (form (cond ((eq major-mode 'python-mode)
+                      (concat "print \"" name ": %s \" % " name)))))
     (insert form)))
 
 (defun py-line-to-printform-python2 (&optional arg)
   "Transforms the item on current in a print statement. "
   (interactive "*")
   (let* ((name (thing-at-point 'word))
-                 (form (cond ((eq major-mode 'python-mode)
-                              (concat "print \"" name ": %s \" % " name)))))
+         (form (cond ((eq major-mode 'python-mode)
+                      (concat "print \"" name ": %s \" % " name)))))
     (delete-region (line-beginning-position) (line-end-position))
     (insert form))
   (forward-line 1)

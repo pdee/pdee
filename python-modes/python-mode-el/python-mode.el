@@ -3306,6 +3306,14 @@ Returns outmost indentation reached. "
     (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
 
+(defmacro py-preceding-line-backslashed-p ()
+  "Return t if preceding line is a backslashed continuation line. "
+  `(save-excursion
+     (beginning-of-line)
+     (skip-chars-backward " \t\r\n\f")
+     (and (eq (char-before (point)) ?\\ )
+          (py-escaped))))
+
 (defun py-indent-region (start end &optional indent-offset)
   "Reindent a region of Python code.
 
@@ -4414,18 +4422,6 @@ Optional ARG indicates a start-position for `parse-partial-sexp'."
     (beginning-of-line)
     (or (py-preceding-line-backslashed-p)
         (< 0 (py-nesting-level)))))
-
-(defun py-preceding-line-backslashed-p ()
-  "Return t if preceding line is a backslashed continuation line. "
-  (interactive)
-  (save-excursion
-    (beginning-of-line)
-    (skip-chars-backward " \t\r\n\f")
-    (let ((erg (and (eq (char-before (point)) ?\\ )
-                    (py-escaped))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-      erg)))
-
 
 (defmacro py-current-line-backslashed-p ()
   "Return t if current line is a backslashed continuation line. "
@@ -6560,7 +6556,6 @@ This function is appropriate for `comint-output-filter-functions'."
       (if erg
           (message "%s" cmd)
         (message "%s" "Could not detect Python on your system")))))
-
 
 (defmacro py-separator-char ()
   "Return the file-path separator char from current machine. "

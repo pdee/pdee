@@ -23,16 +23,7 @@
 
 ;;; Code:
 
-(defun py-nesting-level (&optional pps)
-  "Accepts the output of `parse-partial-sexp'. "
-  (interactive)
-  (let* ((pps (or (ignore-errors (nth 0 pps))
-                  (if (featurep 'xemacs)
-                      (parse-partial-sexp (point-min) (point))
-                    (syntax-ppss))))
-         (erg (nth 0 pps)))
-    (when (interactive-p) (message "%s" erg))
-    erg))
+(require 'python-components-macros)
 
 (defalias 'py-count-indentation 'py-compute-indentation)
 (defun py-compute-indentation (&optional orig origline closing line inside repeat)
@@ -312,23 +303,16 @@ Optional ARG indicates a start-position for `parse-partial-sexp'."
     (when (interactive-p) (message "%s" end))
     end))
 
-(defun py-continuation-line-p ()
-  "Return t iff current line is a continuation line."
-  (save-excursion
-    (beginning-of-line)
-    (or (py-preceding-line-backslashed-p)
-        (< 0 (py-nesting-level)))))
-
-(defun py-preceding-line-backslashed-p ()
-  "Return t if preceding line is a backslashed continuation line. "
-  (interactive)
-  (save-excursion
-    (beginning-of-line)
-    (skip-chars-backward " \t\r\n\f")
-    (let ((erg (and (eq (char-before (point)) ?\\ )
-                    (py-escaped))))
-      (when (interactive-p) (message "%s" erg))
-      erg)))
+;; (defun py-preceding-line-backslashed-p ()
+;;   "Return t if preceding line is a backslashed continuation line. "
+;;   (interactive)
+;;   (save-excursion
+;;     (beginning-of-line)
+;;     (skip-chars-backward " \t\r\n\f")
+;;     (let ((erg (and (eq (char-before (point)) ?\\ )
+;;                     (py-escaped))))
+;;       (when (interactive-p) (message "%s" erg))
+;;       erg)))
 
 (defmacro py-current-line-backslashed-p ()
   "Return t if current line is a backslashed continuation line. "
