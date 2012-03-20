@@ -347,6 +347,7 @@ If you ignore the location `M-x py-guess-pdb-path' might display it.
   :type 'boolean
   :group 'python-mode)
 
+(defvar py-temp-directory nil)
 (defcustom py-temp-directory
   (let ((ok '(lambda (x)
                (and x
@@ -354,11 +355,17 @@ If you ignore the location `M-x py-guess-pdb-path' might display it.
                     (file-directory-p x)
                     (file-writable-p x)
                     x))))
-    (or (funcall ok (getenv "TMPDIR"))
+    (or (funcall ok py-temp-directory)
+        (funcall ok (getenv "TMPDIR"))
+        (funcall ok (getenv "TEMP/TMP"))
         (funcall ok "/usr/tmp")
         (funcall ok "/tmp")
         (funcall ok "/var/tmp")
-        (funcall ok ".")
+        (and (eq (system-type 'darwin))
+             (funcall ok "/var/folders"))
+        ((and (or (eq (system-type 'ms-dos))(eq (system-type 'ms-dos))(eq (system-type 'windows-nt)))
+              (funcall ok (concat "c:" (py-separator-char) "Users" ))))
+        ;; (funcall ok ".")
         (error
          "Couldn't find a usable temp directory -- set `py-temp-directory'")))
   "*Directory used for temporary files created by a *Python* process.
@@ -562,7 +569,7 @@ the second for a 'normal' command, and the third for a multiline command.")
 (defcustom py-split-windows-on-execute-function 'split-window-vertically
   "How window should get splitted to display results of py-execute-... functions. "
   :type '(choice (const :tag "split-window-vertically" split-window-vertically)
-		 (const :tag "split-window-horizontally" split-window-horizontally)
+                 (const :tag "split-window-horizontally" split-window-horizontally)
                  )
   :group 'python-mode)
 (make-variable-buffer-local 'py-split-windows-on-execute-function)
@@ -677,7 +684,7 @@ Otherwise preserve their indentation.
 This only applies to `doc' strings, i.e. those that form statements;
 the indentation is preserved in others."
   :type '(choice (const :tag "Align with preceding" t)
-		 (const :tag "Preserve indentation" nil))
+                 (const :tag "Preserve indentation" nil))
   :group 'python-mode)
 
 (defcustom python-honour-comment-indentation nil
@@ -711,7 +718,7 @@ Note that this variable is consulted only the first time that a Python
 mode buffer is visited during an Emacs session.  After that, use
 \\[python-toggle-shells] to change the interpreter shell."
   :type '(choice (const :tag "Python (a.k.a. CPython)" cpython)
-		 (const :tag "JPython" jpython))
+                 (const :tag "JPython" jpython))
   :group 'python-mode)
 
 (defcustom python-python-command-args '("-i")
@@ -961,9 +968,6 @@ set in py-execute-region and used in py-jump-to-exception.")
 
 (defsubst py-keep-region-active ()
   "Keep the region active in XEmacs."
-  ;; Ignore byte-compiler warnings you might see.  Also note that
-  ;; FSF's Emacs does it differently; its policy doesn't require us
-  ;; to take explicit action.
   (and (boundp 'zmacs-region-stays)
        (setq zmacs-region-stays t)))
 
@@ -1259,7 +1263,6 @@ See original source: http://pymacs.progiciels-bpi.ca"
           (when (interactive-p) (message "%s" load-path)))))
 
 ;; (when (boundp 'py-install-directory) (py-set-load-path))
-;; don't require `py-install-directory' for now
 (py-set-load-path)
 
 (add-to-list 'interpreter-mode-alist (cons (purecopy "jython") 'jython-mode))
@@ -1273,16 +1276,16 @@ See original source: http://pymacs.progiciels-bpi.ca"
   ;; FIXME: maybe these should move to compilation-error-regexp-alist-alist.
   ;;   The first already is (for CAML), but the second isn't.  Anyhow,
   ;;   these are specific to the inferior buffer.  -- fx
-  `((,(rx line-start (1+ (any " \t")) "File \""
-	  (group (1+ (not (any "\"<")))) ; avoid `<stdin>' &c
-	  "\", line " (group (1+ digit)))
+  `((,(rx bol (1+ (any " \t")) "File \""
+          (group (1+ (not (any "\"<")))) ; avoid `<stdin>' &c
+          "\", line " (group (1+ digit)))
      1 2)
     (,(rx " in file " (group (1+ not-newline)) " on line "
-	  (group (1+ digit)))
+          (group (1+ digit)))
      1 2)
     ;; pdb stack trace
-    (,(rx line-start "> " (group (1+ (not (any "(\"<"))))
-	  "(" (group (1+ digit)) ")" (1+ (not (any "("))) "()")
+    (,(rx bol "> " (group (1+ (not (any "(\"<"))))
+          "(" (group (1+ digit)) ")" (1+ (not (any "("))) "()")
      1 2))
   "`compilation-error-regexp-alist' for inferior Python.")
 
@@ -1293,7 +1296,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
                                    (or "def" "class" "if" "elif" "else" "try"
                                        "except" "finally" "for" "while" "with")
                                    symbol-end))
-     `(decorator            . ,(rx line-start (* space) ?@ (any letter ?_)
+     `(decorator            . ,(rx bol (* space) ?@ (any letter ?_)
                                    (* (any word ?_))))
      `(defun                . ,(rx symbol-start (or "def" "class") symbol-end))
      `(symbol-name          . ,(rx (any letter ?_) (* (any word ?_))))
@@ -1329,7 +1332,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
                                    (or "def" "class" "if" "elif" "else" "try"
                                        "except" "finally" "for" "while" "with")
                                    symbol-end))
-     `(decorator            . ,(rx line-start (* space) ?@ (any letter ?_)
+     `(decorator            . ,(rx bol (* space) ?@ (any letter ?_)
                                    (* (any word ?_))))
      `(defun                . ,(rx symbol-start (or "def" "class") symbol-end))
      `(symbol-name          . ,(rx (any letter ?_) (* (any word ?_))))
@@ -1384,12 +1387,12 @@ See original source: http://pymacs.progiciels-bpi.ca"
               (or "cls" "self" "cls" "Ellipsis" "True" "False" "None")
               symbol-end) . py-pseudo-keyword-face)
         ;; Decorators.
-        (,(rx line-start (* (any " \t")) (group "@" (1+ (or word ?_))
-                                                (0+ "." (1+ (or word ?_)))))
+        (,(rx bol (* (any " \t")) (group "@" (1+ (or word ?_))
+                                         (0+ "." (1+ (or word ?_)))))
          (1 py-decorators-face))
         ;; '("\\_<raise[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_.]*\\)" 1 py-exception-name-face)
         ;; '("[ \t]*\\(_\\{0,2\\}[a-zA-Z][a-zA-Z_0-9.]+_\\{0,2\\}\\) *\\(+\\|-\\|*\\|*\\*\\|/\\|//\\|&\\|%\\||\\|\\^\\|>>\\|<<\\)? ?=[^=\n]"
-        (,(python-rx line-start (* (any " \t"))(group (** 0 2 "_") word (0+ (or word ?_))(** 0 2 "_"))(* (any " \t")) assignment-operator)
+        (,(python-rx bol (* (any " \t"))(group (** 0 2 "_") word (0+ (or word ?_))(** 0 2 "_"))(* (any " \t")) assignment-operator)
          1 py-variable-name-face)
 
         ;; Builtin Exceptions
@@ -1475,7 +1478,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
 ;;           (or "None" "True" "False" "Ellipsis" "__debug__" "NotImplemented")
 ;;           symbol-end) . font-lock-constant-face)
 ;;     ;; Decorators.
-;;     (,(rx line-start (* (any " \t")) (group "@" (1+ (or word ?_))
+;;     (,(rx bol (* (any " \t")) (group "@" (1+ (or word ?_))
 ;;                                             (0+ "." (1+ (or word ?_)))))
 ;;      (1 py-decorators-face))
 ;;     ;; Numbers
@@ -1602,11 +1605,11 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
     ;; Give punctuation syntax to ASCII that normally has symbol
     ;; syntax or has word syntax and isn't a letter.
     (let ((symbol (string-to-syntax "_"))
-	  (sst (standard-syntax-table)))
+          (sst (standard-syntax-table)))
       (dotimes (i 128)
-	(unless (= i ?_)
-	  (if (equal symbol (aref sst i))
-	      (modify-syntax-entry i "." table)))))
+        (unless (= i ?_)
+          (if (equal symbol (aref sst i))
+              (modify-syntax-entry i "." table)))))
     (modify-syntax-entry ?$ "." table)
     (modify-syntax-entry ?% "." table)
     ;; exceptions
@@ -3669,7 +3672,7 @@ Finds beginning of innermost nested class or method definition.
 Returns the name of the definition found at the end, or nil if
 reached start of buffer."
   (let ((ci (current-indentation))
-        (def-re (rx line-start (0+ space) (or "def" "class") (1+ space)
+        (def-re (rx bol (0+ space) (or "def" "class") (1+ space)
                     (group (1+ (or word (syntax symbol))))))
         found lep) ;; def-line
     (if (python-comment-line-p)
@@ -3700,7 +3703,7 @@ reached start of buffer."
   "`end-of-defun-function' for Python.
 Finds end of innermost nested class or method definition."
   (let ((orig (point))
-        (pattern (rx line-start (0+ space) (or "def" "class") space)))
+        (pattern (rx bol (0+ space) (or "def" "class") space)))
     ;; Go to start of current block and check whether it's at top
     ;; level.  If it is, and not a block start, look forward for
     ;; definition statement.
@@ -3964,7 +3967,7 @@ precede it)."
     )
   (let (index-alist)			; accumulated value to return
     (while (re-search-forward
-            (rx line-start (0+ space)	; leading space
+            (rx bol (0+ space)	; leading space
                 (or (group "def") (group "class"))	   ; type
                 (1+ space) (group (1+ (or word ?_))))	   ; name
             nil t)
@@ -3986,7 +3989,7 @@ precede it)."
       (let (vars)
         (goto-char (point-min))
         (while (re-search-forward
-                (rx line-start (group (1+ (or word ?_))) (0+ space) "=")
+                (rx bol (group (1+ (or word ?_))) (0+ space) "=")
                 nil t)
           (unless (python-in-string/comment)
             (push (cons (match-string 1) (match-beginning 1))
@@ -4135,7 +4138,6 @@ For running multiple processes in multiple buffers, see `run-python' and
 
 \\{inferior-python-mode-map}"
   :group 'python-mode
-  (require 'ansi-color) ; for ipython
   (setq mode-line-process '(":%s"))
   (set (make-local-variable 'comint-input-filter) 'python-input-filter)
   (add-hook 'comint-preoutput-filter-functions #'python-preoutput-filter
@@ -4261,7 +4263,6 @@ behavior, change `python-remove-cwd-from-path' to nil."
   (interactive (if current-prefix-arg
                    (list (read-string "Run Python: " python-command) nil t)
                  (list python-command)))
-  (require 'ansi-color) ; for ipython
   (unless cmd (setq cmd python-command))
   (python-check-version cmd)
   (setq python-command cmd)
@@ -4643,7 +4644,7 @@ The criterion is either a match for `jython-mode' via
             (jython-mode)
           (if (catch 'done
                 (while (re-search-forward
-                        (rx line-start (or "import" "from") (1+ space)
+                        (rx bol (or "import" "from") (1+ space)
                             (group (1+ (not (any " \t\n.")))))
                         (+ (point-min) 10000) ; Probably not worth customizing.
                         t)
@@ -5067,8 +5068,8 @@ Updated on each expansion.")
           (end (funcall (intern-soft (concat "py-end-of-" form)))))
       (py-execute-base beg end shell dedicated switch))))
 
-(eval-when-compile
-  (add-to-list 'load-path default-directory))
+(add-to-list 'load-path default-directory)
+(require 'python-components-macros)
 (require 'python-components-edit)
 (require 'python-components-intern)
 (require 'python-components-move)
@@ -5089,7 +5090,7 @@ Updated on each expansion.")
 (require 'python-components-re-forms)
 (require 'python-components-exec-forms)
 (require 'python-extended-executes)
-(require 'python-mode-test)
+;; (require 'python-mode-test)
 (require 'column-marker)
 
 (define-derived-mode python-mode fundamental-mode "Python"
@@ -5633,25 +5634,7 @@ Interactively output of `--version' is displayed. "
   (message "Using `python-mode' version %s" py-version)
   (py-keep-region-active))
 
-;;;; Utility stuff
-
-(defconst python-compilation-regexp-alist
-  ;; FIXME: maybe these should move to compilation-error-regexp-alist-alist.
-  ;;   The first already is (for CAML), but the second isn't.  Anyhow,
-  ;;   these are specific to the inferior buffer.  -- fx
-  `((,(rx line-start (1+ (any " \t")) "File \""
-	  (group (1+ (not (any "\"<")))) ; avoid `<stdin>' &c
-	  "\", line " (group (1+ digit)))
-     1 2)
-    (,(rx " in file " (group (1+ not-newline)) " on line "
-	  (group (1+ digit)))
-     1 2)
-    ;; pdb stack trace
-    (,(rx line-start "> " (group (1+ (not (any "(\"<"))))
-	  "(" (group (1+ digit)) ")" (1+ (not (any "("))) "()")
-     1 2))
-  "`compilation-error-regexp-alist' for inferior Python.")
-
+;;; Utility stuff
 (defvar inferior-python-mode-map
   (let ((map (make-sparse-keymap)))
     ;; This will inherit from comint-mode-map.

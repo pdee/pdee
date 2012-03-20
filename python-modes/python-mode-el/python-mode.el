@@ -362,7 +362,7 @@ should be of the form `#x...' where `x' is not a blank or a tab, and
   "When t, comment lines are indented. "
   :type 'boolean
   :group 'python-mode)
-
+(defvar py-temp-directory nil)
 (defcustom py-temp-directory
   (let ((ok '(lambda (x)
                (and x
@@ -370,10 +370,16 @@ should be of the form `#x...' where `x' is not a blank or a tab, and
                     (file-directory-p x)
                     (file-writable-p x)
                     x))))
-    (or (funcall ok (getenv "TMPDIR"))
+    (or (funcall ok py-temp-directory)
+        (funcall ok (getenv "TMPDIR"))
+        (funcall ok (getenv "TEMP/TMP"))
         (funcall ok "/usr/tmp")
         (funcall ok "/tmp")
         (funcall ok "/var/tmp")
+        (and (eq (system-type 'darwin))
+             (funcall ok "/var/folders"))
+        ((and (or (eq (system-type 'ms-dos))(eq (system-type 'ms-dos))(eq (system-type 'windows-nt)))
+              (funcall ok (concat "c:" (py-separator-char) "Users" ))))
         (funcall ok ".")
         (error
          "Couldn't find a usable temp directory -- set `py-temp-directory'")))
@@ -6555,13 +6561,18 @@ This function is appropriate for `comint-output-filter-functions'."
           (message "%s" cmd)
         (message "%s" "Could not detect Python on your system")))))
 
-(defun py-separator-char ()
-  "Return the file-path separator char from current machine.
-Returns char found. "
-  (interactive)
-  (let ((erg (replace-regexp-in-string "\n" "" (shell-command-to-string (concat py-shell-name " -c \"import os; print(os.sep)\"")))))
-    (when (interactive-p) (message "Separator-char: %s" erg))
-    erg))
+
+(defmacro py-separator-char ()
+  "Return the file-path separator char from current machine. "
+  `(replace-regexp-in-string "\n" "" (shell-command-to-string (concat ,py-shell-name " -c \"import os; print(os.sep)\""))))
+
+;; (defun py-separator-char ()
+;;   "Return the file-path separator char from current machine.
+;; Returns char found. "
+;;   (interactive)
+;;   (let ((erg (replace-regexp-in-string "\n" "" (shell-command-to-string (concat py-shell-name " -c \"import os; print(os.sep)\"")))))
+;;     (when (interactive-p) (message "Separator-char: %s" erg))
+;;     erg))
 
 (defun py-process-name (&optional name dedicated nostars sepchar)
   "Return the name of the running Python process, `get-process' willsee it. "

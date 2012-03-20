@@ -125,13 +125,19 @@ This function is appropriate for `comint-output-filter-functions'."
           (message "%s" cmd)
         (message "%s" "Could not detect Python on your system")))))
 
-(defun py-separator-char ()
-  "Return the file-path separator char from current machine.
-Returns char found. "
-  (interactive)
-  (let ((erg (replace-regexp-in-string "\n" "" (shell-command-to-string (concat py-shell-name " -c \"import os; print(os.sep)\"")))))
-    (when (interactive-p) (message "Separator-char: %s" erg))
-    erg))
+
+(defmacro py-separator-char ()
+  "Return the file-path separator char from current machine. "
+  `(replace-regexp-in-string "\n" "" (shell-command-to-string (concat ,py-shell-name " -c \"import os; print(os.sep)\""))))
+
+
+;; (defun py-separator-char ()
+;;   "Return the file-path separator char from current machine.
+;; Returns char found. "
+;;   (interactive)
+;;   (let ((erg (replace-regexp-in-string "\n" "" (shell-command-to-string (concat py-shell-name " -c \"import os; print(os.sep)\"")))))
+;;     (when (interactive-p) (message "Separator-char: %s" erg))
+;;     erg))
 
 ;; from ipython.el
 (defun py-dirstack-hook ()

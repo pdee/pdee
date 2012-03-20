@@ -3,8 +3,14 @@ us how Python-mode is used and which command is missed
 still.
 
 For people who want to dig into the code:
-Python-mode is build around the notion of statement.
-Running `py-end-of-statement',
-`py-beginning-of-statement' with edebug should deliver
-a way of understanding.
 
+Major parts deal with editing and running of
+Python code - start with edit-commands.
+It's build around the notion of statement.
+Putting `py-end-of-statement',
+`py-beginning-of-statement' under edebug should deliver
+a way into.
+
+When re-loading source, don't forget to re-compile
+before running it, else an existing older compiled file
+get's loaded - see docstring of `load'.
