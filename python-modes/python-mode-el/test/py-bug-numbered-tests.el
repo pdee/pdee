@@ -126,6 +126,7 @@
          'py-backward-into-nomenclature-caps-names-lp:919541-test
          'execute-buffer-ipython-fails-lp:928087-test
          'py-indent-comments-nil-ignored-lp-958721-test
+         'broken-font-locking-lp-961231-test
 
          'py-shell-invoking-python-lp:835151-test
          'py-shell-invoking-ipython-lp:835151-test
@@ -2465,7 +2466,7 @@ I am using version 6.0.4
 
 (defun py-indent-comments-nil-ignored-lp-958721-test (&optional arg load-branch-function)
   (interactive "p")
-  (let (py-indent-comments 
+  (let (py-indent-comments
         (teststring "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 if x > 0:
@@ -2479,6 +2480,51 @@ if x > 0:
   (goto-char 83)
   (assert (eq 0 (py-compute-indentation)) nil "py-indent-comments-nil-ignored-lp-958721-test failed"))
 
+(defun broken-font-locking-lp-961231-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+def baz():
+    foo = None
+    bar = False
+    baz = True
+    foo, bar, baz = baz()
+    return foo, bar, baz
+
+# None, False, and True get colored with font-lock-constant-face instead of py-pseudo-keyword-face
+
+# On the second to last line, \"foo\" \"bar\" and \"baz\" all get colored with font-lock-variable-name-face whereas
+# I think they should get default face, just as they would if no comma or equal sign appeared on the line.
+
+def baz(mydict):
+    mydict['hello'] = 'baz'
+
+    # 'mydict' gets colored with font-lock-variable-name-face but it should be default face.
+
+def baz(self):
+    self.baz = 'hello'
+
+    # 'self' gets colored with font-lock-keyword-face instead of py-pseudo-keyword-face
+
+def baz(self):
+    return set(range(100))
+
+# 'set' and 'range' get rendered in font-lock-builtin-face when they should get rendered in py-builtins-face
+"))
+  (when load-branch-function (funcall load-branch-function))
+  (py-bug-tests-intern 'broken-font-locking-lp-961231-base arg teststring)))
+
+(defun broken-font-locking-lp-961231-base ()
+  (font-lock-fontify-buffer)
+  (sit-for 0.1) 
+  (goto-char 87)
+  (assert (eq (get-char-property (point) 'face) 'py-pseudo-keyword-face) nil "broken-font-locking-lp-961231-test #1 failed")
+  (goto-char 488)
+  (assert (eq (get-char-property (point) 'face) 'nil) nil "broken-font-locking-lp-961231-test #2 failed")
+  (goto-char 637)
+  (assert (eq (get-char-property (point) 'face) 'py-pseudo-keyword-face) nil "broken-font-locking-lp-961231-test #3 failed")
+  (goto-char 775)
+  (assert (eq (get-char-property (point) 'face) 'py-builtins-face) nil "broken-font-locking-lp-961231-test #4 failed"))
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

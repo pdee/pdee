@@ -1144,6 +1144,53 @@ Inludes Python shell-prompt in order to stop further searches. ")
 (defconst py-try-re "[ \t]*\\_<try\\_>[: \n\t]"
   "Matches the beginning of a compound statement saying `try'. " )
 
+;;; Macro definitions
+(defmacro empty-line-p ()
+  "Returns t if cursor is at an line with nothing but whitespace-characters, nil otherwise."
+  (interactive "p")
+  `(save-excursion
+     (progn
+       (beginning-of-line)
+       (looking-at "\\s-*$"))))
+
+(defmacro py-escaped ()
+  "Return t if char is preceded by an odd number of backslashes. "
+  `(save-excursion
+     (< 0 (% (abs (skip-chars-backward "\\\\")) 2))))
+
+(defmacro py-preceding-line-backslashed-p ()
+  "Return t if preceding line is a backslashed continuation line. "
+  `(save-excursion
+     (beginning-of-line)
+     (skip-chars-backward " \t\r\n\f")
+     (and (eq (char-before (point)) ?\\ )
+          (py-escaped))))
+
+(defmacro py-current-line-backslashed-p ()
+  "Return t if current line is a backslashed continuation line. "
+  `(save-excursion
+     (end-of-line)
+     (skip-chars-backward " \t\r\n\f")
+     (and (eq (char-before (point)) ?\\ )
+          (py-escaped))))
+
+(defmacro py-continuation-line-p ()
+  "Return t iff current line is a continuation line."
+  `(save-excursion
+     (beginning-of-line)
+     (or (py-preceding-line-backslashed-p)
+         (< 0 (nth 0 (syntax-ppss))))))
+
+(defmacro python-rx (&rest regexps)
+  "Python mode specialized rx macro which supports common python named REGEXPS."
+  (let ((rx-constituents (append python-rx-constituents rx-constituents)))
+    (cond ((null regexps)
+           (error "No regexp"))
+          ((cdr regexps)
+           (rx-to-string `(and ,@regexps) t))
+          (t
+           (rx-to-string (car regexps) t)))))
+;;;
 ;; GNU's syntax-ppss-context
 (unless (functionp 'syntax-ppss-context)
   (defsubst syntax-ppss-context (ppss)
@@ -2471,7 +2518,7 @@ character address of the specified TYPE."
              (or "and" "del" "from" "not" "while" "as" "elif" "global" "or" "with"
                  "assert" "else" "if" "pass" "yield" "break" "import"
                  "print" "exec" "in" "continue" "finally" "is"
-                 "return" "def" "for" "lambda" "try" "self")
+                 "return" "def" "for" "lambda" "try")
              symbol-end)
         ;; functions
         (,(rx symbol-start "def" (1+ space) (group (1+ (or word ?_))))
@@ -2482,14 +2529,12 @@ character address of the specified TYPE."
         (,(rx symbol-start
               (or "raise" "except")
               symbol-end) . py-exception-name-face)
-        ;; Constants
+        ;; already pseudo-keyword
+        ;; (,(rx symbol-start
+        ;;       (or "None" "True" "False" "__debug__" "NotImplemented")
+        ;;       symbol-end) . font-lock-constant-face)
         (,(rx symbol-start
-              (or "None" "True" "False" "__debug__" "NotImplemented")
-              symbol-end) . font-lock-constant-face)
-        ;; Numbers
-        (,(rx symbol-start (or (1+ digit) (1+ hex-digit)) symbol-end) . py-number-face)
-        (,(rx symbol-start
-              (or "cls" "self" "cls" "Ellipsis" "True" "False" "None")
+              (or "cls" "self" "cls" "Ellipsis" "True" "False" "None"  "__debug__" "NotImplemented")
               symbol-end) . py-pseudo-keyword-face)
         ;; Decorators.
         (,(rx line-start (* (any " \t")) (group "@" (1+ (or word ?_))
@@ -2530,7 +2575,7 @@ character address of the specified TYPE."
                   "reload" "repr" "reversed" "round" "set" "setattr" "slice"
                   "sorted" "staticmethod" "str" "sum" "super" "tuple" "type"
                   "unichr" "unicode" "vars" "xrange" "zip")
-              symbol-end) . font-lock-builtin-face)
+              symbol-end) . py-builtins-face)
         ;; asignations
         ;; support for a = b = c = 5
         (,(lambda (limit)
@@ -2559,7 +2604,9 @@ character address of the specified TYPE."
                 (if (not (python-info-ppss-context 'paren))
                     t
                   (set-match-data nil)))))
-         (1 font-lock-variable-name-face nil nil))))
+         (1 font-lock-variable-name-face nil nil))
+        ;; Numbers
+        (,(rx symbol-start (or (1+ digit) (1+ hex-digit)) symbol-end) . py-number-face)))
 
 (defconst py-font-lock-syntactic-keywords
   '(("[^\\]\\\\\\(?:\\\\\\\\\\)*\\(\\s\"\\)\\1\\(\\1\\)"
@@ -4417,28 +4464,6 @@ Optional ARG indicates a start-position for `parse-partial-sexp'."
     (when (and py-verbose-p (interactive-p)) (message "%s" end))
     end))
 
-(defun py-continuation-line-p ()
-  "Return t if current line is a continuation line."
-  (save-excursion
-    (beginning-of-line)
-    (or (py-preceding-line-backslashed-p)
-        (< 0 (py-nesting-level)))))
-
-(defmacro py-current-line-backslashed-p ()
-  "Return t if current line is a backslashed continuation line. "
-  `(save-excursion
-     (end-of-line)
-     (skip-chars-backward " \t\r\n\f")
-     (let ((erg (and (eq (char-before (point)) ?\\ )
-                     (py-escaped))))
-       erg)))
-
-(defmacro py-escaped ()
-  "Return t if char is preceded by an odd number of backslashes. "
-  `(save-excursion
-     (let ((erg (< 0 (% (abs (skip-chars-backward "\\\\")) 2))))
-       erg)))
-
 (defun py-in-comment-p ()
   "Return the beginning of current line's comment, if inside. "
   (save-restriction
@@ -4812,17 +4837,6 @@ i.e. the limit on how far back to scan."
     (cond
      ((nth 3 state) 'string)
      ((nth 4 state) 'comment))))
-
-(defun empty-line-p (&optional iact)
-  "Returns t if cursor is at an line with nothing but whitespace-characters, nil otherwise."
-  (interactive "p")
-  (save-excursion
-    (let ((erg (progn
-                 (beginning-of-line)
-                 (looking-at "\\s-*$"))))
-      (when iact
-        (message "%s" erg))
-      erg)))
 
 (defun py-count-lines (&optional start end)
   "Count lines in buffer, optional without given boundaries.

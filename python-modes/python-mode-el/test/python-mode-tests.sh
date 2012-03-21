@@ -880,6 +880,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-execute-partial-expression-python3.2-dedicated-commandp-test \
 --funcall py-execute-partial-expression-python3.2-dedicated-switch-commandp-test \
 --funcall py-mark-block-clause-misbehave-lp-949310-test \
+--funcall broken-font-locking-lp-961231-test \
 --funcall py-mark-clause-misbehave-lp-949310-test \
 --funcall py-mark-block-misbehave-lp-949310-test \
 --funcall py-mark-partial-expression-commandp-test \

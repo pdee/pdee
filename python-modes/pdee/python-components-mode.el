@@ -1333,7 +1333,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
              (or "and" "del" "from" "not" "while" "as" "elif" "global" "or" "with"
                  "assert" "else" "if" "pass" "yield" "break" "import"
                  "print" "exec" "in" "continue" "finally" "is"
-                 "return" "def" "for" "lambda" "try" "self")
+                 "return" "def" "for" "lambda" "try")
              symbol-end)
         ;; functions
         (,(rx symbol-start "def" (1+ space) (group (1+ (or word ?_))))
@@ -1344,22 +1344,20 @@ See original source: http://pymacs.progiciels-bpi.ca"
         (,(rx symbol-start
               (or "raise" "except")
               symbol-end) . py-exception-name-face)
-        ;; Constants
+        ;; already pseudo-keyword
+        ;; (,(rx symbol-start
+        ;;       (or "None" "True" "False" "__debug__" "NotImplemented")
+        ;;       symbol-end) . font-lock-constant-face)
         (,(rx symbol-start
-              (or "None" "True" "False" "__debug__" "NotImplemented")
-              symbol-end) . font-lock-constant-face)
-        ;; Numbers
-        (,(rx symbol-start (or (1+ digit) (1+ hex-digit)) symbol-end) . py-number-face)
-        (,(rx symbol-start
-              (or "cls" "self" "cls" "Ellipsis" "True" "False" "None")
+              (or "cls" "self" "cls" "Ellipsis" "True" "False" "None"  "__debug__" "NotImplemented")
               symbol-end) . py-pseudo-keyword-face)
         ;; Decorators.
-        (,(rx bol (* (any " \t")) (group "@" (1+ (or word ?_))
-                                         (0+ "." (1+ (or word ?_)))))
+        (,(rx line-start (* (any " \t")) (group "@" (1+ (or word ?_))
+                                                (0+ "." (1+ (or word ?_)))))
          (1 py-decorators-face))
         ;; '("\\_<raise[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_.]*\\)" 1 py-exception-name-face)
         ;; '("[ \t]*\\(_\\{0,2\\}[a-zA-Z][a-zA-Z_0-9.]+_\\{0,2\\}\\) *\\(+\\|-\\|*\\|*\\*\\|/\\|//\\|&\\|%\\||\\|\\^\\|>>\\|<<\\)? ?=[^=\n]"
-        (,(python-rx bol (* (any " \t"))(group (** 0 2 "_") word (0+ (or word ?_))(** 0 2 "_"))(* (any " \t")) assignment-operator)
+        (,(python-rx line-start (* (any " \t"))(group (** 0 2 "_") word (0+ (or word ?_))(** 0 2 "_"))(* (any " \t")) assignment-operator)
          1 py-variable-name-face)
 
         ;; Builtin Exceptions
@@ -1392,7 +1390,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
                   "reload" "repr" "reversed" "round" "set" "setattr" "slice"
                   "sorted" "staticmethod" "str" "sum" "super" "tuple" "type"
                   "unichr" "unicode" "vars" "xrange" "zip")
-              symbol-end) . font-lock-builtin-face)
+              symbol-end) . py-builtins-face)
         ;; asignations
         ;; support for a = b = c = 5
         (,(lambda (limit)
@@ -1421,7 +1419,9 @@ See original source: http://pymacs.progiciels-bpi.ca"
                 (if (not (python-info-ppss-context 'paren))
                     t
                   (set-match-data nil)))))
-         (1 font-lock-variable-name-face nil nil))))
+         (1 font-lock-variable-name-face nil nil))
+        ;; Numbers
+        (,(rx symbol-start (or (1+ digit) (1+ hex-digit)) symbol-end) . py-number-face)))
 
 ;; (defvar python-font-lock-keywords
 ;;   ;; Keywords
