@@ -63,7 +63,9 @@ Returns value of `py-smart-indentation'. "
 (defun py-insert-default-shebang ()
   "Insert in buffer shebang of installed default Python. "
   (interactive "*")
-  (let* ((erg (py-python-default-environment))
+  (let* ((erg (if py-edit-only-p
+                  py-shell-name 
+                  (executable-find py-shell-name)))
          (sheb (concat "#! " erg)))
     (insert sheb)))
 
@@ -295,17 +297,16 @@ Returns `py-indent-offset'"
       (skip-chars-backward " \t")
       (max comment-column (+ (current-column) (if (bolp) 0 1))))))
 
-(defun py-narrow-to-defun (&optional class)
-  "Make text outside current defun invisible.
+(defun py-narrow-to-defun ()
+  "Make text outside current def or class invisible.
 
-The defun visible is the one that contains point or follows point.
-Optional CLASS is passed directly to `py-beginning-of-def-or-class'."
+The defun visible is the one that contains point or follows point. "
   (interactive "P")
   (save-excursion
     (widen)
-    (py-end-of-def-or-class class)
+    (py-end-of-def-or-class)
     (let ((end (point)))
-      (py-beginning-of-def-or-class class)
+      (py-beginning-of-or-class)
       (narrow-to-region (point) end))))
 
 
@@ -965,6 +966,9 @@ Returns a list, whose car is beg, cdr - end."
             (when (interactive-p) (message "%s" (list beg end)))
           (list beg end))))))
 
+(defalias 'py-beginning-of-buffer-position 'point-min) 
+(defalias 'py-end-of-buffer-position 'point-max)
+
 ;;; Declarations start
 (defun py-bounds-of-declarations ()
   "Bounds of consecutive multitude of assigments resp. statements around point.
@@ -1396,7 +1400,7 @@ Returns the string inserted. "
     (if (< ver 3)
         (progn
           (py-beginning-of-class)
-          (when (looking-at (concat py-class-re " *\\([^( ]+\\)")) 
+          (when (looking-at (concat py-class-re " *\\([^( ]+\\)"))
             (setq classname (match-string-no-properties 2)))
           (goto-char orig)
           (setq erg (concat "super(" classname ", self)." funcname "(" args ")"))

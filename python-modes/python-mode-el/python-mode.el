@@ -2696,7 +2696,9 @@ Otherwise inherits from `py-mode-syntax-table'.")
 (defun py-insert-default-shebang ()
   "Insert in buffer shebang of installed default Python. "
   (interactive "*")
-  (let* ((erg (py-python-current-environment))
+  (let* ((erg (if py-edit-only-p
+                  py-shell-name
+                (executable-find py-shell-name)))
          (sheb (concat "#! " erg)))
     (insert sheb)))
 
@@ -3050,17 +3052,16 @@ Returns `py-indent-offset'"
       (skip-chars-backward " \t")
       (max comment-column (+ (current-column) (if (bolp) 0 1))))))
 
-(defun py-narrow-to-defun (&optional class)
-  "Make text outside current defun invisible.
+(defun py-narrow-to-defun ()
+  "Make text outside current def or class invisible.
 
-The defun visible is the one that contains point or follows point.
-Optional CLASS is passed directly to `py-beginning-of-def-or-class'."
+The defun visible is the one that contains point or follows point. "
   (interactive "P")
   (save-excursion
     (widen)
-    (py-end-of-def-or-class class)
+    (py-end-of-def-or-class)
     (let ((end (point)))
-      (py-beginning-of-def-or-class class)
+      (py-beginning-of-or-class)
       (narrow-to-region (point) end))))
 
 ;; make general form below work also in these cases
@@ -6559,7 +6560,7 @@ This function is appropriate for `comint-output-filter-functions'."
 
 (defmacro py-separator-char ()
   "Return the file-path separator char from current machine. "
-  `(replace-regexp-in-string "\n" "" (shell-command-to-string (concat ,py-shell-name " -c \"import os; print(os.sep)\""))))
+  `(replace-regexp-in-string "\n" "" (shell-command-to-string (concat py-shell-name " -c \"import os; print(os.sep)\""))))
 
 ;; (defun py-separator-char ()
 ;;   "Return the file-path separator char from current machine.
@@ -7549,7 +7550,7 @@ Optional OUTPUT-BUFFER and ERROR-BUFFER might be given. "
 (defun py-exec-execfile-region (start end &optional shell)
   "Execute the region in a Python interpreter. "
   (interactive "r\nP")
-  (let ((shell (if (eq 4 (prefix-numeric-value arg))
+  (let ((shell (if (eq 4 (prefix-numeric-value shell))
                    (read-from-minibuffer "Shell: " (default-value 'py-shell-name))
                  py-shell-name)))
     (let ((strg (buffer-substring-no-properties start end)))
@@ -7787,8 +7788,8 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)"
   (interactive "fFile: ")
   (let* ((regbuf (current-buffer))
          (file (or (expand-file-name filename) (when (ignore-errors (file-readable-p (buffer-file-name))) (buffer-file-name))))
-         (shell (or shell (progn (with-temp-buffer (insert-file file)(py-choose-shell)))))
-         (name (py-process-name shell dedicated nostars sepchar))
+         (shell (or shell (progn (with-temp-buffer (insert-file-contents file)(py-choose-shell)))))
+         (name (py-process-name shell dedicated))
          (proc (get-process (py-shell nil dedicated (or shell (downcase name)))))
          (procbuf (if dedicated
                       (buffer-name (get-buffer (current-buffer)))

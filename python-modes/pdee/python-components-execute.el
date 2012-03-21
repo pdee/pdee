@@ -125,12 +125,6 @@ This function is appropriate for `comint-output-filter-functions'."
           (message "%s" cmd)
         (message "%s" "Could not detect Python on your system")))))
 
-
-(defmacro py-separator-char ()
-  "Return the file-path separator char from current machine. "
-  `(replace-regexp-in-string "\n" "" (shell-command-to-string (concat ,py-shell-name " -c \"import os; print(os.sep)\""))))
-
-
 ;; (defun py-separator-char ()
 ;;   "Return the file-path separator char from current machine.
 ;; Returns char found. "
@@ -966,7 +960,7 @@ Optional OUTPUT-BUFFER and ERROR-BUFFER might be given. "
 (defun py-exec-execfile-region (start end &optional shell)
   "Execute the region in a Python interpreter. "
   (interactive "r\nP")
-  (let ((shell (if (eq 4 (prefix-numeric-value arg))
+  (let ((shell (if (eq 4 (prefix-numeric-value shell))
                    (read-from-minibuffer "Shell: " (default-value 'py-shell-name))
                  py-shell-name)))
     (let ((strg (buffer-substring-no-properties start end)))
@@ -1032,8 +1026,8 @@ Optional OUTPUT-BUFFER and ERROR-BUFFER might be given.')
   (interactive "fFile: ")
   (let* ((regbuf (current-buffer))
          (file (or (expand-file-name filename) (when (ignore-errors (file-readable-p (buffer-file-name))) (buffer-file-name))))
-         (shell (or shell (progn (with-temp-buffer (insert-file file)(py-choose-shell)))))
-         (name (py-process-name shell dedicated nostars sepchar))
+         (shell (or shell (progn (with-temp-buffer (insert-file-contents file)(py-choose-shell)))))
+         (name (py-process-name shell dedicated))
          (proc (get-process (py-shell nil dedicated (or shell (downcase name)))))
          (procbuf (if dedicated
                       (buffer-name (get-buffer (current-buffer)))

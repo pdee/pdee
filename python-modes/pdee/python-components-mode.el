@@ -28,7 +28,7 @@
 
 (require 'comint)
 (require 'custom)
-(eval-when-compile (require 'cl))
+(require 'cl)
 (require 'compile)
 (require 'ansi-color)
 (require 'cc-cmds)
@@ -732,6 +732,9 @@ mode buffer is visited during an Emacs session.  After that, use
   :group 'python-mode
   :tag "JPython Command Args")
 
+(defvar hs-hide-comments-when-hiding-all nil
+  "Defined in hideshow.el, silence compiler warnings here. ")
+
 ;; for toggling between CPython and JPython
 (defvar python-which-shell nil)
 (defvar python-which-args python-python-command-args)
@@ -1288,42 +1291,6 @@ See original source: http://pymacs.progiciels-bpi.ca"
           "(" (group (1+ digit)) ")" (1+ (not (any "("))) "()")
      1 2))
   "`compilation-error-regexp-alist' for inferior Python.")
-
-(eval-when-compile
-  (defconst python-rx-constituents
-    (list
-     `(block-start          . ,(rx symbol-start
-                                   (or "def" "class" "if" "elif" "else" "try"
-                                       "except" "finally" "for" "while" "with")
-                                   symbol-end))
-     `(decorator            . ,(rx bol (* space) ?@ (any letter ?_)
-                                   (* (any word ?_))))
-     `(defun                . ,(rx symbol-start (or "def" "class") symbol-end))
-     `(symbol-name          . ,(rx (any letter ?_) (* (any word ?_))))
-     `(open-paren           . ,(rx (or "{" "[" "(")))
-     `(close-paren          . ,(rx (or "}" "]" ")")))
-     `(simple-operator      . ,(rx (any ?+ ?- ?/ ?& ?^ ?~ ?| ?* ?< ?> ?= ?%)))
-     `(not-simple-operator  . ,(rx (not (any ?+ ?- ?/ ?& ?^ ?~ ?| ?* ?< ?> ?= ?%))))
-     `(operator             . ,(rx (or "+" "-" "/" "&" "^" "~" "|" "*" "<" ">"
-                                       "=" "%" "**" "//" "<<" ">>" "<=" "!="
-                                       "==" ">=" "is" "not")))
-     `(assignment-operator  . ,(rx (or "=" "+=" "-=" "*=" "/=" "//=" "%=" "**="
-                                       ">>=" "<<=" "&=" "^=" "|="))))
-    "Additional Python specific sexps for `python-rx'"))
-
-(defmacro python-rx (&rest regexps)
-  "Python mode specialized rx macro which supports common python named REGEXPS."
-  (let ((rx-constituents (append python-rx-constituents rx-constituents)))
-    (cond ((null regexps)
-           (error "No regexp"))
-          ((cdr regexps)
-           (rx-to-string `(and ,@regexps) t))
-          (t
-           (rx-to-string (car regexps) t)))))
-
-
-;;; Font-lock and syntax
-;;; Python specialized rx
 
 (eval-when-compile
   (defconst python-rx-constituents
@@ -5149,7 +5116,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
                 "#"
                 ;; forward-sexp function
                 (lambda (arg)
-                  (py-goto-beyond-block)
+                  (py-down-block-lc)
                   (skip-chars-backward " \t\n"))
                 nil))
   ;; (set (make-local-variable 'outline-regexp)
@@ -5312,7 +5279,6 @@ return `jython', otherwise return nil."
                         'jython))))
     mode))
 
-(defalias 'py-version 'py-which-python)
 (defun py-which-python ()
   "Returns version of Python of current environment, a number. "
   (interactive)
@@ -5368,7 +5334,7 @@ Should you need more shells to select, extend this command by adding inside the 
                                          py-shell-toggle-1)
                            py-shell-toggle-2
                          py-shell-toggle-1))))
-        erg)
+        erg msg)
     (cond ((or (string= "ipython" name)
                (string= "IPython" name))
            (setq py-shell-name name

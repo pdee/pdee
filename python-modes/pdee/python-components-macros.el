@@ -23,6 +23,11 @@
 ;;
 
 ;;; Code:
+
+(defmacro py-separator-char ()
+  "Return the file-path separator char from current machine. "
+  `(replace-regexp-in-string "\n" "" (shell-command-to-string (concat py-shell-name " -c \"import os; print(os.sep)\""))))
+
 (defmacro pps-emacs-version ()
   "Include the appropriate `parse-partial-sexp' "
   `(if (featurep 'xemacs)
@@ -40,8 +45,7 @@
 (defmacro py-escaped ()
   "Return t if char is preceded by an odd number of backslashes. "
   `(save-excursion
-     (let ((erg (< 0 (% (abs (skip-chars-backward "\\\\")) 2))))
-       erg)))
+     (< 0 (% (abs (skip-chars-backward "\\\\")) 2))))
 
 (defmacro py-current-line-backslashed-p ()
   "Return t if current line is a backslashed continuation line. "
