@@ -153,6 +153,7 @@
      (erase-buffer)
      (fundamental-mode)
      (insert ,teststring)
+     (local-unset-key (kbd "RET"))
      (python-mode)
      (funcall ,testname)
      (message "%s" (concat (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname)) " passed"))
@@ -2473,8 +2474,8 @@ if x > 0:
     for i in range(100):
         # print i
 "))
-  (when load-branch-function (funcall load-branch-function))
-  (py-bug-tests-intern 'py-indent-comments-nil-ignored-lp-958721-base arg teststring)))
+    (when load-branch-function (funcall load-branch-function))
+    (py-bug-tests-intern 'py-indent-comments-nil-ignored-lp-958721-base arg teststring)))
 
 (defun py-indent-comments-nil-ignored-lp-958721-base ()
   (goto-char 83)
@@ -2511,12 +2512,12 @@ def baz(self):
 
 # 'set' and 'range' get rendered in font-lock-builtin-face when they should get rendered in py-builtins-face
 "))
-  (when load-branch-function (funcall load-branch-function))
-  (py-bug-tests-intern 'broken-font-locking-lp-961231-base arg teststring)))
+    (when load-branch-function (funcall load-branch-function))
+    (py-bug-tests-intern 'broken-font-locking-lp-961231-base arg teststring)))
 
 (defun broken-font-locking-lp-961231-base ()
   (font-lock-fontify-buffer)
-  (sit-for 0.1) 
+  (sit-for 0.1)
   (goto-char 87)
   (assert (eq (get-char-property (point) 'face) 'py-pseudo-keyword-face) nil "broken-font-locking-lp-961231-test #1 failed")
   (goto-char 488)

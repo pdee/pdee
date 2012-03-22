@@ -18,6 +18,7 @@
 ;;; Commentary:
 
 ;;; Code:
+(require 'python-components-macros) 
 
 ;; Imenu definitions
 

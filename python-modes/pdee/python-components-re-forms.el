@@ -17,7 +17,7 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Code:
-
+(require 'python-components-macros) 
 
 (defun py-beginning-of-block (&optional indent)
   "Returns beginning of block if successful, nil otherwise.

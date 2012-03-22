@@ -39,7 +39,9 @@
 ;;                (setq comint-input-sender 'py-shell-simple-send)
 ;;                (local-set-key [tab] 'py-shell-complete))))
 
+;;; Code
 (require 'comint)
+(require 'python-components-macros) 
 
 (defvar py-shell-input-lines nil
   "Collect input lines send interactively to the Python process in

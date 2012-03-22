@@ -5024,17 +5024,6 @@ Updated on each expansion.")
 ;; (setq pdb-path '/usr/lib/python2.7/pdb.py
 ;;      gud-pdb-command-name (symbol-name pdb-path))
 
-(defun py-execute-prepare (form &optional shell dedicated switch)
-  "Used by python-extended-executes ."
-  (save-excursion
-    (let ((beg (prog1
-                   (or (funcall (intern-soft (concat "py-beginning-of-" form "-p")))
-
-                       (funcall (intern-soft (concat "py-beginning-of-" form)))
-                       (push-mark))))
-          (end (funcall (intern-soft (concat "py-end-of-" form)))))
-      (py-execute-base beg end shell dedicated switch))))
-
 (add-to-list 'load-path default-directory)
 (require 'python-components-macros)
 (require 'python-components-edit)

@@ -19,6 +19,7 @@
 ;;; Commentary: Derived from GNU python.el, where it's instrumented as abbrev; errors are mine
 
 ;;; Code:
+(require 'python-components-macros) 
 
 (define-skeleton py-else
   "Auxiliary skeleton."
@@ -35,14 +36,6 @@
   < "elif " str ":" \n
    > _ \n nil)
   '(py-else) | ^)
-
-(define-skeleton py-else
-  "Auxiliary skeleton."
-  nil
-  (unless (eq ?y (read-char "Add `else' clause? (y for yes or RET for no) "))
-    (signal 'quit t))
-  "else:" \n
-  > _ \n)
 
 (define-skeleton py-while
     "Condition: "

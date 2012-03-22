@@ -21,6 +21,7 @@
 ;;
 
 ;;; Code:
+(require 'python-components-macros) 
 
 (defun py-fetch-docu ()
   "Lookup in current buffer for the doku for the symbol at point.

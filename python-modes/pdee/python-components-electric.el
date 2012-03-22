@@ -21,6 +21,7 @@
 ;;
 
 ;;; Code:
+(require 'python-components-macros) 
 
 (defun py-electric-colon (arg)
   "Insert a colon and indent accordingly.

@@ -858,7 +858,6 @@ also insert a newline. "
 (defun ar-trace-all-functions (&optional beg end)
   "Get all functions traced, `untrace-all' disables it. "
   (interactive)
-  (when (string-match ".gnu-emacs-all-cvs" (buffer-file-name)) (emacs-lisp-mode))
   (let ((beg (cond (beg)
 		   ((region-active-p)
 		    (region-beginning))

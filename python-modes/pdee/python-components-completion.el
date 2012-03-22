@@ -19,9 +19,11 @@
 ;;; Commentary:
 ;; This completion code was been written by Dave Love
 ;;; Code:
+(require 'python-components-macros) 
 
 ;; Fixme: This fails the first time if the sub-process isn't already
 ;; running.  Presumably a timing issue with i/o to the process.
+
 (defun python-symbol-completions (symbol)
   "Return a list of completions of the string SYMBOL from Python process.
 The list is sorted.

@@ -22,7 +22,6 @@
 ;;
 
 ;;; Code:
-
 (require 'python-components-macros)
 
 (defalias 'py-count-indentation 'py-compute-indentation)

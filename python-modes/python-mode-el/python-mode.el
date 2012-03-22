@@ -6573,16 +6573,20 @@ This function is appropriate for `comint-output-filter-functions'."
         (message "%s" "Could not detect Python on your system")))))
 
 (defmacro py-separator-char ()
-  "Return the file-path separator char from current machine. "
-  `(replace-regexp-in-string "\n" "" (shell-command-to-string (concat py-shell-name " -c \"import os; print(os.sep)\""))))
+  "Return the file-path separator char from current machine.
 
-;; (defun py-separator-char ()
-;;   "Return the file-path separator char from current machine.
-;; Returns char found. "
-;;   (interactive)
-;;   (let ((erg (replace-regexp-in-string "\n" "" (shell-command-to-string (concat py-shell-name " -c \"import os; print(os.sep)\"")))))
-;;     (when (interactive-p) (message "Separator-char: %s" erg))
-;;     erg))
+Returns char found. "
+  (let (erg)
+    (if (and
+         ;; epd hack
+         (string-match "[Ii][Pp]ython" py-shell-name)
+         (string-match "epd\\|EPD" py-shell-name))
+        (progn
+          (setq erg (shell-command-to-string (concat py-shell-name " -c \"import os; print(os.sep)\"")))
+          (when py-verbose-p (message "%s" erg))
+          (setq erg (substring erg (string-match "^$" erg))))
+      (setq erg (shell-command-to-string (concat py-shell-name " -W ignore" " -c \"import os; print(os.sep)\""))))
+    (replace-regexp-in-string "\n" "" erg)))
 
 (defun py-process-name (&optional name dedicated nostars sepchar)
   "Return the name of the running Python process, `get-process' willsee it. "

@@ -24,9 +24,43 @@
 
 ;;; Code:
 
+;; (defun py-separator-char ()
+;;   "Return the file-path separator char from current machine.
+;; Returns char found. "
+;;   (interactive)
+;;   (let (erg)
+;;     (if (and
+;;          (string-match "[Ii][Pp]ython" py-shell-name)
+;;          (string-match "epd\\|EPD" py-shell-name))
+;;         (progn
+;;           (setq erg (shell-command-to-string (concat py-shell-name " -c \"import os; print(os.sep)\"")))
+;;           (when py-verbose-p (message "%s" erg))
+;;           (setq erg (substring erg (string-match "^$" erg))))
+;;       (setq erg (shell-command-to-string (concat py-shell-name " -W ignore" " -c \"import os; print(os.sep)\""))))
+;;     (setq erg (replace-regexp-in-string "\n" "" erg))
+;;     (when (interactive-p) (message "Separator-char: %s" erg))
+;;     erg))
+
 (defmacro py-separator-char ()
-  "Return the file-path separator char from current machine. "
-  `(replace-regexp-in-string "\n" "" (shell-command-to-string (concat py-shell-name " -c \"import os; print(os.sep)\""))))
+  "Return the file-path separator char from current machine.
+
+Returns char found. "
+  (let (erg)
+    (if (and
+         ;; epd hack
+         (string-match "[Ii][Pp]ython" py-shell-name)
+         (string-match "epd\\|EPD" py-shell-name))
+        (progn
+          (setq erg (shell-command-to-string (concat py-shell-name " -c \"import os; print(os.sep)\"")))
+          (when py-verbose-p (message "%s" erg))
+          (setq erg (substring erg (string-match "^$" erg))))
+      (setq erg (shell-command-to-string (concat py-shell-name " -W ignore" " -c \"import os; print(os.sep)\""))))
+    (replace-regexp-in-string "\n" "" erg)))
+
+
+;; (defmacro py-separator-char ()
+;;   "Return the file-path separator char from current machine. "
+;;   `(replace-regexp-in-string "\n" "" (shell-command-to-string (concat py-shell-name " -c \"import os; print(os.sep)\""))))
 
 (defmacro pps-emacs-version ()
   "Include the appropriate `parse-partial-sexp' "

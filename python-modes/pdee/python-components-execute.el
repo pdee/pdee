@@ -22,6 +22,7 @@
 ;;
 
 ;;; Code:
+(require 'python-components-macros) 
 
 (defvar py-execute-keep-temporary-file-p nil
   "For tests only. Excute functions delete temporary files default. ")

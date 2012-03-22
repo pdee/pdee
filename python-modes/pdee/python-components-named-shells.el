@@ -21,6 +21,7 @@
 ;;; Commentary:
 
 ;;; Code:
+(require 'python-components-macros) 
 
 ;;; Python named shells
 (defun python (&optional argprompt dedicated switch)
