@@ -119,6 +119,8 @@
          'from-__future__-import-absolute_import-mishighlighted-lp-907084-test
          'automatic-indentation-is-broken-lp-889643-test
          'chars-uU-preceding-triple-quoted-get-string-face-lp-909517-test
+         'tuple-unpacking-highlighted-incorrectly-lp-961496-test
+
          'wrong-type-argument-lp-901541-test
          'py-pychecker-run-missing-lp-910783-test
          'py-forward-into-nomenclature-lp-916818-test
@@ -2550,8 +2552,7 @@ def foo():
 
 # which perhaps makes sense, but isn't helpful. What python-mode used to do was, if the block to be executed
 # was indented, it would still a \"if True:\" line indented to column zero in front of the region to be
-# executed. This is essentially a no-op that just makes the indented region valid syntactically. 
-
+# executed. This is essentially a no-op that just makes the indented region valid syntactically.
 
 "))
   (when load-branch-function (funcall load-branch-function))
@@ -2559,10 +2560,9 @@ def foo():
 
 (defun regression-in-py-execute-region-lp-962227-base ()
     (goto-char 59)
-    (push-mark) 
+    (push-mark)
     (goto-char 93)
     (assert (py-execute-region 59 93) nil "regression-in-py-execute-region-lp-962227-test failed"))
-
 
 (defun auto-indent-behaves-strangely-with-slices-lp-961684.txt-test (&optional arg load-branch-function)
   (interactive "p")
@@ -2589,6 +2589,21 @@ potential = potential.difference(set(S[1]))
     (goto-char 40)
     (assert (eq 0 (py-compute-indentation)) nil "auto-indent-behaves-strangely-with-slices-lp-961684.txt-test failed"))
 
+(defun tuple-unpacking-highlighted-incorrectly-lp-961496-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+foo, bar = toothpick
+"))
+  (when load-branch-function (funcall load-branch-function))
+  (py-bug-tests-intern 'tuple-unpacking-highlighted-incorrectly-lp-961496-base arg teststring)))
+
+(defun tuple-unpacking-highlighted-incorrectly-lp-961496-base ()
+  (font-lock-fontify-buffer)
+  (sit-for 0.1) 
+  (goto-char 50)
+  (assert (eq (get-char-property (point) 'face) 'py-variable-name-face) nil "tuple-unpacking-highlighted-incorrectly-lp-961496-test failed"))
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
+

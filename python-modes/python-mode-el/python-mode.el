@@ -2542,9 +2542,6 @@ character address of the specified TYPE."
          (1 py-decorators-face))
         ;; '("\\_<raise[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_.]*\\)" 1 py-exception-name-face)
         ;; '("[ \t]*\\(_\\{0,2\\}[a-zA-Z][a-zA-Z_0-9.]+_\\{0,2\\}\\) *\\(+\\|-\\|*\\|*\\*\\|/\\|//\\|&\\|%\\||\\|\\^\\|>>\\|<<\\)? ?=[^=\n]"
-        (,(python-rx line-start (* (any " \t"))(group (** 0 2 "_") word (0+ (or word ?_))(** 0 2 "_"))(* (any " \t")) assignment-operator)
-         1 py-variable-name-face)
-
         ;; Builtin Exceptions
         (,(rx symbol-start
               (or "ArithmeticError" "AssertionError" "AttributeError"
@@ -2576,6 +2573,10 @@ character address of the specified TYPE."
                   "sorted" "staticmethod" "str" "sum" "super" "tuple" "type"
                   "unichr" "unicode" "vars" "xrange" "zip")
               symbol-end) . py-builtins-face)
+        ;; '("[ \t]*\\(_\\{0,2\\}[a-zA-Z][a-zA-Z_0-9.]+_\\{0,2\\}\\) *\\(+\\|-\\|*\\|*\\*\\|/\\|//\\|&\\|%\\||\\|\\^\\|>>\\|<<\\)? ?=[^=\n]"
+        ;; 1 py-variable-name-face)
+        (,(python-rx line-start (* (any " \t"))(group (** 0 2 "_") word (0+ (or word ?_))(** 0 2 "_"))(* (any " \t")) assignment-operator)
+         1 py-variable-name-face)
         ;; asignations
         ;; support for a = b = c = 5
         (,(lambda (limit)
@@ -2589,7 +2590,7 @@ character address of the specified TYPE."
                          (not (equal (char-after (point-marker)) ?=)))
                     t
                   (set-match-data nil)))))
-         (1 font-lock-variable-name-face nil nil))
+         (1 py-variable-name-face nil nil))
         ;; support for a, b, c = (1, 2, 3)
         (,(lambda (limit)
             (let ((re (python-rx (group (+ (any word ?. ?_))) (* space)
@@ -2604,7 +2605,7 @@ character address of the specified TYPE."
                 (if (not (python-info-ppss-context 'paren))
                     t
                   (set-match-data nil)))))
-         (1 font-lock-variable-name-face nil nil))
+         (1 py-variable-name-face nil nil))
         ;; Numbers
         (,(rx symbol-start (or (1+ digit) (1+ hex-digit)) symbol-end) . py-number-face)))
 

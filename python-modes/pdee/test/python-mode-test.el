@@ -24,8 +24,6 @@
 
 ;;; Code:
 
-(require 'py-bug-numbered-tests)
-
 (setq python-mode-tests
       (if (featurep 'xemacs)
           (list

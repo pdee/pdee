@@ -1357,9 +1357,6 @@ See original source: http://pymacs.progiciels-bpi.ca"
          (1 py-decorators-face))
         ;; '("\\_<raise[ \t]+\\([a-zA-Z_]+[a-zA-Z0-9_.]*\\)" 1 py-exception-name-face)
         ;; '("[ \t]*\\(_\\{0,2\\}[a-zA-Z][a-zA-Z_0-9.]+_\\{0,2\\}\\) *\\(+\\|-\\|*\\|*\\*\\|/\\|//\\|&\\|%\\||\\|\\^\\|>>\\|<<\\)? ?=[^=\n]"
-        (,(python-rx line-start (* (any " \t"))(group (** 0 2 "_") word (0+ (or word ?_))(** 0 2 "_"))(* (any " \t")) assignment-operator)
-         1 py-variable-name-face)
-
         ;; Builtin Exceptions
         (,(rx symbol-start
               (or "ArithmeticError" "AssertionError" "AttributeError"
@@ -1391,6 +1388,10 @@ See original source: http://pymacs.progiciels-bpi.ca"
                   "sorted" "staticmethod" "str" "sum" "super" "tuple" "type"
                   "unichr" "unicode" "vars" "xrange" "zip")
               symbol-end) . py-builtins-face)
+        ;; '("[ \t]*\\(_\\{0,2\\}[a-zA-Z][a-zA-Z_0-9.]+_\\{0,2\\}\\) *\\(+\\|-\\|*\\|*\\*\\|/\\|//\\|&\\|%\\||\\|\\^\\|>>\\|<<\\)? ?=[^=\n]"
+        ;; 1 py-variable-name-face)
+        (,(python-rx line-start (* (any " \t"))(group (** 0 2 "_") word (0+ (or word ?_))(** 0 2 "_"))(* (any " \t")) assignment-operator)
+         1 py-variable-name-face)
         ;; asignations
         ;; support for a = b = c = 5
         (,(lambda (limit)
@@ -1404,7 +1405,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
                          (not (equal (char-after (point-marker)) ?=)))
                     t
                   (set-match-data nil)))))
-         (1 font-lock-variable-name-face nil nil))
+         (1 py-variable-name-face nil nil))
         ;; support for a, b, c = (1, 2, 3)
         (,(lambda (limit)
             (let ((re (python-rx (group (+ (any word ?. ?_))) (* space)
@@ -1419,7 +1420,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
                 (if (not (python-info-ppss-context 'paren))
                     t
                   (set-match-data nil)))))
-         (1 font-lock-variable-name-face nil nil))
+         (1 py-variable-name-face nil nil))
         ;; Numbers
         (,(rx symbol-start (or (1+ digit) (1+ hex-digit)) symbol-end) . py-number-face)))
 

@@ -171,6 +171,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall fourth-level-blocks-indent-incorrectly-lp-939577-test \
 --funcall py-mark-expression-marks-too-much-lp-941140-test \
 --funcall py-indent-comments-nil-ignored-lp-958721-test \
+--funcall tuple-unpacking-highlighted-incorrectly-lp-961496-test \
 \
 --funcall multiline-list-indent-test \
 --funcall py-beginning-of-block-test \
