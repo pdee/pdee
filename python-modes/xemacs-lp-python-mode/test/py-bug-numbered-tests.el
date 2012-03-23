@@ -2564,5 +2564,31 @@ def foo():
     (assert (py-execute-region 59 93) nil "regression-in-py-execute-region-lp-962227-test failed"))
 
 
+(defun auto-indent-behaves-strangely-with-slices-lp-961684.txt-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# In the final line of the following, I want the line not to be indented at
+# all (the loop in the preceding lines is complete). But if you type a :
+# after the 1 to form potential.difference(set(S[1]:)), this activates the
+# automatic indentation and incorrectly indents the line under the
+# preceding line in the for loop.
+potential = set([])
+for j in X:
+    potential = potential.union(visible[j])
+potential = potential.difference(set(S[1]))
+
+# py-electric-colon-active-p is t.
+
+"))
+  (when load-branch-function (funcall load-branch-function))
+  (py-bug-tests-intern 'auto-indent-behaves-strangely-with-slices-lp-961684.txt-base arg teststring)))
+
+(defun auto-indent-behaves-strangely-with-slices-lp-961684.txt-base ()
+    (goto-char 40)
+    (assert (eq 0 (py-compute-indentation)) nil "auto-indent-behaves-strangely-with-slices-lp-961684.txt-test failed"))
+
+
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

@@ -189,15 +189,15 @@ interpreter.
 
                          name)
                      (substring py-shell-name (or (string-match (concat sepchar ".+$") py-shell-name) 0))))
-         (name (cond (dedicated
+         (nname (cond (dedicated
                       (make-temp-name (concat thisname "-")))
                      ;; ((string-match "\*" (buffer-name))
                      ;; (replace-regexp-in-string "\*" "" (buffer-name)))
                      (t thisname)))
-         (erg (cond ((or (string-match "ipython" name)
-                         (string-match "IPython" name))
+         (erg (cond ((or (string-match "ipython" nname)
+                         (string-match "IPython" nname))
                      "IPython")
-                    (name)
+                    (nname)
                     )))
     ;; (unless (or nostars (string-match "^\*" erg))(setq erg (concat "*" erg "*")))
     erg))
@@ -605,6 +605,7 @@ Inserts an incentive true form \"if 1:\\n.\" "
 (defun py-fix-start (start end)
   "Internal use by py-execute... functions.
 Avoid empty lines at the beginning. "
+  (switch-to-buffer (current-buffer)) 
   (goto-char start)
   (let ((beg (copy-marker start)))
     (while (empty-line-p)

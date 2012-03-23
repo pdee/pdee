@@ -5049,6 +5049,8 @@ Updated on each expansion.")
 ;; (require 'python-mode-test)
 (require 'column-marker)
 
+(remove-hook 'python-mode-hook 'imenu-add-menubar-index)
+
 (define-derived-mode python-mode fundamental-mode "Python"
   "Major mode for editing Python files.
 
@@ -5089,6 +5091,42 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (set (make-local-variable 'indent-region-function) 'py-indent-region)
   (set (make-local-variable 'indent-line-function) 'py-indent-line)
   (set (make-local-variable 'hs-hide-comments-when-hiding-all) 'py-hide-comments-when-hiding-all)
+  (set (make-local-variable 'outline-heading-end-regexp) ":\\s-*\n")
+  (set (make-local-variable 'outline-level) #'python-outline-level)
+  (set (make-local-variable 'open-paren-in-column-0-is-defun-start) nil)
+  (set (make-local-variable 'add-log-current-defun-function) 'py-current-defun)
+  (set (make-local-variable 'paragraph-start) "\\s-*$")
+  (set (make-local-variable 'fill-paragraph-function) 'py-fill-paragraph)
+  (set (make-local-variable 'require-final-newline) mode-require-final-newline)
+  (make-local-variable 'python-saved-check-command)
+  (set (make-local-variable 'tab-width) py-indent-offset)
+
+  ;; (set (make-local-variable 'outline-regexp)
+  ;; (rx (* space) (or "class" "def" "elif" "else" "except" "finally"
+  ;; "for" "if" "try" "while" "with")
+  ;; symbol-end))
+
+  (set (make-local-variable 'outline-regexp)
+       (concat (mapconcat 'identity
+                          (mapcar #'(lambda (x) (concat "^\\s-*" x "\\_>"))
+                                  py-outline-mode-keywords)
+                          "\\|")))
+  (set (make-local-variable 'eldoc-documentation-function)
+       #'python-eldoc-function)
+  (set (make-local-variable 'skeleton-further-elements)
+       '((< '(backward-delete-char-untabify (min py-indent-offset
+                                                 (current-column))))
+         (^ '(- (1+ (current-indentation))))))
+  (when (and py-imenu-create-index-p (fboundp 'imenu-add-to-menubar)(ignore-errors (require 'imenu)))
+    (setq imenu-create-index-function #'py-imenu-create-index-new)
+    (setq imenu-generic-expression py-imenu-generic-expression)
+    (imenu-add-to-menubar "PyIndex")
+    (add-hook 'python-mode-hook imenu-create-index-function))
+
+  ;; (set (make-local-variable 'beginning-of-defun-function)
+  ;; 'py-beginning-of-def-or-class)
+  ;; (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class)
+
   (add-to-list 'hs-special-modes-alist
                (list
                 'python-mode
@@ -5108,42 +5146,10 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
                   (py-down-block-lc)
                   (skip-chars-backward " \t\n"))
                 nil))
-  ;; (set (make-local-variable 'outline-regexp)
-  ;; (rx (* space) (or "class" "def" "elif" "else" "except" "finally"
-  ;; "for" "if" "try" "while" "with")
-  ;; symbol-end))
-  (set (make-local-variable 'outline-heading-end-regexp) ":\\s-*\n")
-  (set (make-local-variable 'outline-level) #'python-outline-level)
-  (set (make-local-variable 'open-paren-in-column-0-is-defun-start) nil)
-  (set (make-local-variable 'outline-regexp)
-       (concat (mapconcat 'identity
-                          (mapcar #'(lambda (x) (concat "^\\s-*" x "\\_>"))
-                                  py-outline-mode-keywords)
-                          "\\|")))
-  (set (make-local-variable 'add-log-current-defun-function) 'py-current-defun)
-  (set (make-local-variable 'paragraph-start) "\\s-*$")
-  (set (make-local-variable 'fill-paragraph-function) 'py-fill-paragraph)
-  (set (make-local-variable 'require-final-newline) mode-require-final-newline)
-  (make-local-variable 'python-saved-check-command)
-  ;; (set (make-local-variable 'beginning-of-defun-function)
-  ;;      'py-beginning-of-def-or-class)
-  ;; (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class)
   (add-hook 'which-func-functions 'python-which-func nil t)
   (add-hook 'completion-at-point-functions
             py-complete-function nil 'local)
-  (set (make-local-variable 'eldoc-documentation-function)
-       #'python-eldoc-function)
-  (set (make-local-variable 'skeleton-further-elements)
-       '((< '(backward-delete-char-untabify (min py-indent-offset
-                                                 (current-column))))
-         (^ '(- (1+ (current-indentation))))))
-  (set (make-local-variable 'tab-width) py-indent-offset)
-  (remove-hook 'python-mode-hook 'imenu-add-menubar-index)
-  (when (and py-imenu-create-index-p (fboundp 'imenu-add-to-menubar)(ignore-errors (require 'imenu)))
-    (setq imenu-create-index-function #'py-imenu-create-index-new)
-    (setq imenu-generic-expression py-imenu-generic-expression)
-    (imenu-add-to-menubar "PyIndex")
-    (add-hook 'python-mode-hook imenu-create-index-function))
+
   ;; Now guess `py-indent-offset'
   (when py-smart-indentation
     (if (bobp)
