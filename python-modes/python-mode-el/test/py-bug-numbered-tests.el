@@ -127,6 +127,7 @@
          'execute-buffer-ipython-fails-lp:928087-test
          'py-indent-comments-nil-ignored-lp-958721-test
          'broken-font-locking-lp-961231-test
+         'regression-in-py-execute-region-lp-962227-test
 
          'py-shell-invoking-python-lp:835151-test
          'py-shell-invoking-ipython-lp:835151-test
@@ -2526,6 +2527,42 @@ def baz(self):
   (assert (eq (get-char-property (point) 'face) 'py-pseudo-keyword-face) nil "broken-font-locking-lp-961231-test #3 failed")
   (goto-char 775)
   (assert (eq (get-char-property (point) 'face) 'py-builtins-face) nil "broken-font-locking-lp-961231-test #4 failed"))
+
+(defun regression-in-py-execute-region-lp-962227-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+def foo():
+    def bar():
+        return True
+    return bar
+
+# In the past it was possible to highlight the middle two lines and run py-execute-region. This would have
+# the effect of defining bar() at global scope, but that's okay since it was explicitly asked for. Now
+# however you get this error in the Python buffer:
+
+# >>> Traceback (most recent call last):
+# File \"<stdin>\", line 1, in <module>
+# File \"/tmp/Python4249aED.py\", line 8
+# return True
+# ^
+# IndentationError: expected an indented block
+
+# which perhaps makes sense, but isn't helpful. What python-mode used to do was, if the block to be executed
+# was indented, it would still a \"if True:\" line indented to column zero in front of the region to be
+# executed. This is essentially a no-op that just makes the indented region valid syntactically. 
+
+
+"))
+  (when load-branch-function (funcall load-branch-function))
+  (py-bug-tests-intern 'regression-in-py-execute-region-lp-962227-base arg teststring)))
+
+(defun regression-in-py-execute-region-lp-962227-base ()
+    (goto-char 59)
+    (push-mark) 
+    (goto-char 93)
+    (assert (py-execute-region 59 93) nil "regression-in-py-execute-region-lp-962227-test failed"))
+
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
