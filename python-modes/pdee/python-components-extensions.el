@@ -106,7 +106,7 @@ Affected by `py-dedent-keep-relative-column'. "
 
 (defun py-close-intern (regexp)
   "Core function, internal used only. "
-  (let ((cui (ignore-errors (car (py-go-to-keyword regexp -1)))))
+  (let ((cui (ignore-errors (car (py-go-to-keyword regexp)))))
     (py-end-base regexp (point))
     (forward-line 1)
     (if py-close-provides-newline

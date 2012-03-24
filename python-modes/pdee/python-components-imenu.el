@@ -18,7 +18,7 @@
 ;;; Commentary:
 
 ;;; Code:
-(require 'python-components-macros) 
+(require 'python-components-macros)
 
 ;; Imenu definitions
 
@@ -247,10 +247,8 @@ of the first definition found."
   "`imenu-create-index-function' for Python. "
   (set (make-local-variable 'imenu-max-items) 99)
   (let ((orig (point))
-        (beg (cond (beg)
-                   (t (point-min))))
-        (end (cond (end)
-                   (t (point-max))))
+        (beg (or beg (point-min)))
+        (end (or end (point-max)))
         index-alist vars thisend sublist classname)
     (goto-char beg)
     (while (and (re-search-forward "^[ \t]*\\(?:\\(def\\|class\\)\\)[ \t]+\\(?:\\(\\sw+\\)\\)" end t 1)(not (py-in-string-or-comment-p)))

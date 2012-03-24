@@ -2555,14 +2555,14 @@ def foo():
 # executed. This is essentially a no-op that just makes the indented region valid syntactically.
 
 "))
-  (when load-branch-function (funcall load-branch-function))
-  (py-bug-tests-intern 'regression-in-py-execute-region-lp-962227-base arg teststring)))
+    (when load-branch-function (funcall load-branch-function))
+    (py-bug-tests-intern 'regression-in-py-execute-region-lp-962227-base arg teststring)))
 
 (defun regression-in-py-execute-region-lp-962227-base ()
-    (goto-char 59)
-    (push-mark)
-    (goto-char 93)
-    (assert (py-execute-region 59 93) nil "regression-in-py-execute-region-lp-962227-test failed"))
+  (goto-char 59)
+  (push-mark)
+  (goto-char 93)
+  (assert (py-execute-region 59 93) nil "regression-in-py-execute-region-lp-962227-test failed"))
 
 (defun auto-indent-behaves-strangely-with-slices-lp-961684.txt-test (&optional arg load-branch-function)
   (interactive "p")
@@ -2582,12 +2582,12 @@ potential = potential.difference(set(S[1]))
 # py-electric-colon-active-p is t.
 
 "))
-  (when load-branch-function (funcall load-branch-function))
-  (py-bug-tests-intern 'auto-indent-behaves-strangely-with-slices-lp-961684.txt-base arg teststring)))
+    (when load-branch-function (funcall load-branch-function))
+    (py-bug-tests-intern 'auto-indent-behaves-strangely-with-slices-lp-961684.txt-base arg teststring)))
 
 (defun auto-indent-behaves-strangely-with-slices-lp-961684.txt-base ()
-    (goto-char 40)
-    (assert (eq 0 (py-compute-indentation)) nil "auto-indent-behaves-strangely-with-slices-lp-961684.txt-test failed"))
+  (goto-char 40)
+  (assert (eq 0 (py-compute-indentation)) nil "auto-indent-behaves-strangely-with-slices-lp-961684.txt-test failed"))
 
 (defun tuple-unpacking-highlighted-incorrectly-lp-961496-test (&optional arg load-branch-function)
   (interactive "p")
@@ -2595,12 +2595,12 @@ potential = potential.difference(set(S[1]))
 # -*- coding: utf-8 -*-
 foo, bar = toothpick
 "))
-  (when load-branch-function (funcall load-branch-function))
-  (py-bug-tests-intern 'tuple-unpacking-highlighted-incorrectly-lp-961496-base arg teststring)))
+    (when load-branch-function (funcall load-branch-function))
+    (py-bug-tests-intern 'tuple-unpacking-highlighted-incorrectly-lp-961496-base arg teststring)))
 
 (defun tuple-unpacking-highlighted-incorrectly-lp-961496-base ()
   (font-lock-fontify-buffer)
-  (sit-for 0.1) 
+  (sit-for 0.1)
   (goto-char 50)
   (assert (eq (get-char-property (point) 'face) 'py-variable-name-face) nil "tuple-unpacking-highlighted-incorrectly-lp-961496-test failed"))
 

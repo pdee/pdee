@@ -25,7 +25,7 @@
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
-  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-block-re -1 indent)))))
+  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-block-re indent)))))
     erg))
 
 (defun py-end-of-block ()
@@ -47,7 +47,7 @@ http://docs.python.org/reference/compound_stmts.html"
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
-  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-clause-re -1 indent)))))
+  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-clause-re indent)))))
     erg))
 
 (defun py-end-of-clause ()
@@ -69,7 +69,7 @@ http://docs.python.org/reference/compound_stmts.html"
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
-  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-block-or-clause-re -1 indent)))))
+  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-block-or-clause-re indent)))))
     erg))
 
 (defun py-end-of-block-or-clause ()
@@ -91,7 +91,7 @@ http://docs.python.org/reference/compound_stmts.html"
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
-  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-def-re -1 indent)))))
+  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-def-re indent)))))
     erg))
 
 (defun py-end-of-def ()
@@ -113,7 +113,7 @@ http://docs.python.org/reference/compound_stmts.html"
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
-  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-class-re -1 indent)))))
+  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-class-re indent)))))
     erg))
 
 (defun py-end-of-class ()
@@ -135,7 +135,7 @@ http://docs.python.org/reference/compound_stmts.html"
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
-  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-def-or-class-re -1 indent)))))
+  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-def-or-class-re indent)))))
     erg))
 
 (defun py-end-of-def-or-class ()
@@ -157,7 +157,7 @@ http://docs.python.org/reference/compound_stmts.html"
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
-  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-if-block-re -1 indent)))))
+  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-if-block-re indent)))))
     erg))
 
 (defun py-end-of-if-block ()
@@ -179,7 +179,7 @@ http://docs.python.org/reference/compound_stmts.html"
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
-  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-try-block-re -1 indent)))))
+  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-try-block-re indent)))))
     erg))
 
 (defun py-end-of-try-block ()
@@ -201,7 +201,7 @@ http://docs.python.org/reference/compound_stmts.html"
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
-  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-minor-block-re -1 indent)))))
+  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-minor-block-re indent)))))
     erg))
 
 (defun py-end-of-minor-block ()

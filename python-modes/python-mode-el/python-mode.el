@@ -376,13 +376,13 @@ should be of the form `#x...' where `x' is not a blank or a tab, and
         (funcall ok "/usr/tmp")
         (funcall ok "/tmp")
         (funcall ok "/var/tmp")
-        (and (eq (system-type 'darwin))
+        (and (eq system-type 'darwin)
              (funcall ok "/var/folders"))
-        ((and (or (eq (system-type 'ms-dos))(eq (system-type 'ms-dos))(eq (system-type 'windows-nt)))
-              (funcall ok (concat "c:" (py-separator-char) "Users" ))))
-        (funcall ok ".")
-        (error
-         "Couldn't find a usable temp directory -- set `py-temp-directory'")))
+        (and (or (eq system-type 'ms-dos)(eq system-type 'ms-dos)(eq system-type 'windows-nt))
+             (funcall ok (concat "c:" (py-separator-char) "Users" ))))
+    ;; (funcall ok ".")
+    (error
+     "Couldn't find a usable temp directory -- set `py-temp-directory'"))
   "*Directory used for temporary files created by a *Python* process.
 By default, the first directory from this list that exists and that you
 can write into: the value (if any) of the environment variable TMPDIR,
@@ -1145,6 +1145,12 @@ Inludes Python shell-prompt in order to stop further searches. ")
   "Matches the beginning of a compound statement saying `try'. " )
 
 ;;; Macro definitions
+(defmacro py-in-string-or-comment-p ()
+  "Returns beginning position if inside a string or comment, nil otherwise. "
+  `(or (nth 8 (syntax-ppss))
+       (when (or (looking-at "\"")(looking-at comment-start)(looking-at comment-start-skip))
+         (match-beginning 0))))
+
 (defmacro empty-line-p ()
   "Returns t if cursor is at an line with nothing but whitespace-characters, nil otherwise."
   (interactive "p")
@@ -2728,18 +2734,6 @@ Otherwise inherits from `py-mode-syntax-table'.")
 
 (defvar py-keywords "\\_<\\(ArithmeticError\\|AssertionError\\|AttributeError\\|BaseException\\|BufferError\\|BytesWarning\\|DeprecationWarning\\|EOFError\\|Ellipsis\\|EnvironmentError\\|Exception\\|False\\|FloatingPointError\\|FutureWarning\\|GeneratorExit\\|IOError\\|ImportError\\|ImportWarning\\|IndentationError\\|IndexError\\|KeyError\\|KeyboardInterrupt\\|LookupError\\|MemoryError\\|NameError\\|NoneNotImplementedError\\|NotImplemented\\|OSError\\|OverflowError\\|PendingDeprecationWarning\\|ReferenceError\\|RuntimeError\\|RuntimeWarning\\|StandardError\\|StopIteration\\|SyntaxError\\|SyntaxWarning\\|SystemError\\|SystemExit\\|TabError\\|True\\|TypeError\\|UnboundLocalError\\|UnicodeDecodeError\\|UnicodeEncodeError\\|UnicodeError\\|UnicodeTranslateError\\|UnicodeWarning\\|UserWarning\\|ValueError\\|Warning\\|ZeroDivisionError\\|__debug__\\|__import__\\|__name__\\|abs\\|all\\|and\\|any\\|apply\\|as\\|assert\\|basestring\\|bin\\|bool\\|break\\|buffer\\|bytearray\\|callable\\|chr\\|class\\|classmethod\\|cmp\\|coerce\\|compile\\|complex\\|continue\\|copyright\\|credits\\|def\\|del\\|delattr\\|dict\\|dir\\|divmod\\|elif\\|else\\|enumerate\\|eval\\|except\\|exec\\|execfile\\|exit\\|file\\|filter\\|float\\|for\\|format\\|from\\|getattr\\|global\\|globals\\|hasattr\\|hash\\|help\\|hex\\|id\\|if\\|import\\|in\\|input\\|int\\|intern\\|is\\|isinstance\\|issubclass\\|iter\\|lambda\\|len\\|license\\|list\\|locals\\|long\\|map\\|max\\|memoryview\\|min\\|next\\|not\\|object\\|oct\\|open\\|or\\|ord\\|pass\\|pow\\|print\\|property\\|quit\\|raise\\|range\\|raw_input\\|reduce\\|reload\\|repr\\|return\\|round\\|set\\|setattr\\|slice\\|sorted\\|staticmethod\\|str\\|sum\\|super\\|tuple\\|type\\|unichr\\|unicode\\|vars\\|while\\|with\\|xrange\\|yield\\|zip\\|\\)\\_>"
   "Contents like py-fond-lock-keyword")
-
-(defun py-in-string-or-comment-p ()
-  "Returns beginning position if inside a string or comment, nil otherwise. "
-  (interactive)
-  (let* ((erg (nth 8 (if (featurep 'xemacs)
-                         (parse-partial-sexp (point-min) (point))
-                       (syntax-ppss))))
-         (la (unless erg (when (or (looking-at "\"")(looking-at comment-start)(looking-at comment-start-skip))
-                           (match-beginning 0)))))
-    (setq erg (or erg la))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-    erg))
 
 (defun py-insert-default-shebang ()
   "Insert in buffer shebang of installed default Python. "
@@ -4384,7 +4378,7 @@ When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
                 (py-beginning-of-statement)
                 (py-compute-indentation orig origline closing line inside repeat))
                ((and (eq origline (py-count-lines))
-                     (save-excursion (and (setq erg (py-go-to-keyword py-block-or-clause-re -1))
+                     (save-excursion (and (setq erg (py-go-to-keyword py-block-or-clause-re))
                                           (ignore-errors (< orig (py-end-of-block-or-clause))))))
                 (+ (car erg) (if py-smart-indentation (py-guess-indent-offset nil orig origline) py-indent-offset)))
                ((and (eq origline (py-count-lines))
@@ -4736,7 +4730,7 @@ and `pass'.  This doesn't catch embedded statements."
   (let ((orig (or orig (point)))
         (erg (if (py-statement-opens-block-p regexp)
                  (point)
-               (py-go-to-keyword regexp -1)
+               (py-go-to-keyword regexp)
                (when (py-statement-opens-block-p regexp)
                  (point))))
         ind)
@@ -4894,7 +4888,7 @@ is preferable for that. ")
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
-  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-block-re -1 indent)))))
+  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-block-re indent)))))
     erg))
 
 (defun py-end-of-block ()
@@ -4916,7 +4910,7 @@ http://docs.python.org/reference/compound_stmts.html"
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
-  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-clause-re -1 indent)))))
+  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-clause-re indent)))))
     erg))
 
 (defun py-end-of-clause ()
@@ -4938,7 +4932,7 @@ http://docs.python.org/reference/compound_stmts.html"
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
-  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-block-or-clause-re -1 indent)))))
+  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-block-or-clause-re indent)))))
     erg))
 
 (defun py-end-of-block-or-clause ()
@@ -4960,7 +4954,7 @@ http://docs.python.org/reference/compound_stmts.html"
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
-  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-def-re -1 indent)))))
+  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-def-re indent)))))
     erg))
 
 (defun py-end-of-def ()
@@ -4982,7 +4976,7 @@ http://docs.python.org/reference/compound_stmts.html"
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
-  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-class-re -1 indent)))))
+  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-class-re indent)))))
     erg))
 
 (defun py-end-of-class ()
@@ -5004,7 +4998,7 @@ http://docs.python.org/reference/compound_stmts.html"
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
-  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-def-or-class-re -1 indent)))))
+  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-def-or-class-re indent)))))
     erg))
 
 (defun py-end-of-def-or-class ()
@@ -5026,7 +5020,7 @@ http://docs.python.org/reference/compound_stmts.html"
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
-  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-if-block-re -1 indent)))))
+  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-if-block-re indent)))))
     erg))
 
 (defun py-end-of-if-block ()
@@ -5048,7 +5042,7 @@ http://docs.python.org/reference/compound_stmts.html"
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
-  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-try-block-re -1 indent)))))
+  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-try-block-re indent)))))
     erg))
 
 (defun py-end-of-try-block ()
@@ -5070,7 +5064,7 @@ http://docs.python.org/reference/compound_stmts.html"
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
-  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-minor-block-re -1 indent)))))
+  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-minor-block-re indent)))))
     erg))
 
 (defun py-end-of-minor-block ()
@@ -5485,6 +5479,35 @@ http://docs.python.org/reference/compound_stmts.html
           (when (< (point) orig)(setq erg (point))))
         (when (and py-verbose-p (interactive-p)) (message "%s" erg))
         erg))))
+
+(defun py-go-to-keyword (regexp &optional maxindent)
+  "Returns a list, whose car is indentation, cdr position. "
+  (let ((orig (point))
+        (origline (py-count-lines))
+        (maxindent maxindent)
+        done erg cui)
+    (while (and (not done) (not (bobp)))
+      (py-beginning-of-statement)
+      (when (and (looking-at regexp)(if maxindent
+                                        (< (current-indentation) maxindent)t))
+        (setq erg (point))
+        (setq done t)))
+    (when erg (setq erg (cons (current-indentation) erg)))
+    erg))
+
+;; (defmacro py-go-to-keyword (regexp &optional maxindent)
+;;   "Returns a list, whose car is indentation, cdr position. "
+;;   `(let ((orig (point))
+;;          (origline (py-count-lines))
+;;          (maxindent maxindent)
+;;          done erg)
+;;      (while (and (not done) (not (bobp)))
+;;        (py-beginning-of-statement)
+;;        (when (and (looking-at ,regexp)(if maxindent
+;;                                           (< (current-indentation) maxindent)t))
+;;          (setq erg (point))
+;;          (setq done t)))
+;;      (when erg (cons (current-indentation) erg))))
 
 (defalias 'py-statement-forward 'py-end-of-statement)
 (defalias 'py-next-statement 'py-end-of-statement)
@@ -6135,23 +6158,6 @@ Travels right-margin comments. "
         (setq erg (cons (current-indentation) erg))))
     erg))
 
-(defun py-go-to-keyword (regexp arg &optional maxindent)
-  "Returns a list, whose car is indentation, cdr position. "
-  (let ((orig (point))
-        (origline (py-count-lines))
-        (stop (if (< 0 arg)'(eobp)'(bobp)))
-        (function (if (< 0 arg) 'py-end-of-statement 'py-beginning-of-statement))
-        (maxindent maxindent)
-        done erg cui)
-    (while (and (not done) (not (eval stop)))
-      (funcall function)
-      (when (and (looking-at regexp)(if maxindent
-                                        (< (current-indentation) maxindent)t))
-        (setq erg (point))
-        (setq done t)))
-    (when erg (setq erg (cons (current-indentation) erg)))
-    erg))
-
 (defun py-leave-comment-or-string-backward (&optional pos)
   "If inside a comment or string, leave it backward. "
   (interactive)
@@ -6586,7 +6592,6 @@ Returns char found. "
          (string-match "epd\\|EPD" py-shell-name))
         (progn
           (setq erg (shell-command-to-string (concat py-shell-name " -c \"import os; print(os.sep)\"")))
-          (when py-verbose-p (message "%s" erg))
           (setq erg (substring erg (string-match "^$" erg))))
       (setq erg (shell-command-to-string (concat py-shell-name " -W ignore" " -c \"import os; print(os.sep)\""))))
     (replace-regexp-in-string "\n" "" erg)))
@@ -8722,7 +8727,7 @@ Affected by `py-dedent-keep-relative-column'. "
 
 (defun py-close-intern (regexp)
   "Core function, internal used only. "
-  (let ((cui (ignore-errors (car (py-go-to-keyword regexp -1)))))
+  (let ((cui (ignore-errors (car (py-go-to-keyword regexp)))))
     (py-end-base regexp (point))
     (forward-line 1)
     (if py-close-provides-newline

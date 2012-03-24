@@ -1082,15 +1082,6 @@ for x in y:
 (defun highlight-indentation-commandp-base ()
   (assert (commandp 'highlight-indentation) nil "highlight-indentation-commandp-test failed"))
 
-(defun py-in-string-or-comment-p-commandp-test (&optional arg load-branch-function)
-  (interactive "p")
-  (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
-    (py-bug-tests-intern 'py-in-string-or-comment-p-commandp-base arg teststring)))
-
-(defun py-in-string-or-comment-p-commandp-base ()
-  (assert (commandp 'py-in-string-or-comment-p) nil "py-in-string-or-comment-p-commandp-test failed"))
-
 (defun py-insert-default-shebang-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))

@@ -404,6 +404,21 @@ http://docs.python.org/reference/compound_stmts.html
         (when (and py-verbose-p (interactive-p)) (message "%s" erg))
         erg))))
 
+
+;; (defmacro py-go-to-keyword (regexp &optional maxindent)
+;;   "Returns a list, whose car is indentation, cdr position. "
+;;   `(let ((orig (point))
+;;          (origline (py-count-lines))
+;;          (maxindent maxindent)
+;;          done erg)
+;;      (while (and (not done) (not (bobp)))
+;;        (py-beginning-of-statement)
+;;        (when (and (looking-at ,regexp)(if maxindent
+;;                                           (< (current-indentation) maxindent)t))
+;;          (setq erg (point))
+;;          (setq done t)))
+;;      (when erg (cons (current-indentation) erg))))
+
 (defalias 'py-statement-forward 'py-end-of-statement)
 (defalias 'py-next-statement 'py-end-of-statement)
 (defalias 'py-forward-statement 'py-end-of-statement)
@@ -959,6 +974,21 @@ Travels right-margin comments. "
         (goto-char
          (nth 8 pps))))))
 
+(defun py-go-to-keyword (regexp &optional maxindent)
+  "Returns a list, whose car is indentation, cdr position. "
+  (let ((orig (point))
+        (origline (py-count-lines))
+        (maxindent maxindent)
+        done erg cui)
+    (while (and (not done) (not (bobp)))
+      (py-beginning-of-statement) 
+      (when (and (looking-at regexp)(if maxindent
+                                        (< (current-indentation) maxindent)t))
+        (setq erg (point))
+        (setq done t)))
+    (when erg (setq erg (cons (current-indentation) erg)))
+    erg))
+
 (defun py-clause-lookup-keyword (regexp arg &optional indent orig origline)
   "Returns a list, whose car is indentation, cdr position. "
   (let* ((orig (or orig (point)))
@@ -1053,23 +1083,6 @@ Travels right-margin comments. "
       (if (looking-at py-def-or-class-re)
           (setq erg (cons (+ (current-indentation) py-indent-offset) erg))
         (setq erg (cons (current-indentation) erg))))
-    erg))
-
-(defun py-go-to-keyword (regexp arg &optional maxindent)
-  "Returns a list, whose car is indentation, cdr position. "
-  (let ((orig (point))
-        (origline (py-count-lines))
-        (stop (if (< 0 arg)'(eobp)'(bobp)))
-        (function (if (< 0 arg) 'py-end-of-statement 'py-beginning-of-statement))
-        (maxindent maxindent)
-        done erg cui)
-    (while (and (not done) (not (eval stop)))
-      (funcall function)
-      (when (and (looking-at regexp)(if maxindent
-                                        (< (current-indentation) maxindent)t))
-        (setq erg (point))
-        (setq done t)))
-    (when erg (setq erg (cons (current-indentation) erg)))
     erg))
 
 (defun py-leave-comment-or-string-backward (&optional pos)

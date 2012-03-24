@@ -213,7 +213,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall highlight-indentation-on-commandp-test \
 --funcall highlight-indentation-off-commandp-test \
 --funcall highlight-indentation-commandp-test \
---funcall py-in-string-or-comment-p-commandp-test \
 --funcall py-insert-default-shebang-commandp-test \
 --funcall py-electric-comment-commandp-test \
 --funcall py-electric-colon-commandp-test \

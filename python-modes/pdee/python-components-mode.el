@@ -361,13 +361,13 @@ If you ignore the location `M-x py-guess-pdb-path' might display it.
         (funcall ok "/usr/tmp")
         (funcall ok "/tmp")
         (funcall ok "/var/tmp")
-        (and (eq (system-type 'darwin))
+        (and (eq system-type 'darwin)
              (funcall ok "/var/folders"))
-        ((and (or (eq (system-type 'ms-dos))(eq (system-type 'ms-dos))(eq (system-type 'windows-nt)))
-              (funcall ok (concat "c:" (py-separator-char) "Users" ))))
-        ;; (funcall ok ".")
-        (error
-         "Couldn't find a usable temp directory -- set `py-temp-directory'")))
+        (and (or (eq system-type 'ms-dos)(eq system-type 'ms-dos)(eq system-type 'windows-nt))
+             (funcall ok (concat "c:" (py-separator-char) "Users"))))
+    ;; (funcall ok ".")
+    (error
+     "Couldn't find a usable temp directory -- set `py-temp-directory'"))
   "*Directory used for temporary files created by a *Python* process.
 By default, the first directory from this list that exists and that you
 can write into: the value (if any) of the environment variable TMPDIR,
@@ -5120,7 +5120,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
          (^ '(- (1+ (current-indentation))))))
   (when (and py-imenu-create-index-p (fboundp 'imenu-add-to-menubar)(ignore-errors (require 'imenu)))
     (setq imenu-create-index-function #'py-imenu-create-index-new)
-    (setq imenu-generic-expression py-imenu-generic-expression)
+    ;; (setq imenu-generic-expression py-imenu-generic-expression)
     (imenu-add-to-menubar "PyIndex")
     (add-hook 'python-mode-hook imenu-create-index-function))
 
