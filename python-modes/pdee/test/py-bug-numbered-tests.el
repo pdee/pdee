@@ -148,7 +148,8 @@
 (defmacro py-bug-tests-intern (testname &optional arg teststring)
   `(let (py-load-pymacs-p
          py-split-windows-on-execute-p
-         py-shell-switch-buffers-on-execute-p)
+         py-shell-switch-buffers-on-execute-p
+         py-start-run-py-shell)
      (set-buffer (get-buffer-create (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname))))
      ;; (with-temp-buffer
      (switch-to-buffer (current-buffer))
@@ -2377,7 +2378,7 @@ I am using version 6.0.4
 
 (defun py-shell-invoking-ipython-lp:835151-base ()
   (setq py-shell-name "ipython")
-  (assert (markerp (py-execute-buffer)) nil "py-shell-invoking-ipython-lp:835151-test failed"))
+  (assert (markerp (py-execute-buffer "ipython")) nil "py-shell-invoking-ipython-lp:835151-test failed"))
 
 (defun py-shell-invoking-python3-lp:835151-test (&optional arg load-branch-function)
   (interactive "p")

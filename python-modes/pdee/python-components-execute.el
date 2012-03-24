@@ -22,7 +22,7 @@
 ;;
 
 ;;; Code:
-(require 'python-components-macros) 
+(require 'python-components-macros)
 
 (defvar py-execute-keep-temporary-file-p nil
   "For tests only. Excute functions delete temporary files default. ")
@@ -197,16 +197,15 @@ interpreter.
          (erg (cond ((or (string-match "ipython" nname)
                          (string-match "IPython" nname))
                      "IPython")
-                    (nname)
-                    )))
+                    (nname))))
     ;; (unless (or nostars (string-match "^\*" erg))(setq erg (concat "*" erg "*")))
     erg))
 
-(defun py-buffer-name-prepare (name &optional sepchar)
+(defun py-buffer-name-prepare (name &optional sepchar dedicated)
   "Return an appropriate name to display in modeline.
 SEPCHAR is the file-path separator of your system. "
   (let ((sepchar (or sepchar (py-separator-char)))
-        prefix erg)
+        prefix erg suffix)
     (when (string-match sepchar name)
       (setq prefix "ND")
       (setq name (py-python-version name t)))
@@ -218,6 +217,8 @@ SEPCHAR is the file-path separator of your system. "
                 ((string-match "python" name)
                  (replace-regexp-in-string "python" "Python" name))
                 (t name)))
+    (when dedicated
+      (setq erg (make-temp-name (concat erg "-"))))
     (cond ((and prefix (string-match "^\*" erg))
            (setq erg (replace-regexp-in-string "^\*" (concat "*" prefix " ") erg)))
           (prefix
@@ -244,7 +245,7 @@ Interactively, \\[universal-argument] 4 prompts for a buffer.
 If `default-directory' is a remote file name, it is also prompted
 to change if called with a prefix arg.
 
-Returns variable `py-process-name' used by function `get-process'.
+Returns py-shell's buffer-name.
 Optional string PYSHELLNAME overrides default `py-shell-name'.
 Optional symbol SWITCH ('switch/'noswitch) precedes `py-shell-switch-buffers-on-execute-p'
 "
@@ -294,7 +295,7 @@ Optional symbol SWITCH ('switch/'noswitch) precedes `py-shell-switch-buffers-on-
               (when py-use-local-default
                 (error "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'"))))
            (py-buffer-name-prepare (unless buffer
-                                     (py-buffer-name-prepare py-process-name sepchar)))
+                                     (py-buffer-name-prepare py-process-name sepchar dedicated)))
            (py-buffer-name (or buffer py-buffer-name-prepare))
            (executable (cond (buffer
                               (downcase (replace-regexp-in-string
@@ -326,7 +327,9 @@ Optional symbol SWITCH ('switch/'noswitch) precedes `py-shell-switch-buffers-on-
                     (concat (getenv "IPYTHONDIR") "/history") "~/.ipython/history")
               (if (getenv "PYTHONHISTORY")
                   (concat (getenv "PYTHONHISTORY") "/" py-buffer-name "_history")
-                (concat "~/." py-buffer-name "_history"))))
+                (if dedicated
+                    (concat "~/." (substring py-buffer-name 0 (string-match "-" py-buffer-name)) "_history")
+                  (concat "~/." py-buffer-name "_history")))))
       (comint-read-input-ring t)
       (set-process-sentinel (get-buffer-process (current-buffer))
                             #'shell-write-history-on-exit)
@@ -358,7 +361,7 @@ Optional symbol SWITCH ('switch/'noswitch) precedes `py-shell-switch-buffers-on-
              (switch-to-buffer (current-buffer))))
       (goto-char (point-max))
       (when (and py-verbose-p (interactive-p)) (message py-buffer-name))
-      proc)))
+      (buffer-name))))
 
 (defcustom py-remove-cwd-from-path t
   "Whether to allow loading of Python modules from the current directory.
@@ -460,8 +463,10 @@ Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will be
          (file (concat (expand-file-name temp py-temp-directory) ".py"))
          (filebuf (get-buffer-create file))
          (process-connection-type t)
-         (proc (or (get-process shell)
-                   (get-process (process-name (py-shell nil dedicated (or shell (downcase shell)) switch sepchar)))))
+         (proc (if dedicated
+                   (get-buffer-process (py-shell nil dedicated (or shell (downcase shell)) switch sepchar))
+                 (or (get-buffer-process shell)
+                     (get-buffer-process (py-shell nil dedicated (or shell (downcase shell)) switch sepchar)))))
          (procbuf (if dedicated
                       (buffer-name (get-buffer (current-buffer)))
                     (buffer-name (get-buffer (py-process-name name dedicated nostars sepchar)))))
@@ -605,7 +610,7 @@ Inserts an incentive true form \"if 1:\\n.\" "
 (defun py-fix-start (start end)
   "Internal use by py-execute... functions.
 Avoid empty lines at the beginning. "
-  (switch-to-buffer (current-buffer)) 
+  (switch-to-buffer (current-buffer))
   (goto-char start)
   (let ((beg (copy-marker start)))
     (while (empty-line-p)

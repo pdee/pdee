@@ -74,6 +74,7 @@
          'nested-try-finally-test
          'py-shell-complete-test
          'py-completion-at-point-test
+         'python-dedicated-test
          'tqs-list-error-test
          'py-mark-def-commandp-test
          'py-separator-char-test
@@ -2026,15 +2027,6 @@ for x in y:
 
 (defun empty-line-p-commandp-base ()
   (assert (commandp 'empty-line-p) nil "empty-line-p-commandp-test failed"))
-
-(defun py-count-lines-commandp-test (&optional arg load-branch-function)
-  (interactive "p")
-  (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
-    (py-bug-tests-intern 'py-count-lines-commandp-base arg teststring)))
-
-(defun py-count-lines-commandp-base ()
-  (assert (commandp 'py-count-lines) nil "py-count-lines-commandp-test failed"))
 
 (defun py-which-function-commandp-test (&optional arg load-branch-function)
   (interactive "p")
@@ -7199,6 +7191,16 @@ print(\"I'm the `py-menu-pyshell-test'\")
 
 (defun py-menu-pyshell-base ()
   (assert (string= "PyShell" (prin1-to-string (car (nth 2 (nth 1 (cdr python-mode-map)))))) nil "py-menu-pyshell-test failed"))
+
+(defun python-dedicated-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring ""))
+    (when load-branch-function (funcall load-branch-function))
+    (py-bug-tests-intern 'python-dedicated-base arg teststring)))
+
+(defun python-dedicated-base ()
+  (set-buffer (python-dedicated))
+  (assert (string-match "^\*Python-[:alnum:]+*" (buffer-name)) nil "python-dedicated-test failed"))
 
 (provide 'python-mode-test)
 ;;; python-mode-test.el ends here

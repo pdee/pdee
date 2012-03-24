@@ -728,17 +728,6 @@ i.e. the limit on how far back to scan."
      ((nth 3 state) 'string)
      ((nth 4 state) 'comment))))
 
-(defun empty-line-p (&optional iact)
-  "Returns t if cursor is at an line with nothing but whitespace-characters, nil otherwise."
-  (interactive "p")
-  (save-excursion
-    (let ((erg (progn
-                 (beginning-of-line)
-                 (looking-at "\\s-*$"))))
-      (when iact
-        (message "%s" erg))
-      erg)))
-
 (defun py-count-lines (&optional start end)
   "Count lines in buffer, optional without given boundaries.
 Ignores common region.

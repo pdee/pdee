@@ -317,7 +317,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-statement-opens-def-or-class-p-commandp-test \
 --funcall py-current-defun-commandp-test \
 --funcall py-sort-imports-commandp-test \
---funcall py-count-lines-commandp-test \
 --funcall py-which-function-commandp-test \
 --funcall py-beginning-of-block-commandp-test \
 --funcall py-beginning-of-if-block-commandp-test \
@@ -888,12 +887,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-mark-partial-expression-commandp-test \
 --funcall py-shebang-consider-ipython-lp-849293-test \
 --funcall py-insert-super-python2-test \
---funcall py-shell-invoking-python-lp:835151-test \
---funcall py-shell-invoking-ipython-lp:835151-test \
---funcall py-shell-invoking-python3-lp:835151-test \
---funcall py-shell-invoking-python2-lp:835151-test \
---funcall py-shell-invoking-python2.7-lp:835151-test \
---funcall py-shell-invoking-jython-lp:835151-test \
 --funcall py-smart-indent-eight-test \
 --funcall wrong-type-argument-lp-901541-test \
 --funcall indentation-bug-inside-docstrings-lp-899455-test \
@@ -905,6 +898,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall execute-indented-code-lp:828314-test \
 --funcall switch-windows-on-execute-p-test \
 --funcall py-execute-block-test \
+--funcall python-dedicated-test \
 --funcall py-shell-complete-test \
 --funcall py-completion-at-point-test \
 --funcall split-windows-on-execute-p-test \
@@ -912,6 +906,12 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-ipython-complete-lp:927136-test \
 --funcall master-file-not-honored-lp:794850-test \
 --funcall execute-buffer-ipython-fails-lp:928087-test \
+--funcall py-shell-invoking-python-lp:835151-test \
+--funcall py-shell-invoking-ipython-lp:835151-test \
+--funcall py-shell-invoking-python3-lp:835151-test \
+--funcall py-shell-invoking-python2-lp:835151-test \
+--funcall py-shell-invoking-python2.7-lp:835151-test \
+--funcall py-shell-invoking-jython-lp:835151-test \
 --funcall py-electric-backspace-test \
 --funcall UnicodeEncodeError-lp-550661-test \
 --funcall UnicodeEncodeError-python3-test \

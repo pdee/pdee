@@ -46,13 +46,15 @@
 
 Returns char found. "
   (let (erg)
-    (if (and
+    (if (or
          ;; epd hack
          (string-match "[Ii][Pp]ython" py-shell-name)
          (string-match "epd\\|EPD" py-shell-name))
         (progn
           (setq erg (shell-command-to-string (concat py-shell-name " -c \"import os; print(os.sep)\"")))
-          (setq erg (substring erg (string-match "^$" erg))))
+          (setq erg (replace-regexp-in-string "\n" "" erg))
+          (when (string-match "^$" erg)
+            (setq erg (substring erg (string-match "^$" erg)))))
       (setq erg (shell-command-to-string (concat py-shell-name " -W ignore" " -c \"import os; print(os.sep)\""))))
     (replace-regexp-in-string "\n" "" erg)))
 
@@ -106,7 +108,6 @@ Returns char found. "
   "Count lines in buffer, optional without given boundaries.
 
 See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
-  (interactive)
   (save-restriction
     (widen)
     `(if (featurep 'xemacs)
