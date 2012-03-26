@@ -4295,6 +4295,7 @@ behavior, change `python-remove-cwd-from-path' to nil."
   (interactive (if current-prefix-arg
                    (list (read-string "Run Python: " python-command) nil t)
                  (list python-command)))
+  (require 'ansi-color) ; for ipython
   (unless cmd (setq cmd python-command))
   (python-check-version cmd)
   (setq python-command cmd)
@@ -4316,7 +4317,8 @@ behavior, change `python-remove-cwd-from-path' to nil."
                ;; If we use a pipe, unicode characters are not printed
                ;; correctly (Bug#5794) and IPython does not work at
                ;; all (Bug#5390).
-               (process-connection-type t))
+               ;; (process-connection-type t))
+               )
           (apply 'make-comint-in-buffer "Python"
                  (generate-new-buffer "*Python*")
                  (car cmdlist) nil (cdr cmdlist)))
@@ -4331,7 +4333,7 @@ behavior, change `python-remove-cwd-from-path' to nil."
       ;; seems worth putting in a separate file, and it's probably cleaner
       ;; to put it in a module.
       ;; Ensure we're at a prompt before doing anything else.
-      (python-send-string "import emacs")
+      (py-send-string "import emacs")
       ;; The following line was meant to ensure that we're at a prompt
       ;; before doing anything else.  However, this can cause Emacs to
       ;; hang waiting for a response, if that Python function fails
@@ -4351,7 +4353,7 @@ behavior, change `python-remove-cwd-from-path' to nil."
     (with-current-buffer (process-buffer (python-proc))
       (goto-char (point-max))
       (compilation-forget-errors)
-      (python-send-string command)
+      (py-send-string command)
       (setq compilation-last-buffer (current-buffer)))))
 
 (defun python-send-region (start end)
@@ -4549,7 +4551,7 @@ Otherwise inherits from `python-mode-syntax-table'.")
   "Send STRING to inferior Python (if any) and return result.
 The result is what follows `_emacs_out' in the output.
 This is a no-op if `python-check-comint-prompt' returns nil."
-  (python-send-string string)
+  (py-send-string string)
   (let ((proc (python-proc)))
     (with-current-buffer (process-buffer proc)
       (when (python-check-comint-prompt proc)

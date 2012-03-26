@@ -582,50 +582,6 @@ Result is useful for booleans too: (when (py-in-statement-p)...)
 will work.
 
 
-py-beginning-of-paragraph-p
----------------------------
-Returns position, if cursor is at the beginning of a paragraph, nil otherwise. 
-
-py-beginning-of-line-p
-----------------------
-Returns position, if cursor is at the beginning of a line, nil otherwise. 
-
-py-beginning-of-statement-p
----------------------------
-Returns position, if cursor is at the beginning of a statement, nil otherwise. 
-
-py-beginning-of-expression-p
-----------------------------
-Returns position, if cursor is at the beginning of a expression, nil otherwise. 
-
-py-beginning-of-partial-expression-p
-------------------------------------
-Returns position, if cursor is at the beginning of a partial-expression, nil otherwise. 
-
-py-beginning-of-block-p
------------------------
-Returns position, if cursor is at the beginning of a block, nil otherwise. 
-
-py-beginning-of-clause-p
-------------------------
-Returns position, if cursor is at the beginning of a clause, nil otherwise. 
-
-py-beginning-of-block-or-clause-p
----------------------------------
-Returns position, if cursor is at the beginning of a block-or-clause, nil otherwise. 
-
-py-beginning-of-def-p
----------------------
-Returns position, if cursor is at the beginning of a def, nil otherwise. 
-
-py-beginning-of-class-p
------------------------
-Returns position, if cursor is at the beginning of a class, nil otherwise. 
-
-py-beginning-of-def-or-class-p
-------------------------------
-Returns position, if cursor is at the beginning of a def-or-class, nil otherwise. 
-
 py-statement-opens-block-p
 --------------------------
 Return position if the current statement opens a block
@@ -1290,9 +1246,12 @@ C-u 2 prompts for `py-python-command-args'.
 If `default-directory' is a remote file name, it is also prompted
 to change if called with a prefix arg.
 
-Returns variable `py-process-name' used by function `get-process'.
+Returns py-shell's buffer-name.
 Optional string PYSHELLNAME overrides default `py-shell-name'.
 Optional symbol SWITCH ('switch/'noswitch) precedes `py-shell-switch-buffers-on-execute-p'
+When SEPCHAR is given, `py-shell' must not detect the file-separator.
+BUFFER allows specifying a name, the Python process is connected to
+When DONE is `t', `py-shell-manage-windows' is omitted
 
 
 python
@@ -1729,7 +1688,15 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)
 
 py-execute-expression
 ---------------------
-Send expression at point to Python interpreter. 
+Send expression at point to a Python interpreter.
+
+When called with M-x univeral-argument, execution through `default-value' of `py-shell-name' is forced.
+
+When called with M-x univeral-argument followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
+
+When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
+
+Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)
 
 py-execute-partial-expression
 -----------------------------
@@ -2127,10 +2094,6 @@ If the current buffer has a local value of `python-buffer', set the
 default (global) value to that.  The associated Python process is
 the one that gets input from M-x py-send-region et al when used
 in a buffer that doesn't have a local value of `python-buffer'.
-
-python-send-string
-------------------
-Evaluate STRING in inferior Python process.
 
 py-shell-complete
 -----------------
@@ -3009,11 +2972,13 @@ Send class at point to Python3.2 interpreter.
 
 py-execute-region-python
 ------------------------
-Send region at point to Python interpreter. 
+Send the region to a common shell calling the python interpreter. 
 
 py-execute-region-python-switch
 -------------------------------
-Send region at point to Python interpreter. 
+Send the region to a common shell calling the python interpreter.
+
+Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will being switched to. 
 
 py-execute-region-python-noswitch
 ---------------------------------
@@ -3029,11 +2994,13 @@ Send region at point to Python interpreter.
 
 py-execute-region-ipython
 -------------------------
-Send region at point to IPython interpreter. 
+Send the region to a common shell calling the ipython interpreter. 
 
 py-execute-region-ipython-switch
 --------------------------------
-Send region at point to IPython interpreter. 
+Send the region to a common shell calling the ipython interpreter.
+
+Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will being switched to. 
 
 py-execute-region-ipython-noswitch
 ----------------------------------
@@ -3049,11 +3016,13 @@ Send region at point to IPython interpreter.
 
 py-execute-region-python3
 -------------------------
-Send region at point to Python3 interpreter. 
+Send the region to a common shell calling the python3 interpreter. 
 
 py-execute-region-python3-switch
 --------------------------------
-Send region at point to Python3 interpreter. 
+Send the region to a common shell calling the python3 interpreter.
+
+Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will being switched to. 
 
 py-execute-region-python3-noswitch
 ----------------------------------
@@ -3069,11 +3038,12 @@ Send region at point to Python3 interpreter.
 
 py-execute-region-python2
 -------------------------
-Send region at point to Python2 interpreter. 
+Send the region to a common shell calling the python2 interpreter. 
 
 py-execute-region-python2-switch
 --------------------------------
-Send region at point to Python2 interpreter. 
+Send the region to a common shell calling the python2 interpreter.
+Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will being switched to. 
 
 py-execute-region-python2-noswitch
 ----------------------------------
@@ -3089,11 +3059,13 @@ Send region at point to Python2 interpreter.
 
 py-execute-region-python2\.7
 ----------------------------
-Send region at point to Python2.7 interpreter. 
+Send the region to a common shell calling the python2.7 interpreter. 
 
 py-execute-region-python2\.7-switch
 -----------------------------------
-Send region at point to Python2.7 interpreter. 
+Send the region to a common shell calling the python2.7 interpreter.
+
+Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will being switched to. 
 
 py-execute-region-python2\.7-noswitch
 -------------------------------------
@@ -3109,11 +3081,13 @@ Send region at point to Python2.7 interpreter.
 
 py-execute-region-jython
 ------------------------
-Send region at point to Jython interpreter. 
+Send the region to a common shell calling the jython interpreter. 
 
 py-execute-region-jython-switch
 -------------------------------
-Send region at point to Jython interpreter. 
+Send the region to a common shell calling the jython interpreter.
+
+Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will being switched to. 
 
 py-execute-region-jython-noswitch
 ---------------------------------
@@ -3129,11 +3103,13 @@ Send region at point to Jython interpreter.
 
 py-execute-region-python3\.2
 ----------------------------
-Send region at point to Python3.2 interpreter. 
+Send the region to a common shell calling the python3.2 interpreter. 
 
 py-execute-region-python3\.2-switch
 -----------------------------------
-Send region at point to Python3.2 interpreter. 
+Send the region to a common shell calling the python3.2 interpreter.
+
+Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will being switched to. 
 
 py-execute-region-python3\.2-noswitch
 -------------------------------------

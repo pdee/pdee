@@ -298,17 +298,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-in-triplequoted-string-p-commandp-test \
 --funcall py-in-string-p-commandp-test \
 --funcall py-in-statement-p-commandp-test \
---funcall py-beginning-of-paragraph-p-commandp-test \
---funcall py-beginning-of-line-p-commandp-test \
---funcall py-beginning-of-statement-p-commandp-test \
---funcall py-beginning-of-expression-p-commandp-test \
---funcall py-beginning-of-partial-expression-p-commandp-test \
---funcall py-beginning-of-block-p-commandp-test \
---funcall py-beginning-of-clause-p-commandp-test \
---funcall py-beginning-of-block-or-clause-p-commandp-test \
---funcall py-beginning-of-def-p-commandp-test \
---funcall py-beginning-of-class-p-commandp-test \
---funcall py-beginning-of-def-or-class-p-commandp-test \
 --funcall py-statement-opens-block-p-commandp-test \
 --funcall py-statement-opens-clause-p-commandp-test \
 --funcall py-statement-opens-block-or-clause-p-commandp-test \
@@ -521,7 +510,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-send-region-and-go-commandp-test \
 --funcall py-load-file-commandp-test \
 --funcall py-set-proc-commandp-test \
---funcall python-send-string-commandp-test \
 --funcall py-shell-complete-commandp-test \
 --funcall ipython-complete-commandp-test \
 --funcall py-pychecker-run-commandp-test \
@@ -901,7 +889,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall python-dedicated-test \
 --funcall py-shell-complete-test \
 --funcall py-completion-at-point-test \
---funcall split-windows-on-execute-p-test \
 --funcall tqs-list-error-test \
 --funcall py-ipython-complete-lp:927136-test \
 --funcall master-file-not-honored-lp:794850-test \
@@ -918,6 +905,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-end-of-print-statement-test \
 --funcall py-insert-super-python3-test \
 --funcall py-menu-pyshell-test \
+--funcall split-windows-on-execute-p-test \
 
 else
 

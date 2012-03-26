@@ -18,6 +18,7 @@
 
 ;;; Code
 (require 'python-components-macros) 
+(require 'python-components-intern)
 
 (defun py-execute-statement (&optional shell dedicated switch)
   "Send statement at point to a Python interpreter.

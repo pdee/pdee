@@ -7173,6 +7173,7 @@ print(\"I'm the `split-windows-on-execute-p-test'\")
     (py-bug-tests-intern 'split-windows-on-execute-p-base arg teststring)))
 
 (defun split-windows-on-execute-p-base ()
+  (delete-other-windows)
   (let ((py-split-windows-on-execute-p t)
         (py-split-windows-on-execute-function 'split-window-vertically)
         (py-shell-switch-buffers-on-execute-p t)

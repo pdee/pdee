@@ -1,4 +1,4 @@
-;;; python-components-re-forms.el --- Forms start described by a regular-expression
+;;; python-components-re-forms.el --- Forms start described by a regular-expression 
 
 ;; Author: Andreas Roehler <andreas.roehler@online.de>
 ;; Keywords: languages, convenience
@@ -17,8 +17,8 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Code:
-(require 'python-components-macros) 
 
+;;; Beg-end forms
 (defun py-beginning-of-block (&optional indent)
   "Returns beginning of block if successful, nil otherwise.
 
@@ -37,8 +37,8 @@ Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
   (let* ((orig (point))
-         (erg (py-end-base py-block-re orig)))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+        (erg (py-end-base py-block-re orig)))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg)) 
     erg))
 
 (defun py-beginning-of-clause (&optional indent)
@@ -59,8 +59,8 @@ Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
   (let* ((orig (point))
-         (erg (py-end-base py-clause-re orig)))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+        (erg (py-end-base py-clause-re orig)))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg)) 
     erg))
 
 (defun py-beginning-of-block-or-clause (&optional indent)
@@ -81,8 +81,8 @@ Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
   (let* ((orig (point))
-         (erg (py-end-base py-block-or-clause-re orig)))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+        (erg (py-end-base py-block-or-clause-re orig)))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg)) 
     erg))
 
 (defun py-beginning-of-def (&optional indent)
@@ -103,8 +103,8 @@ Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
   (let* ((orig (point))
-         (erg (py-end-base py-def-re orig)))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+        (erg (py-end-base py-def-re orig)))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg)) 
     erg))
 
 (defun py-beginning-of-class (&optional indent)
@@ -125,8 +125,8 @@ Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
   (let* ((orig (point))
-         (erg (py-end-base py-class-re orig)))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+        (erg (py-end-base py-class-re orig)))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg)) 
     erg))
 
 (defun py-beginning-of-def-or-class (&optional indent)
@@ -147,8 +147,8 @@ Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
   (let* ((orig (point))
-         (erg (py-end-base py-def-or-class-re orig)))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+        (erg (py-end-base py-def-or-class-re orig)))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg)) 
     erg))
 
 (defun py-beginning-of-if-block (&optional indent)
@@ -169,8 +169,8 @@ Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
   (let* ((orig (point))
-         (erg (py-end-base py-if-block-re orig)))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+        (erg (py-end-base py-if-block-re orig)))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg)) 
     erg))
 
 (defun py-beginning-of-try-block (&optional indent)
@@ -191,8 +191,8 @@ Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
   (let* ((orig (point))
-         (erg (py-end-base py-try-block-re orig)))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+        (erg (py-end-base py-try-block-re orig)))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg)) 
     erg))
 
 (defun py-beginning-of-minor-block (&optional indent)
@@ -213,10 +213,12 @@ Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
   (let* ((orig (point))
-         (erg (py-end-base py-minor-block-re orig)))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+        (erg (py-end-base py-minor-block-re orig)))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg)) 
     erg))
 
+(defalias 'py-beginning-of-buffer '(progn (beginning-of-buffer)(point)))
+(defalias 'py-end-of-buffer '(progn (end-of-buffer)(point)))
 (defalias 'py-forward-block 'py-end-of-block)
 (defalias 'py-forward-block-or-clause 'py-end-of-block-or-clause)
 (defalias 'py-forward-class 'py-end-of-class)
@@ -240,4 +242,4 @@ http://docs.python.org/reference/compound_stmts.html"
 
 (provide 'python-components-re-forms)
 ;;; python-components-re-forms.el ends here
-
+ 

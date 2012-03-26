@@ -41,7 +41,7 @@
 
 ;;; Code
 (require 'comint)
-(require 'python-components-macros) 
+(require 'python-components-macros)
 
 (defvar py-shell-input-lines nil
   "Collect input lines send interactively to the Python process in
@@ -145,9 +145,9 @@ and return collected output"
   (let* ((proc (get-process py-which-bufname))
 	 (cmd (format "exec '''%s''' in {}"
 		      (mapconcat 'identity (split-string string "\n") "\\n")))
-	(procbuf (process-buffer proc))
-	(outbuf (get-buffer-create " *pyshellcomplete-output*"))
-	(lines (reverse py-shell-input-lines)))
+         (procbuf (process-buffer proc))
+         (outbuf (get-buffer-create " *pyshellcomplete-output*"))
+         (lines (reverse py-shell-input-lines)))
     (if (and proc (not py-file-queue))
 	(unwind-protect
 	    (condition-case nil
@@ -173,13 +173,13 @@ and return collected output"
 		      (while (not comint-redirect-completed) ; wait for output
 			(accept-process-output proc 1)))
 		    (signal 'quit nil)))
-	    (if (with-current-buffer procbuf comint-redirect-completed)
-		(while lines
-		  (with-current-buffer procbuf
-		    (py-shell-redirect-send-command-to-process
-		     (car lines) outbuf proc nil t))
-		  (accept-process-output proc 1)
-		  (setq lines (cdr lines))))))))
+          (if (with-current-buffer procbuf comint-redirect-completed)
+              (while lines
+                (with-current-buffer procbuf
+                  (py-shell-redirect-send-command-to-process
+                   (car lines) outbuf proc nil t))
+                (accept-process-output proc 1)
+                (setq lines (cdr lines))))))))
 
 ;;;;
 
@@ -512,9 +512,10 @@ See variable `python-buffer'.  Starts a new process if necessary."
 
 (defun py-send-receive (string)
   "Send STRING to inferior Python (if any) and return result.
+
 The result is what follows `_emacs_out' in the output.
 This is a no-op if `python-check-comint-prompt' returns nil."
-  (python-send-string string)
+  (py-send-string string)
   (let ((proc (py-proc)))
     (with-current-buffer (process-buffer proc)
       (when (python-check-comint-prompt proc)
@@ -606,11 +607,15 @@ complete('%s')
 If no completion available, insert a TAB.
 Returns the completed symbol, a string, if successful, nil otherwise."
   (interactive "*")
-  (let* ((done done)
+  (let* (py-split-windows-on-execute-p
+         py-shell-switch-buffers-on-execute-p
+         (done done)
+         (orig (point)) 
          (oldbuf (current-buffer))
          (ugly-return nil)
          (sep ";")
          (py-which-bufname "IPython-complete")
+         ;; (process-connection-type 'pty)
          ;; (cond ((get-buffer-process  "IPython-complete")
          ;; "IPython-complete")
          ;; ((string-match "[Ii][Pp]ython" py-shell-name)
@@ -619,7 +624,11 @@ Returns the completed symbol, a string, if successful, nil otherwise."
          (python-process (or (get-process py-which-bufname)
                              (progn
                                (setq done (not done))
-                               (get-process (py-shell nil t "ipython" 'noswitch)))))
+                               (get-buffer-process (py-shell nil nil "ipython" 'noswitch nil py-which-bufname))
+                               )))
+         ;; maybe in py-shell now
+         (set-buffer oldbuf)
+         (goto-char orig)
          (beg (progn (set-buffer oldbuf)(save-excursion (skip-chars-backward "a-z0-9A-Z_." (point-at-bol))
                                                         (point))))
          (end (point))
