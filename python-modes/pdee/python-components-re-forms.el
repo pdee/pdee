@@ -217,8 +217,22 @@ http://docs.python.org/reference/compound_stmts.html"
     (when (and py-verbose-p (interactive-p)) (message "%s" erg)) 
     erg))
 
-(defalias 'py-beginning-of-buffer '(progn (beginning-of-buffer)(point)))
-(defalias 'py-end-of-buffer '(progn (end-of-buffer)(point)))
+
+;; Buffer
+(defun py-beginning-of-buffer ()
+  "Go to beginning-of-buffer, return position. "
+  (let ((erg (unless (bobp)
+                 (progn (beginning-of-buffer)(point)))))
+    erg))
+
+(defun py-end-of-buffer ()
+  "Go to end-of-buffer, return position.
+
+If already at end-of-buffer and not at EOB, go to end of next line. "
+  (let ((erg (unless (eobp)
+                 (progn (end-of-buffer)(point)))))
+    erg))
+
 (defalias 'py-forward-block 'py-end-of-block)
 (defalias 'py-forward-block-or-clause 'py-end-of-block-or-clause)
 (defalias 'py-forward-class 'py-end-of-class)

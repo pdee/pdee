@@ -2515,6 +2515,11 @@ def baz(self):
     return set(range(100))
 
 # 'set' and 'range' get rendered in font-lock-builtin-face when they should get rendered in py-builtins-face
+
+print myobj.range()
+
+# the latter range should get default face
+
 "))
     (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'broken-font-locking-lp-961231-base arg teststring)))
@@ -2529,7 +2534,11 @@ def baz(self):
   (goto-char 637)
   (assert (eq (get-char-property (point) 'face) 'py-pseudo-keyword-face) nil "broken-font-locking-lp-961231-test #3 failed")
   (goto-char 775)
-  (assert (eq (get-char-property (point) 'face) 'py-builtins-face) nil "broken-font-locking-lp-961231-test #4 failed"))
+  (assert (eq (get-char-property (point) 'face) 'py-builtins-face) nil "broken-font-locking-lp-961231-test #4 failed")
+  ;; (goto-char 911)
+  ;; (assert (eq (get-char-property (point) 'face) 'default) nil "broken-font-locking-lp-961231-test #4 failed")
+
+  )
 
 (defun regression-in-py-execute-region-lp-962227-test (&optional arg load-branch-function)
   (interactive "p")
