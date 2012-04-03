@@ -160,7 +160,7 @@
      (local-unset-key (kbd "RET"))
      (python-mode)
      (funcall ,testname)
-     (message "%s" (concat (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname)) " passed"))
+     (message "%s" (replace-regexp-in-string "\\\\" "" (concat (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname)) " passed")))
      (unless (< 1 arg)
        (set-buffer-modified-p 'nil)
        (kill-buffer (current-buffer)))))
