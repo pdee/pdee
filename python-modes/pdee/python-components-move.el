@@ -26,7 +26,7 @@
 (require 'python-components-macros)
 ;; Expression
 (defalias 'py-backward-expression 'py-beginning-of-expression)
-(defun py-beginning-of-expression (&optional orig origline done)
+(defun py-beginning-of-expression (&optional orig origline done erg)
   "Go to the beginning of a compound python expression.
 
 A a compound python expression might be concatenated by \".\" operator, thus composed by minor python expressions.
@@ -51,38 +51,44 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
                      (parse-partial-sexp (point-min) (point))
                    (syntax-ppss)))
             (done done)
-            erg)
-        (setq erg
-              (cond
-               ;; if in string
-               ((and (nth 3 pps)(nth 8 pps)
-                     (goto-char (nth 8 pps)))
-                (unless (looking-back "\\(=\\|:\\|+\\|-\\|*\\|/\\|//\\|&\\|%\\||\\|\^\\|>>\\|<<\\)[ \t]*")
-                  (goto-char (nth 2 pps)))
-                (py-beginning-of-expression orig origline))
-               ;; comments left, as strings are done
-               ((nth 8 pps)
-                (goto-char (1- (nth 8 pps)))
-                (py-beginning-of-expression orig origline))
-               ((and (looking-at "[ \t]*#") (looking-back "^[ \t]*"))
-                (forward-line -1)
-                (unless (bobp)
-                  (end-of-line)
-                  (py-beginning-of-expression orig origline)))
-               ;; character address of start of innermost containing list; nil if none.
-               ((nth 1 pps)
-                (goto-char (nth 1 pps))
-                (when
-                    (not (looking-back "[ \t]+"))
-                  (skip-chars-backward py-expression-skip-regexp))
-                (py-beginning-of-expression orig origline))
-               ;; inside expression
-               ((and (eq (point) orig) (not (bobp)) (looking-back py-expression-looking-regexp))
-                (skip-chars-backward py-expression-skip-regexp)
-                (py-beginning-of-expression orig origline))
-               ((looking-at py-expression-looking-regexp)
-                (point))
-               (t (unless (and (looking-at "[ \t]*#") (looking-back "^[ \t]*"))(point)))))
+            (erg erg))
+        (cond
+         ;; if in string
+         ((and (nth 3 pps)(nth 8 pps)
+               (goto-char (nth 8 pps)))
+          (unless (looking-back "\\(=\\|:\\|+\\|-\\|*\\|/\\|//\\|&\\|%\\||\\|\^\\|>>\\|<<\\)[ \t]*")
+            (goto-char (nth 2 pps))
+            (setq erg (point))
+            (setq done t))
+          (py-beginning-of-expression orig origline done erg))
+         ;; comments left, as strings are done
+         ((nth 8 pps)
+          (goto-char (1- (nth 8 pps)))
+          (py-beginning-of-expression orig origline done erg))
+         ((and (looking-at "[ \t]*#") (looking-back "^[ \t]*"))
+          (forward-line -1)
+          (unless (bobp)
+            (end-of-line)
+            (py-beginning-of-expression orig origline done erg)))
+         ;; character address of start of innermost containing list; nil if none.
+         ((nth 1 pps)
+          (goto-char (nth 1 pps))
+          (when
+              (not (looking-back "[ \t]+"))
+            (when (< 0 (abs (skip-chars-backward py-expression-skip-regexp)))
+              (setq erg (point))
+              (setq done t)))
+          (py-beginning-of-expression orig origline done erg))
+         ;; inside expression
+         ((and (eq (point) orig) (not (bobp)) (looking-back py-expression-looking-regexp))
+          (skip-chars-backward py-expression-skip-regexp)
+          (setq erg (point))
+          (setq done t)
+          (py-beginning-of-expression orig origline done erg))
+         ((looking-at py-expression-looking-regexp)
+          (setq erg (point)))
+         (t (unless (and (looking-at "[ \t]*#") (looking-back "^[ \t]*"))
+              (setq erg (point)))))
         (when (and py-verbose-p (interactive-p)) (message "%s" erg))
         erg))))
 
@@ -166,7 +172,7 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
 
 ;; Partial- or Minor Expression
 (defalias 'py-backward-partial-expression 'py-beginning-of-partial-expression)
-(defun py-beginning-of-partial-expression (&optional orig origline done)
+(defun py-beginning-of-partial-expression (&optional orig origline done erg)
   "Go to the beginning of a minor python expression.
 
 \".\" operators delimit a minor expression on their level.
@@ -187,34 +193,40 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
                      (parse-partial-sexp (point-min) (point))
                    (syntax-ppss)))
             (done done)
-            erg)
-        (setq erg
-              (cond
-               ;; if in string
-               ((and (nth 3 pps)(nth 8 pps)
-                     (save-excursion
-                       (ignore-errors
-                         (goto-char (nth 2 pps)))))
-                (goto-char (nth 2 pps))
-                (py-beginning-of-partial-expression orig origline))
-               ;; comments left, as strings are done
-               ((nth 8 pps)
-                (goto-char (1- (nth 8 pps)))
-                (py-beginning-of-partial-expression orig origline))
-               ((and (looking-at "[ \t]*#") (looking-back "^[ \t]*"))
-                (forward-line -1)
-                (unless (bobp)
-                  (end-of-line)
-                  (py-beginning-of-partial-expression orig origline)))
-               ((nth 1 pps)
-                (skip-chars-backward py-partial-expression-backward-regexp)
-                (point))
-               ((and (eq (point) orig) (not (bobp)) (looking-back py-partial-expression-looking-regexp))
-                (skip-chars-backward py-partial-expression-skip-regexp)
-                (py-beginning-of-partial-expression orig origline))
-               ((looking-at py-partial-expression-looking-regexp)
-                (point))
-               (t (unless (and (looking-at "[ \t]*#") (looking-back "^[ \t]*"))(point)))))
+            (erg erg))
+        (cond
+         ;; if in string
+         ((and (nth 3 pps)(nth 8 pps)
+               (save-excursion
+                 (ignore-errors
+                   (goto-char (nth 2 pps)))))
+          (goto-char (nth 2 pps))
+          (setq erg (point))
+          (setq done t)
+          (py-beginning-of-partial-expression orig origline done erg))
+         ((nth 8 pps)
+          (goto-char (1- (nth 8 pps)))
+          (setq erg (point))
+          (py-beginning-of-partial-expression orig origline done erg))
+         ((and (looking-at "[ \t]*#") (looking-back "^[ \t]*"))
+          (forward-line -1)
+          (unless (bobp)
+            (end-of-line)
+            (setq erg (point))
+            (setq done t)
+            (py-beginning-of-partial-expression orig origline done erg)))
+         ((nth 1 pps)
+          (skip-chars-backward py-partial-expression-backward-regexp)
+          (setq erg (point)))
+         ((and (eq (point) orig) (not (bobp)) (looking-back py-partial-expression-looking-regexp))
+          (forward-char -1) 
+          (when (< 0 (abs (skip-chars-backward py-partial-expression-skip-regexp)))
+            (setq erg (point))
+            (setq done t))
+          (py-beginning-of-partial-expression orig origline done erg))
+         ((looking-at py-partial-expression-looking-regexp)
+          (setq erg (point)))
+         (t (unless (and (looking-at "[ \t]*#") (looking-back "^[ \t]*"))(setq erg (point)))))
         (when (and py-verbose-p (interactive-p)) (message "%s" erg))
         erg))))
 
@@ -981,9 +993,9 @@ Travels right-margin comments. "
         (maxindent maxindent)
         done erg cui)
     (while (and (not done) (not (bobp)))
-      (py-beginning-of-statement) 
+      (py-beginning-of-statement)
       (when (and (looking-at regexp)(if maxindent
-                                        (< (current-indentation) maxindent)t))
+                                        (< (current-indentation) maxindent) t))
         (setq erg (point))
         (setq done t)))
     (when erg (setq erg (cons (current-indentation) erg)))

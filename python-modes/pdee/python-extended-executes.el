@@ -25,8 +25,8 @@
     (let ((beg (prog1
                    (or (funcall (intern-soft (concat "py-beginning-of-" form "-p")))
 
-                       (funcall (intern-soft (concat "py-beginning-of-" form)))
-                       (push-mark))))
+                       (funcall (intern-soft (concat "py-beginning-of-" form))))
+                 (push-mark)))
           (end (funcall (intern-soft (concat "py-end-of-" form)))))
       (py-execute-base beg end shell dedicated switch))))
 

@@ -333,7 +333,8 @@ When DONE is `t', `py-shell-manage-windows' is omitted
               (when py-use-local-default
                 (error "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'"))))
            (py-buffer-name-prepare (unless buffer
-                                     (py-buffer-name-prepare py-which-bufname sepchar dedicated)))
+                                     ;; (py-buffer-name-prepare py-which-bufname sepchar dedicated)
+                                     (py-buffer-name-prepare pyshellname sepchar dedicated)))
            (py-buffer-name (or buffer py-buffer-name-prepare))
            (executable (cond (buffer
                               (downcase (replace-regexp-in-string

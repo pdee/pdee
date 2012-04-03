@@ -5075,7 +5075,7 @@ If already at end-of-buffer and not at EOB, go to end of next line. "
 
 ;;; Expression
 (defalias 'py-backward-expression 'py-beginning-of-expression)
-(defun py-beginning-of-expression (&optional orig origline done)
+(defun py-beginning-of-expression (&optional orig origline done erg)
   "Go to the beginning of a compound python expression.
 
 A a compound python expression might be concatenated by \".\" operator, thus composed by minor python expressions.
@@ -5100,38 +5100,44 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
                      (parse-partial-sexp (point-min) (point))
                    (syntax-ppss)))
             (done done)
-            erg)
-        (setq erg
-              (cond
-               ;; if in string
-               ((and (nth 3 pps)(nth 8 pps)
-                     (goto-char (nth 8 pps)))
-                (unless (looking-back "\\(=\\|:\\|+\\|-\\|*\\|/\\|//\\|&\\|%\\||\\|\^\\|>>\\|<<\\)[ \t]*")
-                  (goto-char (nth 2 pps)))
-                (py-beginning-of-expression orig origline))
-               ;; comments left, as strings are done
-               ((nth 8 pps)
-                (goto-char (1- (nth 8 pps)))
-                (py-beginning-of-expression orig origline))
-               ((and (looking-at "[ \t]*#") (looking-back "^[ \t]*"))
-                (forward-line -1)
-                (unless (bobp)
-                  (end-of-line)
-                  (py-beginning-of-expression orig origline)))
-               ;; character address of start of innermost containing list; nil if none.
-               ((nth 1 pps)
-                (goto-char (nth 1 pps))
-                (when
-                    (not (looking-back "[ \t]+"))
-                  (skip-chars-backward py-expression-skip-regexp))
-                (py-beginning-of-expression orig origline))
-               ;; inside expression
-               ((and (eq (point) orig) (not (bobp)) (looking-back py-expression-looking-regexp))
-                (skip-chars-backward py-expression-skip-regexp)
-                (py-beginning-of-expression orig origline))
-               ((looking-at py-expression-looking-regexp)
-                (point))
-               (t (unless (and (looking-at "[ \t]*#") (looking-back "^[ \t]*"))(point)))))
+            (erg erg))
+        (cond
+         ;; if in string
+         ((and (nth 3 pps)(nth 8 pps)
+               (goto-char (nth 8 pps)))
+          (unless (looking-back "\\(=\\|:\\|+\\|-\\|*\\|/\\|//\\|&\\|%\\||\\|\^\\|>>\\|<<\\)[ \t]*")
+            (goto-char (nth 2 pps))
+            (setq erg (point))
+            (setq done t))
+          (py-beginning-of-expression orig origline done erg))
+         ;; comments left, as strings are done
+         ((nth 8 pps)
+          (goto-char (1- (nth 8 pps)))
+          (py-beginning-of-expression orig origline done erg))
+         ((and (looking-at "[ \t]*#") (looking-back "^[ \t]*"))
+          (forward-line -1)
+          (unless (bobp)
+            (end-of-line)
+            (py-beginning-of-expression orig origline done erg)))
+         ;; character address of start of innermost containing list; nil if none.
+         ((nth 1 pps)
+          (goto-char (nth 1 pps))
+          (when
+              (not (looking-back "[ \t]+"))
+            (when (< 0 (abs (skip-chars-backward py-expression-skip-regexp)))
+              (setq erg (point))
+              (setq done t)))
+          (py-beginning-of-expression orig origline done erg))
+         ;; inside expression
+         ((and (eq (point) orig) (not (bobp)) (looking-back py-expression-looking-regexp))
+          (skip-chars-backward py-expression-skip-regexp)
+          (setq erg (point))
+          (setq done t)
+          (py-beginning-of-expression orig origline done erg))
+         ((looking-at py-expression-looking-regexp)
+          (setq erg (point)))
+         (t (unless (and (looking-at "[ \t]*#") (looking-back "^[ \t]*"))
+              (setq erg (point)))))
         (when (and py-verbose-p (interactive-p)) (message "%s" erg))
         erg))))
 
@@ -5214,7 +5220,7 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
 
 ;;; Partial- or Minor Expression
 (defalias 'py-backward-partial-expression 'py-beginning-of-partial-expression)
-(defun py-beginning-of-partial-expression (&optional orig origline done)
+(defun py-beginning-of-partial-expression (&optional orig origline done erg)
   "Go to the beginning of a minor python expression.
 
 \".\" operators delimit a minor expression on their level.
@@ -5235,34 +5241,40 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
                      (parse-partial-sexp (point-min) (point))
                    (syntax-ppss)))
             (done done)
-            erg)
-        (setq erg
-              (cond
-               ;; if in string
-               ((and (nth 3 pps)(nth 8 pps)
-                     (save-excursion
-                       (ignore-errors
-                         (goto-char (nth 2 pps)))))
-                (goto-char (nth 2 pps))
-                (py-beginning-of-partial-expression orig origline))
-               ;; comments left, as strings are done
-               ((nth 8 pps)
-                (goto-char (1- (nth 8 pps)))
-                (py-beginning-of-partial-expression orig origline))
-               ((and (looking-at "[ \t]*#") (looking-back "^[ \t]*"))
-                (forward-line -1)
-                (unless (bobp)
-                  (end-of-line)
-                  (py-beginning-of-partial-expression orig origline)))
-               ((nth 1 pps)
-                (skip-chars-backward py-partial-expression-backward-regexp)
-                (point))
-               ((and (eq (point) orig) (not (bobp)) (looking-back py-partial-expression-looking-regexp))
-                (skip-chars-backward py-partial-expression-skip-regexp)
-                (py-beginning-of-partial-expression orig origline))
-               ((looking-at py-partial-expression-looking-regexp)
-                (point))
-               (t (unless (and (looking-at "[ \t]*#") (looking-back "^[ \t]*"))(point)))))
+            (erg erg))
+        (cond
+         ;; if in string
+         ((and (nth 3 pps)(nth 8 pps)
+               (save-excursion
+                 (ignore-errors
+                   (goto-char (nth 2 pps)))))
+          (goto-char (nth 2 pps))
+          (setq erg (point))
+          (setq done t)
+          (py-beginning-of-partial-expression orig origline done erg))
+         ((nth 8 pps)
+          (goto-char (1- (nth 8 pps)))
+          (setq erg (point))
+          (py-beginning-of-partial-expression orig origline done erg))
+         ((and (looking-at "[ \t]*#") (looking-back "^[ \t]*"))
+          (forward-line -1)
+          (unless (bobp)
+            (end-of-line)
+            (setq erg (point))
+            (setq done t)
+            (py-beginning-of-partial-expression orig origline done erg)))
+         ((nth 1 pps)
+          (skip-chars-backward py-partial-expression-backward-regexp)
+          (setq erg (point)))
+         ((and (eq (point) orig) (not (bobp)) (looking-back py-partial-expression-looking-regexp))
+          (forward-char -1)
+          (when (< 0 (abs (skip-chars-backward py-partial-expression-skip-regexp)))
+            (setq erg (point))
+            (setq done t))
+          (py-beginning-of-partial-expression orig origline done erg))
+         ((looking-at py-partial-expression-looking-regexp)
+          (setq erg (point)))
+         (t (unless (and (looking-at "[ \t]*#") (looking-back "^[ \t]*"))(setq erg (point)))))
         (when (and py-verbose-p (interactive-p)) (message "%s" erg))
         erg))))
 
@@ -6703,7 +6715,7 @@ Needed when file-path names are contructed from maybe numbered buffer names like
          (set-buffer oldbuf)
          (switch-to-buffer (current-buffer)))))
 
-(defun py-shell (&optional argprompt dedicated pyshellname switch sepchar buffer)
+(defun py-shell (&optional argprompt dedicated pyshellname switch sepchar buffer done)
   "Start an interactive Python interpreter in another window.
 
 Interactively, \\[universal-argument] 4 prompts for a buffer.
@@ -6716,6 +6728,7 @@ Optional string PYSHELLNAME overrides default `py-shell-name'.
 Optional symbol SWITCH ('switch/'noswitch) precedes `py-shell-switch-buffers-on-execute-p'
 When SEPCHAR is given, `py-shell' must not detect the file-separator.
 BUFFER allows specifying a name, the Python process is connected to
+When DONE is `t', `py-shell-manage-windows' is omitted
 "
   (interactive "P")
   (let ((sepchar (or sepchar (py-separator-char)))
@@ -6763,7 +6776,8 @@ BUFFER allows specifying a name, the Python process is connected to
               (when py-use-local-default
                 (error "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'"))))
            (py-buffer-name-prepare (unless buffer
-                                     (py-buffer-name-prepare py-which-bufname sepchar dedicated)))
+                                     ;; (py-buffer-name-prepare py-which-bufname sepchar dedicated)
+                                     (py-buffer-name-prepare pyshellname sepchar dedicated)))
            (py-buffer-name (or buffer py-buffer-name-prepare))
            (executable (cond (buffer
                               (downcase (replace-regexp-in-string
@@ -6812,7 +6826,7 @@ BUFFER allows specifying a name, the Python process is connected to
         (use-local-map py-shell-map)
         (add-hook 'py-shell-hook 'py-dirstack-hook)
         (run-hooks 'py-shell-hook))
-      (py-shell-manage-windows switch py-split-windows-on-execute-p py-shell-switch-buffers-on-execute-p oldbuf py-buffer-name)
+      (unless done (py-shell-manage-windows switch py-split-windows-on-execute-p py-shell-switch-buffers-on-execute-p oldbuf py-buffer-name))
       (when (and (not py-split-windows-on-execute-p) (or (eq switch 'noswitch) (not py-shell-switch-buffers-on-execute-p)) py-verbose-p) (message py-buffer-name))
       py-buffer-name)))
 
@@ -7635,12 +7649,12 @@ When called with \\[univeral-argument] followed by a number different from 4 and
 When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
 
 Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)"
-  (interactive)
+  (interactive "P")
   (save-excursion
     (let ((beg (prog1
                    (or (py-beginning-of-statement-p)
                        (py-beginning-of-statement))))
-          (end (py-end-of-block-or-clause)))
+          (end (py-end-of-statement)))
       (py-execute-region beg end shell dedicated switch))))
 
 (defun py-execute-block (&optional shell dedicated switch)
@@ -7654,12 +7668,12 @@ When called with \\[univeral-argument] followed by a number different from 4 and
 When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
 
 Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)"
-  (interactive)
+  (interactive "P")
   (save-excursion
     (let ((beg (prog1
                    (or (py-beginning-of-block-p)
                        (py-beginning-of-block))))
-          (end (py-end-of-block-or-clause)))
+          (end (py-end-of-block)))
       (py-execute-region beg end shell dedicated switch))))
 
 (defun py-execute-clause (&optional shell dedicated switch)
@@ -7673,12 +7687,12 @@ When called with \\[univeral-argument] followed by a number different from 4 and
 When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
 
 Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)"
-  (interactive)
+  (interactive "P")
   (save-excursion
     (let ((beg (prog1
                    (or (py-beginning-of-clause-p)
                        (py-beginning-of-clause))))
-          (end (py-end-of-block-or-clause)))
+          (end (py-end-of-clause)))
       (py-execute-region beg end shell dedicated switch))))
 
 (defun py-execute-block-or-clause (&optional shell dedicated switch)
@@ -7692,7 +7706,7 @@ When called with \\[univeral-argument] followed by a number different from 4 and
 When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
 
 Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)"
-  (interactive)
+  (interactive "P")
   (save-excursion
     (let ((beg (prog1
                    (or (py-beginning-of-block-or-clause-p)
@@ -7711,12 +7725,12 @@ When called with \\[univeral-argument] followed by a number different from 4 and
 When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
 
 Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)"
-  (interactive)
+  (interactive "P")
   (save-excursion
     (let ((beg (prog1
                    (or (py-beginning-of-def-p)
                        (py-beginning-of-def))))
-          (end (py-end-of-block-or-clause)))
+          (end (py-end-of-def)))
       (py-execute-region beg end shell dedicated switch))))
 
 (defun py-execute-class (&optional shell dedicated switch)
@@ -7730,12 +7744,12 @@ When called with \\[univeral-argument] followed by a number different from 4 and
 When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
 
 Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)"
-  (interactive)
+  (interactive "P")
   (save-excursion
     (let ((beg (prog1
                    (or (py-beginning-of-class-p)
                        (py-beginning-of-class))))
-          (end (py-end-of-block-or-clause)))
+          (end (py-end-of-class)))
       (py-execute-region beg end shell dedicated switch))))
 
 (defun py-execute-def-or-class (&optional shell dedicated switch)
@@ -7749,12 +7763,12 @@ When called with \\[univeral-argument] followed by a number different from 4 and
 When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
 
 Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)"
-  (interactive)
+  (interactive "P")
   (save-excursion
     (let ((beg (prog1
                    (or (py-beginning-of-def-or-class-p)
                        (py-beginning-of-def-or-class))))
-          (end (py-end-of-block-or-clause)))
+          (end (py-end-of-def-or-class)))
       (py-execute-region beg end shell dedicated switch))))
 
 (defun py-execute-expression (&optional shell dedicated switch)
@@ -7768,12 +7782,12 @@ When called with \\[univeral-argument] followed by a number different from 4 and
 When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
 
 Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)"
-  (interactive)
+  (interactive "P")
   (save-excursion
     (let ((beg (prog1
                    (or (py-beginning-of-expression-p)
                        (py-beginning-of-expression))))
-          (end (py-end-of-block-or-clause)))
+          (end (py-end-of-expression)))
       (py-execute-region beg end shell dedicated switch))))
 
 (defun py-execute-partial-expression (&optional shell dedicated switch)
@@ -7787,12 +7801,12 @@ When called with \\[univeral-argument] followed by a number different from 4 and
 When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
 
 Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)"
-  (interactive)
+  (interactive "P")
   (save-excursion
     (let ((beg (prog1
                    (or (py-beginning-of-partial-expression-p)
                        (py-beginning-of-partial-expression))))
-          (end (py-end-of-block-or-clause)))
+          (end (py-end-of-partial-expression)))
       (py-execute-region beg end shell dedicated switch))))
 
 ;;;
@@ -11334,8 +11348,8 @@ as it leaves your system default unchanged."
     (let ((beg (prog1
                    (or (funcall (intern-soft (concat "py-beginning-of-" form "-p")))
 
-                       (funcall (intern-soft (concat "py-beginning-of-" form)))
-                       (push-mark))))
+                       (funcall (intern-soft (concat "py-beginning-of-" form))))
+                 (push-mark)))
           (end (funcall (intern-soft (concat "py-end-of-" form)))))
       (py-execute-base beg end shell dedicated switch))))
 
