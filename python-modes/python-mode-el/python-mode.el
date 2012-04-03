@@ -6691,15 +6691,16 @@ Needed when file-path names are contructed from maybe numbered buffer names like
 
                 (or (eq switch 'switch)
                     py-shell-switch-buffers-on-execute-p)))
-         (delete-other-windows)
-         (funcall py-split-windows-on-execute-function)
+         (unless (string-match "[Ii][Pp]ython" py-buffer-name) (delete-other-windows))
+         (when (window-full-height-p)
+           (funcall py-split-windows-on-execute-function))
          (pop-to-buffer py-buffer-name))
         (;; split, not switch
          (and py-split-windows-on-execute-p
               (or (eq switch 'noswitch)
                   (not (eq switch 'switch))))
-         (delete-other-windows)
-         (funcall py-split-windows-on-execute-function)
+         (when (window-full-height-p)
+           (funcall py-split-windows-on-execute-function))
          (set-buffer py-buffer-name)
          (switch-to-buffer (current-buffer))
          (other-window 1) )
@@ -6777,7 +6778,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
                 (error "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'"))))
            (py-buffer-name-prepare (unless buffer
                                      ;; (py-buffer-name-prepare py-which-bufname sepchar dedicated)
-                                     (py-buffer-name-prepare pyshellname sepchar dedicated)))
+                                     (py-buffer-name-prepare (or pyshellname py-shell-name) sepchar dedicated)))
            (py-buffer-name (or buffer py-buffer-name-prepare))
            (executable (cond (buffer
                               (downcase (replace-regexp-in-string
@@ -7199,7 +7200,8 @@ When called from a programm, it accepts a string specifying a shell which will b
 
 (defun py-execute-base (start end &optional shell dedicated switch nostars sepchar)
   "Adapt the variables used in the process. "
-  (let* ((shell (or shell (py-choose-shell)))
+  (let* ((oldbuf (current-buffer))
+         (shell (or shell (py-choose-shell)))
          (regbuf (current-buffer))
          (py-execute-directory (or (ignore-errors (file-name-directory (buffer-file-name)))(getenv "WORKON_HOME")(getenv "HOME")))
          (strg (buffer-substring-no-properties start end))
@@ -7211,12 +7213,12 @@ When called from a programm, it accepts a string specifying a shell which will b
          (filebuf (get-buffer-create file))
          ;; (process-connection-type 'pty)
          (proc (if dedicated
-                   (get-buffer-process (py-shell nil dedicated (or shell (downcase shell)) switch sepchar))
+                   (get-buffer-process (py-shell nil dedicated (or shell (downcase shell)) switch sepchar nil t))
                  (or (get-buffer-process shell)
-                     (get-buffer-process (py-shell nil dedicated (or shell (downcase shell)) switch sepchar)))))
+                     (get-buffer-process (py-shell nil dedicated (or shell (downcase shell)) switch sepchar nil t)))))
          (procbuf (if dedicated
                       (buffer-name (get-buffer (current-buffer)))
-                    (buffer-name (get-buffer (py-process-name name dedicated nostars sepchar)))))
+                    (py-process-name name dedicated nostars sepchar)))
          (pec (if (string-match "Python *3" name)
                   (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" file file)
                 (format "execfile(r'%s') # PYTHON-MODE\n" file)))
@@ -7241,39 +7243,7 @@ When called from a programm, it accepts a string specifying a shell which will b
             (sit-for py-ipython-execute-delay))
           (setq erg (py-execute-file-base proc file pec))
           (setq py-exception-buffer (cons file (current-buffer)))
-          ;; (set-buffer regbuf)
-          (cond ((eq switch 'switch)
-                 (if py-split-windows-on-execute-p
-                     (progn
-                       (delete-other-windows)
-                       (funcall py-split-windows-on-execute-function))
-                   (set-buffer regbuf))
-                 (set-buffer procbuf)
-                 (switch-to-buffer (current-buffer))
-                 (goto-char (point-max)))
-                ((eq switch 'noswitch)
-                 (when py-split-windows-on-execute-p
-                   (delete-other-windows)
-                   (funcall py-split-windows-on-execute-function))
-                 (set-buffer regbuf)
-                 (switch-to-buffer (current-buffer)))
-                ((and py-shell-switch-buffers-on-execute-p py-split-windows-on-execute-p)
-                 ;; (delete-other-windows)
-                 (funcall py-split-windows-on-execute-function)
-                 (switch-to-buffer (current-buffer))
-                 (switch-to-buffer regbuf)
-                 (pop-to-buffer procbuf))
-                (py-split-windows-on-execute-p
-                 (delete-other-windows)
-                 (pop-to-buffer procbuf)
-                 (set-buffer procbuf)
-                 (funcall py-split-windows-on-execute-function)
-                 (switch-to-buffer regbuf))
-                (py-shell-switch-buffers-on-execute-p
-                 (set-buffer procbuf)
-                 (switch-to-buffer (current-buffer))
-                 ;; (delete-other-windows)
-                 ))
+          (py-shell-manage-windows switch py-split-windows-on-execute-p py-shell-switch-buffers-on-execute-p oldbuf procbuf)
           (unless (string= (buffer-name (current-buffer)) procbuf)
             (when py-verbose-p (message "Output buffer: %s" procbuf)))
           (sit-for 0.1)
