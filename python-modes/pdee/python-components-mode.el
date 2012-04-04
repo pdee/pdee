@@ -1860,10 +1860,6 @@ If NOERROR is not nil, do not raise error when the module is not found. "]
              :help "`py-execute-block'
        Send block at point to Python interpreter. "]
 
-            ["Execute clause" py-execute-clause
-             :help "`py-execute-clause'
-       Send clause at point to Python interpreter. "]
-
             ["Execute block-or-clause" py-execute-block-or-clause
              :help "`py-execute-block-or-clause'
        Send block-or-clause at point to Python interpreter. "]
@@ -2077,98 +2073,9 @@ Switch to output buffer; ignores `py-shell-switch-buffers-on-execute-p'. "]
              ["py-execute-block-python3.2-dedicated-switch" py-execute-block-python3.2-dedicated-switch
               :help "Execute block through a unique Python3.2 interpreter.
 Switch to output buffer; ignores `py-shell-switch-buffers-on-execute-p'. "]
-             )            ;; clause
+             )
 
-            ("Execute clause ... "
-             :help "Execute clause functions"
-             ["py-execute-clause-python" py-execute-clause-python
-              :help "Execute clause through a Python interpreter.
-        With \\[universal-argument] use an unique Python interpreter. "]
-             ["py-execute-clause-ipython" py-execute-clause-ipython
-              :help "Execute clause through an IPython interpreter.
-        With \\[universal-argument] use an unique IPython interpreter. "]
-             ["py-execute-clause-python3" py-execute-clause-python3
-              :help "Execute clause through a Python3 interpreter.
-        With \\[universal-argument] use an unique Python3 interpreter. "]
-             ["py-execute-clause-python2" py-execute-clause-python2
-              :help "Execute clause through a Python2 interpreter.
-        With \\[universal-argument] use an unique Python2 interpreter. "]
-             ["py-execute-clause-python2.7" py-execute-clause-python2.7
-              :help "Execute clause through a Python2.7 interpreter.
-        With \\[universal-argument] use an unique Python2.7 interpreter. "]
-             ["py-execute-clause-jython" py-execute-clause-jython
-              :help "Execute clause through a Jython interpreter.
-        With \\[universal-argument] use an unique Jython interpreter. "]
-             ["py-execute-clause-python3.2" py-execute-clause-python3.2
-              :help "Execute clause through a Python3.2 interpreter.
-        With \\[universal-argument] use an unique Python3.2 interpreter. "]
-             ;; dedicated
-             ["py-execute-clause-python-dedicated" py-execute-clause-python-dedicated
-              :help "Execute clause through a unique Python interpreter.
-Optional \\[universal-argument] forces switch to output buffer, ignores `py-shell-switch-buffers-on-execute-p'. "]
-             ["py-execute-clause-ipython-dedicated" py-execute-clause-ipython-dedicated
-              :help "Execute clause through a unique IPython interpreter.
-Optional \\[universal-argument] forces switch to output buffer, ignores `py-shell-switch-buffers-on-execute-p'. "]
-             ["py-execute-clause-python3-dedicated" py-execute-clause-python3-dedicated
-              :help "Execute clause through a unique Python3 interpreter.
-Optional \\[universal-argument] forces switch to output buffer, ignores `py-shell-switch-buffers-on-execute-p'. "]
-             ["py-execute-clause-python2-dedicated" py-execute-clause-python2-dedicated
-              :help "Execute clause through a unique Python2 interpreter.
-Optional \\[universal-argument] forces switch to output buffer, ignores `py-shell-switch-buffers-on-execute-p'. "]
-             ["py-execute-clause-python2.7-dedicated" py-execute-clause-python2.7-dedicated
-              :help "Execute clause through a unique Python2.7 interpreter.
-Optional \\[universal-argument] forces switch to output buffer, ignores `py-shell-switch-buffers-on-execute-p'. "]
-             ["py-execute-clause-jython-dedicated" py-execute-clause-jython-dedicated
-              :help "Execute clause through a unique Jython interpreter.
-Optional \\[universal-argument] forces switch to output buffer, ignores `py-shell-switch-buffers-on-execute-p'. "]
-             ["py-execute-clause-python3.2-dedicated" py-execute-clause-python3.2-dedicated
-              :help "Execute clause through a unique Python3.2 interpreter.
-Optional \\[universal-argument] forces switch to output buffer, ignores `py-shell-switch-buffers-on-execute-p'. "]
-             ;; switch
-             ["py-execute-clause-python-switch" py-execute-clause-python-switch
-              :help "Execute clause through a Python interpreter.
-With \\[universal-argument] use an unique Python interpreter. "]
-             ["py-execute-clause-ipython-switch" py-execute-clause-ipython-switch
-              :help "Execute clause through an IPython interpreter.
-With \\[universal-argument] use an unique IPython interpreter. "]
-             ["py-execute-clause-python3-switch" py-execute-clause-python3-switch
-              :help "Execute clause through a Python3 interpreter.
-With \\[universal-argument] use an unique Python3 interpreter. "]
-             ["py-execute-clause-python2-switch" py-execute-clause-python2-switch
-              :help "Execute clause through a Python2 interpreter.
-With \\[universal-argument] use an unique Python2 interpreter. "]
-             ["py-execute-clause-python2.7-switch" py-execute-clause-python2.7-switch
-              :help "Execute clause through a Python2.7 interpreter.
-With \\[universal-argument] use an unique Python2.7 interpreter. "]
-             ["py-execute-clause-jython-switch" py-execute-clause-jython-switch
-              :help "Execute clause through a Jython interpreter.
-With \\[universal-argument] use an unique Jython interpreter. "]
-             ["py-execute-clause-python3.2-switch" py-execute-clause-python3.2-switch
-              :help "Execute clause through a Python3.2 interpreter.
-With \\[universal-argument] use an unique Python3.2 interpreter. "]
-             ;; dedicated-switch
-             ["py-execute-clause-python-dedicated-switch" py-execute-clause-python-dedicated-switch
-              :help "Execute clause through a unique Python interpreter.
-Switch to output buffer; ignores `py-shell-switch-buffers-on-execute-p'. "]
-             ["py-execute-clause-ipython-dedicated-switch" py-execute-clause-ipython-dedicated-switch
-              :help "Execute clause through a uniquen IPython interpreter.
-Switch to output buffer; ignores `py-shell-switch-buffers-on-execute-p'. "]
-             ["py-execute-clause-python3-dedicated-switch" py-execute-clause-python3-dedicated-switch
-              :help "Execute clause through a unique Python3 interpreter.
-Switch to output buffer; ignores `py-shell-switch-buffers-on-execute-p'. "]
-             ["py-execute-clause-python2-dedicated-switch" py-execute-clause-python2-dedicated-switch
-              :help "Execute clause through a unique Python2 interpreter.
-Switch to output buffer; ignores `py-shell-switch-buffers-on-execute-p'. "]
-             ["py-execute-clause-python2.7-dedicated-switch" py-execute-clause-python2.7-dedicated-switch
-              :help "Execute clause through a unique Python2.7 interpreter.
-Switch to output buffer; ignores `py-shell-switch-buffers-on-execute-p'. "]
-             ["py-execute-clause-jython-dedicated-switch" py-execute-clause-jython-dedicated-switch
-              :help "Execute clause through a unique Jython interpreter.
-Switch to output buffer; ignores `py-shell-switch-buffers-on-execute-p'. "]
-             ["py-execute-clause-python3.2-dedicated-switch" py-execute-clause-python3.2-dedicated-switch
-              :help "Execute clause through a unique Python3.2 interpreter.
-Switch to output buffer; ignores `py-shell-switch-buffers-on-execute-p'. "]
-             )            ;; block-or-clause
+                        ;; block-or-clause
 
             ("Execute block-or-clause ... "
              :help "Execute block-or-clause functions"
@@ -4083,7 +3990,6 @@ local value.")
                             "\\|")
                  "\\)"))
     (set (make-local-variable 'python--prompt-regexp) prompt)))
-
 
 (defun py-kill-emacs-hook ()
   "Delete files in `py-file-queue'.

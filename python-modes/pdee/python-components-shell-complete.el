@@ -142,7 +142,10 @@ This function is appropriate for `comint-output-filter-functions'."
 (defun py-shell-execute-string-now (string)
   "Send to Python interpreter process PROC \"exec STRING in {}\".
 and return collected output"
-  (let* ((proc (get-process py-which-bufname))
+  (let* ((proc (or (get-process py-shell-name)
+                   (prog1
+                       (py-shell nil nil py-shell-name)
+                     (sit-for 0.1))))
 	 (cmd (format "exec '''%s''' in {}"
 		      (mapconcat 'identity (split-string string "\n") "\\n")))
          (procbuf (process-buffer proc))
@@ -610,7 +613,7 @@ Returns the completed symbol, a string, if successful, nil otherwise."
   (let* (py-split-windows-on-execute-p
          py-shell-switch-buffers-on-execute-p
          (done done)
-         (orig (point)) 
+         (orig (point))
          (oldbuf (current-buffer))
          (ugly-return nil)
          (sep ";")

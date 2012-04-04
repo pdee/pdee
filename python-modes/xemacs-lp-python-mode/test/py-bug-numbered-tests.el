@@ -142,6 +142,7 @@
          'py-mark-clause-misbehave-lp-949310-test
          'py-mark-block-misbehave-lp-949310-test
 
+         'script-buffer-appears-instead-of-python-shell-buffer-lp-957561-test
          'UnicodeEncodeError-lp-550661-test
          'py-shell-complete-lp-328836-test)))
 
@@ -2613,6 +2614,23 @@ foo, bar = toothpick
   (sit-for 0.1)
   (goto-char 50)
   (assert (eq (get-char-property (point) 'face) 'py-variable-name-face) nil "tuple-unpacking-highlighted-incorrectly-lp-961496-test failed"))
+
+(defun script-buffer-appears-instead-of-python-shell-buffer-lp-957561-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+print(\"I'm the script-buffer-appears-instead-of-python-shell-buffer-lp-957561-test\")
+"))
+  (when load-branch-function (funcall load-branch-function))
+  (py-bug-tests-intern 'script-buffer-appears-instead-of-python-shell-buffer-lp-957561-base arg teststring)))
+
+(defun script-buffer-appears-instead-of-python-shell-buffer-lp-957561-base ()
+  (let (py-shell-switch-buffers-on-execute-p
+        (py-split-windows-on-execute-p t))
+    (delete-other-windows)
+    (ipython)
+    (assert (and (py-execute-buffer-ipython) (set-buffer "script-buffer-appears-instead-of-python-shell-buffer-lp-957561-test") (not (window-full-height-p))) nil "script-buffer-appears-instead-of-python-shell-buffer-lp-957561-test failed")))
+
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
