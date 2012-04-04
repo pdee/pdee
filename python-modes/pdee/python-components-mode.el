@@ -347,33 +347,40 @@ If you ignore the location `M-x py-guess-pdb-path' might display it.
   :type 'boolean
   :group 'python-mode)
 
-(defvar py-temp-directory nil)
-(defcustom py-temp-directory
+(defvar py-temp-directory
   (let ((ok '(lambda (x)
                (and x
                     (setq x (expand-file-name x)) ; always true
                     (file-directory-p x)
                     (file-writable-p x)
-                    x))))
-    (or (funcall ok py-temp-directory)
-        (funcall ok (getenv "TMPDIR"))
-        (funcall ok (getenv "TEMP/TMP"))
-        (funcall ok "/usr/tmp")
-        (funcall ok "/tmp")
-        (funcall ok "/var/tmp")
-        (and (eq system-type 'darwin)
-             (funcall ok "/var/folders"))
-        (and (or (eq system-type 'ms-dos)(eq system-type 'ms-dos)(eq system-type 'windows-nt))
-             (funcall ok (concat "c:" (py-separator-char) "Users"))))
-    ;; (funcall ok ".")
-    (error
-     "Couldn't find a usable temp directory -- set `py-temp-directory'"))
+                    x)))
+        erg)
+    (or
+     (and (funcall ok (getenv "TMPDIR"))
+          (setq erg (getenv "TMPDIR")))
+     (and (funcall ok (getenv "TEMP/TMP"))
+          (setq erg (getenv "TEMP/TMP")))
+     (and (funcall ok "/usr/tmp")
+          (setq erg "/usr/tmp"))
+     (and (funcall ok "/tmp")
+          (setq erg "/tmp"))
+     (and (funcall ok "/var/tmp")
+          (setq erg "/var/tmp"))
+     (and (eq system-type 'darwin)
+          (funcall ok "/var/folders")
+          (setq erg "/var/folders"))
+     (and (or (eq system-type 'ms-dos)(eq system-type 'windows-nt))
+          (funcall ok (concat "c:" (py-separator-char) "Users"))
+          (setq erg (concat "c:" (py-separator-char) "Users")))
+     ;; (funcall ok ".")
+     (error
+      "Couldn't find a usable temp directory -- set `py-temp-directory'"))
+    (when erg (setq py-temp-directory erg)))
   "*Directory used for temporary files created by a *Python* process.
 By default, the first directory from this list that exists and that you
 can write into: the value (if any) of the environment variable TMPDIR,
-/usr/tmp, /tmp, /var/tmp, or the current directory."
-  :type 'string
-  :group 'python-mode)
+/usr/tmp, /tmp, /var/tmp, or the current directory.")
+
 
 (defcustom py-beep-if-tab-change t
   "*Ring the bell if `tab-width' is changed.
@@ -2075,7 +2082,7 @@ Switch to output buffer; ignores `py-shell-switch-buffers-on-execute-p'. "]
 Switch to output buffer; ignores `py-shell-switch-buffers-on-execute-p'. "]
              )
 
-                        ;; block-or-clause
+            ;; block-or-clause
 
             ("Execute block-or-clause ... "
              :help "Execute block-or-clause functions"

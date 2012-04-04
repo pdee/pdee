@@ -120,6 +120,7 @@
          'automatic-indentation-is-broken-lp-889643-test
          'chars-uU-preceding-triple-quoted-get-string-face-lp-909517-test
          'tuple-unpacking-highlighted-incorrectly-lp-961496-test
+         'new-problem-with-py-temp-directory-lp-965762-test
 
          'wrong-type-argument-lp-901541-test
          'py-pychecker-run-missing-lp-910783-test
@@ -2631,7 +2632,18 @@ print(\"I'm the script-buffer-appears-instead-of-python-shell-buffer-lp-957561-t
     (ipython)
     (assert (and (py-execute-buffer-ipython) (set-buffer "script-buffer-appears-instead-of-python-shell-buffer-lp-957561-test") (not (window-full-height-p))) nil "script-buffer-appears-instead-of-python-shell-buffer-lp-957561-test failed")))
 
+(defun new-problem-with-py-temp-directory-lp-965762-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"))
+  (when load-branch-function (funcall load-branch-function))
+  (py-bug-tests-intern 'new-problem-with-py-temp-directory-lp-965762-base arg teststring)))
+
+(defun new-problem-with-py-temp-directory-lp-965762-base ()
+    (assert (stringp py-temp-directory) nil "new-problem-with-py-temp-directory-lp-965762-test failed"))
+
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
-
