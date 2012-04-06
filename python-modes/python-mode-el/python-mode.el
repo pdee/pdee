@@ -363,6 +363,13 @@ should be of the form `#x...' where `x' is not a blank or a tab, and
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-custom-temp-directory ""
+  "If set, will take precedence over guessed values from `py-temp-directory'. Default is the empty string.
+
+When set, make sure the directory exists. "
+  :type 'string
+  :group 'python-mode)
+
 (defvar py-temp-directory
   (let ((ok '(lambda (x)
                (and x
@@ -372,6 +379,12 @@ should be of the form `#x...' where `x' is not a blank or a tab, and
                     x)))
         erg)
     (or
+     (and (not (string= "" py-custom-temp-directory))
+          (if (funcall ok py-custom-temp-directory)
+              (setq erg (expand-file-name py-custom-temp-directory))
+            (if (file-directory-p (expand-file-name py-custom-temp-directory))
+                (error "py-custom-temp-directory set but not writable")
+              (error "py-custom-temp-directory not an existing directory"))))
      (and (funcall ok (getenv "TMPDIR"))
           (setq erg (getenv "TMPDIR")))
      (and (funcall ok (getenv "TEMP/TMP"))
@@ -393,9 +406,11 @@ should be of the form `#x...' where `x' is not a blank or a tab, and
       "Couldn't find a usable temp directory -- set `py-temp-directory'"))
     (when erg (setq py-temp-directory erg)))
   "*Directory used for temporary files created by a *Python* process.
-By default, the first directory from this list that exists and that you
+By default, guesses the first directory from this list that exists and that you
 can write into: the value (if any) of the environment variable TMPDIR,
-/usr/tmp, /tmp, /var/tmp, or the current directory.")
+/usr/tmp, /tmp, /var/tmp, or the current directory.
+
+`py-custom-temp-directory' will take precedence when setq ")
 
 (defcustom py-beep-if-tab-change t
   "*Ring the bell if `tab-width' is changed.
