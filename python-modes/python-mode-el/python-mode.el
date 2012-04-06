@@ -11019,28 +11019,18 @@ Returns the completed symbol, a string, if successful, nil otherwise."
   (interactive "*")
   (let* (py-split-windows-on-execute-p
          py-shell-switch-buffers-on-execute-p
+         (beg (progn (save-excursion (skip-chars-backward "a-z0-9A-Z_." (point-at-bol))
+                                     (point))))
+         (end (point))
          (done done)
          (orig (point))
          (oldbuf (current-buffer))
          (ugly-return nil)
          (sep ";")
-         (py-which-bufname "IPython-complete")
-         ;; (process-connection-type 'pty)
-         ;; (cond ((get-buffer-process  "IPython-complete")
-         ;; "IPython-complete")
-         ;; ((string-match "[Ii][Pp]ython" py-shell-name)
-         ;; py-shell-name)
-         ;; (t "ipython"))
-         (python-process (or (get-process py-which-bufname)
+         (python-process (or (get-buffer-process (current-buffer))
                              (progn
                                (setq done (not done))
                                (get-buffer-process (py-shell nil nil "ipython" 'noswitch nil py-which-bufname)))))
-         ;; maybe in py-shell now
-         (set-buffer oldbuf)
-         (goto-char orig)
-         (beg (progn (set-buffer oldbuf)(save-excursion (skip-chars-backward "a-z0-9A-Z_." (point-at-bol))
-                                                        (point))))
-         (end (point))
          (pattern (buffer-substring-no-properties beg end))
          (comint-output-filter-functions
           (delq 'py-comint-output-filter-function comint-output-filter-functions))
