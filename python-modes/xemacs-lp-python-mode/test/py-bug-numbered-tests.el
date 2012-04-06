@@ -151,7 +151,8 @@
   `(let (py-load-pymacs-p
          py-split-windows-on-execute-p
          py-shell-switch-buffers-on-execute-p
-         py-start-run-py-shell)
+         py-start-run-py-shell
+         proc)
      (set-buffer (get-buffer-create (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname))))
      ;; (with-temp-buffer
      (switch-to-buffer (current-buffer))
@@ -165,6 +166,8 @@
      (message "%s" (replace-regexp-in-string "\\\\" "" (concat (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname)) " passed")))
      (unless (< 1 arg)
        (set-buffer-modified-p 'nil)
+       (and (get-buffer-process (current-buffer))
+            (process-kill-without-query (get-buffer-process (current-buffer))))
        (kill-buffer (current-buffer)))))
 
 ;; (defun py-bug-tests-intern (testname &optional arg teststring)
@@ -2285,8 +2288,7 @@ return SOME_Constant + blah
 
 (defun py-ipython-complete-lp:927136-test (&optional arg load-branch-function)
   (interactive "p")
-  (py-shell nil nil "ipython" 'noswitch)
-  (sit-for 0.1)
+  ;; (py-shell nil nil "ipython" 'noswitch)
   (let ((teststring "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 impo"))
@@ -2294,6 +2296,7 @@ impo"))
     (py-bug-tests-intern 'py-ipython-complete-lp:927136-base arg teststring)))
 
 (defun py-ipython-complete-lp:927136-base ()
+  (sit-for 1)
   (assert (string= "import" (ipython-complete)) nil "py-ipython-complete-lp:927136-test failed"))
 
 (defun execute-buffer-ipython-fails-lp:928087-test (&optional arg load-branch-function)
@@ -2622,8 +2625,8 @@ foo, bar = toothpick
 # -*- coding: utf-8 -*-
 print(\"I'm the script-buffer-appears-instead-of-python-shell-buffer-lp-957561-test\")
 "))
-  (when load-branch-function (funcall load-branch-function))
-  (py-bug-tests-intern 'script-buffer-appears-instead-of-python-shell-buffer-lp-957561-base arg teststring)))
+    (when load-branch-function (funcall load-branch-function))
+    (py-bug-tests-intern 'script-buffer-appears-instead-of-python-shell-buffer-lp-957561-base arg teststring)))
 
 (defun script-buffer-appears-instead-of-python-shell-buffer-lp-957561-base ()
   (let (py-shell-switch-buffers-on-execute-p
@@ -2638,11 +2641,11 @@ print(\"I'm the script-buffer-appears-instead-of-python-shell-buffer-lp-957561-t
 # -*- coding: utf-8 -*-
 
 "))
-  (when load-branch-function (funcall load-branch-function))
-  (py-bug-tests-intern 'new-problem-with-py-temp-directory-lp-965762-base arg teststring)))
+    (when load-branch-function (funcall load-branch-function))
+    (py-bug-tests-intern 'new-problem-with-py-temp-directory-lp-965762-base arg teststring)))
 
 (defun new-problem-with-py-temp-directory-lp-965762-base ()
-    (assert (stringp py-temp-directory) nil "new-problem-with-py-temp-directory-lp-965762-test failed"))
+  (assert (stringp py-temp-directory) nil "new-problem-with-py-temp-directory-lp-965762-test failed"))
 
 
 (provide 'py-bug-numbered-tests)

@@ -184,7 +184,51 @@ and return collected output"
                 (accept-process-output proc 1)
                 (setq lines (cdr lines))))))))
 
-;;;;
+;; (defun py-shell-execute-string-now (string)
+;;   "Send to Python interpreter process PROC \"exec STRING in {}\".
+;; and return collected output"
+;;   (let* ((proc
+;;           (get-process (py-process-name)))
+;;          (procbuf (if (buffer-live-p (get-buffer (process-buffer proc)))
+;;                       (get-buffer (process-buffer proc))
+;;                     (py-shell nil nil py-shell-name)
+;;                     (py-shell-execute-string-now string)))
+;; 	 (cmd (format "exec '''%s''' in {}"
+;; 		      (mapconcat 'identity (split-string string "\n") "\\n")))
+;;          (outbuf (get-buffer-create " *pyshellcomplete-output*"))
+;;          (lines (reverse py-shell-input-lines)))
+;;     (if (and proc (not py-file-queue))
+;; 	(unwind-protect
+;; 	    (condition-case nil
+;; 		(progn
+;; 		  (if lines
+;; 		      (with-current-buffer procbuf
+;; 			(py-shell-redirect-send-command-to-process
+;; 			 "\C-c" outbuf proc nil t)
+;; 			;; wait for output
+;; 			(while (not comint-redirect-completed)
+;; 			  (accept-process-output proc 1))))
+;; 		  (with-current-buffer outbuf
+;; 		    (delete-region (point-min) (point-max)))
+;; 		  (with-current-buffer procbuf
+;; 		    (py-shell-redirect-send-command-to-process
+;; 		     cmd outbuf proc nil t)
+;; 		    (while (not comint-redirect-completed) ; wait for output
+;; 		      (accept-process-output proc 1)))
+;; 		  (with-current-buffer outbuf
+;; 		    (buffer-substring (point-min) (point-max))))
+;; 	      (quit (with-current-buffer procbuf
+;; 		      (interrupt-process proc comint-ptyp)
+;; 		      (while (not comint-redirect-completed) ; wait for output
+;; 			(accept-process-output proc 1)))
+;; 		    (signal 'quit nil)))
+;;           (if (with-current-buffer procbuf comint-redirect-completed)
+;;               (while lines
+;;                 (with-current-buffer procbuf
+;;                   (py-shell-redirect-send-command-to-process
+;;                    (car lines) outbuf proc nil t))
+;;                 (accept-process-output proc 1)
+;;                 (setq lines (cdr lines))))))))
 
 (defun py-dot-word-before-point ()
   (buffer-substring
@@ -455,52 +499,6 @@ and resending the lines later. The lines are stored in reverse order")
 				     (match-beginning 0)
 				     (match-end 0))))))
       imports)))
-
-(defun py-shell-execute-string-now (string)
-  "Send to Python interpreter process PROC \"exec STRING in {}\".
-and return collected output"
-  (let* ((proc
-          (get-process (py-process-name)))
-         (procbuf (if (buffer-live-p (get-buffer (process-buffer proc)))
-                      (get-buffer (process-buffer proc))
-                    (py-shell nil nil py-shell-name)
-                    (py-shell-execute-string-now string)))
-	 (cmd (format "exec '''%s''' in {}"
-		      (mapconcat 'identity (split-string string "\n") "\\n")))
-         (outbuf (get-buffer-create " *pyshellcomplete-output*"))
-         (lines (reverse py-shell-input-lines)))
-    (if (and proc (not py-file-queue))
-	(unwind-protect
-	    (condition-case nil
-		(progn
-		  (if lines
-		      (with-current-buffer procbuf
-			(py-shell-redirect-send-command-to-process
-			 "\C-c" outbuf proc nil t)
-			;; wait for output
-			(while (not comint-redirect-completed)
-			  (accept-process-output proc 1))))
-		  (with-current-buffer outbuf
-		    (delete-region (point-min) (point-max)))
-		  (with-current-buffer procbuf
-		    (py-shell-redirect-send-command-to-process
-		     cmd outbuf proc nil t)
-		    (while (not comint-redirect-completed) ; wait for output
-		      (accept-process-output proc 1)))
-		  (with-current-buffer outbuf
-		    (buffer-substring (point-min) (point-max))))
-	      (quit (with-current-buffer procbuf
-		      (interrupt-process proc comint-ptyp)
-		      (while (not comint-redirect-completed) ; wait for output
-			(accept-process-output proc 1)))
-		    (signal 'quit nil)))
-          (if (with-current-buffer procbuf comint-redirect-completed)
-              (while lines
-                (with-current-buffer procbuf
-                  (py-shell-redirect-send-command-to-process
-                   (car lines) outbuf proc nil t))
-                (accept-process-output proc 1)
-                (setq lines (cdr lines))))))))
 
 (defun py-proc ()
   "Return the current Python process.

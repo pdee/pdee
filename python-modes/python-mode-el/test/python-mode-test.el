@@ -23,6 +23,7 @@
 ;; A couple of test cases for python-mode.el
 
 ;;; Code:
+(require 'py-bug-numbered-tests)
 
 (setq python-mode-tests
       (if (featurep 'xemacs)
@@ -7178,7 +7179,7 @@ print(\"I'm the `py-menu-pyshell-test'\")
 
 (defun python-dedicated-base ()
   (set-buffer (python-dedicated))
-  (sit-for 0.1) 
+  (sit-for 0.1)
   (assert (string-match "^\*Python-[:alnum:]+*" (buffer-name)) nil "python-dedicated-test failed"))
 
 (provide 'python-mode-test)
