@@ -11017,7 +11017,10 @@ ipython0.11-completion-command-string also covers version 0.12")
 If no completion available, insert a TAB.
 Returns the completed symbol, a string, if successful, nil otherwise."
   (interactive "*")
-  (let* ((done done)
+  (let* (py-split-windows-on-execute-p
+         py-shell-switch-buffers-on-execute-p
+         (done done)
+         (orig (point))
          (oldbuf (current-buffer))
          (ugly-return nil)
          (sep ";")
@@ -11031,7 +11034,10 @@ Returns the completed symbol, a string, if successful, nil otherwise."
          (python-process (or (get-process py-which-bufname)
                              (progn
                                (setq done (not done))
-                               (get-buffer-process (py-shell nil t "ipython" 'noswitch)))))
+                               (get-buffer-process (py-shell nil nil "ipython" 'noswitch nil py-which-bufname)))))
+         ;; maybe in py-shell now
+         (set-buffer oldbuf)
+         (goto-char orig)
          (beg (progn (set-buffer oldbuf)(save-excursion (skip-chars-backward "a-z0-9A-Z_." (point-at-bol))
                                                         (point))))
          (end (point))

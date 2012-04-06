@@ -617,7 +617,7 @@ Returns the completed symbol, a string, if successful, nil otherwise."
          (sep ";")
          (py-which-bufname "IPython-complete")
          ;; (process-connection-type 'pty)
-         ;; (cond ((get-buffer-process  "IPython-complete")
+         ;; (cond ((get-buffer-process "IPython-complete")
          ;; "IPython-complete")
          ;; ((string-match "[Ii][Pp]ython" py-shell-name)
          ;; py-shell-name)
@@ -625,8 +625,7 @@ Returns the completed symbol, a string, if successful, nil otherwise."
          (python-process (or (get-process py-which-bufname)
                              (progn
                                (setq done (not done))
-                               (get-buffer-process (py-shell nil nil "ipython" 'noswitch nil py-which-bufname))
-                               )))
+                               (get-buffer-process (py-shell nil nil "ipython" 'noswitch nil py-which-bufname)))))
          ;; maybe in py-shell now
          (set-buffer oldbuf)
          (goto-char orig)
