@@ -2690,6 +2690,5 @@ print myobj.range(10)
   (sit-for 0.1)
   (assert (eq (get-char-property (point) 'face) nil) nil "another-broken-font-locking-lp-961231-test failed"))
 
-
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

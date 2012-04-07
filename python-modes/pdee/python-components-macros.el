@@ -24,45 +24,23 @@
 
 ;;; Code:
 
-;; (defun py-separator-char ()
-;;   "Return the file-path separator char from current machine.
-;; Returns char found. "
-;;   (interactive)
-;;   (let (erg)
-;;     (if (and
-;;          (string-match "[Ii][Pp]ython" py-shell-name)
-;;          (string-match "epd\\|EPD" py-shell-name))
-;;         (progn
-;;           (setq erg (shell-command-to-string (concat py-shell-name " -c \"import os; print(os.sep)\"")))
-;;           (when py-verbose-p (message "%s" erg))
-;;           (setq erg (substring erg (string-match "^$" erg))))
-;;       (setq erg (shell-command-to-string (concat py-shell-name " -W ignore" " -c \"import os; print(os.sep)\""))))
-;;     (setq erg (replace-regexp-in-string "\n" "" erg))
-;;     (when (interactive-p) (message "Separator-char: %s" erg))
-;;     erg))
-
 (defmacro py-separator-char ()
   "Return the file-path separator char from current machine.
 
 When `py-separator-char' is customized, its taken.
 Returns char found. "
-  `(let (erg)
-    (cond ((not (string= "" py-separator-char))
-           py-separator-char)
-          ;; epd hack
-          ((and
-            (string-match "[Ii][Pp]ython" py-shell-name)
-            (string-match "epd\\|EPD" py-shell-name))
-           (setq erg (shell-command-to-string (concat py-shell-name " -c \"import os; print(os.sep)\"")))
-           (setq erg (replace-regexp-in-string "\n" "" erg))
-           (when (string-match "^$" erg)
-             (setq erg (substring erg (string-match "^$" erg)))))
-          (t (setq erg (shell-command-to-string (concat py-shell-name " -W ignore" " -c \"import os; print(os.sep)\"")))))
-    (replace-regexp-in-string "\n" "" erg)))
-
-;; (defmacro py-separator-char ()
-;;   "Return the file-path separator char from current machine. "
-;;   `(replace-regexp-in-string "\n" "" (shell-command-to-string (concat py-shell-name " -c \"import os; print(os.sep)\""))))
+  `(let ((erg (cond ((characterp py-separator-char)
+                     (char-to-string py-separator-char))
+                    ;; epd hack
+                    ((and
+                      (string-match "[Ii][Pp]ython" py-shell-name)
+                      (string-match "epd\\|EPD" py-shell-name))
+                     (setq erg (shell-command-to-string (concat py-shell-name " -c \"import os; print(os.sep)\"")))
+                     (setq erg (replace-regexp-in-string "\n" "" erg))
+                     (when (string-match "^$" erg)
+                       (setq erg (substring erg (string-match "^$" erg)))))
+                    (t (setq erg (shell-command-to-string (concat py-shell-name " -W ignore" " -c \"import os; print(os.sep)\"")))))))
+     (replace-regexp-in-string "\n" "" erg)))
 
 (defmacro pps-emacs-version ()
   "Include the appropriate `parse-partial-sexp' "

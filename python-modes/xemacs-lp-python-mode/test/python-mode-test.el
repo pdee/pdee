@@ -61,6 +61,7 @@
          'py-execute-statement-jython-noswitch-test
          'py-execute-statement-jython-dedicated-test
          'py-execute-statement-jython-dedicated-switch-test
+         'py-separator-char-test
          'py-execute-block-python-test
          'py-execute-block-python-switch-test
          'py-execute-block-python-noswitch-test
@@ -379,7 +380,6 @@
          'python-dedicated-test
          'tqs-list-error-test
          'py-mark-def-commandp-test
-         'py-separator-char-test
          'split-windows-on-execute-p-test
          'switch-windows-on-execute-p-test
          'py-menu-pyshell-test
@@ -7118,15 +7118,6 @@ for x in y:
 (defun py-execute-partial-expression-python3.2-dedicated-switch-commandp-base ()
   (assert (commandp 'py-execute-partial-expression-python3.2-dedicated-switch) nil "py-execute-partial-expression-python3.2-dedicated-switch-commandp-test failed"))
 
-(defun py-separator-char-test (&optional arg load-branch-function)
-  (interactive "p")
-  (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
-    (py-bug-tests-intern 'py-separator-char-base arg teststring)))
-
-(defun py-separator-char-base ()
-  (assert (stringp (py-separator-char)) nil "py-separator-char-test failed"))
-
 (defun switch-windows-on-execute-p-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
@@ -7181,6 +7172,15 @@ print(\"I'm the `py-menu-pyshell-test'\")
   (set-buffer (python-dedicated))
   (sit-for 0.1)
   (assert (string-match "^\*Python-[:alnum:]+*" (buffer-name)) nil "python-dedicated-test failed"))
+
+(defun py-separator-char-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring ""))
+  (when load-branch-function (funcall load-branch-function))
+  (py-bug-tests-intern 'py-separator-char-base arg teststring)))
+
+(defun py-separator-char-base ()
+    (assert (stringp (py-separator-char)) nil "py-separator-char-test failed"))
 
 (provide 'python-mode-test)
 ;;; python-mode-test.el ends here
