@@ -119,6 +119,7 @@
          'from-__future__-import-absolute_import-mishighlighted-lp-907084-test
          'automatic-indentation-is-broken-lp-889643-test
          'chars-uU-preceding-triple-quoted-get-string-face-lp-909517-test
+         'problem-with-py-separator-char-under-windows-lp-975539-test
          'tuple-unpacking-highlighted-incorrectly-lp-961496-test
          'new-problem-with-py-temp-directory-lp-965762-test
 
@@ -167,7 +168,10 @@
      (unless (< 1 arg)
        (set-buffer-modified-p 'nil)
        (and (get-buffer-process (current-buffer))
-            (process-kill-without-query (get-buffer-process (current-buffer))))
+            (set-process-query-on-exit-flag (get-buffer-process (current-buffer)) nil)
+            (kill-process (get-buffer-process (current-buffer))) 
+            ;; (process-kill-without-query (get-buffer-process (current-buffer)))
+)
        (kill-buffer (current-buffer)))))
 
 ;; (defun py-bug-tests-intern (testname &optional arg teststring)
@@ -2647,6 +2651,16 @@ print(\"I'm the script-buffer-appears-instead-of-python-shell-buffer-lp-957561-t
 (defun new-problem-with-py-temp-directory-lp-965762-base ()
   (assert (stringp py-temp-directory) nil "new-problem-with-py-temp-directory-lp-965762-test failed"))
 
+(defun problem-with-py-separator-char-under-windows-lp-975539-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring ""))
+  (when load-branch-function (funcall load-branch-function))
+  (py-bug-tests-intern 'problem-with-py-separator-char-under-windows-lp-975539-base arg teststring)))
+
+(defun problem-with-py-separator-char-under-windows-lp-975539-base ()
+  (let ((psc py-separator-char))
+    (when (string= "" psc) (setq psc "/"))
+    (assert (string= psc (py-separator-char))) nil "problem-with-py-separator-char-under-windows-lp-975539-test failed"))
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

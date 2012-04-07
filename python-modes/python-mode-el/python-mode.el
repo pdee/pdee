@@ -363,6 +363,13 @@ should be of the form `#x...' where `x' is not a blank or a tab, and
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-separator-char ""
+  "The character, which separates the system file-path components.
+
+Precedes guessing when not empty, returned by function `py-separator-char'. "
+  :type 'boolean
+  :group 'python-mode)
+
 (defcustom py-custom-temp-directory ""
   "If set, will take precedence over guessed values from `py-temp-directory'. Default is the empty string.
 
@@ -6590,17 +6597,21 @@ This function is appropriate for `comint-output-filter-functions'."
 (defmacro py-separator-char ()
   "Return the file-path separator char from current machine.
 
+When `py-separator-char' is customized, its taken.
 Returns char found. "
-  (let (erg)
-    (if (and
-         ;; epd hack
-         (string-match "[Ii][Pp]ython" py-shell-name)
-         (string-match "epd\\|EPD" py-shell-name))
-        (progn
-          (setq erg (shell-command-to-string (concat py-shell-name " -c \"import os; print(os.sep)\"")))
-          (setq erg (substring erg (string-match "^$" erg))))
-      (setq erg (shell-command-to-string (concat py-shell-name " -W ignore" " -c \"import os; print(os.sep)\""))))
-    (replace-regexp-in-string "\n" "" erg)))
+  `(let (erg)
+     (cond ((not (string= "" py-separator-char))
+            py-separator-char)
+           ;; epd hack
+           ((and
+             (string-match "[Ii][Pp]ython" py-shell-name)
+             (string-match "epd\\|EPD" py-shell-name))
+            (setq erg (shell-command-to-string (concat py-shell-name " -c \"import os; print(os.sep)\"")))
+            (setq erg (replace-regexp-in-string "\n" "" erg))
+            (when (string-match "^$" erg)
+              (setq erg (substring erg (string-match "^$" erg)))))
+           (t (setq erg (shell-command-to-string (concat py-shell-name " -W ignore" " -c \"import os; print(os.sep)\"")))))
+     (replace-regexp-in-string "\n" "" erg)))
 
 (defun py-process-name (&optional name dedicated nostars sepchar)
   "Return the name of the running Python process, `get-process' willsee it. "

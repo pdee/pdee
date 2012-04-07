@@ -33,6 +33,11 @@ New in version 6.0.6
 - new boolean `py-force-py-shell-name-p'
   When `t', execution with Python specified in `py-shell-name' is en  forced, shebang will have no effect. Default is nil.
 
+-  customizable `py-separator-char', a string, see report lp:975539
+  Precedes guessing when not empty, is returned by
+  function `py-separator-char
+
+
 New in version 6.0.5
 --------------------
 

@@ -347,6 +347,13 @@ If you ignore the location `M-x py-guess-pdb-path' might display it.
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-separator-char ""
+  "The character, which separates the system file-path components.
+
+Precedes guessing when not empty, returned by function `py-separator-char'. "
+  :type 'boolean
+  :group 'python-mode)
+
 (defcustom py-custom-temp-directory ""
   "If set, will take precedence over guessed values from `py-temp-directory'. Default is the empty string. "
   :type 'string
