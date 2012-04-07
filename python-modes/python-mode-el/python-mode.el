@@ -11015,23 +11015,21 @@ ipython0.11-completion-command-string also covers version 0.12")
   "Complete the python symbol before point.
 
 If no completion available, insert a TAB.
-Returns the completed symbol, a string, if successful, nil otherwise."
+Returns the completed symbol, a string, if successful, nil otherwise.
+
+Bug: if no IPython-shell is running, fails first time due to header returned, which messes up the result. Please repeat once then. "
   (interactive "*")
   (let* (py-split-windows-on-execute-p
          py-shell-switch-buffers-on-execute-p
          (beg (progn (save-excursion (skip-chars-backward "a-z0-9A-Z_." (point-at-bol))
                                      (point))))
          (end (point))
-         (done done)
-         (orig (point))
-         (oldbuf (current-buffer))
-         (ugly-return nil)
+         (pattern (buffer-substring-no-properties beg end))
          (sep ";")
          (python-process (or (get-buffer-process (current-buffer))
-                             (progn
-                               (setq done (not done))
-                               (get-buffer-process (py-shell nil nil "ipython" 'noswitch nil py-which-bufname)))))
-         (pattern (buffer-substring-no-properties beg end))
+                             (get-buffer-process "*IPython*")
+                             (get-buffer-process (py-shell nil nil "ipython" 'noswitch nil))))
+
          (comint-output-filter-functions
           (delq 'py-comint-output-filter-function comint-output-filter-functions))
          (comint-output-filter-functions
@@ -11041,7 +11039,7 @@ Returns the completed symbol, a string, if successful, nil otherwise."
                       (setq ugly-return (concat ugly-return string))
                       (delete-region comint-last-output-start
                                      (process-mark (get-buffer-process (current-buffer))))))))
-         completion completions completion-table)
+         completion completions completion-table ugly-return)
     (if (string= pattern "")
         (tab-to-tab-stop)
       (process-send-string python-process
@@ -11054,11 +11052,11 @@ Returns the completed symbol, a string, if successful, nil otherwise."
       (setq completion (try-completion pattern completion-table))
       (cond ((eq completion t))
             ((null completion)
-             ;; workaround: if an (I)Python shell didn't run
+             ;; if an (I)Python shell didn't run
              ;; before, first completion are not delivered
-             (if done (ipython-complete done)
-               (message "Can't find completion for \"%s\"" pattern)
-               (ding)))
+             ;; (if done (ipython-complete done)
+             (message "Can't find completion for \"%s\"" pattern)
+             (ding))
             ((not (string= pattern completion))
              (delete-region beg end)
              (insert completion))
