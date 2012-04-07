@@ -169,7 +169,7 @@
        (set-buffer-modified-p 'nil)
        (and (get-buffer-process (current-buffer))
             (set-process-query-on-exit-flag (get-buffer-process (current-buffer)) nil)
-            (kill-process (get-buffer-process (current-buffer))) 
+            (kill-process (get-buffer-process (current-buffer)))
             ;; (process-kill-without-query (get-buffer-process (current-buffer)))
 )
        (kill-buffer (current-buffer)))))
@@ -2543,7 +2543,7 @@ print myobj.range()
   (goto-char 637)
   (assert (eq (get-char-property (point) 'face) 'py-pseudo-keyword-face) nil "broken-font-locking-lp-961231-test #3 failed")
   (goto-char 775)
-  (assert (eq (get-char-property (point) 'face) 'py-builtins-face) nil "broken-font-locking-lp-961231-test #4 failed")
+  (assert (eq (get-char-property (point) 'face) 'nil) nil "broken-font-locking-lp-961231-test #4 failed")
   ;; (goto-char 911)
   ;; (assert (eq (get-char-property (point) 'face) 'default) nil "broken-font-locking-lp-961231-test #4 failed")
 
@@ -2661,6 +2661,35 @@ print(\"I'm the script-buffer-appears-instead-of-python-shell-buffer-lp-957561-t
   (let ((psc py-separator-char))
     (when (string= "" psc) (setq psc "/"))
     (assert (string= psc (py-separator-char))) nil "problem-with-py-separator-char-under-windows-lp-975539-test failed"))
+
+(defun another-broken-font-locking-lp-961231-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+# So while in this case, range() refers to the built-in function:
+
+print range(10)
+
+# in this case, it's just a method on some object:
+
+print myobj.range(10)
+
+# The two 'range's have no relationship at all.
+# That's why I suggest that the former be colored with py-builtins-face but the latter by default face.
+
+"))
+  (when load-branch-function (funcall load-branch-function))
+  (py-bug-tests-intern 'another-broken-font-locking-lp-961231-base arg teststring)))
+
+(defun another-broken-font-locking-lp-961231-base ()
+  (font-lock-fontify-buffer) 
+  (goto-char 124)
+  (sit-for 0.1)
+  (assert (eq (get-char-property (point) 'face) 'py-builtins-face) nil "another-broken-font-locking-lp-961231-test failed")
+  (goto-char 197)
+  (sit-for 0.1)
+  (assert (eq (get-char-property (point) 'face) nil) nil "another-broken-font-locking-lp-961231-test failed"))
+
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

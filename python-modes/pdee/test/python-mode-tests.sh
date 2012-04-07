@@ -840,6 +840,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-execute-statement-python2.7-dedicated-switch-test \
 \
 --funcall py-shell-complete-test \
+--funcall another-broken-font-locking-lp-961231-test \
 --funcall py-ipython-complete-lp:927136-test \
 --funcall py-execute-def-python-test \
 --funcall py-execute-def-python-switch-test \

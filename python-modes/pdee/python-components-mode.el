@@ -1409,7 +1409,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
                   "getattr" "globals" "hasattr" "hash" "help" "hex" "id" "input"
                   "int" "intern" "isinstance" "issubclass" "iter" "len" "list"
                   "locals" "long" "map" "max" "min" "next" "object" "oct" "open"
-                  "ord" "pow" "print" "property" "range" "raw_input" "reduce"
+                  "ord" "pow" "print" "property" "raw_input" "reduce"
                   "reload" "repr" "reversed" "round" "set" "setattr" "slice"
                   "sorted" "staticmethod" "str" "sum" "super" "tuple" "type"
                   "unichr" "unicode" "vars" "xrange" "zip")
@@ -1447,6 +1447,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
                     t
                   (set-match-data nil)))))
          (1 py-variable-name-face nil nil))
+        (,(rx (or space line-start) symbol-start "range" symbol-end) . py-builtins-face)
         ;; Numbers
         (,(rx symbol-start (or (1+ digit) (1+ hex-digit)) symbol-end) . py-number-face)))
 
