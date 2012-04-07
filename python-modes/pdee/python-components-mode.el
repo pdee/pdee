@@ -351,7 +351,7 @@ If you ignore the location `M-x py-guess-pdb-path' might display it.
   "The character, which separates the system file-path components.
 
 Precedes guessing when not empty, returned by function `py-separator-char'. "
-  :type 'boolean
+  :type 'string
   :group 'python-mode)
 
 (defcustom py-custom-temp-directory ""
