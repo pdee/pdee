@@ -798,7 +798,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall nested-try-finally-test \
 --funcall py-install-directory-path-test \
 --funcall py-separator-char-test \
---funcall execute-indented-code-lp:828314-test \
+--funcall execute-indented-code-lp-828314-test \
 --funcall switch-windows-on-execute-p-test \
 --funcall python-dedicated-test \
 \

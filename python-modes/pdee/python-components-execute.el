@@ -182,7 +182,7 @@ interpreter.
 
 (defun py-process-name (&optional name dedicated nostars sepchar)
   "Return the name of the running Python process, `get-process' willsee it. "
-  (let* ((sepchar (or sepchar (py-separator-char)))
+  (let* ((sepchar (if sepchar (regexp-quote sepchar) (py-separator-char)))
          (thisname (if name
                        (if (string-match sepchar name)
                            (substring name (progn (string-match (concat "\\(.+\\)" sepchar "\\(.+\\)$") name) (match-beginning 2)))
@@ -204,7 +204,7 @@ interpreter.
 (defun py-buffer-name-prepare (name &optional sepchar dedicated)
   "Return an appropriate name to display in modeline.
 SEPCHAR is the file-path separator of your system. "
-  (let ((sepchar (or sepchar (py-separator-char)))
+  (let ((sepchar (or (regexp-quote (prin1-to-string sepchar)) (py-separator-char)))
         prefix erg suffix)
     (when (string-match sepchar name)
       (setq prefix "ND")
@@ -289,27 +289,27 @@ When DONE is `t', `py-shell-manage-windows' is omitted
         (args py-python-command-args)
         (oldbuf (current-buffer))
         proc)
-    (let* ((buffer
-            (when argprompt
-              (cond
-               ((eq 4 (prefix-numeric-value argprompt))
-                (setq buffer
-                      (prog1
-                          (read-buffer "Py-Shell buffer: "
-                                       (generate-new-buffer-name (py-buffer-name-prepare (or pyshellname py-shell-name) sepchar)))
-                        (if (file-remote-p default-directory)
-                            ;; It must be possible to declare a local default-directory.
-                            (setq default-directory
-                                  (expand-file-name
-                                   (read-file-name
-                                    "Default directory: " default-directory default-directory
-                                    t nil 'file-directory-p)))))))
-               ((and (eq 2 (prefix-numeric-value argprompt))
-                     (fboundp 'split-string))
-                (setq args (split-string
-                            (read-string "Py-Shell arguments: "
-                                         (concat
-                                          (mapconcat 'identity py-python-command-args " ") " "))))))))
+    (let* ((buffer (or buffer
+                       (when argprompt
+                         (cond
+                          ((eq 4 (prefix-numeric-value argprompt))
+                           (setq buffer
+                                 (prog1
+                                     (read-buffer "Py-Shell buffer: "
+                                                  (generate-new-buffer-name (py-buffer-name-prepare (or pyshellname py-shell-name) sepchar)))
+                                   (if (file-remote-p default-directory)
+                                       ;; It must be possible to declare a local default-directory.
+                                       (setq default-directory
+                                             (expand-file-name
+                                              (read-file-name
+                                               "Default directory: " default-directory default-directory
+                                               t nil 'file-directory-p)))))))
+                          ((and (eq 2 (prefix-numeric-value argprompt))
+                                (fboundp 'split-string))
+                           (setq args (split-string
+                                       (read-string "Py-Shell arguments: "
+                                                    (concat
+                                                     (mapconcat 'identity py-python-command-args " ") " ")))))))))
            (py-process-name
             (cond (buffer
                    (if
@@ -330,7 +330,6 @@ When DONE is `t', `py-shell-manage-windows' is omitted
               (when py-use-local-default
                 (error "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'"))))
            (py-buffer-name-prepare (unless buffer
-                                     ;; (py-buffer-name-prepare py-which-bufname sepchar dedicated)
                                      (py-buffer-name-prepare (or pyshellname py-shell-name) sepchar dedicated)))
            (py-buffer-name (or buffer py-buffer-name-prepare))
            (executable (cond (buffer
@@ -478,7 +477,7 @@ Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will be
          (regbuf (current-buffer))
          (py-execute-directory (or (ignore-errors (file-name-directory (buffer-file-name)))(getenv "WORKON_HOME")(getenv "HOME")))
          (strg (buffer-substring-no-properties start end))
-         (sepchar (or sepchar (py-separator-char)))
+         (sepchar (if sepchar (regexp-quote sepchar) (py-separator-char)))
          ;; (name-raw (or shell (py-choose-shell)))
          (name (py-buffer-name-prepare shell sepchar))
          (temp (make-temp-name shell))
@@ -486,9 +485,9 @@ Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will be
          (filebuf (get-buffer-create file))
          ;; (process-connection-type 'pty)
          (proc (if dedicated
-                   (get-buffer-process (py-shell nil dedicated (or shell (downcase shell)) switch sepchar nil t))
+                   (get-buffer-process (py-shell nil dedicated (or shell (downcase shell)) switch sepchar name t))
                  (or (get-buffer-process shell)
-                     (get-buffer-process (py-shell nil dedicated (or shell (downcase shell)) switch sepchar nil t)))))
+                     (get-buffer-process (py-shell nil dedicated (or shell (downcase shell)) switch sepchar name t)))))
          (procbuf (if dedicated
                       (buffer-name (get-buffer (current-buffer)))
                     (py-process-name name dedicated nostars sepchar)))

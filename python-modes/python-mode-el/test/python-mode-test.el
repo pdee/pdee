@@ -7122,7 +7122,7 @@ for x in y:
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
-print(\"I'm the `switch-windows-on-execute-p-test'\")
+print(\"I'm the switch-windows-on-execute-p-test\")
 "))
     (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'switch-windows-on-execute-p-base arg teststring)))

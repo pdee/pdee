@@ -92,7 +92,7 @@
          'closing-list-lp:826144-test
          'py-electric-comment-add-space-lp:828398-test
          'py-electric-comment-add-space-t-lp:828398-test
-         'execute-indented-code-lp:828314-test
+         'execute-indented-code-lp-828314-test
          'py-hungry-delete-backwards-needs-cc-lp-850595-test
          'wrong-guess-for-py-indent-offset-lp-852052-test
          'indent-match-import-pkg-lp-852500-test
@@ -117,7 +117,7 @@
          'py-shebang-ipython-env-lp-849293-test
          'indent-offset-not-guessed-when-loading-lp:902890-test
          'from-__future__-import-absolute_import-mishighlighted-lp-907084-test
-         'automatic-indentation-is-broken-lp-889643-test
+         ;; 'automatic-indentation-is-broken-lp-889643-test
          'chars-uU-preceding-triple-quoted-get-string-face-lp-909517-test
          'problem-with-py-separator-char-under-windows-lp-975539-test
          'tuple-unpacking-highlighted-incorrectly-lp-961496-test
@@ -149,7 +149,8 @@
          'py-shell-complete-lp-328836-test)))
 
 (defmacro py-bug-tests-intern (testname &optional arg teststring)
-  `(let (py-load-pymacs-p
+  `(let ((debug-on-error t)
+         py-load-pymacs-p
          py-split-windows-on-execute-p
          py-shell-switch-buffers-on-execute-p
          py-start-run-py-shell
@@ -171,7 +172,7 @@
             (set-process-query-on-exit-flag (get-buffer-process (current-buffer)) nil)
             (kill-process (get-buffer-process (current-buffer)))
             ;; (process-kill-without-query (get-buffer-process (current-buffer)))
-)
+            )
        (kill-buffer (current-buffer)))))
 
 ;; (defun py-bug-tests-intern (testname &optional arg teststring)
@@ -1603,15 +1604,15 @@ if foo:
     (py-electric-comment 1)
     (assert (looking-back " ") nil "py-electric-comment-add-space-lp:828398-test failed")))
 
-(defun execute-indented-code-lp:828314-test (&optional arg load-branch-function)
+(defun execute-indented-code-lp-828314-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring "if __name__ == \"__main__\":
     print \"hello\"
 "))
     (when load-branch-function (funcall load-branch-function))
-    (py-bug-tests-intern 'execute-indented-code-lp:828314-base 2 teststring)))
+    (py-bug-tests-intern 'execute-indented-code-lp-828314-base 2 teststring)))
 
-(defun execute-indented-code-lp:828314-base ()
+(defun execute-indented-code-lp-828314-base ()
   (let ((debug-on-error t))
     (goto-char 28)
     (push-mark)
@@ -2097,7 +2098,7 @@ def foo():
     defenders of my codebase, we are the masters of our enemy, we are the
     saviors of my life. So be it, until there is no enemy, but peace. Amen.
 
-    `foo`: str or None
+    foo: str or None
         If None then baz.
 
     \"\"\"
@@ -2108,8 +2109,6 @@ def foo():
 
 (defun indentation-bug-inside-docstrings-lp-899455-base ()
   (goto-char 742)
-  ;; (message "%s" "indentation-bug-inside-docstrings-lp-899455-test")
-  ;; (message "(py-compute-indentation) should 8: %s" (py-compute-indentation))
   (sit-for 0.2)
   (assert (eq 8 (py-compute-indentation)) nil "indentation-bug-inside-docstrings-lp-899455-test failed"))
 
@@ -2654,13 +2653,11 @@ print(\"I'm the script-buffer-appears-instead-of-python-shell-buffer-lp-957561-t
 (defun problem-with-py-separator-char-under-windows-lp-975539-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-  (when load-branch-function (funcall load-branch-function))
-  (py-bug-tests-intern 'problem-with-py-separator-char-under-windows-lp-975539-base arg teststring)))
+    (when load-branch-function (funcall load-branch-function))
+    (py-bug-tests-intern 'problem-with-py-separator-char-under-windows-lp-975539-base arg teststring)))
 
 (defun problem-with-py-separator-char-under-windows-lp-975539-base ()
-  (let ((psc py-separator-char))
-    (when (string= "" psc) (setq psc "/"))
-    (assert (string= psc (py-separator-char))) nil "problem-with-py-separator-char-under-windows-lp-975539-test failed"))
+  (assert (string= (char-to-string  py-separator-char) (py-separator-char)) nil "problem-with-py-separator-char-under-windows-lp-975539-test failed"))
 
 (defun another-broken-font-locking-lp-961231-test (&optional arg load-branch-function)
   (interactive "p")
@@ -2678,11 +2675,11 @@ print myobj.range(10)
 # That's why I suggest that the former be colored with py-builtins-face but the latter by default face.
 
 "))
-  (when load-branch-function (funcall load-branch-function))
-  (py-bug-tests-intern 'another-broken-font-locking-lp-961231-base arg teststring)))
+    (when load-branch-function (funcall load-branch-function))
+    (py-bug-tests-intern 'another-broken-font-locking-lp-961231-base arg teststring)))
 
 (defun another-broken-font-locking-lp-961231-base ()
-  (font-lock-fontify-buffer) 
+  (font-lock-fontify-buffer)
   (goto-char 124)
   (sit-for 0.1)
   (assert (eq (get-char-property (point) 'face) 'py-builtins-face) nil "another-broken-font-locking-lp-961231-test failed")
