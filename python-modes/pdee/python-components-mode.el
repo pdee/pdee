@@ -59,6 +59,14 @@
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-org-cycle-p nil
+  "When non-nil, command `org-cycle' is available at shift-TAB, <backtab>
+
+Default is nil. "
+
+  :type 'boolean
+  :group 'python-mode)
+
 (defcustom py-start-run-py-shell t
   "If `python-mode' should start a python-shell, `py-shell'. Default is `t'.
 
@@ -351,7 +359,7 @@ If you ignore the location `M-x py-guess-pdb-path' might display it.
   "The character, which separates the system file-path components.
 
 Precedes guessing when not empty, returned by function `py-separator-char'. "
-  :type 'character 
+  :type 'character
   :group 'python-mode)
 
 (defcustom py-custom-temp-directory ""
@@ -3097,6 +3105,7 @@ Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-p
             (setq indent-tabs-mode py-indent-tabs-mode)
             (set (make-local-variable 'beginning-of-defun-function) 'py-beginning-of-def-or-class)
             (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class)
+            ;; (orgstruct-mode 1)
             ))
 
 (add-hook 'eldoc-mode-hook
@@ -5122,6 +5131,8 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
     ;; (setq imenu-generic-expression py-imenu-generic-expression)
     (imenu-add-to-menubar "PyIndex")
     (add-hook 'python-mode-hook imenu-create-index-function))
+  (when py-org-cycle-p
+    (define-key py-mode-map (kbd "<backtab>") 'org-cycle))
 
   ;; (set (make-local-variable 'beginning-of-defun-function)
   ;; 'py-beginning-of-def-or-class)

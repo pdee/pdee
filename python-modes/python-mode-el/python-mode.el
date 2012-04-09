@@ -125,6 +125,14 @@ Default is nil. "
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-org-cycle-p nil
+  "When non-nil, command `org-cycle' is available at shift-TAB, <backtab>
+
+Default is nil. "
+
+  :type 'boolean
+  :group 'python-mode)
+
 (defcustom py-outline-minor-mode-p t
   "If outline minor-mode should be on, default is `t'. "
 
@@ -9760,6 +9768,8 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
             (back-to-indentation)
             (py-guess-indent-offset)))
       (py-guess-indent-offset)))
+  (when py-org-cycle-p
+    (define-key py-mode-map (kbd "<backtab>") 'org-cycle))
   (when py-load-pymacs-p (py-load-pymacs))
   (define-key inferior-python-mode-map (kbd "<tab>")
     'python-shell-completion-complete-or-indent)

@@ -2687,5 +2687,50 @@ print myobj.range(10)
   (sit-for 0.1)
   (assert (eq (get-char-property (point) 'face) nil) nil "another-broken-font-locking-lp-961231-test failed"))
 
+(defun temp-file-stored-in-python-script-directory-lp:958987-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring "
+# -*- coding: utf-8 -*-
+Richard Stanton (a-stanton) wrote on 2012-03-20:  #5
+
+> > 1) The directory is not being applied correctly.
+> >
+>
+> need a recipe for it, a new report would help, as it's related only
+
+Actually, I think this is the original problem I was reporting. Any python script will do in my experience,
+but the problem only occurs if the script file does *not* contain a shebang line. For example, the
+following file works fine:
+
+--------
+
+#!/usr/bin/python
+print "Hi, Richard"
+
+---------
+
+In this case, the temp file is created in the appropriate temp directory.
+
+However, if I use the same file without the shebang line,
+
+--------
+
+print "Hi, Richard"
+
+---------
+
+now the problem occurs.
+
+print "Hi, Richard"
+
+"))
+  (when load-branch-function (funcall load-branch-function))
+  (py-bug-tests-intern 'temp-file-stored-in-python-script-directory-lp:958987-base arg teststring)))
+
+(defun temp-file-stored-in-python-script-directory-lp:958987-base ()
+    (goto-char 40)
+    (assert nil "temp-file-stored-in-python-script-directory-lp:958987-test failed"))
+
+
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

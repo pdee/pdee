@@ -474,7 +474,6 @@ Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will be
   "Adapt the variables used in the process. "
   (let* ((oldbuf (current-buffer))
          (shell (or shell (py-choose-shell)))
-         (regbuf (current-buffer))
          (py-execute-directory (or (ignore-errors (file-name-directory (buffer-file-name)))(getenv "WORKON_HOME")(getenv "HOME")))
          (strg (buffer-substring-no-properties start end))
          (sepchar (if sepchar (regexp-quote sepchar) (py-separator-char)))

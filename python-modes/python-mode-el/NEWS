@@ -37,6 +37,8 @@ New in version 6.0.6
   Precedes guessing when not empty, is returned by
   function `py-separator-char
 
+- nicer `org-cycle' behavior: when new `py-org-cycle-p' it `t',
+  command `org-cycle' is available at shift-TAB, <backtab>
 
 New in version 6.0.5
 --------------------
