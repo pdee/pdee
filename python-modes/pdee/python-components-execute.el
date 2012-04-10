@@ -182,7 +182,7 @@ interpreter.
 
 (defun py-process-name (&optional name dedicated nostars sepchar)
   "Return the name of the running Python process, `get-process' willsee it. "
-  (let* ((sepchar (if sepchar (regexp-quote sepchar) (py-separator-char)))
+  (let* ((sepchar (if sepchar sepchar (py-separator-char)))
          (thisname (if name
                        (if (string-match sepchar name)
                            (substring name (progn (string-match (concat "\\(.+\\)" sepchar "\\(.+\\)$") name) (match-beginning 2)))
@@ -204,11 +204,12 @@ interpreter.
 (defun py-buffer-name-prepare (name &optional sepchar dedicated)
   "Return an appropriate name to display in modeline.
 SEPCHAR is the file-path separator of your system. "
-  (let ((sepchar (or (regexp-quote (prin1-to-string sepchar)) (py-separator-char)))
+  (let ((sepchar (or sepchar (py-separator-char)))
         prefix erg suffix)
     (when (string-match sepchar name)
       (setq prefix "ND")
-      (setq name (py-python-version name t)))
+      ;; (setq name (py-python-version name t))
+      )
     (setq erg
           (cond ((string-match "ipython" name)
                  (replace-regexp-in-string "ipython" "IPython" name))
@@ -476,7 +477,7 @@ Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will be
          (shell (or shell (py-choose-shell)))
          (py-execute-directory (or (ignore-errors (file-name-directory (buffer-file-name)))(getenv "WORKON_HOME")(getenv "HOME")))
          (strg (buffer-substring-no-properties start end))
-         (sepchar (if sepchar (regexp-quote sepchar) (py-separator-char)))
+         (sepchar (if sepchar sepchar (py-separator-char)))
          ;; (name-raw (or shell (py-choose-shell)))
          (name (py-buffer-name-prepare shell sepchar))
          (temp (make-temp-name shell))

@@ -2699,13 +2699,13 @@ Richard Stanton (a-stanton) wrote on 2012-03-20:  #5
 > need a recipe for it, a new report would help, as it's related only
 
 Actually, I think this is the original problem I was reporting. Any python script will do in my experience,
-but the problem only occurs if the script file does *not* contain a shebang line. For example, the
+but the problem only occurs if the script file does \*not\* contain a shebang line. For example, the
 following file works fine:
 
 --------
 
 #!/usr/bin/python
-print "Hi, Richard"
+print \"Hi, Richard\"
 
 ---------
 
@@ -2715,13 +2715,48 @@ However, if I use the same file without the shebang line,
 
 --------
 
-print "Hi, Richard"
+print \"Hi, Richard\"
 
 ---------
 
 now the problem occurs.
 
-print "Hi, Richard"
+print \"Hi, Richard\"
+
+Richard Stanton (a-stanton) wrote 1 hour ago:  #10
+
+The problem is still there in certain situations, I'm afraid, with r918 on my Mac. Here are three
+experiments. In numbers 1 and 2, things work as they're supposed to. In number 3, they don't:
+
+1) Script file =
+
+#!/usr/bin/ipython
+print \"Hi, Richard\"
+
+In this case, the temp file is correctly stored in the temp directory as (for example)
+/var/folders/zf/bgjm4tvs3wv_6q7_6z3b2nx00000gn/T/ipython61090CmR.py. The ipython buffer is called
+\*IPython\*.
+
+2) Script file =
+
+print \"Hi, Richard\"
+
+py-shell-name = \"ipython\"
+
+In this case, the temp file is again correctly stored in the temp directory as (for example)
+/var/folders/zf/bgjm4tvs3wv_6q7_6z3b2nx00000gn/T/ipython61090CmR.py. The ipython buffer is again named
+\*IPython\*
+
+3) Script file =
+
+print \"Hi, Richard\"
+
+py-shell-name = \"/Library/Frameworks/EPD64.framework/Versions/7.2/bin/ipython\"
+
+In this case, the temp file is saved in the \*wrong\* location as
+/Library/Frameworks/EPD64.framework/Versions/7.2/bin/ipython61090PwX.py.
+
+In this case, the ipython buffer is called \*ND 0.12\*
 
 "))
   (when load-branch-function (funcall load-branch-function))
@@ -2731,6 +2766,20 @@ print "Hi, Richard"
     (goto-char 40)
     (assert nil "temp-file-stored-in-python-script-directory-lp:958987-test failed"))
 
+(defun temp-buffer-affected-by-py-shell-name-lp:958987-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let* ((py-shell-name (concat (expand-file-name py-shell-name-testpath) "/ipython"))
+        (teststring (concat "#! " py-shell-name "
+# -*- coding: utf-8 -*-
+print(\"I'm the temp-buffer-affected-by-py-shell-name-lp:958987-test\")
+"))
+        )
+    (when load-branch-function (funcall load-branch-function))
+    (py-bug-tests-intern 'temp-buffer-affected-by-py-shell-name-lp:958987-base arg teststring)))
+
+(defun temp-buffer-affected-by-py-shell-name-lp:958987-base ()
+  (message "%s" py-shell-name)
+  (assert (markerp (py-execute-buffer)) nil "temp-buffer-affected-by-py-shell-name-lp:958987-test failed"))
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
