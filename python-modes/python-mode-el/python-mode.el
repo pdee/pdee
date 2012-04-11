@@ -616,7 +616,7 @@ Also used by (minor-)outline-mode "
   :group 'python-mode
   :type 'hook)
 
-(defcustom py-imenu-create-index-p t
+(defcustom py-imenu-create-index-p nil
   "Non-nil means Python mode creates and displays an index menu of functions and global variables. "
   :type 'boolean
   :group 'python-mode)

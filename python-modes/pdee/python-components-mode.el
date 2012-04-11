@@ -705,7 +705,7 @@ element matches `py-shell-name'."
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-imenu-create-index-p t
+(defcustom py-imenu-create-index-p nil
   "Non-nil means Python mode creates and displays an index menu of functions and global variables. "
   :type 'boolean
   :group 'python-mode)

@@ -1022,6 +1022,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-execute-block-or-clause-python2.7-noswitch-test \
 --funcall py-execute-block-or-clause-python2.7-dedicated-test \
 --funcall py-execute-block-or-clause-python2.7-dedicated-switch-test
+\
 --funcall py-execute-partial-expression-ipython-test \
 --funcall py-execute-partial-expression-ipython-switch-test \
 --funcall py-execute-partial-expression-ipython-noswitch-test \
