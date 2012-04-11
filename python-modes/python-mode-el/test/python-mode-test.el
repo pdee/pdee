@@ -1177,8 +1177,8 @@ somme errors
     (py-bug-tests-intern 'py-end-of-print-statement-base arg teststring)))
 
 (defun py-end-of-print-statement-base ()
-  (switch-to-buffer (current-buffer))
   (goto-char 66)
+  (sit-for 0.1) 
   (assert (eq 146 (py-end-of-statement)) nil "py-end-of-print-statement-test failed"))
 
 (defun nested-try-test (&optional arg load-branch-function)

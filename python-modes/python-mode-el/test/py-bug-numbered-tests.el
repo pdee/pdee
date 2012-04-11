@@ -170,9 +170,7 @@
        (set-buffer-modified-p 'nil)
        (and (get-buffer-process (current-buffer))
             (set-process-query-on-exit-flag (get-buffer-process (current-buffer)) nil)
-            (kill-process (get-buffer-process (current-buffer)))
-            ;; (process-kill-without-query (get-buffer-process (current-buffer)))
-            )
+            (kill-process (get-buffer-process (current-buffer))))
        (kill-buffer (current-buffer)))))
 
 ;; (defun py-bug-tests-intern (testname &optional arg teststring)
@@ -1401,16 +1399,18 @@ print \"master-file is executed\"
     (py-bug-tests-intern 'master-file-not-honored-lp:794850-base arg teststring)))
 
 (defun master-file-not-honored-lp:794850-base ()
-  (save-excursion
-    (set-buffer (get-buffer-create "test-master.py"))
-    (erase-buffer)
-    (insert "#! /usr/bin/env python
+  (let ((oldbuf (current-buffer)))
+    (save-excursion
+      (set-buffer (get-buffer-create "test-master.py"))
+      (erase-buffer)
+      (insert "#! /usr/bin/env python
  # -*- coding: utf-8 -*-
 
 print \"Hello, I'm your master!\"
 ")
-    (write-file "/var/tmp/my-master.py"))
-  (py-execute-buffer))
+      (write-file "/var/tmp/my-master.py"))
+    (set-buffer oldbuf)
+    (py-execute-buffer)))
 
 (defun py-variable-name-face-lp:798538-test (&optional arg load-branch-function)
   (interactive "p")
@@ -1607,7 +1607,7 @@ if foo:
 (defun execute-indented-code-lp-828314-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring "if __name__ == \"__main__\":
-    print \"hello\"
+    print \"hello, I'm the execute-indented-code-lp-828314-test\"
 "))
     (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'execute-indented-code-lp-828314-base 2 teststring)))
@@ -1617,9 +1617,7 @@ if foo:
     (goto-char 28)
     (push-mark)
     (progn
-      (py-execute-base (point) (progn (end-of-line)(point)))
-      ;; (when (interactive-p) (message "%s" "execute-indented-code-lp:828314-test passed"))
-      )))
+      (py-execute-base (point) (progn (end-of-line)(point))))))
 
 (defun wrong-indentation-of-function-arguments-lp:840891-test (&optional arg load-branch-function)
   (interactive "p")
@@ -2759,21 +2757,21 @@ In this case, the temp file is saved in the \*wrong\* location as
 In this case, the ipython buffer is called \*ND 0.12\*
 
 "))
-  (when load-branch-function (funcall load-branch-function))
-  (py-bug-tests-intern 'temp-file-stored-in-python-script-directory-lp:958987-base arg teststring)))
+    (when load-branch-function (funcall load-branch-function))
+    (py-bug-tests-intern 'temp-file-stored-in-python-script-directory-lp:958987-base arg teststring)))
 
 (defun temp-file-stored-in-python-script-directory-lp:958987-base ()
-    (goto-char 40)
-    (assert nil "temp-file-stored-in-python-script-directory-lp:958987-test failed"))
+  (goto-char 40)
+  (assert nil "temp-file-stored-in-python-script-directory-lp:958987-test failed"))
 
 (defun temp-buffer-affected-by-py-shell-name-lp:958987-test (&optional arg load-branch-function)
   (interactive "p")
   (let* ((py-shell-name (concat (expand-file-name py-shell-name-testpath) "/ipython"))
-        (teststring (concat "#! " py-shell-name "
+         (teststring (concat "#! " py-shell-name "
 # -*- coding: utf-8 -*-
 print(\"I'm the temp-buffer-affected-by-py-shell-name-lp:958987-test\")
 "))
-        )
+         )
     (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'temp-buffer-affected-by-py-shell-name-lp:958987-base arg teststring)))
 
