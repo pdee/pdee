@@ -1227,6 +1227,26 @@ Inludes Python shell-prompt in order to stop further searches. ")
      (or (py-preceding-line-backslashed-p)
          (< 0 (nth 0 (syntax-ppss))))))
 
+
+(defun py-count-lines (&optional start end)
+  "Count lines in buffer, optional without given boundaries.
+Ignores common region.
+
+See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
+  (interactive)
+  (save-restriction
+    (widen)
+    (let ((beg (cond (start)
+                     (t (point-min))))
+          (end (cond (end)
+                     (t (point))))
+          erg)
+      (if (featurep 'xemacs)
+          (setq erg (count-lines beg end))
+        (setq erg (1+ (count-matches "[\n\C-m]" beg end))))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+      erg)))
+
 (defmacro python-rx (&rest regexps)
   "Python mode specialized rx macro which supports common python named REGEXPS."
   (let ((rx-constituents (append python-rx-constituents rx-constituents)))
@@ -4816,24 +4836,24 @@ i.e. the limit on how far back to scan."
      ((nth 3 state) 'string)
      ((nth 4 state) 'comment))))
 
-(defun py-count-lines (&optional start end)
-  "Count lines in buffer, optional without given boundaries.
-Ignores common region.
-
-See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
-  (interactive)
-  (save-restriction
-    (widen)
-    (let ((beg (cond (start)
-                     (t (point-min))))
-          (end (cond (end)
-                     (t (point))))
-          erg)
-      (if (featurep 'xemacs)
-          (setq erg (count-lines beg end))
-        (setq erg (1+ (count-matches "[\n\C-m]" beg end))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-      erg)))
+;; (defun py-count-lines (&optional start end)
+;;   "Count lines in buffer, optional without given boundaries.
+;; Ignores common region.
+;;
+;; See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
+;;   (interactive)
+;;   (save-restriction
+;;     (widen)
+;;     (let ((beg (cond (start)
+;;                      (t (point-min))))
+;;           (end (cond (end)
+;;                      (t (point))))
+;;           erg)
+;;       (if (featurep 'xemacs)
+;;           (setq erg (count-lines beg end))
+;;         (setq erg (1+ (count-matches "[\n\C-m]" beg end))))
+;;       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+;;       erg)))
 
 (defun py-which-function ()
   "Return the name of the function or class, if curser is in, return nil otherwise. "
@@ -6676,18 +6696,17 @@ interpreter.
 SEPCHAR is the file-path separator of your system. "
   (let ((sepchar (or sepchar (py-separator-char)))
         prefix erg suffix)
-    (when (string-match sepchar name)
-      (setq prefix "ND")
-      ;; (setq name (py-python-version name t))
-      )
+    (when (string-match (regexp-quote sepchar) name)
+      (setq prefix "ND"))
     (setq erg
-          (cond ((string-match "ipython" name)
+          (cond ((string= "ipython" name)
                  (replace-regexp-in-string "ipython" "IPython" name))
-                ((string-match "jython" name)
+                ((string= "jython" name)
                  (replace-regexp-in-string "jython" "Jython" name))
-                ((string-match "python" name)
+                ((string= "python" name)
                  (replace-regexp-in-string "python" "Python" name))
                 (t name)))
+    (setq erg (replace-regexp-in-string  ":" "-" erg))
     (when dedicated
       (setq erg (make-temp-name (concat erg "-"))))
     (cond ((and prefix (string-match "^\*" erg))
@@ -7224,8 +7243,7 @@ When called from a programm, it accepts a string specifying a shell which will b
          (sepchar (if sepchar sepchar (py-separator-char)))
          (py-buffer-name (py-buffer-name-prepare pyshellname sepchar))
          (temp (make-temp-name
-                (concat (replace-regexp-in-string (regexp-quote sepchar) "-" (replace-regexp-in-string (concat "^" (regexp-quote sepchar)) "" pyshellname)) "-")
-                ))
+                (concat (replace-regexp-in-string (regexp-quote sepchar) "-" (replace-regexp-in-string (concat "^" (regexp-quote sepchar)) "" (replace-regexp-in-string ":" "-" pyshellname))) "-")))
          (file (concat (expand-file-name py-temp-directory) sepchar (replace-regexp-in-string (regexp-quote sepchar) "-" temp) ".py"))
          (filebuf (get-buffer-create file))
          (proc (if dedicated

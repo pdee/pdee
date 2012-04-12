@@ -208,6 +208,7 @@ SEPCHAR is the file-path separator of your system. "
                 ((string= "python" name)
                  (replace-regexp-in-string "python" "Python" name))
                 (t name)))
+    (setq erg (replace-regexp-in-string  ":" "-" erg))
     (when dedicated
       (setq erg (make-temp-name (concat erg "-"))))
     (cond ((and prefix (string-match "^\*" erg))
@@ -464,8 +465,7 @@ Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will be
          (sepchar (if sepchar sepchar (py-separator-char)))
          (py-buffer-name (py-buffer-name-prepare pyshellname sepchar))
          (temp (make-temp-name
-                (concat (replace-regexp-in-string (regexp-quote sepchar) "-" (replace-regexp-in-string (concat "^" (regexp-quote sepchar)) "" pyshellname)) "-")
-                ))
+                (concat (replace-regexp-in-string (regexp-quote sepchar) "-" (replace-regexp-in-string (concat "^" (regexp-quote sepchar)) "" (replace-regexp-in-string ":" "-" pyshellname))) "-")))
          (file (concat (expand-file-name py-temp-directory) sepchar (replace-regexp-in-string (regexp-quote sepchar) "-" temp) ".py"))
          (filebuf (get-buffer-create file))
          (proc (if dedicated
