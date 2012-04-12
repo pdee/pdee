@@ -355,6 +355,9 @@ If you ignore the location `M-x py-guess-pdb-path' might display it.
   :type 'boolean
   :group 'python-mode)
 
+(defvar py-separator-char 47
+  "Values set by defcustom only will not be seen in batch-mode. ")
+
 (defcustom py-separator-char ?\\
   "The character, which separates the system file-path components.
 

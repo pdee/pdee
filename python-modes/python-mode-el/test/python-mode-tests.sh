@@ -88,7 +88,7 @@ echo "\$PYTHONMODE: $PYTHONMODE"
 echo "\$PDIR/\$TESTFILE: $PDIR/$TESTFILE"
 
 $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'python)(unload-feature 'python t))" --eval "(when (featurep 'python-mode)(unload-feature 'python-mode t))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$TESTDIR/\")" --eval "(setq py-install-directory \"..\")" -load "$PYMACS" -load $CCCMDS -load $COMINT -load $SHELL -load $ANSICOLOR -load $CLMACS -load $BYTECOMP -load $CUSTOM -load $SKEL -load $PYTHONMODE -load "$PCOT/$TESTFILE" -load "$PCOT/$TESTFILE2" -load "$PCOT/$TESTFILE3" -load "$PCOT/$TESTFILE4" --eval "(quietly-read-abbrev-file (expand-file-name \"~/.abbrev_defs\"))" \
---funcall new-problem-with-py-temp-directory-lp-965762-test \
+--funcall new-problem-with-py-temp-directory-lp:965762-test \
 --funcall nested-dictionaries-indent-lp:328791-test \
 --funcall triple-quoted-string-dq-lp:302834-test \
 --funcall dq-in-tqs-string-lp:328813-test \
@@ -144,37 +144,37 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-electric-comment-add-space-lp:828398-test \
 --funcall py-electric-comment-add-space-t-lp:828398-test \
 --funcall wrong-indentation-of-function-arguments-lp:840891-test \
---funcall wrong-guess-for-py-indent-offset-lp-852052-test \
---funcall indent-match-import-pkg-lp-852500-test \
---funcall py-hungry-delete-backwards-needs-cc-lp-850595-test \
---funcall py-shift-line-when-no-region-lp-855565-test \
---funcall indentation-of-from-import-continuation-lines-lp-858041-test \
+--funcall wrong-guess-for-py-indent-offset-lp:852052-test \
+--funcall indent-match-import-pkg-lp:852500-test \
+--funcall py-hungry-delete-backwards-needs-cc-lp:850595-test \
+--funcall py-shift-line-when-no-region-lp:855565-test \
+--funcall indentation-of-from-import-continuation-lines-lp:858041-test \
 --funcall indentation-after-one-line-suites-lp:858044-test \
---funcall py-compute-indentation-wrong-at-eol-lp-858043-test \
---funcall comment-indentation-level-lp-869854-test \
---funcall indentation-wrong-after-multi-line-parameter-list-lp-871698-test \
---funcall no-indent-after-continue-lp-872676-test \
---funcall indent-after-inline-comment-lp-873372-test \
---funcall else-clause-indentation-lp-874470-test \
+--funcall py-compute-indentation-wrong-at-eol-lp:858043-test \
+--funcall comment-indentation-level-lp:869854-test \
+--funcall indentation-wrong-after-multi-line-parameter-list-lp:871698-test \
+--funcall no-indent-after-continue-lp:872676-test \
+--funcall indent-after-inline-comment-lp:873372-test \
+--funcall else-clause-indentation-lp:874470-test \
 --funcall indent-after-multiple-except-statements-lp:883815-test \
---funcall wrongly-highlighted-as-keywords-lp-885144-test \
---funcall glitch-when-indenting-lists-lp-886473-test \
+--funcall wrongly-highlighted-as-keywords-lp:885144-test \
+--funcall glitch-when-indenting-lists-lp:886473-test \
 --funcall another-indentation-bug-inside-docstrings-lp:900684-test \
 --funcall incorrect-use-of-region-in-py-shift-left-lp:875951-test \
---funcall indentation-keyword-lp-885143-test \
+--funcall indentation-keyword-lp:885143-test \
 --funcall fore-00007F-breaks-indentation-lp:328788-test \
 --funcall indent-offset-not-guessed-when-loading-lp:902890-test \
---funcall from-__future__-import-absolute_import-mishighlighted-lp-907084-test \
---funcall automatic-indentation-is-broken-lp-889643-test \
---funcall chars-uU-preceding-triple-quoted-get-string-face-lp-909517-test \
---funcall py-pychecker-run-missing-lp-910783-test \
---funcall py-forward-into-nomenclature-lp-916818-test \
+--funcall from-__future__-import-absolute_import-mishighlighted-lp:907084-test \
+--funcall automatic-indentation-is-broken-lp:889643-test \
+--funcall chars-uU-preceding-triple-quoted-get-string-face-lp:909517-test \
+--funcall py-pychecker-run-missing-lp:910783-test \
+--funcall py-forward-into-nomenclature-lp:916818-test \
 --funcall py-forward-into-nomenclature-jumps-over-CamelCased-words-lp:919540-test \
 --funcall py-backward-into-nomenclature-caps-names-lp:919541-test \
---funcall fourth-level-blocks-indent-incorrectly-lp-939577-test \
---funcall py-mark-expression-marks-too-much-lp-941140-test \
---funcall py-indent-comments-nil-ignored-lp-958721-test \
---funcall tuple-unpacking-highlighted-incorrectly-lp-961496-test \
+--funcall fourth-level-blocks-indent-incorrectly-lp:939577-test \
+--funcall py-mark-expression-marks-too-much-lp:941140-test \
+--funcall py-indent-comments-nil-ignored-lp:958721-test \
+--funcall tuple-unpacking-highlighted-incorrectly-lp:961496-test \
 \
 --funcall multiline-list-indent-test \
 --funcall py-beginning-of-block-test \
@@ -783,22 +783,22 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-execute-partial-expression-jython-noswitch-commandp-test \
 --funcall py-execute-partial-expression-jython-dedicated-commandp-test \
 --funcall py-execute-partial-expression-jython-dedicated-switch-commandp-test \
---funcall py-mark-block-clause-misbehave-lp-949310-test \
---funcall broken-font-locking-lp-961231-test \
---funcall py-mark-clause-misbehave-lp-949310-test \
---funcall py-mark-block-misbehave-lp-949310-test \
+--funcall py-mark-block-clause-misbehave-lp:949310-test \
+--funcall broken-font-locking-lp:961231-test \
+--funcall py-mark-clause-misbehave-lp:949310-test \
+--funcall py-mark-block-misbehave-lp:949310-test \
 --funcall py-mark-partial-expression-commandp-test \
---funcall py-shebang-consider-ipython-lp-849293-test \
+--funcall py-shebang-consider-ipython-lp:849293-test \
 --funcall py-insert-super-python2-test \
 --funcall py-smart-indent-eight-test \
---funcall wrong-type-argument-lp-901541-test \
---funcall indentation-bug-inside-docstrings-lp-899455-test \
---funcall py-shebang-ipython-env-lp-849293-test \
+--funcall wrong-type-argument-lp:901541-test \
+--funcall indentation-bug-inside-docstrings-lp:899455-test \
+--funcall py-shebang-ipython-env-lp:849293-test \
 --funcall py-insert-super-python2-test \
 --funcall nested-try-finally-test \
 --funcall py-install-directory-path-test \
 --funcall py-separator-char-test \
---funcall execute-indented-code-lp-828314-test \
+--funcall execute-indented-code-lp:828314-test \
 --funcall switch-windows-on-execute-p-test \
 --funcall python-dedicated-test \
 \
@@ -840,7 +840,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-execute-statement-python2.7-dedicated-switch-test \
 \
 --funcall py-shell-complete-test \
---funcall another-broken-font-locking-lp-961231-test \
+--funcall another-broken-font-locking-lp:961231-test \
 --funcall py-ipython-complete-lp:927136-test \
 --funcall py-execute-def-python-test \
 --funcall py-execute-def-python-switch-test \
@@ -1021,8 +1021,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-execute-block-or-clause-python2.7-switch-test \
 --funcall py-execute-block-or-clause-python2.7-noswitch-test \
 --funcall py-execute-block-or-clause-python2.7-dedicated-test \
---funcall py-execute-block-or-clause-python2.7-dedicated-switch-test
-\
+--funcall py-execute-block-or-clause-python2.7-dedicated-switch-test \
 --funcall py-execute-partial-expression-ipython-test \
 --funcall py-execute-partial-expression-ipython-switch-test \
 --funcall py-execute-partial-expression-ipython-noswitch-test \
@@ -1069,7 +1068,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-execute-line-python2.7-dedicated-test \
 --funcall py-execute-line-python2.7-dedicated-switch-test \
 \
---funcall tqs-list-error-test \
 --funcall master-file-not-honored-lp:794850-test \
 --funcall execute-buffer-ipython-fails-lp:928087-test \
 --funcall py-shell-invoking-python-lp:835151-test \
@@ -1079,15 +1077,15 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-shell-invoking-python2.7-lp:835151-test \
 --funcall py-shell-invoking-jython-lp:835151-test \
 --funcall py-electric-backspace-test \
---funcall UnicodeEncodeError-lp-550661-test \
---funcall UnicodeEncodeError-python3-test \
---funcall py-end-of-print-statement-test \
+--funcall UnicodeEncodeError-lp:550661-test \
 --funcall py-insert-super-python3-test \
+--funcall py-end-of-print-statement-test \
 --funcall py-menu-pyshell-test \
 --funcall split-windows-on-execute-p-test \
---funcall script-buffer-appears-instead-of-python-shell-buffer-lp-957561-test \
+--funcall script-buffer-appears-instead-of-python-shell-buffer-lp:957561-test \
 --funcall py-completion-at-point-test \
-
+--funcall tqs-list-error-test \
+--funcall UnicodeEncodeError-python3-test \
 
 else
 

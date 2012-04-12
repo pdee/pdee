@@ -473,7 +473,7 @@ Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will be
                  (or (get-buffer-process pyshellname)
                      (get-buffer-process (py-shell nil dedicated pyshellname switch sepchar py-buffer-name t)))))
          (procbuf (process-buffer proc))
-         (pec (if (string-match "Python *3" py-buffer-name)
+         (pec (if (string-match "[pP]ython ?3" py-buffer-name)
                   (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" file file)
                 (format "execfile(r'%s') # PYTHON-MODE\n" file)))
          (wholebuf (when (boundp 'wholebuf) wholebuf))
