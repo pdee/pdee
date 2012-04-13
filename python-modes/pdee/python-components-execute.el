@@ -208,7 +208,6 @@ SEPCHAR is the file-path separator of your system. "
                 ((string= "python" name)
                  (replace-regexp-in-string "python" "Python" name))
                 (t name)))
-    (setq erg (replace-regexp-in-string  ":" "-" erg))
     (when dedicated
       (setq erg (make-temp-name (concat erg "-"))))
     (cond ((and prefix (string-match "^\*" erg))
