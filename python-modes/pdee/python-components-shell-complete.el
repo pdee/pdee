@@ -139,105 +139,57 @@ This function is appropriate for `comint-output-filter-functions'."
 	  (display-completion-list (sort candidates 'string<)))
 	'listed)))))
 
-(defun py-shell-execute-string-now (string)
+(defun py-shell-execute-string-now (string &optional shell)
   "Send to Python interpreter process PROC \"exec STRING in {}\".
 and return collected output"
-  (let* ((proc (or (get-process py-shell-name)
-                   (prog1
-                       (py-shell nil nil py-shell-name)
-                     (sit-for 0.1))))
+  (let* ((proc (cond (shell
+                      (or (get-process shell)))
+                     (t (or (get-process (default-value 'py-shell-name))
+                            (get-buffer-process (py-shell))))))
 	 (cmd (format "exec '''%s''' in {}"
 		      (mapconcat 'identity (split-string string "\n") "\\n")))
          (procbuf (process-buffer proc))
          (outbuf (get-buffer-create " *pyshellcomplete-output*"))
          (lines (reverse py-shell-input-lines)))
-    (if (and proc (not py-file-queue))
-	(unwind-protect
-	    (condition-case nil
-		(progn
-		  (if lines
-		      (with-current-buffer procbuf
-			(py-shell-redirect-send-command-to-process
-			 "\C-c" outbuf proc nil t)
-			;; wait for output
-			(while (not comint-redirect-completed)
-			  (accept-process-output proc 1))))
-		  (with-current-buffer outbuf
-		    (delete-region (point-min) (point-max)))
-		  (with-current-buffer procbuf
-		    (py-shell-redirect-send-command-to-process
-		     cmd outbuf proc nil t)
-		    (while (not comint-redirect-completed) ; wait for output
-		      (accept-process-output proc 1)))
-		  (with-current-buffer outbuf
-		    (buffer-substring (point-min) (point-max))))
-	      (quit (with-current-buffer procbuf
-		      (interrupt-process proc comint-ptyp)
-		      (while (not comint-redirect-completed) ; wait for output
-			(accept-process-output proc 1)))
-		    (signal 'quit nil)))
-          (if (with-current-buffer procbuf comint-redirect-completed)
-              (while lines
-                (with-current-buffer procbuf
-                  (py-shell-redirect-send-command-to-process
-                   (car lines) outbuf proc nil t))
-                (accept-process-output proc 1)
-                (setq lines (cdr lines))))))))
+    (if (string-match "[iI]python" (buffer-name procbuf))
+        (ipython-complete)
+      (if (and proc (not py-file-queue))
+          (unwind-protect
+              (condition-case nil
+                  (progn
+                    (if lines
+                        (with-current-buffer procbuf
+                          (py-shell-redirect-send-command-to-process
+                           "\C-c" outbuf proc nil t)
+                          ;; wait for output
+                          (while (not comint-redirect-completed)
+                            (accept-process-output proc 1))))
+                    (with-current-buffer outbuf
+                      (delete-region (point-min) (point-max)))
+                    (with-current-buffer procbuf
+                      (py-shell-redirect-send-command-to-process
+                       cmd outbuf proc nil t)
+                      (while (not comint-redirect-completed) ; wait for output
+                        (accept-process-output proc 1)))
+                    (with-current-buffer outbuf
+                      (buffer-substring (point-min) (point-max))))
+                (quit (with-current-buffer procbuf
+                        (interrupt-process proc comint-ptyp)
+                        (while (not comint-redirect-completed) ; wait for output
+                          (accept-process-output proc 1)))
+                      (signal 'quit nil)))
+            (if (with-current-buffer procbuf comint-redirect-completed)
+                (while lines
+                  (with-current-buffer procbuf
+                    (py-shell-redirect-send-command-to-process
+                     (car lines) outbuf proc nil t))
+                  (accept-process-output proc 1)
+                  (setq lines (cdr lines)))))))))
 
 (defun py-dot-word-before-point ()
   (buffer-substring
    (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point))
    (point)))
-
-(defun py-shell-complete (&optional arg)
-  "Complete word before point, if any. Otherwise insert TAB.
-With prefix argument \\[universal-argument] a TAB is inserted. "
-  (interactive "*P")
-  (if (eq 4 (prefix-numeric-value arg))
-      (insert-tab)
-    (let ((orig (point))
-          (word (py-dot-word-before-point))
-          result)
-      (if (equal word "")
-          (tab-to-tab-stop)	   ; non nil so the completion is over
-        (setq result (py-shell-execute-string-now (format "
-def print_completions(namespace, text, prefix=''):
-   for name in namespace:
-       if name.startswith(text):
-           print prefix + name
-
-def complete(text):
-    import __builtin__
-    import __main__
-    if '.' in text:
-        terms = text.split('.')
-        try:
-            if hasattr(__main__, terms[0]):
-                obj = getattr(__main__, terms[0])
-            else:
-                obj = getattr(__builtin__, terms[0])
-            for term in terms[1:-1]:
-                obj = getattr(obj, term)
-            print_completions(dir(obj), terms[-1], text[:text.rfind('.') + 1])
-        except AttributeError:
-            pass
-    else:
-        import keyword
-        print_completions(keyword.kwlist, text)
-        print_completions(dir(__builtin__), text)
-        print_completions(dir(__main__), text)
-complete('%s')
-" word)))
-        (if (eq result nil)
-            (message "Could not do completion as the Python process is busy")
-          (let ((comint-completion-addsuffix nil)
-                (completions (if (split-string "\n" "\n")
-                                 (split-string result "\n" t) ; XEmacs
-                               (split-string result "\n"))))
-            (ignore-errors (py-shell-dynamic-simple-complete word completions)))))
-      ;; word before has not further completions
-      (when (eq (point) orig)
-        (insert-tab)))))
 
 (defun py-switch-to-python (eob-p)
   "Switch to the Python process buffer, maybe starting new process.
@@ -505,14 +457,17 @@ ipython0.11-completion-command-string also covers version 0.12")
   "print(';'.join(get_ipython().Completer.all_completions('%s'))) #PYTHON-MODE SILENT\n"
   "The string send to ipython to query for all possible completions")
 
-(defun py-shell-complete ()
+(defun py-shell-complete (&optional shell)
   "Complete word before point, if any. Otherwise insert TAB. "
   (interactive)
-  (let ((word (py-dot-word-before-point))
-        result)
-    (if (string= word "")
-        (tab-to-tab-stop)	   ; non nil so the completion is over
-      (setq result (py-shell-execute-string-now (format "
+  (let ((pyshellname (or shell py-shell-name)))
+    (if (string-match "[iI][pP]ython" pyshellname)
+        (ipython-complete)
+      (let ((word (py-dot-word-before-point))
+            result)
+        (if (string= word "")
+            (tab-to-tab-stop)
+          (setq result (py-shell-execute-string-now (format "
 def print_completions(namespace, text, prefix=''):
    for name in namespace:
        if name.startswith(text):
@@ -540,16 +495,72 @@ def complete(text):
         print_completions(dir(__main__), text)
 complete('%s')
 " word)))
-      (if (eq result nil)
-          (message "Could not do completion as the Python process is busy")
-        (let ((comint-completion-addsuffix nil)
-              (completions (if (split-string "\n" "\n")
-                               (split-string result "\n" t) ; XEmacs
-                             (split-string result "\n"))))
-          (py-shell-dynamic-simple-complete word completions))))))
+          (if (eq result nil)
+              (message "Could not do completion as the Python process is busy")
+            (let ((comint-completion-addsuffix nil)
+                  (completions (if (split-string "\n" "\n")
+                                   (split-string result "\n" t) ; XEmacs
+                                 (split-string result "\n"))))
+              (py-shell-dynamic-simple-complete word completions))))))))
 
 ;; (defun ipython-complete (&optional done)
 ;;   "Complete the python symbol before point.
+
+(defun ipython-complete-py-shell-name (&optional done)
+  "Complete the python symbol before point.
+
+If no completion available, insert a TAB.
+Returns the completed symbol, a string, if successful, nil otherwise.
+
+Bug: if no IPython-shell is running, fails first time due to header returned, which messes up the result. Please repeat once then. "
+  (interactive "*")
+  (let* (py-split-windows-on-execute-p
+         py-shell-switch-buffers-on-execute-p
+         (beg (progn (save-excursion (skip-chars-backward "a-z0-9A-Z_." (point-at-bol))
+                                     (point))))
+         (end (point))
+         (pattern (buffer-substring-no-properties beg end))
+         (sep ";")
+         (python-process (or (get-buffer-process (current-buffer))
+                             (get-buffer-process (py-shell))
+                             (get-buffer-process (py-shell nil nil "ipython" 'noswitch nil))))
+
+         (comint-output-filter-functions
+          (delq 'py-comint-output-filter-function comint-output-filter-functions))
+         (comint-output-filter-functions
+          (append comint-output-filter-functions
+                  '(ansi-color-filter-apply
+                    (lambda (string)
+                      (setq ugly-return (concat ugly-return string))
+                      (delete-region comint-last-output-start
+                                     (process-mark (get-buffer-process (current-buffer))))))))
+         completion completions completion-table ugly-return)
+    (if (string= pattern "")
+        (tab-to-tab-stop)
+      (process-send-string python-process
+                           (format (py-set-ipython-completion-command-string (downcase (process-name python-process))) pattern))
+      (accept-process-output python-process)
+      (setq completions
+            (split-string (substring ugly-return 0 (position ?\n ugly-return)) sep))
+      (setq completion-table (loop for str in completions
+                                   collect (list str nil)))
+      (setq completion (try-completion pattern completion-table))
+      (cond ((eq completion t))
+            ((null completion)
+             ;; if an (I)Python shell didn't run
+             ;; before, first completion are not delivered
+             ;; (if done (ipython-complete done)
+             (message "Can't find completion for \"%s\"" pattern)
+             (ding))
+            ((not (string= pattern completion))
+             (delete-region beg end)
+             (insert completion))
+            (t
+             (message "Making completion list...")
+             (with-output-to-temp-buffer "*Python Completions*"
+               (display-completion-list (all-completions pattern completion-table)))
+             (message "Making completion list...%s" "done"))))
+    completion))
 
 (defun ipython-complete (&optional done)
   "Complete the python symbol before point.
@@ -569,7 +580,6 @@ Bug: if no IPython-shell is running, fails first time due to header returned, wh
          (python-process (or (get-buffer-process (current-buffer))
                              (get-buffer-process "*IPython*")
                              (get-buffer-process (py-shell nil nil "ipython" 'noswitch nil))))
-
          (comint-output-filter-functions
           (delq 'py-comint-output-filter-function comint-output-filter-functions))
          (comint-output-filter-functions

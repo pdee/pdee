@@ -10927,18 +10927,17 @@ and return collected output"
    (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point))
    (point)))
 
-(defun py-shell-complete ()
+(defun py-shell-complete (&optional shell)
   "Complete word before point, if any. Otherwise insert TAB. "
   (interactive)
-  ;; make sure, a process exists
-  ;; (unless (and (processp (get-process (py-process-name py-shell-name)))
-  ;;              (buffer-live-p (get-buffer (py-process-name py-shell-name))))
-  ;;   (py-shell nil nil py-shell-name))
-  (let ((word (py-dot-word-before-point))
-        result)
-    (if (string= word "")
-        (tab-to-tab-stop)	   ; non nil so the completion is over
-      (setq result (py-shell-execute-string-now (format "
+  (let ((pyshellname (or shell py-shell-name)))
+    (if (string-match "[iI][pP]ython" pyshellname)
+        (ipython-complete)
+      (let ((word (py-dot-word-before-point))
+            result)
+        (if (string= word "")
+            (tab-to-tab-stop)
+          (setq result (py-shell-execute-string-now (format "
 def print_completions(namespace, text, prefix=''):
    for name in namespace:
        if name.startswith(text):
@@ -10966,21 +10965,13 @@ def complete(text):
         print_completions(dir(__main__), text)
 complete('%s')
 " word)))
-      (if (eq result nil)
-          (message "Could not do completion as the Python process is busy")
-        (let ((comint-completion-addsuffix nil)
-              (completions (if (split-string "\n" "\n")
-                               (split-string result "\n" t) ; XEmacs
-                             (split-string result "\n"))))
-          (py-shell-dynamic-simple-complete word completions))))))
-
-;; (add-hook 'py-shell-hook
-;;           '(lambda ()
-;;              (require 'py-shell-complete) ; nil t)
-;;              (when (functionp 'py-shell-complete)
-;;                ;; this should be set in py-shell
-;;                (setq comint-input-sender 'py-shell-simple-send)
-;;                (local-set-key [tab] 'py-shell-complete))))
+          (if (eq result nil)
+              (message "Could not do completion as the Python process is busy")
+            (let ((comint-completion-addsuffix nil)
+                  (completions (if (split-string "\n" "\n")
+                                   (split-string result "\n" t) ; XEmacs
+                                 (split-string result "\n"))))
+              (py-shell-dynamic-simple-complete word completions))))))))
 
 ;;; IPython Shell Complete
 

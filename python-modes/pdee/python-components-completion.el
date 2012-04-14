@@ -1,4 +1,4 @@
-;;; python-components-completion.el --- complete symbol at point
+;;; python-components-completion.el --- the way python.el does it
 
 ;; Maintainer: Andreas Roehler <andreas.roehler@online.de>
 ;; Keywords: languages
@@ -19,7 +19,8 @@
 ;;; Commentary:
 ;; This completion code was been written by Dave Love
 ;;; Code:
-(require 'python-components-macros) 
+
+(require 'python-components-macros)
 
 ;; Fixme: This fails the first time if the sub-process isn't already
 ;; running.  Presumably a timing issue with i/o to the process.
@@ -71,7 +72,7 @@ to complete."
       (indent-for-tab-command)
     (py-completion-at-point)
     ;; (comint-dynamic-complete)
-))
+    ))
 
 (provide 'python-components-completion)
 ;;; python-components-completion.el ends here
