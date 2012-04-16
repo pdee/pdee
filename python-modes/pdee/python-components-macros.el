@@ -43,6 +43,31 @@
 ;;      (replace-regexp-in-string "\n" "" erg)))
 
 
+(defmacro py-beginning-of-comment ()
+  "Go to the beginning of current line's comment, if any.
+
+Returns position if succesful. "
+  `(save-restriction
+     (widen)
+     (if (looking-at ,comment-start)
+         (point)
+       (let ((pps (parse-partial-sexp (line-beginning-position) (point))))
+         (and (nth 4 pps)
+              (goto-char (nth 8 pps)))))))
+
+;; (defun py-beginning-of-comment ()
+;;   "Go to the beginning of current line's comment, if any.
+;;
+;; Returns position if succesful. "
+;;   (interactive)
+;;   (save-restriction
+;;     (widen)
+;;     (if (looking-at comment-start)
+;;         (point)
+;;       (let ((pps (parse-partial-sexp (line-beginning-position) (point))))
+;;         (and (nth 4 pps)
+;;              (goto-char (nth 8 pps)))))))
+
 (defun py-separator-char ()
   "Return the file-path separator char from current machine.
 

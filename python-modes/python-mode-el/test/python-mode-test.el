@@ -945,7 +945,7 @@ class OrderedDict1(dict):
 (defun py-insert-super-python3-base ()
   (save-excursion
     (py-insert-super))
-  (sit-for 0.1)
+  (sit-for 0.2)
   (assert (looking-at "super().__init__(d={})") nil "py-insert-super-python3-test failed"))
 
 (defun py-indent-after-assigment-test (&optional arg load-branch-function)

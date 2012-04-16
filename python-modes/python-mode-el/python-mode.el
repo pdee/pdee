@@ -6074,9 +6074,18 @@ Travels right-margin comments. "
     (py-beginning-of-comment)
     (skip-chars-backward " \t")))
 
+
+(defun py-go-to-beginning-of-comment ()
+  "Go to the beginning of current line's comment, if any.
+
+From a programm use `py-beginning-of-comment' instead "
+  (interactive)
+  (let ((erg (py-beginning-of-comment)))
+    (when (and py-verbose-p (interactive-p))
+      (message "%s" erg))))
+
 (defun py-beginning-of-comment ()
   "Go to the beginning of current line's comment, if any. "
-  (interactive)
   (save-restriction
     (widen)
     (let ((pps

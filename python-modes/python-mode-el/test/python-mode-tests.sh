@@ -363,7 +363,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-kill-def-commandp-test \
 --funcall py-kill-clause-commandp-test \
 --funcall py-forward-line-commandp-test \
---funcall py-beginning-of-comment-commandp-test \
 --funcall py-leave-comment-or-string-backward-commandp-test \
 --funcall py-beginning-of-list-pps-commandp-test \
 --funcall py-down-block-lc-commandp-test \

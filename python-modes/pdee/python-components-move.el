@@ -219,7 +219,7 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
           (skip-chars-backward py-partial-expression-backward-regexp)
           (setq erg (point)))
          ((and (eq (point) orig) (not (bobp)) (looking-back py-partial-expression-looking-regexp))
-          (forward-char -1) 
+          (forward-char -1)
           (when (< 0 (abs (skip-chars-backward py-partial-expression-skip-regexp)))
             (setq erg (point))
             (setq done t))
@@ -415,7 +415,6 @@ http://docs.python.org/reference/compound_stmts.html
           (when (< (point) orig)(setq erg (point))))
         (when (and py-verbose-p (interactive-p)) (message "%s" erg))
         erg))))
-
 
 ;; (defmacro py-go-to-keyword (regexp &optional maxindent)
 ;;   "Returns a list, whose car is indentation, cdr position. "
@@ -973,18 +972,14 @@ Travels right-margin comments. "
     (py-beginning-of-comment)
     (skip-chars-backward " \t")))
 
-(defun py-beginning-of-comment ()
-  "Go to the beginning of current line's comment, if any. "
+(defun py-go-to-beginning-of-comment ()
+  "Go to the beginning of current line's comment, if any.
+
+From a programm use macro `py-beginning-of-comment' instead "
   (interactive)
-  (save-restriction
-    (widen)
-    (let ((pps
-           (if (featurep 'xemacs)
-               (parse-partial-sexp (line-beginning-position) (point))
-             (syntax-ppss))))
-      (when (nth 4 pps)
-        (goto-char
-         (nth 8 pps))))))
+  (let ((erg (py-beginning-of-comment)))
+    (when (and py-verbose-p (interactive-p))
+      (message "%s" erg))))
 
 (defun py-go-to-keyword (regexp &optional maxindent)
   "Returns a list, whose car is indentation, cdr position. "

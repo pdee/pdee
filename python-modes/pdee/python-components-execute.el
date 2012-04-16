@@ -584,7 +584,6 @@ Inserts an incentive true form \"if 1:\\n.\" "
 (defun py-fix-start (start end)
   "Internal use by py-execute... functions.
 Avoid empty lines at the beginning. "
-  (switch-to-buffer (current-buffer))
   (goto-char start)
   (let ((beg (copy-marker start)))
     (while (empty-line-p)
