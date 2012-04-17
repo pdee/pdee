@@ -423,7 +423,7 @@
 
 ;; (defun index-menu-test (&optional arg load-branch-function)
 ;;   (interactive "p")
-;;   (let ((teststring "#! /usr/bin/env python
+;;   (let ((teststring (concat py-test-shebang
 ;; # -*- coding: utf-8 -*-
 ;;
 ;; class OrderedDict1(dict):
@@ -566,9 +566,9 @@
 
 (defun UnicodeEncodeError-python3-test (&optional arg load-branch-function)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python3
+  (let ((teststring (concat py-test-shebang "
 # -\*- coding: utf-8 -\*-\n
-print('\\xA9')"))
+print('\\xA9')")))
     (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'UnicodeEncodeError-python3-base 2 teststring)))
 
@@ -584,7 +584,7 @@ print('\\xA9')"))
 
 (defun dict-error-test (&optional arg load-branch-function)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python3
+  (let ((teststring (concat py-test-shebang "
  # -*- coding: utf-8 -*-
 
 class foo(bar):
@@ -595,21 +595,21 @@ class foo(bar):
 		'43': 'ddd',
 		'45': 'ddd',
 	}
-"))
+")))
     (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'dict-error-base arg teststring)))
 
 (defun dict-error-base ()
   (goto-char 78)
-  (assert (eq 167 (py-end-of-statement)) nil "dict-error-test failed"))
+  (assert (eq 167 (progn (py-end-of-statement) (sit-for 0.1) (point) )) nil "dict-error-test failed"))
 
 (defun py-expand-abbrev-pst-pdb.set_trace-test (&optional arg load-branch-function)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python3
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 print('\xA9')
 pst
-"))
+")))
     (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-expand-abbrev-pst-pdb.set_trace-base arg teststring)))
 
@@ -628,11 +628,11 @@ pst
 
 (defun near-bob-beginning-of-statement-test (&optional arg load-branch-function)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
  # -*- coding: utf-8 -*-
 
 print u'\xA9'
-"))
+")))
     (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'near-bob-beginning-of-statement-base arg teststring)))
 
@@ -878,10 +878,10 @@ def main(argv):
 
 (defun py-expression-index-test (&optional arg load-branch-function)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
  # -\*- coding: utf-8 -\*-
 b = a[0].split(':')[1]
-"))
+")))
     (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-expression-index-base arg teststring)))
 
@@ -891,7 +891,7 @@ b = a[0].split(':')[1]
 
 (defun py-insert-super-python2-test (&optional arg load-branch-function)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python2
+  (let ((teststring (concat py-test-shebang "
 # -\*- coding: utf-8 -\*-
 # As example given in Python v3.1 documentation » The Python Standard Library »
 #
@@ -909,7 +909,7 @@ class OrderedDict1(dict):
     def __init__(self, d={}):
         self._keys = d.keys()
         dict.__init__(self, d)
-        "))
+        ")))
     (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-insert-super-python2-base arg teststring)))
 
@@ -920,7 +920,7 @@ class OrderedDict1(dict):
 
 (defun py-insert-super-python3-test (&optional arg load-branch-function)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python3
+  (let ((teststring (concat py-test-shebang "
 # -\*- coding: utf-8 -\*-
 # As example given in Python v3.1 documentation » The Python Standard Library »
 #
@@ -938,7 +938,7 @@ class OrderedDict1(dict):
     def __init__(self, d={}):
         self._keys = d.keys()
         dict.__init__(self, d)
-        "))
+        ")))
     (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-insert-super-python3-base arg teststring)))
 
@@ -950,14 +950,14 @@ class OrderedDict1(dict):
 
 (defun py-indent-after-assigment-test (&optional arg load-branch-function)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
 #####################################
 def foo( self, bar=False ):  # version 12345
     title = self.barz.attrs['file'].split('.')[ -1 ]
     if asdf:
-"))
+")))
     (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'indent-after-assigment-base arg teststring)))
 
@@ -1001,7 +1001,7 @@ foo = {
 
 (defun args-list-first-line-indent-test (&optional arg load-branch-function)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
 if foo:
@@ -1013,7 +1013,7 @@ if foo:
             self.Tasdf( asdf ),
             )
     )
-"))
+")))
     (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'args-list-first-line-indent-base arg teststring)))
 
@@ -1023,7 +1023,7 @@ if foo:
 
 (defun py-partial-expression-test (&optional arg load-branch-function)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
 if foo:
@@ -1035,7 +1035,7 @@ if foo:
             self.Tasdf( asdf ),
             )
         )
-"))
+")))
     (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-partial-expression-base arg teststring)))
 
@@ -1073,11 +1073,11 @@ if foo:
 
 (defun no-switch-no-split-test (&optional arg load-branch-function)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
 print u'\\xA9'
-"))
+")))
     (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'no-switch-no-split-base arg teststring)))
 
@@ -1093,7 +1093,7 @@ print u'\\xA9'
 
 (defun close-block-test (&optional arg load-branch-function)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
 def main():
@@ -1102,7 +1102,7 @@ def main():
         sys.exit()
 if __name__==\"__main__\":
     main()
-"))
+")))
     (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'close-block-base arg teststring)))
 
@@ -1112,7 +1112,7 @@ if __name__==\"__main__\":
 
 (defun py-shift-block-test (&optional arg load-branch-function)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python2
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
 class OrderedDict1(dict):
@@ -1124,7 +1124,7 @@ class OrderedDict1(dict):
     def __init__(self, d={}):
         self._keys = d.keys()
         dict.__init__(self, d)
-         "))
+         ")))
     (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-shift-block-base arg teststring)))
 
@@ -1135,7 +1135,7 @@ class OrderedDict1(dict):
 
 (defun nesting-if-test (&optional arg load-branch-function)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
 if foo:
@@ -1146,7 +1146,7 @@ if foo:
 else:
     pass
 
-"))
+")))
     (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'nesting-if-test-base arg teststring)))
 
@@ -1156,7 +1156,7 @@ else:
 
 (defun py-end-of-print-statement-test (&optional arg load-branch-function)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
 def usage():
@@ -1164,7 +1164,7 @@ def usage():
 somme errors
 \"\"\" % (
           os.path.basename(sys.argv[0]))
-"))
+")))
     (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-end-of-print-statement-base arg teststring)))
 
@@ -1175,7 +1175,7 @@ somme errors
 
 (defun nested-try-test (&optional arg load-branch-function)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
 def main(argv):
@@ -1193,7 +1193,7 @@ def main(argv):
     finally:
         print \"asdf\"
 
-"))
+")))
     (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'nested-try-base arg teststring)))
 
@@ -1203,7 +1203,7 @@ def main(argv):
 
 (defun nested-if-test (&optional arg load-branch-function)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
 if abr:
@@ -1222,7 +1222,7 @@ if abr:
 else:
     print \"asbd\"
 
-"))
+")))
     (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'nested-if-base arg teststring)))
 
@@ -1232,7 +1232,7 @@ else:
 
 (defun nested-try-finally-test (&optional arg load-branch-function)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
 # Example from:
@@ -1260,7 +1260,7 @@ def my_fun():
 
     return
 
-"))
+")))
     (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'nested-try-finally-base arg teststring)))
 
@@ -1268,36 +1268,9 @@ def my_fun():
   (goto-char 431)
   (assert (eq 12 (py-compute-indentation)) nil "nested-try-finally-test failed"))
 
-(defun py-completion-at-point-test (&optional arg load-branch-function)
-  (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-pri"))
-    (when load-branch-function (funcall load-branch-function))
-    (py-bug-tests-intern 'py-completion-at-point-base 2 teststring)))
-
-(defun py-completion-at-point-base ()
-  (delete-other-windows)
-  (py-completion-at-point)
-  (sit-for 0.1)
-  (assert (looking-back "print") nil "py-completion-at-point-test failed"))
-
-(defun py-shell-complete-test (&optional arg load-branch-function)
-  (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-impo"))
-    (when load-branch-function (funcall load-branch-function))
-    (py-bug-tests-intern 'py-shell-complete-base 2 teststring)))
-
-(defun py-shell-complete-base ()
-  (py-shell-complete)
-  (sit-for 0.1)
-  (assert (looking-back "import") nil "py-completion-at-point-test failed"))
-
 (defun tqs-list-error-test (&optional arg load-branch-function)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 class foo(bar, baz):
     \"\"\"
@@ -1305,7 +1278,7 @@ class foo(bar, baz):
     \\\"\\\"\\\"containers of a finite number of orig
 \"\"\"
     pass
-"))
+")))
     (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'tqs-list-error-base 2 teststring)))
 
@@ -1317,13 +1290,13 @@ class foo(bar, baz):
 (defun py-smart-indent-eight-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((py-smart-indentation t)
-        (teststring "#! /usr/bin/env python
+        (teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 for x in y:
     for z in l:
         for r in t:
                 pass # <--- indents here. Pressing <backspace> dedents eight spaces (i.e. you can go to column 0 in two presess)
-"))
+")))
     (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-smart-indent-eight-base arg teststring)))
 
@@ -7111,10 +7084,10 @@ for x in y:
 
 (defun switch-windows-on-execute-p-test (&optional arg load-branch-function)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 print(\"I'm the switch-windows-on-execute-p-test\")
-"))
+")))
     (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'switch-windows-on-execute-p-base arg teststring)))
 
@@ -7125,10 +7098,10 @@ print(\"I'm the switch-windows-on-execute-p-test\")
 
 (defun split-windows-on-execute-p-test (&optional arg load-branch-function)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 print(\"I'm the `split-windows-on-execute-p-test'\")
-"))
+")))
     (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'split-windows-on-execute-p-base arg teststring)))
 
@@ -7143,10 +7116,10 @@ print(\"I'm the `split-windows-on-execute-p-test'\")
 
 (defun py-menu-pyshell-test (&optional arg load-branch-function)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 print(\"I'm the `py-menu-pyshell-test'\")
-"))
+")))
     (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-menu-pyshell-base arg teststring)))
 
@@ -7172,6 +7145,34 @@ print(\"I'm the `py-menu-pyshell-test'\")
 
 (defun py-separator-char-base ()
   (assert (stringp (py-separator-char)) nil "py-separator-char-test failed"))
+
+
+(defun py-completion-at-point-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring (concat py-test-shebang "
+# -*- coding: utf-8 -*-
+pri")))
+    (when load-branch-function (funcall load-branch-function))
+    (py-bug-tests-intern 'py-completion-at-point-base 2 teststring)))
+
+(defun py-completion-at-point-base ()
+  (delete-other-windows)
+  (py-completion-at-point)
+  (sit-for 0.1)
+  (assert (looking-back "print") nil "py-completion-at-point-test failed"))
+
+(defun py-shell-complete-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring (concat py-test-shebang "
+# -*- coding: utf-8 -*-
+impo")))
+    (when load-branch-function (funcall load-branch-function))
+    (py-bug-tests-intern 'py-shell-complete-base 2 teststring)))
+
+(defun py-shell-complete-base ()
+  (py-shell-complete)
+  (sit-for 0.1)
+  (assert (looking-back "import") nil "py-completion-at-point-test failed"))
 
 (provide 'python-mode-test)
 ;;; python-mode-test.el ends here

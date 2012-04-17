@@ -1428,6 +1428,7 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
 (defvar py-shell-map nil
   "Keymap used in *Python* shell buffers.")
 
+;; used by py-completion-at-point, the way of python.el
 (defvar python-shell-map
   (let ((map (copy-keymap comint-mode-map)))
     (define-key map [tab]   'tab-to-tab-stop)
@@ -9892,12 +9893,15 @@ Interactively output of `--version' is displayed. "
   (message "Using `python-mode' version %s" py-version)
   (py-keep-region-active))
 
+(defvar python-command "python"
+  "Used by `py-completion-at-point', derived from python.el" )
+
 (defvaralias 'python-python-command-args 'py-python-command-args)
 (defvaralias 'py-python-command 'py-shell-name)
 (defvaralias 'py-jpython-command 'py-shell-name)
 (defvaralias 'py-jython-command 'py-shell-name)
 (defvaralias 'py-default-interpreter 'py-shell-name)
-(defvaralias 'python-command 'py-shell-name)
+;; (defvaralias 'python-command 'py-shell-name)
 
 (defvar py-shell-template "
 \(defun NAME (&optional argprompt)

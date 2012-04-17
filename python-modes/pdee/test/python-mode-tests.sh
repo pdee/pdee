@@ -186,7 +186,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-beginning-of-def-or-class-test \
 --funcall py-end-of-def-or-class-test \
 --funcall py-electric-delete-test \
---funcall dict-error-test \
 --funcall near-bob-beginning-of-statement-test \
 --funcall honor-comments-indent-test \
 --funcall bob-beginning-of-statement-test \
@@ -787,12 +786,10 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-mark-clause-misbehave-lp:949310-test \
 --funcall py-mark-block-misbehave-lp:949310-test \
 --funcall py-mark-partial-expression-commandp-test \
---funcall py-shebang-consider-ipython-lp:849293-test \
 --funcall py-insert-super-python2-test \
 --funcall py-smart-indent-eight-test \
 --funcall wrong-type-argument-lp:901541-test \
 --funcall indentation-bug-inside-docstrings-lp:899455-test \
---funcall py-shebang-ipython-env-lp:849293-test \
 --funcall py-insert-super-python2-test \
 --funcall nested-try-finally-test \
 --funcall py-install-directory-path-test \
@@ -1085,6 +1082,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-completion-at-point-test \
 --funcall tqs-list-error-test \
 --funcall UnicodeEncodeError-python3-test \
+--funcall dict-error-test \
 
 else
 

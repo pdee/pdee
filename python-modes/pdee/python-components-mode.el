@@ -467,6 +467,13 @@ as gud-mode does for debugging C programs with gdb."
   :group 'python-mode)
 (make-variable-buffer-local 'py-pdbtrack-do-tracking-p)
 
+(defcustom py-pdbtrack-filename-mapping nil
+  "Supports mapping file paths when opening file buffers in pdbtrack.
+When non-nil this is an alist mapping paths in the Python interpreter
+to paths in Emacs."
+  :type 'alist
+  :group 'python-mode)
+
 (defcustom py-pdbtrack-minor-mode-string " PDB"
   "*String to use in the minor mode list when pdbtrack is enabled."
   :type 'string
@@ -582,7 +589,6 @@ to select the appropriate python interpreter mode for a file.")
   first line of input."
   :type 'string
   :group 'python-mode)
-
 
 (defvar ipython-de-input-prompt-regexp "In \\[[0-9]+\\]:\\|^[ ]\\{3\\}[.]\\{3,\\}:"
   "A regular expression to match the IPython input prompt. ")
@@ -709,11 +715,14 @@ element matches `py-shell-name'."
 (defvar py-mode-output-map nil
   "Keymap used in *Python Output* buffers.")
 
+(defvar python-command "python"
+  "Used for `py-completion-at-point', derived from python.el." )
+
 (defvar py-python-command py-shell-name)
 (defvar py-jpython-command py-shell-name)
 (defvar py-jython-command py-shell-name)
 (defvar py-default-interpreter py-shell-name)
-(defvar python-command py-shell-name)
+;; (defvar python-command py-shell-name)
 
 (defcustom python-guess-indent t
   "Non-nil means Python mode guesses `py-indent-offset' for the buffer."
@@ -3128,6 +3137,7 @@ Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-p
           (lambda () (run-python nil t)) ; need it running
           nil t)
 
+;; used by py-completion-at-point, the way of python.el
 (defvar python-shell-map
   (let ((map (copy-keymap comint-mode-map)))
     (define-key map [tab]   'tab-to-tab-stop)

@@ -16,6 +16,14 @@
 ;;
 ;;; Code:
 
+(defvar py-test-shebang-list (list "#! /usr/bin/env python" "#! /usr/bin/env ipython" "#! /usr/bin/python" "#! /usr/bin/ipython")
+  "Values to test as `py-test-shebang', resp. `py-shell-name'. ")
+
+(setq py-test-shebang-list (list "#! /usr/bin/env python" "#! /usr/bin/ipython"))
+
+(defvar py-test-shebang "#! /usr/bin/env python"
+  "Default value used for tests. ")
+
 (defvar bug-numbered-tests nil
   "Tests following reports at https://bugs.launchpad.net/python-mode")
 
@@ -651,10 +659,10 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
 
 (defun UnicodeEncodeError-lp:550661-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -\*- coding: utf-8 -\*-
 print u'\\xA9'
-"))
+^")))
     (py-bug-tests-intern 'UnicodeEncodeError-lp:550661-base 2 teststring)))
 
 (defun UnicodeEncodeError-lp:550661-base ()
@@ -1132,13 +1140,13 @@ def pushrevvalues(self, n, values_w): # n should be len(values_w)
 
 (defun stops-backslashed-line-lp:802504-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
 if bar == 1 or bar == 2 or bar == 3 or bar == 4 or bar == 5 or bar == 6 or bar == 7 \\
   or bar == 8 or bar == 9 or bar == 10 or bar == 11 or bar == 12 or bar == 13 \\
   or bar == 14 or bar == 15 or bar == 16 or bar == 17 or bar == 18:
-"))
+^")))
     (py-bug-tests-intern 'stops-backslashed-line-lp:802504-base arg teststring)))
 
 (defun stops-backslashed-line-lp:802504-base ()
@@ -1147,13 +1155,13 @@ if bar == 1 or bar == 2 or bar == 3 or bar == 4 or bar == 5 or bar == 6 or bar =
 
 (defun stops-backslashed-line-lp:802504-test2 (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
 if x>1 and x<100 and y>1 and y<200:
   if bar == 1 or bar == 2 or bar == 3 or bar == 4 or bar == 5 or bar == 6 or bar == 7 \\
   or bar == 8 or bar == 9 or bar == 10 or bar == 11 or bar == 12 or bar == 13 or \\
-"))
+^")))
     (py-bug-tests-intern 'stops-backslashed-line2-lp:802504-base arg teststring)))
 
 (defun stops-backslashed-line2-lp:802504-base ()
@@ -1338,7 +1346,7 @@ def add(ui, repo, \*pats, \*\*opts):
 
 (defun master-file-not-honored-lp:794850-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
  # -*- coding: utf-8 -*-
 
 # Local Variables:
@@ -1346,7 +1354,7 @@ def add(ui, repo, \*pats, \*\*opts):
 # End:
 
 print \"master-file is executed\"
-"))
+^")))
     (py-bug-tests-intern 'master-file-not-honored-lp:794850-base arg teststring)))
 
 (defun master-file-not-honored-lp:794850-base ()
@@ -1382,11 +1390,11 @@ print \"Hello, I'm your master!\"
 
 (defun colon-causes-error-lp:818665-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
  # -*- coding: utf-8 -*-
 
 print \"Hello!\"
-"))
+^")))
     (py-bug-tests-intern 'colon-causes-error-lp:818665-base arg teststring)))
 
 (defun colon-causes-error-lp:818665-base ()
@@ -1396,7 +1404,7 @@ print \"Hello!\"
 
 (defun if-indentation-lp:818720-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
  # -*- coding: utf-8 -*-
 
 class X():
@@ -1409,7 +1417,7 @@ class X():
             return self.lookup[ foo ]
         else:
             return None
-"))
+")))
     (py-bug-tests-intern 'if-indentation-lp:818720-base arg teststring)))
 
 (defun if-indentation-lp:818720-base ()
@@ -1418,7 +1426,7 @@ class X():
 
 (defun closing-parentesis-indent-lp:821820-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
 if foo:
@@ -1430,7 +1438,7 @@ if foo:
             self.Tasdf( asdf ),
         )
     )
-"))
+")))
     (py-bug-tests-intern 'closing-parentesis-indent-lp:821820-base arg teststring)))
 
 (defun closing-parentesis-indent-lp:821820-base ()
@@ -1457,12 +1465,12 @@ elif x < 0:
 
 (defun indent-honor-arglist-whitespaces-lp:822540-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python3
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
 abc( ghi,
     jkl
-"))
+^")))
     (py-bug-tests-intern 'indent-honor-arglist-whitespaces-lp:822540-base arg teststring)))
 
 (defun indent-honor-arglist-whitespaces-lp:822540-base ()
@@ -1471,7 +1479,7 @@ abc( ghi,
 
 (defun comments-indent-honor-setting-lp:824427-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -\*- coding: utf-8 -\*-
 
 if __name__ == '__main__':
@@ -1482,7 +1490,7 @@ if __name__ == '__main__':
 #
 #   Some comments on limitations:
 # asdf
-"))
+^")))
     (py-bug-tests-intern 'comments-indent-honor-setting-lp:824427-base arg teststring)))
 
 (defun comments-indent-honor-setting-lp:824427-base ()
@@ -1502,7 +1510,7 @@ hey
 
 (defun closing-list-lp:826144-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
 if foo:
@@ -1514,7 +1522,7 @@ if foo:
             self.Tasdf( asdf ),
             )
         )
-"))
+")))
     (py-bug-tests-intern 'closing-list-lp:826144-base arg teststring)))
 
 (defun closing-list-lp:826144-base ()
@@ -1570,26 +1578,6 @@ if foo:
   (goto-char 38)
   (assert (eq 11 (py-compute-indentation)) nil "wrong-indentation-of-function-arguments-lp:840891-test failed"))
 
-(defun py-shebang-consider-ipython-lp:849293-test (&optional arg)
-  (interactive "p")
-  (let ((teststring "#! /usr/bin/ipython
-# -*- coding: utf-8 -*-
-"))
-    (py-bug-tests-intern 'py-shebang-consider-ipython-lp:849293-base arg teststring)))
-
-(defun py-shebang-consider-ipython-lp:849293-base ()
-  (assert (string= "ipython" (py-choose-shell-by-shebang)) nil "py-shebang-consider-ipython-lp:849293-test failed"))
-
-(defun py-shebang-ipython-env-lp:849293-test (&optional arg)
-  (interactive "p")
-  (let ((teststring "#! /usr/env ipython
-# -*- coding: utf-8 -*-
-"))
-    (py-bug-tests-intern 'py-shebang-ipython-env-lp:849293-base arg teststring)))
-
-(defun py-shebang-ipython-env-lp:849293-base ()
-  (assert (string= "ipython" (py-choose-shell-by-shebang)) nil "py-shebang-ipython-env-lp:849293-test failed"))
-
 (defun py-hungry-delete-backwards-needs-cc-lp:850595-test (&optional arg)
   (interactive "p")
   (let ((teststring ""))
@@ -1634,11 +1622,11 @@ from long.pkg.name import long, list, of, \\
 
 (defun py-shift-line-when-no-region-lp:855565-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/ipython
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
 if foo:
-    print"))
+    print")))
     (py-bug-tests-intern 'py-shift-line-when-no-region-lp:855565-base arg teststring)))
 
 (defun py-shift-line-when-no-region-lp:855565-base ()
@@ -1647,13 +1635,13 @@ if foo:
 
 (defun highlighting-in-multiline-function-call-arguments-lp:856833-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -\*- coding: utf-8 -\*-
 
 newObj = SomeClassWithManyManyArgs (param0 = val0,
     param1 = val1,
     param2 = val2, param3 = val3)
-"))
+^")))
     (py-bug-tests-intern 'highlighting-in-multiline-function-call-arguments-lp:856833-base arg teststring)))
 
 (defun highlighting-in-multiline-function-call-arguments-lp:856833-base ()
@@ -1664,12 +1652,12 @@ newObj = SomeClassWithManyManyArgs (param0 = val0,
 
 (defun py-shift-preserve-active-region-lp:857837-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -\*- coding: utf-8 -\*-
 
 print 'hello'
 print 'world'
-"))
+^")))
     (py-bug-tests-intern 'py-shift-preserve-active-region-lp:857837-base arg teststring)))
 
 (defun py-shift-preserve-active-region-lp:857837-base ()
@@ -1678,12 +1666,12 @@ print 'world'
 
 (defun variable-highlighted-on-LHS-of-eq-lp:858304-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
 if someVar == 5:
     doSomething()
-"))
+^")))
     (py-bug-tests-intern 'variable-highlighted-on-LHS-of-eq-lp:858304-base arg teststring)))
 
 (defun variable-highlighted-on-LHS-of-eq-lp:858304-base ()
@@ -1692,12 +1680,12 @@ if someVar == 5:
 
 (defun indent-guessing-lp:858040-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
 some_longer_call(arguments,
          arguments)
-"))
+^")))
     (py-bug-tests-intern 'indent-guessing-lp:858040-base arg teststring)))
 
 (defun indent-guessing-lp:858040-base ()
@@ -1706,7 +1694,7 @@ some_longer_call(arguments,
 
 (defun indentation-of-from-import-continuation-lines-lp:858041-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
 from nicos import session
@@ -1714,7 +1702,7 @@ from nicos import status, loggers
 from nicos.utils import DeviceMeta, Param, Override, Value, getVersions, \\
 usermethod, tupleof, floatrange, any, none_or
 
-"))
+^")))
     (py-bug-tests-intern 'indentation-of-from-import-continuation-lines-lp:858041-base arg teststring)))
 
 (defun indentation-of-from-import-continuation-lines-lp:858041-base ()
@@ -1723,12 +1711,12 @@ usermethod, tupleof, floatrange, any, none_or
 
 (defun indentation-after-one-line-suites-lp:858044-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
 if foo: return
 
-"))
+^")))
     (py-bug-tests-intern 'indentation-after-one-line-suites-lp:858044-base arg teststring)))
 
 (defun indentation-after-one-line-suites-lp:858044-base ()
@@ -1737,12 +1725,12 @@ if foo: return
 
 (defun py-compute-indentation-wrong-at-eol-lp:858043-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
 if maxdepth == 0 or depth < maxdepth:
       item += build_toc(sectionnode, depth+1)
-"))
+^")))
     (py-bug-tests-intern 'py-compute-indentation-wrong-at-eol-lp:858043-base arg teststring)))
 
 (defun py-compute-indentation-wrong-at-eol-lp:858043-base ()
@@ -1753,7 +1741,7 @@ if maxdepth == 0 or depth < maxdepth:
 
 (defun comment-indentation-level-lp:869854-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
 def foo():
@@ -1761,7 +1749,7 @@ def foo():
         x = 1
 # asdf
 
-"))
+")))
     (py-bug-tests-intern 'comment-indentation-level-lp:869854-base arg teststring)))
 
 (defun comment-indentation-level-lp:869854-base ()
@@ -1770,7 +1758,7 @@ def foo():
 
 (defun indentation-wrong-after-multi-line-parameter-list-lp:871698-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
 def foo(bar, baz):
@@ -1785,7 +1773,7 @@ class Foo:
             baz):
     # indentation here after newline
 
-"))
+^")))
     (py-bug-tests-intern 'indentation-wrong-after-multi-line-parameter-list-lp:871698-base arg teststring)))
 
 (defun indentation-wrong-after-multi-line-parameter-list-lp:871698-base ()
@@ -1801,7 +1789,7 @@ class Foo:
 
 (defun no-indent-after-continue-lp:872676-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
 def foo():
@@ -1810,7 +1798,7 @@ def foo():
             continue
         if i == 9
 
-"))
+^")))
     (py-bug-tests-intern 'no-indent-after-continue-lp:872676-base arg teststring)))
 
 (defun no-indent-after-continue-lp:872676-base ()
@@ -1819,12 +1807,12 @@ def foo():
 
 (defun indent-after-inline-comment-lp:873372-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
 foo = True # the next line is indented incorrectly
            # to here
-"))
+^")))
     (py-bug-tests-intern 'indent-after-inline-comment-lp:873372.txt-base arg teststring)))
 
 (defun indent-after-inline-comment-lp:873372.txt-base ()
@@ -1833,7 +1821,7 @@ foo = True # the next line is indented incorrectly
 
 (defun else-clause-indentation-lp:874470-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
 def foo():
@@ -1842,7 +1830,7 @@ def foo():
             continue
         do_something(i)
     else
-"))
+^")))
     (py-bug-tests-intern 'else-clause-indentation-lp:874470-base arg teststring)))
 
 (defun else-clause-indentation-lp:874470-base ()
@@ -1851,7 +1839,7 @@ def foo():
 
 (defun incorrect-use-of-region-in-py-shift-left-lp:875951-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
 def foo():
@@ -1860,7 +1848,7 @@ def foo():
             print i, j
         print 'next'
 
-"))
+^")))
     (py-bug-tests-intern 'incorrect-use-of-region-in-py-shift-left-lp:875951-base arg teststring)))
 
 (defun incorrect-use-of-region-in-py-shift-left-lp:875951-base ()
@@ -1871,11 +1859,11 @@ def foo():
 
 (defun py-complete-lp:858621-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
 pri
-"))
+^")))
     (py-bug-tests-intern 'py-complete-lp:858621-base 2 teststring)))
 
 (defun py-complete-lp:858621-base ()
@@ -1886,12 +1874,12 @@ pri
 
 (defun indentation-after-line-with-keyword-lp:883073-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
 with_foo = False
     # indents here
-"))
+^")))
     (py-bug-tests-intern 'indentation-after-line-with-keyword-lp:883073-base arg teststring)))
 
 (defun indentation-after-line-with-keyword-lp:883073-base ()
@@ -1900,7 +1888,7 @@ with_foo = False
 
 (defun indent-after-multiple-except-statements-lp:883815-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
 def foo():
@@ -1910,7 +1898,7 @@ def foo():
         f = 1
 except KeyError:
         p = 1
-"))
+^")))
     (py-bug-tests-intern 'indent-after-multiple-except-statements-lp:883815-base arg teststring)))
 
 (defun indent-after-multiple-except-statements-lp:883815-base ()
@@ -1919,13 +1907,13 @@ except KeyError:
 
 (defun wrongly-highlighted-as-keywords-lp:885144-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
 date_range = 4
 date_range_max = 3
 latest_sum = 5
-"))
+^")))
     (py-bug-tests-intern 'wrongly-highlighted-as-keywords-lp:885144-base arg teststring)))
 
 (defun wrongly-highlighted-as-keywords-lp:885144-base ()
@@ -1936,12 +1924,12 @@ latest_sum = 5
 
 (defun glitch-when-indenting-lists-lp:886473-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 def foo(bar,
         baz):
     pass
-"))
+^")))
     (py-bug-tests-intern 'glitch-when-indenting-lists-lp:886473-base arg teststring)))
 
 (defun glitch-when-indenting-lists-lp:886473-base ()
@@ -1950,11 +1938,11 @@ def foo(bar,
 
 (defun keywords-in-identifiers-highlighted-incorrectly-lp:888338-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 def possibly_break():
     pass
-"))
+^")))
     (py-bug-tests-intern 'keywords-in-identifiers-highlighted-incorrectly-lp:888338-base arg teststring)))
 
 (defun keywords-in-identifiers-highlighted-incorrectly-lp:888338-base ()
@@ -1965,10 +1953,10 @@ def possibly_break():
 
 (defun indentation-keyword-lp:885143-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 import sys
-"))
+^")))
     (py-bug-tests-intern 'indentation-keyword-lp:885143-base arg teststring)))
 
 (defun indentation-keyword-lp:885143-base ()
@@ -1977,10 +1965,10 @@ import sys
 
 (defun py-shell-complete-lp:328836-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
-"))
+^")))
     (py-bug-tests-intern 'py-shell-complete-lp:328836-base 2 teststring)))
 
 (defun py-shell-complete-lp:328836-base ()
@@ -1992,7 +1980,7 @@ import sys
 
 (defun indentation-bug-inside-docstrings-lp:899455-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
 def foo():
@@ -2012,7 +2000,7 @@ def foo():
 
     \"\"\"
 
-"))
+^")))
     (py-bug-tests-intern 'indentation-bug-inside-docstrings-lp:899455-base arg teststring)))
 
 (defun indentation-bug-inside-docstrings-lp:899455-base ()
@@ -2022,13 +2010,13 @@ def foo():
 
 (defun another-indentation-bug-inside-docstrings-lp:900684-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 def is_x_day(date):
     \"\"\"Return True if given date is the X-day.
 
     \"\"\"
-"))
+^")))
     (py-bug-tests-intern 'another-indentation-bug-inside-docstrings-lp:900684-base arg teststring)))
 
 (defun another-indentation-bug-inside-docstrings-lp:900684-base ()
@@ -2038,7 +2026,7 @@ def is_x_day(date):
 
 (defun indent-offset-not-guessed-when-loading-lp:902890-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 #! /usr/bin/python
 # -*- coding: utf-8 -*-
@@ -2046,7 +2034,7 @@ def main():
   if len(sys.argv)==1:
     usage()
     sys.exit()
-"))
+^")))
     (py-bug-tests-intern 'indent-offset-not-guessed-when-loading-lp:902890-base arg teststring)))
 
 (defun indent-offset-not-guessed-when-loading-lp:902890-base ()
@@ -2055,10 +2043,10 @@ def main():
 
 (defun from-__future__-import-absolute_import-mishighlighted-lp:907084-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
-"))
+^")))
     (py-bug-tests-intern 'from-__future__-import-absolute_import-mishighlighted-lp:907084-base arg teststring)))
 
 (defun from-__future__-import-absolute_import-mishighlighted-lp:907084-base ()
@@ -2068,21 +2056,24 @@ from __future__ import absolute_import
 
 (defun automatic-indentation-is-broken-lp:889643-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
-"))
+^")))
     (py-bug-tests-intern 'automatic-indentation-is-broken-lp:889643-base arg teststring)))
 
 (defun automatic-indentation-is-broken-lp:889643-base ()
-  (assert (eq (key-binding (kbd "RET")) 'py-newline-and-indent) nil "automatic-indentation-is-broken-lp:889643-test failed"))
+  (if (string-match "components" (find-lisp-object-file-name 'python-mode 'python-modee))
+      (assert (eq (key-binding (kbd "RET")) 'newline) nil "automatic-indentation-is-broken-lp:889643-test failed")
+    (assert (eq (key-binding (kbd "RET")) 'py-newline-and-indent) nil "automatic-indentation-is-broken-lp:889643-test failed")
+    ))
 
 (defun chars-uU-preceding-triple-quoted-get-string-face-lp:909517-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 u\"hi\" and u\"\"\"d\"\"\"
-"))
+^")))
     (py-bug-tests-intern 'chars-uU-preceding-triple-quoted-get-string-face-lp:909517-base arg teststring)))
 
 (defun chars-uU-preceding-triple-quoted-get-string-face-lp:909517-base ()
@@ -2091,7 +2082,7 @@ u\"hi\" and u\"\"\"d\"\"\"
 
 (defun wrong-type-argument-lp:901541-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 # source: argparse.py
 # Author: Steven J. Bethard <steven.bethard@gmail.com>.
@@ -2104,7 +2095,7 @@ This module is an optparse-inspired command-line parsing library that:
     - produces highly informative usage messages
     - supports parsers that dispatch to sub-parsers
 \"\"\"
-"))
+^")))
     (py-bug-tests-intern 'wrong-type-argument-lp:901541-base arg teststring)))
 
 (defun wrong-type-argument-lp:901541-base ()
@@ -2116,10 +2107,10 @@ This module is an optparse-inspired command-line parsing library that:
 
 (defun py-pychecker-run-missing-lp:910783-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
-"))
+^")))
     (py-bug-tests-intern 'py-pychecker-run-missing-lp:910783-base arg teststring)))
 
 (defun py-pychecker-run-missing-lp:910783-base ()
@@ -2127,11 +2118,11 @@ This module is an optparse-inspired command-line parsing library that:
 
 (defun py-forward-into-nomenclature-lp:916818-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 def doSomething(blah)
 print \"\"\"Es müsste \"müßte\" heißen.\"\"\"
-"))
+^")))
     (py-bug-tests-intern 'py-forward-into-nomenclature-lp:916818-base arg teststring)))
 
 (defun py-forward-into-nomenclature-lp:916818-base ()
@@ -2145,10 +2136,10 @@ print \"\"\"Es müsste \"müßte\" heißen.\"\"\"
 
 (defun tab-completion-in-Ipython-buffers-lp:916869-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
-"))
+^")))
     (py-bug-tests-intern 'tab-completion-in-Ipython-buffers-lp:916869-base arg teststring)))
 
 (defun tab-completion-in-Ipython-buffers-lp:916869-base ()
@@ -2163,11 +2154,11 @@ print \"\"\"Es müsste \"müßte\" heißen.\"\"\"
 
 (defun py-forward-into-nomenclature-jumps-over-CamelCased-words-lp:919540-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 def SomeFunction(arg):
     pass
-"))
+^")))
     (py-bug-tests-intern 'py-forward-into-nomenclature-jumps-over-CamelCased-words-lp:919540-base arg teststring)))
 
 (defun py-forward-into-nomenclature-jumps-over-CamelCased-words-lp:919540-base ()
@@ -2176,10 +2167,10 @@ def SomeFunction(arg):
 
 (defun py-backward-into-nomenclature-caps-names-lp:919541-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 return SOME_Constant + blah
-"))
+^")))
     (py-bug-tests-intern 'py-backward-into-nomenclature-caps-names-lp:919541-base arg teststring)))
 
 (defun py-backward-into-nomenclature-caps-names-lp:919541-base ()
@@ -2189,9 +2180,9 @@ return SOME_Constant + blah
 (defun py-ipython-complete-lp:927136-test (&optional arg)
   (interactive "p")
   ;; (py-shell nil nil "ipython" 'noswitch)
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
-impo"))
+impo")))
     (py-bug-tests-intern 'py-ipython-complete-lp:927136-base arg teststring)))
 
 (defun py-ipython-complete-lp:927136-base ()
@@ -2200,11 +2191,11 @@ impo"))
 
 (defun execute-buffer-ipython-fails-lp:928087-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env ipython
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 print 4 + 5
 print u'\\xA9'
-"))
+^")))
     (py-bug-tests-intern 'execute-buffer-ipython-fails-lp:928087-base arg teststring)))
 
 (defun execute-buffer-ipython-fails-lp:928087-base ()
@@ -2214,13 +2205,13 @@ print u'\\xA9'
 
 (defun fourth-level-blocks-indent-incorrectly-lp:939577-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 for x in y:
     for z in l:
         for r in t:
                 pass # <--- indents here. Pressing <backspace> dedents eight spaces (i.e. you can go to column 0 in two presess)
-"))
+^")))
     (py-bug-tests-intern 'fourth-level-blocks-indent-incorrectly-lp:939577-base arg teststring)))
 
 (defun fourth-level-blocks-indent-incorrectly-lp:939577-base ()
@@ -2232,7 +2223,7 @@ for x in y:
 
 (defun py-mark-expression-marks-too-much-lp:941140-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -\*-
   somevar = \"some string\"
   # some code
@@ -2250,7 +2241,7 @@ line.
 
 I am using version 6.0.4
 
-"))
+^")))
     (py-bug-tests-intern 'py-mark-expression-marks-too-much-lp:941140-base arg teststring)))
 
 (defun py-mark-expression-marks-too-much-lp:941140-base ()
@@ -2363,12 +2354,12 @@ I am using version 6.0.4
 (defun py-indent-comments-nil-ignored-lp:958721-test (&optional arg)
   (interactive "p")
   (let (py-indent-comments
-        (teststring "#! /usr/bin/env python
+        (teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 if x > 0:
     for i in range(100):
         # print i
-"))
+^")))
     (py-bug-tests-intern 'py-indent-comments-nil-ignored-lp:958721-base arg teststring)))
 
 (defun py-indent-comments-nil-ignored-lp:958721-base ()
@@ -2377,7 +2368,7 @@ if x > 0:
 
 (defun broken-font-locking-lp:961231-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 def baz():
     foo = None
@@ -2410,7 +2401,7 @@ print myobj.range()
 
 # the latter range should get default face
 
-"))
+^")))
     (py-bug-tests-intern 'broken-font-locking-lp:961231-base arg teststring)))
 
 (defun broken-font-locking-lp:961231-base ()
@@ -2431,7 +2422,7 @@ print myobj.range()
 
 (defun regression-in-py-execute-region-lp:962227-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 def foo():
     def bar():
@@ -2453,7 +2444,7 @@ def foo():
 # was indented, it would still a \"if True:\" line indented to column zero in front of the region to be
 # executed. This is essentially a no-op that just makes the indented region valid syntactically.
 
-"))
+^")))
     (py-bug-tests-intern 'regression-in-py-execute-region-lp:962227-base arg teststring)))
 
 (defun regression-in-py-execute-region-lp:962227-base ()
@@ -2464,7 +2455,7 @@ def foo():
 
 (defun auto-indent-behaves-strangely-with-slices-lp:961684.txt-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
 # In the final line of the following, I want the line not to be indented at
@@ -2479,7 +2470,7 @@ potential = potential.difference(set(S[1]))
 
 # py-electric-colon-active-p is t.
 
-"))
+^")))
     (py-bug-tests-intern 'auto-indent-behaves-strangely-with-slices-lp:961684.txt-base arg teststring)))
 
 (defun auto-indent-behaves-strangely-with-slices-lp:961684.txt-base ()
@@ -2488,10 +2479,10 @@ potential = potential.difference(set(S[1]))
 
 (defun tuple-unpacking-highlighted-incorrectly-lp:961496-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 foo, bar = toothpick
-"))
+^")))
     (py-bug-tests-intern 'tuple-unpacking-highlighted-incorrectly-lp:961496-base arg teststring)))
 
 (defun tuple-unpacking-highlighted-incorrectly-lp:961496-base ()
@@ -2502,10 +2493,10 @@ foo, bar = toothpick
 
 (defun script-buffer-appears-instead-of-python-shell-buffer-lp:957561-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 print(\"I'm the script-buffer-appears-instead-of-python-shell-buffer-lp:957561-test\")
-"))
+^")))
     (py-bug-tests-intern 'script-buffer-appears-instead-of-python-shell-buffer-lp:957561-base arg teststring)))
 
 (defun script-buffer-appears-instead-of-python-shell-buffer-lp:957561-base ()
@@ -2517,10 +2508,10 @@ print(\"I'm the script-buffer-appears-instead-of-python-shell-buffer-lp:957561-t
 
 (defun new-problem-with-py-temp-directory-lp:965762-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 
-"))
+^")))
     (py-bug-tests-intern 'new-problem-with-py-temp-directory-lp:965762-base arg teststring)))
 
 (defun new-problem-with-py-temp-directory-lp:965762-base ()
@@ -2536,7 +2527,7 @@ print(\"I'm the script-buffer-appears-instead-of-python-shell-buffer-lp:957561-t
 
 (defun another-broken-font-locking-lp:961231-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
+  (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 # So while in this case, range() refers to the built-in function:
 
@@ -2549,7 +2540,7 @@ print myobj.range(10)
 # The two 'range's have no relationship at all.
 # That's why I suggest that the former be colored with py-builtins-face but the latter by default face.
 
-"))
+^")))
     (py-bug-tests-intern 'another-broken-font-locking-lp:961231-base arg teststring)))
 
 (defun another-broken-font-locking-lp:961231-base ()
