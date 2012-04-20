@@ -26,9 +26,6 @@
 (require 'py-bug-numbered-tests)
 
 (setq python-mode-tests
-      (if (featurep 'xemacs)
-          (list
-           'py-beginning-of-block-or-clause-test)
         (list
 
          'py-execute-statement-python-test
@@ -386,7 +383,7 @@
          'py-install-directory-path-test
          'UnicodeEncodeError-python3-test
 
-         )))
+         ))
 
 (defun py-run-tests (&optional arg)
   (interactive "p")

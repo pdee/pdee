@@ -24,14 +24,12 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;;; Commentary:
-
-;; Provides utilities creating python-mode commands
-
 ;;; Code:
 
-(defvar arkopf
-  "\n;; Author: Andreas Roehler <andreas.roehler@online.de>
+(defvar arkopf)
+
+(setq arkopf
+      "\n;; Author: Andreas Roehler <andreas.roehler@online.de>
 ;; Keywords: languages, convenience
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -47,6 +45,10 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary: Edit `py-test-pyshellname-list' before
+;; running this test-builder or give a list of shells as
+;; arguments
+
 ;;; Code:
 
 ")
@@ -60,7 +62,7 @@
   :group 'python)
 
 (setq py-test-shells
-  (list "python" "ipython" "python3" "python2" "python2.7"))
+      (list "python" "ipython" "python3" "python2" "python2.7"))
 
 (setq py-shift-forms (list "paragraph" "block" "clause" "block-or-clause" "def" "class" "def-or-class" "line" "statement" "expression" "partial-expression"))
 
@@ -84,10 +86,10 @@
     (insert arkopf)
     (insert ";;; Execute forms at point\n\n")
     (dolist (ele py-bounds-command-names)
-          (insert (concat "(defun py-execute-" ele " (&optional shell dedicated switch)"))
-          (insert (concat "
+      (insert (concat "(defun py-execute-" ele " (&optional shell dedicated switch)"))
+      (insert (concat "
   \"Send " ele " at point to a Python interpreter.\n\n"))
-       (insert "When called with \\\\[univeral-argument], execution through `default-value' of `py-shell-name' is forced.
+      (insert "When called with \\\\[univeral-argument], execution through `default-value' of `py-shell-name' is forced.
 See also `py-force-py-shell-name-p'.
 
 When called with \\\\[univeral-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
@@ -95,14 +97,14 @@ When called with \\\\[univeral-argument] followed by a number different from 4 a
 When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
 
 Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)\"\n")
-       (insert (concat "  (interactive \"P\")
+      (insert (concat "  (interactive \"P\")
   (save-excursion
     (let ((beg (prog1
                    (or (py-beginning-of-" ele "-p)
                        (py-beginning-of-" ele "))))
           (end (py-end-of-" ele")))
       (py-execute-region beg end shell dedicated switch))))\n\n"))))
-      (insert "(provide 'python-components-exec-forms)
+  (insert "(provide 'python-components-exec-forms)
 ;;; python-components-exec-forms.el ends here\n ")
   (emacs-lisp-mode))
 
@@ -127,32 +129,32 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)\"\
     (dolist (ele py-bounds-command-names)
       ;; (dolist (elt py-shells)
       ;; (dolist (pyo py-options)
-          (insert (concat "(defun py-execute-" ele "-test (&optional arg load-branch-function)
+      (insert (concat "(defun py-execute-" ele "-test (&optional arg load-branch-function)
   (interactive \"p\")
   (let ((teststring \""))
-          (cond ((or (string-match "block" ele)(string-match "clause" ele))
-                 (insert (concat "if True: print(\\\"I'm the py-execute-" ele)))
-                ((string-match "def" ele)
-                 (insert (concat "def foo (): print(\\\"I'm the py-execute-" ele)))
-                ((string= "class" ele)
-                 (insert (concat "class foo (): print(\\\"I'm the py-execute-" ele)))
-                (t (insert (concat "print(\\\"I'm the py-execute-" ele))))
-          (insert "-test\\\")\"))")
-          (insert (concat "
+      (cond ((or (string-match "block" ele)(string-match "clause" ele))
+             (insert (concat "if True: print(\\\"I'm the py-execute-" ele)))
+            ((string-match "def" ele)
+             (insert (concat "def foo (): print(\\\"I'm the py-execute-" ele)))
+            ((string= "class" ele)
+             (insert (concat "class foo (): print(\\\"I'm the py-execute-" ele)))
+            (t (insert (concat "print(\\\"I'm the py-execute-" ele))))
+      (insert "-test\\\")\"))")
+      (insert (concat "
     (py-bug-tests-intern 'py-execute-" ele))
-          (insert (concat "-base arg teststring)))\n"))
-              (insert (concat "\n(defun py-execute-" ele))
-          (insert "-base ()\n")
-              (insert (concat "  (assert (markerp (py-execute-" ele))
-              (cond ((string= "region" ele)
-                     (insert " (line-beginning-position) (line-end-position)"))
-                    ;; ((string= "buffer" ele)
-                    ;; (insert " (point-min)(point-max)"))
-)
-              (insert "))")
-              (insert (concat " nil \"py-execute-" ele))
-          (insert "-test failed\"))\n\n")))
-    (insert "\n\n(provide 'python-extended-executes-test)
+      (insert (concat "-base arg teststring)))\n"))
+      (insert (concat "\n(defun py-execute-" ele))
+      (insert "-base ()\n")
+      (insert (concat "  (assert (markerp (py-execute-" ele))
+      (cond ((string= "region" ele)
+             (insert " (line-beginning-position) (line-end-position)"))
+            ;; ((string= "buffer" ele)
+            ;; (insert " (point-min)(point-max)"))
+            )
+      (insert "))")
+      (insert (concat " nil \"py-execute-" ele))
+      (insert "-test failed\"))\n\n")))
+  (insert "\n\n(provide 'python-extended-executes-test)
 ;;; python-extended-executes-test.el ends here\n ")
   (emacs-lisp-mode)
   (switch-to-buffer (current-buffer)))
@@ -311,7 +313,7 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)\"\
               (insert (concat "  (assert (markerp (py-execute-" ele))
             (insert (concat "  (assert (markerp (py-execute-" ele "-" elt)))
           (unless (string= pyo "")(insert (concat "-" pyo)))                  (cond ((string= "region" ele)
-                     (insert " (line-beginning-position) (line-end-position)")))
+                                                                                     (insert " (line-beginning-position) (line-end-position)")))
           (insert "))")
           (if (string= "" elt)
               (insert (concat "
@@ -835,11 +837,11 @@ Optional \\\\[universal-argument] prompts for options to pass to the "))
 (defun py-write-re-beg-end-forms ()
   (interactive)
   (set-buffer (get-buffer-create "python-components-re-forms.el"))
-    (erase-buffer)
-    (switch-to-buffer (current-buffer))
-    (insert ";;; python-components-re-forms.el --- Forms start described by a regular-expression \n")
-    (insert arkopf)
-    (insert ";;; Beg-end forms")
+  (erase-buffer)
+  (switch-to-buffer (current-buffer))
+  (insert ";;; python-components-re-forms.el --- Forms start described by a regular-expression \n")
+  (insert arkopf)
+  (insert ";;; Beg-end forms")
   (dolist (ele py-re-forms-names)
     (insert (concat "
 \(defun py-beginning-of-" ele " (&optional indent)
@@ -863,21 +865,21 @@ http://docs.python.org/reference/compound_stmts.html\"
         (erg (py-end-base py-" ele "-re orig)))
     (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
     erg))\n")))
-    (insert "
+  (insert "
 
 ;; Buffer
 (defun py-beginning-of-buffer ()
   \"Go to beginning-of-buffer, return position. \"
   (let ((erg (unless (bobp)
-                 (goto-char (point-min)))))
+               (goto-char (point-min)))))
     erg))
 
 (defun py-end-of-buffer ()
   \"Go to end-of-buffer, return position.
 
-If already at end-of-buffer and not at EOB, go to end of next line. \"
+  If already at end-of-buffer and not at EOB, go to end of next line. \"
   (let ((erg (unless (eobp)
-                 (goto-char (point-max)))))
+               (goto-char (point-max)))))
     erg))
 
 \(defalias 'py-forward-block 'py-end-of-block)
@@ -904,7 +906,7 @@ If already at end-of-buffer and not at EOB, go to end of next line. \"
 ")
     (insert "\n(provide 'python-components-re-forms)
 ;;; python-components-re-forms.el ends here\n ")
-    (emacs-lisp-mode))
+(emacs-lisp-mode))
 
 (defun py-write-beg-end-position-forms ()
   (interactive)
@@ -1130,19 +1132,19 @@ A complementary command travelling right, whilst `py-beginning-of-" ele "' stops
   \"Returns position, if cursor is at the beginning of a " ele ", nil otherwise. \"
   (let ((orig (point))
          erg)"))
-        (when (string= "paragraph" ele)
-           (insert "
+      (when (string= "paragraph" ele)
+        (insert "
      (if (and (bolp) (looking-at paragraph-separate))
          (setq erg (point))"))
-         (insert (concat "
+      (insert (concat "
      (save-excursion
        (py-end-of-" ele ")
        (py-beginning-of-" ele ")
        (when (eq orig (point))
          (setq erg orig))"))
-         (when (string= "paragraph" ele)
-           (insert ")"))
-         (insert (concat "
+      (when (string= "paragraph" ele)
+        (insert ")"))
+      (insert (concat "
        erg)))
 "))))
   (dolist (ele py-regexp-forms)
@@ -1335,23 +1337,121 @@ http://repo.or.cz/w/elbb.git/blob/HEAD:/code/Go-to-Emacs-Lisp-Definition.el
 (defun list-python-mode-test-forms ()
   (interactive)
   (let* ((oldbuf (current-buffer))
-        (batchbuffer (concat (capitalize (buffer-name oldbuf)) "-test-batch-calls"))
-        (symbolbuffer (concat (capitalize (buffer-name oldbuf)) "-test-symbols"))
-      tests)
-      (set-buffer (get-buffer-create symbolbuffer))
-      (erase-buffer)
-      (set-buffer (get-buffer-create batchbuffer))
-      (erase-buffer)
-      (set-buffer oldbuf)
-      (goto-char (point-min))
-      (while (and (not (eobp))(re-search-forward "^(defun [[:alpha:]]" nil t 1))
-          (let* ((name  (prin1-to-string (symbol-at-point))))
-            (unless (string-match "-base" name) (add-to-list 'tests name))
+         (batchbuffer (concat (capitalize (buffer-name oldbuf)) "-test-batch-calls"))
+         (symbolbuffer (concat (capitalize (buffer-name oldbuf)) "-test-symbols"))
+         tests)
+    (set-buffer (get-buffer-create symbolbuffer))
+    (erase-buffer)
+    (set-buffer (get-buffer-create batchbuffer))
+    (erase-buffer)
+    (set-buffer oldbuf)
+    (goto-char (point-min))
+    (while (and (not (eobp))(re-search-forward "^(defun [[:alpha:]]" nil t 1))
+      (let* ((name  (prin1-to-string (symbol-at-point))))
+        (unless (string-match "-base" name) (add-to-list 'tests name))
         (forward-line 1)))
-      (setq tests (nreverse tests))
-      (set-buffer batchbuffer)
-      (dolist (ele tests)
-        (insert (concat "'" ele "\n")))
-      (set-buffer symbolbuffer)
-      (dolist (ele tests)
-        (insert (concat "--funcall " ele " \\\n")))))
+    (setq tests (nreverse tests))
+    (set-buffer batchbuffer)
+    (dolist (ele tests)
+      (insert (concat "'" ele "\n")))
+    (set-buffer symbolbuffer)
+    (dolist (ele tests)
+      (insert (concat "--funcall " ele " \\\n")))))
+
+(defun write-completion-tests (&optional pyshellname-list)
+  (interactive)
+  (let ((pyshellname-list (or pyshellname-list py-test-pyshellname-list))
+        (sepchar (py-separator-char))
+        (symbolbuffer "completion-test-symbols")
+        (batchbuffer "completion-test-funcalls"))
+    (set-buffer (get-buffer-create  batchbuffer))
+    (erase-buffer)
+    (dolist (ele pyshellname-list)
+      (setq ele (replace-regexp-in-string  "/+" "-" (replace-regexp-in-string  "^/" "" ele)))
+      (insert (concat "--funcall " ele "-complete-test \\\n")))
+    (set-buffer (get-buffer-create symbolbuffer))
+    (erase-buffer)
+    (dolist (ele pyshellname-list)
+      (setq ele (replace-regexp-in-string  "/+" "-" (replace-regexp-in-string  "^/" "" ele)))
+      (insert (concat "'" ele "-complete-test\n")))
+    (set-buffer (get-buffer-create "py-completion-tests.el"))
+    (erase-buffer)
+    (switch-to-buffer (current-buffer))
+    (insert ";;; py-completion-tests.el --- Test completion for available Python shell\n")
+    (insert arkopf)
+    ;; (insert ";;; \n\n")
+    (dolist (ele pyshellname-list)
+      (setq elt ele)
+      (setq ele (replace-regexp-in-string  "/+" "-" (replace-regexp-in-string  "^/" "" ele)))
+      (insert (concat "\(defun " ele "-complete-test (&optional arg)
+  (interactive \"p\")
+  (let ((teststring \""))
+      (if (string-match sepchar elt)
+          (insert (concat "#! " elt "\n"))
+        (insert (concat "#! /usr/bin/env " elt "\n")))
+      (insert (concat "pri\"))
+    (py-bug-tests-intern '" ele "-complete-base arg teststring)))
+
+\(defun " ele "-complete-base ()
+  (save-excursion (completion-at-point))
+  ;; (sit-for 0.1)
+  (assert (looking-at \"nt\") nil \"py-completion-at-point-test failed\"))\n\n"))))
+  (insert "\n(provide \"py-completion-tests\")
+;;; py-completion-tests ends here\n ")
+
+  (emacs-lisp-mode))
+
+(defun write-shell-completion-tests (&optional pyshellname-list)
+  (interactive)
+  (let ((pyshellname-list (or pyshellname-list py-test-pyshellname-list))
+        (sepchar (py-separator-char))
+        (symbolbuffer "completion-test-symbols")
+        (batchbuffer "completion-test-funcalls"))
+    (set-buffer (get-buffer-create  batchbuffer))
+    (erase-buffer)
+    (dolist (ele pyshellname-list)
+      (setq ele (replace-regexp-in-string  "/+" "-" (replace-regexp-in-string  "^[/~]+" "" ele)))
+      (insert (concat "--funcall " ele "-shell-complete-test \\\n")))
+    (set-buffer (get-buffer-create symbolbuffer))
+    (erase-buffer)
+    (dolist (ele pyshellname-list)
+      (setq ele (replace-regexp-in-string  "/+" "-" (replace-regexp-in-string  "^[/~]+" "" ele)))
+      (insert (concat "'" ele "-shell-complete-test\n")))
+    (set-buffer (get-buffer-create "py-shell-completion-tests.el"))
+    (erase-buffer)
+    (switch-to-buffer (current-buffer))
+    (insert ";;; py-shell-completion-tests.el --- Test completion for available Python shell\n")
+    (insert arkopf)
+    (insert "(setq python-mode-shell-complete-tests
+        (list\n\n")
+    (insert-buffer symbolbuffer)
+    (goto-char (point-max))
+    (insert "))\n\n")
+    (forward-line -4)
+    (richten)
+    (goto-char (point-max))
+    (insert "(defun py-run-shell-complete-tests ()
+  (interactive)
+  (dolist (ele python-mode-shell-complete-tests)
+    (funcall ele)))\n\n")
+
+    ;; (insert ";;; \n\n")
+    (dolist (ele pyshellname-list)
+      (setq elt ele)
+      (setq ele (replace-regexp-in-string  "/+" "-" (replace-regexp-in-string  "^[/~]+" "" ele)))
+      (insert (concat "\(defun " ele "-shell-complete-test ()
+  (interactive)
+  (let (py-shell-switch-buffers-on-execute-p
+        py-split-windows-on-execute-p)
+    (set-buffer (py-shell nil t \"" elt "\" nil \"" sepchar "\"))
+    (sit-for 0.2 t)
+    (goto-char (point-max))
+    (insert \"pri\")
+    (completion-at-point)
+    (beginning-of-line)
+    (assert (looking-at \"print\") nil \"" ele "-shell-complete-test failed\")
+    (when py-verbose-p (message \"%s\" \"" ele "-shell-complete-test passed\"))))
+\n\n")))
+    (insert "\n(provide 'py-shell-completion-tests)
+;;; py-shell-completion-tests ends here\n ")
+    (emacs-lisp-mode)))

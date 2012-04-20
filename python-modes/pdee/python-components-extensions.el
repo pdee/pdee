@@ -23,7 +23,7 @@
 (defcustom py-match-paren-mode nil
   "*Non-nil means, cursor will jump to beginning or end of a block.
 This vice versa, to beginning first.
-Sets `py-match-paren-key' in py-mode-map.
+Sets `py-match-paren-key' in python-mode-map.
 Customize `py-match-paren-key' which key to use. "
   :type 'boolean
   :group 'python)
@@ -226,7 +226,7 @@ With interactive call, send it to the message buffer too. "
   (if (or arg (not py-match-paren-mode))
       (progn
 	(setq py-match-paren-mode t)
-        ;; 	(define-key py-mode-map (kbd (concat "<" py-match-paren-key ">")) 'py-match-paren))
+        ;; 	(define-key python-mode-map (kbd (concat "<" py-match-paren-key ">")) 'py-match-paren))
         (setq py-match-paren-mode nil))))
 
 (defun ar-py-match-paren ()

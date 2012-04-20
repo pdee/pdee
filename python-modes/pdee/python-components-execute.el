@@ -70,35 +70,35 @@ Returns value of `py-split-windows-on-execute-p'. "
 ;;; Shell-Switch-Buffers-On-Execute forms
 (defalias 'toggle-py-shell-switch-buffers-on-execute 'py-toggle-shell-switch-buffers-on-execute)
 (defun py-toggle-shell-switch-buffers-on-execute (&optional arg)
-  "If `py-shell-switch-buffers-on-execute-p' should be on or off.
+  "If `py-switch-buffers-on-execute-p' should be on or off.
 
-  Returns value of `py-shell-switch-buffers-on-execute-p' switched to. "
+  Returns value of `py-switch-buffers-on-execute-p' switched to. "
   (interactive)
-  (let ((arg (or arg (if py-shell-switch-buffers-on-execute-p -1 1))))
+  (let ((arg (or arg (if py-switch-buffers-on-execute-p -1 1))))
     (if (< 0 arg)
-        (setq py-shell-switch-buffers-on-execute-p t)
-      (setq py-shell-switch-buffers-on-execute-p nil))
-    (when (interactive-p) (message "py-shell-switch-buffers-on-execute: %s" py-shell-switch-buffers-on-execute-p))
-    py-shell-switch-buffers-on-execute-p))
+        (setq py-switch-buffers-on-execute-p t)
+      (setq py-switch-buffers-on-execute-p nil))
+    (when (interactive-p) (message "py-shell-switch-buffers-on-execute: %s" py-switch-buffers-on-execute-p))
+    py-switch-buffers-on-execute-p))
 
 (defun py-shell-switch-buffers-on-execute-on (&optional arg)
-  "Make sure, `py-shell-switch-buffers-on-execute-p' is on.
+  "Make sure, `py-switch-buffers-on-execute-p' is on.
 
-Returns value of `py-shell-switch-buffers-on-execute-p'. "
+Returns value of `py-switch-buffers-on-execute-p'. "
   (interactive "p")
   (let ((arg (or arg 1)))
     (toggle-py-shell-switch-buffers-on-execute arg))
-  (when (interactive-p) (message "py-shell-switch-buffers-on-execute: %s" py-shell-switch-buffers-on-execute-p))
-  py-shell-switch-buffers-on-execute-p)
+  (when (interactive-p) (message "py-shell-switch-buffers-on-execute: %s" py-switch-buffers-on-execute-p))
+  py-switch-buffers-on-execute-p)
 
 (defun py-shell-switch-buffers-on-execute-off ()
-  "Make sure, `py-shell-switch-buffers-on-execute-p' is off.
+  "Make sure, `py-switch-buffers-on-execute-p' is off.
 
-Returns value of `py-shell-switch-buffers-on-execute-p'. "
+Returns value of `py-switch-buffers-on-execute-p'. "
   (interactive)
   (toggle-py-shell-switch-buffers-on-execute -1)
-  (when (interactive-p) (message "py-shell-switch-buffers-on-execute: %s" py-shell-switch-buffers-on-execute-p))
-  py-shell-switch-buffers-on-execute-p)
+  (when (interactive-p) (message "py-shell-switch-buffers-on-execute: %s" py-switch-buffers-on-execute-p))
+  py-switch-buffers-on-execute-p)
 
 ;;;
 (defun py-comint-output-filter-function (string)
@@ -108,7 +108,7 @@ This function is appropriate for `comint-output-filter-functions'."
   (setq string (ansi-color-filter-apply string))
   (when (and (string-match py-shell-input-prompt-1-regexp string)
              py-file-queue)
-    (if py-shell-switch-buffers-on-execute-p
+    (if py-switch-buffers-on-execute-p
         (pop-to-buffer (current-buffer)))
     (ignore-errors (delete-file (car py-file-queue)))
     (setq py-file-queue (cdr py-file-queue))
@@ -156,10 +156,15 @@ interpreter.
     (cond ((string-match "ipython" pyshellname)
            (setq ipython-version (string-to-number (substring (shell-command-to-string (concat py-shell-name " -V")) 2 -1)))
            (setq ipython-completion-command-string (if (< ipython-version 11) ipython0.10-completion-command-string ipython0.11-completion-command-string))
-           (define-key py-shell-map [tab] ipython-complete-function))
+           (define-key inferior-python-mode-map [tab] ipython-complete-function)
+           (define-key python-shell-map [tab] ipython-complete-function))
           ((string-match "python3" pyshellname)
-           (define-key py-shell-map [tab] 'py-completion-at-point))
-          (t (define-key py-shell-map [tab] 'py-shell-complete)))))
+           (add-hook 'completion-at-point-functions
+                     'py-shell-complete nil 'local)
+           (define-key inferior-python-mode-map [tab]
+             'py-shell-complete))
+          (t
+           (define-key inferior-python-mode-map [tab] 'py-shell-complete)))))
 
 (defun py-set-ipython-completion-command-string (&optional pyshellname)
   "Set and return `ipython-completion-command-string'. "
@@ -228,13 +233,13 @@ Needed when file-path names are contructed from maybe numbered buffer names like
     "\*" ""
     string)))
 
-(defun py-shell-manage-windows (switch py-split-windows-on-execute-p py-shell-switch-buffers-on-execute-p oldbuf py-buffer-name)
+(defun py-shell-manage-windows (switch py-split-windows-on-execute-p py-switch-buffers-on-execute-p oldbuf py-buffer-name)
   (cond (;; split and switch
          (unless (eq switch 'noswitch)
            (and py-split-windows-on-execute-p
 
                 (or (eq switch 'switch)
-                    py-shell-switch-buffers-on-execute-p)))
+                    py-switch-buffers-on-execute-p)))
          (unless (string-match "[Ii][Pp]ython" py-buffer-name) (delete-other-windows))
          (when (window-full-height-p)
            (funcall py-split-windows-on-execute-function))
@@ -251,12 +256,12 @@ Needed when file-path names are contructed from maybe numbered buffer names like
         ;; no split, switch
         ((or (eq switch 'switch)
              (and (not (eq switch 'noswitch))
-                  py-shell-switch-buffers-on-execute-p))
+                  py-switch-buffers-on-execute-p))
          (pop-to-buffer py-buffer-name)
          (goto-char (point-max)))
         ;; no split, no switch
         ((or (eq switch 'noswitch)
-             (not py-shell-switch-buffers-on-execute-p))
+             (not py-switch-buffers-on-execute-p))
          (set-buffer oldbuf)
          (switch-to-buffer (current-buffer)))))
 
@@ -270,7 +275,7 @@ to change if called with a prefix arg.
 
 Returns py-shell's buffer-name.
 Optional string PYSHELLNAME overrides default `py-shell-name'.
-Optional symbol SWITCH ('switch/'noswitch) precedes `py-shell-switch-buffers-on-execute-p'
+Optional symbol SWITCH ('switch/'noswitch) precedes `py-switch-buffers-on-execute-p'
 When SEPCHAR is given, `py-shell' must not detect the file-separator.
 BUFFER allows specifying a name, the Python process is connected to
 When DONE is `t', `py-shell-manage-windows' is omitted
@@ -306,6 +311,10 @@ When DONE is `t', `py-shell-manage-windows' is omitted
                           (if (or (null py-shell-name)(string= "" py-shell-name))
                               (py-choose-shell)
                             py-shell-name)))
+         ;; If we use a pipe, Unicode characters are not printed
+         ;; correctly (Bug#5794) and IPython does not work at
+         ;; all (Bug#5390). python.el
+         (process-connection-type t)
          ;; already in py-choose-shell
          (py-use-local-default
           (if (not (string= "" py-shell-local-path))
@@ -329,9 +338,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
     (unless (comint-check-proc py-buffer-name)
       ;; comint
       (if py-buffer-name
-          (set-buffer (get-buffer-create
-                       (apply 'make-comint-in-buffer executable py-buffer-name executable nil args)))
-        (set-buffer (apply 'make-comint-in-buffer executable py-buffer-name executable nil args)))
+          (set-buffer (apply 'make-comint-in-buffer executable py-buffer-name executable nil args)))
       (set (make-local-variable 'comint-prompt-regexp)
            (concat "\\("
                    (mapconcat 'identity
@@ -340,6 +347,11 @@ When DONE is `t', `py-shell-manage-windows' is omitted
                    "\\)"))
       (add-hook 'comint-output-filter-functions
                 'py-comint-output-filter-function)
+      (set-buffer (get-buffer-create
+                   (apply 'make-comint-in-buffer executable py-buffer-name executable nil args)))
+      (setq python-buffer (current-buffer))
+      (accept-process-output (get-buffer-process python-buffer) 5)
+      (inferior-python-mode)
       (setq comint-input-sender 'py-shell-simple-send)
       (setq comint-input-ring-file-name
             (if (or (string-match "ipython" py-buffer-name)
@@ -361,11 +373,15 @@ When DONE is `t', `py-shell-manage-windows' is omitted
       ;;
       (set-syntax-table python-mode-syntax-table)
       (ansi-color-for-comint-mode-on)
-      (use-local-map py-shell-map)
+      ;; (use-local-map py-shell-map)
+      (use-local-map inferior-python-mode-map)
       (add-hook 'py-shell-hook 'py-dirstack-hook)
-      (run-hooks 'py-shell-hook))
-    (unless done (py-shell-manage-windows switch py-split-windows-on-execute-p py-shell-switch-buffers-on-execute-p oldbuf py-buffer-name))
-    (when (and (not py-split-windows-on-execute-p) (or (eq switch 'noswitch) (not py-shell-switch-buffers-on-execute-p)) py-verbose-p) (message py-buffer-name))
+      (run-hooks 'py-shell-hook)
+      (goto-char (point-max)))
+    (if (and (interactive-p) py-shell-switch-buffers-on-execute-p)
+        (pop-to-buffer py-buffer-name)
+      (unless done (py-shell-manage-windows switch py-split-windows-on-execute-p py-switch-buffers-on-execute-p oldbuf py-buffer-name)))
+    (when py-verbose-p (message py-buffer-name))
     py-buffer-name))
 
 (defcustom py-remove-cwd-from-path t
@@ -398,7 +414,7 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 (defun py-execute-region-no-switch (start end &optional shell dedicated)
   "Send the region to a Python interpreter.
 
-Ignores setting of `py-shell-switch-buffers-on-execute-p', buffer with region stays current.
+Ignores setting of `py-switch-buffers-on-execute-p', buffer with region stays current.
  "
   (interactive "r\nP")
   (py-execute-base start end py-shell-name dedicated 'noswitch))
@@ -444,7 +460,7 @@ When called from a programm, it accepts a string specifying a shell which will b
 (defun py-execute-region-switch (start end &optional shell dedicated)
   "Send the region to a Python interpreter.
 
-Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will being switched to.
+Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being switched to.
 "
   (interactive "r\nP")
   (py-execute-base start end py-shell-name dedicated 'switch))
@@ -496,7 +512,7 @@ Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will be
             (sit-for py-ipython-execute-delay))
           (setq erg (py-execute-file-base proc file pec procbuf))
           (setq py-exception-buffer (cons file (current-buffer)))
-          (py-shell-manage-windows switch py-split-windows-on-execute-p py-shell-switch-buffers-on-execute-p oldbuf py-buffer-name)
+          (py-shell-manage-windows switch py-split-windows-on-execute-p py-switch-buffers-on-execute-p oldbuf py-buffer-name)
           (unless (string= (buffer-name (current-buffer)) (buffer-name procbuf))
             (when py-verbose-p (message "Output buffer: %s" procbuf)))
           (sit-for 0.1)
@@ -756,7 +772,7 @@ See also `\\[py-execute-region]'. "
 (defun py-execute-buffer-dedicated-switch (&optional shell)
   "Send the contents of the buffer to an unique Python interpreter.
 
-Ignores setting of `py-shell-switch-buffers-on-execute-p'.
+Ignores setting of `py-switch-buffers-on-execute-p'.
 If the file local variable `py-master-file' is non-nil, execute the
 named file instead of the buffer's file.
 
@@ -776,17 +792,17 @@ See also `\\[py-execute-region]'. "
 (defun py-execute-region-python-switch (start end)
   "Send the region to a common shell calling the python interpreter.
 
-Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will being switched to. "
+Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being switched to. "
   (interactive "r")
-  (let ((py-shell-switch-buffers-on-execute-p t))
+  (let ((py-switch-buffers-on-execute-p t))
     (py-execute-base start end "python")))
 
 (defun py-execute-region-python-no-switch (start end)
   "Send the region to a common shell calling the python interpreter.
 
-Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will not being switched to."
+Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will not being switched to."
   (interactive "r")
-  (let ((py-shell-switch-buffers-on-execute-p))
+  (let ((py-switch-buffers-on-execute-p))
     (py-execute-base start end "python")))
 
 (defun py-execute-region-python2 (start end)
@@ -796,17 +812,17 @@ Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will no
 
 (defun py-execute-region-python2-switch (start end)
   "Send the region to a common shell calling the python2 interpreter.
-Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will being switched to. "
+Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being switched to. "
   (interactive "r")
-  (let ((py-shell-switch-buffers-on-execute-p t))
+  (let ((py-switch-buffers-on-execute-p t))
     (py-execute-base start end "python2")))
 
 (defun py-execute-region-python2-no-switch (start end)
   "Send the region to a common shell calling the python2 interpreter.
 
-Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will not being switched to."
+Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will not being switched to."
   (interactive "r")
-  (let ((py-shell-switch-buffers-on-execute-p))
+  (let ((py-switch-buffers-on-execute-p))
     (py-execute-base start end "python2")))
 
 (defun py-execute-region-python2.7 (start end)
@@ -817,17 +833,17 @@ Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will no
 (defun py-execute-region-python2.7-switch (start end)
   "Send the region to a common shell calling the python2.7 interpreter.
 
-Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will being switched to. "
+Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being switched to. "
   (interactive "r")
-  (let ((py-shell-switch-buffers-on-execute-p t))
+  (let ((py-switch-buffers-on-execute-p t))
     (py-execute-base start end "python2.7")))
 
 (defun py-execute-region-python2.7-no-switch (start end)
   "Send the region to a common shell calling the python2.7 interpreter.
 
-Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will not being switched to."
+Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will not being switched to."
   (interactive "r")
-  (let ((py-shell-switch-buffers-on-execute-p))
+  (let ((py-switch-buffers-on-execute-p))
     (py-execute-base start end "python2.7")))
 
 (defun py-execute-region-python3 (start end)
@@ -838,17 +854,17 @@ Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will no
 (defun py-execute-region-python3-switch (start end)
   "Send the region to a common shell calling the python3 interpreter.
 
-Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will being switched to. "
+Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being switched to. "
   (interactive "r")
-  (let ((py-shell-switch-buffers-on-execute-p t))
+  (let ((py-switch-buffers-on-execute-p t))
     (py-execute-base start end "python3")))
 
 (defun py-execute-region-python3-no-switch (start end)
   "Send the region to a common shell calling the python3 interpreter.
 
-Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will not being switched to."
+Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will not being switched to."
   (interactive "r")
-  (let ((py-shell-switch-buffers-on-execute-p))
+  (let ((py-switch-buffers-on-execute-p))
     (py-execute-base start end "python3")))
 
 (defun py-execute-region-python3.2 (start end)
@@ -859,17 +875,17 @@ Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will no
 (defun py-execute-region-python3.2-switch (start end)
   "Send the region to a common shell calling the python3.2 interpreter.
 
-Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will being switched to. "
+Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being switched to. "
   (interactive "r")
-  (let ((py-shell-switch-buffers-on-execute-p t))
+  (let ((py-switch-buffers-on-execute-p t))
     (py-execute-base start end "python3.2")))
 
 (defun py-execute-region-python3.2-no-switch (start end)
   "Send the region to a common shell calling the python3.2 interpreter.
 
-Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will not being switched to."
+Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will not being switched to."
   (interactive "r")
-  (let ((py-shell-switch-buffers-on-execute-p))
+  (let ((py-switch-buffers-on-execute-p))
     (py-execute-base start end "python3.2")))
 
 (defun py-execute-region-ipython (start end)
@@ -880,17 +896,17 @@ Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will no
 (defun py-execute-region-ipython-switch (start end)
   "Send the region to a common shell calling the ipython interpreter.
 
-Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will being switched to. "
+Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being switched to. "
   (interactive "r")
-  (let ((py-shell-switch-buffers-on-execute-p t))
+  (let ((py-switch-buffers-on-execute-p t))
     (py-execute-base start end "ipython")))
 
 (defun py-execute-region-ipython-no-switch (start end)
   "Send the region to a common shell calling the ipython interpreter.
 
-Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will not being switched to."
+Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will not being switched to."
   (interactive "r")
-  (let ((py-shell-switch-buffers-on-execute-p))
+  (let ((py-switch-buffers-on-execute-p))
     (py-execute-base start end "ipython")))
 
 (defun py-execute-region-jython (start end)
@@ -901,17 +917,17 @@ Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will no
 (defun py-execute-region-jython-switch (start end)
   "Send the region to a common shell calling the jython interpreter.
 
-Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will being switched to. "
+Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being switched to. "
   (interactive "r")
-  (let ((py-shell-switch-buffers-on-execute-p t))
+  (let ((py-switch-buffers-on-execute-p t))
     (py-execute-base start end "jython")))
 
 (defun py-execute-region-jython-no-switch (start end)
   "Send the region to a common shell calling the jython interpreter.
 
-Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will not being switched to."
+Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will not being switched to."
   (interactive "r")
-  (let ((py-shell-switch-buffers-on-execute-p))
+  (let ((py-switch-buffers-on-execute-p))
     (py-execute-base start end "jython")))
 
 ;; Specifying shells end
@@ -1022,7 +1038,7 @@ Optional OUTPUT-BUFFER and ERROR-BUFFER might be given.')
           (setq erg (py-execute-file-base proc file pec))
           (setq py-exception-buffer (cons file (current-buffer)))
           (if (or (eq switch 'switch)
-                  (and (not (eq switch 'noswitch)) py-shell-switch-buffers-on-execute-p))
+                  (and (not (eq switch 'noswitch)) py-switch-buffers-on-execute-p))
               (progn
                 (pop-to-buffer procbuf)
                 (goto-char (point-max)))

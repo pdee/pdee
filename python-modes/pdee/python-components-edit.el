@@ -308,7 +308,7 @@ The defun visible is the one that contains point or follows point. "
     (widen)
     (py-end-of-def-or-class)
     (let ((end (point)))
-      (py-beginning-of-or-class)
+      (py-beginning-def-of-or-class)
       (narrow-to-region (point) end))))
 
 
@@ -970,8 +970,11 @@ Returns a list, whose car is beg, cdr - end."
             (when (interactive-p) (message "%s" (list beg end)))
           (list beg end))))))
 
-(defalias 'py-beginning-of-buffer-position 'point-min) 
-(defalias 'py-end-of-buffer-position 'point-max)
+(defun py-beginning-of-buffer-position ()
+  (point-min))
+ 
+(defun py-end-of-buffer-position ()
+  (point-max)) 
 
 ;;; Declarations start
 (defun py-bounds-of-declarations ()
