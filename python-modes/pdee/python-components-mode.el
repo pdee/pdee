@@ -75,9 +75,7 @@ Default is nil. "
   :group 'python-mode)
 
 (defcustom py-start-run-py-shell t
-  "If `python-mode' should start a python-shell, `py-shell'. Default is `t'.
-
-A running python-shell presently is needed by complete-functions, otherwise first try will fail. "
+  "If `python-mode' should start a python-shell, `py-shell'. Default is `t'. "
 
   :type 'boolean
   :group 'python-mode)

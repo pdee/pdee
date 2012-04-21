@@ -151,7 +151,8 @@ interpreter.
 (defun py-set-shell-completion-environment (&optional pyshellname)
   "Sets `...-completion-command-string' and `py-complete-function'. "
   (interactive)
-  (let ((pyshellname (or pyshellname py-shell-name)))
+  (let ((pyshellname (or pyshellname py-shell-name))
+        ipython-version)
     (local-unset-key [tab])
     (cond ((string-match "ipython" pyshellname)
            (setq ipython-version (string-to-number (substring (shell-command-to-string (concat py-shell-name " -V")) 2 -1)))

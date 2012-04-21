@@ -4,6 +4,8 @@ Python Mode News
 New in version 6.0.6
 --------------------
 
+- files inside a virtual machine made visible for pdbtrack
+  
 - new commands `py-toggle-split-windows-on-execute', ...-on, ...-off
   `py-toggle-shell-switch-buffers-on-execute', ...-on, ...-off
   allow `py-execute-buffer' etc. to split/not-split windows,
@@ -35,7 +37,7 @@ New in version 6.0.6
 
 -  customizable `py-separator-char', a string, see report lp:975539
   Precedes guessing when not empty, is returned by
-  function `py-separator-char
+  function `py-separator-char'
 
 - nicer `org-cycle' behavior: when new `py-org-cycle-p' it `t',
   command `org-cycle' is available at shift-TAB, <backtab>

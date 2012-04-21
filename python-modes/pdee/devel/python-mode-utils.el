@@ -179,7 +179,8 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)\"\
     (insert arkopf)
 
     (insert "
-;;; Executes
+;;; Extended executes
+;; created by `write-extended-execute-forms'
 \(defun py-execute-prepare (form &optional shell dedicated switch)
   \"Used by python-extended-executes .\"
   (save-excursion
@@ -207,7 +208,7 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)\"\
               (insert "IPython")
             (insert (capitalize elt)))
           (cond ((string= pyo "dedicated")
-                 (insert "unique interpreter. "))
+                 (insert " unique interpreter. "))
                 ((string= pyo "dedicated-switch")
                  (insert " unique interpreter and switch to result. "))
                 ((string= "" elt)
