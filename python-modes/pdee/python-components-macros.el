@@ -153,7 +153,7 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
 (defmacro py-in-string-or-comment-p ()
   "Returns beginning position if inside a string or comment, nil otherwise. "
   `(or (nth 8 (syntax-ppss))
-       (when (or (looking-at "\"")(looking-at comment-start)(looking-at comment-start-skip))
+       (when (or (looking-at "\"")(looking-at "[ \t]*#[ \t]*"))
          (match-beginning 0))))
 
 (provide 'python-components-macros)

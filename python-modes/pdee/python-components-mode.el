@@ -1853,6 +1853,11 @@ It makes underscores and dots word constituent chars.")
         (easy-menu-define py-menu map "Python Tools"
           `("PyTools"
             :help "Python mode tools"
+
+            ["Customize Python mode" (customize-group 'python-mode)
+             :help "Open the customization buffer for Python mode"]
+
+            "-"
             ("Skeletons..."
              :help "See also templates in YASnippet")
             ["if" py-if
@@ -1884,8 +1889,6 @@ Run pdb under GUD"]
             ["Toggle indent-tabs-mode" py-toggle-indent-tabs-mode
              :help "See also `py-indent-tabs-mode-on', `-off' "]
 
-            ["Customize Python mode" (customize-group 'python-mode)
-             :help "Open the customization buffer for Python mode"]
             ["Help on symbol" py-describe-symbol
              :help "`py-describe-symbol'
 Use pydoc on symbol at point"]
@@ -1929,7 +1932,7 @@ If NOERROR is not nil, do not raise error when the module is not found. "]
 
             ))
 
-            ;;; Menu py-execute forms
+        ;; Menu py-execute forms
         (easy-menu-define py-menu map "Execute Python"
           `("PyExec"
             :help "Python-specific features"
@@ -1962,6 +1965,13 @@ If NOERROR is not nil, do not raise error when the module is not found. "]
              :help "`py-execute-buffer'
        Send buffer at point to Python interpreter. "]
 
+            ["Execute file" py-execute-file
+             :help "`py-execute-file'
+       Send file at point to Python interpreter. "]
+            ["Execute line" py-execute-line
+             :help "`py-execute-line'
+       Send current line from beginning of indent to Python interpreter. "]
+
             ["Execute expression" py-execute-expression
              :help "`py-execute-expression'
        Send expression at point to Python interpreter. "]
@@ -1973,8 +1983,8 @@ If NOERROR is not nil, do not raise error when the module is not found. "]
             ["Execute line" py-execute-line
              :help "`py-execute-line'
        Send line at point to Python interpreter. "]
-            ;; statement
 
+            ;; statement
             ("Execute statement ... "
              :help "Execute statement functions"
              ["py-execute-statement-python" py-execute-statement-python
@@ -2064,8 +2074,9 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
              ["py-execute-statement-python3.2-dedicated-switch" py-execute-statement-python3.2-dedicated-switch
               :help "Execute statement through a unique Python3.2 interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
-             )            ;; block
+             )
 
+            ;; block
             ("Execute block ... "
              :help "Execute block functions"
              ["py-execute-block-python" py-execute-block-python
@@ -2158,7 +2169,6 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
              )
 
             ;; block-or-clause
-
             ("Execute block-or-clause ... "
              :help "Execute block-or-clause functions"
              ["py-execute-block-or-clause-python" py-execute-block-or-clause-python
@@ -2248,8 +2258,9 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
              ["py-execute-block-or-clause-python3.2-dedicated-switch" py-execute-block-or-clause-python3.2-dedicated-switch
               :help "Execute block-or-clause through a unique Python3.2 interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
-             )            ;; def
+             )
 
+            ;; def
             ("Execute def ... "
              :help "Execute def functions"
              ["py-execute-def-python" py-execute-def-python
@@ -2339,8 +2350,9 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
              ["py-execute-def-python3.2-dedicated-switch" py-execute-def-python3.2-dedicated-switch
               :help "Execute def through a unique Python3.2 interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
-             )            ;; class
+             )
 
+            ;; class
             ("Execute class ... "
              :help "Execute class functions"
              ["py-execute-class-python" py-execute-class-python
@@ -2430,8 +2442,9 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
              ["py-execute-class-python3.2-dedicated-switch" py-execute-class-python3.2-dedicated-switch
               :help "Execute class through a unique Python3.2 interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
-             )            ;; region
+             )
 
+            ;; region
             ("Execute region ... "
              :help "Execute region functions"
              ["py-execute-region-python" py-execute-region-python
@@ -2521,8 +2534,9 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
              ["py-execute-region-python3.2-dedicated-switch" py-execute-region-python3.2-dedicated-switch
               :help "Execute region through a unique Python3.2 interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
-             )            ;; buffer
+             )
 
+            ;; buffer
             ("Execute buffer ... "
              :help "Execute buffer functions"
              ["py-execute-buffer-python" py-execute-buffer-python
@@ -2612,8 +2626,9 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
              ["py-execute-buffer-python3.2-dedicated-switch" py-execute-buffer-python3.2-dedicated-switch
               :help "Execute buffer through a unique Python3.2 interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
-             )            ;; expression
+             )
 
+            ;; expression
             ("Execute expression ... "
              :help "Execute expression functions"
              ["py-execute-expression-python" py-execute-expression-python
@@ -2887,7 +2902,7 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
              )))
 
-        ;;; Menu command forms
+        ;; Menu command forms
         (easy-menu-define py-menu map "Python Mode Commands"
           `("PyEdit"
             :help "Python-specific features"
@@ -2954,22 +2969,22 @@ A a compound python expression might be concatenated by \".\" operator, thus com
 Expression here is conceived as the syntactical component of a statement in Python. See http://docs.python.org/reference
 Operators however are left aside resp. limit py-expression designed for edit-purposes."]
             ["End of expression" py-end-of-expression
-             :help "`py-end-of-minor-expression'
+             :help "`py-end-of-expression'
 Go to the end of a compound python expression.
 
 A a compound python expression might be concatenated by \".\" operator, thus composed by minor python expressions.
 
 Expression here is conceived as the syntactical component of a statement in Python. See http://docs.python.org/reference
 Operators however are left aside resp. limit py-expression designed for edit-purposes."]
-            ["Beginning of minor expression" py-beginning-of-minor-expression
-             :help "`py-beginning-of-minor-expression'
+            ["Beginning of minor expression" py-beginning-of-partial-expression
+             :help "`py-beginning-of-partial-expression'
 Go to start of an minor expression
 
 Expression here is conceived as the syntactical component of a statement in Python. See http://docs.python.org/reference
 Operators however are left aside resp. limit py-expression designed for edit-purposes."]
-            ["End of minor-expression" py-end-of-minor-expression
-             :help "`py-end-of-minor-expression'
-Go to end of an minor-expression
+            ["End of partial-expression" py-end-of-partial-expression
+             :help "`py-end-of-partial-expression'
+Go to end of an partial-expression
 
 Expression here is conceived as the syntactical component of a statement in Python. See http://docs.python.org/reference
 Operators however are left aside resp. limit py-expression designed for edit-purposes."]
@@ -5142,7 +5157,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
                                                  (current-column))))
          (^ '(- (1+ (current-indentation))))))
   (add-hook 'completion-at-point-functions
-            'py-script-complete nil 'local)
+            py-complete-function nil 'local)
 
   (when (and py-imenu-create-index-p (fboundp 'imenu-add-to-menubar)(ignore-errors (require 'imenu)))
     (setq imenu-create-index-function #'py-imenu-create-index-new)
