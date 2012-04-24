@@ -546,7 +546,8 @@ Bug: if no IPython-shell is running, fails first time due to header returned, wh
       (setq completion-table (loop for str in completions
                                    collect (list str nil)))
       (setq completion (try-completion pattern completion-table))
-      (cond ((eq completion t))
+      (cond ((eq completion t)
+             (tab-to-tab-stop))
             ((null completion)
              ;; if an (I)Python shell didn't run
              ;; before, first completion are not delivered
@@ -561,7 +562,8 @@ Bug: if no IPython-shell is running, fails first time due to header returned, wh
              (with-output-to-temp-buffer "*Python Completions*"
                (display-completion-list (all-completions pattern completion-table)))
              (message "Making completion list...%s" "done"))))
-    completion))
+    ;; minibuffer.el requires that 
+    (list beg end)))
 
 (provide 'python-components-shell-complete)
 

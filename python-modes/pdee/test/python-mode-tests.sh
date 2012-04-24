@@ -31,7 +31,7 @@ PDIR=`pwd`
 
 # write PATH-TO-EMACS source code directory here
 EMACS_SOURCE_DIR=
-EMACS_SOURCE_DIR="$HOME/emacs-23.4"
+EMACS_SOURCE_DIR="$HOME/emacs-23.4-source"
 
 # python-mode file to load
 if [ -s "../python-components-mode.el" ];
@@ -48,7 +48,7 @@ fi
 
 if [ $EMACS_SOURCE_DIR ]; then
 
-EMACS="${EMACS_SOURCE_DIR}/src/emacs"
+EMACS="$HOME/emacs/src/emacs"
 
 # else
 # EMACS=emacs
@@ -1072,6 +1072,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-shell-invoking-python2-lp:835151-test \
 --funcall py-shell-invoking-python2.7-lp:835151-test \
 --funcall py-shell-invoking-jython-lp:835151-test \
+\
 --funcall py-electric-backspace-test \
 --funcall UnicodeEncodeError-lp:550661-test \
 --funcall py-insert-super-python3-test \
