@@ -1449,8 +1449,9 @@ See original source: http://pymacs.progiciels-bpi.ca"
                   "UnicodeError" "UnicodeTranslateError" "UnicodeWarning"
                   "UserWarning" "ValueError" "Warning" "ZeroDivisionError")
               symbol-end) . py-exception-name-face)
+        ;; (,(rx (or space line-start) symbol-start "range
         ;; Builtins
-        (,(rx symbol-start
+        (,(rx (or space line-start) symbol-start
               (or "_" "__doc__" "__import__" "__name__" "__package__" "abs" "all"
                   "any" "apply" "basestring" "bin" "bool" "buffer" "bytearray"
                   "bytes" "callable" "chr" "classmethod" "cmp" "coerce" "compile"
@@ -1459,7 +1460,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
                   "getattr" "globals" "hasattr" "hash" "help" "hex" "id" "input"
                   "int" "intern" "isinstance" "issubclass" "iter" "len" "list"
                   "locals" "long" "map" "max" "min" "next" "object" "oct" "open"
-                  "ord" "pow" "print" "property" "raw_input" "reduce"
+                  "ord" "pow" "print" "property" "range" "raw_input" "reduce"
                   "reload" "repr" "reversed" "round" "set" "setattr" "slice"
                   "sorted" "staticmethod" "str" "sum" "super" "tuple" "type"
                   "unichr" "unicode" "vars" "xrange" "zip")
@@ -1497,7 +1498,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
                     t
                   (set-match-data nil)))))
          (1 py-variable-name-face nil nil))
-        (,(rx (or space line-start) symbol-start "range" symbol-end) . py-builtins-face)
+        ;; (,(rx (or space line-start) symbol-start "range" symbol-end) . py-builtins-face)
         ;; Numbers
         (,(rx symbol-start (or (1+ digit) (1+ hex-digit)) symbol-end) . py-number-face)))
 
