@@ -756,7 +756,7 @@ completions on the current context."
 		   (set-window-configuration
 		    python-completion-original-window-configuration)))
 	     (setq python-completion-original-window-configuration nil)
-	     t)
+	     nil)
 	    ((null completion)
 	     (message "Can't find completion for \"%s\"" input)
 	     (ding)
@@ -764,7 +764,8 @@ completions on the current context."
             ((not (string= input completion))
              (progn (delete-char (- (length input)))
                     (insert completion)
-                    t))
+                    ;; minibuffer.el expects a list, a bug IMO
+                    nil))
             (t
              (unless python-completion-original-window-configuration
                (setq python-completion-original-window-configuration
@@ -772,7 +773,7 @@ completions on the current context."
              (with-output-to-temp-buffer "*Python Completions*"
                (display-completion-list
                 (all-completions input completions)))
-             t)))))
+             nil)))))
 
 (defun python-shell-completion-complete-at-point ()
   "Perform completion at point in inferior Python process."

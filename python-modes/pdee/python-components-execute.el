@@ -161,7 +161,7 @@ interpreter.
            (define-key python-shell-map [tab] ipython-complete-function))
           ((string-match "python3" pyshellname)
            (add-hook 'completion-at-point-functions
-                     'py-shell-complete nil 'local)
+                     'py-python3-shell-complete nil 'local)
            (define-key inferior-python-mode-map [tab]
              'py-shell-complete))
           (t

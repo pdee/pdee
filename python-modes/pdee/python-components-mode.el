@@ -42,6 +42,14 @@
 
 (defconst py-version "This is experimental `python-components-mode' not released yet, see https://code.launchpad.net/~a-roehler/python-mode/python-mode-components")
 
+(defvar python-local-version nil
+  "Used internally. ")
+(make-variable-buffer-local 'python-local-version)
+
+(defvar python-local-full-version nil
+  "Used internally. ")
+(make-variable-buffer-local 'python-local-full-version)
+
 (defcustom py-install-directory ""
   "Directory where python-mode.el and it's subdirectories should be installed. Needed for completion and other environment stuff only. "
 
@@ -178,12 +186,17 @@ Default is nil. "
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-complete-function 'py-shell-complete
-  "Function used for completion in buffers. "
-  :type '(choice (const :tag "py-completion-at-point" py-completion-at-point)
-		 (const :tag "Pymacs based py-complete" py-complete)
-                 (const :tag "py-shell-complete" py-shell-complete)
-                 (const :tag "IPython's ipython-complete" ipython-complete))
+(defcustom py-complete-function 'nil
+  "When set, enforces function todo completion, default is nil.
+
+Normally python-mode, resp. inferior-python-mode know best which functin to use. "
+  :type '(choice
+          (const :tag "default" nil)
+          (const :tag "py-completion-at-point" py-completion-at-point)
+          (const :tag "Pymacs based py-complete" py-complete)
+          (const :tag "py-shell-complete" py-shell-complete)
+          (const :tag "IPython's ipython-complete" ipython-complete)
+          )
   :group 'python-mode)
 (make-variable-buffer-local 'py-complete-function)
 
@@ -3163,8 +3176,6 @@ Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-p
 
 (add-hook 'python-mode-hook
           (lambda ()
-            (define-key python-mode-map [(meta p)] 'py-beginning-of-statement)
-            (define-key python-mode-map [(meta n)] 'py-end-of-statement)
             (setq indent-tabs-mode py-indent-tabs-mode)
             (set (make-local-variable 'beginning-of-defun-function) 'py-beginning-of-def-or-class)
             (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class)
@@ -4117,6 +4128,27 @@ Interactively output of `--version' is displayed. "
 ;;; Utility stuff
 (declare-function compilation-shell-minor-mode "compile" (&optional arg))
 
+(defun py-set-shell-complete-function ()
+  "Set appropriate completion according (I)Python version in buffer resp. shell.
+
+Setting of `py-complete-function' inhibites that, enforces its value. "
+  (unless py-complete-function
+    (set (make-local-variable 'python-local-version) (prin1-to-string (get-buffer-process (current-buffer))))
+    (set (make-local-variable 'python-local-command)
+         (car (process-command (get-buffer-process (current-buffer)))))
+    (message "%s" python-local-command)
+    (if (string-match "[iI][pP]ython" python-local-command)
+        (setq py-complete-function 'ipython-complete)
+      ;; if `python-local-version' already contains version, use it
+      (if (string-match "[0-9]" python-local-command)
+          (set (make-local-variable 'python-local-full-version) python-local-command)
+        (set (make-local-variable 'python-version-numbers) (shell-command-to-string (concat python-local-command " -c \"from sys import version_info; print version_info[0:2]\"")))
+        (set (make-local-variable 'python-local-full-version) (concat python-local-command (replace-regexp-in-string "," "." (replace-regexp-in-string "[()\.\n ]" "" python-version-numbers)))))
+      (message "python-local-full-version %s" python-local-full-version)
+      (cond ((string-match "[pP]ython3[^[:alpha:]]*$" python-local-full-version)
+             (setq py-complete-function 'py-python3-shell-complete))
+            (t (setq py-complete-function 'py-python2-shell-complete))))))
+
 ;; Fixme: This should inherit some stuff from `python-mode', but I'm
 ;; not sure how much: at least some keybindings, like C-c C-f;
 ;; syntax?; font-locking, e.g. for triple-quoted strings?
@@ -4143,13 +4175,22 @@ For running multiple processes in multiple buffers, see `run-python' and
   (set (make-local-variable 'comint-input-filter) 'python-input-filter)
   (add-hook 'comint-preoutput-filter-functions #'python-preoutput-filter
             nil t)
-  (remove-hook 'completion-at-point-functions
-               py-complete-function 'local)
-  (add-hook 'completion-at-point-functions
-            'py-shell-complete nil 'local)
   (python--set-prompt-regexp)
   (set (make-local-variable 'compilation-error-regexp-alist)
        python-compilation-regexp-alist)
+  (setq completion-at-point-functions nil)
+  (py-set-shell-complete-function)
+  (add-hook 'completion-at-point-functions
+            py-complete-function nil 'local)
+
+  (unless py-complete-function
+    ;; when set, `py-complete-function' it enforced
+    (set (make-local-variable 'python-local-version) (py-which-python))
+    (cond ((string-match "[iI][pP]ython" 'python-local-version)
+           (setq py-complete-function 'ipython-complete))
+          ((string-match "[pP]ython3[^[:alpha:]]*$" 'python-local-version)
+           (setq py-complete-function 'py-python3-shell-complete))
+          (t (setq py-complete-function 'py-python2-shell-complete))))
   (compilation-shell-minor-mode 1))
 
 (defun python-input-filter (str)
@@ -5157,6 +5198,21 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
        '((< '(backward-delete-char-untabify (min py-indent-offset
                                                  (current-column))))
          (^ '(- (1+ (current-indentation))))))
+  (setq completion-at-point-functions nil)
+  (unless py-complete-function
+    ;; when set, `py-complete-function' it enforced
+    (set (make-local-variable 'python-local-version) (py-choose-shell))
+    (if (string-match "[iI][pP]ython" python-local-version)
+        (setq py-complete-function 'ipython-complete)
+      ;; if `python-local-version' already contains version, use it
+      (if (string-match "[0-9]" python-local-version)
+          (set (make-local-variable 'python-local-full-version) python-local-version)
+        (set (make-local-variable 'python-version-numbers) (shell-command-to-string (concat python-local-version " -c \"from sys import version_info; print version_info[0:2]\"")))
+        (set (make-local-variable 'python-local-full-version) (concat python-local-version (replace-regexp-in-string "," "." (replace-regexp-in-string "[()\.\n ]" "" python-version-numbers)))))
+      (message "python-local-full-version %s" python-local-full-version)
+      (cond ((string-match "[pP]ython3[^[:alpha:]]*$" python-local-full-version)
+             (setq py-complete-function 'py-python3-script-complete))
+            (t (setq py-complete-function 'py-python2-script-complete)))))
   (add-hook 'completion-at-point-functions
             py-complete-function nil 'local)
 

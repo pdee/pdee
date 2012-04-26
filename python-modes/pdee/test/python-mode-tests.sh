@@ -31,7 +31,7 @@ PDIR=`pwd`
 
 # write PATH-TO-EMACS source code directory here
 EMACS_SOURCE_DIR=
-EMACS_SOURCE_DIR="$HOME/emacs-23.4-source"
+EMACS_SOURCE_DIR="$HOME/emacs-23.4"
 
 # python-mode file to load
 if [ -s "../python-components-mode.el" ];
@@ -71,7 +71,7 @@ CUSTOM="${EMACS_SOURCE_DIR}/lisp/custom.el"
 ANSICOLOR="${EMACS_SOURCE_DIR}/lisp/ansi-color.el"
 COMINT="${EMACS_SOURCE_DIR}/lisp/comint.el"
 CCCMDS="${EMACS_SOURCE_DIR}/lisp/progmodes/cc-cmds.el"
-SHELL="${EMACS_SOURCE_DIR}/lisp/shell.el"
+# SHELL="${EMACS_SOURCE_DIR}/lisp/shell.el"
 SKEL="${EMACS_SOURCE_DIR}/lisp/skeleton.el"
 PYMACS="../pymacs.el"
 # file holding the tests
@@ -87,7 +87,7 @@ echo "\$PYMACS: $PYMACS"
 echo "\$PYTHONMODE: $PYTHONMODE"
 echo "\$PDIR/\$TESTFILE: $PDIR/$TESTFILE"
 
-$EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'python)(unload-feature 'python t))" --eval "(when (featurep 'python-mode)(unload-feature 'python-mode t))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$TESTDIR/\")" --eval "(setq py-install-directory \"..\")" -load "$PYMACS" -load $CCCMDS -load $COMINT -load $SHELL -load $ANSICOLOR -load $CLMACS -load $BYTECOMP -load $CUSTOM -load $SKEL -load $PYTHONMODE -load "$PCOT/$TESTFILE" -load "$PCOT/$TESTFILE2" -load "$PCOT/$TESTFILE3" -load "$PCOT/$TESTFILE4" --eval "(quietly-read-abbrev-file (expand-file-name \"~/.abbrev_defs\"))" \
+$EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'python)(unload-feature 'python t))" --eval "(when (featurep 'python-mode)(unload-feature 'python-mode t))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$TESTDIR/\")" --eval "(setq py-install-directory \"..\")" -load "$PYMACS" -load $CCCMDS -load $COMINT -load $ANSICOLOR -load $CLMACS -load $BYTECOMP -load $CUSTOM -load $SKEL -load $PYTHONMODE -load "$PCOT/$TESTFILE" -load "$PCOT/$TESTFILE2" -load "$PCOT/$TESTFILE3" -load "$PCOT/$TESTFILE4" --eval "(quietly-read-abbrev-file (expand-file-name \"~/.abbrev_defs\"))" \
 --funcall new-problem-with-py-temp-directory-lp:965762-test \
 --funcall nested-dictionaries-indent-lp:328791-test \
 --funcall triple-quoted-string-dq-lp:302834-test \

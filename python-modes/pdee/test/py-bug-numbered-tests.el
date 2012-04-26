@@ -533,7 +533,7 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
     (let ((erg (get-char-property (point) 'face)))
       (insert "\"")
       (font-lock-fontify-buffer)
-      (sit-for 0.1)
+      (sit-for 0.2)
       (assert (eq erg (get-char-property (point) 'face)) "Being stuck inside triple-quoted-string. Did not reach beginning of class."))))
 
 (defun inbound-indentation-multiline-assignment-lp:629916-test (&optional arg)

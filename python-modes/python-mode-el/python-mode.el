@@ -44,7 +44,14 @@
 
 (defconst py-version "6.0.6")
 
-
+(defvar python-local-version nil
+  "Used internally. ")
+(make-variable-buffer-local 'python-local-version)
+
+(defvar python-local-full-version nil
+  "Used internally. ")
+(make-variable-buffer-local 'python-local-full-version)
+
 ;;; User definable variables
 (defcustom py-indent-offset 4
   "*Amount of offset per level of indentation.
@@ -214,12 +221,17 @@ Default is nil. "
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-complete-function 'py-shell-complete
-  "Function used for completion in buffers. "
-  :type '(choice (const :tag "py-completion-at-point" py-completion-at-point)
-		 (const :tag "Pymacs based py-complete" py-complete)
-                 (const :tag "py-shell-complete" py-shell-complete)
-                 (const :tag "IPython's ipython-complete" ipython-complete))
+(defcustom py-complete-function 'nil
+  "When set, enforces function todo completion, default is nil.
+
+Normally python-mode, resp. inferior-python-mode know best which functin to use. "
+  :type '(choice
+          (const :tag "default" nil)
+          (const :tag "py-completion-at-point" py-completion-at-point)
+          (const :tag "Pymacs based py-complete" py-complete)
+          (const :tag "py-shell-complete" py-shell-complete)
+          (const :tag "IPython's ipython-complete" ipython-complete)
+          )
   :group 'python-mode)
 
 (defcustom ipython-complete-function 'ipython-complete
@@ -10243,8 +10255,6 @@ Useful for newly defined symbol, not known to python yet. "
 
 (add-hook 'python-mode-hook
           (lambda ()
-            (define-key python-mode-map [(meta p)] 'py-beginning-of-statement)
-            (define-key python-mode-map [(meta n)] 'py-end-of-statement)
             (setq indent-tabs-mode py-indent-tabs-mode)
             (set (make-local-variable 'beginning-of-defun-function) 'py-beginning-of-def-or-class)
             (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class)

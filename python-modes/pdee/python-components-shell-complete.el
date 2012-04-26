@@ -370,6 +370,75 @@ Uses `python-imports' to load modules against which to complete."
        (delete-dups completions)
        #'string<))))
 
+(defun py-python2-script-complete (&optional shell)
+  "Complete word before point, if any. Otherwise insert TAB. "
+  (interactive)
+  (let* (py-split-windows-on-execute-p
+         py-switch-buffers-on-execute-p
+         (shell (or shell python-local-full-version))
+         (orig (point))
+         (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
+         (end (point))
+         (word (buffer-substring-no-properties beg end)))
+    (cond ((string= word "")
+           (message "%s" "Nothing to complete. ")
+           (tab-to-tab-stop))
+          (t (or (setq proc (get-buffer-process shell))
+                 (setq proc (get-buffer-process (py-shell nil nil shell))))
+             (message "%s" (processp proc))
+             (python-shell-completion--do-completion-at-point proc)))))
+
+(defun py-python2-shell-complete (&optional shell)
+  (interactive) 
+  (let* (py-split-windows-on-execute-p
+         py-switch-buffers-on-execute-p
+         (shell (or shell python-local-full-version))
+         (orig (point))
+         (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
+         (end (point))
+         (word (buffer-substring-no-properties beg end)))
+    (cond ((string= word "")
+           (message "%s" "Nothing to complete. ")
+           (tab-to-tab-stop))
+          (t (or (setq proc (get-buffer-process shell))
+                 (setq proc (get-buffer-process (py-shell nil nil shell))))
+             (message "%s" (processp proc))
+             (python-shell-completion--do-completion-at-point proc)))))
+
+(defun py-python3-script-complete (&optional shell)
+  "Complete word before point, if any. Otherwise insert TAB. "
+  (interactive)
+  (let* (py-split-windows-on-execute-p
+         py-switch-buffers-on-execute-p
+         (shell (or shell python-local-full-version))
+         (orig (point))
+         (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
+         (end (point))
+         (word (buffer-substring-no-properties beg end))
+         proc)
+    (cond ((string= word "")
+           (message "%s" "Nothing to complete. ")
+           (tab-to-tab-stop))
+          ;; (t (eval complete))
+          (t (or (setq proc (get-buffer-process shell))
+                 (setq proc (get-buffer-process (py-shell nil nil shell))))
+             (message "%s" (processp proc))
+             (python-shell-completion--do-completion-at-point proc)))))
+
+(defun py-python3-shell-complete (&optional shell)
+  "Complete word before point, if any. Otherwise insert TAB. "
+  (interactive)
+  (let* ((shell (or shell python-local-full-version))
+         (orig (point))
+         (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
+         (end (point))
+         (word (buffer-substring-no-properties beg end)))
+    (cond ((string= word "")
+           (message "%s" "Nothing to complete. ")
+           (tab-to-tab-stop))
+          (t
+           (python-shell-completion--do-completion-at-point (get-buffer-process (current-buffer)))))))
+
 (defun py-shell-complete (&optional shell)
   "Complete word before point, if any. Otherwise insert TAB. "
   (interactive)
@@ -562,7 +631,7 @@ Bug: if no IPython-shell is running, fails first time due to header returned, wh
              (with-output-to-temp-buffer "*Python Completions*"
                (display-completion-list (all-completions pattern completion-table)))
              (message "Making completion list...%s" "done"))))
-    ;; minibuffer.el requires that 
+    ;; minibuffer.el requires that
     (list beg end)))
 
 (provide 'python-components-shell-complete)
