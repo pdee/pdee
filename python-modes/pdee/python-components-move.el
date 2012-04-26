@@ -445,10 +445,7 @@ To go just beyond the final line of the current statement, use `py-down-statemen
         (let*
             ((orig (or orig (point)))
              (origline (or origline (py-count-lines)))
-             (pps
-              (if (featurep 'xemacs)
-                  (parse-partial-sexp (point-min) (point))
-                (syntax-ppss)))
+             (pps (syntax-ppss))
              ;; use by scan-lists
              parse-sexp-ignore-comments)
           (cond
@@ -457,7 +454,7 @@ To go just beyond the final line of the current statement, use `py-down-statemen
                 (and (empty-line-p) (not (eobp)))
               (forward-line 1))
             (py-end-of-statement orig origline done))
-           ((and (not done)(looking-at "\"\"\"\\|'''\\|\"\\|'"))
+           ((and (not done)(not (nth 3 pps))(looking-at "\"\"\"\\|'''\\|\"\\|'"))
             (goto-char (match-end 0))
             (while (and (re-search-forward (match-string-no-properties 0) nil (quote move) 1)(setq done t)
                         (nth 3

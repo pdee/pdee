@@ -428,26 +428,26 @@ will work.
 (defun py-beginning-of-paragraph-p ()
   "Returns position, if cursor is at the beginning of a paragraph, nil otherwise. "
   (let ((orig (point))
-         erg) 
-     (if (and (bolp) (looking-at paragraph-separate))
-         (setq erg (point))
-     (save-excursion
-       (py-end-of-paragraph)
-       (py-beginning-of-paragraph)
-       (when (eq orig (point))
-         (setq erg orig)))
-       erg)))
+        erg)
+    (if (and (bolp) (looking-at paragraph-separate))
+        (setq erg (point))
+      (save-excursion
+        (py-end-of-paragraph)
+        (py-beginning-of-paragraph)
+        (when (eq orig (point))
+          (setq erg orig)))
+      erg)))
 
 (defun py-beginning-of-statement-p ()
   "Returns position, if cursor is at the beginning of a statement, nil otherwise. "
   (let ((orig (point))
-         erg)
-     (save-excursion
-       (py-end-of-statement)
-       (py-beginning-of-statement)
-       (when (eq orig (point))
-         (setq erg orig))
-       erg)))
+        erg)
+    (save-excursion
+      (py-end-of-statement)
+      (py-beginning-of-statement)
+      (when (eq orig (point))
+        (setq erg orig))
+      erg)))
 
 (defun py-beginning-of-expression-p ()
   "Returns position, if cursor is at the beginning of a expression, nil otherwise. "
@@ -682,19 +682,9 @@ i.e. the limit on how far back to scan."
 Ignores common region.
 
 See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
-  (interactive)
   (save-restriction
     (widen)
-    (let ((beg (cond (start)
-                     (t (point-min))))
-          (end (cond (end)
-                     (t (point))))
-          erg)
-      (if (featurep 'xemacs)
-          (setq erg (count-lines beg end))
-        (setq erg (1+ (count-matches "[\n\C-m]" beg end))))
-      (when (interactive-p) (message "%s" erg))
-      erg)))
+    (1+ (count-matches "[\n\C-m]" (point-min) (point)))))
 
 (defun py-which-function ()
   "Return the name of the function or class, if curser is in, return nil otherwise. "

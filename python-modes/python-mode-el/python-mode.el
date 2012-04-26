@@ -2040,19 +2040,9 @@ Inludes Python shell-prompt in order to stop further searches. ")
 Ignores common region.
 
 See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
-  (interactive)
   (save-restriction
     (widen)
-    (let ((beg (cond (start)
-                     (t (point-min))))
-          (end (cond (end)
-                     (t (point))))
-          erg)
-      (if (featurep 'xemacs)
-          (setq erg (count-lines beg end))
-        (setq erg (1+ (count-matches "[\n\C-m]" beg end))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-      erg)))
+    (1+ (count-matches "[\n\C-m]" (point-min) (point)))))
 
 (defmacro python-rx (&rest regexps)
   "Python mode specialized rx macro which supports common python named REGEXPS."
@@ -7451,10 +7441,7 @@ To go just beyond the final line of the current statement, use `py-down-statemen
         (let*
             ((orig (or orig (point)))
              (origline (or origline (py-count-lines)))
-             (pps
-              (if (featurep 'xemacs)
-                  (parse-partial-sexp (point-min) (point))
-                (syntax-ppss)))
+             (pps (syntax-ppss))
              ;; use by scan-lists
              parse-sexp-ignore-comments)
           (cond
@@ -7463,7 +7450,7 @@ To go just beyond the final line of the current statement, use `py-down-statemen
                 (and (empty-line-p) (not (eobp)))
               (forward-line 1))
             (py-end-of-statement orig origline done))
-           ((and (not done)(looking-at "\"\"\"\\|'''\\|\"\\|'"))
+           ((and (not done)(not (nth 3 pps))(looking-at "\"\"\"\\|'''\\|\"\\|'"))
             (goto-char (match-end 0))
             (while (and (re-search-forward (match-string-no-properties 0) nil (quote move) 1)(setq done t)
                         (nth 3

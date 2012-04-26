@@ -91,6 +91,9 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall new-problem-with-py-temp-directory-lp:965762-test \
 --funcall nested-dictionaries-indent-lp:328791-test \
 --funcall triple-quoted-string-dq-lp:302834-test \
+--funcall new-problem-with-py-temp-directory-lp:965762-test \
+--funcall nested-dictionaries-indent-lp:328791-test \
+--funcall triple-quoted-string-dq-lp:302834-test \
 --funcall dq-in-tqs-string-lp:328813-test \
 --funcall py-current-defun-lp:328846-test \
 --funcall cls-pseudo-keyword-lp:328849-test \

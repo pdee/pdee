@@ -598,7 +598,7 @@ class foo(bar):
 
 (defun dict-error-base ()
   (goto-char 78)
-  (assert (eq 167 (progn (py-end-of-statement) (sit-for 0.1) (point) )) nil "dict-error-test failed"))
+  (assert (eq 166 (progn (py-end-of-statement) (sit-for 0.1) (point) )) nil "dict-error-test failed"))
 
 (defun py-expand-abbrev-pst-pdb.set_trace-test (&optional arg load-branch-function)
   (interactive "p")
@@ -918,7 +918,7 @@ class OrderedDict1(dict):
 (defun py-insert-super-python3-test (&optional arg load-branch-function)
   (interactive "p")
   (let* ((py-test-shebang "#! /usr/bin/env python3")
-        (teststring (concat py-test-shebang "
+         (teststring (concat py-test-shebang "
 # -\*- coding: utf-8 -\*-
 # As example given in Python v3.1 documentation » The Python Standard Library »
 #
@@ -1168,7 +1168,7 @@ somme errors
 
 (defun py-end-of-print-statement-base ()
   (goto-char 66)
-  (sit-for 0.1)
+  (sit-for 0.2)
   (assert (eq 146 (py-end-of-statement)) nil "py-end-of-print-statement-test failed"))
 
 (defun nested-try-test (&optional arg load-branch-function)

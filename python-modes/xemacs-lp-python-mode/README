@@ -33,3 +33,5 @@ Install a local shell by evaluating
 (defun MY-LOCAL-SHELL ()
   (interactive)
   (py-shell nil DEDICATED PATH-TO-LOCAL-SHELL))
+
+If `py-complete-function' is set, it takes precedence 
