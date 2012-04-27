@@ -266,6 +266,16 @@ Needed when file-path names are contructed from maybe numbered buffer names like
          (set-buffer oldbuf)
          (switch-to-buffer (current-buffer)))))
 
+(defun py-report-executable (py-buffer-name)
+  (downcase (replace-regexp-in-string
+             "<\\([0-9]+\\)>" ""
+             (replace-regexp-in-string
+              "\*" ""
+              (if
+                  (string-match " " py-buffer-name)
+                  (substring py-buffer-name (1+ (string-match " " py-buffer-name)))
+                py-buffer-name)))))
+
 (defun py-shell (&optional argprompt dedicated pyshellname switch sepchar py-buffer-name done)
   "Start an interactive Python interpreter in another window.
 
@@ -334,14 +344,8 @@ When DONE is `t', `py-shell-manage-windows' is omitted
          (py-buffer-name (or py-buffer-name py-buffer-name-prepare))
          (executable (cond (pyshellname)
                            (py-buffer-name
-                            (downcase (replace-regexp-in-string
-                                       "<\\([0-9]+\\)>" ""
-                                       (replace-regexp-in-string
-                                        "\*" ""
-                                        (if
-                                            (string-match " " py-buffer-name)
-                                            (substring py-buffer-name (1+ (string-match " " py-buffer-name)))
-                                          py-buffer-name))))))))
+                            (py-report-executable py-buffer-name)
+                            ))))
     ;; done by python-mode resp. inferior-python-mode
     ;; (py-set-shell-completion-environment executable)
     (unless (comint-check-proc py-buffer-name)

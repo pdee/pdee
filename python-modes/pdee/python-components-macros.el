@@ -24,25 +24,6 @@
 
 ;;; Code:
 
-;; (defmacro py-separator-char ()
-;;   "Return the file-path separator char from current machine.
-;;
-;; When `py-separator-char' is customized, its taken.
-;; Returns char found. "
-;;   `(let ((erg (cond ((characterp py-separator-char)
-;;                      (char-to-string py-separator-char))
-;;                     ;; epd hack
-;;                     ((and
-;;                       (string-match "[Ii][Pp]ython" py-shell-name)
-;;                       (string-match "epd\\|EPD" py-shell-name))
-;;                      (setq erg (shell-command-to-string (concat py-shell-name " -c \"import os; print(os.sep)\"")))
-;;                      (setq erg (replace-regexp-in-string "\n" "" erg))
-;;                      (when (string-match "^$" erg)
-;;                        (setq erg (substring erg (string-match "^$" erg)))))
-;;                     (t (setq erg (shell-command-to-string (concat py-shell-name " -W ignore" " -c \"import os; print(os.sep)\"")))))))
-;;      (replace-regexp-in-string "\n" "" erg)))
-
-
 (defmacro py-beginning-of-comment ()
   "Go to the beginning of current line's comment, if any.
 

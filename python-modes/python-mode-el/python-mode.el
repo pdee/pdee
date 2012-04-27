@@ -8660,6 +8660,16 @@ Needed when file-path names are contructed from maybe numbered buffer names like
          (set-buffer oldbuf)
          (switch-to-buffer (current-buffer)))))
 
+(defun py-report-executable (py-buffer-name)
+  (downcase (replace-regexp-in-string
+             "<\\([0-9]+\\)>" ""
+             (replace-regexp-in-string
+              "\*" ""
+              (if
+                  (string-match " " py-buffer-name)
+                  (substring py-buffer-name (1+ (string-match " " py-buffer-name)))
+                py-buffer-name)))))
+
 (defun py-shell (&optional argprompt dedicated pyshellname switch sepchar py-buffer-name done)
   "Start an interactive Python interpreter in another window.
 
@@ -8728,14 +8738,8 @@ When DONE is `t', `py-shell-manage-windows' is omitted
          (py-buffer-name (or py-buffer-name py-buffer-name-prepare))
          (executable (cond (pyshellname)
                            (py-buffer-name
-                            (downcase (replace-regexp-in-string
-                                       "<\\([0-9]+\\)>" ""
-                                       (replace-regexp-in-string
-                                        "\*" ""
-                                        (if
-                                            (string-match " " py-buffer-name)
-                                            (substring py-buffer-name (1+ (string-match " " py-buffer-name)))
-                                          py-buffer-name))))))))
+                            (py-report-executable py-buffer-name)
+                            ))))
     ;; done by python-mode resp. inferior-python-mode
     ;; (py-set-shell-completion-environment executable)
     (unless (comint-check-proc py-buffer-name)
@@ -12655,7 +12659,13 @@ Bug: if no IPython-shell is running, fails first time due to header returned, wh
     (if (string= pattern "")
         (tab-to-tab-stop)
       (process-send-string python-process
-                           (format (py-set-ipython-completion-command-string (downcase (process-name python-process))) pattern))
+                           (format
+                            (py-set-ipython-completion-command-string
+                             ;; extract executable core name
+                             (if (string-match (char-to-string py-separator-char) (process-name python-process))
+                                 (substring (py-report-executable (process-name python-process))(1+ (string-match (concat (char-to-string py-separator-char) "[^" (char-to-string py-separator-char) "]+$") (py-report-executable (process-name python-process)))))
+                               (py-report-executable (process-name python-process))))
+                            pattern))
       (accept-process-output python-process)
       (setq completions
             (split-string (substring ugly-return 0 (position ?\n ugly-return)) sep))

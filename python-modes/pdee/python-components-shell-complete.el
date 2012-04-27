@@ -50,21 +50,21 @@ and resending the lines later. The lines are stored in reverse order")
 
 ;;; need to clear py-shell-input-lines if primary prompt found
 
-(defun py-comint-output-filter-function (string)
-  "Watch output for Python prompt and exec next file waiting in queue.
-This function is appropriate for `comint-output-filter-functions'."
-  ;; TBD: this should probably use split-string
-  (when (and (or (string-equal string ">>> ")
-		 (and (>= (length string) 5)
-		      (string-equal (substring string -5) "\n>>> ")))
-	     (or (setq py-shell-input-lines nil)
-		 py-file-queue))
-    (pop-to-buffer (current-buffer))
-    (ignore-errors (delete-file (car py-file-queue)))
-    (setq py-file-queue (cdr py-file-queue))
-    (if py-file-queue
-	(let ((pyproc (get-buffer-process (current-buffer))))
-	  (py-execute-file pyproc (car py-file-queue))))))
+;; (defun py-comint-output-filter-function (string)
+;;   "Watch output for Python prompt and exec next file waiting in queue.
+;; This function is appropriate for `comint-output-filter-functions'."
+;;   ;; TBD: this should probably use split-string
+;;   (when (and (or (string-equal string ">>> ")
+;; 		 (and (>= (length string) 5)
+;; 		      (string-equal (substring string -5) "\n>>> ")))
+;; 	     (or (setq py-shell-input-lines nil)
+;; 		 py-file-queue))
+;;     (pop-to-buffer (current-buffer))
+;;     (ignore-errors (delete-file (car py-file-queue)))
+;;     (setq py-file-queue (cdr py-file-queue))
+;;     (if py-file-queue
+;; 	(let ((pyproc (get-buffer-process (current-buffer))))
+;; 	  (py-execute-file pyproc (car py-file-queue))))))
 
 (defun py-shell-simple-send (proc string)
   (setq py-shell-input-lines (cons string py-shell-input-lines))
@@ -389,7 +389,7 @@ Uses `python-imports' to load modules against which to complete."
              (python-shell-completion--do-completion-at-point proc)))))
 
 (defun py-python2-shell-complete (&optional shell)
-  (interactive) 
+  (interactive)
   (let* (py-split-windows-on-execute-p
          py-switch-buffers-on-execute-p
          (shell (or shell python-local-full-command))
@@ -608,8 +608,14 @@ Bug: if no IPython-shell is running, fails first time due to header returned, wh
     (if (string= pattern "")
         (tab-to-tab-stop)
       (process-send-string python-process
-                           (format (py-set-ipython-completion-command-string (downcase (process-name python-process))) pattern))
-      (accept-process-output python-process)
+                           (format
+                            (py-set-ipython-completion-command-string
+                             ;; extract executable core name
+                             (if (string-match (char-to-string py-separator-char) (process-name python-process))
+                                 (substring (py-report-executable (process-name python-process))(1+ (string-match (concat (char-to-string py-separator-char) "[^" (char-to-string py-separator-char) "]+$") (py-report-executable (process-name python-process)))))
+                               (py-report-executable (process-name python-process))))
+                            pattern))
+      (accept-process-output python-process 5)
       (setq completions
             (split-string (substring ugly-return 0 (position ?\n ugly-return)) sep))
       (setq completion-table (loop for str in completions

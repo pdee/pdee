@@ -1,6 +1,14 @@
 Python Mode News
 ================
 
+New in version 6.0.7
+--------------------
+
+- more specific complete commands available:
+  py-python2-shell-complete, py-python3-shell-complete,
+  py-python2-script-complete, py-python3-script-complete
+
+
 New in version 6.0.6
 --------------------
 
