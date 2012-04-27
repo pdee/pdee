@@ -285,6 +285,13 @@ When DONE is `t', `py-shell-manage-windows' is omitted
   (let* ((sepchar (or sepchar (py-separator-char)))
          (args py-python-command-args)
          (oldbuf (current-buffer))
+         (path (getenv "PYTHONPATH"))
+         ;; make python.el forms usable, to import emacs.py
+         (process-environment
+          (cons (concat "PYTHONPATH="
+                        (if path (concat path path-separator))
+                        data-directory)
+                process-environment))
          ;; proc
          (py-buffer-name
           (or py-buffer-name
@@ -335,10 +342,11 @@ When DONE is `t', `py-shell-manage-windows' is omitted
                                             (string-match " " py-buffer-name)
                                             (substring py-buffer-name (1+ (string-match " " py-buffer-name)))
                                           py-buffer-name))))))))
-    (py-set-shell-completion-environment executable)
+    ;; done by python-mode resp. inferior-python-mode
+    ;; (py-set-shell-completion-environment executable)
     (unless (comint-check-proc py-buffer-name)
       ;; comint
-      (if py-buffer-name
+      (when py-buffer-name
           (set-buffer (apply 'make-comint-in-buffer executable py-buffer-name executable nil args)))
       (set (make-local-variable 'comint-prompt-regexp)
            (concat "\\("
@@ -367,7 +375,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
       (comint-read-input-ring t)
       (set-process-sentinel (get-buffer-process (current-buffer))
                             #'shell-write-history-on-exit)
-      (setq proc (get-buffer-process (current-buffer)))
+      ;; (setq proc (get-buffer-process (current-buffer)))
       ;; pdbtrack
       (add-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file)
       (setq py-pdbtrack-do-tracking-p t)

@@ -46,9 +46,9 @@
   "Used internally. ")
 (make-variable-buffer-local 'python-local-version)
 
-(defvar python-local-full-version nil
+(defvar python-local-full-command nil
   "Used internally. ")
-(make-variable-buffer-local 'python-local-full-version)
+(make-variable-buffer-local 'python-local-full-command)
 
 (defcustom py-install-directory ""
   "Directory where python-mode.el and it's subdirectories should be installed. Needed for completion and other environment stuff only. "
@@ -4128,27 +4128,6 @@ Interactively output of `--version' is displayed. "
 ;;; Utility stuff
 (declare-function compilation-shell-minor-mode "compile" (&optional arg))
 
-(defun py-set-shell-complete-function ()
-  "Set appropriate completion according (I)Python version in buffer resp. shell.
-
-Setting of `py-complete-function' inhibites that, enforces its value. "
-  (unless py-complete-function
-    (set (make-local-variable 'python-local-version) (prin1-to-string (get-buffer-process (current-buffer))))
-    (set (make-local-variable 'python-local-command)
-         (car (process-command (get-buffer-process (current-buffer)))))
-    (message "%s" python-local-command)
-    (if (string-match "[iI][pP]ython" python-local-command)
-        (setq py-complete-function 'ipython-complete)
-      ;; if `python-local-version' already contains version, use it
-      (if (string-match "[0-9]" python-local-command)
-          (set (make-local-variable 'python-local-full-version) python-local-command)
-        (set (make-local-variable 'python-version-numbers) (shell-command-to-string (concat python-local-command " -c \"from sys import version_info; print version_info[0:2]\"")))
-        (set (make-local-variable 'python-local-full-version) (concat python-local-command (replace-regexp-in-string "," "." (replace-regexp-in-string "[()\.\n ]" "" python-version-numbers)))))
-      (message "python-local-full-version %s" python-local-full-version)
-      (cond ((string-match "[pP]ython3[^[:alpha:]]*$" python-local-full-version)
-             (setq py-complete-function 'py-python3-shell-complete))
-            (t (setq py-complete-function 'py-python2-shell-complete))))))
-
 ;; Fixme: This should inherit some stuff from `python-mode', but I'm
 ;; not sure how much: at least some keybindings, like C-c C-f;
 ;; syntax?; font-locking, e.g. for triple-quoted strings?
@@ -4179,18 +4158,30 @@ For running multiple processes in multiple buffers, see `run-python' and
   (set (make-local-variable 'compilation-error-regexp-alist)
        python-compilation-regexp-alist)
   (setq completion-at-point-functions nil)
-  (py-set-shell-complete-function)
+  ;; (py-set-shell-complete-function)
+  ;; (message "%s" (current-buffer))
+  (unless py-complete-function
+    (set (make-local-variable 'python-local-command)
+         (car (process-command (get-buffer-process (current-buffer)))))
+    (message "%s" python-local-command)
+    (if (string-match "[iI][pP]ython" python-local-command)
+        (progn
+          (setq py-complete-function 'ipython-complete)
+          (setq ipython-version (string-to-number (substring (shell-command-to-string (concat py-shell-name " -V")) 2 -1)))
+          (setq ipython-completion-command-string (if (< ipython-version 11) ipython0.10-completion-command-string ipython0.11-completion-command-string)))
+      ;; if `python-local-version' already contains version
+      (if (string-match "[0-9]" python-local-command)
+          (set (make-local-variable 'python-local-full-command) python-local-command)
+        (set (make-local-variable 'python-version-numbers) (shell-command-to-string (concat python-local-command " -c \"from sys import version_info; print version_info[0:2]\"")))
+        (message "%s" python-version-numbers)
+        (set (make-local-variable 'python-local-full-command) (concat python-local-command (replace-regexp-in-string "," "." (replace-regexp-in-string "[()\.\n ]" "" python-version-numbers)))))
+      (message "python-local-full-command %s" python-local-full-command)
+      (cond ((string-match "[pP]ython3[^[:alpha:]]*$" python-local-full-command)
+             (setq py-complete-function 'py-python3-shell-complete))
+            (t (setq py-complete-function 'py-python2-shell-complete)))))
   (add-hook 'completion-at-point-functions
             py-complete-function nil 'local)
-
-  (unless py-complete-function
-    ;; when set, `py-complete-function' it enforced
-    (set (make-local-variable 'python-local-version) (py-which-python))
-    (cond ((string-match "[iI][pP]ython" 'python-local-version)
-           (setq py-complete-function 'ipython-complete))
-          ((string-match "[pP]ython3[^[:alpha:]]*$" 'python-local-version)
-           (setq py-complete-function 'py-python3-shell-complete))
-          (t (setq py-complete-function 'py-python2-shell-complete))))
+  (define-key inferior-python-mode-map [tab] py-complete-function)
   (compilation-shell-minor-mode 1))
 
 (defun python-input-filter (str)
@@ -5206,11 +5197,11 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
         (setq py-complete-function 'ipython-complete)
       ;; if `python-local-version' already contains version, use it
       (if (string-match "[0-9]" python-local-version)
-          (set (make-local-variable 'python-local-full-version) python-local-version)
+          (set (make-local-variable 'python-local-full-command) python-local-version)
         (set (make-local-variable 'python-version-numbers) (shell-command-to-string (concat python-local-version " -c \"from sys import version_info; print version_info[0:2]\"")))
-        (set (make-local-variable 'python-local-full-version) (concat python-local-version (replace-regexp-in-string "," "." (replace-regexp-in-string "[()\.\n ]" "" python-version-numbers)))))
-      (message "python-local-full-version %s" python-local-full-version)
-      (cond ((string-match "[pP]ython3[^[:alpha:]]*$" python-local-full-version)
+        (set (make-local-variable 'python-local-full-command) (concat python-local-version (replace-regexp-in-string "," "." (replace-regexp-in-string "[()\.\n ]" "" python-version-numbers)))))
+      (when py-verbose-p (message "python-local-full-command %s" python-local-full-command))
+      (cond ((string-match "[pP]ython3[^[:alpha:]]*$" python-local-full-command)
              (setq py-complete-function 'py-python3-script-complete))
             (t (setq py-complete-function 'py-python2-script-complete)))))
   (add-hook 'completion-at-point-functions
@@ -5362,15 +5353,17 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
 Returns the specified Python resp. Jython shell command name. "
   (interactive)
   ;; look for an interpreter specified in the first line
-  ;; similar to set-auto-mode (files.el)
-  (let* (erg
-         (interpreter (save-excursion
-                        (goto-char (point-min))
-                        (when (looking-at py-shebang-regexp)
-                          (setq erg (match-string-no-properties 0))
-                          (substring erg (string-match "[ijp]+ython" erg))))))
-    (when (interactive-p) (message "%s" interpreter))
-    interpreter))
+  (let* (erg res)
+    (save-excursion
+      (goto-char (point-min))
+      (when (looking-at py-shebang-regexp)
+        (setq erg (match-string-no-properties 0))
+        (setq erg (split-string erg "[ \t]"))
+        (dolist (ele erg)
+          (when (string-match "[ijp]+ython" ele)
+            (setq res ele)))))
+    (when (interactive-p) (message "%s" res))
+    res))
 
 (defun py-choose-shell-by-import ()
   "Choose CPython or Jython mode based imports.

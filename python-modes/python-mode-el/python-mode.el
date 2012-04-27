@@ -11142,15 +11142,17 @@ Uses `python-imports' to load modules against which to complete."
 Returns the specified Python resp. Jython shell command name. "
   (interactive)
   ;; look for an interpreter specified in the first line
-  ;; similar to set-auto-mode (files.el)
-  (let* (erg
-         (interpreter (save-excursion
-                        (goto-char (point-min))
-                        (when (looking-at py-shebang-regexp)
-                          (setq erg (match-string-no-properties 0))
-                          (substring erg (string-match "[ijp]+ython" erg))))))
-    (when (and py-verbose-p (interactive-p)) (message "%s" interpreter))
-    interpreter))
+  (let* (erg res)
+    (save-excursion
+      (goto-char (point-min))
+      (when (looking-at py-shebang-regexp)
+        (setq erg (match-string-no-properties 0))
+        (setq erg (split-string erg "[ \t]"))
+        (dolist (ele erg)
+          (when (string-match "[ijp]+ython" ele)
+            (setq res ele)))))
+    (when (interactive-p) (message "%s" res))
+    res))
 
 (defun py-choose-shell-by-import ()
   "Choose CPython or Jython mode based imports.
@@ -11561,8 +11563,23 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
        '((< '(backward-delete-char-untabify (min py-indent-offset
                                                  (current-column))))
          (^ '(- (1+ (current-indentation))))))
+  (setq completion-at-point-functions nil)
+  (unless py-complete-function
+    ;; when set, `py-complete-function' it enforced
+    (set (make-local-variable 'python-local-version) (py-choose-shell))
+    (if (string-match "[iI][pP]ython" python-local-version)
+        (setq py-complete-function 'ipython-complete)
+      ;; if `python-local-version' already contains version, use it
+      (if (string-match "[0-9]" python-local-version)
+          (set (make-local-variable 'python-local-full-version) python-local-version)
+        (set (make-local-variable 'python-version-numbers) (shell-command-to-string (concat python-local-version " -c \"from sys import version_info; print version_info[0:2]\"")))
+        (set (make-local-variable 'python-local-full-version) (concat python-local-version (replace-regexp-in-string "," "." (replace-regexp-in-string "[()\.\n ]" "" python-version-numbers)))))
+      ;; (message "python-local-full-version %s" python-local-full-version)
+      (cond ((string-match "[pP]ython3[^[:alpha:]]*$" python-local-full-version)
+             (setq py-complete-function 'py-python3-script-complete))
+            (t (setq py-complete-function 'py-python2-script-complete)))))
   (add-hook 'completion-at-point-functions
-            'py-shell-complete nil 'local)
+            py-complete-function nil 'local)
 
   (when (and py-imenu-create-index-p (fboundp 'imenu-add-to-menubar)(ignore-errors (require 'imenu)))
     (setq imenu-create-index-function #'py-imenu-create-index-new)
@@ -11617,12 +11634,6 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (if py-menu
       (easy-menu-add py-menu))
   (when py-hide-show-minor-mode-p (hs-minor-mode 1))
-  ;; shell-complete end
-  ;; Run the mode hook.  Note that py-mode-hook is deprecated.
-  ;; (run-mode-hooks
-  ;; (if python-mode-hook
-  ;; 'python-mode-hook
-  ;; 'py-mode-hook))
   (py-send-string "import emacs")
   (when py-start-run-py-shell
     ;; py-shell may split window, provide restore

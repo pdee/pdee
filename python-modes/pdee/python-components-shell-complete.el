@@ -375,7 +375,7 @@ Uses `python-imports' to load modules against which to complete."
   (interactive)
   (let* (py-split-windows-on-execute-p
          py-switch-buffers-on-execute-p
-         (shell (or shell python-local-full-version))
+         (shell (or shell python-local-full-command))
          (orig (point))
          (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
          (end (point))
@@ -392,7 +392,7 @@ Uses `python-imports' to load modules against which to complete."
   (interactive) 
   (let* (py-split-windows-on-execute-p
          py-switch-buffers-on-execute-p
-         (shell (or shell python-local-full-version))
+         (shell (or shell python-local-full-command))
          (orig (point))
          (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
          (end (point))
@@ -410,7 +410,7 @@ Uses `python-imports' to load modules against which to complete."
   (interactive)
   (let* (py-split-windows-on-execute-p
          py-switch-buffers-on-execute-p
-         (shell (or shell python-local-full-version))
+         (shell (or shell python-local-full-command))
          (orig (point))
          (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
          (end (point))
@@ -428,7 +428,7 @@ Uses `python-imports' to load modules against which to complete."
 (defun py-python3-shell-complete (&optional shell)
   "Complete word before point, if any. Otherwise insert TAB. "
   (interactive)
-  (let* ((shell (or shell python-local-full-version))
+  (let* ((shell (or shell python-local-full-command))
          (orig (point))
          (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
          (end (point))
