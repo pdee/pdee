@@ -3066,6 +3066,16 @@ Returns indentation if found, nil otherwise. "]))
             ["Default interpreter" py-shell
              :help "`py-shell'
 Switch to `inferior' Python in separate buffer"]
+
+            ["Toggle enforcement of default interpreter" toggle-force-py-shell-name-p
+             :help "If customized default `py-shell-name' should be enforced upon execution. "]
+
+            ["Enforce default interpreter" force-py-shell-name-p-on
+             :help "Enforce customized default `py-shell-name' should upon execution. "]
+
+            ["Don't enforce default interpreter" force-py-shell-name-p-off
+             :help "Make execute commands guess interpreter from environment"]
+
             ["python" python
              :help "`python'
 Start an Python interpreter.
@@ -5518,7 +5528,9 @@ With \\[universal-argument] 4 is called `py-switch-shell' see docu there.
   (interactive "P")
   (if (eq 4 (prefix-numeric-value arg))
       (py-switch-shell '(4))
-    (let* ((erg (cond (py-use-local-default
+    (let* ((erg (cond (py-force-py-shell-name-p
+                       py-shell-name)
+                      (py-use-local-default
                        (if (not (string= "" py-shell-local-path))
                            (expand-file-name py-shell-local-path)
                          (message "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'")))

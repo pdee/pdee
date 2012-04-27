@@ -1223,37 +1223,37 @@ A complementary command travelling right, whilst `py-beginning-of-" ele "' stops
     (erase-buffer)
     (insert (concat ";;; " (capitalize ele) " forms"))
     (insert (concat "
-\(defalias 'toggle-py-" ele " 'py-toggle-" ele ")
+\(defalias 'toggle-" ele " 'py-toggle-" ele ")
 \(defun py-toggle-" ele " (&optional arg)
-  \"If `py-" ele "' should be on or off.
+  \"If `" ele "' should be on or off.
 
-  Returns value of `py-" ele "' switched to. \"
+  Returns value of `" ele "' switched to. \"
   (interactive)
-  (let ((arg (or arg (if py-" ele " -1 1))))
+  (let ((arg (or arg (if " ele " -1 1))))
     (if (< 0 arg)
-        (setq py-" ele " t)
-      (setq py-" ele " nil))
-    (when (interactive-p) (message \"py-" ele ": %s\" py-" ele "))
-    py-" ele "))
+        (setq " ele " t)
+      (setq " ele " nil))
+    (when (or py-verbose-p (interactive-p)) (message \"" ele ": %s\" " ele "))
+    " ele "))
 
-\(defun py-" ele "-on (&optional arg)
+\(defun " ele "-on (&optional arg)
   \"Make sure, `py-" ele "' is on.
 
-Returns value of `py-" ele "'. \"
+Returns value of `" ele "'. \"
   (interactive \"p\")
   (let ((arg (or arg 1)))
-    (toggle-py-" ele " arg))
-  (when (interactive-p) (message \"py-" ele ": %s\" py-" ele "))
-  py-" ele ")
+    (toggle-" ele " arg))
+  (when (or py-verbose-p (interactive-p)) (message \"" ele ": %s\" " ele "))
+  " ele ")
 
-\(defun py-" ele "-off ()
-  \"Make sure, `py-" ele "' is off.
+\(defun " ele "-off ()
+  \"Make sure, `" ele "' is off.
 
-Returns value of `py-" ele "'. \"
+Returns value of `" ele "'. \"
   (interactive \"p\")
-  (toggle-py-" ele " -1)
-  (when (interactive-p) (message \"py-" ele ": %s\" py-" ele "))
-  py-" ele ")"))
+  (toggle-" ele " -1)
+  (when (or py-verbose-p (interactive-p)) (message \"" ele ": %s\" " ele "))
+  " ele ")"))
     (newline))
   (switch-to-buffer (current-buffer))
   (emacs-lisp-mode))

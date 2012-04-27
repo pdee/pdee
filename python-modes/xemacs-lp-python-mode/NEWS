@@ -4,6 +4,13 @@ Python Mode News
 New in version 6.0.7
 --------------------
 
+- new commands
+  toggle-force-py-shell-name-p
+  force-py-shell-name-p-on
+  force-py-shell-name-p-off
+
+  making it easier to enforce default py-shell upon execution
+
 - more specific complete commands available:
   py-python2-shell-complete, py-python3-shell-complete,
   py-python2-script-complete, py-python3-script-complete

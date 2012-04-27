@@ -24,6 +24,47 @@
 ;;; Code:
 (require 'python-components-macros)
 
+;;; toggle-force-py-shell-name-p forms
+(defun toggle-force-py-shell-name-p (&optional arg)
+  "If customized default `py-shell-name' should be enforced upon execution.
+
+If `py-force-py-shell-name-p' should be on or off.
+Returns value of `py-force-py-shell-name-p' switched to. 
+
+Caveat: Completion might not work that way.
+"
+  (interactive)
+  (let ((arg (or arg (if py-force-py-shell-name-p -1 1))))
+    (if (< 0 arg)
+        (setq py-force-py-shell-name-p t)
+      (setq py-force-py-shell-name-p nil))
+    (when (or py-verbose-p (interactive-p)) (message "py-force-py-shell-name-p: %s" py-force-py-shell-name-p))
+    py-force-py-shell-name-p))
+
+(defun force-py-shell-name-p-on (&optional arg)
+  "Make sure, `py-force-py-shell-name-p' is on.
+
+Customized default `py-shell-name' will be enforced upon execution.
+Returns value of `py-force-py-shell-name-p'. 
+
+Caveat: Completion might not work that way.
+"
+  (interactive "p")
+  (let ((arg (or arg 1)))
+    (toggle-force-py-shell-name-p arg))
+  (when (or py-verbose-p (interactive-p)) (message "py-force-py-shell-name-p: %s" py-force-py-shell-name-p))
+  py-force-py-shell-name-p)
+
+(defun force-py-shell-name-p-off ()
+  "Make sure, `py-force-py-shell-name-p' is off.
+
+Function to use by executes will be guessed from environment.
+Returns value of `py-force-py-shell-name-p'. "
+  (interactive "p")
+  (toggle-force-py-shell-name-p -1)
+  (when (or py-verbose-p (interactive-p)) (message "py-force-py-shell-name-p: %s" py-force-py-shell-name-p))
+  py-force-py-shell-name-p)
+
 (defvar py-execute-keep-temporary-file-p nil
   "For tests only. Excute functions delete temporary files default. ")
 

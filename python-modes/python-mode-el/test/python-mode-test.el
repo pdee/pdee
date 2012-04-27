@@ -28,6 +28,7 @@
 (setq python-mode-tests
       (list
 
+       'toggle-force-py-shell-name-p-test
        'py-execute-statement-python-test
        'py-execute-statement-python-switch-test
        'py-execute-statement-python-noswitch-test
@@ -7171,6 +7172,16 @@ impo")))
   (py-shell-complete)
   (sit-for 0.1)
   (assert (looking-back "import") nil "py-completion-at-point-test failed"))
+
+(defun toggle-force-py-shell-name-p-test (&optional arg)
+  (interactive "p")
+  (let ((teststring ""))
+  (py-bug-tests-intern 'toggle-force-py-shell-name-p-base arg teststring)))
+
+(defun toggle-force-py-shell-name-p-base ()
+  (let ((old py-force-py-shell-name-p))
+    (assert (not (eq old (toggle-force-py-shell-name-p))) nil "toggle-force-py-shell-name-p-test failed")
+    (setq py-force-py-shell-name-p old)))
 
 (provide 'python-mode-test)
 ;;; python-mode-test.el ends here
