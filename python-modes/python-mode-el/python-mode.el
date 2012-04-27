@@ -8679,6 +8679,13 @@ When DONE is `t', `py-shell-manage-windows' is omitted
   (let* ((sepchar (or sepchar (py-separator-char)))
          (args py-python-command-args)
          (oldbuf (current-buffer))
+         (path (getenv "PYTHONPATH"))
+         ;; make python.el forms usable, to import emacs.py
+         (process-environment
+          (cons (concat "PYTHONPATH="
+                        (if path (concat path path-separator))
+                        data-directory)
+                process-environment))
          ;; proc
          (py-buffer-name
           (or py-buffer-name
@@ -8729,11 +8736,12 @@ When DONE is `t', `py-shell-manage-windows' is omitted
                                             (string-match " " py-buffer-name)
                                             (substring py-buffer-name (1+ (string-match " " py-buffer-name)))
                                           py-buffer-name))))))))
-    (py-set-shell-completion-environment executable)
+    ;; done by python-mode resp. inferior-python-mode
+    ;; (py-set-shell-completion-environment executable)
     (unless (comint-check-proc py-buffer-name)
       ;; comint
-      (if py-buffer-name
-          (set-buffer (apply 'make-comint-in-buffer executable py-buffer-name executable nil args)))
+      (when py-buffer-name
+        (set-buffer (apply 'make-comint-in-buffer executable py-buffer-name executable nil args)))
       (set (make-local-variable 'comint-prompt-regexp)
            (concat "\\("
                    (mapconcat 'identity
@@ -8761,7 +8769,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
       (comint-read-input-ring t)
       (set-process-sentinel (get-buffer-process (current-buffer))
                             #'shell-write-history-on-exit)
-      (setq proc (get-buffer-process (current-buffer)))
+      ;; (setq proc (get-buffer-process (current-buffer)))
       ;; pdbtrack
       (add-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file)
       (setq py-pdbtrack-do-tracking-p t)
@@ -8770,8 +8778,8 @@ When DONE is `t', `py-shell-manage-windows' is omitted
       (ansi-color-for-comint-mode-on)
       ;; (use-local-map py-shell-map)
       (use-local-map inferior-python-mode-map)
-      (add-hook 'py-shell-hook 'py-dirstack-hook)
-      (run-hooks 'py-shell-hook)
+      ;; (add-hook 'py-shell-hook 'py-dirstack-hook)
+      (when py-shell-hook (run-hooks 'py-shell-hook))
       (goto-char (point-max)))
     (if (and (interactive-p) py-shell-switch-buffers-on-execute-p)
         (pop-to-buffer py-buffer-name)
@@ -12009,15 +12017,38 @@ For running multiple processes in multiple buffers, see `run-python' and
   :group 'python-mode
   (setq mode-line-process '(":%s"))
   (set (make-local-variable 'comint-input-filter) 'python-input-filter)
-  (add-hook 'comint-preoutput-filter-functions #'python-preoutput-filter
-            nil t)
-  (remove-hook 'completion-at-point-functions
-               py-complete-function 'local)
-  (add-hook 'completion-at-point-functions
-            'py-shell-complete nil 'local)
   (python--set-prompt-regexp)
   (set (make-local-variable 'compilation-error-regexp-alist)
        python-compilation-regexp-alist)
+  (setq completion-at-point-functions nil)
+  ;; (py-set-shell-complete-function)
+  ;; (message "%s" (current-buffer))
+  (unless py-complete-function
+    (set (make-local-variable 'python-local-command)
+         (car (process-command (get-buffer-process (current-buffer)))))
+    ;; (message "%s" python-local-command)
+    (if (string-match "[iI][pP]ython" python-local-command)
+        (progn
+          (setq py-complete-function 'ipython-complete)
+          (setq ipython-version (string-to-number (substring (shell-command-to-string (concat py-shell-name " -V")) 2 -1)))
+          (setq ipython-completion-command-string (if (< ipython-version 11) ipython0.10-completion-command-string ipython0.11-completion-command-string)))
+      ;; if `python-local-version' already contains version
+      (if (string-match "[0-9]" python-local-command)
+          (set (make-local-variable 'python-local-full-command) python-local-command)
+        (set (make-local-variable 'python-version-numbers) (shell-command-to-string (concat python-local-command " -c \"from sys import version_info; print version_info[0:2]\"")))
+        ;; (message "%s" python-version-numbers)
+        (set (make-local-variable 'python-local-full-command) (concat python-local-command (replace-regexp-in-string "," "." (replace-regexp-in-string "[()\.\n ]" "" python-version-numbers)))))
+      (when py-verbose-p (message "python-local-full-command %s" python-local-full-command))
+      (cond ((string-match "[pP]ython3[^[:alpha:]]*$" python-local-full-command)
+             (setq py-complete-function 'py-python3-shell-complete))
+            (t (setq py-complete-function 'py-python2-shell-complete)))))
+  (add-hook 'comint-preoutput-filter-functions #'python-preoutput-filter
+            nil t)
+  ;; (add-hook 'inferior-python-mode-hook 'py-shell-hook)
+  (add-hook 'completion-at-point-functions
+            py-complete-function nil 'local)
+  (define-key inferior-python-mode-map [tab] py-complete-function)
+  (define-key inferior-python-mode-map "\t" py-complete-function)
   (compilation-shell-minor-mode 1))
 
 (defvar python-preoutput-leftover nil)

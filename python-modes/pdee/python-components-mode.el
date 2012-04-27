@@ -4152,8 +4152,6 @@ For running multiple processes in multiple buffers, see `run-python' and
   :group 'python-mode
   (setq mode-line-process '(":%s"))
   (set (make-local-variable 'comint-input-filter) 'python-input-filter)
-  (add-hook 'comint-preoutput-filter-functions #'python-preoutput-filter
-            nil t)
   (python--set-prompt-regexp)
   (set (make-local-variable 'compilation-error-regexp-alist)
        python-compilation-regexp-alist)
@@ -4173,15 +4171,19 @@ For running multiple processes in multiple buffers, see `run-python' and
       (if (string-match "[0-9]" python-local-command)
           (set (make-local-variable 'python-local-full-command) python-local-command)
         (set (make-local-variable 'python-version-numbers) (shell-command-to-string (concat python-local-command " -c \"from sys import version_info; print version_info[0:2]\"")))
-        (message "%s" python-version-numbers)
+        ;; (message "%s" python-version-numbers)
         (set (make-local-variable 'python-local-full-command) (concat python-local-command (replace-regexp-in-string "," "." (replace-regexp-in-string "[()\.\n ]" "" python-version-numbers)))))
       (when py-verbose-p (message "python-local-full-command %s" python-local-full-command))
       (cond ((string-match "[pP]ython3[^[:alpha:]]*$" python-local-full-command)
              (setq py-complete-function 'py-python3-shell-complete))
             (t (setq py-complete-function 'py-python2-shell-complete)))))
+  (add-hook 'comint-preoutput-filter-functions #'python-preoutput-filter
+            nil t)
+  ;; (add-hook 'inferior-python-mode-hook 'py-shell-hook)
   (add-hook 'completion-at-point-functions
             py-complete-function nil 'local)
   (define-key inferior-python-mode-map [tab] py-complete-function)
+  (define-key inferior-python-mode-map "\t" py-complete-function)
   (compilation-shell-minor-mode 1))
 
 (defun python-input-filter (str)

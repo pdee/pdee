@@ -347,7 +347,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
     (unless (comint-check-proc py-buffer-name)
       ;; comint
       (when py-buffer-name
-          (set-buffer (apply 'make-comint-in-buffer executable py-buffer-name executable nil args)))
+        (set-buffer (apply 'make-comint-in-buffer executable py-buffer-name executable nil args)))
       (set (make-local-variable 'comint-prompt-regexp)
            (concat "\\("
                    (mapconcat 'identity
@@ -384,8 +384,8 @@ When DONE is `t', `py-shell-manage-windows' is omitted
       (ansi-color-for-comint-mode-on)
       ;; (use-local-map py-shell-map)
       (use-local-map inferior-python-mode-map)
-      (add-hook 'py-shell-hook 'py-dirstack-hook)
-      (run-hooks 'py-shell-hook)
+      ;; (add-hook 'py-shell-hook 'py-dirstack-hook)
+      (when py-shell-hook (run-hooks 'py-shell-hook))
       (goto-char (point-max)))
     (if (and (interactive-p) py-shell-switch-buffers-on-execute-p)
         (pop-to-buffer py-buffer-name)
