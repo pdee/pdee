@@ -216,7 +216,7 @@ This function takes the list of setup code to send from the
     (accept-process-output process python-shell-send-setup-max-wait)
     (dolist (code python-shell-setup-codes)
       (when code
-        (message (format msg code))
+        (when py-verbose-p (message (format msg code)))
         (python-shell-send-string-no-output
          (symbol-value code) process)))))
 
@@ -446,11 +446,11 @@ of commands.)"
 
 (defun python-shell-send-string (string &optional process msg)
   "Send STRING to inferior Python PROCESS.
-When MSG is non-nil messages the first line of STRING."
+When `py-verbose-p' and MSG is non-nil messages the first line of STRING."
   (interactive "sPython command: ")
   (let ((process (or process (python-shell-get-or-create-process)))
         (lines (split-string string "\n" t)))
-    (when msg
+    (when (and py-verbose-p msg)
       (message (format "Sent: %s..." (nth 0 lines))))
     (if (> (length lines) 1)
         (let* ((temp-file-name (make-temp-file "py"))

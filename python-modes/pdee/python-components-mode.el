@@ -4163,7 +4163,7 @@ For running multiple processes in multiple buffers, see `run-python' and
   (unless py-complete-function
     (set (make-local-variable 'python-local-command)
          (car (process-command (get-buffer-process (current-buffer)))))
-    (message "%s" python-local-command)
+    ;; (message "%s" python-local-command)
     (if (string-match "[iI][pP]ython" python-local-command)
         (progn
           (setq py-complete-function 'ipython-complete)
@@ -4175,7 +4175,7 @@ For running multiple processes in multiple buffers, see `run-python' and
         (set (make-local-variable 'python-version-numbers) (shell-command-to-string (concat python-local-command " -c \"from sys import version_info; print version_info[0:2]\"")))
         (message "%s" python-version-numbers)
         (set (make-local-variable 'python-local-full-command) (concat python-local-command (replace-regexp-in-string "," "." (replace-regexp-in-string "[()\.\n ]" "" python-version-numbers)))))
-      (message "python-local-full-command %s" python-local-full-command)
+      (when py-verbose-p (message "python-local-full-command %s" python-local-full-command))
       (cond ((string-match "[pP]ython3[^[:alpha:]]*$" python-local-full-command)
              (setq py-complete-function 'py-python3-shell-complete))
             (t (setq py-complete-function 'py-python2-shell-complete)))))
