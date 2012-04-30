@@ -8721,6 +8721,10 @@ SEPCHAR is the file-path separator of your system. "
                  (replace-regexp-in-string "jython" "Jython" name))
                 ((string= "python" name)
                  (replace-regexp-in-string "python" "Python" name))
+                ((string-match "python2" name)
+                 (replace-regexp-in-string "python2" "Python2" name))
+                ((string-match "python3" name)
+                 (replace-regexp-in-string "python3" "Python3" name))
                 (t name)))
     (when dedicated
       (setq erg (make-temp-name (concat erg "-"))))
