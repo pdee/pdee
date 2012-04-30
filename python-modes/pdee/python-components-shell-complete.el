@@ -275,7 +275,7 @@ and resending the lines later. The lines are stored in reverse order")
 
 ;; (defun py-send-receive (string)
 ;;   "Send STRING to inferior Python (if any) and return result.
-;; 
+;;
 ;; The result is what follows `_emacs_out' in the output.
 ;; This is a no-op if `python-check-comint-prompt' returns nil."
 ;;   (py-send-string string)
@@ -582,7 +582,7 @@ Bug: if no IPython-shell is running, fails first time due to header returned, wh
          (pattern (buffer-substring-no-properties beg end))
          (sep ";")
          (python-process (or (get-buffer-process (current-buffer))
-                             (get-buffer-process "*IPython*")
+                             ;; (get-buffer-process "*IPython*")
                              (get-buffer-process (py-shell nil nil "ipython" 'noswitch nil))))
          (comint-output-filter-functions
           (delq 'py-comint-output-filter-function comint-output-filter-functions))
@@ -595,10 +595,7 @@ Bug: if no IPython-shell is running, fails first time due to header returned, wh
                                      (process-mark (get-buffer-process (current-buffer))))))))
 
          (ccs (or completion-command-string (py-set-ipython-completion-command-string
-                                             ;; extract executable core name
-                                             (if (string-match (char-to-string py-separator-char) (process-name python-process))
-                                                 (substring (py-report-executable (process-name python-process))(1+ (string-match (concat (char-to-string py-separator-char) "[^" (char-to-string py-separator-char) "]+$") (py-report-executable (process-name python-process)))))
-                                               (py-report-executable (process-name python-process))))))
+                                             (process-name python-process))))
          completion completions completion-table ugly-return)
     (if (string= pattern "")
         (tab-to-tab-stop)

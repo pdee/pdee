@@ -45,7 +45,7 @@ See also commands
           (setq py-force-local-shell-p t))
       (setq py-shell-name (default-value 'py-shell-name))
       (setq py-force-local-shell-p nil))
-    (when (or py-verbose-p (interactive))
+    (when (or py-verbose-p (interactive-p))
       (if py-force-local-shell-p
           (message "Enforce %s"  py-shell-name)
         (message "py-shell-name default restored to: %s" py-shell-name))))
@@ -59,14 +59,14 @@ Returns value of `py-force-local-shell-p'.
 Kind of an option 'follow', local shell sets `py-shell-name', enforces its use afterwards "
   (interactive "p")
   (let* ((erg (toggle-force-local-shell 1)))
-    (when (or py-verbose-p (interactive))
+    (when (or py-verbose-p (interactive-p))
       (message "Enforce %s" py-shell-name))))
 
 (defun py-force-local-shell-off ()
   "Restore `py-shell-name' default value and `behaviour'. "
   (interactive "p")
   (let* ((erg (toggle-force-local-shell 1)))
-    (when (or py-verbose-p (interactive))
+    (when (or py-verbose-p (interactive-p))
 (message "py-shell-name default restored to: %s" py-shell-name)
       (message "Enforce %s" py-shell-name))))
 

@@ -4975,7 +4975,7 @@ See also commands
           (setq py-force-local-shell-p t))
       (setq py-shell-name (default-value 'py-shell-name))
       (setq py-force-local-shell-p nil))
-    (when (or py-verbose-p (interactive))
+    (when (or py-verbose-p (interactive-p))
       (if py-force-local-shell-p
           (message "Enforce %s"  py-shell-name)
         (message "py-shell-name default restored to: %s" py-shell-name))))
@@ -4989,14 +4989,14 @@ Returns value of `py-force-local-shell-p'.
 Kind of an option 'follow', local shell sets `py-shell-name', enforces its use afterwards "
   (interactive)
   (let* ((erg (toggle-force-local-shell 1)))
-    (when (or py-verbose-p (interactive))
+    (when (or py-verbose-p (interactive-p))
       (message "Enforce %s" py-shell-name))))
 
 (defun py-force-local-shell-off ()
   "Restore `py-shell-name' default value and `behaviour'. "
   (interactive)
   (let* ((erg (toggle-force-local-shell 1)))
-    (when (or py-verbose-p (interactive))
+    (when (or py-verbose-p (interactive-p))
       (message "py-shell-name default restored to: %s" py-shell-name)
       (message "Enforce %s" py-shell-name))))
 
@@ -12769,7 +12769,7 @@ Bug: if no IPython-shell is running, fails first time due to header returned, wh
          (pattern (buffer-substring-no-properties beg end))
          (sep ";")
          (python-process (or (get-buffer-process (current-buffer))
-                             (get-buffer-process "*IPython*")
+                             ;; (get-buffer-process "*IPython*")
                              (get-buffer-process (py-shell nil nil "ipython" 'noswitch nil))))
          (comint-output-filter-functions
           (delq 'py-comint-output-filter-function comint-output-filter-functions))
@@ -12782,10 +12782,7 @@ Bug: if no IPython-shell is running, fails first time due to header returned, wh
                                      (process-mark (get-buffer-process (current-buffer))))))))
 
          (ccs (or completion-command-string (py-set-ipython-completion-command-string
-                                             ;; extract executable core name
-                                             (if (string-match (char-to-string py-separator-char) (process-name python-process))
-                                                 (substring (py-report-executable (process-name python-process))(1+ (string-match (concat (char-to-string py-separator-char) "[^" (char-to-string py-separator-char) "]+$") (py-report-executable (process-name python-process)))))
-                                               (py-report-executable (process-name python-process))))))
+                                             (process-name python-process))))
          completion completions completion-table ugly-return)
     (if (string= pattern "")
         (tab-to-tab-stop)
