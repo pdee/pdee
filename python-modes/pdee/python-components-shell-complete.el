@@ -135,7 +135,7 @@ and return collected output"
 
 With prefix arg, position cursor at end of buffer."
   (interactive "P")
-  (pop-to-buffer (process-buffer (python-proc)) t) ;Runs python if needed.
+  (pop-to-buffer (process-buffer (py-proc)) t) ;Runs python if needed.
   (when eob-p
     (push-mark)
     (goto-char (point-max))))
@@ -161,7 +161,7 @@ module-qualified names."
   (comint-check-source file-name)     ; Check to see if buffer needs saving.
   (setq python-prev-dir/file (cons (file-name-directory file-name)
 				   (file-name-nondirectory file-name)))
-  (with-current-buffer (process-buffer (python-proc)) ;Runs python if needed.
+  (with-current-buffer (process-buffer (py-proc)) ;Runs python if needed.
     ;; Fixme: I'm not convinced by this logic from python-mode.el.
     (python-send-command
      (if (string-match "\\.py\\'" file-name)
@@ -273,32 +273,21 @@ and resending the lines later. The lines are stored in reverse order")
 				     (match-end 0))))))
       imports)))
 
-(defun py-proc ()
-  "Return the current Python process.
-See variable `python-buffer'.  Starts a new process if necessary."
-  ;; Fixme: Maybe should look for another active process if there
-  ;; isn't one for `python-buffer'.
-  (unless (comint-check-proc python-buffer)
-    (run-python nil t))
-  (get-buffer-process (if (derived-mode-p 'inferior-python-mode)
-			  (current-buffer)
-			python-buffer)))
-
-(defun py-send-receive (string)
-  "Send STRING to inferior Python (if any) and return result.
-
-The result is what follows `_emacs_out' in the output.
-This is a no-op if `python-check-comint-prompt' returns nil."
-  (py-send-string string)
-  (let ((proc (py-proc)))
-    (with-current-buffer (process-buffer proc)
-      (when (python-check-comint-prompt proc)
-	(set (make-local-variable 'python-preoutput-result) nil)
-	(while (progn
-		 (accept-process-output proc 5)
-		 (null python-preoutput-result)))
-	(prog1 python-preoutput-result
-	  (kill-local-variable 'python-preoutput-result))))))
+;; (defun py-send-receive (string)
+;;   "Send STRING to inferior Python (if any) and return result.
+;; 
+;; The result is what follows `_emacs_out' in the output.
+;; This is a no-op if `python-check-comint-prompt' returns nil."
+;;   (py-send-string string)
+;;   (let ((proc (py-proc)))
+;;     (with-current-buffer (process-buffer proc)
+;;       (when (python-check-comint-prompt proc)
+;; 	(set (make-local-variable 'python-preoutput-result) nil)
+;; 	(while (progn
+;; 		 (accept-process-output proc 5)
+;; 		 (null python-preoutput-result)))
+;; 	(prog1 python-preoutput-result
+;; 	  (kill-local-variable 'python-preoutput-result))))))
 
 ;;; IPython Completion start
 
@@ -375,7 +364,7 @@ Uses `python-imports' to load modules against which to complete."
   (interactive)
   (let* (py-split-windows-on-execute-p
          py-switch-buffers-on-execute-p
-         (shell (or shell python-local-full-command))
+         (shell (or shell py-local-versioned-command))
          (orig (point))
          (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
          (end (point))
@@ -392,7 +381,7 @@ Uses `python-imports' to load modules against which to complete."
   (interactive)
   (let* (py-split-windows-on-execute-p
          py-switch-buffers-on-execute-p
-         (shell (or shell python-local-full-command))
+         (shell (or shell py-local-versioned-command))
          (orig (point))
          (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
          (end (point))
@@ -410,7 +399,7 @@ Uses `python-imports' to load modules against which to complete."
   (interactive)
   (let* (py-split-windows-on-execute-p
          py-switch-buffers-on-execute-p
-         (shell (or shell python-local-full-command))
+         (shell (or shell py-local-versioned-command))
          (orig (point))
          (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
          (end (point))
@@ -428,7 +417,7 @@ Uses `python-imports' to load modules against which to complete."
 (defun py-python3-shell-complete (&optional shell)
   "Complete word before point, if any. Otherwise insert TAB. "
   (interactive)
-  (let* ((shell (or shell python-local-full-command))
+  (let* ((shell (or shell py-local-versioned-command))
          (orig (point))
          (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
          (end (point))
@@ -577,7 +566,7 @@ Bug: if no IPython-shell is running, fails first time due to header returned, wh
              (message "Making completion list...%s" "done"))))
     completion))
 
-(defun ipython-complete (&optional done)
+(defun ipython-complete (&optional done completion-command-string)
   "Complete the python symbol before point.
 
 If no completion available, insert a TAB.
@@ -604,17 +593,16 @@ Bug: if no IPython-shell is running, fails first time due to header returned, wh
                       (setq ugly-return (concat ugly-return string))
                       (delete-region comint-last-output-start
                                      (process-mark (get-buffer-process (current-buffer))))))))
+
+         (ccs (or completion-command-string (py-set-ipython-completion-command-string
+                                             ;; extract executable core name
+                                             (if (string-match (char-to-string py-separator-char) (process-name python-process))
+                                                 (substring (py-report-executable (process-name python-process))(1+ (string-match (concat (char-to-string py-separator-char) "[^" (char-to-string py-separator-char) "]+$") (py-report-executable (process-name python-process)))))
+                                               (py-report-executable (process-name python-process))))))
          completion completions completion-table ugly-return)
     (if (string= pattern "")
         (tab-to-tab-stop)
-      (process-send-string python-process
-                           (format
-                            (py-set-ipython-completion-command-string
-                             ;; extract executable core name
-                             (if (string-match (char-to-string py-separator-char) (process-name python-process))
-                                 (substring (py-report-executable (process-name python-process))(1+ (string-match (concat (char-to-string py-separator-char) "[^" (char-to-string py-separator-char) "]+$") (py-report-executable (process-name python-process)))))
-                               (py-report-executable (process-name python-process))))
-                            pattern))
+      (process-send-string python-process (format ccs pattern))
       (accept-process-output python-process 5)
       (setq completions
             (split-string (substring ugly-return 0 (position ?\n ugly-return)) sep))

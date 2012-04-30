@@ -43,14 +43,14 @@
 (defun py-send-string (string)
   "Evaluate STRING in inferior Python process."
   (interactive "sPython command: ")
-  (comint-send-string (python-proc) string)
+  (comint-send-string (py-proc) string)
   (unless (string-match "\n\\'" string)
     ;; Make sure the text is properly LF-terminated.
-    (comint-send-string (python-proc) "\n"))
+    (comint-send-string (py-proc) "\n"))
   (when (string-match "\n[ \t].*\n?\\'" string)
     ;; If the string contains a final indented line, add a second newline so
     ;; as to make sure we terminate the multiline instruction.
-    (comint-send-string (python-proc) "\n")))
+    (comint-send-string (py-proc) "\n")))
 
 (provide 'python-components-send)
 ;;; python-components-send.el ends here

@@ -46,9 +46,13 @@
   "Used internally. ")
 (make-variable-buffer-local 'python-local-version)
 
-(defvar python-local-full-command nil
-  "Used internally. ")
-(make-variable-buffer-local 'python-local-full-command)
+(defvar py-local-command nil
+  "Returns locally used executable-name. ")
+(make-variable-buffer-local 'py-local-command)
+
+(defvar py-local-versioned-command nil
+  "Returns locally used executable-name including its version. ")
+(make-variable-buffer-local 'py-local-versioned-command)
 
 (defcustom py-install-directory ""
   "Directory where python-mode.el and it's subdirectories should be installed. Needed for completion and other environment stuff only. "
@@ -979,6 +983,9 @@ See bug report at launchpad, lp:944093. "
   :type 'boolean
   :group 'python-mode)
 
+(defvar py-force-local-shell-p nil
+  "Used internally, see `toggle-force-local-shell'. ")
+
 (defcustom py-force-py-shell-name-p nil
   "When `t', execution with kind of Python specified in `py-shell-name' is enforced, possibly shebang doesn't take precedence. "
 
@@ -1821,8 +1828,8 @@ It makes underscores and dots word constituent chars.")
         (define-key map [(control j)] 'py-newline-and-indent)
         ;; Most Pythoneers expect RET `py-newline-and-indent'
         ;; (define-key map (kbd "RET") 'py-newline-and-dedent)
-        ;; (define-key map (kbd "RET") 'py-newline-and-indent)
-        (define-key map (kbd "RET") 'newline)
+        (define-key map (kbd "RET") 'py-newline-and-indent)
+        ;; (define-key map (kbd "RET") 'newline)
         (define-key map [(super backspace)] 'py-dedent)
         ;; (define-key map [(control return)] 'py-newline-and-dedent)
         ;; indentation level modifiers
@@ -3067,14 +3074,26 @@ Returns indentation if found, nil otherwise. "]))
              :help "`py-shell'
 Switch to `inferior' Python in separate buffer"]
 
-            ["Toggle enforcement of default interpreter" toggle-force-py-shell-name-p
-             :help "If customized default `py-shell-name' should be enforced upon execution. "]
+            ;; ["Toggle enforcement of default interpreter" toggle-force-py-shell-name-p
+            ;; :help "If customized default `py-shell-name' should be enforced upon execution. "]
 
-            ["Enforce default interpreter" force-py-shell-name-p-on
+            ["Enforce py-shell-name" force-py-shell-name-p-on
              :help "Enforce customized default `py-shell-name' should upon execution. "]
 
             ["Don't enforce default interpreter" force-py-shell-name-p-off
              :help "Make execute commands guess interpreter from environment"]
+
+            ;; ["Enforce locally Python shell sessions interpreter " toggle-force-local-shell
+            ;; :help "If locally indicated Python shell should be taken and
+            ;; enforced upon sessions execute commands. "]
+
+            ["Enforce local Python shell " py-force-local-shell-on
+             :help "Locally indicated Python being enforced upon sessions execute commands. "]
+
+            ["Remove local Python shell enforcement, restore default" py-force-local-shell-off
+             :help "Restore `py-shell-name' default value and `behaviour'. "]
+
+            "-"
 
             ["python" python
              :help "`python'
@@ -3191,10 +3210,6 @@ Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-p
             (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class)
             ;; (orgstruct-mode 1)
             ))
-
-(add-hook 'eldoc-mode-hook
-          (lambda () (run-python nil t)) ; need it running
-          nil t)
 
 ;; used by py-completion-at-point, the way of python.el
 (defvar python-shell-map
@@ -4167,24 +4182,22 @@ For running multiple processes in multiple buffers, see `run-python' and
        python-compilation-regexp-alist)
   (setq completion-at-point-functions nil)
   ;; (py-set-shell-complete-function)
-  ;; (message "%s" (current-buffer))
+  (set (make-local-variable 'py-local-command)
+       (car (process-command (get-buffer-process (current-buffer)))))
   (unless py-complete-function
-    (set (make-local-variable 'python-local-command)
-         (car (process-command (get-buffer-process (current-buffer)))))
-    ;; (message "%s" python-local-command)
-    (if (string-match "[iI][pP]ython" python-local-command)
+    (if (string-match "[iI][pP]ython" py-local-command)
         (progn
           (setq py-complete-function 'ipython-complete)
           (setq ipython-version (string-to-number (substring (shell-command-to-string (concat py-shell-name " -V")) 2 -1)))
           (setq ipython-completion-command-string (if (< ipython-version 11) ipython0.10-completion-command-string ipython0.11-completion-command-string)))
       ;; if `python-local-version' already contains version
-      (if (string-match "[0-9]" python-local-command)
-          (set (make-local-variable 'python-local-full-command) python-local-command)
-        (set (make-local-variable 'python-version-numbers) (shell-command-to-string (concat python-local-command " -c \"from sys import version_info; print version_info[0:2]\"")))
+      (if (string-match "[0-9]" py-local-command)
+          (set (make-local-variable 'py-local-versioned-command) py-local-command)
+        (set (make-local-variable 'python-version-numbers) (shell-command-to-string (concat py-local-command " -c \"from sys import version_info; print version_info[0:2]\"")))
         ;; (message "%s" python-version-numbers)
-        (set (make-local-variable 'python-local-full-command) (concat python-local-command (replace-regexp-in-string "," "." (replace-regexp-in-string "[()\.\n ]" "" python-version-numbers)))))
-      (when py-verbose-p (message "python-local-full-command %s" python-local-full-command))
-      (cond ((string-match "[pP]ython3[^[:alpha:]]*$" python-local-full-command)
+        (set (make-local-variable 'py-local-versioned-command) (concat py-local-command (replace-regexp-in-string "," "." (replace-regexp-in-string "[()\.\n ]" "" python-version-numbers)))))
+      (when (and (interactive-p) py-verbose-p) (message "py-local-versioned-command %s" py-local-versioned-command))
+      (cond ((string-match "[pP]ython3[^[:alpha:]]*$" py-local-versioned-command)
              (setq py-complete-function 'py-python3-shell-complete))
             (t (setq py-complete-function 'py-python2-shell-complete)))))
   (add-hook 'comint-preoutput-filter-functions #'python-preoutput-filter
@@ -4196,6 +4209,7 @@ For running multiple processes in multiple buffers, see `run-python' and
   (define-key inferior-python-mode-map "\t" py-complete-function)
   (compilation-shell-minor-mode 1))
 
+;;; shipped python.el
 (defun python-input-filter (str)
   "`comint-input-filter' function for inferior Python.
 Don't save anything for STR matching `inferior-python-filter-regexp'."
@@ -4363,14 +4377,14 @@ behavior, change `python-remove-cwd-from-path' to nil."
   (sit-for 1 t)        ;Should we use accept-process-output instead?  --Stef
   (unless noshow (pop-to-buffer python-buffer t)))
 
-(defun python-send-command (command)
-  "Like `python-send-string' but resets `compilation-shell-minor-mode'."
-  (when (python-check-comint-prompt)
-    (with-current-buffer (process-buffer (python-proc))
-      (goto-char (point-max))
-      (compilation-forget-errors)
-      (py-send-string command)
-      (setq compilation-last-buffer (current-buffer)))))
+;; (defun python-send-command (command)
+;;   "Like `python-send-string' but resets `compilation-shell-minor-mode'."
+;;   (when (python-check-comint-prompt)
+;;     (with-current-buffer (process-buffer (py-proc))
+;;       (goto-char (point-max))
+;;       (compilation-forget-errors)
+;;       (py-send-string command)
+;;       (setq compilation-last-buffer (current-buffer)))))
 
 (defun python-send-region (start end)
   "Send the region to the inferior Python process."
@@ -4407,7 +4421,7 @@ behavior, change `python-remove-cwd-from-path' to nil."
       (write-region "if True:\n" nil f nil 'nomsg))
     (write-region start end f t 'nomsg)
     (python-send-command command)
-    (with-current-buffer (process-buffer (python-proc))
+    (with-current-buffer (process-buffer (py-proc))
       ;; Tell compile.el to redirect error locations in file `f' to
       ;; positions past marker `orig-start'.  It has to be done *after*
       ;; `python-send-command''s call to `compilation-forget-errors'.
@@ -4487,6 +4501,7 @@ module-qualified names."
 See variable `python-buffer'.  Starts a new process if necessary."
   ;; Fixme: Maybe should look for another active process if there
   ;; isn't one for `python-buffer'.
+  (message "python-proc %s" "Starte run-python")
   (unless (comint-check-proc python-buffer)
     (run-python nil t))
   (get-buffer-process (if (derived-mode-p 'inferior-python-mode)
@@ -5202,23 +5217,32 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
                                                  (current-column))))
          (^ '(- (1+ (current-indentation))))))
   (setq completion-at-point-functions nil)
+  ;; setting of var `py-local-versioned-command' is
+  ;; needed to detect the completion command to choose
+
+  ;; py-complete-function (set (make-local-variable
+  ;; 'python-local-version) py-complete-function) when
+  ;; set, `py-complete-function' it enforced
+  (set (make-local-variable 'py-local-command) (py-choose-shell))
+  ;; customized `py-complete-function' precedes
   (unless py-complete-function
-    ;; when set, `py-complete-function' it enforced
-    (set (make-local-variable 'python-local-version) (py-choose-shell))
-    (if (string-match "[iI][pP]ython" python-local-version)
-        (setq py-complete-function 'ipython-complete)
-      ;; if `python-local-version' already contains version, use it
-      (if (string-match "[0-9]" python-local-version)
-          (set (make-local-variable 'python-local-full-command) python-local-version)
-        (set (make-local-variable 'python-version-numbers) (shell-command-to-string (concat python-local-version " -c \"from sys import version_info; print version_info[0:2]\"")))
-        (set (make-local-variable 'python-local-full-command) (concat python-local-version (replace-regexp-in-string "," "." (replace-regexp-in-string "[()\.\n ]" "" python-version-numbers)))))
-      (when py-verbose-p (message "python-local-full-command %s" python-local-full-command))
-      (cond ((string-match "[pP]ython3[^[:alpha:]]*$" python-local-full-command)
-             (setq py-complete-function 'py-python3-script-complete))
-            (t (setq py-complete-function 'py-python2-script-complete)))))
+    (cond ((string-match "[iI][pP]ython" py-local-command)
+           ;; customized `py-complete-function' precedes
+           (setq py-complete-function 'ipython-complete))
+          ;; if `py-local-command' already contains version, use it
+          ((string-match "[0-9]" py-local-command)
+           (set (make-local-variable 'py-local-versioned-command) py-local-command))
+          (t (set (make-local-variable 'python-version-numbers) (shell-command-to-string (concat py-local-command " -c \"from sys import version_info; print version_info[0:2]\"")))
+             (set (make-local-variable 'py-local-versioned-command) (concat py-local-command (replace-regexp-in-string "," "." (replace-regexp-in-string "[()\.\n ]" "" python-version-numbers)))))))
+  (if py-local-versioned-command
+      (when (and (interactive-p) py-verbose-p) (message "py-local-versioned-command %s" py-local-versioned-command))
+    (when (and (interactive-p) py-verbose-p) (message "py-local-command %s" py-local-command)))
+  (when py-local-versioned-command
+    (cond ((string-match "[pP]ython3[^[:alpha:]]*$" py-local-versioned-command)
+           (setq py-complete-function 'py-python3-script-complete))
+          (t (setq py-complete-function 'py-python2-script-complete))))
   (add-hook 'completion-at-point-functions
             py-complete-function nil 'local)
-
   (when (and py-imenu-create-index-p (fboundp 'imenu-add-to-menubar)(ignore-errors (require 'imenu)))
     (setq imenu-create-index-function #'py-imenu-create-index-new)
     ;; (setq imenu-generic-expression py-imenu-generic-expression)
@@ -5272,7 +5296,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (if py-menu
       (easy-menu-add py-menu))
   (when py-hide-show-minor-mode-p (hs-minor-mode 1))
-  (py-send-string "import emacs")
+  ;; (py-send-string "import emacs")
   (when py-start-run-py-shell
     ;; py-shell may split window, provide restore
     (window-configuration-to-register 213465879)

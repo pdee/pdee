@@ -2063,10 +2063,10 @@ from __future__ import absolute_import
     (py-bug-tests-intern 'automatic-indentation-is-broken-lp:889643-base arg teststring)))
 
 (defun automatic-indentation-is-broken-lp:889643-base ()
-  (if (string-match "components" (find-lisp-object-file-name 'python-mode 'python-modee))
-      (assert (eq (key-binding (kbd "RET")) 'newline) nil "automatic-indentation-is-broken-lp:889643-test failed")
-    (assert (eq (key-binding (kbd "RET")) 'py-newline-and-indent) nil "automatic-indentation-is-broken-lp:889643-test failed")
-    ))
+  ;; (if (string-match "components" (find-lisp-object-file-name 'python-mode 'python-mode))
+  ;; (assert (eq (key-binding (kbd "RET")) 'py-newline-and-indent) nil "automatic-indentation-is-broken-lp:889643-test failed")
+  (assert (eq (key-binding (kbd "RET")) 'py-newline-and-indent) nil "automatic-indentation-is-broken-lp:889643-test failed")
+  )
 
 (defun chars-uU-preceding-triple-quoted-get-string-face-lp:909517-test (&optional arg)
   (interactive "p")
@@ -2643,6 +2643,43 @@ print(\"I'm the temp-buffer-affected-by-py-shell-name-lp:958987-test\")
 (defun temp-buffer-affected-by-py-shell-name-lp:958987-base ()
   (message "%s" py-shell-name)
   (assert (markerp (py-execute-buffer)) nil "temp-buffer-affected-by-py-shell-name-lp:958987-test failed"))
+
+(defun toggle-force-local-shell-lp:988091-test (&optional arg)
+  (interactive "p")
+  (let ((teststring (concat py-epd-shebang "
+# -\*- coding: utf-8 -\*-
+pri
+impo
+\"\"\" Am 25.04.2012 01:32, schrieb Yaroslav Halchenko:
+
+\[ ... ]
+
+another convenience might be to have an option 'follow' the desired shell -- i.e. if someone explicitly
+asks for a buffer to execute it in ipython, that sets py-shell-name to ipython.
+\"\"\"
+
+")))
+    (if (and (boundp 'py-epd-shebang)
+             (stringp py-epd-shebang))
+        (py-bug-tests-intern 'toggle-force-local-shell-lp:988091-base arg teststring)
+      (error "Please edit `py-epd-shebang' with your local EPD before running this test."))))
+
+(defun toggle-force-local-shell-lp:988091-base ()
+  (let ((old py-shell-name))
+    (py-force-local-shell-on)
+    (goto-char 92)
+    (save-excursion (completion-at-point))
+    (message "%s" completion-at-point-functions)
+    (when (string= "python") (prin1-to-string (car completion-at-point-functions)))
+    (assert (looking-at "print") nil "toggle-force-local-shell-lp:988091-test #1 failed")
+    (force-py-shell-name-p-off)
+    (goto-char 99)
+    (save-excursion (completion-at-point))
+    (message "%s" completion-at-point-functions)
+    (string= old (prin1-to-string (car completion-at-point-functions)))
+    (assert (looking-at "import") nil "toggle-force-local-shell-lp:988091-test #1 failed")
+    ))
+
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

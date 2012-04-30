@@ -24,12 +24,61 @@
 ;;; Code:
 (require 'python-components-macros)
 
-;;; toggle-force-py-shell-name-p forms
+(defun toggle-force-local-shell (&optional arg)
+  "If locally indicated Python shell should be taken and
+enforced upon sessions execute commands.
+
+Toggles boolean `py-force-local-shell-p' along with `py-force-py-shell-name-p'
+Returns value of `toggle-force-local-shell' switched to.
+
+When on, kind of an option 'follow', local shell sets `py-shell-name', enforces its use afterwards.
+
+See also commands
+`py-force-local-shell-on'
+`py-force-local-shell-off'
+ "
+  (interactive (list arg))
+  (let ((arg (or arg (if py-force-local-shell-p -1 1))))
+    (if (< 0 arg)
+        (progn
+          (setq py-shell-name (or py-local-command (py-choose-shell)))
+          (setq py-force-local-shell-p t))
+      (setq py-shell-name (default-value 'py-shell-name))
+      (setq py-force-local-shell-p nil))
+    (when (or py-verbose-p (interactive))
+      (if py-force-local-shell-p
+          (message "Enforce %s"  py-shell-name)
+        (message "py-shell-name default restored to: %s" py-shell-name))))
+  py-shell-name)
+
+(defun py-force-local-shell-on ()
+  "Make sure, `py-py-force-local-shell-p' is on.
+
+Returns value of `py-force-local-shell-p'. 
+
+Kind of an option 'follow', local shell sets `py-shell-name', enforces its use afterwards "
+  (interactive "p")
+  (let* ((erg (toggle-force-local-shell 1)))
+    (when (or py-verbose-p (interactive))
+      (message "Enforce %s" py-shell-name))))
+
+(defun py-force-local-shell-off ()
+  "Restore `py-shell-name' default value and `behaviour'. "
+  (interactive "p")
+  (let* ((erg (toggle-force-local-shell 1)))
+    (when (or py-verbose-p (interactive))
+(message "py-shell-name default restored to: %s" py-shell-name)
+      (message "Enforce %s" py-shell-name))))
+
 (defun toggle-force-py-shell-name-p (&optional arg)
   "If customized default `py-shell-name' should be enforced upon execution.
 
 If `py-force-py-shell-name-p' should be on or off.
-Returns value of `py-force-py-shell-name-p' switched to. 
+Returns value of `py-force-py-shell-name-p' switched to.
+
+See also commands
+force-py-shell-name-p-on
+force-py-shell-name-p-off
 
 Caveat: Completion might not work that way.
 "
@@ -42,10 +91,10 @@ Caveat: Completion might not work that way.
     py-force-py-shell-name-p))
 
 (defun force-py-shell-name-p-on (&optional arg)
-  "Make sure, `py-force-py-shell-name-p' is on.
+  "Switches `py-force-py-shell-name-p' on.
 
 Customized default `py-shell-name' will be enforced upon execution.
-Returns value of `py-force-py-shell-name-p'. 
+Returns value of `py-force-py-shell-name-p'.
 
 Caveat: Completion might not work that way.
 "
@@ -60,7 +109,7 @@ Caveat: Completion might not work that way.
 
 Function to use by executes will be guessed from environment.
 Returns value of `py-force-py-shell-name-p'. "
-  (interactive "p")
+  (interactive)
   (toggle-force-py-shell-name-p -1)
   (when (or py-verbose-p (interactive-p)) (message "py-force-py-shell-name-p: %s" py-force-py-shell-name-p))
   py-force-py-shell-name-p)
@@ -485,7 +534,9 @@ When called from a programm, it accepts a string specifying a shell which will b
 Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)
 "
   (interactive "r\nP")
-  (let ((shell (cond ((or py-force-py-shell-name-p (eq 4 (prefix-numeric-value shell))) (default-value 'py-shell-name))
+  (let ((shell (cond ((or py-force-local-shell-p py-force-py-shell-name-p)
+                      py-shell-name)
+                     ((or py-force-py-shell-name-p (eq 4 (prefix-numeric-value shell))) (default-value 'py-shell-name))
                      ((and (numberp shell) (not (eq 1 (prefix-numeric-value shell))))
                       (read-from-minibuffer "(path-to-)shell-name: " (default-value 'py-shell-name)))
                      (t shell))))
@@ -1126,15 +1177,6 @@ Returns position where output starts. "
     (setq erg (goto-char (process-mark proc)))
     erg))
 
-(defun py-send-command (command)
-  "Like `python-send-string' but resets `compilation-shell-minor-mode'."
-  (when (python-check-comint-prompt)
-    (with-current-buffer (process-buffer (python-proc))
-      (goto-char (point-max))
-      (compilation-forget-errors)
-      (py-send-string command)
-      (setq compilation-last-buffer (current-buffer)))))
-
 (defun py-send-region (start end)
   "Send the region to the inferior Python process."
   ;; The region is evaluated from a temporary file.  This avoids
@@ -1170,7 +1212,7 @@ Returns position where output starts. "
       (write-region "if True:\n" nil f nil 'nomsg))
     (write-region start end f t 'nomsg)
     (python-send-command command)
-    (with-current-buffer (process-buffer (python-proc))
+    (with-current-buffer (process-buffer (py-proc))
       ;; Tell compile.el to redirect error locations in file `f' to
       ;; positions past marker `orig-start'.  It has to be done *after*
       ;; `python-send-command''s call to `compilation-forget-errors'.

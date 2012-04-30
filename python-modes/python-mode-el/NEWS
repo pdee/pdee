@@ -4,23 +4,27 @@ Python Mode News
 New in version 6.0.7
 --------------------
 
-- new commands
-  toggle-force-py-shell-name-p
-  force-py-shell-name-p-on
-  force-py-shell-name-p-off
+- related to shell used
+  `toggle-force-py-shell-name-p'
+  `force-py-shell-name-p-on'/off
 
   making it easier to enforce default py-shell upon execution
 
-- more specific complete commands available:
+  `toggle-force-local-shell'
+  `py-force-local-shell-on'/off
+
+  If locally indicated Python shell should be taken and
+  enforced upon sessions execute commands, lp:988091
+
+- specific completion:
   py-python2-shell-complete, py-python3-shell-complete,
   py-python2-script-complete, py-python3-script-complete
-
 
 New in version 6.0.6
 --------------------
 
 - files inside a virtual machine made visible for pdbtrack
-  
+
 - new commands `py-toggle-split-windows-on-execute', ...-on, ...-off
   `py-toggle-shell-switch-buffers-on-execute', ...-on, ...-off
   allow `py-execute-buffer' etc. to split/not-split windows,
@@ -36,7 +40,7 @@ New in version 6.0.6
 - `py-intend-tabs-mode' sets default of `indent-tabs-mode', lp:953765
 
 -- New boolean variable `py-intend-tabs-mode'
-  Permits value independent from Emacs-wide `indent-tabs-mode' 
+  Permits value independent from Emacs-wide `indent-tabs-mode'
   Commands `py-toggle-indent-tabs-mode', ...-on, ...-off
   menu PyTools "Toggle indent-tabs-mode"
 
@@ -45,7 +49,7 @@ New in version 6.0.6
 - new commands py-beginning/end-of-line
   while introduced for internal reasons --because of it's
   return values-- they allow repeats, i.e. when already
-  at end-of-line, jumping to next end etc. 
+  at end-of-line, jumping to next end etc.
 
 - new boolean `py-force-py-shell-name-p'
   When `t', execution with Python specified in `py-shell-name' is en  forced, shebang will have no effect. Default is nil.
@@ -62,7 +66,7 @@ New in version 6.0.5
 
 - Menu reworked and extended
 
-- extended commands combine executing statement/block... with dedidi  cated/switch... etc. This may remove some need of customization.  
+- extended commands combine executing statement/block... with dedidi  cated/switch... etc. This may remove some need of customization.
 
 - local environments support started
   If calls to common `py-shell' should use local executable
@@ -82,7 +86,7 @@ New in version 6.0.5
     (let ((py-shell-name "PATH/TO/PYTHON-XYZ"))
       (py-shell argprompt)))
 
--  new commands `indent-tabs-mode', `toggle-indent-tabs-mode', 
+-  new commands `indent-tabs-mode', `toggle-indent-tabs-mode',
   `indent-tabs-mode-on', `indent-tabs-mode-off'
 
   feature after a request at Stack Exchange asked Jul
