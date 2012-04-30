@@ -54,7 +54,7 @@ See also commands
 (defun py-force-local-shell-on ()
   "Make sure, `py-py-force-local-shell-p' is on.
 
-Returns value of `py-force-local-shell-p'. 
+Returns value of `py-force-local-shell-p'.
 
 Kind of an option 'follow', local shell sets `py-shell-name', enforces its use afterwards "
   (interactive "p")
@@ -325,25 +325,31 @@ Needed when file-path names are contructed from maybe numbered buffer names like
     string)))
 
 (defun py-shell-manage-windows (switch py-split-windows-on-execute-p py-switch-buffers-on-execute-p oldbuf py-buffer-name)
+  (delete-other-windows)
+  (window-configuration-to-register 213465889)
   (cond (;; split and switch
          (unless (eq switch 'noswitch)
            (and py-split-windows-on-execute-p
-
                 (or (eq switch 'switch)
                     py-switch-buffers-on-execute-p)))
          (unless (string-match "[Ii][Pp]ython" py-buffer-name) (delete-other-windows))
-         (when (window-full-height-p)
+         (when (< (count-windows) 2)
            (funcall py-split-windows-on-execute-function))
          (pop-to-buffer py-buffer-name))
-        (;; split, not switch
-         (and py-split-windows-on-execute-p
+        ;; split, not switch
+        ((and py-split-windows-on-execute-p
               (or (eq switch 'noswitch)
                   (not (eq switch 'switch))))
-         (when (window-full-height-p)
-           (funcall py-split-windows-on-execute-function))
-         (set-buffer py-buffer-name)
-         (switch-to-buffer (current-buffer))
-         (other-window 1))
+         (if (< (count-windows) 2)
+             (progn
+               (funcall py-split-windows-on-execute-function)
+               (display-buffer py-buffer-name)
+               ;; avoids windows flip top-down - by side-effect?
+               (window-configuration-to-register 213465889))
+           (window-configuration-to-register 213465889))
+         (jump-to-register 213465889)
+         (display-buffer oldbuf)
+         (pop-to-buffer oldbuf))
         ;; no split, switch
         ((or (eq switch 'switch)
              (and (not (eq switch 'noswitch))

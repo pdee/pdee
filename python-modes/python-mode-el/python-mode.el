@@ -48,13 +48,13 @@
   "Used internally. ")
 (make-variable-buffer-local 'python-local-version)
 
-(defvar python-local-command nil
+(defvar py-local-command nil
   "Returns locally used executable-name. ")
-(make-variable-buffer-local 'python-local-command)
+(make-variable-buffer-local 'py-local-command)
 
-(defvar python-local-versioned-command nil
+(defvar py-local-versioned-command nil
   "Returns locally used executable-name including its version. ")
-(make-variable-buffer-local 'python-local-versioned-command)
+(make-variable-buffer-local 'py-local-versioned-command)
 
 ;;; User definable variables
 (defcustom py-indent-offset 4
@@ -4971,7 +4971,7 @@ See also commands
   (let ((arg (or arg (if py-force-local-shell-p -1 1))))
     (if (< 0 arg)
         (progn
-          (setq py-shell-name (or python-local-command (py-choose-shell)))
+          (setq py-shell-name (or py-local-command (py-choose-shell)))
           (setq py-force-local-shell-p t))
       (setq py-shell-name (default-value 'py-shell-name))
       (setq py-force-local-shell-p nil))
@@ -8743,25 +8743,31 @@ Needed when file-path names are contructed from maybe numbered buffer names like
     string)))
 
 (defun py-shell-manage-windows (switch py-split-windows-on-execute-p py-switch-buffers-on-execute-p oldbuf py-buffer-name)
+  (delete-other-windows)
+  (window-configuration-to-register 213465889)
   (cond (;; split and switch
          (unless (eq switch 'noswitch)
            (and py-split-windows-on-execute-p
-
                 (or (eq switch 'switch)
                     py-switch-buffers-on-execute-p)))
          (unless (string-match "[Ii][Pp]ython" py-buffer-name) (delete-other-windows))
-         (when (window-full-height-p)
+         (when (< (count-windows) 2)
            (funcall py-split-windows-on-execute-function))
          (pop-to-buffer py-buffer-name))
-        (;; split, not switch
-         (and py-split-windows-on-execute-p
+        ;; split, not switch
+        ((and py-split-windows-on-execute-p
               (or (eq switch 'noswitch)
                   (not (eq switch 'switch))))
-         (when (window-full-height-p)
-           (funcall py-split-windows-on-execute-function))
-         (set-buffer py-buffer-name)
-         (switch-to-buffer (current-buffer))
-         (other-window 1) )
+         (if (< (count-windows) 2)
+             (progn
+               (funcall py-split-windows-on-execute-function)
+               (display-buffer py-buffer-name)
+               ;; avoids windows flip top-down - by side-effect?
+               (window-configuration-to-register 213465889))
+           (window-configuration-to-register 213465889))
+         (jump-to-register 213465889)
+         (display-buffer oldbuf)
+         (pop-to-buffer oldbuf))
         ;; no split, switch
         ((or (eq switch 'switch)
              (and (not (eq switch 'noswitch))
@@ -11648,28 +11654,28 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
                                                  (current-column))))
          (^ '(- (1+ (current-indentation))))))
   (setq completion-at-point-functions nil)
-  ;; setting of var `python-local-versioned-command' is
+  ;; setting of var `py-local-versioned-command' is
   ;; needed to detect the completion command to choose
 
   ;; py-complete-function (set (make-local-variable
   ;; 'python-local-version) py-complete-function) when
   ;; set, `py-complete-function' it enforced
-  (set (make-local-variable 'python-local-version) (py-choose-shell))
+  (set (make-local-variable 'py-local-command) (py-choose-shell))
   ;; customized `py-complete-function' precedes
   (unless py-complete-function
-    (cond ((string-match "[iI][pP]ython" python-local-version)
+    (cond ((string-match "[iI][pP]ython" py-local-command)
            ;; customized `py-complete-function' precedes
            (setq py-complete-function 'ipython-complete))
-          ;; if `python-local-version' already contains version, use it
-          ((string-match "[0-9]" python-local-version)
-           (set (make-local-variable 'python-local-versioned-command) python-local-version))
-          (t (set (make-local-variable 'python-version-numbers) (shell-command-to-string (concat python-local-version " -c \"from sys import version_info; print version_info[0:2]\"")))
-             (set (make-local-variable 'python-local-versioned-command) (concat python-local-version (replace-regexp-in-string "," "." (replace-regexp-in-string "[()\.\n ]" "" python-version-numbers)))))))
-  (if python-local-versioned-command
-      (when (and (interactive-p) py-verbose-p) (message "python-local-versioned-command %s" python-local-versioned-command))
-    (when (and (interactive-p) py-verbose-p) (message "python-local-command %s" python-local-command)))
-  (when python-local-versioned-command
-    (cond ((string-match "[pP]ython3[^[:alpha:]]*$" python-local-versioned-command)
+          ;; if `py-local-command' already contains version, use it
+          ((string-match "[0-9]" py-local-command)
+           (set (make-local-variable 'py-local-versioned-command) py-local-command))
+          (t (set (make-local-variable 'python-version-numbers) (shell-command-to-string (concat py-local-command " -c \"from sys import version_info; print version_info[0:2]\"")))
+             (set (make-local-variable 'py-local-versioned-command) (concat py-local-command (replace-regexp-in-string "," "." (replace-regexp-in-string "[()\.\n ]" "" python-version-numbers)))))))
+  (if py-local-versioned-command
+      (when (and (interactive-p) py-verbose-p) (message "py-local-versioned-command %s" py-local-versioned-command))
+    (when (and (interactive-p) py-verbose-p) (message "py-local-command %s" py-local-command)))
+  (when py-local-versioned-command
+    (cond ((string-match "[pP]ython3[^[:alpha:]]*$" py-local-versioned-command)
            (setq py-complete-function 'py-python3-script-complete))
           (t (setq py-complete-function 'py-python2-script-complete))))
   (add-hook 'completion-at-point-functions
@@ -12042,22 +12048,22 @@ For running multiple processes in multiple buffers, see `run-python' and
        python-compilation-regexp-alist)
   (setq completion-at-point-functions nil)
   ;; (py-set-shell-complete-function)
-  (set (make-local-variable 'python-local-command)
+  (set (make-local-variable 'py-local-command)
        (car (process-command (get-buffer-process (current-buffer)))))
   (unless py-complete-function
-    (if (string-match "[iI][pP]ython" python-local-command)
+    (if (string-match "[iI][pP]ython" py-local-command)
         (progn
           (setq py-complete-function 'ipython-complete)
           (setq ipython-version (string-to-number (substring (shell-command-to-string (concat py-shell-name " -V")) 2 -1)))
           (setq ipython-completion-command-string (if (< ipython-version 11) ipython0.10-completion-command-string ipython0.11-completion-command-string)))
       ;; if `python-local-version' already contains version
-      (if (string-match "[0-9]" python-local-command)
-          (set (make-local-variable 'python-local-versioned-command) python-local-command)
-        (set (make-local-variable 'python-version-numbers) (shell-command-to-string (concat python-local-command " -c \"from sys import version_info; print version_info[0:2]\"")))
+      (if (string-match "[0-9]" py-local-command)
+          (set (make-local-variable 'py-local-versioned-command) py-local-command)
+        (set (make-local-variable 'python-version-numbers) (shell-command-to-string (concat py-local-command " -c \"from sys import version_info; print version_info[0:2]\"")))
         ;; (message "%s" python-version-numbers)
-        (set (make-local-variable 'python-local-versioned-command) (concat python-local-command (replace-regexp-in-string "," "." (replace-regexp-in-string "[()\.\n ]" "" python-version-numbers)))))
-      (when (and (interactive-p) py-verbose-p) (message "python-local-versioned-command %s" python-local-versioned-command))
-      (cond ((string-match "[pP]ython3[^[:alpha:]]*$" python-local-versioned-command)
+        (set (make-local-variable 'py-local-versioned-command) (concat py-local-command (replace-regexp-in-string "," "." (replace-regexp-in-string "[()\.\n ]" "" python-version-numbers)))))
+      (when (and (interactive-p) py-verbose-p) (message "py-local-versioned-command %s" py-local-versioned-command))
+      (cond ((string-match "[pP]ython3[^[:alpha:]]*$" py-local-versioned-command)
              (setq py-complete-function 'py-python3-shell-complete))
             (t (setq py-complete-function 'py-python2-shell-complete)))))
   (add-hook 'comint-preoutput-filter-functions #'python-preoutput-filter
@@ -12579,7 +12585,7 @@ Uses `python-imports' to load modules against which to complete."
   (interactive)
   (let* (py-split-windows-on-execute-p
          py-switch-buffers-on-execute-p
-         (shell (or shell python-local-versioned-command))
+         (shell (or shell py-local-versioned-command))
          (orig (point))
          (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
          (end (point))
@@ -12596,7 +12602,7 @@ Uses `python-imports' to load modules against which to complete."
   (interactive)
   (let* (py-split-windows-on-execute-p
          py-switch-buffers-on-execute-p
-         (shell (or shell python-local-versioned-command))
+         (shell (or shell py-local-versioned-command))
          (orig (point))
          (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
          (end (point))
@@ -12614,7 +12620,7 @@ Uses `python-imports' to load modules against which to complete."
   (interactive)
   (let* (py-split-windows-on-execute-p
          py-switch-buffers-on-execute-p
-         (shell (or shell python-local-versioned-command))
+         (shell (or shell py-local-versioned-command))
          (orig (point))
          (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
          (end (point))
@@ -12632,7 +12638,7 @@ Uses `python-imports' to load modules against which to complete."
 (defun py-python3-shell-complete (&optional shell)
   "Complete word before point, if any. Otherwise insert TAB. "
   (interactive)
-  (let* ((shell (or shell python-local-versioned-command))
+  (let* ((shell (or shell py-local-versioned-command))
          (orig (point))
          (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
          (end (point))
