@@ -617,26 +617,44 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
       (py-if-needed-insert-shell (prin1-to-string proc) sepchar)
       (py-insert-coding)
       (py-insert-execute-directory))
-    (set-buffer filebuf)
-    (write-region (point-min) (point-max) file nil t nil 'ask)
-    (set-buffer-modified-p 'nil)
-    (kill-buffer filebuf)
-    (if (file-readable-p file)
-        (progn
-          (when (string-match "ipython" (process-name proc))
-            (sit-for py-ipython-execute-delay))
-          (setq erg (py-execute-file-base proc file pec procbuf))
-          (setq py-exception-buffer (cons file (current-buffer)))
-          (py-shell-manage-windows switch py-split-windows-on-execute-p py-switch-buffers-on-execute-p oldbuf py-buffer-name)
-          (unless (string= (buffer-name (current-buffer)) (buffer-name procbuf))
-            (when py-verbose-p (message "Output buffer: %s" procbuf)))
-          (sit-for 0.1)
-          (unless py-execute-keep-temporary-file-p
-            (delete-file file)
-            (when (buffer-live-p file)
-              (kill-buffer file)))
-          erg)
-      (message "%s not readable. %s" file "Do you have write permissions?"))))
+    (cond (python-mode-v5-behavior-p
+           
+           (let ((cmd (concat pyshellname (if (string-equal py-which-bufname
+                                                            "Jython")
+                                              " -" " -c "))))
+             (save-excursion
+               (set-buffer filebuf)
+               (shell-command-on-region (point-min) (point-max)
+                                        cmd py-output-buffer))
+             (if (not (get-buffer py-output-buffer))
+                 (message "No output.")
+               (setq py-exception-buffer (current-buffer))
+               (let ((err-p (py-postprocess-output-buffer py-output-buffer)))
+                 ;; (when py-switch-buffers-on-execute-p
+                     (pop-to-buffer py-output-buffer)
+                     ;; )
+                 (if err-p
+                     (pop-to-buffer py-exception-buffer))))))
+          (t (set-buffer filebuf)
+             (write-region (point-min) (point-max) file nil t nil 'ask)
+             (set-buffer-modified-p 'nil)
+             (kill-buffer filebuf)
+             (if (file-readable-p file)
+                 (progn
+                   (when (string-match "ipython" (process-name proc))
+                     (sit-for py-ipython-execute-delay))
+                   (setq erg (py-execute-file-base proc file pec procbuf))
+                   (setq py-exception-buffer (cons file (current-buffer)))
+                   (py-shell-manage-windows switch py-split-windows-on-execute-p py-switch-buffers-on-execute-p oldbuf py-buffer-name)
+                   (unless (string= (buffer-name (current-buffer)) (buffer-name procbuf))
+                     (when py-verbose-p (message "Output buffer: %s" procbuf)))
+                   (sit-for 0.1)
+                   (unless py-execute-keep-temporary-file-p
+                     (delete-file file)
+                     (when (buffer-live-p file)
+                       (kill-buffer file)))
+                   erg)
+               (message "%s not readable. %s" file "Do you have write permissions?"))))))
 
 (defun py-execute-string (&optional string shell dedicated)
   "Send the argument STRING to a Python interpreter.

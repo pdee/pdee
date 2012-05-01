@@ -992,6 +992,14 @@ See bug report at launchpad, lp:944093. "
   :type 'boolean
   :group 'python-mode)
 
+(defvar python-mode-v5-behavior nil)
+(defcustom python-mode-v5-behavior-p nil
+  "Execute region through `shell-command-on-region' as
+v5 did it - lp:990079. This might fail with certain chars - see UnicodeEncodeError lp:550661"
+
+  :type 'boolean
+  :group 'python-mode)
+
 ;; (defcustom python-load-extended-executes-p  t
 ;;   "If commands from `python-extended-executes.el' should be loaded.
 ;;
