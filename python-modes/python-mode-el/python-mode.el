@@ -12793,9 +12793,20 @@ Bug: if no IPython-shell is running, fails first time due to header returned, wh
          (end (point))
          (pattern (buffer-substring-no-properties beg end))
          (sep ";")
-         (python-process (or (get-buffer-process (current-buffer))
-                             ;; (get-buffer-process "*IPython*")
-                             (get-buffer-process (py-shell nil nil "ipython" 'noswitch nil))))
+         (pyshellname (py-choose-shell))
+         (processlist (process-list))
+         done
+         (process
+          (progn
+            (while (and processlist (not done))
+              (when (and
+                     (string= pyshellname (process-name (car processlist)))
+                     (processp (car processlist))
+                     (setq done (car processlist))))
+              (setq processlist (cdr processlist)))
+            done))
+         (python-process (or process
+                             (setq python-process (get-buffer-process (py-shell nil nil (if (string-match "[iI][pP]ython[^[:alpha:]]*$"  pyshellname) pyshellname "ipython") 'noswitch nil)))))
          (comint-output-filter-functions
           (delq 'py-comint-output-filter-function comint-output-filter-functions))
          (comint-output-filter-functions

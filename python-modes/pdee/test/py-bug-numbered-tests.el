@@ -24,6 +24,9 @@
 (defvar py-test-shebang "#! /usr/bin/env python"
   "Default value used for tests. ")
 
+(defvar py-ipython-test-shebang "#! /usr/bin/env ipython"
+  "Default value used for testing IPython. ")
+
 (defvar bug-numbered-tests nil
   "Tests following reports at https://bugs.launchpad.net/python-mode")
 
@@ -2180,7 +2183,7 @@ return SOME_Constant + blah
 (defun py-ipython-complete-lp:927136-test (&optional arg)
   (interactive "p")
   ;; (py-shell nil nil "ipython" 'noswitch)
-  (let ((teststring (concat py-test-shebang "
+  (let ((teststring (concat py-ipython-test-shebang "
 # -*- coding: utf-8 -*-
 impo")))
     (py-bug-tests-intern 'py-ipython-complete-lp:927136-base arg teststring)))
@@ -2192,7 +2195,7 @@ impo")))
 
 (defun execute-buffer-ipython-fails-lp:928087-test (&optional arg)
   (interactive "p")
-  (let ((teststring (concat py-test-shebang "
+  (let ((teststring (concat py-ipython-test-shebang "
 # -*- coding: utf-8 -*-
 print 4 + 5
 print u'\\xA9'

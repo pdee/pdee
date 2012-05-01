@@ -262,8 +262,11 @@ interpreter.
   (interactive)
   (let* ((pyshellname (or pyshellname py-shell-name))
          (ipython-version
-          (when (string-match "ipython" pyshellname)
-            (string-to-number (substring (shell-command-to-string (concat pyshellname " -V")) 2 -1)))))
+          (if (string-match "ipython" pyshellname)
+              (string-to-number (substring (shell-command-to-string (concat pyshellname " -V")) 2 -1))
+            ;; choose default installed IPython
+            (string-to-number (substring (shell-command-to-string (concat "ipython" " -V")) 2 -1))
+)))
     (when ipython-version
       (setq ipython-completion-command-string (if (< ipython-version 11) ipython0.10-completion-command-string ipython0.11-completion-command-string))
       ipython-completion-command-string)))
