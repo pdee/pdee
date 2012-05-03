@@ -497,7 +497,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
     (if (and (interactive-p) py-shell-switch-buffers-on-execute-p)
         (pop-to-buffer py-buffer-name)
       (unless done (py-shell-manage-windows switch py-split-windows-on-execute-p py-switch-buffers-on-execute-p oldbuf py-buffer-name)))
-    (when py-verbose-p (message py-buffer-name))
+    ;; (when py-verbose-p (message py-buffer-name))
     py-buffer-name))
 
 (defcustom py-remove-cwd-from-path t

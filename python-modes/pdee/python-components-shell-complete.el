@@ -375,7 +375,7 @@ Uses `python-imports' to load modules against which to complete."
           (t (or (setq proc (get-buffer-process shell))
                  (setq proc (get-buffer-process (py-shell nil nil shell))))
              (if (processp proc)
-                 (python-shell-completion--do-completion-at-point proc)
+                 (python-shell-completion--do-completion-at-point proc (buffer-substring-no-properties beg end) word)
                (error "No completion process at proc")
 )))))
 

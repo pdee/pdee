@@ -1372,7 +1372,9 @@ print \"Hello, I'm your master!\"
 ")
       (write-file "/var/tmp/my-master.py"))
     (set-buffer oldbuf)
-    (py-execute-buffer)))
+    (unwind-protect
+        (py-execute-buffer)
+      (when (file-readable-p "/var/tmp/my-master.py") (delete-file "/var/tmp/my-master.py")))))
 
 (defun py-variable-name-face-lp:798538-test (&optional arg)
   (interactive "p")
