@@ -23,6 +23,12 @@
 ;;; Code:
 (require 'python-components-macros) 
 
+(defun py-warn-tmp-files-left ()
+  "Detect and warn about file of form \"py11046IoE\" in py-temp-directory. "
+  (let ((erg1 (file-readable-p (concat py-temp-directory (py-separator-char)  (car (directory-files  py-temp-directory nil "py[[:alnum:]]+$"))))))
+    (when erg1
+      (message "py-warn-tmp-files-left: %s ?" (concat py-temp-directory (py-separator-char) (car (directory-files  py-temp-directory nil "py[[:alnum:]]*$")))))))
+
 (defun py-fetch-docu ()
   "Lookup in current buffer for the doku for the symbol at point.
 

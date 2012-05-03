@@ -1330,12 +1330,13 @@ to \"^python-\"."
   "Send all setup code for shell.
 This function takes the list of setup code to send from the
 `python-shell-setup-codes' list."
-  (let ((msg "Sent %s")
+  (let (
+        ;; (msg "Sent %s")
         (process (get-buffer-process (current-buffer))))
     (accept-process-output process python-shell-send-setup-max-wait)
     (dolist (code python-shell-setup-codes)
       (when code
-        (when py-verbose-p (message (format msg code)))
+        ;; (when py-verbose-p (message (format msg code)))
         (python-shell-send-string-no-output
          (symbol-value code) process)))))
 
@@ -1564,8 +1565,9 @@ When `py-verbose-p' and MSG is non-nil messages the first line of STRING."
   (interactive "sPython command: ")
   (let ((process (or process (python-shell-get-or-create-process)))
         (lines (split-string string "\n" t)))
-    (when (and py-verbose-p msg)
-      (message (format "Sent: %s..." (nth 0 lines))))
+    ;; (when (and py-verbose-p msg)
+    ;; (message (format "Sent: %s..." (nth 0 lines)))
+    ;; )
     (if (> (length lines) 1)
         (let* ((temp-file-name (make-temp-file "py"))
                (file-name (or (buffer-file-name) temp-file-name)))
@@ -11707,8 +11709,11 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
     (cond ((string-match "[pP]ython3[^[:alpha:]]*$" py-local-versioned-command)
            (setq py-complete-function 'py-python3-script-complete))
           (t (setq py-complete-function 'py-python2-script-complete))))
-  (add-hook 'completion-at-point-functions
-            py-complete-function nil 'local)
+  (if py-complete-function
+      (add-hook 'completion-at-point-functions
+                py-complete-function nil 'local)
+    (add-hook 'completion-at-point-functions
+              #'python-shell-send-setup-code))
   (when (and py-imenu-create-index-p (fboundp 'imenu-add-to-menubar)(ignore-errors (require 'imenu)))
     (setq imenu-create-index-function #'py-imenu-create-index-new)
     ;; (setq imenu-generic-expression py-imenu-generic-expression)
@@ -12624,8 +12629,10 @@ Uses `python-imports' to load modules against which to complete."
            (tab-to-tab-stop))
           (t (or (setq proc (get-buffer-process shell))
                  (setq proc (get-buffer-process (py-shell nil nil shell))))
-             (message "%s" (processp proc))
-             (python-shell-completion--do-completion-at-point proc)))))
+             (if (processp proc)
+                 (python-shell-completion--do-completion-at-point proc)
+               (error "No completion process at proc")
+               )))))
 
 (defun py-python2-shell-complete (&optional shell)
   (interactive)

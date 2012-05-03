@@ -374,8 +374,10 @@ Uses `python-imports' to load modules against which to complete."
            (tab-to-tab-stop))
           (t (or (setq proc (get-buffer-process shell))
                  (setq proc (get-buffer-process (py-shell nil nil shell))))
-             (message "%s" (processp proc))
-             (python-shell-completion--do-completion-at-point proc)))))
+             (if (processp proc)
+                 (python-shell-completion--do-completion-at-point proc)
+               (error "No completion process at proc")
+)))))
 
 (defun py-python2-shell-complete (&optional shell)
   (interactive)

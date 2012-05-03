@@ -190,7 +190,7 @@ Default is nil. "
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-complete-function 'nil
+(defcustom py-complete-function nil
   "When set, enforces function todo completion, default is nil.
 
 Normally python-mode, resp. inferior-python-mode know best which functin to use. "
@@ -997,6 +997,11 @@ See bug report at launchpad, lp:944093. "
   "Execute region through `shell-command-on-region' as
 v5 did it - lp:990079. This might fail with certain chars - see UnicodeEncodeError lp:550661"
 
+  :type 'boolean
+  :group 'python-mode)
+
+(defcustom py-warn-tmp-files-left-p nil
+  "Messages a warning, when `py-temp-directory' contains files susceptible being left by previous Python-mode sessions. See also lp:987534 "
   :type 'boolean
   :group 'python-mode)
 
@@ -3204,21 +3209,6 @@ Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-p
   :group 'python
   :type 'hook)
 
-;;; Hooks
-(remove-hook 'python-mode-hook 'python-setup-brm)
-;; (remove-hook 'python-mode-hook
-;; (lambda ()
-;; "Turn off Indent Tabs mode."
-;; (setq indent-tabs-mode nil)))
-
-(add-hook 'python-mode-hook
-          (lambda ()
-            (setq indent-tabs-mode py-indent-tabs-mode)
-            (set (make-local-variable 'beginning-of-defun-function) 'py-beginning-of-def-or-class)
-            (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class)
-            ;; (orgstruct-mode 1)
-            ))
-
 ;; used by py-completion-at-point, the way of python.el
 (defvar python-shell-map
   (let ((map (copy-keymap comint-mode-map)))
@@ -5156,8 +5146,25 @@ Updated on each expansion.")
 (require 'column-marker)
 (require 'feg-python-el-extracts)
 
+;;; Hooks
+(remove-hook 'python-mode-hook 'python-setup-brm)
 (remove-hook 'python-mode-hook 'imenu-add-menubar-index)
+;; (remove-hook 'python-mode-hook
+;; (lambda ()
+;; "Turn off Indent Tabs mode."
+;; (setq indent-tabs-mode nil)))
 
+(add-hook 'python-mode-hook
+          (lambda ()
+            (setq indent-tabs-mode py-indent-tabs-mode)
+            (set (make-local-variable 'beginning-of-defun-function) 'py-beginning-of-def-or-class)
+            (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class)
+            ;; (orgstruct-mode 1)
+            ))
+(when py-warn-tmp-files-left-p
+  (add-hook 'python-mode-hook 'py-warn-tmp-files-left))
+
+;;;
 (define-derived-mode python-mode fundamental-mode "Python"
   "Major mode for editing Python files.
 
@@ -5249,8 +5256,11 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
     (cond ((string-match "[pP]ython3[^[:alpha:]]*$" py-local-versioned-command)
            (setq py-complete-function 'py-python3-script-complete))
           (t (setq py-complete-function 'py-python2-script-complete))))
-  (add-hook 'completion-at-point-functions
-            py-complete-function nil 'local)
+  (if py-complete-function
+      (add-hook 'completion-at-point-functions
+                py-complete-function nil 'local)
+    (add-hook 'completion-at-point-functions
+              #'python-shell-send-setup-code))
   (when (and py-imenu-create-index-p (fboundp 'imenu-add-to-menubar)(ignore-errors (require 'imenu)))
     (setq imenu-create-index-function #'py-imenu-create-index-new)
     ;; (setq imenu-generic-expression py-imenu-generic-expression)
