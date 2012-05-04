@@ -276,31 +276,6 @@ This is a no-op if `python-check-comint-prompt' returns nil."
 	(prog1 python-preoutput-result
 	  (kill-local-variable 'python-preoutput-result))))))
 
-;;; IPython Completion start
-
-;; see also
-;; http://lists.gnu.org/archive/html/bug-gnu-emacs/2008-01/msg00076.html
-
-(defvar ipython-completion-command-string nil
-  "Either ipython0.10-completion-command-string or ipython0.11-completion-command-string.
-
-ipython0.11-completion-command-string also covers version 0.12")
-;; (make-variable-buffer-local 'ipython-completion-command-string)
-
-(defvar ipython0.10-completion-command-string
-  "print(';'.join(__IP.Completer.all_completions('%s'))) #PYTHON-MODE SILENT\n"
-  "The string send to ipython to query for all possible completions")
-
-;; (setq ipython0.10-completion-command-string "print(';'.join(__IP.Completer.all_completions('%s'))) #PYTHON-MODE SILENT\n")
-
-;; https://github.com/ipython
-;; commit 1dd379d857f836c9e8af4576cecaeb413fcba4e5
-;; Date:   Tue Feb 14 19:47:04 2012 -0800
-;; "print(';'.join(get_ipython().complete('%s', '%s')[1])) #PYTHON-MODE SILENT\n"
-(defvar ipython0.11-completion-command-string
-  "print(';'.join(get_ipython().Completer.all_completions('%s'))) #PYTHON-MODE SILENT\n"
-  "The string send to ipython to query for all possible completions")
-
 (defun py-shell-complete (&optional shell)
   "Complete word before point, if any. Otherwise insert TAB. "
   (interactive)
