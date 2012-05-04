@@ -9323,15 +9323,15 @@ When called from a programm, it accepts a string specifying a shell which will b
     (set-buffer filebuf)
     (erase-buffer)
     (insert strg)
-    (unless wholebuf
-      (py-fix-start (point-min)(point-max))
-      (py-if-needed-insert-shell (prin1-to-string proc) sepchar)
-      (py-insert-coding)
-      (py-insert-execute-directory))
+    (py-fix-start (point-min)(point-max))
+    (py-if-needed-insert-shell (prin1-to-string proc) sepchar)
+    (unless wholebuf (py-insert-coding))
+    (py-insert-execute-directory)
     (cond (python-mode-v5-behavior-p
+
            (let ((cmd (concat pyshellname (if (string-equal py-which-bufname
                                                             "Jython")
-                                              " -" ""))))
+                                              " -" " -c "))))
              (save-excursion
                (set-buffer filebuf)
                (shell-command-on-region (point-min) (point-max)
