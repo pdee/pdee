@@ -4,6 +4,11 @@ Python Mode News
 New in version 6.0.7
 --------------------
 
+- make every Python shell acces its own history-file
+  .python3_history
+  .python_history
+  .ipython_history etc.
+
 - related to shell used
   `toggle-force-py-shell-name-p'
   `force-py-shell-name-p-on'/off

@@ -67,7 +67,7 @@ Kind of an option 'follow', local shell sets `py-shell-name', enforces its use a
   (interactive "p")
   (let* ((erg (toggle-force-local-shell 1)))
     (when (or py-verbose-p (interactive-p))
-(message "py-shell-name default restored to: %s" py-shell-name)
+      (message "py-shell-name default restored to: %s" py-shell-name)
       (message "Enforce %s" py-shell-name))))
 
 (defun toggle-force-py-shell-name-p (&optional arg)
@@ -266,7 +266,7 @@ interpreter.
               (string-to-number (substring (shell-command-to-string (concat pyshellname " -V")) 2 -1))
             ;; choose default installed IPython
             (string-to-number (substring (shell-command-to-string (concat "ipython" " -V")) 2 -1))
-)))
+            )))
     (when ipython-version
       (setq ipython-completion-command-string (if (< ipython-version 11) ipython0.10-completion-command-string ipython0.11-completion-command-string))
       ipython-completion-command-string)))
@@ -447,8 +447,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
          (py-buffer-name (or py-buffer-name py-buffer-name-prepare))
          (executable (cond (pyshellname)
                            (py-buffer-name
-                            (py-report-executable py-buffer-name)
-                            ))))
+                            (py-report-executable py-buffer-name)))))
     ;; done by python-mode resp. inferior-python-mode
     ;; (py-set-shell-completion-environment executable)
     (unless (comint-check-proc py-buffer-name)
@@ -470,15 +469,18 @@ When DONE is `t', `py-shell-manage-windows' is omitted
       (inferior-python-mode)
       (setq comint-input-sender 'py-shell-simple-send)
       (setq comint-input-ring-file-name
-            (if (or (string-match "ipython" py-buffer-name)
-                    (string-match "IPython" py-buffer-name))
-                (if (getenv "IPYTHONDIR")
-                    (concat (getenv "IPYTHONDIR") "/history") "~/.ipython/history")
-              (if (getenv "PYTHONHISTORY")
-                  (concat (getenv "PYTHONHISTORY") "/" py-buffer-name "_history")
-                (if dedicated
-                    (concat "~/." (substring py-buffer-name 0 (string-match "-" py-buffer-name)) "_history")
-                  (concat "~/." py-buffer-name "_history")))))
+            (cond ((string-match "[iI][pP]ython[[:alnum:]]*$" py-buffer-name)
+                   (if (getenv "IPYTHONDIR")
+                       (concat (getenv "IPYTHONDIR") "/history")
+                     "~/.ipython/history"))
+                  ((getenv "PYTHONHISTORY")
+                   (concat (getenv "PYTHONHISTORY") "/" (py-report-executable py-buffer-name) "_history"))
+                  (dedicated
+                   (concat "~/." (substring py-buffer-name 0 (string-match "-" py-buffer-name)) "_history"))
+                  ;; .pyhistory might be locked from outside Emacs
+                  ;; (t "~/.pyhistory")
+                  (t (concat "~/." (py-report-executable py-buffer-name) "_history")
+                     )))
       (comint-read-input-ring t)
       (set-process-sentinel (get-buffer-process (current-buffer))
                             #'shell-write-history-on-exit)
@@ -621,7 +623,7 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
       (py-insert-coding)
       (py-insert-execute-directory))
     (cond (python-mode-v5-behavior-p
-           
+
            (let ((cmd (concat pyshellname (if (string-equal py-which-bufname
                                                             "Jython")
                                               " -" " -c "))))
@@ -634,8 +636,8 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
                (setq py-exception-buffer (current-buffer))
                (let ((err-p (py-postprocess-output-buffer py-output-buffer)))
                  ;; (when py-switch-buffers-on-execute-p
-                     (pop-to-buffer py-output-buffer)
-                     ;; )
+                 (pop-to-buffer py-output-buffer)
+                 ;; )
                  (if err-p
                      (pop-to-buffer py-exception-buffer))))))
           (t (set-buffer filebuf)

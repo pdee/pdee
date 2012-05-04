@@ -452,7 +452,7 @@ When `py-verbose-p' and MSG is non-nil messages the first line of STRING."
   (let ((process (or process (python-shell-get-or-create-process)))
         (lines (split-string string "\n" t)))
     ;; (when (and py-verbose-p msg)
-      ;; (message (format "Sent: %s..." (nth 0 lines)))
+    ;; (message (format "Sent: %s..." (nth 0 lines)))
     ;; )
     (if (> (length lines) 1)
         (let* ((temp-file-name (make-temp-file "py"))
@@ -520,7 +520,8 @@ FILE-NAME."
   (let* ((process (or process (python-shell-get-or-create-process)))
          (temp-file-name (when temp-file-name
                            (expand-file-name temp-file-name)))
-         (file-name (or (expand-file-name file-name) temp-file-name)))
+         (file-name (or (expand-file-name file-name) temp-file-name))
+         py-python-command-args)
     (when (not file-name)
       (error "If FILE-NAME is nil then TEMP-FILE-NAME must be non-nil"))
     (python-shell-send-string

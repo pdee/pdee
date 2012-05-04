@@ -893,7 +893,10 @@ Any arguments can't contain whitespace."
   :group 'python-mode
   :type 'string)
 
-(defcustom inferior-python-filter-regexp "\\`\\s-*\\S-?\\S-?\\s-*\\'"
+(defvar py-history-filter-regexp "\\`\\s-*\\S-?\\S-?\\s-*\\'\\|'''/tmp/\\|^__pyfile = open('''\\|^execfile(r'[.+]/tmp/")
+(setq py-history-filter-regexp "\\`\\s-*\\S-?\\S-?\\s-*\\'\\|'''/tmp/\\|^__pyfile = open('''\\|^execfile(r'[.+]/tmp/")
+
+(defcustom py-history-filter-regexp "\\`\\s-*\\S-?\\S-?\\s-*\\'\\|'''/tmp/"
   "Input matching this regexp is not saved on the history list.
 Default ignores all inputs of 0, 1, or 2 non-blank characters."
   :type 'regexp
@@ -4174,7 +4177,7 @@ For running multiple processes in multiple buffers, see `run-python' and
 \\{inferior-python-mode-map}"
   :group 'python-mode
   (setq mode-line-process '(":%s"))
-  (set (make-local-variable 'comint-input-filter) 'python-input-filter)
+  (set (make-local-variable 'comint-input-filter) 'py-history-input-filter)
   (python--set-prompt-regexp)
   (set (make-local-variable 'compilation-error-regexp-alist)
        python-compilation-regexp-alist)
@@ -4207,11 +4210,11 @@ For running multiple processes in multiple buffers, see `run-python' and
   (define-key inferior-python-mode-map "\t" py-complete-function)
   (compilation-shell-minor-mode 1))
 
-;;; shipped python.el
-(defun python-input-filter (str)
+;;; dereived from shipped python.el
+(defun py-history-input-filter (str)
   "`comint-input-filter' function for inferior Python.
-Don't save anything for STR matching `inferior-python-filter-regexp'."
-  (not (string-match inferior-python-filter-regexp str)))
+Don't save anything for STR matching `py-history-filter-regexp'."
+  (not (string-match py-history-filter-regexp str)))
 
 ;; Fixme: Loses with quoted whitespace.
 (defun python-args-to-list (string)
@@ -5121,7 +5124,8 @@ Updated on each expansion.")
 ;;      gud-pdb-command-name (symbol-name pdb-path))
 
 (add-to-list 'load-path default-directory)
-(require 'python-components-macros)
+;; (require 'python-components-macros)
+(require 'python-components-nomacros)
 (require 'python-components-edit)
 (require 'python-components-intern)
 (require 'python-components-move)

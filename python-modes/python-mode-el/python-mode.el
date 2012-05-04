@@ -849,7 +849,7 @@ Any arguments can't contain whitespace."
   :group 'python-mode
   :type 'string)
 
-(defcustom inferior-python-filter-regexp "\\`\\s-*\\S-?\\S-?\\s-*\\'"
+(defcustom py-history-filter-regexp "\\`\\s-*\\S-?\\S-?\\s-*\\'"
   "Input matching this regexp is not saved on the history list.
 Default ignores all inputs of 0, 1, or 2 non-blank characters."
   :type 'regexp
@@ -1800,13 +1800,14 @@ completions on the current context."
       (when (> (length completions) 2)
         (split-string completions "^'\\|^\"\\|;\\|'$\\|\"$" t)))))
 
-(defun python-shell-completion--do-completion-at-point (process)
+(defun python-shell-completion--do-completion-at-point (process line input)
   "Do completion at point for PROCESS."
   (with-syntax-table python-dotty-syntax-table
-    (let* ((line (substring-no-properties
-		  (buffer-substring (point-at-bol) (point)) nil nil))
-	   (input (substring-no-properties
-		   (or (comint-word (current-word)) "") nil nil))
+    (let* (
+           ;; (line (substring-no-properties
+           ;; (buffer-substring (point-at-bol) (point)) nil nil))
+	   ;; (input (substring-no-properties
+           ;; (or (comint-word (current-word)) "") nil nil))
 	   (completions
 	    (if (and (> (length python-shell-module-completion-string-code) 0)
 		     (string-match "^\\(from\\|import\\)[ \t]" line))
@@ -1848,7 +1849,7 @@ completions on the current context."
   (and comint-last-prompt-overlay
        (> (point-marker) (overlay-end comint-last-prompt-overlay))
        (python-shell-completion--do-completion-at-point
-	(get-buffer-process (current-buffer)))))
+	(get-buffer-process (current-buffer))(buffer-substring-no-properties beg end) word)))
 
 (defun python-shell-completion-complete-or-indent ()
   "Complete or indent depending on the context.
@@ -3520,10 +3521,10 @@ Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-p
             ))
         map))
 
-(defun python-input-filter (str)
+(defun py-history-input-filter (str)
   "`comint-input-filter' function for inferior Python.
-Don't save anything for STR matching `inferior-python-filter-regexp'."
-  (not (string-match inferior-python-filter-regexp str)))
+Don't save anything for STR matching `py-history-filter-regexp'."
+  (not (string-match py-history-filter-regexp str)))
 
 ;; Fixme: Loses with quoted whitespace.
 (defun python-args-to-list (string)
@@ -8872,8 +8873,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
          (py-buffer-name (or py-buffer-name py-buffer-name-prepare))
          (executable (cond (pyshellname)
                            (py-buffer-name
-                            (py-report-executable py-buffer-name)
-                            ))))
+                            (py-report-executable py-buffer-name)))))
     ;; done by python-mode resp. inferior-python-mode
     ;; (py-set-shell-completion-environment executable)
     (unless (comint-check-proc py-buffer-name)
@@ -8895,15 +8895,18 @@ When DONE is `t', `py-shell-manage-windows' is omitted
       (inferior-python-mode)
       (setq comint-input-sender 'py-shell-simple-send)
       (setq comint-input-ring-file-name
-            (if (or (string-match "ipython" py-buffer-name)
-                    (string-match "IPython" py-buffer-name))
-                (if (getenv "IPYTHONDIR")
-                    (concat (getenv "IPYTHONDIR") "/history") "~/.ipython/history")
-              (if (getenv "PYTHONHISTORY")
-                  (concat (getenv "PYTHONHISTORY") "/" py-buffer-name "_history")
-                (if dedicated
-                    (concat "~/." (substring py-buffer-name 0 (string-match "-" py-buffer-name)) "_history")
-                  (concat "~/." py-buffer-name "_history")))))
+            (cond ((string-match "[iI][pP]ython[[:alnum:]]*$" py-buffer-name)
+                   (if (getenv "IPYTHONDIR")
+                       (concat (getenv "IPYTHONDIR") "/history")
+                     "~/.ipython/history"))
+                  ((getenv "PYTHONHISTORY")
+                   (concat (getenv "PYTHONHISTORY") "/" (py-report-executable py-buffer-name) "_history"))
+                  (dedicated
+                   (concat "~/." (substring py-buffer-name 0 (string-match "-" py-buffer-name)) "_history"))
+                  ;; .pyhistory might be locked from outside Emacs
+                  ;; (t "~/.pyhistory")
+                  (t (concat "~/." (py-report-executable py-buffer-name) "_history")
+                     )))
       (comint-read-input-ring t)
       (set-process-sentinel (get-buffer-process (current-buffer))
                             #'shell-write-history-on-exit)
@@ -8922,7 +8925,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
     (if (and (interactive-p) py-shell-switch-buffers-on-execute-p)
         (pop-to-buffer py-buffer-name)
       (unless done (py-shell-manage-windows switch py-split-windows-on-execute-p py-switch-buffers-on-execute-p oldbuf py-buffer-name)))
-    (when py-verbose-p (message py-buffer-name))
+    ;; (when py-verbose-p (message py-buffer-name))
     py-buffer-name))
 
 (defalias 'iyp 'ipython)
@@ -12076,7 +12079,7 @@ For running multiple processes in multiple buffers, see `run-python' and
 \\{inferior-python-mode-map}"
   :group 'python-mode
   (setq mode-line-process '(":%s"))
-  (set (make-local-variable 'comint-input-filter) 'python-input-filter)
+  (set (make-local-variable 'comint-input-filter) 'py-history-input-filter)
   (python--set-prompt-regexp)
   (set (make-local-variable 'compilation-error-regexp-alist)
        python-compilation-regexp-alist)
@@ -12630,7 +12633,7 @@ Uses `python-imports' to load modules against which to complete."
           (t (or (setq proc (get-buffer-process shell))
                  (setq proc (get-buffer-process (py-shell nil nil shell))))
              (if (processp proc)
-                 (python-shell-completion--do-completion-at-point proc)
+                 (python-shell-completion--do-completion-at-point proc (buffer-substring-no-properties beg end) word)
                (error "No completion process at proc")
                )))))
 
@@ -12649,7 +12652,7 @@ Uses `python-imports' to load modules against which to complete."
           (t (or (setq proc (get-buffer-process shell))
                  (setq proc (get-buffer-process (py-shell nil nil shell))))
              (message "%s" (processp proc))
-             (python-shell-completion--do-completion-at-point proc)))))
+             (python-shell-completion--do-completion-at-point proc)(buffer-substring-no-properties beg end) word))))
 
 (defun py-python3-script-complete (&optional shell)
   "Complete word before point, if any. Otherwise insert TAB. "
@@ -12669,7 +12672,7 @@ Uses `python-imports' to load modules against which to complete."
           (t (or (setq proc (get-buffer-process shell))
                  (setq proc (get-buffer-process (py-shell nil nil shell))))
              (message "%s" (processp proc))
-             (python-shell-completion--do-completion-at-point proc)))))
+             (python-shell-completion--do-completion-at-point proc)(buffer-substring-no-properties beg end) word))))
 
 (defun py-python3-shell-complete (&optional shell)
   "Complete word before point, if any. Otherwise insert TAB. "
@@ -12683,7 +12686,7 @@ Uses `python-imports' to load modules against which to complete."
            (message "%s" "Nothing to complete. ")
            (tab-to-tab-stop))
           (t
-           (python-shell-completion--do-completion-at-point (get-buffer-process (current-buffer)))))))
+           (python-shell-completion--do-completion-at-point (get-buffer-process (current-buffer)) (buffer-substring-no-properties beg end) word)))))
 
 (defun py-shell-complete (&optional shell)
   "Complete word before point, if any. Otherwise insert TAB. "
@@ -12702,7 +12705,7 @@ Uses `python-imports' to load modules against which to complete."
                    (message "%s" "Nothing to complete. ")
                    (tab-to-tab-stop))
                   ((string-match "[pP]ython3[^[:alpha:]]*$" shell)
-                   (python-shell-completion--do-completion-at-point (get-buffer-process (current-buffer))))
+                   (python-shell-completion--do-completion-at-point (get-buffer-process (current-buffer))(buffer-substring-no-properties beg end) word))
                   (t (py-shell-complete-intern word beg end shell)))))
       ;; complete in script buffer
       (let* (py-split-windows-on-execute-p
@@ -12718,7 +12721,7 @@ Uses `python-imports' to load modules against which to complete."
               ((string-match "[iI][pP]ython" shell)
                (ipython-complete))
               ((string-match "[pP]ython3[^[:alpha:]]*$" shell)
-               (python-shell-completion--do-completion-at-point proc))
+               (python-shell-completion--do-completion-at-point proc (buffer-substring-no-properties beg end) word))
               (t (py-shell-complete-intern word beg end shell)))))))
 
 (defun py-shell-complete-intern (word &optional beg end shell)

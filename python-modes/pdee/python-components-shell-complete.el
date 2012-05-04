@@ -377,7 +377,7 @@ Uses `python-imports' to load modules against which to complete."
              (if (processp proc)
                  (python-shell-completion--do-completion-at-point proc (buffer-substring-no-properties beg end) word)
                (error "No completion process at proc")
-)))))
+               )))))
 
 (defun py-python2-shell-complete (&optional shell)
   (interactive)
@@ -394,7 +394,7 @@ Uses `python-imports' to load modules against which to complete."
           (t (or (setq proc (get-buffer-process shell))
                  (setq proc (get-buffer-process (py-shell nil nil shell))))
              (message "%s" (processp proc))
-             (python-shell-completion--do-completion-at-point proc)))))
+             (python-shell-completion--do-completion-at-point proc (buffer-substring-no-properties beg end) word)))))
 
 (defun py-python3-script-complete (&optional shell)
   "Complete word before point, if any. Otherwise insert TAB. "
@@ -414,7 +414,7 @@ Uses `python-imports' to load modules against which to complete."
           (t (or (setq proc (get-buffer-process shell))
                  (setq proc (get-buffer-process (py-shell nil nil shell))))
              (message "%s" (processp proc))
-             (python-shell-completion--do-completion-at-point proc)))))
+             (python-shell-completion--do-completion-at-point proc (buffer-substring-no-properties beg end) word)))))
 
 (defun py-python3-shell-complete (&optional shell)
   "Complete word before point, if any. Otherwise insert TAB. "
@@ -428,7 +428,7 @@ Uses `python-imports' to load modules against which to complete."
            (message "%s" "Nothing to complete. ")
            (tab-to-tab-stop))
           (t
-           (python-shell-completion--do-completion-at-point (get-buffer-process (current-buffer)))))))
+           (python-shell-completion--do-completion-at-point (get-buffer-process (current-buffer)) (buffer-substring-no-properties beg end) word)))))
 
 (defun py-shell-complete (&optional shell)
   "Complete word before point, if any. Otherwise insert TAB. "
@@ -447,7 +447,7 @@ Uses `python-imports' to load modules against which to complete."
                    (message "%s" "Nothing to complete. ")
                    (tab-to-tab-stop))
                   ((string-match "[pP]ython3[^[:alpha:]]*$" shell)
-                   (python-shell-completion--do-completion-at-point (get-buffer-process (current-buffer))))
+                   (python-shell-completion--do-completion-at-point (get-buffer-process (current-buffer)) (buffer-substring-no-properties beg end) word))
                   (t (py-shell-complete-intern word beg end shell)))))
       ;; complete in script buffer
       (let* (py-split-windows-on-execute-p
@@ -463,7 +463,7 @@ Uses `python-imports' to load modules against which to complete."
               ((string-match "[iI][pP]ython" shell)
                (ipython-complete))
               ((string-match "[pP]ython3[^[:alpha:]]*$" shell)
-               (python-shell-completion--do-completion-at-point proc))
+               (python-shell-completion--do-completion-at-point proc (buffer-substring-no-properties beg end) word))
               (t (py-shell-complete-intern word beg end shell)))))))
 
 (defun py-shell-complete-intern (word &optional beg end shell)
