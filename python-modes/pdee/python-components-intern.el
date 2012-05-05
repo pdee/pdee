@@ -452,60 +452,60 @@ will work.
 (defun py-beginning-of-expression-p ()
   "Returns position, if cursor is at the beginning of a expression, nil otherwise. "
   (let ((orig (point))
-         erg)
-     (save-excursion
-       (py-end-of-expression)
-       (py-beginning-of-expression)
-       (when (eq orig (point))
-         (setq erg orig))
-       erg)))
+        erg)
+    (save-excursion
+      (py-end-of-expression)
+      (py-beginning-of-expression)
+      (when (eq orig (point))
+        (setq erg orig))
+      erg)))
 
 (defun py-beginning-of-partial-expression-p ()
   "Returns position, if cursor is at the beginning of a partial-expression, nil otherwise. "
   (let ((orig (point))
-         erg)
-     (save-excursion
-       (py-end-of-partial-expression)
-       (py-beginning-of-partial-expression)
-       (when (eq orig (point))
-         (setq erg orig))
-       erg)))
+        erg)
+    (save-excursion
+      (py-end-of-partial-expression)
+      (py-beginning-of-partial-expression)
+      (when (eq orig (point))
+        (setq erg orig))
+      erg)))
 
 (defun py-beginning-of-block-p ()
   "Returns position, if cursor is at the beginning of a block, nil otherwise. "
-    (when (and (looking-at py-block-re)
-               (not (py-in-string-or-comment-p)))
-      (point)))
+  (when (and (looking-at py-block-re)
+             (not (py-in-string-or-comment-p)))
+    (point)))
 
 (defun py-beginning-of-clause-p ()
   "Returns position, if cursor is at the beginning of a clause, nil otherwise. "
-    (when (and (looking-at py-clause-re)
-               (not (py-in-string-or-comment-p)))
-      (point)))
+  (when (and (looking-at py-clause-re)
+             (not (py-in-string-or-comment-p)))
+    (point)))
 
 (defun py-beginning-of-block-or-clause-p ()
   "Returns position, if cursor is at the beginning of a block-or-clause, nil otherwise. "
-    (when (and (looking-at py-block-or-clause-re)
-               (not (py-in-string-or-comment-p)))
-      (point)))
+  (when (and (looking-at py-block-or-clause-re)
+             (not (py-in-string-or-comment-p)))
+    (point)))
 
 (defun py-beginning-of-def-p ()
   "Returns position, if cursor is at the beginning of a def, nil otherwise. "
-    (when (and (looking-at py-def-re)
-               (not (py-in-string-or-comment-p)))
-      (point)))
+  (when (and (looking-at py-def-re)
+             (not (py-in-string-or-comment-p)))
+    (point)))
 
 (defun py-beginning-of-class-p ()
   "Returns position, if cursor is at the beginning of a class, nil otherwise. "
-    (when (and (looking-at py-class-re)
-               (not (py-in-string-or-comment-p)))
-      (point)))
+  (when (and (looking-at py-class-re)
+             (not (py-in-string-or-comment-p)))
+    (point)))
 
 (defun py-beginning-of-def-or-class-p ()
   "Returns position, if cursor is at the beginning of a def-or-class, nil otherwise. "
-    (when (and (looking-at py-def-or-class-re)
-               (not (py-in-string-or-comment-p)))
-      (point)))
+  (when (and (looking-at py-def-or-class-re)
+             (not (py-in-string-or-comment-p)))
+    (point)))
 
 ;;; Opens
 (defun py-statement-opens-block-p (&optional regexp)
@@ -678,13 +678,21 @@ i.e. the limit on how far back to scan."
      ((nth 4 state) 'comment))))
 
 (defun py-count-lines (&optional start end)
-  "Count lines in buffer, optional without given boundaries.
-Ignores common region.
+  "Count lines in accessible part until current line.
 
 See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
-  (save-restriction
-    (widen)
-    (1+ (count-matches "[\n\C-m]" (point-min) (point)))))
+  (interactive) 
+  (save-excursion
+    (let ((count 0)
+          (orig (point)))
+      (goto-char (point-min))
+      (while (and (< (point) orig)(not (eobp)) (skip-chars-forward "^\n" orig))
+        (setq count (1+ count))
+        (unless (or (not (< (point) orig)) (eobp)) (forward-char 1)
+                (setq count (+ count (abs (skip-chars-forward "\n" orig))))))
+      (when (bolp) (setq count (1+ count)))
+      (when (interactive-p) (message "%s" count)) 
+      count)))
 
 (defun py-which-function ()
   "Return the name of the function or class, if curser is in, return nil otherwise. "

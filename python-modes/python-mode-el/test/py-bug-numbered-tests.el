@@ -2685,6 +2685,5 @@ asks for a buffer to execute it in ipython, that sets py-shell-name to ipython.
     (assert (looking-at "import") nil "toggle-force-local-shell-lp:988091-test #1 failed")
     ))
 
-
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

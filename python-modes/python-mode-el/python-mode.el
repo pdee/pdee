@@ -2103,13 +2103,21 @@ Inludes Python shell-prompt in order to stop further searches. ")
          (< 0 (nth 0 (syntax-ppss))))))
 
 (defun py-count-lines (&optional start end)
-  "Count lines in buffer, optional without given boundaries.
-Ignores common region.
+  "Count lines in accessible part until current line.
 
 See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
-  (save-restriction
-    (widen)
-    (1+ (count-matches "[\n\C-m]" (point-min) (point)))))
+  (interactive)
+  (save-excursion
+    (let ((count 0)
+          (orig (point)))
+      (goto-char (point-min))
+      (while (and (< (point) orig)(not (eobp)) (skip-chars-forward "^\n" orig))
+        (setq count (1+ count))
+        (unless (or (not (< (point) orig)) (eobp)) (forward-char 1)
+                (setq count (+ count (abs (skip-chars-forward "\n" orig))))))
+      (when (bolp) (setq count (1+ count)))
+      (when (interactive-p) (message "%s" count))
+      count)))
 
 (defmacro python-rx (&rest regexps)
   "Python mode specialized rx macro which supports common python named REGEXPS."
@@ -7570,18 +7578,16 @@ To go just beyond the final line of the current statement, use `py-down-statemen
              ;; use by scan-lists
              parse-sexp-ignore-comments)
           (cond
-           ((and (empty-line-p) (not (eobp)))
-            (while
-                (and (empty-line-p) (not (eobp)))
-              (forward-line 1))
+           ((and (not done) (< 0 (skip-chars-forward " \t\r\n\f")))
+            ;; (and (empty-line-p) (not (eobp)))
+            ;; (while
+            ;; (and (empty-line-p) (not (eobp)))
+            ;; (forward-line 1))
             (py-end-of-statement orig origline done))
            ((and (not done)(not (nth 3 pps))(looking-at "\"\"\"\\|'''\\|\"\\|'"))
             (goto-char (match-end 0))
-            (while (and (re-search-forward (match-string-no-properties 0) nil (quote move) 1)(setq done t)
-                        (nth 3
-                             (if (featurep 'xemacs)
-                                 (parse-partial-sexp (point-min) (point))
-                               (syntax-ppss)))))
+            (while (and (re-search-forward (match-string-no-properties 0) nil t 1)(setq done t)
+                        (nth 3 (syntax-ppss))))
             (py-end-of-statement orig origline done))
            ;; inside string
            ((nth 8 pps)
@@ -7591,11 +7597,8 @@ To go just beyond the final line of the current statement, use `py-down-statemen
               (when (looking-at "\"\"\"\\|'''")
                 (goto-char (match-end 0))
                 (while (and (re-search-forward (match-string-no-properties 0) nil (quote move) 1)
-                            (setq done nil)
-                            (nth 3
-                                 (if (featurep 'xemacs)
-                                     (parse-partial-sexp (point-min) (point))
-                                   (syntax-ppss)))))
+                            ;; (setq done nil)
+                            (nth 3 (syntax-ppss))))
                 (setq done t)
                 (end-of-line)
                 (skip-chars-backward " \t\r\n\f" (line-beginning-position))
@@ -7605,21 +7608,22 @@ To go just beyond the final line of the current statement, use `py-down-statemen
              ((nth 4 pps)
               (if (eobp)
                   nil
-                (forward-line 1)
+                (setq done t)
+                (forward-comment 99999)
                 (end-of-line)
                 (skip-chars-backward " \t\r\n\f" (line-beginning-position))
-                (setq erg (point))
-                (setq done t)
                 (py-end-of-statement orig origline done)))))
-           ((and (looking-at "[ \t]*#")(looking-back "^[ \t]*"))
-            (while (and (looking-at "[ \t]*#") (forward-line 1)(not (eobp))
-                        (beginning-of-line))
-              (setq done t))
+           ((looking-at "#")
+            ;; (and (looking-at "[ \t]*#")(looking-back "^[ \t]*"))
+            (skip-chars-forward "#")
+            (forward-comment 99999)
+            (setq done t)
             (end-of-line)
-            (when (and done (looking-at "[ \t]*$") (not (looking-back "^[ \t]*")))
-              (py-beginning-of-comment)
-              (skip-chars-backward " \t\r\n\f"))
             (py-end-of-statement orig origline done))
+           ;; ((and (not done) (looking-at "[ \t]*$") (not (looking-back "^[ \t]*")))
+           ;; (py-beginning-of-comment)
+           ;; (skip-chars-backward " \t\r\n\f")
+           ;; (py-end-of-statement orig origline done))
            ((py-current-line-backslashed-p)
             (py-forward-line)
             (setq done t)
@@ -7637,6 +7641,11 @@ To go just beyond the final line of the current statement, use `py-down-statemen
                     (setq done t)
                     (py-end-of-statement orig origline done))
                 (goto-char orig))))
+           ((and (not done) (eq (current-indentation) (current-column)))
+            (end-of-line)
+            (py-beginning-of-comment)
+            (skip-chars-backward " \t")
+            (py-end-of-statement orig origline t))
            ((eq (point) orig)
             (cond ((not (looking-at "[ \t]*$"))
                    (end-of-line)
@@ -7665,13 +7674,10 @@ To go just beyond the final line of the current statement, use `py-down-statemen
             (forward-char 1)
             (py-end-of-statement orig origline done)))
           (unless (or (eq (point) orig)(empty-line-p)
-                      (if (featurep 'xemacs)
-                          (nth 4 (parse-partial-sexp (point-min) (point)))
-                        (nth 4 (syntax-ppss)))
+                      (nth 4 (syntax-ppss))
                       (eq 0 (current-column)))
             (setq erg (point)))
           (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-          ;; (message "%s" erg)
           erg)))))
 
 (defun py-goto-statement-below ()
@@ -8589,7 +8595,9 @@ Takes a list, INDENT and START position. "
           (goto-char start)
           (while (and (setq last (point))(not (eobp))(py-end-of-statement)
                       (<= indent (progn (save-excursion (py-beginning-of-statement)(current-indentation))))
-                      (not (and (empty-line-p)(or (nth 0 (syntax-ppss)))(nth 8 (syntax-ppss))))))
+                      ;; already covered by `py-end-of-statement'
+                      ;; (not (and (empty-line-p)(or (nth 0 (syntax-ppss)))(nth 8 (syntax-ppss))))
+                      ))
           (when last (goto-char last))
           last))))
 

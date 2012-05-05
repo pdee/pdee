@@ -28,6 +28,7 @@
 (setq python-mode-tests
       (list
 
+       'before-inline-comment-test
        'toggle-force-py-shell-name-p-test
        'py-execute-statement-python-test
        'py-execute-statement-python-switch-test
@@ -7145,7 +7146,6 @@ print(\"I'm the `py-menu-pyshell-test'\")
 (defun py-separator-char-base ()
   (assert (stringp (py-separator-char)) nil "py-separator-char-test failed"))
 
-
 (defun py-completion-at-point-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring (concat py-test-shebang "
@@ -7176,12 +7176,28 @@ impo")))
 (defun toggle-force-py-shell-name-p-test (&optional arg)
   (interactive "p")
   (let ((teststring ""))
-  (py-bug-tests-intern 'toggle-force-py-shell-name-p-base arg teststring)))
+    (py-bug-tests-intern 'toggle-force-py-shell-name-p-base arg teststring)))
 
 (defun toggle-force-py-shell-name-p-base ()
   (let ((old py-force-py-shell-name-p))
     (assert (not (eq old (toggle-force-py-shell-name-p))) nil "toggle-force-py-shell-name-p-test failed")
     (setq py-force-py-shell-name-p old)))
+
+(defun before-inline-comment-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+self._blah_blup = 0xe000 # aka: foo bar baz
+self.nult = {}
+self.nult['_foobar'] = []
+"))
+    (py-bug-tests-intern 'before-inline-comment-base arg teststring)))
+
+(defun before-inline-comment-base ()
+  (goto-char 72)
+  (py-end-of-statement)
+  (sit-for 0.1)
+  (assert (eq 106 (point)) nil "before-inline-comment-test failed"))
 
 (provide 'python-mode-test)
 ;;; python-mode-test.el ends here

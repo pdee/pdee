@@ -180,6 +180,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-indent-comments-nil-ignored-lp:958721-test \
 --funcall tuple-unpacking-highlighted-incorrectly-lp:961496-test \
 \
+--funcall before-inline-comment-test \
 --funcall toggle-force-py-shell-name-p-test \
 --funcall multiline-list-indent-test \
 --funcall py-beginning-of-block-test \
