@@ -5290,9 +5290,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
               #'python-shell-send-setup-code))
   (when (and py-imenu-create-index-p (fboundp 'imenu-add-to-menubar)(ignore-errors (require 'imenu)))
     (setq imenu-create-index-function #'py-imenu-create-index-new)
-    ;; (setq imenu-generic-expression py-imenu-generic-expression)
-    (imenu-add-to-menubar "PyIndex")
-    (add-hook 'python-mode-hook imenu-create-index-function))
+    (imenu-add-to-menubar "PyIndex"))
   (when py-org-cycle-p
     (define-key python-mode-map (kbd "<backtab>") 'org-cycle))
 
