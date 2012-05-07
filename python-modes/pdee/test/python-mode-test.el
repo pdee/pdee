@@ -28,6 +28,7 @@
 (setq python-mode-tests
       (list
 
+       'py-end-of-def-inline-comment-test
        'before-inline-comment-test
        'toggle-force-py-shell-name-p-test
        'py-execute-statement-python-test
@@ -7198,6 +7199,29 @@ self.nult['_foobar'] = []
   (py-end-of-statement)
   (sit-for 0.1)
   (assert (eq 106 (point)) nil "before-inline-comment-test failed"))
+
+
+(defun py-end-of-def-inline-comment-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+)
+    #####################################
+#####################################
+def fooBaz( bar ):  # version 2003/9/7
+  if \"Foo:\" == bar \\
+          or  \"[Foo:]\" == bar \\
+          or \"Foo:]\" == bar \\
+          or \"Baz:\" == bar:
+      return False
+  return True
+"))
+  (py-bug-tests-intern 'py-end-of-def-inline-comment-base arg teststring)))
+
+(defun py-end-of-def-inline-comment-base ()
+    (goto-char 49)
+    (py-end-of-def-or-class)
+    (assert (eq 312 (point)) nil "py-end-of-def-inline-comment-test failed"))
 
 (provide 'python-mode-test)
 ;;; python-mode-test.el ends here

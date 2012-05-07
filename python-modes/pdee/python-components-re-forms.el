@@ -146,10 +146,64 @@ Returns position reached, if any, nil otherwise.
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
-  (let* ((orig (point))
-         (erg (py-end-base py-def-or-class-re orig)))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-    erg))
+  (save-restriction
+    (widen)
+    (let* ((orig (point))
+           (pps (syntax-ppss))
+           ;; (origline (py-count-lines))
+           (erg (if (and (not (nth 8 pps)) (looking-at py-def-or-class-re))
+                    (point)
+                  (py-go-to-keyword py-def-or-class-re)
+                  (when (and (not (nth 8 pps)) (looking-at py-def-or-class-re)) (point))))
+           ind)
+      (if erg
+          (progn
+            (setq ind
+                  (+ (if py-smart-indentation
+                         (save-excursion
+                           (goto-char orig)
+                           ;; (setq origline (py-count-lines))
+                           (py-end-of-statement)
+                           (py-end-of-statement)
+                           ;; (when (eq origline (py-count-lines)) (py-end-of-statement))
+                           (py-guess-indent-offset nil (point)))
+                       py-indent-offset)
+                     (current-indentation)))
+            (py-end-of-statement)
+            (forward-line 1)
+            (setq erg (py-travel-current-indent ind)))
+        (py-look-downward-for-beginning py-def-or-class-re)
+        (unless (eobp)
+          ;; (py-end-base py-def-or-class-re orig)
+          (progn
+            (setq ind
+                  (+ (if py-smart-indentation
+                         (save-excursion
+                           (goto-char orig)
+                           ;; (setq origline (py-count-lines))
+                           (py-end-of-statement)
+                           (py-end-of-statement)
+                           ;; (when (eq origline (py-count-lines)) (py-end-of-statement))
+                           (py-guess-indent-offset nil (point)))
+                       py-indent-offset)
+                     (current-indentation)))
+            (py-end-of-statement)
+            (forward-line 1)
+            (setq erg (py-travel-current-indent ind)))
+          ))
+      (if (< orig (point))
+          (setq erg (point))
+        (setq erg (py-look-downward-for-beginning py-def-or-class-re))
+        (when erg
+          (progn
+            (setq ind (+ py-indent-offset (current-indentation)))
+            (py-end-of-statement)
+            (forward-line 1)
+            (setq erg (py-travel-current-indent ind)))
+          ;; (py-end-base py-def-or-class-re orig)
+          ))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+      erg)))
 
 (defun py-beginning-of-if-block (&optional indent)
   "Returns beginning of if-block if successful, nil otherwise.

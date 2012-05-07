@@ -581,7 +581,7 @@ and `pass'.  This doesn't catch embedded statements."
           (setq ind (+ py-indent-offset (current-indentation)))
           (py-end-of-statement)
           (forward-line 1)
-          (setq erg (py-travel-current-indent (cons ind (point)))))
+          (setq erg (py-travel-current-indent ind)))
       (py-look-downward-for-beginning regexp)
       (unless (eobp)(py-end-base regexp orig)))
     (if (< orig (point))
@@ -681,7 +681,7 @@ i.e. the limit on how far back to scan."
   "Count lines in accessible part until current line.
 
 See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
-  (interactive) 
+  (interactive)
   (save-excursion
     (let ((count 0)
           (orig (point)))
@@ -691,7 +691,7 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
         (unless (or (not (< (point) orig)) (eobp)) (forward-char 1)
                 (setq count (+ count (abs (skip-chars-forward "\n" orig))))))
       (when (bolp) (setq count (1+ count)))
-      (when (interactive-p) (message "%s" count)) 
+      (when (interactive-p) (message "%s" count))
       count)))
 
 (defun py-which-function ()
