@@ -1276,7 +1276,6 @@ local value.")
   :type '(alist string)
   :group 'python)
 
-
 (defvar python-mode-syntax-table nil
   "Syntax table for Python files.")
 
@@ -1310,7 +1309,6 @@ local value.")
 Otherwise inherits from `python-mode-syntax-table'.")
 (defvar outline-heading-end-regexp)
 (defvar eldoc-documentation-function)
-(defvar python-mode-running)            ;Dynamically scoped var.
 
 ;; Stolen from org-mode
 (defun python-util-clone-local-variables (from-buffer &optional regexp)
@@ -1902,10 +1900,6 @@ for options to pass to the DOCNAME interpreter. \"
     (when (interactive-p) (switch-to-buffer (current-buffer))
           (goto-char (point-max)))))
 ")
-
-(defvar outline-heading-end-regexp)
-(defvar eldoc-documentation-function)
-(defvar python-mode-running)            ;Dynamically scoped var.
 
 (defvar view-return-to-alist)
 (defvar python-imports)			; forward declaration
@@ -3910,32 +3904,32 @@ information etc.  If PROC is non-nil, check the buffer for that process."
 
 ;; Fixme:  Is there anything reasonable we can do with random methods?
 ;; (Currently only works with functions.)
-;; (defun python-eldoc-function ()
-;;   "`eldoc-documentation-function' for Python.
-;; Only works when point is in a function name, not its arg list, for
-;; instance.  Assumes an inferior Python is running."
-;;   (let ((symbol (with-syntax-table python-dotty-syntax-table
-;;                   (current-word))))
-;;     ;; This is run from timers, so inhibit-quit tends to be set.
-;;     (with-local-quit
-;;       ;; First try the symbol we're on.
-;;       (or (and symbol
-;;                (python-send-receive (format "emacs.eargs(%S, %s)"
-;;                                             symbol python-imports)))
-;;           ;; Try moving to symbol before enclosing parens.
-;;           (let ((s (syntax-ppss)))
-;;             (unless (zerop (car s))
-;;               (when (eq ?\( (char-after (nth 1 s)))
-;;                 (save-excursion
-;;                   (goto-char (nth 1 s))
-;;                   (skip-syntax-backward "-")
-;;                   (let ((point (point)))
-;;                     (skip-chars-backward "a-zA-Z._")
-;;                     (if (< (point) point)
-;;                         (python-send-receive
-;;                          (format "emacs.eargs(%S, %s)"
-;;                                  (buffer-substring-no-properties (point) point)
-;;                                  python-imports))))))))))))
+(defun python-eldoc-function ()
+  "`eldoc-documentation-function' for Python.
+Only works when point is in a function name, not its arg list, for
+instance.  Assumes an inferior Python is running."
+  (let ((symbol (with-syntax-table python-dotty-syntax-table
+                  (current-word))))
+    ;; This is run from timers, so inhibit-quit tends to be set.
+    (with-local-quit
+      ;; First try the symbol we're on.
+      (or (and symbol
+               (python-send-receive (format "emacs.eargs(%S, %s)"
+                                            symbol python-imports)))
+          ;; Try moving to symbol before enclosing parens.
+          (let ((s (syntax-ppss)))
+            (unless (zerop (car s))
+              (when (eq ?\( (char-after (nth 1 s)))
+                (save-excursion
+                  (goto-char (nth 1 s))
+                  (skip-syntax-backward "-")
+                  (let ((point (point)))
+                    (skip-chars-backward "a-zA-Z._")
+                    (if (< (point) point)
+                        (python-send-receive
+                         (format "emacs.eargs(%S, %s)"
+                                 (buffer-substring-no-properties (point) point)
+                                 python-imports))))))))))))
 
 ;;; Info-look functionality.
 
@@ -10289,6 +10283,44 @@ Useful for newly defined symbol, not known to python yet. "
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
+(defun py-eldoc-function ()
+  "Print help on symbol at point. "
+  (interactive)
+  (if (unless (looking-at " ")
+        (or
+
+         (eq (get-char-property (point) 'face) 'font-lock-keyword-face)
+         (eq (get-char-property (point) 'face) 'py-builtins-face)
+         (eq (get-char-property (point) 'face) 'py-exception-name-face)
+         (eq (get-char-property (point) 'face) 'py-class-name-face)
+
+         ))
+
+      (lexical-let* ((sym (prin1-to-string (symbol-at-point)))
+                     (origfile (buffer-file-name))
+                     (temp (make-temp-name (buffer-name)))
+                     (file (concat (expand-file-name temp py-temp-directory) ".py"))
+                     (cmd (py-find-imports))
+                     (no-quotes (save-excursion
+                                  (skip-chars-backward "A-Za-z_0-9.")
+                                  (and (looking-at "[A-Za-z_0-9.]+")
+                                       (string-match "\\." (match-string-no-properties 0))))))
+        (setq cmd (concat "import pydoc\n"
+                          cmd))
+        (if no-quotes
+            (setq cmd (concat cmd
+                              "try: pydoc.help(" sym ")\n"))
+          (setq cmd (concat cmd "try: pydoc.help('" sym "')\n")))
+        (setq cmd (concat cmd
+                          "except:
+    print 'No help available on:', \"" sym "\""))
+        (with-temp-buffer
+          (insert cmd)
+          (write-file file))
+        (py-process-file file "*Python-Help*")
+        (when (file-readable-p file)
+          (delete-file file)))
+    (delete-other-windows)))
 
 (defalias 'py-help-at-point 'py-describe-symbol)
 (defun py-describe-symbol ()
@@ -11696,7 +11728,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
                                   py-outline-mode-keywords)
                           "\\|")))
   (set (make-local-variable 'eldoc-documentation-function)
-       #'python-eldoc-function)
+       #'py-eldoc-function)
   (set (make-local-variable 'skeleton-further-elements)
        '((< '(backward-delete-char-untabify (min py-indent-offset
                                                  (current-column))))
@@ -12242,77 +12274,12 @@ in a buffer that doesn't have a local value of `python-buffer'."
 (defvar python-imports)			; forward declaration
 
 
-
 ;; Called from `python-mode', this causes a recursive call of the
 ;; mode.  See logic there to break out of the recursion.
 
 ;; pdb tracking is alert once this file is loaded, but takes no action if
 ;; `python-pdbtrack-do-tracking-p' is nil.
 (add-hook 'comint-output-filter-functions 'python-pdbtrack-track-stack-file)
-
-;;; eldoc
-
-(defun python-eldoc--get-doc-at-point (&optional force-input force-process)
-  "Internal implementation to get documentation at point.
-If not FORCE-INPUT is passed then what `current-word' returns
-will be used.  If not FORCE-PROCESS is passed what
-`python-shell-get-process' returns is used."
-  (let ((process (or force-process (python-shell-get-process))))
-    (if (not process)
-        "Eldoc needs an inferior Python process running."
-      (let* ((current-defun (python-info-current-defun))
-             (input (or force-input
-                        (with-syntax-table python-dotty-syntax-table
-                          (if (not current-defun)
-                              (current-word)
-                            (concat current-defun "." (current-word))))))
-             (ppss (syntax-ppss))
-             (help (when (and input
-                              (not (string= input (concat current-defun ".")))
-                              (not (or (python-info-ppss-context 'string ppss)
-                                       (python-info-ppss-context 'comment ppss))))
-                     (when (string-match (concat
-                                          (regexp-quote (concat current-defun "."))
-                                          "self\\.") input)
-                       (with-temp-buffer
-                         (insert input)
-                         (goto-char (point-min))
-                         (forward-word)
-                         (forward-char)
-                         (delete-region (point-marker) (search-forward "self."))
-                         (setq input (buffer-substring (point-min) (point-max)))))
-                     (python-shell-send-string-no-output
-                      (format python-eldoc-string-code input) process))))
-        (with-current-buffer (process-buffer process)
-          (when comint-last-prompt-overlay
-            (delete-region comint-last-input-end
-                           (overlay-start comint-last-prompt-overlay))))
-        (when (and help
-                   (not (string= help "\n")))
-          help)))))
-
-(defun python-eldoc-function ()
-  "`eldoc-documentation-function' for Python.
-For this to work the best as possible you should call
-`python-shell-send-buffer' from time to time so context in
-inferior python process is updated properly."
-  (python-eldoc--get-doc-at-point))
-
-;; (defun python-eldoc-at-point (symbol)
-;;   "Get help on SYMBOL using `help'.
-;; Interactively, prompt for symbol."
-;;   (interactive
-;;    (let ((symbol (with-syntax-table python-dotty-syntax-table
-;;                    (current-word)))
-;;          (enable-recursive-minibuffers t))
-;;      (list (read-string (if symbol
-;;                             (format "Describe symbol (default %s): " symbol)
-;;                           "Describe symbol: ")
-;;                         nil nil symbol))))
-;;   (let ((process (python-shell-get-process)))
-;;     (if (not process)
-;;         (message "Eldoc needs an inferior Python process running.")
-;;       (message (python-eldoc--get-doc-at-point symbol process)))))
 
 
 

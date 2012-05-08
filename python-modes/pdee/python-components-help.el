@@ -21,7 +21,7 @@
 ;;
 
 ;;; Code:
-(require 'python-components-macros) 
+(require 'python-components-macros)
 
 (defun py-warn-tmp-files-left ()
   "Detect and warn about file of form \"py11046IoE\" in py-temp-directory. "
@@ -51,33 +51,19 @@ Useful for newly defined symbol, not known to python yet. "
             (when (interactive-p) (switch-to-buffer (current-buffer)))
             (insert erg)))))))
 
-(defun ar-py-find-imports ()
-  (let* (imports
-         (erg
-          (save-excursion
-            (goto-char (point-min))
-            (while (re-search-forward
-                    "^import *[A-Za-z_][A-Za-z_0-9].*\\|^from +[A-Za-z_][A-Za-z_0-9]+ +import .*" nil t)
-              (setq imports
-                    (concat
-                     imports
-                     (buffer-substring-no-properties (match-beginning 0) (match-end 0)) "\n"))))))
-    (when (interactive-p) (message "%s" erg))
-    erg))
-
 (defalias 'py-help-at-point 'py-describe-symbol)
 (defun py-describe-symbol ()
   "Print help on symbol at point. "
   (interactive)
-  (let* ((sym (prin1-to-string (symbol-at-point)))
-         (origfile (buffer-file-name))
-         (temp (make-temp-name (buffer-name)))
-         (file (concat (expand-file-name temp py-temp-directory) ".py"))
-         (cmd (py-find-imports))
-         (no-quotes (save-excursion
-                      (skip-chars-backward "A-Za-z_0-9.")
-                      (and (looking-at "[A-Za-z_0-9.]+")
-                           (string-match "\\." (match-string-no-properties 0))))))
+  (lexical-let* ((sym (prin1-to-string (symbol-at-point)))
+                 (origfile (buffer-file-name))
+                 (temp (make-temp-name (buffer-name)))
+                 (file (concat (expand-file-name temp py-temp-directory) ".py"))
+                 (cmd (py-find-imports))
+                 (no-quotes (save-excursion
+                              (skip-chars-backward "A-Za-z_0-9.")
+                              (and (looking-at "[A-Za-z_0-9.]+")
+                                   (string-match "\\." (match-string-no-properties 0))))))
     (setq cmd (concat "import pydoc\n"
                       cmd))
     (if no-quotes
@@ -94,6 +80,44 @@ Useful for newly defined symbol, not known to python yet. "
     (when (file-readable-p file)
       (delete-file file))))
 
+(defun py-eldoc-function ()
+  "Print help on symbol at point. "
+  (interactive)
+  (if (unless (looking-at " ")
+        (or
+
+         (eq (get-char-property (point) 'face) 'font-lock-keyword-face)
+         (eq (get-char-property (point) 'face) 'py-builtins-face)
+         (eq (get-char-property (point) 'face) 'py-exception-name-face)
+         (eq (get-char-property (point) 'face) 'py-class-name-face)
+
+))
+
+      (lexical-let* ((sym (prin1-to-string (symbol-at-point)))
+                     (origfile (buffer-file-name))
+                     (temp (make-temp-name (buffer-name)))
+                     (file (concat (expand-file-name temp py-temp-directory) ".py"))
+                     (cmd (py-find-imports))
+                     (no-quotes (save-excursion
+                                  (skip-chars-backward "A-Za-z_0-9.")
+                                  (and (looking-at "[A-Za-z_0-9.]+")
+                                       (string-match "\\." (match-string-no-properties 0))))))
+        (setq cmd (concat "import pydoc\n"
+                          cmd))
+        (if no-quotes
+            (setq cmd (concat cmd
+                              "try: pydoc.help(" sym ")\n"))
+          (setq cmd (concat cmd "try: pydoc.help('" sym "')\n")))
+        (setq cmd (concat cmd
+                          "except:
+    print 'No help available on:', \"" sym "\""))
+        (with-temp-buffer
+          (insert cmd)
+          (write-file file))
+        (py-process-file file "*Python-Help*")
+        (when (file-readable-p file)
+          (delete-file file)))
+    (delete-other-windows)))
 
 ;; Documentation functions
 
@@ -490,32 +514,18 @@ Interactively, prompt for name."
 (defun py-find-imports ()
   "Find top-level imports, updating `python-imports'."
   (interactive)
-  (save-excursion
-    (let (lines)
-      (goto-char (point-min))
-      (while (re-search-forward "^import\\>\\|^from\\>" nil t)
-        (unless (syntax-ppss-context (syntax-ppss))
-          (let ((start (line-beginning-position)))
-            ;; Skip over continued lines.
-            (while (and (eq ?\\ (char-before (line-end-position)))
-                        (= 0 (forward-line 1)))
-              t)
-            (push (buffer-substring start (line-beginning-position 2))
-                  lines))))
-      (setq python-imports
-            (if lines
-                (apply #'concat
-                       (nreverse lines))
-              "None"))
-      (when lines
-        (set-text-properties 0 (length python-imports) nil python-imports)
-        ;; The output ends up in the wrong place if the string we
-        ;; send contains newlines (from the imports).
-        (setq python-imports
-              (replace-regexp-in-string "\n" "\\n"
-                                        (format "%S" python-imports) t t)))))
-  (when (interactive-p) (message "%s" (car (read-from-string python-imports))))
-  python-imports)
+  (let* (imports
+         (erg
+          (save-excursion
+            (goto-char (point-min))
+            (while (re-search-forward
+                    "^import *[A-Za-z_][A-Za-z_0-9].*\\|^from +[A-Za-z_][A-Za-z_0-9]+ +import .*" nil t)
+              (setq imports
+                    (concat
+                     imports
+                     (buffer-substring-no-properties (match-beginning 0) (match-end 0)) "\n"))))))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
 
 (defun py-update-imports ()
   "Returns `python-imports'.

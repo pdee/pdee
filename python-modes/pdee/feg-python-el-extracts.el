@@ -590,6 +590,37 @@ Used to extract the current line and module being inspected."
   :group 'python
   :safe 'stringp)
 
+(defun python-info-current-defun (&optional include-type)
+  "Return name of surrounding function with Python compatible dotty syntax.
+Optional argument INCLUDE-TYPE indicates to include the type of the defun.
+This function is compatible to be used as
+`add-log-current-defun-function' since it returns nil if point is
+not inside a defun."
+  (let ((names '())
+        (min-indent)
+        (first-run t))
+    (save-restriction
+      (widen)
+      (save-excursion
+        (goto-char (line-end-position))
+        (forward-comment -9999)
+        (setq min-indent (current-indentation))
+        (while (py-beginning-of-def-or-class)
+          (when (or (< (current-indentation) min-indent)
+                    first-run)
+            (setq first-run nil)
+            (setq min-indent (current-indentation))
+            (looking-at py-def-or-class-re)
+            (setq names (cons
+                         (if (not include-type)
+                             (match-string-no-properties 1)
+                           (mapconcat 'identity
+                                      (split-string
+                                       (match-string-no-properties 0)) " "))
+                         names))))))
+    (when names
+      (mapconcat (lambda (string) string) names "."))))
+
 (defun python-eldoc--get-doc-at-point (&optional force-input force-process)
   "Internal implementation to get documentation at point.
 If not FORCE-INPUT is passed then what `current-word' returns

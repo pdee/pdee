@@ -193,42 +193,42 @@ in a buffer that doesn't have a local value of `python-buffer'."
 (defvar python-imports)			; forward declaration
 (make-variable-buffer-local 'python-imports)
 
-(defun py-find-imports ()
-  "Find top-level imports, updating `python-imports'."
-  (interactive)
-  (save-excursion
-    (let (lines)
-      (goto-char (point-min))
-      (while (re-search-forward "^import\\_>[ \n\t]\\|^from\\_>[ \n\t]" nil t)
-        (unless (syntax-ppss-context (syntax-ppss))
-          (let ((start (line-beginning-position)))
-            ;; Skip over continued lines.
-            (while (and (eq ?\\ (char-before (line-end-position)))
-                        (= 0 (forward-line 1)))
-              t)
-            (push (buffer-substring start (line-beginning-position 2))
-                  lines))))
-      (setq python-imports
-            (if lines
-                (apply #'concat
-                       ;; This is probably best left out since you're unlikely to need the
-                       ;; doc for a function in the buffer and the import will lose if the
-                       ;; Python sub-process' working directory isn't the same as the
-                       ;; buffer's.
-                       ;; 			 (if buffer-file-name
-                       ;; 			     (concat
-                       ;; 			      "import "
-                       ;; 			      (file-name-sans-extension
-                       ;; 			       (file-name-nondirectory buffer-file-name))))
-                       (nreverse lines))
-              "None"))
-      (when lines
-        (set-text-properties 0 (length python-imports) nil python-imports)
-        ;; The output ends up in the wrong place if the string we
-        ;; send contains newlines (from the imports).
-        (setq python-imports
-              (replace-regexp-in-string "\n" "\\n"
-                                        (format "%S" python-imports)) t t)))))
+;; (defun py-find-imports ()
+;;   "Find top-level imports, updating `python-imports'."
+;;   (interactive)
+;;   (save-excursion
+;;     (let (lines)
+;;       (goto-char (point-min))
+;;       (while (re-search-forward "^import\\_>[ \n\t]\\|^from\\_>[ \n\t]" nil t)
+;;         (unless (syntax-ppss-context (syntax-ppss))
+;;           (let ((start (line-beginning-position)))
+;;             ;; Skip over continued lines.
+;;             (while (and (eq ?\\ (char-before (line-end-position)))
+;;                         (= 0 (forward-line 1)))
+;;               t)
+;;             (push (buffer-substring start (line-beginning-position 2))
+;;                   lines))))
+;;       (setq python-imports
+;;             (if lines
+;;                 (apply #'concat
+;;                        ;; This is probably best left out since you're unlikely to need the
+;;                        ;; doc for a function in the buffer and the import will lose if the
+;;                        ;; Python sub-process' working directory isn't the same as the
+;;                        ;; buffer's.
+;;                        ;; 			 (if buffer-file-name
+;;                        ;; 			     (concat
+;;                        ;; 			      "import "
+;;                        ;; 			      (file-name-sans-extension
+;;                        ;; 			       (file-name-nondirectory buffer-file-name))))
+;;                        (nreverse lines))
+;;               "None"))
+;;       (when lines
+;;         (set-text-properties 0 (length python-imports) nil python-imports)
+;;         ;; The output ends up in the wrong place if the string we
+;;         ;; send contains newlines (from the imports).
+;;         (setq python-imports
+;;               (replace-regexp-in-string "\n" "\\n"
+;;                                         (format "%S" python-imports)) t t)))))
 
 
 
