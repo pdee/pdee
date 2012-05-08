@@ -55,21 +55,23 @@ Useful for newly defined symbol, not known to python yet. "
 (defun py-describe-symbol ()
   "Print help on symbol at point. "
   (interactive)
-  (lexical-let* ((sym (prin1-to-string (symbol-at-point)))
-                 (origfile (buffer-file-name))
-                 (temp (make-temp-name (buffer-name)))
-                 (file (concat (expand-file-name temp py-temp-directory) ".py"))
-                 (cmd (py-find-imports))
-                 (no-quotes (save-excursion
-                              (skip-chars-backward "A-Za-z_0-9.")
-                              (and (looking-at "[A-Za-z_0-9.]+")
-                                   (string-match "\\." (match-string-no-properties 0))))))
+  (let* ((orig (point))
+         (beg (progn (skip-chars-backward "a-zA-Z0-9_." (line-beginning-position))(point)))
+         (end (progn (skip-chars-forward "a-zA-Z0-9_." (line-end-position))(point)))
+         (sym (buffer-substring-no-properties beg end))
+         ;; (sym (prin1-to-string (symbol-at-point)))
+         (origfile (buffer-file-name))
+         (temp (make-temp-name (buffer-name)))
+         (file (concat (expand-file-name temp py-temp-directory) ".py"))
+         (cmd (py-find-imports))
+         (quotes (string-match "\\." sym)))
+    (goto-char orig)
     (setq cmd (concat "import pydoc\n"
                       cmd))
-    (if no-quotes
-        (setq cmd (concat cmd
-                          "try: pydoc.help(" sym ")\n"))
-      (setq cmd (concat cmd "try: pydoc.help('" sym "')\n")))
+    (if quotes
+        (setq cmd (concat cmd "try: pydoc.help('" sym "')\n"))
+      (setq cmd (concat cmd
+                        "try: pydoc.help(" sym ")\n")))
     (setq cmd (concat cmd
                       "except:
     print 'No help available on:', \"" sym "\""))
@@ -91,7 +93,7 @@ Useful for newly defined symbol, not known to python yet. "
          (eq (get-char-property (point) 'face) 'py-exception-name-face)
          (eq (get-char-property (point) 'face) 'py-class-name-face)
 
-))
+         ))
 
       (lexical-let* ((sym (prin1-to-string (symbol-at-point)))
                      (origfile (buffer-file-name))
