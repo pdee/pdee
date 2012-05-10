@@ -84,3 +84,4 @@ python-modes/pdee/devel/*
 # Bytecodes
 *.pyc
 setup.py
+python-mode-compile.sh

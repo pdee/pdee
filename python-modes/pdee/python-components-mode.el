@@ -1390,7 +1390,6 @@ See original source: http://pymacs.progiciels-bpi.ca"
     (cond (py-install-directory
            (add-to-list 'load-path (expand-file-name py-install-directory))
            (add-to-list 'load-path (concat (expand-file-name py-install-directory) "completion"))
-           ;; (add-to-list 'load-path (concat py-install-directory "/pymacs"))
            (add-to-list 'load-path (concat (expand-file-name py-install-directory) "test"))
            (add-to-list 'load-path (concat (expand-file-name py-install-directory) "tools")))
           ((when py-guess-py-install-directory-p

@@ -1,4 +1,4 @@
-
+pdb.set_trace()
 """
 Python dot expression completion using Pymacs.
 

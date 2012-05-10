@@ -20,6 +20,7 @@
 (require 'pymacs)
 
 (pymacs-load "pycomplete")
+;; (pymacs-load "pycomplete-msg")
 
 (defun py-symbol-near-point ()
   "Return the first textual item to the nearest point."
