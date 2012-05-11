@@ -570,7 +570,10 @@ Returns outmost indentation reached. "
 (defun py-indent-region (start end &optional indent-offset)
   "Reindent a region of Python code.
 
-With optional INDENT-OFFSET specify a different value than `py-indent-offset' at place. "
+With optional INDENT-OFFSET specify a different value than `py-indent-offset' at place. 
+
+Guesses the outmost reasonable indent 
+Returns and keeps relative position "
   (interactive "*r\nP")
   (let ((orig (copy-marker (point)))
         (beg start)
@@ -580,7 +583,7 @@ With optional INDENT-OFFSET specify a different value than `py-indent-offset' at
     (goto-char beg)
     (while (< (line-end-position) end)
       (py-indent-and-forward))
-    (py-indent-line)
+    (unless (empty-line-p) (py-indent-line))
     (goto-char orig)))
 
 ;;; Positions

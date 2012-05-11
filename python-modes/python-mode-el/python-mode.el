@@ -4032,81 +4032,34 @@ Returns outmost indentation reached. "
     (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
 
+
+(defun py-indent-and-forward ()
+  "Indent current line according to mode, move one line forward. "
+  (interactive "*")
+  (indent-according-to-mode)
+  (if (eobp)
+      (newline-and-indent)
+    (forward-line 1))
+  (back-to-indentation))
+
 (defun py-indent-region (start end &optional indent-offset)
   "Reindent a region of Python code.
 
-The lines from the line containing the start of the current region up
-to (but not including) the line containing the end of the region are
-reindented.  If the first line of the region has a non-whitespace
-character in the first column, the first line is left alone and the
-rest of the region is reindented with respect to it.  Else the entire
-region is reindented with respect to the (closest code or indenting
-comment) statement immediately preceding the region.
+With optional INDENT-OFFSET specify a different value than `py-indent-offset' at place.
 
-This is useful when code blocks are moved or yanked, when enclosing
-control structures are introduced or removed, or to reformat code
-using a new value for the indentation offset.
-
-If a numeric prefix argument is given, it will be used as the value of
-the indentation offset.  Else the value of `py-indent-offset' will be
-used.
-
-Warning: The region must be consistently indented before this function
-is called!  This function does not compute proper indentation from
-scratch (that's impossible in Python), it merely adjusts the existing
-indentation to be correct in context.
-
-Warning: This function really has no idea what to do with
-non-indenting comment lines, and shifts them as if they were indenting
-comment lines.  Fixing this appears to require telepathy.
-
-Special cases: whitespace is deleted from blank lines; continuation
-lines are shifted by the same amount their initial line was shifted,
-in order to preserve their relative indentation with respect to their
-initial line; and comment lines beginning in column 1 are ignored."
-  (interactive "*r\nP")                 ; region; raw prefix arg
-  (save-excursion
-    (goto-char end) (beginning-of-line) (setq end (point-marker))
-    (goto-char start) (beginning-of-line)
-    (let ((py-indent-offset (prefix-numeric-value
-                             (or indent-offset py-indent-offset)))
-          (indents '(-1))               ; stack of active indent levels
-          (target-column 0)             ; column to which to indent
-          (base-shifted-by 0)           ; amount last base line was shifted
-          (indent-base (if (looking-at "[ \t\n]")
-                           (py-compute-indentation)
-                         0))
-          ci)
-      (while (< (point) end)
-        (setq ci (current-indentation))
-        ;; figure out appropriate target column
-        (cond
-         ((or (eq (following-char) ?#)  ; comment in column 1
-              (looking-at "[ \t]*$"))   ; entirely blank
-          (setq target-column 0))
-         ((py-preceding-line-backslashed-p)      ; shift relative to base line
-          (setq target-column (+ ci base-shifted-by)))
-         (t                             ; new base line
-          (if (> ci (car indents))      ; going deeper; push it
-              (setq indents (cons ci indents))
-            ;; else we should have seen this indent before
-            (setq indents (memq ci indents)) ; pop deeper indents
-            (if (null indents)
-                (error "Bad indentation in region, at line %d"
-                       (save-restriction
-                         (widen)
-                         (1+ (count-lines 1 (point)))))))
-          (setq target-column (+ indent-base
-                                 (* py-indent-offset
-                                    (- (length indents) 2))))
-          (setq base-shifted-by (- target-column ci))))
-        ;; shift as needed
-        (if (/= ci target-column)
-            (progn
-              (delete-horizontal-space)
-              (indent-to target-column)))
-        (forward-line 1))))
-  (set-marker end nil))
+Guesses the outmost reasonable indent
+Returns and keeps relative position "
+  (interactive "*r\nP")
+  (let ((orig (copy-marker (point)))
+        (beg start)
+        (end (copy-marker end))
+        (py-indent-offset (prefix-numeric-value
+                           (or indent-offset py-indent-offset))))
+    (goto-char beg)
+    (while (< (line-end-position) end)
+      (py-indent-and-forward))
+    (unless (empty-line-p) (py-indent-line))
+    (goto-char orig)))
 
 ;;; Positions
 (defun py-beginning-of-paragraph-position ()

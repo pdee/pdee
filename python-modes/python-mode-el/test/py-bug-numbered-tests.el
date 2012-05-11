@@ -44,6 +44,7 @@
            'nested-indents-lp:328775-test
            'previous-statement-lp:637955-test)
         (list
+         'indent-region-lp:997958-test
          'py-describe-symbol-fails-on-modules-lp:919719-test
          'mark-block-region-lp:328806-test
          'mark-decorators-lp:328851-test
@@ -2676,13 +2677,11 @@ asks for a buffer to execute it in ipython, that sets py-shell-name to ipython.
     (goto-char 92)
     (save-excursion (completion-at-point))
     (message "%s" completion-at-point-functions)
-    (when (string= "python") (prin1-to-string (car completion-at-point-functions)))
     (assert (looking-at "print") nil "toggle-force-local-shell-lp:988091-test #1 failed")
     (force-py-shell-name-p-off)
     (goto-char 99)
     (save-excursion (completion-at-point))
     (message "%s" completion-at-point-functions)
-    (string= old (prin1-to-string (car completion-at-point-functions)))
     (assert (looking-at "import") nil "toggle-force-local-shell-lp:988091-test #1 failed")
     ))
 
@@ -2693,13 +2692,36 @@ asks for a buffer to execute it in ipython, that sets py-shell-name to ipython.
 import os
 os.chmod
 "))
-  (py-bug-tests-intern 'py-describe-symbol-fails-on-modules-lp:919719-base arg teststring)))
+    (py-bug-tests-intern 'py-describe-symbol-fails-on-modules-lp:919719-base arg teststring)))
 
 (defun py-describe-symbol-fails-on-modules-lp:919719-base ()
-    (goto-char 61)
-    (py-describe-symbol)
-    (set-buffer "*Python-Help*")
-    (assert (looking-at "Help on built-in function chmod in os:")  nil "py-describe-symbol-fails-on-modules-lp:919719-test failed"))
+  (goto-char 61)
+  (py-describe-symbol)
+  (set-buffer "*Python-Help*")
+  (assert (looking-at "Help on built-in function chmod in os:")  nil "py-describe-symbol-fails-on-modules-lp:919719-test failed"))
+
+(defun indent-region-lp:997958-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+with file(\"foo\" + zeit + \".ending\", 'w') as datei:
+for i in range(anzahl):
+bar.dosomething()
+datei.write(str(baz[i]) + \"\\n\")
+"))
+    (py-bug-tests-intern 'indent-region-lp:997958-base arg teststring)))
+
+(defun indent-region-lp:997958-base ()
+  (py-indent-region 48 172)
+  (goto-char 99)
+  (back-to-indentation)
+  (assert (eq 4 (current-column))  nil "indent-region-lp:997958-test #1 failed")
+  (goto-char 127)
+  (back-to-indentation)
+  (assert (eq 8 (current-column))  nil "indent-region-lp:997958-test #2 failed")
+
+  )
+
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
