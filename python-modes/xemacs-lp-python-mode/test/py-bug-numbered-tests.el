@@ -1568,7 +1568,9 @@ if foo:
 (defun execute-indented-code-lp:828314-base ()
   (let ((debug-on-error t))
     (goto-char 28)
-    (py-execute-line)))
+    (push-mark)
+    (progn
+      (py-execute-base (point) (progn (end-of-line)(point))))))
 
 (defun wrong-indentation-of-function-arguments-lp:840891-test (&optional arg)
   (interactive "p")
@@ -2674,12 +2676,15 @@ asks for a buffer to execute it in ipython, that sets py-shell-name to ipython.
     (goto-char 92)
     (save-excursion (completion-at-point))
     (message "%s" completion-at-point-functions)
-    (assert (looking-at "print") nil "toggle-force-local-shell-lp:988091-test #1 failed"))
-  (force-py-shell-name-p-off)
-  (goto-char 99)
-  (save-excursion (completion-at-point))
-  (message "%s" completion-at-point-functions)
-  (assert (looking-at "import") nil "toggle-force-local-shell-lp:988091-test #1 failed"))
+    (when (string= "python") (prin1-to-string (car completion-at-point-functions)))
+    (assert (looking-at "print") nil "toggle-force-local-shell-lp:988091-test #1 failed")
+    (force-py-shell-name-p-off)
+    (goto-char 99)
+    (save-excursion (completion-at-point))
+    (message "%s" completion-at-point-functions)
+    (string= old (prin1-to-string (car completion-at-point-functions)))
+    (assert (looking-at "import") nil "toggle-force-local-shell-lp:988091-test #1 failed")
+    ))
 
 (defun py-describe-symbol-fails-on-modules-lp:919719-test (&optional arg)
   (interactive "p")
@@ -2688,27 +2693,13 @@ asks for a buffer to execute it in ipython, that sets py-shell-name to ipython.
 import os
 os.chmod
 "))
-    (py-bug-tests-intern 'py-describe-symbol-fails-on-modules-lp:919719-base arg teststring)))
+  (py-bug-tests-intern 'py-describe-symbol-fails-on-modules-lp:919719-base arg teststring)))
 
 (defun py-describe-symbol-fails-on-modules-lp:919719-base ()
-  (goto-char 61)
-  (py-describe-symbol)
-  (set-buffer "*Python-Help*")
-  (assert (looking-at "Help on built-in function chmod in os:")  nil "py-describe-symbol-fails-on-modules-lp:919719-test failed"))
-
-
-(defun make-help-operates-correctly-when-run-after-lp:889046-test (&optional arg)
-  (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-numpy.arange(
-"))
-    (py-bug-tests-intern 'make-help-operates-correctly-when-run-after-lp:889046-base arg teststring)))
-
-(defun make-help-operates-correctly-when-run-after-lp:889046-base ()
-  (goto-char 40)
-  (assert nil "make-help-operates-correctly-when-run-after-lp:889046-test failed"))
-
+    (goto-char 61)
+    (py-describe-symbol)
+    (set-buffer "*Python-Help*")
+    (assert (looking-at "Help on built-in function chmod in os:")  nil "py-describe-symbol-fails-on-modules-lp:919719-test failed"))
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

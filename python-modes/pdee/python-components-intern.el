@@ -41,9 +41,7 @@ When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
              (closing closing)
              ;; line: moved already a line backward
              (line line)
-             (pps (if (featurep 'xemacs)
-                      (parse-partial-sexp (point-min) (point))
-                    (syntax-ppss)))
+             (pps (syntax-ppss))
              ;; in a recursive call already
              (repeat repeat)
              ;; inside: started inside a list
@@ -67,9 +65,7 @@ When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
                       (forward-line -1)
                       (end-of-line)
                       (skip-chars-backward " \t\r\n\f")
-                      (if (ignore-errors (< (nth 2 (if (featurep 'xemacs)
-                                                       (parse-partial-sexp (point-min) (point))
-                                                     (syntax-ppss))) (line-beginning-position)))
+                      (if (ignore-errors (< (nth 2 (syntax-ppss)) (line-beginning-position)))
                           (current-indentation)
                         (ignore-errors (goto-char (nth 2 pps)))
                         (py-line-backward-maybe)
@@ -195,10 +191,7 @@ When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
                ((and (< (current-indentation) (current-column)))
                 (back-to-indentation)
                 (unless line
-                  (setq inside
-                        (if (featurep 'xemacs)
-                            (nth 1 (parse-partial-sexp (point-min) (point)))
-                          (nth 1 (syntax-ppss)))))
+                  (setq inside (nth 1 (syntax-ppss))))
                 (py-compute-indentation orig origline closing line inside repeat))
                ((not (py-beginning-of-statement-p))
                 (if (bobp)
@@ -276,10 +269,7 @@ When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
 Optional ARG indicates a start-position for `parse-partial-sexp'."
   (interactive)
   (let* ((ppstart (or start (point-min)))
-         (erg
-          (if (featurep 'xemacs)
-              (nth 1 (parse-partial-sexp ppstart (point)))
-            (nth 1 (syntax-ppss)))))
+         (erg (nth 1 (syntax-ppss))))
     (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -289,9 +279,7 @@ Optional ARG indicates a start-position for `parse-partial-sexp'."
 Optional ARG indicates a start-position for `parse-partial-sexp'."
   (interactive)
   (let* ((ppstart (or arg (point-min)))
-         (erg (if (featurep 'xemacs)
-                  (parse-partial-sexp ppstart (point))
-                (syntax-ppss)))
+         (erg (syntax-ppss))
          (beg (nth 1 erg))
          end)
     (when beg
@@ -299,7 +287,7 @@ Optional ARG indicates a start-position for `parse-partial-sexp'."
         (goto-char beg)
         (forward-list 1)
         (setq end (point))))
-    (when (interactive-p) (message "%s" end))
+    (when (and py-verbose-p (interactive-p)) (message "%s" end))
     end))
 
 ;; (defun py-preceding-line-backslashed-p ()
@@ -349,10 +337,7 @@ Optional ARG indicates a start-position for `parse-partial-sexp'."
   "Return the beginning of current line's comment, if inside. "
   (save-restriction
     (widen)
-    (let* ((pps
-            (if (featurep 'xemacs)
-                (parse-partial-sexp (line-beginning-position) (point))
-              (syntax-ppss)))
+    (let* ((pps (syntax-ppss))
            (erg (when (nth 4 pps) (nth 8 pps))))
       (unless erg
         (when (looking-at (concat "^[ \t]*" comment-start-skip))
@@ -362,41 +347,31 @@ Optional ARG indicates a start-position for `parse-partial-sexp'."
 (defun py-in-triplequoted-string-p ()
   "Returns character address of start tqs-string, nil if not inside. "
   (interactive)
-  (let* ((pps
-          (if (featurep 'xemacs)
-              (parse-partial-sexp (point-min) (point))
-            (syntax-ppss)))
+  (let* ((pps (syntax-ppss))
          (erg (when (and (nth 3 pps) (nth 8 pps))(nth 2 pps))))
     (save-excursion
       (unless erg (setq erg
                         (progn
                           (when (looking-at "\"\"\"\\|''''")
                             (goto-char (match-end 0))
-                            (setq pps (if (featurep 'xemacs)
-                                          (parse-partial-sexp (point-min) (point))
-                                        (syntax-ppss)))
+                            (setq pps (syntax-ppss))
                             (when (and (nth 3 pps) (nth 8 pps)) (nth 2 pps)))))))
-    (when (interactive-p) (message "%s" erg))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
 (defun py-in-string-p ()
   "Returns character address of start of string, nil if not inside. "
   (interactive)
-  (let* ((pps
-          (if (featurep 'xemacs)
-              (parse-partial-sexp (point-min) (point))
-            (syntax-ppss)))
+  (let* ((pps (syntax-ppss))
          (erg (when (nth 3 pps) (nth 8 pps))))
     (save-excursion
       (unless erg (setq erg
                         (progn
                           (when (looking-at "\"\\|'")
                             (forward-char 1)
-                            (setq pps (if (featurep 'xemacs)
-                                          (parse-partial-sexp (point-min) (point))
-                                        (syntax-ppss)))
+                            (setq pps (syntax-ppss))
                             (when (nth 3 pps) (nth 8 pps)))))))
-    (when (interactive-p) (message "%s" erg))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
 (defun py-in-statement-p ()
@@ -670,9 +645,7 @@ Put point inside the parentheses of a multiline import and hit
 Optional argument LIM indicates the beginning of the containing form,
 i.e. the limit on how far back to scan."
   (let* ((lim (or lim (point-min)))
-         (state (if (featurep 'xemacs)
-                    (parse-partial-sexp lim (point))
-                  (syntax-ppss))))
+         (state (syntax-ppss)))
     (cond
      ((nth 3 state) 'string)
      ((nth 4 state) 'comment))))
