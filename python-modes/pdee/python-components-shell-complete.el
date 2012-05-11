@@ -255,6 +255,7 @@ and resending the lines later. The lines are stored in reverse order")
 (defun py-completion-at-point ()
   "An alternative completion, similar the way python.el does it. "
   (interactive "*")
+  (python-find-imports)
   (let* ((start (when (skip-chars-backward "[[:alnum:]_]")(point)))
          (end (progn (skip-chars-forward "[[:alnum:]_]")(point)))
          (completion (when start

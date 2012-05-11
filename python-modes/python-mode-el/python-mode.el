@@ -2339,7 +2339,8 @@ behavior, change `python-remove-cwd-from-path' to nil."
          (command
           ;; IPython puts the FakeModule module into __main__ so
           ;; emacs.eexecfile becomes useless.
-          (if (string-match "^ipython" py-shell-name)
+          (if (or (string-match "[iI][pP]ython[^[:alpha:]]*$" (py-choose-shell))
+                  (string-match "[pP]ython3[[:alnum:]:]*$" (py-choose-shell)))
               (format "execfile %S" f)
             (format "emacs.eexecfile(%S)" f)))
          (orig-start (copy-marker start)))
@@ -2434,6 +2435,19 @@ See variable `python-buffer'.  Starts a new process if necessary."
   ;; Fixme: Maybe should look for another active process if there
   ;; isn't one for `python-buffer'.
   (unless (comint-check-proc python-buffer)
+    (run-python nil t))
+  (get-buffer-process (if (derived-mode-p 'inferior-python-mode)
+                          (current-buffer)
+                        python-buffer)))
+
+(defun py-proc ()
+  "Return the current Python process.
+
+See variable `python-buffer'.  Starts a new process if necessary."
+  ;; Fixme: Maybe should look for another active process if there
+  ;; isn't one for `python-buffer'.
+  (unless (comint-check-proc python-buffer)
+    (when py-verbose-p (message "Please wait while starting a Python shell, as completion needs it"))
     (run-python nil t))
   (get-buffer-process (if (derived-mode-p 'inferior-python-mode)
                           (current-buffer)
@@ -4031,7 +4045,6 @@ Returns outmost indentation reached. "
   (let ((erg (py-shift-forms-base "statement" (- (or arg py-indent-offset)))))
     (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
-
 
 (defun py-indent-and-forward ()
   "Indent current line according to mode, move one line forward. "
@@ -10193,7 +10206,6 @@ See original source: http://pymacs.progiciels-bpi.ca"
           (t (error "Please set `py-install-directory', see INSTALL"))
           (when (interactive-p) (message "%s" load-path)))))
 
-
 (defvar py-menu)
 (defvar python-mode-map)
 (setq python-mode-map
@@ -11666,7 +11678,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (when py-local-versioned-command
     (cond ((string-match "[pP]ython3[^[:alpha:]]*$" py-local-versioned-command)
            (setq py-complete-function 'py-python3-script-complete))
-          (t (setq py-complete-function 'py-python2-script-complete))))
+          (t (setq py-complete-function 'py-completion-at-point))))
   (if py-complete-function
       (add-hook 'completion-at-point-functions
                 py-complete-function nil 'local)
@@ -12761,9 +12773,9 @@ Bug: if no IPython-shell is running, fails first time due to header returned, wh
          (end (point))
          (pattern (buffer-substring-no-properties beg end))
          (sep ";")
-         (python-process (or (get-buffer-process (current-buffer))
-                             (get-buffer-process (py-shell))
-                             (get-buffer-process (py-shell nil nil "ipython" 'noswitch nil))))
+         (py-process (or (get-buffer-process (current-buffer))
+                         (get-buffer-process (py-shell))
+                         (get-buffer-process (py-shell nil nil "ipython" 'noswitch nil))))
 
          (comint-output-filter-functions
           (delq 'py-comint-output-filter-function comint-output-filter-functions))
@@ -12777,9 +12789,9 @@ Bug: if no IPython-shell is running, fails first time due to header returned, wh
          completion completions completion-table ugly-return)
     (if (string= pattern "")
         (tab-to-tab-stop)
-      (process-send-string python-process
-                           (format (py-set-ipython-completion-command-string (downcase (process-name python-process))) pattern))
-      (accept-process-output python-process)
+      (process-send-string py-process
+                           (format (py-set-ipython-completion-command-string (downcase (process-name py-process))) pattern))
+      (accept-process-output py-process)
       (setq completions
             (split-string (substring ugly-return 0 (position ?\n ugly-return)) sep))
       (setq completion-table (loop for str in completions

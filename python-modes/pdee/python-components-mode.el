@@ -1054,6 +1054,17 @@ v5 did it - lp:990079. This might fail with certain chars - see UnicodeEncodeErr
 ;; ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ;; NO USER DEFINABLE VARIABLES BEYOND THIS POINT
 
+(defconst python-dotty-syntax-table
+  (let ((table (make-syntax-table)))
+    (set-char-table-parent table python-mode-syntax-table)
+    (modify-syntax-entry ?. "_" table)
+    table)
+  "Syntax table giving `.' symbol syntax.
+Otherwise inherits from `python-mode-syntax-table'.")
+
+(defvar view-return-to-alist)
+(defvar python-imports)
+
 (defvar py-prev-dir/file nil
   "Caches (directory . file) pair used in the last `py-load-file' command.
 Used for determining the default in the next one.")
@@ -4245,7 +4256,8 @@ behavior, change `python-remove-cwd-from-path' to nil."
          (command
           ;; IPython puts the FakeModule module into __main__ so
           ;; emacs.eexecfile becomes useless.
-          (if (string-match "^ipython" py-shell-name)
+          (if (or (string-match "[iI][pP]ython[^[:alpha:]]*$" (py-choose-shell))
+                  (string-match "[pP]ython3[[:alnum:]:]*$" (py-choose-shell))) 
               (format "execfile %S" f)
             (format "emacs.eexecfile(%S)" f)))
          (orig-start (copy-marker start)))
@@ -4339,8 +4351,8 @@ module-qualified names."
 See variable `python-buffer'.  Starts a new process if necessary."
   ;; Fixme: Maybe should look for another active process if there
   ;; isn't one for `python-buffer'.
-  (message "python-proc %s" "Starte run-python")
   (unless (comint-check-proc python-buffer)
+    (when py-verbose-p (message "Please wait while starting a Python shell, as completion needs it"))
     (run-python nil t))
   (get-buffer-process (if (derived-mode-p 'inferior-python-mode)
                           (current-buffer)
@@ -4358,17 +4370,6 @@ in a buffer that doesn't have a local value of `python-buffer'."
     (error "No local value of `python-buffer'")))
 
 ;;;; Context-sensitive help.
-
-(defconst python-dotty-syntax-table
-  (let ((table (make-syntax-table)))
-    (set-char-table-parent table python-mode-syntax-table)
-    (modify-syntax-entry ?. "_" table)
-    table)
-  "Syntax table giving `.' symbol syntax.
-Otherwise inherits from `python-mode-syntax-table'.")
-
-(defvar view-return-to-alist)
-(defvar python-imports)			; forward declaration
 
 ;; Fixme: Should this actually be used instead of info-look, i.e. be
 ;; bound to C-h S?  [Probably not, since info-look may work in cases
@@ -4415,31 +4416,6 @@ Otherwise inherits from `python-mode-syntax-table'.")
 ;;                                            "*Help*" (python-proc) nil nil))
 
 (add-to-list 'debug-ignored-errors "^No symbol")
-
-(defun python-send-receive (string)
-  "Send STRING to inferior Python (if any) and return result.
-The result is what follows `_emacs_out' in the output.
-This is a no-op if `python-check-comint-prompt' returns nil."
-  (py-send-string string)
-  (let ((proc (python-proc)))
-    (with-current-buffer (process-buffer proc)
-      (when (python-check-comint-prompt proc)
-        (set (make-local-variable 'python-preoutput-result) nil)
-        (while (progn
-                 (accept-process-output proc 5)
-                 (null python-preoutput-result)))
-        (prog1 python-preoutput-result
-          (kill-local-variable 'python-preoutput-result))))))
-
-(defun python-check-comint-prompt (&optional proc)
-  "Return non-nil if and only if there's a normal prompt in the inferior buffer.
-If there isn't, it's probably not appropriate to send input to return Eldoc
-information etc.  If PROC is non-nil, check the buffer for that process."
-  (with-current-buffer (process-buffer (or proc (python-proc)))
-    (save-excursion
-      (save-match-data
-        (re-search-backward (concat python--prompt-regexp " *\\=")
-                            nil t)))))
 
 ;; Fixme:  Is there anything reasonable we can do with random methods?
 ;; (Currently only works with functions.)
@@ -4757,8 +4733,31 @@ Uses `python-beginning-of-block', `python-end-of-block'."
               (replace-regexp-in-string "\n" "\\n"
                                         (format "%S" python-imports) t t))))))
 
-;; Fixme: This fails the first time if the sub-process isn't already
-;; running.  Presumably a timing issue with i/o to the process.
+(defun python-check-comint-prompt (&optional proc)
+  "Return non-nil if and only if there's a normal prompt in the inferior buffer.
+If there isn't, it's probably not appropriate to send input to return Eldoc
+information etc.  If PROC is non-nil, check the buffer for that process."
+  (with-current-buffer (process-buffer (or proc (python-proc)))
+    (save-excursion
+      (save-match-data
+	(re-search-backward (concat python--prompt-regexp " *\\=")
+			    nil t)))))
+
+(defun python-send-receive (string)
+  "Send STRING to inferior Python (if any) and return result.
+The result is what follows `_emacs_out' in the output.
+This is a no-op if `python-check-comint-prompt' returns nil."
+  (python-send-string string)
+  (let ((proc (python-proc)))
+    (with-current-buffer (process-buffer proc)
+      (when (python-check-comint-prompt proc)
+	(set (make-local-variable 'python-preoutput-result) nil)
+	(while (progn
+		 (accept-process-output proc 5)
+		 (null python-preoutput-result)))
+	(prog1 python-preoutput-result
+	  (kill-local-variable 'python-preoutput-result))))))
+
 (defun python-symbol-completions (symbol)
   "Return a list of completions of the string SYMBOL from Python process.
 The list is sorted.
@@ -5095,7 +5094,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (when py-local-versioned-command
     (cond ((string-match "[pP]ython3[^[:alpha:]]*$" py-local-versioned-command)
            (setq py-complete-function 'py-python3-script-complete))
-          (t (setq py-complete-function 'py-python2-script-complete))))
+          (t (setq py-complete-function 'py-completion-at-point))))
   (if py-complete-function
       (add-hook 'completion-at-point-functions
                 py-complete-function nil 'local)

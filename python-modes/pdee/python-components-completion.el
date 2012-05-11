@@ -360,7 +360,7 @@ Bug: if no IPython-shell is running, fails first time due to header returned, wh
          (end (point))
          (pattern (buffer-substring-no-properties beg end))
          (sep ";")
-         (python-process (or (get-buffer-process (current-buffer))
+         (py-process (or (get-buffer-process (current-buffer))
                              (get-buffer-process (py-shell))
                              (get-buffer-process (py-shell nil nil "ipython" 'noswitch nil))))
 
@@ -376,9 +376,9 @@ Bug: if no IPython-shell is running, fails first time due to header returned, wh
          completion completions completion-table ugly-return)
     (if (string= pattern "")
         (tab-to-tab-stop)
-      (process-send-string python-process
-                           (format (py-set-ipython-completion-command-string (downcase (process-name python-process))) pattern))
-      (accept-process-output python-process)
+      (process-send-string py-process
+                           (format (py-set-ipython-completion-command-string (downcase (process-name py-process))) pattern))
+      (accept-process-output py-process)
       (setq completions
             (split-string (substring ugly-return 0 (position ?\n ugly-return)) sep))
       (setq completion-table (loop for str in completions
