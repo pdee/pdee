@@ -547,6 +547,56 @@ Imports done are displayed in message buffer. "
         (message "%s" erg))
       erg)))
 
+;;; Pylint
+(defalias 'pylint 'py-pylint-run)
+(defun py-pylint-run (command)
+  "*Run pylint (default on the file currently visited).
+
+For help see M-x pylint-help resp. M-x pylint-long-help. 
+Home-page: http://www.logilab.org/project/pylint "
+  (interactive
+   (let ((default
+           (if (buffer-file-name)
+               (format "%s %s %s" py-pylint-command
+                       (mapconcat 'identity py-pylint-command-args " ")
+                       (buffer-file-name))
+             (format "%s %s" py-pylint-command
+                     (mapconcat 'identity py-pylint-command-args " "))))
+         (last (when py-pylint-history
+                 (let* ((lastcmd (car py-pylint-history))
+                        (cmd (cdr (reverse (split-string lastcmd))))
+                        (newcmd (reverse (cons (buffer-file-name) cmd))))
+                   (mapconcat 'identity newcmd " ")))))
+
+     (list
+      (if (fboundp 'read-shell-command)
+          (read-shell-command "Run pylint like this: "
+                              (if last
+                                  last
+                                default)
+                              'py-pylint-history)
+        (read-string "Run pylint like this: "
+                     (if last
+                         last
+                       default)
+                     'py-pylint-history)))))
+  (save-some-buffers (not py-ask-about-save) nil)
+  (if (fboundp 'compilation-start)
+      ;; Emacs.
+      (compilation-start command)
+    ;; XEmacs.
+    (when (featurep 'xemacs)
+      (compile-internal command "No more errors"))))
+
+(defun pylint-help ()
+  "Display Pylint command line help messages. 
+
+Let's have this until more Emacs-like help is prepared "
+  (interactive)
+  (set-buffer (get-buffer-create "*Pylint-Help*"))
+  (erase-buffer)
+  (shell-command "pylint --long-help" "*Pylint-Help*"))
+
 ;;; Pychecker
 ;; hack for GNU Emacs
 ;; (unless (fboundp 'read-shell-command)

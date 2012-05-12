@@ -41,8 +41,6 @@
 
 (defvar py-pdbtrack-is-tracking-p nil)
 
-(defvar py-pychecker-history nil)
-
 (defun py-update-gud-pdb-history ()
   "If pdb is called at a Python buffer, put it's file name at the head of `gud-pdb-history'. "
   (interactive)

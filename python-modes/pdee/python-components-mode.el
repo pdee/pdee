@@ -608,6 +608,7 @@ variable section, e.g.:
   :group 'python-mode)
 (make-variable-buffer-local 'py-master-file)
 
+(defvar py-pychecker-history nil)
 (defcustom py-pychecker-command "pychecker"
   "*Shell command used to run Pychecker."
   :type 'string
@@ -619,6 +620,21 @@ variable section, e.g.:
   :type '(repeat string)
   :group 'python-mode
   :tag "Pychecker Command Args")
+
+(defvar py-pylint-history nil)
+(defcustom py-pylint-command "pylint"
+  "*Shell command used to run Pylint."
+  :type 'string
+  :group 'python-mode
+  :tag "Pylint Command")
+
+(defcustom py-pylint-command-args '("--errors-only")
+  "*List of string arguments to be passed to pylint.
+
+Default is \"--errors-only\" "
+  :type '(repeat string)
+  :group 'python-mode
+  :tag "Pylint Command Args")
 
 (defvar py-shell-alist
   '(("jython" . 'jython)
@@ -1781,9 +1797,14 @@ It makes underscores and dots word constituent chars.")
             ["Import/reload file" py-execute-import-or-reload
              :help "`py-execute-import-or-reload'
 Load into inferior Python session"]
+
             ["pychecker-run" py-pychecker-run
              :help "`py-pychecker-run'
 Run pychecker"]
+
+            ["pylint" py-pylint-run
+             :help "Extendet report options, plain checks \"--errors-only\" "]
+
             ["Debugger" pdb
              :help "`pdb'
 Run pdb under GUD"]
