@@ -10021,7 +10021,7 @@ Returns nil, if no executable found.
 This does the following:
  - look for an interpreter with `py-choose-shell-by-shebang'
  - examine imports using `py-choose-shell-by-import'
- - look if Path/To/File already indicates a Python version
+ - look if Path/To/File indicates a Python version
  - if not successful, return default value of `py-shell-name'
 
 When interactivly called, messages the shell name, Emacs would in the given circtumstances.
