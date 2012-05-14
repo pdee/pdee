@@ -2131,6 +2131,12 @@ Switch between classic index machine `py-imenu-create-index'-function and new `p
 
 The former may provide a more detailed report, thus delivering two different index-machines is considered. 
 
+py-choose-shell-by-path
+-----------------------
+Select Python executable according to version desplayed in path, current buffer-file is selected from.
+
+Returns versioned string, nil if nothing appropriate found 
+
 py-choose-shell-by-shebang
 --------------------------
 Choose shell by looking at #! on the first line.
@@ -2170,6 +2176,7 @@ Returns nil, if no executable found.
 This does the following:
  - look for an interpreter with `py-choose-shell-by-shebang'
  - examine imports using `py-choose-shell-by-import'
+ - look if Path/To/File indicates a Python version
  - if not successful, return default value of `py-shell-name'
 
 When interactivly called, messages the shell name, Emacs would in the given circtumstances.
@@ -2252,7 +2259,8 @@ See original source: http://pymacs.progiciels-bpi.ca
 
 py-guess-py-install-directory
 -----------------------------
-
+Takes value of user directory aka $HOME
+if `(locate-library "python-mode")' is not succesful. 
 
 py-set-load-path
 ----------------

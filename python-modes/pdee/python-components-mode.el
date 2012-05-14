@@ -5191,6 +5191,21 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
     ;; (define-key map "\C-c\C-f" 'python-describe-symbol)
     map))
 
+(defun py-choose-shell-by-path (&optional file-separator-char)
+  "Select Python executable according to version desplayed in path, current buffer-file is selected from.
+
+Returns versioned string, nil if nothing appropriate found "
+  (interactive)
+  (lexical-let ((path (buffer-file-name))
+                (file-separator-char (or file-separator-char (py-separator-char)))
+                erg)
+    (when (and path file-separator-char
+               (string-match (concat file-separator-char "[iI]?[pP]ython[0-9.]+" file-separator-char) path))
+      (setq erg (substring path
+                           (1+ (string-match (concat file-separator-char "[iI]?[pP]ython[0-9.]+" file-separator-char) path)) (1- (match-end 0)))))
+    (when (interactive-p) (message "%s" erg))
+    erg))
+
 (defun py-choose-shell-by-shebang ()
   "Choose shell by looking at #! on the first line.
 
@@ -5351,6 +5366,7 @@ Returns nil, if no executable found.
 This does the following:
  - look for an interpreter with `py-choose-shell-by-shebang'
  - examine imports using `py-choose-shell-by-import'
+ - look if Path/To/File indicates a Python version
  - if not successful, return default value of `py-shell-name'
 
 When interactivly called, messages the shell name, Emacs would in the given circtumstances.
@@ -5368,6 +5384,7 @@ With \\[universal-argument] 4 is called `py-switch-shell' see docu there.
                          (message "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'")))
                       ((py-choose-shell-by-shebang))
                       ((py-choose-shell-by-import))
+                      ((py-choose-shell-by-path))
                       (py-shell-name py-shell-name)
                       (t (default-value 'py-shell-name))))
            (cmd (if py-edit-only-p erg

@@ -1082,12 +1082,13 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will not bein
 
 Optional OUTPUT-BUFFER and ERROR-BUFFER might be given. "
   (interactive "fDatei:")
-  (let ((coding-system-or-read 'utf-8)
+  (let ((coding-system-for-read 'utf-8)
         (coding-system-for-write 'utf-8)
-        (output-buffer (or output-buffer (make-temp-name "py-process-file-output"))))
+        (output-buffer (or output-buffer (make-temp-name "py-process-file-output")))
+        (cmd (py-choose-shell)))
     (unless (buffer-live-p output-buffer)
       (set-buffer (get-buffer-create output-buffer)))
-    (shell-command (concat "python " filename) output-buffer error-buffer)
+    (shell-command (concat cmd " " filename) output-buffer error-buffer)
     (when (interactive-p) (switch-to-buffer output-buffer))))
 
 (defun py-exec-execfile-region (start end &optional shell)

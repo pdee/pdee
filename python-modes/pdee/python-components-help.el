@@ -155,7 +155,7 @@ Useful for newly defined symbol, not known to python yet. "
                         "try: pydoc.help(" sym ")\n")))
     (setq cmd (concat cmd
                       "except:
-    print 'No help available on:', \"" sym "\""))
+    print('No help available on: \"" sym "\"')\n"))
     (with-temp-buffer
       (insert cmd)
       (write-file file))

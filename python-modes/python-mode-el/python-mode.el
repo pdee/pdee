@@ -8184,11 +8184,12 @@ Optional OUTPUT-BUFFER and ERROR-BUFFER might be given. "
   (interactive "fDatei:")
   (let ((coding-system-for-read 'utf-8)
         (coding-system-for-write 'utf-8)
-        (output-buffer (or output-buffer (make-temp-name "py-process-file-output"))))
+        (output-buffer (or output-buffer (make-temp-name "py-process-file-output")))
+        (cmd (py-choose-shell)))
     (unless (buffer-live-p output-buffer)
       (set-buffer (get-buffer-create output-buffer)))
-    (shell-command (concat "python " filename) output-buffer error-buffer)
-    (when (and py-verbose-p (interactive-p)) (switch-to-buffer output-buffer))))
+    (shell-command (concat cmd " " filename) output-buffer error-buffer)
+    (when (interactive-p) (switch-to-buffer output-buffer))))
 
 ;;;
 (defun py-exec-execfile-region (start end &optional shell)
@@ -8899,7 +8900,7 @@ Useful for newly defined symbol, not known to python yet. "
                         "try: pydoc.help(" sym ")\n")))
     (setq cmd (concat cmd
                       "except:
-    print 'No help available on:', \"" sym "\""))
+    print('No help available on: \"" sym "\"')\n"))
     (with-temp-buffer
       (insert cmd)
       (write-file file))
@@ -9862,6 +9863,22 @@ Uses `python-imports' to load modules against which to complete."
         (define-key map "\C-c=" 'py-down-exception)
         map))
 
+
+(defun py-choose-shell-by-path (&optional file-separator-char)
+  "Select Python executable according to version desplayed in path, current buffer-file is selected from.
+
+Returns versioned string, nil if nothing appropriate found "
+  (interactive)
+  (lexical-let ((path (buffer-file-name))
+                (file-separator-char (or file-separator-char (py-separator-char)))
+                erg)
+    (when (and path file-separator-char
+               (string-match (concat file-separator-char "[iI]?[pP]ython[0-9.]+" file-separator-char) path))
+      (setq erg (substring path
+                           (1+ (string-match (concat file-separator-char "[iI]?[pP]ython[0-9.]+" file-separator-char) path)) (1- (match-end 0)) )))
+    (when (interactive-p) (message "%s" erg))
+    erg))
+
 (defun py-choose-shell-by-shebang ()
   "Choose shell by looking at #! on the first line.
 
@@ -10004,6 +10021,7 @@ Returns nil, if no executable found.
 This does the following:
  - look for an interpreter with `py-choose-shell-by-shebang'
  - examine imports using `py-choose-shell-by-import'
+ - look if Path/To/File already indicates a Python version
  - if not successful, return default value of `py-shell-name'
 
 When interactivly called, messages the shell name, Emacs would in the given circtumstances.
@@ -10013,12 +10031,15 @@ With \\[universal-argument] 4 is called `py-switch-shell' see docu there.
   (interactive "P")
   (if (eq 4 (prefix-numeric-value arg))
       (py-switch-shell '(4))
-    (let* ((erg (cond (py-use-local-default
+    (let* ((erg (cond (py-force-py-shell-name-p
+                       py-shell-name)
+                      (py-use-local-default
                        (if (not (string= "" py-shell-local-path))
                            (expand-file-name py-shell-local-path)
                          (message "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'")))
                       ((py-choose-shell-by-shebang))
                       ((py-choose-shell-by-import))
+                      ((py-choose-shell-by-path))
                       (py-shell-name py-shell-name)
                       (t (default-value 'py-shell-name))))
            (cmd (if py-edit-only-p erg
