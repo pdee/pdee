@@ -133,11 +133,13 @@ Useful for newly defined symbol, not known to python yet. "
             (insert erg)))))))
 
 (defalias 'py-help-at-point 'py-describe-symbol)
-(defun py-describe-symbol ()
-  "Print help on symbol at point. "
-  (interactive)
+(defun py-describe-symbol (&optional arg) 
+  "Print help on symbol at point. 
+
+Optional \\[universal-argument] used for debugging, will prevent deletion of temp file. "
+  (interactive "P")
   (let* ((orig (point))
-         (beg (progn (skip-chars-backward "a-zA-Z0-9_." (line-beginning-position))(point)))
+         (beg (progn (when (looking-back "(") (forward-char -1))  (skip-chars-backward "a-zA-Z0-9_." (line-beginning-position))(point)))
          (end (progn (skip-chars-forward "a-zA-Z0-9_." (line-end-position))(point)))
          (sym (buffer-substring-no-properties beg end))
          ;; (sym (prin1-to-string (symbol-at-point)))
@@ -145,14 +147,15 @@ Useful for newly defined symbol, not known to python yet. "
          (temp (make-temp-name (buffer-name)))
          (file (concat (expand-file-name temp py-temp-directory) ".py"))
          (cmd (py-find-imports))
-         (quotes (string-match "\\." sym)))
+         ;; (quotes (string-match "\\." sym))
+)
     (goto-char orig)
     (setq cmd (concat "import pydoc\n"
                       cmd))
-    (if quotes
-        (setq cmd (concat cmd "try: pydoc.help('" sym "')\n"))
-      (setq cmd (concat cmd
-                        "try: pydoc.help(" sym ")\n")))
+    ;; (if quotes
+    (setq cmd (concat cmd "try: pydoc.help('" sym "')\n"))
+        ;; (setq cmd (concat cmd
+        ;; "try: pydoc.help(" sym ")\n")))
     (setq cmd (concat cmd
                       "except:
     print('No help available on: \"" sym "\"')\n"))
@@ -161,7 +164,7 @@ Useful for newly defined symbol, not known to python yet. "
       (write-file file))
     (py-process-file file "*Python-Help*")
     (when (file-readable-p file)
-      (delete-file file))))
+      (unless (eq 4 (prefix-numeric-value arg)) (delete-file file)))))
 
 (defun py-eldoc-function ()
   "Print help on symbol at point. "
