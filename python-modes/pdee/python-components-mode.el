@@ -20,6 +20,8 @@
 
 ;;; Code
 
+(add-to-list 'load-path default-directory)
+
 (require 'comint)
 
 (eval-when-compile
@@ -34,6 +36,8 @@
 (require 'cc-cmds)
 (require 'shell)
 (require 'python)
+(require 'python-components-macros)
+(require 'python-components-nomacros)
 
 (defgroup python-mode nil
   "Support for the Python programming language, <http://www.python.org/>"
@@ -1345,22 +1349,27 @@ Currently-active file is at the head of the list.")
      (make-obsolete-variable 'py-mode-hook 'python-mode-hook nil))
 
 
+(defun py-normalize-directory (directory &optional file-separator-char)
+  "Make sure DIRECTORY ends with a file-path separator char.
+
+Returns DIRECTORY"
+  (let* ((file-separator-char (or file-separator-char (py-separator-char)))
+         ;; (if (or (string-match "windows" (prin1-to-string system-type))
+         ;; (string-match "ms-dos" (prin1-to-string system-type)))
+         ;; "\\"
+         ;; "\/")
+         (erg (if (string-match (concat file-separator-char "$") directory)
+                  directory
+                (concat directory file-separator-char))))
+    (when (interactive-p) (message "%s" erg))
+    erg))
 
 (defun py-normalize-py-install-directory ()
   "Make sure `py-install-directory' ends with a file-path separator.
 
 Returns `py-install-directory' "
   (interactive)
-  (let* ((file-separator-char (if (or (string-match "windows" (prin1-to-string system-type))
-                                      (string-match "ms-dos" (prin1-to-string system-type)))
-                                  "\\"
-                                "\/"))
-         (erg (if (string-match (concat file-separator-char "$") py-install-directory)
-                  py-install-directory
-                (concat py-install-directory file-separator-char))))
-    (setq py-install-directory erg)
-    (when (interactive-p) (message "%s" erg))
-    erg))
+  (py-normalize-directory py-install-directory (py-separator-char)))
 
 (defun py-install-directory-check ()
   "Do some sanity check for `py-install-directory'.
@@ -1379,7 +1388,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
   (interactive)
   (let* ((pyshell (py-choose-shell))
          (path (getenv "PYTHONPATH"))
-         (py-install-directory (py-normalize-py-install-directory))
+         (py-install-directory (py-normalize-directory py-install-directory (py-separator-char)))
          (pymacs-installed-p
           (ignore-errors (string-match (expand-file-name (concat py-install-directory "Pymacs")) path))))
     ;; Python side
@@ -1404,17 +1413,22 @@ See original source: http://pymacs.progiciels-bpi.ca"
       (error "`py-install-directory' not set, see INSTALL"))))
 
 (defun py-guess-py-install-directory ()
+  "Takes value of user directory aka $HOME
+if `(locate-library \"python-mode\")' is not succesful. "
   (interactive)
   (let ((erg (file-name-directory (locate-library "python-mode"))))
-    (when erg
-      (when (interactive-p) (message "Setting py-install-directory to: %s" erg))
-      (setq py-install-directory erg))))
+    (if erg
+        (progn
+          (setq py-install-directory erg)
+          (when (and py-verbose-p (interactive-p)) (message "Setting py-install-directory to: %s" erg)))
+      (setq py-install-directory (expand-file-name "~/")))
+    py-install-directory ))
 
 (defun py-set-load-path ()
   "Include needed subdirs of python-mode directory. "
   (interactive)
-  (let ((py-install-directory (py-normalize-py-install-directory)))
-    (cond (py-install-directory
+  (let ((py-install-directory (py-normalize-directory py-install-directory (py-separator-char))))
+    (cond ((and (not (string= "" py-install-directory))(stringp py-install-directory))
            (add-to-list 'load-path (expand-file-name py-install-directory))
            (add-to-list 'load-path (concat (expand-file-name py-install-directory) "completion"))
            (add-to-list 'load-path (concat (expand-file-name py-install-directory) "test"))
@@ -4278,7 +4292,7 @@ behavior, change `python-remove-cwd-from-path' to nil."
           ;; IPython puts the FakeModule module into __main__ so
           ;; emacs.eexecfile becomes useless.
           (if (or (string-match "[iI][pP]ython[^[:alpha:]]*$" (py-choose-shell))
-                  (string-match "[pP]ython3[[:alnum:]:]*$" (py-choose-shell))) 
+                  (string-match "[pP]ython3[[:alnum:]:]*$" (py-choose-shell)))
               (format "execfile %S" f)
             (format "emacs.eexecfile(%S)" f)))
          (orig-start (copy-marker start)))
@@ -4440,86 +4454,6 @@ in a buffer that doesn't have a local value of `python-buffer'."
 
 ;; Fixme:  Is there anything reasonable we can do with random methods?
 ;; (Currently only works with functions.)
-(defun python-eldoc-function ()
-  "`eldoc-documentation-function' for Python.
-Only works when point is in a function name, not its arg list, for
-instance.  Assumes an inferior Python is running."
-  (let ((symbol (with-syntax-table python-dotty-syntax-table
-                  (current-word))))
-    ;; This is run from timers, so inhibit-quit tends to be set.
-    (with-local-quit
-      ;; First try the symbol we're on.
-      (or (and symbol
-               (python-send-receive (format "emacs.eargs(%S, %s)"
-                                            symbol python-imports)))
-          ;; Try moving to symbol before enclosing parens.
-          (let ((s (syntax-ppss)))
-            (unless (zerop (car s))
-              (when (eq ?\( (char-after (nth 1 s)))
-                (save-excursion
-                  (goto-char (nth 1 s))
-                  (skip-syntax-backward "-")
-                  (let ((point (point)))
-                    (skip-chars-backward "a-zA-Z._")
-                    (if (< (point) point)
-                        (python-send-receive
-                         (format "emacs.eargs(%S, %s)"
-                                 (buffer-substring-no-properties (point) point)
-                                 python-imports))))))))))))
-
-;;; Info-look functionality.
-
-(declare-function info-lookup-maybe-add-help "info-look" (&rest arg))
-
-(defun python-after-info-look ()
-  "Set up info-look for Python.
-Used with `eval-after-load'."
-  (let* ((version (let ((s (shell-command-to-string (concat py-shell-name
-                                                            " -V"))))
-                    (string-match "^Python \\([0-9]+\\.[0-9]+\\_>\\)" s)
-                    (match-string 1 s)))
-         ;; Whether info files have a Python version suffix, e.g. in Debian.
-         (versioned
-          (with-temp-buffer
-            (with-no-warnings (Info-mode))
-            (condition-case ()
-                ;; Don't use `info' because it would pop-up a *info* buffer.
-                (with-no-warnings
-                  (Info-goto-node (format "(python%s-lib)Miscellaneous Index"
-                                          version))
-                  t)
-              (error nil)))))
-    (info-lookup-maybe-add-help
-     :mode 'python-mode
-     :regexp "[[:alnum:]_]+"
-     :doc-spec
-     ;; Fixme: Can this reasonably be made specific to indices with
-     ;; different rules?  Is the order of indices optimal?
-     ;; (Miscellaneous in -ref first prefers lookup of keywords, for
-     ;; instance.)
-     (if versioned
-         ;; The empty prefix just gets us highlighted terms.
-         `((,(concat "(python" version "-ref)Miscellaneous Index") nil "")
-           (,(concat "(python" version "-ref)Module Index" nil ""))
-           (,(concat "(python" version "-ref)Function-Method-Variable Index"
-                     nil ""))
-           (,(concat "(python" version "-ref)Class-Exception-Object Index"
-                     nil ""))
-           (,(concat "(python" version "-lib)Module Index" nil ""))
-           (,(concat "(python" version "-lib)Class-Exception-Object Index"
-                     nil ""))
-           (,(concat "(python" version "-lib)Function-Method-Variable Index"
-                     nil ""))
-           (,(concat "(python" version "-lib)Miscellaneous Index" nil "")))
-       '(("(python-ref)Miscellaneous Index" nil "")
-         ("(python-ref)Module Index" nil "")
-         ("(python-ref)Function-Method-Variable Index" nil "")
-         ("(python-ref)Class-Exception-Object Index" nil "")
-         ("(python-lib)Module Index" nil "")
-         ("(python-lib)Class-Exception-Object Index" nil "")
-         ("(python-lib)Function-Method-Variable Index" nil "")
-         ("(python-lib)Miscellaneous Index" nil ""))))))
-(eval-after-load "info-look" '(python-after-info-look))
 
 ;;;; Miscellany.
 
@@ -4979,9 +4913,7 @@ Updated on each expansion.")
 ;; (setq pdb-path '/usr/lib/python2.7/pdb.py
 ;;      gud-pdb-command-name (symbol-name pdb-path))
 
-(add-to-list 'load-path default-directory)
-;; (require 'python-components-macros)
-(require 'python-components-nomacros)
+
 (require 'python-components-edit)
 (require 'python-components-intern)
 (require 'python-components-move)

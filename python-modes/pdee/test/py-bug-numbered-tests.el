@@ -44,6 +44,7 @@
            'nested-indents-lp:328775-test
            'previous-statement-lp:637955-test)
         (list
+         'pycomplete-same-folder-def-lp:889052-test
          'indent-region-lp:997958-test
          'py-describe-symbol-fails-on-modules-lp:919719-test
          'mark-block-region-lp:328806-test
@@ -1569,9 +1570,7 @@ if foo:
 (defun execute-indented-code-lp:828314-base ()
   (let ((debug-on-error t))
     (goto-char 28)
-    (push-mark)
-    (progn
-      (py-execute-base (point) (progn (end-of-line)(point))))))
+    (assert (py-execute-line) nil "execute-indented-code-lp:828314-test failed")))
 
 (defun wrong-indentation-of-function-arguments-lp:840891-test (&optional arg)
   (interactive "p")
@@ -2718,10 +2717,34 @@ datei.write(str(baz[i]) + \"\\n\")
   (assert (eq 4 (current-column))  nil "indent-region-lp:997958-test #1 failed")
   (goto-char 127)
   (back-to-indentation)
-  (assert (eq 8 (current-column))  nil "indent-region-lp:997958-test #2 failed")
+  (assert (eq 8 (current-column))  nil "indent-region-lp:997958-test #2 failed"))
 
-  )
+(defun pycomplete-same-folder-def-lp:889052-test (&optional arg)
+  (interactive "p")
+  (save-excursion
+    (set-buffer (get-buffer-create "somedef.py"))
+    (switch-to-buffer (current-buffer))
+    (erase-buffer)
+    (insert "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
 
+def someDef():
+    print(\"I'm someDef\")
+")
+    (write-file (concat (py-normalize-directory py-temp-directory) "somedef.py")))
+
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+from somedef import *
+someDe
+"))
+    (py-bug-tests-intern 'pycomplete-same-folder-def-lp:889052-base arg teststring)))
+
+(defun pycomplete-same-folder-def-lp:889052-base ()
+  (goto-char 76)
+  (py-complete)
+  (beginning-of-line)
+  (assert (looking-at "someDef") nil "pycomplete-same-folder-def-lp:889052-test failed"))
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
