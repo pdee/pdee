@@ -762,27 +762,22 @@ Argument OUTPUT is a string with the output from the comint process."
 Argument COMPLETION-CODE is the python code used to get
 completions on the current context."
   (with-current-buffer (process-buffer process)
-    (let ((completions (python-shell-send-string-no-output
-                        (format completion-code input) process)))
+    (let ((completions
+           (python-shell-send-string-no-output
+            (format completion-code input) process)))
       (when (> (length completions) 2)
         (split-string completions "^'\\|^\"\\|;\\|'$\\|\"$" t)))))
 
 (defun python-shell-completion--do-completion-at-point (process line input)
   "Do completion at point for PROCESS."
   (with-syntax-table python-dotty-syntax-table
-    (let* (
-           ;; (line (substring-no-properties
-           ;; (buffer-substring (point-at-bol) (point)) nil nil))
-	   ;; (input (substring-no-properties
-           ;; (or (comint-word (current-word)) "") nil nil))
-	   (completions
-	    (if (and (> (length python-shell-module-completion-string-code) 0)
-		     (string-match "^\\(from\\|import\\)[ \t]" line))
-		(python-shell-completion--get-completions
-		 line process python-shell-module-completion-string-code)
-	      (and (> (length input) 0)
-		   (python-shell-completion--get-completions
-		    input process python-shell-completion-string-code))))
+    (let* ((code
+	    (if line
+                (concat line  python-shell-module-completion-string-code)
+              python-shell-module-completion-string-code))
+           (completions
+            (python-shell-completion--get-completions
+             input process code))
 	   (completion (when completions
 			 (try-completion input completions))))
       (cond ((eq completion t)

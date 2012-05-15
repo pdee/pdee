@@ -133,8 +133,8 @@ Useful for newly defined symbol, not known to python yet. "
             (insert erg)))))))
 
 (defalias 'py-help-at-point 'py-describe-symbol)
-(defun py-describe-symbol (&optional arg) 
-  "Print help on symbol at point. 
+(defun py-describe-symbol (&optional arg)
+  "Print help on symbol at point.
 
 Optional \\[universal-argument] used for debugging, will prevent deletion of temp file. "
   (interactive "P")
@@ -600,18 +600,17 @@ Interactively, prompt for name."
 (defun py-find-imports ()
   "Find top-level imports, updating `python-imports'."
   (interactive)
-  (let* (imports
-         (erg
-          (save-excursion
-            (goto-char (point-min))
-            (while (re-search-forward
-                    "^import *[A-Za-z_][A-Za-z_0-9].*\\|^from +[A-Za-z_][A-Za-z_0-9]+ +import .*" nil t)
-              (setq imports
-                    (concat
-                     imports
-                     (buffer-substring-no-properties (match-beginning 0) (match-end 0)) "\n"))))))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-    erg))
+  (let* (imports)
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward
+              "^import *[A-Za-z_][A-Za-z_0-9].*\\|^from +[A-Za-z_][A-Za-z_0-9]+ +import .*" nil t)
+        (setq imports
+              (concat
+               imports
+               (buffer-substring-no-properties (match-beginning 0) (match-end 0)) ";"))))
+    (when (and py-verbose-p (interactive-p)) (message "%s" imports))
+    imports))
 
 (defun py-update-imports ()
   "Returns `python-imports'.
@@ -636,7 +635,7 @@ Imports done are displayed in message buffer. "
 (defun py-pylint-run (command)
   "*Run pylint (default on the file currently visited).
 
-For help see M-x pylint-help resp. M-x pylint-long-help. 
+For help see M-x pylint-help resp. M-x pylint-long-help.
 Home-page: http://www.logilab.org/project/pylint "
   (interactive
    (let ((default
@@ -673,7 +672,7 @@ Home-page: http://www.logilab.org/project/pylint "
       (compile-internal command "No more errors"))))
 
 (defun pylint-help ()
-  "Display Pylint command line help messages. 
+  "Display Pylint command line help messages.
 
 Let's have this until more Emacs-like help is prepared "
   (interactive)

@@ -298,7 +298,7 @@ Uses `python-imports' to load modules against which to complete."
        (delete-dups completions)
        #'string<))))
 
-(defun py-python2-script-complete (&optional shell)
+(defun py-python-script-complete (&optional shell)
   "Complete word before point, if any. Otherwise insert TAB. "
   (interactive)
   (let* (py-split-windows-on-execute-p
@@ -307,16 +307,27 @@ Uses `python-imports' to load modules against which to complete."
          (orig (point))
          (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
          (end (point))
-         (word (buffer-substring-no-properties beg end)))
+         (word (buffer-substring-no-properties beg end))
+         (imports (py-find-imports)))
     (cond ((string= word "")
            (message "%s" "Nothing to complete. ")
            (tab-to-tab-stop))
           (t (or (setq proc (get-buffer-process shell))
                  (setq proc (get-buffer-process (py-shell nil nil shell))))
              (if (processp proc)
-                 (python-shell-completion--do-completion-at-point proc (buffer-substring-no-properties beg end) word)
-               (error "No completion process at proc")
-               )))))
+                 (progn
+                   ;; when completing instances, make them known
+                   (when (string-match "^\\(^[a-zA-Z0-9_]+\\)\\.\\([a-zA-Z0-9_]+\\)$" word)
+                     ;; (message "%s" (match-string 1 word))
+                     (save-excursion
+                       (goto-char (point-min))
+                       (when (re-search-forward (concat "^[ \t]*" (match-string-no-properties 1 word) "[ \t]*=[ \t]*[^ \n\r\f\t]+") nil t 1))
+                       (message "%s" (match-string-no-properties 0)))
+                     (if imports
+                         (setq imports (concat imports (match-string-no-properties 0) ";"))
+                       (setq imports (match-string-no-properties 0))))
+                   (python-shell-completion--do-completion-at-point proc imports word))
+               (error "No completion process at proc"))))))
 
 (defun py-python2-shell-complete (&optional shell)
   (interactive)
@@ -330,26 +341,6 @@ Uses `python-imports' to load modules against which to complete."
     (cond ((string= word "")
            (message "%s" "Nothing to complete. ")
            (tab-to-tab-stop))
-          (t (or (setq proc (get-buffer-process shell))
-                 (setq proc (get-buffer-process (py-shell nil nil shell))))
-             (message "%s" (processp proc))
-             (python-shell-completion--do-completion-at-point proc (buffer-substring-no-properties beg end) word)))))
-
-(defun py-python3-script-complete (&optional shell)
-  "Complete word before point, if any. Otherwise insert TAB. "
-  (interactive)
-  (let* (py-split-windows-on-execute-p
-         py-switch-buffers-on-execute-p
-         (shell (or shell py-local-versioned-command))
-         (orig (point))
-         (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
-         (end (point))
-         (word (buffer-substring-no-properties beg end))
-         proc)
-    (cond ((string= word "")
-           (message "%s" "Nothing to complete. ")
-           (tab-to-tab-stop))
-          ;; (t (eval complete))
           (t (or (setq proc (get-buffer-process shell))
                  (setq proc (get-buffer-process (py-shell nil nil shell))))
              (message "%s" (processp proc))

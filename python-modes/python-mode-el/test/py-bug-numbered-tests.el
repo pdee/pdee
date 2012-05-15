@@ -44,6 +44,7 @@
            'nested-indents-lp:328775-test
            'previous-statement-lp:637955-test)
         (list
+         'pycomplete-same-folder-class-lp:889052-test
          'pycomplete-same-folder-def-lp:889052-test
          'indent-region-lp:997958-test
          'py-describe-symbol-fails-on-modules-lp:919719-test
@@ -2745,6 +2746,38 @@ someDe
   (py-complete)
   (beginning-of-line)
   (assert (looking-at "someDef") nil "pycomplete-same-folder-def-lp:889052-test failed"))
+
+
+(defun pycomplete-same-folder-class-lp:889052-test (&optional arg)
+  (interactive "p")
+  (save-excursion
+    (set-buffer (get-buffer-create "somedef.py"))
+    (switch-to-buffer (current-buffer))
+    (erase-buffer)
+    (insert "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+class Blah():
+    def someDef():
+        print(\"I'm someDef\")
+")
+    (write-file (concat (py-normalize-directory py-temp-directory) "classblah.py")))
+
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+from classblah import *
+CLASS_INS = Blah()
+CLASS_INS.someDe
+"))
+    (py-bug-tests-intern 'pycomplete-same-folder-class-lp:889052-base arg teststring)))
+
+(defun pycomplete-same-folder-class-lp:889052-base ()
+  (let ((erg (concat (py-normalize-directory py-temp-directory) "classblah.py")))
+    (goto-char 107)
+    (unwind-protect
+        (py-python-script-complete)
+      (beginning-of-line))
+    (when (file-readable-p erg) (delete-file erg)))
+  (assert (looking-at "CLASS_INS.someDef") "pycomplete-same-folder-class-lp:889052-test failed"))
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

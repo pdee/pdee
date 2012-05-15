@@ -2003,7 +2003,7 @@ Useful for newly defined symbol, not known to python yet.
 
 py-find-imports
 ---------------
-
+Find top-level imports, updating `python-imports'.
 
 py-eldoc-function
 -----------------
@@ -2012,6 +2012,8 @@ Print help on symbol at point.
 py-describe-symbol
 ------------------
 Print help on symbol at point. 
+
+Optional C-u used for debugging, will prevent deletion of temp file. 
 
 py-describe-mode
 ----------------
@@ -2354,17 +2356,13 @@ py-script-complete
 ------------------
 
 
-py-python2-script-complete
---------------------------
+py-python-script-complete
+-------------------------
 Complete word before point, if any. Otherwise insert TAB. 
 
 py-python2-shell-complete
 -------------------------
 
-
-py-python3-script-complete
---------------------------
-Complete word before point, if any. Otherwise insert TAB. 
 
 py-python3-shell-complete
 -------------------------
@@ -2396,12 +2394,12 @@ py-pylint-run
 -------------
 *Run pylint (default on the file currently visited).
 
-For help see M-x pylint-help resp. M-x pylint-long-help. 
+For help see M-x pylint-help resp. M-x pylint-long-help.
 Home-page: http://www.logilab.org/project/pylint 
 
 pylint-help
 -----------
-Display Pylint command line help messages. 
+Display Pylint command line help messages.
 
 Let's have this until more Emacs-like help is prepared 
 

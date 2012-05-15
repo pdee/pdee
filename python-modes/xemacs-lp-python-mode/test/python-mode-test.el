@@ -446,7 +446,6 @@
 (defun py-beginning-of-block-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring python-mode-teststring))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-block-base arg teststring)))
 
 (defun py-beginning-of-block-base ()
@@ -457,7 +456,6 @@
 (defun py-end-of-block-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring python-mode-teststring))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-end-of-block-base arg teststring)))
 
 (defun py-end-of-block-base ()
@@ -468,7 +466,6 @@
 (defun py-beginning-of-block-or-clause-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring python-mode-teststring))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-block-or-clause-base arg teststring)))
 
 (defun py-beginning-of-block-or-clause-base ()
@@ -479,7 +476,6 @@
 (defun py-end-of-block-or-clause-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring python-mode-teststring))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-end-of-block-or-clause-base arg teststring)))
 
 (defun py-end-of-block-or-clause-base ()
@@ -490,7 +486,6 @@
 (defun py-beginning-of-def-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring python-mode-teststring))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-def-base arg teststring)))
 
 (defun py-beginning-of-def-base ()
@@ -501,7 +496,6 @@
 (defun py-end-of-def-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring python-mode-teststring))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-end-of-def-base arg teststring)))
 
 (defun py-end-of-def-base ()
@@ -513,7 +507,6 @@
 (defun py-beginning-of-def-or-class-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring python-mode-teststring))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-def-or-class-base arg teststring)))
 
 (defun py-beginning-of-def-or-class-base ()
@@ -523,7 +516,6 @@
 (defun py-end-of-def-or-class-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring python-mode-teststring))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-end-of-def-or-class-base arg teststring)))
 
 (defun py-end-of-def-or-class-base ()
@@ -534,7 +526,6 @@
 (defun py-electric-backspace-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring python-mode-teststring))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-electric-backspace-base arg teststring)))
 
 (defun py-electric-backspace-base ()
@@ -552,7 +543,6 @@
 (defun py-electric-delete-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring python-mode-teststring))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-electric-delete-base arg teststring)))
 
 (defun py-electric-delete-base ()
@@ -570,7 +560,6 @@
   (let ((teststring (concat py-test-shebang "
 # -\*- coding: utf-8 -\*-\n
 print('\\xA9')")))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'UnicodeEncodeError-python3-base 2 teststring)))
 
 (defun UnicodeEncodeError-python3-base ()
@@ -597,7 +586,6 @@ class foo(bar):
 		'45': 'ddd',
 	}
 ")))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'dict-error-base arg teststring)))
 
 (defun dict-error-base ()
@@ -611,7 +599,6 @@ class foo(bar):
 print('\xA9')
 pst
 ")))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-expand-abbrev-pst-pdb.set_trace-base arg teststring)))
 
 (defun py-expand-abbrev-pst-pdb.set_trace-base ()
@@ -634,7 +621,6 @@ pst
 
 print u'\xA9'
 ")))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'near-bob-beginning-of-statement-base arg teststring)))
 
 (defun near-bob-beginning-of-statement-base ()
@@ -645,7 +631,6 @@ print u'\xA9'
   (interactive "p")
   (let ((teststring "    #Foo.py
 "))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'bob-beginning-of-statement-base arg teststring)))
 
 (defun bob-beginning-of-statement-base ()
@@ -657,7 +642,6 @@ print u'\xA9'
   (let ((teststring "    #Something.py
     # The purpose of this program is uncertain.
 "))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'honor-comments-indent-base arg teststring)))
 
 (defun honor-comments-indent-base ()
@@ -669,7 +653,6 @@ print u'\xA9'
   (let ((teststring "    #Something.py
     # The purpose of this program is uncertain.
 "))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'first-line-offset-base arg teststring)))
 
 (defun first-line-offset-base ()
@@ -681,7 +664,6 @@ print u'\xA9'
   (let ((teststring "def foo():
 sammlung = []
 "))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'assignment-indent-base arg teststring)))
 
 (defun assignment-indent-base ()
@@ -697,7 +679,6 @@ sammlung = []
 elif barr in bazz:
     print \"\"
 "))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'if-elif-base arg teststring)))
 
 (defun if-elif-base ()
@@ -709,7 +690,6 @@ elif barr in bazz:
   (let ((teststring "if bar in baz:
     print \"0, baz\"
 "))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'if-elif-bob-base arg teststring)))
 
 (defun if-elif-bob-base ()
@@ -733,7 +713,6 @@ def _commit_on_success(*args, **kw):
         commit()
     return res
 "))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'try-else-clause-base arg teststring)))
 
 (defun try-else-clause-base ()
@@ -757,7 +736,6 @@ def _commit_on_success(*args, **kw):
         commit()
     return res
 "))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'try-except-base arg teststring)))
 
 (defun try-except-base ()
@@ -776,7 +754,6 @@ if x > 0:
 a = \"asdf\"
 b = \"asdf\"
 "))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'assignment-after-block-base arg teststring)))
 
 (defun assignment-after-block-base ()
@@ -804,7 +781,6 @@ def main(argv):
         elif opt in (\"-g\", \"--grammar\"):
             grammar = arg
 "))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-clause-base arg teststring)))
 
 (defun py-beginning-of-clause-base ()
@@ -832,7 +808,6 @@ def main(argv):
         elif opt in (\"-g\", \"--grammar\"):
             grammar = arg
 "))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-end-of-clause-base arg teststring)))
 
 (defun py-end-of-clause-base ()
@@ -851,7 +826,6 @@ def main(argv):
         usage()
         sys.exit(2)
 "))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-expression-base arg teststring)))
 
 (defun py-beginning-of-expression-base ()
@@ -870,7 +844,6 @@ def main(argv):
         usage()
         sys.exit(2)
 "))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-end-of-expression-base arg teststring)))
 
 (defun py-end-of-expression-base ()
@@ -883,7 +856,6 @@ def main(argv):
  # -\*- coding: utf-8 -\*-
 b = a[0].split(':')[1]
 ")))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-expression-index-base arg teststring)))
 
 (defun py-expression-index-base ()
@@ -911,7 +883,6 @@ class OrderedDict1(dict):
         self._keys = d.keys()
         dict.__init__(self, d)
         ")))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-insert-super-python2-base arg teststring)))
 
 (defun py-insert-super-python2-base ()
@@ -941,7 +912,6 @@ class OrderedDict1(dict):
         self._keys = d.keys()
         dict.__init__(self, d)
         ")))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-insert-super-python3-base arg teststring)))
 
 (defun py-insert-super-python3-base ()
@@ -960,7 +930,6 @@ def foo( self, bar=False ):  # version 12345
     title = self.barz.attrs['file'].split('.')[ -1 ]
     if asdf:
 ")))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'indent-after-assigment-base arg teststring)))
 
 (defun indent-after-assigment-base ()
@@ -980,7 +949,6 @@ foo = {
     \"wxrddef\": { \"yyer\": [], \"wfter\": [\"yyfx\", \"yytem\", \"hym\"], \"xbject\": WxrddefTwg, },
 }
 "))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'leave-dict-base arg teststring)))
 
 (defun leave-dict-base ()
@@ -994,7 +962,6 @@ foo = {
     return baz.replace(\"\+\",\"§\").replace(\"_\", \" \").replace(\"ﬁ\",\"fr\").replace(
         \"ﬂ\", \"fg\").replace(\"--\", \"ü\")
 "))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'eofs-attribut-base arg teststring)))
 
 (defun eofs-attribut-base ()
@@ -1016,7 +983,6 @@ if foo:
             )
     )
 ")))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'args-list-first-line-indent-base arg teststring)))
 
 (defun args-list-first-line-indent-base ()
@@ -1038,7 +1004,6 @@ if foo:
             )
         )
 ")))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-partial-expression-base arg teststring)))
 
 (defun py-partial-expression-base ()
@@ -1054,7 +1019,6 @@ if foo:
   (interactive "p")
   (let ((teststring "if True:
     print \"asdf\""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-base 2 teststring)))
 
 (defun py-execute-block-base ()
@@ -1067,7 +1031,6 @@ if foo:
   (interactive "p")
   (let ((teststring "print [1, 2,
     3, 4]"))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'multiline-list-indent-base arg teststring)))
 
 (defun multiline-list-indent-base ()
@@ -1080,7 +1043,6 @@ if foo:
 
 print u'\\xA9'
 ")))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'no-switch-no-split-base arg teststring)))
 
 (defun no-switch-no-split-base ()
@@ -1105,7 +1067,6 @@ def main():
 if __name__==\"__main__\":
     main()
 ")))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'close-block-base arg teststring)))
 
 (defun close-block-base ()
@@ -1127,7 +1088,6 @@ class OrderedDict1(dict):
         self._keys = d.keys()
         dict.__init__(self, d)
          ")))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-shift-block-base arg teststring)))
 
 (defun py-shift-block-base ()
@@ -1149,7 +1109,6 @@ else:
     pass
 
 ")))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'nesting-if-test-base arg teststring)))
 
 (defun nesting-if-test-base ()
@@ -1167,7 +1126,6 @@ somme errors
 \"\"\" % (
           os.path.basename(sys.argv[0]))
 ")))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-end-of-print-statement-base arg teststring)))
 
 (defun py-end-of-print-statement-base ()
@@ -1196,7 +1154,6 @@ def main(argv):
         print \"asdf\"
 
 ")))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'nested-try-base arg teststring)))
 
 (defun nested-try-base ()
@@ -1225,7 +1182,6 @@ else:
     print \"asbd\"
 
 ")))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'nested-if-base arg teststring)))
 
 (defun nested-if-base ()
@@ -1263,7 +1219,6 @@ def my_fun():
     return
 
 ")))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'nested-try-finally-base arg teststring)))
 
 (defun nested-try-finally-base ()
@@ -1281,7 +1236,6 @@ class foo(bar, baz):
 \"\"\"
     pass
 ")))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'tqs-list-error-base 2 teststring)))
 
 (defun tqs-list-error-base ()
@@ -1299,7 +1253,6 @@ for x in y:
         for r in t:
                 pass # <--- indents here. Pressing <backspace> dedents eight spaces (i.e. you can go to column 0 in two presess)
 ")))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-smart-indent-eight-base arg teststring)))
 
 (defun py-smart-indent-eight-base ()
@@ -1308,7 +1261,10 @@ for x in y:
 
 (defun py-install-directory-path-test (&optional arg)
   (interactive "p")
-  (py-bug-tests-intern 'py-install-directory-path-base arg ""))
+  (let ((teststring (concat py-test-shebang "
+# -*- coding: utf-8 -*-
+")))
+    (py-bug-tests-intern 'py-install-directory-path-base arg teststring)))
 
 (defun py-install-directory-path-base ()
   "See if `py-install-directory' is set when required. "
@@ -1318,7 +1274,6 @@ for x in y:
 (defun py-guess-pdb-path-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-guess-pdb-path-commandp-base arg teststring)))
 
 (defun py-guess-pdb-path-commandp-base ()
@@ -1327,7 +1282,6 @@ for x in y:
 (defun highlight-indentation-on-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'highlight-indentation-on-commandp-base arg teststring)))
 
 (defun highlight-indentation-on-commandp-base ()
@@ -1336,7 +1290,6 @@ for x in y:
 (defun highlight-indentation-off-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'highlight-indentation-off-commandp-base arg teststring)))
 
 (defun highlight-indentation-off-commandp-base ()
@@ -1345,7 +1298,6 @@ for x in y:
 (defun highlight-indentation-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'highlight-indentation-commandp-base arg teststring)))
 
 (defun highlight-indentation-commandp-base ()
@@ -1354,7 +1306,6 @@ for x in y:
 (defun py-insert-default-shebang-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-insert-default-shebang-commandp-base arg teststring)))
 
 (defun py-insert-default-shebang-commandp-base ()
@@ -1363,7 +1314,6 @@ for x in y:
 (defun py-electric-comment-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-electric-comment-commandp-base arg teststring)))
 
 (defun py-electric-comment-commandp-base ()
@@ -1372,7 +1322,6 @@ for x in y:
 (defun py-electric-colon-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-electric-colon-commandp-base arg teststring)))
 
 (defun py-electric-colon-commandp-base ()
@@ -1381,7 +1330,6 @@ for x in y:
 (defun py-electric-backspace-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-electric-backspace-commandp-base arg teststring)))
 
 (defun py-electric-backspace-commandp-base ()
@@ -1390,7 +1338,6 @@ for x in y:
 (defun py-electric-delete-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-electric-delete-commandp-base arg teststring)))
 
 (defun py-electric-delete-commandp-base ()
@@ -1399,7 +1346,6 @@ for x in y:
 (defun py-indent-line-outmost-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-indent-line-outmost-commandp-base arg teststring)))
 
 (defun py-indent-line-outmost-commandp-base ()
@@ -1408,7 +1354,6 @@ for x in y:
 (defun py-indent-line-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-indent-line-commandp-base arg teststring)))
 
 (defun py-indent-line-commandp-base ()
@@ -1417,7 +1362,6 @@ for x in y:
 (defun py-newline-and-indent-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-newline-and-indent-commandp-base arg teststring)))
 
 (defun py-newline-and-indent-commandp-base ()
@@ -1426,7 +1370,6 @@ for x in y:
 (defun py-newline-and-dedent-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-newline-and-dedent-commandp-base arg teststring)))
 
 (defun py-newline-and-dedent-commandp-base ()
@@ -1435,7 +1378,6 @@ for x in y:
 (defun toggle-indent-tabs-mode-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'toggle-indent-tabs-mode-commandp-base arg teststring)))
 
 (defun toggle-indent-tabs-mode-commandp-base ()
@@ -1444,7 +1386,6 @@ for x in y:
 (defun indent-tabs-mode-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'indent-tabs-mode-commandp-base arg teststring)))
 
 (defun indent-tabs-mode-commandp-base ()
@@ -1453,7 +1394,6 @@ for x in y:
 (defun indent-tabs-mode-on-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'indent-tabs-mode-on-commandp-base arg teststring)))
 
 (defun indent-tabs-mode-on-commandp-base ()
@@ -1462,7 +1402,6 @@ for x in y:
 (defun indent-tabs-mode-off-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'indent-tabs-mode-off-commandp-base arg teststring)))
 
 (defun indent-tabs-mode-off-commandp-base ()
@@ -1471,7 +1410,6 @@ for x in y:
 (defun py-guess-indent-offset-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-guess-indent-offset-commandp-base arg teststring)))
 
 (defun py-guess-indent-offset-commandp-base ()
@@ -1480,7 +1418,6 @@ for x in y:
 (defun py-narrow-to-defun-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-narrow-to-defun-commandp-base arg teststring)))
 
 (defun py-narrow-to-defun-commandp-base ()
@@ -1489,7 +1426,6 @@ for x in y:
 (defun py-shift-left-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-shift-left-commandp-base arg teststring)))
 
 (defun py-shift-left-commandp-base ()
@@ -1498,7 +1434,6 @@ for x in y:
 (defun py-shift-right-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-shift-right-commandp-base arg teststring)))
 
 (defun py-shift-right-commandp-base ()
@@ -1507,7 +1442,6 @@ for x in y:
 (defun py-shift-paragraph-right-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-shift-paragraph-right-commandp-base arg teststring)))
 
 (defun py-shift-paragraph-right-commandp-base ()
@@ -1516,7 +1450,6 @@ for x in y:
 (defun py-shift-paragraph-left-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-shift-paragraph-left-commandp-base arg teststring)))
 
 (defun py-shift-paragraph-left-commandp-base ()
@@ -1525,7 +1458,6 @@ for x in y:
 (defun py-shift-block-right-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-shift-block-right-commandp-base arg teststring)))
 
 (defun py-shift-block-right-commandp-base ()
@@ -1534,7 +1466,6 @@ for x in y:
 (defun py-shift-block-left-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-shift-block-left-commandp-base arg teststring)))
 
 (defun py-shift-block-left-commandp-base ()
@@ -1543,7 +1474,6 @@ for x in y:
 (defun py-shift-clause-right-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-shift-clause-right-commandp-base arg teststring)))
 
 (defun py-shift-clause-right-commandp-base ()
@@ -1552,7 +1482,6 @@ for x in y:
 (defun py-shift-clause-left-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-shift-clause-left-commandp-base arg teststring)))
 
 (defun py-shift-clause-left-commandp-base ()
@@ -1561,7 +1490,6 @@ for x in y:
 (defun py-shift-def-right-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-shift-def-right-commandp-base arg teststring)))
 
 (defun py-shift-def-right-commandp-base ()
@@ -1570,7 +1498,6 @@ for x in y:
 (defun py-shift-def-left-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-shift-def-left-commandp-base arg teststring)))
 
 (defun py-shift-def-left-commandp-base ()
@@ -1579,7 +1506,6 @@ for x in y:
 (defun py-shift-class-right-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-shift-class-right-commandp-base arg teststring)))
 
 (defun py-shift-class-right-commandp-base ()
@@ -1588,7 +1514,6 @@ for x in y:
 (defun py-shift-class-left-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-shift-class-left-commandp-base arg teststring)))
 
 (defun py-shift-class-left-commandp-base ()
@@ -1597,7 +1522,6 @@ for x in y:
 (defun py-shift-line-right-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-shift-line-right-commandp-base arg teststring)))
 
 (defun py-shift-line-right-commandp-base ()
@@ -1606,7 +1530,6 @@ for x in y:
 (defun py-shift-line-left-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-shift-line-left-commandp-base arg teststring)))
 
 (defun py-shift-line-left-commandp-base ()
@@ -1615,7 +1538,6 @@ for x in y:
 (defun py-shift-statement-right-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-shift-statement-right-commandp-base arg teststring)))
 
 (defun py-shift-statement-right-commandp-base ()
@@ -1624,7 +1546,6 @@ for x in y:
 (defun py-shift-statement-left-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-shift-statement-left-commandp-base arg teststring)))
 
 (defun py-shift-statement-left-commandp-base ()
@@ -1633,7 +1554,6 @@ for x in y:
 (defun py-indent-region-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-indent-region-commandp-base arg teststring)))
 
 (defun py-indent-region-commandp-base ()
@@ -1642,7 +1562,6 @@ for x in y:
 (defun py-beginning-of-paragraph-position-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-paragraph-position-commandp-base arg teststring)))
 
 (defun py-beginning-of-paragraph-position-commandp-base ()
@@ -1651,7 +1570,6 @@ for x in y:
 (defun py-end-of-paragraph-position-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-end-of-paragraph-position-commandp-base arg teststring)))
 
 (defun py-end-of-paragraph-position-commandp-base ()
@@ -1660,7 +1578,6 @@ for x in y:
 (defun py-beginning-of-block-position-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-block-position-commandp-base arg teststring)))
 
 (defun py-beginning-of-block-position-commandp-base ()
@@ -1669,7 +1586,6 @@ for x in y:
 (defun py-end-of-block-position-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-end-of-block-position-commandp-base arg teststring)))
 
 (defun py-end-of-block-position-commandp-base ()
@@ -1678,7 +1594,6 @@ for x in y:
 (defun py-beginning-of-clause-position-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-clause-position-commandp-base arg teststring)))
 
 (defun py-beginning-of-clause-position-commandp-base ()
@@ -1687,7 +1602,6 @@ for x in y:
 (defun py-end-of-clause-position-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-end-of-clause-position-commandp-base arg teststring)))
 
 (defun py-end-of-clause-position-commandp-base ()
@@ -1696,7 +1610,6 @@ for x in y:
 (defun py-beginning-of-block-or-clause-position-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-block-or-clause-position-commandp-base arg teststring)))
 
 (defun py-beginning-of-block-or-clause-position-commandp-base ()
@@ -1705,7 +1618,6 @@ for x in y:
 (defun py-end-of-block-or-clause-position-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-end-of-block-or-clause-position-commandp-base arg teststring)))
 
 (defun py-end-of-block-or-clause-position-commandp-base ()
@@ -1714,7 +1626,6 @@ for x in y:
 (defun py-beginning-of-def-position-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-def-position-commandp-base arg teststring)))
 
 (defun py-beginning-of-def-position-commandp-base ()
@@ -1723,7 +1634,6 @@ for x in y:
 (defun py-end-of-def-position-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-end-of-def-position-commandp-base arg teststring)))
 
 (defun py-end-of-def-position-commandp-base ()
@@ -1732,7 +1642,6 @@ for x in y:
 (defun py-beginning-of-class-position-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-class-position-commandp-base arg teststring)))
 
 (defun py-beginning-of-class-position-commandp-base ()
@@ -1741,7 +1650,6 @@ for x in y:
 (defun py-end-of-class-position-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-end-of-class-position-commandp-base arg teststring)))
 
 (defun py-end-of-class-position-commandp-base ()
@@ -1750,7 +1658,6 @@ for x in y:
 (defun py-beginning-of-def-or-class-position-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-def-or-class-position-commandp-base arg teststring)))
 
 (defun py-beginning-of-def-or-class-position-commandp-base ()
@@ -1759,7 +1666,6 @@ for x in y:
 (defun py-end-of-def-or-class-position-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-end-of-def-or-class-position-commandp-base arg teststring)))
 
 (defun py-end-of-def-or-class-position-commandp-base ()
@@ -1768,7 +1674,6 @@ for x in y:
 (defun py-beginning-of-line-position-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-line-position-commandp-base arg teststring)))
 
 (defun py-beginning-of-line-position-commandp-base ()
@@ -1777,7 +1682,6 @@ for x in y:
 (defun py-end-of-line-position-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-end-of-line-position-commandp-base arg teststring)))
 
 (defun py-end-of-line-position-commandp-base ()
@@ -1786,7 +1690,6 @@ for x in y:
 (defun py-beginning-of-statement-position-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-statement-position-commandp-base arg teststring)))
 
 (defun py-beginning-of-statement-position-commandp-base ()
@@ -1795,7 +1698,6 @@ for x in y:
 (defun py-end-of-statement-position-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-end-of-statement-position-commandp-base arg teststring)))
 
 (defun py-end-of-statement-position-commandp-base ()
@@ -1804,7 +1706,6 @@ for x in y:
 (defun py-beginning-of-expression-position-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-expression-position-commandp-base arg teststring)))
 
 (defun py-beginning-of-expression-position-commandp-base ()
@@ -1813,7 +1714,6 @@ for x in y:
 (defun py-end-of-expression-position-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-end-of-expression-position-commandp-base arg teststring)))
 
 (defun py-end-of-expression-position-commandp-base ()
@@ -1822,7 +1722,6 @@ for x in y:
 (defun py-beginning-of-partial-expression-position-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-partial-expression-position-commandp-base arg teststring)))
 
 (defun py-beginning-of-partial-expression-position-commandp-base ()
@@ -1831,7 +1730,6 @@ for x in y:
 (defun py-end-of-partial-expression-position-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-end-of-partial-expression-position-commandp-base arg teststring)))
 
 (defun py-end-of-partial-expression-position-commandp-base ()
@@ -1840,7 +1738,6 @@ for x in y:
 (defun py-bounds-of-statement-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-bounds-of-statement-commandp-base arg teststring)))
 
 (defun py-bounds-of-statement-commandp-base ()
@@ -1849,7 +1746,6 @@ for x in y:
 (defun py-bounds-of-block-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-bounds-of-block-commandp-base arg teststring)))
 
 (defun py-bounds-of-block-commandp-base ()
@@ -1858,7 +1754,6 @@ for x in y:
 (defun py-bounds-of-clause-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-bounds-of-clause-commandp-base arg teststring)))
 
 (defun py-bounds-of-clause-commandp-base ()
@@ -1867,7 +1762,6 @@ for x in y:
 (defun py-bounds-of-block-or-clause-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-bounds-of-block-or-clause-commandp-base arg teststring)))
 
 (defun py-bounds-of-block-or-clause-commandp-base ()
@@ -1876,7 +1770,6 @@ for x in y:
 (defun py-bounds-of-def-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-bounds-of-def-commandp-base arg teststring)))
 
 (defun py-bounds-of-def-commandp-base ()
@@ -1885,7 +1778,6 @@ for x in y:
 (defun py-bounds-of-class-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-bounds-of-class-commandp-base arg teststring)))
 
 (defun py-bounds-of-class-commandp-base ()
@@ -1894,7 +1786,6 @@ for x in y:
 (defun py-bounds-of-region-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-bounds-of-region-commandp-base arg teststring)))
 
 (defun py-bounds-of-region-commandp-base ()
@@ -1903,7 +1794,6 @@ for x in y:
 (defun py-bounds-of-buffer-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-bounds-of-buffer-commandp-base arg teststring)))
 
 (defun py-bounds-of-buffer-commandp-base ()
@@ -1912,7 +1802,6 @@ for x in y:
 (defun py-bounds-of-expression-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-bounds-of-expression-commandp-base arg teststring)))
 
 (defun py-bounds-of-expression-commandp-base ()
@@ -1921,7 +1810,6 @@ for x in y:
 (defun py-bounds-of-partial-expression-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-bounds-of-partial-expression-commandp-base arg teststring)))
 
 (defun py-bounds-of-partial-expression-commandp-base ()
@@ -1930,7 +1818,6 @@ for x in y:
 (defun py-bounds-of-declarations-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-bounds-of-declarations-commandp-base arg teststring)))
 
 (defun py-bounds-of-declarations-commandp-base ()
@@ -1939,7 +1826,6 @@ for x in y:
 (defun py-beginning-of-declarations-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-declarations-commandp-base arg teststring)))
 
 (defun py-beginning-of-declarations-commandp-base ()
@@ -1948,7 +1834,6 @@ for x in y:
 (defun py-end-of-declarations-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-end-of-declarations-commandp-base arg teststring)))
 
 (defun py-end-of-declarations-commandp-base ()
@@ -1957,7 +1842,6 @@ for x in y:
 (defun py-declarations-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-declarations-commandp-base arg teststring)))
 
 (defun py-declarations-commandp-base ()
@@ -1966,7 +1850,6 @@ for x in y:
 (defun py-kill-declarations-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-kill-declarations-commandp-base arg teststring)))
 
 (defun py-kill-declarations-commandp-base ()
@@ -1975,7 +1858,6 @@ for x in y:
 (defun py-bounds-of-statements-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-bounds-of-statements-commandp-base arg teststring)))
 
 (defun py-bounds-of-statements-commandp-base ()
@@ -1984,7 +1866,6 @@ for x in y:
 (defun py-beginning-of-statements-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-statements-commandp-base arg teststring)))
 
 (defun py-beginning-of-statements-commandp-base ()
@@ -1993,7 +1874,6 @@ for x in y:
 (defun py-end-of-statements-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-end-of-statements-commandp-base arg teststring)))
 
 (defun py-end-of-statements-commandp-base ()
@@ -2002,7 +1882,6 @@ for x in y:
 (defun py-statements-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-statements-commandp-base arg teststring)))
 
 (defun py-statements-commandp-base ()
@@ -2011,7 +1890,6 @@ for x in y:
 (defun py-kill-statements-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-kill-statements-commandp-base arg teststring)))
 
 (defun py-kill-statements-commandp-base ()
@@ -2020,7 +1898,6 @@ for x in y:
 (defun py-comment-region-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-comment-region-commandp-base arg teststring)))
 
 (defun py-comment-region-commandp-base ()
@@ -2029,7 +1906,6 @@ for x in y:
 (defun py-fill-paragraph-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-fill-paragraph-commandp-base arg teststring)))
 
 (defun py-fill-paragraph-commandp-base ()
@@ -2038,7 +1914,6 @@ for x in y:
 (defun py-insert-super-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-insert-super-commandp-base arg teststring)))
 
 (defun py-insert-super-commandp-base ()
@@ -2047,7 +1922,6 @@ for x in y:
 (defun py-compute-indentation-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-compute-indentation-commandp-base arg teststring)))
 
 (defun py-compute-indentation-commandp-base ()
@@ -2056,7 +1930,6 @@ for x in y:
 (defun py-continuation-offset-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-continuation-offset-commandp-base arg teststring)))
 
 (defun py-continuation-offset-commandp-base ()
@@ -2065,7 +1938,6 @@ for x in y:
 (defun py-indentation-of-statement-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-indentation-of-statement-commandp-base arg teststring)))
 
 (defun py-indentation-of-statement-commandp-base ()
@@ -2074,7 +1946,6 @@ for x in y:
 (defun py-list-beginning-position-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-list-beginning-position-commandp-base arg teststring)))
 
 (defun py-list-beginning-position-commandp-base ()
@@ -2083,7 +1954,6 @@ for x in y:
 (defun py-end-of-list-position-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-end-of-list-position-commandp-base arg teststring)))
 
 (defun py-end-of-list-position-commandp-base ()
@@ -2092,7 +1962,6 @@ for x in y:
 (defun py-in-triplequoted-string-p-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-in-triplequoted-string-p-commandp-base arg teststring)))
 
 (defun py-in-triplequoted-string-p-commandp-base ()
@@ -2101,7 +1970,6 @@ for x in y:
 (defun py-in-string-p-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-in-string-p-commandp-base arg teststring)))
 
 (defun py-in-string-p-commandp-base ()
@@ -2110,7 +1978,6 @@ for x in y:
 (defun py-in-statement-p-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-in-statement-p-commandp-base arg teststring)))
 
 (defun py-in-statement-p-commandp-base ()
@@ -2119,7 +1986,6 @@ for x in y:
 (defun py-beginning-of-paragraph-p-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-paragraph-p-commandp-base arg teststring)))
 
 (defun py-beginning-of-paragraph-p-commandp-base ()
@@ -2128,7 +1994,6 @@ for x in y:
 (defun py-beginning-of-line-p-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-line-p-commandp-base arg teststring)))
 
 (defun py-beginning-of-line-p-commandp-base ()
@@ -2137,7 +2002,6 @@ for x in y:
 (defun py-beginning-of-statement-p-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-statement-p-commandp-base arg teststring)))
 
 (defun py-beginning-of-statement-p-commandp-base ()
@@ -2146,7 +2010,6 @@ for x in y:
 (defun py-beginning-of-expression-p-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-expression-p-commandp-base arg teststring)))
 
 (defun py-beginning-of-expression-p-commandp-base ()
@@ -2155,7 +2018,6 @@ for x in y:
 (defun py-beginning-of-partial-expression-p-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-partial-expression-p-commandp-base arg teststring)))
 
 (defun py-beginning-of-partial-expression-p-commandp-base ()
@@ -2164,7 +2026,6 @@ for x in y:
 (defun py-beginning-of-block-p-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-block-p-commandp-base arg teststring)))
 
 (defun py-beginning-of-block-p-commandp-base ()
@@ -2173,7 +2034,6 @@ for x in y:
 (defun py-beginning-of-clause-p-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-clause-p-commandp-base arg teststring)))
 
 (defun py-beginning-of-clause-p-commandp-base ()
@@ -2182,7 +2042,6 @@ for x in y:
 (defun py-beginning-of-block-or-clause-p-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-block-or-clause-p-commandp-base arg teststring)))
 
 (defun py-beginning-of-block-or-clause-p-commandp-base ()
@@ -2191,7 +2050,6 @@ for x in y:
 (defun py-beginning-of-def-p-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-def-p-commandp-base arg teststring)))
 
 (defun py-beginning-of-def-p-commandp-base ()
@@ -2200,7 +2058,6 @@ for x in y:
 (defun py-beginning-of-class-p-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-class-p-commandp-base arg teststring)))
 
 (defun py-beginning-of-class-p-commandp-base ()
@@ -2209,7 +2066,6 @@ for x in y:
 (defun py-beginning-of-def-or-class-p-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-def-or-class-p-commandp-base arg teststring)))
 
 (defun py-beginning-of-def-or-class-p-commandp-base ()
@@ -2218,7 +2074,6 @@ for x in y:
 (defun py-statement-opens-block-p-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-statement-opens-block-p-commandp-base arg teststring)))
 
 (defun py-statement-opens-block-p-commandp-base ()
@@ -2227,7 +2082,6 @@ for x in y:
 (defun py-statement-opens-clause-p-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-statement-opens-clause-p-commandp-base arg teststring)))
 
 (defun py-statement-opens-clause-p-commandp-base ()
@@ -2236,7 +2090,6 @@ for x in y:
 (defun py-statement-opens-block-or-clause-p-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-statement-opens-block-or-clause-p-commandp-base arg teststring)))
 
 (defun py-statement-opens-block-or-clause-p-commandp-base ()
@@ -2245,7 +2098,6 @@ for x in y:
 (defun py-statement-opens-class-p-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-statement-opens-class-p-commandp-base arg teststring)))
 
 (defun py-statement-opens-class-p-commandp-base ()
@@ -2254,7 +2106,6 @@ for x in y:
 (defun py-statement-opens-def-p-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-statement-opens-def-p-commandp-base arg teststring)))
 
 (defun py-statement-opens-def-p-commandp-base ()
@@ -2263,7 +2114,6 @@ for x in y:
 (defun py-statement-opens-def-or-class-p-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-statement-opens-def-or-class-p-commandp-base arg teststring)))
 
 (defun py-statement-opens-def-or-class-p-commandp-base ()
@@ -2272,7 +2122,6 @@ for x in y:
 (defun py-current-defun-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-current-defun-commandp-base arg teststring)))
 
 (defun py-current-defun-commandp-base ()
@@ -2281,7 +2130,6 @@ for x in y:
 (defun py-sort-imports-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-sort-imports-commandp-base arg teststring)))
 
 (defun py-sort-imports-commandp-base ()
@@ -2290,7 +2138,6 @@ for x in y:
 (defun empty-line-p-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'empty-line-p-commandp-base arg teststring)))
 
 (defun empty-line-p-commandp-base ()
@@ -2299,7 +2146,6 @@ for x in y:
 (defun py-which-function-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-which-function-commandp-base arg teststring)))
 
 (defun py-which-function-commandp-base ()
@@ -2308,7 +2154,6 @@ for x in y:
 (defun py-beginning-of-block-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-block-commandp-base arg teststring)))
 
 (defun py-beginning-of-block-commandp-base ()
@@ -2317,7 +2162,6 @@ for x in y:
 (defun py-beginning-of-if-block-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-if-block-commandp-base arg teststring)))
 
 (defun py-beginning-of-if-block-commandp-base ()
@@ -2326,7 +2170,6 @@ for x in y:
 (defun py-beginning-of-try-block-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-try-block-commandp-base arg teststring)))
 
 (defun py-beginning-of-try-block-commandp-base ()
@@ -2335,7 +2178,6 @@ for x in y:
 (defun py-end-of-block-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-end-of-block-commandp-base arg teststring)))
 
 (defun py-end-of-block-commandp-base ()
@@ -2344,7 +2186,6 @@ for x in y:
 (defun py-beginning-of-block-or-clause-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-block-or-clause-commandp-base arg teststring)))
 
 (defun py-beginning-of-block-or-clause-commandp-base ()
@@ -2353,7 +2194,6 @@ for x in y:
 (defun py-end-of-block-or-clause-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-end-of-block-or-clause-commandp-base arg teststring)))
 
 (defun py-end-of-block-or-clause-commandp-base ()
@@ -2362,7 +2202,6 @@ for x in y:
 (defun py-beginning-of-class-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-class-commandp-base arg teststring)))
 
 (defun py-beginning-of-class-commandp-base ()
@@ -2371,7 +2210,6 @@ for x in y:
 (defun py-end-of-class-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-end-of-class-commandp-base arg teststring)))
 
 (defun py-end-of-class-commandp-base ()
@@ -2380,7 +2218,6 @@ for x in y:
 (defun py-beginning-of-clause-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-clause-commandp-base arg teststring)))
 
 (defun py-beginning-of-clause-commandp-base ()
@@ -2389,7 +2226,6 @@ for x in y:
 (defun py-end-of-clause-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-end-of-clause-commandp-base arg teststring)))
 
 (defun py-end-of-clause-commandp-base ()
@@ -2398,7 +2234,6 @@ for x in y:
 (defun py-beginning-of-def-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-def-commandp-base arg teststring)))
 
 (defun py-beginning-of-def-commandp-base ()
@@ -2407,7 +2242,6 @@ for x in y:
 (defun py-end-of-def-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-end-of-def-commandp-base arg teststring)))
 
 (defun py-end-of-def-commandp-base ()
@@ -2416,7 +2250,6 @@ for x in y:
 (defun py-beginning-of-def-or-class-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-def-or-class-commandp-base arg teststring)))
 
 (defun py-beginning-of-def-or-class-commandp-base ()
@@ -2425,7 +2258,6 @@ for x in y:
 (defun py-end-of-def-or-class-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-end-of-def-or-class-commandp-base arg teststring)))
 
 (defun py-end-of-def-or-class-commandp-base ()
@@ -2434,7 +2266,6 @@ for x in y:
 (defun py-beginning-of-expression-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-expression-commandp-base arg teststring)))
 
 (defun py-beginning-of-expression-commandp-base ()
@@ -2443,7 +2274,6 @@ for x in y:
 (defun py-end-of-expression-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-end-of-expression-commandp-base arg teststring)))
 
 (defun py-end-of-expression-commandp-base ()
@@ -2452,7 +2282,6 @@ for x in y:
 (defun py-beginning-of-partial-expression-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-partial-expression-commandp-base arg teststring)))
 
 (defun py-beginning-of-partial-expression-commandp-base ()
@@ -2461,7 +2290,6 @@ for x in y:
 (defun py-end-of-partial-expression-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-end-of-partial-expression-commandp-base arg teststring)))
 
 (defun py-end-of-partial-expression-commandp-base ()
@@ -2470,7 +2298,6 @@ for x in y:
 (defun py-beginning-of-statement-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-statement-commandp-base arg teststring)))
 
 (defun py-beginning-of-statement-commandp-base ()
@@ -2479,7 +2306,6 @@ for x in y:
 (defun py-end-of-statement-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-end-of-statement-commandp-base arg teststring)))
 
 (defun py-end-of-statement-commandp-base ()
@@ -2488,7 +2314,6 @@ for x in y:
 (defun py-goto-statement-below-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-goto-statement-below-commandp-base arg teststring)))
 
 (defun py-goto-statement-below-commandp-base ()
@@ -2497,7 +2322,6 @@ for x in y:
 (defun py-mark-paragraph-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-mark-paragraph-commandp-base arg teststring)))
 
 (defun py-mark-paragraph-commandp-base ()
@@ -2506,7 +2330,6 @@ for x in y:
 (defun py-mark-block-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-mark-block-commandp-base arg teststring)))
 
 (defun py-mark-block-commandp-base ()
@@ -2515,7 +2338,6 @@ for x in y:
 (defun py-mark-clause-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-mark-clause-commandp-base arg teststring)))
 
 (defun py-mark-clause-commandp-base ()
@@ -2524,7 +2346,6 @@ for x in y:
 (defun py-mark-block-or-clause-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-mark-block-or-clause-commandp-base arg teststring)))
 
 (defun py-mark-block-or-clause-commandp-base ()
@@ -2533,7 +2354,6 @@ for x in y:
 (defun py-mark-def-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-mark-def-commandp-base arg teststring)))
 
 (defun py-mark-def-commandp-base ()
@@ -2542,7 +2362,6 @@ for x in y:
 (defun py-mark-class-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-mark-class-commandp-base arg teststring)))
 
 (defun py-mark-class-commandp-base ()
@@ -2551,7 +2370,6 @@ for x in y:
 (defun py-mark-def-or-class-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-mark-def-or-class-commandp-base arg teststring)))
 
 (defun py-mark-def-or-class-commandp-base ()
@@ -2560,7 +2378,6 @@ for x in y:
 (defun py-mark-line-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-mark-line-commandp-base arg teststring)))
 
 (defun py-mark-line-commandp-base ()
@@ -2569,7 +2386,6 @@ for x in y:
 (defun py-mark-statement-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-mark-statement-commandp-base arg teststring)))
 
 (defun py-mark-statement-commandp-base ()
@@ -2578,7 +2394,6 @@ for x in y:
 (defun py-mark-expression-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-mark-expression-commandp-base arg teststring)))
 
 (defun py-mark-expression-commandp-base ()
@@ -2587,7 +2402,6 @@ for x in y:
 (defun py-mark-partial-expression-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-mark-partial-expression-commandp-base arg teststring)))
 
 (defun py-mark-partial-expression-commandp-base ()
@@ -2596,7 +2410,6 @@ for x in y:
 (defun py-beginning-of-decorator-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-decorator-commandp-base arg teststring)))
 
 (defun py-beginning-of-decorator-commandp-base ()
@@ -2605,7 +2418,6 @@ for x in y:
 (defun py-end-of-decorator-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-end-of-decorator-commandp-base arg teststring)))
 
 (defun py-end-of-decorator-commandp-base ()
@@ -2614,7 +2426,6 @@ for x in y:
 (defun py-copy-expression-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-copy-expression-commandp-base arg teststring)))
 
 (defun py-copy-expression-commandp-base ()
@@ -2623,7 +2434,6 @@ for x in y:
 (defun py-copy-partial-expression-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-copy-partial-expression-commandp-base arg teststring)))
 
 (defun py-copy-partial-expression-commandp-base ()
@@ -2632,7 +2442,6 @@ for x in y:
 (defun py-copy-statement-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-copy-statement-commandp-base arg teststring)))
 
 (defun py-copy-statement-commandp-base ()
@@ -2641,7 +2450,6 @@ for x in y:
 (defun py-copy-block-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-copy-block-commandp-base arg teststring)))
 
 (defun py-copy-block-commandp-base ()
@@ -2650,7 +2458,6 @@ for x in y:
 (defun py-copy-block-or-clause-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-copy-block-or-clause-commandp-base arg teststring)))
 
 (defun py-copy-block-or-clause-commandp-base ()
@@ -2659,7 +2466,6 @@ for x in y:
 (defun py-copy-def-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-copy-def-commandp-base arg teststring)))
 
 (defun py-copy-def-commandp-base ()
@@ -2668,7 +2474,6 @@ for x in y:
 (defun py-copy-def-or-class-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-copy-def-or-class-commandp-base arg teststring)))
 
 (defun py-copy-def-or-class-commandp-base ()
@@ -2677,7 +2482,6 @@ for x in y:
 (defun py-copy-class-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-copy-class-commandp-base arg teststring)))
 
 (defun py-copy-class-commandp-base ()
@@ -2686,7 +2490,6 @@ for x in y:
 (defun py-copy-clause-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-copy-clause-commandp-base arg teststring)))
 
 (defun py-copy-clause-commandp-base ()
@@ -2695,7 +2498,6 @@ for x in y:
 (defun py-kill-expression-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-kill-expression-commandp-base arg teststring)))
 
 (defun py-kill-expression-commandp-base ()
@@ -2704,7 +2506,6 @@ for x in y:
 (defun py-kill-partial-expression-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-kill-partial-expression-commandp-base arg teststring)))
 
 (defun py-kill-partial-expression-commandp-base ()
@@ -2713,7 +2514,6 @@ for x in y:
 (defun py-kill-statement-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-kill-statement-commandp-base arg teststring)))
 
 (defun py-kill-statement-commandp-base ()
@@ -2722,7 +2522,6 @@ for x in y:
 (defun py-kill-block-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-kill-block-commandp-base arg teststring)))
 
 (defun py-kill-block-commandp-base ()
@@ -2731,7 +2530,6 @@ for x in y:
 (defun py-kill-block-or-clause-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-kill-block-or-clause-commandp-base arg teststring)))
 
 (defun py-kill-block-or-clause-commandp-base ()
@@ -2740,7 +2538,6 @@ for x in y:
 (defun py-kill-def-or-class-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-kill-def-or-class-commandp-base arg teststring)))
 
 (defun py-kill-def-or-class-commandp-base ()
@@ -2749,7 +2546,6 @@ for x in y:
 (defun py-kill-class-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-kill-class-commandp-base arg teststring)))
 
 (defun py-kill-class-commandp-base ()
@@ -2758,7 +2554,6 @@ for x in y:
 (defun py-kill-def-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-kill-def-commandp-base arg teststring)))
 
 (defun py-kill-def-commandp-base ()
@@ -2767,7 +2562,6 @@ for x in y:
 (defun py-kill-clause-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-kill-clause-commandp-base arg teststring)))
 
 (defun py-kill-clause-commandp-base ()
@@ -2776,7 +2570,6 @@ for x in y:
 (defun py-forward-line-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-forward-line-commandp-base arg teststring)))
 
 (defun py-forward-line-commandp-base ()
@@ -2785,7 +2578,6 @@ for x in y:
 (defun py-beginning-of-comment-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-comment-commandp-base arg teststring)))
 
 (defun py-beginning-of-comment-commandp-base ()
@@ -2794,7 +2586,6 @@ for x in y:
 (defun py-leave-comment-or-string-backward-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-leave-comment-or-string-backward-commandp-base arg teststring)))
 
 (defun py-leave-comment-or-string-backward-commandp-base ()
@@ -2803,7 +2594,6 @@ for x in y:
 (defun py-beginning-of-list-pps-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-beginning-of-list-pps-commandp-base arg teststring)))
 
 (defun py-beginning-of-list-pps-commandp-base ()
@@ -2812,7 +2602,6 @@ for x in y:
 (defun py-down-block-lc-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-down-block-lc-commandp-base arg teststring)))
 
 (defun py-down-block-lc-commandp-base ()
@@ -2821,7 +2610,6 @@ for x in y:
 (defun py-down-clause-lc-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-down-clause-lc-commandp-base arg teststring)))
 
 (defun py-down-clause-lc-commandp-base ()
@@ -2830,7 +2618,6 @@ for x in y:
 (defun py-down-def-lc-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-down-def-lc-commandp-base arg teststring)))
 
 (defun py-down-def-lc-commandp-base ()
@@ -2839,7 +2626,6 @@ for x in y:
 (defun py-down-class-lc-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-down-class-lc-commandp-base arg teststring)))
 
 (defun py-down-class-lc-commandp-base ()
@@ -2848,7 +2634,6 @@ for x in y:
 (defun py-down-statement-lc-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-down-statement-lc-commandp-base arg teststring)))
 
 (defun py-down-statement-lc-commandp-base ()
@@ -2857,7 +2642,6 @@ for x in y:
 (defun py-down-statement-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-down-statement-commandp-base arg teststring)))
 
 (defun py-down-statement-commandp-base ()
@@ -2866,7 +2650,6 @@ for x in y:
 (defun py-down-block-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-down-block-commandp-base arg teststring)))
 
 (defun py-down-block-commandp-base ()
@@ -2875,7 +2658,6 @@ for x in y:
 (defun py-down-clause-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-down-clause-commandp-base arg teststring)))
 
 (defun py-down-clause-commandp-base ()
@@ -2884,7 +2666,6 @@ for x in y:
 (defun py-down-block-or-clause-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-down-block-or-clause-commandp-base arg teststring)))
 
 (defun py-down-block-or-clause-commandp-base ()
@@ -2893,7 +2674,6 @@ for x in y:
 (defun py-down-def-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-down-def-commandp-base arg teststring)))
 
 (defun py-down-def-commandp-base ()
@@ -2902,7 +2682,6 @@ for x in y:
 (defun py-down-class-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-down-class-commandp-base arg teststring)))
 
 (defun py-down-class-commandp-base ()
@@ -2911,7 +2690,6 @@ for x in y:
 (defun py-down-def-or-class-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-down-def-or-class-commandp-base arg teststring)))
 
 (defun py-down-def-or-class-commandp-base ()
@@ -2920,7 +2698,6 @@ for x in y:
 (defun py-forward-into-nomenclature-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-forward-into-nomenclature-commandp-base arg teststring)))
 
 (defun py-forward-into-nomenclature-commandp-base ()
@@ -2929,7 +2706,6 @@ for x in y:
 (defun py-backward-into-nomenclature-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-backward-into-nomenclature-commandp-base arg teststring)))
 
 (defun py-backward-into-nomenclature-commandp-base ()
@@ -2938,7 +2714,6 @@ for x in y:
 (defun match-paren-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'match-paren-commandp-base arg teststring)))
 
 (defun match-paren-commandp-base ()
@@ -2947,7 +2722,6 @@ for x in y:
 (defun py-toggle-execute-keep-temporary-file-p-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-toggle-execute-keep-temporary-file-p-commandp-base arg teststring)))
 
 (defun py-toggle-execute-keep-temporary-file-p-commandp-base ()
@@ -2956,7 +2730,6 @@ for x in y:
 (defun py-guess-default-python-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-guess-default-python-commandp-base arg teststring)))
 
 (defun py-guess-default-python-commandp-base ()
@@ -2965,7 +2738,6 @@ for x in y:
 (defun py-set-shell-completion-environment-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-set-shell-completion-environment-commandp-base arg teststring)))
 
 (defun py-set-shell-completion-environment-commandp-base ()
@@ -2974,7 +2746,6 @@ for x in y:
 (defun py-set-ipython-completion-command-string-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-set-ipython-completion-command-string-commandp-base arg teststring)))
 
 (defun py-set-ipython-completion-command-string-commandp-base ()
@@ -2983,7 +2754,6 @@ for x in y:
 (defun py-shell-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-shell-dedicated-commandp-base arg teststring)))
 
 (defun py-shell-dedicated-commandp-base ()
@@ -2992,7 +2762,6 @@ for x in y:
 (defun py-shell-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-shell-commandp-base arg teststring)))
 
 (defun py-shell-commandp-base ()
@@ -3001,7 +2770,6 @@ for x in y:
 (defun python-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'python-commandp-base arg teststring)))
 
 (defun python-commandp-base ()
@@ -3010,7 +2778,6 @@ for x in y:
 (defun ipython-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'ipython-commandp-base arg teststring)))
 
 (defun ipython-commandp-base ()
@@ -3019,7 +2786,6 @@ for x in y:
 (defun python3-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'python3-commandp-base arg teststring)))
 
 (defun python3-commandp-base ()
@@ -3028,7 +2794,6 @@ for x in y:
 (defun python2-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'python2-commandp-base arg teststring)))
 
 (defun python2-commandp-base ()
@@ -3037,7 +2802,6 @@ for x in y:
 (defun python2.7-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'python2.7-commandp-base arg teststring)))
 
 (defun python2.7-commandp-base ()
@@ -3046,7 +2810,6 @@ for x in y:
 (defun jython-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'jython-commandp-base arg teststring)))
 
 (defun jython-commandp-base ()
@@ -3055,7 +2818,6 @@ for x in y:
 (defun python3.2-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'python3.2-commandp-base arg teststring)))
 
 (defun python3.2-commandp-base ()
@@ -3064,7 +2826,6 @@ for x in y:
 (defun python-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'python-dedicated-commandp-base arg teststring)))
 
 (defun python-dedicated-commandp-base ()
@@ -3073,7 +2834,6 @@ for x in y:
 (defun ipython-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'ipython-dedicated-commandp-base arg teststring)))
 
 (defun ipython-dedicated-commandp-base ()
@@ -3082,7 +2842,6 @@ for x in y:
 (defun python3-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'python3-dedicated-commandp-base arg teststring)))
 
 (defun python3-dedicated-commandp-base ()
@@ -3091,7 +2850,6 @@ for x in y:
 (defun python2-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'python2-dedicated-commandp-base arg teststring)))
 
 (defun python2-dedicated-commandp-base ()
@@ -3100,7 +2858,6 @@ for x in y:
 (defun python2.7-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'python2.7-dedicated-commandp-base arg teststring)))
 
 (defun python2.7-dedicated-commandp-base ()
@@ -3109,7 +2866,6 @@ for x in y:
 (defun jython-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'jython-dedicated-commandp-base arg teststring)))
 
 (defun jython-dedicated-commandp-base ()
@@ -3118,7 +2874,6 @@ for x in y:
 (defun python3.2-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'python3.2-dedicated-commandp-base arg teststring)))
 
 (defun python3.2-dedicated-commandp-base ()
@@ -3127,7 +2882,6 @@ for x in y:
 (defun python-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'python-switch-commandp-base arg teststring)))
 
 (defun python-switch-commandp-base ()
@@ -3136,7 +2890,6 @@ for x in y:
 (defun ipython-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'ipython-switch-commandp-base arg teststring)))
 
 (defun ipython-switch-commandp-base ()
@@ -3145,7 +2898,6 @@ for x in y:
 (defun python3-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'python3-switch-commandp-base arg teststring)))
 
 (defun python3-switch-commandp-base ()
@@ -3154,7 +2906,6 @@ for x in y:
 (defun python2-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'python2-switch-commandp-base arg teststring)))
 
 (defun python2-switch-commandp-base ()
@@ -3163,7 +2914,6 @@ for x in y:
 (defun python2.7-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'python2.7-switch-commandp-base arg teststring)))
 
 (defun python2.7-switch-commandp-base ()
@@ -3172,7 +2922,6 @@ for x in y:
 (defun jython-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'jython-switch-commandp-base arg teststring)))
 
 (defun jython-switch-commandp-base ()
@@ -3181,7 +2930,6 @@ for x in y:
 (defun python3.2-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'python3.2-switch-commandp-base arg teststring)))
 
 (defun python3.2-switch-commandp-base ()
@@ -3190,7 +2938,6 @@ for x in y:
 (defun python-no-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'python-no-switch-commandp-base arg teststring)))
 
 (defun python-no-switch-commandp-base ()
@@ -3199,7 +2946,6 @@ for x in y:
 (defun ipython-no-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'ipython-no-switch-commandp-base arg teststring)))
 
 (defun ipython-no-switch-commandp-base ()
@@ -3208,7 +2954,6 @@ for x in y:
 (defun python3-no-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'python3-no-switch-commandp-base arg teststring)))
 
 (defun python3-no-switch-commandp-base ()
@@ -3217,7 +2962,6 @@ for x in y:
 (defun python2-no-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'python2-no-switch-commandp-base arg teststring)))
 
 (defun python2-no-switch-commandp-base ()
@@ -3226,7 +2970,6 @@ for x in y:
 (defun python2.7-no-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'python2.7-no-switch-commandp-base arg teststring)))
 
 (defun python2.7-no-switch-commandp-base ()
@@ -3235,7 +2978,6 @@ for x in y:
 (defun jython-no-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'jython-no-switch-commandp-base arg teststring)))
 
 (defun jython-no-switch-commandp-base ()
@@ -3244,7 +2986,6 @@ for x in y:
 (defun python3.2-no-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'python3.2-no-switch-commandp-base arg teststring)))
 
 (defun python3.2-no-switch-commandp-base ()
@@ -3253,7 +2994,6 @@ for x in y:
 (defun python-switch-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'python-switch-dedicated-commandp-base arg teststring)))
 
 (defun python-switch-dedicated-commandp-base ()
@@ -3262,7 +3002,6 @@ for x in y:
 (defun ipython-switch-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'ipython-switch-dedicated-commandp-base arg teststring)))
 
 (defun ipython-switch-dedicated-commandp-base ()
@@ -3271,7 +3010,6 @@ for x in y:
 (defun python3-switch-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'python3-switch-dedicated-commandp-base arg teststring)))
 
 (defun python3-switch-dedicated-commandp-base ()
@@ -3280,7 +3018,6 @@ for x in y:
 (defun python2-switch-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'python2-switch-dedicated-commandp-base arg teststring)))
 
 (defun python2-switch-dedicated-commandp-base ()
@@ -3289,7 +3026,6 @@ for x in y:
 (defun python2.7-switch-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'python2.7-switch-dedicated-commandp-base arg teststring)))
 
 (defun python2.7-switch-dedicated-commandp-base ()
@@ -3298,7 +3034,6 @@ for x in y:
 (defun jython-switch-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'jython-switch-dedicated-commandp-base arg teststring)))
 
 (defun jython-switch-dedicated-commandp-base ()
@@ -3307,7 +3042,6 @@ for x in y:
 (defun python3.2-switch-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'python3.2-switch-dedicated-commandp-base arg teststring)))
 
 (defun python3.2-switch-dedicated-commandp-base ()
@@ -3316,7 +3050,6 @@ for x in y:
 (defun py-which-execute-file-command-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-which-execute-file-command-commandp-base arg teststring)))
 
 (defun py-which-execute-file-command-commandp-base ()
@@ -3325,7 +3058,6 @@ for x in y:
 (defun py-execute-region-no-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-no-switch-commandp-base arg teststring)))
 
 (defun py-execute-region-no-switch-commandp-base ()
@@ -3334,7 +3066,6 @@ for x in y:
 (defun py-execute-region-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-switch-commandp-base arg teststring)))
 
 (defun py-execute-region-switch-commandp-base ()
@@ -3343,7 +3074,6 @@ for x in y:
 (defun py-execute-region-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-commandp-base arg teststring)))
 
 (defun py-execute-region-commandp-base ()
@@ -3352,7 +3082,6 @@ for x in y:
 (defun py-execute-region-default-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-default-commandp-base arg teststring)))
 
 (defun py-execute-region-default-commandp-base ()
@@ -3361,7 +3090,6 @@ for x in y:
 (defun py-execute-region-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-region-dedicated-commandp-base ()
@@ -3370,7 +3098,6 @@ for x in y:
 (defun py-execute-region-default-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-default-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-region-default-dedicated-commandp-base ()
@@ -3379,7 +3106,6 @@ for x in y:
 (defun py-execute-string-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-string-commandp-base arg teststring)))
 
 (defun py-execute-string-commandp-base ()
@@ -3388,7 +3114,6 @@ for x in y:
 (defun py-execute-string-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-string-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-string-dedicated-commandp-base ()
@@ -3397,7 +3122,6 @@ for x in y:
 (defun py-shell-command-on-region-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-shell-command-on-region-commandp-base arg teststring)))
 
 (defun py-shell-command-on-region-commandp-base ()
@@ -3406,7 +3130,6 @@ for x in y:
 (defun py-ipython-shell-command-on-region-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-ipython-shell-command-on-region-commandp-base arg teststring)))
 
 (defun py-ipython-shell-command-on-region-commandp-base ()
@@ -3415,7 +3138,6 @@ for x in y:
 (defun py-send-region-ipython-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-send-region-ipython-commandp-base arg teststring)))
 
 (defun py-send-region-ipython-commandp-base ()
@@ -3424,7 +3146,6 @@ for x in y:
 (defun ipython-send-and-indent-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'ipython-send-and-indent-commandp-base arg teststring)))
 
 (defun ipython-send-and-indent-commandp-base ()
@@ -3433,7 +3154,6 @@ for x in y:
 (defun py-execute-region-in-shell-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-in-shell-commandp-base arg teststring)))
 
 (defun py-execute-region-in-shell-commandp-base ()
@@ -3442,7 +3162,6 @@ for x in y:
 (defun py-fetch-py-master-file-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-fetch-py-master-file-commandp-base arg teststring)))
 
 (defun py-fetch-py-master-file-commandp-base ()
@@ -3451,7 +3170,6 @@ for x in y:
 (defun py-execute-import-or-reload-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-import-or-reload-commandp-base arg teststring)))
 
 (defun py-execute-import-or-reload-commandp-base ()
@@ -3460,7 +3178,6 @@ for x in y:
 (defun py-execute-buffer-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-buffer-dedicated-commandp-base ()
@@ -3469,7 +3186,6 @@ for x in y:
 (defun py-execute-buffer-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-switch-commandp-base arg teststring)))
 
 (defun py-execute-buffer-switch-commandp-base ()
@@ -3478,7 +3194,6 @@ for x in y:
 (defun py-execute-buffer-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-buffer-dedicated-switch-commandp-base ()
@@ -3487,7 +3202,6 @@ for x in y:
 (defun py-execute-buffer-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-commandp-base arg teststring)))
 
 (defun py-execute-buffer-commandp-base ()
@@ -3496,7 +3210,6 @@ for x in y:
 (defun py-execute-buffer-no-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-no-switch-commandp-base arg teststring)))
 
 (defun py-execute-buffer-no-switch-commandp-base ()
@@ -3505,7 +3218,6 @@ for x in y:
 (defun py-execute-defun-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-defun-commandp-base arg teststring)))
 
 (defun py-execute-defun-commandp-base ()
@@ -3514,7 +3226,6 @@ for x in y:
 (defun py-process-file-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-process-file-commandp-base arg teststring)))
 
 (defun py-process-file-commandp-base ()
@@ -3523,7 +3234,6 @@ for x in y:
 (defun py-exec-execfile-region-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-exec-execfile-region-commandp-base arg teststring)))
 
 (defun py-exec-execfile-region-commandp-base ()
@@ -3532,7 +3242,6 @@ for x in y:
 (defun py-exec-execfile-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-exec-execfile-commandp-base arg teststring)))
 
 (defun py-exec-execfile-commandp-base ()
@@ -3541,7 +3250,6 @@ for x in y:
 (defun py-execute-block-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-commandp-base arg teststring)))
 
 (defun py-execute-block-commandp-base ()
@@ -3550,7 +3258,6 @@ for x in y:
 (defun py-execute-block-or-clause-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-or-clause-commandp-base arg teststring)))
 
 (defun py-execute-block-or-clause-commandp-base ()
@@ -3559,7 +3266,6 @@ for x in y:
 (defun py-execute-class-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-class-commandp-base arg teststring)))
 
 (defun py-execute-class-commandp-base ()
@@ -3568,7 +3274,6 @@ for x in y:
 (defun py-execute-def-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-def-commandp-base arg teststring)))
 
 (defun py-execute-def-commandp-base ()
@@ -3577,7 +3282,6 @@ for x in y:
 (defun py-execute-def-or-class-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-def-or-class-commandp-base arg teststring)))
 
 (defun py-execute-def-or-class-commandp-base ()
@@ -3586,7 +3290,6 @@ for x in y:
 (defun py-execute-expression-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-expression-commandp-base arg teststring)))
 
 (defun py-execute-expression-commandp-base ()
@@ -3595,7 +3298,6 @@ for x in y:
 (defun py-execute-partial-expression-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-partial-expression-commandp-base arg teststring)))
 
 (defun py-execute-partial-expression-commandp-base ()
@@ -3604,7 +3306,6 @@ for x in y:
 (defun py-execute-statement-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-statement-commandp-base arg teststring)))
 
 (defun py-execute-statement-commandp-base ()
@@ -3613,7 +3314,6 @@ for x in y:
 (defun py-execute-file-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-file-commandp-base arg teststring)))
 
 (defun py-execute-file-commandp-base ()
@@ -3622,7 +3322,6 @@ for x in y:
 (defun py-down-exception-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-down-exception-commandp-base arg teststring)))
 
 (defun py-down-exception-commandp-base ()
@@ -3631,7 +3330,6 @@ for x in y:
 (defun py-up-exception-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-up-exception-commandp-base arg teststring)))
 
 (defun py-up-exception-commandp-base ()
@@ -3640,7 +3338,6 @@ for x in y:
 (defun py-output-buffer-filter-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-output-buffer-filter-commandp-base arg teststring)))
 
 (defun py-output-buffer-filter-commandp-base ()
@@ -3649,7 +3346,6 @@ for x in y:
 (defun py-send-string-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-send-string-commandp-base arg teststring)))
 
 (defun py-send-string-commandp-base ()
@@ -3658,7 +3354,6 @@ for x in y:
 (defun py-pdbtrack-toggle-stack-tracking-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-pdbtrack-toggle-stack-tracking-commandp-base arg teststring)))
 
 (defun py-pdbtrack-toggle-stack-tracking-commandp-base ()
@@ -3667,7 +3362,6 @@ for x in y:
 (defun turn-on-pdbtrack-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'turn-on-pdbtrack-commandp-base arg teststring)))
 
 (defun turn-on-pdbtrack-commandp-base ()
@@ -3676,7 +3370,6 @@ for x in y:
 (defun turn-off-pdbtrack-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'turn-off-pdbtrack-commandp-base arg teststring)))
 
 (defun turn-off-pdbtrack-commandp-base ()
@@ -3685,7 +3378,6 @@ for x in y:
 (defun py-fetch-docu-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-fetch-docu-commandp-base arg teststring)))
 
 (defun py-fetch-docu-commandp-base ()
@@ -3694,7 +3386,6 @@ for x in y:
 (defun py-find-imports-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-find-imports-commandp-base arg teststring)))
 
 (defun py-find-imports-commandp-base ()
@@ -3703,7 +3394,6 @@ for x in y:
 (defun python-find-imports-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'python-find-imports-commandp-base arg teststring)))
 
 (defun python-find-imports-commandp-base ()
@@ -3712,7 +3402,6 @@ for x in y:
 (defun py-describe-symbol-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-describe-symbol-commandp-base arg teststring)))
 
 (defun py-describe-symbol-commandp-base ()
@@ -3721,7 +3410,6 @@ for x in y:
 (defun py-describe-mode-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-describe-mode-commandp-base arg teststring)))
 
 (defun py-describe-mode-commandp-base ()
@@ -3730,7 +3418,6 @@ for x in y:
 (defun py-find-function-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-find-function-commandp-base arg teststring)))
 
 (defun py-find-function-commandp-base ()
@@ -3739,7 +3426,6 @@ for x in y:
 (defun py-update-imports-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-update-imports-commandp-base arg teststring)))
 
 (defun py-update-imports-commandp-base ()
@@ -3748,7 +3434,6 @@ for x in y:
 (defun py-indent-forward-line-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-indent-forward-line-commandp-base arg teststring)))
 
 (defun py-indent-forward-line-commandp-base ()
@@ -3757,7 +3442,6 @@ for x in y:
 (defun py-dedent-forward-line-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-dedent-forward-line-commandp-base arg teststring)))
 
 (defun py-dedent-forward-line-commandp-base ()
@@ -3766,7 +3450,6 @@ for x in y:
 (defun py-dedent-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-dedent-commandp-base arg teststring)))
 
 (defun py-dedent-commandp-base ()
@@ -3775,7 +3458,6 @@ for x in y:
 (defun py-close-def-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-close-def-commandp-base arg teststring)))
 
 (defun py-close-def-commandp-base ()
@@ -3784,7 +3466,6 @@ for x in y:
 (defun py-close-class-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-close-class-commandp-base arg teststring)))
 
 (defun py-close-class-commandp-base ()
@@ -3793,7 +3474,6 @@ for x in y:
 (defun py-close-clause-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-close-clause-commandp-base arg teststring)))
 
 (defun py-close-clause-commandp-base ()
@@ -3802,7 +3482,6 @@ for x in y:
 (defun py-close-block-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-close-block-commandp-base arg teststring)))
 
 (defun py-close-block-commandp-base ()
@@ -3811,7 +3490,6 @@ for x in y:
 (defun py-class-at-point-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-class-at-point-commandp-base arg teststring)))
 
 (defun py-class-at-point-commandp-base ()
@@ -3820,7 +3498,6 @@ for x in y:
 (defun py-match-paren-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-match-paren-commandp-base arg teststring)))
 
 (defun py-match-paren-commandp-base ()
@@ -3829,7 +3506,6 @@ for x in y:
 (defun eva-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'eva-commandp-base arg teststring)))
 
 (defun eva-commandp-base ()
@@ -3838,7 +3514,6 @@ for x in y:
 (defun pst-here-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'pst-here-commandp-base arg teststring)))
 
 (defun pst-here-commandp-base ()
@@ -3847,7 +3522,6 @@ for x in y:
 (defun py-printform-insert-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-printform-insert-commandp-base arg teststring)))
 
 (defun py-printform-insert-commandp-base ()
@@ -3856,7 +3530,6 @@ for x in y:
 (defun py-line-to-printform-python2-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-line-to-printform-python2-commandp-base arg teststring)))
 
 (defun py-line-to-printform-python2-commandp-base ()
@@ -3865,7 +3538,6 @@ for x in y:
 (defun py-switch-imenu-index-function-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-switch-imenu-index-function-commandp-base arg teststring)))
 
 (defun py-switch-imenu-index-function-commandp-base ()
@@ -3874,7 +3546,6 @@ for x in y:
 (defun py-completion-at-point-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-completion-at-point-commandp-base arg teststring)))
 
 (defun py-completion-at-point-commandp-base ()
@@ -3883,7 +3554,6 @@ for x in y:
 (defun py-choose-shell-by-shebang-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-choose-shell-by-shebang-commandp-base arg teststring)))
 
 (defun py-choose-shell-by-shebang-commandp-base ()
@@ -3892,7 +3562,6 @@ for x in y:
 (defun py-which-python-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-which-python-commandp-base arg teststring)))
 
 (defun py-which-python-commandp-base ()
@@ -3901,7 +3570,6 @@ for x in y:
 (defun py-python-current-environment-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-python-current-environment-commandp-base arg teststring)))
 
 (defun py-python-current-environment-commandp-base ()
@@ -3910,7 +3578,6 @@ for x in y:
 (defun py-switch-shell-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-switch-shell-commandp-base arg teststring)))
 
 (defun py-switch-shell-commandp-base ()
@@ -3919,7 +3586,6 @@ for x in y:
 (defun py-choose-shell-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-choose-shell-commandp-base arg teststring)))
 
 (defun py-choose-shell-commandp-base ()
@@ -3928,7 +3594,6 @@ for x in y:
 (defun py-toggle-smart-indentation-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-toggle-smart-indentation-commandp-base arg teststring)))
 
 (defun py-toggle-smart-indentation-commandp-base ()
@@ -3937,7 +3602,6 @@ for x in y:
 (defun py-smart-indentation-on-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-smart-indentation-on-commandp-base arg teststring)))
 
 (defun py-smart-indentation-on-commandp-base ()
@@ -3946,7 +3610,6 @@ for x in y:
 (defun py-smart-indentation-off-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-smart-indentation-off-commandp-base arg teststring)))
 
 (defun py-smart-indentation-off-commandp-base ()
@@ -3955,7 +3618,6 @@ for x in y:
 (defun py-toggle-split-windows-on-execute-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-toggle-split-windows-on-execute-commandp-base arg teststring)))
 
 (defun py-toggle-split-windows-on-execute-commandp-base ()
@@ -3964,7 +3626,6 @@ for x in y:
 (defun py-split-windows-on-execute-on-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-split-windows-on-execute-on-commandp-base arg teststring)))
 
 (defun py-split-windows-on-execute-on-commandp-base ()
@@ -3973,7 +3634,6 @@ for x in y:
 (defun py-split-windows-on-execute-off-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-split-windows-on-execute-off-commandp-base arg teststring)))
 
 (defun py-split-windows-on-execute-off-commandp-base ()
@@ -3982,7 +3642,6 @@ for x in y:
 (defun py-toggle-shell-switch-buffers-on-execute-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-toggle-shell-switch-buffers-on-execute-commandp-base arg teststring)))
 
 (defun py-toggle-shell-switch-buffers-on-execute-commandp-base ()
@@ -3991,7 +3650,6 @@ for x in y:
 (defun py-shell-switch-buffers-on-execute-on-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-shell-switch-buffers-on-execute-on-commandp-base arg teststring)))
 
 (defun py-shell-switch-buffers-on-execute-on-commandp-base ()
@@ -4000,7 +3658,6 @@ for x in y:
 (defun py-shell-switch-buffers-on-execute-off-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-shell-switch-buffers-on-execute-off-commandp-base arg teststring)))
 
 (defun py-shell-switch-buffers-on-execute-off-commandp-base ()
@@ -4009,7 +3666,6 @@ for x in y:
 (defun py-normalize-py-install-directory-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-normalize-py-install-directory-commandp-base arg teststring)))
 
 (defun py-normalize-py-install-directory-commandp-base ()
@@ -4018,7 +3674,6 @@ for x in y:
 (defun py-install-directory-check-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-install-directory-check-commandp-base arg teststring)))
 
 (defun py-install-directory-check-commandp-base ()
@@ -4027,7 +3682,6 @@ for x in y:
 (defun py-load-pymacs-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-load-pymacs-commandp-base arg teststring)))
 
 (defun py-load-pymacs-commandp-base ()
@@ -4036,7 +3690,6 @@ for x in y:
 (defun py-guess-py-install-directory-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-guess-py-install-directory-commandp-base arg teststring)))
 
 (defun py-guess-py-install-directory-commandp-base ()
@@ -4045,7 +3698,6 @@ for x in y:
 (defun py-set-load-path-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-set-load-path-commandp-base arg teststring)))
 
 (defun py-set-load-path-commandp-base ()
@@ -4054,7 +3706,6 @@ for x in y:
 (defun py-def-or-class-beginning-position-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-def-or-class-beginning-position-commandp-base arg teststring)))
 
 (defun py-def-or-class-beginning-position-commandp-base ()
@@ -4063,7 +3714,6 @@ for x in y:
 (defun py-def-or-class-end-position-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-def-or-class-end-position-commandp-base arg teststring)))
 
 (defun py-def-or-class-end-position-commandp-base ()
@@ -4072,7 +3722,6 @@ for x in y:
 (defun py-statement-beginning-position-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-statement-beginning-position-commandp-base arg teststring)))
 
 (defun py-statement-beginning-position-commandp-base ()
@@ -4081,7 +3730,6 @@ for x in y:
 (defun py-statement-end-position-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-statement-end-position-commandp-base arg teststring)))
 
 (defun py-statement-end-position-commandp-base ()
@@ -4090,7 +3738,6 @@ for x in y:
 (defun py-current-indentation-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-current-indentation-commandp-base arg teststring)))
 
 (defun py-current-indentation-commandp-base ()
@@ -4099,7 +3746,6 @@ for x in y:
 (defun py-version-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-version-commandp-base arg teststring)))
 
 (defun py-version-commandp-base ()
@@ -4108,7 +3754,6 @@ for x in y:
 (defun run-python-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'run-python-commandp-base arg teststring)))
 
 (defun run-python-commandp-base ()
@@ -4117,7 +3762,6 @@ for x in y:
 (defun py-send-region-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-send-region-commandp-base arg teststring)))
 
 (defun py-send-region-commandp-base ()
@@ -4126,7 +3770,6 @@ for x in y:
 (defun py-send-buffer-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-send-buffer-commandp-base arg teststring)))
 
 (defun py-send-buffer-commandp-base ()
@@ -4135,7 +3778,6 @@ for x in y:
 (defun py-switch-to-python-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-switch-to-python-commandp-base arg teststring)))
 
 (defun py-switch-to-python-commandp-base ()
@@ -4144,7 +3786,6 @@ for x in y:
 (defun py-send-region-and-go-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-send-region-and-go-commandp-base arg teststring)))
 
 (defun py-send-region-and-go-commandp-base ()
@@ -4153,7 +3794,6 @@ for x in y:
 (defun py-load-file-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-load-file-commandp-base arg teststring)))
 
 (defun py-load-file-commandp-base ()
@@ -4162,7 +3802,6 @@ for x in y:
 (defun py-set-proc-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-set-proc-commandp-base arg teststring)))
 
 (defun py-set-proc-commandp-base ()
@@ -4171,7 +3810,6 @@ for x in y:
 (defun python-send-string-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'python-send-string-commandp-base arg teststring)))
 
 (defun python-send-string-commandp-base ()
@@ -4180,7 +3818,6 @@ for x in y:
 (defun py-shell-complete-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-shell-complete-commandp-base arg teststring)))
 
 (defun py-shell-complete-commandp-base ()
@@ -4189,7 +3826,6 @@ for x in y:
 (defun ipython-complete-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'ipython-complete-commandp-base arg teststring)))
 
 (defun ipython-complete-commandp-base ()
@@ -4198,7 +3834,6 @@ for x in y:
 (defun py-pychecker-run-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-pychecker-run-commandp-base arg teststring)))
 
 (defun py-pychecker-run-commandp-base ()
@@ -4207,7 +3842,6 @@ for x in y:
 (defun virtualenv-current-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'virtualenv-current-commandp-base arg teststring)))
 
 (defun virtualenv-current-commandp-base ()
@@ -4216,7 +3850,6 @@ for x in y:
 (defun virtualenv-activate-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'virtualenv-activate-commandp-base arg teststring)))
 
 (defun virtualenv-activate-commandp-base ()
@@ -4225,7 +3858,6 @@ for x in y:
 (defun virtualenv-deactivate-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'virtualenv-deactivate-commandp-base arg teststring)))
 
 (defun virtualenv-deactivate-commandp-base ()
@@ -4234,7 +3866,6 @@ for x in y:
 (defun virtualenv-workon-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'virtualenv-workon-commandp-base arg teststring)))
 
 (defun virtualenv-workon-commandp-base ()
@@ -4243,7 +3874,6 @@ for x in y:
 (defun py-toggle-local-default-use-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-toggle-local-default-use-commandp-base arg teststring)))
 
 (defun py-toggle-local-default-use-commandp-base ()
@@ -4252,7 +3882,6 @@ for x in y:
 (defun py-execute-statement-python-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-statement-python-commandp-base arg teststring)))
 
 (defun py-execute-statement-python-commandp-base ()
@@ -4261,7 +3890,6 @@ for x in y:
 (defun py-execute-statement-python-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-statement-python-switch-commandp-base arg teststring)))
 
 (defun py-execute-statement-python-switch-commandp-base ()
@@ -4270,7 +3898,6 @@ for x in y:
 (defun py-execute-statement-python-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-statement-python-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-statement-python-noswitch-commandp-base ()
@@ -4279,7 +3906,6 @@ for x in y:
 (defun py-execute-statement-python-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-statement-python-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-statement-python-dedicated-commandp-base ()
@@ -4288,7 +3914,6 @@ for x in y:
 (defun py-execute-statement-python-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-statement-python-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-statement-python-dedicated-switch-commandp-base ()
@@ -4297,7 +3922,6 @@ for x in y:
 (defun py-execute-statement-ipython-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-statement-ipython-commandp-base arg teststring)))
 
 (defun py-execute-statement-ipython-commandp-base ()
@@ -4306,7 +3930,6 @@ for x in y:
 (defun py-execute-statement-ipython-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-statement-ipython-switch-commandp-base arg teststring)))
 
 (defun py-execute-statement-ipython-switch-commandp-base ()
@@ -4315,7 +3938,6 @@ for x in y:
 (defun py-execute-statement-ipython-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-statement-ipython-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-statement-ipython-noswitch-commandp-base ()
@@ -4324,7 +3946,6 @@ for x in y:
 (defun py-execute-statement-ipython-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-statement-ipython-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-statement-ipython-dedicated-commandp-base ()
@@ -4333,7 +3954,6 @@ for x in y:
 (defun py-execute-statement-ipython-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-statement-ipython-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-statement-ipython-dedicated-switch-commandp-base ()
@@ -4342,7 +3962,6 @@ for x in y:
 (defun py-execute-statement-python3-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-statement-python3-commandp-base arg teststring)))
 
 (defun py-execute-statement-python3-commandp-base ()
@@ -4351,7 +3970,6 @@ for x in y:
 (defun py-execute-statement-python3-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-statement-python3-switch-commandp-base arg teststring)))
 
 (defun py-execute-statement-python3-switch-commandp-base ()
@@ -4360,7 +3978,6 @@ for x in y:
 (defun py-execute-statement-python3-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-statement-python3-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-statement-python3-noswitch-commandp-base ()
@@ -4369,7 +3986,6 @@ for x in y:
 (defun py-execute-statement-python3-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-statement-python3-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-statement-python3-dedicated-commandp-base ()
@@ -4378,7 +3994,6 @@ for x in y:
 (defun py-execute-statement-python3-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-statement-python3-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-statement-python3-dedicated-switch-commandp-base ()
@@ -4387,7 +4002,6 @@ for x in y:
 (defun py-execute-statement-python2-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-statement-python2-commandp-base arg teststring)))
 
 (defun py-execute-statement-python2-commandp-base ()
@@ -4396,7 +4010,6 @@ for x in y:
 (defun py-execute-statement-python2-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-statement-python2-switch-commandp-base arg teststring)))
 
 (defun py-execute-statement-python2-switch-commandp-base ()
@@ -4405,7 +4018,6 @@ for x in y:
 (defun py-execute-statement-python2-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-statement-python2-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-statement-python2-noswitch-commandp-base ()
@@ -4414,7 +4026,6 @@ for x in y:
 (defun py-execute-statement-python2-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-statement-python2-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-statement-python2-dedicated-commandp-base ()
@@ -4423,7 +4034,6 @@ for x in y:
 (defun py-execute-statement-python2-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-statement-python2-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-statement-python2-dedicated-switch-commandp-base ()
@@ -4432,7 +4042,6 @@ for x in y:
 (defun py-execute-statement-python2.7-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-statement-python2.7-commandp-base arg teststring)))
 
 (defun py-execute-statement-python2.7-commandp-base ()
@@ -4441,7 +4050,6 @@ for x in y:
 (defun py-execute-statement-python2.7-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-statement-python2.7-switch-commandp-base arg teststring)))
 
 (defun py-execute-statement-python2.7-switch-commandp-base ()
@@ -4450,7 +4058,6 @@ for x in y:
 (defun py-execute-statement-python2.7-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-statement-python2.7-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-statement-python2.7-noswitch-commandp-base ()
@@ -4459,7 +4066,6 @@ for x in y:
 (defun py-execute-statement-python2.7-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-statement-python2.7-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-statement-python2.7-dedicated-commandp-base ()
@@ -4468,7 +4074,6 @@ for x in y:
 (defun py-execute-statement-python2.7-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-statement-python2.7-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-statement-python2.7-dedicated-switch-commandp-base ()
@@ -4477,7 +4082,6 @@ for x in y:
 (defun py-execute-statement-jython-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-statement-jython-commandp-base arg teststring)))
 
 (defun py-execute-statement-jython-commandp-base ()
@@ -4486,7 +4090,6 @@ for x in y:
 (defun py-execute-statement-jython-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-statement-jython-switch-commandp-base arg teststring)))
 
 (defun py-execute-statement-jython-switch-commandp-base ()
@@ -4495,7 +4098,6 @@ for x in y:
 (defun py-execute-statement-jython-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-statement-jython-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-statement-jython-noswitch-commandp-base ()
@@ -4504,7 +4106,6 @@ for x in y:
 (defun py-execute-statement-jython-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-statement-jython-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-statement-jython-dedicated-commandp-base ()
@@ -4513,7 +4114,6 @@ for x in y:
 (defun py-execute-statement-jython-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-statement-jython-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-statement-jython-dedicated-switch-commandp-base ()
@@ -4522,7 +4122,6 @@ for x in y:
 (defun py-execute-statement-python3.2-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-statement-python3.2-commandp-base arg teststring)))
 
 (defun py-execute-statement-python3.2-commandp-base ()
@@ -4531,7 +4130,6 @@ for x in y:
 (defun py-execute-statement-python3.2-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-statement-python3.2-switch-commandp-base arg teststring)))
 
 (defun py-execute-statement-python3.2-switch-commandp-base ()
@@ -4540,7 +4138,6 @@ for x in y:
 (defun py-execute-statement-python3.2-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-statement-python3.2-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-statement-python3.2-noswitch-commandp-base ()
@@ -4549,7 +4146,6 @@ for x in y:
 (defun py-execute-statement-python3.2-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-statement-python3.2-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-statement-python3.2-dedicated-commandp-base ()
@@ -4558,7 +4154,6 @@ for x in y:
 (defun py-execute-statement-python3.2-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-statement-python3.2-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-statement-python3.2-dedicated-switch-commandp-base ()
@@ -4567,7 +4162,6 @@ for x in y:
 (defun py-execute-block-python-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-python-commandp-base arg teststring)))
 
 (defun py-execute-block-python-commandp-base ()
@@ -4576,7 +4170,6 @@ for x in y:
 (defun py-execute-block-python-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-python-switch-commandp-base arg teststring)))
 
 (defun py-execute-block-python-switch-commandp-base ()
@@ -4585,7 +4178,6 @@ for x in y:
 (defun py-execute-block-python-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-python-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-block-python-noswitch-commandp-base ()
@@ -4594,7 +4186,6 @@ for x in y:
 (defun py-execute-block-python-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-python-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-block-python-dedicated-commandp-base ()
@@ -4603,7 +4194,6 @@ for x in y:
 (defun py-execute-block-python-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-python-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-block-python-dedicated-switch-commandp-base ()
@@ -4612,7 +4202,6 @@ for x in y:
 (defun py-execute-block-ipython-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-ipython-commandp-base arg teststring)))
 
 (defun py-execute-block-ipython-commandp-base ()
@@ -4621,7 +4210,6 @@ for x in y:
 (defun py-execute-block-ipython-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-ipython-switch-commandp-base arg teststring)))
 
 (defun py-execute-block-ipython-switch-commandp-base ()
@@ -4630,7 +4218,6 @@ for x in y:
 (defun py-execute-block-ipython-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-ipython-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-block-ipython-noswitch-commandp-base ()
@@ -4639,7 +4226,6 @@ for x in y:
 (defun py-execute-block-ipython-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-ipython-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-block-ipython-dedicated-commandp-base ()
@@ -4648,7 +4234,6 @@ for x in y:
 (defun py-execute-block-ipython-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-ipython-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-block-ipython-dedicated-switch-commandp-base ()
@@ -4657,7 +4242,6 @@ for x in y:
 (defun py-execute-block-python3-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-python3-commandp-base arg teststring)))
 
 (defun py-execute-block-python3-commandp-base ()
@@ -4666,7 +4250,6 @@ for x in y:
 (defun py-execute-block-python3-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-python3-switch-commandp-base arg teststring)))
 
 (defun py-execute-block-python3-switch-commandp-base ()
@@ -4675,7 +4258,6 @@ for x in y:
 (defun py-execute-block-python3-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-python3-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-block-python3-noswitch-commandp-base ()
@@ -4684,7 +4266,6 @@ for x in y:
 (defun py-execute-block-python3-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-python3-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-block-python3-dedicated-commandp-base ()
@@ -4693,7 +4274,6 @@ for x in y:
 (defun py-execute-block-python3-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-python3-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-block-python3-dedicated-switch-commandp-base ()
@@ -4702,7 +4282,6 @@ for x in y:
 (defun py-execute-block-python2-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-python2-commandp-base arg teststring)))
 
 (defun py-execute-block-python2-commandp-base ()
@@ -4711,7 +4290,6 @@ for x in y:
 (defun py-execute-block-python2-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-python2-switch-commandp-base arg teststring)))
 
 (defun py-execute-block-python2-switch-commandp-base ()
@@ -4720,7 +4298,6 @@ for x in y:
 (defun py-execute-block-python2-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-python2-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-block-python2-noswitch-commandp-base ()
@@ -4729,7 +4306,6 @@ for x in y:
 (defun py-execute-block-python2-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-python2-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-block-python2-dedicated-commandp-base ()
@@ -4738,7 +4314,6 @@ for x in y:
 (defun py-execute-block-python2-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-python2-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-block-python2-dedicated-switch-commandp-base ()
@@ -4747,7 +4322,6 @@ for x in y:
 (defun py-execute-block-python2.7-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-python2.7-commandp-base arg teststring)))
 
 (defun py-execute-block-python2.7-commandp-base ()
@@ -4756,7 +4330,6 @@ for x in y:
 (defun py-execute-block-python2.7-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-python2.7-switch-commandp-base arg teststring)))
 
 (defun py-execute-block-python2.7-switch-commandp-base ()
@@ -4765,7 +4338,6 @@ for x in y:
 (defun py-execute-block-python2.7-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-python2.7-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-block-python2.7-noswitch-commandp-base ()
@@ -4774,7 +4346,6 @@ for x in y:
 (defun py-execute-block-python2.7-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-python2.7-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-block-python2.7-dedicated-commandp-base ()
@@ -4783,7 +4354,6 @@ for x in y:
 (defun py-execute-block-python2.7-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-python2.7-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-block-python2.7-dedicated-switch-commandp-base ()
@@ -4792,7 +4362,6 @@ for x in y:
 (defun py-execute-block-jython-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-jython-commandp-base arg teststring)))
 
 (defun py-execute-block-jython-commandp-base ()
@@ -4801,7 +4370,6 @@ for x in y:
 (defun py-execute-block-jython-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-jython-switch-commandp-base arg teststring)))
 
 (defun py-execute-block-jython-switch-commandp-base ()
@@ -4810,7 +4378,6 @@ for x in y:
 (defun py-execute-block-jython-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-jython-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-block-jython-noswitch-commandp-base ()
@@ -4819,7 +4386,6 @@ for x in y:
 (defun py-execute-block-jython-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-jython-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-block-jython-dedicated-commandp-base ()
@@ -4828,7 +4394,6 @@ for x in y:
 (defun py-execute-block-jython-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-jython-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-block-jython-dedicated-switch-commandp-base ()
@@ -4837,7 +4402,6 @@ for x in y:
 (defun py-execute-block-python3.2-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-python3.2-commandp-base arg teststring)))
 
 (defun py-execute-block-python3.2-commandp-base ()
@@ -4846,7 +4410,6 @@ for x in y:
 (defun py-execute-block-python3.2-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-python3.2-switch-commandp-base arg teststring)))
 
 (defun py-execute-block-python3.2-switch-commandp-base ()
@@ -4855,7 +4418,6 @@ for x in y:
 (defun py-execute-block-python3.2-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-python3.2-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-block-python3.2-noswitch-commandp-base ()
@@ -4864,7 +4426,6 @@ for x in y:
 (defun py-execute-block-python3.2-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-python3.2-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-block-python3.2-dedicated-commandp-base ()
@@ -4873,7 +4434,6 @@ for x in y:
 (defun py-execute-block-python3.2-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-python3.2-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-block-python3.2-dedicated-switch-commandp-base ()
@@ -4882,7 +4442,6 @@ for x in y:
 (defun py-execute-block-or-clause-python-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-or-clause-python-commandp-base arg teststring)))
 
 (defun py-execute-block-or-clause-python-commandp-base ()
@@ -4891,7 +4450,6 @@ for x in y:
 (defun py-execute-block-or-clause-python-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-or-clause-python-switch-commandp-base arg teststring)))
 
 (defun py-execute-block-or-clause-python-switch-commandp-base ()
@@ -4900,7 +4458,6 @@ for x in y:
 (defun py-execute-block-or-clause-python-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-or-clause-python-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-block-or-clause-python-noswitch-commandp-base ()
@@ -4909,7 +4466,6 @@ for x in y:
 (defun py-execute-block-or-clause-python-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-or-clause-python-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-block-or-clause-python-dedicated-commandp-base ()
@@ -4918,7 +4474,6 @@ for x in y:
 (defun py-execute-block-or-clause-python-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-or-clause-python-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-block-or-clause-python-dedicated-switch-commandp-base ()
@@ -4927,7 +4482,6 @@ for x in y:
 (defun py-execute-block-or-clause-ipython-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-or-clause-ipython-commandp-base arg teststring)))
 
 (defun py-execute-block-or-clause-ipython-commandp-base ()
@@ -4936,7 +4490,6 @@ for x in y:
 (defun py-execute-block-or-clause-ipython-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-or-clause-ipython-switch-commandp-base arg teststring)))
 
 (defun py-execute-block-or-clause-ipython-switch-commandp-base ()
@@ -4945,7 +4498,6 @@ for x in y:
 (defun py-execute-block-or-clause-ipython-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-or-clause-ipython-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-block-or-clause-ipython-noswitch-commandp-base ()
@@ -4954,7 +4506,6 @@ for x in y:
 (defun py-execute-block-or-clause-ipython-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-or-clause-ipython-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-block-or-clause-ipython-dedicated-commandp-base ()
@@ -4963,7 +4514,6 @@ for x in y:
 (defun py-execute-block-or-clause-ipython-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-or-clause-ipython-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-block-or-clause-ipython-dedicated-switch-commandp-base ()
@@ -4972,7 +4522,6 @@ for x in y:
 (defun py-execute-block-or-clause-python3-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-or-clause-python3-commandp-base arg teststring)))
 
 (defun py-execute-block-or-clause-python3-commandp-base ()
@@ -4981,7 +4530,6 @@ for x in y:
 (defun py-execute-block-or-clause-python3-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-or-clause-python3-switch-commandp-base arg teststring)))
 
 (defun py-execute-block-or-clause-python3-switch-commandp-base ()
@@ -4990,7 +4538,6 @@ for x in y:
 (defun py-execute-block-or-clause-python3-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-or-clause-python3-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-block-or-clause-python3-noswitch-commandp-base ()
@@ -4999,7 +4546,6 @@ for x in y:
 (defun py-execute-block-or-clause-python3-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-or-clause-python3-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-block-or-clause-python3-dedicated-commandp-base ()
@@ -5008,7 +4554,6 @@ for x in y:
 (defun py-execute-block-or-clause-python3-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-or-clause-python3-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-block-or-clause-python3-dedicated-switch-commandp-base ()
@@ -5017,7 +4562,6 @@ for x in y:
 (defun py-execute-block-or-clause-python2-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-or-clause-python2-commandp-base arg teststring)))
 
 (defun py-execute-block-or-clause-python2-commandp-base ()
@@ -5026,7 +4570,6 @@ for x in y:
 (defun py-execute-block-or-clause-python2-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-or-clause-python2-switch-commandp-base arg teststring)))
 
 (defun py-execute-block-or-clause-python2-switch-commandp-base ()
@@ -5035,7 +4578,6 @@ for x in y:
 (defun py-execute-block-or-clause-python2-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-or-clause-python2-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-block-or-clause-python2-noswitch-commandp-base ()
@@ -5044,7 +4586,6 @@ for x in y:
 (defun py-execute-block-or-clause-python2-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-or-clause-python2-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-block-or-clause-python2-dedicated-commandp-base ()
@@ -5053,7 +4594,6 @@ for x in y:
 (defun py-execute-block-or-clause-python2-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-or-clause-python2-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-block-or-clause-python2-dedicated-switch-commandp-base ()
@@ -5062,7 +4602,6 @@ for x in y:
 (defun py-execute-block-or-clause-python2.7-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-or-clause-python2.7-commandp-base arg teststring)))
 
 (defun py-execute-block-or-clause-python2.7-commandp-base ()
@@ -5071,7 +4610,6 @@ for x in y:
 (defun py-execute-block-or-clause-python2.7-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-or-clause-python2.7-switch-commandp-base arg teststring)))
 
 (defun py-execute-block-or-clause-python2.7-switch-commandp-base ()
@@ -5080,7 +4618,6 @@ for x in y:
 (defun py-execute-block-or-clause-python2.7-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-or-clause-python2.7-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-block-or-clause-python2.7-noswitch-commandp-base ()
@@ -5089,7 +4626,6 @@ for x in y:
 (defun py-execute-block-or-clause-python2.7-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-or-clause-python2.7-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-block-or-clause-python2.7-dedicated-commandp-base ()
@@ -5098,7 +4634,6 @@ for x in y:
 (defun py-execute-block-or-clause-python2.7-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-or-clause-python2.7-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-block-or-clause-python2.7-dedicated-switch-commandp-base ()
@@ -5107,7 +4642,6 @@ for x in y:
 (defun py-execute-block-or-clause-jython-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-or-clause-jython-commandp-base arg teststring)))
 
 (defun py-execute-block-or-clause-jython-commandp-base ()
@@ -5116,7 +4650,6 @@ for x in y:
 (defun py-execute-block-or-clause-jython-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-or-clause-jython-switch-commandp-base arg teststring)))
 
 (defun py-execute-block-or-clause-jython-switch-commandp-base ()
@@ -5125,7 +4658,6 @@ for x in y:
 (defun py-execute-block-or-clause-jython-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-or-clause-jython-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-block-or-clause-jython-noswitch-commandp-base ()
@@ -5134,7 +4666,6 @@ for x in y:
 (defun py-execute-block-or-clause-jython-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-or-clause-jython-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-block-or-clause-jython-dedicated-commandp-base ()
@@ -5143,7 +4674,6 @@ for x in y:
 (defun py-execute-block-or-clause-jython-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-or-clause-jython-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-block-or-clause-jython-dedicated-switch-commandp-base ()
@@ -5152,7 +4682,6 @@ for x in y:
 (defun py-execute-block-or-clause-python3.2-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-or-clause-python3.2-commandp-base arg teststring)))
 
 (defun py-execute-block-or-clause-python3.2-commandp-base ()
@@ -5161,7 +4690,6 @@ for x in y:
 (defun py-execute-block-or-clause-python3.2-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-or-clause-python3.2-switch-commandp-base arg teststring)))
 
 (defun py-execute-block-or-clause-python3.2-switch-commandp-base ()
@@ -5170,7 +4698,6 @@ for x in y:
 (defun py-execute-block-or-clause-python3.2-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-or-clause-python3.2-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-block-or-clause-python3.2-noswitch-commandp-base ()
@@ -5179,7 +4706,6 @@ for x in y:
 (defun py-execute-block-or-clause-python3.2-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-or-clause-python3.2-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-block-or-clause-python3.2-dedicated-commandp-base ()
@@ -5188,7 +4714,6 @@ for x in y:
 (defun py-execute-block-or-clause-python3.2-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-block-or-clause-python3.2-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-block-or-clause-python3.2-dedicated-switch-commandp-base ()
@@ -5197,7 +4722,6 @@ for x in y:
 (defun py-execute-def-python-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-def-python-commandp-base arg teststring)))
 
 (defun py-execute-def-python-commandp-base ()
@@ -5206,7 +4730,6 @@ for x in y:
 (defun py-execute-def-python-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-def-python-switch-commandp-base arg teststring)))
 
 (defun py-execute-def-python-switch-commandp-base ()
@@ -5215,7 +4738,6 @@ for x in y:
 (defun py-execute-def-python-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-def-python-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-def-python-noswitch-commandp-base ()
@@ -5224,7 +4746,6 @@ for x in y:
 (defun py-execute-def-python-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-def-python-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-def-python-dedicated-commandp-base ()
@@ -5233,7 +4754,6 @@ for x in y:
 (defun py-execute-def-python-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-def-python-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-def-python-dedicated-switch-commandp-base ()
@@ -5242,7 +4762,6 @@ for x in y:
 (defun py-execute-def-ipython-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-def-ipython-commandp-base arg teststring)))
 
 (defun py-execute-def-ipython-commandp-base ()
@@ -5251,7 +4770,6 @@ for x in y:
 (defun py-execute-def-ipython-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-def-ipython-switch-commandp-base arg teststring)))
 
 (defun py-execute-def-ipython-switch-commandp-base ()
@@ -5260,7 +4778,6 @@ for x in y:
 (defun py-execute-def-ipython-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-def-ipython-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-def-ipython-noswitch-commandp-base ()
@@ -5269,7 +4786,6 @@ for x in y:
 (defun py-execute-def-ipython-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-def-ipython-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-def-ipython-dedicated-commandp-base ()
@@ -5278,7 +4794,6 @@ for x in y:
 (defun py-execute-def-ipython-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-def-ipython-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-def-ipython-dedicated-switch-commandp-base ()
@@ -5287,7 +4802,6 @@ for x in y:
 (defun py-execute-def-python3-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-def-python3-commandp-base arg teststring)))
 
 (defun py-execute-def-python3-commandp-base ()
@@ -5296,7 +4810,6 @@ for x in y:
 (defun py-execute-def-python3-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-def-python3-switch-commandp-base arg teststring)))
 
 (defun py-execute-def-python3-switch-commandp-base ()
@@ -5305,7 +4818,6 @@ for x in y:
 (defun py-execute-def-python3-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-def-python3-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-def-python3-noswitch-commandp-base ()
@@ -5314,7 +4826,6 @@ for x in y:
 (defun py-execute-def-python3-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-def-python3-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-def-python3-dedicated-commandp-base ()
@@ -5323,7 +4834,6 @@ for x in y:
 (defun py-execute-def-python3-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-def-python3-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-def-python3-dedicated-switch-commandp-base ()
@@ -5332,7 +4842,6 @@ for x in y:
 (defun py-execute-def-python2-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-def-python2-commandp-base arg teststring)))
 
 (defun py-execute-def-python2-commandp-base ()
@@ -5341,7 +4850,6 @@ for x in y:
 (defun py-execute-def-python2-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-def-python2-switch-commandp-base arg teststring)))
 
 (defun py-execute-def-python2-switch-commandp-base ()
@@ -5350,7 +4858,6 @@ for x in y:
 (defun py-execute-def-python2-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-def-python2-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-def-python2-noswitch-commandp-base ()
@@ -5359,7 +4866,6 @@ for x in y:
 (defun py-execute-def-python2-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-def-python2-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-def-python2-dedicated-commandp-base ()
@@ -5368,7 +4874,6 @@ for x in y:
 (defun py-execute-def-python2-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-def-python2-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-def-python2-dedicated-switch-commandp-base ()
@@ -5377,7 +4882,6 @@ for x in y:
 (defun py-execute-def-python2.7-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-def-python2.7-commandp-base arg teststring)))
 
 (defun py-execute-def-python2.7-commandp-base ()
@@ -5386,7 +4890,6 @@ for x in y:
 (defun py-execute-def-python2.7-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-def-python2.7-switch-commandp-base arg teststring)))
 
 (defun py-execute-def-python2.7-switch-commandp-base ()
@@ -5395,7 +4898,6 @@ for x in y:
 (defun py-execute-def-python2.7-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-def-python2.7-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-def-python2.7-noswitch-commandp-base ()
@@ -5404,7 +4906,6 @@ for x in y:
 (defun py-execute-def-python2.7-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-def-python2.7-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-def-python2.7-dedicated-commandp-base ()
@@ -5413,7 +4914,6 @@ for x in y:
 (defun py-execute-def-python2.7-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-def-python2.7-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-def-python2.7-dedicated-switch-commandp-base ()
@@ -5422,7 +4922,6 @@ for x in y:
 (defun py-execute-def-jython-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-def-jython-commandp-base arg teststring)))
 
 (defun py-execute-def-jython-commandp-base ()
@@ -5431,7 +4930,6 @@ for x in y:
 (defun py-execute-def-jython-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-def-jython-switch-commandp-base arg teststring)))
 
 (defun py-execute-def-jython-switch-commandp-base ()
@@ -5440,7 +4938,6 @@ for x in y:
 (defun py-execute-def-jython-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-def-jython-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-def-jython-noswitch-commandp-base ()
@@ -5449,7 +4946,6 @@ for x in y:
 (defun py-execute-def-jython-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-def-jython-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-def-jython-dedicated-commandp-base ()
@@ -5458,7 +4954,6 @@ for x in y:
 (defun py-execute-def-jython-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-def-jython-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-def-jython-dedicated-switch-commandp-base ()
@@ -5467,7 +4962,6 @@ for x in y:
 (defun py-execute-def-python3.2-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-def-python3.2-commandp-base arg teststring)))
 
 (defun py-execute-def-python3.2-commandp-base ()
@@ -5476,7 +4970,6 @@ for x in y:
 (defun py-execute-def-python3.2-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-def-python3.2-switch-commandp-base arg teststring)))
 
 (defun py-execute-def-python3.2-switch-commandp-base ()
@@ -5485,7 +4978,6 @@ for x in y:
 (defun py-execute-def-python3.2-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-def-python3.2-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-def-python3.2-noswitch-commandp-base ()
@@ -5494,7 +4986,6 @@ for x in y:
 (defun py-execute-def-python3.2-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-def-python3.2-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-def-python3.2-dedicated-commandp-base ()
@@ -5503,7 +4994,6 @@ for x in y:
 (defun py-execute-def-python3.2-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-def-python3.2-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-def-python3.2-dedicated-switch-commandp-base ()
@@ -5512,7 +5002,6 @@ for x in y:
 (defun py-execute-class-python-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-class-python-commandp-base arg teststring)))
 
 (defun py-execute-class-python-commandp-base ()
@@ -5521,7 +5010,6 @@ for x in y:
 (defun py-execute-class-python-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-class-python-switch-commandp-base arg teststring)))
 
 (defun py-execute-class-python-switch-commandp-base ()
@@ -5530,7 +5018,6 @@ for x in y:
 (defun py-execute-class-python-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-class-python-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-class-python-noswitch-commandp-base ()
@@ -5539,7 +5026,6 @@ for x in y:
 (defun py-execute-class-python-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-class-python-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-class-python-dedicated-commandp-base ()
@@ -5548,7 +5034,6 @@ for x in y:
 (defun py-execute-class-python-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-class-python-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-class-python-dedicated-switch-commandp-base ()
@@ -5557,7 +5042,6 @@ for x in y:
 (defun py-execute-class-ipython-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-class-ipython-commandp-base arg teststring)))
 
 (defun py-execute-class-ipython-commandp-base ()
@@ -5566,7 +5050,6 @@ for x in y:
 (defun py-execute-class-ipython-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-class-ipython-switch-commandp-base arg teststring)))
 
 (defun py-execute-class-ipython-switch-commandp-base ()
@@ -5575,7 +5058,6 @@ for x in y:
 (defun py-execute-class-ipython-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-class-ipython-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-class-ipython-noswitch-commandp-base ()
@@ -5584,7 +5066,6 @@ for x in y:
 (defun py-execute-class-ipython-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-class-ipython-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-class-ipython-dedicated-commandp-base ()
@@ -5593,7 +5074,6 @@ for x in y:
 (defun py-execute-class-ipython-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-class-ipython-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-class-ipython-dedicated-switch-commandp-base ()
@@ -5602,7 +5082,6 @@ for x in y:
 (defun py-execute-class-python3-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-class-python3-commandp-base arg teststring)))
 
 (defun py-execute-class-python3-commandp-base ()
@@ -5611,7 +5090,6 @@ for x in y:
 (defun py-execute-class-python3-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-class-python3-switch-commandp-base arg teststring)))
 
 (defun py-execute-class-python3-switch-commandp-base ()
@@ -5620,7 +5098,6 @@ for x in y:
 (defun py-execute-class-python3-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-class-python3-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-class-python3-noswitch-commandp-base ()
@@ -5629,7 +5106,6 @@ for x in y:
 (defun py-execute-class-python3-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-class-python3-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-class-python3-dedicated-commandp-base ()
@@ -5638,7 +5114,6 @@ for x in y:
 (defun py-execute-class-python3-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-class-python3-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-class-python3-dedicated-switch-commandp-base ()
@@ -5647,7 +5122,6 @@ for x in y:
 (defun py-execute-class-python2-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-class-python2-commandp-base arg teststring)))
 
 (defun py-execute-class-python2-commandp-base ()
@@ -5656,7 +5130,6 @@ for x in y:
 (defun py-execute-class-python2-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-class-python2-switch-commandp-base arg teststring)))
 
 (defun py-execute-class-python2-switch-commandp-base ()
@@ -5665,7 +5138,6 @@ for x in y:
 (defun py-execute-class-python2-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-class-python2-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-class-python2-noswitch-commandp-base ()
@@ -5674,7 +5146,6 @@ for x in y:
 (defun py-execute-class-python2-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-class-python2-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-class-python2-dedicated-commandp-base ()
@@ -5683,7 +5154,6 @@ for x in y:
 (defun py-execute-class-python2-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-class-python2-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-class-python2-dedicated-switch-commandp-base ()
@@ -5692,7 +5162,6 @@ for x in y:
 (defun py-execute-class-python2.7-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-class-python2.7-commandp-base arg teststring)))
 
 (defun py-execute-class-python2.7-commandp-base ()
@@ -5701,7 +5170,6 @@ for x in y:
 (defun py-execute-class-python2.7-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-class-python2.7-switch-commandp-base arg teststring)))
 
 (defun py-execute-class-python2.7-switch-commandp-base ()
@@ -5710,7 +5178,6 @@ for x in y:
 (defun py-execute-class-python2.7-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-class-python2.7-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-class-python2.7-noswitch-commandp-base ()
@@ -5719,7 +5186,6 @@ for x in y:
 (defun py-execute-class-python2.7-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-class-python2.7-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-class-python2.7-dedicated-commandp-base ()
@@ -5728,7 +5194,6 @@ for x in y:
 (defun py-execute-class-python2.7-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-class-python2.7-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-class-python2.7-dedicated-switch-commandp-base ()
@@ -5737,7 +5202,6 @@ for x in y:
 (defun py-execute-class-jython-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-class-jython-commandp-base arg teststring)))
 
 (defun py-execute-class-jython-commandp-base ()
@@ -5746,7 +5210,6 @@ for x in y:
 (defun py-execute-class-jython-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-class-jython-switch-commandp-base arg teststring)))
 
 (defun py-execute-class-jython-switch-commandp-base ()
@@ -5755,7 +5218,6 @@ for x in y:
 (defun py-execute-class-jython-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-class-jython-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-class-jython-noswitch-commandp-base ()
@@ -5764,7 +5226,6 @@ for x in y:
 (defun py-execute-class-jython-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-class-jython-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-class-jython-dedicated-commandp-base ()
@@ -5773,7 +5234,6 @@ for x in y:
 (defun py-execute-class-jython-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-class-jython-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-class-jython-dedicated-switch-commandp-base ()
@@ -5782,7 +5242,6 @@ for x in y:
 (defun py-execute-class-python3.2-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-class-python3.2-commandp-base arg teststring)))
 
 (defun py-execute-class-python3.2-commandp-base ()
@@ -5791,7 +5250,6 @@ for x in y:
 (defun py-execute-class-python3.2-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-class-python3.2-switch-commandp-base arg teststring)))
 
 (defun py-execute-class-python3.2-switch-commandp-base ()
@@ -5800,7 +5258,6 @@ for x in y:
 (defun py-execute-class-python3.2-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-class-python3.2-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-class-python3.2-noswitch-commandp-base ()
@@ -5809,7 +5266,6 @@ for x in y:
 (defun py-execute-class-python3.2-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-class-python3.2-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-class-python3.2-dedicated-commandp-base ()
@@ -5818,7 +5274,6 @@ for x in y:
 (defun py-execute-class-python3.2-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-class-python3.2-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-class-python3.2-dedicated-switch-commandp-base ()
@@ -5827,7 +5282,6 @@ for x in y:
 (defun py-execute-region-python-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-python-commandp-base arg teststring)))
 
 (defun py-execute-region-python-commandp-base ()
@@ -5836,7 +5290,6 @@ for x in y:
 (defun py-execute-region-python-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-python-switch-commandp-base arg teststring)))
 
 (defun py-execute-region-python-switch-commandp-base ()
@@ -5845,7 +5298,6 @@ for x in y:
 (defun py-execute-region-python-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-python-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-region-python-noswitch-commandp-base ()
@@ -5854,7 +5306,6 @@ for x in y:
 (defun py-execute-region-python-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-python-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-region-python-dedicated-commandp-base ()
@@ -5863,7 +5314,6 @@ for x in y:
 (defun py-execute-region-python-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-python-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-region-python-dedicated-switch-commandp-base ()
@@ -5872,7 +5322,6 @@ for x in y:
 (defun py-execute-region-ipython-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-ipython-commandp-base arg teststring)))
 
 (defun py-execute-region-ipython-commandp-base ()
@@ -5881,7 +5330,6 @@ for x in y:
 (defun py-execute-region-ipython-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-ipython-switch-commandp-base arg teststring)))
 
 (defun py-execute-region-ipython-switch-commandp-base ()
@@ -5890,7 +5338,6 @@ for x in y:
 (defun py-execute-region-ipython-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-ipython-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-region-ipython-noswitch-commandp-base ()
@@ -5899,7 +5346,6 @@ for x in y:
 (defun py-execute-region-ipython-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-ipython-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-region-ipython-dedicated-commandp-base ()
@@ -5908,7 +5354,6 @@ for x in y:
 (defun py-execute-region-ipython-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-ipython-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-region-ipython-dedicated-switch-commandp-base ()
@@ -5917,7 +5362,6 @@ for x in y:
 (defun py-execute-region-python3-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-python3-commandp-base arg teststring)))
 
 (defun py-execute-region-python3-commandp-base ()
@@ -5926,7 +5370,6 @@ for x in y:
 (defun py-execute-region-python3-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-python3-switch-commandp-base arg teststring)))
 
 (defun py-execute-region-python3-switch-commandp-base ()
@@ -5935,7 +5378,6 @@ for x in y:
 (defun py-execute-region-python3-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-python3-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-region-python3-noswitch-commandp-base ()
@@ -5944,7 +5386,6 @@ for x in y:
 (defun py-execute-region-python3-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-python3-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-region-python3-dedicated-commandp-base ()
@@ -5953,7 +5394,6 @@ for x in y:
 (defun py-execute-region-python3-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-python3-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-region-python3-dedicated-switch-commandp-base ()
@@ -5962,7 +5402,6 @@ for x in y:
 (defun py-execute-region-python2-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-python2-commandp-base arg teststring)))
 
 (defun py-execute-region-python2-commandp-base ()
@@ -5971,7 +5410,6 @@ for x in y:
 (defun py-execute-region-python2-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-python2-switch-commandp-base arg teststring)))
 
 (defun py-execute-region-python2-switch-commandp-base ()
@@ -5980,7 +5418,6 @@ for x in y:
 (defun py-execute-region-python2-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-python2-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-region-python2-noswitch-commandp-base ()
@@ -5989,7 +5426,6 @@ for x in y:
 (defun py-execute-region-python2-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-python2-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-region-python2-dedicated-commandp-base ()
@@ -5998,7 +5434,6 @@ for x in y:
 (defun py-execute-region-python2-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-python2-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-region-python2-dedicated-switch-commandp-base ()
@@ -6007,7 +5442,6 @@ for x in y:
 (defun py-execute-region-python2.7-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-python2.7-commandp-base arg teststring)))
 
 (defun py-execute-region-python2.7-commandp-base ()
@@ -6016,7 +5450,6 @@ for x in y:
 (defun py-execute-region-python2.7-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-python2.7-switch-commandp-base arg teststring)))
 
 (defun py-execute-region-python2.7-switch-commandp-base ()
@@ -6025,7 +5458,6 @@ for x in y:
 (defun py-execute-region-python2.7-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-python2.7-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-region-python2.7-noswitch-commandp-base ()
@@ -6034,7 +5466,6 @@ for x in y:
 (defun py-execute-region-python2.7-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-python2.7-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-region-python2.7-dedicated-commandp-base ()
@@ -6043,7 +5474,6 @@ for x in y:
 (defun py-execute-region-python2.7-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-python2.7-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-region-python2.7-dedicated-switch-commandp-base ()
@@ -6052,7 +5482,6 @@ for x in y:
 (defun py-execute-region-jython-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-jython-commandp-base arg teststring)))
 
 (defun py-execute-region-jython-commandp-base ()
@@ -6061,7 +5490,6 @@ for x in y:
 (defun py-execute-region-jython-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-jython-switch-commandp-base arg teststring)))
 
 (defun py-execute-region-jython-switch-commandp-base ()
@@ -6070,7 +5498,6 @@ for x in y:
 (defun py-execute-region-jython-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-jython-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-region-jython-noswitch-commandp-base ()
@@ -6079,7 +5506,6 @@ for x in y:
 (defun py-execute-region-jython-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-jython-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-region-jython-dedicated-commandp-base ()
@@ -6088,7 +5514,6 @@ for x in y:
 (defun py-execute-region-jython-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-jython-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-region-jython-dedicated-switch-commandp-base ()
@@ -6097,7 +5522,6 @@ for x in y:
 (defun py-execute-region-python3.2-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-python3.2-commandp-base arg teststring)))
 
 (defun py-execute-region-python3.2-commandp-base ()
@@ -6106,7 +5530,6 @@ for x in y:
 (defun py-execute-region-python3.2-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-python3.2-switch-commandp-base arg teststring)))
 
 (defun py-execute-region-python3.2-switch-commandp-base ()
@@ -6115,7 +5538,6 @@ for x in y:
 (defun py-execute-region-python3.2-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-python3.2-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-region-python3.2-noswitch-commandp-base ()
@@ -6124,7 +5546,6 @@ for x in y:
 (defun py-execute-region-python3.2-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-python3.2-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-region-python3.2-dedicated-commandp-base ()
@@ -6133,7 +5554,6 @@ for x in y:
 (defun py-execute-region-python3.2-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-region-python3.2-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-region-python3.2-dedicated-switch-commandp-base ()
@@ -6142,7 +5562,6 @@ for x in y:
 (defun py-execute-buffer-python-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-python-commandp-base arg teststring)))
 
 (defun py-execute-buffer-python-commandp-base ()
@@ -6151,7 +5570,6 @@ for x in y:
 (defun py-execute-buffer-python-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-python-switch-commandp-base arg teststring)))
 
 (defun py-execute-buffer-python-switch-commandp-base ()
@@ -6160,7 +5578,6 @@ for x in y:
 (defun py-execute-buffer-python-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-python-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-buffer-python-noswitch-commandp-base ()
@@ -6169,7 +5586,6 @@ for x in y:
 (defun py-execute-buffer-python-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-python-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-buffer-python-dedicated-commandp-base ()
@@ -6178,7 +5594,6 @@ for x in y:
 (defun py-execute-buffer-python-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-python-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-buffer-python-dedicated-switch-commandp-base ()
@@ -6187,7 +5602,6 @@ for x in y:
 (defun py-execute-buffer-ipython-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-ipython-commandp-base arg teststring)))
 
 (defun py-execute-buffer-ipython-commandp-base ()
@@ -6196,7 +5610,6 @@ for x in y:
 (defun py-execute-buffer-ipython-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-ipython-switch-commandp-base arg teststring)))
 
 (defun py-execute-buffer-ipython-switch-commandp-base ()
@@ -6205,7 +5618,6 @@ for x in y:
 (defun py-execute-buffer-ipython-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-ipython-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-buffer-ipython-noswitch-commandp-base ()
@@ -6214,7 +5626,6 @@ for x in y:
 (defun py-execute-buffer-ipython-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-ipython-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-buffer-ipython-dedicated-commandp-base ()
@@ -6223,7 +5634,6 @@ for x in y:
 (defun py-execute-buffer-ipython-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-ipython-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-buffer-ipython-dedicated-switch-commandp-base ()
@@ -6232,7 +5642,6 @@ for x in y:
 (defun py-execute-buffer-python3-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-python3-commandp-base arg teststring)))
 
 (defun py-execute-buffer-python3-commandp-base ()
@@ -6241,7 +5650,6 @@ for x in y:
 (defun py-execute-buffer-python3-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-python3-switch-commandp-base arg teststring)))
 
 (defun py-execute-buffer-python3-switch-commandp-base ()
@@ -6250,7 +5658,6 @@ for x in y:
 (defun py-execute-buffer-python3-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-python3-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-buffer-python3-noswitch-commandp-base ()
@@ -6259,7 +5666,6 @@ for x in y:
 (defun py-execute-buffer-python3-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-python3-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-buffer-python3-dedicated-commandp-base ()
@@ -6268,7 +5674,6 @@ for x in y:
 (defun py-execute-buffer-python3-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-python3-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-buffer-python3-dedicated-switch-commandp-base ()
@@ -6277,7 +5682,6 @@ for x in y:
 (defun py-execute-buffer-python2-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-python2-commandp-base arg teststring)))
 
 (defun py-execute-buffer-python2-commandp-base ()
@@ -6286,7 +5690,6 @@ for x in y:
 (defun py-execute-buffer-python2-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-python2-switch-commandp-base arg teststring)))
 
 (defun py-execute-buffer-python2-switch-commandp-base ()
@@ -6295,7 +5698,6 @@ for x in y:
 (defun py-execute-buffer-python2-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-python2-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-buffer-python2-noswitch-commandp-base ()
@@ -6304,7 +5706,6 @@ for x in y:
 (defun py-execute-buffer-python2-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-python2-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-buffer-python2-dedicated-commandp-base ()
@@ -6313,7 +5714,6 @@ for x in y:
 (defun py-execute-buffer-python2-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-python2-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-buffer-python2-dedicated-switch-commandp-base ()
@@ -6322,7 +5722,6 @@ for x in y:
 (defun py-execute-buffer-python2.7-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-python2.7-commandp-base arg teststring)))
 
 (defun py-execute-buffer-python2.7-commandp-base ()
@@ -6331,7 +5730,6 @@ for x in y:
 (defun py-execute-buffer-python2.7-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-python2.7-switch-commandp-base arg teststring)))
 
 (defun py-execute-buffer-python2.7-switch-commandp-base ()
@@ -6340,7 +5738,6 @@ for x in y:
 (defun py-execute-buffer-python2.7-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-python2.7-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-buffer-python2.7-noswitch-commandp-base ()
@@ -6349,7 +5746,6 @@ for x in y:
 (defun py-execute-buffer-python2.7-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-python2.7-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-buffer-python2.7-dedicated-commandp-base ()
@@ -6358,7 +5754,6 @@ for x in y:
 (defun py-execute-buffer-python2.7-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-python2.7-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-buffer-python2.7-dedicated-switch-commandp-base ()
@@ -6367,7 +5762,6 @@ for x in y:
 (defun py-execute-buffer-jython-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-jython-commandp-base arg teststring)))
 
 (defun py-execute-buffer-jython-commandp-base ()
@@ -6376,7 +5770,6 @@ for x in y:
 (defun py-execute-buffer-jython-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-jython-switch-commandp-base arg teststring)))
 
 (defun py-execute-buffer-jython-switch-commandp-base ()
@@ -6385,7 +5778,6 @@ for x in y:
 (defun py-execute-buffer-jython-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-jython-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-buffer-jython-noswitch-commandp-base ()
@@ -6394,7 +5786,6 @@ for x in y:
 (defun py-execute-buffer-jython-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-jython-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-buffer-jython-dedicated-commandp-base ()
@@ -6403,7 +5794,6 @@ for x in y:
 (defun py-execute-buffer-jython-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-jython-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-buffer-jython-dedicated-switch-commandp-base ()
@@ -6412,7 +5802,6 @@ for x in y:
 (defun py-execute-buffer-python3.2-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-python3.2-commandp-base arg teststring)))
 
 (defun py-execute-buffer-python3.2-commandp-base ()
@@ -6421,7 +5810,6 @@ for x in y:
 (defun py-execute-buffer-python3.2-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-python3.2-switch-commandp-base arg teststring)))
 
 (defun py-execute-buffer-python3.2-switch-commandp-base ()
@@ -6430,7 +5818,6 @@ for x in y:
 (defun py-execute-buffer-python3.2-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-python3.2-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-buffer-python3.2-noswitch-commandp-base ()
@@ -6439,7 +5826,6 @@ for x in y:
 (defun py-execute-buffer-python3.2-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-python3.2-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-buffer-python3.2-dedicated-commandp-base ()
@@ -6448,7 +5834,6 @@ for x in y:
 (defun py-execute-buffer-python3.2-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-buffer-python3.2-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-buffer-python3.2-dedicated-switch-commandp-base ()
@@ -6457,7 +5842,6 @@ for x in y:
 (defun py-execute-expression-python-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-expression-python-commandp-base arg teststring)))
 
 (defun py-execute-expression-python-commandp-base ()
@@ -6466,7 +5850,6 @@ for x in y:
 (defun py-execute-expression-python-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-expression-python-switch-commandp-base arg teststring)))
 
 (defun py-execute-expression-python-switch-commandp-base ()
@@ -6475,7 +5858,6 @@ for x in y:
 (defun py-execute-expression-python-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-expression-python-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-expression-python-noswitch-commandp-base ()
@@ -6484,7 +5866,6 @@ for x in y:
 (defun py-execute-expression-python-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-expression-python-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-expression-python-dedicated-commandp-base ()
@@ -6493,7 +5874,6 @@ for x in y:
 (defun py-execute-expression-python-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-expression-python-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-expression-python-dedicated-switch-commandp-base ()
@@ -6502,7 +5882,6 @@ for x in y:
 (defun py-execute-expression-ipython-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-expression-ipython-commandp-base arg teststring)))
 
 (defun py-execute-expression-ipython-commandp-base ()
@@ -6511,7 +5890,6 @@ for x in y:
 (defun py-execute-expression-ipython-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-expression-ipython-switch-commandp-base arg teststring)))
 
 (defun py-execute-expression-ipython-switch-commandp-base ()
@@ -6520,7 +5898,6 @@ for x in y:
 (defun py-execute-expression-ipython-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-expression-ipython-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-expression-ipython-noswitch-commandp-base ()
@@ -6529,7 +5906,6 @@ for x in y:
 (defun py-execute-expression-ipython-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-expression-ipython-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-expression-ipython-dedicated-commandp-base ()
@@ -6538,7 +5914,6 @@ for x in y:
 (defun py-execute-expression-ipython-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-expression-ipython-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-expression-ipython-dedicated-switch-commandp-base ()
@@ -6547,7 +5922,6 @@ for x in y:
 (defun py-execute-expression-python3-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-expression-python3-commandp-base arg teststring)))
 
 (defun py-execute-expression-python3-commandp-base ()
@@ -6556,7 +5930,6 @@ for x in y:
 (defun py-execute-expression-python3-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-expression-python3-switch-commandp-base arg teststring)))
 
 (defun py-execute-expression-python3-switch-commandp-base ()
@@ -6565,7 +5938,6 @@ for x in y:
 (defun py-execute-expression-python3-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-expression-python3-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-expression-python3-noswitch-commandp-base ()
@@ -6574,7 +5946,6 @@ for x in y:
 (defun py-execute-expression-python3-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-expression-python3-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-expression-python3-dedicated-commandp-base ()
@@ -6583,7 +5954,6 @@ for x in y:
 (defun py-execute-expression-python3-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-expression-python3-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-expression-python3-dedicated-switch-commandp-base ()
@@ -6592,7 +5962,6 @@ for x in y:
 (defun py-execute-expression-python2-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-expression-python2-commandp-base arg teststring)))
 
 (defun py-execute-expression-python2-commandp-base ()
@@ -6601,7 +5970,6 @@ for x in y:
 (defun py-execute-expression-python2-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-expression-python2-switch-commandp-base arg teststring)))
 
 (defun py-execute-expression-python2-switch-commandp-base ()
@@ -6610,7 +5978,6 @@ for x in y:
 (defun py-execute-expression-python2-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-expression-python2-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-expression-python2-noswitch-commandp-base ()
@@ -6619,7 +5986,6 @@ for x in y:
 (defun py-execute-expression-python2-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-expression-python2-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-expression-python2-dedicated-commandp-base ()
@@ -6628,7 +5994,6 @@ for x in y:
 (defun py-execute-expression-python2-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-expression-python2-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-expression-python2-dedicated-switch-commandp-base ()
@@ -6637,7 +6002,6 @@ for x in y:
 (defun py-execute-expression-python2.7-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-expression-python2.7-commandp-base arg teststring)))
 
 (defun py-execute-expression-python2.7-commandp-base ()
@@ -6646,7 +6010,6 @@ for x in y:
 (defun py-execute-expression-python2.7-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-expression-python2.7-switch-commandp-base arg teststring)))
 
 (defun py-execute-expression-python2.7-switch-commandp-base ()
@@ -6655,7 +6018,6 @@ for x in y:
 (defun py-execute-expression-python2.7-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-expression-python2.7-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-expression-python2.7-noswitch-commandp-base ()
@@ -6664,7 +6026,6 @@ for x in y:
 (defun py-execute-expression-python2.7-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-expression-python2.7-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-expression-python2.7-dedicated-commandp-base ()
@@ -6673,7 +6034,6 @@ for x in y:
 (defun py-execute-expression-python2.7-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-expression-python2.7-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-expression-python2.7-dedicated-switch-commandp-base ()
@@ -6682,7 +6042,6 @@ for x in y:
 (defun py-execute-expression-jython-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-expression-jython-commandp-base arg teststring)))
 
 (defun py-execute-expression-jython-commandp-base ()
@@ -6691,7 +6050,6 @@ for x in y:
 (defun py-execute-expression-jython-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-expression-jython-switch-commandp-base arg teststring)))
 
 (defun py-execute-expression-jython-switch-commandp-base ()
@@ -6700,7 +6058,6 @@ for x in y:
 (defun py-execute-expression-jython-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-expression-jython-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-expression-jython-noswitch-commandp-base ()
@@ -6709,7 +6066,6 @@ for x in y:
 (defun py-execute-expression-jython-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-expression-jython-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-expression-jython-dedicated-commandp-base ()
@@ -6718,7 +6074,6 @@ for x in y:
 (defun py-execute-expression-jython-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-expression-jython-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-expression-jython-dedicated-switch-commandp-base ()
@@ -6727,7 +6082,6 @@ for x in y:
 (defun py-execute-expression-python3.2-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-expression-python3.2-commandp-base arg teststring)))
 
 (defun py-execute-expression-python3.2-commandp-base ()
@@ -6736,7 +6090,6 @@ for x in y:
 (defun py-execute-expression-python3.2-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-expression-python3.2-switch-commandp-base arg teststring)))
 
 (defun py-execute-expression-python3.2-switch-commandp-base ()
@@ -6745,7 +6098,6 @@ for x in y:
 (defun py-execute-expression-python3.2-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-expression-python3.2-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-expression-python3.2-noswitch-commandp-base ()
@@ -6754,7 +6106,6 @@ for x in y:
 (defun py-execute-expression-python3.2-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-expression-python3.2-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-expression-python3.2-dedicated-commandp-base ()
@@ -6763,7 +6114,6 @@ for x in y:
 (defun py-execute-expression-python3.2-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-expression-python3.2-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-expression-python3.2-dedicated-switch-commandp-base ()
@@ -6772,7 +6122,6 @@ for x in y:
 (defun py-execute-partial-expression-python-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-partial-expression-python-commandp-base arg teststring)))
 
 (defun py-execute-partial-expression-python-commandp-base ()
@@ -6781,7 +6130,6 @@ for x in y:
 (defun py-execute-partial-expression-python-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-partial-expression-python-switch-commandp-base arg teststring)))
 
 (defun py-execute-partial-expression-python-switch-commandp-base ()
@@ -6790,7 +6138,6 @@ for x in y:
 (defun py-execute-partial-expression-python-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-partial-expression-python-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-partial-expression-python-noswitch-commandp-base ()
@@ -6799,7 +6146,6 @@ for x in y:
 (defun py-execute-partial-expression-python-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-partial-expression-python-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-partial-expression-python-dedicated-commandp-base ()
@@ -6808,7 +6154,6 @@ for x in y:
 (defun py-execute-partial-expression-python-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-partial-expression-python-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-partial-expression-python-dedicated-switch-commandp-base ()
@@ -6817,7 +6162,6 @@ for x in y:
 (defun py-execute-partial-expression-ipython-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-partial-expression-ipython-commandp-base arg teststring)))
 
 (defun py-execute-partial-expression-ipython-commandp-base ()
@@ -6826,7 +6170,6 @@ for x in y:
 (defun py-execute-partial-expression-ipython-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-partial-expression-ipython-switch-commandp-base arg teststring)))
 
 (defun py-execute-partial-expression-ipython-switch-commandp-base ()
@@ -6835,7 +6178,6 @@ for x in y:
 (defun py-execute-partial-expression-ipython-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-partial-expression-ipython-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-partial-expression-ipython-noswitch-commandp-base ()
@@ -6844,7 +6186,6 @@ for x in y:
 (defun py-execute-partial-expression-ipython-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-partial-expression-ipython-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-partial-expression-ipython-dedicated-commandp-base ()
@@ -6853,7 +6194,6 @@ for x in y:
 (defun py-execute-partial-expression-ipython-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-partial-expression-ipython-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-partial-expression-ipython-dedicated-switch-commandp-base ()
@@ -6862,7 +6202,6 @@ for x in y:
 (defun py-execute-partial-expression-python3-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-partial-expression-python3-commandp-base arg teststring)))
 
 (defun py-execute-partial-expression-python3-commandp-base ()
@@ -6871,7 +6210,6 @@ for x in y:
 (defun py-execute-partial-expression-python3-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-partial-expression-python3-switch-commandp-base arg teststring)))
 
 (defun py-execute-partial-expression-python3-switch-commandp-base ()
@@ -6880,7 +6218,6 @@ for x in y:
 (defun py-execute-partial-expression-python3-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-partial-expression-python3-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-partial-expression-python3-noswitch-commandp-base ()
@@ -6889,7 +6226,6 @@ for x in y:
 (defun py-execute-partial-expression-python3-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-partial-expression-python3-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-partial-expression-python3-dedicated-commandp-base ()
@@ -6898,7 +6234,6 @@ for x in y:
 (defun py-execute-partial-expression-python3-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-partial-expression-python3-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-partial-expression-python3-dedicated-switch-commandp-base ()
@@ -6907,7 +6242,6 @@ for x in y:
 (defun py-execute-partial-expression-python2-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-partial-expression-python2-commandp-base arg teststring)))
 
 (defun py-execute-partial-expression-python2-commandp-base ()
@@ -6916,7 +6250,6 @@ for x in y:
 (defun py-execute-partial-expression-python2-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-partial-expression-python2-switch-commandp-base arg teststring)))
 
 (defun py-execute-partial-expression-python2-switch-commandp-base ()
@@ -6925,7 +6258,6 @@ for x in y:
 (defun py-execute-partial-expression-python2-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-partial-expression-python2-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-partial-expression-python2-noswitch-commandp-base ()
@@ -6934,7 +6266,6 @@ for x in y:
 (defun py-execute-partial-expression-python2-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-partial-expression-python2-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-partial-expression-python2-dedicated-commandp-base ()
@@ -6943,7 +6274,6 @@ for x in y:
 (defun py-execute-partial-expression-python2-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-partial-expression-python2-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-partial-expression-python2-dedicated-switch-commandp-base ()
@@ -6952,7 +6282,6 @@ for x in y:
 (defun py-execute-partial-expression-python2.7-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-partial-expression-python2.7-commandp-base arg teststring)))
 
 (defun py-execute-partial-expression-python2.7-commandp-base ()
@@ -6961,7 +6290,6 @@ for x in y:
 (defun py-execute-partial-expression-python2.7-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-partial-expression-python2.7-switch-commandp-base arg teststring)))
 
 (defun py-execute-partial-expression-python2.7-switch-commandp-base ()
@@ -6970,7 +6298,6 @@ for x in y:
 (defun py-execute-partial-expression-python2.7-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-partial-expression-python2.7-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-partial-expression-python2.7-noswitch-commandp-base ()
@@ -6979,7 +6306,6 @@ for x in y:
 (defun py-execute-partial-expression-python2.7-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-partial-expression-python2.7-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-partial-expression-python2.7-dedicated-commandp-base ()
@@ -6988,7 +6314,6 @@ for x in y:
 (defun py-execute-partial-expression-python2.7-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-partial-expression-python2.7-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-partial-expression-python2.7-dedicated-switch-commandp-base ()
@@ -6997,7 +6322,6 @@ for x in y:
 (defun py-execute-partial-expression-jython-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-partial-expression-jython-commandp-base arg teststring)))
 
 (defun py-execute-partial-expression-jython-commandp-base ()
@@ -7006,7 +6330,6 @@ for x in y:
 (defun py-execute-partial-expression-jython-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-partial-expression-jython-switch-commandp-base arg teststring)))
 
 (defun py-execute-partial-expression-jython-switch-commandp-base ()
@@ -7015,7 +6338,6 @@ for x in y:
 (defun py-execute-partial-expression-jython-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-partial-expression-jython-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-partial-expression-jython-noswitch-commandp-base ()
@@ -7024,7 +6346,6 @@ for x in y:
 (defun py-execute-partial-expression-jython-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-partial-expression-jython-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-partial-expression-jython-dedicated-commandp-base ()
@@ -7033,7 +6354,6 @@ for x in y:
 (defun py-execute-partial-expression-jython-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-partial-expression-jython-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-partial-expression-jython-dedicated-switch-commandp-base ()
@@ -7042,7 +6362,6 @@ for x in y:
 (defun py-execute-partial-expression-python3.2-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-partial-expression-python3.2-commandp-base arg teststring)))
 
 (defun py-execute-partial-expression-python3.2-commandp-base ()
@@ -7051,7 +6370,6 @@ for x in y:
 (defun py-execute-partial-expression-python3.2-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-partial-expression-python3.2-switch-commandp-base arg teststring)))
 
 (defun py-execute-partial-expression-python3.2-switch-commandp-base ()
@@ -7060,7 +6378,6 @@ for x in y:
 (defun py-execute-partial-expression-python3.2-noswitch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-partial-expression-python3.2-noswitch-commandp-base arg teststring)))
 
 (defun py-execute-partial-expression-python3.2-noswitch-commandp-base ()
@@ -7069,7 +6386,6 @@ for x in y:
 (defun py-execute-partial-expression-python3.2-dedicated-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-partial-expression-python3.2-dedicated-commandp-base arg teststring)))
 
 (defun py-execute-partial-expression-python3.2-dedicated-commandp-base ()
@@ -7078,7 +6394,6 @@ for x in y:
 (defun py-execute-partial-expression-python3.2-dedicated-switch-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-execute-partial-expression-python3.2-dedicated-switch-commandp-base arg teststring)))
 
 (defun py-execute-partial-expression-python3.2-dedicated-switch-commandp-base ()
@@ -7090,7 +6405,6 @@ for x in y:
 # -*- coding: utf-8 -*-
 print(\"I'm the switch-windows-on-execute-p-test\")
 ")))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'switch-windows-on-execute-p-base arg teststring)))
 
 (defun switch-windows-on-execute-p-base ()
@@ -7104,7 +6418,6 @@ print(\"I'm the switch-windows-on-execute-p-test\")
 # -*- coding: utf-8 -*-
 print(\"I'm the `split-windows-on-execute-p-test'\")
 ")))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'split-windows-on-execute-p-base arg teststring)))
 
 (defun split-windows-on-execute-p-base ()
@@ -7122,7 +6435,6 @@ print(\"I'm the `split-windows-on-execute-p-test'\")
 # -*- coding: utf-8 -*-
 print(\"I'm the `py-menu-pyshell-test'\")
 ")))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-menu-pyshell-base arg teststring)))
 
 (defun py-menu-pyshell-base ()
@@ -7131,7 +6443,6 @@ print(\"I'm the `py-menu-pyshell-test'\")
 (defun python-dedicated-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'python-dedicated-base arg teststring)))
 
 (defun python-dedicated-base ()
@@ -7142,7 +6453,6 @@ print(\"I'm the `py-menu-pyshell-test'\")
 (defun py-separator-char-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-separator-char-base arg teststring)))
 
 (defun py-separator-char-base ()
@@ -7153,7 +6463,6 @@ print(\"I'm the `py-menu-pyshell-test'\")
   (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 pri")))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-completion-at-point-base 2 teststring)))
 
 (defun py-completion-at-point-base ()
@@ -7167,7 +6476,6 @@ pri")))
   (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
 impo")))
-    (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-shell-complete-base 2 teststring)))
 
 (defun py-shell-complete-base ()
@@ -7217,12 +6525,12 @@ def fooBaz( bar ):  # version 2003/9/7
       return False
   return True
 "))
-  (py-bug-tests-intern 'py-end-of-def-inline-comment-base arg teststring)))
+    (py-bug-tests-intern 'py-end-of-def-inline-comment-base arg teststring)))
 
 (defun py-end-of-def-inline-comment-base ()
-    (goto-char 49)
-    (py-end-of-def-or-class)
-    (assert (eq 312 (point)) nil "py-end-of-def-inline-comment-test failed"))
+  (goto-char 49)
+  (py-end-of-def-or-class)
+  (assert (eq 312 (point)) nil "py-end-of-def-inline-comment-test failed"))
 
 (defun py-compute-indentation-with-test (&optional arg)
   (interactive "p")
@@ -7233,15 +6541,15 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
         bar.dosomething()
         datei.write(str(baz[i]) + \"\\n\")
 "))
-  (py-bug-tests-intern 'py-compute-indentation-with-base arg teststring)))
+    (py-bug-tests-intern 'py-compute-indentation-with-base arg teststring)))
 
 (defun py-compute-indentation-with-base ()
-    (goto-char 99)
-    (assert (eq 4 (py-compute-indentation)) nil "py-compute-indentation-with-test #1 failed")
-    (goto-char 127)
-    (assert (eq 8 (py-compute-indentation)) nil "py-compute-indentation-with-test #2 failed")
+  (goto-char 99)
+  (assert (eq 4 (py-compute-indentation)) nil "py-compute-indentation-with-test #1 failed")
+  (goto-char 127)
+  (assert (eq 8 (py-compute-indentation)) nil "py-compute-indentation-with-test #2 failed")
 
-)
+  )
 
 (provide 'python-mode-test)
 ;;; python-mode-test.el ends here

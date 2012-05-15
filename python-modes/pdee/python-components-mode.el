@@ -4234,7 +4234,7 @@ behavior, change `python-remove-cwd-from-path' to nil."
                ;; (process-connection-type t))
                )
           (apply 'make-comint-in-buffer "Python"
-                 (generate-new-buffer "*Python*")
+                 (get-buffer-create "*Python*")
                  (car cmdlist) nil (cdr cmdlist)))
       (setq-default python-buffer (current-buffer))
       (setq python-buffer (current-buffer))
@@ -4312,6 +4312,19 @@ behavior, change `python-remove-cwd-from-path' to nil."
       ;; `python-send-command''s call to `compilation-forget-errors'.
       (compilation-fake-loc orig-start f))))
 
+
+(defun py-send-string (string)
+  "Evaluate STRING in inferior Python process."
+  (interactive "sPython command: ")
+  (comint-send-string (py-proc) string)
+  (unless (string-match "\n\\'" string)
+    ;; Make sure the text is properly LF-terminated.
+    (comint-send-string (py-proc) "\n"))
+  (when (string-match "\n[ \t].*\n?\\'" string)
+    ;; If the string contains a final indented line, add a second newline so
+    ;; as to make sure we terminate the multiline instruction.
+    (comint-send-string (py-proc) "\n")))
+
 (defun python-send-string (string)
   "Evaluate STRING in inferior Python process."
   (interactive "sPython command: ")
@@ -4379,6 +4392,20 @@ module-qualified names."
                    module (file-name-directory file-name)))
        (format "execfile(%S)" file-name)))
     (message "%s loaded" file-name)))
+
+
+(defun py-proc ()
+  "Return the current Python process.
+
+See variable `python-buffer'.  Starts a new process if necessary."
+  ;; Fixme: Maybe should look for another active process if there
+  ;; isn't one for `python-buffer'.
+  (unless (comint-check-proc python-buffer)
+    (when py-verbose-p (message "Please wait while starting a Python shell, as completion needs it"))
+    (run-python nil t))
+  (get-buffer-process (if (derived-mode-p 'inferior-python-mode)
+                          (current-buffer)
+                        python-buffer)))
 
 (defun python-proc ()
   "Return the current Python process.
@@ -4703,7 +4730,7 @@ information etc.  If PROC is non-nil, check the buffer for that process."
 The result is what follows `_emacs_out' in the output.
 This is a no-op if `python-check-comint-prompt' returns nil."
   (python-send-string string)
-  (let ((proc (python-proc)))
+  (let ((proc (py-proc)))
     (with-current-buffer (process-buffer proc)
       (when (python-check-comint-prompt proc)
 	(set (make-local-variable 'python-preoutput-result) nil)
@@ -5044,10 +5071,14 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (if py-local-versioned-command
       (when (and (interactive-p) py-verbose-p) (message "py-local-versioned-command %s" py-local-versioned-command))
     (when (and (interactive-p) py-verbose-p) (message "py-local-command %s" py-local-command)))
-  (when py-local-versioned-command
-    (cond ((string-match "[pP]ython3[^[:alpha:]]*$" py-local-versioned-command)
-           (setq py-complete-function 'py-python3-script-complete))
-          (t (setq py-complete-function 'py-completion-at-point))))
+  (if py-local-versioned-command
+      (cond ((string-match "[pP]ython3[^[:alpha:]]*$" py-local-versioned-command)
+             (setq py-complete-function 'py-python-script-complete))
+            ((string-match "[pP]ython2[^[:alpha:]]*$" py-local-versioned-command)
+             (setq py-complete-function 'py-python-script-complete))
+            (t (setq py-complete-function 'py-completion-at-point)))
+    ;; should never reach this clause
+    (setq py-complete-function 'py-completion-at-point))
   (if py-complete-function
       (add-hook 'completion-at-point-functions
                 py-complete-function nil 'local)

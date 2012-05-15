@@ -1808,27 +1808,22 @@ Argument OUTPUT is a string with the output from the comint process."
 Argument COMPLETION-CODE is the python code used to get
 completions on the current context."
   (with-current-buffer (process-buffer process)
-    (let ((completions (python-shell-send-string-no-output
-                        (format completion-code input) process)))
+    (let ((completions
+           (python-shell-send-string-no-output
+            (format completion-code input) process)))
       (when (> (length completions) 2)
         (split-string completions "^'\\|^\"\\|;\\|'$\\|\"$" t)))))
 
 (defun python-shell-completion--do-completion-at-point (process line input)
   "Do completion at point for PROCESS."
   (with-syntax-table python-dotty-syntax-table
-    (let* (
-           ;; (line (substring-no-properties
-           ;; (buffer-substring (point-at-bol) (point)) nil nil))
-	   ;; (input (substring-no-properties
-           ;; (or (comint-word (current-word)) "") nil nil))
+    (let* ((code
+	    (if line
+                (concat line  python-shell-module-completion-string-code)
+              python-shell-module-completion-string-code))
 	   (completions
-	    (if (and (> (length python-shell-module-completion-string-code) 0)
-		     (string-match "^\\(from\\|import\\)[ \t]" line))
-		(python-shell-completion--get-completions
-		 line process python-shell-module-completion-string-code)
-	      (and (> (length input) 0)
-		   (python-shell-completion--get-completions
-		    input process python-shell-completion-string-code))))
+            (python-shell-completion--get-completions
+             input process code))
 	   (completion (when completions
 			 (try-completion input completions))))
       (cond ((eq completion t)
@@ -8824,19 +8819,19 @@ Useful for newly defined symbol, not known to python yet. "
             (insert erg)))))))
 
 (defun py-find-imports ()
+  "Find top-level imports, updating `python-imports'."
   (interactive)
-  (let* (imports
-         (erg
-          (save-excursion
-            (goto-char (point-min))
-            (while (re-search-forward
-                    "^import *[A-Za-z_][A-Za-z_0-9].*\\|^from +[A-Za-z_][A-Za-z_0-9]+ +import .*" nil t)
-              (setq imports
-                    (concat
-                     imports
-                     (buffer-substring-no-properties (match-beginning 0) (match-end 0)) "\n"))))))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-    erg))
+  (let* (imports)
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward
+              "^import *[A-Za-z_][A-Za-z_0-9].*\\|^from +[A-Za-z_][A-Za-z_0-9]+ +import .*" nil t)
+        (setq imports
+              (concat
+               imports
+               (buffer-substring-no-properties (match-beginning 0) (match-end 0)) ";"))))
+    (when (and py-verbose-p (interactive-p)) (message "%s" imports))
+    imports))
 
 (defun py-eldoc-function ()
   "Print help on symbol at point. "
@@ -11730,10 +11725,14 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (if py-local-versioned-command
       (when (and (interactive-p) py-verbose-p) (message "py-local-versioned-command %s" py-local-versioned-command))
     (when (and (interactive-p) py-verbose-p) (message "py-local-command %s" py-local-command)))
-  (when py-local-versioned-command
-    (cond ((string-match "[pP]ython3[^[:alpha:]]*$" py-local-versioned-command)
-           (setq py-complete-function 'py-python3-script-complete))
-          (t (setq py-complete-function 'py-completion-at-point))))
+  (if py-local-versioned-command
+      (cond ((string-match "[pP]ython3[^[:alpha:]]*$" py-local-versioned-command)
+             (setq py-complete-function 'py-python-script-complete))
+            ((string-match "[pP]ython2[^[:alpha:]]*$" py-local-versioned-command)
+             (setq py-complete-function 'py-python-script-complete))
+            (t (setq py-complete-function 'py-completion-at-point)))
+    ;; should never reach this clause
+    (setq py-complete-function 'py-completion-at-point))
   (if py-complete-function
       (add-hook 'completion-at-point-functions
                 py-complete-function nil 'local)
@@ -12572,7 +12571,7 @@ Uses `python-imports' to load modules against which to complete."
        (delete-dups completions)
        #'string<))))
 
-(defun py-python2-script-complete (&optional shell)
+(defun py-python-script-complete (&optional shell)
   "Complete word before point, if any. Otherwise insert TAB. "
   (interactive)
   (let* (py-split-windows-on-execute-p
@@ -12581,16 +12580,27 @@ Uses `python-imports' to load modules against which to complete."
          (orig (point))
          (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
          (end (point))
-         (word (buffer-substring-no-properties beg end)))
+         (word (buffer-substring-no-properties beg end))
+         (imports (py-find-imports)))
     (cond ((string= word "")
            (message "%s" "Nothing to complete. ")
            (tab-to-tab-stop))
           (t (or (setq proc (get-buffer-process shell))
                  (setq proc (get-buffer-process (py-shell nil nil shell))))
              (if (processp proc)
-                 (python-shell-completion--do-completion-at-point proc (buffer-substring-no-properties beg end) word)
-               (error "No completion process at proc")
-               )))))
+                 (progn
+                   ;; when completing instances, make them known
+                   (when (string-match "^\\(^[a-zA-Z0-9_]+\\)\\.\\([a-zA-Z0-9_]+\\)$" word)
+                     ;; (message "%s" (match-string 1 word))
+                     (save-excursion
+                       (goto-char (point-min))
+                       (when (re-search-forward (concat "^[ \t]*" (match-string-no-properties 1 word) "[ \t]*=[ \t]*[^ \n\r\f\t]+") nil t 1))
+                       (message "%s" (match-string-no-properties 0)))
+                     (if imports
+                         (setq imports (concat imports (match-string-no-properties 0) ";"))
+                       (setq imports (match-string-no-properties 0))))
+                   (python-shell-completion--do-completion-at-point proc imports word))
+               (error "No completion process at proc"))))))
 
 (defun py-python2-shell-complete (&optional shell)
   (interactive)
@@ -12604,26 +12614,6 @@ Uses `python-imports' to load modules against which to complete."
     (cond ((string= word "")
            (message "%s" "Nothing to complete. ")
            (tab-to-tab-stop))
-          (t (or (setq proc (get-buffer-process shell))
-                 (setq proc (get-buffer-process (py-shell nil nil shell))))
-             (message "%s" (processp proc))
-             (python-shell-completion--do-completion-at-point proc)(buffer-substring-no-properties beg end) word))))
-
-(defun py-python3-script-complete (&optional shell)
-  "Complete word before point, if any. Otherwise insert TAB. "
-  (interactive)
-  (let* (py-split-windows-on-execute-p
-         py-switch-buffers-on-execute-p
-         (shell (or shell py-local-versioned-command))
-         (orig (point))
-         (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
-         (end (point))
-         (word (buffer-substring-no-properties beg end))
-         proc)
-    (cond ((string= word "")
-           (message "%s" "Nothing to complete. ")
-           (tab-to-tab-stop))
-          ;; (t (eval complete))
           (t (or (setq proc (get-buffer-process shell))
                  (setq proc (get-buffer-process (py-shell nil nil shell))))
              (message "%s" (processp proc))
