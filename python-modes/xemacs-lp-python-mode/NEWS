@@ -12,6 +12,12 @@ New in version 6.0.8
 
 - `py-pep8-run', new command checking formatting
 
+- `py-pyflake-run', new command 
+   Pyflakes is a simple program which checks Python
+   source files for errors. - It is similar to
+   PyChecker in scope, but differs in - that it does
+   not execute the modules to check them.
+
 New in version 6.0.7
 --------------------
 

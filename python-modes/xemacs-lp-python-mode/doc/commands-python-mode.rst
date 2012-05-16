@@ -2011,7 +2011,7 @@ Print help on symbol at point.
 
 py-describe-symbol
 ------------------
-Print help on symbol at point. 
+Print help on symbol at point.
 
 Optional C-u used for debugging, will prevent deletion of temp file. 
 
@@ -2240,12 +2240,6 @@ Make sure, `py-switch-buffers-on-execute-p' is off.
 
 Returns value of `py-switch-buffers-on-execute-p'. 
 
-py-normalize-py-install-directory
----------------------------------
-Make sure `py-install-directory' ends with a file-path separator.
-
-Returns `py-install-directory' 
-
 py-install-directory-check
 --------------------------
 Do some sanity check for `py-install-directory'.
@@ -2390,6 +2384,15 @@ Returns the completed symbol, a string, if successful, nil otherwise.
 
 Bug: if no IPython-shell is running, fails first time due to header returned, which messes up the result. Please repeat once then. 
 
+py-pep8-run
+-----------
+*Run pep8, check formatting (default on the file currently visited).
+
+
+py-pep8-help
+------------
+Display pep8 command line help messages. 
+
 py-pylint-run
 -------------
 *Run pylint (default on the file currently visited).
@@ -2397,9 +2400,22 @@ py-pylint-run
 For help see M-x pylint-help resp. M-x pylint-long-help.
 Home-page: http://www.logilab.org/project/pylint 
 
-pylint-help
------------
+py-pylint-help
+--------------
 Display Pylint command line help messages.
+
+Let's have this until more Emacs-like help is prepared 
+
+py-pyflakes-run
+---------------
+*Run pyflakes (default on the file currently visited).
+
+For help see M-x pyflakes-help resp. M-x pyflakes-long-help.
+Home-page: http://www.logilab.org/project/pyflakes 
+
+py-pyflakes-help
+----------------
+Display Pyflakes command line help messages.
 
 Let's have this until more Emacs-like help is prepared 
 
