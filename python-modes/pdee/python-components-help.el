@@ -622,6 +622,7 @@ Imports done are displayed in message buffer. "
       erg)))
 
 ;;; pep8
+(defalias 'pep8 'py-pep8-run)
 (defun py-pep8-run (command)
   "*Run pep8, check formatting (default on the file currently visited).
 "
@@ -716,6 +717,84 @@ Let's have this until more Emacs-like help is prepared "
   (set-buffer (get-buffer-create "*Pylint-Help*"))
   (erase-buffer)
   (shell-command "pylint --long-help" "*Pylint-Help*"))
+
+;;; Pyflakes
+(defalias 'pyflakes 'py-pyflakes-run)
+(defun py-pyflakes-run (command)
+  "*Run pyflakes (default on the file currently visited).
+
+For help see M-x pyflakes-help resp. M-x pyflakes-long-help.
+Home-page: http://www.logilab.org/project/pyflakes "
+  (interactive
+   (let ((default
+           (if (buffer-file-name)
+               (format "%s %s %s" py-pyflakes-command
+                       (mapconcat 'identity py-pyflakes-command-args " ")
+                       (buffer-file-name))
+             (format "%s %s" py-pyflakes-command
+                     (mapconcat 'identity py-pyflakes-command-args " "))))
+         (last (when py-pyflakes-history
+                 (let* ((lastcmd (car py-pyflakes-history))
+                        (cmd (cdr (reverse (split-string lastcmd))))
+                        (newcmd (reverse (cons (buffer-file-name) cmd))))
+                   (mapconcat 'identity newcmd " ")))))
+
+     (list
+      (if (fboundp 'read-shell-command)
+          (read-shell-command "Run pyflakes like this: "
+                              (if last
+                                  last
+                                default)
+                              'py-pyflakes-history)
+        (read-string "Run pyflakes like this: "
+                     (if last
+                         last
+                       default)
+                     'py-pyflakes-history)))))
+  (save-some-buffers (not py-ask-about-save) nil)
+  (if (fboundp 'compilation-start)
+      ;; Emacs.
+      (compilation-start command)
+    ;; XEmacs.
+    (when (featurep 'xemacs)
+      (compile-internal command "No more errors"))))
+
+(defalias 'pyflakes-help 'py-pyflakes-help)
+(defun py-pyflakes-help ()
+  "Display Pyflakes command line help messages.
+
+Let's have this until more Emacs-like help is prepared "
+  (interactive)
+  ;; (set-buffer (get-buffer-create "*Pyflakes-Help*"))
+  ;; (erase-buffer)
+  (with-help-window "*Pyflakes-Help*"
+      (with-current-buffer standard-output
+      (insert "       pyflakes [file-or-directory ...]
+       
+       Pyflakes is a simple program which checks Python
+       source files for errors. It is similar to
+       PyChecker in scope, but differs in that it does
+       not execute the modules to check them. This is
+       both safer and faster, although it does not
+       perform as many checks. Unlike PyLint, Pyflakes
+       checks only for logical errors in programs; it
+       does not perform any checks on style.
+
+       All commandline arguments are checked, which
+       have to be either regular files or directories.
+       If a directory is given, every .py file within
+       will be checked.
+
+       When no commandline arguments are given, data
+       will be read from standard input.
+
+       The exit status is 0 when no warnings or errors
+       are found. When errors are found the exit status
+       is 2. When warnings (but no errors) are found
+       the exit status is 1.
+
+Extracted from http://manpages.ubuntu.com/manpages/natty/man1/pyflakes.1.html
+"))))
 
 ;;; Pychecker
 ;; hack for GNU Emacs

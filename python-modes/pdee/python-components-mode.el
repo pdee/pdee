@@ -632,6 +632,21 @@ variable section, e.g.:
   :group 'python-mode
   :tag "Pylint Command")
 
+(defvar py-pyflakes-history nil)
+(defcustom py-pyflakes-command "pyflakes"
+  "*Shell command used to run Pyflakes."
+  :type 'string
+  :group 'python-mode
+  :tag "Pyflakes Command")
+
+(defcustom py-pyflakes-command-args '("")
+  "*List of string arguments to be passed to pyflakes.
+
+Default is \"--errors-only\" "
+  :type '(repeat string)
+  :group 'python-mode
+  :tag "Pyflakes Command Args")
+
 (defvar py-pep8-history nil)
 (defcustom py-pep8-command "pep8"
   "*Shell command used to run pep8."
@@ -1835,6 +1850,11 @@ See also pylint-help"]
              :help "`py-pep8-run'
 Check formatting (default on the file currently visited)
 See also py-pep8-help"]
+
+            ["pyflakes" py-pyflakes-run
+             :help "`py-pyflakes-run'
+Run pyflakes
+See also py-pyflakes-help"]
 
             ["Debugger" pdb
              :help "`pdb'
