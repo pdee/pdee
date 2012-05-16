@@ -82,14 +82,14 @@ TESTFILE3="python-extended-executes-test.el"
 TESTFILE4="python-executes-test.el"
 TESTFILE5="py-shell-completion-tests.el"
 CEXEC="python-extended-executes.el"
-PDIR="../"
+PDIR=".."
 PCOT="."
 
 echo "\$PYMACS: $PYMACS"
 echo "\$PYTHONMODE: $PYTHONMODE"
 echo "\$PDIR/\$TESTFILE: $PDIR/$TESTFILE"
 
-$EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'python)(unload-feature 'python t))" --eval "(when (featurep 'python-mode)(unload-feature 'python-mode t))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$TESTDIR/\")" --eval "(setq py-temp-directory (expand-file-name \"~/tmp\"))" --eval "(message py-temp-directory)" -load "$PYMACS" -load $CCCMDS -load $COMINT -load $ANSICOLOR -load $CLMACS -load $BYTECOMP -load $CUSTOM -load $SKEL -load $PYTHONMODE -load $PYCO -load "$PCOT/$TESTFILE" -load "$PCOT/$TESTFILE2" -load "$PCOT/$TESTFILE3" -load "$PCOT/$TESTFILE4" -load "$PCOT/$TESTFILE5" --eval "(quietly-read-abbrev-file (expand-file-name \"~/.abbrev_defs\"))" \
+$EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'python)(unload-feature 'python t))" --eval "(when (featurep 'python-mode)(unload-feature 'python-mode t))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$TESTDIR/\")" --eval "(setq py-temp-directory (expand-file-name \"~/tmp\"))" --eval "(message \"py-temp-directory: %s\" py-temp-directory)" --eval "(setq py-install-directory \"$PDIR\"))" --eval "(message \"py-install-directory: %s\" py-install-directory)" -load "$PYMACS" -load $CCCMDS -load $COMINT -load $ANSICOLOR -load $CLMACS -load $BYTECOMP -load $CUSTOM -load $SKEL -load $PYTHONMODE -load $PYCO -load "$PCOT/$TESTFILE" -load "$PCOT/$TESTFILE2" -load "$PCOT/$TESTFILE3" -load "$PCOT/$TESTFILE4" -load "$PCOT/$TESTFILE5" --eval "(quietly-read-abbrev-file (expand-file-name \"~/.abbrev_defs\"))" \
 --funcall pycomplete-same-folder-def-lp:889052-test \
 --funcall new-problem-with-py-temp-directory-lp:965762-test \
 --funcall nested-dictionaries-indent-lp:328791-test \
@@ -495,7 +495,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-toggle-shell-switch-buffers-on-execute-commandp-test \
 --funcall py-shell-switch-buffers-on-execute-on-commandp-test \
 --funcall py-shell-switch-buffers-on-execute-off-commandp-test \
---funcall py-normalize-py-install-directory-commandp-test \
 --funcall py-install-directory-check-commandp-test \
 --funcall py-load-pymacs-commandp-test \
 --funcall py-guess-py-install-directory-commandp-test \

@@ -1373,18 +1373,13 @@ Returns DIRECTORY"
          ;; (string-match "ms-dos" (prin1-to-string system-type)))
          ;; "\\"
          ;; "\/")
-         (erg (if (string-match (concat file-separator-char "$") directory)
-                  directory
-                (concat directory file-separator-char))))
+         (erg (cond ((string-match (concat file-separator-char "$") directory)
+                     directory)
+                    ((not (string= "" directory))
+                     (concat directory file-separator-char)))))
+    (unless erg (when py-verbose-p (message "Warning: directory is empty")))
     (when (interactive-p) (message "%s" erg))
     erg))
-
-(defun py-normalize-py-install-directory ()
-  "Make sure `py-install-directory' ends with a file-path separator.
-
-Returns `py-install-directory' "
-  (interactive)
-  (py-normalize-directory py-install-directory (py-separator-char)))
 
 (defun py-install-directory-check ()
   "Do some sanity check for `py-install-directory'.
@@ -1403,7 +1398,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
   (interactive)
   (let* ((pyshell (py-choose-shell))
          (path (getenv "PYTHONPATH"))
-         (py-install-directory (py-normalize-directory py-install-directory (py-separator-char)))
+         (py-install-directory (py-normalize-directory (or py-install-directory (py-guess-py-install-directory)) (py-separator-char)))
          (pymacs-installed-p
           (ignore-errors (string-match (expand-file-name (concat py-install-directory "Pymacs")) path))))
     ;; Python side
@@ -1832,7 +1827,14 @@ Load into inferior Python session"]
 Run pychecker"]
 
             ["pylint" py-pylint-run
-             :help "Extendet report options, plain checks \"--errors-only\" "]
+             :help "`pylint-run'
+Extendet report options, plain checks \"--errors-only\"
+See also pylint-help"]
+
+            ["pep8" py-pep8-run
+             :help "`py-pep8-run'
+Check formatting (default on the file currently visited)
+See also py-pep8-help"]
 
             ["Debugger" pdb
              :help "`pdb'

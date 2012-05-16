@@ -3663,14 +3663,6 @@ for x in y:
 (defun py-shell-switch-buffers-on-execute-off-commandp-base ()
   (assert (commandp 'py-shell-switch-buffers-on-execute-off) nil "py-shell-switch-buffers-on-execute-off-commandp-test failed"))
 
-(defun py-normalize-py-install-directory-commandp-test (&optional arg load-branch-function)
-  (interactive "p")
-  (let ((teststring ""))
-    (py-bug-tests-intern 'py-normalize-py-install-directory-commandp-base arg teststring)))
-
-(defun py-normalize-py-install-directory-commandp-base ()
-  (assert (commandp 'py-normalize-py-install-directory) nil "py-normalize-py-install-directory-commandp-test failed"))
-
 (defun py-install-directory-check-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))

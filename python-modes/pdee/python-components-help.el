@@ -139,26 +139,17 @@ Useful for newly defined symbol, not known to python yet. "
 Optional \\[universal-argument] used for debugging, will prevent deletion of temp file. "
   (interactive "P")
   (let* ((orig (point))
-         (beg (progn (when (and (looking-back "(")(not (looking-at "\\sw"))) (forward-char -1))  (skip-chars-backward "a-zA-Z0-9_." (line-beginning-position))(point)))
+         (beg (progn (when (and (looking-back "(")(not (looking-at "\\sw"))) (forward-char -1)) (skip-chars-backward "a-zA-Z0-9_." (line-beginning-position))(point)))
          (end (progn (skip-chars-forward "a-zA-Z0-9_." (line-end-position))(point)))
          (sym (buffer-substring-no-properties beg end))
-         ;; (sym (prin1-to-string (symbol-at-point)))
          (origfile (buffer-file-name))
          (temp (make-temp-name (buffer-name)))
          (file (concat (expand-file-name temp py-temp-directory) ".py"))
-         (cmd (py-find-imports))
-         ;; (quotes (string-match "\\." sym))
-)
+         (cmd (py-find-imports)))
     (goto-char orig)
     (setq cmd (concat "import pydoc\n"
                       cmd))
-    ;; (if quotes
-    (setq cmd (concat cmd "try: pydoc.help('" sym "')\n"))
-        ;; (setq cmd (concat cmd
-        ;; "try: pydoc.help(" sym ")\n")))
-    (setq cmd (concat cmd
-                      "except:
-    print('No help available on: \"" sym "\"')\n"))
+    (setq cmd (concat cmd "pydoc.help('" sym "')\n"))
     (with-temp-buffer
       (insert cmd)
       (write-file file))
@@ -716,7 +707,8 @@ Home-page: http://www.logilab.org/project/pylint "
     (when (featurep 'xemacs)
       (compile-internal command "No more errors"))))
 
-(defun pylint-help ()
+(defalias 'pylint-help 'py-pylint-help)
+(defun py-pylint-help ()
   "Display Pylint command line help messages.
 
 Let's have this until more Emacs-like help is prepared "
