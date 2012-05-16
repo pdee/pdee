@@ -632,6 +632,21 @@ variable section, e.g.:
   :group 'python-mode
   :tag "Pylint Command")
 
+(defvar py-pep8-history nil)
+(defcustom py-pep8-command "pep8"
+  "*Shell command used to run pep8."
+  :type 'string
+  :group 'python-mode
+  :tag "PEP 8 Command")
+
+(defcustom py-pep8-command-args '("")
+  "*List of string arguments to be passed to pylint.
+
+Default is \"\" "
+  :type '(repeat string)
+  :group 'python-mode
+  :tag "PEP 8 Command Args")
+
 (defcustom py-pylint-command-args '("--errors-only")
   "*List of string arguments to be passed to pylint.
 

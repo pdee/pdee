@@ -630,6 +630,51 @@ Imports done are displayed in message buffer. "
         (message "%s" erg))
       erg)))
 
+;;; pep8
+(defun py-pep8-run (command)
+  "*Run pep8, check formatting (default on the file currently visited).
+"
+  (interactive
+   (let ((default
+           (if (buffer-file-name)
+               (format "%s %s %s" py-pep8-command
+                       (mapconcat 'identity py-pep8-command-args " ")
+                       (buffer-file-name))
+             (format "%s %s" py-pep8-command
+                     (mapconcat 'identity py-pep8-command-args " "))))
+         (last (when py-pep8-history
+                 (let* ((lastcmd (car py-pep8-history))
+                        (cmd (cdr (reverse (split-string lastcmd))))
+                        (newcmd (reverse (cons (buffer-file-name) cmd))))
+                   (mapconcat 'identity newcmd " ")))))
+
+     (list
+      (if (fboundp 'read-shell-command)
+          (read-shell-command "Run pep8 like this: "
+                              (if last
+                                  last
+                                default)
+                              'py-pep8-history)
+        (read-string "Run pep8 like this: "
+                     (if last
+                         last
+                       default)
+                     'py-pep8-history)))))
+  (save-some-buffers (not py-ask-about-save) nil)
+  (if (fboundp 'compilation-start)
+      ;; Emacs.
+      (compilation-start command)
+    ;; XEmacs.
+    (when (featurep 'xemacs)
+      (compile-internal command "No more errors"))))
+
+(defun py-pep8-help ()
+  "Display pep8 command line help messages. "
+  (interactive)
+  (set-buffer (get-buffer-create "*pep8-Help*"))
+  (erase-buffer)
+  (shell-command "pep8 --help" "*pep8-Help*"))
+
 ;;; Pylint
 (defalias 'pylint 'py-pylint-run)
 (defun py-pylint-run (command)

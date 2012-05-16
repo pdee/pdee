@@ -592,6 +592,20 @@ variable section, e.g.:
   :group 'python-mode
   :tag "Pychecker Command Args")
 
+(defvar py-pep8-history nil)
+(defcustom py-pep8-command "pep8"
+  "*Shell command used to run pep8."
+  :type 'string
+  :group 'python-mode
+  :tag "PEP 8 Command")
+
+(defcustom py-pep8-command-args '("")
+  "*List of string arguments to be passed to pylint.
+
+Default is \"\" "
+  :type '(repeat string)
+  :group 'python-mode
+  :tag "PEP 8 Command Args")
 
 (defvar py-pylint-history nil)
 (defcustom py-pylint-command "pylint"
@@ -9861,7 +9875,6 @@ Uses `python-imports' to load modules against which to complete."
         (define-key map "\C-c=" 'py-down-exception)
         map))
 
-
 (defun py-choose-shell-by-path (&optional file-separator-char)
   "Select Python executable according to version desplayed in path, current buffer-file is selected from.
 
@@ -12859,6 +12872,51 @@ Bug: if no IPython-shell is running, fails first time due to header returned, wh
              (message "Making completion list...%s" "done"))))
     completion))
 
+;;; pep8
+(defun py-pep8-run (command)
+  "*Run pep8, check formatting (default on the file currently visited).
+"
+  (interactive
+   (let ((default
+           (if (buffer-file-name)
+               (format "%s %s %s" py-pep8-command
+                       (mapconcat 'identity py-pep8-command-args " ")
+                       (buffer-file-name))
+             (format "%s %s" py-pep8-command
+                     (mapconcat 'identity py-pep8-command-args " "))))
+         (last (when py-pep8-history
+                 (let* ((lastcmd (car py-pep8-history))
+                        (cmd (cdr (reverse (split-string lastcmd))))
+                        (newcmd (reverse (cons (buffer-file-name) cmd))))
+                   (mapconcat 'identity newcmd " ")))))
+
+     (list
+      (if (fboundp 'read-shell-command)
+          (read-shell-command "Run pep8 like this: "
+                              (if last
+                                  last
+                                default)
+                              'py-pep8-history)
+        (read-string "Run pep8 like this: "
+                     (if last
+                         last
+                       default)
+                     'py-pep8-history)))))
+  (save-some-buffers (not py-ask-about-save) nil)
+  (if (fboundp 'compilation-start)
+      ;; Emacs.
+      (compilation-start command)
+    ;; XEmacs.
+    (when (featurep 'xemacs)
+      (compile-internal command "No more errors"))))
+
+(defun py-pep8-help ()
+  "Display pep8 command line help messages. "
+  (interactive)
+  (set-buffer (get-buffer-create "*pep8-Help*"))
+  (erase-buffer)
+  (shell-command "pep8 --help" "*pep8-Help*"))
+
 ;;; Pylint
 (defalias 'pylint 'py-pylint-run)
 (defun py-pylint-run (command)
@@ -12900,7 +12958,8 @@ Home-page: http://www.logilab.org/project/pylint "
     (when (featurep 'xemacs)
       (compile-internal command "No more errors"))))
 
-(defun pylint-help ()
+(defalias 'pylint-help 'py-pylint-help)
+(defun py-pylint-help ()
   "Display Pylint command line help messages.
 
 Let's have this until more Emacs-like help is prepared "
