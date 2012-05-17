@@ -96,13 +96,19 @@ Default is nil. "
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-start-run-ipython-shell t
-  "If `python-mode' should start an ipython-shell. Default is `t'.
+(defcustom py-start-run-ipython-shell t "If
+  `python-mode' should start an ipython-shell. Default
+  is `t'.
 
-A running ipython-shell presently is needed by `ipython-complete', otherwise first try will fail. "
+A running ipython-shell presently is needed by
+`ipython-complete', otherwise first try will fail. "
 
-  :type 'boolean
-  :group 'python-mode)
+  :type 'boolean :group 'python-mode)
+
+(defcustom ipython-complete-use-separate-shell-p t
+
+  "If `ipython-complete' should use a separate shell. Thus prompt-counter is not incremented by completion. "
+  :type 'boolean :group 'python-mode)
 
 (defcustom py-outline-minor-mode-p t
   "If outline minor-mode should be on, default is `t'. "
@@ -1841,20 +1847,61 @@ Load into inferior Python session"]
              :help "`py-pychecker-run'
 Run pychecker"]
 
-            ["pylint" py-pylint-run
-             :help "`pylint-run'
-Extendet report options, plain checks \"--errors-only\"
-See also pylint-help"]
+            ("Pylint ... "
+             :help "Extendet report options
+call `easy_install pylint' if not available"
 
-            ["pep8" py-pep8-run
+             ["pylint-run" py-pylint-run
+              :help "`pylint-run'
+Pylint will display a number of messages as it analyzes the code,
+as well as some statistics about the number of warnings and
+errors found in different files - unless called with arg \"--errors-only\". The messages are classified
+under various categories such as errors and warnings
+
+Pylint checks length of lines of code, if variable names are
+well-formed according to your coding standard, if declared
+interfaces are truly implemented, and much more. Additionally, it
+is possible to write plugins.
+
+call `easy_install pylint' if not available
+"]
+
+             ["pylint-help" py-pylint-help
+              :help "`py-pylint-help'
+List extendet report options
+"]
+             )
+
+            ("pep8 ... "
+             :help "Check formatting
+call `easy_install pep8' if not available"
+
+            ["pep8-run" py-pep8-run
              :help "`py-pep8-run'
 Check formatting (default on the file currently visited)
-See also py-pep8-help"]
+call `easy_install pep8' if not available
+"]
+            ["pep8-help" py-pep8-help
+             :help "`py-pep8-help'
+Display help for pep8 format checker)
+"]
 
-            ["pyflakes" py-pyflakes-run
-             :help "`py-pyflakes-run'
-Run pyflakes
-See also py-pyflakes-help"]
+            )
+
+            ("Pyflakes ... "
+             :help "Non intrusive code checker
+call `easy_install pyflakes' if not available"
+             
+             ["pyflakes-run" py-pyflakes-run
+              :help "`py-pyflakes-run'
+Run pyflakes 
+call `easy_install pyflakes' if not available"]
+             
+             ["pyflakes-help" py-pyflakes-help
+              :help "`py-pyflakes-help'
+Display help for Pyflakes "]
+             
+             )
 
             ["Debugger" pdb
              :help "`pdb'
@@ -5450,6 +5497,8 @@ With \\[universal-argument] 4 is called `py-switch-shell' see docu there.
                        (if (not (string= "" py-shell-local-path))
                            (expand-file-name py-shell-local-path)
                          (message "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'")))
+                      ((comint-check-proc (current-buffer))
+                       (process-name (get-buffer-process (current-buffer))))
                       ((py-choose-shell-by-shebang))
                       ((py-choose-shell-by-import))
                       ((py-choose-shell-by-path))

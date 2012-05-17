@@ -718,6 +718,18 @@ Let's have this until more Emacs-like help is prepared "
   (erase-buffer)
   (shell-command "pylint --long-help" "*Pylint-Help*"))
 
+(defalias 'pylint-doku 'py-pylint-doku)
+(defun py-pylint-doku ()
+  "Display Pylint Documentation. 
+
+Calls `pylint --full-documentation'"
+  (interactive)
+  (set-buffer (get-buffer-create "*Pylint-Documentation*"))
+  (erase-buffer)
+  (shell-command "pylint --full-documentation" "*Pylint-Documentation*"))
+
+
+
 ;;; Pyflakes
 (defalias 'pyflakes 'py-pyflakes-run)
 (defun py-pyflakes-run (command)

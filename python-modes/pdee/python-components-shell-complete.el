@@ -517,14 +517,17 @@ Bug: if no IPython-shell is running, fails first time due to header returned, wh
          (processlist (process-list))
          done
          (process
-          (progn
-            (while (and processlist (not done))
-              (when (and
-                     (string= pyshellname (process-name (car processlist)))
-                     (processp (car processlist))
-                     (setq done (car processlist))))
-              (setq processlist (cdr processlist)))
-            done))
+          (if ipython-complete-use-separate-shell-p
+              (unless (comint-check-proc (process-name (get-buffer-process (get-buffer-create "*IPython-Complete*"))))
+                (get-buffer-process (py-shell nil nil pyshellname 'noswitch nil "*IPython-Complete*")))
+            (progn
+              (while (and processlist (not done))
+                (when (and
+                       (string= pyshellname (process-name (car processlist)))
+                       (processp (car processlist))
+                       (setq done (car processlist))))
+                (setq processlist (cdr processlist)))
+              done)))
          (python-process (or process
                              (setq python-process (get-buffer-process (py-shell nil nil (if (string-match "[iI][pP]ython[^[:alpha:]]*$"  pyshellname) pyshellname "ipython") 'noswitch nil)))))
          (comint-output-filter-functions
