@@ -9911,8 +9911,7 @@ Returns the specified Python resp. Jython shell command name. "
     (save-excursion
       (goto-char (point-min))
       (when (looking-at py-shebang-regexp)
-        (setq erg (match-string-no-properties 0))
-        (setq erg (split-string erg "[ \t]"))
+        (setq erg (split-string (match-string-no-properties 0) "[#! \t]"))
         (dolist (ele erg)
           (when (string-match "[ijp]+ython" ele)
             (setq res ele)))))

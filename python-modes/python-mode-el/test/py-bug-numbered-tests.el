@@ -39,6 +39,7 @@
 (setq bug-numbered-tests
       (if (featurep 'xemacs)
           (list
+           'shebang-interpreter-not-detected-lp:1001327-test
            'bullet-lists-in-comments-lp:328782-test
            'fill-paragraph-problems-lp:710373-test
            'nested-indents-lp:328775-test
@@ -2778,6 +2779,16 @@ CLASS_INS.someDe
       (beginning-of-line))
     (when (file-readable-p erg) (delete-file erg)))
   (assert (looking-at "CLASS_INS.someDef") "pycomplete-same-folder-class-lp:889052-test failed"))
+
+(defun shebang-interpreter-not-detected-lp:1001327-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#!/usr/bin/python
+"))
+  (py-bug-tests-intern 'shebang-interpreter-not-detected-lp:1001327-base arg teststring)))
+
+(defun shebang-interpreter-not-detected-lp:1001327-base ()
+    (assert (string= "/usr/bin/python" (py-choose-shell)) nil "shebang-interpreter-not-detected-lp:1001327-test failed"))
+
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
