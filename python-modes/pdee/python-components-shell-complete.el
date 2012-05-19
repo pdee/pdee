@@ -322,11 +322,12 @@ Uses `python-imports' to load modules against which to complete."
                      (save-excursion
                        (goto-char (point-min))
                        (when (re-search-forward (concat "^[ \t]*" (match-string-no-properties 1 word) "[ \t]*=[ \t]*[^ \n\r\f\t]+") nil t 1))
-                       (message "%s" (match-string-no-properties 0)))
-                     (if imports
-                         (setq imports (concat imports (match-string-no-properties 0) ";"))
-                       (setq imports (match-string-no-properties 0))))
-                   (python-shell-completion--do-completion-at-point proc imports word))
+                       (if imports
+                           (setq imports (concat imports (match-string-no-properties 0) ";"))
+                         (setq imports (match-string-no-properties 0)))))
+                   (unless (python-shell-completion--do-completion-at-point proc imports word)
+                     (call-interactively 'dabbrev-expand))
+                   nil)
                (error "No completion process at proc"))))))
 
 (defun py-python2-shell-complete (&optional shell)

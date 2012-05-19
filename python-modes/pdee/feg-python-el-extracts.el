@@ -1,4 +1,4 @@
-;;; feg-python-el-extracts.el --- Based from Python's flying circus support for Emacs
+;;; feg-python-el-extracts.el --- Started from Python's flying circus support for Emacs
 
 ;; Copyright (C) 2010, 2011 Free Software Foundation, Inc.
 
@@ -795,7 +795,7 @@ completions on the current context."
              (progn (delete-char (- (length input)))
                     (insert completion)
                     ;; minibuffer.el expects a list, a bug IMO
-                    nil))
+                    t))
             (t
              (unless python-completion-original-window-configuration
                (setq python-completion-original-window-configuration

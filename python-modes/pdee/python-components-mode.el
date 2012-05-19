@@ -1877,31 +1877,31 @@ List extendet report options
              :help "Check formatting
 call `easy_install pep8' if not available"
 
-            ["pep8-run" py-pep8-run
-             :help "`py-pep8-run'
+             ["pep8-run" py-pep8-run
+              :help "`py-pep8-run'
 Check formatting (default on the file currently visited)
 call `easy_install pep8' if not available
 "]
-            ["pep8-help" py-pep8-help
-             :help "`py-pep8-help'
+             ["pep8-help" py-pep8-help
+              :help "`py-pep8-help'
 Display help for pep8 format checker)
 "]
 
-            )
+             )
 
             ("Pyflakes ... "
              :help "Non intrusive code checker
 call `easy_install pyflakes' if not available"
-             
+
              ["pyflakes-run" py-pyflakes-run
               :help "`py-pyflakes-run'
-Run pyflakes 
+Run pyflakes
 call `easy_install pyflakes' if not available"]
-             
+
              ["pyflakes-help" py-pyflakes-help
               :help "`py-pyflakes-help'
 Display help for Pyflakes "]
-             
+
              )
 
             ["Debugger" pdb

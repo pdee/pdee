@@ -39,6 +39,7 @@
 (setq bug-numbered-tests
       (if (featurep 'xemacs)
           (list
+           'no-completion-at-all-lp:1001328-test
            'shebang-interpreter-not-detected-lp:1001327-test
            'bullet-lists-in-comments-lp:328782-test
            'fill-paragraph-problems-lp:710373-test
@@ -2788,6 +2789,21 @@ CLASS_INS.someDe
 
 (defun shebang-interpreter-not-detected-lp:1001327-base ()
     (assert (string= "/usr/bin/python" (py-choose-shell)) nil "shebang-interpreter-not-detected-lp:1001327-test failed"))
+
+
+(defun no-completion-at-all-lp:1001328-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#!/usr/bin/python
+basdklfjasdf = 3
+basd
+"))
+  (py-bug-tests-intern 'no-completion-at-all-lp:1001328-base arg teststring)))
+
+(defun no-completion-at-all-lp:1001328-base ()
+  (goto-char 40)
+  (py-python-script-complete)
+  (beginning-of-line)  
+    (assert (looking-at "basdklfjasdf") nil "no-completion-at-all-lp:1001328-test failed"))
 
 
 (provide 'py-bug-numbered-tests)
