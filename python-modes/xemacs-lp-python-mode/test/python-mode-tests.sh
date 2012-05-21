@@ -223,6 +223,16 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall nesting-if-test \
 --funcall nested-try-test \
 --funcall nested-if-test \
+--funcall clear-flymake-allowed-file-name-masks-commandp-test \
+--funcall pylint-flymake-mode-commandp-test \
+--funcall pyflakes-flymake-mode-commandp-test \
+--funcall pychecker-flymake-mode-commandp-test \
+--funcall pep8-flymake-mode-commandp-test \
+--funcall pyflakespep8-flymake-mode-commandp-test \
+--funcall py-pylint-doku-commandp-test \
+--funcall py-pyflakes-run-commandp-test \
+--funcall py-pyflakespep8-run-commandp-test \
+--funcall py-pyflakespep8-help-commandp-test \
 --funcall py-guess-pdb-path-commandp-test \
 --funcall highlight-indentation-on-commandp-test \
 --funcall highlight-indentation-off-commandp-test \

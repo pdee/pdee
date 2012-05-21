@@ -27,6 +27,12 @@ New in version 6.0.8
   possible to write plugins.
   `py-pylint-doku', `py-pylint-help'
 
+- py-pyflakespep8-run, combines calls to pyflakes and pep8
+  
+- respective flymake-modes,
+  `pyflakespep8-flymake-mode', `pylint-flymake-mode'
+  etc. See meny PyTools
+
 New in version 6.0.7
 --------------------
 

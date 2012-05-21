@@ -2222,6 +2222,38 @@ Make sure, `py-split-windows-on-execute-p' is off.
 
 Returns value of `py-split-windows-on-execute-p'. 
 
+clear-flymake-allowed-file-name-masks
+-------------------------------------
+Remove entries with SUFFIX from `flymake-allowed-file-name-masks'.
+
+Default is "\.py\'" 
+
+pylint-flymake-mode
+-------------------
+Toggle `pylint' `flymake-mode'. 
+
+pyflakes-flymake-mode
+---------------------
+Toggle `pyflakes' `flymake-mode'. 
+
+pychecker-flymake-mode
+----------------------
+Toggle `pychecker' `flymake-mode'. 
+
+pep8-flymake-mode
+-----------------
+Toggle `pep8' `flymake-mode'. 
+
+pyflakespep8-flymake-mode
+-------------------------
+Toggle `pyflakespep8' `flymake-mode'.
+
+Joint call to pyflakes and pep8 as proposed by
+
+Keegan Carruthers-Smith
+
+
+
 py-toggle-shell-switch-buffers-on-execute
 -----------------------------------------
 If `py-switch-buffers-on-execute-p' should be on or off.
@@ -2406,6 +2438,12 @@ Display Pylint command line help messages.
 
 Let's have this until more Emacs-like help is prepared 
 
+py-pylint-doku
+--------------
+Display Pylint Documentation.
+
+Calls `pylint --full-documentation'
+
 py-pyflakes-run
 ---------------
 *Run pyflakes (default on the file currently visited).
@@ -2418,6 +2456,15 @@ py-pyflakes-help
 Display Pyflakes command line help messages.
 
 Let's have this until more Emacs-like help is prepared 
+
+py-pyflakespep8-run
+-------------------
+*Run pyflakespep8, check formatting (default on the file currently visited).
+
+
+py-pyflakespep8-help
+--------------------
+Display pyflakespep8 command line help messages. 
 
 py-pychecker-run
 ----------------

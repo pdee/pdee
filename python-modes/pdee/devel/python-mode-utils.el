@@ -68,7 +68,9 @@
 
 (setq py-core-command-name '("statement" "block" "def" "class" "region" "file"))
 
-(setq py-bounds-command-names '("statement" "block" "clause" "block-or-clause" "def" "class" "region" "buffer" "expression" "partial-expression" "line"))
+;; (setq py-bounds-command-names '("statement" "block" "clause" "block-or-clause" "def" "class" "region" "buffer" "expression" "partial-expression" "line"))
+
+(setq py-bounds-command-names '("clear-flymake-allowed-file-name-masks" "pylint-flymake-mode" "pyflakes-flymake-mode" "pychecker-flymake-mode" "pep8-flymake-mode" "pyflakespep8-flymake-mode" "py-pylint-doku" "py-pyflakes-run" "py-pyflakespep8-run" "py-pyflakespep8-help"))
 
 (setq py-execute-forms-names '("statement" "block" "block-or-clause" "def" "class" "def-or-class" "expression" "partial-expression"))
 
@@ -1261,24 +1263,24 @@ Returns value of `" ele "'. \"
 (defun write-commandp-forms ()
   "Write forms according to `py-bounds-command-names' "
   (interactive)
-  (load (concat py-install-directory "/components-python-mode/devel/" "commands.el") nil t)
-  (set-buffer (get-buffer-create "Commandp tests"))
-  (erase-buffer)
-  (dolist (ele commands)
-    (insert (concat "--funcall " ele "-commandp-test \\\n")))
-  (insert ";;; Commandp tests")
-  ;; (dolist (ele py-bounds-command-names)
-  (dolist (ele commands)
-    (insert (concat "
+  (let ((erg py-bounds-command-names))
+
+    (set-buffer (get-buffer-create "Commandp tests"))
+    (erase-buffer)
+    (dolist (ele erg)
+      (insert (concat "--funcall " ele "-commandp-test \\\n")))
+    (insert ";;; Commandp tests")
+    ;; (dolist (ele py-bounds-command-names)
+    (dolist (ele erg)
+      (insert (concat "
 \(defun " ele "-commandp-test (&optional arg load-branch-function)
   (interactive \"p\")
   (let ((teststring \"\"))
-  (when load-branch-function (funcall load-branch-function))
   (py-bug-tests-intern '" ele "-commandp-base arg teststring)))
 
 \(defun " ele "-commandp-base ()
     (assert (commandp '" ele ") nil \"" ele "-commandp-test failed\"))"))
-    (newline))
+      (newline)))
   (switch-to-buffer (current-buffer))
   (emacs-lisp-mode))
 

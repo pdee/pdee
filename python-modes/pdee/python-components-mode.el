@@ -632,13 +632,6 @@ variable section, e.g.:
   :group 'python-mode
   :tag "Pychecker Command Args")
 
-(defvar py-pylint-history nil)
-(defcustom py-pylint-command "pylint"
-  "*Shell command used to run Pylint."
-  :type 'string
-  :group 'python-mode
-  :tag "Pylint Command")
-
 (defvar py-pyflakes-history nil)
 (defcustom py-pyflakes-command "pyflakes"
   "*Shell command used to run Pyflakes."
@@ -649,7 +642,7 @@ variable section, e.g.:
 (defcustom py-pyflakes-command-args '("")
   "*List of string arguments to be passed to pyflakes.
 
-Default is \"--errors-only\" "
+Default is \"\""
   :type '(repeat string)
   :group 'python-mode
   :tag "Pyflakes Command Args")
@@ -668,6 +661,28 @@ Default is \"\" "
   :type '(repeat string)
   :group 'python-mode
   :tag "PEP 8 Command Args")
+
+(defvar py-pyflakespep8-history nil)
+(defcustom py-pyflakespep8-command (concat py-install-directory "pyflakespep8.py")
+  "*Shell command used to run `pyflakespep8'."
+  :type 'string
+  :group 'python-mode
+  :tag "Pyflakespep8 Command")
+
+(defcustom py-pyflakespep8-command-args '("")
+  "*List of string arguments to be passed to pyflakespep8.
+
+Default is \"\" "
+  :type '(repeat string)
+  :group 'python-mode
+  :tag "Pyflakespep8 Command Args")
+
+(defvar py-pylint-history nil)
+(defcustom py-pylint-command "pylint"
+  "*Shell command used to run Pylint."
+  :type 'string
+  :group 'python-mode
+  :tag "Pylint Command")
 
 (defcustom py-pylint-command-args '("--errors-only")
   "*List of string arguments to be passed to pylint.
@@ -1254,7 +1269,6 @@ Inludes Python shell-prompt in order to stop further searches. ")
 
 (setq py-clause-re "[ \t]*\\_<\\(else\\|elif\\|except\\|finally\\)\\_>[: \n\t]")
 
-
 (defconst py-elif-re "[ \t]*\\_<\\elif\\_>[: \n\t]"
   "Matches the beginning of a compound if-statement's clause exclusively. ")
 
@@ -1825,24 +1839,6 @@ It makes underscores and dots word constituent chars.")
              :help "Open the customization buffer for Python mode"]
 
             "-"
-            ("Skeletons..."
-             :help "See also templates in YASnippet")
-            ["if" py-if
-             :help "Inserts if-statement"]
-            ["py-else" py-else
-             :help "Inserts else-statement"]
-            ["py-while" py-while
-             :help "Inserts while-statement"]
-            ["py-for" py-for
-             :help "Inserts for-statement"]
-            ["py-try/finally" py-try/finally
-             :help "Inserts py-try/finally-statement"]
-            ["py-try/except" py-try/except
-             :help "Inserts py-try/except-statement"]
-            "-"
-            ["Import/reload file" py-execute-import-or-reload
-             :help "`py-execute-import-or-reload'
-Load into inferior Python session"]
 
             ["pychecker-run" py-pychecker-run
              :help "`py-pychecker-run'
@@ -1867,9 +1863,13 @@ is possible to write plugins.
 call `easy_install pylint' if not available
 "]
 
-             ["pylint-help" py-pylint-help
-              :help "`py-pylint-help'
+             ["pylint-help" pylint-help
+              :help "`pylint-help'
 List extendet report options
+"]
+             ["pylint-flymake-mode" pylint-flymake-mode
+              :help "`pylint-flymake-mode'
+Toggle flymake-mode running `pylint'
 "]
              )
 
@@ -1882,27 +1882,77 @@ call `easy_install pep8' if not available"
 Check formatting (default on the file currently visited)
 call `easy_install pep8' if not available
 "]
+
              ["pep8-help" py-pep8-help
               :help "`py-pep8-help'
 Display help for pep8 format checker)
 "]
 
+             ["pep8-flymake-mode" pep8-flymake-mode
+              :help "`pep8-flymake-mode'
+Toggle flymake-mode running `pep8'
+"]
+
              )
 
-            ("Pyflakes ... "
-             :help "Non intrusive code checker
-call `easy_install pyflakes' if not available"
+            ("Pyflakes ... " :help "Non intrusive code
+             checker call `easy_install pyflakes' if
+             not available"
 
-             ["pyflakes-run" py-pyflakes-run
-              :help "`py-pyflakes-run'
-Run pyflakes
+             ["pyflakes-run" py-pyflakes-run :help
+              "`py-pyflakes-run' Run pyflakes call
+              `easy_install pyflakes' if not
+              available"]
+
+             ["pyflakes-help" py-pyflakes-help :help
+              "`py-pyflakes-help' Display help for
+              Pyflakes "]
+
+             ["pyflakes-flymake-mode" pyflakes-flymake-mode :help
+              "`pyflakes-flymake-mode'
+Toggle flymake-mode running `pyflakes' "]
+
+             )
+
+            ("Pyflakes-pep8 ... " :help
+             "Non intrusive code checker running `pyflakes' and `pep8'
+call `easy_install pyflakes' and `easy_install pep8' if basics not available"
+
+             ["pyflakespep8-run" py-pyflakespep8-run :help
+              "`py-pyflakespep8-run' Run `pyflakespep8'
 call `easy_install pyflakes' if not available"]
 
-             ["pyflakes-help" py-pyflakes-help
-              :help "`py-pyflakes-help'
-Display help for Pyflakes "]
+             ["pyflakespep8-help" py-pyflakespep8-help :help
+              "`py-pyflakespep8-help' Display help for
+              Pyflakespep8 "]
+
+             ["pyflakespep8-flymake-mode" pyflakespep8-flymake-mode :help
+              "`pyflakespep8-flymake-mode'
+Toggle flymake-mode running `pyflakespep8' "]
 
              )
+
+            "-"
+            ("Skeletons..."
+             :help "See also templates in YASnippet")
+            ["if" py-if
+             :help "Inserts if-statement"]
+            ["py-else" py-else
+             :help "Inserts else-statement"]
+            ["py-while" py-while
+             :help "Inserts while-statement"]
+            ["py-for" py-for
+             :help "Inserts for-statement"]
+            ["py-try/finally" py-try/finally
+             :help "Inserts py-try/finally-statement"]
+            ["py-try/except" py-try/except
+             :help "Inserts py-try/except-statement"]
+
+            "-"
+
+            ["Import/reload file" py-execute-import-or-reload
+             :help "`py-execute-import-or-reload'
+Load into inferior Python session"]
 
             ["Debugger" pdb
              :help "`pdb'
@@ -4397,7 +4447,6 @@ behavior, change `python-remove-cwd-from-path' to nil."
       ;; `python-send-command''s call to `compilation-forget-errors'.
       (compilation-fake-loc orig-start f))))
 
-
 (defun py-send-string (string)
   "Evaluate STRING in inferior Python process."
   (interactive "sPython command: ")
@@ -4477,7 +4526,6 @@ module-qualified names."
                    module (file-name-directory file-name)))
        (format "execfile(%S)" file-name)))
     (message "%s loaded" file-name)))
-
 
 (defun py-proc ()
   "Return the current Python process.
@@ -5024,7 +5072,6 @@ Updated on each expansion.")
 
 ;; (setq pdb-path '/usr/lib/python2.7/pdb.py
 ;;      gud-pdb-command-name (symbol-name pdb-path))
-
 
 (require 'python-components-edit)
 (require 'python-components-intern)

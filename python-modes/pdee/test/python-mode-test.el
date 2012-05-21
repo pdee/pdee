@@ -1271,6 +1271,86 @@ for x in y:
   (assert (py-install-directory-check) nil "`py-install-directory' not valid. See INSTALL. "))
 
 ;;; Commandp tests
+(defun clear-flymake-allowed-file-name-masks-commandp-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring ""))
+  (py-bug-tests-intern 'clear-flymake-allowed-file-name-masks-commandp-base arg teststring)))
+
+(defun clear-flymake-allowed-file-name-masks-commandp-base ()
+    (assert (commandp 'clear-flymake-allowed-file-name-masks) nil "clear-flymake-allowed-file-name-masks-commandp-test failed"))
+
+(defun pylint-flymake-mode-commandp-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring ""))
+  (py-bug-tests-intern 'pylint-flymake-mode-commandp-base arg teststring)))
+
+(defun pylint-flymake-mode-commandp-base ()
+    (assert (commandp 'pylint-flymake-mode) nil "pylint-flymake-mode-commandp-test failed"))
+
+(defun pyflakes-flymake-mode-commandp-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring ""))
+  (py-bug-tests-intern 'pyflakes-flymake-mode-commandp-base arg teststring)))
+
+(defun pyflakes-flymake-mode-commandp-base ()
+    (assert (commandp 'pyflakes-flymake-mode) nil "pyflakes-flymake-mode-commandp-test failed"))
+
+(defun pychecker-flymake-mode-commandp-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring ""))
+  (py-bug-tests-intern 'pychecker-flymake-mode-commandp-base arg teststring)))
+
+(defun pychecker-flymake-mode-commandp-base ()
+    (assert (commandp 'pychecker-flymake-mode) nil "pychecker-flymake-mode-commandp-test failed"))
+
+(defun pep8-flymake-mode-commandp-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring ""))
+  (py-bug-tests-intern 'pep8-flymake-mode-commandp-base arg teststring)))
+
+(defun pep8-flymake-mode-commandp-base ()
+    (assert (commandp 'pep8-flymake-mode) nil "pep8-flymake-mode-commandp-test failed"))
+
+(defun pyflakespep8-flymake-mode-commandp-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring ""))
+  (py-bug-tests-intern 'pyflakespep8-flymake-mode-commandp-base arg teststring)))
+
+(defun pyflakespep8-flymake-mode-commandp-base ()
+    (assert (commandp 'pyflakespep8-flymake-mode) nil "pyflakespep8-flymake-mode-commandp-test failed"))
+
+(defun py-pylint-doku-commandp-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring ""))
+  (py-bug-tests-intern 'py-pylint-doku-commandp-base arg teststring)))
+
+(defun py-pylint-doku-commandp-base ()
+    (assert (commandp 'py-pylint-doku) nil "py-pylint-doku-commandp-test failed"))
+
+(defun py-pyflakes-run-commandp-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring ""))
+  (py-bug-tests-intern 'py-pyflakes-run-commandp-base arg teststring)))
+
+(defun py-pyflakes-run-commandp-base ()
+    (assert (commandp 'py-pyflakes-run) nil "py-pyflakes-run-commandp-test failed"))
+
+(defun py-pyflakespep8-run-commandp-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring ""))
+  (py-bug-tests-intern 'py-pyflakespep8-run-commandp-base arg teststring)))
+
+(defun py-pyflakespep8-run-commandp-base ()
+    (assert (commandp 'py-pyflakespep8-run) nil "py-pyflakespep8-run-commandp-test failed"))
+
+(defun py-pyflakespep8-help-commandp-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring ""))
+  (py-bug-tests-intern 'py-pyflakespep8-help-commandp-base arg teststring)))
+
+(defun py-pyflakespep8-help-commandp-base ()
+    (assert (commandp 'py-pyflakespep8-help) nil "py-pyflakespep8-help-commandp-test failed"))
+
 (defun py-guess-pdb-path-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))

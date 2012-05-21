@@ -720,7 +720,7 @@ Let's have this until more Emacs-like help is prepared "
 
 (defalias 'pylint-doku 'py-pylint-doku)
 (defun py-pylint-doku ()
-  "Display Pylint Documentation. 
+  "Display Pylint Documentation.
 
 Calls `pylint --full-documentation'"
   (interactive)
@@ -780,9 +780,9 @@ Let's have this until more Emacs-like help is prepared "
   ;; (set-buffer (get-buffer-create "*Pyflakes-Help*"))
   ;; (erase-buffer)
   (with-help-window "*Pyflakes-Help*"
-      (with-current-buffer standard-output
+    (with-current-buffer standard-output
       (insert "       pyflakes [file-or-directory ...]
-       
+
        Pyflakes is a simple program which checks Python
        source files for errors. It is similar to
        PyChecker in scope, but differs in that it does
@@ -807,6 +807,52 @@ Let's have this until more Emacs-like help is prepared "
 
 Extracted from http://manpages.ubuntu.com/manpages/natty/man1/pyflakes.1.html
 "))))
+
+;;; Pyflakes-pep8
+(defalias 'pyflakespep8 'py-pyflakespep8-run)
+(defun py-pyflakespep8-run (command)
+  "*Run pyflakespep8, check formatting (default on the file currently visited).
+"
+  (interactive
+   (let ((default
+           (if (buffer-file-name)
+               (format "%s %s %s" py-pyflakespep8-command
+                       (mapconcat 'identity py-pyflakespep8-command-args " ")
+                       (buffer-file-name))
+             (format "%s %s" py-pyflakespep8-command
+                     (mapconcat 'identity py-pyflakespep8-command-args " "))))
+         (last (when py-pyflakespep8-history
+                 (let* ((lastcmd (car py-pyflakespep8-history))
+                        (cmd (cdr (reverse (split-string lastcmd))))
+                        (newcmd (reverse (cons (buffer-file-name) cmd))))
+                   (mapconcat 'identity newcmd " ")))))
+
+     (list
+      (if (fboundp 'read-shell-command)
+          (read-shell-command "Run pyflakespep8 like this: "
+                              (if last
+                                  last
+                                default)
+                              'py-pyflakespep8-history)
+        (read-string "Run pyflakespep8 like this: "
+                     (if last
+                         last
+                       default)
+                     'py-pyflakespep8-history)))))
+  (save-some-buffers (not py-ask-about-save) nil)
+  (if (fboundp 'compilation-start)
+      ;; Emacs.
+      (compilation-start command)
+    ;; XEmacs.
+    (when (featurep 'xemacs)
+      (compile-internal command "No more errors"))))
+
+(defun py-pyflakespep8-help ()
+  "Display pyflakespep8 command line help messages. "
+  (interactive)
+  (set-buffer (get-buffer-create "*pyflakespep8-Help*"))
+  (erase-buffer)
+  (shell-command "pyflakespep8 --help" "*pyflakespep8-Help*"))
 
 ;;; Pychecker
 ;; hack for GNU Emacs

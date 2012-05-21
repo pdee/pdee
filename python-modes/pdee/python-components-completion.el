@@ -77,7 +77,6 @@ This function is appropriate for `comint-output-filter-functions'."
   'py-shell-dynamic-simple-complete
   'comint-dynamic-simple-complete)
 
-
 (defun py-shell-execute-string-now (string &optional shell)
   "Send to Python interpreter process PROC \"exec STRING in {}\".
 and return collected output"
@@ -361,8 +360,8 @@ Bug: if no IPython-shell is running, fails first time due to header returned, wh
          (pattern (buffer-substring-no-properties beg end))
          (sep ";")
          (py-process (or (get-buffer-process (current-buffer))
-                             (get-buffer-process (py-shell))
-                             (get-buffer-process (py-shell nil nil "ipython" 'noswitch nil))))
+                         (get-buffer-process (py-shell))
+                         (get-buffer-process (py-shell nil nil "ipython" 'noswitch nil))))
 
          (comint-output-filter-functions
           (delq 'py-comint-output-filter-function comint-output-filter-functions))
@@ -456,17 +455,90 @@ Bug: if no IPython-shell is running, fails first time due to header returned, wh
              (message "Making completion list...%s" "done"))))
     completion))
 
-;; Pyflakes for python
-(defun flymake-pychecker-init ()
+;;; Flymake
+(defun clear-flymake-allowed-file-name-masks (&optional suffix)
+  "Remove entries with SUFFIX from `flymake-allowed-file-name-masks'.
+
+Default is \"\\.py\\'\" "
+  (interactive "P")
+  (let ((suffix (cond ((eq 4 (prefix-numeric-value suffix))
+                       (read-from-minibuffer "Suffix: " "\\\\.py\\\\'"))
+                      (suffix suffix)
+                      (t "\\\\.py\\\\'")))
+        (erg flymake-allowed-file-name-masks)
+        (newlist '()))
+    (dolist (ele flymake-allowed-file-name-masks)
+      (unless
+          ;; (string-match "\\\\.py\\\\'" (car ele))
+          (string-match suffix (car ele))
+        (add-to-list 'newlist ele t)))
+    (setq flymake-allowed-file-name-masks newlist)
+    (when (and py-verbose-p (interactive-p)) (message "%s" flymake-allowed-file-name-masks))
+    flymake-allowed-file-name-masks))
+
+(defun py-toggle-flymake-intern (name command)
+  ;; (clear-flymake-allowed-file-name-masks)
+  (unless (string-match "pyflakespep8" name)
+    (unless (executable-find name)
+      (when py-verbose-p (message "Don't see %s. Use `easy_install' %s? " name name))))
   (let* ((temp-file (flymake-init-create-temp-buffer-copy
                      'flymake-create-temp-inplace))
          (local-file (file-relative-name
                       temp-file
                       (file-name-directory buffer-file-name))))
-    (list (concat (py-normalize-directory py-install-directory) "pyflakespep8.py") (list local-file))))
+    (add-to-list 'flymake-allowed-file-name-masks (car (read-from-string (concat "(\"\\.py\\'\" flymake-" name ")"))))
+    (list command (list local-file))))
 
-(add-to-list 'flymake-allowed-file-name-masks
-             '("\\.py\\'" flymake-pychecker-init))
+(defun pylint-flymake-mode ()
+  "Toggle `pylint' `flymake-mode'. "
+  (interactive)
+  (if flymake-mode
+      ;; switch off
+      (flymake-mode)
+    (py-toggle-flymake-intern "pylint" "pylint")
+    (flymake-mode)))
+
+(defun pyflakes-flymake-mode ()
+  "Toggle `pyflakes' `flymake-mode'. "
+  (interactive)
+  (if flymake-mode
+      ;; switch off
+      (flymake-mode)
+    (py-toggle-flymake-intern "pyflakes" "pyflakes")
+    (flymake-mode)))
+
+(defun pychecker-flymake-mode ()
+  "Toggle `pychecker' `flymake-mode'. "
+  (interactive)
+  (if flymake-mode
+      ;; switch off
+      (flymake-mode)
+    (py-toggle-flymake-intern "pychecker" "pychecker")
+    (flymake-mode)))
+
+(defun pep8-flymake-mode ()
+  "Toggle `pep8' `flymake-mode'. "
+  (interactive)
+  (if flymake-mode
+      ;; switch off
+      (flymake-mode)
+    (py-toggle-flymake-intern "pep8" "pep8")
+    (flymake-mode)))
+
+(defun pyflakespep8-flymake-mode ()
+  "Toggle `pyflakespep8' `flymake-mode'.
+
+Joint call to pyflakes and pep8 as proposed by
+
+Keegan Carruthers-Smith
+
+"
+  (interactive)
+  (if flymake-mode
+      ;; switch off
+      (flymake-mode)
+    (py-toggle-flymake-intern "pyflakespep8" "pyflakespep8")
+    (flymake-mode)))
 
 (provide 'python-components-completion)
 

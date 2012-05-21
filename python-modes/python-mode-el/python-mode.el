@@ -36,6 +36,8 @@
 (require 'ansi-color)
 (require 'cc-cmds)
 (require 'shell)
+(require 'rx)
+(require 'flymake)
 
 (defgroup python-mode nil
   "Support for the Python programming language, <http://www.python.org/>"
@@ -603,6 +605,30 @@ variable section, e.g.:
   :type 'string
   :group 'python-mode
   :tag "PEP 8 Command")
+
+(defcustom py-pep8-command-args '("")
+  "*List of string arguments to be passed to pep8.
+
+Default is \"\" "
+  :type '(repeat string)
+  :group 'python-mode
+  :tag "PEP 8 Command Args")
+
+
+(defvar py-pyflakespep8-history nil)
+(defcustom py-pyflakespep8-command (concat py-install-directory "pyflakespep8.py")
+  "*Shell command used to run `pyflakespep8'."
+  :type 'string
+  :group 'python-mode
+  :tag "Pyflakespep8 Command")
+
+(defcustom py-pyflakespep8-command-args '("")
+  "*List of string arguments to be passed to pyflakespep8.
+
+Default is \"\" "
+  :type '(repeat string)
+  :group 'python-mode
+  :tag "Pyflakes-pep8 Command Args")
 
 (defvar py-pyflakes-history nil)
 (defcustom py-pyflakes-command "pyflakes"
@@ -2484,19 +2510,6 @@ See variable `python-buffer'.  Starts a new process if necessary."
                           (current-buffer)
                         python-buffer)))
 
-(defun py-proc ()
-  "Return the current Python process.
-
-See variable `python-buffer'.  Starts a new process if necessary."
-  ;; Fixme: Maybe should look for another active process if there
-  ;; isn't one for `python-buffer'.
-  (unless (comint-check-proc python-buffer)
-    (when py-verbose-p (message "Please wait while starting a Python shell, as completion needs it"))
-    (run-python nil t))
-  (get-buffer-process (if (derived-mode-p 'inferior-python-mode)
-                          (current-buffer)
-                        python-buffer)))
-
 (defun python-set-proc ()
   "Set the default value of `python-buffer' to correspond to this buffer.
 If the current buffer has a local value of `python-buffer', set the
@@ -2907,7 +2920,7 @@ Uses `python-beginning-of-block', `python-end-of-block'."
       (list start end
             (completion-table-dynamic 'python-symbol-completions)))))
 
-;;;; FFAP support
+;;; FFAP support
 
 (defun python-module-path (module)
   "Function for `ffap-alist' to return path to MODULE."
@@ -10140,6 +10153,91 @@ Returns value of `py-split-windows-on-execute-p'. "
   (when (interactive-p) (message "py-split-windows-on-execute-p: %s" py-split-windows-on-execute-p))
   py-split-windows-on-execute-p)
 
+;;; Flymake
+(defun clear-flymake-allowed-file-name-masks (&optional suffix)
+  "Remove entries with SUFFIX from `flymake-allowed-file-name-masks'.
+
+Default is \"\\.py\\'\" "
+  (interactive "P")
+  (let ((suffix (cond ((eq 4 (prefix-numeric-value suffix))
+                       (read-from-minibuffer "Suffix: " "\\\\.py\\\\'"))
+                      (suffix suffix)
+                      (t "\\\\.py\\\\'")))
+        (erg flymake-allowed-file-name-masks)
+        (newlist '()))
+    (dolist (ele flymake-allowed-file-name-masks)
+      (unless
+          ;; (string-match "\\\\.py\\\\'" (car ele))
+          (string-match suffix (car ele))
+        (add-to-list 'newlist ele t)))
+    (setq flymake-allowed-file-name-masks newlist)
+    (when (and py-verbose-p (interactive-p)) (message "%s" flymake-allowed-file-name-masks))
+    flymake-allowed-file-name-masks))
+
+(defun py-toggle-flymake-intern (name command)
+  ;; (clear-flymake-allowed-file-name-masks)
+  (unless (string-match "pyflakespep8" name)
+    (unless (executable-find name)
+      (when py-verbose-p (message "Don't see %s. Use `easy_install' %s? " name name))))
+  (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                     'flymake-create-temp-inplace))
+         (local-file (file-relative-name
+                      temp-file
+                      (file-name-directory buffer-file-name))))
+    (add-to-list 'flymake-allowed-file-name-masks (car (read-from-string (concat "(\"\\.py\\'\" flymake-" name ")"))))
+    (list command (list local-file))))
+
+(defun pylint-flymake-mode ()
+  "Toggle `pylint' `flymake-mode'. "
+  (interactive)
+  (if flymake-mode
+      ;; switch off
+      (flymake-mode)
+    (py-toggle-flymake-intern "pylint" "pylint")
+    (flymake-mode)))
+
+(defun pyflakes-flymake-mode ()
+  "Toggle `pyflakes' `flymake-mode'. "
+  (interactive)
+  (if flymake-mode
+      ;; switch off
+      (flymake-mode)
+    (py-toggle-flymake-intern "pyflakes" "pyflakes")
+    (flymake-mode)))
+
+(defun pychecker-flymake-mode ()
+  "Toggle `pychecker' `flymake-mode'. "
+  (interactive)
+  (if flymake-mode
+      ;; switch off
+      (flymake-mode)
+    (py-toggle-flymake-intern "pychecker" "pychecker")
+    (flymake-mode)))
+
+(defun pep8-flymake-mode ()
+  "Toggle `pep8' `flymake-mode'. "
+  (interactive)
+  (if flymake-mode
+      ;; switch off
+      (flymake-mode)
+    (py-toggle-flymake-intern "pep8" "pep8")
+    (flymake-mode)))
+
+(defun pyflakespep8-flymake-mode ()
+  "Toggle `pyflakespep8' `flymake-mode'.
+
+Joint call to pyflakes and pep8 as proposed by
+
+Keegan Carruthers-Smith
+
+"
+  (interactive)
+  (if flymake-mode
+      ;; switch off
+      (flymake-mode)
+    (py-toggle-flymake-intern "pyflakespep8" "pyflakespep8")
+    (flymake-mode)))
+
 ;;; Shell-Switch-Buffers-On-Execute forms
 (defalias 'toggle-py-shell-switch-buffers-on-execute 'py-toggle-shell-switch-buffers-on-execute)
 (defun py-toggle-shell-switch-buffers-on-execute (&optional arg)
@@ -10346,24 +10444,6 @@ if `(locate-library \"python-mode\")' is not succesful. "
              :help "Open the customization buffer for Python mode"]
 
             "-"
-            ("Skeletons..."
-             :help "See also templates in YASnippet")
-            ["if" py-if
-             :help "Inserts if-statement"]
-            ["py-else" py-else
-             :help "Inserts else-statement"]
-            ["py-while" py-while
-             :help "Inserts while-statement"]
-            ["py-for" py-for
-             :help "Inserts for-statement"]
-            ["py-try/finally" py-try/finally
-             :help "Inserts py-try/finally-statement"]
-            ["py-try/except" py-try/except
-             :help "Inserts py-try/except-statement"]
-            "-"
-            ["Import/reload file" py-execute-import-or-reload
-             :help "`py-execute-import-or-reload'
-Load into inferior Python session"]
 
             ["pychecker-run" py-pychecker-run
              :help "`py-pychecker-run'
@@ -10388,9 +10468,13 @@ is possible to write plugins.
 call `easy_install pylint' if not available
 "]
 
-             ["pylint-help" py-pylint-help
-              :help "`py-pylint-help'
+             ["pylint-help" pylint-help
+              :help "`pylint-help'
 List extendet report options
+"]
+             ["pylint-flymake-mode" pylint-flymake-mode
+              :help "`pylint-flymake-mode'
+Toggle flymake-mode running `pylint'
 "]
              )
 
@@ -10403,27 +10487,77 @@ call `easy_install pep8' if not available"
 Check formatting (default on the file currently visited)
 call `easy_install pep8' if not available
 "]
+
              ["pep8-help" py-pep8-help
               :help "`py-pep8-help'
 Display help for pep8 format checker)
 "]
 
+             ["pep8-flymake-mode" pep8-flymake-mode
+              :help "`pep8-flymake-mode'
+Toggle flymake-mode running `pep8'
+"]
+
              )
 
-            ("Pyflakes ... "
-             :help "Non intrusive code checker
-call `easy_install pyflakes' if not available"
+            ("Pyflakes ... " :help "Non intrusive code
+             checker call `easy_install pyflakes' if
+             not available"
 
-             ["pyflakes-run" py-pyflakes-run
-              :help "`py-pyflakes-run'
-Run pyflakes
+             ["pyflakes-run" py-pyflakes-run :help
+              "`py-pyflakes-run' Run pyflakes call
+              `easy_install pyflakes' if not
+              available"]
+
+             ["pyflakes-help" py-pyflakes-help :help
+              "`py-pyflakes-help' Display help for
+              Pyflakes "]
+
+             ["pyflakes-flymake-mode" pyflakes-flymake-mode :help
+              "`pyflakes-flymake-mode'
+Toggle flymake-mode running `pyflakes' "]
+
+             )
+
+            ("Pyflakes-pep8 ... " :help
+             "Non intrusive code checker running `pyflakes' and `pep8'
+call `easy_install pyflakes' and `easy_install pep8' if basics not available"
+
+             ["pyflakespep8-run" py-pyflakespep8-run :help
+              "`py-pyflakespep8-run' Run `pyflakespep8'
 call `easy_install pyflakes' if not available"]
 
-             ["pyflakes-help" py-pyflakes-help
-              :help "`py-pyflakes-help'
-Display help for Pyflakes "]
+             ["pyflakespep8-help" py-pyflakespep8-help :help
+              "`py-pyflakespep8-help' Display help for
+              Pyflakespep8 "]
+
+             ["pyflakespep8-flymake-mode" pyflakespep8-flymake-mode :help
+              "`pyflakespep8-flymake-mode'
+Toggle flymake-mode running `pyflakespep8' "]
 
              )
+
+            "-"
+            ("Skeletons..."
+             :help "See also templates in YASnippet")
+            ["if" py-if
+             :help "Inserts if-statement"]
+            ["py-else" py-else
+             :help "Inserts else-statement"]
+            ["py-while" py-while
+             :help "Inserts while-statement"]
+            ["py-for" py-for
+             :help "Inserts for-statement"]
+            ["py-try/finally" py-try/finally
+             :help "Inserts py-try/finally-statement"]
+            ["py-try/except" py-try/except
+             :help "Inserts py-try/except-statement"]
+
+            "-"
+
+            ["Import/reload file" py-execute-import-or-reload
+             :help "`py-execute-import-or-reload'
+Load into inferior Python session"]
 
             ["Debugger" pdb
              :help "`pdb'
@@ -10485,7 +10619,7 @@ If NOERROR is not nil, do not raise error when the module is not found. "]
 
             ["Execute statement" py-execute-statement
              :help "`py-execute-statement'
-Send statement at point to Python interpreter. "]
+       Send statement at point to Python interpreter. "]
 
             ["Execute block" py-execute-block
              :help "`py-execute-block'
@@ -11086,91 +11220,91 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
             ("Execute buffer ... "
              :help "Execute buffer functions"
              ["py-execute-buffer-python" py-execute-buffer-python
-              :help "  Execute buffer through a Python interpreter.
-With \\[universal-argument] use an unique Python interpreter. "]
+              :help "Execute buffer through a Python interpreter.
+        With \\[universal-argument] use an unique Python interpreter. "]
              ["py-execute-buffer-ipython" py-execute-buffer-ipython
-              :help "  Execute buffer through an IPython interpreter.
-With \\[universal-argument] use an unique IPython interpreter. "]
+              :help "Execute buffer through an IPython interpreter.
+        With \\[universal-argument] use an unique IPython interpreter. "]
              ["py-execute-buffer-python3" py-execute-buffer-python3
-              :help "  Execute buffer through a Python3 interpreter.
-With \\[universal-argument] use an unique Python3 interpreter. "]
+              :help "Execute buffer through a Python3 interpreter.
+        With \\[universal-argument] use an unique Python3 interpreter. "]
              ["py-execute-buffer-python2" py-execute-buffer-python2
-              :help "  Execute buffer through a Python2 interpreter.
-With \\[universal-argument] use an unique Python2 interpreter. "]
+              :help "Execute buffer through a Python2 interpreter.
+        With \\[universal-argument] use an unique Python2 interpreter. "]
              ["py-execute-buffer-python2.7" py-execute-buffer-python2.7
-              :help "  Execute buffer through a Python2.7 interpreter.
-With \\[universal-argument] use an unique Python2.7 interpreter. "]
+              :help "Execute buffer through a Python2.7 interpreter.
+        With \\[universal-argument] use an unique Python2.7 interpreter. "]
              ["py-execute-buffer-jython" py-execute-buffer-jython
-              :help "  Execute buffer through a Jython interpreter.
-With \\[universal-argument] use an unique Jython interpreter. "]
+              :help "Execute buffer through a Jython interpreter.
+        With \\[universal-argument] use an unique Jython interpreter. "]
              ["py-execute-buffer-python3.2" py-execute-buffer-python3.2
-              :help "  Execute buffer through a Python3.2 interpreter.
-With \\[universal-argument] use an unique Python3.2 interpreter. "]
+              :help "Execute buffer through a Python3.2 interpreter.
+        With \\[universal-argument] use an unique Python3.2 interpreter. "]
              ;; dedicated
              ["py-execute-buffer-python-dedicated" py-execute-buffer-python-dedicated
-              :help "  Execute buffer through a unique Python interpreter.
+              :help "Execute buffer through a unique Python interpreter.
 Optional \\[universal-argument] forces switch to output buffer, ignores `py-switch-buffers-on-execute-p'. "]
              ["py-execute-buffer-ipython-dedicated" py-execute-buffer-ipython-dedicated
-              :help "  Execute buffer through a unique IPython interpreter.
+              :help "Execute buffer through a unique IPython interpreter.
 Optional \\[universal-argument] forces switch to output buffer, ignores `py-switch-buffers-on-execute-p'. "]
              ["py-execute-buffer-python3-dedicated" py-execute-buffer-python3-dedicated
-              :help "  Execute buffer through a unique Python3 interpreter.
+              :help "Execute buffer through a unique Python3 interpreter.
 Optional \\[universal-argument] forces switch to output buffer, ignores `py-switch-buffers-on-execute-p'. "]
              ["py-execute-buffer-python2-dedicated" py-execute-buffer-python2-dedicated
-              :help "  Execute buffer through a unique Python2 interpreter.
+              :help "Execute buffer through a unique Python2 interpreter.
 Optional \\[universal-argument] forces switch to output buffer, ignores `py-switch-buffers-on-execute-p'. "]
              ["py-execute-buffer-python2.7-dedicated" py-execute-buffer-python2.7-dedicated
-              :help "  Execute buffer through a unique Python2.7 interpreter.
+              :help "Execute buffer through a unique Python2.7 interpreter.
 Optional \\[universal-argument] forces switch to output buffer, ignores `py-switch-buffers-on-execute-p'. "]
              ["py-execute-buffer-jython-dedicated" py-execute-buffer-jython-dedicated
-              :help "  Execute buffer through a unique Jython interpreter.
+              :help "Execute buffer through a unique Jython interpreter.
 Optional \\[universal-argument] forces switch to output buffer, ignores `py-switch-buffers-on-execute-p'. "]
              ["py-execute-buffer-python3.2-dedicated" py-execute-buffer-python3.2-dedicated
-              :help "  Execute buffer through a unique Python3.2 interpreter.
+              :help "Execute buffer through a unique Python3.2 interpreter.
 Optional \\[universal-argument] forces switch to output buffer, ignores `py-switch-buffers-on-execute-p'. "]
              ;; switch
              ["py-execute-buffer-python-switch" py-execute-buffer-python-switch
-              :help "  Execute buffer through a Python interpreter.
+              :help "Execute buffer through a Python interpreter.
 With \\[universal-argument] use an unique Python interpreter. "]
              ["py-execute-buffer-ipython-switch" py-execute-buffer-ipython-switch
-              :help "  Execute buffer through an IPython interpreter.
+              :help "Execute buffer through an IPython interpreter.
 With \\[universal-argument] use an unique IPython interpreter. "]
              ["py-execute-buffer-python3-switch" py-execute-buffer-python3-switch
-              :help "  Execute buffer through a Python3 interpreter.
+              :help "Execute buffer through a Python3 interpreter.
 With \\[universal-argument] use an unique Python3 interpreter. "]
              ["py-execute-buffer-python2-switch" py-execute-buffer-python2-switch
-              :help "  Execute buffer through a Python2 interpreter.
+              :help "Execute buffer through a Python2 interpreter.
 With \\[universal-argument] use an unique Python2 interpreter. "]
              ["py-execute-buffer-python2.7-switch" py-execute-buffer-python2.7-switch
-              :help "  Execute buffer through a Python2.7 interpreter.
+              :help "Execute buffer through a Python2.7 interpreter.
 With \\[universal-argument] use an unique Python2.7 interpreter. "]
              ["py-execute-buffer-jython-switch" py-execute-buffer-jython-switch
-              :help "  Execute buffer through a Jython interpreter.
+              :help "Execute buffer through a Jython interpreter.
 With \\[universal-argument] use an unique Jython interpreter. "]
              ["py-execute-buffer-python3.2-switch" py-execute-buffer-python3.2-switch
-              :help "  Execute buffer through a Python3.2 interpreter.
+              :help "Execute buffer through a Python3.2 interpreter.
 With \\[universal-argument] use an unique Python3.2 interpreter. "]
              ;; dedicated-switch
              ["py-execute-buffer-python-dedicated-switch" py-execute-buffer-python-dedicated-switch
-              :help "  Execute buffer through a unique Python interpreter.
+              :help "Execute buffer through a unique Python interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
              ["py-execute-buffer-ipython-dedicated-switch" py-execute-buffer-ipython-dedicated-switch
-              :help "  Execute buffer through a uniquen IPython interpreter.
+              :help "Execute buffer through a uniquen IPython interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
              ["py-execute-buffer-python3-dedicated-switch" py-execute-buffer-python3-dedicated-switch
-              :help "  Execute buffer through a unique Python3 interpreter.
+              :help "Execute buffer through a unique Python3 interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
              ["py-execute-buffer-python2-dedicated-switch" py-execute-buffer-python2-dedicated-switch
-              :help "  Execute buffer through a unique Python2 interpreter.
+              :help "Execute buffer through a unique Python2 interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
              ["py-execute-buffer-python2.7-dedicated-switch" py-execute-buffer-python2.7-dedicated-switch
-              :help "  Execute buffer through a unique Python2.7 interpreter.
+              :help "Execute buffer through a unique Python2.7 interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
              ["py-execute-buffer-jython-dedicated-switch" py-execute-buffer-jython-dedicated-switch
-              :help "  Execute buffer through a unique Jython interpreter.
+              :help "Execute buffer through a unique Jython interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
              ["py-execute-buffer-python3.2-dedicated-switch" py-execute-buffer-python3.2-dedicated-switch
-              :help "  Execute buffer through a unique Python3.2 interpreter.
+              :help "Execute buffer through a unique Python3.2 interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
              )
 
@@ -13119,6 +13253,52 @@ Let's have this until more Emacs-like help is prepared "
 
 Extracted from http://manpages.ubuntu.com/manpages/natty/man1/pyflakes.1.html
 "))))
+
+;;; Pyflakes-pep8
+(defalias 'pyflakespep8 'py-pyflakespep8-run)
+(defun py-pyflakespep8-run (command)
+  "*Run pyflakespep8, check formatting (default on the file currently visited).
+"
+  (interactive
+   (let ((default
+           (if (buffer-file-name)
+               (format "%s %s %s" py-pyflakespep8-command
+                       (mapconcat 'identity py-pyflakespep8-command-args " ")
+                       (buffer-file-name))
+             (format "%s %s" py-pyflakespep8-command
+                     (mapconcat 'identity py-pyflakespep8-command-args " "))))
+         (last (when py-pyflakespep8-history
+                 (let* ((lastcmd (car py-pyflakespep8-history))
+                        (cmd (cdr (reverse (split-string lastcmd))))
+                        (newcmd (reverse (cons (buffer-file-name) cmd))))
+                   (mapconcat 'identity newcmd " ")))))
+
+     (list
+      (if (fboundp 'read-shell-command)
+          (read-shell-command "Run pyflakespep8 like this: "
+                              (if last
+                                  last
+                                default)
+                              'py-pyflakespep8-history)
+        (read-string "Run pyflakespep8 like this: "
+                     (if last
+                         last
+                       default)
+                     'py-pyflakespep8-history)))))
+  (save-some-buffers (not py-ask-about-save) nil)
+  (if (fboundp 'compilation-start)
+      ;; Emacs.
+      (compilation-start command)
+    ;; XEmacs.
+    (when (featurep 'xemacs)
+      (compile-internal command "No more errors"))))
+
+(defun py-pyflakespep8-help ()
+  "Display pyflakespep8 command line help messages. "
+  (interactive)
+  (set-buffer (get-buffer-create "*pyflakespep8-Help*"))
+  (erase-buffer)
+  (shell-command "pyflakespep8 --help" "*pyflakespep8-Help*"))
 
 ;;; Pychecker
 (defun py-pychecker-run (command)
