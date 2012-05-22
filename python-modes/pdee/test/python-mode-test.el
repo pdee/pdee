@@ -28,6 +28,7 @@
 (setq python-mode-tests
       (list
 
+       'py-end-of-statement-test
        'py-compute-indentation-with-test
        'py-end-of-def-inline-comment-test
        'before-inline-comment-test
@@ -1274,82 +1275,82 @@ for x in y:
 (defun clear-flymake-allowed-file-name-masks-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-  (py-bug-tests-intern 'clear-flymake-allowed-file-name-masks-commandp-base arg teststring)))
+    (py-bug-tests-intern 'clear-flymake-allowed-file-name-masks-commandp-base arg teststring)))
 
 (defun clear-flymake-allowed-file-name-masks-commandp-base ()
-    (assert (commandp 'clear-flymake-allowed-file-name-masks) nil "clear-flymake-allowed-file-name-masks-commandp-test failed"))
+  (assert (commandp 'clear-flymake-allowed-file-name-masks) nil "clear-flymake-allowed-file-name-masks-commandp-test failed"))
 
 (defun pylint-flymake-mode-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-  (py-bug-tests-intern 'pylint-flymake-mode-commandp-base arg teststring)))
+    (py-bug-tests-intern 'pylint-flymake-mode-commandp-base arg teststring)))
 
 (defun pylint-flymake-mode-commandp-base ()
-    (assert (commandp 'pylint-flymake-mode) nil "pylint-flymake-mode-commandp-test failed"))
+  (assert (commandp 'pylint-flymake-mode) nil "pylint-flymake-mode-commandp-test failed"))
 
 (defun pyflakes-flymake-mode-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-  (py-bug-tests-intern 'pyflakes-flymake-mode-commandp-base arg teststring)))
+    (py-bug-tests-intern 'pyflakes-flymake-mode-commandp-base arg teststring)))
 
 (defun pyflakes-flymake-mode-commandp-base ()
-    (assert (commandp 'pyflakes-flymake-mode) nil "pyflakes-flymake-mode-commandp-test failed"))
+  (assert (commandp 'pyflakes-flymake-mode) nil "pyflakes-flymake-mode-commandp-test failed"))
 
 (defun pychecker-flymake-mode-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-  (py-bug-tests-intern 'pychecker-flymake-mode-commandp-base arg teststring)))
+    (py-bug-tests-intern 'pychecker-flymake-mode-commandp-base arg teststring)))
 
 (defun pychecker-flymake-mode-commandp-base ()
-    (assert (commandp 'pychecker-flymake-mode) nil "pychecker-flymake-mode-commandp-test failed"))
+  (assert (commandp 'pychecker-flymake-mode) nil "pychecker-flymake-mode-commandp-test failed"))
 
 (defun pep8-flymake-mode-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-  (py-bug-tests-intern 'pep8-flymake-mode-commandp-base arg teststring)))
+    (py-bug-tests-intern 'pep8-flymake-mode-commandp-base arg teststring)))
 
 (defun pep8-flymake-mode-commandp-base ()
-    (assert (commandp 'pep8-flymake-mode) nil "pep8-flymake-mode-commandp-test failed"))
+  (assert (commandp 'pep8-flymake-mode) nil "pep8-flymake-mode-commandp-test failed"))
 
 (defun pyflakespep8-flymake-mode-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-  (py-bug-tests-intern 'pyflakespep8-flymake-mode-commandp-base arg teststring)))
+    (py-bug-tests-intern 'pyflakespep8-flymake-mode-commandp-base arg teststring)))
 
 (defun pyflakespep8-flymake-mode-commandp-base ()
-    (assert (commandp 'pyflakespep8-flymake-mode) nil "pyflakespep8-flymake-mode-commandp-test failed"))
+  (assert (commandp 'pyflakespep8-flymake-mode) nil "pyflakespep8-flymake-mode-commandp-test failed"))
 
 (defun py-pylint-doku-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-  (py-bug-tests-intern 'py-pylint-doku-commandp-base arg teststring)))
+    (py-bug-tests-intern 'py-pylint-doku-commandp-base arg teststring)))
 
 (defun py-pylint-doku-commandp-base ()
-    (assert (commandp 'py-pylint-doku) nil "py-pylint-doku-commandp-test failed"))
+  (assert (commandp 'py-pylint-doku) nil "py-pylint-doku-commandp-test failed"))
 
 (defun py-pyflakes-run-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-  (py-bug-tests-intern 'py-pyflakes-run-commandp-base arg teststring)))
+    (py-bug-tests-intern 'py-pyflakes-run-commandp-base arg teststring)))
 
 (defun py-pyflakes-run-commandp-base ()
-    (assert (commandp 'py-pyflakes-run) nil "py-pyflakes-run-commandp-test failed"))
+  (assert (commandp 'py-pyflakes-run) nil "py-pyflakes-run-commandp-test failed"))
 
 (defun py-pyflakespep8-run-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-  (py-bug-tests-intern 'py-pyflakespep8-run-commandp-base arg teststring)))
+    (py-bug-tests-intern 'py-pyflakespep8-run-commandp-base arg teststring)))
 
 (defun py-pyflakespep8-run-commandp-base ()
-    (assert (commandp 'py-pyflakespep8-run) nil "py-pyflakespep8-run-commandp-test failed"))
+  (assert (commandp 'py-pyflakespep8-run) nil "py-pyflakespep8-run-commandp-test failed"))
 
 (defun py-pyflakespep8-help-commandp-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring ""))
-  (py-bug-tests-intern 'py-pyflakespep8-help-commandp-base arg teststring)))
+    (py-bug-tests-intern 'py-pyflakespep8-help-commandp-base arg teststring)))
 
 (defun py-pyflakespep8-help-commandp-base ()
-    (assert (commandp 'py-pyflakespep8-help) nil "py-pyflakespep8-help-commandp-test failed"))
+  (assert (commandp 'py-pyflakespep8-help) nil "py-pyflakespep8-help-commandp-test failed"))
 
 (defun py-guess-pdb-path-commandp-test (&optional arg load-branch-function)
   (interactive "p")
@@ -6581,12 +6582,11 @@ self.nult['_foobar'] = []
   (sit-for 0.1)
   (assert (eq 106 (point)) nil "before-inline-comment-test failed"))
 
-
 (defun py-end-of-def-inline-comment-test (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
-)
+
     #####################################
 #####################################
 def fooBaz( bar ):  # version 2003/9/7
@@ -6602,7 +6602,7 @@ def fooBaz( bar ):  # version 2003/9/7
 (defun py-end-of-def-inline-comment-base ()
   (goto-char 49)
   (py-end-of-def-or-class)
-  (assert (eq 312 (point)) nil "py-end-of-def-inline-comment-test failed"))
+  (assert (eq 311 (point)) nil "py-end-of-def-inline-comment-test failed"))
 
 (defun py-compute-indentation-with-test (&optional arg)
   (interactive "p")
@@ -6619,8 +6619,26 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
   (goto-char 99)
   (assert (eq 4 (py-compute-indentation)) nil "py-compute-indentation-with-test #1 failed")
   (goto-char 127)
-  (assert (eq 8 (py-compute-indentation)) nil "py-compute-indentation-with-test #2 failed")
+  (assert (eq 8 (py-compute-indentation)) nil "py-compute-indentation-with-test #2 failed"))
 
+(defun py-end-of-statement-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/python
+# -*- coding: utf-8 -*-
+print dir()
+c = Cat()
+c.hello() #causes error, but emacs tracking fails
+
+"))
+    (py-bug-tests-intern 'py-end-of-statement-base arg teststring)))
+
+(defun py-end-of-statement-base ()
+  (goto-char (point-min))
+  (py-end-of-statement)
+  (assert (eq 55 (point)) nil "py-end-of-statement-test #1 failed")
+  (goto-char 65)
+  (py-end-of-statement)
+  (assert (eq 75 (point)) nil "py-end-of-statement-test #2 failed")
   )
 
 (provide 'python-mode-test)

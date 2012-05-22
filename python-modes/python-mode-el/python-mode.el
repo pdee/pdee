@@ -1870,7 +1870,7 @@ completions on the current context."
   (with-current-buffer (process-buffer process)
     (let ((completions
            (python-shell-send-string-no-output
-            (format completion-code input) process)))
+                        (format completion-code input) process)))
       (when (> (length completions) 2)
         (split-string completions "^'\\|^\"\\|;\\|'$\\|\"$" t)))))
 
@@ -1882,7 +1882,7 @@ completions on the current context."
                 (concat line  python-shell-module-completion-string-code)
               python-shell-module-completion-string-code))
 	   (completions
-            (python-shell-completion--get-completions
+		(python-shell-completion--get-completions
              input process code))
 	   (completion (when completions
 			 (try-completion input completions))))
@@ -6194,9 +6194,15 @@ To go just beyond the final line of the current statement, use `py-down-statemen
       (cond
        ((and (not done) (< 0 (skip-chars-forward " \t\r\n\f")))
         (end-of-line)
+        (py-beginning-of-comment)
         (skip-chars-backward " \t\r\n\f" (line-beginning-position))
-        (setq done t)
-        (py-end-of-statement orig done))
+        (if (eq (point) orig)
+            (progn
+              (end-of-line)
+              (forward-comment 99999)
+              (py-end-of-statement orig done))
+          (setq done t)
+          (py-end-of-statement orig done)))
        ((nth 1 pps)
         (when (< orig (point))
           (setq orig (point)))
@@ -6235,7 +6241,8 @@ To go just beyond the final line of the current statement, use `py-down-statemen
             (skip-chars-backward " \t\r\n\f")
             (py-end-of-statement orig done)))))
        ((and (not done) (looking-at "#"))
-        (skip-chars-forward "#")
+        ;; (skip-chars-forward "#")
+        (end-of-line)
         (forward-comment 99999)
         (setq done t)
         (end-of-line)
@@ -8869,13 +8876,13 @@ Useful for newly defined symbol, not known to python yet. "
   "Find top-level imports, updating `python-imports'."
   (interactive)
   (let* (imports)
-    (save-excursion
-      (goto-char (point-min))
-      (while (re-search-forward
-              "^import *[A-Za-z_][A-Za-z_0-9].*\\|^from +[A-Za-z_][A-Za-z_0-9]+ +import .*" nil t)
-        (setq imports
-              (concat
-               imports
+          (save-excursion
+            (goto-char (point-min))
+            (while (re-search-forward
+                    "^import *[A-Za-z_][A-Za-z_0-9].*\\|^from +[A-Za-z_][A-Za-z_0-9]+ +import .*" nil t)
+              (setq imports
+                    (concat
+                     imports
                (buffer-substring-no-properties (match-beginning 0) (match-end 0)) ";"))))
     (when (and py-verbose-p (interactive-p)) (message "%s" imports))
     imports))
@@ -10072,7 +10079,7 @@ With \\[universal-argument] 4 is called `py-switch-shell' see docu there.
                            (expand-file-name py-shell-local-path)
                          (message "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'")))
                       ((comint-check-proc (current-buffer))
-                       (process-name (get-buffer-process (current-buffer))))
+                       (process-name (get-buffer-process (current-buffer)))) 
                       ((py-choose-shell-by-shebang))
                       ((py-choose-shell-by-import))
                       ((py-choose-shell-by-path))
@@ -11933,7 +11940,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
       (when (and (interactive-p) py-verbose-p) (message "py-local-versioned-command %s" py-local-versioned-command))
     (when (and (interactive-p) py-verbose-p) (message "py-local-command %s" py-local-command)))
   (if py-local-versioned-command
-      (cond ((string-match "[pP]ython3[^[:alpha:]]*$" py-local-versioned-command)
+    (cond ((string-match "[pP]ython3[^[:alpha:]]*$" py-local-versioned-command)
              (setq py-complete-function 'py-python-script-complete))
             ((string-match "[pP]ython2[^[:alpha:]]*$" py-local-versioned-command)
              (setq py-complete-function 'py-python-script-complete))
@@ -12802,8 +12809,8 @@ Uses `python-imports' to load modules against which to complete."
                      (save-excursion
                        (goto-char (point-min))
                        (when (re-search-forward (concat "^[ \t]*" (match-string-no-properties 1 word) "[ \t]*=[ \t]*[^ \n\r\f\t]+") nil t 1))
-                       (if imports
-                           (setq imports (concat imports (match-string-no-properties 0) ";"))
+                     (if imports
+                         (setq imports (concat imports (match-string-no-properties 0) ";"))
                          (setq imports (match-string-no-properties 0)))))
                    (unless (python-shell-completion--do-completion-at-point proc imports word)
                      (call-interactively 'dabbrev-expand))
@@ -12963,13 +12970,13 @@ Bug: if no IPython-shell is running, fails first time due to header returned, wh
           (if ipython-complete-use-separate-shell-p
               (unless (comint-check-proc (process-name (get-buffer-process (get-buffer-create "*IPython-Complete*"))))
                 (get-buffer-process (py-shell nil nil pyshellname 'noswitch nil "*IPython-Complete*")))
-            (progn
-              (while (and processlist (not done))
-                (when (and
-                       (string= pyshellname (process-name (car processlist)))
-                       (processp (car processlist))
-                       (setq done (car processlist))))
-                (setq processlist (cdr processlist)))
+          (progn
+            (while (and processlist (not done))
+              (when (and
+                     (string= pyshellname (process-name (car processlist)))
+                     (processp (car processlist))
+                     (setq done (car processlist))))
+              (setq processlist (cdr processlist)))
               done)))
          (python-process (or process
                              (setq python-process (get-buffer-process (py-shell nil nil (if (string-match "[iI][pP]ython[^[:alpha:]]*$"  pyshellname) pyshellname "ipython") 'noswitch nil)))))
@@ -13168,7 +13175,7 @@ Let's have this until more Emacs-like help is prepared "
 
 (defalias 'pylint-doku 'py-pylint-doku)
 (defun py-pylint-doku ()
-  "Display Pylint Documentation.
+  "Display Pylint Documentation. 
 
 Calls `pylint --full-documentation'"
   (interactive)
@@ -13226,9 +13233,9 @@ Let's have this until more Emacs-like help is prepared "
   ;; (set-buffer (get-buffer-create "*Pyflakes-Help*"))
   ;; (erase-buffer)
   (with-help-window "*Pyflakes-Help*"
-    (with-current-buffer standard-output
+      (with-current-buffer standard-output
       (insert "       pyflakes [file-or-directory ...]
-
+       
        Pyflakes is a simple program which checks Python
        source files for errors. It is similar to
        PyChecker in scope, but differs in that it does
