@@ -1118,7 +1118,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall tqs-list-error-test \
 --funcall UnicodeEncodeError-python3-test \
 --funcall dict-error-test \
-
+--funcall not-that-useful-completion-lp:1003580-test \
 else
 
 cat    <<EOF

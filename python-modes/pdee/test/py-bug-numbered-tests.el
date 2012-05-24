@@ -46,6 +46,7 @@
            'nested-indents-lp:328775-test
            'previous-statement-lp:637955-test)
         (list
+         'not-that-useful-completion-lp:1003580-test
          'pycomplete-same-folder-class-lp:889052-test
          'pycomplete-same-folder-def-lp:889052-test
          'indent-region-lp:997958-test
@@ -2784,10 +2785,10 @@ CLASS_INS.someDe
   (interactive "p")
   (let ((teststring "#!/usr/bin/python
 "))
-  (py-bug-tests-intern 'shebang-interpreter-not-detected-lp:1001327-base arg teststring)))
+    (py-bug-tests-intern 'shebang-interpreter-not-detected-lp:1001327-base arg teststring)))
 
 (defun shebang-interpreter-not-detected-lp:1001327-base ()
-    (assert (string= "/usr/bin/python" (py-choose-shell)) nil "shebang-interpreter-not-detected-lp:1001327-test failed"))
+  (assert (string= "/usr/bin/python" (py-choose-shell)) nil "shebang-interpreter-not-detected-lp:1001327-test failed"))
 
 (defun no-completion-at-all-lp:1001328-test (&optional arg)
   (interactive "p")
@@ -2795,13 +2796,33 @@ CLASS_INS.someDe
 basdklfjasdf = 3
 basd
 "))
-  (py-bug-tests-intern 'no-completion-at-all-lp:1001328-base arg teststring)))
+    (py-bug-tests-intern 'no-completion-at-all-lp:1001328-base arg teststring)))
 
 (defun no-completion-at-all-lp:1001328-base ()
   (goto-char 40)
   (py-python-script-complete)
   (beginning-of-line)
-    (assert (looking-at "basdklfjasdf") nil "no-completion-at-all-lp:1001328-test failed"))
+  (assert (looking-at "basdklfjasdf") nil "no-completion-at-all-lp:1001328-test failed"))
+
+(defun not-that-useful-completion-lp:1003580-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+import numpy
+def test_bu():
+    numpy.
+"))
+    (py-bug-tests-intern 'not-that-useful-completion-lp:1003580-base arg teststring)))
+
+(defun not-that-useful-completion-lp:1003580-base ()
+  (goto-char 86)
+  (py-python-script-complete)
+  (search-forward "False")
+  (choose-completion)
+  (back-to-indentation)
+  (assert (looking-at "numpy.False_") nil "not-that-useful-completion-lp:1003580-test failed"))
+
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
+
