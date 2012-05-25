@@ -1,7 +1,16 @@
 Python Mode News
 ================
 
+New in version 6.0.9
+--------------------
+
+- autopair-mode delivered
+  Credits to Joao Tavora http://autopair.googlecode.com
+  see README-AUTOPAIR.org for details
+
+
 New in version 6.0.8
+
 --------------------
 
 - `py-pep8-run', new command checking formatting

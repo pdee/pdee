@@ -77,6 +77,14 @@
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-prepare-autopair-mode-p t
+  "If autopair-mode stuff should be loaded. Default is `t'
+
+When `t' M-x `autopair-mode' will toggle it.
+See also `autopair-mode-on'. "
+  :type 'boolean
+  :group 'python-mode)
+
 (defcustom py-indent-no-completion-p t
   "If completion function should insert a TAB when no completion found. Default is `t'"
 
@@ -198,6 +206,13 @@ Default is nil. "
 
 (defcustom py-tab-indent t
   "*Non-nil means TAB in Python mode calls `py-indent-line'."
+  :type 'boolean
+  :group 'python-mode)
+
+(defcustom py-autopair-mode t
+  "Load `autopair-mode' written by Joao Tavora <joaotavora [at] gmail.com>.
+
+URL: http://autopair.googlecode.com "
   :type 'boolean
   :group 'python-mode)
 
@@ -1958,6 +1973,10 @@ Load into inferior Python session"]
              :help "`pdb'
 Run pdb under GUD"]
             "-"
+
+            ["Toggle autopair-mode" autopair-mode 
+             :help "When `py-prepare-autopair-mode-p' is `t', this toggles `autopair-mode' "]
+
             ["Toggle py-smart-indentation" toggle-py-smart-indentation
              :help "See also `py-smart-indentation-on', `-off' "]
 
@@ -5268,6 +5287,15 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
       (easy-menu-add py-menu))
   (when py-hide-show-minor-mode-p (hs-minor-mode 1))
   ;; (py-send-string "import emacs")
+  (when py-prepare-autopair-mode-p
+    (add-to-list 'load-path (concat (py-normalize-directory py-install-directory) "autopair"))
+    (load (concat (py-normalize-directory py-install-directory) "autopair" "/" "autopair.el") nil t)
+    (add-hook 'python-mode-hook
+          #'(lambda ()
+              (setq autopair-handle-action-fns
+                    (list #'autopair-default-handle-action
+                          #'autopair-python-triple-quote-action))))
+)
   (when py-start-run-py-shell
     ;; py-shell may split window, provide restore
     (window-configuration-to-register 213465879)
