@@ -2823,6 +2823,21 @@ def test_bu():
   (assert (looking-at "numpy.False_") nil "not-that-useful-completion-lp:1003580-test failed"))
 
 
+(defun Completion-fails-in-ipython-buffer-r989-lp:1004329-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env ipython
+# -*- coding: utf-8 -*-
+ex
+"))
+  (py-bug-tests-intern 'Completion-fails-in-ipython-buffer-r989-lp:1004329-base arg teststring)))
+
+(defun Completion-fails-in-ipython-buffer-r989-lp:1004329-base ()
+    (goto-char 51)
+    (ipython-complete)
+    (beginning-of-line) 
+    (assert nil "Completion-fails-in-ipython-buffer-r989-lp:1004329-test failed"))
+
+
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
 

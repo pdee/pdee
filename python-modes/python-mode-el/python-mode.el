@@ -12853,14 +12853,15 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (if py-local-versioned-command
       (when (and (interactive-p) py-verbose-p) (message "py-local-versioned-command %s" py-local-versioned-command))
     (when (and (interactive-p) py-verbose-p) (message "py-local-command %s" py-local-command)))
-  (if py-local-versioned-command
-      (cond ((string-match "[pP]ython3[^[:alpha:]]*$" py-local-versioned-command)
-             (setq py-complete-function 'py-python-script-complete))
-            ((string-match "[pP]ython2[^[:alpha:]]*$" py-local-versioned-command)
-             (setq py-complete-function 'py-python-script-complete))
-            (t (setq py-complete-function 'py-completion-at-point)))
-    ;; should never reach this clause
-    (setq py-complete-function 'py-completion-at-point))
+  (unless py-complete-function
+    (if py-local-versioned-command
+        (cond ((string-match "[pP]ython3[^[:alpha:]]*$" py-local-versioned-command)
+               (setq py-complete-function 'py-python-script-complete))
+              ((string-match "[pP]ython2[^[:alpha:]]*$" py-local-versioned-command)
+               (setq py-complete-function 'py-python-script-complete))
+              (t (setq py-complete-function 'py-completion-at-point)))
+      ;; should never reach this clause
+      (setq py-complete-function 'py-completion-at-point)))
   (if py-complete-function
       (add-hook 'completion-at-point-functions
                 py-complete-function nil 'local)
@@ -12923,8 +12924,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
               #'(lambda ()
                   (setq autopair-handle-action-fns
                         (list #'autopair-default-handle-action
-                              #'autopair-python-triple-quote-action))))
-    )
+                              #'autopair-python-triple-quote-action)))))
   (when py-start-run-py-shell
     ;; py-shell may split window, provide restore
     (window-configuration-to-register 213465879)

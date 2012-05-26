@@ -1974,7 +1974,7 @@ Load into inferior Python session"]
 Run pdb under GUD"]
             "-"
 
-            ["Toggle autopair-mode" autopair-mode 
+            ["Toggle autopair-mode" autopair-mode
              :help "When `py-prepare-autopair-mode-p' is `t', this toggles `autopair-mode' "]
 
             ["Toggle py-smart-indentation" toggle-py-smart-indentation
@@ -5222,14 +5222,15 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (if py-local-versioned-command
       (when (and (interactive-p) py-verbose-p) (message "py-local-versioned-command %s" py-local-versioned-command))
     (when (and (interactive-p) py-verbose-p) (message "py-local-command %s" py-local-command)))
-  (if py-local-versioned-command
-      (cond ((string-match "[pP]ython3[^[:alpha:]]*$" py-local-versioned-command)
-             (setq py-complete-function 'py-python-script-complete))
-            ((string-match "[pP]ython2[^[:alpha:]]*$" py-local-versioned-command)
-             (setq py-complete-function 'py-python-script-complete))
-            (t (setq py-complete-function 'py-completion-at-point)))
-    ;; should never reach this clause
-    (setq py-complete-function 'py-completion-at-point))
+  (unless py-complete-function
+    (if py-local-versioned-command
+        (cond ((string-match "[pP]ython3[^[:alpha:]]*$" py-local-versioned-command)
+               (setq py-complete-function 'py-python-script-complete))
+              ((string-match "[pP]ython2[^[:alpha:]]*$" py-local-versioned-command)
+               (setq py-complete-function 'py-python-script-complete))
+              (t (setq py-complete-function 'py-completion-at-point)))
+      ;; should never reach this clause
+      (setq py-complete-function 'py-completion-at-point)))
   (if py-complete-function
       (add-hook 'completion-at-point-functions
                 py-complete-function nil 'local)
@@ -5291,11 +5292,10 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
     (add-to-list 'load-path (concat (py-normalize-directory py-install-directory) "autopair"))
     (load (concat (py-normalize-directory py-install-directory) "autopair" "/" "autopair.el") nil t)
     (add-hook 'python-mode-hook
-          #'(lambda ()
-              (setq autopair-handle-action-fns
-                    (list #'autopair-default-handle-action
-                          #'autopair-python-triple-quote-action))))
-)
+              #'(lambda ()
+                  (setq autopair-handle-action-fns
+                        (list #'autopair-default-handle-action
+                              #'autopair-python-triple-quote-action)))))
   (when py-start-run-py-shell
     ;; py-shell may split window, provide restore
     (window-configuration-to-register 213465879)
