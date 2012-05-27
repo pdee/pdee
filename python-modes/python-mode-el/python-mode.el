@@ -13245,7 +13245,7 @@ For running multiple processes in multiple buffers, see `run-python' and
     (if (string-match "[iI][pP]ython" py-local-command)
         (progn
           (setq py-complete-function 'ipython-complete)
-          (setq ipython-version (string-to-number (substring (shell-command-to-string (concat py-shell-name " -V")) 2 -1)))
+          (setq ipython-version (string-to-number (substring (shell-command-to-string (concat py-local-command " -Version")) 2)))
           (setq ipython-completion-command-string (if (< ipython-version 11) ipython0.10-completion-command-string ipython0.11-completion-command-string)))
       ;; if `python-local-version' already contains version
       (if (string-match "[0-9]" py-local-command)
@@ -13264,6 +13264,7 @@ For running multiple processes in multiple buffers, see `run-python' and
             py-complete-function nil 'local)
   (define-key inferior-python-mode-map [tab] py-complete-function)
   (define-key inferior-python-mode-map "\t" py-complete-function)
+  (define-key inferior-python-mode-map [(meta tab)] py-complete-function)
   (compilation-shell-minor-mode 1))
 
 (defvar python-preoutput-leftover nil)
