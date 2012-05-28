@@ -1641,23 +1641,27 @@ of commands.)"
   "Send STRING to inferior Python PROCESS.
 When `py-verbose-p' and MSG is non-nil messages the first line of STRING."
   (interactive "sPython command: ")
-  (let ((process (or process (python-shell-get-or-create-process)))
-        (lines (split-string string "\n" t)))
+  (let* ((process (or process (python-shell-get-or-create-process)))
+         (lines (split-string string "\n" t))
+         ;; (temp-file-name (make-temp-file "py"))
+         (temp-file-name (concat (py-normalize-directory py-temp-directory) "psss-temp.py"))
+         (file-name (or (buffer-file-name) temp-file-name)))
     ;; (when (and py-verbose-p msg)
     ;; (message (format "Sent: %s..." (nth 0 lines)))
     ;; )
     (if (> (length lines) 1)
-        (let* ((temp-file-name (make-temp-file "py"))
-               (file-name (or (buffer-file-name) temp-file-name)))
+        (progn
           (with-temp-file temp-file-name
             (insert string)
             (delete-trailing-whitespace))
-          (python-shell-send-file file-name process temp-file-name)
-          (when (file-readable-p temp-file-name) (delete-file temp-file-name)))
+          (python-shell-send-file file-name process temp-file-name))
       (comint-send-string process string)
       (when (or (not (string-match "\n$" string))
                 (string-match "\n[ \t].*\n?$" string))
-        (comint-send-string process "\n")))))
+        (comint-send-string process "\n")))
+    ;; (when (file-readable-p temp-file-name) (delete-file temp-file-name))
+    )
+  )
 
 (defun python-shell-send-string-no-output (string &optional process msg)
   "Send STRING to PROCESS and inhibit output.
@@ -1672,7 +1676,7 @@ the output."
                       (setq output-buffer (concat output-buffer string))
                       "")))))
     (python-shell-send-string string process msg)
-    (accept-process-output process)
+    (accept-process-output process 2)
     (replace-regexp-in-string
      (if (> (length python-shell-prompt-output-regexp) 0)
          (format "\n*%s$\\|^%s\\|\n$"
@@ -1726,7 +1730,8 @@ FILE-NAME."
   (let* ((process (or process (python-shell-get-or-create-process)))
          (temp-file-name (when temp-file-name
                            (expand-file-name temp-file-name)))
-         (file-name (or (expand-file-name file-name) temp-file-name)))
+         (file-name (or (expand-file-name file-name) temp-file-name))
+         py-python-command-args)
     (when (not file-name)
       (error "If FILE-NAME is nil then TEMP-FILE-NAME must be non-nil"))
     (python-shell-send-string
@@ -1880,12 +1885,12 @@ completions on the current context."
       (when (> (length completions) 2)
         (split-string completions "^'\\|^\"\\|;\\|'$\\|\"$" t)))))
 
-(defun python-shell-completion--do-completion-at-point (process line input)
+(defun python-shell-completion--do-completion-at-point (process imports input)
   "Do completion at point for PROCESS."
   (with-syntax-table python-dotty-syntax-table
     (let* ((code
-	    (if line
-                (concat line  python-shell-module-completion-string-code)
+	    (if imports
+                (concat imports  python-shell-module-completion-string-code)
               python-shell-module-completion-string-code))
 	   (completions
             (python-shell-completion--get-completions
@@ -13256,7 +13261,7 @@ For running multiple processes in multiple buffers, see `run-python' and
       (when (and (interactive-p) py-verbose-p) (message "py-local-versioned-command %s" py-local-versioned-command))
       (cond ((string-match "[pP]ython3[^[:alpha:]]*$" py-local-versioned-command)
              (setq py-complete-function 'py-python3-shell-complete))
-            (t (setq py-complete-function 'py-python2-shell-complete)))))
+            (t (setq py-complete-function 'py-shell-complete)))))
   (add-hook 'comint-preoutput-filter-functions #'python-preoutput-filter
             nil t)
   ;; (add-hook 'inferior-python-mode-hook 'py-shell-hook)
@@ -13765,7 +13770,8 @@ Uses `python-imports' to load modules against which to complete."
           (t (or (setq proc (get-buffer-process shell))
                  (setq proc (get-buffer-process (py-shell nil nil shell))))
              (message "%s" (processp proc))
-             (python-shell-completion--do-completion-at-point proc)(buffer-substring-no-properties beg end) word))))
+             (python-shell-completion--do-completion-at-point proc nil word))))
+  nil)
 
 (defun py-python3-shell-complete (&optional shell)
   "Complete word before point, if any. Otherwise insert TAB. "
@@ -13779,7 +13785,8 @@ Uses `python-imports' to load modules against which to complete."
            (message "%s" "Nothing to complete. ")
            (tab-to-tab-stop))
           (t
-           (python-shell-completion--do-completion-at-point (get-buffer-process (current-buffer)) (buffer-substring-no-properties beg end) word)))))
+           (python-shell-completion--do-completion-at-point (get-buffer-process (current-buffer)) nil word)
+           nil))))
 
 (defun py-shell-complete (&optional shell)
   "Complete word before point, if any. Otherwise insert TAB. "
@@ -13885,9 +13892,8 @@ ipython0.11-completion-command-string also covers version 0.12")
   "Complete the python symbol before point.
 
 If no completion available, insert a TAB.
-Returns the completed symbol, a string, if successful, nil otherwise.
+Returns the completed symbol, a string, if successful, nil otherwise. "
 
-Bug: if no IPython-shell is running, fails first time due to header returned, which messes up the result. Please repeat once then. "
   (interactive "*")
   (let* (py-split-windows-on-execute-p
          py-switch-buffers-on-execute-p
@@ -13896,7 +13902,7 @@ Bug: if no IPython-shell is running, fails first time due to header returned, wh
          (end (point))
          (pattern (buffer-substring-no-properties beg end))
          (sep ";")
-         (pyshellname (py-choose-shell))
+         (pyshellname "ipython")
          (processlist (process-list))
          done
          (process
@@ -13943,17 +13949,22 @@ Bug: if no IPython-shell is running, fails first time due to header returned, wh
              ;; before, first completion are not delivered
              ;; (if done (ipython-complete done)
              (message "Can't find completion for \"%s\"" pattern)
-             (ding))
+             (ding)
+             nil)
             ((not (string= pattern completion))
              (delete-region beg end)
-             (insert completion))
+             (insert completion)
+             nil)
             (t
-             (message "Making completion list...")
+             (when py-verbose-p (message "Making completion list..."))
              (with-output-to-temp-buffer "*Python Completions*"
                (display-completion-list (all-completions pattern completion-table)))
-             (message "Making completion list...%s" "done"))))
+             nil
+             ;; (message "Making completion list...%s" "done")
+             )))
     ;; minibuffer.el requires that
-    (list beg end)))
+    ;; (list beg end)
+    ))
 
 (defun ipython-complete-py-shell-name (&optional done)
   "Complete the python symbol before point.

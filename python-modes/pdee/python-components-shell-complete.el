@@ -325,8 +325,8 @@ Uses `python-imports' to load modules against which to complete."
                          (when (re-search-forward (concat "^[ \t]*" (match-string-no-properties 1 word) "[ \t]*=[ \t]*[^ \n\r\f\t]+") nil t 1)))
                        (if imports
                            (unless (string-match (concat "import " (match-string-no-properties 1 word) ";") imports)
-                           (setq imports
-                                 (concat imports (concat "import" (match-string-no-properties 1 word) ";"))))
+                             (setq imports
+                                   (concat imports (concat "import" (match-string-no-properties 1 word) ";"))))
                          (setq imports (match-string-no-properties 0 word)))))
                    (unless (python-shell-completion--do-completion-at-point proc imports word)
                      (if (and (not (window-full-height-p))
@@ -356,7 +356,8 @@ Uses `python-imports' to load modules against which to complete."
           (t (or (setq proc (get-buffer-process shell))
                  (setq proc (get-buffer-process (py-shell nil nil shell))))
              (message "%s" (processp proc))
-             (python-shell-completion--do-completion-at-point proc (buffer-substring-no-properties beg end) word)))))
+             (python-shell-completion--do-completion-at-point proc nil word))))
+  nil)
 
 (defun py-python3-shell-complete (&optional shell)
   "Complete word before point, if any. Otherwise insert TAB. "
@@ -370,7 +371,8 @@ Uses `python-imports' to load modules against which to complete."
            (message "%s" "Nothing to complete. ")
            (tab-to-tab-stop))
           (t
-           (python-shell-completion--do-completion-at-point (get-buffer-process (current-buffer)) (buffer-substring-no-properties beg end) word)))))
+           (python-shell-completion--do-completion-at-point (get-buffer-process (current-buffer)) nil word)
+           nil))))
 
 (defun py-shell-complete (&optional shell)
   "Complete word before point, if any. Otherwise insert TAB. "
@@ -451,9 +453,6 @@ complete('%s')" word) shell))
       ;; list-typ return required by `completion-at-point'
       (list beg end))))
 
-;; (defun ipython-complete (&optional done)
-;;   "Complete the python symbol before point.
-
 (defun ipython-complete-py-shell-name (&optional done)
   "Complete the python symbol before point.
 
@@ -514,9 +513,8 @@ Bug: if no IPython-shell is running, fails first time due to header returned, wh
   "Complete the python symbol before point.
 
 If no completion available, insert a TAB.
-Returns the completed symbol, a string, if successful, nil otherwise.
+Returns the completed symbol, a string, if successful, nil otherwise. "
 
-Bug: if no IPython-shell is running, fails first time due to header returned, which messes up the result. Please repeat once then. "
   (interactive "*")
   (let* (py-split-windows-on-execute-p
          py-switch-buffers-on-execute-p
@@ -525,7 +523,7 @@ Bug: if no IPython-shell is running, fails first time due to header returned, wh
          (end (point))
          (pattern (buffer-substring-no-properties beg end))
          (sep ";")
-         (pyshellname (py-choose-shell))
+         (pyshellname "ipython")
          (processlist (process-list))
          done
          (process
@@ -572,17 +570,22 @@ Bug: if no IPython-shell is running, fails first time due to header returned, wh
              ;; before, first completion are not delivered
              ;; (if done (ipython-complete done)
              (message "Can't find completion for \"%s\"" pattern)
-             (ding))
+             (ding)
+             nil)
             ((not (string= pattern completion))
              (delete-region beg end)
-             (insert completion))
+             (insert completion)
+             nil)
             (t
-             (message "Making completion list...")
+             (when py-verbose-p (message "Making completion list..."))
              (with-output-to-temp-buffer "*Python Completions*"
                (display-completion-list (all-completions pattern completion-table)))
-             (message "Making completion list...%s" "done"))))
+             nil
+             ;; (message "Making completion list...%s" "done")
+             )))
     ;; minibuffer.el requires that
-    (list beg end)))
+    ;; (list beg end)
+    ))
 
 (provide 'python-components-shell-complete)
 

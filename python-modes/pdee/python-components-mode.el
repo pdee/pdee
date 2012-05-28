@@ -4215,6 +4215,7 @@ For running multiple processes in multiple buffers, see `run-python' and
   :group 'python-mode
   (setq mode-line-process '(":%s"))
   (set (make-local-variable 'comint-input-filter) 'py-history-input-filter)
+  ;; (python-shell-send-setup-code)
   (python--set-prompt-regexp)
   (set (make-local-variable 'compilation-error-regexp-alist)
        python-compilation-regexp-alist)
@@ -4237,7 +4238,7 @@ For running multiple processes in multiple buffers, see `run-python' and
       (when (and (interactive-p) py-verbose-p) (message "py-local-versioned-command %s" py-local-versioned-command))
       (cond ((string-match "[pP]ython3[^[:alpha:]]*$" py-local-versioned-command)
              (setq py-complete-function 'py-python3-shell-complete))
-            (t (setq py-complete-function 'py-python2-shell-complete)))))
+            (t (setq py-complete-function 'py-shell-complete)))))
   (add-hook 'comint-preoutput-filter-functions #'python-preoutput-filter
             nil t)
   ;; (add-hook 'inferior-python-mode-hook 'py-shell-hook)

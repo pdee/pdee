@@ -415,9 +415,24 @@ Bug: if no IPython-shell is running, fails first time due to header returned, wh
          (end (point))
          (pattern (buffer-substring-no-properties beg end))
          (sep ";")
-         (python-process (or (get-buffer-process (current-buffer))
-                             (get-buffer-process "*IPython*")
-                             (get-buffer-process (py-shell nil nil "ipython" 'noswitch nil))))
+         (pyshellname (py-choose-shell))
+         (processlist (process-list))
+         done
+         (process
+          (if ipython-complete-use-separate-shell-p
+              (unless (and (buffer-live-p "*IPython-Complete*")
+                           (comint-check-proc (process-name (get-buffer-process "*IPython-Complete*"))))
+                (get-buffer-process (py-shell nil nil pyshellname 'noswitch nil "*IPython-Complete*")))
+          (progn
+            (while (and processlist (not done))
+              (when (and
+                     (string= pyshellname (process-name (car processlist)))
+                     (processp (car processlist))
+                     (setq done (car processlist))))
+              (setq processlist (cdr processlist)))
+              done)))
+         (python-process (or process
+                             (setq python-process (get-buffer-process (py-shell nil nil (if (string-match "[iI][pP]ython[^[:alpha:]]*$"  pyshellname) pyshellname "ipython") 'noswitch nil)))))
          (comint-output-filter-functions
           (delq 'py-comint-output-filter-function comint-output-filter-functions))
          (comint-output-filter-functions
@@ -427,33 +442,42 @@ Bug: if no IPython-shell is running, fails first time due to header returned, wh
                       (setq ugly-return (concat ugly-return string))
                       (delete-region comint-last-output-start
                                      (process-mark (get-buffer-process (current-buffer))))))))
+
+         (ccs (or completion-command-string (py-set-ipython-completion-command-string
+                                             (process-name python-process))))
          completion completions completion-table ugly-return)
     (if (string= pattern "")
         (tab-to-tab-stop)
-      (process-send-string python-process
-                           (format (py-set-ipython-completion-command-string (downcase (process-name python-process))) pattern))
-      (accept-process-output python-process)
+      (process-send-string python-process (format ccs pattern))
+      (accept-process-output python-process 5)
       (setq completions
             (split-string (substring ugly-return 0 (position ?\n ugly-return)) sep))
       (setq completion-table (loop for str in completions
                                    collect (list str nil)))
       (setq completion (try-completion pattern completion-table))
-      (cond ((eq completion t))
+      (cond ((eq completion t)
+             (tab-to-tab-stop))
             ((null completion)
              ;; if an (I)Python shell didn't run
              ;; before, first completion are not delivered
              ;; (if done (ipython-complete done)
              (message "Can't find completion for \"%s\"" pattern)
-             (ding))
+             (ding)
+             nil)
             ((not (string= pattern completion))
              (delete-region beg end)
-             (insert completion))
+             (insert completion)
+             nil)
             (t
-             (message "Making completion list...")
+             (when py-verbose-p (message "Making completion list..."))
              (with-output-to-temp-buffer "*Python Completions*"
                (display-completion-list (all-completions pattern completion-table)))
-             (message "Making completion list...%s" "done"))))
-    completion))
+             nil
+             ;; (message "Making completion list...%s" "done")
+)))
+    ;; minibuffer.el requires that
+    ;; (list beg end)
+))
 
 ;;; Flymake
 (defun clear-flymake-allowed-file-name-masks (&optional suffix)

@@ -26,11 +26,6 @@
 
 ;;; Commentary: Build on top of Fabián E. Gallina's excellent work
 
-;; The diff for now: You don't need any longer to specify your custom
-;; `python-shell-completion-setup-code' and
-;; `python-shell-completion-string-code', python-mode.el will
-;; do that for you
-
 (defcustom python-shell-buffer-name "Python"
   "Default buffer name for Python interpreter."
   :type 'string
@@ -449,14 +444,16 @@ of commands.)"
   "Send STRING to inferior Python PROCESS.
 When `py-verbose-p' and MSG is non-nil messages the first line of STRING."
   (interactive "sPython command: ")
-  (let ((process (or process (python-shell-get-or-create-process)))
-        (lines (split-string string "\n" t)))
+  (let* ((process (or process (python-shell-get-or-create-process)))
+         (lines (split-string string "\n" t))
+         ;; (temp-file-name (make-temp-file "py"))
+         (temp-file-name (concat (py-normalize-directory py-temp-directory) "psss-temp.py"))
+         (file-name (or (buffer-file-name) temp-file-name)))
     ;; (when (and py-verbose-p msg)
     ;; (message (format "Sent: %s..." (nth 0 lines)))
-    ;; )
+    ;;)
     (if (> (length lines) 1)
-        (let* ((temp-file-name (make-temp-file "py"))
-               (file-name (or (buffer-file-name) temp-file-name)))
+        (progn
           (with-temp-file temp-file-name
             (insert string)
             (delete-trailing-whitespace))
@@ -464,7 +461,10 @@ When `py-verbose-p' and MSG is non-nil messages the first line of STRING."
       (comint-send-string process string)
       (when (or (not (string-match "\n$" string))
                 (string-match "\n[ \t].*\n?$" string))
-        (comint-send-string process "\n")))))
+        (comint-send-string process "\n")))
+    ;; (when (file-readable-p temp-file-name) (delete-file temp-file-name))
+    )
+  )
 
 (defun python-shell-send-string-no-output (string &optional process msg)
   "Send STRING to PROCESS and inhibit output.
@@ -479,7 +479,7 @@ the output."
                       (setq output-buffer (concat output-buffer string))
                       "")))))
     (python-shell-send-string string process msg)
-    (accept-process-output process)
+    (accept-process-output process 1)
     (replace-regexp-in-string
      (if (> (length python-shell-prompt-output-regexp) 0)
          (format "\n*%s$\\|^%s\\|\n$"
@@ -768,12 +768,12 @@ completions on the current context."
       (when (> (length completions) 2)
         (split-string completions "^'\\|^\"\\|;\\|'$\\|\"$" t)))))
 
-(defun python-shell-completion--do-completion-at-point (process line input)
+(defun python-shell-completion--do-completion-at-point (process imports input)
   "Do completion at point for PROCESS."
   (with-syntax-table python-dotty-syntax-table
     (let* ((code
-	    (if line
-                (concat line  python-shell-module-completion-string-code)
+	    (if imports
+                (concat imports  python-shell-module-completion-string-code)
               python-shell-module-completion-string-code))
            (completions
             (python-shell-completion--get-completions

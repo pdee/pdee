@@ -90,7 +90,6 @@ echo "\$PYTHONMODE: $PYTHONMODE"
 echo "\$PDIR/\$TESTFILE: $PDIR/$TESTFILE"
 
 $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'python)(unload-feature 'python t))" --eval "(when (featurep 'python-mode)(unload-feature 'python-mode t))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$TESTDIR/\")" --eval "(setq py-temp-directory (expand-file-name \"~/tmp\"))" --eval "(message \"py-temp-directory: %s\" py-temp-directory)" --eval "(setq py-install-directory \"$PDIR\"))" --eval "(message \"py-install-directory: %s\" py-install-directory)" -load "$PYMACS" -load $CCCMDS -load $COMINT -load $ANSICOLOR -load $CLMACS -load $BYTECOMP -load $CUSTOM -load $SKEL -load $PYTHONMODE -load $PYCO -load "$PCOT/$TESTFILE" -load "$PCOT/$TESTFILE2" -load "$PCOT/$TESTFILE3" -load "$PCOT/$TESTFILE4" -load "$PCOT/$TESTFILE5" --eval "(quietly-read-abbrev-file (expand-file-name \"~/.abbrev_defs\"))" \
---funcall completion-fails-in-python-script-r989-lp:1004613-test \
 --funcall py-end-of-statement-test \
 --funcall no-completion-at-all-lp:1001328-test \
 --funcall shebang-interpreter-not-detected-lp:1001327-test \
@@ -1115,6 +1114,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall split-windows-on-execute-p-test \
 --funcall script-buffer-appears-instead-of-python-shell-buffer-lp:957561-test \
 --funcall py-completion-at-point-test \
+--funcall completion-fails-in-python-script-r989-lp:1004613-test \
 --funcall py-install-directory-path-test \
 --funcall tqs-list-error-test \
 --funcall UnicodeEncodeError-python3-test \
