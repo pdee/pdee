@@ -88,6 +88,21 @@ Default is nil. "
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-modeline-display-full-path-p nil
+  "If the full PATH/TO/PYTHON should be displayed in shell modeline.
+
+Default is nil. Note: when `py-shell-name' is specified with path, it's shown as an acronym in buffer-name already. "
+
+  :type 'boolean
+  :group 'python-mode)
+
+(defcustom py-modeline-acronym-display-home-p nil
+  "If the modeline acronym should contain chars indicating the home-directory.
+
+Default is nil "
+  :type 'boolean
+  :group 'python-mode)
+
 (defun py-guess-pdb-path ()
   "If py-pdb-path isn't set, find location of pdb.py. "
   (interactive)
@@ -618,7 +633,6 @@ Default is \"\" "
   :type '(repeat string)
   :group 'python-mode
   :tag "PEP 8 Command Args")
-
 
 (defvar py-pyflakespep8-history nil)
 (defcustom py-pyflakespep8-command (concat py-install-directory "pyflakespep8.py")
@@ -1912,7 +1926,7 @@ completions on the current context."
              (progn (delete-char (- (length input)))
                     (insert completion)
                     ;; minibuffer.el expects a list, a bug IMO
-                    t))
+                    nil))
             (t
              (unless python-completion-original-window-configuration
                (setq python-completion-original-window-configuration
@@ -7328,7 +7342,17 @@ SEPCHAR is the file-path separator of your system. "
   (let ((sepchar (or sepchar (py-separator-char)))
         prefix erg suffix)
     (when (string-match (regexp-quote sepchar) name)
-      (setq prefix "ND"))
+      (unless py-modeline-acronym-display-home-p
+        (when (string-match (concat "^" (expand-file-name "~")) name)
+          (setq name (replace-regexp-in-string (concat "^" (expand-file-name "~")) "" name))))
+      (save-match-data
+        (setq liste (split-string name sepchar)))
+      (dolist (ele liste)
+        (unless (string= "" ele)
+          (setq prefix (concat prefix (char-to-string (aref ele 0))))))
+      (unless py-modeline-display-full-path-p
+
+        (setq name (substring name (1+ (string-match (concat sepchar "[^" sepchar "]+$") name))))))
     (setq erg
           (cond ((string= "ipython" name)
                  (replace-regexp-in-string "ipython" "IPython" name))
@@ -10445,7 +10469,6 @@ In Emacs-lisp, this might be useful
           #'(lambda ()
               (setq autopair-extra-pairs `(:comment ((?`. ?'))))))
 
-
 Note that this does *not* work for single characters,
 e.x. characters you want to behave as quotes.  See the
 docs/source comments for more details.")
@@ -10485,7 +10508,6 @@ ACTION is one of `opening', `insert-quote', `skip-quote',
 `backspace', `newline' or `paired-delimiter'. PAIR is the pair of
 the `autopair-inserted' character, if applicable. POS-BEFORE is
 value of point before action command took place .")
-
 
 (defvar autopair-wrap-action nil
   "Autowrap action decided on by autopair, if any.
@@ -10870,7 +10892,6 @@ returned) and uplisting stops there."
   (and (eq autopair-inserted (fourth (third autopair-triplet)))
        (condition-case nil (progn (scan-sexps (ninth (third autopair-triplet)) 1) nil) (error t))))
 
-
 (defun autopair-insert-opening ()
   (interactive)
   (setq autopair-inserted (autopair-calculate-inserted))
@@ -11140,7 +11161,6 @@ by this command. Then place point after the first, indented.\n\n"
     (error
      (message "[autopair] Ignored error in `autopair-default-handle-wrap-action'"))))
 
-
 ;; example python triple quote helper
 ;;
 (defun autopair-python-triple-quote-action (action pair pos-before)
@@ -11255,7 +11275,6 @@ by this command. Then place point after the first, indented.\n\n"
 (put 'autopair-insert-or-skip-paired-delimiter 'function-documentation
      '(concat "Insert or possibly skip over a character with a syntax-class of \"paired delimiter\"."
               (autopair-document-bindings)))
-
 
 
 ;; monkey-patching: Compatibility with delete-selection-mode and cua-mode

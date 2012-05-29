@@ -8,6 +8,22 @@ New in version 6.0.9
   Credits to Joao Tavora http://autopair.googlecode.com
   see README-AUTOPAIR.org for details
 
+- modeline enhanced
+  when a path/to/my/favoured/Python is given with `py-shell-name'
+  the Python-shell buffer before would display
+
+  *ND path/to/my/favoured/Python* 
+
+  now:
+
+  *ptmfP Python*
+
+  boolean `py-modeline-display-full-path-p' 
+  boolean `py-modeline-acronym-display-home-p'  
+  If the modeline acronym should contain chars indicating the home-directory.
+
+
+
 
 New in version 6.0.8
 

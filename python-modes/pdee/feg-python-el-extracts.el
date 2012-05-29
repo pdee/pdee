@@ -795,7 +795,7 @@ completions on the current context."
              (progn (delete-char (- (length input)))
                     (insert completion)
                     ;; minibuffer.el expects a list, a bug IMO
-                    t))
+                    nil))
             (t
              (unless python-completion-original-window-configuration
                (setq python-completion-original-window-configuration

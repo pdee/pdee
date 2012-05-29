@@ -77,6 +77,21 @@
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-modeline-display-full-path-p nil
+  "If the full PATH/TO/PYTHON should be displayed in shell modeline.
+
+Default is nil. Note: when `py-shell-name' is specified with path, it's shown as an acronym in buffer-name already. "
+
+  :type 'boolean
+  :group 'python-mode)
+
+(defcustom py-modeline-acronym-display-home-p nil
+  "If the modeline acronym should contain chars indicating the home-directory.
+
+Default is nil "
+  :type 'boolean
+  :group 'python-mode)
+
 (defcustom py-prepare-autopair-mode-p t
   "If autopair-mode stuff should be loaded. Default is `t'
 
