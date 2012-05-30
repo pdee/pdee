@@ -23,6 +23,20 @@
 ;;; Code:
 (require 'python-components-macros)
 ;;; Python named shells
+(defun py-shell-prepare (argprompt dedicated shell switch)
+  (if py-fontify-shell-buffer-p
+      (save-excursion
+        (let ((oldbuf (current-buffer))
+              (orig (point))
+              (erg (py-shell argprompt dedicated shell switch)))
+          (set-buffer erg)
+          (font-lock-unfontify-region (point-min) (line-beginning-position))
+          (unless switch
+            (set-buffer oldbuf)
+            (goto-char orig))
+          erg))
+    (py-shell argprompt dedicated shell switch)))
+
 (defun python (&optional argprompt dedicated switch)
   "Start an Python interpreter.
 

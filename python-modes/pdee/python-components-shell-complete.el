@@ -312,7 +312,7 @@ Uses `python-imports' to load modules against which to complete."
     (cond ((string= word "")
            (message "%s" "Nothing to complete. ")
            (tab-to-tab-stop))
-          (t (or (setq proc (get-buffer-process shell))
+          (t (or (setq proc (get-buffer-process (py-buffer-name-prepare shell)))
                  (setq proc (get-buffer-process (py-shell nil nil shell))))
              (if (processp proc)
                  (progn
@@ -328,16 +328,17 @@ Uses `python-imports' to load modules against which to complete."
                              (setq imports
                                    (concat imports (concat "import" (match-string-no-properties 1 word) ";"))))
                          (setq imports (match-string-no-properties 0 word)))))
-                   (unless (python-shell-completion--do-completion-at-point proc imports word)
+                   (python-shell-completion--do-completion-at-point proc imports word)
+                   ;; (unless (python-shell-completion--do-completion-at-point proc imports word)
+                   (when (eq (point) orig)
                      (if (and (not (window-full-height-p))
                               (buffer-live-p (get-buffer "*Python Completions*")))
                          (progn
                            (set-buffer "*Python Completions*")
                            (switch-to-buffer (current-buffer))
                            (delete-other-windows)
-                           (search-forward word)
-                           )
-                       (call-interactively 'dabbrev-expand)))
+                           (search-forward word))
+                       (dabbrev-expand nil)))
                    nil)
                (error "No completion process at proc"))))))
 

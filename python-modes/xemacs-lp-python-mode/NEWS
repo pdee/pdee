@@ -8,6 +8,9 @@ New in version 6.0.9
   Credits to Joao Tavora http://autopair.googlecode.com
   see README-AUTOPAIR.org for details
 
+- Syntax highlighting in Python-shell buffers enabled
+  boolean `py-fontify-shell-buffer-p', default is nil
+
 - modeline enhanced
   when a path/to/my/favoured/Python is given with `py-shell-name'
   the Python-shell buffer before would display

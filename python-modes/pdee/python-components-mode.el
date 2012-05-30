@@ -77,6 +77,17 @@
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-fontify-shell-buffer-p nil
+  "If code in Python shell should be highlighted as in script buffer.
+
+Default is nil.
+
+Seems convenient when playing with stuff in IPython shell
+Might not be TRT when a lot of output arrives "
+
+  :type 'boolean
+  :group 'python-mode)
+
 (defcustom py-modeline-display-full-path-p nil
   "If the full PATH/TO/PYTHON should be displayed in shell modeline.
 
@@ -4229,8 +4240,23 @@ For running multiple processes in multiple buffers, see `run-python' and
 \\{inferior-python-mode-map}"
   :group 'python-mode
   (setq mode-line-process '(":%s"))
+  (when py-fontify-shell-buffer-p
+    (set (make-local-variable 'font-lock-defaults)
+         '(python-font-lock-keywords nil nil nil nil
+                                     (font-lock-syntactic-keywords
+                                      . python-font-lock-syntactic-keywords)
+                                     ;; This probably isn't worth it.
+                                     ;; (font-lock-syntactic-face-function
+                                     ;;  . python-font-lock-syntactic-face-function)
+                                     )))
   (set (make-local-variable 'comint-input-filter) 'py-history-input-filter)
-  ;; (python-shell-send-setup-code)
+  (set (make-local-variable 'comment-start) "# ")
+  (set (make-local-variable 'comment-start-skip) "^[ \t]*#+ *")
+  (set (make-local-variable 'comment-column) 40)
+  (set (make-local-variable 'comment-indent-function) #'py-comment-indent-function)
+  (set (make-local-variable 'indent-region-function) 'py-indent-region)
+  (set (make-local-variable 'indent-line-function) 'py-indent-line)
+  (python-shell-send-setup-code)
   (python--set-prompt-regexp)
   (set (make-local-variable 'compilation-error-regexp-alist)
        python-compilation-regexp-alist)

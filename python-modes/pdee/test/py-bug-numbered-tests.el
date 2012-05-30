@@ -2315,8 +2315,10 @@ I am using version 6.0.4
     (py-bug-tests-intern 'py-shell-invoking-jython-lp:835151-base arg teststring)))
 
 (defun py-shell-invoking-jython-lp:835151-base ()
-  (setq py-shell-name "jython")
-  (assert (markerp (py-execute-buffer)) nil "py-shell-invoking-jython-lp:835151-test failed"))
+  (let ((py-shell-name "jython")
+        (erg (py-execute-buffer)))
+    (sit-for 0.1)
+    (assert (markerp erg) nil "py-shell-invoking-jython-lp:835151-test failed")))
 
 (defun py-shell-invoking-python3.2-lp:835151-test (&optional arg)
   (interactive "p")
@@ -2830,7 +2832,7 @@ def test_bu():
 # -*- coding: utf-8 -*-
 ex
 "))
-  (py-bug-tests-intern 'completion-fails-in-python-script-r989-lp:1004613-base arg teststring)))
+    (py-bug-tests-intern 'completion-fails-in-python-script-r989-lp:1004613-base arg teststring)))
 
 (defun completion-fails-in-python-script-r989-lp:1004613-base ()
   (when (buffer-live-p (get-buffer "*Python Completions*"))

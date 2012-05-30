@@ -88,6 +88,17 @@ Default is nil. "
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-fontify-shell-buffer-p nil
+  "If code in Python shell should be highlighted as in script buffer.
+
+Default is nil.
+
+Seems convenient when playing with stuff in IPython shell
+Might not be TRT when a lot of output arrives "
+
+  :type 'boolean
+  :group 'python-mode)
+
 (defcustom py-modeline-display-full-path-p nil
   "If the full PATH/TO/PYTHON should be displayed in shell modeline.
 
@@ -7245,23 +7256,23 @@ This function is appropriate for `comint-output-filter-functions'."
           (message "%s" cmd)
         (message "%s" "Could not detect Python on your system")))))
 
-(defmacro py-separator-char ()
+(defun py-separator-char ()
   "Return the file-path separator char from current machine.
 
 When `py-separator-char' is customized, its taken.
 Returns char found. "
-  `(let ((erg (cond ((characterp py-separator-char)
-                     (char-to-string py-separator-char))
-                    ;; epd hack
-                    ((and
-                      (string-match "[Ii][Pp]ython" py-shell-name)
-                      (string-match "epd\\|EPD" py-shell-name))
-                     (setq erg (shell-command-to-string (concat py-shell-name " -c \"import os; print(os.sep)\"")))
-                     (setq erg (replace-regexp-in-string "\n" "" erg))
-                     (when (string-match "^$" erg)
-                       (setq erg (substring erg (string-match "^$" erg)))))
-                    (t (setq erg (shell-command-to-string (concat py-shell-name " -W ignore" " -c \"import os; print(os.sep)\"")))))))
-     (replace-regexp-in-string "\n" "" erg)))
+  (let ((erg (cond ((characterp py-separator-char)
+                    (char-to-string py-separator-char))
+                   ;; epd hack
+                   ((and
+                     (string-match "[Ii][Pp]ython" py-shell-name)
+                     (string-match "epd\\|EPD" py-shell-name))
+                    (setq erg (shell-command-to-string (concat py-shell-name " -c \"import os; print(os.sep)\"")))
+                    (setq erg (replace-regexp-in-string "\n" "" erg))
+                    (when (string-match "^$" erg)
+                      (setq erg (substring erg (string-match "^$" erg)))))
+                   (t (setq erg (shell-command-to-string (concat py-shell-name " -W ignore" " -c \"import os; print(os.sep)\"")))))))
+    (replace-regexp-in-string "\n" "" erg)))
 
 (defun py-process-name (&optional name dedicated nostars sepchar)
   "Return the name of the running Python process, `get-process' willsee it. "
@@ -7519,8 +7530,10 @@ When DONE is `t', `py-shell-manage-windows' is omitted
       (set-buffer (get-buffer-create
                    (apply 'make-comint-in-buffer executable py-buffer-name executable nil args)))
       (setq python-buffer (current-buffer))
-      (accept-process-output (get-buffer-process python-buffer) 5)
       (inferior-python-mode)
+      (when py-fontify-shell-buffer-p
+        (font-lock-unfontify-region (point-min) (line-beginning-position)))
+      ;; (accept-process-output (get-buffer-process python-buffer) 1)
       (setq comint-input-sender 'py-shell-simple-send)
       (setq comint-input-ring-file-name
             (cond ((string-match "[iI][pP]ython[[:alnum:]]*$" py-buffer-name)
@@ -7533,8 +7546,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
                    (concat "~/." (substring py-buffer-name 0 (string-match "-" py-buffer-name)) "_history"))
                   ;; .pyhistory might be locked from outside Emacs
                   ;; (t "~/.pyhistory")
-                  (t (concat "~/." (py-report-executable py-buffer-name) "_history")
-                     )))
+                  (t (concat "~/." (py-report-executable py-buffer-name) "_history"))))
       (comint-read-input-ring t)
       (set-process-sentinel (get-buffer-process (current-buffer))
                             #'shell-write-history-on-exit)
@@ -7558,7 +7570,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
 
 (defalias 'iyp 'ipython)
 (defalias 'ipy 'ipython)
-;;; Python named shells
+;;; Named shells
 (defun python (&optional argprompt dedicated switch)
   "Start an Python interpreter.
 
@@ -7954,7 +7966,7 @@ When called from a programm, it accepts a string specifying a shell which will b
     (py-fix-start (point-min)(point-max))
     (py-if-needed-insert-shell (prin1-to-string proc) sepchar)
     (unless wholebuf (py-insert-coding))
-    (py-insert-execute-directory)
+    (unless (string-match "[jJ]ython" pyshellname) (py-insert-execute-directory))
     (cond (python-mode-v5-behavior-p
 
            (let ((cmd (concat pyshellname (if (string-equal py-which-bufname
@@ -9574,9 +9586,9 @@ it defaults to \"\\(.*?\\)\""
 (defun py-printform-insert (&optional arg)
   "Inserts a print statement out of current `(car kill-ring)' by default, inserts ARG instead if delivered. "
   (interactive "*")
-  (lexical-let* ((name (string-strip (or arg (car kill-ring))))
-                 (form (cond ((eq major-mode 'python-mode)
-                              (concat "print \"" name ": %s \" % " name)))))
+  (let* ((name (string-strip (or arg (car kill-ring))))
+         (form (cond ((or (eq major-mode 'python-mode)(eq major-mode 'inferior-python-mode))
+                      (concat "print \"" name ": %s \" % " name)))))
     (insert form)))
 
 (defun py-documentation (w)
@@ -9619,9 +9631,9 @@ it defaults to \"\\(.*?\\)\""
 (defun py-line-to-printform-python2 (&optional arg)
   "Transforms the item on current in a print statement. "
   (interactive "*")
-  (lexical-let* ((name (thing-at-point 'word))
-                 (form (cond ((eq major-mode 'python-mode)
-                              (concat "print \"" name ": %s \" % " name)))))
+  (let* ((name (thing-at-point 'word))
+         (form (cond ((or (eq major-mode 'python-mode)(eq major-mode 'inferior-python-mode))
+                      (concat "print \"" name ": %s \" % " name)))))
     (delete-region (line-beginning-position) (line-end-position))
     (insert form))
   (forward-line 1)
@@ -13257,7 +13269,23 @@ For running multiple processes in multiple buffers, see `run-python' and
 \\{inferior-python-mode-map}"
   :group 'python-mode
   (setq mode-line-process '(":%s"))
+  (when py-fontify-shell-buffer-p
+    (set (make-local-variable 'font-lock-defaults)
+         '(python-font-lock-keywords nil nil nil nil
+                                     (font-lock-syntactic-keywords
+                                      . python-font-lock-syntactic-keywords)
+                                     ;; This probably isn't worth it.
+                                     ;; (font-lock-syntactic-face-function
+                                     ;;  . python-font-lock-syntactic-face-function)
+                                     )))
   (set (make-local-variable 'comint-input-filter) 'py-history-input-filter)
+  (set (make-local-variable 'comment-start) "# ")
+  (set (make-local-variable 'comment-start-skip) "^[ \t]*#+ *")
+  (set (make-local-variable 'comment-column) 40)
+  (set (make-local-variable 'comment-indent-function) #'py-comment-indent-function)
+  (set (make-local-variable 'indent-region-function) 'py-indent-region)
+  (set (make-local-variable 'indent-line-function) 'py-indent-line)
+  (python-shell-send-setup-code)
   (python--set-prompt-regexp)
   (set (make-local-variable 'compilation-error-regexp-alist)
        python-compilation-regexp-alist)
@@ -13736,7 +13764,7 @@ Uses `python-imports' to load modules against which to complete."
   (interactive)
   (let* (py-split-windows-on-execute-p
          py-switch-buffers-on-execute-p
-         (shell (or shell py-local-versioned-command))
+         (shell (or shell py-local-versioned-command (py-choose-shell)))
          (orig (point))
          (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
          (end (point))
@@ -13745,7 +13773,7 @@ Uses `python-imports' to load modules against which to complete."
     (cond ((string= word "")
            (message "%s" "Nothing to complete. ")
            (tab-to-tab-stop))
-          (t (or (setq proc (get-buffer-process shell))
+          (t (or (setq proc (get-buffer-process (py-buffer-name-prepare shell)))
                  (setq proc (get-buffer-process (py-shell nil nil shell))))
              (if (processp proc)
                  (progn
@@ -13761,18 +13789,19 @@ Uses `python-imports' to load modules against which to complete."
                              (setq imports
                                    (concat imports (concat "import" (match-string-no-properties 1 word) ";"))))
                          (setq imports (match-string-no-properties 0 word)))))
-                   (unless (python-shell-completion--do-completion-at-point proc imports word)
+                   (python-shell-completion--do-completion-at-point proc imports word)
+                   ;; (unless (python-shell-completion--do-completion-at-point proc imports word)
+                   (when (eq (point) orig)
                      (if (and (not (window-full-height-p))
                               (buffer-live-p (get-buffer "*Python Completions*")))
                          (progn
                            (set-buffer "*Python Completions*")
                            (switch-to-buffer (current-buffer))
                            (delete-other-windows)
-                           (search-forward word)
-                           )
-                       (call-interactively 'dabbrev-expand)))
+                           (search-forward word))
+                       (dabbrev-expand nil)))
                    nil)
-               (error "No completion process at proc"))))))
+               (error "No completion process at proc %s" proc))))))
 
 (defun py-python2-shell-complete (&optional shell)
   (interactive)

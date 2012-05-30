@@ -475,8 +475,10 @@ When DONE is `t', `py-shell-manage-windows' is omitted
       (set-buffer (get-buffer-create
                    (apply 'make-comint-in-buffer executable py-buffer-name executable nil args)))
       (setq python-buffer (current-buffer))
-      (accept-process-output (get-buffer-process python-buffer) 5)
       (inferior-python-mode)
+      (when py-fontify-shell-buffer-p
+        (font-lock-unfontify-region (point-min) (line-beginning-position)))
+      ;; (accept-process-output (get-buffer-process python-buffer) 1)
       (setq comint-input-sender 'py-shell-simple-send)
       (setq comint-input-ring-file-name
             (cond ((string-match "[iI][pP]ython[[:alnum:]]*$" py-buffer-name)
@@ -489,8 +491,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
                    (concat "~/." (substring py-buffer-name 0 (string-match "-" py-buffer-name)) "_history"))
                   ;; .pyhistory might be locked from outside Emacs
                   ;; (t "~/.pyhistory")
-                  (t (concat "~/." (py-report-executable py-buffer-name) "_history")
-                     )))
+                  (t (concat "~/." (py-report-executable py-buffer-name) "_history"))))
       (comint-read-input-ring t)
       (set-process-sentinel (get-buffer-process (current-buffer))
                             #'shell-write-history-on-exit)
@@ -630,7 +631,7 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
     (py-fix-start (point-min)(point-max))
     (py-if-needed-insert-shell (prin1-to-string proc) sepchar)
     (unless wholebuf (py-insert-coding))
-    (py-insert-execute-directory)
+    (unless (string-match "[jJ]ython" pyshellname) (py-insert-execute-directory))
     (cond (python-mode-v5-behavior-p
 
            (let ((cmd (concat pyshellname (if (string-equal py-which-bufname

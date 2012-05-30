@@ -320,7 +320,7 @@ With arg, do it that many times.
   "Inserts a print statement out of current `(car kill-ring)' by default, inserts ARG instead if delivered. "
   (interactive "*")
   (let* ((name (string-strip (or arg (car kill-ring))))
-         (form (cond ((eq major-mode 'python-mode)
+         (form (cond ((or (eq major-mode 'python-mode)(eq major-mode 'inferior-python-mode))
                       (concat "print \"" name ": %s \" % " name)))))
     (insert form)))
 
@@ -328,7 +328,7 @@ With arg, do it that many times.
   "Transforms the item on current in a print statement. "
   (interactive "*")
   (let* ((name (thing-at-point 'word))
-         (form (cond ((eq major-mode 'python-mode)
+         (form (cond ((or (eq major-mode 'python-mode)(eq major-mode 'inferior-python-mode))
                       (concat "print \"" name ": %s \" % " name)))))
     (delete-region (line-beginning-position) (line-end-position))
     (insert form))
