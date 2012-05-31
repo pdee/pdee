@@ -865,6 +865,15 @@ element matches `py-shell-name'."
   :group 'python-mode
   :type 'hook)
 
+(custom-add-option 'python-mode-hook 'imenu-add-menubar-index)
+(custom-add-option 'python-mode-hook
+		   (lambda ()
+		     "Turn off Indent Tabs mode."
+		     (setq indent-tabs-mode nil)))
+(custom-add-option 'python-mode-hook 'turn-on-eldoc-mode)
+(custom-add-option 'python-mode-hook 'abbrev-mode)
+(custom-add-option 'python-mode-hook 'python-setup-brm)
+
 (defcustom py-shell-name "python"
   "A PATH/TO/EXECUTABLE or default value `py-shell' may look for, if no shell is specified by command. "
   :type 'string
@@ -1413,19 +1422,18 @@ Inludes Python shell-prompt in order to stop further searches. ")
   "Queue of Python temp files awaiting execution.
 Currently-active file is at the head of the list.")
 
-;; (defvar python-mode-abbrev-table nil)
-(define-abbrev-table 'python-mode-abbrev-table ()
-  "Abbrev table for Python mode."
-  :case-fixed t
-  ;; Allow / inside abbrevs.
-  :regexp "\\(?:^\\|[^/]\\)\\<\\([[:word:]/]+\\)\\W*")
-;; Only expand in code.
-
-;; (define-abbrev-table 'python-mode-abbrev-table ())
-
-(defvar inferior-python-mode-abbrev-table nil
-  "Not in use.")
-(define-abbrev-table 'inferior-python-mode-abbrev-table ())
+;; (unless (member 'python-mode-abbrev-table abbrev-table-name-list)
+;;   (define-abbrev-table 'python-mode-abbrev-table ()
+;;     "Abbrev table for Python mode."
+;;     :case-fixed t
+;;     ;; Allow / inside abbrevs.
+;;     :regexp "\\(?:^\\|[^/]\\)\\<\\([[:word:]/]+\\)\\W*"
+;;     ;; Only expand in code, not in string or comment
+;;     :enable-function (lambda () (not (nth 8 (syntax-ppss))))))
+;;
+;; (defvar inferior-python-mode-abbrev-table nil
+;;   "Not in use.")
+;; (define-abbrev-table 'inferior-python-mode-abbrev-table ())
 
 (defvar jython-mode-hook nil
   "*Hook called by `jython-mode'. `jython-mode' also calls
@@ -1975,7 +1983,11 @@ Toggle flymake-mode running `pyflakespep8' "]
 
             "-"
             ("Skeletons..."
-             :help "See also templates in YASnippet")
+             :help "See also templates in YASnippet"
+
+             :filter (lambda (&rest junk)
+                       (abbrev-table-menu python-mode-abbrev-table)))
+
             ["if" py-if
              :help "Inserts if-statement"]
             ["py-else" py-else
@@ -5002,22 +5014,7 @@ Interactively, prompt for name."
       (goto-char (point-min))
       (forward-line (1- line)))))
 
-;;;; Skeletons
-
-(define-abbrev-table 'python-mode-abbrev-table ()
-  "Abbrev table for Python mode."
-  :case-fixed t
-  ;; Allow / inside abbrevs.
-  :regexp "\\(?:^\\|[^/]\\)\\<\\([[:word:]/]+\\)\\W*"
-  ;; Only expand in code.
-  :enable-function (lambda () (not (python-in-string/comment))))
-
-;; From `skeleton-further-elements' set below:
-;;  `<': outdent a level;
-;;  `^': delete indentation on current line and also previous newline.
-;;       Not quite like `delete-indentation'.  Assumes point is at
-;;       beginning of indentation.
-
+;;; Skeletons
 (eval-when-compile
   ;; Define a user-level skeleton and add it to the abbrev table.
   (defmacro def-python-skeleton (name &rest elements)
@@ -5109,22 +5106,7 @@ Interactively, prompt for name."
   "Default template to expand by `python-expand-template'.
 Updated on each expansion.")
 
-;; python.el function
-;; (defun python-expand-template (name)
-;;   "Expand template named NAME.
-;; Interactively, prompt for the name with completion."
-;;   (interactive
-;;    (list (completing-read (format "Template to expand (default %s): "
-;; 				  python-default-template)
-;; 			  python-mode-abbrev-table nil t nil nil
-;;                           python-default-template)))
-;;   (if (equal "" name)
-;;       (setq name python-default-template)
-;;     (setq python-default-template name))
-;;   (let ((sym (abbrev-symbol name python-mode-abbrev-table)))
-;;     (if sym
-;;         (abbrev-insert sym)
-;;       (error "Undefined template: %s" name))))
+
 
 ;;;; Modes.
 
@@ -5177,8 +5159,11 @@ Updated on each expansion.")
 (when py-warn-tmp-files-left-p
   (add-hook 'python-mode-hook 'py-warn-tmp-files-left))
 
+;; FixMe: for unknown reasons this is not done by mode
+(add-hook 'python-mode-hook '(lambda () (load abbrev-file-name)))
+
 ;;;
-(define-derived-mode python-mode fundamental-mode "Python"
+(define-derived-mode python-mode fundamental-mode "Py"
   "Major mode for editing Python files.
 
 To submit a problem report, enter `\\[py-submit-bug-report]' from a
@@ -5642,7 +5627,6 @@ With \\[universal-argument] 4 is called `py-switch-shell' see docu there.
 (define-derived-mode python2-mode python-mode "Python2"
   "Edit and run code used by Python version 2 series. "
   :group 'python-mode
-  :abbrev nil
   (set (make-local-variable 'py-exec-command) '(format "execfile(r'%s') # PYTHON-MODE\n" filename))
   (set (make-local-variable 'py-exec-string-command) '(format "exec(r'%s') # PYTHON-MODE\n" string))
   (py-toggle-shell "python2"))
@@ -5650,7 +5634,6 @@ With \\[universal-argument] 4 is called `py-switch-shell' see docu there.
 (define-derived-mode python3-mode python-mode "Python3"
   "Edit and run code used by Python version 3 series. "
   :group 'python-mode
-  :abbrev nil
   (set (make-local-variable 'py-exec-command) '(format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" file file))
   (set (make-local-variable 'py-exec-string-command) '(format "exec(r'(%s)') # PYTHON-MODE\n" string))
   (py-toggle-shell "python3"))

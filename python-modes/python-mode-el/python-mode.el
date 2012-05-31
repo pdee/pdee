@@ -759,6 +759,18 @@ Also used by (minor-)outline-mode "
   :group 'python-mode
   :type 'hook)
 
+;; FixMe: for unknown reasons this is not done by mode
+(add-hook 'python-mode-hook '(lambda () (load abbrev-file-name nil t)))
+
+(custom-add-option 'python-mode-hook 'imenu-add-menubar-index)
+(custom-add-option 'python-mode-hook
+		   (lambda ()
+		     "Turn off Indent Tabs mode."
+		     (setq indent-tabs-mode nil)))
+(custom-add-option 'python-mode-hook 'turn-on-eldoc-mode)
+(custom-add-option 'python-mode-hook 'abbrev-mode)
+(custom-add-option 'python-mode-hook 'python-setup-brm)
+
 (defcustom py-imenu-create-index-p nil
   "Non-nil means Python mode creates and displays an index menu of functions and global variables. "
   :type 'boolean
