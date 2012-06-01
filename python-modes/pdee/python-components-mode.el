@@ -18,6 +18,32 @@
 
 ;;; Commentary:
 
+
+;; commands-python-mode.org in directory doc reports
+;; available commands, also a menu is provided
+
+;; as for `py-add-abbrev': 
+;; Similar to `add-mode-abbrev', but uses
+;; `py-partial-expression' before point for expansion to
+;; store, not `word'. Also provides a proposal for new
+;; abbrevs.
+
+;; Proposal for an abbrev is composed from the downcased
+;; initials of expansion - provided they are of char-class
+;; [:alpha:]
+;; 
+;; For example code below would be recognised as a
+;; `py-expression' composed by three
+;; py-partial-expressions.
+;; 
+;; OrderedDict.popitem(last=True)
+;; 
+;; Putting the curser at the EOL, M-3 M-x py-add-abbrev
+;; 
+;; would prompt "op" for an abbrev to store, as first
+;; `py-partial-expression' beginns with a "(", which is
+;; not taken as proposal.
+
 ;;; Code
 
 (add-to-list 'load-path default-directory)
@@ -1795,14 +1821,12 @@ character address of the specified TYPE."
 
 ;; An auxiliary syntax table which places underscore and dot in the
 ;; symbol class for simplicity
-(defvar py-dotted-expression-syntax-table nil
+(defvar py-dotted-expression-syntax-table
+  (let ((table (make-syntax-table python-mode-syntax-table)))
+    (modify-syntax-entry ?_ "_" table)
+    (modify-syntax-entry ?. "_" table)
+    table)
   "Syntax table used to identify Python dotted expressions.")
-
-(when (not py-dotted-expression-syntax-table)
-  (setq py-dotted-expression-syntax-table
-        (copy-syntax-table python-mode-syntax-table))
-  (modify-syntax-entry ?_ "_" py-dotted-expression-syntax-table)
-  (modify-syntax-entry ?. "_" py-dotted-expression-syntax-table))
 
 (defvar python-dotty-syntax-table
   (let ((table (make-syntax-table python-mode-syntax-table)))
@@ -1982,11 +2006,12 @@ Toggle flymake-mode running `pyflakespep8' "]
              )
 
             "-"
-            ("Skeletons..."
-             :help "See also templates in YASnippet"
-
+            ("Abbrevs"
+             :help "see also py-add-abbrev"
              :filter (lambda (&rest junk)
                        (abbrev-table-menu python-mode-abbrev-table)))
+            ("Skeletons"
+             :help "See also templates in YASnippet"
 
             ["if" py-if
              :help "Inserts if-statement"]
@@ -2000,6 +2025,7 @@ Toggle flymake-mode running `pyflakespep8' "]
              :help "Inserts py-try/finally-statement"]
             ["py-try/except" py-try/except
              :help "Inserts py-try/except-statement"]
+)
 
             "-"
 
@@ -5106,7 +5132,6 @@ Interactively, prompt for name."
   "Default template to expand by `python-expand-template'.
 Updated on each expansion.")
 
-
 
 ;;;; Modes.
 
@@ -5160,7 +5185,7 @@ Updated on each expansion.")
   (add-hook 'python-mode-hook 'py-warn-tmp-files-left))
 
 ;; FixMe: for unknown reasons this is not done by mode
-(add-hook 'python-mode-hook '(lambda () (load abbrev-file-name)))
+(add-hook 'python-mode-hook '(lambda () (load abbrev-file-name nil t)))
 
 ;;;
 (define-derived-mode python-mode fundamental-mode "Py"

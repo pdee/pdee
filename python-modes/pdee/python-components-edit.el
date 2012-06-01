@@ -561,7 +561,9 @@ Returns outmost indentation reached. "
 (defun py-indent-and-forward ()
   "Indent current line according to mode, move one line forward. "
   (interactive "*")
-  (indent-according-to-mode)
+  (beginning-of-line)
+  (fixup-whitespace)
+  (indent-to (py-compute-indentation))
   (if (eobp)
       (newline-and-indent)
     (forward-line 1))

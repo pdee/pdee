@@ -1086,7 +1086,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 \
 --funcall master-file-not-honored-lp:794850-test \
 --funcall execute-buffer-ipython-fails-lp:928087-test \
---funcall py-shell-invoking-python-lp:835151-test \
 --funcall py-shell-invoking-ipython-lp:835151-test \
 --funcall py-shell-invoking-python3-lp:835151-test \
 --funcall py-shell-invoking-python2-lp:835151-test \
@@ -1110,6 +1109,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-end-of-print-statement-test \
 --funcall py-describe-symbol-fails-on-modules-lp:919719-test \
 --funcall indent-region-lp:997958-test \
+--funcall py-shell-invoking-python-lp:835151-test \
 --funcall py-menu-pyshell-test \
 --funcall split-windows-on-execute-p-test \
 --funcall script-buffer-appears-instead-of-python-shell-buffer-lp:957561-test \

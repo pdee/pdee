@@ -2260,8 +2260,7 @@ I am using version 6.0.4
   (goto-char 60)
   (assert (eq 73 (cdr (py-expression))) nil "py-mark-expression-marks-too-much-lp:941140-test failed")
   (goto-char 417)
-  (assert (eq 420 (cdr (py-expression))) nil "py-mark-expression-marks-too-much-lp:941140-test failed")
-  )
+  (assert (eq 420 (cdr (py-expression))) nil "py-mark-expression-marks-too-much-lp:941140-test failed"))
 
 ;;; Py-shell tests
 (defun py-shell-invoking-python-lp:835151-test (&optional arg)

@@ -983,6 +983,8 @@ Go to the beginning of a compound python expression.
 
 A a compound python expression might be concatenated by "." operator, thus composed by minor python expressions.
 
+If already at the beginning or before a expression, go to next expression in buffer upwards
+
 Expression here is conceived as the syntactical component of a statement in Python. See http://docs.python.org/reference
 Operators however are left aside resp. limit py-expression designed for edit-purposes.
 
@@ -1003,7 +1005,9 @@ Go to the beginning of a minor python expression.
 
 "." operators delimit a minor expression on their level.
 Expression here is conceived as the syntactical component of a statement in Python. See http://docs.python.org/reference
-Operators however are left aside resp. limit py-expression designed for edit-purposes. 
+Operators however are left aside resp. limit py-expression designed for edit-purposes.
+
+If already at the beginning or before a partial-expression, go to next partial-expression in buffer upwards 
 
 py-end-of-partial-expression
 ----------------------------
@@ -2351,6 +2355,17 @@ autopair-insert-or-skip-paired-delimiter
 Insert or possibly skip over a character with a syntax-class of "paired delimiter".Works by scheduling possible autopair behaviour, then calls
 original command as if autopair didn't exist.
 
+py-add-abbrev
+-------------
+Defines python-mode specific abbrev for last expressions before point.
+Argument is how many `py-partial-expression's form the expansion; or zero means the region is the expansion.
+
+Reads the abbreviation in the minibuffer; with numeric arg it displays a proposal for an abbrev.
+Proposal is composed from the initial character(s) of the
+expansion.
+
+Don't use this function in a Lisp program; use `define-abbrev' instead.
+
 py-def-or-class-beginning-position
 ----------------------------------
 Returns beginning position of function or class definition. 
@@ -2460,9 +2475,7 @@ ipython-complete
 Complete the python symbol before point.
 
 If no completion available, insert a TAB.
-Returns the completed symbol, a string, if successful, nil otherwise.
-
-Bug: if no IPython-shell is running, fails first time due to header returned, which messes up the result. Please repeat once then. 
+Returns the completed symbol, a string, if successful, nil otherwise. 
 
 ipython-complete-py-shell-name
 ------------------------------
@@ -2497,7 +2510,7 @@ Let's have this until more Emacs-like help is prepared
 
 py-pylint-doku
 --------------
-Display Pylint Documentation. 
+Display Pylint Documentation.
 
 Calls `pylint --full-documentation'
 

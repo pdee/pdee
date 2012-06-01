@@ -27,6 +27,31 @@
 
 ;;; Commentary:
 
+;; commands-python-mode.org in directory doc reports
+;; available commands, also a menu is provided
+
+;; as for `py-add-abbrev':
+;; Similar to `add-mode-abbrev', but uses
+;; `py-partial-expression' before point for expansion to
+;; store, not `word'. Also provides a proposal for new
+;; abbrevs.
+
+;; Proposal for an abbrev is composed from the downcased
+;; initials of expansion - provided they are of char-class
+;; [:alpha:]
+;;
+;; For example code below would be recognised as a
+;; `py-expression' composed by three
+;; py-partial-expressions.
+;;
+;; OrderedDict.popitem(last=True)
+;;
+;; Putting the curser at the EOL, M-3 M-x py-add-abbrev
+;;
+;; would prompt "op" for an abbrev to store, as first
+;; `py-partial-expression' beginns with a "(", which is
+;; not taken as proposal.
+
 ;;; Code
 
 (require 'comint)
@@ -3412,13 +3437,12 @@ Otherwise inherits from `py-mode-syntax-table'.")
 
 ;; An auxiliary syntax table which places underscore and dot in the
 ;; symbol class for simplicity
-(defvar py-dotted-expression-syntax-table nil
+(defvar py-dotted-expression-syntax-table
+  (let ((table (make-syntax-table python-mode-syntax-table)))
+    (modify-syntax-entry ?_ "_" table)
+    (modify-syntax-entry ?. "_" table)
+    table)
   "Syntax table used to identify Python dotted expressions.")
-(when (not py-dotted-expression-syntax-table)
-  (setq py-dotted-expression-syntax-table
-        (copy-syntax-table py-mode-syntax-table))
-  (modify-syntax-entry ?_ "_" py-dotted-expression-syntax-table)
-  (modify-syntax-entry ?. "_" py-dotted-expression-syntax-table))
 
 ;; credits to python.el
 (defun py-beg-of-defun-function ()
@@ -4154,7 +4178,9 @@ Returns outmost indentation reached. "
 (defun py-indent-and-forward ()
   "Indent current line according to mode, move one line forward. "
   (interactive "*")
-  (indent-according-to-mode)
+  (beginning-of-line)
+  (fixup-whitespace)
+  (indent-to (py-compute-indentation))
   (if (eobp)
       (newline-and-indent)
     (forward-line 1))
@@ -5833,10 +5859,12 @@ If already at end-of-buffer and not at EOB, go to end of next line. "
 
 ;;; Expression
 (defalias 'py-backward-expression 'py-beginning-of-expression)
-(defun py-beginning-of-expression (&optional orig origline done erg)
+(defun py-beginning-of-expression (&optional orig erg)
   "Go to the beginning of a compound python expression.
 
 A a compound python expression might be concatenated by \".\" operator, thus composed by minor python expressions.
+
+If already at the beginning or before a expression, go to next expression in buffer upwards
 
 Expression here is conceived as the syntactical component of a statement in Python. See http://docs.python.org/reference
 Operators however are left aside resp. limit py-expression designed for edit-purposes.
@@ -5845,56 +5873,70 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
   (save-restriction
     (widen)
     (unless (bobp)
-      (when (looking-at "\\(=\\|:\\|+\\|-\\|*\\|/\\|//\\|&\\|%\\||\\|\^\\|>>\\|<<\\)")
-        (goto-char (1- (match-beginning 0)))
-        (skip-chars-backward " \t\r\n\f")
-        (forward-char -1))
-      (when (looking-back "[\])}]")
-        (forward-char -1))
       (let ((orig (or orig (point)))
             (cui (current-indentation))
-            (origline (or origline (py-count-lines)))
-            (pps (if (featurep 'xemacs)
-                     (parse-partial-sexp (point-min) (point))
-                   (syntax-ppss)))
-            (done done)
+            (pps (syntax-ppss))
             (erg erg))
         (cond
          ;; if in string
          ((and (nth 3 pps)(nth 8 pps)
                (goto-char (nth 8 pps)))
+          (setq erg (point))
           (unless (looking-back "\\(=\\|:\\|+\\|-\\|*\\|/\\|//\\|&\\|%\\||\\|\^\\|>>\\|<<\\)[ \t]*")
-            (goto-char (nth 2 pps))
-            (setq erg (point))
-            (setq done t))
-          (py-beginning-of-expression orig origline done erg))
+            (when (nth 2 pps)
+              (goto-char (nth 2 pps))
+              (setq erg (point))))
+          (py-beginning-of-expression orig erg))
          ;; comments left, as strings are done
          ((nth 8 pps)
           (goto-char (1- (nth 8 pps)))
-          (py-beginning-of-expression orig origline done erg))
+          (py-beginning-of-expression orig erg))
          ((and (looking-at "[ \t]*#") (looking-back "^[ \t]*"))
           (forward-line -1)
           (unless (bobp)
             (end-of-line)
-            (py-beginning-of-expression orig origline done erg)))
+            (py-beginning-of-expression orig erg)))
          ;; character address of start of innermost containing list; nil if none.
          ((nth 1 pps)
           (goto-char (nth 1 pps))
           (when
               (not (looking-back "[ \t]+"))
             (when (< 0 (abs (skip-chars-backward py-expression-skip-regexp)))
-              (setq erg (point))
-              (setq done t)))
-          (py-beginning-of-expression orig origline done erg))
+              (setq erg (point))))
+          (py-beginning-of-expression orig erg))
+         ((looking-at "\\(=\\|:\\|+\\|-\\|*\\|/\\|//\\|&\\|%\\||\\|\^\\|>>\\|<<\\)")
+          (goto-char (1- (match-beginning 0)))
+          (skip-chars-backward " \t\r\n\f")
+          (forward-char -1)
+          (py-beginning-of-expression orig erg))
+         ((looking-back "[\])}]")
+          (forward-char -1)
+          (py-beginning-of-expression orig erg))
+
          ;; inside expression
          ((and (eq (point) orig) (not (bobp)) (looking-back py-expression-looking-regexp))
           (skip-chars-backward py-expression-skip-regexp)
           (setq erg (point))
-          (setq done t)
-          (py-beginning-of-expression orig origline done erg))
+          (py-beginning-of-expression orig erg))
+         ((looking-at "[ \t\r\n\f]")
+          (skip-chars-backward " \t\r\n\f")
+          (unless (bobp) (forward-char -1))
+          (unless (eq (abs (skip-chars-backward "^ \t\r\n\f")) 0)
+            (py-beginning-of-expression orig erg)))
+         ((and (eq (point) orig) (not (bobp))(looking-back "[ \.\t\r\n\f]"))
+          (skip-chars-backward "=:+-*/&%^><. \t\r\n\f")
+          (unless (bobp) (forward-char -1))
+          (unless (eq (abs (skip-chars-backward "^=:+-*/&%^>< \t\r\n\f")) 0)
+            (setq erg (point))
+            (py-beginning-of-expression orig erg)))
+         ((and (eq (point) orig) (not (bobp)) (looking-back py-expression-looking-regexp))
+          (forward-char -1)
+          (when (< 0 (abs (skip-chars-backward py-expression-skip-regexp)))
+            (setq erg (point)))
+          (py-beginning-of-expression orig erg))
          ((looking-at py-expression-looking-regexp)
           (setq erg (point)))
-         (t (unless (and (looking-at "[ \t]*#") (looking-back "^[ \t]*"))
+         (t (unless (and (eq (point) orig)(looking-at "[ \t]*#") (looking-back "^[ \t]*"))
               (setq erg (point)))))
         (when (and py-verbose-p (interactive-p)) (message "%s" erg))
         erg))))
@@ -5978,27 +6020,22 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
 
 ;;; Partial- or Minor Expression
 (defalias 'py-backward-partial-expression 'py-beginning-of-partial-expression)
-(defun py-beginning-of-partial-expression (&optional orig origline done erg)
+(defun py-beginning-of-partial-expression (&optional orig erg)
   "Go to the beginning of a minor python expression.
 
 \".\" operators delimit a minor expression on their level.
 Expression here is conceived as the syntactical component of a statement in Python. See http://docs.python.org/reference
-Operators however are left aside resp. limit py-expression designed for edit-purposes. "
+Operators however are left aside resp. limit py-expression designed for edit-purposes.
+
+If already at the beginning or before a partial-expression, go to next partial-expression in buffer upwards "
   (interactive)
   (save-restriction
     (widen)
     (unless (bobp)
-      (when (looking-at "\\(=\\|:\\|+\\|-\\|*\\|/\\|//\\|&\\|%\\||\\|\^\\|>>\\|<<\\)")
-        (goto-char (1- (match-beginning 0)))
-        (skip-chars-backward " \t\r\n\f")
-        (forward-char -1))
       (let ((orig (or orig (point)))
             (cui (current-indentation))
-            (origline (or origline (py-count-lines)))
-            (pps (if (featurep 'xemacs)
-                     (parse-partial-sexp (point-min) (point))
-                   (syntax-ppss)))
-            (done done)
+            ;; (origline (or origline (py-count-lines)))
+            (pps (syntax-ppss))
             (erg erg))
         (cond
          ;; if in string
@@ -6006,32 +6043,50 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
                (save-excursion
                  (ignore-errors
                    (goto-char (nth 2 pps)))))
-          (goto-char (nth 2 pps))
           (setq erg (point))
-          (setq done t)
-          (py-beginning-of-partial-expression orig origline done erg))
+          (when (nth 2 pps)
+            (goto-char (nth 2 pps))
+            (setq erg (point)))
+          (py-beginning-of-partial-expression orig erg))
          ((nth 8 pps)
           (goto-char (1- (nth 8 pps)))
           (setq erg (point))
-          (py-beginning-of-partial-expression orig origline done erg))
+          (py-beginning-of-partial-expression orig erg))
          ((and (looking-at "[ \t]*#") (looking-back "^[ \t]*"))
           (forward-line -1)
           (unless (bobp)
             (end-of-line)
             (setq erg (point))
-            (setq done t)
-            (py-beginning-of-partial-expression orig origline done erg)))
+            (py-beginning-of-partial-expression orig erg)))
          ((nth 1 pps)
-          (skip-chars-backward py-partial-expression-backward-regexp)
+          (goto-char (nth 1 pps))
+          ;; (skip-chars-backward py-partial-expression-backward-regexp)
           (setq erg (point)))
+         ((looking-at "\\(=\\|:\\|+\\|-\\|*\\|/\\|//\\|&\\|%\\||\\|\^\\|>>\\|<<\\)")
+          (goto-char (1- (match-beginning 0)))
+          (skip-chars-backward " \t\r\n\f")
+          (unless (bobp) (forward-char -1))
+          (py-beginning-of-partial-expression orig erg))
+         ((looking-at "[ \t\r\n\f]")
+          (skip-chars-backward " \t\r\n\f")
+          (unless (bobp) (forward-char -1))
+          (unless (eq (abs (skip-chars-backward "^ .\t\r\n\f")) 0)
+            (py-beginning-of-partial-expression orig erg)))
+         ((and (eq (point) orig) (not (bobp))(looking-back "[ \.\t\r\n\f]"))
+          (skip-chars-backward "=:+-*/&%^><. \t\r\n\f")
+          (unless (bobp) (forward-char -1))
+          (unless (eq (abs (skip-chars-backward "^=:+-*/&%^><. \t\r\n\f")) 0)
+            (py-beginning-of-partial-expression orig erg)))
          ((and (eq (point) orig) (not (bobp)) (looking-back py-partial-expression-looking-regexp))
           (forward-char -1)
           (when (< 0 (abs (skip-chars-backward py-partial-expression-skip-regexp)))
-            (setq erg (point))
-            (setq done t))
-          (py-beginning-of-partial-expression orig origline done erg))
+            (setq erg (point)))
+          (py-beginning-of-partial-expression orig erg))
          ((looking-at py-partial-expression-looking-regexp)
           (setq erg (point)))
+         ((and (eq (point) orig)(not (bobp)))
+          (skip-chars-backward " \t\r\n\f")
+          (py-beginning-of-partial-expression orig erg))
          (t (unless (and (looking-at "[ \t]*#") (looking-back "^[ \t]*"))(setq erg (point)))))
         (when (and py-verbose-p (interactive-p)) (message "%s" erg))
         erg))))
@@ -11440,8 +11495,7 @@ List extendet report options
              ["pylint-flymake-mode" pylint-flymake-mode
               :help "`pylint-flymake-mode'
 Toggle flymake-mode running `pylint'
-"]
-             )
+"])
 
             ("pep8 ... "
              :help "Check formatting
@@ -11461,9 +11515,7 @@ Display help for pep8 format checker)
              ["pep8-flymake-mode" pep8-flymake-mode
               :help "`pep8-flymake-mode'
 Toggle flymake-mode running `pep8'
-"]
-
-             )
+"])
 
             ("Pyflakes ... " :help "Non intrusive code
              checker call `easy_install pyflakes' if
@@ -11480,9 +11532,7 @@ Toggle flymake-mode running `pep8'
 
              ["pyflakes-flymake-mode" pyflakes-flymake-mode :help
               "`pyflakes-flymake-mode'
-Toggle flymake-mode running `pyflakes' "]
-
-             )
+Toggle flymake-mode running `pyflakes' "])
 
             ("Pyflakes-pep8 ... " :help
              "Non intrusive code checker running `pyflakes' and `pep8'
@@ -11498,25 +11548,28 @@ call `easy_install pyflakes' if not available"]
 
              ["pyflakespep8-flymake-mode" pyflakespep8-flymake-mode :help
               "`pyflakespep8-flymake-mode'
-Toggle flymake-mode running `pyflakespep8' "]
-
-             )
+Toggle flymake-mode running `pyflakespep8' "])
 
             "-"
-            ("Skeletons..."
-             :help "See also templates in YASnippet")
-            ["if" py-if
-             :help "Inserts if-statement"]
-            ["py-else" py-else
-             :help "Inserts else-statement"]
-            ["py-while" py-while
-             :help "Inserts while-statement"]
-            ["py-for" py-for
-             :help "Inserts for-statement"]
-            ["py-try/finally" py-try/finally
-             :help "Inserts py-try/finally-statement"]
-            ["py-try/except" py-try/except
-             :help "Inserts py-try/except-statement"]
+            ("Abbrevs"
+             :help "see also `py-add-abbrev'"
+             :filter (lambda (&rest junk)
+                       (abbrev-table-menu python-mode-abbrev-table)))
+            ("Skeletons"
+             :help "See also templates in YASnippet"
+
+             ["if" py-if
+              :help "Inserts if-statement"]
+             ["py-else" py-else
+              :help "Inserts else-statement"]
+             ["py-while" py-while
+              :help "Inserts while-statement"]
+             ["py-for" py-for
+              :help "Inserts for-statement"]
+             ["py-try/finally" py-try/finally
+              :help "Inserts py-try/finally-statement"]
+             ["py-try/except" py-try/except
+              :help "Inserts py-try/except-statement"])
 
             "-"
 
@@ -11577,9 +11630,7 @@ Each function in the Python module is made available as an Emacs function.
 The Lisp name of each function is the concatenation of PREFIX with
 the Python name, in which underlines are replaced by dashes.  If PREFIX is
 not given, it defaults to MODULE followed by a dash.
-If NOERROR is not nil, do not raise error when the module is not found. "]
-
-            ))
+If NOERROR is not nil, do not raise error when the module is not found. "]))
 
         ;; Menu py-execute forms
         (easy-menu-define py-menu map "Execute Python"
@@ -12808,11 +12859,58 @@ Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-p
             ["Switch shell-switch-buffers-on-execute ON" py-shell-switch-buffers-on-execute-on
              :help "Switch `py-switch-buffers-on-execute-p' ON. "]
             ["Switch shell-switch-buffers-on-execute OFF" py-shell-switch-buffers-on-execute-off
-             :help "Switch `py-switch-buffers-on-execute-p' OFF. "]
-
-            ))
+             :help "Switch `py-switch-buffers-on-execute-p' OFF. "]))
         map))
 
+;;; py-add-abbrev
+(defun py-add-abbrev-propose (table type arg &optional dont-ask)
+  (save-excursion
+    (let ((orig (point))
+          proposal exp)
+      (if (= arg 0)
+          (setq exp
+                (buffer-substring-no-properties
+                 (point)
+                 (mark)))
+        (while (< 0 arg)
+          (py-beginning-of-partial-expression)
+          (when (looking-at "[[:alpha:]]")
+            (setq proposal (concat (downcase (match-string-no-properties 0)) proposal)))
+          (setq arg (1- arg)))
+        (setq exp (buffer-substring-no-properties (point) orig)))
+      (setq name
+            ;; ask only when interactive
+            (if dont-ask
+                proposal
+              (read-string (format (if exp "%s abbrev for \"%s\": "
+                                     "Undefine %s abbrev: ")
+                                   type exp) proposal)))
+      (set-text-properties 0 (length name) nil name)
+      (when (or (null exp)
+                (not (abbrev-expansion name table))
+                (y-or-n-p (format "%s expands to \"%s\"; redefine? "
+                                  name (abbrev-expansion name table))))
+        (define-abbrev table (downcase name) exp)))))
+
+(defun py-add-abbrev (arg)
+  "Defines python-mode specific abbrev for last expressions before point.
+Argument is how many `py-partial-expression's form the expansion; or zero means the region is the expansion.
+
+Reads the abbreviation in the minibuffer; with numeric arg it displays a proposal for an abbrev.
+Proposal is composed from the initial character(s) of the
+expansion.
+
+Don't use this function in a Lisp program; use `define-abbrev' instead."
+  (interactive "p")
+  (save-excursion
+    (py-add-abbrev-propose
+     (if only-global-abbrevs
+         global-abbrev-table
+       (or local-abbrev-table
+           (error "No per-mode abbrev table")))
+     "Mode" arg)))
+
+;;;
 (defvar skeleton-further-elements)
 (define-derived-mode python-mode fundamental-mode "Python"
   "Major mode for editing Python files.
