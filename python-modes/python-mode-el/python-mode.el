@@ -2066,7 +2066,7 @@ Used for determining the default in the next one.")
   "py-expression assumes chars indicated possible composing a py-expression, skip it. ")
 ;; (setq py-expression-skip-regexp "^ =:#\t\r\n\f")
 
-(defvar py-expression-looking-regexp "[^ =:#\t\r\n\f)]"
+(defvar py-expression-looking-regexp "[^ =:#\t\r\n\f]+"
   "py-expression assumes chars indicated possible composing a py-expression, when looking-at or -back. ")
 ;; (setq py-expression-looking-regexp "[^ =:#\t\r\n\f)]")
 
@@ -5859,7 +5859,7 @@ If already at end-of-buffer and not at EOB, go to end of next line. "
 
 ;;; Expression
 (defalias 'py-backward-expression 'py-beginning-of-expression)
-(defun py-beginning-of-expression (&optional orig erg)
+(defun py-beginning-of-expression (&optional orig done)
   "Go to the beginning of a compound python expression.
 
 A a compound python expression might be concatenated by \".\" operator, thus composed by minor python expressions.
@@ -5876,72 +5876,71 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
       (let ((orig (or orig (point)))
             (cui (current-indentation))
             (pps (syntax-ppss))
-            (erg erg))
+            erg)
         (cond
          ;; if in string
          ((and (nth 3 pps)(nth 8 pps)
                (goto-char (nth 8 pps)))
-          (setq erg (point))
+          (setq done t)
           (unless (looking-back "\\(=\\|:\\|+\\|-\\|*\\|/\\|//\\|&\\|%\\||\\|\^\\|>>\\|<<\\)[ \t]*")
             (when (nth 2 pps)
-              (goto-char (nth 2 pps))
-              (setq erg (point))))
-          (py-beginning-of-expression orig erg))
+              (goto-char (nth 2 pps))))
+          (py-beginning-of-expression orig done))
          ;; comments left, as strings are done
          ((nth 8 pps)
           (goto-char (1- (nth 8 pps)))
-          (py-beginning-of-expression orig erg))
+          (py-beginning-of-expression orig done))
          ((and (looking-at "[ \t]*#") (looking-back "^[ \t]*"))
           (forward-line -1)
           (unless (bobp)
             (end-of-line)
-            (py-beginning-of-expression orig erg)))
+            (py-beginning-of-expression orig done)))
          ;; character address of start of innermost containing list; nil if none.
          ((nth 1 pps)
           (goto-char (nth 1 pps))
           (when
               (not (looking-back "[ \t]+"))
             (when (< 0 (abs (skip-chars-backward py-expression-skip-regexp)))
-              (setq erg (point))))
-          (py-beginning-of-expression orig erg))
+              (setq done t)))
+          (py-beginning-of-expression orig done))
          ((looking-at "\\(=\\|:\\|+\\|-\\|*\\|/\\|//\\|&\\|%\\||\\|\^\\|>>\\|<<\\)")
           (goto-char (1- (match-beginning 0)))
           (skip-chars-backward " \t\r\n\f")
           (forward-char -1)
-          (py-beginning-of-expression orig erg))
+          (py-beginning-of-expression orig done))
          ((looking-back "[\])}]")
           (forward-char -1)
-          (py-beginning-of-expression orig erg))
+          (py-beginning-of-expression orig done))
 
          ;; inside expression
          ((and (eq (point) orig) (not (bobp)) (looking-back py-expression-looking-regexp))
           (skip-chars-backward py-expression-skip-regexp)
-          (setq erg (point))
-          (py-beginning-of-expression orig erg))
+          (setq done t)
+          (py-beginning-of-expression orig done))
          ((looking-at "[ \t\r\n\f]")
           (skip-chars-backward " \t\r\n\f")
           (unless (bobp) (forward-char -1))
           (unless (eq (abs (skip-chars-backward "^ \t\r\n\f")) 0)
-            (py-beginning-of-expression orig erg)))
+            (py-beginning-of-expression orig done)))
          ((and (eq (point) orig) (not (bobp))(looking-back "[ \.\t\r\n\f]"))
           (skip-chars-backward "=:+-*/&%^><. \t\r\n\f")
           (unless (bobp) (forward-char -1))
           (unless (eq (abs (skip-chars-backward "^=:+-*/&%^>< \t\r\n\f")) 0)
-            (setq erg (point))
-            (py-beginning-of-expression orig erg)))
+            (setq done t)
+            (py-beginning-of-expression orig done)))
          ((and (eq (point) orig) (not (bobp)) (looking-back py-expression-looking-regexp))
           (forward-char -1)
           (when (< 0 (abs (skip-chars-backward py-expression-skip-regexp)))
-            (setq erg (point)))
-          (py-beginning-of-expression orig erg))
+            (setq done t))
+          (py-beginning-of-expression orig done))
          ((looking-at py-expression-looking-regexp)
+          (setq done t)))
+        (unless (or (eq (point) orig)(looking-at "[ \t]*#"))
           (setq erg (point)))
-         (t (unless (and (eq (point) orig)(looking-at "[ \t]*#") (looking-back "^[ \t]*"))
-              (setq erg (point)))))
         (when (and py-verbose-p (interactive-p)) (message "%s" erg))
         erg))))
 
-(defun py-end-of-expression (&optional orig origline done)
+(defun py-end-of-expression (&optional orig done)
   "Go to the end of a compound python expression.
 
 A a compound python expression might be concatenated by \".\" operator, thus composed by minor python expressions.
@@ -5955,64 +5954,64 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
     (unless (eobp)
       (let*
           ((orig (or orig (point)))
-           (origline (or origline (py-count-lines)))
-           (pps (if (featurep 'xemacs)
-                    (parse-partial-sexp (point-min) (point))
-                  (syntax-ppss)))
+           (pps (syntax-ppss))
            (done done)
            erg
            ;; use by scan-lists
            parse-sexp-ignore-comments)
         (cond
-         ((and (empty-line-p)(not done)(not (eobp)))
-          (while
-              (and (empty-line-p)(not done)(not (eobp)))
-            (forward-line 1))
-          (py-end-of-expression orig origline done))
-         ;; inside string
-         ((py-in-string-p)
-          (when (looking-at "\"\"\"\\|'''\\|\"\\|'")
-            (goto-char (match-end 0))
-            (setq done t))
-          ;; (re-search-forward "[^\\]\"\"\"\\|[^\\]'''\\|[^\\]\"\\|[^\\]'" nil (quote move) 1)
-          (while
-              (nth 3
-                   (if (featurep 'xemacs)
-                       (parse-partial-sexp (point-min) (point))
-                     (syntax-ppss)))
-            (setq done t)
-            (forward-char 1))
-          (py-end-of-expression orig origline done))
-         ;; in comment
-         ((nth 4 pps)
-          (forward-line 1)
-          (py-end-of-expression orig origline done))
-         ((and (looking-at "[ \t]*#")(looking-back "^[ \t]*")(not done))
-          (while (and (looking-at "[ \t]*#") (forward-line 1)(not (eobp))
-                      (beginning-of-line)))
-          (end-of-line)
-          ;;          (setq done t)
-          (skip-chars-backward " \t\r\n\f")
-          (py-end-of-expression orig origline done))
          ;; start of innermost containing list; nil if none.
          ((nth 1 pps)
           (goto-char (nth 1 pps))
           (let ((parse-sexp-ignore-comments t))
             (forward-list)
-            (py-end-of-expression orig origline done)))
+            (py-end-of-expression orig done)))
+         ;; in comment
+         ((nth 4 pps)
+          (or (< (point) (progn (forward-comment 1)(point)))(forward-line 1))
+          (py-end-of-expression orig done))
+         ((and (empty-line-p)(not done)(not (eobp)))
+          (while
+              (and (empty-line-p)(not done)(not (eobp)))
+            (forward-line 1))
+          (py-end-of-expression orig done))
+         ;; inside string
+         ((py-in-string-p)
+          (when (looking-at "\"\"\"\\|'''\\|\"\\|'")
+            (goto-char (match-end 0)))
+          (while
+              (nth 3 (syntax-ppss))
+            (forward-char 1))
+          (when (looking-at "[ \t]*$")
+            (setq done t))
+          (py-end-of-expression orig done))
+         ((and (looking-at "[ \t]*#")(looking-back "^[ \t]*")(not done))
+          (while (and (looking-at "[ \t]*#") (forward-line 1)(not (eobp))
+                      (beginning-of-line)))
+          (end-of-line)
+          (skip-chars-backward " \t\r\n\f")
+          (unless (bolp) (setq done t))
+          (py-end-of-expression orig done))
          ((and (not done)(looking-at py-not-expression-regexp)(not (eobp)))
-          (skip-chars-forward py-not-expression-regexp)
-          (py-end-of-expression orig origline done))
+          (goto-char (match-end 0))
+          (skip-chars-forward " \t\r\n\f")
+          (py-end-of-expression orig done))
          ((and (not done)(looking-at py-expression-skip-regexp)(not (eobp)))
           (skip-chars-forward py-not-expression-regexp)
           (forward-char -1)
-          (py-end-of-expression orig origline done))
-         ((and (looking-at py-expression-looking-regexp)(not (eobp)))
-          (forward-char 1)
-          (setq done (< 0 (skip-chars-forward py-expression-skip-regexp)))
-          (when done (forward-char -1))
+          (py-end-of-expression orig done))
+         ((and
+           ;; (not done)
+           (not (eobp))(looking-at py-expression-looking-regexp))
+          (goto-char (match-end 0))
           (setq done t)
-          (py-end-of-expression orig origline done)))
+          (unless (< 0 (skip-chars-forward py-expression-skip-regexp))
+            (unless (looking-at "[ \t\r\n\f]") (forward-char 1)))
+          (py-end-of-expression orig done))
+         ((looking-at "\\(+\\|-\\|*\\|/\\|//\\|&\\|%\\||\\|\^\\|>>\\|<<\\)[ \t]*")
+          (setq done t)
+          (goto-char (match-end 0))
+          (py-end-of-expression orig done)))
         (unless (eq (point) orig)
           (setq erg (point)))
         (when (and py-verbose-p (interactive-p)) (message "%s" erg))
@@ -6038,17 +6037,13 @@ If already at the beginning or before a partial-expression, go to next partial-e
             (pps (syntax-ppss))
             (erg erg))
         (cond
-         ;; if in string
-         ((and (nth 3 pps)(nth 8 pps)
-               (save-excursion
-                 (ignore-errors
-                   (goto-char (nth 2 pps)))))
-          (setq erg (point))
-          (when (nth 2 pps)
-            (goto-char (nth 2 pps))
-            (setq erg (point)))
-          (py-beginning-of-partial-expression orig erg))
+         ((nth 1 pps)
+          (goto-char (nth 1 pps))
+          ;; (skip-chars-backward py-partial-expression-backward-regexp)
+          (setq erg (point)))
          ((nth 8 pps)
+          (when (nth 2 pps)
+            (goto-char (nth 2 pps)))
           (goto-char (1- (nth 8 pps)))
           (setq erg (point))
           (py-beginning-of-partial-expression orig erg))
@@ -6058,10 +6053,7 @@ If already at the beginning or before a partial-expression, go to next partial-e
             (end-of-line)
             (setq erg (point))
             (py-beginning-of-partial-expression orig erg)))
-         ((nth 1 pps)
-          (goto-char (nth 1 pps))
-          ;; (skip-chars-backward py-partial-expression-backward-regexp)
-          (setq erg (point)))
+
          ((looking-at "\\(=\\|:\\|+\\|-\\|*\\|/\\|//\\|&\\|%\\||\\|\^\\|>>\\|<<\\)")
           (goto-char (1- (match-beginning 0)))
           (skip-chars-backward " \t\r\n\f")
@@ -12862,7 +12854,27 @@ Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-p
              :help "Switch `py-switch-buffers-on-execute-p' OFF. "]))
         map))
 
-;;; py-add-abbrev
+;;; Abbrevs
+(defun py-edit-abbrevs ()
+  "Jumps to `python-mode-abbrev-table' in a buffer containing lists of abbrev definitions.
+You can edit them and type \\<edit-abbrevs-map>\\[edit-abbrevs-redefine] to redefine abbrevs
+according to your editing.
+Buffer contains a header line for each abbrev table,
+ which is the abbrev table name in parentheses.
+This is followed by one line per abbrev in that table:
+NAME   USECOUNT   EXPANSION   HOOK
+where NAME and EXPANSION are strings with quotes,
+USECOUNT is an integer, and HOOK is any valid function
+or may be omitted (it is usually omitted).  "
+  (interactive)
+  (save-excursion
+    (let ((mat (abbrev-table-name local-abbrev-table)))
+      (prepare-abbrev-list-buffer)
+      (set-buffer "*Abbrevs*")
+      (switch-to-buffer (current-buffer))
+      (goto-char (point-min))
+      (search-forward (concat "(" (format "%s" mat))))))
+
 (defun py-add-abbrev-propose (table type arg &optional dont-ask)
   (save-excursion
     (let ((orig (point))

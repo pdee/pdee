@@ -33,6 +33,9 @@ New in version 6.0.9
   `py-partial-expression' beginns with a "(", which is
   not taken as proposal.
 
+- py-edit-abbrevs
+  Jumps to `python-mode-abbrev-table' 
+
 - modeline enhanced
   when a path/to/my/favoured/Python is given with `py-shell-name'
   the Python-shell buffer before would display

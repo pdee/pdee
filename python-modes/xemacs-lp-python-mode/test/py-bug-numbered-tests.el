@@ -2242,10 +2242,9 @@ for x in y:
 
 # when point is on the first quote, calling py-mark-expression marks the next several lines, no matter what they are.
 
-# This only seems to happen when point is in the first quote of a string literal which is the last thing on a
-line.
+# This only seems to happen when point is in the first quote of a string literal which is the last thing on a line.
 
-  somevar = \"some string\".some_property()
+  somevar = some string.some_property()
   # point at first quote works
 
   somevar = \"a\" + \"b\"
@@ -2260,7 +2259,7 @@ I am using version 6.0.4
   (goto-char 60)
   (assert (eq 73 (cdr (py-expression))) nil "py-mark-expression-marks-too-much-lp:941140-test failed")
   (goto-char 417)
-  (assert (eq 420 (cdr (py-expression))) nil "py-mark-expression-marks-too-much-lp:941140-test failed"))
+  (assert (eq 418 (cdr (py-expression))) nil "py-mark-expression-marks-too-much-lp:941140-test failed"))
 
 ;;; Py-shell tests
 (defun py-shell-invoking-python-lp:835151-test (&optional arg)

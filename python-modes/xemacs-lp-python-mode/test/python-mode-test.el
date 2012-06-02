@@ -1008,12 +1008,12 @@ if foo:
     (py-bug-tests-intern 'py-partial-expression-base arg teststring)))
 
 (defun py-partial-expression-base ()
-  (goto-char 99)
-  (assert (eq 99 (py-beginning-of-partial-expression)) nil "py-partial-expression-test #1 failed")
+  (goto-char 102)
+  (assert (eq 100 (py-beginning-of-partial-expression)) nil "py-partial-expression-test #1 failed")
   (assert (eq 130 (py-end-of-partial-expression)) nil "py-partial-expression-test #2 failed")
   (goto-char 178)
-  (assert (eq 177 (py-beginning-of-partial-expression)) nil "py-partial-expression-test #3 failed")
-  (assert (eq 181 (py-end-of-partial-expression)) nil "py-partial-expression-test #3 failed")
+  (assert (eq 83 (py-beginning-of-partial-expression)) nil "py-partial-expression-test #3 failed")
+  (assert (eq 242 (py-end-of-partial-expression)) nil "py-partial-expression-test #3 failed")
   )
 
 (defun py-execute-block-test (&optional arg load-branch-function)

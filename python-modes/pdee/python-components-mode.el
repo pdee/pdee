@@ -1226,7 +1226,7 @@ Used for determining the default in the next one.")
   "py-expression assumes chars indicated possible composing a py-expression, skip it. ")
 ;; (setq py-expression-skip-regexp "^ =:#\t\r\n\f")
 
-(defvar py-expression-looking-regexp "[^ =:#\t\r\n\f)]"
+(defvar py-expression-looking-regexp "[^ =:#\t\r\n\f]+"
   "py-expression assumes chars indicated possible composing a py-expression, when looking-at or -back. ")
 ;; (setq py-expression-looking-regexp "[^ =:#\t\r\n\f)]")
 
