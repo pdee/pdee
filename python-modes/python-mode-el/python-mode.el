@@ -164,16 +164,6 @@ Default is nil "
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-load-pymacs-p  nil
-  "If Pymacs as delivered with python-mode.el shall be loaded.
-Default is nil.
-
-Pymacs has been written by François Pinard and many others.
-See original source: http://pymacs.progiciels-bpi.ca"
-
-  :type 'boolean
-  :group 'python-mode)
-
 (defcustom py-report-position-p nil
   "If functions moving point like `py-forward-into-nomenclature' should report reached position.
 
@@ -10422,38 +10412,6 @@ Returns `t' if successful. "
     (when (interactive-p) (message "py-install-directory-check: %s" erg))
     erg))
 
-(defun py-load-pymacs ()
-  "Load Pymacs as delivered with python-mode.el.
-
-Pymacs has been written by François Pinard and many others.
-See original source: http://pymacs.progiciels-bpi.ca"
-  (interactive)
-  (let* ((pyshell (py-choose-shell))
-         (path (getenv "PYTHONPATH"))
-         (py-install-directory (py-normalize-directory (or py-install-directory (py-guess-py-install-directory)) (py-separator-char)))
-         (pymacs-installed-p
-          (ignore-errors (string-match (expand-file-name (concat py-install-directory "Pymacs")) path))))
-    ;; Python side
-    (unless pymacs-installed-p
-      (setenv "PYTHONPATH" (concat
-                            (if path (concat path path-separator))
-                            (expand-file-name py-install-directory) "Pymacs")))
-
-    (if (py-install-directory-check)
-        (progn
-          (load (concat py-install-directory "pymacs.el") nil t)
-          (setenv "PYMACS_PYTHON" (if (string-match "IP" pyshell)
-                                      "python"
-                                    pyshell))
-          (autoload 'pymacs-apply "pymacs")
-          (autoload 'pymacs-call "pymacs")
-          (autoload 'pymacs-eval "pymacs")
-          (autoload 'pymacs-exec "pymacs")
-          (autoload 'pymacs-load "pymacs")
-          (require 'pymacs)
-          (load (concat py-install-directory "completion/pycomplete.el") nil t))
-      (error "`py-install-directory' not set, see INSTALL"))))
-
 (defun py-guess-py-install-directory ()
   "Takes value of user directory aka $HOME
 if `(locate-library \"python-mode\")' is not succesful. "
@@ -11596,34 +11554,7 @@ Try to find source definition of function at point"]
              :help "`py-update-imports'
 Update list of top-level imports for completion"]
             "-"
-            ["Pymacs apply" pymacs-apply
-             :help "`pymacs-apply'
-Return the result of calling a Python function FUNCTION over ARGUMENTS.
-FUNCTION is a string denoting the Python function, ARGUMENTS is a list of
-Lisp expressions.  Immutable Lisp constants are converted to Python
-equivalents, other structures are converted into Lisp handles. "]
-            ["Pymacs call" pymacs-call
-             :help "`pymacs-call'
-             Return the result of calling a Python function FUNCTION over ARGUMENTS.
-FUNCTION is a string denoting the Python function, ARGUMENTS are separate
-Lisp expressions, one per argument.  Immutable Lisp constants are converted
-to Python equivalents, other structures are converted into Lisp handles. "]
-            ["Pymacs eval" pymacs-eval
-             :help "`pymacs-eval'
-             Compile TEXT as a Python expression, and return its value."]
-            ["Pymacs exec" pymacs-exec
-             :help "`pymacs-exec'
-             Compile and execute TEXT as a sequence of Python statements.
-This functionality is experimental, and does not appear to be useful. "]
-            ["Pymacs load" pymacs-load
-             :help "`pymacs-load'
-             Import the Python module named MODULE into Emacs.
-Each function in the Python module is made available as an Emacs function.
-The Lisp name of each function is the concatenation of PREFIX with
-the Python name, in which underlines are replaced by dashes.  If PREFIX is
-not given, it defaults to MODULE followed by a dash.
-If NOERROR is not nil, do not raise error when the module is not found. "]))
-
+            ))
         ;; Menu py-execute forms
         (easy-menu-define py-menu map "Execute Python"
           `("PyExec"
@@ -13071,7 +13002,6 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
             (back-to-indentation)
             (py-guess-indent-offset)))
       (py-guess-indent-offset)))
-  (when py-load-pymacs-p (py-load-pymacs))
   ;; add the menu
   (if py-menu
       (easy-menu-add py-menu))
