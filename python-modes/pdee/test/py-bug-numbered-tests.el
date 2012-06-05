@@ -39,6 +39,7 @@
 (setq bug-numbered-tests
       (if (featurep 'xemacs)
           (list
+           'spurious-trailing-whitespace-lp-1008679-test
            'completion-fails-in-python-script-r989-lp:1004613-test
            'no-completion-at-all-lp:1001328-test
            'shebang-interpreter-not-detected-lp:1001327-test
@@ -2839,6 +2840,22 @@ ex
   (ipython-complete)
   (set-buffer "*Python Completions*")
   (assert (search-forward "except") nil "completion-fails-in-python-script-r989-lp:1004613-test failed"))
+
+
+(defun spurious-trailing-whitespace-lp-1008679-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+def foo():        X
+"))
+    (py-bug-tests-intern 'spurious-trailing-whitespace-lp-1008679-base arg teststring)))
+
+(defun spurious-trailing-whitespace-lp-1008679-base ()
+  (goto-char 66)
+  (py-newline-and-indent)
+  (forward-line -1)
+  (end-of-line)
+  (assert (eq (point) 58) nil "spurious-trailing-whitespace-lp-1008679-test failed"))
 
 
 (provide 'py-bug-numbered-tests)

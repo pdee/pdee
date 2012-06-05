@@ -3687,10 +3687,13 @@ Returns current indentation "
 When indent is set back manually, this is honoured in following lines. "
   (interactive "*")
   (let ((ci (current-indentation))
+        (orig (point))
         erg)
     (if (< ci (current-column))         ; if point beyond indentation
         (progn
           (newline)
+          (save-excursion
+            (goto-char orig) (delete-trailing-whitespace))
           (setq erg (indent-to-column (py-compute-indentation))))
       (beginning-of-line)
       (insert-char ?\n 1)

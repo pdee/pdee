@@ -1614,11 +1614,6 @@ Returns value of `py-switch-buffers-on-execute-p'.
    Do some sanity check for `py-install-directory'.
 
 Returns `t' if successful. 
-* py-load-pymacs
-   Load Pymacs as delivered with python-mode.el.
-
-Pymacs has been written by François Pinard and many others.
-See original source: http://pymacs.progiciels-bpi.ca
 * py-guess-py-install-directory
    Takes value of user directory aka $HOME
 if `(locate-library "python-mode")' is not succesful. 
@@ -1665,6 +1660,17 @@ original command as if autopair didn't exist.
 * autopair-insert-or-skip-paired-delimiter
    Insert or possibly skip over a character with a syntax-class of "paired delimiter".Works by scheduling possible autopair behaviour, then calls
 original command as if autopair didn't exist.
+* py-edit-abbrevs
+   Jumps to `python-mode-abbrev-table' in a buffer containing lists of abbrev definitions.
+You can edit them and type C-c C-c to redefine abbrevs
+according to your editing.
+Buffer contains a header line for each abbrev table,
+ which is the abbrev table name in parentheses.
+This is followed by one line per abbrev in that table:
+NAME   USECOUNT   EXPANSION   HOOK
+where NAME and EXPANSION are strings with quotes,
+USECOUNT is an integer, and HOOK is any valid function
+or may be omitted (it is usually omitted).  
 * py-add-abbrev
    Defines python-mode specific abbrev for last expressions before point.
 Argument is how many `py-partial-expression's form the expansion; or zero means the region is the expansion.
