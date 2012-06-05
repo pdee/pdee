@@ -13044,7 +13044,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   :abbrev nil
   (set (make-local-variable 'py-exec-command) '(format "execfile(r'%s') # PYTHON-MODE\n" filename))
   (set (make-local-variable 'py-exec-string-command) '(format "exec(r'%s') # PYTHON-MODE\n" string))
-  (py-toggle-shells "python2"))
+  (py-toggle-shell "python2"))
 
 (define-derived-mode python3-mode python-mode "Python3"
   "Edit and run code used by Python version 3 series. "
@@ -13052,7 +13052,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   :abbrev nil
   (set (make-local-variable 'py-exec-command) '(format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" file file))
   (set (make-local-variable 'py-exec-string-command) '(format "exec(r'(%s)') # PYTHON-MODE\n" string))
-  (py-toggle-shells "python3"))
+  (py-toggle-shell "python3"))
 
 ;; Utilities
 
@@ -13111,7 +13111,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
 Like `python-mode', but sets up parameters for Jython subprocesses.
 Runs `jython-mode-hook' after `python-mode-hook'."
   :group 'python-mode
-  (py-toggle-shells "jython"))
+  (py-toggle-shell "jython"))
 
 ;; It's handy to add recognition of Python files to the
 ;; interpreter-mode-alist and to auto-mode-alist.  With the former, we
