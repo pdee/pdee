@@ -460,58 +460,60 @@ When DONE is `t', `py-shell-manage-windows' is omitted
                             (py-report-executable py-buffer-name)))))
     ;; done by python-mode resp. inferior-python-mode
     ;; (py-set-shell-completion-environment executable)
-    (unless (comint-check-proc py-buffer-name)
+    (if (comint-check-proc py-buffer-name)
+        (set-buffer py-buffer-name)
       ;; comint
-      (when py-buffer-name
-        (set-buffer (apply 'make-comint-in-buffer executable py-buffer-name executable nil args)))
-      (set (make-local-variable 'comint-prompt-regexp)
-           (concat "\\("
-                   (mapconcat 'identity
-                              (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
-                              "\\|")
-                   "\\)"))
-      (add-hook 'comint-output-filter-functions
-                'py-comint-output-filter-function)
-      (set-buffer (get-buffer-create
-                   (apply 'make-comint-in-buffer executable py-buffer-name executable nil args)))
-      (setq python-buffer (current-buffer))
-      (inferior-python-mode)
-      (when py-fontify-shell-buffer-p
-        (font-lock-unfontify-region (point-min) (line-beginning-position)))
-      ;; (accept-process-output (get-buffer-process python-buffer) 1)
-      (setq comint-input-sender 'py-shell-simple-send)
-      (setq comint-input-ring-file-name
-            (cond ((string-match "[iI][pP]ython[[:alnum:]]*$" py-buffer-name)
-                   (if (getenv "IPYTHONDIR")
-                       (concat (getenv "IPYTHONDIR") "/history")
-                     "~/.ipython/history"))
-                  ((getenv "PYTHONHISTORY")
-                   (concat (getenv "PYTHONHISTORY") "/" (py-report-executable py-buffer-name) "_history"))
-                  (dedicated
-                   (concat "~/." (substring py-buffer-name 0 (string-match "-" py-buffer-name)) "_history"))
-                  ;; .pyhistory might be locked from outside Emacs
-                  ;; (t "~/.pyhistory")
-                  (t (concat "~/." (py-report-executable py-buffer-name) "_history"))))
-      (comint-read-input-ring t)
-      (set-process-sentinel (get-buffer-process (current-buffer))
-                            #'shell-write-history-on-exit)
-      ;; (setq proc (get-buffer-process (current-buffer)))
-      ;; pdbtrack
-      (add-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file)
-      (setq py-pdbtrack-do-tracking-p t)
-      ;;
-      (set-syntax-table python-mode-syntax-table)
-      (ansi-color-for-comint-mode-on)
-      ;; (use-local-map py-shell-map)
-      (use-local-map inferior-python-mode-map)
-      ;; (add-hook 'py-shell-hook 'py-dirstack-hook)
-      (when py-shell-hook (run-hooks 'py-shell-hook))
-      (goto-char (point-max)))
+      (set-buffer (apply 'make-comint-in-buffer executable py-buffer-name executable nil args))
+      )
+    (set (make-local-variable 'comint-prompt-regexp)
+         (concat "\\("
+                 (mapconcat 'identity
+                            (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
+                            "\\|")
+                 "\\)"))
+    (add-hook 'comint-output-filter-functions
+              'py-comint-output-filter-function)
+    ;; (set-buffer (get-buffer-create
+    ;; (apply 'make-comint-in-buffer executable py-buffer-name executable nil args)))
+    (setq python-buffer (current-buffer))
+    (inferior-python-mode)
+    (when py-fontify-shell-buffer-p
+      (font-lock-unfontify-region (point-min) (line-beginning-position)))
+    ;; (accept-process-output (get-buffer-process python-buffer) 1)
+    (setq comint-input-sender 'py-shell-simple-send)
+    (setq comint-input-ring-file-name
+          (cond ((string-match "[iI][pP]ython[[:alnum:]]*$" py-buffer-name)
+                 (if (getenv "IPYTHONDIR")
+                     (concat (getenv "IPYTHONDIR") "/history")
+                   "~/.ipython/history"))
+                ((getenv "PYTHONHISTORY")
+                 (concat (getenv "PYTHONHISTORY") "/" (py-report-executable py-buffer-name) "_history"))
+                (dedicated
+                 (concat "~/." (substring py-buffer-name 0 (string-match "-" py-buffer-name)) "_history"))
+                ;; .pyhistory might be locked from outside Emacs
+                ;; (t "~/.pyhistory")
+                (t (concat "~/." (py-report-executable py-buffer-name) "_history"))))
+    (comint-read-input-ring t)
+    (set-process-sentinel (get-buffer-process (current-buffer))
+                          #'shell-write-history-on-exit)
+    ;; (setq proc (get-buffer-process (current-buffer)))
+    ;; pdbtrack
+    (add-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file)
+    (setq py-pdbtrack-do-tracking-p t)
+    ;;
+    (set-syntax-table python-mode-syntax-table)
+    (ansi-color-for-comint-mode-on)
+    ;; (use-local-map py-shell-map)
+    ;; (use-local-map inferior-python-mode-map)
+    ;; (add-hook 'py-shell-hook 'py-dirstack-hook)
+    (when py-shell-hook (run-hooks 'py-shell-hook))
+    (goto-char (point-max))
     (if (and (interactive-p) py-shell-switch-buffers-on-execute-p)
         (pop-to-buffer py-buffer-name)
       (unless done (py-shell-manage-windows switch py-split-windows-on-execute-p py-switch-buffers-on-execute-p oldbuf py-buffer-name)))
     ;; (when py-verbose-p (message py-buffer-name))
     py-buffer-name))
+
 
 (defcustom py-remove-cwd-from-path t
   "Whether to allow loading of Python modules from the current directory.

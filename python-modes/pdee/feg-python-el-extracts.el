@@ -216,8 +216,8 @@ This function takes the list of setup code to send from the
         (python-shell-send-string-no-output
          (symbol-value code) process)))))
 
-(add-hook 'inferior-python-mode-hook
-          #'python-shell-send-setup-code)
+;;(add-hook 'inferior-python-mode-hook
+  ;;        #'python-shell-send-setup-code)
 
 (defun python-shell-get-process-name (dedicated)
   "Calculate the appropiate process name for inferior Python process.

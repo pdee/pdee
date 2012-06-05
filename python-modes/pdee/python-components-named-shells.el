@@ -85,6 +85,14 @@ Optional \\[universal-argument] prompts for options to pass to the Jython interp
   (interactive "P")
   (py-shell argprompt dedicated "jython" switch))
 
+(defun bpython (&optional argprompt dedicated switch)
+  "Start an BPython interpreter.
+
+Optional \\[universal-argument] prompts for options to pass to the Jython interpreter. See `py-python-command-args'.
+   Optional DEDICATED SWITCH are provided for use from programs. "
+  (interactive "P")
+  (py-shell argprompt dedicated "bpython" switch))
+
 (defun python3.2 (&optional argprompt dedicated switch)
   "Start an Python3.2 interpreter.
 

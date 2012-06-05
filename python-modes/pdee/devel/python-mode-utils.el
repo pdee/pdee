@@ -56,7 +56,7 @@
 (setq py-options (list "" "switch" "noswitch" "dedicated" "dedicated-switch"))
 
 (defcustom py-shells
-  '("python" "ipython" "python3" "python2" "python2.7" "jython" "python3.2")
+  '("python" "ipython" "python3" "python2" "python2.7" "jython" "python3.2" "bpython")
   "Python-mode will generate commands opening shells mentioned here. Edit this list \w resp. to your machine. "
   :type '(repeat string)
   :group 'python)

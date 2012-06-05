@@ -89,7 +89,590 @@ echo "\$PYMACS: $PYMACS"
 echo "\$PYTHONMODE: $PYTHONMODE"
 echo "\$PDIR/\$TESTFILE: $PDIR/$TESTFILE"
 
-$EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'python)(unload-feature 'python t))" --eval "(when (featurep 'python-mode)(unload-feature 'python-mode t))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$TESTDIR/\")" --eval "(setq py-temp-directory (expand-file-name \"~/tmp\"))" --eval "(message \"py-temp-directory: %s\" py-temp-directory)" --eval "(setq py-install-directory \"$PDIR\"))" --eval "(message \"py-install-directory: %s\" py-install-directory)" -load "$PYMACS" -load $CCCMDS -load $COMINT -load $ANSICOLOR -load $CLMACS -load $BYTECOMP -load $CUSTOM -load $SKEL -load $PYTHONMODE -load $PYCO -load "$PCOT/$TESTFILE" -load "$PCOT/$TESTFILE2" -load "$PCOT/$TESTFILE3" -load "$PCOT/$TESTFILE4" -load "$PCOT/$TESTFILE5" --eval "(quietly-read-abbrev-file (expand-file-name \"~/.abbrev_defs\"))" \
+$EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'python)(unload-feature 'python t))" --eval "(when (featurep 'python-mode)(unload-feature 'python-mode t))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$TESTDIR/\")" --eval "(setq py-temp-directory (expand-file-name \"~/tmp\"))" --eval "(message \"py-temp-directory: %s\" py-temp-directory)" --eval "(setq py-install-directory \"$PDIR\"))" --eval "(message \"py-install-directory: %s\" py-install-directory)" -load "$PYMACS" -load $CCCMDS -load $COMINT -load $ANSICOLOR -load $CLMACS -load $BYTECOMP -load $CUSTOM -load $SKEL -load $PYTHONMODE -load $PYCO -load "$PCOT/$TESTFILE" -load "$PCOT/$TESTFILE2" -load "$PCOT/$TESTFILE3" -load "$PCOT/$TESTFILE4" -load "$PCOT/$TESTFILE5" --eval "(quietly-read-abbrev-file (expand-file-name \"~/.abbrev_defs\"))" -eval "(assert (commandp 'clear-flymake-allowed-file-name-masks) nil \"clear-flymake-allowed-file-name-masks not detected as command\")" \
+-eval "(assert (commandp 'clear-flymake-allowed-file-name-masks) nil \"clear-flymake-allowed-file-name-masks not detected as command\")" \
+-eval "(assert (commandp 'pylint-flymake-mode) nil \"pylint-flymake-mode not detected as command\")" \
+-eval "(assert (commandp 'pyflakes-flymake-mode) nil \"pyflakes-flymake-mode not detected as command\")" \
+-eval "(assert (commandp 'pychecker-flymake-mode) nil \"pychecker-flymake-mode not detected as command\")" \
+-eval "(assert (commandp 'pep8-flymake-mode) nil \"pep8-flymake-mode not detected as command\")" \
+-eval "(assert (commandp 'pyflakespep8-flymake-mode) nil \"pyflakespep8-flymake-mode not detected as command\")" \
+-eval "(assert (commandp 'py-pylint-doku) nil \"py-pylint-doku not detected as command\")" \
+-eval "(assert (commandp 'py-pyflakes-run) nil \"py-pyflakes-run not detected as command\")" \
+-eval "(assert (commandp 'py-pyflakespep8-run) nil \"py-pyflakespep8-run not detected as command\")" \
+-eval "(assert (commandp 'py-pyflakespep8-help) nil \"py-pyflakespep8-help not detected as command\")" \
+-eval "(assert (commandp 'py-guess-pdb-path) nil \"py-guess-pdb-path not detected as command\")" \
+-eval "(assert (commandp 'highlight-indentation-on) nil \"highlight-indentation-on not detected as command\")" \
+-eval "(assert (commandp 'highlight-indentation-off) nil \"highlight-indentation-off not detected as command\")" \
+-eval "(assert (commandp 'highlight-indentation) nil \"highlight-indentation not detected as command\")" \
+-eval "(assert (commandp 'py-insert-default-shebang) nil \"py-insert-default-shebang not detected as command\")" \
+-eval "(assert (commandp 'py-electric-comment) nil \"py-electric-comment not detected as command\")" \
+-eval "(assert (commandp 'py-electric-colon) nil \"py-electric-colon not detected as command\")" \
+-eval "(assert (commandp 'py-electric-backspace) nil \"py-electric-backspace not detected as command\")" \
+-eval "(assert (commandp 'py-electric-delete) nil \"py-electric-delete not detected as command\")" \
+-eval "(assert (commandp 'py-indent-line-outmost) nil \"py-indent-line-outmost not detected as command\")" \
+-eval "(assert (commandp 'py-indent-line) nil \"py-indent-line not detected as command\")" \
+-eval "(assert (commandp 'py-newline-and-indent) nil \"py-newline-and-indent not detected as command\")" \
+-eval "(assert (commandp 'py-newline-and-dedent) nil \"py-newline-and-dedent not detected as command\")" \
+-eval "(assert (commandp 'py-toggle-indent-tabs-mode) nil \"py-toggle-indent-tabs-mode not detected as command\")" \
+-eval "(assert (commandp 'py-indent-tabs-mode) nil \"indent-tabs-mode not detected as command\")" \
+-eval "(assert (commandp 'py-indent-tabs-mode-on) nil \"indent-tabs-mode-on not detected as command\")" \
+-eval "(assert (commandp 'py-indent-tabs-mode-off) nil \"indent-tabs-mode-off not detected as command\")" \
+-eval "(assert (commandp 'py-guess-indent-offset) nil \"py-guess-indent-offset not detected as command\")" \
+-eval "(assert (commandp 'py-narrow-to-defun) nil \"py-narrow-to-defun not detected as command\")" \
+-eval "(assert (commandp 'py-shift-left) nil \"py-shift-left not detected as command\")" \
+-eval "(assert (commandp 'py-shift-right) nil \"py-shift-right not detected as command\")" \
+-eval "(assert (commandp 'py-shift-paragraph-right) nil \"py-shift-paragraph-right not detected as command\")" \
+-eval "(assert (commandp 'py-shift-paragraph-left) nil \"py-shift-paragraph-left not detected as command\")" \
+-eval "(assert (commandp 'py-shift-block-right) nil \"py-shift-block-right not detected as command\")" \
+-eval "(assert (commandp 'py-shift-block-left) nil \"py-shift-block-left not detected as command\")" \
+-eval "(assert (commandp 'py-shift-clause-right) nil \"py-shift-clause-right not detected as command\")" \
+-eval "(assert (commandp 'py-shift-clause-left) nil \"py-shift-clause-left not detected as command\")" \
+-eval "(assert (commandp 'py-shift-def-right) nil \"py-shift-def-right not detected as command\")" \
+-eval "(assert (commandp 'py-shift-def-left) nil \"py-shift-def-left not detected as command\")" \
+-eval "(assert (commandp 'py-shift-class-right) nil \"py-shift-class-right not detected as command\")" \
+-eval "(assert (commandp 'py-shift-class-left) nil \"py-shift-class-left not detected as command\")" \
+-eval "(assert (commandp 'py-shift-line-right) nil \"py-shift-line-right not detected as command\")" \
+-eval "(assert (commandp 'py-shift-line-left) nil \"py-shift-line-left not detected as command\")" \
+-eval "(assert (commandp 'py-shift-statement-right) nil \"py-shift-statement-right not detected as command\")" \
+-eval "(assert (commandp 'py-shift-statement-left) nil \"py-shift-statement-left not detected as command\")" \
+-eval "(assert (commandp 'py-indent-region) nil \"py-indent-region not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-paragraph-position) nil \"py-beginning-of-paragraph-position not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-paragraph-position) nil \"py-end-of-paragraph-position not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-block-position) nil \"py-beginning-of-block-position not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-block-position) nil \"py-end-of-block-position not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-clause-position) nil \"py-beginning-of-clause-position not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-clause-position) nil \"py-end-of-clause-position not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-block-or-clause-position) nil \"py-beginning-of-block-or-clause-position not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-block-or-clause-position) nil \"py-end-of-block-or-clause-position not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-def-position) nil \"py-beginning-of-def-position not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-def-position) nil \"py-end-of-def-position not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-class-position) nil \"py-beginning-of-class-position not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-class-position) nil \"py-end-of-class-position not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-def-or-class-position) nil \"py-beginning-of-def-or-class-position not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-def-or-class-position) nil \"py-end-of-def-or-class-position not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-line-position) nil \"py-beginning-of-line-position not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-line-position) nil \"py-end-of-line-position not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-statement-position) nil \"py-beginning-of-statement-position not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-statement-position) nil \"py-end-of-statement-position not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-expression-position) nil \"py-beginning-of-expression-position not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-expression-position) nil \"py-end-of-expression-position not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-partial-expression-position) nil \"py-beginning-of-partial-expression-position not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-partial-expression-position) nil \"py-end-of-partial-expression-position not detected as command\")" \
+-eval "(assert (commandp 'py-bounds-of-statement) nil \"py-bounds-of-statement not detected as command\")" \
+-eval "(assert (commandp 'py-bounds-of-block) nil \"py-bounds-of-block not detected as command\")" \
+-eval "(assert (commandp 'py-bounds-of-clause) nil \"py-bounds-of-clause not detected as command\")" \
+-eval "(assert (commandp 'py-bounds-of-block-or-clause) nil \"py-bounds-of-block-or-clause not detected as command\")" \
+-eval "(assert (commandp 'py-bounds-of-def) nil \"py-bounds-of-def not detected as command\")" \
+-eval "(assert (commandp 'py-bounds-of-class) nil \"py-bounds-of-class not detected as command\")" \
+-eval "(assert (commandp 'py-bounds-of-region) nil \"py-bounds-of-region not detected as command\")" \
+-eval "(assert (commandp 'py-bounds-of-buffer) nil \"py-bounds-of-buffer not detected as command\")" \
+-eval "(assert (commandp 'py-bounds-of-expression) nil \"py-bounds-of-expression not detected as command\")" \
+-eval "(assert (commandp 'py-bounds-of-partial-expression) nil \"py-bounds-of-partial-expression not detected as command\")" \
+-eval "(assert (commandp 'py-bounds-of-declarations) nil \"py-bounds-of-declarations not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-declarations) nil \"py-beginning-of-declarations not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-declarations) nil \"py-end-of-declarations not detected as command\")" \
+-eval "(assert (commandp 'py-declarations) nil \"py-declarations not detected as command\")" \
+-eval "(assert (commandp 'py-kill-declarations) nil \"py-kill-declarations not detected as command\")" \
+-eval "(assert (commandp 'py-bounds-of-statements) nil \"py-bounds-of-statements not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-statements) nil \"py-beginning-of-statements not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-statements) nil \"py-end-of-statements not detected as command\")" \
+-eval "(assert (commandp 'py-statements) nil \"py-statements not detected as command\")" \
+-eval "(assert (commandp 'py-kill-statements) nil \"py-kill-statements not detected as command\")" \
+-eval "(assert (commandp 'py-comment-region) nil \"py-comment-region not detected as command\")" \
+-eval "(assert (commandp 'py-fill-paragraph) nil \"py-fill-paragraph not detected as command\")" \
+-eval "(assert (commandp 'py-insert-super) nil \"py-insert-super not detected as command\")" \
+-eval "(assert (commandp 'py-compute-indentation) nil \"py-compute-indentation not detected as command\")" \
+-eval "(assert (commandp 'py-continuation-offset) nil \"py-continuation-offset not detected as command\")" \
+-eval "(assert (commandp 'py-indentation-of-statement) nil \"py-indentation-of-statement not detected as command\")" \
+-eval "(assert (commandp 'py-list-beginning-position) nil \"py-list-beginning-position not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-list-position) nil \"py-end-of-list-position not detected as command\")" \
+-eval "(assert (commandp 'py-in-triplequoted-string-p) nil \"py-in-triplequoted-string-p not detected as command\")" \
+-eval "(assert (commandp 'py-in-string-p) nil \"py-in-string-p not detected as command\")" \
+-eval "(assert (commandp 'py-in-statement-p) nil \"py-in-statement-p not detected as command\")" \
+-eval "(assert (commandp 'py-statement-opens-block-p) nil \"py-statement-opens-block-p not detected as command\")" \
+-eval "(assert (commandp 'py-statement-opens-clause-p) nil \"py-statement-opens-clause-p not detected as command\")" \
+-eval "(assert (commandp 'py-statement-opens-block-or-clause-p) nil \"py-statement-opens-block-or-clause-p not detected as command\")" \
+-eval "(assert (commandp 'py-statement-opens-class-p) nil \"py-statement-opens-class-p not detected as command\")" \
+-eval "(assert (commandp 'py-statement-opens-def-p) nil \"py-statement-opens-def-p not detected as command\")" \
+-eval "(assert (commandp 'py-statement-opens-def-or-class-p) nil \"py-statement-opens-def-or-class-p not detected as command\")" \
+-eval "(assert (commandp 'py-current-defun) nil \"py-current-defun not detected as command\")" \
+-eval "(assert (commandp 'py-sort-imports) nil \"py-sort-imports not detected as command\")" \
+-eval "(assert (commandp 'py-which-function) nil \"py-which-function not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-block) nil \"py-beginning-of-block not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-if-block) nil \"py-beginning-of-if-block not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-try-block) nil \"py-beginning-of-try-block not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-block) nil \"py-end-of-block not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-block-or-clause) nil \"py-beginning-of-block-or-clause not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-block-or-clause) nil \"py-end-of-block-or-clause not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-class) nil \"py-beginning-of-class not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-class) nil \"py-end-of-class not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-clause) nil \"py-beginning-of-clause not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-clause) nil \"py-end-of-clause not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-def) nil \"py-beginning-of-def not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-def) nil \"py-end-of-def not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-def-or-class) nil \"py-beginning-of-def-or-class not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-def-or-class) nil \"py-end-of-def-or-class not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-expression) nil \"py-beginning-of-expression not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-expression) nil \"py-end-of-expression not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-partial-expression) nil \"py-beginning-of-partial-expression not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-partial-expression) nil \"py-end-of-partial-expression not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-statement) nil \"py-beginning-of-statement not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-statement) nil \"py-end-of-statement not detected as command\")" \
+-eval "(assert (commandp 'py-goto-statement-below) nil \"py-goto-statement-below not detected as command\")" \
+-eval "(assert (commandp 'py-mark-paragraph) nil \"py-mark-paragraph not detected as command\")" \
+-eval "(assert (commandp 'py-mark-block) nil \"py-mark-block not detected as command\")" \
+-eval "(assert (commandp 'py-mark-clause) nil \"py-mark-clause not detected as command\")" \
+-eval "(assert (commandp 'py-mark-block-or-clause) nil \"py-mark-block-or-clause not detected as command\")" \
+-eval "(assert (commandp 'py-mark-def) nil \"py-mark-def not detected as command\")" \
+-eval "(assert (commandp 'py-mark-class) nil \"py-mark-class not detected as command\")" \
+-eval "(assert (commandp 'py-mark-def-or-class) nil \"py-mark-def-or-class not detected as command\")" \
+-eval "(assert (commandp 'py-mark-line) nil \"py-mark-line not detected as command\")" \
+-eval "(assert (commandp 'py-mark-statement) nil \"py-mark-statement not detected as command\")" \
+-eval "(assert (commandp 'py-mark-expression) nil \"py-mark-expression not detected as command\")" \
+-eval "(assert (commandp 'py-mark-partial-expression) nil \"py-mark-partial-expression not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-decorator) nil \"py-beginning-of-decorator not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-decorator) nil \"py-end-of-decorator not detected as command\")" \
+-eval "(assert (commandp 'py-copy-expression) nil \"py-copy-expression not detected as command\")" \
+-eval "(assert (commandp 'py-copy-partial-expression) nil \"py-copy-partial-expression not detected as command\")" \
+-eval "(assert (commandp 'py-copy-statement) nil \"py-copy-statement not detected as command\")" \
+-eval "(assert (commandp 'py-copy-block) nil \"py-copy-block not detected as command\")" \
+-eval "(assert (commandp 'py-copy-block-or-clause) nil \"py-copy-block-or-clause not detected as command\")" \
+-eval "(assert (commandp 'py-copy-def) nil \"py-copy-def not detected as command\")" \
+-eval "(assert (commandp 'py-copy-def-or-class) nil \"py-copy-def-or-class not detected as command\")" \
+-eval "(assert (commandp 'py-copy-class) nil \"py-copy-class not detected as command\")" \
+-eval "(assert (commandp 'py-copy-clause) nil \"py-copy-clause not detected as command\")" \
+-eval "(assert (commandp 'py-kill-expression) nil \"py-kill-expression not detected as command\")" \
+-eval "(assert (commandp 'py-kill-partial-expression) nil \"py-kill-partial-expression not detected as command\")" \
+-eval "(assert (commandp 'py-kill-statement) nil \"py-kill-statement not detected as command\")" \
+-eval "(assert (commandp 'py-kill-block) nil \"py-kill-block not detected as command\")" \
+-eval "(assert (commandp 'py-kill-block-or-clause) nil \"py-kill-block-or-clause not detected as command\")" \
+-eval "(assert (commandp 'py-kill-def-or-class) nil \"py-kill-def-or-class not detected as command\")" \
+-eval "(assert (commandp 'py-kill-class) nil \"py-kill-class not detected as command\")" \
+-eval "(assert (commandp 'py-kill-def) nil \"py-kill-def not detected as command\")" \
+-eval "(assert (commandp 'py-kill-clause) nil \"py-kill-clause not detected as command\")" \
+-eval "(assert (commandp 'py-forward-line) nil \"py-forward-line not detected as command\")" \
+-eval "(assert (commandp 'py-leave-comment-or-string-backward) nil \"py-leave-comment-or-string-backward not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-list-pps) nil \"py-beginning-of-list-pps not detected as command\")" \
+-eval "(assert (commandp 'py-down-block-lc) nil \"py-down-block-lc not detected as command\")" \
+-eval "(assert (commandp 'py-down-clause-lc) nil \"py-down-clause-lc not detected as command\")" \
+-eval "(assert (commandp 'py-down-def-lc) nil \"py-down-def-lc not detected as command\")" \
+-eval "(assert (commandp 'py-down-class-lc) nil \"py-down-class-lc not detected as command\")" \
+-eval "(assert (commandp 'py-down-statement-lc) nil \"py-down-statement-lc not detected as command\")" \
+-eval "(assert (commandp 'py-down-statement) nil \"py-down-statement not detected as command\")" \
+-eval "(assert (commandp 'py-down-block) nil \"py-down-block not detected as command\")" \
+-eval "(assert (commandp 'py-down-clause) nil \"py-down-clause not detected as command\")" \
+-eval "(assert (commandp 'py-down-block-or-clause) nil \"py-down-block-or-clause not detected as command\")" \
+-eval "(assert (commandp 'py-down-def) nil \"py-down-def not detected as command\")" \
+-eval "(assert (commandp 'py-down-class) nil \"py-down-class not detected as command\")" \
+-eval "(assert (commandp 'py-down-def-or-class) nil \"py-down-def-or-class not detected as command\")" \
+-eval "(assert (commandp 'py-forward-into-nomenclature) nil \"py-forward-into-nomenclature not detected as command\")" \
+-eval "(assert (commandp 'py-backward-into-nomenclature) nil \"py-backward-into-nomenclature not detected as command\")" \
+-eval "(assert (commandp 'match-paren) nil \"match-paren not detected as command\")" \
+-eval "(assert (commandp 'py-toggle-execute-keep-temporary-file-p) nil \"py-toggle-execute-keep-temporary-file-p not detected as command\")" \
+-eval "(assert (commandp 'py-guess-default-python) nil \"py-guess-default-python not detected as command\")" \
+-eval "(assert (commandp 'py-set-shell-completion-environment) nil \"py-set-shell-completion-environment not detected as command\")" \
+-eval "(assert (commandp 'py-set-ipython-completion-command-string) nil \"py-set-ipython-completion-command-string not detected as command\")" \
+-eval "(assert (commandp 'py-shell-dedicated) nil \"py-shell-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-shell) nil \"py-shell not detected as command\")" \
+-eval "(assert (commandp 'python) nil \"python not detected as command\")" \
+-eval "(assert (commandp 'ipython) nil \"ipython not detected as command\")" \
+-eval "(assert (commandp 'python3) nil \"python3 not detected as command\")" \
+-eval "(assert (commandp 'python2) nil \"python2 not detected as command\")" \
+-eval "(assert (commandp 'python2.7) nil \"python2.7 not detected as command\")" \
+-eval "(assert (commandp 'python-dedicated) nil \"python-dedicated not detected as command\")" \
+-eval "(assert (commandp 'ipython-dedicated) nil \"ipython-dedicated not detected as command\")" \
+-eval "(assert (commandp 'python3-dedicated) nil \"python3-dedicated not detected as command\")" \
+-eval "(assert (commandp 'python2-dedicated) nil \"python2-dedicated not detected as command\")" \
+-eval "(assert (commandp 'python2.7-dedicated) nil \"python2.7-dedicated not detected as command\")" \
+-eval "(assert (commandp 'python-switch) nil \"python-switch not detected as command\")" \
+-eval "(assert (commandp 'ipython-switch) nil \"ipython-switch not detected as command\")" \
+-eval "(assert (commandp 'python3-switch) nil \"python3-switch not detected as command\")" \
+-eval "(assert (commandp 'python2-switch) nil \"python2-switch not detected as command\")" \
+-eval "(assert (commandp 'python2.7-switch) nil \"python2.7-switch not detected as command\")" \
+-eval "(assert (commandp 'jython-switch) nil \"jython-switch not detected as command\")" \
+-eval "(assert (commandp 'python-no-switch) nil \"python-no-switch not detected as command\")" \
+-eval "(assert (commandp 'ipython-no-switch) nil \"ipython-no-switch not detected as command\")" \
+-eval "(assert (commandp 'python3-no-switch) nil \"python3-no-switch not detected as command\")" \
+-eval "(assert (commandp 'python2-no-switch) nil \"python2-no-switch not detected as command\")" \
+-eval "(assert (commandp 'python2.7-no-switch) nil \"python2.7-no-switch not detected as command\")" \
+-eval "(assert (commandp 'jython-no-switch) nil \"jython-no-switch not detected as command\")" \
+-eval "(assert (commandp 'python-switch-dedicated) nil \"python-switch-dedicated not detected as command\")" \
+-eval "(assert (commandp 'ipython-switch-dedicated) nil \"ipython-switch-dedicated not detected as command\")" \
+-eval "(assert (commandp 'python3-switch-dedicated) nil \"python3-switch-dedicated not detected as command\")" \
+-eval "(assert (commandp 'python2-switch-dedicated) nil \"python2-switch-dedicated not detected as command\")" \
+-eval "(assert (commandp 'python2.7-switch-dedicated) nil \"python2.7-switch-dedicated not detected as command\")" \
+-eval "(assert (commandp 'jython-switch-dedicated) nil \"jython-switch-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-which-execute-file-command) nil \"py-which-execute-file-command not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-no-switch) nil \"py-execute-region-no-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-switch) nil \"py-execute-region-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region) nil \"py-execute-region not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-default) nil \"py-execute-region-default not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-dedicated) nil \"py-execute-region-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-default-dedicated) nil \"py-execute-region-default-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-string) nil \"py-execute-string not detected as command\")" \
+-eval "(assert (commandp 'py-execute-string-dedicated) nil \"py-execute-string-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-fetch-py-master-file) nil \"py-fetch-py-master-file not detected as command\")" \
+-eval "(assert (commandp 'py-execute-import-or-reload) nil \"py-execute-import-or-reload not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-dedicated) nil \"py-execute-buffer-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-switch) nil \"py-execute-buffer-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-dedicated-switch) nil \"py-execute-buffer-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer) nil \"py-execute-buffer not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-no-switch) nil \"py-execute-buffer-no-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-defun) nil \"py-execute-defun not detected as command\")" \
+-eval "(assert (commandp 'py-process-file) nil \"py-process-file not detected as command\")" \
+-eval "(assert (commandp 'py-exec-execfile-region) nil \"py-exec-execfile-region not detected as command\")" \
+-eval "(assert (commandp 'py-exec-execfile) nil \"py-exec-execfile not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block) nil \"py-execute-block not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-or-clause) nil \"py-execute-block-or-clause not detected as command\")" \
+-eval "(assert (commandp 'py-execute-class) nil \"py-execute-class not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def) nil \"py-execute-def not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def-or-class) nil \"py-execute-def-or-class not detected as command\")" \
+-eval "(assert (commandp 'py-execute-expression) nil \"py-execute-expression not detected as command\")" \
+-eval "(assert (commandp 'py-execute-partial-expression) nil \"py-execute-partial-expression not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement) nil \"py-execute-statement not detected as command\")" \
+-eval "(assert (commandp 'py-execute-file) nil \"py-execute-file not detected as command\")" \
+-eval "(assert (commandp 'py-down-exception) nil \"py-down-exception not detected as command\")" \
+-eval "(assert (commandp 'py-up-exception) nil \"py-up-exception not detected as command\")" \
+-eval "(assert (commandp 'py-output-buffer-filter) nil \"py-output-buffer-filter not detected as command\")" \
+-eval "(assert (commandp 'py-send-string) nil \"py-send-string not detected as command\")" \
+-eval "(assert (commandp 'py-pdbtrack-toggle-stack-tracking) nil \"py-pdbtrack-toggle-stack-tracking not detected as command\")" \
+-eval "(assert (commandp 'turn-on-pdbtrack) nil \"turn-on-pdbtrack not detected as command\")" \
+-eval "(assert (commandp 'turn-off-pdbtrack) nil \"turn-off-pdbtrack not detected as command\")" \
+-eval "(assert (commandp 'py-fetch-docu) nil \"py-fetch-docu not detected as command\")" \
+-eval "(assert (commandp 'py-find-imports) nil \"py-find-imports not detected as command\")" \
+-eval "(assert (commandp 'python-find-imports) nil \"python-find-imports not detected as command\")" \
+-eval "(assert (commandp 'py-describe-symbol) nil \"py-describe-symbol not detected as command\")" \
+-eval "(assert (commandp 'py-describe-mode) nil \"py-describe-mode not detected as command\")" \
+-eval "(assert (commandp 'py-find-function) nil \"py-find-function not detected as command\")" \
+-eval "(assert (commandp 'py-update-imports) nil \"py-update-imports not detected as command\")" \
+-eval "(assert (commandp 'py-indent-forward-line) nil \"py-indent-forward-line not detected as command\")" \
+-eval "(assert (commandp 'py-dedent-forward-line) nil \"py-dedent-forward-line not detected as command\")" \
+-eval "(assert (commandp 'py-dedent) nil \"py-dedent not detected as command\")" \
+-eval "(assert (commandp 'py-close-def) nil \"py-close-def not detected as command\")" \
+-eval "(assert (commandp 'py-close-class) nil \"py-close-class not detected as command\")" \
+-eval "(assert (commandp 'py-close-clause) nil \"py-close-clause not detected as command\")" \
+-eval "(assert (commandp 'py-close-block) nil \"py-close-block not detected as command\")" \
+-eval "(assert (commandp 'py-class-at-point) nil \"py-class-at-point not detected as command\")" \
+-eval "(assert (commandp 'py-match-paren) nil \"py-match-paren not detected as command\")" \
+-eval "(assert (commandp 'eva) nil \"eva not detected as command\")" \
+-eval "(assert (commandp 'pst-here) nil \"pst-here not detected as command\")" \
+-eval "(assert (commandp 'py-printform-insert) nil \"py-printform-insert not detected as command\")" \
+-eval "(assert (commandp 'py-line-to-printform-python2) nil \"py-line-to-printform-python2 not detected as command\")" \
+-eval "(assert (commandp 'py-switch-imenu-index-function) nil \"py-switch-imenu-index-function not detected as command\")" \
+-eval "(assert (commandp 'py-completion-at-point) nil \"py-completion-at-point not detected as command\")" \
+-eval "(assert (commandp 'py-choose-shell-by-shebang) nil \"py-choose-shell-by-shebang not detected as command\")" \
+-eval "(assert (commandp 'py-which-python) nil \"py-which-python not detected as command\")" \
+-eval "(assert (commandp 'py-python-current-environment) nil \"py-python-current-environment not detected as command\")" \
+-eval "(assert (commandp 'py-switch-shell) nil \"py-switch-shell not detected as command\")" \
+-eval "(assert (commandp 'py-choose-shell) nil \"py-choose-shell not detected as command\")" \
+-eval "(assert (commandp 'py-toggle-smart-indentation) nil \"py-toggle-smart-indentation not detected as command\")" \
+-eval "(assert (commandp 'py-smart-indentation-on) nil \"py-smart-indentation-on not detected as command\")" \
+-eval "(assert (commandp 'py-smart-indentation-off) nil \"py-smart-indentation-off not detected as command\")" \
+-eval "(assert (commandp 'py-toggle-split-windows-on-execute) nil \"py-toggle-split-windows-on-execute not detected as command\")" \
+-eval "(assert (commandp 'py-split-windows-on-execute-on) nil \"py-split-windows-on-execute-on not detected as command\")" \
+-eval "(assert (commandp 'py-split-windows-on-execute-off) nil \"py-split-windows-on-execute-off not detected as command\")" \
+-eval "(assert (commandp 'py-toggle-shell-switch-buffers-on-execute) nil \"py-toggle-shell-switch-buffers-on-execute not detected as command\")" \
+-eval "(assert (commandp 'py-shell-switch-buffers-on-execute-on) nil \"py-shell-switch-buffers-on-execute-on not detected as command\")" \
+-eval "(assert (commandp 'py-shell-switch-buffers-on-execute-off) nil \"py-shell-switch-buffers-on-execute-off not detected as command\")" \
+-eval "(assert (commandp 'py-install-directory-check) nil \"py-install-directory-check not detected as command\")" \
+-eval "(assert (commandp 'py-guess-py-install-directory) nil \"py-guess-py-install-directory not detected as command\")" \
+-eval "(assert (commandp 'py-set-load-path) nil \"py-set-load-path not detected as command\")" \
+-eval "(assert (commandp 'py-def-or-class-beginning-position) nil \"py-def-or-class-beginning-position not detected as command\")" \
+-eval "(assert (commandp 'py-def-or-class-end-position) nil \"py-def-or-class-end-position not detected as command\")" \
+-eval "(assert (commandp 'py-statement-beginning-position) nil \"py-statement-beginning-position not detected as command\")" \
+-eval "(assert (commandp 'py-statement-end-position) nil \"py-statement-end-position not detected as command\")" \
+-eval "(assert (commandp 'py-current-indentation) nil \"py-current-indentation not detected as command\")" \
+-eval "(assert (commandp 'py-version) nil \"py-version not detected as command\")" \
+-eval "(assert (commandp 'run-python) nil \"run-python not detected as command\")" \
+-eval "(assert (commandp 'py-send-region) nil \"py-send-region not detected as command\")" \
+-eval "(assert (commandp 'py-send-buffer) nil \"py-send-buffer not detected as command\")" \
+-eval "(assert (commandp 'py-switch-to-python) nil \"py-switch-to-python not detected as command\")" \
+-eval "(assert (commandp 'py-send-region-and-go) nil \"py-send-region-and-go not detected as command\")" \
+-eval "(assert (commandp 'py-load-file) nil \"py-load-file not detected as command\")" \
+-eval "(assert (commandp 'py-set-proc) nil \"py-set-proc not detected as command\")" \
+-eval "(assert (commandp 'py-shell-complete) nil \"py-shell-complete not detected as command\")" \
+-eval "(assert (commandp 'ipython-complete) nil \"ipython-complete not detected as command\")" \
+-eval "(assert (commandp 'py-pychecker-run) nil \"py-pychecker-run not detected as command\")" \
+-eval "(assert (commandp 'virtualenv-current) nil \"virtualenv-current not detected as command\")" \
+-eval "(assert (commandp 'virtualenv-activate) nil \"virtualenv-activate not detected as command\")" \
+-eval "(assert (commandp 'virtualenv-deactivate) nil \"virtualenv-deactivate not detected as command\")" \
+-eval "(assert (commandp 'virtualenv-workon) nil \"virtualenv-workon not detected as command\")" \
+-eval "(assert (commandp 'py-toggle-local-default-use) nil \"py-toggle-local-default-use not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement-python) nil \"py-execute-statement-python not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement-python-switch) nil \"py-execute-statement-python-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement-python-noswitch) nil \"py-execute-statement-python-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement-python-dedicated) nil \"py-execute-statement-python-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement-python-dedicated-switch) nil \"py-execute-statement-python-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement-ipython) nil \"py-execute-statement-ipython not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement-ipython-switch) nil \"py-execute-statement-ipython-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement-ipython-noswitch) nil \"py-execute-statement-ipython-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement-ipython-dedicated) nil \"py-execute-statement-ipython-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement-ipython-dedicated-switch) nil \"py-execute-statement-ipython-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement-python3) nil \"py-execute-statement-python3 not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement-python3-switch) nil \"py-execute-statement-python3-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement-python3-noswitch) nil \"py-execute-statement-python3-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement-python3-dedicated) nil \"py-execute-statement-python3-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement-python3-dedicated-switch) nil \"py-execute-statement-python3-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement-python2) nil \"py-execute-statement-python2 not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement-python2-switch) nil \"py-execute-statement-python2-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement-python2-noswitch) nil \"py-execute-statement-python2-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement-python2-dedicated) nil \"py-execute-statement-python2-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement-python2-dedicated-switch) nil \"py-execute-statement-python2-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement-python2.7) nil \"py-execute-statement-python2.7 not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement-python2.7-switch) nil \"py-execute-statement-python2.7-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement-python2.7-noswitch) nil \"py-execute-statement-python2.7-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement-python2.7-dedicated) nil \"py-execute-statement-python2.7-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement-python2.7-dedicated-switch) nil \"py-execute-statement-python2.7-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement-jython) nil \"py-execute-statement-jython not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement-jython-switch) nil \"py-execute-statement-jython-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement-jython-noswitch) nil \"py-execute-statement-jython-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement-jython-dedicated) nil \"py-execute-statement-jython-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement-jython-dedicated-switch) nil \"py-execute-statement-jython-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-python) nil \"py-execute-block-python not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-python-switch) nil \"py-execute-block-python-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-python-noswitch) nil \"py-execute-block-python-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-python-dedicated) nil \"py-execute-block-python-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-python-dedicated-switch) nil \"py-execute-block-python-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-ipython) nil \"py-execute-block-ipython not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-ipython-switch) nil \"py-execute-block-ipython-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-ipython-noswitch) nil \"py-execute-block-ipython-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-ipython-dedicated) nil \"py-execute-block-ipython-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-ipython-dedicated-switch) nil \"py-execute-block-ipython-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-python3) nil \"py-execute-block-python3 not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-python3-switch) nil \"py-execute-block-python3-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-python3-noswitch) nil \"py-execute-block-python3-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-python3-dedicated) nil \"py-execute-block-python3-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-python3-dedicated-switch) nil \"py-execute-block-python3-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-python2) nil \"py-execute-block-python2 not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-python2-switch) nil \"py-execute-block-python2-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-python2-noswitch) nil \"py-execute-block-python2-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-python2-dedicated) nil \"py-execute-block-python2-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-python2-dedicated-switch) nil \"py-execute-block-python2-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-python2.7) nil \"py-execute-block-python2.7 not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-python2.7-switch) nil \"py-execute-block-python2.7-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-python2.7-noswitch) nil \"py-execute-block-python2.7-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-python2.7-dedicated) nil \"py-execute-block-python2.7-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-python2.7-dedicated-switch) nil \"py-execute-block-python2.7-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-jython) nil \"py-execute-block-jython not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-jython-switch) nil \"py-execute-block-jython-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-jython-noswitch) nil \"py-execute-block-jython-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-jython-dedicated) nil \"py-execute-block-jython-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-jython-dedicated-switch) nil \"py-execute-block-jython-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-or-clause-python) nil \"py-execute-block-or-clause-python not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-or-clause-python-switch) nil \"py-execute-block-or-clause-python-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-or-clause-python-noswitch) nil \"py-execute-block-or-clause-python-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-or-clause-python-dedicated) nil \"py-execute-block-or-clause-python-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-or-clause-python-dedicated-switch) nil \"py-execute-block-or-clause-python-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-or-clause-ipython) nil \"py-execute-block-or-clause-ipython not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-or-clause-ipython-switch) nil \"py-execute-block-or-clause-ipython-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-or-clause-ipython-noswitch) nil \"py-execute-block-or-clause-ipython-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-or-clause-ipython-dedicated) nil \"py-execute-block-or-clause-ipython-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-or-clause-ipython-dedicated-switch) nil \"py-execute-block-or-clause-ipython-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-or-clause-python3) nil \"py-execute-block-or-clause-python3 not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-or-clause-python3-switch) nil \"py-execute-block-or-clause-python3-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-or-clause-python3-noswitch) nil \"py-execute-block-or-clause-python3-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-or-clause-python3-dedicated) nil \"py-execute-block-or-clause-python3-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-or-clause-python3-dedicated-switch) nil \"py-execute-block-or-clause-python3-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-or-clause-python2) nil \"py-execute-block-or-clause-python2 not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-or-clause-python2-switch) nil \"py-execute-block-or-clause-python2-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-or-clause-python2-noswitch) nil \"py-execute-block-or-clause-python2-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-or-clause-python2-dedicated) nil \"py-execute-block-or-clause-python2-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-or-clause-python2-dedicated-switch) nil \"py-execute-block-or-clause-python2-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-or-clause-python2.7) nil \"py-execute-block-or-clause-python2.7 not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-or-clause-python2.7-switch) nil \"py-execute-block-or-clause-python2.7-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-or-clause-python2.7-noswitch) nil \"py-execute-block-or-clause-python2.7-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-or-clause-python2.7-dedicated) nil \"py-execute-block-or-clause-python2.7-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-or-clause-python2.7-dedicated-switch) nil \"py-execute-block-or-clause-python2.7-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-or-clause-jython) nil \"py-execute-block-or-clause-jython not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-or-clause-jython-switch) nil \"py-execute-block-or-clause-jython-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-or-clause-jython-noswitch) nil \"py-execute-block-or-clause-jython-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-or-clause-jython-dedicated) nil \"py-execute-block-or-clause-jython-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-or-clause-jython-dedicated-switch) nil \"py-execute-block-or-clause-jython-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def-python) nil \"py-execute-def-python not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def-python-switch) nil \"py-execute-def-python-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def-python-noswitch) nil \"py-execute-def-python-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def-python-dedicated) nil \"py-execute-def-python-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def-python-dedicated-switch) nil \"py-execute-def-python-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def-ipython) nil \"py-execute-def-ipython not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def-ipython-switch) nil \"py-execute-def-ipython-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def-ipython-noswitch) nil \"py-execute-def-ipython-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def-ipython-dedicated) nil \"py-execute-def-ipython-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def-ipython-dedicated-switch) nil \"py-execute-def-ipython-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def-python3) nil \"py-execute-def-python3 not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def-python3-switch) nil \"py-execute-def-python3-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def-python3-noswitch) nil \"py-execute-def-python3-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def-python3-dedicated) nil \"py-execute-def-python3-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def-python3-dedicated-switch) nil \"py-execute-def-python3-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def-python2) nil \"py-execute-def-python2 not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def-python2-switch) nil \"py-execute-def-python2-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def-python2-noswitch) nil \"py-execute-def-python2-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def-python2-dedicated) nil \"py-execute-def-python2-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def-python2-dedicated-switch) nil \"py-execute-def-python2-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def-python2.7) nil \"py-execute-def-python2.7 not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def-python2.7-switch) nil \"py-execute-def-python2.7-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def-python2.7-noswitch) nil \"py-execute-def-python2.7-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def-python2.7-dedicated) nil \"py-execute-def-python2.7-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def-python2.7-dedicated-switch) nil \"py-execute-def-python2.7-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def-jython) nil \"py-execute-def-jython not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def-jython-switch) nil \"py-execute-def-jython-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def-jython-noswitch) nil \"py-execute-def-jython-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def-jython-dedicated) nil \"py-execute-def-jython-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def-jython-dedicated-switch) nil \"py-execute-def-jython-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-class-python) nil \"py-execute-class-python not detected as command\")" \
+-eval "(assert (commandp 'py-execute-class-python-switch) nil \"py-execute-class-python-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-class-python-noswitch) nil \"py-execute-class-python-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-class-python-dedicated) nil \"py-execute-class-python-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-class-python-dedicated-switch) nil \"py-execute-class-python-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-class-ipython) nil \"py-execute-class-ipython not detected as command\")" \
+-eval "(assert (commandp 'py-execute-class-ipython-switch) nil \"py-execute-class-ipython-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-class-ipython-noswitch) nil \"py-execute-class-ipython-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-class-ipython-dedicated) nil \"py-execute-class-ipython-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-class-ipython-dedicated-switch) nil \"py-execute-class-ipython-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-class-python3) nil \"py-execute-class-python3 not detected as command\")" \
+-eval "(assert (commandp 'py-execute-class-python3-switch) nil \"py-execute-class-python3-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-class-python3-noswitch) nil \"py-execute-class-python3-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-class-python3-dedicated) nil \"py-execute-class-python3-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-class-python3-dedicated-switch) nil \"py-execute-class-python3-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-class-python2) nil \"py-execute-class-python2 not detected as command\")" \
+-eval "(assert (commandp 'py-execute-class-python2-switch) nil \"py-execute-class-python2-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-class-python2-noswitch) nil \"py-execute-class-python2-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-class-python2-dedicated) nil \"py-execute-class-python2-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-class-python2-dedicated-switch) nil \"py-execute-class-python2-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-class-python2.7) nil \"py-execute-class-python2.7 not detected as command\")" \
+-eval "(assert (commandp 'py-execute-class-python2.7-switch) nil \"py-execute-class-python2.7-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-class-python2.7-noswitch) nil \"py-execute-class-python2.7-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-class-python2.7-dedicated) nil \"py-execute-class-python2.7-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-class-python2.7-dedicated-switch) nil \"py-execute-class-python2.7-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-class-jython) nil \"py-execute-class-jython not detected as command\")" \
+-eval "(assert (commandp 'py-execute-class-jython-switch) nil \"py-execute-class-jython-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-class-jython-noswitch) nil \"py-execute-class-jython-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-class-jython-dedicated) nil \"py-execute-class-jython-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-class-jython-dedicated-switch) nil \"py-execute-class-jython-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-python) nil \"py-execute-region-python not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-python-switch) nil \"py-execute-region-python-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-python-noswitch) nil \"py-execute-region-python-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-python-dedicated) nil \"py-execute-region-python-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-python-dedicated-switch) nil \"py-execute-region-python-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-ipython) nil \"py-execute-region-ipython not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-ipython-switch) nil \"py-execute-region-ipython-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-ipython-noswitch) nil \"py-execute-region-ipython-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-ipython-dedicated) nil \"py-execute-region-ipython-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-ipython-dedicated-switch) nil \"py-execute-region-ipython-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-python3) nil \"py-execute-region-python3 not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-python3-switch) nil \"py-execute-region-python3-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-python3-noswitch) nil \"py-execute-region-python3-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-python3-dedicated) nil \"py-execute-region-python3-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-python3-dedicated-switch) nil \"py-execute-region-python3-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-python2) nil \"py-execute-region-python2 not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-python2-switch) nil \"py-execute-region-python2-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-python2-noswitch) nil \"py-execute-region-python2-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-python2-dedicated) nil \"py-execute-region-python2-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-python2-dedicated-switch) nil \"py-execute-region-python2-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-python2.7) nil \"py-execute-region-python2.7 not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-python2.7-switch) nil \"py-execute-region-python2.7-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-python2.7-noswitch) nil \"py-execute-region-python2.7-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-python2.7-dedicated) nil \"py-execute-region-python2.7-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-python2.7-dedicated-switch) nil \"py-execute-region-python2.7-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-jython) nil \"py-execute-region-jython not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-jython-switch) nil \"py-execute-region-jython-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-jython-noswitch) nil \"py-execute-region-jython-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-jython-dedicated) nil \"py-execute-region-jython-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-jython-dedicated-switch) nil \"py-execute-region-jython-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-python) nil \"py-execute-buffer-python not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-python-switch) nil \"py-execute-buffer-python-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-python-noswitch) nil \"py-execute-buffer-python-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-python-dedicated) nil \"py-execute-buffer-python-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-python-dedicated-switch) nil \"py-execute-buffer-python-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-ipython) nil \"py-execute-buffer-ipython not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-ipython-switch) nil \"py-execute-buffer-ipython-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-ipython-noswitch) nil \"py-execute-buffer-ipython-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-ipython-dedicated) nil \"py-execute-buffer-ipython-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-ipython-dedicated-switch) nil \"py-execute-buffer-ipython-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-python3) nil \"py-execute-buffer-python3 not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-python3-switch) nil \"py-execute-buffer-python3-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-python3-noswitch) nil \"py-execute-buffer-python3-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-python3-dedicated) nil \"py-execute-buffer-python3-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-python3-dedicated-switch) nil \"py-execute-buffer-python3-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-python2) nil \"py-execute-buffer-python2 not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-python2-switch) nil \"py-execute-buffer-python2-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-python2-noswitch) nil \"py-execute-buffer-python2-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-python2-dedicated) nil \"py-execute-buffer-python2-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-python2-dedicated-switch) nil \"py-execute-buffer-python2-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-python2.7) nil \"py-execute-buffer-python2.7 not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-python2.7-switch) nil \"py-execute-buffer-python2.7-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-python2.7-noswitch) nil \"py-execute-buffer-python2.7-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-python2.7-dedicated) nil \"py-execute-buffer-python2.7-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-python2.7-dedicated-switch) nil \"py-execute-buffer-python2.7-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-jython) nil \"py-execute-buffer-jython not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-jython-switch) nil \"py-execute-buffer-jython-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-jython-noswitch) nil \"py-execute-buffer-jython-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-jython-dedicated) nil \"py-execute-buffer-jython-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-jython-dedicated-switch) nil \"py-execute-buffer-jython-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-expression-python) nil \"py-execute-expression-python not detected as command\")" \
+-eval "(assert (commandp 'py-execute-expression-python-switch) nil \"py-execute-expression-python-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-expression-python-noswitch) nil \"py-execute-expression-python-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-expression-python-dedicated) nil \"py-execute-expression-python-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-expression-python-dedicated-switch) nil \"py-execute-expression-python-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-expression-ipython) nil \"py-execute-expression-ipython not detected as command\")" \
+-eval "(assert (commandp 'py-execute-expression-ipython-switch) nil \"py-execute-expression-ipython-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-expression-ipython-noswitch) nil \"py-execute-expression-ipython-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-expression-ipython-dedicated) nil \"py-execute-expression-ipython-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-expression-ipython-dedicated-switch) nil \"py-execute-expression-ipython-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-expression-python3) nil \"py-execute-expression-python3 not detected as command\")" \
+-eval "(assert (commandp 'py-execute-expression-python3-switch) nil \"py-execute-expression-python3-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-expression-python3-noswitch) nil \"py-execute-expression-python3-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-expression-python3-dedicated) nil \"py-execute-expression-python3-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-expression-python3-dedicated-switch) nil \"py-execute-expression-python3-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-expression-python2) nil \"py-execute-expression-python2 not detected as command\")" \
+-eval "(assert (commandp 'py-execute-expression-python2-switch) nil \"py-execute-expression-python2-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-expression-python2-noswitch) nil \"py-execute-expression-python2-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-expression-python2-dedicated) nil \"py-execute-expression-python2-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-expression-python2-dedicated-switch) nil \"py-execute-expression-python2-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-expression-python2.7) nil \"py-execute-expression-python2.7 not detected as command\")" \
+-eval "(assert (commandp 'py-execute-expression-python2.7-switch) nil \"py-execute-expression-python2.7-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-expression-python2.7-noswitch) nil \"py-execute-expression-python2.7-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-expression-python2.7-dedicated) nil \"py-execute-expression-python2.7-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-expression-python2.7-dedicated-switch) nil \"py-execute-expression-python2.7-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-expression-jython) nil \"py-execute-expression-jython not detected as command\")" \
+-eval "(assert (commandp 'py-execute-expression-jython-switch) nil \"py-execute-expression-jython-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-expression-jython-noswitch) nil \"py-execute-expression-jython-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-expression-jython-dedicated) nil \"py-execute-expression-jython-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-expression-jython-dedicated-switch) nil \"py-execute-expression-jython-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-partial-expression-python-switch) nil \"py-execute-partial-expression-python-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-partial-expression-python) nil \"py-execute-partial-expression-python not detected as command\")" \
+-eval "(assert (commandp 'py-execute-partial-expression-python-noswitch) nil \"py-execute-partial-expression-python-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-partial-expression-python-dedicated) nil \"py-execute-partial-expression-python-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-partial-expression-python-dedicated-switch) nil \"py-execute-partial-expression-python-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-partial-expression-ipython) nil \"py-execute-partial-expression-ipython not detected as command\")" \
+-eval "(assert (commandp 'py-execute-partial-expression-ipython-switch) nil \"py-execute-partial-expression-ipython-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-partial-expression-ipython-noswitch) nil \"py-execute-partial-expression-ipython-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-partial-expression-ipython-dedicated) nil \"py-execute-partial-expression-ipython-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-partial-expression-ipython-dedicated-switch) nil \"py-execute-partial-expression-ipython-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-partial-expression-python3) nil \"py-execute-partial-expression-python3 not detected as command\")" \
+-eval "(assert (commandp 'py-execute-partial-expression-python3-switch) nil \"py-execute-partial-expression-python3-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-partial-expression-python3-noswitch) nil \"py-execute-partial-expression-python3-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-partial-expression-python3-dedicated) nil \"py-execute-partial-expression-python3-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-partial-expression-python3-dedicated-switch) nil \"py-execute-partial-expression-python3-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-partial-expression-python2) nil \"py-execute-partial-expression-python2 not detected as command\")" \
+-eval "(assert (commandp 'py-execute-partial-expression-python2-switch) nil \"py-execute-partial-expression-python2-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-partial-expression-python2-noswitch) nil \"py-execute-partial-expression-python2-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-partial-expression-python2-dedicated) nil \"py-execute-partial-expression-python2-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-partial-expression-python2-dedicated-switch) nil \"py-execute-partial-expression-python2-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-partial-expression-python2.7) nil \"py-execute-partial-expression-python2.7 not detected as command\")" \
+-eval "(assert (commandp 'py-execute-partial-expression-python2.7-switch) nil \"py-execute-partial-expression-python2.7-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-partial-expression-python2.7-noswitch) nil \"py-execute-partial-expression-python2.7-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-partial-expression-python2.7-dedicated) nil \"py-execute-partial-expression-python2.7-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-partial-expression-python2.7-dedicated-switch) nil \"py-execute-partial-expression-python2.7-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-partial-expression-jython) nil \"py-execute-partial-expression-jython not detected as command\")" \
+-eval "(assert (commandp 'py-execute-partial-expression-jython-switch) nil \"py-execute-partial-expression-jython-switch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-partial-expression-jython-noswitch) nil \"py-execute-partial-expression-jython-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-partial-expression-jython-dedicated) nil \"py-execute-partial-expression-jython-dedicated not detected as command\")" \
+-eval "(assert (commandp 'py-execute-partial-expression-jython-dedicated-switch) nil \"py-execute-partial-expression-jython-dedicated-switch not detected as command\")" \
+-eval "(assert (commandp 'py-mark-block-clause-misbehave-lp:949310-test) nil \"py-mark-block-clause-misbehave-lp:949310-test not detected as command\")" \
+-eval "(assert (commandp 'broken-font-locking-lp:961231-test) nil \"broken-font-locking-lp:961231-test not detected as command\")" \
+-eval "(assert (commandp 'py-mark-clause-misbehave-lp:949310-test) nil \"py-mark-clause-misbehave-lp:949310-test not detected as command\")" \
+-eval "(assert (commandp 'py-mark-block-misbehave-lp:949310-test) nil \"py-mark-block-misbehave-lp:949310-test not detected as command\")" \
+-eval "(assert (commandp 'py-mark-partial-expression) nil \"py-mark-partial-expression not detected as command\")" \
 --funcall spurious-trailing-whitespace-lp-1008679-test \
 --funcall py-end-of-statement-test \
 --funcall no-completion-at-all-lp:1001328-test \
@@ -225,589 +808,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall nesting-if-test \
 --funcall nested-try-test \
 --funcall nested-if-test \
---funcall clear-flymake-allowed-file-name-masks-commandp-test \
---funcall pylint-flymake-mode-commandp-test \
---funcall pyflakes-flymake-mode-commandp-test \
---funcall pychecker-flymake-mode-commandp-test \
---funcall pep8-flymake-mode-commandp-test \
---funcall pyflakespep8-flymake-mode-commandp-test \
---funcall py-pylint-doku-commandp-test \
---funcall py-pyflakes-run-commandp-test \
---funcall py-pyflakespep8-run-commandp-test \
---funcall py-pyflakespep8-help-commandp-test \
---funcall py-guess-pdb-path-commandp-test \
---funcall highlight-indentation-on-commandp-test \
---funcall highlight-indentation-off-commandp-test \
---funcall highlight-indentation-commandp-test \
---funcall py-insert-default-shebang-commandp-test \
---funcall py-electric-comment-commandp-test \
---funcall py-electric-colon-commandp-test \
---funcall py-electric-backspace-commandp-test \
---funcall py-electric-delete-commandp-test \
---funcall py-indent-line-outmost-commandp-test \
---funcall py-indent-line-commandp-test \
---funcall py-newline-and-indent-commandp-test \
---funcall py-newline-and-dedent-commandp-test \
---funcall toggle-indent-tabs-mode-commandp-test \
---funcall indent-tabs-mode-commandp-test \
---funcall indent-tabs-mode-on-commandp-test \
---funcall indent-tabs-mode-off-commandp-test \
---funcall py-guess-indent-offset-commandp-test \
---funcall py-narrow-to-defun-commandp-test \
---funcall py-shift-left-commandp-test \
---funcall py-shift-right-commandp-test \
---funcall py-shift-paragraph-right-commandp-test \
---funcall py-shift-paragraph-left-commandp-test \
---funcall py-shift-block-right-commandp-test \
---funcall py-shift-block-left-commandp-test \
---funcall py-shift-clause-right-commandp-test \
---funcall py-shift-clause-left-commandp-test \
---funcall py-shift-def-right-commandp-test \
---funcall py-shift-def-left-commandp-test \
---funcall py-shift-class-right-commandp-test \
---funcall py-shift-class-left-commandp-test \
---funcall py-shift-line-right-commandp-test \
---funcall py-shift-line-left-commandp-test \
---funcall py-shift-statement-right-commandp-test \
---funcall py-shift-statement-left-commandp-test \
---funcall py-indent-region-commandp-test \
---funcall py-beginning-of-paragraph-position-commandp-test \
---funcall py-end-of-paragraph-position-commandp-test \
---funcall py-beginning-of-block-position-commandp-test \
---funcall py-end-of-block-position-commandp-test \
---funcall py-beginning-of-clause-position-commandp-test \
---funcall py-end-of-clause-position-commandp-test \
---funcall py-beginning-of-block-or-clause-position-commandp-test \
---funcall py-end-of-block-or-clause-position-commandp-test \
---funcall py-beginning-of-def-position-commandp-test \
---funcall py-end-of-def-position-commandp-test \
---funcall py-beginning-of-class-position-commandp-test \
---funcall py-end-of-class-position-commandp-test \
---funcall py-beginning-of-def-or-class-position-commandp-test \
---funcall py-end-of-def-or-class-position-commandp-test \
---funcall py-beginning-of-line-position-commandp-test \
---funcall py-end-of-line-position-commandp-test \
---funcall py-beginning-of-statement-position-commandp-test \
---funcall py-end-of-statement-position-commandp-test \
---funcall py-beginning-of-expression-position-commandp-test \
---funcall py-end-of-expression-position-commandp-test \
---funcall py-beginning-of-partial-expression-position-commandp-test \
---funcall py-end-of-partial-expression-position-commandp-test \
---funcall py-bounds-of-statement-commandp-test \
---funcall py-bounds-of-block-commandp-test \
---funcall py-bounds-of-clause-commandp-test \
---funcall py-bounds-of-block-or-clause-commandp-test \
---funcall py-bounds-of-def-commandp-test \
---funcall py-bounds-of-class-commandp-test \
---funcall py-bounds-of-region-commandp-test \
---funcall py-bounds-of-buffer-commandp-test \
---funcall py-bounds-of-expression-commandp-test \
---funcall py-bounds-of-partial-expression-commandp-test \
---funcall py-bounds-of-declarations-commandp-test \
---funcall py-beginning-of-declarations-commandp-test \
---funcall py-end-of-declarations-commandp-test \
---funcall py-declarations-commandp-test \
---funcall py-kill-declarations-commandp-test \
---funcall py-bounds-of-statements-commandp-test \
---funcall py-beginning-of-statements-commandp-test \
---funcall py-end-of-statements-commandp-test \
---funcall py-statements-commandp-test \
---funcall py-kill-statements-commandp-test \
---funcall py-comment-region-commandp-test \
---funcall py-fill-paragraph-commandp-test \
---funcall py-insert-super-commandp-test \
---funcall py-compute-indentation-commandp-test \
---funcall py-continuation-offset-commandp-test \
---funcall py-indentation-of-statement-commandp-test \
---funcall py-list-beginning-position-commandp-test \
---funcall py-end-of-list-position-commandp-test \
---funcall py-in-triplequoted-string-p-commandp-test \
---funcall py-in-string-p-commandp-test \
---funcall py-in-statement-p-commandp-test \
---funcall py-statement-opens-block-p-commandp-test \
---funcall py-statement-opens-clause-p-commandp-test \
---funcall py-statement-opens-block-or-clause-p-commandp-test \
---funcall py-statement-opens-class-p-commandp-test \
---funcall py-statement-opens-def-p-commandp-test \
---funcall py-statement-opens-def-or-class-p-commandp-test \
---funcall py-current-defun-commandp-test \
---funcall py-sort-imports-commandp-test \
---funcall py-which-function-commandp-test \
---funcall py-beginning-of-block-commandp-test \
---funcall py-beginning-of-if-block-commandp-test \
---funcall py-beginning-of-try-block-commandp-test \
---funcall py-end-of-block-commandp-test \
---funcall py-beginning-of-block-or-clause-commandp-test \
---funcall py-end-of-block-or-clause-commandp-test \
---funcall py-beginning-of-class-commandp-test \
---funcall py-end-of-class-commandp-test \
---funcall py-beginning-of-clause-commandp-test \
---funcall py-end-of-clause-commandp-test \
---funcall py-beginning-of-def-commandp-test \
---funcall py-end-of-def-commandp-test \
---funcall py-beginning-of-def-or-class-commandp-test \
---funcall py-end-of-def-or-class-commandp-test \
---funcall py-beginning-of-expression-commandp-test \
---funcall py-end-of-expression-commandp-test \
---funcall py-beginning-of-partial-expression-commandp-test \
---funcall py-end-of-partial-expression-commandp-test \
---funcall py-beginning-of-statement-commandp-test \
---funcall py-end-of-statement-commandp-test \
---funcall py-goto-statement-below-commandp-test \
---funcall py-mark-paragraph-commandp-test \
---funcall py-mark-block-commandp-test \
---funcall py-mark-clause-commandp-test \
---funcall py-mark-block-or-clause-commandp-test \
---funcall py-mark-def-commandp-test \
---funcall py-mark-class-commandp-test \
---funcall py-mark-def-or-class-commandp-test \
---funcall py-mark-line-commandp-test \
---funcall py-mark-statement-commandp-test \
---funcall py-mark-expression-commandp-test \
---funcall py-mark-partial-expression-commandp-test \
---funcall py-beginning-of-decorator-commandp-test \
---funcall py-end-of-decorator-commandp-test \
---funcall py-copy-expression-commandp-test \
---funcall py-copy-partial-expression-commandp-test \
---funcall py-copy-statement-commandp-test \
---funcall py-copy-block-commandp-test \
---funcall py-copy-block-or-clause-commandp-test \
---funcall py-copy-def-commandp-test \
---funcall py-copy-def-or-class-commandp-test \
---funcall py-copy-class-commandp-test \
---funcall py-copy-clause-commandp-test \
---funcall py-kill-expression-commandp-test \
---funcall py-kill-partial-expression-commandp-test \
---funcall py-kill-statement-commandp-test \
---funcall py-kill-block-commandp-test \
---funcall py-kill-block-or-clause-commandp-test \
---funcall py-kill-def-or-class-commandp-test \
---funcall py-kill-class-commandp-test \
---funcall py-kill-def-commandp-test \
---funcall py-kill-clause-commandp-test \
---funcall py-forward-line-commandp-test \
---funcall py-leave-comment-or-string-backward-commandp-test \
---funcall py-beginning-of-list-pps-commandp-test \
---funcall py-down-block-lc-commandp-test \
---funcall py-down-clause-lc-commandp-test \
---funcall py-down-def-lc-commandp-test \
---funcall py-down-class-lc-commandp-test \
---funcall py-down-statement-lc-commandp-test \
---funcall py-down-statement-commandp-test \
---funcall py-down-block-commandp-test \
---funcall py-down-clause-commandp-test \
---funcall py-down-block-or-clause-commandp-test \
---funcall py-down-def-commandp-test \
---funcall py-down-class-commandp-test \
---funcall py-down-def-or-class-commandp-test \
---funcall py-forward-into-nomenclature-commandp-test \
---funcall py-backward-into-nomenclature-commandp-test \
---funcall match-paren-commandp-test \
---funcall py-toggle-execute-keep-temporary-file-p-commandp-test \
---funcall py-guess-default-python-commandp-test \
---funcall py-set-shell-completion-environment-commandp-test \
---funcall py-set-ipython-completion-command-string-commandp-test \
---funcall py-shell-dedicated-commandp-test \
---funcall py-shell-commandp-test \
---funcall python-commandp-test \
---funcall ipython-commandp-test \
---funcall python3-commandp-test \
---funcall python2-commandp-test \
---funcall python2.7-commandp-test \
---funcall python-dedicated-commandp-test \
---funcall ipython-dedicated-commandp-test \
---funcall python3-dedicated-commandp-test \
---funcall python2-dedicated-commandp-test \
---funcall python2.7-dedicated-commandp-test \
---funcall python-switch-commandp-test \
---funcall ipython-switch-commandp-test \
---funcall python3-switch-commandp-test \
---funcall python2-switch-commandp-test \
---funcall python2.7-switch-commandp-test \
---funcall jython-switch-commandp-test \
---funcall python-no-switch-commandp-test \
---funcall ipython-no-switch-commandp-test \
---funcall python3-no-switch-commandp-test \
---funcall python2-no-switch-commandp-test \
---funcall python2.7-no-switch-commandp-test \
---funcall jython-no-switch-commandp-test \
---funcall python-switch-dedicated-commandp-test \
---funcall ipython-switch-dedicated-commandp-test \
---funcall python3-switch-dedicated-commandp-test \
---funcall python2-switch-dedicated-commandp-test \
---funcall python2.7-switch-dedicated-commandp-test \
---funcall jython-switch-dedicated-commandp-test \
---funcall py-which-execute-file-command-commandp-test \
---funcall py-execute-region-no-switch-commandp-test \
---funcall py-execute-region-switch-commandp-test \
---funcall py-execute-region-commandp-test \
---funcall py-execute-region-default-commandp-test \
---funcall py-execute-region-dedicated-commandp-test \
---funcall py-execute-region-default-dedicated-commandp-test \
---funcall py-execute-string-commandp-test \
---funcall py-execute-string-dedicated-commandp-test \
---funcall py-fetch-py-master-file-commandp-test \
---funcall py-execute-import-or-reload-commandp-test \
---funcall py-execute-buffer-dedicated-commandp-test \
---funcall py-execute-buffer-switch-commandp-test \
---funcall py-execute-buffer-dedicated-switch-commandp-test \
---funcall py-execute-buffer-commandp-test \
---funcall py-execute-buffer-no-switch-commandp-test \
---funcall py-execute-defun-commandp-test \
---funcall py-process-file-commandp-test \
---funcall py-exec-execfile-region-commandp-test \
---funcall py-exec-execfile-commandp-test \
---funcall py-execute-block-commandp-test \
---funcall py-execute-block-or-clause-commandp-test \
---funcall py-execute-class-commandp-test \
---funcall py-execute-def-commandp-test \
---funcall py-execute-def-or-class-commandp-test \
---funcall py-execute-expression-commandp-test \
---funcall py-execute-partial-expression-commandp-test \
---funcall py-execute-statement-commandp-test \
---funcall py-execute-file-commandp-test \
---funcall py-down-exception-commandp-test \
---funcall py-up-exception-commandp-test \
---funcall py-output-buffer-filter-commandp-test \
---funcall py-send-string-commandp-test \
---funcall py-pdbtrack-toggle-stack-tracking-commandp-test \
---funcall turn-on-pdbtrack-commandp-test \
---funcall turn-off-pdbtrack-commandp-test \
---funcall py-fetch-docu-commandp-test \
---funcall py-find-imports-commandp-test \
---funcall python-find-imports-commandp-test \
---funcall py-describe-symbol-commandp-test \
---funcall py-describe-mode-commandp-test \
---funcall py-find-function-commandp-test \
---funcall py-update-imports-commandp-test \
---funcall py-indent-forward-line-commandp-test \
---funcall py-dedent-forward-line-commandp-test \
---funcall py-dedent-commandp-test \
---funcall py-close-def-commandp-test \
---funcall py-close-class-commandp-test \
---funcall py-close-clause-commandp-test \
---funcall py-close-block-commandp-test \
---funcall py-class-at-point-commandp-test \
---funcall py-match-paren-commandp-test \
---funcall eva-commandp-test \
---funcall pst-here-commandp-test \
---funcall py-printform-insert-commandp-test \
---funcall py-line-to-printform-python2-commandp-test \
---funcall py-switch-imenu-index-function-commandp-test \
---funcall py-completion-at-point-commandp-test \
---funcall py-choose-shell-by-shebang-commandp-test \
---funcall py-which-python-commandp-test \
---funcall py-python-current-environment-commandp-test \
---funcall py-switch-shell-commandp-test \
---funcall py-choose-shell-commandp-test \
---funcall py-toggle-smart-indentation-commandp-test \
---funcall py-smart-indentation-on-commandp-test \
---funcall py-smart-indentation-off-commandp-test \
---funcall py-toggle-split-windows-on-execute-commandp-test \
---funcall py-split-windows-on-execute-on-commandp-test \
---funcall py-split-windows-on-execute-off-commandp-test \
---funcall py-toggle-shell-switch-buffers-on-execute-commandp-test \
---funcall py-shell-switch-buffers-on-execute-on-commandp-test \
---funcall py-shell-switch-buffers-on-execute-off-commandp-test \
---funcall py-install-directory-check-commandp-test \
---funcall py-guess-py-install-directory-commandp-test \
---funcall py-set-load-path-commandp-test \
---funcall py-def-or-class-beginning-position-commandp-test \
---funcall py-def-or-class-end-position-commandp-test \
---funcall py-statement-beginning-position-commandp-test \
---funcall py-statement-end-position-commandp-test \
---funcall py-current-indentation-commandp-test \
---funcall py-version-commandp-test \
---funcall run-python-commandp-test \
---funcall py-send-region-commandp-test \
---funcall py-send-buffer-commandp-test \
---funcall py-switch-to-python-commandp-test \
---funcall py-send-region-and-go-commandp-test \
---funcall py-load-file-commandp-test \
---funcall py-set-proc-commandp-test \
---funcall py-shell-complete-commandp-test \
---funcall ipython-complete-commandp-test \
---funcall py-pychecker-run-commandp-test \
---funcall virtualenv-current-commandp-test \
---funcall virtualenv-activate-commandp-test \
---funcall virtualenv-deactivate-commandp-test \
---funcall virtualenv-workon-commandp-test \
---funcall py-toggle-local-default-use-commandp-test \
---funcall py-execute-statement-python-commandp-test \
---funcall py-execute-statement-python-switch-commandp-test \
---funcall py-execute-statement-python-noswitch-commandp-test \
---funcall py-execute-statement-python-dedicated-commandp-test \
---funcall py-execute-statement-python-dedicated-switch-commandp-test \
---funcall py-execute-statement-ipython-commandp-test \
---funcall py-execute-statement-ipython-switch-commandp-test \
---funcall py-execute-statement-ipython-noswitch-commandp-test \
---funcall py-execute-statement-ipython-dedicated-commandp-test \
---funcall py-execute-statement-ipython-dedicated-switch-commandp-test \
---funcall py-execute-statement-python3-commandp-test \
---funcall py-execute-statement-python3-switch-commandp-test \
---funcall py-execute-statement-python3-noswitch-commandp-test \
---funcall py-execute-statement-python3-dedicated-commandp-test \
---funcall py-execute-statement-python3-dedicated-switch-commandp-test \
---funcall py-execute-statement-python2-commandp-test \
---funcall py-execute-statement-python2-switch-commandp-test \
---funcall py-execute-statement-python2-noswitch-commandp-test \
---funcall py-execute-statement-python2-dedicated-commandp-test \
---funcall py-execute-statement-python2-dedicated-switch-commandp-test \
---funcall py-execute-statement-python2.7-commandp-test \
---funcall py-execute-statement-python2.7-switch-commandp-test \
---funcall py-execute-statement-python2.7-noswitch-commandp-test \
---funcall py-execute-statement-python2.7-dedicated-commandp-test \
---funcall py-execute-statement-python2.7-dedicated-switch-commandp-test \
---funcall py-execute-statement-jython-commandp-test \
---funcall py-execute-statement-jython-switch-commandp-test \
---funcall py-execute-statement-jython-noswitch-commandp-test \
---funcall py-execute-statement-jython-dedicated-commandp-test \
---funcall py-execute-statement-jython-dedicated-switch-commandp-test \
---funcall py-execute-block-python-commandp-test \
---funcall py-execute-block-python-switch-commandp-test \
---funcall py-execute-block-python-noswitch-commandp-test \
---funcall py-execute-block-python-dedicated-commandp-test \
---funcall py-execute-block-python-dedicated-switch-commandp-test \
---funcall py-execute-block-ipython-commandp-test \
---funcall py-execute-block-ipython-switch-commandp-test \
---funcall py-execute-block-ipython-noswitch-commandp-test \
---funcall py-execute-block-ipython-dedicated-commandp-test \
---funcall py-execute-block-ipython-dedicated-switch-commandp-test \
---funcall py-execute-block-python3-commandp-test \
---funcall py-execute-block-python3-switch-commandp-test \
---funcall py-execute-block-python3-noswitch-commandp-test \
---funcall py-execute-block-python3-dedicated-commandp-test \
---funcall py-execute-block-python3-dedicated-switch-commandp-test \
---funcall py-execute-block-python2-commandp-test \
---funcall py-execute-block-python2-switch-commandp-test \
---funcall py-execute-block-python2-noswitch-commandp-test \
---funcall py-execute-block-python2-dedicated-commandp-test \
---funcall py-execute-block-python2-dedicated-switch-commandp-test \
---funcall py-execute-block-python2.7-commandp-test \
---funcall py-execute-block-python2.7-switch-commandp-test \
---funcall py-execute-block-python2.7-noswitch-commandp-test \
---funcall py-execute-block-python2.7-dedicated-commandp-test \
---funcall py-execute-block-python2.7-dedicated-switch-commandp-test \
---funcall py-execute-block-jython-commandp-test \
---funcall py-execute-block-jython-switch-commandp-test \
---funcall py-execute-block-jython-noswitch-commandp-test \
---funcall py-execute-block-jython-dedicated-commandp-test \
---funcall py-execute-block-jython-dedicated-switch-commandp-test \
---funcall py-execute-block-or-clause-python-commandp-test \
---funcall py-execute-block-or-clause-python-switch-commandp-test \
---funcall py-execute-block-or-clause-python-noswitch-commandp-test \
---funcall py-execute-block-or-clause-python-dedicated-commandp-test \
---funcall py-execute-block-or-clause-python-dedicated-switch-commandp-test \
---funcall py-execute-block-or-clause-ipython-commandp-test \
---funcall py-execute-block-or-clause-ipython-switch-commandp-test \
---funcall py-execute-block-or-clause-ipython-noswitch-commandp-test \
---funcall py-execute-block-or-clause-ipython-dedicated-commandp-test \
---funcall py-execute-block-or-clause-ipython-dedicated-switch-commandp-test \
---funcall py-execute-block-or-clause-python3-commandp-test \
---funcall py-execute-block-or-clause-python3-switch-commandp-test \
---funcall py-execute-block-or-clause-python3-noswitch-commandp-test \
---funcall py-execute-block-or-clause-python3-dedicated-commandp-test \
---funcall py-execute-block-or-clause-python3-dedicated-switch-commandp-test \
---funcall py-execute-block-or-clause-python2-commandp-test \
---funcall py-execute-block-or-clause-python2-switch-commandp-test \
---funcall py-execute-block-or-clause-python2-noswitch-commandp-test \
---funcall py-execute-block-or-clause-python2-dedicated-commandp-test \
---funcall py-execute-block-or-clause-python2-dedicated-switch-commandp-test \
---funcall py-execute-block-or-clause-python2.7-commandp-test \
---funcall py-execute-block-or-clause-python2.7-switch-commandp-test \
---funcall py-execute-block-or-clause-python2.7-noswitch-commandp-test \
---funcall py-execute-block-or-clause-python2.7-dedicated-commandp-test \
---funcall py-execute-block-or-clause-python2.7-dedicated-switch-commandp-test \
---funcall py-execute-block-or-clause-jython-commandp-test \
---funcall py-execute-block-or-clause-jython-switch-commandp-test \
---funcall py-execute-block-or-clause-jython-noswitch-commandp-test \
---funcall py-execute-block-or-clause-jython-dedicated-commandp-test \
---funcall py-execute-block-or-clause-jython-dedicated-switch-commandp-test \
---funcall py-execute-def-python-commandp-test \
---funcall py-execute-def-python-switch-commandp-test \
---funcall py-execute-def-python-noswitch-commandp-test \
---funcall py-execute-def-python-dedicated-commandp-test \
---funcall py-execute-def-python-dedicated-switch-commandp-test \
---funcall py-execute-def-ipython-commandp-test \
---funcall py-execute-def-ipython-switch-commandp-test \
---funcall py-execute-def-ipython-noswitch-commandp-test \
---funcall py-execute-def-ipython-dedicated-commandp-test \
---funcall py-execute-def-ipython-dedicated-switch-commandp-test \
---funcall py-execute-def-python3-commandp-test \
---funcall py-execute-def-python3-switch-commandp-test \
---funcall py-execute-def-python3-noswitch-commandp-test \
---funcall py-execute-def-python3-dedicated-commandp-test \
---funcall py-execute-def-python3-dedicated-switch-commandp-test \
---funcall py-execute-def-python2-commandp-test \
---funcall py-execute-def-python2-switch-commandp-test \
---funcall py-execute-def-python2-noswitch-commandp-test \
---funcall py-execute-def-python2-dedicated-commandp-test \
---funcall py-execute-def-python2-dedicated-switch-commandp-test \
---funcall py-execute-def-python2.7-commandp-test \
---funcall py-execute-def-python2.7-switch-commandp-test \
---funcall py-execute-def-python2.7-noswitch-commandp-test \
---funcall py-execute-def-python2.7-dedicated-commandp-test \
---funcall py-execute-def-python2.7-dedicated-switch-commandp-test \
---funcall py-execute-def-jython-commandp-test \
---funcall py-execute-def-jython-switch-commandp-test \
---funcall py-execute-def-jython-noswitch-commandp-test \
---funcall py-execute-def-jython-dedicated-commandp-test \
---funcall py-execute-def-jython-dedicated-switch-commandp-test \
---funcall py-execute-class-python-commandp-test \
---funcall py-execute-class-python-switch-commandp-test \
---funcall py-execute-class-python-noswitch-commandp-test \
---funcall py-execute-class-python-dedicated-commandp-test \
---funcall py-execute-class-python-dedicated-switch-commandp-test \
---funcall py-execute-class-ipython-commandp-test \
---funcall py-execute-class-ipython-switch-commandp-test \
---funcall py-execute-class-ipython-noswitch-commandp-test \
---funcall py-execute-class-ipython-dedicated-commandp-test \
---funcall py-execute-class-ipython-dedicated-switch-commandp-test \
---funcall py-execute-class-python3-commandp-test \
---funcall py-execute-class-python3-switch-commandp-test \
---funcall py-execute-class-python3-noswitch-commandp-test \
---funcall py-execute-class-python3-dedicated-commandp-test \
---funcall py-execute-class-python3-dedicated-switch-commandp-test \
---funcall py-execute-class-python2-commandp-test \
---funcall py-execute-class-python2-switch-commandp-test \
---funcall py-execute-class-python2-noswitch-commandp-test \
---funcall py-execute-class-python2-dedicated-commandp-test \
---funcall py-execute-class-python2-dedicated-switch-commandp-test \
---funcall py-execute-class-python2.7-commandp-test \
---funcall py-execute-class-python2.7-switch-commandp-test \
---funcall py-execute-class-python2.7-noswitch-commandp-test \
---funcall py-execute-class-python2.7-dedicated-commandp-test \
---funcall py-execute-class-python2.7-dedicated-switch-commandp-test \
---funcall py-execute-class-jython-commandp-test \
---funcall py-execute-class-jython-switch-commandp-test \
---funcall py-execute-class-jython-noswitch-commandp-test \
---funcall py-execute-class-jython-dedicated-commandp-test \
---funcall py-execute-class-jython-dedicated-switch-commandp-test \
---funcall py-execute-region-python-commandp-test \
---funcall py-execute-region-python-switch-commandp-test \
---funcall py-execute-region-python-noswitch-commandp-test \
---funcall py-execute-region-python-dedicated-commandp-test \
---funcall py-execute-region-python-dedicated-switch-commandp-test \
---funcall py-execute-region-ipython-commandp-test \
---funcall py-execute-region-ipython-switch-commandp-test \
---funcall py-execute-region-ipython-noswitch-commandp-test \
---funcall py-execute-region-ipython-dedicated-commandp-test \
---funcall py-execute-region-ipython-dedicated-switch-commandp-test \
---funcall py-execute-region-python3-commandp-test \
---funcall py-execute-region-python3-switch-commandp-test \
---funcall py-execute-region-python3-noswitch-commandp-test \
---funcall py-execute-region-python3-dedicated-commandp-test \
---funcall py-execute-region-python3-dedicated-switch-commandp-test \
---funcall py-execute-region-python2-commandp-test \
---funcall py-execute-region-python2-switch-commandp-test \
---funcall py-execute-region-python2-noswitch-commandp-test \
---funcall py-execute-region-python2-dedicated-commandp-test \
---funcall py-execute-region-python2-dedicated-switch-commandp-test \
---funcall py-execute-region-python2.7-commandp-test \
---funcall py-execute-region-python2.7-switch-commandp-test \
---funcall py-execute-region-python2.7-noswitch-commandp-test \
---funcall py-execute-region-python2.7-dedicated-commandp-test \
---funcall py-execute-region-python2.7-dedicated-switch-commandp-test \
---funcall py-execute-region-jython-commandp-test \
---funcall py-execute-region-jython-switch-commandp-test \
---funcall py-execute-region-jython-noswitch-commandp-test \
---funcall py-execute-region-jython-dedicated-commandp-test \
---funcall py-execute-region-jython-dedicated-switch-commandp-test \
---funcall py-execute-buffer-python-commandp-test \
---funcall py-execute-buffer-python-switch-commandp-test \
---funcall py-execute-buffer-python-noswitch-commandp-test \
---funcall py-execute-buffer-python-dedicated-commandp-test \
---funcall py-execute-buffer-python-dedicated-switch-commandp-test \
---funcall py-execute-buffer-ipython-commandp-test \
---funcall py-execute-buffer-ipython-switch-commandp-test \
---funcall py-execute-buffer-ipython-noswitch-commandp-test \
---funcall py-execute-buffer-ipython-dedicated-commandp-test \
---funcall py-execute-buffer-ipython-dedicated-switch-commandp-test \
---funcall py-execute-buffer-python3-commandp-test \
---funcall py-execute-buffer-python3-switch-commandp-test \
---funcall py-execute-buffer-python3-noswitch-commandp-test \
---funcall py-execute-buffer-python3-dedicated-commandp-test \
---funcall py-execute-buffer-python3-dedicated-switch-commandp-test \
---funcall py-execute-buffer-python2-commandp-test \
---funcall py-execute-buffer-python2-switch-commandp-test \
---funcall py-execute-buffer-python2-noswitch-commandp-test \
---funcall py-execute-buffer-python2-dedicated-commandp-test \
---funcall py-execute-buffer-python2-dedicated-switch-commandp-test \
---funcall py-execute-buffer-python2.7-commandp-test \
---funcall py-execute-buffer-python2.7-switch-commandp-test \
---funcall py-execute-buffer-python2.7-noswitch-commandp-test \
---funcall py-execute-buffer-python2.7-dedicated-commandp-test \
---funcall py-execute-buffer-python2.7-dedicated-switch-commandp-test \
---funcall py-execute-buffer-jython-commandp-test \
---funcall py-execute-buffer-jython-switch-commandp-test \
---funcall py-execute-buffer-jython-noswitch-commandp-test \
---funcall py-execute-buffer-jython-dedicated-commandp-test \
---funcall py-execute-buffer-jython-dedicated-switch-commandp-test \
---funcall py-execute-expression-python-commandp-test \
---funcall py-execute-expression-python-switch-commandp-test \
---funcall py-execute-expression-python-noswitch-commandp-test \
---funcall py-execute-expression-python-dedicated-commandp-test \
---funcall py-execute-expression-python-dedicated-switch-commandp-test \
---funcall py-execute-expression-ipython-commandp-test \
---funcall py-execute-expression-ipython-switch-commandp-test \
---funcall py-execute-expression-ipython-noswitch-commandp-test \
---funcall py-execute-expression-ipython-dedicated-commandp-test \
---funcall py-execute-expression-ipython-dedicated-switch-commandp-test \
---funcall py-execute-expression-python3-commandp-test \
---funcall py-execute-expression-python3-switch-commandp-test \
---funcall py-execute-expression-python3-noswitch-commandp-test \
---funcall py-execute-expression-python3-dedicated-commandp-test \
---funcall py-execute-expression-python3-dedicated-switch-commandp-test \
---funcall py-execute-expression-python2-commandp-test \
---funcall py-execute-expression-python2-switch-commandp-test \
---funcall py-execute-expression-python2-noswitch-commandp-test \
---funcall py-execute-expression-python2-dedicated-commandp-test \
---funcall py-execute-expression-python2-dedicated-switch-commandp-test \
---funcall py-execute-expression-python2.7-commandp-test \
---funcall py-execute-expression-python2.7-switch-commandp-test \
---funcall py-execute-expression-python2.7-noswitch-commandp-test \
---funcall py-execute-expression-python2.7-dedicated-commandp-test \
---funcall py-execute-expression-python2.7-dedicated-switch-commandp-test \
---funcall py-execute-expression-jython-commandp-test \
---funcall py-execute-expression-jython-switch-commandp-test \
---funcall py-execute-expression-jython-noswitch-commandp-test \
---funcall py-execute-expression-jython-dedicated-commandp-test \
---funcall py-execute-expression-jython-dedicated-switch-commandp-test \
---funcall py-execute-partial-expression-python-switch-commandp-test \
---funcall py-execute-partial-expression-python-commandp-test \
---funcall py-execute-partial-expression-python-noswitch-commandp-test \
---funcall py-execute-partial-expression-python-dedicated-commandp-test \
---funcall py-execute-partial-expression-python-dedicated-switch-commandp-test \
---funcall py-execute-partial-expression-ipython-commandp-test \
---funcall py-execute-partial-expression-ipython-switch-commandp-test \
---funcall py-execute-partial-expression-ipython-noswitch-commandp-test \
---funcall py-execute-partial-expression-ipython-dedicated-commandp-test \
---funcall py-execute-partial-expression-ipython-dedicated-switch-commandp-test \
---funcall py-execute-partial-expression-python3-commandp-test \
---funcall py-execute-partial-expression-python3-switch-commandp-test \
---funcall py-execute-partial-expression-python3-noswitch-commandp-test \
---funcall py-execute-partial-expression-python3-dedicated-commandp-test \
---funcall py-execute-partial-expression-python3-dedicated-switch-commandp-test \
---funcall py-execute-partial-expression-python2-commandp-test \
---funcall py-execute-partial-expression-python2-switch-commandp-test \
---funcall py-execute-partial-expression-python2-noswitch-commandp-test \
---funcall py-execute-partial-expression-python2-dedicated-commandp-test \
---funcall py-execute-partial-expression-python2-dedicated-switch-commandp-test \
---funcall py-execute-partial-expression-python2.7-commandp-test \
---funcall py-execute-partial-expression-python2.7-switch-commandp-test \
---funcall py-execute-partial-expression-python2.7-noswitch-commandp-test \
---funcall py-execute-partial-expression-python2.7-dedicated-commandp-test \
---funcall py-execute-partial-expression-python2.7-dedicated-switch-commandp-test \
---funcall py-execute-partial-expression-jython-commandp-test \
---funcall py-execute-partial-expression-jython-switch-commandp-test \
---funcall py-execute-partial-expression-jython-noswitch-commandp-test \
---funcall py-execute-partial-expression-jython-dedicated-commandp-test \
---funcall py-execute-partial-expression-jython-dedicated-switch-commandp-test \
---funcall py-mark-block-clause-misbehave-lp:949310-test \
---funcall broken-font-locking-lp:961231-test \
---funcall py-mark-clause-misbehave-lp:949310-test \
---funcall py-mark-block-misbehave-lp:949310-test \
---funcall py-mark-partial-expression-commandp-test \
 --funcall py-insert-super-python2-test \
 --funcall py-smart-indent-eight-test \
 --funcall wrong-type-argument-lp:901541-test \

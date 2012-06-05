@@ -22,7 +22,7 @@
 ;; commands-python-mode.org in directory doc reports
 ;; available commands, also a menu is provided
 
-;; as for `py-add-abbrev': 
+;; as for `py-add-abbrev':
 ;; Similar to `add-mode-abbrev', but uses
 ;; `py-partial-expression' before point for expansion to
 ;; store, not `word'. Also provides a proposal for new
@@ -31,15 +31,15 @@
 ;; Proposal for an abbrev is composed from the downcased
 ;; initials of expansion - provided they are of char-class
 ;; [:alpha:]
-;; 
+;;
 ;; For example code below would be recognised as a
 ;; `py-expression' composed by three
 ;; py-partial-expressions.
-;; 
+;;
 ;; OrderedDict.popitem(last=True)
-;; 
+;;
 ;; Putting the curser at the EOL, M-3 M-x py-add-abbrev
-;; 
+;;
 ;; would prompt "op" for an abbrev to store, as first
 ;; `py-partial-expression' beginns with a "(", which is
 ;; not taken as proposal.
@@ -369,10 +369,10 @@ Richard Everson commented:
   :type 'string
   :group 'python-mode)
 
-(defvar py-shebang-regexp "#![ \t]?\\([^ \t\n]+\\)[ \t]?\\([iptj]+ython[^ \t\n]*\\)"
+(defvar py-shebang-regexp "#![ \t]?\\([^ \t\n]+\\)[ \t]?\\([biptj]+ython[^ \t\n]*\\)"
   "Detecting the shell in head of file. ")
 
-(setq py-shebang-regexp "#![ \t]?\\([^ \t\n]+\\)[ \t]?\\([iptj]+ython[^ \t\n]*\\)")
+(setq py-shebang-regexp "#![ \t]?\\([^ \t\n]+\\)[ \t]?\\([biptj]+ython[^ \t\n]*\\)")
 
 (defcustom py-python-command-args '("-i")
   "*List of string arguments to be used when starting a Python shell."
@@ -4300,6 +4300,7 @@ For running multiple processes in multiple buffers, see `run-python' and
        python-compilation-regexp-alist)
   (setq completion-at-point-functions nil)
   ;; (py-set-shell-complete-function)
+  (message "%s" (current-buffer) )
   (set (make-local-variable 'py-local-command)
        (car (process-command (get-buffer-process (current-buffer)))))
   (unless py-complete-function
@@ -5287,8 +5288,9 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (if py-complete-function
       (add-hook 'completion-at-point-functions
                 py-complete-function nil 'local)
-    (add-hook 'completion-at-point-functions
-              #'python-shell-send-setup-code))
+    ;; (add-hook 'completion-at-point-functions
+    ;; #'python-shell-send-setup-code)
+    )
   (when (and py-imenu-create-index-p (fboundp 'imenu-add-to-menubar)(ignore-errors (require 'imenu)))
     (setq imenu-create-index-function #'py-imenu-create-index-new)
     (imenu-add-to-menubar "PyIndex"))
@@ -5462,7 +5464,7 @@ Returns the specified Python resp. Jython shell command name. "
       (when (looking-at py-shebang-regexp)
         (setq erg (split-string (match-string-no-properties 0) "[#! \t]"))
         (dolist (ele erg)
-          (when (string-match "[ijp]+ython" ele)
+          (when (string-match "[bijp]+ython" ele)
             (setq res ele)))))
     (when (interactive-p) (message "%s" res))
     res))
@@ -5489,11 +5491,15 @@ return `jython', otherwise return nil."
   (interactive)
   (let* ((cmd (py-choose-shell))
          (erg (shell-command-to-string (concat cmd " --version")))
-         (version (when (string-match "\\([0-9]\\.[0-9]+\\)" erg)
-                    (substring erg 7 (1- (length erg))))))
+         ;; Result: "bpython version 0.9.7.1 on top of Python 2.7\n(C) 2008-2010 Bob Farrell, Andreas Stuehrk et al. See AUTHORS for detail.\n"
+
+         (version (cond ((string-match (concat "\\(on top of Python \\)" "\\([0-9]\\.[0-9]+\\)") erg)
+                         (match-string-no-properties 2 erg))
+                        ((string-match "\\([0-9]\\.[0-9]+\\)" erg)
+                         (substring erg 7 (1- (length erg)))))))
     (when (interactive-p)
       (if erg
-          (message "%s" erg)
+          (when py-verbose-p (message "%s" erg))
         (message "%s" "Could not detect Python on your system")))
     (string-to-number version)))
 
