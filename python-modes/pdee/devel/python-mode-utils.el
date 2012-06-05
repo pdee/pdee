@@ -1473,3 +1473,37 @@ http://repo.or.cz/w/elbb.git/blob/HEAD:/code/Go-to-Emacs-Lisp-Definition.el
     (insert "\n(provide 'py-shell-completion-tests)
 ;;; py-shell-completion-tests ends here\n ")
     (emacs-lisp-mode)))
+
+
+(defvar python-mode-el-dir ""
+  "Directory, where python-mode.el to edit resides. Used by related-diff")
+
+(defalias 'rel 'related-diff)
+(defun related-diff (&optional file)
+  "Calls ediff from symbol in Components-branch agains trunk pytho-mode.el
+
+Var `python-mode-el-dir' needs to be set.  "
+  (interactive)
+  (let ((buffer1 (current-buffer))
+        (file2 (cond (file)
+                     ((string-match "components" (buffer-file-name))
+                      (concat (py-normalize-directory (expand-file-name python-mode-el-dir)) "python-mode.el"))))
+        (name (ar-symbol-name-atpt))
+        (keyword (progn (re-search-backward "^([^ ]+" nil (quote move) 1)(match-string-no-properties 0))))
+    (save-restriction
+      (push-mark)
+      (narrow-to-region (point) (1+ (forward-list)))
+      (when (buffer-live-p "python-mode.el")
+        (kill-buffer "python-mode.el"))
+      (when (buffer-live-p "python-mode.el<2>")
+        (kill-buffer "python-mode.el<2>"))
+      (find-file file2)
+      (save-restriction
+        (widen)
+        (when hs-minor-mode (hs-show-all))
+        (goto-char (point-min))
+        (when (re-search-forward (concat "^" keyword " +" name "[ \n\t]") nil (quote move) 1)
+          (goto-char (match-beginning 0))
+          (push-mark)
+          (narrow-to-region (point) (1+ (forward-list)))
+          (ediff-buffers (current-buffer) buffer1))))))
