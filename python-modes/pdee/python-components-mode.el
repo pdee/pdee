@@ -486,7 +486,8 @@ If you ignore the location `M-x py-guess-pdb-path' might display it.
   :type 'boolean
   :group 'python-mode)
 
-(defvar py-separator-char 47
+;; (defvar py-separator-char 47
+(defvar py-separator-char nil
   "Values set by defcustom only will not be seen in batch-mode. ")
 
 (defcustom py-separator-char ?\\
@@ -530,8 +531,8 @@ Precedes guessing when not empty, returned by function `py-separator-char'. "
           (funcall ok "/var/folders")
           (setq erg "/var/folders"))
      (and (or (eq system-type 'ms-dos)(eq system-type 'windows-nt))
-          (funcall ok (concat "c:" (py-separator-char) "Users"))
-          (setq erg (concat "c:" (py-separator-char) "Users")))
+          (funcall ok (concat "c:" py-separator-char "Users"))
+          (setq erg (concat "c:" py-separator-char "Users")))
      ;; (funcall ok ".")
      (error
       "Couldn't find a usable temp directory -- set `py-temp-directory'"))
@@ -1479,7 +1480,7 @@ Currently-active file is at the head of the list.")
   "Make sure DIRECTORY ends with a file-path separator char.
 
 Returns DIRECTORY"
-  (let* ((file-separator-char (or file-separator-char (py-separator-char)))
+  (let* ((file-separator-char (or file-separator-char py-separator-char))
          ;; (if (or (string-match "windows" (prin1-to-string system-type))
          ;; (string-match "ms-dos" (prin1-to-string system-type)))
          ;; "\\"
@@ -1509,7 +1510,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
   (interactive)
   (let* ((pyshell (py-choose-shell))
          (path (getenv "PYTHONPATH"))
-         (py-install-directory (py-normalize-directory (or py-install-directory (py-guess-py-install-directory)) (py-separator-char)))
+         (py-install-directory (py-normalize-directory (or py-install-directory (py-guess-py-install-directory)) py-separator-char))
          (pymacs-installed-p
           (ignore-errors (string-match (expand-file-name (concat py-install-directory "Pymacs")) path))))
     ;; Python side
@@ -1548,7 +1549,7 @@ if `(locate-library \"python-mode\")' is not succesful. "
 (defun py-set-load-path ()
   "Include needed subdirs of python-mode directory. "
   (interactive)
-  (let ((py-install-directory (py-normalize-directory py-install-directory (py-separator-char))))
+  (let ((py-install-directory (py-normalize-directory py-install-directory py-separator-char)))
     (cond ((and (not (string= "" py-install-directory))(stringp py-install-directory))
            (add-to-list 'load-path (expand-file-name py-install-directory))
            (add-to-list 'load-path (concat (expand-file-name py-install-directory) "completion"))
@@ -2013,19 +2014,19 @@ Toggle flymake-mode running `pyflakespep8' "]
             ("Skeletons"
              :help "See also templates in YASnippet"
 
-            ["if" py-if
-             :help "Inserts if-statement"]
-            ["py-else" py-else
-             :help "Inserts else-statement"]
-            ["py-while" py-while
-             :help "Inserts while-statement"]
-            ["py-for" py-for
-             :help "Inserts for-statement"]
-            ["py-try/finally" py-try/finally
-             :help "Inserts py-try/finally-statement"]
-            ["py-try/except" py-try/except
-             :help "Inserts py-try/except-statement"]
-)
+             ["if" py-if
+              :help "Inserts if-statement"]
+             ["py-else" py-else
+              :help "Inserts else-statement"]
+             ["py-while" py-while
+              :help "Inserts while-statement"]
+             ["py-for" py-for
+              :help "Inserts for-statement"]
+             ["py-try/finally" py-try/finally
+              :help "Inserts py-try/finally-statement"]
+             ["py-try/except" py-try/except
+              :help "Inserts py-try/except-statement"]
+             )
 
             "-"
 
@@ -5167,6 +5168,8 @@ Updated on each expansion.")
 (require 'column-marker)
 (require 'feg-python-el-extracts)
 
+(unless py-separator-char (setq py-separator-char (py-separator-char)))
+
 ;;; Hooks
 (remove-hook 'python-mode-hook 'python-setup-brm)
 (remove-hook 'python-mode-hook 'imenu-add-menubar-index)
@@ -5443,7 +5446,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
 Returns versioned string, nil if nothing appropriate found "
   (interactive)
   (lexical-let ((path (buffer-file-name))
-                (file-separator-char (or file-separator-char (py-separator-char)))
+                (file-separator-char (or file-separator-char py-separator-char))
                 erg)
     (when (and path file-separator-char
                (string-match (concat file-separator-char "[iI]?[pP]ython[0-9.]+" file-separator-char) path))

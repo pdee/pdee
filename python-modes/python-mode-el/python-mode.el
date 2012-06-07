@@ -353,7 +353,7 @@ Richard Everson commented:
   :type 'string
   :group 'python-mode)
 
-(defvar py-shebang-regexp "#![ \t]?\\([^ \t\n]+\\)[ \t]?\\([iptj]+ython[^ \t\n]*\\)"
+(defvar py-shebang-regexp "#![ \t]?\\([^ \t\n]+\\)[ \t]?\\([biptj]+ython[^ \t\n]*\\)"
   "Detecting the shell in head of file. ")
 
 (defcustom py-python-command-args '("-i")
@@ -492,8 +492,8 @@ When set, make sure the directory exists. "
           (funcall ok "/var/folders")
           (setq erg "/var/folders"))
      (and (or (eq system-type 'ms-dos)(eq system-type 'windows-nt))
-          (funcall ok (concat "c:" (py-separator-char) "Users"))
-          (setq erg (concat "c:" (py-separator-char) "Users")))
+          (funcall ok (concat "c:" py-separator-char "Users"))
+          (setq erg (concat "c:" py-separator-char "Users")))
      ;; (funcall ok ".")
      (error
       "Couldn't find a usable temp directory -- set `py-temp-directory'"))
@@ -7326,9 +7326,11 @@ Returns char found. "
                    (t (setq erg (shell-command-to-string (concat py-shell-name " -W ignore" " -c \"import os; print(os.sep)\"")))))))
     (replace-regexp-in-string "\n" "" erg)))
 
+(unless py-separator-char (setq py-separator-char (py-separator-char)))
+
 (defun py-process-name (&optional name dedicated nostars sepchar)
   "Return the name of the running Python process, `get-process' willsee it. "
-  (let* ((sepchar (if sepchar sepchar (py-separator-char)))
+  (let* ((sepchar (or sepchar py-separator-char))
          (thisname (if name
                        (if (string-match sepchar name)
                            (substring name (progn (string-match (concat "\\(.+\\)" sepchar "\\(.+\\)$") name) (match-beginning 2)))
@@ -7402,7 +7404,7 @@ interpreter.
 (defun py-buffer-name-prepare (name &optional sepchar dedicated)
   "Return an appropriate name to display in modeline.
 SEPCHAR is the file-path separator of your system. "
-  (let ((sepchar (or sepchar (py-separator-char)))
+  (let ((sepchar (or sepchar py-separator-char))
         prefix erg suffix)
     (when (string-match (regexp-quote sepchar) name)
       (unless py-modeline-acronym-display-home-p
@@ -7512,7 +7514,7 @@ BUFFER allows specifying a name, the Python process is connected to
 When DONE is `t', `py-shell-manage-windows' is omitted
 "
   (interactive "P")
-  (let* ((sepchar (or sepchar (py-separator-char)))
+  (let* ((sepchar (or sepchar py-separator-char))
          (args py-python-command-args)
          (oldbuf (current-buffer))
          (path (getenv "PYTHONPATH"))
@@ -7602,9 +7604,8 @@ When DONE is `t', `py-shell-manage-windows' is omitted
       (comint-read-input-ring t)
       (set-process-sentinel (get-buffer-process (current-buffer))
                             #'shell-write-history-on-exit)
-      ;; (setq proc (get-buffer-process (current-buffer)))
       ;; pdbtrack
-      (add-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file)
+      ;; (add-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file)
       (setq py-pdbtrack-do-tracking-p t)
       ;;
       (set-syntax-table python-mode-syntax-table)
@@ -7670,6 +7671,14 @@ Optional \\[universal-argument] prompts for options to pass to the Jython interp
    Optional DEDICATED SWITCH are provided for use from programs. "
   (interactive "P")
   (py-shell argprompt dedicated "jython" switch))
+
+(defun bpython (&optional argprompt dedicated switch)
+  "Start an BPython interpreter.
+
+Optional \\[universal-argument] prompts for options to pass to the Jython interpreter. See `py-python-command-args'.
+   Optional DEDICATED SWITCH are provided for use from programs. "
+  (interactive "P")
+  (py-shell argprompt dedicated "bpython" switch))
 
 (defun python3.2 (&optional argprompt dedicated switch)
   "Start an Python3.2 interpreter.
@@ -7995,7 +8004,7 @@ When called from a programm, it accepts a string specifying a shell which will b
          (pyshellname (or pyshellname (py-choose-shell)))
          (py-execute-directory (or (ignore-errors (file-name-directory (buffer-file-name)))(getenv "WORKON_HOME")(getenv "HOME")))
          (strg (buffer-substring-no-properties start end))
-         (sepchar (if sepchar sepchar (py-separator-char)))
+         (sepchar (or sepchar py-separator-char))
          (py-buffer-name (py-buffer-name-prepare pyshellname sepchar))
          (temp (make-temp-name
                 (concat (replace-regexp-in-string (regexp-quote sepchar) "-" (replace-regexp-in-string (concat "^" (regexp-quote sepchar)) "" (replace-regexp-in-string ":" "-" pyshellname))) "-")))
@@ -8085,7 +8094,7 @@ See also `py-execute-region'. "
                  (py-choose-shell-by-shebang)
                  (py-choose-shell-by-import)
                  py-shell-name))
-        (sepchar (or sepchar (py-separator-char))))
+        (sepchar (or sepchar py-separator-char)))
     (when (string-match " " erg) (setq erg (substring erg (1+ (string-match " " erg))))
           ;; closing ">"
           (setq erg (substring erg 0 (1- (length erg)))))
@@ -10011,7 +10020,7 @@ Uses `python-imports' to load modules against which to complete."
 Returns versioned string, nil if nothing appropriate found "
   (interactive)
   (lexical-let ((path (buffer-file-name))
-                (file-separator-char (or file-separator-char (py-separator-char)))
+                (file-separator-char (or file-separator-char py-separator-char))
                 erg)
     (when (and path file-separator-char
                (string-match (concat file-separator-char "[iI]?[pP]ython[0-9.]+" file-separator-char) path))
@@ -10032,7 +10041,7 @@ Returns the specified Python resp. Jython shell command name. "
       (when (looking-at py-shebang-regexp)
         (setq erg (split-string (match-string-no-properties 0) "[#! \t]"))
         (dolist (ele erg)
-          (when (string-match "[ijp]+ython" ele)
+          (when (string-match "[bijp]+ython" ele)
             (setq res ele)))))
     (when (interactive-p) (message "%s" res))
     res))
@@ -10060,8 +10069,12 @@ return `jython', otherwise return nil."
   (interactive)
   (let* ((cmd (py-choose-shell))
          (erg (shell-command-to-string (concat cmd " --version")))
-         (version (when (string-match "\\([0-9]\\.[0-9]+\\)" erg)
-                    (substring erg 7 (1- (length erg))))))
+         ;; Result: "bpython version 0.9.7.1 on top of Python 2.7\n(C) 2008-2010 Bob Farrell, Andreas Stuehrk et al. See AUTHORS for detail.\n"
+
+         (version (cond ((string-match (concat "\\(on top of Python \\)" "\\([0-9]\\.[0-9]+\\)") erg)
+                         (match-string-no-properties 2 erg))
+                        ((string-match "\\([0-9]\\.[0-9]+\\)" erg)
+                         (substring erg 7 (1- (length erg)))))))
     (when (interactive-p)
       (if erg
           (when py-verbose-p (message "%s" erg))
@@ -10393,7 +10406,7 @@ Returns value of `py-switch-buffers-on-execute-p'. "
   "Make sure DIRECTORY ends with a file-path separator char.
 
 Returns DIRECTORY"
-  (let* ((file-separator-char (or file-separator-char (py-separator-char)))
+  (let* ((file-separator-char (or file-separator-char py-separator-char))
          ;; (if (or (string-match "windows" (prin1-to-string system-type))
          ;; (string-match "ms-dos" (prin1-to-string system-type)))
          ;; "\\"
@@ -10430,7 +10443,7 @@ if `(locate-library \"python-mode\")' is not succesful. "
 (defun py-set-load-path ()
   "Include needed subdirs of python-mode directory. "
   (interactive)
-  (let ((py-install-directory (py-normalize-directory py-install-directory (py-separator-char))))
+  (let ((py-install-directory (py-normalize-directory py-install-directory py-separator-char)))
     (cond ((and (not (string= "" py-install-directory))(stringp py-install-directory))
            (add-to-list 'load-path (expand-file-name py-install-directory))
            (add-to-list 'load-path (concat (expand-file-name py-install-directory) "completion"))
@@ -12855,6 +12868,7 @@ Don't use this function in a Lisp program; use `define-abbrev' instead."
        (or local-abbrev-table
            (error "No per-mode abbrev table")))
      "Mode" arg)))
+
 
 ;;;
 (defvar skeleton-further-elements)

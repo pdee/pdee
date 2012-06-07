@@ -45,11 +45,11 @@ See also commands
           (setq py-force-local-shell-p t))
       (setq py-shell-name (default-value 'py-shell-name))
       (setq py-force-local-shell-p nil))
-    (when (or py-verbose-p (interactive-p))
+    (when (interactive-p)
       (if py-force-local-shell-p
-          (message "Enforce %s"  py-shell-name)
-        (message "py-shell-name default restored to: %s" py-shell-name))))
-  py-shell-name)
+          (when py-verbose-p (message "Enforce %s"  py-shell-name))
+        (when py-verbose-p (message "py-shell-name default restored to: %s" py-shell-name))))
+  py-shell-name))
 
 (defun py-force-local-shell-on ()
   "Make sure, `py-py-force-local-shell-p' is on.
@@ -273,7 +273,7 @@ interpreter.
 
 (defun py-process-name (&optional name dedicated nostars sepchar)
   "Return the name of the running Python process, `get-process' willsee it. "
-  (let* ((sepchar (if sepchar sepchar (py-separator-char)))
+  (let* ((sepchar (or sepchar py-separator-char))
          (thisname (if name
                        (if (string-match (regexp-quote sepchar) name)
                            (substring name (progn (string-match (concat "\\(.+\\)" sepchar "\\(.+\\)$") name) (match-beginning 2)))
@@ -295,7 +295,7 @@ interpreter.
 (defun py-buffer-name-prepare (name &optional sepchar dedicated)
   "Return an appropriate name to display in modeline.
 SEPCHAR is the file-path separator of your system. "
-  (let ((sepchar (or sepchar (py-separator-char)))
+  (let ((sepchar (or sepchar py-separator-char))
         prefix erg suffix)
     (when (string-match (regexp-quote sepchar) name)
       (unless py-modeline-acronym-display-home-p
@@ -405,7 +405,7 @@ BUFFER allows specifying a name, the Python process is connected to
 When DONE is `t', `py-shell-manage-windows' is omitted
 "
   (interactive "P")
-  (let* ((sepchar (or sepchar (py-separator-char)))
+  (let* ((sepchar (or sepchar py-separator-char))
          (args py-python-command-args)
          (oldbuf (current-buffer))
          (path (getenv "PYTHONPATH"))
@@ -498,7 +498,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
                           #'shell-write-history-on-exit)
     ;; (setq proc (get-buffer-process (current-buffer)))
     ;; pdbtrack
-    (add-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file)
+    ;; (add-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file)
     (setq py-pdbtrack-do-tracking-p t)
     ;;
     (set-syntax-table python-mode-syntax-table)
@@ -700,7 +700,7 @@ See also `py-execute-region'. "
                  (py-choose-shell-by-shebang)
                  (py-choose-shell-by-import)
                  py-shell-name))
-        (sepchar (or sepchar (py-separator-char))))
+        (sepchar (or sepchar py-separator-char)))
     (when (string-match " " erg) (setq erg (substring erg (1+ (string-match " " erg))))
           ;; closing ">"
           (setq erg (substring erg 0 (1- (length erg)))))
