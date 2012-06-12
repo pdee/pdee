@@ -18,7 +18,6 @@
 
 ;;; Commentary:
 
-
 ;; commands-python-mode.org in directory doc reports
 ;; available commands, also a menu is provided
 
@@ -50,9 +49,7 @@
 
 (require 'comint)
 
-(eval-when-compile
-  (require 'compile)
-  (require 'hippie-exp))
+(eval-when-compile (require 'compile) (require 'hippie-exp))
 
 (require 'comint)
 (require 'custom)
@@ -158,8 +155,8 @@ Default is nil. "
   :group 'python-mode)
 
 (defcustom py-start-run-ipython-shell t "If
-  `python-mode' should start an ipython-shell. Default
-  is `t'.
+`python-mode' should start an ipython-shell. Default
+is `t'.
 
 A running ipython-shell presently is needed by
 `ipython-complete', otherwise first try will fail. "
@@ -310,44 +307,44 @@ Normally python-mode, resp. inferior-python-mode know best which functin to use.
 
 Minor bug: `ipython-complete' raises the prompt counter when completion done
 
-Richard Everson commented:
+ Richard Everson commented:
 
-    I don't know how to stop IPython from incrementing the prompt
-    counter, but using py-completion-at-point just hangs emacs for
-    me. If I start with a new IPython shell, then
+ I don't know how to stop IPython from incrementing the prompt
+ counter, but using py-completion-at-point just hangs emacs for
+ me. If I start with a new IPython shell, then
 
-    In [1]: import sys
+ In [1]: import sys
 
-    In [2]: sys.pa
+ In [2]: sys.pa
 
-    then M-x py-completion-at-point, hoping to complete to sys.path, Emacs
-    hangs.  Escaping out of it shows that the \*Python\* buffer has the
-    contents:
+ then M-x py-completion-at-point, hoping to complete to sys.path, Emacs
+ hangs.  Escaping out of it shows that the \*Python\* buffer has the
+ contents:
 
-    >>> Traceback (most recent call last):
-      File \"<stdin>\", line 1, in <module>
-    NameError: name 'nil' is not defined
-    >>> =
-    [ ... ]
+ >>> Traceback (most recent call last):
+ File \"<stdin>\", line 1, in <module>
+ NameError: name 'nil' is not defined
+ >>> =
+ [ ... ]
 
-    On the other hand, IPython's interaction and completion itself is pretty
-    impressive (for versions greater than 0.10 at least): it inserts the
-    correct indentation for for, if, etc and it will show completions even
-    within a loop.  Here's an example from a terminal shell:
+ On the other hand, IPython's interaction and completion itself is pretty
+ impressive (for versions greater than 0.10 at least): it inserts the
+ correct indentation for for, if, etc and it will show completions even
+ within a loop.  Here's an example from a terminal shell:
 
-    In [1]:
+ In [1]:
 
-    In [1]: for i in range(3):
-       ...:     print i, sys.p<------------ Pressed tab here; indentation inser=
-    ted automatically
-    sys.path                 sys.path_importer_cache  sys.prefix
-    sys.path_hooks           sys.platform             sys.py3kwarning
-       ...:     print i, sys.path<------------ Pressed tab again
-    sys.path                 sys.path_hooks           sys.path_importer_cache
-"
+ In [1]: for i in range(3):
+ ...:     print i, sys.p<------------ Pressed tab here; indentation inser=
+ ted automatically
+ sys.path                 sys.path_importer_cache  sys.prefix
+ sys.path_hooks           sys.platform             sys.py3kwarning
+ ...:     print i, sys.path<------------ Pressed tab again
+ sys.path                 sys.path_hooks           sys.path_importer_cache
+ "
   :type '(choice (const :tag "py-completion-at-point" py-completion-at-point)
                  (const :tag "py-shell-complete" py-shell-complete)
-		 (const :tag "Pymacs based py-complete" py-complete)
+                 (const :tag "Pymacs based py-complete" py-complete)
                  (const :tag "IPython's ipython-complete" ipython-complete))
   :group 'python-mode)
 ;; (setq ipython-complete-function 'py-completion-at-point)
@@ -430,18 +427,18 @@ terminated line. "
 When this variable is non-nil, two things happen when a buffer is set
 to `python-mode':
 
-    1. `py-indent-offset' is guessed from existing code in the buffer.
-       Only guessed values between 2 and 8 are considered.  If a valid
-       guess can't be made (perhaps because you are visiting a new
-       file), then the value in `py-indent-offset' is used.
+ 1. `py-indent-offset' is guessed from existing code in the buffer.
+ Only guessed values between 2 and 8 are considered.  If a valid
+ guess can't be made (perhaps because you are visiting a new
+ file), then the value in `py-indent-offset' is used.
 
-    2. `tab-width' is setq to `py-indent-offset' if not equal
-       already. `indent-tabs-mode' inserts one tab one
-       indentation level, otherwise spaces are used.
+ 2. `tab-width' is setq to `py-indent-offset' if not equal
+ already. `indent-tabs-mode' inserts one tab one
+ indentation level, otherwise spaces are used.
 
-Note that both these settings occur *after* `python-mode-hook' is run,
-so if you want to defeat the automagic configuration, you must also
-set `py-smart-indentation' to nil in your `python-mode-hook'."
+ Note that both these settings occur *after* `python-mode-hook' is run,
+ so if you want to defeat the automagic configuration, you must also
+ set `py-smart-indentation' to nil in your `python-mode-hook'."
   :type 'boolean
   :group 'python-mode)
 (make-variable-buffer-local 'py-smart-indentation)
@@ -460,13 +457,13 @@ lines are aligned to column zero."
 This should follow the convention for non-indenting comment lines so
 that the indentation commands won't get confused (i.e., the string
 should be of the form `#x...' where `x' is not a blank or a tab, and
-`...' is arbitrary).  However, this string should not end in whitespace."
+ `...' is arbitrary).  However, this string should not end in whitespace."
   :type 'string
   :group 'python-mode)
 
 (defcustom py-indent-offset 4
   "*Amount of offset per level of indentation.
-`\\[py-guess-indent-offset]' can usually guess a good value when
+ `\\[py-guess-indent-offset]' can usually guess a good value when
 you're editing someone else's Python code."
   :type 'integer
   :group 'python-mode)
@@ -477,7 +474,7 @@ you're editing someone else's Python code."
   "Where to find pdb.py. Edit this according to your system.
 
 If you ignore the location `M-x py-guess-pdb-path' might display it.
-"
+ "
   :type 'variable
   :group 'python-mode)
 
@@ -487,10 +484,11 @@ If you ignore the location `M-x py-guess-pdb-path' might display it.
   :group 'python-mode)
 
 ;; (defvar py-separator-char 47
-(defvar py-separator-char nil
+(defvar py-separator-char 47
   "Values set by defcustom only will not be seen in batch-mode. ")
+;;  (setq py-separator-char 47)
 
-(defcustom py-separator-char ?\\
+(defcustom py-separator-char ?\/
   "The character, which separates the system file-path components.
 
 Precedes guessing when not empty, returned by function `py-separator-char'. "
@@ -531,8 +529,8 @@ Precedes guessing when not empty, returned by function `py-separator-char'. "
           (funcall ok "/var/folders")
           (setq erg "/var/folders"))
      (and (or (eq system-type 'ms-dos)(eq system-type 'windows-nt))
-          (funcall ok (concat "c:" py-separator-char "Users"))
-          (setq erg (concat "c:" py-separator-char "Users")))
+          (funcall ok (concat "c:" (char-to-string py-separator-char) "Users"))
+          (setq erg (concat "c:" (char-to-string py-separator-char) "Users")))
      ;; (funcall ok ".")
      (error
       "Couldn't find a usable temp directory -- set `py-temp-directory'"))
@@ -540,15 +538,15 @@ Precedes guessing when not empty, returned by function `py-separator-char'. "
   "*Directory used for temporary files created by a *Python* process.
 By default, guesses the first directory from this list that exists and that you
 can write into: the value (if any) of the environment variable TMPDIR,
-/usr/tmp, /tmp, /var/tmp, or the current directory.
+                          /usr/tmp, /tmp, /var/tmp, or the current directory.
 
-`py-custom-temp-directory' will take precedence when setq ")
+                          `py-custom-temp-directory' will take precedence when setq ")
 
 (defcustom py-beep-if-tab-change t
   "*Ring the bell if `tab-width' is changed.
 If a comment of the form
 
-  \t# vi:set tabsize=<number>:
+                           \t# vi:set tabsize=<number>:
 
 is found before the first code line when the file is entered, and the
 current value of (the general Emacs variable) `tab-width' does not
@@ -626,7 +624,7 @@ to paths in Emacs."
   "Maximum number of characters to search for a Java-ish import statement.
 When `python-mode' tries to calculate the shell to use (either a
 CPython or a Jython shell), it looks at the so-called `shebang' line
--- i.e. #! line.  If that's not available, it looks at some of the
+                           -- i.e. #! line.  If that's not available, it looks at some of the
 file heading imports to see if they look Java-like."
   :type 'integer
   :group 'python-mode)
@@ -678,11 +676,11 @@ buffer is prepended to come up with a file name.
 Beside you may set this variable in the file's local
 variable section, e.g.:
 
-    # Local Variables:
-    # py-master-file: \"master.py\"
-    # End:
+                           # Local Variables:
+                           # py-master-file: \"master.py\"
+                           # End:
 
-"
+                           "
   :type 'string
   :group 'python-mode)
 (make-variable-buffer-local 'py-master-file)
@@ -773,7 +771,7 @@ to select the appropriate python interpreter mode for a file.")
 
 (defcustom py-shell-input-prompt-2-regexp "^[.][.][.] "
   "*A regular expression to match the input prompt of the shell after the
-  first line of input."
+first line of input."
   :type 'string
   :group 'python-mode)
 
@@ -894,9 +892,9 @@ element matches `py-shell-name'."
 
 (custom-add-option 'python-mode-hook 'imenu-add-menubar-index)
 (custom-add-option 'python-mode-hook
-		   (lambda ()
-		     "Turn off Indent Tabs mode."
-		     (setq indent-tabs-mode nil)))
+                   (lambda ()
+                     "Turn off Indent Tabs mode."
+                     (setq indent-tabs-mode nil)))
 (custom-add-option 'python-mode-hook 'turn-on-eldoc-mode)
 (custom-add-option 'python-mode-hook 'abbrev-mode)
 (custom-add-option 'python-mode-hook 'python-setup-brm)
@@ -972,16 +970,16 @@ statement."
 The value for this variable can be either `cpython' or `jpython'.
 
 When the value is `cpython', the variables `python-python-command' and
-`python-python-command-args' are consulted to determine the interpreter
+                               `python-python-command-args' are consulted to determine the interpreter
 and arguments to use.
 
 When the value is `jpython', the variables `python-jpython-command' and
-`python-jpython-command-args' are consulted to determine the interpreter
+                               `python-jpython-command-args' are consulted to determine the interpreter
 and arguments to use.
 
 Note that this variable is consulted only the first time that a Python
 mode buffer is visited during an Emacs session.  After that, use
-\\[python-toggle-shells] to change the interpreter shell."
+                               \\[python-toggle-shells] to change the interpreter shell."
   :type '(choice (const :tag "Python (a.k.a. CPython)" cpython)
                  (const :tag "JPython" jpython))
   :group 'python-mode)
@@ -1118,7 +1116,7 @@ Customize `py-match-paren-key' which key to use. "
 This should follow the convention for non-indenting comment lines so
 that the indentation commands won't get confused (i.e., the string
 should be of the form `#x...' where `x' is not a blank or a tab, and
-`...' is arbitrary).  However, this string should not end in whitespace."
+                               `...' is arbitrary).  However, this string should not end in whitespace."
   :type 'string
   :group 'python-mode)
 
@@ -1135,10 +1133,10 @@ When non-nil, arguments are printed."
 
 (defcustom py-use-local-default nil
   "If `t', py-shell will use `py-shell-local-path' instead
-  of default Python.
+of default Python.
 
 Making switch between several virtualenv's easier,
- `python-mode' should deliver an installer, so named-shells pointing to virtualenv's will be available. "
+                               `python-mode' should deliver an installer, so named-shells pointing to virtualenv's will be available. "
   :type 'boolean
   :group 'python-mode)
 
@@ -1464,7 +1462,7 @@ Currently-active file is at the head of the list.")
 
 (defvar jython-mode-hook nil
   "*Hook called by `jython-mode'. `jython-mode' also calls
-`python-mode-hook'.")
+                                 `python-mode-hook'.")
 (make-obsolete-variable 'jpython-mode-hook 'jython-mode-hook nil)
 
 (defvar py-shell-hook nil
@@ -1475,22 +1473,162 @@ Currently-active file is at the head of the list.")
 (and (fboundp 'make-obsolete-variable)
      (make-obsolete-variable 'py-mode-hook 'python-mode-hook nil))
 
+
+(require 'python-components-edit)
+(require 'python-components-intern)
+(require 'python-components-move)
+(require 'python-components-execute)
+(require 'python-components-send)
+(require 'python-components-pdb)
+(require 'python-components-help)
+(require 'python-components-extensions)
+;; (require 'thingatpt-python-expressions)
+(require 'python-components-imenu)
+(require 'python-components-completion)
+(require 'python-components-named-shells)
+(require 'python-components-shell-complete)
+(require 'python-components-electric)
+(require 'virtualenv)
+;;(require 'components-shell-completion)
+(require 'python-components-skeletons)
+(require 'python-components-re-forms)
+(require 'python-components-exec-forms)
+(require 'python-extended-executes)
+;; (require 'python-mode-test)
+(require 'column-marker)
+(require 'feg-python-el-extracts)
+
+
+(defun py-choose-shell-by-shebang ()
+  "Choose shell by looking at #! on the first line.
+
+Returns the specified Python resp. Jython shell command name. "
+  (interactive)
+  ;; look for an interpreter specified in the first line
+  (let* (erg res)
+    (save-excursion
+      (goto-char (point-min))
+      (when (looking-at py-shebang-regexp)
+        (setq erg (split-string (match-string-no-properties 0) "[#! \t]"))
+        (dolist (ele erg)
+          (when (string-match "[bijp]+ython" ele)
+            (setq res ele)))))
+    (when (interactive-p) (message "%s" res))
+    res))
+
+(defun py-choose-shell-by-import ()
+  "Choose CPython or Jython mode based imports.
+
+If a file imports any packages in `py-jython-packages', within
+`py-import-check-point-max' characters from the start of the file,
+return `jython', otherwise return nil."
+  (let (mode)
+    (save-excursion
+      (goto-char (point-min))
+      (while (and (not mode)
+                  (search-forward-regexp
+                   "^\\(\\(from\\)\\|\\(import\\)\\) \\([^ \t\n.]+\\)"
+                   py-import-check-point-max t))
+        (setq mode (and (member (match-string 4) py-jython-packages)
+                        'jython))))
+    mode))
+
+
+(defun py-choose-shell-by-path (&optional file-separator-char)
+  "Select Python executable according to version desplayed in path, current buffer-file is selected from.
+
+Returns versioned string, nil if nothing appropriate found "
+  (interactive)
+  (lexical-let ((path (buffer-file-name))
+                (file-separator-char (or file-separator-char (char-to-string py-separator-char)))
+                erg)
+    (when (and path file-separator-char
+               (string-match (concat file-separator-char "[iI]?[pP]ython[0-9.]+" file-separator-char) path))
+      (setq erg (substring path
+                           (1+ (string-match (concat file-separator-char "[iI]?[pP]ython[0-9.]+" file-separator-char) path)) (1- (match-end 0)))))
+    (when (interactive-p) (message "%s" erg))
+    erg))
+
+(defun py-which-python ()
+  "Returns version of Python of current environment, a number. "
+  (interactive)
+  (let* ((cmd (py-choose-shell))
+         (erg (shell-command-to-string (concat cmd " --version")))
+         ;; Result: "bpython version 0.9.7.1 on top of Python 2.7\n(C) 2008-2010 Bob Farrell, Andreas Stuehrk et al. See AUTHORS for detail.\n"
+
+         (version (cond ((string-match (concat "\\(on top of Python \\)" "\\([0-9]\\.[0-9]+\\)") erg)
+                         (match-string-no-properties 2 erg))
+                        ((string-match "\\([0-9]\\.[0-9]+\\)" erg)
+                         (substring erg 7 (1- (length erg)))))))
+    (when (interactive-p)
+      (if erg
+          (when py-verbose-p (message "%s" erg))
+        (message "%s" "Could not detect Python on your system")))
+    (string-to-number version)))
+
+(defun py-python-current-environment ()
+  "Returns path of current Python installation. "
+  (interactive)
+  (let* ((cmd (py-choose-shell))
+         (denv (shell-command-to-string (concat "type " cmd)))
+         (erg (substring denv (string-match "/" denv))))
+    (when (interactive-p)
+      (if erg
+          (message "%s" erg)
+        (message "%s" "Could not detect Python on your system")))
+    erg))
+
+(defalias 'py-which-shell 'py-choose-shell)
+(defun py-choose-shell (&optional arg pyshell dedicated)
+  "Return an appropriate executable as a string.
+
+Returns nil, if no executable found.
+
+This does the following:
+ - look for an interpreter with `py-choose-shell-by-shebang'
+ - examine imports using `py-choose-shell-by-import'
+ - look if Path/To/File indicates a Python version
+ - if not successful, return default value of `py-shell-name'
+
+When interactivly called, messages the shell name, Emacs would in the given circtumstances.
+
+With \\[universal-argument] 4 is called `py-switch-shell' see docu there.
+"
+  (interactive "P")
+  (if (eq 4 (prefix-numeric-value arg))
+      (py-switch-shell '(4))
+    (let* ((erg (cond (py-force-py-shell-name-p
+                       py-shell-name)
+                      (py-use-local-default
+                       (if (not (string= "" py-shell-local-path))
+                           (expand-file-name py-shell-local-path)
+                         (message "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'")))
+                      ((comint-check-proc (current-buffer))
+                       (process-name (get-buffer-process (current-buffer))))
+                      ((py-choose-shell-by-shebang))
+                      ((py-choose-shell-by-import))
+                      ((py-choose-shell-by-path))
+                      (py-shell-name py-shell-name)
+                      (t (default-value 'py-shell-name))))
+           (cmd (if py-edit-only-p erg
+                  (executable-find erg))))
+      (if cmd
+          (when (interactive-p)
+            (message "%s" cmd))
+        (when (interactive-p) (message "%s" "Could not detect Python on your system. Maybe set `py-edit-only-p'?")))
+      erg)))
+
 
 (defun py-normalize-directory (directory &optional file-separator-char)
   "Make sure DIRECTORY ends with a file-path separator char.
 
 Returns DIRECTORY"
-  (let* ((file-separator-char (or file-separator-char py-separator-char))
-         ;; (if (or (string-match "windows" (prin1-to-string system-type))
-         ;; (string-match "ms-dos" (prin1-to-string system-type)))
-         ;; "\\"
-         ;; "\/")
+  (let* ((file-separator-char (or file-separator-char (char-to-string py-separator-char)))
          (erg (cond ((string-match (concat file-separator-char "$") directory)
                      directory)
                     ((not (string= "" directory))
                      (concat directory file-separator-char)))))
     (unless erg (when py-verbose-p (message "Warning: directory is empty")))
-    (when (interactive-p) (message "%s" erg))
     erg))
 
 (defun py-install-directory-check ()
@@ -1502,6 +1640,19 @@ Returns `t' if successful. "
     (when (interactive-p) (message "py-install-directory-check: %s" erg))
     erg))
 
+
+(defun py-guess-py-install-directory ()
+  "Takes value of user directory aka $HOME
+if `(locate-library \"python-mode\")' is not succesful. "
+  (interactive)
+  (let ((erg (file-name-directory (locate-library "python-mode"))))
+    (if erg
+        (progn
+          (setq py-install-directory erg)
+          (when (and py-verbose-p (interactive-p)) (message "Setting py-install-directory to: %s" erg)))
+      (setq py-install-directory (expand-file-name "~/")))
+    py-install-directory ))
+
 (defun py-load-pymacs ()
   "Load Pymacs as delivered with python-mode.el.
 
@@ -1510,7 +1661,9 @@ See original source: http://pymacs.progiciels-bpi.ca"
   (interactive)
   (let* ((pyshell (py-choose-shell))
          (path (getenv "PYTHONPATH"))
-         (py-install-directory (py-normalize-directory (or py-install-directory (py-guess-py-install-directory)) py-separator-char))
+         (py-install-directory (cond ((string= "" py-install-directory)
+                                      (py-guess-py-install-directory))
+                                     (t (py-normalize-directory py-install-directory))))
          (pymacs-installed-p
           (ignore-errors (string-match (expand-file-name (concat py-install-directory "Pymacs")) path))))
     ;; Python side
@@ -1534,22 +1687,12 @@ See original source: http://pymacs.progiciels-bpi.ca"
           (load (concat py-install-directory "completion/pycomplete.el") nil t))
       (error "`py-install-directory' not set, see INSTALL"))))
 
-(defun py-guess-py-install-directory ()
-  "Takes value of user directory aka $HOME
-if `(locate-library \"python-mode\")' is not succesful. "
-  (interactive)
-  (let ((erg (file-name-directory (locate-library "python-mode"))))
-    (if erg
-        (progn
-          (setq py-install-directory erg)
-          (when (and py-verbose-p (interactive-p)) (message "Setting py-install-directory to: %s" erg)))
-      (setq py-install-directory (expand-file-name "~/")))
-    py-install-directory ))
+(when py-load-pymacs-p (py-load-pymacs))
 
 (defun py-set-load-path ()
   "Include needed subdirs of python-mode directory. "
   (interactive)
-  (let ((py-install-directory (py-normalize-directory py-install-directory py-separator-char)))
+  (let ((py-install-directory (py-normalize-directory py-install-directory (char-to-string py-separator-char))))
     (cond ((and (not (string= "" py-install-directory))(stringp py-install-directory))
            (add-to-list 'load-path (expand-file-name py-install-directory))
            (add-to-list 'load-path (concat (expand-file-name py-install-directory) "completion"))
@@ -3323,6 +3466,9 @@ Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-p
             ))
         map))
 
+(when py-org-cycle-p
+  (define-key python-mode-map (kbd "<backtab>") 'org-cycle))
+
 ;; (defvaralias 'py-mode-map 'python-mode-map)
 ;; Fixme: add toolbar stuff for useful things like symbol help, send
 ;; region, at least.  (Shouldn't be specific to Python, obviously.)
@@ -4044,7 +4190,7 @@ don't move and return nil.  Otherwise return t."
     function-name))
 
 
-;;;; Imenu.
+;;; Imenu.
 
 ;; For possibily speeding this up, here's the top of the ELP profile
 ;; for rescanning pydoc.py (2.2k lines, 90kb):
@@ -4114,6 +4260,7 @@ precede it)."
                         (nreverse vars))
                   index-alist))))
     index-alist))
+
 
 ;;;; `Electric' commands.
 
@@ -4227,6 +4374,8 @@ These are Python temporary files awaiting execution."
 (add-hook 'kill-emacs-hook 'py-kill-emacs-hook)
 (add-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file)
 
+(add-hook 'inferior-python-mode-hook 'python-shell-send-setup-code)
+
 ;; hook doesn't get unloaded
 (defalias 'python-pdbtrack-track-stack-file 'py-pdbtrack-track-stack-file)
 
@@ -4261,7 +4410,7 @@ Interactively output of `--version' is displayed. "
 ;; syntax?; font-locking, e.g. for triple-quoted strings?
 (define-derived-mode inferior-python-mode comint-mode "Inferior Python"
   "Major mode for interacting with an inferior Python process.
-A Python process can be started with \\[run-python].
+A Python process can be started with \\[py-shell].
 
 Hooks `comint-mode-hook' and `inferior-python-mode-hook' are run in
 that order.
@@ -4295,13 +4444,20 @@ For running multiple processes in multiple buffers, see `run-python' and
   (set (make-local-variable 'comment-indent-function) #'py-comment-indent-function)
   (set (make-local-variable 'indent-region-function) 'py-indent-region)
   (set (make-local-variable 'indent-line-function) 'py-indent-line)
-  (python-shell-send-setup-code)
-  (python--set-prompt-regexp)
+  (set (make-local-variable 'comint-prompt-regexp)
+       (concat "\\("
+               (mapconcat 'identity
+                          (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
+                          "\\|")
+               "\\)"))
+  (set (make-local-variable 'comint-use-prompt-regexp) t)
+
+  ;; (python--set-prompt-regexp)
   (set (make-local-variable 'compilation-error-regexp-alist)
        python-compilation-regexp-alist)
   (setq completion-at-point-functions nil)
   ;; (py-set-shell-complete-function)
-  (message "%s" (current-buffer) )
+  (message "In Python shell %s" (current-buffer) )
   (set (make-local-variable 'py-local-command)
        (car (process-command (get-buffer-process (current-buffer)))))
   (unless py-complete-function
@@ -4447,7 +4603,6 @@ behavior, change `python-remove-cwd-from-path' to nil."
   (interactive (if current-prefix-arg
                    (list (read-string "Run Python: " python-command) nil t)
                  (list python-command)))
-  (require 'ansi-color) ; for ipython
   (unless cmd (setq cmd python-command))
   (setq python-command cmd)
   ;; Fixme: Consider making `python-buffer' buffer-local as a buffer
@@ -4549,17 +4704,18 @@ behavior, change `python-remove-cwd-from-path' to nil."
       ;; `python-send-command''s call to `compilation-forget-errors'.
       (compilation-fake-loc orig-start f))))
 
-(defun py-send-string (string)
+(defun py-send-string (string &optional process)
   "Evaluate STRING in inferior Python process."
   (interactive "sPython command: ")
-  (comint-send-string (py-proc) string)
-  (unless (string-match "\n\\'" string)
-    ;; Make sure the text is properly LF-terminated.
-    (comint-send-string (py-proc) "\n"))
-  (when (string-match "\n[ \t].*\n?\\'" string)
-    ;; If the string contains a final indented line, add a second newline so
-    ;; as to make sure we terminate the multiline instruction.
-    (comint-send-string (py-proc) "\n")))
+  (let ((proc (or process (py-shell))))
+    (comint-send-string proc string)
+    (unless (string-match "\n\\'" string)
+      ;; Make sure the text is properly LF-terminated.
+      (comint-send-string proc "\n"))
+    (when (string-match "\n[ \t].*\n?\\'" string)
+      ;; If the string contains a final indented line, add a second newline so
+      ;; as to make sure we terminate the multiline instruction.
+      (comint-send-string proc "\n"))))
 
 (defun python-send-string (string)
   "Evaluate STRING in inferior Python process."
@@ -4629,18 +4785,14 @@ module-qualified names."
        (format "execfile(%S)" file-name)))
     (message "%s loaded" file-name)))
 
-(defun py-proc ()
+(defun py-proc (&optional dedicated)
   "Return the current Python process.
 
 See variable `python-buffer'.  Starts a new process if necessary."
-  ;; Fixme: Maybe should look for another active process if there
-  ;; isn't one for `python-buffer'.
-  (unless (comint-check-proc python-buffer)
+  (if (and (not dedicated) (comint-check-proc python-buffer))
+      (get-buffer-process python-buffer)
     (when py-verbose-p (message "Please wait while starting a Python shell, as completion needs it"))
-    (run-python nil t))
-  (get-buffer-process (if (derived-mode-p 'inferior-python-mode)
-                          (current-buffer)
-                        python-buffer)))
+    (py-shell nil dedicated)))
 
 (defun python-proc ()
   "Return the current Python process.
@@ -4960,6 +5112,19 @@ information etc.  If PROC is non-nil, check the buffer for that process."
 	(re-search-backward (concat python--prompt-regexp " *\\=")
 			    nil t)))))
 
+(defun py-send-receive (string)
+  "Send STRING to inferior Python (if any) and return result.
+The result is what follows `_emacs_out' in the output.
+This is a no-op if `python-check-comint-prompt' returns nil."
+  (py-send-string string)
+  (let ((proc (py-proc)))
+    (with-current-buffer (process-buffer proc)
+      (when (python-check-comint-prompt proc)
+	(set (make-local-variable 'python-preoutput-result) nil)
+        (accept-process-output proc 5)
+	(prog1 python-preoutput-result
+	  (kill-local-variable 'python-preoutput-result))))))
+
 (defun python-send-receive (string)
   "Send STRING to inferior Python (if any) and return result.
 The result is what follows `_emacs_out' in the output.
@@ -5009,7 +5174,7 @@ Uses `python-imports' to load modules against which to complete."
 
 (defun python-module-path (module)
   "Function for `ffap-alist' to return path to MODULE."
-  (python-send-receive (format "emacs.modpath (%S)" module)))
+  (py-send-receive (format "emacs.modpath (%S)" module)))
 
 (eval-after-load "ffap"
   '(push '(python-mode . python-module-path) ffap-alist))
@@ -5031,8 +5196,8 @@ Interactively, prompt for name."
 			nil nil symbol))))
   (unless python-imports
     (error "Not called from buffer visiting Python file"))
-  (let* ((loc (python-send-receive (format "emacs.location_of (%S, %s)"
-					   name python-imports)))
+  (let* ((loc (py-send-receive (format "emacs.location_of (%S, %s)"
+                                       name python-imports)))
 	 (loc (car (read-from-string loc)))
 	 (file (car loc))
 	 (line (cdr loc)))
@@ -5144,39 +5309,75 @@ Updated on each expansion.")
 ;; (setq pdb-path '/usr/lib/python2.7/pdb.py
 ;;      gud-pdb-command-name (symbol-name pdb-path))
 
-(require 'python-components-edit)
-(require 'python-components-intern)
-(require 'python-components-move)
-(require 'python-components-execute)
-(require 'python-components-send)
-(require 'python-components-pdb)
-(require 'python-components-help)
-(require 'python-components-extensions)
-;; (require 'thingatpt-python-expressions)
-(require 'python-components-imenu)
-(require 'python-components-completion)
-(require 'python-components-named-shells)
-(require 'python-components-shell-complete)
-(require 'python-components-electric)
-(require 'virtualenv)
-;;(require 'components-shell-completion)
-(require 'python-components-skeletons)
-(require 'python-components-re-forms)
-(require 'python-components-exec-forms)
-(require 'python-extended-executes)
-;; (require 'python-mode-test)
-(require 'column-marker)
-(require 'feg-python-el-extracts)
-
 (unless py-separator-char (setq py-separator-char (py-separator-char)))
 
 ;;; Hooks
 (remove-hook 'python-mode-hook 'python-setup-brm)
-(remove-hook 'python-mode-hook 'imenu-add-menubar-index)
+;;  (add-hook 'python-mode-hook 'imenu-add-menubar-index)
 ;; (remove-hook 'python-mode-hook
 ;; (lambda ()
 ;; "Turn off Indent Tabs mode."
 ;; (setq indent-tabs-mode nil)))
+
+(add-hook 'which-func-functions 'python-which-func nil t)
+(add-hook 'python-mode-hook
+          #'(lambda ()
+              (when py-smart-indentation
+                (if (bobp)
+                    (save-excursion
+                      (save-restriction
+                        (widen)
+                        (while (and (not (eobp))
+                                    (or
+                                     (let ((erg (syntax-ppss)))
+                                       (or (nth 1 erg) (nth 8 erg)))
+                                     (eq 0 (current-indentation))))
+                          (forward-line 1))
+                        (back-to-indentation)
+                        (py-guess-indent-offset)))
+                  (py-guess-indent-offset)))))
+
+(add-hook 'python-mode-hook
+          #'(lambda ()
+              (setq completion-at-point-functions nil)
+              ;; setting of var `py-local-versioned-command' is
+              ;; needed to detect the completion command to choose
+
+              ;; py-complete-function (set (make-local-variable
+              ;; 'python-local-version) py-complete-function) when
+              ;; set, `py-complete-function' it enforced
+              (set (make-local-variable 'py-local-command) (py-choose-shell))
+              ;; customized `py-complete-function' precedes
+              (unless py-complete-function
+                (cond ((string-match "[iI][pP]ython" py-local-command)
+                       ;; customized `py-complete-function' precedes
+                       (setq py-complete-function 'ipython-complete))
+                      ;; if `py-local-command' already contains version, use it
+                      ((string-match "[0-9]" py-local-command)
+                       (set (make-local-variable 'py-local-versioned-command) py-local-command))
+                      (t (set (make-local-variable 'python-version-numbers) (shell-command-to-string (concat py-local-command " -c \"from sys import version_info; print version_info[0:2]\"")))
+                         (set (make-local-variable 'py-local-versioned-command) (concat py-local-command (replace-regexp-in-string "," "." (replace-regexp-in-string "[()\.\n ]" "" python-version-numbers)))))))
+              (if py-local-versioned-command
+                  (when (and (interactive-p) py-verbose-p) (message "py-local-versioned-command %s" py-local-versioned-command))
+                (when (and (interactive-p) py-verbose-p) (message "py-local-command %s" py-local-command)))
+              (unless py-complete-function
+                (if py-local-versioned-command
+                    (cond ((string-match "[pP]ython3[^[:alpha:]]*$" py-local-versioned-command)
+                           (setq py-complete-function 'py-python-script-complete))
+                          ((string-match "[pP]ython2[^[:alpha:]]*$" py-local-versioned-command)
+                           (setq py-complete-function 'py-python-script-complete))
+                          (t (setq py-complete-function 'py-completion-at-point)))
+                  ;; should never reach this clause
+                  (setq py-complete-function 'py-completion-at-point)))
+              (when py-complete-function
+                (add-hook 'completion-at-point-functions
+                          py-complete-function nil 'local)
+                ;; (add-hook 'completion-at-point-functions
+                ;; #'python-shell-send-setup-code)
+                )))
+
+(add-hook 'comint-output-filter-functions
+          'py-comint-output-filter-function)
 
 (add-hook 'python-mode-hook
           (lambda ()
@@ -5191,7 +5392,29 @@ Updated on each expansion.")
 ;; FixMe: for unknown reasons this is not done by mode
 (add-hook 'python-mode-hook '(lambda () (load abbrev-file-name nil t)))
 
+(add-to-list 'hs-special-modes-alist
+             (list
+              'python-mode
+              ;; start regex
+              (concat (if py-hide-show-hide-docstrings
+                          "^\\s-*\"\"\"\\|" "")
+                      (mapconcat 'identity
+                                 (mapcar #'(lambda (x) (concat "^\\s-*" x "\\_>"))
+                                         py-hide-show-keywords)
+                                 "\\|"))
+              ;; end regex
+              nil
+              ;; comment-start regex
+              "#"
+              ;; forward-sexp function
+              (lambda (arg)
+                (py-down-block-lc)
+                (skip-chars-backward " \t\n"))
+              nil))
+
+
 ;;;
+(setq imenu-generic-expression 'py-imenu-generic-regexp)
 (define-derived-mode python-mode fundamental-mode "Py"
   "Major mode for editing Python files.
 
@@ -5215,13 +5438,19 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
 
 \\{python-mode-map}"
   :group 'python-mode
+;;; Local vars
+  (set (make-local-variable 'outline-regexp)
+       (concat (mapconcat 'identity
+                          (mapcar #'(lambda (x) (concat "^\\s-*" x "\\_>"))
+                                  py-outline-mode-keywords)
+                          "\\|")))
   (set (make-local-variable 'font-lock-defaults)
        '(python-font-lock-keywords nil nil nil nil
-				   (font-lock-syntactic-keywords
-				    . python-font-lock-syntactic-keywords)
-				   ;; This probably isn't worth it.
-				   ;; (font-lock-syntactic-face-function
-				   ;;  . python-font-lock-syntactic-face-function)
+                                   (font-lock-syntactic-keywords
+                                    . python-font-lock-syntactic-keywords)
+                                   ;; This probably isn't worth it.
+                                   ;; (font-lock-syntactic-face-function
+                                   ;;  . python-font-lock-syntactic-face-function)
                                    ))
   (set (make-local-variable 'parse-sexp-lookup-properties) t)
   (set (make-local-variable 'parse-sexp-ignore-comments) t)
@@ -5247,113 +5476,34 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   ;; "for" "if" "try" "while" "with")
   ;; symbol-end))
 
-  (set (make-local-variable 'outline-regexp)
-       (concat (mapconcat 'identity
-                          (mapcar #'(lambda (x) (concat "^\\s-*" x "\\_>"))
-                                  py-outline-mode-keywords)
-                          "\\|")))
   (set (make-local-variable 'eldoc-documentation-function)
        #'py-eldoc-function)
   (set (make-local-variable 'skeleton-further-elements)
        '((< '(backward-delete-char-untabify (min py-indent-offset
                                                  (current-column))))
          (^ '(- (1+ (current-indentation))))))
-  (setq completion-at-point-functions nil)
-  ;; setting of var `py-local-versioned-command' is
-  ;; needed to detect the completion command to choose
 
-  ;; py-complete-function (set (make-local-variable
-  ;; 'python-local-version) py-complete-function) when
-  ;; set, `py-complete-function' it enforced
-  (set (make-local-variable 'py-local-command) (py-choose-shell))
-  ;; customized `py-complete-function' precedes
-  (unless py-complete-function
-    (cond ((string-match "[iI][pP]ython" py-local-command)
-           ;; customized `py-complete-function' precedes
-           (setq py-complete-function 'ipython-complete))
-          ;; if `py-local-command' already contains version, use it
-          ((string-match "[0-9]" py-local-command)
-           (set (make-local-variable 'py-local-versioned-command) py-local-command))
-          (t (set (make-local-variable 'python-version-numbers) (shell-command-to-string (concat py-local-command " -c \"from sys import version_info; print version_info[0:2]\"")))
-             (set (make-local-variable 'py-local-versioned-command) (concat py-local-command (replace-regexp-in-string "," "." (replace-regexp-in-string "[()\.\n ]" "" python-version-numbers)))))))
-  (if py-local-versioned-command
-      (when (and (interactive-p) py-verbose-p) (message "py-local-versioned-command %s" py-local-versioned-command))
-    (when (and (interactive-p) py-verbose-p) (message "py-local-command %s" py-local-command)))
-  (unless py-complete-function
-    (if py-local-versioned-command
-        (cond ((string-match "[pP]ython3[^[:alpha:]]*$" py-local-versioned-command)
-               (setq py-complete-function 'py-python-script-complete))
-              ((string-match "[pP]ython2[^[:alpha:]]*$" py-local-versioned-command)
-               (setq py-complete-function 'py-python-script-complete))
-              (t (setq py-complete-function 'py-completion-at-point)))
-      ;; should never reach this clause
-      (setq py-complete-function 'py-completion-at-point)))
-  (if py-complete-function
-      (add-hook 'completion-at-point-functions
-                py-complete-function nil 'local)
-    ;; (add-hook 'completion-at-point-functions
-    ;; #'python-shell-send-setup-code)
-    )
-  (when (and py-imenu-create-index-p (fboundp 'imenu-add-to-menubar)(ignore-errors (require 'imenu)))
-    (setq imenu-create-index-function #'py-imenu-create-index-new)
-    (imenu-add-to-menubar "PyIndex"))
-  (when py-org-cycle-p
-    (define-key python-mode-map (kbd "<backtab>") 'org-cycle))
-
-  ;; (set (make-local-variable 'beginning-of-defun-function)
-  ;; 'py-beginning-of-def-or-class)
-  ;; (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class)
-
-  (add-to-list 'hs-special-modes-alist
-               (list
-                'python-mode
-                ;; start regex
-                (concat (if py-hide-show-hide-docstrings
-                            "^\\s-*\"\"\"\\|" "")
-                        (mapconcat 'identity
-                                   (mapcar #'(lambda (x) (concat "^\\s-*" x "\\_>"))
-                                           py-hide-show-keywords)
-                                   "\\|"))
-                ;; end regex
-                nil
-                ;; comment-start regex
-                "#"
-                ;; forward-sexp function
-                (lambda (arg)
-                  (py-down-block-lc)
-                  (skip-chars-backward " \t\n"))
-                nil))
-  (add-hook 'which-func-functions 'python-which-func nil t)
-
-  ;; Now guess `py-indent-offset'
-  (when py-smart-indentation
-    (if (bobp)
-        (save-excursion
-          (save-restriction
-            (widen)
-            (while (and (not (eobp))
-                        (or
-                         (let ((erg (syntax-ppss)))
-                           (or (nth 1 erg) (nth 8 erg)))
-                         (eq 0 (current-indentation))))
-              (forward-line 1))
-            (back-to-indentation)
-            (py-guess-indent-offset)))
-      (py-guess-indent-offset)))
-  (when py-load-pymacs-p (py-load-pymacs))
-  ;; add the menu
-  (if py-menu
-      (easy-menu-add py-menu))
-  (when py-hide-show-minor-mode-p (hs-minor-mode 1))
-  ;; (py-send-string "import emacs")
   (when py-prepare-autopair-mode-p
-    (add-to-list 'load-path (concat (py-normalize-directory py-install-directory) "autopair"))
-    (load (concat (py-normalize-directory py-install-directory) "autopair" "/" "autopair.el") nil t)
+    (load  (concat py-install-directory (char-to-string py-separator-char)  "autopair" (char-to-string py-separator-char)  "autopair.el") nil t)
     (add-hook 'python-mode-hook
               #'(lambda ()
                   (setq autopair-handle-action-fns
                         (list #'autopair-default-handle-action
                               #'autopair-python-triple-quote-action)))))
+
+  (when (and py-imenu-create-index-p (fboundp 'imenu-add-to-menubar)(ignore-errors (require 'imenu)))
+    (setq imenu-create-index-function #'py-imenu-create-index-new)
+    (imenu-add-to-menubar "PyIndex"))
+  ;; (when py-imenu-create-index-p (imenu-add-to-menubar "PyIndex"))
+
+  ;; Now guess `py-indent-offset'
+
+  ;; add the menu
+  (if py-menu
+      (easy-menu-add py-menu))
+  (when py-hide-show-minor-mode-p (hs-minor-mode 1))
+  ;; (py-send-string "import emacs")
+
   (when py-start-run-py-shell
     ;; py-shell may split window, provide restore
     (window-configuration-to-register 213465879)
@@ -5439,84 +5589,6 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
     ;; (define-key map [(meta ?\t)] 'python-complete-symbol)
     ;; (define-key map "\C-c\C-f" 'python-describe-symbol)
     map))
-
-(defun py-choose-shell-by-path (&optional file-separator-char)
-  "Select Python executable according to version desplayed in path, current buffer-file is selected from.
-
-Returns versioned string, nil if nothing appropriate found "
-  (interactive)
-  (lexical-let ((path (buffer-file-name))
-                (file-separator-char (or file-separator-char py-separator-char))
-                erg)
-    (when (and path file-separator-char
-               (string-match (concat file-separator-char "[iI]?[pP]ython[0-9.]+" file-separator-char) path))
-      (setq erg (substring path
-                           (1+ (string-match (concat file-separator-char "[iI]?[pP]ython[0-9.]+" file-separator-char) path)) (1- (match-end 0)))))
-    (when (interactive-p) (message "%s" erg))
-    erg))
-
-(defun py-choose-shell-by-shebang ()
-  "Choose shell by looking at #! on the first line.
-
-Returns the specified Python resp. Jython shell command name. "
-  (interactive)
-  ;; look for an interpreter specified in the first line
-  (let* (erg res)
-    (save-excursion
-      (goto-char (point-min))
-      (when (looking-at py-shebang-regexp)
-        (setq erg (split-string (match-string-no-properties 0) "[#! \t]"))
-        (dolist (ele erg)
-          (when (string-match "[bijp]+ython" ele)
-            (setq res ele)))))
-    (when (interactive-p) (message "%s" res))
-    res))
-
-(defun py-choose-shell-by-import ()
-  "Choose CPython or Jython mode based imports.
-
-If a file imports any packages in `py-jython-packages', within
-`py-import-check-point-max' characters from the start of the file,
-return `jython', otherwise return nil."
-  (let (mode)
-    (save-excursion
-      (goto-char (point-min))
-      (while (and (not mode)
-                  (search-forward-regexp
-                   "^\\(\\(from\\)\\|\\(import\\)\\) \\([^ \t\n.]+\\)"
-                   py-import-check-point-max t))
-        (setq mode (and (member (match-string 4) py-jython-packages)
-                        'jython))))
-    mode))
-
-(defun py-which-python ()
-  "Returns version of Python of current environment, a number. "
-  (interactive)
-  (let* ((cmd (py-choose-shell))
-         (erg (shell-command-to-string (concat cmd " --version")))
-         ;; Result: "bpython version 0.9.7.1 on top of Python 2.7\n(C) 2008-2010 Bob Farrell, Andreas Stuehrk et al. See AUTHORS for detail.\n"
-
-         (version (cond ((string-match (concat "\\(on top of Python \\)" "\\([0-9]\\.[0-9]+\\)") erg)
-                         (match-string-no-properties 2 erg))
-                        ((string-match "\\([0-9]\\.[0-9]+\\)" erg)
-                         (substring erg 7 (1- (length erg)))))))
-    (when (interactive-p)
-      (if erg
-          (when py-verbose-p (message "%s" erg))
-        (message "%s" "Could not detect Python on your system")))
-    (string-to-number version)))
-
-(defun py-python-current-environment ()
-  "Returns path of current Python installation. "
-  (interactive)
-  (let* ((cmd (py-choose-shell))
-         (denv (shell-command-to-string (concat "type " cmd)))
-         (erg (substring denv (string-match "/" denv))))
-    (when (interactive-p)
-      (if erg
-          (message "%s" erg)
-        (message "%s" "Could not detect Python on your system")))
-    erg))
 
 (defalias 'py-toggle-shell 'py-switch-shell)
 (defun py-switch-shell (&optional arg)
@@ -5608,46 +5680,6 @@ as it leaves your system default unchanged."
   (setq py-use-local-default (not py-use-local-default))
   (when (interactive-p) (message "py-use-local-default set to %s" py-use-local-default))
   py-use-local-default)
-
-(defalias 'py-which-shell 'py-choose-shell)
-(defun py-choose-shell (&optional arg pyshell dedicated)
-  "Return an appropriate executable as a string.
-
-Returns nil, if no executable found.
-
-This does the following:
- - look for an interpreter with `py-choose-shell-by-shebang'
- - examine imports using `py-choose-shell-by-import'
- - look if Path/To/File indicates a Python version
- - if not successful, return default value of `py-shell-name'
-
-When interactivly called, messages the shell name, Emacs would in the given circtumstances.
-
-With \\[universal-argument] 4 is called `py-switch-shell' see docu there.
-"
-  (interactive "P")
-  (if (eq 4 (prefix-numeric-value arg))
-      (py-switch-shell '(4))
-    (let* ((erg (cond (py-force-py-shell-name-p
-                       py-shell-name)
-                      (py-use-local-default
-                       (if (not (string= "" py-shell-local-path))
-                           (expand-file-name py-shell-local-path)
-                         (message "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'")))
-                      ((comint-check-proc (current-buffer))
-                       (process-name (get-buffer-process (current-buffer))))
-                      ((py-choose-shell-by-shebang))
-                      ((py-choose-shell-by-import))
-                      ((py-choose-shell-by-path))
-                      (py-shell-name py-shell-name)
-                      (t (default-value 'py-shell-name))))
-           (cmd (if py-edit-only-p erg
-                  (executable-find erg))))
-      (if cmd
-          (when (interactive-p)
-            (message "%s" cmd))
-        (when (interactive-p) (message "%s" "Could not detect Python on your system. Maybe set `py-edit-only-p'?")))
-      erg)))
 
 (defadvice pdb (before gud-query-cmdline activate)
   "Provide a better default command line when called interactively."

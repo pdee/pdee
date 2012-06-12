@@ -87,6 +87,8 @@ alternative for finding the index.")
 ;; These next two variables are used when searching for the Python
 ;; class/definitions. Just saving some time in accessing the
 ;; generic-python-expression, really.
+;; (set (make-local-variable 'imenu-generic-expression) 'py-imenu-generic-regexp)
+
 (defvar py-imenu-generic-regexp nil)
 (defvar py-imenu-generic-parens nil)
 

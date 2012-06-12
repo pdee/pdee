@@ -29,53 +29,53 @@
 (defcustom python-shell-buffer-name "Python"
   "Default buffer name for Python interpreter."
   :type 'string
-  :group 'python
+  :group 'python-mode
   :safe 'stringp)
 
 (defcustom python-shell-interpreter "python"
   "Default Python interpreter for shell."
   :type 'string
-  :group 'python
+  :group 'python-mode
   :safe 'stringp)
 
 (defcustom python-shell-internal-buffer-name "Python Internal"
   "Default buffer name for the Internal Python interpreter."
   :type 'string
-  :group 'python
+  :group 'python-mode
   :safe 'stringp)
 
 (defcustom python-shell-interpreter-args "-i"
   "Default arguments for the Python interpreter."
   :type 'string
-  :group 'python
+  :group 'python-mode
   :safe 'stringp)
 
 (defcustom python-shell-prompt-regexp ">>> "
   "Regular Expression matching top\-level input prompt of python shell.
 It should not contain a caret (^) at the beginning."
   :type 'string
-  :group 'python
+  :group 'python-mode
   :safe 'stringp)
 
 (defcustom python-shell-prompt-block-regexp "[.][.][.] "
   "Regular Expression matching block input prompt of python shell.
 It should not contain a caret (^) at the beginning."
   :type 'string
-  :group 'python
+  :group 'python-mode
   :safe 'stringp)
 
 (defcustom python-shell-prompt-output-regexp ""
   "Regular Expression matching output prompt of python shell.
 It should not contain a caret (^) at the beginning."
   :type 'string
-  :group 'python
+  :group 'python-mode
   :safe 'stringp)
 
 (defcustom python-shell-prompt-pdb-regexp "[(<]*[Ii]?[Pp]db[>)]+ "
   "Regular Expression matching pdb input prompt of python shell.
 It should not contain a caret (^) at the beginning."
   :type 'string
-  :group 'python
+  :group 'python-mode
   :safe 'stringp)
 
 (defcustom python-shell-send-setup-max-wait 5
@@ -83,7 +83,7 @@ It should not contain a caret (^) at the beginning."
 If output is received before the especified time then control is
 returned in that moment and not after waiting."
   :type 'integer
-  :group 'python
+  :group 'python-mode
   :safe 'integerp)
 
 (defcustom python-shell-process-environment nil
@@ -93,7 +93,7 @@ since it merges with it before the process creation routines are
 called.  When this variable is nil, the Python shell is run with
 the default `process-environment'."
   :type '(repeat string)
-  :group 'python
+  :group 'python-mode
   :safe 'listp)
 
 (defcustom python-shell-extra-pythonpaths nil
@@ -101,7 +101,7 @@ the default `process-environment'."
 The values of this variable are added to the existing value of
 PYTHONPATH in the `process-environment' variable."
   :type '(repeat string)
-  :group 'python
+  :group 'python-mode
   :safe 'listp)
 
 (defcustom python-shell-exec-path nil
@@ -111,7 +111,7 @@ merges with it before the process creation routines are called.
 When this variable is nil, the Python shell is run with the
 default `exec-path'."
   :type '(repeat string)
-  :group 'python
+  :group 'python-mode
   :safe 'listp)
 
 (defcustom python-shell-virtualenv-path nil
@@ -121,7 +121,7 @@ This variable, when set to a string, makes the values stored in
 to be modified properly so shells are started with the specified
 virtualenv."
   :type 'string
-  :group 'python
+  :group 'python-mode
   :safe 'stringp)
 
 (defcustom python-ffap-setup-code
@@ -136,14 +136,14 @@ virtualenv."
         return ''"
   "Python code to get a module path."
   :type 'string
-  :group 'python
+  :group 'python-mode
   :safe 'stringp)
 
 (defcustom python-ffap-string-code
   "__FFAP_get_module_path('''%s''')\n"
   "Python code used to get a string with the path of a module."
   :type 'string
-  :group 'python
+  :group 'python-mode
   :safe 'stringp)
 
 (defun python-ffap-module-path (module)
@@ -170,7 +170,7 @@ virtualenv."
                                       python-eldoc-setup-code)
   "List of code run by `python-shell-send-setup-codes'."
   :type '(repeat symbol)
-  :group 'python
+  :group 'python-mode
   :safe 'listp)
 
 (defcustom python-shell-compilation-regexp-alist
@@ -186,7 +186,7 @@ virtualenv."
      1 2))
   "`compilation-error-regexp-alist' for inferior Python."
   :type '(alist string)
-  :group 'python)
+  :group 'python-mode)
 
 ;; Stolen from org-mode
 (defun python-util-clone-local-variables (from-buffer &optional regexp)
@@ -305,7 +305,7 @@ OUTPUT is a string with the contents of the buffer."
 If output is received before the especified time then control is
 returned in that moment and not after waiting."
   :type 'integer
-  :group 'python
+  :group 'python-mode
   :safe 'integerp)
 
 (defun python-shell-make-comint (cmd proc-name &optional pop)
@@ -542,7 +542,7 @@ FILE-NAME."
   "Regular Expression matching stacktrace information.
 Used to extract the current line and module being inspected."
   :type 'string
-  :group 'python
+  :group 'python-mode
   :safe 'stringp)
 
 ;;; Eldoc
@@ -580,14 +580,14 @@ Used to extract the current line and module being inspected."
         print(doc)"
   "Python code to setup documentation retrieval."
   :type 'string
-  :group 'python
+  :group 'python-mode
   :safe 'stringp)
 
 (defcustom python-eldoc-string-code
   "__PYDOC_get_help('''%s''')\n"
   "Python code used to get a string with the documentation of an object."
   :type 'string
-  :group 'python
+  :group 'python-mode
   :safe 'stringp)
 
 (defun python-info-current-defun (&optional include-type)

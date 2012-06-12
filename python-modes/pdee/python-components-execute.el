@@ -49,7 +49,7 @@ See also commands
       (if py-force-local-shell-p
           (when py-verbose-p (message "Enforce %s"  py-shell-name))
         (when py-verbose-p (message "py-shell-name default restored to: %s" py-shell-name))))
-  py-shell-name))
+    py-shell-name))
 
 (defun py-force-local-shell-on ()
   "Make sure, `py-py-force-local-shell-p' is on.
@@ -273,9 +273,9 @@ interpreter.
 
 (defun py-process-name (&optional name dedicated nostars sepchar)
   "Return the name of the running Python process, `get-process' willsee it. "
-  (let* ((sepchar (or sepchar py-separator-char))
+  (let* ((sepchar (or sepchar (char-to-string py-separator-char)))
          (thisname (if name
-                       (if (string-match (regexp-quote sepchar) name)
+                       (if (string-match sepchar name)
                            (substring name (progn (string-match (concat "\\(.+\\)" sepchar "\\(.+\\)$") name) (match-beginning 2)))
 
                          name)
@@ -295,7 +295,7 @@ interpreter.
 (defun py-buffer-name-prepare (name &optional sepchar dedicated)
   "Return an appropriate name to display in modeline.
 SEPCHAR is the file-path separator of your system. "
-  (let ((sepchar (or sepchar py-separator-char))
+  (let ((sepchar (or sepchar (char-to-string py-separator-char)))
         prefix erg suffix)
     (when (string-match (regexp-quote sepchar) name)
       (unless py-modeline-acronym-display-home-p
@@ -405,114 +405,110 @@ BUFFER allows specifying a name, the Python process is connected to
 When DONE is `t', `py-shell-manage-windows' is omitted
 "
   (interactive "P")
-  (let* ((sepchar (or sepchar py-separator-char))
-         (args py-python-command-args)
-         (oldbuf (current-buffer))
-         (path (getenv "PYTHONPATH"))
-         ;; make python.el forms usable, to import emacs.py
-         (process-environment
-          (cons (concat "PYTHONPATH="
-                        (if path (concat path path-separator))
-                        data-directory)
-                process-environment))
-         ;; proc
-         (py-buffer-name
-          (or py-buffer-name
-              (when argprompt
-                (cond
-                 ((eq 4 (prefix-numeric-value argprompt))
-                  (setq py-buffer-name
-                        (prog1
-                            (read-buffer "Py-Shell buffer: "
-                                         (generate-new-buffer-name (py-buffer-name-prepare (or pyshellname py-shell-name) sepchar)))
-                          (if (file-remote-p default-directory)
-                              ;; It must be possible to declare a local default-directory.
-                              (setq default-directory
-                                    (expand-file-name
-                                     (read-file-name
-                                      "Default directory: " default-directory default-directory
-                                      t nil 'file-directory-p)))))))
-                 ((and (eq 2 (prefix-numeric-value argprompt))
-                       (fboundp 'split-string))
-                  (setq args (split-string
-                              (read-string "Py-Shell arguments: "
-                                           (concat
-                                            (mapconcat 'identity py-python-command-args " ") " ")))))))))
-         (pyshellname (or pyshellname
-                          (if (or (null py-shell-name)(string= "" py-shell-name))
-                              (py-choose-shell)
-                            py-shell-name)))
-         ;; If we use a pipe, Unicode characters are not printed
-         ;; correctly (Bug#5794) and IPython does not work at
-         ;; all (Bug#5390). python.el
-         (process-connection-type t)
-         ;; already in py-choose-shell
-         (py-use-local-default
-          (if (not (string= "" py-shell-local-path))
-              (expand-file-name py-shell-local-path)
-            (when py-use-local-default
-              (error "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'"))))
-         (py-buffer-name-prepare (unless py-buffer-name
-                                   (py-buffer-name-prepare (or pyshellname py-shell-name) sepchar dedicated)))
-         (py-buffer-name (or py-buffer-name py-buffer-name-prepare))
-         (executable (cond (pyshellname)
-                           (py-buffer-name
-                            (py-report-executable py-buffer-name)))))
-    ;; done by python-mode resp. inferior-python-mode
-    ;; (py-set-shell-completion-environment executable)
-    (if (comint-check-proc py-buffer-name)
-        (set-buffer py-buffer-name)
-      ;; comint
-      (set-buffer (apply 'make-comint-in-buffer executable py-buffer-name executable nil args))
-      )
-    (set (make-local-variable 'comint-prompt-regexp)
-         (concat "\\("
-                 (mapconcat 'identity
-                            (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
-                            "\\|")
-                 "\\)"))
-    (add-hook 'comint-output-filter-functions
-              'py-comint-output-filter-function)
-    ;; (set-buffer (get-buffer-create
-    ;; (apply 'make-comint-in-buffer executable py-buffer-name executable nil args)))
-    (setq python-buffer (current-buffer))
-    (inferior-python-mode)
-    (when py-fontify-shell-buffer-p
-      (font-lock-unfontify-region (point-min) (line-beginning-position)))
-    ;; (accept-process-output (get-buffer-process python-buffer) 1)
-    (setq comint-input-sender 'py-shell-simple-send)
-    (setq comint-input-ring-file-name
-          (cond ((string-match "[iI][pP]ython[[:alnum:]]*$" py-buffer-name)
-                 (if (getenv "IPYTHONDIR")
-                     (concat (getenv "IPYTHONDIR") "/history")
-                   "~/.ipython/history"))
-                ((getenv "PYTHONHISTORY")
-                 (concat (getenv "PYTHONHISTORY") "/" (py-report-executable py-buffer-name) "_history"))
-                (dedicated
-                 (concat "~/." (substring py-buffer-name 0 (string-match "-" py-buffer-name)) "_history"))
-                ;; .pyhistory might be locked from outside Emacs
-                ;; (t "~/.pyhistory")
-                (t (concat "~/." (py-report-executable py-buffer-name) "_history"))))
-    (comint-read-input-ring t)
-    (set-process-sentinel (get-buffer-process (current-buffer))
-                          #'shell-write-history-on-exit)
-    ;; (setq proc (get-buffer-process (current-buffer)))
-    ;; pdbtrack
-    ;; (add-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file)
-    (setq py-pdbtrack-do-tracking-p t)
-    ;;
-    (set-syntax-table python-mode-syntax-table)
-    (ansi-color-for-comint-mode-on)
-    ;; (use-local-map py-shell-map)
-    ;; (use-local-map inferior-python-mode-map)
-    ;; (add-hook 'py-shell-hook 'py-dirstack-hook)
-    (when py-shell-hook (run-hooks 'py-shell-hook))
-    (goto-char (point-max))
-    (if (and (interactive-p) py-shell-switch-buffers-on-execute-p)
-        (pop-to-buffer py-buffer-name)
-      (unless done (py-shell-manage-windows switch py-split-windows-on-execute-p py-switch-buffers-on-execute-p oldbuf py-buffer-name)))
-    ;; (when py-verbose-p (message py-buffer-name))
-    py-buffer-name))
+  (cond ((or argprompt dedicated pyshellname switch sepchar py-buffer-name done)
+         (let* ((sepchar (or sepchar (char-to-string py-separator-char)))
+                (args py-python-command-args)
+                (oldbuf (current-buffer))
+                (path (getenv "PYTHONPATH"))
+                ;; make python.el forms usable, to import emacs.py
+                (process-environment
+                 (cons (concat "PYTHONPATH="
+                               (if path (concat path path-separator))
+                               data-directory)
+                       process-environment))
+                ;; proc
+                (py-buffer-name
+                 (or py-buffer-name
+                     (when argprompt
+                       (cond
+                        ((eq 4 (prefix-numeric-value argprompt))
+                         (setq py-buffer-name
+                               (prog1
+                                   (read-buffer "Py-Shell buffer: "
+                                                (generate-new-buffer-name (py-buffer-name-prepare (or pyshellname py-shell-name) sepchar)))
+                                 (if (file-remote-p default-directory)
+                                     ;; It must be possible to declare a local default-directory.
+                                     (setq default-directory
+                                           (expand-file-name
+                                            (read-file-name
+                                             "Default directory: " default-directory default-directory
+                                             t nil 'file-directory-p)))))))
+                        ((and (eq 2 (prefix-numeric-value argprompt))
+                              (fboundp 'split-string))
+                         (setq args (split-string
+                                     (read-string "Py-Shell arguments: "
+                                                  (concat
+                                                   (mapconcat 'identity py-python-command-args " ") " ")))))))))
+                (pyshellname (or pyshellname
+                                 (if (or (null py-shell-name)(string= "" py-shell-name))
+                                     (py-choose-shell)
+                                   py-shell-name)))
+                ;; If we use a pipe, Unicode characters are not printed
+                ;; correctly (Bug#5794) and IPython does not work at
+                ;; all (Bug#5390). python.el
+                (process-connection-type t)
+                ;; already in py-choose-shell
+                (py-use-local-default
+                 (if (not (string= "" py-shell-local-path))
+                     (expand-file-name py-shell-local-path)
+                   (when py-use-local-default
+                     (error "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'"))))
+                (py-buffer-name-prepare (unless py-buffer-name
+                                          (py-buffer-name-prepare (or pyshellname py-shell-name) sepchar dedicated)))
+                (py-buffer-name (or py-buffer-name py-buffer-name-prepare))
+                (executable (cond (pyshellname)
+                                  (py-buffer-name
+                                   (py-report-executable py-buffer-name)))))
+           ;; done by python-mode resp. inferior-python-mode
+           ;; (py-set-shell-completion-environment executable)
+           (if (comint-check-proc py-buffer-name)
+               (set-buffer py-buffer-name)
+             ;; comint
+             (set-buffer (apply 'make-comint-in-buffer executable py-buffer-name executable nil args)))
+           (setq python-buffer (current-buffer))
+           (inferior-python-mode)
+           (when py-fontify-shell-buffer-p
+             (font-lock-unfontify-region (point-min) (line-beginning-position)))
+           (setq comint-input-sender 'py-shell-simple-send)
+           (setq comint-input-ring-file-name
+                 (cond ((string-match "[iI][pP]ython[[:alnum:]]*$" py-buffer-name)
+                        (if (getenv "IPYTHONDIR")
+                            (concat (getenv "IPYTHONDIR") "/history")
+                          "~/.ipython/history"))
+                       ((getenv "PYTHONHISTORY")
+                        (concat (getenv "PYTHONHISTORY") "/" (py-report-executable py-buffer-name) "_history"))
+                       (dedicated
+                        (concat "~/." (substring py-buffer-name 0 (string-match "-" py-buffer-name)) "_history"))
+                       ;; .pyhistory might be locked from outside Emacs
+                       ;; (t "~/.pyhistory")
+                       (t (concat "~/." (py-report-executable py-buffer-name) "_history"))))
+           (comint-read-input-ring t)
+           (set-process-sentinel (get-buffer-process (current-buffer))
+                                 #'shell-write-history-on-exit)
+           ;; (setq proc (get-buffer-process (current-buffer)))
+           ;; pdbtrack
+           ;; (add-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file)
+           (setq py-pdbtrack-do-tracking-p t)
+           ;;
+           (set-syntax-table python-mode-syntax-table)
+           (ansi-color-for-comint-mode-on)
+           (use-local-map py-shell-map)
+           ;; (use-local-map inferior-python-mode-map)
+           ;; (add-hook 'py-shell-hook 'py-dirstack-hook)
+           (when py-shell-hook (run-hooks 'py-shell-hook))
+           (goto-char (point-max))
+           (if (and (interactive-p) py-shell-switch-buffers-on-execute-p)
+               (pop-to-buffer py-buffer-name)
+             (unless done (py-shell-manage-windows switch py-split-windows-on-execute-p py-switch-buffers-on-execute-p oldbuf py-buffer-name)))
+           ;; (when py-verbose-p (message py-buffer-name))
+           py-buffer-name))
+        ((comint-check-proc (current-buffer))
+         (get-buffer-process (current-buffer)))
+        ((comint-check-proc python-buffer)
+         (get-buffer-process python-buffer))
+        ((comint-check-proc (py-buffer-name-prepare py-shell-name))
+         (get-buffer-process (py-buffer-name-prepare py-shell-name)))
+        (t (py-shell nil nil py-shell-name))))
 
 
 (defcustom py-remove-cwd-from-path t
@@ -610,7 +606,7 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
          (pyshellname (or pyshellname (py-choose-shell)))
          (py-execute-directory (or (ignore-errors (file-name-directory (buffer-file-name)))(getenv "WORKON_HOME")(getenv "HOME")))
          (strg (buffer-substring-no-properties start end))
-         (sepchar (if sepchar sepchar (py-separator-char)))
+         (sepchar (or sepchar (char-to-string py-separator-char)))
          (py-buffer-name (py-buffer-name-prepare pyshellname sepchar))
          (temp (make-temp-name
                 (concat (replace-regexp-in-string (regexp-quote sepchar) "-" (replace-regexp-in-string (concat "^" (regexp-quote sepchar)) "" (replace-regexp-in-string ":" "-" pyshellname))) "-")))
@@ -618,7 +614,7 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
          (filebuf (get-buffer-create file))
          (proc (if dedicated
                    (get-buffer-process (py-shell nil dedicated pyshellname switch sepchar py-buffer-name t))
-                 (or (get-buffer-process pyshellname)
+                 (or (get-buffer-process (py-buffer-name-prepare pyshellname))
                      (get-buffer-process (py-shell nil dedicated pyshellname switch sepchar py-buffer-name t)))))
          (procbuf (process-buffer proc))
          (pec (if (string-match "[pP]ython ?3" py-buffer-name)
@@ -700,7 +696,7 @@ See also `py-execute-region'. "
                  (py-choose-shell-by-shebang)
                  (py-choose-shell-by-import)
                  py-shell-name))
-        (sepchar (or sepchar py-separator-char)))
+        (sepchar (or sepchar (char-to-string py-separator-char))))
     (when (string-match " " erg) (setq erg (substring erg (1+ (string-match " " erg))))
           ;; closing ">"
           (setq erg (substring erg 0 (1- (length erg)))))

@@ -33,7 +33,7 @@ instance.  Assumes an inferior Python is running."
     (with-local-quit
       ;; First try the symbol we're on.
       (or (and symbol
-               (python-send-receive (format "emacs.eargs(%S, %s)"
+               (py-send-receive (format "emacs.eargs(%S, %s)"
                                             symbol python-imports)))
           ;; Try moving to symbol before enclosing parens.
           (let ((s (syntax-ppss)))
@@ -106,9 +106,9 @@ Used with `eval-after-load'."
 
 (defun py-warn-tmp-files-left ()
   "Detect and warn about file of form \"py11046IoE\" in py-temp-directory. "
-  (let ((erg1 (file-readable-p (concat py-temp-directory (py-separator-char)  (car (directory-files  py-temp-directory nil "py[[:alnum:]]+$"))))))
+  (let ((erg1 (file-readable-p (concat py-temp-directory (char-to-string py-separator-char)  (car (directory-files  py-temp-directory nil "py[[:alnum:]]+$"))))))
     (when (and py-verbose-p erg1)
-      (message "py-warn-tmp-files-left: %s ?" (concat py-temp-directory py-separator-char (car (directory-files  py-temp-directory nil "py[[:alnum:]]*$")))))))
+      (message "py-warn-tmp-files-left: %s ?" (concat py-temp-directory (char-to-string py-separator-char) (car (directory-files  py-temp-directory nil "py[[:alnum:]]*$")))))))
 
 (defun py-fetch-docu ()
   "Lookup in current buffer for the doku for the symbol at point.
