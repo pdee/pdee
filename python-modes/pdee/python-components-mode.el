@@ -1901,10 +1901,11 @@ See original source: http://pymacs.progiciels-bpi.ca"
   ;; string delimiters.  Fixme: Is there a better way?
   ;; First avoid a sequence preceded by an odd number of backslashes.
   `((,(concat "\\(?:^\\|[^\\]\\(?:\\\\.\\)*\\)" ;Prefix.
-              "\\(?:\\('\\)\\('\\)\\('\\)\\|\\(?1:\"\\)\\(?2:\"\\)\\(?3:\"\\)\\)")
-     (1 (python-quote-syntax 1) nil lax)
-     (2 (python-quote-syntax 2))
-     (3 (python-quote-syntax 3)))
+              "\\(\"\\)\\(\"\\)\\(\"\\)\\(\"\\)\\(\"\\)\\(\"\\)\\|\\(\"\\)\\(\"\\)\\(\"\\)\\|\\('\\)\\('\\)\\('\\)\\|\\('\\)\\('\\)\\('\\)\\('\\)\\('\\)\\('\\)")
+     (1 (python-quote-syntax 1) t t)
+     (2 (python-quote-syntax 2) t t)
+     (3 (python-quote-syntax 3) t t)
+     (6 (python-quote-syntax 1) t t))
     ;; This doesn't really help.
     ;;     (,(rx (and ?\\ (group ?\n))) (1 " "))
     ))

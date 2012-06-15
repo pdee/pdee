@@ -39,6 +39,7 @@
 (setq bug-numbered-tests
       (if (featurep 'xemacs)
           (list
+           'empty-triple-quote-lp:1009318-test
            'spurious-trailing-whitespace-lp-1008679-test
            'completion-fails-in-python-script-r989-lp:1004613-test
            'no-completion-at-all-lp:1001328-test
@@ -2831,6 +2832,22 @@ def foo():        X
   (forward-line -1)
   (end-of-line)
   (assert (eq (point) 58) nil "spurious-trailing-whitespace-lp-1008679-test failed"))
+
+
+(defun empty-triple-quote-lp:1009318-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+\"\"\"\"\"\"
+''''''
+"))
+  (py-bug-tests-intern 'empty-triple-quote-lp:1009318-base arg teststring)))
+
+(defun empty-triple-quote-lp:1009318-base ()
+  (goto-char 54)
+  (assert (not (nth 4 (syntax-ppss))) nil "empty-triple-quote-lp:1009318-test #1 failed")
+  (goto-char 61)
+  (assert (not (nth 4 (syntax-ppss))) nil "empty-triple-quote-lp:1009318-test #2 failed"))
 
 
 (provide 'py-bug-numbered-tests)
