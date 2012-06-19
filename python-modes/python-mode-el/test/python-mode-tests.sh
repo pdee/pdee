@@ -922,7 +922,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-execute-region-ipython-dedicated-switch-test \
 --funcall py-execute-region-python3-test \
 --funcall py-execute-region-python3-switch-test \
---funcall py-execute-region-python3-noswitch-test \
 --funcall py-execute-region-python3-dedicated-test \
 --funcall py-execute-region-python3-dedicated-switch-test \
 --funcall py-execute-region-python2-test \
@@ -1122,6 +1121,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall UnicodeEncodeError-python3-test \
 --funcall dict-error-test \
 --funcall not-that-useful-completion-lp:1003580-test \
+--funcall py-execute-region-python3-noswitch-test \
 else
 
 cat    <<EOF

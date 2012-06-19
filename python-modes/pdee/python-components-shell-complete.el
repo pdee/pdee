@@ -29,10 +29,7 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;; To get tab completion in Python shell you may add these line to
-;; your ~/.emacs file:
-;;
-;; (add-hook 'py-shell-hook
-;;           '(lambda ()
+;; your ~/.emacs file;;           '(lambda ()
 ;;              (require 'py-shell-complete) ; nil t)
 ;;              (when (functionp 'py-shell-complete)
 ;;                ;; this should be set in py-shell
@@ -303,7 +300,7 @@ Uses `python-imports' to load modules against which to complete."
   (interactive)
   (let* (py-split-windows-on-execute-p
          py-switch-buffers-on-execute-p
-         (shell (or shell py-local-versioned-command))
+         (shell (or shell py-local-versioned-command (py-choose-shell)))
          (orig (point))
          (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
          (end (point))

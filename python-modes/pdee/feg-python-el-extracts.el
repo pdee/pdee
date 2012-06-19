@@ -165,28 +165,6 @@ virtualenv."
      (push '(python-mode . python-ffap-module-path) ffap-alist)
      (push '(inferior-python-mode . python-ffap-module-path) ffap-alist)))
 
-(defcustom python-shell-setup-codes '(python-shell-completion-setup-code
-                                      python-ffap-setup-code
-                                      python-eldoc-setup-code)
-  "List of code run by `python-shell-send-setup-codes'."
-  :type '(repeat symbol)
-  :group 'python-mode
-  :safe 'listp)
-
-(defcustom python-shell-compilation-regexp-alist
-  `((,(rx line-start (1+ (any " \t")) "File \""
-	  (group (1+ (not (any "\"<")))) ; avoid `<stdin>' &c
-	  "\", line " (group (1+ digit)))
-     1 2)
-    (,(rx " in file " (group (1+ not-newline)) " on line "
-	  (group (1+ digit)))
-     1 2)
-    (,(rx line-start "> " (group (1+ (not (any "(\"<"))))
-	  "(" (group (1+ digit)) ")" (1+ (not (any "("))) "()")
-     1 2))
-  "`compilation-error-regexp-alist' for inferior Python."
-  :type '(alist string)
-  :group 'python-mode)
 
 ;; Stolen from org-mode
 (defun python-util-clone-local-variables (from-buffer &optional regexp)
@@ -206,18 +184,24 @@ to \"^python-\"."
   "Send all setup code for shell.
 This function takes the list of setup code to send from the
 `python-shell-setup-codes' list."
-  (let (
-        ;; (msg "Sent %s")
-        (process (get-buffer-process (current-buffer))))
-    (accept-process-output process python-shell-send-setup-max-wait)
+  (let ((process (get-buffer-process (current-buffer))))
+    ;; (accept-process-output process python-shell-send-setup-max-wait)
+    (accept-process-output process 1)
     (dolist (code python-shell-setup-codes)
       (when code
         ;; (when py-verbose-p (message (format msg code)))
         (python-shell-send-string-no-output
          (symbol-value code) process)))))
 
-;;(add-hook 'inferior-python-mode-hook
-  ;;        #'python-shell-send-setup-code)
+(defun py-shell-send-setup-code (code)
+  "Send all setup code for shell.
+This function takes the list of setup code to send from the
+`python-shell-setup-codes' list."
+  (let ((process (get-buffer-process (current-buffer))))
+    ;; (accept-process-output process python-shell-send-setup-max-wait)
+    (accept-process-output process 1)
+    (python-shell-send-string-no-output
+     code process)))
 
 (defun python-shell-get-process-name (dedicated)
   "Calculate the appropiate process name for inferior Python process.
@@ -330,56 +314,6 @@ non-nil the buffer is shown."
         (pop-to-buffer proc-buffer-name))
       proc-buffer-name)))
 
-(defcustom python-shell-completion-setup-code
-  "try:
-    import readline
-except ImportError:
-    def __COMPLETER_all_completions(text): []
-else:
-    import rlcompleter
-    readline.set_completer(rlcompleter.Completer().complete)
-    def __COMPLETER_all_completions(text):
-        import sys
-        completions = []
-        try:
-            i = 0
-            while True:
-                res = readline.get_completer()(text, i)
-                if not res: break
-                i += 1
-                completions.append(res)
-        except NameError:
-            pass
-        return completions"
-  "Code used to setup completion in inferior Python processes."
-  :type 'string
-  :group 'python-mode
-  :safe 'stringp)
-
-(defcustom python-shell-completion-string-code
-  "';'.join(__COMPLETER_all_completions('''%s'''))\n"
-  "Python code used to get a string of completions separated by semicolons."
-  :type 'string
-  :group 'python-mode
-  :safe 'stringp)
-
-(defcustom python-shell-module-completion-string-code ""
-  "Python code used to get completions separated by semicolons for imports.
-
-For IPython v0.11, add the following line to
-`python-shell-completion-setup-code':
-
-from IPython.core.completerlib import module_completion
-
-and use the following as the value of this variable:
-
-';'.join(module_completion('''%s'''))\n"
-  :type 'string
-  :group 'python-mode
-  :safe 'stringp)
-
-(defvar python-completion-original-window-configuration nil)
-
 (defun run-python-internal ()
   "Run an inferior Internal Python process.
 Input and output via buffer named after
@@ -463,7 +397,7 @@ When `py-verbose-p' and MSG is non-nil messages the first line of STRING."
                 (string-match "\n[ \t].*\n?$" string))
         (comint-send-string process "\n")))
     ;; (when (file-readable-p temp-file-name) (delete-file temp-file-name))
-    )
+)
   )
 
 (defun python-shell-send-string-no-output (string &optional process msg)
@@ -480,14 +414,15 @@ the output."
                       "")))))
     (python-shell-send-string string process msg)
     (accept-process-output process 1)
-    (replace-regexp-in-string
-     (if (> (length python-shell-prompt-output-regexp) 0)
-         (format "\n*%s$\\|^%s\\|\n$"
-                 python-shell-prompt-regexp
-                 (or python-shell-prompt-output-regexp ""))
-       (format "\n*$\\|^%s\\|\n$"
-               python-shell-prompt-regexp))
-     "" output-buffer)))
+    (when output-buffer
+      (replace-regexp-in-string
+       (if (> (length python-shell-prompt-output-regexp) 0)
+           (format "\n*%s$\\|^%s\\|\n$"
+                   python-shell-prompt-regexp
+                   (or python-shell-prompt-output-regexp ""))
+         (format "\n*$\\|^%s\\|\n$"
+                 python-shell-prompt-regexp))
+       "" output-buffer))))
 
 (defun python-shell-internal-send-string (string)
   "Send STRING to the Internal Python interpreter.

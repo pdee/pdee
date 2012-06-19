@@ -2780,6 +2780,7 @@ basd
   (goto-char 40)
   (py-python-script-complete)
   (beginning-of-line)
+  (sit-for 0.1) 
   (assert (looking-at "basdklfjasdf") nil "no-completion-at-all-lp:1001328-test failed"))
 
 (defun not-that-useful-completion-lp:1003580-test (&optional arg)

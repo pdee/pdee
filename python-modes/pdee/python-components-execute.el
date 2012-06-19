@@ -253,7 +253,7 @@ interpreter.
            (add-hook 'completion-at-point-functions
                      'py-python3-shell-complete nil 'local)
            (define-key inferior-python-mode-map [tab]
-             'py-shell-complete))
+             'py-python3-shell-complete))
           (t
            (define-key inferior-python-mode-map [tab] 'py-shell-complete)))))
 
@@ -467,6 +467,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
              (set-buffer (apply 'make-comint-in-buffer executable py-buffer-name executable nil args)))
            (setq python-buffer (current-buffer))
            (inferior-python-mode)
+           (sit-for 0.1) 
            (when py-fontify-shell-buffer-p
              (font-lock-unfontify-region (point-min) (line-beginning-position)))
            (setq comint-input-sender 'py-shell-simple-send)
@@ -485,7 +486,6 @@ When DONE is `t', `py-shell-manage-windows' is omitted
            (comint-read-input-ring t)
            (set-process-sentinel (get-buffer-process (current-buffer))
                                  #'shell-write-history-on-exit)
-           ;; (setq proc (get-buffer-process (current-buffer)))
            ;; pdbtrack
            ;; (add-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file)
            (setq py-pdbtrack-do-tracking-p t)
@@ -607,7 +607,7 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
          (py-execute-directory (or (ignore-errors (file-name-directory (buffer-file-name)))(getenv "WORKON_HOME")(getenv "HOME")))
          (strg (buffer-substring-no-properties start end))
          (sepchar (or sepchar (char-to-string py-separator-char)))
-         (py-buffer-name (py-buffer-name-prepare pyshellname sepchar))
+         (py-buffer-name (py-buffer-name-prepare (or pyshellname  py-shell-name) sepchar))
          (temp (make-temp-name
                 (concat (replace-regexp-in-string (regexp-quote sepchar) "-" (replace-regexp-in-string (concat "^" (regexp-quote sepchar)) "" (replace-regexp-in-string ":" "-" pyshellname))) "-")))
          (file (concat (expand-file-name py-temp-directory) sepchar (replace-regexp-in-string (regexp-quote sepchar) "-" temp) ".py"))

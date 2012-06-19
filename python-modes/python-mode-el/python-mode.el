@@ -339,6 +339,12 @@ Richard Everson commented:
   :group 'python-mode)
 (make-variable-buffer-local 'ipython-complete-function)
 
+(defvar py-local-complete-function nil
+  "Set by python-mode-hook resp. to environment.
+
+`py-complete-function', when set, overrides it. ")
+(make-variable-buffer-local 'py-local-complete-function)
+
 (defcustom py-encoding-string " # -*- coding: utf-8 -*-"
   "Default string specifying encoding of a Python file. "
   :type 'string
@@ -775,9 +781,6 @@ Also used by (minor-)outline-mode "
   :group 'python-mode
   :type 'hook)
 
-;; FixMe: for unknown reasons this is not done by mode
-(add-hook 'python-mode-hook '(lambda () (load abbrev-file-name nil t)))
-
 (custom-add-option 'python-mode-hook 'imenu-add-menubar-index)
 (custom-add-option 'python-mode-hook
 		   (lambda ()
@@ -1208,6 +1211,11 @@ v5 did it - lp:990079. This might fail with certain chars - see UnicodeEncodeErr
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-warn-tmp-files-left-p nil
+  "Messages a warning, when `py-temp-directory' contains files susceptible being left by previous Python-mode sessions. See also lp:987534 "
+  :type 'boolean
+  :group 'python-mode)
+
 (defcustom py-ipython-execute-delay 0.3
   "Delay needed by execute functions when no IPython shell is running. "
   :type 'float
@@ -1457,22 +1465,30 @@ to \"^python-\"."
 	       (cdr pair))))
    (buffer-local-variables from-buffer)))
 
-(defun python-shell-send-setup-code ()
+;; (defun python-shell-send-setup-code ()
+;;   "Send all setup code for shell.
+;; This function takes the list of setup code to send from the
+;; `python-shell-setup-codes' list."
+;;   (let (
+;;         ;; (msg "Sent %s")
+;;         (process (get-buffer-process (current-buffer))))
+;;     (accept-process-output process python-shell-send-setup-max-wait)
+;;     (dolist (code python-shell-setup-codes)
+;;       (when code
+;;         ;; (when py-verbose-p (message (format msg code)))
+;;         (python-shell-send-string-no-output
+;;          (symbol-value code) process)))))
+
+(defun py-send-shell-setup-code ()
   "Send all setup code for shell.
 This function takes the list of setup code to send from the
 `python-shell-setup-codes' list."
-  (let (
-        ;; (msg "Sent %s")
-        (process (get-buffer-process (current-buffer))))
-    (accept-process-output process python-shell-send-setup-max-wait)
+  (let ((process (get-buffer-process (current-buffer))))
+    ;; (accept-process-output process python-shell-send-setup-max-wait)
+    (accept-process-output process 1)
     (dolist (code python-shell-setup-codes)
       (when code
-        ;; (when py-verbose-p (message (format msg code)))
-        (python-shell-send-string-no-output
-         (symbol-value code) process)))))
-
-(add-hook 'inferior-python-mode-hook
-          #'python-shell-send-setup-code)
+        (py-send-string (symbol-value code) process)))))
 
 (defun python-shell-get-process-name (dedicated)
   "Calculate the appropiate process name for inferior Python process.
@@ -1729,15 +1745,16 @@ the output."
                       (setq output-buffer (concat output-buffer string))
                       "")))))
     (python-shell-send-string string process msg)
-    (accept-process-output process 2)
-    (replace-regexp-in-string
-     (if (> (length python-shell-prompt-output-regexp) 0)
-         (format "\n*%s$\\|^%s\\|\n$"
-                 python-shell-prompt-regexp
-                 (or python-shell-prompt-output-regexp ""))
-       (format "\n*$\\|^%s\\|\n$"
-               python-shell-prompt-regexp))
-     "" output-buffer)))
+    (accept-process-output process 1)
+    (when output-buffer
+      (replace-regexp-in-string
+       (if (> (length python-shell-prompt-output-regexp) 0)
+           (format "\n*%s$\\|^%s\\|\n$"
+                   python-shell-prompt-regexp
+                   (or python-shell-prompt-output-regexp ""))
+         (format "\n*$\\|^%s\\|\n$"
+                 python-shell-prompt-regexp))
+       "" output-buffer))))
 
 (defun python-shell-internal-send-string (string)
   "Send STRING to the Internal Python interpreter.
@@ -6762,6 +6779,12 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
     (kill-region (car erg) (cdr erg))))
 
 ;;; Helper functions
+(defun py-warn-tmp-files-left ()
+  "Detect and warn about file of form \"py11046IoE\" in py-temp-directory. "
+  (let ((erg1 (file-readable-p (concat py-temp-directory (char-to-string py-separator-char)  (car (directory-files  py-temp-directory nil "py[[:alnum:]]+$"))))))
+    (when (and py-verbose-p erg1)
+      (message "py-warn-tmp-files-left: %s ?" (concat py-temp-directory (char-to-string py-separator-char) (car (directory-files  py-temp-directory nil "py[[:alnum:]]*$")))))))
+
 (defun py-forward-line (&optional arg)
   "Goes to end of line after forward move.
 
@@ -7374,9 +7397,9 @@ Returns char found. "
            (define-key python-shell-map [tab] ipython-complete-function))
           ((string-match "python3" pyshellname)
            (add-hook 'completion-at-point-functions
-                     'py-shell-complete nil 'local)
+                     'py-python3-shell-complete nil 'local)
            (define-key inferior-python-mode-map [tab]
-             'py-shell-complete))
+             'py-python3-shell-complete))
           (t
            (define-key inferior-python-mode-map [tab] 'py-shell-complete)))))
 
@@ -7577,6 +7600,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
              (set-buffer (apply 'make-comint-in-buffer executable py-buffer-name executable nil args)))
            (setq python-buffer (current-buffer))
            (inferior-python-mode)
+           (sit-for 0.1)
            (when py-fontify-shell-buffer-p
              (font-lock-unfontify-region (point-min) (line-beginning-position)))
            (setq comint-input-sender 'py-shell-simple-send)
@@ -7595,7 +7619,6 @@ When DONE is `t', `py-shell-manage-windows' is omitted
            (comint-read-input-ring t)
            (set-process-sentinel (get-buffer-process (current-buffer))
                                  #'shell-write-history-on-exit)
-           ;; (setq proc (get-buffer-process (current-buffer)))
            ;; pdbtrack
            ;; (add-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file)
            (setq py-pdbtrack-do-tracking-p t)
@@ -8761,17 +8784,18 @@ bottom) of the trackback stack is encountered."
       (replace-match ""))
     (goto-char beg)))
 
-(defun py-send-string (string)
+(defun py-send-string (string &optional process)
   "Evaluate STRING in inferior Python process."
   (interactive "sPython command: ")
-  (comint-send-string (py-proc) string)
-  (unless (string-match "\n\\'" string)
-    ;; Make sure the text is properly LF-terminated.
-    (comint-send-string (py-proc) "\n"))
-  (when (string-match "\n[ \t].*\n?\\'" string)
-    ;; If the string contains a final indented line, add a second newline so
-    ;; as to make sure we terminate the multiline instruction.
-    (comint-send-string (py-proc) "\n")))
+  (let ((proc (or process (py-shell))))
+    (comint-send-string proc string)
+    (unless (string-match "\n\\'" string)
+      ;; Make sure the text is properly LF-terminated.
+      (comint-send-string proc "\n"))
+    (when (string-match "\n[ \t].*\n?\\'" string)
+      ;; If the string contains a final indented line, add a second newline so
+      ;; as to make sure we terminate the multiline instruction.
+      (comint-send-string proc "\n"))))
 
 ;;; python-components-pdb.el
 
@@ -9111,6 +9135,45 @@ Optional \\[universal-argument] used for debugging, will prevent deletion of tem
             ;; (orgstruct-mode 1)
             ))
 
+(add-hook 'python-mode-hook
+          #'(lambda ()
+              (setq completion-at-point-functions nil)
+              ;; setting of var `py-local-versioned-command' is
+              ;; needed to detect the completion command to choose
+
+              ;; py-complete-function (set (make-local-variable
+              ;; 'python-local-version) py-complete-function) when
+              ;; set, `py-complete-function' it enforced
+              (set (make-local-variable 'py-local-command) (py-choose-shell))
+              ;; customized `py-complete-function' precedes
+              (unless py-complete-function
+                (cond ((string-match "[iI][pP]ython" py-local-command)
+                       ;; customized `py-complete-function' precedes
+                       (setq py-complete-function 'ipython-complete))
+                      ;; if `py-local-command' already contains version, use it
+                      ((string-match "[0-9]" py-local-command)
+                       (set (make-local-variable 'py-local-versioned-command) py-local-command))
+                      (t (set (make-local-variable 'python-version-numbers) (shell-command-to-string (concat py-local-command " -c \"from sys import version_info; print version_info[0:2]\"")))
+                         (set (make-local-variable 'py-local-versioned-command) (concat py-local-command (replace-regexp-in-string "," "." (replace-regexp-in-string "[()\.\n ]" "" python-version-numbers)))))))
+              (if py-local-versioned-command
+                  (when (and (interactive-p) py-verbose-p) (message "py-local-versioned-command %s" py-local-versioned-command))
+                (when (and (interactive-p) py-verbose-p) (message "py-local-command %s" py-local-command)))
+              (unless py-complete-function
+                (if py-local-versioned-command
+                    (cond ((string-match "[pP]ython3[^[:alpha:]]*$" py-local-versioned-command)
+                           (setq py-complete-function 'py-python-script-complete))
+                          ((string-match "[pP]ython2[^[:alpha:]]*$" py-local-versioned-command)
+                           (setq py-complete-function 'py-python-script-complete))
+                          (t (setq py-complete-function 'py-completion-at-point)))
+                  ;; should never reach this clause
+                  (setq py-complete-function 'py-completion-at-point)))
+              (when py-complete-function
+                (add-hook 'completion-at-point-functions
+                          py-complete-function nil 'local)
+                ;; (add-hook 'completion-at-point-functions
+                ;; #'py-send-shell-setup-code)
+                )))
+
 (defun py-describe-mode ()
   "Dump long form of `python-mode' docs."
   (interactive)
@@ -9380,14 +9443,12 @@ local bindings to py-newline-and-indent."))
 
 The result is what follows `_emacs_out' in the output.
 This is a no-op if `python-check-comint-prompt' returns nil."
-  (py-send-string string)
+  (python-shell-send-string-no-output string)
   (let ((proc (py-proc)))
     (with-current-buffer (process-buffer proc)
       (when (python-check-comint-prompt proc)
 	(set (make-local-variable 'python-preoutput-result) nil)
-        (accept-process-output proc py-send-receive-delay)
-        (if (null python-preoutput-result)
-            (message "No output from: %s, maybe set `py-send-receive-delay' onto a higher value " string))
+        (accept-process-output proc 5)
 	(prog1 python-preoutput-result
 	  (kill-local-variable 'python-preoutput-result))))))
 
@@ -12863,7 +12924,117 @@ Don't use this function in a Lisp program; use `define-abbrev' instead."
            (error "No per-mode abbrev table")))
      "Mode" arg)))
 
+;;; Hooks
+;; arrange to kill temp files when Emacs exists
+(add-hook 'kill-emacs-hook 'py-kill-emacs-hook)
+(add-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file)
 
+(add-hook 'inferior-python-mode-hook 'py-send-shell-setup-code)
+
+(remove-hook 'python-mode-hook 'python-setup-brm)
+(add-hook 'python-mode-hook
+          #'(lambda ()
+              (when py-smart-indentation
+                (if (bobp)
+                    (save-excursion
+                      (save-restriction
+                        (widen)
+                        (while (and (not (eobp))
+                                    (or
+                                     (let ((erg (syntax-ppss)))
+                                       (or (nth 1 erg) (nth 8 erg)))
+                                     (eq 0 (current-indentation))))
+                          (forward-line 1))
+                        (back-to-indentation)
+                        (py-guess-indent-offset)))
+                  (py-guess-indent-offset)))))
+
+(add-hook 'python-mode-hook
+          #'(lambda ()
+              (setq completion-at-point-functions nil)
+              ;; setting of var `py-local-versioned-command' is
+              ;; needed to detect the completion command to choose
+
+              ;; py-complete-function (set (make-local-variable
+              ;; 'python-local-version) py-complete-function) when
+              ;; set, `py-complete-function' it enforced
+              (set (make-local-variable 'py-local-command) (py-choose-shell))
+              ;; customized `py-complete-function' precedes
+              (unless py-complete-function
+                (cond ((string-match "[iI][pP]ython" py-local-command)
+                       ;; customized `py-complete-function' precedes
+                       (setq py-complete-function 'ipython-complete))
+                      ;; if `py-local-command' already contains version, use it
+                      ((string-match "[0-9]" py-local-command)
+                       (set (make-local-variable 'py-local-versioned-command) py-local-command))
+                      (t (set (make-local-variable 'python-version-numbers) (shell-command-to-string (concat py-local-command " -c \"from sys import version_info; print version_info[0:2]\"")))
+                         (set (make-local-variable 'py-local-versioned-command) (concat py-local-command (replace-regexp-in-string "," "." (replace-regexp-in-string "[()\.\n ]" "" python-version-numbers)))))))
+              (if py-local-versioned-command
+                  (when (and (interactive-p) py-verbose-p) (message "py-local-versioned-command %s" py-local-versioned-command))
+                (when (and (interactive-p) py-verbose-p) (message "py-local-command %s" py-local-command)))
+              (unless py-complete-function
+                (if py-local-versioned-command
+                    (cond ((string-match "[pP]ython3[^[:alpha:]]*$" py-local-versioned-command)
+                           (setq py-complete-function 'py-python-script-complete))
+                          ((string-match "[pP]ython2[^[:alpha:]]*$" py-local-versioned-command)
+                           (setq py-complete-function 'py-python-script-complete))
+                          (t (setq py-complete-function 'py-completion-at-point)))
+                  ;; should never reach this clause
+                  (setq py-complete-function 'py-completion-at-point)))
+              (when py-complete-function
+                (add-hook 'completion-at-point-functions
+                          py-complete-function nil 'local)
+                ;; (add-hook 'completion-at-point-functions
+                ;; #'py-send-shell-setup-code)
+                )))
+
+;;  (add-hook 'python-mode-hook 'imenu-add-menubar-index)
+;; (remove-hook 'python-mode-hook
+;; (lambda ()
+;; "Turn off Indent Tabs mode."
+;; (setq indent-tabs-mode nil)))
+
+(add-hook 'which-func-functions 'python-which-func nil t)
+
+(add-hook 'comint-output-filter-functions
+          'py-comint-output-filter-function)
+
+(add-hook 'python-mode-hook
+          (lambda ()
+            (setq indent-tabs-mode py-indent-tabs-mode)
+            (set (make-local-variable 'beginning-of-defun-function) 'py-beginning-of-def-or-class)
+            (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class)
+            ;; (orgstruct-mode 1)
+            ))
+(when py-warn-tmp-files-left-p
+  (add-hook 'python-mode-hook 'py-warn-tmp-files-left))
+
+;; FixMe: for unknown reasons this is not done by mode
+(add-hook 'python-mode-hook '(lambda () (load abbrev-file-name nil t)))
+
+;;;
+
+(add-to-list 'hs-special-modes-alist
+             (list
+              'python-mode
+              ;; start regex
+              (concat (if py-hide-show-hide-docstrings
+                          "^\\s-*\"\"\"\\|" "")
+                      (mapconcat 'identity
+                                 (mapcar #'(lambda (x) (concat "^\\s-*" x "\\_>"))
+                                         py-hide-show-keywords)
+                                 "\\|"))
+              ;; end regex
+              nil
+              ;; comment-start regex
+              "#"
+              ;; forward-sexp function
+              (lambda (arg)
+                (py-down-block-lc)
+                (skip-chars-backward " \t\n"))
+              nil))
+
+(setq imenu-generic-expression 'py-imenu-generic-regexp)
 ;;;
 (defvar skeleton-further-elements)
 (define-derived-mode python-mode fundamental-mode "Python"
@@ -12889,6 +13060,20 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
 
 \\{python-mode-map}"
   :group 'python-mode
+;;; Local vars
+  (if py-complete-function
+      (progn
+        (define-key python-mode-map [(meta tab)] py-complete-function)
+        (add-hook 'completion-at-point-functions
+                  py-complete-function nil 'local))
+    (define-key python-mode-map [(meta tab)] 'py-shell-complete)
+    (add-hook 'completion-at-point-functions
+              'py-shell-complete nil 'local))
+  (set (make-local-variable 'outline-regexp)
+       (concat (mapconcat 'identity
+                          (mapcar #'(lambda (x) (concat "^\\s-*" x "\\_>"))
+                                  py-outline-mode-keywords)
+                          "\\|")))
   (set (make-local-variable 'font-lock-defaults)
        '(python-font-lock-keywords nil nil nil nil
 				   (font-lock-syntactic-keywords
@@ -12915,115 +13100,33 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (set (make-local-variable 'require-final-newline) mode-require-final-newline)
   (make-local-variable 'python-saved-check-command)
   (set (make-local-variable 'tab-width) py-indent-offset)
-
-  ;; (set (make-local-variable 'outline-regexp)
-  ;; (rx (* space) (or "class" "def" "elif" "else" "except" "finally"
-  ;; "for" "if" "try" "while" "with")
-  ;; symbol-end))
-
-  (set (make-local-variable 'outline-regexp)
-       (concat (mapconcat 'identity
-                          (mapcar #'(lambda (x) (concat "^\\s-*" x "\\_>"))
-                                  py-outline-mode-keywords)
-                          "\\|")))
   (set (make-local-variable 'eldoc-documentation-function)
        #'py-eldoc-function)
   (set (make-local-variable 'skeleton-further-elements)
        '((< '(backward-delete-char-untabify (min py-indent-offset
                                                  (current-column))))
          (^ '(- (1+ (current-indentation))))))
-  (setq completion-at-point-functions nil)
-  ;; setting of var `py-local-versioned-command' is
-  ;; needed to detect the completion command to choose
 
-  ;; py-complete-function (set (make-local-variable
-  ;; 'python-local-version) py-complete-function) when
-  ;; set, `py-complete-function' it enforced
-  (set (make-local-variable 'py-local-command) (py-choose-shell))
-  ;; customized `py-complete-function' precedes
-  (unless py-complete-function
-    (cond ((string-match "[iI][pP]ython" py-local-command)
-           ;; customized `py-complete-function' precedes
-           (setq py-complete-function 'ipython-complete))
-          ;; if `py-local-command' already contains version, use it
-          ((string-match "[0-9]" py-local-command)
-           (set (make-local-variable 'py-local-versioned-command) py-local-command))
-          (t (set (make-local-variable 'python-version-numbers) (shell-command-to-string (concat py-local-command " -c \"from sys import version_info; print version_info[0:2]\"")))
-             (set (make-local-variable 'py-local-versioned-command) (concat py-local-command (replace-regexp-in-string "," "." (replace-regexp-in-string "[()\.\n ]" "" python-version-numbers)))))))
-  (if py-local-versioned-command
-      (when (and (interactive-p) py-verbose-p) (message "py-local-versioned-command %s" py-local-versioned-command))
-    (when (and (interactive-p) py-verbose-p) (message "py-local-command %s" py-local-command)))
-  (unless py-complete-function
-    (if py-local-versioned-command
-        (cond ((string-match "[pP]ython3[^[:alpha:]]*$" py-local-versioned-command)
-               (setq py-complete-function 'py-python-script-complete))
-              ((string-match "[pP]ython2[^[:alpha:]]*$" py-local-versioned-command)
-               (setq py-complete-function 'py-python-script-complete))
-              (t (setq py-complete-function 'py-completion-at-point)))
-      ;; should never reach this clause
-      (setq py-complete-function 'py-completion-at-point)))
-  (if py-complete-function
-      (add-hook 'completion-at-point-functions
-                py-complete-function nil 'local)
-    (add-hook 'completion-at-point-functions
-              #'python-shell-send-setup-code))
-  (when (and py-imenu-create-index-p (fboundp 'imenu-add-to-menubar)(ignore-errors (require 'imenu)))
-    (setq imenu-create-index-function #'py-imenu-create-index-new)
-    (imenu-add-to-menubar "PyIndex"))
-  (when py-org-cycle-p
-    (define-key python-mode-map (kbd "<backtab>") 'org-cycle))
-
-  ;; (set (make-local-variable 'beginning-of-defun-function)
-  ;; 'py-beginning-of-def-or-class)
-  ;; (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class)
-
-  (add-to-list 'hs-special-modes-alist
-               (list
-                'python-mode
-                ;; start regex
-                (concat (if py-hide-show-hide-docstrings
-                            "^\\s-*\"\"\"\\|" "")
-                        (mapconcat 'identity
-                                   (mapcar #'(lambda (x) (concat "^\\s-*" x "\\_>"))
-                                           py-hide-show-keywords)
-                                   "\\|"))
-                ;; end regex
-                nil
-                ;; comment-start regex
-                "#"
-                ;; forward-sexp function
-                (lambda (arg)
-                  (py-down-block-lc)
-                  (skip-chars-backward " \t\n"))
-                nil))
-  (add-hook 'which-func-functions 'python-which-func nil t)
-
-  ;; Now guess `py-indent-offset'
-  (when py-smart-indentation
-    (if (bobp)
-        (save-excursion
-          (save-restriction
-            (widen)
-            (while (and (not (eobp))
-                        (or
-                         (let ((erg (syntax-ppss)))
-                           (or (nth 1 erg) (nth 8 erg)))
-                         (eq 0 (current-indentation))))
-              (forward-line 1))
-            (back-to-indentation)
-            (py-guess-indent-offset)))
-      (py-guess-indent-offset)))
-  ;; add the menu
-  (if py-menu
-      (easy-menu-add py-menu))
-  (when py-hide-show-minor-mode-p (hs-minor-mode 1))
-  ;; (py-send-string "import emacs")
   (when py-prepare-autopair-mode-p
     (add-hook 'python-mode-hook
               #'(lambda ()
                   (setq autopair-handle-action-fns
                         (list #'autopair-default-handle-action
                               #'autopair-python-triple-quote-action)))))
+
+  (when (and py-imenu-create-index-p (fboundp 'imenu-add-to-menubar)(ignore-errors (require 'imenu)))
+    (setq imenu-create-index-function #'py-imenu-create-index-new)
+    (imenu-add-to-menubar "PyIndex"))
+  ;; (when py-imenu-create-index-p (imenu-add-to-menubar "PyIndex"))
+
+  ;; Now guess `py-indent-offset'
+
+  ;; add the menu
+  (if py-menu
+      (easy-menu-add py-menu))
+  (when py-hide-show-minor-mode-p (hs-minor-mode 1))
+  ;; (py-send-string "import emacs")
+
   (when py-start-run-py-shell
     ;; py-shell may split window, provide restore
     (window-configuration-to-register 213465879)
@@ -13033,7 +13136,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
           (py-shell)
           (set-buffer oldbuf))))
     (jump-to-register 213465879))
-  (run-mode-hooks 'python-mode-hook)
+  ;; (run-mode-hooks 'python-mode-hook)
   (when py-outline-minor-mode-p (outline-minor-mode 1))
   (when (interactive-p) (message "python-mode loaded from: %s" "python-mode.el")))
 
@@ -13314,7 +13417,7 @@ Currently-active file is at the head of the list.")
 ;; syntax?; font-locking, e.g. for triple-quoted strings?
 (define-derived-mode inferior-python-mode comint-mode "Inferior Python"
   "Major mode for interacting with an inferior Python process.
-A Python process can be started with \\[run-python].
+A Python process can be started with \\[py-shell].
 
 Hooks `comint-mode-hook' and `inferior-python-mode-hook' are run in
 that order.
@@ -13336,11 +13439,7 @@ For running multiple processes in multiple buffers, see `run-python' and
     (set (make-local-variable 'font-lock-defaults)
          '(python-font-lock-keywords nil nil nil nil
                                      (font-lock-syntactic-keywords
-                                      . python-font-lock-syntactic-keywords)
-                                     ;; This probably isn't worth it.
-                                     ;; (font-lock-syntactic-face-function
-                                     ;;  . python-font-lock-syntactic-face-function)
-                                     )))
+                                      . python-font-lock-syntactic-keywords))))
   (set (make-local-variable 'comint-input-filter) 'py-history-input-filter)
   (set (make-local-variable 'comment-start) "# ")
   (set (make-local-variable 'comment-start-skip) "^[ \t]*#+ *")
@@ -13348,38 +13447,29 @@ For running multiple processes in multiple buffers, see `run-python' and
   (set (make-local-variable 'comment-indent-function) #'py-comment-indent-function)
   (set (make-local-variable 'indent-region-function) 'py-indent-region)
   (set (make-local-variable 'indent-line-function) 'py-indent-line)
-  (python-shell-send-setup-code)
-  (python--set-prompt-regexp)
+  (set (make-local-variable 'comint-prompt-regexp)
+       (concat "\\("
+               (mapconcat 'identity
+                          (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
+                          "\\|")
+               "\\)"))
+  (set (make-local-variable 'comint-use-prompt-regexp) t)
+  ;; (python--set-prompt-regexp)
   (set (make-local-variable 'compilation-error-regexp-alist)
        python-compilation-regexp-alist)
   (setq completion-at-point-functions nil)
   ;; (py-set-shell-complete-function)
-  (set (make-local-variable 'py-local-command)
-       (car (process-command (get-buffer-process (current-buffer)))))
-  (unless py-complete-function
-    (if (string-match "[iI][pP]ython" py-local-command)
-        (progn
-          (setq py-complete-function 'ipython-complete)
-          (setq ipython-version (string-to-number (substring (shell-command-to-string (concat py-local-command " -Version")) 2)))
-          (setq ipython-completion-command-string (if (< ipython-version 11) ipython0.10-completion-command-string ipython0.11-completion-command-string)))
-      ;; if `python-local-version' already contains version
-      (if (string-match "[0-9]" py-local-command)
-          (set (make-local-variable 'py-local-versioned-command) py-local-command)
-        (set (make-local-variable 'python-version-numbers) (shell-command-to-string (concat py-local-command " -c \"from sys import version_info; print version_info[0:2]\"")))
-        ;; (message "%s" python-version-numbers)
-        (set (make-local-variable 'py-local-versioned-command) (concat py-local-command (replace-regexp-in-string "," "." (replace-regexp-in-string "[()\.\n ]" "" python-version-numbers)))))
-      (when (and (interactive-p) py-verbose-p) (message "py-local-versioned-command %s" py-local-versioned-command))
-      (cond ((string-match "[pP]ython3[^[:alpha:]]*$" py-local-versioned-command)
-             (setq py-complete-function 'py-python3-shell-complete))
-            (t (setq py-complete-function 'py-shell-complete)))))
+  (define-key inferior-python-mode-map [tab] 'py-shell-complete)
+  (define-key inferior-python-mode-map "\t" 'py-shell-complete)
+  (define-key inferior-python-mode-map [(meta tab)] 'py-shell-complete)
+  (add-hook 'completion-at-point-functions
+            'py-shell-complete nil 'local)
+  (python-shell-send-string-no-output python-shell-completion-setup-code (get-process (get-buffer-process (current-buffer))))
+  (python-shell-send-string-no-output python-ffap-setup-code (get-process (get-buffer-process (current-buffer))))
+  (python-shell-send-string-no-output python-eldoc-setup-code (get-process (get-buffer-process (current-buffer))))
   (add-hook 'comint-preoutput-filter-functions #'python-preoutput-filter
             nil t)
   ;; (add-hook 'inferior-python-mode-hook 'py-shell-hook)
-  (add-hook 'completion-at-point-functions
-            py-complete-function nil 'local)
-  (define-key inferior-python-mode-map [tab] py-complete-function)
-  (define-key inferior-python-mode-map "\t" py-complete-function)
-  (define-key inferior-python-mode-map [(meta tab)] py-complete-function)
   (compilation-shell-minor-mode 1))
 
 (defvar python-preoutput-leftover nil)
@@ -13864,7 +13954,7 @@ Uses `python-imports' to load modules against which to complete."
                            (search-forward word))
                        (dabbrev-expand nil)))
                    nil)
-               (error "No completion process at proc %s" proc))))))
+               (error "No completion process at proc"))))))
 
 (defun py-python2-shell-complete (&optional shell)
   (interactive)
