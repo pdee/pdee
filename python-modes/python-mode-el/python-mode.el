@@ -84,6 +84,12 @@
   "Returns locally used executable-name including its version. ")
 (make-variable-buffer-local 'py-local-versioned-command)
 
+(defcustom python-mode-modeline-display "Py"
+  "String to display in Emacs modeline "
+
+  :type 'string
+  :group 'python-mode)
+
 ;;; User definable variables
 (defcustom py-indent-offset 4
   "*Amount of offset per level of indentation.
@@ -13037,7 +13043,7 @@ Don't use this function in a Lisp program; use `define-abbrev' instead."
 (setq imenu-generic-expression 'py-imenu-generic-regexp)
 ;;;
 (defvar skeleton-further-elements)
-(define-derived-mode python-mode fundamental-mode "Python"
+(define-derived-mode python-mode fundamental-mode python-mode-modeline-display
   "Major mode for editing Python files.
 
 To submit a problem report, enter `\\[py-submit-bug-report]' from a

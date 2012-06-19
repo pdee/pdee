@@ -50,6 +50,9 @@ New in version 6.0.9
   boolean `py-modeline-acronym-display-home-p'  
   If the modeline acronym should contain chars indicating the home-directory.
 
+- mode-line indicates "Py" by default
+  customize  `python-mode-modeline-display' 
+
 - Pymacs intergration dropped from trunk
   conflicts with classic install being reported
 

@@ -81,6 +81,12 @@
   "Returns locally used executable-name including its version. ")
 (make-variable-buffer-local 'py-local-versioned-command)
 
+(defcustom python-mode-modeline-display "Py"
+  "String to display in Emacs modeline "
+
+  :type 'string
+  :group 'python-mode)
+
 (defcustom py-install-directory ""
   "Directory where python-mode.el and it's subdirectories should be installed. Needed for completion and other environment stuff only. "
 
@@ -5564,7 +5570,7 @@ For running multiple processes in multiple buffers, see `run-python' and
 
 ;;;
 
-(define-derived-mode python-mode fundamental-mode "Py"
+(define-derived-mode python-mode fundamental-mode python-mode-modeline-display
   "Major mode for editing Python files.
 
 To submit a problem report, enter `\\[py-submit-bug-report]' from a
