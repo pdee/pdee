@@ -59,7 +59,7 @@ instance.  Assumes an inferior Python is running."
 Used with `eval-after-load'."
   (let* ((version (let ((s (shell-command-to-string (concat py-shell-name
                                                             " -V"))))
-                    (string-match "^Python \\([0-9]+\\.[0-9]+\\_>\\)" s)
+                    (string-match "^Python \\([0-9]+\\.[0-9.]+\\_>\\)" s)
                     (match-string 1 s)))
          ;; Whether info files have a Python version suffix, e.g. in Debian.
          (versioned
@@ -102,6 +102,7 @@ Used with `eval-after-load'."
          ("(python-lib)Class-Exception-Object Index" nil "")
          ("(python-lib)Function-Method-Variable Index" nil "")
          ("(python-lib)Miscellaneous Index" nil ""))))))
+
 (eval-after-load "info-look" '(python-after-info-look))
 
 (defun py-warn-tmp-files-left ()

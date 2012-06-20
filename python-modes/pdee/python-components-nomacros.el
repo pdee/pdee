@@ -30,11 +30,10 @@
 Returns position if succesful. "
   (save-restriction
     (widen)
-    (if (looking-at comment-start)
-        (point)
-      (let ((pps (parse-partial-sexp (line-beginning-position) (point))))
-        (and (nth 4 pps)
-             (goto-char (nth 8 pps)))))))
+    (let ((pps (syntax-ppss)))
+      (when (nth 4 pps)
+        (goto-char
+         (nth 8 pps))))))
 
 ;; (defun py-beginning-of-comment ()
 ;;   "Go to the beginning of current line's comment, if any.
