@@ -467,7 +467,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
              (set-buffer (apply 'make-comint-in-buffer executable py-buffer-name executable nil args)))
            (setq python-buffer (current-buffer))
            (inferior-python-mode)
-           (sit-for 0.1) 
+           (sit-for 0.1)
            (when py-fontify-shell-buffer-p
              (font-lock-unfontify-region (point-min) (line-beginning-position)))
            (setq comint-input-sender 'py-shell-simple-send)
@@ -503,13 +503,12 @@ When DONE is `t', `py-shell-manage-windows' is omitted
            ;; (when py-verbose-p (message py-buffer-name))
            py-buffer-name))
         ((comint-check-proc (current-buffer))
-         (get-buffer-process (current-buffer)))
+         (buffer-name (current-buffer)))
         ((comint-check-proc python-buffer)
-         (get-buffer-process python-buffer))
+         (buffer-name python-buffer))
         ((comint-check-proc (py-buffer-name-prepare py-shell-name))
-         (get-buffer-process (py-buffer-name-prepare py-shell-name)))
-        (t (py-shell nil nil py-shell-name))))
-
+         (py-buffer-name-prepare py-shell-name))
+        (t (buffer-name (current-buffer)))))
 
 (defcustom py-remove-cwd-from-path t
   "Whether to allow loading of Python modules from the current directory.

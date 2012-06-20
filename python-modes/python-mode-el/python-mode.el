@@ -125,6 +125,7 @@ Default is nil. "
 
 Default is nil.
 
+If `t', related vars like `comment-start' will be set too.
 Seems convenient when playing with stuff in IPython shell
 Might not be TRT when a lot of output arrives "
 
@@ -7642,12 +7643,12 @@ When DONE is `t', `py-shell-manage-windows' is omitted
            ;; (when py-verbose-p (message py-buffer-name))
            py-buffer-name))
         ((comint-check-proc (current-buffer))
-         (get-buffer-process (current-buffer)))
+         (buffer-name (current-buffer)))
         ((comint-check-proc python-buffer)
-         (get-buffer-process python-buffer))
+         (buffer-name python-buffer))
         ((comint-check-proc (py-buffer-name-prepare py-shell-name))
-         (get-buffer-process (py-buffer-name-prepare py-shell-name)))
-        (t (py-shell nil nil py-shell-name))))
+         (py-buffer-name-prepare py-shell-name))
+        (t (buffer-name (current-buffer)))))
 
 (defalias 'iyp 'ipython)
 (defalias 'ipy 'ipython)
@@ -10074,10 +10075,14 @@ Uses `python-imports' to load modules against which to complete."
       (let ((map (copy-keymap comint-mode-map)))
         (substitute-key-definition 'complete-symbol 'completion-at-point
                                    map global-map)
-        (define-key map [tab] 'py-shell-complete)
         (define-key map (kbd "RET") 'comint-send-input)
         (define-key map "\C-c-" 'py-up-exception)
         (define-key map "\C-c=" 'py-down-exception)
+        ;; defined three times... one should succed
+        (define-key map (kbd "TAB") 'py-shell-complete)
+        (define-key map [tab] 'py-shell-complete)
+        (define-key map "\t" 'py-shell-complete)
+        (define-key map [(meta tab)] 'py-shell-complete)
         map))
 
 (defun py-choose-shell-by-path (&optional file-separator-char)
@@ -13445,14 +13450,14 @@ For running multiple processes in multiple buffers, see `run-python' and
     (set (make-local-variable 'font-lock-defaults)
          '(python-font-lock-keywords nil nil nil nil
                                      (font-lock-syntactic-keywords
-                                      . python-font-lock-syntactic-keywords))))
+                                      . python-font-lock-syntactic-keywords)))
+    (set (make-local-variable 'comment-start) "# ")
+    (set (make-local-variable 'comment-start-skip) "^[ \t]*#+ *")
+    (set (make-local-variable 'comment-column) 40)
+    (set (make-local-variable 'comment-indent-function) #'py-comment-indent-function)
+    (set (make-local-variable 'indent-region-function) 'py-indent-region)
+    (set (make-local-variable 'indent-line-function) 'py-indent-line))
   (set (make-local-variable 'comint-input-filter) 'py-history-input-filter)
-  (set (make-local-variable 'comment-start) "# ")
-  (set (make-local-variable 'comment-start-skip) "^[ \t]*#+ *")
-  (set (make-local-variable 'comment-column) 40)
-  (set (make-local-variable 'comment-indent-function) #'py-comment-indent-function)
-  (set (make-local-variable 'indent-region-function) 'py-indent-region)
-  (set (make-local-variable 'indent-line-function) 'py-indent-line)
   (set (make-local-variable 'comint-prompt-regexp)
        (concat "\\("
                (mapconcat 'identity
@@ -13465,9 +13470,6 @@ For running multiple processes in multiple buffers, see `run-python' and
        python-compilation-regexp-alist)
   (setq completion-at-point-functions nil)
   ;; (py-set-shell-complete-function)
-  (define-key inferior-python-mode-map [tab] 'py-shell-complete)
-  (define-key inferior-python-mode-map "\t" 'py-shell-complete)
-  (define-key inferior-python-mode-map [(meta tab)] 'py-shell-complete)
   (add-hook 'completion-at-point-functions
             'py-shell-complete nil 'local)
   (python-shell-send-string-no-output python-shell-completion-setup-code (get-process (get-buffer-process (current-buffer))))
@@ -13998,10 +14000,9 @@ Uses `python-imports' to load modules against which to complete."
 (defun py-shell-complete (&optional shell)
   "Complete word before point, if any. Otherwise insert TAB. "
   (interactive)
-  (let ((shell (or shell
-                   (ignore-errors (process-name (get-buffer-process (current-buffer)))))))
-    (if (or (eq major-mode 'comint-mode)(eq major-mode 'inferior-python-mode))
-        ;;  complete in shell
+  (if (or (eq major-mode 'comint-mode)(eq major-mode 'inferior-python-mode))
+      ;;  kind of completion resp. to shell
+      (let ((shell (or shell (process-name (get-buffer-process (current-buffer))))))
         (if (string-match "[iI][pP]ython" shell)
             (ipython-complete)
           (let* ((orig (point))
@@ -14012,28 +14013,30 @@ Uses `python-imports' to load modules against which to complete."
                    (message "%s" "Nothing to complete. ")
                    (tab-to-tab-stop))
                   ((string-match "[pP]ython3[^[:alpha:]]*$" shell)
-                   (python-shell-completion--do-completion-at-point (get-buffer-process (current-buffer))(buffer-substring-no-properties beg end) word))
-                  (t (py-shell-complete-intern word beg end shell)))))
-      ;; complete in script buffer
-      (let* (py-split-windows-on-execute-p
-             py-switch-buffers-on-execute-p
-             (shell (or shell (py-choose-shell)))
-             (proc (or (comint-check-proc (py-shell nil nil shell 'noswitch nil))
-                       (py-shell nil nil shell 'noswitch nil)))
-             (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
-             (end (point))
-             (word (buffer-substring-no-properties beg end)))
-        (cond ((string= word "")
-               (message "%s" "Nothing to complete. "))
-              ((string-match "[iI][pP]ython" shell)
-               (ipython-complete))
-              ((string-match "[pP]ython3[^[:alpha:]]*$" shell)
-               (python-shell-completion--do-completion-at-point proc (buffer-substring-no-properties beg end) word))
-              (t (py-shell-complete-intern word beg end shell)))))))
+                   (python-shell-completion--do-completion-at-point (get-buffer-process (py-shell nil nil "python3" nil nil "*Python3-Completions*")) "" word))
+                  (t (py-shell-complete-intern word beg end shell))))))
+    ;; complete in script buffer
+    (let* ((shell (or shell (py-choose-shell)))
+           py-split-windows-on-execute-p
+           py-switch-buffers-on-execute-p
+           (proc (or (get-buffer-process shell)
+                     (py-shell nil nil shell 'noswitch nil)))
+           (imports (py-find-imports))
+           (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
+           (end (point))
+           (word (buffer-substring-no-properties beg end)))
+      (cond ((string= word "")
+             (message "%s" "Nothing to complete. "))
+            ((string-match "[iI][pP]ython" shell)
+             (ipython-complete))
+            ((string-match "[pP]ython3[^[:alpha:]]*$" shell)
+             (python-shell-completion--do-completion-at-point proc (buffer-substring-no-properties beg end) word))
+            (t (py-shell-complete-intern word beg end shell imports))))))
 
-(defun py-shell-complete-intern (word &optional beg end shell)
+(defun py-shell-complete-intern (word &optional beg end shell imports)
   (let (result)
-    (setq result (py-shell-execute-string-now (format "
+    (if imports
+        (setq result (py-shell-execute-string-now (format (concat imports "
 def print_completions(namespace, text, prefix=''):
    for name in namespace:
        if name.startswith(text):
@@ -14059,8 +14062,35 @@ def complete(text):
         print_completions(keyword.kwlist, text)
         print_completions(dir(__builtin__), text)
         print_completions(dir(__main__), text)
-complete('%s')" word) shell))
-    (if (eq result nil)
+complete('%s')") word) shell))
+      (setq result (py-shell-execute-string-now (format "
+def print_completions(namespace, text, prefix=''):
+   for name in namespace:
+       if name.startswith(text):
+           print(prefix + name)
+
+def complete(text):
+    import __builtin__
+    import __main__
+    if '.' in text:
+        terms = text.split('.')
+        try:
+            if hasattr(__main__, terms[0]):
+                obj = getattr(__main__, terms[0])
+            else:
+                obj = getattr(__builtin__, terms[0])
+            for term in terms[1:-1]:
+                obj = getattr(obj, term)
+            print_completions(dir(obj), terms[-1], text[:text.rfind('.') + 1])
+        except AttributeError:
+            pass
+    else:
+        import keyword
+        print_completions(keyword.kwlist, text)
+        print_completions(dir(__builtin__), text)
+        print_completions(dir(__main__), text)
+complete('%s')" word) shell)))
+    (if (or (eq result nil) (string= result ""))
         (message "Can't complete")
       (let ((comint-completion-addsuffix nil)
             (completions

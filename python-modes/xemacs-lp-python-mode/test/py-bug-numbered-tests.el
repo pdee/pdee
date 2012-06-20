@@ -177,7 +177,7 @@
          py-start-run-py-shell
          proc
          py-prepare-autopair-mode-p
-         py-start-run-py-shell)
+         py-fontify-shell-buffer-p)
      (set-buffer (get-buffer-create (replace-regexp-in-string "\\\\" "" (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname)))))
      ;; (with-temp-buffer
      (switch-to-buffer (current-buffer))
@@ -2780,7 +2780,7 @@ basd
   (goto-char 40)
   (py-python-script-complete)
   (beginning-of-line)
-  (sit-for 0.1) 
+  (sit-for 0.1)
   (assert (looking-at "basdklfjasdf") nil "no-completion-at-all-lp:1001328-test failed"))
 
 (defun not-that-useful-completion-lp:1003580-test (&optional arg)
@@ -2849,6 +2849,21 @@ def foo():        X
   (assert (not (nth 4 (syntax-ppss))) nil "empty-triple-quote-lp:1009318-test #1 failed")
   (goto-char 61)
   (assert (not (nth 4 (syntax-ppss))) nil "empty-triple-quote-lp:1009318-test #2 failed"))
+
+
+(defun completion-at-gentoo-lp-1008842-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+import re
+re.s
+"))
+  (py-bug-tests-intern 'completion-at-gentoo-lp-1008842-base arg teststring)))
+
+(defun completion-at-gentoo-lp-1008842-base ()
+  (goto-char 62)
+  (completion-at-point)
+  (assert (equal (buffer-name (current-buffer)) "*Python Completions*") nil "completion-at-gentoo-lp-1008842-test failed"))
 
 
 (provide 'py-bug-numbered-tests)

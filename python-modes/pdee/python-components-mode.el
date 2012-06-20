@@ -110,6 +110,7 @@
 
 Default is nil.
 
+If `t', related vars like `comment-start' will be set too.
 Seems convenient when playing with stuff in IPython shell
 Might not be TRT when a lot of output arrives "
 
@@ -5535,14 +5536,14 @@ For running multiple processes in multiple buffers, see `run-python' and
     (set (make-local-variable 'font-lock-defaults)
          '(python-font-lock-keywords nil nil nil nil
                                      (font-lock-syntactic-keywords
-                                      . python-font-lock-syntactic-keywords))))
+                                      . python-font-lock-syntactic-keywords)))
+    (set (make-local-variable 'comment-start) "# ")
+    (set (make-local-variable 'comment-start-skip) "^[ \t]*#+ *")
+    (set (make-local-variable 'comment-column) 40)
+    (set (make-local-variable 'comment-indent-function) #'py-comment-indent-function)
+    (set (make-local-variable 'indent-region-function) 'py-indent-region)
+    (set (make-local-variable 'indent-line-function) 'py-indent-line))
   (set (make-local-variable 'comint-input-filter) 'py-history-input-filter)
-  (set (make-local-variable 'comment-start) "# ")
-  (set (make-local-variable 'comment-start-skip) "^[ \t]*#+ *")
-  (set (make-local-variable 'comment-column) 40)
-  (set (make-local-variable 'comment-indent-function) #'py-comment-indent-function)
-  (set (make-local-variable 'indent-region-function) 'py-indent-region)
-  (set (make-local-variable 'indent-line-function) 'py-indent-line)
   (set (make-local-variable 'comint-prompt-regexp)
        (concat "\\("
                (mapconcat 'identity
@@ -5555,9 +5556,6 @@ For running multiple processes in multiple buffers, see `run-python' and
        python-compilation-regexp-alist)
   (setq completion-at-point-functions nil)
   ;; (py-set-shell-complete-function)
-  (define-key inferior-python-mode-map [tab] 'py-shell-complete)
-  (define-key inferior-python-mode-map "\t" 'py-shell-complete)
-  (define-key inferior-python-mode-map [(meta tab)] 'py-shell-complete)
   (add-hook 'completion-at-point-functions
             'py-shell-complete nil 'local)
   (python-shell-send-string-no-output python-shell-completion-setup-code (get-process (get-buffer-process (current-buffer))))
@@ -5717,9 +5715,13 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
         (substitute-key-definition 'complete-symbol 'completion-at-point
                                    map global-map)
         (define-key map (kbd "RET") 'comint-send-input)
-        (define-key map (kbd "TAB") 'py-shell-complete)
         (define-key map "\C-c-" 'py-up-exception)
         (define-key map "\C-c=" 'py-down-exception)
+        ;; defined three times... one should succed
+        (define-key map (kbd "TAB") 'py-shell-complete)
+        (define-key map [tab] 'py-shell-complete)
+        (define-key map "\t" 'py-shell-complete)
+        (define-key map [(meta tab)] 'py-shell-complete)
         map))
 
 (defvar inferior-python-mode-map
