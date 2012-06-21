@@ -1607,6 +1607,7 @@ Currently-active file is at the head of the list.")
 (require 'feg-python-el-extracts)
 (unless (featurep 'xemacs)
   (require 'highlight-indentation))
+(require 'python-abbrev-propose)
 
 (defun py-choose-shell-by-shebang ()
   "Choose shell by looking at #! on the first line.
@@ -2190,7 +2191,7 @@ It makes underscores and dots word constituent chars.")
         ;; (define-key map [(meta tab)] py-complete-function)
         ;; (substitute-key-definition 'complete-symbol 'completion-at-point
         ;; map global-map)
-        ;; )
+        ;;)
         (substitute-key-definition 'complete-symbol 'completion-at-point
                                    map global-map)
         (easy-menu-define py-menu map "Python Tools"
@@ -2232,8 +2233,7 @@ List extendet report options
              ["pylint-flymake-mode" pylint-flymake-mode
               :help "`pylint-flymake-mode'
 Toggle flymake-mode running `pylint'
-"]
-             )
+"])
 
             ("pep8 ... "
              :help "Check formatting
@@ -2253,9 +2253,7 @@ Display help for pep8 format checker)
              ["pep8-flymake-mode" pep8-flymake-mode
               :help "`pep8-flymake-mode'
 Toggle flymake-mode running `pep8'
-"]
-
-             )
+"])
 
             ("Pyflakes ... " :help "Non intrusive code
              checker call `easy_install pyflakes' if
@@ -2272,9 +2270,7 @@ Toggle flymake-mode running `pep8'
 
              ["pyflakes-flymake-mode" pyflakes-flymake-mode :help
               "`pyflakes-flymake-mode'
-Toggle flymake-mode running `pyflakes' "]
-
-             )
+Toggle flymake-mode running `pyflakes' "])
 
             ("Pyflakes-pep8 ... " :help
              "Non intrusive code checker running `pyflakes' and `pep8'
@@ -2290,15 +2286,17 @@ call `easy_install pyflakes' if not available"]
 
              ["pyflakespep8-flymake-mode" pyflakespep8-flymake-mode :help
               "`pyflakespep8-flymake-mode'
-Toggle flymake-mode running `pyflakespep8' "]
-
-             )
+Toggle flymake-mode running `pyflakespep8' "])
 
             "-"
             ("Abbrevs"
-             :help "see also py-add-abbrev"
+             :help "see also `py-add-abbrev'"
              :filter (lambda (&rest junk)
                        (abbrev-table-menu python-mode-abbrev-table)))
+            ["add-abbrev" py-add-abbrev
+             :help "Defines python-mode specific abbrev for last expressions before point.
+Argument is how many `py-partial-expression's form the expansion; or zero means the region is the expansion. "]
+
             ("Skeletons"
              :help "See also templates in YASnippet"
 
@@ -2313,8 +2311,7 @@ Toggle flymake-mode running `pyflakespep8' "]
              ["py-try/finally" py-try/finally
               :help "Inserts py-try/finally-statement"]
              ["py-try/except" py-try/except
-              :help "Inserts py-try/except-statement"]
-             )
+              :help "Inserts py-try/except-statement"])
 
             "-"
 
@@ -2375,9 +2372,7 @@ Each function in the Python module is made available as an Emacs function.
 The Lisp name of each function is the concatenation of PREFIX with
 the Python name, in which underlines are replaced by dashes.  If PREFIX is
 not given, it defaults to MODULE followed by a dash.
-If NOERROR is not nil, do not raise error when the module is not found. "]
-
-            ))
+If NOERROR is not nil, do not raise error when the module is not found. "]))
 
         ;; Menu py-execute forms
         (easy-menu-define py-menu map "Execute Python"
@@ -3606,9 +3601,7 @@ Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-p
             ["Switch shell-switch-buffers-on-execute ON" py-shell-switch-buffers-on-execute-on
              :help "Switch `py-switch-buffers-on-execute-p' ON. "]
             ["Switch shell-switch-buffers-on-execute OFF" py-shell-switch-buffers-on-execute-off
-             :help "Switch `py-switch-buffers-on-execute-p' OFF. "]
-
-            ))
+             :help "Switch `py-switch-buffers-on-execute-p' OFF. "]))
         map))
 
 (when py-org-cycle-p
@@ -5483,7 +5476,9 @@ Updated on each expansion.")
   (add-hook 'python-mode-hook 'py-warn-tmp-files-left))
 
 ;; FixMe: for unknown reasons this is not done by mode
-(add-hook 'python-mode-hook '(lambda () (load abbrev-file-name nil t)))
+(if (file-readable-p abbrev-file-name)
+    (add-hook 'python-mode-hook '(lambda () (load abbrev-file-name nil t)))
+  (message "Warning: %s" "no abbrev-file found, customize `abbrev-file-name' in order to make mode-specific abbrevs work. "))
 
 ;;;
 

@@ -1754,13 +1754,13 @@ the output."
     (python-shell-send-string string process msg)
     (accept-process-output process 1)
     (when output-buffer
-    (replace-regexp-in-string
-     (if (> (length python-shell-prompt-output-regexp) 0)
-         (format "\n*%s$\\|^%s\\|\n$"
-                 python-shell-prompt-regexp
-                 (or python-shell-prompt-output-regexp ""))
-       (format "\n*$\\|^%s\\|\n$"
-               python-shell-prompt-regexp))
+      (replace-regexp-in-string
+       (if (> (length python-shell-prompt-output-regexp) 0)
+           (format "\n*%s$\\|^%s\\|\n$"
+                   python-shell-prompt-regexp
+                   (or python-shell-prompt-output-regexp ""))
+         (format "\n*$\\|^%s\\|\n$"
+                 python-shell-prompt-regexp))
        "" output-buffer))))
 
 (defun python-shell-internal-send-string (string)
@@ -6814,7 +6814,9 @@ From a programm use `py-beginning-of-comment' instead "
       (message "%s" erg))))
 
 (defun py-beginning-of-comment ()
-  "Go to the beginning of current line's comment, if any. "
+  "Go to the beginning of current line's comment, if any.
+
+Returns position if succesful. "
   (save-restriction
     (widen)
     (let ((pps
@@ -11480,6 +11482,10 @@ by this command. Then place point after the first, indented.\n\n"
         (define-key map [(control c)(control b)] 'py-submit-bug-report)
         (define-key map [(control c)(control v)] 'py-version)
         (define-key map [(control c)(control w)] 'py-pychecker-run)
+        (define-key map [tab] 'py-shell-complete)
+        (define-key map "\t" 'py-shell-complete)
+        (define-key map [(meta tab)] 'py-shell-complete)
+
         ;; (if (featurep 'xemacs)
         ;; (define-key map [(meta tab)] 'py-complete)
         ;; (define-key map [(meta tab)] py-complete-function)
@@ -11587,6 +11593,10 @@ Toggle flymake-mode running `pyflakespep8' "])
              :help "see also `py-add-abbrev'"
              :filter (lambda (&rest junk)
                        (abbrev-table-menu python-mode-abbrev-table)))
+            ["add-abbrev" py-add-abbrev
+             :help "Defines python-mode specific abbrev for last expressions before point.
+Argument is how many `py-partial-expression's form the expansion; or zero means the region is the expansion. "]
+
             ("Skeletons"
              :help "See also templates in YASnippet"
 
@@ -13021,7 +13031,9 @@ Don't use this function in a Lisp program; use `define-abbrev' instead."
   (add-hook 'python-mode-hook 'py-warn-tmp-files-left))
 
 ;; FixMe: for unknown reasons this is not done by mode
-(add-hook 'python-mode-hook '(lambda () (load abbrev-file-name nil t)))
+(if (file-readable-p abbrev-file-name)
+    (add-hook 'python-mode-hook '(lambda () (load abbrev-file-name nil t)))
+  (message "Warning: %s" "no abbrev-file found, customize `abbrev-file-name' in order to make mode-specific abbrevs work. "))
 
 ;;;
 
@@ -13074,7 +13086,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
 ;;; Local vars
   (if py-complete-function
       (progn
-      (define-key python-mode-map [(meta tab)] py-complete-function)
+        (define-key python-mode-map [(meta tab)] py-complete-function)
         (add-hook 'completion-at-point-functions
                   py-complete-function nil 'local))
     (define-key python-mode-map [(meta tab)] 'py-shell-complete)
@@ -14000,7 +14012,7 @@ Uses `python-imports' to load modules against which to complete."
 (defun py-shell-complete (&optional shell)
   "Complete word before point, if any. Otherwise insert TAB. "
   (interactive)
-    (if (or (eq major-mode 'comint-mode)(eq major-mode 'inferior-python-mode))
+  (if (or (eq major-mode 'comint-mode)(eq major-mode 'inferior-python-mode))
       ;;  kind of completion resp. to shell
       (let ((shell (or shell (process-name (get-buffer-process (current-buffer))))))
         (if (string-match "[iI][pP]ython" shell)
@@ -14015,28 +14027,28 @@ Uses `python-imports' to load modules against which to complete."
                   ((string-match "[pP]ython3[^[:alpha:]]*$" shell)
                    (python-shell-completion--do-completion-at-point (get-buffer-process (py-shell nil nil "python3" nil nil "*Python3-Completions*")) "" word))
                   (t (py-shell-complete-intern word beg end shell))))))
-      ;; complete in script buffer
-    (let* ((shell (or shell (py-choose-shell))) 
+    ;; complete in script buffer
+    (let* ((shell (or shell (py-choose-shell)))
            py-split-windows-on-execute-p
-             py-switch-buffers-on-execute-p
+           py-switch-buffers-on-execute-p
            (proc (or (get-buffer-process shell)
-                       (py-shell nil nil shell 'noswitch nil)))
-             (imports (py-find-imports))
-             (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
-             (end (point))
-             (word (buffer-substring-no-properties beg end)))
-        (cond ((string= word "")
-               (message "%s" "Nothing to complete. "))
-              ((string-match "[iI][pP]ython" shell)
-               (ipython-complete))
-              ((string-match "[pP]ython3[^[:alpha:]]*$" shell)
-               (python-shell-completion--do-completion-at-point proc (buffer-substring-no-properties beg end) word))
+                     (py-shell nil nil shell 'noswitch nil)))
+           (imports (py-find-imports))
+           (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
+           (end (point))
+           (word (buffer-substring-no-properties beg end)))
+      (cond ((string= word "")
+             (message "%s" "Nothing to complete. "))
+            ((string-match "[iI][pP]ython" shell)
+             (ipython-complete))
+            ((string-match "[pP]ython3[^[:alpha:]]*$" shell)
+             (python-shell-completion--do-completion-at-point proc (buffer-substring-no-properties beg end) word))
             (t (py-shell-complete-intern word beg end shell imports))))))
 
 (defun py-shell-complete-intern (word &optional beg end shell imports)
   (let (result)
-  (if imports
-    (setq result (py-shell-execute-string-now (format (concat imports "
+    (if imports
+        (setq result (py-shell-execute-string-now (format (concat imports "
 def print_completions(namespace, text, prefix=''):
    for name in namespace:
        if name.startswith(text):
@@ -14063,7 +14075,7 @@ def complete(text):
         print_completions(dir(__builtin__), text)
         print_completions(dir(__main__), text)
 complete('%s')") word) shell))
-    (setq result (py-shell-execute-string-now (format "
+      (setq result (py-shell-execute-string-now (format "
 def print_completions(namespace, text, prefix=''):
    for name in namespace:
        if name.startswith(text):

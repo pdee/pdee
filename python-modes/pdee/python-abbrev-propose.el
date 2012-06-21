@@ -88,7 +88,7 @@ Don't use this function in a Lisp program; use `define-abbrev' instead."
            (error "No per-mode abbrev table")))
      "Mode" arg)))
 
-(provide 'mode-abbrev-propose)
+(provide 'python-abbrev-propose)
 ;;; mode-abbrev-propose.el ends here
 
 
