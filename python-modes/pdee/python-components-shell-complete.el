@@ -37,14 +37,6 @@
 ;;                (local-set-key [tab] 'py-shell-complete))))
 
 ;;; Code
-(require 'comint)
-(require 'python-components-macros)
-
-(defvar py-shell-input-lines nil
-  "Collect input lines send interactively to the Python process in
-order to allow injecting completion command between keyboard interrupt
-and resending the lines later. The lines are stored in reverse order")
-
 ;;; need to clear py-shell-input-lines if primary prompt found
 
 ;; (defun py-comint-output-filter-function (string)
@@ -74,53 +66,50 @@ and resending the lines later. The lines are stored in reverse order")
   'py-shell-dynamic-simple-complete
   'comint-dynamic-simple-complete)
 
-(defun py-shell-execute-string-now (string &optional shell)
+(defun py-shell-execute-string-now (string &optional shell buffer)
   "Send to Python interpreter process PROC \"exec STRING in {}\".
 and return collected output"
-  (let* ((proc (cond (shell
-                      (or (get-process shell)
-                          (prog1
-                              (get-buffer-process (py-shell nil nil shell))
-                            (sit-for 0.1))))
-                     (t (or (get-buffer-process (current-buffer))
-                            (get-buffer-process (py-shell))))))
+  (let* ((procbuf (or buffer (py-shell nil nil shell)))
+
+         (proc (get-buffer-process procbuf))
 	 (cmd (format "exec '''%s''' in {}"
 		      (mapconcat 'identity (split-string string "\n") "\\n")))
-         (procbuf (process-buffer proc))
          (outbuf (get-buffer-create " *pyshellcomplete-output*"))
-         (lines (reverse py-shell-input-lines)))
-    (if (and proc (not py-file-queue))
-        (unwind-protect
-            (condition-case nil
-                (progn
-                  (if lines
-                      (with-current-buffer procbuf
-                        (comint-redirect-send-command-to-process
-                         "\C-c" outbuf proc nil t)
-                        ;; wait for output
-                        (while (not comint-redirect-completed)
-                          (accept-process-output proc 1))))
-                  (with-current-buffer outbuf
-                    (delete-region (point-min) (point-max)))
-                  (with-current-buffer procbuf
-                    (comint-redirect-send-command-to-process
-                     cmd outbuf proc nil t)
-                    (while (not comint-redirect-completed) ; wait for output
-                      (accept-process-output proc 1)))
-                  (with-current-buffer outbuf
-                    (buffer-substring (point-min) (point-max))))
-              (quit (with-current-buffer procbuf
-                      (interrupt-process proc comint-ptyp)
-                      (while (not comint-redirect-completed) ; wait for output
-                        (accept-process-output proc 1)))
-                    (signal 'quit nil)))
-          (if (with-current-buffer procbuf comint-redirect-completed)
-              (while lines
-                (with-current-buffer procbuf
-                  (comint-redirect-send-command-to-process
-                   (car lines) outbuf proc nil t))
-                (accept-process-output proc 1)
-                (setq lines (cdr lines))))))))
+         ;; (lines (reverse py-shell-input-lines))
+         )
+    ;; (when proc
+    (unwind-protect
+        (condition-case nil
+            (progn
+              ;; (if lines
+              ;;     (with-current-buffer procbuf
+              ;;       (comint-redirect-send-command-to-process
+              ;;        "\C-c" outbuf proc nil t)
+              ;;       ;; wait for output
+              ;;       (while (not comint-redirect-completed)
+              ;;         (accept-process-output proc 1))))
+              (with-current-buffer outbuf
+                (delete-region (point-min) (point-max)))
+              (with-current-buffer procbuf
+                (comint-redirect-send-command-to-process
+                 cmd outbuf proc nil t)
+                (while (not comint-redirect-completed) ; wait for output
+                  (accept-process-output proc 1)))
+              (with-current-buffer outbuf
+                (buffer-substring (point-min) (point-max))))
+          (quit (with-current-buffer procbuf
+                  (interrupt-process proc comint-ptyp)
+                  (while (not comint-redirect-completed) ; wait for output
+                    (accept-process-output proc 1)))
+                (signal 'quit nil)))
+      ;; (if (with-current-buffer procbuf comint-redirect-completed)
+      ;;     (while lines
+      ;;       (with-current-buffer procbuf
+      ;;         (comint-redirect-send-command-to-process
+      ;;          (car lines) outbuf proc nil t))
+      ;;       (accept-process-output proc 1)
+      ;;       (setq lines (cdr lines))))
+      )))
 
 (defun py-dot-word-before-point ()
   (buffer-substring-no-properties
@@ -169,32 +158,7 @@ module-qualified names."
        (format "execfile(%S)" file-name)))
     (message "%s loaded" file-name)))
 
-(defun py-set-proc ()
-  "Set the default value of `python-buffer' to correspond to this buffer.
-
-If the current buffer has a local value of `python-buffer', set the
-default (global) value to that.  The associated Python process is
-the one that gets input from \\[py-send-region] et al when used
-in a buffer that doesn't have a local value of `python-buffer'."
-  (interactive)
-  (if (local-variable-p 'python-buffer)
-      (setq-default python-buffer python-buffer)
-    (error "No local value of `python-buffer'")))
-
-;;; Context-sensitive help.
-
-(defvar view-return-to-alist)
-
-(defvar python-imports)			; forward declaration
-(make-variable-buffer-local 'python-imports)
-
-
 ;; Author: Lukasz Pankowski, patch sent for lp:328836
-(defvar py-shell-input-lines nil
-  "Collect input lines send interactively to the Python process in
-order to allow injecting completion command between keyboard interrupt
-and resending the lines later. The lines are stored in reverse order")
-
 ;;; need to clear py-shell-input-lines if primary prompt found
 
 ;; (defun py-comint-output-filter-function (string)
@@ -353,7 +317,6 @@ Uses `python-imports' to load modules against which to complete."
            (tab-to-tab-stop))
           (t (or (setq proc (get-buffer-process shell))
                  (setq proc (get-buffer-process (py-shell nil nil shell))))
-             (message "%s" (processp proc))
              (python-shell-completion--do-completion-at-point proc nil word))))
   nil)
 
@@ -366,7 +329,6 @@ Uses `python-imports' to load modules against which to complete."
          (end (point))
          (word (buffer-substring-no-properties beg end)))
     (cond ((string= word "")
-           (message "%s" "Nothing to complete. ")
            (tab-to-tab-stop))
           (t
            (python-shell-completion--do-completion-at-point (get-buffer-process (current-buffer)) nil word)
@@ -375,38 +337,40 @@ Uses `python-imports' to load modules against which to complete."
 (defun py-shell-complete (&optional shell)
   "Complete word before point, if any. Otherwise insert TAB. "
   (interactive)
-  (if (or (eq major-mode 'comint-mode)(eq major-mode 'inferior-python-mode))
-      ;;  kind of completion resp. to shell
-      (let ((shell (or shell (process-name (get-buffer-process (current-buffer))))))
-        (if (string-match "[iI][pP]ython" shell)
-            (ipython-complete)
-          (let* ((orig (point))
-                 (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
-                 (end (point))
-                 (word (buffer-substring-no-properties beg end)))
-            (cond ((string= word "")
-                   (message "%s" "Nothing to complete. ")
-                   (tab-to-tab-stop))
-                  ((string-match "[pP]ython3[^[:alpha:]]*$" shell)
-                   (python-shell-completion--do-completion-at-point (get-buffer-process (py-shell nil nil "python3" nil nil "*Python3-Completions*")) "" word))
-                  (t (py-shell-complete-intern word beg end shell))))))
-    ;; complete in script buffer
-    (let* ((shell (or shell (py-choose-shell))) 
-           py-split-windows-on-execute-p
-           py-switch-buffers-on-execute-p
-           (proc (or (get-buffer-process shell)
-                     (py-shell nil nil shell 'noswitch nil)))
-           (imports (py-find-imports))
-           (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
-           (end (point))
-           (word (buffer-substring-no-properties beg end)))
-      (cond ((string= word "")
-             (message "%s" "Nothing to complete. "))
-            ((string-match "[iI][pP]ython" shell)
-             (ipython-complete))
-            ((string-match "[pP]ython3[^[:alpha:]]*$" shell)
-             (python-shell-completion--do-completion-at-point proc (buffer-substring-no-properties beg end) word))
-            (t (py-shell-complete-intern word beg end shell imports))))))
+  ;; (window-configuration-to-register 313465889)
+  ;; (save-window-excursion
+    (if (or (eq major-mode 'comint-mode)(eq major-mode 'inferior-python-mode))
+        ;;  kind of completion resp. to shell
+        (let (py-fontify-shell-buffer-p
+              (shell (or shell (py-report-executable (buffer-name (current-buffer))))))
+          (if (string-match "[iI][pP]ython" shell)
+              (ipython-complete)
+            (let* ((orig (point))
+                   (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
+                   (end (point))
+                   (word (buffer-substring-no-properties beg end)))
+              (cond ((string= word "")
+                     (tab-to-tab-stop))
+                    ((string-match "[pP]ython3[^[:alpha:]]*$" shell)
+                     (python-shell-completion--do-completion-at-point (get-buffer-process (current-buffer)) "" word))
+                    (t (py-shell-complete-intern word beg end shell))))))
+      ;; complete in script buffer
+      (let* ((shell (or shell (py-choose-shell)))
+             py-split-windows-on-execute-p
+             py-switch-buffers-on-execute-p
+             (proc (or (get-buffer-process shell)
+                       (get-buffer-process (py-shell nil nil shell 'noswitch nil))))
+             (imports (py-find-imports))
+             (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
+             (end (point))
+             (word (buffer-substring-no-properties beg end)))
+        (cond ((string= word "")
+               (tab-to-tab-stop))
+              ((string-match "[iI][pP]ython" shell)
+               (ipython-complete))
+              ((string-match "[pP]ython3[^[:alpha:]]*$" shell)
+               (python-shell-completion--do-completion-at-point proc (buffer-substring-no-properties beg end) word))
+              (t (py-shell-complete-intern word beg end shell imports))))))
 
 (defun py-shell-complete-intern (word &optional beg end shell imports)
   (let (result)
@@ -464,9 +428,10 @@ def complete(text):
         print_completions(keyword.kwlist, text)
         print_completions(dir(__builtin__), text)
         print_completions(dir(__main__), text)
-complete('%s')" word) shell)))
+complete('%s')" word) shell (when (comint-check-proc (current-buffer)) (current-buffer)))))
     (if (eq result nil)
         (message "Can't complete")
+      (setq result (replace-regexp-in-string comint-prompt-regexp "" result))
       (let ((comint-completion-addsuffix nil)
             (completions
              (sort
@@ -530,7 +495,7 @@ Bug: if no IPython-shell is running, fails first time due to header returned, wh
              (insert completion))
             (t
              (message "Making completion list...")
-             (with-output-to-temp-buffer "*Python Completions*"
+             (with-output-to-temp-buffer " *Python Completions*"
                (display-completion-list (all-completions pattern completion-table)))
              (message "Making completion list...%s" "done"))))
     completion))
@@ -604,11 +569,9 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
              nil)
             (t
              (when py-verbose-p (message "Making completion list..."))
-             (with-output-to-temp-buffer "*Python Completions*"
+             (with-output-to-temp-buffer " *Python Completions*"
                (display-completion-list (all-completions pattern completion-table)))
-             nil
-             ;; (message "Making completion list...%s" "done")
-             )))
+             nil)))
     ;; minibuffer.el requires that
     ;; (list beg end)
     ))

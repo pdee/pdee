@@ -659,9 +659,10 @@ print u'\\xA9'
   (end-of-line)
   (py-execute-region-switch (line-beginning-position) (point))
   (sit-for 0.2)
-  (when (looking-back comint-prompt-regexp)
-    (goto-char (1- (match-beginning 0))))
-  (sit-for 0.1)
+  (unless (looking-at "©")
+    (when (looking-back comint-prompt-regexp)
+      (goto-char (1- (match-beginning 0))))
+    (sit-for 0.1))
   (assert (or (looking-back "©")(looking-at "©")) nil "UnicodeEncodeError-lp:550661-test failed"))
 
 (defun indentation-of-continuation-lines-lp:691185-test (&optional arg)

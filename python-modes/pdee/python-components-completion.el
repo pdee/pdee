@@ -173,25 +173,6 @@ module-qualified names."
        (format "execfile(%S)" file-name)))
     (message "%s loaded" file-name)))
 
-(defun py-set-proc ()
-  "Set the default value of `python-buffer' to correspond to this buffer.
-
-If the current buffer has a local value of `python-buffer', set the
-default (global) value to that.  The associated Python process is
-the one that gets input from \\[py-send-region] et al when used
-in a buffer that doesn't have a local value of `python-buffer'."
-  (interactive)
-  (if (local-variable-p 'python-buffer)
-      (setq-default python-buffer python-buffer)
-    (error "No local value of `python-buffer'")))
-
-;;; Context-sensitive help.
-
-(defvar view-return-to-alist)
-
-(defvar python-imports)			; forward declaration
-(make-variable-buffer-local 'python-imports)
-
 ;; (defun py-find-imports ()
 ;;   "Find top-level imports, updating `python-imports'."
 ;;   (interactive)

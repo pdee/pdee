@@ -180,28 +180,28 @@ to \"^python-\"."
 	       (cdr pair))))
    (buffer-local-variables from-buffer)))
 
-(defun python-shell-send-setup-code ()
-  "Send all setup code for shell.
-This function takes the list of setup code to send from the
-`python-shell-setup-codes' list."
-  (let ((process (get-buffer-process (current-buffer))))
-    ;; (accept-process-output process python-shell-send-setup-max-wait)
-    (accept-process-output process 1)
-    (dolist (code python-shell-setup-codes)
-      (when code
-        ;; (when py-verbose-p (message (format msg code)))
-        (python-shell-send-string-no-output
-         (symbol-value code) process)))))
+;; (defun python-shell-send-setup-code ()
+;;   "Send all setup code for shell.
+;; This function takes the list of setup code to send from the
+;; `python-shell-setup-codes' list."
+;;   (let ((process (get-buffer-process (current-buffer))))
+;;     ;; (accept-process-output process python-shell-send-setup-max-wait)
+;;     (accept-process-output process 1)
+;;     (dolist (code python-shell-setup-codes)
+;;       (when code
+;;         ;; (when py-verbose-p (message (format msg code)))
+;;         (python-shell-send-string-no-output
+;;          (symbol-value code) process)))))
 
-(defun py-shell-send-setup-code (code)
+(defun py-shell-send-setup-code (process)
   "Send all setup code for shell.
 This function takes the list of setup code to send from the
 `python-shell-setup-codes' list."
-  (let ((process (get-buffer-process (current-buffer))))
-    ;; (accept-process-output process python-shell-send-setup-max-wait)
-    (accept-process-output process 1)
+  (accept-process-output process 1)
+  (dolist (code python-shell-setup-codes)
     (python-shell-send-string-no-output
-     code process)))
+     (symbol-value code) process)
+    (sit-for 0.1)))
 
 (defun python-shell-get-process-name (dedicated)
   "Calculate the appropiate process name for inferior Python process.

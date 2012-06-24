@@ -380,14 +380,17 @@ Needed when file-path names are contructed from maybe numbered buffer names like
          (switch-to-buffer (current-buffer)))))
 
 (defun py-report-executable (py-buffer-name)
-  (downcase (replace-regexp-in-string
-             "<\\([0-9]+\\)>" ""
-             (replace-regexp-in-string
-              "\*" ""
-              (if
-                  (string-match " " py-buffer-name)
-                  (substring py-buffer-name (1+ (string-match " " py-buffer-name)))
-                py-buffer-name)))))
+  (let ((erg (downcase (replace-regexp-in-string
+                        "<\\([0-9]+\\)>" ""
+                        (replace-regexp-in-string
+                         "\*" ""
+                         (if
+                             (string-match " " py-buffer-name)
+                             (substring py-buffer-name (1+ (string-match " " py-buffer-name)))
+                           py-buffer-name))))))
+    (when (string-match "-" erg)
+      (setq erg (substring erg 0 (string-match "-" erg))))
+    erg))
 
 (defun py-shell (&optional argprompt dedicated pyshellname switch sepchar py-buffer-name done)
   "Start an interactive Python interpreter in another window.
@@ -403,7 +406,7 @@ Optional symbol SWITCH ('switch/'noswitch) precedes `py-switch-buffers-on-execut
 When SEPCHAR is given, `py-shell' must not detect the file-separator.
 BUFFER allows specifying a name, the Python process is connected to
 When DONE is `t', `py-shell-manage-windows' is omitted
-"
+ "
   (interactive "P")
   (cond ((or argprompt dedicated pyshellname switch sepchar py-buffer-name done)
          (let* ((sepchar (or sepchar (char-to-string py-separator-char)))
@@ -458,18 +461,61 @@ When DONE is `t', `py-shell-manage-windows' is omitted
                 (py-buffer-name (or py-buffer-name py-buffer-name-prepare))
                 (executable (cond (pyshellname)
                                   (py-buffer-name
-                                   (py-report-executable py-buffer-name)))))
+                                   (py-report-executable py-buffer-name))))
+                proc)
            ;; done by python-mode resp. inferior-python-mode
            ;; (py-set-shell-completion-environment executable)
            (if (comint-check-proc py-buffer-name)
                (set-buffer py-buffer-name)
              ;; comint
-             (set-buffer (apply 'make-comint-in-buffer executable py-buffer-name executable nil args)))
-           (setq python-buffer (current-buffer))
-           (inferior-python-mode)
-           (sit-for 0.1)
-           (when py-fontify-shell-buffer-p
-             (font-lock-unfontify-region (point-min) (line-beginning-position)))
+             (set-buffer (apply 'make-comint-in-buffer executable py-buffer-name executable nil args))
+             (set (make-local-variable 'comint-prompt-regexp)
+                  (concat "\\("
+                          (mapconcat 'identity
+                                     (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
+                                     "\\|")
+                          "\\)"))
+             (set (make-local-variable 'comint-input-filter) 'py-history-input-filter)
+
+             (set (make-local-variable 'comint-use-prompt-regexp) t)
+             (set (make-local-variable 'compilation-error-regexp-alist)
+                  python-compilation-regexp-alist)
+             (setq completion-at-point-functions nil)
+             ;; (py-set-shell-complete-function)
+             (if py-complete-function
+                 (add-hook 'completion-at-point-functions
+                           py-complete-function nil 'local)
+               (add-hook 'completion-at-point-functions
+                         'py-shell-complete nil 'local))
+             (add-hook 'comint-preoutput-filter-functions #'python-preoutput-filter
+                       nil t)
+             (if py-fontify-shell-buffer-p
+                 (progn
+                   (set (make-local-variable 'font-lock-defaults)
+                        '(python-font-lock-keywords nil nil nil nil
+                                                    (font-lock-syntactic-keywords
+                                                     . python-font-lock-syntactic-keywords)))
+                   (set (make-local-variable 'comment-start) "# ")
+                   (set (make-local-variable 'comment-start-skip) "^[ \t]*#+ *")
+                   (set (make-local-variable 'comment-column) 40)
+                   (set (make-local-variable 'comment-indent-function) #'py-comment-indent-function)
+                   (set (make-local-variable 'indent-region-function) 'py-indent-region)
+                   (set (make-local-variable 'indent-line-function) 'py-indent-line)
+                   (font-lock-fontify-buffer))
+               (font-lock-unfontify-region (point-min) (line-beginning-position)))
+             (setq python-buffer (current-buffer))
+             ;; (accept-process-output (get-buffer-process python-buffer) 5)
+             ;; (inferior-python-mode)
+)
+
+           (setq proc (get-buffer-process (current-buffer)))
+           (goto-char (point-max))
+           (move-marker (process-mark proc) (point-max))
+           ;; (funcall (process-filter proc) proc "")
+           (py-shell-send-setup-code proc)
+           ;; (accept-process-output proc 1)
+           (compilation-shell-minor-mode 1)
+           ;; (sit-for 0.1)
            (setq comint-input-sender 'py-shell-simple-send)
            (setq comint-input-ring-file-name
                  (cond ((string-match "[iI][pP]ython[[:alnum:]]*$" py-buffer-name)
@@ -493,10 +539,8 @@ When DONE is `t', `py-shell-manage-windows' is omitted
            (set-syntax-table python-mode-syntax-table)
            (ansi-color-for-comint-mode-on)
            (use-local-map py-shell-map)
-           ;; (use-local-map inferior-python-mode-map)
            ;; (add-hook 'py-shell-hook 'py-dirstack-hook)
            (when py-shell-hook (run-hooks 'py-shell-hook))
-           (goto-char (point-max))
            (if (and (interactive-p) py-shell-switch-buffers-on-execute-p)
                (pop-to-buffer py-buffer-name)
              (unless done (py-shell-manage-windows switch py-split-windows-on-execute-p py-switch-buffers-on-execute-p oldbuf py-buffer-name)))

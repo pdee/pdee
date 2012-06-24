@@ -116,6 +116,7 @@ Might not be TRT when a lot of output arrives "
 
   :type 'boolean
   :group 'python-mode)
+(make-variable-buffer-local 'py-fontify-shell-buffer-p)
 
 (defcustom py-modeline-display-full-path-p nil
   "If the full PATH/TO/PYTHON should be displayed in shell modeline.
@@ -1623,7 +1624,7 @@ Returns the specified Python resp. Jython shell command name. "
         (dolist (ele erg)
           (when (string-match "[bijp]+ython" ele)
             (setq res ele)))))
-    (when (interactive-p) (message "%s" res))
+    (when (and py-verbose-p (interactive-p)) (message "%s" res))
     res))
 
 (defun py-choose-shell-by-import ()
@@ -4481,20 +4482,20 @@ local value.")
 
 (defvar python--prompt-regexp nil)
 
-(defun python--set-prompt-regexp ()
-  (let ((prompt (cdr-safe (or (assoc python-python-command
-                                     python-shell-prompt-alist)
-                              (assq t python-shell-prompt-alist))))
-        (cprompt (cdr-safe (or (assoc python-python-command
-                                      python-shell-continuation-prompt-alist)
-                               (assq t python-shell-continuation-prompt-alist)))))
-    (set (make-local-variable 'comint-prompt-regexp)
-         (concat "\\("
-                 (mapconcat 'identity
-                            (delq nil (list prompt cprompt "^([Pp]db) "))
-                            "\\|")
-                 "\\)"))
-    (set (make-local-variable 'python--prompt-regexp) prompt)))
+;; (defun python--set-prompt-regexp ()
+;;   (let ((prompt (cdr-safe (or (assoc python-python-command
+;;                                      python-shell-prompt-alist)
+;;                               (assq t python-shell-prompt-alist))))
+;;         (cprompt (cdr-safe (or (assoc python-python-command
+;;                                       python-shell-continuation-prompt-alist)
+;;                                (assq t python-shell-continuation-prompt-alist)))))
+;;     (set (make-local-variable 'comint-prompt-regexp)
+;;          (concat "\\("
+;;                  (mapconcat 'identity
+;;                             (delq nil (list prompt cprompt "^([Pp]db) "))
+;;                             "\\|")
+;;                  "\\)"))
+;;     (set (make-local-variable 'python--prompt-regexp) prompt)))
 
 (defun py-kill-emacs-hook ()
   "Delete files in `py-file-queue'.
@@ -5527,39 +5528,40 @@ For running multiple processes in multiple buffers, see `run-python' and
 \\{inferior-python-mode-map}"
   :group 'python-mode
   (setq mode-line-process '(":%s"))
-  (when py-fontify-shell-buffer-p
-    (set (make-local-variable 'font-lock-defaults)
-         '(python-font-lock-keywords nil nil nil nil
-                                     (font-lock-syntactic-keywords
-                                      . python-font-lock-syntactic-keywords)))
-    (set (make-local-variable 'comment-start) "# ")
-    (set (make-local-variable 'comment-start-skip) "^[ \t]*#+ *")
-    (set (make-local-variable 'comment-column) 40)
-    (set (make-local-variable 'comment-indent-function) #'py-comment-indent-function)
-    (set (make-local-variable 'indent-region-function) 'py-indent-region)
-    (set (make-local-variable 'indent-line-function) 'py-indent-line))
-  (set (make-local-variable 'comint-input-filter) 'py-history-input-filter)
-  (set (make-local-variable 'comint-prompt-regexp)
-       (concat "\\("
-               (mapconcat 'identity
-                          (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
-                          "\\|")
-               "\\)"))
-  (set (make-local-variable 'comint-use-prompt-regexp) t)
-  ;; (python--set-prompt-regexp)
-  (set (make-local-variable 'compilation-error-regexp-alist)
-       python-compilation-regexp-alist)
-  (setq completion-at-point-functions nil)
-  ;; (py-set-shell-complete-function)
-  (add-hook 'completion-at-point-functions
-            'py-shell-complete nil 'local)
-  (python-shell-send-string-no-output python-shell-completion-setup-code (get-process (get-buffer-process (current-buffer))))
-  (python-shell-send-string-no-output python-ffap-setup-code (get-process (get-buffer-process (current-buffer))))
-  (python-shell-send-string-no-output python-eldoc-setup-code (get-process (get-buffer-process (current-buffer))))
-  (add-hook 'comint-preoutput-filter-functions #'python-preoutput-filter
-            nil t)
-  ;; (add-hook 'inferior-python-mode-hook 'py-shell-hook)
-  (compilation-shell-minor-mode 1))
+  ;; (when py-fontify-shell-buffer-p
+  ;;   (set (make-local-variable 'font-lock-defaults)
+  ;;        '(python-font-lock-keywords nil nil nil nil
+  ;;                                    (font-lock-syntactic-keywords
+  ;;                                     . python-font-lock-syntactic-keywords)))
+  ;;   (set (make-local-variable 'comment-start) "# ")
+  ;;   (set (make-local-variable 'comment-start-skip) "^[ \t]*#+ *")
+  ;;   (set (make-local-variable 'comment-column) 40)
+  ;;   (set (make-local-variable 'comment-indent-function) #'py-comment-indent-function)
+  ;;   (set (make-local-variable 'indent-region-function) 'py-indent-region)
+  ;;   (set (make-local-variable 'indent-line-function) 'py-indent-line))
+  ;; (set (make-local-variable 'comint-input-filter) 'py-history-input-filter)
+  ;; (set (make-local-variable 'comint-prompt-regexp)
+  ;;      (concat "\\("
+  ;;              (mapconcat 'identity
+  ;;                         (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
+  ;;                         "\\|")
+  ;;              "\\)"))
+  ;; (set (make-local-variable 'comint-use-prompt-regexp) t)
+  ;; ;; (python--set-prompt-regexp)
+  ;; (set (make-local-variable 'compilation-error-regexp-alist)
+  ;;      python-compilation-regexp-alist)
+  ;; (setq completion-at-point-functions nil)
+  ;; ;; (py-set-shell-complete-function)
+  ;; (add-hook 'completion-at-point-functions
+  ;;           'py-shell-complete nil 'local)
+  ;; (python-shell-send-string-no-output python-shell-completion-setup-code (get-process (get-buffer-process (current-buffer))))
+  ;; (python-shell-send-string-no-output python-ffap-setup-code (get-process (get-buffer-process (current-buffer))))
+  ;; (python-shell-send-string-no-output python-eldoc-setup-code (get-process (get-buffer-process (current-buffer))))
+  ;; (add-hook 'comint-preoutput-filter-functions #'python-preoutput-filter
+  ;;           nil t)
+  ;; ;; (add-hook 'inferior-python-mode-hook 'py-shell-hook)
+  ;; (compilation-shell-minor-mode 1)
+  )
 
 ;;;
 

@@ -22,11 +22,11 @@
 ;;
 
 ;;; Code:
-(require 'python-components-macros) 
+(require 'python-components-macros)
 
 (defun py-output-buffer-filter (&optional beg end)
   "Clear output buffer from py-shell-input prompt etc. "
-  (interactive "*") 
+  (interactive "*")
   (let ((beg (cond (beg)
                    ((region-active-p)
                     (region-beginning))
@@ -39,18 +39,20 @@
     (while (re-search-forward (concat "\\(" py-shell-input-prompt-1-regexp "\\|" py-shell-input-prompt-2-regexp "\\|" "^In \\[[0-9]+\\]: *" "\\)") nil (quote move) 1)
       (replace-match ""))
     (goto-char beg)))
-                         
+
 (defun py-send-string (string)
   "Evaluate STRING in inferior Python process."
   (interactive "sPython command: ")
-  (comint-send-string (py-proc) string)
-  (unless (string-match "\n\\'" string)
-    ;; Make sure the text is properly LF-terminated.
-    (comint-send-string (py-proc) "\n"))
-  (when (string-match "\n[ \t].*\n?\\'" string)
-    ;; If the string contains a final indented line, add a second newline so
-    ;; as to make sure we terminate the multiline instruction.
-    (comint-send-string (py-proc) "\n")))
+  (let ((proc (py-proc)))
+    (accept-process-output)
+    (comint-send-string proc string)
+    (unless (string-match "\n\\'" string)
+      ;; Make sure the text is properly LF-terminated.
+      (comint-send-string proc "\n"))
+    (when (string-match "\n[ \t].*\n?\\'" string)
+      ;; If the string contains a final indented line, add a second newline so
+      ;; as to make sure we terminate the multiline instruction.
+      (comint-send-string proc "\n"))))
 
 (provide 'python-components-send)
 ;;; python-components-send.el ends here

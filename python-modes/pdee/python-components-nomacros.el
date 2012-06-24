@@ -118,18 +118,6 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
         (count-lines (point-min) (point-max))
       (count-matches "[\n\C-m]" (point-min) (point-max)))))
 
-;; (defun py-in-string-or-comment-p ()
-;;   "Returns beginning position if inside a string or comment, nil otherwise. "
-;;   (interactive)
-;;   (let* ((erg (nth 8 (if (featurep 'xemacs)
-;;                          (parse-partial-sexp (point-min) (point))
-;;                        (syntax-ppss))))
-;;          (la (unless erg (when (or (looking-at "\"")(looking-at comment-start)(looking-at comment-start-skip))
-;;                            (match-beginning 0)))))
-;;     (setq erg (or erg la))
-;;     (when (interactive-p) (message "%s" erg))
-;;     erg))  a4643 (#o11043, #x1223, ?ሣ)
-
 (defun py-in-string-or-comment-p ()
   "Returns beginning position if inside a string or comment, nil otherwise. "
   (or (nth 8 (syntax-ppss))

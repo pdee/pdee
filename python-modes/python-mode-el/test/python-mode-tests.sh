@@ -389,7 +389,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-switch-to-python) nil \"py-switch-to-python not detected as command\")" \
 -eval "(assert (commandp 'py-send-region-and-go) nil \"py-send-region-and-go not detected as command\")" \
 -eval "(assert (commandp 'py-load-file) nil \"py-load-file not detected as command\")" \
--eval "(assert (commandp 'py-set-proc) nil \"py-set-proc not detected as command\")" \
 -eval "(assert (commandp 'py-shell-complete) nil \"py-shell-complete not detected as command\")" \
 -eval "(assert (commandp 'ipython-complete) nil \"ipython-complete not detected as command\")" \
 -eval "(assert (commandp 'py-pychecker-run) nil \"py-pychecker-run not detected as command\")" \
@@ -920,8 +919,6 @@ est \
 --funcall python-shell-complete-test \
 --funcall usr-bin-python-shell-complete-test \
 --funcall usr-bin-python2.7-shell-complete-test \
---funcall usr-bin-python3-shell-complete-test \
---funcall usr-bin-python3.1-shell-complete-test \
 --funcall ipython-shell-complete-test \
 --funcall usr-bin-ipython-shell-complete-test \
 \
@@ -942,6 +939,9 @@ est \
 --funcall not-that-useful-completion-lp:1003580-test \
 --funcall py-execute-region-python3-noswitch-test \
 --funcall completion-at-gentoo-lp-1008842-test \
+--funcall usr-bin-python3-shell-complete-test \
+--funcall usr-bin-python3.1-shell-complete-test \
+
 else
 
 cat    <<EOF
