@@ -725,7 +725,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall python-mode-hangs-lp:801780-test \
 --funcall stops-backslashed-line-lp:802504-test \
 --funcall stops-backslashed-line-lp:802504-test2 \
---funcall python-mode-slow-lp:803275-test \
 --funcall py-variable-name-face-lp:798538-test \
 --funcall colon-causes-error-lp:818665-test \
 --funcall if-indentation-lp:818720-test \
@@ -733,7 +732,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-indent-line-lp:822532-test \
 --funcall indent-honor-arglist-whitespaces-lp:822540-test \
 --funcall comments-indent-honor-setting-lp:824427-test \
---funcall infinite-loop-after-tqs-lp:826044-test \
 --funcall closing-list-lp:826144-test \
 --funcall py-electric-comment-add-space-lp:828398-test \
 --funcall py-electric-comment-add-space-t-lp:828398-test \
@@ -923,8 +921,6 @@ est \
 --funcall usr-bin-ipython-shell-complete-test \
 \
 --funcall py-ipython-complete-lp:927136-test \
---funcall py-end-of-print-statement-test \
---funcall py-describe-symbol-fails-on-modules-lp:919719-test \
 --funcall indent-region-lp:997958-test \
 --funcall py-shell-invoking-python-lp:835151-test \
 --funcall py-menu-pyshell-test \
@@ -936,11 +932,15 @@ est \
 --funcall tqs-list-error-test \
 --funcall UnicodeEncodeError-python3-test \
 --funcall dict-error-test \
+--funcall python-mode-slow-lp:803275-test \
+--funcall infinite-loop-after-tqs-lp:826044-test \
 --funcall not-that-useful-completion-lp:1003580-test \
 --funcall py-execute-region-python3-noswitch-test \
 --funcall completion-at-gentoo-lp-1008842-test \
 --funcall usr-bin-python3-shell-complete-test \
 --funcall usr-bin-python3.1-shell-complete-test \
+--funcall py-end-of-print-statement-test \
+--funcall py-describe-symbol-fails-on-modules-lp:919719-test \
 
 else
 

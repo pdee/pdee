@@ -1498,6 +1498,13 @@ Start an Jython interpreter.
 Optional C-u prompts for options to pass to the Jython interpreter. See `py-python-command-args'.
    Optional DEDICATED SWITCH are provided for use from programs. 
 
+bpython
+-------
+Start an BPython interpreter.
+
+Optional C-u prompts for options to pass to the Jython interpreter. See `py-python-command-args'.
+   Optional DEDICATED SWITCH are provided for use from programs. 
+
 python3\.2
 ----------
 Start an Python3.2 interpreter.
@@ -2442,15 +2449,6 @@ If the file has extension `.py' import or reload it as a module.
 Treating it as a module keeps the global namespace clean, provides
 function location information for debugging, and supports users of
 module-qualified names.
-
-py-set-proc
------------
-Set the default value of `python-buffer' to correspond to this buffer.
-
-If the current buffer has a local value of `python-buffer', set the
-default (global) value to that.  The associated Python process is
-the one that gets input from M-x py-send-region et al when used
-in a buffer that doesn't have a local value of `python-buffer'.
 
 py-completion-at-point
 ----------------------
