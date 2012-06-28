@@ -200,7 +200,7 @@ Default is nil. "
   :type 'boolean
   :group 'python-mode)
 
-(defcustom ipython-complete-use-separate-shell-p t
+(defcustom ipython-complete-use-separate-shell-p nil
 
   "If `ipython-complete' should use a separate shell. Thus prompt-counter is not incremented by completion. "
   :type 'boolean :group 'python-mode)
