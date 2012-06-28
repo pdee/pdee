@@ -45,6 +45,8 @@ Optional \\[universal-argument] prompts for options to pass to the Python interp
   (interactive "P")
   (py-shell argprompt dedicated "python" switch))
 
+(defalias 'ipyhton 'ipython)
+(defalias 'iypthon 'ipython)
 (defun ipython (&optional argprompt dedicated switch)
   "Start an IPython interpreter.
 
@@ -107,7 +109,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python3.2 int
 
 Optional \\[universal-argument] prompts for options to pass to the Python interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt t "python" switch))
 
 (defun ipython-dedicated (&optional argprompt switch)
@@ -115,7 +116,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python interp
 
 Optional \\[universal-argument] prompts for options to pass to the IPython interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt t "ipython" switch))
 
 (defun python3-dedicated (&optional argprompt switch)
@@ -123,7 +123,6 @@ Optional \\[universal-argument] prompts for options to pass to the IPython inter
 
 Optional \\[universal-argument] prompts for options to pass to the Python3 interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt t "python3" switch))
 
 (defun python2-dedicated (&optional argprompt switch)
@@ -131,7 +130,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python3 inter
 
 Optional \\[universal-argument] prompts for options to pass to the Python2 interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt t "python2" switch))
 
 (defun python2.7-dedicated (&optional argprompt switch)
@@ -139,7 +137,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python2 inter
 
 Optional \\[universal-argument] prompts for options to pass to the Python2.7 interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt t "python2.7" switch))
 
 (defun jython-dedicated (&optional argprompt switch)
@@ -147,7 +144,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python2.7 int
 
 Optional \\[universal-argument] prompts for options to pass to the Jython interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt t "jython" switch))
 
 (defun python3.2-dedicated (&optional argprompt switch)
@@ -155,7 +151,6 @@ Optional \\[universal-argument] prompts for options to pass to the Jython interp
 
 Optional \\[universal-argument] prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt t "python3.2" switch))
 
 ;; switch
@@ -164,7 +159,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python3.2 int
 
 Optional \\[universal-argument] prompts for options to pass to the Python interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt dedicated "python" 'switch))
 
 (defun ipython-switch (&optional argprompt dedicated)
@@ -172,7 +166,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python interp
 
 Optional \\[universal-argument] prompts for options to pass to the IPython interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt dedicated "ipython" 'switch))
 
 (defun python3-switch (&optional argprompt dedicated)
@@ -180,7 +173,6 @@ Optional \\[universal-argument] prompts for options to pass to the IPython inter
 
 Optional \\[universal-argument] prompts for options to pass to the Python3 interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt dedicated "python3" 'switch))
 
 (defun python2-switch (&optional argprompt dedicated)
@@ -188,7 +180,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python3 inter
 
 Optional \\[universal-argument] prompts for options to pass to the Python2 interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt dedicated "python2" 'switch))
 
 (defun python2.7-switch (&optional argprompt dedicated)
@@ -196,7 +187,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python2 inter
 
 Optional \\[universal-argument] prompts for options to pass to the Python2.7 interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt dedicated "python2.7" 'switch))
 
 (defun jython-switch (&optional argprompt dedicated)
@@ -204,7 +194,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python2.7 int
 
 Optional \\[universal-argument] prompts for options to pass to the Jython interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt dedicated "jython" 'switch))
 
 (defun python3.2-switch (&optional argprompt dedicated)
@@ -212,7 +201,6 @@ Optional \\[universal-argument] prompts for options to pass to the Jython interp
 
 Optional \\[universal-argument] prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt dedicated "python3.2" 'switch))
 
 (defun python-no-switch (&optional argprompt dedicated)
@@ -220,7 +208,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python3.2 int
 
 Optional \\[universal-argument] prompts for options to pass to the Python interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt dedicated "python" 'noswitch))
 
 (defun ipython-no-switch (&optional argprompt dedicated)
@@ -228,7 +215,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python interp
 
 Optional \\[universal-argument] prompts for options to pass to the IPython interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt dedicated "ipython" 'noswitch))
 
 (defun python3-no-switch (&optional argprompt dedicated)
@@ -236,7 +222,6 @@ Optional \\[universal-argument] prompts for options to pass to the IPython inter
 
 Optional \\[universal-argument] prompts for options to pass to the Python3 interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt dedicated "python3" 'noswitch))
 
 (defun python2-no-switch (&optional argprompt dedicated)
@@ -244,7 +229,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python3 inter
 
 Optional \\[universal-argument] prompts for options to pass to the Python2 interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt dedicated "python2" 'noswitch))
 
 (defun python2.7-no-switch (&optional argprompt dedicated)
@@ -252,7 +236,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python2 inter
 
 Optional \\[universal-argument] prompts for options to pass to the Python2.7 interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt dedicated "python2.7" 'noswitch))
 
 (defun jython-no-switch (&optional argprompt dedicated)
@@ -260,7 +243,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python2.7 int
 
 Optional \\[universal-argument] prompts for options to pass to the Jython interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt dedicated "jython" 'noswitch))
 
 (defun python3.2-no-switch (&optional argprompt dedicated)
@@ -268,7 +250,6 @@ Optional \\[universal-argument] prompts for options to pass to the Jython interp
 
 Optional \\[universal-argument] prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt dedicated "python3.2" 'noswitch))
 
 (defalias 'python-dedicated-switch 'python-switch-dedicated)
@@ -277,7 +258,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python3.2 int
 
 Optional \\[universal-argument] prompts for options to pass to the Python interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt t "python" 'switch))
 
 (defalias 'ipython-dedicated-switch 'ipython-switch-dedicated)
@@ -286,7 +266,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python interp
 
 Optional \\[universal-argument] prompts for options to pass to the IPython interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt t "ipython" 'switch))
 
 (defalias 'python3-dedicated-switch 'python3-switch-dedicated)
@@ -295,7 +274,6 @@ Optional \\[universal-argument] prompts for options to pass to the IPython inter
 
 Optional \\[universal-argument] prompts for options to pass to the Python3 interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt t "python3" 'switch))
 
 (defalias 'python2-dedicated-switch 'python2-switch-dedicated)
@@ -304,7 +282,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python3 inter
 
 Optional \\[universal-argument] prompts for options to pass to the Python2 interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt t "python2" 'switch))
 
 (defalias 'python2.7-dedicated-switch 'python2.7-switch-dedicated)
@@ -313,7 +290,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python2 inter
 
 Optional \\[universal-argument] prompts for options to pass to the Python2.7 interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt t "python2.7" 'switch))
 
 (defalias 'jython-dedicated-switch 'jython-switch-dedicated)
@@ -322,7 +298,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python2.7 int
 
 Optional \\[universal-argument] prompts for options to pass to the Jython interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt t "jython" 'switch))
 
 (defalias 'python3.2-dedicated-switch 'python3.2-switch-dedicated)
@@ -331,7 +306,6 @@ Optional \\[universal-argument] prompts for options to pass to the Jython interp
 
 Optional \\[universal-argument] prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt t "python3.2" 'switch))
 
 (provide 'python-components-named-shells)

@@ -2022,7 +2022,6 @@ With optional \\\\[universal-argument] user is prompted
 for options to pass to the DOCNAME interpreter. \"
   (interactive \"P\")
   (let\* ((py-shell-name \"FULLNAME\"))
-    (py-set-shell-completion-environment)
     (py-shell argprompt)
     (when (interactive-p) (switch-to-buffer (current-buffer))
           (goto-char (point-max)))))
@@ -2036,7 +2035,6 @@ With optional \\\\[universal-argument] user is prompted
 for options to pass to the DOCNAME interpreter. \"
   (interactive \"P\")
   (let\* ((py-shell-name \"FULLNAME\"))
-    (py-set-shell-completion-environment)
     (py-shell argprompt)
     (when (interactive-p) (switch-to-buffer (current-buffer))
           (goto-char (point-max)))))
@@ -3626,18 +3624,16 @@ With optional \\[universal-argument] an indent with length `py-indent-offset' is
 (defvar py-indent-line-indent nil
   "Used internal by `py-indent-line'")
 
-(defun py-indent-line-intern ()
-  ;; (when (prefix-numeric-value arg) (message "%s" (prefix-numeric-value arg)))
-  (unless (eq this-command last-command)(setq py-indent-line-indent (py-compute-indentation)))
+(defun py-indent-line-intern (need cui)
   (if py-tab-indent
-      (cond ((eq py-indent-line-indent cui)
+      (cond ((eq need cui)
              (when (eq this-command last-command)
                (beginning-of-line)
                (delete-horizontal-space)
                (if (<= (line-beginning-position) (+ (point) (- col cui)))
                    (forward-char (- col cui))
                  (beginning-of-line))))
-            ((< cui py-indent-line-indent)
+            ((< cui need)
              (if (eq this-command last-command)
                  (progn
                    (beginning-of-line)
@@ -3646,11 +3642,11 @@ With optional \\[universal-argument] an indent with length `py-indent-offset' is
                    (forward-char (- col cui)))
                (beginning-of-line)
                (delete-horizontal-space)
-               (indent-to py-indent-line-indent)
+               (indent-to need)
                (forward-char (- col cui))))
             (t (beginning-of-line)
                (delete-horizontal-space)
-               (indent-to py-indent-line-indent)
+               (indent-to need)
                (if (<= (line-beginning-position) (+ (point) (- col cui)))
                    (forward-char (- col cui))
                  (beginning-of-line))))
@@ -3671,20 +3667,17 @@ Returns current indentation "
   (interactive "P")
   (let ((cui (current-indentation))
         (col (current-column))
-        (psi py-smart-indentation))
-    (if (interactive-p)
-        (progn
-          (setq py-indent-line-indent (py-compute-indentation))
-          (cond ((eq 4 (prefix-numeric-value arg))
-                 (beginning-of-line)
-                 (delete-horizontal-space)
-                 (indent-to (+ py-indent-line-indent py-indent-offset)))
-                ((not (eq 1 (prefix-numeric-value arg)))
-                 (py-smart-indentation-off)
-                 (py-indent-line-intern)
-                 (setq py-smart-indentation psi))
-                (t (indent-to py-indent-line-indent))))
-      (py-indent-line-intern)))
+        (psi py-smart-indentation)
+        (need (py-compute-indentation)))
+    (cond ((eq 4 (prefix-numeric-value arg))
+           (beginning-of-line)
+           (delete-horizontal-space)
+           (indent-to (+ need py-indent-offset)))
+          ((not (eq 1 (prefix-numeric-value arg)))
+           (py-smart-indentation-off)
+           (py-indent-line-intern)
+           (setq py-smart-indentation psi))
+          (t (py-indent-line-intern need cui))))
   (when (and (interactive-p) py-verbose-p)(message "%s" (current-indentation)))
   (current-indentation))
 
@@ -7393,25 +7386,6 @@ ipython0.11-completion-command-string also covers version 0.12")
   (setq shell-dirtrackp t)
   (add-hook 'comint-input-filter-functions 'shell-directory-tracker nil t))
 
-(defun py-set-shell-completion-environment (&optional pyshellname)
-  "Sets `...-completion-command-string' and `py-complete-function'. "
-  (interactive)
-  (let ((pyshellname (or pyshellname py-shell-name))
-        ipython-version)
-    (local-unset-key [tab])
-    (cond ((string-match "ipython" pyshellname)
-           (setq ipython-version (string-to-number (substring (shell-command-to-string (concat py-shell-name " -V")) 2 -1)))
-           (setq ipython-completion-command-string (if (< ipython-version 11) ipython0.10-completion-command-string ipython0.11-completion-command-string))
-           (define-key inferior-python-mode-map [tab] ipython-complete-function)
-           (define-key python-shell-map [tab] ipython-complete-function))
-          ((string-match "python3" pyshellname)
-           (add-hook 'completion-at-point-functions
-                     'py-python3-shell-complete nil 'local)
-           (define-key inferior-python-mode-map [tab]
-             'py-python3-shell-complete))
-          (t
-           (define-key inferior-python-mode-map [tab] 'py-shell-complete)))))
-
 (defun py-set-ipython-completion-command-string (&optional pyshellname)
   "Set and return `ipython-completion-command-string'. "
   (interactive)
@@ -7629,11 +7603,11 @@ When DONE is `t', `py-shell-manage-windows' is omitted
              python-compilation-regexp-alist)
         (setq completion-at-point-functions nil)
         ;; (py-set-shell-complete-function)
-        (if py-complete-function
-            (add-hook 'completion-at-point-functions
-                      py-complete-function nil 'local)
-          (add-hook 'completion-at-point-functions
-                    'py-shell-complete nil 'local))
+        ;; (if py-complete-function
+        ;;     (add-hook 'completion-at-point-functions
+        ;;               py-complete-function nil 'local)
+        ;;   (add-hook 'completion-at-point-functions
+        ;;             'py-shell-complete nil 'local))
         (add-hook 'comint-preoutput-filter-functions #'python-preoutput-filter
                   nil t)
         (if py-fontify-shell-buffer-p
@@ -7705,6 +7679,8 @@ Optional \\[universal-argument] prompts for options to pass to the Python interp
   (interactive "P")
   (py-shell argprompt dedicated "python" switch))
 
+(defalias 'ipyhton 'ipython)
+(defalias 'iypthon 'ipython)
 (defun ipython (&optional argprompt dedicated switch)
   "Start an IPython interpreter.
 
@@ -7767,7 +7743,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python3.2 int
 
 Optional \\[universal-argument] prompts for options to pass to the Python interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt t "python" switch))
 
 (defun ipython-dedicated (&optional argprompt switch)
@@ -7775,7 +7750,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python interp
 
 Optional \\[universal-argument] prompts for options to pass to the IPython interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt t "ipython" switch))
 
 (defun python3-dedicated (&optional argprompt switch)
@@ -7783,7 +7757,6 @@ Optional \\[universal-argument] prompts for options to pass to the IPython inter
 
 Optional \\[universal-argument] prompts for options to pass to the Python3 interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt t "python3" switch))
 
 (defun python2-dedicated (&optional argprompt switch)
@@ -7791,7 +7764,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python3 inter
 
 Optional \\[universal-argument] prompts for options to pass to the Python2 interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt t "python2" switch))
 
 (defun python2.7-dedicated (&optional argprompt switch)
@@ -7799,7 +7771,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python2 inter
 
 Optional \\[universal-argument] prompts for options to pass to the Python2.7 interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt t "python2.7" switch))
 
 (defun jython-dedicated (&optional argprompt switch)
@@ -7807,7 +7778,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python2.7 int
 
 Optional \\[universal-argument] prompts for options to pass to the Jython interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt t "jython" switch))
 
 (defun python3.2-dedicated (&optional argprompt switch)
@@ -7815,7 +7785,6 @@ Optional \\[universal-argument] prompts for options to pass to the Jython interp
 
 Optional \\[universal-argument] prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt t "python3.2" switch))
 
 ;; switch
@@ -7824,7 +7793,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python3.2 int
 
 Optional \\[universal-argument] prompts for options to pass to the Python interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt dedicated "python" 'switch))
 
 (defun ipython-switch (&optional argprompt dedicated)
@@ -7832,7 +7800,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python interp
 
 Optional \\[universal-argument] prompts for options to pass to the IPython interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt dedicated "ipython" 'switch))
 
 (defun python3-switch (&optional argprompt dedicated)
@@ -7840,7 +7807,6 @@ Optional \\[universal-argument] prompts for options to pass to the IPython inter
 
 Optional \\[universal-argument] prompts for options to pass to the Python3 interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt dedicated "python3" 'switch))
 
 (defun python2-switch (&optional argprompt dedicated)
@@ -7848,7 +7814,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python3 inter
 
 Optional \\[universal-argument] prompts for options to pass to the Python2 interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt dedicated "python2" 'switch))
 
 (defun python2.7-switch (&optional argprompt dedicated)
@@ -7856,7 +7821,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python2 inter
 
 Optional \\[universal-argument] prompts for options to pass to the Python2.7 interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt dedicated "python2.7" 'switch))
 
 (defun jython-switch (&optional argprompt dedicated)
@@ -7864,7 +7828,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python2.7 int
 
 Optional \\[universal-argument] prompts for options to pass to the Jython interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt dedicated "jython" 'switch))
 
 (defun python3.2-switch (&optional argprompt dedicated)
@@ -7872,7 +7835,6 @@ Optional \\[universal-argument] prompts for options to pass to the Jython interp
 
 Optional \\[universal-argument] prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt dedicated "python3.2" 'switch))
 
 (defun python-no-switch (&optional argprompt dedicated)
@@ -7880,7 +7842,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python3.2 int
 
 Optional \\[universal-argument] prompts for options to pass to the Python interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt dedicated "python" 'noswitch))
 
 (defun ipython-no-switch (&optional argprompt dedicated)
@@ -7888,7 +7849,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python interp
 
 Optional \\[universal-argument] prompts for options to pass to the IPython interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt dedicated "ipython" 'noswitch))
 
 (defun python3-no-switch (&optional argprompt dedicated)
@@ -7896,7 +7856,6 @@ Optional \\[universal-argument] prompts for options to pass to the IPython inter
 
 Optional \\[universal-argument] prompts for options to pass to the Python3 interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt dedicated "python3" 'noswitch))
 
 (defun python2-no-switch (&optional argprompt dedicated)
@@ -7904,7 +7863,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python3 inter
 
 Optional \\[universal-argument] prompts for options to pass to the Python2 interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt dedicated "python2" 'noswitch))
 
 (defun python2.7-no-switch (&optional argprompt dedicated)
@@ -7912,7 +7870,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python2 inter
 
 Optional \\[universal-argument] prompts for options to pass to the Python2.7 interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt dedicated "python2.7" 'noswitch))
 
 (defun jython-no-switch (&optional argprompt dedicated)
@@ -7920,7 +7877,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python2.7 int
 
 Optional \\[universal-argument] prompts for options to pass to the Jython interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt dedicated "jython" 'noswitch))
 
 (defun python3.2-no-switch (&optional argprompt dedicated)
@@ -7928,7 +7884,6 @@ Optional \\[universal-argument] prompts for options to pass to the Jython interp
 
 Optional \\[universal-argument] prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt dedicated "python3.2" 'noswitch))
 
 (defalias 'python-dedicated-switch 'python-switch-dedicated)
@@ -7937,7 +7892,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python3.2 int
 
 Optional \\[universal-argument] prompts for options to pass to the Python interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt t "python" 'switch))
 
 (defalias 'ipython-dedicated-switch 'ipython-switch-dedicated)
@@ -7946,7 +7900,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python interp
 
 Optional \\[universal-argument] prompts for options to pass to the IPython interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt t "ipython" 'switch))
 
 (defalias 'python3-dedicated-switch 'python3-switch-dedicated)
@@ -7955,7 +7908,6 @@ Optional \\[universal-argument] prompts for options to pass to the IPython inter
 
 Optional \\[universal-argument] prompts for options to pass to the Python3 interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt t "python3" 'switch))
 
 (defalias 'python2-dedicated-switch 'python2-switch-dedicated)
@@ -7964,7 +7916,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python3 inter
 
 Optional \\[universal-argument] prompts for options to pass to the Python2 interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt t "python2" 'switch))
 
 (defalias 'python2.7-dedicated-switch 'python2.7-switch-dedicated)
@@ -7973,7 +7924,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python2 inter
 
 Optional \\[universal-argument] prompts for options to pass to the Python2.7 interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt t "python2.7" 'switch))
 
 (defalias 'jython-dedicated-switch 'jython-switch-dedicated)
@@ -7982,7 +7932,6 @@ Optional \\[universal-argument] prompts for options to pass to the Python2.7 int
 
 Optional \\[universal-argument] prompts for options to pass to the Jython interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt t "jython" 'switch))
 
 (defalias 'python3.2-dedicated-switch 'python3.2-switch-dedicated)
@@ -7991,7 +7940,6 @@ Optional \\[universal-argument] prompts for options to pass to the Jython interp
 
 Optional \\[universal-argument] prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-set-shell-completion-environment)
   (py-shell argprompt t "python3.2" 'switch))
 
 
@@ -9186,45 +9134,6 @@ Optional \\[universal-argument] used for debugging, will prevent deletion of tem
             ;; (orgstruct-mode 1)
             ))
 
-(add-hook 'python-mode-hook
-          #'(lambda ()
-              (setq completion-at-point-functions nil)
-              ;; setting of var `py-local-versioned-command' is
-              ;; needed to detect the completion command to choose
-
-              ;; py-complete-function (set (make-local-variable
-              ;; 'python-local-version) py-complete-function) when
-              ;; set, `py-complete-function' it enforced
-              (set (make-local-variable 'py-local-command) (py-choose-shell))
-              ;; customized `py-complete-function' precedes
-              (unless py-complete-function
-                (cond ((string-match "[iI][pP]ython" py-local-command)
-                       ;; customized `py-complete-function' precedes
-                       (setq py-complete-function 'ipython-complete))
-                      ;; if `py-local-command' already contains version, use it
-                      ((string-match "[0-9]" py-local-command)
-                       (set (make-local-variable 'py-local-versioned-command) py-local-command))
-                      (t (set (make-local-variable 'python-version-numbers) (shell-command-to-string (concat py-local-command " -c \"from sys import version_info; print version_info[0:2]\"")))
-                         (set (make-local-variable 'py-local-versioned-command) (concat py-local-command (replace-regexp-in-string "," "." (replace-regexp-in-string "[()\.\n ]" "" python-version-numbers)))))))
-              (if py-local-versioned-command
-                  (when (and (interactive-p) py-verbose-p) (message "py-local-versioned-command %s" py-local-versioned-command))
-                (when (and (interactive-p) py-verbose-p) (message "py-local-command %s" py-local-command)))
-              (unless py-complete-function
-                (if py-local-versioned-command
-                    (cond ((string-match "[pP]ython3[^[:alpha:]]*$" py-local-versioned-command)
-                           (setq py-complete-function 'py-python-script-complete))
-                          ((string-match "[pP]ython2[^[:alpha:]]*$" py-local-versioned-command)
-                           (setq py-complete-function 'py-python-script-complete))
-                          (t (setq py-complete-function 'py-completion-at-point)))
-                  ;; should never reach this clause
-                  (setq py-complete-function 'py-completion-at-point)))
-              (when py-complete-function
-                (add-hook 'completion-at-point-functions
-                          py-complete-function nil 'local)
-                ;; (add-hook 'completion-at-point-functions
-                ;; #'py-send-shell-setup-code)
-                )))
-
 (defun py-describe-mode ()
   "Dump long form of `python-mode' docs."
   (interactive)
@@ -10117,15 +10026,11 @@ Uses `python-imports' to load modules against which to complete."
 
 (setq py-shell-map
       (let ((map (copy-keymap comint-mode-map)))
-        (substitute-key-definition 'complete-symbol 'completion-at-point
-                                   map global-map)
         (define-key map (kbd "RET") 'comint-send-input)
         (define-key map "\C-c-" 'py-up-exception)
         (define-key map "\C-c=" 'py-down-exception)
         ;; defined three times... one should succed
         (define-key map (kbd "TAB") 'py-shell-complete)
-        (define-key map [tab] 'py-shell-complete)
-        (define-key map "\t" 'py-shell-complete)
         (define-key map [(meta tab)] 'py-shell-complete)
         map))
 
@@ -11524,18 +11429,10 @@ by this command. Then place point after the first, indented.\n\n"
         (define-key map [(control c)(control b)] 'py-submit-bug-report)
         (define-key map [(control c)(control v)] 'py-version)
         (define-key map [(control c)(control w)] 'py-pychecker-run)
-        (define-key map [tab] 'py-shell-complete)
-        (define-key map "\t" 'py-shell-complete)
+        (define-key map (kbd "TAB") 'py-indent-line)
         (define-key map [(meta tab)] 'py-shell-complete)
-
-        ;; (if (featurep 'xemacs)
-        ;; (define-key map [(meta tab)] 'py-complete)
-        ;; (define-key map [(meta tab)] py-complete-function)
         ;; (substitute-key-definition 'complete-symbol 'completion-at-point
         ;; map global-map)
-        ;; )
-        (substitute-key-definition 'complete-symbol 'completion-at-point
-                                   map global-map)
         (easy-menu-define py-menu map "Python Tools"
           `("PyTools"
             :help "Python mode tools"
@@ -11678,8 +11575,8 @@ Run pdb under GUD"]
             ["Help on symbol" py-describe-symbol
              :help "`py-describe-symbol'
 Use pydoc on symbol at point"]
-            ["Complete symbol" completion-at-point
-             :help "`completion-at-point'
+            ["Complete symbol" py-shell-complete
+             :help "`py-shell-complete'
 Complete (qualified) symbol before point"]
             ["Find function" py-find-function
              :help "`py-find-function'
@@ -13012,51 +12909,6 @@ Don't use this function in a Lisp program; use `define-abbrev' instead."
                         (py-guess-indent-offset)))
                   (py-guess-indent-offset)))))
 
-(add-hook 'python-mode-hook
-          #'(lambda ()
-              (setq completion-at-point-functions nil)
-              ;; setting of var `py-local-versioned-command' is
-              ;; needed to detect the completion command to choose
-
-              ;; py-complete-function (set (make-local-variable
-              ;; 'python-local-version) py-complete-function) when
-              ;; set, `py-complete-function' it enforced
-              (set (make-local-variable 'py-local-command) (py-choose-shell))
-              ;; customized `py-complete-function' precedes
-              (unless py-complete-function
-                (cond ((string-match "[iI][pP]ython" py-local-command)
-                       ;; customized `py-complete-function' precedes
-                       (setq py-complete-function 'ipython-complete))
-                      ;; if `py-local-command' already contains version, use it
-                      ((string-match "[0-9]" py-local-command)
-                       (set (make-local-variable 'py-local-versioned-command) py-local-command))
-                      (t (set (make-local-variable 'python-version-numbers) (shell-command-to-string (concat py-local-command " -c \"from sys import version_info; print version_info[0:2]\"")))
-                         (set (make-local-variable 'py-local-versioned-command) (concat py-local-command (replace-regexp-in-string "," "." (replace-regexp-in-string "[()\.\n ]" "" python-version-numbers)))))))
-              (if py-local-versioned-command
-                  (when (and (interactive-p) py-verbose-p) (message "py-local-versioned-command %s" py-local-versioned-command))
-                (when (and (interactive-p) py-verbose-p) (message "py-local-command %s" py-local-command)))
-              (unless py-complete-function
-                (if py-local-versioned-command
-                    (cond ((string-match "[pP]ython3[^[:alpha:]]*$" py-local-versioned-command)
-                           (setq py-complete-function 'py-python-script-complete))
-                          ((string-match "[pP]ython2[^[:alpha:]]*$" py-local-versioned-command)
-                           (setq py-complete-function 'py-python-script-complete))
-                          (t (setq py-complete-function 'py-completion-at-point)))
-                  ;; should never reach this clause
-                  (setq py-complete-function 'py-completion-at-point)))
-              (when py-complete-function
-                (add-hook 'completion-at-point-functions
-                          py-complete-function nil 'local)
-                ;; (add-hook 'completion-at-point-functions
-                ;; #'py-send-shell-setup-code)
-                )))
-
-;;  (add-hook 'python-mode-hook 'imenu-add-menubar-index)
-;; (remove-hook 'python-mode-hook
-;; (lambda ()
-;; "Turn off Indent Tabs mode."
-;; (setq indent-tabs-mode nil)))
-
 (add-hook 'which-func-functions 'python-which-func nil t)
 
 (add-hook 'comint-output-filter-functions
@@ -14078,7 +13930,7 @@ def complete(text):
         print_completions(dir(__builtin__), text)
         print_completions(dir(__main__), text)
 complete('%s')" word) shell (when (comint-check-proc (current-buffer)) (current-buffer)))))
-    (if (eq result nil)
+    (if (or (eq result nil)(string= "" result))
         (message "Can't complete")
       (setq result (replace-regexp-in-string comint-prompt-regexp "" result))
       (let ((comint-completion-addsuffix nil)
@@ -14088,10 +13940,12 @@ complete('%s')" word) shell (when (comint-check-proc (current-buffer)) (current-
                                (split-string result "\n" t) ; XEmacs
                              (split-string result "\n")))
               #'string<)))
-        (delete-region beg end)
-        (insert (car completions)))
+        (if (string= (car completions) word)
+            (tab-to-tab-stop)
+          (delete-region beg end)
+          (insert (car completions))))
       ;; list-typ return required by `completion-at-point'
-      (list beg end))))
+      (point))))
 
 ;;; IPython Shell Complete
 

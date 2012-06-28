@@ -1857,7 +1857,7 @@ pri
 
 (defun py-complete-lp:858621-base ()
   (goto-char 52)
-  (ignore-errors (completion-at-point))
+  (ignore-errors (py-shell-complete))
   (sit-for 0.1)
   (assert (eq 54 (point)) nil "py-complete-lp:858621-test failed"))
 
@@ -2657,12 +2657,12 @@ asks for a buffer to execute it in ipython, that sets py-shell-name to ipython.
   (let ((old py-shell-name))
     (py-force-local-shell-on)
     (goto-char 92)
-    (save-excursion (completion-at-point))
+    (save-excursion (py-shell-complete))
     (message "%s" completion-at-point-functions)
     (assert (looking-at "print") nil "toggle-force-local-shell-lp:988091-test #1 failed")
     (force-py-shell-name-p-off)
     (goto-char 99)
-    (save-excursion (completion-at-point))
+    (save-excursion (py-shell-complete))
     (message "%s" completion-at-point-functions)
     (assert (looking-at "import") nil "toggle-force-local-shell-lp:988091-test #1 failed")
     ))
@@ -2863,7 +2863,7 @@ re.s
 
 (defun completion-at-gentoo-lp-1008842-base ()
   (goto-char 62)
-  (completion-at-point)
+  (py-shell-complete)
   (assert (equal (buffer-name (current-buffer)) "*Python Completions*") nil "completion-at-gentoo-lp-1008842-test failed"))
 
 

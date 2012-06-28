@@ -238,24 +238,24 @@ interpreter.
   (interactive "P")
   (py-shell argprompt t))
 
-(defun py-set-shell-completion-environment (&optional pyshellname)
-  "Sets `...-completion-command-string' and `py-complete-function'. "
-  (interactive)
-  (let ((pyshellname (or pyshellname py-shell-name))
-        ipython-version)
-    (local-unset-key [tab])
-    (cond ((string-match "ipython" pyshellname)
-           (setq ipython-version (string-to-number (substring (shell-command-to-string (concat py-shell-name " -V")) 2 -1)))
-           (setq ipython-completion-command-string (if (< ipython-version 11) ipython0.10-completion-command-string ipython0.11-completion-command-string))
-           (define-key inferior-python-mode-map [tab] ipython-complete-function)
-           (define-key python-shell-map [tab] ipython-complete-function))
-          ((string-match "python3" pyshellname)
-           (add-hook 'completion-at-point-functions
-                     'py-python3-shell-complete nil 'local)
-           (define-key inferior-python-mode-map [tab]
-             'py-python3-shell-complete))
-          (t
-           (define-key inferior-python-mode-map [tab] 'py-shell-complete)))))
+;; (defun py-set-shell-completion-environment (&optional pyshellname)
+;;   "Sets `...-completion-command-string' and `py-complete-function'. "
+;;   (interactive)
+;;   (let ((pyshellname (or pyshellname py-shell-name))
+;;         ipython-version)
+;;     (local-unset-key [tab])
+;;     (cond ((string-match "ipython" pyshellname)
+;;            (setq ipython-version (string-to-number (substring (shell-command-to-string (concat py-shell-name " -V")) 2 -1)))
+;;            (setq ipython-completion-command-string (if (< ipython-version 11) ipython0.10-completion-command-string ipython0.11-completion-command-string))
+;;            (define-key inferior-python-mode-map [tab] ipython-complete-function)
+;;            (define-key python-shell-map [tab] ipython-complete-function))
+;;           ((string-match "python3" pyshellname)
+;;            (add-hook 'completion-at-point-functions
+;;                      'py-python3-shell-complete nil 'local)
+;;            (define-key inferior-python-mode-map [tab]
+;;              'py-python3-shell-complete))
+;;           (t
+;;            (define-key inferior-python-mode-map [tab] 'py-shell-complete)))))
 
 (defun py-set-ipython-completion-command-string (&optional pyshellname)
   "Set and return `ipython-completion-command-string'. "
@@ -477,11 +477,11 @@ When DONE is `t', `py-shell-manage-windows' is omitted
              python-compilation-regexp-alist)
         (setq completion-at-point-functions nil)
         ;; (py-set-shell-complete-function)
-        (if py-complete-function
-            (add-hook 'completion-at-point-functions
-                      py-complete-function nil 'local)
-          (add-hook 'completion-at-point-functions
-                    'py-shell-complete nil 'local))
+        ;; (if py-complete-function
+        ;;     (add-hook 'completion-at-point-functions
+        ;;               py-complete-function nil 'local)
+        ;;   (add-hook 'completion-at-point-functions
+        ;;             'py-shell-complete nil 'local))
         (add-hook 'comint-preoutput-filter-functions #'python-preoutput-filter
                   nil t)
         (if py-fontify-shell-buffer-p

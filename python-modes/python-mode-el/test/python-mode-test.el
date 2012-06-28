@@ -6511,7 +6511,10 @@ print(\"I'm the `py-menu-pyshell-test'\")
     (py-bug-tests-intern 'py-menu-pyshell-base arg teststring)))
 
 (defun py-menu-pyshell-base ()
-  (assert (string= "PyShell" (prin1-to-string (car (nth 2 (nth 1 (cdr python-mode-map)))))) nil "py-menu-pyshell-test failed"))
+  (assert (string= "PyShell" (prin1-to-string
+                              (car (nth 1 (cdr (nth 6 python-mode-map))))
+                              ;; (car (nth 2 (nth 1 (cdr python-mode-map))))
+)) nil "py-menu-pyshell-test failed"))
 
 (defun python-dedicated-test (&optional arg load-branch-function)
   (interactive "p")

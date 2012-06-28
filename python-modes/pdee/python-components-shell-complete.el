@@ -442,10 +442,12 @@ complete('%s')" word) shell (when (comint-check-proc (current-buffer)) (current-
                                (split-string result "\n" t) ; XEmacs
                              (split-string result "\n")))
               #'string<)))
+        (if (string= (car completions) word)
+            (tab-to-tab-stop) 
         (delete-region beg end)
-        (insert (car completions)))
+        (insert (car completions))))
       ;; list-typ return required by `completion-at-point'
-      (list beg end))))
+      (point))))
 
 (defun ipython-complete-py-shell-name (&optional done)
   "Complete the python symbol before point.

@@ -2183,8 +2183,7 @@ It makes underscores and dots word constituent chars.")
         (define-key map [(control c)(control b)] 'py-submit-bug-report)
         (define-key map [(control c)(control v)] 'py-version)
         (define-key map [(control c)(control w)] 'py-pychecker-run)
-        (define-key map [tab] 'py-shell-complete)
-        (define-key map "\t" 'py-shell-complete)
+        (define-key map (kbd "TAB") 'py-indent-line)
         (define-key map [(meta tab)] 'py-shell-complete)
 
         ;; (if (featurep 'xemacs)
@@ -5413,47 +5412,47 @@ Updated on each expansion.")
                         (py-guess-indent-offset)))
                   (py-guess-indent-offset)))))
 
-(add-hook 'python-mode-hook
-          #'(lambda ()
-              (setq completion-at-point-functions nil)
-              ;; setting of var `py-local-versioned-command' is
-              ;; needed to detect the completion command to choose
-
-              ;; py-complete-function (set (make-local-variable
-              ;; 'python-local-version) py-complete-function) when
-              ;; set, `py-complete-function' it enforced
-              (set (make-local-variable 'py-local-command) (py-choose-shell))
-              ;; customized `py-complete-function' precedes
-              (cond ((string-match "[iI][pP]ython" py-local-command)
-                     ;; customized `py-complete-function' precedes
-                     (setq py-local-complete-function 'ipython-complete))
-                    ;; if `py-local-command' already contains version, use it
-                    ((string-match "[0-9]" py-local-command)
-                     (set (make-local-variable 'py-local-versioned-command) py-local-command))
-                    (t (set (make-local-variable 'python-version-numbers) (shell-command-to-string (concat py-local-command " -c \"from sys import version_info; print version_info[0:2]\"")))
-                       (set (make-local-variable 'py-local-versioned-command) (concat py-local-command (replace-regexp-in-string "," "." (replace-regexp-in-string "[()\.\n ]" "" python-version-numbers))))))
-              (if py-local-versioned-command
-                  (when (and (interactive-p) py-verbose-p) (message "py-local-versioned-command %s" py-local-versioned-command))
-                (when (and (interactive-p) py-verbose-p) (message "py-local-command %s" py-local-command)))
-              (unless py-complete-function
-                (if py-local-versioned-command
-                    (cond ((string-match "[pP]ython3[^[:alpha:]]*$" py-local-versioned-command)
-                           (setq py-local-complete-function 'py-python-script-complete))
-                          ((string-match "[pP]ython2[^[:alpha:]]*$" py-local-versioned-command)
-                           (setq py-local-complete-function 'py-python-script-complete))
-                          (t (setq py-local-complete-function 'py-completion-at-point)))
-                  ;; should never reach this clause
-                  (setq py-local-complete-function 'py-completion-at-point)))
-              (cond (py-complete-function
-                     (add-hook 'completion-at-point-functions
-                               py-complete-function nil 'local))
-                    (py-local-complete-function
-                     (add-hook 'completion-at-point-functions
-                               py-local-complete-function nil 'local)))
-
-              ;; (add-hook 'completion-at-point-functions
-              ;; #'python-shell-send-setup-code)
-              ))
+;; (add-hook 'python-mode-hook
+;;           #'(lambda ()
+;;               (setq completion-at-point-functions nil)
+;;               ;; setting of var `py-local-versioned-command' is
+;;               ;; needed to detect the completion command to choose
+;; 
+;;               ;; py-complete-function (set (make-local-variable
+;;               ;; 'python-local-version) py-complete-function) when
+;;               ;; set, `py-complete-function' it enforced
+;;               (set (make-local-variable 'py-local-command) (py-choose-shell))
+;;               ;; customized `py-complete-function' precedes
+;;               (cond ((string-match "[iI][pP]ython" py-local-command)
+;;                      ;; customized `py-complete-function' precedes
+;;                      (setq py-local-complete-function 'ipython-complete))
+;;                     ;; if `py-local-command' already contains version, use it
+;;                     ((string-match "[0-9]" py-local-command)
+;;                      (set (make-local-variable 'py-local-versioned-command) py-local-command))
+;;                     (t (set (make-local-variable 'python-version-numbers) (shell-command-to-string (concat py-local-command " -c \"from sys import version_info; print version_info[0:2]\"")))
+;;                        (set (make-local-variable 'py-local-versioned-command) (concat py-local-command (replace-regexp-in-string "," "." (replace-regexp-in-string "[()\.\n ]" "" python-version-numbers))))))
+;;               (if py-local-versioned-command
+;;                   (when (and (interactive-p) py-verbose-p) (message "py-local-versioned-command %s" py-local-versioned-command))
+;;                 (when (and (interactive-p) py-verbose-p) (message "py-local-command %s" py-local-command)))
+;;               (unless py-complete-function
+;;                 (if py-local-versioned-command
+;;                     (cond ((string-match "[pP]ython3[^[:alpha:]]*$" py-local-versioned-command)
+;;                            (setq py-local-complete-function 'py-python-script-complete))
+;;                           ((string-match "[pP]ython2[^[:alpha:]]*$" py-local-versioned-command)
+;;                            (setq py-local-complete-function 'py-python-script-complete))
+;;                           (t (setq py-local-complete-function 'py-completion-at-point)))
+;;                   ;; should never reach this clause
+;;                   (setq py-local-complete-function 'py-completion-at-point)))
+;;               (cond (py-complete-function
+;;                      (add-hook 'completion-at-point-functions
+;;                                py-complete-function nil 'local))
+;;                     (py-local-complete-function
+;;                      (add-hook 'completion-at-point-functions
+;;                                py-local-complete-function nil 'local)))
+;; 
+;;               ;; (add-hook 'completion-at-point-functions
+;;               ;; #'python-shell-send-setup-code)
+;;               ))
 
 ;;  (add-hook 'python-mode-hook 'imenu-add-menubar-index)
 ;; (remove-hook 'python-mode-hook
@@ -5709,8 +5708,8 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
 
 (setq py-shell-map
       (let ((map (copy-keymap comint-mode-map)))
-        (substitute-key-definition 'complete-symbol 'completion-at-point
-                                   map global-map)
+        ;; (substitute-key-definition 'complete-symbol 'completion-at-point
+        ;; map global-map)
         (define-key map (kbd "RET") 'comint-send-input)
         (define-key map "\C-c-" 'py-up-exception)
         (define-key map "\C-c=" 'py-down-exception)

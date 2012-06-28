@@ -270,7 +270,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'match-paren) nil \"match-paren not detected as command\")" \
 -eval "(assert (commandp 'py-toggle-execute-keep-temporary-file-p) nil \"py-toggle-execute-keep-temporary-file-p not detected as command\")" \
 -eval "(assert (commandp 'py-guess-default-python) nil \"py-guess-default-python not detected as command\")" \
--eval "(assert (commandp 'py-set-shell-completion-environment) nil \"py-set-shell-completion-environment not detected as command\")" \
 -eval "(assert (commandp 'py-set-ipython-completion-command-string) nil \"py-set-ipython-completion-command-string not detected as command\")" \
 -eval "(assert (commandp 'py-shell-dedicated) nil \"py-shell-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-shell) nil \"py-shell not detected as command\")" \
@@ -923,7 +922,6 @@ est \
 --funcall py-ipython-complete-lp:927136-test \
 --funcall indent-region-lp:997958-test \
 --funcall py-shell-invoking-python-lp:835151-test \
---funcall py-menu-pyshell-test \
 --funcall split-windows-on-execute-p-test \
 --funcall script-buffer-appears-instead-of-python-shell-buffer-lp:957561-test \
 --funcall py-completion-at-point-test \
@@ -941,6 +939,7 @@ est \
 --funcall usr-bin-python3.1-shell-complete-test \
 --funcall py-end-of-print-statement-test \
 --funcall py-describe-symbol-fails-on-modules-lp:919719-test \
+--funcall py-menu-pyshell-test \
 
 else
 

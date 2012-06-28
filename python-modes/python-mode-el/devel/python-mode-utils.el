@@ -1411,7 +1411,7 @@ http://repo.or.cz/w/elbb.git/blob/HEAD:/code/Go-to-Emacs-Lisp-Definition.el
     (py-bug-tests-intern '" ele "-complete-base arg teststring)))
 
 \(defun " ele "-complete-base ()
-  (save-excursion (completion-at-point))
+  (save-excursion (py-shell-complete))
   ;; (sit-for 0.1)
   (assert (looking-at \"print\") nil \"" ele "complete-test failed\"))\n\n"))))
   (insert "\n(provide 'py-script-completion-tests)
@@ -1465,7 +1465,7 @@ http://repo.or.cz/w/elbb.git/blob/HEAD:/code/Go-to-Emacs-Lisp-Definition.el
     (sit-for 0.2 t)
     (goto-char (point-max))
     (insert \"pri\")
-    (completion-at-point)
+    (py-shell-complete)
     (beginning-of-line)
     (assert (looking-at \"print\") nil \"" ele "-shell-complete-test failed\")
     (when py-verbose-p (message \"%s\" \"" ele "-shell-complete-test passed\"))))

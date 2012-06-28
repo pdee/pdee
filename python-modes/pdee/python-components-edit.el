@@ -100,21 +100,16 @@ With optional \\[universal-argument] an indent with length `py-indent-offset' is
              (delete-horizontal-space)
              (indent-to need))))))
 
-(defvar py-indent-line-indent nil
-  "Used internal by `py-indent-line'")
-
-(defun py-indent-line-intern ()
-  ;; (when (prefix-numeric-value arg) (message "%s" (prefix-numeric-value arg)))
-  (unless (eq this-command last-command)(setq py-indent-line-indent (py-compute-indentation)))
+(defun py-indent-line-intern (need cui)
   (if py-tab-indent
-      (cond ((eq py-indent-line-indent cui)
+      (cond ((eq need cui)
              (when (eq this-command last-command)
                (beginning-of-line)
                (delete-horizontal-space)
                (if (<= (line-beginning-position) (+ (point) (- col cui)))
                    (forward-char (- col cui))
                  (beginning-of-line))))
-            ((< cui py-indent-line-indent)
+            ((< cui need)
              (if (eq this-command last-command)
                  (progn
                    (beginning-of-line)
@@ -123,11 +118,11 @@ With optional \\[universal-argument] an indent with length `py-indent-offset' is
                    (forward-char (- col cui)))
                (beginning-of-line)
                (delete-horizontal-space)
-               (indent-to py-indent-line-indent)
+               (indent-to need)
                (forward-char (- col cui))))
             (t (beginning-of-line)
                (delete-horizontal-space)
-               (indent-to py-indent-line-indent)
+               (indent-to need)
                (if (<= (line-beginning-position) (+ (point) (- col cui)))
                    (forward-char (- col cui))
                  (beginning-of-line))))
@@ -148,20 +143,17 @@ Returns current indentation "
   (interactive "P")
   (let ((cui (current-indentation))
         (col (current-column))
-        (psi py-smart-indentation))
-    (if (interactive-p)
-        (progn
-          (setq py-indent-line-indent (py-compute-indentation))
-          (cond ((eq 4 (prefix-numeric-value arg))
-                 (beginning-of-line)
-                 (delete-horizontal-space)
-                 (indent-to (+ py-indent-line-indent py-indent-offset)))
-                ((not (eq 1 (prefix-numeric-value arg)))
-                 (py-smart-indentation-off)
-                 (py-indent-line-intern)
-                 (setq py-smart-indentation psi))
-                (t (indent-to py-indent-line-indent))))
-      (py-indent-line-intern)))
+        (psi py-smart-indentation)
+        (need (py-compute-indentation)))
+    (cond ((eq 4 (prefix-numeric-value arg))
+           (beginning-of-line)
+           (delete-horizontal-space)
+           (indent-to (+ need py-indent-offset)))
+          ((not (eq 1 (prefix-numeric-value arg)))
+           (py-smart-indentation-off)
+           (py-indent-line-intern)
+           (setq py-smart-indentation psi))
+          (t (py-indent-line-intern need cui))))
   (when (and (interactive-p) py-verbose-p)(message "%s" (current-indentation)))
   (current-indentation))
 
@@ -170,13 +162,13 @@ Returns current indentation "
 When indent is set back manually, this is honoured in following lines. "
   (interactive "*")
   (let ((ci (current-indentation))
-        (orig (point)) 
+        (orig (point))
         erg)
     (if (< ci (current-column))         ; if point beyond indentation
         (progn
           (newline)
           (save-excursion
-            (goto-char orig) (delete-trailing-whitespace)) 
+            (goto-char orig) (delete-trailing-whitespace))
           (setq erg (indent-to-column (py-compute-indentation))))
       (beginning-of-line)
       (insert-char ?\n 1)
@@ -575,9 +567,9 @@ Returns outmost indentation reached. "
 (defun py-indent-region (start end &optional indent-offset)
   "Reindent a region of Python code.
 
-With optional INDENT-OFFSET specify a different value than `py-indent-offset' at place. 
+With optional INDENT-OFFSET specify a different value than `py-indent-offset' at place.
 
-Guesses the outmost reasonable indent 
+Guesses the outmost reasonable indent
 Returns and keeps relative position "
   (interactive "*r\nP")
   (let ((orig (copy-marker (point)))
