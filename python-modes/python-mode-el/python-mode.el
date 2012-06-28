@@ -11430,7 +11430,9 @@ by this command. Then place point after the first, indented.\n\n"
         (define-key map [(control c)(control v)] 'py-version)
         (define-key map [(control c)(control w)] 'py-pychecker-run)
         (define-key map (kbd "TAB") 'py-indent-line)
-        (define-key map [(meta tab)] 'py-shell-complete)
+        (if py-complete-function
+            (define-key map [(meta tab)] py-complete-function)
+          (define-key map [(meta tab)] 'py-shell-complete))
         ;; (substitute-key-definition 'complete-symbol 'completion-at-point
         ;; map global-map)
         (easy-menu-define py-menu map "Python Tools"
@@ -12978,14 +12980,6 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
 \\{python-mode-map}"
   :group 'python-mode
 ;;; Local vars
-  (if py-complete-function
-      (progn
-        (define-key python-mode-map [(meta tab)] py-complete-function)
-        (add-hook 'completion-at-point-functions
-                  py-complete-function nil 'local))
-    (define-key python-mode-map [(meta tab)] 'py-shell-complete)
-    (add-hook 'completion-at-point-functions
-              'py-shell-complete nil 'local))
   (set (make-local-variable 'outline-regexp)
        (concat (mapconcat 'identity
                           (mapcar #'(lambda (x) (concat "^\\s-*" x "\\_>"))
