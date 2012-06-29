@@ -170,7 +170,7 @@ A running ipython-shell presently is needed by
 
   :type 'boolean :group 'python-mode)
 
-(defcustom ipython-complete-use-separate-shell-p t
+(defcustom ipython-complete-use-separate-shell-p nil
 
   "If `ipython-complete' should use a separate shell. Thus prompt-counter is not incremented by completion. "
   :type 'boolean :group 'python-mode)
@@ -1984,7 +1984,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
   ;; string delimiters.  Fixme: Is there a better way?
   ;; First avoid a sequence preceded by an odd number of backslashes.
   `((,(concat "\\(?:^\\|[^\\]\\(?:\\\\.\\)*\\)" ;Prefix.
-              "\\(?1:\"\\)\\(?2:\"\\)\\(?3:\"\\)\\(?4:\"\\)\\(?5:\"\\)\\(?6:\"\\)\\|\\(?1:\"\\)\\(?2:\"\\)\\(?3:\"\\)\\|\\('\\)\\('\\)\\('\\)\\|\\('\\)\\('\\)\\('\\)\\('\\)\\('\\)\\('\\)")
+              "\\(?1:\"\\)\\(?2:\"\\)\\(?3:\"\\)\\(?4:\"\\)\\(?5:\"\\)\\(?6:\"\\)\\|\\(?1:\"\\)\\(?2:\"\\)\\(?3:\"\\)\\|\\('\\)\\('\\)\\('\\)\\|\\(?1:'\\)\\(?2:'\\)\\(?3:'\\)\\(?4:'\\)\\(?5:'\\)\\(?6:'\\)")
      (1 (python-quote-syntax 1) t t)
      (2 (python-quote-syntax 2) t t)
      (3 (python-quote-syntax 3) t t)
@@ -2143,7 +2143,7 @@ It makes underscores and dots word constituent chars.")
         (define-key map [(control c)(control q)] 'py-end-of-block)
         (define-key map [(control meta a)] 'py-beginning-of-def-or-class)
         (define-key map [(control meta e)] 'py-end-of-def-or-class)
-
+        
         ;; (define-key map [(meta i)] 'py-indent-forward-line)
         (define-key map [(control j)] 'py-newline-and-indent)
         ;; Most Pythoneers expect RET `py-newline-and-indent'
@@ -2184,33 +2184,28 @@ It makes underscores and dots word constituent chars.")
         (define-key map [(control c)(control v)] 'py-version)
         (define-key map [(control c)(control w)] 'py-pychecker-run)
         (define-key map (kbd "TAB") 'py-indent-line)
-        (define-key map [(meta tab)] 'py-shell-complete)
-
-        ;; (if (featurep 'xemacs)
-        ;; (define-key map [(meta tab)] 'py-complete)
-        ;; (define-key map [(meta tab)] py-complete-function)
+        (if py-complete-function
+            (define-key map [(meta tab)] py-complete-function)
+          (define-key map [(meta tab)] 'py-shell-complete))
         ;; (substitute-key-definition 'complete-symbol 'completion-at-point
         ;; map global-map)
-        ;;)
-        (substitute-key-definition 'complete-symbol 'completion-at-point
-                                   map global-map)
         (easy-menu-define py-menu map "Python Tools"
           `("PyTools"
             :help "Python mode tools"
-
+            
             ["Customize Python mode" (customize-group 'python-mode)
              :help "Open the customization buffer for Python mode"]
-
+            
             "-"
-
+            
             ["pychecker-run" py-pychecker-run
              :help "`py-pychecker-run'
 Run pychecker"]
-
+            
             ("Pylint ... "
              :help "Extendet report options
 call `easy_install pylint' if not available"
-
+             
              ["pylint-run" py-pylint-run
               :help "`pylint-run'
 Pylint will display a number of messages as it analyzes the code,
@@ -2225,7 +2220,7 @@ is possible to write plugins.
 
 call `easy_install pylint' if not available
 "]
-
+             
              ["pylint-help" pylint-help
               :help "`pylint-help'
 List extendet report options
@@ -2234,60 +2229,60 @@ List extendet report options
               :help "`pylint-flymake-mode'
 Toggle flymake-mode running `pylint'
 "])
-
+            
             ("pep8 ... "
              :help "Check formatting
 call `easy_install pep8' if not available"
-
+             
              ["pep8-run" py-pep8-run
               :help "`py-pep8-run'
 Check formatting (default on the file currently visited)
 call `easy_install pep8' if not available
 "]
-
+             
              ["pep8-help" py-pep8-help
               :help "`py-pep8-help'
 Display help for pep8 format checker)
 "]
-
+             
              ["pep8-flymake-mode" pep8-flymake-mode
               :help "`pep8-flymake-mode'
 Toggle flymake-mode running `pep8'
 "])
-
+            
             ("Pyflakes ... " :help "Non intrusive code
              checker call `easy_install pyflakes' if
              not available"
-
+             
              ["pyflakes-run" py-pyflakes-run :help
               "`py-pyflakes-run' Run pyflakes call
               `easy_install pyflakes' if not
               available"]
-
+             
              ["pyflakes-help" py-pyflakes-help :help
               "`py-pyflakes-help' Display help for
               Pyflakes "]
-
+             
              ["pyflakes-flymake-mode" pyflakes-flymake-mode :help
               "`pyflakes-flymake-mode'
 Toggle flymake-mode running `pyflakes' "])
-
+            
             ("Pyflakes-pep8 ... " :help
              "Non intrusive code checker running `pyflakes' and `pep8'
 call `easy_install pyflakes' and `easy_install pep8' if basics not available"
-
+             
              ["pyflakespep8-run" py-pyflakespep8-run :help
               "`py-pyflakespep8-run' Run `pyflakespep8'
 call `easy_install pyflakes' if not available"]
-
+             
              ["pyflakespep8-help" py-pyflakespep8-help :help
               "`py-pyflakespep8-help' Display help for
               Pyflakespep8 "]
-
+             
              ["pyflakespep8-flymake-mode" pyflakespep8-flymake-mode :help
               "`pyflakespep8-flymake-mode'
 Toggle flymake-mode running `pyflakespep8' "])
-
+            
             "-"
             ("Abbrevs"
              :help "see also `py-add-abbrev'"
@@ -2296,10 +2291,10 @@ Toggle flymake-mode running `pyflakespep8' "])
             ["add-abbrev" py-add-abbrev
              :help "Defines python-mode specific abbrev for last expressions before point.
 Argument is how many `py-partial-expression's form the expansion; or zero means the region is the expansion. "]
-
+            
             ("Skeletons"
              :help "See also templates in YASnippet"
-
+             
              ["if" py-if
               :help "Inserts if-statement"]
              ["py-else" py-else
@@ -2312,32 +2307,32 @@ Argument is how many `py-partial-expression's form the expansion; or zero means 
               :help "Inserts py-try/finally-statement"]
              ["py-try/except" py-try/except
               :help "Inserts py-try/except-statement"])
-
+            
             "-"
-
+            
             ["Import/reload file" py-execute-import-or-reload
              :help "`py-execute-import-or-reload'
 Load into inferior Python session"]
-
+            
             ["Debugger" pdb
              :help "`pdb'
 Run pdb under GUD"]
             "-"
-
+            
             ["Toggle autopair-mode" autopair-mode
              :help "When `py-prepare-autopair-mode-p' is `t', this toggles `autopair-mode' "]
-
+            
             ["Toggle py-smart-indentation" toggle-py-smart-indentation
              :help "See also `py-smart-indentation-on', `-off' "]
-
+            
             ["Toggle indent-tabs-mode" py-toggle-indent-tabs-mode
              :help "See also `py-indent-tabs-mode-on', `-off' "]
-
+            
             ["Help on symbol" py-describe-symbol
              :help "`py-describe-symbol'
 Use pydoc on symbol at point"]
-            ["Complete symbol" completion-at-point
-             :help "`completion-at-point'
+            ["Complete symbol" py-shell-complete
+             :help "`py-shell-complete'
 Complete (qualified) symbol before point"]
             ["Find function" py-find-function
              :help "`py-find-function'
@@ -2373,59 +2368,59 @@ The Lisp name of each function is the concatenation of PREFIX with
 the Python name, in which underlines are replaced by dashes.  If PREFIX is
 not given, it defaults to MODULE followed by a dash.
 If NOERROR is not nil, do not raise error when the module is not found. "]))
-
+        
         ;; Menu py-execute forms
         (easy-menu-define py-menu map "Execute Python"
           `("PyExec"
             :help "Python-specific features"
-
+            
             ["Execute statement" py-execute-statement
              :help "`py-execute-statement'
        Send statement at point to Python interpreter. "]
-
+            
             ["Execute block" py-execute-block
              :help "`py-execute-block'
        Send block at point to Python interpreter. "]
-
+            
             ["Execute block-or-clause" py-execute-block-or-clause
              :help "`py-execute-block-or-clause'
        Send block-or-clause at point to Python interpreter. "]
-
+            
             ["Execute def" py-execute-def
              :help "`py-execute-def'
        Send def at point to Python interpreter. "]
-
+            
             ["Execute class" py-execute-class
              :help "`py-execute-class'
        Send class at point to Python interpreter. "]
-
+            
             ["Execute region" py-execute-region
              :help "`py-execute-region'
        Send region at point to Python interpreter. "]
-
+            
             ["Execute buffer" py-execute-buffer
              :help "`py-execute-buffer'
        Send buffer at point to Python interpreter. "]
-
+            
             ["Execute file" py-execute-file
              :help "`py-execute-file'
        Send file at point to Python interpreter. "]
             ["Execute line" py-execute-line
              :help "`py-execute-line'
        Send current line from beginning of indent to Python interpreter. "]
-
+            
             ["Execute expression" py-execute-expression
              :help "`py-execute-expression'
        Send expression at point to Python interpreter. "]
-
+            
             ["Execute partial-expression" py-execute-partial-expression
              :help "`py-execute-partial-expression'
        Send partial-expression at point to Python interpreter. "]
-
+            
             ["Execute line" py-execute-line
              :help "`py-execute-line'
        Send line at point to Python interpreter. "]
-
+            
             ;; statement
             ("Execute statement ... "
              :help "Execute statement functions"
@@ -2517,7 +2512,7 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
               :help "Execute statement through a unique Python3.2 interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
              )
-
+            
             ;; block
             ("Execute block ... "
              :help "Execute block functions"
@@ -2609,7 +2604,7 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
               :help "Execute block through a unique Python3.2 interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
              )
-
+            
             ;; block-or-clause
             ("Execute block-or-clause ... "
              :help "Execute block-or-clause functions"
@@ -2701,7 +2696,7 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
               :help "Execute block-or-clause through a unique Python3.2 interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
              )
-
+            
             ;; def
             ("Execute def ... "
              :help "Execute def functions"
@@ -2793,7 +2788,7 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
               :help "Execute def through a unique Python3.2 interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
              )
-
+            
             ;; class
             ("Execute class ... "
              :help "Execute class functions"
@@ -2885,7 +2880,7 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
               :help "Execute class through a unique Python3.2 interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
              )
-
+            
             ;; region
             ("Execute region ... "
              :help "Execute region functions"
@@ -2977,7 +2972,7 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
               :help "Execute region through a unique Python3.2 interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
              )
-
+            
             ;; buffer
             ("Execute buffer ... "
              :help "Execute buffer functions"
@@ -3069,7 +3064,7 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
               :help "Execute buffer through a unique Python3.2 interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
              )
-
+            
             ;; expression
             ("Execute expression ... "
              :help "Execute expression functions"
@@ -3161,7 +3156,7 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
               :help "Execute expression through a unique Python3.2 interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
              )            ;; partial-expression
-
+            
             ("Execute partial-expression ... "
              :help "Execute partial-expression functions"
              ["py-execute-partial-expression-python" py-execute-partial-expression-python
@@ -3252,7 +3247,7 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
               :help "Execute minor-expression through a unique Python3.2 interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
              )            ;; line
-
+            
             ("Execute line ... "
              :help "Execute line functions"
              ["py-execute-line-python" py-execute-line-python
@@ -3343,7 +3338,7 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
               :help "Execute line through a unique Python3.2 interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
              )))
-
+        
         ;; Menu command forms
         (easy-menu-define py-menu map "Python Mode Commands"
           `("PyEdit"
@@ -3351,30 +3346,30 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
             ["Copy block" py-copy-block
              :help "`py-copy-block'
 Copy innermost compound statement at point"]
-
+            
             ["Copy clause" py-copy-clause
              :help "`py-copy-clause'
 Copy clause at point"]
-
+            
             ["Copy def-or-class" py-copy-def-or-class
              :help "`py-copy-def-or-class'
 Copy innermost definition at point"]
-
+            
             ["Copy def" py-copy-def
              :help "`py-copy-def'
 Copy method/function definition at point"]
-
+            
             ["Copy class" py-copy-class
              :help "`py-copy-class'
 Copy class definition at point"]
-
+            
             ["Copy statement" py-copy-statement
              :help "`py-copy-statement'
 Copy statement at point"]
             ["Copy expression" py-copy-expression
              :help "`py-copy-expression'
 Copy expression at point"]
-
+            
             ["Copy partial expression" py-copy-partial-expression
              :help "`py-copy-partial-expression'
 \".\" operators delimit a partial-expression expression on it's level"]
@@ -4754,17 +4749,17 @@ behavior, change `python-remove-cwd-from-path' to nil."
       ;; as to make sure we terminate the multiline instruction.
       (comint-send-string proc "\n"))))
 
-(defun python-send-string (string)
+(defun python-send-string (string &optional proc)
   "Evaluate STRING in inferior Python process."
   (interactive "sPython command: ")
-  (comint-send-string (python-proc) string)
+  (comint-send-string (or proc (python-proc)) string)
   (unless (string-match "\n\\'" string)
     ;; Make sure the text is properly LF-terminated.
-    (comint-send-string (python-proc) "\n"))
+    (comint-send-string (or proc (python-proc)) "\n"))
   (when (string-match "\n[ \t].*\n?\\'" string)
     ;; If the string contains a final indented line, add a second newline so
     ;; as to make sure we terminate the multiline instruction.
-    (comint-send-string (python-proc) "\n")))
+    (comint-send-string (or proc (python-proc)) "\n")))
 
 (defun python-send-buffer ()
   "Send the current buffer to the inferior Python process."
@@ -5163,12 +5158,12 @@ This is a no-op if `python-check-comint-prompt' returns nil."
 	(prog1 python-preoutput-result
 	  (kill-local-variable 'python-preoutput-result))))))
 
-(defun python-send-receive (string)
+(defun python-send-receive (string &optional proc)
   "Send STRING to inferior Python (if any) and return result.
 The result is what follows `_emacs_out' in the output.
 This is a no-op if `python-check-comint-prompt' returns nil."
   (python-send-string string)
-  (let ((proc (py-proc)))
+  (let ((proc (or proc (py-proc))))
     (with-current-buffer (process-buffer proc)
       (when (python-check-comint-prompt proc)
 	(set (make-local-variable 'python-preoutput-result) nil)
@@ -5588,14 +5583,6 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
 \\{python-mode-map}"
   :group 'python-mode
 ;;; Local vars
-  (if py-complete-function
-      (progn
-        (define-key python-mode-map [(meta tab)] py-complete-function)
-        (add-hook 'completion-at-point-functions
-                  py-complete-function nil 'local))
-    (define-key python-mode-map [(meta tab)] 'py-shell-complete)
-    (add-hook 'completion-at-point-functions
-              'py-shell-complete nil 'local))
   (set (make-local-variable 'outline-regexp)
        (concat (mapconcat 'identity
                           (mapcar #'(lambda (x) (concat "^\\s-*" x "\\_>"))

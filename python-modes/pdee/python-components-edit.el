@@ -92,7 +92,9 @@ With optional \\[universal-argument] an indent with length `py-indent-offset' is
          (cui (current-indentation))
          (cuc (current-column)))
     (cond ((eq 4 (prefix-numeric-value arg))
-           (insert (make-string py-indent-offset ?\ )))
+	   (if indent-tabs-mode
+	       (insert (make-string 1 9))
+	     (insert (make-string py-indent-offset 32))))
           (t
            (if (and (eq need cui)(not (eq cuc cui)))
                (back-to-indentation)
@@ -172,7 +174,9 @@ When indent is set back manually, this is honoured in following lines. "
           (setq erg (indent-to-column (py-compute-indentation))))
       (beginning-of-line)
       (insert-char ?\n 1)
-      (insert (make-string (setq erg (py-compute-indentation)) ?\ ))
+      (if indent-tabs-mode
+	  (insert (make-string (/ (setq erg (py-compute-indentation)) py-indent-offset) 9))
+	(insert (make-string (setq erg (py-compute-indentation)) 32)))
       ;; (move-to-column erg)
       (when (looking-at "\\([ \t]+\\)") (delete-region (match-beginning 1) (match-end 1))))
     (when (and (looking-at "[ \t]+")
@@ -225,12 +229,12 @@ Returns value of `indent-tabs-mode' switched to. "
 (defun py-indent-tabs-mode-on (arg)
   "Switch `indent-tabs-mode' on. "
   (interactive "p")
-  (indent-tabs-mode (abs arg)(interactive-p)))
+  (py-indent-tabs-mode (abs arg)(interactive-p)))
 
 (defun py-indent-tabs-mode-off (arg)
   "Switch `indent-tabs-mode' on. "
   (interactive "p")
-  (indent-tabs-mode (- (abs arg))(interactive-p)))
+  (py-indent-tabs-mode (- (abs arg))(interactive-p)))
 
 ;;; Guess indent offset
 (defun py-guessed-sanity-check (guessed)

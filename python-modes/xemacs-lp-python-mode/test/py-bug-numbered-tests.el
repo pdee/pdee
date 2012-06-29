@@ -39,6 +39,7 @@
 (setq bug-numbered-tests
       (if (featurep 'xemacs)
           (list
+	   'converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128.py-test
            'empty-triple-quote-lp:1009318-test
            'spurious-trailing-whitespace-lp-1008679-test
            'completion-fails-in-python-script-r989-lp:1004613-test
@@ -510,7 +511,12 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
     \"\"\"
     This implementation of a dictionary keeps track of the order
     in which keys were inserted.
-    \"\"\""))
+
+    \"\"\"
+
+    '''I'asdfa'''
+"))
+
     (py-bug-tests-intern 'triple-quoted-string-dq-lp:302834 arg teststring)))
 
 (defun triple-quoted-string-dq-lp:302834 ()
@@ -522,7 +528,10 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
       (insert "\"")
       (font-lock-fontify-buffer)
       (sit-for 0.2)
-      (assert (eq erg (get-char-property (point) 'face)) "triple-quoted-string-dq-lp:302834-test failed."))))
+      (assert (eq erg (get-char-property (point) 'face)) "triple-quoted-string-dq-lp:302834-test #1 failed.")
+      (goto-char 153)
+      (assert (eq erg (get-char-property (point) 'face)) "triple-quoted-string-dq-lp:302834-test #2 failed.")
+      )))
 
 (defun inbound-indentation-multiline-assignment-lp:629916-test (&optional arg)
   "With ARG greater 1 keep test buffer open.
@@ -2865,6 +2874,23 @@ re.s
   (goto-char 62)
   (py-shell-complete)
   (assert (equal (buffer-name (current-buffer)) "*Python Completions*") nil "completion-at-gentoo-lp-1008842-test failed"))
+
+
+(defun converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128.py-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+setup(
+	name = \"fail2ban\",
+"))
+  (py-bug-tests-intern 'converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128.py-base arg teststring)))
+
+(defun converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128.py-base ()
+  (let ((indent-tabs-mode t))
+    (goto-char 74)
+    (py-newline-and-indent)
+    (beginning-of-line))
+  (assert (looking-at "\t") nil "converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128.py-test failed"))
 
 
 (provide 'py-bug-numbered-tests)

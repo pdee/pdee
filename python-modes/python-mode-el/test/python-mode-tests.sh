@@ -672,6 +672,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-mark-block-misbehave-lp:949310-test) nil \"py-mark-block-misbehave-lp:949310-test not detected as command\")" \
 -eval "(assert (commandp 'py-mark-partial-expression) nil \"py-mark-partial-expression not detected as command\")" \
 -eval "(message \"commandp tests done\")" \
+--funcall converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128.py-test \
 --funcall empty-triple-quote-lp:1009318-test \
 --funcall spurious-trailing-whitespace-lp-1008679-test \
 --funcall py-end-of-statement-test \
@@ -680,10 +681,8 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall pycomplete-same-folder-def-lp:889052-test \
 --funcall new-problem-with-py-temp-directory-lp:965762-test \
 --funcall nested-dictionaries-indent-lp:328791-test \
---funcall triple-quoted-string-dq-lp:302834-test \
 --funcall new-problem-with-py-temp-directory-lp:965762-test \
 --funcall nested-dictionaries-indent-lp:328791-test \
---funcall triple-quoted-string-dq-lp:302834-test \
 --funcall dq-in-tqs-string-lp:328813-test \
 --funcall py-current-defun-lp:328846-test \
 --funcall cls-pseudo-keyword-lp:328849-test \
@@ -924,8 +923,6 @@ est \
 --funcall py-shell-invoking-python-lp:835151-test \
 --funcall split-windows-on-execute-p-test \
 --funcall script-buffer-appears-instead-of-python-shell-buffer-lp:957561-test \
---funcall py-completion-at-point-test \
---funcall completion-fails-in-python-script-r989-lp:1004613-test \
 --funcall py-install-directory-path-test \
 --funcall tqs-list-error-test \
 --funcall UnicodeEncodeError-python3-test \
@@ -940,6 +937,9 @@ est \
 --funcall py-end-of-print-statement-test \
 --funcall py-describe-symbol-fails-on-modules-lp:919719-test \
 --funcall py-menu-pyshell-test \
+--funcall completion-fails-in-python-script-r989-lp:1004613-test \
+--funcall py-completion-at-point-test \
+--funcall triple-quoted-string-dq-lp:302834-test \
 
 else
 
