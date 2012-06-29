@@ -70,7 +70,7 @@
   :group 'languages
   :prefix "py-")
 
-(defconst py-version "6.0.10")
+(defconst py-version "6.0.11")
 
 (defvar python-local-version nil
   "Used internally. ")
@@ -7663,9 +7663,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
         (use-local-map py-shell-map)
         ;; (add-hook 'py-shell-hook 'py-dirstack-hook)
         (when py-shell-hook (run-hooks 'py-shell-hook))
-        (if (and (interactive-p) py-shell-switch-buffers-on-execute-p)
-            (pop-to-buffer py-buffer-name)
-          (unless done (py-shell-manage-windows switch py-split-windows-on-execute-p py-switch-buffers-on-execute-p oldbuf py-buffer-name)))
+        (unless done (py-shell-manage-windows switch py-split-windows-on-execute-p py-switch-buffers-on-execute-p oldbuf py-buffer-name))
         py-buffer-name)
     (cond ((comint-check-proc (current-buffer))
            (buffer-name (current-buffer)))
