@@ -39,6 +39,7 @@
 (setq bug-numbered-tests
       (if (featurep 'xemacs)
           (list
+           'return-statement-indented-incorrectly-lp-1019601.py-test
 	   'converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128.py-test
            'empty-triple-quote-lp:1009318-test
            'spurious-trailing-whitespace-lp-1008679-test
@@ -2811,7 +2812,6 @@ def test_bu():
   (back-to-indentation)
   (assert (looking-at "numpy.False_") nil "not-that-useful-completion-lp:1003580-test failed"))
 
-
 (defun completion-fails-in-python-script-r989-lp:1004613-test (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env ipython
@@ -2828,7 +2828,6 @@ ex
   (set-buffer "*Python Completions*")
   (assert (search-forward "except") nil "completion-fails-in-python-script-r989-lp:1004613-test failed"))
 
-
 (defun spurious-trailing-whitespace-lp-1008679-test (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
@@ -2843,7 +2842,6 @@ def foo():        X
   (forward-line -1)
   (end-of-line)
   (assert (eq (point) 58) nil "spurious-trailing-whitespace-lp-1008679-test failed"))
-
 
 (defun empty-triple-quote-lp:1009318-test (&optional arg)
   (interactive "p")
@@ -2860,7 +2858,6 @@ def foo():        X
   (goto-char 61)
   (assert (not (nth 4 (syntax-ppss))) nil "empty-triple-quote-lp:1009318-test #2 failed"))
 
-
 (defun completion-at-gentoo-lp-1008842-test (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
@@ -2874,7 +2871,6 @@ re.s
   (goto-char 62)
   (py-shell-complete)
   (assert (equal (buffer-name (current-buffer)) "*Python Completions*") nil "completion-at-gentoo-lp-1008842-test failed"))
-
 
 (defun converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128.py-test (&optional arg)
   (interactive "p")
@@ -2892,7 +2888,21 @@ setup(
     (beginning-of-line))
   (assert (looking-at "\t") nil "converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128.py-test failed"))
 
+(defun return-statement-indented-incorrectly-lp-1019601.py-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+def foo():
+    while True:
+        bar()
+    baz()
+        return 1
+"))
+  (py-bug-tests-intern 'return-statement-indented-incorrectly-lp-1019601.py-base arg teststring)))
+
+(defun return-statement-indented-incorrectly-lp-1019601.py-base ()
+    (goto-char 99)
+    (assert (eq 4 (py-compute-indentation)) nil "return-statement-indented-incorrectly-lp-1019601.py-test failed"))
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
-

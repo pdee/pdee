@@ -157,11 +157,13 @@ When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
                       (py-compute-indentation orig origline closing line inside repeat))
                   (current-indentation)))
                ((and (looking-at py-block-closing-keywords-re)(eq (py-count-lines) origline))
-                (py-beginning-of-block-or-clause)
-                (+
-                 (if py-smart-indentation (py-guess-indent-offset nil orig origline) py-indent-offset)
-                 ;; py-indent-offset
-                 (current-indentation)))
+                (skip-chars-backward "[ \t\r\n\f]")
+                (py-beginning-of-statement)
+                (if (py-beginning-of-block-or-clause-p)
+                    (+
+                     (if py-smart-indentation (py-guess-indent-offset nil orig origline) py-indent-offset)
+                     (current-indentation))
+                  (current-column)))
                ((looking-at py-block-closing-keywords-re)
                 (py-beginning-of-block-or-clause (current-indentation))
                 (current-indentation))

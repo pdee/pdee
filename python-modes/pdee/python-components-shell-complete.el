@@ -356,7 +356,8 @@ Uses `python-imports' to load modules against which to complete."
                    (python-shell-completion--do-completion-at-point (get-buffer-process (current-buffer)) "" word))
                   (t (py-shell-complete-intern word beg end shell))))))
     ;; complete in script buffer
-    (let* ((shell (or shell (py-choose-shell)))
+    (let* ((a (random 999999999))
+           (shell (or shell (py-choose-shell)))
            py-split-windows-on-execute-p
            py-switch-buffers-on-execute-p
            (proc (or (get-buffer-process shell)
@@ -365,6 +366,7 @@ Uses `python-imports' to load modules against which to complete."
            (end (point))
            (word (buffer-substring-no-properties beg end))
            (imports (py-find-imports)))
+      (window-configuration-to-register a)
       (cond ((string= word "")
              (tab-to-tab-stop))
             ((string-match "[iI][pP]ython" shell)
@@ -373,7 +375,9 @@ Uses `python-imports' to load modules against which to complete."
              (python-shell-completion--do-completion-at-point proc (buffer-substring-no-properties beg end) word))
             (imports
              (py-python-script-complete shell imports beg end word))
-            (t (py-shell-complete-intern word beg end shell imports))))))
+            (t (py-shell-complete-intern word beg end shell imports)))
+      (jump-to-register a)
+      (forward-word 1))))
 
 (defun py-shell-complete-intern (word &optional beg end shell imports)
   (let (result)
@@ -443,9 +447,10 @@ complete('%s')" word) shell (when (comint-check-proc (current-buffer)) (current-
                              (split-string result "\n")))
               #'string<)))
         (if (string= (car completions) word)
-            (tab-to-tab-stop) 
+            (tab-to-tab-stop)
         (delete-region beg end)
         (insert (car completions))))
+      ;; (jump-to-register a)
       ;; list-typ return required by `completion-at-point'
       (point))))
 
