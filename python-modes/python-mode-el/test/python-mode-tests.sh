@@ -672,6 +672,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-mark-block-misbehave-lp:949310-test) nil \"py-mark-block-misbehave-lp:949310-test not detected as command\")" \
 -eval "(assert (commandp 'py-mark-partial-expression) nil \"py-mark-partial-expression not detected as command\")" \
 -eval "(message \"commandp tests done\")" \
+--funcall tqs-lp:302834-lp:1018994-test \
 --funcall return-statement-indented-incorrectly-lp-1019601.py-test \
 --funcall converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128.py-test \
 --funcall empty-triple-quote-lp:1009318-test \
@@ -940,7 +941,7 @@ est \
 --funcall py-menu-pyshell-test \
 --funcall completion-fails-in-python-script-r989-lp:1004613-test \
 --funcall py-completion-at-point-test \
---funcall triple-quoted-string-dq-lp:302834-test \
+
 
 else
 

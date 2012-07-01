@@ -59,7 +59,7 @@
          'mark-block-region-lp:328806-test
          'mark-decorators-lp:328851-test
          'nested-dictionaries-indent-lp:328791-test
-         'triple-quoted-string-dq-lp:302834-test
+         'tqs-lp:302834-lp:1018994-test
          'fore-00007F-breaks-indentation-lp:328788-test
          'dq-in-tqs-string-lp:328813-test
          'flexible-indentation-lp:328842-test
@@ -504,7 +504,7 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
     (set-buffer-modified-p 'nil)
     (kill-buffer (current-buffer))))
 
-(defun triple-quoted-string-dq-lp:302834-test (&optional arg)
+(defun tqs-lp:302834-lp:1018994-test (&optional arg)
   "With ARG greater 1 keep test buffer open.
 If no `load-branch-function' is specified, make sure the appropriate branch is loaded. Otherwise default python-mode will be checked."
   (interactive "p")
@@ -529,9 +529,9 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
       (insert "\"")
       (font-lock-fontify-buffer)
       (sit-for 0.2)
-      (assert (eq erg (get-char-property (point) 'face)) "triple-quoted-string-dq-lp:302834-test #1 failed.")
+      (assert (eq erg (get-char-property (point) 'face)) "tqs-lp:302834-lp:1018994-test #1 failed.")
       (goto-char 153)
-      (assert (eq erg (get-char-property (point) 'face)) "triple-quoted-string-dq-lp:302834-test #2 failed.")
+      (assert (eq erg (get-char-property (point) 'face)) "tqs-lp:302834-lp:1018994-test #2 failed.")
       )))
 
 (defun inbound-indentation-multiline-assignment-lp:629916-test (&optional arg)
@@ -2850,7 +2850,7 @@ def foo():        X
 \"\"\"\"\"\"
 ''''''
 "))
-  (py-bug-tests-intern 'empty-triple-quote-lp:1009318-base arg teststring)))
+    (py-bug-tests-intern 'empty-triple-quote-lp:1009318-base arg teststring)))
 
 (defun empty-triple-quote-lp:1009318-base ()
   (goto-char 54)
@@ -2865,7 +2865,7 @@ def foo():        X
 import re
 re.s
 "))
-  (py-bug-tests-intern 'completion-at-gentoo-lp-1008842-base arg teststring)))
+    (py-bug-tests-intern 'completion-at-gentoo-lp-1008842-base arg teststring)))
 
 (defun completion-at-gentoo-lp-1008842-base ()
   (goto-char 62)
@@ -2879,7 +2879,7 @@ re.s
 setup(
 	name = \"fail2ban\",
 "))
-  (py-bug-tests-intern 'converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128.py-base arg teststring)))
+    (py-bug-tests-intern 'converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128.py-base arg teststring)))
 
 (defun converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128.py-base ()
   (let ((indent-tabs-mode t))
@@ -2898,11 +2898,11 @@ def foo():
     baz()
         return 1
 "))
-  (py-bug-tests-intern 'return-statement-indented-incorrectly-lp-1019601.py-base arg teststring)))
+    (py-bug-tests-intern 'return-statement-indented-incorrectly-lp-1019601.py-base arg teststring)))
 
 (defun return-statement-indented-incorrectly-lp-1019601.py-base ()
-    (goto-char 99)
-    (assert (eq 4 (py-compute-indentation)) nil "return-statement-indented-incorrectly-lp-1019601.py-test failed"))
+  (goto-char 99)
+  (assert (eq 4 (py-compute-indentation)) nil "return-statement-indented-incorrectly-lp-1019601.py-test failed"))
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

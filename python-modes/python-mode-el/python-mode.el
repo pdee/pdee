@@ -3149,14 +3149,11 @@ Currently-active file is at the head of the list.")
   ;; string delimiters.  Fixme: Is there a better way?
   ;; First avoid a sequence preceded by an odd number of backslashes.
   `((,(concat "\\(?:^\\|[^\\]\\(?:\\\\.\\)*\\)" ;Prefix.
-              "\\(?1:\"\\)\\(?2:\"\\)\\(?3:\"\\)\\(?4:\"\\)\\(?5:\"\\)\\(?6:\"\\)\\|\\(?1:\"\\)\\(?2:\"\\)\\(?3:\"\\)\\|\\('\\)\\('\\)\\('\\)\\|\\('\\)\\('\\)\\('\\)\\('\\)\\('\\)\\('\\)")
+              "\\(?1:\"\\)\\(?2:\"\\)\\(?3:\"\\)\\(?4:\"\\)\\(?5:\"\\)\\(?6:\"\\)\\|\\(?1:\"\\)\\(?2:\"\\)\\(?3:\"\\)\\|\\(?1:'\\)\\(?2:'\\)\\(?3:'\\)\\(?4:'\\)\\(?5:'\\)\\(?6:'\\)\\|\\(?1:'\\)\\(?2:'\\)\\(?3:'\\)\\(?4:'\\)\\(?5:'\\)\\(?6:'\\)\\|\\(?1:'\\)\\(?2:'\\)\\(?3:'\\)")
      (1 (python-quote-syntax 1) t t)
      (2 (python-quote-syntax 2) t t)
      (3 (python-quote-syntax 3) t t)
-     (6 (python-quote-syntax 1) t t))
-    ;; This doesn't really help.
-    ;;     (,(rx (and ?\\ (group ?\n))) (1 " "))
-    ))
+     (6 (python-quote-syntax 1) t t))))
 
 (defun python-quote-syntax (n)
   "Put `syntax-table' property correctly on triple quote.
