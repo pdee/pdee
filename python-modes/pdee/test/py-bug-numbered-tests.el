@@ -39,6 +39,7 @@
 (setq bug-numbered-tests
       (if (featurep 'xemacs)
           (list
+           'pycomplete-imports-not-found-error-when-no-symbol-lp:1019791-test
            'return-statement-indented-incorrectly-lp-1019601.py-test
 	   'converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128.py-test
            'empty-triple-quote-lp:1009318-test
@@ -2903,6 +2904,18 @@ def foo():
 (defun return-statement-indented-incorrectly-lp-1019601.py-base ()
   (goto-char 99)
   (assert (eq 4 (py-compute-indentation)) nil "return-statement-indented-incorrectly-lp-1019601.py-test failed"))
+
+(defun pycomplete-imports-not-found-error-when-no-symbol-lp:1019791-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+from PyQt4.QtGui import QMainWindow
+"))
+  (py-bug-tests-intern 'pycomplete-imports-not-found-error-when-no-symbol-lp:1019791-base arg teststring)))
+
+(defun pycomplete-imports-not-found-error-when-no-symbol-lp:1019791-base ()
+  (assert (py-find-global-imports) nil "pycomplete-imports-not-found-error-when-no-symbol-lp:1019791-test failed"))
+
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

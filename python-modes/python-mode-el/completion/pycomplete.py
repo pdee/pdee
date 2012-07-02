@@ -59,6 +59,8 @@ def get_all_completions(s, imports=None):
                 exec stmt in globals(), locald
             except TypeError:
                 raise TypeError, "invalid type: %s" % stmt
+            except Exception:
+                continue
 
     dots = s.split(".")
     if not s or len(dots) == 1:
@@ -77,6 +79,8 @@ def get_all_completions(s, imports=None):
     sym = None
     for i in range(1, len(dots)):
         s = ".".join(dots[:i])
+        if not s:
+            continue
         try:
             sym = eval(s, globals(), locald)
         except NameError:
@@ -84,11 +88,23 @@ def get_all_completions(s, imports=None):
                 sym = __import__(s, globals(), locald, [])
             except ImportError:
                 return []
+            except AttributeError:
+                try:
+                    sym = __import__(s, globals(), locald, [])
+                except ImportError:
+                    pass
     if sym is not None:
         s = dots[-1]
         return [k for k in dir(sym) if k.startswith(s)]
+    return []
 
-def pycomplete(s, imports=None):
+def pycomplete(s, fname=None, imports=None):
+    if not s:
+        return ''
+    # changes to where the file is
+    if fname:
+        os.chdir(os.path.dirname(fname))
+
     completions = get_all_completions(s, imports)
     if len(completions) == 0:
         return None

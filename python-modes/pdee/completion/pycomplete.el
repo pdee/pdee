@@ -2,8 +2,8 @@
 
 ;; Copyright (C) 2007  Skip Montanaro
 
-;; Author:     Skip Montanaro
-;; Maintainer: skip@pobox.com
+;; Original Author: Skip Montanaro
+;; Maintainer: Andreas Roehler <andreas.roehler@online.de>
 ;; Created:    Oct 2004
 ;; Keywords:   python pymacs emacs
 
@@ -49,8 +49,8 @@
       (goto-char (point-min))
       (setq imports nil)
       (while (re-search-forward
-	      "^\\(import \\|from \\([A-Za-z_][A-Za-z_0-9]*\\) import \\).*"
-	      nil t)
+              "^\\(import \\|from \\([A-Za-z_\\.][A-Za-z_0-9\\.]*\\) import \\).*"
+	      first-class-or-def t)
 	(setq imports (append imports
 			      (list (buffer-substring
 				     (match-beginning 0)
@@ -62,7 +62,7 @@
   (let* ((pymacs-forget-mutability t)
          (symbol (py-symbol-near-point))
          (completions
-          (pycomplete-pycomplete symbol
+          (pycomplete-pycomplete symbol (buffer-file-name)
                                  (py-find-global-imports))))
     (cond ((null completions) ; no matching symbol
            (message "Can't find completion for \"%s\"" symbol)
