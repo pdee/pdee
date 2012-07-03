@@ -1187,9 +1187,11 @@ v5 did it - lp:990079. This might fail with certain chars - see UnicodeEncodeErr
   :group 'python-mode)
 
 (defcustom py-trailing-whitespace-smart-delete-p nil
-  "Some commands may delete trailing whitespace by the way. Default is nil.
+  "Default is nil. When t, python-mode calls
+    (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
-When editing other peoples code, it may produce a larger diff than expected "
+Also commands may delete trailing whitespace by the way. 
+When editing other peoples code, this may produce a larger diff than expected "
   :type 'boolean
   :group 'python-mode)
 
@@ -5417,7 +5419,8 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
                   (setq autopair-handle-action-fns
                         (list #'autopair-default-handle-action
                               #'autopair-python-triple-quote-action)))))
-
+  (when py-trailing-whitespace-smart-delete-p
+    (add-hook 'before-save-hook 'delete-trailing-whitespace))
   (when (and py-imenu-create-index-p (fboundp 'imenu-add-to-menubar)(ignore-errors (require 'imenu)))
     (setq imenu-create-index-function #'py-imenu-create-index-new)
     (imenu-add-to-menubar "PyIndex"))
