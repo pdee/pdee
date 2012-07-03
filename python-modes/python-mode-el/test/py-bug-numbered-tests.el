@@ -2838,11 +2838,12 @@ def foo():        X
     (py-bug-tests-intern 'spurious-trailing-whitespace-lp-1008679-base arg teststring)))
 
 (defun spurious-trailing-whitespace-lp-1008679-base ()
-  (goto-char 66)
-  (py-newline-and-indent)
-  (forward-line -1)
-  (end-of-line)
-  (assert (eq (point) 58) nil "spurious-trailing-whitespace-lp-1008679-test failed"))
+  (let ((py-trailing-whitespace-smart-delete-p t))
+    (goto-char 66)
+    (py-newline-and-indent)
+    (forward-line -1)
+    (end-of-line)
+    (assert (eq (point) 58) nil "spurious-trailing-whitespace-lp-1008679-test failed")))
 
 (defun empty-triple-quote-lp:1009318-test (&optional arg)
   (interactive "p")

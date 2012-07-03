@@ -1,6 +1,14 @@
 Python Mode News
 ================
 
+New in version 6.1
+--------------------
+
+- customizable boolean `py-trailing-whitespace-smart-delete-p'
+  Default is nil. Some commands may delete trailing
+  whitespaces by the way. When editing other peoples
+  code, this may produce a larger diff than expected 
+
 New in version 6.0.9
 --------------------
 

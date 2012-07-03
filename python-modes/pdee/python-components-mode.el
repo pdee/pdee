@@ -1186,6 +1186,13 @@ v5 did it - lp:990079. This might fail with certain chars - see UnicodeEncodeErr
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-trailing-whitespace-smart-delete-p nil
+  "Some commands may delete trailing whitespace by the way. Default is nil.
+
+When editing other peoples code, it may produce a larger diff than expected "
+  :type 'boolean
+  :group 'python-mode)
+
 (defcustom py-warn-tmp-files-left-p nil
   "Messages a warning, when `py-temp-directory' contains files susceptible being left by previous Python-mode sessions. See also lp:987534 "
   :type 'boolean
@@ -4866,95 +4873,6 @@ The criterion is either a match for `jython-mode' via
                       (throw 'done t))))
               (jython-mode)))))))
 
-(defun python-fill-paragraph (&optional justify)
-  "`fill-paragraph-function' handling multi-line strings and possibly comments.
-If any of the current line is in or at the end of a multi-line string,
-fill the string or the paragraph of it that point is in, preserving
-the string's indentation."
-  (interactive "P")
-  (or (fill-comment-paragraph justify)
-      (save-excursion
-        (end-of-line)
-        (let* ((syntax (syntax-ppss))
-               (orig (point))
-               start end)
-          (cond ((nth 4 syntax)	; comment.   fixme: loses with trailing one
-                 (let (fill-paragraph-function)
-                   (fill-paragraph justify)))
-                ;; The `paragraph-start' and `paragraph-separate'
-                ;; variables don't allow us to delimit the last
-                ;; paragraph in a multi-line string properly, so narrow
-                ;; to the string and then fill around (the end of) the
-                ;; current line.
-                ((eq t (nth 3 syntax))	; in fenced string
-                 (goto-char (nth 8 syntax)) ; string start
-                 (setq start (line-beginning-position))
-                 (setq end (condition-case () ; for unbalanced quotes
-                               (progn (forward-sexp)
-                                      (- (point) 3))
-                             (error (point-max)))))
-                ((re-search-backward "\\s|\\s-*\\=" nil t) ; end of fenced string
-                 (forward-char)
-                 (setq end (point))
-                 (condition-case ()
-                     (progn (backward-sexp)
-                            (setq start (line-beginning-position)))
-                   (error nil))))
-          (when end
-            (save-restriction
-              (narrow-to-region start end)
-              (goto-char orig)
-              ;; Avoid losing leading and trailing newlines in doc
-              ;; strings written like:
-              ;;   """
-              ;;   ...
-              ;;   """
-              (let ((paragraph-separate
-                     ;; Note that the string could be part of an
-                     ;; expression, so it can have preceding and
-                     ;; trailing non-whitespace.
-                     (concat
-                      (rx (or
-                           ;; Opening triple quote without following text.
-                           (and (* nonl)
-                                (group (syntax string-delimiter))
-                                (repeat 2 (backref 1))
-                                ;; Fixme:  Not sure about including
-                                ;; trailing whitespace.
-                                (* (any " \t"))
-                                eol)
-                           ;; Closing trailing quote without preceding text.
-                           (and (group (any ?\" ?')) (backref 2)
-                                (syntax string-delimiter))))
-                      "\\(?:" paragraph-separate "\\)"))
-                    fill-paragraph-function)
-                (fill-paragraph justify))))))) t)
-
-(defun python-shift-left (start end &optional count)
-  "Shift lines in region COUNT (the prefix arg) columns to the left.
-COUNT defaults to `py-indent-offset'.  If region isn't active, just shift
-current line.  The region shifted includes the lines in which START and
-END lie.  It is an error if any lines in the region are indented less than
-COUNT columns."
-  (interactive
-   (if mark-active
-       (list (region-beginning) (region-end) current-prefix-arg)
-     (list (line-beginning-position) (line-end-position) current-prefix-arg)))
-  (if count
-      (setq count (prefix-numeric-value count))
-    (setq count py-indent-offset))
-  (when (> count 0)
-    (save-excursion
-      (goto-char start)
-      (while (< (point) end)
-        (if (and (< (current-indentation) count)
-                 (not (looking-at "[ \t]*$")))
-            (error "Can't shift all lines enough"))
-        (forward-line))
-      (indent-rigidly start end (- count)))))
-
-(add-to-list 'debug-ignored-errors "^Can't shift all lines enough")
-
 (defun python-shift-right (start end &optional count)
   "Shift lines in region COUNT (the prefix arg) columns to the right.
 COUNT defaults to `py-indent-offset'.  If region isn't active, just shift
@@ -4974,35 +4892,6 @@ END lie."
 The level is the number of `py-indent-offset' steps of indentation
 of current line."
   (1+ (/ (current-indentation) py-indent-offset)))
-
-;; Fixme: Consider top-level assignments, imports, &c.
-(defun python-current-defun (&optional length-limit)
-  "`add-log-current-defun-function' for Python."
-  (save-excursion
-    ;; Move up the tree of nested `class' and `def' blocks until we
-    ;; get to zero indentation, accumulating the defined names.
-    (let ((accum)
-          (length -1))
-      (catch 'done
-        (while (or (null length-limit)
-                   (null (cdr accum))
-                   (< length length-limit))
-          (let ((started-from (point)))
-            (python-beginning-of-block)
-            (end-of-line)
-            (beginning-of-defun)
-            (when (= (point) started-from)
-              (throw 'done nil)))
-          (when (looking-at (rx (0+ space) (or "def" "class") (1+ space)
-                                (group (1+ (or word (syntax symbol))))))
-            (push (match-string 1) accum)
-            (setq length (+ length 1 (length (car accum)))))
-          (when (= (current-indentation) 0)
-            (throw 'done nil))))
-      (when accum
-	(when (and length-limit (> length length-limit))
-	  (setcar accum ".."))
-	(mapconcat 'identity accum ".")))))
 
 (defun python-mark-block ()
   "Mark the block around point.
