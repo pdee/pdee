@@ -27,7 +27,7 @@
 
 (setq python-mode-tests
       (list
-
+       'key-binding-tests
        'py-end-of-statement-test
        'py-compute-indentation-with-test
        'py-end-of-def-inline-comment-test
@@ -6642,6 +6642,62 @@ c.hello() #causes error, but emacs tracking fails
   (goto-char 65)
   (py-end-of-statement)
   (assert (eq 75 (point)) nil "py-end-of-statement-test #2 failed")
+  )
+
+
+(defun key-binding-tests (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+"))
+  (py-bug-tests-intern 'key-binding-base arg teststring)))
+
+(defun key-binding-base ()
+  (assert (eq (key-binding [(:)]) 'py-electric-colon) nil "py-electric-colon key-binding test failed")
+  (assert (eq (key-binding [(\#)]) 'py-electric-comment) nil "py-electric-comment key-binding test failed")
+  (assert (eq (key-binding [(delete)]) 'py-electric-delete) nil "py-electric-delete key-binding test failed")
+  (assert (eq (key-binding [(backspace)]) 'py-electric-backspace) nil "py-electric-backspace key-binding test failed")
+  (assert (eq (key-binding [(control backspace)]) 'py-hungry-delete-backwards) nil "py-hungry-delete-backwards key-binding test failed")
+  (assert (eq (key-binding [(control c) (delete)]) 'py-hungry-delete-forward) nil "py-hungry-delete-forward key-binding test failed")
+  (assert (eq (key-binding [(control c)(control a)]) 'py-mark-statement) nil "py-mark-statement key-binding test failed")
+  (assert (eq (key-binding [(control c)(control u)]) 'py-beginning-of-block) nil "py-beginning-of-block key-binding test failed")
+  (assert (eq (key-binding [(control c)(control q)]) 'py-end-of-block) nil "py-end-of-block key-binding test failed")
+  (assert (eq (key-binding [(control meta a)]) 'py-beginning-of-def-or-class) nil "py-beginning-of-def-or-class key-binding test failed")
+  (assert (eq (key-binding [(control meta e)]) 'py-end-of-def-or-class) nil "py-end-of-def-or-class key-binding test failed")
+  (assert (eq (key-binding [(super backspace)]) 'py-dedent) nil "py-dedent key-binding test failed")
+  (assert (eq (key-binding [(control c)(control l)]) 'py-shift-left) nil "py-shift-left key-binding test failed")
+  (assert (eq (key-binding [(control c)(control r)]) 'py-shift-right) nil "py-shift-right key-binding test failed")
+  (assert (eq (key-binding [(control c)(<)]) 'py-shift-left) nil "py-shift-left key-binding test failed")
+  (assert (eq (key-binding [(control c)(>)]) 'py-shift-right) nil "py-shift-right key-binding test failed")
+  (assert (eq (key-binding [(control c)(tab)]) 'py-indent-region) nil "py-indent-region key-binding test failed")
+  (assert (eq (key-binding [(control c)(:)]) 'py-guess-indent-offset) nil "py-guess-indent-offset key-binding test failed")
+  (assert (eq (key-binding [(control c)(control c)]) 'py-execute-buffer) nil "py-execute-buffer key-binding test failed")
+  (assert (eq (key-binding [(control c)(control m)]) 'py-execute-import-or-reload) nil "py-execute-import-or-reload key-binding test failed")
+  (assert (eq (key-binding [(control c)(control s)]) 'py-execute-string) nil "py-execute-string key-binding test failed")
+  (assert (eq (key-binding [(control c)(|)]) 'py-execute-region) nil "py-execute-region key-binding test failed")
+  (assert (eq (key-binding [(control meta x)]) 'py-execute-def-or-class) nil "py-execute-def-or-class key-binding test failed")
+  (assert (eq (key-binding [(control c)(!)]) 'py-shell) nil "py-shell key-binding test failed")
+  (assert (eq (key-binding [(control c)(control t)]) 'py-toggle-shell) nil "py-toggle-shell key-binding test failed")
+  (assert (eq (key-binding [(control meta h)]) 'py-mark-def-or-class) nil "py-mark-def-or-class key-binding test failed")
+  (assert (eq (key-binding [(control c)(control k)]) 'py-mark-block-or-clause) nil "py-mark-block-or-clause key-binding test failed")
+  (assert (eq (key-binding [(control c)(.)]) 'py-expression) nil "py-expression key-binding test failed")
+  (assert (eq (key-binding [(control c)(control d)]) 'py-pdbtrack-toggle-stack-tracking) nil "py-pdbtrack-toggle-stack-tracking key-binding test failed")
+  (assert (eq (key-binding [(control c)(control f)]) 'py-sort-imports) nil "py-sort-imports key-binding test failed")
+  (assert (eq (key-binding [(control c)(\#)]) 'py-comment-region) nil "py-comment-region key-binding test failed")
+  (assert (eq (key-binding [(control c)(\?)]) 'py-describe-mode) nil "py-describe-mode key-binding test failed")
+  (assert (eq (key-binding [(control c)(control e)]) 'py-describe-symbol) nil "py-describe-symbol key-binding test failed")
+  (assert (eq (key-binding [(control c)(-)]) 'py-up-exception) nil "py-up-exception key-binding test failed")
+  (assert (eq (key-binding [(control c)(=)]) 'py-down-exception) nil "py-down-exception key-binding test failed")
+  (assert (eq (key-binding [(control x) (n) (d)]) 'py-narrow-to-defun) nil "py-narrow-to-defun key-binding test failed")
+
+  (assert (eq (key-binding [(control c)(control b)]) 'py-submit-bug-report) nil "py-submit-bug-report key-binding test failed")
+  (assert (eq (key-binding [(control c)(control v)]) 'py-version) nil "py-version key-binding test failed")
+  (assert (eq (key-binding [(control c)(control w)]) 'py-pychecker-run) nil "py-pychecker-run key-binding test failed")
+  (assert (eq (key-binding (kbd "TAB")) 'py-indent-line) nil "py-indent-line key-binding test failed")
+  (assert (eq (key-binding [(control c)(control p)]) 'py-beginning-of-statement) nil "py-beginning-of-statement key-binding test failed")
+  (assert (eq (key-binding [(control c)(control n)]) 'py-end-of-statement) nil "py-end-of-statement key-binding test failed")
+  (assert (eq (key-binding [(control j)]) 'py-newline-and-indent) nil "py-newline-and-indent key-binding test failed")
+  (assert (eq (key-binding (kbd "RET")) 'py-newline-and-indent) nil "py-newline-and-indent key-binding test failed")
   )
 
 (provide 'python-mode-test)

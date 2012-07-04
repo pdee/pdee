@@ -37,140 +37,134 @@
     (funcall ele arg)))
 
 (setq bug-numbered-tests
-      (if (featurep 'xemacs)
-          (list
-           'pycomplete-imports-not-found-error-when-no-symbol-lp:1019791-test
-           'return-statement-indented-incorrectly-lp-1019601.py-test
-	   'converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128.py-test
-           'empty-triple-quote-lp:1009318-test
-           'spurious-trailing-whitespace-lp-1008679-test
-           'completion-fails-in-python-script-r989-lp:1004613-test
-           'no-completion-at-all-lp:1001328-test
-           'shebang-interpreter-not-detected-lp:1001327-test
-           'bullet-lists-in-comments-lp:328782-test
-           'fill-paragraph-problems-lp:710373-test
-           'nested-indents-lp:328775-test
-           'previous-statement-lp:637955-test)
-        (list
-         'not-that-useful-completion-lp:1003580-test
-         'pycomplete-same-folder-class-lp:889052-test
-         'pycomplete-same-folder-def-lp:889052-test
-         'indent-region-lp:997958-test
-         'py-describe-symbol-fails-on-modules-lp:919719-test
-         'mark-block-region-lp:328806-test
-         'mark-decorators-lp:328851-test
-         'nested-dictionaries-indent-lp:328791-test
-         'tqs-lp:302834-lp:1018994-test
-         'fore-00007F-breaks-indentation-lp:328788-test
-         'dq-in-tqs-string-lp:328813-test
-         'flexible-indentation-lp:328842-test
-         'py-current-defun-lp:328846-test
-         'cls-pseudo-keyword-lp:328849-test
-         'hungry-delete-backwards-lp:328853-test
-         'hungry-delete-forward-lp:328853-test
-         'beg-end-of-defun-lp:303622-test
-         'bullet-lists-in-comments-lp:328782-test
-         'imenu-newline-arglist-lp:328783-test
-         'imenu-matches-in-docstring-lp:436285-test
-         'exceptions-not-highlighted-lp:473525-test
-         'fill-paragraph-problems-lp:710373-test
-         'nested-indents-lp:328775-test
-         'previous-statement-lp:637955-test
-         'inbound-indentation-multiline-assignment-lp:629916-test
-         'indentation-of-continuation-lines-lp:691185-test
-         ;; test passes only when run from edebug
-         ;; assistance appreciated
-         ;; 'syntaxerror-on-py-execute-region-lp:691542-test
-         'goto-beginning-of-tqs-lp:735328-test
-         'class-treated-as-keyword-lp:709478-test
-         'py-decorators-face-lp:744335-test
-         'indent-after-return-lp:745208-test
-         'keep-assignments-column-lp:748198-test
-         'indent-triplequoted-to-itself-lp:752252-test
-         'multiline-listings-indent-lp:761946-test
-         'new-page-char-causes-loop-lp:762498-test
-         'nested-dicts-indent-lp:763756-test
-         'bad-indent-after-except-lp:771289-test
-         'indent-open-paren-not-last-lp:771291-test
-         'wrong-indent-after-else-lp:772610-test
-         'except-indents-wrong-lp:784432-test
-         'indent-explicitly-set-in-multiline-tqs-lp:784225-test
-         'unbalanced-parentheses-lp:784645-test
-         'explicitly-indent-in-list-lp:785018-test
-         'explicit-backslashed-continuation-line-indent-lp:785091-test
-         'indentation-error-lp:795773-test
-         'indent-function-arglist-lp:800088-test
-         'python-mode-hangs-lp:801780-test
-         'stops-backslashed-line-lp:802504-test
-         'stops-backslashed-line-lp:802504-test2
-         'python-mode-slow-lp:803275-test
-         'master-file-not-honored-lp:794850-test
-         'py-variable-name-face-lp:798538-test
-         'colon-causes-error-lp:818665-test
-         'if-indentation-lp:818720-test
-         'closing-parentesis-indent-lp:821820-test
-         'py-indent-line-lp:822532-test
-         'indent-honor-arglist-whitespaces-lp:822540-test
-         'comments-indent-honor-setting-lp:824427-test
-         'infinite-loop-after-tqs-lp:826044-test
-         'closing-list-lp:826144-test
-         'py-electric-comment-add-space-lp:828398-test
-         'py-electric-comment-add-space-t-lp:828398-test
-         'execute-indented-code-lp:828314-test
-         'py-hungry-delete-backwards-needs-cc-lp:850595-test
-         'wrong-guess-for-py-indent-offset-lp:852052-test
-         'indent-match-import-pkg-lp:852500-test
-         'py-shift-line-when-no-region-lp:855565-test
-         'indentation-of-from-import-continuation-lines-lp:858041-test
-         'indentation-after-one-line-suites-lp:858044-test
-         'py-compute-indentation-wrong-at-eol-lp:858043-test
-         'comment-indentation-level-lp:869854-test
-         'indentation-wrong-after-multi-line-parameter-list-lp:871698-test
-         'no-indent-after-continue-lp:872676-test
-         'indent-after-inline-comment-lp:873372-test
-         'else-clause-indentation-lp:874470-test
-         'py-complete-lp:858621-test
-         'incorrect-use-of-region-in-py-shift-left-lp:875951-test
-         'indent-after-multiple-except-statements-lp:883815-test
-         'wrongly-highlighted-as-keywords-lp:885144-test
-         'glitch-when-indenting-lists-lp:886473-test
-         'indentation-keyword-lp:885143-test
-         'indentation-bug-inside-docstrings-lp:899455-test
-         'another-indentation-bug-inside-docstrings-lp:900684-test
-         'py-shebang-consider-ipython-lp:849293-test
-         'py-shebang-ipython-env-lp:849293-test
-         'indent-offset-not-guessed-when-loading-lp:902890-test
-         'from-__future__-import-absolute_import-mishighlighted-lp:907084-test
-         ;; 'automatic-indentation-is-broken-lp:889643-test
-         'chars-uU-preceding-triple-quoted-get-string-face-lp:909517-test
-         'problem-with-py-separator-char-under-windows-lp:975539-test
-         'tuple-unpacking-highlighted-incorrectly-lp:961496-test
-         'new-problem-with-py-temp-directory-lp:965762-test
+      (list
+       'pycomplete-imports-not-found-error-when-no-symbol-lp:1019791-test
+       'return-statement-indented-incorrectly-lp-1019601.py-test
+       'converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128.py-test
+       'empty-triple-quote-lp:1009318-test
+       'spurious-trailing-whitespace-lp-1008679-test
+       'completion-fails-in-python-script-r989-lp:1004613-test
+       'no-completion-at-all-lp:1001328-test
+       'py-narrow-to-defun-lp-1020531-test
+       'not-that-useful-completion-lp:1003580-test
+       'pycomplete-same-folder-class-lp:889052-test
+       'pycomplete-same-folder-def-lp:889052-test
+       'indent-region-lp:997958-test
+       'py-describe-symbol-fails-on-modules-lp:919719-test
+       'mark-block-region-lp:328806-test
+       'mark-decorators-lp:328851-test
+       'nested-dictionaries-indent-lp:328791-test
+       'tqs-lp:302834-lp:1018994-test
+       'fore-00007F-breaks-indentation-lp:328788-test
+       'dq-in-tqs-string-lp:328813-test
+       'flexible-indentation-lp:328842-test
+       'py-current-defun-lp:328846-test
+       'cls-pseudo-keyword-lp:328849-test
+       'hungry-delete-backwards-lp:328853-test
+       'hungry-delete-forward-lp:328853-test
+       'beg-end-of-defun-lp:303622-test
+       'bullet-lists-in-comments-lp:328782-test
+       'imenu-newline-arglist-lp:328783-test
+       'imenu-matches-in-docstring-lp:436285-test
+       'exceptions-not-highlighted-lp:473525-test
+       'fill-paragraph-problems-lp:710373-test
+       'nested-indents-lp:328775-test
+       'previous-statement-lp:637955-test
+       'inbound-indentation-multiline-assignment-lp:629916-test
+       'indentation-of-continuation-lines-lp:691185-test
+       ;; test passes only when run from edebug
+       ;; assistance appreciated
+       ;; 'syntaxerror-on-py-execute-region-lp:691542-test
+       'goto-beginning-of-tqs-lp:735328-test
+       'class-treated-as-keyword-lp:709478-test
+       'py-decorators-face-lp:744335-test
+       'indent-after-return-lp:745208-test
+       'keep-assignments-column-lp:748198-test
+       'indent-triplequoted-to-itself-lp:752252-test
+       'multiline-listings-indent-lp:761946-test
+       'new-page-char-causes-loop-lp:762498-test
+       'nested-dicts-indent-lp:763756-test
+       'bad-indent-after-except-lp:771289-test
+       'indent-open-paren-not-last-lp:771291-test
+       'wrong-indent-after-else-lp:772610-test
+       'except-indents-wrong-lp:784432-test
+       'indent-explicitly-set-in-multiline-tqs-lp:784225-test
+       'unbalanced-parentheses-lp:784645-test
+       'explicitly-indent-in-list-lp:785018-test
+       'explicit-backslashed-continuation-line-indent-lp:785091-test
+       'indentation-error-lp:795773-test
+       'indent-function-arglist-lp:800088-test
+       'python-mode-hangs-lp:801780-test
+       'stops-backslashed-line-lp:802504-test
+       'stops-backslashed-line-lp:802504-test2
+       'python-mode-slow-lp:803275-test
+       'master-file-not-honored-lp:794850-test
+       'py-variable-name-face-lp:798538-test
+       'colon-causes-error-lp:818665-test
+       'if-indentation-lp:818720-test
+       'closing-parentesis-indent-lp:821820-test
+       'py-indent-line-lp:822532-test
+       'indent-honor-arglist-whitespaces-lp:822540-test
+       'comments-indent-honor-setting-lp:824427-test
+       'infinite-loop-after-tqs-lp:826044-test
+       'closing-list-lp:826144-test
+       'py-electric-comment-add-space-lp:828398-test
+       'py-electric-comment-add-space-t-lp:828398-test
+       'execute-indented-code-lp:828314-test
+       'py-hungry-delete-backwards-needs-cc-lp:850595-test
+       'wrong-guess-for-py-indent-offset-lp:852052-test
+       'indent-match-import-pkg-lp:852500-test
+       'py-shift-line-when-no-region-lp:855565-test
+       'indentation-of-from-import-continuation-lines-lp:858041-test
+       'indentation-after-one-line-suites-lp:858044-test
+       'py-compute-indentation-wrong-at-eol-lp:858043-test
+       'comment-indentation-level-lp:869854-test
+       'indentation-wrong-after-multi-line-parameter-list-lp:871698-test
+       'no-indent-after-continue-lp:872676-test
+       'indent-after-inline-comment-lp:873372-test
+       'else-clause-indentation-lp:874470-test
+       'py-complete-lp:858621-test
+       'incorrect-use-of-region-in-py-shift-left-lp:875951-test
+       'indent-after-multiple-except-statements-lp:883815-test
+       'wrongly-highlighted-as-keywords-lp:885144-test
+       'glitch-when-indenting-lists-lp:886473-test
+       'indentation-keyword-lp:885143-test
+       'indentation-bug-inside-docstrings-lp:899455-test
+       'another-indentation-bug-inside-docstrings-lp:900684-test
+       'py-shebang-consider-ipython-lp:849293-test
+       'py-shebang-ipython-env-lp:849293-test
+       'indent-offset-not-guessed-when-loading-lp:902890-test
+       'from-__future__-import-absolute_import-mishighlighted-lp:907084-test
+       ;; 'automatic-indentation-is-broken-lp:889643-test
+       'chars-uU-preceding-triple-quoted-get-string-face-lp:909517-test
+       'problem-with-py-separator-char-under-windows-lp:975539-test
+       'tuple-unpacking-highlighted-incorrectly-lp:961496-test
+       'new-problem-with-py-temp-directory-lp:965762-test
 
-         'wrong-type-argument-lp:901541-test
-         'py-pychecker-run-missing-lp:910783-test
-         'py-forward-into-nomenclature-lp:916818-test
-         'py-forward-into-nomenclature-jumps-over-CamelCased-words-lp:919540-test
-         'py-backward-into-nomenclature-caps-names-lp:919541-test
-         'execute-buffer-ipython-fails-lp:928087-test
-         'py-indent-comments-nil-ignored-lp:958721-test
-         'broken-font-locking-lp:961231-test
-         'regression-in-py-execute-region-lp:962227-test
+       'wrong-type-argument-lp:901541-test
+       'py-pychecker-run-missing-lp:910783-test
+       'py-forward-into-nomenclature-lp:916818-test
+       'py-forward-into-nomenclature-jumps-over-CamelCased-words-lp:919540-test
+       'py-backward-into-nomenclature-caps-names-lp:919541-test
+       'execute-buffer-ipython-fails-lp:928087-test
+       'py-indent-comments-nil-ignored-lp:958721-test
+       'broken-font-locking-lp:961231-test
+       'regression-in-py-execute-region-lp:962227-test
 
-         'py-shell-invoking-python-lp:835151-test
-         'py-shell-invoking-ipython-lp:835151-test
-         'py-shell-invoking-python3-lp:835151-test
-         'py-shell-invoking-python2-lp:835151-test
-         'py-shell-invoking-python2.7-lp:835151-test
-         'py-shell-invoking-jython-lp:835151-test
+       'py-shell-invoking-python-lp:835151-test
+       'py-shell-invoking-ipython-lp:835151-test
+       'py-shell-invoking-python3-lp:835151-test
+       'py-shell-invoking-python2-lp:835151-test
+       'py-shell-invoking-python2.7-lp:835151-test
+       'py-shell-invoking-jython-lp:835151-test
 
-         'py-mark-block-clause-misbehave-lp:949310-test
-         'py-mark-clause-misbehave-lp:949310-test
-         'py-mark-block-misbehave-lp:949310-test
+       'py-mark-block-clause-misbehave-lp:949310-test
+       'py-mark-clause-misbehave-lp:949310-test
+       'py-mark-block-misbehave-lp:949310-test
 
-         'script-buffer-appears-instead-of-python-shell-buffer-lp:957561-test
-         'UnicodeEncodeError-lp:550661-test
-         'py-shell-complete-lp:328836-test)))
+       'script-buffer-appears-instead-of-python-shell-buffer-lp:957561-test
+       'UnicodeEncodeError-lp:550661-test
+       'py-shell-complete-lp:328836-test))
 
 (defmacro py-bug-tests-intern (testname &optional dedicated teststring)
   `(let ((debug-on-error t)
@@ -2916,6 +2910,40 @@ from PyQt4.QtGui import QMainWindow
 
 (defun pycomplete-imports-not-found-error-when-no-symbol-lp:1019791-base ()
   (assert (py-find-global-imports) nil "pycomplete-imports-not-found-error-when-no-symbol-lp:1019791-test failed"))
+
+(defun py-narrow-to-defun-lp-1020531-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+def usage():
+    print \"\"\"Fehler: %s
+Es muß die aufzurufende Ziehungszahl als Argument angegeben werden:
+'python roulette.py 1, 'python roulette.py 2', ... 'python roulette.py n'.
+\"\"\" % (
+          os.path.basename(sys.argv[0]))
+
+
+def main():
+    if len(sys.argv) == 1:
+        usage()
+        sys.exit()
+
+    class asdf(object):
+        zeit = time.strftime('%Y%m%d--%H-%M-%S')
+
+        def utf8_exists(filename):
+            return os.path.exists(filename.encode('utf-8'))
+
+if __name__ == \"__main__\":
+    main()
+
+"))
+  (py-bug-tests-intern 'py-narrow-to-defun-lp-1020531-base arg teststring)))
+
+(defun py-narrow-to-defun-lp-1020531-base ()
+    (goto-char 334)
+    (py-narrow-to-defun)
+    (assert (eq 522 (point-max)) nil "py-narrow-to-defun-lp-1020531-test failed"))
 
 
 (provide 'py-bug-numbered-tests)

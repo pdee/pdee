@@ -672,6 +672,8 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-mark-block-misbehave-lp:949310-test) nil \"py-mark-block-misbehave-lp:949310-test not detected as command\")" \
 -eval "(assert (commandp 'py-mark-partial-expression) nil \"py-mark-partial-expression not detected as command\")" \
 -eval "(message \"commandp tests done\")" \
+--funcall key-binding-tests \
+--funcall py-narrow-to-defun-lp-1020531-test \
 --funcall pycomplete-imports-not-found-error-when-no-symbol-lp:1019791-test \
 --funcall tqs-lp:302834-lp:1018994-test \
 --funcall return-statement-indented-incorrectly-lp-1019601.py-test \

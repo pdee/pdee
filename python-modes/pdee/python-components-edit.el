@@ -304,12 +304,10 @@ Returns `py-indent-offset'"
   "Make text outside current def or class invisible.
 
 The defun visible is the one that contains point or follows point. "
-  (interactive "P")
+  (interactive)
   (save-excursion
-    (widen)
-    (py-end-of-def-or-class)
-    (let ((end (point)))
-      (py-beginning-def-of-or-class)
+    (let ((end (py-beginning-of-def-or-class)))
+      (py-end-of-def-or-class)
       (narrow-to-region (point) end))))
 
 

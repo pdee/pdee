@@ -99,25 +99,6 @@ If the current buffer has a local value of `python-buffer', set the
 default (global) value to that.  The associated Python process is
 the one that gets input from M-x python-send-region et al when used
 in a buffer that doesn't have a local value of `python-buffer'.
-* python-fill-paragraph
-   `fill-paragraph-function' handling multi-line strings and possibly comments.
-If any of the current line is in or at the end of a multi-line string,
-fill the string or the paragraph of it that point is in, preserving
-the string's indentation.
-* python-shift-left
-   Shift lines in region COUNT (the prefix arg) columns to the left.
-COUNT defaults to `py-indent-offset'.  If region isn't active, just shift
-current line.  The region shifted includes the lines in which START and
-END lie.  It is an error if any lines in the region are indented less than
-COUNT columns.
-* python-shift-right
-   Shift lines in region COUNT (the prefix arg) columns to the right.
-COUNT defaults to `py-indent-offset'.  If region isn't active, just shift
-current line.  The region shifted includes the lines in which START and
-END lie.
-* python-mark-block
-   Mark the block around point.
-Uses `python-beginning-of-block', `python-end-of-block'.
 * python-find-imports
    Find top-level imports, updating `python-imports'.
 * python-find-function
@@ -1000,8 +981,6 @@ With universal arg  insert a `%'.
    Toggle py-execute-keep-temporary-file-p 
 * py-guess-default-python
    Defaults to "python", if guessing didn't succeed. 
-* py-set-shell-completion-environment
-   Sets `...-completion-command-string' and `py-complete-function'. 
 * py-set-ipython-completion-command-string
    Set and return `ipython-completion-command-string'. 
 * py-shell-dedicated

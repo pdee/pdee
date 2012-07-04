@@ -5174,45 +5174,6 @@ Updated on each expansion.")
 (add-hook 'kill-emacs-hook 'py-kill-emacs-hook)
 (add-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file)
 
-;; (add-hook 'inferior-python-mode-hook 'py-send-shell-setup-code)
-;; (add-hook 'inferior-python-mode-hook
-;;           #'(lambda ()
-;;               (setq completion-at-point-functions nil)
-;;               (set (make-local-variable 'py-local-command) (py-choose-shell))
-;;               ;; customized `py-complete-function' precedes
-;;               (cond ((string-match "[iI][pP]ython" py-local-command)
-;;                      ;; customized `py-complete-function' precedes
-;;                      (set (make-local-variable 'python-version-numbers) (shell-command-to-string (concat py-local-command " -V")))
-;;                      (set (make-local-variable 'py-local-versioned-command) (concat py-local-command (replace-regexp-in-string "[()\n ]" "" python-version-numbers)))
-;;                      (setq py-local-complete-function 'ipython-complete)
-;;                      (define-key inferior-python-mode-map [tab] 'ipython-complete)
-;;                      (define-key inferior-python-mode-map "\t" 'ipython-complete)
-;;                      (define-key inferior-python-mode-map [(meta tab)] 'ipython-complete))
-;;                     ((string-match "[0-9]" py-local-command)
-;;                      (set (make-local-variable 'py-local-versioned-command) py-local-command))
-;;                     (t (set (make-local-variable 'python-version-numbers) (shell-command-to-string (concat py-local-command " -c \"from sys import version_info; print version_info[0:2]\"")))
-;;                        (set (make-local-variable 'py-local-versioned-command) (concat py-local-command (replace-regexp-in-string "," "." (replace-regexp-in-string "[()\.\n ]" "" python-version-numbers))))))
-;;               (if py-local-versioned-command
-;;                   (when (and (interactive-p) py-verbose-p) (message "py-local-versioned-command %s" py-local-versioned-command))
-;;                 (when (and (interactive-p) py-verbose-p) (message "py-local-command %s" py-local-command)))
-;;               (python-shell-send-string-no-output python-shell-completion-setup-code (get-buffer-process (current-buffer)))
-;;               (if py-complete-function
-;;                   (progn
-;;                     (define-key inferior-python-mode-map [tab] 'py-complete-function)
-;;                     (define-key inferior-python-mode-map "\t" py-complete-function)
-;;                     (define-key inferior-python-mode-map [(meta tab)] py-complete-function)
-;;                     (add-hook 'completion-at-point-functions
-;;                               py-complete-function nil 'local))
-;;                 (if py-local-versioned-command
-;;                     (cond ((string-match "[pP]ython3[^[:alpha:]]*$" py-local-versioned-command)
-;;                            (setq py-local-complete-function 'py-python-script-complete))
-;;                           ((string-match "[pP]ython2[^[:alpha:]]*$" py-local-versioned-command)
-;;                            (setq py-local-complete-function 'py-python-script-complete))
-;;                           (t (setq py-local-complete-function 'py-completion-at-point)))
-;;                   ;; should never reach this clause
-;;                   (setq py-local-complete-function 'py-completion-at-point)
-;;                   (add-hook 'completion-at-point-functions
-;;                             py-local-complete-function nil 'local)))))
 
 (remove-hook 'python-mode-hook 'python-setup-brm)
 (add-hook 'python-mode-hook
