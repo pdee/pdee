@@ -2801,10 +2801,12 @@ def test_bu():
 
 (defun not-that-useful-completion-lp:1003580-base ()
   (goto-char 86)
-  (py-python-script-complete)
+  ;; (py-python-script-complete)
+  (py-shell-complete)
   (search-forward "False")
   (choose-completion)
   (back-to-indentation)
+  (sit-for 0.1)
   (assert (looking-at "numpy.False_") nil "not-that-useful-completion-lp:1003580-test failed"))
 
 (defun completion-fails-in-python-script-r989-lp:1004613-test (&optional arg)
@@ -2906,7 +2908,7 @@ def foo():
 # -*- coding: utf-8 -*-
 from PyQt4.QtGui import QMainWindow
 "))
-  (py-bug-tests-intern 'pycomplete-imports-not-found-error-when-no-symbol-lp:1019791-base arg teststring)))
+    (py-bug-tests-intern 'pycomplete-imports-not-found-error-when-no-symbol-lp:1019791-base arg teststring)))
 
 (defun pycomplete-imports-not-found-error-when-no-symbol-lp:1019791-base ()
   (assert (py-find-global-imports) nil "pycomplete-imports-not-found-error-when-no-symbol-lp:1019791-test failed"))
@@ -2938,12 +2940,12 @@ if __name__ == \"__main__\":
     main()
 
 "))
-  (py-bug-tests-intern 'py-narrow-to-defun-lp-1020531-base arg teststring)))
+    (py-bug-tests-intern 'py-narrow-to-defun-lp-1020531-base arg teststring)))
 
 (defun py-narrow-to-defun-lp-1020531-base ()
-    (goto-char 334)
-    (py-narrow-to-defun)
-    (assert (eq 522 (point-max)) nil "py-narrow-to-defun-lp-1020531-test failed"))
+  (goto-char 334)
+  (py-narrow-to-defun)
+  (assert (eq 522 (point-max)) nil "py-narrow-to-defun-lp-1020531-test failed"))
 
 
 (provide 'py-bug-numbered-tests)

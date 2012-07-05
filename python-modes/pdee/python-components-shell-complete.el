@@ -1,20 +1,5 @@
 ;;; python-components-shell-complete.el -- Add suport for completion in py-shell
 
-;; Maintainer: Andreas Roehler <andreas.roehler@online.de>
-;; Original Author: Lukasz Pankowski
-
-;; py-comint-output-filter-function is modified version from:
-;; python-mode.el --- Major mode for editing Python programs
-
-;; Copyright (C) 1992,1993,1994  Tim Peters
-
-;; Author: 2003-2004 http://sf.net/projects/python-mode
-;;         1995-2002 Barry A. Warsaw
-;;         1992-1994 Tim Peters
-;; Maintainer: python-mode@python.org
-;; Created:    Feb 1992
-;; Keywords:   python languages oop
-
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or
@@ -28,50 +13,15 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;; To get tab completion in Python shell you may add these line to
-;; your ~/.emacs file;;           '(lambda ()
-;;              (require 'py-shell-complete) ; nil t)
-;;              (when (functionp 'py-shell-complete)
-;;                ;; this should be set in py-shell
-;;                (setq comint-input-sender 'py-shell-simple-send)
-;;                (local-set-key [tab] 'py-shell-complete))))
 
 ;;; Code
-;;; need to clear py-shell-input-lines if primary prompt found
 
-;; (defun py-comint-output-filter-function (string)
-;;   "Watch output for Python prompt and exec next file waiting in queue.
-;; This function is appropriate for `comint-output-filter-functions'."
-;;   ;; TBD: this should probably use split-string
-;;   (when (and (or (string-equal string ">>> ")
-;; 		 (and (>= (length string) 5)
-;; 		      (string-equal (substring string -5) "\n>>> ")))
-;; 	     (or (setq py-shell-input-lines nil)
-;; 		 py-file-queue))
-;;     (pop-to-buffer (current-buffer))
-;;     (ignore-errors (delete-file (car py-file-queue)))
-;;     (setq py-file-queue (cdr py-file-queue))
-;;     (if py-file-queue
-;; 	(let ((pyproc (get-buffer-process (current-buffer))))
-;; 	  (py-execute-file pyproc (car py-file-queue))))))
-
-(defun py-shell-simple-send (proc string)
-  (setq py-shell-input-lines (cons string py-shell-input-lines))
-  (comint-simple-send proc string))
-
-(defalias
-  'py-shell-redirect-send-command-to-process
-  'comint-redirect-send-command-to-process)
-(defalias
-  'py-shell-dynamic-simple-complete
-  'comint-dynamic-simple-complete)
-
-(defun py-shell-execute-string-now (string &optional shell buffer)
+(defun py-shell-execute-string-now (string &optional shell buffer proc)
   "Send to Python interpreter process PROC \"exec STRING in {}\".
 and return collected output"
-  (let* ((procbuf (or buffer (py-shell nil nil shell)))
+  (let* ((procbuf (or buffer (process-buffer proc) (py-shell nil nil shell)))
 
-         (proc (get-buffer-process procbuf))
+         (proc (or proc (get-buffer-process procbuf)))
 	 (cmd (format "exec '''%s''' in {}"
 		      (mapconcat 'identity (split-string string "\n") "\\n")))
          (outbuf (get-buffer-create " *pyshellcomplete-output*"))
@@ -160,7 +110,6 @@ module-qualified names."
 
 ;; Author: Lukasz Pankowski, patch sent for lp:328836
 ;;; need to clear py-shell-input-lines if primary prompt found
-
 ;; (defun py-comint-output-filter-function (string)
 ;;   "Watch output for Python prompt and exec next file waiting in queue.
 ;; This function is appropriate for `comint-output-filter-functions'."
@@ -349,37 +298,40 @@ Uses `python-imports' to load modules against which to complete."
           (let* ((orig (point))
                  (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
                  (end (point))
-                 (word (buffer-substring-no-properties beg end)))
+                 (word (buffer-substring-no-properties beg end))
+                 (proc (get-buffer-process (current-buffer))))
             (cond ((string= word "")
                    (tab-to-tab-stop))
                   ((string-match "[pP]ython3[^[:alpha:]]*$" shell)
-                   (python-shell-completion--do-completion-at-point (get-buffer-process (current-buffer)) "" word))
-                  (t (py-shell-complete-intern word beg end shell))))))
+                   (python-shell-completion--do-completion-at-point proc "" word))
+                  (t (py-shell-complete-intern word beg end shell nil proc))))))
     ;; complete in script buffer
-    (let* ((a (random 999999999))
+    (let* (
+           ;; (a (random 999999999))
            (shell (or shell (py-choose-shell)))
            py-split-windows-on-execute-p
            py-switch-buffers-on-execute-p
-           (proc (or (get-buffer-process shell)
+           (proc (or (get-process shell)
                      (get-buffer-process (py-shell nil nil shell 'noswitch nil))))
            (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
            (end (point))
            (word (buffer-substring-no-properties beg end))
            (imports (py-find-imports)))
-      (window-configuration-to-register a)
+      ;; (window-configuration-to-register a)
       (cond ((string= word "")
              (tab-to-tab-stop))
             ((string-match "[iI][pP]ython" shell)
-             (ipython-complete))
+             (ipython-complete nil nil beg end word))
             ((string-match "[pP]ython3[^[:alpha:]]*$" shell)
              (python-shell-completion--do-completion-at-point proc (buffer-substring-no-properties beg end) word))
+            ;; deals better with imports
             (imports
              (py-python-script-complete shell imports beg end word))
-            (t (py-shell-complete-intern word beg end shell imports)))
-      (jump-to-register a)
-      (forward-word 1))))
+            (t (py-shell-complete-intern word beg end shell imports proc)))
+      ;; (jump-to-register a)
+      )))
 
-(defun py-shell-complete-intern (word &optional beg end shell imports)
+(defun py-shell-complete-intern (word &optional beg end shell imports proc)
   (let (result)
     (if imports
         (setq result (py-shell-execute-string-now (format (concat imports "
@@ -408,7 +360,7 @@ def complete(text):
         print_completions(keyword.kwlist, text)
         print_completions(dir(__builtin__), text)
         print_completions(dir(__main__), text)
-complete('%s')") word) shell))
+complete('%s')") word) shell nil proc))
       (setq result (py-shell-execute-string-now (format "
 def print_completions(namespace, text, prefix=''):
    for name in namespace:
@@ -435,7 +387,7 @@ def complete(text):
         print_completions(keyword.kwlist, text)
         print_completions(dir(__builtin__), text)
         print_completions(dir(__main__), text)
-complete('%s')" word) shell (when (comint-check-proc (current-buffer)) (current-buffer)))))
+complete('%s')" word) shell nil proc)))
     (if (or (eq result nil)(string= "" result))
         (message "Can't complete")
       (setq result (replace-regexp-in-string comint-prompt-regexp "" result))
@@ -451,7 +403,6 @@ complete('%s')" word) shell (when (comint-check-proc (current-buffer)) (current-
         (delete-region beg end)
         (insert (car completions))))
       ;; (jump-to-register a)
-      ;; list-typ return required by `completion-at-point'
       (point))))
 
 (defun ipython-complete-py-shell-name (&optional done)
@@ -517,14 +468,18 @@ If no completion available, insert a TAB.
 Returns the completed symbol, a string, if successful, nil otherwise. "
 
   (interactive "*")
-  (let* (py-split-windows-on-execute-p
-         py-switch-buffers-on-execute-p
+  (let* (
+         ;; py-split-windows-on-execute-p
+         ;; py-switch-buffers-on-execute-p
          (beg (or beg (progn (save-excursion (skip-chars-backward "a-z0-9A-Z_." (point-at-bol))
                                              (point)))))
          (end (or end (point)))
          (pattern (or word (buffer-substring-no-properties beg end)))
          (sep ";")
-         (pyshellname "ipython")
+         (shell (py-choose-shell))
+         (pyshellname (if (string-match "ipython" shell)
+                          shell
+                        "ipython"))
          (processlist (process-list))
          done
          (process
@@ -558,30 +513,35 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
     (if (string= pattern "")
         (tab-to-tab-stop)
       (process-send-string python-process (format ccs pattern))
-      (accept-process-output python-process 5)
+      (accept-process-output python-process 0.1)
       (setq completions
             (split-string (substring ugly-return 0 (position ?\n ugly-return)) sep))
-      (setq completion-table (loop for str in completions
-                                   collect (list str nil)))
-      (setq completion (try-completion pattern completion-table))
-      (cond ((eq completion t)
-             (tab-to-tab-stop))
-            ((null completion)
-             ;; if an (I)Python shell didn't run
-             ;; before, first completion are not delivered
-             ;; (if done (ipython-complete done)
-             (message "Can't find completion for \"%s\"" pattern)
-             (ding)
-             nil)
-            ((not (string= pattern completion))
-             (delete-region beg end)
-             (insert completion)
-             nil)
-            (t
-             (when py-verbose-p (message "Making completion list..."))
-             (with-output-to-temp-buffer " *Python Completions*"
-               (display-completion-list (all-completions pattern completion-table)))
-             nil)))))
+      (setq completion (when completions
+                         (try-completion pattern completions))))
+    (cond ((eq completion t)
+           (if (eq this-command last-command)
+               (when python-completion-original-window-configuration
+                 (set-window-configuration
+                  python-completion-original-window-configuration)))
+           (setq python-completion-original-window-configuration nil)
+           (message "Can't find completion for \"%s\"" pattern)
+           (ding)
+           nil)
+          ((not (string= pattern completion))
+           (progn (delete-char (- (length pattern)))
+                  (insert completion)
+                  ;; minibuffer.el expects a list, a bug IMO
+                  nil))
+          ((< 1 (length completions))
+           (unless python-completion-original-window-configuration
+             (setq python-completion-original-window-configuration
+                   (current-window-configuration)))
+           (with-output-to-temp-buffer "*IPython Completions*"
+             (display-completion-list
+              (all-completions pattern completions))))
+          ((null completion)
+           (message "Can't find completion for \"%s\"" pattern)
+           (ding)))))
 
 (provide 'python-components-shell-complete)
 

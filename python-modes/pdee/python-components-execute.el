@@ -190,22 +190,6 @@ Returns value of `py-switch-buffers-on-execute-p'. "
   (when (interactive-p) (message "py-shell-switch-buffers-on-execute: %s" py-switch-buffers-on-execute-p))
   py-switch-buffers-on-execute-p)
 
-;;;
-(defun py-comint-output-filter-function (string)
-  "Watch output for Python prompt and exec next file waiting in queue.
-This function is appropriate for `comint-output-filter-functions'."
-  ;;remove ansi terminal escape sequences from string
-  (setq string (ansi-color-filter-apply string))
-  (when (and (string-match py-shell-input-prompt-1-regexp string)
-             py-file-queue)
-    (if py-switch-buffers-on-execute-p
-        (pop-to-buffer (current-buffer)))
-    (ignore-errors (delete-file (car py-file-queue)))
-    (setq py-file-queue (cdr py-file-queue))
-    (if py-file-queue
-        (let ((pyproc (get-buffer-process (current-buffer))))
-          (py-execute-file-base pyproc (car py-file-queue))))))
-
 (defun py-guess-default-python ()
   "Defaults to \"python\", if guessing didn't succeed. "
   (interactive)
@@ -364,7 +348,7 @@ Needed when file-path names are contructed from maybe numbered buffer names like
                ;; avoids windows flip top-down - by side-effect?
                (window-configuration-to-register 213465889))
            (window-configuration-to-register 213465889))
-         (jump-to-register 213465889)
+         ;; (jump-to-register 213465889)
          (display-buffer oldbuf)
          (pop-to-buffer oldbuf))
         ;; no split, switch
@@ -392,6 +376,21 @@ Needed when file-path names are contructed from maybe numbered buffer names like
       (setq erg (substring erg 0 (string-match "-" erg))))
     erg))
 
+(defun py-comint-output-filter-function (string)
+  "Watch output for Python prompt and exec next file waiting in queue.
+This function is appropriate for `comint-output-filter-functions'."
+  ;;remove ansi terminal escape sequences from string
+  (setq string (ansi-color-filter-apply string))
+  (when (and (string-match py-shell-input-prompt-1-regexp string)
+             py-file-queue)
+    (if py-switch-buffers-on-execute-p
+        (pop-to-buffer (current-buffer)))
+    (ignore-errors (delete-file (car py-file-queue)))
+    (setq py-file-queue (cdr py-file-queue))
+    (if py-file-queue
+        (let ((pyproc (get-buffer-process (current-buffer))))
+          (py-execute-file-base pyproc (car py-file-queue))))))
+
 (defun py-shell (&optional argprompt dedicated pyshellname switch sepchar py-buffer-name done)
   "Start an interactive Python interpreter in another window.
 
@@ -409,7 +408,9 @@ When DONE is `t', `py-shell-manage-windows' is omitted
 "
   (interactive "P")
   (if (or argprompt dedicated pyshellname switch sepchar py-buffer-name done (interactive-p))
-      (let* ((sepchar (or sepchar (char-to-string py-separator-char)))
+      (let* ((coding-system-for-read 'utf-8)
+             (coding-system-for-write 'utf-8)
+             (sepchar (or sepchar (char-to-string py-separator-char)))
              (args py-python-command-args)
              (oldbuf (current-buffer))
              (path (getenv "PYTHONPATH"))

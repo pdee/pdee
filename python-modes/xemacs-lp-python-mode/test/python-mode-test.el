@@ -560,7 +560,8 @@
   (interactive "p")
   (let ((teststring (concat py-test-shebang "
 # -\*- coding: utf-8 -\*-\n
-print('\\xA9')")))
+print(\'\\xA9\')
+")))
     (py-bug-tests-intern 'UnicodeEncodeError-python3-base 2 teststring)))
 
 (defun UnicodeEncodeError-python3-base ()
@@ -568,7 +569,7 @@ print('\\xA9')")))
   (let ((py-split-windows-on-execute-p t)
         (py-shell-switch-buffers-on-execute-p t)
         erg pos)
-    (py-execute-region 50 63)
+    (py-execute-region 49 62)
     (setq erg (goto-char (point-max)))
     (sit-for 1.0)
     (assert (and (setq pos (search-backward "©"))(< (- erg pos) 9)) nil "UnicodeEncodeError-python3-test failed")))

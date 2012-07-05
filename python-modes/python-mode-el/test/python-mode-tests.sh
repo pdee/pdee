@@ -89,8 +89,8 @@ echo "\$PYMACS: $PYMACS"
 echo "\$PYTHONMODE: $PYTHONMODE"
 echo "\$PDIR/\$TESTFILE: $PDIR/$TESTFILE"
 
-$EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'python)(unload-feature 'python t))" --eval "(when (featurep 'python-mode)(unload-feature 'python-mode t))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$TESTDIR/\")" --eval "(setq py-temp-directory (expand-file-name \"~/tmp\"))" --eval "(message \"py-temp-directory: %s\" py-temp-directory)" --eval "(setq py-install-directory \"$PDIR\"))" --eval "(message \"py-install-directory: %s\" py-install-directory)" -load "$PYMACS" -load $CCCMDS -load $COMINT -load $ANSICOLOR -load $CLMACS -load $BYTECOMP -load $CUSTOM -load $SKEL -load $PYTHONMODE -load $PYCO -load "$PCOT/$TESTFILE" -load "$PCOT/$TESTFILE2" -load "$PCOT/$TESTFILE3" -load "$PCOT/$TESTFILE4" -load "$PCOT/$TESTFILE5" --eval "(quietly-read-abbrev-file (expand-file-name \"~/.abbrev_defs\"))" -eval "(assert (commandp 'clear-flymake-allowed-file-name-masks) nil \"clear-flymake-allowed-file-name-masks not detected as command\")" \
--eval "(assert (commandp 'clear-flymake-allowed-file-name-masks) nil \"clear-flymake-allowed-file-name-masks not detected as command\")" \
+$EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'python)(unload-feature 'python t))" --eval "(when (featurep 'python-mode)(unload-feature 'python-mode t))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$TESTDIR/\")" --eval "(setq py-temp-directory (expand-file-name \"~/tmp\"))" --eval "(message \"py-temp-directory: %s\" py-temp-directory)" --eval "(setq py-install-directory \"$PDIR\"))" --eval "(message \"py-install-directory: %s\" py-install-directory)" -load "$PYMACS" -load $CCCMDS -load $COMINT -load $ANSICOLOR -load $CLMACS -load $BYTECOMP -load $CUSTOM -load $SKEL -load $PYTHONMODE -load $PYCO -load "$PCOT/$TESTFILE" -load "$PCOT/$TESTFILE2" -load "$PCOT/$TESTFILE3" -load "$PCOT/$TESTFILE4" -load "$PCOT/$TESTFILE5" --eval "(quietly-read-abbrev-file (expand-file-name \"~/.abbrev_defs\"))" \
+\
 -eval "(assert (commandp 'pylint-flymake-mode) nil \"pylint-flymake-mode not detected as command\")" \
 -eval "(assert (commandp 'pyflakes-flymake-mode) nil \"pyflakes-flymake-mode not detected as command\")" \
 -eval "(assert (commandp 'pychecker-flymake-mode) nil \"pychecker-flymake-mode not detected as command\")" \
@@ -929,12 +929,7 @@ est \
 --funcall split-windows-on-execute-p-test \
 --funcall script-buffer-appears-instead-of-python-shell-buffer-lp:957561-test \
 --funcall py-install-directory-path-test \
---funcall tqs-list-error-test \
---funcall UnicodeEncodeError-python3-test \
 --funcall dict-error-test \
---funcall python-mode-slow-lp:803275-test \
---funcall infinite-loop-after-tqs-lp:826044-test \
---funcall not-that-useful-completion-lp:1003580-test \
 --funcall py-execute-region-python3-noswitch-test \
 --funcall completion-at-gentoo-lp-1008842-test \
 --funcall usr-bin-python3-shell-complete-test \
@@ -944,7 +939,11 @@ est \
 --funcall py-menu-pyshell-test \
 --funcall completion-fails-in-python-script-r989-lp:1004613-test \
 --funcall py-completion-at-point-test \
-
+--funcall tqs-list-error-test \
+--funcall UnicodeEncodeError-python3-test \
+--funcall python-mode-slow-lp:803275-test \
+--funcall infinite-loop-after-tqs-lp:826044-test \
+--funcall not-that-useful-completion-lp:1003580-test \
 
 else
 

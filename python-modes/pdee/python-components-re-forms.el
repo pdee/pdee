@@ -174,23 +174,19 @@ http://docs.python.org/reference/compound_stmts.html"
             (setq erg (py-travel-current-indent ind)))
         (py-look-downward-for-beginning py-def-or-class-re)
         (unless (eobp)
-          ;; (py-end-base py-def-or-class-re orig)
           (progn
             (setq ind
                   (+ (if py-smart-indentation
                          (save-excursion
                            (goto-char orig)
-                           ;; (setq origline (py-count-lines))
                            (py-end-of-statement)
                            (py-end-of-statement)
-                           ;; (when (eq origline (py-count-lines)) (py-end-of-statement))
                            (py-guess-indent-offset nil (point)))
                        py-indent-offset)
                      (current-indentation)))
             (py-end-of-statement)
             (forward-line 1)
-            (setq erg (py-travel-current-indent ind)))
-          ))
+            (setq erg (py-travel-current-indent ind)))))
       (if (< orig (point))
           (setq erg (point))
         (setq erg (py-look-downward-for-beginning py-def-or-class-re))
@@ -199,9 +195,7 @@ http://docs.python.org/reference/compound_stmts.html"
             (setq ind (+ py-indent-offset (current-indentation)))
             (py-end-of-statement)
             (forward-line 1)
-            (setq erg (py-travel-current-indent ind)))
-          ;; (py-end-base py-def-or-class-re orig)
-          ))
+            (setq erg (py-travel-current-indent ind)))))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 

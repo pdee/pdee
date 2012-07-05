@@ -5243,8 +5243,8 @@ Updated on each expansion.")
 
 (add-hook 'which-func-functions 'python-which-func nil t)
 
-(add-hook 'comint-output-filter-functions
-          'py-comint-output-filter-function)
+;; (add-hook 'comint-output-filter-functions
+;; 'py-comint-output-filter-function)
 
 (add-hook 'python-mode-hook
           (lambda ()
@@ -5403,7 +5403,8 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
         (save-excursion
           (py-shell)
           (set-buffer oldbuf))))
-    (jump-to-register 213465879))
+    ;; (jump-to-register 213465879)
+)
   ;; (run-mode-hooks 'python-mode-hook)
   (when py-outline-minor-mode-p (outline-minor-mode 1))
   (when (interactive-p) (message "python-mode loaded from: %s" "python-components-mode.el")))
