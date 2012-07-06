@@ -853,17 +853,23 @@ element matches `py-shell-name'."
   :type 'string
   :group 'python-mode)
 
+(defvar ipython-de-input-prompt-regexp "In \\[[0-9]+\\]:\\|^[ ]\\{3\\}[.]\\{3,\\}:"
+  "A regular expression to match the IPython input prompt. ")
+
+;; make sure it's set that way
+(setq ipython-de-input-prompt-regexp "In \\[[0-9]+\\]:\\|^[ ]\\{3\\}[.]\\{3,\\}:")
+
 ;; ipython.el
-(defvar ipython-de-input-prompt-regexp "\\(?:
-In \\[[0-9]+\\]: *.*
-----+> \\(.*
-\\)[\n]?\\)\\|\\(?:
-In \\[[0-9]+\\]: *\\(.*
-\\)\\)\\|^[ ]\\{3\\}[.]\\{3,\\}: *\\(.*
-\\)"
-  "A regular expression to match the IPython input prompt and the python
-command after it. The first match group is for a command that is rewritten,
-the second for a 'normal' command, and the third for a multiline command.")
+;; (defvar ipython-de-input-prompt-regexp "\\(?:
+;; In \\[[0-9]+\\]: *.*
+;; ----+> \\(.*
+;; \\)[\n]?\\)\\|\\(?:
+;; In \\[[0-9]+\\]: *\\(.*
+;; \\)\\)\\|^[ ]\\{3\\}[.]\\{3,\\}: *\\(.*
+;; \\)"
+;;   "A regular expression to match the IPython input prompt and the python
+;; command after it. The first match group is for a command that is rewritten,
+;; the second for a 'normal' command, and the third for a multiline command.")
 
 (defvar ipython-de-output-prompt-regexp "^Out\\[[0-9]+\\]: "
   "A regular expression to match the output prompt of IPython.")

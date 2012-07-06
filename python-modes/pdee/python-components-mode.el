@@ -791,6 +791,9 @@ first line of input."
 (defvar ipython-de-input-prompt-regexp "In \\[[0-9]+\\]:\\|^[ ]\\{3\\}[.]\\{3,\\}:"
   "A regular expression to match the IPython input prompt. ")
 
+;; prevent ipython.el's setting
+(setq ipython-de-input-prompt-regexp "In \\[[0-9]+\\]:\\|^[ ]\\{3\\}[.]\\{3,\\}:" )
+
 ;; (setq ipython-de-input-prompt-regexp "In \\[[0-9]+\\]:\\|^[ ]\\{3\\}[.]\\{3,\\}:")
 
 ;; ipython.el
