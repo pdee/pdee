@@ -1010,10 +1010,10 @@ if foo:
 
 (defun py-partial-expression-base ()
   (goto-char 102)
-  (assert (eq 100 (py-beginning-of-partial-expression)) nil "py-partial-expression-test #1 failed")
+  (assert (eq 99 (py-beginning-of-partial-expression)) nil "py-partial-expression-test #1 failed")
   (assert (eq 130 (py-end-of-partial-expression)) nil "py-partial-expression-test #2 failed")
   (goto-char 178)
-  (assert (eq 83 (py-beginning-of-partial-expression)) nil "py-partial-expression-test #3 failed")
+  (assert (eq 81 (py-beginning-of-partial-expression)) nil "py-partial-expression-test #3 failed")
   (assert (eq 242 (py-end-of-partial-expression)) nil "py-partial-expression-test #3 failed")
   )
 

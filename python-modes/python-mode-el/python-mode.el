@@ -5897,7 +5897,9 @@ If already at the beginning or before a partial-expression, go to next partial-e
          ((nth 1 pps)
           (goto-char (nth 1 pps))
           ;; (skip-chars-backward py-partial-expression-backward-regexp)
-          (setq erg (point)))
+          (setq erg (point))
+          (when (< 0 (abs (skip-chars-backward py-partial-expression-skip-regexp)))
+            (setq erg (point))))
          ((nth 8 pps)
           (when (nth 2 pps)
             (goto-char (nth 2 pps)))
@@ -6439,6 +6441,7 @@ Returns beginning and end positions of marked area, a cons. "
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
+(defalias 'py-minor-expression 'py-copy-partial-expression)
 (defalias 'py-partial-expression 'py-copy-partial-expression)
 (defun py-copy-partial-expression ()
   "Mark partial-expression at point.
