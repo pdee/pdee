@@ -148,7 +148,9 @@ Optional \\[universal-argument] used for debugging, will prevent deletion of tem
          (file (concat (expand-file-name temp py-temp-directory) ".py"))
          (cmd (py-find-imports)))
     (goto-char orig)
-    (setq cmd (concat "import pydoc\n"
+    (setq cmd (concat "import pydoc, sys\n"
+                      "sys.path.insert(0, '"
+                      (file-name-directory origfile) "')\n"
                       cmd))
     (setq cmd (concat cmd "pydoc.help('" sym "')\n"))
     (with-temp-buffer

@@ -2579,5 +2579,5 @@ def grep(ui, repo, pattern, \*pats, \*\*opts):
     (message "#2 nth 3: %s" (nth 3 pps))
     (assert (not (nth 3 pps)) nil "erste-tqs-syntax-test #2 failed")))
 
-(provide 'python-mode-test)
+(provide 'python-mode-syntax-test)
 ;;; python-mode-test.el ends here
