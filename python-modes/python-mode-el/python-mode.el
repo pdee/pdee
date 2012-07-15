@@ -8873,11 +8873,18 @@ Useful for newly defined symbol, not known to python yet. "
     (save-excursion
       (goto-char (point-min))
       (while (re-search-forward
-              "^import *[A-Za-z_][A-Za-z_0-9].*\\|^from +[A-Za-z_][A-Za-z_0-9]+ +import .*" nil t)
-        (setq imports
-              (concat
-               imports
-               (buffer-substring-no-properties (match-beginning 0) (match-end 0)) ";"))))
+              "^import *[A-Za-z_][A-Za-z_0-9].*\\|^from +[A-Za-z_][A-Za-z_0-9.]+ +import .*" nil t)
+        (let ((start-point (point)))
+          (end-of-line)
+          (while (equal (char-before) (string-to-char "\\"))
+            (next-line)
+            (end-of-line))
+          (setq imports
+                (concat
+                 imports
+                 (replace-regexp-in-string
+                  "[\\]\r?\n?\s*" ""
+                  (buffer-substring-no-properties (match-beginning 0) (point))) ";")))))
     (when (and py-verbose-p (interactive-p)) (message "%s" imports))
     imports))
 
@@ -12774,8 +12781,6 @@ Don't use this function in a Lisp program; use `define-abbrev' instead."
                         (back-to-indentation)
                         (py-guess-indent-offset)))
                   (py-guess-indent-offset)))))
-
-(add-hook 'which-func-functions 'python-which-func nil t)
 
 (add-hook 'comint-output-filter-functions
           'py-comint-output-filter-function)

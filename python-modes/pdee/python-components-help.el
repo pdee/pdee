@@ -598,11 +598,18 @@ Interactively, prompt for name."
     (save-excursion
       (goto-char (point-min))
       (while (re-search-forward
-              "^import *[A-Za-z_][A-Za-z_0-9].*\\|^from +[A-Za-z_][A-Za-z_0-9]+ +import .*" nil t)
+              "^import *[A-Za-z_][A-Za-z_0-9].*\\|^from +[A-Za-z_][A-Za-z_0-9.]+ +import .*" nil t)
+        (let ((start-point (point)))
+          (end-of-line)
+          (while (equal (char-before) (string-to-char "\\"))
+              (next-line)
+              (end-of-line))
         (setq imports
               (concat
                imports
-               (buffer-substring-no-properties (match-beginning 0) (match-end 0)) ";"))))
+                 (replace-regexp-in-string
+                  "[\\]\r?\n?\s*" ""
+                  (buffer-substring-no-properties (match-beginning 0) (point))) ";")))))
     (when (and py-verbose-p (interactive-p)) (message "%s" imports))
     imports))
 

@@ -931,7 +931,6 @@ est \
 --funcall py-install-directory-path-test \
 --funcall dict-error-test \
 --funcall py-execute-region-python3-noswitch-test \
---funcall completion-at-gentoo-lp-1008842-test \
 --funcall usr-bin-python3-shell-complete-test \
 --funcall usr-bin-python3.1-shell-complete-test \
 --funcall py-end-of-print-statement-test \
@@ -944,6 +943,8 @@ est \
 --funcall python-mode-slow-lp:803275-test \
 --funcall infinite-loop-after-tqs-lp:826044-test \
 --funcall not-that-useful-completion-lp:1003580-test \
+--funcall completion-at-gentoo-lp-1008842-test \
+--funcall py-find-imports-lp-1023236-test \
 
 else
 

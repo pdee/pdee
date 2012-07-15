@@ -43,6 +43,7 @@
       (setq word (concat prefix word)))
     word))
 
+(defalias 'py-find-global-imports 'py-complete-find-global-imports)
 (defun py-complete-find-global-imports ()
   "Find Python import statements in buffer."
   (save-excursion

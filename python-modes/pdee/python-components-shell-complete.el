@@ -13,7 +13,6 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
 ;;; Code
 
 (defun py-shell-execute-string-now (string &optional shell buffer proc)
@@ -128,39 +127,6 @@ module-qualified names."
 ;;     ))
 
 ;;;
-
-;; from pycomplete.el
-(defun py-find-global-imports ()
-  (save-excursion
-    (let (first-class-or-def imports)
-      (goto-char (point-min))
-      (setq first-class-or-def
-	    (re-search-forward "^ *\\(def\\|class\\) " nil t))
-      (goto-char (point-min))
-      (while (re-search-forward
-	      "^\\(import \\|from \\([A-Za-z_][A-Za-z_0-9]*\\) import \\).*"
-	      nil t)
-	(setq imports (append imports
-			      (list (buffer-substring
-				     (match-beginning 0)
-				     (match-end 0))))))
-      imports)))
-
-;; (defun py-send-receive (string)
-;;   "Send STRING to inferior Python (if any) and return result.
-;;
-;; The result is what follows `_emacs_out' in the output.
-;; This is a no-op if `python-check-comint-prompt' returns nil."
-;;   (py-send-string string)
-;;   (let ((proc (py-proc)))
-;;     (with-current-buffer (process-buffer proc)
-;;       (when (python-check-comint-prompt proc)
-;; 	(set (make-local-variable 'python-preoutput-result) nil)
-;; 	(while (progn
-;; 		 (accept-process-output proc 5)
-;; 		 (null python-preoutput-result)))
-;; 	(prog1 python-preoutput-result
-;; 	  (kill-local-variable 'python-preoutput-result))))))
 
 (defun py-completion-at-point ()
   "An alternative completion, similar the way python.el does it. "

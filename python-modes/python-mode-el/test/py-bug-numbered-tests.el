@@ -38,6 +38,7 @@
 
 (setq bug-numbered-tests
       (list
+       'py-find-imports-lp-1023236-test
        'pycomplete-imports-not-found-error-when-no-symbol-lp:1019791-test
        'return-statement-indented-incorrectly-lp-1019601.py-test
        'converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128.py-test
@@ -2947,6 +2948,40 @@ if __name__ == \"__main__\":
   (py-narrow-to-defun)
   (assert (eq 522 (point-max)) nil "py-narrow-to-defun-lp-1020531-test failed"))
 
+(defun py-find-imports-lp-1023236-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+#############################################################################
+#
+# Import test
+#
+#############################################################################
+
+import urllib
+import os, sys
+from hashlib import md5
+
+from construct import Container
+from twisted.internet import reactor, defer
+from twisted.internet.protocol import ClientFactory
+from twisted.python import log, failure, filepath
+
+from mock import mock1, mock2, \\
+     mock3, mock4
+print \"ignored\"
+
+print \"ignored\"
+
+def something():
+    pass
+
+"))
+    (py-bug-tests-intern 'py-find-imports-lp-1023236-base arg teststring)))
+
+(defun py-find-imports-lp-1023236-base ()
+  (goto-char 334)
+  (assert (equal (py-find-imports) "import urllib;import os, sys;from hashlib import md5;from construct import Container;from twisted.internet import reactor, defer;from twisted.internet.protocol import ClientFactory;from twisted.python import log, failure, filepath;from mock import mock1, mock2, mock3, mock4;") nil "py-find-imports-lp-1023236-test failed"))
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

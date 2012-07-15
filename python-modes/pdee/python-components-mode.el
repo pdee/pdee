@@ -1193,7 +1193,7 @@ v5 did it - lp:990079. This might fail with certain chars - see UnicodeEncodeErr
   "Default is nil. When t, python-mode calls
     (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
-Also commands may delete trailing whitespace by the way. 
+Also commands may delete trailing whitespace by the way.
 When editing other peoples code, this may produce a larger diff than expected "
   :type 'boolean
   :group 'python-mode)
@@ -4045,289 +4045,7 @@ or a blank line indented to where it would close a block."
                 (python-previous-statement)
                 (current-indentation))))))
 
-;;;; Movement.
-
-;; Fixme:  Define {for,back}ward-sexp-function?  Maybe skip units like
-;; block, statement, depending on context.
-
-(defun python-beginning-of-defun ()
-  "`beginning-of-defun-function' for Python.
-Finds beginning of innermost nested class or method definition.
-Returns the name of the definition found at the end, or nil if
-reached start of buffer."
-  (let ((ci (current-indentation))
-        (def-re (rx bol (0+ space) (or "def" "class") (1+ space)
-                    (group (1+ (or word (syntax symbol))))))
-        found lep) ;; def-line
-    (if (python-comment-line-p)
-        (setq ci most-positive-fixnum))
-    (while (and (not (bobp)) (not found))
-      ;; Treat bol at beginning of function as outside function so
-      ;; that successive C-M-a makes progress backwards.
-      ;;(setq def-line (looking-at def-re))
-      (unless (bolp) (end-of-line))
-      (setq lep (line-end-position))
-      (if (and (re-search-backward def-re nil 'move)
-               ;; Must be less indented or matching top level, or
-               ;; equally indented if we started on a definition line.
-               (let ((in (current-indentation)))
-                 (or (and (zerop ci) (zerop in))
-                     (= lep (line-end-position)) ; on initial line
-                     ;; Not sure why it was like this -- fails in case of
-                     ;; last internal function followed by first
-                     ;; non-def statement of the main body.
-                     ;; 		     (and def-line (= in ci))
-                     (= in ci)
-                     (< in ci)))
-               (not (python-in-string/comment)))
-          (setq found t)))
-    found))
-
-(defun python-end-of-defun ()
-  "`end-of-defun-function' for Python.
-Finds end of innermost nested class or method definition."
-  (let ((orig (point))
-        (pattern (rx bol (0+ space) (or "def" "class") space)))
-    ;; Go to start of current block and check whether it's at top
-    ;; level.  If it is, and not a block start, look forward for
-    ;; definition statement.
-    (when (python-comment-line-p)
-      (end-of-line)
-      (forward-comment most-positive-fixnum))
-    (if (not (python-open-block-statement-p))
-        (python-beginning-of-block))
-    (if (zerop (current-indentation))
-        (unless (python-open-block-statement-p)
-          (while (and (re-search-forward pattern nil 'move)
-                      (python-in-string/comment))) ; just loop
-          (unless (eobp)
-            (beginning-of-line)))
-      ;; Don't move before top-level statement that would end defun.
-      (end-of-line)
-      (python-beginning-of-defun))
-    ;; If we got to the start of buffer, look forward for
-    ;; definition statement.
-    (if (and (bobp) (not (looking-at "def\\|class")))
-        (while (and (not (eobp))
-                    (re-search-forward pattern nil 'move)
-                    (python-in-string/comment)))) ; just loop
-    ;; We're at a definition statement (or end-of-buffer).
-    (unless (eobp)
-      (python-end-of-block)
-      ;; Count trailing space in defun (but not trailing comments).
-      (skip-syntax-forward " >")
-      (unless (eobp)			; e.g. missing final newline
-        (beginning-of-line)))
-    ;; Catch pathological cases like this, where the beginning-of-defun
-    ;; skips to a definition we're not in:
-    ;; if ...:
-    ;;     ...
-    ;; else:
-    ;;     ...  # point here
-    ;;     ...
-    ;;     def ...
-    (if (< (point) orig)
-        (goto-char (point-max)))))
-
-(defun python-beginning-of-statement ()
-  "Go to start of current statement.
-Accounts for continuation lines, multi-line strings, and
-multi-line bracketed expressions."
-  (beginning-of-line)
-  (python-beginning-of-string)
-  (let (point)
-    (while (and (python-continuation-line-p)
-                (if point
-                    (< (point) point)
-                  t))
-      (beginning-of-line)
-      (if (python-backslash-continuation-line-p)
-          (progn
-            (forward-line -1)
-            (while (python-backslash-continuation-line-p)
-              (forward-line -1)))
-        (python-beginning-of-string)
-        (python-skip-out))
-      (setq point (point))))
-  (back-to-indentation))
-
-(defun python-skip-out (&optional forward syntax)
-  "Skip out of any nested brackets.
-Skip forward if FORWARD is non-nil, else backward.
-If SYNTAX is non-nil it is the state returned by `syntax-ppss' at point.
-Return non-nil if and only if skipping was done."
-  (let ((depth (syntax-ppss-depth (or syntax (syntax-ppss))))
-        (forward (if forward -1 1)))
-    (unless (zerop depth)
-      (if (> depth 0)
-          ;; Skip forward out of nested brackets.
-          (condition-case ()		; beware invalid syntax
-              (progn (backward-up-list (* forward depth)) t)
-            (error nil))
-        ;; Invalid syntax (too many closed brackets).
-        ;; Skip out of as many as possible.
-        (let (done)
-          (while (condition-case ()
-                     (progn (backward-up-list forward)
-                            (setq done t))
-                   (error nil)))
-          done)))))
-
-(defun python-end-of-statement ()
-  "Go to the end of the current statement and return point.
-Usually this is the start of the next line, but if this is a
-multi-line statement we need to skip over the continuation lines.
-On a comment line, go to end of line."
-  (end-of-line)
-  (while (let (comment)
-           ;; Move past any enclosing strings and sexps, or stop if
-           ;; we're in a comment.
-           (while (let ((s (syntax-ppss)))
-                    (cond ((eq 'comment (syntax-ppss-context s))
-                           (setq comment t)
-                           nil)
-                          ((eq 'string (syntax-ppss-context s))
-                           ;; Go to start of string and skip it.
-                           (let ((pos (point)))
-                             (goto-char (nth 8 s))
-                             (condition-case () ; beware invalid syntax
-                                 (progn (forward-sexp) t)
-                               ;; If there's a mismatched string, make sure
-                               ;; we still overall move *forward*.
-                               (error (goto-char pos) (end-of-line)))))
-                          ((python-skip-out t s))))
-             (end-of-line))
-           (unless comment
-             (eq ?\\ (char-before))))	; Line continued?
-    (end-of-line 2))			; Try next line.
-  (point))
-
-(defun python-previous-statement (&optional count)
-  "Go to start of previous statement.
-With argument COUNT, do it COUNT times.  Stop at beginning of buffer.
-Return count of statements left to move."
-  (interactive "p")
-  (unless count (setq count 1))
-  (if (< count 0)
-      (python-next-statement (- count))
-    (python-beginning-of-statement)
-    (while (and (> count 0) (not (bobp)))
-      (python-skip-comments/blanks t)
-      (python-beginning-of-statement)
-      (unless (bobp) (setq count (1- count))))
-    count))
-
-(defun python-next-statement (&optional count)
-  "Go to start of next statement.
-With argument COUNT, do it COUNT times.  Stop at end of buffer.
-Return count of statements left to move."
-  (interactive "p")
-  (unless count (setq count 1))
-  (if (< count 0)
-      (python-previous-statement (- count))
-    (beginning-of-line)
-    (let (bogus)
-      (while (and (> count 0) (not (eobp)) (not bogus))
-        (python-end-of-statement)
-        (python-skip-comments/blanks)
-        (if (eq 'string (syntax-ppss-context (syntax-ppss)))
-            (setq bogus t)
-          (unless (eobp)
-            (setq count (1- count))))))
-    count))
-
-(defun python-beginning-of-block (&optional arg)
-  "Go to start of current block.
-With numeric arg, do it that many times.  If ARG is negative, call
-`python-end-of-block' instead.
-If point is on the first line of a block, use its outer block.
-If current statement is in column zero, don't move and return nil.
-Otherwise return non-nil."
-  (interactive "p")
-  (unless arg (setq arg 1))
-  (cond
-   ((zerop arg))
-   ((< arg 0) (python-end-of-block (- arg)))
-   (t
-    (let ((point (point)))
-      (if (or (python-comment-line-p)
-              (python-blank-line-p))
-          (python-skip-comments/blanks t))
-      (python-beginning-of-statement)
-      (let ((ci (current-indentation)))
-        (if (zerop ci)
-            (not (goto-char point))	; return nil
-          ;; Look upwards for less indented statement.
-          (if (catch 'done
-;;; This is slower than the below.
-;;; 	  (while (zerop (python-previous-statement))
-;;; 	    (when (and (< (current-indentation) ci)
-;;; 		       (python-open-block-statement-p t))
-;;; 	      (beginning-of-line)
-;;; 	      (throw 'done t)))
-                (while (and (zerop (forward-line -1)))
-                  (when (and (< (current-indentation) ci)
-                             (not (python-comment-line-p))
-                             ;; Move to beginning to save effort in case
-                             ;; this is in string.
-                             (progn (python-beginning-of-statement) t)
-                             (python-open-block-statement-p t))
-                    (beginning-of-line)
-                    (throw 'done t)))
-                (not (goto-char point))) ; Failed -- return nil
-              (python-beginning-of-block (1- arg)))))))))
-
-(defun python-end-of-block (&optional arg)
-  "Go to end of current block.
-With numeric arg, do it that many times.  If ARG is negative,
-call `python-beginning-of-block' instead.
-If current statement is in column zero and doesn't open a block,
-don't move and return nil.  Otherwise return t."
-  (interactive "p")
-  (unless arg (setq arg 1))
-  (if (< arg 0)
-      (python-beginning-of-block (- arg))
-    (while (and (> arg 0)
-                (let* ((point (point))
-                       (_ (if (python-comment-line-p)
-                              (python-skip-comments/blanks t)))
-                       (ci (current-indentation))
-                       (open (python-open-block-statement-p)))
-                  (if (and (zerop ci) (not open))
-                      (not (goto-char point))
-                    (catch 'done
-                      (while (zerop (python-next-statement))
-                        (when (or (and open (<= (current-indentation) ci))
-                                  (< (current-indentation) ci))
-                          (python-skip-comments/blanks t)
-                          (beginning-of-line 2)
-                          (throw 'done t)))))))
-      (setq arg (1- arg)))
-    (zerop arg)))
-
-(defvar python-which-func-length-limit 40
-  "Non-strict length limit for `python-which-func' output.")
-
-(defun python-which-func ()
-  (let ((function-name (python-current-defun python-which-func-length-limit)))
-    (set-text-properties 0 (length function-name) nil function-name)
-    function-name))
-
-
 ;;; Imenu.
-
-;; For possibily speeding this up, here's the top of the ELP profile
-;; for rescanning pydoc.py (2.2k lines, 90kb):
-;; Function Name Call Count Elapsed Time Average Time
-;; ====================================  ==========  =============  ============
-;; python-imenu-create-index 156 2.430906 0.0155827307
-;; python-end-of-defun 155 1.2718260000 0.0082053290
-;; python-end-of-block 155 1.1898689999 0.0076765741
-;; python-next-statement 2970 1.024717 0.0003450225
-;; python-end-of-statement 2970 0.4332190000 0.0001458649
-;; python-beginning-of-defun 265 0.0918479999 0.0003465962
-;; python-skip-comments/blanks 3125 0.0753319999 2.410...e-05
-
 (defvar python-recursing)
 (defun python-imenu-create-index ()
   "`imenu-create-index-function' for Python.
@@ -4386,22 +4104,7 @@ precede it)."
     index-alist))
 
 
-;;;; `Electric' commands.
-
-(defun python-electric-colon (arg)
-  "Insert a colon and maybe outdent the line if it is a statement like `else'.
-With numeric ARG, just insert that many colons.  With \\[universal-argument],
-just insert a single colon."
-  (interactive "*P")
-  (self-insert-command (if (not (integerp arg)) 1 arg))
-  (and (not arg)
-       (eolp)
-       (python-outdent-p)
-       (not (python-in-string/comment))
-       (> (current-indentation) (python-calculate-indentation))
-       (python-indent-line)))		; OK, do it
-(put 'python-electric-colon 'delete-selection t)
-
+;;; Electric commands.
 (defun python-backspace (arg)
   "Maybe delete a level of indentation on the current line.
 Do so if point is at the end of the line's indentation outside
@@ -5177,7 +4880,6 @@ Updated on each expansion.")
 (add-hook 'kill-emacs-hook 'py-kill-emacs-hook)
 (add-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file)
 
-
 (remove-hook 'python-mode-hook 'python-setup-brm)
 (add-hook 'python-mode-hook
           #'(lambda ()
@@ -5243,8 +4945,6 @@ Updated on each expansion.")
 ;; (lambda ()
 ;; "Turn off Indent Tabs mode."
 ;; (setq indent-tabs-mode nil)))
-
-(add-hook 'which-func-functions 'python-which-func nil t)
 
 ;; (add-hook 'comint-output-filter-functions
 ;; 'py-comint-output-filter-function)
