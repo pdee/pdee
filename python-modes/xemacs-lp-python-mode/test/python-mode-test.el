@@ -6632,7 +6632,7 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
 print dir()
 c = Cat()
 c.hello() #causes error, but emacs tracking fails
-
+import sys, os; os.remove('do/something/nasty') # lp:1025000
 "))
     (py-bug-tests-intern 'py-end-of-statement-base arg teststring)))
 
@@ -6643,7 +6643,13 @@ c.hello() #causes error, but emacs tracking fails
   (goto-char 65)
   (py-end-of-statement)
   (assert (eq 75 (point)) nil "py-end-of-statement-test #2 failed")
+  (goto-char 99)
+  (py-end-of-statement) 
+  (assert (eq 130 (point)) nil "py-end-of-statement-test #3 failed")
+  (py-end-of-statement)
+  (assert (eq 163 (point)) nil "py-end-of-statement-test #4 failed")
   )
+
 
 
 (defun key-binding-tests (&optional arg)

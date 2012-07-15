@@ -562,7 +562,7 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
 (defun previous-statement-lp:637955 ()
   (beginning-of-line)
   (py-previous-statement)
-  (assert (eq 31 (point)) nil "previous-statement-lp:637955-test failed."))
+  (assert (eq 1 (point)) nil "previous-statement-lp:637955-test failed."))
 
 (defun nested-indents-lp:328775-test (&optional arg)
   "With ARG greater 1 keep test buffer open.
