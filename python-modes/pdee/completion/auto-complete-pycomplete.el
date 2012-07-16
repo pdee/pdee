@@ -34,6 +34,14 @@
 
 (ac-clear-variable-after-save 'ac-pycomplete-imports-cache)
 
+(defun ac-pycomplete-document (symbol)
+  (let* ((full-prefix (py-complete-enhanced-symbol-before-point))
+        (full-symbol (concat (substring full-prefix 0 (- (length ac-prefix))) symbol)))
+    (or ac-pycomplete-imports-cache
+        (setq ac-pycomplete-imports-cache (py-complete-find-global-imports)))
+    (py-complete-docstring-for-symbol
+     full-symbol ac-pycomplete-imports-cache)))
+
 (defun ac-pycomplete-candidates ()
   (or ac-pycomplete-imports-cache
       (setq ac-pycomplete-imports-cache (py-complete-find-global-imports)))
@@ -41,7 +49,8 @@
    (py-complete-enhanced-symbol-before-point) ac-pycomplete-imports-cache))
 
 (ac-define-source pycomplete
-  '((candidates . ac-pycomplete-candidates)))
+  '((candidates . ac-pycomplete-candidates)
+    (document . ac-pycomplete-document)))
 
 (provide 'auto-complete-pycomplete)
 ;;; auto-complete-pycomplete.el ends here

@@ -64,12 +64,24 @@ def test_location():
     assert linecache.getline(fn, line).startswith('def join')
     assert pylocation('cStringIO.StringIO') is None
 
+def test_docstring():
+    assert pydocstring('os.path.abspath') == 'Return an absolute path.'
+    assert pydocstring('os.path').startswith(
+        'Common operations on Posix pathnames.\n')
+    assert pydocstring('httplib.HTTPMessage.getheader').startswith(
+        'Get the header value for a name.\n')
+    assert pydocstring('yield') == ''
+    assert pydocstring('numbers.Real.real') == \
+      'Real numbers are their real component.'
+    assert pydocstring('notexisting') == ''
+
 def run_tests():
     test_complete()
     test_completions()
     test_help()
     test_signature()
     test_location()
+    test_docstring()
 
 if __name__ == "__main__":
     run_tests()

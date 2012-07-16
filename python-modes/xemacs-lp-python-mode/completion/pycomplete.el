@@ -90,6 +90,13 @@
      sym (buffer-file-name)
      imports)))
 
+(defun py-complete-docstring-for-symbol (sym &optional imports)
+  "Get docstring for symbol using statements given in imports."
+  (let ((pymacs-forget-mutability t))
+    (pycomplete-pydocstring
+     sym (buffer-file-name)
+     imports)))
+
 (defun py-complete-completions ()
   "Get possible completions for current statement."
   (py-complete-completions-for-symbol

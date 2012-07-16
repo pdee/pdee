@@ -265,6 +265,20 @@ class PyCompleteDocument(object):
         except Exception, ex:
             return '%s' % ex
 
+    def get_docstring(self, s, imports=None):
+        """Return docstring for symbol s."""
+        if s and not keyword.iskeyword(s):
+            try:
+                self._import_modules(imports)
+                obj = self._load_symbol(s, strict=False)
+                if obj:
+                    doc = inspect.getdoc(obj)
+                    if doc:
+                        return doc
+            except:
+                pass
+        return ''
+
     def get_signature(self, s, imports=None):
         """Return info about function parameters."""
         if not s or keyword.iskeyword(s):
@@ -343,6 +357,10 @@ def pycomplete(s, fname=None, imports=None):
 def pyhelp(s, fname=None, imports=None):
     """Return help on object s."""
     return PyCompleteDocument.instance(fname).help(s, imports)
+
+def pydocstring(s, fname=None, imports=None):
+    """Return docstring of symbol."""
+    return PyCompleteDocument.instance(fname).get_docstring(s, imports)
 
 def pysignature(s, fname=None, imports=None):
     """Return info about function parameters."""
