@@ -484,6 +484,127 @@ will work.
              (not (py-in-string-or-comment-p)))
     (point)))
 
+;;; End-of- p
+(defun py-end-of-line-p ()
+  "Returns position, if cursor is at the end of a line, nil otherwise. "
+  (when (eolp)(point)))
+
+(defun py-end-of-buffer-p ()
+  "Returns position, if cursor is at the end of buffer, nil otherwise. "
+  (when (eobp)(point)))
+
+(defun py-end-of-paragraph-p ()
+  "Returns position, if cursor is at the end of a paragraph, nil otherwise. "
+  (let ((orig (point))
+         erg)
+     (if (and (eolp) (looking-at paragraph-separate))
+         (setq erg (point))
+     (save-excursion
+       (py-beginning-of-paragraph)
+       (py-end-of-paragraph)
+       (when (eq orig (point))
+         (setq erg orig)))
+       erg)))
+
+(defun py-end-of-statement-p ()
+  "Returns position, if cursor is at the end of a statement, nil otherwise. "
+  (let ((orig (point))
+         erg)
+     (save-excursion
+       (py-beginning-of-statement)
+       (py-end-of-statement)
+       (when (eq orig (point))
+         (setq erg orig))
+       erg)))
+
+(defun py-end-of-expression-p ()
+  "Returns position, if cursor is at the end of a expression, nil otherwise. "
+  (let ((orig (point))
+         erg)
+     (save-excursion
+       (py-beginning-of-expression)
+       (py-end-of-expression)
+       (when (eq orig (point))
+         (setq erg orig))
+       erg)))
+
+(defun py-end-of-partial-expression-p ()
+  "Returns position, if cursor is at the end of a partial-expression, nil otherwise. "
+  (let ((orig (point))
+         erg)
+     (save-excursion
+       (py-beginning-of-partial-expression)
+       (py-end-of-partial-expression)
+       (when (eq orig (point))
+         (setq erg orig))
+       erg)))
+
+(defun py-end-of-block-p ()
+  "Returns position, if cursor is at the end of a block, nil otherwise. "
+  (let ((orig (point))
+         erg)
+     (save-excursion
+       (py-beginning-of-block)
+       (py-end-of-block)
+       (when (eq orig (point))
+         (setq erg orig))
+       erg)))
+
+(defun py-end-of-clause-p ()
+  "Returns position, if cursor is at the end of a clause, nil otherwise. "
+  (let ((orig (point))
+         erg)
+     (save-excursion
+       (py-beginning-of-clause)
+       (py-end-of-clause)
+       (when (eq orig (point))
+         (setq erg orig))
+       erg)))
+
+(defun py-end-of-block-or-clause-p ()
+  "Returns position, if cursor is at the end of a block-or-clause, nil otherwise. "
+  (let ((orig (point))
+         erg)
+     (save-excursion
+       (py-beginning-of-block-or-clause)
+       (py-end-of-block-or-clause)
+       (when (eq orig (point))
+         (setq erg orig))
+       erg)))
+
+(defun py-end-of-def-p ()
+  "Returns position, if cursor is at the end of a def, nil otherwise. "
+  (let ((orig (point))
+         erg)
+     (save-excursion
+       (py-beginning-of-def)
+       (py-end-of-def)
+       (when (eq orig (point))
+         (setq erg orig))
+       erg)))
+
+(defun py-end-of-class-p ()
+  "Returns position, if cursor is at the end of a class, nil otherwise. "
+  (let ((orig (point))
+         erg)
+     (save-excursion
+       (py-beginning-of-class)
+       (py-end-of-class)
+       (when (eq orig (point))
+         (setq erg orig))
+       erg)))
+
+(defun py-end-of-def-or-class-p ()
+  "Returns position, if cursor is at the end of a def-or-class, nil otherwise. "
+  (let ((orig (point))
+         erg)
+     (save-excursion
+       (py-beginning-of-def-or-class)
+       (py-end-of-def-or-class)
+       (when (eq orig (point))
+         (setq erg orig))
+       erg)))
+
 ;;; Opens
 (defun py-statement-opens-block-p (&optional regexp)
   "Return position if the current statement opens a block

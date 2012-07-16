@@ -5237,6 +5237,127 @@ will work.
              (not (py-in-string-or-comment-p)))
     (point)))
 
+;;; End-of- p
+(defun py-end-of-line-p ()
+  "Returns position, if cursor is at the end of a line, nil otherwise. "
+  (when (eolp)(point)))
+
+(defun py-end-of-buffer-p ()
+  "Returns position, if cursor is at the end of buffer, nil otherwise. "
+  (when (eobp)(point)))
+
+(defun py-end-of-paragraph-p ()
+  "Returns position, if cursor is at the end of a paragraph, nil otherwise. "
+  (let ((orig (point))
+        erg)
+    (if (and (eolp) (looking-at paragraph-separate))
+        (setq erg (point))
+      (save-excursion
+        (py-beginning-of-paragraph)
+        (py-end-of-paragraph)
+        (when (eq orig (point))
+          (setq erg orig)))
+      erg)))
+
+(defun py-end-of-statement-p ()
+  "Returns position, if cursor is at the end of a statement, nil otherwise. "
+  (let ((orig (point))
+        erg)
+    (save-excursion
+      (py-beginning-of-statement)
+      (py-end-of-statement)
+      (when (eq orig (point))
+        (setq erg orig))
+      erg)))
+
+(defun py-end-of-expression-p ()
+  "Returns position, if cursor is at the end of a expression, nil otherwise. "
+  (let ((orig (point))
+        erg)
+    (save-excursion
+      (py-beginning-of-expression)
+      (py-end-of-expression)
+      (when (eq orig (point))
+        (setq erg orig))
+      erg)))
+
+(defun py-end-of-partial-expression-p ()
+  "Returns position, if cursor is at the end of a partial-expression, nil otherwise. "
+  (let ((orig (point))
+        erg)
+    (save-excursion
+      (py-beginning-of-partial-expression)
+      (py-end-of-partial-expression)
+      (when (eq orig (point))
+        (setq erg orig))
+      erg)))
+
+(defun py-end-of-block-p ()
+  "Returns position, if cursor is at the end of a block, nil otherwise. "
+  (let ((orig (point))
+        erg)
+    (save-excursion
+      (py-beginning-of-block)
+      (py-end-of-block)
+      (when (eq orig (point))
+        (setq erg orig))
+      erg)))
+
+(defun py-end-of-clause-p ()
+  "Returns position, if cursor is at the end of a clause, nil otherwise. "
+  (let ((orig (point))
+        erg)
+    (save-excursion
+      (py-beginning-of-clause)
+      (py-end-of-clause)
+      (when (eq orig (point))
+        (setq erg orig))
+      erg)))
+
+(defun py-end-of-block-or-clause-p ()
+  "Returns position, if cursor is at the end of a block-or-clause, nil otherwise. "
+  (let ((orig (point))
+        erg)
+    (save-excursion
+      (py-beginning-of-block-or-clause)
+      (py-end-of-block-or-clause)
+      (when (eq orig (point))
+        (setq erg orig))
+      erg)))
+
+(defun py-end-of-def-p ()
+  "Returns position, if cursor is at the end of a def, nil otherwise. "
+  (let ((orig (point))
+        erg)
+    (save-excursion
+      (py-beginning-of-def)
+      (py-end-of-def)
+      (when (eq orig (point))
+        (setq erg orig))
+      erg)))
+
+(defun py-end-of-class-p ()
+  "Returns position, if cursor is at the end of a class, nil otherwise. "
+  (let ((orig (point))
+        erg)
+    (save-excursion
+      (py-beginning-of-class)
+      (py-end-of-class)
+      (when (eq orig (point))
+        (setq erg orig))
+      erg)))
+
+(defun py-end-of-def-or-class-p ()
+  "Returns position, if cursor is at the end of a def-or-class, nil otherwise. "
+  (let ((orig (point))
+        erg)
+    (save-excursion
+      (py-beginning-of-def-or-class)
+      (py-end-of-def-or-class)
+      (when (eq orig (point))
+        (setq erg orig))
+      erg)))
+
 ;;; Opens- p
 (defun py-statement-opens-block-p (&optional regexp)
   "Return position if the current statement opens a block
@@ -6080,19 +6201,30 @@ http://docs.python.org/reference/compound_stmts.html
         (py-beginning-of-statement orig done))
        ((nth 8 pps)
         (goto-char (1- (nth 8 pps)))
-        (setq done t)
+        ;; (setq done t)
         (py-beginning-of-statement orig done))
        ((nth 1 pps)
         (goto-char (1- (nth 1 pps)))
         (setq done t)
         (py-beginning-of-statement orig done))
+       ((and (eq (point) orig)(looking-back ";[ \t]*"))
+        (goto-char (match-beginning 0))
+        (skip-chars-backward ";")
+        (py-beginning-of-statement orig done))
+       ((and (not (eq (point) orig))(looking-back ";[ \t]*"))
+        (setq erg (point)))
        ((and (not done) (not (eq 0 (skip-chars-backward " \t\r\n\f"))))
-        (setq done t)
+        ;; (setq done t)
         (py-beginning-of-statement orig done))
        ((not (eq (current-column) (current-indentation)))
-        (back-to-indentation)
-        (setq done t)
-        (py-beginning-of-statement orig done))
+        (if (< 0 (abs (skip-chars-backward "^;\t\r\n\f")))
+            (progn
+              (setq done t)
+              (back-to-indentation)
+              (py-beginning-of-statement orig done))
+          (back-to-indentation)
+          (setq done t)
+          (py-beginning-of-statement orig done)))
        ((looking-at "[ \t]*#")
         (skip-chars-backward " \t\r\n\f")
         (setq done t)
@@ -6147,15 +6279,16 @@ To go just beyond the final line of the current statement, use `py-down-statemen
     (let ((pps (syntax-ppss))
           (orig (point))
           ;; use by scan-lists
-          parse-sexp-ignore-comments erg)
+          parse-sexp-ignore-comments erg stringchar)
       (cond
        ((and (not done) (< 0 (skip-chars-forward " \t\r\n\f")))
-        (end-of-line)
+        (skip-chars-forward "^;" (line-end-position))
         (py-beginning-of-comment)
-        (skip-chars-backward " \t\r\n\f" (line-beginning-position))
+        (unless (looking-back "^[ \t]*")
+          (skip-chars-backward " \t\r\n\f" (line-beginning-position)))
         (if (eq (point) orig)
             (progn
-              (end-of-line)
+              (skip-chars-forward "^;" (line-end-position))
               (forward-comment 99999)
               (py-end-of-statement orig done))
           (setq done t)
@@ -6170,52 +6303,63 @@ To go just beyond the final line of the current statement, use `py-down-statemen
                 (when (looking-at ":[ \t]*$")
                   (forward-char 1))
                 (setq done t)
-                (end-of-line)
+                (skip-chars-forward "^;" (line-end-position))
                 (skip-chars-backward " \t\r\n\f")
                 (py-end-of-statement orig done))
             (goto-char orig))))
        ((and (nth 8 pps)(nth 3 pps))
         (goto-char (nth 8 pps))
         (if (looking-at "\"\"\"\\|'''")
-            (goto-char (match-end 0))
-          (forward-char 1))
-        (while (and (re-search-forward (match-string-no-properties 0) nil (quote move) 1)
-                    (nth 3 (syntax-ppss))))
+            (progn
+              (goto-char (match-end 0))
+              (while (and (re-search-forward (match-string-no-properties 0) nil (quote move) 1)
+                          (nth 3 (syntax-ppss)))))
+          (setq stringchar (char-to-string (char-after)))
+          (forward-char 1)
+          (while (and (re-search-forward stringchar nil t 1)
+                      (nth 3 (syntax-ppss)))))
+        (skip-chars-forward "^;\t\r\n\f")
         (setq done t)
-        (end-of-line)
-        (skip-chars-backward " \t\r\n\f" (line-beginning-position))
+        (skip-chars-backward " " (line-beginning-position))
         (py-end-of-statement orig done))
        ;; in comment
        ((nth 4 pps)
         (if (eobp)
             nil
-          (setq done t)
+          (skip-chars-forward "^;" (line-end-position))
           (forward-comment 99999)
-          (end-of-line)
           (skip-chars-backward " \t\r\n\f" (line-beginning-position))
-          (py-beginning-of-comment)
-          (skip-chars-backward " \t\r\n\f")
+          (when (py-beginning-of-comment)
+            (skip-chars-backward " \t\r\n\f" (line-beginning-position)))
           (py-end-of-statement orig done)))
        ((looking-at "#")
         ;; (skip-chars-forward "#")
-        (end-of-line)
+        (skip-chars-forward "^;" (line-end-position))
         (forward-comment 99999)
         (setq done t)
-        (end-of-line)
+        (skip-chars-forward "^;" (line-end-position))
         (skip-chars-backward " \t\r\n\f")
         (py-beginning-of-comment)
         (skip-chars-backward " \t\r\n\f")
         (py-end-of-statement orig done))
        ((py-current-line-backslashed-p)
         (skip-chars-forward " \t\r\n\f")
-        (end-of-line)
+        (skip-chars-forward "^;" (line-end-position))
         (skip-chars-backward " \t\r\n\f")
         (py-beginning-of-comment)
         (skip-chars-backward " \t\r\n\f")
         (setq done t)
         (py-end-of-statement orig done))
+       ((and (not done) (eq (point) orig)(looking-at ";"))
+        (skip-chars-forward ";" (line-end-position))
+        (when (< 0 (skip-chars-forward "^;" (line-end-position)))
+          (py-beginning-of-comment)
+          (skip-chars-backward " \t\r\n\f")
+          (setq done t)
+          )
+        (py-end-of-statement orig done))
        ((and (not done) (eq (point) orig))
-        (end-of-line)
+        (skip-chars-forward "^;" (line-end-position))
         (skip-chars-backward " \t\r\n\f")
         (py-beginning-of-comment)
         (skip-chars-backward " \t\r\n\f")
@@ -8867,25 +9011,25 @@ Useful for newly defined symbol, not known to python yet. "
             (insert erg)))))))
 
 (defun py-find-imports ()
-  "Find top-level imports, updating `python-imports'."
+  "Find top-level imports, updating `python-imports'.
+
+Returns python-imports"
   (interactive)
-  (let* (imports)
+  (let (imports)
     (save-excursion
       (goto-char (point-min))
       (while (re-search-forward
               "^import *[A-Za-z_][A-Za-z_0-9].*\\|^from +[A-Za-z_][A-Za-z_0-9.]+ +import .*" nil t)
-        (let ((start-point (point)))
-          (end-of-line)
-          (while (equal (char-before) (string-to-char "\\"))
-            (next-line)
-            (end-of-line))
-          (setq imports
-                (concat
-                 imports
-                 (replace-regexp-in-string
-                  "[\\]\r?\n?\s*" ""
-                  (buffer-substring-no-properties (match-beginning 0) (point))) ";")))))
+        (unless (py-end-of-statement-p)
+          (py-end-of-statement))
+        (setq imports
+              (concat
+               imports
+               (replace-regexp-in-string
+                "[\\]\r?\n?\s*" ""
+                (buffer-substring-no-properties (match-beginning 0) (point))) ";"))))
     (when (and py-verbose-p (interactive-p)) (message "%s" imports))
+    (setq python-imports imports)
     imports))
 
 (defun py-eldoc-function ()

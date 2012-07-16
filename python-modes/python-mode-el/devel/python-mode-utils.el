@@ -1161,6 +1161,52 @@ A complementary command travelling right, whilst `py-beginning-of-" ele "' stops
   (switch-to-buffer (current-buffer))
   (emacs-lisp-mode))
 
+(defun py-write-beginning-of-p-forms ()
+  (interactive)
+  (set-buffer (get-buffer-create "End-of"))
+  (erase-buffer)
+  (insert ";;; End-of- p
+\(defun py-end-of-line-p ()
+  \"Returns position, if cursor is at the end of a line, nil otherwise. \"
+  (when (eolp)(point)))
+
+\(defun py-end-of-buffer-p ()
+  \"Returns position, if cursor is at the end of buffer, nil otherwise. \"
+  (when (eobp)(point)))\n")
+
+  (dolist (ele py-noregexp-forms)
+    (unless (string= "line" ele)
+      (insert (concat "
+\(defun py-end-of-" ele "-p ()
+  \"Returns position, if cursor is at the end of a " ele ", nil otherwise. \"
+  (let ((orig (point))
+         erg)"))
+      (when (string= "paragraph" ele)
+        (insert "
+     (if (and (eolp) (looking-at paragraph-separate))
+         (setq erg (point))"))
+      (insert (concat "
+     (save-excursion
+       (py-beginning-of-" ele ")
+       (py-end-of-" ele ")
+       (when (eq orig (point))
+         (setq erg orig))"))
+      (when (string= "paragraph" ele)
+        (insert ")"))
+      (insert (concat "
+       erg)))
+"))))
+  (dolist (ele py-regexp-forms)
+    (insert (concat "
+\(defun py-end-of-" ele "-p ()
+  \"Returns position, if cursor is at the end of a " ele ", nil otherwise. \"
+    (when (and (looking-at py-" ele "-re)
+               (not (py-in-string-or-comment-p)))
+      (point)))
+")))
+  (switch-to-buffer (current-buffer))
+  (emacs-lisp-mode))
+
 (defun py-write-mark-forms ()
   (interactive)
   (set-buffer (get-buffer-create "Mark-forms"))

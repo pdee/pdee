@@ -592,25 +592,25 @@ Interactively, prompt for name."
       (forward-line (1- line)))))
 
 (defun py-find-imports ()
-  "Find top-level imports, updating `python-imports'."
+  "Find top-level imports, updating `python-imports'.
+
+Returns python-imports"
   (interactive)
-  (let* (imports)
+  (let (imports)
     (save-excursion
       (goto-char (point-min))
       (while (re-search-forward
               "^import *[A-Za-z_][A-Za-z_0-9].*\\|^from +[A-Za-z_][A-Za-z_0-9.]+ +import .*" nil t)
-        (let ((start-point (point)))
-          (end-of-line)
-          (while (equal (char-before) (string-to-char "\\"))
-              (next-line)
-              (end-of-line))
+        (unless (py-end-of-statement-p)
+          (py-end-of-statement))
         (setq imports
               (concat
                imports
-                 (replace-regexp-in-string
-                  "[\\]\r?\n?\s*" ""
-                  (buffer-substring-no-properties (match-beginning 0) (point))) ";")))))
+               (replace-regexp-in-string
+                "[\\]\r?\n?\s*" ""
+                (buffer-substring-no-properties (match-beginning 0) (point))) ";"))))
     (when (and py-verbose-p (interactive-p)) (message "%s" imports))
+    (setq python-imports imports)
     imports))
 
 (defun py-update-imports ()
