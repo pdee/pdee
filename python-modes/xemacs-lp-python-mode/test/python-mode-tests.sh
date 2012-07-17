@@ -817,7 +817,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-insert-super-python2-test \
 --funcall nested-try-finally-test \
 --funcall py-separator-char-test \
---funcall execute-indented-code-lp:828314-test \
 --funcall switch-windows-on-execute-p-test \
 --funcall python-dedicated-test \
 \
@@ -926,7 +925,6 @@ est \
 --funcall py-ipython-complete-lp:927136-test \
 --funcall indent-region-lp:997958-test \
 --funcall py-shell-invoking-python-lp:835151-test \
---funcall split-windows-on-execute-p-test \
 --funcall script-buffer-appears-instead-of-python-shell-buffer-lp:957561-test \
 --funcall py-install-directory-path-test \
 --funcall dict-error-test \
@@ -945,6 +943,8 @@ est \
 --funcall not-that-useful-completion-lp:1003580-test \
 --funcall completion-at-gentoo-lp-1008842-test \
 --funcall py-find-imports-lp-1023236-test \
+--funcall execute-indented-code-lp:828314-test \
+--funcall split-windows-on-execute-p-test \
 
 else
 

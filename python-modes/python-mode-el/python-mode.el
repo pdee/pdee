@@ -1717,8 +1717,10 @@ When `py-verbose-p' and MSG is non-nil messages the first line of STRING."
   (interactive "sPython command: ")
   (let* ((process (or process (python-shell-get-or-create-process)))
          (lines (split-string string "\n" t))
-         ;; (temp-file-name (make-temp-file "py"))
-         (temp-file-name (concat (py-normalize-directory py-temp-directory) "psss-temp.py"))
+         (temp-file-name (concat (with-current-buffer (process-buffer process)
+                                   (file-remote-p default-directory))
+                                 (py-normalize-directory py-temp-directory)
+                                 "psss-temp.py"))
          (file-name (or (buffer-file-name) temp-file-name)))
     ;; (when (and py-verbose-p msg)
     ;; (message (format "Sent: %s..." (nth 0 lines)))
@@ -1814,7 +1816,7 @@ FILE-NAME."
       (concat "__pyfile = open('''%s''');"
               "exec(compile(__pyfile.read(), '''%s''', 'exec'));"
               "__pyfile.close()")
-      (or temp-file-name file-name) file-name)
+      (or (file-remote-p temp-file-name 'localname) file-name) file-name)
      process)))
 
 (defun python-shell-switch-to-shell ()
@@ -8031,13 +8033,15 @@ When called from a programm, it accepts a string specifying a shell which will b
   "Adapt the variables used in the process. "
   (let* ((oldbuf (current-buffer))
          (pyshellname (or pyshellname (py-choose-shell)))
-         (py-execute-directory (or (ignore-errors (file-name-directory (buffer-file-name)))(getenv "WORKON_HOME")(getenv "HOME")))
+         (py-execute-directory (or (ignore-errors (file-name-directory (file-remote-p (buffer-file-name) 'localname)))(getenv "WORKON_HOME")(getenv "HOME")))
          (strg (buffer-substring-no-properties start end))
          (sepchar (or sepchar (char-to-string py-separator-char)))
          (py-buffer-name (py-buffer-name-prepare pyshellname sepchar))
          (temp (make-temp-name
                 (concat (replace-regexp-in-string (regexp-quote sepchar) "-" (replace-regexp-in-string (concat "^" (regexp-quote sepchar)) "" (replace-regexp-in-string ":" "-" pyshellname))) "-")))
-         (file (concat (expand-file-name py-temp-directory) sepchar (replace-regexp-in-string (regexp-quote sepchar) "-" temp) ".py"))
+         (localname (concat (expand-file-name py-temp-directory) sepchar (replace-regexp-in-string (regexp-quote sepchar) "-" temp) ".py"))
+         (file (with-current-buffer py-buffer-name ; create the file to be executed in context of the shell
+                 (concat (file-remote-p default-directory) localname)))
          (filebuf (get-buffer-create file))
          (proc (if dedicated
                    (get-buffer-process (py-shell nil dedicated pyshellname switch sepchar py-buffer-name t))
@@ -8045,8 +8049,8 @@ When called from a programm, it accepts a string specifying a shell which will b
                      (get-buffer-process (py-shell nil dedicated pyshellname switch sepchar py-buffer-name t)))))
          (procbuf (process-buffer proc))
          (pec (if (string-match "[pP]ython ?3" py-buffer-name)
-                  (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" file file)
-                (format "execfile(r'%s') # PYTHON-MODE\n" file)))
+                  (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" localname localname)
+                (format "execfile(r'%s') # PYTHON-MODE\n" localname)))
          (wholebuf (when (boundp 'wholebuf) wholebuf))
          (comint-scroll-to-bottom-on-output t)
          erg)
@@ -8091,8 +8095,8 @@ When called from a programm, it accepts a string specifying a shell which will b
                    (sit-for 0.1)
                    (unless py-execute-keep-temporary-file-p
                      (delete-file file)
-                     (when (buffer-live-p file)
-                       (kill-buffer file)))
+                     (when (buffer-live-p localname)
+                       (kill-buffer localname)))
                    erg)
                (message "%s not readable. %s" file "Do you have write permissions?"))))))
 
