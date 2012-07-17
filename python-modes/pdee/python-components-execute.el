@@ -641,14 +641,14 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
          (temp (make-temp-name
                 (concat (replace-regexp-in-string (regexp-quote sepchar) "-" (replace-regexp-in-string (concat "^" (regexp-quote sepchar)) "" (replace-regexp-in-string ":" "-" pyshellname))) "-")))
          (localname (concat (expand-file-name py-temp-directory) sepchar (replace-regexp-in-string (regexp-quote sepchar) "-" temp) ".py"))
-         (file (with-current-buffer py-buffer-name ; create the file to be executed in context of the shell
-                 (concat (file-remote-p default-directory) localname)))
-         (filebuf (get-buffer-create file))
          (proc (if dedicated
                    (get-buffer-process (py-shell nil dedicated pyshellname switch sepchar py-buffer-name t))
                  (or (get-buffer-process (py-buffer-name-prepare pyshellname))
                      (get-buffer-process (py-shell nil dedicated pyshellname switch sepchar py-buffer-name t)))))
          (procbuf (process-buffer proc))
+         (file (with-current-buffer py-buffer-name ; create the file to be executed in context of the shell
+                 (concat (file-remote-p default-directory) localname)))
+         (filebuf (get-buffer-create file))
          (pec (if (string-match "[pP]ython ?3" py-buffer-name)
                   (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" localname localname)
                 (format "execfile(r'%s') # PYTHON-MODE\n" localname)))
@@ -677,7 +677,7 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
                (let ((err-p (py-postprocess-output-buffer py-output-buffer)))
                  ;; (when py-switch-buffers-on-execute-p
                  (pop-to-buffer py-output-buffer)
-                 ;; )
+                 ;;)
                  (if err-p
                      (pop-to-buffer py-exception-buffer))))))
           (t (set-buffer filebuf)
