@@ -824,7 +824,7 @@ You may customize this variable ")
 
 (defcustom py-honor-IPYTHONDIR-p nil
   "When non-nil ipython-history file is constructed by $IPYTHONDIR
-followed by \"/history\". Default is nil. 
+followed by \"/history\". Default is nil.
 
 Otherwise value of py-ipython-history is used. "
   :type 'boolean
@@ -838,7 +838,7 @@ Otherwise value of py-ipython-history is used. "
 
 (defcustom py-honor-PYTHONHISTORY-p nil
   "When non-nil python-history file is set by $PYTHONHISTORY
-Default is nil. 
+Default is nil.
 
 Otherwise value of py-python-history is used. "
   :type 'boolean
@@ -2209,8 +2209,11 @@ It makes underscores and dots word constituent chars.")
         (define-key map [(control c)(control w)] 'py-pychecker-run)
         (define-key map (kbd "TAB") 'py-indent-line)
         (if py-complete-function
-            (define-key map [(meta tab)] py-complete-function)
-          (define-key map [(meta tab)] 'py-shell-complete))
+            (progn
+              (define-key map [(meta tab)] py-complete-function)
+              (define-key map [(esc) (tab)] py-complete-function))
+          (define-key map [(meta tab)] 'py-shell-complete)
+          (define-key map [(esc) (tab)] 'py-shell-complete))
         ;; (substitute-key-definition 'complete-symbol 'completion-at-point
         ;; map global-map)
         (easy-menu-define py-menu map "Python Tools"
@@ -4391,57 +4394,6 @@ Updated on each expansion.")
                         (py-guess-indent-offset)))
                   (py-guess-indent-offset)))))
 
-;; (add-hook 'python-mode-hook
-;;           #'(lambda ()
-;;               (setq completion-at-point-functions nil)
-;;               ;; setting of var `py-local-versioned-command' is
-;;               ;; needed to detect the completion command to choose
-;;
-;;               ;; py-complete-function (set (make-local-variable
-;;               ;; 'python-local-version) py-complete-function) when
-;;               ;; set, `py-complete-function' it enforced
-;;               (set (make-local-variable 'py-local-command) (py-choose-shell))
-;;               ;; customized `py-complete-function' precedes
-;;               (cond ((string-match "[iI][pP]ython" py-local-command)
-;;                      ;; customized `py-complete-function' precedes
-;;                      (setq py-local-complete-function 'ipython-complete))
-;;                     ;; if `py-local-command' already contains version, use it
-;;                     ((string-match "[0-9]" py-local-command)
-;;                      (set (make-local-variable 'py-local-versioned-command) py-local-command))
-;;                     (t (set (make-local-variable 'python-version-numbers) (shell-command-to-string (concat py-local-command " -c \"from sys import version_info; print version_info[0:2]\"")))
-;;                        (set (make-local-variable 'py-local-versioned-command) (concat py-local-command (replace-regexp-in-string "," "." (replace-regexp-in-string "[()\.\n ]" "" python-version-numbers))))))
-;;               (if py-local-versioned-command
-;;                   (when (and (interactive-p) py-verbose-p) (message "py-local-versioned-command %s" py-local-versioned-command))
-;;                 (when (and (interactive-p) py-verbose-p) (message "py-local-command %s" py-local-command)))
-;;               (unless py-complete-function
-;;                 (if py-local-versioned-command
-;;                     (cond ((string-match "[pP]ython3[^[:alpha:]]*$" py-local-versioned-command)
-;;                            (setq py-local-complete-function 'py-python-script-complete))
-;;                           ((string-match "[pP]ython2[^[:alpha:]]*$" py-local-versioned-command)
-;;                            (setq py-local-complete-function 'py-python-script-complete))
-;;                           (t (setq py-local-complete-function 'py-completion-at-point)))
-;;                   ;; should never reach this clause
-;;                   (setq py-local-complete-function 'py-completion-at-point)))
-;;               (cond (py-complete-function
-;;                      (add-hook 'completion-at-point-functions
-;;                                py-complete-function nil 'local))
-;;                     (py-local-complete-function
-;;                      (add-hook 'completion-at-point-functions
-;;                                py-local-complete-function nil 'local)))
-;;
-;;               ;; (add-hook 'completion-at-point-functions
-;;               ;; #'python-shell-send-setup-code)
-;;               ))
-
-;;  (add-hook 'python-mode-hook 'imenu-add-menubar-index)
-;; (remove-hook 'python-mode-hook
-;; (lambda ()
-;; "Turn off Indent Tabs mode."
-;; (setq indent-tabs-mode nil)))
-
-;; (add-hook 'comint-output-filter-functions
-;; 'py-comint-output-filter-function)
-
 (add-hook 'python-mode-hook
           (lambda ()
             (setq indent-tabs-mode py-indent-tabs-mode)
@@ -4449,6 +4401,7 @@ Updated on each expansion.")
             (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class)
             ;; (orgstruct-mode 1)
             ))
+
 (when py-warn-tmp-files-left-p
   (add-hook 'python-mode-hook 'py-warn-tmp-files-left))
 
@@ -4578,6 +4531,11 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
                               #'autopair-python-triple-quote-action)))))
   (when py-trailing-whitespace-smart-delete-p
     (add-hook 'before-save-hook 'delete-trailing-whitespace))
+  (if py-complete-function
+      (add-hook 'completion-at-point-functions
+                py-complete-function nil 'local)
+    (add-hook 'completion-at-point-functions
+              'py-shell-complete nil 'local))
   (when (and py-imenu-create-index-p (fboundp 'imenu-add-to-menubar)(ignore-errors (require 'imenu)))
     (setq imenu-create-index-function #'py-imenu-create-index-new)
     (imenu-add-to-menubar "PyIndex"))

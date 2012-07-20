@@ -7644,13 +7644,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
         (set (make-local-variable 'comint-use-prompt-regexp) t)
         (set (make-local-variable 'compilation-error-regexp-alist)
              python-compilation-regexp-alist)
-        (setq completion-at-point-functions nil)
-        ;; (py-set-shell-complete-function)
-        ;; (if py-complete-function
-        ;;     (add-hook 'completion-at-point-functions
-        ;;               py-complete-function nil 'local)
-        ;;   (add-hook 'completion-at-point-functions
-        ;;             'py-shell-complete nil 'local))
+        ;; (setq completion-at-point-functions nil)
         (add-hook 'comint-preoutput-filter-functions #'python-preoutput-filter
                   nil t)
         (if py-fontify-shell-buffer-p
@@ -11497,8 +11491,11 @@ by this command. Then place point after the first, indented.\n\n"
         (define-key map [(control c)(control w)] 'py-pychecker-run)
         (define-key map (kbd "TAB") 'py-indent-line)
         (if py-complete-function
-            (define-key map [(meta tab)] py-complete-function)
-          (define-key map [(meta tab)] 'py-shell-complete))
+            (progn
+              (define-key map [(meta tab)] py-complete-function)
+              (define-key map [(esc) (tab)] py-complete-function))
+          (define-key map [(meta tab)] 'py-shell-complete)
+          (define-key map [(esc) (tab)] 'py-shell-complete))
         ;; (substitute-key-definition 'complete-symbol 'completion-at-point
         ;; map global-map)
         (easy-menu-define py-menu map "Python Tools"
@@ -13090,6 +13087,11 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
                               #'autopair-python-triple-quote-action)))))
   (when py-trailing-whitespace-smart-delete-p
     (add-hook 'before-save-hook 'delete-trailing-whitespace))
+  (if py-complete-function
+      (add-hook 'completion-at-point-functions
+                py-complete-function nil 'local)
+    (add-hook 'completion-at-point-functions
+              'py-shell-complete nil 'local))
   (when (and py-imenu-create-index-p (fboundp 'imenu-add-to-menubar)(ignore-errors (require 'imenu)))
     (setq imenu-create-index-function #'py-imenu-create-index-new)
     (imenu-add-to-menubar "PyIndex"))
@@ -13111,7 +13113,8 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
         (save-excursion
           (py-shell)
           (set-buffer oldbuf))))
-    (jump-to-register 213465879))
+    ;; (jump-to-register 213465879)
+    )
   ;; (run-mode-hooks 'python-mode-hook)
   (when py-outline-minor-mode-p (outline-minor-mode 1))
   (when (interactive-p) (message "python-mode loaded from: %s" "python-mode.el")))
