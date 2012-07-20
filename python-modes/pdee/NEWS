@@ -1,8 +1,15 @@
 Python Mode News
 ================
 
-New in version 6.1
---------------------
+New in version 6.0.11
+---------------------
+
+- customizable history variables/files
+  py-python-history defaults to "~/.python_history"
+  py-ipython-history defaults to "~/.ipython/history"
+
+  If py-honor-PYTHONHISTORY-p is `t', $PYTHONHISTORY takes precedence, default is nil
+  If py-honor-IPYTHONDIR-p is `t', $IPYTHONHISTORY precedes, default is nil
 
 - customizable boolean `py-trailing-whitespace-smart-delete-p'
   Default is nil. Some commands may delete trailing

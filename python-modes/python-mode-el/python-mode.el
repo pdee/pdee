@@ -628,6 +628,35 @@ Default is `t'."
 (defvar py-which-bufname "Python")
 (make-variable-buffer-local 'py-which-bufname)
 
+
+(defcustom py-honor-IPYTHONDIR-p nil
+  "When non-nil ipython-history file is constructed by $IPYTHONDIR
+followed by \"/history\". Default is nil.
+
+Otherwise value of py-ipython-history is used. "
+  :type 'boolean
+  :group 'python-mode)
+
+(defcustom py-ipython-history "~/.ipython/history"
+  "ipython-history default file. Used when py-honor-IPYTHONDIR-p is nil (default) "
+
+  :type 'string
+  :group 'python-mode)
+
+(defcustom py-honor-PYTHONHISTORY-p nil
+  "When non-nil python-history file is set by $PYTHONHISTORY
+Default is nil.
+
+Otherwise value of py-python-history is used. "
+  :type 'boolean
+  :group 'python-mode)
+
+(defcustom py-python-history "~/.python_history"
+  "python-history default file. Used when py-honor-PYTHONHISTORY-p is nil (default) "
+
+  :type 'string
+  :group 'python-mode)
+
 (defcustom py-master-file nil
   "If non-nil, \\[py-execute-buffer] executes the named
 master file instead of the buffer's file.  If the file name has a
@@ -7547,7 +7576,9 @@ When DONE is `t', `py-shell-manage-windows' is omitted
 "
   (interactive "P")
   (if (or argprompt dedicated pyshellname switch sepchar py-buffer-name done (interactive-p))
-      (let* ((sepchar (or sepchar (char-to-string py-separator-char)))
+      (let* ((coding-system-for-read 'utf-8)
+             (coding-system-for-write 'utf-8)
+             (sepchar (or sepchar (char-to-string py-separator-char)))
              (args py-python-command-args)
              (oldbuf (current-buffer))
              (path (getenv "PYTHONPATH"))
@@ -7648,17 +7679,24 @@ When DONE is `t', `py-shell-manage-windows' is omitted
         ;; (sit-for 0.1)
         (setq comint-input-sender 'py-shell-simple-send)
         (setq comint-input-ring-file-name
-              (cond ((string-match "[iI][pP]ython[[:alnum:]]*$" py-buffer-name)
-                     (if (getenv "IPYTHONDIR")
-                         (concat (getenv "IPYTHONDIR") "/history")
-                       "~/.ipython/history"))
-                    ((getenv "PYTHONHISTORY")
-                     (concat (getenv "PYTHONHISTORY") "/" (py-report-executable py-buffer-name) "_history"))
-                    (dedicated
-                     (concat "~/." (substring py-buffer-name 0 (string-match "-" py-buffer-name)) "_history"))
+              (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
+                     (if py-honor-IPYTHONDIR-p
+                         (if (getenv "IPYTHONDIR")
+                             (concat (getenv "IPYTHONDIR") "/history")
+                           py-ipython-history)
+                       py-ipython-history))
+                    (t
+                     (if py-honor-PYTHONHISTORY-p
+                         (if (getenv "PYTHONHISTORY")
+                             (concat (getenv "PYTHONHISTORY") "/" (py-report-executable py-buffer-name) "_history")
+                           py-ipython-history)
+                       py-ipython-history))
+                    ;; (dedicated
+                    ;; (concat "~/." (substring py-buffer-name 0 (string-match "-" py-buffer-name)) "_history"))
                     ;; .pyhistory might be locked from outside Emacs
                     ;; (t "~/.pyhistory")
-                    (t (concat "~/." (py-report-executable py-buffer-name) "_history"))))
+                    ;; (t (concat "~/." (py-report-executable py-buffer-name) "_history"))
+                    ))
         (comint-read-input-ring t)
         (set-process-sentinel (get-buffer-process (current-buffer))
                               #'shell-write-history-on-exit)

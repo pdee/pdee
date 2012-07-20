@@ -511,17 +511,24 @@ When DONE is `t', `py-shell-manage-windows' is omitted
         ;; (sit-for 0.1)
         (setq comint-input-sender 'py-shell-simple-send)
         (setq comint-input-ring-file-name
-              (cond ((string-match "[iI][pP]ython[[:alnum:]]*$" py-buffer-name)
-                     (if (getenv "IPYTHONDIR")
-                         (concat (getenv "IPYTHONDIR") "/history")
-                       "~/.ipython/history"))
-                    ((getenv "PYTHONHISTORY")
-                     (concat (getenv "PYTHONHISTORY") "/" (py-report-executable py-buffer-name) "_history"))
-                    (dedicated
-                     (concat "~/." (substring py-buffer-name 0 (string-match "-" py-buffer-name)) "_history"))
+              (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
+                     (if py-honor-IPYTHONDIR-p
+                         (if (getenv "IPYTHONDIR")
+                             (concat (getenv "IPYTHONDIR") "/history")
+                           py-ipython-history)
+                       py-ipython-history))
+                    (t
+                     (if py-honor-PYTHONHISTORY-p
+                         (if (getenv "PYTHONHISTORY")
+                             (concat (getenv "PYTHONHISTORY") "/" (py-report-executable py-buffer-name) "_history")
+                           py-ipython-history)
+                       py-ipython-history))
+                    ;; (dedicated
+                    ;; (concat "~/." (substring py-buffer-name 0 (string-match "-" py-buffer-name)) "_history"))
                     ;; .pyhistory might be locked from outside Emacs
                     ;; (t "~/.pyhistory")
-                    (t (concat "~/." (py-report-executable py-buffer-name) "_history"))))
+                    ;; (t (concat "~/." (py-report-executable py-buffer-name) "_history"))
+                    ))
         (comint-read-input-ring t)
         (set-process-sentinel (get-buffer-process (current-buffer))
                               #'shell-write-history-on-exit)

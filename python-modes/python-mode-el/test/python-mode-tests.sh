@@ -672,7 +672,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-mark-block-misbehave-lp:949310-test) nil \"py-mark-block-misbehave-lp:949310-test not detected as command\")" \
 -eval "(assert (commandp 'py-mark-partial-expression) nil \"py-mark-partial-expression not detected as command\")" \
 -eval "(message \"commandp tests done\")" \
---funcall execute-indented-code-lp:828314-test \
 --funcall split-windows-on-execute-p-test \
 --funcall key-binding-tests \
 --funcall py-narrow-to-defun-lp-1020531-test \
@@ -858,11 +857,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-execute-region-ipython-test \
 --funcall py-execute-region-python3-test \
 --funcall py-execute-region-python2-switch-test \
---funcall py-execute-region-python2.7-switch-test \
---funcall py-execute-buffer-python-switch-test \
---funcall py-execute-buffer-ipython-switch-test \
---funcall py-execute-buffer-python3-switch-test \
---funcall py-execute-buffer-python2-switch-test \
 --funcall py-execute-expression-python-test \
 --funcall py-execute-expression-ipython-test \
 --funcall py-execute-expression-python3-test \
@@ -945,6 +939,13 @@ est \
 --funcall not-that-useful-completion-lp:1003580-test \
 --funcall completion-at-gentoo-lp-1008842-test \
 --funcall py-find-imports-lp-1023236-test \
+--funcall execute-indented-code-lp:828314-test \
+--funcall py-execute-region-python2.7-switch-test \
+--funcall py-execute-buffer-python-switch-test \
+--funcall py-execute-buffer-ipython-switch-test \
+--funcall py-execute-buffer-python3-switch-test \
+--funcall py-execute-buffer-python2-switch-test \
+
 
 else
 

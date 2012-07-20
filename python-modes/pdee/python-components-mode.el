@@ -822,6 +822,34 @@ You may customize this variable ")
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-honor-IPYTHONDIR-p nil
+  "When non-nil ipython-history file is constructed by $IPYTHONDIR
+followed by \"/history\". Default is nil. 
+
+Otherwise value of py-ipython-history is used. "
+  :type 'boolean
+  :group 'python-mode)
+
+(defcustom py-ipython-history "~/.ipython/history"
+  "ipython-history default file. Used when py-honor-IPYTHONDIR-p is nil (default) "
+
+  :type 'string
+  :group 'python-mode)
+
+(defcustom py-honor-PYTHONHISTORY-p nil
+  "When non-nil python-history file is set by $PYTHONHISTORY
+Default is nil. 
+
+Otherwise value of py-python-history is used. "
+  :type 'boolean
+  :group 'python-mode)
+
+(defcustom py-python-history "~/.python_history"
+  "python-history default file. Used when py-honor-PYTHONHISTORY-p is nil (default) "
+
+  :type 'string
+  :group 'python-mode)
+
 (defcustom py-switch-buffers-on-execute-p nil
   "When non-nil switch to the Python output buffer. "
 
