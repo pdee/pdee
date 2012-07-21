@@ -672,6 +672,8 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-mark-block-misbehave-lp:949310-test) nil \"py-mark-block-misbehave-lp:949310-test not detected as command\")" \
 -eval "(assert (commandp 'py-mark-partial-expression) nil \"py-mark-partial-expression not detected as command\")" \
 -eval "(message \"commandp tests done\")" \
+--funcall py-guess-indent-offset-dont-detect-indent-of-2-lp-1027389-test \
+--funcall indent-triplequoted-to-itself-lp:752252-test \
 --funcall split-windows-on-execute-p-test \
 --funcall key-binding-tests \
 --funcall py-narrow-to-defun-lp-1020531-test \
@@ -711,7 +713,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-decorators-face-lp:744335-test \
 --funcall indent-after-return-lp:745208-test \
 --funcall keep-assignments-column-lp:748198-test \
---funcall indent-triplequoted-to-itself-lp:752252-test \
 --funcall multiline-listings-indent-lp:761946-test \
 --funcall new-page-char-causes-loop-lp:762498-test \
 --funcall nested-dicts-indent-lp:763756-test \
@@ -945,6 +946,7 @@ est \
 --funcall py-execute-buffer-ipython-switch-test \
 --funcall py-execute-buffer-python3-switch-test \
 --funcall py-execute-buffer-python2-switch-test \
+
 
 
 else
