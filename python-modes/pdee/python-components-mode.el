@@ -205,14 +205,6 @@ Default is nil. "
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-report-position-p nil
-  "If functions moving point like `py-forward-into-nomenclature' should report reached position.
-
-Default is nil. "
-
-  :type 'boolean
-  :group 'python-mode)
-
 (defcustom py-close-provides-newline t
   "If a newline is inserted, when line after block isn't empty. Default is non-nil. "
   :type 'boolean

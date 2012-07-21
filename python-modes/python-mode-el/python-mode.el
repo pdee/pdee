@@ -172,14 +172,6 @@ Default is nil "
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-report-position-p nil
-  "If functions moving point like `py-forward-into-nomenclature' should report reached position.
-
-Default is nil. "
-
-  :type 'boolean
-  :group 'python-mode)
-
 (defcustom py-extensions "py-extensions.el"
   "File where extensions to python-mode.el should be installed. Used by virtualenv support. "
 
@@ -7270,7 +7262,7 @@ A `nomenclature' is a fancy way of saying AWordWithMixedCaseNotUnderscores."
       (if (and (< orig (point)) (not (eobp)))
           (setq erg (point))
         (setq erg nil)))
-    (when (and py-report-position-p (or iact (interactive-p))) (message "%s" erg))
+    (when (and py-verbose-p (or iact (interactive-p))) (message "%s" erg))
     erg))
 
 (defun py-backward-into-nomenclature (&optional arg)
