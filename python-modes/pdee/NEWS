@@ -3,6 +3,8 @@ Python Mode News
 
 New in version 6.0.11
 ---------------------
+- new boolean `py-shell-prompt-read-only', default t
+  sets `comint-prompt-read-only', avoid unintentional edits
 
 - customizable history variables/files
   py-python-history defaults to "~/.python_history"

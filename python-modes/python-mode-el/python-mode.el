@@ -765,6 +765,12 @@ to select the appropriate python interpreter mode for a file.")
   :type 'string
   :group 'python-mode)
 
+(defcustom py-shell-prompt-read-only t
+  "If non-nil, the python prompt is read only.  Setting this
+variable will only effect new shells."
+  :type 'boolean
+  :group 'python-mode)
+
 (defcustom py-shell-switch-buffers-on-execute-p t
   "When non-nil switch to the new Python shell. "
 
@@ -850,7 +856,7 @@ value to determine defaults."
   :group 'python-mode)
 
 (defcustom py-shell-prompt-alist
-  '(("ipython" . "^In \\[[0-9]+\\]: *")
+  '(("ipython" . "^In \\[[0-9]+\\]: ")
     (t . "^>>> "))
   "Alist of Python input prompts.
 Each element has the form (PROGRAM . REGEXP), where PROGRAM is
@@ -862,7 +868,7 @@ element matches `py-shell-name'."
   :group 'python-mode)
 
 (defcustom py-shell-continuation-prompt-alist
-  '(("ipython" . "^   [.][.][.]+: *")
+  '(("ipython" . "^   [.][.][.]+: ")
     (t . "^[.][.][.] "))
   "Alist of Python continued-line prompts.
 Each element has the form (PROGRAM . REGEXP), where PROGRAM is
@@ -7641,7 +7647,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
                                 "\\|")
                      "\\)"))
         (set (make-local-variable 'comint-input-filter) 'py-history-input-filter)
-
+        (set (make-local-variable 'comint-prompt-read-only) py-shell-prompt-read-only)
         (set (make-local-variable 'comint-use-prompt-regexp) t)
         (set (make-local-variable 'compilation-error-regexp-alist)
              python-compilation-regexp-alist)

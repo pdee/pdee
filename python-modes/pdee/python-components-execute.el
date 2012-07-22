@@ -453,7 +453,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
                                 "\\|")
                      "\\)"))
         (set (make-local-variable 'comint-input-filter) 'py-history-input-filter)
-
+        (set (make-local-variable 'comint-prompt-read-only) py-shell-prompt-read-only)
         (set (make-local-variable 'comint-use-prompt-regexp) t)
         (set (make-local-variable 'compilation-error-regexp-alist)
              python-compilation-regexp-alist)
