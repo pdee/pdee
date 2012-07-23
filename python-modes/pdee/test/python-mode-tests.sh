@@ -18,7 +18,8 @@
 
 # Caveats:
 #
-# needs being started in `test' directory
+# needs being started in `test' directory 
+# optional shell argument PATH/TO/EMACS-SOURCE-DIRECTORY might be given
 #
 # If testing with emacs-24 please be aware of bug 11984 [0], for the
 # time being the patch will need to be added manually.
@@ -30,6 +31,7 @@
 
 # Code:
 
+
 # needs being in `test' directory
 # PCOT=`pwd`
 PCOT="."
@@ -39,13 +41,30 @@ PDIR=".."
 # TESTDIR="$(dirname "$0")"
 # PDIR="$TESTDIR/.."
 
-# write PATH-TO-EMACS source code directory here
+# write PATH-TO-EMACS source code default directory here
 EMACS_SOURCE_DIR=
-EMACS_SOURCE_DIR="$HOME/emacs-23.4"
-
 if [ $1 ]; then
+    echo "\$1: $1"
     EMACS_SOURCE_DIR=$1
+elif [ -s "$HOME/emacs-23.4" ]; then
+    EMACS_SOURCE_DIR="$HOME/emacs-23.4"
+    else
+cat    <<EOF
+usage: ${0##*/} EMACS_SOURCE_DIR
+
+This script tests python-mode with non-installed Emacsen in a Bash.
+
+It assumes being in directory "test" below python-mode.el and relies on source-code directories as delivered by bzr branch.
+
+Edit \$EMACS_SOURCE_DIR to specify an Emacs or put "PATH-TO-EMACS-SOURCES" as shell argument.
+
+To run tests with installed Emacs, load available test-files like "py-bug-numbered-tests.el" and do "M-x py-run-bug-numbered-tests". Alternatively you may edit variables making it point according to you installation.
+
+EOF
+    
 fi
+
+echo "\$EMACS_SOURCE_DIR: $EMACS_SOURCE_DIR"
 
 EMACS="$EMACS_SOURCE_DIR/src/emacs"
 
@@ -72,6 +91,7 @@ To run tests with installed Emacs, load available test-files like "py-bug-number
 EOF
 
 fi
+
 
 HIGHL="highlight-indentation.el"
 CLMACS="${EMACS_SOURCE_DIR}/lisp/emacs-lisp/cl-macs.el"
@@ -963,5 +983,3 @@ est \
 --funcall py-execute-buffer-ipython-switch-test \
 --funcall py-execute-buffer-python3-switch-test \
 --funcall py-execute-buffer-python2-switch-test \
-
-
