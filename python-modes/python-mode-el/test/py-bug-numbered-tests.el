@@ -167,7 +167,10 @@
        'UnicodeEncodeError-lp:550661-test
        'py-shell-complete-lp:328836-test))
 
-(defmacro py-bug-tests-intern (testname &optional dedicated teststring)
+(defmacro py-bug-tests-intern (testname &optional dedicated teststring use-find-file)
+  "`use-find-file' is used to make sure that the new buffer is
+created local to the project that autocomplete is being tested
+on."
   `(let ((debug-on-error t)
          py-load-pymacs-p
          py-split-windows-on-execute-p
@@ -176,7 +179,10 @@
          proc
          py-prepare-autopair-mode-p
          py-fontify-shell-buffer-p)
-     (set-buffer (get-buffer-create (replace-regexp-in-string "\\\\" "" (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname)))))
+     (if ,use-find-file
+         (find-file (concat (py-normalize-directory py-temp-directory)
+                            (replace-regexp-in-string "\\\\" "" (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname)))))
+         (set-buffer (get-buffer-create (replace-regexp-in-string "\\\\" "" (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname))))))
      ;; (with-temp-buffer
      (switch-to-buffer (current-buffer))
      (delete-other-windows)
@@ -2727,7 +2733,7 @@ def someDef():
 from somedef import *
 someDe
 "))
-    (py-bug-tests-intern 'pycomplete-same-folder-def-lp:889052-base arg teststring)))
+    (py-bug-tests-intern 'pycomplete-same-folder-def-lp:889052-base arg teststring t)))
 
 (defun pycomplete-same-folder-def-lp:889052-base ()
   (goto-char 76)
