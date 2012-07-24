@@ -2770,7 +2770,9 @@ CLASS_INS.someDe
     (py-bug-tests-intern 'pycomplete-same-folder-class-lp:889052-base arg teststring)))
 
 (defun pycomplete-same-folder-class-lp:889052-base ()
-  (let ((erg (concat (py-normalize-directory py-temp-directory) "classblah.py")))
+  (let ((erg (concat (py-normalize-directory py-temp-directory) "classblah.py"))
+        py-no-completion-calls-dabbrev-expand-p
+        py-indent-no-completion-p)
     (goto-char 107)
     (unwind-protect
         (py-python-script-complete)

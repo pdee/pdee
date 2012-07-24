@@ -3,7 +3,11 @@ Python Mode News
 
 New in version 6.0.11
 ---------------------
-- new boolean `py-shell-prompt-read-only', default t
+- boolean `py-no-completion-calls-dabbrev-expand-p'
+  If completion function should call dabbrev-expand
+  when no completion found. Default is `t'
+
+- boolean `py-shell-prompt-read-only', default t
   sets `comint-prompt-read-only', avoid unintentional edits
 
 - customizable history variables/files

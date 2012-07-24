@@ -120,6 +120,21 @@ Default is nil. "
   :type 'boolean
   :group 'python-mode)
 
+
+(defcustom py-no-completion-calls-dabbrev-expand-p t
+  "If completion function should call dabbrev-expand when no completion found. Default is `t'
+
+See also `py-indent-no-completion-p'"
+  :type 'boolean
+  :group 'python-mode)
+
+(defcustom py-indent-no-completion-p t
+  "If completion function should insert a TAB when no completion found. Default is `t'
+
+See also `py-no-completion-calls-dabbrev-expand-p'"
+  :type 'boolean
+  :group 'python-mode)
+
 (defcustom py-fontify-shell-buffer-p nil
   "If code in Python shell should be highlighted as in script buffer.
 
@@ -2006,11 +2021,19 @@ completions on the current context."
 		 (when python-completion-original-window-configuration
 		   (set-window-configuration
 		    python-completion-original-window-configuration)))
-	     (setq python-completion-original-window-configuration nil)
+	     ;; (setq python-completion-original-window-configuration nil)
+             (if py-no-completion-calls-dabbrev-expand-p
+                 (or (ignore-errors (dabbrev-expand nil))(when py-indent-no-completion-p
+                                                           (tab-to-tab-stop)))
+               (when py-indent-no-completion-p
+                 (tab-to-tab-stop)))
 	     nil)
 	    ((null completion)
-	     (message "Can't find completion for \"%s\"" input)
-	     (ding)
+             (if py-no-completion-calls-dabbrev-expand-p
+                 (or (dabbrev-expand nil)(when py-indent-no-completion-p
+                                           (tab-to-tab-stop))(message "Can't find completion "))
+               (when py-indent-no-completion-p
+                 (tab-to-tab-stop)))
              nil)
             ((not (string= input completion))
              (progn (delete-char (- (length input)))
@@ -13825,7 +13848,9 @@ Uses `python-imports' to load modules against which to complete."
        #'string<))))
 
 (defun py-python-script-complete (&optional shell imports beg end word)
-  "Complete word before point, if any. Otherwise insert TAB. "
+  "Complete word before point, if any.
+
+When `py-no-completion-calls-dabbrev-expand-p' is non-nil, try dabbrev-expand. Otherwise, when `py-indent-no-completion-p' is non-nil, call `tab-to-tab-stop'. "
   (interactive)
   (let* (py-split-windows-on-execute-p
          py-switch-buffers-on-execute-p
@@ -13834,11 +13859,11 @@ Uses `python-imports' to load modules against which to complete."
          (beg (or beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point))))
          (end (or end (point)))
          (word (or word (buffer-substring-no-properties beg end)))
-         (imports (or imports (py-find-imports)))
-         )
+         (imports (or imports (py-find-imports))))
     (cond ((string= word "")
-           (message "%s" "Nothing to complete. ")
-           (tab-to-tab-stop))
+           (if py-indent-no-completion-p
+               (tab-to-tab-stop)
+             (message "%s" "Nothing to complete. ")))
           (t (or (setq proc (get-buffer-process (py-buffer-name-prepare shell)))
                  (setq proc (get-buffer-process (py-shell nil nil shell))))
              (if (processp proc)
@@ -13849,24 +13874,12 @@ Uses `python-imports' to load modules against which to complete."
                      (save-excursion
                        (save-match-data
                          (goto-char (point-min))
-                         (when (re-search-forward (concat "^[ \t]*" (match-string-no-properties 1 word) "[ \t]*=[ \t]*[^ \n\r\f\t]+") nil t 1)))
-                       (if imports
-                           (unless (string-match (concat "import " (match-string-no-properties 1 word) ";") imports)
-                             (setq imports
-                                   (concat imports (concat "import" (match-string-no-properties 1 word) ";"))))
-                         (setq imports (match-string-no-properties 0 word)))))
-                   (python-shell-completion--do-completion-at-point proc imports word)
-                   ;; (unless (python-shell-completion--do-completion-at-point proc imports word)
-                   (when (eq (point) orig)
-                     (if (and (not (window-full-height-p))
-                              (buffer-live-p (get-buffer "*Python Completions*")))
-                         (progn
-                           (set-buffer "*Python Completions*")
-                           (switch-to-buffer (current-buffer))
-                           (delete-other-windows)
-                           (search-forward word))
-                       (dabbrev-expand nil)))
-                   nil)
+                         (when (re-search-forward (concat "^[ \t]*" (match-string-no-properties 1 word) "[ \t]*=[ \t]*[^ \n\r\f\t]+") nil t 1))
+                         (when py-verbose-p (message "%s" (match-string-no-properties 0)))
+                         (if imports
+                             (setq imports (concat imports (match-string-no-properties 0) ";"))
+                           (setq imports (match-string-no-properties 0))))))
+                   (python-shell-completion--do-completion-at-point proc imports word))
                (error "No completion process at proc"))))))
 
 (defun py-python2-shell-complete (&optional shell)
@@ -13910,7 +13923,8 @@ Uses `python-imports' to load modules against which to complete."
   (if (or (eq major-mode 'comint-mode)(eq major-mode 'inferior-python-mode))
       ;;  kind of completion resp. to shell
       (let (py-fontify-shell-buffer-p
-            (shell (or shell (py-report-executable (buffer-name (current-buffer))))))
+            (shell (or shell (py-report-executable (buffer-name (current-buffer)))))
+            (imports (py-find-imports)))
         (if (string-match "[iI][pP]ython" shell)
             (ipython-complete)
           (let* ((orig (point))
@@ -13921,8 +13935,8 @@ Uses `python-imports' to load modules against which to complete."
             (cond ((string= word "")
                    (tab-to-tab-stop))
                   ((string-match "[pP]ython3[^[:alpha:]]*$" shell)
-                   (python-shell-completion--do-completion-at-point proc "" word))
-                  (t (py-shell-complete-intern word beg end shell nil proc))))))
+                   (python-shell-completion--do-completion-at-point proc imports word))
+                  (t (py-shell-complete-intern word beg end shell imports proc))))))
     ;; complete in script buffer
     (let* (
            ;; (a (random 999999999))
@@ -13935,6 +13949,7 @@ Uses `python-imports' to load modules against which to complete."
            (end (point))
            (word (buffer-substring-no-properties beg end))
            (imports (py-find-imports)))
+      ;; (window-configuration-to-register a)
       (cond ((string= word "")
              (tab-to-tab-stop))
             ((string-match "[iI][pP]ython" shell)
@@ -14006,7 +14021,11 @@ def complete(text):
         print_completions(dir(__main__), text)
 complete('%s')" word) shell nil proc)))
     (if (or (eq result nil)(string= "" result))
-        (message "Can't complete")
+        (progn
+          (if py-no-completion-calls-dabbrev-expand-p
+              (or (dabbrev-expand nil) (message "Can't complete"))
+            (message "No completion found")))
+
       (setq result (replace-regexp-in-string comint-prompt-regexp "" result))
       (let ((comint-completion-addsuffix nil)
             (completions

@@ -949,7 +949,6 @@ est \
 --funcall UnicodeEncodeError-lp:550661-test \
 --funcall py-insert-super-python3-test \
 \
---funcall pycomplete-same-folder-class-lp:889052-test \
 --funcall python-shell-complete-test \
 --funcall usr-bin-python-shell-complete-test \
 --funcall usr-bin-python2.7-shell-complete-test \
@@ -983,3 +982,4 @@ est \
 --funcall py-execute-buffer-ipython-switch-test \
 --funcall py-execute-buffer-python3-switch-test \
 --funcall py-execute-buffer-python2-switch-test \
+--funcall pycomplete-same-folder-class-lp:889052-test \

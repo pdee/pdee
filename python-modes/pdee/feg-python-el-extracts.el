@@ -708,7 +708,7 @@ completions on the current context."
   (with-syntax-table python-dotty-syntax-table
     (let* ((code
 	    (if imports
-                (concat imports  python-shell-module-completion-string-code)
+                (concat imports python-shell-module-completion-string-code)
               python-shell-module-completion-string-code))
            (completions
             (python-shell-completion--get-completions
@@ -720,11 +720,19 @@ completions on the current context."
 		 (when python-completion-original-window-configuration
 		   (set-window-configuration
 		    python-completion-original-window-configuration)))
-	     (setq python-completion-original-window-configuration nil)
+	     ;; (setq python-completion-original-window-configuration nil)
+             (if py-no-completion-calls-dabbrev-expand-p
+                 (or (ignore-errors (dabbrev-expand nil))(when py-indent-no-completion-p
+                                           (tab-to-tab-stop)))
+               (when py-indent-no-completion-p
+                 (tab-to-tab-stop)))
 	     nil)
 	    ((null completion)
-	     (message "Can't find completion for \"%s\"" input)
-	     (ding)
+             (if py-no-completion-calls-dabbrev-expand-p
+                 (or (dabbrev-expand nil)(when py-indent-no-completion-p
+                                           (tab-to-tab-stop))(message "Can't find completion "))
+               (when py-indent-no-completion-p
+                 (tab-to-tab-stop)))
              nil)
             ((not (string= input completion))
              (progn (delete-char (- (length input)))

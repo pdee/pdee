@@ -141,9 +141,17 @@ See also `autopair-mode-on'. "
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-indent-no-completion-p t
-  "If completion function should insert a TAB when no completion found. Default is `t'"
+(defcustom py-no-completion-calls-dabbrev-expand-p t
+  "If completion function should call dabbrev-expand when no completion found. Default is `t'
 
+See also `py-indent-no-completion-p'"
+  :type 'boolean
+  :group 'python-mode)
+
+(defcustom py-indent-no-completion-p t
+  "If completion function should insert a TAB when no completion found. Default is `t'
+
+See also `py-no-completion-calls-dabbrev-expand-p'"
   :type 'boolean
   :group 'python-mode)
 

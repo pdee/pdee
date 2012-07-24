@@ -175,7 +175,9 @@ Uses `python-imports' to load modules against which to complete."
        #'string<))))
 
 (defun py-python-script-complete (&optional shell imports beg end word)
-  "Complete word before point, if any. Otherwise insert TAB. "
+  "Complete word before point, if any.
+
+When `py-no-completion-calls-dabbrev-expand-p' is non-nil, try dabbrev-expand. Otherwise, when `py-indent-no-completion-p' is non-nil, call `tab-to-tab-stop'. "
   (interactive)
   (let* (py-split-windows-on-execute-p
          py-switch-buffers-on-execute-p
@@ -184,11 +186,11 @@ Uses `python-imports' to load modules against which to complete."
          (beg (or beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point))))
          (end (or end (point)))
          (word (or word (buffer-substring-no-properties beg end)))
-         (imports (or imports (py-find-imports)))
-         )
+         (imports (or imports (py-find-imports))))
     (cond ((string= word "")
-           (message "%s" "Nothing to complete. ")
-           (tab-to-tab-stop))
+           (if py-indent-no-completion-p
+               (tab-to-tab-stop)
+             (message "%s" "Nothing to complete. ")))
           (t (or (setq proc (get-buffer-process (py-buffer-name-prepare shell)))
                  (setq proc (get-buffer-process (py-shell nil nil shell))))
              (if (processp proc)
@@ -199,24 +201,12 @@ Uses `python-imports' to load modules against which to complete."
                      (save-excursion
                        (save-match-data
                          (goto-char (point-min))
-                         (when (re-search-forward (concat "^[ \t]*" (match-string-no-properties 1 word) "[ \t]*=[ \t]*[^ \n\r\f\t]+") nil t 1)))
+                         (when (re-search-forward (concat "^[ \t]*" (match-string-no-properties 1 word) "[ \t]*=[ \t]*[^ \n\r\f\t]+") nil t 1))
+                         (when py-verbose-p (message "%s" (match-string-no-properties 0)))
                        (if imports
-                           (unless (string-match (concat "import " (match-string-no-properties 1 word) ";") imports)
-                             (setq imports
-                                   (concat imports (concat "import" (match-string-no-properties 1 word) ";"))))
-                         (setq imports (match-string-no-properties 0 word)))))
-                   (python-shell-completion--do-completion-at-point proc imports word)
-                   ;; (unless (python-shell-completion--do-completion-at-point proc imports word)
-                   (when (eq (point) orig)
-                     (if (and (not (window-full-height-p))
-                              (buffer-live-p (get-buffer "*Python Completions*")))
-                         (progn
-                           (set-buffer "*Python Completions*")
-                           (switch-to-buffer (current-buffer))
-                           (delete-other-windows)
-                           (search-forward word))
-                       (dabbrev-expand nil)))
-                   nil)
+                           (setq imports (concat imports (match-string-no-properties 0) ";"))
+                         (setq imports (match-string-no-properties 0))))))
+                     (python-shell-completion--do-completion-at-point proc imports word))
                (error "No completion process at proc"))))))
 
 (defun py-python2-shell-complete (&optional shell)
@@ -258,7 +248,8 @@ Uses `python-imports' to load modules against which to complete."
   (if (or (eq major-mode 'comint-mode)(eq major-mode 'inferior-python-mode))
       ;;  kind of completion resp. to shell
       (let (py-fontify-shell-buffer-p
-            (shell (or shell (py-report-executable (buffer-name (current-buffer))))))
+            (shell (or shell (py-report-executable (buffer-name (current-buffer)))))
+            (imports (py-find-imports)))
         (if (string-match "[iI][pP]ython" shell)
             (ipython-complete)
           (let* ((orig (point))
@@ -269,8 +260,8 @@ Uses `python-imports' to load modules against which to complete."
             (cond ((string= word "")
                    (tab-to-tab-stop))
                   ((string-match "[pP]ython3[^[:alpha:]]*$" shell)
-                   (python-shell-completion--do-completion-at-point proc "" word))
-                  (t (py-shell-complete-intern word beg end shell nil proc))))))
+                   (python-shell-completion--do-completion-at-point proc imports word))
+                  (t (py-shell-complete-intern word beg end shell imports proc))))))
     ;; complete in script buffer
     (let* (
            ;; (a (random 999999999))
@@ -355,7 +346,11 @@ def complete(text):
         print_completions(dir(__main__), text)
 complete('%s')" word) shell nil proc)))
     (if (or (eq result nil)(string= "" result))
-        (message "Can't complete")
+        (progn
+          (if py-no-completion-calls-dabbrev-expand-p
+              (or (ignore-errors (dabbrev-expand nil)) (message "Can't complete"))
+            (message "No completion found")))
+
       (setq result (replace-regexp-in-string comint-prompt-regexp "" result))
       (let ((comint-completion-addsuffix nil)
             (completions
@@ -480,42 +475,50 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
         (tab-to-tab-stop)
       (process-send-string python-process (format ccs pattern))
       (accept-process-output python-process 0.1)
-      (setq completions
-            (split-string (substring ugly-return 0 (position ?\n ugly-return)) sep))
-      (setq completion (when completions
-                         (try-completion pattern completions))))
-    (cond ((eq completion t)
-           (if (eq this-command last-command)
-               (when python-completion-original-window-configuration
-                 (set-window-configuration
-                  python-completion-original-window-configuration)))
-           (setq python-completion-original-window-configuration nil)
-           (message "Can't find completion for \"%s\"" pattern)
-           (ding)
-           nil)
-          ((not (string= pattern completion))
-           (progn (delete-char (- (length pattern)))
-                  (insert completion)
-                  ;; minibuffer.el expects a list, a bug IMO
-                  nil))
-          ((< 1 (length completions))
-           (unless python-completion-original-window-configuration
-             (setq python-completion-original-window-configuration
-                   (current-window-configuration)))
-           (with-output-to-temp-buffer "*IPython Completions*"
-             (display-completion-list
-              (all-completions pattern completions)))
-           (set-buffer "*IPython Completions*")
-           (switch-to-buffer "*IPython Completions*")
-           (goto-char (point-min))
-           (when
-               (search-forward (car (all-completions pattern completions)))
-             (forward-word -1)
-             (delete-other-windows)
-             (word-at-point)))
-          ((null completion)
-           (message "Can't find completion for \"%s\"" pattern)
-           (ding)))))
+      (if ugly-return
+          (progn
+            (setq completions
+                  (split-string (substring ugly-return 0 (position ?\n ugly-return)) sep))
+            (setq completion (when completions
+                               (try-completion pattern completions)))
+            (if completion
+                (cond ((eq completion t)
+                       (if (eq this-command last-command)
+                           (when python-completion-original-window-configuration
+                             (set-window-configuration
+                              python-completion-original-window-configuration)))
+                       (setq python-completion-original-window-configuration nil)
+                       (message "Can't find completion for \"%s\"" pattern)
+                       (ding)
+                       nil)
+                      ((not (string= pattern completion))
+                       (progn (delete-char (- (length pattern)))
+                              (insert completion)
+                              ;; minibuffer.el expects a list, a bug IMO
+                              nil))
+                      ((< 1 (length completions))
+                       (unless python-completion-original-window-configuration
+                         (setq python-completion-original-window-configuration
+                               (current-window-configuration)))
+                       (with-output-to-temp-buffer "*IPython Completions*"
+                         (display-completion-list
+                          (all-completions pattern completions)))
+                       (set-buffer "*IPython Completions*")
+                       (switch-to-buffer "*IPython Completions*")
+                       (goto-char (point-min))
+                       (when
+                           (search-forward (car (all-completions pattern completions)))
+                         (forward-word -1)
+                         (delete-other-windows)
+                         (word-at-point)))
+                      ((null completion)
+                       (message "Can't find completion for \"%s\"" pattern)
+                       (ding)))
+              (when py-no-completion-calls-dabbrev-expand-p
+                (ignore-errors (dabbrev-expand nil)))
+              (when py-indent-no-completion-p
+                (tab-to-tab-stop))))
+        (message "%s" "No response from Python process. Please check your configuration. If config is okay, please file a bug-regport at http://launchpad.net/python-mode")))))
 
 (provide 'python-components-shell-complete)
 
