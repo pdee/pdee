@@ -504,7 +504,15 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
                    (current-window-configuration)))
            (with-output-to-temp-buffer "*IPython Completions*"
              (display-completion-list
-              (all-completions pattern completions))))
+              (all-completions pattern completions)))
+           (set-buffer "*IPython Completions*")
+           (switch-to-buffer "*IPython Completions*")
+           (goto-char (point-min))
+           (when
+               (search-forward (car (all-completions pattern completions)))
+             (forward-word -1)
+             (delete-other-windows)
+             (word-at-point)))
           ((null completion)
            (message "Can't find completion for \"%s\"" pattern)
            (ding)))))

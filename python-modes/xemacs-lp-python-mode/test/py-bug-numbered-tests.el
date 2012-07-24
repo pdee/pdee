@@ -2183,13 +2183,19 @@ return SOME_Constant + blah
   ;; (py-shell nil nil "ipython" 'noswitch)
   (let ((teststring (concat py-ipython-test-shebang "
 # -*- coding: utf-8 -*-
-impo")))
+impo
+ex")))
     (py-bug-tests-intern 'py-ipython-complete-lp:927136-base arg teststring)))
 
 (defun py-ipython-complete-lp:927136-base ()
+  (goto-char 53)
   (save-excursion (ipython-complete))
-  (sit-for 1)
-  (assert (looking-at "import") nil "py-ipython-complete-lp:927136-test failed"))
+  (sit-for 0.1)
+  (assert (looking-at "import") nil "py-ipython-complete-lp:927136-test #1 failed")
+  (goto-char 62)
+  (sit-for 0.1)
+  (assert (string= "except" (ipython-complete)) nil "py-ipython-complete-lp:927136-test #2 lp:1026705 failed"))
+  
 
 (defun execute-buffer-ipython-fails-lp:928087-test (&optional arg)
   (interactive "p")
