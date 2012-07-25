@@ -1,4 +1,4 @@
-Python-mode commands
+python-mode.el commands
 
 * py-guess-pdb-path
    If py-pdb-path isn't set, find location of pdb.py. 
@@ -1415,6 +1415,8 @@ jump to the top (outermost) exception in the exception stack.
 Useful for newly defined symbol, not known to python yet. 
 * py-find-imports
    Find top-level imports, updating `python-imports'.
+
+Returns python-imports
 * py-eldoc-function
    Print help on symbol at point. 
 * py-describe-symbol
@@ -1712,7 +1714,9 @@ module-qualified names.
 * py-script-complete
    
 * py-python-script-complete
-   Complete word before point, if any. Otherwise insert TAB. 
+   Complete word before point, if any.
+
+When `py-no-completion-calls-dabbrev-expand-p' is non-nil, try dabbrev-expand. Otherwise, when `py-indent-no-completion-p' is non-nil, call `tab-to-tab-stop'. 
 * py-python2-shell-complete
    
 * py-python3-shell-complete

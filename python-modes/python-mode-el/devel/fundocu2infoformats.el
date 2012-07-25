@@ -28,7 +28,7 @@
 (defun finds-from-programm ()
   (let ((directory-in (or (and (not (string= "" py-devel-directory-in)) py-devel-directory-in) default-directory))
         (directory-out (or (and (not (string= "" py-devel-directory-out)) py-devel-directory-out default-directory)) (concat default-directory "doc"))
-        (erg (concat default-directory "python-mode.el"))
+        (erg (buffer-file-name))
         (buffer (current-buffer)))
     (message "Lade %s" erg)
     (find-file erg)
@@ -47,7 +47,8 @@
 
 (defun finds-base (oldbuf orgname reSTname directory-in directory-out)
   (save-restriction
-    (let (commandslist)
+    (let ((suffix (file-name-nondirectory (buffer-file-name)))
+          commandslist)
       ;; (widen)
       (goto-char (point-min))
       ;; (eval-buffer)
@@ -64,23 +65,21 @@
       (setq commandslist (nreverse commandslist))
       (with-temp-buffer
         (switch-to-buffer (current-buffer))
-        (insert (concat ";; a list of " "python-mode-el" " commands
-\(setq " "python-mode-el" "-commands (quote "))
+        (insert (concat ";; a list of " suffix " commands
+\(setq " (replace-regexp-in-string  "\\." "-" suffix) "-commands (quote "))
         (insert (prin1-to-string commandslist))
         (insert "))")
         (eval-buffer)
-        (write-file (concat directory-out "commands-" "python-mode-el"
-                            ;; (concat (substring oldbuf 0 (string-match "\\." oldbuf)) ".el")
-                            )))
+        (write-file (concat directory-out "commands-" suffix)))
       (with-temp-buffer
         (dolist (ele commandslist)
           (insert (concat (car ele) "\n")))
-        (write-file (concat directory-out "python-mode-commands.txt")))
+        (write-file (concat directory-out suffix "-commands.txt")))
 
       (with-temp-buffer
         ;; org
         ;; (insert (concat (capitalize (substring oldbuf 0 (string-match "\." oldbuf))) " commands" "\n\n"))
-        (insert "Python-mode commands\n\n")
+        (insert (concat  suffix " commands\n\n"))
         (dolist (ele commandslist)
           (insert (concat "* "(car ele) "\n"))
           (insert (concat "   " (cdr ele) "\n")))

@@ -1985,6 +1985,8 @@ py-find-imports
 ---------------
 Find top-level imports, updating `python-imports'.
 
+Returns python-imports
+
 py-eldoc-function
 -----------------
 Print help on symbol at point. 
@@ -2429,7 +2431,9 @@ py-script-complete
 
 py-python-script-complete
 -------------------------
-Complete word before point, if any. Otherwise insert TAB. 
+Complete word before point, if any.
+
+When `py-no-completion-calls-dabbrev-expand-p' is non-nil, try dabbrev-expand. Otherwise, when `py-indent-no-completion-p' is non-nil, call `tab-to-tab-stop'. 
 
 py-python2-shell-complete
 -------------------------

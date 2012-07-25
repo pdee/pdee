@@ -3,7 +3,7 @@
 ;; Copyright (C) 2007  Skip Montanaro
 
 ;; Original Author: Skip Montanaro
-;; Maintainer: Andreas Roehler <andreas.roehler@online.de>
+;; Maintainer: Urs Fleisch <ufleisch@users.sourceforge.net>
 ;; Created:    Oct 2004
 ;; Keywords:   python pymacs emacs
 
@@ -63,6 +63,7 @@
       (nreverse imports))))
 
 (defun py-complete ()
+  "Complete symbol before point using Pymacs. "
   (interactive)
   (let* ((pymacs-forget-mutability t)
          (symbol (py-complete-enhanced-symbol-before-point))
