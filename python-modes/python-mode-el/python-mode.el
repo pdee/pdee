@@ -7664,11 +7664,17 @@ When DONE is `t', `py-shell-manage-windows' is omitted
              proc)
         (set-buffer (apply 'make-comint-in-buffer executable py-buffer-name executable nil args))
         (set (make-local-variable 'comint-prompt-regexp)
-             (concat "\\("
-                     (mapconcat 'identity
-                                (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
-                                "\\|")
-                     "\\)"))
+             (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
+                    (concat "\\("
+                            (mapconcat 'identity
+                                       (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
+                                       "\\|")
+                            "\\)"))
+                   (t (concat "\\("
+                              (mapconcat 'identity
+                                         (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
+                                         "\\|")
+                              "\\)"))))
         (set (make-local-variable 'comint-input-filter) 'py-history-input-filter)
         (set (make-local-variable 'comint-prompt-read-only) py-shell-prompt-read-only)
         (set (make-local-variable 'comint-use-prompt-regexp) t)
