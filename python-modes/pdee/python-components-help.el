@@ -745,8 +745,6 @@ Calls `pylint --full-documentation'"
   (erase-buffer)
   (shell-command "pylint --full-documentation" "*Pylint-Documentation*"))
 
-
-
 ;;; Pyflakes
 (defalias 'pyflakes 'py-pyflakes-run)
 (defun py-pyflakes-run (command)
@@ -944,41 +942,30 @@ See `python-check-command' for the default."
 ;;; from string-strip.el --- Strip CHARS from STRING
 
 ;; (setq strip-chars-before  "[ \t\r\n]*")
-(defcustom strip-chars-before  "[ \t\r\n]*"
+(defcustom strip-chars-before  "\\`[ \t\r\n]*"
   "Regexp indicating which chars shall be stripped before STRING - which is defined by `string-chars-preserve'."
 
   :type 'string
   :group 'convenience)
 
-;; (setq strip-chars-after  "[ \t\r\n]*")
 (defcustom strip-chars-after  "[ \t\r\n]*\\'"
   "Regexp indicating which chars shall be stripped after STRING - which is defined by `string-chars-preserve'."
 
   :type 'string
   :group 'convenience)
 
-(defcustom string-chars-preserve "\\(.*?\\)"
-  "Chars preserved of STRING.
-`strip-chars-after' and
-`strip-chars-before' indicate what class of chars to strip."
-  :type 'string
-  :group 'convenience)
-
-(defun string-strip (str &optional chars-before chars-after chars-preserve)
+(defun string-strip (str &optional chars-before chars-after)
   "Return a copy of STR, CHARS removed.
 `CHARS-BEFORE' and `CHARS-AFTER' default is \"[ \t\r\n]*\",
-i.e. spaces, tabs, carriage returns, newlines and newpages.
-`CHARS-PRESERVE' must be a parentized expression,
-it defaults to \"\\(.*?\\)\""
+i.e. spaces, tabs, carriage returns, newlines and newpages. "
   (let ((s-c-b (or chars-before
                    strip-chars-before))
         (s-c-a (or chars-after
                    strip-chars-after))
-        (s-c-p (or chars-preserve
-                   string-chars-preserve)))
-    (string-match
-     (concat "\\`[" s-c-b"]*" s-c-p "[" s-c-a "]*\\'") str)
-    (match-string 1 str)))
+        (erg str))
+    (setq erg (replace-regexp-in-string  s-c-b "" erg))
+    (setq erg (replace-regexp-in-string  s-c-a "" erg))
+    erg))
 
 (provide 'python-components-help)
 ;;; python-components-help.el ends here

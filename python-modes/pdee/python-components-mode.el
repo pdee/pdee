@@ -1149,7 +1149,10 @@ actually punts to `jython-mode'."
 (defcustom python-use-skeletons nil
   "Non-nil means template skeletons will be automagically inserted.
 This happens when pressing \"if<SPACE>\", for example, to prompt for
-the if condition."
+the if condition.
+
+Kept for compatibility reasons.
+Don't activate this, with some probability it will mess up abbrev edits, leaving abbrev-mode unusable. "
   :type 'boolean
   :group 'python-mode)
 
