@@ -115,6 +115,15 @@ Default is nil. "
   :type 'boolean
   :group 'python-mode)
 
+
+(defcustom py-smart-operator-mode-p t
+  "If python-mode calls (smart-operator-mode-on)
+
+Default is non-nil. "
+
+  :type 'boolean
+  :group 'python-mode)
+
 (defcustom py-prepare-autopair-mode-p t
   "If autopair-mode hook should be loaded. Default is `t'. "
   :type 'boolean
@@ -269,6 +278,11 @@ Default is nil. "
 
 (defcustom py-electric-colon-active-p nil
   "`py-electric-colon' feature.  Default is `nil'. See lp:837065 for discussions. "
+  :type 'boolean
+  :group 'python-mode)
+
+(defcustom py-electric-colon-newline-and-indent-p nil
+  "If non-nil, `py-electric-colon' will call `newline-and-indent'.  Default is `nil'. "
   :type 'boolean
   :group 'python-mode)
 
@@ -13152,7 +13166,11 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
     )
   ;; (run-mode-hooks 'python-mode-hook)
   (when py-outline-minor-mode-p (outline-minor-mode 1))
-  (when (interactive-p) (message "python-mode loaded from: %s" "python-mode.el")))
+  (when py-smart-operator-mode-p
+    (unless (featurep 'smart-operator)
+      (load (concat (py-normalize-directory py-install-directory) "smart-operator.el")))
+    (smart-operator-mode-on))
+  (when (interactive-p) (message "python-mode loaded from: %s" "python-components-mode.el")))
 
 (defadvice pdb (before gud-query-cmdline activate)
   "Provide a better default command line when called interactively."

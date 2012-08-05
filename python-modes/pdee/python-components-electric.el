@@ -46,7 +46,9 @@ Default is nil, controlled by `py-electric-colon-active-p'"
                  (beginning-of-line)
                  (delete-horizontal-space)
                  (indent-to indent))
-               (goto-char orig))))))
+               (goto-char orig))
+             (when py-electric-colon-newline-and-indent-p
+               (py-newline-and-indent))))))
 
 (defun py-electric-comment (arg)
   "Insert a comment. If starting a comment, indent accordingly.

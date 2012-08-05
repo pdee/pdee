@@ -3,6 +3,23 @@ Python Mode News
 
 New in version 6.0.11
 ---------------------
+- extended version of smart-operator added
+  original smart-operator.el authored by
+  William Xu <william.xwl@gmail.com>
+  Url: http://xwl.appspot.com/ref/smart-operator.el
+
+  smart-operator minor mode for example with key "+" 
+  inserts " + " 
+  smart-operator extended by augmented-assigments
+  C-u +
+  inserts " += "
+
+  customizable boolean `py-smart-operator-mode-p'
+
+- py-electric-colon extended
+  if `py-electric-colon-newline-and-indent-p' is non-nil,
+  `py-electric-colon' calls `newline-and-indent'
+
 - boolean `py-no-completion-calls-dabbrev-expand-p'
   If completion function should call dabbrev-expand
   when no completion found. Default is `t'

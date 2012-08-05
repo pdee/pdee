@@ -27,6 +27,8 @@
 
 (setq python-mode-tests
       (list
+       'augmented-assigment-test
+       'smart-operator-test
        'key-binding-tests
        'py-end-of-statement-test
        'py-compute-indentation-with-test
@@ -6515,7 +6517,7 @@ print(\"I'm the `py-menu-pyshell-test'\")
   (assert (string= "PyShell" (prin1-to-string
                               (car (nth 1 (cdr (nth 6 python-mode-map))))
                               ;; (car (nth 2 (nth 1 (cdr python-mode-map))))
-)) nil "py-menu-pyshell-test failed"))
+                              )) nil "py-menu-pyshell-test failed"))
 
 (defun python-dedicated-test (&optional arg load-branch-function)
   (interactive "p")
@@ -6644,20 +6646,18 @@ import sys, os; os.remove('do/something/nasty') # lp:1025000
   (py-end-of-statement)
   (assert (eq 75 (point)) nil "py-end-of-statement-test #2 failed")
   (goto-char 99)
-  (py-end-of-statement) 
+  (py-end-of-statement)
   (assert (eq 130 (point)) nil "py-end-of-statement-test #3 failed")
   (py-end-of-statement)
   (assert (eq 163 (point)) nil "py-end-of-statement-test #4 failed")
   )
-
-
 
 (defun key-binding-tests (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 "))
-  (py-bug-tests-intern 'key-binding-base arg teststring)))
+    (py-bug-tests-intern 'key-binding-base arg teststring)))
 
 (defun key-binding-base ()
   (assert (eq (key-binding [(:)]) 'py-electric-colon) nil "py-electric-colon key-binding test failed")
@@ -6666,9 +6666,6 @@ import sys, os; os.remove('do/something/nasty') # lp:1025000
   (assert (eq (key-binding [(backspace)]) 'py-electric-backspace) nil "py-electric-backspace key-binding test failed")
   (assert (eq (key-binding [(control backspace)]) 'py-hungry-delete-backwards) nil "py-hungry-delete-backwards key-binding test failed")
   (assert (eq (key-binding [(control c) (delete)]) 'py-hungry-delete-forward) nil "py-hungry-delete-forward key-binding test failed")
-  (assert (eq (key-binding [(control c)(control a)]) 'py-mark-statement) nil "py-mark-statement key-binding test failed")
-  (assert (eq (key-binding [(control c)(control u)]) 'py-beginning-of-block) nil "py-beginning-of-block key-binding test failed")
-  (assert (eq (key-binding [(control c)(control q)]) 'py-end-of-block) nil "py-end-of-block key-binding test failed")
   (assert (eq (key-binding [(control meta a)]) 'py-beginning-of-def-or-class) nil "py-beginning-of-def-or-class key-binding test failed")
   (assert (eq (key-binding [(control meta e)]) 'py-end-of-def-or-class) nil "py-end-of-def-or-class key-binding test failed")
   (assert (eq (key-binding [(super backspace)]) 'py-dedent) nil "py-dedent key-binding test failed")
@@ -6706,6 +6703,103 @@ import sys, os; os.remove('do/something/nasty') # lp:1025000
   (assert (eq (key-binding [(control j)]) 'py-newline-and-indent) nil "py-newline-and-indent key-binding test failed")
   (assert (eq (key-binding (kbd "RET")) 'py-newline-and-indent) nil "py-newline-and-indent key-binding test failed")
   )
+
+(defun smart-operator-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+foo "))
+    (py-bug-tests-intern 'smart-operator-base arg teststring)))
+
+(defun smart-operator-base ()
+  (let ((py-smart-operator-mode-p t))
+    (smart-operator-mode-on)
+    (goto-char 52)
+    (save-excursion
+      (smart-operator-<))
+    (assert (looking-at " < ") nil "smart-operator-test \"smart-operator-<\" failed")
+    (delete-region (point) (line-end-position))
+    (save-excursion
+      (smart-operator->))
+    (assert (looking-at " > ") nil "smart-operator-test \"smart-operator->\" failed")
+    (delete-region (point) (line-end-position))
+    (save-excursion (smart-operator-%))
+    (assert (looking-at " % ") nil "smart-operator-test \"smart-operator-%\" failed")
+    (delete-region (point) (line-end-position))
+    (save-excursion (smart-operator-+))
+    (assert (looking-at " \\+ ") nil "smart-operator-test \"smart-operator-+\" failed")
+    (delete-region (point) (line-end-position))
+    (save-excursion (smart-operator--))
+    (assert (looking-at " - ") nil "smart-operator-test \"smart-operator--\" failed")
+    (delete-region (point) (line-end-position))
+    (save-excursion (smart-operator-*))
+    (assert (looking-at " * ") nil "smart-operator-test \"smart-operator-*\" failed")
+    (delete-region (point) (line-end-position))
+    (save-excursion (smart-operator-&))
+    (assert (looking-at " & ") nil "smart-operator-test \"smart-operator-&\" failed")
+    (delete-region (point) (line-end-position))
+    (save-excursion (smart-operator-!))
+    (assert (looking-at "! ") nil "smart-operator-test \"smart-operator-!\" failed")
+    (delete-region (point) (line-end-position))
+    (save-excursion (smart-operator-?))
+    (assert (looking-at "? ") nil "smart-operator-test \"smart-operator-?\" failed")
+    (delete-region (point) (line-end-position))
+    (save-excursion (smart-operator-,))
+    (assert (looking-at ", ") nil "smart-operator-test \"smart-operator-,\" failed")
+    (delete-region (point) (line-end-position))
+    (save-excursion (smart-operator-.))
+    (assert (looking-at ".") nil "smart-operator-test \"smart-operator-.\" failed")
+    (when py-verbose-p (message "%s" "smart-operator-test passed"))))
+
+(defun augmented-assigment-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+foo "))
+    (py-bug-tests-intern 'augmented-assigment-base arg teststring)))
+
+(defun augmented-assigment-base ()
+  (let ((py-smart-operator-mode-p t))
+    (smart-operator-mode-on)
+    (goto-char 52)
+    (save-excursion
+      (smart-operator-< '(4)))
+    (assert (looking-at " <= ") nil "augmented-assigment-test \"smart-operator-<m\" failed")
+    (delete-region (point) (line-end-position))
+    (save-excursion
+      (smart-operator-> '(4)))
+    (assert (looking-at " >= ") nil "augmented-assigment-test \"smart-operator->\" failed")
+    (delete-region (point) (line-end-position))
+    (save-excursion (smart-operator-% '(4)))
+    (assert (looking-at " %= ") nil "augmented-assigment-test \"smart-operator-%\" failed")
+    (delete-region (point) (line-end-position))
+    (save-excursion (smart-operator-+ '(4)))
+    (assert (looking-at " \\+= ") nil "augmented-assigment-test \"smart-operator-+\" failed")
+    (delete-region (point) (line-end-position))
+    (save-excursion (smart-operator-- '(4)))
+    (assert (looking-at " -= ") nil "augmented-assigment-test \"smart-operator--\" failed")
+    (delete-region (point) (line-end-position))
+    (save-excursion (smart-operator-* '(4)))
+    (assert (looking-at " \\*= ") nil "augmented-assigment-test \"smart-operator-*\" failed")
+    (delete-region (point) (line-end-position))
+    (save-excursion (smart-operator-& '(4)))
+    (assert (looking-at " &= ") nil "augmented-assigment-test \"smart-operator-&\" failed")
+    (delete-region (point) (line-end-position))
+    (save-excursion (smart-operator-! '(4)))
+    (assert (looking-at " != ") nil "augmented-assigment-test \"smart-operator-!\" failed")
+    (delete-region (point) (line-end-position))
+    (save-excursion (smart-operator-? '(4)))
+    (assert (looking-at " \\?= ") nil "augmented-assigment-test \"smart-operator-?\" failed")
+    ;; (delete-region (point) (line-end-position))
+    ;; (save-excursion (smart-operator-, '(4)))
+    ;; (assert (looking-at " ,= ") nil "augmented-assigment-test \"smart-operator-,\" failed")
+    ;; (delete-region (point) (line-end-position))
+    ;; (save-excursion (smart-operator-. '(4)))
+    ;; (assert (looking-at " .= ") nil "augmented-assigment-test \"smart-operator-.\" failed")
+    ;; (assert nil "smart-operator-test failed")
+    (when py-verbose-p (message "%s" "augmented-assigment-test passed"))))
+
+
 
 (provide 'python-mode-test)
 ;;; python-mode-test.el ends here

@@ -3013,6 +3013,5 @@ for something:
     (goto-char 109)
     (assert (eq 2 (py-guess-indent-offset)) nil "py-guess-indent-offset-dont-detect-indent-of-2-lp-1027389-test failed"))
 
-
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

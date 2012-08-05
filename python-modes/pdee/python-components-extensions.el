@@ -315,6 +315,7 @@ With arg, do it that many times.
     (goto-char orig)
     (insert "pdb.set_trace()")))
 
+(defalias 'durck 'py-printform-insert)
 (defalias 'druck 'py-printform-insert)
 (defun py-printform-insert (&optional arg)
   "Inserts a print statement out of current `(car kill-ring)' by default, inserts ARG instead if delivered. "

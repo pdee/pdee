@@ -61,6 +61,7 @@
 (require 'flymake)
 (require 'python-components-macros)
 (require 'python-components-nomacros)
+(require 'smart-operator)
 
 (defgroup python-mode nil
   "Support for the Python programming language, <http://www.python.org/>"
@@ -213,6 +214,14 @@ Default is nil. "
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-smart-operator-mode-p t
+  "If python-mode calls (smart-operator-mode-on)
+
+Default is non-nil. "
+
+  :type 'boolean
+  :group 'python-mode)
+
 (defcustom py-close-provides-newline t
   "If a newline is inserted, when line after block isn't empty. Default is non-nil. "
   :type 'boolean
@@ -242,6 +251,11 @@ Default is nil. "
 
 (defcustom py-electric-colon-active-p nil
   "`py-electric-colon' feature.  Default is `nil'. See lp:837065 for discussions. "
+  :type 'boolean
+  :group 'python-mode)
+
+(defcustom py-electric-colon-newline-and-indent-p nil
+  "If non-nil, `py-electric-colon' will call `newline-and-indent'.  Default is `nil'. "
   :type 'boolean
   :group 'python-mode)
 
@@ -2168,12 +2182,11 @@ It makes underscores and dots word constituent chars.")
         (define-key map [(backspace)] 'py-electric-backspace)
         (define-key map [(control backspace)] 'py-hungry-delete-backwards)
         (define-key map [(control c) (delete)] 'py-hungry-delete-forward)
-        (define-key map [(control c)(control a)] 'py-mark-statement)
         ;; moving point
         (define-key map [(control c)(control p)] 'py-beginning-of-statement)
         (define-key map [(control c)(control n)] 'py-end-of-statement)
-        (define-key map [(control c)(control u)] 'py-beginning-of-block)
-        (define-key map [(control c)(control q)] 'py-end-of-block)
+        (define-key map [(control meta u)] 'py-beginning-of-block)
+        (define-key map [(control meta q)] 'py-end-of-block)
         (define-key map [(control meta a)] 'py-beginning-of-def-or-class)
         (define-key map [(control meta e)] 'py-end-of-def-or-class)
 
@@ -2204,6 +2217,7 @@ It makes underscores and dots word constituent chars.")
         (define-key map [(control c)(control k)] 'py-mark-block-or-clause)
         (define-key map [(control c)(.)] 'py-expression)
         ;; Miscellaneous
+        (define-key map [(super q)] 'py-copy-statement)
         (define-key map [(control c)(control d)] 'py-pdbtrack-toggle-stack-tracking)
         (define-key map [(control c)(control f)] 'py-sort-imports)
         (define-key map [(control c)(\#)] 'py-comment-region)
@@ -4567,9 +4581,13 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
           (py-shell)
           (set-buffer oldbuf))))
     ;; (jump-to-register 213465879)
-)
+    )
   ;; (run-mode-hooks 'python-mode-hook)
   (when py-outline-minor-mode-p (outline-minor-mode 1))
+  (when py-smart-operator-mode-p
+    (unless (featurep 'smart-operator)
+      (load (concat (py-normalize-directory py-install-directory) "smart-operator.el")))
+    (smart-operator-mode-on))
   (when (interactive-p) (message "python-mode loaded from: %s" "python-components-mode.el")))
 
 
