@@ -45,7 +45,11 @@
 
 ;;; Code
 
+(add-to-list 'load-path py-install-directory)
+(add-to-list 'load-path (concat py-install-directory "extensions"))
+;; make it easier to run from different branches
 (add-to-list 'load-path default-directory)
+(add-to-list 'load-path (concat default-directory "extensions"))
 
 (require 'comint)
 
@@ -221,6 +225,7 @@ Default is non-nil. "
 
   :type 'boolean
   :group 'python-mode)
+(make-variable-buffer-local 'py-smart-operator-mode-p)
 
 (defcustom py-close-provides-newline t
   "If a newline is inserted, when line after block isn't empty. Default is non-nil. "
@@ -2374,6 +2379,9 @@ Run pdb under GUD"]
 
             ["Toggle py-smart-indentation" toggle-py-smart-indentation
              :help "See also `py-smart-indentation-on', `-off' "]
+
+            ["Toggle py-smart-operator" smart-operator-mode
+             :help "See also `py-smart-operator-on', `-off' "]
 
             ["Toggle indent-tabs-mode" py-toggle-indent-tabs-mode
              :help "See also `py-indent-tabs-mode-on', `-off' "]
@@ -4544,7 +4552,9 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
        '((< '(backward-delete-char-untabify (min py-indent-offset
                                                  (current-column))))
          (^ '(- (1+ (current-indentation))))))
-
+  
+  (add-to-list 'load-path py-install-directory)
+  (add-to-list 'load-path (concat py-install-directory "extensions"))
   (when py-prepare-autopair-mode-p
     (load (concat py-install-directory (char-to-string py-separator-char) "autopair" (char-to-string py-separator-char) "autopair.el") nil t)
     (add-hook 'python-mode-hook
@@ -4586,7 +4596,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (when py-outline-minor-mode-p (outline-minor-mode 1))
   (when py-smart-operator-mode-p
     (unless (featurep 'smart-operator)
-      (load (concat (py-normalize-directory py-install-directory) "smart-operator.el")))
+      (load (concat (py-normalize-directory py-install-directory) "extensions/smart-operator.el")))
     (smart-operator-mode-on))
   (when (interactive-p) (message "python-mode loaded from: %s" "python-components-mode.el")))
 

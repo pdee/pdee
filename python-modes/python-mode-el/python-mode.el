@@ -123,6 +123,7 @@ Default is non-nil. "
 
   :type 'boolean
   :group 'python-mode)
+(make-variable-buffer-local 'py-smart-operator-mode-p)
 
 (defcustom py-prepare-autopair-mode-p t
   "If autopair-mode hook should be loaded. Default is `t'. "
@@ -10323,6 +10324,7 @@ With \\[universal-argument] 4 is called `py-switch-shell' see docu there.
         (when (interactive-p) (message "%s" "Could not detect Python on your system. Maybe set `py-edit-only-p'?")))
       erg)))
 
+;;; Smart indentation
 (defalias 'toggle-py-smart-indentation 'py-toggle-smart-indentation)
 (defun py-toggle-smart-indentation (&optional arg)
   "If `py-smart-indentation' should be on or off.
@@ -10356,6 +10358,43 @@ Returns value of `py-smart-indentation'. "
     (toggle-py-smart-indentation arg))
   (when (interactive-p) (message "py-smart-indentation: %s" py-smart-indentation))
   py-smart-indentation)
+
+;;; Smart operator
+(defalias 'toggle-py-smart-operator 'py-toggle-smart-operator)
+(defun py-toggle-smart-operator (&optional arg)
+  "If `py-smart-operator-mode-p' should be on or off.
+
+Returns value of `py-smart-operator-mode-p' switched to. "
+  (interactive)
+  (let ((arg (or arg (if py-smart-operator-mode-p -1 1))))
+    (if (< 0 arg)
+        (progn
+          (setq py-smart-operator-mode-p t)
+          (smart-operator-mode 1))
+      (setq py-smart-operator-mode-p nil)
+      (smart-operator-mode 1))
+    (when (interactive-p) (message "py-smart-operator-mode-p: %s" py-smart-operator-mode-p))
+    py-smart-operator-mode-p))
+
+(defun py-smart-operator-mode-on (&optional arg)
+  "Make sure, `py-smart-operator-mode-p' is on.
+
+Returns value of `py-smart-operator-mode-p'. "
+  (interactive "p")
+  (let ((arg (or arg 1)))
+    (toggle-py-smart-operator-mode-p arg))
+  (when (interactive-p) (message "py-smart-operator-mode-p: %s" py-smart-operator-mode-p))
+  py-smart-operator-mode-p)
+
+(defun py-smart-operator-mode-off (&optional arg)
+  "Make sure, `py-smart-operator-mode-p' is off.
+
+Returns value of `py-smart-operator-mode-p'. "
+  (interactive "p")
+  (let ((arg (if arg (- arg) -1)))
+    (toggle-py-smart-operator-mode-p arg))
+  (when (interactive-p) (message "py-smart-operator-mode-p: %s" py-smart-operator-mode-p))
+  py-smart-operator-mode-p)
 
 ;;; Split-Windows-On-Execute forms
 (defalias 'toggle-py-split-windows-on-execute 'py-toggle-split-windows-on-execute)
@@ -11479,7 +11518,6 @@ by this command. Then place point after the first, indented.\n\n"
         (define-key map [(backspace)] 'py-electric-backspace)
         (define-key map [(control backspace)] 'py-hungry-delete-backwards)
         (define-key map [(control c) (delete)] 'py-hungry-delete-forward)
-        (define-key map [(control c)(control a)] 'py-mark-statement)
         ;; moving point
         (define-key map [(control c)(control p)] 'py-beginning-of-statement)
         (define-key map [(control c)(control n)] 'py-end-of-statement)
@@ -11515,6 +11553,7 @@ by this command. Then place point after the first, indented.\n\n"
         (define-key map [(control c)(control k)] 'py-mark-block-or-clause)
         (define-key map [(control c)(.)] 'py-expression)
         ;; Miscellaneous
+        (define-key map [(super q)] 'py-copy-statement)
         (define-key map [(control c)(control d)] 'py-pdbtrack-toggle-stack-tracking)
         (define-key map [(control c)(control f)] 'py-sort-imports)
         (define-key map [(control c)(\#)] 'py-comment-region)
@@ -11671,6 +11710,9 @@ Run pdb under GUD"]
 
             ["Toggle py-smart-indentation" toggle-py-smart-indentation
              :help "See also `py-smart-indentation-on', `-off' "]
+
+            ["Toggle py-smart-operator" smart-operator-mode
+             :help "See also `py-smart-operator-on', `-off' "]
 
             ["Toggle indent-tabs-mode" py-toggle-indent-tabs-mode
              :help "See also `py-indent-tabs-mode-on', `-off' "]
@@ -13168,7 +13210,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (when py-outline-minor-mode-p (outline-minor-mode 1))
   (when py-smart-operator-mode-p
     (unless (featurep 'smart-operator)
-      (load (concat (py-normalize-directory py-install-directory) "smart-operator.el")))
+      (load (concat (py-normalize-directory py-install-directory) "extensions/smart-operator.el")))
     (smart-operator-mode-on))
   (when (interactive-p) (message "python-mode loaded from: %s" "python-components-mode.el")))
 
@@ -13740,21 +13782,21 @@ comint believe the user typed this string so that
     (process-send-string proc cmd)))
 
 ;; from pycomplete.el
-(defun py-find-global-imports ()
-  (save-excursion
-    (let (first-class-or-def imports)
-      (goto-char (point-min))
-      (setq first-class-or-def
-            (re-search-forward "^ *\\(def\\|class\\) " nil t))
-      (goto-char (point-min))
-      (while (re-search-forward
-              "^\\(import \\|from \\([A-Za-z_][A-Za-z_0-9]*\\) import \\).*"
-              nil t)
-        (setq imports (append imports
-                              (list (buffer-substring
-                                     (match-beginning 0)
-                                     (match-end 0))))))
-      imports)))
+;; (defun py-find-global-imports ()
+;;   (save-excursion
+;;     (let (first-class-or-def imports)
+;;       (goto-char (point-min))
+;;       (setq first-class-or-def
+;;             (re-search-forward "^ *\\(def\\|class\\) " nil t))
+;;       (goto-char (point-min))
+;;       (while (re-search-forward
+;;               "^\\(import \\|from \\([A-Za-z_][A-Za-z_0-9]*\\) import \\).*"
+;;               nil t)
+;;         (setq imports (append imports
+;;                               (list (buffer-substring
+;;                                      (match-beginning 0)
+;;                                      (match-end 0))))))
+;;       imports)))
 
 ;;; Code Completion.
 
