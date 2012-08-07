@@ -2742,6 +2742,7 @@ someDe
     (py-bug-tests-intern 'pycomplete-same-folder-def-lp:889052-base arg teststring t)))
 
 (defun pycomplete-same-folder-def-lp:889052-base ()
+  (write-file (concat (py-normalize-directory py-temp-directory) "samefolder.py"))
   (goto-char 76)
   (py-complete)
   (beginning-of-line)
