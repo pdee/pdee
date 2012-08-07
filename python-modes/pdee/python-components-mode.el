@@ -65,7 +65,7 @@
 (require 'flymake)
 (require 'python-components-macros)
 (require 'python-components-nomacros)
-(require 'smart-operator)
+;; (require 'smart-operator)
 
 (defgroup python-mode nil
   "Support for the Python programming language, <http://www.python.org/>"

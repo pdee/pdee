@@ -41,6 +41,23 @@
                   (skip-syntax-backward "w_"))
                 (- pos (point))))))))
 
+
+(defun company-pycomplete-doc-buffer (candidate)
+  "Return buffer with docstring of CANDIDATE if it is available."
+  (let* ((full-prefix (py-complete-enhanced-symbol-before-point))
+         (full-symbol (concat full-prefix (company-strip-prefix candidate)))
+         (doc (py-complete-docstring-for-symbol full-symbol)))
+    (when (and (stringp doc) (> (length doc) 0))
+      (with-current-buffer (company-doc-buffer)
+        (insert doc)
+        (current-buffer)))))
+
+(defun company-pycomplete-location (candidate)
+  "Return location of CANDIDATE in cons form (FILE . LINE) if it is available."
+  (let* ((full-prefix (py-complete-enhanced-symbol-before-point))
+         (full-symbol (concat full-prefix (company-strip-prefix candidate))))
+    (py-complete-location full-symbol)))
+
 (defun company-pycomplete (command &optional arg &rest ignored)
   "A `company-mode' completion back-end for pycomplete."
   (interactive (list 'interactive))
@@ -49,7 +66,9 @@
     ('prefix (and (derived-mode-p 'python-mode)
                   (not (company-in-string-or-comment))
                   (company-pycomplete--grab-symbol)))
-    ('candidates (py-complete-completions))))
+    ('candidates (py-complete-completions))
+    ('doc-buffer (company-pycomplete-doc-buffer arg))
+    ('location (company-pycomplete-location arg))))
 
 (provide 'company-pycomplete)
 ;;; company-pycomplete.el ends here

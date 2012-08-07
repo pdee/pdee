@@ -317,6 +317,12 @@ or if the dot-expression starts with a variable for which the type is known."
   (if py-complete-current-signature
       (py-complete-show (format "%s" py-complete-current-signature))))
 
+(defun py-complete-location (sym)
+  "Get definition location of sym in cons form (FILE . LINE)."
+  (let ((location (pycomplete-pylocation sym (buffer-file-name))))
+    (when (and location (vectorp location) (= (length location) 2))
+      (cons (aref location 0) (aref location 1)))))
+
 (defun py-complete-goto-definition nil
   "Got to definition of Python function."
   (interactive)
