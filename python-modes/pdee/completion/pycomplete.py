@@ -54,6 +54,7 @@ import keyword
 import StringIO
 import os
 import pydoc
+import ast
 
 try:
     x = set
@@ -61,6 +62,154 @@ except NameError:
     from sets import Set as set
 else:
     del x
+
+class ImportExtractor(ast.NodeVisitor):
+    """NodeVisitor to extract the top-level import statements from an AST.
+
+    To generate code containing all imports in try-except statements,
+    call get_import_code(node), where node is a parsed AST.
+    """
+    def visit_FunctionDef(self, node):
+        # Ignore imports inside functions or methods.
+        pass
+
+    def visit_ClassDef(self, node):
+        # Ignore imports inside classes.
+        pass
+
+    def generic_visit(self, node):
+        # Store import statement nodes.
+        if isinstance(node, (ast.Import, ast.ImportFrom)):
+            self._import_nodes.append(node)
+        ast.NodeVisitor.generic_visit(self, node)
+
+    def get_import_code(self, node, fname='<string>'):
+        """Get compiled code of all top-level import statements found in the
+        AST of node."""
+        self._import_nodes = []
+        self.visit(node)
+        body = []
+        for imp_node in self._import_nodes:
+            body.append(ast.TryExcept(body=[imp_node], handlers=[
+                ast.ExceptHandler(type=None, name=None, body=[ast.Pass()])],
+                orelse=[]))
+        node = ast.Module(body=body)
+        ast.fix_missing_locations(node)
+        code = compile(node, fname, 'exec')
+        return code
+
+
+class CodeRemover(ast.NodeTransformer):
+    """NodeTransformer which replaces function statements with 'pass'
+    and keeps only safe assignments, so that the resulting code can
+    be used for code completion.
+
+    To reduce the code from the node of a parsed AST, call
+    get_transformed_code(node).
+    """
+    def visit_FunctionDef(self, node):
+        # Replace all function statements except doc string by 'pass'.
+        if node.body:
+            if isinstance(node.body[0], ast.Expr) and \
+               isinstance(node.body[0].value, ast.Str):
+                # Keep doc string.
+                first_stmt = node.body[1]
+                node.body = [node.body[0]]
+            else:
+                first_stmt = node.body[0]
+                node.body = []
+            node.body.append(ast.copy_location(ast.Pass(), first_stmt))
+            return node
+        return None
+
+    def visit_Expr(self, node):
+        # Remove all expressions except strings to keep doc strings.
+        if isinstance(node.value, ast.Str):
+            return node
+        return None
+
+    @staticmethod
+    def replace_unsafe_value(node, replace_self=None):
+        """Modify value from assignment if unsafe.
+
+        If replace_self is given, only assignments starting with 'self.' are
+        processed, the assignment node is returned with 'self.' replaced by
+        the value of replace_self (typically the class name).
+        For other assignments, None is returned."""
+        if replace_self:
+            if len(node.targets) != 1:
+                return None
+            target = node.targets[0]
+            if isinstance(target, ast.Attribute) and \
+               isinstance(target.value, ast.Name) and \
+               target.value.id == 'self' and \
+               isinstance(target.value.ctx, ast.Load):
+                node.targets[0].value.id = replace_self
+            else:
+                return None
+        if isinstance(node.value, (ast.Str, ast.Num)):
+            pass
+        elif isinstance(node.value, (ast.List, ast.Tuple)):
+            node.value.elts = []
+        elif isinstance(node.value, ast.Dict):
+            node.value.keys = []
+            node.value.values = []
+        elif isinstance(node.value, ast.ListComp):
+            node.value = ast.copy_location(ast.List(elts=[], ctx=ast.Load()), node.value)
+        else:
+            node.value = ast.copy_location(ast.Name(id='None', ctx=ast.Load()), node.value)
+        return node
+
+    def visit_Assign(self, node):
+        # Replace unsafe values of assignements by None.
+        return self.replace_unsafe_value(node)
+
+    def visit_Name(self, node):
+        # Pass names for bases in ClassDef.
+        return node
+
+    def visit_Attribute(self, node):
+        # Pass attributes for bases in ClassDef.
+        return node
+
+    def visit_ClassDef(self, node):
+        # Visit nodes of class.
+        # Store instance member assignments to be added later to generated code.
+        self_assignments = {}
+        for child in ast.walk(node):
+            if isinstance(child, ast.Assign):
+                new_child = self.replace_unsafe_value(child,
+                                                      replace_self=node.name)
+                if new_child:
+                    new_var = child.targets[0].attr
+                    old_assign = self_assignments.get(new_var)
+                    if not old_assign or (
+                            isinstance(old_assign.value, ast.Name) and
+                            old_assign.value.id == 'None'):
+                        self_assignments[new_var] = new_child
+        self._class_assignments.extend(self_assignments.values())
+        return ast.NodeTransformer.generic_visit(self, node)
+
+    def visit_Module(self, node):
+        # Visit nodes of module
+        return ast.NodeTransformer.generic_visit(self, node)
+
+    def generic_visit(self, node):
+        # Remove everything which is not handled by the methods above
+        return None
+
+    def get_transformed_code(self, node, fname='<string>'):
+        """Get compiled code containing only empty functions and methods
+        and safe assignments found in the AST of node."""
+        self._class_assignments = []
+        node = self.visit(node)
+        # The self members are added as attributes to the class objects
+        # rather than included as class variables inside the class definition
+        # so that names starting with '__' are not mangled.
+        node.body.extend(self._class_assignments)
+        code = compile(node, fname, 'exec')
+        return code
+
 
 class PyCompleteDocument(object):
     """Completion data for Python source file."""
@@ -79,6 +228,7 @@ class PyCompleteDocument(object):
         self._globald = globals()
         self._symnames = []
         self._symobjs = {}
+        self._parse_source_called = False
 
     @classmethod
     def instance(cls, fname):
@@ -97,6 +247,8 @@ class PyCompleteDocument(object):
         If the imports are the same as in the last call, the methods
         immediately returns, also if imports is None.
         """
+        if imports is None and not self._parse_source_called:
+            self.parse_source()
         if imports is None or imports == self._imports:
             return
         # changes to where the file is
@@ -270,8 +422,8 @@ class PyCompleteDocument(object):
         if s and not keyword.iskeyword(s):
             try:
                 self._import_modules(imports)
-                obj = self._load_symbol(s, strict=False)
-                if obj:
+                obj = self._load_symbol(s, strict=True)
+                if obj and not isinstance(obj, (int, float, basestring)):
                     doc = inspect.getdoc(obj)
                     if doc:
                         return doc
@@ -331,8 +483,60 @@ class PyCompleteDocument(object):
                 if type(obj) in [types.FunctionType, types.LambdaType]:
                     code = obj.func_code
                     return (os.path.abspath(code.co_filename), code.co_firstlineno)
+                # If not found, try using inspect.
+                return (inspect.getsourcefile(obj), inspect.getsourcelines(obj)[1])
         except:
             pass
+        return None
+
+    def parse_source(self, only_reload=False):
+        """Parse source code to get imports and completions.
+
+        If this method is called, the imports parameter for the other methods
+        must be omitted (or None), so that the imports are taken from the
+        parsed source code. If only_reload is True, the source is only parsed
+        if it has been parsed before.
+        None is returned if OK, else a string describing the error.
+        """
+        if only_reload and not self._parse_source_called:
+            return None
+        self._parse_source_called = True
+        if not self._fname:
+            return None
+
+        try:
+            with open(self._fname) as fh:
+                src = fh.read()
+        except IOError, ex:
+            return '%s' % ex
+
+        # changes to where the file is
+        os.chdir(os.path.dirname(self._fname))
+
+        try:
+            node = ast.parse(src, self._fname)
+        except (SyntaxError, TypeError), ex:
+            return '%s' % ex
+        import_code = ImportExtractor().get_import_code(node, self._fname)
+
+        old_globald = self._globald.copy()
+        old_locald = self._locald
+        self._locald = {}
+        try:
+            exec import_code in self._globald, self._locald
+        except Exception, ex:
+            self._globald = old_globald
+            self._locald = old_locald
+            return '%s' % ex
+
+        self._symnames = []
+        self._symobjs = {}
+
+        reduced_code = CodeRemover().get_transformed_code(node, self._fname)
+        try:
+            exec reduced_code in self._globald, self._locald
+        except Exception, ex:
+            return '%s' % ex
         return None
 
 def get_all_completions(s, fname=None, imports=None):
@@ -369,6 +573,16 @@ def pysignature(s, fname=None, imports=None):
 def pylocation(s, fname=None, imports=None):
     """Return file path and line number of symbol, None if not found."""
     return PyCompleteDocument.instance(fname).get_location(s, imports)
+
+def parse_source(fname, only_reload=False):
+    """Parse source code to get imports and completions.
+
+    If this function is called, the imports parameter for the other functions
+    must be omitted (or None), so that the imports are taken from the
+    parsed source code. If only_reload is True, the source is only parsed if
+    it has been parsed before.
+    """
+    return PyCompleteDocument.instance(fname).parse_source(only_reload)
 
 if __name__ == "__main__":
     print "<empty> ->", pycomplete("")

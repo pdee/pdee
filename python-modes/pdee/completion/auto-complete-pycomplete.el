@@ -30,23 +30,14 @@
 (require 'pycomplete)
 (require 'auto-complete)
 
-(defvar ac-pycomplete-imports-cache nil)
-
-(ac-clear-variable-after-save 'ac-pycomplete-imports-cache)
-
 (defun ac-pycomplete-document (symbol)
   (let* ((full-prefix (py-complete-enhanced-symbol-before-point))
         (full-symbol (concat (substring full-prefix 0 (- (length ac-prefix))) symbol)))
-    (or ac-pycomplete-imports-cache
-        (setq ac-pycomplete-imports-cache (py-complete-find-global-imports)))
-    (py-complete-docstring-for-symbol
-     full-symbol ac-pycomplete-imports-cache)))
+    (py-complete-docstring-for-symbol full-symbol)))
 
 (defun ac-pycomplete-candidates ()
-  (or ac-pycomplete-imports-cache
-      (setq ac-pycomplete-imports-cache (py-complete-find-global-imports)))
   (py-complete-completions-for-symbol
-   (py-complete-enhanced-symbol-before-point) ac-pycomplete-imports-cache))
+   (py-complete-enhanced-symbol-before-point)))
 
 (ac-define-source pycomplete
   '((candidates . ac-pycomplete-candidates)

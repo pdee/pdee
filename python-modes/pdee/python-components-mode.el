@@ -1834,7 +1834,9 @@ See original source: http://pymacs.progiciels-bpi.ca"
     (unless pymacs-installed-p
       (setenv "PYTHONPATH" (concat
                             (if path (concat path path-separator))
-                            (expand-file-name py-install-directory) "Pymacs")))
+                            (expand-file-name py-install-directory)
+                            path-separator
+                            (expand-file-name py-install-directory) "completion")))
 
     (if (py-install-directory-check)
         (progn
@@ -1848,7 +1850,8 @@ See original source: http://pymacs.progiciels-bpi.ca"
           (autoload 'pymacs-exec "pymacs")
           (autoload 'pymacs-load "pymacs")
           (require 'pymacs)
-          (load (concat py-install-directory "completion/pycomplete.el") nil t))
+          (load (concat py-install-directory "completion/pycomplete.el") nil t)
+          (add-hook 'python-mode-hook 'py-complete-initialize))
       (error "`py-install-directory' not set, see INSTALL"))))
 
 (when py-load-pymacs-p (py-load-pymacs))
