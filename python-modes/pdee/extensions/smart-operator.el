@@ -290,7 +290,7 @@ See also `smart-operator-insert' "
   "Insert operator \"-\" with surrounding spaces.
 e.g., `-' will become ` - ', `-=' will become ` -= '.
 
-With optional ARG, insert ` -= '.
+With optional numerical ARG 4 -- M-4 --, insert ` -= '.
 
 See also `smart-operator-insert' "
   (interactive "*p")
@@ -302,8 +302,8 @@ See also `smart-operator-insert' "
          (indent-according-to-mode))
         (t
          (if (eq 4 (prefix-numeric-value arg))
-             (smart-operator-insert "-" nil '(4))
-           (smart-operator-insert "-" nil arg)))))
+             (smart-operator-insert "-" nil t)
+           (smart-operator-insert "-")))))
 
 (defun smart-operator-? (&optional arg)
   "Insert operator \"?\" with space.
