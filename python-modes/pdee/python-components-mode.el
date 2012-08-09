@@ -65,6 +65,7 @@
 (require 'flymake)
 (require 'python-components-macros)
 (require 'python-components-nomacros)
+(require 'thingatpt)
 ;; (require 'smart-operator)
 
 (defgroup python-mode nil

@@ -64,6 +64,7 @@
 (require 'rx)
 (require 'flymake)
 (require 'imenu)
+(require 'thingatpt)
 
 (defgroup python-mode nil
   "Support for the Python programming language, <http://www.python.org/>"
