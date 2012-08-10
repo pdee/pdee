@@ -219,7 +219,7 @@ Default is nil. "
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-smart-operator-mode-p t
+(defcustom py-smart-operator-mode-p nil
   "If python-mode calls (smart-operator-mode-on)
 
 Default is non-nil. "
