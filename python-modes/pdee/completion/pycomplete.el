@@ -30,7 +30,8 @@ This can be used to skip updating the index when still on the same line.")
 (defun py-complete-type-for-value (val)
   "Return name of type for variable assignment value.
 If the type cannot be deduced, nil is returned."
-  (let ((firstchar (string-to-char val)))
+  (let ((firstchar (string-to-char val))
+        (case-fold-search nil))
     (cond
      ((string= val "None") nil)
      ((equal ?\[ firstchar) "list")
@@ -41,7 +42,10 @@ If the type cannot be deduced, nil is returned."
      ((or (string= val "True") (string= val "False")) "bool")
      ((string-match "^[+\\-]?[0-9]+$" val) "int")
      ((string-match "^[+\\-]?[0-9]+[lL]$" val) "long")
-     ((string-match "^[+\\-]?[0-9]+\\(?:\\.[0-9]+\\)?" val) "float"))))
+     ((string-match "^[+\\-]?[0-9]+\\(?:\\.[0-9]+\\)?" val) "float")
+     ((string-match "^\\(\\(?:[[:word:]\\.]+\\.\\)?_?[A-Z][A-Za-z0-9]+\\)($" val)
+      (match-string-no-properties 1 val))
+     ((or (string= val "open(") (string= val "file(")) "file"))))
 
 (defun py-complete-variables-in-def (&optional limit)
   "Return an alist with mappings of local variable names to types.
@@ -359,6 +363,16 @@ Should be called from python-mode-hook."
   (interactive)
   (py-complete-set-keymap)
   ;; Parse source file after it is saved
-  (add-hook 'after-save-hook 'py-complete-parse-source nil 'local))
+  (add-hook 'after-save-hook 'py-complete-parse-source nil 'local)
+  ;; Set up auto-complete or company if enabled
+  (cond
+   ((fboundp 'auto-complete-mode)
+    (require 'auto-complete-pycomplete)
+    (setq ac-sources '(ac-source-pycomplete)))
+   ((fboundp 'company-mode)
+    (company-mode t)
+    (require 'company-pycomplete)
+    (set (make-local-variable 'company-backends)
+         '((company-pycomplete))))))
 
 (provide 'pycomplete)

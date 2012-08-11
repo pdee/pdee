@@ -1,6 +1,43 @@
 Python Mode News
 ================
 
+New in version 6.1.0
+--------------------
+- improved Pymacs based code completion:
+  - Completion of symbols from imported modules, functions, classes,
+    module/class-level data members and instance variables in the current
+    buffer. The information for this completion is updated whenever the file
+    is saved.
+  - Completion of local variables and function parameters.
+  - Type deduction from constructor calls and literals.
+  - Show help for modules, classes and functions.
+  - Go to definition of modules, classes and functions.
+  - Show signature of functions.
+  - Support for auto-complete and company.
+
+  To enable code completion, the following initialization file is sufficient:
+
+  (setq py-install-directory "PATH/TO/PYTHON-MODE/")
+  (add-to-list 'load-path py-install-directory)
+  (setq py-load-pymacs-p t)
+  (require 'python-mode)
+
+  To use auto-complete, just prepend the following lines:
+
+  (require 'auto-complete-config)
+  (ac-config-default)
+
+  or for company:
+
+  (autoload 'company-mode "company" nil t)
+
+  If you do not use one of those visual completion interfaces, key bindings
+  exist:
+  - C-tab complete symbol
+  - f1    show help
+  - S-f1  show signature
+  - f2    go to definition
+
 New in version 6.0.11
 ---------------------
 - extended version of smart-operator added

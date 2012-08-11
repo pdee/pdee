@@ -962,7 +962,6 @@ est \
 --funcall ipython-shell-complete-test \
 --funcall usr-bin-ipython-shell-complete-test \
 \
---funcall py-ipython-complete-lp:927136-test \
 --funcall indent-region-lp:997958-test \
 --funcall py-shell-invoking-python-lp:835151-test \
 --funcall script-buffer-appears-instead-of-python-shell-buffer-lp:957561-test \
@@ -988,3 +987,4 @@ est \
 --funcall py-execute-buffer-python-switch-test \
 --funcall py-execute-buffer-ipython-switch-test \
 --funcall pycomplete-same-folder-class-lp:889052-test \
+--funcall py-ipython-complete-lp:927136-test \

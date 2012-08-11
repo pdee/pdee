@@ -1834,10 +1834,10 @@ See original source: http://pymacs.progiciels-bpi.ca"
     ;; Python side
     (unless pymacs-installed-p
       (setenv "PYTHONPATH" (concat
-                            (if path (concat path path-separator))
                             (expand-file-name py-install-directory)
                             path-separator
-                            (expand-file-name py-install-directory) "completion")))
+                            (expand-file-name py-install-directory) "completion"
+                            (if path (concat path-separator path)))))
 
     (if (py-install-directory-check)
         (progn
@@ -4567,7 +4567,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
                         (list #'autopair-default-handle-action
                               #'autopair-python-triple-quote-action)))))
   (when py-trailing-whitespace-smart-delete-p
-    (add-hook 'before-save-hook 'delete-trailing-whitespace))
+    (add-hook 'before-save-hook 'delete-trailing-whitespace nil 'local))
   (if py-complete-function
       (add-hook 'completion-at-point-functions
                 py-complete-function nil 'local)

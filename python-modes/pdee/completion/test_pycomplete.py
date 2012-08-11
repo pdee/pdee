@@ -7,19 +7,18 @@ from pycomplete import *
 
 def test_signature():
     assert pysignature('os.path.join') == 'join: (a, *p)'
-    assert pysignature('urllib.urlopen') == \
-           'urlopen: (url, data=None, proxies=None)'
-    assert pysignature('httplib.HTTPConnection.request') == \
-           'request: (self, method, url, body=None, headers={})'
-    assert pysignature('httplib.HTTPMessage') == \
-           '__init__: (self, fp, seekable=1)'
-    assert pysignature('httplib.HTTPResponse') == \
-           '__init__: (self, sock, debuglevel=0, strict=0, method=None, buffering=False)'
+    assert pysignature('json.dump').startswith(
+        'dump: (obj, fp, skipkeys=False, ensure_ascii=True, ')
+    assert pysignature('json.JSONEncoder.encode') == 'encode: (self, o)'
+    assert pysignature('json.JSONEncoder').startswith(
+        '__init__: (self, skipkeys=False, ensure_ascii=True, ')
     assert pysignature('xml.dom.minidom.parse') == \
            'parse: (file, parser=None, bufsize=None)'
     assert pysignature('csv.reader') == \
            'csv_reader = reader(iterable [, dialect=\'excel\']'
-    assert pysignature('super') == 'super(type) -> unbound super object'
+    assert pysignature('super') in (
+        'super(type) -> unbound super object',
+        'super() -> same as super(__class__, <first argument>)')
 
 def test_help():
     assert pyhelp('os.path.join').startswith('Help on function join')
@@ -34,20 +33,16 @@ def test_help():
 
 def test_complete():
     assert pycomplete('') == ''
-    assert pycomplete('sys.get') == [
-        'getcheckinterval', 'getdefaultencoding', 'getdlopenflags',
-        'getfilesystemencoding', 'getprofile', 'getrecursionlimit',
-        'getrefcount', 'getsizeof', 'gettrace']
+    assert pycomplete('sys.getd') == ['getdefaultencoding', 'getdlopenflags']
     assert pycomplete('set') == ['set', 'setattr']
     assert pycomplete('settr') is None
     assert pycomplete('settr', imports=['from sys import settrace']) == [
         'ace']
     assert pycomplete('foo.') is None
-    assert pycomplete('Enc') is None
-    assert pycomplete('Enc', imports=['from email import *']) == ['oders']
-    assert pycomplete('E') == [
-        'EOFError', 'Ellipsis', 'Encoders', 'EnvironmentError', 'Errors',
-        'Exception']
+    assert pycomplete('JSONEnc') is None
+    assert pycomplete('JSONEnc', imports=['from json import *']) == ['oder']
+    assert pycomplete('A') == [
+        'ArithmeticError', 'AssertionError', 'AttributeError']
 
 def test_completions():
     assert get_all_completions('os.path.jo') == ['join']
@@ -63,16 +58,16 @@ def test_location():
     fn, line = pylocation('os.path.join')
     assert os.path.exists(fn)
     assert linecache.getline(fn, line).startswith('def join')
-    assert pylocation('cStringIO.StringIO') is None
-    fn, line = pylocation('urllib')
+    assert pylocation('io.StringIO') is None
+    fn, line = pylocation('json')
     assert os.path.exists(fn)
 
 def test_docstring():
     assert pydocstring('os.path.abspath') == 'Return an absolute path.'
     assert pydocstring('os.path').startswith(
         'Common operations on Posix pathnames.\n')
-    assert pydocstring('httplib.HTTPMessage.getheader').startswith(
-        'Get the header value for a name.\n')
+    assert pydocstring('json.JSONEncoder.encode').startswith(
+        'Return a JSON string representation of a Python data structure.\n')
     assert pydocstring('yield') == ''
     assert pydocstring('numbers.Real.real') == \
       'Real numbers are their real component.'
@@ -80,7 +75,7 @@ def test_docstring():
     assert pydocstring('re.IGNORECASE') == ''
 
 def test_parse_source():
-    tmp_file = tempfile.NamedTemporaryFile(suffix='.py')
+    tmp_file = tempfile.NamedTemporaryFile(suffix='.py', mode='w')
     name = tmp_file.name
     with tmp_file.file as fh:
         assert parse_source('not_existing') == \
@@ -90,9 +85,10 @@ def test_parse_source():
         assert get_all_completions('dat' , name) == []
         src = """
 "Doc for module."
-import os
+import sys, os, io
 from datetime import date, \
 time
+import argparse
 if os.getenv('LC'):
     import linecache
 
@@ -105,21 +101,22 @@ class TestClass(date):
     CONST1 = 7
     CONST2 = 'abc'
     CONST3 = ['a', ]
-    CONST4 = open('not_existing')
 
     def __init__(self):
         self._member1 = 'string member'
         self._member2 = None
         self.__member3 = [ None, open('not_existing') ]
+        self.member4 = argparse.ArgumentParser()
+        self.member5 = open('not_existing')
     def testmeth(self, arg1=1):
         "Doc for testmeth."
-        print 'From testmeth %d' % arg1
+        sys.stdout.write('From testmeth %d' % arg1)
         if arg1 == 2:
             self._member1 = None
     @staticmethod
     def teststaticmeth(arg1=2):
         "Doc for teststaticmeth."
-        print 'From teststaticmeth %d' % arg1
+        sys.stdout.write('From teststaticmeth %d' % arg1)
     @classmethod
     def testclassmeth(cls, arg1=3):
         "Doc for testclassmeth."
@@ -145,7 +142,7 @@ if __name__ == '__main__':
         # Check for definitions in local file
         assert get_all_completions('test' , name) == ['testfunc']
         assert get_all_completions('TestClass.CO' , name) == \
-          ['CONST1', 'CONST2', 'CONST3', 'CONST4']
+          ['CONST1', 'CONST2', 'CONST3']
         assert get_all_completions('TestClass.test' , name) == \
           ['testclassmeth', 'testmeth', 'testprop', 'teststaticmeth']
         # Check for instance members
@@ -157,6 +154,10 @@ if __name__ == '__main__':
         assert get_all_completions('TestClass._member2.', name) == []
         assert get_all_completions('TestClass.__member3.ext', name) == \
           ['extend']
+        assert get_all_completions('TestClass.member4.prin', name) == \
+          ['print_help', 'print_usage', 'print_version']
+        assert get_all_completions('TestClass.member5.writel', name) == \
+          ['writelines']
         assert pydocstring('TestClass._member1', name) == ''
         assert pydocstring('TestClass._member2', name) == ''
         assert pydocstring('TestClass.__member3', name) == ''

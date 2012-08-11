@@ -51,10 +51,41 @@ import sys
 import types
 import inspect
 import keyword
-import StringIO
 import os
 import pydoc
 import ast
+import re
+
+if sys.version_info[0] >= 3: # Python 3
+    from io import StringIO
+    def is_num_or_str(obj):
+        return isinstance(obj, (int, float, str))
+    def is_class_type(obj):
+        return type(obj) == type
+    def get_unbound_function(unbound):
+        return unbound
+    def get_method_function(meth):
+        return meth.__func__
+    def get_function_code(func):
+        return func.__code__
+    def update_with_builtins(keys):
+        import builtins
+        keys.update(dir(builtins))
+else: # Python 2
+    from StringIO import StringIO
+    def is_num_or_str(obj):
+        return isinstance(obj, (int, long, float, basestring))
+    def is_class_type(obj):
+        return type(obj) in (types.ClassType, types.TypeType)
+    def get_unbound_function(unbound):
+        return unbound.im_func
+    def get_method_function(meth):
+        return meth.im_func
+    def get_function_code(func):
+        return func.func_code
+    def update_with_builtins(keys):
+        import __builtin__
+        keys.update(dir(__builtin__))
 
 try:
     x = set
@@ -128,6 +159,9 @@ class CodeRemover(ast.NodeTransformer):
             return node
         return None
 
+    # Class name in CapCase, as suggested by PEP8 Python style guide
+    _classNameRe = re.compile(r'^_?[A-Z][A-Za-z0-9]+$')
+
     @staticmethod
     def replace_unsafe_value(node, replace_self=None):
         """Modify value from assignment if unsafe.
@@ -156,6 +190,45 @@ class CodeRemover(ast.NodeTransformer):
             node.value.values = []
         elif isinstance(node.value, ast.ListComp):
             node.value = ast.copy_location(ast.List(elts=[], ctx=ast.Load()), node.value)
+        elif isinstance(node.value, ast.Call):
+            if isinstance(node.value.func, ast.Name):
+                name = node.value.func.id
+                if name == 'open':
+                    if sys.version_info[0] >= 3: # Python 3
+                        node.value = ast.copy_location(
+                            ast.Attribute(value=ast.Name(id='io', ctx=ast.Load()),
+                                          attr='BufferedIOBase', ctx=ast.Load()),
+                                          node.value)
+                    else: # Python 2
+                        node.value = ast.copy_location(
+                            ast.Name(id='file', ctx=ast.Load()), node.value)
+                    # Wrap class lookup in try-except because it is not fail-safe.
+                    node = ast.copy_location(ast.TryExcept(body=[node], handlers=[
+                        ast.ExceptHandler(type=None, name=None, body=[ast.Pass()])],
+                        orelse=[]), node)
+                    ast.fix_missing_locations(node)
+                elif CodeRemover._classNameRe.match(name):
+                    node.value = ast.copy_location(
+                        ast.Name(id=name, ctx=ast.Load()), node.value)
+                    # Wrap class lookup in try-except because it is not fail-safe.
+                    node = ast.copy_location(ast.TryExcept(body=[node], handlers=[
+                        ast.ExceptHandler(type=None, name=None, body=[ast.Pass()])],
+                        orelse=[]), node)
+                    ast.fix_missing_locations(node)
+                else:
+                    node.value = ast.copy_location(
+                        ast.Name(id='None', ctx=ast.Load()), node.value)
+            elif isinstance(node.value.func, ast.Attribute) and \
+                 CodeRemover._classNameRe.match(node.value.func.attr):
+                node.value = node.value.func
+                # Wrap class lookup in try-except because it is not fail-safe.
+                node = ast.copy_location(ast.TryExcept(body=[node], handlers=[
+                    ast.ExceptHandler(type=None, name=None, body=[ast.Pass()])],
+                    orelse=[]), node)
+                ast.fix_missing_locations(node)
+            else:
+                node.value = ast.copy_location(
+                    ast.Name(id='None', ctx=ast.Load()), node.value)
         else:
             node.value = ast.copy_location(ast.Name(id='None', ctx=ast.Load()), node.value)
         return node
@@ -187,7 +260,7 @@ class CodeRemover(ast.NodeTransformer):
                             isinstance(old_assign.value, ast.Name) and
                             old_assign.value.id == 'None'):
                         self_assignments[new_var] = new_child
-        self._class_assignments.extend(self_assignments.values())
+        self._class_assignments.extend(list(self_assignments.values()))
         return ast.NodeTransformer.generic_visit(self, node)
 
     def visit_Module(self, node):
@@ -213,7 +286,7 @@ class CodeRemover(ast.NodeTransformer):
 
 class PyCompleteDocument(object):
     """Completion data for Python source file."""
-    _helpout = StringIO.StringIO
+    _helpout = StringIO
     _stdout = sys.stdout
 
     _instances = {}
@@ -259,9 +332,9 @@ class PyCompleteDocument(object):
         self._symobjs = {}
         for stmt in imports:
             try:
-                exec stmt in self._globald, self._locald
+                exec(stmt, self._globald, self._locald)
             except TypeError:
-                raise TypeError, 'invalid type: %s' % stmt
+                raise TypeError('invalid type: %s' % stmt)
             except Exception:
                 continue
         self._imports = imports
@@ -272,10 +345,9 @@ class PyCompleteDocument(object):
         """
         if not self._symnames:
             keys = set(keyword.kwlist)
-            keys.update(self._locald.keys())
-            keys.update(self._globald.keys())
-            import __builtin__
-            keys.update(dir(__builtin__))
+            keys.update(list(self._locald.keys()))
+            keys.update(list(self._globald.keys()))
+            update_with_builtins(keys)
             self._symnames = list(keys)
             self._symnames.sort()
 
@@ -348,7 +420,7 @@ class PyCompleteDocument(object):
             try:
                 self._import_modules(imports)
                 obj = self._load_symbol(s, strict=False)
-            except Exception, ex:
+            except Exception as ex:
                 return '%s' % ex
         if not obj:
             obj = str(s)
@@ -365,7 +437,7 @@ class PyCompleteDocument(object):
         """Given a class object, return a function object used for the
         constructor (ie, __init__() ) or None if we can't find one."""
         try:
-            return class_ob.__init__.im_func
+            return get_unbound_function(class_ob.__init__)
         except AttributeError:
             for base in class_ob.__bases__:
                 rc = PyCompleteDocument._find_constructor(base)
@@ -414,7 +486,7 @@ class PyCompleteDocument(object):
         """Return help on object."""
         try:
             return self._get_help(s, imports)
-        except Exception, ex:
+        except Exception as ex:
             return '%s' % ex
 
     def get_docstring(self, s, imports=None):
@@ -423,7 +495,7 @@ class PyCompleteDocument(object):
             try:
                 self._import_modules(imports)
                 obj = self._load_symbol(s, strict=True)
-                if obj and not isinstance(obj, (int, float, basestring)):
+                if obj and not is_num_or_str(obj):
                     doc = inspect.getdoc(obj)
                     if doc:
                         return doc
@@ -441,18 +513,19 @@ class PyCompleteDocument(object):
         try:
             self._import_modules(imports)
             obj = self._load_symbol(s, strict=False)
-        except Exception, ex:
+        except Exception as ex:
             return '%s' % ex
 
-        if type(obj) in (types.ClassType, types.TypeType):
+        if is_class_type(obj):
             # Look for the highest __init__ in the class chain.
             ctr = self._find_constructor(obj)
-            if ctr is not None:
+            if ctr is not None and type(ctr) in (
+                    types.MethodType, types.FunctionType, types.LambdaType):
                 obj = ctr
         elif type(obj) == types.MethodType:
             # bit of a hack for methods - turn it into a function
             # but we drop the "self" param.
-            obj = obj.im_func
+            obj = get_method_function(obj)
 
         if type(obj) in [types.FunctionType, types.LambdaType]:
             (args, varargs, varkw, defaults) = inspect.getargspec(obj)
@@ -476,12 +549,12 @@ class PyCompleteDocument(object):
             self._import_modules(imports)
             obj = self._load_symbol(s, strict=False)
             if obj is not None:
-                if type(obj) in (types.ClassType, types.TypeType):
+                if is_class_type(obj):
                     obj = obj.__init__
                 if type(obj) == types.MethodType:
-                    obj = obj.im_func
+                    obj = get_method_function(obj)
                 if type(obj) in [types.FunctionType, types.LambdaType]:
-                    code = obj.func_code
+                    code = get_function_code(obj)
                     return (os.path.abspath(code.co_filename), code.co_firstlineno)
                 # If not found, try using inspect.
                 return (inspect.getsourcefile(obj), inspect.getsourcelines(obj)[1])
@@ -507,7 +580,7 @@ class PyCompleteDocument(object):
         try:
             with open(self._fname) as fh:
                 src = fh.read()
-        except IOError, ex:
+        except IOError as ex:
             return '%s' % ex
 
         # changes to where the file is
@@ -515,7 +588,7 @@ class PyCompleteDocument(object):
 
         try:
             node = ast.parse(src, self._fname)
-        except (SyntaxError, TypeError), ex:
+        except (SyntaxError, TypeError) as ex:
             return '%s' % ex
         import_code = ImportExtractor().get_import_code(node, self._fname)
 
@@ -523,8 +596,8 @@ class PyCompleteDocument(object):
         old_locald = self._locald
         self._locald = {}
         try:
-            exec import_code in self._globald, self._locald
-        except Exception, ex:
+            exec(import_code, self._globald, self._locald)
+        except Exception as ex:
             self._globald = old_globald
             self._locald = old_locald
             return '%s' % ex
@@ -534,8 +607,8 @@ class PyCompleteDocument(object):
 
         reduced_code = CodeRemover().get_transformed_code(node, self._fname)
         try:
-            exec reduced_code in self._globald, self._locald
-        except Exception, ex:
+            exec(reduced_code, self._globald, self._locald)
+        except Exception as ex:
             return '%s' % ex
         return None
 
@@ -583,20 +656,6 @@ def parse_source(fname, only_reload=False):
     it has been parsed before.
     """
     return PyCompleteDocument.instance(fname).parse_source(only_reload)
-
-if __name__ == "__main__":
-    print "<empty> ->", pycomplete("")
-    print "sys.get ->", pycomplete("sys.get")
-    print "sy ->", pycomplete("sy")
-    print "sy (sys in context) ->", pycomplete("sy", imports=["import sys"])
-    print "foo. ->", pycomplete("foo.")
-    print "Enc (email * imported) ->",
-    print pycomplete("Enc", imports=["from email import *"])
-    print "E (email * imported) ->",
-    print pycomplete("E", imports=["from email import *"])
-
-    print "Enc ->", pycomplete("Enc")
-    print "E ->", pycomplete("E")
 
 # Local Variables :
 # pymacs-auto-reload : t
