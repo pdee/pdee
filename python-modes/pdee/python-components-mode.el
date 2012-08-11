@@ -1248,7 +1248,7 @@ v5 did it - lp:990079. This might fail with certain chars - see UnicodeEncodeErr
 
 (defcustom py-trailing-whitespace-smart-delete-p nil
   "Default is nil. When t, python-mode calls
-    (add-hook 'before-save-hook 'delete-trailing-whitespace)
+    (add-hook 'before-save-hook 'delete-trailing-whitespace nil 'local)
 
 Also commands may delete trailing whitespace by the way.
 When editing other peoples code, this may produce a larger diff than expected "
