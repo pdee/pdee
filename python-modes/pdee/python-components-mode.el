@@ -4560,7 +4560,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (add-to-list 'load-path py-install-directory)
   (add-to-list 'load-path (concat py-install-directory "extensions"))
   (when py-prepare-autopair-mode-p
-    (load (concat py-install-directory (char-to-string py-separator-char) "autopair" (char-to-string py-separator-char) "autopair.el") nil t)
+    (load (concat (py-normalize-directory py-install-directory) "autopair/autopair.el") nil t)
     (add-hook 'python-mode-hook
               #'(lambda ()
                   (setq autopair-handle-action-fns

@@ -121,9 +121,16 @@ class ImportExtractor(ast.NodeVisitor):
         self.visit(node)
         body = []
         for imp_node in self._import_nodes:
-            body.append(ast.TryExcept(body=[imp_node], handlers=[
-                ast.ExceptHandler(type=None, name=None, body=[ast.Pass()])],
-                orelse=[]))
+            if isinstance(imp_node, ast.ImportFrom) and \
+               imp_node.module == '__future__':
+                # 'SyntaxError: from __future__ imports must occur at the
+                # beginning of the file' is raised if a 'from __future__ import'
+                # is wrapped in try-except, so use only the import statement.
+                body.append(imp_node)
+            else:
+                body.append(ast.TryExcept(body=[imp_node], handlers=[
+                    ast.ExceptHandler(type=None, name=None, body=[ast.Pass()])],
+                    orelse=[]))
         node = ast.Module(body=body)
         ast.fix_missing_locations(node)
         code = compile(node, fname, 'exec')
@@ -588,9 +595,9 @@ class PyCompleteDocument(object):
 
         try:
             node = ast.parse(src, self._fname)
+            import_code = ImportExtractor().get_import_code(node, self._fname)
         except (SyntaxError, TypeError) as ex:
             return '%s' % ex
-        import_code = ImportExtractor().get_import_code(node, self._fname)
 
         old_globald = self._globald.copy()
         old_locald = self._locald
