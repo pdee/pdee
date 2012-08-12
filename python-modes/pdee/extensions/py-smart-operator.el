@@ -1,4 +1,4 @@
-;;; smart-operator.el --- Insert operators with surrounding spaces smartly
+;;; py-smart-operator.el --- Insert operators with surrounding spaces smartly
 
 ;; Copyright (C) 2004, 2005, 2007, 2008, 2009 William Xu
 
@@ -6,7 +6,7 @@
 ;; Version: 1.2
 ;; Url: http://xwl.appspot.com/ref/smart-operator.el
 
-;; Augmented assigment features by Andreas Roehler 
+;; Augmented assigment features by Andreas Roehler
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -58,36 +58,38 @@
 
 ;;; smart-operator minor mode
 
-(defvar smart-operator-mode-map
+(defvar py-smart-operator-mode-map
   (let ((keymap (make-sparse-keymap)))
-    (define-key keymap "=" 'smart-operator-self-insert-command)
-    (define-key keymap "<" 'smart-operator-<)
-    (define-key keymap ">" 'smart-operator->)
-    (define-key keymap "%" 'smart-operator-%)
-    (define-key keymap "+" 'smart-operator-+)
-    (define-key keymap "-" 'smart-operator--)
-    (define-key keymap "*" 'smart-operator-*)
-    (define-key keymap "/" 'smart-operator-self-insert-command)
-    (define-key keymap "&" 'smart-operator-&)
-    (define-key keymap "|" 'smart-operator-self-insert-command)
-    (define-key keymap "!" ' 'smart-operator-!)
+    ;; (define-key keymap "=" 'smart-operator-self-insert-command)
+    (define-key keymap "=" 'py-smart-operator-=)
+    (define-key keymap "<" 'py-smart-operator-<)
+    (define-key keymap ">" 'py-smart-operator->)
+    (define-key keymap "%" 'py-smart-operator-%)
+    (define-key keymap "+" 'py-smart-operator-+)
+    (define-key keymap "-" 'py-smart-operator--)
+    (define-key keymap "*" 'py-smart-operator-*)
+    (define-key keymap "/" 'py-smart-operator-self-insert-command)
+    (define-key keymap "&" 'py-smart-operator-&)
+    ;; (define-key keymap "|" 'smart-operator-self-insert-command)
+    (define-key keymap "|" 'py-smart-operator-|)
+    (define-key keymap "!" ' 'py-smart-operator-!)
     ;; conflicts with electric-colon
     ;; (define-key keymap ":" 'smart-operator-:)
-    (define-key keymap "?" 'smart-operator-?)
+    (define-key keymap "?" 'py-smart-operator-?)
     ;; (define-key keymap "," 'smart-operator-,)
-    (define-key keymap "." 'smart-operator-.)
+    (define-key keymap "." 'py-smart-operator-.)
     keymap)
-  "Keymap used my `smart-operator-mode'.")
+  "Keymap used my `py-smart-operator-mode'.")
 
 ;; (define-key python-mode-map "+" 'py-smart-operator-self-insert-command)
 
 ;;;###autoload
-(define-minor-mode smart-operator-mode
+(define-minor-mode py-smart-operator-mode
   "Insert operators with surrounding spaces smartly."
-  nil " _+_" smart-operator-mode-map)
+  nil " _+_" py-smart-operator-mode-map)
 
-(defun smart-operator-mode-on (&optional arg)
-  (smart-operator-mode 1))
+(defun py-smart-operator-mode-on (&optional arg)
+  (py-smart-operator-mode 1))
 
 ;;;###autoload
 (defun smart-operator-self-insert-command (&optional arg)
@@ -96,22 +98,22 @@
   (if (eq 4 (prefix-numeric-value arg))
       (cond ((eq 45  last-command-event)
 	     (smart-operator-insert (concat (string last-command-event)) "=")))
-  (smart-operator-insert (string last-command-event))))
+    (smart-operator-insert (string last-command-event))))
 
-(defun ar-smart-operator-self-insert-command (&optional arg)
+(defun py-smart-operator-self-insert-command (&optional arg)
   "Insert the entered operator plus surrounding spaces."
   (interactive "P")
   (if (eq 4 (prefix-numeric-value arg))
       (cond ((eq 45  last-command-event)
-	     (smart-operator-insert (concat (string last-command-event) "=")))
+	     (py-smart-operator-insert (concat (string last-command-event) "=")))
             ((eq 43  last-command-event)
-	     (smart-operator-insert (concat (string last-command-event) "="))))
-  (smart-operator-insert (string last-command-event))))
+	     (py-smart-operator-insert (concat (string last-command-event) "="))))
+    (py-smart-operator-insert (string last-command-event))))
 
-(defvar smart-operator-list
+(defvar py-smart-operator-list
   '("=" "<" ">" "%" "+" "-" "*" "/" "&" "|" "!" ":" "?" "," "."))
 
-(defun smart-operator-insert (op &optional only-after assignment indent nospace)
+(defun py-smart-operator-insert (op &optional only-after assignment indent nospace)
   "Insert operator OP with surrounding spaces.
 e.g., `=' will become ` = ', `+=' will become ` += '.
 
@@ -119,16 +121,18 @@ When ONLY-AFTER, insert space at back only.
 o ASSIGNMENT, insert a augmented assigment, ` += ' for example
 With INDENT, indent line according to mode
 When NOSPACE, don't insert any space around "
-  (let ((op (if assignment (concat op "=") op)))
+  (let ((op (if assignment
+                (concat op "=") op)))
     (delete-horizontal-space)
     (cond (nospace (insert op))
-          (only-after (insert (concat op " ")))
+          ((or (equal last-command this-command)
+               only-after) (insert (concat op " ")))
           (t (insert (concat " " op " "))))
     (when indent (indent-according-to-mode))))
 
 (if (fboundp 'python-comment-line-p)
-    (defalias 'smart-operator-comment-line-p 'python-comment-line-p)
-  (defun smart-operator-comment-line-p ()
+    (defalias 'py-smart-operator-comment-line-p 'python-comment-line-p)
+  (defun py-smart-operator-comment-line-p ()
     "Return non-nil if and only if current line has only a comment."
     (save-excursion
       (end-of-line)
@@ -137,13 +141,13 @@ When NOSPACE, don't insert any space around "
         (looking-at (rx (or (syntax comment-start) line-end)))))))
 
 
-(defun smart-operator-< (&optional arg)
+(defun py-smart-operator-< (&optional arg)
   "Insert operator \"<\" with surrounding spaces.
 e.g., `<' will become ` < ', `<=' will become ` <= '.
 
 With optional ARG, insert ` <= '.
 
-See also `smart-operator-insert' "
+See also `py-smart-operator-insert' "
   (interactive "*P")
   (cond ((and (memq major-mode '(c-mode c++-mode objc-mode))
               (looking-back
@@ -164,46 +168,46 @@ See also `smart-operator-insert' "
          (backward-char))
         (t
          (if (eq 4 (prefix-numeric-value arg))
-             (smart-operator-insert "<" nil '(4))
-           (smart-operator-insert "<")))))
+             (py-smart-operator-insert "<" nil '(4))
+           (py-smart-operator-insert "<")))))
 
-(defun smart-operator-: (&optional arg)
-  "See `smart-operator-insert'."
+(defun py-smart-operator-: (&optional arg)
+  "See `py-smart-operator-insert'."
   (interactive "*P")
   (cond ((memq major-mode '(c-mode c++-mode))
          (if (looking-back "\\?.+" (line-beginning-position))
-             (smart-operator-insert ":")
+             (py-smart-operator-insert ":")
            (insert ":")))
         (t
          (if (eq 4 (prefix-numeric-value arg))
-             (smart-operator-insert ":" nil '(4))
+             (py-smart-operator-insert ":" nil '(4))
            (if (and (eq major-mode 'python-mode) py-electric-colon-active-p)
-               (smart-operator-insert ":" t nil t t)
-             (smart-operator-insert ":" t arg))))))
+               (py-smart-operator-insert ":" t nil t t)
+             (py-smart-operator-insert ":" t arg))))))
 
-(defun smart-operator-, (&optional arg)
+(defun py-smart-operator-, (&optional arg)
   "Insert operator \",\" with space.
 e.g., `,' will become `, '.
 
 With optional ARG, insert ` ,= '.
 
-See also `smart-operator-insert' "
+See also `py-smart-operator-insert' "
   (interactive "*P")
-  (smart-operator-insert "," t arg))
+  (py-smart-operator-insert "," t arg))
 
-(defun smart-operator-. (&optional arg)
+(defun py-smart-operator-. (&optional arg)
   "Insert operator \".\" with space.
 e.g., `.' will become `. '
 
 With optional ARG, insert ` .= '.
 
-See also `smart-operator-insert' "
+See also `py-smart-operator-insert' "
   (interactive "*P")
   (cond (;; in string or comment
          (nth 8 (syntax-ppss))
-         (smart-operator-insert "." t arg))
-        ;; ((smart-operator-comment-line-p)
-        ;; (smart-operator-insert "." t arg)
+         (py-smart-operator-insert "." t arg))
+        ;; ((py-smart-operator-comment-line-p)
+        ;; (py-smart-operator-insert "." t arg)
         ;; (insert " "))
         ((or (looking-back "[0-9]" (1- (point)))
              (and (memq major-mode '(c-mode c++-mode python-mode))
@@ -213,50 +217,50 @@ See also `smart-operator-insert' "
          (insert " . "))
         (t
          (if (eq 4 (prefix-numeric-value arg))
-             (smart-operator-insert "." nil '(4))
-           (smart-operator-insert "." t arg)
+             (py-smart-operator-insert "." nil '(4))
+           (py-smart-operator-insert "." t arg)
            (insert " ")))))
 
-(defun smart-operator-& (&optional arg)
+(defun py-smart-operator-& (&optional arg)
   "Insert operator \"&\" with surrounding spaces.
 e.g., `&' will become ` & ', `&=' will become ` &= '.
 
 With optional ARG, insert ` &= '.
 
-See also `smart-operator-insert' "
+See also `py-smart-operator-insert' "
   (interactive "*P")
   (cond ((memq major-mode '(c-mode c++-mode))
          (insert "&"))
         (t
          (if (eq 4 (prefix-numeric-value arg))
-             (smart-operator-insert "&" nil '(4))
-           (smart-operator-insert "&" nil arg)))))
+             (py-smart-operator-insert "&" nil '(4))
+           (py-smart-operator-insert "&" nil arg)))))
 
-(defun smart-operator-* (&optional arg)
+(defun py-smart-operator-* (&optional arg)
   "Insert operator \"*\" with surrounding spaces.
 e.g., `*' will become ` * ', `*=' will become ` *= '.
 
 With optional ARG, insert ` *= '.
 
-See also `smart-operator-insert' "
+See also `py-smart-operator-insert' "
   (interactive "*P")
   (cond ((memq major-mode '(c-mode c++-mode objc-mode))
          (if (or (looking-back "[0-9a-zA-Z]" (1- (point)))
                  (bolp))
-             (smart-operator-insert "*" nil arg)
+             (py-smart-operator-insert "*" nil arg)
            (insert "*")))
         (t
          (if (eq 4 (prefix-numeric-value arg))
-             (smart-operator-insert "*" nil '(4))
-           (smart-operator-insert "*" nil arg)))))
+             (py-smart-operator-insert "*" nil '(4))
+           (py-smart-operator-insert "*" nil arg)))))
 
-(defun smart-operator-> (&optional arg)
+(defun py-smart-operator-> (&optional arg)
   "Insert operator \">\" with surrounding spaces.
-e.g., `>' will become ` > ', `>=' will become ` >= '.
+e.g., `>' will become ` > '.
 
 With optional ARG, insert ` >= '.
 
-See also `smart-operator-insert' "
+See also `py-smart-operator-insert' "
   (interactive "*P")
   (cond ((and (memq major-mode '(c-mode c++-mode))
               (looking-back " - " (- (point) 3)))
@@ -264,16 +268,16 @@ See also `smart-operator-insert' "
          (insert "->"))
         (t
          (if (eq 4 (prefix-numeric-value arg))
-             (smart-operator-insert ">" nil '(4))
-           (smart-operator-insert ">" nil arg)))))
+             (py-smart-operator-insert ">" nil '(4))
+           (py-smart-operator-insert ">")))))
 
-(defun smart-operator-+ (&optional arg)
+(defun py-smart-operator-+ (&optional arg)
   "Insert operator \"+\" with surrounding spaces.
 e.g., `+' will become ` + ', `+=' will become ` += '.
 
 With optional ARG, insert ` += '.
 
-See also `smart-operator-insert' "
+See also `py-smart-operator-insert' "
   (interactive "*P")
   (cond ((and (memq major-mode '(c-mode c++-mode))
               (looking-back "+ " (- (point) 2)))
@@ -283,16 +287,16 @@ See also `smart-operator-insert' "
          (indent-according-to-mode))
         (t
          (if (eq 4 (prefix-numeric-value arg))
-             (smart-operator-insert "+" nil '(4))
-           (smart-operator-insert "+" nil arg)))))
+             (py-smart-operator-insert "+" nil '(4))
+           (py-smart-operator-insert "+" nil arg)))))
 
-(defun smart-operator-- (&optional arg)
+(defun py-smart-operator-- (&optional arg)
   "Insert operator \"-\" with surrounding spaces.
 e.g., `-' will become ` - ', `-=' will become ` -= '.
 
 With optional numerical ARG 4 -- M-4 --, insert ` -= '.
 
-See also `smart-operator-insert' "
+See also `py-smart-operator-insert' "
   (interactive "*p")
   (cond ((and (memq major-mode '(c-mode c++-mode))
               (looking-back "- " (- (point) 2)))
@@ -302,54 +306,79 @@ See also `smart-operator-insert' "
          (indent-according-to-mode))
         (t
          (if (eq 4 (prefix-numeric-value arg))
-             (smart-operator-insert "-" nil t)
-           (smart-operator-insert "-")))))
+             (py-smart-operator-insert "-" nil t)
+           (py-smart-operator-insert "-")))))
 
-(defun smart-operator-? (&optional arg)
+(defun py-smart-operator-? (&optional arg)
   "Insert operator \"?\" with space.
 e.g., `?' will become `? '.
 
 With optional ARG, insert ` ?= '.
 
-See also `smart-operator-insert' "
+See also `py-smart-operator-insert' "
   (interactive "*P")
   (cond ((memq major-mode '(c-mode c++-mode))
-         (smart-operator-insert "?" nil arg))
+         (py-smart-operator-insert "?" nil arg))
         (t
          (if (eq 4 (prefix-numeric-value arg))
-             (smart-operator-insert "?" nil '(4))
-           (smart-operator-insert "?" t arg)))))
+             (py-smart-operator-insert "?" nil '(4))
+           (py-smart-operator-insert "?" t arg)))))
 
-(defun smart-operator-! (&optional arg)
+(defun py-smart-operator-! (&optional arg)
   "Insert operator \"!\" with space.
 e.g., `!' will become `! '.
 
 With optional ARG, insert ` != '.
 
-See also `smart-operator-insert' "
+See also `py-smart-operator-insert' "
   (interactive "*P")
   (cond ((memq major-mode '(c-mode c++-mode))
-         (smart-operator-insert "!" nil arg))
+         (py-smart-operator-insert "!" nil arg))
         (t
          (if (eq 4 (prefix-numeric-value arg))
-             (smart-operator-insert "!" nil '(4))
-           (smart-operator-insert "!" t arg)))))
+             (py-smart-operator-insert "!" nil '(4))
+           (py-smart-operator-insert "!" t arg)))))
 
-(defun smart-operator-% (&optional arg)
+(defun py-smart-operator-% (&optional arg)
   "Insert operator \"%\" with space.
 e.g., `%' will become `% '.
 
 With optional ARG, insert ` %= '.
 
-See also `smart-operator-insert' "
+See also `py-smart-operator-insert' "
   (interactive "*P")
   (cond ((and (memq major-mode '(c-mode c++-mode objc-mode)))
          (insert "%"))
         (t
          (if (eq 4 (prefix-numeric-value arg))
-             (smart-operator-insert "%" nil '(4))
-           (smart-operator-insert "%" nil arg)))))
+             (py-smart-operator-insert "%" nil '(4))
+           (py-smart-operator-insert "%" nil arg)))))
 
-(provide 'smart-operator)
 
-;;; smart-operator.el ends here
+(defun py-smart-operator-= (&optional arg)
+  "Insert operator \"=\" with surrounding spaces.
+e.g., `=' will become ` = '.
+
+With optional ARG, insert ` == '.
+
+See also `py-smart-operator-insert' "
+  (interactive "*P")
+  (if (eq 4 (prefix-numeric-value arg))
+      (py-smart-operator-insert "=" nil '(4))
+    (py-smart-operator-insert "=" nil arg)))
+
+(defun py-smart-operator-| (&optional arg)
+  "Insert operator \"|\" with surrounding spaces.
+e.g., `|' will become ` | '.
+
+With optional ARG, insert ` || '.
+
+See also `py-smart-operator-insert' "
+  (interactive "*P")
+  (if (eq 4 (prefix-numeric-value arg))
+      (py-smart-operator-insert "|" nil '(4))
+    (py-smart-operator-insert "|" nil arg)))
+
+(provide 'py-smart-operator)
+
+;;; py-smart-operator.el ends here

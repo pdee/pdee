@@ -66,7 +66,6 @@
 (require 'python-components-macros)
 (require 'python-components-nomacros)
 (require 'thingatpt)
-;; (require 'smart-operator)
 
 (defgroup python-mode nil
   "Support for the Python programming language, <http://www.python.org/>"
@@ -220,7 +219,7 @@ Default is nil. "
   :group 'python-mode)
 
 (defcustom py-smart-operator-mode-p nil
-  "If python-mode calls (smart-operator-mode-on)
+  "If python-mode calls (py-smart-operator-mode-on)
 
 Default is non-nil. "
 
@@ -1864,6 +1863,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
     (cond ((and (not (string= "" py-install-directory))(stringp py-install-directory))
            (add-to-list 'load-path (expand-file-name py-install-directory))
            (add-to-list 'load-path (concat (expand-file-name py-install-directory) "completion"))
+           (add-to-list 'load-path (concat (expand-file-name py-install-directory) "extensions"))
            (add-to-list 'load-path (concat (expand-file-name py-install-directory) "test"))
            (add-to-list 'load-path (concat (expand-file-name py-install-directory) "tools")))
           ((when py-guess-py-install-directory-p
@@ -4599,9 +4599,9 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   ;; (run-mode-hooks 'python-mode-hook)
   (when py-outline-minor-mode-p (outline-minor-mode 1))
   (when py-smart-operator-mode-p
-    (unless (featurep 'smart-operator)
-      (load (concat (py-normalize-directory py-install-directory) "extensions/smart-operator.el")))
-    (smart-operator-mode-on))
+    (unless (featurep 'py-smart-operator)
+      (load (concat (py-normalize-directory py-install-directory) "extensions/py-smart-operator.el")))
+    (py-smart-operator-mode-on))
   (when (interactive-p) (message "python-mode loaded from: %s" "python-components-mode.el")))
 
 

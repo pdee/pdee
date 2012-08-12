@@ -103,7 +103,7 @@ CCCMDS="${EMACS_SOURCE_DIR}/lisp/progmodes/cc-cmds.el"
 SKEL="${EMACS_SOURCE_DIR}/lisp/skeleton.el"
 PYMACS="$PDIR/pymacs.el"
 PYCO="$PDIR/completion/pycomplete.el"
-SO="$PDIR/extensions/smart-operator.el"
+SO="$PDIR/extensions/py-smart-operator.el"
 
 # file holding the tests
 TESTFILE="py-bug-numbered-tests.el"
@@ -712,8 +712,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-mark-block-misbehave-lp:949310-test) nil \"py-mark-block-misbehave-lp:949310-test not detected as command\")" \
 -eval "(assert (commandp 'py-mark-partial-expression) nil \"py-mark-partial-expression not detected as command\")" \
 -eval "(message \"commandp tests done\")" \
---funcall augmented-assigment-test \
---funcall smart-operator-test \
 --funcall py-execute-buffer-python3-switch-test \
 --funcall py-execute-buffer-python2-switch-test \
 --funcall py-guess-indent-offset-dont-detect-indent-of-2-lp-1027389-test \
@@ -988,3 +986,5 @@ est \
 --funcall py-execute-buffer-ipython-switch-test \
 --funcall pycomplete-same-folder-class-lp:889052-test \
 --funcall py-ipython-complete-lp:927136-test \
+--funcall augmented-assigment-test \
+--funcall py-smart-operator-test \

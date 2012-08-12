@@ -74,9 +74,9 @@ Returns value of `py-smart-operator-mode-p' switched to. "
     (if (< 0 arg)
         (progn
           (setq py-smart-operator-mode-p t)
-          (smart-operator-mode 1))
+          (py-smart-operator-mode 1))
       (setq py-smart-operator-mode-p nil)
-      (smart-operator-mode 1))
+      (py-smart-operator-mode 1))
     (when (interactive-p) (message "py-smart-operator-mode-p: %s" py-smart-operator-mode-p))
     py-smart-operator-mode-p))
 
@@ -86,7 +86,7 @@ Returns value of `py-smart-operator-mode-p' switched to. "
 Returns value of `py-smart-operator-mode-p'. "
   (interactive "p")
   (let ((arg (or arg 1)))
-    (toggle-py-smart-operator-mode-p arg))
+    (py-toggle-smart-operator arg))
   (when (interactive-p) (message "py-smart-operator-mode-p: %s" py-smart-operator-mode-p))
   py-smart-operator-mode-p)
 
@@ -96,7 +96,7 @@ Returns value of `py-smart-operator-mode-p'. "
 Returns value of `py-smart-operator-mode-p'. "
   (interactive "p")
   (let ((arg (if arg (- arg) -1)))
-    (toggle-py-smart-operator-mode-p arg))
+    (py-toggle-smart-operator arg))
   (when (interactive-p) (message "py-smart-operator-mode-p: %s" py-smart-operator-mode-p))
   py-smart-operator-mode-p)
 
@@ -106,7 +106,7 @@ Returns value of `py-smart-operator-mode-p'. "
   (interactive "*")
   (let* ((erg (if py-edit-only-p
                   py-shell-name
-                  (executable-find py-shell-name)))
+                (executable-find py-shell-name)))
          (sheb (concat "#! " erg)))
     (insert sheb)))
 
@@ -399,10 +399,10 @@ Returns indentation reached. "
       (setq end (copy-marker end))
       ;; lp:962227
       ;; (dotimes (i (abs count))
-        (if (< 0 count)
-            (indent-rigidly beg end py-indent-offset)
-          (indent-rigidly beg end (- py-indent-offset)))
-        ;; )
+      (if (< 0 count)
+          (indent-rigidly beg end py-indent-offset)
+        (indent-rigidly beg end (- py-indent-offset)))
+      ;; )
       (push-mark beg t)
       (goto-char end)
       (skip-chars-backward " \t\r\n\f"))
