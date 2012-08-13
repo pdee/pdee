@@ -1199,7 +1199,8 @@ Optional OUTPUT-BUFFER and ERROR-BUFFER might be given.')
          (pec (if (string-match "Python3" name)
                   (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" file file)
                 (format "execfile(r'%s') # PYTHON-MODE\n" file)))
-         (comint-scroll-to-bottom-on-output t))
+         (comint-scroll-to-bottom-on-output t)
+         erg)
     (if (file-readable-p file)
         (progn
           (setq erg (py-execute-file-base proc file pec))
@@ -1419,7 +1420,7 @@ bottom) of the trackback stack is encountered."
 (defalias 'ipython-send-and-indent 'py-execute-line-ipython)
 (defalias 'py-execute-region-in-shell 'py-execute-region)
 (defalias 'py-ipython-shell-command-on-region 'py-execute-region-ipython)
-(defalias 'py-shell-command-on-region 'py-execute-region-region)
+(defalias 'py-shell-command-on-region 'py-execute-region)
 (defalias 'py-send-region-ipython 'py-execute-region-ipython)
 
 (provide 'python-components-execute);

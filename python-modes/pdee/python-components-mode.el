@@ -1840,7 +1840,9 @@ See original source: http://pymacs.progiciels-bpi.ca"
 
     (if (py-install-directory-check)
         (progn
-          (load (concat py-install-directory "pymacs.el") nil t)
+          ;; don't interfere with already installed Pymacs
+          (unless (featurep 'pymacs)
+            (load (concat py-install-directory "pymacs.el") nil t))
           (setenv "PYMACS_PYTHON" (if (string-match "IP" pyshell)
                                       "python"
                                     pyshell))
@@ -2384,7 +2386,7 @@ Run pdb under GUD"]
             ["Toggle py-smart-indentation" toggle-py-smart-indentation
              :help "See also `py-smart-indentation-on', `-off' "]
 
-            ["Toggle py-smart-operator" smart-operator-mode
+            ["Toggle py-smart-operator" py-toggle-smart-operator
              :help "See also `py-smart-operator-on', `-off' "]
 
             ["Toggle indent-tabs-mode" py-toggle-indent-tabs-mode
@@ -4556,7 +4558,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
        '((< '(backward-delete-char-untabify (min py-indent-offset
                                                  (current-column))))
          (^ '(- (1+ (current-indentation))))))
-  
+
   (add-to-list 'load-path py-install-directory)
   (add-to-list 'load-path (concat py-install-directory "extensions"))
   (when py-prepare-autopair-mode-p

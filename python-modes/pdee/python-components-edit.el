@@ -63,43 +63,6 @@ Returns value of `py-smart-indentation'. "
   (when (interactive-p) (message "py-smart-indentation: %s" py-smart-indentation))
   py-smart-indentation)
 
-;;; Smart operator
-(defalias 'toggle-py-smart-operator 'py-toggle-smart-operator)
-(defun py-toggle-smart-operator (&optional arg)
-  "If `py-smart-operator-mode-p' should be on or off.
-
-Returns value of `py-smart-operator-mode-p' switched to. "
-  (interactive)
-  (let ((arg (or arg (if py-smart-operator-mode-p -1 1))))
-    (if (< 0 arg)
-        (progn
-          (setq py-smart-operator-mode-p t)
-          (py-smart-operator-mode 1))
-      (setq py-smart-operator-mode-p nil)
-      (py-smart-operator-mode 1))
-    (when (interactive-p) (message "py-smart-operator-mode-p: %s" py-smart-operator-mode-p))
-    py-smart-operator-mode-p))
-
-(defun py-smart-operator-mode-on (&optional arg)
-  "Make sure, `py-smart-operator-mode-p' is on.
-
-Returns value of `py-smart-operator-mode-p'. "
-  (interactive "p")
-  (let ((arg (or arg 1)))
-    (py-toggle-smart-operator arg))
-  (when (interactive-p) (message "py-smart-operator-mode-p: %s" py-smart-operator-mode-p))
-  py-smart-operator-mode-p)
-
-(defun py-smart-operator-mode-off (&optional arg)
-  "Make sure, `py-smart-operator-mode-p' is off.
-
-Returns value of `py-smart-operator-mode-p'. "
-  (interactive "p")
-  (let ((arg (if arg (- arg) -1)))
-    (py-toggle-smart-operator arg))
-  (when (interactive-p) (message "py-smart-operator-mode-p: %s" py-smart-operator-mode-p))
-  py-smart-operator-mode-p)
-
 ;;;
 (defun py-insert-default-shebang ()
   "Insert in buffer shebang of installed default Python. "
@@ -192,7 +155,7 @@ Returns current indentation "
            (indent-to (+ need py-indent-offset)))
           ((not (eq 1 (prefix-numeric-value arg)))
            (py-smart-indentation-off)
-           (py-indent-line-intern)
+           (py-indent-line-intern need cui)
            (setq py-smart-indentation psi))
           (t (py-indent-line-intern need cui))))
   (when (and (interactive-p) py-verbose-p)(message "%s" (current-indentation)))
