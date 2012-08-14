@@ -141,7 +141,7 @@ the dot, else nil."
         (save-excursion
           (if pos
               (goto-char pos))
-          (cond 
+          (cond
            ((looking-back "\\(\\[\\|,[^[]*\\)\\]") "list")
            ((looking-back "['\"]") "str")
            ((looking-back "}") "dict"))))))
@@ -361,7 +361,8 @@ or if the dot-expression starts with a variable for which the type is known."
   "Initialize pycomplete hooks and key map.
 Should be called from python-mode-hook."
   (interactive)
-  (py-complete-set-keymap)
+  (when py-set-complete-keymap-p
+    (py-complete-set-keymap))
   ;; Parse source file after it is saved
   (add-hook 'after-save-hook 'py-complete-parse-source nil 'local)
   ;; Set up auto-complete or company if enabled

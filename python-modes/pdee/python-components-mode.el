@@ -1259,14 +1259,14 @@ When editing other peoples code, this may produce a larger diff than expected "
   :type 'boolean
   :group 'python-mode)
 
-;; (defcustom python-load-extended-executes-p  t
-;;   "If commands from `python-extended-executes.el' should be loaded.
-;;
-;; Default is `t'.
-;; Provides commands executing buffers code at different conditions, thus avoids customization of `py-shell-name', `py-switch-buffers-on-execute-p'. "
-;;
-;;   :type 'boolean
-;;   :group 'python-mode)
+(defcustom py-set-complete-keymap-p  nil
+  "If `py-complete-initialize', which sets up enviroment for Pymacs based py-complete, should load it's keys into `python-mode-map'
+
+Default is nil. 
+See also resp. edit `py-complete-set-keymap' "
+  
+  :type 'boolean
+  :group 'python-mode)
 
 (defcustom py-shell-local-path ""
   "If `py-use-local-default' is non-nil, `py-shell' will use EXECUTABLE indicated here incl. path. "

@@ -35,7 +35,7 @@
     (finds buffer directory-in directory-out)))
 
 (defun finds (&optional buffer directory-in directory-out)
-  "List all commands in file alongside with their documentation. "
+  "Writes all commands in BUFFER alongside with their documentation into directory \"doc\" as \*.org and \*rst file ."
   (interactive)
   (let* ((oldbuf (buffer-name (or buffer (current-buffer))))
          ;; (file (buffer-file-name))
