@@ -45,8 +45,8 @@
 
 ;;; Code
 
-(add-to-list 'load-path py-install-directory)
-(add-to-list 'load-path (concat py-install-directory "extensions"))
+;; (add-to-list 'load-path py-install-directory)
+;; (add-to-list 'load-path (concat py-install-directory "extensions"))
 ;; make it easier to run from different branches
 (add-to-list 'load-path default-directory)
 (add-to-list 'load-path (concat default-directory "extensions"))
@@ -1867,7 +1867,9 @@ See original source: http://pymacs.progiciels-bpi.ca"
            (add-to-list 'load-path (concat (expand-file-name py-install-directory) "completion"))
            (add-to-list 'load-path (concat (expand-file-name py-install-directory) "extensions"))
            (add-to-list 'load-path (concat (expand-file-name py-install-directory) "test"))
-           (add-to-list 'load-path (concat (expand-file-name py-install-directory) "tools")))
+           (add-to-list 'load-path (concat (expand-file-name py-install-directory) "tools"))
+           (add-to-list 'load-path (concat (expand-file-name py-install-directory) "autopair"))
+           )
           ((when py-guess-py-install-directory-p
              (let ((guessed-py-install-directory (py-guess-py-install-directory)))
                (when guessed-py-install-directory
@@ -4558,9 +4560,9 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
        '((< '(backward-delete-char-untabify (min py-indent-offset
                                                  (current-column))))
          (^ '(- (1+ (current-indentation))))))
-
-  (add-to-list 'load-path py-install-directory)
-  (add-to-list 'load-path (concat py-install-directory "extensions"))
+  (py-set-load-path)
+  ;; (add-to-list 'load-path py-install-directory)
+  ;; (add-to-list 'load-path (concat py-install-directory "extensions"))
   (when py-prepare-autopair-mode-p
     (load (concat (py-normalize-directory py-install-directory) "autopair" (char-to-string py-separator-char) "autopair.el") nil t)
     (add-hook 'python-mode-hook
