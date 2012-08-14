@@ -1,8 +1,9 @@
 Python Mode News
 ================
 
-New in version 6.1.0
---------------------
+New in version 6.0.11
+---------------------
+
 - improved Pymacs based code completion:
   - Completion of symbols from imported modules, functions, classes,
     module/class-level data members and instance variables in the current
@@ -15,43 +16,12 @@ New in version 6.1.0
   - Show signature of functions.
   - Support for auto-complete and company.
 
-  To enable code completion, the following initialization file is sufficient:
+- remote shell support
 
-  (setq py-install-directory "PATH/TO/PYTHON-MODE/")
-  (add-to-list 'load-path py-install-directory)
-  (setq py-load-pymacs-p t)
-  (require 'python-mode)
-
-  To use auto-complete, just prepend the following lines:
-
-  (require 'auto-complete-config)
-  (ac-config-default)
-
-  or for company:
-
-  (autoload 'company-mode "company" nil t)
-
-  If you do not use one of those visual completion interfaces, key bindings
-  exist:
-  - C-tab complete symbol
-  - f1    show help
-  - S-f1  show signature
-  - f2    go to definition
-
-New in version 6.0.11
----------------------
 - extended version of smart-operator added
   original smart-operator.el authored by
   William Xu <william.xwl@gmail.com>
   Url: http://xwl.appspot.com/ref/smart-operator.el
-
-  smart-operator minor mode for example with key "+" 
-  inserts " + " 
-  smart-operator extended by augmented-assigments
-  C-u +
-  inserts " += "
-
-  customizable boolean `py-smart-operator-mode-p'
 
 - py-electric-colon extended
   if `py-electric-colon-newline-and-indent-p' is non-nil,
@@ -75,6 +45,12 @@ New in version 6.0.11
   Default is nil. Some commands may delete trailing
   whitespaces by the way. When editing other peoples
   code, this may produce a larger diff than expected 
+
+New in version 6.0.10
+--------------------
+
+addresses bugs and speed issues
+
 
 New in version 6.0.9
 --------------------

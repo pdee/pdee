@@ -2186,6 +2186,24 @@ Make sure, `py-smart-indentation' is off.
 
 Returns value of `py-smart-indentation'. 
 
+py-toggle-smart-operator
+------------------------
+If `py-smart-operator-mode-p' should be on or off.
+
+Returns value of `py-smart-operator-mode-p' switched to. 
+
+py-smart-operator-mode-on
+-------------------------
+Make sure, `py-smart-operator-mode-p' is on.
+
+Returns value of `py-smart-operator-mode-p'. 
+
+py-smart-operator-mode-off
+--------------------------
+Make sure, `py-smart-operator-mode-p' is off.
+
+Returns value of `py-smart-operator-mode-p'. 
+
 py-toggle-split-windows-on-execute
 ----------------------------------
 If `py-split-windows-on-execute-p' should be on or off.
@@ -2268,63 +2286,6 @@ if `(locate-library "python-mode")' is not succesful.
 py-set-load-path
 ----------------
 Include needed subdirs of python-mode directory. 
-
-autopair-insert-or-skip-quote
------------------------------
-Insert or possibly skip over a quoting character.
-
-Works by scheduling possible autopair behaviour, then calls
-original command as if autopair didn't exist.
-
-autopair-insert-opening
------------------------
-Insert opening delimiter and possibly automatically close it.
-
-Works by scheduling possible autopair behaviour, then calls
-original command as if autopair didn't exist.
-
-autopair-skip-close-maybe
--------------------------
-Insert or possibly skip over a closing delimiter.
-
-Works by scheduling possible autopair behaviour, then calls
-original command as if autopair didn't exist.
-
-autopair-backspace
-------------------
-Possibly delete a pair of paired delimiters.
-
-Works by scheduling possible autopair behaviour, then calls
-original command as if autopair didn't exist.
-
-autopair-newline
-----------------
-Do a smart newline when right between parenthesis.
-
-In other words, insert an extra newline along with the one inserted normally
-by this command. Then place point after the first, indented.
-
-Works by scheduling possible autopair behaviour, then calls
-original command as if autopair didn't exist.
-
-autopair-extra-insert-opening
------------------------------
-Insert (an extra) opening delimiter and possibly automatically close it.
-
-Works by scheduling possible autopair behaviour, then calls
-original command as if autopair didn't exist.
-
-autopair-extra-skip-close-maybe
--------------------------------
-Insert or possibly skip over a (and extra) closing delimiter.
-
-Works by scheduling possible autopair behaviour, then calls
-original command as if autopair didn't exist.
-
-autopair-insert-or-skip-paired-delimiter
-----------------------------------------
-Insert or possibly skip over a character with a syntax-class of "paired delimiter".Works by scheduling possible autopair behaviour, then calls
-original command as if autopair didn't exist.
 
 py-edit-abbrevs
 ---------------
@@ -4384,4 +4345,11 @@ Send line at point to Python3.2 unique interpreter.
 py-execute-line-python3\.2-dedicated-switch
 -------------------------------------------
 Send line at point to Python3.2 unique interpreter and switch to result. 
+
+py-load-pymacs
+--------------
+Load Pymacs as delivered with python-mode.el.
+
+Pymacs has been written by François Pinard and many others.
+See original source: http://pymacs.progiciels-bpi.ca
 

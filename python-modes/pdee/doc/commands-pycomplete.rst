@@ -2,6 +2,11 @@ Python-mode commands
 
 ====================
 
+py-complete-which-class
+-----------------------
+Return current class name based on point.
+If no class name is found, return nil.
+
 py-complete
 -----------
 Complete symbol before point using Pymacs. 
@@ -33,4 +38,9 @@ Got to definition of Python function.
 py-complete-set-keymap
 ----------------------
 Define key map with pycomplete functions.
+
+py-complete-initialize
+----------------------
+Initialize pycomplete hooks and key map.
+Should be called from python-mode-hook.
 

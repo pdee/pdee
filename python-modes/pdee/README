@@ -1,3 +1,32 @@
+Put the following into your initialization file:
+
+  (setq py-install-directory "PATH/TO/PYTHON-MODE/")
+  (add-to-list 'load-path py-install-directory)
+  (require 'python-mode)
+
+To enable code completion:
+
+  (setq py-load-pymacs-p t)
+
+To use auto-complete, just prepend the following lines:
+
+  (require 'auto-complete-config)
+  (ac-config-default)
+
+or for company:
+
+  (autoload 'company-mode "company" nil t)
+
+If you do not use one of those visual completion interfaces, key bindings exist:
+  - C-tab complete symbol
+  - f1    show help
+  - S-f1  show signature
+  - f2    go to
+
+If `py-complete-function' is set, it takes precedence
+
+;;;;;;;;;
+
 Customize default Python shell as `py-shell-name'
 
 `py-shell-name' might be an installed executable as
@@ -9,15 +38,15 @@ To change the Python default shell see also INSTALL
 Most python-mode.el commands start with prefix `py-'
 
 `M-x py- TAB'
-displays a list of them in completion-buffer. 
+displays a list of them in completion-buffer.
 See also commands list delivered in directory doc.
 
 List virtualenv related `M-x virtualenv- TAB'
-resp. Pymacs commands `M-x pymacs-'  
+resp. Pymacs commands `M-x pymacs-'
 
 Commands related to a specific shell start with
 it's name as `ipython-complete'.
-Open an installed shell by 
+Open an installed shell by
 
 M-x SHELL
 
@@ -34,4 +63,16 @@ Install a local shell by evaluating
   (interactive)
   (py-shell nil DEDICATED PATH-TO-LOCAL-SHELL))
 
-If `py-complete-function' is set, it takes precedence 
+;;;;;;;;;
+
+smart-operator minor mode
+
+for example with key "+"
+inserts " + "
+
+smart-operator extended by augmented-assigments
+C-u +
+inserts " += "
+
+customizable boolean `py-smart-operator-mode-p'
+

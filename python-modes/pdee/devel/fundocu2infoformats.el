@@ -70,11 +70,12 @@
         (insert (prin1-to-string commandslist))
         (insert "))")
         (eval-buffer)
-        (write-file (concat directory-out "commands-" suffix)))
-      (with-temp-buffer
-        (dolist (ele commandslist)
-          (insert (concat (car ele) "\n")))
-        (write-file (concat directory-out suffix "-commands.txt")))
+        ;; (write-file (concat directory-out "commands-" suffix))
+)
+      ;; (with-temp-buffer
+      ;;   (dolist (ele commandslist)
+      ;;     (insert (concat (car ele) "\n")))
+      ;;   (write-file (concat directory-out suffix "-commands.txt")))
 
       (with-temp-buffer
         ;; org
