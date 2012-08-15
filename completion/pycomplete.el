@@ -372,7 +372,6 @@ Should be called from python-mode-hook. Keys are set when
   (interactive)
   (when py-set-complete-keymap-p
     (py-complete-set-keymap))
-=======
 	(when py-complete-set-keymap-p
 		(py-complete-set-keymap))
   ;; Parse source file after it is saved
