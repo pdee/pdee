@@ -522,9 +522,11 @@
     (py-bug-tests-intern 'py-end-of-def-or-class-base arg teststring)))
 
 (defun py-end-of-def-or-class-base ()
-  (py-beginning-of-def-or-class)
-  (py-end-of-def-or-class)
-  (assert (eq (point) 556) nil "py-end-of-def-or-class-test failed"))
+  (assert (eq 238 (py-beginning-of-def-or-class)) nil "py-end-of-def-or-class-test #1 failed")
+  (assert (eq 1 (py-beginning-of-def-or-class '(4))) nil "py-end-of-def-or-class-test #2 failed")
+  (goto-char 201)
+  (save-excursion (assert (eq 232 (py-end-of-def-or-class)) nil "py-end-of-def-or-class-test #3 failed"))
+  (assert (eq 556 (py-end-of-def-or-class '(4))) nil "py-end-of-def-or-class-test #4 failed"))
 
 (defun py-electric-backspace-test (&optional arg load-branch-function)
   (interactive "p")

@@ -21,6 +21,14 @@
 
 (pymacs-load "pycomplete")
 
+(defcustom py-complete-set-keymap-p nil
+  "If keys shall be defined when calling `py-complete-initialize'.
+Default is nil.
+
+See also `py-complete-set-keymap'"
+  :type 'boolean
+  :group 'python-mode)
+
 (defvar py-complete-variable-index nil
   "An alist with mappings of local variable names to types.")
 (defvar py-complete-variable-index-position 0
@@ -358,11 +366,15 @@ or if the dot-expression starts with a variable for which the type is known."
   (define-key python-mode-map [f3] 'py-complete-help))
 
 (defun py-complete-initialize ()
-  "Initialize pycomplete hooks and key map.
-Should be called from python-mode-hook."
+  "Initialize pycomplete hooks.
+Should be called from python-mode-hook. Keys are set when
+`py-complete-set-keymap-p' is non-nil."
   (interactive)
   (when py-set-complete-keymap-p
     (py-complete-set-keymap))
+=======
+	(when py-complete-set-keymap-p
+		(py-complete-set-keymap))
   ;; Parse source file after it is saved
   (add-hook 'after-save-hook 'py-complete-parse-source nil 'local)
   ;; Set up auto-complete or company if enabled

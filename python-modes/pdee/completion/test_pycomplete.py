@@ -6,6 +6,7 @@ import tempfile
 from pycomplete import *
 
 def test_signature():
+    assert pysignature('') == ''
     assert pysignature('os.path.join') == 'join: (a, *p)'
     assert pysignature('json.dump').startswith(
         'dump: (obj, fp, skipkeys=False, ensure_ascii=True, ')
@@ -30,6 +31,7 @@ def test_help():
         'The ``import`` statement\n************************\n')
     assert pyhelp('pydoc.help').startswith(
         'Help on class Helper in module pydoc')
+    assert pyhelp('') == ''
 
 def test_complete():
     assert pycomplete('') == ''
@@ -38,6 +40,13 @@ def test_complete():
     assert pycomplete('settr') is None
     assert pycomplete('settr', imports=['from sys import settrace']) == [
         'ace']
+    # Test with cached imports
+    assert pycomplete('settr') == ['ace']
+    # Not cached for other files
+    fpath = os.path.abspath(__file__)
+    assert pycomplete('settr', fname=fpath) is None
+    assert pycomplete('settr', fname=fpath,
+                      imports=['from sys import settrace']) == ['ace']
     assert pycomplete('foo.') is None
     assert pycomplete('JSONEnc') is None
     assert pycomplete('JSONEnc', imports=['from json import *']) == ['oder']
@@ -45,6 +54,9 @@ def test_complete():
         'ArithmeticError', 'AssertionError', 'AttributeError']
 
 def test_completions():
+    all_completions = get_all_completions('')
+    assert all_completions[0] == 'ArithmeticError'
+    assert all_completions[-1] == 'zip'
     assert get_all_completions('os.path.jo') == ['join']
     assert get_all_completions('settr', imports=['']) == []
     assert get_all_completions('settr',
@@ -61,6 +73,7 @@ def test_location():
     assert pylocation('io.StringIO') is None
     fn, line = pylocation('json')
     assert os.path.exists(fn)
+    assert pylocation('for') is None
 
 def test_docstring():
     assert pydocstring('os.path.abspath') == 'Return an absolute path.'
@@ -78,6 +91,7 @@ def test_parse_source():
     tmp_file = tempfile.NamedTemporaryFile(suffix='.py', mode='w')
     name = tmp_file.name
     with tmp_file.file as fh:
+        assert parse_source('not_existing', only_reload=True) == None
         assert parse_source('not_existing') == \
            "[Errno 2] No such file or directory: 'not_existing'"
         assert parse_source(name) is None
@@ -85,6 +99,7 @@ def test_parse_source():
         assert get_all_completions('dat' , name) == []
         src = """
 "Doc for module."
+from __future__ import print_function
 import sys, os, io
 from datetime import date, \
 time
@@ -92,9 +107,14 @@ import argparse
 if os.getenv('LC'):
     import linecache
 
+modvar = 1
+
 def testfunc():
     "Doc for testfunc."
     import urllib
+
+def emptyfunc():
+    "Function with only docstring."
 
 class TestClass(date):
     "Doc for TestClass."
@@ -107,8 +127,14 @@ class TestClass(date):
         self._member2 = None
         self.__member3 = [ None, open('not_existing') ]
         self.member4 = argparse.ArgumentParser()
+        self.member4 = None
         self.member5 = open('not_existing')
-    def testmeth(self, arg1=1):
+        self.member6 = self.member7 = { 'multiple': 'targets' }
+        self.member8, self.member9 = 'tuple', 'assignment'
+        self.member10 = [ n for n in range(3) ]
+        self.member11 = SyntaxError()
+        self.member12 = testfunc()
+    def testmeth(self, arg1=modvar):
         "Doc for testmeth."
         sys.stdout.write('From testmeth %d' % arg1)
         if arg1 == 2:
@@ -158,6 +184,15 @@ if __name__ == '__main__':
           ['print_help', 'print_usage', 'print_version']
         assert get_all_completions('TestClass.member5.writel', name) == \
           ['writelines']
+        assert get_all_completions('TestClass.member6.from', name) == \
+          ['fromkeys']
+        assert get_all_completions('TestClass.member7.from', name) == \
+          ['fromkeys']
+        assert get_all_completions('TestClass.member10.ext', name) == \
+          ['extend']
+        assert get_all_completions('TestClass.member11.ar', name) == \
+          ['args']
+        assert get_all_completions('modvar.num', name) == ['numerator']
         assert pydocstring('TestClass._member1', name) == ''
         assert pydocstring('TestClass._member2', name) == ''
         assert pydocstring('TestClass.__member3', name) == ''

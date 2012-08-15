@@ -129,32 +129,43 @@ http://docs.python.org/reference/compound_stmts.html"
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
-(defun py-beginning-of-def-or-class (&optional indent)
+(defun py-beginning-of-def-or-class (&optional arg)
   "Returns beginning of def-or-class if successful, nil otherwise.
+
+With \\[universal-argument] go to beginning of class.
 
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
-  (interactive)
-  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-def-or-class-re indent)))))
+  (interactive "P")
+  (let ((erg (if (eq 4 (prefix-numeric-value arg))
+                 (ignore-errors (cdr (py-go-to-keyword py-class-re)))
+               (ignore-errors (cdr (py-go-to-keyword py-def-or-class-re))))))
     erg))
 
-(defun py-end-of-def-or-class ()
+(defun py-end-of-def-or-class (&optional arg)
   "Go to the end of def-or-class.
 
+With \\[universal-argument] go to end of class.
 Returns position reached, if any, nil otherwise.
 
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
-  (interactive)
+  (interactive "P")
   (save-restriction
     (widen)
     (let* ((orig (point))
            (pps (syntax-ppss))
            ;; (origline (py-count-lines))
-           (erg (if (and (not (nth 8 pps)) (looking-at py-def-or-class-re))
+           (erg
+            (if (eq 4 (prefix-numeric-value arg))
+                (if (and (not (nth 8 pps)) (looking-at py-class-re))
                     (point)
-                  (py-go-to-keyword py-def-or-class-re)
-                  (when (and (not (nth 8 pps)) (looking-at py-def-or-class-re)) (point))))
+                  (py-go-to-keyword py-class-re)
+                  (when (and (not (nth 8 pps)) (looking-at py-class-re)) (point)))
+              (if (and (not (nth 8 pps)) (looking-at py-def-or-class-re))
+                  (point)
+                (py-go-to-keyword py-def-or-class-re)
+                (when (and (not (nth 8 pps)) (looking-at py-def-or-class-re)) (point)))))
            ind)
       (if erg
           (progn

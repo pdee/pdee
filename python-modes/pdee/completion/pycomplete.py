@@ -151,7 +151,7 @@ class CodeRemover(ast.NodeTransformer):
             if isinstance(node.body[0], ast.Expr) and \
                isinstance(node.body[0].value, ast.Str):
                 # Keep doc string.
-                first_stmt = node.body[1]
+                first_stmt = node.body[1] if len(node.body) > 1 else node.body[0]
                 node.body = [node.body[0]]
             else:
                 first_stmt = node.body[0]
@@ -177,17 +177,19 @@ class CodeRemover(ast.NodeTransformer):
         processed, the assignment node is returned with 'self.' replaced by
         the value of replace_self (typically the class name).
         For other assignments, None is returned."""
-        if replace_self:
-            if len(node.targets) != 1:
+        for i, target in enumerate(node.targets):
+            if not isinstance(target, (ast.Name, ast.Attribute)):
+                # Only process assignments to names and attributes,
+                # not tuples.
                 return None
-            target = node.targets[0]
-            if isinstance(target, ast.Attribute) and \
-               isinstance(target.value, ast.Name) and \
-               target.value.id == 'self' and \
-               isinstance(target.value.ctx, ast.Load):
-                node.targets[0].value.id = replace_self
-            else:
-                return None
+            if replace_self:
+                if isinstance(target, ast.Attribute) and \
+                   isinstance(target.value, ast.Name) and \
+                   target.value.id == 'self' and \
+                   isinstance(target.value.ctx, ast.Load):
+                    node.targets[i].value.id = replace_self
+                else:
+                    return None
         if isinstance(node.value, (ast.Str, ast.Num)):
             pass
         elif isinstance(node.value, (ast.List, ast.Tuple)):
@@ -264,6 +266,7 @@ class CodeRemover(ast.NodeTransformer):
                     new_var = child.targets[0].attr
                     old_assign = self_assignments.get(new_var)
                     if not old_assign or (
+                            isinstance(old_assign, ast.Assign) and
                             isinstance(old_assign.value, ast.Name) and
                             old_assign.value.id == 'None'):
                         self_assignments[new_var] = new_child
@@ -304,8 +307,7 @@ class PyCompleteDocument(object):
         """
         self._fname = fname
         self._imports = None
-        self._locald = {}
-        self._globald = globals()
+        self._globald = globals().copy()
         self._symnames = []
         self._symobjs = {}
         self._parse_source_called = False
@@ -334,12 +336,12 @@ class PyCompleteDocument(object):
         # changes to where the file is
         if self._fname:
             os.chdir(os.path.dirname(self._fname))
-        self._locald = {}
+        self._globald = globals().copy()
         self._symnames = []
         self._symobjs = {}
         for stmt in imports:
             try:
-                exec(stmt, self._globald, self._locald)
+                exec(stmt, self._globald)
             except TypeError:
                 raise TypeError('invalid type: %s' % stmt)
             except Exception:
@@ -352,7 +354,6 @@ class PyCompleteDocument(object):
         """
         if not self._symnames:
             keys = set(keyword.kwlist)
-            keys.update(list(self._locald.keys()))
             keys.update(list(self._globald.keys()))
             update_with_builtins(keys)
             self._symnames = list(keys)
@@ -369,16 +370,16 @@ class PyCompleteDocument(object):
         if self._fname:
             os.chdir(os.path.dirname(self._fname))
         try:
-            sym = eval(s, self._globald, self._locald)
+            sym = eval(s, self._globald)
         except NameError:
             try:
-                sym = __import__(s, self._globald, self._locald, [])
-                self._locald[s] = sym
+                sym = __import__(s, self._globald)
+                self._globald[s] = sym
             except ImportError:
                 pass
         except AttributeError:
             try:
-                sym = __import__(s, self._globald, self._locald, [])
+                sym = __import__(s, self._globald)
             except ImportError:
                 pass
         except SyntaxError:
@@ -600,13 +601,11 @@ class PyCompleteDocument(object):
             return '%s' % ex
 
         old_globald = self._globald.copy()
-        old_locald = self._locald
-        self._locald = {}
+        self._globald = globals().copy()
         try:
-            exec(import_code, self._globald, self._locald)
+            exec(import_code, self._globald)
         except Exception as ex:
             self._globald = old_globald
-            self._locald = old_locald
             return '%s' % ex
 
         self._symnames = []
@@ -614,7 +613,7 @@ class PyCompleteDocument(object):
 
         reduced_code = CodeRemover().get_transformed_code(node, self._fname)
         try:
-            exec(reduced_code, self._globald, self._locald)
+            exec(reduced_code, self._globald)
         except Exception as ex:
             return '%s' % ex
         return None
