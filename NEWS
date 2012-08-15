@@ -1,7 +1,288 @@
 Python Mode News
 ================
+
+New in version 6.0.11
+---------------------
+
+- improved Pymacs based code completion:
+  - Completion of symbols from imported modules, functions, classes,
+    module/class-level data members and instance variables in the current
+    buffer. The information for this completion is updated whenever the file
+    is saved.
+  - Completion of local variables and function parameters.
+  - Type deduction from constructor calls and literals.
+  - Show help for modules, classes and functions.
+  - Go to definition of modules, classes and functions.
+  - Show signature of functions.
+  - Support for auto-complete and company.
+
+- remote shell support
+
+- extended version of smart-operator added
+  original smart-operator.el authored by
+  William Xu <william.xwl@gmail.com>
+  Url: http://xwl.appspot.com/ref/smart-operator.el
+
+- py-electric-colon extended
+  if `py-electric-colon-newline-and-indent-p' is non-nil,
+  `py-electric-colon' calls `newline-and-indent'
+
+- boolean `py-no-completion-calls-dabbrev-expand-p'
+  If completion function should call dabbrev-expand
+  when no completion found. Default is `t'
+
+- boolean `py-shell-prompt-read-only', default t
+  sets `comint-prompt-read-only', avoid unintentional edits
+
+- customizable history variables/files
+  py-python-history defaults to "~/.python_history"
+  py-ipython-history defaults to "~/.ipython/history"
+
+  If py-honor-PYTHONHISTORY-p is `t', $PYTHONHISTORY takes precedence, default is nil
+  If py-honor-IPYTHONDIR-p is `t', $IPYTHONHISTORY precedes, default is nil
+
+- customizable boolean `py-trailing-whitespace-smart-delete-p'
+  Default is nil. Some commands may delete trailing
+  whitespaces by the way. When editing other peoples
+  code, this may produce a larger diff than expected 
+
+New in version 6.0.10
+--------------------
+
+addresses bugs and speed issues
+
+
+New in version 6.0.9
+--------------------
+
+- autopair-mode delivered
+  Credits to Joao Tavora http://autopair.googlecode.com
+  see README-AUTOPAIR.org for details
+
+- Syntax highlighting in Python-shell buffers enabled
+  boolean `py-fontify-shell-buffer-p', default is nil
+
+- py-add-abbrev, new command
+  Similar to `add-mode-abbrev', but uses
+  `py-partial-expression' before point for expansion to
+  store, not `word'. Also provides a proposal for new
+  abbrevs.
+
+  Proposal for an abbrev is composed from the downcased
+  initials of expansion - provided they are of char-class
+  [:alpha:]
+
+  For example code below would be recognised as a
+  `py-expression' composed by three
+  py-partial-expressions.
+
+  OrderedDict.popitem(last=True)
+
+  Putting the curser at the EOL, M-3 M-x py-add-abbrev
+
+  would prompt "op" for an abbrev to store, as first
+  `py-partial-expression' beginns with a "(", which is
+  not taken as proposal.
+
+- py-edit-abbrevs
+  Jumps to `python-mode-abbrev-table' 
+
+- modeline enhanced
+  when a path/to/my/favoured/Python is given with `py-shell-name'
+  the Python-shell buffer before would display
+
+  *ND path/to/my/favoured/Python* 
+
+  now:
+
+  *ptmfP Python*
+
+  boolean `py-modeline-display-full-path-p' 
+  boolean `py-modeline-acronym-display-home-p'  
+  If the modeline acronym should contain chars indicating the home-directory.
+
+- mode-line indicates "Py" by default
+  customize  `python-mode-modeline-display' 
+
+- Pymacs intergration dropped from trunk
+  conflicts with classic install being reported
+
+New in version 6.0.8
+
+--------------------
+
+- `py-pep8-run', new command checking formatting
+   `py-pep8-help'
+
+- `py-pyflake-run', new command 
+   Pyflakes is a simple program which checks Python
+   source files for errors. - It is similar to
+   PyChecker in scope, but differs in - that it does
+   not execute the modules to check them.
+   `py-pyflake-help'
+
+- `py-pylint-run', new command calls Pylint, 
+  a Python source code analyzer which looks for
+  programming errors, helps enforcing a coding standard
+  and sniffs for some code smells (as defined in Martin
+  Fowler's Refactoring book) . 
+
+  Pylint checks length of lines of code, if variable
+  names are well-formed according to your coding
+  standard, if declared interfaces are truly
+  implemented, and much more. Additionally, it is
+  possible to write plugins.
+  `py-pylint-doku', `py-pylint-help'
+
+- py-pyflakespep8-run, combines calls to pyflakes and pep8
+  
+- respective flymake-modes,
+  `pyflakespep8-flymake-mode', `pylint-flymake-mode'
+  etc. See meny PyTools
+
+New in version 6.0.7
+--------------------
+
+- make every Python shell acces its own history-file
+  .python3_history
+  .python_history
+  .ipython_history etc.
+
+- related to shell used
+  `toggle-force-py-shell-name-p'
+  `force-py-shell-name-p-on'/off
+
+  making it easier to enforce default py-shell upon execution
+
+  `toggle-force-local-shell'
+  `py-force-local-shell-on'/off
+
+  If locally indicated Python shell should be taken and
+  enforced upon sessions execute commands, lp:988091
+
+- specific completion:
+  py-python2-shell-complete, py-python3-shell-complete,
+  py-python2-script-complete, py-python3-script-complete
+
+New in version 6.0.6
+--------------------
+
+- files inside a virtual machine made visible for pdbtrack
+
+- new commands `py-toggle-split-windows-on-execute', ...-on, ...-off
+  `py-toggle-shell-switch-buffers-on-execute', ...-on, ...-off
+  allow `py-execute-buffer' etc. to split/not-split windows,
+  move cursor onto output or not
+
+- Behavior of C-u M-x `py-shell' closer to common shell
+
+  C-u 4 prompts for a buffer,
+  i.e. when a "*Python*" shell is running,
+  C-u M-x `py-shell' opens a "*Python<2>*" per default
+  C-u 2 M-x py-shell promts for command-arguments as known from 5th-series
+
+- `py-intend-tabs-mode' sets default of `indent-tabs-mode', lp:953765
+
+-- New boolean variable `py-intend-tabs-mode'
+  Permits value independent from Emacs-wide `indent-tabs-mode'
+  Commands `py-toggle-indent-tabs-mode', ...-on, ...-off
+  menu PyTools "Toggle indent-tabs-mode"
+
+- Extended py-execute-... forms provided for "line"
+
+- new commands py-beginning/end-of-line
+  while introduced for internal reasons --because of it's
+  return values-- they allow repeats, i.e. when already
+  at end-of-line, jumping to next end etc.
+
+- new boolean `py-force-py-shell-name-p'
+  When `t', execution with Python specified in `py-shell-name' is en  forced, shebang will have no effect. Default is nil.
+
+-  customizable `py-separator-char', a string, see report lp:975539
+  Precedes guessing when not empty, is returned by
+  function `py-separator-char'
+
+- nicer `org-cycle' behavior: when new `py-org-cycle-p' it `t',
+  command `org-cycle' is available at shift-TAB, <backtab>
+
+New in version 6.0.5
+--------------------
+
+- Menu reworked and extended
+
+- extended commands combine executing statement/block... with dedidi  cated/switch... etc. This may remove some need of customization.
+
+- local environments support started
+  If calls to common `py-shell' should use local executable
+  instead of default system Python set
+  `py-use-local-default' alongside with
+  `py-shell-local-path'
+
+- `py-toggle-shells' alias of more powerful `py-switch-shells'
+  Toggles between the interpreter customized in `py-shell-toggle-1' resp. `py-shell-toggle-2'. Was hard-coded CPython and Jython in earlier versions, now starts with Python2 and Python3 by default.
+
+- `py-shell-name' accepts PATH/TO/EXECUTABLE
+  in addition to name of an installed default Python-Shell.
+  Permits installing commands like
+  (defun python-XYZ-shell (&optional argprompt)
+    "Start an Python-XYZ interpreter ... "
+    (interactive)
+    (let ((py-shell-name "PATH/TO/PYTHON-XYZ"))
+      (py-shell argprompt)))
+
+-  new commands `indent-tabs-mode', `toggle-indent-tabs-mode',
+  `indent-tabs-mode-on', `indent-tabs-mode-off'
+
+  feature after a request at Stack Exchange asked Jul
+  13 '11 at 13:23 saying
+  `tab-width' now follows `py-indent-offset'
+
+- new command `py-execute-region-default' forces the
+  systems default Python interpreter to execute, ignores
+  shebang
+
+  related functions redesigned, `async' argument dropped
+  `py-execute-region' now reads:
+
+  (defun py-execute-region (start end &optional shell dedicated)
+    "Send the region to a Python interpreter.
+
+  When called with \\[univeral-argument], execution through `default-value' of `py-shell-name' is forced.
+  When called with \\[univeral-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
+
+  When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument. "
+  [ ... ]
+
+- new `py-number-face',
+  visible only when customized and `py-use-number-face-p' is `t',
+  inherits default face
+  With large files fontifying numbers may cause a delay
+  Credits to github.com/fgallina/python.el/issues42
+
+- new boolean `py-verbose-p'
+  if `t', reached indent level etc. is messaged
+
+- new commands py-execute-buffer-dedicated, py-execute-buffer-switch  -dedicated
+
+- `toggle-py-smart-indentation' new command
+   also `py-smart-indentation-on', -off
+
 New in version 6.0.4
 --------------------
+
+- Python shell starts with `python-mode'
+  that's needed by completion for now
+  boolean customizable `py-start-run-py-shell'
+
+- outline-(minor-)mode enabled providing regular
+  expressions. Customize `py-outline-minor-mode-p' to
+  switch it on with python-mode
+
+- Hook delivered to start hs-minor-mode from python-mode
+  Customize `py-hide-show-minor-mode-p'
+  Key setting example:
+  (global-set-key [(super s)] 'hs-hide-all)
+  (global-set-key [(super S)] 'hs-show-all)
 
 - Listing of available commands in org-mode and reST
   format in directory "doc"
@@ -24,10 +305,7 @@ New in version 6.0.4
   implemented also for "clause", "def", "class",
   "statement".
   Go to the beginning of next block below
-  current level. 
-
-
-
+  current level.
 
 New in version 6.0.3
 --------------------

@@ -1,73 +1,78 @@
-* Welcome to Python Development Emacs Environment - PDEE
+Put the following into your initialization file:
 
-Originating from Grabriele Lanaros's
-`emacs-for-python', PDEE collects and customizes
-resources reachable from Emacs to obtain a really
-modern and exciting (yet stable) way to edit Python
-files.
+  (setq py-install-directory "PATH/TO/PYTHON-MODE/")
+  (add-to-list 'load-path py-install-directory)
+  (require 'python-mode)
 
-** Features
+To enable code completion:
 
-Coming with a bunch of files, PDEE makes it easy to run
-what's needed.
+  (setq py-load-pymacs-p t)
 
-*** Python Related
+To use auto-complete, just prepend the following lines:
 
-    - Ropemacs (Custom) : A refactoring library
-    - Auto Completion with rope (Custom) : Tested to work well with Rope
-    - Flymake + pyflakes (Custom): Highlight errors on the fly, improved
-      from the standard version
-    - Virtualenv : Original, In-development tool for using virtualenv in
-      Emacs.
-    - Custom Yasnippet Snippets
-    - Cython Mode: a mode for highlighting cython files
-    - Choice of available basic python-modes.
+  (require 'auto-complete-config)
+  (ac-config-default)
 
-*** Editing Packages
+or for company:
 
-    - Open Next Line: C-o will open a line under the cursor (very
-      similar to vim o)
-    - Auto Completion: Auto complete anything in Emacs
-    - Yasnippet: Snippets on steroids
-    - Parentheses pairing (Custom): Bug-free parentheses pairing using
-      skeletons.
-    - smart-operator: Automatically adds spaces around arithmetic operators.
-    - code folding
+  (autoload 'company-mode "company" nil t)
 
-** Installation
+If you do not use one of those visual completion interfaces, key bindings exist:
+  - C-tab complete symbol
+  - f1    show help
+  - S-f1  show signature
+  - f2    go to
 
-Make sure, the path is set and the PDEE init file gets
-loaded, add these lines to your Emacs initialisation
-file:
+If `py-complete-function' is set, it takes precedence
 
-(add-to-list 'load-path "path/to/pdee/")
-(defvar pdee-install-dir "path/to/pdee/")
-(load-file "/path/to/pdee/pdee-init.el")
+;;;;;;;;;
 
-Maybe have a look at the following issues too
+Customize default Python shell as `py-shell-name'
 
-*** Configuring the _flymake_ checker
+`py-shell-name' might be an installed executable as
+shell command `type' would display, but also a
+PATH/TO/(I)PYTHON, of a virtualenv for example
 
-To configure the pyflakes checker install it and
-put in your customization file (.emacs):
+To change the Python default shell see also INSTALL
 
-(pdee-setup-checker "pyflakes %f")
+Most python-mode.el commands start with prefix `py-'
 
-Obviously you can substitute the ``"pyflakes %f"`` with wathever you
-want, you just have to keep in mind that ``%f`` will be substituted
-with the file which is being checked.
+`M-x py- TAB'
+displays a list of them in completion-buffer.
+See also commands list delivered in directory doc.
 
-*** Adding the django snippets
-The django snippets comes as an option, you can load them using:
+List virtualenv related `M-x virtualenv- TAB'
+resp. Pymacs commands `M-x pymacs-'
 
-(pdee-django-snippets)
+Commands related to a specific shell start with
+it's name as `ipython-complete'.
+Open an installed shell by
 
-** License
+M-x SHELL
 
-This is mostly a distribution with some little tweaks, with respect of
-the licenses, my tweaks are distributed according to the term of the
-GNU GPL license, described in the file COPYING.
+With prefix C-u user is prompted to specify a PATH-TO-LOCAL-SHELL
+Also evaluating
 
-Generally each file has its own license and copyright notice (most, if
-not all of packages are GPL), the license of rope (GPL) is in
-rope-dist/COPYING.
+(py-shell nil DEDICATED PATH-TO-LOCAL-SHELL)
+
+if DEDICATED is set to `t', shell will get an unique name.
+
+Install a local shell by evaluating
+
+(defun MY-LOCAL-SHELL ()
+  (interactive)
+  (py-shell nil DEDICATED PATH-TO-LOCAL-SHELL))
+
+;;;;;;;;;
+
+smart-operator minor mode
+
+for example with key "+"
+inserts " + "
+
+smart-operator extended by augmented-assigments
+C-u +
+inserts " += "
+
+customizable boolean `py-smart-operator-mode-p'
+
