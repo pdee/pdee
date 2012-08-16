@@ -168,11 +168,11 @@ Returns the word with replaced variable if known, else the unchanged word."
         (concat type (substring word firstlen))
       word)))
 
-(defun py-complete-python-dotexpr-begin nil
+(defun py-complete-python-dotexpr-begin ()
   (re-search-backward "[^a-zA-Z_0-9\\.]")
   (forward-char))
 
-(defun py-complete-python-dotexpr-end nil
+(defun py-complete-python-dotexpr-end ()
   (re-search-forward "[a-zA-Z_0-9\\.]*"))
 
 (put 'python-dotexpr 'beginning-op 'py-complete-python-dotexpr-begin)
@@ -288,7 +288,7 @@ or if the dot-expression starts with a variable for which the type is known."
           (princ help-string))
       (py-complete-show help-string))))
 
-(defun py-complete-help-thing-at-point nil
+(defun py-complete-help-thing-at-point ()
   (interactive)
   (let ((sym (py-complete-enhanced-dotexpr-at-point)))
     (if sym
@@ -302,13 +302,13 @@ or if the dot-expression starts with a variable for which the type is known."
     (set 'py-complete-current-signature
          (pycomplete-pysignature function (buffer-file-name)))))
 
-(defun py-complete-signature-show nil
+(defun py-complete-signature-show ()
   (let ((sym (py-complete-enhanced-dotexpr-at-point)))
     (if sym
         (progn
           (py-complete-show (py-complete-signature sym))))))
 
-(defun py-complete-signature-expr nil
+(defun py-complete-signature-expr ()
   (interactive)
   (let ((dotexpr (read-string "signature on: "
                               (py-complete-enhanced-dotexpr-at-point))))
@@ -316,13 +316,13 @@ or if the dot-expression starts with a variable for which the type is known."
         (py-complete-show
          (py-complete-signature dotexpr)))))
 
-(defun py-complete-electric-lparen nil
+(defun py-complete-electric-lparen ()
   "electricly insert '(', and try to get a signature for the stuff to the left"
   (interactive)
   (py-complete-signature-show)
   (self-insert-command 1))
 
-(defun py-complete-electric-comma nil
+(defun py-complete-electric-comma ()
   "electricly insert ',', and redisplay latest signature"
   (interactive)
   (self-insert-command 1)
@@ -335,7 +335,7 @@ or if the dot-expression starts with a variable for which the type is known."
     (when (and location (vectorp location) (= (length location) 2))
       (cons (aref location 0) (aref location 1)))))
 
-(defun py-complete-goto-definition nil
+(defun py-complete-goto-definition ()
   "Got to definition of Python function."
   (interactive)
   (let ((sym (py-complete-enhanced-dotexpr-at-point)))
