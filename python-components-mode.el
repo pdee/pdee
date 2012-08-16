@@ -138,10 +138,10 @@ Default is nil "
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-prepare-autopair-mode-p t
-  "If autopair-mode stuff should be loaded. Default is `t'
+(defcustom py-prepare-autopair-mode-p nil
+  "If autopair-mode stuff should be loaded. Default is `nil'
 
-When `t' M-x `autopair-mode' will toggle it.
+When non-nil, M-x `autopair-mode' will toggle it.
 See also `autopair-mode-on'. "
   :type 'boolean
   :group 'python-mode)
