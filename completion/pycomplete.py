@@ -57,35 +57,9 @@ import ast
 import re
 
 if sys.version_info[0] >= 3: # Python 3
-    from io import StringIO
-    def is_num_or_str(obj):
-        return isinstance(obj, (int, float, str))
-    def is_class_type(obj):
-        return type(obj) == type
-    def get_unbound_function(unbound):
-        return unbound
-    def get_method_function(meth):
-        return meth.__func__
-    def get_function_code(func):
-        return func.__code__
-    def update_with_builtins(keys):
-        import builtins
-        keys.update(dir(builtins))
+    import io
 else: # Python 2
-    from StringIO import StringIO
-    def is_num_or_str(obj):
-        return isinstance(obj, (int, long, float, basestring))
-    def is_class_type(obj):
-        return type(obj) in (types.ClassType, types.TypeType)
-    def get_unbound_function(unbound):
-        return unbound.im_func
-    def get_method_function(meth):
-        return meth.im_func
-    def get_function_code(func):
-        return func.func_code
-    def update_with_builtins(keys):
-        import __builtin__
-        keys.update(dir(__builtin__))
+    import StringIO
 
 try:
     x = set
@@ -94,132 +68,279 @@ except NameError:
 else:
     del x
 
-class ImportExtractor(ast.NodeVisitor):
-    """NodeVisitor to extract the top-level import statements from an AST.
 
-    To generate code containing all imports in try-except statements,
-    call get_import_code(node), where node is a parsed AST.
-    """
-    def visit_FunctionDef(self, node):
-        # Ignore imports inside functions or methods.
-        pass
+class _PyCompleteDocument(object):
+    """Completion data for Python source file."""
 
-    def visit_ClassDef(self, node):
-        # Ignore imports inside classes.
-        pass
+    if sys.version_info[0] >= 3: # Python 3
+        _helpout = io.StringIO
+        @staticmethod
+        def is_num_or_str(obj):
+            return isinstance(obj, (int, float, str))
+        @staticmethod
+        def is_class_type(obj):
+            return type(obj) == type
+        @staticmethod
+        def get_unbound_function(unbound):
+            return unbound
+        @staticmethod
+        def get_method_function(meth):
+            return meth.__func__
+        @staticmethod
+        def get_function_code(func):
+            return func.__code__
+        @staticmethod
+        def update_with_builtins(keys):
+            import builtins
+            keys.update(dir(builtins))
+    else: # Python 2
+        _helpout = StringIO.StringIO
+        @staticmethod
+        def is_num_or_str(obj):
+            return isinstance(obj, (int, long, float, basestring))
+        @staticmethod
+        def is_class_type(obj):
+            return type(obj) in (types.ClassType, types.TypeType)
+        @staticmethod
+        def get_unbound_function(unbound):
+            return unbound.im_func
+        @staticmethod
+        def get_method_function(meth):
+            return meth.im_func
+        @staticmethod
+        def get_function_code(func):
+            return func.func_code
+        @staticmethod
+        def update_with_builtins(keys):
+            import __builtin__
+            keys.update(dir(__builtin__))
 
-    def generic_visit(self, node):
-        # Store import statement nodes.
-        if isinstance(node, (ast.Import, ast.ImportFrom)):
-            self._import_nodes.append(node)
-        ast.NodeVisitor.generic_visit(self, node)
-
-    def get_import_code(self, node, fname='<string>'):
-        """Get compiled code of all top-level import statements found in the
-        AST of node."""
-        self._import_nodes = []
-        self.visit(node)
-        body = []
-        for imp_node in self._import_nodes:
-            if isinstance(imp_node, ast.ImportFrom) and \
-               imp_node.module == '__future__':
-                # 'SyntaxError: from __future__ imports must occur at the
-                # beginning of the file' is raised if a 'from __future__ import'
-                # is wrapped in try-except, so use only the import statement.
-                body.append(imp_node)
-            else:
-                body.append(ast.TryExcept(body=[imp_node], handlers=[
-                    ast.ExceptHandler(type=None, name=None, body=[ast.Pass()])],
-                    orelse=[]))
-        node = ast.Module(body=body)
-        ast.fix_missing_locations(node)
-        code = compile(node, fname, 'exec')
-        return code
-
-
-class CodeRemover(ast.NodeTransformer):
-    """NodeTransformer which replaces function statements with 'pass'
-    and keeps only safe assignments, so that the resulting code can
-    be used for code completion.
-
-    To reduce the code from the node of a parsed AST, call
-    get_transformed_code(node).
-    """
-    def visit_FunctionDef(self, node):
-        # Replace all function statements except doc string by 'pass'.
-        if node.body:
-            if isinstance(node.body[0], ast.Expr) and \
-               isinstance(node.body[0].value, ast.Str):
-                # Keep doc string.
-                first_stmt = node.body[1] if len(node.body) > 1 else node.body[0]
-                node.body = [node.body[0]]
-            else:
-                first_stmt = node.body[0]
-                node.body = []
-            node.body.append(ast.copy_location(ast.Pass(), first_stmt))
-            return node
-        return None
-
-    def visit_Expr(self, node):
-        # Remove all expressions except strings to keep doc strings.
-        if isinstance(node.value, ast.Str):
-            return node
-        return None
+    _sre_SRE_Pattern = type(re.compile(''))
+    _sre_SRE_Match = type(re.match('', ''))
 
     # Class name in CapCase, as suggested by PEP8 Python style guide
-    _classNameRe = re.compile(r'^_?[A-Z][A-Za-z0-9]+$')
+    _class_name_re = re.compile(r'(?:^|\.)_?[A-Z][A-Za-z0-9]+$')
+
+    _return_type_of_func = {
+        'bin': 'str',
+        'bytearray': 'bytearray',
+        'bytes': 'bytes',
+        'compile': 'types.CodeType',
+        'complex': 'complex',
+        'dict': 'dict',
+        'frozenset': 'frozenset',
+        'oct': 'str',
+        'open': 'io.BufferedIOBase' if sys.version_info[0] >= 3 else 'file',
+        'list': 'list',
+        'repr': 'str',
+        'set': 'set',
+        'sorted': 'list',
+        'str': 'str',
+        'tuple': 'tuple',
+        'vars': 'dict',
+        're.compile': '_PyCompleteDocument._sre_SRE_Pattern',
+        're.escape': 'str',
+        're.findall': 'list',
+        're.match': '_PyCompleteDocument._sre_SRE_Match',
+        're.search': '_PyCompleteDocument._sre_SRE_Match',
+        're.split': 'list',
+        're.sub': 'str',
+        're.subn': 'tuple',
+        'datetime.datetime': 'datetime.datetime',
+        'datetime.date': 'datetime.date',
+        'datetime.time': 'datetime.time',
+        'datetime.timedelta': 'datetime.timedelta',
+        'sys.exc_info': 'tuple',
+        'os.getcwd': 'str',
+        'os.getenv': 'str',
+        'os.urandom': 'bytes',
+        'os.path.abspath': 'str',
+        'os.path.basename': 'str',
+        'os.path.commonprefix': 'str',
+        'os.path.dirname': 'str',
+        'os.path.expanduser': 'str',
+        'os.path.expandvars': 'str',
+        'os.path.join': 'str',
+        'os.path.normcase': 'str',
+        'os.path.normpath': 'str',
+        'os.path.realpath': 'str',
+        'os.path.relpath': 'str',
+        'os.path.split': 'tuple',
+        'os.path.splitdrive': 'tuple',
+        'os.path.splitext': 'tuple',
+        'collections.defaultdict': 'collections.defaultdict',
+        'collections.deque': 'collections.deque',
+        'collections.namedtuple': 'collections.namedtuple',
+        'socket.socket': 'socket.socket',
+        'csv.excel': 'csv.excel',
+        'csv.excel_tab': 'csv.excel_tab'
+    }
 
     @staticmethod
-    def replace_unsafe_value(node, replace_self=None):
-        """Modify value from assignment if unsafe.
+    def _get_type_for_function(funcname):
+        typename = _PyCompleteDocument._return_type_of_func.get(funcname)
+        if not typename and \
+           _PyCompleteDocument._class_name_re.search(funcname):
+            typename = funcname
+        return typename
 
-        If replace_self is given, only assignments starting with 'self.' are
-        processed, the assignment node is returned with 'self.' replaced by
-        the value of replace_self (typically the class name).
-        For other assignments, None is returned."""
-        for i, target in enumerate(node.targets):
-            if not isinstance(target, (ast.Name, ast.Attribute)):
-                # Only process assignments to names and attributes,
-                # not tuples.
-                return None
-            if replace_self:
-                if isinstance(target, ast.Attribute) and \
-                   isinstance(target.value, ast.Name) and \
-                   target.value.id == 'self' and \
-                   isinstance(target.value.ctx, ast.Load):
-                    node.targets[i].value.id = replace_self
-                else:
-                    return None
-        if isinstance(node.value, (ast.Str, ast.Num)):
+    @staticmethod
+    def _replace_pycfrt_with_typename(s):
+        """Replace _PYCFRT(..) expressions with function return type.
+
+        The names of variables assigned from function calls can be replaced by
+        _PYCFRT(name.of.function). This function tries to replace such expressions
+        with the corresponding function return type (PYCFRT = pycomplete function
+        return type). If no such expression can be found, s is returned unchanged.
+        If the type cannot be deduced, None is returned, else the substituted
+        string."""
+        pycfrt_re = re.compile(r'_PYCFRT\(([^()]+)\)')
+        return pycfrt_re.sub(lambda m: _PyCompleteDocument._get_type_for_function(m.group(1)), s)
+
+    class ImportExtractor(ast.NodeVisitor):
+        """NodeVisitor to extract the top-level import statements from an AST.
+
+        To generate code containing all imports in try-except statements,
+        call get_import_code(node), where node is a parsed AST.
+        """
+        def visit_FunctionDef(self, node):
+            # Ignore imports inside functions or methods.
             pass
-        elif isinstance(node.value, (ast.List, ast.Tuple)):
-            node.value.elts = []
-        elif isinstance(node.value, ast.Dict):
-            node.value.keys = []
-            node.value.values = []
-        elif isinstance(node.value, ast.ListComp):
-            node.value = ast.copy_location(ast.List(elts=[], ctx=ast.Load()), node.value)
-        elif isinstance(node.value, ast.Call):
-            if isinstance(node.value.func, ast.Name):
-                name = node.value.func.id
-                if name == 'open':
-                    if sys.version_info[0] >= 3: # Python 3
-                        node.value = ast.copy_location(
-                            ast.Attribute(value=ast.Name(id='io', ctx=ast.Load()),
-                                          attr='BufferedIOBase', ctx=ast.Load()),
-                                          node.value)
-                    else: # Python 2
-                        node.value = ast.copy_location(
-                            ast.Name(id='file', ctx=ast.Load()), node.value)
-                    # Wrap class lookup in try-except because it is not fail-safe.
-                    node = ast.copy_location(ast.TryExcept(body=[node], handlers=[
+
+        def visit_ClassDef(self, node):
+            # Ignore imports inside classes.
+            pass
+
+        def generic_visit(self, node):
+            # Store import statement nodes.
+            if isinstance(node, (ast.Import, ast.ImportFrom)):
+                self._import_nodes.append(node)
+            ast.NodeVisitor.generic_visit(self, node)
+
+        def get_import_code(self, node, fname='<string>'):
+            """Get compiled code of all top-level import statements found in the
+            AST of node."""
+            self._import_nodes = []
+            self.visit(node)
+            body = []
+            for imp_node in self._import_nodes:
+                if isinstance(imp_node, ast.ImportFrom) and \
+                   imp_node.module == '__future__':
+                    # 'SyntaxError: from __future__ imports must occur at the
+                    # beginning of the file' is raised if a 'from __future__ import'
+                    # is wrapped in try-except, so use only the import statement.
+                    body.append(imp_node)
+                else:
+                    body.append(ast.TryExcept(body=[imp_node], handlers=[
                         ast.ExceptHandler(type=None, name=None, body=[ast.Pass()])],
-                        orelse=[]), node)
-                    ast.fix_missing_locations(node)
-                elif CodeRemover._classNameRe.match(name):
-                    node.value = ast.copy_location(
-                        ast.Name(id=name, ctx=ast.Load()), node.value)
+                        orelse=[]))
+            node = ast.Module(body=body)
+            ast.fix_missing_locations(node)
+            code = compile(node, fname, 'exec')
+            return code
+
+
+    class CodeRemover(ast.NodeTransformer):
+        """NodeTransformer which replaces function statements with 'pass'
+        and keeps only safe assignments, so that the resulting code can
+        be used for code completion.
+
+        To reduce the code from the node of a parsed AST, call
+        get_transformed_code(node).
+        """
+        def visit_FunctionDef(self, node):
+            # Replace all function statements except doc string by 'pass'.
+            if node.body:
+                if isinstance(node.body[0], ast.Expr) and \
+                   isinstance(node.body[0].value, ast.Str):
+                    # Keep doc string.
+                    first_stmt = node.body[1] if len(node.body) > 1 else node.body[0]
+                    node.body = [node.body[0]]
+                else:
+                    first_stmt = node.body[0]
+                    node.body = []
+                node.body.append(ast.copy_location(ast.Pass(), first_stmt))
+                return node
+            return None
+
+        def visit_Expr(self, node):
+            # Remove all expressions except strings to keep doc strings.
+            if isinstance(node.value, ast.Str):
+                return node
+            return None
+
+        @staticmethod
+        def _get_type_node_for_function_node(node):
+            # Convert node to dot expression
+            attrs = []
+            while isinstance(node, ast.Attribute):
+                attrs.insert(0, node.attr)
+                node = node.value
+            if isinstance(node, ast.Name):
+                attrs.insert(0, node.id)
+            funcname = '.'.join(attrs)
+            typename = _PyCompleteDocument._get_type_for_function(funcname)
+            if typename:
+                # Convert dot expression to node
+                attrs = typename.split('.')
+                node = None
+                if attrs:
+                    node = ast.Name(id=attrs.pop(0), ctx=ast.Load())
+                    while attrs:
+                        node = ast.Attribute(value=node, attr=attrs.pop(0),
+                                             ctx=ast.Load())
+                return node
+            return None
+
+        @staticmethod
+        def replace_unsafe_value(node, replace_self=None):
+            """Modify value from assignment if unsafe.
+
+            If replace_self is given, only assignments starting with 'self.' are
+            processed, the assignment node is returned with 'self.' replaced by
+            the value of replace_self (typically the class name).
+            For other assignments, None is returned."""
+            for i, target in enumerate(node.targets):
+                if not isinstance(target, (ast.Name, ast.Attribute)):
+                    # Only process assignments to names and attributes,
+                    # not tuples.
+                    return None
+                if replace_self:
+                    if isinstance(target, ast.Attribute) and \
+                       isinstance(target.value, ast.Name) and \
+                       target.value.id == 'self' and \
+                       isinstance(target.value.ctx, ast.Load):
+                        node.targets[i].value.id = replace_self
+                        if target.attr == '__name__':
+                            node.value = ast.copy_location(ast.Str(s=''),
+                                                           node.value)
+                        elif target.attr in ('__dict__', '__class__', '__bases__',
+                                             '__doc__'):
+                            return None
+                    else:
+                        return None
+                elif isinstance(target, ast.Name) and \
+                   isinstance(target.ctx, ast.Store):
+                   if target.id == '__metaclass__':
+                       # Do not modify __metaclass__ assignments
+                       return node
+                   elif target.id == '__slots__':
+                       node.value = ast.copy_location(
+                           ast.List(elts=[], ctx=ast.Load()), node.value)
+            if isinstance(node.value, (ast.Str, ast.Num)):
+                pass
+            elif isinstance(node.value, (ast.List, ast.Tuple)):
+                node.value.elts = []
+            elif isinstance(node.value, ast.Dict):
+                node.value.keys = []
+                node.value.values = []
+            elif isinstance(node.value, ast.ListComp):
+                node.value = ast.copy_location(ast.List(elts=[], ctx=ast.Load()), node.value)
+            elif isinstance(node.value, ast.Call):
+                type_node = _PyCompleteDocument.CodeRemover._get_type_node_for_function_node(node.value.func)
+                if type_node:
                     # Wrap class lookup in try-except because it is not fail-safe.
+                    node.value = ast.copy_location(type_node, node.value)
                     node = ast.copy_location(ast.TryExcept(body=[node], handlers=[
                         ast.ExceptHandler(type=None, name=None, body=[ast.Pass()])],
                         orelse=[]), node)
@@ -227,76 +348,61 @@ class CodeRemover(ast.NodeTransformer):
                 else:
                     node.value = ast.copy_location(
                         ast.Name(id='None', ctx=ast.Load()), node.value)
-            elif isinstance(node.value.func, ast.Attribute) and \
-                 CodeRemover._classNameRe.match(node.value.func.attr):
-                node.value = node.value.func
-                # Wrap class lookup in try-except because it is not fail-safe.
-                node = ast.copy_location(ast.TryExcept(body=[node], handlers=[
-                    ast.ExceptHandler(type=None, name=None, body=[ast.Pass()])],
-                    orelse=[]), node)
-                ast.fix_missing_locations(node)
             else:
-                node.value = ast.copy_location(
-                    ast.Name(id='None', ctx=ast.Load()), node.value)
-        else:
-            node.value = ast.copy_location(ast.Name(id='None', ctx=ast.Load()), node.value)
-        return node
+                node.value = ast.copy_location(ast.Name(id='None', ctx=ast.Load()), node.value)
+            return node
 
-    def visit_Assign(self, node):
-        # Replace unsafe values of assignements by None.
-        return self.replace_unsafe_value(node)
+        def visit_Assign(self, node):
+            # Replace unsafe values of assignements by None.
+            return self.replace_unsafe_value(node)
 
-    def visit_Name(self, node):
-        # Pass names for bases in ClassDef.
-        return node
+        def visit_Name(self, node):
+            # Pass names for bases in ClassDef.
+            return node
 
-    def visit_Attribute(self, node):
-        # Pass attributes for bases in ClassDef.
-        return node
+        def visit_Attribute(self, node):
+            # Pass attributes for bases in ClassDef.
+            return node
 
-    def visit_ClassDef(self, node):
-        # Visit nodes of class.
-        # Store instance member assignments to be added later to generated code.
-        self_assignments = {}
-        for child in ast.walk(node):
-            if isinstance(child, ast.Assign):
-                new_child = self.replace_unsafe_value(child,
-                                                      replace_self=node.name)
-                if new_child:
-                    new_var = child.targets[0].attr
-                    old_assign = self_assignments.get(new_var)
-                    if not old_assign or (
-                            isinstance(old_assign, ast.Assign) and
-                            isinstance(old_assign.value, ast.Name) and
-                            old_assign.value.id == 'None'):
-                        self_assignments[new_var] = new_child
-        self._class_assignments.extend(list(self_assignments.values()))
-        return ast.NodeTransformer.generic_visit(self, node)
+        def visit_ClassDef(self, node):
+            # Visit nodes of class.
+            # Store instance member assignments to be added later to generated code.
+            self_assignments = {}
+            for child in ast.walk(node):
+                if isinstance(child, ast.Assign):
+                    new_child = self.replace_unsafe_value(child,
+                                                          replace_self=node.name)
+                    if new_child:
+                        new_var = child.targets[0].attr
+                        old_assign = self_assignments.get(new_var)
+                        if not old_assign or (
+                                isinstance(old_assign, ast.Assign) and
+                                isinstance(old_assign.value, ast.Name) and
+                                old_assign.value.id == 'None'):
+                            self_assignments[new_var] = new_child
+            self._class_assignments.extend(list(self_assignments.values()))
+            return ast.NodeTransformer.generic_visit(self, node)
 
-    def visit_Module(self, node):
-        # Visit nodes of module
-        return ast.NodeTransformer.generic_visit(self, node)
+        def visit_Module(self, node):
+            # Visit nodes of module
+            return ast.NodeTransformer.generic_visit(self, node)
 
-    def generic_visit(self, node):
-        # Remove everything which is not handled by the methods above
-        return None
+        def generic_visit(self, node):
+            # Remove everything which is not handled by the methods above
+            return None
 
-    def get_transformed_code(self, node, fname='<string>'):
-        """Get compiled code containing only empty functions and methods
-        and safe assignments found in the AST of node."""
-        self._class_assignments = []
-        node = self.visit(node)
-        # The self members are added as attributes to the class objects
-        # rather than included as class variables inside the class definition
-        # so that names starting with '__' are not mangled.
-        node.body.extend(self._class_assignments)
-        code = compile(node, fname, 'exec')
-        return code
+        def get_transformed_code(self, node, fname='<string>'):
+            """Get compiled code containing only empty functions and methods
+            and safe assignments found in the AST of node."""
+            self._class_assignments = []
+            node = self.visit(node)
+            # The self members are added as attributes to the class objects
+            # rather than included as class variables inside the class definition
+            # so that names starting with '__' are not mangled.
+            node.body.extend(self._class_assignments)
+            code = compile(node, fname, 'exec')
+            return code
 
-
-class PyCompleteDocument(object):
-    """Completion data for Python source file."""
-    _helpout = StringIO
     _stdout = sys.stdout
 
     _instances = {}
@@ -314,13 +420,13 @@ class PyCompleteDocument(object):
 
     @classmethod
     def instance(cls, fname):
-        """Get PyCompleteDocument object for fname.
+        """Get _PyCompleteDocument object for fname.
         If no object for this file name exists, a new object is created and
         registered.
         """
         obj = cls._instances.get(fname)
         if obj is None:
-            obj = PyCompleteDocument(fname)
+            obj = _PyCompleteDocument(fname)
             cls._instances[fname] = obj
         return obj
 
@@ -355,7 +461,7 @@ class PyCompleteDocument(object):
         if not self._symnames:
             keys = set(keyword.kwlist)
             keys.update(list(self._globald.keys()))
-            update_with_builtins(keys)
+            self.update_with_builtins(keys)
             self._symnames = list(keys)
             self._symnames.sort()
 
@@ -398,6 +504,7 @@ class PyCompleteDocument(object):
         symbol for a parent can be returned, which may be enough
         if searching for help on symbol.
         """
+        s = self._replace_pycfrt_with_typename(s)
         sym = self._symobjs.get(s)
         if sym is not None:
             return sym
@@ -445,10 +552,10 @@ class PyCompleteDocument(object):
         """Given a class object, return a function object used for the
         constructor (ie, __init__() ) or None if we can't find one."""
         try:
-            return get_unbound_function(class_ob.__init__)
+            return _PyCompleteDocument.get_unbound_function(class_ob.__init__)
         except AttributeError:
             for base in class_ob.__bases__:
-                rc = PyCompleteDocument._find_constructor(base)
+                rc = _PyCompleteDocument._find_constructor(base)
                 if rc is not None:
                      return rc
         return None
@@ -461,6 +568,7 @@ class PyCompleteDocument(object):
         """
         self._import_modules(imports)
 
+        s = self._replace_pycfrt_with_typename(s)
         last_dot_pos = s.rfind('.')
         if last_dot_pos == -1:
             self._collect_symbol_names()
@@ -503,7 +611,7 @@ class PyCompleteDocument(object):
             try:
                 self._import_modules(imports)
                 obj = self._load_symbol(s, strict=True)
-                if obj and not is_num_or_str(obj):
+                if obj and not self.is_num_or_str(obj):
                     doc = inspect.getdoc(obj)
                     if doc:
                         return doc
@@ -524,7 +632,7 @@ class PyCompleteDocument(object):
         except Exception as ex:
             return '%s' % ex
 
-        if is_class_type(obj):
+        if self.is_class_type(obj):
             # Look for the highest __init__ in the class chain.
             ctr = self._find_constructor(obj)
             if ctr is not None and type(ctr) in (
@@ -533,7 +641,7 @@ class PyCompleteDocument(object):
         elif type(obj) == types.MethodType:
             # bit of a hack for methods - turn it into a function
             # but we drop the "self" param.
-            obj = get_method_function(obj)
+            obj = self.get_method_function(obj)
 
         if type(obj) in [types.FunctionType, types.LambdaType]:
             (args, varargs, varkw, defaults) = inspect.getargspec(obj)
@@ -557,12 +665,12 @@ class PyCompleteDocument(object):
             self._import_modules(imports)
             obj = self._load_symbol(s, strict=False)
             if obj is not None:
-                if is_class_type(obj):
+                if self.is_class_type(obj):
                     obj = obj.__init__
                 if type(obj) == types.MethodType:
-                    obj = get_method_function(obj)
+                    obj = self.get_method_function(obj)
                 if type(obj) in [types.FunctionType, types.LambdaType]:
-                    code = get_function_code(obj)
+                    code = self.get_function_code(obj)
                     return (os.path.abspath(code.co_filename), code.co_firstlineno)
                 # If not found, try using inspect.
                 return (inspect.getsourcefile(obj), inspect.getsourcelines(obj)[1])
@@ -596,7 +704,7 @@ class PyCompleteDocument(object):
 
         try:
             node = ast.parse(src, self._fname)
-            import_code = ImportExtractor().get_import_code(node, self._fname)
+            import_code = self.ImportExtractor().get_import_code(node, self._fname)
         except (SyntaxError, TypeError) as ex:
             return '%s' % ex
 
@@ -611,19 +719,19 @@ class PyCompleteDocument(object):
         self._symnames = []
         self._symobjs = {}
 
-        reduced_code = CodeRemover().get_transformed_code(node, self._fname)
+        reduced_code = self.CodeRemover().get_transformed_code(node, self._fname)
         try:
             exec(reduced_code, self._globald)
         except Exception as ex:
             return '%s' % ex
         return None
 
-def get_all_completions(s, fname=None, imports=None):
+def pycompletions(s, fname=None, imports=None):
     """Get a list of possible completions for s.
 
     The completions extend the expression s after the last dot.
     """
-    return PyCompleteDocument.instance(fname).get_all_completions(
+    return _PyCompleteDocument.instance(fname).get_all_completions(
         s, imports)
 
 def pycomplete(s, fname=None, imports=None):
@@ -635,25 +743,25 @@ def pycomplete(s, fname=None, imports=None):
     remaining characters is returned.
     If no completion is found, None is returned.
     """
-    return PyCompleteDocument.instance(fname).complete(s, imports)
+    return _PyCompleteDocument.instance(fname).complete(s, imports)
 
 def pyhelp(s, fname=None, imports=None):
     """Return help on object s."""
-    return PyCompleteDocument.instance(fname).help(s, imports)
+    return _PyCompleteDocument.instance(fname).help(s, imports)
 
 def pydocstring(s, fname=None, imports=None):
     """Return docstring of symbol."""
-    return PyCompleteDocument.instance(fname).get_docstring(s, imports)
+    return _PyCompleteDocument.instance(fname).get_docstring(s, imports)
 
 def pysignature(s, fname=None, imports=None):
     """Return info about function parameters."""
-    return PyCompleteDocument.instance(fname).get_signature(s, imports)
+    return _PyCompleteDocument.instance(fname).get_signature(s, imports)
 
 def pylocation(s, fname=None, imports=None):
     """Return file path and line number of symbol, None if not found."""
-    return PyCompleteDocument.instance(fname).get_location(s, imports)
+    return _PyCompleteDocument.instance(fname).get_location(s, imports)
 
-def parse_source(fname, only_reload=False):
+def pyparse(fname, only_reload=False):
     """Parse source code to get imports and completions.
 
     If this function is called, the imports parameter for the other functions
@@ -661,7 +769,7 @@ def parse_source(fname, only_reload=False):
     parsed source code. If only_reload is True, the source is only parsed if
     it has been parsed before.
     """
-    return PyCompleteDocument.instance(fname).parse_source(only_reload)
+    return _PyCompleteDocument.instance(fname).parse_source(only_reload)
 
 # Local Variables :
 # pymacs-auto-reload : t

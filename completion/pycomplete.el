@@ -41,7 +41,7 @@ If the type cannot be deduced, nil is returned."
   (let ((firstchar (string-to-char val))
         (case-fold-search nil))
     (cond
-     ((string= val "None") nil)
+     ((or (equal 0 firstchar) (string= val "None")) nil)
      ((equal ?\[ firstchar) "list")
      ((equal ?{ firstchar) "dict")
      ((or (equal ?' firstchar) (equal ?\" firstchar)) "str")
@@ -53,7 +53,8 @@ If the type cannot be deduced, nil is returned."
      ((string-match "^[+\\-]?[0-9]+\\(?:\\.[0-9]+\\)?" val) "float")
      ((string-match "^\\(\\(?:[[:word:]\\.]+\\.\\)?_?[A-Z][A-Za-z0-9]+\\)($" val)
       (match-string-no-properties 1 val))
-     ((or (string= val "open(") (string= val "file(")) "file"))))
+		 ((string= "(" (substring-no-properties val -1))
+			(concat "_PYCFRT(" (substring-no-properties val 0 -1) ")")))))
 
 (defun py-complete-variables-in-def (&optional limit)
   "Return an alist with mappings of local variable names to types.
@@ -168,11 +169,11 @@ Returns the word with replaced variable if known, else the unchanged word."
         (concat type (substring word firstlen))
       word)))
 
-(defun py-complete-python-dotexpr-begin ()
+(defun py-complete-python-dotexpr-begin nil
   (re-search-backward "[^a-zA-Z_0-9\\.]")
   (forward-char))
 
-(defun py-complete-python-dotexpr-end ()
+(defun py-complete-python-dotexpr-end nil
   (re-search-forward "[a-zA-Z_0-9\\.]*"))
 
 (put 'python-dotexpr 'beginning-op 'py-complete-python-dotexpr-begin)
@@ -258,7 +259,7 @@ or if the dot-expression starts with a variable for which the type is known."
   (let ((pymacs-forget-mutability t))
     (append
      (py-complete-variable-completions-for-symbol sym)
-     (pycomplete-get-all-completions
+     (pycomplete-pycompletions
       sym (buffer-file-name)
       imports))))
 
@@ -288,7 +289,7 @@ or if the dot-expression starts with a variable for which the type is known."
           (princ help-string))
       (py-complete-show help-string))))
 
-(defun py-complete-help-thing-at-point ()
+(defun py-complete-help-thing-at-point nil
   (interactive)
   (let ((sym (py-complete-enhanced-dotexpr-at-point)))
     (if sym
@@ -302,13 +303,13 @@ or if the dot-expression starts with a variable for which the type is known."
     (set 'py-complete-current-signature
          (pycomplete-pysignature function (buffer-file-name)))))
 
-(defun py-complete-signature-show ()
+(defun py-complete-signature-show nil
   (let ((sym (py-complete-enhanced-dotexpr-at-point)))
     (if sym
         (progn
           (py-complete-show (py-complete-signature sym))))))
 
-(defun py-complete-signature-expr ()
+(defun py-complete-signature-expr nil
   (interactive)
   (let ((dotexpr (read-string "signature on: "
                               (py-complete-enhanced-dotexpr-at-point))))
@@ -316,13 +317,13 @@ or if the dot-expression starts with a variable for which the type is known."
         (py-complete-show
          (py-complete-signature dotexpr)))))
 
-(defun py-complete-electric-lparen ()
+(defun py-complete-electric-lparen nil
   "electricly insert '(', and try to get a signature for the stuff to the left"
   (interactive)
   (py-complete-signature-show)
   (self-insert-command 1))
 
-(defun py-complete-electric-comma ()
+(defun py-complete-electric-comma nil
   "electricly insert ',', and redisplay latest signature"
   (interactive)
   (self-insert-command 1)
@@ -335,7 +336,7 @@ or if the dot-expression starts with a variable for which the type is known."
     (when (and location (vectorp location) (= (length location) 2))
       (cons (aref location 0) (aref location 1)))))
 
-(defun py-complete-goto-definition ()
+(defun py-complete-goto-definition nil
   "Got to definition of Python function."
   (interactive)
   (let ((sym (py-complete-enhanced-dotexpr-at-point)))
@@ -350,7 +351,7 @@ or if the dot-expression starts with a variable for which the type is known."
 
 (defun py-complete-parse-source ()
   "Parse source code of Python file to get imports and completions."
-  (let ((errstr (pycomplete-parse-source (buffer-file-name) t)))
+  (let ((errstr (pycomplete-pyparse (buffer-file-name) t)))
     (if errstr
         (message "%s" errstr))))
 

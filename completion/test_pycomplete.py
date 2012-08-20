@@ -54,17 +54,17 @@ def test_complete():
         'ArithmeticError', 'AssertionError', 'AttributeError']
 
 def test_completions():
-    all_completions = get_all_completions('')
+    all_completions = pycompletions('')
     assert all_completions[0] == 'ArithmeticError'
     assert all_completions[-1] == 'zip'
-    assert get_all_completions('os.path.jo') == ['join']
-    assert get_all_completions('settr', imports=['']) == []
-    assert get_all_completions('settr',
+    assert pycompletions('os.path.jo') == ['join']
+    assert pycompletions('settr', imports=['']) == []
+    assert pycompletions('settr',
                 imports=['from sys import settrace']) == ['settrace']
     # Check if imports are still cached.
-    assert get_all_completions('settr', imports=None) == ['settrace']
+    assert pycompletions('settr', imports=None) == ['settrace']
     # Change list of imports, so that cache is invalidated.
-    assert get_all_completions('settr', imports=['']) == []
+    assert pycompletions('settr', imports=['']) == []
 
 def test_location():
     fn, line = pylocation('os.path.join')
@@ -91,16 +91,16 @@ def test_parse_source():
     tmp_file = tempfile.NamedTemporaryFile(suffix='.py', mode='w')
     name = tmp_file.name
     with tmp_file.file as fh:
-        assert parse_source('not_existing', only_reload=True) == None
-        assert parse_source('not_existing') == \
+        assert pyparse('not_existing', only_reload=True) == None
+        assert pyparse('not_existing') == \
            "[Errno 2] No such file or directory: 'not_existing'"
-        assert parse_source(name) is None
+        assert pyparse(name) is None
         # Nothing imported so far
-        assert get_all_completions('dat' , name) == []
+        assert pycompletions('dat' , name) == []
         src = """
 "Doc for module."
 from __future__ import print_function
-import sys, os, io
+import sys, os, io, re
 from datetime import date, \
 time
 import argparse
@@ -108,6 +108,7 @@ if os.getenv('LC'):
     import linecache
 
 modvar = 1
+mod_re = re.compile(r'^test')
 
 def testfunc():
     "Doc for testfunc."
@@ -158,47 +159,48 @@ if __name__ == '__main__':
         num_src_lines = len(src.splitlines())
         fh.write(src)
         fh.flush()
-        assert parse_source(name) == None
+        assert pyparse(name) == None
         # Check if only global imports are visible
-        assert get_all_completions('dat' , name) == ['date']
-        assert get_all_completions('tim' , name) == ['time']
-        assert get_all_completions('url' , name) == []
-        assert get_all_completions('line' , name) == ['linecache']
-        assert get_all_completions('os' , name) == ['os']
+        assert pycompletions('dat' , name) == ['date']
+        assert pycompletions('tim' , name) == ['time']
+        assert pycompletions('url' , name) == []
+        assert pycompletions('line' , name) == ['linecache']
+        assert pycompletions('os' , name) == ['os']
         # Check for definitions in local file
-        assert get_all_completions('test' , name) == ['testfunc']
-        assert get_all_completions('TestClass.CO' , name) == \
+        assert pycompletions('test' , name) == ['testfunc']
+        assert pycompletions('TestClass.CO' , name) == \
           ['CONST1', 'CONST2', 'CONST3']
-        assert get_all_completions('TestClass.test' , name) == \
+        assert pycompletions('TestClass.test' , name) == \
           ['testclassmeth', 'testmeth', 'testprop', 'teststaticmeth']
         # Check for instance members
-        assert get_all_completions('TestClass._mem', name) == \
+        assert pycompletions('TestClass._mem', name) == \
           ['_member1', '_member2']
-        assert get_all_completions('TestClass.__mem', name) == ['__member3']
-        assert get_all_completions('TestClass._member1.start', name) == \
+        assert pycompletions('TestClass.__mem', name) == ['__member3']
+        assert pycompletions('TestClass._member1.start', name) == \
           ['startswith']
-        assert get_all_completions('TestClass._member2.', name) == []
-        assert get_all_completions('TestClass.__member3.ext', name) == \
+        assert pycompletions('TestClass._member2.', name) == []
+        assert pycompletions('TestClass.__member3.ext', name) == \
           ['extend']
-        assert get_all_completions('TestClass.member4.prin', name) == \
+        assert pycompletions('TestClass.member4.prin', name) == \
           ['print_help', 'print_usage', 'print_version']
-        assert get_all_completions('TestClass.member5.writel', name) == \
+        assert pycompletions('TestClass.member5.writel', name) == \
           ['writelines']
-        assert get_all_completions('TestClass.member6.from', name) == \
+        assert pycompletions('TestClass.member6.from', name) == \
           ['fromkeys']
-        assert get_all_completions('TestClass.member7.from', name) == \
+        assert pycompletions('TestClass.member7.from', name) == \
           ['fromkeys']
-        assert get_all_completions('TestClass.member10.ext', name) == \
+        assert pycompletions('TestClass.member10.ext', name) == \
           ['extend']
-        assert get_all_completions('TestClass.member11.ar', name) == \
+        assert pycompletions('TestClass.member11.ar', name) == \
           ['args']
-        assert get_all_completions('modvar.num', name) == ['numerator']
+        assert pycompletions('modvar.num', name) == ['numerator']
+        assert pycompletions('mod_re.ma', name) == ['match']
         assert pydocstring('TestClass._member1', name) == ''
         assert pydocstring('TestClass._member2', name) == ''
         assert pydocstring('TestClass.__member3', name) == ''
         # Check for super class
-        assert get_all_completions('TestClass.week' , name) == ['weekday']
-        assert get_all_completions('TestClass.utc' , name) == []
+        assert pycompletions('TestClass.week' , name) == ['weekday']
+        assert pycompletions('TestClass.utc' , name) == []
         # Check signature, documentation and location
         assert pysignature('TestClass.testmeth', name) == \
           'testmeth: (self, arg1=1)'
@@ -210,18 +212,18 @@ if __name__ == '__main__':
         # syntax error
         fh.write('while')
         fh.flush()
-        assert parse_source(name) == \
+        assert pyparse(name) == \
           'invalid syntax (%s, line %d)' % (os.path.basename(name),
                                             num_src_lines + 1)
-        assert get_all_completions('dat' , name) == ['date']
+        assert pycompletions('dat' , name) == ['date']
         # Replace file contents and check new imports
         fh.seek(0)
         fh.truncate(0)
         fh.write('import urllib\n')
         fh.flush()
-        assert parse_source(name) == None
-        assert get_all_completions('dat' , name) == []
-        assert get_all_completions('url' , name) == ['urllib']
+        assert pyparse(name) == None
+        assert pycompletions('dat' , name) == []
+        assert pycompletions('url' , name) == ['urllib']
 
 def run_tests():
     test_complete()
