@@ -1262,9 +1262,9 @@ When editing other peoples code, this may produce a larger diff than expected "
 (defcustom py-set-complete-keymap-p  nil
   "If `py-complete-initialize', which sets up enviroment for Pymacs based py-complete, should load it's keys into `python-mode-map'
 
-Default is nil. 
+Default is nil.
 See also resp. edit `py-complete-set-keymap' "
-  
+
   :type 'boolean
   :group 'python-mode)
 
@@ -1807,15 +1807,16 @@ Returns `t' if successful. "
 
 (defun py-guess-py-install-directory ()
   "Takes value of user directory aka $HOME
-if `(locate-library \"python-mode\")' is not succesful. "
+if `(locate-library \"python-mode\")' is not succesful. 
+
+Used only, if `py-install-directory' is empty. "
   (interactive)
   (let ((erg (file-name-directory (locate-library "python-mode"))))
     (if erg
-        (progn
-          (setq py-install-directory erg)
-          (when (and py-verbose-p (interactive-p)) (message "Setting py-install-directory to: %s" erg)))
+        (setq py-install-directory erg)
       (setq py-install-directory (expand-file-name "~/")))
-    py-install-directory ))
+    (when (and py-verbose-p (interactive-p)) (message "Setting py-install-directory to: %s" py-install-directory))
+    py-install-directory))
 
 (defun py-load-pymacs ()
   "Load Pymacs as delivered with python-mode.el.
