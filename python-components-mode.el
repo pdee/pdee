@@ -227,6 +227,18 @@ Default is non-nil. "
   :group 'python-mode)
 (make-variable-buffer-local 'py-smart-operator-mode-p)
 
+(defcustom py-sexp-function nil
+  "When set, it's value is called instead of `forward-sexp', `backward-sexp'
+
+Default is nil. "
+
+  :type '(choice
+          (const :tag "default" nil)
+          (const :tag "py-end-of-partial-expression" py-end-of-partial-expression)
+          (const :tag "py-end-of-expression" py-end-of-expression))
+  :group 'python-mode)
+(make-variable-buffer-local 'py-sexp-function)
+
 (defcustom py-close-provides-newline t
   "If a newline is inserted, when line after block isn't empty. Default is non-nil. "
   :type 'boolean
@@ -1262,9 +1274,9 @@ When editing other peoples code, this may produce a larger diff than expected "
 (defcustom py-set-complete-keymap-p  nil
   "If `py-complete-initialize', which sets up enviroment for Pymacs based py-complete, should load it's keys into `python-mode-map'
 
-Default is nil. 
+Default is nil.
 See also resp. edit `py-complete-set-keymap' "
-  
+
   :type 'boolean
   :group 'python-mode)
 
@@ -1399,38 +1411,75 @@ Used for determining the default in the next one.")
 (defvar py-output-buffer "*Python Output*")
 (make-variable-buffer-local 'py-output-buffer)
 
-(defvar py-expression-skip-regexp "^ =:#\t\r\n\f"
+;;; py-expression variables start
+(defvar py-string-start-regexp "\\(\"\"\"\\|'''\\|\"\\|'\\)"
+  "When looking at beginning of string. ")
+
+(defvar py-expression-skip-regexp "[^ (=:#\t\r\n\f]"
   "py-expression assumes chars indicated possible composing a py-expression, skip it. ")
-;; (setq py-expression-skip-regexp "^ =:#\t\r\n\f")
+;; (setq py-expression-skip-regexp "[^ (=#\t\r\n\f]")
 
-(defvar py-expression-looking-regexp "[^ =:#\t\r\n\f]+"
+(defvar py-expression-skip-chars "^ (:=#\t\r\n\f"
+  "py-expression assumes chars indicated possible composing a py-expression, skip it. ")
+;; (setq py-expression-skip-chars "^ (=#\t\r\n\f")
+
+(defvar py-expression-looking-regexp "[^ =#\t\r\n\f]+"
   "py-expression assumes chars indicated possible composing a py-expression, when looking-at or -back. ")
-;; (setq py-expression-looking-regexp "[^ =:#\t\r\n\f)]")
+;; (setq py-expression-looking-regexp "[^ =#\t\r\n\f)]")
 
-(defvar py-not-expression-regexp "[ .=:#\t\r\n\f)]"
+(defvar py-not-expression-regexp "[ .=#\t\r\n\f)]+"
   "py-expression assumes chars indicated probably will not compose a py-expression. ")
-;; (setq py-not-expression-regexp "[ .=:#\t\r\n\f)]")
+;; (setq py-not-expression-regexp "[ .=#\t\r\n\f)]+")
 
-(defvar py-partial-expression-skip-regexp "^ .()[]{}=:#\t\r\n\f"
+(defvar py-not-expression-chars " .=#\t\r\n\f"
+  "py-expression assumes chars indicated probably will not compose a py-expression. ")
+;; (setq py-not-expression-chars "[ .=#\t\r\n\f)]+")
+
+(defvar py-partial-expression-skip-chars "^ .()[]{}=:#\t\r\n\f"
   "py-partial-expression assumes chars indicated possible composing a py-partial-expression, skip it. ")
-;; (setq py-partial-expression-skip-regexp "^ .(){}=:#\t\r\n\f")
+;; (setq py-partial-expression-skip-chars "^ .(){}=:#\t\r\n\f")
 
-(defvar py-partial-expression-forward-regexp "^ .)}=:#\t\r\n\f"
+(defvar py-partial-expression-forward-regexp "[^ .()}=:#\t\r\n\f]"
   "py-partial-expression assumes chars indicated possible composing a py-partial-expression, skip it. ")
 
-(defvar py-partial-expression-backward-regexp "^ .({=:#\t\r\n\f"
-  "py-partial-expression assumes chars indicated possible composing a py-partial-expression, skip it. ")
+(setq py-partial-expression-forward-regexp "^ .()}=:#\t\r\n\f")
 
-(defvar py-not-partial-expression-skip-regexp " \\.=:#\t\r\n\f"
+(defvar py-partial-expression-skip-backward-chars "^ .\"(){}[]=:#\t\r\n\f"
+  "py-partial-expression assumes chars indicated possible composing a py-partial-expression, skip it. ")
+;; (setq py-partial-expression-skip-backward-chars "^ .\"(){}\[]=:#\t\r\n\f")
+
+(defvar py-not-partial-expression-skip-chars " \\.=:#\t\r\n\f"
   "py-partial-expression assumes chars indicated may not compose a py-partial-expression, skip it. ")
+;; (setq py-not-partial-expression-skip-chars " )\]\\.=:#\t\r\n\f")
 
-(defvar py-partial-expression-looking-regexp "[^ .=:#\t\r\n\f]"
+(defvar py-partial-expression-looking-regexp "[^ ).=:#\t\r\n\f]"
   "py-partial-expression assumes chars indicated possible composing a py-partial-expression, when looking-at or -back. ")
-;; (setq py-partial-expression-looking-regexp "[^ .=:#\t\r\n\f]")
+;; (setq py-partial-expression-looking-regexp "[^ ).=:#\t\r\n\f]")
 
-(defvar py-not-partial-expression-regexp "[ .=:#\t\r\n\f)]"
+(defvar py-not-partial-expression-regexp "[ ).=:#\t\r\n\f]"
   "py-partial-expression assumes chars indicated probably will not compose a py-partial-expression. ")
 ;; (setq py-not-partial-expression-regexp "[ .=:#\t\r\n\f)]")
+
+(defvar py-operator-regexp "[ \t]*\\(\\.\\|+\\|-\\|*\\|//\\|//\\|&\\|%\\||\\|\\^\\|>>\\|<<\\|<\\|<=\\|>\\|>=\\|==\\|!=\\)[ \t]*"
+  "Matches most of Python operators inclusive whitespaces around.
+
+See also `py-assignment-regexp' ")
+;; (setq py-operator-regexp "[ \t]*\\(+\\|-\\|*\\|//\\|//\\|&\\|%\\||\\|\\^\\|>>\\|<<\\|<\\|<=\\|>\\|>=\\|==\\|!=\\)[ \t]*")
+
+(defvar py-assignment-regexp "[ \t]*=[^=]"
+  "Matches assignment operator inclusive whitespaces around.
+
+See also `py-operator-regexp' ")
+;; (setq  py-assignment-regexp "[ \t]*=[^=]")
+
+(defvar py-delimiter-regexp "\\(,\\|;\\|:\\)[ \t]*"
+  "Delimiting elements of lists or other programming constructs. ")
+;; (setq py-delimiter-regexp "\\(,\\|;\\:\\)[ \t]*")
+
+(defvar py-delimiter-chars ",;."
+  "Chars delimiting elements of lists or other programming constructs. ")
+
+;;;
 
 (defvar py-line-number-offset 0
   "When an exception occurs as a result of py-execute-region, a
@@ -1807,15 +1856,16 @@ Returns `t' if successful. "
 
 (defun py-guess-py-install-directory ()
   "Takes value of user directory aka $HOME
-if `(locate-library \"python-mode\")' is not succesful. "
+if `(locate-library \"python-mode\")' is not succesful.
+
+Used only, if `py-install-directory' is empty. "
   (interactive)
   (let ((erg (file-name-directory (locate-library "python-mode"))))
     (if erg
-        (progn
-          (setq py-install-directory erg)
-          (when (and py-verbose-p (interactive-p)) (message "Setting py-install-directory to: %s" erg)))
+        (setq py-install-directory erg)
       (setq py-install-directory (expand-file-name "~/")))
-    py-install-directory ))
+    (when (and py-verbose-p (interactive-p)) (message "Setting py-install-directory to: %s" py-install-directory))
+    py-install-directory))
 
 (defun py-load-pymacs ()
   "Load Pymacs as delivered with python-mode.el.
@@ -4439,7 +4489,11 @@ Updated on each expansion.")
             (set (make-local-variable 'beginning-of-defun-function) 'py-beginning-of-def-or-class)
             (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class)
             ;; (orgstruct-mode 1)
-            ))
+))
+
+(when py-sexp-function
+  (add-hook 'python-mode-hook
+            (set (make-local-variable 'forward-sexp-function) py-sexp-function)))
 
 (when py-warn-tmp-files-left-p
   (add-hook 'python-mode-hook 'py-warn-tmp-files-left))
