@@ -4493,7 +4493,8 @@ Updated on each expansion.")
 
 (when py-sexp-function
   (add-hook 'python-mode-hook
-            (set (make-local-variable 'forward-sexp-function) py-sexp-function)))
+            (lambda ()
+              (set (make-local-variable 'forward-sexp-function) py-sexp-function))))
 
 (when py-warn-tmp-files-left-p
   (add-hook 'python-mode-hook 'py-warn-tmp-files-left))

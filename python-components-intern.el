@@ -428,7 +428,7 @@ will work.
 
 (defun py-beginning-of-expression-p ()
   "Returns position, if cursor is at the beginning of a expression, nil otherwise. "
-  (interactive) 
+  (interactive)
   (let ((orig (point))
         erg)
     (save-excursion
@@ -532,24 +532,24 @@ will work.
 (defun py-end-of-partial-expression-p ()
   "Returns position, if cursor is at the end of a partial-expression, nil otherwise. "
   (let ((orig (point))
-         erg)
-     (save-excursion
-       (py-beginning-of-partial-expression)
-       (py-end-of-partial-expression)
-       (when (eq orig (point))
-         (setq erg orig))
-       erg)))
+        erg)
+    (save-excursion
+      (py-beginning-of-partial-expression)
+      (py-end-of-partial-expression)
+      (when (eq orig (point))
+        (setq erg orig)))
+    erg))
 
 (defun py-end-of-block-p ()
   "Returns position, if cursor is at the end of a block, nil otherwise. "
   (let ((orig (point))
-         erg)
-     (save-excursion
-       (py-beginning-of-block)
-       (py-end-of-block)
-       (when (eq orig (point))
-         (setq erg orig))
-       erg)))
+        erg)
+    (save-excursion
+      (py-beginning-of-block)
+      (py-end-of-block)
+      (when (eq orig (point))
+        (setq erg orig)))
+    erg))
 
 (defun py-end-of-clause-p ()
   "Returns position, if cursor is at the end of a clause, nil otherwise. "
