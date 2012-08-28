@@ -4961,5 +4961,6 @@ Runs `jython-mode-hook' after `python-mode-hook'."
   (push '("\\.py$" . python-mode) auto-mode-alist))
 
 (provide 'python-components-mode)
+(provide 'python)
 (provide 'python-mode)
 ;;; python-components-mode.el ends here
