@@ -730,8 +730,8 @@ See also `py-execute-region'. "
             (when (looking-at "[^/\n\r]+")
               (replace-match "#! ")))
         (if (string-match (regexp-quote sepchar) erg)
-            (insert (concat "#! " erg "\n\n"))
-          (insert (concat py-shebang-startstring " " erg "\n\n")))))))
+            (insert (concat "#! " erg "\n"))
+          (insert (concat py-shebang-startstring " " erg "\n")))))))
 
 (defun py-insert-execute-directory ()
   (goto-char (point-min))

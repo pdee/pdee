@@ -2195,7 +2195,7 @@ ex")))
   (goto-char 62)
   (sit-for 0.1)
   (assert (string= "except" (ipython-complete)) nil "py-ipython-complete-lp:927136-test #2 lp:1026705 failed"))
-  
+
 
 (defun execute-buffer-ipython-fails-lp:928087-test (&optional arg)
   (interactive "p")
@@ -3013,6 +3013,18 @@ for something:
 (defun py-guess-indent-offset-dont-detect-indent-of-2-lp-1027389-base ()
     (goto-char 109)
     (assert (eq 2 (py-guess-indent-offset)) nil "py-guess-indent-offset-dont-detect-indent-of-2-lp-1027389-test failed"))
+
+(defun complaint-about-non-ASCII-character-lp-1042949-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "# -*- coding: utf-8 -*-
+
+# 11–14
+"))
+  (py-bug-tests-intern 'complaint-about-non-ASCII-character-lp-1042949-base arg teststring)))
+
+(defun complaint-about-non-ASCII-character-lp-1042949-base ()
+  (assert (py-execute-buffer) nil "complaint-about-non-ASCII-character-lp-1042949-test failed"))
+
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

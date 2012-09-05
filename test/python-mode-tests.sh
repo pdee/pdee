@@ -711,6 +711,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-mark-block-misbehave-lp:949310-test) nil \"py-mark-block-misbehave-lp:949310-test not detected as command\")" \
 -eval "(assert (commandp 'py-mark-partial-expression) nil \"py-mark-partial-expression not detected as command\")" \
 -eval "(message \"commandp tests done\")" \
+--funcall complaint-about-non-ASCII-character-lp-1042949-test \
 --funcall py-expression-index-test \
 --funcall py-indent-after-assigment-test \
 --funcall py-execute-buffer-python3-switch-test \
