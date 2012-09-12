@@ -2698,6 +2698,7 @@ os.chmod
   (goto-char 61)
   (py-describe-symbol)
   (set-buffer "*Python-Help*")
+  (goto-char (point-min)) 
   (assert (looking-at "Help on built-in function chmod in os:")  nil "py-describe-symbol-fails-on-modules-lp:919719-test failed"))
 
 (defun indent-region-lp:997958-test (&optional arg)
@@ -2838,7 +2839,7 @@ ex
     (kill-buffer "*Python Completions*"))
   (goto-char 51)
   (ipython-complete)
-  (set-buffer "*Python Completions*")
+  (set-buffer "*IPython Completions*")
   (assert (search-forward "except") nil "completion-fails-in-python-script-r989-lp:1004613-test failed"))
 
 (defun spurious-trailing-whitespace-lp-1008679-test (&optional arg)
@@ -3024,6 +3025,26 @@ for something:
 
 (defun complaint-about-non-ASCII-character-lp-1042949-base ()
   (assert (py-execute-buffer) nil "complaint-about-non-ASCII-character-lp-1042949-test failed"))
+
+
+(defun dont-indent-code-unnecessarily-lp-1048778-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+def foo(a):
+    if a == 1:
+        return 1
+    elif a == 2:
+        if a < 7:
+            return 3
+    elif a == 3
+"))
+  (py-bug-tests-intern 'dont-indent-code-unnecessarily-lp-1048778-base arg teststring)))
+
+(defun dont-indent-code-unnecessarily-lp-1048778-base ()
+    (goto-char 163)
+    (py-electric-colon 1)
+    (assert (eq 4 (current-indentation)) nil "dont-indent-code-unnecessarily-lp-1048778-test failed"))
 
 
 (provide 'py-bug-numbered-tests)

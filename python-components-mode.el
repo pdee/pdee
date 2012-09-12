@@ -271,6 +271,19 @@ Default is nil. "
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-electric-colon-active-p nil
+  "`py-electric-colon' feature.  Default is `nil'. See lp:837065 for discussions. "
+  :type 'boolean
+  :group 'python-mode)
+
+(defcustom py-electric-colon-greedy-p nil
+  "If py-electric-colon should indent to the outmost reasonable level.
+
+If nil, default, it will not move from at any reasonable level. "
+  :type 'boolean
+  :group 'python-mode)
+
+
 (defcustom py-electric-colon-newline-and-indent-p nil
   "If non-nil, `py-electric-colon' will call `newline-and-indent'.  Default is `nil'. "
   :type 'boolean
@@ -4265,14 +4278,14 @@ information etc.  If PROC is non-nil, check the buffer for that process."
 
 The result is what follows `_emacs_out' in the output.
 This is a no-op if `python-check-comint-prompt' returns nil."
-  (python-shell-send-string-no-output string)
-  (let ((proc (py-proc)))
-    (with-current-buffer (process-buffer proc)
-      (when (python-check-comint-prompt proc)
-	(set (make-local-variable 'python-preoutput-result) nil)
-        (accept-process-output proc 5)
-	(prog1 python-preoutput-result
-	  (kill-local-variable 'python-preoutput-result))))))
+  (or (python-shell-send-string-no-output string)
+      (let ((proc (py-proc)))
+        (with-current-buffer (process-buffer proc)
+          (when (python-check-comint-prompt proc)
+            (set (make-local-variable 'python-preoutput-result) nil)
+            (accept-process-output proc 5)
+            (prog1 python-preoutput-result
+              (kill-local-variable 'python-preoutput-result)))))))
 
 (defun python-send-receive (string &optional proc)
   "Send STRING to inferior Python (if any) and return result.
@@ -4286,6 +4299,7 @@ This is a no-op if `python-check-comint-prompt' returns nil."
 	(while (progn
 		 (accept-process-output proc 5)
 		 (null python-preoutput-result)))
+        (setq python-preoutput-result (python-preoutput-filter python-preoutput-result))
 	(prog1 python-preoutput-result
 	  (kill-local-variable 'python-preoutput-result))))))
 

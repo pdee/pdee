@@ -31,17 +31,23 @@ non-electrically.
 
 Electric behavior is inhibited inside a string or
 comment or by universal prefix C-u.
-Default is nil, controlled by `py-electric-colon-active-p'"
+
+Switched by `py-electric-colon-active-p', default is nil
+See also `py-electric-colon-greedy-p' "
   (interactive "*P")
   (cond ((not py-electric-colon-active-p)
          (self-insert-command (prefix-numeric-value arg)))
         ((eq 4 (prefix-numeric-value arg))
          (self-insert-command 1))
-        (t (self-insert-command (prefix-numeric-value arg))
+        (t (if (interactive-p) (self-insert-command (prefix-numeric-value arg))
+             ;; used from dont-indent-code-unnecessarily-lp-1048778-test
+             (insert ":"))
            (unless (py-in-string-or-comment-p)
              (let ((orig (copy-marker (point)))
                    (indent (py-compute-indentation)))
                (unless (or (eq (current-indentation) indent)
+                           (and (not py-electric-colon-greedy-p)
+                                (eq (current-indentation)(save-excursion (py-beginning-of-block)(current-indentation)))) 
                            (and (py-top-level-form-p)(< (current-indentation) indent)))
                  (beginning-of-line)
                  (delete-horizontal-space)

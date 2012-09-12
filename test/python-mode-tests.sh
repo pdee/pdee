@@ -964,10 +964,8 @@ est \
 --funcall dict-error-test \
 --funcall py-execute-region-python3-noswitch-test \
 --funcall usr-bin-python3-shell-complete-test \
---funcall usr-bin-python3.1-shell-complete-test \
 --funcall py-end-of-print-statement-test \
 --funcall py-describe-symbol-fails-on-modules-lp:919719-test \
---funcall py-menu-pyshell-test \
 --funcall completion-fails-in-python-script-r989-lp:1004613-test \
 --funcall py-completion-at-point-test \
 --funcall tqs-list-error-test \
@@ -988,3 +986,4 @@ est \
 --funcall py-beginning-of-expression-test \
 --funcall py-end-of-expression-test \
 --funcall py-partial-expression-test \
+--funcall py-menu-pyshell-test \

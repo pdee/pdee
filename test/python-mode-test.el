@@ -6527,7 +6527,7 @@ print(\"I'm the `py-menu-pyshell-test'\")
 
 (defun py-menu-pyshell-base ()
   (assert (string= "PyShell" (prin1-to-string
-                              (car (nth 1 (cdr (nth 6 python-mode-map))))
+                              (car (nth 1 (cdr (nth 17 python-mode-map))))
                               ;; (car (nth 2 (nth 1 (cdr python-mode-map))))
                               )) nil "py-menu-pyshell-test failed"))
 

@@ -25,7 +25,7 @@
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
-  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-block-re indent)))))
+  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-minor-block-re indent)))))
     erg))
 
 (defun py-end-of-block ()

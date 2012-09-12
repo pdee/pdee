@@ -1161,14 +1161,15 @@ From a programm use macro `py-beginning-of-comment' instead "
 (defun py-go-to-keyword (regexp &optional maxindent)
   "Returns a list, whose car is indentation, cdr position. "
   (let ((orig (point))
-        ;; (origline (py-count-lines))
-        (maxindent maxindent)
+        (maxindent (or maxindent (and (< 0 (current-indentation))(current-indentation))
+                       ;; make maxindent large enough if not set
+                       (* 99 py-indent-offset)))
         (first t)
         done erg cui)
     (while (and (not done) (not (bobp)))
       (py-beginning-of-statement)
       (if (and (looking-at regexp)(if maxindent
-                                      (< (current-indentation) maxindent) t))
+                                      (<= (current-indentation) maxindent) t))
           (progn
             (setq erg (point))
             (setq done t))
