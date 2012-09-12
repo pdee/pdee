@@ -168,7 +168,7 @@ py-electric-comment
 -------------------
 Insert a comment. If starting a comment, indent accordingly.
 
-If a numeric argument ARG is provided, that many colons are inserted
+If a numeric argument ARG is provided, that many "#" are inserted
 non-electrically.
 With C-u "#" electric behavior is inhibited inside a string or comment.
 
