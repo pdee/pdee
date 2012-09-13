@@ -573,30 +573,40 @@ Interactively, prompt for name."
 ;;         printit (\"_emacs_out ()\")
 ;; ")
 
-(defun py-find-function (name)
+(defalias 'py-find-function 'py-find-definition)
+(defun py-find-definition (&optional arg)
   "Find source of definition of function NAME.
 
-Interactively, prompt for name."
-  (interactive
-   (let ((symbol (with-syntax-table py-dotted-expression-syntax-table
-		   (current-word)))
-	 (enable-recursive-minibuffers t))
-     (list (read-string (if symbol
-			    (format "Find location of (default %s): " symbol)
-			  "Find location of: ")
-			nil nil symbol))))
-  (unless python-imports
-    (error "Not called from buffer visiting Python file"))
-  (let* ((loc (py-send-receive (format "emacs.location_of (%S, %s)"
-                                       name python-imports)))
-	 (loc (car (read-from-string loc)))
-	 (file (car loc))
-	 (line (cdr loc)))
-    (unless file (error "Don't know where `%s' is defined" name))
-    (pop-to-buffer (find-file-noselect file))
-    (when (integerp line)
-      (goto-char (point-min))
-      (forward-line (1- line)))))
+Interactively, prompt for name.
+
+Search in current buffer first. "
+  (interactive)
+  (let* ((symbol (or arg
+                     (with-syntax-table py-dotted-expression-syntax-table
+                       (current-word))))
+         ;; (enable-recursive-minibuffers t)
+         (erg (progn (goto-char (point-min))
+                     (when
+                         (re-search-forward (concat "^[ \t]*def " symbol "(") nil t 1))
+                     (forward-char -2)
+                     (point))))
+    (unless erg
+      (setq name (list (read-string (if symbol
+                                        (format "Find location of (default %s): " symbol)
+                                      "Find location of: ")
+                                    nil nil symbol)))
+      (unless python-imports
+        (error "Not called from buffer visiting Python file"))
+      (let* ((loc (py-send-receive (format "emacs.location_of (%S, %s)"
+                                           name python-imports)))
+             (loc (car (read-from-string loc)))
+             (file (car loc))
+             (line (cdr loc)))
+        (unless file (error "Don't know where `%s' is defined" name))
+        (pop-to-buffer (find-file-noselect file))
+        (when (integerp line)
+          (goto-char (point-min))
+          (forward-line (1- line)))))))
 
 (defun py-find-imports ()
   "Find top-level imports, updating `python-imports'.

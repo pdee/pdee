@@ -30,6 +30,8 @@ New in version 6.0.12
   all levels encountered, i.e. at opening `[' `py-expression' would return ['spam', 'eggs', 100, 1234], while one char behind at `''
   it yields `'spam','
 
+- `py-find-definition' also detects non-imported definition in current buffer
+
 
 New in version 6.0.11
 ---------------------

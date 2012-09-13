@@ -2010,11 +2010,13 @@ py-describe-mode
 ----------------
 Dump long form of `python-mode' docs.
 
-py-find-function
-----------------
+py-find-definition
+------------------
 Find source of definition of function NAME.
 
 Interactively, prompt for name.
+
+Search in current buffer first. 
 
 py-update-imports
 -----------------

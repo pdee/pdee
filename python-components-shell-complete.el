@@ -164,7 +164,7 @@ Uses `python-imports' to load modules against which to complete."
     (let ((completions
 	   (condition-case ()
 	       (car (read-from-string
-		     (python-send-receive
+		     (py-send-receive
 		      (format "emacs.complete(%S,%s)"
 			      (substring-no-properties symbol)
 			      python-imports))))
