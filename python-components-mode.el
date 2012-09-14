@@ -1886,36 +1886,29 @@ Used only, if `py-install-directory' is empty. "
 Pymacs has been written by François Pinard and many others.
 See original source: http://pymacs.progiciels-bpi.ca"
   (interactive)
-  (let* ((pyshell (py-choose-shell))
-         (path (getenv "PYTHONPATH"))
-         (py-install-directory (cond ((string= "" py-install-directory)
-                                      (py-guess-py-install-directory))
-                                     (t (py-normalize-directory py-install-directory))))
-         (pymacs-installed-p
-          (ignore-errors (string-match (expand-file-name (concat py-install-directory "Pymacs")) path))))
+  (let ((pyshell (py-choose-shell))
+        (path (getenv "PYTHONPATH"))
+        (py-install-directory (cond ((string= "" py-install-directory)
+                                     (py-guess-py-install-directory))
+                                    (t (py-normalize-directory py-install-directory)))))
     ;; Python side
-    (unless pymacs-installed-p
-      (setenv "PYTHONPATH" (concat
-                            (expand-file-name py-install-directory)
-                            path-separator
-                            (expand-file-name py-install-directory) "completion"
-                            (if path (concat path-separator path)))))
+    ;; If Pymacs has not been loaded before, prepend py-install-directory to
+    ;; PYTHONPATH, so that the Pymacs delivered with python-mode is used.
+    (setenv "PYTHONPATH" (concat
+                          (unless (featurep 'pymacs)
+                            (concat (expand-file-name py-install-directory)
+                                    path-separator))
+                          (expand-file-name py-install-directory) "completion"
+                          (if path (concat path-separator path))))
 
     (if (py-install-directory-check)
         (progn
-          ;; don't interfere with already installed Pymacs
-          (unless (featurep 'pymacs)
-            (load (concat py-install-directory "pymacs.el") nil t))
           (setenv "PYMACS_PYTHON" (if (string-match "IP" pyshell)
                                       "python"
                                     pyshell))
-          (autoload 'pymacs-apply "pymacs")
-          (autoload 'pymacs-call "pymacs")
-          (autoload 'pymacs-eval "pymacs")
-          (autoload 'pymacs-exec "pymacs")
-          (autoload 'pymacs-load "pymacs")
           (require 'pymacs)
-          (load (concat py-install-directory "completion/pycomplete.el") nil t)
+          (add-to-list 'load-path (concat (expand-file-name py-install-directory) "completion"))
+          (require 'pycomplete)
           (add-hook 'python-mode-hook 'py-complete-initialize))
       (error "`py-install-directory' not set, see INSTALL"))))
 

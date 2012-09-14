@@ -275,6 +275,28 @@ or if the dot-expression starts with a variable for which the type is known."
   (py-complete-completions-for-symbol
    (py-complete-enhanced-symbol-before-point)))
 
+(defun py-complete-completion-at-point ()
+  "Return a (start end collection) list, so that this function
+can be used as a hook for completion-at-point-functions."
+  (let ((symbol (py-complete-enhanced-symbol-before-point)))
+    (when (not (string= "" symbol))
+      (let ((completions (py-complete-completions-for-symbol symbol)))
+        (when completions
+          (when (> (length completions) 1)
+            ;; this-command is changed to avoid the following situation:
+            ;; This function is invoked via indent-for-tab-command (because
+            ;; tab-always-indent is complete) and there is a "Complete, but
+            ;; not unique" case (e.g. "for" is completed and the next TAB key
+            ;; press shall display a list with "for", "format"). In such a
+            ;; case, py-indent-line would detect a repeated indentation
+            ;; request and thus change the indentation. The changed
+            ;; indentation would then prevent indent-for-tab-command
+            ;; from calling the completion function.
+            (setq this-command 'py-complete-completion-at-point))
+          (list (- (point) (length (car (last (split-string symbol "\\.")))))
+                (point)
+                completions))))))
+
 (defun py-complete-show (string)
   (display-message-or-buffer string "*PythonHelp*"))
 
@@ -386,6 +408,18 @@ Should be called from python-mode-hook. Keys are set when
     (company-mode t)
     (require 'company-pycomplete)
     (set (make-local-variable 'company-backends)
-         '((company-pycomplete))))))
+         '((company-pycomplete))))
+   ((or py-set-complete-keymap-p py-complete-set-keymap-p)
+    ;; Neither auto-complete-mode nor company are used, but we are allowed
+    ;; to set the keymap. Enable completion with TAB.
+    (if py-complete-function
+        (remove-hook 'completion-at-point-functions
+                     py-complete-function 'local)
+      (remove-hook 'completion-at-point-functions
+                   'py-shell-complete  'local))
+    (add-hook 'completion-at-point-functions
+              'py-complete-completion-at-point nil 'local)
+    (set (make-local-variable 'tab-always-indent) 'complete)
+    (define-key python-mode-map [tab] 'indent-for-tab-command))))
 
 (provide 'pycomplete)
