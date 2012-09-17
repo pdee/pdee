@@ -16,6 +16,7 @@
 ;;
 ;;; Code:
 
+
 (defvar py-test-shebang-list (list "#! /usr/bin/env python" "#! /usr/bin/env ipython" "#! /usr/bin/python" "#! /usr/bin/ipython")
   "Values to test as `py-test-shebang', resp. `py-shell-name'. ")
 
@@ -178,7 +179,8 @@ on."
          py-start-run-py-shell
          proc
          py-prepare-autopair-mode-p
-         py-fontify-shell-buffer-p)
+         py-fontify-shell-buffer-p
+         company-mode)
      (if ,use-find-file
          (find-file (concat (py-normalize-directory py-temp-directory)
                             (replace-regexp-in-string "\\\\" "" (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname)))))
@@ -199,32 +201,6 @@ on."
             (set-process-query-on-exit-flag (get-buffer-process (current-buffer)) nil)
             (kill-process (get-buffer-process (current-buffer))))
        (kill-buffer (current-buffer)))))
-
-(defvar python-mode-teststring "class OrderedDict1(dict):
-    \"\"\"
-    This implementation of a dictionary keeps track of the order
-    in which keys were inserted.
-    \"\"\"
-
-    def __init__(self, d={}):
-        self._keys = d.keys()
-        dict.__init__(self, d)
-
-    def f():
-        \"\"\"
-        class for in 'for in while with blah'
-        \"\"\"
-        if a:
-
-            ar_atpt_python_list_roh = ([
-                'python-expression',
-
-    #     def ar_thingatpt_write_lists (&optional datei):
-            'python-partial-expression',
-            'python-statement',
-            ])
-"
-  "String used for tests by python-mode-test.el")
 
 (defun sexp-commands-lp:328778-test (&optional arg)
   "With ARG greater 1 keep test buffer open.
@@ -643,7 +619,7 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
 (defun hungry-delete-backwards-lp:328853 ()
   (goto-char 421)
   (py-hungry-delete-backwards)
-  (assert (eq 416 (point)) nil "hungry-delete-backwards test failed"))
+  (assert (eq 409 (point)) nil "hungry-delete-backwards-lp:328853-test failed"))
 
 (defun hungry-delete-forward-lp:328853-test (&optional arg)
   "With ARG greater 1 keep test buffer open.
@@ -2698,7 +2674,7 @@ os.chmod
   (goto-char 61)
   (py-describe-symbol)
   (set-buffer "*Python-Help*")
-  (goto-char (point-min)) 
+  (goto-char (point-min))
   (assert (looking-at "Help on built-in function chmod in os:")  nil "py-describe-symbol-fails-on-modules-lp:919719-test failed"))
 
 (defun indent-region-lp:997958-test (&optional arg)
@@ -2820,8 +2796,8 @@ def test_bu():
   (goto-char 86)
   ;; (py-python-script-complete)
   (py-shell-complete)
-  (search-forward "False")
-  (choose-completion)
+  (unless (looking-back "False_")
+    (choose-completion))
   (back-to-indentation)
   (sit-for 0.1)
   (assert (looking-at "numpy.False_") nil "not-that-useful-completion-lp:1003580-test failed"))

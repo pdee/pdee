@@ -592,9 +592,10 @@ To go just beyond the final line of the current statement, use `py-down-statemen
   (interactive)
   (unless (eobp)
     (let ((pps (syntax-ppss))
-          (orig (point))
+          (orig (or orig (point)))
           ;; use by scan-lists
-          parse-sexp-ignore-comments erg stringchar)
+          parse-sexp-ignore-comments
+          erg stringchar)
       (cond
        ((and (not done) (< 0 (skip-chars-forward " \t\r\n\f")))
         (skip-chars-forward "^;" (line-end-position))
@@ -678,11 +679,17 @@ To go just beyond the final line of the current statement, use `py-down-statemen
         (py-beginning-of-comment)
         (skip-chars-backward " \t\r\n\f")
         (setq done t)
+        (py-end-of-statement orig done))
+       ((bolp)
+        (end-of-line)
+        (py-beginning-of-comment)
+        (skip-chars-backward " \t\r\n\f")
+        (setq done t)
         (py-end-of-statement orig done)))
       (unless
           (or
            (eq (point) orig)
-           (eq 0 (current-column)))
+           (empty-line-p))
         (setq erg (point)))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))

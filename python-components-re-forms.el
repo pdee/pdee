@@ -59,7 +59,7 @@ Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
   (let* ((orig (point))
-         (erg (py-end-base py-clause-re orig)))
+         (erg (py-end-of-clause-intern py-block-or-clause-re orig)))
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 

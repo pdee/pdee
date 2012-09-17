@@ -283,7 +283,6 @@ If nil, default, it will not move from at any reasonable level. "
   :type 'boolean
   :group 'python-mode)
 
-
 (defcustom py-electric-colon-newline-and-indent-p nil
   "If non-nil, `py-electric-colon' will call `newline-and-indent'.  Default is `nil'. "
   :type 'boolean
@@ -1507,7 +1506,7 @@ set in py-execute-region and used in py-jump-to-exception.")
   (and (boundp 'zmacs-region-stays)
        (setq zmacs-region-stays t)))
 
-;; Constants
+;;; Constants
 (defconst py-blank-or-comment-re "[ \t]*\\($\\|#\\)"
   "Regular expression matching a blank or comment line.")
 
@@ -1576,13 +1575,17 @@ Inludes Python shell-prompt in order to stop further searches. ")
 (defconst py-def-re "[ \t]*\\_<\\(def\\)\\_>[ \n\t]"
   "Matches the beginning of a functions definition. ")
 
-(defconst py-block-or-clause-re "[ \t]*\\_<\\(if\\|else\\|elif\\|while\\|for\\|def\\|class\\|try\\|except\\|finally\\|with\\)\\_>[: \n\t]"
+(defconst py-block-or-clause-re "[ \t]*\\_<\\(if\\|else\\|elif\\|while\\|for\\|try\\|except\\|finally\\|with\\)\\_>[: \n\t]"
   "Matches the beginning of a compound statement or it's clause. ")
+;; (setq py-block-or-clause-re "[ \t]*\\_<\\(if\\|else\\|elif\\|while\\|for\\|try\\|except\\|finally\\|with\\)\\_>[: \n\t]")
 
-(defconst py-clause-re "[ \t]*\\_<\\(if\\|else\\|elif\\|while\\|for\\|def\\|class\\|try\\|except\\|finally\\|with\\)\\_>[: \n\t]"
+(defconst py-extended-block-or-clause-re "[ \t]*\\_<\\(def\\|class\\|if\\|else\\|elif\\|while\\|for\\|try\\|except\\|finally\\|with\\)\\_>[: \n\t]"
+  "Matches the beginning of a compound statement or it's clause.
+Includes def and class. ")
+
+(defconst py-clause-re "[ \t]*\\_<\\(else\\|elif\\|except\\|finally\\)\\_>[: \n\t]"
   "Matches the beginning of a compound statement's clause. ")
-
-(setq py-clause-re "[ \t]*\\_<\\(else\\|elif\\|except\\|finally\\)\\_>[: \n\t]")
+;; (setq py-clause-re "[ \t]*\\_<\\(else\\|elif\\|except\\|finally\\)\\_>[: \n\t]")
 
 (defconst py-elif-re "[ \t]*\\_<\\elif\\_>[: \n\t]"
   "Matches the beginning of a compound if-statement's clause exclusively. ")

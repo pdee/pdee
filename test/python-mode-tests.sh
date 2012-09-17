@@ -711,13 +711,14 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-mark-block-misbehave-lp:949310-test) nil \"py-mark-block-misbehave-lp:949310-test not detected as command\")" \
 -eval "(assert (commandp 'py-mark-partial-expression) nil \"py-mark-partial-expression not detected as command\")" \
 -eval "(message \"commandp tests done\")" \
+--funcall py-end-of-block-or-clause-test \
+--funcall mark-decorators-lp:328851-test \
 --funcall complaint-about-non-ASCII-character-lp-1042949-test \
 --funcall py-expression-index-test \
 --funcall py-indent-after-assigment-test \
 --funcall py-execute-buffer-python3-switch-test \
 --funcall py-execute-buffer-python2-switch-test \
 --funcall py-guess-indent-offset-dont-detect-indent-of-2-lp-1027389-test \
---funcall indent-triplequoted-to-itself-lp:752252-test \
 --funcall split-windows-on-execute-p-test \
 --funcall key-binding-tests \
 --funcall py-narrow-to-defun-lp-1020531-test \
@@ -738,7 +739,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall dq-in-tqs-string-lp:328813-test \
 --funcall py-current-defun-lp:328846-test \
 --funcall cls-pseudo-keyword-lp:328849-test \
---funcall mark-decorators-lp:328851-test \
 --funcall flexible-indentation-lp:328842-test \
 --funcall hungry-delete-backwards-lp:328853-test \
 --funcall hungry-delete-forward-lp:328853-test \
@@ -825,7 +825,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-beginning-of-block-test \
 --funcall py-end-of-block-test \
 --funcall py-beginning-of-block-or-clause-test \
---funcall py-end-of-block-or-clause-test \
 --funcall py-beginning-of-def-test \
 --funcall py-end-of-def-test \
 --funcall py-beginning-of-def-or-class-test \
@@ -833,7 +832,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-electric-delete-test \
 --funcall near-bob-beginning-of-statement-test \
 --funcall honor-comments-indent-test \
---funcall bob-beginning-of-statement-test \
 --funcall first-line-offset-test \
 --funcall assignment-indent-test \
 --funcall if-elif-test \
@@ -967,12 +965,9 @@ est \
 --funcall py-end-of-print-statement-test \
 --funcall py-describe-symbol-fails-on-modules-lp:919719-test \
 --funcall completion-fails-in-python-script-r989-lp:1004613-test \
---funcall py-completion-at-point-test \
 --funcall tqs-list-error-test \
---funcall UnicodeEncodeError-python3-test \
 --funcall python-mode-slow-lp:803275-test \
 --funcall infinite-loop-after-tqs-lp:826044-test \
---funcall not-that-useful-completion-lp:1003580-test \
 --funcall completion-at-gentoo-lp-1008842-test \
 --funcall py-find-imports-lp-1023236-test \
 --funcall execute-indented-code-lp:828314-test \
@@ -987,3 +982,8 @@ est \
 --funcall py-end-of-expression-test \
 --funcall py-partial-expression-test \
 --funcall py-menu-pyshell-test \
+--funcall indent-triplequoted-to-itself-lp:752252-test \
+--funcall py-completion-at-point-test 
+--funcall bob-beginning-of-statement-test \
+--funcall UnicodeEncodeError-python3-test \
+--funcall not-that-useful-completion-lp:1003580-test \

@@ -416,35 +416,12 @@
             ar_atpt_python_list_roh = ([
                 'python-expression',
 
-    #     def ar_thingatpt_write_lists (&optional datei):
+            # def ar_thingatpt_write_lists (&optional datei):
             'python-partial-expression',
             'python-statement',
             ])
 "
   "String used for tests by python-mode-test.el")
-
-;;;
-
-;; (defun index-menu-test (&optional arg load-branch-function)
-;;   (interactive "p")
-;;   (let ((teststring (concat py-test-shebang
-;; # -*- coding: utf-8 -*-
-;;
-;; class OrderedDict1(dict):
-;;     \"\"\"
-;;     This implementation of a dictionary keeps track of the order
-;;     in which keys were inserted.
-;;     \"\"\"
-;;
-;;     def __init__(self, d={}):
-;;         self._keys = d.keys()
-;;         dict.__init__(self, d)
-;; "))
-;;   (when load-branch-function (funcall load-branch-function))
-;;   (py-bug-tests-intern 'index-menu-base arg teststring)))
-
-;; (defun index-menu-base ()
-;;   (assert (string= "IM-Python" (nth 2 (nth 2 (cadr (current-local-map))))) nil "index-menu-test failed"))
 
 (defun py-beginning-of-block-test (&optional arg load-branch-function)
   (interactive "p")
@@ -458,13 +435,42 @@
 
 (defun py-end-of-block-test (&optional arg load-branch-function)
   (interactive "p")
-  (let ((teststring python-mode-teststring))
+  (let ((teststring "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def __init__(self, d={}):
+        self._keys = d.keys()
+        dict.__init__(self, d)
+
+    def f():
+        \"\"\"
+        class for in 'for in while with blah'
+        \"\"\"
+        if foo:
+
+            ar_atpt_python_list_roh = ([
+                'python-expression',
+
+            # def ar_thingatpt_write_lists (&optional datei):
+            'python-partial-expression',
+            'python-statement',
+            ])
+
+        elif bar:
+            pass
+        else:
+            pass
+ "))
     (py-bug-tests-intern 'py-end-of-block-base arg teststring)))
 
 (defun py-end-of-block-base ()
-  (py-beginning-of-block)
-  (py-end-of-block)
-  (assert (eq (point) 556) nil "py-end-of-block-test failed"))
+  (goto-char 326)
+  (assert (eq 562 (py-end-of-clause)) nil "py-end-of-block-test failed")
+  (assert (eq 598 (py-end-of-clause)) nil "py-end-of-block-test failed")
+  (assert (eq 629 (py-end-of-block)) nil "py-end-of-block-test failed"))
 
 (defun py-beginning-of-block-or-clause-test (&optional arg load-branch-function)
   (interactive "p")
@@ -484,7 +490,7 @@
 (defun py-end-of-block-or-clause-base ()
   (py-beginning-of-block-or-clause)
   (py-end-of-block-or-clause)
-  (assert (eq (point) 556) nil "py-end-of-block-or-clause-test failed"))
+  (assert (eq (point) 560) nil "py-end-of-block-or-clause-test failed"))
 
 (defun py-beginning-of-def-test (&optional arg load-branch-function)
   (interactive "p")
@@ -504,7 +510,7 @@
 (defun py-end-of-def-base ()
   (py-beginning-of-def)
   (py-end-of-def)
-  (assert (eq (point) 556) nil "py-end-of-def-test failed")
+  (assert (eq (point) 560) nil "py-end-of-def-test failed")
   )
 
 (defun py-beginning-of-def-or-class-test (&optional arg load-branch-function)
@@ -526,7 +532,7 @@
   (assert (eq 1 (py-beginning-of-def-or-class '(4))) nil "py-end-of-def-or-class-test #2 failed")
   (goto-char 201)
   (save-excursion (assert (eq 232 (py-end-of-def-or-class)) nil "py-end-of-def-or-class-test #3 failed"))
-  (assert (eq 556 (py-end-of-def-or-class '(4))) nil "py-end-of-def-or-class-test #4 failed"))
+  (assert (eq 560 (py-end-of-def-or-class '(4))) nil "py-end-of-def-or-class-test #4 failed"))
 
 (defun py-electric-backspace-test (&optional arg load-branch-function)
   (interactive "p")
@@ -6659,9 +6665,7 @@ import sys, os; os.remove('do/something/nasty') # lp:1025000
   (assert (eq 75 (point)) nil "py-end-of-statement-test #2 failed")
   (goto-char 99)
   (py-end-of-statement)
-  (assert (eq 130 (point)) nil "py-end-of-statement-test #3 failed")
-  (py-end-of-statement)
-  (assert (eq 163 (point)) nil "py-end-of-statement-test #4 failed")
+  (assert (eq 163 (point)) nil "py-end-of-statement-test #3 failed")
   )
 
 (defun key-binding-tests (&optional arg)
