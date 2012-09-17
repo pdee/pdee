@@ -410,15 +410,6 @@ Should be called from python-mode-hook. Keys are set when
     (set (make-local-variable 'company-backends)
          '((company-pycomplete))))
    ((or py-set-complete-keymap-p py-complete-set-keymap-p)
-    ;; Neither auto-complete-mode nor company are used, but we are allowed
-    ;; to set the keymap. Enable completion with TAB.
-    (if py-complete-function
-        (remove-hook 'completion-at-point-functions
-                     py-complete-function 'local)
-      (remove-hook 'completion-at-point-functions
-                   'py-shell-complete  'local))
-    (add-hook 'completion-at-point-functions
-              'py-complete-completion-at-point nil 'local)
     (set (make-local-variable 'tab-always-indent) 'complete)
     (define-key python-mode-map [tab] 'indent-for-tab-command))))
 

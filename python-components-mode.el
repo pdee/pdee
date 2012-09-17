@@ -4637,11 +4637,16 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
                               #'autopair-python-triple-quote-action)))))
   (when py-trailing-whitespace-smart-delete-p
     (add-hook 'before-save-hook 'delete-trailing-whitespace nil 'local))
-  (if py-complete-function
-      (add-hook 'completion-at-point-functions
-                py-complete-function nil 'local)
+  (cond
+   (py-complete-function
     (add-hook 'completion-at-point-functions
-              'py-shell-complete nil 'local))
+              py-complete-function nil 'local))
+   (py-load-pymacs-p
+    (add-hook 'completion-at-point-functions
+              'py-complete-completion-at-point nil 'local))
+   (t
+    (add-hook 'completion-at-point-functions
+              'py-shell-complete nil 'local)))
   (when (and py-imenu-create-index-p (fboundp 'imenu-add-to-menubar)(ignore-errors (require 'imenu)))
     (setq imenu-create-index-function #'py-imenu-create-index-new)
     (imenu-add-to-menubar "PyIndex"))
