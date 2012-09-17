@@ -1353,7 +1353,7 @@ else:
   :safe 'stringp)
 
 (defcustom python-shell-completion-string-code
-  "';'.join(__COMPLETER_all_completions('''%s'''))\n"
+  "';'.join(__COMPLETER_all_completions('''%s'''))"
   "Python code used to get a string of completions separated by semicolons."
   :type 'string
   :group 'python-mode
@@ -1369,7 +1369,7 @@ from IPython.core.completerlib import module_completion
 
 and use the following as the value of this variable:
 
-';'.join(module_completion('''%s'''))\n"
+';'.join(module_completion('''%s'''))"
   :type 'string
   :group 'python-mode
   :safe 'stringp)

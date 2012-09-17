@@ -50,11 +50,6 @@ python-shell-send-buffer
 ------------------------
 Send the entire buffer to inferior Python process.
 
-python-shell-send-defun
------------------------
-Send the current defun to inferior Python process.
-When argument ARG is non-nil sends the innermost defun.
-
 python-shell-send-file
 ----------------------
 Send FILE-NAME to inferior Python PROCESS.
@@ -717,10 +712,6 @@ class C(B):
 
 Returns the string inserted. 
 
-py-nesting-level
-----------------
-Accepts the output of `parse-partial-sexp'. 
-
 py-compute-indentation
 ----------------------
 Compute Python indentation.
@@ -764,6 +755,10 @@ Result is useful for booleans too: (when (py-in-statement-p)...)
 will work.
 
 
+py-beginning-of-expression-p
+----------------------------
+Returns position, if cursor is at the beginning of a expression, nil otherwise. 
+
 py-statement-opens-block-p
 --------------------------
 Return position if the current statement opens a block
@@ -790,6 +785,12 @@ Return `t' if the statement opens a functions or class definition, nil otherwise
 py-statement-opens-def-or-class-p
 ---------------------------------
 Return `t' if the statement opens a functions or class definition, nil otherwise. 
+
+py-look-downward-for-clause
+---------------------------
+If beginning of other clause exists downward in current block.
+
+If succesful return position. 
 
 py-current-defun
 ----------------
@@ -963,6 +964,8 @@ py-beginning-of-expression
 --------------------------
 Go to the beginning of a compound python expression.
 
+With numeric ARG do it that many times.
+
 A a compound python expression might be concatenated by "." operator, thus composed by minor python expressions.
 
 If already at the beginning or before a expression, go to next expression in buffer upwards
@@ -975,6 +978,8 @@ py-end-of-expression
 --------------------
 Go to the end of a compound python expression.
 
+With numeric ARG do it that many times.
+
 A a compound python expression might be concatenated by "." operator, thus composed by minor python expressions.
 
 Expression here is conceived as the syntactical component of a statement in Python. See http://docs.python.org/reference
@@ -985,6 +990,8 @@ py-beginning-of-partial-expression
 ----------------------------------
 Go to the beginning of a minor python expression.
 
+With numeric ARG do it that many times.
+
 "." operators delimit a minor expression on their level.
 Expression here is conceived as the syntactical component of a statement in Python. See http://docs.python.org/reference
 Operators however are left aside resp. limit py-expression designed for edit-purposes.
@@ -994,6 +1001,8 @@ If already at the beginning or before a partial-expression, go to next partial-e
 py-end-of-partial-expression
 ----------------------------
 Go to the end of a minor python expression.
+
+With numeric ARG do it that many times.
 
 "." operators delimit a minor expression on their level.
 Expression here is conceived as the syntactical component of a statement in Python. See http://docs.python.org/reference
@@ -1117,7 +1126,8 @@ py-copy-expression
 ------------------
 Mark expression at point.
 
-Returns beginning and end positions of marked area, a cons. 
+Returns beginning and end positions of marked area, a cons.
+See also py-partial-expression. 
 
 py-copy-partial-expression
 --------------------------
@@ -1152,7 +1162,7 @@ def usage():
 while `py-expression' would copy and return
 
 (
-        os.path.basename(sys.argv[0]))
+ os.path.basename(sys.argv[0]))
 
 ;;;;;
 
@@ -1268,7 +1278,7 @@ py-go-to-beginning-of-comment
 -----------------------------
 Go to the beginning of current line's comment, if any.
 
-From a programm use `py-beginning-of-comment' instead 
+From a programm use macro `py-beginning-of-comment' instead 
 
 py-leave-comment-or-string-backward
 -----------------------------------
@@ -1356,9 +1366,9 @@ Returns indentation if block-or-clause found, nil otherwise.
 
 py-down-def
 -----------
-Go to the beginning of next def below in buffer.
+Go to the beginning of next function definition below in buffer.
 
-Returns indentation if def found, nil otherwise. 
+Returns indentation if found, nil otherwise. 
 
 py-down-class
 -------------
@@ -2078,33 +2088,16 @@ Return class definition as string.
 
 With interactive call, send it to the message buffer too. 
 
-py-line-at-point
-----------------
-Return line as string.
-  With interactive call, send it to the message buffer too. 
-
-py-looking-at-keywords-p
-------------------------
-If looking at a python keyword. Returns t or nil. 
-
-py-match-paren-mode
--------------------
-py-match-paren-mode nil oder t
-
 py-match-paren
 --------------
-Goto to the opening or closing of block before or after point.
+Go to the matching brace, bracket or parenthesis if on its counterpart.
 
-With arg, do it that many times.
- Closes unclosed block if jumping from beginning. 
+Otherwise insert the character, the key is assigned to, here `%'.
+With universal arg  insert a `%'. 
 
 py-printform-insert
 -------------------
 Inserts a print statement out of current `(car kill-ring)' by default, inserts ARG instead if delivered. 
-
-py-documentation
-----------------
-Launch PyDOC on the Word at Point
 
 eva
 ---
@@ -2233,12 +2226,6 @@ Make sure, `py-split-windows-on-execute-p' is off.
 
 Returns value of `py-split-windows-on-execute-p'. 
 
-clear-flymake-allowed-file-name-masks
--------------------------------------
-Remove entries with SUFFIX from `flymake-allowed-file-name-masks'.
-
-Default is "\.py\'" 
-
 pylint-flymake-mode
 -------------------
 Toggle `pylint' `flymake-mode'. 
@@ -2355,17 +2342,6 @@ py-version
 ----------
 Echo the current version of `python-mode' in the minibuffer.
 
-py-install-search-local
------------------------
-
-
-py-install-local-shells
------------------------
-Builds Python-shell commands from executable found in LOCAL.
-
-If LOCAL is empty, shell-command `find' searches beneath current directory.
-Eval resulting buffer to install it, see customizable `py-extensions'. 
-
 py-send-region
 --------------
 Send the region to the inferior Python process.
@@ -2427,15 +2403,6 @@ Complete the python symbol before point.
 
 If no completion available, insert a TAB.
 Returns the completed symbol, a string, if successful, nil otherwise. 
-
-ipython-complete-py-shell-name
-------------------------------
-Complete the python symbol before point.
-
-If no completion available, insert a TAB.
-Returns the completed symbol, a string, if successful, nil otherwise.
-
-Bug: if no IPython-shell is running, fails first time due to header returned, which messes up the result. Please repeat once then. 
 
 py-pep8-run
 -----------
@@ -2517,13 +2484,13 @@ Send statement at point to Python interpreter.
 
 py-execute-statement-python-switch
 ----------------------------------
-Send statement at point to Python interpreter.
+Send statement at point to Python interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-statement-python-noswitch
 ------------------------------------
-Send statement at point to Python interpreter.
+Send statement at point to Python interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -2541,13 +2508,13 @@ Send statement at point to IPython interpreter.
 
 py-execute-statement-ipython-switch
 -----------------------------------
-Send statement at point to IPython interpreter.
+Send statement at point to IPython interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-statement-ipython-noswitch
 -------------------------------------
-Send statement at point to IPython interpreter.
+Send statement at point to IPython interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -2565,13 +2532,13 @@ Send statement at point to Python3 interpreter.
 
 py-execute-statement-python3-switch
 -----------------------------------
-Send statement at point to Python3 interpreter.
+Send statement at point to Python3 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-statement-python3-noswitch
 -------------------------------------
-Send statement at point to Python3 interpreter.
+Send statement at point to Python3 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -2589,13 +2556,13 @@ Send statement at point to Python2 interpreter.
 
 py-execute-statement-python2-switch
 -----------------------------------
-Send statement at point to Python2 interpreter.
+Send statement at point to Python2 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-statement-python2-noswitch
 -------------------------------------
-Send statement at point to Python2 interpreter.
+Send statement at point to Python2 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -2613,13 +2580,13 @@ Send statement at point to Python2.7 interpreter.
 
 py-execute-statement-python2\.7-switch
 --------------------------------------
-Send statement at point to Python2.7 interpreter.
+Send statement at point to Python2.7 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-statement-python2\.7-noswitch
 ----------------------------------------
-Send statement at point to Python2.7 interpreter.
+Send statement at point to Python2.7 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -2637,13 +2604,13 @@ Send statement at point to Jython interpreter.
 
 py-execute-statement-jython-switch
 ----------------------------------
-Send statement at point to Jython interpreter.
+Send statement at point to Jython interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-statement-jython-noswitch
 ------------------------------------
-Send statement at point to Jython interpreter.
+Send statement at point to Jython interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -2661,13 +2628,13 @@ Send statement at point to Python3.2 interpreter.
 
 py-execute-statement-python3\.2-switch
 --------------------------------------
-Send statement at point to Python3.2 interpreter.
+Send statement at point to Python3.2 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-statement-python3\.2-noswitch
 ----------------------------------------
-Send statement at point to Python3.2 interpreter.
+Send statement at point to Python3.2 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -2685,13 +2652,13 @@ Send block at point to Python interpreter.
 
 py-execute-block-python-switch
 ------------------------------
-Send block at point to Python interpreter.
+Send block at point to Python interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-block-python-noswitch
 --------------------------------
-Send block at point to Python interpreter.
+Send block at point to Python interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -2709,13 +2676,13 @@ Send block at point to IPython interpreter.
 
 py-execute-block-ipython-switch
 -------------------------------
-Send block at point to IPython interpreter.
+Send block at point to IPython interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-block-ipython-noswitch
 ---------------------------------
-Send block at point to IPython interpreter.
+Send block at point to IPython interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -2733,13 +2700,13 @@ Send block at point to Python3 interpreter.
 
 py-execute-block-python3-switch
 -------------------------------
-Send block at point to Python3 interpreter.
+Send block at point to Python3 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-block-python3-noswitch
 ---------------------------------
-Send block at point to Python3 interpreter.
+Send block at point to Python3 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -2757,13 +2724,13 @@ Send block at point to Python2 interpreter.
 
 py-execute-block-python2-switch
 -------------------------------
-Send block at point to Python2 interpreter.
+Send block at point to Python2 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-block-python2-noswitch
 ---------------------------------
-Send block at point to Python2 interpreter.
+Send block at point to Python2 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -2781,13 +2748,13 @@ Send block at point to Python2.7 interpreter.
 
 py-execute-block-python2\.7-switch
 ----------------------------------
-Send block at point to Python2.7 interpreter.
+Send block at point to Python2.7 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-block-python2\.7-noswitch
 ------------------------------------
-Send block at point to Python2.7 interpreter.
+Send block at point to Python2.7 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -2805,13 +2772,13 @@ Send block at point to Jython interpreter.
 
 py-execute-block-jython-switch
 ------------------------------
-Send block at point to Jython interpreter.
+Send block at point to Jython interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-block-jython-noswitch
 --------------------------------
-Send block at point to Jython interpreter.
+Send block at point to Jython interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -2829,13 +2796,13 @@ Send block at point to Python3.2 interpreter.
 
 py-execute-block-python3\.2-switch
 ----------------------------------
-Send block at point to Python3.2 interpreter.
+Send block at point to Python3.2 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-block-python3\.2-noswitch
 ------------------------------------
-Send block at point to Python3.2 interpreter.
+Send block at point to Python3.2 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -2853,13 +2820,13 @@ Send clause at point to Python interpreter.
 
 py-execute-clause-python-switch
 -------------------------------
-Send clause at point to Python interpreter.
+Send clause at point to Python interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-clause-python-noswitch
 ---------------------------------
-Send clause at point to Python interpreter.
+Send clause at point to Python interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -2877,13 +2844,13 @@ Send clause at point to IPython interpreter.
 
 py-execute-clause-ipython-switch
 --------------------------------
-Send clause at point to IPython interpreter.
+Send clause at point to IPython interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-clause-ipython-noswitch
 ----------------------------------
-Send clause at point to IPython interpreter.
+Send clause at point to IPython interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -2901,13 +2868,13 @@ Send clause at point to Python3 interpreter.
 
 py-execute-clause-python3-switch
 --------------------------------
-Send clause at point to Python3 interpreter.
+Send clause at point to Python3 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-clause-python3-noswitch
 ----------------------------------
-Send clause at point to Python3 interpreter.
+Send clause at point to Python3 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -2925,13 +2892,13 @@ Send clause at point to Python2 interpreter.
 
 py-execute-clause-python2-switch
 --------------------------------
-Send clause at point to Python2 interpreter.
+Send clause at point to Python2 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-clause-python2-noswitch
 ----------------------------------
-Send clause at point to Python2 interpreter.
+Send clause at point to Python2 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -2949,13 +2916,13 @@ Send clause at point to Python2.7 interpreter.
 
 py-execute-clause-python2\.7-switch
 -----------------------------------
-Send clause at point to Python2.7 interpreter.
+Send clause at point to Python2.7 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-clause-python2\.7-noswitch
 -------------------------------------
-Send clause at point to Python2.7 interpreter.
+Send clause at point to Python2.7 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -2973,13 +2940,13 @@ Send clause at point to Jython interpreter.
 
 py-execute-clause-jython-switch
 -------------------------------
-Send clause at point to Jython interpreter.
+Send clause at point to Jython interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-clause-jython-noswitch
 ---------------------------------
-Send clause at point to Jython interpreter.
+Send clause at point to Jython interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -2997,13 +2964,13 @@ Send clause at point to Python3.2 interpreter.
 
 py-execute-clause-python3\.2-switch
 -----------------------------------
-Send clause at point to Python3.2 interpreter.
+Send clause at point to Python3.2 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-clause-python3\.2-noswitch
 -------------------------------------
-Send clause at point to Python3.2 interpreter.
+Send clause at point to Python3.2 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3021,13 +2988,13 @@ Send block-or-clause at point to Python interpreter.
 
 py-execute-block-or-clause-python-switch
 ----------------------------------------
-Send block-or-clause at point to Python interpreter.
+Send block-or-clause at point to Python interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-block-or-clause-python-noswitch
 ------------------------------------------
-Send block-or-clause at point to Python interpreter.
+Send block-or-clause at point to Python interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3045,13 +3012,13 @@ Send block-or-clause at point to IPython interpreter.
 
 py-execute-block-or-clause-ipython-switch
 -----------------------------------------
-Send block-or-clause at point to IPython interpreter.
+Send block-or-clause at point to IPython interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-block-or-clause-ipython-noswitch
 -------------------------------------------
-Send block-or-clause at point to IPython interpreter.
+Send block-or-clause at point to IPython interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3069,13 +3036,13 @@ Send block-or-clause at point to Python3 interpreter.
 
 py-execute-block-or-clause-python3-switch
 -----------------------------------------
-Send block-or-clause at point to Python3 interpreter.
+Send block-or-clause at point to Python3 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-block-or-clause-python3-noswitch
 -------------------------------------------
-Send block-or-clause at point to Python3 interpreter.
+Send block-or-clause at point to Python3 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3093,13 +3060,13 @@ Send block-or-clause at point to Python2 interpreter.
 
 py-execute-block-or-clause-python2-switch
 -----------------------------------------
-Send block-or-clause at point to Python2 interpreter.
+Send block-or-clause at point to Python2 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-block-or-clause-python2-noswitch
 -------------------------------------------
-Send block-or-clause at point to Python2 interpreter.
+Send block-or-clause at point to Python2 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3117,13 +3084,13 @@ Send block-or-clause at point to Python2.7 interpreter.
 
 py-execute-block-or-clause-python2\.7-switch
 --------------------------------------------
-Send block-or-clause at point to Python2.7 interpreter.
+Send block-or-clause at point to Python2.7 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-block-or-clause-python2\.7-noswitch
 ----------------------------------------------
-Send block-or-clause at point to Python2.7 interpreter.
+Send block-or-clause at point to Python2.7 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3141,13 +3108,13 @@ Send block-or-clause at point to Jython interpreter.
 
 py-execute-block-or-clause-jython-switch
 ----------------------------------------
-Send block-or-clause at point to Jython interpreter.
+Send block-or-clause at point to Jython interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-block-or-clause-jython-noswitch
 ------------------------------------------
-Send block-or-clause at point to Jython interpreter.
+Send block-or-clause at point to Jython interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3165,13 +3132,13 @@ Send block-or-clause at point to Python3.2 interpreter.
 
 py-execute-block-or-clause-python3\.2-switch
 --------------------------------------------
-Send block-or-clause at point to Python3.2 interpreter.
+Send block-or-clause at point to Python3.2 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-block-or-clause-python3\.2-noswitch
 ----------------------------------------------
-Send block-or-clause at point to Python3.2 interpreter.
+Send block-or-clause at point to Python3.2 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3189,13 +3156,13 @@ Send def at point to Python interpreter.
 
 py-execute-def-python-switch
 ----------------------------
-Send def at point to Python interpreter.
+Send def at point to Python interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-def-python-noswitch
 ------------------------------
-Send def at point to Python interpreter.
+Send def at point to Python interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3213,13 +3180,13 @@ Send def at point to IPython interpreter.
 
 py-execute-def-ipython-switch
 -----------------------------
-Send def at point to IPython interpreter.
+Send def at point to IPython interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-def-ipython-noswitch
 -------------------------------
-Send def at point to IPython interpreter.
+Send def at point to IPython interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3237,13 +3204,13 @@ Send def at point to Python3 interpreter.
 
 py-execute-def-python3-switch
 -----------------------------
-Send def at point to Python3 interpreter.
+Send def at point to Python3 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-def-python3-noswitch
 -------------------------------
-Send def at point to Python3 interpreter.
+Send def at point to Python3 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3261,13 +3228,13 @@ Send def at point to Python2 interpreter.
 
 py-execute-def-python2-switch
 -----------------------------
-Send def at point to Python2 interpreter.
+Send def at point to Python2 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-def-python2-noswitch
 -------------------------------
-Send def at point to Python2 interpreter.
+Send def at point to Python2 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3285,13 +3252,13 @@ Send def at point to Python2.7 interpreter.
 
 py-execute-def-python2\.7-switch
 --------------------------------
-Send def at point to Python2.7 interpreter.
+Send def at point to Python2.7 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-def-python2\.7-noswitch
 ----------------------------------
-Send def at point to Python2.7 interpreter.
+Send def at point to Python2.7 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3309,13 +3276,13 @@ Send def at point to Jython interpreter.
 
 py-execute-def-jython-switch
 ----------------------------
-Send def at point to Jython interpreter.
+Send def at point to Jython interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-def-jython-noswitch
 ------------------------------
-Send def at point to Jython interpreter.
+Send def at point to Jython interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3333,13 +3300,13 @@ Send def at point to Python3.2 interpreter.
 
 py-execute-def-python3\.2-switch
 --------------------------------
-Send def at point to Python3.2 interpreter.
+Send def at point to Python3.2 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-def-python3\.2-noswitch
 ----------------------------------
-Send def at point to Python3.2 interpreter.
+Send def at point to Python3.2 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3357,13 +3324,13 @@ Send class at point to Python interpreter.
 
 py-execute-class-python-switch
 ------------------------------
-Send class at point to Python interpreter.
+Send class at point to Python interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-class-python-noswitch
 --------------------------------
-Send class at point to Python interpreter.
+Send class at point to Python interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3381,13 +3348,13 @@ Send class at point to IPython interpreter.
 
 py-execute-class-ipython-switch
 -------------------------------
-Send class at point to IPython interpreter.
+Send class at point to IPython interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-class-ipython-noswitch
 ---------------------------------
-Send class at point to IPython interpreter.
+Send class at point to IPython interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3405,13 +3372,13 @@ Send class at point to Python3 interpreter.
 
 py-execute-class-python3-switch
 -------------------------------
-Send class at point to Python3 interpreter.
+Send class at point to Python3 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-class-python3-noswitch
 ---------------------------------
-Send class at point to Python3 interpreter.
+Send class at point to Python3 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3429,13 +3396,13 @@ Send class at point to Python2 interpreter.
 
 py-execute-class-python2-switch
 -------------------------------
-Send class at point to Python2 interpreter.
+Send class at point to Python2 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-class-python2-noswitch
 ---------------------------------
-Send class at point to Python2 interpreter.
+Send class at point to Python2 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3453,13 +3420,13 @@ Send class at point to Python2.7 interpreter.
 
 py-execute-class-python2\.7-switch
 ----------------------------------
-Send class at point to Python2.7 interpreter.
+Send class at point to Python2.7 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-class-python2\.7-noswitch
 ------------------------------------
-Send class at point to Python2.7 interpreter.
+Send class at point to Python2.7 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3477,13 +3444,13 @@ Send class at point to Jython interpreter.
 
 py-execute-class-jython-switch
 ------------------------------
-Send class at point to Jython interpreter.
+Send class at point to Jython interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-class-jython-noswitch
 --------------------------------
-Send class at point to Jython interpreter.
+Send class at point to Jython interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3501,13 +3468,13 @@ Send class at point to Python3.2 interpreter.
 
 py-execute-class-python3\.2-switch
 ----------------------------------
-Send class at point to Python3.2 interpreter.
+Send class at point to Python3.2 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-class-python3\.2-noswitch
 ------------------------------------
-Send class at point to Python3.2 interpreter.
+Send class at point to Python3.2 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3525,13 +3492,13 @@ Send region at point to Python interpreter.
 
 py-execute-region-python-switch
 -------------------------------
-Send region at point to Python interpreter.
+Send region at point to Python interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-region-python-noswitch
 ---------------------------------
-Send region at point to Python interpreter.
+Send region at point to Python interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3549,13 +3516,13 @@ Send region at point to IPython interpreter.
 
 py-execute-region-ipython-switch
 --------------------------------
-Send region at point to IPython interpreter.
+Send region at point to IPython interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-region-ipython-noswitch
 ----------------------------------
-Send region at point to IPython interpreter.
+Send region at point to IPython interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3573,13 +3540,13 @@ Send region at point to Python3 interpreter.
 
 py-execute-region-python3-switch
 --------------------------------
-Send region at point to Python3 interpreter.
+Send region at point to Python3 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-region-python3-noswitch
 ----------------------------------
-Send region at point to Python3 interpreter.
+Send region at point to Python3 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3597,13 +3564,13 @@ Send region at point to Python2 interpreter.
 
 py-execute-region-python2-switch
 --------------------------------
-Send region at point to Python2 interpreter.
+Send region at point to Python2 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-region-python2-noswitch
 ----------------------------------
-Send region at point to Python2 interpreter.
+Send region at point to Python2 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3621,13 +3588,13 @@ Send region at point to Python2.7 interpreter.
 
 py-execute-region-python2\.7-switch
 -----------------------------------
-Send region at point to Python2.7 interpreter.
+Send region at point to Python2.7 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-region-python2\.7-noswitch
 -------------------------------------
-Send region at point to Python2.7 interpreter.
+Send region at point to Python2.7 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3645,13 +3612,13 @@ Send region at point to Jython interpreter.
 
 py-execute-region-jython-switch
 -------------------------------
-Send region at point to Jython interpreter.
+Send region at point to Jython interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-region-jython-noswitch
 ---------------------------------
-Send region at point to Jython interpreter.
+Send region at point to Jython interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3669,13 +3636,13 @@ Send region at point to Python3.2 interpreter.
 
 py-execute-region-python3\.2-switch
 -----------------------------------
-Send region at point to Python3.2 interpreter.
+Send region at point to Python3.2 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-region-python3\.2-noswitch
 -------------------------------------
-Send region at point to Python3.2 interpreter.
+Send region at point to Python3.2 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3693,13 +3660,13 @@ Send buffer at point to Python interpreter.
 
 py-execute-buffer-python-switch
 -------------------------------
-Send buffer at point to Python interpreter.
+Send buffer at point to Python interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-buffer-python-noswitch
 ---------------------------------
-Send buffer at point to Python interpreter.
+Send buffer at point to Python interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3717,13 +3684,13 @@ Send buffer at point to IPython interpreter.
 
 py-execute-buffer-ipython-switch
 --------------------------------
-Send buffer at point to IPython interpreter.
+Send buffer at point to IPython interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-buffer-ipython-noswitch
 ----------------------------------
-Send buffer at point to IPython interpreter.
+Send buffer at point to IPython interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3741,13 +3708,13 @@ Send buffer at point to Python3 interpreter.
 
 py-execute-buffer-python3-switch
 --------------------------------
-Send buffer at point to Python3 interpreter.
+Send buffer at point to Python3 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-buffer-python3-noswitch
 ----------------------------------
-Send buffer at point to Python3 interpreter.
+Send buffer at point to Python3 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3765,13 +3732,13 @@ Send buffer at point to Python2 interpreter.
 
 py-execute-buffer-python2-switch
 --------------------------------
-Send buffer at point to Python2 interpreter.
+Send buffer at point to Python2 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-buffer-python2-noswitch
 ----------------------------------
-Send buffer at point to Python2 interpreter.
+Send buffer at point to Python2 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3789,13 +3756,13 @@ Send buffer at point to Python2.7 interpreter.
 
 py-execute-buffer-python2\.7-switch
 -----------------------------------
-Send buffer at point to Python2.7 interpreter.
+Send buffer at point to Python2.7 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-buffer-python2\.7-noswitch
 -------------------------------------
-Send buffer at point to Python2.7 interpreter.
+Send buffer at point to Python2.7 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3813,13 +3780,13 @@ Send buffer at point to Jython interpreter.
 
 py-execute-buffer-jython-switch
 -------------------------------
-Send buffer at point to Jython interpreter.
+Send buffer at point to Jython interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-buffer-jython-noswitch
 ---------------------------------
-Send buffer at point to Jython interpreter.
+Send buffer at point to Jython interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3837,13 +3804,13 @@ Send buffer at point to Python3.2 interpreter.
 
 py-execute-buffer-python3\.2-switch
 -----------------------------------
-Send buffer at point to Python3.2 interpreter.
+Send buffer at point to Python3.2 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-buffer-python3\.2-noswitch
 -------------------------------------
-Send buffer at point to Python3.2 interpreter.
+Send buffer at point to Python3.2 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3861,13 +3828,13 @@ Send expression at point to Python interpreter.
 
 py-execute-expression-python-switch
 -----------------------------------
-Send expression at point to Python interpreter.
+Send expression at point to Python interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-expression-python-noswitch
 -------------------------------------
-Send expression at point to Python interpreter.
+Send expression at point to Python interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3885,13 +3852,13 @@ Send expression at point to IPython interpreter.
 
 py-execute-expression-ipython-switch
 ------------------------------------
-Send expression at point to IPython interpreter.
+Send expression at point to IPython interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-expression-ipython-noswitch
 --------------------------------------
-Send expression at point to IPython interpreter.
+Send expression at point to IPython interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3909,13 +3876,13 @@ Send expression at point to Python3 interpreter.
 
 py-execute-expression-python3-switch
 ------------------------------------
-Send expression at point to Python3 interpreter.
+Send expression at point to Python3 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-expression-python3-noswitch
 --------------------------------------
-Send expression at point to Python3 interpreter.
+Send expression at point to Python3 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3933,13 +3900,13 @@ Send expression at point to Python2 interpreter.
 
 py-execute-expression-python2-switch
 ------------------------------------
-Send expression at point to Python2 interpreter.
+Send expression at point to Python2 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-expression-python2-noswitch
 --------------------------------------
-Send expression at point to Python2 interpreter.
+Send expression at point to Python2 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3957,13 +3924,13 @@ Send expression at point to Python2.7 interpreter.
 
 py-execute-expression-python2\.7-switch
 ---------------------------------------
-Send expression at point to Python2.7 interpreter.
+Send expression at point to Python2.7 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-expression-python2\.7-noswitch
 -----------------------------------------
-Send expression at point to Python2.7 interpreter.
+Send expression at point to Python2.7 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -3981,13 +3948,13 @@ Send expression at point to Jython interpreter.
 
 py-execute-expression-jython-switch
 -----------------------------------
-Send expression at point to Jython interpreter.
+Send expression at point to Jython interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-expression-jython-noswitch
 -------------------------------------
-Send expression at point to Jython interpreter.
+Send expression at point to Jython interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -4005,13 +3972,13 @@ Send expression at point to Python3.2 interpreter.
 
 py-execute-expression-python3\.2-switch
 ---------------------------------------
-Send expression at point to Python3.2 interpreter.
+Send expression at point to Python3.2 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-expression-python3\.2-noswitch
 -----------------------------------------
-Send expression at point to Python3.2 interpreter.
+Send expression at point to Python3.2 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -4029,13 +3996,13 @@ Send partial-expression at point to Python interpreter.
 
 py-execute-partial-expression-python-switch
 -------------------------------------------
-Send partial-expression at point to Python interpreter.
+Send partial-expression at point to Python interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-partial-expression-python-noswitch
 ---------------------------------------------
-Send partial-expression at point to Python interpreter.
+Send partial-expression at point to Python interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -4053,13 +4020,13 @@ Send partial-expression at point to IPython interpreter.
 
 py-execute-partial-expression-ipython-switch
 --------------------------------------------
-Send partial-expression at point to IPython interpreter.
+Send partial-expression at point to IPython interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-partial-expression-ipython-noswitch
 ----------------------------------------------
-Send partial-expression at point to IPython interpreter.
+Send partial-expression at point to IPython interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -4077,13 +4044,13 @@ Send partial-expression at point to Python3 interpreter.
 
 py-execute-partial-expression-python3-switch
 --------------------------------------------
-Send partial-expression at point to Python3 interpreter.
+Send partial-expression at point to Python3 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-partial-expression-python3-noswitch
 ----------------------------------------------
-Send partial-expression at point to Python3 interpreter.
+Send partial-expression at point to Python3 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -4101,13 +4068,13 @@ Send partial-expression at point to Python2 interpreter.
 
 py-execute-partial-expression-python2-switch
 --------------------------------------------
-Send partial-expression at point to Python2 interpreter.
+Send partial-expression at point to Python2 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-partial-expression-python2-noswitch
 ----------------------------------------------
-Send partial-expression at point to Python2 interpreter.
+Send partial-expression at point to Python2 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -4125,13 +4092,13 @@ Send partial-expression at point to Python2.7 interpreter.
 
 py-execute-partial-expression-python2\.7-switch
 -----------------------------------------------
-Send partial-expression at point to Python2.7 interpreter.
+Send partial-expression at point to Python2.7 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-partial-expression-python2\.7-noswitch
 -------------------------------------------------
-Send partial-expression at point to Python2.7 interpreter.
+Send partial-expression at point to Python2.7 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -4149,13 +4116,13 @@ Send partial-expression at point to Jython interpreter.
 
 py-execute-partial-expression-jython-switch
 -------------------------------------------
-Send partial-expression at point to Jython interpreter.
+Send partial-expression at point to Jython interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-partial-expression-jython-noswitch
 ---------------------------------------------
-Send partial-expression at point to Jython interpreter.
+Send partial-expression at point to Jython interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -4173,13 +4140,13 @@ Send partial-expression at point to Python3.2 interpreter.
 
 py-execute-partial-expression-python3\.2-switch
 -----------------------------------------------
-Send partial-expression at point to Python3.2 interpreter.
+Send partial-expression at point to Python3.2 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-partial-expression-python3\.2-noswitch
 -------------------------------------------------
-Send partial-expression at point to Python3.2 interpreter.
+Send partial-expression at point to Python3.2 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -4197,13 +4164,13 @@ Send line at point to Python interpreter.
 
 py-execute-line-python-switch
 -----------------------------
-Send line at point to Python interpreter.
+Send line at point to Python interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-line-python-noswitch
 -------------------------------
-Send line at point to Python interpreter.
+Send line at point to Python interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -4221,13 +4188,13 @@ Send line at point to IPython interpreter.
 
 py-execute-line-ipython-switch
 ------------------------------
-Send line at point to IPython interpreter.
+Send line at point to IPython interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-line-ipython-noswitch
 --------------------------------
-Send line at point to IPython interpreter.
+Send line at point to IPython interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -4245,13 +4212,13 @@ Send line at point to Python3 interpreter.
 
 py-execute-line-python3-switch
 ------------------------------
-Send line at point to Python3 interpreter.
+Send line at point to Python3 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-line-python3-noswitch
 --------------------------------
-Send line at point to Python3 interpreter.
+Send line at point to Python3 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -4269,13 +4236,13 @@ Send line at point to Python2 interpreter.
 
 py-execute-line-python2-switch
 ------------------------------
-Send line at point to Python2 interpreter.
+Send line at point to Python2 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-line-python2-noswitch
 --------------------------------
-Send line at point to Python2 interpreter.
+Send line at point to Python2 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -4293,13 +4260,13 @@ Send line at point to Python2.7 interpreter.
 
 py-execute-line-python2\.7-switch
 ---------------------------------
-Send line at point to Python2.7 interpreter.
+Send line at point to Python2.7 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-line-python2\.7-noswitch
 -----------------------------------
-Send line at point to Python2.7 interpreter.
+Send line at point to Python2.7 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -4317,13 +4284,13 @@ Send line at point to Jython interpreter.
 
 py-execute-line-jython-switch
 -----------------------------
-Send line at point to Jython interpreter.
+Send line at point to Jython interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-line-jython-noswitch
 -------------------------------
-Send line at point to Jython interpreter.
+Send line at point to Jython interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
@@ -4341,13 +4308,13 @@ Send line at point to Python3.2 interpreter.
 
 py-execute-line-python3\.2-switch
 ---------------------------------
-Send line at point to Python3.2 interpreter.
+Send line at point to Python3.2 interpreter. 
 
 Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. 
 
 py-execute-line-python3\.2-noswitch
 -----------------------------------
-Send line at point to Python3.2 interpreter.
+Send line at point to Python3.2 interpreter. 
 
 Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' 
 
