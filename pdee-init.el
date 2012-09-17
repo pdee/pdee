@@ -23,27 +23,26 @@
   :group 'pdee)
 
 (defcustom pdee-load-all nil
-  "Load all the pdee libraries at initialization, default is nil. "
+  "Load all the pdee libraries at initialization, default is nil.
+
+This variable has no effect at the moment. "
   :type 'boolean
   :group 'pdee)
 
 (defcustom pdee-default-mode 'pdee
-  "Which python-mode should be loaded at start. "
-  :type '(choice
-  (const :tag "fgallina" fgallina)
-  (const :tag "gnu" gnu)
-  (const :tag "loveshack" loveshack)
-  (const :tag "pdee" pdee)
-  (const :tag "python-mode-el" python-mode-el)
-  (const :tag "xemacs-lp-python-mode" xemacs-lp-python-mode)
-  (const :tag "xemacs-mode-shipped" xemacs-mode-shipped))
-  :group 'pdee)
+  "Which python-mode should be loaded at start.
 
-(defvar py-install-directory (concat (expand-file-name pdee-install-dir)  "python-modes/"  (prin1-to-string pdee-default-mode) "/")
+Actuallly only components-python-mode branch is implemented.
+components-python-mode is the development-branch of python-mode.el "
+  :type '(choice
+  (const :tag "pdee" pdee)
+  :group 'pdee))
+
+(defvar py-install-directory (expand-file-name pdee-install-dir)
   "The directory, where core python-modes for choice reside. ")
 
-(setq py-install-directory (concat (expand-file-name pdee-install-dir)  "python-modes/"  (prin1-to-string pdee-default-mode) "/"))
-
+;; py-install-directory might be set by python-mode.el already
+(setq py-install-directory (expand-file-name pdee-install-dir))
 
 ;; Adding paths to the variable load-path
 (dolist (relpath '(""
@@ -72,32 +71,22 @@
   "Select a python-mode to use. See `pdee-default-mode' for available choices.
 
 Then set `py-install-directory', load the needed python(-mode).el
-When called without arguments, default mode is switched on. "
+When called without arguments, default mode is switched on.
+
+Actuallly there is just one branch
+"
   (interactive "P")
   (let ((branch (if (eq 4 (prefix-numeric-value branch))
                     (read-from-minibuffer "pdee-default-mode: " pdee-default-mode)
                   (or branch (prin1-to-string pdee-default-mode)))))
-    (unless (string-match ".+/$" branch)    
+    (unless (string-match ".+/$" branch)
       (setq branch (concat branch "/")))
-    (setq py-install-directory (concat pdee-install-dir "python-modes/" branch))
+    (setq py-install-directory pdee-install-dir)
     (add-to-list 'load-path py-install-directory)
-    (cond ((eq pdee-default-mode 'pdee)
-           (load (concat py-install-directory "python-components-mode.el")))
-          ((eq pdee-default-mode 'fgallina)
-           (load (concat py-install-directory "python.el")))
-          ((eq pdee-default-mode 'gnu)
-           (load (concat py-install-directory "python.el")))
-          ((eq pdee-default-mode 'loveshack)
-           (load (concat py-install-directory "python.el")))
-          ((eq pdee-default-mode 'python-mode-el)
-           (load (concat py-install-directory "python-mode.el")))
-          ((eq pdee-default-mode 'xemacs-lp-python-mode)
-           (load (concat py-install-directory "python-mode.el")))
-          ((eq pdee-default-mode 'xemacs-mode-shipped)
-           (load (concat py-install-directory "python-mode.el"))))))
+    (load (concat py-install-directory "python-components-mode.el"))))
 
 (when (ignore-errors pdee-install-dir)
-(add-to-list 'load-path pdee-install-dir))
+  (add-to-list 'load-path pdee-install-dir))
 
 (when pdee-unload-first
   (when (featurep 'ipython) (unload-feature 'ipython t))
@@ -107,13 +96,26 @@ When called without arguments, default mode is switched on. "
   (unload-python-components))
 
 
-(if pdee-load-all
+(when pdee-load-all
+  (require 'open-next-line)
   (require 'pdee-completion)
   (require 'pdee-editing)
-)
+  (require 'pymacs (concat pdee-install-dir "extensions/pymacs.el")))
 
-;;; Pymacs
-(require 'pymacs (concat pdee-install-dir "extensions/pymacs.el"))
+(defun pdee-load-all ()
+  (interactive)
+  (dolist (relpath '(""
+                     "extensions/"
+                     "extensions/yasnippet"
+                     "extensions/auto-complete"
+                     "extensions/eproject"))
+    (add-to-list 'load-path (concat pdee-install-dir relpath)))
+  (load (concat pdee-install-dir "python-components-mode.el"))
+  (require 'open-next-line)
+  (require 'pdee-completion)
+  (require 'pdee-editing)
+  (require 'pymacs (concat pdee-install-dir "extensions/pymacs.el"))
+  )
 
 (defun setup-ropemacs ()
   "Setup the ropemacs harness"
@@ -146,8 +148,11 @@ When called without arguments, default mode is switched on. "
   )
 
 ;;; Ipython integration
+; this is  deliverd py python-mode already
 (defun pdee-setup-ipython ()
-  "Setup ipython integration with python-mode"
+  "Setup ipython integration is already delivered by python-mode.
+
+You should not need to call this command. "
   (interactive)
   (setq
    python-shell-interpreter "ipython"
@@ -195,7 +200,7 @@ The CMDLINE should be something like:
   )
 
 ;; Python or python mode?
-(eval-after-load 'python
+(eval-after-load 'python-mode
   '(progn
      ;;==================================================
      ;; Ropemacs Configuration
