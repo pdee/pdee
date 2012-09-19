@@ -1376,6 +1376,12 @@ and use the following as the value of this variable:
 
 (defvar python-completion-original-window-configuration nil)
 
+(defcustom py-imenu-create-index-function 'py-imenu-create-index-new
+  "Switch between `py-imenu-create-index-new', which also lists modules variables,  and series 5. index-machine"
+  :type '(choice (const :tag "'py-imenu-create-index-new, also lists modules variables " py-imenu-create-index-new)
+                 (const :tag "py-imenu-create-index, series 5. index-machine" py-imenu-create-index-function))
+  :group 'python-mode)
+
 ;; ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ;; NO USER DEFINABLE VARIABLES BEYOND THIS POINT
 (defvar python-mode-syntax-table nil
@@ -2462,6 +2468,11 @@ Complete (qualified) symbol before point"]
             ["Find function" py-find-function
              :help "`py-find-function'
 Try to find source definition of function at point"]
+
+            ["Switch index-function" py-switch-imenu-index-function
+             :help "`py-switch-imenu-index-function'
+Switch between `py-imenu-create-index' from 5.1 series and `py-imenu-create-index-new'."]
+
             ["Update imports" py-update-imports
              :help "`py-update-imports'
 Update list of top-level imports for completion"]
@@ -4536,8 +4547,6 @@ Updated on each expansion.")
                 (skip-chars-backward " \t\n"))
               nil))
 
-(setq imenu-generic-expression 'py-imenu-generic-regexp)
-
 ;; Fixme: This should inherit some stuff from `python-mode', but I'm
 ;; not sure how much: at least some keybindings, like C-c C-f;
 ;; syntax?; font-locking, e.g. for triple-quoted strings?
@@ -4648,14 +4657,14 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
     (add-hook 'completion-at-point-functions
               'py-shell-complete nil 'local)))
   (when (and py-imenu-create-index-p (fboundp 'imenu-add-to-menubar)(ignore-errors (require 'imenu)))
-    (setq imenu-create-index-function #'py-imenu-create-index-new)
+    (set (make-local-variable 'imenu-create-index-function) 'py-imenu-create-index-function)
     (imenu-add-to-menubar "PyIndex"))
   ;; (when py-imenu-create-index-p (imenu-add-to-menubar "PyIndex"))
 
   ;; Now guess `py-indent-offset'
 
   ;; add the menu
-  (if py-menu
+  (when py-menu
       (easy-menu-add py-menu))
   (when py-hide-show-minor-mode-p (hs-minor-mode 1))
   ;; (py-send-string "import emacs")

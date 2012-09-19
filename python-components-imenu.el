@@ -93,21 +93,23 @@ alternative for finding the index.")
 (defvar py-imenu-generic-parens nil)
 
 (defun py-switch-imenu-index-function ()
-  "For development only. Good old renamed `py-imenu-create-index'-function hangs with medium size files already. Working `py-imenu-create-index-new' is active by default.
-
-Switch between classic index machine `py-imenu-create-index'-function and new `py-imenu-create-index-new'.
-
-The former may provide a more detailed report, thus delivering two different index-machines is considered. "
+  "Switch between series 5. index machine `py-imenu-create-index' and `py-imenu-create-index-new', which also lists modules variables "
   (interactive)
   (if (eq major-mode 'python-mode)
       (progn
-        (if (eq imenu-create-index-function 'py-imenu-create-index-new)
-            (setq imenu-create-index-function #'py-imenu-create-index)
-          (setq imenu-create-index-function #'py-imenu-create-index-new))
-        (when (interactive-p) (message "imenu-create-index-function: %s" (prin1-to-string imenu-create-index-function))))
+        (if (eq py-imenu-create-index-function 'py-imenu-create-index-new)
+            ;; (setq py-imenu-create-index-function 'py-imenu-create-index)
+            (set (make-local-variable 'py-imenu-create-index-function) 'py-imenu-create-index)
+          ;; (setq py-imenu-create-index-function 'py-imenu-create-index-new)
+          (set (make-local-variable 'py-imenu-create-index-function) 'py-imenu-create-index-new))
+        (when py-menu
+          (easy-menu-add py-menu))
+        (when py-verbose-p (message "imenu-create-index-function: %s" (prin1-to-string py-imenu-create-index-function)))
+        (funcall imenu-create-index-function))
     (error "%s" "Only available in buffers set to python-mode")))
 
-(defun py-imenu-create-index-function ()
+(defalias 'py-imenu-create-index-function 'py-imenu-create-index)
+(defun py-imenu-create-index ()
   "Python interface function for the Imenu package.
 Finds all Python classes and functions/methods. Calls function
 \\[py-imenu-create-index-engine].  See that function for the details

@@ -6882,5 +6882,19 @@ foo "))
     (assert (looking-at "..") nil "py-smart-operator-test \"py-smart-operator-.\" failed")
     (when py-verbose-p (message "%s" "py-smart-operator-test passed"))))
 
+
+(defun py-switch-imenu-index-function-test (&optional arg)
+  (interactive "p")
+  (let ((teststring python-mode-teststring))
+  (py-bug-tests-intern 'py-switch-imenu-index-function-base arg teststring)))
+
+(defun py-switch-imenu-index-function-base ()
+  (assert (listp imenu--index-alist) nil "py-switch-imenu-index-function-test failed")
+  (assert (py-switch-imenu-index-function) nil "py-switch-imenu-index-function-test failed")
+  (assert (listp imenu--index-alist) nil "py-switch-imenu-index-function-test failed"))
+
+
+
+;; imenu--subalist-p
 (provide 'python-mode-test)
 ;;; python-mode-test.el ends here

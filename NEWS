@@ -32,6 +32,10 @@ New in version 6.0.12
 
 - `py-find-definition' also detects non-imported definition in current buffer
 
+- Choice between `py-imenu-create-index-new' and series 5. 
+  py-imenu-create-index-function made easier.
+  Customizable variable `py-imenu-create-index-function' provided, see also
+  command in PyTools
 
 New in version 6.0.11
 ---------------------

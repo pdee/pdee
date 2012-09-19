@@ -3022,6 +3022,5 @@ def foo(a):
     (py-electric-colon 1)
     (assert (eq 4 (current-indentation)) nil "dont-indent-code-unnecessarily-lp-1048778-test failed"))
 
-
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
