@@ -526,13 +526,19 @@ http://docs.python.org/reference/compound_stmts.html
           (done done)
           erg)
       (cond
-       ((empty-line-p)
-        (skip-chars-backward " \t\r\n\f")
+       ((or (empty-line-p)(nth 8 pps))
+        ;; when travelling large sections of empty or comment lines
+        ;; recursive calls might run into `max-specpdl-size' error
+        (while (and (not (bobp)) (or (empty-line-p)(setq this (nth 8 (syntax-ppss)))))
+          (if (empty-line-p)
+              (skip-chars-backward " \t\r\n\f")
+            (when this
+              (goto-char (1- this)))))
         (py-beginning-of-statement orig done))
-       ((nth 8 pps)
-        (goto-char (1- (nth 8 pps)))
-        ;; (setq done t)
-        (py-beginning-of-statement orig done))
+       ;; (py-beginning-of-statement orig done))
+       ;; ((nth 8 pps)
+       ;; (goto-char (1- (nth 8 pps)))
+       ;; (py-beginning-of-statement orig done))
        ((nth 1 pps)
         (goto-char (1- (nth 1 pps)))
         (setq done t)
