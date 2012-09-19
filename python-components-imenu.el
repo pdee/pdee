@@ -294,34 +294,5 @@ of the first definition found."
     (goto-char orig)
     index-alist))
 
-(defun py-imenu-create-index-before (&optional beg end)
-  "`imenu-create-index-function' for Python. "
-  (set (make-local-variable 'imenu-max-items) 99)
-  (let ((orig (point))
-        (beg (or beg (point-min)))
-        (end (or end (point-max)))
-        index-alist vars thisend sublist classname)
-    (goto-char beg)
-    (while (and (re-search-forward "^[ \t]*\\(?:\\(def\\|class\\)\\)[ \t]+\\(?:\\(\\sw+\\)\\)" end t 1)(not (nth 8 (syntax-ppss))))
-      (if (save-match-data (string= "class" (match-string-no-properties 1)))
-          (py-imenu-create-index-new-intern)
-        (let ((pos (match-beginning 0))
-              (name (match-string-no-properties 2)))
-          (push (cons name pos) index-alist))))
-    ;; Look for module variables.
-    (goto-char (point-min))
-    (while (re-search-forward "^\\(\\sw+\\)[ \t]*=" end t)
-      (unless (nth 8 (syntax-ppss))
-        (let ((pos (match-beginning 1))
-              (name (match-string-no-properties 1)))
-          (push (cons name pos) vars))))
-    (setq index-alist (nreverse index-alist))
-    (when vars
-      (push (cons "Module variables"
-                  (nreverse vars))
-            index-alist))
-    (goto-char orig)
-    index-alist))
-
 (provide 'python-components-imenu)
 ;;; python-components-imenu.el ends here

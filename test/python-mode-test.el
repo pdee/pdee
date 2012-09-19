@@ -31,7 +31,7 @@
        'py-smart-operator-test
        'key-binding-tests
        'py-end-of-statement-test
-       'py-compute-indentation-with-test
+       'py-compute-indentation-test
        'py-end-of-def-inline-comment-test
        'before-inline-comment-test
        'toggle-force-py-shell-name-p-test
@@ -6628,7 +6628,7 @@ def fooBaz( bar ):  # version 2003/9/7
   (py-end-of-def-or-class)
   (assert (eq 311 (point)) nil "py-end-of-def-inline-comment-test failed"))
 
-(defun py-compute-indentation-with-test (&optional arg)
+(defun py-compute-indentation-test (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
 # -\*- coding: utf-8 -\*-
@@ -6636,14 +6636,16 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     for i in range(anzahl):
         bar.dosomething()
         datei.write(str(baz[i]) + \"\\n\")
-"))
-    (py-bug-tests-intern 'py-compute-indentation-with-base arg teststring)))
 
-(defun py-compute-indentation-with-base ()
+def foo()
+"))
+    (py-bug-tests-intern 'py-compute-indentation-base arg teststring)))
+
+(defun py-compute-indentation-base ()
   (goto-char 99)
-  (assert (eq 4 (py-compute-indentation)) nil "py-compute-indentation-with-test #1 failed")
+  (assert (eq 4 (py-compute-indentation)) nil "py-compute-indentation-test #1 failed")
   (goto-char 127)
-  (assert (eq 8 (py-compute-indentation)) nil "py-compute-indentation-with-test #2 failed"))
+  (assert (eq 8 (py-compute-indentation)) nil "py-compute-indentation-test #2 failed"))
 
 (defun py-end-of-statement-test (&optional arg)
   (interactive "p")
