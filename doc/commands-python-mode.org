@@ -721,7 +721,7 @@ http://docs.python.org/reference/compound_stmts.html
 * py-end-of-statement
    Go to the last char of current statement.
 
-To go just beyond the final line of the current statement, use `py-down-statement-lc'. 
+To go just beyond the final line of the current statement, use `py-down-statement-bol'. 
 * py-goto-statement-below
    Goto beginning of next statement. 
 * py-mark-paragraph
@@ -902,46 +902,205 @@ From a programm use `py-beginning-of-comment' instead
    Go to the beginning of a list.
 Optional ARG indicates a start-position for `parse-partial-sexp'.
 Return beginning position, nil if not inside.
-* py-down-block-lc
+* py-beginning-of-block-bol-p
+   Returns position, if cursor is at the beginning of block, at beginning of line, nil otherwise. 
+* py-beginning-of-block-bol
+   Goto beginning of line where block starts.
+  Returns position reached, if successful, nil otherwise.
+
+See also `py-up-block': up from current definition to next beginning of block above. 
+* py-end-of-block-bol
    Goto beginning of line following end of block.
-
-Returns position reached, if successful, nil otherwise.
-
-"-lc" stands for "left-corner" - a complementary command travelling left, whilst `py-end-of-block' stops at right corner.
+  Returns position reached, if successful, nil otherwise.
 
 See also `py-down-block': down from current definition to next beginning of block below. 
-* py-down-clause-lc
+* py-mark-block-bol
+   Mark block, take beginning of line positions.
+
+Returns beginning and end positions of region, a cons. 
+* py-copy-block-bol
+   Delete block bol at point.
+
+Stores data in kill ring. Might be yanked back using `C-y'. 
+* py-kill-block-bol
+   Delete block bol at point.
+
+Stores data in kill ring. Might be yanked back using `C-y'. 
+* py-delete-block-bol
+   Delete block bol at point.
+
+Don't store data in kill ring. 
+* py-beginning-of-clause-bol-p
+   Returns position, if cursor is at the beginning of clause, at beginning of line, nil otherwise. 
+* py-beginning-of-clause-bol
+   Goto beginning of line where clause starts.
+  Returns position reached, if successful, nil otherwise.
+
+See also `py-up-clause': up from current definition to next beginning of clause above. 
+* py-end-of-clause-bol
    Goto beginning of line following end of clause.
-
-Returns position reached, if successful, nil otherwise.
-
-"-lc" stands for "left-corner" - a complementary command travelling left, whilst `py-end-of-clause' stops at right corner.
+  Returns position reached, if successful, nil otherwise.
 
 See also `py-down-clause': down from current definition to next beginning of clause below. 
-* py-down-def-lc
+* py-mark-clause-bol
+   Mark clause, take beginning of line positions.
+
+Returns beginning and end positions of region, a cons. 
+* py-copy-clause-bol
+   Delete clause bol at point.
+
+Stores data in kill ring. Might be yanked back using `C-y'. 
+* py-kill-clause-bol
+   Delete clause bol at point.
+
+Stores data in kill ring. Might be yanked back using `C-y'. 
+* py-delete-clause-bol
+   Delete clause bol at point.
+
+Don't store data in kill ring. 
+* py-beginning-of-block-or-clause-bol-p
+   Returns position, if cursor is at the beginning of block-or-clause, at beginning of line, nil otherwise. 
+* py-beginning-of-block-or-clause-bol
+   Goto beginning of line where block-or-clause starts.
+  Returns position reached, if successful, nil otherwise.
+
+See also `py-up-block-or-clause': up from current definition to next beginning of block-or-clause above. 
+* py-end-of-block-or-clause-bol
+   Goto beginning of line following end of block-or-clause.
+  Returns position reached, if successful, nil otherwise.
+
+See also `py-down-block-or-clause': down from current definition to next beginning of block-or-clause below. 
+* py-mark-block-or-clause-bol
+   Mark block-or-clause, take beginning of line positions.
+
+Returns beginning and end positions of region, a cons. 
+* py-copy-block-or-clause-bol
+   Delete block-or-clause bol at point.
+
+Stores data in kill ring. Might be yanked back using `C-y'. 
+* py-kill-block-or-clause-bol
+   Delete block-or-clause bol at point.
+
+Stores data in kill ring. Might be yanked back using `C-y'. 
+* py-delete-block-or-clause-bol
+   Delete block-or-clause bol at point.
+
+Don't store data in kill ring. 
+* py-beginning-of-def-bol-p
+   Returns position, if cursor is at the beginning of def, at beginning of line, nil otherwise. 
+* py-beginning-of-def-bol
+   Goto beginning of line where def starts.
+  Returns position reached, if successful, nil otherwise.
+
+See also `py-up-def': up from current definition to next beginning of def above. 
+* py-end-of-def-bol
    Goto beginning of line following end of def.
-
-Returns position reached, if successful, nil otherwise.
-
-"-lc" stands for "left-corner" - a complementary command travelling left, whilst `py-end-of-def' stops at right corner.
+  Returns position reached, if successful, nil otherwise.
 
 See also `py-down-def': down from current definition to next beginning of def below. 
-* py-down-class-lc
+* py-mark-def-bol
+   Mark def, take beginning of line positions.
+
+With M-x universal argument or `py-mark-decorators' set to `t', decorators are marked too.
+Returns beginning and end positions of region, a cons. 
+* py-copy-def-bol
+   Delete def bol at point.
+
+Stores data in kill ring. Might be yanked back using `C-y'. 
+* py-kill-def-bol
+   Delete def bol at point.
+
+Stores data in kill ring. Might be yanked back using `C-y'. 
+* py-delete-def-bol
+   Delete def bol at point.
+
+Don't store data in kill ring. 
+* py-beginning-of-class-bol-p
+   Returns position, if cursor is at the beginning of class, at beginning of line, nil otherwise. 
+* py-beginning-of-class-bol
+   Goto beginning of line where class starts.
+  Returns position reached, if successful, nil otherwise.
+
+See also `py-up-class': up from current definition to next beginning of class above. 
+* py-end-of-class-bol
    Goto beginning of line following end of class.
-
-Returns position reached, if successful, nil otherwise.
-
-"-lc" stands for "left-corner" - a complementary command travelling left, whilst `py-end-of-class' stops at right corner.
+  Returns position reached, if successful, nil otherwise.
 
 See also `py-down-class': down from current definition to next beginning of class below. 
-* py-down-statement-lc
+* py-mark-class-bol
+   Mark class, take beginning of line positions.
+
+With M-x universal argument or `py-mark-decorators' set to `t', decorators are marked too.
+Returns beginning and end positions of region, a cons. 
+* py-copy-class-bol
+   Delete class bol at point.
+
+Stores data in kill ring. Might be yanked back using `C-y'. 
+* py-kill-class-bol
+   Delete class bol at point.
+
+Stores data in kill ring. Might be yanked back using `C-y'. 
+* py-delete-class-bol
+   Delete class bol at point.
+
+Don't store data in kill ring. 
+* py-beginning-of-def-or-class-bol-p
+   Returns position, if cursor is at the beginning of def-or-class, at beginning of line, nil otherwise. 
+* py-beginning-of-def-or-class-bol
+   Goto beginning of line where def-or-class starts.
+  Returns position reached, if successful, nil otherwise.
+
+See also `py-up-def-or-class': up from current definition to next beginning of def-or-class above. 
+* py-end-of-def-or-class-bol
+   Goto beginning of line following end of def-or-class.
+  Returns position reached, if successful, nil otherwise.
+
+See also `py-down-def-or-class': down from current definition to next beginning of def-or-class below. 
+* py-mark-def-or-class-bol
+   Mark def-or-class, take beginning of line positions.
+
+With M-x universal argument or `py-mark-decorators' set to `t', decorators are marked too.
+Returns beginning and end positions of region, a cons. 
+* py-copy-def-or-class-bol
+   Delete def-or-class bol at point.
+
+Stores data in kill ring. Might be yanked back using `C-y'. 
+* py-kill-def-or-class-bol
+   Delete def-or-class bol at point.
+
+Stores data in kill ring. Might be yanked back using `C-y'. 
+* py-delete-def-or-class-bol
+   Delete def-or-class bol at point.
+
+Don't store data in kill ring. 
+* py-beginning-of-statement-bol-p
+   Returns position, if cursor is at the beginning of statement, at beginning of line, nil otherwise. 
+* py-beginning-of-statement-bol
+   Goto beginning of line where statement starts.
+  Returns position reached, if successful, nil otherwise.
+
+See also `py-up-statement': up from current definition to next beginning of statement above. 
+* py-end-of-statement-bol
    Goto beginning of line following end of statement.
-
-Returns position reached, if successful, nil otherwise.
-
-"-lc" stands for "left-corner" - a complementary command travelling left, whilst `py-end-of-statement' stops at right corner.
+  Returns position reached, if successful, nil otherwise.
 
 See also `py-down-statement': down from current definition to next beginning of statement below. 
+* py-mark-statement-bol
+   Mark statement, take beginning of line positions.
+
+Returns beginning and end positions of region, a cons. 
+* py-copy-statement-bol
+   Delete statement bol at point.
+
+Stores data in kill ring. Might be yanked back using `C-y'. 
+* py-kill-statement-bol
+   Delete statement bol at point.
+
+Stores data in kill ring. Might be yanked back using `C-y'. 
+* py-delete-statement-bol
+   Delete statement bol at point.
+
+Don't store data in kill ring. 
 * py-down-statement
    Go to the beginning of next statement below in buffer.
 
@@ -959,9 +1118,9 @@ Returns indentation if clause found, nil otherwise.
 
 Returns indentation if block-or-clause found, nil otherwise. 
 * py-down-def
-   Go to the beginning of next def below in buffer.
+   Go to the beginning of next function definition below in buffer.
 
-Returns indentation if def found, nil otherwise. 
+Returns indentation if found, nil otherwise. 
 * py-down-class
    Go to the beginning of next class below in buffer.
 
