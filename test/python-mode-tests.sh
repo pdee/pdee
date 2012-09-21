@@ -292,11 +292,11 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-forward-line) nil \"py-forward-line not detected as command\")" \
 -eval "(assert (commandp 'py-leave-comment-or-string-backward) nil \"py-leave-comment-or-string-backward not detected as command\")" \
 -eval "(assert (commandp 'py-beginning-of-list-pps) nil \"py-beginning-of-list-pps not detected as command\")" \
--eval "(assert (commandp 'py-down-block-lc) nil \"py-down-block-lc not detected as command\")" \
--eval "(assert (commandp 'py-down-clause-lc) nil \"py-down-clause-lc not detected as command\")" \
--eval "(assert (commandp 'py-down-def-lc) nil \"py-down-def-lc not detected as command\")" \
--eval "(assert (commandp 'py-down-class-lc) nil \"py-down-class-lc not detected as command\")" \
--eval "(assert (commandp 'py-down-statement-lc) nil \"py-down-statement-lc not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-block-bol) nil \"py-end-of-block-bol not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-clause-bol) nil \"py-end-of-clause-bol not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-def-bol) nil \"py-end-of-def-bol not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-class-bol) nil \"py-end-of-class-bol not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-statement-bol) nil \"py-end-of-statement-bol not detected as command\")" \
 -eval "(assert (commandp 'py-down-statement) nil \"py-down-statement not detected as command\")" \
 -eval "(assert (commandp 'py-down-block) nil \"py-down-block not detected as command\")" \
 -eval "(assert (commandp 'py-down-clause) nil \"py-down-clause not detected as command\")" \
@@ -710,7 +710,56 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-mark-clause-misbehave-lp:949310-test) nil \"py-mark-clause-misbehave-lp:949310-test not detected as command\")" \
 -eval "(assert (commandp 'py-mark-block-misbehave-lp:949310-test) nil \"py-mark-block-misbehave-lp:949310-test not detected as command\")" \
 -eval "(assert (commandp 'py-mark-partial-expression) nil \"py-mark-partial-expression not detected as command\")" \
--eval "(message \"commandp tests done\")" \
+-eval "(assert (commandp 'py-beginning-of-block-bol-p) nil \"py-beginning-of-block-bol-p not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-block-bol) nil \"py-beginning-of-block-bol not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-block-bol) nil \"py-end-of-block-bol not detected as command\")" \
+-eval "(assert (commandp 'py-mark-block-bol) nil \"py-mark-block-bol not detected as command\")" \
+-eval "(assert (commandp 'py-copy-block-bol) nil \"py-copy-block-bol not detected as command\")" \
+-eval "(assert (commandp 'py-kill-block-bol) nil \"py-kill-block-bol not detected as command\")" \
+-eval "(assert (commandp 'py-delete-block-bol) nil \"py-delete-block-bol not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-clause-bol-p) nil \"py-beginning-of-clause-bol-p not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-clause-bol) nil \"py-beginning-of-clause-bol not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-clause-bol) nil \"py-end-of-clause-bol not detected as command\")" \
+-eval "(assert (commandp 'py-mark-clause-bol) nil \"py-mark-clause-bol not detected as command\")" \
+-eval "(assert (commandp 'py-copy-clause-bol) nil \"py-copy-clause-bol not detected as command\")" \
+-eval "(assert (commandp 'py-kill-clause-bol) nil \"py-kill-clause-bol not detected as command\")" \
+-eval "(assert (commandp 'py-delete-clause-bol) nil \"py-delete-clause-bol not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-block-or-clause-bol-p) nil \"py-beginning-of-block-or-clause-bol-p not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-block-or-clause-bol) nil \"py-beginning-of-block-or-clause-bol not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-block-or-clause-bol) nil \"py-end-of-block-or-clause-bol not detected as command\")" \
+-eval "(assert (commandp 'py-mark-block-or-clause-bol) nil \"py-mark-block-or-clause-bol not detected as command\")" \
+-eval "(assert (commandp 'py-copy-block-or-clause-bol) nil \"py-copy-block-or-clause-bol not detected as command\")" \
+-eval "(assert (commandp 'py-kill-block-or-clause-bol) nil \"py-kill-block-or-clause-bol not detected as command\")" \
+-eval "(assert (commandp 'py-delete-block-or-clause-bol) nil \"py-delete-block-or-clause-bol not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-def-bol-p) nil \"py-beginning-of-def-bol-p not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-def-bol) nil \"py-beginning-of-def-bol not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-def-bol) nil \"py-end-of-def-bol not detected as command\")" \
+-eval "(assert (commandp 'py-mark-def-bol) nil \"py-mark-def-bol not detected as command\")" \
+-eval "(assert (commandp 'py-copy-def-bol) nil \"py-copy-def-bol not detected as command\")" \
+-eval "(assert (commandp 'py-kill-def-bol) nil \"py-kill-def-bol not detected as command\")" \
+-eval "(assert (commandp 'py-delete-def-bol) nil \"py-delete-def-bol not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-class-bol-p) nil \"py-beginning-of-class-bol-p not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-class-bol) nil \"py-beginning-of-class-bol not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-class-bol) nil \"py-end-of-class-bol not detected as command\")" \
+-eval "(assert (commandp 'py-mark-class-bol) nil \"py-mark-class-bol not detected as command\")" \
+-eval "(assert (commandp 'py-copy-class-bol) nil \"py-copy-class-bol not detected as command\")" \
+-eval "(assert (commandp 'py-kill-class-bol) nil \"py-kill-class-bol not detected as command\")" \
+-eval "(assert (commandp 'py-delete-class-bol) nil \"py-delete-class-bol not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-def-or-class-bol-p) nil \"py-beginning-of-def-or-class-bol-p not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-def-or-class-bol) nil \"py-beginning-of-def-or-class-bol not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-def-or-class-bol) nil \"py-end-of-def-or-class-bol not detected as command\")" \
+-eval "(assert (commandp 'py-mark-def-or-class-bol) nil \"py-mark-def-or-class-bol not detected as command\")" \
+-eval "(assert (commandp 'py-copy-def-or-class-bol) nil \"py-copy-def-or-class-bol not detected as command\")" \
+-eval "(assert (commandp 'py-kill-def-or-class-bol) nil \"py-kill-def-or-class-bol not detected as command\")" \
+-eval "(assert (commandp 'py-delete-def-or-class-bol) nil \"py-delete-def-or-class-bol not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-statement-bol-p) nil \"py-beginning-of-statement-bol-p not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-statement-bol) nil \"py-beginning-of-statement-bol not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-statement-bol) nil \"py-end-of-statement-bol not detected as command\")" \
+-eval "(assert (commandp 'py-mark-statement-bol) nil \"py-mark-statement-bol not detected as command\")" \
+-eval "(assert (commandp 'py-copy-statement-bol) nil \"py-copy-statement-bol not detected as command\")" \
+-eval "(assert (commandp 'py-kill-statement-bol) nil \"py-kill-statement-bol not detected as command\")" \
+-eval "(assert (commandp 'py-delete-statement-bol) nil \"py-delete-statement-bol not detected as command\")" \
+--funcall py-bol-moves-test \
 --funcall py-end-of-block-or-clause-test \
 --funcall mark-decorators-lp:328851-test \
 --funcall complaint-about-non-ASCII-character-lp-1042949-test \

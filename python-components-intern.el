@@ -210,7 +210,7 @@ When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
                     (+ (if py-smart-indentation (py-guess-indent-offset nil orig origline) py-indent-offset) (current-indentation))
                   (skip-chars-backward " \t\r\n\f")
                   (setq line t)
-                  (back-to-indentation) 
+                  (back-to-indentation)
                   (py-compute-indentation orig origline closing line inside t)))
                ((and (< (py-count-lines) origline)(looking-at py-assignment-re))
                 (current-indentation))
@@ -695,8 +695,9 @@ and `pass'.  This doesn't catch embedded statements."
         (skip-chars-backward " \t\r\n\f"))
       (when (eq (point) orig)
         (py-look-downward-for-clause))
-      (when (< orig (point))
-        (setq res (point)))
+      (if (< orig (point))
+          (setq res (point))
+        (goto-char orig))
       res)))
 
 ;; py-look-downward-for-clause
@@ -711,6 +712,7 @@ and `pass'.  This doesn't catch embedded statements."
         ind erg last)
     (if this
         (progn
+          (setq py-bol-forms-last-indent (cons this-command (current-indentation)))
           (setq ind (+ py-indent-offset (current-indentation)))
           (py-end-of-statement)
           (forward-line 1)
@@ -741,7 +743,7 @@ If succesful return position. "
   (interactive)
   (unless (eobp)
     (let ((ind (or ind
-                   (save-excursion 
+                   (save-excursion
                      (py-beginning-of-statement)
                      (if (py-statement-opens-block-p)
                          (current-indentation)

@@ -4,16 +4,16 @@ Python Mode News
 New in version 6.0.12
 ---------------------
 
-- py-sexp-function, 
+- py-sexp-function,
   When set, it's value is called instead of `forward-sexp', `backward-sexp
   Choices are py-partial-expression, py-expression, default nil
 
 - `py-partial-expression' reconsidered.
    Beside common moves like `defun', `statement' specific Python-mode edits are delivered:
 
-  `py-expression' and `py-partial-expression'. 
+  `py-expression' and `py-partial-expression'.
 
-  Statement below is considered composed of two `py-expression' 
+  Statement below is considered composed of two `py-expression'
 
   a = ['spam', 'eggs', 100, 1234]
   |_| |_________________________|
@@ -32,10 +32,61 @@ New in version 6.0.12
 
 - `py-find-definition' also detects non-imported definition in current buffer
 
-- Choice between `py-imenu-create-index-new' and series 5. 
+- Choice between `py-imenu-create-index-new' and series 5.
   py-imenu-create-index-function made easier.
   Customizable variable `py-imenu-create-index-function' provided, see also
   command in PyTools
+
+- New commands addressing BOL as start/end:
+  py-beginning-of-block-bol-p
+  py-beginning-of-block-bol
+  py-end-of-block-bol
+  py-mark-block-bol
+  py-copy-block-bol
+  py-kill-block-bol
+  py-delete-block-bol
+  py-beginning-of-clause-bol-p
+  py-beginning-of-clause-bol
+  py-end-of-clause-bol
+  py-mark-clause-bol
+  py-copy-clause-bol
+  py-kill-clause-bol
+  py-delete-clause-bol
+  py-beginning-of-block-or-clause-bol-p
+  py-beginning-of-block-or-clause-bol
+  py-end-of-block-or-clause-bol
+  py-mark-block-or-clause-bol
+  py-copy-block-or-clause-bol
+  py-kill-block-or-clause-bol
+  py-delete-block-or-clause-bol
+  py-beginning-of-def-bol-p
+  py-beginning-of-def-bol
+  py-end-of-def-bol
+  py-mark-def-bol
+  py-copy-def-bol
+  py-kill-def-bol
+  py-delete-def-bol
+  py-beginning-of-class-bol-p
+  py-beginning-of-class-bol
+  py-end-of-class-bol
+  py-mark-class-bol
+  py-copy-class-bol
+  py-kill-class-bol
+  py-delete-class-bol
+  py-beginning-of-def-or-class-bol-p
+  py-beginning-of-def-or-class-bol
+  py-end-of-def-or-class-bol
+  py-mark-def-or-class-bol
+  py-copy-def-or-class-bol
+  py-kill-def-or-class-bol
+  py-delete-def-or-class-bol
+  py-beginning-of-statement-bol-p
+  py-beginning-of-statement-bol
+  py-end-of-statement-bol
+  py-mark-statement-bol
+  py-copy-statement-bol
+  py-kill-statement-bol
+  py-delete-statement-bol
 
 New in version 6.0.11
 ---------------------
@@ -80,13 +131,12 @@ New in version 6.0.11
 - customizable boolean `py-trailing-whitespace-smart-delete-p'
   Default is nil. Some commands may delete trailing
   whitespaces by the way. When editing other peoples
-  code, this may produce a larger diff than expected 
+  code, this may produce a larger diff than expected
 
 New in version 6.0.10
 --------------------
 
 addresses bugs and speed issues
-
 
 New in version 6.0.9
 --------------------
@@ -121,24 +171,24 @@ New in version 6.0.9
   not taken as proposal.
 
 - py-edit-abbrevs
-  Jumps to `python-mode-abbrev-table' 
+  Jumps to `python-mode-abbrev-table'
 
 - modeline enhanced
   when a path/to/my/favoured/Python is given with `py-shell-name'
   the Python-shell buffer before would display
 
-  *ND path/to/my/favoured/Python* 
+  *ND path/to/my/favoured/Python*
 
   now:
 
   *ptmfP Python*
 
-  boolean `py-modeline-display-full-path-p' 
-  boolean `py-modeline-acronym-display-home-p'  
+  boolean `py-modeline-display-full-path-p'
+  boolean `py-modeline-acronym-display-home-p'
   If the modeline acronym should contain chars indicating the home-directory.
 
 - mode-line indicates "Py" by default
-  customize  `python-mode-modeline-display' 
+  customize  `python-mode-modeline-display'
 
 - Pymacs intergration dropped from trunk
   conflicts with classic install being reported
@@ -150,18 +200,18 @@ New in version 6.0.8
 - `py-pep8-run', new command checking formatting
    `py-pep8-help'
 
-- `py-pyflake-run', new command 
+- `py-pyflake-run', new command
    Pyflakes is a simple program which checks Python
    source files for errors. - It is similar to
    PyChecker in scope, but differs in - that it does
    not execute the modules to check them.
    `py-pyflake-help'
 
-- `py-pylint-run', new command calls Pylint, 
+- `py-pylint-run', new command calls Pylint,
   a Python source code analyzer which looks for
   programming errors, helps enforcing a coding standard
   and sniffs for some code smells (as defined in Martin
-  Fowler's Refactoring book) . 
+  Fowler's Refactoring book) .
 
   Pylint checks length of lines of code, if variable
   names are well-formed according to your coding
@@ -171,7 +221,7 @@ New in version 6.0.8
   `py-pylint-doku', `py-pylint-help'
 
 - py-pyflakespep8-run, combines calls to pyflakes and pep8
-  
+
 - respective flymake-modes,
   `pyflakespep8-flymake-mode', `pylint-flymake-mode'
   etc. See meny PyTools

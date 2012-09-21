@@ -34,6 +34,17 @@
     (find-file erg)
     (finds buffer directory-in directory-out)))
 
+(defvar python-mode-el-doku-list (list "autopair/autopair.el" "python-mode.el" "completion/auto-complete-pycomplete.el" "completion/company-pycomplete.el" "completion/pycomplete.el" "pymacs.el" "extensions/py-smart-operator.el"))
+
+(defun finds-alle ()
+  "Write doku for files listet in python-mode-el-doku-list. "
+  (interactive)
+  (dolist (ele python-mode-el-doku-list)
+    (when
+        (and (load (concat "~/arbeit/emacs/python-modes/python-mode/" ele))
+             (find-file (concat "~/arbeit/emacs/python-modes/python-mode/" ele)))
+      (finds))))
+
 (defun finds (&optional buffer directory-in directory-out)
   "Writes all commands in BUFFER alongside with their documentation into directory \"doc\" as \*.org and \*rst file ."
   (interactive)

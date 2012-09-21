@@ -977,5 +977,16 @@ i.e. spaces, tabs, carriage returns, newlines and newpages. "
     (setq erg (replace-regexp-in-string  s-c-a "" erg))
     erg))
 
+(defun py-nesting-level (&optional pps)
+  "Accepts the output of `parse-partial-sexp'. "
+  (interactive)
+  (let* ((pps (or (ignore-errors (nth 0 pps))
+                  (if (featurep 'xemacs)
+                      (parse-partial-sexp (point-min) (point))
+                    (syntax-ppss))))
+         (erg (nth 0 pps)))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
 (provide 'python-components-help)
 ;;; python-components-help.el ends here
