@@ -45,7 +45,7 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;;; Commentary: 
+;;; Commentary:
 
 ;;; Code:
 
@@ -75,7 +75,12 @@
 (defvar py-re-forms-names '("block" "clause" "block-or-clause" "def" "class" "def-or-class" "if-block" "try-block" "minor-block")
   "Forms whose start is described by a regexp in python-mode." )
 
-(defvar py-down-forms (list "block" "clause" "block-or-clause" "def" "class" "def-or-class" "statement"))
+;; (defvar py-down-forms (list "block" "minor-block" "clause" "block-or-clause" "def" "class" "def-or-class" "statement"))
+;; 
+(defvar py-down-forms (list "block" "minor-block" "clause" "block-or-clause" "def" "class" "def-or-class"))
+
+;; (setq py-down-forms (list "block" "minor-block" "clause" "block-or-clause" "def" "class" "def-or-class" "statement"))
+(setq py-down-forms (list "block" "minor-block" "clause" "block-or-clause" "def" "class" "def-or-class"))
 
 (defun write-execute-forms (&optional command)
   "Write `py-execute-block...' etc. "
@@ -846,38 +851,74 @@ Optional \\\\[universal-argument] prompts for options to pass to the "))
   (insert arkopf)
   (insert ";;; Beg-end forms")
   (dolist (ele py-re-forms-names)
-    (insert (concat "
-\(defun py-beginning-of-" ele " (&optional indent)
-  \"Returns beginning of " ele " if successful, nil otherwise.
+        (if (string-match "def\\|class" ele)
+            (insert (concat "
+\(defun py-beginning-of-" ele " (&optional arg indent)"))
+          (insert (concat " 
+\(defun py-beginning-of-" ele " (&optional indent)")))
+        (insert (concat "\n  \"Go to beginning of " ele ".\n
+Returns beginning of " ele " if successful, nil otherwise\n\n"))
+    (when (string-match "def\\|class" ele)
+      (insert "With \\\\[universal argument] or `py-mark-decorators' set to `t', decorators are marked too.\n\n"))
+    (insert "Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html\"\n")
 
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html\"
-  (interactive)
-  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-" ele "-re indent)))))
-    erg))
+    (if (string-match "def\\|class" ele)
+        (insert "  (interactive \"P\")")
+      (insert "  (interactive)"))
+    (insert (concat "\n  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-" ele "-re indent))))"))
+    (when  (string-match "def\\|class" ele)
+        (insert "\n        (py-mark-decorators (or arg py-mark-decorators))"))
+    (insert ")")
+    (insert "\n    erg))\n")
 
-\(defun py-end-of-"ele" ()
-  \"Go to the end of " ele".
 
-Returns position reached, if any, nil otherwise.
+        (if (string-match "def\\|class" ele)
+            (insert (concat "
+\(defun py-end-of-" ele " (&optional arg indent)"))
+          (insert (concat " 
+\(defun py-end-of-" ele " (&optional indent)")))
+        (insert (concat "\n  \"Go to end of " ele ".\n
+Returns end of " ele " if successful, nil otherwise\n\n"))
+    (when (string-match "def\\|class" ele)
+      (insert "With \\\\[universal argument] or `py-mark-decorators' set to `t', decorators are marked too.\n\n"))
+    (insert "Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html\"\n")
 
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html\"
-  (interactive)
-  (let* ((orig (point))
-        (erg (py-end-base py-" ele "-re orig)))
-    (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
-    erg))\n")))
+    (if (string-match "def\\|class" ele)
+        (insert "  (interactive \"P\")")
+      (insert "  (interactive)"))
+    (insert (concat " 
+    (let* ((orig (point))
+           (erg (py-end-base py-" ele "-re orig)))
+      (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
+      erg))\n"))
+
+;;     (insert (concat " 
+;; \(defun py-end-of-"ele" ()
+;;   \"Go to the end of " ele".
+;; 
+;; Returns position reached, if any, nil otherwise.
+;; 
+;; Referring python program structures see for example:
+;; http://docs.python.org/reference/compound_stmts.html\"
+;;   (interactive)
+;;   (let* ((orig (point))
+;;          (erg (py-end-base py-" ele "-re orig)))
+;;     (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
+;;     erg))\n"))
+
+    )
   (insert "
 
 ;; Buffer
-(defun py-beginning-of-buffer ()
+\(defun py-beginning-of-buffer ()
   \"Go to beginning-of-buffer, return position. \"
   (let ((erg (unless (bobp)
                (goto-char (point-min)))))
     erg))
 
-(defun py-end-of-buffer ()
+\(defun py-end-of-buffer ()
   \"Go to end-of-buffer, return position.
 
   If already at end-of-buffer and not at EOB, go to end of next line. \"
@@ -909,7 +950,7 @@ http://docs.python.org/reference/compound_stmts.html\"
 ")
     (insert "\n(provide 'python-components-re-forms)
 ;;; python-components-re-forms.el ends here\n ")
-(emacs-lisp-mode))
+    (emacs-lisp-mode))
 
 (defun py-write-beg-end-position-forms ()
   (interactive)
@@ -1604,29 +1645,35 @@ Returns position reached, if successful, nil otherwise. \"]\n"))
               :help \"`py-end-of-" ele "-bol'
 Go to beginning of line following end of " ele ".
 
-Returns position reached, if successful, nil otherwise. \"]\n"))
+Returns position reached, if successful, nil otherwise. \"]
 
-  (insert (concat "
+             [\"Up " ele " bol\" py-up-" ele "-bol
+              :help \"`py-up-" ele "-bol'
+Go to next " ele " upwards in buffer if any. Go to beginning of line.
+
+Returns position reached, if successful, nil otherwise. \"]
+
+             [\"Down " ele " bol\" py-down-" ele "-bol
+              :help \"`py-down-" ele "-bol'
+Go to next " ele " downwards in buffer if any. Go to beginning of line.
+
+Returns position reached, if successful, nil otherwise. \"]
+
              [\"Mark " ele " bol\" py-mark-" ele "-bol
               :help \"`py-mark-" ele "-bol'
-Mark " ele " at point. \"]\n"))
+Mark " ele " at point. \"]
 
-  (insert (concat "
              [\"Copy " ele " bol\" py-copy-" ele "-bol
               :help \"`py-copy-" ele "-bol'
-Copy " ele " at point. \"]\n"))
+Copy " ele " at point. \"]
 
-  (insert (concat "
              [\"Kill " ele " bol\" py-kill-" ele "-bol
               :help \"`py-kill-" ele "-bol'
-Kill " ele " at point. \"]\n"))
+Kill " ele " at point. \"]
 
-  (insert (concat "
              [\"Delete " ele " bol\" py-delete-" ele "-bol
               :help \"`py-delete-" ele "-bol'
-Delete " ele " at point. \"]\n)\n"))
-
-  )
+Delete " ele " at point. \"]\n)\n")))
 
   (set-buffer (get-buffer-create "python-components-bol-forms.el"))
   (erase-buffer)
@@ -1658,7 +1705,7 @@ Delete " ele " at point. \"]\n)\n"))
     (insert (concat "
 \(defun py-beginning-of-" ele "-bol-p ()
   \"Returns position, if cursor is at the beginning of " ele ", at beginning of line, nil otherwise. \"
-  (interactive) 
+  (interactive)
   (let ((orig (point))
         (indent (current-indentation))
         erg)
@@ -1759,10 +1806,133 @@ Don't store data in kill ring. \"
   (interactive \"\*\")
   (let ((erg (py-mark-base-bol \"block\")))
     (delete-region (car erg) (cdr erg))))
-"
-
-    )))
+")))
   (insert "\n;; python-components-bol-forms.el ends here
 \(provide 'python-components-bol-forms)")
   (switch-to-buffer (current-buffer))
   (emacs-lisp-mode))
+
+(defun py-write-up-down-forms ()
+  (interactive)
+  (set-buffer (get-buffer-create "python-components-up-down.el"))
+  (erase-buffer)
+  (insert ";;; python-components-up-down.el -- Searching up/downwards in buffer\n")
+  (insert arkopf)
+  (insert "
+\(defun py-up-base (regexp)
+  \"Go to the beginning of next form upwards in buffer.
+
+Return position if form found, nil otherwise. \"
+  (let\* ((orig (point))
+         erg)
+    (if (bobp)
+        (setq erg nil)
+      (while (and (re-search-backward regexp nil t 1)
+                  (nth 8 (syntax-ppss))))
+      (back-to-indentation)
+      (when (looking-at regexp) (setq erg (point)))
+      (when py-verbose-p (message \"%s\" erg))
+      erg)))
+
+\(defun py-down-base (regexp)
+  \"Go to the beginning of next form below in buffer.
+
+Return position if form found, nil otherwise. \"
+  (unless (eobp)
+    (forward-line 1)
+    (beginning-of-line)
+    (let\* ((orig (point))
+           erg)
+      (if (eobp)
+          (setq erg nil)
+        (while (and (re-search-forward regexp nil t 1)
+                    (nth 8 (syntax-ppss))))
+        (back-to-indentation)
+        (when (looking-at regexp) (setq erg (point)))
+        (when py-verbose-p (message \"%s\" erg))
+        erg))))
+
+\(defun py-up-base-bol (regexp)
+  \"Go to the beginning of next form upwards in buffer.
+
+Return position if form found, nil otherwise. \"
+  (let\* ((orig (point))
+         erg)
+    (if (bobp)
+        (setq erg nil)
+      (while (and (re-search-backward regexp nil t 1)
+                  (nth 8 (syntax-ppss))))
+      (beginning-of-line) 
+      (when (looking-at regexp) (setq erg (point)))
+      (when py-verbose-p (message \"%s\" erg))
+      erg)))
+
+\(defun py-down-base-bol (regexp)
+  \"Go to the beginning of next form below in buffer.
+
+Return position if form found, nil otherwise. \"
+  (unless (eobp)
+    (forward-line 1)
+    (beginning-of-line)
+    (let\* ((orig (point))
+           erg)
+      (if (eobp)
+          (setq erg nil)
+        (while (and (re-search-forward regexp nil t 1)
+                    (nth 8 (syntax-ppss))))
+        (beginning-of-line) 
+        (when (looking-at regexp) (setq erg (point)))
+        (when py-verbose-p (message \"%s\" erg))
+        erg))))\n")
+  ;; up
+  (dolist (ele py-down-forms)
+    (if (string= "statement" ele)
+        (insert "\n(defalias 'py-up-statement 'py-beginning-of-statement)\n")
+      (insert (concat "
+\(defun py-up-" ele " ()
+  \"Go to the beginning of next " ele " upwards in buffer.
+
+Return position if " ele " found, nil otherwise. \"
+  (interactive)
+  (py-up-base py-" ele "-re))\n"))))
+  ;; down
+  (dolist (ele py-down-forms)
+    (if (string= "statement" ele)
+        (insert "\n(defalias 'py-down-statement 'py-end-of-statement)\n")
+      (insert (concat "
+\(defun py-down-" ele " ()
+  \"Go to the beginning of next " ele " below in buffer.
+
+Return position if " ele " found, nil otherwise. \"
+  (interactive)
+  (py-down-base py-" ele "-re))\n"))))
+  ;; up bol
+  (dolist (ele py-down-forms)
+    (if (string= "statement" ele)
+        (insert "\n(defalias 'py-up-statement-bol 'py-beginning-of-statement-bol)\n")
+      (insert (concat "
+\(defun py-up-" ele "-bol ()
+  \"Go to the beginning of next " ele " upwards in buffer.
+
+Go to beginning of line.
+Return position if " ele " found, nil otherwise. \"
+  (interactive)
+  (py-up-base-bol py-" ele "-re))\n"))))
+  ;; down bol
+  (dolist (ele py-down-forms)
+    (if (string= "statement" ele)
+        (insert "\n(defalias 'py-down-statement-bol 'py-end-of-statement-bol)\n")
+      (insert (concat "
+\(defun py-down-" ele "-bol ()
+  \"Go to the beginning of next " ele " below in buffer.
+
+Go to beginning of line
+Return position if " ele " found, nil otherwise \"
+  (interactive)
+  (py-down-base-bol py-" ele "-re))\n"))))
+  (insert "\n;; python-components-up-down ends here
+\(provide 'python-components-up-down)")
+  (switch-to-buffer (current-buffer))
+  (emacs-lisp-mode))
+
+

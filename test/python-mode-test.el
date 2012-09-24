@@ -27,6 +27,7 @@
 
 (setq python-mode-tests
       (list
+       'py-moves-test
        'augmented-assigment-test
        'py-smart-operator-test
        'key-binding-tests
@@ -420,9 +421,72 @@
             'python-partial-expression',
             'python-statement',
             ])
+        elif b:
+            pass
+        else b:
+            pass
+
+            ])
+
 "
   "String used for tests by python-mode-test.el")
 
+(setq python-mode-teststring "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def __init__(self, d={}):
+        self._keys = d.keys()
+        dict.__init__(self, d)
+
+    def f():
+        \"\"\"
+        class for in 'for in while with blah'
+        \"\"\"
+        if a:
+
+            ar_atpt_python_list_roh = ([
+                'python-expression',
+
+            # def ar_thingatpt_write_lists (&optional datei):
+            'python-partial-expression',
+            'python-statement',
+            ])
+        elif b:
+            pass
+        else b:
+            pass
+")
+"class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def __init__(self, d={}):
+        self._keys = d.keys()
+        dict.__init__(self, d)
+
+    def f():
+        \"\"\"
+        class for in 'for in while with blah'
+        \"\"\"
+        if a:
+
+            ar_atpt_python_list_roh = ([
+                'python-expression',
+
+            # def ar_thingatpt_write_lists (&optional datei):
+            'python-partial-expression',
+            'python-statement',
+            ])
+        elif b:
+           pass
+        else b:
+           pass
+"
 (defun py-beginning-of-block-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring python-mode-teststring))
@@ -490,7 +554,7 @@
 (defun py-end-of-block-or-clause-base ()
   (py-beginning-of-block-or-clause)
   (py-end-of-block-or-clause)
-  (assert (eq (point) 560) nil "py-end-of-block-or-clause-test failed"))
+  (assert (eq (point) 626) nil "py-end-of-block-or-clause-test failed"))
 
 (defun py-beginning-of-def-test (&optional arg load-branch-function)
   (interactive "p")
@@ -529,7 +593,7 @@
 
 (defun py-end-of-def-or-class-base ()
   (assert (eq 238 (py-beginning-of-def-or-class)) nil "py-end-of-def-or-class-test #1 failed")
-  (assert (eq 1 (py-beginning-of-def-or-class '(4))) nil "py-end-of-def-or-class-test #2 failed")
+  (assert (eq 1 (py-beginning-of-def-or-class)) nil "py-end-of-def-or-class-test #2 failed")
   (goto-char 201)
   (save-excursion (assert (eq 232 (py-end-of-def-or-class)) nil "py-end-of-def-or-class-test #3 failed"))
   (assert (eq 560 (py-end-of-def-or-class '(4))) nil "py-end-of-def-or-class-test #4 failed"))
@@ -6893,39 +6957,101 @@ foo "))
   (assert (py-switch-imenu-index-function) nil "py-switch-imenu-index-function-test failed")
   (assert (listp imenu--index-alist) nil "py-switch-imenu-index-function-test failed"))
 
-(defun py-bol-moves-test (&optional arg load-branch-function)
+(defun py-moves-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring python-mode-teststring))
     (py-bug-tests-intern 'py-bol-moves-base arg teststring)))
 
 (defun py-bol-moves-base ()
+  (goto-char 592)
+  (assert (eq 561 (py-up-clause-bol)) nil "py-up-clause-bol-test of `py-moves-test' failed")
   (goto-char 410)
-  (assert (eq 332 (py-beginning-of-statement-bol)) nil "py-beginning-of-statement-bol-test #1 failed")
+  (assert (eq 317 (py-up-block-or-clause-bol)) nil "py-up-block-or-clause-bol-test of `py-moves-test' failed")
+  (goto-char 410)
+  (assert (eq 234 (py-up-def-bol)) nil "py-up-def-bol-test of `py-moves-test' failed")
+  (goto-char 410)
+  (assert (eq 1 (py-up-class-bol)) nil "py-up-class-bol-test of `py-moves-test' failed")
+  (goto-char 410)
+  (assert (eq 234 (py-up-def-or-class-bol)) nil "py-up-def-or-class-bol-test of `py-moves-test' failed")
+  (goto-char 410)
+  (assert (eq 317 (py-up-block-bol)) nil "py-up-block-bol-test of `py-moves-test' failed")
+  (goto-char 410)
+  (assert (eq 317 (py-up-minor-block-bol)) nil "py-up-minor-block-bol-test of `py-moves-test' failed")
+  (goto-char 592)
+  (assert (eq 325 (py-up-block)) nil "py-up-block-test of `py-moves-test' failed")
+  (goto-char 410)
+  (assert (eq 325 (py-up-minor-block)) nil "py-up-minor-block-test of `py-moves-test' failed")
+  (goto-char 592)
+  (assert (eq 569 (py-up-clause)) nil "py-up-clause-test of `py-moves-test' failed")
+  (goto-char 592)
+  (assert (eq 569 (py-up-block-or-clause)) nil "py-up-block-or-clause-test of `py-moves-test' failed")
+  (goto-char 410)
+  (assert (eq 238 (py-up-def)) nil "py-up-def-test of `py-moves-test' failed")
+  (goto-char 410)
+  (assert (eq 1 (py-up-class)) nil "py-up-class-test of `py-moves-test' failed")
+  (goto-char 410)
+  (assert (eq 238 (py-up-def-or-class)) nil "py-up-def-or-class-test of `py-moves-test' failed")
+  (goto-char 264)
+  (assert (eq 317 (py-down-block-bol)) nil "py-down-block-bol-test of `py-moves-test' failed")
+  (goto-char 561)
+  (assert (eq 594 (py-down-clause-bol)) nil "py-down-clause-bol-test of `py-moves-test' failed")
+  (goto-char 264)
+  (assert (eq 317 (py-down-block-or-clause-bol)) nil "py-down-block-or-clause-bol-test of `py-moves-test' failed")
+  (goto-char (point-min))
+  (assert (eq 142 (py-down-def-bol)) nil "py-down-def-bol-test of `py-moves-test' failed")
+  (goto-char 410)
+  (assert (not (py-down-class-bol)) nil "py-down-class-bol-test of `py-moves-test' failed")
+  (goto-char (point-min))
+  (assert (eq 142 (py-down-def-or-class-bol)) nil "py-down-def-or-class-bol-test of `py-moves-test' failed")
+  (goto-char 264)
+  (assert (eq 325 (py-down-block)) nil "py-down-block-test of `py-moves-test' failed")
+  (goto-char 264)
+  (assert (eq 317 (py-down-block-bol)) nil "py-down-block-bol-test of `py-moves-test' failed")
+
+  (goto-char 264)
+  (assert (eq 325 (py-down-minor-block)) nil "py-down-minor-block-test of `py-moves-test' failed")
+  (goto-char 264)
+  (assert (eq 317 (py-down-minor-block-bol)) nil "py-down-minor-block-bol-test of `py-moves-test' failed")
+
+
+  (goto-char 569)
+  (assert (eq 602 (py-down-clause)) nil "py-down-clause-test of `py-moves-test' failed")
+  (goto-char 410)
+  (assert (eq 569 (py-down-block-or-clause)) nil "py-down-block-or-clause-test of `py-moves-test' failed")
+  (goto-char (point-min))
+  (assert (eq 146 (py-down-def)) nil "py-down-def-test of `py-moves-test' failed")
+  (goto-char 410)
+  (assert (not (py-down-class)) nil "py-down-class-test of `py-moves-test' failed")
+  (goto-char (point-min))
+  (assert (eq 146 (py-down-def-or-class)) nil "py-down-def-or-class-test of `py-moves-test' failed")
+  
+  (goto-char 410)
+  (assert (eq 332 (py-beginning-of-statement-bol)) nil "py-beginning-of-statement-bol-test of `py-moves-test' failed")
     (goto-char 410)
-  (assert (eq 317 (py-beginning-of-block-bol)) nil "py-beginning-of-block-bol-test #1 failed")
+  (assert (eq 317 (py-beginning-of-block-bol)) nil "py-beginning-of-block-bol-test of `py-moves-test' failed")
   (goto-char 410)
-  (assert (eq nil (py-beginning-of-clause-bol)) nil "py-beginning-of-clause-bol-test #1 failed")
+  (assert (eq nil (py-beginning-of-clause-bol)) nil "py-beginning-of-clause-bol-test of `py-moves-test' failed")
   (goto-char 410)
-  (assert (eq 317 (py-beginning-of-block-or-clause-bol)) nil "py-beginning-of-block-or-clause-bol-test #1 failed")
-  (assert (eq 1 (py-beginning-of-class-bol)) nil "py-beginning-of-class-bol-test #1 failed")
+  (assert (eq 317 (py-beginning-of-block-or-clause-bol)) nil "py-beginning-of-block-or-clause-bol-test of `py-moves-test' failed")
+  (assert (eq 1 (py-beginning-of-class-bol)) nil "py-beginning-of-class-bol-test of `py-moves-test' failed")
   (goto-char 410)
-  (assert (eq 234 (py-beginning-of-def-or-class-bol)) nil "py-beginning-of-def-or-class-bol-test #1 failed")
+  (assert (eq 234 (py-beginning-of-def-or-class-bol)) nil "py-beginning-of-def-or-class-bol-test of `py-moves-test' failed")
   (goto-char 410)
-  (assert (eq 561 (py-end-of-block-bol)) nil "py-end-of-block-bol-test #1 failed")
+  (assert (eq 627 (py-end-of-block-bol)) nil "py-end-of-block-bol-test of `py-moves-test' failed")
+  (goto-char 576)
+  (assert (eq 594 (py-end-of-clause-bol)) nil "py-end-of-clause-bol-test of `py-moves-test' failed")
+  (goto-char 576)
+  (assert (eq 594 (py-end-of-block-or-clause-bol)) nil "py-end-of-block-or-clause-bol-test of `py-moves-test' failed")
   (goto-char 410)
-  (assert (eq 561 (py-end-of-clause-bol)) nil "py-end-of-clause-bol-test #1 failed")
+  (assert (eq 627 (py-end-of-def-bol)) nil "py-end-of-def-bol-test of `py-moves-test' failed")
   (goto-char 410)
-  (assert (eq 561 (py-end-of-block-or-clause-bol)) nil "py-end-of-block-or-clause-bol-test #1 failed")
+  (assert (eq 627 (py-end-of-class-bol)) nil "py-end-of-class-bol-test of `py-moves-test' failed")
   (goto-char 410)
-  (assert (eq 561 (py-end-of-def-bol)) nil "py-end-of-def-bol-test #1 failed")
+  (assert (eq 627 (py-end-of-def-or-class-bol)) nil "py-end-of-def-or-class-bol-test of `py-moves-test' failed")
   (goto-char 410)
-  (assert (eq 561 (py-end-of-class-bol)) nil "py-end-of-class-bol-test #1 failed")
+  (assert (eq 561 (py-end-of-statement-bol)) nil "py-end-of-statement-bol-test of `py-moves-test' failed")
   (goto-char 410)
-  (assert (eq 561 (py-end-of-def-or-class-bol)) nil "py-end-of-def-or-class-bol-test #1 failed")
-  (goto-char 410)
-  (assert (eq 561 (py-end-of-statement-bol)) nil "py-end-of-statement-bol-test #1 failed")
-  (goto-char 410)
-  (assert (eq 234 (py-beginning-of-def-bol)) nil "py-beginning-of-def-bol-test #1 failed")
+  (assert (eq 234 (py-beginning-of-def-bol)) nil "py-beginning-of-def-bol-test of `py-moves-test' failed")
   )
 
 ;; imenu--subalist-p

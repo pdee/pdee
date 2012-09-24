@@ -1101,34 +1101,114 @@ Stores data in kill ring. Might be yanked back using `C-y'.
    Delete statement bol at point.
 
 Don't store data in kill ring. 
-* py-down-statement
-   Go to the beginning of next statement below in buffer.
+* py-up-block
+   Go to the beginning of next block upwards in buffer.
 
-Returns indentation if statement found, nil otherwise. 
+Return position if block found, nil otherwise. 
+* py-up-clause
+   Go to the beginning of next clause upwards in buffer.
+
+Return position if clause found, nil otherwise. 
+* py-up-block-or-clause
+   Go to the beginning of next block-or-clause upwards in buffer.
+
+Return position if block-or-clause found, nil otherwise. 
+* py-up-def
+   Go to the beginning of next def upwards in buffer.
+
+Return position if def found, nil otherwise. 
+* py-up-class
+   Go to the beginning of next class upwards in buffer.
+
+Return position if class found, nil otherwise. 
+* py-up-def-or-class
+   Go to the beginning of next def-or-class upwards in buffer.
+
+Return position if def-or-class found, nil otherwise. 
 * py-down-block
    Go to the beginning of next block below in buffer.
 
-Returns indentation if block found, nil otherwise. 
+Return position if block found, nil otherwise. 
 * py-down-clause
    Go to the beginning of next clause below in buffer.
 
-Returns indentation if clause found, nil otherwise. 
+Return position if clause found, nil otherwise. 
 * py-down-block-or-clause
    Go to the beginning of next block-or-clause below in buffer.
 
-Returns indentation if block-or-clause found, nil otherwise. 
+Return position if block-or-clause found, nil otherwise. 
 * py-down-def
-   Go to the beginning of next function definition below in buffer.
+   Go to the beginning of next def below in buffer.
 
-Returns indentation if found, nil otherwise. 
+Return position if def found, nil otherwise. 
 * py-down-class
    Go to the beginning of next class below in buffer.
 
-Returns indentation if class found, nil otherwise. 
+Return position if class found, nil otherwise. 
 * py-down-def-or-class
    Go to the beginning of next def-or-class below in buffer.
 
-Returns indentation if def-or-class found, nil otherwise. 
+Return position if def-or-class found, nil otherwise. 
+* py-up-block-bol
+   Go to the beginning of next block upwards in buffer.
+
+Go to beginning of line.
+Return position if block found, nil otherwise. 
+* py-up-clause-bol
+   Go to the beginning of next clause upwards in buffer.
+
+Go to beginning of line.
+Return position if clause found, nil otherwise. 
+* py-up-block-or-clause-bol
+   Go to the beginning of next block-or-clause upwards in buffer.
+
+Go to beginning of line.
+Return position if block-or-clause found, nil otherwise. 
+* py-up-def-bol
+   Go to the beginning of next def upwards in buffer.
+
+Go to beginning of line.
+Return position if def found, nil otherwise. 
+* py-up-class-bol
+   Go to the beginning of next class upwards in buffer.
+
+Go to beginning of line.
+Return position if class found, nil otherwise. 
+* py-up-def-or-class-bol
+   Go to the beginning of next def-or-class upwards in buffer.
+
+Go to beginning of line.
+Return position if def-or-class found, nil otherwise. 
+* py-down-block-bol
+   Go to the beginning of next block below in buffer.
+
+Go to beginning of line
+Return position if block found, nil otherwise 
+* py-down-clause-bol
+   Go to the beginning of next clause below in buffer.
+
+Go to beginning of line
+Return position if clause found, nil otherwise 
+* py-down-block-or-clause-bol
+   Go to the beginning of next block-or-clause below in buffer.
+
+Go to beginning of line
+Return position if block-or-clause found, nil otherwise 
+* py-down-def-bol
+   Go to the beginning of next def below in buffer.
+
+Go to beginning of line
+Return position if def found, nil otherwise 
+* py-down-class-bol
+   Go to the beginning of next class below in buffer.
+
+Go to beginning of line
+Return position if class found, nil otherwise 
+* py-down-def-or-class-bol
+   Go to the beginning of next def-or-class below in buffer.
+
+Go to beginning of line
+Return position if def-or-class found, nil otherwise 
 * py-forward-into-nomenclature
    Move forward to end of a nomenclature section or word.
 

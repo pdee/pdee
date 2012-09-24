@@ -102,3 +102,19 @@ it yields `'spam','
 - py-sexp-function, 
   When set, it's value is called instead of `forward-sexp', `backward-sexp
   Choices are py-partial-expression, py-expression, default nil
+
+;;;;;;;;;
+
+Moving, copying, deleting
+
+When moving over or mark code, commands with suffix
+"-bol" take the correspond beginning of line as start
+resp. end. Commands without that suffix take the
+indentation at the beginning resp. the last printable
+character the end - see in menu PyEdit whats implemented.
+
+While commands "py-beginning..." resp. "py-end..." compute the context, 
+selecting the corresponding beginning or end
+new "py-up...", "py-down..." jump regexp-based to the 
+next element in buffer.
+Listed in PyMenu. 

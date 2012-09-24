@@ -297,7 +297,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-end-of-def-bol) nil \"py-end-of-def-bol not detected as command\")" \
 -eval "(assert (commandp 'py-end-of-class-bol) nil \"py-end-of-class-bol not detected as command\")" \
 -eval "(assert (commandp 'py-end-of-statement-bol) nil \"py-end-of-statement-bol not detected as command\")" \
--eval "(assert (commandp 'py-down-statement) nil \"py-down-statement not detected as command\")" \
 -eval "(assert (commandp 'py-down-block) nil \"py-down-block not detected as command\")" \
 -eval "(assert (commandp 'py-down-clause) nil \"py-down-clause not detected as command\")" \
 -eval "(assert (commandp 'py-down-block-or-clause) nil \"py-down-block-or-clause not detected as command\")" \
@@ -759,7 +758,19 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-copy-statement-bol) nil \"py-copy-statement-bol not detected as command\")" \
 -eval "(assert (commandp 'py-kill-statement-bol) nil \"py-kill-statement-bol not detected as command\")" \
 -eval "(assert (commandp 'py-delete-statement-bol) nil \"py-delete-statement-bol not detected as command\")" \
---funcall py-bol-moves-test \
+-eval "(assert (commandp 'py-up-block) nil \"py-up-block not detected as command\")" \
+-eval "(assert (commandp 'py-up-clause) nil \"py-up-clause not detected as command\")" \
+-eval "(assert (commandp 'py-up-block-or-clause) nil \"py-up-block-or-clause not detected as command\")" \
+-eval "(assert (commandp 'py-up-def) nil \"py-up-def not detected as command\")" \
+-eval "(assert (commandp 'py-up-class) nil \"py-up-class not detected as command\")" \
+-eval "(assert (commandp 'py-up-def-or-class) nil \"py-up-def-or-class not detected as command\")" \
+-eval "(assert (commandp 'py-up-block-bol) nil \"py-up-block-bol not detected as command\")" \
+-eval "(assert (commandp 'py-up-clause-bol) nil \"py-up-clause-bol not detected as command\")" \
+-eval "(assert (commandp 'py-up-block-or-clause-bol) nil \"py-up-block-or-clause-bol not detected as command\")" \
+-eval "(assert (commandp 'py-up-def-bol) nil \"py-up-def-bol not detected as command\")" \
+-eval "(assert (commandp 'py-up-class-bol) nil \"py-up-class-bol not detected as command\")" \
+-eval "(assert (commandp 'py-up-def-or-class-bol) nil \"py-up-def-or-class-bol not detected as command\")" \
+--funcall py-moves-test \
 --funcall py-end-of-block-or-clause-test \
 --funcall mark-decorators-lp:328851-test \
 --funcall complaint-about-non-ASCII-character-lp-1042949-test \
@@ -772,7 +783,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall key-binding-tests \
 --funcall py-narrow-to-defun-lp-1020531-test \
 --funcall pycomplete-imports-not-found-error-when-no-symbol-lp:1019791-test \
---funcall tqs-lp:302834-lp:1018994-test \
 --funcall return-statement-indented-incorrectly-lp-1019601.py-test \
 --funcall converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128.py-test \
 --funcall empty-triple-quote-lp:1009318-test \
@@ -1016,7 +1026,6 @@ est \
 --funcall completion-fails-in-python-script-r989-lp:1004613-test \
 --funcall tqs-list-error-test \
 --funcall python-mode-slow-lp:803275-test \
---funcall infinite-loop-after-tqs-lp:826044-test \
 --funcall completion-at-gentoo-lp-1008842-test \
 --funcall py-find-imports-lp-1023236-test \
 --funcall execute-indented-code-lp:828314-test \
@@ -1036,3 +1045,5 @@ est \
 --funcall bob-beginning-of-statement-test \
 --funcall UnicodeEncodeError-python3-test \
 --funcall not-that-useful-completion-lp:1003580-test \
+--funcall tqs-lp:302834-lp:1018994-test \
+--funcall infinite-loop-after-tqs-lp:826044-test \

@@ -38,55 +38,20 @@ New in version 6.0.12
   command in PyTools
 
 - New commands addressing BOL as start/end:
-  py-beginning-of-block-bol-p
   py-beginning-of-block-bol
   py-end-of-block-bol
   py-mark-block-bol
   py-copy-block-bol
   py-kill-block-bol
   py-delete-block-bol
-  py-beginning-of-clause-bol-p
-  py-beginning-of-clause-bol
   py-end-of-clause-bol
-  py-mark-clause-bol
-  py-copy-clause-bol
-  py-kill-clause-bol
-  py-delete-clause-bol
-  py-beginning-of-block-or-clause-bol-p
-  py-beginning-of-block-or-clause-bol
-  py-end-of-block-or-clause-bol
-  py-mark-block-or-clause-bol
-  py-copy-block-or-clause-bol
-  py-kill-block-or-clause-bol
-  py-delete-block-or-clause-bol
-  py-beginning-of-def-bol-p
-  py-beginning-of-def-bol
-  py-end-of-def-bol
-  py-mark-def-bol
-  py-copy-def-bol
-  py-kill-def-bol
-  py-delete-def-bol
-  py-beginning-of-class-bol-p
-  py-beginning-of-class-bol
-  py-end-of-class-bol
-  py-mark-class-bol
-  py-copy-class-bol
-  py-kill-class-bol
-  py-delete-class-bol
-  py-beginning-of-def-or-class-bol-p
-  py-beginning-of-def-or-class-bol
-  py-end-of-def-or-class-bol
-  py-mark-def-or-class-bol
-  py-copy-def-or-class-bol
-  py-kill-def-or-class-bol
-  py-delete-def-or-class-bol
-  py-beginning-of-statement-bol-p
-  py-beginning-of-statement-bol
-  py-end-of-statement-bol
-  py-mark-statement-bol
-  py-copy-statement-bol
-  py-kill-statement-bol
-  py-delete-statement-bol
+  etc.
+
+- While commands "py-beginning..." resp. "py-end..." compute the context, 
+  selecting the corresponding beginning or end,
+  new "py-up...", "py-down..." jump regexp-based to the 
+  next element in buffer.
+  See also menu PyEdit. 
 
 New in version 6.0.11
 ---------------------
