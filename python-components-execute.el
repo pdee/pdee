@@ -735,12 +735,15 @@ See also `py-execute-region'. "
 
 (defun py-insert-execute-directory ()
   (goto-char (point-min))
-  (if (re-search-forward py-encoding-string-re nil (quote move))
+  (if (re-search-forward py-encoding-string-re nil t 1)
       (progn
         (newline)
         (insert (concat "import os; os.chdir(\"" py-execute-directory "\")\n")))
     (goto-char (point-min))
-    (forward-line 2)
+    (when (looking-at py-shebang-regexp)
+      (forward-line 1))
+    (when (looking-at " *# *-*- *coding:")
+      (forward-line 1))
     (newline)
     (insert (concat "import os; os.chdir(\"" py-execute-directory "\")\n"))))
 

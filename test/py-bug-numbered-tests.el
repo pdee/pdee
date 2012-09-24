@@ -3022,5 +3022,16 @@ def foo(a):
     (py-electric-colon 1)
     (assert (eq 4 (current-indentation)) nil "dont-indent-code-unnecessarily-lp-1048778-test failed"))
 
+(defun IndentationError-expected-an-indented-block-when-execute-lp-1055569-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "if __name__ == '__main__':
+    print 'hello'
+"))
+  (py-bug-tests-intern 'IndentationError-expected-an-indented-block-when-execute-lp-1055569-base arg teststring)))
+
+(defun IndentationError-expected-an-indented-block-when-execute-lp-1055569-base ()
+    (assert (py-execute-buffer) nil "IndentationError-expected-an-indented-block-when-execute-lp-1055569-test failed"))
+
+
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

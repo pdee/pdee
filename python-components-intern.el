@@ -724,8 +724,7 @@ and `pass'.  This doesn't catch embedded statements."
           (if (and (looking-at regexp)(not (nth 1 (syntax-ppss)))(not (nth 8 (syntax-ppss))))
               (goto-char last)
             (unless (py-travel-current-indent ind (point))
-              (goto-char last)) 
-))
+              (goto-char last))))
       (py-look-downward-for-beginning regexp))
     ;; py-travel-current-indent will stop of clause at equal indent
     (unless (and (or (string= regexp py-clause-re) (string= regexp py-block-or-clause-re))(< orig (point)))
@@ -760,7 +759,7 @@ If succesful return position. "
                      (py-beginning-of-statement)
                      (if (py-statement-opens-block-p)
                          (current-indentation)
-                         (- (current-indentation) py-indent-offset)))))
+                       (- (current-indentation) py-indent-offset)))))
           (orig (or orig (point)))
           erg last)
       (end-of-line)
