@@ -1733,7 +1733,6 @@ Currently-active file is at the head of the list.")
 ;;(require 'components-shell-completion)
 (require 'python-components-skeletons)
 (require 'python-components-re-forms)
-(require 'python-components-up-down)
 (require 'python-components-bol-forms)
 (require 'python-components-exec-forms)
 (require 'python-extended-executes)
@@ -3524,29 +3523,29 @@ Delete innermost compound statement at point, don't store deleted string in kill
              )
             ("Def-or-class ... "
              ["Beginning of Def-or-Class" py-beginning-of-def-or-class
-              :help "`py-beginning-of-def-or-class'
+             :help "`py-beginning-of-def-or-class'
 Go to start of innermost definition at point"]
 
-             ["End of Def-or-Class" py-end-of-def-or-class
-              :help "`py-end-of-def-or-class'
+            ["End of Def-or-Class" py-end-of-def-or-class
+             :help "`py-end-of-def-or-class'
 Go to end of innermost function definition at point"]
 
-             ["Down def-or-class" py-down-def-or-class
-              :help "`py-down-def-or-class'
+            ["Down def-or-class" py-down-def-or-class
+             :help "`py-down-def-or-class'
 
 Go to the beginning of next def-or-class below in buffer.
 
 Returns indentation if def-or-class found, nil otherwise. "]
 
-             ["Up def-or-class" py-up-def-or-class
-              :help "`py-up-def-or-class'
+            ["Up def-or-class" py-up-def-or-class
+             :help "`py-up-def-or-class'
 
 Go upwards to the beginning of next def-or-class below in buffer.
 
 Returns indentation if def-or-class found, nil otherwise. "]
 
-             ["Copy Def-or-Class" py-copy-def-or-class
-              :help "`py-copy-def-or-class'
+            ["Copy Def-or-Class" py-copy-def-or-class
+             :help "`py-copy-def-or-class'
 Copy innermost definition at point"]
 
              ["Kill def-or-class" py-kill-def-or-class
@@ -3557,29 +3556,29 @@ Delete innermost compound statement at point, store deleted string in kill-ring"
               :help "`py-delete-def-or-class'
 Delete def-or-class at point, don't store deleted string in kill-ring"]
 
-             )
+            )
 
             ("Clause ... "
-             ["Copy clause" py-copy-clause
-              :help "`py-copy-clause'
+            ["Copy clause" py-copy-clause
+             :help "`py-copy-clause'
 Copy clause at point"]
 
-             ["Beginning of clause" py-beginning-of-clause
-              :help "`py-beginning-of-clause'
+            ["Beginning of clause" py-beginning-of-clause
+             :help "`py-beginning-of-clause'
 Go to start of innermost compound statement at point"]
-             ["End of clause" py-end-of-clause
-              :help "`py-end-of-clause'
+            ["End of clause" py-end-of-clause
+             :help "`py-end-of-clause'
 Go to end of innermost compound statement at point"]
 
-             ["Down clause" py-down-clause
-              :help "`py-down-clause'
+            ["Down clause" py-down-clause
+             :help "`py-down-clause'
 
 Go to the beginning of next clause below in buffer.
 
 Returns indentation if clause found, nil otherwise. "]
 
-             ["Up clause" py-up-clause
-              :help "`py-up-clause'
+            ["Up clause" py-up-clause
+             :help "`py-up-clause'
 
 Go upwards to the beginning of next clause below in buffer.
 
@@ -3597,7 +3596,8 @@ Delete innermost compound statement at point, store deleted string in kill-ring"
               :help "`py-delete-clause'
 Delete innermost compound statement at point, don't store deleted string in kill-ring"]
 
-             )
+            )
+            
 
             ("Statement ... "
              ["Beginning of Statement" py-beginning-of-statement
@@ -3607,6 +3607,13 @@ Go to start of innermost definition at point"]
              ["End of Statement" py-end-of-statement
               :help "`py-end-of-statement'
 Go to end of innermost function definition at point"]
+
+             ["Up statement" py-up-statement
+              :help "`py-up-statement'
+
+Go upwards to the beginning of next statement below in buffer.
+
+Returns indentation if statement found, nil otherwise. "]
 
              ["Copy statement" py-copy-statement
               :help "`py-copy-statement'
@@ -3642,11 +3649,11 @@ Expression here is conceived as the syntactical component of a statement in Pyth
 Operators however are left aside resp. limit py-expression designed for edit-purposes."]
 
              ["Beginning of expression" py-beginning-of-expression
-              :help "`py-beginning-of-expression'
+             :help "`py-beginning-of-expression'
 Go to start of a Python expression"]
 
              ["End of expression" py-end-of-expression
-              :help "`py-end-of-expression'
+             :help "`py-end-of-expression'
 Go to end of a Python expression"]
 
              ["Copy expression" py-copy-expression
@@ -3660,7 +3667,7 @@ Delete innermost compound statement at point, store deleted string in kill-ring"
              ["Delete expression" py-delete-expression
               :help "`py-delete-expression'
 Delete expression at point, don't store deleted string in kill-ring"]
-             )
+            )
             ("Partial expression ..."
 
              ["Beginning of minor expression" py-beginning-of-partial-expression
@@ -3689,33 +3696,33 @@ Delete innermost compound statement at point, store deleted string in kill-ring"
               :help "`py-delete-partial-expression'
 Delete partial-expression at point, don't store deleted string in kill-ring"]
 
-             )
+            )
 
             ("Class ... "
              ["Beginning of Class" py-beginning-of-class
-              :help "`py-beginning-of-class'
+             :help "`py-beginning-of-class'
 Go to start of innermost definition at point"]
 
-             ["End of Class" py-end-of-class
-              :help "`py-end-of-class'
+            ["End of Class" py-end-of-class
+             :help "`py-end-of-class'
 Go to end of innermost function definition at point"]
 
-             ["Down class" py-down-class
-              :help "`py-down-class'
+            ["Down class" py-down-class
+             :help "`py-down-class'
 
 Go to the beginning of next class below in buffer.
 
 Returns indentation if class found, nil otherwise. "]
 
-             ["Up class" py-up-class
-              :help "`py-up-class'
+            ["Up class" py-up-class
+             :help "`py-up-class'
 
 Go upwards to the beginning of next class below in buffer.
 
 Returns indentation if class found, nil otherwise. "]
 
-             ["Copy class" py-copy-class
-              :help "`py-copy-class'
+            ["Copy class" py-copy-class
+             :help "`py-copy-class'
 Copy innermost definition at point"]
 
              ["Kill class" py-kill-class
@@ -3726,33 +3733,33 @@ Delete innermost compound statement at point, store deleted string in kill-ring"
               :help "`py-delete-class'
 Delete class at point, don't store deleted string in kill-ring"]
 
-             )
+            )
 
             ("Def ... "
              ["Beginning of Def" py-beginning-of-def
-              :help "`py-beginning-of-def'
+             :help "`py-beginning-of-def'
 Go to start of innermost definition at point"]
 
-             ["End of Def" py-end-of-def
-              :help "`py-end-of-def'
+            ["End of Def" py-end-of-def
+             :help "`py-end-of-def'
 Go to end of innermost function definition at point"]
 
-             ["Down def" py-down-def
-              :help "`py-down-def'
+            ["Down def" py-down-def
+             :help "`py-down-def'
 
 Go to the beginning of next def below in buffer.
 
 Returns indentation if def found, nil otherwise. "]
 
-             ["Up def" py-up-def
-              :help "`py-up-def'
+            ["Up def" py-up-def
+             :help "`py-up-def'
 
 Go upwards to the beginning of next def below in buffer.
 
 Returns indentation if def found, nil otherwise. "]
 
-             ["Copy def" py-copy-def
-              :help "`py-copy-def'
+            ["Copy def" py-copy-def
+             :help "`py-copy-def'
 Copy innermost definition at point"]
 
              ["Kill def" py-kill-def
@@ -3763,7 +3770,7 @@ Delete innermost compound statement at point, store deleted string in kill-ring"
               :help "`py-delete-def'
 Delete def at point, don't store deleted string in kill-ring"]
 
-             )
+            )
             "-"
             (" Block bol ... "
              ["Beginning of block bol" py-beginning-of-block-bol
@@ -3775,18 +3782,6 @@ Returns position reached, if successful, nil otherwise. "]
              ["End of block bol" py-end-of-block-bol
               :help "`py-end-of-block-bol'
 Go to beginning of line following end of block.
-
-Returns position reached, if successful, nil otherwise. "]
-
-             ["Up block bol" py-up-block-bol
-              :help "`py-up-block-bol'
-Go to next block upwards in buffer if any. Go to beginning of line.
-
-Returns position reached, if successful, nil otherwise. "]
-
-             ["Down block bol" py-down-block-bol
-              :help "`py-down-block-bol'
-Go to next block downwards in buffer if any. Go to beginning of line.
 
 Returns position reached, if successful, nil otherwise. "]
 
@@ -3820,18 +3815,6 @@ Go to beginning of line following end of clause.
 
 Returns position reached, if successful, nil otherwise. "]
 
-             ["Up clause bol" py-up-clause-bol
-              :help "`py-up-clause-bol'
-Go to next clause upwards in buffer if any. Go to beginning of line.
-
-Returns position reached, if successful, nil otherwise. "]
-
-             ["Down clause bol" py-down-clause-bol
-              :help "`py-down-clause-bol'
-Go to next clause downwards in buffer if any. Go to beginning of line.
-
-Returns position reached, if successful, nil otherwise. "]
-
              ["Mark clause bol" py-mark-clause-bol
               :help "`py-mark-clause-bol'
 Mark clause at point. "]
@@ -3847,7 +3830,7 @@ Kill clause at point. "]
              ["Delete clause bol" py-delete-clause-bol
               :help "`py-delete-clause-bol'
 Delete clause at point. "]
-             )
+)
             (" Block-Or-Clause bol ... "
              ["Beginning of block-or-clause bol" py-beginning-of-block-or-clause-bol
               :help "`py-beginning-of-block-or-clause-bol'
@@ -3858,18 +3841,6 @@ Returns position reached, if successful, nil otherwise. "]
              ["End of block-or-clause bol" py-end-of-block-or-clause-bol
               :help "`py-end-of-block-or-clause-bol'
 Go to beginning of line following end of block-or-clause.
-
-Returns position reached, if successful, nil otherwise. "]
-
-             ["Up block-or-clause bol" py-up-block-or-clause-bol
-              :help "`py-up-block-or-clause-bol'
-Go to next block-or-clause upwards in buffer if any. Go to beginning of line.
-
-Returns position reached, if successful, nil otherwise. "]
-
-             ["Down block-or-clause bol" py-down-block-or-clause-bol
-              :help "`py-down-block-or-clause-bol'
-Go to next block-or-clause downwards in buffer if any. Go to beginning of line.
 
 Returns position reached, if successful, nil otherwise. "]
 
@@ -3888,6 +3859,64 @@ Kill block-or-clause at point. "]
              ["Delete block-or-clause bol" py-delete-block-or-clause-bol
               :help "`py-delete-block-or-clause-bol'
 Delete block-or-clause at point. "]
+)
+            (" Def-Or-Class bol ... "
+             ["Beginning of def-or-class bol" py-beginning-of-def-or-class-bol
+              :help "`py-beginning-of-def-or-class-bol'
+Go to beginning of line at beginning of def-or-class.
+
+Returns position reached, if successful, nil otherwise. "]
+
+             ["End of def-or-class bol" py-end-of-def-or-class-bol
+              :help "`py-end-of-def-or-class-bol'
+Go to beginning of line following end of def-or-class.
+
+Returns position reached, if successful, nil otherwise. "]
+
+             ["Mark def-or-class bol" py-mark-def-or-class-bol
+              :help "`py-mark-def-or-class-bol'
+Mark def-or-class at point. "]
+
+             ["Copy def-or-class bol" py-copy-def-or-class-bol
+              :help "`py-copy-def-or-class-bol'
+Copy def-or-class at point. "]
+
+             ["Kill def-or-class bol" py-kill-def-or-class-bol
+              :help "`py-kill-def-or-class-bol'
+Kill def-or-class at point. "]
+
+             ["Delete def-or-class bol" py-delete-def-or-class-bol
+              :help "`py-delete-def-or-class-bol'
+Delete def-or-class at point. "]
+)
+            (" Statement bol ... "
+             ["Beginning of statement bol" py-beginning-of-statement-bol
+              :help "`py-beginning-of-statement-bol'
+Go to beginning of line at beginning of statement.
+
+Returns position reached, if successful, nil otherwise. "]
+
+             ["End of statement bol" py-end-of-statement-bol
+              :help "`py-end-of-statement-bol'
+Go to beginning of line following end of statement.
+
+Returns position reached, if successful, nil otherwise. "]
+
+             ["Mark statement bol" py-mark-statement-bol
+              :help "`py-mark-statement-bol'
+Mark statement at point. "]
+
+             ["Copy statement bol" py-copy-statement-bol
+              :help "`py-copy-statement-bol'
+Copy statement at point. "]
+
+             ["Kill statement bol" py-kill-statement-bol
+              :help "`py-kill-statement-bol'
+Kill statement at point. "]
+
+             ["Delete statement bol" py-delete-statement-bol
+              :help "`py-delete-statement-bol'
+Delete statement at point. "]
              )
             (" Def bol ... "
              ["Beginning of def bol" py-beginning-of-def-bol
@@ -3899,18 +3928,6 @@ Returns position reached, if successful, nil otherwise. "]
              ["End of def bol" py-end-of-def-bol
               :help "`py-end-of-def-bol'
 Go to beginning of line following end of def.
-
-Returns position reached, if successful, nil otherwise. "]
-
-             ["Up def bol" py-up-def-bol
-              :help "`py-up-def-bol'
-Go to next def upwards in buffer if any. Go to beginning of line.
-
-Returns position reached, if successful, nil otherwise. "]
-
-             ["Down def bol" py-down-def-bol
-              :help "`py-down-def-bol'
-Go to next def downwards in buffer if any. Go to beginning of line.
 
 Returns position reached, if successful, nil otherwise. "]
 
@@ -3943,18 +3960,6 @@ Go to beginning of line following end of class.
 
 Returns position reached, if successful, nil otherwise. "]
 
-             ["Up class bol" py-up-class-bol
-              :help "`py-up-class-bol'
-Go to next class upwards in buffer if any. Go to beginning of line.
-
-Returns position reached, if successful, nil otherwise. "]
-
-             ["Down class bol" py-down-class-bol
-              :help "`py-down-class-bol'
-Go to next class downwards in buffer if any. Go to beginning of line.
-
-Returns position reached, if successful, nil otherwise. "]
-
              ["Mark class bol" py-mark-class-bol
               :help "`py-mark-class-bol'
 Mark class at point. "]
@@ -3971,75 +3976,8 @@ Kill class at point. "]
               :help "`py-delete-class-bol'
 Delete class at point. "]
              )
-            (" Def-Or-Class bol ... "
-             ["Beginning of def-or-class bol" py-beginning-of-def-or-class-bol
-              :help "`py-beginning-of-def-or-class-bol'
-Go to beginning of line at beginning of def-or-class.
+            
 
-Returns position reached, if successful, nil otherwise. "]
-
-             ["End of def-or-class bol" py-end-of-def-or-class-bol
-              :help "`py-end-of-def-or-class-bol'
-Go to beginning of line following end of def-or-class.
-
-Returns position reached, if successful, nil otherwise. "]
-
-             ["Up def-or-class bol" py-up-def-or-class-bol
-              :help "`py-up-def-or-class-bol'
-Go to next def-or-class upwards in buffer if any. Go to beginning of line.
-
-Returns position reached, if successful, nil otherwise. "]
-
-             ["Down def-or-class bol" py-down-def-or-class-bol
-              :help "`py-down-def-or-class-bol'
-Go to next def-or-class downwards in buffer if any. Go to beginning of line.
-
-Returns position reached, if successful, nil otherwise. "]
-
-             ["Mark def-or-class bol" py-mark-def-or-class-bol
-              :help "`py-mark-def-or-class-bol'
-Mark def-or-class at point. "]
-
-             ["Copy def-or-class bol" py-copy-def-or-class-bol
-              :help "`py-copy-def-or-class-bol'
-Copy def-or-class at point. "]
-
-             ["Kill def-or-class bol" py-kill-def-or-class-bol
-              :help "`py-kill-def-or-class-bol'
-Kill def-or-class at point. "]
-
-             ["Delete def-or-class bol" py-delete-def-or-class-bol
-              :help "`py-delete-def-or-class-bol'
-Delete def-or-class at point. "]
-             )
-            (" Statement bol ... "
-             ["Beginning of statement bol" py-beginning-of-statement-bol
-              :help "`py-beginning-of-statement-bol'
-Go to beginning of line at beginning of statement.
-
-Returns position reached, if successful, nil otherwise. "]
-
-             ["End of statement bol" py-end-of-statement-bol
-              :help "`py-end-of-statement-bol'
-Go to beginning of line following end of statement.
-
-Returns position reached, if successful, nil otherwise. "]
-
-             ["Mark statement bol" py-mark-statement-bol
-              :help "`py-mark-statement-bol'
-Mark statement at point. "]
-
-             ["Copy statement bol" py-copy-statement-bol
-              :help "`py-copy-statement-bol'
-Copy statement at point. "]
-
-             ["Kill statement bol" py-kill-statement-bol
-              :help "`py-kill-statement-bol'
-Kill statement at point. "]
-
-             ["Delete statement bol" py-delete-statement-bol
-              :help "`py-delete-statement-bol'
-Delete statement at point. "])
             "-"
             ["Backward into nomenclature" py-backward-into-nomenclature
              :help " `py-backward-into-nomenclature'

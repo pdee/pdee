@@ -43,7 +43,6 @@ ORGWEBPAGE/Changes.txt
 
 # allow tmp and test directories that will not be tracked
 
-test
 t
 auto
 tmp
@@ -85,3 +84,9 @@ python-modes/pdee/devel/*
 *.pyc
 setup.py
 python-mode-compile.sh
+
+test/py-shell-completion-tests.el
+test/python-executes-test.el
+test/python-extended-executes-test.el
+test/python-mode-script-completion-test.sh
+test/python-mode-shell-complete-test.sh

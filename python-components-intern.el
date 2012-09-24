@@ -680,16 +680,13 @@ and `pass'.  This doesn't catch embedded statements."
                   (py-go-to-keyword py-extended-block-or-clause-re)
                   (when (py-statement-opens-block-p regexp)
                     (point))))
-           ind res last)
+           ind res)
       (if erg
           (progn
             (setq ind (+ py-indent-offset (current-indentation)))
             (py-end-of-statement)
-            (setq last (point))
             (forward-line 1)
-            (if (and (looking-at regexp)(not (nth 1 (syntax-ppss)))(not (nth 8 (syntax-ppss))))
-                (goto-char last)
-              (setq erg (py-travel-current-indent ind))))
+            (setq erg (py-travel-current-indent ind)))
         (goto-char orig)
         (py-look-downward-for-clause))
       (when (empty-line-p)
@@ -718,35 +715,34 @@ and `pass'.  This doesn't catch embedded statements."
           (setq py-bol-forms-last-indent (cons this-command (current-indentation)))
           (setq ind (+ py-indent-offset (current-indentation)))
           (py-end-of-statement)
-          (setq last (point))
           (forward-line 1)
+<<<<<<< HEAD
           ;; when jumping clause for clause
           (if (and (looking-at regexp)(not (nth 1 (syntax-ppss)))(not (nth 8 (syntax-ppss))))
               (goto-char last)
             (unless (py-travel-current-indent ind (point))
               (goto-char last))))
+=======
+          (py-travel-current-indent ind))
+>>>>>>> parent of a8d44c9... Upward commands; lp:1044122
       (py-look-downward-for-beginning regexp))
-    ;; py-travel-current-indent will stop of clause at equal indent
-    (unless (and (or (string= regexp py-clause-re) (string= regexp py-block-or-clause-re))(< orig (point)))
-      (if (and (setq last (point)) (py-look-downward-for-clause nil orig))
-          (progn
-            (while (and (setq last (point))
-                        (py-look-downward-for-clause nil orig)))
-            (goto-char last)
-            (py-end-of-clause))
-        (goto-char last)))
+    (when (py-look-downward-for-clause nil orig)
+      (while (and (setq last (point))
+                  (py-look-downward-for-clause nil orig)))
+      (goto-char last)
+      (py-end-of-clause))
     (when (< orig (point))
       (setq erg (point)))
     erg))
 
 (defun py-look-downward-for-beginning (regexp)
   "When above any beginning of FORM, search downward. "
-  (let ((orig (point))
-        erg)
-        (while (and (setq erg (point)) (not (eobp)) (re-search-forward regexp nil t 1)
-                    (not (nth 8 (syntax-ppss))) (not (nth 1 (syntax-ppss)))))
-        (when (< orig erg)
-          erg)))
+  (let ((erg (re-search-forward regexp nil t 1)))
+    (if (and erg (not (py-in-string-or-comment-p))
+             (not (py-in-list-p)))
+        erg
+      (unless (eobp)
+        (py-look-downward-for-beginning regexp)))))
 
 (defun py-look-downward-for-clause (&optional ind orig)
   "If beginning of other clause exists downward in current block.

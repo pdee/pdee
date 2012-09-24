@@ -526,19 +526,13 @@ http://docs.python.org/reference/compound_stmts.html
           (done done)
           erg)
       (cond
-       ((or (empty-line-p)(nth 8 pps))
-        ;; when travelling large sections of empty or comment lines
-        ;; recursive calls might run into `max-specpdl-size' error
-        (while (and (not (bobp)) (or (empty-line-p)(setq this (nth 8 (syntax-ppss)))))
-          (if (empty-line-p)
-              (skip-chars-backward " \t\r\n\f")
-            (when this
-              (goto-char (1- this)))))
+       ((empty-line-p)
+        (skip-chars-backward " \t\r\n\f")
         (py-beginning-of-statement orig done))
-       ;; (py-beginning-of-statement orig done))
-       ;; ((nth 8 pps)
-       ;; (goto-char (1- (nth 8 pps)))
-       ;; (py-beginning-of-statement orig done))
+       ((nth 8 pps)
+        (goto-char (1- (nth 8 pps)))
+        ;; (setq done t)
+        (py-beginning-of-statement orig done))
        ((nth 1 pps)
         (goto-char (1- (nth 1 pps)))
         (setq done t)
@@ -661,9 +655,9 @@ To go just beyond the final line of the current statement, use `py-down-statemen
         (forward-comment 99999)
         (setq done t)
         (skip-chars-forward "^;" (line-end-position))
-        (skip-chars-backward " \t\r\n\f" (line-beginning-position))
-        ;; (py-beginning-of-comment)
-        ;; (skip-chars-backward " \t\r\n\f")
+        (skip-chars-backward " \t\r\n\f")
+        (py-beginning-of-comment)
+        (skip-chars-backward " \t\r\n\f")
         (py-end-of-statement orig done))
        ((py-current-line-backslashed-p)
         (skip-chars-forward " \t\r\n\f")
@@ -1325,6 +1319,111 @@ Return beginning position, nil if not inside."
             (when iact (message "%s" last))
             last))))))
 
+;;; Py-down commands start
+(defun py-down-statement ()
+  "Go to the beginning of next statement below in buffer.
+
+Returns indentation if statement found, nil otherwise. "
+  (interactive)
+  (let* ((orig (point))
+         erg)
+    (if (eobp)
+        (setq erg nil)
+      (progn
+        (when (setq erg (py-end-of-statement))
+          (if (< orig (setq erg (py-beginning-of-statement-position)))
+              (goto-char erg)
+            (setq erg (py-end-of-statement))
+            (when erg
+              (py-beginning-of-statement))))
+        (when erg
+          (setq erg (current-column)))))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defun py-down-block ()
+  "Go to the beginning of next block below in buffer.
+
+Returns indentation if block found, nil otherwise. "
+  (interactive)
+  (let* ((orig (point))
+         erg)
+    (if (eobp)
+        (setq erg nil)
+      (while (and (re-search-forward py-block-re nil (quote move))
+                  (nth 8 (if (featurep 'xemacs)
+                             (parse-partial-sexp ppstart (point))
+                           (syntax-ppss)))))
+      (back-to-indentation)
+      (when (looking-at py-block-re) (setq erg (current-indentation)))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+      erg)))
+
+(defun py-down-clause ()
+  "Go to the beginning of next clause below in buffer.
+
+Returns indentation if clause found, nil otherwise. "
+  (interactive)
+  (let* ((orig (point))
+         erg)
+    (if (eobp)
+        (setq erg nil)
+      (while (and (setq erg (py-down-statement))(not (looking-at py-clause-re)))))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defun py-down-block-or-clause ()
+  "Go to the beginning of next block-or-clause below in buffer.
+
+Returns indentation if block-or-clause found, nil otherwise. "
+  (interactive)
+  (let* ((orig (point))
+         erg)
+    (if (eobp)
+        (setq erg nil)
+      (while (and (setq erg (py-down-statement))(not (looking-at py-block-or-clause-re)))))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defun py-down-def ()
+  "Go to the beginning of next function definition below in buffer.
+
+Returns indentation if found, nil otherwise. "
+  (interactive)
+  (let* ((orig (point))
+         erg)
+    (if (eobp)
+        (setq erg nil)
+      (while (and (setq erg (py-down-statement))(not (looking-at py-def-re)))))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defun py-down-class ()
+  "Go to the beginning of next class below in buffer.
+
+Returns indentation if class found, nil otherwise. "
+  (interactive)
+  (let* ((orig (point))
+         erg)
+    (if (eobp)
+        (setq erg nil)
+      (while (and (setq erg (py-down-statement))(not (looking-at py-class-re)))))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defun py-down-def-or-class ()
+  "Go to the beginning of next def-or-class below in buffer.
+
+Returns indentation if def-or-class found, nil otherwise. "
+  (interactive)
+  (let* ((orig (point))
+         erg)
+    (if (eobp)
+        (setq erg nil)
+      (while (and (setq erg (py-down-statement))(not (looking-at py-def-or-class-re)))))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
 (defun py-forward-into-nomenclature (&optional arg iact)
   "Move forward to end of a nomenclature section or word.
 
@@ -1418,18 +1517,15 @@ With universal arg \C-u insert a `%'. "
         (ar-braced-beginning-atpt))
        (t (self-insert-command 1))))))
 
-(defun py-travel-current-indent (indent &optional orig)
+(defun py-travel-current-indent (indent)
   "Moves down until clause is closed, i.e. current indentation is reached.
 
 Takes a list, INDENT and START position. "
-  (unless (eobp)
-    (let ((orig (or orig (point)))
-          last)
-      (while (and (setq last (point))(not (eobp))(py-end-of-statement)
-                  (or (<= indent (progn (save-excursion (py-beginning-of-statement)(current-indentation))))(eq last (line-beginning-position)))))
-      (goto-char last)
-      (when (< orig last)
-        last))))
+  (let (last)
+    (while (and (setq last (point))(not (eobp))(py-end-of-statement)
+                (<= indent (progn (save-excursion (py-beginning-of-statement)(current-indentation))))))
+    (when last (goto-char last))
+    last))
 
 (provide 'python-components-move)
 ;;; python-components-move.el ends here

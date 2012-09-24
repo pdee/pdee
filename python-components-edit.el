@@ -299,46 +299,30 @@ Returns `py-indent-offset'"
   (save-excursion
     (let* ((orig (or orig (point)))
            (origline (or origline (py-count-lines)))
-           done
            (firstindent
-            (cond ((py-beginning-of-statement-p)
-                   (current-column))
-                  ((py-beginning-of-statement)
-                   (current-column))
-                  (t (goto-char orig)
-                     (if (py-down-block)
-                         (current-column)
-                       ;; if nothing suitable around, us default
-                       (setq done t)
-                       (default-value 'py-indent-offset)))))
-           (secondindent
-            (if done (when (and
-                            (py-end-of-statement)
-                            (py-end-of-statement))
-                       (current-indentation))
-              (when firstindent
-                (if (py-statement-opens-block-p)
-                    (progn
-                      (when (and (py-end-of-statement)
-                                 (py-end-of-statement))
-                        (current-indentation)))
-                  (if (py-beginning-of-block)
-                      (progn
-                        (setq firstindent (current-indentation))
-                        (when (and (py-end-of-statement)
-                                   (py-end-of-statement))
-                          (current-indentation))))))))
-           guessed)
-      (unless secondindent
-        (setq secondindent
-              (when (py-end-of-block)
-                (progn (setq first (current-indentation))
-                       (when (and (py-end-of-statement)
-                                  (py-end-of-statement))
-                         (current-indentation))))))
-      (when secondindent
-        (setq guessed
-              (abs (- secondindent firstindent))))
+            (if (eq origline (py-count-lines))
+                (progn (py-beginning-of-statement)
+                       (if (eq origline (py-count-lines))
+                           (progn (py-beginning-of-statement)(current-column)) (current-column)))))
+           (erg (when firstindent
+                  (py-beginning-of-block)
+                  (if
+                      (< (current-column) firstindent)
+                      (current-column)
+                    (progn (goto-char orig)
+                           ;; need a block-start
+                           (when
+                               (setq firstindent (progn (py-beginning-of-block)(current-indentation)))
+                             (when (eq origline (py-count-lines))
+                               (setq firstindent (progn (py-beginning-of-block)(current-indentation))))
+                             (when (ignore-errors (< firstindent (py-down-statement)))
+                               (current-indentation)))))))
+           (second (progn (py-end-of-statement)
+                          (py-end-of-statement)
+                          (py-beginning-of-statement)
+                          (current-indentation)))
+           (guessed (when erg
+                      (abs (- second erg)))))
       (if (and guessed (py-guessed-sanity-check guessed))
           (setq py-indent-offset guessed)
         (setq py-indent-offset (default-value 'py-indent-offset)))
@@ -371,11 +355,9 @@ Returns `py-indent-offset'"
 The defun visible is the one that contains point or follows point. "
   (interactive)
   (save-excursion
-    (let ((start (if (py-statement-opens-def-or-class-p)
-                     (point)
-                   (py-beginning-of-def-or-class))))
+    (let ((end (py-beginning-of-def-or-class)))
       (py-end-of-def-or-class)
-      (narrow-to-region (point) start))))
+      (narrow-to-region (point) end))))
 
 
 

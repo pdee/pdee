@@ -820,147 +820,174 @@ Return the name of the function or class, if curser is in, return nil otherwise.
 
 py-beginning-of-block
 ---------------------
-Returns beginning of block if successful, nil otherwise.
+Go to beginning of block.
+
+Returns beginning of block if successful, nil otherwise
 
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html
 
 py-end-of-block
 ---------------
-Go to the end of block.
+Go to end of block.
 
-Returns position reached, if any, nil otherwise.
+Returns end of block if successful, nil otherwise
 
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html
 
 py-beginning-of-clause
 ----------------------
-Returns beginning of clause if successful, nil otherwise.
+Go to beginning of clause.
+
+Returns beginning of clause if successful, nil otherwise
 
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html
 
 py-end-of-clause
 ----------------
-Go to the end of clause.
+Go to end of clause.
 
-Returns position reached, if any, nil otherwise.
+Returns end of clause if successful, nil otherwise
 
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html
 
 py-beginning-of-block-or-clause
 -------------------------------
-Returns beginning of block-or-clause if successful, nil otherwise.
+Go to beginning of block-or-clause.
+
+Returns beginning of block-or-clause if successful, nil otherwise
 
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html
 
 py-end-of-block-or-clause
 -------------------------
-Go to the end of block-or-clause.
+Go to end of block-or-clause.
 
-Returns position reached, if any, nil otherwise.
+Returns end of block-or-clause if successful, nil otherwise
 
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html
 
 py-beginning-of-def
 -------------------
-Returns beginning of def if successful, nil otherwise.
+Go to beginning of def.
+
+Returns beginning of def if successful, nil otherwise
+
+With M-x universal argument or `py-mark-decorators' set to `t', decorators are marked too.
 
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html
 
 py-end-of-def
 -------------
-Go to the end of def.
+Go to end of def.
 
-Returns position reached, if any, nil otherwise.
+Returns end of def if successful, nil otherwise
+
+With M-x universal argument or `py-mark-decorators' set to `t', decorators are marked too.
 
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html
 
 py-beginning-of-class
 ---------------------
-Returns beginning of class if successful, nil otherwise.
+Go to beginning of class.
+
+Returns beginning of class if successful, nil otherwise
+
+With M-x universal argument or `py-mark-decorators' set to `t', decorators are marked too.
 
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html
 
 py-end-of-class
 ---------------
-Go to the end of class.
+Go to end of class.
 
-Returns position reached, if any, nil otherwise.
+Returns end of class if successful, nil otherwise
+
+With M-x universal argument or `py-mark-decorators' set to `t', decorators are marked too.
 
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html
 
 py-beginning-of-def-or-class
 ----------------------------
-Returns beginning of def-or-class if successful, nil otherwise.
+Go to beginning of def-or-class.
 
-With C-u go to beginning of class.
+Returns beginning of def-or-class if successful, nil otherwise
+
+With M-x universal argument or `py-mark-decorators' set to `t', decorators are marked too.
 
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html
 
 py-end-of-def-or-class
 ----------------------
-Go to the end of def-or-class.
+Go to end of def-or-class.
 
-With C-u go to end of class.
-Returns position reached, if any, nil otherwise.
+Returns end of def-or-class if successful, nil otherwise
+
+With M-x universal argument or `py-mark-decorators' set to `t', decorators are marked too.
 
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html
 
 py-beginning-of-if-block
 ------------------------
-Returns beginning of if-block if successful, nil otherwise.
+Go to beginning of if-block.
+
+Returns beginning of if-block if successful, nil otherwise
 
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html
 
 py-end-of-if-block
 ------------------
-Go to the end of if-block.
+Go to end of if-block.
 
-Returns position reached, if any, nil otherwise.
+Returns end of if-block if successful, nil otherwise
 
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html
 
 py-beginning-of-try-block
 -------------------------
-Returns beginning of try-block if successful, nil otherwise.
+Go to beginning of try-block.
+
+Returns beginning of try-block if successful, nil otherwise
 
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html
 
 py-end-of-try-block
 -------------------
-Go to the end of try-block.
+Go to end of try-block.
 
-Returns position reached, if any, nil otherwise.
+Returns end of try-block if successful, nil otherwise
 
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html
 
 py-beginning-of-minor-block
 ---------------------------
-Returns beginning of minor-block if successful, nil otherwise.
+Go to beginning of minor-block.
+
+Returns beginning of minor-block if successful, nil otherwise
 
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html
 
 py-end-of-minor-block
 ---------------------
-Go to the end of minor-block.
+Go to end of minor-block.
 
-Returns position reached, if any, nil otherwise.
+Returns end of minor-block if successful, nil otherwise
 
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html
@@ -1589,6 +1616,12 @@ Go to the beginning of next block upwards in buffer.
 
 Return position if block found, nil otherwise. 
 
+py-up-minor-block
+-----------------
+Go to the beginning of next minor-block upwards in buffer.
+
+Return position if minor-block found, nil otherwise. 
+
 py-up-clause
 ------------
 Go to the beginning of next clause upwards in buffer.
@@ -1624,6 +1657,12 @@ py-down-block
 Go to the beginning of next block below in buffer.
 
 Return position if block found, nil otherwise. 
+
+py-down-minor-block
+-------------------
+Go to the beginning of next minor-block below in buffer.
+
+Return position if minor-block found, nil otherwise. 
 
 py-down-clause
 --------------
@@ -1661,6 +1700,13 @@ Go to the beginning of next block upwards in buffer.
 
 Go to beginning of line.
 Return position if block found, nil otherwise. 
+
+py-up-minor-block-bol
+---------------------
+Go to the beginning of next minor-block upwards in buffer.
+
+Go to beginning of line.
+Return position if minor-block found, nil otherwise. 
 
 py-up-clause-bol
 ----------------
@@ -1703,6 +1749,13 @@ Go to the beginning of next block below in buffer.
 
 Go to beginning of line
 Return position if block found, nil otherwise 
+
+py-down-minor-block-bol
+-----------------------
+Go to the beginning of next minor-block below in buffer.
+
+Go to beginning of line
+Return position if minor-block found, nil otherwise 
 
 py-down-clause-bol
 ------------------
