@@ -2194,7 +2194,7 @@ print u'\\xA9'
 for x in y:
     for z in l:
         for r in t:
-                pass # <--- indents here. Pressing <backspace> dedents eight spaces (i.e. you can go to column 0 in two presess)
+            pass # <--- indents here. Pressing <backspace> dedents eight spaces (i.e. you can go to column 0 in two presess)
 ")))
     (py-bug-tests-intern 'fourth-level-blocks-indent-incorrectly-lp:939577-base arg teststring)))
 
@@ -2202,7 +2202,7 @@ for x in y:
   (goto-char 88)
   (assert (eq 4 (py-guess-indent-offset)) nil "fourth-level-blocks-indent-incorrectly-lp:939577-test failed")
   (goto-char 225)
-  (assert (eq 8 (py-guess-indent-offset)) nil "fourth-level-blocks-indent-incorrectly-lp:939577-test failed")
+  (assert (eq 4 (py-guess-indent-offset)) nil "fourth-level-blocks-indent-incorrectly-lp:939577-test failed")
   )
 
 (defun py-mark-expression-marks-too-much-lp:941140-test (&optional arg)
@@ -2861,7 +2861,7 @@ re.s
 (defun completion-at-gentoo-lp-1008842-base ()
   (goto-char 62)
   (py-shell-complete)
-  (assert (equal (buffer-name (current-buffer)) "*Python Completions*") nil "completion-at-gentoo-lp-1008842-test failed"))
+  (assert (buffer-live-p (get-buffer  "*Python Completions*")) nil "completion-at-gentoo-lp-1008842-test failed"))
 
 (defun converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128.py-test (&optional arg)
   (interactive "p")

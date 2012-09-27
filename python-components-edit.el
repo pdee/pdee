@@ -77,11 +77,8 @@ Returns value of `py-smart-operator-mode-p' switched to. "
   (interactive)
   (let ((arg (or arg (if py-smart-operator-mode-p -1 1))))
     (if (< 0 arg)
-        (progn
           (setq py-smart-operator-mode-p t)
-          (smart-operator-mode 1))
-      (setq py-smart-operator-mode-p nil)
-      (smart-operator-mode 1))
+      (setq py-smart-operator-mode-p nil))
     (when (interactive-p) (message "py-smart-operator-mode-p: %s" py-smart-operator-mode-p))
     py-smart-operator-mode-p))
 
@@ -91,7 +88,7 @@ Returns value of `py-smart-operator-mode-p' switched to. "
 Returns value of `py-smart-operator-mode-p'. "
   (interactive "p")
   (let ((arg (or arg 1)))
-    (toggle-py-smart-operator-mode-p arg))
+    (py-toggle-smart-operator arg))
   (when (interactive-p) (message "py-smart-operator-mode-p: %s" py-smart-operator-mode-p))
   py-smart-operator-mode-p)
 
@@ -101,9 +98,9 @@ Returns value of `py-smart-operator-mode-p'. "
 Returns value of `py-smart-operator-mode-p'. "
   (interactive "p")
   (let ((arg (if arg (- arg) -1)))
-    (toggle-py-smart-operator-mode-p arg))
-  (when (interactive-p) (message "py-smart-operator-mode-p: %s" py-smart-operator-mode-p))
-  py-smart-operator-mode-p)
+    (py-toggle-smart-operator arg)
+    (when (interactive-p) (message "py-smart-operator-mode-p: %s" py-smart-operator-mode-p))
+    py-smart-operator-mode-p))
 
 ;;;
 (defun py-insert-default-shebang ()
@@ -293,36 +290,94 @@ By default, make a buffer-local copy of `py-indent-offset' with the
 new value.
 With optional argument GLOBAL change the global value of `py-indent-offset'.
 
-Indent might be guessed savely only from beginning of a block.
 Returns `py-indent-offset'"
   (interactive "P")
   (save-excursion
     (let* ((orig (or orig (point)))
            (origline (or origline (py-count-lines)))
+           last down
            (firstindent
-            (if (eq origline (py-count-lines))
-                (progn (py-beginning-of-statement)
-                       (if (eq origline (py-count-lines))
-                           (progn (py-beginning-of-statement)(current-column)) (current-column)))))
-           (erg (when firstindent
-                  (py-beginning-of-block)
-                  (if
-                      (< (current-column) firstindent)
-                      (current-column)
-                    (progn (goto-char orig)
-                           ;; need a block-start
-                           (when
-                               (setq firstindent (progn (py-beginning-of-block)(current-indentation)))
-                             (when (eq origline (py-count-lines))
-                               (setq firstindent (progn (py-beginning-of-block)(current-indentation))))
-                             (when (ignore-errors (< firstindent (py-down-statement)))
-                               (current-indentation)))))))
-           (second (progn (py-end-of-statement)
-                          (py-end-of-statement)
-                          (py-beginning-of-statement)
-                          (current-indentation)))
-           (guessed (when erg
-                      (abs (- second erg)))))
+            (if (py-beginning-of-block)
+                (progn
+                  (setq last (point))
+                  (setq down t)
+                  (current-indentation))
+              (progn
+                (forward-line -1)
+                (back-to-indentation)
+                (cond ((py-beginning-of-statement-p)
+                       (setq last (point))
+                       (current-column))
+                      ((py-beginning-of-statement)
+                       (setq last (point))
+                       (current-column))
+                      ((and (prog1 (goto-char orig)
+                              (back-to-indentation))
+                            (py-beginning-of-block-p))
+                       (setq down t)
+                       (setq last (point))
+                       (current-indentation))
+                      ((and (goto-char orig)
+                            (py-end-of-statement)
+                            (py-end-of-statement))
+                       (py-beginning-of-statement)
+                       (setq last (point))
+                       (current-indentation))
+                      (t (goto-char orig)
+                         (if (py-down-block)
+                             (progn (setq last (point))
+                                    (setq down t)
+                                    (current-column))
+                           ;; if nothing suitable around, us default
+                           (default-value 'py-indent-offset)))))))
+           (secondindent
+            (if firstindent
+                (cond ((or down (py-statement-opens-block-p))
+                       (or (progn
+                             (when (and (py-end-of-statement)
+                                        (py-end-of-statement)
+                                        (py-beginning-of-statement))
+                               (current-indentation)))
+                           (progn
+                             (goto-char last)
+                             (and (py-beginning-of-block)
+                                  (current-indentation)))))
+
+                      ((py-beginning-of-block)
+                       (progn
+                         (when (and (py-end-of-statement)
+                                    (py-end-of-statement)
+                                    (py-beginning-of-statement)
+                                    (py-beginning-of-statement))
+                           (current-indentation))))
+                      (t (if last (if (and (goto-char last)
+                                           (py-end-of-statement)
+                                           (py-end-of-statement)
+                                           (py-beginning-of-statement))
+                                      (current-indentation)
+                                    (goto-char last)
+                                    (when (py-beginning-of-block-or-clause)
+                                      (current-indentation))))))))
+           guessed)
+      (unless secondindent
+        (setq secondindent
+              (when (py-end-of-block)
+                (current-indentation))))
+      (unless secondindent
+        (setq secondindent
+              ;; (setq first (current-indentation))
+              (when (and (py-end-of-statement)
+                         (py-end-of-statement)
+                         (py-beginning-of-statement))
+                (current-indentation))))
+      (when secondindent
+        (when (eq 0 (abs (- secondindent firstindent)))
+          (when (if (py-beginning-of-block) (< (current-indentation) secondindent))
+            (setq secondindent (current-indentation))))
+        (setq guessed
+              (abs (- secondindent firstindent))))
+      (when (and (eq 0 guessed)(not (eq 0 secondindent)))
+        (setq guessed secondindent))
       (if (and guessed (py-guessed-sanity-check guessed))
           (setq py-indent-offset guessed)
         (setq py-indent-offset (default-value 'py-indent-offset)))
@@ -355,9 +410,11 @@ Returns `py-indent-offset'"
 The defun visible is the one that contains point or follows point. "
   (interactive)
   (save-excursion
-    (let ((end (py-beginning-of-def-or-class)))
+    (let ((start (if (py-statement-opens-def-or-class-p)
+                     (point)
+                   (py-beginning-of-def-or-class))))
       (py-end-of-def-or-class)
-      (narrow-to-region (point) end))))
+      (narrow-to-region (point) start))))
 
 
 

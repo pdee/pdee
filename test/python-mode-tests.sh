@@ -771,6 +771,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-up-class-bol) nil \"py-up-class-bol not detected as command\")" \
 -eval "(assert (commandp 'py-up-def-or-class-bol) nil \"py-up-def-or-class-bol not detected as command\")" \
 --funcall IndentationError-expected-an-indented-block-when-execute-lp-1055569-test \
+--funcall py-guess-indent-offset-test \
 --funcall py-moves-test \
 --funcall py-end-of-block-or-clause-test \
 --funcall mark-decorators-lp:328851-test \
@@ -927,7 +928,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-execute-region-test \
 --funcall py-execute-buffer-test \
 --funcall py-execute-expression-test \
---funcall py-execute-partial-expression-test \
 --funcall py-execute-line-test \
 \
 --funcall py-execute-statement-python-test \
@@ -979,6 +979,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-execute-block-or-clause-python2.7-noswitch-test \
 --funcall py-execute-block-or-clause-python2.7-dedicated-test \
 --funcall py-execute-block-or-clause-python2.7-dedicated-switch-test \
+--funcall py-execute-partial-expression-test \
 --funcall py-execute-partial-expression-ipython-test \
 t \
 --funcall py-execute-partial-expression-python3-test \
@@ -1027,24 +1028,24 @@ est \
 --funcall completion-fails-in-python-script-r989-lp:1004613-test \
 --funcall tqs-list-error-test \
 --funcall python-mode-slow-lp:803275-test \
---funcall completion-at-gentoo-lp-1008842-test \
 --funcall py-find-imports-lp-1023236-test \
 --funcall execute-indented-code-lp:828314-test \
 --funcall py-execute-region-python2.7-switch-test \
 --funcall py-execute-buffer-python-switch-test \
 --funcall py-execute-buffer-ipython-switch-test \
---funcall pycomplete-same-folder-class-lp:889052-test \
 --funcall py-ipython-complete-lp:927136-test \
---funcall augmented-assigment-test \
---funcall py-smart-operator-test \
 --funcall py-beginning-of-expression-test \
 --funcall py-end-of-expression-test \
 --funcall py-partial-expression-test \
---funcall py-menu-pyshell-test \
---funcall indent-triplequoted-to-itself-lp:752252-test \
 --funcall py-completion-at-point-test 
 --funcall bob-beginning-of-statement-test \
 --funcall UnicodeEncodeError-python3-test \
 --funcall not-that-useful-completion-lp:1003580-test \
 --funcall tqs-lp:302834-lp:1018994-test \
 --funcall infinite-loop-after-tqs-lp:826044-test \
+--funcall completion-at-gentoo-lp-1008842-test \
+--funcall pycomplete-same-folder-class-lp:889052-test \
+--funcall augmented-assigment-test \
+--funcall py-smart-operator-test \
+--funcall indent-triplequoted-to-itself-lp:752252-test \
+

@@ -27,6 +27,7 @@
 
 (setq python-mode-tests
       (list
+       'py-guess-indent-offset-test
        'py-moves-test
        'augmented-assigment-test
        'py-smart-operator-test
@@ -387,7 +388,6 @@
        'py-mark-def-commandp-test
        'split-windows-on-execute-p-test
        'switch-windows-on-execute-p-test
-       'py-menu-pyshell-test
        'py-install-directory-path-test
        'UnicodeEncodeError-python3-test
 
@@ -532,9 +532,9 @@
 
 (defun py-end-of-block-base ()
   (goto-char 326)
-  (assert (eq 562 (py-end-of-clause)) nil "py-end-of-block-test failed")
-  (assert (eq 598 (py-end-of-clause)) nil "py-end-of-block-test failed")
-  (assert (eq 629 (py-end-of-block)) nil "py-end-of-block-test failed"))
+  (assert (eq 562 (py-end-of-clause)) nil "py-end-of-block-test #1 failed")
+  (assert (eq 598 (py-end-of-clause)) nil "py-end-of-block-test #2 failed")
+  (assert (eq 629 (py-end-of-block)) nil "py-end-of-block-test #3 failed"))
 
 (defun py-beginning-of-block-or-clause-test (&optional arg load-branch-function)
   (interactive "p")
@@ -544,7 +544,13 @@
 (defun py-beginning-of-block-or-clause-base ()
   (goto-char (point-max))
   (py-beginning-of-block-or-clause)
-  (assert (looking-at "if") nil "py-beginning-of-block-or-clause-test failed"))
+  (assert (looking-at "else") nil "py-beginning-of-block-or-clause-test failed")
+  (py-beginning-of-block-or-clause)
+  (assert (looking-at "elif") nil "py-beginning-of-block-or-clause-test failed")
+  (py-beginning-of-block-or-clause)
+  (assert (looking-at "if") nil "py-beginning-of-block-or-clause-test failed")
+
+  )
 
 (defun py-end-of-block-or-clause-test (&optional arg load-branch-function)
   (interactive "p")
@@ -574,7 +580,7 @@
 (defun py-end-of-def-base ()
   (py-beginning-of-def)
   (py-end-of-def)
-  (assert (eq (point) 560) nil "py-end-of-def-test failed")
+  (assert (eq (point) 626) nil "py-end-of-def-test failed")
   )
 
 (defun py-beginning-of-def-or-class-test (&optional arg load-branch-function)
@@ -584,7 +590,7 @@
 
 (defun py-beginning-of-def-or-class-base ()
   (py-beginning-of-def-or-class 4)
-  (assert (eq (point) 1) nil "py-beginning-of-def-or-class-test failed"))
+  (assert (eq (point) 238) nil "py-beginning-of-def-or-class-test failed"))
 
 (defun py-end-of-def-or-class-test (&optional arg load-branch-function)
   (interactive "p")
@@ -593,10 +599,10 @@
 
 (defun py-end-of-def-or-class-base ()
   (assert (eq 238 (py-beginning-of-def-or-class)) nil "py-end-of-def-or-class-test #1 failed")
-  (assert (eq 1 (py-beginning-of-def-or-class)) nil "py-end-of-def-or-class-test #2 failed")
+  (assert (eq 146 (py-beginning-of-def-or-class)) nil "py-end-of-def-or-class-test #2 failed")
   (goto-char 201)
-  (save-excursion (assert (eq 232 (py-end-of-def-or-class)) nil "py-end-of-def-or-class-test #3 failed"))
-  (assert (eq 560 (py-end-of-def-or-class '(4))) nil "py-end-of-def-or-class-test #4 failed"))
+  (assert (eq 232 (py-end-of-def-or-class)) nil "py-end-of-def-or-class-test #3 failed")
+  (assert (eq 626 (py-end-of-def-or-class '(4))) nil "py-end-of-def-or-class-test #4 failed"))
 
 (defun py-electric-backspace-test (&optional arg load-branch-function)
   (interactive "p")
@@ -931,7 +937,7 @@ def main(argv):
   (assert (eq 72 (py-end-of-expression)) nil "py-end-of-expression-test failed")
   (assert (eq 85 (py-end-of-expression)) nil "py-end-of-expression-test failed")
   (assert (eq 94 (py-end-of-expression)) nil "py-end-of-expression-test failed")
-  (assert (eq 108 (py-end-of-expression)) nil "py-end-of-expression-test failed")
+  (assert (eq 113 (py-end-of-expression)) nil "py-end-of-expression-test failed")
   (goto-char 225)
   (assert (eq 232 (py-end-of-expression)) nil "py-end-of-expression-test failed"))
 
@@ -6587,6 +6593,7 @@ print(\"I'm the `split-windows-on-execute-p-test'\")
     (py-execute-buffer)
     (assert (not (window-full-height-p)) nil "split-windows-on-execute-p-test failed")))
 
+;; this test is not valable, as python-mode-map often changes 
 (defun py-menu-pyshell-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring (concat py-test-shebang "
@@ -7024,10 +7031,10 @@ foo "))
   (assert (not (py-down-class)) nil "py-down-class-test of `py-moves-test' failed")
   (goto-char (point-min))
   (assert (eq 146 (py-down-def-or-class)) nil "py-down-def-or-class-test of `py-moves-test' failed")
-  
+
   (goto-char 410)
   (assert (eq 332 (py-beginning-of-statement-bol)) nil "py-beginning-of-statement-bol-test of `py-moves-test' failed")
-    (goto-char 410)
+  (goto-char 410)
   (assert (eq 317 (py-beginning-of-block-bol)) nil "py-beginning-of-block-bol-test of `py-moves-test' failed")
   (goto-char 410)
   (assert (eq nil (py-beginning-of-clause-bol)) nil "py-beginning-of-clause-bol-test of `py-moves-test' failed")
@@ -7054,6 +7061,38 @@ foo "))
   (assert (eq 234 (py-beginning-of-def-bol)) nil "py-beginning-of-def-bol-test of `py-moves-test' failed")
   )
 
+(defun py-guess-indent-offset-test (&optional arg)
+  (interactive "p")
+  (let (py-smart-indentation
+        (teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+    #####################################
+#####################################
+def fooBaz( bar ):  # version 2003/9/7
+  if \"Foo:\" == bar \\
+          or  \"[Foo:]\" == bar \\
+          or \"Foo:]\" == bar \\
+          or \"Baz:\" == bar:
+      return False
+  return True
+"))
+    (py-bug-tests-intern 'py-guess-indent-offset-base arg teststring)))
+
+(defun py-guess-indent-offset-base ()
+  (goto-char 49)
+  (assert (eq (default-value 'py-indent-offset) (py-guess-indent-offset)) nil "py-guess-indent-offset-test #1 failed")
+  (goto-char 168)
+  (assert (eq 2 (py-guess-indent-offset)) nil "py-guess-indent-offset-test #1 failed")
+  (goto-char 251)
+  (assert (eq 4 (py-guess-indent-offset)) nil "py-guess-indent-offset-test #1 failed")
+  (goto-char 279)
+  (assert (eq 4 (py-guess-indent-offset)) nil "py-guess-indent-offset-test #1 failed")
+  (goto-char 298)
+  ;; indent might be eithe 4 or 2
+  (assert (eq 4 (py-guess-indent-offset)) nil "py-guess-indent-offset-test #1 failed")
+
+)
 ;; imenu--subalist-p
 (provide 'python-mode-test)
 ;;; python-mode-test.el ends here
