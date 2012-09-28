@@ -1490,9 +1490,9 @@ See also `py-assignment-regexp' ")
 See also `py-operator-regexp' ")
 ;; (setq  py-assignment-regexp "[ \t]*=[^=]")
 
-(defvar py-delimiter-regexp "\\(,\\|;\\|:\\)[ \t]*"
+(defvar py-delimiter-regexp "\\(,\\|;\\|:\\)[ \t\n]"
   "Delimiting elements of lists or other programming constructs. ")
-;; (setq py-delimiter-regexp "\\(,\\|;\\:\\)[ \t]*")
+;; (setq py-delimiter-regexp "\\(,\\|;\\:\\)[ \t\n]")
 
 (defvar py-delimiter-chars ",;."
   "Chars delimiting elements of lists or other programming constructs. ")
