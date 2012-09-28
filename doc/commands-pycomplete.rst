@@ -41,7 +41,6 @@ Define key map with pycomplete functions.
 
 py-complete-initialize
 ----------------------
-Initialize pycomplete hooks.
-Should be called from python-mode-hook. Keys are set when
-`py-complete-set-keymap-p' is non-nil.
+Initialize pycomplete hooks and key map.
+Should be called from python-mode-hook.
 
