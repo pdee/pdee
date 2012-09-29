@@ -2074,8 +2074,8 @@ See original source: http://pymacs.progiciels-bpi.ca"
                   "sorted" "staticmethod" "str" "sum" "super" "tuple" "type"
                   "unichr" "unicode" "vars" "xrange" "zip")
               symbol-end) . py-builtins-face)
-        (,(python-rx line-start (* (any " \t"))(group (** 0 2 "_") word (0+ (or word ?_))(** 0 2 "_"))(* (any " \t")) assignment-operator)
-         1 py-variable-name-face)
+        ;; (,(python-rx line-start (* (any " \t"))(group (** 0 2 "_") word (0+ (or word ?_))(** 0 2 "_"))(* (any " \t")) assignment-operator)
+        ;; 1 py-variable-name-face)
         ;; asignations
         ;; support for a = b = c = 5
         (,(lambda (limit)

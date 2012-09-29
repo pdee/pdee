@@ -122,10 +122,10 @@ With \\[universal argument] or `py-mark-decorators' set to `t', decorators are m
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive "P")
-    (let* ((orig (point))
-           (erg (py-end-base py-def-re orig)))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-      erg))
+  (let* ((orig (point))
+         (erg (py-end-base py-def-re orig)))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
 
 (defun py-beginning-of-class (&optional arg indent)
   "Go to beginning of class.
