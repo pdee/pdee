@@ -14,3 +14,7 @@ a way into the code.
 When re-loading source, don't forget to re-compile
 before running it, else an existing older compiled file
 is loaded - see docstring of `load'.
+
+CAVEAT:
+stalls-emacs-probably-due-to-syntax-highlighting-lp-1058261-test
+only triggers the bug, when run interactively, not from batch-mode
