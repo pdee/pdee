@@ -134,10 +134,9 @@ Useful for newly defined symbol, not known to python yet. "
             (insert erg)))))))
 
 (defalias 'py-help-at-point 'py-describe-symbol)
-(defun py-describe-symbol (&optional debug)
+(defun py-describe-symbol (&optional arg)
   "Print help on symbol at point.
 
-If symbol is defined in current buffer, jump to it's definition instead
 Optional \\[universal-argument] used for debugging, will prevent deletion of temp file. "
   (interactive "P")
   (let* ((orig (point))
@@ -147,36 +146,26 @@ Optional \\[universal-argument] used for debugging, will prevent deletion of tem
          (origfile (buffer-file-name))
          (temp (make-temp-name (buffer-name)))
          (file (concat (expand-file-name temp py-temp-directory) ".py"))
-         (cmd (py-find-imports))
-         ;; if symbol is defined in current buffer, go to
-         (erg (progn (goto-char (point-min))
-                     (when
-                         (re-search-forward (concat "^[ \t]*def " sym "(") nil t 1)
-                       (forward-char -2)
-                       (point)))))
-    (if erg
-        (progn (push-mark orig)(push-mark (point))
-               (when (and (interactive-p) py-verbose-p) (message "Jump to previous position with %s" "C-u C-<SPC> C-u C-<SPC>")))
-      (goto-char orig)
-      (when cmd
-        (setq cmd (mapconcat
-                   (lambda (arg) (concat "try: " arg "\nexcept: pass\n"))
-                   (split-string cmd ";" t)
-                   "")))
-      (setq cmd (concat "import pydoc\n"
-                        cmd))
-      (when (not py-remove-cwd-from-path)
-        (setq cmd (concat cmd "import sys\n"
-                          "sys.path.insert(0, '"
-                          (file-name-directory origfile) "')\n")))
-      (setq cmd (concat cmd "pydoc.help('" sym "')\n"))
-      (with-temp-buffer
-        (insert cmd)
-        (write-file file))
-      (setq erg (py-process-file file "*Python-Help*"))
-      (message "%s" erg)
-      (when (file-readable-p file)
-        (unless (eq 4 (prefix-numeric-value debug)) (delete-file file))))))
+         (cmd (py-find-imports)))
+    (goto-char orig)
+    (when cmd
+      (setq cmd (mapconcat
+                 (lambda (arg) (concat "try: " arg "\nexcept: pass\n"))
+                 (split-string cmd ";" t)
+                 "")))
+    (setq cmd (concat "import pydoc\n"
+                      cmd))
+    (when (not py-remove-cwd-from-path)
+      (setq cmd (concat cmd "import sys\n"
+                        "sys.path.insert(0, '"
+                        (file-name-directory origfile) "')\n")))
+    (setq cmd (concat cmd "pydoc.help('" sym "')\n"))
+    (with-temp-buffer
+      (insert cmd)
+      (write-file file))
+    (py-process-file file "*Python-Help*")
+    (when (file-readable-p file)
+      (unless (eq 4 (prefix-numeric-value arg)) (delete-file file)))))
 
 (defun py-eldoc-function ()
   "Print help on symbol at point. "

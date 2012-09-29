@@ -315,6 +315,7 @@ By default, make a buffer-local copy of `py-indent-offset' with the
 new value.
 With optional argument GLOBAL change the global value of `py-indent-offset'.
 
+Indent might be guessed savely only from beginning of a block.
 Returns `py-indent-offset'
 
 py-narrow-to-defun
@@ -995,8 +996,6 @@ py-beginning-of-expression
 --------------------------
 Go to the beginning of a compound python expression.
 
-With numeric ARG do it that many times.
-
 A a compound python expression might be concatenated by "." operator, thus composed by minor python expressions.
 
 If already at the beginning or before a expression, go to next expression in buffer upwards
@@ -1009,8 +1008,6 @@ py-end-of-expression
 --------------------
 Go to the end of a compound python expression.
 
-With numeric ARG do it that many times.
-
 A a compound python expression might be concatenated by "." operator, thus composed by minor python expressions.
 
 Expression here is conceived as the syntactical component of a statement in Python. See http://docs.python.org/reference
@@ -1021,8 +1018,6 @@ py-beginning-of-partial-expression
 ----------------------------------
 Go to the beginning of a minor python expression.
 
-With numeric ARG do it that many times.
-
 "." operators delimit a minor expression on their level.
 Expression here is conceived as the syntactical component of a statement in Python. See http://docs.python.org/reference
 Operators however are left aside resp. limit py-expression designed for edit-purposes.
@@ -1032,8 +1027,6 @@ If already at the beginning or before a partial-expression, go to next partial-e
 py-end-of-partial-expression
 ----------------------------
 Go to the end of a minor python expression.
-
-With numeric ARG do it that many times.
 
 "." operators delimit a minor expression on their level.
 Expression here is conceived as the syntactical component of a statement in Python. See http://docs.python.org/reference
@@ -2264,6 +2257,110 @@ Process "python filename",
 Optional OUTPUT-BUFFER and ERROR-BUFFER might be given.')
 
 
+py-execute-statement
+--------------------
+Send statement at point to a Python interpreter.
+
+When called with M-x univeral-argument, execution through `default-value' of `py-shell-name' is forced.
+See also `py-force-py-shell-name-p'.
+
+When called with M-x univeral-argument followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
+
+When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
+
+Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)
+
+py-execute-block
+----------------
+Send block at point to a Python interpreter.
+
+When called with M-x univeral-argument, execution through `default-value' of `py-shell-name' is forced.
+See also `py-force-py-shell-name-p'.
+
+When called with M-x univeral-argument followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
+
+When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
+
+Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)
+
+py-execute-block-or-clause
+--------------------------
+Send block-or-clause at point to a Python interpreter.
+
+When called with M-x univeral-argument, execution through `default-value' of `py-shell-name' is forced.
+See also `py-force-py-shell-name-p'.
+
+When called with M-x univeral-argument followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
+
+When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
+
+Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)
+
+py-execute-def
+--------------
+Send def at point to a Python interpreter.
+
+When called with M-x univeral-argument, execution through `default-value' of `py-shell-name' is forced.
+See also `py-force-py-shell-name-p'.
+
+When called with M-x univeral-argument followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
+
+When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
+
+Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)
+
+py-execute-class
+----------------
+Send class at point to a Python interpreter.
+
+When called with M-x univeral-argument, execution through `default-value' of `py-shell-name' is forced.
+See also `py-force-py-shell-name-p'.
+
+When called with M-x univeral-argument followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
+
+When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
+
+Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)
+
+py-execute-def-or-class
+-----------------------
+Send def-or-class at point to a Python interpreter.
+
+When called with M-x univeral-argument, execution through `default-value' of `py-shell-name' is forced.
+See also `py-force-py-shell-name-p'.
+
+When called with M-x univeral-argument followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
+
+When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
+
+Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)
+
+py-execute-expression
+---------------------
+Send expression at point to a Python interpreter.
+
+When called with M-x univeral-argument, execution through `default-value' of `py-shell-name' is forced.
+See also `py-force-py-shell-name-p'.
+
+When called with M-x univeral-argument followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
+
+When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
+
+Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)
+
+py-execute-partial-expression
+-----------------------------
+Send partial-expression at point to a Python interpreter.
+
+When called with M-x univeral-argument, execution through `default-value' of `py-shell-name' is forced.
+See also `py-force-py-shell-name-p'.
+
+When called with M-x univeral-argument followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
+
+When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
+
+Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)
+
 py-execute-line
 ---------------
 Send current line from beginning of indent to Python interpreter. 
@@ -2327,7 +2424,6 @@ py-describe-symbol
 ------------------
 Print help on symbol at point.
 
-If symbol is defined in current buffer, jump to it's definition
 Optional C-u used for debugging, will prevent deletion of temp file. 
 
 py-describe-mode
@@ -2830,110 +2926,6 @@ Issue a virtualenvwrapper-like virtualenv-workon command
 py-toggle-local-default-use
 ---------------------------
 
-
-py-execute-statement
---------------------
-Send statement at point to a Python interpreter.
-
-When called with M-x univeral-argument, execution through `default-value' of `py-shell-name' is forced.
-See also `py-force-py-shell-name-p'.
-
-When called with M-x univeral-argument followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
-
-When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
-
-Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)
-
-py-execute-block
-----------------
-Send block at point to a Python interpreter.
-
-When called with M-x univeral-argument, execution through `default-value' of `py-shell-name' is forced.
-See also `py-force-py-shell-name-p'.
-
-When called with M-x univeral-argument followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
-
-When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
-
-Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)
-
-py-execute-block-or-clause
---------------------------
-Send block-or-clause at point to a Python interpreter.
-
-When called with M-x univeral-argument, execution through `default-value' of `py-shell-name' is forced.
-See also `py-force-py-shell-name-p'.
-
-When called with M-x univeral-argument followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
-
-When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
-
-Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)
-
-py-execute-def
---------------
-Send def at point to a Python interpreter.
-
-When called with M-x univeral-argument, execution through `default-value' of `py-shell-name' is forced.
-See also `py-force-py-shell-name-p'.
-
-When called with M-x univeral-argument followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
-
-When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
-
-Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)
-
-py-execute-class
-----------------
-Send class at point to a Python interpreter.
-
-When called with M-x univeral-argument, execution through `default-value' of `py-shell-name' is forced.
-See also `py-force-py-shell-name-p'.
-
-When called with M-x univeral-argument followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
-
-When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
-
-Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)
-
-py-execute-def-or-class
------------------------
-Send def-or-class at point to a Python interpreter.
-
-When called with M-x univeral-argument, execution through `default-value' of `py-shell-name' is forced.
-See also `py-force-py-shell-name-p'.
-
-When called with M-x univeral-argument followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
-
-When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
-
-Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)
-
-py-execute-expression
----------------------
-Send expression at point to a Python interpreter.
-
-When called with M-x univeral-argument, execution through `default-value' of `py-shell-name' is forced.
-See also `py-force-py-shell-name-p'.
-
-When called with M-x univeral-argument followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
-
-When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
-
-Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)
-
-py-execute-partial-expression
------------------------------
-Send partial-expression at point to a Python interpreter.
-
-When called with M-x univeral-argument, execution through `default-value' of `py-shell-name' is forced.
-See also `py-force-py-shell-name-p'.
-
-When called with M-x univeral-argument followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
-
-When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
-
-Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)
 
 py-execute-statement-python
 ---------------------------
