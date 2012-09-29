@@ -710,7 +710,9 @@ and `pass'.  This doesn't catch embedded statements."
          (regexp (or regexp py-extended-block-or-clause-re))
          (this (if (py-statement-opens-block-p regexp)
                    (point)
-                 (when (cdr-safe (py-go-to-keyword py-extended-block-or-clause-re))
+                 (when (cdr-safe (py-go-to-keyword (if (string= regexp py-def-or-class-re)
+                                                       py-def-or-class-re
+                                                     py-extended-block-or-clause-re)))
                    (when (py-statement-opens-block-p py-extended-block-or-clause-re)
                      (point)))))
          ind erg last)

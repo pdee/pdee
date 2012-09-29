@@ -770,6 +770,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-up-def-bol) nil \"py-up-def-bol not detected as command\")" \
 -eval "(assert (commandp 'py-up-class-bol) nil \"py-up-class-bol not detected as command\")" \
 -eval "(assert (commandp 'py-up-def-or-class-bol) nil \"py-up-def-or-class-bol not detected as command\")" \
+--funcall pyindex-mishandles-class-definitions-lp-1018164-test \
 --funcall IndentationError-expected-an-indented-block-when-execute-lp-1055569-test \
 --funcall stalls-emacs-probably-due-to-syntax-highlighting-lp-1058261-test \
 --funcall py-guess-indent-offset-test \
