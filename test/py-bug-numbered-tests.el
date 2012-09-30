@@ -38,6 +38,7 @@
 
 (setq bug-numbered-tests
       (list
+       'exception-in-except-clause-highlighted-as-keyword-lp-909205-test
        'pyindex-mishandles-class-definitions-lp-1018164-test
        'stalls-emacs-probably-due-to-syntax-highlighting-lp-1058261-test
        'py-find-imports-lp-1023236-test
@@ -4222,6 +4223,27 @@ class EmacsFrameThemeManager(datatypes.Singleton, metaclass=cldef.metaClass):
 (defun pyindex-mishandles-class-definitions-lp-1018164-base ()
     (goto-char 25548)
     (assert (eq 26242 (py-end-of-def-or-class)) nil "pyindex-mishandles-class-definitions-lp-1018164-test failed"))
+
+
+(defun exception-in-except-clause-highlighted-as-keyword-lp-909205-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+try:
+    blah
+except ormexc.NoResultFound:
+    pass
+"))
+  (py-bug-tests-intern 'exception-in-except-clause-highlighted-as-keyword-lp-909205-base arg teststring)))
+
+(defun exception-in-except-clause-highlighted-as-keyword-lp-909205-base ()
+  (font-lock-fontify-buffer) 
+  (goto-char 65)
+  ;; (sit-for 0.1) 
+  (assert (eq (get-char-property (point) 'face) 'font-lock-keyword-face) nil "exception-in-except-clause-highlighted-as-keyword-lp-909205-test #1 failed")
+  (goto-char 77)
+  (assert (eq (get-char-property (point) 'face) 'py-exception-name-face) nil "exception-in-except-clause-highlighted-as-keyword-lp-909205-test #2 failed")
+  )
 
 
 (provide 'py-bug-numbered-tests)
