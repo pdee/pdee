@@ -307,31 +307,23 @@ Needed when file-path names are contructed from maybe numbered buffer names like
     string)))
 
 (defun py-shell-manage-windows (switch py-split-windows-on-execute-p py-switch-buffers-on-execute-p oldbuf py-buffer-name)
-  (delete-other-windows)
-  (window-configuration-to-register 213465889)
   (cond (;; split and switch
          (unless (eq switch 'noswitch)
            (and py-split-windows-on-execute-p
                 (or (eq switch 'switch)
                     py-switch-buffers-on-execute-p)))
-         (unless (string-match "[Ii][Pp]ython" py-buffer-name) (delete-other-windows))
-         (when (< (count-windows) 2)
-           (funcall py-split-windows-on-execute-function))
-         (pop-to-buffer py-buffer-name))
+         (if (< (count-windows) py-max-split-windows)
+             (funcall py-split-windows-on-execute-function)
+           (switch-to-buffer-other-window py-buffer-name)))
         ;; split, not switch
         ((and py-split-windows-on-execute-p
               (or (eq switch 'noswitch)
                   (not (eq switch 'switch))))
-         (if (< (count-windows) 2)
+         (if (< (count-windows) py-max-split-windows)
              (progn
                (funcall py-split-windows-on-execute-function)
-               (display-buffer py-buffer-name)
-               ;; avoids windows flip top-down - by side-effect?
-               (window-configuration-to-register 213465889))
-           (window-configuration-to-register 213465889))
-         ;; (jump-to-register 213465889)
-         (display-buffer oldbuf)
-         (pop-to-buffer oldbuf))
+               (display-buffer py-buffer-name))
+           (display-buffer py-buffer-name 'display-buffer-reuse-window)))
         ;; no split, switch
         ((or (eq switch 'switch)
              (and (not (eq switch 'noswitch))
@@ -424,10 +416,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
                                   (read-string "Py-Shell arguments: "
                                                (concat
                                                 (mapconcat 'identity py-python-command-args " ") " ")))))))))
-             (pyshellname (or pyshellname
-                              (if (or (null py-shell-name)(string= "" py-shell-name))
-                                  (py-choose-shell)
-                                py-shell-name)))
+             (pyshellname (or pyshellname (py-choose-shell)))
              ;; If we use a pipe, Unicode characters are not printed
              ;; correctly (Bug#5794) and IPython does not work at
              ;; all (Bug#5390). python.el
@@ -449,15 +438,15 @@ When DONE is `t', `py-shell-manage-windows' is omitted
         (set (make-local-variable 'comint-prompt-regexp)
              (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
                     (concat "\\("
-                     (mapconcat 'identity
-                                (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
-                                "\\|")
-                     "\\)"))
+                            (mapconcat 'identity
+                                       (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
+                                       "\\|")
+                            "\\)"))
                    (t (concat "\\("
-                     (mapconcat 'identity
-                                (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
-                                "\\|")
-                     "\\)"))))
+                              (mapconcat 'identity
+                                         (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
+                                         "\\|")
+                              "\\)"))))
         (set (make-local-variable 'comint-input-filter) 'py-history-input-filter)
         (set (make-local-variable 'comint-prompt-read-only) py-shell-prompt-read-only)
         (set (make-local-variable 'comint-use-prompt-regexp) nil)

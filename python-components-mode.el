@@ -910,6 +910,12 @@ Otherwise value of py-python-history is used. "
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-max-split-windows 2
+  "When split windows is enabled the maximum windows to allow
+  before reusing other windows."
+  :type 'number
+  :group 'python-mode)
+
 (defcustom py-split-windows-on-execute-function 'split-window-vertically
   "How window should get splitted to display results of py-execute-... functions. "
   :type '(choice (const :tag "split-window-vertically" split-window-vertically)
