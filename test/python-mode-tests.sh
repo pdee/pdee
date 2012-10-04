@@ -770,6 +770,8 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-up-def-bol) nil \"py-up-def-bol not detected as command\")" \
 -eval "(assert (commandp 'py-up-class-bol) nil \"py-up-class-bol not detected as command\")" \
 -eval "(assert (commandp 'py-up-def-or-class-bol) nil \"py-up-def-or-class-bol not detected as command\")" \
+--funcall UnicodeEncodeError-python3-test \
+--funcall py-run-shell-complete-tests \
 --funcall exception-in-except-clause-highlighted-as-keyword-lp-909205-test \
 --funcall pyindex-mishandles-class-definitions-lp-1018164-test \
 --funcall IndentationError-expected-an-indented-block-when-execute-lp-1055569-test \
@@ -793,7 +795,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall empty-triple-quote-lp:1009318-test \
 --funcall spurious-trailing-whitespace-lp-1008679-test \
 --funcall py-end-of-statement-test \
---funcall no-completion-at-all-lp:1001328-test \
 --funcall shebang-interpreter-not-detected-lp:1001327-test \
 --funcall pycomplete-same-folder-def-lp:889052-test \
 --funcall new-problem-with-py-temp-directory-lp:965762-test \
@@ -1025,7 +1026,6 @@ est \
 --funcall py-install-directory-path-test \
 --funcall dict-error-test \
 --funcall py-execute-region-python3-noswitch-test \
---funcall usr-bin-python3-shell-complete-test \
 --funcall py-end-of-print-statement-test \
 --funcall py-describe-symbol-fails-on-modules-lp:919719-test \
 --funcall completion-fails-in-python-script-r989-lp:1004613-test \
@@ -1036,13 +1036,11 @@ est \
 --funcall py-execute-region-python2.7-switch-test \
 --funcall py-execute-buffer-python-switch-test \
 --funcall py-execute-buffer-ipython-switch-test \
---funcall py-ipython-complete-lp:927136-test \
 --funcall py-beginning-of-expression-test \
 --funcall py-end-of-expression-test \
 --funcall py-partial-expression-test \
---funcall py-completion-at-point-test 
+--funcall py-completion-at-point-test \
 --funcall bob-beginning-of-statement-test \
---funcall UnicodeEncodeError-python3-test \
 --funcall not-that-useful-completion-lp:1003580-test \
 --funcall tqs-lp:302834-lp:1018994-test \
 --funcall infinite-loop-after-tqs-lp:826044-test \
@@ -1051,4 +1049,8 @@ est \
 --funcall augmented-assigment-test \
 --funcall py-smart-operator-test \
 --funcall indent-triplequoted-to-itself-lp:752252-test \
-
+--funcall no-completion-at-all-lp:1001328-test \
+--funcall usr-bin-python3-shell-complete-test \
+--funcall inconvenient-window-splitting-behavior-ipython-lp-1018996-test \
+--funcall inconvenient-window-splitting-behavior-python-lp-1018996-test \
+--funcall py-ipython-complete-lp:927136-test \

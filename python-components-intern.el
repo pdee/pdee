@@ -923,5 +923,87 @@ Also accepts submission of bug reports, whilst a ticket at
 http://launchpad.net/python-mode
 is preferable for that. ")
 
+
+;;; Utilities
+(defun py-def-or-class-beginning-position ()
+  "Returns beginning position of function or class definition. "
+  (interactive)
+  (let ((here (point))
+        (pos (progn (py-beginning-of-def-or-class)(point))))
+    (prog1
+        (point)
+      (when (interactive-p) (message "%s" pos))
+      (goto-char here))))
+
+(defun py-def-or-class-end-position ()
+  "Returns end position of function or class definition. "
+  (interactive)
+  (let ((here (point))
+        (pos (progn (py-end-of-def-or-class) (point))))
+    (prog1
+        (point)
+      (when (interactive-p) (message "%s" pos))
+      (goto-char here))))
+
+(defun py-statement-beginning-position ()
+  "Returns beginning position of statement. "
+  (interactive)
+  (let ((here (point))
+        (pos (progn (py-beginning-of-statement)(point))))
+    (prog1
+        (point)
+      (when (interactive-p) (message "%s" pos))
+      (goto-char here))))
+
+(defun py-statement-end-position ()
+  "Returns end position of statement. "
+  (interactive)
+  (let (erg)
+    (save-excursion
+      (setq erg (py-end-of-statement)))
+    (when (interactive-p) (message "%s" erg))
+    erg))
+
+(defun py-current-indentation ()
+  "Returns beginning position of code in line. "
+  (interactive)
+  (let ((here (point))
+        (pos (progn (back-to-indentation)(point))))
+    (prog1
+        (point)
+      (when (interactive-p) (message "%s" pos))
+      (goto-char here))))
+
+(defun py-point (position)
+  "Returns the value of point at certain commonly referenced POSITIONs.
+POSITION can be one of the following symbols:
+
+  bol -- beginning of line
+  eol -- end of line
+  bod -- beginning of def or class
+  eod -- end of def or class
+  bob -- beginning of buffer
+  eob -- end of buffer
+  boi -- back to indentation
+  bos -- beginning of statement
+
+This function does not modify point or mark."
+  (let (erg)
+    (save-excursion
+      (setq erg
+            (progn
+              (cond
+               ((eq position 'bol) (beginning-of-line))
+               ((eq position 'eol) (end-of-line))
+               ((eq position 'bod) (py-beginning-of-def-or-class))
+               ((eq position 'eod) (py-end-of-def-or-class))
+               ;; Kind of funny, I know, but useful for py-up-exception.
+               ((eq position 'bob) (goto-char (point-min)))
+               ((eq position 'eob) (goto-char (point-max)))
+               ((eq position 'boi) (back-to-indentation))
+               ((eq position 'bos) (py-beginning-of-statement))
+               (t (error "Unknown buffer position requested: %s" position))) (point))))
+    erg))
+
 (provide 'python-components-intern)
 ;;; python-components-intern.el ends here

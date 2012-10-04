@@ -459,34 +459,7 @@
         else b:
             pass
 ")
-"class OrderedDict1(dict):
-    \"\"\"
-    This implementation of a dictionary keeps track of the order
-    in which keys were inserted.
-    \"\"\"
 
-    def __init__(self, d={}):
-        self._keys = d.keys()
-        dict.__init__(self, d)
-
-    def f():
-        \"\"\"
-        class for in 'for in while with blah'
-        \"\"\"
-        if a:
-
-            ar_atpt_python_list_roh = ([
-                'python-expression',
-
-            # def ar_thingatpt_write_lists (&optional datei):
-            'python-partial-expression',
-            'python-statement',
-            ])
-        elif b:
-           pass
-        else b:
-           pass
-"
 (defun py-beginning-of-block-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring python-mode-teststring))
@@ -638,7 +611,7 @@
 
 (defun UnicodeEncodeError-python3-test (&optional arg load-branch-function)
   (interactive "p")
-  (let ((teststring (concat py-test-shebang "
+  (let ((teststring (concat "#! /usr/bin/env python3
 # -\*- coding: utf-8 -\*-\n
 print(\'\\xA9\')
 ")))
@@ -649,7 +622,7 @@ print(\'\\xA9\')
   (let ((py-split-windows-on-execute-p t)
         (py-shell-switch-buffers-on-execute-p t)
         erg pos)
-    (py-execute-region 49 62)
+    (py-execute-region 50 63)
     (setq erg (goto-char (point-max)))
     (sit-for 1.0)
     (assert (and (setq pos (search-backward "©"))(< (- erg pos) 9)) nil "UnicodeEncodeError-python3-test failed")))
@@ -6593,7 +6566,7 @@ print(\"I'm the `split-windows-on-execute-p-test'\")
     (py-execute-buffer)
     (assert (not (window-full-height-p)) nil "split-windows-on-execute-p-test failed")))
 
-;; this test is not valable, as python-mode-map often changes 
+;; this test is not valable, as python-mode-map often changes
 (defun py-menu-pyshell-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring (concat py-test-shebang "
@@ -6634,8 +6607,9 @@ pri")))
     (py-bug-tests-intern 'py-completion-at-point-base 2 teststring)))
 
 (defun py-completion-at-point-base ()
+  (when (and (boundp 'company-mode) company-mode) (company-abort))
   (delete-other-windows)
-  (py-completion-at-point)
+  (completion-at-point)
   (sit-for 0.1)
   (assert (looking-back "print") nil "py-completion-at-point-test failed"))
 
@@ -6833,7 +6807,7 @@ foo "))
     (save-excursion (py-smart-operator-?))
     (assert (looking-at "? ") nil "py-smart-operator-test \"py-smart-operator-?\" failed")
     (delete-region (point) (line-end-position))
-    (save-excursion (py-smart-operator-,))
+    (save-excursion (py-smart-operator-\,))
     (assert (looking-at ", ") nil "py-smart-operator-test \"py-smart-operator-,\" failed")
     (delete-region (point) (line-end-position))
     (save-excursion (py-smart-operator-.))

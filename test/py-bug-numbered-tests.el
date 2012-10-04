@@ -182,7 +182,7 @@ on."
          proc
          py-prepare-autopair-mode-p
          py-fontify-shell-buffer-p
-         company-mode)
+         )
      (if ,use-find-file
          (find-file (concat (py-normalize-directory py-temp-directory)
                             (replace-regexp-in-string "\\\\" "" (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname)))))
@@ -195,6 +195,7 @@ on."
      (insert ,teststring)
      (local-unset-key (kbd "RET"))
      (python-mode)
+     (when (and (boundp 'company-mode) company-mode) (company-abort))
      (funcall ,testname)
      (message "%s" (replace-regexp-in-string "\\\\" "" (concat (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname)) " passed")))
      (unless (< 1 arg)
@@ -2172,7 +2173,7 @@ ex")))
   (assert (looking-at "import") nil "py-ipython-complete-lp:927136-test #1 failed")
   (goto-char 62)
   (sit-for 0.1)
-  (assert (string= "except" (ipython-complete)) nil "py-ipython-complete-lp:927136-test #2 lp:1026705 failed"))
+  (assert (buffer-live-p (get-buffer "*IPython Completions*")) nil "py-ipython-complete-lp:927136-test #2 lp:1026705 failed"))
 
 (defun execute-buffer-ipython-fails-lp:928087-test (&optional arg)
   (interactive "p")
@@ -2796,12 +2797,8 @@ def test_bu():
 (defun not-that-useful-completion-lp:1003580-base ()
   (goto-char 86)
   ;; (py-python-script-complete)
-  (py-shell-complete)
-  (unless (looking-back "False_")
-    (choose-completion))
-  (back-to-indentation)
-  (sit-for 0.1)
-  (assert (looking-at "numpy.False_") nil "not-that-useful-completion-lp:1003580-test failed"))
+  (py-shell-complete nil t)
+  (assert (string-match  "^numpy." (car py-shell-complete-debug)) nil "not-that-useful-completion-lp:1003580-test failed"))
 
 (defun completion-fails-in-python-script-r989-lp:1004613-test (&optional arg)
   (interactive "p")
@@ -2815,7 +2812,7 @@ ex
   (when (buffer-live-p (get-buffer "*Python Completions*"))
     (kill-buffer "*Python Completions*"))
   (goto-char 51)
-  (ipython-complete)
+  (ipython-complete nil nil nil nil nil nil t)
   (set-buffer "*IPython Completions*")
   (assert (search-forward "except") nil "completion-fails-in-python-script-r989-lp:1004613-test failed"))
 
@@ -4224,7 +4221,6 @@ class EmacsFrameThemeManager(datatypes.Singleton, metaclass=cldef.metaClass):
     (goto-char 25548)
     (assert (eq 26242 (py-end-of-def-or-class)) nil "pyindex-mishandles-class-definitions-lp-1018164-test failed"))
 
-
 (defun exception-in-except-clause-highlighted-as-keyword-lp-909205-test (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
@@ -4237,14 +4233,53 @@ except ormexc.NoResultFound:
   (py-bug-tests-intern 'exception-in-except-clause-highlighted-as-keyword-lp-909205-base arg teststring)))
 
 (defun exception-in-except-clause-highlighted-as-keyword-lp-909205-base ()
-  (font-lock-fontify-buffer) 
+  (font-lock-fontify-buffer)
   (goto-char 65)
-  ;; (sit-for 0.1) 
+  ;; (sit-for 0.1)
   (assert (eq (get-char-property (point) 'face) 'font-lock-keyword-face) nil "exception-in-except-clause-highlighted-as-keyword-lp-909205-test #1 failed")
   (goto-char 77)
   (assert (eq (get-char-property (point) 'face) 'py-exception-name-face) nil "exception-in-except-clause-highlighted-as-keyword-lp-909205-test #2 failed")
   )
 
+(defun inconvenient-window-splitting-behavior-python-lp-1018996-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+import re
+import sys
+import os
+re.
+os.
+"))
+  (py-bug-tests-intern 'inconvenient-window-splitting-behavior-python-lp-1018996-base arg teststring)))
+
+(defun inconvenient-window-splitting-behavior-python-lp-1018996-base ()
+  (goto-char 82)
+  (py-shell-complete nil t)
+  (assert (string-match  "^re." (car py-shell-complete-debug)) nil "inconvenient-window-splitting-behavior-python-lp-1018996-test #1 failed")
+  (goto-char 86)
+  (py-shell-complete nil t)
+  (assert (string-match  "^os." (car py-shell-complete-debug)) nil "inconvenient-window-splitting-behavior-python-lp-1018996-test #2 failed"))
+
+(defun inconvenient-window-splitting-behavior-ipython-lp-1018996-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env ipython
+# -*- coding: utf-8 -*-
+import re
+import sys
+import os
+re.
+os.
+"))
+  (py-bug-tests-intern 'inconvenient-window-splitting-behavior-ipython-lp-1018996-base arg teststring)))
+
+(defun inconvenient-window-splitting-behavior-ipython-lp-1018996-base ()
+  (goto-char 83)
+  (py-shell-complete nil t)
+  (assert (string-match  "^re." (car py-shell-complete-debug)) nil "inconvenient-window-splitting-behavior-ipython-lp-1018996-test #1 failed")
+  (goto-char 87)
+  (py-shell-complete nil t)
+  (assert (string-match  "^os." (car py-shell-complete-debug)) nil "inconvenient-window-splitting-behavior-ipython-lp-1018996-test #2 failed"))
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
