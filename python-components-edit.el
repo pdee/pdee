@@ -295,7 +295,7 @@ Returns `py-indent-offset'"
   (save-excursion
     (let* ((orig (or orig (point)))
            (origline (or origline (py-count-lines)))
-           last down
+           last down done
            (firstindent
             (if (py-beginning-of-block)
                 (progn
@@ -303,12 +303,12 @@ Returns `py-indent-offset'"
                   (setq down t)
                   (current-indentation))
               (progn
-                (forward-line -1)
-                (back-to-indentation)
+                (unless (bobp) (forward-line -1)
+                        (back-to-indentation))
                 (cond ((py-beginning-of-statement-p)
                        (setq last (point))
                        (current-column))
-                      ((py-beginning-of-statement)
+                      ((and (not (bobp)) (py-beginning-of-statement))
                        (setq last (point))
                        (current-column))
                       ((and (prog1 (goto-char orig)
@@ -329,41 +329,44 @@ Returns `py-indent-offset'"
                                     (setq down t)
                                     (current-column))
                            ;; if nothing suitable around, us default
-                           (default-value 'py-indent-offset)))))))
+                           (default-value 'py-indent-offset)
+                           (setq done t)
+                           ))))))
            (secondindent
-            (if firstindent
-                (cond ((or down (py-statement-opens-block-p))
-                       (or (progn
-                             (when (and (py-end-of-statement)
-                                        (py-end-of-statement)
-                                        (py-beginning-of-statement))
-                               (current-indentation)))
-                           (progn
-                             (goto-char last)
-                             (and (py-beginning-of-block)
-                                  (current-indentation)))))
+            (unless done
+              (if firstindent
+                  (cond ((or down (py-statement-opens-block-p))
+                         (or (progn
+                               (when (and (py-end-of-statement)
+                                          (py-end-of-statement)
+                                          (py-beginning-of-statement))
+                                 (current-indentation)))
+                             (progn
+                               (goto-char last)
+                               (and (py-beginning-of-block)
+                                    (current-indentation)))))
 
-                      ((py-beginning-of-block)
-                       (progn
-                         (when (and (py-end-of-statement)
-                                    (py-end-of-statement)
-                                    (py-beginning-of-statement)
-                                    (py-beginning-of-statement))
-                           (current-indentation))))
-                      (t (if last (if (and (goto-char last)
-                                           (py-end-of-statement)
-                                           (py-end-of-statement)
-                                           (py-beginning-of-statement))
-                                      (current-indentation)
-                                    (goto-char last)
-                                    (when (py-beginning-of-block-or-clause)
-                                      (current-indentation))))))))
+                        ((py-beginning-of-block)
+                         (progn
+                           (when (and (py-end-of-statement)
+                                      (py-end-of-statement)
+                                      (py-beginning-of-statement)
+                                      (py-beginning-of-statement))
+                             (current-indentation))))
+                        (t (if last (if (and (goto-char last)
+                                             (py-end-of-statement)
+                                             (py-end-of-statement)
+                                             (py-beginning-of-statement))
+                                        (current-indentation)
+                                      (goto-char last)
+                                      (when (py-beginning-of-block-or-clause)
+                                        (current-indentation)))))))))
            guessed)
-      (unless secondindent
+      (unless (or done secondindent)
         (setq secondindent
               (when (py-end-of-block)
                 (current-indentation))))
-      (unless secondindent
+      (unless (or done secondindent)
         (setq secondindent
               ;; (setq first (current-indentation))
               (when (and (py-end-of-statement)

@@ -92,8 +92,10 @@ EOF
 
 fi
 
+SO="$PDIR/extensions/py-smart-operator.el"
+COLMK="$PDIR/extensions/column-marker.el"
+HIGHL="$PDIR/extensions/highlight-indentation.el"
 
-HIGHL="highlight-indentation.el"
 CLMACS="${EMACS_SOURCE_DIR}/lisp/emacs-lisp/cl-macs.el"
 BYTECOMP="${EMACS_SOURCE_DIR}/lisp/emacs-lisp/bytecomp.el"
 CUSTOM="${EMACS_SOURCE_DIR}/lisp/custom.el"
@@ -102,7 +104,7 @@ COMINT="${EMACS_SOURCE_DIR}/lisp/comint.el"
 CCCMDS="${EMACS_SOURCE_DIR}/lisp/progmodes/cc-cmds.el"
 SKEL="${EMACS_SOURCE_DIR}/lisp/skeleton.el"
 PYCO="$PDIR/completion/pycomplete.el"
-SO="$PDIR/extensions/py-smart-operator.el"
+
 
 # file holding the tests
 TESTFILE="py-bug-numbered-tests.el"
@@ -126,7 +128,8 @@ fi
 echo "\$PYMACS: $PYMACS"
 echo "\$PYTHONMODE: $PYTHONMODE"
 echo "\$PDIR/\$TESTFILE: $PDIR/$TESTFILE"
-$EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'python)(unload-feature 'python t))" --eval "(when (featurep 'python-mode)(unload-feature 'python-mode t))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$TESTDIR/\")" --eval "(setq py-install-directory \"$PDIR\"))" --eval "(message \"py-install-directory: %s\" py-install-directory)" --eval "(setq py-load-pymacs-p t)" -load $CCCMDS -load $COMINT -load $ANSICOLOR -load $CLMACS -load $BYTECOMP -load $CUSTOM -load $SKEL -load $PYCO -load $SO -load $PYTHONMODE  --eval "(message \"py-temp-directory: %s\" py-temp-directory)" -load $PCOT$TESTFILE -load $PCOT$TESTFILE2 -load $PCOT$TESTFILE3 -load $PCOT$TESTFILE4 -load $PCOT$TESTFILE5 --eval "(when (file-exists-p \"~/.abbrev_defs\") (quietly-read-abbrev-file (expand-file-name \"~/.abbrev_defs\")))" \
+$EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'python)(unload-feature 'python t))" --eval "(when (featurep 'python-mode)(unload-feature 'python-mode t))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$TESTDIR/\")" --eval "(setq py-install-directory \"$PDIR\"))" --eval "(message \"py-install-directory: %s\" py-install-directory)" --eval "(setq py-load-pymacs-p t)" -load $CCCMDS -load $COMINT -load $ANSICOLOR -load $CLMACS -load $BYTECOMP -load $CUSTOM -load $SKEL -load $PYCO -load $SO -load $COLMK -load $HIGHL -load $PYTHONMODE  --eval "(message \"py-temp-directory: %s\" py-temp-directory)" -load $PCOT$TESTFILE -load $PCOT$TESTFILE2 -load $PCOT$TESTFILE3 -load $PCOT$TESTFILE4 -load $PCOT$TESTFILE5 \
+--eval "(when (file-exists-p \"~/.abbrev_defs\") (quietly-read-abbrev-file (expand-file-name \"~/.abbrev_defs\")))" \
 \
 -eval "(assert (functionp 'word-at-point) nil \"new completion bug, lp:1034656, word-at-point not known\")" \
 \
@@ -422,7 +425,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-version) nil \"py-version not detected as command\")" \
 -eval "(assert (commandp 'run-python) nil \"run-python not detected as command\")" \
 -eval "(assert (commandp 'py-send-region) nil \"py-send-region not detected as command\")" \
--eval "(assert (commandp 'py-send-buffer) nil \"py-send-buffer not detected as command\")" \
 -eval "(assert (commandp 'py-switch-to-python) nil \"py-switch-to-python not detected as command\")" \
 -eval "(assert (commandp 'py-send-region-and-go) nil \"py-send-region-and-go not detected as command\")" \
 -eval "(assert (commandp 'py-load-file) nil \"py-load-file not detected as command\")" \
@@ -780,7 +782,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-moves-test \
 --funcall py-end-of-block-or-clause-test \
 --funcall mark-decorators-lp:328851-test \
---funcall complaint-about-non-ASCII-character-lp-1042949-test \
 --funcall py-expression-index-test \
 --funcall py-indent-after-assigment-test \
 --funcall py-execute-buffer-python3-switch-test \
@@ -1041,12 +1042,9 @@ est \
 --funcall py-partial-expression-test \
 --funcall py-completion-at-point-test \
 --funcall bob-beginning-of-statement-test \
---funcall not-that-useful-completion-lp:1003580-test \
 --funcall tqs-lp:302834-lp:1018994-test \
 --funcall infinite-loop-after-tqs-lp:826044-test \
 --funcall completion-at-gentoo-lp-1008842-test \
---funcall pycomplete-same-folder-class-lp:889052-test \
---funcall augmented-assigment-test \
 --funcall py-smart-operator-test \
 --funcall indent-triplequoted-to-itself-lp:752252-test \
 --funcall no-completion-at-all-lp:1001328-test \
@@ -1054,3 +1052,8 @@ est \
 --funcall inconvenient-window-splitting-behavior-ipython-lp-1018996-test \
 --funcall inconvenient-window-splitting-behavior-python-lp-1018996-test \
 --funcall py-ipython-complete-lp:927136-test \
+--funcall UnicodeEncodeError-python3-test \
+--funcall pycomplete-same-folder-class-lp:889052-test \
+--funcall complaint-about-non-ASCII-character-lp-1042949-test \
+--funcall not-that-useful-completion-lp:1003580-test \
+--funcall augmented-assigment-test \

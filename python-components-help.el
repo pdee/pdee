@@ -931,12 +931,6 @@ Extracted from http://manpages.ubuntu.com/manpages/natty/man1/pyflakes.1.html
     (when (featurep 'xemacs)
       (compile-internal command "No more errors"))))
 
-;; the python-el way
-(defcustom python-check-command "pychecker --stdlib"
-  "Command used to check a Python file."
-  :type 'string
-  :group 'python)
-
 (defvar python-saved-check-command nil
   "Internal use.")
 
@@ -963,18 +957,6 @@ See `python-check-command' for the default."
 ;;; from string-strip.el --- Strip CHARS from STRING
 
 ;; (setq strip-chars-before  "[ \t\r\n]*")
-(defcustom strip-chars-before  "\\`[ \t\r\n]*"
-  "Regexp indicating which chars shall be stripped before STRING - which is defined by `string-chars-preserve'."
-
-  :type 'string
-  :group 'convenience)
-
-(defcustom strip-chars-after  "[ \t\r\n]*\\'"
-  "Regexp indicating which chars shall be stripped after STRING - which is defined by `string-chars-preserve'."
-
-  :type 'string
-  :group 'convenience)
-
 (defun string-strip (str &optional chars-before chars-after)
   "Return a copy of STR, CHARS removed.
 `CHARS-BEFORE' and `CHARS-AFTER' default is \"[ \t\r\n]*\",

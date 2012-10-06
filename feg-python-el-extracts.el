@@ -146,7 +146,7 @@ virtualenv."
   :group 'python-mode
   :safe 'stringp)
 
-(defun python-ffap-module-path (module)
+(defun py-ffap-module-path (module)
   "Function for `ffap-alist' to return path for MODULE."
   (let ((process (or
                   (and (eq major-mode 'inferior-python-mode)
@@ -162,12 +162,12 @@ virtualenv."
 
 (eval-after-load "ffap"
   '(progn
-     (push '(python-mode . python-ffap-module-path) ffap-alist)
-     (push '(inferior-python-mode . python-ffap-module-path) ffap-alist)))
+     (push '(python-mode . py-ffap-module-path) ffap-alist)
+     (push '(inferior-python-mode . py-ffap-module-path) ffap-alist)))
 
 
 ;; Stolen from org-mode
-(defun python-util-clone-local-variables (from-buffer &optional regexp)
+(defun py-util-clone-local-variables (from-buffer &optional regexp)
   "Clone local variables from FROM-BUFFER.
 Optional argument REGEXP selects variables to clone and defaults
 to \"^python-\"."
@@ -279,11 +279,6 @@ uniqueness for different types of configurations."
                     (directory-file-name python-shell-virtualenv-path))
             path))))
 
-(defun python-comint-output-filter-function (output)
-  "Hook run after content is put into comint buffer.
-OUTPUT is a string with the contents of the buffer."
-  (ansi-color-filter-apply output))
-
 (defcustom python-shell-send-setup-max-wait 5
   "Seconds to wait for process output before code setup.
 If output is received before the especified time then control is
@@ -309,7 +304,7 @@ non-nil the buffer is shown."
                (current-buffer (current-buffer)))
           (with-current-buffer buffer
             (inferior-python-mode)
-            (python-util-clone-local-variables current-buffer))))
+            (py-util-clone-local-variables current-buffer))))
       (when pop
         (pop-to-buffer proc-buffer-name))
       proc-buffer-name)))
@@ -380,12 +375,11 @@ When `py-verbose-p' and MSG is non-nil messages the first line of STRING."
   (interactive "sPython command: ")
   (let* ((process (or process (python-shell-get-or-create-process)))
          (lines (split-string string "\n" t))
-         ;; (temp-file-name (make-temp-file "py"))
-         (temp-file-name (concat (py-normalize-directory py-temp-directory) "psss-temp.py"))
+         (temp-file-name (concat (with-current-buffer (process-buffer process)
+                                   (file-remote-p default-directory))
+                                 (py-normalize-directory py-temp-directory)
+                                 "psss-temp.py"))
          (file-name (or (buffer-file-name) temp-file-name)))
-    ;; (when (and py-verbose-p msg)
-    ;; (message (format "Sent: %s..." (nth 0 lines)))
-    ;;)
     (if (> (length lines) 1)
         (progn
           (with-temp-file temp-file-name
@@ -395,10 +389,7 @@ When `py-verbose-p' and MSG is non-nil messages the first line of STRING."
       (comint-send-string process string)
       (when (or (not (string-match "\n$" string))
                 (string-match "\n[ \t].*\n?$" string))
-        (comint-send-string process "\n")))
-    ;; (when (file-readable-p temp-file-name) (delete-file temp-file-name))
-)
-  )
+        (comint-send-string process "\n")))))
 
 (defun python-shell-send-string-no-output (string &optional process msg)
   "Send STRING to PROCESS and inhibit output.
@@ -464,7 +455,7 @@ FILE-NAME."
       (concat "__pyfile = open('''%s''');"
               "exec(compile(__pyfile.read(), '''%s''', 'exec'));"
               "__pyfile.close()")
-      (or temp-file-name file-name) file-name)
+      (or (file-remote-p temp-file-name 'localname) file-name) file-name)
      process)))
 
 (defun python-shell-switch-to-shell ()
@@ -706,28 +697,26 @@ completions on the current context."
 (defun python-shell-completion--do-completion-at-point (process imports input)
   "Do completion at point for PROCESS."
   (with-syntax-table python-dotty-syntax-table
-    (let* ((code
-	    (if imports
-                (concat imports python-shell-module-completion-string-code)
-              python-shell-module-completion-string-code))
+    (when imports (python-shell-send-string-no-output imports process))
+    (let* ((code python-shell-module-completion-string-code)
            (completions
             (python-shell-completion--get-completions
              input process code))
-	   (completion (when completions
-			 (try-completion input completions))))
+           (completion (when completions
+                         (try-completion input completions))))
       (cond ((eq completion t)
-	     (if (eq this-command last-command)
-		 (when python-completion-original-window-configuration
-		   (set-window-configuration
-		    python-completion-original-window-configuration)))
-	     ;; (setq python-completion-original-window-configuration nil)
+             (if (eq this-command last-command)
+                 (when python-completion-original-window-configuration
+                   (set-window-configuration
+                    python-completion-original-window-configuration)))
+             ;; (setq python-completion-original-window-configuration nil)
              (if py-no-completion-calls-dabbrev-expand-p
                  (or (ignore-errors (dabbrev-expand nil))(when py-indent-no-completion-p
-                                           (tab-to-tab-stop)))
+                                                           (tab-to-tab-stop)))
                (when py-indent-no-completion-p
                  (tab-to-tab-stop)))
-	     nil)
-	    ((null completion)
+             nil)
+            ((null completion)
              (if py-no-completion-calls-dabbrev-expand-p
                  (or (dabbrev-expand nil)(when py-indent-no-completion-p
                                            (tab-to-tab-stop))(message "Can't find completion "))

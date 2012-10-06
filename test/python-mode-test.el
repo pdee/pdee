@@ -6669,9 +6669,10 @@ def fooBaz( bar ):  # version 2003/9/7
     (py-bug-tests-intern 'py-end-of-def-inline-comment-base arg teststring)))
 
 (defun py-end-of-def-inline-comment-base ()
-  (goto-char 49)
-  (py-end-of-def-or-class)
-  (assert (eq 311 (point)) nil "py-end-of-def-inline-comment-test failed"))
+  (let ((py-smart-indentation t))
+    (goto-char 49)
+    (py-end-of-def-or-class)
+    (assert (eq 311 (point)) nil "py-end-of-def-inline-comment-test failed")))
 
 (defun py-compute-indentation-test (&optional arg)
   (interactive "p")

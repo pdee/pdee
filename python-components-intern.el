@@ -706,69 +706,60 @@ and `pass'.  This doesn't catch embedded statements."
 ;; py-look-downward-for-clause
 (defun py-end-base (regexp &optional orig)
   "Used internal by functions going to the end forms. "
-  (let* ((orig (or orig (point)))
-         (regexp (or regexp py-extended-block-or-clause-re))
-         (this (if (py-statement-opens-block-p regexp)
-                   (point)
-                 (when (cdr-safe (py-go-to-keyword (if (string= regexp py-def-or-class-re)
-                                                       py-def-or-class-re
-                                                     py-extended-block-or-clause-re)))
-                   (when (py-statement-opens-block-p py-extended-block-or-clause-re)
-                     (point)))))
-         ind erg last)
-    (if this
-        (progn
-          (setq py-bol-forms-last-indent (cons this-command (current-indentation)))
-          (setq ind (+ py-indent-offset (current-indentation)))
-          (py-end-of-statement)
-          (setq last (point))
-          (forward-line 1)
-          (if (looking-at regexp)
-              (skip-chars-backward " \t\r\n\f")
-            (py-travel-current-indent ind (point))
-            (cond ((string= regexp py-clause-re)
-                   ;; (string= regexp py-block-or-clause-re)
-                   (unless (< orig (point))
-                     (if
-                         (and (setq last (point)) (prog1 (py-end-of-statement)(beginning-of-line))(looking-at py-clause-re))
-                         (py-travel-current-indent (+ (current-indentation) py-indent-offset) (point))
-                       (goto-char last))))
-                  (t (while
-                         (and (setq last (point)) (prog1 (py-end-of-statement)(beginning-of-line))(looking-at py-clause-re))
-                       (py-travel-current-indent (+ (current-indentation) py-indent-offset) (point)))
-                     (goto-char last)))))
-      (goto-char orig))
-    (when (eq orig (point))
-      ;; py-travel-current-indent will stop of clause at equal indent
-      (if (py-look-downward-for-beginning regexp)
-          (if (or (string= regexp py-clause-re) (string= regexp py-block-or-clause-re))
-              (progn
-                (py-beginning-of-statement)
-                (py-end-of-statement))
-            (progn
-              (setq orig (point) ind (+ (current-indentation) py-indent-offset))
-              (if (and (setq last (point)) (py-look-downward-for-clause ind orig py-block-or-clause-re))
-                  (progn
-                    (while (and (setq last (point))
-                                (py-look-downward-for-clause ind orig py-block-or-clause-re)
-                                (setq orig (point))))
-                    (goto-char last)
-                    (py-end-of-clause))
-                (goto-char last)
-                (py-travel-current-indent (current-indentation) (point)))))))
-    (when (< orig (point))
-      (setq erg (point)))
-    erg))
+  (unless (eobp)
+    (let* ((orig (or orig (point)))
+           (regexp (or regexp py-extended-block-or-clause-re))
+           (this (if (py-statement-opens-block-p regexp)
+                     (point)
+                   (when (cdr-safe (py-go-to-keyword (if (string= regexp py-def-or-class-re)
+                                                         py-def-or-class-re
+                                                       py-extended-block-or-clause-re)))
+                     (when (py-statement-opens-block-p py-extended-block-or-clause-re)
+                       (point)))))
+           ind erg last pps)
+      (if this
+          (progn
+            (setq py-bol-forms-last-indent (cons this-command (current-indentation)))
+            (setq ind (+ py-indent-offset (current-indentation)))
+            (py-end-of-statement)
+            (setq last (point))
+            (forward-line 1)
+            (if (looking-at regexp)
+                (skip-chars-backward " \t\r\n\f")
+              (py-travel-current-indent ind (point))
+              (cond ((string= regexp py-clause-re)
+                     ;; (string= regexp py-block-or-clause-re)
+                     (unless (< orig (point))
+                       (if
+                           (and (setq last (point)) (prog1 (py-end-of-statement)(beginning-of-line))(looking-at py-clause-re))
+                           (py-travel-current-indent (+ (current-indentation) py-indent-offset) (point))
+                         (goto-char last))))
+                    (t (while
+                           (and (setq last (point)) (prog1 (py-end-of-statement)(beginning-of-line))(looking-at py-clause-re))
+                         (py-travel-current-indent (+ (current-indentation) py-indent-offset) (point)))
+                       (goto-char last)))))
+        (goto-char orig))
+      (when (<= (point) orig)
+        ;; found the end above
+        ;; py-travel-current-indent will stop of clause at equal indent
+        (when (py-look-downward-for-beginning regexp)
+          (py-end-base regexp orig))))
+    (setq pps (syntax-ppss))
+    (unless (or (looking-at comment-start) (or (nth 8 pps) (nth 1 pps)))
+      (when (< orig (point))
+        (point)))))
 
 (defun py-look-downward-for-beginning (regexp)
   "When above any beginning of FORM, search downward. "
-  (let ((orig (point))
-        erg last)
-    (while (and (setq last (point)) (not (eobp)) (setq erg (re-search-forward regexp nil t 1))
-                (or (nth 8 (syntax-ppss)) (nth 1 (syntax-ppss)))))
-    (or erg
-        (when (< orig last)
-          last))))
+  (let* ((orig (point))
+         (erg orig)
+         (last orig)
+         pps)
+    (while (and (setq last (point)) (not (eobp)) (re-search-forward regexp nil t 1)(setq erg (match-beginning 0)) (setq pps (syntax-ppss))
+                (or (nth 8 pps) (nth 1 pps))))
+    (cond ((not (or (nth 8 pps) (nth 1 pps) (or (looking-at comment-start))))
+           (when (ignore-errors (< orig erg))
+             erg)))))
 
 (defun py-look-downward-for-clause (&optional ind orig regexp)
   "If beginning of other clause exists downward in current block.

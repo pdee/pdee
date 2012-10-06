@@ -652,9 +652,7 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
                  (message "No output.")
                (setq py-exception-buffer (current-buffer))
                (let ((err-p (py-postprocess-output-buffer py-output-buffer)))
-                 ;; (when py-switch-buffers-on-execute-p
                  (pop-to-buffer py-output-buffer)
-                 ;;)
                  (if err-p
                      (pop-to-buffer py-exception-buffer))))))
           (t (set-buffer filebuf)
@@ -1272,11 +1270,6 @@ Returns position where output starts. "
       ;; positions past marker `orig-start'.  It has to be done *after*
       ;; `python-send-command''s call to `compilation-forget-errors'.
       (compilation-fake-loc orig-start f))))
-
-(defun py-send-buffer ()
-  "Send the current buffer to the inferior Python process."
-  (interactive)
-  (py-send-region (point-min) (point-max)))
 
 ;;; Subprocess utilities and filters
 (defvar py-last-exeption-buffer nil

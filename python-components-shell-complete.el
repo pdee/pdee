@@ -349,7 +349,8 @@ complete('%s')" word) shell nil proc)))
                    (with-output-to-temp-buffer "*Python Completions*"
                      (display-completion-list
                       (all-completions word completions)))
-                   (recenter))
+                   (recenter)
+                   nil)
                   ((not (string= word (car completions)))
                    (progn (delete-char (- (length word)))
                           (insert (car completions))

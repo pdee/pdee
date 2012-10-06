@@ -660,7 +660,7 @@ To go just beyond the final line of the current statement, use `py-down-statemen
             (skip-chars-backward " \t\r\n\f" (line-beginning-position)))
           (py-end-of-statement orig done)))
        ((looking-at "#")
-        (end-of-line) 
+        (end-of-line)
         (forward-comment 99999)
         (setq done t)
         (skip-chars-forward (concat "^" comment-start) (line-end-position))
@@ -1188,7 +1188,11 @@ From a programm use macro `py-beginning-of-comment' instead "
         (when (and first (not maxindent))
           (setq maxindent (current-indentation))
           (setq first nil))))
-    (when erg (setq erg (cons (current-indentation) erg)))
+    (when erg
+      (if (looking-at regexp)
+          (setq erg (cons (current-indentation) erg))
+        (setq erg nil
+              )))
     erg))
 
 (defun py-clause-lookup-keyword (regexp arg &optional indent orig origline)

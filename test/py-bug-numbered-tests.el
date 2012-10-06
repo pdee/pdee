@@ -1588,7 +1588,8 @@ from long.pkg.name import long, list, of, \\
 
 (defun indent-match-import-pkg-lp:852500-test (&optional arg)
   (interactive "p")
-  (let ((teststring "from long.pkg.name import long, list, of, \\
+  (let (py-smart-indentation
+        (teststring "from long.pkg.name import long, list, of, \\
      class_and_function, names
 
 # (note there are five spaces before \"class\", to match with the
@@ -2739,8 +2740,11 @@ class Blah():
     def someDef():
         print(\"I'm someDef\")
 ")
-    (write-file (concat (py-normalize-directory py-temp-directory) "classblah.py")))
-
+    ;; (write-file (concat (py-normalize-directory py-temp-directory) "classblah.py")))
+    ;; as completion is  already in $PYTHONPATH
+   (write-file (concat (expand-file-name (py-normalize-directory py-install-directory)) "completion" "/" "classblah.py"))
+     (set-buffer-modified-p 'nil)
+  (kill-buffer (current-buffer)))
   (let ((teststring "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 from classblah import *
@@ -2750,14 +2754,18 @@ CLASS_INS.someDe
     (py-bug-tests-intern 'pycomplete-same-folder-class-lp:889052-base arg teststring)))
 
 (defun pycomplete-same-folder-class-lp:889052-base ()
-  (let ((erg (concat (py-normalize-directory py-temp-directory) "classblah.py"))
+  (let (
+(testfile1 (concat (expand-file-name (py-normalize-directory py-install-directory)) "completion" "/" "classblah.py"))
+        (testfile2 (concat (expand-file-name (py-normalize-directory py-install-directory)) "completion" "/" "somedef.py"))
         py-no-completion-calls-dabbrev-expand-p
         py-indent-no-completion-p)
+    (write-file testfile2)
     (goto-char 107)
     (unwind-protect
         (py-python-script-complete)
       (beginning-of-line))
-    (when (file-readable-p erg) (delete-file erg)))
+    (when (file-readable-p testfile1) (delete-file testfile1))
+    (when (file-readable-p testfile2) (delete-file testfile2)))
   (assert (looking-at "CLASS_INS.someDef") "pycomplete-same-folder-class-lp:889052-test failed"))
 
 (defun shebang-interpreter-not-detected-lp:1001327-test (&optional arg)

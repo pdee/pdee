@@ -60,8 +60,7 @@
          (setq py-pdbtrack-is-tracking-p t))
         (overlay-arrow-position
          (setq overlay-arrow-position nil)
-         (setq py-pdbtrack-is-tracking-p nil))
-        ))
+         (setq py-pdbtrack-is-tracking-p nil))))
 
 (defun py-pdbtrack-track-stack-file (text)
   "Show the file indicated by the pdb stack entry line, in a separate window.
@@ -116,10 +115,7 @@ script, and set to python-mode, and pdbtrack will find it.)"
             (forward-line (1- target_lineno))
             (message "pdbtrack: line %s, file %s" target_lineno target_fname)
             (py-pdbtrack-overlay-arrow t)
-            (pop-to-buffer origbuf t)
-
-            )))))
-  )
+            (pop-to-buffer origbuf t)))))))
 
 
 (defun py-pdbtrack-map-filename (filename)
