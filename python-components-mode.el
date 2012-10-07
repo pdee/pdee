@@ -1218,6 +1218,14 @@ without the user's realization (e.g. to perform completion)."
   :type 'string
   :group 'python)
 
+(defcustom py-load-highlight-indentation-p  nil
+  "If highlight-indentation should be load.
+
+When `t', toggle buffer local status via `M-x highlight-indentation' during session. "
+
+  :type 'boolean
+  :group 'python-mode)
+
 ;;; defvarred Variables
 (defvar python-mode-syntax-table nil
   "Give punctuation syntax to ASCII that normally has symbol
@@ -1281,6 +1289,7 @@ ipython0.11-completion-command-string also covers version 0.12")
 
 (defvar py-shebang-regexp "#![ \t]?\\([^ \t\n]+\\)[ \t]?\\([biptj]+ython[^ \t\n]*\\)"
   "Detecting the shell in head of file. ")
+
 
 (defvar py-separator-char 47
   "Values set by defcustom only will not be seen in batch-mode. ")
@@ -2243,11 +2252,10 @@ See original source: http://pymacs.progiciels-bpi.ca"
 ;; (require 'python-mode-test)
 (require 'column-marker)
 (require 'feg-python-el-extracts)
-(unless (featurep 'xemacs)
-  (require 'highlight-indentation))
 (require 'python-abbrev-propose)
 (require 'py-smart-operator)
 (require 'python-extended-executes-test)
+(require 'python-components-switches)
 
 ;;; Python specialized rx
 
@@ -2702,6 +2710,9 @@ Load into inferior Python session"]
              :help "`pdb'
 Run pdb under GUD"]
             "-"
+
+            ["Toggle highlight-indentation" py-toggle-highlight-indentation
+             :help "When `py-load-highlight-indentation-p' is `t', this toggles `highlight-indentation' "]
 
             ["Toggle autopair-mode" autopair-mode
              :help "When `py-prepare-autopair-mode-p' is `t', this toggles `autopair-mode' "]
@@ -5471,11 +5482,14 @@ Don't save anything for STR matching `inferior-python-filter-regexp'."
 (make-obsolete 'jpython-mode 'jython-mode nil)
 (autoload 'comint-check-proc "comint")
 
-;;;
+;;; Hooks
+(add-hook 'python-mode-hook
+          (lambda ()
+            (when py-load-highlight-indentation-p
+              (unless (featurep 'highlight-indentation)
+                (load (concat (py-normalize-directory py-install-directory) "extensions" (char-to-string py-separator-char) "highlight-indentation.el"))))))
 
-;; Fixme: This should inherit some stuff from `python-mode', but I'm
-;; not sure how much: at least some keybindings, like C-c C-f;
-;; syntax?; font-locking, e.g. for triple-quoted strings?
+;;;
 (define-derived-mode inferior-python-mode comint-mode "Inferior Python"
   "Major mode for interacting with an inferior Python process.
 A Python process can be started with \\[run-python] or \\[py-shell].

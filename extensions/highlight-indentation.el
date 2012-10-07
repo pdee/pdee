@@ -1,9 +1,8 @@
 ;;; highlight-indentation.el --- Function for highlighting indentation
-;; Author: Anton Johansson <anton.johansson@gmail.com> - http://antonj.se
+;; Original Author: Anton Johansson <anton.johansson@gmail.com> - http://antonj.se
 ;; Created: Dec 15 23:42:04 2010
-;; Version: 0.5.0
 ;; URL: https://github.com/antonj/Highlight-Indentation-for-Emacs
-;;
+
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
 ;; published by the Free Software Foundation; either version 2 of
@@ -19,16 +18,44 @@
 
 ;;; Code:
 
-(defface highlight-indent-face
-  ;; Fringe has non intrusive color in most color-themes
-  '((t :inherit fringe))
-  "Basic face for highlighting indentation guides."
-  :group 'basic-faces)
+(defcustom highlight-indentation  nil
+ "If level of indentation should be displayed at start.
+Toggle buffer local status via `M-x highlight-indentation' during session. "
 
-;; Used buffer-local to toggle on-off
-(setq-default highlight-indent-active nil)
-;; Needed to to remove font-lock-keywords
+:type 'boolean
+:group 'python)
+(make-variable-buffer-local 'highlight-indentation)
+
+(defvar highlight-indent-active nil)
+(make-variable-buffer-local 'highlight-indent-active)
+
+(defface highlight-indent-face
+  '((((class color) (background dark))
+     (:background "grey33"))
+    (((class color) (background light))
+     (:background "grey")))
+  "Basic face for highlighting indentation guides.")
+
 (setq-default highlight-indent-offset 4)
+
+(defvar ruby-indent-level nil)
+(defvar nxml-child-indent nil)
+
+(defun highlight-indentation-on ()
+  "Make sure `highlight-indentation' is on. "
+  (interactive)
+  (set (make-local-variable 'highlight-indent-active) nil)
+  (highlight-indentation)
+  (when (called-interactively-p 'any)
+    (message "highlight-indentation ON")))
+
+(defun highlight-indentation-off ()
+  "Make sure `highlight-indentation' is off. "
+  (interactive)
+  (set (make-local-variable 'highlight-indent-active) t)
+  (highlight-indentation)
+  (when (called-interactively-p 'any)
+    (message "highlight-indentation OFF")))
 
 (defun highlight-indentation (&optional indent-width)
   "Toggle highlight indentation.
@@ -36,34 +63,37 @@ Optional argument INDENT-WIDTH specifies which indentation
 level (spaces only) should be highlighted, if omitted
 indent-width will be guessed from current major-mode"
   (interactive "P")
-  (when (not highlight-indent-active)
-    (set (make-local-variable 'highlight-indent-offset)
-         (if indent-width
-             indent-width
-           ;; Set indentation offset according to major mode
-           (cond ((eq major-mode 'python-mode)
-                  (if (boundp 'python-indent)
-                      python-indent
-                    py-indent-offset))
-                 ((eq major-mode 'ruby-mode)
-                  ruby-indent-level)
-                 ((eq major-mode 'nxml-mode)
-                  nxml-child-indent)
-                 ((local-variable-p 'c-basic-offset)
-                  c-basic-offset)
-                 (t
-                  (default-value 'highlight-indent-offset))))))
   (let ((re (format "\\( \\) \\{%s\\}" (- highlight-indent-offset 1))))
-    (if highlight-indent-active
-        (progn ;; Toggle off
-          (set (make-local-variable 'highlight-indent-active) nil)
-          (font-lock-remove-keywords nil `((,re (1 'highlight-indent-face))))
-          (message "highlight-indentation OFF"))
-      (progn ;; Toggle on
-        (set (make-local-variable 'highlight-indent-active) t)
-        (font-lock-add-keywords nil `((,re (1 'highlight-indent-face))))
-        (message (format "highlight-indentation with indent-width %s"
-                         highlight-indent-offset))))
+    (if (not highlight-indent-active)
+        (progn ;; Toggle on
+          (set (make-local-variable 'highlight-indent-offset)
+               (if indent-width
+                   indent-width
+                 ;; Set indentation offset according to major mode
+                 (cond ((eq major-mode 'python-mode)
+                        (if (boundp 'python-indent)
+                            python-indent
+                          py-indent-offset))
+                       ((eq major-mode 'ruby-mode)
+                        ruby-indent-level)
+                       ((eq major-mode 'nxml-mode)
+                        nxml-child-indent)
+                       ((local-variable-p 'c-basic-offset)
+                        c-basic-offset)
+                       (t
+                        (default-value 'highlight-indent-offset)))))
+          (set (make-local-variable 'highlight-indent-active) t)
+          (if (featurep 'xemacs)
+              (font-lock-add-keywords nil `((,re (1 'paren-face-match))))
+            (font-lock-add-keywords nil `((,re (1 'highlight-indent-face)))))
+          (message (format "highlight-indentation with indent-width %s"
+                           highlight-indent-offset)))
+      ;; Toggle off
+      (set (make-local-variable 'highlight-indent-active) nil)
+      (if (featurep 'xemacs)
+          (font-lock-remove-keywords nil `((,re (1 'paren-face-match))))
+        (font-lock-remove-keywords nil `((,re (1 'highlight-indent-face)))))
+      (message "highlight-indentation OFF"))
     (font-lock-fontify-buffer)))
 
 (provide 'highlight-indentation)
