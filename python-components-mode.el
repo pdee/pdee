@@ -1218,14 +1218,6 @@ without the user's realization (e.g. to perform completion)."
   :type 'string
   :group 'python)
 
-(defcustom py-load-highlight-indentation-p  nil
-  "If highlight-indentation should be load.
-
-When `t', toggle buffer local status via `M-x highlight-indentation' during session. "
-
-  :type 'boolean
-  :group 'python-mode)
-
 ;;; defvarred Variables
 (defvar python-mode-syntax-table nil
   "Give punctuation syntax to ASCII that normally has symbol
@@ -2711,20 +2703,59 @@ Load into inferior Python session"]
 Run pdb under GUD"]
             "-"
 
-            ["Toggle highlight-indentation" py-toggle-highlight-indentation
-             :help "When `py-load-highlight-indentation-p' is `t', this toggles `highlight-indentation' "]
+            ("Modes"
+             :help "Toggle useful modes like `highlight-indentation'"
 
-            ["Toggle autopair-mode" autopair-mode
-             :help "When `py-prepare-autopair-mode-p' is `t', this toggles `autopair-mode' "]
+            ["Toggle highlight-indentation" py-toggle-highlight-indentation
+             :help "M-x `highlight-indentation' switches this minor mode "]
+
+            ["Highlight-indentation on" highlight-indentation-on
+             :help "M-x `highlight-indentation-on' switches this minor mode on "]
+
+            ["Highlight-indentation off" highlight-indentation-off
+             :help "M-x `highlight-indentation-off' switches this minor mode off "]
+            "-"
+
+            ["Toggle autopair-mode" py-toggle-autopair-mode
+             :help "Toggles py-autopair minor-mode "]
+
+            ["Autopair on" py-autopair-mode-on
+             :help "Switches autopair minor-mode on "]
+
+            "-"
 
             ["Toggle py-smart-indentation" toggle-py-smart-indentation
-             :help "See also `py-smart-indentation-on', `-off' "]
+             :help "Toggles py-smart-indentation minor-mode "]
+
+            ["Py-smart-indentation on" py-smart-indentation-mode-on
+             :help "Switches py-smart-indentation minor-mode on "]
+
+            ["Toggle py-smart-indentation" py-toggle-smart-indentation
+             :help "Toggles py-smart-indentation minor-mode off"]
+
+            "-"
 
             ["Toggle py-smart-operator" py-toggle-smart-operator
-             :help "See also `py-smart-operator-on', `-off' "]
+             :help "Toggles py-smart-operator minor-mode"]
+
+            ["Py-smart-operator off" py-smart-operator-mode-off
+             :help "Switches py-smart-operator minor-mode off "]
+
+            ["Py-smart-operator on" py-smart-operator-mode-on
+             :help "Switches py-smart-operator minor-mode on "]
+
+            "-"
 
             ["Toggle indent-tabs-mode" py-toggle-indent-tabs-mode
              :help "See also `py-indent-tabs-mode-on', `-off' "]
+
+            ["Switch indent-tabs-mode on" py-indent-tabs-mode-on
+             :help "`py-indent-tabs-mode-on'"]
+
+            ["Switch indent-tabs-mode off" py-indent-tabs-mode-off
+             :help "`py-indent-tabs-mode-off'"]
+
+            )
 
             ["Help on symbol" py-describe-symbol
              :help "`py-describe-symbol'
@@ -4416,8 +4447,10 @@ Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-p
 
             ["Toggle split-windows-on-execute" py-toggle-split-windows-on-execute
              :help "Switch boolean `py-split-windows-on-execute-p'."]
+
             ["Switch split-windows-on-execute ON" py-split-windows-on-execute-on
              :help "Switch `py-split-windows-on-execute-p' ON. "]
+
             ["Switch split-windows-on-execute OFF" py-split-windows-on-execute-off
              :help "Switch `py-split-windows-on-execute-p' OFF. "]
 
@@ -5483,11 +5516,11 @@ Don't save anything for STR matching `inferior-python-filter-regexp'."
 (autoload 'comint-check-proc "comint")
 
 ;;; Hooks
-(add-hook 'python-mode-hook
-          (lambda ()
-            (when py-load-highlight-indentation-p
-              (unless (featurep 'highlight-indentation)
-                (load (concat (py-normalize-directory py-install-directory) "extensions" (char-to-string py-separator-char) "highlight-indentation.el"))))))
+;; (add-hook 'python-mode-hook
+;;           (lambda ()
+;;             (when py-load-highlight-indentation-p
+;;               (unless (featurep 'highlight-indentation)
+;;                 (load (concat (py-normalize-directory py-install-directory) "extensions" (char-to-string py-separator-char) "highlight-indentation.el"))))))
 
 ;;;
 (define-derived-mode inferior-python-mode comint-mode "Inferior Python"
@@ -5514,9 +5547,20 @@ For running multiple processes in multiple buffers, see `run-python' and
   (set (make-local-variable 'comint-input-filter) 'python-input-filter)
   (add-hook 'comint-preoutput-filter-functions #'python-preoutput-filter
 	    nil t)
-  (python--set-prompt-regexp)
   (set (make-local-variable 'compilation-error-regexp-alist)
        python-compilation-regexp-alist)
+  (set (make-local-variable 'comint-prompt-regexp)
+             (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
+                    (concat "\\("
+                            (mapconcat 'identity
+                                       (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
+                                       "\\|")
+                            "\\)"))
+                   (t (concat "\\("
+                              (mapconcat 'identity
+                                         (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
+                                         "\\|")
+                              "\\)"))))
   (if py-complete-function
       (add-hook 'completion-at-point-functions
                 py-complete-function nil 'local)

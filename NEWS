@@ -4,8 +4,6 @@ Python Mode News
 New in version 6.1.0
 ---------------------
 
-- customizable boolean `py-load-highlight-indentation-p'. Default is nil.
-  When `t', toggle buffer local status via `M-x highlight-indentation' during session. "
 
 New in version 6.0.12
 ---------------------

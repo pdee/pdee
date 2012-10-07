@@ -180,7 +180,6 @@ on."
          py-shell-switch-buffers-on-execute-p
          py-start-run-py-shell
          proc
-         py-prepare-autopair-mode-p
          py-fontify-shell-buffer-p
          )
      (if ,use-find-file

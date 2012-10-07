@@ -772,6 +772,9 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-up-def-bol) nil \"py-up-def-bol not detected as command\")" \
 -eval "(assert (commandp 'py-up-class-bol) nil \"py-up-class-bol not detected as command\")" \
 -eval "(assert (commandp 'py-up-def-or-class-bol) nil \"py-up-def-or-class-bol not detected as command\")" \
+--funcall py-highlight-indentation-test \
+--funcall py-smart-indentation-test \
+--funcall autopair-mode-test \
 --funcall UnicodeEncodeError-python3-test \
 --funcall py-run-shell-complete-tests \
 --funcall exception-in-except-clause-highlighted-as-keyword-lp-909205-test \
