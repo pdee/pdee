@@ -780,6 +780,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-fill-string-pep-257) nil \"py-fill-string-pep-257 not detected as command\")" \
 -eval "(assert (commandp 'py-fill-string-pep-257-nn) nil \"py-fill-string-pep-257-nn not detected as command\")" \
 -eval "(assert (commandp 'py-fill-string-symmetric) nil \"py-fill-string-symmetric not detected as command\")" \
+--funcall impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test \
 --funcall py-highlight-indentation-test \
 --funcall py-smart-indentation-test \
 --funcall autopair-mode-test \
