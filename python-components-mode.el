@@ -2787,56 +2787,54 @@ Run pdb under GUD"]
             ("Modes"
              :help "Toggle useful modes like `highlight-indentation'"
 
-            ["Toggle highlight-indentation" py-toggle-highlight-indentation
-             :help "M-x `highlight-indentation' switches this minor mode "]
+             ["Toggle highlight-indentation" py-toggle-highlight-indentation
+              :help "M-x `highlight-indentation' switches this minor mode "]
 
-            ["Highlight-indentation on" highlight-indentation-on
-             :help "M-x `highlight-indentation-on' switches this minor mode on "]
+             ["Highlight-indentation on" highlight-indentation-on
+              :help "M-x `highlight-indentation-on' switches this minor mode on "]
 
-            ["Highlight-indentation off" highlight-indentation-off
-             :help "M-x `highlight-indentation-off' switches this minor mode off "]
-            "-"
+             ["Highlight-indentation off" highlight-indentation-off
+              :help "M-x `highlight-indentation-off' switches this minor mode off "]
+             "-"
 
-            ["Toggle autopair-mode" py-toggle-autopair-mode
-             :help "Toggles py-autopair minor-mode "]
+             ["Toggle autopair-mode" py-toggle-autopair-mode
+              :help "Toggles py-autopair minor-mode "]
 
-            ["Autopair on" py-autopair-mode-on
-             :help "Switches autopair minor-mode on "]
+             ["Autopair on" py-autopair-mode-on
+              :help "Switches autopair minor-mode on "]
 
-            "-"
+             "-"
 
-            ["Toggle py-smart-indentation" toggle-py-smart-indentation
-             :help "Toggles py-smart-indentation minor-mode "]
+             ["Toggle py-smart-indentation" toggle-py-smart-indentation
+              :help "Toggles py-smart-indentation minor-mode "]
 
-            ["Py-smart-indentation on" py-smart-indentation-mode-on
-             :help "Switches py-smart-indentation minor-mode on "]
+             ["Py-smart-indentation on" py-smart-indentation-mode-on
+              :help "Switches py-smart-indentation minor-mode on "]
 
-            ["Toggle py-smart-indentation" py-toggle-smart-indentation
-             :help "Toggles py-smart-indentation minor-mode off"]
+             ["Toggle py-smart-indentation" py-toggle-smart-indentation
+              :help "Toggles py-smart-indentation minor-mode off"]
 
-            "-"
+             "-"
 
-            ["Toggle py-smart-operator" py-toggle-smart-operator
-             :help "Toggles py-smart-operator minor-mode"]
+             ["Toggle py-smart-operator" py-toggle-smart-operator
+              :help "Toggles py-smart-operator minor-mode"]
 
-            ["Py-smart-operator off" py-smart-operator-mode-off
-             :help "Switches py-smart-operator minor-mode off "]
+             ["Py-smart-operator off" py-smart-operator-mode-off
+              :help "Switches py-smart-operator minor-mode off "]
 
-            ["Py-smart-operator on" py-smart-operator-mode-on
-             :help "Switches py-smart-operator minor-mode on "]
+             ["Py-smart-operator on" py-smart-operator-mode-on
+              :help "Switches py-smart-operator minor-mode on "]
 
-            "-"
+             "-"
 
-            ["Toggle indent-tabs-mode" py-toggle-indent-tabs-mode
-             :help "See also `py-indent-tabs-mode-on', `-off' "]
+             ["Toggle indent-tabs-mode" py-toggle-indent-tabs-mode
+              :help "See also `py-indent-tabs-mode-on', `-off' "]
 
-            ["Switch indent-tabs-mode on" py-indent-tabs-mode-on
-             :help "`py-indent-tabs-mode-on'"]
+             ["Switch indent-tabs-mode on" py-indent-tabs-mode-on
+              :help "`py-indent-tabs-mode-on'"]
 
-            ["Switch indent-tabs-mode off" py-indent-tabs-mode-off
-             :help "`py-indent-tabs-mode-off'"]
-
-            )
+             ["Switch indent-tabs-mode off" py-indent-tabs-mode-off
+              :help "`py-indent-tabs-mode-off'"])
 
             ["Help on symbol" py-describe-symbol
              :help "`py-describe-symbol'
@@ -3890,9 +3888,7 @@ Delete innermost compound statement at point, store deleted string in kill-ring"
 
              ["Delete block" py-delete-block
               :help "`py-delete-block'
-Delete innermost compound statement at point, don't store deleted string in kill-ring"]
-
-             )
+Delete innermost compound statement at point, don't store deleted string in kill-ring"])
             ("Def-or-class ... "
              ["Beginning of Def-or-Class" py-beginning-of-def-or-class
               :help "`py-beginning-of-def-or-class'
@@ -3926,9 +3922,7 @@ Delete innermost compound statement at point, store deleted string in kill-ring"
 
              ["Delete def-or-class" py-delete-def-or-class
               :help "`py-delete-def-or-class'
-Delete def-or-class at point, don't store deleted string in kill-ring"]
-
-             )
+Delete def-or-class at point, don't store deleted string in kill-ring"])
 
             ("Clause ... "
              ["Copy clause" py-copy-clause
@@ -3966,9 +3960,7 @@ Delete innermost compound statement at point, store deleted string in kill-ring"
 
              ["Delete clause" py-delete-clause
               :help "`py-delete-clause'
-Delete innermost compound statement at point, don't store deleted string in kill-ring"]
-
-             )
+Delete innermost compound statement at point, don't store deleted string in kill-ring"])
 
             ("Statement ... "
              ["Beginning of Statement" py-beginning-of-statement
@@ -3989,9 +3981,7 @@ Delete innermost compound statement at point, store deleted string in kill-ring"
 
              ["Delete statement" py-delete-statement
               :help "`py-delete-statement'
-Delete statement at point, don't store deleted string in kill-ring"]
-
-             )
+Delete statement at point, don't store deleted string in kill-ring"])
 
             ("Expression ..."
 
@@ -4030,8 +4020,7 @@ Delete innermost compound statement at point, store deleted string in kill-ring"
 
              ["Delete expression" py-delete-expression
               :help "`py-delete-expression'
-Delete expression at point, don't store deleted string in kill-ring"]
-             )
+Delete expression at point, don't store deleted string in kill-ring"])
             ("Partial expression ..."
 
              ["Beginning of minor expression" py-beginning-of-partial-expression
@@ -4058,9 +4047,7 @@ Delete innermost compound statement at point, store deleted string in kill-ring"
 
              ["Delete partial-expression" py-delete-partial-expression
               :help "`py-delete-partial-expression'
-Delete partial-expression at point, don't store deleted string in kill-ring"]
-
-             )
+Delete partial-expression at point, don't store deleted string in kill-ring"])
 
             ("Class ... "
              ["Beginning of Class" py-beginning-of-class
@@ -4095,9 +4082,7 @@ Delete innermost compound statement at point, store deleted string in kill-ring"
 
              ["Delete class" py-delete-class
               :help "`py-delete-class'
-Delete class at point, don't store deleted string in kill-ring"]
-
-             )
+Delete class at point, don't store deleted string in kill-ring"])
 
             ("Def ... "
              ["Beginning of Def" py-beginning-of-def
@@ -4132,9 +4117,7 @@ Delete innermost compound statement at point, store deleted string in kill-ring"
 
              ["Delete def" py-delete-def
               :help "`py-delete-def'
-Delete def at point, don't store deleted string in kill-ring"]
-
-             )
+Delete def at point, don't store deleted string in kill-ring"])
             "-"
             (" Block bol ... "
              ["Beginning of block bol" py-beginning-of-block-bol
@@ -4175,8 +4158,7 @@ Kill block at point. "]
 
              ["Delete block bol" py-delete-block-bol
               :help "`py-delete-block-bol'
-Delete block at point. "]
-             )
+Delete block at point. "])
 
             (" Clause bol ... "
              ["Beginning of clause bol" py-beginning-of-clause-bol
@@ -4217,8 +4199,7 @@ Kill clause at point. "]
 
              ["Delete clause bol" py-delete-clause-bol
               :help "`py-delete-clause-bol'
-Delete clause at point. "]
-             )
+Delete clause at point. "])
             (" Block-Or-Clause bol ... "
              ["Beginning of block-or-clause bol" py-beginning-of-block-or-clause-bol
               :help "`py-beginning-of-block-or-clause-bol'
@@ -4258,8 +4239,7 @@ Kill block-or-clause at point. "]
 
              ["Delete block-or-clause bol" py-delete-block-or-clause-bol
               :help "`py-delete-block-or-clause-bol'
-Delete block-or-clause at point. "]
-             )
+Delete block-or-clause at point. "])
             (" Def bol ... "
              ["Beginning of def bol" py-beginning-of-def-bol
               :help "`py-beginning-of-def-bol'
@@ -4299,8 +4279,7 @@ Kill def at point. "]
 
              ["Delete def bol" py-delete-def-bol
               :help "`py-delete-def-bol'
-Delete def at point. "]
-             )
+Delete def at point. "])
             (" Class bol ... "
              ["Beginning of class bol" py-beginning-of-class-bol
               :help "`py-beginning-of-class-bol'
@@ -4340,8 +4319,7 @@ Kill class at point. "]
 
              ["Delete class bol" py-delete-class-bol
               :help "`py-delete-class-bol'
-Delete class at point. "]
-             )
+Delete class at point. "])
             (" Def-Or-Class bol ... "
              ["Beginning of def-or-class bol" py-beginning-of-def-or-class-bol
               :help "`py-beginning-of-def-or-class-bol'
@@ -4381,8 +4359,7 @@ Kill def-or-class at point. "]
 
              ["Delete def-or-class bol" py-delete-def-or-class-bol
               :help "`py-delete-def-or-class-bol'
-Delete def-or-class at point. "]
-             )
+Delete def-or-class at point. "])
             (" Statement bol ... "
              ["Beginning of statement bol" py-beginning-of-statement-bol
               :help "`py-beginning-of-statement-bol'
@@ -4423,7 +4400,115 @@ Go forward into nomenclature
 
 A nomenclature is a fancy way of saying AWordWithMixedCaseNotUnderscores. "]
             "-"
-            ))
+            ("Filling"
+             :help "see also customizable `py-fill-docstring-style'"
+
+             ["Fill string" py-fill-string
+              :help " `py-fill-string'
+
+Uses value of `py-fill-docstring-style', if set. "]
+
+             ["Fill paragraph" py-fill-paragraph
+              :help " `py-fill-paragraph'
+
+Uses value of `py-fill-docstring-style', if set. "]
+
+             ["Fill comment" py-fill-comment
+              :help " `py-fill-comment'
+
+Fill comment at point. "]
+
+             ["Fill string django-style " py-fill-string-django
+              :help " `py-fill-string-django'
+
+    \"\"\"
+    Process foo, return bar.
+    \"\"\"
+
+    \"\"\"
+    Process foo, return bar.
+
+    If processing fails throw ProcessingError.
+    \"\"\"
+
+See available styles at `py-fill-paragraph' or var `py-fill-docstring-style'
+ "]
+
+             ["py fill string onetwo" py-fill-string-onetwo
+              :help " `py-fill-string-onetwo'
+One newline and start and Two at end style.
+
+    \"\"\"Process foo, return bar.\"\"\"
+
+    \"\"\"
+    Process foo, return bar.
+
+    If processing fails throw ProcessingError.
+
+    \"\"\"
+
+See available styles at `py-fill-paragraph' or var `py-fill-docstring-style'"]
+
+             ["py fill string pep 257" py-fill-string-pep-257
+              :help " `py-fill-string-pep-257'
+PEP-257 with 2 newlines at end of string.
+
+    \"\"\"Process foo, return bar.\"\"\"
+
+    \"\"\"Process foo, return bar.
+
+    If processing fails throw ProcessingError.
+
+    \"\"\"
+
+See available styles at `py-fill-paragraph' or var `py-fill-docstring-style' "]
+
+             ["py fill string pep 257" py-fill-string-pep-257
+              :help " `py-fill-string-pep-257'
+
+PEP-257 with 2 newlines at end of string.
+
+    \"\"\"Process foo, return bar.\"\"\"
+
+    \"\"\"Process foo, return bar.
+
+    If processing fails throw ProcessingError.
+
+    \"\"\"
+
+See available styles at `py-fill-paragraph' or var `py-fill-docstring-style'"]
+
+             ["py fill string pep 257 nn" py-fill-string-pep-257-nn
+              :help " `py-fill-string-pep-257-nn'
+
+PEP-257 with 1 newline at end of string.
+
+    \"\"\"Process foo, return bar.\"\"\"
+
+    \"\"\"Process foo, return bar.
+
+    If processing fails throw ProcessingError.
+    \"\"\"
+
+See available styles at `py-fill-paragraph' or var `py-fill-docstring-style'"]
+
+             ["py fill string symmetric" py-fill-string-symmetric
+              :help " `py-fill-string-symmetric'
+
+Symmetric style.
+
+    \"\"\"Process foo, return bar.\"\"\"
+
+    \"\"\"
+    Process foo, return bar.
+
+    If processing fails throw ProcessingError.
+    \"\"\"
+
+See available styles at `py-fill-paragraph' or var `py-fill-docstring-style'"]
+
+             )))
+
         ;; Python shell menu
         (easy-menu-define py-menu map "Python Shells"
           `("PyShell"

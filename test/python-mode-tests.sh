@@ -774,7 +774,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-fill-paragraph) nil \"py-fill-paragraph not detected as command\")" \
 -eval "(assert (commandp 'py-fill-comment) nil \"py-fill-comment not detected as command\")" \
 -eval "(assert (commandp 'py-fill-string) nil \"py-fill-string not detected as command\")" \
--eval "(assert (commandp 'py-fill-decorator) nil \"py-fill-decorator not detected as command\")" \
 -eval "(assert (commandp 'py-fill-paren) nil \"py-fill-paren not detected as command\")" \
 -eval "(assert (commandp 'py-fill-string-django) nil \"py-fill-string-django not detected as command\")" \
 -eval "(assert (commandp 'py-fill-string-onetwo) nil \"py-fill-string-onetwo not detected as command\")" \

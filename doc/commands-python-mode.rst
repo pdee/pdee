@@ -738,8 +738,6 @@ py-fill-paragraph
 -----------------
 `fill-paragraph-function'
 
-Optional argument JUSTIFY defines if the paragraph should be justified.
-
 With regards to triple quotes positioning, commands
 py-fill-paragraph-SUFFIX
 choose one of the following implemented styles:
@@ -806,21 +804,14 @@ py-fill-string
 String fill function for `py-fill-paragraph'.
 JUSTIFY should be used (if applicable) as in `fill-paragraph'.
 
-py-fill-decorator
------------------
-Decorator fill function for `py-fill-paragraph'.
-JUSTIFY should be used (if applicable) as in `fill-paragraph'.
-
 py-fill-paren
 -------------
 Paren fill function for `py-fill-paragraph'.
-JUSTIFY should be used (if applicable) as in `fill-paragraph'.
+
 
 py-fill-string-django
 ---------------------
 Fill docstring according to Django's coding standards style.
-
-Optional argument JUSTIFY defines if the paragraph should be justified.
 
     """
     Process foo, return bar.
@@ -839,8 +830,6 @@ py-fill-string-onetwo
 ---------------------
 One newline and start and Two at end style.
 
-Optional argument JUSTIFY defines if the paragraph should be justified.
-
     """Process foo, return bar."""
 
     """
@@ -857,8 +846,6 @@ py-fill-string-pep-257
 ----------------------
 PEP-257 with 2 newlines at end of string.
 
-Optional argument JUSTIFY defines if the paragraph should be justified.
-
     """Process foo, return bar."""
 
     """Process foo, return bar.
@@ -874,8 +861,6 @@ py-fill-string-pep-257-nn
 -------------------------
 PEP-257 with 1 newline at end of string.
 
-Optional argument JUSTIFY defines if the paragraph should be justified.
-
     """Process foo, return bar."""
 
     """Process foo, return bar.
@@ -889,8 +874,6 @@ See available styles at `py-fill-paragraph' or var `py-fill-docstring-style'
 py-fill-string-symmetric
 ------------------------
 Symmetric style.
-
-Optional argument JUSTIFY defines if the paragraph should be justified.
 
     """Process foo, return bar."""
 
