@@ -18,7 +18,7 @@
 
 # Caveats:
 #
-# needs being started in `test' directory 
+# needs being started in `test' directory
 # optional shell argument PATH/TO/EMACS-SOURCE-DIRECTORY might be given
 #
 # If testing with emacs-24 please be aware of bug 11984 [0], for the
@@ -61,7 +61,7 @@ Edit \$EMACS_SOURCE_DIR to specify an Emacs or put "PATH-TO-EMACS-SOURCES" as sh
 To run tests with installed Emacs, load available test-files like "py-bug-numbered-tests.el" and do "M-x py-run-bug-numbered-tests". Alternatively you may edit variables making it point according to you installation.
 
 EOF
-    
+
 fi
 
 echo "\$EMACS_SOURCE_DIR: $EMACS_SOURCE_DIR"
@@ -221,7 +221,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-statements) nil \"py-statements not detected as command\")" \
 -eval "(assert (commandp 'py-kill-statements) nil \"py-kill-statements not detected as command\")" \
 -eval "(assert (commandp 'py-comment-region) nil \"py-comment-region not detected as command\")" \
--eval "(assert (commandp 'py-fill-paragraph) nil \"py-fill-paragraph not detected as command\")" \
 -eval "(assert (commandp 'py-insert-super) nil \"py-insert-super not detected as command\")" \
 -eval "(assert (commandp 'py-compute-indentation) nil \"py-compute-indentation not detected as command\")" \
 -eval "(assert (commandp 'py-continuation-offset) nil \"py-continuation-offset not detected as command\")" \
@@ -772,6 +771,16 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-up-def-bol) nil \"py-up-def-bol not detected as command\")" \
 -eval "(assert (commandp 'py-up-class-bol) nil \"py-up-class-bol not detected as command\")" \
 -eval "(assert (commandp 'py-up-def-or-class-bol) nil \"py-up-def-or-class-bol not detected as command\")" \
+-eval "(assert (commandp 'py-fill-paragraph) nil \"py-fill-paragraph not detected as command\")" \
+-eval "(assert (commandp 'py-fill-comment) nil \"py-fill-comment not detected as command\")" \
+-eval "(assert (commandp 'py-fill-string) nil \"py-fill-string not detected as command\")" \
+-eval "(assert (commandp 'py-fill-decorator) nil \"py-fill-decorator not detected as command\")" \
+-eval "(assert (commandp 'py-fill-paren) nil \"py-fill-paren not detected as command\")" \
+-eval "(assert (commandp 'py-fill-string-django) nil \"py-fill-string-django not detected as command\")" \
+-eval "(assert (commandp 'py-fill-string-onetwo) nil \"py-fill-string-onetwo not detected as command\")" \
+-eval "(assert (commandp 'py-fill-string-pep-257) nil \"py-fill-string-pep-257 not detected as command\")" \
+-eval "(assert (commandp 'py-fill-string-pep-257-nn) nil \"py-fill-string-pep-257-nn not detected as command\")" \
+-eval "(assert (commandp 'py-fill-string-symmetric) nil \"py-fill-string-symmetric not detected as command\")" \
 --funcall py-highlight-indentation-test \
 --funcall py-smart-indentation-test \
 --funcall autopair-mode-test \
@@ -891,7 +900,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall before-inline-comment-test \
 --funcall toggle-force-py-shell-name-p-test \
 --funcall multiline-list-indent-test \
---funcall py-beginning-of-block-test \
 --funcall py-end-of-block-test \
 --funcall py-beginning-of-block-or-clause-test \
 --funcall py-beginning-of-def-test \
@@ -1048,7 +1056,6 @@ est \
 --funcall tqs-lp:302834-lp:1018994-test \
 --funcall infinite-loop-after-tqs-lp:826044-test \
 --funcall completion-at-gentoo-lp-1008842-test \
---funcall py-smart-operator-test \
 --funcall indent-triplequoted-to-itself-lp:752252-test \
 --funcall no-completion-at-all-lp:1001328-test \
 --funcall usr-bin-python3-shell-complete-test \
@@ -1059,4 +1066,11 @@ est \
 --funcall pycomplete-same-folder-class-lp:889052-test \
 --funcall complaint-about-non-ASCII-character-lp-1042949-test \
 --funcall not-that-useful-completion-lp:1003580-test \
+--funcall py-beginning-of-block-test \
+--funcall py-smart-operator-test \
 --funcall augmented-assigment-test \
+--funcall py-fill-string-django-test \
+--funcall py-fill-string-onetwo-test \
+--funcall py-fill-string-pep-257-test \
+--funcall py-fill-string-pep-257-nn-test \
+--funcall py-fill-string-symmetric-test \

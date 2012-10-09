@@ -4,6 +4,70 @@ Python Mode News
 New in version 6.1.0
 ---------------------
 
+- fill docstrings according to style, commands 
+  py-fill-string-django
+  py-fill-string-onetwo
+  py-fill-string-pep-257
+  py-fill-string-pep-257-nn
+  py-fill-string-symmetric
+
+  Customizable variable `py-fill-docstring-style' provides default value
+  used by `py-fill-string', `py-fill-paragraph'
+
+  DJANGO:
+
+      \"\"\"
+      Process foo, return bar.
+      \"\"\"
+
+      \"\"\"
+      Process foo, return bar.
+
+      If processing fails throw ProcessingError.
+      \"\"\"
+
+  ONETWO:
+
+      \"\"\"Process foo, return bar.\"\"\"
+
+      \"\"\"
+      Process foo, return bar.
+
+      If processing fails throw ProcessingError.
+
+      \"\"\"
+
+  PEP-257:
+
+      \"\"\"Process foo, return bar.\"\"\"
+
+      \"\"\"Process foo, return bar.
+
+      If processing fails throw ProcessingError.
+
+      \"\"\"
+
+  PEP-257-NN:
+
+      \"\"\"Process foo, return bar.\"\"\"
+
+      \"\"\"Process foo, return bar.
+
+      If processing fails throw ProcessingError.
+      \"\"\"
+
+  SYMMETRIC:
+
+      \"\"\"Process foo, return bar.\"\"\"
+
+      \"\"\"
+      Process foo, return bar.
+
+      If processing fails throw ProcessingError.
+      \"\"\""
+
+  Built upon code seen at python.el, thanks Fabian
+
 
 New in version 6.0.12
 ---------------------

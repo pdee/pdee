@@ -498,13 +498,152 @@ More general than py-declarations, which would stop at keywords like a print-sta
 Store deleted statements in kill-ring 
 * py-comment-region
    Like `comment-region' but uses double hash (`#') comment starter.
+* py-fill-comment
+   Fill the comment paragraph at point
 * py-fill-paragraph
-   Like M-q, but handle Python comments and strings.
+   `fill-paragraph-function'
 
-If any of the current line is a comment, fill the comment or the
-paragraph of it that point is in, preserving the comment's indentation
-and initial `#'s.
-If point is inside a string, narrow to that string and fill.
+Optional argument JUSTIFY defines if the paragraph should be justified.
+
+With regards to triple quotes positioning, commands
+py-fill-paragraph-SUFFIX
+choose one of the following implemented styles:
+
+DJANGO, ONETWO, PEP-257, PEP-257-NN, SYMMETRIC
+
+Otherwise `py-fill-docstring-style' is used. Explanation:
+
+DJANGO:
+
+    """
+    Process foo, return bar.
+    """
+
+    """
+    Process foo, return bar.
+
+    If processing fails throw ProcessingError.
+    """
+
+ONETWO:
+
+    """Process foo, return bar."""
+
+    """
+    Process foo, return bar.
+
+    If processing fails throw ProcessingError.
+
+    """
+
+PEP-257:
+
+    """Process foo, return bar."""
+
+    """Process foo, return bar.
+
+    If processing fails throw ProcessingError.
+
+    """
+
+PEP-257-NN:
+
+    """Process foo, return bar."""
+
+    """Process foo, return bar.
+
+    If processing fails throw ProcessingError.
+    """
+
+SYMMETRIC:
+
+    """Process foo, return bar."""
+
+    """
+    Process foo, return bar.
+
+    If processing fails throw ProcessingError.
+    """
+
+* py-fill-string
+   String fill function for `py-fill-paragraph'.
+JUSTIFY should be used (if applicable) as in `fill-paragraph'.
+* py-fill-string-django
+   Fill docstring according to Django's coding standards style.
+
+Optional argument JUSTIFY defines if the paragraph should be justified.
+
+    """
+    Process foo, return bar.
+    """
+
+    """
+    Process foo, return bar.
+
+    If processing fails throw ProcessingError.
+    """
+
+See available styles at `py-fill-paragraph' or var `py-fill-docstring-style'
+
+* py-fill-string-onetwo
+   One newline and start and Two at end style.
+
+Optional argument JUSTIFY defines if the paragraph should be justified.
+
+    """Process foo, return bar."""
+
+    """
+    Process foo, return bar.
+
+    If processing fails throw ProcessingError.
+
+    """
+
+See available styles at `py-fill-paragraph' or var `py-fill-docstring-style'
+
+* py-fill-string-pep-257
+   PEP-257 with 2 newlines at end of string.
+
+Optional argument JUSTIFY defines if the paragraph should be justified.
+
+    """Process foo, return bar."""
+
+    """Process foo, return bar.
+
+    If processing fails throw ProcessingError.
+
+    """
+
+See available styles at `py-fill-paragraph' or var `py-fill-docstring-style'
+
+* py-fill-string-pep-257-nn
+   PEP-257 with 1 newline at end of string.
+
+Optional argument JUSTIFY defines if the paragraph should be justified.
+
+    """Process foo, return bar."""
+
+    """Process foo, return bar.
+
+    If processing fails throw ProcessingError.
+    """
+
+See available styles at `py-fill-paragraph' or var `py-fill-docstring-style'
+
+* py-fill-string-symmetric
+   Symmetric style.
+
+Optional argument JUSTIFY defines if the paragraph should be justified.
+
+    """Process foo, return bar."""
+
+    """
+    Process foo, return bar.
+
+    If processing fails throw ProcessingError.
+    """
+
+See available styles at `py-fill-paragraph' or var `py-fill-docstring-style'
 
 * py-insert-super
    Insert a function "super()" from current environment.

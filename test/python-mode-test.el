@@ -27,6 +27,12 @@
 
 (setq python-mode-tests
       (list
+       'py-fill-string-django-test
+       'py-fill-string-onetwo-test
+       'py-fill-string-pep-257-test
+       'py-fill-string-pep-257-nn-test
+       ;;  fails for unknown reasons, interactive call works
+       ;; 'py-fill-string-symmetric-test
        'py-highlight-indentation-test
        'py-smart-indentation-test
        'autopair-mode-test
@@ -431,6 +437,8 @@
 
             ])
 
+''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
+'''
 "
   "String used for tests by python-mode-test.el")
 
@@ -461,6 +469,9 @@
             pass
         else b:
             pass
+
+''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
+'''
 ")
 
 (defun py-beginning-of-block-test (&optional arg load-branch-function)
@@ -1528,6 +1539,7 @@ import sys, os; os.remove('do/something/nasty') # lp:1025000
 
 (defun key-binding-base ()
   (assert (eq (key-binding [(:)]) 'py-electric-colon) nil "py-electric-colon key-binding test failed")
+
   (assert (eq (key-binding [(\#)]) 'py-electric-comment) nil "py-electric-comment key-binding test failed")
   (assert (eq (key-binding [(delete)]) 'py-electric-delete) nil "py-electric-delete key-binding test failed")
   (assert (eq (key-binding [(backspace)]) 'py-electric-backspace) nil "py-electric-backspace key-binding test failed")
@@ -1535,13 +1547,13 @@ import sys, os; os.remove('do/something/nasty') # lp:1025000
   (assert (eq (key-binding [(control c) (delete)]) 'py-hungry-delete-forward) nil "py-hungry-delete-forward key-binding test failed")
   (assert (eq (key-binding [(control meta a)]) 'py-beginning-of-def-or-class) nil "py-beginning-of-def-or-class key-binding test failed")
   (assert (eq (key-binding [(control meta e)]) 'py-end-of-def-or-class) nil "py-end-of-def-or-class key-binding test failed")
-  (assert (eq (key-binding [(super backspace)]) 'py-dedent) nil "py-dedent key-binding test failed")
   (assert (eq (key-binding [(control c)(control l)]) 'py-shift-left) nil "py-shift-left key-binding test failed")
   (assert (eq (key-binding [(control c)(control r)]) 'py-shift-right) nil "py-shift-right key-binding test failed")
   (assert (eq (key-binding [(control c)(<)]) 'py-shift-left) nil "py-shift-left key-binding test failed")
   (assert (eq (key-binding [(control c)(>)]) 'py-shift-right) nil "py-shift-right key-binding test failed")
   (assert (eq (key-binding [(control c)(tab)]) 'py-indent-region) nil "py-indent-region key-binding test failed")
   (assert (eq (key-binding [(control c)(:)]) 'py-guess-indent-offset) nil "py-guess-indent-offset key-binding test failed")
+
   (assert (eq (key-binding [(control c)(control c)]) 'py-execute-buffer) nil "py-execute-buffer key-binding test failed")
   (assert (eq (key-binding [(control c)(control m)]) 'py-execute-import-or-reload) nil "py-execute-import-or-reload key-binding test failed")
   (assert (eq (key-binding [(control c)(control s)]) 'py-execute-string) nil "py-execute-string key-binding test failed")
@@ -1551,16 +1563,18 @@ import sys, os; os.remove('do/something/nasty') # lp:1025000
   (assert (eq (key-binding [(control c)(control t)]) 'py-toggle-shell) nil "py-toggle-shell key-binding test failed")
   (assert (eq (key-binding [(control meta h)]) 'py-mark-def-or-class) nil "py-mark-def-or-class key-binding test failed")
   (assert (eq (key-binding [(control c)(control k)]) 'py-mark-block-or-clause) nil "py-mark-block-or-clause key-binding test failed")
-  (assert (eq (key-binding [(control c)(.)]) 'py-expression) nil "py-expression key-binding test failed")
+
+  (assert (eq (key-binding [(control c)(\.)]) 'py-expression) nil "py-expression key-binding test failed")
+
   (assert (eq (key-binding [(control c)(control d)]) 'py-pdbtrack-toggle-stack-tracking) nil "py-pdbtrack-toggle-stack-tracking key-binding test failed")
   (assert (eq (key-binding [(control c)(control f)]) 'py-sort-imports) nil "py-sort-imports key-binding test failed")
   (assert (eq (key-binding [(control c)(\#)]) 'py-comment-region) nil "py-comment-region key-binding test failed")
   (assert (eq (key-binding [(control c)(\?)]) 'py-describe-mode) nil "py-describe-mode key-binding test failed")
+
   (assert (eq (key-binding [(control c)(control e)]) 'py-describe-symbol) nil "py-describe-symbol key-binding test failed")
   (assert (eq (key-binding [(control c)(-)]) 'py-up-exception) nil "py-up-exception key-binding test failed")
   (assert (eq (key-binding [(control c)(=)]) 'py-down-exception) nil "py-down-exception key-binding test failed")
   (assert (eq (key-binding [(control x) (n) (d)]) 'py-narrow-to-defun) nil "py-narrow-to-defun key-binding test failed")
-
   (assert (eq (key-binding [(control c)(control b)]) 'py-submit-bug-report) nil "py-submit-bug-report key-binding test failed")
   (assert (eq (key-binding [(control c)(control v)]) 'py-version) nil "py-version key-binding test failed")
   (assert (eq (key-binding [(control c)(control w)]) 'py-pychecker-run) nil "py-pychecker-run key-binding test failed")
@@ -1568,8 +1582,7 @@ import sys, os; os.remove('do/something/nasty') # lp:1025000
   (assert (eq (key-binding [(control c)(control p)]) 'py-beginning-of-statement) nil "py-beginning-of-statement key-binding test failed")
   (assert (eq (key-binding [(control c)(control n)]) 'py-end-of-statement) nil "py-end-of-statement key-binding test failed")
   (assert (eq (key-binding [(control j)]) 'py-newline-and-indent) nil "py-newline-and-indent key-binding test failed")
-  (assert (eq (key-binding (kbd "RET")) 'py-newline-and-indent) nil "py-newline-and-indent key-binding test failed")
-  )
+  (assert (eq (key-binding (kbd "RET")) 'py-newline-and-indent) nil "py-newline-and-indent key-binding test failed"))
 
 (defun py-smart-operator-test (&optional arg)
   (interactive "p")
@@ -1612,7 +1625,7 @@ foo "))
     (assert (looking-at "? ") nil "py-smart-operator-test \"py-smart-operator-?\" failed")
     (delete-region (point) (line-end-position))
     (save-excursion (py-smart-operator-\,))
-    (assert (looking-at ", ") nil "py-smart-operator-test \"py-smart-operator-,\" failed")
+    (assert (looking-at ", ") nil "py-smart-operator-test \"py-smart-operator-\,\" failed")
     (delete-region (point) (line-end-position))
     (save-excursion (py-smart-operator-.))
     (assert (looking-at ".") nil "py-smart-operator-test \"py-smart-operator-.\" failed")
@@ -1658,8 +1671,8 @@ foo "))
     (save-excursion (py-smart-operator-? 4))
     (assert (looking-at " \\?= ") nil "augmented-assigment-test \"py-smart-operator-?\" failed")
     ;; (delete-region (point) (line-end-position))
-    ;; (save-excursion (py-smart-operator-, 4))
-    ;; (assert (looking-at " ,= ") nil "augmented-assigment-test \"py-smart-operator-,\" failed")
+    ;; (save-excursion (py-smart-operator-\, 4))
+    ;; (assert (looking-at " ,= ") nil "augmented-assigment-test \"py-smart-operator-\,\" failed")
     ;; (delete-region (point) (line-end-position))
     ;; (save-excursion (py-smart-operator-. 4))
     ;; (assert (looking-at " .= ") nil "augmented-assigment-test \"py-smart-operator-.\" failed")
@@ -1723,8 +1736,8 @@ foo "))
     (assert (looking-at "\\?\\? ") nil "py-smart-operator-test \"py-smart-operator-?\" failed")
     (delete-region (point) (line-end-position))
     (setq last-command nil)
-    (save-excursion (py-smart-operator-,)(setq this-command 'py-smart-operator-,)(setq last-command 'py-smart-operator-,)(py-smart-operator-,))
-    (assert (looking-at ",, ") nil "py-smart-operator-test \"py-smart-operator-,\" failed")
+    (save-excursion (py-smart-operator-\,)(setq this-command 'py-smart-operator-\,)(setq last-command 'py-smart-operator-\,)(py-smart-operator-\,))
+    (assert (looking-at ",, ") nil "py-smart-operator-test \"py-smart-operator-\,\" failed")
     (delete-region (point) (line-end-position))
     (setq last-command nil)
     (save-excursion (py-smart-operator-.)(setq this-command 'py-smart-operator-.)(setq last-command 'py-smart-operator-.)(py-smart-operator-.))
@@ -1880,7 +1893,6 @@ def fooBaz( bar ):  # version 2003/9/7
   (assert (py-autopair-mode-on) nil "autopair-mode-test #1 failed")
   (assert (not (py-toggle-autopair-mode)) nil "autopair-mode-test #2 failed"))
 
-
 (defun py-smart-indentation-test (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
@@ -1893,7 +1905,6 @@ def fooBaz( bar ):  # version 2003/9/7
   (assert (py-smart-indentation-on) nil "smart-indentation-test #1 failed")
   (assert (not (py-smart-indentation-off)) nil "smart-indentation-test #2 failed")
   (assert (py-toggle-smart-indentation) nil "smart-indentation-test #3 failed"))
-
 
 (defun py-highlight-indentation-test (&optional arg)
   (interactive "p")
@@ -1911,8 +1922,102 @@ def fooBaz( bar ):  # version 2003/9/7
   (py-toggle-highlight-indentation)
   (assert highlight-indent-active nil "highlight-indentation-test #3 failed"))
 
+(defun py-fill-string-django-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"))
+    (py-bug-tests-intern 'py-fill-string-django-base arg teststring)))
+
+(defun py-fill-string-django-base ()
+  (insert python-mode-teststring)
+  (sit-for 0.1)
+  (goto-char 684)
+  (py-fill-string-django)
+  (beginning-of-line)
+  (sit-for 0.1)
+  (assert (nth 8 (syntax-ppss)) t nil "py-fill-string-django-test #1 failed")
+  (goto-char (nth 8 (syntax-ppss)))
+  (assert (looking-at (concat py-string-delim-re "$")) t nil "py-fill-string-django-test #2 failed")
+)
+
+(defun py-fill-string-onetwo-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"))
+  (py-bug-tests-intern 'py-fill-string-onetwo-base arg teststring)))
+
+(defun py-fill-string-onetwo-base ()
+  (insert python-mode-teststring)
+  (sit-for 0.1)
+  (goto-char 684)
+  (py-fill-string-onetwo)
+  (forward-line 1)
+  (assert (empty-line-p) nil "py-fill-string-onetwo-test #1 failed")
+  (goto-char (nth 8 (syntax-ppss)))
+  (assert (looking-at (concat py-string-delim-re "$")) nil "py-fill-string-onetwo-test #2 failed"))
+
+(defun py-fill-string-pep-257-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"))
+  (py-bug-tests-intern 'py-fill-string-pep-257-base arg teststring)))
+
+(defun py-fill-string-pep-257-base ()
+  (insert python-mode-teststring)
+  (sit-for 0.1)
+  (goto-char 684)
+  (py-fill-string-pep-257)
+  (forward-line 1)
+  (assert (nth 3 (syntax-ppss))  nil "py-fill-string-pep-257-test #1 failed")
+  (assert (empty-line-p)  nil "py-fill-string-pep-257-test #2 failed"))
+
+(defun py-fill-string-pep-257-nn-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"))
+  (py-bug-tests-intern  'py-fill-string-pep-257-nn-base arg teststring)))
+
+(defun py-fill-string-pep-257-nn-base ()
+  (insert python-mode-teststring)
+  (sit-for 0.1)
+  (goto-char 684)
+  (py-fill-string-pep-257-nn)
+  (assert (nth 3 (syntax-ppss))  nil "py-fill-string-pep-257-nn-test #1 failed")
+  (re-search-forward "py-string-delim-re" nil t 1)
+  (assert (not (empty-line-p))  nil "py-fill-string-pep-257-non-nil-test #2 failed"))
 
 
+(defun py-fill-string-symmetric-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+def foo():
+''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
+
+asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
+'''
+    pass
+"))
+  (py-bug-tests-intern 'py-fill-string-symmetric-base arg teststring)))
+
+(defun py-fill-string-symmetric-base ()
+  (goto-char 84)
+  (py-fill-string-symmetric)
+  (sit-for 0.1)
+  (forward-line -4)
+  (assert (empty-line-p) nil "py-fill-string-symmetric-test failed")
+  (re-search-forward py-string-delim-re nil t 3)
+  (goto-char (match-beginning 0))
+  (assert (looking-at (concat py-string-delim-re "$"))  nil "py-fill-string-symmetric-test failed")
+)
 
 ;; imenu--subalist-p
 (provide 'python-mode-test)

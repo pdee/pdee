@@ -1212,6 +1212,79 @@ without the user's realization (e.g. to perform completion)."
   :type 'string
   :group 'convenience)
 
+
+(defcustom py-fill-docstring-style 'pep-257
+  "Style used to fill docstrings.
+This affects `py-fill-string' behavior with regards to
+triple quotes positioning.
+
+Possible values are DJANGO, ONETWO, PEP-257, PEP-257-NN,
+SYMMETRIC, and NIL.  A value of NIL won't care about quotes
+position and will treat docstrings a normal string, any other
+value may result in one of the following docstring styles:
+
+DJANGO:
+
+    \"\"\"
+    Process foo, return bar.
+    \"\"\"
+
+    \"\"\"
+    Process foo, return bar.
+
+    If processing fails throw ProcessingError.
+    \"\"\"
+
+ONETWO:
+
+    \"\"\"Process foo, return bar.\"\"\"
+
+    \"\"\"
+    Process foo, return bar.
+
+    If processing fails throw ProcessingError.
+
+    \"\"\"
+
+PEP-257:
+
+    \"\"\"Process foo, return bar.\"\"\"
+
+    \"\"\"Process foo, return bar.
+
+    If processing fails throw ProcessingError.
+
+    \"\"\"
+
+PEP-257-NN:
+
+    \"\"\"Process foo, return bar.\"\"\"
+
+    \"\"\"Process foo, return bar.
+
+    If processing fails throw ProcessingError.
+    \"\"\"
+
+SYMMETRIC:
+
+    \"\"\"Process foo, return bar.\"\"\"
+
+    \"\"\"
+    Process foo, return bar.
+
+    If processing fails throw ProcessingError.
+    \"\"\""
+  :type '(choice
+          (const :tag "Don't format docstrings" nil)
+          (const :tag "Django's coding standards style." django)
+          (const :tag "One newline and start and Two at end style." onetwo)
+          (const :tag "PEP-257 with 2 newlines at end of string." pep-257)
+          (const :tag "PEP-257 with 1 newline at end of string." pep-257-nn)
+          (const :tag "Symmetric style." symmetric))
+  :group 'python-mode
+  :safe (lambda (val)
+          (memq val '(django onetwo pep-257 pep-257-nn symmetric nil))))
+
 ;; the python-el way
 (defcustom python-check-command "pychecker --stdlib"
   "Command used to check a Python file."
@@ -1426,7 +1499,7 @@ Used for determining the default in the next one.")
 (defvar py-output-buffer "*Python Output*")
 (make-variable-buffer-local 'py-output-buffer)
 
-(defvar py-string-start-regexp "\\(\"\"\"\\|'''\\|\"\\|'\\)"
+(defvar py-string-delim-re "\\(\"\"\"\\|'''\\|\"\\|'\\)"
   "When looking at beginning of string. ")
 
 (defvar py-expression-skip-regexp "[^ (=:#\t\r\n\f]"
@@ -1435,7 +1508,7 @@ Used for determining the default in the next one.")
 (defvar py-expression-skip-chars "^ (:=#\t\r\n\f"
   "py-expression assumes chars indicated possible composing a py-expression, skip it. ")
 
-(defvar py-expression-looking-regexp "[^ =#\t\r\n\f]+"
+(defvar py-expression-looking-re "[^ =#\t\r\n\f]+"
   "py-expression assumes chars indicated possible composing a py-expression, when looking-at or -back. ")
 
 (defvar py-not-expression-regexp "[ .=#\t\r\n\f)]+"
@@ -1862,7 +1935,7 @@ Includes def and class. ")
 
 ;; (setq py-expression-skip-chars "^ (=#\t\r\n\f")
 
-;; (setq py-expression-looking-regexp "[^ =#\t\r\n\f)]")
+;; (setq py-expression-looking-re "[^ =#\t\r\n\f)]")
 
 ;; (setq py-not-expression-regexp "[ .=#\t\r\n\f)]+")
 
@@ -2248,28 +2321,36 @@ See original source: http://pymacs.progiciels-bpi.ca"
 (require 'py-smart-operator)
 (require 'python-extended-executes-test)
 (require 'python-components-switches)
+(require 'python-components-paragraph)
 
-;;; Python specialized rx
-
+;;; Python specialized rx, thanks Fabian F. Gallina
 (eval-when-compile
   (defconst python-rx-constituents
-    (list
-     `(block-start          . ,(rx symbol-start
+    `((block-start          . ,(rx symbol-start
                                    (or "def" "class" "if" "elif" "else" "try"
                                        "except" "finally" "for" "while" "with")
                                    symbol-end))
-     `(decorator            . ,(rx bol (* space) ?@ (any letter ?_)
+      (decorator            . ,(rx line-start (* space) ?@ (any letter ?_)
                                    (* (any word ?_))))
-     `(defun                . ,(rx symbol-start (or "def" "class") symbol-end))
-     `(symbol-name          . ,(rx (any letter ?_) (* (any word ?_))))
-     `(open-paren           . ,(rx (or "{" "[" "(")))
-     `(close-paren          . ,(rx (or "}" "]" ")")))
-     `(simple-operator      . ,(rx (any ?+ ?- ?/ ?& ?^ ?~ ?| ?* ?< ?> ?= ?%)))
-     `(not-simple-operator  . ,(rx (not (any ?+ ?- ?/ ?& ?^ ?~ ?| ?* ?< ?> ?= ?%))))
-     `(operator             . ,(rx (or "+" "-" "/" "&" "^" "~" "|" "*" "<" ">"
+      (defun                . ,(rx symbol-start (or "def" "class") symbol-end))
+      (if-name-main         . ,(rx line-start "if" (+ space) "__name__"
+                                   (+ space) "==" (+ space)
+                                   (any ?' ?\") "__main__" (any ?' ?\")
+                                   (* space) ?:))
+      (symbol-name          . ,(rx (any letter ?_) (* (any word ?_))))
+      (open-paren           . ,(rx (or "{" "[" "(")))
+      (close-paren          . ,(rx (or "}" "]" ")")))
+      (simple-operator      . ,(rx (any ?+ ?- ?/ ?& ?^ ?~ ?| ?* ?< ?> ?= ?%)))
+      ;; FIXME: rx should support (not simple-operator).
+      (not-simple-operator  . ,(rx
+                                (not
+                                 (any ?+ ?- ?/ ?& ?^ ?~ ?| ?* ?< ?> ?= ?%))))
+      ;; FIXME: Use regexp-opt.
+      (operator             . ,(rx (or "+" "-" "/" "&" "^" "~" "|" "*" "<" ">"
                                        "=" "%" "**" "//" "<<" ">>" "<=" "!="
                                        "==" ">=" "is" "not")))
-     `(assignment-operator  . ,(rx (or "=" "+=" "-=" "*=" "/=" "//=" "%=" "**="
+      ;; FIXME: Use regexp-opt.
+      (assignment-operator  . ,(rx (or "=" "+=" "-=" "*=" "/=" "//=" "%=" "**="
                                        ">>=" "<<=" "&=" "^=" "|="))))
     "Additional Python specific sexps for `python-rx'"))
 
@@ -5653,6 +5734,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (set (make-local-variable 'add-log-current-defun-function) 'py-current-defun)
   (set (make-local-variable 'paragraph-start) "\\s-*$")
   (set (make-local-variable 'fill-paragraph-function) 'py-fill-paragraph)
+  ;; (set (make-local-variable 'fill-paragraph-function) 'python-fill-paragraph)
   (set (make-local-variable 'require-final-newline) mode-require-final-newline)
   (make-local-variable 'python-saved-check-command)
   (set (make-local-variable 'tab-width) py-indent-offset)

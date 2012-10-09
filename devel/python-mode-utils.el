@@ -51,6 +51,8 @@
 
 ")
 
+(defvar docstring-styles (list "django" "onetwo" "pep-257" "pep-257-nn" "symmetric"))
+
 (setq py-options (list "" "switch" "noswitch" "dedicated" "dedicated-switch"))
 
 (defcustom py-shells
@@ -1935,20 +1937,3 @@ Return position if " ele " found, nil otherwise \"
   (switch-to-buffer (current-buffer))
   (emacs-lisp-mode))
 
-;; different from other beginning-of
-
-;; (defun py-beginning-of-block (&optional indent)
-;;   "Go to beginning of block.
-;; 
-;; Returns beginning of block if successful, nil otherwise
-;; 
-;; Referring python program structures see for example:
-;; http://docs.python.org/reference/compound_stmts.html"
-;;   (interactive)
-;;   (let* ((orig (point))
-;;          (indent (or indent (progn (py-beginning-of-statement) (current-indentation))))
-;;          erg)
-;;     (if (py-beginning-of-block-p)
-;;         (setq erg (point))
-;;       (setq erg (ignore-errors (cdr (py-go-to-keyword-above py-block-re indent)))))
-;;     erg))

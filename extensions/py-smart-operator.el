@@ -76,7 +76,7 @@
     ;; conflicts with electric-colon
     ;; (define-key keymap ":" 'smart-operator-:)
     (define-key keymap "?" 'py-smart-operator-?)
-    ;; (define-key keymap "," 'smart-operator-,)
+    (define-key keymap "," 'smart-operator-\,)
     (define-key keymap "." 'py-smart-operator-.)
     keymap)
   "Keymap used my `py-smart-operator-mode'.")
@@ -185,7 +185,7 @@ See also `py-smart-operator-insert' "
                (py-smart-operator-insert ":" t nil t t)
              (py-smart-operator-insert ":" t arg))))))
 
-(defun py-smart-operator-, (&optional arg)
+(defun py-smart-operator-\, (&optional arg)
   "Insert operator \",\" with space.
 e.g., `,' will become `, '.
 
