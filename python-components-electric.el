@@ -56,6 +56,20 @@ See also `py-electric-colon-greedy-p' "
              (when py-electric-colon-newline-and-indent-p
                (py-newline-and-indent))))))
 
+(defun py-electric-space (arg)
+  "Close completion buffer when it's sure, it's no longer needed, i.e. when inserting a space. 
+
+Works around a bug in `choose-completion'. "
+
+  (interactive "*P")
+  (cond ((not py-electric-space-active-p)
+         (self-insert-command (prefix-numeric-value arg)))
+        ((eq 4 (prefix-numeric-value arg))
+         (self-insert-command 1))
+        (t (if (interactive-p) (self-insert-command (prefix-numeric-value arg))
+             ;; used from dont-indent-code-unnecessarily-lp-1048778-test
+             (insert " ")))))
+
 (defun py-electric-comment (arg)
   "Insert a comment. If starting a comment, indent accordingly.
 

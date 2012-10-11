@@ -1479,7 +1479,8 @@ You may customize this variable ")
 (defvar py-shell-complete-debug nil
   "For interal use when debugging." )
 
-(defvar python-completion-original-window-configuration nil)
+(defvar py-completion-last-window-configuration nil
+  "Internal use: restore py-restore-window-configuration when completion is done resp. abandoned. ")
 
 (defvar python-mode-syntax-table nil
   "Give punctuation syntax to ASCII that normally has symbol
@@ -1674,6 +1675,11 @@ Updated on each expansion.")
 
 (defvar python--prompt-regexp nil)
 
+(defvar py-shell-input-lines nil
+  "Collect input lines send interactively to the Python process in
+order to allow injecting completion command between keyboard interrupt
+and resending the lines later. The lines are stored in reverse order")
+
 (defvar py-shell-map (make-sparse-keymap)
   "Keymap used in *Python* shell buffers.")
 
@@ -1813,10 +1819,10 @@ Includes def and class. ")
   ;; First avoid a sequence preceded by an odd number of backslashes.
   `((,(concat "\\(?:^\\|[^\\]\\(?:\\\\.\\)*\\)" ;Prefix.
               "\\(?1:\"\\)\\(?2:\"\\)\\(?3:\"\\)\\(?4:\"\\)\\(?5:\"\\)\\(?6:\"\\)\\|\\(?1:\"\\)\\(?2:\"\\)\\(?3:\"\\)\\|\\(?1:'\\)\\(?2:'\\)\\(?3:'\\)\\(?4:'\\)\\(?5:'\\)\\(?6:'\\)\\|\\(?1:'\\)\\(?2:'\\)\\(?3:'\\)\\(?4:'\\)\\(?5:'\\)\\(?6:'\\)\\|\\(?1:'\\)\\(?2:'\\)\\(?3:'\\)")
-     (1 (python-quote-syntax 1) t t)
-     (2 (python-quote-syntax 2) t t)
-     (3 (python-quote-syntax 3) t t)
-     (6 (python-quote-syntax 1) t t))))
+     (1 (py-quote-syntax 1) t t)
+     (2 (py-quote-syntax 2) t t)
+     (3 (py-quote-syntax 3) t t)
+     (6 (py-quote-syntax 1) t t))))
 
 ;;;
 ;; It's handy to add recognition of Python files to the
@@ -2302,7 +2308,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
 (require 'python-components-extensions)
 ;; (require 'thingatpt-python-expressions)
 (require 'python-components-imenu)
-(require 'python-components-completion)
+;; (require 'python-components-completion)
 (require 'python-components-named-shells)
 (require 'python-components-shell-complete)
 (require 'python-components-electric)
@@ -2469,7 +2475,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
 ;;               "\\(?:\\('\\)'\\('\\)\\|\\(?2:\"\\)\"\\(?3:\"\\)\\)")
 ;;      (3 (python-quote-syntax)))))
 
-(defun python-quote-syntax (n)
+(defun py-quote-syntax (n)
   "Put `syntax-table' property correctly on triple quote.
 Used for syntactic keywords.  N is the match number (1, 2 or 3)."
   ;; Given a triple quote, we have to check the context to know
@@ -2934,6 +2940,9 @@ If NOERROR is not nil, do not raise error when the module is not found. "]))
              :help "`py-execute-line'
        Send line at point to Python interpreter. "]
 
+            ("Ignoring defaults ... "
+             :help "Commands will ignore default setting of
+`py-switch-buffers-on-execute-p' resp. `py-split-windows-on-execute-p'"
             ;; statement
             ("Execute statement ... "
              :help "Execute statement functions"
@@ -3850,7 +3859,7 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
              ["py-execute-line-python3.2-dedicated-switch" py-execute-line-python3.2-dedicated-switch
               :help "Execute line through a unique Python3.2 interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
-             )))
+             ))))
 
         ;; Menu command forms
         (easy-menu-define py-menu map "Python Mode Commands"
@@ -5108,15 +5117,18 @@ The level is the number of `py-indent-offset' steps of indentation
 of current line."
   (1+ (/ (current-indentation) py-indent-offset)))
 
-(defun python-mark-block ()
-  "Mark the block around point.
-Uses `python-beginning-of-block', `python-end-of-block'."
-  (interactive)
-  (push-mark)
-  (python-beginning-of-block)
-  (push-mark (point) nil t)
-  (python-end-of-block)
-  (exchange-point-and-mark))
+
+;;; need to clear py-shell-input-lines if primary prompt found
+(defun py-shell-simple-send (proc string)
+  (setq py-shell-input-lines (cons string py-shell-input-lines))
+  (comint-simple-send proc string))
+
+(defalias
+  'py-shell-redirect-send-command-to-process
+  'comint-redirect-send-command-to-process)
+(defalias
+  'py-shell-dynamic-simple-complete
+  'comint-dynamic-simple-complete)
 
 ;; Fixme:  Provide a find-function-like command to find source of a
 ;; definition (separate from BicycleRepairMan).  Complicated by
@@ -5394,7 +5406,7 @@ Interactively, prompt for name."
             (set (make-local-variable 'beginning-of-defun-function) 'py-beginning-of-def-or-class)
             (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class)
             ;; (orgstruct-mode 1)
-))
+            ))
 
 (add-hook 'python-mode-hook 'python-find-imports)
 

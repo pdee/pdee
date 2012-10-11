@@ -1057,7 +1057,6 @@ est \
 --funcall infinite-loop-after-tqs-lp:826044-test \
 --funcall completion-at-gentoo-lp-1008842-test \
 --funcall indent-triplequoted-to-itself-lp:752252-test \
---funcall no-completion-at-all-lp:1001328-test \
 --funcall usr-bin-python3-shell-complete-test \
 --funcall inconvenient-window-splitting-behavior-ipython-lp-1018996-test \
 --funcall inconvenient-window-splitting-behavior-python-lp-1018996-test \
@@ -1074,3 +1073,4 @@ est \
 --funcall py-fill-string-pep-257-test \
 --funcall py-fill-string-pep-257-nn-test \
 --funcall py-fill-string-symmetric-test \
+--funcall no-completion-at-all-lp:1001328-test \

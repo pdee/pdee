@@ -15,6 +15,15 @@
 
 ;;; Code
 
+(defun py-restore-window-configuration ()
+  "Restore py-restore-window-configuration when completion is done resp. abandoned. "
+  (interactive)
+  (if py-completion-last-window-configuration
+      (set-window-configuration py-completion-last-window-configuration)
+    (delete-other-windows))
+  (when (buffer-live-p (get-buffer "*Python Completions*"))
+    (kill-buffer (get-buffer "*Python Completions*"))))
+
 (defun py-shell-execute-string-now (string &optional shell buffer proc)
   "Send to Python interpreter process PROC \"exec STRING in {}\".
 and return collected output"
@@ -246,6 +255,9 @@ When `py-no-completion-calls-dabbrev-expand-p' is non-nil, try dabbrev-expand. O
   ;; (window-configuration-to-register 313465889)
   ;; (save-window-excursion
   (when debug (setq py-shell-complete-debug nil))
+  (unless (buffer-live-p (get-buffer "*Python Completions*"))
+    (setq py-completion-last-window-configuration
+          (current-window-configuration)))
   (if (or (eq major-mode 'comint-mode)(eq major-mode 'inferior-python-mode))
       ;;  kind of completion resp. to shell
       (let (py-fontify-shell-buffer-p
@@ -335,30 +347,35 @@ complete('%s')" word) shell nil proc)))
         (if (and completions (not (string= "" (car completions))))
             (cond ((eq completions t)
                    (if (eq this-command last-command)
-                       (when python-completion-original-window-configuration
+                       (when py-completion-last-window-configuration
                          (set-window-configuration
-                          python-completion-original-window-configuration)))
-                   (setq python-completion-original-window-configuration nil)
+                          py-completion-last-window-configuration)))
+                   (setq py-completion-last-window-configuration nil)
+                   (when (buffer-live-p (get-buffer "*Python Completions*"))
+                     (kill-buffer (get-buffer "*Python Completions*")))
                    (message "Can't find completion for \"%s\"" word)
                    (ding)
                    nil)
                   ((< 1 (length completions))
-                   (unless python-completion-original-window-configuration
-                     (setq python-completion-original-window-configuration
-                           (current-window-configuration)))
                    (with-output-to-temp-buffer "*Python Completions*"
                      (display-completion-list
-                      (all-completions word completions)))
-                   (recenter)
+                      (all-completions word completions)
+                      word))
                    nil)
                   ((not (string= word (car completions)))
-                   (progn (delete-char (- (length word)))
-                          (insert (car completions))
-                          nil)))
+                   (completion-in-region beg end completions)
+                   ;; (progn (delete-char (- (length word)))
+                   ;; (insert (car completions))
+                   (py-restore-window-configuration)
+                   (when (buffer-live-p (get-buffer "*Python Completions*"))
+                     (kill-buffer (get-buffer "*Python Completions*")))
+                   nil))
           (when py-no-completion-calls-dabbrev-expand-p
             (ignore-errors (dabbrev-expand nil)))
           (when py-indent-no-completion-p
-            (tab-to-tab-stop)))))))
+            (tab-to-tab-stop)
+            (when (buffer-live-p (get-buffer "*Python Completions*"))
+              (kill-buffer (get-buffer "*Python Completions*")))))))))
 
 (defalias 'ipyhton-complete 'ipython-complete)
 (defun ipython-complete (&optional done completion-command-string beg end word shell debug)
@@ -422,16 +439,16 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
             (if (and completions (not (string= "" (car completions))))
                 (cond ((eq completions t)
                        (if (eq this-command last-command)
-                           (when python-completion-original-window-configuration
+                           (when py-completion-last-window-configuration
                              (set-window-configuration
-                              python-completion-original-window-configuration)))
-                       (setq python-completion-original-window-configuration nil)
+                              py-completion-last-window-configuration)))
+                       (setq py-completion-last-window-configuration nil)
                        (message "Can't find completion for \"%s\"" pattern)
                        (ding)
                        nil)
                       ((< 1 (length completions))
-                       (unless python-completion-original-window-configuration
-                         (setq python-completion-original-window-configuration
+                       (unless py-completion-last-window-configuration
+                         (setq py-completion-last-window-configuration
                                (current-window-configuration)))
                        (with-output-to-temp-buffer "*IPython Completions*"
                          (display-completion-list
@@ -446,6 +463,7 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
               (when py-indent-no-completion-p
                 (tab-to-tab-stop))))
         (message "%s" "No response from Python process. Please check your configuration. If config is okay, please file a bug-regport at http://launchpad.net/python-mode")))))
+
 
 (provide 'python-components-shell-complete)
 

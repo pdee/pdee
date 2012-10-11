@@ -706,10 +706,10 @@ completions on the current context."
                          (try-completion input completions))))
       (cond ((eq completion t)
              (if (eq this-command last-command)
-                 (when python-completion-original-window-configuration
+                 (when py-completion-last-window-configuration
                    (set-window-configuration
-                    python-completion-original-window-configuration)))
-             ;; (setq python-completion-original-window-configuration nil)
+                    py-completion-last-window-configuration)))
+             ;; (setq py-completion-last-window-configuration nil)
              (if py-no-completion-calls-dabbrev-expand-p
                  (or (ignore-errors (dabbrev-expand nil))(when py-indent-no-completion-p
                                                            (tab-to-tab-stop)))
@@ -729,8 +729,8 @@ completions on the current context."
                     ;; minibuffer.el expects a list, a bug IMO
                     nil))
             (t
-             (unless python-completion-original-window-configuration
-               (setq python-completion-original-window-configuration
+             (unless py-completion-last-window-configuration
+               (setq py-completion-last-window-configuration
                      (current-window-configuration)))
              (with-output-to-temp-buffer "*Python Completions*"
                (display-completion-list
