@@ -38,7 +38,6 @@
 
 (setq bug-numbered-tests
       (list
-       'impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test
        'exception-in-except-clause-highlighted-as-keyword-lp-909205-test
        'pyindex-mishandles-class-definitions-lp-1018164-test
        'stalls-emacs-probably-due-to-syntax-highlighting-lp-1058261-test
@@ -4288,19 +4287,6 @@ os.
   (goto-char 87)
   (py-shell-complete nil t)
   (assert (string-match  "^os." (car py-shell-complete-debug)) nil "inconvenient-window-splitting-behavior-ipython-lp-1018996-test #2 failed"))
-
-(defun impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test (&optional arg)
-  (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-from __future__ import with_statement
-print(\"I'm the \\\"impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test\\\"\")
-"))
-  (py-bug-tests-intern 'impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-base arg teststring)))
-
-(defun impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-base ()
-    (assert (py-execute-buffer) nil "impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test failed"))
-
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
