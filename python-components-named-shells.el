@@ -103,6 +103,19 @@ Optional \\[universal-argument] prompts for options to pass to the Python3.2 int
   (interactive "P")
   (py-shell argprompt dedicated "python3.2" switch))
 
+(defun python3.3 (&optional argprompt dedicated switch)
+  "Start an Python3.3 interpreter.
+
+Optional \\[universal-argument] prompts for options to pass to the Python3.3 interpreter. See `py-python-command-args'.
+   Optional DEDICATED SWITCH are provided for use from programs. 
+
+Command expects Python3.3 installed at your system. "
+  (interactive "P")
+  (py-shell argprompt dedicated "python3.,#. zi
+3" switch))
+
+
+
 ;; dedicated
 (defun python-dedicated (&optional argprompt switch)
   "Start an unique Python interpreter in another window.

@@ -43,7 +43,7 @@
 (defun py-send-string (string &optional process)
   "Evaluate STRING in inferior Python process."
   (interactive "sPython command: ")
-  (let ((proc (or process (py-shell))))
+  (let ((proc (or process (get-buffer-process (py-shell)))))
     (comint-send-string proc string)
     (unless (string-match "\n\\'" string)
       ;; Make sure the text is properly LF-terminated.

@@ -4,6 +4,9 @@ Python Mode News
 New in version 6.1.0
 ---------------------
 
+- python3.3 command, start a Python3.3 interpreter
+
+Start an Python3.3 interpreter.
 - fill docstrings according to style, commands 
   py-fill-string-django
   py-fill-string-onetwo

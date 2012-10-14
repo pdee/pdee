@@ -379,7 +379,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'turn-off-pdbtrack) nil \"turn-off-pdbtrack not detected as command\")" \
 -eval "(assert (commandp 'py-fetch-docu) nil \"py-fetch-docu not detected as command\")" \
 -eval "(assert (commandp 'py-find-imports) nil \"py-find-imports not detected as command\")" \
--eval "(assert (commandp 'python-find-imports) nil \"python-find-imports not detected as command\")" \
 -eval "(assert (commandp 'py-describe-symbol) nil \"py-describe-symbol not detected as command\")" \
 -eval "(assert (commandp 'py-describe-mode) nil \"py-describe-mode not detected as command\")" \
 -eval "(assert (commandp 'py-find-function) nil \"py-find-function not detected as command\")" \

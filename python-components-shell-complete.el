@@ -151,7 +151,6 @@ module-qualified names."
 ;;           (insert (car completion)))
 ;;       (tab-to-tab-stop))))
 
-;; started from python.el's python-completion-at-point
 (defun py-script-complete ()
   (interactive "*")
   (let ((end (point))

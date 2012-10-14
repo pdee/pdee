@@ -29,54 +29,53 @@
 (defcustom python-shell-buffer-name "Python"
   "Default buffer name for Python interpreter."
   :type 'string
-  :group 'python-mode
-  :safe 'stringp)
+  :group 'python-mode)
 
 (defcustom python-shell-interpreter "python"
   "Default Python interpreter for shell."
   :type 'string
   :group 'python-mode
-  :safe 'stringp)
+)
 
 (defcustom python-shell-internal-buffer-name "Python Internal"
   "Default buffer name for the Internal Python interpreter."
   :type 'string
   :group 'python-mode
-  :safe 'stringp)
+)
 
 (defcustom python-shell-interpreter-args "-i"
   "Default arguments for the Python interpreter."
   :type 'string
   :group 'python-mode
-  :safe 'stringp)
+)
 
 (defcustom python-shell-prompt-regexp ">>> "
   "Regular Expression matching top\-level input prompt of python shell.
 It should not contain a caret (^) at the beginning."
   :type 'string
   :group 'python-mode
-  :safe 'stringp)
+)
 
 (defcustom python-shell-prompt-block-regexp "[.][.][.] "
   "Regular Expression matching block input prompt of python shell.
 It should not contain a caret (^) at the beginning."
   :type 'string
   :group 'python-mode
-  :safe 'stringp)
+)
 
 (defcustom python-shell-prompt-output-regexp ""
   "Regular Expression matching output prompt of python shell.
 It should not contain a caret (^) at the beginning."
   :type 'string
   :group 'python-mode
-  :safe 'stringp)
+)
 
 (defcustom python-shell-prompt-pdb-regexp "[(<]*[Ii]?[Pp]db[>)]+ "
   "Regular Expression matching pdb input prompt of python shell.
 It should not contain a caret (^) at the beginning."
   :type 'string
   :group 'python-mode
-  :safe 'stringp)
+)
 
 (defcustom python-shell-send-setup-max-wait 5
   "Seconds to wait for process output before code setup.
@@ -121,8 +120,7 @@ This variable, when set to a string, makes the values stored in
 to be modified properly so shells are started with the specified
 virtualenv."
   :type 'string
-  :group 'python-mode
-  :safe 'stringp)
+  :group 'python-mode)
 
 (defcustom python-ffap-setup-code
   "def __FFAP_get_module_path(module):
@@ -136,15 +134,13 @@ virtualenv."
         return ''"
   "Python code to get a module path."
   :type 'string
-  :group 'python-mode
-  :safe 'stringp)
+  :group 'python-mode)
 
 (defcustom python-ffap-string-code
   "__FFAP_get_module_path('''%s''')\n"
   "Python code used to get a string with the path of a module."
   :type 'string
-  :group 'python-mode
-  :safe 'stringp)
+  :group 'python-mode)
 
 (defun py-ffap-module-path (module)
   "Function for `ffap-alist' to return path for MODULE."
@@ -164,7 +160,6 @@ virtualenv."
   '(progn
      (push '(python-mode . py-ffap-module-path) ffap-alist)
      (push '(inferior-python-mode . py-ffap-module-path) ffap-alist)))
-
 
 ;; Stolen from org-mode
 (defun py-util-clone-local-variables (from-buffer &optional regexp)
@@ -468,8 +463,7 @@ FILE-NAME."
   "Regular Expression matching stacktrace information.
 Used to extract the current line and module being inspected."
   :type 'string
-  :group 'python-mode
-  :safe 'stringp)
+  :group 'python-mode)
 
 ;;; Eldoc
 
@@ -490,12 +484,10 @@ Used to extract the current line and module being inspected."
                 objtype = 'def'
             if target:
                 args = inspect.formatargspec(
-                    *inspect.getargspec(target)
-                )
+                    *inspect.getargspec(target))
                 name = obj.__name__
                 doc = '{objtype} {name}{args}'.format(
-                    objtype=objtype, name=name, args=args
-                )
+                    objtype=objtype, name=name, args=args)
         else:
             doc = doc.splitlines()[0]
     except:
@@ -506,15 +498,13 @@ Used to extract the current line and module being inspected."
         print(doc)"
   "Python code to setup documentation retrieval."
   :type 'string
-  :group 'python-mode
-  :safe 'stringp)
+  :group 'python-mode)
 
 (defcustom python-eldoc-string-code
   "__PYDOC_get_help('''%s''')\n"
   "Python code used to get a string with the documentation of an object."
   :type 'string
-  :group 'python-mode
-  :safe 'stringp)
+  :group 'python-mode)
 
 (defun python-info-current-defun (&optional include-type)
   "Return name of surrounding function with Python compatible dotty syntax.
