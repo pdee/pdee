@@ -114,8 +114,6 @@ Command expects Python3.3 installed at your system. "
   (py-shell argprompt dedicated "python3.,#. zi
 3" switch))
 
-
-
 ;; dedicated
 (defun python-dedicated (&optional argprompt switch)
   "Start an unique Python interpreter in another window.

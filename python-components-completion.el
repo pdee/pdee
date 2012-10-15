@@ -63,6 +63,31 @@
 
 ;;;
 
+(defun python-proc ()
+  "Return the current Python process.
+
+See variable `python-buffer'.  Starts a new process if necessary."
+  ;; Fixme: Maybe should look for another active process if there
+  ;; isn't one for `python-buffer'.
+  (unless (comint-check-proc python-buffer)
+    ;; (when py-verbose-p (message "python-proc: Please wait while starting a Python shell, as completion needs it"))
+    (run-python nil t))
+  (get-buffer-process (if (derived-mode-p 'inferior-python-mode)
+                          (current-buffer)
+                        python-buffer)))
+
+(defun python-set-proc ()
+  "Set the default value of `python-buffer' to correspond to this buffer.
+If the current buffer has a local value of `python-buffer', set the
+default (global) value to that.  The associated Python process is
+the one that gets input from \\[py-send-region] et al when used
+in a buffer that doesn't have a local value of `python-buffer'."
+  (interactive)
+  (if (local-variable-p 'python-buffer)
+      (setq-default python-buffer python-buffer)
+    (error "No local value of `python-buffer'")))
+(add-to-list 'debug-ignored-errors "^No symbol")
+
 (defun python-guess-indent ()
   "Guess step for indentation of current buffer.
 Set `python-indent' locally to the value guessed."
@@ -226,17 +251,6 @@ information etc.  If PROC is non-nil, check the buffer for that process."
 			    nil t)))))
 
 (autoload 'comint-check-proc "comint")
-
-(defun python-proc ()
-  "Return the current Python process.
-See variable `python-buffer'.  Starts a new process if necessary."
-  ;; Fixme: Maybe should look for another active process if there
-  ;; isn't one for `python-buffer'.
-  (unless (comint-check-proc python-buffer)
-    (run-python nil t))
-  (get-buffer-process (if (derived-mode-p 'inferior-python-mode)
-			  (current-buffer)
-			python-buffer)))
 
 (defun python-symbol-completions (symbol)
   "Return a list of completions of the string SYMBOL from Python process.

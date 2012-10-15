@@ -506,8 +506,6 @@ When DONE is `t', `py-shell-manage-windows' is omitted
       (remove-hook 'comint-output-filter-functions 'python-pdbtrack-track-stack-file t)
       (setq py-pdbtrack-do-tracking-p t)
       (set-syntax-table python-mode-syntax-table)
-      (add-hook 'comint-preoutput-filter-functions #'py-preoutput-filter
-                nil t)
       ;; (add-hook 'py-shell-hook 'py-dirstack-hook)
       (when py-shell-hook (run-hooks 'py-shell-hook)))
     (unless done (py-shell-manage-windows switch py-split-windows-on-execute-p py-switch-buffers-on-execute-p oldbuf py-buffer-name))

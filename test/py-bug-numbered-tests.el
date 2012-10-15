@@ -38,6 +38,7 @@
 
 (setq bug-numbered-tests
       (list
+       'several-new-bugs-with-paragraph-filling-lp-1066489-test
        'impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test
        'exception-in-except-clause-highlighted-as-keyword-lp-909205-test
        'pyindex-mishandles-class-definitions-lp-1018164-test
@@ -4300,6 +4301,65 @@ print(\"I'm the \\\"impossible-to-execute-a-buffer-with-from-future-imports-lp-1
 
 (defun impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-base ()
     (assert (py-execute-buffer) nil "impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test failed"))
+
+
+(defun several-new-bugs-with-paragraph-filling-lp-1066489-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+class IBanManager(Interface):
+    \"\"\"The global manager of email address bans.\"\"\"
+
+    def ban(email):
+        \"\"\"Ban an email address from subscribing to a mailing list.
+
+        The `IBanManager` is created by adapting an `IMailingList` or ``None``.
+        For global bans, use ``None``.
+
+        When an email address is banned, it will not be allowed to subscribe
+        to a the named mailing list. This does not affect any email address
+        already subscribed to the mailing list.
+
+        It is also possible to add a 'ban pattern' whereby all email addresses
+        matching a Python regular expression can be banned. This is
+        accomplished by using a `^` as the first character in `email`.
+
+        When an email address is already banned for the given mailing list (or
+        globally), then this method does nothing. However, it is possible to
+        extend a ban for a specific mailing list into a global ban; both bans
+        would be in place and they can be removed individually.
+
+        :param email: The text email address being banned or, if the string
+            starts with a caret (^), the email address pattern to ban.
+        :type email: str
+        :param mailing_list: The fqdn name of the mailing list to which the
+            ban applies. If None, then the ban is global.
+        :type mailing_list: string
+        \"\"\"
+"))
+  (py-bug-tests-intern 'several-new-bugs-with-paragraph-filling-lp-1066489-base arg teststring)))
+
+(defun several-new-bugs-with-paragraph-filling-lp-1066489-base ()
+    (goto-char 932)
+    (py-fill-paragraph)
+    (assert (re-search-forward "^ +:type email") nil "several-new-bugs-with-paragraph-filling-lp-1066489-test #1 failed")
+    (goto-char 220)
+    (push-mark)
+    (goto-char 1075)
+    (narrow-to-region 220 1045)
+    (py-fill-paragraph nil nil (point-min) (point-max))
+    (widen) 
+    (assert (re-search-forward "^ +:type email") nil "several-new-bugs-with-paragraph-filling-lp-1066489-test #2 failed")
+    (goto-char 1108)
+    (push-mark)
+    (goto-char (point-max))
+    (py-fill-paragraph nil nil 1108 (point))
+    (widen)
+    (goto-char 1108)
+    (assert (re-search-forward "^ +:type email") nil "several-new-bugs-with-paragraph-filling-lp-1066489-test #3 failed")
+    (py-fill-paragraph)
+    
+    )
 
 
 (provide 'py-bug-numbered-tests)

@@ -626,7 +626,7 @@ Returns and keeps relative position "
   "Returns beginning of paragraph position. "
   (interactive)
   (save-excursion
-    (let ((erg (py-beginning-of-paragraph)))
+    (let ((erg (progn (py-beginning-of-paragraph) (point))))
       (when (interactive-p) (message "%s" erg))
       erg)))
 
@@ -634,7 +634,7 @@ Returns and keeps relative position "
   "Returns end of paragraph position. "
   (interactive)
   (save-excursion
-    (let ((erg (py-end-of-paragraph)))
+    (let ((erg (progn (py-end-of-paragraph) (point))))
       (when (interactive-p) (message "%s" erg))
       erg)))
 

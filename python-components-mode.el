@@ -318,45 +318,7 @@ Normally python-mode, resp. inferior-python-mode know best which function to use
 (make-variable-buffer-local 'py-complete-function)
 
 (defcustom ipython-complete-function 'ipython-complete
-  "Function used for completion in IPython shell buffers.
-
-Minor bug: `ipython-complete' raises the prompt counter when completion done
-
- Richard Everson commented:
-
- I don't know how to stop IPython from incrementing the prompt
- counter, but using py-completion-at-point just hangs emacs for
- me. If I start with a new IPython shell, then
-
- In [1]: import sys
-
- In [2]: sys.pa
-
- then M-x py-completion-at-point, hoping to complete to sys.path, Emacs
- hangs.  Escaping out of it shows that the \*Python\* buffer has the
- contents:
-
- >>> Traceback (most recent call last):
- File \"<stdin>\", line 1, in <module>
- NameError: name 'nil' is not defined
- >>> =
- [ ... ]
-
- On the other hand, IPython's interaction and completion itself is pretty
- impressive (for versions greater than 0.10 at least): it inserts the
- correct indentation for for, if, etc and it will show completions even
- within a loop.  Here's an example from a terminal shell:
-
- In [1]:
-
- In [1]: for i in range(3):
- ...:     print i, sys.p<------------ Pressed tab here; indentation inser=
- ted automatically
- sys.path                 sys.path_importer_cache  sys.prefix
- sys.path_hooks           sys.platform             sys.py3kwarning
- ...:     print i, sys.path<------------ Pressed tab again
- sys.path                 sys.path_hooks           sys.path_importer_cache
- "
+  "Function used for completion in IPython shell buffers. "
   :type '(choice (const :tag "py-completion-at-point" py-completion-at-point)
                  (const :tag "py-shell-complete" py-shell-complete)
                  (const :tag "Pymacs based py-complete" py-complete)
@@ -1206,13 +1168,11 @@ without the user's realization (e.g. to perform completion)."
   :group 'convenience)
 
 
-(defcustom py-fill-docstring-style 'pep-257
-  "Style used to fill docstrings.
-This affects `py-fill-string' behavior with regards to
-triple quotes positioning.
+(defcustom py-fill-docstring-style 'pep-257-nn
+  "Implemented styles are DJANGO, ONETWO, PEP-257, PEP-257-NN,
+SYMMETRIC, and NIL.
 
-Possible values are DJANGO, ONETWO, PEP-257, PEP-257-NN,
-SYMMETRIC, and NIL.  A value of NIL won't care about quotes
+A value of NIL won't care about quotes
 position and will treat docstrings a normal string, any other
 value may result in one of the following docstring styles:
 
@@ -1497,6 +1457,10 @@ Used for determining the default in the next one.")
 
 (defvar py-string-delim-re "\\(\"\"\"\\|'''\\|\"\\|'\\)"
   "When looking at beginning of string. ")
+
+(defvar py-labelled-re "[ \\t]*:[[:print:]]+"
+  "When looking at label. ")
+;; (setq py-labelled-re "[ \\t]*:[[:graph:]]+")
 
 (defvar py-expression-skip-regexp "[^ (=:#\t\r\n\f]"
   "py-expression assumes chars indicated possible composing a py-expression, skip it. ")
@@ -2938,55 +2902,55 @@ If NOERROR is not nil, do not raise error when the module is not found. "]))
             ("Ignoring defaults ... "
              :help "Commands will ignore default setting of
 `py-switch-buffers-on-execute-p' resp. `py-split-windows-on-execute-p'"
-            ;; statement
-            ("Execute statement ... "
-             :help "Execute statement functions"
-             ["py-execute-statement-python" py-execute-statement-python
-              :help "Execute statement through a Python interpreter.
+             ;; statement
+             ("Execute statement ... "
+              :help "Execute statement functions"
+              ["py-execute-statement-python" py-execute-statement-python
+               :help "Execute statement through a Python interpreter.
         With \\[universal-argument] use an unique Python interpreter. "]
-             ["py-execute-statement-ipython" py-execute-statement-ipython
-              :help "Execute statement through an IPython interpreter.
+              ["py-execute-statement-ipython" py-execute-statement-ipython
+               :help "Execute statement through an IPython interpreter.
         With \\[universal-argument] use an unique IPython interpreter. "]
-             ["py-execute-statement-python3" py-execute-statement-python3
-              :help "Execute statement through a Python3 interpreter.
+              ["py-execute-statement-python3" py-execute-statement-python3
+               :help "Execute statement through a Python3 interpreter.
         With \\[universal-argument] use an unique Python3 interpreter. "]
-             ["py-execute-statement-python2" py-execute-statement-python2
-              :help "Execute statement through a Python2 interpreter.
+              ["py-execute-statement-python2" py-execute-statement-python2
+               :help "Execute statement through a Python2 interpreter.
         With \\[universal-argument] use an unique Python2 interpreter. "]
-             ["py-execute-statement-python2.7" py-execute-statement-python2.7
-              :help "Execute statement through a Python2.7 interpreter.
+              ["py-execute-statement-python2.7" py-execute-statement-python2.7
+               :help "Execute statement through a Python2.7 interpreter.
         With \\[universal-argument] use an unique Python2.7 interpreter. "]
-             ["py-execute-statement-jython" py-execute-statement-jython
-              :help "Execute statement through a Jython interpreter.
+              ["py-execute-statement-jython" py-execute-statement-jython
+               :help "Execute statement through a Jython interpreter.
         With \\[universal-argument] use an unique Jython interpreter. "]
-             ["py-execute-statement-python3.2" py-execute-statement-python3.2
-              :help "Execute statement through a Python3.2 interpreter.
+              ["py-execute-statement-python3.2" py-execute-statement-python3.2
+               :help "Execute statement through a Python3.2 interpreter.
         With \\[universal-argument] use an unique Python3.2 interpreter. "]
-             ;; dedicated
-             ["py-execute-statement-python-dedicated" py-execute-statement-python-dedicated
-              :help "Execute statement through a unique Python interpreter.
+              ;; dedicated
+              ["py-execute-statement-python-dedicated" py-execute-statement-python-dedicated
+               :help "Execute statement through a unique Python interpreter.
 Optional \\[universal-argument] forces switch to output buffer, ignores `py-switch-buffers-on-execute-p'. "]
-             ["py-execute-statement-ipython-dedicated" py-execute-statement-ipython-dedicated
-              :help "Execute statement through a unique IPython interpreter.
+              ["py-execute-statement-ipython-dedicated" py-execute-statement-ipython-dedicated
+               :help "Execute statement through a unique IPython interpreter.
 Optional \\[universal-argument] forces switch to output buffer, ignores `py-switch-buffers-on-execute-p'. "]
-             ["py-execute-statement-python3-dedicated" py-execute-statement-python3-dedicated
-              :help "Execute statement through a unique Python3 interpreter.
+              ["py-execute-statement-python3-dedicated" py-execute-statement-python3-dedicated
+               :help "Execute statement through a unique Python3 interpreter.
 Optional \\[universal-argument] forces switch to output buffer, ignores `py-switch-buffers-on-execute-p'. "]
-             ["py-execute-statement-python2-dedicated" py-execute-statement-python2-dedicated
-              :help "Execute statement through a unique Python2 interpreter.
+              ["py-execute-statement-python2-dedicated" py-execute-statement-python2-dedicated
+               :help "Execute statement through a unique Python2 interpreter.
 Optional \\[universal-argument] forces switch to output buffer, ignores `py-switch-buffers-on-execute-p'. "]
-             ["py-execute-statement-python2.7-dedicated" py-execute-statement-python2.7-dedicated
-              :help "Execute statement through a unique Python2.7 interpreter.
+              ["py-execute-statement-python2.7-dedicated" py-execute-statement-python2.7-dedicated
+               :help "Execute statement through a unique Python2.7 interpreter.
 Optional \\[universal-argument] forces switch to output buffer, ignores `py-switch-buffers-on-execute-p'. "]
-             ["py-execute-statement-jython-dedicated" py-execute-statement-jython-dedicated
-              :help "Execute statement through a unique Jython interpreter.
+              ["py-execute-statement-jython-dedicated" py-execute-statement-jython-dedicated
+               :help "Execute statement through a unique Jython interpreter.
 Optional \\[universal-argument] forces switch to output buffer, ignores `py-switch-buffers-on-execute-p'. "]
-             ["py-execute-statement-python3.2-dedicated" py-execute-statement-python3.2-dedicated
-              :help "Execute statement through a unique Python3.2 interpreter.
+              ["py-execute-statement-python3.2-dedicated" py-execute-statement-python3.2-dedicated
+               :help "Execute statement through a unique Python3.2 interpreter.
 Optional \\[universal-argument] forces switch to output buffer, ignores `py-switch-buffers-on-execute-p'. "]
-             ;; switch
-             ["py-execute-statement-python-switch" py-execute-statement-python-switch
-              :help "Execute statement through a Python interpreter.
+              ;; switch
+              ["py-execute-statement-python-switch" py-execute-statement-python-switch
+               :help "Execute statement through a Python interpreter.
 With \\[universal-argument] use an unique Python interpreter. "]
              ["py-execute-statement-ipython-switch" py-execute-statement-ipython-switch
               :help "Execute statement through an IPython interpreter.
@@ -3064,75 +3028,75 @@ Optional \\[universal-argument] forces switch to output buffer, ignores `py-swit
              ["py-execute-block-python3-dedicated" py-execute-block-python3-dedicated
               :help "Execute block through a unique Python3 interpreter.
 Optional \\[universal-argument] forces switch to output buffer, ignores `py-switch-buffers-on-execute-p'. "]
-             ["py-execute-block-python2-dedicated" py-execute-block-python2-dedicated
-              :help "Execute block through a unique Python2 interpreter.
+              ["py-execute-block-python2-dedicated" py-execute-block-python2-dedicated
+               :help "Execute block through a unique Python2 interpreter.
 Optional \\[universal-argument] forces switch to output buffer, ignores `py-switch-buffers-on-execute-p'. "]
-             ["py-execute-block-python2.7-dedicated" py-execute-block-python2.7-dedicated
-              :help "Execute block through a unique Python2.7 interpreter.
+              ["py-execute-block-python2.7-dedicated" py-execute-block-python2.7-dedicated
+               :help "Execute block through a unique Python2.7 interpreter.
 Optional \\[universal-argument] forces switch to output buffer, ignores `py-switch-buffers-on-execute-p'. "]
-             ["py-execute-block-jython-dedicated" py-execute-block-jython-dedicated
-              :help "Execute block through a unique Jython interpreter.
+              ["py-execute-block-jython-dedicated" py-execute-block-jython-dedicated
+               :help "Execute block through a unique Jython interpreter.
 Optional \\[universal-argument] forces switch to output buffer, ignores `py-switch-buffers-on-execute-p'. "]
-             ["py-execute-block-python3.2-dedicated" py-execute-block-python3.2-dedicated
-              :help "Execute block through a unique Python3.2 interpreter.
+              ["py-execute-block-python3.2-dedicated" py-execute-block-python3.2-dedicated
+               :help "Execute block through a unique Python3.2 interpreter.
 Optional \\[universal-argument] forces switch to output buffer, ignores `py-switch-buffers-on-execute-p'. "]
-             ;; switch
-             ["py-execute-block-python-switch" py-execute-block-python-switch
-              :help "Execute block through a Python interpreter.
+              ;; switch
+              ["py-execute-block-python-switch" py-execute-block-python-switch
+               :help "Execute block through a Python interpreter.
 With \\[universal-argument] use an unique Python interpreter. "]
-             ["py-execute-block-ipython-switch" py-execute-block-ipython-switch
-              :help "Execute block through an IPython interpreter.
+              ["py-execute-block-ipython-switch" py-execute-block-ipython-switch
+               :help "Execute block through an IPython interpreter.
 With \\[universal-argument] use an unique IPython interpreter. "]
-             ["py-execute-block-python3-switch" py-execute-block-python3-switch
-              :help "Execute block through a Python3 interpreter.
+              ["py-execute-block-python3-switch" py-execute-block-python3-switch
+               :help "Execute block through a Python3 interpreter.
 With \\[universal-argument] use an unique Python3 interpreter. "]
-             ["py-execute-block-python2-switch" py-execute-block-python2-switch
-              :help "Execute block through a Python2 interpreter.
+              ["py-execute-block-python2-switch" py-execute-block-python2-switch
+               :help "Execute block through a Python2 interpreter.
 With \\[universal-argument] use an unique Python2 interpreter. "]
-             ["py-execute-block-python2.7-switch" py-execute-block-python2.7-switch
-              :help "Execute block through a Python2.7 interpreter.
+              ["py-execute-block-python2.7-switch" py-execute-block-python2.7-switch
+               :help "Execute block through a Python2.7 interpreter.
 With \\[universal-argument] use an unique Python2.7 interpreter. "]
-             ["py-execute-block-jython-switch" py-execute-block-jython-switch
-              :help "Execute block through a Jython interpreter.
+              ["py-execute-block-jython-switch" py-execute-block-jython-switch
+               :help "Execute block through a Jython interpreter.
 With \\[universal-argument] use an unique Jython interpreter. "]
-             ["py-execute-block-python3.2-switch" py-execute-block-python3.2-switch
-              :help "Execute block through a Python3.2 interpreter.
+              ["py-execute-block-python3.2-switch" py-execute-block-python3.2-switch
+               :help "Execute block through a Python3.2 interpreter.
 With \\[universal-argument] use an unique Python3.2 interpreter. "]
-             ;; dedicated-switch
-             ["py-execute-block-python-dedicated-switch" py-execute-block-python-dedicated-switch
-              :help "Execute block through a unique Python interpreter.
+              ;; dedicated-switch
+              ["py-execute-block-python-dedicated-switch" py-execute-block-python-dedicated-switch
+               :help "Execute block through a unique Python interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
-             ["py-execute-block-ipython-dedicated-switch" py-execute-block-ipython-dedicated-switch
-              :help "Execute block through a uniquen IPython interpreter.
+              ["py-execute-block-ipython-dedicated-switch" py-execute-block-ipython-dedicated-switch
+               :help "Execute block through a uniquen IPython interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
-             ["py-execute-block-python3-dedicated-switch" py-execute-block-python3-dedicated-switch
-              :help "Execute block through a unique Python3 interpreter.
+              ["py-execute-block-python3-dedicated-switch" py-execute-block-python3-dedicated-switch
+               :help "Execute block through a unique Python3 interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
-             ["py-execute-block-python2-dedicated-switch" py-execute-block-python2-dedicated-switch
-              :help "Execute block through a unique Python2 interpreter.
+              ["py-execute-block-python2-dedicated-switch" py-execute-block-python2-dedicated-switch
+               :help "Execute block through a unique Python2 interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
-             ["py-execute-block-python2.7-dedicated-switch" py-execute-block-python2.7-dedicated-switch
-              :help "Execute block through a unique Python2.7 interpreter.
+              ["py-execute-block-python2.7-dedicated-switch" py-execute-block-python2.7-dedicated-switch
+               :help "Execute block through a unique Python2.7 interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
-             ["py-execute-block-jython-dedicated-switch" py-execute-block-jython-dedicated-switch
-              :help "Execute block through a unique Jython interpreter.
+              ["py-execute-block-jython-dedicated-switch" py-execute-block-jython-dedicated-switch
+               :help "Execute block through a unique Jython interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
-             ["py-execute-block-python3.2-dedicated-switch" py-execute-block-python3.2-dedicated-switch
-              :help "Execute block through a unique Python3.2 interpreter.
+              ["py-execute-block-python3.2-dedicated-switch" py-execute-block-python3.2-dedicated-switch
+               :help "Execute block through a unique Python3.2 interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. "]
-             )
+              )
 
-            ;; block-or-clause
-            ("Execute block-or-clause ... "
-             :help "Execute block-or-clause functions"
-             ["py-execute-block-or-clause-python" py-execute-block-or-clause-python
-              :help "Execute block-or-clause through a Python interpreter.
+             ;; block-or-clause
+             ("Execute block-or-clause ... "
+              :help "Execute block-or-clause functions"
+              ["py-execute-block-or-clause-python" py-execute-block-or-clause-python
+               :help "Execute block-or-clause through a Python interpreter.
         With \\[universal-argument] use an unique Python interpreter. "]
-             ["py-execute-block-or-clause-ipython" py-execute-block-or-clause-ipython
-              :help "Execute block-or-clause through an IPython interpreter.
+              ["py-execute-block-or-clause-ipython" py-execute-block-or-clause-ipython
+               :help "Execute block-or-clause through an IPython interpreter.
         With \\[universal-argument] use an unique IPython interpreter. "]
-             ["py-execute-block-or-clause-python3" py-execute-block-or-clause-python3
-              :help "Execute block-or-clause through a Python3 interpreter.
+              ["py-execute-block-or-clause-python3" py-execute-block-or-clause-python3
+               :help "Execute block-or-clause through a Python3 interpreter.
         With \\[universal-argument] use an unique Python3 interpreter. "]
              ["py-execute-block-or-clause-python2" py-execute-block-or-clause-python2
               :help "Execute block-or-clause through a Python2 interpreter.
@@ -4572,11 +4536,19 @@ Optional C-u prompts for options to pass to the Python2.7 interpreter. See `py-p
 Start an Jython interpreter.
 
 Optional C-u prompts for options to pass to the Jython interpreter. See `py-python-command-args'."]
+
             ["python3.2" python3.2
              :help "`python3.2'
 Start an Python3.2 interpreter.
 
 Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'."]
+
+            ["python3.3" python3.3
+             :help "`python3.3'
+Start an Python3.3 interpreter.
+
+Optional C-u prompts for options to pass to the Python3.3 interpreter. See `py-python-command-args'."]
+
             "-"
             ["python-dedicated" python-dedicated
              :help "`python-dedicated'
@@ -4787,15 +4759,6 @@ behavior, change `py-remove-cwd-from-path' to nil."
   (save-excursion (py-send-region (progn (beginning-of-defun) (point))
 				      (progn (end-of-defun) (point)))))
 
-(defun python-switch-to-python (eob-p)
-  "Switch to the Python process buffer, maybe starting new process.
-With prefix arg, position cursor at end of buffer."
-  (interactive "P")
-  (pop-to-buffer (process-buffer (python-proc)) t) ;Runs python if needed.
-  (when eob-p
-    (push-mark)
-    (goto-char (point-max))))
-
 (autoload 'comint-get-source "comint")
 
 (defun python-load-file (file-name)
@@ -4821,17 +4784,6 @@ module-qualified names."
        (format "execfile(%S)" file-name)))
     (message "%s loaded" file-name)))
 
-(defun python-proc ()
-  "Return the current Python process.
-See variable `python-buffer'.  Starts a new process if necessary."
-  ;; Fixme: Maybe should look for another active process if there
-  ;; isn't one for `python-buffer'.
-  (unless (comint-check-proc python-buffer)
-    (run-python nil t))
-  (get-buffer-process (if (derived-mode-p 'inferior-python-mode)
-			  (current-buffer)
-			python-buffer)))
-
 (defun python-set-proc ()
   "Set the default value of `python-buffer' to correspond to this buffer.
 If the current buffer has a local value of `python-buffer', set the
@@ -4849,15 +4801,6 @@ in a buffer that doesn't have a local value of `python-buffer'."
   (interactive)
   (save-excursion (py-send-region (progn (beginning-of-defun) (point))
                                       (progn (end-of-defun) (point)))))
-
-(defun python-switch-to-python (eob-p)
-  "Switch to the Python process buffer, maybe starting new process.
-With prefix arg, position cursor at end of buffer."
-  (interactive "P")
-  (pop-to-buffer (process-buffer (python-proc)) t) ;Runs python if needed.
-  (when eob-p
-    (push-mark)
-    (goto-char (point-max))))
 
 (defun python-check-comint-prompt (&optional proc)
   "Return non-nil if and only if there's a normal prompt in the inferior buffer.
@@ -4909,31 +4852,6 @@ See variable `python-buffer'.  Starts a new process if necessary."
       (get-buffer-process python-buffer)
     (when py-verbose-p (message "py-proc: Please wait while starting a Python shell, as completion needs it"))
     (py-shell nil dedicated)))
-
-(defun python-proc ()
-  "Return the current Python process.
-
-See variable `python-buffer'.  Starts a new process if necessary."
-  ;; Fixme: Maybe should look for another active process if there
-  ;; isn't one for `python-buffer'.
-  (unless (comint-check-proc python-buffer)
-    ;; (when py-verbose-p (message "python-proc: Please wait while starting a Python shell, as completion needs it"))
-    (run-python nil t))
-  (get-buffer-process (if (derived-mode-p 'inferior-python-mode)
-                          (current-buffer)
-                        python-buffer)))
-
-(defun python-set-proc ()
-  "Set the default value of `python-buffer' to correspond to this buffer.
-If the current buffer has a local value of `python-buffer', set the
-default (global) value to that.  The associated Python process is
-the one that gets input from \\[py-send-region] et al when used
-in a buffer that doesn't have a local value of `python-buffer'."
-  (interactive)
-  (if (local-variable-p 'python-buffer)
-      (setq-default python-buffer python-buffer)
-    (error "No local value of `python-buffer'")))
-(add-to-list 'debug-ignored-errors "^No symbol")
 
 ;;; Miscellany.
 
@@ -5570,6 +5488,15 @@ Don't save anything for STR matching `inferior-python-filter-regexp'."
 (make-obsolete 'jpython-mode 'jython-mode nil)
 (autoload 'comint-check-proc "comint")
 
+(defun py-switch-to-python (eob-p)
+  "Switch to the Python process buffer, maybe starting new process.
+With prefix arg, position cursor at end of buffer."
+  (interactive "P")
+  (pop-to-buffer (py-shell)) ;Runs python if needed.
+  (when eob-p
+    (push-mark)
+    (goto-char (point-max))))
+
 ;;; Hooks
 ;; (add-hook 'python-mode-hook
 ;;           (lambda ()
@@ -5587,7 +5514,7 @@ that order.
 
 You can send text to the inferior Python process from other buffers
 containing Python source.
- * \\[python-switch-to-python] switches the current buffer to the Python
+ * \\[py-switch-to-python] switches the current buffer to the Python
     process buffer.
  * \\[py-send-region] sends the current region to the Python process.
  * \\[py-send-region-and-go] switches to the Python process buffer
