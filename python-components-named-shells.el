@@ -111,8 +111,7 @@ Optional \\[universal-argument] prompts for options to pass to the Python3.3 int
 
 Command expects Python3.3 installed at your system. "
   (interactive "P")
-  (py-shell argprompt dedicated "python3.,#. zi
-3" switch))
+  (py-shell argprompt dedicated "python3.3" switch))
 
 ;; dedicated
 (defun python-dedicated (&optional argprompt switch)
