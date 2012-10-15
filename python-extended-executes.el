@@ -1,4 +1,4 @@
-;;; Extended executespython-extended-executes.el --- more execute forms
+;;; Extended executes --- more execute forms
 ;; Author: Andreas Roehler <andreas.roehler@online.de>
 ;; Keywords: languages, convenience
 
@@ -15,14 +15,11 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;;; Commentary: Edit `py-test-pyshellname-list' before
-;; running this test-builder or give a list of shells as
-;; arguments
+;;; Commentary:
 
 ;;; Code:
 
 
-;;; Extended executes
 ;; created by `write-extended-execute-forms'
 (defun py-execute-prepare (form &optional shell dedicated switch)
   "Used by python-extended-executes ."
@@ -238,6 +235,64 @@ Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' "
   (interactive)
   (py-execute-prepare "statement" "python3.2" t 'switch))
 
+(defun py-execute-statement-python3.3 ()
+  "Send statement at point to Python3.3 interpreter. "
+  (interactive)
+  (py-execute-prepare "statement" "python3.3" nil nil))
+
+(defun py-execute-statement-python3.3-switch ()
+  "Send statement at point to Python3.3 interpreter. 
+
+Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. "
+  (interactive)
+  (py-execute-prepare "statement" "python3.3" nil 'switch))
+
+(defun py-execute-statement-python3.3-noswitch ()
+  "Send statement at point to Python3.3 interpreter. 
+
+Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' "
+  (interactive)
+  (py-execute-prepare "statement" "python3.3" nil 'noswitch))
+
+(defun py-execute-statement-python3.3-dedicated ()
+  "Send statement at point to Python3.3 unique interpreter. "
+  (interactive)
+  (py-execute-prepare "statement" "python3.3" t nil))
+
+(defun py-execute-statement-python3.3-dedicated-switch ()
+  "Send statement at point to Python3.3 unique interpreter and switch to result. "
+  (interactive)
+  (py-execute-prepare "statement" "python3.3" t 'switch))
+
+(defun py-execute-statement-bpython ()
+  "Send statement at point to Bpython interpreter. "
+  (interactive)
+  (py-execute-prepare "statement" "bpython" nil nil))
+
+(defun py-execute-statement-bpython-switch ()
+  "Send statement at point to Bpython interpreter. 
+
+Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. "
+  (interactive)
+  (py-execute-prepare "statement" "bpython" nil 'switch))
+
+(defun py-execute-statement-bpython-noswitch ()
+  "Send statement at point to Bpython interpreter. 
+
+Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' "
+  (interactive)
+  (py-execute-prepare "statement" "bpython" nil 'noswitch))
+
+(defun py-execute-statement-bpython-dedicated ()
+  "Send statement at point to Bpython unique interpreter. "
+  (interactive)
+  (py-execute-prepare "statement" "bpython" t nil))
+
+(defun py-execute-statement-bpython-dedicated-switch ()
+  "Send statement at point to Bpython unique interpreter and switch to result. "
+  (interactive)
+  (py-execute-prepare "statement" "bpython" t 'switch))
+
 (defun py-execute-block-python ()
   "Send block at point to Python interpreter. "
   (interactive)
@@ -440,6 +495,64 @@ Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' "
   "Send block at point to Python3.2 unique interpreter and switch to result. "
   (interactive)
   (py-execute-prepare "block" "python3.2" t 'switch))
+
+(defun py-execute-block-python3.3 ()
+  "Send block at point to Python3.3 interpreter. "
+  (interactive)
+  (py-execute-prepare "block" "python3.3" nil nil))
+
+(defun py-execute-block-python3.3-switch ()
+  "Send block at point to Python3.3 interpreter. 
+
+Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. "
+  (interactive)
+  (py-execute-prepare "block" "python3.3" nil 'switch))
+
+(defun py-execute-block-python3.3-noswitch ()
+  "Send block at point to Python3.3 interpreter. 
+
+Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' "
+  (interactive)
+  (py-execute-prepare "block" "python3.3" nil 'noswitch))
+
+(defun py-execute-block-python3.3-dedicated ()
+  "Send block at point to Python3.3 unique interpreter. "
+  (interactive)
+  (py-execute-prepare "block" "python3.3" t nil))
+
+(defun py-execute-block-python3.3-dedicated-switch ()
+  "Send block at point to Python3.3 unique interpreter and switch to result. "
+  (interactive)
+  (py-execute-prepare "block" "python3.3" t 'switch))
+
+(defun py-execute-block-bpython ()
+  "Send block at point to Bpython interpreter. "
+  (interactive)
+  (py-execute-prepare "block" "bpython" nil nil))
+
+(defun py-execute-block-bpython-switch ()
+  "Send block at point to Bpython interpreter. 
+
+Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. "
+  (interactive)
+  (py-execute-prepare "block" "bpython" nil 'switch))
+
+(defun py-execute-block-bpython-noswitch ()
+  "Send block at point to Bpython interpreter. 
+
+Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' "
+  (interactive)
+  (py-execute-prepare "block" "bpython" nil 'noswitch))
+
+(defun py-execute-block-bpython-dedicated ()
+  "Send block at point to Bpython unique interpreter. "
+  (interactive)
+  (py-execute-prepare "block" "bpython" t nil))
+
+(defun py-execute-block-bpython-dedicated-switch ()
+  "Send block at point to Bpython unique interpreter and switch to result. "
+  (interactive)
+  (py-execute-prepare "block" "bpython" t 'switch))
 
 (defun py-execute-clause-python ()
   "Send clause at point to Python interpreter. "
@@ -644,6 +757,64 @@ Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' "
   (interactive)
   (py-execute-prepare "clause" "python3.2" t 'switch))
 
+(defun py-execute-clause-python3.3 ()
+  "Send clause at point to Python3.3 interpreter. "
+  (interactive)
+  (py-execute-prepare "clause" "python3.3" nil nil))
+
+(defun py-execute-clause-python3.3-switch ()
+  "Send clause at point to Python3.3 interpreter. 
+
+Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. "
+  (interactive)
+  (py-execute-prepare "clause" "python3.3" nil 'switch))
+
+(defun py-execute-clause-python3.3-noswitch ()
+  "Send clause at point to Python3.3 interpreter. 
+
+Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' "
+  (interactive)
+  (py-execute-prepare "clause" "python3.3" nil 'noswitch))
+
+(defun py-execute-clause-python3.3-dedicated ()
+  "Send clause at point to Python3.3 unique interpreter. "
+  (interactive)
+  (py-execute-prepare "clause" "python3.3" t nil))
+
+(defun py-execute-clause-python3.3-dedicated-switch ()
+  "Send clause at point to Python3.3 unique interpreter and switch to result. "
+  (interactive)
+  (py-execute-prepare "clause" "python3.3" t 'switch))
+
+(defun py-execute-clause-bpython ()
+  "Send clause at point to Bpython interpreter. "
+  (interactive)
+  (py-execute-prepare "clause" "bpython" nil nil))
+
+(defun py-execute-clause-bpython-switch ()
+  "Send clause at point to Bpython interpreter. 
+
+Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. "
+  (interactive)
+  (py-execute-prepare "clause" "bpython" nil 'switch))
+
+(defun py-execute-clause-bpython-noswitch ()
+  "Send clause at point to Bpython interpreter. 
+
+Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' "
+  (interactive)
+  (py-execute-prepare "clause" "bpython" nil 'noswitch))
+
+(defun py-execute-clause-bpython-dedicated ()
+  "Send clause at point to Bpython unique interpreter. "
+  (interactive)
+  (py-execute-prepare "clause" "bpython" t nil))
+
+(defun py-execute-clause-bpython-dedicated-switch ()
+  "Send clause at point to Bpython unique interpreter and switch to result. "
+  (interactive)
+  (py-execute-prepare "clause" "bpython" t 'switch))
+
 (defun py-execute-block-or-clause-python ()
   "Send block-or-clause at point to Python interpreter. "
   (interactive)
@@ -846,6 +1017,64 @@ Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' "
   "Send block-or-clause at point to Python3.2 unique interpreter and switch to result. "
   (interactive)
   (py-execute-prepare "block-or-clause" "python3.2" t 'switch))
+
+(defun py-execute-block-or-clause-python3.3 ()
+  "Send block-or-clause at point to Python3.3 interpreter. "
+  (interactive)
+  (py-execute-prepare "block-or-clause" "python3.3" nil nil))
+
+(defun py-execute-block-or-clause-python3.3-switch ()
+  "Send block-or-clause at point to Python3.3 interpreter. 
+
+Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. "
+  (interactive)
+  (py-execute-prepare "block-or-clause" "python3.3" nil 'switch))
+
+(defun py-execute-block-or-clause-python3.3-noswitch ()
+  "Send block-or-clause at point to Python3.3 interpreter. 
+
+Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' "
+  (interactive)
+  (py-execute-prepare "block-or-clause" "python3.3" nil 'noswitch))
+
+(defun py-execute-block-or-clause-python3.3-dedicated ()
+  "Send block-or-clause at point to Python3.3 unique interpreter. "
+  (interactive)
+  (py-execute-prepare "block-or-clause" "python3.3" t nil))
+
+(defun py-execute-block-or-clause-python3.3-dedicated-switch ()
+  "Send block-or-clause at point to Python3.3 unique interpreter and switch to result. "
+  (interactive)
+  (py-execute-prepare "block-or-clause" "python3.3" t 'switch))
+
+(defun py-execute-block-or-clause-bpython ()
+  "Send block-or-clause at point to Bpython interpreter. "
+  (interactive)
+  (py-execute-prepare "block-or-clause" "bpython" nil nil))
+
+(defun py-execute-block-or-clause-bpython-switch ()
+  "Send block-or-clause at point to Bpython interpreter. 
+
+Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. "
+  (interactive)
+  (py-execute-prepare "block-or-clause" "bpython" nil 'switch))
+
+(defun py-execute-block-or-clause-bpython-noswitch ()
+  "Send block-or-clause at point to Bpython interpreter. 
+
+Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' "
+  (interactive)
+  (py-execute-prepare "block-or-clause" "bpython" nil 'noswitch))
+
+(defun py-execute-block-or-clause-bpython-dedicated ()
+  "Send block-or-clause at point to Bpython unique interpreter. "
+  (interactive)
+  (py-execute-prepare "block-or-clause" "bpython" t nil))
+
+(defun py-execute-block-or-clause-bpython-dedicated-switch ()
+  "Send block-or-clause at point to Bpython unique interpreter and switch to result. "
+  (interactive)
+  (py-execute-prepare "block-or-clause" "bpython" t 'switch))
 
 (defun py-execute-def-python ()
   "Send def at point to Python interpreter. "
@@ -1050,6 +1279,64 @@ Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' "
   (interactive)
   (py-execute-prepare "def" "python3.2" t 'switch))
 
+(defun py-execute-def-python3.3 ()
+  "Send def at point to Python3.3 interpreter. "
+  (interactive)
+  (py-execute-prepare "def" "python3.3" nil nil))
+
+(defun py-execute-def-python3.3-switch ()
+  "Send def at point to Python3.3 interpreter. 
+
+Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. "
+  (interactive)
+  (py-execute-prepare "def" "python3.3" nil 'switch))
+
+(defun py-execute-def-python3.3-noswitch ()
+  "Send def at point to Python3.3 interpreter. 
+
+Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' "
+  (interactive)
+  (py-execute-prepare "def" "python3.3" nil 'noswitch))
+
+(defun py-execute-def-python3.3-dedicated ()
+  "Send def at point to Python3.3 unique interpreter. "
+  (interactive)
+  (py-execute-prepare "def" "python3.3" t nil))
+
+(defun py-execute-def-python3.3-dedicated-switch ()
+  "Send def at point to Python3.3 unique interpreter and switch to result. "
+  (interactive)
+  (py-execute-prepare "def" "python3.3" t 'switch))
+
+(defun py-execute-def-bpython ()
+  "Send def at point to Bpython interpreter. "
+  (interactive)
+  (py-execute-prepare "def" "bpython" nil nil))
+
+(defun py-execute-def-bpython-switch ()
+  "Send def at point to Bpython interpreter. 
+
+Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. "
+  (interactive)
+  (py-execute-prepare "def" "bpython" nil 'switch))
+
+(defun py-execute-def-bpython-noswitch ()
+  "Send def at point to Bpython interpreter. 
+
+Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' "
+  (interactive)
+  (py-execute-prepare "def" "bpython" nil 'noswitch))
+
+(defun py-execute-def-bpython-dedicated ()
+  "Send def at point to Bpython unique interpreter. "
+  (interactive)
+  (py-execute-prepare "def" "bpython" t nil))
+
+(defun py-execute-def-bpython-dedicated-switch ()
+  "Send def at point to Bpython unique interpreter and switch to result. "
+  (interactive)
+  (py-execute-prepare "def" "bpython" t 'switch))
+
 (defun py-execute-class-python ()
   "Send class at point to Python interpreter. "
   (interactive)
@@ -1253,6 +1540,64 @@ Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' "
   (interactive)
   (py-execute-prepare "class" "python3.2" t 'switch))
 
+(defun py-execute-class-python3.3 ()
+  "Send class at point to Python3.3 interpreter. "
+  (interactive)
+  (py-execute-prepare "class" "python3.3" nil nil))
+
+(defun py-execute-class-python3.3-switch ()
+  "Send class at point to Python3.3 interpreter. 
+
+Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. "
+  (interactive)
+  (py-execute-prepare "class" "python3.3" nil 'switch))
+
+(defun py-execute-class-python3.3-noswitch ()
+  "Send class at point to Python3.3 interpreter. 
+
+Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' "
+  (interactive)
+  (py-execute-prepare "class" "python3.3" nil 'noswitch))
+
+(defun py-execute-class-python3.3-dedicated ()
+  "Send class at point to Python3.3 unique interpreter. "
+  (interactive)
+  (py-execute-prepare "class" "python3.3" t nil))
+
+(defun py-execute-class-python3.3-dedicated-switch ()
+  "Send class at point to Python3.3 unique interpreter and switch to result. "
+  (interactive)
+  (py-execute-prepare "class" "python3.3" t 'switch))
+
+(defun py-execute-class-bpython ()
+  "Send class at point to Bpython interpreter. "
+  (interactive)
+  (py-execute-prepare "class" "bpython" nil nil))
+
+(defun py-execute-class-bpython-switch ()
+  "Send class at point to Bpython interpreter. 
+
+Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. "
+  (interactive)
+  (py-execute-prepare "class" "bpython" nil 'switch))
+
+(defun py-execute-class-bpython-noswitch ()
+  "Send class at point to Bpython interpreter. 
+
+Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' "
+  (interactive)
+  (py-execute-prepare "class" "bpython" nil 'noswitch))
+
+(defun py-execute-class-bpython-dedicated ()
+  "Send class at point to Bpython unique interpreter. "
+  (interactive)
+  (py-execute-prepare "class" "bpython" t nil))
+
+(defun py-execute-class-bpython-dedicated-switch ()
+  "Send class at point to Bpython unique interpreter and switch to result. "
+  (interactive)
+  (py-execute-prepare "class" "bpython" t 'switch))
+
 (defun py-execute-region-python (beg end)
   "Send region at point to Python interpreter. "
   (interactive "r")
@@ -1455,6 +1800,64 @@ Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' "
   "Send region at point to Python3.2 unique interpreter and switch to result. "
   (interactive "r")
   (py-execute-base beg end "python3.2" t 'switch))
+
+(defun py-execute-region-python3.3 (beg end)
+  "Send region at point to Python3.3 interpreter. "
+  (interactive "r")
+  (py-execute-base beg end "python3.3" nil nil))
+
+(defun py-execute-region-python3.3-switch (beg end)
+  "Send region at point to Python3.3 interpreter. 
+
+Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. "
+  (interactive "r")
+  (py-execute-base beg end "python3.3" nil 'switch))
+
+(defun py-execute-region-python3.3-noswitch (beg end)
+  "Send region at point to Python3.3 interpreter. 
+
+Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' "
+  (interactive "r")
+  (py-execute-base beg end "python3.3" nil 'noswitch))
+
+(defun py-execute-region-python3.3-dedicated (beg end)
+  "Send region at point to Python3.3 unique interpreter. "
+  (interactive "r")
+  (py-execute-base beg end "python3.3" t nil))
+
+(defun py-execute-region-python3.3-dedicated-switch (beg end)
+  "Send region at point to Python3.3 unique interpreter and switch to result. "
+  (interactive "r")
+  (py-execute-base beg end "python3.3" t 'switch))
+
+(defun py-execute-region-bpython (beg end)
+  "Send region at point to Bpython interpreter. "
+  (interactive "r")
+  (py-execute-base beg end "bpython" nil nil))
+
+(defun py-execute-region-bpython-switch (beg end)
+  "Send region at point to Bpython interpreter. 
+
+Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. "
+  (interactive "r")
+  (py-execute-base beg end "bpython" nil 'switch))
+
+(defun py-execute-region-bpython-noswitch (beg end)
+  "Send region at point to Bpython interpreter. 
+
+Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' "
+  (interactive "r")
+  (py-execute-base beg end "bpython" nil 'noswitch))
+
+(defun py-execute-region-bpython-dedicated (beg end)
+  "Send region at point to Bpython unique interpreter. "
+  (interactive "r")
+  (py-execute-base beg end "bpython" t nil))
+
+(defun py-execute-region-bpython-dedicated-switch (beg end)
+  "Send region at point to Bpython unique interpreter and switch to result. "
+  (interactive "r")
+  (py-execute-base beg end "bpython" t 'switch))
 
 (defun py-execute-buffer-python ()
   "Send buffer at point to Python interpreter. "
@@ -2044,6 +2447,174 @@ Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' "
       (setq end (point-max))
       (py-execute-region beg end "python3.2" t 'switch))))
 
+(defun py-execute-buffer-python3.3 ()
+  "Send buffer at point to Python3.3 interpreter. "
+  (interactive)
+  (save-excursion
+    (let ((wholebuf t)
+          (py-master-file (or py-master-file (py-fetch-py-master-file)))
+          beg end)
+      (when py-master-file
+        (let* ((filename (expand-file-name py-master-file))
+               (buffer (or (get-file-buffer filename)
+                           (find-file-noselect filename))))
+          (set-buffer buffer)))
+      (setq beg (point-min))
+      (setq end (point-max))
+      (py-execute-region beg end "python3.3" nil nil))))
+
+(defun py-execute-buffer-python3.3-switch ()
+  "Send buffer at point to Python3.3 interpreter. 
+
+Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. "
+  (interactive)
+  (save-excursion
+    (let ((wholebuf t)
+          (py-master-file (or py-master-file (py-fetch-py-master-file)))
+          beg end)
+      (when py-master-file
+        (let* ((filename (expand-file-name py-master-file))
+               (buffer (or (get-file-buffer filename)
+                           (find-file-noselect filename))))
+          (set-buffer buffer)))
+      (setq beg (point-min))
+      (setq end (point-max))
+      (py-execute-region beg end "python3.3" nil 'switch))))
+
+(defun py-execute-buffer-python3.3-noswitch ()
+  "Send buffer at point to Python3.3 interpreter. 
+
+Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' "
+  (interactive)
+  (save-excursion
+    (let ((wholebuf t)
+          (py-master-file (or py-master-file (py-fetch-py-master-file)))
+          beg end)
+      (when py-master-file
+        (let* ((filename (expand-file-name py-master-file))
+               (buffer (or (get-file-buffer filename)
+                           (find-file-noselect filename))))
+          (set-buffer buffer)))
+      (setq beg (point-min))
+      (setq end (point-max))
+      (py-execute-region beg end "python3.3" nil 'noswitch))))
+
+(defun py-execute-buffer-python3.3-dedicated ()
+  "Send buffer at point to Python3.3 unique interpreter. "
+  (interactive)
+  (save-excursion
+    (let ((wholebuf t)
+          (py-master-file (or py-master-file (py-fetch-py-master-file)))
+          beg end)
+      (when py-master-file
+        (let* ((filename (expand-file-name py-master-file))
+               (buffer (or (get-file-buffer filename)
+                           (find-file-noselect filename))))
+          (set-buffer buffer)))
+      (setq beg (point-min))
+      (setq end (point-max))
+      (py-execute-region beg end "python3.3" t nil))))
+
+(defun py-execute-buffer-python3.3-dedicated-switch ()
+  "Send buffer at point to Python3.3 unique interpreter and switch to result. "
+  (interactive)
+  (save-excursion
+    (let ((wholebuf t)
+          (py-master-file (or py-master-file (py-fetch-py-master-file)))
+          beg end)
+      (when py-master-file
+        (let* ((filename (expand-file-name py-master-file))
+               (buffer (or (get-file-buffer filename)
+                           (find-file-noselect filename))))
+          (set-buffer buffer)))
+      (setq beg (point-min))
+      (setq end (point-max))
+      (py-execute-region beg end "python3.3" t 'switch))))
+
+(defun py-execute-buffer-bpython ()
+  "Send buffer at point to Bpython interpreter. "
+  (interactive)
+  (save-excursion
+    (let ((wholebuf t)
+          (py-master-file (or py-master-file (py-fetch-py-master-file)))
+          beg end)
+      (when py-master-file
+        (let* ((filename (expand-file-name py-master-file))
+               (buffer (or (get-file-buffer filename)
+                           (find-file-noselect filename))))
+          (set-buffer buffer)))
+      (setq beg (point-min))
+      (setq end (point-max))
+      (py-execute-region beg end "bpython" nil nil))))
+
+(defun py-execute-buffer-bpython-switch ()
+  "Send buffer at point to Bpython interpreter. 
+
+Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. "
+  (interactive)
+  (save-excursion
+    (let ((wholebuf t)
+          (py-master-file (or py-master-file (py-fetch-py-master-file)))
+          beg end)
+      (when py-master-file
+        (let* ((filename (expand-file-name py-master-file))
+               (buffer (or (get-file-buffer filename)
+                           (find-file-noselect filename))))
+          (set-buffer buffer)))
+      (setq beg (point-min))
+      (setq end (point-max))
+      (py-execute-region beg end "bpython" nil 'switch))))
+
+(defun py-execute-buffer-bpython-noswitch ()
+  "Send buffer at point to Bpython interpreter. 
+
+Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' "
+  (interactive)
+  (save-excursion
+    (let ((wholebuf t)
+          (py-master-file (or py-master-file (py-fetch-py-master-file)))
+          beg end)
+      (when py-master-file
+        (let* ((filename (expand-file-name py-master-file))
+               (buffer (or (get-file-buffer filename)
+                           (find-file-noselect filename))))
+          (set-buffer buffer)))
+      (setq beg (point-min))
+      (setq end (point-max))
+      (py-execute-region beg end "bpython" nil 'noswitch))))
+
+(defun py-execute-buffer-bpython-dedicated ()
+  "Send buffer at point to Bpython unique interpreter. "
+  (interactive)
+  (save-excursion
+    (let ((wholebuf t)
+          (py-master-file (or py-master-file (py-fetch-py-master-file)))
+          beg end)
+      (when py-master-file
+        (let* ((filename (expand-file-name py-master-file))
+               (buffer (or (get-file-buffer filename)
+                           (find-file-noselect filename))))
+          (set-buffer buffer)))
+      (setq beg (point-min))
+      (setq end (point-max))
+      (py-execute-region beg end "bpython" t nil))))
+
+(defun py-execute-buffer-bpython-dedicated-switch ()
+  "Send buffer at point to Bpython unique interpreter and switch to result. "
+  (interactive)
+  (save-excursion
+    (let ((wholebuf t)
+          (py-master-file (or py-master-file (py-fetch-py-master-file)))
+          beg end)
+      (when py-master-file
+        (let* ((filename (expand-file-name py-master-file))
+               (buffer (or (get-file-buffer filename)
+                           (find-file-noselect filename))))
+          (set-buffer buffer)))
+      (setq beg (point-min))
+      (setq end (point-max))
+      (py-execute-region beg end "bpython" t 'switch))))
+
 (defun py-execute-expression-python ()
   "Send expression at point to Python interpreter. "
   (interactive)
@@ -2246,6 +2817,64 @@ Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' "
   "Send expression at point to Python3.2 unique interpreter and switch to result. "
   (interactive)
   (py-execute-prepare "expression" "python3.2" t 'switch))
+
+(defun py-execute-expression-python3.3 ()
+  "Send expression at point to Python3.3 interpreter. "
+  (interactive)
+  (py-execute-prepare "expression" "python3.3" nil nil))
+
+(defun py-execute-expression-python3.3-switch ()
+  "Send expression at point to Python3.3 interpreter. 
+
+Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. "
+  (interactive)
+  (py-execute-prepare "expression" "python3.3" nil 'switch))
+
+(defun py-execute-expression-python3.3-noswitch ()
+  "Send expression at point to Python3.3 interpreter. 
+
+Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' "
+  (interactive)
+  (py-execute-prepare "expression" "python3.3" nil 'noswitch))
+
+(defun py-execute-expression-python3.3-dedicated ()
+  "Send expression at point to Python3.3 unique interpreter. "
+  (interactive)
+  (py-execute-prepare "expression" "python3.3" t nil))
+
+(defun py-execute-expression-python3.3-dedicated-switch ()
+  "Send expression at point to Python3.3 unique interpreter and switch to result. "
+  (interactive)
+  (py-execute-prepare "expression" "python3.3" t 'switch))
+
+(defun py-execute-expression-bpython ()
+  "Send expression at point to Bpython interpreter. "
+  (interactive)
+  (py-execute-prepare "expression" "bpython" nil nil))
+
+(defun py-execute-expression-bpython-switch ()
+  "Send expression at point to Bpython interpreter. 
+
+Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. "
+  (interactive)
+  (py-execute-prepare "expression" "bpython" nil 'switch))
+
+(defun py-execute-expression-bpython-noswitch ()
+  "Send expression at point to Bpython interpreter. 
+
+Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' "
+  (interactive)
+  (py-execute-prepare "expression" "bpython" nil 'noswitch))
+
+(defun py-execute-expression-bpython-dedicated ()
+  "Send expression at point to Bpython unique interpreter. "
+  (interactive)
+  (py-execute-prepare "expression" "bpython" t nil))
+
+(defun py-execute-expression-bpython-dedicated-switch ()
+  "Send expression at point to Bpython unique interpreter and switch to result. "
+  (interactive)
+  (py-execute-prepare "expression" "bpython" t 'switch))
 
 (defun py-execute-partial-expression-python ()
   "Send partial-expression at point to Python interpreter. "
@@ -2450,6 +3079,64 @@ Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' "
   (interactive)
   (py-execute-prepare "partial-expression" "python3.2" t 'switch))
 
+(defun py-execute-partial-expression-python3.3 ()
+  "Send partial-expression at point to Python3.3 interpreter. "
+  (interactive)
+  (py-execute-prepare "partial-expression" "python3.3" nil nil))
+
+(defun py-execute-partial-expression-python3.3-switch ()
+  "Send partial-expression at point to Python3.3 interpreter. 
+
+Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. "
+  (interactive)
+  (py-execute-prepare "partial-expression" "python3.3" nil 'switch))
+
+(defun py-execute-partial-expression-python3.3-noswitch ()
+  "Send partial-expression at point to Python3.3 interpreter. 
+
+Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' "
+  (interactive)
+  (py-execute-prepare "partial-expression" "python3.3" nil 'noswitch))
+
+(defun py-execute-partial-expression-python3.3-dedicated ()
+  "Send partial-expression at point to Python3.3 unique interpreter. "
+  (interactive)
+  (py-execute-prepare "partial-expression" "python3.3" t nil))
+
+(defun py-execute-partial-expression-python3.3-dedicated-switch ()
+  "Send partial-expression at point to Python3.3 unique interpreter and switch to result. "
+  (interactive)
+  (py-execute-prepare "partial-expression" "python3.3" t 'switch))
+
+(defun py-execute-partial-expression-bpython ()
+  "Send partial-expression at point to Bpython interpreter. "
+  (interactive)
+  (py-execute-prepare "partial-expression" "bpython" nil nil))
+
+(defun py-execute-partial-expression-bpython-switch ()
+  "Send partial-expression at point to Bpython interpreter. 
+
+Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. "
+  (interactive)
+  (py-execute-prepare "partial-expression" "bpython" nil 'switch))
+
+(defun py-execute-partial-expression-bpython-noswitch ()
+  "Send partial-expression at point to Bpython interpreter. 
+
+Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' "
+  (interactive)
+  (py-execute-prepare "partial-expression" "bpython" nil 'noswitch))
+
+(defun py-execute-partial-expression-bpython-dedicated ()
+  "Send partial-expression at point to Bpython unique interpreter. "
+  (interactive)
+  (py-execute-prepare "partial-expression" "bpython" t nil))
+
+(defun py-execute-partial-expression-bpython-dedicated-switch ()
+  "Send partial-expression at point to Bpython unique interpreter and switch to result. "
+  (interactive)
+  (py-execute-prepare "partial-expression" "bpython" t 'switch))
+
 (defun py-execute-line-python ()
   "Send line at point to Python interpreter. "
   (interactive)
@@ -2652,6 +3339,64 @@ Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' "
   "Send line at point to Python3.2 unique interpreter and switch to result. "
   (interactive)
   (py-execute-prepare "line" "python3.2" t 'switch))
+
+(defun py-execute-line-python3.3 ()
+  "Send line at point to Python3.3 interpreter. "
+  (interactive)
+  (py-execute-prepare "line" "python3.3" nil nil))
+
+(defun py-execute-line-python3.3-switch ()
+  "Send line at point to Python3.3 interpreter. 
+
+Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. "
+  (interactive)
+  (py-execute-prepare "line" "python3.3" nil 'switch))
+
+(defun py-execute-line-python3.3-noswitch ()
+  "Send line at point to Python3.3 interpreter. 
+
+Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' "
+  (interactive)
+  (py-execute-prepare "line" "python3.3" nil 'noswitch))
+
+(defun py-execute-line-python3.3-dedicated ()
+  "Send line at point to Python3.3 unique interpreter. "
+  (interactive)
+  (py-execute-prepare "line" "python3.3" t nil))
+
+(defun py-execute-line-python3.3-dedicated-switch ()
+  "Send line at point to Python3.3 unique interpreter and switch to result. "
+  (interactive)
+  (py-execute-prepare "line" "python3.3" t 'switch))
+
+(defun py-execute-line-bpython ()
+  "Send line at point to Bpython interpreter. "
+  (interactive)
+  (py-execute-prepare "line" "bpython" nil nil))
+
+(defun py-execute-line-bpython-switch ()
+  "Send line at point to Bpython interpreter. 
+
+Switch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. "
+  (interactive)
+  (py-execute-prepare "line" "bpython" nil 'switch))
+
+(defun py-execute-line-bpython-noswitch ()
+  "Send line at point to Bpython interpreter. 
+
+Keep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' "
+  (interactive)
+  (py-execute-prepare "line" "bpython" nil 'noswitch))
+
+(defun py-execute-line-bpython-dedicated ()
+  "Send line at point to Bpython unique interpreter. "
+  (interactive)
+  (py-execute-prepare "line" "bpython" t nil))
+
+(defun py-execute-line-bpython-dedicated-switch ()
+  "Send line at point to Bpython unique interpreter and switch to result. "
+  (interactive)
+  (py-execute-prepare "line" "bpython" t 'switch))
 
 (provide 'python-extended-executes)
 ;;; python-extended-executes.el ends here

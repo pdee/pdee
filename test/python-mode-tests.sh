@@ -316,6 +316,8 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'python) nil \"python not detected as command\")" \
 -eval "(assert (commandp 'ipython) nil \"ipython not detected as command\")" \
 -eval "(assert (commandp 'python3) nil \"python3 not detected as command\")" \
+-eval "(assert (commandp 'python3.2) nil \"python3.2 not detected as command\")" \
+-eval "(assert (commandp 'python3.3) nil \"python3.3 not detected as command\")" \
 -eval "(assert (commandp 'python2) nil \"python2 not detected as command\")" \
 -eval "(assert (commandp 'python2.7) nil \"python2.7 not detected as command\")" \
 -eval "(assert (commandp 'python-dedicated) nil \"python-dedicated not detected as command\")" \
@@ -445,6 +447,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-execute-statement-ipython-dedicated) nil \"py-execute-statement-ipython-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-statement-ipython-dedicated-switch) nil \"py-execute-statement-ipython-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-statement-python3) nil \"py-execute-statement-python3 not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement-python3.2) nil \"py-execute-statement-python3 not detected as command\")" \
 -eval "(assert (commandp 'py-execute-statement-python3-switch) nil \"py-execute-statement-python3-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-statement-python3-noswitch) nil \"py-execute-statement-python3-noswitch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-statement-python3-dedicated) nil \"py-execute-statement-python3-dedicated not detected as command\")" \

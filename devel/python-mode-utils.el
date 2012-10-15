@@ -55,11 +55,11 @@
 
 (setq py-options (list "" "switch" "noswitch" "dedicated" "dedicated-switch"))
 
-(defcustom py-shells
-  '("python" "ipython" "python3" "python2" "python2.7" "jython" "python3.2" "bpython")
-  "Python-mode will generate commands opening shells mentioned here. Edit this list \w resp. to your machine. "
-  :type '(repeat string)
-  :group 'python)
+(defvar py-shells
+  (list "python" "ipython" "python3" "python2" "python2.7" "jython" "python3.2" "python3.3" "bpython")
+  "Python-mode will generate commands opening shells mentioned here. Edit this list \w resp. to your machine. ")
+
+;; (setq  py-shells (list "python" "ipython" "python3" "python2" "python2.7" "jython" "python3.2" "python3.3" "bpython"))
 
 (setq py-test-shells
       (list "python" "ipython" "python3" "python2" "python2.7"))
@@ -68,11 +68,12 @@
 
 (setq py-core-command-name '("statement" "block" "def" "class" "region" "file"))
 
-;; (setq py-bounds-command-names '("statement" "block" "clause" "block-or-clause" "def" "class" "region" "buffer" "expression" "partial-expression" "line"))
+(defvar py-bounds-command-names (list "statement" "block" "clause" "block-or-clause" "def" "class" "region" "buffer" "expression" "partial-expression" "line"))
+(setq  py-bounds-command-names (list "statement" "block" "clause" "block-or-clause" "def" "class" "region" "buffer" "expression" "partial-expression" "line"))
 
-(setq py-bounds-command-names '("clear-flymake-allowed-file-name-masks" "pylint-flymake-mode" "pyflakes-flymake-mode" "pychecker-flymake-mode" "pep8-flymake-mode" "pyflakespep8-flymake-mode" "py-pylint-doku" "py-pyflakes-run" "py-pyflakespep8-run" "py-pyflakespep8-help"))
+(setq py-checker-command-names '("clear-flymake-allowed-file-name-masks" "pylint-flymake-mode" "pyflakes-flymake-mode" "pychecker-flymake-mode" "pep8-flymake-mode" "pyflakespep8-flymake-mode" "py-pylint-doku" "py-pyflakes-run" "py-pyflakespep8-run" "py-pyflakespep8-help"))
 
-(setq py-execute-forms-names '("statement" "block" "block-or-clause" "def" "class" "def-or-class" "expression" "partial-expression"))
+(setq py-execute-forms-names (list "statement" "block" "block-or-clause" "def" "class" "def-or-class" "expression" "partial-expression"))
 
 (defvar py-re-forms-names '("block" "clause" "block-or-clause" "def" "class" "def-or-class" "if-block" "try-block" "minor-block")
   "Forms whose start is described by a regexp in python-mode." )
@@ -183,12 +184,12 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)\"\
     (insert ";;; Extended executes")
     (if path-to-shell
         (insert (concat path-to-shell ".el"))
-      (insert "python-extended-executes.el"))
+      ;; (insert "python-extended-executes.el")
+)
     (insert " --- more execute forms")
     (insert arkopf)
 
     (insert "
-;;; Extended executes
 ;; created by `write-extended-execute-forms'
 \(defun py-execute-prepare (form &optional shell dedicated switch)
   \"Used by python-extended-executes .\"
@@ -200,7 +201,7 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)\"\
                        (push-mark))))
           (end (funcall (intern-soft (concat \"py-end-of-\" form)))))
       (py-execute-base beg end shell dedicated switch))))\n\n")
-
+    ;; see also `py-checker-command-names'
     (dolist (ele py-bounds-command-names)
       (dolist (elt py-shells)
         (dolist (pyo py-options)
@@ -386,7 +387,8 @@ Returns a list, whose car is beg, cdr - end.\"
 (defun write-py-menu (&optional commands)
   "Reads py-shells. "
   (interactive)
-  (let ((menu-buffer "Python Executes Menu Buffer"))
+  (let ((menu-buffer "Python Executes Menu Buffer")
+        done)
     (set-buffer (get-buffer-create menu-buffer))
     (erase-buffer)
     (switch-to-buffer (current-buffer))
@@ -409,7 +411,8 @@ Returns a list, whose car is beg, cdr - end.\"
       (dolist (ele py-shells)
         ;; ["if" py-if
         ;; :help "Inserts if-statement"]
-        (insert (concat "\[\"py-execute-" ccc "-" ele "\" py-execute-" ccc "-" ele "
+        (insert (concat "
+            \[\"py-execute-" ccc "-" ele "\" py-execute-" ccc "-" ele "
             :help \"Execute " ccc " through a"))
         (if (string= "ipython" ele)
             (insert "n IPython")
@@ -420,25 +423,30 @@ Returns a list, whose car is beg, cdr - end.\"
             (insert "IPython")
           (insert (capitalize ele)))
         (insert (concat " interpreter. \"]\n")))
-
       (insert "            ;; dedicated\n")
       (switch-to-buffer (current-buffer))
       (dolist (ele py-shells)
         ;; ["if" py-if
         ;; :help "Inserts if-statement"]
-        (insert (concat "\[\"py-execute-" ccc "-" ele "-dedicated\" py-execute-" ccc "-" ele "-dedicated
+        (insert (concat "
+            \[\"py-execute-" ccc "-" ele "-dedicated\" py-execute-" ccc "-" ele "-dedicated
 :help \"Execute " ccc " through a unique"))
         (if (string= "ipython" ele)
             (insert " IPython")
           (insert (concat " " (capitalize ele))))
         (insert (concat " interpreter.
 Optional \\\\[universal-argument] forces switch to output buffer, ignores `py-shell-switch-buffers-on-execute-p'. \"]\n")))
-
+      ;; (unless done 
+            (insert "            (\"Ignoring defaults ... \"
+             :help \"Commands will ignore default setting of 
+`py-switch-buffers-on-execute-p' and `py-split-windows-on-execute-p'\"")
+            ;; (setq done t)) 
       (insert "            ;; switch\n")
       (dolist (ele py-shells)
         ;; ["if" py-if
         ;; :help "Inserts if-statement"]
-        (insert (concat "            \[\"py-execute-" ccc "-" ele "-switch\" py-execute-" ccc "-" ele "-switch
+        (insert (concat "            
+            \[\"py-execute-" ccc "-" ele "-switch\" py-execute-" ccc "-" ele "-switch
 :help \"Execute " ccc " through a"))
         (if (string= "ipython" ele)
             (insert "n IPython")
@@ -453,14 +461,15 @@ With \\\\[universal-argument] use an unique "))
       (dolist (ele py-shells)
         ;; ["if" py-if
         ;; :help "Inserts if-statement"]
-        (insert (concat "            \[\"py-execute-" ccc "-" ele "-dedicated-switch\" py-execute-" ccc "-" ele "-dedicated-switch
+        (insert (concat "            
+            \[\"py-execute-" ccc "-" ele "-dedicated-switch\" py-execute-" ccc "-" ele "-dedicated-switch
 :help \"Execute " ccc " through a unique"))
         (if (string= "ipython" ele)
             (insert "n IPython")
           (insert (concat " " (capitalize ele))))
         (insert (concat " interpreter.
-Switch to output buffer; ignores `py-shell-switch-buffers-on-execute-p'. \"]\n")))
-      (insert ")"))
+Switch to output buffer; ignores `py-shell-switch-buffers-on-execute-p' \"]\n")))
+      (insert "))"))
     (insert "))")
 
     (emacs-lisp-mode)
