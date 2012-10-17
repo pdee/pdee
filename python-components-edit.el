@@ -111,16 +111,27 @@ Returns current indentation "
   (interactive "P")
   (let ((cui (current-indentation))
         (col (current-column))
-        (psi py-smart-indentation)
-        (need (py-compute-indentation)))
+        (this-indent-offset (cond ((and py-smart-indentation (not (eq this-command last-command)))
+                                   (py-guess-indent-offset))
+                                  ((and py-smart-indentation (eq this-command last-command) py-already-guessed-indent-offset)
+                                   py-already-guessed-indent-offset)
+                                  (t (default-value 'py-indent-offset))))
+        (need (if (and (eq this-command last-command) py-already-guessed-indent-offset)
+                  ;; if previous command was an indent
+                  ;; already, position reached might
+                  ;; produce false guesses
+                  (py-compute-indentation (point) nil nil nil nil nil py-already-guessed-indent-offset)
+                (py-compute-indentation))))
+    ;; (setq py-indent-offset)
+    (unless (eq this-command last-command)
+      (setq py-already-guessed-indent-offset this-indent-offset))
     (cond ((eq 4 (prefix-numeric-value arg))
            (beginning-of-line)
            (delete-horizontal-space)
            (indent-to (+ need py-indent-offset)))
           ((not (eq 1 (prefix-numeric-value arg)))
            (py-smart-indentation-off)
-           (py-indent-line-intern need cui)
-           (setq py-smart-indentation psi))
+           (py-indent-line-intern need cui))
           (t (py-indent-line-intern need cui))))
   (when (and (interactive-p) py-verbose-p)(message "%s" (current-indentation)))
   (current-indentation))
@@ -1413,4 +1424,5 @@ Returns the string inserted. "
     (comment-region beg end arg)))
 
 (provide 'python-components-edit)
+
 ;;; python-components-edit.el ends here

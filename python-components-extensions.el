@@ -322,7 +322,7 @@ With arg, do it that many times.
   (interactive "*")
   (let* ((name (string-strip (or arg (car kill-ring))))
          (form (cond ((or (eq major-mode 'python-mode)(eq major-mode 'inferior-python-mode))
-                      (concat "print(\"" name ": %s \" % \"" name "\")")))))
+                      (concat "print(\"" name ": %s \" % " name ")")))))
     (insert form)))
 
 (defun py-line-to-printform-python2 (&optional arg)

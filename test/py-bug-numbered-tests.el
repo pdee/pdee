@@ -38,6 +38,7 @@
 
 (setq bug-numbered-tests
       (list
+       'incorrect-indentation-of-one-line-functions-lp-1067633-test
        'several-new-bugs-with-paragraph-filling-lp-1066489-test
        'impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test
        'exception-in-except-clause-highlighted-as-keyword-lp-909205-test
@@ -4340,26 +4341,39 @@ class IBanManager(Interface):
   (py-bug-tests-intern 'several-new-bugs-with-paragraph-filling-lp-1066489-base arg teststring)))
 
 (defun several-new-bugs-with-paragraph-filling-lp-1066489-base ()
-    (goto-char 932)
-    (py-fill-paragraph)
-    (assert (re-search-forward "^ +:type email") nil "several-new-bugs-with-paragraph-filling-lp-1066489-test #1 failed")
-    (goto-char 220)
-    (push-mark)
-    (goto-char 1075)
-    (narrow-to-region 220 1045)
-    (py-fill-paragraph nil nil (point-min) (point-max))
-    (widen) 
-    (assert (re-search-forward "^ +:type email") nil "several-new-bugs-with-paragraph-filling-lp-1066489-test #2 failed")
-    (goto-char 1108)
-    (push-mark)
-    (goto-char (point-max))
-    (py-fill-paragraph nil nil 1108 (point))
-    (widen)
-    (goto-char 1108)
-    (assert (re-search-forward "^ +:type email") nil "several-new-bugs-with-paragraph-filling-lp-1066489-test #3 failed")
-    (py-fill-paragraph)
-    
-    )
+  (goto-char 932)
+  (py-fill-paragraph)
+  (assert (re-search-forward "^ +:type email") nil "several-new-bugs-with-paragraph-filling-lp-1066489-test #1 failed")
+  (goto-char 220)
+  (push-mark)
+  (goto-char 1075)
+  (narrow-to-region 220 1045)
+  (py-fill-paragraph nil nil (point-min) (point-max))
+  (widen)
+  (assert (re-search-forward "^ +:type email") nil "several-new-bugs-with-paragraph-filling-lp-1066489-test #2 failed")
+  (goto-char 1108)
+  (push-mark)
+  (goto-char (point-max))
+  (py-fill-paragraph nil nil 1108 (point))
+  (widen)
+  (goto-char 1108)
+  (assert (re-search-forward "^ +:type email") nil "several-new-bugs-with-paragraph-filling-lp-1066489-test #3 failed")
+  (py-fill-paragraph))
+
+
+
+(defun incorrect-indentation-of-one-line-functions-lp-1067633-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+def foo():
+    pass
+"))
+  (py-bug-tests-intern 'incorrect-indentation-of-one-line-functions-lp-1067633-base arg teststring)))
+
+(defun incorrect-indentation-of-one-line-functions-lp-1067633-base ()
+    (goto-char 67)
+    (assert (eq 4 (py-compute-indentation)) nil "incorrect-indentation-of-one-line-functions-lp-1067633-test failed"))
 
 
 (provide 'py-bug-numbered-tests)

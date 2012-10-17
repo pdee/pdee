@@ -782,6 +782,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-fill-string-pep-257) nil \"py-fill-string-pep-257 not detected as command\")" \
 -eval "(assert (commandp 'py-fill-string-pep-257-nn) nil \"py-fill-string-pep-257-nn not detected as command\")" \
 -eval "(assert (commandp 'py-fill-string-symmetric) nil \"py-fill-string-symmetric not detected as command\")" \
+--funcall incorrect-indentation-of-one-line-functions-lp-1067633-test \
 --funcall several-new-bugs-with-paragraph-filling-lp-1066489-test \
 --funcall impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test \
 --funcall py-highlight-indentation-test \
@@ -950,7 +951,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-execute-line-test \
 \
 --funcall py-execute-statement-python-test \
---funcall py-execute-statement-ipython-test \
 --funcall py-execute-statement-python3-test \
 --funcall py-execute-statement-python2-test \
 --funcall py-execute-statement-python2.7-switch-test \
@@ -961,21 +961,16 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-shell-complete-test \
 --funcall another-broken-font-locking-lp:961231-test \
 --funcall py-execute-def-python-test \
---funcall py-execute-def-ipython-test \
 --funcall py-execute-def-python3-test \
 --funcall py-execute-def-python2-test \
 --funcall py-execute-def-python2.7-test \
 --funcall py-execute-class-python-test \
---funcall py-execute-class-ipython-test \
 --funcall py-execute-class-python3-test \
 --funcall py-execute-class-python2-test \
 --funcall py-execute-class-python2.7-test \
 --funcall py-execute-region-python-test \
---funcall py-execute-region-ipython-test \
 --funcall py-execute-region-python3-test \
 --funcall py-execute-region-python2-switch-test \
---funcall py-execute-expression-python-test \
---funcall py-execute-expression-ipython-test \
 --funcall py-execute-expression-python3-test \
 --funcall py-execute-expression-python2-test \
 --funcall py-execute-expression-python2.7-test \
@@ -985,12 +980,10 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-execute-partial-expression-python-dedicated-test \
 --funcall py-execute-partial-expression-python-dedicated-switch-test \
 --funcall py-execute-block-python-test \
---funcall py-execute-block-ipython-test \
 --funcall py-execute-block-python3-test \
 --funcall py-execute-block-python2-test \
 --funcall py-execute-block-python2.7-test \
 --funcall py-execute-block-or-clause-python-test \
---funcall py-execute-block-or-clause-ipython-test \
 --funcall py-execute-block-or-clause-python3-test \
 --funcall py-execute-block-or-clause-python2-test \
 --funcall py-execute-block-or-clause-python2.7-test \
@@ -999,16 +992,11 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-execute-block-or-clause-python2.7-dedicated-test \
 --funcall py-execute-block-or-clause-python2.7-dedicated-switch-test \
 --funcall py-execute-partial-expression-test \
---funcall py-execute-partial-expression-ipython-test \
-t \
 --funcall py-execute-partial-expression-python3-test \
-t \
 --funcall py-execute-partial-expression-python2-test \
-t \
 --funcall py-execute-partial-expression-python2.7-test \
 est \
 --funcall py-execute-line-python-test \
---funcall py-execute-line-ipython-test \
 --funcall py-execute-line-python3-test \
 --funcall py-execute-line-python2-test \
 --funcall py-execute-line-python2.7-test \
@@ -1016,10 +1004,9 @@ est \
 --funcall py-execute-line-python2.7-noswitch-test \
 --funcall py-execute-line-python2.7-dedicated-test \
 --funcall py-execute-line-python2.7-dedicated-switch-test \
+--funcall py-execute-expression-python-test \
 \
 --funcall master-file-not-honored-lp:794850-test \
---funcall execute-buffer-ipython-fails-lp:928087-test \
---funcall py-shell-invoking-ipython-lp:835151-test \
 --funcall py-shell-invoking-python3-lp:835151-test \
 --funcall py-shell-invoking-python2-lp:835151-test \
 --funcall py-shell-invoking-python2.7-lp:835151-test \
@@ -1032,25 +1019,20 @@ est \
 --funcall python-shell-complete-test \
 --funcall usr-bin-python-shell-complete-test \
 --funcall usr-bin-python2.7-shell-complete-test \
---funcall ipython-shell-complete-test \
---funcall usr-bin-ipython-shell-complete-test \
 \
 --funcall indent-region-lp:997958-test \
 --funcall py-shell-invoking-python-lp:835151-test \
---funcall script-buffer-appears-instead-of-python-shell-buffer-lp:957561-test \
 --funcall py-install-directory-path-test \
 --funcall dict-error-test \
 --funcall py-execute-region-python3-noswitch-test \
 --funcall py-end-of-print-statement-test \
 --funcall py-describe-symbol-fails-on-modules-lp:919719-test \
---funcall completion-fails-in-python-script-r989-lp:1004613-test \
 --funcall tqs-list-error-test \
 --funcall python-mode-slow-lp:803275-test \
 --funcall py-find-imports-lp-1023236-test \
 --funcall execute-indented-code-lp:828314-test \
 --funcall py-execute-region-python2.7-switch-test \
 --funcall py-execute-buffer-python-switch-test \
---funcall py-execute-buffer-ipython-switch-test \
 --funcall py-beginning-of-expression-test \
 --funcall py-end-of-expression-test \
 --funcall py-partial-expression-test \
@@ -1060,12 +1042,6 @@ est \
 --funcall infinite-loop-after-tqs-lp:826044-test \
 --funcall completion-at-gentoo-lp-1008842-test \
 --funcall indent-triplequoted-to-itself-lp:752252-test \
---funcall usr-bin-python3-shell-complete-test \
---funcall inconvenient-window-splitting-behavior-ipython-lp-1018996-test \
---funcall inconvenient-window-splitting-behavior-python-lp-1018996-test \
---funcall py-ipython-complete-lp:927136-test \
---funcall UnicodeEncodeError-python3-test \
---funcall pycomplete-same-folder-class-lp:889052-test \
 --funcall complaint-about-non-ASCII-character-lp-1042949-test \
 --funcall not-that-useful-completion-lp:1003580-test \
 --funcall py-beginning-of-block-test \
@@ -1077,3 +1053,25 @@ est \
 --funcall py-fill-string-pep-257-nn-test \
 --funcall py-fill-string-symmetric-test \
 --funcall no-completion-at-all-lp:1001328-test \
+--funcall UnicodeEncodeError-python3-test \
+--funcall pycomplete-same-folder-class-lp:889052-test \
+--funcall usr-bin-python3-shell-complete-test \
+# --funcall py-execute-statement-ipython-test \
+# --funcall ipython-shell-complete-test \
+# --funcall usr-bin-ipython-shell-complete-test \
+# --funcall inconvenient-window-splitting-behavior-ipython-lp-1018996-test \
+# --funcall py-ipython-complete-lp:927136-test \
+# --funcall py-execute-buffer-ipython-switch-test \
+# --funcall py-execute-region-ipython-test \
+# --funcall py-execute-def-ipython-test \
+# --funcall py-execute-class-ipython-test \
+# --funcall py-execute-expression-ipython-test \
+# --funcall execute-buffer-ipython-fails-lp:928087-test \
+# --funcall py-shell-invoking-ipython-lp:835151-test \
+# --funcall py-execute-block-ipython-test \
+# --funcall py-execute-block-or-clause-ipython-test \
+# --funcall py-execute-partial-expression-ipython-test \
+# --funcall py-execute-line-ipython-test \
+# --funcall inconvenient-window-splitting-behavior-python-lp-1018996-test \
+# --funcall script-buffer-appears-instead-of-python-shell-buffer-lp:957561-test \
+# --funcall completion-fails-in-python-script-r989-lp:1004613-test \

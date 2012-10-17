@@ -482,7 +482,7 @@
 (defun py-beginning-of-block-base ()
   (goto-char (point-max))
   (py-beginning-of-block)
-  (assert (looking-at "if") nil "py-beginning-of-block-test failed"))
+  (assert (eq (point) 325) nil "py-beginning-of-block-test failed"))
 
 (defun py-end-of-block-test (&optional arg load-branch-function)
   (interactive "p")

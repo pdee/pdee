@@ -620,7 +620,7 @@ Switch to output buffer; ignores `py-shell-switch-buffers-on-execute-p'. \"]\n")
       (insert (concat "(defun py-execute-buffer-" ele " (&optional dedicated switch)
   \"Execute buffer through a"))
       (if (string= "ipython" ele)
-          (insert "n IPython")
+          (insert " IPython")
         (insert (concat " " (capitalize ele))))
       (insert (concat " interpreter.
 
@@ -697,7 +697,7 @@ Optional \\\\[universal-argument] forces switch to output buffer, ignores `py-sh
 Ignores `py-shell-switch-buffers-on-execute-p'.
 Optional \\\\[universal-argument] makes"))
       (if (string= "ipython" ele)
-          (insert "n IPython")
+          (insert " IPython")
         (insert (concat " " (capitalize ele))))
       (insert " run as an unique process. \"
   (interactive \"P\")
