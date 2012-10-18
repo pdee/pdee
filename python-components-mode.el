@@ -353,7 +353,7 @@ Normally python-mode, resp. inferior-python-mode know best which function to use
 
 Messaging increments the prompt counter of IPython shell. "
   :type 'boolean
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom py-lhs-inbound-indent 1
   "When line starts a multiline-assignment: How many colums indent should be more than opening bracket, brace or parenthesis. "
@@ -1136,13 +1136,13 @@ If a file is loaded into a buffer that is in one of these major modes,
 it is considered Python source by `python-load-file', which uses the
 value to determine defaults."
   :type '(repeat function)
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom inferior-python-filter-regexp "\\`\\s-*\\S-?\\S-?\\s-*\\'"
   "Input matching this regexp is not saved on the history list.
 Default ignores all inputs of 0, 1, or 2 non-blank characters."
   :type 'regexp
-  :group 'python)
+  :group 'python-mode)
 
 (defcustom python-remove-cwd-from-path t
   "Whether to allow loading of Python modules from the current directory.
@@ -1151,8 +1151,7 @@ an inferior Python process.  This is the default, for security
 reasons, as it is easy for the Python process to be started
 without the user's realization (e.g. to perform completion)."
   :type 'boolean
-  :group 'python
-  :version "23.3")
+  :group 'python-mode)
 
 (defcustom strip-chars-before  "\\`[ \t\r\n]*"
   "Regexp indicating which chars shall be stripped before STRING - which is defined by `string-chars-preserve'."
@@ -1236,11 +1235,25 @@ SYMMETRIC:
   :safe (lambda (val)
           (memq val '(django onetwo pep-257 pep-257-nn symmetric nil))))
 
+(defcustom py-execute-directory nil
+  "When set, stores the file's default directory-name py-execute-... functions act upon.
+
+Used by Python-shell for output of `py-execute-buffer' and related commands. See also `py-use-current-dir-when-execute-p'"
+    :type 'string
+  :group 'python-mode)
+
+(defcustom py-use-current-dir-when-execute-p nil
+  "When `t', current directory is used by Python-shell for output of `py-execute-buffer' and related commands.
+
+See also `py-execute-directory'"
+  :type 'boolean
+  :group 'python-mode)
+
 ;; the python-el way
 (defcustom python-check-command "pychecker --stdlib"
   "Command used to check a Python file."
   :type 'string
-  :group 'python)
+  :group 'python-mode)
 
 ;;; defvarred Variables
 (defvar py-emacs-import-code "import emacs")

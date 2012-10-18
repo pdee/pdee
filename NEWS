@@ -4,6 +4,15 @@ Python Mode News
 New in version 6.1.0
 ---------------------
 
+- Customizable output directory 
+  In order to determine which directory the Python-shell
+  should have when output arrives, variables are queried in that order:
+  a remote directory, when detected
+  $WORKON_HOME - if set by virtualenv
+  `py-use-current-dir-when-execute-p'
+  `py-execute-directory'
+  $HOME 
+
 - Set of commands calling Python3.3
 
 - fill docstrings according to style, commands 

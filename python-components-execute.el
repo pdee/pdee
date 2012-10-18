@@ -523,9 +523,6 @@ without the user's realization (e.g. to perform completion)."
 
 
 ;; Code execution commands
-(defvar py-execute-directory nil
-  "Stores the file's directory-name py-execute-... functions act upon. ")
-
 (defun py-which-execute-file-command (filename)
   "Return the command appropriate to Python version.
 
@@ -604,7 +601,12 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
   "Adapt the variables used in the process. "
   (let* ((oldbuf (current-buffer))
          (pyshellname (or pyshellname (py-choose-shell)))
-         (py-execute-directory (or (ignore-errors (file-name-directory (file-remote-p (buffer-file-name) 'localname)))(getenv "WORKON_HOME")(getenv "HOME")))
+         (execute-directory (cond ((ignore-errors (file-name-directory (file-remote-p (buffer-file-name) 'localname))))
+                                  (py-use-current-dir-when-execute-p
+                                   (file-name-directory (buffer-file-name)))
+                                  ((getenv "WORKON_HOME"))
+                                  (py-execute-directory)
+                                  ((getenv "HOME"))))
          (strg (buffer-substring-no-properties start end))
          (sepchar (or sepchar (char-to-string py-separator-char)))
          (py-buffer-name (py-buffer-name-prepare pyshellname sepchar))
@@ -631,7 +633,7 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
     (py-fix-start (point-min)(point-max))
     (py-if-needed-insert-shell (prin1-to-string proc) sepchar)
     (unless wholebuf (py-insert-coding))
-    (unless (string-match "[jJ]ython" pyshellname) (py-insert-execute-directory))
+    (unless (string-match "[jJ]ython" pyshellname) (py-insert-execute-directory execute-directory))
     (cond (python-mode-v5-behavior-p
 
            (let ((cmd (concat pyshellname (if (string-equal py-which-bufname
@@ -729,7 +731,7 @@ See also `py-execute-region'. "
            (py-insert-execute-directory orig done))
           (t (forward-line 1)
              (unless (empty-line-p) (newline))
-             (insert (concat "import os; os.chdir(\"" py-execute-directory "\")\n"))))))
+             (insert (concat "import os; os.chdir(\"" execute-directory "\")\n"))))))
 
 (defun py-insert-coding ()
   ;; (switch-to-buffer (current-buffer))
