@@ -129,6 +129,8 @@
 (defun virtualenv-workon (name)
   "Issue a virtualenvwrapper-like virtualenv-workon command"
   (interactive (list (completing-read "Virtualenv: " (virtualenv-workon-complete))))
-  (virtualenv-activate (concat (getenv "WORKON_HOME") "/" name)))
+  (if (getenv "WORKON_HOME")
+      (virtualenv-activate (concat (py-normalize-directory (getenv "WORKON_HOME")) name))
+    (virtualenv-activate (concat (py-normalize-directory virtualenv-workon-home) name))))
 
 (provide 'virtualenv)

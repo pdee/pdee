@@ -788,7 +788,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-highlight-indentation-test \
 --funcall py-smart-indentation-test \
 --funcall autopair-mode-test \
---funcall UnicodeEncodeError-python3-test \
 --funcall py-run-shell-complete-tests \
 --funcall exception-in-except-clause-highlighted-as-keyword-lp-909205-test \
 --funcall pyindex-mishandles-class-definitions-lp-1018164-test \
@@ -1020,7 +1019,6 @@ est \
 --funcall usr-bin-python-shell-complete-test \
 --funcall usr-bin-python2.7-shell-complete-test \
 \
---funcall indent-region-lp:997958-test \
 --funcall py-shell-invoking-python-lp:835151-test \
 --funcall py-install-directory-path-test \
 --funcall dict-error-test \
@@ -1043,7 +1041,6 @@ est \
 --funcall completion-at-gentoo-lp-1008842-test \
 --funcall indent-triplequoted-to-itself-lp:752252-test \
 --funcall complaint-about-non-ASCII-character-lp-1042949-test \
---funcall not-that-useful-completion-lp:1003580-test \
 --funcall py-beginning-of-block-test \
 --funcall py-smart-operator-test \
 --funcall augmented-assigment-test \
@@ -1053,25 +1050,25 @@ est \
 --funcall py-fill-string-pep-257-nn-test \
 --funcall py-fill-string-symmetric-test \
 --funcall no-completion-at-all-lp:1001328-test \
---funcall UnicodeEncodeError-python3-test \
---funcall pycomplete-same-folder-class-lp:889052-test \
---funcall usr-bin-python3-shell-complete-test \
-# --funcall py-execute-statement-ipython-test \
-# --funcall ipython-shell-complete-test \
-# --funcall usr-bin-ipython-shell-complete-test \
-# --funcall inconvenient-window-splitting-behavior-ipython-lp-1018996-test \
-# --funcall py-ipython-complete-lp:927136-test \
-# --funcall py-execute-buffer-ipython-switch-test \
-# --funcall py-execute-region-ipython-test \
-# --funcall py-execute-def-ipython-test \
-# --funcall py-execute-class-ipython-test \
-# --funcall py-execute-expression-ipython-test \
-# --funcall execute-buffer-ipython-fails-lp:928087-test \
-# --funcall py-shell-invoking-ipython-lp:835151-test \
-# --funcall py-execute-block-ipython-test \
-# --funcall py-execute-block-or-clause-ipython-test \
-# --funcall py-execute-partial-expression-ipython-test \
-# --funcall py-execute-line-ipython-test \
-# --funcall inconvenient-window-splitting-behavior-python-lp-1018996-test \
-# --funcall script-buffer-appears-instead-of-python-shell-buffer-lp:957561-test \
-# --funcall completion-fails-in-python-script-r989-lp:1004613-test \
+--funcall py-execute-statement-ipython-test \
+--funcall ipython-shell-complete-test \
+--funcall usr-bin-ipython-shell-complete-test \
+--funcall inconvenient-window-splitting-behavior-ipython-lp-1018996-test \
+--funcall py-ipython-complete-lp:927136-test \
+--funcall py-execute-buffer-ipython-switch-test \
+--funcall py-execute-region-ipython-test \
+--funcall py-execute-def-ipython-test \
+--funcall py-execute-class-ipython-test \
+--funcall py-execute-expression-ipython-test \
+--funcall execute-buffer-ipython-fails-lp:928087-test \
+--funcall py-shell-invoking-ipython-lp:835151-test \
+--funcall py-execute-block-ipython-test \
+--funcall py-execute-block-or-clause-ipython-test \
+--funcall py-execute-partial-expression-ipython-test \
+--funcall py-execute-line-ipython-test \
+--funcall inconvenient-window-splitting-behavior-python-lp-1018996-test \
+--funcall script-buffer-appears-instead-of-python-shell-buffer-lp:957561-test \
+--funcall completion-fails-in-python-script-r989-lp:1004613-test \
+--funcall UnicodeEncodeError-python3-test
+--funcall indent-region-lp:997958-test \
+--funcall not-that-useful-completion-lp:1003580-test \
