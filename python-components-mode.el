@@ -1802,25 +1802,6 @@ Includes def and class. ")
      (3 (py-quote-syntax 3) t t)
      (6 (py-quote-syntax 1) t t))))
 
-;;;
-;; It's handy to add recognition of Python files to the
-;; interpreter-mode-alist and to auto-mode-alist.  With the former, we
-;; can specify different `derived-modes' based on the #! line, but
-;; with the latter, we can't.  So we just won't add them if they're
-;; already added.
-
-(let ((modes '(("jython" . jython-mode)
-               ("python" . python-mode)
-               ("python3" . python-mode))))
-  (while modes
-    (when (not (assoc (car modes) interpreter-mode-alist))
-      (push (car modes) interpreter-mode-alist))
-    (setq modes (cdr modes))))
-
-(when (not (or (rassq 'python-mode auto-mode-alist)
-               (rassq 'jython-mode auto-mode-alist)))
-  (push '("\\.py$" . python-mode) auto-mode-alist))
-
 (custom-add-option 'python-mode-hook 'imenu-add-menubar-index)
 (custom-add-option 'python-mode-hook
                    (lambda ()
@@ -2270,11 +2251,6 @@ See original source: http://pymacs.progiciels-bpi.ca"
 
 ;; (when (boundp 'py-install-directory) (py-set-load-path))
 (py-set-load-path)
-
-(add-to-list 'interpreter-mode-alist (cons (purecopy "jython") 'jython-mode))
-(add-to-list 'interpreter-mode-alist (cons (purecopy "python") 'python-mode))
-(add-to-list 'auto-mode-alist (cons (purecopy "\\.py\\'")  'python-mode))
-(add-to-list 'same-window-buffer-names (purecopy "*Python*"))
 
 (require 'python-components-edit)
 (require 'python-components-intern)
@@ -5470,6 +5446,48 @@ With prefix arg, position cursor at end of buffer."
 ;;             (when py-load-highlight-indentation-p
 ;;               (unless (featurep 'highlight-indentation)
 ;;                 (load (concat (py-normalize-directory py-install-directory) "extensions" (char-to-string py-separator-char) "highlight-indentation.el"))))))
+
+
+(add-to-list 'same-window-buffer-names (purecopy "*Python*"))
+(add-to-list 'same-window-buffer-names (purecopy "*IPython*"))
+
+;;; interpreter-mode-alist
+
+;;;
+;; It's handy to add recognition of Python files to the
+;; interpreter-mode-alist and to auto-mode-alist.  With the former, we
+;; can specify different `derived-modes' based on the #! line, but
+;; with the latter, we can't.  So we just won't add them if they're
+;; already added.
+
+
+;;;###autoload
+(add-to-list 'auto-mode-alist (cons (purecopy "\\.py\\'")  'python-mode))
+;;;###autoload
+(add-to-list 'interpreter-mode-alist (cons (purecopy "python") 'python-mode))
+
+(let ((modes '(("jython" . jython-mode)
+               ("python" . python-mode)
+               ("python2" . python-mode)
+               ("python2.6" . python-mode)
+               ("python2.7" . python-mode)
+               ("python3" . python-mode)
+               ("python3.0" . python-mode)
+               ("python3.1" . python-mode)
+               ("python3.2" . python-mode)
+               ("python3.3" . python-mode))))
+  (while modes
+    (when (not (assoc (car modes) interpreter-mode-alist))
+      (push (car modes) interpreter-mode-alist))
+    (setq modes (cdr modes))))
+
+(when (not (or (rassq 'python-mode auto-mode-alist)
+               (rassq 'jython-mode auto-mode-alist)))
+  (push '("\\.py$" . python-mode) auto-mode-alist))
+
+;; (add-to-list 'interpreter-mode-alist (cons (purecopy "jython") 'jython-mode))
+;; (add-to-list 'interpreter-mode-alist (cons (purecopy "python") 'python-mode))
+;; (add-to-list 'auto-mode-alist (cons (purecopy "\\.py\\'")  'python-mode))
 
 ;;;
 (define-derived-mode inferior-python-mode comint-mode "Inferior Python"
