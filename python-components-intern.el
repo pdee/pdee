@@ -682,7 +682,7 @@ and `pass'.  This doesn't catch embedded statements."
       (if this
           (progn
             (setq py-bol-forms-last-indent (cons this-command (current-indentation)))
-            (setq ind (+ py-indent-offset (current-indentation)))
+            (setq ind (+ (progn (if py-smart-indentation (py-guess-indent-offset)  py-indent-offset)) (current-indentation)))
             (py-end-of-statement)
             (setq last (point))
             (forward-line 1)

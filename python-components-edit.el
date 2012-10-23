@@ -233,85 +233,54 @@ Returns `py-indent-offset'"
            (origline (or origline (py-count-lines)))
            last down done
            (firstindent
-            (if (py-beginning-of-block)
-                (progn
-                  (setq last (point))
-                  (setq down t)
-                  (current-indentation))
-              (progn
-                (unless (bobp) (forward-line -1)
-                        (back-to-indentation))
-                (cond ((py-beginning-of-statement-p)
-                       (setq last (point))
-                       (current-column))
-                      ((and (not (bobp)) (py-beginning-of-statement))
-                       (setq last (point))
-                       (current-column))
-                      ((and (prog1 (goto-char orig)
-                              (back-to-indentation))
-                            (py-beginning-of-block-p))
-                       (setq down t)
-                       (setq last (point))
-                       (current-indentation))
-                      ((and (goto-char orig)
-                            (py-end-of-statement)
-                            (py-end-of-statement))
-                       (py-beginning-of-statement)
-                       (setq last (point))
-                       (current-indentation))
-                      (t (goto-char orig)
-                         (if (py-down-block)
-                             (progn (setq last (point))
-                                    (setq down t)
-                                    (current-column))
-                           ;; if nothing suitable around, us default
-                           (setq done t)
-                           (default-value 'py-indent-offset)
-                           ))))))
+            (cond ((and (py-beginning-of-statement-p) (looking-at py-extended-block-or-clause-re))
+                   (current-indentation))
+                  ((and (py-beginning-of-statement)(looking-at py-extended-block-or-clause-re))
+                   (current-indentation))
+                  (t (while (and (setq last (py-beginning-of-statement))(not (looking-at py-extended-block-or-clause-re))))
+                     (if last
+                         (progn
+                           (setq last (point))
+                           (setq down t)
+                           (current-indentation))
+                       (if (and (goto-char orig)
+                                (py-end-of-statement)
+                                (py-end-of-statement)
+                                (py-beginning-of-statement)
+                                (looking-at py-extended-block-or-clause-re))
+
+                           (progn
+                             (setq last (point))
+                             (current-indentation)
+                             (goto-char orig))
+                         (while (and (setq last (py-down-statement))(not (looking-at py-extended-block-or-clause-re)))
+                           (if last
+                               (progn (setq last (point))
+                                      (setq down t)
+                                      (current-column))
+                             ;; if nothing suitable around, us default
+                             (setq done t)
+                             (default-value 'py-indent-offset))))))))
            (secondindent
             (unless done
               (if firstindent
-                  (cond ((or down (py-statement-opens-block-p))
-                         (or (progn
-                               (when (and (py-end-of-statement)
-                                          (py-end-of-statement)
-                                          (py-beginning-of-statement))
-                                 (current-indentation)))
-                             (progn
-                               (goto-char last)
-                               (and (py-beginning-of-block)
-                                    (current-indentation)))))
-
-                        ((py-beginning-of-block)
-                         (progn
-                           (when (and (py-end-of-statement)
-                                      (py-end-of-statement)
-                                      (py-beginning-of-statement)
-                                      (py-beginning-of-statement))
-                             (current-indentation))))
-                        (t (if last (if (and (goto-char last)
-                                             (py-end-of-statement)
-                                             (py-end-of-statement)
-                                             (py-beginning-of-statement))
-                                        (current-indentation)
-                                      (goto-char last)
-                                      (when (py-beginning-of-block-or-clause)
-                                        (current-indentation)))))))))
+                  (if (progn (setq orig (point)) (while (and (py-beginning-of-statement)(>= firstindent (current-indentation)) (setq last (point)) (not (looking-at py-extended-block-or-clause-re)))) last)
+                      (current-indentation)
+                    (goto-char orig)
+                    (while (and (not (eobp))(py-end-of-statement)(setq last (point))
+                                (save-excursion (or (>= firstindent (progn (py-beginning-of-statement)(current-indentation)))(eq last (line-beginning-position))))
+                                (py-end-of-statement-p)))
+                    (when last (py-beginning-of-statement) (current-indentation))))))
            guessed)
       (unless (or done secondindent)
         (setq secondindent
-              (when (py-end-of-block)
-                (current-indentation))))
-      (unless (or done secondindent)
-        (setq secondindent
-              ;; (setq first (current-indentation))
               (when (and (py-end-of-statement)
                          (py-end-of-statement)
                          (py-beginning-of-statement))
                 (current-indentation))))
       (when secondindent
         (when (eq 0 (abs (- secondindent firstindent)))
-          (when (if (py-beginning-of-block) (< (current-indentation) secondindent))
+          (when (if (py-beginning-of-statement) (< (current-indentation) secondindent))
             (setq secondindent (current-indentation))))
         (setq guessed
               (abs (- secondindent firstindent))))
@@ -413,7 +382,57 @@ Returns indentation reached. "
 (defalias 'py-beginning-of-paragraph 'backward-paragraph)
 (defalias 'py-end-of-paragraph 'forward-paragraph)
 
-;; Shifting forms start
+;;; Shifting forms start
+
+(defalias 'py-shift-region-left 'py-shift-left)
+(defun py-shift-left (&optional count start end)
+  "Dedent region according to `py-indent-offset' by COUNT times.
+
+If no region is active, current line is dedented.
+Returns indentation reached. "
+  (interactive "p")
+  (let ((erg (py-shift-intern (- count) start end)))
+    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
+    erg))
+
+(defalias 'py-shift-region-right 'py-shift-right)
+(defun py-shift-right (&optional count beg end)
+  "Indent region according to `py-indent-offset' by COUNT times.
+
+If no region is active, current line is indented.
+Returns indentation reached. "
+  (interactive "p")
+  (let ((erg (py-shift-intern count beg end)))
+    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
+    erg))
+
+(defun py-shift-intern (count &optional start end)
+  (save-excursion
+    (let* ((inhibit-point-motion-hooks t)
+           deactivate-mark
+           (beg (cond (start)
+                      ((region-active-p)
+                       (save-excursion
+                         (goto-char
+                          (region-beginning))))
+                      (t (line-beginning-position))))
+           (end (cond (end)
+                      ((region-active-p)
+                       (save-excursion
+                         (goto-char
+                          (region-end))))
+                      (t (line-end-position))))
+           (orig end))
+      (setq beg (copy-marker beg))
+      (setq end (copy-marker end))
+      (if (< 0 count)
+          (indent-rigidly beg end py-indent-offset)
+        (indent-rigidly beg end (- py-indent-offset)))
+      (push-mark beg t)
+      (goto-char end)
+      (skip-chars-backward " \t\r\n\f"))
+    (py-indentation-of-statement)))
+
 (defun py-shift-forms-base (form arg &optional beg end)
   (let* ((begform (intern-soft (concat "py-beginning-of-" form)))
          (endform (intern-soft (concat "py-end-of-" form)))
@@ -443,7 +462,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "paragraph" (or arg py-indent-offset))))
-    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
+        (when (interactive-p) (message "%s" erg))
     erg))
 
 (defun py-shift-paragraph-left (&optional arg)
@@ -455,7 +474,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "paragraph" (- (or arg py-indent-offset)))))
-    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
+    (when (interactive-p) (message "%s" erg))
     erg))
 
 (defun py-shift-block-right (&optional arg)
@@ -467,7 +486,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "block" (or arg py-indent-offset))))
-    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
+        (when (interactive-p) (message "%s" erg))
     erg))
 
 (defun py-shift-block-left (&optional arg)
@@ -479,7 +498,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "block" (- (or arg py-indent-offset)))))
-    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
+    (when (interactive-p) (message "%s" erg))
     erg))
 
 (defun py-shift-clause-right (&optional arg)
@@ -491,7 +510,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "clause" (or arg py-indent-offset))))
-    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
+        (when (interactive-p) (message "%s" erg))
     erg))
 
 (defun py-shift-clause-left (&optional arg)
@@ -503,7 +522,31 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "clause" (- (or arg py-indent-offset)))))
-    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
+    (when (interactive-p) (message "%s" erg))
+    erg))
+
+(defun py-shift-block-or-clause-right (&optional arg)
+  "Indent block-or-clause by COUNT spaces.
+
+COUNT defaults to `py-indent-offset',
+use \[universal-argument] to specify a different value.
+
+Returns outmost indentation reached. "
+  (interactive "*P")
+  (let ((erg (py-shift-forms-base "block-or-clause" (or arg py-indent-offset))))
+        (when (interactive-p) (message "%s" erg))
+    erg))
+
+(defun py-shift-block-or-clause-left (&optional arg)
+  "Dedent block-or-clause by COUNT spaces.
+
+COUNT defaults to `py-indent-offset',
+use \[universal-argument] to specify a different value.
+
+Returns outmost indentation reached. "
+  (interactive "*P")
+  (let ((erg (py-shift-forms-base "block-or-clause" (- (or arg py-indent-offset)))))
+    (when (interactive-p) (message "%s" erg))
     erg))
 
 (defun py-shift-def-right (&optional arg)
@@ -515,7 +558,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "def" (or arg py-indent-offset))))
-    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
+        (when (interactive-p) (message "%s" erg))
     erg))
 
 (defun py-shift-def-left (&optional arg)
@@ -527,7 +570,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "def" (- (or arg py-indent-offset)))))
-    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
+    (when (interactive-p) (message "%s" erg))
     erg))
 
 (defun py-shift-class-right (&optional arg)
@@ -539,7 +582,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "class" (or arg py-indent-offset))))
-    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
+        (when (interactive-p) (message "%s" erg))
     erg))
 
 (defun py-shift-class-left (&optional arg)
@@ -551,7 +594,31 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "class" (- (or arg py-indent-offset)))))
-    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
+    (when (interactive-p) (message "%s" erg))
+    erg))
+
+(defun py-shift-def-or-class-right (&optional arg)
+  "Indent def-or-class by COUNT spaces.
+
+COUNT defaults to `py-indent-offset',
+use \[universal-argument] to specify a different value.
+
+Returns outmost indentation reached. "
+  (interactive "*P")
+  (let ((erg (py-shift-forms-base "def-or-class" (or arg py-indent-offset))))
+        (when (interactive-p) (message "%s" erg))
+    erg))
+
+(defun py-shift-def-or-class-left (&optional arg)
+  "Dedent def-or-class by COUNT spaces.
+
+COUNT defaults to `py-indent-offset',
+use \[universal-argument] to specify a different value.
+
+Returns outmost indentation reached. "
+  (interactive "*P")
+  (let ((erg (py-shift-forms-base "def-or-class" (- (or arg py-indent-offset)))))
+    (when (interactive-p) (message "%s" erg))
     erg))
 
 (defun py-shift-line-right (&optional arg)
@@ -563,7 +630,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "line" (or arg py-indent-offset))))
-    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
+        (when (interactive-p) (message "%s" erg))
     erg))
 
 (defun py-shift-line-left (&optional arg)
@@ -575,7 +642,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "line" (- (or arg py-indent-offset)))))
-    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
+    (when (interactive-p) (message "%s" erg))
     erg))
 
 (defun py-shift-statement-right (&optional arg)
@@ -587,7 +654,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "statement" (or arg py-indent-offset))))
-    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
+        (when (interactive-p) (message "%s" erg))
     erg))
 
 (defun py-shift-statement-left (&optional arg)
@@ -599,9 +666,10 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "statement" (- (or arg py-indent-offset)))))
-    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
+    (when (interactive-p) (message "%s" erg))
     erg))
 
+;;;
 (defun py-indent-and-forward ()
   "Indent current line according to mode, move one line forward. "
   (interactive "*")

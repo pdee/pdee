@@ -2282,6 +2282,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
 (require 'python-extended-executes-test)
 (require 'python-components-switches)
 (require 'python-components-paragraph)
+(require 'python-components-shift-forms)
 
 ;;; Python specialized rx, thanks Fabian F. Gallina
 (eval-when-compile
@@ -2815,8 +2816,8 @@ Switch between `py-imenu-create-index' from 5.1 series and `py-imenu-create-inde
 Update list of top-level imports for completion"]
             "-"
             ))
-        ;;; Menu py-execute forms
-    (easy-menu-define py-menu map "Execute Python"
+        ;; Menu py-execute forms
+        (easy-menu-define py-menu map "Execute Python"
           `("PyExec"
             :help "Python-specific features"
 
@@ -3763,7 +3764,7 @@ Switch to output buffer; ignores `py-shell-switch-buffers-on-execute-p' "]
 Switch to output buffer; ignores `py-shell-switch-buffers-on-execute-p' "]
 ))))
 
-        ;;; Menu command forms
+        ;; Menu command forms
         (easy-menu-define py-menu map "Python Mode Commands"
           `("PyEdit"
             :help "Python-specific features"
@@ -3799,8 +3800,19 @@ Delete innermost compound statement at point, store deleted string in kill-ring"
 
              ["Delete block" py-delete-block
               :help "`py-delete-block'
-Delete innermost compound statement at point, don't store deleted string in kill-ring"])
+Delete innermost compound statement at point, don't store deleted string in kill-ring"]
+             
+             ["Shift block right" py-shift-block-right
+              :help "`py-shift-block-right'
+Shift block right. "]
+             
+             ["Shift block left" py-shift-block-left
+              :help "`py-shift-block-left'
+Shift block left. "]
+
+             )
             ("Def-or-class ... "
+
              ["Beginning of Def-or-Class" py-beginning-of-def-or-class
               :help "`py-beginning-of-def-or-class'
 Go to start of innermost definition at point"]
@@ -3833,12 +3845,19 @@ Delete innermost compound statement at point, store deleted string in kill-ring"
 
              ["Delete def-or-class" py-delete-def-or-class
               :help "`py-delete-def-or-class'
-Delete def-or-class at point, don't store deleted string in kill-ring"])
+Delete def-or-class at point, don't store deleted string in kill-ring"]
+
+             ["Shift def-or-class right" py-shift-def-or-class-right
+              :help "`py-shift-def-or-class-right'
+Shift def-or-class right. "]
+
+             ["Shift def-or-class left" py-shift-def-or-class-left
+              :help "`py-shift-def-or-class-left'
+Shift def-or-class left. "]
+
+             )
 
             ("Clause ... "
-             ["Copy clause" py-copy-clause
-              :help "`py-copy-clause'
-Copy clause at point"]
 
              ["Beginning of clause" py-beginning-of-clause
               :help "`py-beginning-of-clause'
@@ -3871,9 +3890,20 @@ Delete innermost compound statement at point, store deleted string in kill-ring"
 
              ["Delete clause" py-delete-clause
               :help "`py-delete-clause'
-Delete innermost compound statement at point, don't store deleted string in kill-ring"])
+Delete innermost compound statement at point, don't store deleted string in kill-ring"]
+
+            ["Shift clause right" py-shift-clause-right
+             :help "`py-shift-clause-right'
+Shift clause right. "]
+
+            ["Shift clause left" py-shift-clause-left
+             :help "`py-shift-clause-left'
+Shift clause left. "]
+
+            )
 
             ("Statement ... "
+
              ["Beginning of Statement" py-beginning-of-statement
               :help "`py-beginning-of-statement'
 Go to start of innermost definition at point"]
@@ -3892,7 +3922,18 @@ Delete innermost compound statement at point, store deleted string in kill-ring"
 
              ["Delete statement" py-delete-statement
               :help "`py-delete-statement'
-Delete statement at point, don't store deleted string in kill-ring"])
+Delete statement at point, don't store deleted string in kill-ring"]
+
+
+             ["Shift statement right" py-shift-statement-right
+              :help "`py-shift-statement-right'
+Shift statement right. "]
+
+             ["Shift statement left" py-shift-statement-left
+              :help "`py-shift-statement-left'
+Shift statement left. "]
+
+             )
 
             ("Expression ..."
 
@@ -3931,7 +3972,10 @@ Delete innermost compound statement at point, store deleted string in kill-ring"
 
              ["Delete expression" py-delete-expression
               :help "`py-delete-expression'
-Delete expression at point, don't store deleted string in kill-ring"])
+Delete expression at point, don't store deleted string in kill-ring"]
+
+             )
+
             ("Partial expression ..."
 
              ["Beginning of minor expression" py-beginning-of-partial-expression
@@ -3958,9 +4002,12 @@ Delete innermost compound statement at point, store deleted string in kill-ring"
 
              ["Delete partial-expression" py-delete-partial-expression
               :help "`py-delete-partial-expression'
-Delete partial-expression at point, don't store deleted string in kill-ring"])
+Delete partial-expression at point, don't store deleted string in kill-ring"]
+
+             )
 
             ("Class ... "
+
              ["Beginning of Class" py-beginning-of-class
               :help "`py-beginning-of-class'
 Go to start of innermost definition at point"]
@@ -3993,9 +4040,21 @@ Delete innermost compound statement at point, store deleted string in kill-ring"
 
              ["Delete class" py-delete-class
               :help "`py-delete-class'
-Delete class at point, don't store deleted string in kill-ring"])
+Delete class at point, don't store deleted string in kill-ring"]
+
+
+             ["Shift class right" py-shift-class-right
+              :help "`py-shift-class-right'
+Shift class right. "]
+
+             ["Shift class left" py-shift-class-left
+              :help "`py-shift-class-left'
+Shift class left. "]
+
+             )
 
             ("Def ... "
+
              ["Beginning of Def" py-beginning-of-def
               :help "`py-beginning-of-def'
 Go to start of innermost definition at point"]
@@ -4028,9 +4087,22 @@ Delete innermost compound statement at point, store deleted string in kill-ring"
 
              ["Delete def" py-delete-def
               :help "`py-delete-def'
-Delete def at point, don't store deleted string in kill-ring"])
+Delete def at point, don't store deleted string in kill-ring"]
+
+
+             ["Shift def right" py-shift-def-right
+              :help "`py-shift-def-right'
+Shift def right. "]
+
+             ["Shift def left" py-shift-def-left
+              :help "`py-shift-def-left'
+Shift def left. "]
+
+             )
             "-"
+
             (" Block bol ... "
+
              ["Beginning of block bol" py-beginning-of-block-bol
               :help "`py-beginning-of-block-bol'
 Go to beginning of line at beginning of block.
@@ -4069,9 +4141,20 @@ Kill block at point. "]
 
              ["Delete block bol" py-delete-block-bol
               :help "`py-delete-block-bol'
-Delete block at point. "])
+Delete block at point. "]
+
+             ["Shift block right" py-shift-block-right
+              :help "`py-shift-block-right'
+Shift block right. "]
+             
+             ["Shift block left" py-shift-block-left
+              :help "`py-shift-block-left'
+Shift block left. "]
+
+             )
 
             (" Clause bol ... "
+
              ["Beginning of clause bol" py-beginning-of-clause-bol
               :help "`py-beginning-of-clause-bol'
 Go to beginning of line at beginning of clause.
@@ -4110,8 +4193,21 @@ Kill clause at point. "]
 
              ["Delete clause bol" py-delete-clause-bol
               :help "`py-delete-clause-bol'
-Delete clause at point. "])
+Delete clause at point. "]
+
+
+             ["Shift clause right" py-shift-clause-right
+              :help "`py-shift-clause-right'
+Shift clause right. "]
+
+             ["Shift clause left" py-shift-clause-left
+              :help "`py-shift-clause-left'
+Shift clause left. "]
+
+             )
+
             (" Block-Or-Clause bol ... "
+
              ["Beginning of block-or-clause bol" py-beginning-of-block-or-clause-bol
               :help "`py-beginning-of-block-or-clause-bol'
 Go to beginning of line at beginning of block-or-clause.
@@ -4150,8 +4246,20 @@ Kill block-or-clause at point. "]
 
              ["Delete block-or-clause bol" py-delete-block-or-clause-bol
               :help "`py-delete-block-or-clause-bol'
-Delete block-or-clause at point. "])
+Delete block-or-clause at point. "]
+
+             ["Shift block-or-clause right" py-shift-block-or-clause-right
+              :help "`py-shift-block-or-clause-right'
+Shift block-or-clause right. "]
+
+             ["Shift block-or-clause left" py-shift-block-or-clause-left
+              :help "`py-shift-block-or-clause-left'
+Shift block-or-clause left. "]
+
+             )
+            
             (" Def bol ... "
+
              ["Beginning of def bol" py-beginning-of-def-bol
               :help "`py-beginning-of-def-bol'
 Go to beginning of line at beginning of def.
@@ -4190,7 +4298,18 @@ Kill def at point. "]
 
              ["Delete def bol" py-delete-def-bol
               :help "`py-delete-def-bol'
-Delete def at point. "])
+Delete def at point. "]
+
+             ["Shift def right" py-shift-def-right
+              :help "`py-shift-def-right'
+Shift def right. "]
+
+             ["Shift def left" py-shift-def-left
+              :help "`py-shift-def-left'
+Shift def left. "]
+
+             )
+
             (" Class bol ... "
              ["Beginning of class bol" py-beginning-of-class-bol
               :help "`py-beginning-of-class-bol'
@@ -4230,7 +4349,18 @@ Kill class at point. "]
 
              ["Delete class bol" py-delete-class-bol
               :help "`py-delete-class-bol'
-Delete class at point. "])
+Delete class at point. "]
+
+             ["Shift class right" py-shift-class-right
+              :help "`py-shift-class-right'
+Shift class right. "]
+
+             ["Shift class left" py-shift-class-left
+              :help "`py-shift-class-left'
+Shift class left. "]
+
+             )
+
             (" Def-Or-Class bol ... "
              ["Beginning of def-or-class bol" py-beginning-of-def-or-class-bol
               :help "`py-beginning-of-def-or-class-bol'
@@ -4270,7 +4400,18 @@ Kill def-or-class at point. "]
 
              ["Delete def-or-class bol" py-delete-def-or-class-bol
               :help "`py-delete-def-or-class-bol'
-Delete def-or-class at point. "])
+Delete def-or-class at point. "]
+
+             ["Shift def-or-class right" py-shift-def-or-class-right
+              :help "`py-shift-def-or-class-right'
+Shift def-or-class right. "]
+             
+             ["Shift def-or-class left" py-shift-def-or-class-left
+              :help "`py-shift-def-or-class-left'
+Shift def-or-class left. "]
+
+             )
+
             (" Statement bol ... "
              ["Beginning of statement bol" py-beginning-of-statement-bol
               :help "`py-beginning-of-statement-bol'
@@ -4298,7 +4439,17 @@ Kill statement at point. "]
 
              ["Delete statement bol" py-delete-statement-bol
               :help "`py-delete-statement-bol'
-Delete statement at point. "])
+Delete statement at point. "]
+
+             ["Shift statement right" py-shift-statement-right
+              :help "`py-shift-statement-right'
+Shift statement right. "]
+
+             ["Shift statement left" py-shift-statement-left
+              :help "`py-shift-statement-left'
+Shift statement left. "]
+
+             )
             "-"
             ["Backward into nomenclature" py-backward-into-nomenclature
              :help " `py-backward-into-nomenclature'
@@ -4528,7 +4679,7 @@ Start an unique Python3.2 interpreter in another window.
 
 Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'."]
 
-            ;;;
+            ;;
             "-"
 
             ["Toggle split-windows-on-execute" py-toggle-split-windows-on-execute
@@ -5326,8 +5477,7 @@ as it leaves your system default unchanged."
               "#"
               ;; forward-sexp function
               (lambda (arg)
-                (py-end-of-block-bol)
-                (skip-chars-backward " \t\n"))
+                (py-end-of-block))
               nil))
 
 ;; Fixme: This should inherit some stuff from `python-mode', but I'm

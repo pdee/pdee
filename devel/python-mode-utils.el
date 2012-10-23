@@ -64,7 +64,7 @@
 (setq py-test-shells
       (list "python" "ipython" "python3" "python2" "python2.7"))
 
-(setq py-shift-forms (list "paragraph" "block" "clause" "block-or-clause" "def" "class" "def-or-class" "line" "statement" "expression" "partial-expression"))
+(setq py-shift-forms (list "paragraph" "block" "clause" "block-or-clause" "def" "class" "def-or-class" "line" "statement"))
 
 (setq py-core-command-name '("statement" "block" "def" "class" "region" "file"))
 
@@ -79,7 +79,7 @@
   "Forms whose start is described by a regexp in python-mode." )
 
 ;; (defvar py-down-forms (list "block" "minor-block" "clause" "block-or-clause" "def" "class" "def-or-class" "statement"))
-;; 
+;;
 (defvar py-down-forms (list "block" "minor-block" "clause" "block-or-clause" "def" "class" "def-or-class"))
 
 ;; (setq py-down-forms (list "block" "minor-block" "clause" "block-or-clause" "def" "class" "def-or-class" "statement"))
@@ -384,7 +384,7 @@ Returns a list, whose car is beg, cdr - end.\"
   (interactive)
   (write-py-menu py-bounds-command-names))
 
-(defun write-py-menu (&optional commands)
+(defun write-py-executes-menu (&optional commands)
   "Reads py-shells. "
   (interactive)
   (let ((menu-buffer "Python Executes Menu Buffer")
@@ -436,16 +436,16 @@ Returns a list, whose car is beg, cdr - end.\"
           (insert (concat " " (capitalize ele))))
         (insert (concat " interpreter.
 Optional \\\\[universal-argument] forces switch to output buffer, ignores `py-shell-switch-buffers-on-execute-p'. \"]\n")))
-      ;; (unless done 
+      ;; (unless done
             (insert "            (\"Ignoring defaults ... \"
-             :help \"Commands will ignore default setting of 
+             :help \"Commands will ignore default setting of
 `py-switch-buffers-on-execute-p' and `py-split-windows-on-execute-p'\"")
-            ;; (setq done t)) 
+            ;; (setq done t))
       (insert "            ;; switch\n")
       (dolist (ele py-shells)
         ;; ["if" py-if
         ;; :help "Inserts if-statement"]
-        (insert (concat "            
+        (insert (concat "
             \[\"py-execute-" ccc "-" ele "-switch\" py-execute-" ccc "-" ele "-switch
 :help \"Execute " ccc " through a"))
         (if (string= "ipython" ele)
@@ -461,7 +461,7 @@ With \\\\[universal-argument] use an unique "))
       (dolist (ele py-shells)
         ;; ["if" py-if
         ;; :help "Inserts if-statement"]
-        (insert (concat "            
+        (insert (concat "
             \[\"py-execute-" ccc "-" ele "-dedicated-switch\" py-execute-" ccc "-" ele "-dedicated-switch
 :help \"Execute " ccc " through a unique"))
         (if (string= "ipython" ele)
@@ -860,65 +860,73 @@ Optional \\\\[universal-argument] prompts for options to pass to the "))
   (switch-to-buffer (current-buffer))
   (insert ";;; python-components-re-forms.el --- Forms start described by a regular-expression \n")
   (insert arkopf)
-  (insert ";;; Beg-end forms")
+  (insert ";;; Beg-end forms\n
+\(defun py-beginning-of-top-level ()
+  \"Go to beginning of block until level of indentation is null.
+
+Returns beginning of block if successful, nil otherwise
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html\"
+  (interactive)
+  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-block-re 0)))))
+    erg))\n")
   (dolist (ele py-re-forms-names)
-        (if (string-match "def\\|class" ele)
-            (insert (concat "
+    (if (string-match "def\\|class" ele)
+        (insert (concat "
 \(defun py-beginning-of-" ele " (&optional arg indent)"))
-          (insert (concat " 
+      (insert (concat "
 \(defun py-beginning-of-" ele " (&optional indent)")))
-        (insert (concat "\n  \"Go to beginning of " ele ".\n
+    (insert (concat "\n \"Go to beginning of " ele ".\n
 Returns beginning of " ele " if successful, nil otherwise\n\n"))
     (when (string-match "def\\|class" ele)
       (insert "With \\\\[universal argument] or `py-mark-decorators' set to `t', decorators are marked too.\n\n"))
     (insert "Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html\"\n")
 
-    (if (string-match "def\\|class" ele)
-        (insert "  (interactive \"P\")")
-      (insert "  (interactive)"))
-    (insert (concat "\n  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-" ele "-re indent))))"))
-    (when  (string-match "def\\|class" ele)
-        (insert "\n        (py-mark-decorators (or arg py-mark-decorators))"))
+    ;; (if (string-match "def\\|class" ele)
+    (insert "  (interactive \"P\")")
+    ;; (insert "  (interactive)"))
+    (insert (concat "\n (let ((erg (ignore-errors (cdr (py-go-to-keyword py-" ele "-re indent))))"))
+    (when (string-match "def\\|class" ele)
+      (insert "\n (py-mark-decorators (or arg py-mark-decorators))"))
     (insert ")")
-    (insert "\n    erg))\n")
+    (insert "\n erg))\n")
 
-
-        (if (string-match "def\\|class" ele)
-            (insert (concat "
+    (if (string-match "def\\|class" ele)
+        (insert (concat "
 \(defun py-end-of-" ele " (&optional arg indent)"))
-          (insert (concat " 
+      (insert (concat "
 \(defun py-end-of-" ele " (&optional indent)")))
-        (insert (concat "\n  \"Go to end of " ele ".\n
+    (insert (concat "\n \"Go to end of " ele ".\n
 Returns end of " ele " if successful, nil otherwise\n\n"))
     (when (string-match "def\\|class" ele)
       (insert "With \\\\[universal argument] or `py-mark-decorators' set to `t', decorators are marked too.\n\n"))
     (insert "Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html\"\n")
 
-    (if (string-match "def\\|class" ele)
-        (insert "  (interactive \"P\")")
-      (insert "  (interactive)"))
-    (insert (concat " 
+    ;; (if (string-match "def\\|class" ele)
+    (insert "  (interactive \"P\")")
+    ;; (insert "  (interactive)"))
+    (insert (concat "
     (let* ((orig (point))
            (erg (py-end-base py-" ele "-re orig)))
       (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
       erg))\n"))
 
-;;     (insert (concat " 
-;; \(defun py-end-of-"ele" ()
-;;   \"Go to the end of " ele".
-;; 
-;; Returns position reached, if any, nil otherwise.
-;; 
-;; Referring python program structures see for example:
-;; http://docs.python.org/reference/compound_stmts.html\"
-;;   (interactive)
-;;   (let* ((orig (point))
-;;          (erg (py-end-base py-" ele "-re orig)))
-;;     (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
-;;     erg))\n"))
-
+    ;;     (insert (concat "
+    ;; \(defun py-end-of-"ele" ()
+    ;;   \"Go to the end of " ele".
+    ;;
+    ;; Returns position reached, if any, nil otherwise.
+    ;;
+    ;; Referring python program structures see for example:
+    ;; http://docs.python.org/reference/compound_stmts.html\"
+    ;;   (interactive)
+    ;;   (let* ((orig (point))
+    ;;          (erg (py-end-base py-" ele "-re orig)))
+    ;;     (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
+    ;;     erg))\n"))
     )
   (insert "
 
@@ -959,9 +967,9 @@ http://docs.python.org/reference/compound_stmts.html\"\n")
 \(defalias 'py-backward-def-or-class 'py-beginning-of-def-or-class)
 \(defalias 'py-previous-def-or-class 'py-beginning-of-def-or-class)
 ")
-    (insert "\n(provide 'python-components-re-forms)
+  (insert "\n(provide 'python-components-re-forms)
 ;;; python-components-re-forms.el ends here\n ")
-    (emacs-lisp-mode))
+  (emacs-lisp-mode))
 
 (defun py-write-beg-end-position-forms ()
   (interactive)
@@ -1007,8 +1015,81 @@ http://docs.python.org/reference/compound_stmts.html\"\n")
 (defun py-write-shift-forms ()
   " "
   (interactive)
-  (set-buffer (get-buffer-create "py-shift-forms"))
+  (set-buffer (get-buffer-create "python-components-shift-forms.el"))
   (erase-buffer)
+  (insert ";;; python-components-shift-forms.el --- Move forms left or right\n")
+  (insert arkopf)
+  
+  (insert "
+\(defalias 'py-shift-region-left 'py-shift-left)
+\(defun py-shift-left (&optional count start end)
+  \"Dedent region according to `py-indent-offset' by COUNT times.
+
+If no region is active, current line is dedented.
+Returns indentation reached. \"
+  (interactive \"p\")
+  (let ((erg (py-shift-intern (- count) start end)))
+    (when (and (interactive-p) py-verbose-p) (message \"%s\" erg))
+    erg))
+
+\(defalias 'py-shift-region-right 'py-shift-right)
+\(defun py-shift-right (&optional count beg end)
+  \"Indent region according to `py-indent-offset' by COUNT times.
+
+If no region is active, current line is indented.
+Returns indentation reached. \"
+  (interactive \"p\")
+  (let ((erg (py-shift-intern count beg end)))
+    (when (and (interactive-p) py-verbose-p) (message \"%s\" erg))
+    erg))
+
+\(defun py-shift-intern (count &optional start end)
+  (save-excursion
+    (let\* ((inhibit-point-motion-hooks t)
+           deactivate-mark
+           (beg (cond (start)
+                      ((region-active-p)
+                       (save-excursion
+                         (goto-char
+                          (region-beginning))))
+                      (t (line-beginning-position))))
+           (end (cond (end)
+                      ((region-active-p)
+                       (save-excursion
+                         (goto-char
+                          (region-end))))
+                      (t (line-end-position))))
+           (orig end))
+      (setq beg (copy-marker beg))
+      (setq end (copy-marker end))
+      (if (< 0 count)
+          (indent-rigidly beg end py-indent-offset)
+        (indent-rigidly beg end (- py-indent-offset)))
+      (push-mark beg t)
+      (goto-char end)
+      (skip-chars-backward \" \\t\\r\\n\\f\"))
+    (py-indentation-of-statement)))
+
+\(defun py-shift-forms-base (form arg &optional beg end)
+  (let\* ((begform (intern-soft (concat \"py-beginning-of-\" form)))
+         (endform (intern-soft (concat \"py-end-of-\" form)))
+         (orig (copy-marker (point)))
+         (beg (cond (beg)
+                    ((region-active-p)
+                     (save-excursion
+                       (goto-char (region-beginning))
+                       (line-beginning-position)))
+                    (t (save-excursion
+                         (funcall begform)
+                         (line-beginning-position)))))
+         (end (cond (end)
+                    ((region-active-p)
+                     (region-end))
+                    (t (funcall endform))))
+         (erg (py-shift-intern arg beg end)))
+    (goto-char orig)
+    erg))
+")
   (dolist (ele py-shift-forms)
     (insert (concat "
 \(defun py-shift-" ele "-right (&optional arg)
@@ -1034,9 +1115,12 @@ Returns outmost indentation reached. \"
   (let ((erg (py-shift-forms-base \"" ele "\" (- (or arg py-indent-offset)))))
     (when (interactive-p) (message \"%s\" erg))
     erg))
-"))
+")))
+      (insert "\n(provide 'python-components-shift-forms)
+;;; python-components-shift-forms.el ends here\n ")
+
     (emacs-lisp-mode)
-    (switch-to-buffer (current-buffer))))
+    (switch-to-buffer (current-buffer)))
 
 (defun py-write-down-forms-bol ()
   " "
@@ -1830,6 +1914,32 @@ Don't store data in kill ring. \"
   (insert ";;; python-components-up-down.el -- Searching up/downwards in buffer\n")
   (insert arkopf)
   (insert "
+\(defun py-up-statement ()
+  \"Go to the beginning of next statement upwards in buffer.
+
+Return position if statement found, nil otherwise. \"
+  (interactive)
+  (let ((orig (point))
+        erg)
+  (if (py-beginning-of-statement-p)
+      (setq erg (py-beginning-of-statement))
+    (setq erg (and (py-beginning-of-statement) (py-beginning-of-statement))))
+  (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
+  erg))
+
+\(defun py-down-statement ()
+  \"Go to the end of next statement downwards in buffer.
+
+Return position if statement found, nil otherwise. \"
+  (interactive)
+  (let ((orig (point))
+        erg)
+    (if (py-end-of-statement-p)
+        (setq erg (and (py-end-of-statement) (py-beginning-of-statement)))
+      (setq erg (and (py-end-of-statement) (py-end-of-statement)(py-beginning-of-statement))))
+    (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
+    erg))
+
 \(defun py-up-base (regexp)
   \"Go to the beginning of next form upwards in buffer.
 
@@ -1873,7 +1983,7 @@ Return position if form found, nil otherwise. \"
         (setq erg nil)
       (while (and (re-search-backward regexp nil t 1)
                   (nth 8 (syntax-ppss))))
-      (beginning-of-line) 
+      (beginning-of-line)
       (when (looking-at regexp) (setq erg (point)))
       (when py-verbose-p (message \"%s\" erg))
       erg)))
@@ -1891,7 +2001,7 @@ Return position if form found, nil otherwise. \"
           (setq erg nil)
         (while (and (re-search-forward regexp nil t 1)
                     (nth 8 (syntax-ppss))))
-        (beginning-of-line) 
+        (beginning-of-line)
         (when (looking-at regexp) (setq erg (point)))
         (when py-verbose-p (message \"%s\" erg))
         erg))))\n")

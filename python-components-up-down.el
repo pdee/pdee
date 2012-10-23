@@ -21,6 +21,32 @@
 ;;; Code:
 
 
+(defun py-up-statement ()
+  "Go to the beginning of next statement upwards in buffer.
+
+Return position if statement found, nil otherwise. "
+  (interactive)
+  (let ((orig (point))
+        erg)
+  (if (py-beginning-of-statement-p)
+      (setq erg (py-beginning-of-statement))
+    (setq erg (and (py-beginning-of-statement) (py-beginning-of-statement))))
+  (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+  erg))
+
+(defun py-down-statement ()
+  "Go to the end of next statement downwards in buffer.
+
+Return position if statement found, nil otherwise. "
+  (interactive)
+  (let ((orig (point))
+        erg)
+    (if (py-end-of-statement-p)
+        (setq erg (and (py-end-of-statement) (py-beginning-of-statement)))
+      (setq erg (and (py-end-of-statement) (py-end-of-statement)(py-beginning-of-statement))))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
 (defun py-up-base (regexp)
   "Go to the beginning of next form upwards in buffer.
 
@@ -64,7 +90,7 @@ Return position if form found, nil otherwise. "
         (setq erg nil)
       (while (and (re-search-backward regexp nil t 1)
                   (nth 8 (syntax-ppss))))
-      (beginning-of-line) 
+      (beginning-of-line)
       (when (looking-at regexp) (setq erg (point)))
       (when py-verbose-p (message "%s" erg))
       erg)))
@@ -82,7 +108,7 @@ Return position if form found, nil otherwise. "
           (setq erg nil)
         (while (and (re-search-forward regexp nil t 1)
                     (nth 8 (syntax-ppss))))
-        (beginning-of-line) 
+        (beginning-of-line)
         (when (looking-at regexp) (setq erg (point)))
         (when py-verbose-p (message "%s" erg))
         erg))))

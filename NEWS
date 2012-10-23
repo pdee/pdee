@@ -79,6 +79,7 @@ New in version 6.1.0
 
   Built upon code seen at python.el, thanks Fabian
 
+- `py-down-statement', `py-up-statement'
 
 New in version 6.0.12
 ---------------------

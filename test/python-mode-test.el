@@ -1170,9 +1170,10 @@ class OrderedDict1(dict):
     (py-bug-tests-intern 'py-shift-block-base arg teststring)))
 
 (defun py-shift-block-base ()
-  (goto-char 237)
-  (assert (eq 12 (py-shift-block-right)) nil "py-shift-block-test #1 failed")
-  (assert (eq 8 (py-shift-block-left)) nil "py-shift-block-test #1 failed"))
+  (let (py-smart-indentation)
+    (goto-char 237)
+    (assert (eq 12 (py-shift-block-right)) nil "py-shift-block-test #1 failed")
+    (assert (eq 8 (py-shift-block-left)) nil "py-shift-block-test #1 failed")))
 
 (defun nesting-if-test (&optional arg load-branch-function)
   (interactive "p")
@@ -1319,8 +1320,8 @@ class foo(bar, baz):
 
 (defun tqs-list-error-base ()
   (goto-char 90)
-  (sit-for 0.2)
-  (assert (eq 175 (py-end-of-statement)) nil "tqs-list-error-test failed"))
+  ;; (sit-for 0.2)
+  (assert (eq 184 (py-end-of-statement)) nil "tqs-list-error-test failed"))
 
 (defun py-smart-indent-eight-test (&optional arg load-branch-function)
   (interactive "p")
@@ -1330,13 +1331,16 @@ class foo(bar, baz):
 for x in y:
     for z in l:
         for r in t:
-                pass # <--- indents here. Pressing <backspace> dedents eight spaces (i.e. you can go to column 0 in two presess)
+        pass
+                # <--- indents here. Pressing <backspace> dedents eight spaces (i.e. you can go to column 0 in two presess)
 ")))
     (py-bug-tests-intern 'py-smart-indent-eight-base arg teststring)))
 
 (defun py-smart-indent-eight-base ()
-  (goto-char 112)
-  (assert (eq 12 (py-compute-indentation)) nil "py-smart-indent-eight-test failed"))
+  (goto-char 104)
+  (assert (eq 4 (py-guess-indent-offset)) nil "py-smart-indent-eight-test #1 failed")
+  (assert (eq 12 (py-compute-indentation)) nil "py-smart-indent-eight-test #2 failed")
+)
 
 (defun py-install-directory-path-test (&optional arg)
   (interactive "p")
@@ -1874,12 +1878,12 @@ def fooBaz( bar ):  # version 2003/9/7
   (goto-char 168)
   (assert (eq 2 (py-guess-indent-offset)) nil "py-guess-indent-offset-test #1 failed")
   (goto-char 251)
-  (assert (eq 4 (py-guess-indent-offset)) nil "py-guess-indent-offset-test #1 failed")
+  (assert (eq 2 (py-guess-indent-offset)) nil "py-guess-indent-offset-test #1 failed")
   (goto-char 279)
-  (assert (eq 4 (py-guess-indent-offset)) nil "py-guess-indent-offset-test #1 failed")
+  (assert (eq 2 (py-guess-indent-offset)) nil "py-guess-indent-offset-test #1 failed")
   (goto-char 298)
   ;; indent might be eithe 4 or 2
-  (assert (eq 4 (py-guess-indent-offset)) nil "py-guess-indent-offset-test #1 failed"))
+  (assert (eq 2 (py-guess-indent-offset)) nil "py-guess-indent-offset-test #1 failed"))
 
 (defun autopair-mode-test (&optional arg)
   (interactive "p")

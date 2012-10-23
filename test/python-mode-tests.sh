@@ -782,9 +782,12 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-fill-string-pep-257) nil \"py-fill-string-pep-257 not detected as command\")" \
 -eval "(assert (commandp 'py-fill-string-pep-257-nn) nil \"py-fill-string-pep-257-nn not detected as command\")" \
 -eval "(assert (commandp 'py-fill-string-symmetric) nil \"py-fill-string-symmetric not detected as command\")" \
---funcall incorrect-indentation-of-one-line-functions-lp-1067633-test \
+--funcall py-moves-test \
+--funcall stalls-emacs-probably-due-to-syntax-highlighting-lp-1058261-test \
 --funcall several-new-bugs-with-paragraph-filling-lp-1066489-test \
 --funcall impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test \
+--funcall py-indent-after-assigment-test \
+--funcall incorrect-indentation-of-one-line-functions-lp-1067633-test \
 --funcall py-highlight-indentation-test \
 --funcall py-smart-indentation-test \
 --funcall autopair-mode-test \
@@ -792,13 +795,10 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall exception-in-except-clause-highlighted-as-keyword-lp-909205-test \
 --funcall pyindex-mishandles-class-definitions-lp-1018164-test \
 --funcall IndentationError-expected-an-indented-block-when-execute-lp-1055569-test \
---funcall stalls-emacs-probably-due-to-syntax-highlighting-lp-1058261-test \
 --funcall py-guess-indent-offset-test \
---funcall py-moves-test \
 --funcall py-end-of-block-or-clause-test \
 --funcall mark-decorators-lp:328851-test \
 --funcall py-expression-index-test \
---funcall py-indent-after-assigment-test \
 --funcall py-execute-buffer-python3-switch-test \
 --funcall py-execute-buffer-python2-switch-test \
 --funcall py-guess-indent-offset-dont-detect-indent-of-2-lp-1027389-test \
