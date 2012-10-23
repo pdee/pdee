@@ -91,8 +91,8 @@
   (setq virtualenv-old-exec-path exec-path)
 
   (setenv "VIRTUAL_ENV" dir)
-  (virtualenv-add-to-path (concat dir "bin"))
-  (add-to-list 'exec-path (concat dir "bin"))
+  (virtualenv-add-to-path (concat (py-normalize-directory dir) "bin"))
+  (add-to-list 'exec-path (concat (py-normalize-directory dir) "bin"))
 
   (setq virtualenv-name dir)
 

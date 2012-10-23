@@ -152,7 +152,7 @@ process buffer for a list of commands.
 
 By default, Emacs inhibits the loading of Python modules from the
 current working directory, for security reasons.  To disable this
-behavior, change `python-remove-cwd-from-path' to nil.
+behavior, change `py-remove-cwd-from-path' to nil.
 
 py-send-region
 --------------
@@ -162,15 +162,11 @@ python-send-string
 ------------------
 Evaluate STRING in inferior Python process.
 
-python-switch-to-python
------------------------
+py-switch-to-python
+-------------------
 Switch to the Python process buffer, maybe starting new process.
-With prefix arg, position cursor at end of buffer.
 
-python-send-region-and-go
--------------------------
-Send the region to the inferior Python process.
-Then switch to the process buffer.
+With prefix arg, position cursor at end of buffer.
 
 python-load-file
 ----------------
@@ -185,7 +181,7 @@ python-set-proc
 Set the default value of `python-buffer' to correspond to this buffer.
 If the current buffer has a local value of `python-buffer', set the
 default (global) value to that.  The associated Python process is
-the one that gets input from M-x python-send-region et al when used
+the one that gets input from M-x py-send-region et al when used
 in a buffer that doesn't have a local value of `python-buffer'.
 
 python-find-imports
@@ -428,6 +424,24 @@ use [universal-argument] to specify a different value.
 
 Returns outmost indentation reached. 
 
+py-shift-block-or-clause-right
+------------------------------
+Indent block-or-clause by COUNT spaces.
+
+COUNT defaults to `py-indent-offset',
+use [universal-argument] to specify a different value.
+
+Returns outmost indentation reached. 
+
+py-shift-block-or-clause-left
+-----------------------------
+Dedent block-or-clause by COUNT spaces.
+
+COUNT defaults to `py-indent-offset',
+use [universal-argument] to specify a different value.
+
+Returns outmost indentation reached. 
+
 py-shift-def-right
 ------------------
 Indent def by COUNT spaces.
@@ -458,6 +472,24 @@ Returns outmost indentation reached.
 py-shift-class-left
 -------------------
 Dedent class by COUNT spaces.
+
+COUNT defaults to `py-indent-offset',
+use [universal-argument] to specify a different value.
+
+Returns outmost indentation reached. 
+
+py-shift-def-or-class-right
+---------------------------
+Indent def-or-class by COUNT spaces.
+
+COUNT defaults to `py-indent-offset',
+use [universal-argument] to specify a different value.
+
+Returns outmost indentation reached. 
+
+py-shift-def-or-class-left
+--------------------------
+Dedent def-or-class by COUNT spaces.
 
 COUNT defaults to `py-indent-offset',
 use [universal-argument] to specify a different value.
@@ -738,8 +770,7 @@ py-fill-paragraph
 -----------------
 `fill-paragraph-function'
 
-With regards to triple quotes positioning, commands
-py-fill-paragraph-SUFFIX
+commands py-fill-paragraph-SUFFIX
 choose one of the following implemented styles:
 
 DJANGO, ONETWO, PEP-257, PEP-257-NN, SYMMETRIC
@@ -798,6 +829,12 @@ SYMMETRIC:
     If processing fails throw ProcessingError.
     """
 
+
+py-fill-labelled-string
+-----------------------
+Fill string or paragraph containing lines starting with label
+
+See lp:1066489 
 
 py-fill-string
 --------------
@@ -999,6 +1036,15 @@ M-x py-sort-imports to sort the imports lexicographically
 py-which-function
 -----------------
 Return the name of the function or class, if curser is in, return nil otherwise. 
+
+py-beginning-of-top-level
+-------------------------
+Go to beginning of block until level of indentation is null.
+
+Returns beginning of block if successful, nil otherwise
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html
 
 py-beginning-of-block
 ---------------------
@@ -1800,6 +1846,18 @@ Delete statement bol at point.
 
 Don't store data in kill ring. 
 
+py-up-statement
+---------------
+Go to the beginning of next statement upwards in buffer.
+
+Return position if statement found, nil otherwise. 
+
+py-down-statement
+-----------------
+Go to the end of next statement downwards in buffer.
+
+Return position if statement found, nil otherwise. 
+
 py-up-block
 -----------
 Go to the beginning of next block upwards in buffer.
@@ -2099,6 +2157,15 @@ Start an Python3.2 interpreter.
 
 Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'.
    Optional DEDICATED SWITCH are provided for use from programs. 
+
+python3\.3
+----------
+Start an Python3.3 interpreter.
+
+Optional C-u prompts for options to pass to the Python3.3 interpreter. See `py-python-command-args'.
+   Optional DEDICATED SWITCH are provided for use from programs.
+
+Command expects Python3.3 installed at your system. 
 
 python-dedicated
 ----------------
@@ -2832,12 +2899,6 @@ Builds Python-shell commands from executable found in LOCAL.
 
 If LOCAL is empty, shell-command `find' searches beneath current directory.
 Eval resulting buffer to install it, see customizable `py-extensions'. 
-
-py-switch-to-python
--------------------
-Switch to the Python process buffer, maybe starting new process.
-
-With prefix arg, position cursor at end of buffer.
 
 py-send-region-and-go
 ---------------------
