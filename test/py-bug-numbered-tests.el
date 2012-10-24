@@ -178,6 +178,7 @@
 created local to the project that autocomplete is being tested
 on."
   `(let ((debug-on-error t)
+         (enable-local-variables t)
          py-load-pymacs-p
          py-split-windows-on-execute-p
          py-shell-switch-buffers-on-execute-p

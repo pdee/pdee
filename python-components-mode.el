@@ -1099,15 +1099,13 @@ else:
         return completions"
   "Code used to setup completion in inferior Python processes."
   :type 'string
-  :group 'python-mode
-  :safe 'stringp)
+  :group 'python-mode)
 
 (defcustom python-shell-completion-string-code
   "';'.join(__COMPLETER_all_completions('''%s'''))"
   "Python code used to get a string of completions separated by semicolons."
   :type 'string
-  :group 'python-mode
-  :safe 'stringp)
+  :group 'python-mode)
 
 (defcustom python-shell-module-completion-string-code ""
   "Python code used to get completions separated by semicolons for imports.
@@ -1121,8 +1119,7 @@ and use the following as the value of this variable:
 
 ';'.join(module_completion('''%s'''))"
   :type 'string
-  :group 'python-mode
-  :safe 'stringp)
+  :group 'python-mode)
 
 (defcustom py-imenu-create-index-function 'py-imenu-create-index-new
   "Switch between `py-imenu-create-index-new', which also lists modules variables,  and series 5. index-machine"
@@ -1231,9 +1228,7 @@ SYMMETRIC:
           (const :tag "PEP-257 with 2 newlines at end of string." pep-257)
           (const :tag "PEP-257 with 1 newline at end of string." pep-257-nn)
           (const :tag "Symmetric style." symmetric))
-  :group 'python-mode
-  :safe (lambda (val)
-          (memq val '(django onetwo pep-257 pep-257-nn symmetric nil))))
+  :group 'python-mode)
 
 (defcustom py-execute-directory nil
   "When set, stores the file's default directory-name py-execute-... functions act upon.
@@ -3801,11 +3796,11 @@ Delete innermost compound statement at point, store deleted string in kill-ring"
              ["Delete block" py-delete-block
               :help "`py-delete-block'
 Delete innermost compound statement at point, don't store deleted string in kill-ring"]
-             
+
              ["Shift block right" py-shift-block-right
               :help "`py-shift-block-right'
 Shift block right. "]
-             
+
              ["Shift block left" py-shift-block-left
               :help "`py-shift-block-left'
 Shift block left. "]
@@ -3924,7 +3919,6 @@ Delete innermost compound statement at point, store deleted string in kill-ring"
               :help "`py-delete-statement'
 Delete statement at point, don't store deleted string in kill-ring"]
 
-
              ["Shift statement right" py-shift-statement-right
               :help "`py-shift-statement-right'
 Shift statement right. "]
@@ -4042,7 +4036,6 @@ Delete innermost compound statement at point, store deleted string in kill-ring"
               :help "`py-delete-class'
 Delete class at point, don't store deleted string in kill-ring"]
 
-
              ["Shift class right" py-shift-class-right
               :help "`py-shift-class-right'
 Shift class right. "]
@@ -4088,7 +4081,6 @@ Delete innermost compound statement at point, store deleted string in kill-ring"
              ["Delete def" py-delete-def
               :help "`py-delete-def'
 Delete def at point, don't store deleted string in kill-ring"]
-
 
              ["Shift def right" py-shift-def-right
               :help "`py-shift-def-right'
@@ -4146,7 +4138,7 @@ Delete block at point. "]
              ["Shift block right" py-shift-block-right
               :help "`py-shift-block-right'
 Shift block right. "]
-             
+
              ["Shift block left" py-shift-block-left
               :help "`py-shift-block-left'
 Shift block left. "]
@@ -4194,7 +4186,6 @@ Kill clause at point. "]
              ["Delete clause bol" py-delete-clause-bol
               :help "`py-delete-clause-bol'
 Delete clause at point. "]
-
 
              ["Shift clause right" py-shift-clause-right
               :help "`py-shift-clause-right'
@@ -4257,7 +4248,7 @@ Shift block-or-clause right. "]
 Shift block-or-clause left. "]
 
              )
-            
+
             (" Def bol ... "
 
              ["Beginning of def bol" py-beginning-of-def-bol
@@ -4405,7 +4396,7 @@ Delete def-or-class at point. "]
              ["Shift def-or-class right" py-shift-def-or-class-right
               :help "`py-shift-def-or-class-right'
 Shift def-or-class right. "]
-             
+
              ["Shift def-or-class left" py-shift-def-or-class-left
               :help "`py-shift-def-or-class-left'
 Shift def-or-class left. "]
@@ -5597,7 +5588,6 @@ With prefix arg, position cursor at end of buffer."
 ;;               (unless (featurep 'highlight-indentation)
 ;;                 (load (concat (py-normalize-directory py-install-directory) "extensions" (char-to-string py-separator-char) "highlight-indentation.el"))))))
 
-
 (add-to-list 'same-window-buffer-names (purecopy "*Python*"))
 (add-to-list 'same-window-buffer-names (purecopy "*IPython*"))
 
@@ -5609,7 +5599,6 @@ With prefix arg, position cursor at end of buffer."
 ;; can specify different `derived-modes' based on the #! line, but
 ;; with the latter, we can't.  So we just won't add them if they're
 ;; already added.
-
 
 ;;;###autoload
 (add-to-list 'auto-mode-alist (cons (purecopy "\\.py\\'")  'python-mode))

@@ -82,8 +82,7 @@ It should not contain a caret (^) at the beginning."
 If output is received before the especified time then control is
 returned in that moment and not after waiting."
   :type 'integer
-  :group 'python-mode
-  :safe 'integerp)
+  :group 'python-mode)
 
 (defcustom python-shell-process-environment nil
   "List of environment variables for Python shell.
@@ -92,16 +91,14 @@ since it merges with it before the process creation routines are
 called.  When this variable is nil, the Python shell is run with
 the default `process-environment'."
   :type '(repeat string)
-  :group 'python-mode
-  :safe 'listp)
+  :group 'python-mode)
 
 (defcustom python-shell-extra-pythonpaths nil
   "List of extra pythonpaths for Python shell.
 The values of this variable are added to the existing value of
 PYTHONPATH in the `process-environment' variable."
   :type '(repeat string)
-  :group 'python-mode
-  :safe 'listp)
+  :group 'python-mode)
 
 (defcustom python-shell-exec-path nil
   "List of path to search for binaries.
@@ -110,8 +107,7 @@ merges with it before the process creation routines are called.
 When this variable is nil, the Python shell is run with the
 default `exec-path'."
   :type '(repeat string)
-  :group 'python-mode
-  :safe 'listp)
+  :group 'python-mode)
 
 (defcustom python-shell-virtualenv-path nil
   "Path to virtualenv root.
@@ -279,8 +275,7 @@ uniqueness for different types of configurations."
 If output is received before the especified time then control is
 returned in that moment and not after waiting."
   :type 'integer
-  :group 'python-mode
-  :safe 'integerp)
+  :group 'python-mode)
 
 (defun python-shell-make-comint (cmd proc-name &optional pop)
   "Create a python shell comint buffer.
