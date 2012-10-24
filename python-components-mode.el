@@ -4560,6 +4560,46 @@ Symmetric style.
 
 See available styles at `py-fill-paragraph' or var `py-fill-docstring-style'"]
 
+             )
+            
+
+            ("Electric... "
+             :help "electric commands'"
+
+             ["Electric colon" py-electric-colon
+              :help " `py-electric-colon' 
+Insert a colon and indent accordingly.
+
+If a numeric argument ARG is provided, that many colons are inserted
+non-electrically.
+
+Electric behavior is inhibited inside a string or
+comment or by universal prefix C-u.
+
+Switched by `py-electric-colon-active-p', default is nil
+See also `py-electric-colon-greedy-p' "]
+
+             ["Electric delete" py-electric-delete
+:help " `py-electric-delete' 
+Delete following character or levels of whitespace\.
+
+With ARG do that ARG times\. . "]
+
+             ["Electric backspace" py-electric-backspace
+:help " `py-electric-backspace' 
+Delete preceding character or level of indentation\.
+
+With ARG do that ARG times\.
+Returns column reached\. . "]
+
+             ["Electric comment" py-electric-comment
+:help " `py-electric-comment' 
+Insert a comment. If starting a comment, indent accordingly.
+
+If a numeric argument ARG is provided, that many \"#\" are inserted
+non-electrically.
+With C-u \"#\" electric behavior is inhibited inside a string or comment.. "]
+
              )))
 
         ;; Python shell menu
@@ -4669,8 +4709,6 @@ Optional C-u prompts for options to pass to the Jython interpreter. See `py-pyth
 Start an unique Python3.2 interpreter in another window.
 
 Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'."]
-
-            ;;
             "-"
 
             ["Toggle split-windows-on-execute" py-toggle-split-windows-on-execute

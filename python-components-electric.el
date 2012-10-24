@@ -21,7 +21,7 @@
 ;;
 
 ;;; Code:
-(require 'python-components-macros) 
+(require 'python-components-macros)
 
 (defun py-electric-colon (arg)
   "Insert a colon and indent accordingly.
@@ -39,15 +39,13 @@ See also `py-electric-colon-greedy-p' "
          (self-insert-command (prefix-numeric-value arg)))
         ((eq 4 (prefix-numeric-value arg))
          (self-insert-command 1))
-        (t (if (interactive-p) (self-insert-command (prefix-numeric-value arg))
-             ;; used from dont-indent-code-unnecessarily-lp-1048778-test
-             (insert ":"))
+        (t (insert ":")
            (unless (py-in-string-or-comment-p)
              (let ((orig (copy-marker (point)))
                    (indent (py-compute-indentation)))
                (unless (or (eq (current-indentation) indent)
                            (and (not py-electric-colon-greedy-p)
-                                (eq (current-indentation)(save-excursion (py-beginning-of-block)(current-indentation)))) 
+                                (eq (current-indentation)(save-excursion (beginning-of-line) (py-beginning-of-block)(current-indentation))))
                            (and (py-top-level-form-p)(< (current-indentation) indent)))
                  (beginning-of-line)
                  (delete-horizontal-space)
@@ -57,7 +55,7 @@ See also `py-electric-colon-greedy-p' "
                (py-newline-and-indent))))))
 
 (defun py-electric-space (arg)
-  "Close completion buffer when it's sure, it's no longer needed, i.e. when inserting a space. 
+  "Close completion buffer when it's sure, it's no longer needed, i.e. when inserting a space.
 
 Works around a bug in `choose-completion'. "
 
