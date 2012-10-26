@@ -2913,7 +2913,7 @@ from PyQt4.QtGui import QMainWindow
     (py-bug-tests-intern 'pycomplete-imports-not-found-error-when-no-symbol-lp:1019791-base arg teststring)))
 
 (defun pycomplete-imports-not-found-error-when-no-symbol-lp:1019791-base ()
-  (assert (py-find-global-imports) nil "pycomplete-imports-not-found-error-when-no-symbol-lp:1019791-test failed"))
+  (assert (py-find-imports) nil "pycomplete-imports-not-found-error-when-no-symbol-lp:1019791-test failed"))
 
 (defun py-narrow-to-defun-lp-1020531-test (&optional arg)
   (interactive "p")
