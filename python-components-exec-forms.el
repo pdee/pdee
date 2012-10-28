@@ -23,10 +23,10 @@
 (defun py-execute-statement (&optional shell dedicated switch)
   "Send statement at point to a Python interpreter.
 
-When called with \\[univeral-argument], execution through `default-value' of `py-shell-name' is forced.
+When called with \\[universal-argument], execution through `default-value' of `py-shell-name' is forced.
 See also `py-force-py-shell-name-p'.
 
-When called with \\[univeral-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
+When called with \\[universal-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
 
 When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
 
@@ -42,10 +42,10 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)"
 (defun py-execute-block (&optional shell dedicated switch)
   "Send block at point to a Python interpreter.
 
-When called with \\[univeral-argument], execution through `default-value' of `py-shell-name' is forced.
+When called with \\[universal-argument], execution through `default-value' of `py-shell-name' is forced.
 See also `py-force-py-shell-name-p'.
 
-When called with \\[univeral-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
+When called with \\[universal-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
 
 When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
 
@@ -61,10 +61,10 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)"
 (defun py-execute-block-or-clause (&optional shell dedicated switch)
   "Send block-or-clause at point to a Python interpreter.
 
-When called with \\[univeral-argument], execution through `default-value' of `py-shell-name' is forced.
+When called with \\[universal-argument], execution through `default-value' of `py-shell-name' is forced.
 See also `py-force-py-shell-name-p'.
 
-When called with \\[univeral-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
+When called with \\[universal-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
 
 When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
 
@@ -80,10 +80,10 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)"
 (defun py-execute-def (&optional shell dedicated switch)
   "Send def at point to a Python interpreter.
 
-When called with \\[univeral-argument], execution through `default-value' of `py-shell-name' is forced.
+When called with \\[universal-argument], execution through `default-value' of `py-shell-name' is forced.
 See also `py-force-py-shell-name-p'.
 
-When called with \\[univeral-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
+When called with \\[universal-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
 
 When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
 
@@ -99,10 +99,10 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)"
 (defun py-execute-class (&optional shell dedicated switch)
   "Send class at point to a Python interpreter.
 
-When called with \\[univeral-argument], execution through `default-value' of `py-shell-name' is forced.
+When called with \\[universal-argument], execution through `default-value' of `py-shell-name' is forced.
 See also `py-force-py-shell-name-p'.
 
-When called with \\[univeral-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
+When called with \\[universal-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
 
 When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
 
@@ -118,10 +118,10 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)"
 (defun py-execute-def-or-class (&optional shell dedicated switch)
   "Send def-or-class at point to a Python interpreter.
 
-When called with \\[univeral-argument], execution through `default-value' of `py-shell-name' is forced.
+When called with \\[universal-argument], execution through `default-value' of `py-shell-name' is forced.
 See also `py-force-py-shell-name-p'.
 
-When called with \\[univeral-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
+When called with \\[universal-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
 
 When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
 
@@ -137,10 +137,10 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)"
 (defun py-execute-expression (&optional shell dedicated switch)
   "Send expression at point to a Python interpreter.
 
-When called with \\[univeral-argument], execution through `default-value' of `py-shell-name' is forced.
+When called with \\[universal-argument], execution through `default-value' of `py-shell-name' is forced.
 See also `py-force-py-shell-name-p'.
 
-When called with \\[univeral-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
+When called with \\[universal-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
 
 When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
 
@@ -156,10 +156,10 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)"
 (defun py-execute-partial-expression (&optional shell dedicated switch)
   "Send partial-expression at point to a Python interpreter.
 
-When called with \\[univeral-argument], execution through `default-value' of `py-shell-name' is forced.
+When called with \\[universal-argument], execution through `default-value' of `py-shell-name' is forced.
 See also `py-force-py-shell-name-p'.
 
-When called with \\[univeral-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
+When called with \\[universal-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
 
 When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
 

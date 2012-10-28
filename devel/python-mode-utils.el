@@ -99,10 +99,10 @@
       (insert (concat "(defun py-execute-" ele " (&optional shell dedicated switch)"))
       (insert (concat "
   \"Send " ele " at point to a Python interpreter.\n\n"))
-      (insert "When called with \\\\[univeral-argument], execution through `default-value' of `py-shell-name' is forced.
+      (insert "When called with \\\\[universal-argument], execution through `default-value' of `py-shell-name' is forced.
 See also `py-force-py-shell-name-p'.
 
-When called with \\\\[univeral-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
+When called with \\\\[universal-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
 
 When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
 

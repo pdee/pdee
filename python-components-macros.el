@@ -102,12 +102,12 @@ Returns char found. "
      (and (eq (char-before (point)) ?\\ )
           (py-escaped))))
 
-(defmacro py-continuation-line-p ()
-  "Return t iff current line is a continuation line."
-  `(save-excursion
-     (beginning-of-line)
-     (or (py-preceding-line-backslashed-p)
-         (< 0 (nth 0 (syntax-ppss))))))
+;; (defmacro py-continuation-line-p ()
+;;   "Return t iff current line is a continuation line."
+;;   `(save-excursion
+;;      (beginning-of-line)
+;;      (or (py-preceding-line-backslashed-p)
+;;          (< 0 (nth 0 (syntax-ppss))))))
 
 (defmacro py-count-lines ()
   "Count lines in buffer, optional without given boundaries.

@@ -48,8 +48,6 @@
 ;; (add-to-list 'load-path py-install-directory)
 ;; (add-to-list 'load-path (concat py-install-directory "extensions"))
 ;; make it easier to run from different branches
-(add-to-list 'load-path default-directory)
-(add-to-list 'load-path (concat default-directory "extensions"))
 
 (require 'comint)
 (require 'hippie-exp)
@@ -2253,6 +2251,10 @@ See original source: http://pymacs.progiciels-bpi.ca"
 
 ;; (when (boundp 'py-install-directory) (py-set-load-path))
 (py-set-load-path)
+
+(unless py-install-directory
+  (add-to-list 'load-path default-directory)
+  (add-to-list 'load-path (concat default-directory "extensions")))
 
 (require 'python-components-edit)
 (require 'python-components-intern)

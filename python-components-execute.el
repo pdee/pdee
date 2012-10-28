@@ -547,8 +547,8 @@ Ignores setting of `py-switch-buffers-on-execute-p', buffer with region stays cu
 (defun py-execute-region (start end &optional shell dedicated switch)
   "Send the region to a Python interpreter.
 
-When called with \\[univeral-argument], execution through `default-value' of `py-shell-name' is forced.
-When called with \\[univeral-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
+When called with \\[universal-argument], execution through `default-value' of `py-shell-name' is forced.
+When called with \\[universal-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
 
 When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
 
@@ -572,8 +572,8 @@ See also `py-execute-region'. "
 (defun py-execute-region-dedicated (start end &optional shell)
   "Get the region processed by an unique Python interpreter.
 
-When called with \\[univeral-argument], execution through `default-value' of `py-shell-name' is forced.
-When called with \\[univeral-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
+When called with \\[universal-argument], execution through `default-value' of `py-shell-name' is forced.
+When called with \\[universal-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
 
 When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument. "
   (interactive "r\nP")
@@ -849,8 +849,8 @@ Basically, this goes down the directory tree as long as there are __init__.py fi
 (defun py-execute-buffer (&optional shell dedicated switch)
   "Send the contents of the buffer to a Python interpreter.
 
-When called with \\[univeral-argument], execution through `default-value' of `py-shell-name' is forced.
-When called with \\[univeral-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
+When called with \\[universal-argument], execution through `default-value' of `py-shell-name' is forced.
+When called with \\[universal-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
 
 If the file local variable `py-master-file' is non-nil, execute the
 named file instead of the buffer's file.
@@ -893,7 +893,7 @@ named file instead of the buffer's file.
 
 If a clipping restriction is in effect, only the accessible portion of the buffer is sent. A trailing newline will be supplied if needed.
 
-With \\[univeral-argument] user is prompted to specify another then default shell.
+With \\[universal-argument] user is prompted to specify another then default shell.
 See also `\\[py-execute-region]'. "
   (interactive "P")
   (py-execute-buffer-base shell t))
@@ -906,7 +906,7 @@ named file instead of the buffer's file.
 If there is a *Python* process buffer, it is used.
 If a clipping restriction is in effect, only the accessible portion of the buffer is sent. A trailing newline will be supplied if needed.
 
-With \\[univeral-argument] user is prompted to specify another then default shell.
+With \\[universal-argument] user is prompted to specify another then default shell.
 See also `\\[py-execute-region]'. "
   (interactive "P")
   (py-execute-buffer-base shell dedicated 'switch))
@@ -919,7 +919,7 @@ named file instead of the buffer's file.
 If there is a *Python* process buffer, it is used.
 If a clipping restriction is in effect, only the accessible portion of the buffer is sent. A trailing newline will be supplied if needed.
 
-With \\[univeral-argument] user is prompted to specify another then default shell.
+With \\[universal-argument] user is prompted to specify another then default shell.
 See also `\\[py-execute-region]'. "
   (interactive "P")
   (py-execute-buffer-base shell dedicated 'noswitch))
@@ -934,7 +934,7 @@ named file instead of the buffer's file.
 
 If a clipping restriction is in effect, only the accessible portion of the buffer is sent. A trailing newline will be supplied if needed.
 
-With \\[univeral-argument] user is prompted to specify another then default shell.
+With \\[universal-argument] user is prompted to specify another then default shell.
 See also `\\[py-execute-region]'. "
   (interactive "P")
   (py-execute-buffer-base shell t 'switch))
@@ -1324,7 +1324,7 @@ If an exception occurred return t, otherwise return nil.  BUF must exist."
 (defun py-down-exception (&optional bottom)
   "Go to the next line down in the traceback.
 
-With \\[univeral-argument] (programmatically, optional argument
+With \\[universal-argument] (programmatically, optional argument
 BOTTOM), jump to the bottom (innermost) exception in the exception
 stack."
   (interactive "P")

@@ -669,7 +669,7 @@ To go just beyond the final line of the current statement, use `py-down-statemen
           (forward-comment 99999)
           (py-handle-eol)
           (py-end-of-statement orig done origline)))
-       ((py-continuation-line-p)
+       ((py-current-line-backslashed-p)
         (end-of-line)
         (py-handle-eol)
         (when (and (eq (char-before (point)) ?\\ )
