@@ -133,27 +133,13 @@ With ARG do that ARG times. "
               (delete-char py-indent-offset)))
         (delete-char 1)))))
 
-;; (defun py-electric-delete (arg)
-;;   "Delete preceding or following character or levels of whitespace.
-;;
-;; The behavior of this function depends on the variable
-;; `delete-key-deletes-forward'.  If this variable is nil (or does not
-;; exist, as in older Emacsen and non-XEmacs versions), then this
-;; function behaves identically to \\[c-electric-backspace].
-;;
-;; If `delete-key-deletes-forward' is non-nil and is supported in your
-;; Emacs, then deletion occurs in the forward direction, by calling the
-;; function in `py-delete-function'.
-;;
-;; \\[universal-argument] (programmatically, argument ARG) specifies the
-;; number of characters to delete (default is 1)."
-;;   (interactive "*p")
-;;   (if (or (and (fboundp 'delete-forward-p) ;XEmacs 21
-;;                (delete-forward-p))
-;;           (and (boundp 'delete-key-deletes-forward) ;XEmacs 20
-;;                delete-key-deletes-forward))
-;;       (funcall py-delete-function arg)
-;;     (py-electric-backspace arg)))
+(defun py-electric-yank (&optional arg)
+  "Perform command `yank' followed by an `indent-according-to-mode' "
+  (interactive "P")
+  (cond (py-electric-yank-active-p
+         (yank arg)
+         (indent-according-to-mode))
+        (t (yank arg))))
 
 ;; required for pending-del and delsel modes
 (put 'py-electric-colon 'delete-selection t) ;delsel

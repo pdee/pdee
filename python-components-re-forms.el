@@ -1,4 +1,4 @@
-;;; python-components-re-forms.el --- Forms start described by a regular-expression 
+;;; python-components-re-forms.el --- Forms start described by a regular-expression
 
 ;; Author: Andreas Roehler <andreas.roehler@online.de>
 ;; Keywords: languages, convenience
@@ -164,7 +164,7 @@ http://docs.python.org/reference/compound_stmts.html"
       erg))
 
 (defun py-beginning-of-def-or-class (&optional arg indent)
- "Go to beginning of def-or-class.
+  "Go to beginning of def-or-class.
 
 Returns beginning of def-or-class if successful, nil otherwise
 
@@ -173,9 +173,10 @@ With \\[universal argument] or `py-mark-decorators' set to `t', decorators are m
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive "P")
- (let ((erg (ignore-errors (cdr (py-go-to-keyword py-def-or-class-re indent))))
- (py-mark-decorators (or arg py-mark-decorators)))
- erg))
+  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-def-or-class-re indent))))
+        (py-mark-decorators (or arg py-mark-decorators)))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
 
 (defun py-end-of-def-or-class (&optional arg indent)
  "Go to end of def-or-class.
@@ -303,4 +304,4 @@ http://docs.python.org/reference/compound_stmts.html"
 
 (provide 'python-components-re-forms)
 ;;; python-components-re-forms.el ends here
- 
+

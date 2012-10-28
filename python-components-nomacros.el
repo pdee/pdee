@@ -102,11 +102,11 @@ Returns char found. "
          (py-escaped))))
 
 (defun py-continuation-line-p ()
-  "Return t iff current line is a continuation line."
+  "Return t iff current line ends with a backslash. "
   (save-excursion
-    (beginning-of-line)
-    (or (py-preceding-line-backslashed-p)
-        (< 0 (nth 0 (syntax-ppss))))))
+    (end-of-line)
+    (and (eq (char-before (point)) ?\\ )
+         (py-escaped))))
 
 (defun py-count-lines ()
   "Count lines in buffer, optional without given boundaries.

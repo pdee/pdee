@@ -178,7 +178,7 @@
 created local to the project that autocomplete is being tested
 on."
   `(let ((debug-on-error t)
-         (enable-local-variables t)
+         (enable-local-variables :all)
          py-load-pymacs-p
          py-split-windows-on-execute-p
          py-shell-switch-buffers-on-execute-p
@@ -1325,6 +1325,7 @@ def add(ui, repo, \*pats, \*\*opts):
 
 (defun python-mode-slow-lp:803275-base ()
   (goto-char 1)
+  (sit-for 0.1) 
   (assert (eq 5430 (py-end-of-def-or-class)) nil "python-mode-slow-lp:803275-test failed"))
 
 (defun master-file-not-honored-lp:794850-test (&optional arg)

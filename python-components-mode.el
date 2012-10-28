@@ -259,6 +259,13 @@ Default is nil. "
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-electric-yank-active-p nil
+  " When non-nil, `yank' will be followed by an `indent-according-to-mode'.
+
+Default is nil" 
+  :type 'boolean
+  :group 'python-mode)
+
 (defcustom py-electric-colon-active-p nil
   "`py-electric-colon' feature.  Default is `nil'. See lp:837065 for discussions. "
   :type 'boolean
@@ -2553,6 +2560,7 @@ character address of the specified TYPE."
         (define-key map [(backspace)] 'py-electric-backspace)
         (define-key map [(control backspace)] 'py-hungry-delete-backwards)
         (define-key map [(control c) (delete)] 'py-hungry-delete-forward)
+        (define-key map [(control y)] 'py-electric-yank)
         ;; moving point
         (define-key map [(control c)(control p)] 'py-beginning-of-statement)
         (define-key map [(control c)(control n)] 'py-end-of-statement)
@@ -4586,6 +4594,9 @@ If a numeric argument ARG is provided, that many \"#\" are inserted
 non-electrically.
 With C-u \"#\" electric behavior is inhibited inside a string or comment.. "]
 
+             ["Electric yank" py-electric-yank
+:help " `py-electric-yank' 
+Perform command `yank' followed by an `indent-according-to-mode' . "]
              )))
 
         ;; Python shell menu
