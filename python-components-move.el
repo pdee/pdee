@@ -585,9 +585,9 @@ http://docs.python.org/reference/compound_stmts.html
 (defun py-eos-handle-comment-start ()
   (end-of-line)
   (forward-comment 99999)
-  (skip-chars-forward (concat "^" comment-start) (line-end-position))
-  (skip-chars-backward " \t\r\n\f" (line-beginning-position))
-  (unless (progn (setq pps (syntax-ppss))(or (nth 8 pps)(nth 1 pps))) (setq done t)))
+  ;; (skip-chars-forward (concat "^" comment-start) (line-end-position))
+  ;; (skip-chars-backward " \t\r\n\f" (line-beginning-position))
+  )
 
 (defun py-eos-handle-string-start ()
   "Internal use, find possible end of statement from string start. "

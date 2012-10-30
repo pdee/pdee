@@ -630,6 +630,7 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
     (set-buffer filebuf)
     (erase-buffer)
     (insert strg)
+    (switch-to-buffer (current-buffer)) 
     (py-fix-start (point-min)(point-max))
     (py-if-needed-insert-shell (prin1-to-string proc) sepchar)
     (unless wholebuf (py-insert-coding))
@@ -756,12 +757,14 @@ Inserts an incentive true form \"if 1:\\n.\" "
 (defun py-fix-start (start end)
   "Internal use by py-execute... functions.
 Avoid empty lines at the beginning. "
+  (python-mode)
   (goto-char start)
   (let ((beg (copy-marker start)))
     (while (empty-line-p)
       (delete-region (line-beginning-position) (1+ (line-end-position))))
     (back-to-indentation)
-    (unless (eq (current-indentation) 0)
+    (py-down-statement)
+    (while (not (eq (current-indentation) 0))
       (py-shift-left (current-indentation) start end))
     (setq py-line-number-offset (count-lines 1 start))
     beg))

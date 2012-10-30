@@ -27,6 +27,7 @@
 
 (setq python-mode-tests
       (list
+       'py-down-statement-test
        'py-fill-string-django-test
        'py-fill-string-onetwo-test
        'py-fill-string-pep-257-test
@@ -1999,7 +2000,6 @@ def fooBaz( bar ):  # version 2003/9/7
   (re-search-forward "py-string-delim-re" nil t 1)
   (assert (not (empty-line-p))  nil "py-fill-string-pep-257-non-nil-test #2 failed"))
 
-
 (defun py-fill-string-symmetric-test (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
@@ -2035,9 +2035,18 @@ asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf
     (goto-char 610)
     (py-electric-delete)
     (assert (eq 8 (current-indentation))  nil "py-electric-yank-test #1 failed, `py-electric-delete' ")
-    (end-of-line) 
+    (end-of-line)
     (py-electric-yank)
     (assert (eq 12 (current-indentation))  nil "py-electric-yank-test #2 failed")))
+
+(defun py-down-statement-test (&optional arg)
+  (interactive "p")
+  (let ((teststring python-mode-teststring))
+  (py-bug-tests-intern 'py-down-statement-base arg teststring)))
+
+(defun py-down-statement-base ()
+    (goto-char (point-min))
+    (assert (eq 146 (py-down-statement)) nil "py-down-statement-test failed"))
 
 ;; imenu--subalist-p
 (provide 'python-mode-test)

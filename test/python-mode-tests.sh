@@ -783,6 +783,8 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-fill-string-pep-257-nn) nil \"py-fill-string-pep-257-nn not detected as command\")" \
 -eval "(assert (commandp 'py-fill-string-symmetric) nil \"py-fill-string-symmetric not detected as command\")" \
 -eval "(setq enable-local-variables :all)" \
+--funcall does-not-dedent-regions-lp-1072869-test \
+--funcall py-down-statement-test \
 --funcall several-new-bugs-with-paragraph-filling-lp-1066489-test \
 --funcall impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test \
 --funcall py-indent-after-assigment-test \

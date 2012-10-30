@@ -1325,7 +1325,7 @@ def add(ui, repo, \*pats, \*\*opts):
 
 (defun python-mode-slow-lp:803275-base ()
   (goto-char 1)
-  (sit-for 0.1) 
+  (sit-for 0.1)
   (assert (eq 5430 (py-end-of-def-or-class)) nil "python-mode-slow-lp:803275-test failed"))
 
 (defun master-file-not-honored-lp:794850-test (&optional arg)
@@ -4305,7 +4305,6 @@ print(\"I'm the \\\"impossible-to-execute-a-buffer-with-from-future-imports-lp-1
 (defun impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-base ()
     (assert (py-execute-buffer) nil "impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test failed"))
 
-
 (defun several-new-bugs-with-paragraph-filling-lp-1066489-test (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
@@ -4362,8 +4361,6 @@ class IBanManager(Interface):
   (assert (re-search-forward "^ +:type email") nil "several-new-bugs-with-paragraph-filling-lp-1066489-test #3 failed")
   (py-fill-paragraph))
 
-
-
 (defun incorrect-indentation-of-one-line-functions-lp-1067633-test (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
@@ -4376,6 +4373,16 @@ def foo():
 (defun incorrect-indentation-of-one-line-functions-lp-1067633-base ()
     (goto-char 67)
     (assert (eq 4 (py-compute-indentation)) nil "incorrect-indentation-of-one-line-functions-lp-1067633-test failed"))
+
+(defun does-not-dedent-regions-lp-1072869-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "        print(\"HELLO\")"))
+  (py-bug-tests-intern 'does-not-dedent-regions-lp-1072869-base arg teststring)))
+
+(defun does-not-dedent-regions-lp-1072869-base ()
+  (assert (markerp (py-execute-buffer-python)) nil "does-not-dedent-regions-lp-1072869-test failed")
+  (assert (markerp (py-execute-buffer-ipython)) nil "does-not-dedent-regions-lp-1072869-test failed")
+  )
 
 
 (provide 'py-bug-numbered-tests)

@@ -1929,16 +1929,19 @@ Return position if statement found, nil otherwise. \"
   erg))
 
 \(defun py-down-statement ()
-  \"Go to the end of next statement downwards in buffer.
+  \"Go to the beginning of next statement downwards in buffer.
 
 Return position if statement found, nil otherwise. \"
   (interactive)
-  (let ((orig (point))
-        erg)
-    (if (py-end-of-statement-p)
-        (setq erg (and (py-end-of-statement) (py-beginning-of-statement)))
-      (setq erg (and (py-end-of-statement) (py-end-of-statement)(py-beginning-of-statement))))
-    (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
+  (let\* ((orig (point))
+           (erg 
+            (cond ((py-end-of-statement-p)
+                   (setq erg (and (py-end-of-statement) (py-beginning-of-statement))))
+                  ((< orig (progn (py-end-of-statement) (py-beginning-of-statement)))
+                   (point)) 
+                  (t (and (py-end-of-statement) (py-end-of-statement)(py-beginning-of-statement))))))
+            (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
+            erg)
     erg))
 
 \(defun py-up-base (regexp)
