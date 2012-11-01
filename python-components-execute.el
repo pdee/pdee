@@ -114,16 +114,6 @@ Returns value of `py-force-py-shell-name-p'. "
   (when (or py-verbose-p (interactive-p)) (message "py-force-py-shell-name-p: %s" py-force-py-shell-name-p))
   py-force-py-shell-name-p)
 
-(defvar py-execute-keep-temporary-file-p nil
-  "For tests only. Excute functions delete temporary files default. ")
-
-(defun py-toggle-execute-keep-temporary-file-p ()
-  "Toggle py-execute-keep-temporary-file-p "
-  (interactive)
-  (setq py-execute-keep-temporary-file-p
-        (not py-execute-keep-temporary-file-p))
-  (when (interactive-p) (message "py-execute-keep-temporary-file-p: %s" py-execute-keep-temporary-file-p)))
-
 ;;; Split-Windows-On-Execute forms
 (defalias 'toggle-py-split-windows-on-execute 'py-toggle-split-windows-on-execute)
 (defun py-toggle-split-windows-on-execute (&optional arg)
@@ -630,7 +620,6 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
     (set-buffer filebuf)
     (erase-buffer)
     (insert strg)
-    (switch-to-buffer (current-buffer)) 
     (py-fix-start (point-min)(point-max))
     (py-if-needed-insert-shell (prin1-to-string proc) sepchar)
     (unless wholebuf (py-insert-coding))
@@ -665,7 +654,7 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
                    (unless (string= (buffer-name (current-buffer)) (buffer-name procbuf))
                      (when py-verbose-p (message "Output buffer: %s" procbuf)))
                    (sit-for 0.1)
-                   (unless py-execute-keep-temporary-file-p
+                   (when py-cleanup-temporary
                      (delete-file file)
                      (when (buffer-live-p localname)
                        (kill-buffer localname)))
