@@ -1046,6 +1046,12 @@ See also resp. edit `py-complete-set-keymap' "
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-complete-ac-sources '(ac-source-pycomplete)
+  "List of auto-complete sources assigned to `ac-sources' in `py-complete-initialize'."
+  :type 'hook
+  :options '(ac-source-pycomplete ac-source-abbrev ac-source-dictionary ac-source-words-in-same-mode-buffers)
+  :group 'python-mode)
+
 (defcustom py-shell-local-path ""
   "If `py-use-local-default' is non-nil, `py-shell' will use EXECUTABLE indicated here incl. path. "
 
@@ -1259,7 +1265,7 @@ See also `py-execute-directory'"
 (defvar py-emacs-import-code "import emacs")
 
 (defvar python-mode-message-string "python-components-mode.el"
-  "Internally used. Reports the python-mode branch in use.)
+  "Internally used. Reports the python-mode branch in use.")
 
 (defvar python-mode-syntax-table nil
   "Give punctuation syntax to ASCII that normally has symbol
