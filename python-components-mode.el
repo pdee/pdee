@@ -1264,6 +1264,9 @@ See also `py-execute-directory'"
 ;;; defvarred Variables
 (defvar py-emacs-import-code "import emacs")
 
+(defvar python-mode-message-string "python-components-mode.el"
+  "Internally used. Reports the python-mode branch in use.)
+
 (defvar python-mode-syntax-table nil
   "Give punctuation syntax to ASCII that normally has symbol
 syntax or has word syntax and isn't a letter.")
@@ -5874,7 +5877,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
     (unless (featurep 'py-smart-operator)
       (load (concat (py-normalize-directory py-install-directory) "extensions/py-smart-operator.el")))
     (py-smart-operator-mode-on))
-  (when (interactive-p) (message "python-mode loaded from: %s" "python-components-mode.el")))
+  (when (interactive-p) (message "python-mode loaded from: %s" python-mode-message-string)))
 
 (define-derived-mode python2-mode python-mode "Python2"
   "Edit and run code used by Python version 2 series. "
