@@ -260,7 +260,7 @@ Default is nil. "
 (defcustom py-electric-yank-active-p nil
   " When non-nil, `yank' will be followed by an `indent-according-to-mode'.
 
-Default is nil" 
+Default is nil"
   :type 'boolean
   :group 'python-mode)
 
@@ -2635,17 +2635,17 @@ character address of the specified TYPE."
 
             ["Customize Python mode" (customize-group 'python-mode)
              :help "Open the customization buffer for Python mode"]
-            
+
             "-"
-            
+
             ["pychecker-run" py-pychecker-run
              :help "`py-pychecker-run'
 Run pychecker"]
-            
+
             ("Pylint ... "
              :help "Extendet report options
 call `easy_install pylint' if not available"
-             
+
              ["pylint-run" py-pylint-run
               :help "`pylint-run'
 Pylint will display a number of messages as it analyzes the code,
@@ -2660,7 +2660,7 @@ is possible to write plugins.
 
 call `easy_install pylint' if not available
 "]
-             
+
              ["pylint-help" pylint-help
               :help "`pylint-help'
 List extendet report options
@@ -2669,60 +2669,60 @@ List extendet report options
               :help "`pylint-flymake-mode'
 Toggle flymake-mode running `pylint'
 "])
-            
+
             ("pep8 ... "
              :help "Check formatting
 call `easy_install pep8' if not available"
-             
+
              ["pep8-run" py-pep8-run
               :help "`py-pep8-run'
 Check formatting (default on the file currently visited)
 call `easy_install pep8' if not available
 "]
-             
+
              ["pep8-help" py-pep8-help
               :help "`py-pep8-help'
 Display help for pep8 format checker)
 "]
-             
+
              ["pep8-flymake-mode" pep8-flymake-mode
               :help "`pep8-flymake-mode'
 Toggle flymake-mode running `pep8'
 "])
-            
+
             ("Pyflakes ... " :help "Non intrusive code
              checker call `easy_install pyflakes' if
              not available"
-             
+
              ["pyflakes-run" py-pyflakes-run :help
               "`py-pyflakes-run' Run pyflakes call
               `easy_install pyflakes' if not
               available"]
-             
+
              ["pyflakes-help" py-pyflakes-help :help
               "`py-pyflakes-help' Display help for
               Pyflakes "]
-             
+
              ["pyflakes-flymake-mode" pyflakes-flymake-mode :help
               "`pyflakes-flymake-mode'
 Toggle flymake-mode running `pyflakes' "])
-            
+
             ("Pyflakes-pep8 ... " :help
              "Non intrusive code checker running `pyflakes' and `pep8'
 call `easy_install pyflakes' and `easy_install pep8' if basics not available"
-             
+
              ["pyflakespep8-run" py-pyflakespep8-run :help
               "`py-pyflakespep8-run' Run `pyflakespep8'
 call `easy_install pyflakes' if not available"]
-             
+
              ["pyflakespep8-help" py-pyflakespep8-help :help
               "`py-pyflakespep8-help' Display help for
               Pyflakespep8 "]
-             
+
              ["pyflakespep8-flymake-mode" pyflakespep8-flymake-mode :help
               "`pyflakespep8-flymake-mode'
 Toggle flymake-mode running `pyflakespep8' "])
-            
+
             "-"
             ("Abbrevs"
              :help "see also `py-add-abbrev'"
@@ -2731,10 +2731,10 @@ Toggle flymake-mode running `pyflakespep8' "])
             ["add-abbrev" py-add-abbrev
              :help "Defines python-mode specific abbrev for last expressions before point.
 Argument is how many `py-partial-expression's form the expansion; or zero means the region is the expansion. "]
-            
+
             ("Skeletons"
              :help "See also templates in YASnippet"
-             
+
              ["if" py-if
               :help "Inserts if-statement"]
              ["py-else" py-else
@@ -2747,70 +2747,113 @@ Argument is how many `py-partial-expression's form the expansion; or zero means 
               :help "Inserts py-try/finally-statement"]
              ["py-try/except" py-try/except
               :help "Inserts py-try/except-statement"])
-            
+
             "-"
-            
+
             ["Import/reload file" py-execute-import-or-reload
              :help "`py-execute-import-or-reload'
 Load into inferior Python session"]
-            
+
             ["Debugger" pdb
              :help "`pdb'
 Run pdb under GUD"]
             "-"
-            
+
             ("Modes"
              :help "Toggle useful modes like `highlight-indentation'"
 
-             ["Toggle highlight-indentation" py-toggle-highlight-indentation
-              :help "M-x `highlight-indentation' switches this minor mode "]
+             ("py-switch-buffers-on-execute-p"
+              :help "Toggle  `py-switch-buffers-on-execute-p'"
 
-             ["Highlight-indentation on" highlight-indentation-on
-              :help "M-x `highlight-indentation-on' switches this minor mode on "]
+              ["Toggle py-switch-buffers-on-execute-p" toggle-py-switch-buffers-on-execute-p
+               :help "M-x `py-switch-buffers-on-execute-p' switches this minor mode "]
 
-             ["Highlight-indentation off" highlight-indentation-off
-              :help "M-x `highlight-indentation-off' switches this minor mode off "]
-             "-"
+              ["py-switch-buffers-on-execute-p on" py-switch-buffers-on-execute-p-on
+               :help "M-x `py-switch-buffers-on-execute-p-on' switches this minor mode on "]
+              
+              ["py-switch-buffers-on-execute-p off" py-switch-buffers-on-execute-p-off
+               :help "M-x `py-switch-buffers-on-execute-p-off' switches this minor mode off "]
+              
+              )
+             
+             ("py-split-windows-on-execute-p"
+              :help "Toggle  `py-split-windows-on-execute-p'"
+              
+              ["Toggle py-split-windows-on-execute-p" toggle-py-split-windows-on-execute-p
+               :help "M-x `py-split-windows-on-execute-p' splites this minor mode "]
 
-             ["Toggle autopair-mode" py-toggle-autopair-mode
-              :help "Toggles py-autopair minor-mode "]
+              ["py-split-windows-on-execute-p on" py-split-windows-on-execute-p-on
+               :help "M-x `py-split-windows-on-execute-p-on' splites this minor mode on "]
 
-             ["Autopair on" py-autopair-mode-on
-              :help "Switches autopair minor-mode on "]
+              ["py-split-windows-on-execute-p off" py-split-windows-on-execute-p-off
+               :help "M-x `py-split-windows-on-execute-p-off' splites this minor mode off "]
+              
+              )
+             
+             ("Highlight indentation"
+              :help "Toggle  `highlight-indentation'"
 
-             "-"
+              ["Toggle highlight-indentation" py-toggle-highlight-indentation
+               :help "M-x `highlight-indentation' switches this minor mode "]
 
-             ["Toggle py-smart-indentation" toggle-py-smart-indentation
-              :help "Toggles py-smart-indentation minor-mode "]
+              ["Highlight-indentation on" highlight-indentation-on
+               :help "M-x `highlight-indentation-on' switches this minor mode on "]
 
-             ["Py-smart-indentation on" py-smart-indentation-mode-on
-              :help "Switches py-smart-indentation minor-mode on "]
+              ["Highlight-indentation off" highlight-indentation-off
+               :help "M-x `highlight-indentation-off' switches this minor mode off "]
 
-             ["Toggle py-smart-indentation" py-toggle-smart-indentation
-              :help "Toggles py-smart-indentation minor-mode off"]
-
-             "-"
-
-             ["Toggle py-smart-operator" py-toggle-smart-operator
-              :help "Toggles py-smart-operator minor-mode"]
-
-             ["Py-smart-operator off" py-smart-operator-mode-off
-              :help "Switches py-smart-operator minor-mode off "]
-
-             ["Py-smart-operator on" py-smart-operator-mode-on
-              :help "Switches py-smart-operator minor-mode on "]
-
-             "-"
-
-             ["Toggle indent-tabs-mode" py-toggle-indent-tabs-mode
-              :help "See also `py-indent-tabs-mode-on', `-off' "]
-
-             ["Switch indent-tabs-mode on" py-indent-tabs-mode-on
-              :help "`py-indent-tabs-mode-on'"]
-
-             ["Switch indent-tabs-mode off" py-indent-tabs-mode-off
-              :help "`py-indent-tabs-mode-off'"])
-
+              )
+             
+             ("Autopair"
+              :help "Toggle autopair-mode'"
+              
+              ["Toggle autopair-mode" py-toggle-autopair-mode
+               :help "Toggles py-autopair minor-mode "]
+              
+              ["Autopair on" py-autopair-mode-on
+               :help "Switches autopair minor-mode on "]
+              
+              )
+             
+             ("Smart indentation"
+              :help "Toggle py-smart-indentation'"
+              
+              ["Toggle py-smart-indentation" toggle-py-smart-indentation
+               :help "Toggles py-smart-indentation minor-mode "]
+              
+              ["Py-smart-indentation on" py-smart-indentation-mode-on
+               :help "Switches py-smart-indentation minor-mode on "]
+              
+              )
+             
+             ("Smart operator"
+              :help "Toggle py-smart-operator'"
+              
+              ["Toggle py-smart-operator" py-toggle-smart-operator
+               :help "Toggles py-smart-operator minor-mode"]
+              
+              ["Py-smart-operator off" py-smart-operator-mode-off
+               :help "Switches py-smart-operator minor-mode off "]
+              
+              ["Py-smart-operator on" py-smart-operator-mode-on
+               :help "Switches py-smart-operator minor-mode on "]
+              
+              )
+             
+             ("indent-tabs-mode"
+              :help "Toggle indent-tabs-mode'"
+              
+              ["Toggle indent-tabs-mode" py-toggle-indent-tabs-mode
+               :help "See also `py-indent-tabs-mode-on', `-off' "]
+              
+              ["Switch indent-tabs-mode on" py-indent-tabs-mode-on
+               :help "`py-indent-tabs-mode-on'"]
+              
+              ["Switch indent-tabs-mode off" py-indent-tabs-mode-off
+               :help "`py-indent-tabs-mode-off'"])
+             
+             )
+            
             ["Help on symbol" py-describe-symbol
              :help "`py-describe-symbol'
 Use pydoc on symbol at point"]
@@ -4566,13 +4609,12 @@ Symmetric style.
 See available styles at `py-fill-paragraph' or var `py-fill-docstring-style'"]
 
              )
-            
 
             ("Electric... "
              :help "electric commands'"
 
              ["Electric colon" py-electric-colon
-              :help " `py-electric-colon' 
+              :help " `py-electric-colon'
 Insert a colon and indent accordingly.
 
 If a numeric argument ARG is provided, that many colons are inserted
@@ -4585,20 +4627,20 @@ Switched by `py-electric-colon-active-p', default is nil
 See also `py-electric-colon-greedy-p' "]
 
              ["Electric delete" py-electric-delete
-:help " `py-electric-delete' 
+:help " `py-electric-delete'
 Delete following character or levels of whitespace\.
 
 With ARG do that ARG times\. . "]
 
              ["Electric backspace" py-electric-backspace
-:help " `py-electric-backspace' 
+:help " `py-electric-backspace'
 Delete preceding character or level of indentation\.
 
 With ARG do that ARG times\.
 Returns column reached\. . "]
 
              ["Electric comment" py-electric-comment
-:help " `py-electric-comment' 
+:help " `py-electric-comment'
 Insert a comment. If starting a comment, indent accordingly.
 
 If a numeric argument ARG is provided, that many \"#\" are inserted
@@ -4606,7 +4648,7 @@ non-electrically.
 With C-u \"#\" electric behavior is inhibited inside a string or comment.. "]
 
              ["Electric yank" py-electric-yank
-:help " `py-electric-yank' 
+:help " `py-electric-yank'
 Perform command `yank' followed by an `indent-according-to-mode' . "]
              )))
 

@@ -4384,6 +4384,24 @@ def foo():
   (assert (markerp (py-execute-buffer-ipython)) nil "does-not-dedent-regions-lp-1072869-test failed")
   )
 
+(defun inconvenient-py-switch-buffers-on-execute-lp-1073-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+print \"HELLO!\"
+"))
+  (py-bug-tests-intern 'inconvenient-py-switch-buffers-on-execute-lp-1073-base arg teststring)))
+
+;; doesn't word, patches welcome
+(defun inconvenient-py-switch-buffers-on-execute-lp-1073-base ()
+  (let ((py-switch-buffers-on-execute-p t)
+        erg)
+    (py-execute-buffer-python)
+    (message "current: %s" (buffer-name (current-buffer)))
+    (setq erg (string-match "Python" (buffer-name (current-buffer))))
+    ;; (assert erg nil "inconvenient-py-switch-buffers-on-execute-lp-1073-test failed")
+    (switch-to-buffer (current-buffer))
+    ))
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

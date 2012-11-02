@@ -81,6 +81,14 @@ New in version 6.1.0
 
 - `py-down-statement', `py-up-statement'
 
+- toggle-py-split-windows-on-execute-p
+- py-split-windows-on-execute-p-off
+- py-split-windows-on-execute-p-on
+
+- toggle-py-switch-buffers-on-execute-p
+- py-switch-buffers-on-execute-p-on
+- py-switch-buffers-on-execute-p-off
+
 New in version 6.0.12
 ---------------------
 

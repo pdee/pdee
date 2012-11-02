@@ -154,6 +154,70 @@ Returns value of `py-smart-operator-mode-p'. "
   (when py-verbose-p (message "autopair-mode: %s" autopair-mode))
   autopair-mode)
 
+;;; py-switch-buffers-on-execute-p forms
+(defun toggle-py-switch-buffers-on-execute-p (&optional arg)
+  "If `py-switch-buffers-on-execute-p' should be on or off.
+
+  Returns value of `py-switch-buffers-on-execute-p' switched to. "
+  (interactive)
+  (let ((arg (or arg (if py-switch-buffers-on-execute-p -1 1))))
+    (if (< 0 arg)
+        (setq py-switch-buffers-on-execute-p t)
+      (setq py-switch-buffers-on-execute-p nil))
+    (when (or py-verbose-p (interactive-p)) (message "py-switch-buffers-on-execute-p: %s" py-switch-buffers-on-execute-p))
+    py-switch-buffers-on-execute-p))
+
+(defun py-switch-buffers-on-execute-p-on (&optional arg)
+  "Make sure, `py-py-switch-buffers-on-execute-p' is on.
+
+Returns value of `py-switch-buffers-on-execute-p'. "
+  (interactive)
+  (let ((arg (or arg 1)))
+    (toggle-py-switch-buffers-on-execute-p arg))
+  (when (or py-verbose-p (interactive-p)) (message "py-switch-buffers-on-execute-p: %s" py-switch-buffers-on-execute-p))
+  py-switch-buffers-on-execute-p)
+
+(defun py-switch-buffers-on-execute-p-off ()
+  "Make sure, `py-switch-buffers-on-execute-p' is off.
+
+Returns value of `py-switch-buffers-on-execute-p'. "
+  (interactive)
+  (toggle-py-switch-buffers-on-execute-p -1)
+  (when (or py-verbose-p (interactive-p)) (message "py-switch-buffers-on-execute-p: %s" py-switch-buffers-on-execute-p))
+  py-switch-buffers-on-execute-p)
+
+;;; py-split-windows-on-execute-p forms
+(defun toggle-py-split-windows-on-execute-p (&optional arg)
+  "If `py-split-windows-on-execute-p' should be on or off.
+
+  Returns value of `py-split-windows-on-execute-p' switched to. "
+  (interactive)
+  (let ((arg (or arg (if py-split-windows-on-execute-p -1 1))))
+    (if (< 0 arg)
+        (setq py-split-windows-on-execute-p t)
+      (setq py-split-windows-on-execute-p nil))
+    (when (or py-verbose-p (interactive-p)) (message "py-split-windows-on-execute-p: %s" py-split-windows-on-execute-p))
+    py-split-windows-on-execute-p))
+
+(defun py-split-windows-on-execute-p-on (&optional arg)
+  "Make sure, `py-py-split-windows-on-execute-p' is on.
+
+Returns value of `py-split-windows-on-execute-p'. "
+  (interactive)
+  (let ((arg (or arg 1)))
+    (toggle-py-split-windows-on-execute-p arg))
+  (when (or py-verbose-p (interactive-p)) (message "py-split-windows-on-execute-p: %s" py-split-windows-on-execute-p))
+  py-split-windows-on-execute-p)
+
+(defun py-split-windows-on-execute-p-off ()
+  "Make sure, `py-split-windows-on-execute-p' is off.
+
+Returns value of `py-split-windows-on-execute-p'. "
+  (interactive)
+  (toggle-py-split-windows-on-execute-p -1)
+  (when (or py-verbose-p (interactive-p)) (message "py-split-windows-on-execute-p: %s" py-split-windows-on-execute-p))
+  py-split-windows-on-execute-p)
+
 
 (provide 'python-components-switches)
 ;;; python-components-switches.el ends here

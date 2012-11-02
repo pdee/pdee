@@ -1440,10 +1440,9 @@ A complementary command travelling right, whilst `py-beginning-of-" ele "' stops
     (message "Writing for; %s" (car kill-ring))
     (set-buffer (get-buffer-create (capitalize ele)))
     (erase-buffer)
-    (insert (concat ";;; " (capitalize ele) " forms"))
+    (insert (concat ";;; " ele " forms"))
     (insert (concat "
-\(defalias 'toggle-" ele " 'py-toggle-" ele ")
-\(defun py-toggle-" ele " (&optional arg)
+\(defun toggle-" ele " (&optional arg)
   \"If `" ele "' should be on or off.
 
   Returns value of `" ele "' switched to. \"
@@ -1459,7 +1458,7 @@ A complementary command travelling right, whilst `py-beginning-of-" ele "' stops
   \"Make sure, `py-" ele "' is on.
 
 Returns value of `" ele "'. \"
-  (interactive \"p\")
+  (interactive)
   (let ((arg (or arg 1)))
     (toggle-" ele " arg))
   (when (or py-verbose-p (interactive-p)) (message \"" ele ": %s\" " ele "))
@@ -1469,7 +1468,7 @@ Returns value of `" ele "'. \"
   \"Make sure, `" ele "' is off.
 
 Returns value of `" ele "'. \"
-  (interactive \"p\")
+  (interactive)
   (toggle-" ele " -1)
   (when (or py-verbose-p (interactive-p)) (message \"" ele ": %s\" " ele "))
   " ele ")"))

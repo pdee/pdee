@@ -302,9 +302,9 @@ Needed when file-path names are contructed from maybe numbered buffer names like
            (and py-split-windows-on-execute-p
                 (or (eq switch 'switch)
                     py-switch-buffers-on-execute-p)))
-         (if (< (count-windows) py-max-split-windows)
-             (funcall py-split-windows-on-execute-function)
-           (switch-to-buffer-other-window py-buffer-name)))
+         (when (< (count-windows) py-max-split-windows)
+           (funcall py-split-windows-on-execute-function))
+         (switch-to-buffer-other-window py-buffer-name))
         ;; split, not switch
         ((and py-split-windows-on-execute-p
               (or (eq switch 'noswitch)
@@ -312,19 +312,20 @@ Needed when file-path names are contructed from maybe numbered buffer names like
          (if (< (count-windows) py-max-split-windows)
              (progn
                (funcall py-split-windows-on-execute-function)
-               (display-buffer py-buffer-name))
+               (display-buffer py-buffer-name 'display-buffer-reuse-window))
            (display-buffer py-buffer-name 'display-buffer-reuse-window)))
         ;; no split, switch
         ((or (eq switch 'switch)
              (and (not (eq switch 'noswitch))
                   py-switch-buffers-on-execute-p))
-         (pop-to-buffer py-buffer-name)
-         (goto-char (point-max)))
+         (let (pop-up-windows)
+           (pop-to-buffer py-buffer-name)))
         ;; no split, no switch
         ((or (eq switch 'noswitch)
              (not py-switch-buffers-on-execute-p))
-         (set-buffer oldbuf)
-         (switch-to-buffer (current-buffer)))))
+         (let (pop-up-windows)
+           (set-buffer oldbuf)
+           (switch-to-buffer (current-buffer))))))
 
 (defun py-report-executable (py-buffer-name)
   (let ((erg (downcase (replace-regexp-in-string
