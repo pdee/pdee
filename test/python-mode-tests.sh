@@ -308,7 +308,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-forward-into-nomenclature) nil \"py-forward-into-nomenclature not detected as command\")" \
 -eval "(assert (commandp 'py-backward-into-nomenclature) nil \"py-backward-into-nomenclature not detected as command\")" \
 -eval "(assert (commandp 'match-paren) nil \"match-paren not detected as command\")" \
--eval "(assert (commandp 'py-toggle-execute-keep-temporary-file-p) nil \"py-toggle-execute-keep-temporary-file-p not detected as command\")" \
 -eval "(assert (commandp 'py-guess-default-python) nil \"py-guess-default-python not detected as command\")" \
 -eval "(assert (commandp 'py-set-ipython-completion-command-string) nil \"py-set-ipython-completion-command-string not detected as command\")" \
 -eval "(assert (commandp 'py-shell-dedicated) nil \"py-shell-dedicated not detected as command\")" \

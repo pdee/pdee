@@ -708,7 +708,7 @@ See also `py-execute-region'. "
 (defun py-insert-execute-directory (directory &optional orig done)
   (let ((orig (or orig (point)))
         (done done))
-    (switch-to-buffer (current-buffer)) 
+    (switch-to-buffer (current-buffer))
     (if done (goto-char done) (goto-char (point-min)))
     (cond ((re-search-forward "^from __future__ import " nil t 1)
            (py-end-of-statement)
@@ -746,15 +746,17 @@ Inserts an incentive true form \"if 1:\\n.\" "
 (defun py-fix-start (start end)
   "Internal use by py-execute... functions.
 Avoid empty lines at the beginning. "
+  ;; (switch-to-buffer (current-buffer))
   (python-mode)
   (goto-char start)
   (let ((beg (copy-marker start)))
     (while (empty-line-p)
       (delete-region (line-beginning-position) (1+ (line-end-position))))
     (back-to-indentation)
-    (py-down-statement)
+    (unless (py-beginning-of-statement-p)
+      (py-down-statement))
     (while (not (eq (current-indentation) 0))
-      (py-shift-left (current-indentation) start end))
+      (py-shift-left py-indent-offset start end))
     (setq py-line-number-offset (count-lines 1 start))
     beg))
 
