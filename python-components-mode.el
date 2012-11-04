@@ -2853,16 +2853,44 @@ Run pdb under GUD"]
                :help "`py-indent-tabs-mode-off'"])
              
              )
-            
+
+            ("Help"
+             :help "Some help commands"
+
+             ["Help" py-complete-help
+              :help " `py-complete-help' 
+Get help on a Python expression.\n
+Needs Pymacs "]
+
+            ["Help thing at point" py-complete-help-thing-at-point
+             :help " `py-complete-help-thing-at-point'\n
+Needs Pymacs "]
+
             ["Help on symbol" py-describe-symbol
-             :help "`py-describe-symbol'
+             :help "`py-describe-symbol'\n
 Use pydoc on symbol at point"]
+
+            ["Signature" py-complete-signature-expr
+             :help " Print object's signature\n  
+Needs Pymacs"]
+            )
+
+            ("Completion"
+             :help "Completion options"
+            
             ["Complete symbol" py-shell-complete
              :help "`py-shell-complete'
 Complete (qualified) symbol before point"]
+
+            ["Complete" py-complete
+             :help " `py-complete' 
+Complete symbol before point using Pymacs . "]
+            )
+
             ["Find function" py-find-function
              :help "`py-find-function'
 Try to find source definition of function at point"]
+
 
             ["Switch index-function" py-switch-imenu-index-function
              :help "`py-switch-imenu-index-function'
@@ -4646,6 +4674,16 @@ Insert a comment. If starting a comment, indent accordingly.
 If a numeric argument ARG is provided, that many \"#\" are inserted
 non-electrically.
 With C-u \"#\" electric behavior is inhibited inside a string or comment.. "]
+
+             ["Electric left paren" py-complete-electric-lparen
+              :help " `py-complete-electric-lparen' 
+electricly insert '(', and try to get a signature for the stuff to the left.\n  
+Needs Pymacs"]
+
+             ["Complete electric comma" py-complete-electric-comma
+              :help " `py-complete-electric-comma' 
+electricly insert ',', and redisplay latest signature.\n  
+Needs Pymacs"]
 
              ["Electric yank" py-electric-yank
 :help " `py-electric-yank'
