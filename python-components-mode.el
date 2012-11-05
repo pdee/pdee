@@ -2770,15 +2770,15 @@ Run pdb under GUD"]
 
               ["py-switch-buffers-on-execute-p on" py-switch-buffers-on-execute-p-on
                :help "M-x `py-switch-buffers-on-execute-p-on' switches this minor mode on "]
-              
+
               ["py-switch-buffers-on-execute-p off" py-switch-buffers-on-execute-p-off
                :help "M-x `py-switch-buffers-on-execute-p-off' switches this minor mode off "]
-              
+
               )
-             
+
              ("py-split-windows-on-execute-p"
               :help "Toggle  `py-split-windows-on-execute-p'"
-              
+
               ["Toggle py-split-windows-on-execute-p" toggle-py-split-windows-on-execute-p
                :help "M-x `py-split-windows-on-execute-p' splites this minor mode "]
 
@@ -2787,9 +2787,9 @@ Run pdb under GUD"]
 
               ["py-split-windows-on-execute-p off" py-split-windows-on-execute-p-off
                :help "M-x `py-split-windows-on-execute-p-off' splites this minor mode off "]
-              
+
               )
-             
+
              ("Highlight indentation"
               :help "Toggle  `highlight-indentation'"
 
@@ -2803,62 +2803,62 @@ Run pdb under GUD"]
                :help "M-x `highlight-indentation-off' switches this minor mode off "]
 
               )
-             
+
              ("Autopair"
               :help "Toggle autopair-mode'"
-              
+
               ["Toggle autopair-mode" py-toggle-autopair-mode
                :help "Toggles py-autopair minor-mode "]
-              
+
               ["Autopair on" py-autopair-mode-on
                :help "Switches autopair minor-mode on "]
-              
+
               )
-             
+
              ("Smart indentation"
               :help "Toggle py-smart-indentation'"
-              
+
               ["Toggle py-smart-indentation" toggle-py-smart-indentation
                :help "Toggles py-smart-indentation minor-mode "]
-              
+
               ["Py-smart-indentation on" py-smart-indentation-mode-on
                :help "Switches py-smart-indentation minor-mode on "]
-              
+
               )
-             
+
              ("Smart operator"
               :help "Toggle py-smart-operator'"
-              
+
               ["Toggle py-smart-operator" py-toggle-smart-operator
                :help "Toggles py-smart-operator minor-mode"]
-              
+
               ["Py-smart-operator off" py-smart-operator-mode-off
                :help "Switches py-smart-operator minor-mode off "]
-              
+
               ["Py-smart-operator on" py-smart-operator-mode-on
                :help "Switches py-smart-operator minor-mode on "]
-              
+
               )
-             
+
              ("indent-tabs-mode"
               :help "Toggle indent-tabs-mode'"
-              
+
               ["Toggle indent-tabs-mode" py-toggle-indent-tabs-mode
                :help "See also `py-indent-tabs-mode-on', `-off' "]
-              
+
               ["Switch indent-tabs-mode on" py-indent-tabs-mode-on
                :help "`py-indent-tabs-mode-on'"]
-              
+
               ["Switch indent-tabs-mode off" py-indent-tabs-mode-off
                :help "`py-indent-tabs-mode-off'"])
-             
+
              )
 
             ("Help"
              :help "Some help commands"
 
              ["Help" py-complete-help
-              :help " `py-complete-help' 
+              :help " `py-complete-help'
 Get help on a Python expression.\n
 Needs Pymacs "]
 
@@ -2871,19 +2871,19 @@ Needs Pymacs "]
 Use pydoc on symbol at point"]
 
             ["Signature" py-complete-signature-expr
-             :help " Print object's signature\n  
+             :help " Print object's signature\n
 Needs Pymacs"]
             )
 
             ("Completion"
              :help "Completion options"
-            
+
             ["Complete symbol" py-shell-complete
              :help "`py-shell-complete'
 Complete (qualified) symbol before point"]
 
             ["Complete" py-complete
-             :help " `py-complete' 
+             :help " `py-complete'
 Complete symbol before point using Pymacs . "]
             )
 
@@ -4676,13 +4676,13 @@ non-electrically.
 With C-u \"#\" electric behavior is inhibited inside a string or comment.. "]
 
              ["Electric left paren" py-complete-electric-lparen
-              :help " `py-complete-electric-lparen' 
-electricly insert '(', and try to get a signature for the stuff to the left.\n  
+              :help " `py-complete-electric-lparen'
+electricly insert '(', and try to get a signature for the stuff to the left.\n
 Needs Pymacs"]
 
              ["Complete electric comma" py-complete-electric-comma
-              :help " `py-complete-electric-comma' 
-electricly insert ',', and redisplay latest signature.\n  
+              :help " `py-complete-electric-comma'
+electricly insert ',', and redisplay latest signature.\n
 Needs Pymacs"]
 
              ["Electric yank" py-electric-yank
@@ -5914,29 +5914,19 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
                               #'autopair-python-triple-quote-action)))))
   (when py-trailing-whitespace-smart-delete-p
     (add-hook 'before-save-hook 'delete-trailing-whitespace nil 'local))
-  ;; (cond
-  ;; (py-complete-function
-  ;; (add-hook 'completion-at-point-functions
-  ;; py-complete-function nil 'local))
-  (add-hook 'completion-at-point-functions
-            (if py-load-pymacs-p
-                'py-complete-completion-at-point
-              'py-completion-at-point)
-            nil 'local)
-
-  ;; (py-load-pymacs-p
-  ;;  (add-hook 'completion-at-point-functions
-  ;;            'py-complete-completion-at-point nil 'local))
-  ;; (t
-  ;;  (add-hook 'completion-at-point-functions
-  ;;            'py-shell-complete nil 'local)))
+  (cond
+   (py-complete-function
+    (add-hook 'completion-at-point-functions
+              py-complete-function nil 'local))
+   (py-load-pymacs-p
+    (add-hook 'completion-at-point-functions
+              'py-complete-completion-at-point nil 'local))
+   (t
+    (add-hook 'completion-at-point-functions
+              'py-shell-complete nil 'local)))
   (when (and py-imenu-create-index-p (fboundp 'imenu-add-to-menubar)(ignore-errors (require 'imenu)))
     (set (make-local-variable 'imenu-create-index-function) 'py-imenu-create-index-function)
     (imenu-add-to-menubar "PyIndex"))
-  ;; (when py-imenu-create-index-p (imenu-add-to-menubar "PyIndex"))
-
-  ;; Now guess `py-indent-offset'
-
   ;; add the menu
   (when py-menu
     (easy-menu-add py-menu))
