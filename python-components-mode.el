@@ -5864,7 +5864,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
 
 \\{python-mode-map}"
   :group 'python-mode
-;;; Local vars
+  ;; Local vars
   (set (make-local-variable 'outline-regexp)
        (concat (mapconcat 'identity
                           (mapcar #'(lambda (x) (concat "^\\s-*" x "\\_>"))
@@ -5893,7 +5893,6 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (set (make-local-variable 'add-log-current-defun-function) 'py-current-defun)
   (set (make-local-variable 'paragraph-start) "\\s-*$")
   (set (make-local-variable 'fill-paragraph-function) 'py-fill-paragraph)
-  ;; (set (make-local-variable 'fill-paragraph-function) 'python-fill-paragraph)
   (set (make-local-variable 'require-final-newline) mode-require-final-newline)
   (make-local-variable 'python-saved-check-command)
   (set (make-local-variable 'tab-width) py-indent-offset)
@@ -5920,7 +5919,10 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   ;; (add-hook 'completion-at-point-functions
   ;; py-complete-function nil 'local))
   (add-hook 'completion-at-point-functions
-            'py-completion-at-point nil 'local)
+            (if py-load-pymacs-p
+                'py-complete-completion-at-point
+              'py-completion-at-point)
+            nil 'local)
 
   ;; (py-load-pymacs-p
   ;;  (add-hook 'completion-at-point-functions
