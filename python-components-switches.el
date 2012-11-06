@@ -67,7 +67,7 @@ Returns value of `py-smart-indentation' switched to. "
     (if (< 0 arg)
         (progn
           (setq py-smart-indentation t)
-          (py-compute-indentation))
+          (py-guess-indent-offset))
       (setq py-smart-indentation nil)
       (setq py-indent-offset (default-value 'py-indent-offset)))
     (when (interactive-p) (message "py-smart-indentation: %s" py-smart-indentation))

@@ -84,8 +84,11 @@ When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
                       (skip-chars-backward " \t")
                       (py-compute-indentation orig origline closing line inside repeat indent-offset))
                   (goto-char (nth 8 pps))
-                  (if (and line (or py-indent-honors-inline-comment (looking-back "^[ \t]*")))
-                      (current-column)
+                  (if
+                      line
+                      (if py-indent-honors-inline-comment
+                          (current-column)
+                        (current-indentation))
                     (forward-char -1)
                     (py-compute-indentation orig origline closing line inside repeat indent-offset))))
                ((and (looking-at "[ \t]*#") (looking-back "^[ \t]*")(not py-indent-comments)(not line)(eq origline (py-count-lines)))
@@ -149,7 +152,6 @@ When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
                     (if (looking-at "from +\\([^ \t\n]+\\) +import")
                         5
                       (+ (current-indentation) py-continuation-offset)))))
-              
                ((and (looking-at py-block-closing-keywords-re)(eq (py-count-lines) origline))
                 (skip-chars-backward "[ \t\r\n\f]")
                 (py-beginning-of-statement)

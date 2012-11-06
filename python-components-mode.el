@@ -790,6 +790,7 @@ element matches `py-shell-name'."
   :type 'string
   :group 'python-mode)
 (make-variable-buffer-local 'py-shell-name)
+(defvaralias 'py-python-command 'py-shell-name)
 
 (defcustom py-shell-toggle-1 py-shell-name
   "A PATH/TO/EXECUTABLE or default value used by `py-toggle-shell'. "

@@ -1801,8 +1801,12 @@ foo = True # the next line is indented incorrectly
     (py-bug-tests-intern 'indent-after-inline-comment-lp:873372.txt-base arg teststring)))
 
 (defun indent-after-inline-comment-lp:873372.txt-base ()
-  (goto-char 111)
-  (assert (eq 0 (py-compute-indentation)) nil "indent-after-inline-comment-lp:873372-test failed"))
+  (let ((py-indent-honors-inline-comment t))
+    (goto-char 111)
+    (assert (eq 11 (py-compute-indentation)) nil "indent-after-inline-comment-lp:873372-test #1 failed"))
+  (let (py-indent-honors-inline-comment)
+    (goto-char 111)
+    (assert (eq 0 (py-compute-indentation)) nil "indent-after-inline-comment-lp:873372-test #2 failed")))
 
 (defun else-clause-indentation-lp:874470-test (&optional arg)
   (interactive "p")
