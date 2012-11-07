@@ -652,8 +652,6 @@ To go just beyond the final line of the current statement, use `py-down-statemen
         (goto-char (nth 8 pps))
         (unless (looking-back "^[ \t]*")
           (setq stm t))
-        ;; (when (looking-at py-string-delim-re)
-        ;; (py-eos-handle-string-start))
         (when (looking-at "'''\\|'")
           (py-eos-handle-singlequoted-string-start))
         (when (looking-at "\"\"\"\\|\"")

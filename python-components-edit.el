@@ -280,7 +280,7 @@ Returns `py-indent-offset'"
                                (default-value 'py-indent-offset)))))))))
       (setq secondindent
             (unless done
-              (if firstindent
+              (if (and firstindent (numberp firstindent))
                   ;; let's look if inside a clause
                   (cond ((and
                           ;; (goto-char orig)
@@ -301,14 +301,14 @@ Returns `py-indent-offset'"
                          (py-end-of-statement)
                          (py-beginning-of-statement))
                 (current-indentation))))
-      (when secondindent
+      (when (and secondindent (numberp secondindent) (numberp firstindent))
         (when (eq 0 (abs (- secondindent firstindent)))
           (when (if (py-beginning-of-statement) (< (current-indentation) secondindent))
             (setq secondindent (current-indentation))))
         (setq guessed
-              (abs (- secondindent firstindent))))
-      (when (and (eq 0 guessed)(not (eq 0 secondindent)))
-        (setq guessed secondindent))
+              (abs (- secondindent firstindent)))
+        (when (and (eq 0 guessed)(not (eq 0 secondindent)))
+          (setq guessed secondindent)))
       (if (and guessed (py-guessed-sanity-check guessed))
           (setq py-indent-offset guessed)
         (setq py-indent-offset (default-value 'py-indent-offset)))

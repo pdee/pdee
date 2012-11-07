@@ -38,6 +38,7 @@
 
 (setq bug-numbered-tests
       (list
+       'fails-to-indent-abs-wrong-type-argument-lp-1075673-test
        'incorrect-indentation-of-one-line-functions-lp-1067633-test
        'several-new-bugs-with-paragraph-filling-lp-1066489-test
        'impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test
@@ -4406,6 +4407,32 @@ print \"HELLO!\"
     ;; (assert erg nil "inconvenient-py-switch-buffers-on-execute-lp-1073-test failed")
     (switch-to-buffer (current-buffer))
     ))
+
+(defun fails-to-indent-abs-wrong-type-argument-lp-1075673-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#!/usr/bin/env python
+# emacs: -\*- mode: python; py-indent-offset: 4; indent-tabs-mode: nil -\*-
+# vi: set ft=python sts=4 ts=4 sw=4 et:
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ##
+#
+#   See COPYING file distributed along with the PyMVPA package for the
+#   copyright and license terms.
+#
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ##
+\"\"\"Python distutils setup for PyMVPA\"\"\"
+
+from numpy.distutils.core import setup, Extension
+import os
+import sys
+from glob import glob
+
+if sys.version_info[:2] < (2, 5):
+"))
+  (py-bug-tests-intern 'fails-to-indent-abs-wrong-type-argument-lp-1075673-base arg teststring)))
+
+(defun fails-to-indent-abs-wrong-type-argument-lp-1075673-base ()
+    (assert (eq 4 (py-compute-indentation)) nil "fails-to-indent-abs-wrong-type-argument-lp-1075673-test failed"))
+
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
