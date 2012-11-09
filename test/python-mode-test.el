@@ -27,6 +27,7 @@
 
 (setq python-mode-tests
       (list
+       'py-nested-block-or-clause-test
        'py-down-statement-test
        'py-fill-string-django-test
        'py-fill-string-onetwo-test
@@ -2047,6 +2048,66 @@ asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf
 (defun py-down-statement-base ()
     (goto-char (point-min))
     (assert (eq 146 (py-down-statement)) nil "py-down-statement-test failed"))
+
+
+(defun py-nested-block-or-clause-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+if foo:
+    if bar:
+        if True:
+            pass
+        elif False:
+            pass
+        else:
+            pass
+    elif baz:
+        pass
+elif foo2:
+    if bar2:
+        pass
+    elif baz2:
+        pass
+    else:
+        pass
+else:
+    pass
+
+"))
+  (py-bug-tests-intern 'py-nested-block-or-clause-base arg teststring)))
+
+(defun py-nested-block-or-clause-base ()
+  (goto-char 48)
+  (assert (eq 299 (py-end-of-block)) nil "py-nested-block-or-clause-test #1 failed")
+  (goto-char 60)
+  (assert (eq 196 (py-end-of-block)) nil "py-nested-block-or-clause-test #2 failed")
+  (goto-char 76)
+  (assert (eq 169 (py-end-of-block)) nil "py-nested-block-or-clause-test #3 failed")
+  (goto-char 48)
+  (assert (eq 196 (py-end-of-clause)) nil "py-nested-block-or-clause-test #4 failed")
+  (goto-char 60)
+  (assert (eq 169 (py-end-of-clause)) nil "py-nested-block-or-clause-test #5 failed")
+  (goto-char 85)
+  (assert (eq 101 (py-end-of-clause)) nil "py-nested-block-or-clause-test #6 failed")
+  (goto-char 291)
+  (assert (eq 285 (py-beginning-of-clause)) nil "py-nested-block-or-clause-test #7 failed")
+  (assert (eq 197 (py-beginning-of-clause)) nil "py-nested-block-or-clause-test #8 failed")
+  (assert (eq 48 (py-beginning-of-block-or-clause)) nil "py-nested-block-or-clause-test #9 failed")
+  (goto-char 284)
+  (assert (eq 266 (py-beginning-of-block-or-clause)) nil "py-nested-block-or-clause-test #10 failed")
+  (assert (eq 238 (py-beginning-of-block-or-clause)) nil "py-nested-block-or-clause-test #11 failed")
+  (assert (eq 212 (py-beginning-of-block-or-clause)) nil "py-nested-block-or-clause-test #12 failed")
+  (assert (eq 197 (py-beginning-of-block-or-clause)) nil "py-nested-block-or-clause-test #13 failed")
+  (goto-char 196)
+  (assert (eq 174 (py-beginning-of-block-or-clause)) nil "py-nested-block-or-clause-test #14 failed")
+  (goto-char 169)
+  (assert (eq 147 (py-beginning-of-block-or-clause)) nil "py-nested-block-or-clause-test #15 failed")
+  (assert (eq 110 (py-beginning-of-block-or-clause)) nil "py-nested-block-or-clause-test #16 failed")
+  (assert (eq 76 (py-beginning-of-block-or-clause)) nil "py-nested-block-or-clause-test #17 failed")
+  (assert (eq 60 (py-beginning-of-block-or-clause)) nil "py-nested-block-or-clause-test #18 failed")
+  )
+
 
 ;; imenu--subalist-p
 (provide 'python-mode-test)

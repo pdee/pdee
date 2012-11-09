@@ -4,6 +4,11 @@ Python Mode News
 New in version 6.1.0
 ---------------------
 
+- py-up 
+  Go to beginning one level above of compound statement or definition at point.
+- py-down
+  Go to beginning one level below of compound statement or definition at point.
+
 - Customizable output directory 
   In order to determine which directory the Python-shell
   should have when output arrives, variables are queried in that order:
