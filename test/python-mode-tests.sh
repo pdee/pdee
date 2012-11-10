@@ -782,6 +782,8 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-fill-string-pep-257-nn) nil \"py-fill-string-pep-257-nn not detected as command\")" \
 -eval "(assert (commandp 'py-fill-string-symmetric) nil \"py-fill-string-symmetric not detected as command\")" \
 -eval "(setq enable-local-variables :all)" \
+--funcall incorrect-indentation-of-comments-in-a-multiline-list-lp-1077063-test \
+--funcall py-nested-block-or-clause-test \
 --funcall fails-to-indent-abs-wrong-type-argument-lp-1075673-test \
 --funcall does-not-dedent-regions-lp-1072869-test \
 --funcall py-down-statement-test \

@@ -38,6 +38,7 @@
 
 (setq bug-numbered-tests
       (list
+       'incorrect-indentation-of-comments-in-a-multiline-list-lp-1077063-test
        'fails-to-indent-abs-wrong-type-argument-lp-1075673-test
        'incorrect-indentation-of-one-line-functions-lp-1067633-test
        'several-new-bugs-with-paragraph-filling-lp-1066489-test
@@ -4432,6 +4433,30 @@ if sys.version_info[:2] < (2, 5):
 
 (defun fails-to-indent-abs-wrong-type-argument-lp-1075673-base ()
     (assert (eq 4 (py-compute-indentation)) nil "fails-to-indent-abs-wrong-type-argument-lp-1075673-test failed"))
+
+(defun incorrect-indentation-of-comments-in-a-multiline-list-lp-1077063-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#!/usr/bin/python
+#emacs: -\*- mode: python; py-indent-offset: 4; tab-width: 4; indent-tabs-mode: nil -\*-
+#ex: set sts=4 ts=4 sw=4 noet:
+
+class X:
+    XX = [
+        \"asdfasdF\",
+        \"asdfasdf\",
+    # lakjsdflkjasdf
+    \"lkajsdlkfj\"
+    ]
+    
+# There is no way to indent #comment line with TAB, nor subsequent list entry to the level of previous
+# entries
+
+"))
+  (py-bug-tests-intern 'incorrect-indentation-of-comments-in-a-multiline-list-lp-1077063-base arg teststring)))
+
+(defun incorrect-indentation-of-comments-in-a-multiline-list-lp-1077063-base ()
+    (goto-char 202)
+    (assert (eq 8 (py-compute-indentation)) nil "incorrect-indentation-of-comments-in-a-multiline-list-lp-1077063-test failed"))
 
 
 (provide 'py-bug-numbered-tests)
