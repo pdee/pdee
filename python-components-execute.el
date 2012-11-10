@@ -298,13 +298,16 @@ Needed when file-path names are contructed from maybe numbered buffer names like
 
 (defun py-shell-manage-windows (switch py-split-windows-on-execute-p py-switch-buffers-on-execute-p oldbuf py-buffer-name)
   (cond (;; split and switch
-         (unless (eq switch 'noswitch)
-           (and py-split-windows-on-execute-p
-                (or (eq switch 'switch)
-                    py-switch-buffers-on-execute-p)))
+         (and py-split-windows-on-execute-p
+              (not (eq switch 'noswitch))
+              (or (eq switch 'switch)
+                  py-switch-buffers-on-execute-p))
          (when (< (count-windows) py-max-split-windows)
            (funcall py-split-windows-on-execute-function))
-         (switch-to-buffer-other-window py-buffer-name))
+         (display-buffer oldbuf)
+         ;; (switch-to-buffer-other-window py-buffer-name)
+         (pop-to-buffer py-buffer-name)
+         )
         ;; split, not switch
         ((and py-split-windows-on-execute-p
               (or (eq switch 'noswitch)
@@ -1172,15 +1175,12 @@ Optional OUTPUT-BUFFER and ERROR-BUFFER might be given.')
 (defun py-execute-file (&optional filename shell dedicated switch)
   "When called interactively, user is prompted for filename. "
   (interactive "fFile: ")
-  (let* ((regbuf (current-buffer))
+  (let* ((oldbuf (current-buffer))
          (file (or (expand-file-name filename) (when (ignore-errors (file-readable-p (buffer-file-name))) (buffer-file-name))))
          (shell (or shell (progn (with-temp-buffer (insert-file-contents file)(py-choose-shell)))))
          (name (py-process-name shell dedicated))
          (proc (get-buffer-process (py-shell nil dedicated (or shell (downcase name)))))
-         (procbuf (get-process proc))
-         ;; (procbuf (if dedicated
-         ;;              (buffer-name (get-buffer (current-buffer)))
-         ;;            (buffer-name (get-buffer (concat "*" name "*")))))
+         (py-buffer-name (buffer-name (process-buffer proc)))
          (pec (if (string-match "Python3" name)
                   (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" file file)
                 (format "execfile(r'%s') # PYTHON-MODE\n" file)))
@@ -1190,13 +1190,7 @@ Optional OUTPUT-BUFFER and ERROR-BUFFER might be given.')
         (progn
           (setq erg (py-execute-file-base proc file pec))
           (setq py-exception-buffer (cons file (current-buffer)))
-          (if (or (eq switch 'switch)
-                  (and (not (eq switch 'noswitch)) py-switch-buffers-on-execute-p))
-              (progn
-                (pop-to-buffer procbuf)
-                (goto-char (point-max)))
-            (when (buffer-live-p regbuf) (pop-to-buffer regbuf))
-            (when py-verbose-p (message "Output buffer: %s" procbuf)))
+          (py-shell-manage-windows switch py-split-windows-on-execute-p py-switch-buffers-on-execute-p oldbuf py-buffer-name)
           (sit-for 0.1)
           erg)
       (message "File not readable: %s" "Do you have write permissions?"))))

@@ -118,6 +118,107 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)\"\
 ;;; python-components-exec-forms.el ends here\n ")
   (emacs-lisp-mode))
 
+(defun write-options-dokumentation-subform (pyo)
+  (cond ((string-match "dedicated" pyo)
+         (insert "\n\nUses a dedicated shell.")))
+  (cond ((string-match "noswitch" pyo)
+         (insert "\nIgnores default of `py-shell-switch-buffers-on-execute-p', uses it with value \\\"nil\\\""))
+        ((string-match "switch" pyo)
+         (insert "\nIgnores default of `py-shell-switch-buffers-on-execute-p', uses it with value \\\"non-nil\\\""))))
+
+(defun write-menu-entry (&optional erg)
+  "Menu Eintrag einfuegen. "
+  (interactive "*")
+  (let* ((orig (point))
+         (erg (or erg (car kill-ring)))
+         (name (intern-soft erg))
+         (doku (documentation name))
+         last)
+      (insert (concat "\[\"" (replace-regexp-in-string "-" " " (replace-regexp-in-string "py-" "" erg)) "\" " erg "
+ :help \" `" erg "'
+"))
+      (when doku (insert (regexp-quote doku)))
+
+      (insert (concat
+               ". \"]\n\n"))
+      (setq last (point))
+      (goto-char orig)
+    (skip-chars-forward "[[:punct:]]")
+    (capitalize-word 1)
+    (goto-char last)))
+
+(defun write-execute-file-forms ()
+  (interactive)
+  ;; write commandp-tests
+  ;; -eval "(assert (commandp 'py-fill-string-symmetric) nil \"py-fill-string-symmetric not detected as command\")" \
+  (set-buffer (get-buffer-create "Python-Components-Execute-File-Commandp-Tests"))
+  (erase-buffer)
+  (shell-script-mode)
+  ;; (switch-to-buffer (current-buffer))
+  (let (name)
+    (dolist (ele py-shells)
+      (dolist (pyo py-options)
+        (insert (concat "
+-eval \"(assert (commandp 'py-execute-file-" ele))
+        (unless (string= "" pyo)
+          (insert (concat "-" pyo)))
+        (insert (concat ") nil \\\""))
+        (insert (concat "py-execute-file-" ele))
+        (unless (string= "" pyo)
+          (insert (concat "-" pyo)))
+        (insert " not detected as command\\\")\" \\"))))
+
+  (set-buffer (get-buffer-create "Menu-Python-Components-Execute-File"))
+  (erase-buffer)
+  (insert "(\"Execute file ... \"
+            :help \"Execute file functions\"\n\n")
+
+  (switch-to-buffer (current-buffer))
+  (dolist (ele py-shells)
+    (setq name (concat "py-execute-file-" ele))
+    (write-menu-entry name))
+  (insert "(\"Ignoring defaults ... \"
+ :help \"Commands will ignore default setting of
+`py-switch-buffers-on-execute-p' and `py-split-windows-on-execute-p'\"\n\n")
+  (dolist (ele py-shells)
+    (dolist (pyo py-options)
+      (unless (string= "" pyo)
+        (setq name (concat "py-execute-file-" ele))
+        (setq name (concat name "-" pyo))
+        (write-menu-entry name))))
+  (insert "      ))")
+
+  (set-buffer (get-buffer-create "python-components-execute-file.el"))
+  (erase-buffer)
+  ;; (switch-to-buffer (current-buffer))
+  (insert ";;; python-components-execute-file.el --- Execute files from python-mode\n")
+  (insert arkopf)
+  (insert ";;; Execute file commands\n")
+  (dolist (ele py-shells)
+    (dolist (pyo py-options)
+      (insert (concat "
+\(defun py-execute-file-" ele))
+      (if (string= "" pyo)
+          (insert " (&optional filename)\n")
+        (insert (concat "-" pyo " (&optional filename)\n")))
+      (insert (concat "  \"Send file to a " (capitalize ele) " interpreter."))
+      (write-options-dokumentation-subform pyo)
+      (insert (concat "\"
+  (interactive \"fFile: \")
+  (py-execute-file filename \"" ele "\""))
+      (cond ((string-match "dedicated" pyo)
+             (insert " 'dedicated"))
+            (t (insert " nil")))
+      (cond ((string-match "noswitch" pyo)
+             (insert " 'noswitch"))
+            ((string-match "switch" pyo)
+             (insert " 'switch"))
+            (t (insert " nil")))
+      (insert "))\n")))
+  (insert "\n(provide 'python-components-execute-file)
+;;; 'python-components-execute-file.el ends here\n ")
+  (emacs-lisp-mode))
+
 (defun write-execute-forms-test (&optional command path-to-shell option)
   "Write `py-execute-block...' etc. "
   (interactive)
@@ -160,7 +261,7 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)\"\
              (insert " (line-beginning-position) (line-end-position)"))
             ;; ((string= "buffer" ele)
             ;; (insert " (point-min)(point-max)"))
-            )
+)
       (insert "))")
       (insert (concat " nil \"py-execute-" ele))
       (insert "-test failed\"))\n\n")))
@@ -264,7 +365,7 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)\"\
   (if path-to-shell
       (insert (concat "(provide '" path-to-shell) ")
 ;;; " path-to-shell ".el ends here\n")
-    (insert "(provide 'python-extended-executes)
+    (insert "(provide 'python-extend8ed-executes)
 ;;; python-extended-executes.el ends here\n "))
   (emacs-lisp-mode))
 
@@ -1061,7 +1162,7 @@ http://docs.python.org/reference/compound_stmts.html\"\n")
   (erase-buffer)
   (insert ";;; python-components-shift-forms.el --- Move forms left or right\n")
   (insert arkopf)
-  
+
   (insert "
 \(defalias 'py-shift-region-left 'py-shift-left)
 \(defun py-shift-left (&optional count start end)
@@ -1974,11 +2075,11 @@ Return position if statement found, nil otherwise. \"
 Return position if statement found, nil otherwise. \"
   (interactive)
   (let\* ((orig (point))
-           (erg 
+           (erg
             (cond ((py-end-of-statement-p)
                    (setq erg (and (py-end-of-statement) (py-beginning-of-statement))))
                   ((< orig (progn (py-end-of-statement) (py-beginning-of-statement)))
-                   (point)) 
+                   (point))
                   (t (and (py-end-of-statement) (py-end-of-statement)(py-beginning-of-statement))))))
             (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
             erg)
@@ -2099,4 +2200,3 @@ Return position if " ele " found, nil otherwise \"
 \(provide 'python-components-up-down)")
   (switch-to-buffer (current-buffer))
   (emacs-lisp-mode))
-

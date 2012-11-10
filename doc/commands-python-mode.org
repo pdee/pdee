@@ -1874,6 +1874,159 @@ Optional OUTPUT-BUFFER and ERROR-BUFFER might be given.')
    Send current line from beginning of indent to Python interpreter. 
 * py-execute-file
    When called interactively, user is prompted for filename. 
+* py-execute-file-python
+   Send file to a Python interpreter.
+* py-execute-file-python-switch
+   Send file to a Python interpreter.
+Ignores default of `py-shell-switch-buffers-on-execute-p', uses it with value "non-nil"
+* py-execute-file-python-noswitch
+   Send file to a Python interpreter.
+Ignores default of `py-shell-switch-buffers-on-execute-p', uses it with value "nil"
+* py-execute-file-python-dedicated
+   Send file to a Python interpreter.
+
+Uses a dedicated shell.
+* py-execute-file-python-dedicated-switch
+   Send file to a Python interpreter.
+
+Uses a dedicated shell.
+Ignores default of `py-shell-switch-buffers-on-execute-p', uses it with value "non-nil"
+* py-execute-file-ipython
+   Send file to a Ipython interpreter.
+* py-execute-file-ipython-switch
+   Send file to a Ipython interpreter.
+Ignores default of `py-shell-switch-buffers-on-execute-p', uses it with value "non-nil"
+* py-execute-file-ipython-noswitch
+   Send file to a Ipython interpreter.
+Ignores default of `py-shell-switch-buffers-on-execute-p', uses it with value "nil"
+* py-execute-file-ipython-dedicated
+   Send file to a Ipython interpreter.
+
+Uses a dedicated shell.
+* py-execute-file-ipython-dedicated-switch
+   Send file to a Ipython interpreter.
+
+Uses a dedicated shell.
+Ignores default of `py-shell-switch-buffers-on-execute-p', uses it with value "non-nil"
+* py-execute-file-python3
+   Send file to a Python3 interpreter.
+* py-execute-file-python3-switch
+   Send file to a Python3 interpreter.
+Ignores default of `py-shell-switch-buffers-on-execute-p', uses it with value "non-nil"
+* py-execute-file-python3-noswitch
+   Send file to a Python3 interpreter.
+Ignores default of `py-shell-switch-buffers-on-execute-p', uses it with value "nil"
+* py-execute-file-python3-dedicated
+   Send file to a Python3 interpreter.
+
+Uses a dedicated shell.
+* py-execute-file-python3-dedicated-switch
+   Send file to a Python3 interpreter.
+
+Uses a dedicated shell.
+Ignores default of `py-shell-switch-buffers-on-execute-p', uses it with value "non-nil"
+* py-execute-file-python2
+   Send file to a Python2 interpreter.
+* py-execute-file-python2-switch
+   Send file to a Python2 interpreter.
+Ignores default of `py-shell-switch-buffers-on-execute-p', uses it with value "non-nil"
+* py-execute-file-python2-noswitch
+   Send file to a Python2 interpreter.
+Ignores default of `py-shell-switch-buffers-on-execute-p', uses it with value "nil"
+* py-execute-file-python2-dedicated
+   Send file to a Python2 interpreter.
+
+Uses a dedicated shell.
+* py-execute-file-python2-dedicated-switch
+   Send file to a Python2 interpreter.
+
+Uses a dedicated shell.
+Ignores default of `py-shell-switch-buffers-on-execute-p', uses it with value "non-nil"
+* py-execute-file-python2\.7
+   Send file to a Python2.7 interpreter.
+* py-execute-file-python2\.7-switch
+   Send file to a Python2.7 interpreter.
+Ignores default of `py-shell-switch-buffers-on-execute-p', uses it with value "non-nil"
+* py-execute-file-python2\.7-noswitch
+   Send file to a Python2.7 interpreter.
+Ignores default of `py-shell-switch-buffers-on-execute-p', uses it with value "nil"
+* py-execute-file-python2\.7-dedicated
+   Send file to a Python2.7 interpreter.
+
+Uses a dedicated shell.
+* py-execute-file-python2\.7-dedicated-switch
+   Send file to a Python2.7 interpreter.
+
+Uses a dedicated shell.
+Ignores default of `py-shell-switch-buffers-on-execute-p', uses it with value "non-nil"
+* py-execute-file-jython
+   Send file to a Jython interpreter.
+* py-execute-file-jython-switch
+   Send file to a Jython interpreter.
+Ignores default of `py-shell-switch-buffers-on-execute-p', uses it with value "non-nil"
+* py-execute-file-jython-noswitch
+   Send file to a Jython interpreter.
+Ignores default of `py-shell-switch-buffers-on-execute-p', uses it with value "nil"
+* py-execute-file-jython-dedicated
+   Send file to a Jython interpreter.
+
+Uses a dedicated shell.
+* py-execute-file-jython-dedicated-switch
+   Send file to a Jython interpreter.
+
+Uses a dedicated shell.
+Ignores default of `py-shell-switch-buffers-on-execute-p', uses it with value "non-nil"
+* py-execute-file-python3\.2
+   Send file to a Python3.2 interpreter.
+* py-execute-file-python3\.2-switch
+   Send file to a Python3.2 interpreter.
+Ignores default of `py-shell-switch-buffers-on-execute-p', uses it with value "non-nil"
+* py-execute-file-python3\.2-noswitch
+   Send file to a Python3.2 interpreter.
+Ignores default of `py-shell-switch-buffers-on-execute-p', uses it with value "nil"
+* py-execute-file-python3\.2-dedicated
+   Send file to a Python3.2 interpreter.
+
+Uses a dedicated shell.
+* py-execute-file-python3\.2-dedicated-switch
+   Send file to a Python3.2 interpreter.
+
+Uses a dedicated shell.
+Ignores default of `py-shell-switch-buffers-on-execute-p', uses it with value "non-nil"
+* py-execute-file-python3\.3
+   Send file to a Python3.3 interpreter.
+* py-execute-file-python3\.3-switch
+   Send file to a Python3.3 interpreter.
+Ignores default of `py-shell-switch-buffers-on-execute-p', uses it with value "non-nil"
+* py-execute-file-python3\.3-noswitch
+   Send file to a Python3.3 interpreter.
+Ignores default of `py-shell-switch-buffers-on-execute-p', uses it with value "nil"
+* py-execute-file-python3\.3-dedicated
+   Send file to a Python3.3 interpreter.
+
+Uses a dedicated shell.
+* py-execute-file-python3\.3-dedicated-switch
+   Send file to a Python3.3 interpreter.
+
+Uses a dedicated shell.
+Ignores default of `py-shell-switch-buffers-on-execute-p', uses it with value "non-nil"
+* py-execute-file-bpython
+   Send file to a Bpython interpreter.
+* py-execute-file-bpython-switch
+   Send file to a Bpython interpreter.
+Ignores default of `py-shell-switch-buffers-on-execute-p', uses it with value "non-nil"
+* py-execute-file-bpython-noswitch
+   Send file to a Bpython interpreter.
+Ignores default of `py-shell-switch-buffers-on-execute-p', uses it with value "nil"
+* py-execute-file-bpython-dedicated
+   Send file to a Bpython interpreter.
+
+Uses a dedicated shell.
+* py-execute-file-bpython-dedicated-switch
+   Send file to a Bpython interpreter.
+
+Uses a dedicated shell.
+Ignores default of `py-shell-switch-buffers-on-execute-p', uses it with value "non-nil"
 * py-down-exception
    Go to the next line down in the traceback.
 
