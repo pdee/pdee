@@ -1762,14 +1762,14 @@ Otherwise inherits from `python-mode-syntax-table'.")
 (defconst py-def-re "[ \t]*\\_<\\(def\\)\\_>[ \n\t]"
   "Matches the beginning of a functions definition. ")
 
-(defconst py-block-or-clause-re "[ \t]*\\_<\\(def\\|class\\|if\\|else\\|elif\\|while\\|for\\|try\\|except\\|finally\\|with\\)\\_>[: \n\t]"
+(defconst py-block-or-clause-re "[ \t]*\\_<\\(if\\|else\\|elif\\|while\\|for\\|try\\|except\\|finally\\|with\\)\\_>[: \n\t]"
   "Matches the beginning of a compound statement or it's clause. ")
 
 (defconst py-extended-block-or-clause-re "[ \t]*\\_<\\(def\\|class\\|if\\|else\\|elif\\|while\\|for\\|try\\|except\\|finally\\|with\\)\\_>[: \n\t]"
   "Matches the beginning of a compound statement or it's clause.
 Includes def and class. ")
 
-(defconst py-clause-re "[ \t]*\\_<else\\_>[: \n\t]\\|[ \t]*\\_<elif\\_>[: \n\t]\\|[ \t]*\\_<except\\_>[: \n\t]\\|[ \t]*\\_<finally\\_>[: \n\t]"
+(defconst py-clause-re "[ \t]*\\_<\\(else\\|elif\\|except\\|finally\\)\\_>[: \n\t]"
   "Matches the beginning of a compound statement's clause. ")
 
 (defconst py-elif-re "[ \t]*\\_<\\elif\\_>[: \n\t]"
@@ -4543,15 +4543,6 @@ A nomenclature is a fancy way of saying AWordWithMixedCaseNotUnderscores. "]
 Go forward into nomenclature
 
 A nomenclature is a fancy way of saying AWordWithMixedCaseNotUnderscores. "]
-
-            ["Up level" py-up
-             :help " `py-up' 
-Go to beginning one level above of compound statement or definition at point. "]
-
-            ["Down level" py-down
-             :help " `py-down' 
-Go to beginning one level below of compound statement or definition at point. "]
-
             "-"
             ("Filling"
              :help "see also customizable `py-fill-docstring-style'"

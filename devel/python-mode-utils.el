@@ -871,89 +871,34 @@ http://docs.python.org/reference/compound_stmts.html\"
   (interactive)
   (let ((erg (ignore-errors (cdr (py-go-to-keyword py-block-re 0)))))
     erg))\n")
-
-  (insert"
-\(defun py-beginning-of-form-intern (regexp &optional iact indent)
- \"Go to beginning of FORM.
-
-With INDENT, go to beginning one level above.
-Whit IACT, print result in message buffer.
-
-Returns beginning of FORM if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html\"
-  (interactive \"P\")
-  (let ((erg (if indent
-                 (ignore-errors
-                   (cdr (py-go-to-keyword regexp
-                                          (- (progn (if (py-beginning-of-statement-p) (current-indentation) (save-excursion (py-beginning-of-statement) (current-indentation)))) py-indent-offset))))
-               (ignore-errors
-                 (cdr (py-go-to-keyword regexp indent))))))
-    (when (and py-verbose-p iact) (message \"%s\" erg))
-    erg))
-
-\(defun py-beginning (&optional indent)
- \"Go to beginning of compound statement or definition at point.
-
-With \\\\[universal-argument], go to beginning one level above.
-Returns position if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html\"
-  (interactive \"P\")
-  (py-beginning-of-form-intern py-extended-block-or-clause-re (interactive-p) indent))
-
-\(defun py-end (&optional indent)
- \"Go to end of of compound statement or definition at point.
-
-Returns position block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html\"
-  (interactive \"P\")
-    (let\* ((orig (point))
-           (erg (py-end-base 'py-extended-block-or-clause-re orig)))
-      (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
-      erg))
-
-\(defun py-up (&optional indent)
- \"Go to beginning one level above of compound statement or definition at point.
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html\"
-  (interactive \"P\")
-  (py-beginning-of-form-intern py-extended-block-or-clause-re (interactive-p) t))
-
-\(defun py-down (&optional indent)
-
- \"Go to beginning one level below of compound statement or definition at point.
-
-Returns position if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html\"
-  (interactive \"P\")
-    (let\* ((orig (point))
-           (erg (py-end-base 'py-extended-block-or-clause-re orig)))
-      (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
-      erg))
-")
   (dolist (ele py-re-forms-names)
+    (if (string-match "def\\|class" ele)
+        (insert (concat "
+\(defun py-beginning-of-" ele " (&optional arg indent)"))
       (insert (concat "
-\(defun py-beginning-of-" ele " (&optional indent)"
-    "\n \"Go to beginning of " ele ".
-
-With \\\\[universal-argument], go to beginning one level above.
+\(defun py-beginning-of-" ele " (&optional indent)")))
+    (insert (concat "\n \"Go to beginning of " ele ".\n
 Returns beginning of " ele " if successful, nil otherwise\n\n"))
     (when (string-match "def\\|class" ele)
-      (insert "When `py-mark-decorators' is non-nil, decorators are considered too.\n\n"))
+      (insert "With \\\\[universal argument] or `py-mark-decorators' set to `t', decorators are marked too.\n\n"))
     (insert "Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html\"\n")
-    (insert (concat "  (interactive \"P\")
-  (py-beginning-of-form-intern py-" ele "-re (interactive-p) indent))\n"))
-    (insert (concat "
-\(defun py-end-of-" ele " (&optional indent)"))
+
+    ;; (if (string-match "def\\|class" ele)
+    (insert "  (interactive \"P\")")
+    ;; (insert "  (interactive)"))
+    (insert (concat "\n (let ((erg (ignore-errors (cdr (py-go-to-keyword py-" ele "-re indent))))"))
+    (when (string-match "def\\|class" ele)
+      (insert "\n   (py-mark-decorators (or arg py-mark-decorators))
+    (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))"))
+    (insert ")")
+    (insert "\n erg))\n")
+
+    (if (string-match "def\\|class" ele)
+        (insert (concat "
+\(defun py-end-of-" ele " (&optional arg indent)"))
+      (insert (concat "
+\(defun py-end-of-" ele " (&optional indent)")))
     (insert (concat "\n \"Go to end of " ele ".\n
 Returns end of " ele " if successful, nil otherwise\n\n"))
     (when (string-match "def\\|class" ele)
@@ -966,9 +911,23 @@ http://docs.python.org/reference/compound_stmts.html\"\n")
     ;; (insert "  (interactive)"))
     (insert (concat "
     (let* ((orig (point))
-           (erg (py-end-base 'py-" ele "-re orig)))
+           (erg (py-end-base py-" ele "-re orig)))
       (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
       erg))\n"))
+
+    ;;     (insert (concat "
+    ;; \(defun py-end-of-"ele" ()
+    ;;   \"Go to the end of " ele".
+    ;;
+    ;; Returns position reached, if any, nil otherwise.
+    ;;
+    ;; Referring python program structures see for example:
+    ;; http://docs.python.org/reference/compound_stmts.html\"
+    ;;   (interactive)
+    ;;   (let* ((orig (point))
+    ;;          (erg (py-end-base py-" ele "-re orig)))
+    ;;     (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
+    ;;     erg))\n"))
     )
   (insert "
 

@@ -4433,5 +4433,6 @@ if sys.version_info[:2] < (2, 5):
 (defun fails-to-indent-abs-wrong-type-argument-lp-1075673-base ()
     (assert (eq 4 (py-compute-indentation)) nil "fails-to-indent-abs-wrong-type-argument-lp-1075673-test failed"))
 
+
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

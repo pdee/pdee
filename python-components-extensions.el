@@ -106,7 +106,7 @@ Affected by `py-dedent-keep-relative-column'. "
 
 (defun py-close-intern (regexp)
   "Core function, internal used only. "
-  (let ((cui (ignore-errors (car (py-go-to-keyword (symbol-value regexp))))))
+  (let ((cui (ignore-errors (car (py-go-to-keyword regexp)))))
     (py-end-base regexp (point))
     (forward-line 1)
     (if py-close-provides-newline
@@ -147,7 +147,7 @@ If final line isn't empty and `py-close-block-provides-newline' non-nil, insert 
 
 If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline. "
   (interactive "*")
-  (let ((erg (py-close-intern 'py-block-re)))
+  (let ((erg (py-close-intern py-block-re)))
     (when (interactive-p) (message "%s" erg))
     erg))
 
