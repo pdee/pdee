@@ -38,6 +38,7 @@
 
 (setq bug-numbered-tests
       (list
+       'fill-paragraph-in-a-comment-does-not-stop-at-empty-comment-lines-lp-1077139-test
        'incorrect-indentation-of-comments-in-a-multiline-list-lp-1077063-test
        'fails-to-indent-abs-wrong-type-argument-lp-1075673-test
        'incorrect-indentation-of-one-line-functions-lp-1067633-test
@@ -4447,7 +4448,7 @@ class X:
     # lakjsdflkjasdf
     \"lkajsdlkfj\"
     ]
-    
+
 # There is no way to indent #comment line with TAB, nor subsequent list entry to the level of previous
 # entries
 
@@ -4457,6 +4458,41 @@ class X:
 (defun incorrect-indentation-of-comments-in-a-multiline-list-lp-1077063-base ()
     (goto-char 202)
     (assert (eq 8 (py-compute-indentation)) nil "incorrect-indentation-of-comments-in-a-multiline-list-lp-1077063-test failed"))
+
+
+(defun fill-paragraph-in-a-comment-does-not-stop-at-empty-comment-lines-lp-1077139-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+# in older version of python-mode (5.1.0) fill-paragraph (Alt-q) e.g. on first line of
+
+# line1: alskdjfl aksdjlfkas dklfj aslkdjf aklsdj flkasjd fklasjd lfkasj dlkfj asdklfj aslkdfj
+#
+# line2
+
+# would fill only portion of line1:
+
+# line1: alskdjfl aksdjlfkas dklfj aslkdjf aklsdj flkasjd fklasjd
+# lfkasj dlkfj asdklfj aslkdfj
+#
+# line2
+
+# while current version disregards such stop paragraph separation... unless it is at the beginning of the
+# buffer!! ;), so adding an empty line before the first comment line of this test example, results in:
+
+# line1: alskdjfl aksdjlfkas dklfj aslkdjf aklsdj flkasjd fklasjd
+# lfkasj dlkfj asdklfj aslkdfj line2
+
+"))
+  (py-bug-tests-intern 'fill-paragraph-in-a-comment-does-not-stop-at-empty-comment-lines-lp-1077139-base arg teststring)))
+
+(defun fill-paragraph-in-a-comment-does-not-stop-at-empty-comment-lines-lp-1077139-base ()
+  (let ((empty-comment-line-separates-paragraph-p t))
+    (goto-char 152)
+    (fill-paragraph)
+    (goto-char 233)
+    (beginning-of-line)
+    (assert (looking-at paragraph-separate) nil "fill-paragraph-in-a-comment-does-not-stop-at-empty-comment-lines-lp-1077139-test failed")))
 
 
 (provide 'py-bug-numbered-tests)

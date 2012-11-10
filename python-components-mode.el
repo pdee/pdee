@@ -96,6 +96,13 @@
   :type 'boolean
   :group 'python-mode)
 
+(defcustom empty-comment-line-separates-paragraph-p t
+  "Consider paragraph start/end lines with nothing inside but comment sign.  
+
+Default is  non-nil"
+  :type 'boolean
+  :group 'python-mode)
+
 (defcustom py-fontify-shell-buffer-p nil
   "If code in Python shell should be highlighted as in script buffer.
 
@@ -5891,6 +5898,12 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (set (make-local-variable 'parse-sexp-lookup-properties) t)
   (set (make-local-variable 'parse-sexp-ignore-comments) t)
   (set (make-local-variable 'comment-start) "#")
+  (if empty-comment-line-separates-paragraph-p
+      (progn 
+        (set (make-local-variable 'paragraph-separate) "^[ \t\f]*$\\|^#[ \t]*$")
+        (set (make-local-variable 'paragraph-start) "^[ \t\f]*$\\|^#[ \t]*$"))
+    (set (make-local-variable 'paragraph-separate) "^[ \t]*$")
+    (set (make-local-variable 'paragraph-start) "^[ \t]*$"))
   (set (make-local-variable 'comment-start-skip) "^[ \t]*#+ *")
   (set (make-local-variable 'comment-column) 40)
   (set (make-local-variable 'comment-indent-function) #'py-comment-indent-function)
@@ -5901,7 +5914,6 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (set (make-local-variable 'outline-level) #'python-outline-level)
   (set (make-local-variable 'open-paren-in-column-0-is-defun-start) nil)
   (set (make-local-variable 'add-log-current-defun-function) 'py-current-defun)
-  (set (make-local-variable 'paragraph-start) "\\s-*$")
   (set (make-local-variable 'fill-paragraph-function) 'py-fill-paragraph)
   (set (make-local-variable 'require-final-newline) mode-require-final-newline)
   (make-local-variable 'python-saved-check-command)
