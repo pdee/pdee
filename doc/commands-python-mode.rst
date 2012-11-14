@@ -14,9 +14,6 @@ Python-mode commands
 -----------------
 
 
-Aha
-===
-
 py-guess-pdb-path
 -----------------
 If py-pdb-path isn't set, find location of pdb.py. 
@@ -125,49 +122,24 @@ Returns value of `py-split-windows-on-execute-p'.
 --------
 
 
-run-python-internal
--------------------
-Run an inferior Internal Python process.
-Input and output via buffer named after
-`python-shell-internal-buffer-name' and what
-`python-shell-internal-get-process-name' returns.  This new kind
-of shell is intended to be used for generic communication related
-to defined configurations.  The main difference with global or
-dedicated shells is that these ones are attached to a
-configuration, not a buffer.  This means that can be used for
-example to retrieve the sys.path and other stuff, without messing
-with user shells.  Runs the hook
-`inferior-python-mode-hook' (after the `comint-mode-hook' is
-run).  (Type C-h m in the process buffer for a list
-of commands.)
+py-shell-get-process
+--------------------
+Get appropriate Python process for current buffer and return it.
 
-python-shell-send-string
-------------------------
+py-shell-send-string
+--------------------
 Send STRING to inferior Python PROCESS.
 When `py-verbose-p' and MSG is non-nil messages the first line of STRING.
 
-python-shell-send-region
-------------------------
-Send the region delimited by START and END to inferior Python process.
-
-python-shell-send-buffer
-------------------------
-Send the entire buffer to inferior Python process.
-
-python-shell-send-defun
------------------------
-Send the current defun to inferior Python process.
-When argument ARG is non-nil sends the innermost defun.
-
-python-shell-send-file
-----------------------
+py-shell-send-file
+------------------
 Send FILE-NAME to inferior Python PROCESS.
 If TEMP-FILE-NAME is passed then that file is used for processing
 instead, while internally the shell will continue to use
 FILE-NAME.
 
-python-shell-switch-to-shell
-----------------------------
+py-switch-to-shell
+------------------
 Switch to inferior Python process buffer.
 
 python-shell-completion-complete-at-point
@@ -220,33 +192,6 @@ Count lines in accessible part until current line.
 
 See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115
 
-;;; GNU Emacs23 python.el stuff
--------------------------------
-
-
-run-python
-----------
-Run an inferior Python process, input and output via buffer *Python*.
-
-CMD is the Python command to run.  NOSHOW non-nil means don't
-show the buffer automatically.
-
-Interactively, a prefix arg means to prompt for the initial
-Python command line (default is `python-command').
-
-A new process is started if one isn't running attached to
-`python-buffer', or if called from Lisp with non-nil arg NEW.
-Otherwise, if a process is already running in `python-buffer',
-switch to that buffer.
-
-This command runs the hook `inferior-python-mode-hook' after
-running `comint-mode-hook'.  Type C-h m in the
-process buffer for a list of commands.
-
-By default, Emacs inhibits the loading of Python modules from the
-current working directory, for security reasons.  To disable this
-behavior, change `py-remove-cwd-from-path' to nil.
-
 py-send-region
 --------------
 Send the region to the inferior Python process.
@@ -261,38 +206,14 @@ Switch to the Python process buffer, maybe starting new process.
 
 With prefix arg, position cursor at end of buffer.
 
-python-load-file
-----------------
+py-load-file
+------------
 Load a Python file FILE-NAME into the inferior Python process.
+
 If the file has extension `.py' import or reload it as a module.
 Treating it as a module keeps the global namespace clean, provides
 function location information for debugging, and supports users of
 module-qualified names.
-
-python-set-proc
----------------
-Set the default value of `python-buffer' to correspond to this buffer.
-If the current buffer has a local value of `python-buffer', set the
-default (global) value to that.  The associated Python process is
-the one that gets input from M-x py-send-region et al when used
-in a buffer that doesn't have a local value of `python-buffer'.
-
-;;; Info-look
--------------
-
-
-;;; Completion.
----------------
-
-
-python-find-imports
--------------------
-Find top-level imports, updating `python-imports'.
-
-python-find-function
---------------------
-Find source of definition of function NAME.
-Interactively, prompt for name.
 
 py-insert-default-shebang
 -------------------------
@@ -2299,7 +2220,6 @@ interpreter.
 py-shell
 --------
 Start an interactive Python interpreter in another window.
-
 Interactively, C-u 4 prompts for a buffer.
 C-u 2 prompts for `py-python-command-args'.
 If `default-directory' is a remote file name, it is also prompted
@@ -2741,8 +2661,8 @@ py-execute-file
 ---------------
 When called interactively, user is prompted for filename. 
 
-;;; Execute file 
------------------
+;;; Execute file
+----------------
 
 
 py-execute-file-python
@@ -3011,8 +2931,8 @@ py-send-string
 --------------
 Evaluate STRING in inferior Python process.
 
-;;; Pdbtrack
-------------
+;;; Pdb
+-------
 
 
 py-pdbtrack-toggle-stack-tracking
@@ -3423,15 +3343,6 @@ py-send-region-and-go
 Send the region to the inferior Python process.
 
 Then switch to the process buffer.
-
-py-load-file
-------------
-Load a Python file FILE-NAME into the inferior Python process.
-
-If the file has extension `.py' import or reload it as a module.
-Treating it as a module keeps the global namespace clean, provides
-function location information for debugging, and supports users of
-module-qualified names.
 
 ;;; Completion
 --------------
@@ -5536,8 +5447,4 @@ Send line at point to Python3.2 unique interpreter and switch to result.
 py-load-pycomplete
 ------------------
 Load Pymacs based pycomplete.
-
-;;; Pdb
--------
-
 
