@@ -2,9 +2,28 @@ Python-mode commands
 
 ====================
 
+;;; Commentary:
+---------------
+
+
+;;; Code
+--------
+
+
+;;; Customization
+-----------------
+
+
+Aha
+===
+
 py-guess-pdb-path
 -----------------
 If py-pdb-path isn't set, find location of pdb.py. 
+
+;;; Minor mode switches
+-----------------------
+
 
 py-toggle-highlight-indentation
 -------------------------------
@@ -102,6 +121,10 @@ Make sure, `py-split-windows-on-execute-p' is off.
 
 Returns value of `py-split-windows-on-execute-p'. 
 
+(defun p
+--------
+
+
 run-python-internal
 -------------------
 Run an inferior Internal Python process.
@@ -157,6 +180,36 @@ Complete or indent depending on the context.
 If content before pointer is all whitespace indent.  If not try
 to complete.
 
+;;; Macro definitions
+---------------------
+
+
+;;; Helper functions
+--------------------
+
+
+py-forward-line
+---------------
+Goes to end of line after forward move.
+
+Travels right-margin comments. 
+
+py-go-to-beginning-of-comment
+-----------------------------
+Go to the beginning of current line's comment, if any.
+
+From a programm use `py-beginning-of-comment' instead 
+
+py-leave-comment-or-string-backward
+-----------------------------------
+If inside a comment or string, leave it backward. 
+
+py-beginning-of-list-pps
+------------------------
+Go to the beginning of a list.
+Optional ARG indicates a start-position for `parse-partial-sexp'.
+Return beginning position, nil if not inside.
+
 empty-line-p
 ------------
 Returns t if cursor is at an line with nothing but whitespace-characters, nil otherwise.
@@ -166,6 +219,10 @@ py-count-lines
 Count lines in accessible part until current line.
 
 See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115
+
+;;; GNU Emacs23 python.el stuff
+-------------------------------
+
 
 run-python
 ----------
@@ -219,6 +276,14 @@ If the current buffer has a local value of `python-buffer', set the
 default (global) value to that.  The associated Python process is
 the one that gets input from M-x py-send-region et al when used
 in a buffer that doesn't have a local value of `python-buffer'.
+
+;;; Info-look
+-------------
+
+
+;;; Completion.
+---------------
+
 
 python-find-imports
 -------------------
@@ -391,6 +456,10 @@ py-narrow-to-defun
 Make text outside current def or class invisible.
 
 The defun visible is the one that contains point or follows point. 
+
+;;; Shifting
+------------
+
 
 py-shift-left
 -------------
@@ -581,6 +650,10 @@ With optional INDENT-OFFSET specify a different value than `py-indent-offset' at
 Guesses the outmost reasonable indent
 Returns and keeps relative position 
 
+;;; Positions
+-------------
+
+
 py-beginning-of-paragraph-position
 ----------------------------------
 Returns beginning of paragraph position. 
@@ -669,6 +742,10 @@ py-end-of-partial-expression-position
 -------------------------------------
 Returns end of partial-expression position. 
 
+;;; Bounds
+----------
+
+
 py-bounds-of-statement
 ----------------------
 Returns bounds of statement at point.
@@ -738,6 +815,10 @@ Returns bounds of partial-expression at point.
 With optional POSITION, a number, report bounds of partial-expression at POSITION.
 Returns a list, whose car is beg, cdr - end.
 
+;;; Declarations
+----------------
+
+
 py-bounds-of-declarations
 -------------------------
 Bounds of consecutive multitude of assigments resp. statements around point.
@@ -768,6 +849,10 @@ Delete variables declared in current level.
 
 Store deleted variables in kill-ring 
 
+;;; Statements
+--------------
+
+
 py-bounds-of-statements
 -----------------------
 Bounds of consecutive multitude of statements around point.
@@ -793,6 +878,10 @@ py-kill-statements
 Delete statements declared in current level.
 
 Store deleted statements in kill-ring 
+
+;;; Comments, Filling
+---------------------
+
 
 py-comment-region
 -----------------
@@ -1019,6 +1108,18 @@ Result is useful for booleans too: (when (py-in-statement-p)...)
 will work.
 
 
+;;; Beginning-of- p
+-------------------
+
+
+;;; End-of- p
+-------------
+
+
+;;; Opens- p
+------------
+
+
 py-statement-opens-block-p
 --------------------------
 Return position if the current statement opens a block
@@ -1072,6 +1173,10 @@ M-x py-sort-imports to sort the imports lexicographically
 py-which-function
 -----------------
 Return the name of the function or class, if curser is in, return nil otherwise. 
+
+;;; Beg-end forms
+-----------------
+
 
 py-beginning-of-top-level
 -------------------------
@@ -1312,6 +1417,10 @@ Returns end of minor-block if successful, nil otherwise
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html
 
+;;; Expression
+--------------
+
+
 py-beginning-of-expression
 --------------------------
 Go to the beginning of a compound python expression.
@@ -1338,6 +1447,10 @@ Expression here is conceived as the syntactical component of a statement in Pyth
 
 Operators however are left aside resp. limit py-expression designed for edit-purposes. 
 
+;;; Partial- or Minor Expression
+--------------------------------
+
+
 py-beginning-of-partial-expression
 ----------------------------------
 Go to the beginning of a minor python expression.
@@ -1360,6 +1473,10 @@ With numeric ARG do it that many times.
 Expression here is conceived as the syntactical component of a statement in Python. See http://docs.python.org/reference
 Operators however are left aside resp. limit py-expression designed for edit-purposes. 
 
+;;; Line
+--------
+
+
 py-beginning-of-line
 --------------------
 Go to beginning-of-line, return position.
@@ -1371,6 +1488,10 @@ py-end-of-line
 Go to end-of-line, return position.
 
 If already at end-of-line and not at EOB, go to end of next line. 
+
+;;; Statement
+-------------
+
 
 py-beginning-of-statement
 -------------------------
@@ -1392,6 +1513,10 @@ To go just beyond the final line of the current statement, use `py-down-statemen
 py-goto-statement-below
 -----------------------
 Goto beginning of next statement. 
+
+;;; Mark forms
+--------------
+
 
 py-mark-paragraph
 -----------------
@@ -1473,6 +1598,10 @@ py-end-of-decorator
 Go to the end of a decorator.
 
 Returns position if succesful 
+
+;;; Copying
+-----------
+
 
 py-copy-expression
 ------------------
@@ -1565,6 +1694,10 @@ py-copy-clause
 Mark clause at point.
   Returns beginning and end positions of marked area, a cons. 
 
+;;; Deleting
+------------
+
+
 py-kill-expression
 ------------------
 Delete expression at point.
@@ -1619,27 +1752,9 @@ Delete clause at point.
 
 Stores data in kill ring. Might be yanked back using `C-y'. 
 
-py-forward-line
----------------
-Goes to end of line after forward move.
+;;; Beginning of line forms
+---------------------------
 
-Travels right-margin comments. 
-
-py-go-to-beginning-of-comment
------------------------------
-Go to the beginning of current line's comment, if any.
-
-From a programm use `py-beginning-of-comment' instead 
-
-py-leave-comment-or-string-backward
------------------------------------
-If inside a comment or string, leave it backward. 
-
-py-beginning-of-list-pps
-------------------------
-Go to the beginning of a list.
-Optional ARG indicates a start-position for `parse-partial-sexp'.
-Return beginning position, nil if not inside.
 
 py-beginning-of-block-bol-p
 ---------------------------
@@ -1938,6 +2053,10 @@ Delete statement bol at point.
 
 Don't store data in kill ring. 
 
+;;; Py up/down commands
+-----------------------
+
+
 py-up-statement
 ---------------
 Go to the beginning of next statement upwards in buffer.
@@ -2156,6 +2275,10 @@ Go to the matching brace, bracket or parenthesis if on its counterpart.
 Otherwise insert the character, the key is assigned to, here `%'.
 With universal arg  insert a `%'. 
 
+;;; Miscellany
+--------------
+
+
 py-guess-default-python
 -----------------------
 Defaults to "python", if guessing didn't succeed. 
@@ -2188,6 +2311,10 @@ Optional symbol SWITCH ('switch/'noswitch) precedes `py-switch-buffers-on-execut
 When SEPCHAR is given, `py-shell' must not detect the file-separator.
 BUFFER allows specifying a name, the Python process is connected to
 When DONE is `t', `py-shell-manage-windows' is omitted
+
+
+;;; Named shells
+----------------
 
 
 python
@@ -2423,6 +2550,10 @@ Switch to an unique Python3.2 interpreter in another window.
 
 Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'.
 
+;;; Code execution
+------------------
+
+
 py-which-execute-file-command
 -----------------------------
 Return the command appropriate to Python version.
@@ -2609,6 +2740,10 @@ Send current line from beginning of indent to Python interpreter.
 py-execute-file
 ---------------
 When called interactively, user is prompted for filename. 
+
+;;; Execute file 
+-----------------
+
 
 py-execute-file-python
 ----------------------
@@ -2876,6 +3011,10 @@ py-send-string
 --------------
 Evaluate STRING in inferior Python process.
 
+;;; Pdbtrack
+------------
+
+
 py-pdbtrack-toggle-stack-tracking
 ---------------------------------
 Set variable `py-pdbtrack-do-tracking-p'. 
@@ -2886,6 +3025,10 @@ turn-on-pdbtrack
 
 turn-off-pdbtrack
 -----------------
+
+
+;;; python-components-help.el
+-----------------------------
 
 
 py-fetch-docu
@@ -2911,6 +3054,10 @@ Print help on symbol at point.
 If symbol is defined in current buffer, jump to it's definition
 Optional C-u used for debugging, will prevent deletion of temp file. 
 
+;;; Documentation
+-----------------
+
+
 py-describe-mode
 ----------------
 Dump long form of `python-mode' docs.
@@ -2928,6 +3075,10 @@ py-update-imports
 Returns `python-imports'.
 
 Imports done are displayed in message buffer. 
+
+;;; python-components-extensions.el
+-----------------------------------
+
 
 py-indent-forward-line
 ----------------------
@@ -3003,6 +3154,14 @@ Goto to the opening or closing of block before or after point.
 With arg, do it that many times.
  Closes unclosed block if jumping from beginning. 
 
+;;; from string-strip.el --- Strip CHARS from STRING
+----------------------------------------------------
+
+
+(defun s
+--------
+
+
 py-printform-insert
 -------------------
 Inserts a print statement out of current `(car kill-ring)' by default, inserts ARG instead if delivered. 
@@ -3023,9 +3182,17 @@ py-line-to-printform-python2
 ----------------------------
 Transforms the item on current in a print statement. 
 
+;;; python-components-imenu.el
+------------------------------
+
+
 py-switch-imenu-index-function
 ------------------------------
 Switch between series 5. index machine `py-imenu-create-index' and `py-imenu-create-index-new', which also lists modules variables 
+
+;;; python-components-completion.el
+-----------------------------------
+
 
 py-choose-shell-by-path
 -----------------------
@@ -3080,6 +3247,10 @@ When interactivly called, messages the shell name, Emacs would in the given circ
 With C-u 4 is called `py-switch-shell' see docu there.
 
 
+;;; Split-Windows-On-Execute
+----------------------------
+
+
 py-toggle-split-windows-on-execute
 ----------------------------------
 If `py-split-windows-on-execute-p' should be on or off.
@@ -3097,6 +3268,10 @@ py-split-windows-on-execute-off
 Make sure, `py-split-windows-on-execute-p' is off.
 
 Returns value of `py-split-windows-on-execute-p'. 
+
+;;; Flymake
+-----------
+
 
 clear-flymake-allowed-file-name-masks
 -------------------------------------
@@ -3128,6 +3303,10 @@ Joint call to pyflakes and pep8 as proposed by
 
 Keegan Carruthers-Smith
 
+
+
+;;; Shell-Switch-Buffers-On-Execute forms
+-----------------------------------------
 
 
 py-toggle-shell-switch-buffers-on-execute
@@ -3164,6 +3343,10 @@ Used only, if `py-install-directory' is empty.
 py-set-load-path
 ----------------
 Include needed subdirs of python-mode directory. 
+
+;;; Abbrevs
+-----------
+
 
 py-edit-abbrevs
 ---------------
@@ -3231,6 +3414,10 @@ Builds Python-shell commands from executable found in LOCAL.
 If LOCAL is empty, shell-command `find' searches beneath current directory.
 Eval resulting buffer to install it, see customizable `py-extensions'. 
 
+;;; Utility stuff
+-----------------
+
+
 py-send-region-and-go
 ---------------------
 Send the region to the inferior Python process.
@@ -3245,6 +3432,10 @@ If the file has extension `.py' import or reload it as a module.
 Treating it as a module keeps the global namespace clean, provides
 function location information for debugging, and supports users of
 module-qualified names.
+
+;;; Completion
+--------------
+
 
 py-completion-at-point
 ----------------------
@@ -3272,6 +3463,10 @@ py-shell-complete
 -----------------
 Complete word before point, if any. Otherwise insert TAB. 
 
+;;; IPython Shell Complete
+--------------------------
+
+
 ipython-complete
 ----------------
 Complete the python symbol before point.
@@ -3287,6 +3482,10 @@ If no completion available, insert a TAB.
 Returns the completed symbol, a string, if successful, nil otherwise.
 
 Bug: if no IPython-shell is running, fails first time due to header returned, which messes up the result. Please repeat once then. 
+
+;;; Checker
+-----------
+
 
 py-pep8-run
 -----------
@@ -3342,6 +3541,18 @@ py-pychecker-run
 ----------------
 *Run pychecker (default on the file currently visited).
 
+;;; Skeletons
+-------------
+
+
+;;; Virtualenv --- Switching virtual python enviroments seamlessly
+------------------------------------------------------------------
+
+
+(defun v
+--------
+
+
 virtualenv-current
 ------------------
 barfs the current activated virtualenv
@@ -3360,6 +3571,10 @@ Issue a virtualenvwrapper-like virtualenv-workon command
 
 py-toggle-local-default-use
 ---------------------------
+
+
+;;; Py execute
+--------------
 
 
 py-execute-statement
@@ -3465,6 +3680,10 @@ When called with C-u followed by a number different from 4 and 1, user is prompt
 When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
 
 Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)
+
+;;; Extended executes
+---------------------
+
 
 py-execute-statement-python
 ---------------------------
@@ -5313,4 +5532,12 @@ Send line at point to Python3.2 unique interpreter.
 py-execute-line-python3\.2-dedicated-switch
 -------------------------------------------
 Send line at point to Python3.2 unique interpreter and switch to result. 
+
+py-load-pycomplete
+------------------
+Load Pymacs based pycomplete.
+
+;;; Pdb
+-------
+
 

@@ -77,13 +77,6 @@ It should not contain a caret (^) at the beginning."
   :group 'python-mode
 )
 
-(defcustom python-shell-send-setup-max-wait 5
-  "Seconds to wait for process output before code setup.
-If output is received before the especified time then control is
-returned in that moment and not after waiting."
-  :type 'integer
-  :group 'python-mode)
-
 (defcustom python-shell-process-environment nil
   "List of environment variables for Python shell.
 This variable follows the same rules as `process-environment'
@@ -100,15 +93,6 @@ PYTHONPATH in the `process-environment' variable."
   :type '(repeat string)
   :group 'python-mode)
 
-(defcustom python-shell-exec-path nil
-  "List of path to search for binaries.
-This variable follows the same rules as `exec-path' since it
-merges with it before the process creation routines are called.
-When this variable is nil, the Python shell is run with the
-default `exec-path'."
-  :type '(repeat string)
-  :group 'python-mode)
-
 (defcustom python-shell-virtualenv-path nil
   "Path to virtualenv root.
 This variable, when set to a string, makes the values stored in
@@ -118,36 +102,16 @@ virtualenv."
   :type 'string
   :group 'python-mode)
 
-(defcustom python-ffap-setup-code
-  "def __FFAP_get_module_path(module):
-    try:
-        import os
-        path = __import__(module).__file__
-        if path[-4:] == '.pyc' and os.path.exists(path[0:-1]):
-            path = path[:-1]
-        return path
-    except:
-        return ''"
-  "Python code to get a module path."
-  :type 'string
-  :group 'python-mode)
-
-(defcustom python-ffap-string-code
-  "__FFAP_get_module_path('''%s''')\n"
-  "Python code used to get a string with the path of a module."
-  :type 'string
-  :group 'python-mode)
-
 (defun py-ffap-module-path (module)
   "Function for `ffap-alist' to return path for MODULE."
   (let ((process (or
                   (and (eq major-mode 'inferior-python-mode)
                        (get-buffer-process (current-buffer)))
-                  (python-shell-get-process))))
+                  (py-shell-get-process))))
     (if (not process)
         nil
       (let ((module-file
-             (python-shell-send-string-no-output
+             (py-shell-send-string-no-output
               (format python-ffap-string-code module) process)))
         (when module-file
           (substring-no-properties module-file 1 -1))))))
@@ -171,30 +135,17 @@ to \"^python-\"."
 	       (cdr pair))))
    (buffer-local-variables from-buffer)))
 
-;; (defun python-shell-send-setup-code ()
-;;   "Send all setup code for shell.
-;; This function takes the list of setup code to send from the
-;; `python-shell-setup-codes' list."
-;;   (let ((process (get-buffer-process (current-buffer))))
-;;     ;; (accept-process-output process python-shell-send-setup-max-wait)
-;;     (accept-process-output process 1)
-;;     (dolist (code python-shell-setup-codes)
-;;       (when code
-;;         ;; (when py-verbose-p (message (format msg code)))
-;;         (python-shell-send-string-no-output
-;;          (symbol-value code) process)))))
-
 (defun py-shell-send-setup-code (process)
   "Send all setup code for shell.
 This function takes the list of setup code to send from the
 `python-shell-setup-codes' list."
   (accept-process-output process 1)
   (dolist (code python-shell-setup-codes)
-    (python-shell-send-string-no-output
+    (py-shell-send-string-no-output
      (symbol-value code) process)
     (sit-for 0.1)))
 
-(defun python-shell-get-process-name (dedicated)
+(defun py-shell-get-process-name (dedicated)
   "Calculate the appropiate process name for inferior Python process.
 If DEDICATED is t and the variable `buffer-file-name' is non-nil
 returns a string with the form
@@ -210,26 +161,6 @@ in the `same-window-buffer-names' list."
     (add-to-list 'same-window-buffer-names (purecopy
                                             (format "*%s*" process-name)))
     process-name))
-
-(defun python-shell-internal-get-process-name ()
-  "Calculate the appropiate process name for Internal Python process.
-The name is calculated from `python-shell-global-buffer-name' and
-a hash of all relevant global shell settings in order to ensure
-uniqueness for different types of configurations."
-  (format "%s [%s]"
-          python-shell-internal-buffer-name
-          (md5
-           (concat
-            (python-shell-parse-command)
-            python-shell-prompt-regexp
-            python-shell-prompt-block-regexp
-            python-shell-prompt-output-regexp
-            (mapconcat #'symbol-value python-shell-setup-codes "")
-            (mapconcat #'identity python-shell-process-environment "")
-            (mapconcat #'identity python-shell-extra-pythonpaths "")
-            (mapconcat #'identity python-shell-exec-path "")
-            (or python-shell-virtualenv-path "")
-            (mapconcat #'identity python-shell-exec-path "")))))
 
 (defun python-shell-parse-command ()
   "Calculate the string used to execute the inferior Python process."
@@ -260,110 +191,11 @@ uniqueness for different types of configurations."
       (setenv "VIRTUAL_ENV" virtualenv))
     process-environment))
 
-(defun python-shell-calculate-exec-path ()
-  "Calculate exec path given `python-shell-virtualenv-path'."
-  (let ((path (append python-shell-exec-path
-                      exec-path nil)))
-    (if (not python-shell-virtualenv-path)
-        path
-      (cons (format "%s/bin"
-                    (directory-file-name python-shell-virtualenv-path))
-            path))))
-
-(defcustom python-shell-send-setup-max-wait 5
-  "Seconds to wait for process output before code setup.
-If output is received before the especified time then control is
-returned in that moment and not after waiting."
-  :type 'integer
-  :group 'python-mode)
-
-(defun python-shell-make-comint (cmd proc-name &optional pop)
-  "Create a python shell comint buffer.
-CMD is the python command to be executed and PROC-NAME is the
-process name the comint buffer will get.  After the comint buffer
-is created the `inferior-python-mode' is activated.  If POP is
-non-nil the buffer is shown."
-  (save-excursion
-    (let* ((proc-buffer-name (format "*%s*" proc-name))
-           (process-environment (python-shell-calculate-process-environment))
-           (exec-path (python-shell-calculate-exec-path)))
-      (when (not (comint-check-proc proc-buffer-name))
-        (let* ((cmdlist (split-string-and-unquote cmd))
-               (buffer (apply 'make-comint proc-name (car cmdlist) nil
-                              (cdr cmdlist)))
-               (current-buffer (current-buffer)))
-          (with-current-buffer buffer
-            (inferior-python-mode)
-            (py-util-clone-local-variables current-buffer))))
-      (when pop
-        (pop-to-buffer proc-buffer-name))
-      proc-buffer-name)))
-
-(defun run-python-internal ()
-  "Run an inferior Internal Python process.
-Input and output via buffer named after
-`python-shell-internal-buffer-name' and what
-`python-shell-internal-get-process-name' returns.  This new kind
-of shell is intended to be used for generic communication related
-to defined configurations.  The main difference with global or
-dedicated shells is that these ones are attached to a
-configuration, not a buffer.  This means that can be used for
-example to retrieve the sys.path and other stuff, without messing
-with user shells.  Runs the hook
-`inferior-python-mode-hook' (after the `comint-mode-hook' is
-run).  \(Type \\[describe-mode] in the process buffer for a list
-of commands.)"
-  (interactive)
-  (set-process-query-on-exit-flag
-   (get-buffer-process
-    (python-shell-make-comint
-     (python-shell-parse-command)
-     (python-shell-internal-get-process-name))) nil))
-
-(defun python-shell-get-process ()
-  "Get inferior Python process for current buffer and return it."
-  (let* ((dedicated-proc-name (python-shell-get-process-name t))
-         (dedicated-proc-buffer-name (format "*%s*" dedicated-proc-name))
-         (global-proc-name  (python-shell-get-process-name nil))
-         (global-proc-buffer-name (format "*%s*" global-proc-name))
-         (dedicated-running (comint-check-proc dedicated-proc-buffer-name))
-         (global-running (comint-check-proc global-proc-buffer-name)))
-    ;; Always prefer dedicated
-    (get-buffer-process (or (and dedicated-running dedicated-proc-buffer-name)
-                            (and global-running global-proc-buffer-name)))))
-
-(defun python-shell-get-or-create-process ()
-  "Get or create an inferior Python process for current buffer and return it."
-  (let* ((old-buffer (current-buffer))
-         (dedicated-proc-name (python-shell-get-process-name t))
-         (dedicated-proc-buffer-name (format "*%s*" dedicated-proc-name))
-         (global-proc-name  (python-shell-get-process-name nil))
-         (global-proc-buffer-name (format "*%s*" global-proc-name))
-         (dedicated-running (comint-check-proc dedicated-proc-buffer-name))
-         (global-running (comint-check-proc global-proc-buffer-name))
-         (current-prefix-arg 4))
-    (when (and (not dedicated-running) (not global-running))
-      (if (call-interactively 'run-python)
-          (setq dedicated-running t)
-        (setq global-running t)))
-    ;; Always prefer dedicated
-    (switch-to-buffer old-buffer)
-    (get-buffer-process (if dedicated-running
-                            dedicated-proc-buffer-name
-                          global-proc-buffer-name))))
-
-(defun python-shell-internal-get-or-create-process ()
-  "Get or create an inferior Internal Python process."
-  (let* ((proc-name (python-shell-internal-get-process-name))
-         (proc-buffer-name (format "*%s*" proc-name)))
-    (run-python-internal)
-    (get-buffer-process proc-buffer-name)))
-
-(defun python-shell-send-string (string &optional process msg)
+(defun py-shell-send-string (string &optional process msg)
   "Send STRING to inferior Python PROCESS.
 When `py-verbose-p' and MSG is non-nil messages the first line of STRING."
   (interactive "sPython command: ")
-  (let* ((process (or process (python-shell-get-or-create-process)))
+  (let* ((process (or process (get-buffer-process (py-shell))))
          (lines (split-string string "\n" t))
          (temp-file-name (concat (with-current-buffer (process-buffer process)
                                    (file-remote-p default-directory))
@@ -375,25 +207,25 @@ When `py-verbose-p' and MSG is non-nil messages the first line of STRING."
           (with-temp-file temp-file-name
             (insert string)
             (delete-trailing-whitespace))
-          (python-shell-send-file file-name process temp-file-name))
+          (py-send-file file-name process temp-file-name))
       (comint-send-string process string)
       (when (or (not (string-match "\n$" string))
                 (string-match "\n[ \t].*\n?$" string))
         (comint-send-string process "\n")))))
 
-(defun python-shell-send-string-no-output (string &optional process msg)
+(defun py-shell-send-string-no-output (string &optional process msg)
   "Send STRING to PROCESS and inhibit output.
 When MSG is non-nil messages the first line of STRING.  Return
 the output."
   (let* ((output-buffer)
-         (process (or process (python-shell-get-or-create-process)))
+         (process (or process (get-buffer-process (py-shell))))
          (comint-preoutput-filter-functions
           (append comint-preoutput-filter-functions
                   '(ansi-color-filter-apply
                     (lambda (string)
                       (setq output-buffer (concat output-buffer string))
                       "")))))
-    (python-shell-send-string string process msg)
+    (py-shell-send-string string process msg)
     (accept-process-output process 1)
     (when output-buffer
       (replace-regexp-in-string
@@ -405,42 +237,26 @@ the output."
                  python-shell-prompt-regexp))
        "" output-buffer))))
 
-(defun python-shell-internal-send-string (string)
-  "Send STRING to the Internal Python interpreter.
-Returns the output.  See `python-shell-send-string-no-output'."
-  (python-shell-send-string-no-output
-   ;; Makes this function compatible with the old
-   ;; python-send-receive. (At least for CEDET).
-   (replace-regexp-in-string "_emacs_out +" "" string)
-   (python-shell-internal-get-or-create-process) nil))
-
 (defun python-shell-send-region (start end)
   "Send the region delimited by START and END to inferior Python process."
   (interactive "r")
   (let ((deactivate-mark nil))
-    (python-shell-send-string (buffer-substring start end) nil t)))
+    (py-shell-send-string (buffer-substring start end) nil t)))
 
-(defun python-shell-send-buffer ()
-  "Send the entire buffer to inferior Python process."
-  (interactive)
-  (save-restriction
-    (widen)
-    (python-shell-send-region (point-min) (point-max))))
-
-(defun python-shell-send-file (file-name &optional process temp-file-name)
+(defun py-send-file (file-name &optional process temp-file-name)
   "Send FILE-NAME to inferior Python PROCESS.
 If TEMP-FILE-NAME is passed then that file is used for processing
 instead, while internally the shell will continue to use
 FILE-NAME."
   (interactive "fFile to send: ")
-  (let* ((process (or process (python-shell-get-or-create-process)))
+  (let* ((process (or process (get-buffer-process (py-shell))))
          (temp-file-name (when temp-file-name
                            (expand-file-name temp-file-name)))
          (file-name (or (expand-file-name file-name) temp-file-name))
          py-python-command-args)
     (when (not file-name)
       (error "If FILE-NAME is nil then TEMP-FILE-NAME must be non-nil"))
-    (python-shell-send-string
+    (py-shell-send-string
      (format
       (concat "__pyfile = open('''%s''');"
               "exec(compile(__pyfile.read(), '''%s''', 'exec'));"
@@ -448,10 +264,10 @@ FILE-NAME."
       (or (file-remote-p temp-file-name 'localname) file-name) file-name)
      process)))
 
-(defun python-shell-switch-to-shell ()
+(defun py-switch-to-shell ()
   "Switch to inferior Python process buffer."
   (interactive)
-  (pop-to-buffer (process-buffer (python-shell-get-or-create-process)) t))
+  (pop-to-buffer (py-shell) t))
 
 (defcustom python-pdbtrack-stacktrace-info-regexp
   "^> \\([^\"(<]+\\)(\\([0-9]+\\))\\([?a-zA-Z0-9_<>]+\\)()"
@@ -561,7 +377,7 @@ will be used.  If not FORCE-PROCESS is passed what
                          (forward-char)
                          (delete-region (point-marker) (search-forward "self."))
                          (setq input (buffer-substring (point-min) (point-max)))))
-                     (python-shell-send-string-no-output
+                     (py-shell-send-string-no-output
                       (format python-eldoc-string-code input) process))))
         (with-current-buffer (process-buffer process)
           (when comint-last-prompt-overlay
@@ -571,14 +387,11 @@ will be used.  If not FORCE-PROCESS is passed what
                    (not (string= help "\n")))
           help)))))
 
-(defun python-eldoc-function ()
-  "`eldoc-documentation-function' for Python.
-For this to work the best as possible you should call
-`python-shell-send-buffer' from time to time so context in
-inferior python process is updated properly."
+(defun feg-python-eldoc-function ()
+  "`eldoc-documentation-function' for Python."
   (python-eldoc--get-doc-at-point))
 
-(defun python-eldoc-at-point (symbol)
+(defun py-eldoc-at-point (symbol)
   "Get help on SYMBOL using `help'.
 Interactively, prompt for symbol."
   (interactive
@@ -674,7 +487,7 @@ Argument COMPLETION-CODE is the python code used to get
 completions on the current context."
   (with-current-buffer (process-buffer process)
     (let ((completions
-           (python-shell-send-string-no-output
+           (py-shell-send-string-no-output
             (format completion-code input) process)))
       (when (> (length completions) 2)
         (split-string completions "^'\\|^\"\\|;\\|'$\\|\"$" t)))))
@@ -682,7 +495,7 @@ completions on the current context."
 (defun python-shell-completion--do-completion-at-point (process imports input)
   "Do completion at point for PROCESS."
   (with-syntax-table python-dotty-syntax-table
-    (when imports (python-shell-send-string-no-output imports process))
+    (when imports (py-shell-send-string-no-output imports process))
     (let* ((code python-shell-module-completion-string-code)
            (completions
             (python-shell-completion--get-completions

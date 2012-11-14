@@ -4387,8 +4387,8 @@ def foo():
   (py-bug-tests-intern 'does-not-dedent-regions-lp-1072869-base arg teststring)))
 
 (defun does-not-dedent-regions-lp-1072869-base ()
-  (assert (markerp (py-execute-buffer-python)) nil "does-not-dedent-regions-lp-1072869-test failed")
-  (assert (markerp (py-execute-buffer-ipython)) nil "does-not-dedent-regions-lp-1072869-test failed")
+  (assert (markerp (py-execute-buffer-ipython)) nil "does-not-dedent-regions-lp-1072869-test #1 failed")
+  (assert (markerp (py-execute-buffer-python)) nil "does-not-dedent-regions-lp-1072869-test #2 failed")
   )
 
 (defun inconvenient-py-switch-buffers-on-execute-lp-1073-test (&optional arg)

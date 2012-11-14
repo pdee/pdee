@@ -132,23 +132,13 @@ and return collected output"
    (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point))
    (point)))
 
-(defun py-switch-to-python (eob-p)
-  "Switch to the Python process buffer, maybe starting new process.
-
-With prefix arg, position cursor at end of buffer."
-  (interactive "P")
-  (pop-to-buffer (process-buffer (python-proc)) t) ;Runs python if needed.
-  (when eob-p
-    (push-mark)
-    (goto-char (point-max))))
-
 (defun py-send-region-and-go (start end)
   "Send the region to the inferior Python process.
 
 Then switch to the process buffer."
   (interactive "r")
   (py-send-region start end)
-  (py-switch-to-python t))
+  (py-switch-to-shell))
 
 (defun py-load-file (file-name)
   "Load a Python file FILE-NAME into the inferior Python process.
@@ -175,16 +165,16 @@ module-qualified names."
     (message "%s loaded" file-name)))
 
 (defun py-set-proc ()
-  "Set the default value of `python-buffer' to correspond to this buffer.
+  "Set the default value of `py-buffer-name' to correspond to this buffer.
 
-If the current buffer has a local value of `python-buffer', set the
+If the current buffer has a local value of `py-buffer-name', set the
 default (global) value to that.  The associated Python process is
 the one that gets input from \\[py-send-region] et al when used
-in a buffer that doesn't have a local value of `python-buffer'."
+in a buffer that doesn't have a local value of `py-buffer-name'."
   (interactive)
-  (if (local-variable-p 'python-buffer)
-      (setq-default python-buffer python-buffer)
-    (error "No local value of `python-buffer'")))
+  (if (local-variable-p 'py-buffer-name)
+      (setq-default py-buffer-name py-buffer-name)
+    (error "No local value of `py-buffer-name'")))
 
 ;;; Context-sensitive help.
 
@@ -251,24 +241,24 @@ in a buffer that doesn't have a local value of `python-buffer'."
 
 (defun py-proc ()
   "Return the current Python process.
-See variable `python-buffer'.  Starts a new process if necessary."
+See variable `py-buffer-name'.  Starts a new process if necessary."
   ;; Fixme: Maybe should look for another active process if there
-  ;; isn't one for `python-buffer'.
-  (unless (comint-check-proc python-buffer)
+  ;; isn't one for `py-buffer-name'.
+  (unless (comint-check-proc py-buffer-name)
     (run-python nil t))
   (get-buffer-process (if (derived-mode-p 'inferior-python-mode)
 			  (current-buffer)
-			python-buffer)))
+			py-buffer-name)))
 
 (defun py-send-receive (string)
   "Send STRING to inferior Python (if any) and return result.
 
 The result is what follows `_emacs_out' in the output.
-This is a no-op if `python-check-comint-prompt' returns nil."
+This is a no-op if `py-check-comint-prompt' returns nil."
   (py-send-string string)
   (let ((proc (py-proc)))
     (with-current-buffer (process-buffer proc)
-      (when (python-check-comint-prompt proc)
+      (when (py-check-comint-prompt proc)
 	(set (make-local-variable 'python-preoutput-result) nil)
 	(while (progn
 		 (accept-process-output proc 5)

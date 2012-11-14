@@ -364,6 +364,7 @@ Interactively, \\[universal-argument] 4 prompts for a buffer.
 \\[universal-argument] 2 prompts for `py-python-command-args'.
 If `default-directory' is a remote file name, it is also prompted
 to change if called with a prefix arg.
+
 Returns py-shell's buffer-name.
 Optional string PYSHELLNAME overrides default `py-shell-name'.
 Optional symbol SWITCH ('switch/'noswitch) precedes `py-switch-buffers-on-execute-p'
@@ -505,17 +506,19 @@ When DONE is `t', `py-shell-manage-windows' is omitted
     (unless done (py-shell-manage-windows switch py-split-windows-on-execute-p py-switch-buffers-on-execute-p oldbuf py-buffer-name))
     py-buffer-name))
 
-(defcustom py-remove-cwd-from-path t
-  "Whether to allow loading of Python modules from the current directory.
-If this is non-nil, Emacs removes '' from sys.path when starting
-an inferior Python process.  This is the default, for security
-reasons, as it is easy for the Python process to be started
-without the user's realization (e.g. to perform completion)."
-  :type 'boolean
-  :group 'python
-  :version "23.3")
+(defun py-shell-get-process (&optional argprompt dedicated pyshellname switch sepchar py-buffer-name done)
+  "Get appropriate Python process for current buffer and return it."
+  (interactive)
+  (let ((erg (get-buffer-process (py-shell argprompt dedicated pyshellname switch sepchar py-buffer-name done))))
+    (when (interactive-p) (message "%S" erg))
+    erg))
 
-
+(defalias 'py-switch-to-python 'py-switch-to-shell)
+(defun py-switch-to-shell ()
+  "Switch to inferior Python process buffer."
+  (interactive)
+  (pop-to-buffer (py-shell) t))
+
 ;; Code execution commands
 (defun py-which-execute-file-command (filename)
   "Return the command appropriate to Python version.

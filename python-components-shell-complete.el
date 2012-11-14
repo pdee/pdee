@@ -116,6 +116,84 @@ module-qualified names."
        (format "execfile(%S)" file-name)))
     (message "%s loaded" file-name)))
 
+
+(defun py-shell-send-setup-code (process)
+  "Send all setup code for shell.
+This function takes the list of setup code to send from the
+`python-shell-setup-codes' list."
+  (accept-process-output process 1)
+  (dolist (code python-shell-setup-codes)
+    (py-shell-send-string-no-output
+     (symbol-value code) process)
+    (sit-for 0.1)))
+
+(defun py-shell-send-string (string &optional process msg)
+  "Send STRING to inferior Python PROCESS.
+When `py-verbose-p' and MSG is non-nil messages the first line of STRING."
+  (interactive "sPython command: ")
+  (let* ((process (or process (get-buffer-process (py-shell))))
+         (lines (split-string string "\n" t))
+         (temp-file-name (concat (with-current-buffer (process-buffer process)
+                                   (file-remote-p default-directory))
+                                 (py-normalize-directory py-temp-directory)
+                                 "psss-temp.py"))
+         (file-name (or (buffer-file-name) temp-file-name)))
+    (if (> (length lines) 1)
+        (progn
+          (with-temp-file temp-file-name
+            (insert string)
+            (delete-trailing-whitespace))
+          (py-send-file file-name process temp-file-name))
+      (comint-send-string process string)
+      (when (or (not (string-match "\n$" string))
+                (string-match "\n[ \t].*\n?$" string))
+        (comint-send-string process "\n")))))
+
+(defun py-shell-send-string-no-output (string &optional process msg)
+  "Send STRING to PROCESS and inhibit output.
+When MSG is non-nil messages the first line of STRING.  Return
+the output."
+  (let* ((output-buffer)
+         (process (or process (get-buffer-process (py-shell))))
+         (comint-preoutput-filter-functions
+          (append comint-preoutput-filter-functions
+                  '(ansi-color-filter-apply
+                    (lambda (string)
+                      (setq output-buffer (concat output-buffer string))
+                      "")))))
+    (py-shell-send-string string process msg)
+    (accept-process-output process 1)
+    (when output-buffer
+      (replace-regexp-in-string
+       (if (> (length python-shell-prompt-output-regexp) 0)
+           (format "\n*%s$\\|^%s\\|\n$"
+                   py-shell-prompt-regexp
+                   (or python-shell-prompt-output-regexp ""))
+         (format "\n*$\\|^%s\\|\n$"
+                 py-shell-prompt-regexp))
+       "" output-buffer))))
+
+(defun py-send-file (file-name &optional process temp-file-name)
+  "Send FILE-NAME to inferior Python PROCESS.
+If TEMP-FILE-NAME is passed then that file is used for processing
+instead, while internally the shell will continue to use
+FILE-NAME."
+  (interactive "fFile to send: ")
+  (let* ((process (or process (get-buffer-process (py-shell))))
+         (temp-file-name (when temp-file-name
+                           (expand-file-name temp-file-name)))
+         (file-name (or (expand-file-name file-name) temp-file-name))
+         py-python-command-args)
+    (when (not file-name)
+      (error "If FILE-NAME is nil then TEMP-FILE-NAME must be non-nil"))
+    (py-shell-send-string
+     (format
+      (concat "__pyfile = open('''%s''');"
+              "exec(compile(__pyfile.read(), '''%s''', 'exec'));"
+              "__pyfile.close()")
+      (or (file-remote-p temp-file-name 'localname) file-name) file-name)
+     process)))
+
 ;; Author: Lukasz Pankowski, patch sent for lp:328836
 ;;; need to clear py-shell-input-lines if primary prompt found
 ;; (defun py-comint-output-filter-function (string)
@@ -300,7 +378,7 @@ When `py-no-completion-calls-dabbrev-expand-p' is non-nil, try dabbrev-expand. O
 
 (defun py-shell-complete-intern (word &optional beg end shell imports proc debug)
   (when imports
-    (python-shell-send-string-no-output imports proc))
+    (py-shell-send-string-no-output imports proc))
   (let ((result (py-shell-execute-string-now (format "
 def print_completions(namespace, text, prefix=''):
    for name in namespace:

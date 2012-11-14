@@ -23,7 +23,15 @@
 ;;; Code:
 (require 'python-components-macros)
 
-(defun python-eldoc-function ()
+(defun py-outline-level ()
+  "`outline-level' function for Python mode.
+The level is the number of `py-indent-offset' steps of indentation
+of current line."
+  (let ((erg (1+ (/ (current-indentation) py-indent-offset))))
+    (when (interactive-p) (message "%s" erg))
+    erg))
+
+(defun py-eldoc ()
   "`eldoc-documentation-function' for Python.
 Only works when point is in a function name, not its arg list, for
 instance.  Assumes an inferior Python is running."
@@ -45,7 +53,7 @@ instance.  Assumes an inferior Python is running."
                   (let ((point (point)))
                     (skip-chars-backward "a-zA-Z._")
                     (if (< (point) point)
-                        (python-send-receive
+                        (py-send-receive
                          (format "emacs.eargs(%S, %s)"
                                  (buffer-substring-no-properties (point) point)
                                  python-imports))))))))))))
@@ -54,7 +62,7 @@ instance.  Assumes an inferior Python is running."
 
 (declare-function info-lookup-maybe-add-help "info-look" (&rest arg))
 
-(defun python-after-info-look ()
+(defun py-after-info-look ()
   "Set up info-look for Python.
 Used with `eval-after-load'."
   (let* ((version (let ((s (shell-command-to-string (concat py-shell-name
@@ -103,7 +111,7 @@ Used with `eval-after-load'."
          ("(python-lib)Function-Method-Variable Index" nil "")
          ("(python-lib)Miscellaneous Index" nil ""))))))
 
-(eval-after-load "info-look" '(python-after-info-look))
+(eval-after-load "info-look" '(py-after-info-look))
 
 (defun py-warn-tmp-files-left ()
   "Detect and warn about file of form \"py11046IoE\" in py-temp-directory. "
@@ -935,7 +943,7 @@ Extracted from http://manpages.ubuntu.com/manpages/natty/man1/pyflakes.1.html
   "Internal use.")
 
 ;; After `sgml-validate-command'.
-(defun python-check (command)
+(defun py-check-command (command)
   "Check a Python file (default current buffer's file).
 Runs COMMAND, a shell command, as if by `compile'.
 See `python-check-command' for the default."
@@ -981,7 +989,25 @@ i.e. spaces, tabs, carriage returns, newlines and newpages. "
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
+;;; ffap
+(defun py-ffap-module-path (module)
+  "Function for `ffap-alist' to return path for MODULE."
+  (let ((process (or
+                  (and (eq major-mode 'inferior-python-mode)
+                       (get-buffer-process (current-buffer)))
+                  (py-shell-get-process))))
+    (if (not process)
+        nil
+      (let ((module-file
+             (py-shell-send-string-no-output
+              (format python-ffap-string-code module) process)))
+        (when module-file
+          (substring-no-properties module-file 1 -1))))))
 
+(eval-after-load "ffap"
+  '(progn
+     (push '(python-mode . py-ffap-module-path) ffap-alist)
+     (push '(inferior-python-mode . py-ffap-module-path) ffap-alist)))
 
 ;;; Flymake
 (defun py-toggle-flymake-intern (name command)
