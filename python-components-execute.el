@@ -304,10 +304,8 @@ Needed when file-path names are contructed from maybe numbered buffer names like
                   py-switch-buffers-on-execute-p))
          (when (< (count-windows) py-max-split-windows)
            (funcall py-split-windows-on-execute-function))
-         (display-buffer oldbuf)
-         ;; (switch-to-buffer-other-window py-buffer-name)
          (pop-to-buffer py-buffer-name)
-         )
+         (display-buffer oldbuf))
         ;; split, not switch
         ((and py-split-windows-on-execute-p
               (or (eq switch 'noswitch)

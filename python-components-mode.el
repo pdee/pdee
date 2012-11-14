@@ -1398,8 +1398,9 @@ ipython0.11-completion-command-string also covers version 0.12")
 (defvar py-encoding-string-re "^[ \t]*#[ \t]*-\\*-[ \t]*coding:.+-\\*-"
   "Matches encoding string of a Python file. ")
 
-(defvar py-shebang-regexp "#![ \t]?\\([^ \t\n]+\\)[ \t]?\\([biptj]+ython[^ \t\n]*\\)"
+(defvar py-shebang-regexp "#![ \t]?\\([^ \t\n]+\\)[ \t]*\\([biptj]+ython[^ \t\n]*\\)"
   "Detecting the shell in head of file. ")
+(setq py-shebang-regexp   "#![ \t]?\\([^ \t\n]+\\)[ \t]*\\([biptj]+ython[^ \t\n]*\\)")
 
 (defvar py-separator-char 47
   "Values set by defcustom only will not be seen in batch-mode. ")
@@ -1888,7 +1889,7 @@ Includes def and class. ")
 
 (setq symbol-definition-start-re "^[ \t]*(\\(defun\\|defvar\\|defcustom\\)")
 
-(setq py-shebang-regexp "#![ \t]?\\([^ \t\n]+\\)[ \t]?\\([biptj]+ython[^ \t\n]*\\)")
+
 
 (set-default 'py-python-command-args  '("-i"))
 (make-obsolete-variable 'py-jpython-command-args 'py-jython-command-args nil)
