@@ -122,9 +122,9 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)\"\
   (cond ((string-match "dedicated" pyo)
          (insert "\n\nUses a dedicated shell.")))
   (cond ((string-match "noswitch" pyo)
-         (insert "\nIgnores default of `py-shell-switch-buffers-on-execute-p', uses it with value \\\"nil\\\""))
+         (insert "\nIgnores default of `py-switch-buffers-on-execute-p', uses it with value \\\"nil\\\""))
         ((string-match "switch" pyo)
-         (insert "\nIgnores default of `py-shell-switch-buffers-on-execute-p', uses it with value \\\"non-nil\\\""))))
+         (insert "\nIgnores default of `py-switch-buffers-on-execute-p', uses it with value \\\"non-nil\\\""))))
 
 (defun write-menu-entry (&optional erg)
   "Menu Eintrag einfuegen. "
@@ -326,9 +326,9 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)\"\
                  (insert "default interpreter. "))
                 (t (insert " interpreter. ")))
           (cond ((string= pyo "switch")
-                 (insert "\n\nSwitch to output buffer. Ignores `py-shell-switch-buffers-on-execute-p'. "))
+                 (insert "\n\nSwitch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "))
                 ((string= pyo "noswitch")
-                 (insert "\n\nKeep current buffer. Ignores `py-shell-switch-buffers-on-execute-p' ")))
+                 (insert "\n\nKeep current buffer. Ignores `py-switch-buffers-on-execute-p' ")))
           (insert "\"\n")
           (cond ((string= "region" ele)
                  (insert (concat "  (interactive \"r\")
@@ -536,7 +536,7 @@ Returns a list, whose car is beg, cdr - end.\"
             (insert " IPython")
           (insert (concat " " (capitalize ele))))
         (insert (concat " interpreter.
-Optional \\\\[universal-argument] forces switch to output buffer, ignores `py-shell-switch-buffers-on-execute-p'. \"]\n")))
+Optional \\\\[universal-argument] forces switch to output buffer, ignores `py-switch-buffers-on-execute-p'. \"]\n")))
       ;; (unless done
             (insert "            (\"Ignoring defaults ... \"
              :help \"Commands will ignore default setting of
@@ -569,7 +569,7 @@ With \\\\[universal-argument] use an unique "))
             (insert "n IPython")
           (insert (concat " " (capitalize ele))))
         (insert (concat " interpreter.
-Switch to output buffer; ignores `py-shell-switch-buffers-on-execute-p' \"]\n")))
+Switch to output buffer; ignores `py-switch-buffers-on-execute-p' \"]\n")))
       (insert "))"))
     (insert "))")
 
@@ -624,7 +624,7 @@ With \\\\[universal-argument] use an unique "))
           (insert (concat " " (capitalize ele))))
         (insert (concat " interpreter.
 
-Optional \\\\[universal-argument] forces switch to output buffer, ignores `py-shell-switch-buffers-on-execute-p'. \"]\n")))
+Optional \\\\[universal-argument] forces switch to output buffer, ignores `py-switch-buffers-on-execute-p'. \"]\n")))
 
       (insert ";; switch\n")
       (dolist (ele py-shells)
@@ -653,7 +653,7 @@ With \\\\[universal-argument] use an unique "))
           (insert (concat " " (capitalize ele))))
         (insert (concat " interpreter.
 
-Switch to output buffer; ignores `py-shell-switch-buffers-on-execute-p'. \"]\n")))
+Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. \"]\n")))
       (insert ")"))
     (insert "))")
 
@@ -764,7 +764,7 @@ With \\\\[universal-argument] use an unique "))
         (insert (capitalize ele)))
       (insert (concat " interpreter.
 
-Optional \\\\[universal-argument] forces switch to output buffer, ignores `py-shell-switch-buffers-on-execute-p'. \"
+Optional \\\\[universal-argument] forces switch to output buffer, ignores `py-switch-buffers-on-execute-p'. \"
   (interactive \"P\")
   (let ((wholebuf t))
   (py-execute-buffer-base \"" ele "\" t switch)))\n\n"))
@@ -780,7 +780,7 @@ Optional \\\\[universal-argument] forces switch to output buffer, ignores `py-sh
         (insert (concat " " (capitalize ele))))
       (insert (concat " interpreter.
 
-Optional \\\\[universal-argument] forces switch to output buffer, ignores `py-shell-switch-buffers-on-execute-p'. \"]\n")))
+Optional \\\\[universal-argument] forces switch to output buffer, ignores `py-switch-buffers-on-execute-p'. \"]\n")))
     (set-buffer temp-buffer)
     (goto-char (point-max))
 
@@ -795,7 +795,7 @@ Optional \\\\[universal-argument] forces switch to output buffer, ignores `py-sh
         (insert (concat " " (capitalize ele))))
       (insert (concat " interpreter and switch to output buffer.
 
-Ignores `py-shell-switch-buffers-on-execute-p'.
+Ignores `py-switch-buffers-on-execute-p'.
 Optional \\\\[universal-argument] makes"))
       (if (string= "ipython" ele)
           (insert " IPython")
@@ -835,7 +835,7 @@ With \\\\[universal-argument] use an unique "))
         (insert (concat " " (capitalize ele))))
       (insert (concat " interpreter.
 
-Switch to output buffer; ignores `py-shell-switch-buffers-on-execute-p'. \"
+Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. \"
   (interactive)
   (let ((wholebuf t))
   (py-execute-buffer-base \"" ele "\" t 'switch)))\n\n"))
@@ -851,7 +851,7 @@ Switch to output buffer; ignores `py-shell-switch-buffers-on-execute-p'. \"
         (insert (concat " " (capitalize ele))))
       (insert (concat " interpreter.
 
-Switch to output buffer; ignores `py-shell-switch-buffers-on-execute-p'. \"]\n")))
+Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. \"]\n")))
     (set-buffer temp-buffer)
     (goto-char (point-max))
 
@@ -1390,16 +1390,16 @@ A complementary command travelling right, whilst `py-beginning-of-" ele "' stops
 
 \(defun py-execute-region-" ele "-switch (start end &optional async)
   \"Send the region to a common shell calling the " ele " interpreter.
-  Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will being switched to. \"
+  Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being switched to. \"
   (interactive \"r\\nP\")
-  (let ((py-shell-switch-buffers-on-execute-p t))
+  (let ((py-switch-buffers-on-execute-p t))
     (py-execute-base start end async \"" ele "\")))
 
 \(defun py-execute-region-" ele "-no-switch (start end &optional async)
   \"Send the region to a common shell calling the " ele " interpreter.
-  Ignores setting of `py-shell-switch-buffers-on-execute-p', output-buffer will not being switched to.\"
+  Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will not being switched to.\"
   (interactive \"r\\nP\")
-  (let ((py-shell-switch-buffers-on-execute-p))
+  (let ((py-switch-buffers-on-execute-p))
     (py-execute-base start end async \"" ele "\")))"))))
 
 (defun xemacs-remove-help-strings ()
@@ -1817,7 +1817,7 @@ http://repo.or.cz/w/elbb.git/blob/HEAD:/code/Go-to-Emacs-Lisp-Definition.el
       (setq ele (replace-regexp-in-string  "/+" "-" (replace-regexp-in-string  "^[/~]+" "" ele)))
       (insert (concat "\(defun " ele "-shell-complete-test ()
   (interactive)
-  (let (py-shell-switch-buffers-on-execute-p
+  (let (py-switch-buffers-on-execute-p
         py-split-windows-on-execute-p)
     (set-buffer (py-shell nil t \"" elt "\" nil \"" sepchar "\"))
     (sit-for 0.2 t)
