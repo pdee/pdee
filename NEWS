@@ -94,6 +94,8 @@ New in version 6.1.0
 - py-switch-buffers-on-execute-p-on
 - py-switch-buffers-on-execute-p-off
 
+- `py-shell-switch-buffers-on-execute-p' renamed `py-switch-buffers-on-execute-p'
+
 New in version 6.0.12
 ---------------------
 

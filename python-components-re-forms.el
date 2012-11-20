@@ -53,6 +53,11 @@ http://docs.python.org/reference/compound_stmts.html"
                                 (current-indentation)))))
          (erg (cond ((and (< (point) orig) (looking-at regexp))
                      (point))
+                    ((and (eq 0 (current-column)) (numberp indent))
+                     (when (< 0 (abs (skip-chars-backward " \t\r\n\f")))
+                       (py-beginning-of-statement)
+                       (unless (looking-at regexp)
+                         (cdr (py-go-to-keyword regexp (current-indentation))))))
                     ((numberp indent)
                      (ignore-errors
                        (cdr (py-go-to-keyword regexp indent))))
@@ -106,7 +111,7 @@ http://docs.python.org/reference/compound_stmts.html"
     (let* ((orig (point))
            (erg (py-end-base 'py-extended-block-or-clause-re orig)))
       (when (< orig (point))
-        (setq erg (py-beginning-of-block-or-clause))) 
+        (setq erg (py-beginning-of-block-or-clause)))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg))
 
@@ -162,6 +167,7 @@ http://docs.python.org/reference/compound_stmts.html"
  "Go to beginning of block-or-clause.
 
 With \\[universal-argument], go to beginning one level above.
+Travels buffer upward by clauses.
 Returns beginning of block-or-clause if successful, nil otherwise
 
 Referring python program structures see for example:
