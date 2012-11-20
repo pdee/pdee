@@ -229,7 +229,7 @@ When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
                   (back-to-indentation)
                   (py-compute-indentation orig origline closing line inside t indent-offset)))
                ((and (not line)(eq origline (py-count-lines))
-                     (save-excursion (and (save-excursion (setq erg (py-go-to-keyword py-block-or-clause-re)))
+                     (save-excursion (and (setq erg (py-go-to-keyword py-extended-block-or-clause-re))
                                           (ignore-errors (< orig (or (py-end-of-block-or-clause)(point)))))))
                 (+ (car erg) (if py-smart-indentation (py-guess-indent-offset nil orig origline) indent-offset)))
                ((and (not line)(eq origline (py-count-lines))

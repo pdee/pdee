@@ -341,7 +341,7 @@ When `py-no-completion-calls-dabbrev-expand-p' is non-nil, try dabbrev-expand. O
             (shell (or shell (py-report-executable (buffer-name (current-buffer)))))
             (imports (py-find-imports)))
         (if (string-match "[iI][pP]ython" shell)
-            (ipython-complete nil nil nil nil nil shell debug)
+            (ipython-complete nil nil nil nil nil shell debug imports)
           (let* ((orig (point))
                  (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
                  (end (point))
@@ -368,7 +368,7 @@ When `py-no-completion-calls-dabbrev-expand-p' is non-nil, try dabbrev-expand. O
       (cond ((string= word "")
              (tab-to-tab-stop))
             ((string-match "[iI][pP]ython" shell)
-             (ipython-complete nil nil beg end word))
+             (ipython-complete nil nil beg end word nil debug imports))
             ((string-match "[pP]ython3[^[:alpha:]]*$" shell)
              (python-shell-completion--do-completion-at-point proc (buffer-substring-no-properties beg end) word))
             ;; deals better with imports
@@ -455,7 +455,7 @@ complete('%s')" word) shell nil proc)))
               (kill-buffer (get-buffer "*Python Completions*")))))))))
 
 (defalias 'ipyhton-complete 'ipython-complete)
-(defun ipython-complete (&optional done completion-command-string beg end word shell debug)
+(defun ipython-complete (&optional done completion-command-string beg end word shell debug imports)
   "Complete the python symbol before point.
 
 If no completion available, insert a TAB.
@@ -475,6 +475,7 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
                           shell
                         "ipython"))
          (processlist (process-list))
+         (imports (or imports (py-find-imports)))
          done
          (process
           (if ipython-complete-use-separate-shell-p
@@ -501,8 +502,12 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
                       (delete-region comint-last-output-start
                                      (process-mark (get-buffer-process (current-buffer))))))))
 
-         (ccs (or completion-command-string (py-set-ipython-completion-command-string
-                                             (process-name python-process))))
+         (ccs (or completion-command-string
+                  (if imports
+                      (concat imports (py-set-ipython-completion-command-string
+                                       (process-name python-process)))
+                    (py-set-ipython-completion-command-string
+                     (process-name python-process)))))
          completion completions completion-table ugly-return)
     (if (string= pattern "")
         (tab-to-tab-stop)

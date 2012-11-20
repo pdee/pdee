@@ -128,7 +128,7 @@ fi
 echo "\$PYMACS: $PYMACS"
 echo "\$PYTHONMODE: $PYTHONMODE"
 echo "\$PDIR/\$TESTFILE: $PDIR/$TESTFILE"
-$EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'python)(unload-feature 'python t))" --eval "(when (featurep 'python-mode)(unload-feature 'python-mode t))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$TESTDIR/\")" --eval "(setq py-install-directory \"$PDIR\"))" --eval "(message \"py-install-directory: %s\" py-install-directory)" --eval "(setq py-load-pymacs-p t)" -load $CCCMDS -load $COMINT -load $ANSICOLOR -load $CLMACS -load $BYTECOMP -load $CUSTOM -load $SKEL -load $SO -load $COLMK -load $HIGHL -load $PYTHONMODE  --eval "(message \"py-temp-directory: %s\" py-temp-directory)" -load $PCOT$TESTFILE -load $PCOT$TESTFILE2 -load $PCOT$TESTFILE3 -load $PCOT$TESTFILE4 -load $PCOT$TESTFILE5 \
+$EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'python)(unload-feature 'python t))" --eval "(when (featurep 'python-mode)(unload-feature 'python-mode t))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$TESTDIR/\")" --eval "(setq py-install-directory \"$PDIR\"))" --eval "(message \"py-install-directory: %s\" py-install-directory)" --eval "(setq py-load-pymacs-p nil)" -load $CCCMDS -load $COMINT -load $ANSICOLOR -load $CLMACS -load $BYTECOMP -load $CUSTOM -load $SKEL -load $SO -load $COLMK -load $HIGHL -load $PYTHONMODE  --eval "(message \"py-temp-directory: %s\" py-temp-directory)" -load $PCOT$TESTFILE -load $PCOT$TESTFILE2 -load $PCOT$TESTFILE3 -load $PCOT$TESTFILE4 -load $PCOT$TESTFILE5 \
 --eval "(when (file-exists-p \"~/.abbrev_defs\") (quietly-read-abbrev-file (expand-file-name \"~/.abbrev_defs\")))" \
 \
 -eval "(assert (functionp 'word-at-point) nil \"new completion bug, lp:1034656, word-at-point not known\")" \
@@ -827,9 +827,9 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-execute-file-bpython-dedicated) nil \"py-execute-file-bpython-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-bpython-dedicated-switch) nil \"py-execute-file-bpython-dedicated-switch not detected as command\")" \
 -eval "(setq enable-local-variables :all)" \
+--funcall spuriously-indents-whole-line-while-making-some-portion-inline-comment-lp-1080973-test \
 --funcall fill-paragraph-in-a-comment-does-not-stop-at-empty-comment-lines-lp-1077139-test \
 --funcall incorrect-indentation-of-comments-in-a-multiline-list-lp-1077063-test \
---funcall py-nested-block-or-clause-test \
 --funcall fails-to-indent-abs-wrong-type-argument-lp-1075673-test \
 --funcall does-not-dedent-regions-lp-1072869-test \
 --funcall py-down-statement-test \
@@ -1056,7 +1056,6 @@ est \
 --funcall py-shell-invoking-jython-lp:835151-test \
 \
 --funcall py-electric-backspace-test \
---funcall UnicodeEncodeError-lp:550661-test \
 --funcall py-insert-super-python3-test \
 \
 --funcall python-shell-complete-test \
@@ -1082,17 +1081,7 @@ est \
 --funcall indent-triplequoted-to-itself-lp:752252-test \
 --funcall complaint-about-non-ASCII-character-lp-1042949-test \
 --funcall py-beginning-of-block-test \
---funcall augmented-assigment-test \
---funcall py-fill-string-django-test \
---funcall py-fill-string-onetwo-test \
---funcall py-fill-string-pep-257-test \
---funcall py-fill-string-pep-257-nn-test \
---funcall py-fill-string-symmetric-test \
---funcall no-completion-at-all-lp:1001328-test \
 --funcall py-execute-statement-ipython-test \
---funcall ipython-shell-complete-test \
---funcall usr-bin-ipython-shell-complete-test \
---funcall inconvenient-window-splitting-behavior-ipython-lp-1018996-test \
 --funcall py-ipython-complete-lp:927136-test \
 --funcall py-execute-buffer-ipython-switch-test \
 --funcall py-execute-region-ipython-test \
@@ -1120,3 +1109,15 @@ est \
 --funcall python-mode-slow-lp:803275-test \
 --funcall beg-end-of-defun-lp:303622-test \
 --funcall py-smart-operator-test \
+--funcall py-nested-block-or-clause-test \
+--funcall augmented-assigment-test \
+--funcall UnicodeEncodeError-lp:550661-test \
+--funcall py-fill-string-django-test \
+--funcall py-fill-string-onetwo-test \
+--funcall py-fill-string-pep-257-test \
+--funcall py-fill-string-pep-257-nn-test \
+--funcall py-fill-string-symmetric-test \
+--funcall no-completion-at-all-lp:1001328-test \
+--funcall ipython-shell-complete-test \
+--funcall usr-bin-ipython-shell-complete-test \
+--funcall inconvenient-window-splitting-behavior-ipython-lp-1018996-test \

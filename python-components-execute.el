@@ -599,9 +599,9 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
          (execute-directory (cond ((ignore-errors (file-name-directory (file-remote-p (buffer-file-name) 'localname))))
                                   (py-use-current-dir-when-execute-p
                                    (file-name-directory (buffer-file-name)))
-                                  ((getenv "WORKON_HOME"))
+                                  ((getenv "VIRTUAL_ENV"))
                                   (py-execute-directory)
-                                  ((getenv "HOME"))))
+                                  (t (getenv "HOME"))))
          (strg (buffer-substring-no-properties start end))
          (sepchar (or sepchar (char-to-string py-separator-char)))
          (py-buffer-name (py-buffer-name-prepare pyshellname sepchar))

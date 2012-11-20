@@ -38,6 +38,7 @@
 
 (setq bug-numbered-tests
       (list
+       'spuriously-indents-whole-line-while-making-some-portion-inline-comment-lp-1080973-test
        'fill-paragraph-in-a-comment-does-not-stop-at-empty-comment-lines-lp-1077139-test
        'incorrect-indentation-of-comments-in-a-multiline-list-lp-1077063-test
        'fails-to-indent-abs-wrong-type-argument-lp-1075673-test
@@ -4493,6 +4494,49 @@ class X:
     (goto-char 233)
     (beginning-of-line)
     (assert (looking-at paragraph-separate) nil "fill-paragraph-in-a-comment-does-not-stop-at-empty-comment-lines-lp-1077139-test failed")))
+
+
+(defun spuriously-indents-whole-line-while-making-some-portion-inline-comment-lp-1080973-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# originally it actually added indentation level in my case so code became
+
+#     @sweepargs(clf=[kNN(5)]) #clfswh['multiclass'])
+# def test_auc(self, clf):
+#     pass
+
+# but on example to reproduce
+class A(object):
+    def prev():
+        pass
+
+    @decorator(1) lkajsd
+    def buga():
+        pass
+
+# attempt to insert # before lkajsd actually dedented it and made it
+
+class A(object):
+    def prev():
+        pass
+
+@decorator(1) #lkajsd
+    def buga():
+        pass
+
+# imho making inline comment should not alter whole line indentation
+
+"))
+  (py-bug-tests-intern 'spuriously-indents-whole-line-while-making-some-portion-inline-comment-lp-1080973-base arg teststring)))
+
+(defun spuriously-indents-whole-line-while-making-some-portion-inline-comment-lp-1080973-base ()
+    (goto-char 312)
+    (assert (eq 4 (py-compute-indentation)) nil "spuriously-indents-whole-line-while-making-some-portion-inline-comment-lp-1080973-test #1 failed")
+    (goto-char 349)
+    (assert (eq 4 (py-compute-indentation)) nil "spuriously-indents-whole-line-while-making-some-portion-inline-comment-lp-1080973-test #2 failed")
+    )
 
 
 (provide 'py-bug-numbered-tests)

@@ -2092,6 +2092,7 @@ else:
   (assert (eq 101 (py-end-of-clause)) nil "py-nested-block-or-clause-test #6 failed")
   (goto-char 291)
   (assert (eq 285 (py-beginning-of-clause)) nil "py-nested-block-or-clause-test #7 failed")
+  (sit-for 0.1) 
   (assert (eq 197 (py-beginning-of-clause)) nil "py-nested-block-or-clause-test #8 failed")
   (assert (eq 48 (py-beginning-of-block-or-clause)) nil "py-nested-block-or-clause-test #9 failed")
   (goto-char 284)
