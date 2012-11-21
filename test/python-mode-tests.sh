@@ -1097,9 +1097,6 @@ est \
 --funcall inconvenient-window-splitting-behavior-python-lp-1018996-test \
 --funcall script-buffer-appears-instead-of-python-shell-buffer-lp:957561-test \
 --funcall completion-fails-in-python-script-r989-lp:1004613-test \
---funcall UnicodeEncodeError-python3-test
---funcall indent-region-lp:997958-test \
---funcall not-that-useful-completion-lp:1003580-test \
 --funcall stalls-emacs-probably-due-to-syntax-highlighting-lp-1058261-test \
 --funcall tqs-lp:302834-lp:1018994-test \
 --funcall py-moves-test \
@@ -1121,3 +1118,6 @@ est \
 --funcall ipython-shell-complete-test \
 --funcall usr-bin-ipython-shell-complete-test \
 --funcall inconvenient-window-splitting-behavior-ipython-lp-1018996-test \
+--funcall indent-region-lp:997958-test \
+--funcall not-that-useful-completion-lp:1003580-test \
+--funcall UnicodeEncodeError-python3-test

@@ -2186,6 +2186,7 @@ ex")))
   (assert (looking-at "import") nil "py-ipython-complete-lp:927136-test #1 failed")
   (goto-char 62)
   (sit-for 0.1)
+  (ipython-complete)
   (assert (buffer-live-p (get-buffer "*IPython Completions*")) nil "py-ipython-complete-lp:927136-test #2 lp:1026705 failed"))
 
 (defun execute-buffer-ipython-fails-lp:928087-test (&optional arg)

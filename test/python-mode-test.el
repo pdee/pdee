@@ -25,6 +25,26 @@
 ;;; Code:
 (require 'py-bug-numbered-tests)
 
+(defvar py-variables (list 'py-version 'python-mode-modeline-display 'py-indent-offset 'pdb-path 'py-verbose-p 'py-load-pymacs-p 'py-smart-operator-mode-p 'py-sexp-function 'py-prepare-autopair-mode-p 'py-no-completion-calls-dabbrev-expand-p 'py-indent-no-completion-p 'py-fontify-shell-buffer-p 'py-modeline-display-full-path-p 'py-modeline-acronym-display-home-p 'py-install-directory 'py-guess-py-install-directory-p 'py-extensions 'py-hide-show-minor-mode-p 'empty-comment-line-separates-paragraph-p 'py-org-cycle-p 'ipython-complete-use-separate-shell-p 'py-outline-minor-mode-p 'py-outline-mode-keywords 'py-start-run-py-shell 'py-start-run-ipython-shell 'py-close-provides-newline 'py-dedent-keep-relative-column 'py-indent-honors-inline-comment 'py-closing-list-dedents-bos 'py-electric-colon-active-p 'py-electric-colon-greedy-p 'py-electric-colon-newline-and-indent-p 'py-electric-comment-p 'py-electric-comment-add-space-p 'py-mark-decorators 'py-tab-indent 'py-complete-function 'py-encoding-string 'py-shebang-startstring 'py-python-command-args 'py-jython-command-args 'py-cleanup-temporary 'py-lhs-inbound-indent 'py-continuation-offset 'py-indent-tabs-mode 'py-smart-indentation 'py-block-comment-prefix 'py-indent-comments 'py-separator-char 'py-custom-temp-directory 'py-jump-on-exception 'py-ask-about-save 'py-pdbtrack-do-tracking-p 'py-pdbtrack-filename-mapping 'py-pdbtrack-minor-mode-string 'py-import-check-point-max 'py-jython-packages 'py-current-defun-show 'py-current-defun-delay 'py-honor-IPYTHONDIR-p 'py-ipython-history 'py-honor-PYTHONHISTORY-p 'py-master-file 'py-pychecker-command 'py-pychecker-command-args 'py-pep8-command 'py-pep8-command-args 'py-pyflakespep8-command 'py-pep8-command 'py-pep8-command-args 'py-pyflakespep8-command-args 'py-pyflakes-command 'py-pyflakes-command-args 'py-pep8-command-args 'py-pylint-command 'py-pylint-command-args 'py-shell-input-prompt-1-regexp 'py-shell-input-prompt-2-regexp 'py-shell-prompt-read-only 'py-switch-buffers-on-execute-p 'py-split-windows-on-execute-p 'py-max-split-windows 'py-split-windows-on-execute-function 'py-hide-show-keywords 'py-hide-show-hide-docstrings 'python-mode-hook 'py-imenu-create-index-p 'py-imenu-create-index-function 'py-shell-name 'py-shell-toggle-1 'py-shell-toggle-2 'py-match-paren-mode 'py-kill-empty-line 'py-remove-cwd-from-path 'py-imenu-show-method-args-p 'py-history-filter-regexp 'py-use-local-default 'py-shell-local-path 'py-underscore-word-syntax-p 'py-edit-only-p 'py-force-py-shell-name-p 'python-mode-v5-behavior-p 'py-trailing-whitespace-smart-delete-p 'py-warn-tmp-files-left-p 'py-ipython-execute-delay 'python-shell-buffer-name 'python-shell-interpreter 'python-shell-prompt-regexp 'python-shell-prompt-output-regexp 'python-ffap-setup-code 'python-ffap-string-code 'python-shell-setup-codes 'python-shell-module-completion-string-code 'strip-chars-before 'strip-chars-after 'py-fill-docstring-style 'py-number-face 'py-XXX-tag-face 'py-pseudo-keyword-face 'py-variable-name-face 'py-decorators-face 'py-builtins-face 'py-class-name-face 'py-exception-name-face 'python-mode-message-string 'py-local-command 'py-local-versioned-command 'python-preoutput-leftover 'python-preoutput-skip-next-prompt 'py-shell-complete-debug 'py-encoding-string-re 'symbol-definition-start-re 'symbol-definition-start-re 'py-shebang-regexp 'py-separator-char 'py-temp-directory 'py-exec-command 'py-exec-string-command 'py-which-bufname 'py-pychecker-history 'py-pep8-history 'py-pyflakespep8-history 'py-pyflakes-history 'py-pylint-history 'ipython-de-input-prompt-regexp 'ipython-de-input-prompt-regexp 'ipython-de-output-prompt-regexp 'py-force-local-shell-p 'python-mode-v5-behavior 'python--prompt-regexp 'py-bol-forms-last-indent 'python-mode-syntax-table 'outline-heading-end-regexp 'eldoc-documentation-function 'py-completion-last-window-configuration 'ipython-version 'py-shell-template 'py-imports 'py-execute-directory 'py-use-current-dir-when-execute-p 'py-exception-buffer 'py-output-buffer 'py-string-delim-re 'py-labelled-re 'py-expression-skip-regexp 'py-expression-skip-chars 'py-expression-looking-re 'py-not-expression-regexp 'py-not-expression-chars 'py-not-expression-chars 'py-partial-expression-skip-chars 'py-partial-expression-forward-regexp 'py-partial-expression-skip-backward-chars 'py-not-partial-expression-skip-chars 'py-partial-expression-looking-regexp 'py-not-partial-expression-regexp 'py-operator-regexp 'py-assignment-regexp 'py-delimiter-regexp 'py-delimiter-chars 'py-line-number-offset 'match-paren-no-use-syntax-pps 'py-traceback-line-re 'py-traceback-line-re 'python-preoutput-result 'python-preoutput-leftover 'python-preoutput-skip-next-prompt 'python-prev-dir/file 'py-mode-syntax-table 'py-file-queue 'python-mode-abbrev-table 'inferior-python-mode-abbrev-table 'py-pdbtrack-input-prompt 'py-pydbtrack-input-prompt 'py-pdbtrack-is-tracking-p 'py-shell-map 'python-font-lock-keywords 'py-dotted-expression-syntax-table 'jython-mode-hook 'py-shell-hook 'ipython-completion-command-string 'ipython0.10-completion-command-string 'ipython0.11-completion-command-string 'py-last-exeption-buffer 'python-preoutput-result 'py-imenu-class-regexp 'py-imenu-method-regexp 'py-imenu-method-no-arg-parens 'py-imenu-method-arg-parens 'py-imenu-generic-expression 'py-imenu-generic-regexp 'py-imenu-generic-parens 'imenu-max-items 'py-mode-output-map 'py-menu 'py-already-guessed-indent-offset 'python-mode-map 'skeleton-further-elements 'virtualenv-workon-home 'virtualenv-name 'python-mode-syntax-table 'python-dotty-syntax-table 'py-shell-template 'py-blank-or-comment-re 'py-block-closing-keywords-re 'py-finally-re 'py-except-re 'py-else-re 'py-no-outdent-re 'py-assignment-re 'py-block-re 'py-minor-block-re 'py-try-block-re 'py-class-re 'py-def-or-class-re 'py-def-re 'py-block-or-clause-re 'py-extended-block-or-clause-re 'py-clause-re 'py-elif-re 'py-if-re 'py-try-re 'py-mode-syntax-table 'py-pdbtrack-stack-entry-regexp 'py-pdbtrack-input-prompt 'py-pydbtrack-input-prompt 'py-pdbtrack-marker-regexp-file-group 'py-pdbtrack-marker-regexp-line-group 'py-pdbtrack-marker-regexp-funcname-group 'py-pdbtrack-track-range 'python-compilation-regexp-alist 'py-font-lock-syntactic-keywords 'python-font-lock-keywords 'py-font-lock-syntactic-keywords 'virtualenv-name )
+  "Used for bug-tracking by `py-list-settings'")
+
+(defvar unused-variables (list 'py-indent-honors-multiline-listing 'ipython-complete-function 'py-rhs-inbound-indent 'py-align-multiline-strings-p 'py-beep-if-tab-change 'py-backspace-function 'py-delete-function 'py-send-receive-delay 'py-python-history 'py-source-modes 'py-shell-prompt-alist 'py-shell-continuation-prompt-alist 'py-match-paren-key 'py-set-complete-keymap-p 'python-shell-internal-buffer-name 'python-shell-interpreter-args 'python-shell-prompt-block-regexp 'python-shell-prompt-pdb-regexp 'python-shell-process-environment 'python-shell-extra-pythonpaths 'python-shell-virtualenv-path 'python-shell-compilation-regexp-alist 'python-shell-completion-setup-code 'python-shell-completion-string-code 'python-eldoc-setup-code 'python-eldoc-string-code 'python-use-skeletons 'python-local-version 'py-local-complete-function 'py-shell-alist 'python-pdbtrack-tracked-buffer 'view-return-to-alist 'py-prev-dir/file 'python-preoutput-continuation 'python-version-checked 'py-help-mode-syntax-table 'python-file-queue 'python-pdbtrack-is-tracking-p 'python-shell-map 'py-indent-line-indent 'inferior-python-mode-map 'py-variables 'inferior-python-mode-syntax-table 'py-return-re 'py-try-clause-re 'py-space-backslash-table 'python-pdbtrack-stack-entry-regexp 'python-pdbtrack-input-prompt 'python-pdbtrack-track-range 'python-dotty-syntax-table 'py-help-address 'py-shell-map 'python-mode-map 'imenu-generic-expression ))
+
+(defun py-list-settings ()
+  "List py-variables with it's current value.
+
+  For debugging "
+  (interactive)
+  (set-buffer (get-buffer-create "Python-mode-el-settings"))
+  (erase-buffer)
+  (load (concat (py-normalize-directory py-install-directory) "devel/python-mode-vars.el") nil t)
+  (dolist (elt py-variables)
+    (insert (concat (prin1-to-string elt) " ==> "))
+    (if (stringp (ignore-errors (symbol-value elt)))
+        (insert (concat (symbol-value elt) "\n\n"))
+      (insert (concat (prin1-to-string (ignore-errors (symbol-value elt))) "\n\n"))))
+  (switch-to-buffer (current-buffer)))
+
 (setq python-mode-tests
       (list
        'py-nested-block-or-clause-test
@@ -2049,7 +2069,6 @@ asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf
     (goto-char (point-min))
     (assert (eq 146 (py-down-statement)) nil "py-down-statement-test failed"))
 
-
 (defun py-nested-block-or-clause-test (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
@@ -2092,7 +2111,7 @@ else:
   (assert (eq 101 (py-end-of-clause)) nil "py-nested-block-or-clause-test #6 failed")
   (goto-char 291)
   (assert (eq 285 (py-beginning-of-clause)) nil "py-nested-block-or-clause-test #7 failed")
-  (sit-for 0.1) 
+  (sit-for 0.1)
   (assert (eq 197 (py-beginning-of-clause)) nil "py-nested-block-or-clause-test #8 failed")
   (assert (eq 48 (py-beginning-of-block-or-clause)) nil "py-nested-block-or-clause-test #9 failed")
   (goto-char 284)
@@ -2108,7 +2127,6 @@ else:
   (assert (eq 76 (py-beginning-of-block-or-clause)) nil "py-nested-block-or-clause-test #17 failed")
   (assert (eq 60 (py-beginning-of-block-or-clause)) nil "py-nested-block-or-clause-test #18 failed")
   )
-
 
 ;; imenu--subalist-p
 (provide 'python-mode-test)

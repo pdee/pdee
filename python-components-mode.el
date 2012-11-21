@@ -811,138 +811,10 @@ element matches `py-shell-name'."
   :type 'boolean
   :group 'python-mode)
 
-(defcustom python-indent-string-contents t
-  "Non-nil means indent contents of multi-line strings together.
-This means indent them the same as the preceding non-blank line.
-Otherwise preserve their indentation.
-
-This only applies to `doc' strings, i.e. those that form statements;
-the indentation is preserved in others."
-  :type '(choice (const :tag "Align with preceding" t)
-                 (const :tag "Preserve indentation" nil))
-  :group 'python-mode)
-
-(defcustom python-honour-comment-indentation nil
-  "Non-nil means indent relative to preceding comment line.
-Only do this for comments where the leading comment character is
-followed by space.  This doesn't apply to comment lines, which
-are always indented in lines with preceding comments."
-  :type 'boolean
-  :group 'python-mode)
-
-(defcustom python-continuation-offset 4
-  "Number of columns of additional indentation for continuation lines.
-Continuation lines follow a backslash-terminated line starting a
-statement."
-  :group 'python-mode
-  :type 'integer)
-
-(defcustom python-default-interpreter 'cpython
-  "*Which Python interpreter is used by default.
-The value for this variable can be either `cpython' or `jpython'.
-
-When the value is `cpython', the variables `python-python-command' and
-                               `python-python-command-args' are consulted to determine the interpreter
-and arguments to use.
-
-When the value is `jpython', the variables `python-jpython-command' and
-                               `python-jpython-command-args' are consulted to determine the interpreter
-and arguments to use.
-
-Note that this variable is consulted only the first time that a Python
-mode buffer is visited during an Emacs session.  After that, use
-                               \\[python-toggle-shells] to change the interpreter shell."
-  :type '(choice (const :tag "Python (a.k.a. CPython)" cpython)
-                 (const :tag "JPython" jpython))
-  :group 'python-mode)
-
-(defcustom python-python-command-args '("-i")
-  "*List of string arguments to be used when starting a Python shell."
-  :type '(repeat string)
-  :group 'python-mode)
-
-(defcustom python-jython-command-args '("-i")
-  "*List of string arguments to be used when starting a Jython shell."
-  :type '(repeat string)
-  :group 'python-mode
-  :tag "JPython Command Args")
-
-(defcustom python-pdbtrack-do-tracking-p t
-  "*Controls whether the pdbtrack feature is enabled or not.
-
-When non-nil, pdbtrack is enabled in all comint-based buffers,
-e.g. shell interaction buffers and the *Python* buffer.
-
-When using pdb to debug a Python program, pdbtrack notices the
-pdb prompt and presents the line in the source file where the
-program is stopped in a pop-up buffer.  It's similar to what
-gud-mode does for debugging C programs with gdb, but without
-having to restart the program."
-  :type 'boolean
-  :group 'python-mode)
-(make-variable-buffer-local 'python-pdbtrack-do-tracking-p)
-
-(defcustom python-pdbtrack-minor-mode-string " PDB"
-  "*Minor-mode sign to be displayed when pdbtrack is active."
-  :type 'string
-  :group 'python-mode)
-
-(defcustom python-shell-prompt-alist
-  '(("ipython" . "^In \\[[0-9]+\\]: *")
-    (t . "^>>> "))
-  "Alist of Python input prompts.
-Each element has the form (PROGRAM . REGEXP), where PROGRAM is
-the value of `python-python-command' for the python process and
-REGEXP is a regular expression matching the Python prompt.
-PROGRAM can also be t, which specifies the default when no other
-element matches `python-python-command'."
-  :type 'string
-  :group 'python-mode)
-
-(defcustom python-shell-continuation-prompt-alist
-  '(("ipython" . "^   [.][.][.]+: *")
-    (t . "^[.][.][.] "))
-  "Alist of Python continued-line prompts.
-Each element has the form (PROGRAM . REGEXP), where PROGRAM is
-the value of `python-python-command' for the python process and
-REGEXP is a regular expression matching the Python prompt for
-continued lines.
-PROGRAM can also be t, which specifies the default when no other
-element matches `python-python-command'."
-  :type 'string
-  :group 'python-mode)
-
-(defcustom python-python-command "python"
-  "Shell command to run Python interpreter.
-Any arguments can't contain whitespace."
-  :group 'python-mode
-  :type 'string)
-
-(defcustom python-jython-command "jython"
-  "Shell command to run Jython interpreter.
-Any arguments can't contain whitespace."
-  :group 'python-mode
-  :type 'string)
-
 (defcustom py-history-filter-regexp "\\`\\s-*\\S-?\\S-?\\s-*\\'\\|'''/tmp/"
   "Input matching this regexp is not saved on the history list.
 Default ignores all inputs of 0, 1, or 2 non-blank characters."
   :type 'regexp
-  :group 'python-mode)
-
-(defcustom python-source-modes '(python-mode jython-mode)
-  "Used to determine if a buffer contains Python source code.
-If a file is loaded into a buffer that is in one of these major modes,
-it is considered Python source by `py-load-file', which uses the
-value to determine defaults."
-  :type '(repeat function)
-  :group 'python-mode)
-
-(defcustom python-jython-packages '("java" "javax" "org" "com")
-  "Packages implying `jython-mode'.
-If these are imported near the beginning of the buffer, `python-mode'
-actually punts to `jython-mode'."
-  :type '(repeat string)
   :group 'python-mode)
 
 (defcustom python-use-skeletons nil
@@ -1481,9 +1353,6 @@ to select the appropriate python interpreter mode for a file.")
 (defvar py-mode-output-map nil
   "Keymap used in *Python Output* buffers.")
 
-(defvar python-command "python"
-  "Used for `py-completion-at-point', derived from python.el." )
-
 (defvar py-python-command py-shell-name)
 
 (defvar py-jpython-command py-shell-name)
@@ -1494,15 +1363,6 @@ to select the appropriate python interpreter mode for a file.")
 
 (defvar hs-hide-comments-when-hiding-all nil
   "Defined in hideshow.el, silence compiler warnings here. ")
-
-(defvar python-which-shell nil)
-(make-variable-buffer-local 'python-which-shell)
-
-(defvar python-which-args python-python-command-args)
-(make-variable-buffer-local 'python-which-args)
-
-(defvar python-which-bufname "Python")
-(make-variable-buffer-local 'python-which-bufname)
 
 (defvar py-history-filter-regexp "\\`\\s-*\\S-?\\S-?\\s-*\\'\\|'''/tmp/\\|^__pyfile = open('''\\|^execfile(r'[.+]/tmp/")
 
@@ -1877,8 +1737,6 @@ Includes def and class. ")
 ;; (setq py-encoding-string-re "^[ \t]*#[ \t]*-\\*-[ \t]*coding:.+-\\*-")
 
 (setq symbol-definition-start-re "^[ \t]*(\\(defun\\|defvar\\|defcustom\\)")
-
-
 
 (set-default 'py-python-command-args  '("-i"))
 (make-obsolete-variable 'py-jpython-command-args 'py-jython-command-args nil)
@@ -2357,7 +2215,6 @@ See original source: http://pymacs.progiciels-bpi.ca"
 (require 'python-components-paragraph)
 (require 'python-components-shift-forms)
 (require 'python-components-execute-file)
-
 
 ;;; Python specialized rx, thanks Fabian F. Gallina
 (eval-when-compile
@@ -5053,7 +4910,7 @@ Don't save anything for STR matching `py-history-filter-regexp'."
   "Check that CMD runs a suitable version of Python."
   ;; Fixme:  Check on Jython.
   (unless (or python-version-checked
-              (equal 0 (string-match (regexp-quote python-python-command)
+              (equal 0 (string-match (regexp-quote py-python-command)
                                      cmd)))
     (unless (shell-command-to-string cmd)
       (error "Can't run Python command `%s'" cmd))
@@ -5351,6 +5208,7 @@ This is a no-op if `py-check-comint-prompt' returns nil."
 (add-hook 'python-mode-hook
           #'(lambda ()
               (when py-smart-indentation
+                (sit-for 0.1) 
                 (if (bobp)
                     (save-excursion
                       (save-restriction
@@ -5583,21 +5441,6 @@ as it leaves your system default unchanged."
 
 ;;;
 
-(defun py--set-prompt-regexp ()
-  (let ((prompt  (cdr-safe (or (assoc python-python-command
-				      python-shell-prompt-alist)
-			       (assq t python-shell-prompt-alist))))
-	(cprompt (cdr-safe (or (assoc python-python-command
-				      python-shell-continuation-prompt-alist)
-			       (assq t python-shell-continuation-prompt-alist)))))
-    (set (make-local-variable 'comint-prompt-regexp)
-	 (concat "\\("
-		 (mapconcat 'identity
-			    (delq nil (list prompt cprompt "^([Pp]db) "))
-			    "\\|")
-		 "\\)"))
-    (set (make-local-variable 'py--prompt-regexp) prompt)))
-
 (defun py-input-filter (str)
   "`comint-input-filter' function for inferior Python.
 Don't save anything for STR matching `inferior-python-filter-regexp'."
@@ -5706,6 +5549,7 @@ Don't save anything for STR matching `inferior-python-filter-regexp'."
 ;; (add-to-list 'auto-mode-alist (cons (purecopy "\\.py\\'")  'python-mode))
 
 (autoload 'comint-get-source "comint")
+
 ;;;
 (define-derived-mode inferior-python-mode comint-mode "Inferior Python"
   "Major mode for interacting with an inferior Python process.

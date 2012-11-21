@@ -237,12 +237,15 @@ Returns `py-indent-offset'"
       (back-to-indentation)
       (when (looking-at py-block-closing-keywords-re)
         (setq count (1+ count)))
-      (forward-line -1)
+      (skip-chars-backward " \t\r\n\f")
       (back-to-indentation)
       (when (looking-at py-block-closing-keywords-re)
         (setq count (1+ count)))
       (when (< 0 count)
-        (while (and (< 0 count)(re-search-backward py-block-re nil t 1)(or (nth 8 (syntax-ppss)) (progn (setq count (1- count)) t))))
+        (while (and (< 0 count)(re-search-backward py-block-re nil t 1)
+                    (or
+                     (nth 8 (parse-partial-sexp (point-min) (point)))
+                     (progn (setq count (1- count)) t))))
         (setq firstindent (current-indentation)))
       (unless firstindent
         (setq firstindent
