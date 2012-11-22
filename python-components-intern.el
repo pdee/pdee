@@ -646,14 +646,22 @@ and `pass'.  This doesn't catch embedded statements."
            (regexp (or regexp 'py-extended-block-or-clause-re))
            (this (progn (back-to-indentation)
                         (cond ((and (py-beginning-of-statement-p)(eq regexp 'py-clause-re)(looking-at py-extended-block-or-clause-re))
-                               (point)) 
+                               (point))
                               ((and (py-beginning-of-statement-p)(looking-at (symbol-value regexp)))
                                (point))
-                              (t (when (cdr-safe (py-go-to-keyword (if (string= regexp py-def-or-class-re)
-                                                                       py-def-or-class-re
-                                                                     py-extended-block-or-clause-re)))
-                                   (when (py-statement-opens-block-p py-extended-block-or-clause-re)
-                                     (point)))))))
+                              (t
+                               (when
+                                   (cdr-safe
+                                    (py-go-to-keyword
+                                     (cond ((eq regexp 'py-def-or-class-re)
+                                            py-def-or-class-re)
+                                           ((eq regexp 'py-def-re)
+                                            py-def-re)
+                                           ((eq regexp 'py-class-re)
+                                            py-class-re)
+                                           (t py-extended-block-or-clause-re))))
+                                 (when (py-statement-opens-block-p py-extended-block-or-clause-re)
+                                   (point)))))))
            ind erg last pps)
       (if this
           (progn

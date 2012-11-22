@@ -1341,8 +1341,9 @@ class foo(bar, baz):
 
 (defun tqs-list-error-base ()
   (goto-char 90)
-  ;; (sit-for 0.2)
-  (assert (eq 184 (py-end-of-statement)) nil "tqs-list-error-test failed"))
+  (py-end-of-statement)
+  (sit-for 0.2)
+  (assert (eq 184 (point)) nil "tqs-list-error-test failed"))
 
 (defun py-smart-indent-eight-test (&optional arg load-branch-function)
   (interactive "p")

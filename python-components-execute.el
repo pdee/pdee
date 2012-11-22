@@ -296,9 +296,10 @@ Needed when file-path names are contructed from maybe numbered buffer names like
     "\*" ""
     string)))
 
-(defun py-shell-manage-windows (switch py-split-windows-on-execute-p py-switch-buffers-on-execute-p oldbuf py-buffer-name)
+(defun py-shell-manage-windows (switch split oldbuf py-buffer-name)
   (cond (;; split and switch
-         (and py-split-windows-on-execute-p
+         (and (not (eq split 'nosplit))
+              py-split-windows-on-execute-p
               (not (eq switch 'noswitch))
               (or (eq switch 'switch)
                   py-switch-buffers-on-execute-p))
@@ -307,9 +308,11 @@ Needed when file-path names are contructed from maybe numbered buffer names like
          (pop-to-buffer py-buffer-name)
          (display-buffer oldbuf))
         ;; split, not switch
-        ((and py-split-windows-on-execute-p
-              (or (eq switch 'noswitch)
-                  (not (eq switch 'switch))))
+        ((and
+          (not (eq split 'nosplit))
+          py-split-windows-on-execute-p
+          (or (eq switch 'noswitch)
+              (not (eq switch 'switch))))
          (if (< (count-windows) py-max-split-windows)
              (progn
                (funcall py-split-windows-on-execute-function)
@@ -356,7 +359,7 @@ This function is appropriate for `comint-output-filter-functions'."
         (let ((pyproc (get-buffer-process (current-buffer))))
           (py-execute-file-base pyproc (car py-file-queue))))))
 
-(defun py-shell (&optional argprompt dedicated pyshellname switch sepchar py-buffer-name done)
+(defun py-shell (&optional argprompt dedicated pyshellname switch sepchar py-buffer-name done split)
   "Start an interactive Python interpreter in another window.
 Interactively, \\[universal-argument] 4 prompts for a buffer.
 \\[universal-argument] 2 prompts for `py-python-command-args'.
@@ -369,10 +372,13 @@ Optional symbol SWITCH ('switch/'noswitch) precedes `py-switch-buffers-on-execut
 When SEPCHAR is given, `py-shell' must not detect the file-separator.
 BUFFER allows specifying a name, the Python process is connected to
 When DONE is `t', `py-shell-manage-windows' is omitted
+Optional symbol SPLIT ('split/'nosplit) precedes `py-split-buffers-on-execute-p'
 "
   (interactive "P")
   (let* ((coding-system-for-read 'utf-8)
          (coding-system-for-write 'utf-8)
+         (switch (or switch py-switch-buffers-on-execute-p))
+         (split (or split py-split-windows-on-execute-p))
          (sepchar (or sepchar (char-to-string py-separator-char)))
          (args py-python-command-args)
          (oldbuf (current-buffer))
@@ -501,7 +507,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
       (set-syntax-table python-mode-syntax-table)
       ;; (add-hook 'py-shell-hook 'py-dirstack-hook)
       (when py-shell-hook (run-hooks 'py-shell-hook)))
-    (unless done (py-shell-manage-windows switch py-split-windows-on-execute-p py-switch-buffers-on-execute-p oldbuf py-buffer-name))
+    (unless done (py-shell-manage-windows switch split oldbuf py-buffer-name))
     py-buffer-name))
 
 (defun py-shell-get-process (&optional argprompt dedicated pyshellname switch sepchar py-buffer-name done)
@@ -592,7 +598,7 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
   (interactive "r")
   (py-execute-base start end (default-value 'py-shell-name) t))
 
-(defun py-execute-base (start end &optional pyshellname dedicated switch nostars sepchar)
+(defun py-execute-base (start end &optional pyshellname dedicated switch nostars sepchar split)
   "Adapt the variables used in the process. "
   (let* ((oldbuf (current-buffer))
          (pyshellname (or pyshellname (py-choose-shell)))
@@ -608,6 +614,8 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
          (temp (make-temp-name
                 (concat (replace-regexp-in-string (regexp-quote sepchar) "-" (replace-regexp-in-string (concat "^" (regexp-quote sepchar)) "" (replace-regexp-in-string ":" "-" pyshellname))) "-")))
          (localname (concat (expand-file-name py-temp-directory) sepchar (replace-regexp-in-string (regexp-quote sepchar) "-" temp) ".py"))
+         (switch (or switch py-switch-buffers-on-execute-p))
+         (split (or split py-split-windows-on-execute-p))
          (proc (if dedicated
                    (get-buffer-process (py-shell nil dedicated pyshellname switch sepchar py-buffer-name t))
                  (or (get-buffer-process (py-buffer-name-prepare pyshellname))
@@ -655,7 +663,7 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
                      (sit-for py-ipython-execute-delay))
                    (setq erg (py-execute-file-base proc file pec procbuf))
                    (setq py-exception-buffer (cons file (current-buffer)))
-                   (py-shell-manage-windows switch py-split-windows-on-execute-p py-switch-buffers-on-execute-p oldbuf py-buffer-name)
+                   (py-shell-manage-windows switch split oldbuf py-buffer-name)
                    (unless (string= (buffer-name (current-buffer)) (buffer-name procbuf))
                      (when py-verbose-p (message "Output buffer: %s" procbuf)))
                    (sit-for 0.1)
@@ -1191,7 +1199,7 @@ Optional OUTPUT-BUFFER and ERROR-BUFFER might be given.')
         (progn
           (setq erg (py-execute-file-base proc file pec))
           (setq py-exception-buffer (cons file (current-buffer)))
-          (py-shell-manage-windows switch py-split-windows-on-execute-p py-switch-buffers-on-execute-p oldbuf py-buffer-name)
+          (py-shell-manage-windows switch split oldbuf py-buffer-name)
           (sit-for 0.1)
           erg)
       (message "File not readable: %s" "Do you have write permissions?"))))

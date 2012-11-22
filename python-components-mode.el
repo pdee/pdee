@@ -4854,6 +4854,8 @@ Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-p
              :help "Switch `py-switch-buffers-on-execute-p' OFF. "]))
         map))
 
+(defvaralias 'py-mode-map 'python-mode-map)
+
 (when py-org-cycle-p
   (define-key python-mode-map (kbd "<backtab>") 'org-cycle))
 
@@ -4922,82 +4924,6 @@ print version_info >= (2, 2) and version_info < (3, 0)\""))))
         (error "Only Python versions >= 2.2 and < 3.0 are supported")))
     (setq python-version-checked t)))
 
-;;;###autoload
-(defun run-python (&optional cmd noshow new)
-  "Run an inferior Python process, input and output via buffer *Python*.
-
-CMD is the Python command to run.  NOSHOW non-nil means don't
-show the buffer automatically.
-
-Interactively, a prefix arg means to prompt for the initial
-Python command line (default is `python-command').
-
-A new process is started if one isn't running attached to
-`py-buffer-name', or if called from Lisp with non-nil arg NEW.
-Otherwise, if a process is already running in `py-buffer-name',
-switch to that buffer.
-
-This command runs the hook `inferior-python-mode-hook' after
-running `comint-mode-hook'.  Type \\[describe-mode] in the
-process buffer for a list of commands.
-
-By default, Emacs inhibits the loading of Python modules from the
-current working directory, for security reasons.  To disable this
-behavior, change `py-remove-cwd-from-path' to nil."
-  (interactive (if current-prefix-arg
-		   (list (read-string "Run Python: " python-command) nil t)
-		 (list python-command)))
-  (require 'ansi-color) ; for ipython
-  (unless cmd (setq cmd python-command))
-  (py-check-version cmd)
-  (setq python-command cmd)
-  ;; Fixme: Consider making `py-buffer-name' buffer-local as a buffer
-  ;; (not a name) in Python buffers from which `run-python' &c is
-  ;; invoked.  Would support multiple processes better.
-  (when (or new (not (comint-check-proc py-buffer-name)))
-    (with-current-buffer
-	(let* ((cmdlist
-		(append (py-args-to-list cmd) '("-i")
-			(if python-remove-cwd-from-path
-			    '("-c" "import sys; sys.path.remove('')"))))
-	       (path (getenv "PYTHONPATH"))
-	       (process-environment	; to import emacs.py
-		(cons (concat "PYTHONPATH="
-			      (if path (concat path path-separator))
-			      data-directory)
-		      process-environment))
-               ;; If we use a pipe, unicode characters are not printed
-               ;; correctly (Bug#5794) and IPython does not work at
-               ;; all (Bug#5390).
-	       (process-connection-type t))
-	  (apply 'make-comint-in-buffer "Python"
-		 (generate-new-buffer "*Python*")
-		 (car cmdlist) nil (cdr cmdlist)))
-      (setq-default py-buffer-name (current-buffer))
-      (setq py-buffer-name (current-buffer))
-      (accept-process-output (get-buffer-process py-buffer-name) 5)
-      (inferior-python-mode)
-      ;; Load function definitions we need.
-      ;; Before the preoutput function was used, this was done via -c in
-      ;; cmdlist, but that loses the banner and doesn't run the startup
-      ;; file.  The code might be inline here, but there's enough that it
-      ;; seems worth putting in a separate file, and it's probably cleaner
-      ;; to put it in a module.
-      ;; Ensure we're at a prompt before doing anything else.
-      (py-send-string "import emacs")
-      ;; The following line was meant to ensure that we're at a prompt
-      ;; before doing anything else.  However, this can cause Emacs to
-      ;; hang waiting for a response, if that Python function fails
-      ;; (i.e. raises an exception).
-      ;; (py-send-receive "print '_emacs_out ()'")
-      ))
-  (if (derived-mode-p 'python-mode)
-      (setq py-buffer-name (default-value 'py-buffer-name))) ; buffer-local
-  ;; Without this, help output goes into the inferior python buffer if
-  ;; the process isn't already running.
-  (sit-for 1 t)        ;Should we use accept-process-output instead?  --Stef
-  (unless noshow (pop-to-buffer py-buffer-name t)))
-
 (defun py-send-command (command)
   "Like `py-send-string' but resets `compilation-shell-minor-mode'."
   (when (py-check-comint-prompt)
@@ -5031,13 +4957,19 @@ module-qualified names."
     (message "%s loaded" file-name)))
 
 (defun py-proc (&optional dedicated)
-  "Return the current Python process.
+  "Return the current Python process. 
 
-See variable `py-buffer-name'.  Starts a new process if necessary."
-  (if (and (not dedicated) (comint-check-proc py-buffer-name))
-      (get-buffer-process py-buffer-name)
-    (when py-verbose-p (message "py-proc: Please wait while starting a Python shell, as completion needs it"))
-    (py-shell nil dedicated)))
+Start a new process if necessary. "
+  (interactive) 
+  (let (py-split-windows-on-execute-p
+        (erg
+         (cond ((and (not dedicated) (comint-check-proc (current-buffer)))
+         (get-buffer-process (buffer-name (current-buffer))))
+        ((not dedicated)
+         (get-buffer-process (py-shell nil nil nil 'noswitch nil nil nil 'nosplit)))
+        ((py-shell nil dedicated 'noswitch nil nil nil 'nosplit)))))
+    (when (interactive-p) (message "%S" erg))
+    erg))
 
 ;;; Miscellany.
 
@@ -5205,23 +5137,23 @@ This is a no-op if `py-check-comint-prompt' returns nil."
 ;; (add-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file)
 
 (remove-hook 'python-mode-hook 'python-setup-brm)
-(add-hook 'python-mode-hook
-          #'(lambda ()
-              (when py-smart-indentation
-                (sit-for 0.1) 
-                (if (bobp)
-                    (save-excursion
-                      (save-restriction
-                        (widen)
-                        (while (and (not (eobp))
-                                    (or
-                                     (let ((erg (syntax-ppss)))
-                                       (or (nth 1 erg) (nth 8 erg)))
-                                     (eq 0 (current-indentation))))
-                          (forward-line 1))
-                        (back-to-indentation)
-                        (py-guess-indent-offset)))
-                  (py-guess-indent-offset)))))
+;; (add-hook 'python-mode-hook
+;;           #'(lambda ()
+;;               (when py-smart-indentation
+;;                 (sit-for 0.1)
+;;                 (if (bobp)
+;;                     (save-excursion
+;;                       (save-restriction
+;;                         (widen)
+;;                         (while (and (not (eobp))
+;;                                     (or
+;;                                      (let ((erg (syntax-ppss)))
+;;                                        (or (nth 1 erg) (nth 8 erg)))
+;;                                      (eq 0 (current-indentation))))
+;;                           (forward-line 1))
+;;                         (back-to-indentation)
+;;                         (py-guess-indent-offset)))
+;;                   (py-guess-indent-offset)))))
 
 (add-hook 'python-mode-hook
           (lambda ()

@@ -239,17 +239,6 @@ in a buffer that doesn't have a local value of `py-buffer-name'."
 				     (match-end 0))))))
       imports)))
 
-(defun py-proc ()
-  "Return the current Python process.
-See variable `py-buffer-name'.  Starts a new process if necessary."
-  ;; Fixme: Maybe should look for another active process if there
-  ;; isn't one for `py-buffer-name'.
-  (unless (comint-check-proc py-buffer-name)
-    (run-python nil t))
-  (get-buffer-process (if (derived-mode-p 'inferior-python-mode)
-			  (current-buffer)
-			py-buffer-name)))
-
 (defun py-send-receive (string)
   "Send STRING to inferior Python (if any) and return result.
 

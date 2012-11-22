@@ -975,8 +975,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall nested-if-test \
 --funcall py-insert-super-python2-test \
 --funcall py-smart-indent-eight-test \
---funcall wrong-type-argument-lp:901541-test \
---funcall indentation-bug-inside-docstrings-lp:899455-test \
 --funcall py-insert-super-python2-test \
 --funcall nested-try-finally-test \
 --funcall py-separator-char-test \
@@ -1102,7 +1100,6 @@ est \
 --funcall py-moves-test \
 --funcall py-end-of-def-test \
 --funcall py-end-of-def-or-class-test \
---funcall tqs-list-error-test \
 --funcall python-mode-slow-lp:803275-test \
 --funcall beg-end-of-defun-lp:303622-test \
 --funcall py-smart-operator-test \
@@ -1121,3 +1118,6 @@ est \
 --funcall indent-region-lp:997958-test \
 --funcall not-that-useful-completion-lp:1003580-test \
 --funcall UnicodeEncodeError-python3-test
+--funcall wrong-type-argument-lp:901541-test\ 
+--funcall indentation-bug-inside-docstrings-lp:899455-test \
+--funcall tqs-list-error-test \
