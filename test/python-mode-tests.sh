@@ -1311,7 +1311,6 @@ est \
 --funcall complaint-about-non-ASCII-character-lp-1042949-test \
 --funcall py-beginning-of-block-test \
 --funcall py-execute-statement-ipython-test \
---funcall py-ipython-complete-lp:927136-test \
 --funcall py-execute-buffer-ipython-switch-test \
 --funcall py-execute-region-ipython-test \
 --funcall py-execute-def-ipython-test \
@@ -1354,3 +1353,4 @@ est \
 --funcall tqs-list-error-test \
 --funcall does-not-dedent-regions-lp-1072869-test \
 --funcall impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test \
+--funcall py-ipython-complete-lp:927136-test \

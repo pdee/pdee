@@ -1,4 +1,4 @@
-;;; python-components-mode.el --- Towards an Python Development Emacs Environment,
+;;; python-components-mode.el --- Towards an Python Development Emacs Environment
 
 ;; Maintainer: Andreas Roehler <andreas.roehler@online.de>
 ;; Keywords: languages, processes, python, oop
@@ -175,6 +175,15 @@ A running ipython-shell presently is needed by
 `ipython-complete', otherwise first try will fail. "
 
   :type 'boolean :group 'python-mode)
+
+(defcustom py-set-complete-keymap-p  nil
+  "If `py-complete-initialize', which sets up enviroment for Pymacs based py-complete, should load it's keys into `python-mode-map'
+
+Default is nil.
+See also resp. edit `py-complete-set-keymap' "
+
+  :type 'boolean
+  :group 'python-mode)
 
 (defcustom ipython-complete-use-separate-shell-p nil
 
