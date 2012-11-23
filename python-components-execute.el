@@ -389,7 +389,7 @@ Optional symbol SPLIT ('split/'nosplit) precedes `py-split-buffers-on-execute-p'
                         (if path (concat path path-separator))
                         data-directory)
                 process-environment))
-         ;; proc
+         ;; reset later on
          (py-buffer-name
           (or py-buffer-name
               (when argprompt
@@ -423,9 +423,9 @@ Optional symbol SPLIT ('split/'nosplit) precedes `py-split-buffers-on-execute-p'
               (expand-file-name py-shell-local-path)
             (when py-use-local-default
               (error "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'"))))
-         (py-buffer-name-prepare (unless py-buffer-name
+         (py-buffer-name-prepare (unless (and py-buffer-name (not dedicated))
                                    (py-buffer-name-prepare (or pyshellname py-shell-name) sepchar dedicated)))
-         (py-buffer-name (or py-buffer-name py-buffer-name-prepare))
+         (py-buffer-name (or py-buffer-name-prepare py-buffer-name))
          (executable (cond (pyshellname)
                            (py-buffer-name
                             (py-report-executable py-buffer-name))))
@@ -452,9 +452,9 @@ Optional symbol SPLIT ('split/'nosplit) precedes `py-split-buffers-on-execute-p'
       ;; (setq completion-at-point-functions nil)
       (when py-fontify-shell-buffer-p
         (set (make-local-variable 'font-lock-defaults)
-             '(python-font-lock-keywords nil nil nil nil
+             '(py-font-lock-keywords nil nil nil nil
                                          (font-lock-syntactic-keywords
-                                          . py-font-lock-syntactic-keywords)))
+                                          . py-font-lock-syntactic-keywords))))
         (set (make-local-variable 'comment-start) "# ")
         (set (make-local-variable 'comment-start-skip) "^[ \t]*#+ *")
         (set (make-local-variable 'comment-column) 40)
@@ -463,9 +463,7 @@ Optional symbol SPLIT ('split/'nosplit) precedes `py-split-buffers-on-execute-p'
       (set (make-local-variable 'indent-region-function) 'py-indent-region)
       (set (make-local-variable 'indent-line-function) 'py-indent-line)
       ;; (font-lock-unfontify-region (point-min) (line-beginning-position))
-      (setq python-buffer (current-buffer))
-      ;; (accept-process-output (get-buffer-process python-buffer) 5)
-      (setq proc (get-buffer-process (current-buffer)))
+      (setq proc (get-buffer-process py-buffer-name))
       (goto-char (point-max))
       (move-marker (process-mark proc) (point-max))
       ;; (funcall (process-filter proc) proc "")
@@ -492,9 +490,9 @@ Optional symbol SPLIT ('split/'nosplit) precedes `py-split-buffers-on-execute-p'
                   ;; .pyhistory might be locked from outside Emacs
                   ;; (t "~/.pyhistory")
                   ;; (t (concat "~/." (py-report-executable py-buffer-name) "_history"))
-                  ))
+))
       (comint-read-input-ring t)
-      (set-process-sentinel (get-buffer-process (current-buffer))
+      (set-process-sentinel (get-buffer-process py-buffer-name)
                             #'shell-write-history-on-exit)
       ;; (comint-send-string proc "import emacs\n")
       ;; (process-send-string proc "import emacs")
@@ -506,7 +504,7 @@ Optional symbol SPLIT ('split/'nosplit) precedes `py-split-buffers-on-execute-p'
       (setq py-pdbtrack-do-tracking-p t)
       (set-syntax-table python-mode-syntax-table)
       ;; (add-hook 'py-shell-hook 'py-dirstack-hook)
-      (when py-shell-hook (run-hooks 'py-shell-hook)))
+      (when py-shell-hook (run-hooks 'py-shell-hook))
     (unless done (py-shell-manage-windows switch split oldbuf py-buffer-name))
     py-buffer-name))
 

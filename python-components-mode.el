@@ -374,12 +374,6 @@ Messaging increments the prompt counter of IPython shell. "
   :group 'python-mode)
 (make-variable-buffer-local 'py-lhs-inbound-indent)
 
-(defcustom py-rhs-inbound-indent 1
-  "When inside a multiline-assignment: How many colums indent should be more than opening bracket, brace or parenthesis. "
-  :type 'integer
-  :group 'python-mode)
-(make-variable-buffer-local 'py-rhs-inbound-indent)
-
 (defcustom py-cleanup-temporary t
   "If temporary buffers and files used by functions executing region should be deleted afterwards. "
   :type 'boolean
@@ -417,15 +411,6 @@ to `python-mode':
   :type 'boolean
   :group 'python-mode)
 (make-variable-buffer-local 'py-smart-indentation)
-
-(defcustom py-align-multiline-strings-p t
-  "*Flag describing how multi-line triple quoted strings are aligned.
-When this flag is non-nil, continuation lines are lined up under the
-preceding line's indentation.  When this flag is nil, continuation
-lines are aligned to column zero."
-  :type '(choice (const :tag "Align under preceding line" t)
-                 (const :tag "Align to column zero" nil))
-  :group 'python-mode)
 
 (defcustom py-block-comment-prefix "##"
   "*String used by \\[comment-region] to comment out a block of code.
@@ -748,39 +733,6 @@ Otherwise value of py-python-history is used. "
   :type '(repeat string)
   :group 'python-mode)
 
-(defcustom py-source-modes '(python-mode jython-mode)
-  "Used to determine if a buffer contains Python source code.
-If a file is loaded into a buffer that is in one of these major modes,
-it is considered Python source by `py-load-file', which uses the
-value to determine defaults."
-  :type '(repeat function)
-  :group 'python-mode)
-
-(defcustom py-shell-prompt-alist
-  '(("ipython" . "^In \\[[0-9]+\\]: ")
-    (t . "^>>> "))
-  "Alist of Python input prompts.
-Each element has the form (PROGRAM . REGEXP), where PROGRAM is
-the value of `py-shell-name' for the python process and
-REGEXP is a regular expression matching the Python prompt.
-PROGRAM can also be t, which specifies the default when no other
-element matches `py-shell-name'."
-  :type 'string
-  :group 'python-mode)
-
-(defcustom py-shell-continuation-prompt-alist
-  '(("ipython" . "^   [.][.][.]+: ")
-    (t . "^[.][.][.] "))
-  "Alist of Python continued-line prompts.
-Each element has the form (PROGRAM . REGEXP), where PROGRAM is
-the value of `py-shell-name' for the python process and
-REGEXP is a regular expression matching the Python prompt for
-continued lines.
-PROGRAM can also be t, which specifies the default when no other
-element matches `py-shell-name'."
-  :type 'string
-  :group 'python-mode)
-
 (defcustom python-mode-hook nil
   "Hook run when entering Python mode."
 
@@ -815,16 +767,6 @@ element matches `py-shell-name'."
   "Input matching this regexp is not saved on the history list.
 Default ignores all inputs of 0, 1, or 2 non-blank characters."
   :type 'regexp
-  :group 'python-mode)
-
-(defcustom python-use-skeletons nil
-  "Non-nil means template skeletons will be automagically inserted.
-This happens when pressing \"if<SPACE>\", for example, to prompt for
-the if condition.
-
-Kept for compatibility reasons.
-Don't activate this, with some probability it will mess up abbrev edits, leaving abbrev-mode unusable. "
-  :type 'boolean
   :group 'python-mode)
 
 (defcustom py-match-paren-mode nil
@@ -907,15 +849,6 @@ When editing other peoples code, this may produce a larger diff than expected "
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-set-complete-keymap-p  nil
-  "If `py-complete-initialize', which sets up enviroment for Pymacs based py-complete, should load it's keys into `python-mode-map'
-
-Default is nil.
-See also resp. edit `py-complete-set-keymap' "
-
-  :type 'boolean
-  :group 'python-mode)
-
 (defcustom py-complete-ac-sources '(ac-source-pycomplete)
   "List of auto-complete sources assigned to `ac-sources' in `py-complete-initialize'."
   :type 'hook
@@ -943,28 +876,13 @@ without the user's realization (e.g. to perform completion)."
   :type 'float
   :group 'python-mode)
 
-(defcustom python-shell-setup-codes '(python-shell-completion-setup-code
+(defcustom py-setup-codes '(python-shell-completion-setup-code
                                       python-ffap-setup-code
-                                      python-eldoc-setup-code
+                                      py-eldoc-setup-code
                                       py-emacs-import-code
                                       )
   "List of code run by `python-shell-send-setup-codes'."
   :type '(repeat symbol)
-  :group 'python-mode)
-
-(defcustom python-shell-compilation-regexp-alist
-  `((,(rx line-start (1+ (any " \t")) "File \""
-	  (group (1+ (not (any "\"<")))) ; avoid `<stdin>' &c
-	  "\", line " (group (1+ digit)))
-     1 2)
-    (,(rx " in file " (group (1+ not-newline)) " on line "
-	  (group (1+ digit)))
-     1 2)
-    (,(rx line-start "> " (group (1+ (not (any "(\"<"))))
-	  "(" (group (1+ digit)) ")" (1+ (not (any "("))) "()")
-     1 2))
-  "`compilation-error-regexp-alist' for inferior Python."
-  :type '(alist string)
   :group 'python-mode)
 
 (defcustom python-shell-completion-setup-code
@@ -989,12 +907,6 @@ else:
             pass
         return completions"
   "Code used to setup completion in inferior Python processes."
-  :type 'string
-  :group 'python-mode)
-
-(defcustom python-shell-completion-string-code
-  "';'.join(__COMPLETER_all_completions('''%s'''))"
-  "Python code used to get a string of completions separated by semicolons."
   :type 'string
   :group 'python-mode)
 
@@ -1147,6 +1059,12 @@ See also `py-execute-directory'"
   :type 'string
   :group 'python-mode)
 
+(defcustom python-shell-prompt-regexp ">>> "
+  "Regular Expression matching top\-level input prompt of python shell.
+It should not contain a caret (^) at the beginning."
+  :type 'string
+  :group 'python-mode)
+
 (defcustom python-ffap-setup-code
   "def __FFAP_get_module_path(module):
     try:
@@ -1161,7 +1079,7 @@ See also `py-execute-directory'"
   :type 'string
   :group 'python-mode)
 
-(defcustom python-eldoc-setup-code
+(defcustom py-eldoc-setup-code
   "def __PYDOC_get_help(obj):
     try:
         import inspect
@@ -1194,10 +1112,16 @@ See also `py-execute-directory'"
   :type 'string
   :group 'python-mode)
 
+
+(defcustom py-shell-prompt-output-regexp ""
+  "Regular Expression matching output prompt of python shell.
+It should not contain a caret (^) at the beginning."
+  :type 'string
+  :group 'python-mode
+)
+
 ;;; defvarred Variables
 (defvar py-shell-prompt-regexp ">>> ")
-
-(defvar python-shell-prompt-output-regexp "")
 
 (defvar py-emacs-import-code "import emacs")
 
@@ -1229,10 +1153,6 @@ syntax or has word syntax and isn't a letter.")
           (modify-syntax-entry ?_ "w" table))
         table))
 
-(defvar python-local-version nil
-  "Used internally. ")
-(make-variable-buffer-local 'python-local-version)
-
 (defvar py-local-command nil
   "Returns locally used executable-name. ")
 (make-variable-buffer-local 'py-local-command)
@@ -1254,12 +1174,6 @@ ipython0.11-completion-command-string also covers version 0.12")
 (defvar ipython0.11-completion-command-string
   "print(';'.join(get_ipython().Completer.all_completions('%s'))) #PYTHON-MODE SILENT\n"
   "The string send to ipython to query for all possible completions")
-
-(defvar py-local-complete-function nil
-  "Set by python-mode-hook resp. to environment.
-
-`py-complete-function', when set, overrides it. ")
-(make-variable-buffer-local 'py-local-complete-function)
 
 (defvar py-encoding-string-re "^[ \t]*#[ \t]*-\\*-[ \t]*coding:.+-\\*-"
   "Matches encoding string of a Python file. ")
@@ -1338,12 +1252,6 @@ can write into: the value (if any) of the environment variable TMPDIR,
 
 (defvar py-pylint-history nil)
 
-(defvar py-shell-alist
-  '(("jython" . 'jython)
-    ("python" . 'cpython))
-  "*Alist of interpreters and python shells. Used by `py-choose-shell'
-to select the appropriate python interpreter mode for a file.")
-
 (defvar ipython-de-input-prompt-regexp "In \\[[0-9]+\\]:\\|^[ ]\\{3\\}[.]\\{3,\\}:"
   "A regular expression to match the IPython input prompt. ")
 
@@ -1376,19 +1284,6 @@ to select the appropriate python interpreter mode for a file.")
 
 (defvar py-completion-last-window-configuration nil
   "Internal use: restore py-restore-window-configuration when completion is done resp. abandoned. ")
-
-(defvar python-mode-syntax-table nil
-  "Give punctuation syntax to ASCII that normally has symbol
-syntax or has word syntax and isn't a letter.")
-
-(defvar view-return-to-alist)
-
-(defvar python-imports)
-(make-variable-buffer-local 'python-imports)
-
-(defvar py-prev-dir/file nil
-  "Caches (directory . file) pair used in the last `py-load-file' command.
-Used for determining the default in the next one.")
 
 (defvar py-exception-buffer nil)
 
@@ -1496,7 +1391,7 @@ Currently-active file is at the head of the list.")
 (defvar py-shell-hook nil
   "*Hook called by `py-shell'.")
 
-(defvar python-font-lock-keywords)
+(defvar py-font-lock-keywords nil)
 
 (defvar py-dotted-expression-syntax-table
   (let ((table (make-syntax-table python-mode-syntax-table)))
@@ -1504,14 +1399,6 @@ Currently-active file is at the head of the list.")
     (modify-syntax-entry ?. "_" table)
     table)
   "Syntax table used to identify Python dotted expressions.")
-
-(defvar python-dotty-syntax-table
-  (let ((table (make-syntax-table python-mode-syntax-table)))
-    (modify-syntax-entry ?. "w" table)
-    (modify-syntax-entry ?_ "w" table)
-    table)
-  "Dotty syntax table for Python files.
-It makes underscores and dots word constituent chars.")
 
 (defvar inferior-python-mode-syntax-table
   (let ((st (make-syntax-table python-mode-syntax-table)))
@@ -1522,17 +1409,12 @@ It makes underscores and dots word constituent chars.")
     ;; (modify-syntax-entry ?\" "." st)
     st))
 
-(defvar python-preoutput-result nil
+(defvar py-preoutput-result nil
   "Data from last `_emacs_out' line seen by the preoutput filter.")
 
-(defvar python-preoutput-continuation nil
-  "If non-nil, funcall this when `py-preoutput-filter' sees `_emacs_ok'.")
+(defvar py-preoutput-leftover nil)
 
-(defvar python-preoutput-leftover nil)
-
-(defvar python-preoutput-skip-next-prompt nil)
-
-(defvar python-version-checked nil)
+(defvar py-preoutput-skip-next-prompt nil)
 
 (defvar python-prev-dir/file nil
   "Caches (directory . file) pair used in the last `py-load-file' command.
@@ -1549,11 +1431,7 @@ Used for determining the default in the next one.")
   "Default template to expand by `python-expand-template'.
 Updated on each expansion.")
 
-(defvar outline-heading-end-regexp)
-
-(defvar python-mode-running)            ;Dynamically scoped var.
-
-(defvar py--prompt-regexp nil)
+(defvar outline-heading-end-regexp nil)
 
 (defvar py-shell-input-lines nil
   "Collect input lines send interactively to the Python process in
@@ -1603,15 +1481,30 @@ and resending the lines later. The lines are stored in reverse order")
   "Internal use by py-indent-line, use the guess already computed. ")
 (make-variable-buffer-local 'py-already-guessed-indent-offset)
 
-;;; Constants
-(defconst python-dotty-syntax-table
-  (let ((table (make-syntax-table)))
-    (set-char-table-parent table python-mode-syntax-table)
-    (modify-syntax-entry ?. "_" table)
-    table)
-  "Syntax table giving `.' symbol syntax.
-Otherwise inherits from `python-mode-syntax-table'.")
+(defvar py-imports nil)
 
+(defvar py-shell-template "
+\(defun NAME (&optional argprompt)
+  \"Start an DOCNAME interpreter in another window.
+
+With optional \\\\[universal-argument] user is prompted
+for options to pass to the DOCNAME interpreter. \"
+  (interactive \"P\")
+  (let\* ((py-shell-name \"FULLNAME\"))
+    (py-shell argprompt)
+    (when (interactive-p) (switch-to-buffer (current-buffer))
+          (goto-char (point-max)))))
+")
+
+(defvar py-dotty-syntax-table
+  (let ((table (make-syntax-table python-mode-syntax-table)))
+    (modify-syntax-entry ?. "w" table)
+    (modify-syntax-entry ?_ "w" table)
+    table)
+  "Dotty syntax table for Python files.
+It makes underscores and dots word constituent chars.")
+
+;;; Constants
 (defconst py-blank-or-comment-re "[ \t]*\\($\\|#\\)"
   "regular expression matching a blank or comment line.")
 
@@ -1779,29 +1672,7 @@ Includes def and class. ")
 
 (setq py-history-filter-regexp "\\`\\s-*\\S-?\\S-?\\s-*\\'\\|'''/tmp/\\|^__pyfile = open('''\\|^execfile(r'[.+]/tmp/")
 
-;; ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-;; NO USER DEFINABLE VARIABLES BEYOND THIS POINT
 
-(setq python-mode-syntax-table
-      (let ((table (make-syntax-table)))
-        ;; Give punctuation syntax to ASCII that normally has symbol
-        ;; syntax or has word syntax and isn't a letter.
-        (let ((symbol (string-to-syntax "_"))
-              (sst (standard-syntax-table)))
-          (dotimes (i 128)
-            (unless (= i ?_)
-              (if (equal symbol (aref sst i))
-                  (modify-syntax-entry i "." table)))))
-        (modify-syntax-entry ?$ "." table)
-        (modify-syntax-entry ?% "." table)
-        ;; exceptions
-        (modify-syntax-entry ?# "<" table)
-        (modify-syntax-entry ?\n ">" table)
-        (modify-syntax-entry ?' "\"" table)
-        (modify-syntax-entry ?` "$" table)
-        (when py-underscore-word-syntax-p
-          (modify-syntax-entry ?_ "w" table))
-        table))
 
 ;;; py-expression variables start
 
@@ -1881,21 +1752,6 @@ Includes def and class. ")
      ((equal s "|") '(15))
      ((equal s "_") '(3))
      (t (error "Unhandled string: %s" s)))))
-
-;; (defvar py-help-mode-syntax-table
-;;   (let ((st (make-syntax-table py-mode-syntax-table)))
-;;     ;; Don't get confused by apostrophes in the process's output (e.g. if
-;;     ;; you execute "help(os)").
-;;     (modify-syntax-entry ?\' "." st)
-;;     ;; Maybe we should do the same for double quotes?
-;;     (modify-syntax-entry ?\" "." st)
-;;     st))
-;;
-;; (defconst py-space-backslash-table
-;;   (let ((table (copy-syntax-table py-mode-syntax-table)))
-;;     (modify-syntax-entry ?\\ " " table)
-;;     table)
-;;   "`py-mode-syntax-table' with backslash given whitespace syntax.")
 
 (defface py-XXX-tag-face
   '((t (:inherit font-lock-string-face)))
@@ -2259,7 +2115,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
 
 
 ;;; Font-lock and syntax
-(setq python-font-lock-keywords
+(setq py-font-lock-keywords
       ;; Keywords
       `(,(rx symbol-start
              (or "and" "del" "from" "not" "while" "as" "elif" "global" "or" "with"
@@ -4908,22 +4764,6 @@ Don't save anything for STR matching `py-history-filter-regexp'."
           (t (let ((pos (string-match "[^ \t]" string)))
                (if pos (py-args-to-list (substring string pos))))))))
 
-(defun py-check-version (cmd)
-  "Check that CMD runs a suitable version of Python."
-  ;; Fixme:  Check on Jython.
-  (unless (or python-version-checked
-              (equal 0 (string-match (regexp-quote py-python-command)
-                                     cmd)))
-    (unless (shell-command-to-string cmd)
-      (error "Can't run Python command `%s'" cmd))
-    (let* ((res (shell-command-to-string
-                 (concat cmd
-                         " -c \"from sys import version_info;\
-print version_info >= (2, 2) and version_info < (3, 0)\""))))
-      (unless (string-match "True" res)
-        (error "Only Python versions >= 2.2 and < 3.0 are supported")))
-    (setq python-version-checked t)))
-
 (defun py-send-command (command)
   "Like `py-send-string' but resets `compilation-shell-minor-mode'."
   (when (py-check-comint-prompt)
@@ -5014,10 +4854,10 @@ This is a no-op if `py-check-comint-prompt' returns nil."
       (let ((proc (py-proc)))
         (with-current-buffer (process-buffer proc)
           (when (py-check-comint-prompt proc)
-            (set (make-local-variable 'python-preoutput-result) nil)
+            (set (make-local-variable 'py-preoutput-result) nil)
             (accept-process-output proc 5)
-            (prog1 python-preoutput-result
-              (kill-local-variable 'python-preoutput-result)))))))
+            (prog1 py-preoutput-result
+              (kill-local-variable 'py-preoutput-result)))))))
 
 ;;;; FFAP support
 (defun py-module-path (module)
@@ -5384,32 +5224,32 @@ Don't save anything for STR matching `inferior-python-filter-regexp'."
 ;; `python-preoutput-continuation' if we get it.
 (defun py-preoutput-filter (s)
   "`comint-preoutput-filter-functions' function: ignore prompts not at bol."
-  (when python-preoutput-leftover
-    (setq s (concat python-preoutput-leftover s))
-    (setq python-preoutput-leftover nil))
+  (when py-preoutput-leftover
+    (setq s (concat py-preoutput-leftover s))
+    (setq py-preoutput-leftover nil))
   (let ((start 0)
         (res ""))
     ;; First process whole lines.
     (while (string-match "\n" s start)
       (let ((line (substring s start (setq start (match-end 0)))))
         ;; Skip prompt if needed.
-        (when (and python-preoutput-skip-next-prompt
+        (when (and py-preoutput-skip-next-prompt
                    (string-match comint-prompt-regexp line))
-          (setq python-preoutput-skip-next-prompt nil)
+          (setq py-preoutput-skip-next-prompt nil)
           (setq line (substring line (match-end 0))))
         ;; Recognize special _emacs_out lines.
         (if (and (string-match "\\`_emacs_out \\(.*\\)\n\\'" line)
-                 (local-variable-p 'python-preoutput-result))
+                 (local-variable-p 'py-preoutput-result))
             (progn
-              (setq python-preoutput-result (match-string 1 line))
-              (set (make-local-variable 'python-preoutput-skip-next-prompt) t)
-              python-preoutput-result)
+              (setq py-preoutput-result (match-string 1 line))
+              (set (make-local-variable 'py-preoutput-skip-next-prompt) t)
+              py-preoutput-result)
           (setq res (concat res line)))))
     ;; Then process the remaining partial line.
     (unless (zerop start) (setq s (substring s start)))
     (cond ((and (string-match comint-prompt-regexp s)
                 ;; Drop this prompt if it follows an _emacs_out...
-                (or python-preoutput-skip-next-prompt
+                (or py-preoutput-skip-next-prompt
                     ;; ... or if it's not gonna be inserted at BOL.
                     ;; Maybe we could be more selective here.
                     (if (zerop (length res))
@@ -5419,14 +5259,14 @@ Don't save anything for STR matching `inferior-python-filter-regexp'."
            ;; What is this all about, exactly?  --Stef
            ;; (if (and (eq ?. (aref s 0)))
            ;;     (accept-process-output (get-buffer-process (current-buffer)) 1))
-           (setq python-preoutput-skip-next-prompt nil)
+           (setq py-preoutput-skip-next-prompt nil)
            res)
           ((let ((end (min (length "_emacs_out ") (length s))))
              (eq t (compare-strings s nil end "_emacs_out " nil end)))
            ;; The leftover string is a prefix of _emacs_out so we don't know
            ;; yet whether it's an _emacs_out or something else: wait until we
            ;; get more output so we can resolve this ambiguity.
-           (set (make-local-variable 'python-preoutput-leftover) s)
+           (set (make-local-variable 'py-preoutput-leftover) s)
            res)
           (t (concat res s)))))
 
@@ -5609,7 +5449,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
                                   py-outline-mode-keywords)
                           "\\|")))
   (set (make-local-variable 'font-lock-defaults)
-       '(python-font-lock-keywords nil nil nil nil
+       '(py-font-lock-keywords nil nil nil nil
                                    (font-lock-syntactic-keywords
                                     . py-font-lock-syntactic-keywords)
                                    ;; This probably isn't worth it.

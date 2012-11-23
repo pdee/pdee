@@ -864,7 +864,6 @@ Also accepts submission of bug reports, whilst a ticket at
 http://launchpad.net/python-mode
 is preferable for that. ")
 
-
 ;;; Utilities
 (defun py-def-or-class-beginning-position ()
   "Returns beginning position of function or class definition. "
@@ -945,6 +944,57 @@ This function does not modify point or mark."
                ((eq position 'bos) (py-beginning-of-statement))
                (t (error "Unknown buffer position requested: %s" position))) (point))))
     erg))
+
+(defun py-install-search-local ()
+  (interactive)
+  (let ((erg (split-string (shell-command-to-string (concat "find " default-directory " -maxdepth 9 -type f -name \"*python\"")))))))
+
+;; (defun py-install-local-epdfree ()
+;;   (interactive)
+;;   (py-install-local-shells "MY-PATH/epdfree"))
+
+(defun py-install-local-shells (&optional local path-prefix)
+  "Builds Python-shell commands from executable found in LOCAL.
+
+If LOCAL is empty, shell-command `find' searches beneath current directory.
+Eval resulting buffer to install it, see customizable `py-extensions'. "
+  (interactive)
+  (let* ((local-dir (if local
+                        (expand-file-name local)
+                      (read-from-minibuffer "Virtualenv directory: " default-directory)))
+         (path-separator (if (string-match "/" local-dir)
+                             "/"
+                           "\\" t))
+         (shells (split-string (shell-command-to-string (concat "find " local-dir " -maxdepth 9 -type f -executable -name \"*python\""))))
+         erg newshell prefix akt end orig)
+    (set-buffer (get-buffer-create py-extensions))
+    (erase-buffer)
+    (switch-to-buffer (current-buffer))
+    (dolist (elt shells)
+      (setq prefix "")
+      (setq curexe (substring elt (1+ (string-match "/[^/]+$" elt))))
+      (setq aktpath (substring elt 0 (1+ (string-match "/[^/]+$" elt))))
+      (dolist (prf (split-string aktpath (regexp-quote path-separator)))
+        (unless (string= "" prf)
+          (setq prefix (concat prefix (substring prf 0 1)))))
+      (setq orig (point))
+      (insert py-shell-template)
+      (setq end (point))
+      (goto-char orig)
+      (when (re-search-forward "\\<NAME\\>" end t 1)
+        (replace-match (concat prefix "-" (substring elt (1+ (save-match-data (string-match "/[^/]+$" elt)))))t))
+      (goto-char orig)
+      (while (search-forward "DOCNAME" end t 1)
+        (replace-match (if (string= "ipython" curexe)
+                           "IPython"
+                         (capitalize curexe)) t))
+      (goto-char orig)
+      (when (search-forward "FULLNAME" end t 1)
+        (replace-match elt t))
+      (goto-char (point-max)))
+    (emacs-lisp-mode)
+    (if (file-readable-p (concat py-install-directory "/" py-extensions))
+        (find-file (concat py-install-directory "/" py-extensions)))))
 
 (provide 'python-components-intern)
 ;;; python-components-intern.el ends here

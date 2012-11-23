@@ -218,6 +218,45 @@ Returns value of `py-split-windows-on-execute-p'. "
   (when (or py-verbose-p (interactive-p)) (message "py-split-windows-on-execute-p: %s" py-split-windows-on-execute-p))
   py-split-windows-on-execute-p)
 
+;;; py-fontify-shell-buffer-p forms
+(defun toggle-py-fontify-shell-buffer-p (&optional arg)
+  "If `py-fontify-shell-buffer-p' should be on or off.
+
+  Returns value of `py-fontify-shell-buffer-p' switched to. "
+  (interactive)
+  (let ((arg (or arg (if py-fontify-shell-buffer-p -1 1))))
+    (if (< 0 arg)
+        (progn
+          (setq py-fontify-shell-buffer-p t)
+          (set (make-local-variable 'font-lock-defaults)
+             '(py-font-lock-keywords nil nil nil nil
+                                         (font-lock-syntactic-keywords
+                                          . py-font-lock-syntactic-keywords)))
+          (unless (looking-at comint-prompt-regexp)
+            (when (re-search-backward comint-prompt-regexp nil t 1)
+              (font-lock-fontify-region (line-beginning-position) (point-max)))))
+      (setq py-fontify-shell-buffer-p nil))
+    (when (or py-verbose-p (interactive-p)) (message "py-fontify-shell-buffer-p: %s" py-fontify-shell-buffer-p))
+    py-fontify-shell-buffer-p))
+
+(defun py-fontify-shell-buffer-p-on (&optional arg)
+  "Make sure, `py-py-fontify-shell-buffer-p' is on.
+
+Returns value of `py-fontify-shell-buffer-p'. "
+  (interactive)
+  (let ((arg (or arg 1)))
+    (toggle-py-fontify-shell-buffer-p arg))
+  (when (or py-verbose-p (interactive-p)) (message "py-fontify-shell-buffer-p: %s" py-fontify-shell-buffer-p))
+  py-fontify-shell-buffer-p)
+
+(defun py-fontify-shell-buffer-p-off ()
+  "Make sure, `py-fontify-shell-buffer-p' is off.
+
+Returns value of `py-fontify-shell-buffer-p'. "
+  (interactive)
+  (toggle-py-fontify-shell-buffer-p -1)
+  (when (or py-verbose-p (interactive-p)) (message "py-fontify-shell-buffer-p: %s" py-fontify-shell-buffer-p))
+  py-fontify-shell-buffer-p)
 
 (provide 'python-components-switches)
 ;;; python-components-switches.el ends here

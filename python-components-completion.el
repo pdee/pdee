@@ -27,23 +27,6 @@
 (require 'comint)
 (require 'python-components-macros)
 
-(defvar python-pdbtrack-is-tracking-p nil)
-
-(defconst python-pdbtrack-track-range 10000
-  "Max number of characters from end of buffer to search for stack entry.")
-
-(defvar python-preoutput-skip-next-prompt nil)
-
-(defvar python-preoutput-result nil
-  "Data from last `_emacs_out' line seen by the preoutput filter.")
-
-(defvar python-preoutput-continuation nil
-  "If non-nil, funcall this when `python-preoutput-filter' sees `_emacs_ok'.")
-
-(defvar python-preoutput-leftover nil)
-
-(defvar python-version-checked nil)
-
 (defconst python-compilation-regexp-alist
   ;; FIXME: maybe these should move to compilation-error-regexp-alist-alist.
   ;;   The first already is (for CAML), but the second isn't.  Anyhow,
@@ -70,8 +53,7 @@ information etc.  If PROC is non-nil, check the buffer for that process."
   (with-current-buffer (process-buffer (or proc (get-buffer-process (py-shell))))
     (save-excursion
       (save-match-data
-	(re-search-backward (concat py--prompt-regexp " *\\=")
-			    nil t)))))
+        (re-search-backward " *\\=" nil t)))))
 
 (autoload 'comint-check-proc "comint")
 

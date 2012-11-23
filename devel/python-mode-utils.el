@@ -2200,3 +2200,14 @@ Return position if " ele " found, nil otherwise \"
 \(provide 'python-components-up-down)")
   (switch-to-buffer (current-buffer))
   (emacs-lisp-mode))
+
+(defun py-write-variables-test ()
+  (interactive)
+  (set-buffer (get-buffer-create "Py-Variables-Test"))
+  (erase-buffer)
+  (dolist (elt py-variables)
+    (setq elt (prin1-to-string elt))
+    ;; -eval "(assert (commandp 'py-execute-file-bpython-dedicated-switch) nil \"py-execute-file-bpython-dedicated-switch not detected as command\")" \
+    (insert (concat "-eval \"(assert (boundp '" elt ") nil \\\"" elt " not a variable\\\")\" \\\n")))
+  (switch-to-buffer (current-buffer))
+  (emacs-lisp-mode)) 

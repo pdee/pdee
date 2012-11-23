@@ -827,14 +827,245 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-execute-file-bpython-dedicated) nil \"py-execute-file-bpython-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-bpython-dedicated-switch) nil \"py-execute-file-bpython-dedicated-switch not detected as command\")" \
 -eval "(setq enable-local-variables :all)" \
+-eval "(assert (boundp 'py-version) nil \"py-version not a variable\")" \
+-eval "(assert (boundp 'python-mode-modeline-display) nil \"python-mode-modeline-display not a variable\")" \
+-eval "(assert (boundp 'py-indent-offset) nil \"py-indent-offset not a variable\")" \
+-eval "(assert (boundp 'pdb-path) nil \"pdb-path not a variable\")" \
+-eval "(assert (boundp 'py-verbose-p) nil \"py-verbose-p not a variable\")" \
+-eval "(assert (boundp 'py-load-pymacs-p) nil \"py-load-pymacs-p not a variable\")" \
+-eval "(assert (boundp 'py-smart-operator-mode-p) nil \"py-smart-operator-mode-p not a variable\")" \
+-eval "(assert (boundp 'py-sexp-function) nil \"py-sexp-function not a variable\")" \
+-eval "(assert (boundp 'py-prepare-autopair-mode-p) nil \"py-prepare-autopair-mode-p not a variable\")" \
+-eval "(assert (boundp 'py-no-completion-calls-dabbrev-expand-p) nil \"py-no-completion-calls-dabbrev-expand-p not a variable\")" \
+-eval "(assert (boundp 'py-indent-no-completion-p) nil \"py-indent-no-completion-p not a variable\")" \
+-eval "(assert (boundp 'py-fontify-shell-buffer-p) nil \"py-fontify-shell-buffer-p not a variable\")" \
+-eval "(assert (boundp 'py-modeline-display-full-path-p) nil \"py-modeline-display-full-path-p not a variable\")" \
+-eval "(assert (boundp 'py-modeline-acronym-display-home-p) nil \"py-modeline-acronym-display-home-p not a variable\")" \
+-eval "(assert (boundp 'py-install-directory) nil \"py-install-directory not a variable\")" \
+-eval "(assert (boundp 'py-guess-py-install-directory-p) nil \"py-guess-py-install-directory-p not a variable\")" \
+-eval "(assert (boundp 'py-extensions) nil \"py-extensions not a variable\")" \
+-eval "(assert (boundp 'py-hide-show-minor-mode-p) nil \"py-hide-show-minor-mode-p not a variable\")" \
+-eval "(assert (boundp 'empty-comment-line-separates-paragraph-p) nil \"empty-comment-line-separates-paragraph-p not a variable\")" \
+-eval "(assert (boundp 'py-org-cycle-p) nil \"py-org-cycle-p not a variable\")" \
+-eval "(assert (boundp 'ipython-complete-use-separate-shell-p) nil \"ipython-complete-use-separate-shell-p not a variable\")" \
+-eval "(assert (boundp 'py-outline-minor-mode-p) nil \"py-outline-minor-mode-p not a variable\")" \
+-eval "(assert (boundp 'py-outline-mode-keywords) nil \"py-outline-mode-keywords not a variable\")" \
+-eval "(assert (boundp 'py-start-run-py-shell) nil \"py-start-run-py-shell not a variable\")" \
+-eval "(assert (boundp 'py-start-run-ipython-shell) nil \"py-start-run-ipython-shell not a variable\")" \
+-eval "(assert (boundp 'py-close-provides-newline) nil \"py-close-provides-newline not a variable\")" \
+-eval "(assert (boundp 'py-dedent-keep-relative-column) nil \"py-dedent-keep-relative-column not a variable\")" \
+-eval "(assert (boundp 'py-indent-honors-inline-comment) nil \"py-indent-honors-inline-comment not a variable\")" \
+-eval "(assert (boundp 'py-closing-list-dedents-bos) nil \"py-closing-list-dedents-bos not a variable\")" \
+-eval "(assert (boundp 'py-electric-colon-active-p) nil \"py-electric-colon-active-p not a variable\")" \
+-eval "(assert (boundp 'py-electric-colon-greedy-p) nil \"py-electric-colon-greedy-p not a variable\")" \
+-eval "(assert (boundp 'py-electric-colon-newline-and-indent-p) nil \"py-electric-colon-newline-and-indent-p not a variable\")" \
+-eval "(assert (boundp 'py-electric-comment-p) nil \"py-electric-comment-p not a variable\")" \
+-eval "(assert (boundp 'py-electric-comment-add-space-p) nil \"py-electric-comment-add-space-p not a variable\")" \
+-eval "(assert (boundp 'py-mark-decorators) nil \"py-mark-decorators not a variable\")" \
+-eval "(assert (boundp 'py-tab-indent) nil \"py-tab-indent not a variable\")" \
+-eval "(assert (boundp 'py-complete-function) nil \"py-complete-function not a variable\")" \
+-eval "(assert (boundp 'py-encoding-string) nil \"py-encoding-string not a variable\")" \
+-eval "(assert (boundp 'py-shebang-startstring) nil \"py-shebang-startstring not a variable\")" \
+-eval "(assert (boundp 'py-python-command-args) nil \"py-python-command-args not a variable\")" \
+-eval "(assert (boundp 'py-jython-command-args) nil \"py-jython-command-args not a variable\")" \
+-eval "(assert (boundp 'py-cleanup-temporary) nil \"py-cleanup-temporary not a variable\")" \
+-eval "(assert (boundp 'py-lhs-inbound-indent) nil \"py-lhs-inbound-indent not a variable\")" \
+-eval "(assert (boundp 'py-continuation-offset) nil \"py-continuation-offset not a variable\")" \
+-eval "(assert (boundp 'py-indent-tabs-mode) nil \"py-indent-tabs-mode not a variable\")" \
+-eval "(assert (boundp 'py-smart-indentation) nil \"py-smart-indentation not a variable\")" \
+-eval "(assert (boundp 'py-block-comment-prefix) nil \"py-block-comment-prefix not a variable\")" \
+-eval "(assert (boundp 'py-indent-comments) nil \"py-indent-comments not a variable\")" \
+-eval "(assert (boundp 'py-separator-char) nil \"py-separator-char not a variable\")" \
+-eval "(assert (boundp 'py-custom-temp-directory) nil \"py-custom-temp-directory not a variable\")" \
+-eval "(assert (boundp 'py-jump-on-exception) nil \"py-jump-on-exception not a variable\")" \
+-eval "(assert (boundp 'py-ask-about-save) nil \"py-ask-about-save not a variable\")" \
+-eval "(assert (boundp 'py-pdbtrack-do-tracking-p) nil \"py-pdbtrack-do-tracking-p not a variable\")" \
+-eval "(assert (boundp 'py-pdbtrack-filename-mapping) nil \"py-pdbtrack-filename-mapping not a variable\")" \
+-eval "(assert (boundp 'py-pdbtrack-minor-mode-string) nil \"py-pdbtrack-minor-mode-string not a variable\")" \
+-eval "(assert (boundp 'py-import-check-point-max) nil \"py-import-check-point-max not a variable\")" \
+-eval "(assert (boundp 'py-jython-packages) nil \"py-jython-packages not a variable\")" \
+-eval "(assert (boundp 'py-current-defun-show) nil \"py-current-defun-show not a variable\")" \
+-eval "(assert (boundp 'py-current-defun-delay) nil \"py-current-defun-delay not a variable\")" \
+-eval "(assert (boundp 'py-honor-IPYTHONDIR-p) nil \"py-honor-IPYTHONDIR-p not a variable\")" \
+-eval "(assert (boundp 'py-ipython-history) nil \"py-ipython-history not a variable\")" \
+-eval "(assert (boundp 'py-honor-PYTHONHISTORY-p) nil \"py-honor-PYTHONHISTORY-p not a variable\")" \
+-eval "(assert (boundp 'py-master-file) nil \"py-master-file not a variable\")" \
+-eval "(assert (boundp 'py-pychecker-command) nil \"py-pychecker-command not a variable\")" \
+-eval "(assert (boundp 'py-pychecker-command-args) nil \"py-pychecker-command-args not a variable\")" \
+-eval "(assert (boundp 'py-pep8-command) nil \"py-pep8-command not a variable\")" \
+-eval "(assert (boundp 'py-pep8-command-args) nil \"py-pep8-command-args not a variable\")" \
+-eval "(assert (boundp 'py-pyflakespep8-command) nil \"py-pyflakespep8-command not a variable\")" \
+-eval "(assert (boundp 'py-pep8-command) nil \"py-pep8-command not a variable\")" \
+-eval "(assert (boundp 'py-pep8-command-args) nil \"py-pep8-command-args not a variable\")" \
+-eval "(assert (boundp 'py-pyflakespep8-command-args) nil \"py-pyflakespep8-command-args not a variable\")" \
+-eval "(assert (boundp 'py-pyflakes-command) nil \"py-pyflakes-command not a variable\")" \
+-eval "(assert (boundp 'py-pyflakes-command-args) nil \"py-pyflakes-command-args not a variable\")" \
+-eval "(assert (boundp 'py-pep8-command-args) nil \"py-pep8-command-args not a variable\")" \
+-eval "(assert (boundp 'py-pylint-command) nil \"py-pylint-command not a variable\")" \
+-eval "(assert (boundp 'py-pylint-command-args) nil \"py-pylint-command-args not a variable\")" \
+-eval "(assert (boundp 'py-shell-input-prompt-1-regexp) nil \"py-shell-input-prompt-1-regexp not a variable\")" \
+-eval "(assert (boundp 'py-shell-input-prompt-2-regexp) nil \"py-shell-input-prompt-2-regexp not a variable\")" \
+-eval "(assert (boundp 'py-shell-prompt-read-only) nil \"py-shell-prompt-read-only not a variable\")" \
+-eval "(assert (boundp 'py-switch-buffers-on-execute-p) nil \"py-switch-buffers-on-execute-p not a variable\")" \
+-eval "(assert (boundp 'py-split-windows-on-execute-p) nil \"py-split-windows-on-execute-p not a variable\")" \
+-eval "(assert (boundp 'py-max-split-windows) nil \"py-max-split-windows not a variable\")" \
+-eval "(assert (boundp 'py-split-windows-on-execute-function) nil \"py-split-windows-on-execute-function not a variable\")" \
+-eval "(assert (boundp 'py-hide-show-keywords) nil \"py-hide-show-keywords not a variable\")" \
+-eval "(assert (boundp 'py-hide-show-hide-docstrings) nil \"py-hide-show-hide-docstrings not a variable\")" \
+-eval "(assert (boundp 'python-mode-hook) nil \"python-mode-hook not a variable\")" \
+-eval "(assert (boundp 'py-imenu-create-index-p) nil \"py-imenu-create-index-p not a variable\")" \
+-eval "(assert (boundp 'py-imenu-create-index-function) nil \"py-imenu-create-index-function not a variable\")" \
+-eval "(assert (boundp 'py-shell-name) nil \"py-shell-name not a variable\")" \
+-eval "(assert (boundp 'py-shell-toggle-1) nil \"py-shell-toggle-1 not a variable\")" \
+-eval "(assert (boundp 'py-shell-toggle-2) nil \"py-shell-toggle-2 not a variable\")" \
+-eval "(assert (boundp 'py-match-paren-mode) nil \"py-match-paren-mode not a variable\")" \
+-eval "(assert (boundp 'py-kill-empty-line) nil \"py-kill-empty-line not a variable\")" \
+-eval "(assert (boundp 'py-remove-cwd-from-path) nil \"py-remove-cwd-from-path not a variable\")" \
+-eval "(assert (boundp 'py-imenu-show-method-args-p) nil \"py-imenu-show-method-args-p not a variable\")" \
+-eval "(assert (boundp 'py-history-filter-regexp) nil \"py-history-filter-regexp not a variable\")" \
+-eval "(assert (boundp 'py-use-local-default) nil \"py-use-local-default not a variable\")" \
+-eval "(assert (boundp 'py-shell-local-path) nil \"py-shell-local-path not a variable\")" \
+-eval "(assert (boundp 'py-underscore-word-syntax-p) nil \"py-underscore-word-syntax-p not a variable\")" \
+-eval "(assert (boundp 'py-edit-only-p) nil \"py-edit-only-p not a variable\")" \
+-eval "(assert (boundp 'py-force-py-shell-name-p) nil \"py-force-py-shell-name-p not a variable\")" \
+-eval "(assert (boundp 'python-mode-v5-behavior-p) nil \"python-mode-v5-behavior-p not a variable\")" \
+-eval "(assert (boundp 'py-trailing-whitespace-smart-delete-p) nil \"py-trailing-whitespace-smart-delete-p not a variable\")" \
+-eval "(assert (boundp 'py-warn-tmp-files-left-p) nil \"py-warn-tmp-files-left-p not a variable\")" \
+-eval "(assert (boundp 'py-ipython-execute-delay) nil \"py-ipython-execute-delay not a variable\")" \
+-eval "(assert (boundp 'strip-chars-before) nil \"strip-chars-before not a variable\")" \
+-eval "(assert (boundp 'strip-chars-after) nil \"strip-chars-after not a variable\")" \
+-eval "(assert (boundp 'py-fill-docstring-style) nil \"py-fill-docstring-style not a variable\")" \
+-eval "(assert (boundp 'py-number-face) nil \"py-number-face not a variable\")" \
+-eval "(assert (boundp 'py-XXX-tag-face) nil \"py-XXX-tag-face not a variable\")" \
+-eval "(assert (boundp 'py-pseudo-keyword-face) nil \"py-pseudo-keyword-face not a variable\")" \
+-eval "(assert (boundp 'py-variable-name-face) nil \"py-variable-name-face not a variable\")" \
+-eval "(assert (boundp 'py-decorators-face) nil \"py-decorators-face not a variable\")" \
+-eval "(assert (boundp 'py-builtins-face) nil \"py-builtins-face not a variable\")" \
+-eval "(assert (boundp 'py-class-name-face) nil \"py-class-name-face not a variable\")" \
+-eval "(assert (boundp 'py-exception-name-face) nil \"py-exception-name-face not a variable\")" \
+-eval "(assert (boundp 'python-mode-message-string) nil \"python-mode-message-string not a variable\")" \
+-eval "(assert (boundp 'py-local-command) nil \"py-local-command not a variable\")" \
+-eval "(assert (boundp 'py-local-versioned-command) nil \"py-local-versioned-command not a variable\")" \
+-eval "(assert (boundp 'py-shell-complete-debug) nil \"py-shell-complete-debug not a variable\")" \
+-eval "(assert (boundp 'py-encoding-string-re) nil \"py-encoding-string-re not a variable\")" \
+-eval "(assert (boundp 'symbol-definition-start-re) nil \"symbol-definition-start-re not a variable\")" \
+-eval "(assert (boundp 'symbol-definition-start-re) nil \"symbol-definition-start-re not a variable\")" \
+-eval "(assert (boundp 'py-shebang-regexp) nil \"py-shebang-regexp not a variable\")" \
+-eval "(assert (boundp 'py-separator-char) nil \"py-separator-char not a variable\")" \
+-eval "(assert (boundp 'py-temp-directory) nil \"py-temp-directory not a variable\")" \
+-eval "(assert (boundp 'py-exec-command) nil \"py-exec-command not a variable\")" \
+-eval "(assert (boundp 'py-exec-string-command) nil \"py-exec-string-command not a variable\")" \
+-eval "(assert (boundp 'py-which-bufname) nil \"py-which-bufname not a variable\")" \
+-eval "(assert (boundp 'py-pychecker-history) nil \"py-pychecker-history not a variable\")" \
+-eval "(assert (boundp 'py-pep8-history) nil \"py-pep8-history not a variable\")" \
+-eval "(assert (boundp 'py-pyflakespep8-history) nil \"py-pyflakespep8-history not a variable\")" \
+-eval "(assert (boundp 'py-pyflakes-history) nil \"py-pyflakes-history not a variable\")" \
+-eval "(assert (boundp 'py-pylint-history) nil \"py-pylint-history not a variable\")" \
+-eval "(assert (boundp 'ipython-de-input-prompt-regexp) nil \"ipython-de-input-prompt-regexp not a variable\")" \
+-eval "(assert (boundp 'ipython-de-input-prompt-regexp) nil \"ipython-de-input-prompt-regexp not a variable\")" \
+-eval "(assert (boundp 'ipython-de-output-prompt-regexp) nil \"ipython-de-output-prompt-regexp not a variable\")" \
+-eval "(assert (boundp 'py-force-local-shell-p) nil \"py-force-local-shell-p not a variable\")" \
+-eval "(assert (boundp 'python-mode-v5-behavior) nil \"python-mode-v5-behavior not a variable\")" \
+-eval "(assert (boundp 'py-bol-forms-last-indent) nil \"py-bol-forms-last-indent not a variable\")" \
+-eval "(assert (boundp 'python-mode-syntax-table) nil \"python-mode-syntax-table not a variable\")" \
+-eval "(assert (boundp 'outline-heading-end-regexp) nil \"outline-heading-end-regexp not a variable\")" \
+-eval "(assert (boundp 'eldoc-documentation-function) nil \"eldoc-documentation-function not a variable\")" \
+-eval "(assert (boundp 'py-completion-last-window-configuration) nil \"py-completion-last-window-configuration not a variable\")" \
+-eval "(assert (boundp 'py-shell-template) nil \"py-shell-template not a variable\")" \
+-eval "(assert (boundp 'py-imports) nil \"py-imports not a variable\")" \
+-eval "(assert (boundp 'py-execute-directory) nil \"py-execute-directory not a variable\")" \
+-eval "(assert (boundp 'py-use-current-dir-when-execute-p) nil \"py-use-current-dir-when-execute-p not a variable\")" \
+-eval "(assert (boundp 'py-exception-buffer) nil \"py-exception-buffer not a variable\")" \
+-eval "(assert (boundp 'py-output-buffer) nil \"py-output-buffer not a variable\")" \
+-eval "(assert (boundp 'py-string-delim-re) nil \"py-string-delim-re not a variable\")" \
+-eval "(assert (boundp 'py-labelled-re) nil \"py-labelled-re not a variable\")" \
+-eval "(assert (boundp 'py-expression-skip-regexp) nil \"py-expression-skip-regexp not a variable\")" \
+-eval "(assert (boundp 'py-expression-skip-chars) nil \"py-expression-skip-chars not a variable\")" \
+-eval "(assert (boundp 'py-expression-looking-re) nil \"py-expression-looking-re not a variable\")" \
+-eval "(assert (boundp 'py-not-expression-regexp) nil \"py-not-expression-regexp not a variable\")" \
+-eval "(assert (boundp 'py-not-expression-chars) nil \"py-not-expression-chars not a variable\")" \
+-eval "(assert (boundp 'py-not-expression-chars) nil \"py-not-expression-chars not a variable\")" \
+-eval "(assert (boundp 'py-partial-expression-skip-chars) nil \"py-partial-expression-skip-chars not a variable\")" \
+-eval "(assert (boundp 'py-partial-expression-forward-regexp) nil \"py-partial-expression-forward-regexp not a variable\")" \
+-eval "(assert (boundp 'py-partial-expression-skip-backward-chars) nil \"py-partial-expression-skip-backward-chars not a variable\")" \
+-eval "(assert (boundp 'py-not-partial-expression-skip-chars) nil \"py-not-partial-expression-skip-chars not a variable\")" \
+-eval "(assert (boundp 'py-partial-expression-looking-regexp) nil \"py-partial-expression-looking-regexp not a variable\")" \
+-eval "(assert (boundp 'py-not-partial-expression-regexp) nil \"py-not-partial-expression-regexp not a variable\")" \
+-eval "(assert (boundp 'py-operator-regexp) nil \"py-operator-regexp not a variable\")" \
+-eval "(assert (boundp 'py-assignment-regexp) nil \"py-assignment-regexp not a variable\")" \
+-eval "(assert (boundp 'py-delimiter-regexp) nil \"py-delimiter-regexp not a variable\")" \
+-eval "(assert (boundp 'py-delimiter-chars) nil \"py-delimiter-chars not a variable\")" \
+-eval "(assert (boundp 'py-line-number-offset) nil \"py-line-number-offset not a variable\")" \
+-eval "(assert (boundp 'match-paren-no-use-syntax-pps) nil \"match-paren-no-use-syntax-pps not a variable\")" \
+-eval "(assert (boundp 'py-traceback-line-re) nil \"py-traceback-line-re not a variable\")" \
+-eval "(assert (boundp 'py-traceback-line-re) nil \"py-traceback-line-re not a variable\")" \
+-eval "(assert (boundp 'python-mode-abbrev-table) nil \"python-mode-abbrev-table not a variable\")" \
+-eval "(assert (boundp 'inferior-python-mode-abbrev-table) nil \"inferior-python-mode-abbrev-table not a variable\")" \
+-eval "(assert (boundp 'py-pdbtrack-input-prompt) nil \"py-pdbtrack-input-prompt not a variable\")" \
+-eval "(assert (boundp 'py-pydbtrack-input-prompt) nil \"py-pydbtrack-input-prompt not a variable\")" \
+-eval "(assert (boundp 'py-pdbtrack-is-tracking-p) nil \"py-pdbtrack-is-tracking-p not a variable\")" \
+-eval "(assert (boundp 'py-shell-map) nil \"py-shell-map not a variable\")" \
+-eval "(assert (boundp 'py-font-lock-keywords) nil \"py-font-lock-keywords not a variable\")" \
+-eval "(assert (boundp 'py-dotted-expression-syntax-table) nil \"py-dotted-expression-syntax-table not a variable\")" \
+-eval "(assert (boundp 'jython-mode-hook) nil \"jython-mode-hook not a variable\")" \
+-eval "(assert (boundp 'py-shell-hook) nil \"py-shell-hook not a variable\")" \
+-eval "(assert (boundp 'ipython-completion-command-string) nil \"ipython-completion-command-string not a variable\")" \
+-eval "(assert (boundp 'ipython0\.10-completion-command-string) nil \"ipython0\.10-completion-command-string not a variable\")" \
+-eval "(assert (boundp 'ipython0\.11-completion-command-string) nil \"ipython0\.11-completion-command-string not a variable\")" \
+-eval "(assert (boundp 'py-last-exeption-buffer) nil \"py-last-exeption-buffer not a variable\")" \
+-eval "(assert (boundp 'py-imenu-class-regexp) nil \"py-imenu-class-regexp not a variable\")" \
+-eval "(assert (boundp 'py-imenu-method-regexp) nil \"py-imenu-method-regexp not a variable\")" \
+-eval "(assert (boundp 'py-imenu-method-no-arg-parens) nil \"py-imenu-method-no-arg-parens not a variable\")" \
+-eval "(assert (boundp 'py-imenu-method-arg-parens) nil \"py-imenu-method-arg-parens not a variable\")" \
+-eval "(assert (boundp 'py-imenu-generic-expression) nil \"py-imenu-generic-expression not a variable\")" \
+-eval "(assert (boundp 'py-imenu-generic-regexp) nil \"py-imenu-generic-regexp not a variable\")" \
+-eval "(assert (boundp 'py-imenu-generic-parens) nil \"py-imenu-generic-parens not a variable\")" \
+-eval "(assert (boundp 'py-mode-output-map) nil \"py-mode-output-map not a variable\")" \
+-eval "(assert (boundp 'py-menu) nil \"py-menu not a variable\")" \
+-eval "(assert (boundp 'py-already-guessed-indent-offset) nil \"py-already-guessed-indent-offset not a variable\")" \
+-eval "(assert (boundp 'python-mode-map) nil \"python-mode-map not a variable\")" \
+-eval "(assert (boundp 'skeleton-further-elements) nil \"skeleton-further-elements not a variable\")" \
+-eval "(assert (boundp 'virtualenv-workon-home) nil \"virtualenv-workon-home not a variable\")" \
+-eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+-eval "(assert (boundp 'python-mode-syntax-table) nil \"python-mode-syntax-table not a variable\")" \
+-eval "(assert (boundp 'py-shell-template) nil \"py-shell-template not a variable\")" \
+-eval "(assert (boundp 'py-blank-or-comment-re) nil \"py-blank-or-comment-re not a variable\")" \
+-eval "(assert (boundp 'py-block-closing-keywords-re) nil \"py-block-closing-keywords-re not a variable\")" \
+-eval "(assert (boundp 'py-finally-re) nil \"py-finally-re not a variable\")" \
+-eval "(assert (boundp 'py-except-re) nil \"py-except-re not a variable\")" \
+-eval "(assert (boundp 'py-else-re) nil \"py-else-re not a variable\")" \
+-eval "(assert (boundp 'py-no-outdent-re) nil \"py-no-outdent-re not a variable\")" \
+-eval "(assert (boundp 'py-assignment-re) nil \"py-assignment-re not a variable\")" \
+-eval "(assert (boundp 'py-block-re) nil \"py-block-re not a variable\")" \
+-eval "(assert (boundp 'py-minor-block-re) nil \"py-minor-block-re not a variable\")" \
+-eval "(assert (boundp 'py-try-block-re) nil \"py-try-block-re not a variable\")" \
+-eval "(assert (boundp 'py-class-re) nil \"py-class-re not a variable\")" \
+-eval "(assert (boundp 'py-def-or-class-re) nil \"py-def-or-class-re not a variable\")" \
+-eval "(assert (boundp 'py-def-re) nil \"py-def-re not a variable\")" \
+-eval "(assert (boundp 'py-block-or-clause-re) nil \"py-block-or-clause-re not a variable\")" \
+-eval "(assert (boundp 'py-extended-block-or-clause-re) nil \"py-extended-block-or-clause-re not a variable\")" \
+-eval "(assert (boundp 'py-clause-re) nil \"py-clause-re not a variable\")" \
+-eval "(assert (boundp 'py-elif-re) nil \"py-elif-re not a variable\")" \
+-eval "(assert (boundp 'py-if-re) nil \"py-if-re not a variable\")" \
+-eval "(assert (boundp 'py-try-re) nil \"py-try-re not a variable\")" \
+-eval "(assert (boundp 'py-pdbtrack-stack-entry-regexp) nil \"py-pdbtrack-stack-entry-regexp not a variable\")" \
+-eval "(assert (boundp 'py-pdbtrack-input-prompt) nil \"py-pdbtrack-input-prompt not a variable\")" \
+-eval "(assert (boundp 'py-pydbtrack-input-prompt) nil \"py-pydbtrack-input-prompt not a variable\")" \
+-eval "(assert (boundp 'py-pdbtrack-marker-regexp-file-group) nil \"py-pdbtrack-marker-regexp-file-group not a variable\")" \
+-eval "(assert (boundp 'py-pdbtrack-marker-regexp-line-group) nil \"py-pdbtrack-marker-regexp-line-group not a variable\")" \
+-eval "(assert (boundp 'py-pdbtrack-marker-regexp-funcname-group) nil \"py-pdbtrack-marker-regexp-funcname-group not a variable\")" \
+-eval "(assert (boundp 'py-pdbtrack-track-range) nil \"py-pdbtrack-track-range not a variable\")" \
+-eval "(assert (boundp 'python-compilation-regexp-alist) nil \"python-compilation-regexp-alist not a variable\")" \
+-eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
+-eval "(assert (boundp 'py-font-lock-keywords) nil \"py-font-lock-keywords not a variable\")" \
+-eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
+-eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
 --funcall spuriously-indents-whole-line-while-making-some-portion-inline-comment-lp-1080973-test \
 --funcall fill-paragraph-in-a-comment-does-not-stop-at-empty-comment-lines-lp-1077139-test \
 --funcall incorrect-indentation-of-comments-in-a-multiline-list-lp-1077063-test \
 --funcall fails-to-indent-abs-wrong-type-argument-lp-1075673-test \
---funcall does-not-dedent-regions-lp-1072869-test \
 --funcall py-down-statement-test \
 --funcall several-new-bugs-with-paragraph-filling-lp-1066489-test \
---funcall impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test \
 --funcall py-indent-after-assigment-test \
 --funcall incorrect-indentation-of-one-line-functions-lp-1067633-test \
 --funcall py-highlight-indentation-test \
@@ -1118,6 +1349,8 @@ est \
 --funcall indent-region-lp:997958-test \
 --funcall not-that-useful-completion-lp:1003580-test \
 --funcall UnicodeEncodeError-python3-test
---funcall wrong-type-argument-lp:901541-test\ 
+--funcall wrong-type-argument-lp:901541-test \
 --funcall indentation-bug-inside-docstrings-lp:899455-test \
 --funcall tqs-list-error-test \
+--funcall does-not-dedent-regions-lp-1072869-test \
+--funcall impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test \

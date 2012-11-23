@@ -37,71 +37,6 @@
   :group 'python-mode
 )
 
-(defcustom python-shell-internal-buffer-name "Python Internal"
-  "Default buffer name for the Internal Python interpreter."
-  :type 'string
-  :group 'python-mode
-)
-
-(defcustom python-shell-interpreter-args "-i"
-  "Default arguments for the Python interpreter."
-  :type 'string
-  :group 'python-mode
-)
-
-(defcustom python-shell-prompt-regexp ">>> "
-  "Regular Expression matching top\-level input prompt of python shell.
-It should not contain a caret (^) at the beginning."
-  :type 'string
-  :group 'python-mode
-)
-
-(defcustom python-shell-prompt-block-regexp "[.][.][.] "
-  "Regular Expression matching block input prompt of python shell.
-It should not contain a caret (^) at the beginning."
-  :type 'string
-  :group 'python-mode
-)
-
-(defcustom python-shell-prompt-output-regexp ""
-  "Regular Expression matching output prompt of python shell.
-It should not contain a caret (^) at the beginning."
-  :type 'string
-  :group 'python-mode
-)
-
-(defcustom python-shell-prompt-pdb-regexp "[(<]*[Ii]?[Pp]db[>)]+ "
-  "Regular Expression matching pdb input prompt of python shell.
-It should not contain a caret (^) at the beginning."
-  :type 'string
-  :group 'python-mode
-)
-
-(defcustom python-shell-process-environment nil
-  "List of environment variables for Python shell.
-This variable follows the same rules as `process-environment'
-since it merges with it before the process creation routines are
-called.  When this variable is nil, the Python shell is run with
-the default `process-environment'."
-  :type '(repeat string)
-  :group 'python-mode)
-
-(defcustom python-shell-extra-pythonpaths nil
-  "List of extra pythonpaths for Python shell.
-The values of this variable are added to the existing value of
-PYTHONPATH in the `process-environment' variable."
-  :type '(repeat string)
-  :group 'python-mode)
-
-(defcustom python-shell-virtualenv-path nil
-  "Path to virtualenv root.
-This variable, when set to a string, makes the values stored in
-`python-shell-process-environment' and `python-shell-exec-path'
-to be modified properly so shells are started with the specified
-virtualenv."
-  :type 'string
-  :group 'python-mode)
-
 (defun py-ffap-module-path (module)
   "Function for `ffap-alist' to return path for MODULE."
   (let ((process (or
@@ -138,9 +73,9 @@ to \"^python-\"."
 (defun py-shell-send-setup-code (process)
   "Send all setup code for shell.
 This function takes the list of setup code to send from the
-`python-shell-setup-codes' list."
+`py-setup-codes' list."
   (accept-process-output process 1)
-  (dolist (code python-shell-setup-codes)
+  (dolist (code py-setup-codes)
     (py-shell-send-string-no-output
      (symbol-value code) process)
     (sit-for 0.1)))
@@ -161,35 +96,6 @@ in the `same-window-buffer-names' list."
     (add-to-list 'same-window-buffer-names (purecopy
                                             (format "*%s*" process-name)))
     process-name))
-
-(defun python-shell-parse-command ()
-  "Calculate the string used to execute the inferior Python process."
-  (format "%s %s" python-shell-interpreter python-shell-interpreter-args))
-
-(defun python-shell-calculate-process-environment ()
-  "Calculate process environment given `python-shell-virtualenv-path'."
-  (let ((process-environment (append
-                              python-shell-process-environment
-                              process-environment nil))
-        (virtualenv (if python-shell-virtualenv-path
-                        (directory-file-name python-shell-virtualenv-path)
-                      nil)))
-    (when python-shell-extra-pythonpaths
-      (setenv "PYTHONPATH"
-              (format "%s%s%s"
-                      (mapconcat 'identity
-                                 python-shell-extra-pythonpaths
-                                 path-separator)
-                      path-separator
-                      (or (getenv "PYTHONPATH") ""))))
-    (if (not virtualenv)
-        process-environment
-      (setenv "PYTHONHOME" nil)
-      (setenv "PATH" (format "%s/bin%s%s"
-                             virtualenv path-separator
-                             (or (getenv "PATH") "")))
-      (setenv "VIRTUAL_ENV" virtualenv))
-    process-environment))
 
 (defun py-shell-send-string (string &optional process msg)
   "Send STRING to inferior Python PROCESS.
@@ -229,10 +135,10 @@ the output."
     (accept-process-output process 1)
     (when output-buffer
       (replace-regexp-in-string
-       (if (> (length python-shell-prompt-output-regexp) 0)
+       (if (> (length py-shell-prompt-output-regexp) 0)
            (format "\n*%s$\\|^%s\\|\n$"
                    python-shell-prompt-regexp
-                   (or python-shell-prompt-output-regexp ""))
+                   (or py-shell-prompt-output-regexp ""))
          (format "\n*$\\|^%s\\|\n$"
                  python-shell-prompt-regexp))
        "" output-buffer))))
@@ -277,40 +183,6 @@ Used to extract the current line and module being inspected."
   :group 'python-mode)
 
 ;;; Eldoc
-
-(defcustom python-eldoc-setup-code
-  "def __PYDOC_get_help(obj):
-    try:
-        import inspect
-        if hasattr(obj, 'startswith'):
-            obj = eval(obj, globals())
-        doc = inspect.getdoc(obj)
-        if not doc and callable(obj):
-            target = None
-            if inspect.isclass(obj) and hasattr(obj, '__init__'):
-                target = obj.__init__
-                objtype = 'class'
-            else:
-                target = obj
-                objtype = 'def'
-            if target:
-                args = inspect.formatargspec(
-                    *inspect.getargspec(target))
-                name = obj.__name__
-                doc = '{objtype} {name}{args}'.format(
-                    objtype=objtype, name=name, args=args)
-        else:
-            doc = doc.splitlines()[0]
-    except:
-        doc = ''
-    try:
-        exec('print doc')
-    except SyntaxError:
-        print(doc)"
-  "Python code to setup documentation retrieval."
-  :type 'string
-  :group 'python-mode)
-
 (defcustom python-eldoc-string-code
   "__PYDOC_get_help('''%s''')\n"
   "Python code used to get a string with the documentation of an object."
@@ -348,7 +220,7 @@ not inside a defun."
     (when names
       (mapconcat (lambda (string) string) names "."))))
 
-(defun python-eldoc--get-doc-at-point (&optional force-input force-process)
+(defun py-eldoc--get-doc-at-point (&optional force-input force-process)
   "Internal implementation to get documentation at point.
 If not FORCE-INPUT is passed then what `current-word' returns
 will be used.  If not FORCE-PROCESS is passed what
@@ -358,7 +230,7 @@ will be used.  If not FORCE-PROCESS is passed what
         "Eldoc needs an inferior Python process running."
       (let* ((current-defun (python-info-current-defun))
              (input (or force-input
-                        (with-syntax-table python-dotty-syntax-table
+                        (with-syntax-table py-dotty-syntax-table
                           (if (not current-defun)
                               (current-word)
                             (concat current-defun "." (current-word))))))
@@ -387,15 +259,11 @@ will be used.  If not FORCE-PROCESS is passed what
                    (not (string= help "\n")))
           help)))))
 
-(defun feg-python-eldoc-function ()
-  "`eldoc-documentation-function' for Python."
-  (python-eldoc--get-doc-at-point))
-
 (defun py-eldoc-at-point (symbol)
   "Get help on SYMBOL using `help'.
 Interactively, prompt for symbol."
   (interactive
-   (let ((symbol (with-syntax-table python-dotty-syntax-table
+   (let ((symbol (with-syntax-table py-dotty-syntax-table
                    (current-word)))
          (enable-recursive-minibuffers t))
      (list (read-string (if symbol
@@ -405,82 +273,16 @@ Interactively, prompt for symbol."
   (let ((process (python-shell-get-process)))
     (if (not process)
         (message "Eldoc needs an inferior Python process running.")
-      (message (python-eldoc--get-doc-at-point symbol process)))))
+      (message (py-eldoc--get-doc-at-point symbol process)))))
 
 ;;; Pdb
-(defvar python-pdbtrack-tracked-buffer nil
-  "Variable containing the value of the current tracked buffer.
-Never set this variable directly, use
-`python-pdbtrack-set-tracked-buffer' instead.")
-(make-variable-buffer-local 'python-pdbtrack-tracked-buffer)
-
 (defvar python-pdbtrack-buffers-to-kill nil
   "List of buffers to be deleted after tracking finishes.")
 (make-variable-buffer-local 'python-pdbtrack-buffers-to-kill)
 
-(defun python-pdbtrack-set-tracked-buffer (file-name)
-  "Set the buffer for FILE-NAME as the tracked buffer.
-Internally it uses the `python-pdbtrack-tracked-buffer' variable.
-Returns the tracked buffer."
-  (let ((file-buffer (get-file-buffer file-name)))
-    (if file-buffer
-        (setq python-pdbtrack-tracked-buffer file-buffer)
-      (setq file-buffer (find-file-noselect file-name))
-      (when (not (member file-buffer python-pdbtrack-buffers-to-kill))
-        (add-to-list 'python-pdbtrack-buffers-to-kill file-buffer)))
-    file-buffer))
 
-(defun python-pdbtrack-comint-output-filter-function (output)
-  "Move overlay arrow to current pdb line in tracked buffer.
-Argument OUTPUT is a string with the output from the comint process."
-  (when (not (string= output ""))
-    (let* ((full-output (ansi-color-filter-apply
-                         (buffer-substring comint-last-input-end (point-max))))
-           (line-number)
-           (file-name
-            (with-temp-buffer
-              (insert full-output)
-              (goto-char (point-min))
-              ;; OK, this sucked but now it became a cool hack. The
-              ;; stacktrace information normally is on the first line
-              ;; but in some cases (like when doing a step-in) it is
-              ;; on the second.
-              (when (or (looking-at python-pdbtrack-stacktrace-info-regexp)
-                        (and (forward-line)
-                             (looking-at python-pdbtrack-stacktrace-info-regexp)))
-                (setq line-number (string-to-number
-                                   (match-string-no-properties 2)))
-                (match-string-no-properties 1)))))
-      (if (and file-name line-number)
-          (let* ((tracked-buffer (python-pdbtrack-set-tracked-buffer file-name))
-                 (shell-buffer (current-buffer))
-                 (tracked-buffer-window (get-buffer-window tracked-buffer))
-                 (tracked-buffer-line-pos))
-            (with-current-buffer tracked-buffer
-              (set (make-local-variable 'overlay-arrow-string) "=>")
-              (set (make-local-variable 'overlay-arrow-position) (make-marker))
-              (setq tracked-buffer-line-pos (progn
-                                              (goto-char (point-min))
-                                              (forward-line (1- line-number))
-                                              (point-marker)))
-              (when tracked-buffer-window
-                (set-window-point
-                 tracked-buffer-window tracked-buffer-line-pos))
-              (set-marker overlay-arrow-position tracked-buffer-line-pos))
-            (pop-to-buffer tracked-buffer)
-            (switch-to-buffer-other-window shell-buffer))
-        (when python-pdbtrack-tracked-buffer
-          (with-current-buffer python-pdbtrack-tracked-buffer
-            (set-marker overlay-arrow-position nil))
-          (mapc #'(lambda (buffer)
-                    (ignore-errors (kill-buffer buffer)))
-                python-pdbtrack-buffers-to-kill)
-          (setq python-pdbtrack-tracked-buffer nil
-                python-pdbtrack-buffers-to-kill nil)))))
-  output)
 
 ;;;
-
 (defun python-shell-completion--get-completions (input process completion-code)
   "Retrieve available completions for INPUT using PROCESS.
 Argument COMPLETION-CODE is the python code used to get
@@ -494,7 +296,7 @@ completions on the current context."
 
 (defun python-shell-completion--do-completion-at-point (process imports input)
   "Do completion at point for PROCESS."
-  (with-syntax-table python-dotty-syntax-table
+  (with-syntax-table py-dotty-syntax-table
     (when imports (py-shell-send-string-no-output imports process))
     (let* ((code python-shell-module-completion-string-code)
            (completions

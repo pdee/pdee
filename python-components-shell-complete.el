@@ -120,9 +120,9 @@ module-qualified names."
 (defun py-shell-send-setup-code (process)
   "Send all setup code for shell.
 This function takes the list of setup code to send from the
-`python-shell-setup-codes' list."
+`py-setup-codes' list."
   (accept-process-output process 1)
-  (dolist (code python-shell-setup-codes)
+  (dolist (code py-setup-codes)
     (py-shell-send-string-no-output
      (symbol-value code) process)
     (sit-for 0.1)))
@@ -244,17 +244,18 @@ FILE-NAME."
 
 (defun py-symbol-completions (symbol)
   "Return a list of completions of the string SYMBOL from Python process.
-The list is sorted.
-Uses `python-imports' to load modules against which to complete."
+
+The list is sorted. "
   (when (stringp symbol)
-    (let ((completions
-	   (condition-case ()
-	       (car (read-from-string
-		     (py-send-receive
-		      (format "emacs.complete(%S,%s)"
-			      (substring-no-properties symbol)
-			      python-imports))))
-	     (error nil))))
+    (let* ((py-imports (py-find-imports))
+           (completions
+            (condition-case ()
+                (car (read-from-string
+                      (py-send-receive
+                       (format "emacs.complete(%S,%s)"
+                               (substring-no-properties symbol)
+                               py-imports))))
+              (error nil))))
       (sort
        ;; We can get duplicates from the above -- don't know why.
        (delete-dups completions)
