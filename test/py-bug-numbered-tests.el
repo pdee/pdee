@@ -647,7 +647,7 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
   (interactive "p")
   (let ((teststring (concat py-test-shebang "
 # -\*- coding: utf-8 -\*-
-print u'\\xA9'
+print(u'\\xA9')
 ")))
     (py-bug-tests-intern 'UnicodeEncodeError-lp:550661-base 2 teststring)))
 
@@ -3047,7 +3047,7 @@ def foo(a):
   (py-bug-tests-intern 'IndentationError-expected-an-indented-block-when-execute-lp-1055569-base arg teststring)))
 
 (defun IndentationError-expected-an-indented-block-when-execute-lp-1055569-base ()
-    (assert (py-execute-buffer) nil "IndentationError-expected-an-indented-block-when-execute-lp-1055569-test failed"))
+    (assert (progn (py-execute-buffer) t) nil "IndentationError-expected-an-indented-block-when-execute-lp-1055569-test failed"))
 
 (defun stalls-emacs-probably-due-to-syntax-highlighting-lp-1058261-test (&optional arg)
   (interactive "p")

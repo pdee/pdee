@@ -258,5 +258,37 @@ Returns value of `py-fontify-shell-buffer-p'. "
   (when (or py-verbose-p (interactive-p)) (message "py-fontify-shell-buffer-p: %s" py-fontify-shell-buffer-p))
   py-fontify-shell-buffer-p)
 
+;;; python-mode-v5-behavior-p forms
+(defun toggle-python-mode-v5-behavior-p (&optional arg)
+  "If `python-mode-v5-behavior-p' should be on or off.
+
+  Returns value of `python-mode-v5-behavior-p' switched to. "
+  (interactive)
+  (let ((arg (or arg (if python-mode-v5-behavior-p -1 1))))
+    (if (< 0 arg)
+        (setq python-mode-v5-behavior-p t)
+      (setq python-mode-v5-behavior-p nil))
+    (when (or py-verbose-p (interactive-p)) (message "python-mode-v5-behavior-p: %s" python-mode-v5-behavior-p))
+    python-mode-v5-behavior-p))
+
+(defun python-mode-v5-behavior-p-on (&optional arg)
+  "Make sure, `python-mode-v5-behavior-p' is on.
+
+Returns value of `python-mode-v5-behavior-p'. "
+  (interactive)
+  (let ((arg (or arg 1)))
+    (toggle-python-mode-v5-behavior-p arg))
+  (when (or py-verbose-p (interactive-p)) (message "python-mode-v5-behavior-p: %s" python-mode-v5-behavior-p))
+  python-mode-v5-behavior-p)
+
+(defun python-mode-v5-behavior-p-off ()
+  "Make sure, `python-mode-v5-behavior-p' is off.
+
+Returns value of `python-mode-v5-behavior-p'. "
+  (interactive)
+  (toggle-python-mode-v5-behavior-p -1)
+  (when (or py-verbose-p (interactive-p)) (message "python-mode-v5-behavior-p: %s" python-mode-v5-behavior-p))
+  python-mode-v5-behavior-p)
+
 (provide 'python-components-switches)
 ;;; python-components-switches.el ends here

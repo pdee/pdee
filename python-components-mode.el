@@ -2574,6 +2574,20 @@ Run pdb under GUD"]
 
               )
 
+             ("Python-mode v5 behavior"
+              :help "Toggle  `python-mode-v5-behavior-p'"
+              
+              ["Toggle python-mode-v5-behavior-p" toggle-python-mode-v5-behavior-p
+               :help "Switch boolean `python-mode-v5-behavior-p'."]
+              
+              ["Switch python-mode-v5-behavior-p ON" python-mode-v5-behavior-p-on
+               :help "Switch `python-mode-v5-behavior-p' ON. "]
+              
+              ["Switch python-mode-v5-behavior-p OFF" python-mode-v5-behavior-p-off
+             :help "Switch `python-mode-v5-behavior-p-p' OFF. "]
+
+              )
+
              ("Highlight indentation"
               :help "Toggle  `highlight-indentation'"
 
@@ -3739,9 +3753,7 @@ Send file to a Bpython interpreter\.
 Uses a dedicated shell\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
 
-              ))
-
-))
+              ))))
 
         ;; Menu command forms
         (easy-menu-define py-menu map "Python Mode Commands"
@@ -4701,7 +4713,6 @@ Start an unique Python3.2 interpreter in another window.
 
 Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'."]
             "-"
-
             ["Toggle split-windows-on-execute" py-toggle-split-windows-on-execute
              :help "Switch boolean `py-split-windows-on-execute-p'."]
 

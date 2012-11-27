@@ -2,3 +2,5 @@
 * TODO implement respective to shell-dumb-shell-regexp 
 * TODO make `py-complete-completion-at-point' command
 * TODO run shebang in ansi-term
+* TODO dispay index in speedbar
+* TODO python3 smart detect for py-execute-

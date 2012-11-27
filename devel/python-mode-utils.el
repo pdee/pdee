@@ -1597,7 +1597,7 @@ A complementary command travelling right, whilst `py-beginning-of-" ele "' stops
     " ele "))
 
 \(defun " ele "-on (&optional arg)
-  \"Make sure, `py-" ele "' is on.
+  \"Make sure, " ele "' is on.
 
 Returns value of `" ele "'. \"
   (interactive)

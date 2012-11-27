@@ -596,6 +596,14 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
   (interactive "r")
   (py-execute-base start end (default-value 'py-shell-name) t))
 
+(defun py-delete-temporary (file localname filebuf)
+  (when (file-readable-p file)
+    (delete-file file))
+  (when (buffer-live-p filebuf)
+    (kill-buffer filebuf))
+  (when (buffer-live-p localname)
+    (kill-buffer localname)))
+
 (defun py-execute-base (start end &optional pyshellname dedicated switch nostars sepchar split)
   "Adapt the variables used in the process. "
   (let* ((oldbuf (current-buffer))
@@ -636,21 +644,24 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
     (unless wholebuf (py-insert-coding))
     (unless (string-match "[jJ]ython" pyshellname) (py-insert-execute-directory execute-directory))
     (cond (python-mode-v5-behavior-p
-
            (let ((cmd (concat pyshellname (if (string-equal py-which-bufname
                                                             "Jython")
-                                              " -" " -c "))))
+                                              " -"
+                                            ;; " -c "
+                                            ""))))
              (save-excursion
                (set-buffer filebuf)
                (shell-command-on-region (point-min) (point-max)
                                         cmd py-output-buffer))
              (if (not (get-buffer py-output-buffer))
                  (message "No output.")
-               (setq py-exception-buffer (current-buffer))
-               (let ((err-p (py-postprocess-output-buffer py-output-buffer)))
-                 (pop-to-buffer py-output-buffer)
+               (setq py-exception-buffer oldbuf)
+               (let ((err-p (py-postprocess-output-buffer py-output-buffer file)))
                  (if err-p
-                     (pop-to-buffer py-exception-buffer))))))
+                     (pop-to-buffer py-exception-buffer)
+                   (pop-to-buffer py-output-buffer)
+                   (goto-char (point-max)) 
+                   (setq erg (copy-marker (point))))))))
           (t (set-buffer filebuf)
              (write-region (point-min) (point-max) file nil t nil 'ask)
              (set-buffer-modified-p 'nil)
@@ -665,12 +676,11 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
                    (unless (string= (buffer-name (current-buffer)) (buffer-name procbuf))
                      (when py-verbose-p (message "Output buffer: %s" procbuf)))
                    (sit-for 0.1)
-                   (when py-cleanup-temporary
-                     (delete-file file)
-                     (when (buffer-live-p localname)
-                       (kill-buffer localname)))
                    erg)
-               (message "%s not readable. %s" file "Do you have write permissions?"))))))
+               (message "%s not readable. %s" file "Do you have write permissions?"))))
+    (when py-cleanup-temporary
+      (py-delete-temporary file localname filebuf))
+    erg))
 
 (defun py-execute-string (&optional string shell dedicated)
   "Send the argument STRING to a Python interpreter.
@@ -1272,22 +1282,30 @@ Returns position where output starts. "
   "Internal use only - when `py-up-exception' is called in
   source-buffer, this will deliver the exception-buffer again. ")
 
-(defun py-postprocess-output-buffer (buf)
+(defun py-postprocess-output-buffer (buf &optional file)
   "Highlight exceptions found in BUF.
 If an exception occurred return t, otherwise return nil.  BUF must exist."
-  (let (line file bol err-p)
+  (let ((file file)
+        line bol err-p)
     (save-excursion
       (set-buffer buf)
       (goto-char (point-min))
       (while (re-search-forward py-traceback-line-re nil t)
-        (setq file (match-string 1)
-              line (string-to-number (match-string 2))
-              bol (py-point 'bol))
-        (overlay-put (make-overlay (match-beginning 0) (match-end 0))
-                     'face 'highlight)))
+        (message "% s" (match-string-no-properties 0))
+        (or file (setq file (match-string 1)))
+        (setq line (if (and (match-string-no-properties 2)
+                            (string-match "[0-9]" (match-string-no-properties 2)))
+                       (string-to-number (match-string 2))
+                     (when (and (match-string-no-properties 3)
+                                (save-match-data (string-match "[0-9]" (match-string-no-properties 3))))
+                       (string-to-number (match-string-no-properties 3)))))
+        (setq bol (py-point 'bol)))
+      (overlay-put (make-overlay (match-beginning 0) (match-end 0))
+                   'face 'highlight))
     (when (and py-jump-on-exception line)
       (beep)
-      (py-jump-to-exception file line py-line-number-offset)
+      (when file
+        (py-jump-to-exception file line py-line-number-offset))
       (setq err-p t))
     err-p))
 
