@@ -290,5 +290,38 @@ Returns value of `python-mode-v5-behavior-p'. "
   (when (or py-verbose-p (interactive-p)) (message "python-mode-v5-behavior-p: %s" python-mode-v5-behavior-p))
   python-mode-v5-behavior-p)
 
+;;; py-jump-on-exception forms
+(defun toggle-py-jump-on-exception (&optional arg)
+  "If `py-jump-on-exception' should be on or off.
+
+  Returns value of `py-jump-on-exception' switched to. "
+  (interactive)
+  (let ((arg (or arg (if py-jump-on-exception -1 1))))
+    (if (< 0 arg)
+        (setq py-jump-on-exception t)
+      (setq py-jump-on-exception nil))
+    (when (or py-verbose-p (interactive-p)) (message "py-jump-on-exception: %s" py-jump-on-exception))
+    py-jump-on-exception))
+
+(defun py-jump-on-exception-on (&optional arg)
+  "Make sure, py-jump-on-exception' is on.
+
+Returns value of `py-jump-on-exception'. "
+  (interactive)
+  (let ((arg (or arg 1)))
+    (toggle-py-jump-on-exception arg))
+  (when (or py-verbose-p (interactive-p)) (message "py-jump-on-exception: %s" py-jump-on-exception))
+  py-jump-on-exception)
+
+(defun py-jump-on-exception-off ()
+  "Make sure, `py-jump-on-exception' is off.
+
+Returns value of `py-jump-on-exception'. "
+  (interactive)
+  (toggle-py-jump-on-exception -1)
+  (when (or py-verbose-p (interactive-p)) (message "py-jump-on-exception: %s" py-jump-on-exception))
+  py-jump-on-exception)
+
+
 (provide 'python-components-switches)
 ;;; python-components-switches.el ends here

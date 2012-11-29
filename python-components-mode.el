@@ -2546,6 +2546,31 @@ Run pdb under GUD"]
             ("Modes"
              :help "Toggle useful modes like `highlight-indentation'"
 
+             ("Jump on exception"
+              :help "Toggle `py-jump-on-exception'"
+
+              ["Toggle jump on exception" toggle-py-jump-on-exception
+               :help " `toggle-py-jump-on-exception'
+
+ If `py-jump-on-exception' should be on or off\.
+
+ Returns value of `py-jump-on-exception' switched to\. . "]
+
+              ["Jump on exception on" py-jump-on-exception-on
+               :help " `py-jump-on-exception-on'
+
+Make sure, py-jump-on-exception' is on\.
+
+Returns value of `py-jump-on-exception'\. . "]
+
+              ["Jump on exception off" py-jump-on-exception-off
+               :help " `py-jump-on-exception-off'
+
+Make sure, `py-jump-on-exception' is off\.
+
+Returns value of `py-jump-on-exception'\. . "]
+              )
+
              ("py-switch-buffers-on-execute-p"
               :help "Toggle  `py-switch-buffers-on-execute-p'"
 
@@ -2576,13 +2601,13 @@ Run pdb under GUD"]
 
              ("Python-mode v5 behavior"
               :help "Toggle  `python-mode-v5-behavior-p'"
-              
+
               ["Toggle python-mode-v5-behavior-p" toggle-python-mode-v5-behavior-p
                :help "Switch boolean `python-mode-v5-behavior-p'."]
-              
+
               ["Switch python-mode-v5-behavior-p ON" python-mode-v5-behavior-p-on
                :help "Switch `python-mode-v5-behavior-p' ON. "]
-              
+
               ["Switch python-mode-v5-behavior-p OFF" python-mode-v5-behavior-p-off
              :help "Switch `python-mode-v5-behavior-p-p' OFF. "]
 
@@ -4817,10 +4842,10 @@ module-qualified names."
     (message "%s loaded" file-name)))
 
 (defun py-proc (&optional dedicated)
-  "Return the current Python process. 
+  "Return the current Python process.
 
 Start a new process if necessary. "
-  (interactive) 
+  (interactive)
   (let (py-split-windows-on-execute-p
         (erg
          (cond ((and (not dedicated) (comint-check-proc (current-buffer)))
@@ -5470,12 +5495,12 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
                           "\\|")))
   (set (make-local-variable 'font-lock-defaults)
        '(py-font-lock-keywords nil nil nil nil
-                                   (font-lock-syntactic-keywords
-                                    . py-font-lock-syntactic-keywords)
-                                   ;; This probably isn't worth it.
-                                   ;; (font-lock-syntactic-face-function
-                                   ;;  . python-font-lock-syntactic-face-function)
-                                   ))
+                               (font-lock-syntactic-keywords
+                                . py-font-lock-syntactic-keywords)
+                               ;; This probably isn't worth it.
+                               ;; (font-lock-syntactic-face-function
+                               ;;  . python-font-lock-syntactic-face-function)
+                               ))
   (set (make-local-variable 'parse-sexp-lookup-properties) t)
   (set (make-local-variable 'parse-sexp-ignore-comments) t)
   (set (make-local-variable 'comment-start) "#")
@@ -5504,6 +5529,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
        '((< '(backward-delete-char-untabify (min py-indent-offset
                                                  (current-column))))
          (^ '(- (1+ (current-indentation))))))
+  (set (make-local-variable 'imenu-create-index-function) 'py-imenu-create-index-function)
   (py-set-load-path)
   ;; (add-to-list 'load-path py-install-directory)
   ;; (add-to-list 'load-path (concat py-install-directory "extensions"))
@@ -5526,8 +5552,9 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
    (t
     (add-hook 'completion-at-point-functions
               'py-shell-complete nil 'local)))
-  (when (and py-imenu-create-index-p (fboundp 'imenu-add-to-menubar)(ignore-errors (require 'imenu)))
-    (set (make-local-variable 'imenu-create-index-function) 'py-imenu-create-index-function)
+  (when (and py-imenu-create-index-p
+             (fboundp 'imenu-add-to-menubar)
+             (ignore-errors (require 'imenu)))
     (imenu-add-to-menubar "PyIndex"))
   ;; add the menu
   (when py-menu

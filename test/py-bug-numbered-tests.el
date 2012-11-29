@@ -38,6 +38,7 @@
 
 (setq bug-numbered-tests
       (list
+       'imenu-add-menubar-index-fails-lp-1084503-test
        'spuriously-indents-whole-line-while-making-some-portion-inline-comment-lp-1080973-test
        'fill-paragraph-in-a-comment-does-not-stop-at-empty-comment-lines-lp-1077139-test
        'incorrect-indentation-of-comments-in-a-multiline-list-lp-1077063-test
@@ -4461,7 +4462,6 @@ class X:
     (goto-char 202)
     (assert (eq 8 (py-compute-indentation)) nil "incorrect-indentation-of-comments-in-a-multiline-list-lp-1077063-test failed"))
 
-
 (defun fill-paragraph-in-a-comment-does-not-stop-at-empty-comment-lines-lp-1077139-test (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
@@ -4495,7 +4495,6 @@ class X:
     (goto-char 233)
     (beginning-of-line)
     (assert (looking-at paragraph-separate) nil "fill-paragraph-in-a-comment-does-not-stop-at-empty-comment-lines-lp-1077139-test failed")))
-
 
 (defun spuriously-indents-whole-line-while-making-some-portion-inline-comment-lp-1080973-test (&optional arg)
   (interactive "p")
@@ -4539,6 +4538,15 @@ class A(object):
     (assert (eq 4 (py-compute-indentation)) nil "spuriously-indents-whole-line-while-making-some-portion-inline-comment-lp-1080973-test #2 failed")
     )
 
+(defun imenu-add-menubar-index-fails-lp-1084503-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+"))
+  (py-bug-tests-intern 'imenu-add-menubar-index-fails-lp-1084503-base arg teststring)))
+
+(defun imenu-add-menubar-index-fails-lp-1084503-base ()
+  (assert (imenu-add-menubar-index) nil "imenu-add-menubar-index-fails-lp-1084503-test failed"))
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

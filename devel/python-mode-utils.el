@@ -1614,9 +1614,17 @@ Returns value of `" ele "'. \"
   (toggle-" ele " -1)
   (when (or py-verbose-p (interactive-p)) (message \"" ele ": %s\" " ele "))
   " ele ")"))
-    (newline))
-  (switch-to-buffer (current-buffer))
-  (emacs-lisp-mode))
+    (newline)
+    (emacs-lisp-mode)
+    (eval-buffer)
+    (set-buffer (get-buffer-create (concat "Menu " ele)))
+    (erase-buffer)
+    (switch-emen ele)
+    (set-buffer (get-buffer-create (capitalize ele)))
+    ;; (switch-to-buffer (current-buffer))
+    ))
+
+
 
 (defun write-commandp-forms ()
   "Write forms according to `py-bounds-command-names' "
@@ -2210,4 +2218,52 @@ Return position if " ele " found, nil otherwise \"
     ;; -eval "(assert (commandp 'py-execute-file-bpython-dedicated-switch) nil \"py-execute-file-bpython-dedicated-switch not detected as command\")" \
     (insert (concat "-eval \"(assert (boundp '" elt ") nil \\\"" elt " not a variable\\\")\" \\\n")))
   (switch-to-buffer (current-buffer))
-  (emacs-lisp-mode)) 
+  (emacs-lisp-mode))
+
+(defun emen (&optional symbol)
+  "Provide menu draft. "
+  (interactive "*")
+  (let* ((erg (or symbol (car kill-ring)))
+         (name (intern-soft erg))
+         (doku (if (functionp name)
+                   (documentation name)
+                 (documentation-property name 'variable-documentation))))
+    (goto-char (point-max))
+    (switch-to-buffer (current-buffer))
+    (save-excursion
+      (insert (concat "\n\[\"" (replace-regexp-in-string "-" " " (replace-regexp-in-string "py-" "" erg)) "\" " erg "
+ :help \" `" erg "'
+\n"))
+      (when doku (insert (regexp-quote doku)))
+
+      (insert (concat
+               ". \"]\n")))
+    (skip-chars-forward "[[:punct:]]")
+    (capitalize-word 1)))
+
+(defun switch-emen (&optional symbol)
+  "Provide menu draft for switches. "
+  (interactive "*")
+  (let* ((erg (or symbol (car kill-ring)))
+         (name (intern-soft erg))
+         (doku (if (functionp name)
+                   (documentation name)
+                 (documentation-property name 'variable-documentation))))
+    (switch-to-buffer (current-buffer))
+    (save-excursion
+      ;; ("py-switch-buffers-on-execute-p"
+      ;; :help "Toggle `py-switch-buffers-on-execute-p'"
+      (insert (concat "(\"" (replace-regexp-in-string "-" " " (replace-regexp-in-string "py-" "" erg)) "\"
+ :help \"Toggle `" erg "'\"
+")))
+    (capitalize-word 1)
+    (goto-char (point-max))
+    (emen (concat "toggle-" symbol))
+    (goto-char (point-max))
+    (emen (concat symbol "-on"))
+    (goto-char (point-max))
+    (emen (concat symbol "-off"))
+    (goto-char (point-max))
+    (insert "\n)\n"))
+  (emacs-lisp-mode))
+
