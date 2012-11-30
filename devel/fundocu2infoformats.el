@@ -95,7 +95,7 @@
         (insert (concat suffix " commands\n\n"))
         (dolist (ele commandslist)
           (if (string-match "^;;; " (car ele))
-              (unless (or (string-match "^;;; Commentary\\|^;;; Code\\|^;;; Macro definitions\\|^;;; Customization" (car ele)))
+              (unless (or (string-match "^;;; Constants\\|^;;; Commentary\\|^;;; Code\\|^;;; Macro definitions\\|^;;; Customization" (car ele)))
 
                 (insert (concat (replace-regexp-in-string "^;;; " "* " (car ele)) "\n")))
             (insert (concat "** "(car ele) "\n"))

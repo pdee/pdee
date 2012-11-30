@@ -38,6 +38,7 @@
 
 (setq bug-numbered-tests
       (list
+       'fill-paragraph-in-comments-results-in-mess-lp-1084769-test
        'imenu-add-menubar-index-fails-lp-1084503-test
        'spuriously-indents-whole-line-while-making-some-portion-inline-comment-lp-1080973-test
        'fill-paragraph-in-a-comment-does-not-stop-at-empty-comment-lines-lp-1077139-test
@@ -596,6 +597,7 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
 ##   directory consisting of just .txt and .lorien files.
 ")
     (when arg (switch-to-buffer (current-buffer)))
+    (python-mode)
     (font-lock-mode 1)
     (font-lock-fontify-buffer)
     (goto-char 100)
@@ -4547,6 +4549,27 @@ class A(object):
 
 (defun imenu-add-menubar-index-fails-lp-1084503-base ()
   (assert (imenu-add-menubar-index) nil "imenu-add-menubar-index-fails-lp-1084503-test failed"))
+
+(defun fill-paragraph-in-comments-results-in-mess-lp-1084769-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+def update():
+    # We need to get a reliable checksum for the dictionary in
+    # newpkg_list. Dictionary order is unpredictable, so to get a
+    # reproducible checksum, we get the items of the dict, sort on the
+    # keys, then get the json representation of this sorted list, encode
+    # this to bytes assuming utf-8, and hash
+    # the resulting bytes.
+"))
+  (py-bug-tests-intern 'fill-paragraph-in-comments-results-in-mess-lp-1084769-base arg teststring)))
+
+(defun fill-paragraph-in-comments-results-in-mess-lp-1084769-base ()
+    (goto-char 266)
+    (fill-paragraph)
+    (beginning-of-line) 
+    (assert (looking-at "    ") nil "fill-paragraph-in-comments-results-in-mess-lp-1084769-test failed"))
+
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

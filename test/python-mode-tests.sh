@@ -1060,6 +1060,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-font-lock-keywords) nil \"py-font-lock-keywords not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall fill-paragraph-in-comments-results-in-mess-lp-1084769-test \
 --funcall imenu-add-menubar-index-fails-lp-1084503-test \
 --funcall spuriously-indents-whole-line-while-making-some-portion-inline-comment-lp-1080973-test \
 --funcall fill-paragraph-in-a-comment-does-not-stop-at-empty-comment-lines-lp-1077139-test \
