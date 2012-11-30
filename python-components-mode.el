@@ -5229,7 +5229,7 @@ as it leaves your system default unchanged."
               "#"
               ;; forward-sexp function
               (lambda (arg)
-                (py-end-of-block))
+                (py-end-of-block-or-clause))
               nil))
 
 ;; Fixme: This should inherit some stuff from `python-mode', but I'm
