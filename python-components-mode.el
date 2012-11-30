@@ -953,14 +953,6 @@ Default ignores all inputs of 0, 1, or 2 non-blank characters."
   :type 'regexp
   :group 'python-mode)
 
-(defcustom python-remove-cwd-from-path t
-  "Whether to allow loading of Python modules from the current directory.
-If this is non-nil, Emacs removes '' from sys.path when starting
-an inferior Python process.  This is the default, for security
-reasons, as it is easy for the Python process to be started
-without the user's realization (e.g. to perform completion)."
-  :type 'boolean
-  :group 'python-mode)
 
 (defcustom strip-chars-before  "\\`[ \t\r\n]*"
   "Regexp indicating which chars shall be stripped before STRING - which is defined by `string-chars-preserve'."
@@ -1049,7 +1041,7 @@ Used by Python-shell for output of `py-execute-buffer' and related commands. See
     :type 'string
   :group 'python-mode)
 
-(defcustom py-use-current-dir-when-execute-p nil
+(defcustom py-use-current-dir-when-execute-p t
   "When `t', current directory is used by Python-shell for output of `py-execute-buffer' and related commands.
 
 See also `py-execute-directory'"
@@ -1278,7 +1270,7 @@ can write into: the value (if any) of the environment variable TMPDIR,
 
 (defvar py-default-interpreter py-shell-name)
 
-(defvar hs-hide-comments-when-hiding-all nil
+(defvar hs-hide-comments-when-hiding-all t
   "Defined in hideshow.el, silence compiler warnings here. ")
 
 (defvar py-history-filter-regexp "\\`\\s-*\\S-?\\S-?\\s-*\\'\\|'''/tmp/\\|^__pyfile = open('''\\|^execfile(r'[.+]/tmp/")
@@ -2545,6 +2537,32 @@ Run pdb under GUD"]
 
             ("Modes"
              :help "Toggle useful modes like `highlight-indentation'"
+
+             ("Use current dir when execute"
+              :help "Toggle `py-use-current-dir-when-execute-p'"
+              
+              ["Toggle use-current-dir-when-execute-p" toggle-py-use-current-dir-when-execute-p
+               :help " `toggle-py-use-current-dir-when-execute-p'
+
+If `py-use-current-dir-when-execute-p' should be on or off\.
+
+  Returns value of `py-use-current-dir-when-execute-p' switched to\. . "]
+              
+              ["use-current-dir-when-execute-p on" py-use-current-dir-when-execute-p-on
+               :help " `py-use-current-dir-when-execute-p-on'
+
+Make sure, py-use-current-dir-when-execute-p' is on\.
+
+Returns value of `py-use-current-dir-when-execute-p'\. . "]
+              
+              ["use-current-dir-when-execute-p off" py-use-current-dir-when-execute-p-off
+               :help " `py-use-current-dir-when-execute-p-off'
+
+Make sure, `py-use-current-dir-when-execute-p' is off\.
+
+Returns value of `py-use-current-dir-when-execute-p'\. . "]
+              
+              )
 
              ("Jump on exception"
               :help "Toggle `py-jump-on-exception'"

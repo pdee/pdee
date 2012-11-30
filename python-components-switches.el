@@ -322,6 +322,37 @@ Returns value of `py-jump-on-exception'. "
   (when (or py-verbose-p (interactive-p)) (message "py-jump-on-exception: %s" py-jump-on-exception))
   py-jump-on-exception)
 
+;; py-use-current-dir-when-execute-p forms
+(defun toggle-py-use-current-dir-when-execute-p (&optional arg)
+  "If `py-use-current-dir-when-execute-p' should be on or off.
+
+  Returns value of `py-use-current-dir-when-execute-p' switched to. "
+  (interactive)
+  (let ((arg (or arg (if py-use-current-dir-when-execute-p -1 1))))
+    (if (< 0 arg)
+        (setq py-use-current-dir-when-execute-p t)
+      (setq py-use-current-dir-when-execute-p nil))
+    (when (or py-verbose-p (interactive-p)) (message "py-use-current-dir-when-execute-p: %s" py-use-current-dir-when-execute-p))
+    py-use-current-dir-when-execute-p))
+
+(defun py-use-current-dir-when-execute-p-on (&optional arg)
+  "Make sure, py-use-current-dir-when-execute-p' is on.
+
+Returns value of `py-use-current-dir-when-execute-p'. "
+  (interactive)
+  (let ((arg (or arg 1)))
+    (toggle-py-use-current-dir-when-execute-p arg))
+  (when (or py-verbose-p (interactive-p)) (message "py-use-current-dir-when-execute-p: %s" py-use-current-dir-when-execute-p))
+  py-use-current-dir-when-execute-p)
+
+(defun py-use-current-dir-when-execute-p-off ()
+  "Make sure, `py-use-current-dir-when-execute-p' is off.
+
+Returns value of `py-use-current-dir-when-execute-p'. "
+  (interactive)
+  (toggle-py-use-current-dir-when-execute-p -1)
+  (when (or py-verbose-p (interactive-p)) (message "py-use-current-dir-when-execute-p: %s" py-use-current-dir-when-execute-p))
+  py-use-current-dir-when-execute-p)
 
 (provide 'python-components-switches)
 ;;; python-components-switches.el ends here

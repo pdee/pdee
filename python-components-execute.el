@@ -614,7 +614,8 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
                                   (py-use-current-dir-when-execute-p
                                    (file-name-directory (buffer-file-name)))
                                   ((getenv "VIRTUAL_ENV"))
-                                  (py-execute-directory)
+                                  ((stringp py-execute-directory)
+                                   py-execute-directory)
                                   (t (getenv "HOME"))))
          (strg (buffer-substring-no-properties start end))
          (sepchar (or sepchar (char-to-string py-separator-char)))
