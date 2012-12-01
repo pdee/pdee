@@ -38,6 +38,7 @@
 
 (setq bug-numbered-tests
       (list
+       'py-execute-buffer-python3-looks-broken-lp-1085386-test
        'fill-paragraph-in-comments-results-in-mess-lp-1084769-test
        'imenu-add-menubar-index-fails-lp-1084503-test
        'spuriously-indents-whole-line-while-making-some-portion-inline-comment-lp-1080973-test
@@ -4569,6 +4570,18 @@ def update():
     (fill-paragraph)
     (beginning-of-line) 
     (assert (looking-at "    ") nil "fill-paragraph-in-comments-results-in-mess-lp-1084769-test failed"))
+
+(defun py-execute-buffer-python3-looks-broken-lp-1085386-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "i = 0
+i+=1
+print(i)
+"))
+  (py-bug-tests-intern 'py-execute-buffer-python3-looks-broken-lp-1085386-base arg teststring)))
+
+(defun py-execute-buffer-python3-looks-broken-lp-1085386-base ()
+  (let ((py-use-current-dir-when-execute-p t)) 
+    (assert (markerp (py-execute-buffer-python3)) nil "py-execute-buffer-python3-looks-broken-lp-1085386-test failed")))
 
 
 (provide 'py-bug-numbered-tests)

@@ -1048,6 +1048,18 @@ See also `py-execute-directory'"
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-keep-shell-dir-when-execute-p nil
+  "Don't change Python shell's current working directory when sending code.
+
+See also `py-execute-directory'"
+  :type 'boolean
+  :group 'python-mode)
+
+(defcustom py-fileless-buffer-use-default-directory-p t
+  "When `py-use-current-dir-when-execute-p' is non-nil and no buffer-file exists, value of `default-directory' sets current working directory of Python output shell"
+  :type 'boolean
+  :group 'python-mode)
+
 (defcustom py-check-command "pychecker --stdlib"
   "Command used to check a Python file."
   :type 'string
@@ -1118,8 +1130,7 @@ It should not contain a caret (^) at the beginning."
   "Regular Expression matching output prompt of python shell.
 It should not contain a caret (^) at the beginning."
   :type 'string
-  :group 'python-mode
-)
+  :group 'python-mode)
 
 ;;; defvarred Variables
 (defvar py-shell-prompt-regexp ">>> ")
@@ -2540,28 +2551,28 @@ Run pdb under GUD"]
 
              ("Use current dir when execute"
               :help "Toggle `py-use-current-dir-when-execute-p'"
-              
+
               ["Toggle use-current-dir-when-execute-p" toggle-py-use-current-dir-when-execute-p
                :help " `toggle-py-use-current-dir-when-execute-p'
 
 If `py-use-current-dir-when-execute-p' should be on or off\.
 
   Returns value of `py-use-current-dir-when-execute-p' switched to\. . "]
-              
+
               ["use-current-dir-when-execute-p on" py-use-current-dir-when-execute-p-on
                :help " `py-use-current-dir-when-execute-p-on'
 
 Make sure, py-use-current-dir-when-execute-p' is on\.
 
 Returns value of `py-use-current-dir-when-execute-p'\. . "]
-              
+
               ["use-current-dir-when-execute-p off" py-use-current-dir-when-execute-p-off
                :help " `py-use-current-dir-when-execute-p-off'
 
 Make sure, `py-use-current-dir-when-execute-p' is off\.
 
 Returns value of `py-use-current-dir-when-execute-p'\. . "]
-              
+
               )
 
              ("Jump on exception"

@@ -10,13 +10,20 @@ New in version 6.1.0
   Go to beginning one level below of compound statement or definition at point.
 
 - Customizable output directory 
-  In order to determine which directory the Python-shell
-  should have when output arrives, variables are queried in that order:
-  a remote directory, when detected
-  $WORKON_HOME - if set by virtualenv
-  `py-use-current-dir-when-execute-p'
-  `py-execute-directory'
-  $HOME 
+  After checking for a remote shell, the following variables are consulted:
+
+  py-use-current-dir-when-execute-p, default t
+  When `t', current directory is used by Python-shell for output of `py-execute-buffer' and related commands
+
+  py-fileless-buffer-use-default-directory-p, default t
+  When `py-use-current-dir-when-execute-p' is non-nil and no buffer-file exists, value of `default-directory' sets current working directory of Python output shell"
+
+  py-keep-shell-dir-when-execute-p, default nil
+  Don't change Python shell's current working directory when sending code.
+
+  `py-execute-directory', default nil
+
+  If nothing was set so far, $VIRTUAL_ENV and $HOME are queried.
 
 - Set of commands calling Python3.3
 
