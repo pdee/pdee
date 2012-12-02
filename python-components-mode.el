@@ -161,20 +161,19 @@ Default is nil. "
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-start-run-py-shell t
-  "If `python-mode' should start a python-shell, `py-shell'. Default is `t'. "
+(defcustom py-start-run-py-shell nil
+  "If `python-mode' should start a python-shell, `py-shell'. 
 
+Default is `nil'. "
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-start-run-ipython-shell t "If
-`python-mode' should start an ipython-shell. Default
-is `t'.
+(defcustom py-start-run-ipython-shell nil 
+  "If `python-mode' should start an ipython-shell. 
 
-A running ipython-shell presently is needed by
-`ipython-complete', otherwise first try will fail. "
-
-  :type 'boolean :group 'python-mode)
+Default is `nil'. "
+  :type 'boolean
+  :group 'python-mode)
 
 (defcustom py-set-complete-keymap-p  nil
   "If `py-complete-initialize', which sets up enviroment for Pymacs based py-complete, should load it's keys into `python-mode-map'
@@ -1966,7 +1965,12 @@ if `(locate-library \"python-mode\")' is not succesful.
 
 Used only, if `py-install-directory' is empty. "
   (interactive)
-  (let ((erg (file-name-directory (locate-library "python-mode"))))
+  (let ((erg (cond ((locate-library "python-mode")
+                    (file-name-directory (locate-library "python-mode")))
+                   ((and (buffer-file-name)(string-match "python-mode" (buffer-file-name)))
+                    (file-name-directory (buffer-file-name)))
+                   ((string-match "python-mode" (buffer-name))
+                    default-directory)))) 
     (if erg
         (setq py-install-directory erg)
       (setq py-install-directory (expand-file-name "~/")))
