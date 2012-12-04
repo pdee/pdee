@@ -138,7 +138,8 @@ With ARG do that ARG times. "
   (interactive "P")
   (cond (py-electric-yank-active-p
          (yank arg)
-         (indent-according-to-mode))
+         ;; (py-indent-line)
+         )
         (t (yank arg))))
 
 ;; required for pending-del and delsel modes

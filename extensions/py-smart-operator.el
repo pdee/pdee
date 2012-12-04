@@ -76,7 +76,7 @@
     ;; conflicts with electric-colon
     ;; (define-key keymap ":" 'smart-operator-:)
     (define-key keymap "?" 'py-smart-operator-?)
-    (define-key keymap "," 'smart-operator-\,)
+    (define-key keymap "," 'py-smart-operator-\,)
     (define-key keymap "." 'py-smart-operator-.)
     keymap)
   "Keymap used my `py-smart-operator-mode'.")

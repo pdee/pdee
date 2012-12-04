@@ -496,7 +496,14 @@ Optional symbol SPLIT ('split/'nosplit) precedes `py-split-buffers-on-execute-p'
                             #'shell-write-history-on-exit)
       ;; (comint-send-string proc "import emacs\n")
       ;; (process-send-string proc "import emacs")
-      (ansi-color-for-comint-mode-on)
+      (add-hook 'comint-output-filter-functions
+	  'ansi-color-process-output)
+
+      ;; (add-hook 'comint-preoutput-filter-functions
+      ;; '(ansi-color-filter-apply
+      ;; (lambda (string) (buffer-substring comint-last-output-start
+      ;; (process-mark (get-buffer-process (current-buffer)))))))
+      ;; (ansi-color-for-comint-mode-on)
       (use-local-map py-shell-map)
       ;; pdbtrack
       (add-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file t)
