@@ -317,12 +317,15 @@ With arg, do it that many times.
 
 (defalias 'durck 'py-printform-insert)
 (defalias 'druck 'py-printform-insert)
-(defun py-printform-insert (&optional arg)
-  "Inserts a print statement out of current `(car kill-ring)' by default, inserts ARG instead if delivered. "
-  (interactive "*")
+
+(defun py-printform-insert (&optional arg string)
+  "Inserts a print statement out of current `(car kill-ring)' by default, inserts STRING if delivered. 
+
+With optional \\[universal-argument] print as string"
+  (interactive "*P")
   (let* ((name (string-strip (or arg (car kill-ring))))
          ;; guess if doublequotes or parentesis are needed
-         (numbered (and (string-match "^[0-9]" name) (string-match "^[ \t]*[0-9]" name)(string-match "[0-9][ \t]*$" name)))
+         (numbered (not (eq 4 (prefix-numeric-value arg))))
          (form (cond ((or (eq major-mode 'python-mode)(eq major-mode 'inferior-python-mode))
                       (if numbered
                           (concat "print(\"" name ": %s \" % (" name "))")
@@ -339,6 +342,21 @@ With arg, do it that many times.
     (insert form))
   (forward-line 1)
   (back-to-indentation))
+
+(defun py-boolswitch ()
+  "Edit the assignment of a boolean variable, revert them. 
+
+I.e. switch it from \"True\" to \"False\" and vice versa"
+  (interactive "*")
+  (save-excursion
+    (unless (py-end-of-statement-p)
+      (py-end-of-statement))
+    (backward-word)
+    (cond ((looking-at "True")
+           (replace-match "False"))
+          ((looking-at "False")
+           (replace-match "True"))
+          (t (message "%s" "Can't see \"True or False\" here")))))
 
 (provide 'python-components-extensions)
 ;;; python-components-extensions.el ends here

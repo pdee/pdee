@@ -79,6 +79,18 @@ Returns value of `py-smart-operator-mode-p'.
    Make sure, `py-smart-operator-mode-p' is off.
 
 Returns value of `py-smart-operator-mode-p'. 
+** toggle-py-use-current-dir-when-execute-p
+   If `py-use-current-dir-when-execute-p' should be on or off.
+
+  Returns value of `py-use-current-dir-when-execute-p' switched to. 
+** py-use-current-dir-when-execute-p-on
+   Make sure, py-use-current-dir-when-execute-p' is on.
+
+Returns value of `py-use-current-dir-when-execute-p'. 
+** py-use-current-dir-when-execute-p-off
+   Make sure, `py-use-current-dir-when-execute-p' is off.
+
+Returns value of `py-use-current-dir-when-execute-p'. 
 ** py-toggle-autopair-mode
    If `autopair-p' should be on or off. 
 ** py-autopair-mode-on

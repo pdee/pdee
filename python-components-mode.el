@@ -4661,7 +4661,18 @@ Needs Pymacs"]
              ["Electric yank" py-electric-yank
 :help " `py-electric-yank'
 Perform command `yank' followed by an `indent-according-to-mode' . "]
-             )))
+             )
+            ("Extended... "
+             :help "extended edit commands'"
+             ["Revert boolean assignent" py-boolswitch
+:help " `py-boolswitch'
+Edit the assigment of a boolean variable, rever them. 
+
+I.e. switch it from \"True\" to \"False\" and vice versa "]
+
+             )
+
+            ))
 
         ;; Python shell menu
         (easy-menu-define py-menu map "Python Shells"
