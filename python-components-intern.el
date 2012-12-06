@@ -201,7 +201,7 @@ When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
                ((and (< (py-count-lines) origline)(looking-at py-assignment-re))
                 (goto-char (match-end 0))
                 ;; multiline-assignment
-                (if (looking-at " *[[{(]")
+                (if (and (looking-at " *[[{(]")(not (looking-at ".+[]})][ \t]*$")))
                     (+ (current-indentation) py-indent-offset)
                   (current-indentation)))
                ((looking-at py-assignment-re)

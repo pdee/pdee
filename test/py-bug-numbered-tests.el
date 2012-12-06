@@ -38,6 +38,7 @@
 
 (setq bug-numbered-tests
       (list
+       'wrong-indent-after-asignment-lp-1087404-test
        'py-execute-buffer-python3-looks-broken-lp-1085386-test
        'fill-paragraph-in-comments-results-in-mess-lp-1084769-test
        'imenu-add-menubar-index-fails-lp-1084503-test
@@ -4582,6 +4583,24 @@ print(i)
 (defun py-execute-buffer-python3-looks-broken-lp-1085386-base ()
   (let ((py-use-current-dir-when-execute-p t)) 
     (assert (markerp (py-execute-buffer-python3)) nil "py-execute-buffer-python3-looks-broken-lp-1085386-test failed")))
+
+
+(defun wrong-indent-after-asignment-lp-1087404-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+a = 1
+# After pressing enter column 1 as expected
+b = [1]
+
+# Now after pressing enter indents to column 4
+ 
+"))
+  (py-bug-tests-intern 'wrong-indent-after-asignment-lp-1087404-base arg teststring)))
+
+(defun wrong-indent-after-asignment-lp-1087404-base ()
+    (goto-char 106)
+    (assert (eq 0 (py-compute-indentation)) nil "wrong-indent-after-asignment-lp-1087404-test failed"))
 
 
 (provide 'py-bug-numbered-tests)
