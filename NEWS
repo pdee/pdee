@@ -1,6 +1,12 @@
 Python Mode News
 ================
 
+New in version 6.1.1
+---------------------
+
+- boolean `py-use-font-lock-doc-face-p', default is nil 
+  If non-nil, documention strings get `font-lock-doc-face'
+
 New in version 6.1.0
 ---------------------
 

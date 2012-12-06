@@ -96,6 +96,15 @@
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-use-font-lock-doc-face-p nil
+  "If documention string inside of def or class get `font-lock-doc-face'.
+
+`font-lock-doc-face' inherits `font-lock-string-face'.
+Call M-x `customize-face' in order to have a visible effect. "
+
+  :type 'boolean
+  :group 'python-mode)
+
 (defcustom empty-comment-line-separates-paragraph-p t
   "Consider paragraph start/end lines with nothing inside but comment sign.
 
@@ -162,14 +171,14 @@ Default is nil. "
   :group 'python-mode)
 
 (defcustom py-start-run-py-shell nil
-  "If `python-mode' should start a python-shell, `py-shell'. 
+  "If `python-mode' should start a python-shell, `py-shell'.
 
 Default is `nil'. "
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-start-run-ipython-shell nil 
-  "If `python-mode' should start an ipython-shell. 
+(defcustom py-start-run-ipython-shell nil
+  "If `python-mode' should start an ipython-shell.
 
 Default is `nil'. "
   :type 'boolean
@@ -1814,6 +1823,17 @@ Includes def and class. ")
 
 (make-obsolete-variable 'jpython-mode-hook 'jython-mode-hook nil)
 
+(defun py-font-lock-syntactic-face-function (state)
+  (if (nth 3 state)
+      (let ((startpos (nth 8 state)))
+        (save-excursion
+          (goto-char startpos)
+          (if (and (looking-at-p "'''\\|\"\"\"")
+                   (looking-back "\\`\\|^\\s *\\(?:class\\|def\\)\\s +\\(?:\\sw\\|\\s_\\)+(.*):\n\\s *"))
+              font-lock-doc-face
+            font-lock-string-face)))
+    font-lock-comment-face))
+
 ;; In previous version of python-mode.el, the hook was incorrectly
 ;; called py-mode-hook, and was not defvar'd.  Deprecate its use.
 (and (fboundp 'make-obsolete-variable)
@@ -1970,7 +1990,7 @@ Used only, if `py-install-directory' is empty. "
                    ((and (buffer-file-name)(string-match "python-mode" (buffer-file-name)))
                     (file-name-directory (buffer-file-name)))
                    ((string-match "python-mode" (buffer-name))
-                    default-directory)))) 
+                    default-directory))))
     (if erg
         (setq py-install-directory erg)
       (setq py-install-directory (expand-file-name "~/")))
@@ -4666,7 +4686,7 @@ Perform command `yank' followed by an `indent-according-to-mode' . "]
              :help "extended edit commands'"
              ["Revert boolean assignent" py-boolswitch
 :help " `py-boolswitch'
-Edit the assigment of a boolean variable, rever them. 
+Edit the assigment of a boolean variable, rever them.
 
 I.e. switch it from \"True\" to \"False\" and vice versa "]
 
@@ -5537,14 +5557,17 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
                           (mapcar #'(lambda (x) (concat "^\\s-*" x "\\_>"))
                                   py-outline-mode-keywords)
                           "\\|")))
-  (set (make-local-variable 'font-lock-defaults)
-       '(py-font-lock-keywords nil nil nil nil
-                               (font-lock-syntactic-keywords
-                                . py-font-lock-syntactic-keywords)
-                               ;; This probably isn't worth it.
-                               ;; (font-lock-syntactic-face-function
-                               ;;  . python-font-lock-syntactic-face-function)
-                               ))
+  (if py-use-font-lock-doc-face-p
+      (set (make-local-variable 'font-lock-defaults)
+           '(py-font-lock-keywords nil nil nil nil
+                                   (font-lock-syntactic-keywords
+                                    . py-font-lock-syntactic-keywords)
+                                   (font-lock-syntactic-face-function
+                                    . py-font-lock-syntactic-face-function)))
+    (set (make-local-variable 'font-lock-defaults)
+         '(py-font-lock-keywords nil nil nil nil
+                                 (font-lock-syntactic-keywords
+                                  . py-font-lock-syntactic-keywords))))
   (set (make-local-variable 'parse-sexp-lookup-properties) t)
   (set (make-local-variable 'parse-sexp-ignore-comments) t)
   (set (make-local-variable 'comment-start) "#")
@@ -5557,6 +5580,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (set (make-local-variable 'comment-start-skip) "^[ \t]*#+ *")
   (set (make-local-variable 'comment-column) 40)
   (set (make-local-variable 'comment-indent-function) #'py-comment-indent-function)
+  (set (make-local-variable 'ar-indent-uncomment-lor) nil)
   (set (make-local-variable 'indent-region-function) 'py-indent-region)
   (set (make-local-variable 'indent-line-function) 'py-indent-line)
   (set (make-local-variable 'hs-hide-comments-when-hiding-all) 'py-hide-comments-when-hiding-all)
