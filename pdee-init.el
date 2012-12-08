@@ -2,6 +2,10 @@
 
 ;; Trick to get the filename of the installation directory
 
+(load "python-components-mode.el" nil t)
+(require 'python-mode)
+(message "%s" py-install-directory)
+
 (defgroup pdee nil
   "Python Development Emacs Environment stuff."
   :group 'languages)
@@ -38,11 +42,12 @@ components-python-mode is the development-branch of python-mode.el "
   (const :tag "pdee" pdee)
   :group 'pdee))
 
-(defvar py-install-directory (expand-file-name pdee-install-dir)
-  "The directory, where core python-modes for choice reside. ")
+;; set by python-mode
+;; (defvar py-install-directory (expand-file-name pdee-install-dir)
+;; "The directory, where core python-modes for choice reside. ")
 
 ;; py-install-directory might be set by python-mode.el already
-(setq py-install-directory (expand-file-name pdee-install-dir))
+;; (setq py-install-directory (expand-file-name pdee-install-dir))
 
 ;; Adding paths to the variable load-path
 (dolist (relpath '(""
@@ -67,26 +72,26 @@ components-python-mode is the development-branch of python-mode.el "
   (when (featurep 'python-components-imenu)(unload-feature 'python-components-imenu t))
   (when (featurep 'python-describe-symbol)(unload-feature 'python-describe-symbol t)))
 
-(defun pdee-set-mode (&optional branch)
-  "Select a python-mode to use. See `pdee-default-mode' for available choices.
+;; (defun pdee-set-mode (&optional branch)
+;;   "Select a python-mode to use. See `pdee-default-mode' for available choices.
+;; 
+;; Then set `py-install-directory', load the needed python(-mode).el
+;; When called without arguments, default mode is switched on.
+;; 
+;; Actuallly there is just one branch
+;; "
+;;   (interactive "P")
+;;   (let ((branch (if (eq 4 (prefix-numeric-value branch))
+;;                     (read-from-minibuffer "pdee-default-mode: " pdee-default-mode)
+;;                   (or branch (prin1-to-string pdee-default-mode)))))
+;;     (unless (string-match ".+/$" branch)
+;;       (setq branch (concat branch "/")))
+;;     (setq py-install-directory pdee-install-dir)
+;;     (add-to-list 'load-path py-install-directory)
+;;     (load (concat py-install-directory "python-components-mode.el"))))
 
-Then set `py-install-directory', load the needed python(-mode).el
-When called without arguments, default mode is switched on.
-
-Actuallly there is just one branch
-"
-  (interactive "P")
-  (let ((branch (if (eq 4 (prefix-numeric-value branch))
-                    (read-from-minibuffer "pdee-default-mode: " pdee-default-mode)
-                  (or branch (prin1-to-string pdee-default-mode)))))
-    (unless (string-match ".+/$" branch)
-      (setq branch (concat branch "/")))
-    (setq py-install-directory pdee-install-dir)
-    (add-to-list 'load-path py-install-directory)
-    (load (concat py-install-directory "python-components-mode.el"))))
-
-(when (ignore-errors pdee-install-dir)
-  (add-to-list 'load-path pdee-install-dir))
+;; (when (ignore-errors pdee-install-dir)
+;; (add-to-list 'load-path pdee-install-dir))
 
 (when pdee-unload-first
   (when (featurep 'ipython) (unload-feature 'ipython t))
@@ -189,7 +194,7 @@ The CMDLINE should be something like:
     (list (first cmdline-subst) (rest cmdline-subst))
     ))
 
-(when (load-file (concat pdee-install-dir "extensions/flymake-patch.el"))
+(when (load-file (concat py-install-directory "/extensions/flymake-patch.el"))
   (setq flymake-info-line-regex
         (append flymake-info-line-regex '("unused$" "^redefinition" "used$")))
   (load-library "flymake-cursor"))

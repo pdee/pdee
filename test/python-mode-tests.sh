@@ -825,7 +825,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-execute-file-bpython-switch) nil \"py-execute-file-bpython-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-bpython-noswitch) nil \"py-execute-file-bpython-noswitch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-bpython-dedicated) nil \"py-execute-file-bpython-dedicated not detected as command\")" \
--eval "(assert (commandp 'py-execute-file-bpython-dedicated-switch) nil \"py-execute-file-bpython-dedicated-switch not detected as command\")" \
+-eval "(assert (functionp 'py-font-lock-syntactic-face-function) nil \"py-font-lock-syntactic-face-function not detected function\")" \
 -eval "(setq enable-local-variables :all)" \
 -eval "(assert (boundp 'py-version) nil \"py-version not a variable\")" \
 -eval "(assert (boundp 'python-mode-modeline-display) nil \"python-mode-modeline-display not a variable\")" \
@@ -1060,6 +1060,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-font-lock-keywords) nil \"py-font-lock-keywords not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall wrong-indentation-after-return-or-pass-keyword-lp-1087499-test \
 --funcall wrong-indent-after-asignment-lp-1087404-test \
 --funcall py-execute-buffer-python3-looks-broken-lp-1085386-test \
 --funcall fill-paragraph-in-comments-results-in-mess-lp-1084769-test \

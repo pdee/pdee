@@ -38,6 +38,7 @@
 
 (setq bug-numbered-tests
       (list
+       'wrong-indentation-after-return-or-pass-keyword-lp-1087499-test
        'wrong-indent-after-asignment-lp-1087404-test
        'py-execute-buffer-python3-looks-broken-lp-1085386-test
        'fill-paragraph-in-comments-results-in-mess-lp-1084769-test
@@ -4601,6 +4602,28 @@ b = [1]
 (defun wrong-indent-after-asignment-lp-1087404-base ()
     (goto-char 106)
     (assert (eq 0 (py-compute-indentation)) nil "wrong-indent-after-asignment-lp-1087404-test failed"))
+
+(defun wrong-indentation-after-return-or-pass-keyword-lp-1087499-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+class Foo(self):
+    def bar(self):
+        return self.baz
+
+class Baz(self):
+    def bar(self):
+        pass
+
+"))
+  (py-bug-tests-intern 'wrong-indentation-after-return-or-pass-keyword-lp-1087499-base arg teststring)))
+
+(defun wrong-indentation-after-return-or-pass-keyword-lp-1087499-base ()
+    (goto-char 108)
+    (assert (eq 4 (py-compute-indentation)) nil "wrong-indentation-after-return-or-pass-keyword-lp-1087499-test failed")
+    (goto-char 158)
+    (assert (py-compute-indentation) nil "wrong-indentation-after-return-or-pass-keyword-lp-1087499-test failed")
+    )
 
 
 (provide 'py-bug-numbered-tests)
