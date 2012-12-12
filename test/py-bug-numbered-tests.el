@@ -38,6 +38,10 @@
 
 (setq bug-numbered-tests
       (list
+       'temporary-files-remain-when-python-raises-exception-lp-1083973-n1-test
+       'temporary-files-remain-when-python-raises-exception-lp-1083973-n2-test
+       'temporary-files-remain-when-python-raises-exception-lp-1083973-n3-test
+       'temporary-files-remain-when-python-raises-exception-lp-1083973-n4-test
        'wrong-indentation-after-return-or-pass-keyword-lp-1087499-test
        'wrong-indent-after-asignment-lp-1087404-test
        'py-execute-buffer-python3-looks-broken-lp-1085386-test
@@ -4570,7 +4574,7 @@ def update():
 (defun fill-paragraph-in-comments-results-in-mess-lp-1084769-base ()
     (goto-char 266)
     (fill-paragraph)
-    (beginning-of-line) 
+    (beginning-of-line)
     (assert (looking-at "    ") nil "fill-paragraph-in-comments-results-in-mess-lp-1084769-test failed"))
 
 (defun py-execute-buffer-python3-looks-broken-lp-1085386-test (&optional arg)
@@ -4582,9 +4586,8 @@ print(i)
   (py-bug-tests-intern 'py-execute-buffer-python3-looks-broken-lp-1085386-base arg teststring)))
 
 (defun py-execute-buffer-python3-looks-broken-lp-1085386-base ()
-  (let ((py-use-current-dir-when-execute-p t)) 
+  (let ((py-use-current-dir-when-execute-p t))
     (assert (markerp (py-execute-buffer-python3)) nil "py-execute-buffer-python3-looks-broken-lp-1085386-test failed")))
-
 
 (defun wrong-indent-after-asignment-lp-1087404-test (&optional arg)
   (interactive "p")
@@ -4595,7 +4598,7 @@ a = 1
 b = [1]
 
 # Now after pressing enter indents to column 4
- 
+
 "))
   (py-bug-tests-intern 'wrong-indent-after-asignment-lp-1087404-base arg teststring)))
 
@@ -4619,12 +4622,81 @@ class Baz(self):
   (py-bug-tests-intern 'wrong-indentation-after-return-or-pass-keyword-lp-1087499-base arg teststring)))
 
 (defun wrong-indentation-after-return-or-pass-keyword-lp-1087499-base ()
-    (goto-char 108)
-    (assert (eq 4 (py-compute-indentation)) nil "wrong-indentation-after-return-or-pass-keyword-lp-1087499-test failed")
-    (goto-char 158)
-    (assert (py-compute-indentation) nil "wrong-indentation-after-return-or-pass-keyword-lp-1087499-test failed")
-    )
+  (goto-char 108)
+  (assert (eq 4 (py-compute-indentation)) nil "wrong-indentation-after-return-or-pass-keyword-lp-1087499-test failed")
+  (goto-char 158)
+  (assert (py-compute-indentation) nil "wrong-indentation-after-return-or-pass-keyword-lp-1087499-test failed"))
 
+(defun temporary-files-remain-when-python-raises-exception-lp-1083973-n1-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+import os
+import urllib
+os.chdir(\"NOT-EXISTING\")
+f = urllib.urlopen(\"NOT-EXISTING.html\")
+for lines in f:
+    print(lines)
+"))
+  (py-bug-tests-intern 'temporary-files-remain-when-python-raises-exception-lp-1083973-n1-base arg teststring)))
+
+(defun temporary-files-remain-when-python-raises-exception-lp-1083973-n1-base ()
+  (let ((python-mode-v5-behavior-p t))
+    (py-execute-buffer)
+    (assert (eq 72 (point)) nil "temporary-files-remain-when-python-raises-exception-lp-1083973-n1-test failed")))
+
+(defun temporary-files-remain-when-python-raises-exception-lp-1083973-n2-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+import os
+import urllib
+f = urllib.urlopen(\"NOT-EXISTING.html\")
+for lines in f:
+    print(lines)
+"))
+  (py-bug-tests-intern 'temporary-files-remain-when-python-raises-exception-lp-1083973-n2-base arg teststring)))
+
+(defun temporary-files-remain-when-python-raises-exception-lp-1083973-n2-base ()
+  (let ((python-mode-v5-behavior-p t))
+    (py-execute-buffer)
+    (assert (eq 72 (point)) nil "temporary-files-remain-when-python-raises-exception-lp-1083973-n2-test failed")))
+
+
+(defun temporary-files-remain-when-python-raises-exception-lp-1083973-n3-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+import os
+import urllib
+f = urllib.urlopen(\"NOT-EXISTING.html\")
+for lines in f:
+    print(lines)
+"))
+  (py-bug-tests-intern 'temporary-files-remain-when-python-raises-exception-lp-1083973-n3-base arg teststring)))
+
+(defun temporary-files-remain-when-python-raises-exception-lp-1083973-n3-base ()
+  (py-execute-buffer)
+  (assert (eq 163 (point)) nil "temporary-files-remain-when-python-raises-exception-lp-1083973-n3-test failed"))
+
+(defun temporary-files-remain-when-python-raises-exception-lp-1083973-n4-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+import os
+import urllib
+f = urllib.urlopen(\"NOT-EXISTING.html\")
+for lines in f:
+    print(lines)
+"))
+  (py-bug-tests-intern 'temporary-files-remain-when-python-raises-exception-lp-1083973-n4-base arg teststring)))
+
+(defun temporary-files-remain-when-python-raises-exception-lp-1083973-n4-base ()
+  (py-execute-buffer)
+  (switch-to-buffer (current-buffer))
+  (sit-for 0.1) 
+  (message "Bin hier %s" (buffer-name (current-buffer)))
+  (assert (eq 163 (point)) nil "temporary-files-remain-when-python-raises-exception-lp-1083973-n4-test failed"))
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

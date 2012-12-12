@@ -1379,6 +1379,9 @@ set in py-execute-region and used in py-jump-to-exception.")
   "Regular expression that describes tracebacks.
 Inludes Python shell-prompt in order to stop further searches. ")
 
+(setq py-traceback-line-re
+  "^IPython\\|^In \\[[0-9]+\\]: *\\|^>>> \\|^[ \t]+File \"\\([^\"]+\\)\", line \\([0-9]+\\)\\|^[^ \t>]+>[^0-9]+\\([0-9]+\\)")
+
 (defvar py-bol-forms-last-indent nil
   "For internal use. Stores indent from last py-end-of-FORM-bol command.
 When this-command is py-beginning-of-FORM-bol, last-command's indent will be considered in order to jump onto right beginning position.")

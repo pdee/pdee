@@ -965,7 +965,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'ipython-de-input-prompt-regexp) nil \"ipython-de-input-prompt-regexp not a variable\")" \
 -eval "(assert (boundp 'ipython-de-output-prompt-regexp) nil \"ipython-de-output-prompt-regexp not a variable\")" \
 -eval "(assert (boundp 'py-force-local-shell-p) nil \"py-force-local-shell-p not a variable\")" \
--eval "(assert (boundp 'python-mode-v5-behavior) nil \"python-mode-v5-behavior not a variable\")" \
 -eval "(assert (boundp 'py-bol-forms-last-indent) nil \"py-bol-forms-last-indent not a variable\")" \
 -eval "(assert (boundp 'python-mode-syntax-table) nil \"python-mode-syntax-table not a variable\")" \
 -eval "(assert (boundp 'outline-heading-end-regexp) nil \"outline-heading-end-regexp not a variable\")" \
@@ -1359,3 +1358,7 @@ est \
 --funcall does-not-dedent-regions-lp-1072869-test \
 --funcall impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test \
 --funcall py-ipython-complete-lp:927136-test \
+--funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n1-test 2 \
+--funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n2-test 2 \
+--funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n3-test 2 \
+--funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n4-test 2 \

@@ -4,27 +4,6 @@ Put the following into your initialization file:
   (add-to-list 'load-path py-install-directory)
   (require 'python-mode)
 
-To enable code completion:
-
-  (setq py-load-pymacs-p t)
-
-To use auto-complete, just prepend the following lines:
-
-  (require 'auto-complete-config)
-  (ac-config-default)
-
-or for company:
-
-  (autoload 'company-mode "company" nil t)
-
-If you do not use one of those visual completion interfaces, key bindings exist:
-  - C-tab complete symbol
-  - f1    show help
-  - S-f1  show signature
-  - f2    go to
-
-If `py-complete-function' is set, it takes precedence
-
 ;;;;;;;;;
 
 Customize default Python shell as `py-shell-name'
@@ -62,6 +41,42 @@ Install a local shell by evaluating
 (defun MY-LOCAL-SHELL ()
   (interactive)
   (py-shell nil DEDICATED PATH-TO-LOCAL-SHELL))
+
+;;;;;;;;;
+
+When code is executed from current buffer, either
+
+- python-mode-v5-behavior, a quite simple and effective way.
+  Setting `python-mode-v5-behavior-p' to `t' makes it the default.
+
+- if a buffer-file exists and buffer is unchanged, it's file is executed as is.
+
+- in all other cases a temporary file is created.
+  Setback: in case of error, returned error code points
+  here, i.e. indicated error-line-numbers are not that of
+  orginal buffer.
+
+;;;;;;;;;
+To enable code auto-completion:
+
+  (setq py-load-pymacs-p t)
+
+To use auto-complete, just prepend the following lines:
+
+  (require 'auto-complete-config)
+  (ac-config-default)
+
+or for company:
+
+  (autoload 'company-mode "company" nil t)
+
+If you do not use one of those visual completion interfaces, key bindings exist:
+  - C-tab complete symbol
+  - f1    show help
+  - S-f1  show signature
+  - f2    go to
+
+If `py-complete-function' is set, it takes precedence
 
 ;;;;;;;;;
 

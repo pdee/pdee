@@ -317,7 +317,8 @@ Needed when file-path names are contructed from maybe numbered buffer names like
              (progn
                (funcall py-split-windows-on-execute-function)
                (display-buffer py-buffer-name 'display-buffer-reuse-window))
-           (display-buffer py-buffer-name 'display-buffer-reuse-window)))
+           (display-buffer py-buffer-name 'display-buffer-reuse-window))
+         (pop-to-buffer oldbuf))
         ;; no split, switch
         ((or (eq switch 'switch)
              (and (not (eq switch 'noswitch))
@@ -464,7 +465,7 @@ Optional symbol SPLIT ('split/'nosplit) precedes `py-split-buffers-on-execute-p'
       (set (make-local-variable 'indent-line-function) 'py-indent-line)
       ;; (font-lock-unfontify-region (point-min) (line-beginning-position))
       (setq proc (get-buffer-process py-buffer-name))
-      (goto-char (point-max))
+      ;; (goto-char (point-max))
       (move-marker (process-mark proc) (point-max))
       ;; (funcall (process-filter proc) proc "")
       (py-shell-send-setup-code proc)
@@ -550,7 +551,7 @@ Ignores setting of `py-switch-buffers-on-execute-p', buffer with region stays cu
   (py-execute-base start end py-shell-name dedicated 'noswitch))
 
 ;;; execute region
-(defun py-execute-region (start end &optional shell dedicated switch)
+(defun py-execute-region (start end &optional shell dedicated switch nostars sepchar split file)
   "Send the region to a Python interpreter.
 
 When called with \\[universal-argument], execution through `default-value' of `py-shell-name' is forced.
@@ -567,7 +568,7 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)
                      ((and (numberp shell) (not (eq 1 (prefix-numeric-value shell))))
                       (read-from-minibuffer "(path-to-)shell-name: " (default-value 'py-shell-name)))
                      (t shell))))
-    (py-execute-base start end shell dedicated switch)))
+    (py-execute-base start end shell dedicated switch nostars sepchar split file)))
 
 (defun py-execute-region-default (start end &optional dedicated)
   "Send the region to the systems default Python interpreter.
@@ -613,8 +614,81 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
   (when (buffer-live-p localname)
     (kill-buffer localname)))
 
-(defun py-execute-base (start end &optional pyshellname dedicated switch nostars sepchar split)
-  "Adapt the variables used in the process. "
+(defun py-execute-base (start end &optional pyshellname dedicated switch nostars sepchar split file)
+  "Select the handler. "
+  (cond (python-mode-v5-behavior-p
+         (let ((py-exception-buffer (current-buffer))
+               (cmd (concat (or pyshellname py-shell-name) (if (string-equal py-which-bufname
+                                                                             "Jython")
+                                                               " -"
+                                                             ;; " -c "
+                                                             ""))))
+           (save-excursion
+             (shell-command-on-region start end
+                                      cmd py-output-buffer))
+           (if (not (get-buffer py-output-buffer))
+               (message "No output.")
+
+             (let ((err-p (py-postprocess-output-buffer py-output-buffer)))
+               (if err-p
+                   (pop-to-buffer py-exception-buffer)
+                 (pop-to-buffer py-output-buffer)
+                 (goto-char (point-max))
+                 (setq erg (copy-marker (point))))))))
+        ;; No need for a temporary file than
+        ((and (not (buffer-modified-p)) file)
+         (py-execute-buffer-file start end pyshellname dedicated switch nostars sepchar split file))
+        (t (py-execute-buffer-finally start end pyshellname dedicated switch nostars sepchar split))))
+
+(defun py-execute-buffer-file (start end pyshellname dedicated switch nostars sepchar split file)
+  (delete-other-windows)
+  (let* ((oldbuf (current-buffer))
+         (py-exception-buffer oldbuf)
+         (pyshellname (or pyshellname (py-choose-shell)))
+         (execute-directory
+          (cond ((ignore-errors (file-name-directory (file-remote-p (buffer-file-name) 'localname))))
+                ((and py-use-current-dir-when-execute-p (buffer-file-name))
+                 (file-name-directory (buffer-file-name)))
+                ((and py-use-current-dir-when-execute-p
+                      py-fileless-buffer-use-default-directory-p)
+                 (expand-file-name default-directory))
+                ((stringp py-execute-directory)
+                 py-execute-directory)
+                ((getenv "VIRTUAL_ENV"))
+                (t (getenv "HOME"))))
+         (strg (buffer-substring-no-properties start end))
+         (sepchar (or sepchar (char-to-string py-separator-char)))
+         (py-buffer-name (py-buffer-name-prepare pyshellname sepchar))
+         (localname file)
+         (switch (or switch py-switch-buffers-on-execute-p))
+         (split (or split py-split-windows-on-execute-p))
+         (proc (if dedicated
+                   (get-buffer-process (py-shell nil dedicated pyshellname switch sepchar py-buffer-name t))
+                 (or (get-buffer-process py-buffer-name)
+                     (get-buffer-process (py-shell nil dedicated pyshellname switch sepchar py-buffer-name t)))))
+         (procbuf (process-buffer proc))
+         ;; (filebuf (get-buffer file))
+         (pec (if (string-match "[pP]ython ?3" py-buffer-name)
+                  (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" localname localname)
+                (format "execfile(r'%s') # PYTHON-MODE\n" localname)))
+         ;; (comint-scroll-to-bottom-on-output t)
+)
+    (if (file-readable-p file)
+        (progn
+          (when (string-match "ipython" (process-name proc))
+            (sit-for py-ipython-execute-delay))
+          (setq erg (py-execute-file-base proc file pec procbuf))
+          (sit-for 0.2)
+          (unless (py-postprocess-output-buffer procbuf file)
+            (pop-to-buffer py-exception-buffer)
+            (py-shell-manage-windows switch split oldbuf py-buffer-name))
+          (unless (string= (buffer-name (current-buffer)) (buffer-name procbuf))
+            (when py-verbose-p (message "Output buffer: %s" procbuf))))
+      (message "%s not readable. %s" file "Do you have permissions?"))
+    erg))
+
+(defun py-execute-buffer-finally (start end &optional pyshellname dedicated switch nostars sepchar split)
+  (delete-other-windows)
   (let* ((oldbuf (current-buffer))
          (pyshellname (or pyshellname (py-choose-shell)))
          (execute-directory
@@ -638,7 +712,7 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
          (split (or split py-split-windows-on-execute-p))
          (proc (if dedicated
                    (get-buffer-process (py-shell nil dedicated pyshellname switch sepchar py-buffer-name t))
-                 (or (get-buffer-process (py-buffer-name-prepare pyshellname))
+                 (or (get-buffer-process py-buffer-name)
                      (get-buffer-process (py-shell nil dedicated pyshellname switch sepchar py-buffer-name t)))))
          (procbuf (process-buffer proc))
          (file (with-current-buffer py-buffer-name ; create the file to be executed in context of the shell
@@ -657,44 +731,26 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
     (py-if-needed-insert-shell (prin1-to-string proc) sepchar)
     (unless wholebuf (py-insert-coding))
     (unless (string-match "[jJ]ython" pyshellname) (py-insert-execute-directory execute-directory))
-    (unwind-protect
-        (cond (python-mode-v5-behavior-p
-               (let ((cmd (concat pyshellname (if (string-equal py-which-bufname
-                                                                "Jython")
-                                                  " -"
-                                                ;; " -c "
-                                                ""))))
-                 (save-excursion
-                   (set-buffer filebuf)
-                   (shell-command-on-region (point-min) (point-max)
-                                            cmd py-output-buffer))
-                 (if (not (get-buffer py-output-buffer))
-                     (message "No output.")
-                   (setq py-exception-buffer oldbuf)
-                   (let ((err-p (py-postprocess-output-buffer py-output-buffer file)))
-                     (if err-p
-                         (pop-to-buffer py-exception-buffer)
-                       (pop-to-buffer py-output-buffer)
-                       (goto-char (point-max))
-                       (setq erg (copy-marker (point))))))))
-              (t (set-buffer filebuf)
-                 (write-region (point-min) (point-max) file nil t nil 'ask)
-                 (set-buffer-modified-p 'nil)
-                 (kill-buffer filebuf)
-                 (if (file-readable-p file)
-                     (progn
-                       (when (string-match "ipython" (process-name proc))
-                         (sit-for py-ipython-execute-delay))
-                       (setq erg (py-execute-file-base proc file pec procbuf))
-                       (setq py-exception-buffer (cons file (current-buffer)))
-                       (py-shell-manage-windows switch split oldbuf py-buffer-name)
-                       (unless (string= (buffer-name (current-buffer)) (buffer-name procbuf))
-                         (when py-verbose-p (message "Output buffer: %s" procbuf)))
-                       (sit-for 0.1)
-                       erg)
-                   (message "%s not readable. %s" file "Do you have write permissions?")))))
-    (when py-cleanup-temporary
-      (py-delete-temporary file localname filebuf))
+    (set-buffer filebuf)
+    (write-region (point-min) (point-max) file nil t nil 'ask)
+    (set-buffer-modified-p 'nil)
+    (if (file-readable-p file)
+        (progn
+          (when (string-match "ipython" (process-name proc))
+            (sit-for py-ipython-execute-delay))
+          (setq erg (py-execute-file-base proc file pec procbuf))
+          (sit-for 0.1)
+          (if (py-postprocess-output-buffer procbuf file)
+              (progn (set-buffer filebuf)
+                     (switch-to-buffer (current-buffer)))
+            (kill-buffer filebuf)
+            (py-shell-manage-windows switch split oldbuf py-buffer-name)
+            (unless (string= (buffer-name (current-buffer)) (buffer-name procbuf))
+              (when py-verbose-p (message "Output buffer: %s" procbuf)))
+            (when py-cleanup-temporary
+              (py-delete-temporary file localname filebuf))
+            (sit-for 0.1)))
+      (message "%s not readable. %s" file "Do you have write permissions?"))
     erg))
 
 (defun py-execute-string (&optional string shell dedicated)
@@ -876,7 +932,7 @@ Basically, this goes down the directory tree as long as there are __init__.py fi
              (file-name-sans-extension (file-name-nondirectory file)))))
 
 ;;; execute buffer
-(defun py-execute-buffer (&optional shell dedicated switch)
+(defun py-execute-buffer (&optional shell dedicated switch nostars sepchar split file)
   "Send the contents of the buffer to a Python interpreter.
 
 When called with \\[universal-argument], execution through `default-value' of `py-shell-name' is forced.
@@ -891,29 +947,35 @@ When called from a programm, it accepts a string specifying a shell which will b
 
 Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch) "
   (interactive "P")
-  (save-excursion
-    (let ((wholebuf t)
-          (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          beg end)
-      (when py-master-file
-        (let* ((filename (expand-file-name py-master-file))
-               (buffer (or (get-file-buffer filename)
-                           (find-file-noselect filename))))
-          (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end shell dedicated switch))))
+  (let* ((wholebuf t)
+         (py-master-file (or py-master-file (py-fetch-py-master-file)))
+         (file (or
+                file
+                (if py-master-file
+                    (prog1 (expand-file-name py-master-file)
+                      (set-buffer
+                       (or (get-file-buffer filename)
+                           (get-file-buffer (find-file-noselect filename))))))
+                (when (buffer-file-name) (buffer-file-name))))
+         (beg (point-min))
+         (end (point-max)))
+    (py-execute-region beg end shell dedicated switch nostars sepchar split file)))
 
-(defun py-execute-buffer-base (&optional shell dedicated switch)
+(defun py-execute-buffer-base (&optional shell dedicated switch nostars sepchar split file)
   "Honor `py-master-file'. "
-  (save-excursion
-    (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
-      (if py-master-file
-          (let* ((filename (expand-file-name py-master-file))
-                 (buffer (or (get-file-buffer filename)
-                             (find-file-noselect filename))))
-            (set-buffer buffer)))
-      (py-execute-region (point-min) (point-max) shell dedicated switch))))
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file)))
+        (file (or
+               file
+               (if py-master-file
+                   (prog1 (expand-file-name py-master-file)
+                     (set-buffer
+                      (or (get-file-buffer filename)
+                          (get-file-buffer (find-file-noselect filename))))))
+               (when (buffer-file-name) (buffer-file-name))))
+        (beg (point-min))
+        (end (point-max)))
+    (py-execute-region beg end shell dedicated switch nostars sepchar split file)))
+
 
 (defun py-execute-buffer-dedicated (&optional shell)
   "Send the contents of the buffer to a unique Python interpreter.
@@ -1245,10 +1307,11 @@ Returns position where output starts. "
       (unwind-protect
           (save-excursion
             (set-buffer procbuf)
+            (switch-to-buffer (current-buffer))
             (funcall (process-filter proc) proc msg))))
     (set-buffer procbuf)
     (process-send-string proc cmd)
-    (setq erg (goto-char (process-mark proc)))
+    (setq erg (process-mark proc))
     erg))
 
 (defun py-send-region (start end)
@@ -1301,20 +1364,24 @@ Returns position where output starts. "
   "Highlight exceptions found in BUF.
 If an exception occurred return t, otherwise return nil.  BUF must exist."
   (let ((file file)
-        line bol err-p)
+        (expression (concat "^[ 	]+File \"\\(" file "\\)\", line \\([0-9]+\\)"))
+        line err-p)
     (save-excursion
       (set-buffer buf)
-      (goto-char (point-min))
-      (while (re-search-forward py-traceback-line-re nil t)
-        (message "% s" (match-string-no-properties 0))
+      (when
+          (or (and file (re-search-forward expression nil t))
+              (and file (re-search-backward expression nil t))
+              ;; File "/tmp/python-2246WCK.py", line 7, in <module>
+              ;; "^IPython\\|^In \\[[0-9]+\\]: *\\|^>>> \\|^[ 	]+File \"\\([^\"]+\\)\", line \\([0-9]+\\)\\|^[^ 	>]+>[^0-9]+\\([0-9]+\\)"
+              (re-search-forward py-traceback-line-re nil t)
+              (re-search-backward py-traceback-line-re nil t))
         (or file (setq file (match-string 1)))
         (setq line (if (and (match-string-no-properties 2)
-                            (string-match "[0-9]" (match-string-no-properties 2)))
+                            (save-match-data (string-match "[0-9]" (match-string-no-properties 2))))
                        (string-to-number (match-string 2))
                      (when (and (match-string-no-properties 3)
                                 (save-match-data (string-match "[0-9]" (match-string-no-properties 3))))
-                       (string-to-number (match-string-no-properties 3)))))
-        (setq bol (py-point 'bol)))
+                       (string-to-number (match-string-no-properties 3))))))
       (overlay-put (make-overlay (match-beginning 0) (match-end 0))
                    'face 'highlight))
     (when (and py-jump-on-exception line)
@@ -1341,10 +1408,9 @@ If an exception occurred return t, otherwise return nil.  BUF must exist."
                                                     file t))))))
     ;; Fiddle about with line number
     (setq line (+ py-line-number-offset line))
-
     (pop-to-buffer buffer)
     ;; Force Python mode
-    (unless(eq major-mode 'python-mode)
+    (unless (eq major-mode 'python-mode)
       (python-mode))
     (goto-char (point-min))
     (forward-line (1- line))
