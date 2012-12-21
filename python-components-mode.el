@@ -306,8 +306,8 @@ If nil, default, it will not move from at any reasonable level. "
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-electric-comment-p t
-  "If \"#\" should call `py-electric-comment'. Default is `t'. "
+(defcustom py-electric-comment-p nil
+  "If \"#\" should call `py-electric-comment'. Default is `nil'. "
   :type 'boolean
   :group 'python-mode)
 
@@ -2729,6 +2729,32 @@ Returns value of `py-jump-on-exception'\. . "]
               ["Switch indent-tabs-mode off" py-indent-tabs-mode-off
                :help "`py-indent-tabs-mode-off'"])
 
+             ("Electric comment"
+              :help "Toggle `py-electric-comment-p'"
+              
+              ["Toggle electric comment" toggle-py-electric-comment-p
+               :help " `toggle-py-electric-comment-p'
+
+If `py-electric-comment-p' should be on or off\.
+
+  Returns value of `py-electric-comment-p' switched to\. . "]
+              
+              ["Electric comment on" py-electric-comment-p-on
+               :help " `py-electric-comment-p-on'
+
+Make sure, py-electric-comment-p' is on\.
+
+Returns value of `py-electric-comment-p'\. . "]
+              
+              ["Electric comment off" py-electric-comment-p-off
+               :help " `py-electric-comment-p-off'
+
+Make sure, `py-electric-comment-p' is off\.
+
+Returns value of `py-electric-comment-p'\. . "]
+              
+              )
+             
              )
 
             ("Help"

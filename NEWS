@@ -7,6 +7,8 @@ New in version 6.1.1
 - boolean `py-use-font-lock-doc-face-p', default is nil 
   If non-nil, documention strings get `font-lock-doc-face'
 
+- `py-electric-comment-p' new default nil
+
 New in version 6.1.0
 ---------------------
 

@@ -38,6 +38,8 @@
 
 (setq bug-numbered-tests
       (list
+       'comments-start-a-new-line-lp-1092847-n1-test
+       'comments-start-a-new-line-lp-1092847-n2-test
        'temporary-files-remain-when-python-raises-exception-lp-1083973-n1-test
        'temporary-files-remain-when-python-raises-exception-lp-1083973-n2-test
        'temporary-files-remain-when-python-raises-exception-lp-1083973-n3-test
@@ -4662,7 +4664,6 @@ for lines in f:
     (py-execute-buffer)
     (assert (eq 72 (point)) nil "temporary-files-remain-when-python-raises-exception-lp-1083973-n2-test failed")))
 
-
 (defun temporary-files-remain-when-python-raises-exception-lp-1083973-n3-test (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
@@ -4694,9 +4695,81 @@ for lines in f:
 (defun temporary-files-remain-when-python-raises-exception-lp-1083973-n4-base ()
   (py-execute-buffer)
   (switch-to-buffer (current-buffer))
-  (sit-for 0.1) 
+  (sit-for 0.1)
   (message "Bin hier %s" (buffer-name (current-buffer)))
   (assert (eq 163 (point)) nil "temporary-files-remain-when-python-raises-exception-lp-1083973-n4-test failed"))
+
+(defun comments-start-a-new-line-lp-1092847-n1-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+# I am using python-mode.el in Emacs to edit some Python code and it has the most annoying feature where it
+# auto-indents a comment and then starts a new line. For example, if I have this:
+
+def x():
+    y = 1
+<cursor is here, at root indentation level>
+
+And then add in one # at the root indentation level:
+
+def x():
+    y = 1
+
+    #
+<cursor is now here>
+
+# It automatically indents, inserts the #, and inserts a carriage return after the #. It's driving me crazy.
+# I want my comments to stay exactly where I put them! Any suggestions?
+
+# I've looked through the elisp code for the mode and can't find anything yet nor can I find anything
+# elsewhere online. All I can find is that comments won't be used for future indentation (py-honor-comment-
+# indentation) but nothing related to the comment itself. Nor the strange carriage return.
+
+"))
+  (py-bug-tests-intern 'comments-start-a-new-line-lp-1092847-base arg teststring)))
+
+(defun comments-start-a-new-line-lp-1092847-base ()
+  (let ((py-electric-comment-p t))
+    (goto-char 258)
+    (py-electric-comment 1)
+    (back-to-indentation)
+    (assert (eq 4 (current-column)) nil "comments-start-a-new-line-lp-1092847-n1-test failed")))
+
+(defun comments-start-a-new-line-lp-1092847-n2-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+# I am using python-mode.el in Emacs to edit some Python code and it has the most annoying feature where it
+# auto-indents a comment and then starts a new line. For example, if I have this:
+
+def x():
+    y = 1
+<cursor is here, at root indentation level>
+
+And then add in one # at the root indentation level:
+
+def x():
+    y = 1
+
+    #
+<cursor is now here>
+
+# It automatically indents, inserts the #, and inserts a carriage return after the #. It's driving me crazy.
+# I want my comments to stay exactly where I put them! Any suggestions?
+
+# I've looked through the elisp code for the mode and can't find anything yet nor can I find anything
+# elsewhere online. All I can find is that comments won't be used for future indentation (py-honor-comment-
+# indentation) but nothing related to the comment itself. Nor the strange carriage return.
+
+"))
+  (py-bug-tests-intern 'comments-start-a-new-line-lp-1092847-n2-base arg teststring)))
+
+(defun comments-start-a-new-line-lp-1092847-n2-base ()
+  (let ((py-electric-comment-p nil))
+    (goto-char 258)
+    (py-electric-comment 1)
+    (back-to-indentation)
+    (assert (eq 0 (current-column)) nil "comments-start-a-new-line-lp-1092847-n2-test failed")))
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

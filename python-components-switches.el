@@ -354,5 +354,37 @@ Returns value of `py-use-current-dir-when-execute-p'. "
   (when (or py-verbose-p (interactive-p)) (message "py-use-current-dir-when-execute-p: %s" py-use-current-dir-when-execute-p))
   py-use-current-dir-when-execute-p)
 
+;; py-electric-comment-p forms
+(defun toggle-py-electric-comment-p (&optional arg)
+  "If `py-electric-comment-p' should be on or off.
+
+  Returns value of `py-electric-comment-p' switched to. "
+  (interactive)
+  (let ((arg (or arg (if py-electric-comment-p -1 1))))
+    (if (< 0 arg)
+        (setq py-electric-comment-p t)
+      (setq py-electric-comment-p nil))
+    (when (or py-verbose-p (interactive-p)) (message "py-electric-comment-p: %s" py-electric-comment-p))
+    py-electric-comment-p))
+
+(defun py-electric-comment-p-on (&optional arg)
+  "Make sure, py-electric-comment-p' is on.
+
+Returns value of `py-electric-comment-p'. "
+  (interactive)
+  (let ((arg (or arg 1)))
+    (toggle-py-electric-comment-p arg))
+  (when (or py-verbose-p (interactive-p)) (message "py-electric-comment-p: %s" py-electric-comment-p))
+  py-electric-comment-p)
+
+(defun py-electric-comment-p-off ()
+  "Make sure, `py-electric-comment-p' is off.
+
+Returns value of `py-electric-comment-p'. "
+  (interactive)
+  (toggle-py-electric-comment-p -1)
+  (when (or py-verbose-p (interactive-p)) (message "py-electric-comment-p: %s" py-electric-comment-p))
+  py-electric-comment-p)
+
 (provide 'python-components-switches)
 ;;; python-components-switches.el ends here
