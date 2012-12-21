@@ -967,7 +967,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-force-local-shell-p) nil \"py-force-local-shell-p not a variable\")" \
 -eval "(assert (boundp 'py-bol-forms-last-indent) nil \"py-bol-forms-last-indent not a variable\")" \
 -eval "(assert (boundp 'python-mode-syntax-table) nil \"python-mode-syntax-table not a variable\")" \
--eval "(assert (boundp 'outline-heading-end-regexp) nil \"outline-heading-end-regexp not a variable\")" \
 -eval "(assert (boundp 'eldoc-documentation-function) nil \"eldoc-documentation-function not a variable\")" \
 -eval "(assert (boundp 'py-completion-last-window-configuration) nil \"py-completion-last-window-configuration not a variable\")" \
 -eval "(assert (boundp 'py-shell-template) nil \"py-shell-template not a variable\")" \
@@ -1146,8 +1145,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall indent-honor-arglist-whitespaces-lp:822540-test \
 --funcall comments-indent-honor-setting-lp:824427-test \
 --funcall closing-list-lp:826144-test \
---funcall py-electric-comment-add-space-lp:828398-test \
---funcall py-electric-comment-add-space-t-lp:828398-test \
 --funcall wrong-indentation-of-function-arguments-lp:840891-test \
 --funcall wrong-guess-for-py-indent-offset-lp:852052-test \
 --funcall indent-match-import-pkg-lp:852500-test \
@@ -1364,3 +1361,5 @@ est \
 --funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n2-test 2 \
 --funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n3-test 2 \
 --funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n4-test 2 \
+--funcall py-electric-comment-add-space-lp:828398-test \
+--funcall py-electric-comment-add-space-t-lp:828398-test \
