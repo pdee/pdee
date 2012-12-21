@@ -967,6 +967,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-force-local-shell-p) nil \"py-force-local-shell-p not a variable\")" \
 -eval "(assert (boundp 'py-bol-forms-last-indent) nil \"py-bol-forms-last-indent not a variable\")" \
 -eval "(assert (boundp 'python-mode-syntax-table) nil \"python-mode-syntax-table not a variable\")" \
+-eval "(assert (boundp 'outline-heading-end-regexp) nil \"outline-heading-end-regexp not a variable\")" \
 -eval "(assert (boundp 'eldoc-documentation-function) nil \"eldoc-documentation-function not a variable\")" \
 -eval "(assert (boundp 'py-completion-last-window-configuration) nil \"py-completion-last-window-configuration not a variable\")" \
 -eval "(assert (boundp 'py-shell-template) nil \"py-shell-template not a variable\")" \

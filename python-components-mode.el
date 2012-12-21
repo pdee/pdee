@@ -1454,6 +1454,8 @@ Used for determining the default in the next one.")
   "Default template to expand by `python-expand-template'.
 Updated on each expansion.")
 
+(defvar outline-heading-end-regexp nil)
+
 (defvar py-shell-input-lines nil
   "Collect input lines send interactively to the Python process in
 order to allow injecting completion command between keyboard interrupt
