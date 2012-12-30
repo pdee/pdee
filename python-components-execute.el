@@ -641,7 +641,6 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
         (t (py-execute-buffer-finally start end pyshellname dedicated switch nostars sepchar split))))
 
 (defun py-execute-buffer-file (start end pyshellname dedicated switch nostars sepchar split file)
-  (delete-other-windows)
   (let* ((oldbuf (current-buffer))
          (py-exception-buffer oldbuf)
          (pyshellname (or pyshellname (py-choose-shell)))
@@ -688,7 +687,6 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
     erg))
 
 (defun py-execute-buffer-finally (start end &optional pyshellname dedicated switch nostars sepchar split)
-  (delete-other-windows)
   (let* ((oldbuf (current-buffer))
          (pyshellname (or pyshellname (py-choose-shell)))
          (execute-directory
