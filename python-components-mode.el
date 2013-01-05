@@ -333,6 +333,16 @@ URL: http://autopair.googlecode.com "
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-return-key 'py-newline-and-indent
+  "Which command <return> should call. "
+  :type '(choice
+          (const :tag "default" py-newline-and-indent)
+          (const :tag "newline" newline)
+          (const :tag "py-newline-and-indent" py-newline-and-indent)
+          (const :tag "py-newline-and-dedent" py-newline-and-dedent)
+          )
+  :group 'python-mode)
+
 (defcustom py-complete-function 'py-shell-complete
   "When set, enforces function todo completion, default is nil.
 
@@ -2396,7 +2406,7 @@ character address of the specified TYPE."
         (define-key map [(control j)] 'py-newline-and-indent)
         ;; Most Pythoneers expect RET `py-newline-and-indent'
         ;; (define-key map (kbd "RET") 'py-newline-and-dedent)
-        (define-key map (kbd "RET") 'py-newline-and-indent)
+        (define-key map (kbd "RET") py-return-key)
         ;; (define-key map (kbd "RET") 'newline)
         (define-key map [(super backspace)] 'py-dedent)
         ;; (define-key map [(control return)] 'py-newline-and-dedent)
@@ -2626,7 +2636,7 @@ Returns value of `py-jump-on-exception'\. . "]
               )
 
              ("py-switch-buffers-on-execute-p"
-              :help "Toggle  `py-switch-buffers-on-execute-p'"
+              :help "Toggle `py-switch-buffers-on-execute-p'"
 
               ["Toggle py-switch-buffers-on-execute-p" toggle-py-switch-buffers-on-execute-p
                :help "M-x `py-switch-buffers-on-execute-p' switches this minor mode "]
@@ -2635,12 +2645,10 @@ Returns value of `py-jump-on-exception'\. . "]
                :help "M-x `py-switch-buffers-on-execute-p-on' switches this minor mode on "]
 
               ["py-switch-buffers-on-execute-p off" py-switch-buffers-on-execute-p-off
-               :help "M-x `py-switch-buffers-on-execute-p-off' switches this minor mode off "]
-
-              )
+               :help "M-x `py-switch-buffers-on-execute-p-off' switches this minor mode off "])
 
              ("py-split-windows-on-execute-p"
-              :help "Toggle  `py-split-windows-on-execute-p'"
+              :help "Toggle `py-split-windows-on-execute-p'"
 
               ["Toggle py-split-windows-on-execute-p" toggle-py-split-windows-on-execute-p
                :help "M-x `py-split-windows-on-execute-p' splites this minor mode "]
@@ -2649,12 +2657,10 @@ Returns value of `py-jump-on-exception'\. . "]
                :help "M-x `py-split-windows-on-execute-p-on' splites this minor mode on "]
 
               ["py-split-windows-on-execute-p off" py-split-windows-on-execute-p-off
-               :help "M-x `py-split-windows-on-execute-p-off' splites this minor mode off "]
-
-              )
+               :help "M-x `py-split-windows-on-execute-p-off' splites this minor mode off "])
 
              ("Python-mode v5 behavior"
-              :help "Toggle  `python-mode-v5-behavior-p'"
+              :help "Toggle `python-mode-v5-behavior-p'"
 
               ["Toggle python-mode-v5-behavior-p" toggle-python-mode-v5-behavior-p
                :help "Switch boolean `python-mode-v5-behavior-p'."]
@@ -2663,12 +2669,10 @@ Returns value of `py-jump-on-exception'\. . "]
                :help "Switch `python-mode-v5-behavior-p' ON. "]
 
               ["Switch python-mode-v5-behavior-p OFF" python-mode-v5-behavior-p-off
-             :help "Switch `python-mode-v5-behavior-p-p' OFF. "]
-
-              )
+               :help "Switch `python-mode-v5-behavior-p-p' OFF. "])
 
              ("Highlight indentation"
-              :help "Toggle  `highlight-indentation'"
+              :help "Toggle `highlight-indentation'"
 
               ["Toggle highlight-indentation" py-toggle-highlight-indentation
                :help "M-x `highlight-indentation' switches this minor mode "]
@@ -2677,9 +2681,7 @@ Returns value of `py-jump-on-exception'\. . "]
                :help "M-x `highlight-indentation-on' switches this minor mode on "]
 
               ["Highlight-indentation off" highlight-indentation-off
-               :help "M-x `highlight-indentation-off' switches this minor mode off "]
-
-              )
+               :help "M-x `highlight-indentation-off' switches this minor mode off "])
 
              ("Autopair"
               :help "Toggle autopair-mode'"
@@ -2688,9 +2690,7 @@ Returns value of `py-jump-on-exception'\. . "]
                :help "Toggles py-autopair minor-mode "]
 
               ["Autopair on" py-autopair-mode-on
-               :help "Switches autopair minor-mode on "]
-
-              )
+               :help "Switches autopair minor-mode on "])
 
              ("Smart indentation"
               :help "Toggle py-smart-indentation'"
@@ -2699,9 +2699,7 @@ Returns value of `py-jump-on-exception'\. . "]
                :help "Toggles py-smart-indentation minor-mode "]
 
               ["Py-smart-indentation on" py-smart-indentation-mode-on
-               :help "Switches py-smart-indentation minor-mode on "]
-
-              )
+               :help "Switches py-smart-indentation minor-mode on "])
 
              ("Smart operator"
               :help "Toggle py-smart-operator'"
@@ -2713,9 +2711,7 @@ Returns value of `py-jump-on-exception'\. . "]
                :help "Switches py-smart-operator minor-mode off "]
 
               ["Py-smart-operator on" py-smart-operator-mode-on
-               :help "Switches py-smart-operator minor-mode on "]
-
-              )
+               :help "Switches py-smart-operator minor-mode on "])
 
              ("indent-tabs-mode"
               :help "Toggle indent-tabs-mode'"
@@ -2731,31 +2727,27 @@ Returns value of `py-jump-on-exception'\. . "]
 
              ("Electric comment"
               :help "Toggle `py-electric-comment-p'"
-              
+
               ["Toggle electric comment" toggle-py-electric-comment-p
                :help " `toggle-py-electric-comment-p'
 
 If `py-electric-comment-p' should be on or off\.
 
   Returns value of `py-electric-comment-p' switched to\. . "]
-              
+
               ["Electric comment on" py-electric-comment-p-on
                :help " `py-electric-comment-p-on'
 
 Make sure, py-electric-comment-p' is on\.
 
 Returns value of `py-electric-comment-p'\. . "]
-              
+
               ["Electric comment off" py-electric-comment-p-off
                :help " `py-electric-comment-p-off'
 
 Make sure, `py-electric-comment-p' is off\.
 
-Returns value of `py-electric-comment-p'\. . "]
-              
-              )
-             
-             )
+Returns value of `py-electric-comment-p'\. . "]))
 
             ("Help"
              :help "Some help commands"
@@ -2765,30 +2757,28 @@ Returns value of `py-electric-comment-p'\. . "]
 Get help on a Python expression.\n
 Needs Pymacs "]
 
-            ["Help thing at point" py-complete-help-thing-at-point
-             :help " `py-complete-help-thing-at-point'\n
+             ["Help thing at point" py-complete-help-thing-at-point
+              :help " `py-complete-help-thing-at-point'\n
 Needs Pymacs "]
 
-            ["Help on symbol" py-describe-symbol
-             :help "`py-describe-symbol'\n
+             ["Help on symbol" py-describe-symbol
+              :help "`py-describe-symbol'\n
 Use pydoc on symbol at point"]
 
-            ["Signature" py-complete-signature-expr
-             :help " Print object's signature\n
-Needs Pymacs"]
-            )
+             ["Signature" py-complete-signature-expr
+              :help " Print object's signature\n
+Needs Pymacs"])
 
             ("Completion"
              :help "Completion options"
 
-            ["Complete symbol" py-shell-complete
-             :help "`py-shell-complete'
+             ["Complete symbol" py-shell-complete
+              :help "`py-shell-complete'
 Complete (qualified) symbol before point"]
 
-            ["Complete" py-complete
-             :help " `py-complete'
-Complete symbol before point using Pymacs . "]
-            )
+             ["Complete" py-complete
+              :help " `py-complete'
+Complete symbol before point using Pymacs . "])
 
             ["Find function" py-find-function
              :help "`py-find-function'
@@ -2801,8 +2791,7 @@ Switch between `py-imenu-create-index' from 5.1 series and `py-imenu-create-inde
             ["Update imports" py-update-imports
              :help "`py-update-imports'
 Update list of top-level imports for completion"]
-            "-"
-            ))
+            "-"))
         ;; Menu py-execute forms
         (easy-menu-define py-menu map "Execute Python"
           `("PyExec"
@@ -3139,7 +3128,6 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p' "]
               ["py-execute-block-bpython-dedicated-switch" py-execute-block-bpython-dedicated-switch
                :help "Execute block through a unique Bpython interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p' "]
-
               ))
 
             ;; def
@@ -3294,7 +3282,6 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p' "]
               ["py-execute-def-bpython-dedicated-switch" py-execute-def-bpython-dedicated-switch
                :help "Execute def through a unique Bpython interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p' "]
-
               ))
 
             ;; class
@@ -3449,7 +3436,6 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p' "]
               ["py-execute-class-bpython-dedicated-switch" py-execute-class-bpython-dedicated-switch
                :help "Execute class through a unique Bpython interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p' "]
-
               ))
 
             ;; region
@@ -3604,7 +3590,6 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p' "]
               ["py-execute-region-bpython-dedicated-switch" py-execute-region-bpython-dedicated-switch
                :help "Execute region through a unique Bpython interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p' "]
-
               ))
 
             ;; file
@@ -3856,9 +3841,7 @@ Uses a dedicated shell\.. "]
 Send file to a Bpython interpreter\.
 
 Uses a dedicated shell\.
-Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
-
-              ))))
+Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]))))
 
         ;; Menu command forms
         (easy-menu-define py-menu map "Python Mode Commands"
@@ -3904,9 +3887,7 @@ Shift block right. "]
 
              ["Shift block left" py-shift-block-left
               :help "`py-shift-block-left'
-Shift block left. "]
-
-             )
+Shift block left. "])
             ("Def-or-class ... "
 
              ["Beginning of Def-or-Class" py-beginning-of-def-or-class
@@ -3949,9 +3930,7 @@ Shift def-or-class right. "]
 
              ["Shift def-or-class left" py-shift-def-or-class-left
               :help "`py-shift-def-or-class-left'
-Shift def-or-class left. "]
-
-             )
+Shift def-or-class left. "])
 
             ("Clause ... "
 
@@ -3988,15 +3967,13 @@ Delete innermost compound statement at point, store deleted string in kill-ring"
               :help "`py-delete-clause'
 Delete innermost compound statement at point, don't store deleted string in kill-ring"]
 
-            ["Shift clause right" py-shift-clause-right
-             :help "`py-shift-clause-right'
+             ["Shift clause right" py-shift-clause-right
+              :help "`py-shift-clause-right'
 Shift clause right. "]
 
-            ["Shift clause left" py-shift-clause-left
-             :help "`py-shift-clause-left'
-Shift clause left. "]
-
-            )
+             ["Shift clause left" py-shift-clause-left
+              :help "`py-shift-clause-left'
+Shift clause left. "])
 
             ("Statement ... "
 
@@ -4026,9 +4003,7 @@ Shift statement right. "]
 
              ["Shift statement left" py-shift-statement-left
               :help "`py-shift-statement-left'
-Shift statement left. "]
-
-             )
+Shift statement left. "])
 
             ("Expression ..."
 
@@ -4067,9 +4042,7 @@ Delete innermost compound statement at point, store deleted string in kill-ring"
 
              ["Delete expression" py-delete-expression
               :help "`py-delete-expression'
-Delete expression at point, don't store deleted string in kill-ring"]
-
-             )
+Delete expression at point, don't store deleted string in kill-ring"])
 
             ("Partial expression ..."
 
@@ -4097,9 +4070,7 @@ Delete innermost compound statement at point, store deleted string in kill-ring"
 
              ["Delete partial-expression" py-delete-partial-expression
               :help "`py-delete-partial-expression'
-Delete partial-expression at point, don't store deleted string in kill-ring"]
-
-             )
+Delete partial-expression at point, don't store deleted string in kill-ring"])
 
             ("Class ... "
 
@@ -4143,9 +4114,7 @@ Shift class right. "]
 
              ["Shift class left" py-shift-class-left
               :help "`py-shift-class-left'
-Shift class left. "]
-
-             )
+Shift class left. "])
 
             ("Def ... "
 
@@ -4189,9 +4158,7 @@ Shift def right. "]
 
              ["Shift def left" py-shift-def-left
               :help "`py-shift-def-left'
-Shift def left. "]
-
-             )
+Shift def left. "])
             "-"
 
             (" Block bol ... "
@@ -4242,9 +4209,7 @@ Shift block right. "]
 
              ["Shift block left" py-shift-block-left
               :help "`py-shift-block-left'
-Shift block left. "]
-
-             )
+Shift block left. "])
 
             (" Clause bol ... "
 
@@ -4294,9 +4259,7 @@ Shift clause right. "]
 
              ["Shift clause left" py-shift-clause-left
               :help "`py-shift-clause-left'
-Shift clause left. "]
-
-             )
+Shift clause left. "])
 
             (" Block-Or-Clause bol ... "
 
@@ -4346,9 +4309,7 @@ Shift block-or-clause right. "]
 
              ["Shift block-or-clause left" py-shift-block-or-clause-left
               :help "`py-shift-block-or-clause-left'
-Shift block-or-clause left. "]
-
-             )
+Shift block-or-clause left. "])
 
             (" Def bol ... "
 
@@ -4398,9 +4359,7 @@ Shift def right. "]
 
              ["Shift def left" py-shift-def-left
               :help "`py-shift-def-left'
-Shift def left. "]
-
-             )
+Shift def left. "])
 
             (" Class bol ... "
              ["Beginning of class bol" py-beginning-of-class-bol
@@ -4449,9 +4408,7 @@ Shift class right. "]
 
              ["Shift class left" py-shift-class-left
               :help "`py-shift-class-left'
-Shift class left. "]
-
-             )
+Shift class left. "])
 
             (" Def-Or-Class bol ... "
              ["Beginning of def-or-class bol" py-beginning-of-def-or-class-bol
@@ -4500,9 +4457,7 @@ Shift def-or-class right. "]
 
              ["Shift def-or-class left" py-shift-def-or-class-left
               :help "`py-shift-def-or-class-left'
-Shift def-or-class left. "]
-
-             )
+Shift def-or-class left. "])
 
             (" Statement bol ... "
              ["Beginning of statement bol" py-beginning-of-statement-bol
@@ -4539,9 +4494,7 @@ Shift statement right. "]
 
              ["Shift statement left" py-shift-statement-left
               :help "`py-shift-statement-left'
-Shift statement left. "]
-
-             )
+Shift statement left. "])
             "-"
             ["Backward into nomenclature" py-backward-into-nomenclature
              :help " `py-backward-into-nomenclature'
@@ -4654,9 +4607,7 @@ Symmetric style.
     If processing fails throw ProcessingError.
     \"\"\"
 
-See available styles at `py-fill-paragraph' or var `py-fill-docstring-style'"]
-
-             )
+See available styles at `py-fill-paragraph' or var `py-fill-docstring-style'"])
 
             ("Electric... "
              :help "electric commands'"
@@ -4675,20 +4626,20 @@ Switched by `py-electric-colon-active-p', default is nil
 See also `py-electric-colon-greedy-p' "]
 
              ["Electric delete" py-electric-delete
-:help " `py-electric-delete'
+              :help " `py-electric-delete'
 Delete following character or levels of whitespace\.
 
 With ARG do that ARG times\. . "]
 
              ["Electric backspace" py-electric-backspace
-:help " `py-electric-backspace'
+              :help " `py-electric-backspace'
 Delete preceding character or level of indentation\.
 
 With ARG do that ARG times\.
 Returns column reached\. . "]
 
              ["Electric comment" py-electric-comment
-:help " `py-electric-comment'
+              :help " `py-electric-comment'
 Insert a comment. If starting a comment, indent accordingly.
 
 If a numeric argument ARG is provided, that many \"#\" are inserted
@@ -4706,20 +4657,15 @@ electricly insert ',', and redisplay latest signature.\n
 Needs Pymacs"]
 
              ["Electric yank" py-electric-yank
-:help " `py-electric-yank'
-Perform command `yank' followed by an `indent-according-to-mode' . "]
-             )
+              :help " `py-electric-yank'
+Perform command `yank' followed by an `indent-according-to-mode' . "])
             ("Extended... "
              :help "extended edit commands'"
              ["Revert boolean assignent" py-boolswitch
-:help " `py-boolswitch'
+              :help " `py-boolswitch'
 Edit the assigment of a boolean variable, rever them.
 
-I.e. switch it from \"True\" to \"False\" and vice versa "]
-
-             )
-
-            ))
+I.e. switch it from \"True\" to \"False\" and vice versa "])))
 
         ;; Python shell menu
         (easy-menu-define py-menu map "Python Shells"
