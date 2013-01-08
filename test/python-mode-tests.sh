@@ -1058,6 +1058,8 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-font-lock-keywords) nil \"py-font-lock-keywords not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall filename-completion-fails-in-ipython-lp-1027265-n1-test \
+--funcall filename-completion-fails-in-ipython-lp-1027265-n2-test \
 --funcall comments-start-a-new-line-lp-1092847-n1-test \
 --funcall comments-start-a-new-line-lp-1092847-n2-test \
 --funcall wrong-indentation-after-return-or-pass-keyword-lp-1087499-test \

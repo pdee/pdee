@@ -38,6 +38,8 @@
 
 (setq bug-numbered-tests
       (list
+       'filename-completion-fails-in-ipython-lp-1027265-n1-test
+       'filename-completion-fails-in-ipython-lp-1027265-n2-test
        'comments-start-a-new-line-lp-1092847-n1-test
        'comments-start-a-new-line-lp-1092847-n2-test
        'temporary-files-remain-when-python-raises-exception-lp-1083973-n1-test
@@ -4770,6 +4772,33 @@ def x():
     (py-electric-comment 1)
     (back-to-indentation)
     (assert (eq 0 (current-column)) nil "comments-start-a-new-line-lp-1092847-n2-test failed")))
+
+(defun filename-completion-fails-in-ipython-lp-1027265-n1-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+a = open('/ho')
+"))
+  (py-bug-tests-intern 'filename-completion-fails-in-ipython-lp-1027265-n1-base arg teststring)))
+
+(defun filename-completion-fails-in-ipython-lp-1027265-n1-base ()
+    (goto-char 61)
+    (completion-at-point)
+    (assert (eq 64 (point)) nil "filename-completion-fails-in-ipython-lp-1027265-n1-test failed"))
+
+(defun filename-completion-fails-in-ipython-lp-1027265-n2-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env ipython
+# -*- coding: utf-8 -*-
+a = open('/ho')
+"))
+  (py-bug-tests-intern 'filename-completion-fails-in-ipython-lp-1027265-n2-base arg teststring)))
+
+(defun filename-completion-fails-in-ipython-lp-1027265-n2-base ()
+    (goto-char 62)
+    (completion-at-point)
+    (assert (eq 65 (point)) nil "filename-completion-fails-in-ipython-lp-1027265-n2-test failed"))
+
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

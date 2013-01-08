@@ -336,46 +336,49 @@ When `py-no-completion-calls-dabbrev-expand-p' is non-nil, try dabbrev-expand. O
   (unless (buffer-live-p (get-buffer "*Python Completions*"))
     (setq py-completion-last-window-configuration
           (current-window-configuration)))
-  (if (or (eq major-mode 'comint-mode)(eq major-mode 'inferior-python-mode))
-      ;;  kind of completion resp. to shell
-      (let (py-fontify-shell-buffer-p
-            (shell (or shell (py-report-executable (buffer-name (current-buffer)))))
-            (imports (py-find-imports)))
-        (if (string-match "[iI][pP]ython" shell)
-            (ipython-complete nil nil nil nil nil shell debug imports)
-          (let* ((orig (point))
-                 (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
-                 (end (point))
-                 (word (buffer-substring-no-properties beg end))
-                 (proc (get-buffer-process (current-buffer))))
-            (cond ((string= word "")
-                   (tab-to-tab-stop))
-                  ((string-match "[pP]ython3[^[:alpha:]]*$" shell)
-                   (python-shell-completion--do-completion-at-point proc imports word))
-                  (t (py-shell-complete-intern word beg end shell imports proc))))))
-    ;; complete in script buffer
-    (let* (
-           ;; (a (random 999999999))
-           (shell (or shell (py-choose-shell)))
-           py-split-windows-on-execute-p
-           py-switch-buffers-on-execute-p
-           (proc (or (get-process shell)
-                     (get-buffer-process (py-shell nil nil shell 'noswitch nil))))
-           (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
-           (end (point))
-           (word (buffer-substring-no-properties beg end))
-           (imports (py-find-imports)))
-      ;; (window-configuration-to-register a)
-      (cond ((string= word "")
-             (tab-to-tab-stop))
-            ((string-match "[iI][pP]ython" shell)
-             (ipython-complete nil nil beg end word nil debug imports))
-            ((string-match "[pP]ython3[^[:alpha:]]*$" shell)
-             (python-shell-completion--do-completion-at-point proc (buffer-substring-no-properties beg end) word))
-            ;; deals better with imports
-            ;; (imports
-            ;; (py-python-script-complete shell imports beg end word))
-            (t (py-shell-complete-intern word beg end shell imports proc debug))))))
+  (let ((orig (point)))
+    (ignore-errors (comint-dynamic-complete))
+    (when (eq (point) orig)
+      (if (or (eq major-mode 'comint-mode)(eq major-mode 'inferior-python-mode))
+          ;;  kind of completion resp. to shell
+          (let (py-fontify-shell-buffer-p
+                (shell (or shell (py-report-executable (buffer-name (current-buffer)))))
+                (imports (py-find-imports)))
+            (if (string-match "[iI][pP]ython" shell)
+                (ipython-complete nil nil nil nil nil shell debug imports)
+              (let* ((orig (point))
+                     (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
+                     (end (point))
+                     (word (buffer-substring-no-properties beg end))
+                     (proc (get-buffer-process (current-buffer))))
+                (cond ((string= word "")
+                       (tab-to-tab-stop))
+                      ((string-match "[pP]ython3[^[:alpha:]]*$" shell)
+                       (python-shell-completion--do-completion-at-point proc imports word))
+                      (t (py-shell-complete-intern word beg end shell imports proc))))))
+        ;; complete in script buffer
+        (let* (
+               ;; (a (random 999999999))
+               (shell (or shell (py-choose-shell)))
+               py-split-windows-on-execute-p
+               py-switch-buffers-on-execute-p
+               (proc (or (get-process shell)
+                         (get-buffer-process (py-shell nil nil shell 'noswitch nil))))
+               (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
+               (end (point))
+               (word (buffer-substring-no-properties beg end))
+               (imports (py-find-imports)))
+          ;; (window-configuration-to-register a)
+          (cond ((string= word "")
+                 (tab-to-tab-stop))
+                ((string-match "[iI][pP]ython" shell)
+                 (ipython-complete nil nil beg end word nil debug imports))
+                ((string-match "[pP]ython3[^[:alpha:]]*$" shell)
+                 (python-shell-completion--do-completion-at-point proc (buffer-substring-no-properties beg end) word))
+                ;; deals better with imports
+                ;; (imports
+                ;; (py-python-script-complete shell imports beg end word))
+                (t (py-shell-complete-intern word beg end shell imports proc debug))))))))
 
 (defun py-shell-complete-intern (word &optional beg end shell imports proc debug)
   (when imports
