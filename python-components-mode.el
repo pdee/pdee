@@ -2653,7 +2653,9 @@ Returns value of `py-jump-on-exception'\. . "]
                :help "M-x `py-switch-buffers-on-execute-p-on' switches this minor mode on "]
 
               ["py-switch-buffers-on-execute-p off" py-switch-buffers-on-execute-p-off
-               :help "M-x `py-switch-buffers-on-execute-p-off' switches this minor mode off "])
+               :help "M-x `py-switch-buffers-on-execute-p-off' switches this minor mode off "]
+
+              )
 
              ("py-split-windows-on-execute-p"
               :help "Toggle `py-split-windows-on-execute-p'"
@@ -2665,7 +2667,9 @@ Returns value of `py-jump-on-exception'\. . "]
                :help "M-x `py-split-windows-on-execute-p-on' splites this minor mode on "]
 
               ["py-split-windows-on-execute-p off" py-split-windows-on-execute-p-off
-               :help "M-x `py-split-windows-on-execute-p-off' splites this minor mode off "])
+               :help "M-x `py-split-windows-on-execute-p-off' splites this minor mode off "]
+
+              )
 
              ("Python-mode v5 behavior"
               :help "Toggle `python-mode-v5-behavior-p'"
@@ -2677,7 +2681,9 @@ Returns value of `py-jump-on-exception'\. . "]
                :help "Switch `python-mode-v5-behavior-p' ON. "]
 
               ["Switch python-mode-v5-behavior-p OFF" python-mode-v5-behavior-p-off
-               :help "Switch `python-mode-v5-behavior-p-p' OFF. "])
+               :help "Switch `python-mode-v5-behavior-p-p' OFF. "]
+
+              )
 
              ("Highlight indentation"
               :help "Toggle `highlight-indentation'"
@@ -2689,7 +2695,9 @@ Returns value of `py-jump-on-exception'\. . "]
                :help "M-x `highlight-indentation-on' switches this minor mode on "]
 
               ["Highlight-indentation off" highlight-indentation-off
-               :help "M-x `highlight-indentation-off' switches this minor mode off "])
+               :help "M-x `highlight-indentation-off' switches this minor mode off "]
+
+              )
 
              ("Autopair"
               :help "Toggle autopair-mode'"
@@ -2698,7 +2706,9 @@ Returns value of `py-jump-on-exception'\. . "]
                :help "Toggles py-autopair minor-mode "]
 
               ["Autopair on" py-autopair-mode-on
-               :help "Switches autopair minor-mode on "])
+               :help "Switches autopair minor-mode on "]
+
+              )
 
              ("Smart indentation"
               :help "Toggle py-smart-indentation'"
@@ -2707,7 +2717,9 @@ Returns value of `py-jump-on-exception'\. . "]
                :help "Toggles py-smart-indentation minor-mode "]
 
               ["Py-smart-indentation on" py-smart-indentation-mode-on
-               :help "Switches py-smart-indentation minor-mode on "])
+               :help "Switches py-smart-indentation minor-mode on "]
+
+              )
 
              ("Smart operator"
               :help "Toggle py-smart-operator'"
@@ -2719,7 +2731,9 @@ Returns value of `py-jump-on-exception'\. . "]
                :help "Switches py-smart-operator minor-mode off "]
 
               ["Py-smart-operator on" py-smart-operator-mode-on
-               :help "Switches py-smart-operator minor-mode on "])
+               :help "Switches py-smart-operator minor-mode on "]
+
+              )
 
              ("indent-tabs-mode"
               :help "Toggle indent-tabs-mode'"
@@ -2755,7 +2769,11 @@ Returns value of `py-electric-comment-p'\. . "]
 
 Make sure, `py-electric-comment-p' is off\.
 
-Returns value of `py-electric-comment-p'\. . "]))
+Returns value of `py-electric-comment-p'\. . "]
+
+              )
+
+             )
 
             ("Help"
              :help "Some help commands"
@@ -2775,7 +2793,8 @@ Use pydoc on symbol at point"]
 
              ["Signature" py-complete-signature-expr
               :help " Print object's signature\n
-Needs Pymacs"])
+Needs Pymacs"]
+             )
 
             ("Completion"
              :help "Completion options"
@@ -2786,7 +2805,8 @@ Complete (qualified) symbol before point"]
 
              ["Complete" py-complete
               :help " `py-complete'
-Complete symbol before point using Pymacs . "])
+Complete symbol before point using Pymacs . "]
+             )
 
             ["Find function" py-find-function
              :help "`py-find-function'
@@ -2799,7 +2819,8 @@ Switch between `py-imenu-create-index' from 5.1 series and `py-imenu-create-inde
             ["Update imports" py-update-imports
              :help "`py-update-imports'
 Update list of top-level imports for completion"]
-            "-"))
+            "-"
+            ))
         ;; Menu py-execute forms
         (easy-menu-define py-menu map "Execute Python"
           `("PyExec"
@@ -3849,12 +3870,175 @@ Uses a dedicated shell\.. "]
 Send file to a Bpython interpreter\.
 
 Uses a dedicated shell\.
-Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]))))
+Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
+
+              ))))
 
         ;; Menu command forms
         (easy-menu-define py-menu map "Python Mode Commands"
           `("PyEdit"
             :help "Python-specific features"
+            ("Copy ... "
+             ["Copy statement" py-copy-statement
+              :help "`py-copy-statement'
+Copy statement at point"]
+             ["Copy clause" py-copy-clause
+              :help "`py-copy-clause'
+Copy innermost compound statement at point"]
+
+             ["Copy block" py-copy-block
+              :help "`py-copy-block'
+Copy innermost compound statement at point"]
+
+             ["Copy def" py-copy-def
+              :help "`py-copy-def'
+Copy innermost definition at point"]
+             ["Copy expression" py-copy-expression
+              :help "`py-copy-expression'
+Copy expression at point"]
+             ["Copy partial expression" py-copy-partial-expression
+              :help "`py-copy-partial-expression'
+\".\" operators delimit a partial-expression expression on it's level"]
+             ["Copy class" py-copy-class
+              :help "`py-copy-class'
+Copy innermost definition at point"]
+
+             ["Copy Def-or-Class" py-copy-def-or-class
+              :help "`py-copy-def-or-class'
+Copy innermost definition at point"]
+
+             )
+            ("Kill ... "
+
+             ["Kill statement" py-kill-statement
+              :help "`py-kill-statement'
+Delete innermost compound statement at point, store deleted string in kill-ring"]
+             
+             ["Kill clause" py-kill-clause
+              :help "`py-kill-clause'
+Delete innermost compound statement at point, store deleted string in kill-ring"]
+
+             ["Kill block" py-kill-block
+              :help "`py-kill-block'
+Delete innermost compound statement at point, store deleted string in kill-ring"]
+
+             ["Kill def-or-class" py-kill-def-or-class
+              :help "`py-kill-def-or-class'
+Delete innermost compound statement at point, store deleted string in kill-ring"]
+
+             ["Kill expression" py-kill-expression
+              :help "`py-kill-expression'
+Delete innermost compound statement at point, store deleted string in kill-ring"]
+
+             ["Kill partial-expression" py-kill-partial-expression
+              :help "`py-kill-partial-expression'
+Delete innermost compound statement at point, store deleted string in kill-ring"]
+
+             ["Kill class" py-kill-class
+              :help "`py-kill-class'
+Delete innermost compound statement at point, store deleted string in kill-ring"]
+
+             ["Kill def" py-kill-def
+              :help "`py-kill-def'
+Delete innermost compound statement at point, store deleted string in kill-ring"]
+             )
+             ("Delete ... "
+              ["Delete block" py-delete-block
+              :help "`py-delete-block'
+Delete innermost compound statement at point, don't store deleted string in kill-ring"]
+
+              ["Delete def-or-class" py-delete-def-or-class
+              :help "`py-delete-def-or-class'
+Delete def-or-class at point, don't store deleted string in kill-ring"]
+
+              ["Delete clause" py-delete-clause
+              :help "`py-delete-clause'
+Delete innermost compound statement at point, don't store deleted string in kill-ring"]
+              ["Delete statement" py-delete-statement
+              :help "`py-delete-statement'
+Delete statement at point, don't store deleted string in kill-ring"]
+
+              ["Delete expression" py-delete-expression
+              :help "`py-delete-expression'
+Delete expression at point, don't store deleted string in kill-ring"]
+
+             ["Delete partial-expression" py-delete-partial-expression
+              :help "`py-delete-partial-expression'
+Delete partial-expression at point, don't store deleted string in kill-ring"]
+
+          ["Delete class" py-delete-class
+              :help "`py-delete-class'
+Delete class at point, don't store deleted string in kill-ring"]
+
+          ["Delete def" py-delete-def
+              :help "`py-delete-def'
+Delete def at point, don't store deleted string in kill-ring"]
+
+          )
+
+              ("Shift right ... "
+              ["Shift block right" py-shift-block-right
+              :help "`py-shift-block-right'
+Shift block right. "]
+
+             ["Shift clause right" py-shift-clause-right
+              :help "`py-shift-clause-right'
+Shift clause right. "]
+
+             ["Shift statement right" py-shift-statement-right
+              :help "`py-shift-statement-right'
+Shift statement right. "]
+              
+             ["Shift def-or-class right" py-shift-def-or-class-right
+              :help "`py-shift-def-or-class-right'
+Shift def-or-class right. "]
+             
+             ["Shift class right" py-shift-class-right
+              :help "`py-shift-class-right'
+Shift class right. "]
+
+             ["Shift def right" py-shift-def-right
+              :help "`py-shift-def-right'
+Shift def right. "]
+
+             ["Shift block-or-clause right" py-shift-block-or-clause-right
+              :help "`py-shift-block-or-clause-right'
+Shift block-or-clause right. "]
+
+             )
+
+             ("Shift left ... "
+              ["Shift block left" py-shift-block-left
+              :help "`py-shift-block-left'
+Shift block left. "]
+
+             ["Shift clause left" py-shift-clause-left
+              :help "`py-shift-clause-left'
+Shift clause left. "]
+
+             ["Shift statement left" py-shift-statement-left
+              :help "`py-shift-statement-left'
+Shift statement left. "]
+              
+             ["Shift def-or-class left" py-shift-def-or-class-left
+              :help "`py-shift-def-or-class-left'
+Shift def-or-class left. "]
+             
+             ["Shift class left" py-shift-class-left
+              :help "`py-shift-class-left'
+Shift class left. "]
+
+             ["Shift def left" py-shift-def-left
+              :help "`py-shift-def-left'
+Shift def left. "]
+
+             ["Shift block-or-clause left" py-shift-block-or-clause-left
+              :help "`py-shift-block-or-clause-left'
+Shift block-or-clause left. "]
+
+             )
+              
+            "-"
             ("Block ... "
              ["Beginning of block" py-beginning-of-block
               :help "`py-beginning-of-block'
@@ -3895,7 +4079,10 @@ Shift block right. "]
 
              ["Shift block left" py-shift-block-left
               :help "`py-shift-block-left'
-Shift block left. "])
+Shift block left. "]
+
+             )
+
             ("Def-or-class ... "
 
              ["Beginning of Def-or-Class" py-beginning-of-def-or-class
@@ -3938,7 +4125,9 @@ Shift def-or-class right. "]
 
              ["Shift def-or-class left" py-shift-def-or-class-left
               :help "`py-shift-def-or-class-left'
-Shift def-or-class left. "])
+Shift def-or-class left. "]
+
+             )
 
             ("Clause ... "
 
@@ -3981,7 +4170,9 @@ Shift clause right. "]
 
              ["Shift clause left" py-shift-clause-left
               :help "`py-shift-clause-left'
-Shift clause left. "])
+Shift clause left. "]
+
+             )
 
             ("Statement ... "
 
@@ -4011,7 +4202,9 @@ Shift statement right. "]
 
              ["Shift statement left" py-shift-statement-left
               :help "`py-shift-statement-left'
-Shift statement left. "])
+Shift statement left. "]
+
+             )
 
             ("Expression ..."
 
@@ -4050,7 +4243,9 @@ Delete innermost compound statement at point, store deleted string in kill-ring"
 
              ["Delete expression" py-delete-expression
               :help "`py-delete-expression'
-Delete expression at point, don't store deleted string in kill-ring"])
+Delete expression at point, don't store deleted string in kill-ring"]
+
+             )
 
             ("Partial expression ..."
 
@@ -4078,7 +4273,9 @@ Delete innermost compound statement at point, store deleted string in kill-ring"
 
              ["Delete partial-expression" py-delete-partial-expression
               :help "`py-delete-partial-expression'
-Delete partial-expression at point, don't store deleted string in kill-ring"])
+Delete partial-expression at point, don't store deleted string in kill-ring"]
+
+             )
 
             ("Class ... "
 
@@ -4122,7 +4319,9 @@ Shift class right. "]
 
              ["Shift class left" py-shift-class-left
               :help "`py-shift-class-left'
-Shift class left. "])
+Shift class left. "]
+
+             )
 
             ("Def ... "
 
@@ -4166,7 +4365,9 @@ Shift def right. "]
 
              ["Shift def left" py-shift-def-left
               :help "`py-shift-def-left'
-Shift def left. "])
+Shift def left. "]
+
+             )
             "-"
 
             (" Block bol ... "
@@ -4217,7 +4418,9 @@ Shift block right. "]
 
              ["Shift block left" py-shift-block-left
               :help "`py-shift-block-left'
-Shift block left. "])
+Shift block left. "]
+
+             )
 
             (" Clause bol ... "
 
@@ -4267,7 +4470,9 @@ Shift clause right. "]
 
              ["Shift clause left" py-shift-clause-left
               :help "`py-shift-clause-left'
-Shift clause left. "])
+Shift clause left. "]
+
+             )
 
             (" Block-Or-Clause bol ... "
 
@@ -4317,7 +4522,9 @@ Shift block-or-clause right. "]
 
              ["Shift block-or-clause left" py-shift-block-or-clause-left
               :help "`py-shift-block-or-clause-left'
-Shift block-or-clause left. "])
+Shift block-or-clause left. "]
+
+             )
 
             (" Def bol ... "
 
@@ -4367,7 +4574,9 @@ Shift def right. "]
 
              ["Shift def left" py-shift-def-left
               :help "`py-shift-def-left'
-Shift def left. "])
+Shift def left. "]
+
+             )
 
             (" Class bol ... "
              ["Beginning of class bol" py-beginning-of-class-bol
@@ -4416,7 +4625,9 @@ Shift class right. "]
 
              ["Shift class left" py-shift-class-left
               :help "`py-shift-class-left'
-Shift class left. "])
+Shift class left. "]
+
+             )
 
             (" Def-Or-Class bol ... "
              ["Beginning of def-or-class bol" py-beginning-of-def-or-class-bol
@@ -4465,7 +4676,9 @@ Shift def-or-class right. "]
 
              ["Shift def-or-class left" py-shift-def-or-class-left
               :help "`py-shift-def-or-class-left'
-Shift def-or-class left. "])
+Shift def-or-class left. "]
+
+             )
 
             (" Statement bol ... "
              ["Beginning of statement bol" py-beginning-of-statement-bol
@@ -4502,7 +4715,9 @@ Shift statement right. "]
 
              ["Shift statement left" py-shift-statement-left
               :help "`py-shift-statement-left'
-Shift statement left. "])
+Shift statement left. "]
+
+             )
             "-"
             ["Backward into nomenclature" py-backward-into-nomenclature
              :help " `py-backward-into-nomenclature'
@@ -4615,7 +4830,9 @@ Symmetric style.
     If processing fails throw ProcessingError.
     \"\"\"
 
-See available styles at `py-fill-paragraph' or var `py-fill-docstring-style'"])
+See available styles at `py-fill-paragraph' or var `py-fill-docstring-style'"]
+
+             )
 
             ("Electric... "
              :help "electric commands'"
