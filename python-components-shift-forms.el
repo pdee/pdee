@@ -28,6 +28,7 @@
 If no region is active, current line is dedented.
 Returns indentation reached. "
   (interactive "p")
+  (setq count (or count 1))
   (let ((erg (py-shift-intern (- count) start end)))
     (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
@@ -39,6 +40,7 @@ Returns indentation reached. "
 If no region is active, current line is indented.
 Returns indentation reached. "
   (interactive "p")
+  (setq count (or count 1))
   (let ((erg (py-shift-intern count beg end)))
     (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))

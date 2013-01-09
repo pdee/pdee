@@ -162,6 +162,14 @@ See also `py-no-completion-calls-dabbrev-expand-p'"
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-tab-indents-region-p nil
+  "If `t', TAB will indent/cycle the region, not just the current line.
+
+Default is  nil"
+
+  :type 'boolean
+  :group 'python-mode)
+
 (defcustom py-org-cycle-p nil
   "When non-nil, command `org-cycle' is available at shift-TAB, <backtab>
 

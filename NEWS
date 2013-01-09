@@ -4,6 +4,9 @@ Python Mode News
 New in version 6.1.1
 ---------------------
 
+- when boolean `py-tab-indents-region-p' is `t',
+  TAB will indent/cycle the region, not just the current line.
+
 - command from RET customizable via `py-return-key':
   `py-newline-and-indent', `newline' or `py-newline-and-dedent'
 

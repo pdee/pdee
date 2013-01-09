@@ -72,31 +72,55 @@ With optional \\[universal-argument] an indent with length `py-indent-offset' is
   (if py-tab-indent
       (cond ((eq need cui)
              (when (eq this-command last-command)
-               (beginning-of-line)
-               (delete-horizontal-space)
-               (if (<= (line-beginning-position) (+ (point) (- col cui)))
-                   (forward-char (- col cui))
-                 (beginning-of-line))))
+               (if (and py-tab-indents-region-p (use-region-p))
+                   (progn
+                     (when (eq (point) (region-end))
+                       (exchange-point-and-mark))
+                     (while (< 0 (current-indentation))
+                       (py-shift-region-left 1)))
+                 (beginning-of-line)
+                 (delete-horizontal-space)
+                 (if (<= (line-beginning-position) (+ (point) (- col cui)))
+                     (forward-char (- col cui))
+                   (beginning-of-line)))))
             ((< cui need)
              (if (eq this-command last-command)
+                 (if (and py-tab-indents-region-p (use-region-p))
+                     (progn
+                       (when (eq (point) (region-end))
+                         (exchange-point-and-mark))
+                       (py-shift-region-right 1))
+                   (progn
+                     (beginning-of-line)
+                     (delete-horizontal-space)
+                     (indent-to (+ (* (/ cui py-indent-offset) py-indent-offset) py-indent-offset))
+                     (forward-char (- col cui))))
+               (if (and py-tab-indents-region-p (use-region-p))
+                   (progn
+                     (when (eq (point) (region-end))
+                       (exchange-point-and-mark))
+                     (while (< (current-indentation) need)
+                       (py-shift-region-right 1)))
+                 (beginning-of-line)
+                 (delete-horizontal-space)
+                 (indent-to need)
+                 (forward-char (- col cui)))))
+            (t
+             (if (and py-tab-indents-region-p (use-region-p))
                  (progn
-                   (beginning-of-line)
-                   (delete-horizontal-space)
-                   (indent-to (+ (* (/ cui py-indent-offset) py-indent-offset) py-indent-offset))
-                   (forward-char (- col cui)))
+                   (when (eq (point) (region-end))
+                     (exchange-point-and-mark))
+                   (while (< (current-indentation) need)
+                     (py-shift-region-right 1)))
                (beginning-of-line)
-               (delete-horizontal-space)
-               (indent-to need)
-               (forward-char (- col cui))))
-            (t (beginning-of-line)
                (delete-horizontal-space)
                (indent-to need)
                (if (<= (line-beginning-position) (+ (point) (- col cui)))
                    (forward-char (- col cui))
-                 (beginning-of-line))))
+                 (beginning-of-line)))))
     (insert-tab)))
 
-(defun py-indent-line (&optional arg)
+(defun py-indent-line (&optional arg recursive)
   "Indent the current line according to Python rules.
 
 When called interactivly with \\[universal-argument], ignore dedenting rules for block closing statements
@@ -134,6 +158,7 @@ Returns current indentation "
            (py-indent-line-intern need cui))
           (t (py-indent-line-intern need cui))))
   (when (and (interactive-p) py-verbose-p)(message "%s" (current-indentation)))
+
   (current-indentation))
 
 (defun py-newline-and-indent ()
@@ -367,7 +392,7 @@ The defun visible is the one that contains point or follows point. "
     (forward-line 1))
   (back-to-indentation))
 
-(defun py-indent-region (start end &optional indent-offset)
+(defun py-indent-region (start end &optional indent-offset recursive)
   "Reindent a region of Python code.
 
 With optional INDENT-OFFSET specify a different value than `py-indent-offset' at place.
@@ -383,7 +408,7 @@ Returns and keeps relative position "
     (goto-char beg)
     (while (< (line-end-position) end)
       (py-indent-and-forward))
-    (unless (empty-line-p) (py-indent-line))
+    (unless (empty-line-p) (py-indent-line nil t))
     (goto-char orig)))
 
 ;;; Positions
