@@ -1199,7 +1199,7 @@ Returns the string inserted. "
 (defun py-comment-region (beg end &optional arg)
   "Like `comment-region' but uses double hash (`#') comment starter."
   (interactive "r\nP")
-  (let ((comment-start py-blocqk-comment-prefix))
+  (let ((comment-start py-block-comment-prefix))
     (comment-region beg end arg)))
 
 (provide 'python-components-edit)

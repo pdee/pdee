@@ -82,6 +82,8 @@
 ;;
 (defvar py-down-forms (list "block" "minor-block" "clause" "block-or-clause" "def" "class" "def-or-class"))
 
+(setq py-comment-forms (list "block" "clause" "block-or-clause" "def" "class" "def-or-class" "statement"))
+
 ;; (setq py-down-forms (list "block" "minor-block" "clause" "block-or-clause" "def" "class" "def-or-class" "statement"))
 (setq py-down-forms (list "block" "minor-block" "clause" "block-or-clause" "def" "class" "def-or-class"))
 
@@ -2266,4 +2268,59 @@ Return position if " ele " found, nil otherwise \"
     (goto-char (point-max))
     (insert "\n)\n"))
   (emacs-lisp-mode))
+
+
+(defun write-py-comment-forms ()
+  (interactive)
+  (set-buffer (get-buffer-create "python-components-comment.el"))
+  (erase-buffer)
+  (insert ";;; python-components-comment.el -- Comment/uncomment python constructs at point\n")
+  (insert arkopf)
+  (insert "
+\(defun py-comment-region (beg end &optional arg)
+  \"Like `comment-region' but uses double hash (`#') comment starter.\"
+  (interactive \"r\\nP\")
+  (let ((comment-start (if py-block-comment-prefix-p
+                             py-block-comment-prefix
+                           comment-start)))
+    (comment-region beg end arg)))\n
+")
+  (dolist (ele py-comment-forms)
+    (insert (concat "(defun py-comment-" ele " (&optional beg end arg)
+  \"Comments " ele " at point.
+
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+the default\"
+  (interactive \"\*\")
+  (save-excursion 
+    (let ((comment-start (if py-block-comment-prefix-p
+                             py-block-comment-prefix
+                           comment-start))
+          (beg (or beg (py-beginning-of-" ele "-position)))
+          (end (or end (py-end-of-" ele "-position))))
+      (goto-char beg)
+      (push-mark)
+      (goto-char end)
+      (comment-region beg end arg))))\n\n")))
+  (insert "\n;; python-components-comment ends here
+\(provide 'python-components-comment)")
+
+  ;; (switch-to-buffer (current-buffer))
+    (eval-buffer)
+  (emacs-lisp-mode)
+
+  (set-buffer (get-buffer-create "Menu-Python-Components-Comments"))
+  (erase-buffer)
+  (insert "(\"Comment ... \"
+            :help \"Comment forms\"\n\n")
+
+  (switch-to-buffer (current-buffer))
+  (dolist (ele py-comment-forms)
+    (setq name (concat "py-comment-" ele))
+    (write-menu-entry name))
+  (insert "      ))")
+  (emacs-lisp-mode) 
+  (switch-to-buffer (current-buffer)))
+
+    
 

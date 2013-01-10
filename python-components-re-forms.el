@@ -149,7 +149,7 @@ Returns beginning of clause if successful, nil otherwise
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive "P")
-  (py-beginning-of-form-intern py-clause-re (interactive-p) indent))
+  (py-beginning-of-form-intern py-block-or-clause-re (interactive-p) indent))
 
 (defun py-end-of-clause (&optional indent)
  "Go to end of clause.

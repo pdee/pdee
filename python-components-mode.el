@@ -170,6 +170,14 @@ Default is  nil"
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-block-comment-prefix-p t
+  "If py-comment inserts py-block-comment-prefix.
+
+Default is t"
+
+  :type 'boolean
+  :group 'python-mode)
+
 (defcustom py-org-cycle-p nil
   "When non-nil, command `org-cycle' is available at shift-TAB, <backtab>
 
@@ -979,7 +987,6 @@ Default ignores all inputs of 0, 1, or 2 non-blank characters."
   :type 'regexp
   :group 'python-mode)
 
-
 (defcustom strip-chars-before  "\\`[ \t\r\n]*"
   "Regexp indicating which chars shall be stripped before STRING - which is defined by `string-chars-preserve'."
 
@@ -1150,7 +1157,6 @@ It should not contain a caret (^) at the beginning."
   "Python code to setup documentation retrieval."
   :type 'string
   :group 'python-mode)
-
 
 (defcustom py-shell-prompt-output-regexp ""
   "Regular Expression matching output prompt of python shell.
@@ -1711,8 +1717,6 @@ Includes def and class. ")
 
 (setq py-history-filter-regexp "\\`\\s-*\\S-?\\S-?\\s-*\\'\\|'''/tmp/\\|^__pyfile = open('''\\|^execfile(r'[.+]/tmp/")
 
-
-
 ;;; py-expression variables start
 
 ;; (setq py-expression-skip-regexp "[^ (=#\t\r\n\f]")
@@ -2126,6 +2130,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
 (require 'python-components-paragraph)
 (require 'python-components-shift-forms)
 (require 'python-components-execute-file)
+(require 'python-components-comment)
 
 ;;; Python specialized rx, thanks Fabian F. Gallina
 (eval-when-compile
@@ -3913,7 +3918,7 @@ Copy innermost definition at point"]
              ["Kill statement" py-kill-statement
               :help "`py-kill-statement'
 Delete innermost compound statement at point, store deleted string in kill-ring"]
-             
+
              ["Kill clause" py-kill-clause
               :help "`py-kill-clause'
 Delete innermost compound statement at point, store deleted string in kill-ring"]
@@ -3976,7 +3981,7 @@ Delete def at point, don't store deleted string in kill-ring"]
 
           )
 
-              ("Shift right ... "
+             ("Shift right ... "
               ["Shift block right" py-shift-block-right
               :help "`py-shift-block-right'
 Shift block right. "]
@@ -3988,11 +3993,11 @@ Shift clause right. "]
              ["Shift statement right" py-shift-statement-right
               :help "`py-shift-statement-right'
 Shift statement right. "]
-              
+
              ["Shift def-or-class right" py-shift-def-or-class-right
               :help "`py-shift-def-or-class-right'
 Shift def-or-class right. "]
-             
+
              ["Shift class right" py-shift-class-right
               :help "`py-shift-class-right'
 Shift class right. "]
@@ -4019,11 +4024,11 @@ Shift clause left. "]
              ["Shift statement left" py-shift-statement-left
               :help "`py-shift-statement-left'
 Shift statement left. "]
-              
+
              ["Shift def-or-class left" py-shift-def-or-class-left
               :help "`py-shift-def-or-class-left'
 Shift def-or-class left. "]
-             
+
              ["Shift class left" py-shift-class-left
               :help "`py-shift-class-left'
 Shift class left. "]
@@ -4037,14 +4042,83 @@ Shift def left. "]
 Shift block-or-clause left. "]
 
              )
+
+             ("Comment ... "
+              :help "Comment forms"
+
+              ["Beginning of comment" py-beginning-of-comment
+               :help " `py-beginning-of-comment'
+Go to beginning of comment at point. "]
+
+              ["End of comment" py-end-of-comment
+               :help " `py-end-of-comment'
+
+Go to end of comment at point. "]
+
+              ["Uncomment" py-uncomment
+               :help " `py-uncomment'
+
+Uncomment lines at point\.
+
+If region is active, restrict uncommenting at region . "]
               
-            "-"
-            ("Block ... "
-             ["Beginning of block" py-beginning-of-block
-              :help "`py-beginning-of-block'
+              ["Comment block" py-comment-block
+               :help " `py-comment-block'
+Comments block at point\.
+
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+the default. "]
+              
+              ["Comment clause" py-comment-clause
+               :help " `py-comment-clause'
+Comments clause at point\.
+
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+the default. "]
+              
+              ["Comment block or clause" py-comment-block-or-clause
+               :help " `py-comment-block-or-clause'
+Comments block-or-clause at point\.
+
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+the default. "]
+              
+              ["Comment def" py-comment-def
+               :help " `py-comment-def'
+Comments def at point\.
+
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+the default. "]
+              
+              ["Comment class" py-comment-class
+               :help " `py-comment-class'
+Comments class at point\.
+
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+the default. "]
+              
+              ["Comment def or class" py-comment-def-or-class
+               :help " `py-comment-def-or-class'
+Comments def-or-class at point\.
+
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+the default. "]
+              
+              ["Comment statement" py-comment-statement
+               :help " `py-comment-statement'
+Comments statement at point\.
+
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+the default. "]
+              
+              )
+          "-"
+          ("Block ... "
+           ["Beginning of block" py-beginning-of-block
+            :help "`py-beginning-of-block'
 Go to start of innermost compound statement at point"]
-             ["End of block" py-end-of-block
-              :help "`py-end-of-block'
+           ["End of block" py-end-of-block
+            :help "`py-end-of-block'
 Go to end of innermost compound statement at point"]
 
              ["Down block" py-down-block

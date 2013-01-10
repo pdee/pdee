@@ -24,17 +24,6 @@
 
 ;;; Code:
 
-(defun py-beginning-of-comment ()
-  "Go to the beginning of current line's comment, if any.
-
-Returns position if succesful. "
-  (save-restriction
-    (widen)
-    (let ((pps (syntax-ppss)))
-      (when (nth 4 pps)
-        (goto-char
-         (nth 8 pps))))))
-
 ;; (defun py-beginning-of-comment ()
 ;;   "Go to the beginning of current line's comment, if any.
 ;;
