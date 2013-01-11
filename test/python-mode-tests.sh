@@ -1058,6 +1058,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-font-lock-keywords) nil \"py-font-lock-keywords not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall py-moves-test \
 --funcall filename-completion-fails-in-ipython-lp-1027265-n1-test \
 --funcall filename-completion-fails-in-ipython-lp-1027265-n2-test \
 --funcall comments-start-a-new-line-lp-1092847-n1-test \
@@ -1332,7 +1333,6 @@ est \
 --funcall completion-fails-in-python-script-r989-lp:1004613-test \
 --funcall stalls-emacs-probably-due-to-syntax-highlighting-lp-1058261-test \
 --funcall tqs-lp:302834-lp:1018994-test \
---funcall py-moves-test \
 --funcall py-end-of-def-test \
 --funcall py-end-of-def-or-class-test \
 --funcall python-mode-slow-lp:803275-test \

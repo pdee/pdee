@@ -684,8 +684,9 @@ and `pass'.  This doesn't catch embedded statements."
                            (goto-char last))))
                       ((eq 'py-block-re regexp)
                        (while
-                           (and (setq last (point)) (prog1 (py-end-of-statement)(beginning-of-line))
-                                (<= (- ind py-indent-offset) (current-indentation)))
+                           (and (setq last (point)) (prog1 (py-end-of-statement)(py-beginning-of-statement))
+                                (or (and (looking-at py-clause-re) (<= ind (+ (current-indentation) py-indent-offset))(py-end-of-statement) (py-end-of-statement) )
+                                    (<= ind (current-indentation))))
                          (py-travel-current-indent ind (point)))
                        (goto-char last))))))
         (goto-char orig))
