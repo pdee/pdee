@@ -71,21 +71,28 @@ With optional \\[universal-argument] an indent with length `py-indent-offset' is
 (defun py-indent-line-intern (need cui)
   (if py-tab-indent
       (cond ((eq need cui)
-             (when (eq this-command last-command)
-               (if (and py-tab-indents-region-p (use-region-p))
-                   (progn
-                     (when (eq (point) (region-end))
-                       (exchange-point-and-mark))
-                     (while (< 0 (current-indentation))
-                       (py-shift-region-left 1)))
-                 (beginning-of-line)
-                 (delete-horizontal-space)
-                 (if (<= (line-beginning-position) (+ (point) (- col cui)))
-                     (forward-char (- col cui))
-                   (beginning-of-line)))))
+             (if (eq this-command last-command)
+                 (if (and py-tab-shifts-region-p (use-region-p))
+                     (progn
+                       (when (eq (point) (region-end))
+                         (exchange-point-and-mark))
+                       (while (< 0 (current-indentation))
+                         (py-shift-region-left 1)))
+                   (beginning-of-line)
+                   (delete-horizontal-space)
+                   (if (<= (line-beginning-position) (+ (point) (- col cui)))
+                       (forward-char (- col cui))
+                     (beginning-of-line)))
+               (when (and py-tab-indents-region-p (use-region-p))
+                 (save-excursion
+                   (save-restriction
+                     (narrow-to-region (region-beginning) (region-end))
+                     (forward-line 1)
+                     (narrow-to-region (line-beginning-position) (region-end))
+                     (py-indent-region (point-min) (point-max)))))))
             ((< cui need)
              (if (eq this-command last-command)
-                 (if (and py-tab-indents-region-p (use-region-p))
+                 (if (and py-tab-shifts-region-p (use-region-p))
                      (progn
                        (when (eq (point) (region-end))
                          (exchange-point-and-mark))
@@ -95,7 +102,7 @@ With optional \\[universal-argument] an indent with length `py-indent-offset' is
                      (delete-horizontal-space)
                      (indent-to (+ (* (/ cui py-indent-offset) py-indent-offset) py-indent-offset))
                      (forward-char (- col cui))))
-               (if (and py-tab-indents-region-p (use-region-p))
+               (if (and py-tab-shifts-region-p (use-region-p))
                    (progn
                      (when (eq (point) (region-end))
                        (exchange-point-and-mark))
@@ -106,7 +113,7 @@ With optional \\[universal-argument] an indent with length `py-indent-offset' is
                  (indent-to need)
                  (forward-char (- col cui)))))
             (t
-             (if (and py-tab-indents-region-p (use-region-p))
+             (if (and py-tab-shifts-region-p (use-region-p))
                  (progn
                    (when (eq (point) (region-end))
                      (exchange-point-and-mark))
@@ -131,35 +138,47 @@ Similar to `toggle-py-smart-indentation' resp. `py-smart-indentation-off' follow
 
 This function is normally used by `indent-line-function' resp.
 \\[indent-for-tab-command].
-Returns current indentation "
-  (interactive "P")
-  (let ((cui (current-indentation))
-        (col (current-column))
-        (this-indent-offset (cond ((and py-smart-indentation (not (eq this-command last-command)))
-                                   (py-guess-indent-offset))
-                                  ((and py-smart-indentation (eq this-command last-command) py-already-guessed-indent-offset)
-                                   py-already-guessed-indent-offset)
-                                  (t (default-value 'py-indent-offset))))
-        (need (if (and (eq this-command last-command) py-already-guessed-indent-offset)
-                  ;; if previous command was an indent
-                  ;; already, position reached might
-                  ;; produce false guesses
-                  (py-compute-indentation (point) nil nil nil nil nil py-already-guessed-indent-offset)
-                (py-compute-indentation))))
-    ;; (setq py-indent-offset)
-    (unless (eq this-command last-command)
-      (setq py-already-guessed-indent-offset this-indent-offset))
-    (cond ((eq 4 (prefix-numeric-value arg))
-           (beginning-of-line)
-           (delete-horizontal-space)
-           (indent-to (+ need py-indent-offset)))
-          ((not (eq 1 (prefix-numeric-value arg)))
-           (py-smart-indentation-off)
-           (py-indent-line-intern need cui))
-          (t (py-indent-line-intern need cui))))
-  (when (and (interactive-p) py-verbose-p)(message "%s" (current-indentation)))
+Returns current indentation 
 
-  (current-indentation))
+When `py-tab-shifts-region-p' is `t', not just the current line, 
+but the region is shiftet that way.
+
+If `py-tab-indents-region-p' is `t' and first TAB doesn't shift 
+--as indent is at outmost reasonable--, indent-region is called.
+
+Optional arg RECURSIVE is ignored presently. "
+  (interactive "P")
+  (save-excursion
+    (when (and (use-region-p) (or py-tab-shifts-region-p
+                                  py-tab-indents-region-p)
+               (eq (point) (region-end))
+               (exchange-point-and-mark)))
+    (let ((cui (current-indentation))
+          (col (current-column))
+          (this-indent-offset (cond ((and py-smart-indentation (not (eq this-command last-command)))
+                                     (py-guess-indent-offset))
+                                    ((and py-smart-indentation (eq this-command last-command) py-already-guessed-indent-offset)
+                                     py-already-guessed-indent-offset)
+                                    (t (default-value 'py-indent-offset))))
+          (need (if (and (eq this-command last-command) py-already-guessed-indent-offset)
+                    ;; if previous command was an indent
+                    ;; already, position reached might
+                    ;; produce false guesses
+                    (py-compute-indentation (point) nil nil nil nil nil py-already-guessed-indent-offset)
+                  (py-compute-indentation))))
+      ;; (setq py-indent-offset)
+      (unless (eq this-command last-command)
+        (setq py-already-guessed-indent-offset this-indent-offset))
+      (cond ((eq 4 (prefix-numeric-value arg))
+             (beginning-of-line)
+             (delete-horizontal-space)
+             (indent-to (+ need py-indent-offset)))
+            ((not (eq 1 (prefix-numeric-value arg)))
+             (py-smart-indentation-off)
+             (py-indent-line-intern need cui))
+            (t (py-indent-line-intern need cui))))
+    (when (and (interactive-p) py-verbose-p)(message "%s" (current-indentation)))
+    (current-indentation)))
 
 (defun py-newline-and-indent ()
   "Add a newline and indent to outmost reasonable indent.
