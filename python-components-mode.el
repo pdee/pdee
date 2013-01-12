@@ -4163,6 +4163,14 @@ Shift block right. "]
               :help "`py-shift-block-left'
 Shift block left. "]
 
+             ["Comment block" py-comment-block
+              :help " `py-comment-block'
+
+Comments block at point\.
+
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+the default. "]
+
              )
 
             ("Def-or-class ... "
@@ -4209,6 +4217,14 @@ Shift def-or-class right. "]
               :help "`py-shift-def-or-class-left'
 Shift def-or-class left. "]
 
+             ["Comment def or class" py-comment-def-or-class
+              :help " `py-comment-def-or-class'
+
+Comments def-or-class at point\.
+
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+the default. "]
+
              )
 
             ("Clause ... "
@@ -4254,6 +4270,14 @@ Shift clause right. "]
               :help "`py-shift-clause-left'
 Shift clause left. "]
 
+             ["Comment clause" py-comment-clause
+              :help " `py-comment-clause'
+
+Comments clause at point\.
+
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+the default. "]
+
              )
 
             ("Statement ... "
@@ -4285,6 +4309,14 @@ Shift statement right. "]
              ["Shift statement left" py-shift-statement-left
               :help "`py-shift-statement-left'
 Shift statement left. "]
+
+             ["Comment statement" py-comment-statement
+              :help " `py-comment-statement'
+
+Comments statement at point\.
+
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+the default. "]
 
              )
 
@@ -4403,6 +4435,14 @@ Shift class right. "]
               :help "`py-shift-class-left'
 Shift class left. "]
 
+             ["Comment class" py-comment-class
+              :help " `py-comment-class'
+
+Comments class at point\.
+
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+the default. "]
+
              )
 
             ("Def ... "
@@ -4448,6 +4488,14 @@ Shift def right. "]
              ["Shift def left" py-shift-def-left
               :help "`py-shift-def-left'
 Shift def left. "]
+
+             ["Comment def" py-comment-def
+              :help " `py-comment-def'
+
+Comments def at point\.
+
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+the default. "]
 
              )
             "-"
@@ -4819,6 +4867,7 @@ Go to beginning one level above of compound statement or definition at point. "]
             ["Down level" py-down
              :help " `py-down'
 Go to beginning one level below of compound statement or definition at point. "]
+            
 
             "-"
             ("Filling"
@@ -4965,14 +5014,23 @@ Needs Pymacs"]
 
              ["Electric yank" py-electric-yank
               :help " `py-electric-yank'
-Perform command `yank' followed by an `indent-according-to-mode' . "])
+Perform command `yank' followed by an `indent-according-to-mode' . "]
+
+             )
             ("Extended... "
              :help "extended edit commands'"
              ["Revert boolean assignent" py-boolswitch
               :help " `py-boolswitch'
 Edit the assigment of a boolean variable, rever them.
 
-I.e. switch it from \"True\" to \"False\" and vice versa "])))
+I.e. switch it from \"True\" to \"False\" and vice versa "]
+
+             )
+            
+            )
+          
+          )
+
 
         ;; Python shell menu
         (easy-menu-define py-menu map "Python Shells"
@@ -5096,7 +5154,9 @@ Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-p
             ["Switch shell-switch-buffers-on-execute ON" py-shell-switch-buffers-on-execute-on
              :help "Switch `py-switch-buffers-on-execute-p' ON. "]
             ["Switch shell-switch-buffers-on-execute OFF" py-shell-switch-buffers-on-execute-off
-             :help "Switch `py-switch-buffers-on-execute-p' OFF. "]))
+             :help "Switch `py-switch-buffers-on-execute-p' OFF. "]
+            )
+          )
         map))
 
 (defvaralias 'py-mode-map 'python-mode-map)
