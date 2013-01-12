@@ -49,9 +49,10 @@ Return position if statement found, nil otherwise. "
           (when (and py-verbose-p (interactive-p)) (message "%s" erg))
           erg))
 
-(defun py-up-base (regexp)
+(defun py-up-base (regexp &optional indent)
   "Go to the beginning of next form upwards in buffer.
 
+With optional arg INDENT check for a required indent.
 Return position if form found, nil otherwise. "
   (let* ((orig (point))
          erg)

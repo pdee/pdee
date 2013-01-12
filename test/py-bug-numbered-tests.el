@@ -38,6 +38,7 @@
 
 (setq bug-numbered-tests
       (list
+       'enter-key-does-not-indent-properly-after-return-statement-lp-1098793-test
        'filename-completion-fails-in-ipython-lp-1027265-n1-test
        'filename-completion-fails-in-ipython-lp-1027265-n2-test
        'comments-start-a-new-line-lp-1092847-n1-test
@@ -4799,6 +4800,34 @@ a = open('/ho')
     (completion-at-point)
     (assert (eq 65 (point)) nil "filename-completion-fails-in-ipython-lp-1027265-n2-test failed"))
 
+(defun enter-key-does-not-indent-properly-after-return-statement-lp-1098793-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+def foo():
+    while something():
+        bar()
+    baz()
+    return 1
+
+# Once the cursor is placed after \"return 1\" and I hit enter, on the next line, the cursor is placed under
+# the \"r\" in return statement, instead of moving indentation to the outer block.
+#
+# \"ENTER\" key is bound to (py-newline-and-indent)
+#
+# Some version information:
+#
+# emacs-version
+# \"GNU Emacs 24.2.1 (i686-pc-cygwin) of 2012-08-27 on fiona\"
+# py-version
+# \"6.1.0\"
+
+"))
+  (py-bug-tests-intern 'enter-key-does-not-indent-properly-after-return-statement-lp-1098793-base arg teststring)))
+
+(defun enter-key-does-not-indent-properly-after-return-statement-lp-1098793-base ()
+    (goto-char 119)
+    (assert (eq 0 (py-compute-indentation)) nil "enter-key-does-not-indent-properly-after-return-statement-lp-1098793-test failed"))
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

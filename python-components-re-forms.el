@@ -48,10 +48,9 @@ http://docs.python.org/reference/compound_stmts.html"
   (let* ((orig (point))
          (indent (or indent (progn
                               (back-to-indentation)
-                              (if (py-beginning-of-statement-p)
-                                  (current-indentation)
-                                (py-beginning-of-statement)
-                                (current-indentation)))))
+                              (or (py-beginning-of-statement-p)
+                                (py-beginning-of-statement))
+                                (current-indentation))))
          (erg (cond ((and (< (point) orig) (looking-at regexp))
                      (point))
                     ((and (eq 0 (current-column)) (numberp indent))
