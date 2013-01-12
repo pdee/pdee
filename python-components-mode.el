@@ -5951,6 +5951,5 @@ Runs `jython-mode-hook' after `python-mode-hook'."
   (py-toggle-shell "jython"))
 
 (provide 'python-components-mode)
-(provide 'python)
 (provide 'python-mode)
 ;;; python-components-mode.el ends here

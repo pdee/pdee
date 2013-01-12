@@ -61,7 +61,9 @@ Return position if form found, nil otherwise. "
       (while (and (re-search-backward regexp nil t 1)
                   (nth 8 (syntax-ppss))))
       (back-to-indentation)
-      (when (looking-at regexp) (setq erg (point)))
+      (if (and indent (eq indent (current-indentation))
+                (looking-at regexp) (setq erg (point)))
+           (looking-at regexp) (setq erg (point)))
       (when py-verbose-p (message "%s" erg))
       erg)))
 
