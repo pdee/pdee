@@ -165,15 +165,17 @@ See also `py-no-completion-calls-dabbrev-expand-p'"
 (defcustom py-tab-shifts-region-p nil
   "If `t', TAB will indent/cycle the region, not just the current line.
 
-Default is  nil"
+Default is  nil
+See also `py-tab-indents-region-p'"
 
   :type 'boolean
   :group 'python-mode)
 
 (defcustom py-tab-indents-region-p nil
-  "When `t' and first TAB doesn't shift, indent-region is called. 
+  "When `t' and first TAB doesn't shift, indent-region is called.
 
-Default is  nil"
+Default is  nil
+See also `py-tab-shifts-region-p'"
 
   :type 'boolean
   :group 'python-mode)
@@ -2139,6 +2141,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
 (require 'python-components-shift-forms)
 (require 'python-components-execute-file)
 (require 'python-components-comment)
+(require 'highlight-indentation)
 
 ;;; Python specialized rx, thanks Fabian F. Gallina
 (eval-when-compile
@@ -2605,112 +2608,54 @@ Run pdb under GUD"]
             ("Modes"
              :help "Toggle useful modes like `highlight-indentation'"
 
-             ("Use current dir when execute"
-              :help "Toggle `py-use-current-dir-when-execute-p'"
+              ["Toggle use-current-dir-when-execute-p"
+               (setq py-use-current-dir-when-execute-p
+                     (not py-use-current-dir-when-execute-p))
+               :help " `toggle-py-use-current-dir-when-execute-p'"
+               :style toggle :selected py-use-current-dir-when-execute-p]
 
-              ["Toggle use-current-dir-when-execute-p" toggle-py-use-current-dir-when-execute-p
-               :help " `toggle-py-use-current-dir-when-execute-p'
+              ["Jump on exception"
+               (setq  py-jump-on-exception
+                      (not py-jump-on-exception))
+               :help "Jump to innermost exception frame in Python output buffer\.
+When this variable is non-nil and an exception occurs when running
+Python code synchronously in a subprocess, jump immediately to the
+source code of the innermost traceback frame\."
+               :style toggle :selected py-jump-on-exception]
 
-If `py-use-current-dir-when-execute-p' should be on or off\.
+              ["Switch buffers on execute"
+               (setq  py-switch-buffers-on-execute-p
+                      (not py-switch-buffers-on-execute-p))
+               :help "When non-nil switch to the Python output buffer\. "
+               :style toggle :selected py-switch-buffers-on-execute-p]
 
-  Returns value of `py-use-current-dir-when-execute-p' switched to\. . "]
+              ["Split windows on execute"
+               (setq  py-split-windows-on-execute-p
+                      (not py-split-windows-on-execute-p))
+               :help "When non-nil split windows\. "
+               :style toggle :selected py-split-windows-on-execute-p]
 
-              ["use-current-dir-when-execute-p on" py-use-current-dir-when-execute-p-on
-               :help " `py-use-current-dir-when-execute-p-on'
+              ["Python mode v5 behavior" 
+               (setq  python-mode-v5-behavior-p
+                      (not python-mode-v5-behavior-p))  
+               :help "Execute region through `shell-command-on-region' as
+v5 did it - lp:990079\. This might fail with certain chars - see UnicodeEncodeError lp:550661"
+               :style toggle :selected python-mode-v5-behavior-p]
 
-Make sure, py-use-current-dir-when-execute-p' is on\.
+              ["Highlight indentation"
+               (setq highlight-indentation
+                     (not highlight-indentation))
+               :help "Toggle highlight indentation\.
+Optional argument INDENT-WIDTH specifies which indentation
+level (spaces only) should be highlighted, if omitted
+indent-width will be guessed from current major-mode"
+               :style toggle :selected highlight-indentation]
 
-Returns value of `py-use-current-dir-when-execute-p'\. . "]
-
-              ["use-current-dir-when-execute-p off" py-use-current-dir-when-execute-p-off
-               :help " `py-use-current-dir-when-execute-p-off'
-
-Make sure, `py-use-current-dir-when-execute-p' is off\.
-
-Returns value of `py-use-current-dir-when-execute-p'\. . "]
-
-              )
-
-             ("Jump on exception"
-              :help "Toggle `py-jump-on-exception'"
-
-              ["Toggle jump on exception" toggle-py-jump-on-exception
-               :help " `toggle-py-jump-on-exception'
-
- If `py-jump-on-exception' should be on or off\.
-
- Returns value of `py-jump-on-exception' switched to\. . "]
-
-              ["Jump on exception on" py-jump-on-exception-on
-               :help " `py-jump-on-exception-on'
-
-Make sure, py-jump-on-exception' is on\.
-
-Returns value of `py-jump-on-exception'\. . "]
-
-              ["Jump on exception off" py-jump-on-exception-off
-               :help " `py-jump-on-exception-off'
-
-Make sure, `py-jump-on-exception' is off\.
-
-Returns value of `py-jump-on-exception'\. . "]
-              )
-
-             ("py-switch-buffers-on-execute-p"
-              :help "Toggle `py-switch-buffers-on-execute-p'"
-
-              ["Toggle py-switch-buffers-on-execute-p" toggle-py-switch-buffers-on-execute-p
-               :help "M-x `py-switch-buffers-on-execute-p' switches this minor mode "]
-
-              ["py-switch-buffers-on-execute-p on" py-switch-buffers-on-execute-p-on
-               :help "M-x `py-switch-buffers-on-execute-p-on' switches this minor mode on "]
-
-              ["py-switch-buffers-on-execute-p off" py-switch-buffers-on-execute-p-off
-               :help "M-x `py-switch-buffers-on-execute-p-off' switches this minor mode off "]
-
-              )
-
-             ("py-split-windows-on-execute-p"
-              :help "Toggle `py-split-windows-on-execute-p'"
-
-              ["Toggle py-split-windows-on-execute-p" toggle-py-split-windows-on-execute-p
-               :help "M-x `py-split-windows-on-execute-p' splites this minor mode "]
-
-              ["py-split-windows-on-execute-p on" py-split-windows-on-execute-p-on
-               :help "M-x `py-split-windows-on-execute-p-on' splites this minor mode on "]
-
-              ["py-split-windows-on-execute-p off" py-split-windows-on-execute-p-off
-               :help "M-x `py-split-windows-on-execute-p-off' splites this minor mode off "]
-
-              )
-
-             ("Python-mode v5 behavior"
-              :help "Toggle `python-mode-v5-behavior-p'"
-
-              ["Toggle python-mode-v5-behavior-p" toggle-python-mode-v5-behavior-p
-               :help "Switch boolean `python-mode-v5-behavior-p'."]
-
-              ["Switch python-mode-v5-behavior-p ON" python-mode-v5-behavior-p-on
-               :help "Switch `python-mode-v5-behavior-p' ON. "]
-
-              ["Switch python-mode-v5-behavior-p OFF" python-mode-v5-behavior-p-off
-               :help "Switch `python-mode-v5-behavior-p-p' OFF. "]
-
-              )
-
-             ("Highlight indentation"
-              :help "Toggle `highlight-indentation'"
-
-              ["Toggle highlight-indentation" py-toggle-highlight-indentation
-               :help "M-x `highlight-indentation' switches this minor mode "]
-
-              ["Highlight-indentation on" highlight-indentation-on
-               :help "M-x `highlight-indentation-on' switches this minor mode on "]
-
-              ["Highlight-indentation off" highlight-indentation-off
-               :help "M-x `highlight-indentation-off' switches this minor mode off "]
-
-              )
+              ["indent-tabs-mode"
+               (setq indent-tabs-mode
+                     (not indent-tabs-mode))
+               :help "Indentation can insert tabs if this is non-nil\."
+               :style toggle :selected indent-tabs-mode]
 
              ("Autopair"
               :help "Toggle autopair-mode'"
@@ -2748,43 +2693,13 @@ Returns value of `py-jump-on-exception'\. . "]
 
               )
 
-             ("indent-tabs-mode"
-              :help "Toggle indent-tabs-mode'"
 
-              ["Toggle indent-tabs-mode" py-toggle-indent-tabs-mode
-               :help "See also `py-indent-tabs-mode-on', `-off' "]
+             ["Electric comment "
+              (setq py-electric-comment-p
+                    (not py-electric-comment-p))
+              :help "If \"#\" should call `py-electric-comment'\. Default is `nil'\. "
+              :style toggle :selected py-electric-comment-p]
 
-              ["Switch indent-tabs-mode on" py-indent-tabs-mode-on
-               :help "`py-indent-tabs-mode-on'"]
-
-              ["Switch indent-tabs-mode off" py-indent-tabs-mode-off
-               :help "`py-indent-tabs-mode-off'"])
-
-             ("Electric comment"
-              :help "Toggle `py-electric-comment-p'"
-
-              ["Toggle electric comment" toggle-py-electric-comment-p
-               :help " `toggle-py-electric-comment-p'
-
-If `py-electric-comment-p' should be on or off\.
-
-  Returns value of `py-electric-comment-p' switched to\. . "]
-
-              ["Electric comment on" py-electric-comment-p-on
-               :help " `py-electric-comment-p-on'
-
-Make sure, py-electric-comment-p' is on\.
-
-Returns value of `py-electric-comment-p'\. . "]
-
-              ["Electric comment off" py-electric-comment-p-off
-               :help " `py-electric-comment-p-off'
-
-Make sure, `py-electric-comment-p' is off\.
-
-Returns value of `py-electric-comment-p'\. . "]
-
-              )
 
              )
 
@@ -3324,6 +3239,7 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p' "]
               ["py-execute-def-bpython-dedicated-switch" py-execute-def-bpython-dedicated-switch
                :help "Execute def through a unique Bpython interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p' "]
+
               ))
 
             ;; class
@@ -3478,6 +3394,7 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p' "]
               ["py-execute-class-bpython-dedicated-switch" py-execute-class-bpython-dedicated-switch
                :help "Execute class through a unique Bpython interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p' "]
+
               ))
 
             ;; region
@@ -3632,6 +3549,7 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p' "]
               ["py-execute-region-bpython-dedicated-switch" py-execute-region-bpython-dedicated-switch
                :help "Execute region through a unique Bpython interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p' "]
+
               ))
 
             ;; file
@@ -4069,56 +3987,56 @@ Go to end of comment at point. "]
 Uncomment lines at point\.
 
 If region is active, restrict uncommenting at region . "]
-              
+
               ["Comment block" py-comment-block
                :help " `py-comment-block'
 Comments block at point\.
 
 Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
 the default. "]
-              
+
               ["Comment clause" py-comment-clause
                :help " `py-comment-clause'
 Comments clause at point\.
 
 Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
 the default. "]
-              
+
               ["Comment block or clause" py-comment-block-or-clause
                :help " `py-comment-block-or-clause'
 Comments block-or-clause at point\.
 
 Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
 the default. "]
-              
+
               ["Comment def" py-comment-def
                :help " `py-comment-def'
 Comments def at point\.
 
 Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
 the default. "]
-              
+
               ["Comment class" py-comment-class
                :help " `py-comment-class'
 Comments class at point\.
 
 Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
 the default. "]
-              
+
               ["Comment def or class" py-comment-def-or-class
                :help " `py-comment-def-or-class'
 Comments def-or-class at point\.
 
 Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
 the default. "]
-              
+
               ["Comment statement" py-comment-statement
                :help " `py-comment-statement'
 Comments statement at point\.
 
 Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
 the default. "]
-              
+
               )
           "-"
           ("Block ... "
@@ -4867,7 +4785,6 @@ Go to beginning one level above of compound statement or definition at point. "]
             ["Down level" py-down
              :help " `py-down'
 Go to beginning one level below of compound statement or definition at point. "]
-            
 
             "-"
             ("Filling"
@@ -5026,11 +4943,10 @@ Edit the assigment of a boolean variable, rever them.
 I.e. switch it from \"True\" to \"False\" and vice versa "]
 
              )
-            
-            )
-          
-          )
 
+            )
+
+          )
 
         ;; Python shell menu
         (easy-menu-define py-menu map "Python Shells"

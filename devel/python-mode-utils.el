@@ -2230,7 +2230,7 @@ Return position if " ele " found, nil otherwise \"
          (doku (if (functionp name)
                    (documentation name)
                  (documentation-property name 'variable-documentation))))
-    (goto-char (point-max))
+    ;; (goto-char (point-max))
     (switch-to-buffer (current-buffer))
     (save-excursion
       (insert (concat "\n\[\"" (replace-regexp-in-string "-" " " (replace-regexp-in-string "py-" "" erg)) "\" " erg "
@@ -2242,6 +2242,35 @@ Return position if " ele " found, nil otherwise \"
                ". \"]\n")))
     (skip-chars-forward "[[:punct:]]")
     (capitalize-word 1)))
+
+
+(defun temen (&optional symbol)
+  "Provide menu for toggle-commans using checkbox. "
+  (interactive "*")
+  (let* ((erg (or symbol (car kill-ring)))
+         (name (intern-soft erg))
+         (doku (if (functionp name)
+                   (documentation name)
+                 (documentation-property name 'variable-documentation)))
+         (banner1 (replace-regexp-in-string "-" " " (replace-regexp-in-string "py-" "" erg)))
+         (banner2 (replace-regexp-in-string " p$" " " (replace-regexp-in-string "py-" "" banner1))))
+    ;; (goto-char (point-max))
+    (switch-to-buffer (current-buffer))
+    (save-excursion
+      (insert (concat "\n\[\"" banner2 "\"
+  (setq " erg "
+     (not " erg "))
+ :help \""))
+      (when doku (insert (regexp-quote doku)))
+      (insert (concat "\"
+ :style toggle :selected " erg "]\n")))
+    (skip-chars-forward "[[:punct:]]")
+    (capitalize-word 1)))
+    ;; ["Hide comments when hiding all"
+    ;;  (setq hs-hide-comments-when-hiding-all
+    ;; 	   (not hs-hide-comments-when-hiding-all))
+    ;;  :help "If t also hide comment blocks when doing `hs-hide-all'"
+    ;;  :style toggle :selected hs-hide-comments-when-hiding-all]
 
 (defun switch-emen (&optional symbol)
   "Provide menu draft for switches. "
@@ -2292,7 +2321,7 @@ Return position if " ele " found, nil otherwise \"
 Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
 the default\"
   (interactive \"\*\")
-  (save-excursion 
+  (save-excursion
     (let ((comment-start (if py-block-comment-prefix-p
                              py-block-comment-prefix
                            comment-start))
@@ -2319,8 +2348,8 @@ the default\"
     (setq name (concat "py-comment-" ele))
     (write-menu-entry name))
   (insert "      ))")
-  (emacs-lisp-mode) 
+  (emacs-lisp-mode)
   (switch-to-buffer (current-buffer)))
 
-    
+
 
