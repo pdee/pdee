@@ -64,7 +64,7 @@
 (setq py-test-shells
       (list "python" "ipython" "python3" "python2" "python2.7"))
 
-(setq py-shift-forms (list "paragraph" "block" "clause" "block-or-clause" "def" "class" "def-or-class" "line" "statement"))
+(setq py-shift-forms (list "paragraph" "block" "clause" "block-or-clause" "def" "class" "def-or-class" "line" "statement" "comment"))
 
 (setq py-core-command-name '("statement" "block" "def" "class" "region" "file"))
 
