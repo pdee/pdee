@@ -26,7 +26,6 @@
 (defvar py-keywords "\\<\\(ArithmeticError\\|AssertionError\\|AttributeError\\|BaseException\\|BufferError\\|BytesWarning\\|DeprecationWarning\\|EOFError\\|Ellipsis\\|EnvironmentError\\|Exception\\|False\\|FloatingPointError\\|FutureWarning\\|GeneratorExit\\|IOError\\|ImportError\\|ImportWarning\\|IndentationError\\|IndexError\\|KeyError\\|KeyboardInterrupt\\|LookupError\\|MemoryError\\|NameError\\|NoneNotImplementedError\\|NotImplemented\\|OSError\\|OverflowError\\|PendingDeprecationWarning\\|ReferenceError\\|RuntimeError\\|RuntimeWarning\\|StandardError\\|StopIteration\\|SyntaxError\\|SyntaxWarning\\|SystemError\\|SystemExit\\|TabError\\|True\\|TypeError\\|UnboundLocalError\\|UnicodeDecodeError\\|UnicodeEncodeError\\|UnicodeError\\|UnicodeTranslateError\\|UnicodeWarning\\|UserWarning\\|ValueError\\|Warning\\|ZeroDivisionError\\|__debug__\\|__import__\\|__name__\\|abs\\|all\\|and\\|any\\|apply\\|as\\|assert\\|basestring\\|bin\\|bool\\|break\\|buffer\\|bytearray\\|callable\\|chr\\|class\\|classmethod\\|cmp\\|coerce\\|compile\\|complex\\|continue\\|copyright\\|credits\\|def\\|del\\|delattr\\|dict\\|dir\\|divmod\\|elif\\|else\\|enumerate\\|eval\\|except\\|exec\\|execfile\\|exit\\|file\\|filter\\|float\\|for\\|format\\|from\\|getattr\\|global\\|globals\\|hasattr\\|hash\\|help\\|hex\\|id\\|if\\|import\\|in\\|input\\|int\\|intern\\|is\\|isinstance\\|issubclass\\|iter\\|lambda\\|len\\|license\\|list\\|locals\\|long\\|map\\|max\\|memoryview\\|min\\|next\\|not\\|object\\|oct\\|open\\|or\\|ord\\|pass\\|pow\\|print\\|property\\|quit\\|raise\\|range\\|raw_input\\|reduce\\|reload\\|repr\\|return\\|round\\|set\\|setattr\\|slice\\|sorted\\|staticmethod\\|str\\|sum\\|super\\|tuple\\|type\\|unichr\\|unicode\\|vars\\|while\\|with\\|xrange\\|yield\\|zip\\|\\)\\>"
   "Contents like py-fond-lock-keyword")
 
-
 ;;;
 (defun py-insert-default-shebang ()
   "Insert in buffer shebang of installed default Python. "
@@ -138,12 +137,12 @@ Similar to `toggle-py-smart-indentation' resp. `py-smart-indentation-off' follow
 
 This function is normally used by `indent-line-function' resp.
 \\[indent-for-tab-command].
-Returns current indentation 
+Returns current indentation
 
-When `py-tab-shifts-region-p' is `t', not just the current line, 
+When `py-tab-shifts-region-p' is `t', not just the current line,
 but the region is shiftet that way.
 
-If `py-tab-indents-region-p' is `t' and first TAB doesn't shift 
+If `py-tab-indents-region-p' is `t' and first TAB doesn't shift
 --as indent is at outmost reasonable--, indent-region is called.
 
 Optional arg RECURSIVE is ignored presently. "
@@ -366,7 +365,6 @@ Returns `py-indent-offset'"
                  (if global "Global" "Local")
                  py-indent-offset))
       py-indent-offset)))
-
 
 (defun py-comment-indent-function ()
   "Python version of `comment-indent-function'."
@@ -986,200 +984,6 @@ Store deleted statements in kill-ring "
      (point)
      (progn (skip-chars-forward " \t") (point)))))
 
-;; (defun py-fill-string (&optional beg justify)
-;;   "Fill strings in region. "
-;;   (interactive "*")
-;;   (let ((beg (or beg (nth 8 (syntax-ppss)) (and (looking-at "'''\\|\"\"\"\\|'\\|\"") (match-beginning 0))))
-;;         end
-;;         ;; length of the string's delimiter
-;;         delim-length
-;;         ;; The string delimiter
-;;         delim)
-;;     (if beg
-;;         (save-excursion
-;;           (goto-char beg)
-;;           (when (looking-at "'''\\|\"\"\"\\|'\\|\"")
-;;             (setq beg (match-end 0)
-;;                   delim-length (- (match-end 0) (match-beginning 0))
-;;                   delim (buffer-substring-no-properties (match-beginning 0)
-;;                                                         (match-end 0)))))
-;;       (error "The parameter beg is not the beginning of a python string"))
-;;
-;;     ;; if the string is the first token on a line and doesn't beg with
-;;     ;; a newline, fill as if the string begs at the beginning of the
-;;     ;; line. this helps with one line docstrings
-;;     (save-excursion
-;;       (beginning-of-line)
-;;       (and (/= (char-before beg) ?\n)
-;;            (looking-at (concat "[ \t]*" delim))
-;;            (setq beg (point))))
-;;     ;; go to the end of string
-;;     (while (and (search-forward delim nil t 1)(nth 8 (syntax-ppss))))
-;;     (setq end (- (point) delim-length))
-;;     ;; Narrow to the string's contents and fill the current paragraph
-;;     (save-restriction
-;;       (narrow-to-region beg end)
-;;       (let ((ends-with-newline (= (char-before (point-max)) ?\n)))
-;;         (fill-paragraph justify)
-;;         (if (and (not ends-with-newline)
-;;                  (= (char-before (point-max)) ?\n))
-;;             ;; the default fill-paragraph implementation has inserted a
-;;             ;; newline at the end. Remove it again.
-;;             (save-excursion
-;;               (goto-char (point-max))
-;;               (delete-char -1)))))
-;;
-;;     ;; return t to indicate that we've done our work
-;;     t))
-;;
-;; (defun py-fill-string (&optional beg end justify kind this-fill-column)
-;;   "Fill the paragraph around (point) in the string starting at start"
-;;   (interactive "*")
-;;   (save-excursion
-;;     (let* ((beg (or beg (nth 8 (syntax-ppss)) (and (looking-at "'''\\|\"\"\"\\|'\\|\"") (match-beginning 0))))
-;;            end
-;;            ;; The string delimiter
-;;            delim
-;;            delim-length
-;;            (indent (progn (goto-char beg) (current-column)))
-;;            (orig beg)
-;;            (fill-column-old fill-column)
-;;            empty erg)
-;;       (if beg
-;;           (save-excursion
-;;             (goto-char beg)
-;;             (when (looking-at "'''\\|\"\"\"\\|'\\|\"")
-;;               (setq beg (match-end 0)
-;;                     delim-length (- (match-end 0) (match-beginning 0))
-;;                     delim (buffer-substring-no-properties (match-beginning 0)
-;;                                                           (match-end 0)))
-;;               (setq end (progn (while (and (search-forward delim nil t 1)(nth 8 (syntax-ppss)))) (point)))))
-;;         (error "The parameter beg is not the beginning of a python string"))
-;;       (when this-fill-column (setq fill-column this-fill-column))
-;;       (goto-char beg)
-;;       (setq empty (looking-at "[ \t]*$"))
-;;       (when empty
-;;         (forward-line 1))
-;;       (beginning-of-line)
-;;       (narrow-to-region beg end)
-;;       (when (setq erg (string-match "[\n\r\f]" (buffer-substring-no-properties beg end)))
-;;         (narrow-to-region beg (+ beg erg)))
-;;       (while (and (<= beg (point))
-;;                   (< (setq beg (point))
-;;                      (progn (forward-paragraph)(point))))
-;;         (save-restriction
-;;           (narrow-to-region beg (point))
-;;           (goto-char beg)
-;;           (when (looking-at "[ \t]*$")
-;;             (forward-line 1) (setq beg (point)))
-;;           (py-fix-this-indent indent)
-;;           ;;           (when py-just-one-whitespace
-;;           ;;             (while (re-search-forward "[ \n\r\t]+" nil t 1)
-;;           ;;               (replace-match " ")))
-;;           (fill-region beg end justify)
-;;           (unless (empty-line-p)
-;;             (newline))
-;;           (widen)))
-;;       (when this-fill-column (setq fill-column fill-column-old)))))
-
-;; (defun py-fill-paragraph (&optional justify)
-;;   "`fill-paragraph-function' handling multi-line strings and possibly comments.
-;; If any of the current line is in or at the end of a multi-line string,
-;; fill the string or the paragraph of it that point is in, preserving
-;; the string's indentation."
-;;   (interactive "P")
-;;   (or (fill-comment-paragraph justify)
-;;       (save-excursion
-;; 	(end-of-line)
-;; 	(let* (;; when qforward-sexp-function is set but must not DTRT here
-;;                forward-sexp-function
-;;                (syntax (syntax-ppss))
-;; 	       (orig (point))
-;; 	       start end)
-;; 	  (cond ((nth 4 syntax)	; comment.   fixme: loses with trailing one
-;; 		 (let (fill-paragraph-function)
-;; 		   (fill-paragraph justify)))
-;; 		;; The `paragraph-start' and `paragraph-separate'
-;; 		;; variables don't allow us to delimit the last
-;; 		;; paragraph in a multi-line string properly, so narrow
-;; 		;; to the string and then fill around (the end of) the
-;; 		;; current line.
-;; 		((eq t (nth 3 syntax))	; in fenced string
-;; 		 (goto-char (nth 8 syntax)) ; string start
-;; 		 (setq start (line-beginning-position))
-;; 		 (setq end (condition-case () ; for unbalanced quotes
-;;                                (progn (forward-sexp)
-;;                                       (- (point) 3))
-;;                              (error (point-max)))))
-;; 		((re-search-backward "\\s|\\s-*\\=" nil t) ; end of fenced string
-;; 		 (forward-char)
-;; 		 (setq end (point))
-;; 		 (condition-case ()
-;; 		     (progn (backward-sexp)
-;; 			    (setq start (line-beginning-position)))
-;; 		   (error nil))))
-;; 	  (when end
-;; 	    (save-restriction
-;; 	      (narrow-to-region start end)
-;; 	      (goto-char orig)
-;; 	      ;; Avoid losing leading and trailing newlines in doc
-;; 	      ;; strings written like:
-;; 	      ;;   """
-;; 	      ;;   ...
-;; 	      ;;   """
-;; 	      (let ((paragraph-separate
-;; 		     ;; Note that the string could be part of an
-;; 		     ;; expression, so it can have preceding and
-;; 		     ;; trailing non-whitespace.
-;; 		     (concat
-;; 		      (rx (or
-;; 			   ;; Opening triple quote without following text.
-;; 			   (and (* nonl)
-;; 				(group (syntax string-delimiter))
-;; 				(repeat 2 (backref 1))
-;; 				;; Fixme:  Not sure about including
-;; 				;; trailing whitespace.
-;; 				(* (any " \t"))
-;; 				eol)
-;; 			   ;; Closing trailing quote without preceding text.
-;; 			   (and (group (any ?\" ?')) (backref 2)
-;; 				(syntax string-delimiter))))
-;; 		      "\\(?:" paragraph-separate "\\)"))
-;; 		    fill-paragraph-function)
-;; 		(fill-paragraph justify))))))) t)
-
-;; (defun py-fill-paragraph (&optional justify)
-;;   "Like \\[fill-paragraph], but handle Python comments and strings.
-;;
-;; If any of the current line is a comment, fill the comment or the
-;; paragraph of it that point is in, preserving the comment's indentation
-;; and initial `#'s.
-;; If point is inside a string, narrow to that string and fill.
-;; "
-;;   (interactive "P")
-;;   (save-excursion
-;;     (save-restriction
-;;       (widen)
-;;       (let ((pps
-;;              (if (featurep 'xemacs)
-;;                  (parse-partial-sexp (point-min) (point))
-;;                (syntax-ppss))))
-;;         (cond
-;;          ;; inside a comment
-;;          ((nth 4 pps)
-;;           (py-fill-comment justify))
-;;          ;; only whitespace before the comment start
-;;          ((looking-at "[ \t]*#")
-;;           (py-fill-comment justify))
-;;          ;; inside a string
-;;          ((nth 3 pps)
-;;           (py-fill-string (nth 8 pps)))
-;;          ;; opening quote of a string
-;;          ((progn (save-excursion (forward-char 1)(nth 3 pps)))
-;;           (save-excursion
-;;             (forward-char 1)
-;;             (py-fill-string (nth 8 pps)))))))))
-
 (defun py-insert-super ()
   "Insert a function \"super()\" from current environment.
 
@@ -1213,7 +1017,6 @@ Returns the string inserted. "
       (setq erg (concat "super()." funcname "(" args ")"))
       (insert erg))
     erg))
-
 
 (defun py-comment-region (beg end &optional arg)
   "Like `comment-region' but uses double hash (`#') comment starter."

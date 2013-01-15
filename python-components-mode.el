@@ -112,6 +112,37 @@ Default is  non-nil"
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-set-fill-column-p nil
+  "If python-mode should set fill-column 
+
+according values in `py-comment-fill-column' and `py-docstring-fill-column'.
+Default is  nil"
+
+  :type 'boolean
+  :group 'python-mode)
+
+(defcustom py-autofill-timer-delay 1
+  "Delay when idle before functions ajusting  `py-docstring-fill-column' resp. `py-comment-fill-column' are called. "
+  :type 'integer
+
+  :group 'python-mode)
+
+(defcustom py-docstring-fill-column 72
+  "Value of `fill-column' to use when filling a docstring.
+Any non-integer value means do not use a different value of
+`fill-column' when filling docstrings."
+  :type '(choice (integer)
+                 (const :tag "Use the current `fill-column'" t))
+  :group 'python-mode)
+
+(defcustom py-comment-fill-column 79
+  "Value of `fill-column' to use when filling a comment.
+Any non-integer value means do not use a different value of
+`fill-column' when filling docstrings."
+  :type '(choice (integer)
+                 (const :tag "Use the current `fill-column'" t))
+  :group 'python-mode)
+
 (defcustom py-fontify-shell-buffer-p nil
   "If code in Python shell should be highlighted as in script buffer.
 
@@ -1177,6 +1208,9 @@ It should not contain a caret (^) at the beginning."
 ;;; defvarred Variables
 (defvar py-shell-prompt-regexp ">>> ")
 
+(defvar py-autofill-timer nil)
+(defvar py-fill-column-orig fill-column)
+
 (defvar py-emacs-import-code "import emacs")
 
 (defvar python-mode-message-string "python-components-mode.el"
@@ -2141,6 +2175,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
 (require 'python-components-shift-forms)
 (require 'python-components-execute-file)
 (require 'python-components-comment)
+(require 'python-components-auto-fill)
 (require 'highlight-indentation)
 
 ;;; Python specialized rx, thanks Fabian F. Gallina
@@ -2608,83 +2643,89 @@ Run pdb under GUD"]
             ("Modes"
              :help "Toggle useful modes like `highlight-indentation'"
 
-              ["Toggle use-current-dir-when-execute-p"
-               (setq py-use-current-dir-when-execute-p
-                     (not py-use-current-dir-when-execute-p))
-               :help " `toggle-py-use-current-dir-when-execute-p'"
-               :style toggle :selected py-use-current-dir-when-execute-p]
-
-              ["Jump on exception"
-               (setq  py-jump-on-exception
-                      (not py-jump-on-exception))
-               :help "Jump to innermost exception frame in Python output buffer\.
+             ["Auto-fill mode"
+              (setq py-set-fill-column-p
+                    (not py-set-fill-column-p))
+              :help "Set Python specific `fill-column' according to `py-docstring-fill-column' and `py-comment-fill-column' "
+              :style toggle :selected py-set-fill-column-p]
+             
+             ["Toggle use-current-dir-when-execute-p"
+              (setq py-use-current-dir-when-execute-p
+                    (not py-use-current-dir-when-execute-p))
+              :help " `toggle-py-use-current-dir-when-execute-p'"
+              :style toggle :selected py-use-current-dir-when-execute-p]
+             
+             ["Jump on exception"
+              (setq  py-jump-on-exception
+                     (not py-jump-on-exception))
+              :help "Jump to innermost exception frame in Python output buffer\.
 When this variable is non-nil and an exception occurs when running
 Python code synchronously in a subprocess, jump immediately to the
 source code of the innermost traceback frame\."
-               :style toggle :selected py-jump-on-exception]
-
-              ["Switch buffers on execute"
-               (setq  py-switch-buffers-on-execute-p
-                      (not py-switch-buffers-on-execute-p))
-               :help "When non-nil switch to the Python output buffer\. "
-               :style toggle :selected py-switch-buffers-on-execute-p]
-
-              ["Split windows on execute"
-               (setq  py-split-windows-on-execute-p
-                      (not py-split-windows-on-execute-p))
-               :help "When non-nil split windows\. "
-               :style toggle :selected py-split-windows-on-execute-p]
-
-              ["Python mode v5 behavior" 
-               (setq  python-mode-v5-behavior-p
-                      (not python-mode-v5-behavior-p))  
-               :help "Execute region through `shell-command-on-region' as
+              :style toggle :selected py-jump-on-exception]
+             
+             ["Switch buffers on execute"
+              (setq  py-switch-buffers-on-execute-p
+                     (not py-switch-buffers-on-execute-p))
+              :help "When non-nil switch to the Python output buffer\. "
+              :style toggle :selected py-switch-buffers-on-execute-p]
+             
+             ["Split windows on execute"
+              (setq  py-split-windows-on-execute-p
+                     (not py-split-windows-on-execute-p))
+              :help "When non-nil split windows\. "
+              :style toggle :selected py-split-windows-on-execute-p]
+             
+             ["Python mode v5 behavior"
+              (setq  python-mode-v5-behavior-p
+                     (not python-mode-v5-behavior-p))
+              :help "Execute region through `shell-command-on-region' as
 v5 did it - lp:990079\. This might fail with certain chars - see UnicodeEncodeError lp:550661"
-               :style toggle :selected python-mode-v5-behavior-p]
-
-              ["Highlight indentation"
-               (setq highlight-indentation
-                     (not highlight-indentation))
-               :help "Toggle highlight indentation\.
+              :style toggle :selected python-mode-v5-behavior-p]
+             
+             ["Highlight indentation"
+              (setq highlight-indentation
+                    (not highlight-indentation))
+              :help "Toggle highlight indentation\.
 Optional argument INDENT-WIDTH specifies which indentation
 level (spaces only) should be highlighted, if omitted
 indent-width will be guessed from current major-mode"
-               :style toggle :selected highlight-indentation]
-
-              ["indent-tabs-mode"
-               (setq indent-tabs-mode
-                     (not indent-tabs-mode))
-               :help "Indentation can insert tabs if this is non-nil\."
-               :style toggle :selected indent-tabs-mode]
-
+              :style toggle :selected highlight-indentation]
+             
+             ["indent-tabs-mode"
+              (setq indent-tabs-mode
+                    (not indent-tabs-mode))
+              :help "Indentation can insert tabs if this is non-nil\."
+              :style toggle :selected indent-tabs-mode]
+             
              ("Autopair"
               :help "Toggle autopair-mode'"
-
+              
               ["Toggle autopair-mode" py-toggle-autopair-mode
                :help "Toggles py-autopair minor-mode "]
-
+              
               ["Autopair on" py-autopair-mode-on
                :help "Switches autopair minor-mode on "]
-
+              
               )
-
+             
              ("Smart indentation"
               :help "Toggle py-smart-indentation'"
-
+              
               ["Toggle py-smart-indentation" toggle-py-smart-indentation
                :help "Toggles py-smart-indentation minor-mode "]
-
+              
               ["Py-smart-indentation on" py-smart-indentation-mode-on
                :help "Switches py-smart-indentation minor-mode on "]
-
+              
               )
-
+             
              ("Smart operator"
               :help "Toggle py-smart-operator'"
-
+              
               ["Toggle py-smart-operator" py-toggle-smart-operator
                :help "Toggles py-smart-operator minor-mode"]
-
+              
               ["Py-smart-operator off" py-smart-operator-mode-off
                :help "Switches py-smart-operator minor-mode off "]
 
@@ -2693,13 +2734,11 @@ indent-width will be guessed from current major-mode"
 
               )
 
-
              ["Electric comment "
               (setq py-electric-comment-p
                     (not py-electric-comment-p))
               :help "If \"#\" should call `py-electric-comment'\. Default is `nil'\. "
               :style toggle :selected py-electric-comment-p]
-
 
              )
 
@@ -5725,6 +5764,25 @@ Don't save anything for STR matching `inferior-python-filter-regexp'."
 ;; (add-to-list 'auto-mode-alist (cons (purecopy "\\.py\\'")  'python-mode))
 
 (autoload 'comint-get-source "comint")
+;;; auto-fill modes
+
+(defun py-set-auto-fill-values ()
+  "Internal use by `py-run-auto-fill-timer'"
+  (let ((pps (syntax-ppss)))
+    (cond ((and (nth 4 pps)(numberp py-comment-fill-column))
+           (set (make-local-variable 'fill-column) py-comment-fill-column))
+          ((and (nth 3 pps)(numberp py-docstring-fill-column))
+           (set (make-local-variable 'fill-column) py-docstring-fill-column))
+          (t (set (make-local-variable 'fill-column) py-fill-column-orig)))))
+
+(defun py-run-auto-fill-timer ()
+  "Set fill-column to values of `py-docstring-fill-column' resp. to `py-comment-fill-column' according to environment. "
+  (when py-set-fill-column-p
+    (unless py-autofill-timer
+      (setq py-autofill-timer
+            (run-with-idle-timer
+             py-autofill-timer-delay t
+             'py-set-auto-fill-values)))))
 
 ;;;
 (define-derived-mode inferior-python-mode comint-mode "Inferior Python"
@@ -5915,6 +5973,9 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
    (t
     (add-hook 'completion-at-point-functions
               'py-shell-complete nil 'local)))
+  (if py-set-fill-column-p
+              (add-hook 'python-mode-hook 'py-run-auto-fill-timer)
+    (remove-hook 'python-mode-hook 'py-run-auto-fill-timer))
   (when (and py-imenu-create-index-p
              (fboundp 'imenu-add-to-menubar)
              (ignore-errors (require 'imenu)))

@@ -11,11 +11,16 @@ New in version 6.1.1
   py-comment-class, py-comment-def-or-class,
   py-comment-statement
 
-- when `py-tab-shifts-region-p' is `t',
-  TAB will indent/cycle the region, not just the current line.
+- boolean `py-set-fill-column-p'
+  If `t', enables use Python specific `fill-column' according to
+  `py-docstring-fill-column', default is 72
+  and `py-comment-fill-column, default is 79
 
-- when `py-tab-indents-region-p' is `t',
-  When first TAB doesn't shift, `indent-region' is called
+- boolean `py-tab-shifts-region-p'
+  when `t', TAB will indent/cycle the region, not just the current line.
+
+- boolean `py-tab-indents-region-p' 
+  when `t', when first TAB doesn't shift, `indent-region' is called
 
 - command from RET customizable via `py-return-key':
   `py-newline-and-indent', `newline' or `py-newline-and-dedent'

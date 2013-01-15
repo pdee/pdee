@@ -228,6 +228,9 @@ See lp:1066489 "
 JUSTIFY should be used (if applicable) as in `fill-paragraph'."
   (interactive "P")
   (let* ((py-fill-docstring-style (or style py-fill-docstring-style))
+         (fill-column (if (integerp py-docstring-fill-column)
+                          py-docstring-fill-column
+                        fill-column))
          ;; unset python-mode value this time
          forward-sexp-function
          (orig (point-marker))

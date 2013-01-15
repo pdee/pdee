@@ -133,3 +133,22 @@ selecting the corresponding beginning or end
 new "py-up...", "py-down..." jump regexp-based to the 
 next element in buffer.
 Listed in PyMenu. 
+
+;;;;;;;;;
+
+Customize boolean `py-set-fill-column-p'
+
+If `t', enables use Python specific `fill-column' according to
+
+`py-docstring-fill-column', default is 72
+
+and `py-comment-fill-column, default is 79
+
+Comment- and docstring settings might be disabled by
+any non-integer value, which means: do not use a
+different value of `fill-column' than emacs-wide
+
+
+
+
+
