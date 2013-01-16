@@ -2510,6 +2510,8 @@ character address of the specified TYPE."
         ;;   (define-key map [(esc) (tab)] 'py-shell-complete))
         (substitute-key-definition 'complete-symbol 'completion-at-point
                                    map global-map)
+        (substitute-key-definition 'backward-up-list 'py-up
+                                   map global-map)
         (easy-menu-define py-menu map "Python Tools"
           `("PyTools"
             :help "Python mode tools"

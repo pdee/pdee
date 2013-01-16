@@ -1058,6 +1058,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-font-lock-keywords) nil \"py-font-lock-keywords not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall py-up-test-python-el-111-test \
 --funcall py-moves-test \
 --funcall enter-key-does-not-indent-properly-after-return-statement-lp-1098793-test \
 --funcall filename-completion-fails-in-ipython-lp-1027265-n1-test \
@@ -1366,3 +1367,4 @@ est \
 --funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n4-test 2 \
 --funcall py-electric-comment-add-space-lp:828398-test \
 --funcall py-electric-comment-add-space-t-lp:828398-test \
+

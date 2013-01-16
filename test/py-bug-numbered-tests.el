@@ -4829,5 +4829,57 @@ def foo():
     (goto-char 119)
     (assert (eq 0 (py-compute-indentation)) nil "enter-key-does-not-indent-properly-after-return-statement-lp-1098793-test failed"))
 
+(defun py-up-test-python-el-111-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -\*- coding: utf-8 -\*-
+# up-list: Scan error: \"Unbalanced parentheses\"
+# Hi, when I press C-M-u in python buffer I get:
+# 
+# up-list: Scan error: \"Unbalanced parentheses\"
+
+# My expected behavior is something like this:
+# 
+# Scenario: Going higher level by C-M-u
+#     When I insert:
+
+# def f():
+#    if True:
+#        [i for i in range(3)]
+
+#     And I am looking at \"3)]\"
+#     And I press C-M-u
+#     Then I should looking at \"(3)]\"
+#     And I press C-M-u
+#     Then I should looking at \"[i for i\"
+#     And I press C-M-u
+#     Then I should looking at \"if True\"
+#     And I press C-M-u
+#     Then I should looking at \"def f\"
+# 
+# related: #106
+
+def f():
+    if True:
+        print(\"[i for i in range(3)]: %s \" % ([i for i in range(3)]))
+
+"))
+  (py-bug-tests-intern 'py-up-test-python-el-111-base arg teststring)))
+
+(defun py-up-test-python-el-111-base ()
+    (goto-char 760)
+    (assert (eq 759 (py-up)) nil "py-up-test-python-el-111-test #1 failed")
+    (assert (eq 742 (py-up)) nil "py-up-test-python-el-111-test #2 failed")
+    (assert (eq 741 (py-up)) nil "py-up-test-python-el-111-test #3 failed")
+    (assert (eq 709 (py-up)) nil "py-up-test-python-el-111-test #4 failed")
+    (assert (eq 704 (py-up)) nil "py-up-test-python-el-111-test #5 failed")
+    (assert (eq 687 (py-up)) nil "py-up-test-python-el-111-test #6 failed")
+    (assert (eq 674 (py-up)) nil "py-up-test-python-el-111-test #7 failed")
+    (goto-char 729)
+    (assert (eq 710 (py-up)) nil "py-up-test-python-el-111-test #7 failed")
+    (assert (eq 709 (py-up)) nil "py-up-test-python-el-111-test #7 failed")
+    )
+
+
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

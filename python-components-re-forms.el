@@ -92,12 +92,20 @@ http://docs.python.org/reference/compound_stmts.html"
       erg))
 
 (defun py-up (&optional indent)
- "Go to beginning one level above of compound statement or definition at point.
+  "Go up or to beginning of form if inside.
+
+If inside a delimited form --string or list-- go to it's beginning.
+If not at beginning of a statement or block, go to it's beginning.
+If at beginning of a statement or block, go to beginning one level above of compound statement or definition at point.
 
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive "P")
-  (py-beginning-of-form-intern py-extended-block-or-clause-re (interactive-p) t))
+  (let ((pps (syntax-ppss)))
+    (cond ((nth 8 pps) (goto-char (nth 8 pps)))
+          ((nth 1 pps) (goto-char (nth 1 pps)))
+          ((py-beginning-of-statement-p) (py-beginning-of-form-intern py-extended-block-or-clause-re (interactive-p) t))
+          (t (py-beginning-of-statement))))) 
 
 (defun py-down (&optional indent)
 
@@ -383,4 +391,3 @@ http://docs.python.org/reference/compound_stmts.html"
 
 (provide 'python-components-re-forms)
 ;;; python-components-re-forms.el ends here
-
