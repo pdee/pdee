@@ -30,6 +30,16 @@ New in version 6.1.1
 
 - `py-electric-comment-p' new default nil
 
+- py-up minor API change
+  If inside a delimited form --string or list-- go to it's beginning
+  If not at beginning of a statement or block, go to it's beginning
+  If at beginning of a statement or block, go to beginning one level above of c
+
+- py-down minor API change:
+  Go to beginning of one level below of compound statement or definition at point.
+  If no statement or block below, but a delimited form --string or list-- go to it's beginning. 
+  Repeated call from there will behave like down-list.
+
 New in version 6.1.0
 ---------------------
 

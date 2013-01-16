@@ -105,23 +105,42 @@ http://docs.python.org/reference/compound_stmts.html"
     (cond ((nth 8 pps) (goto-char (nth 8 pps)))
           ((nth 1 pps) (goto-char (nth 1 pps)))
           ((py-beginning-of-statement-p) (py-beginning-of-form-intern py-extended-block-or-clause-re (interactive-p) t))
-          (t (py-beginning-of-statement))))) 
+          (t (py-beginning-of-statement)))))
 
 (defun py-down (&optional indent)
 
- "Go to beginning one level below of compound statement or definition at point.
+  "Go to beginning one level below of compound statement or definition at point.
+
+If no statement or block below, but a delimited form --string or list-- go to it's beginning. Repeated call from there will behave like down-list.
 
 Returns position if successful, nil otherwise
 
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive "P")
-    (let* ((orig (point))
-           (erg (py-end-base 'py-extended-block-or-clause-re orig)))
-      (when (< orig (point))
-        (setq erg (py-beginning-of-block-or-clause)))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-      erg))
+  (let* ((orig (point))
+         erg
+         (indent (if
+                     (py-beginning-of-statement-p)
+                     (current-indentation)
+                   (progn
+                     (py-beginning-of-statement)
+                     (current-indentation)))))
+    (while (and (setq last (point)) (py-end-of-statement) (py-end-of-statement) (py-beginning-of-statement) (eq (current-indentation) indent)))
+    (if (< indent (current-indentation))
+        (setq erg (point))
+      (goto-char last))
+    (when (< (point) orig)
+      (goto-char orig))
+    (when (and (eq (point) orig)
+               (progn (forward-char 1)
+                      (skip-chars-forward "^\"'[({" (line-end-position))
+                      (member (char-after) (list ?\( ?\" ?\' ?\[ ?\{)))
+               (setq erg (point))))
+    (unless erg
+      (goto-char orig))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
 
 (defun py-beginning-of-block (&optional indent)
  "Go to beginning of block.

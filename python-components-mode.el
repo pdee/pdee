@@ -2512,6 +2512,9 @@ character address of the specified TYPE."
                                    map global-map)
         (substitute-key-definition 'backward-up-list 'py-up
                                    map global-map)
+        (substitute-key-definition 'down-list 'py-down
+                                   map global-map)
+
         (easy-menu-define py-menu map "Python Tools"
           `("PyTools"
             :help "Python mode tools"

@@ -4881,5 +4881,46 @@ def f():
     )
 
 
+(defun py-down-python-el-112-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+# Scenario: Going lover level by C-M-d
+#     When I insert:
+
+class C(object):
+    def m(self):
+        if True:
+            return [i for i in range(3)]
+        else:
+            return []
+
+    # And I am looking at \"class C\"
+    # And I press C-M-d
+    # Then I should looking at \"def m\"
+    # And I press C-M-d
+    # Then I should looking at \"if True\"
+    # And I press C-M-d
+    # Then I should looking at \"i for i\"
+    # And I press C-M-d
+    # Then I should looking at \"3\"
+
+# Current version of C-M-d jumps to inside of (object)
+# because it is just a plain down-list. I think it's
+# better to have python-specific one for symmetry.
+
+"))
+  (py-bug-tests-intern 'py-down-python-el-112-base arg teststring)))
+
+(defun py-down-python-el-112-base ()
+    (goto-char 109)
+    (assert (eq 130 (py-down)) nil "py-down-test-python-el-112-test #1 failed")
+    (assert (eq 151 (py-down)) nil "py-down-test-python-el-112-test #2 failed")
+    (assert (eq 172 (py-down)) nil "py-down-test-python-el-112-test #3 failed")
+    (assert (eq 179 (py-down)) nil "py-down-test-python-el-112-test #4 failed")
+    (assert (eq 196 (py-down)) nil "py-down-test-python-el-112-test #5 failed")
+)
+
+
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
