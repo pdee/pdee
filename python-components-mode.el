@@ -1564,7 +1564,9 @@ and resending the lines later. The lines are stored in reverse order")
     map))
 
 (defvar py-already-guessed-indent-offset nil
-  "Internal use by py-indent-line, use the guess already computed. ")
+  "Internal use by py-indent-line.
+
+When `this-command' is `eq' to `last-command', use the guess already computed. ")
 (make-variable-buffer-local 'py-already-guessed-indent-offset)
 
 (defvar py-imports nil)
@@ -2645,13 +2647,33 @@ Run pdb under GUD"]
             ("Modes"
              :help "Toggle useful modes like `highlight-indentation'"
 
+
+             ["Tab shifts region "
+              (setq py-tab-shifts-region-p
+                    (not py-tab-shifts-region-p))
+              :help "If `t', TAB will indent/cycle the region, not just the current line\.
+
+Default is  nil
+See also `py-tab-indents-region-p'"
+              :style toggle :selected py-tab-shifts-region-p]
+
+             
+             ["Tab indents region "
+              (setq py-tab-indents-region-p
+                    (not py-tab-indents-region-p))
+              :help "When `t' and first TAB doesn't shift, indent-region is called\.
+
+Default is  nil
+See also `py-tab-shifts-region-p'"
+              :style toggle :selected py-tab-indents-region-p]
+
              ["Auto-fill mode"
               (setq py-set-fill-column-p
                     (not py-set-fill-column-p))
               :help "Set Python specific `fill-column' according to `py-docstring-fill-column' and `py-comment-fill-column' "
               :style toggle :selected py-set-fill-column-p]
              
-             ["Toggle use-current-dir-when-execute-p"
+             ["Use current dir when execute"
               (setq py-use-current-dir-when-execute-p
                     (not py-use-current-dir-when-execute-p))
               :help " `toggle-py-use-current-dir-when-execute-p'"
@@ -2721,20 +2743,12 @@ indent-width will be guessed from current major-mode"
                :help "Switches py-smart-indentation minor-mode on "]
               
               )
-             
-             ("Smart operator"
-              :help "Toggle py-smart-operator'"
-              
-              ["Toggle py-smart-operator" py-toggle-smart-operator
-               :help "Toggles py-smart-operator minor-mode"]
-              
-              ["Py-smart-operator off" py-smart-operator-mode-off
-               :help "Switches py-smart-operator minor-mode off "]
 
-              ["Py-smart-operator on" py-smart-operator-mode-on
-               :help "Switches py-smart-operator minor-mode on "]
-
-              )
+             ["Smart operator mode "
+              (setq py-smart-operator-mode-p             
+                    (not py-smart-operator-mode-p))
+              :help "Toggle `py-smart-operator-mode-p'"
+              :style toggle :selected py-smart-operator-mode-p             ]
 
              ["Electric comment "
               (setq py-electric-comment-p
