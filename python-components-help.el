@@ -36,13 +36,14 @@ of current line."
 Only works when point is in a function name, not its arg list, for
 instance.  Assumes an inferior Python is running."
   (let ((symbol (with-syntax-table python-dotty-syntax-table
-                  (current-word))))
+                  (current-word)))
+        (imports (py-find-imports)))
     ;; This is run from timers, so inhibit-quit tends to be set.
     (with-local-quit
       ;; First try the symbol we're on.
       (or (and symbol
                (py-send-receive (format "emacs.eargs(%S, %s)"
-                                            symbol python-imports)))
+                                        symbol imports)))
           ;; Try moving to symbol before enclosing parens.
           (let ((s (syntax-ppss)))
             (unless (zerop (car s))
@@ -56,7 +57,7 @@ instance.  Assumes an inferior Python is running."
                         (py-send-receive
                          (format "emacs.eargs(%S, %s)"
                                  (buffer-substring-no-properties (point) point)
-                                 python-imports))))))))))))
+                                 imports))))))))))))
 
 ;;; Info-look functionality.
 
@@ -539,10 +540,6 @@ local bindings to py-newline-and-indent."))
 
 ;; Find function stuff, lifted from python.el
 
-(defvar python-imports nil
-  "Set by `python-find-imports'.")
-(make-variable-buffer-local 'python-imports)
-
 (defun ar-py-find-function (name)
   "Find source of definition of function NAME.
 Interactively, prompt for name."
@@ -558,40 +555,6 @@ Interactively, prompt for name."
           (sourcefile (py-send-string (concat "inspect.getsourcefile (inspect.getmodule (" symbol ")))")))
           (sourceline (py-send-string (concat "inspect.getsourcelines (" symbol ")))")))))))
 
-;; (let* ((loc (py-send-receive (format "emacs.location_of (%S, %s)"
-;;       				   name python-imports)))
-;;        (loc (car (read-from-string loc)))
-;;        (file (car loc))
-;;        (line (cdr loc)))
-;;   (unless file (error "Don't know where `%s' is defined" name))
-;;   (pop-to-buffer (find-file-noselect file))
-;;   (when (integerp line)
-;;     (goto-char (point-min))
-;;     (forward-line (1- line)))))
-
-;; (python-find-template "#! /bin/env python
-;;  # -*- coding: utf-8 -*-
-;;
-;; def location_of (name, imports):
-;;     \"\"\"Get location at which NAME is defined (or nil).
-;;     Provides a pair (PATH, LINE), where LINE is the start of the definition
-;;     in path name PATH.
-;;     Exec IMPORTS first.\"\"\"
-;;     locls = {}
-;;     if imports:
-;;         try: execit (imports, locls)
-;;         except: pass
-;;     try:
-;;         obj = eval (name, globals (), locls)
-;;         # Bug: (in Python 2.5) `getsourcefile' only works with modules,
-;;         # hence the `getmodule' here.
-;;         srcfile = inspect.getsourcefile (inspect.getmodule (obj))
-;;         _, line = inspect.getsourcelines (obj)
-;;         printit ('_emacs_out (\"%s\" . %d)' % (srcfile, line))
-;;     except:
-;;         printit (\"_emacs_out ()\")
-;; ")
-
 (defalias 'py-find-function 'py-find-definition)
 (defun py-find-definition (&optional arg)
   "Find source of definition of function NAME.
@@ -603,21 +566,21 @@ Search in current buffer first. "
   (let* ((symbol (or arg
                      (with-syntax-table py-dotted-expression-syntax-table
                        (current-word))))
+         (imports (replace-regexp-in-string  ";$" "" (py-find-imports)))
          ;; (enable-recursive-minibuffers t)
          (erg (progn (goto-char (point-min))
                      (when
-                         (re-search-forward (concat "^[ \t]*def " symbol "(") nil t 1))
-                     (forward-char -2)
-                     (point))))
+                         (re-search-forward (concat "^[ \t]*def " symbol "(") nil t 1)
+                       (forward-char -2)
+                       (point)))))
     (unless erg
       (setq name (list (read-string (if symbol
                                         (format "Find location of (default %s): " symbol)
                                       "Find location of: ")
                                     nil nil symbol)))
-      (unless python-imports
         (error "Not called from buffer visiting Python file"))
-      (let* ((loc (py-send-receive (format "emacs.location_of (%S, %s)"
-                                           name python-imports)))
+      (let* ((loc (py-send-receive (format "emacs.location_of%S;%s)"
+                                           name imports)))
              (loc (car (read-from-string loc)))
              (file (car loc))
              (line (cdr loc)))
@@ -625,12 +588,12 @@ Search in current buffer first. "
         (pop-to-buffer (find-file-noselect file))
         (when (integerp line)
           (goto-char (point-min))
-          (forward-line (1- line)))))))
+          (forward-line (1- line))))))
 
 (defun py-find-imports ()
-  "Find top-level imports, updating `python-imports'.
+  "Find top-level imports.
 
-Returns python-imports"
+Returns imports "
   (interactive)
   (let (imports)
     (save-excursion
@@ -645,21 +608,23 @@ Returns python-imports"
                (replace-regexp-in-string
                 "[\\]\r?\n?\s*" ""
                 (buffer-substring-no-properties (match-beginning 0) (point))) ";"))))
+    (and imports
+      (setq imports (replace-regexp-in-string ";$" "" imports)))
     (when (and py-verbose-p (interactive-p)) (message "%s" imports))
-    (setq python-imports imports)
     imports))
 
 (defun py-update-imports ()
-  "Returns `python-imports'.
+  "Returns imports.
 
 Imports done are displayed in message buffer. "
   (interactive)
   (save-excursion
     (let ((oldbuf (current-buffer))
           (orig (point))
-          erg)
-      (mapc 'py-execute-string (split-string (car (read-from-string (py-find-imports))) "\n" t))
-      (setq erg (car (read-from-string python-imports)))
+          (erg (py-find-imports)))
+
+          ;; (mapc 'py-execute-string (split-string (car (read-from-string (py-find-imports))) "\n" t)))
+      ;; (setq erg (car (read-from-string python-imports)))
       (set-buffer oldbuf)
       (goto-char orig)
       (when (interactive-p)

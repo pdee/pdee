@@ -383,7 +383,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-describe-symbol) nil \"py-describe-symbol not detected as command\")" \
 -eval "(assert (commandp 'py-describe-mode) nil \"py-describe-mode not detected as command\")" \
 -eval "(assert (commandp 'py-find-function) nil \"py-find-function not detected as command\")" \
--eval "(assert (commandp 'py-update-imports) nil \"py-update-imports not detected as command\")" \
 -eval "(assert (commandp 'py-indent-forward-line) nil \"py-indent-forward-line not detected as command\")" \
 -eval "(assert (commandp 'py-dedent-forward-line) nil \"py-dedent-forward-line not detected as command\")" \
 -eval "(assert (commandp 'py-dedent) nil \"py-dedent not detected as command\")" \

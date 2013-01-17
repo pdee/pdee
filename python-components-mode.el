@@ -1515,9 +1515,6 @@ Used for determining the default in the next one.")
   "Caches (directory . file) pair used in the last `py-load-file' command.
 Used for determining the default in the next one.")
 
-(defvar python-imports "None"
-  "String of top-level import statements updated by `py-find-imports'.")
-
 (defvar python-default-template "if"
   "Default template to expand by `python-expand-template'.
 Updated on each expansion.")
@@ -2788,9 +2785,6 @@ Try to find source definition of function at point"]
              :help "`py-switch-imenu-index-function'
 Switch between `py-imenu-create-index' from 5.1 series and `py-imenu-create-index-new'."]
 
-            ["Update imports" py-update-imports
-             :help "`py-update-imports'
-Update list of top-level imports for completion"]
             "-"
             ))
         ;; Menu py-execute forms

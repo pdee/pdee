@@ -40,6 +40,11 @@ New in version 6.1.1
   If no statement or block below, but a delimited form --string or list-- go to it's beginning. 
   Repeated call from there will behave like down-list.
 
+- py-update-imports removed
+  Do not maintain a static variable containing needed imports
+  Determine imports on the fly rather, as it might change
+  the very moment
+
 New in version 6.1.0
 ---------------------
 

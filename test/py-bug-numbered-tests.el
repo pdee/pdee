@@ -3006,7 +3006,7 @@ def something():
 
 (defun py-find-imports-lp-1023236-base ()
   (goto-char 334)
-  (assert (equal (py-find-imports) "import urllib;import os, sys;from hashlib import md5;from construct import Container;from twisted.internet import reactor, defer;from twisted.internet.protocol import ClientFactory;from twisted.python import log, failure, filepath;from mock import mock1, mock2, mock3, mock4;") nil "py-find-imports-lp-1023236-test failed"))
+  (assert (equal (py-find-imports) "import urllib;import os, sys;from hashlib import md5;from construct import Container;from twisted.internet import reactor, defer;from twisted.internet.protocol import ClientFactory;from twisted.python import log, failure, filepath;from mock import mock1, mock2, mock3, mock4") nil "py-find-imports-lp-1023236-test failed"))
 
 (defun py-guess-indent-offset-dont-detect-indent-of-2-lp-1027389-test (&optional arg)
   (interactive "p")
