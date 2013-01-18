@@ -386,5 +386,40 @@ Returns value of `py-electric-comment-p'. "
   (when (or py-verbose-p (interactive-p)) (message "py-electric-comment-p: %s" py-electric-comment-p))
   py-electric-comment-p)
 
+;; py-underscore-word-syntax-p forms
+(defun toggle-py-underscore-word-syntax-p (&optional arg)
+  "If `py-underscore-word-syntax-p' should be on or off.
+
+  Returns value of `py-underscore-word-syntax-p' switched to. "
+  (interactive)
+  (let ((arg (or arg (if py-underscore-word-syntax-p -1 1))))
+    (if (< 0 arg)
+        (progn
+          (setq py-underscore-word-syntax-p t)
+          (modify-syntax-entry ?\_ "w" python-mode-syntax-table))
+      (setq py-underscore-word-syntax-p nil)
+      (modify-syntax-entry ?\_ "_" python-mode-syntax-table))
+    (when (or py-verbose-p (interactive-p)) (message "py-underscore-word-syntax-p: %s" py-underscore-word-syntax-p))
+    py-underscore-word-syntax-p))
+
+(defun py-underscore-word-syntax-p-on (&optional arg)
+  "Make sure, py-underscore-word-syntax-p' is on.
+
+Returns value of `py-underscore-word-syntax-p'. "
+  (interactive)
+  (let ((arg (or arg 1)))
+    (toggle-py-underscore-word-syntax-p arg))
+  (when (or py-verbose-p (interactive-p)) (message "py-underscore-word-syntax-p: %s" py-underscore-word-syntax-p))
+  py-underscore-word-syntax-p)
+
+(defun py-underscore-word-syntax-p-off ()
+  "Make sure, `py-underscore-word-syntax-p' is off.
+
+Returns value of `py-underscore-word-syntax-p'. "
+  (interactive)
+  (toggle-py-underscore-word-syntax-p -1)
+  (when (or py-verbose-p (interactive-p)) (message "py-underscore-word-syntax-p: %s" py-underscore-word-syntax-p))
+  py-underscore-word-syntax-p)
+
 (provide 'python-components-switches)
 ;;; python-components-switches.el ends here

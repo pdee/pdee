@@ -113,7 +113,7 @@ Default is  non-nil"
   :group 'python-mode)
 
 (defcustom py-set-fill-column-p nil
-  "If python-mode should set fill-column 
+  "If python-mode should set fill-column
 
 according values in `py-comment-fill-column' and `py-docstring-fill-column'.
 Default is  nil"
@@ -1237,9 +1237,55 @@ syntax or has word syntax and isn't a letter.")
         (modify-syntax-entry ?\n ">" table)
         (modify-syntax-entry ?' "\"" table)
         (modify-syntax-entry ?` "$" table)
-        (when py-underscore-word-syntax-p
-          (modify-syntax-entry ?_ "w" table))
+        (modify-syntax-entry ?\_ "w" table)
         table))
+
+(if py-underscore-word-syntax-p
+    (modify-syntax-entry ?\_ "w" python-mode-syntax-table)
+  (modify-syntax-entry ?\_ "_" python-mode-syntax-table))
+
+;; (add-hook
+;;  'python-mode-hook
+;;  '(lambda ()
+;;     (if py-underscore-word-syntax-p
+;;         (setq python-mode-syntax-table
+;;               (let ((table (make-syntax-table)))
+;;                 ;; Give punctuation syntax to ASCII that normally has symbol
+;;                 ;; syntax or has word syntax and isn't a letter.
+;;                 (let ((symbol (string-to-syntax "_"))
+;;                       (sst (standard-syntax-table)))
+;;                   (dotimes (i 128)
+;;                     (unless (= i ?_)
+;;                       (if (equal symbol (aref sst i))
+;;                           (modify-syntax-entry i "." table)))))
+;;                 (modify-syntax-entry ?$ "." table)
+;;                 (modify-syntax-entry ?% "." table)
+;;                 ;; exceptions
+;;                 (modify-syntax-entry ?# "<" table)
+;;                 (modify-syntax-entry ?\n ">" table)
+;;                 (modify-syntax-entry ?' "\"" table)
+;;                 (modify-syntax-entry ?` "$" table)
+;;                 (modify-syntax-entry ?\_ "w" table)
+;;                 table))
+;;       (setq python-mode-syntax-table
+;;             (let ((table (make-syntax-table)))
+;;               ;; Give punctuation syntax to ASCII that normally has symbol
+;;               ;; syntax or has word syntax and isn't a letter.
+;;               (let ((symbol (string-to-syntax "_"))
+;;                     (sst (standard-syntax-table)))
+;;                 (dotimes (i 128)
+;;                   (unless (= i ?_)
+;;                     (if (equal symbol (aref sst i))
+;;                         (modify-syntax-entry i "." table)))))
+;;               (modify-syntax-entry ?$ "." table)
+;;               (modify-syntax-entry ?% "." table)
+;;               ;; exceptions
+;;               (modify-syntax-entry ?# "<" table)
+;;               (modify-syntax-entry ?\n ">" table)
+;;               (modify-syntax-entry ?' "\"" table)
+;;               (modify-syntax-entry ?` "$" table)
+;;               (modify-syntax-entry ?\_ "_" table)
+;;               table)))))
 
 (defvar py-local-command nil
   "Returns locally used executable-name. ")
@@ -2646,8 +2692,32 @@ Run pdb under GUD"]
 
             ("Modes"
              :help "Toggle useful modes like `highlight-indentation'"
+             ("Underscore word syntax"
+              :help "Toggle `py-underscore-word-syntax-p'"
+              
+              ["Toggle underscore word syntax" toggle-py-underscore-word-syntax-p
+               :help " `toggle-py-underscore-word-syntax-p'
 
+If `py-underscore-word-syntax-p' should be on or off\.
 
+  Returns value of `py-underscore-word-syntax-p' switched to\. . "]
+              
+              ["Underscore word syntax on" py-underscore-word-syntax-p-on
+               :help " `py-underscore-word-syntax-p-on'
+
+Make sure, py-underscore-word-syntax-p' is on\.
+
+Returns value of `py-underscore-word-syntax-p'\. . "]
+              
+              ["Underscore word syntax off" py-underscore-word-syntax-p-off
+               :help " `py-underscore-word-syntax-p-off'
+
+Make sure, `py-underscore-word-syntax-p' is off\.
+
+Returns value of `py-underscore-word-syntax-p'\. . "]
+              
+              )
+             
              ["Tab shifts region "
               (setq py-tab-shifts-region-p
                     (not py-tab-shifts-region-p))
@@ -2657,7 +2727,6 @@ Default is  nil
 See also `py-tab-indents-region-p'"
               :style toggle :selected py-tab-shifts-region-p]
 
-             
              ["Tab indents region "
               (setq py-tab-indents-region-p
                     (not py-tab-indents-region-p))
@@ -2672,13 +2741,13 @@ See also `py-tab-shifts-region-p'"
                     (not py-set-fill-column-p))
               :help "Set Python specific `fill-column' according to `py-docstring-fill-column' and `py-comment-fill-column' "
               :style toggle :selected py-set-fill-column-p]
-             
+
              ["Use current dir when execute"
               (setq py-use-current-dir-when-execute-p
                     (not py-use-current-dir-when-execute-p))
               :help " `toggle-py-use-current-dir-when-execute-p'"
               :style toggle :selected py-use-current-dir-when-execute-p]
-             
+
              ["Jump on exception"
               (setq  py-jump-on-exception
                      (not py-jump-on-exception))
@@ -2687,26 +2756,26 @@ When this variable is non-nil and an exception occurs when running
 Python code synchronously in a subprocess, jump immediately to the
 source code of the innermost traceback frame\."
               :style toggle :selected py-jump-on-exception]
-             
+
              ["Switch buffers on execute"
               (setq  py-switch-buffers-on-execute-p
                      (not py-switch-buffers-on-execute-p))
               :help "When non-nil switch to the Python output buffer\. "
               :style toggle :selected py-switch-buffers-on-execute-p]
-             
+
              ["Split windows on execute"
               (setq  py-split-windows-on-execute-p
                      (not py-split-windows-on-execute-p))
               :help "When non-nil split windows\. "
               :style toggle :selected py-split-windows-on-execute-p]
-             
+
              ["Python mode v5 behavior"
               (setq  python-mode-v5-behavior-p
                      (not python-mode-v5-behavior-p))
               :help "Execute region through `shell-command-on-region' as
 v5 did it - lp:990079\. This might fail with certain chars - see UnicodeEncodeError lp:550661"
               :style toggle :selected python-mode-v5-behavior-p]
-             
+
              ["Highlight indentation"
               (setq highlight-indentation
                     (not highlight-indentation))
@@ -2715,37 +2784,37 @@ Optional argument INDENT-WIDTH specifies which indentation
 level (spaces only) should be highlighted, if omitted
 indent-width will be guessed from current major-mode"
               :style toggle :selected highlight-indentation]
-             
+
              ["indent-tabs-mode"
               (setq indent-tabs-mode
                     (not indent-tabs-mode))
               :help "Indentation can insert tabs if this is non-nil\."
               :style toggle :selected indent-tabs-mode]
-             
+
              ("Autopair"
               :help "Toggle autopair-mode'"
-              
+
               ["Toggle autopair-mode" py-toggle-autopair-mode
                :help "Toggles py-autopair minor-mode "]
-              
+
               ["Autopair on" py-autopair-mode-on
                :help "Switches autopair minor-mode on "]
-              
+
               )
-             
+
              ("Smart indentation"
               :help "Toggle py-smart-indentation'"
-              
+
               ["Toggle py-smart-indentation" toggle-py-smart-indentation
                :help "Toggles py-smart-indentation minor-mode "]
-              
+
               ["Py-smart-indentation on" py-smart-indentation-mode-on
                :help "Switches py-smart-indentation minor-mode on "]
-              
+
               )
 
              ["Smart operator mode "
-              (setq py-smart-operator-mode-p             
+              (setq py-smart-operator-mode-p
                     (not py-smart-operator-mode-p))
               :help "Toggle `py-smart-operator-mode-p'"
               :style toggle :selected py-smart-operator-mode-p             ]
@@ -5987,7 +6056,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
     (add-hook 'completion-at-point-functions
               'py-shell-complete nil 'local)))
   (if py-set-fill-column-p
-              (add-hook 'python-mode-hook 'py-run-auto-fill-timer)
+      (add-hook 'python-mode-hook 'py-run-auto-fill-timer)
     (remove-hook 'python-mode-hook 'py-run-auto-fill-timer))
   (when (and py-imenu-create-index-p
              (fboundp 'imenu-add-to-menubar)
