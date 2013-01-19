@@ -890,15 +890,6 @@ Making switch between several virtualenv's easier,
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-underscore-word-syntax-p t
-  "If underscore chars should be of syntax-class `word', not of `symbol'.
-
-Underscores in word-class makes `forward-word' etc. travel the indentifiers. Default is `t'.
-
-See bug report at launchpad, lp:940812 "
-  :type 'boolean
-  :group 'python-mode)
-
 (defcustom py-edit-only-p nil
   "When `t' `python-mode' will not take resort nor check for installed Python executables. Default is nil.
 
@@ -1206,6 +1197,13 @@ It should not contain a caret (^) at the beginning."
   :group 'python-mode)
 
 ;;; defvarred Variables
+(defvar py-underscore-word-syntax-p t
+  "This is set later by defcustom, only initial value here.  
+
+If underscore chars should be of syntax-class `word', not of `symbol'.
+Underscores in word-class makes `forward-word' etc. travel the indentifiers. Default is `t'.
+See also command `toggle-py-underscore-word-syntax-p' ")
+
 (defvar py-shell-prompt-regexp ">>> ")
 
 (defvar py-autofill-timer nil)
@@ -2222,6 +2220,21 @@ See original source: http://pymacs.progiciels-bpi.ca"
 (require 'python-components-comment)
 (require 'python-components-auto-fill)
 (require 'highlight-indentation)
+
+
+;; toggle-py-underscore-word-syntax-p must be known already
+;; circular: toggle-py-underscore-word-syntax-p sets and calls it
+(defcustom py-underscore-word-syntax-p t
+  "If underscore chars should be of syntax-class `word', not of `symbol'.
+
+Underscores in word-class makes `forward-word' etc. travel the indentifiers. Default is `t'.
+
+See bug report at launchpad, lp:940812 "
+  :type 'boolean
+  :group 'python-mode
+  :set (lambda (symbol value)
+         (set-default symbol value)
+         (toggle-py-underscore-word-syntax-p (if value 1 0))))
 
 ;;; Python specialized rx, thanks Fabian F. Gallina
 (eval-when-compile
