@@ -28,7 +28,7 @@ New in version 6.1.1
 - boolean `py-use-font-lock-doc-face-p', default is nil 
   If non-nil, documention strings get `font-lock-doc-face'
 
-- boolean py-newline-delete-trailing-whitespace-p 
+- boolean `py-newline-delete-trailing-whitespace-p' 
   Delete trailing whitespace maybe left by `py-newline-and-indent'
 
 - `py-electric-comment-p' new default nil

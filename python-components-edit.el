@@ -408,7 +408,33 @@ The defun visible is the one that contains point or follows point. "
 
 ;; make general form below work also in these cases
 (defalias 'py-beginning-of-paragraph 'backward-paragraph)
+;; (defun py-beginning-of-paragraph ()
+;;   "Go to beginning of paragraph.
+;;
+;; Consider a string starting at current indentation as beginning too "
+;;   (interactive)
+;;   (let* ((pps (syntax-ppss))
+;;          (erg (and (nth 3 pps)(nth 8 pps))))
+;;     (if (and erg (progn (back-to-indentation) (looking-at "\"\"\"\\|'''\\|\"\\|'")))
+;;         erg
+;;       (backward-paragraph))))
+
 (defalias 'py-end-of-paragraph 'forward-paragraph)
+;; (defun py-end-of-paragraph ()
+;;   "Go to end of paragraph.
+;;
+;; If in a string starting which starts at current indentation, consider end-of-string as paragraph end "
+;;   (interactive)
+;;   (let* ((pps (syntax-ppss))
+;;          (erg (or (and (nth 3 pps)(nth 8 pps))
+;;                   (and (looking-at "\"\"\"\\|'''\\|\"\\|'")(looking-back "^[ \t]*]")))))
+;;
+;;     (if (and erg (back-to-indentation) (looking-at "\"\"\"\\|'''\\|\"\\|'"))
+;;         (progn
+;;           (goto-char (match-end 0))
+;;           (search-forward (match-string-no-properties 0) (line-end-position))
+;;           (match-end 0))
+;;       (forward-paragraph))))
 
 ;;;
 (defun py-indent-and-forward ()

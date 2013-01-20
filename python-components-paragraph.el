@@ -116,11 +116,11 @@ SYMMETRIC:
                   (set (make-local-variable 'py-fill-docstring-style) nil))))
              ;; Decorators
              ((save-excursion
-                (equal (char-after
-                        (py-beginning-of-statement))
+                (and (py-beginning-of-statement)
+                (equal (char-after)
                        ;; (back-to-indentation)
                        ;; (point))
-                       ?\@))
+                       ?\@)))
               (py-fill-decorator justify))
              ;; Parens
              ((or (nth 1 pps)
@@ -267,7 +267,7 @@ JUSTIFY should be used (if applicable) as in `fill-paragraph'."
          (fill-paragraph-function))
     (save-restriction
       (cond (docstring-p
-             (narrow-to-region (+ beg delim-length) (- end delim-length))
+             (narrow-to-region (+ beg delim-length) (- (1- end) delim-length))
              (fill-region (+ beg delim-length) (- end delim-length)))
             ((string-match (concat "^" py-labelled-re) (buffer-substring-no-properties beg end))
              (py-fill-labelled-string beg end))
