@@ -214,6 +214,11 @@ When indent is set back manually, this is honoured in following lines. "
                           (parse-partial-sexp (point-min) (point))
                         (syntax-ppss))))
       (delete-region (match-beginning 0) (match-end 0)))
+    (save-excursion
+      (and py-newline-delete-trailing-whitespace-p
+           (goto-char orig)
+           (< 0 (abs (skip-chars-backward " \t\r\n\f")))
+           (delete-region (point) (line-end-position))))
     (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
 

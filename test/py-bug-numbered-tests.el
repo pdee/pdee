@@ -38,6 +38,7 @@
 
 (setq bug-numbered-tests
       (list
+       'py-newline-and-indent-leaves-eol-whitespace-lp-1100892-test
        'py-underscore-word-syntax-p-customization-has-no-effect-lp-1100947-test
        'py-up-test-python-el-111-test
        'py-down-python-el-112-test
@@ -4942,6 +4943,32 @@ _
   (py-underscore-word-syntax-p-on)
   (assert (eq 119 (char-syntax (char-after))) nil "py-underscore-word-syntax-p-customization-has-no-effect-lp-1100947-test #3 failed")
 )
+
+(defun py-newline-and-indent-leaves-eol-whitespace-lp-1100892-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -\*- coding: utf-8 -\*-
+# py-newline-and-indent leaves extra whitespace at eol if used inside an existing construct. It should
+# instead clean up all trailing whitespace. I believe this is a regression.
+
+def foo():
+    x = some_long_call(supercalifragilistic=6, expialidocious=7)
+
+# Now, put point on the 'e' of expialidocious and hit RET
+
+# You will see that there's an extra space left after the \"6, \". All trailing whitespace should instead be
+# removed.
+
+"))
+  (py-bug-tests-intern 'py-newline-and-indent-leaves-eol-whitespace-lp-1100892-base arg teststring)))
+
+(defun py-newline-and-indent-leaves-eol-whitespace-lp-1100892-base ()
+  (let ((py-newline-delete-trailing-whitespace-p t))
+    (goto-char 286)
+    (py-newline-and-indent)
+    (skip-chars-backward " \t\r\n\f")
+    (assert (eq (char-after) 10) nil "py-newline-and-indent-leaves-eol-whitespace-lp-1100892-test failed")))
+
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
