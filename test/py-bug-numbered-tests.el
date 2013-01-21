@@ -38,6 +38,7 @@
 
 (setq bug-numbered-tests
       (list
+       'module-docstring-when-following-comment-lp-1102011-test
        'py-newline-and-indent-leaves-eol-whitespace-lp-1100892-test
        'py-underscore-word-syntax-p-customization-has-no-effect-lp-1100947-test
        'py-up-test-python-el-111-test
@@ -4969,6 +4970,24 @@ def foo():
     (skip-chars-backward " \t\r\n\f")
     (assert (eq (char-after) 10) nil "py-newline-and-indent-leaves-eol-whitespace-lp-1100892-test failed")))
 
+
+(defun module-docstring-when-following-comment-lp-1102011-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python3
+# -\*- coding: utf-8 -\*-
+\"\"\"
+module docstring
+\"\"\"
+"))
+  (py-bug-tests-intern 'module-docstring-when-following-comment-lp-1102011-base arg teststring)))
+
+(defun module-docstring-when-following-comment-lp-1102011-base ()
+  (let ((py-use-font-lock-doc-face-p t))
+    (goto-char 57)
+    (python-mode)
+    (font-lock-fontify-buffer) 
+    (sit-for 1) 
+    (assert (eq (face-at-point) 'font-lock-doc-face) nil "module-docstring-when-following-comment-lp-1102011-test failed")))
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

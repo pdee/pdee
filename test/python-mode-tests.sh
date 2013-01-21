@@ -1057,6 +1057,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-font-lock-keywords) nil \"py-font-lock-keywords not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall module-docstring-when-following-comment-lp-1102011-test \
 --funcall py-newline-and-indent-leaves-eol-whitespace-lp-1100892-test \
 --funcall py-underscore-word-syntax-p-customization-has-no-effect-lp-1100947-test \
 --funcall py-up-test-python-el-111-test \
