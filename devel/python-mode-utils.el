@@ -51,9 +51,9 @@
 
 ")
 
-(defvar py-toggle-form-vars (list "py-set-nil-docstring-style" "py-set-onetwo-docstring-style" "py-set-pep-257-docstring-style" "py-set-pep-257-nn-docstring-style" "py-set-symmetric-docstring-style" "py-set-django-docstring-style" ))
+;; (defvar py-toggle-form-vars (list "py-set-nil-docstring-style" "py-set-onetwo-docstring-style" "py-set-pep-257-docstring-style" "py-set-pep-257-nn-docstring-style" "py-set-symmetric-docstring-style" "py-set-django-docstring-style" ))
 
-(setq py-toggle-form-vars (list "py-set-nil-docstring-style" "py-set-onetwo-docstring-style" "py-set-pep-257-docstring-style" "py-set-pep-257-nn-docstring-style" "py-set-symmetric-docstring-style" "py-set-django-docstring-style" ))
+(setq py-toggle-form-vars (list "py-nil-docstring-style" "py-onetwo-docstring-style" "py-pep-257-docstring-style" "py-pep-257-nn-docstring-style" "py-symmetric-docstring-style" "py-django-docstring-style" ))
 
 (defvar docstring-styles (list "django" "onetwo" "pep-257" "pep-257-nn" "symmetric"))
 

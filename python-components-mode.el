@@ -2587,130 +2587,7 @@ character address of the specified TYPE."
             ["Customize Python mode" (customize-group 'python-mode)
              :help "Open the customization buffer for Python mode"]
 
-            "-"
-
-            ["pychecker-run" py-pychecker-run
-             :help "`py-pychecker-run'
-Run pychecker"]
-
-            ("Pylint ... "
-             :help "Extendet report options
-call `easy_install pylint' if not available"
-
-             ["pylint-run" py-pylint-run
-              :help "`pylint-run'
-Pylint will display a number of messages as it analyzes the code,
-as well as some statistics about the number of warnings and
-errors found in different files - unless called with arg \"--errors-only\". The messages are classified
-under various categories such as errors and warnings
-
-Pylint checks length of lines of code, if variable names are
-well-formed according to your coding standard, if declared
-interfaces are truly implemented, and much more. Additionally, it
-is possible to write plugins.
-
-call `easy_install pylint' if not available
-"]
-
-             ["pylint-help" pylint-help
-              :help "`pylint-help'
-List extendet report options
-"]
-             ["pylint-flymake-mode" pylint-flymake-mode
-              :help "`pylint-flymake-mode'
-Toggle flymake-mode running `pylint'
-"])
-
-            ("pep8 ... "
-             :help "Check formatting
-call `easy_install pep8' if not available"
-
-             ["pep8-run" py-pep8-run
-              :help "`py-pep8-run'
-Check formatting (default on the file currently visited)
-call `easy_install pep8' if not available
-"]
-
-             ["pep8-help" py-pep8-help
-              :help "`py-pep8-help'
-Display help for pep8 format checker)
-"]
-
-             ["pep8-flymake-mode" pep8-flymake-mode
-              :help "`pep8-flymake-mode'
-Toggle flymake-mode running `pep8'
-"])
-
-            ("Pyflakes ... " :help "Non intrusive code
-             checker call `easy_install pyflakes' if
-             not available"
-
-             ["pyflakes-run" py-pyflakes-run :help
-              "`py-pyflakes-run' Run pyflakes call
-              `easy_install pyflakes' if not
-              available"]
-
-             ["pyflakes-help" py-pyflakes-help :help
-              "`py-pyflakes-help' Display help for
-              Pyflakes "]
-
-             ["pyflakes-flymake-mode" pyflakes-flymake-mode :help
-              "`pyflakes-flymake-mode'
-Toggle flymake-mode running `pyflakes' "])
-
-            ("Pyflakes-pep8 ... " :help
-             "Non intrusive code checker running `pyflakes' and `pep8'
-call `easy_install pyflakes' and `easy_install pep8' if basics not available"
-
-             ["pyflakespep8-run" py-pyflakespep8-run :help
-              "`py-pyflakespep8-run' Run `pyflakespep8'
-call `easy_install pyflakes' if not available"]
-
-             ["pyflakespep8-help" py-pyflakespep8-help :help
-              "`py-pyflakespep8-help' Display help for
-              Pyflakespep8 "]
-
-             ["pyflakespep8-flymake-mode" pyflakespep8-flymake-mode :help
-              "`pyflakespep8-flymake-mode'
-Toggle flymake-mode running `pyflakespep8' "])
-
-            "-"
-            ("Abbrevs"
-             :help "see also `py-add-abbrev'"
-             :filter (lambda (&rest junk)
-                       (abbrev-table-menu python-mode-abbrev-table)))
-            ["add-abbrev" py-add-abbrev
-             :help "Defines python-mode specific abbrev for last expressions before point.
-Argument is how many `py-partial-expression's form the expansion; or zero means the region is the expansion. "]
-
-            ("Skeletons"
-             :help "See also templates in YASnippet"
-
-             ["if" py-if
-              :help "Inserts if-statement"]
-             ["py-else" py-else
-              :help "Inserts else-statement"]
-             ["py-while" py-while
-              :help "Inserts while-statement"]
-             ["py-for" py-for
-              :help "Inserts for-statement"]
-             ["py-try/finally" py-try/finally
-              :help "Inserts py-try/finally-statement"]
-             ["py-try/except" py-try/except
-              :help "Inserts py-try/except-statement"])
-
-            "-"
-
-            ["Import/reload file" py-execute-import-or-reload
-             :help "`py-execute-import-or-reload'
-Load into inferior Python session"]
-
-            ["Debugger" pdb
-             :help "`pdb'
-Run pdb under GUD"]
-            "-"
-
-            ("Modes"
+            ("Switches"
              :help "Toggle useful modes like `highlight-indentation'"
              ("Underscore word syntax"
               :help "Toggle `py-underscore-word-syntax-p'"
@@ -2846,6 +2723,131 @@ indent-width will be guessed from current major-mode"
               :style toggle :selected py-electric-comment-p]
 
              )
+
+            "-"
+
+            ["pychecker-run" py-pychecker-run
+             :help "`py-pychecker-run'
+Run pychecker"]
+
+            ("Pylint ... "
+             :help "Extendet report options
+call `easy_install pylint' if not available"
+
+             ["pylint-run" py-pylint-run
+              :help "`pylint-run'
+Pylint will display a number of messages as it analyzes the code,
+as well as some statistics about the number of warnings and
+errors found in different files - unless called with arg \"--errors-only\". The messages are classified
+under various categories such as errors and warnings
+
+Pylint checks length of lines of code, if variable names are
+well-formed according to your coding standard, if declared
+interfaces are truly implemented, and much more. Additionally, it
+is possible to write plugins.
+
+call `easy_install pylint' if not available
+"]
+
+             ["pylint-help" pylint-help
+              :help "`pylint-help'
+List extendet report options
+"]
+             ["pylint-flymake-mode" pylint-flymake-mode
+              :help "`pylint-flymake-mode'
+Toggle flymake-mode running `pylint'
+"])
+
+            ("pep8 ... "
+             :help "Check formatting
+call `easy_install pep8' if not available"
+
+             ["pep8-run" py-pep8-run
+              :help "`py-pep8-run'
+Check formatting (default on the file currently visited)
+call `easy_install pep8' if not available
+"]
+
+             ["pep8-help" py-pep8-help
+              :help "`py-pep8-help'
+Display help for pep8 format checker)
+"]
+
+             ["pep8-flymake-mode" pep8-flymake-mode
+              :help "`pep8-flymake-mode'
+Toggle flymake-mode running `pep8'
+"])
+
+            ("Pyflakes ... " :help "Non intrusive code
+             checker call `easy_install pyflakes' if
+             not available"
+
+             ["pyflakes-run" py-pyflakes-run :help
+              "`py-pyflakes-run' Run pyflakes call
+              `easy_install pyflakes' if not
+              available"]
+
+             ["pyflakes-help" py-pyflakes-help :help
+              "`py-pyflakes-help' Display help for
+              Pyflakes "]
+
+             ["pyflakes-flymake-mode" pyflakes-flymake-mode :help
+              "`pyflakes-flymake-mode'
+Toggle flymake-mode running `pyflakes' "])
+
+            ("Pyflakes-pep8 ... " :help
+             "Non intrusive code checker running `pyflakes' and `pep8'
+call `easy_install pyflakes' and `easy_install pep8' if basics not available"
+
+             ["pyflakespep8-run" py-pyflakespep8-run :help
+              "`py-pyflakespep8-run' Run `pyflakespep8'
+call `easy_install pyflakes' if not available"]
+
+             ["pyflakespep8-help" py-pyflakespep8-help :help
+              "`py-pyflakespep8-help' Display help for
+              Pyflakespep8 "]
+
+             ["pyflakespep8-flymake-mode" pyflakespep8-flymake-mode :help
+              "`pyflakespep8-flymake-mode'
+Toggle flymake-mode running `pyflakespep8' "])
+
+            "-"
+            ("Abbrevs"
+             :help "see also `py-add-abbrev'"
+             :filter (lambda (&rest junk)
+                       (abbrev-table-menu python-mode-abbrev-table)))
+            ["add-abbrev" py-add-abbrev
+             :help "Defines python-mode specific abbrev for last expressions before point.
+Argument is how many `py-partial-expression's form the expansion; or zero means the region is the expansion. "]
+
+            ("Skeletons"
+             :help "See also templates in YASnippet"
+
+             ["if" py-if
+              :help "Inserts if-statement"]
+             ["py-else" py-else
+              :help "Inserts else-statement"]
+             ["py-while" py-while
+              :help "Inserts while-statement"]
+             ["py-for" py-for
+              :help "Inserts for-statement"]
+             ["py-try/finally" py-try/finally
+              :help "Inserts py-try/finally-statement"]
+             ["py-try/except" py-try/except
+              :help "Inserts py-try/except-statement"])
+
+            "-"
+
+            ["Import/reload file" py-execute-import-or-reload
+             :help "`py-execute-import-or-reload'
+Load into inferior Python session"]
+
+            ["Debugger" pdb
+             :help "`pdb'
+Run pdb under GUD"]
+            "-"
+
+       
 
             ("Help"
              :help "Some help commands"
