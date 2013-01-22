@@ -933,7 +933,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-ipython-execute-delay) nil \"py-ipython-execute-delay not a variable\")" \
 -eval "(assert (boundp 'strip-chars-before) nil \"strip-chars-before not a variable\")" \
 -eval "(assert (boundp 'strip-chars-after) nil \"strip-chars-after not a variable\")" \
--eval "(assert (boundp 'py-fill-docstring-style) nil \"py-fill-docstring-style not a variable\")" \
+-eval "(assert (boundp 'py-docstring-style) nil \"py-docstring-style not a variable\")" \
 -eval "(assert (boundp 'py-number-face) nil \"py-number-face not a variable\")" \
 -eval "(assert (boundp 'py-XXX-tag-face) nil \"py-XXX-tag-face not a variable\")" \
 -eval "(assert (boundp 'py-pseudo-keyword-face) nil \"py-pseudo-keyword-face not a variable\")" \

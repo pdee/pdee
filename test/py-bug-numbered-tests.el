@@ -4989,5 +4989,51 @@ module docstring
     (sit-for 1) 
     (assert (eq (face-at-point) 'font-lock-doc-face) nil "module-docstring-when-following-comment-lp-1102011-test failed")))
 
+(defun More-docstring-filling-woes-lp-1102296-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+# (I selected \"PEP-257-NN\" as the docstring fill style.)
+# Given the following code:
+
+class Test(object):
+    \"\"\"
+    Builds target formats from the reST sources.
+    \"\"\"
+
+    def method1(self):
+        \"\"\"Return the template bridge configured.\"\"\"
+        pass
+
+    def method2(self):
+        \"\"\"Load necessary templates and perform initialization. The default implementation does nothing.
+        \"\"\"
+        pass
+
+# After filling the three docstrings with fill-paragraph, it looks like this:
+
+class Test(object):
+    \"\"\" Builds target formats from the reST sources. \"\"\"
+
+    def method1(self):
+        \"\"\"Return the template bridge configured.\"\"\" pass
+
+    def method2(self):
+        \"\"\"Load necessary templates and perform initialization. The default
+        implementation does nothing. \"\"\" pass
+
+# There are three misbehaviors here:
+# \* should have removed the whitespace at the beginning and end of the class docstring
+# \* in method1, the \"pass\" should remain on its own line
+# \* in method2, the closing triple-quote should get its own line, and the \"pass\" too
+
+"))
+  (py-bug-tests-intern 'More-docstring-filling-woes-lp-1102296-base arg teststring)))
+
+(defun More-docstring-filling-woes-lp-1102296-base ()
+    (goto-char 178)
+    (assert nil "More-docstring-filling-woes-lp-1102296-test failed"))
+
+
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

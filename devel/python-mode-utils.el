@@ -51,6 +51,10 @@
 
 ")
 
+(defvar py-toggle-form-vars (list "py-set-nil-docstring-style" "py-set-onetwo-docstring-style" "py-set-pep-257-docstring-style" "py-set-pep-257-nn-docstring-style" "py-set-symmetric-docstring-style" "py-set-django-docstring-style" ))
+
+(setq py-toggle-form-vars (list "py-set-nil-docstring-style" "py-set-onetwo-docstring-style" "py-set-pep-257-docstring-style" "py-set-pep-257-nn-docstring-style" "py-set-symmetric-docstring-style" "py-set-django-docstring-style" ))
+
 (defvar docstring-styles (list "django" "onetwo" "pep-257" "pep-257-nn" "symmetric"))
 
 (setq py-options (list "" "switch" "noswitch" "dedicated" "dedicated-switch"))
@@ -1577,15 +1581,23 @@ A complementary command travelling right, whilst `py-beginning-of-" ele "' stops
   (switch-to-buffer (current-buffer))
   (emacs-lisp-mode))
 
-(defun write-toggle-forms ()
+(defun write-toggle-forms (&optional arg)
   "Write toggle-forms according to (car kill-ring) "
-  (interactive)
-  (let ((ele (car kill-ring)))
-    (message "Writing for; %s" (car kill-ring))
-    (set-buffer (get-buffer-create (capitalize ele)))
-    (erase-buffer)
-    (insert (concat ";;; " ele " forms"))
-    (insert (concat "
+  (interactive "P")
+  (let ((liste (if (eq 4 (prefix-numeric-value arg))
+                   (car kill-ring)
+                 py-toggle-form-vars))
+        done buffer-out first menu-buffer)
+    (dolist (ele liste)
+      (if done
+          (set-buffer buffer-out)
+        (setq buffer-out (capitalize ele))
+        (set-buffer (get-buffer-create buffer-out))
+        (erase-buffer)
+        (insert (concat ";;; " ele " forms\n\n"))
+        (setq done t))
+      (message "Writing for; %s" ele)
+      (insert (concat "
 \(defun toggle-" ele " (&optional arg)
   \"If `" ele "' should be on or off.
 
@@ -1616,15 +1628,21 @@ Returns value of `" ele "'. \"
   (toggle-" ele " -1)
   (when (or py-verbose-p (interactive-p)) (message \"" ele ": %s\" " ele "))
   " ele ")"))
-    (newline)
-    (emacs-lisp-mode)
-    (eval-buffer)
-    (set-buffer (get-buffer-create (concat "Menu " ele)))
-    (erase-buffer)
-    (switch-emen ele)
-    (set-buffer (get-buffer-create (capitalize ele)))
-    ;; (switch-to-buffer (current-buffer))
-    ))
+      (newline)
+      (emacs-lisp-mode)
+      (eval-buffer)
+      (if first
+          (set-buffer menu-buffer)
+        (setq menu-buffer (concat "Menu " ele))
+        (set-buffer (get-buffer-create menu-buffer))
+        (erase-buffer)
+        (insert (concat ";;; " ele " forms\n\n"))
+        (setq first t))
+      (switch-emen ele)
+      ;; (set-buffer buffer-out)
+      ;; (switch-to-buffer (current-buffer))
+      )))
+
 
 
 
@@ -2243,7 +2261,6 @@ Return position if " ele " found, nil otherwise \"
     (skip-chars-forward "[[:punct:]]")
     (capitalize-word 1)))
 
-
 (defun temen (&optional symbol)
   "Provide menu for toggle-commans using checkbox. "
   (interactive "*")
@@ -2298,7 +2315,6 @@ Return position if " ele " found, nil otherwise \"
     (insert "\n)\n"))
   (emacs-lisp-mode))
 
-
 (defun write-py-comment-forms ()
   (interactive)
   (set-buffer (get-buffer-create "python-components-comment.el"))
@@ -2350,6 +2366,3 @@ the default\"
   (insert "      ))")
   (emacs-lisp-mode)
   (switch-to-buffer (current-buffer)))
-
-
-

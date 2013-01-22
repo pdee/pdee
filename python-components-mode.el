@@ -1038,7 +1038,7 @@ Default ignores all inputs of 0, 1, or 2 non-blank characters."
   :type 'string
   :group 'convenience)
 
-(defcustom py-fill-docstring-style 'pep-257-nn
+(defcustom py-docstring-style 'pep-257-nn
   "Implemented styles are DJANGO, ONETWO, PEP-257, PEP-257-NN,
 SYMMETRIC, and NIL.
 
@@ -4968,17 +4968,17 @@ Go to beginning one level below of compound statement or definition at point. "]
 
             "-"
             ("Filling"
-             :help "see also customizable `py-fill-docstring-style'"
+             :help "see also customizable `py-docstring-style'"
 
              ["Fill string" py-fill-string
               :help " `py-fill-string'
 
-Uses value of `py-fill-docstring-style', if set. "]
+Uses value of `py-docstring-style', if set. "]
 
              ["Fill paragraph" py-fill-paragraph
               :help " `py-fill-paragraph'
 
-Uses value of `py-fill-docstring-style', if set. "]
+Uses value of `py-docstring-style', if set. "]
 
              ["Fill comment" py-fill-comment
               :help " `py-fill-comment'
@@ -4998,7 +4998,7 @@ Fill comment at point. "]
     If processing fails throw ProcessingError.
     \"\"\"
 
-See available styles at `py-fill-paragraph' or var `py-fill-docstring-style'
+See available styles at `py-fill-paragraph' or var `py-docstring-style'
  "]
 
              ["py fill string onetwo" py-fill-string-onetwo
@@ -5014,7 +5014,7 @@ One newline and start and Two at end style.
 
     \"\"\"
 
-See available styles at `py-fill-paragraph' or var `py-fill-docstring-style'"]
+See available styles at `py-fill-paragraph' or var `py-docstring-style'"]
 
              ["py fill string pep 257" py-fill-string-pep-257
               :help " `py-fill-string-pep-257'
@@ -5029,7 +5029,7 @@ PEP-257 with 2 newlines at end of string.
 
     \"\"\"
 
-See available styles at `py-fill-paragraph' or var `py-fill-docstring-style'"]
+See available styles at `py-fill-paragraph' or var `py-docstring-style'"]
 
              ["py fill string pep 257 nn" py-fill-string-pep-257-nn
               :help " `py-fill-string-pep-257-nn'
@@ -5043,7 +5043,7 @@ PEP-257 with 1 newline at end of string.
     If processing fails throw ProcessingError.
     \"\"\"
 
-See available styles at `py-fill-paragraph' or var `py-fill-docstring-style'"]
+See available styles at `py-fill-paragraph' or var `py-docstring-style'"]
 
              ["py fill string symmetric" py-fill-string-symmetric
               :help " `py-fill-string-symmetric'
@@ -5058,7 +5058,7 @@ Symmetric style.
     If processing fails throw ProcessingError.
     \"\"\"
 
-See available styles at `py-fill-paragraph' or var `py-fill-docstring-style'"]
+See available styles at `py-fill-paragraph' or var `py-docstring-style'"]
 
              )
 

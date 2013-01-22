@@ -53,6 +53,8 @@ New in version 6.1.1
   Determine imports on the fly rather, as it might change
   the very moment
 
+- variable `py-fill-docstring-style' renamed `py-docstring-style'
+
 New in version 6.1.0
 ---------------------
 
