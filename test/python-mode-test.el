@@ -47,6 +47,7 @@
 
 (setq python-mode-tests
       (list
+       'docstring-style-switches-test
        'py-nested-block-or-clause-test
        'py-down-statement-test
        'py-fill-string-django-test
@@ -2258,14 +2259,38 @@ else:
 
 (defun py-travel-current-indent-test (&optional indent orig)
   (interactive)
-  (let ((orig (point)) 
+  (let ((orig (point))
         (indent (or indent
                     py-travel-current-indent-test-start
                     (string-to-number (read-from-minibuffer "Indent to travel:")))))
     (py-travel-current-indent indent orig)))
 
+(defun docstring-style-switches-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
 
+"))
+  (py-bug-tests-intern 'docstring-style-switches-base arg teststring)))
 
+(defun docstring-style-switches-base ()
+  
+  (py-django-docstring-style-on)
+  (assert (eq 'django py-docstring-style) nil "django not py-docstring-style")
+  
+  (py-onetwo-docstring-style-on)
+  (assert (eq 'onetwo py-docstring-style) nil "onetwo not py-docstring-style")
+  
+  (py-pep-257-docstring-style-on)
+  (assert (eq 'pep-257 py-docstring-style) nil "pep-257 not py-docstring-style")
+  
+  (py-pep-257-nn-docstring-style-on)
+  (assert (eq 'pep-257-nn py-docstring-style) nil "pep-257-nn not py-docstring-style")
+  
+  (py-symmetric-docstring-style-on)
+  (assert (eq 'symmetric py-docstring-style) nil "symmetric not py-docstring-style")
+  
+)
 ;; imenu--subalist-p
 (provide 'python-mode-test)
 ;;; python-mode-test.el ends here

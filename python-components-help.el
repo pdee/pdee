@@ -608,8 +608,8 @@ Returns imports "
                (replace-regexp-in-string
                 "[\\]\r?\n?\s*" ""
                 (buffer-substring-no-properties (match-beginning 0) (point))) ";"))))
-    (and imports
-      (setq imports (replace-regexp-in-string ";$" "" imports)))
+    ;; (and imports
+    ;; (setq imports (replace-regexp-in-string ";$" "" imports)))
     (when (and py-verbose-p (interactive-p)) (message "%s" imports))
     imports))
 

@@ -2589,6 +2589,108 @@ character address of the specified TYPE."
 
             ("Switches"
              :help "Toggle useful modes like `highlight-indentation'"
+             ("Docstring styles"
+             :help "Toggle values of `py-docstring-style'
+In order to set permanently customize this variable"
+             
+             ("Nil"
+:help "Toggle nil value of `py-docstring-style'
+In order to set permanently customize this variable"
+              
+              ["Toggle nil docstring style" toggle-py-nil-docstring-style
+               :help "If nil docstring-style should be on or off
+  Returns value of `py-docstring-style' switched to "]
+              
+              ["Nil on" py-nil-docstring-style-on
+               :help "Make sure, nil docstring-style is on"] 
+              
+              ["Nil off" py-nil-docstring-style-off
+               :help "Restores default value of `py-docstring-style'"]
+              
+              )
+             
+             ("Onetwo"
+:help "Toggle onetwo value of `py-docstring-style'
+In order to set permanently customize this variable"
+              
+              ["Toggle onetwo docstring style" toggle-py-onetwo-docstring-style
+               :help "If onetwo docstring-style should be on or off
+  Returns value of `py-docstring-style' switched to "]
+              
+              ["Onetwo on" py-onetwo-docstring-style-on
+               :help "Make sure, onetwo docstring-style is on"]
+              
+              ["Onetwo off" py-onetwo-docstring-style-off
+               :help " Restores default value of `py-docstring-style' "]
+              
+              )
+             
+             ("Pep 257"
+:help "Toggle pep-257 value of `py-docstring-style'
+In order to set permanently customize this variable"
+              
+              ["Toggle pep 257 docstring style" toggle-py-pep-257-docstring-style
+               :help "If pep-257 docstring-style should be on or off
+  Returns value of `py-docstring-style' switched to "]
+              
+              ["Pep 257 on" py-pep-257-docstring-style-on
+               :help "Make sure, pep-257 docstring-style is on"]
+              
+              ["Pep 257 off" py-pep-257-docstring-style-off
+               :help " Restores default value of `py-docstring-style' "]
+              
+              )
+             
+             ("Pep 257 nn"
+:help "Toggle pep-257-nn value of `py-docstring-style'
+In order to set permanently customize this variable"
+              
+              ["Toggle pep 257 nn docstring style" toggle-py-pep-257-nn-docstring-style
+               :help "If pep-257-nn docstring-style should be on or off
+  Returns value of `py-docstring-style' switched to "]
+              
+              ["Pep 257 nn on" py-pep-257-nn-docstring-style-on
+               :help "Make sure, pep-257-nn docstring-style is on"]
+              
+              ["Pep 257 nn off" py-pep-257-nn-docstring-style-off
+               :help " Restores default value of `py-docstring-style' "]
+              
+              )
+             
+             ("Symmetric"
+:help "Toggle symmetric value of `py-docstring-style'
+In order to set permanently customize this variable"
+              
+              ["Toggle symmetric docstring style" toggle-py-symmetric-docstring-style
+               :help "If symmetric docstring-style should be on or off
+  Returns value of `py-docstring-style' switched to "]
+              
+              ["Symmetric on" py-symmetric-docstring-style-on
+               :help "Make sure, symmetric docstring-style is on"]
+              
+              ["Symmetric off" py-symmetric-docstring-style-off
+               :help " Restores default value of `py-docstring-style' "]
+              
+              )
+             
+             ("Django"
+:help "Toggle django value of `py-docstring-style'
+In order to set permanently customize this variable"
+              
+              ["Toggle django docstring style" toggle-py-django-docstring-style
+               :help "If django docstring-style should be on or off
+  Returns value of `py-docstring-style' switched to "]
+              
+              ["Django on" py-django-docstring-style-on
+               :help "Make sure, django docstring-style is on"]
+              
+              ["Django off" py-django-docstring-style-off
+               :help "Restores default value of `py-docstring-style'"]
+              
+              )
+             
+             
+             )
              ("Underscore word syntax"
               :help "Toggle `py-underscore-word-syntax-p'"
               

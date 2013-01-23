@@ -3011,7 +3011,7 @@ def something():
 
 (defun py-find-imports-lp-1023236-base ()
   (goto-char 334)
-  (assert (equal (py-find-imports) "import urllib;import os, sys;from hashlib import md5;from construct import Container;from twisted.internet import reactor, defer;from twisted.internet.protocol import ClientFactory;from twisted.python import log, failure, filepath;from mock import mock1, mock2, mock3, mock4") nil "py-find-imports-lp-1023236-test failed"))
+  (assert (equal (py-find-imports) "import urllib;import os, sys;from hashlib import md5;from construct import Container;from twisted.internet import reactor, defer;from twisted.internet.protocol import ClientFactory;from twisted.python import log, failure, filepath;from mock import mock1, mock2, mock3, mock4;") nil "py-find-imports-lp-1023236-test failed"))
 
 (defun py-guess-indent-offset-dont-detect-indent-of-2-lp-1027389-test (&optional arg)
   (interactive "p")
@@ -4885,7 +4885,6 @@ def f():
     (assert (eq 706 (py-up)) nil "py-up-test-python-el-111-test #9 failed")
     )
 
-
 (defun py-down-python-el-112-test (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
@@ -4925,7 +4924,6 @@ class C(object):
     (assert (eq 179 (py-down)) nil "py-down-test-python-el-112-test #4 failed")
     (assert (eq 196 (py-down)) nil "py-down-test-python-el-112-test #5 failed")
 )
-
 
 (defun py-underscore-word-syntax-p-customization-has-no-effect-lp-1100947-test (&optional arg)
   (interactive "p")
@@ -4970,7 +4968,6 @@ def foo():
     (skip-chars-backward " \t\r\n\f")
     (assert (eq (char-after) 10) nil "py-newline-and-indent-leaves-eol-whitespace-lp-1100892-test failed")))
 
-
 (defun module-docstring-when-following-comment-lp-1102011-test (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python3
@@ -4985,8 +4982,8 @@ module docstring
   (let ((py-use-font-lock-doc-face-p t))
     (goto-char 57)
     (python-mode)
-    (font-lock-fontify-buffer) 
-    (sit-for 1) 
+    (font-lock-fontify-buffer)
+    (sit-for 1)
     (assert (eq (face-at-point) 'font-lock-doc-face) nil "module-docstring-when-following-comment-lp-1102011-test failed")))
 
 (defun More-docstring-filling-woes-lp-1102296-test (&optional arg)
@@ -5034,6 +5031,22 @@ class Test(object):
     (goto-char 178)
     (assert nil "More-docstring-filling-woes-lp-1102296-test failed"))
 
+(defun ipython-complete-lp-1102226-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env ipython
+# -*- coding: utf-8 -*-
+import re
+re.
+"))
+  (py-bug-tests-intern 'ipython-complete-lp-1102226-base arg teststring)))
+
+(defun ipython-complete-lp-1102226-base ()
+  (and (featurep 'company)(company-mode -1))
+  (goto-char 62)
+  (ipython-complete)
+  ;; (set-buffer "*IPython Completions*")
+  ;; (switch-to-buffer (current-buffer))
+  (assert (bufferp (get-buffer "*IPython Completions*")) nil "ipython-complete-lp-1102226-test failed"))
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
