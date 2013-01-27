@@ -774,7 +774,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-fill-paragraph) nil \"py-fill-paragraph not detected as command\")" \
 -eval "(assert (commandp 'py-fill-comment) nil \"py-fill-comment not detected as command\")" \
 -eval "(assert (commandp 'py-fill-string) nil \"py-fill-string not detected as command\")" \
--eval "(assert (commandp 'py-fill-paren) nil \"py-fill-paren not detected as command\")" \
 -eval "(assert (commandp 'py-fill-string-django) nil \"py-fill-string-django not detected as command\")" \
 -eval "(assert (commandp 'py-fill-string-onetwo) nil \"py-fill-string-onetwo not detected as command\")" \
 -eval "(assert (commandp 'py-fill-string-pep-257) nil \"py-fill-string-pep-257 not detected as command\")" \
@@ -1372,4 +1371,9 @@ est \
 --funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n4-test 2 \
 --funcall py-electric-comment-add-space-lp:828398-test \
 --funcall py-electric-comment-add-space-t-lp:828398-test \
-
+--funcall more-docstring-filling-woes-lp-1102296-pep-257-test \
+--funcall more-docstring-filling-woes-lp-1102296-pep-257-nn-test \
+--funcall more-docstring-filling-woes-lp-1102296-nil-test \
+--funcall more-docstring-filling-woes-lp-1102296-onetwo-test \
+--funcall more-docstring-filling-woes-lp-1102296-django-test \
+--funcall more-docstring-filling-woes-lp-1102296-symmetric-test \

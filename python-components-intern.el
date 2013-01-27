@@ -58,7 +58,7 @@ When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
                 (+ (if py-smart-indentation (py-guess-indent-offset nil orig origline) indent-offset) (current-indentation)))
                ((and (bobp)(not (py-statement-opens-block-p py-extended-block-or-clause-re)))
                 (current-indentation))
-               ;; (py-in-triplequoted-string-p)
+               ;; in string
                ((and (nth 3 pps)(nth 8 pps))
                 (if (and (not line)(eq origline (py-count-lines)))
                     (progn
@@ -71,6 +71,7 @@ When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
                         (py-line-backward-maybe)
                         (back-to-indentation)
                         (py-compute-indentation orig origline closing line inside repeat indent-offset)))
+                  (goto-char (nth 8 pps))
                   (current-indentation)))
                ((and (looking-at "\"\"\"\\|'''")(not (bobp)))
                 (py-beginning-of-statement)
@@ -998,6 +999,16 @@ Eval resulting buffer to install it, see customizable `py-extensions'. "
     (emacs-lisp-mode)
     (if (file-readable-p (concat py-install-directory "/" py-extensions))
         (find-file (concat py-install-directory "/" py-extensions)))))
+
+(defun py-end-of-string-intern (pps)
+  "Go to end of string at point, return position.
+
+Takes the result of (syntax-ppss)"
+  (goto-char (nth 8 pps))
+  (and (looking-at "\"\"\"\\|'''\\|\"\\|\'")
+       (goto-char (match-end 0))
+       (search-forward (match-string-no-properties 0))))
+
 
 (provide 'python-components-intern)
 ;;; python-components-intern.el ends here

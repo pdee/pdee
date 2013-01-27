@@ -5711,6 +5711,8 @@ This is a no-op if `py-check-comint-prompt' returns nil."
         (define-key map [(meta tab)] 'py-shell-complete)
         map))
 
+;; backward compatibility
+(defalias 'py-switch-shells 'py-switch-shell)
 (defalias 'py-toggle-shell 'py-switch-shell)
 (defun py-switch-shell (&optional arg)
   "Toggles between the interpreter customized in `py-shell-toggle-1' resp. `py-shell-toggle-2'. Was hard-coded CPython and Jython in earlier versions, now starts with Python2 and Python3 by default.

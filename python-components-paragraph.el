@@ -88,48 +88,55 @@ SYMMETRIC:
   (interactive "P")
   (or (fill-comment-paragraph justify)
       (let ((orig (copy-marker (point)))
+            (pps (syntax-ppss))
             (beg (or start (if (use-region-p) (region-beginning) (py-beginning-of-paragraph-position))))
             (end (copy-marker (or end (if (use-region-p) (region-end) (py-end-of-paragraph-position)))))
-            pps
             (style (or style py-docstring-style))
             (this-end (point-min)))
+        ;; if inside a string and beginning of paragraph < beginning of string
+        ;; use beginning of string
+        (when (and (nth 3 pps) (< beg (nth 8 pps))
+                   (setq beg (nth 8 pps)))
+          (setq end (py-end-of-string-intern pps)))
         (save-excursion
           (save-restriction
-            (goto-char beg) (end-of-line)
-            (setq pps (syntax-ppss))
+            ;; (goto-char beg) (end-of-line)
             (narrow-to-region beg end)
             (cond
              ;; Comments
              ((nth 4 pps)
               (py-fill-comment justify))
              ;; Strings/Docstrings
-             ((save-excursion
-                (or (nth 3 pps)
-                    (equal (string-to-syntax "|")
-                           (syntax-after (point)))
-                    (looking-at py-string-delim-re))
-                (goto-char (point-min))
-                (while (and (progn (forward-paragraph) (< this-end (point)))(setq this-end (copy-marker (point))))
-                  (py-fill-string justify style beg this-end)
-                  (goto-char this-end)
-                  ;; (end-of-line) (while (nth 8 (syntax-ppss))(forward-char 1))
-                  (set (make-local-variable 'py-docstring-style) nil))))
+             ((or (nth 3 pps)
+                  (equal (string-to-syntax "|")
+                         (syntax-after (point)))
+                  (looking-at py-string-delim-re))
+              (goto-char beg)
+              (while (and (progn (forward-paragraph) (< this-end (point)))(setq this-end (copy-marker (point))))
+                (py-fill-string justify style beg this-end)
+                (goto-char this-end)
+                ;; (end-of-line) (while (nth 8 (syntax-ppss))(forward-char 1))
+                ;; (set (make-local-variable 'py-docstring-style) nil)
+                ))
              ;; Decorators
              ((save-excursion
                 (and (py-beginning-of-statement)
-                (equal (char-after)
-                       ;; (back-to-indentation)
-                       ;; (point))
-                       ?\@)))
+                     (equal (char-after)
+                            ;; (back-to-indentation)
+                            ;; (point))
+                            ?\@)))
               (py-fill-decorator justify))
              ;; Parens
-             ((or (nth 1 pps)
-                  (looking-at (python-rx open-paren))
-                  (save-excursion
-                    (skip-syntax-forward "^(" (line-end-position))
-                    (looking-at (python-rx open-paren))))
-              (py-fill-paren justify))
-             (t t)))))))
+             ;; is there a need to fill parentized expressions?
+             ;; ((or (nth 1 pps)
+             ;;      (looking-at (python-rx open-paren))
+             ;;      (save-excursion
+             ;;        (skip-syntax-forward "^(" (line-end-position))
+             ;;        (looking-at (python-rx open-paren))))
+             ;;  (py-fill-paren pps justify))
+             (t t))))))
+  ;; fill-paragraph expexts t
+  t)
 
 (defun py-fill-comment (&optional justify)
   "Fill the comment paragraph at point"
@@ -227,81 +234,97 @@ See lp:1066489 "
   "String fill function for `py-fill-paragraph'.
 JUSTIFY should be used (if applicable) as in `fill-paragraph'."
   (interactive "P")
-  (let* ((py-docstring-style (or style py-docstring-style))
-         (fill-column (if (integerp py-docstring-fill-column)
-                          py-docstring-fill-column
-                        fill-column))
-         ;; unset python-mode value this time
-         forward-sexp-function
-         (orig (point-marker))
-         (pps (syntax-ppss))
-         (beg (or beg (if (nth 3 pps)
-                          (copy-marker (nth 8 pps))
-                        (when (and (equal (string-to-syntax "|")
-                                          (syntax-after (point))))
-                          (point-marker)))))
-         (delim-length (progn (goto-char beg)(when (looking-at py-string-delim-re) (- (match-end 0) (match-beginning 0)))))
-         ;; Assume docstrings at BOL resp. indentation
-         (docstring-p
-          (and delim-length
-               (eq (current-column) (current-indentation))
-               (not (looking-at py-labelled-re))))
-         (end (or end (progn
-                        (forward-sexp)
-                        (point-marker))))
-         (multi-line-p
-          ;; Docstring styles may vary for oneliners and multi-liners.
-          (> (count-matches "\n" beg end) 0))
-         (delimiters-style
-          (case py-docstring-style
-            ;; delimiters-style is a cons cell with the form
-            ;; (START-NEWLINES .  END-NEWLINES). When any of the sexps
-            ;; is NIL means to not add any newlines for start or end
-            ;; of docstring.  See `py-docstring-style' for a
-            ;; graphic idea of each style.
-            (django (cons 1 1))
-            (onetwo (and multi-line-p (cons 1 2)))
-            (pep-257 (and multi-line-p (cons nil 2)))
-            (pep-257-nn (and multi-line-p (cons nil 1)))
-            (symmetric (and multi-line-p (cons 1 1)))))
-         (fill-paragraph-function))
+  (save-excursion
     (save-restriction
-      (cond (docstring-p
-             (narrow-to-region (+ beg delim-length) (- (1- end) delim-length))
-             (fill-region (+ beg delim-length) (- end delim-length)))
-            ((string-match (concat "^" py-labelled-re) (buffer-substring-no-properties beg end))
-             (py-fill-labelled-string beg end))
-            (t (narrow-to-region beg end)
-               (fill-region beg end))))
-    (save-excursion
-      (when (and docstring-p py-docstring-style)
-        ;; Add the number of newlines indicated by the selected style
-        ;; at the start of the docstring.
+      (let* ((style (or style py-docstring-style))
+             (fill-column (if (integerp py-docstring-fill-column)
+                              py-docstring-fill-column
+                            fill-column))
+             ;; unset python-mode value this time
+             forward-sexp-function
+             (orig (point-marker))
+             (pps (syntax-ppss))
+             (beg (or beg (if (nth 3 pps)
+                              (copy-marker (nth 8 pps))
+                            (when (and (equal (string-to-syntax "|")
+                                              (syntax-after (point))))
+                              (point-marker)))))
+             (delim-length (progn (goto-char beg)
+                                  (if (looking-at py-string-delim-re) (- (match-end 0) (match-beginning 0))
+                                    0)))
+             ;; Assume docstrings at BOL resp. indentation
+             (docstring-p
+              (and (< 0 delim-length)
+                   (eq (current-column) (current-indentation))
+                   (not (looking-at py-labelled-re))))
+             (end (or end (progn
+                            (forward-sexp)
+                            (point-marker))))
+             multi-line-p
+             delimiters-style
+             ;; (fill-paragraph-function)
+             )
+        ;; whitespace and newline will be added according to mode again
         (goto-char (+ beg delim-length))
-        (delete-region (point) (progn
-                                 (skip-syntax-forward "> ")
-                                 (point)))
-        (and (car delimiters-style)
-             (or (newline (car delimiters-style)) t)
-             ;; Indent only if a newline is added.
-             ;; (indent-according-to-mode)
-             (indent-region (+ beg delim-length) (- end delim-length)))
-        ;; Add the number of newlines indicated by the selected style
-        ;; at the end of the docstring.
-        (goto-char (if (not (= end (point-max)))
-                       (- end delim-length)
-                     end))
-        (delete-region (point) (progn
-                                 (skip-syntax-backward "> ")
-                                 (point)))
-        (and (cdr delimiters-style)
-             ;; Add newlines only if string ends.
-             (not (= end (point-max)))
-             (or (newline (cdr delimiters-style)) t)
-             ;; Again indent only if a newline is added.
-             (indent-according-to-mode))
-        (when (or (eq style 'pep-257)(eq style 'pep-257-nn))
-          (indent-region beg end))) t)))
+        (delete-region (point) (progn (skip-chars-forward " \t\r\n\f") (skip-chars-forward " \t\r\n\f")(point)))
+        (goto-char (- end delim-length))
+        (delete-region (point) (progn (skip-chars-backward " \t\r\n\f")(point)))
+        (cond (docstring-p
+               (narrow-to-region (+ beg delim-length) (- end delim-length))
+               (fill-region (point-min) (point-max)))
+              ((string-match (concat "^" py-labelled-re) (buffer-substring-no-properties beg end))
+               (py-fill-labelled-string beg end))
+              (t (narrow-to-region beg end)
+                 (sit-for 0.1) 
+                 (fill-region beg end)))
+        (setq multi-line-p
+              (> (count-matches "\n" (progn (goto-char (+ beg delim-length))(skip-chars-forward " \t\r\n\f")(point)) (progn (goto-char (- end delim-length))(skip-chars-backward " \t\r\n\f")(point))) 0))
+        (setq delimiters-style
+              (case style
+                ;; delimiters-style is a cons cell with the form
+                ;; (START-NEWLINES .  END-NEWLINES). When any of the sexps
+                ;; is NIL means to not add any newlines for start or end
+                ;; of docstring.  See `style' for a
+                ;; graphic idea of each style.
+                (django (cons 1 1))
+                (onetwo (and multi-line-p (cons 1 2)))
+                (pep-257 (and multi-line-p (cons nil 2)))
+                (pep-257-nn (and multi-line-p (cons nil 1)))
+                (symmetric (and multi-line-p (cons 1 1)))))
+        (message "%s" delimiters-style)
+        (save-excursion
+          (when (and docstring-p style)
+            ;; Add the number of newlines indicated by the selected style
+            ;; at the start of the docstring.
+            (goto-char (+ beg delim-length))
+            ;; (delete-region (point) (progn
+            ;; (skip-syntax-forward "> ")
+            ;; (point)))
+            (and (car delimiters-style)
+                 (or (newline (car delimiters-style)) t)
+                 ;; Indent only if a newline is added.
+                 ;; (indent-according-to-mode)
+                 (indent-region (+ beg delim-length) (- end delim-length)))
+            ;; Add the number of newlines indicated by the selected style
+            ;; at the end of the docstring.
+            (goto-char (1+ (- end delim-length)))
+            ;; (delete-region (point) (progn
+            ;; (skip-syntax-backward "> ")
+            ;; (point)))
+            (and (cdr delimiters-style)
+                 ;; Add newlines only if string ends.
+                 ;; (not (= end (point-max)))
+                 (or (newline (cdr delimiters-style)) t))
+            ;; Again indent only if a newline is added.
+
+            ;; (when (or (eq style 'pep-257)(eq style 'pep-257-nn))
+            (widen)
+            (indent-region beg end)
+            (goto-char (1+ (+ beg delim-length)))
+            (end-of-line)
+            (skip-chars-backward " \"\t\r\n\f")
+            (unless (eq (char-after) ?\") (newline)))
+          (widen))))))
 
 (defun py-fill-decorator (&optional justify)
   "Decorator fill function for `py-fill-paragraph'.
@@ -309,34 +332,17 @@ JUSTIFY should be used (if applicable) as in `fill-paragraph'."
   ;; (interactive "*P")
   t)
 
-(defun py-fill-paren (&optional justify)
-  "Paren fill function for `py-fill-paragraph'.
-"
-  (interactive "*P")
-  (save-restriction
-    (narrow-to-region
-     (progn
-       (while (python-syntax-context 'paren)
-         (goto-char (1- (point-marker))))
-       (point-marker)
-       (line-beginning-position))
-     (progn
-       (when (not (python-syntax-context 'paren))
-         (end-of-line)
-         (when (not (python-syntax-context 'paren))
-           (skip-syntax-backward "^)")))
-       (while (python-syntax-context 'paren)
-         (goto-char (1+ (point-marker))))
-       (point-marker)))
-    (let ((paragraph-start "\f\\|[ \t]*$")
-          (paragraph-separate ",")
-          (fill-paragraph-function))
-      (goto-char (point-min))
-      (fill-paragraph justify))
-    (while (not (eobp))
-      (forward-line 1)
-      (py-indent-line)
-      (goto-char (line-end-position)))) t)
+;; (defun py-fill-paren (&optional pps justify)
+;;   "Paren fill function for `py-fill-paragraph'.
+;; "
+;;   (interactive "*P")
+;;   (save-excursion
+;;     (save-restriction
+;;       (let ((beg (if pps (nth 1 pps) (nth 1 (syntax-ppss))))
+;;             (end (progn (goto-char (nth 1 pps))(forward-list))))
+;; 
+;;         (narrow-to-region beg end)))))
+
 
 (defun py-fill-string-django (&optional justify)
   "Fill docstring according to Django's coding standards style.
@@ -423,32 +429,32 @@ See available styles at `py-fill-paragraph' or var `py-docstring-style'
 
 (defun py-set-onetwo-docstring-style ()
   "See customizable `py-docstring-style' "
-  (interactive) 
+  (interactive)
   (setq py-docstring-style 'onetwo))
 
 (defun py-set-pep-257-docstring-style ()
   "See customizable `py-docstring-style' "
-  (interactive) 
+  (interactive)
   (setq py-docstring-style 'pep-257))
 
 (defun py-set-pep-257-nn-docstring-style ()
   "See customizable `py-docstring-style' "
-  (interactive) 
+  (interactive)
   (setq py-docstring-style 'pep-257-nn))
 
 (defun py-set-symmetric-docstring-style ()
   "See customizable `py-docstring-style' "
-  (interactive) 
+  (interactive)
   (setq py-docstring-style 'symmetric))
 
 (defun py-set-django-docstring-style ()
   "See customizable `py-docstring-style' "
-  (interactive) 
+  (interactive)
   (setq py-docstring-style 'django))
 
 (defun py-set-nil-docstring-style ()
   "See customizable `py-docstring-style' "
-  (interactive) 
+  (interactive)
   (setq py-docstring-style 'nil))
 
 (provide 'python-components-paragraph)
