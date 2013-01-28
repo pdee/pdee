@@ -688,7 +688,7 @@ and `pass'.  This doesn't catch embedded statements."
                       ((eq 'py-block-re regexp)
                        (while
                            (and (setq last (point)) (prog1 (py-end-of-statement)(py-beginning-of-statement))
-                                (or (and (looking-at py-clause-re) (<= ind (+ (current-indentation) py-indent-offset))(py-end-of-statement) (py-end-of-statement) )
+                                (or (and (looking-at py-clause-re) (<= ind (+ (current-indentation) py-indent-offset))(py-end-of-statement) (py-end-of-statement))
                                     (<= ind (current-indentation))))
                          (py-travel-current-indent ind (point)))
                        (goto-char last))))))
@@ -697,11 +697,12 @@ and `pass'.  This doesn't catch embedded statements."
         ;; found the end above
         ;; py-travel-current-indent will stop of clause at equal indent
         (when (py-look-downward-for-beginning (symbol-value regexp))
-          (py-end-base regexp orig))))
-    (setq pps (syntax-ppss))
-    (unless (or (looking-at comment-start) (or (nth 8 pps) (nth 1 pps)))
-      (when (< orig (point))
-        (point)))))
+          (py-end-base regexp orig)))
+      (setq pps (syntax-ppss))
+      (if (and (< orig (point)) (not (or (looking-at comment-start) (nth 8 pps) (nth 1 pps))))
+          (point)
+        (goto-char (point-max))
+        nil))))
 
 (defun py-look-downward-for-beginning (regexp)
   "When above any beginning of FORM, search downward. "

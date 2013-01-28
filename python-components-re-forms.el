@@ -296,7 +296,8 @@ http://docs.python.org/reference/compound_stmts.html"
   (interactive "P")
     (let* ((orig (point))
            (erg (py-end-base 'py-def-or-class-re orig)))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+      (when (and py-verbose-p (interactive-p))
+          (message "%s" erg))
       erg))
 
 (defun py-beginning-of-if-block (&optional indent)
