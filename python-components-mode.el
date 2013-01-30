@@ -2805,10 +2805,13 @@ indent-width will be guessed from current major-mode"
               :help "Toggle py-smart-indentation'"
 
               ["Toggle py-smart-indentation" toggle-py-smart-indentation
-               :help "Toggles py-smart-indentation minor-mode "]
+               :help "Toggles py-smart-indentation "]
 
-              ["Py-smart-indentation on" py-smart-indentation-mode-on
-               :help "Switches py-smart-indentation minor-mode on "]
+              ["py-smart-indentation on" py-smart-indentation-on
+               :help "Switches py-smart-indentation on "]
+
+              ["py-smart-indentation off" py-smart-indentation-off
+               :help "Switches py-smart-indentation off "]
 
               )
 

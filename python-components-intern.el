@@ -89,7 +89,10 @@ When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
                       line
                       (if py-indent-honors-inline-comment
                           (current-column)
-                        (current-indentation))
+                        (progn (back-to-indentation)
+                               (if (looking-at py-block-or-clause-re)
+                                   (+ (current-indentation) py-indent-offset)
+                                 (current-indentation))))
                     (forward-char -1)
                     (py-compute-indentation orig origline closing line inside repeat indent-offset))))
                ((and (looking-at "[ \t]*#") (looking-back "^[ \t]*")(not py-indent-comments)(not line)(eq origline (py-count-lines)))

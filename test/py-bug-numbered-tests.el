@@ -38,6 +38,7 @@
 
 (setq bug-numbered-tests
       (list
+       'line-after-colon-with-inline-comment-lp-1109946-test
        'more-docstring-filling-woes-lp-1102296-pep-257-nn-test
        'more-docstring-filling-woes-lp-1102296-pep-257-test
        'more-docstring-filling-woes-lp-1102296-nil-test
@@ -4976,17 +4977,39 @@ def foo():
 
 (defun module-docstring-when-following-comment-lp-1102011-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python3
-# -\*- coding: utf-8 -\*-
-\"\"\"
-module docstring
-\"\"\"
+  (let ((teststring "# -*- coding: utf-8 -*-
+# *****************************************************************************
+# <Name of software>
+# Copyright (c) 2009-2012 by the contributors (see AUTHORS)
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 2 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program; if not, write to the Free Software Foundation, Inc.,
+# 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+#
+# Module authors:
+# Georg Brandl <email address>
+#
+# *****************************************************************************
+\"\"\"Some docstring.\"\"\"
+
+__version__ = \"\$Revision\$\"
+
 "))
   (py-bug-tests-intern 'module-docstring-when-following-comment-lp-1102011-base arg teststring)))
 
 (defun module-docstring-when-following-comment-lp-1102011-base ()
   (let ((py-use-font-lock-doc-face-p t))
-    (goto-char 57)
+    (goto-char 1024)
     (python-mode)
     (font-lock-fontify-buffer)
     (sit-for 1)
@@ -5326,6 +5349,24 @@ class Test(object):
     (forward-line 1)
     (assert (looking-at "        pass") nil "more-docstring-filling-woes-lp-1102296-nil-test #3c failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-nil-test #3c done")))
+
+(defun line-after-colon-with-inline-comment-lp-1109946-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+def f():
+    if a:
+        b
+    if c: # inline comment
+    
+        # |<---- cursor will not indent properly with <TAB>>
+"))
+  (py-bug-tests-intern 'line-after-colon-with-inline-comment-lp-1109946-base arg teststring)))
+
+(defun line-after-colon-with-inline-comment-lp-1109946-base ()
+    (goto-char 104)
+    (assert (eq 8 (py-compute-indentation)) nil "line-after-colon-with-inline-comment-lp-1109946-test failed"))
+
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
