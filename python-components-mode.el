@@ -2590,257 +2590,314 @@ character address of the specified TYPE."
             ("Switches"
              :help "Toggle useful modes like `highlight-indentation'"
              ("Docstring styles"
-             :help "Toggle values of `py-docstring-style'
+              :help "Toggle values of `py-docstring-style'
 In order to set permanently customize this variable"
-             
-             ("Nil"
-:help "Toggle nil value of `py-docstring-style'
+
+              ("Nil"
+               :help "Toggle nil value of `py-docstring-style'
+Use `M-x customize-variable' to set it permanently"
+
+               ["Toggle nil docstring style" toggle-py-nil-docstring-style
+                :help "If nil docstring-style should be on or off
+  Returns value of `py-docstring-style' switched to
+
+Use `M-x customize-variable' to set it permanently"]
+
+               ["Nil on" py-nil-docstring-style-on
+                :help "Make sure, nil docstring-style is on
+
+Use `M-x customize-variable' to set it permanently"]
+
+               ["Nil off" py-nil-docstring-style-off
+                :help "Restores default value of `py-docstring-style'
+
+Use `M-x customize-variable' to set it permanently"])
+
+              ("Onetwo"
+               :help "Toggle onetwo value of `py-docstring-style'
 In order to set permanently customize this variable"
-              
-              ["Toggle nil docstring style" toggle-py-nil-docstring-style
-               :help "If nil docstring-style should be on or off
-  Returns value of `py-docstring-style' switched to "]
-              
-              ["Nil on" py-nil-docstring-style-on
-               :help "Make sure, nil docstring-style is on"] 
-              
-              ["Nil off" py-nil-docstring-style-off
-               :help "Restores default value of `py-docstring-style'"]
-              
-              )
-             
-             ("Onetwo"
-:help "Toggle onetwo value of `py-docstring-style'
+
+               ["Toggle onetwo docstring style" toggle-py-onetwo-docstring-style
+                :help "If onetwo docstring-style should be on or off
+  Returns value of `py-docstring-style' switched to
+
+Use `M-x customize-variable' to set it permanently"]
+
+               ["Onetwo on" py-onetwo-docstring-style-on
+                :help "Make sure, onetwo docstring-style is on
+
+Use `M-x customize-variable' to set it permanently"]
+
+               ["Onetwo off" py-onetwo-docstring-style-off
+                :help " Restores default value of `py-docstring-style'
+
+Use `M-x customize-variable' to set it permanently"])
+
+              ("Pep 257"
+               :help "Toggle pep-257 value of `py-docstring-style'
 In order to set permanently customize this variable"
-              
-              ["Toggle onetwo docstring style" toggle-py-onetwo-docstring-style
-               :help "If onetwo docstring-style should be on or off
-  Returns value of `py-docstring-style' switched to "]
-              
-              ["Onetwo on" py-onetwo-docstring-style-on
-               :help "Make sure, onetwo docstring-style is on"]
-              
-              ["Onetwo off" py-onetwo-docstring-style-off
-               :help " Restores default value of `py-docstring-style' "]
-              
-              )
-             
-             ("Pep 257"
-:help "Toggle pep-257 value of `py-docstring-style'
+
+               ["Toggle pep 257 docstring style" toggle-py-pep-257-docstring-style
+                :help "If pep-257 docstring-style should be on or off
+  Returns value of `py-docstring-style' switched to
+
+Use `M-x customize-variable' to set it permanently"]
+
+               ["Pep 257 on" py-pep-257-docstring-style-on
+                :help "Make sure, pep-257 docstring-style is on
+
+Use `M-x customize-variable' to set it permanently"]
+
+               ["Pep 257 off" py-pep-257-docstring-style-off
+                :help " Restores default value of `py-docstring-style'
+
+Use `M-x customize-variable' to set it permanently"])
+
+              ("Pep 257 nn"
+               :help "Toggle pep-257-nn value of `py-docstring-style'
 In order to set permanently customize this variable"
-              
-              ["Toggle pep 257 docstring style" toggle-py-pep-257-docstring-style
-               :help "If pep-257 docstring-style should be on or off
-  Returns value of `py-docstring-style' switched to "]
-              
-              ["Pep 257 on" py-pep-257-docstring-style-on
-               :help "Make sure, pep-257 docstring-style is on"]
-              
-              ["Pep 257 off" py-pep-257-docstring-style-off
-               :help " Restores default value of `py-docstring-style' "]
-              
-              )
-             
-             ("Pep 257 nn"
-:help "Toggle pep-257-nn value of `py-docstring-style'
+
+               ["Toggle pep 257 nn docstring style" toggle-py-pep-257-nn-docstring-style
+                :help "If pep-257-nn docstring-style should be on or off
+  Returns value of `py-docstring-style' switched to
+
+Use `M-x customize-variable' to set it permanently"]
+
+               ["Pep 257 nn on" py-pep-257-nn-docstring-style-on
+                :help "Make sure, pep-257-nn docstring-style is on
+
+Use `M-x customize-variable' to set it permanently"]
+
+               ["Pep 257 nn off" py-pep-257-nn-docstring-style-off
+                :help " Restores default value of `py-docstring-style'
+
+Use `M-x customize-variable' to set it permanently"])
+
+              ("Symmetric"
+               :help "Toggle symmetric value of `py-docstring-style'
 In order to set permanently customize this variable"
-              
-              ["Toggle pep 257 nn docstring style" toggle-py-pep-257-nn-docstring-style
-               :help "If pep-257-nn docstring-style should be on or off
-  Returns value of `py-docstring-style' switched to "]
-              
-              ["Pep 257 nn on" py-pep-257-nn-docstring-style-on
-               :help "Make sure, pep-257-nn docstring-style is on"]
-              
-              ["Pep 257 nn off" py-pep-257-nn-docstring-style-off
-               :help " Restores default value of `py-docstring-style' "]
-              
-              )
-             
-             ("Symmetric"
-:help "Toggle symmetric value of `py-docstring-style'
+
+               ["Toggle symmetric docstring style" toggle-py-symmetric-docstring-style
+                :help "If symmetric docstring-style should be on or off
+  Returns value of `py-docstring-style' switched to
+
+Use `M-x customize-variable' to set it permanently"]
+
+               ["Symmetric on" py-symmetric-docstring-style-on
+                :help "Make sure, symmetric docstring-style is on
+
+Use `M-x customize-variable' to set it permanently"]
+
+               ["Symmetric off" py-symmetric-docstring-style-off
+                :help " Restores default value of `py-docstring-style'
+
+Use `M-x customize-variable' to set it permanently"])
+
+              ("Django"
+               :help "Toggle django value of `py-docstring-style'
 In order to set permanently customize this variable"
-              
-              ["Toggle symmetric docstring style" toggle-py-symmetric-docstring-style
-               :help "If symmetric docstring-style should be on or off
-  Returns value of `py-docstring-style' switched to "]
-              
-              ["Symmetric on" py-symmetric-docstring-style-on
-               :help "Make sure, symmetric docstring-style is on"]
-              
-              ["Symmetric off" py-symmetric-docstring-style-off
-               :help " Restores default value of `py-docstring-style' "]
-              
-              )
-             
-             ("Django"
-:help "Toggle django value of `py-docstring-style'
-In order to set permanently customize this variable"
-              
-              ["Toggle django docstring style" toggle-py-django-docstring-style
-               :help "If django docstring-style should be on or off
-  Returns value of `py-docstring-style' switched to "]
-              
-              ["Django on" py-django-docstring-style-on
-               :help "Make sure, django docstring-style is on"]
-              
-              ["Django off" py-django-docstring-style-off
-               :help "Restores default value of `py-docstring-style'"]
-              
-              )
-             
-             
-             )
-             ("Underscore word syntax"
-              :help "Toggle `py-underscore-word-syntax-p'"
-              
-              ["Toggle underscore word syntax" toggle-py-underscore-word-syntax-p
-               :help " `toggle-py-underscore-word-syntax-p'
+
+               ["Toggle django docstring style" toggle-py-django-docstring-style
+                :help "If django docstring-style should be on or off
+  Returns value of `py-docstring-style' switched to
+
+Use `M-x customize-variable' to set it permanently"]
+
+               ["Django on" py-django-docstring-style-on
+                :help "Make sure, django docstring-style is on
+
+Use `M-x customize-variable' to set it permanently"]
+
+               ["Django off" py-django-docstring-style-off
+                :help "Restores default value of `py-docstring-style'
+
+Use `M-x customize-variable' to set it permanently"]))
+              ("Underscore word syntax"
+               :help "Toggle `py-underscore-word-syntax-p'"
+
+               ["Toggle underscore word syntax" toggle-py-underscore-word-syntax-p
+                :help " `toggle-py-underscore-word-syntax-p'
 
 If `py-underscore-word-syntax-p' should be on or off\.
 
-  Returns value of `py-underscore-word-syntax-p' switched to\. . "]
-              
-              ["Underscore word syntax on" py-underscore-word-syntax-p-on
-               :help " `py-underscore-word-syntax-p-on'
+  Returns value of `py-underscore-word-syntax-p' switched to\. .
+
+Use `M-x customize-variable' to set it permanently"]
+
+               ["Underscore word syntax on" py-underscore-word-syntax-p-on
+                :help " `py-underscore-word-syntax-p-on'
 
 Make sure, py-underscore-word-syntax-p' is on\.
 
-Returns value of `py-underscore-word-syntax-p'\. . "]
-              
-              ["Underscore word syntax off" py-underscore-word-syntax-p-off
-               :help " `py-underscore-word-syntax-p-off'
+Returns value of `py-underscore-word-syntax-p'\. .
+
+Use `M-x customize-variable' to set it permanently"]
+
+               ["Underscore word syntax off" py-underscore-word-syntax-p-off
+                :help " `py-underscore-word-syntax-p-off'
 
 Make sure, `py-underscore-word-syntax-p' is off\.
 
-Returns value of `py-underscore-word-syntax-p'\. . "]
-              
-              )
-             
-             ["Tab shifts region "
-              (setq py-tab-shifts-region-p
-                    (not py-tab-shifts-region-p))
-              :help "If `t', TAB will indent/cycle the region, not just the current line\.
+Returns value of `py-underscore-word-syntax-p'\. .
 
-Default is  nil
-See also `py-tab-indents-region-p'"
-              :style toggle :selected py-tab-shifts-region-p]
+Use `M-x customize-variable' to set it permanently"])
 
-             ["Tab indents region "
-              (setq py-tab-indents-region-p
-                    (not py-tab-indents-region-p))
-              :help "When `t' and first TAB doesn't shift, indent-region is called\.
+              ["Tab shifts region "
+               (setq py-tab-shifts-region-p
+                     (not py-tab-shifts-region-p))
+               :help "If `t', TAB will indent/cycle the region, not just the current line\.
 
-Default is  nil
-See also `py-tab-shifts-region-p'"
-              :style toggle :selected py-tab-indents-region-p]
+Default is nil
+See also `py-tab-indents-region-p'
 
-             ["Auto-fill mode"
-              (setq py-set-fill-column-p
-                    (not py-set-fill-column-p))
-              :help "Set Python specific `fill-column' according to `py-docstring-fill-column' and `py-comment-fill-column' "
-              :style toggle :selected py-set-fill-column-p]
+Use `M-x customize-variable' to set it permanently"
+               :style toggle :selected py-tab-shifts-region-p]
 
-             ["Use current dir when execute"
-              (setq py-use-current-dir-when-execute-p
-                    (not py-use-current-dir-when-execute-p))
-              :help " `toggle-py-use-current-dir-when-execute-p'"
-              :style toggle :selected py-use-current-dir-when-execute-p]
+              ["Tab indents region "
+               (setq py-tab-indents-region-p
+                     (not py-tab-indents-region-p))
+               :help "When `t' and first TAB doesn't shift, indent-region is called\.
 
-             ["Jump on exception"
-              (setq  py-jump-on-exception
+Default is nil
+See also `py-tab-shifts-region-p'
+
+Use `M-x customize-variable' to set it permanently"
+               :style toggle :selected py-tab-indents-region-p]
+
+              ["Auto-fill mode"
+               (setq py-set-fill-column-p
+                     (not py-set-fill-column-p))
+               :help "Set Python specific `fill-column' according to `py-docstring-fill-column' and `py-comment-fill-column'
+
+Use `M-x customize-variable' to set it permanently"
+               :style toggle :selected py-set-fill-column-p]
+
+              ["Use current dir when execute"
+               (setq py-use-current-dir-when-execute-p
+                     (not py-use-current-dir-when-execute-p))
+               :help " `toggle-py-use-current-dir-when-execute-p'
+
+Use `M-x customize-variable' to set it permanently"
+               :style toggle :selected py-use-current-dir-when-execute-p]
+
+              ["Jump on exception"
+               (setq py-jump-on-exception
                      (not py-jump-on-exception))
-              :help "Jump to innermost exception frame in Python output buffer\.
+               :help "Jump to innermost exception frame in Python output buffer\.
 When this variable is non-nil and an exception occurs when running
 Python code synchronously in a subprocess, jump immediately to the
-source code of the innermost traceback frame\."
-              :style toggle :selected py-jump-on-exception]
+source code of the innermost traceback frame\.
 
-             ["Switch buffers on execute"
-              (setq  py-switch-buffers-on-execute-p
+Use `M-x customize-variable' to set it permanently"
+               :style toggle :selected py-jump-on-exception]
+
+              ["Switch buffers on execute"
+               (setq py-switch-buffers-on-execute-p
                      (not py-switch-buffers-on-execute-p))
-              :help "When non-nil switch to the Python output buffer\. "
-              :style toggle :selected py-switch-buffers-on-execute-p]
+               :help "When non-nil switch to the Python output buffer\.
 
-             ["Split windows on execute"
-              (setq  py-split-windows-on-execute-p
+Use `M-x customize-variable' to set it permanently"
+               :style toggle :selected py-switch-buffers-on-execute-p]
+
+              ["Split windows on execute"
+               (setq py-split-windows-on-execute-p
                      (not py-split-windows-on-execute-p))
-              :help "When non-nil split windows\. "
-              :style toggle :selected py-split-windows-on-execute-p]
+               :help "When non-nil split windows\.
 
-             ["Python mode v5 behavior"
-              (setq  python-mode-v5-behavior-p
+Use `M-x customize-variable' to set it permanently"
+               :style toggle :selected py-split-windows-on-execute-p]
+
+              ["Python mode v5 behavior"
+               (setq python-mode-v5-behavior-p
                      (not python-mode-v5-behavior-p))
-              :help "Execute region through `shell-command-on-region' as
-v5 did it - lp:990079\. This might fail with certain chars - see UnicodeEncodeError lp:550661"
-              :style toggle :selected python-mode-v5-behavior-p]
+               :help "Execute region through `shell-command-on-region' as
+v5 did it - lp:990079\. This might fail with certain chars - see UnicodeEncodeError lp:550661
 
-             ["Highlight indentation"
-              (setq highlight-indentation
-                    (not highlight-indentation))
-              :help "Toggle highlight indentation\.
+Use `M-x customize-variable' to set it permanently"
+               :style toggle :selected python-mode-v5-behavior-p]
+
+              ["Highlight indentation"
+               (setq highlight-indentation
+                     (not highlight-indentation))
+               :help "Toggle highlight indentation\.
 Optional argument INDENT-WIDTH specifies which indentation
 level (spaces only) should be highlighted, if omitted
-indent-width will be guessed from current major-mode"
-              :style toggle :selected highlight-indentation]
+indent-width will be guessed from current major-mode
 
-             ["indent-tabs-mode"
-              (setq indent-tabs-mode
-                    (not indent-tabs-mode))
-              :help "Indentation can insert tabs if this is non-nil\."
-              :style toggle :selected indent-tabs-mode]
+Use `M-x customize-variable' to set it permanently"
+               :style toggle :selected highlight-indentation]
 
-             ("Autopair"
-              :help "Toggle autopair-mode'"
+              ["indent-tabs-mode"
+               (setq indent-tabs-mode
+                     (not indent-tabs-mode))
+               :help "Indentation can insert tabs if this is non-nil\.
 
-              ["Toggle autopair-mode" py-toggle-autopair-mode
-               :help "Toggles py-autopair minor-mode "]
+Use `M-x customize-variable' to set it permanently"
+               :style toggle :selected indent-tabs-mode]
 
-              ["Autopair on" py-autopair-mode-on
-               :help "Switches autopair minor-mode on "]
+              ("Autopair"
+               :help "Toggle autopair-mode'
 
-              )
+Use `M-x customize-variable' to set it permanently"
 
-             ("Smart indentation"
-              :help "Toggle py-smart-indentation'"
+               ["Toggle autopair-mode" py-toggle-autopair-mode
+                :help "Toggles py-autopair minor-mode
 
-              ["Toggle py-smart-indentation" toggle-py-smart-indentation
-               :help "Toggles py-smart-indentation "]
+Use `M-x customize-variable' to set it permanently"]
 
-              ["py-smart-indentation on" py-smart-indentation-on
-               :help "Switches py-smart-indentation on "]
+               ["Autopair on" py-autopair-mode-on
+                :help "Switches autopair minor-mode on
 
-              ["py-smart-indentation off" py-smart-indentation-off
-               :help "Switches py-smart-indentation off "]
+Use `M-x customize-variable' to set it permanently"])
 
-              )
+              ("Smart indentation"
+               :help "Toggle py-smart-indentation'
 
-             ["Smart operator mode "
-              (setq py-smart-operator-mode-p
-                    (not py-smart-operator-mode-p))
-              :help "Toggle `py-smart-operator-mode-p'"
-              :style toggle :selected py-smart-operator-mode-p             ]
+Use `M-x customize-variable' to set it permanently"
 
-             ["Electric comment "
-              (setq py-electric-comment-p
-                    (not py-electric-comment-p))
-              :help "If \"#\" should call `py-electric-comment'\. Default is `nil'\. "
-              :style toggle :selected py-electric-comment-p]
+               ["Toggle py-smart-indentation" toggle-py-smart-indentation
+                :help "Toggles py-smart-indentation
 
-             )
+Use `M-x customize-variable' to set it permanently"]
 
-            "-"
+               ["py-smart-indentation on" py-smart-indentation-on
+                :help "Switches py-smart-indentation on
 
-            ["pychecker-run" py-pychecker-run
-             :help "`py-pychecker-run'
+Use `M-x customize-variable' to set it permanently"]
+
+               ["py-smart-indentation off" py-smart-indentation-off
+                :help "Switches py-smart-indentation off
+
+Use `M-x customize-variable' to set it permanently"])
+
+              ["Smart operator mode "
+               (setq py-smart-operator-mode-p
+                     (not py-smart-operator-mode-p))
+               :help "Toggle `py-smart-operator-mode-p'
+
+Use `M-x customize-variable' to set it permanently"
+               :style toggle :selected py-smart-operator-mode-p ]
+
+              ["Electric comment "
+               (setq py-electric-comment-p
+                     (not py-electric-comment-p))
+               :help "If \"#\" should call `py-electric-comment'\. Default is `nil'\.
+
+Use `M-x customize-variable' to set it permanently"
+               :style toggle :selected py-electric-comment-p])
+
+             "-"
+
+             ["pychecker-run" py-pychecker-run
+              :help "`py-pychecker-run'
 Run pychecker"]
 
-            ("Pylint ... "
-             :help "Extendet report options
+             ("Pylint ... "
+              :help "Extendet report options
 call `easy_install pylint' if not available"
 
-             ["pylint-run" py-pylint-run
-              :help "`pylint-run'
+              ["pylint-run" py-pylint-run
+               :help "`pylint-run'
 Pylint will display a number of messages as it analyzes the code,
 as well as some statistics about the number of warnings and
 errors found in different files - unless called with arg \"--errors-only\". The messages are classified
@@ -2854,149 +2911,144 @@ is possible to write plugins.
 call `easy_install pylint' if not available
 "]
 
-             ["pylint-help" pylint-help
-              :help "`pylint-help'
+              ["pylint-help" pylint-help
+               :help "`pylint-help'
 List extendet report options
 "]
-             ["pylint-flymake-mode" pylint-flymake-mode
-              :help "`pylint-flymake-mode'
+              ["pylint-flymake-mode" pylint-flymake-mode
+               :help "`pylint-flymake-mode'
 Toggle flymake-mode running `pylint'
 "])
 
-            ("pep8 ... "
-             :help "Check formatting
+             ("pep8 ... "
+              :help "Check formatting
 call `easy_install pep8' if not available"
 
-             ["pep8-run" py-pep8-run
-              :help "`py-pep8-run'
+              ["pep8-run" py-pep8-run
+               :help "`py-pep8-run'
 Check formatting (default on the file currently visited)
 call `easy_install pep8' if not available
 "]
 
-             ["pep8-help" py-pep8-help
-              :help "`py-pep8-help'
+              ["pep8-help" py-pep8-help
+               :help "`py-pep8-help'
 Display help for pep8 format checker)
 "]
 
-             ["pep8-flymake-mode" pep8-flymake-mode
-              :help "`pep8-flymake-mode'
+              ["pep8-flymake-mode" pep8-flymake-mode
+               :help "`pep8-flymake-mode'
 Toggle flymake-mode running `pep8'
 "])
 
-            ("Pyflakes ... " :help "Non intrusive code
+             ("Pyflakes ... " :help "Non intrusive code
              checker call `easy_install pyflakes' if
              not available"
 
-             ["pyflakes-run" py-pyflakes-run :help
-              "`py-pyflakes-run' Run pyflakes call
+              ["pyflakes-run" py-pyflakes-run :help
+               "`py-pyflakes-run' Run pyflakes call
               `easy_install pyflakes' if not
               available"]
 
-             ["pyflakes-help" py-pyflakes-help :help
-              "`py-pyflakes-help' Display help for
+              ["pyflakes-help" py-pyflakes-help :help
+               "`py-pyflakes-help' Display help for
               Pyflakes "]
 
-             ["pyflakes-flymake-mode" pyflakes-flymake-mode :help
-              "`pyflakes-flymake-mode'
+              ["pyflakes-flymake-mode" pyflakes-flymake-mode :help
+               "`pyflakes-flymake-mode'
 Toggle flymake-mode running `pyflakes' "])
 
-            ("Pyflakes-pep8 ... " :help
-             "Non intrusive code checker running `pyflakes' and `pep8'
+             ("Pyflakes-pep8 ... " :help
+              "Non intrusive code checker running `pyflakes' and `pep8'
 call `easy_install pyflakes' and `easy_install pep8' if basics not available"
 
-             ["pyflakespep8-run" py-pyflakespep8-run :help
-              "`py-pyflakespep8-run' Run `pyflakespep8'
+              ["pyflakespep8-run" py-pyflakespep8-run :help
+               "`py-pyflakespep8-run' Run `pyflakespep8'
 call `easy_install pyflakes' if not available"]
 
-             ["pyflakespep8-help" py-pyflakespep8-help :help
-              "`py-pyflakespep8-help' Display help for
+              ["pyflakespep8-help" py-pyflakespep8-help :help
+               "`py-pyflakespep8-help' Display help for
               Pyflakespep8 "]
 
-             ["pyflakespep8-flymake-mode" pyflakespep8-flymake-mode :help
-              "`pyflakespep8-flymake-mode'
+              ["pyflakespep8-flymake-mode" pyflakespep8-flymake-mode :help
+               "`pyflakespep8-flymake-mode'
 Toggle flymake-mode running `pyflakespep8' "])
 
-            "-"
-            ("Abbrevs"
-             :help "see also `py-add-abbrev'"
-             :filter (lambda (&rest junk)
-                       (abbrev-table-menu python-mode-abbrev-table)))
-            ["add-abbrev" py-add-abbrev
-             :help "Defines python-mode specific abbrev for last expressions before point.
+             "-"
+             ("Abbrevs"
+              :help "see also `py-add-abbrev'"
+              :filter (lambda (&rest junk)
+                        (abbrev-table-menu python-mode-abbrev-table)))
+             ["add-abbrev" py-add-abbrev
+              :help "Defines python-mode specific abbrev for last expressions before point.
 Argument is how many `py-partial-expression's form the expansion; or zero means the region is the expansion. "]
 
-            ("Skeletons"
-             :help "See also templates in YASnippet"
+             ("Skeletons"
+              :help "See also templates in YASnippet"
 
-             ["if" py-if
-              :help "Inserts if-statement"]
-             ["py-else" py-else
-              :help "Inserts else-statement"]
-             ["py-while" py-while
-              :help "Inserts while-statement"]
-             ["py-for" py-for
-              :help "Inserts for-statement"]
-             ["py-try/finally" py-try/finally
-              :help "Inserts py-try/finally-statement"]
-             ["py-try/except" py-try/except
-              :help "Inserts py-try/except-statement"])
+              ["if" py-if
+               :help "Inserts if-statement"]
+              ["py-else" py-else
+               :help "Inserts else-statement"]
+              ["py-while" py-while
+               :help "Inserts while-statement"]
+              ["py-for" py-for
+               :help "Inserts for-statement"]
+              ["py-try/finally" py-try/finally
+               :help "Inserts py-try/finally-statement"]
+              ["py-try/except" py-try/except
+               :help "Inserts py-try/except-statement"])
 
-            "-"
+             "-"
 
-            ["Import/reload file" py-execute-import-or-reload
-             :help "`py-execute-import-or-reload'
+             ["Import/reload file" py-execute-import-or-reload
+              :help "`py-execute-import-or-reload'
 Load into inferior Python session"]
 
-            ["Debugger" pdb
-             :help "`pdb'
+             ["Debugger" pdb
+              :help "`pdb'
 Run pdb under GUD"]
-            "-"
+             "-"
 
-       
+             ("Help"
+              :help "Some help commands"
 
-            ("Help"
-             :help "Some help commands"
-
-             ["Help" py-complete-help
-              :help " `py-complete-help'
+              ["Help" py-complete-help
+               :help " `py-complete-help'
 Get help on a Python expression.\n
 Needs Pymacs "]
 
-             ["Help thing at point" py-complete-help-thing-at-point
-              :help " `py-complete-help-thing-at-point'\n
+              ["Help thing at point" py-complete-help-thing-at-point
+               :help " `py-complete-help-thing-at-point'\n
 Needs Pymacs "]
 
-             ["Help on symbol" py-describe-symbol
-              :help "`py-describe-symbol'\n
+              ["Help on symbol" py-describe-symbol
+               :help "`py-describe-symbol'\n
 Use pydoc on symbol at point"]
 
-             ["Signature" py-complete-signature-expr
-              :help " Print object's signature\n
-Needs Pymacs"]
-             )
+              ["Signature" py-complete-signature-expr
+               :help " Print object's signature\n
+Needs Pymacs"])
 
-            ("Completion"
-             :help "Completion options"
+             ("Completion"
+              :help "Completion options"
 
-             ["Complete symbol" py-shell-complete
-              :help "`py-shell-complete'
+              ["Complete symbol" py-shell-complete
+               :help "`py-shell-complete'
 Complete (qualified) symbol before point"]
 
-             ["Complete" py-complete
-              :help " `py-complete'
-Complete symbol before point using Pymacs . "]
-             )
+              ["Complete" py-complete
+               :help " `py-complete'
+Complete symbol before point using Pymacs . "])
 
-            ["Find function" py-find-function
-             :help "`py-find-function'
+             ["Find function" py-find-function
+              :help "`py-find-function'
 Try to find source definition of function at point"]
 
-            ["Switch index-function" py-switch-imenu-index-function
-             :help "`py-switch-imenu-index-function'
+             ["Switch index-function" py-switch-imenu-index-function
+              :help "`py-switch-imenu-index-function'
 Switch between `py-imenu-create-index' from 5.1 series and `py-imenu-create-index-new'."]
 
-            "-"
-            ))
+             "-"))
         ;; Menu py-execute forms
         (easy-menu-define py-menu map "Execute Python"
           `("PyExec"
@@ -3333,7 +3385,6 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p' "]
               ["py-execute-block-bpython-dedicated-switch" py-execute-block-bpython-dedicated-switch
                :help "Execute block through a unique Bpython interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p' "]
-
               ))
 
             ;; def
@@ -3488,7 +3539,6 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p' "]
               ["py-execute-def-bpython-dedicated-switch" py-execute-def-bpython-dedicated-switch
                :help "Execute def through a unique Bpython interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p' "]
-
               ))
 
             ;; class
@@ -3643,7 +3693,6 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p' "]
               ["py-execute-class-bpython-dedicated-switch" py-execute-class-bpython-dedicated-switch
                :help "Execute class through a unique Bpython interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p' "]
-
               ))
 
             ;; region
@@ -3798,7 +3847,6 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p' "]
               ["py-execute-region-bpython-dedicated-switch" py-execute-region-bpython-dedicated-switch
                :help "Execute region through a unique Bpython interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p' "]
-
               ))
 
             ;; file
@@ -4050,9 +4098,7 @@ Uses a dedicated shell\.. "]
 Send file to a Bpython interpreter\.
 
 Uses a dedicated shell\.
-Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
-
-              ))))
+Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]))))
 
         ;; Menu command forms
         (easy-menu-define py-menu map "Python Mode Commands"
@@ -4064,74 +4110,72 @@ Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil
              :help "(py-comment-region (point) (mark) '(4))" ]
 
             ("Comment ... "
-              :help "Comment forms"
+             :help "Comment forms"
 
-              ["Beginning of comment" py-beginning-of-comment
-               :help " `py-beginning-of-comment'
+             ["Beginning of comment" py-beginning-of-comment
+              :help " `py-beginning-of-comment'
 Go to beginning of comment at point. "]
 
-              ["End of comment" py-end-of-comment
-               :help " `py-end-of-comment'
+             ["End of comment" py-end-of-comment
+              :help " `py-end-of-comment'
 
 Go to end of comment at point. "]
 
-              ["Uncomment" py-uncomment
-               :help " `py-uncomment'
+             ["Uncomment" py-uncomment
+              :help " `py-uncomment'
 
 Uncomment lines at point\.
 
 If region is active, restrict uncommenting at region . "]
 
-              ["Comment block" py-comment-block
-               :help " `py-comment-block'
+             ["Comment block" py-comment-block
+              :help " `py-comment-block'
 Comments block at point\.
 
-Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
 the default. "]
 
-              ["Comment clause" py-comment-clause
-               :help " `py-comment-clause'
+             ["Comment clause" py-comment-clause
+              :help " `py-comment-clause'
 Comments clause at point\.
 
-Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
 the default. "]
 
-              ["Comment block or clause" py-comment-block-or-clause
-               :help " `py-comment-block-or-clause'
+             ["Comment block or clause" py-comment-block-or-clause
+              :help " `py-comment-block-or-clause'
 Comments block-or-clause at point\.
 
-Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
 the default. "]
 
-              ["Comment def" py-comment-def
-               :help " `py-comment-def'
+             ["Comment def" py-comment-def
+              :help " `py-comment-def'
 Comments def at point\.
 
-Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
 the default. "]
 
-              ["Comment class" py-comment-class
-               :help " `py-comment-class'
+             ["Comment class" py-comment-class
+              :help " `py-comment-class'
 Comments class at point\.
 
-Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
 the default. "]
 
-              ["Comment def or class" py-comment-def-or-class
-               :help " `py-comment-def-or-class'
+             ["Comment def or class" py-comment-def-or-class
+              :help " `py-comment-def-or-class'
 Comments def-or-class at point\.
 
-Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
 the default. "]
 
-              ["Comment statement" py-comment-statement
-               :help " `py-comment-statement'
+             ["Comment statement" py-comment-statement
+              :help " `py-comment-statement'
 Comments statement at point\.
 
-Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
-the default. "]
-
-              )
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
+the default. "])
 
             ("Mark ... "
              ["Mark statement" py-mark-statement
@@ -4161,9 +4205,7 @@ Mark innermost definition at point"]
 
              ["Mark comment" py-mark-comment
               :help "`py-mark-comment'
-Mark commented section at point"]
-
-             )
+Mark commented section at point"])
 
             ("Copy ... "
              ["Copy statement" py-copy-statement
@@ -4192,9 +4234,7 @@ Copy innermost definition at point"]
 
              ["Copy Def-or-Class" py-copy-def-or-class
               :help "`py-copy-def-or-class'
-Copy innermost definition at point"]
-
-             )
+Copy innermost definition at point"])
             ("Kill ... "
 
              ["Kill statement" py-kill-statement
@@ -4227,25 +4267,24 @@ Delete innermost compound statement at point, store deleted string in kill-ring"
 
              ["Kill def" py-kill-def
               :help "`py-kill-def'
-Delete innermost compound statement at point, store deleted string in kill-ring"]
-             )
-             ("Delete ... "
-              ["Delete block" py-delete-block
+Delete innermost compound statement at point, store deleted string in kill-ring"])
+            ("Delete ... "
+             ["Delete block" py-delete-block
               :help "`py-delete-block'
 Delete innermost compound statement at point, don't store deleted string in kill-ring"]
 
-              ["Delete def-or-class" py-delete-def-or-class
+             ["Delete def-or-class" py-delete-def-or-class
               :help "`py-delete-def-or-class'
 Delete def-or-class at point, don't store deleted string in kill-ring"]
 
-              ["Delete clause" py-delete-clause
+             ["Delete clause" py-delete-clause
               :help "`py-delete-clause'
 Delete innermost compound statement at point, don't store deleted string in kill-ring"]
-              ["Delete statement" py-delete-statement
+             ["Delete statement" py-delete-statement
               :help "`py-delete-statement'
 Delete statement at point, don't store deleted string in kill-ring"]
 
-              ["Delete expression" py-delete-expression
+             ["Delete expression" py-delete-expression
               :help "`py-delete-expression'
 Delete expression at point, don't store deleted string in kill-ring"]
 
@@ -4253,18 +4292,16 @@ Delete expression at point, don't store deleted string in kill-ring"]
               :help "`py-delete-partial-expression'
 Delete partial-expression at point, don't store deleted string in kill-ring"]
 
-          ["Delete class" py-delete-class
+             ["Delete class" py-delete-class
               :help "`py-delete-class'
 Delete class at point, don't store deleted string in kill-ring"]
 
-          ["Delete def" py-delete-def
+             ["Delete def" py-delete-def
               :help "`py-delete-def'
-Delete def at point, don't store deleted string in kill-ring"]
+Delete def at point, don't store deleted string in kill-ring"])
 
-          )
-
-             ("Shift right ... "
-              ["Shift block right" py-shift-block-right
+            ("Shift right ... "
+             ["Shift block right" py-shift-block-right
               :help "`py-shift-block-right'
 Shift block right. "]
 
@@ -4290,12 +4327,10 @@ Shift def right. "]
 
              ["Shift block-or-clause right" py-shift-block-or-clause-right
               :help "`py-shift-block-or-clause-right'
-Shift block-or-clause right. "]
+Shift block-or-clause right. "])
 
-             )
-
-             ("Shift left ... "
-              ["Shift block left" py-shift-block-left
+            ("Shift left ... "
+             ["Shift block left" py-shift-block-left
               :help "`py-shift-block-left'
 Shift block left. "]
 
@@ -4321,17 +4356,15 @@ Shift def left. "]
 
              ["Shift block-or-clause left" py-shift-block-or-clause-left
               :help "`py-shift-block-or-clause-left'
-Shift block-or-clause left. "]
+Shift block-or-clause left. "])
 
-             )
-
-          "-"
-          ("Block ... "
-           ["Beginning of block" py-beginning-of-block
-            :help "`py-beginning-of-block'
+            "-"
+            ("Block ... "
+             ["Beginning of block" py-beginning-of-block
+              :help "`py-beginning-of-block'
 Go to start of innermost compound statement at point"]
-           ["End of block" py-end-of-block
-            :help "`py-end-of-block'
+             ["End of block" py-end-of-block
+              :help "`py-end-of-block'
 Go to end of innermost compound statement at point"]
 
              ["Down block" py-down-block
@@ -4373,10 +4406,8 @@ Shift block left. "]
 
 Comments block at point\.
 
-Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
-the default. "]
-
-             )
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
+the default. "])
 
             ("Def-or-class ... "
 
@@ -4427,10 +4458,8 @@ Shift def-or-class left. "]
 
 Comments def-or-class at point\.
 
-Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
-the default. "]
-
-             )
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
+the default. "])
 
             ("Clause ... "
 
@@ -4480,10 +4509,8 @@ Shift clause left. "]
 
 Comments clause at point\.
 
-Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
-the default. "]
-
-             )
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
+the default. "])
 
             ("Statement ... "
 
@@ -4520,10 +4547,8 @@ Shift statement left. "]
 
 Comments statement at point\.
 
-Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
-the default. "]
-
-             )
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
+the default. "])
 
             ("Expression ..."
 
@@ -4562,9 +4587,7 @@ Delete innermost compound statement at point, store deleted string in kill-ring"
 
              ["Delete expression" py-delete-expression
               :help "`py-delete-expression'
-Delete expression at point, don't store deleted string in kill-ring"]
-
-             )
+Delete expression at point, don't store deleted string in kill-ring"])
 
             ("Partial expression ..."
 
@@ -4592,9 +4615,7 @@ Delete innermost compound statement at point, store deleted string in kill-ring"
 
              ["Delete partial-expression" py-delete-partial-expression
               :help "`py-delete-partial-expression'
-Delete partial-expression at point, don't store deleted string in kill-ring"]
-
-             )
+Delete partial-expression at point, don't store deleted string in kill-ring"])
 
             ("Class ... "
 
@@ -4645,10 +4666,8 @@ Shift class left. "]
 
 Comments class at point\.
 
-Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
-the default. "]
-
-             )
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
+the default. "])
 
             ("Def ... "
 
@@ -4699,10 +4718,8 @@ Shift def left. "]
 
 Comments def at point\.
 
-Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
-the default. "]
-
-             )
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
+the default. "])
             "-"
 
             (" Block bol ... "
@@ -4753,9 +4770,7 @@ Shift block right. "]
 
              ["Shift block left" py-shift-block-left
               :help "`py-shift-block-left'
-Shift block left. "]
-
-             )
+Shift block left. "])
 
             (" Clause bol ... "
 
@@ -4805,9 +4820,7 @@ Shift clause right. "]
 
              ["Shift clause left" py-shift-clause-left
               :help "`py-shift-clause-left'
-Shift clause left. "]
-
-             )
+Shift clause left. "])
 
             (" Block-Or-Clause bol ... "
 
@@ -4857,9 +4870,7 @@ Shift block-or-clause right. "]
 
              ["Shift block-or-clause left" py-shift-block-or-clause-left
               :help "`py-shift-block-or-clause-left'
-Shift block-or-clause left. "]
-
-             )
+Shift block-or-clause left. "])
 
             (" Def bol ... "
 
@@ -4909,9 +4920,7 @@ Shift def right. "]
 
              ["Shift def left" py-shift-def-left
               :help "`py-shift-def-left'
-Shift def left. "]
-
-             )
+Shift def left. "])
 
             (" Class bol ... "
              ["Beginning of class bol" py-beginning-of-class-bol
@@ -4960,9 +4969,7 @@ Shift class right. "]
 
              ["Shift class left" py-shift-class-left
               :help "`py-shift-class-left'
-Shift class left. "]
-
-             )
+Shift class left. "])
 
             (" Def-Or-Class bol ... "
              ["Beginning of def-or-class bol" py-beginning-of-def-or-class-bol
@@ -5011,9 +5018,7 @@ Shift def-or-class right. "]
 
              ["Shift def-or-class left" py-shift-def-or-class-left
               :help "`py-shift-def-or-class-left'
-Shift def-or-class left. "]
-
-             )
+Shift def-or-class left. "])
 
             (" Statement bol ... "
              ["Beginning of statement bol" py-beginning-of-statement-bol
@@ -5050,9 +5055,7 @@ Shift statement right. "]
 
              ["Shift statement left" py-shift-statement-left
               :help "`py-shift-statement-left'
-Shift statement left. "]
-
-             )
+Shift statement left. "])
             "-"
             ["Backward into nomenclature" py-backward-into-nomenclature
              :help " `py-backward-into-nomenclature'
@@ -5165,9 +5168,7 @@ Symmetric style.
     If processing fails throw ProcessingError.
     \"\"\"
 
-See available styles at `py-fill-paragraph' or var `py-docstring-style'"]
-
-             )
+See available styles at `py-fill-paragraph' or var `py-docstring-style'"])
 
             ("Electric... "
              :help "electric commands'"
@@ -5218,22 +5219,14 @@ Needs Pymacs"]
 
              ["Electric yank" py-electric-yank
               :help " `py-electric-yank'
-Perform command `yank' followed by an `indent-according-to-mode' . "]
-
-             )
+Perform command `yank' followed by an `indent-according-to-mode' . "])
             ("Extended... "
              :help "extended edit commands'"
              ["Revert boolean assignent" py-boolswitch
               :help " `py-boolswitch'
 Edit the assigment of a boolean variable, rever them.
 
-I.e. switch it from \"True\" to \"False\" and vice versa "]
-
-             )
-
-            )
-
-          )
+I.e. switch it from \"True\" to \"False\" and vice versa "])))
 
         ;; Python shell menu
         (easy-menu-define py-menu map "Python Shells"
@@ -5357,9 +5350,7 @@ Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-p
             ["Switch shell-switch-buffers-on-execute ON" py-shell-switch-buffers-on-execute-on
              :help "Switch `py-switch-buffers-on-execute-p' ON. "]
             ["Switch shell-switch-buffers-on-execute OFF" py-shell-switch-buffers-on-execute-off
-             :help "Switch `py-switch-buffers-on-execute-p' OFF. "]
-            )
-          )
+             :help "Switch `py-switch-buffers-on-execute-p' OFF. "]))
         map))
 
 (defvaralias 'py-mode-map 'python-mode-map)
