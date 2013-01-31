@@ -2292,7 +2292,7 @@ Return position if " ele " found, nil otherwise \"
      (not " erg "))
  :help \""))
       (when doku (insert (regexp-quote doku)))
-      (insert (concat "\"
+      (insert (concat "Use `M-x customize-variable' to set it permanently\"
  :style toggle :selected " erg "]\n")))
     (skip-chars-forward "[[:punct:]]")
     (capitalize-word 1)))

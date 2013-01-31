@@ -38,6 +38,7 @@
 
 (setq bug-numbered-tests
       (list
+       'cascading-indent-lp-1101962-test
        'line-after-colon-with-inline-comment-lp-1109946-test
        'more-docstring-filling-woes-lp-1102296-pep-257-nn-test
        'more-docstring-filling-woes-lp-1102296-pep-257-test
@@ -5032,7 +5033,6 @@ re.
   ;; (switch-to-buffer (current-buffer))
   (assert (bufferp (get-buffer "*IPython Completions*")) nil "ipython-complete-lp-1102226-test failed"))
 
-
 (defun more-docstring-filling-woes-lp-1102296-pep-257-nn-test (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
@@ -5358,7 +5358,7 @@ def f():
     if a:
         b
     if c: # inline comment
-    
+
         # |<---- cursor will not indent properly with <TAB>>
 "))
   (py-bug-tests-intern 'line-after-colon-with-inline-comment-lp-1109946-base arg teststring)))
@@ -5367,6 +5367,23 @@ def f():
     (goto-char 104)
     (assert (eq 8 (py-compute-indentation)) nil "line-after-colon-with-inline-comment-lp-1109946-test failed"))
 
+(defun cascading-indent-lp-1101962-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+def foo():
+    pgdt = []
+    pdwd = []
+        cItemLik = [ ht(\"Item\", T.hr(), T.span(\"Like\", style=
+                            \"background-color: rgb( 229, 200, 136 )\")),
+                     lambda item: ht( item['!'], T.br(), like( item ))
+                     ]
+"))
+  (py-bug-tests-intern 'cascading-indent-lp-1101962-base arg teststring)))
+
+(defun cascading-indent-lp-1101962-base ()
+    (goto-char 315)
+    (assert (eq 8 (py-compute-indentation)) nil "cascading-indent-lp-1101962-test failed"))
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

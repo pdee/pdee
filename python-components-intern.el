@@ -29,8 +29,11 @@
   "Compute Python indentation.
 
 When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
-`raise', `break', `continue', and `pass' force one level of dedenting."
-  (interactive "P")
+`raise', `break', `continue', and `pass' force one level of dedenting.
+
+Optional arguments are flags resp. values set and used by `py-compute-indentation' internally
+"
+  (interactive)
   (save-excursion
     (save-restriction
       (widen)
@@ -207,7 +210,7 @@ When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
                ((and (< (py-count-lines) origline)(looking-at py-assignment-re))
                 (goto-char (match-end 0))
                 ;; multiline-assignment
-                (if (and (looking-at " *[[{(]")(not (looking-at ".+[]})][ \t]*$")))
+                (if (and inside (looking-at " *[[{(]")(not (looking-at ".+[]})][ \t]*$")))
                     (+ (current-indentation) py-indent-offset)
                   (current-indentation)))
                ((looking-at py-assignment-re)
