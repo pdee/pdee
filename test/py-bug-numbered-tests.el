@@ -38,6 +38,7 @@
 
 (setq bug-numbered-tests
       (list
+       'python-mode-very-slow-lp-1107037-test
        'cascading-indent-lp-1101962-test
        'line-after-colon-with-inline-comment-lp-1109946-test
        'more-docstring-filling-woes-lp-1102296-pep-257-nn-test
@@ -5384,6 +5385,60 @@ def foo():
 (defun cascading-indent-lp-1101962-base ()
     (goto-char 315)
     (assert (eq 8 (py-compute-indentation)) nil "cascading-indent-lp-1101962-test failed"))
+
+(defun python-mode-very-slow-lp-1107037-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "# Since the last few commits, python-mode is unbearably slow on nontrivial files. Even
+# just moving around in the file makes Emacs use 100% CPU for a few seconds.
+#
+# If this is due to the fix for lp:1102011, I would rather live with the highlight bug :)
+# Georg Brandl (gbrandl) wrote 11 hours ago: #2
+#
+# Try the file below. I have narrowed the problem to the fix for lp:1102011 -- the regex
+# \*must\* have pathological behavior (which wouldn't surprise me, such backtracking
+# problems are very hard to fix). In general, for that many lines between module start
+# and docstring, I think it is quite fine for python-mode not to color the docstring as
+# such. I think the number of permitted comment lines should be restricted to 2, in order
+# to accomodate a shebang line and a coding declaration.
+# -\*- coding: utf-8 -\*-
+# \*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*
+# <Name of software>
+# Copyright (c) 2009-2012 by the contributors (see AUTHORS)
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 2 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program; if not, write to the Free Software Foundation, Inc.,
+# 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+#
+# Module authors:
+# Georg Brandl <email address>
+#
+# \*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*
+
+\"\"\"Some docstring.\"\"\"
+
+__version__ = \"$Revision$\"
+
+"))
+  (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
+
+(defun python-mode-very-slow-lp-1107037-base ()
+  (let ((py-use-font-lock-doc-face-p t))
+    (goto-char 1825)
+    (python-mode)
+    (font-lock-fontify-buffer)
+    (sit-for 1)
+    (assert (eq (face-at-point) 'font-lock-doc-face) nil "python-mode-very-slow-lp-1107037-test failed")))
+
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

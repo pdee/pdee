@@ -920,7 +920,7 @@ When editing other peoples code, this may produce a larger diff than expected "
   :group 'python-mode)
 
 (defcustom py-newline-delete-trailing-whitespace-p t
-  "Delete trailing whitespace maybe left by `py-newline-and-indent'. 
+  "Delete trailing whitespace maybe left by `py-newline-and-indent'.
 
 Default is `t'. See lp:1100892 "
   :type 'boolean
@@ -1205,7 +1205,7 @@ It should not contain a caret (^) at the beginning."
 
 ;;; defvarred Variables
 (defvar py-underscore-word-syntax-p t
-  "This is set later by defcustom, only initial value here.  
+  "This is set later by defcustom, only initial value here.
 
 If underscore chars should be of syntax-class `word', not of `symbol'.
 Underscores in word-class makes `forward-word' etc. travel the indentifiers. Default is `t'.
@@ -1940,15 +1940,22 @@ Includes def and class. ")
 
 (make-obsolete-variable 'jpython-mode-hook 'jython-mode-hook nil)
 
+(defun py-doc-string-p (pos)
+  "Check to see if there is a docstring at POS."
+  (save-excursion
+    (goto-char pos)
+    (if (looking-at-p "'''\\|\"\"\"")
+        (progn
+          (py-beginning-of-statement)
+          (or (bobp)
+              (py-beginning-of-def-or-class-p)))
+      nil)))
+
 (defun py-font-lock-syntactic-face-function (state)
   (if (nth 3 state)
-      (let ((startpos (nth 8 state)))
-        (save-excursion
-          (goto-char startpos)
-          (if (and (looking-at-p "'''\\|\"\"\"")
-                   (looking-back "\\(?:\\`\\|^\\s *\\(?:class\\|def\\)\\s +.*\\)\n*\\(?:\\s *#\\s *.*\n\\)*\\s *"))
-              font-lock-doc-face
-            font-lock-string-face)))
+      (if (py-doc-string-p (nth 8 state))
+          font-lock-doc-face
+        font-lock-string-face)
     font-lock-comment-face))
 
 ;; In previous version of python-mode.el, the hook was incorrectly
@@ -2227,7 +2234,6 @@ See original source: http://pymacs.progiciels-bpi.ca"
 (require 'python-components-comment)
 (require 'python-components-auto-fill)
 (require 'highlight-indentation)
-
 
 ;; toggle-py-underscore-word-syntax-p must be known already
 ;; circular: toggle-py-underscore-word-syntax-p sets and calls it
