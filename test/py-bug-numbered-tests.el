@@ -5426,7 +5426,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision$\"
+__version__ = \"$Revision: 1.164 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -5438,6 +5438,22 @@ __version__ = \"$Revision$\"
     (font-lock-fontify-buffer)
     (sit-for 1)
     (assert (eq (face-at-point) 'font-lock-doc-face) nil "python-mode-very-slow-lp-1107037-test failed")))
+
+
+(defun add-custom-switch-for-ffap-hooks-lp-1117119-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+/usr/lib/pyt
+"))
+  (py-bug-tests-intern 'add-custom-switch-for-ffap-hooks-lp-1117119-base arg teststring)))
+
+(defun add-custom-switch-for-ffap-hooks-lp-1117119-base ()
+  (let ((py-ffap-p t)
+        (python-ffap t))
+    (goto-char 60)
+    (assert (member 'py-set-ffap-form python-mode-hook) nil "add-custom-switch-for-ffap-hooks-lp-1117119-test #1 failed")
+    ))
 
 
 (provide 'py-bug-numbered-tests)

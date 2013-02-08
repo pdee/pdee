@@ -37,25 +37,6 @@
   :group 'python-mode
 )
 
-(defun py-ffap-module-path (module)
-  "Function for `ffap-alist' to return path for MODULE."
-  (let ((process (or
-                  (and (eq major-mode 'inferior-python-mode)
-                       (get-buffer-process (current-buffer)))
-                  (py-shell-get-process))))
-    (if (not process)
-        nil
-      (let ((module-file
-             (py-shell-send-string-no-output
-              (format python-ffap-string-code module) process)))
-        (when module-file
-          (substring-no-properties module-file 1 -1))))))
-
-(eval-after-load "ffap"
-  '(progn
-     (push '(python-mode . py-ffap-module-path) ffap-alist)
-     (push '(inferior-python-mode . py-ffap-module-path) ffap-alist)))
-
 ;; Stolen from org-mode
 (defun py-util-clone-local-variables (from-buffer &optional regexp)
   "Clone local variables from FROM-BUFFER.
