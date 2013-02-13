@@ -1470,9 +1470,9 @@ can write into: the value (if any) of the environment variable TMPDIR,
 (defvar py-string-delim-re "\\(\"\"\"\\|'''\\|\"\\|'\\)"
   "When looking at beginning of string. ")
 
-(defvar py-labelled-re "[ \\t]*:[[:print:]]+"
+(defvar py-labelled-re "[ \\t]*:[[:print:]]+:"
   "When looking at label. ")
-;; (setq py-labelled-re "[ \\t]*:[[:graph:]]+")
+(setq py-labelled-re "[ \\t]*:[[:graph:]]+:")
 
 (defvar py-expression-skip-regexp "[^ (=:#\t\r\n\f]"
   "py-expression assumes chars indicated possible composing a py-expression, skip it. ")
@@ -1978,7 +1978,7 @@ Includes def and class. ")
 
 (make-obsolete-variable 'jpython-mode-hook 'jython-mode-hook nil)
 
-(defun py-doc-string-p (pos)
+(defun py-docstring-p (pos)
   "Check to see if there is a docstring at POS."
   (save-excursion
     (goto-char pos)
@@ -1991,7 +1991,7 @@ Includes def and class. ")
 
 (defun py-font-lock-syntactic-face-function (state)
   (if (nth 3 state)
-      (if (py-doc-string-p (nth 8 state))
+      (if (py-docstring-p (nth 8 state))
           font-lock-doc-face
         font-lock-string-face)
     font-lock-comment-face))

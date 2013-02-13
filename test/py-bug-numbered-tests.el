@@ -5034,61 +5034,6 @@ re.
   ;; (switch-to-buffer (current-buffer))
   (assert (bufferp (get-buffer "*IPython Completions*")) nil "ipython-complete-lp-1102226-test failed"))
 
-(defun more-docstring-filling-woes-lp-1102296-pep-257-nn-test (&optional arg)
-  (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-# (I selected \"PEP-257-NN\" as the docstring fill style.)
-# Given the following code:
-
-class Test(object):
-    \"\"\"
-    Builds target formats from the reST sources.
-    \"\"\"
-
-    def method1(self):
-        \"\"\"Return the template bridge configured.\"\"\"
-        pass
-
-    def method2(self):
-        \"\"\"Load necessary templates and perform initialization. The default implementation does nothing.
-        \"\"\"
-        pass
-
-# There are three misbehaviors here:
-# \* should have removed the whitespace at the beginning and end of the class docstring
-# \* in method1, the \"pass\" should remain on its own line
-# \* in method2, the closing triple-quote should get its own line, and the \"pass\" too
-
-"))
-  (py-bug-tests-intern 'more-docstring-filling-woes-lp-1102296-pep-257-nn-base arg teststring)))
-
-(defun more-docstring-filling-woes-lp-1102296-pep-257-nn-base ()
-  (let ((py-docstring-style 'pep-257-nn))
-    (goto-char 178)
-    (assert (fill-paragraph) nil "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #1 failed")
-    (message "%s" "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #1 done")
-    (goto-char 259)
-    (fill-paragraph)
-    (forward-line 1)
-    (assert (looking-at "        pass") nil "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #2 failed")
-    (message "%s" "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #2 done")
-    (goto-char 357)
-    (fill-paragraph)
-    (beginning-of-line)
-    (sit-for 0.1)
-    (write-file (concat default-directory  "more-docstring-filling-woes-lp-1102296-pep-257-nn-3a-test.py"))
-    (assert (eq (skip-chars-forward " ")  8) nil "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #3a failed")
-    (message "%s" "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #3a done")
-    (save-excursion
-      (goto-char 357)
-      (forward-line 1)
-      (assert (empty-line-p) nil "more-docstring-filling-woes-lp-1102296-pep-267-nn-test #3b failed")
-      (message "%s" "more-docstring-filling-woes-lp-1102296-pep-267-nn-test #3b done"))
-    (forward-line 1)
-    (assert (looking-at "        pass") nil "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #3b failed")
-    (message "%s" "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #3b done")))
-
 (defun more-docstring-filling-woes-lp-1102296-pep-257-test (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
@@ -5132,14 +5077,8 @@ class Test(object):
     (fill-paragraph)
     (goto-char 437)
     (sit-for 0.1)
-    (write-file (concat default-directory  "more-docstring-filling-woes-lp-1102296-pep-257-3a-test.py"))
     (assert (empty-line-p) nil "more-docstring-filling-woes-lp-1102296-pep-257-test #3a failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-pep-257-test #3a done")
-    (save-excursion
-      (goto-char 357)
-      (forward-line 1)
-      (assert (empty-line-p) nil "more-docstring-filling-woes-lp-1102296-pep-267-test #3b failed")
-      (message "%s" "more-docstring-filling-woes-lp-1102296-pep-267-test #3b done"))
     (forward-line 2)
     (assert (looking-at "        pass") nil "more-docstring-filling-woes-lp-1102296-pep-257-test #3c failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-pep-257-test #3c done")))
@@ -5302,55 +5241,6 @@ class Test(object):
     (assert (looking-at "        pass") nil "more-docstring-filling-woes-lp-1102296-symmetric-test #3c failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-symmetric-test #3c done")))
 
-(defun more-docstring-filling-woes-lp-1102296-nil-test (&optional arg)
-  (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-# (I selected \"PEP-257-NN\" as the docstring fill style.)
-# Given the following code:
-
-class Test(object):
-    \"\"\"
-    Builds target formats from the reST sources.
-    \"\"\"
-
-    def method1(self):
-        \"\"\"Return the template bridge configured.\"\"\"
-        pass
-
-    def method2(self):
-        \"\"\"Load necessary templates and perform initialization. The default implementation does nothing.
-        \"\"\"
-        pass
-
-# There are three misbehaviors here:
-# \* should have removed the whitespace at the beginning and end of the class docstring
-# \* in method1, the \"pass\" should remain on its own line
-# \* in method2, the closing triple-quote should get its own line, and the \"pass\" too
-
-"))
-  (py-bug-tests-intern 'more-docstring-filling-woes-lp-1102296-nil-base arg teststring)))
-
-(defun more-docstring-filling-woes-lp-1102296-nil-base ()
-  (let ((py-docstring-style nil))
-    (goto-char 178)
-    (assert (fill-paragraph) nil "more-docstring-filling-woes-lp-1102296-nil-test #1 failed")
-    (message "%s" "more-docstring-filling-woes-lp-1102296-nil-test #1 done")
-    (goto-char 259)
-    (fill-paragraph)
-    (forward-line 1)
-    (assert (looking-at "        pass") nil "more-docstring-filling-woes-lp-1102296-nil-test #2 failed")
-    (message "%s" "more-docstring-filling-woes-lp-1102296-nil-test #2 done")
-    (goto-char 380)
-    (fill-paragraph)
-    (beginning-of-line)
-    (sit-for 0.1)
-    (assert (eq (char-after) ?\i) nil "more-docstring-filling-woes-lp-1102296-nil-test #3a failed")
-    (message "%s" "more-docstring-filling-woes-lp-1102296-nil-test #3a done")
-    (forward-line 1)
-    (assert (looking-at "        pass") nil "more-docstring-filling-woes-lp-1102296-nil-test #3c failed")
-    (message "%s" "more-docstring-filling-woes-lp-1102296-nil-test #3c done")))
-
 (defun line-after-colon-with-inline-comment-lp-1109946-test (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
@@ -5426,7 +5316,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.164 $\"
+__version__ = \"$Revision: 1.166 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -5438,7 +5328,6 @@ __version__ = \"$Revision: 1.164 $\"
     (font-lock-fontify-buffer)
     (sit-for 1)
     (assert (eq (face-at-point) 'font-lock-doc-face) nil "python-mode-very-slow-lp-1107037-test failed")))
-
 
 (defun add-custom-switch-for-ffap-hooks-lp-1117119-test (&optional arg)
   (interactive "p")
@@ -5455,6 +5344,104 @@ __version__ = \"$Revision: 1.164 $\"
     (assert (member 'py-set-ffap-form python-mode-hook) nil "add-custom-switch-for-ffap-hooks-lp-1117119-test #1 failed")
     ))
 
+(defun more-docstring-filling-woes-lp-1102296-nil-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+# (I selected \"PEP-257-NN\" as the docstring fill style.)
+# Given the following code:
+
+class Test(object):
+    \"\"\"
+    Builds target formats from the reST sources.
+    \"\"\"
+
+    def method1(self):
+        \"\"\"Return the template bridge configured.\"\"\"
+        pass
+
+    def method2(self):
+        \"\"\"Load necessary templates and perform initialization. The default implementation does nothing.
+        \"\"\"
+        pass
+
+# There are three misbehaviors here:
+# \* should have removed the whitespace at the beginning and end of the class docstring
+# \* in method1, the \"pass\" should remain on its own line
+# \* in method2, the closing triple-quote should get its own line, and the \"pass\" too
+
+"))
+  (py-bug-tests-intern 'more-docstring-filling-woes-lp-1102296-nil-base arg teststring)))
+
+(defun more-docstring-filling-woes-lp-1102296-nil-base ()
+  (let ((py-docstring-style nil))
+    (goto-char 178)
+    (assert (fill-paragraph) nil "more-docstring-filling-woes-lp-1102296-nil-test #1 failed")
+    (message "%s" "more-docstring-filling-woes-lp-1102296-nil-test #1 done")
+    (goto-char 259)
+    (fill-paragraph)
+    (forward-line 1)
+    (assert (looking-at "        pass") nil "more-docstring-filling-woes-lp-1102296-nil-test #2 failed")
+    (message "%s" "more-docstring-filling-woes-lp-1102296-nil-test #2 done")
+    (goto-char 380)
+    (fill-paragraph)
+    (back-to-indentation) 
+    (sit-for 0.1)
+    (assert (eq (char-after) ?\i) nil "more-docstring-filling-woes-lp-1102296-nil-test #3a failed")
+    (message "%s" "more-docstring-filling-woes-lp-1102296-nil-test #3a done")
+    (forward-line 1)
+    (assert (looking-at "        pass") nil "more-docstring-filling-woes-lp-1102296-nil-test #3c failed")
+    (message "%s" "more-docstring-filling-woes-lp-1102296-nil-test #3c done")))
+
+(defun more-docstring-filling-woes-lp-1102296-pep-257-nn-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+# (I selected \"PEP-257-NN\" as the docstring fill style.)
+# Given the following code:
+
+class Test(object):
+    \"\"\"
+    Builds target formats from the reST sources.
+    \"\"\"
+
+    def method1(self):
+        \"\"\"Return the template bridge configured.\"\"\"
+        pass
+
+    def method2(self):
+        \"\"\"Load necessary templates and perform initialization. The default implementation does nothing.
+        \"\"\"
+        pass
+
+# There are three misbehaviors here:
+# \* should have removed the whitespace at the beginning and end of the class docstring
+# \* in method1, the \"pass\" should remain on its own line
+# \* in method2, the closing triple-quote should get its own line, and the \"pass\" too
+
+"))
+  (py-bug-tests-intern 'more-docstring-filling-woes-lp-1102296-pep-257-nn-base arg teststring)))
+
+(defun more-docstring-filling-woes-lp-1102296-pep-257-nn-base ()
+  (let ((py-docstring-style 'pep-257-nn))
+    (goto-char 178)
+    (assert (fill-paragraph) nil "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #1 failed")
+    (message "%s" "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #1 done")
+    (goto-char 259)
+    (fill-paragraph)
+    (forward-line 1)
+    (assert (looking-at "        pass") nil "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #2 failed")
+    (message "%s" "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #2 done")
+    (goto-char 357)
+    (fill-paragraph)
+    (beginning-of-line)
+    (sit-for 0.1)
+    (assert (eq (skip-chars-forward " ")  8) nil "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #3a failed")
+    (message "%s" "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #3a done")
+    (forward-line 1)
+    (sit-for 0.1) 
+    (assert (looking-at "        pass") nil "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #3b failed")
+    (message "%s" "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #3b done")))
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

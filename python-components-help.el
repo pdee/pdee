@@ -562,25 +562,24 @@ Interactively, prompt for name."
 Interactively, prompt for name.
 
 Search in current buffer first. "
-  (interactive)
-  (let* ((symbol (or arg
-                     (with-syntax-table py-dotted-expression-syntax-table
-                       (current-word))))
-         (imports (replace-regexp-in-string  ";$" "" (py-find-imports)))
+  (interactive "P")
+  (let* ((name (or (and (eq 4 (prefix-numeric-value arg))
+                        (read-from-minibuffer "Name: "
+                                              (with-syntax-table py-dotted-expression-syntax-table
+                                                (current-word))))
+                   (with-syntax-table py-dotted-expression-syntax-table
+                     (current-word))))
+         (imports (replace-regexp-in-string ";$" "" (py-find-imports)))
          ;; (enable-recursive-minibuffers t)
          (erg (progn (goto-char (point-min))
                      (when
-                         (re-search-forward (concat "^[ \t]*def " symbol "(") nil t 1)
+                         (re-search-forward (concat "^[ \t]*def " name "(") nil t 1)
                        (forward-char -2)
                        (point)))))
     (unless erg
-      (setq name (list (read-string (if symbol
-                                        (format "Find location of (default %s): " symbol)
-                                      "Find location of: ")
-                                    nil nil symbol)))
-        (error "Not called from buffer visiting Python file"))
-      (let* ((loc (py-send-receive (format "emacs.location_of%S;%s)"
-                                           name imports)))
+      ;; (error "Not called from buffer visiting Python file")
+      (let* ((loc (py-send-receive (format "%s;emacs.location_of%S)"
+                                           imports name )))
              (loc (car (read-from-string loc)))
              (file (car loc))
              (line (cdr loc)))
@@ -588,7 +587,7 @@ Search in current buffer first. "
         (pop-to-buffer (find-file-noselect file))
         (when (integerp line)
           (goto-char (point-min))
-          (forward-line (1- line))))))
+          (forward-line (1- line)))))))
 
 (defun py-find-imports ()
   "Find top-level imports.
