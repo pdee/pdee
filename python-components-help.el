@@ -540,54 +540,93 @@ local bindings to py-newline-and-indent."))
 
 ;; Find function stuff, lifted from python.el
 
-(defun ar-py-find-function (name)
-  "Find source of definition of function NAME.
-Interactively, prompt for name."
-  (interactive
-   (let* ((symbol (with-syntax-table py-dotted-expression-syntax-table
-                    (current-word)))
-          (enable-recursive-minibuffers t)
+(defun py-find-definition (&optional symbol)
+  "Find source of definition of SYMBOL.
 
-          (list (read-string (if symbol
-                                 (format "Find location of (default %s): " symbol)
-                               "Find location of: ")
-                             nil nil symbol))
-          (sourcefile (py-send-string (concat "inspect.getsourcefile (inspect.getmodule (" symbol ")))")))
-          (sourceline (py-send-string (concat "inspect.getsourcelines (" symbol ")))")))))))
+Interactively, prompt for name."
+  (interactive)
+  (set-register 98888888 (list (current-window-configuration) (point-marker)))
+  (let* ((oldbuf (current-buffer))
+         (imports (py-find-imports))
+         (symbol (or symbol (with-syntax-table py-dotted-expression-syntax-table
+                              (current-word))))
+         (enable-recursive-minibuffers t)
+         (symbol
+          (if (interactive-p)
+              (read-string (if symbol
+                               (format "Find location of (default %s): " symbol)
+                             "Find location of: ")
+                           nil nil symbol)
+            symbol))
+         (orig (point))
+         (local (or
+                 (py-until-found (concat "class " name) imenu--index-alist)
+                 (py-until-found name imenu--index-alist)))
+         source sourcefile path)
+    ;; ismethod(), isclass(), isfunction() or isbuiltin()
+    ;; ismethod isclass isfunction isbuiltin)
+    (if local
+        (if (numberp local)
+            (progn
+              (goto-char local)
+              (search-forward name (line-end-position) nil 1)
+              (push-mark)
+              (goto-char (match-beginning 0))
+              (exchange-point-and-mark))
+          (error "%s" "local not a number"))
+      (setq source (py-send-string-return-output (concat imports "import inspect;inspect.getmodule(" symbol ")")))
+      (cond ((string-match "SyntaxError" source)
+             (setq source (substring-no-properties source (match-beginning 0)))
+             (jump-to-register 98888888)
+             (message "Can't get source: %s" source))
+            ((and source (string-match "builtin" source))
+             (progn (jump-to-register 98888888)
+                    (message "%s" source)))
+            ((and source (setq path (replace-regexp-in-string "'" "" (py-send-string-return-output "import os;os.getcwd()")))
+                  (setq sourcefile (replace-regexp-in-string "'" "" (py-send-string-return-output (concat "inspect.getsourcefile(" symbol ")"))))
+                  (interactive-p) (message "sourcefile: %s" sourcefile)
+                  (find-file (concat path (char-to-string py-separator-char) sourcefile))
+                  (goto-char (point-min))
+                  (re-search-forward (concat py-def-or-class-re symbol) nil nil 1))
+             (push-mark)
+             (goto-char (match-beginning 0))
+             (exchange-point-and-mark)
+             (display-buffer oldbuf)))
+      sourcefile)))
 
 (defalias 'py-find-function 'py-find-definition)
-(defun py-find-definition (&optional arg)
-  "Find source of definition of function NAME.
-
-Interactively, prompt for name.
-
-Search in current buffer first. "
-  (interactive "P")
-  (let* ((name (or (and (eq 4 (prefix-numeric-value arg))
-                        (read-from-minibuffer "Name: "
-                                              (with-syntax-table py-dotted-expression-syntax-table
-                                                (current-word))))
-                   (with-syntax-table py-dotted-expression-syntax-table
-                     (current-word))))
-         (imports (replace-regexp-in-string ";$" "" (py-find-imports)))
-         ;; (enable-recursive-minibuffers t)
-         (erg (progn (goto-char (point-min))
-                     (when
-                         (re-search-forward (concat "^[ \t]*def " name "(") nil t 1)
-                       (forward-char -2)
-                       (point)))))
-    (unless erg
-      ;; (error "Not called from buffer visiting Python file")
-      (let* ((loc (py-send-receive (format "%s;emacs.location_of%S)"
-                                           imports name )))
-             (loc (car (read-from-string loc)))
-             (file (car loc))
-             (line (cdr loc)))
-        (unless file (error "Don't know where `%s' is defined" name))
-        (pop-to-buffer (find-file-noselect file))
-        (when (integerp line)
-          (goto-char (point-min))
-          (forward-line (1- line)))))))
+;; (defun py-find-definition (&optional arg)
+;;   "Find source of definition of function NAME.
+;;
+;; Interactively, prompt for name.
+;;
+;; Search in current buffer first. "
+;;   (interactive "P")
+;;   (let* ((name (or (and (eq 4 (prefix-numeric-value arg))
+;;                         (read-from-minibuffer "Name: "
+;;                                               (with-syntax-table py-dotted-expression-syntax-table
+;;                                                 (current-word))))
+;;                    (with-syntax-table py-dotted-expression-syntax-table
+;;                      (current-word))))
+;;          (imports (replace-regexp-in-string ";$" "" (py-find-imports)))
+;;          ;; (enable-recursive-minibuffers t)
+;;          (erg (progn (goto-char (point-min))
+;;                      (when
+;;                          (re-search-forward (concat "^[ \t]*def " name "(") nil t 1)
+;;                        (forward-char -2)
+;;                        (point)))))
+;;     (unless erg
+;;       ;; (error "Not called from buffer visiting Python file")
+;;       (let* ((loc (py-send-receive (format "%s;emacs.location_of%S)"
+;;                                            imports name )))
+;;              (loc (car (read-from-string loc)))
+;;              (file (car loc))
+;;              (line (cdr loc)))
+;;         (unless file (error "Don't know where `%s' is defined" name))
+;;         (pop-to-buffer (find-file-noselect file))
+;;         (when (integerp line)
+;;           (goto-char (point-min))
+;;           (forward-line (1- line)))))))
 
 (defun py-find-imports ()
   "Find top-level imports.

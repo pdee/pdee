@@ -1016,6 +1016,19 @@ Takes the result of (syntax-ppss)"
        (goto-char (match-end 0))
        (search-forward (match-string-no-properties 0))))
 
+(defun py-until-found (search-string liste)
+  "Search liste for search-string until found. "
+  (let ((liste liste) element)
+    (while liste
+      (if (member search-string (car liste))
+          (setq element (car liste) liste nil))
+      (setq liste (cdr liste)))
+    (when element
+      (while (and element (not (numberp element)))
+        (if (member search-string (car element))
+            (setq element (car element))
+          (setq element (cdr element))))
+      element)))
 
 (provide 'python-components-intern)
 ;;; python-components-intern.el ends here
