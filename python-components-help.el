@@ -543,7 +543,7 @@ local bindings to py-newline-and-indent."))
 (defun py-find-definition (&optional symbol)
   "Find source of definition of SYMBOL.
 
-Interactively, prompt for name."
+Interactively, prompt for SYMBOL."
   (interactive)
   (set-register 98888888 (list (current-window-configuration) (point-marker)))
   (let* ((oldbuf (current-buffer))
@@ -560,8 +560,8 @@ Interactively, prompt for name."
             symbol))
          (orig (point))
          (local (or
-                 (py-until-found (concat "class " name) imenu--index-alist)
-                 (py-until-found name imenu--index-alist)))
+                 (py-until-found (concat "class " symbol) imenu--index-alist)
+                 (py-until-found symbol imenu--index-alist)))
          source sourcefile path)
     ;; ismethod(), isclass(), isfunction() or isbuiltin()
     ;; ismethod isclass isfunction isbuiltin)
@@ -569,7 +569,7 @@ Interactively, prompt for name."
         (if (numberp local)
             (progn
               (goto-char local)
-              (search-forward name (line-end-position) nil 1)
+              (search-forward symbol (line-end-position) nil 1)
               (push-mark)
               (goto-char (match-beginning 0))
               (exchange-point-and-mark))
