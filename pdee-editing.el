@@ -12,7 +12,7 @@
 ;; Auto Completion
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories
-	     (concat pdee-install-dir "auto-complete/ac-dict"))
+	     (concat pdee-install-dir "extensions/auto-complete/ac-dict"))
 (ac-config-default)
 
 ;; Yasnippet - force the loading of the custom version of yasnippet
