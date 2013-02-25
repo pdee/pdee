@@ -545,8 +545,10 @@ local bindings to py-newline-and-indent."))
 
 Interactively, prompt for SYMBOL."
   (interactive)
-  (set-register 98888888 (list (current-window-configuration) (point-marker)))
-  (let* ((oldbuf (current-buffer))
+  ;; (set-register 98888888 (list (current-window-configuration) (point-marker)))
+  (let* ((last-window-configuration
+          (current-window-configuration))
+         (oldbuf (current-buffer))
          (imports (py-find-imports))
          (symbol (or symbol (with-syntax-table py-dotted-expression-syntax-table
                               (current-word))))
@@ -577,10 +579,13 @@ Interactively, prompt for SYMBOL."
       (setq source (py-send-string-return-output (concat imports "import inspect;inspect.getmodule(" symbol ")")))
       (cond ((string-match "SyntaxError" source)
              (setq source (substring-no-properties source (match-beginning 0)))
-             (jump-to-register 98888888)
+             (set-window-configuration last-window-configuration)
+             ;; (jump-to-register 98888888)
              (message "Can't get source: %s" source))
             ((and source (string-match "builtin" source))
-             (progn (jump-to-register 98888888)
+             (progn
+               (set-window-configuration last-window-configuration)
+               ;; (jump-to-register 98888888)
                     (message "%s" source)))
             ((and source (setq path (replace-regexp-in-string "'" "" (py-send-string-return-output "import os;os.getcwd()")))
                   (setq sourcefile (replace-regexp-in-string "'" "" (py-send-string-return-output (concat "inspect.getsourcefile(" symbol ")"))))

@@ -1625,7 +1625,8 @@ and resending the lines later. The lines are stored in reverse order")
         (define-key map [tab] 'py-complete-function)
       (define-key map [tab] 'py-completion-at-point))
     (define-key map "\C-c-" 'py-up-exception)
-    (define-key map "\C-c=" 'py-down-exception)))
+    (define-key map "\C-c=" 'py-down-exception))
+  map)
 
 (defvar python-shell-mode-map
   (let ((map (copy-keymap comint-mode-map)))

@@ -1875,6 +1875,7 @@ Var `python-mode-el-dir' needs to be set.  "
                       (concat (py-normalize-directory (expand-file-name python-mode-el-dir)) "python-mode.el"))))
         (name (ar-symbol-name-atpt))
         (keyword (progn (re-search-backward "^([^ ]+" nil (quote move) 1)(match-string-no-properties 0))))
+    (read-only-mode -1)
     (save-restriction
       (push-mark)
       (narrow-to-region (point) (1+ (forward-list)))

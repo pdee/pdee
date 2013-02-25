@@ -1524,7 +1524,7 @@ With universal arg \C-u insert a `%'. "
 Takes a list, INDENT and START position. "
   (unless (eobp)
     (let ((orig (or orig (point)))
-          last)
+          last else)
       (while (and (setq last (point))(not (eobp))(py-end-of-statement)
                   (save-excursion (or (<= indent (progn  (py-beginning-of-statement)(current-indentation)))(eq last (line-beginning-position))))
                   (py-end-of-statement-p)))

@@ -165,10 +165,10 @@ the output."
     (accept-process-output process 1)
     (when output-buffer
       (replace-regexp-in-string
-       (if (> (length python-shell-prompt-output-regexp) 0)
+       (if (> (length py-shell-prompt-output-regexp) 0)
            (format "\n*%s$\\|^%s\\|\n$"
                    py-shell-prompt-regexp
-                   (or python-shell-prompt-output-regexp ""))
+                   (or py-shell-prompt-output-regexp ""))
          (format "\n*$\\|^%s\\|\n$"
                  py-shell-prompt-regexp))
        "" output-buffer))))

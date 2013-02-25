@@ -50,8 +50,7 @@ New in version 6.1.1
 
 - py-update-imports removed
   Do not maintain a static variable containing needed imports
-  Determine imports on the fly rather, as it might change
-  the very moment
+  Determine imports on the fly rather, as it might have changed
 
 - variable `py-fill-docstring-style' renamed `py-docstring-style'
 
