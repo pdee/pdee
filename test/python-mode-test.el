@@ -2291,6 +2291,7 @@ else:
   (assert (eq 'symmetric py-docstring-style) nil "symmetric not py-docstring-style")
   
 )
+
 ;; imenu--subalist-p
 (provide 'python-mode-test)
 ;;; python-mode-test.el ends here

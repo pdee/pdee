@@ -334,6 +334,26 @@ Default is nil. "
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-electric-kill-backward-p nil
+  "Affects `py-electric-backspace'. Default is nil.
+
+If behind a delimited form of braces, brackets or parentheses,
+backspace will kill it's contents
+
+With when cursor after
+my_string[0:1]
+--------------^
+
+==>
+
+my_string[]
+----------^
+
+In result cursor is insided emptied delimited form."
+
+  :type 'boolean
+  :group 'python-mode)
+
 (defcustom py-electric-colon-active-p nil
   "`py-electric-colon' feature.  Default is `nil'. See lp:837065 for discussions. "
   :type 'boolean
@@ -564,11 +584,6 @@ source code of the innermost traceback frame."
   "If not nil, ask about which buffers to save before executing some code.
 Otherwise, all modified buffers are saved without asking."
   :type 'boolean
-  :group 'python-mode)
-
-(defcustom py-backspace-function 'backward-delete-char-untabify
-  "*Function called by `py-electric-backspace' when deleting backwards."
-  :type 'function
   :group 'python-mode)
 
 (defcustom py-delete-function 'delete-char
@@ -2054,17 +2069,23 @@ Returns versioned string, nil if nothing appropriate found "
 (defun py-which-python ()
   "Returns version of Python of current environment, a number. "
   (interactive)
-  (let* ((cmd (py-choose-shell))
-         (erg (shell-command-to-string (concat cmd " --version")))
-         ;; Result: "bpython version 0.9.7.1 on top of Python 2.7\n(C) 2008-2010 Bob Farrell, Andreas Stuehrk et al. See AUTHORS for detail.\n"
+  (let* (treffer
+         (cmd (py-choose-shell))
+         version)
+    (setq treffer (string-match "\\([23]*\\.?[0-9\\.]*\\)$" cmd))
+    (if treffer
+        ;; if a number if part of python name, assume it's the version
+        (setq version (substring-no-properties cmd treffer))
+      (setq erg (shell-command-to-string (concat cmd " --version")))
+      ;; Result: "bpython version 0.9.7.1 on top of Python 2.7\n(C) 2008-2010 Bob Farrell, Andreas Stuehrk et al. See AUTHORS for detail.\n"
 
-         (version (cond ((string-match (concat "\\(on top of Python \\)" "\\([0-9]\\.[0-9]+\\)") erg)
-                         (match-string-no-properties 2 erg))
-                        ((string-match "\\([0-9]\\.[0-9]+\\)" erg)
-                         (substring erg 7 (1- (length erg)))))))
+      (setq version (cond ((string-match (concat "\\(on top of Python \\)" "\\([0-9]\\.[0-9]+\\)") erg)
+                           (match-string-no-properties 2 erg))
+                          ((string-match "\\([0-9]\\.[0-9]+\\)" erg)
+                           (substring erg 7 (1- (length erg)))))))
     (when (interactive-p)
-      (if erg
-          (when py-verbose-p (message "%s" erg))
+      (if version
+          (when py-verbose-p (message "%s" version))
         (message "%s" "Could not detect Python on your system")))
     (string-to-number version)))
 
@@ -5219,7 +5240,7 @@ See available styles at `py-fill-paragraph' or var `py-docstring-style'"])
 
             ("Electric... "
              :help "electric commands'"
-                 
+
              ["Hungry delete backwards" py-hungry-delete-backwards
               :help " `py-hungry-delete-backwards'
 
@@ -5233,7 +5254,7 @@ See also C-c <delete>\.. "]
 Delete the following character or all following whitespace
 up to the next non-whitespace character\.
 See also C-c <C-backspace>\.. "]
-             
+
              ["Electric colon" py-electric-colon
               :help " `py-electric-colon'
 Insert a colon and indent accordingly.

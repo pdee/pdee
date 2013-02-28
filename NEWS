@@ -1,6 +1,24 @@
 Python Mode News
 ================
 
+New in version 6.1.2
+---------------------
+
+- boolean `py-electric-kill-backward-p', default is nil.
+  If behind a delimited form of braces, brackets or parentheses,
+  py-electric-backspace will kill it's contents
+
+  With when cursor after 
+  mystring[0:1]
+  -------------^
+  ==> 
+  mystring[]
+  ---------^
+  In result cursor is insided emptied delimited form."
+
+- unused variable `py-backspace-function' removed
+
+
 New in version 6.1.1
 ---------------------
 
