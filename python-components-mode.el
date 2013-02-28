@@ -2080,8 +2080,9 @@ Returns versioned string, nil if nothing appropriate found "
         (message "%s" "Could not detect Python on your system")))
     erg))
 
+;; (defalias 'py-toggle-shells 'py-choose-shell)
 (defalias 'py-which-shell 'py-choose-shell)
-(defun py-choose-shell (&optional arg pyshell dedicated)
+(defun py-choose-shell (&optional arg pyshell dedicated py-edit-only-p)
   "Return an appropriate executable as a string.
 
 Returns nil, if no executable found.
@@ -5218,7 +5219,21 @@ See available styles at `py-fill-paragraph' or var `py-docstring-style'"])
 
             ("Electric... "
              :help "electric commands'"
+                 
+             ["Hungry delete backwards" py-hungry-delete-backwards
+              :help " `py-hungry-delete-backwards'
 
+Delete the preceding character or all preceding whitespace
+back to the previous non-whitespace character\.
+See also C-c <delete>\.. "]
+
+             ["Hungry delete forward" py-hungry-delete-forward
+              :help " `py-hungry-delete-forward'
+
+Delete the following character or all following whitespace
+up to the next non-whitespace character\.
+See also C-c <C-backspace>\.. "]
+             
              ["Electric colon" py-electric-colon
               :help " `py-electric-colon'
 Insert a colon and indent accordingly.
