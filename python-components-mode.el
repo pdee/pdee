@@ -286,15 +286,6 @@ Default is nil. "
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-smart-operator-mode-p nil
-  "If python-mode calls (py-smart-operator-mode-on)
-
-Default is non-nil. "
-
-  :type 'boolean
-  :group 'python-mode)
-(make-variable-buffer-local 'py-smart-operator-mode-p)
-
 (defcustom py-sexp-function nil
   "When set, it's value is called instead of `forward-sexp', `backward-sexp'
 
@@ -2286,7 +2277,6 @@ See original source: http://pymacs.progiciels-bpi.ca"
 (require 'column-marker)
 (require 'feg-python-el-extracts)
 (require 'python-abbrev-propose)
-(require 'py-smart-operator)
 (require 'python-extended-executes-test)
 (require 'python-components-switches)
 (require 'python-components-paragraph)
@@ -2309,6 +2299,20 @@ See bug report at launchpad, lp:940812 "
   :set (lambda (symbol value)
          (set-default symbol value)
          (toggle-py-underscore-word-syntax-p (if value 1 0))))
+
+;; (defvar smart-operator-mode nil)
+(defcustom py-smart-operator-mode-p t
+  "If python-mode calls (py-smart-operator-mode-on)
+
+Default is non-nil. "
+
+  :type 'boolean
+  :group 'python-mode
+  :set (lambda (symbol value)
+         (and (py-smart-operator-check)
+              (set-default symbol value)
+              (smart-operator-mode (if value 1 0)))))
+(make-variable-buffer-local 'py-smart-operator-mode-p)
 
 ;;; Python specialized rx, thanks Fabian F. Gallina
 (eval-when-compile
@@ -2938,14 +2942,33 @@ Use `M-x customize-variable' to set it permanently"]
 
 Use `M-x customize-variable' to set it permanently"])
 
-              ["Smart operator mode "
-               (setq py-smart-operator-mode-p
-                     (not py-smart-operator-mode-p))
-               :help "Toggle `py-smart-operator-mode-p'
+              ;; py-smart-operator-mode-p forms
+              ("Smart operator mode"
+               :help "Toggle `smart-operator-mode'"
+               
+               ["Toggle smart operator mode" toggle-py-smart-operator-mode-p
+                :help " `toggle-smart-operator-mode'
 
-Use `M-x customize-variable' to set it permanently"
-               :style toggle :selected py-smart-operator-mode-p ]
+If `smart-operator-mode' should be on or off\.
 
+  Returns value of `smart-operator-mode ' switched to\. . "]
+               
+               ["Smart operator mode on" py-smart-operator-mode-p-on
+                :help " `smart-operator-mode -on'
+
+Make sure, `smart-operator-mode' is on\.
+
+Returns value of `smart-operator-mode'\. . "]
+               
+               ["Smart operator mode off" py-smart-operator-mode-p-off
+                :help " `smart-operator-mode' off
+
+Make sure, `smart-operator-mode' is off\.
+
+Returns value of `smart-operator-mode'\. . "]
+               
+               )              
+              
               ["Electric comment "
                (setq py-electric-comment-p
                      (not py-electric-comment-p))
@@ -6295,10 +6318,6 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
     )
   ;; (run-mode-hooks 'python-mode-hook)
   (when py-outline-minor-mode-p (outline-minor-mode 1))
-  (when py-smart-operator-mode-p
-    (unless (featurep 'py-smart-operator)
-      (load (concat (py-normalize-directory py-install-directory) "extensions/py-smart-operator.el")))
-    (py-smart-operator-mode-on))
   (when (interactive-p) (message "python-mode loaded from: %s" python-mode-message-string)))
 
 (define-derived-mode python2-mode python-mode "Python2"

@@ -1082,5 +1082,17 @@ Keegan Carruthers-Smith
     (py-toggle-flymake-intern "pyflakespep8" "pyflakespep8")
     (flymake-mode)))
 
+(defun py-smart-operator-check ()
+  "Check, if smart-operator-mode is loaded resp. available.
+
+Give some hints, if not."
+  (interactive)
+  (if (featurep 'smart-operator)
+      't
+    (progn
+      (message "%s" "Don't see smart-operator.el. Make sure, it's installed. See in menu Options, Manage Emacs Packages. Or get it from source: http://xwl.appspot.com/ref/smart-operator.el")
+      nil)))
+
+
 (provide 'python-components-help)
 ;;; python-components-help.el ends here

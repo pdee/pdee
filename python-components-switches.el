@@ -98,41 +98,31 @@ Returns value of `py-smart-indentation'. "
   (interactive)
   (customize-variable 'py-sexp-function))
 
-;;; Smart operator
-(defalias 'toggle-py-smart-operator 'py-toggle-smart-operator)
-(defun py-toggle-smart-operator (&optional arg)
+;; Smart operator
+;; py-smart-operator-mode-p forms
+(defun toggle-py-smart-operator-mode-p (&optional arg)
   "If `py-smart-operator-mode-p' should be on or off.
 
-Returns value of `py-smart-operator-mode-p' switched to. "
+  Returns value of `py-smart-operator-mode-p' switched to. "
   (interactive)
-  (let ((arg (or arg (if py-smart-operator-mode-p -1 1))))
-    (if (< 0 arg)
-          (setq py-smart-operator-mode-p t)
-      (setq py-smart-operator-mode-p nil))
-    (when (interactive-p) (message "py-smart-operator-mode-p: %s" py-smart-operator-mode-p))
-    py-smart-operator-mode-p))
+  (and (py-smart-operator-check)
+       (setq py-smart-operator-mode-p (smart-operator-mode (if smart-operator-mode 0 1)))))
 
-(defun py-smart-operator-mode-on (&optional arg)
-  "Make sure, `py-smart-operator-mode-p' is on.
+(defun py-smart-operator-mode-p-on ()
+  "Make sure, py-smart-operator-mode-p' is on.
 
 Returns value of `py-smart-operator-mode-p'. "
-  (interactive "p")
-  (let ((arg (or arg 1)))
-    (py-toggle-smart-operator arg))
-  (when (interactive-p) (message "py-smart-operator-mode-p: %s" py-smart-operator-mode-p))
-  py-smart-operator-mode-p)
+  (interactive)
+  (and (py-smart-operator-check)
+       (setq py-smart-operator-mode-p (smart-operator-mode 1))))
 
-(defun py-smart-operator-mode-off (&optional arg)
-  "Make sure, `py-smart-operator-mode-p' is off.
+(defun py-smart-operator-mode-p-off ()
+  "Make sure, py-smart-operator-mode-p' is off.
 
 Returns value of `py-smart-operator-mode-p'. "
-  (interactive "p")
-  (let ((arg (if arg (- arg) -1)))
-    (py-toggle-smart-operator arg)
-    (when (interactive-p) (message "py-smart-operator-mode-p: %s" py-smart-operator-mode-p))
-    py-smart-operator-mode-p))
+  (interactive)
+  (setq py-smart-operator-mode-p (smart-operator-mode 0)))
 
-;;; autopair
 
 ;; (defalias 'py-autopair-on 'autopair-on)
 ;; (defalias 'py-autopair-off 'autopair-off)

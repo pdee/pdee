@@ -1588,7 +1588,12 @@ A complementary command travelling right, whilst `py-beginning-of-" ele "' stops
                    (car kill-ring)
                  py-toggle-form-vars))
         done buffer-out first menu-buffer)
-    (dolist (ele liste)
+    (if (listp liste)
+        (dolist (ele liste)
+          (write-toggle-forms-intern ele))
+      (write-toggle-forms-intern liste))))
+
+(defun write-toggle-forms-intern (ele)
       (if done
           (set-buffer buffer-out)
         (setq buffer-out (capitalize ele))
@@ -1641,8 +1646,7 @@ Returns value of `" ele "'. \"
       (switch-emen ele)
       ;; (set-buffer buffer-out)
       ;; (switch-to-buffer (current-buffer))
-      )))
-
+      )
 
 
 
@@ -1875,7 +1879,7 @@ Var `python-mode-el-dir' needs to be set.  "
                       (concat (py-normalize-directory (expand-file-name python-mode-el-dir)) "python-mode.el"))))
         (name (ar-symbol-name-atpt))
         (keyword (progn (re-search-backward "^([^ ]+" nil (quote move) 1)(match-string-no-properties 0))))
-    (read-only-mode -1)
+    (toggle-read-only -1)
     (save-restriction
       (push-mark)
       (narrow-to-region (point) (1+ (forward-list)))
@@ -2276,7 +2280,7 @@ Return position if " ele " found, nil otherwise \"
     (capitalize-word 1)))
 
 (defun temen (&optional symbol)
-  "Provide menu for toggle-commans using checkbox. "
+  "Provide menu for toggle-commands using checkbox. "
   (interactive "*")
   (let* ((erg (or symbol (car kill-ring)))
          (name (intern-soft erg))
