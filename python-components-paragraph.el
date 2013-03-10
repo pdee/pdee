@@ -239,7 +239,8 @@ JUSTIFY should be used (if applicable) as in `fill-paragraph'."
              (orig (point-marker))
              (pps (or pps (syntax-ppss)))
              ;; if beginning of string is closer than arg beg, use this
-             (beg (or (ignore-errors (copy-marker beg))
+             (beg (or (and (numberp beg)
+                           (ignore-errors (copy-marker beg)))
                       (cond ((and (nth 3 pps) (nth 8 pps))
                              (goto-char (nth 8 pps))
                              (skip-chars-forward "\"'")

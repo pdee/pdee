@@ -1,4 +1,3 @@
-
 ;;; python-components-re-forms.el --- Forms start described by a regular-expression
 
 ;; Author: Andreas Roehler <andreas.roehler@online.de>
@@ -53,7 +52,7 @@ http://docs.python.org/reference/compound_stmts.html"
                                 (current-indentation))))
          (erg (cond ((and (< (point) orig) (looking-at regexp))
                      (point))
-                    ((and (eq 0 (current-column)) (numberp indent))
+                    ((and (eq 0 (current-column)) (numberp indent) (< 0 indent))
                      (when (< 0 (abs (skip-chars-backward " \t\r\n\f")))
                        (py-beginning-of-statement)
                        (unless (looking-at regexp)
@@ -167,7 +166,7 @@ http://docs.python.org/reference/compound_stmts.html"
       erg))
 
 (defun py-beginning-of-clause (&optional indent)
- "Go to beginning of clause.
+  "Go to beginning of clause.
 
 With \\[universal-argument], go to beginning one level above.
 Returns beginning of clause if successful, nil otherwise
@@ -175,7 +174,9 @@ Returns beginning of clause if successful, nil otherwise
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive "P")
-  (py-beginning-of-form-intern py-block-or-clause-re (interactive-p) indent))
+  (let ((indent (and (looking-at py-clause-re)
+                     (current-indentation))))
+    (py-beginning-of-form-intern py-block-or-clause-re (interactive-p) indent)))
 
 (defun py-end-of-clause (&optional indent)
  "Go to end of clause.

@@ -42,33 +42,34 @@ PDIR=$(cd ..; pwd)/
 # PDIR="$TESTDIR/.."
 
 # write PATH-TO-EMACS source code default directory here
-EMACS_SOURCE_DIR=
-if [ $1 ]; then
-    echo "\$1: $1"
-    EMACS_SOURCE_DIR=$1
-elif [ -s "$HOME/emacs-23.4" ]; then
-    EMACS_SOURCE_DIR="$HOME/emacs-23.4"
+EMACS_SOURCE_DIR="/usr/share/emacs/24.2"
+# if [ $1 ]; then
+#     echo "\$1: $1"
+#     EMACS_SOURCE_DIR=$1
+# elif [ -s "$HOME/emacs-23.4" ]; then
+#     EMACS_SOURCE_DIR="$HOME/emacs-23.4"
     
     # EMACS_SOURCE_DIR="$HOME/emacs_20130227"
-    else
-cat    <<EOF
-usage: ${0##*/} EMACS_SOURCE_DIR
-
-This script tests python-mode with non-installed Emacsen in a Bash.
-
-It assumes being in directory "test" below python-mode.el and relies on source-code directories as delivered by bzr branch.
-
-Edit \$EMACS_SOURCE_DIR to specify an Emacs or put "PATH-TO-EMACS-SOURCES" as shell argument.
-
-To run tests with installed Emacs, load available test-files like "py-bug-numbered-tests.el" and do "M-x py-run-bug-numbered-tests". Alternatively you may edit variables making it point according to you installation.
-
-EOF
-
-fi
+#     else
+# cat    <<EOF
+# usage: ${0##*/} EMACS_SOURCE_DIR
+# 
+# This script tests python-mode with non-installed Emacsen in a Bash.
+# 
+# It assumes being in directory "test" below python-mode.el and relies on source-code directories as delivered by bzr branch.
+# 
+# Edit \$EMACS_SOURCE_DIR to specify an Emacs or put "PATH-TO-EMACS-SOURCES" as shell argument.
+# 
+# To run tests with installed Emacs, load available test-files like "py-bug-numbered-tests.el" and do "M-x py-run-bug-numbered-tests". Alternatively you may edit variables making it point according to you installation.
+# 
+# EOF
+# 
+# fi
 
 echo "\$EMACS_SOURCE_DIR: $EMACS_SOURCE_DIR"
 
-EMACS="$EMACS_SOURCE_DIR/src/emacs"
+# EMACS="$EMACS_SOURCE_DIR/src/emacs"
+EMACS="/usr/bin/emacs"
 
 # python-mode file to load
 if [ -s "../python-components-mode.el" ];
@@ -94,17 +95,61 @@ EOF
 
 fi
 
-SO="$PDIR/extensions/py-smart-operator.el"
+# edit this to get locally installed stuff loaded
+MYEXTENSIONS="${HOME}/arbeit/emacs/elisp"
+
+SO="${MYEXTENSIONS}/smart-operator.el"
+
 COLMK="$PDIR/extensions/column-marker.el"
 HIGHL="$PDIR/extensions/highlight-indentation.el"
 
-CLMACS="${EMACS_SOURCE_DIR}/lisp/emacs-lisp/cl-macs.el"
-BYTECOMP="${EMACS_SOURCE_DIR}/lisp/emacs-lisp/bytecomp.el"
-CUSTOM="${EMACS_SOURCE_DIR}/lisp/custom.el"
-ANSICOLOR="${EMACS_SOURCE_DIR}/lisp/ansi-color.el"
-COMINT="${EMACS_SOURCE_DIR}/lisp/comint.el"
-CCCMDS="${EMACS_SOURCE_DIR}/lisp/progmodes/cc-cmds.el"
-SKEL="${EMACS_SOURCE_DIR}/lisp/skeleton.el"
+# CLMACS="${EMACS_SOURCE_DIR}/lisp/emacs-lisp/cl-macs.el"
+if [ -s "${EMACS_SOURCE_DIR}/lisp/emacs-lisp/cl-macs.elc" ];then
+    CLMACS="${EMACS_SOURCE_DIR}/lisp/emacs-lisp/cl-macs.elc"
+else
+    CLMACS="${EMACS_SOURCE_DIR}/lisp/emacs-lisp/cl-macs.el"
+fi
+
+# BYTECOMP="${EMACS_SOURCE_DIR}/lisp/emacs-lisp/bytecomp.el"
+if [ -s "${EMACS_SOURCE_DIR}/lisp/emacs-lisp/bytecomp.elc" ];then
+    BYTECOMP="${EMACS_SOURCE_DIR}/lisp/emacs-lisp/bytecomp.elc"
+else
+    BYTECOMP="${EMACS_SOURCE_DIR}/lisp/emacs-lisp/bytecomp.el"
+fi
+
+if [ -s "${EMACS_SOURCE_DIR}/lisp/custom.elc" ];then
+    CUSTOM="${EMACS_SOURCE_DIR}/lisp/custom.elc"
+else
+    CUSTOM="${EMACS_SOURCE_DIR}/lisp/comint.el"
+fi
+ 
+if [ -s "${EMACS_SOURCE_DIR}/lisp/ansi-color.elc" ];then
+    ANSICOLOR="${EMACS_SOURCE_DIR}/lisp/ansi-color.elc"
+else
+    ANSICOLOR="${EMACS_SOURCE_DIR}/lisp/ansi-color.el"
+fi
+
+if [ -s "${EMACS_SOURCE_DIR}/lisp/comint.elc" ]; then
+    COMINT="${EMACS_SOURCE_DIR}/lisp/comint.elc"
+else
+    COMINT="${EMACS_SOURCE_DIR}/lisp/comint.el"
+fi
+
+if [ -s "${EMACS_SOURCE_DIR}/lisp/progmodes/cc-cmds.elc" ];then
+    CC_CMDS="${EMACS_SOURCE_DIR}/lisp/progmodes/cc-cmds.elc"
+else
+    CC_CMDS="${EMACS_SOURCE_DIR}/lisp/cc-cmds.el"
+fi
+
+
+
+# SKEL="${EMACS_SOURCE_DIR}/lisp/skeleton.el"
+if [ -s "${EMACS_SOURCE_DIR}/lisp/skeleton.elc" ];then
+    SKELETON="${EMACS_SOURCE_DIR}/lisp/skeleton.elc"
+else
+    SKELETON="${EMACS_SOURCE_DIR}/lisp/skeleton.el"
+fi
+
 PYCO="$PDIR/completion/pycomplete.el"
 
 
@@ -133,7 +178,7 @@ echo "\$PDIR/\$TESTFILE: $PDIR/$TESTFILE"
 
 # $EMACS -Q -batch -l $HOME/emacs_20130227/lisp/emacs-lisp/cl-lib.el -l $HOME/emacs_20130227/lisp/emacs-lisp/ert.el -l ${PCOT}/python-mode-ert-tests.el -f ert-run-tests-batch-and-exit
 # $EMACS -Q -batch -load ${EMACS_SOURCE_DIR}lisp/emacs-lisp/ert.el -load ${PCOT}/python-mode-ert-tests.el -f ert-run-tests-batch-and-exit
-$EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'python)(unload-feature 'python t))" --eval "(when (featurep 'python-mode)(unload-feature 'python-mode t))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$TESTDIR/\")" --eval "(setq py-install-directory \"$PDIR\"))" --eval "(message \"py-install-directory: %s\" py-install-directory)" --eval "(setq py-load-pymacs-p nil)" -load $CCCMDS -load $COMINT -load $ANSICOLOR -load $CLMACS -load $BYTECOMP -load $CUSTOM -load $SKEL -load $SO -load $COLMK -load $HIGHL -load $PYTHONMODE  --eval "(message \"py-temp-directory: %s\" py-temp-directory)" -load $PCOT$TESTFILE -load $PCOT$TESTFILE2 -load $PCOT$TESTFILE3 -load $PCOT$TESTFILE4 -load $PCOT$TESTFILE5 \
+$EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'python)(unload-feature 'python t))" --eval "(when (featurep 'python-mode)(unload-feature 'python-mode t))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$TESTDIR/\")" --eval "(setq py-install-directory \"$PDIR\"))" --eval "(message \"py-install-directory: %s\" py-install-directory)" --eval "(setq py-load-pymacs-p nil)" -load $CC_CMDS -load $COMINT -load $ANSICOLOR -load $CLMACS -load $BYTECOMP -load $CUSTOM -load $SKELETON -load $SO -load $COLMK -load $HIGHL -load $PYTHONMODE  --eval "(message \"py-temp-directory: %s\" py-temp-directory)" -load $PCOT$TESTFILE -load $PCOT$TESTFILE2 -load $PCOT$TESTFILE3 -load $PCOT$TESTFILE4 -load $PCOT$TESTFILE5 \
 --eval "(when (file-exists-p \"~/.abbrev_defs\") (quietly-read-abbrev-file (expand-file-name \"~/.abbrev_defs\")))" \
 \
 -eval "(assert (functionp 'word-at-point) nil \"new completion bug, lp:1034656, word-at-point not known\")" \
@@ -1061,10 +1106,10 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-font-lock-keywords) nil \"py-font-lock-keywords not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall py-smart-operator-test \
 --funcall python-mode-very-slow-lp-1107037-test \
 --funcall cascading-indent-lp-1101962-test \
 --funcall line-after-colon-with-inline-comment-lp-1109946-test \
---funcall ipython-complete-lp-1102226-test \
 --funcall docstring-style-switches-test \
 --funcall module-docstring-when-following-comment-lp-1102011-test \
 --funcall py-newline-and-indent-leaves-eol-whitespace-lp-1100892-test \
@@ -1073,8 +1118,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-down-python-el-112-test \
 --funcall py-moves-test \
 --funcall enter-key-does-not-indent-properly-after-return-statement-lp-1098793-test \
---funcall filename-completion-fails-in-ipython-lp-1027265-n1-test \
---funcall filename-completion-fails-in-ipython-lp-1027265-n2-test \
 --funcall comments-start-a-new-line-lp-1092847-n1-test \
 --funcall comments-start-a-new-line-lp-1092847-n2-test \
 --funcall wrong-indentation-after-return-or-pass-keyword-lp-1087499-test \
@@ -1093,7 +1136,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-highlight-indentation-test \
 --funcall py-smart-indentation-test \
 --funcall autopair-mode-test \
---funcall py-run-shell-complete-tests \
 --funcall exception-in-except-clause-highlighted-as-keyword-lp-909205-test \
 --funcall pyindex-mishandles-class-definitions-lp-1018164-test \
 --funcall IndentationError-expected-an-indented-block-when-execute-lp-1055569-test \
@@ -1309,11 +1351,8 @@ est \
 \
 --funcall python-shell-complete-test \
 --funcall usr-bin-python-shell-complete-test \
---funcall usr-bin-python2.7-shell-complete-test \
-\
---funcall py-shell-invoking-python-lp:835151-test \
---funcall py-install-directory-path-test \
 --funcall dict-error-test \
+--funcall py-install-directory-path-test \
 --funcall py-execute-region-python3-noswitch-test \
 --funcall py-end-of-print-statement-test \
 --funcall py-describe-symbol-fails-on-modules-lp:919719-test \
@@ -1330,31 +1369,14 @@ est \
 --funcall indent-triplequoted-to-itself-lp:752252-test \
 --funcall complaint-about-non-ASCII-character-lp-1042949-test \
 --funcall py-beginning-of-block-test \
---funcall py-execute-statement-ipython-test \
---funcall py-execute-buffer-ipython-switch-test \
---funcall py-execute-region-ipython-test \
---funcall py-execute-def-ipython-test \
---funcall py-execute-class-ipython-test \
---funcall py-execute-expression-ipython-test \
---funcall execute-buffer-ipython-fails-lp:928087-test \
---funcall py-shell-invoking-ipython-lp:835151-test \
---funcall py-execute-block-ipython-test \
---funcall py-execute-block-or-clause-ipython-test \
---funcall py-execute-partial-expression-ipython-test \
---funcall py-execute-line-ipython-test \
 --funcall inconvenient-window-splitting-behavior-python-lp-1018996-test \
---funcall script-buffer-appears-instead-of-python-shell-buffer-lp:957561-test \
---funcall completion-fails-in-python-script-r989-lp:1004613-test \
 --funcall stalls-emacs-probably-due-to-syntax-highlighting-lp-1058261-test \
 --funcall tqs-lp:302834-lp:1018994-test \
 --funcall py-end-of-def-test \
 --funcall py-end-of-def-or-class-test \
 --funcall python-mode-slow-lp:803275-test \
 --funcall beg-end-of-defun-lp:303622-test \
---funcall py-smart-operator-test \
 --funcall py-nested-block-or-clause-test \
---funcall augmented-assigment-test \
---funcall UnicodeEncodeError-lp:550661-test \
 --funcall py-fill-string-django-test \
 --funcall py-fill-string-onetwo-test \
 --funcall py-fill-string-pep-257-test \
@@ -1366,7 +1388,6 @@ est \
 --funcall inconvenient-window-splitting-behavior-ipython-lp-1018996-test \
 --funcall indent-region-lp:997958-test \
 --funcall not-that-useful-completion-lp:1003580-test \
---funcall UnicodeEncodeError-python3-test
 --funcall wrong-type-argument-lp:901541-test \
 --funcall indentation-bug-inside-docstrings-lp:899455-test \
 --funcall tqs-list-error-test \
@@ -1385,3 +1406,26 @@ est \
 --funcall more-docstring-filling-woes-lp-1102296-onetwo-test \
 --funcall more-docstring-filling-woes-lp-1102296-django-test \
 --funcall more-docstring-filling-woes-lp-1102296-symmetric-test \
+--funcall UnicodeEncodeError-python3-test
+--funcall UnicodeEncodeError-lp:550661-test \
+--funcall ipython-complete-lp-1102226-test \
+--funcall filename-completion-fails-in-ipython-lp-1027265-n1-test \
+--funcall filename-completion-fails-in-ipython-lp-1027265-n2-test \
+--funcall py-shell-invoking-python-lp:835151-test \
+--funcall usr-bin-python2.7-shell-complete-test \
+--funcall py-run-shell-complete-tests \
+--funcall py-execute-statement-ipython-test \
+--funcall py-execute-buffer-ipython-switch-test \
+--funcall py-execute-region-ipython-test \
+--funcall py-execute-def-ipython-test \
+--funcall py-execute-class-ipython-test \
+--funcall py-execute-expression-ipython-test \
+--funcall execute-buffer-ipython-fails-lp:928087-test \
+--funcall py-shell-invoking-ipython-lp:835151-test \
+--funcall py-execute-block-ipython-test \
+--funcall py-execute-block-or-clause-ipython-test \
+--funcall py-execute-partial-expression-ipython-test \
+--funcall py-execute-line-ipython-test \
+--funcall script-buffer-appears-instead-of-python-shell-buffer-lp:957561-test \
+--funcall completion-fails-in-python-script-r989-lp:1004613-test \
+--funcall augmented-assigment-test \

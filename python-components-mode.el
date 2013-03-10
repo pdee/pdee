@@ -2302,7 +2302,7 @@ See bug report at launchpad, lp:940812 "
 
 ;; (defvar smart-operator-mode nil)
 (defcustom py-smart-operator-mode-p t
-  "If python-mode calls (py-smart-operator-mode-on)
+  "If python-mode calls (smart-operator-mode-on)
 
 Default is non-nil. "
 

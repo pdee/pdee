@@ -4799,7 +4799,7 @@ a = open('/ho')
 (defun filename-completion-fails-in-ipython-lp-1027265-n1-base ()
     (goto-char 61)
     (completion-at-point)
-    (assert (eq 64 (point)) nil "filename-completion-fails-in-ipython-lp-1027265-n1-test failed"))
+    (assert (eq 63 (point)) nil "filename-completion-fails-in-ipython-lp-1027265-n1-test failed"))
 
 (defun filename-completion-fails-in-ipython-lp-1027265-n2-test (&optional arg)
   (interactive "p")
@@ -5316,7 +5316,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.166 $\"
+__version__ = \"$Revision: 1.167 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))

@@ -131,7 +131,7 @@ Returns value of `py-smart-operator-mode-p'. "
   (interactive)
   (unless (featurep 'autopair)
     (load (concat (py-normalize-directory py-install-directory) "autopair" (char-to-string py-separator-char) "autopair.el")))
-  (autopair-mode)
+  (if autopair-mode (autopair-mode 0) (autopair-mode 1))
   (when py-verbose-p (message "autopair-mode: %s" autopair-mode))
   autopair-mode)
 
@@ -143,6 +143,17 @@ Returns value of `py-smart-operator-mode-p'. "
   (autopair-on)
   (when py-verbose-p (message "autopair-mode: %s" autopair-mode))
   autopair-mode)
+
+(defun py-autopair-mode-off ()
+  "Make sure, autopair' is on. "
+  (interactive)
+  (unless (featurep 'autopair)
+    (load (concat (py-normalize-directory py-install-directory) "autopair" (char-to-string py-separator-char) "autopair.el")))
+  (autopair-mode 0)
+  (when py-verbose-p (message "autopair-mode: %s" autopair-mode))
+  autopair-mode)
+
+
 
 ;;; py-switch-buffers-on-execute-p forms
 (defun toggle-py-switch-buffers-on-execute-p (&optional arg)
