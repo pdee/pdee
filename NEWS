@@ -18,6 +18,10 @@ New in version 6.1.2
 
 - unused variable `py-backspace-function' removed
 
+- Bundled third-party-stuff removed as reported conflicting at emacs-mirror, lp:1153998 
+  affects autopair.el, smart-operator.el  
+  Kept  menu switches resp. commands will issue a warning 
+
 
 New in version 6.1.1
 ---------------------

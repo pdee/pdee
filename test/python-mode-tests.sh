@@ -98,7 +98,15 @@ fi
 # edit this to get locally installed stuff loaded
 MYEXTENSIONS="${HOME}/arbeit/emacs/elisp"
 
-SO="${MYEXTENSIONS}/smart-operator.el"
+APAIR="${HOME}/arbeit/emacs/autopair/autopair.el"
+
+if [ -s ${HOME}/.emacs.d/elpa/smart-operator-4.0/smart-operator.elc ];then
+    SO="${HOME}/.emacs.d/elpa/smart-operator-4.0/smart-operator.elc"
+elif [ -s ${HOME}/.emacs.d/elpa/smart-operator-4.0/smart-operator.el ];then
+    SO="${HOME}/.emacs.d/elpa/smart-operator-4.0/smart-operator.el"
+else 
+    SO="${MYEXTENSIONS}/smart-operator.el"
+fi
 
 COLMK="$PDIR/extensions/column-marker.el"
 HIGHL="$PDIR/extensions/highlight-indentation.el"
@@ -143,6 +151,7 @@ fi
 
 
 
+
 # SKEL="${EMACS_SOURCE_DIR}/lisp/skeleton.el"
 if [ -s "${EMACS_SOURCE_DIR}/lisp/skeleton.elc" ];then
     SKELETON="${EMACS_SOURCE_DIR}/lisp/skeleton.elc"
@@ -178,7 +187,7 @@ echo "\$PDIR/\$TESTFILE: $PDIR/$TESTFILE"
 
 # $EMACS -Q -batch -l $HOME/emacs_20130227/lisp/emacs-lisp/cl-lib.el -l $HOME/emacs_20130227/lisp/emacs-lisp/ert.el -l ${PCOT}/python-mode-ert-tests.el -f ert-run-tests-batch-and-exit
 # $EMACS -Q -batch -load ${EMACS_SOURCE_DIR}lisp/emacs-lisp/ert.el -load ${PCOT}/python-mode-ert-tests.el -f ert-run-tests-batch-and-exit
-$EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'python)(unload-feature 'python t))" --eval "(when (featurep 'python-mode)(unload-feature 'python-mode t))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$TESTDIR/\")" --eval "(setq py-install-directory \"$PDIR\"))" --eval "(message \"py-install-directory: %s\" py-install-directory)" --eval "(setq py-load-pymacs-p nil)" -load $CC_CMDS -load $COMINT -load $ANSICOLOR -load $CLMACS -load $BYTECOMP -load $CUSTOM -load $SKELETON -load $SO -load $COLMK -load $HIGHL -load $PYTHONMODE  --eval "(message \"py-temp-directory: %s\" py-temp-directory)" -load $PCOT$TESTFILE -load $PCOT$TESTFILE2 -load $PCOT$TESTFILE3 -load $PCOT$TESTFILE4 -load $PCOT$TESTFILE5 \
+$EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'python)(unload-feature 'python t))" --eval "(when (featurep 'python-mode)(unload-feature 'python-mode t))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$TESTDIR/\")" --eval "(setq py-install-directory \"$PDIR\"))" --eval "(message \"py-install-directory: %s\" py-install-directory)" --eval "(setq py-load-pymacs-p nil)" -load $CC_CMDS -load $COMINT -load $ANSICOLOR -load $CLMACS -load $BYTECOMP -load $CUSTOM -load $SKELETON -load $SO -load $COLMK -load $HIGHL -load $PYTHONMODE  --eval "(message \"py-temp-directory: %s\" py-temp-directory)" -load $PCOT$TESTFILE -load $PCOT$TESTFILE2 -load $PCOT$TESTFILE3 -load $PCOT$TESTFILE4 -load $PCOT$TESTFILE5 -load $APAIR \
 --eval "(when (file-exists-p \"~/.abbrev_defs\") (quietly-read-abbrev-file (expand-file-name \"~/.abbrev_defs\")))" \
 \
 -eval "(assert (functionp 'word-at-point) nil \"new completion bug, lp:1034656, word-at-point not known\")" \
@@ -883,7 +892,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-load-pymacs-p) nil \"py-load-pymacs-p not a variable\")" \
 -eval "(assert (boundp 'py-smart-operator-mode-p) nil \"py-smart-operator-mode-p not a variable\")" \
 -eval "(assert (boundp 'py-sexp-function) nil \"py-sexp-function not a variable\")" \
--eval "(assert (boundp 'py-prepare-autopair-mode-p) nil \"py-prepare-autopair-mode-p not a variable\")" \
+-eval "(assert (boundp 'py-autopair-mode) nil \"py-autopair-mode not a variable\")" \
 -eval "(assert (boundp 'py-no-completion-calls-dabbrev-expand-p) nil \"py-no-completion-calls-dabbrev-expand-p not a variable\")" \
 -eval "(assert (boundp 'py-indent-no-completion-p) nil \"py-indent-no-completion-p not a variable\")" \
 -eval "(assert (boundp 'py-fontify-shell-buffer-p) nil \"py-fontify-shell-buffer-p not a variable\")" \
@@ -1377,11 +1386,6 @@ est \
 --funcall python-mode-slow-lp:803275-test \
 --funcall beg-end-of-defun-lp:303622-test \
 --funcall py-nested-block-or-clause-test \
---funcall py-fill-string-django-test \
---funcall py-fill-string-onetwo-test \
---funcall py-fill-string-pep-257-test \
---funcall py-fill-string-pep-257-nn-test \
---funcall py-fill-string-symmetric-test \
 --funcall no-completion-at-all-lp:1001328-test \
 --funcall ipython-shell-complete-test \
 --funcall usr-bin-ipython-shell-complete-test \
@@ -1429,3 +1433,8 @@ est \
 --funcall script-buffer-appears-instead-of-python-shell-buffer-lp:957561-test \
 --funcall completion-fails-in-python-script-r989-lp:1004613-test \
 --funcall augmented-assigment-test \
+--funcall py-fill-string-django-test \
+--funcall py-fill-string-onetwo-test \
+--funcall py-fill-string-pep-257-test \
+--funcall py-fill-string-pep-257-nn-test \
+--funcall py-fill-string-symmetric-test \

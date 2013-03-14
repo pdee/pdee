@@ -98,6 +98,34 @@ Returns value of `py-smart-indentation'. "
   (interactive)
   (customize-variable 'py-sexp-function))
 
+
+;; Autopair mode
+;; py-autopair-mode forms
+(defalias 'toggle-py-autopair-mode 'py-toggle-autopair-mode)
+(defun py-toggle-autopair-mode (&optional arg)
+  "If `py-autopair-mode' should be on or off.
+
+  Returns value of `py-autopair-mode' switched to. "
+  (interactive)
+  (and (py-autopair-check)
+       (setq py-autopair-mode (autopair-mode (if autopair-mode 0 1)))))
+
+(defun py-autopair-mode-on ()
+  "Make sure, py-autopair-mode' is on.
+
+Returns value of `py-autopair-mode'. "
+  (interactive)
+  (and (py-autopair-check)
+       (setq py-autopair-mode (autopair-mode 1))))
+
+(defun py-autopair-mode-off ()
+  "Make sure, py-autopair-mode' is off.
+
+Returns value of `py-autopair-mode'. "
+  (interactive)
+  (setq py-autopair-mode (autopair-mode 0)))
+
+
 ;; Smart operator
 ;; py-smart-operator-mode-p forms
 (defun toggle-py-smart-operator-mode-p (&optional arg)
@@ -123,35 +151,6 @@ Returns value of `py-smart-operator-mode-p'. "
   (interactive)
   (setq py-smart-operator-mode-p (smart-operator-mode 0)))
 
-
-;; (defalias 'py-autopair-on 'autopair-on)
-;; (defalias 'py-autopair-off 'autopair-off)
-(defun py-toggle-autopair-mode ()
-  "If `autopair-p' should be on or off. "
-  (interactive)
-  (unless (featurep 'autopair)
-    (load (concat (py-normalize-directory py-install-directory) "autopair" (char-to-string py-separator-char) "autopair.el")))
-  (if autopair-mode (autopair-mode 0) (autopair-mode 1))
-  (when py-verbose-p (message "autopair-mode: %s" autopair-mode))
-  autopair-mode)
-
-(defun py-autopair-mode-on ()
-  "Make sure, autopair' is on. "
-  (interactive)
-  (unless (featurep 'autopair)
-    (load (concat (py-normalize-directory py-install-directory) "autopair" (char-to-string py-separator-char) "autopair.el")))
-  (autopair-on)
-  (when py-verbose-p (message "autopair-mode: %s" autopair-mode))
-  autopair-mode)
-
-(defun py-autopair-mode-off ()
-  "Make sure, autopair' is on. "
-  (interactive)
-  (unless (featurep 'autopair)
-    (load (concat (py-normalize-directory py-install-directory) "autopair" (char-to-string py-separator-char) "autopair.el")))
-  (autopair-mode 0)
-  (when py-verbose-p (message "autopair-mode: %s" autopair-mode))
-  autopair-mode)
 
 
 
