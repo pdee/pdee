@@ -460,6 +460,7 @@ Optional symbol SPLIT ('split/'nosplit) precedes `py-split-buffers-on-execute-p'
         (set (make-local-variable 'comment-start-skip) "^[ \t]*#+ *")
         (set (make-local-variable 'comment-column) 40)
         (set (make-local-variable 'comment-indent-function) #'py-comment-indent-function)
+        (setq py-smart-indentation)
         (font-lock-fontify-buffer))
       (set (make-local-variable 'indent-region-function) 'py-indent-region)
       (set (make-local-variable 'indent-line-function) 'py-indent-line)
