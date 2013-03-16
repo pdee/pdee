@@ -1620,7 +1620,7 @@ foo "))
     (py-bug-tests-intern 'py-smart-operator-base arg teststring)))
 
 (defun py-smart-operator-base ()
-  (python-mode) 
+  (python-mode)
   (let ((py-smart-operator-mode-p t))
     (py-smart-operator-mode-p-on)
     (goto-char 52)
@@ -1675,7 +1675,7 @@ foo"))
     (save-excursion
       (smart-operator-<)
       (insert "="))
-    
+
     (assert (looking-at " <= ") nil "augmented-assigment-test \"smart-operator-<\" failed")
     (delete-region (point) (line-end-position))
     (save-excursion
@@ -2064,7 +2064,7 @@ def foo()
   (assert (nth 8 (syntax-ppss)) t nil "py-fill-string-django-test #1 failed")
   (message "%s" "py-fill-string-django-test #1  done")
   (goto-char (nth 8 (syntax-ppss)))
-  (sit-for 1) 
+  (sit-for 1)
   (assert (looking-at (concat py-string-delim-re "$")) t nil "py-fill-string-django-test #2 failed")
   (message "%s" "$")
 )
@@ -2276,23 +2276,43 @@ else:
   (py-bug-tests-intern 'docstring-style-switches-base arg teststring)))
 
 (defun docstring-style-switches-base ()
-  
+
   (py-django-docstring-style-on)
   (assert (eq 'django py-docstring-style) nil "django not py-docstring-style")
-  
+
   (py-onetwo-docstring-style-on)
   (assert (eq 'onetwo py-docstring-style) nil "onetwo not py-docstring-style")
-  
+
   (py-pep-257-docstring-style-on)
   (assert (eq 'pep-257 py-docstring-style) nil "pep-257 not py-docstring-style")
-  
+
   (py-pep-257-nn-docstring-style-on)
   (assert (eq 'pep-257-nn py-docstring-style) nil "pep-257-nn not py-docstring-style")
-  
+
   (py-symmetric-docstring-style-on)
   (assert (eq 'symmetric py-docstring-style) nil "symmetric not py-docstring-style")
-  
+
 )
+
+(defun forward-sexp-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+def usage():
+    print(\"\"\"Fehler: %s
+Es muß die aufzurufende Ziehungszahl als Argument angegeben werden:
+'python roulette.py 1, 'python roulette.py 2', ... 'python roulette.py n'.
+\"\"\" % (
+          os.path.basename(sys.argv[0])))
+"))
+  (py-bug-tests-intern 'forward-sexp-base arg teststring)))
+
+(defun forward-sexp-base ()
+  (message "forward-sexp-function: %s" forward-sexp-function)
+  (goto-char 71)
+  (forward-sexp 1)
+  (sit-for 0.1) 
+  (assert (eq 231 (point)) nil "forward-sexp-test failed"))
 
 ;; imenu--subalist-p
 (provide 'python-mode-test)

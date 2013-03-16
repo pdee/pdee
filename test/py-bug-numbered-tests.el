@@ -5443,5 +5443,6 @@ class Test(object):
     (assert (looking-at "        pass") nil "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #3b failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #3b done")))
 
+
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

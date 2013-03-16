@@ -5802,10 +5802,10 @@ This is a no-op if `py-check-comint-prompt' returns nil."
 
 (add-hook 'python-mode-hook 'py-find-imports)
 
-(when py-sexp-function
-  (add-hook 'python-mode-hook
-            (lambda ()
-              (set (make-local-variable 'forward-sexp-function) py-sexp-function))))
+;; (when py-sexp-function
+;;   (add-hook 'python-mode-hook
+;;             (lambda ()
+;;               (set (make-local-variable 'forward-sexp-function) py-sexp-function))))
 
 (when py-warn-tmp-files-left-p
   (add-hook 'python-mode-hook 'py-warn-tmp-files-left))

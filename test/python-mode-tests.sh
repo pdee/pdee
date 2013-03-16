@@ -1438,3 +1438,4 @@ est \
 --funcall py-fill-string-pep-257-test \
 --funcall py-fill-string-pep-257-nn-test \
 --funcall py-fill-string-symmetric-test \
+--funcall forward-sexp-test \
