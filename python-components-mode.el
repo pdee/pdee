@@ -3011,7 +3011,15 @@ Returns value of `smart-operator-mode'\. . "]
                :help "If \"#\" should call `py-electric-comment'\. Default is `nil'\.
 
 Use `M-x customize-variable' to set it permanently"
-               :style toggle :selected py-electric-comment-p])
+               :style toggle :selected py-electric-comment-p]
+
+              ["Indent comment "
+               (setq py-indent-comments
+                     (not py-indent-comments))
+               :help "If comments should be indented like code. Default is `nil'.
+
+Use `M-x customize-variable' to set it permanently"
+               :style toggle :selected py-indent-comments])
 
              "-"
 
