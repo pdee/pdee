@@ -724,7 +724,7 @@ This docstring isn't indented, test should pass anyway.
 
 (defun goto-beginning-of-tqs-lp:735328 ()
   (goto-char 84)
-  (assert (eq 0 (py-compute-indentation)) nil "goto-beginning-of-tqs-lp:735328-test failed")
+  (assert (eq 4 (py-compute-indentation)) nil "goto-beginning-of-tqs-lp:735328-test failed")
   )
 
 (defun class-treated-as-keyword-lp:709478-test (&optional arg)
@@ -5255,8 +5255,9 @@ def f():
   (py-bug-tests-intern 'line-after-colon-with-inline-comment-lp-1109946-base arg teststring)))
 
 (defun line-after-colon-with-inline-comment-lp-1109946-base ()
+  (let ((py-indent-honors-inline-comment t))
     (goto-char 104)
-    (assert (eq 8 (py-compute-indentation)) nil "line-after-colon-with-inline-comment-lp-1109946-test failed"))
+    (assert (eq 10 (py-compute-indentation)) nil "line-after-colon-with-inline-comment-lp-1109946-test failed")))
 
 (defun cascading-indent-lp-1101962-test (&optional arg)
   (interactive "p")
@@ -5316,7 +5317,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.2 $\"
+__version__ = \"$Revision: 1.3 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -5385,7 +5386,7 @@ class Test(object):
     (message "%s" "more-docstring-filling-woes-lp-1102296-nil-test #2 done")
     (goto-char 380)
     (fill-paragraph)
-    (back-to-indentation) 
+    (back-to-indentation)
     (sit-for 0.1)
     (assert (eq (char-after) ?\i) nil "more-docstring-filling-woes-lp-1102296-nil-test #3a failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-nil-test #3a done")
@@ -5439,9 +5440,29 @@ class Test(object):
     (assert (eq (skip-chars-forward " ")  8) nil "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #3a failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #3a done")
     (forward-line 1)
-    (sit-for 0.1) 
+    (sit-for 0.1)
     (assert (looking-at "        pass") nil "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #3b failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #3b done")))
+
+
+(defun infinite-loop-on-lp-1156426-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+while mvi.t2 <= T:
+
+# calculate a spline for the kinematic inputs
+#fname = 'data/monte_1000hz.mat'
+"))
+  (py-bug-tests-intern 'infinite-loop-on-lp-1156426-base arg teststring)))
+
+(defun infinite-loop-on-lp-1156426-base ()
+    (let ((py-indent-comments t))
+    (assert (eq 4 (py-compute-indentation)) nil "infinite-loop-on-lp-1156426-test #1 failed"))
+    (setq py-indent-comments)
+    (assert (eq 0 (py-compute-indentation)) nil "infinite-loop-on-lp-1156426-test #2 failed"))
+
+
 
 
 (provide 'py-bug-numbered-tests)

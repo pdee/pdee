@@ -1115,6 +1115,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-font-lock-keywords) nil \"py-font-lock-keywords not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall infinite-loop-on-lp-1156426-test \
 --funcall py-smart-operator-test \
 --funcall python-mode-very-slow-lp-1107037-test \
 --funcall cascading-indent-lp-1101962-test \
@@ -1127,7 +1128,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-down-python-el-112-test \
 --funcall py-moves-test \
 --funcall enter-key-does-not-indent-properly-after-return-statement-lp-1098793-test \
---funcall comments-start-a-new-line-lp-1092847-n1-test \
 --funcall comments-start-a-new-line-lp-1092847-n2-test \
 --funcall wrong-indentation-after-return-or-pass-keyword-lp-1087499-test \
 --funcall wrong-indent-after-asignment-lp-1087404-test \
@@ -1136,7 +1136,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall imenu-add-menubar-index-fails-lp-1084503-test \
 --funcall spuriously-indents-whole-line-while-making-some-portion-inline-comment-lp-1080973-test \
 --funcall fill-paragraph-in-a-comment-does-not-stop-at-empty-comment-lines-lp-1077139-test \
---funcall incorrect-indentation-of-comments-in-a-multiline-list-lp-1077063-test \
 --funcall fails-to-indent-abs-wrong-type-argument-lp-1075673-test \
 --funcall py-down-statement-test \
 --funcall several-new-bugs-with-paragraph-filling-lp-1066489-test \
@@ -1222,9 +1221,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall indentation-after-one-line-suites-lp:858044-test \
 --funcall py-compute-indentation-wrong-at-eol-lp:858043-test \
 --funcall comment-indentation-level-lp:869854-test \
---funcall indentation-wrong-after-multi-line-parameter-list-lp:871698-test \
 --funcall no-indent-after-continue-lp:872676-test \
---funcall indent-after-inline-comment-lp:873372-test \
 --funcall else-clause-indentation-lp:874470-test \
 --funcall indent-after-multiple-except-statements-lp:883815-test \
 --funcall wrongly-highlighted-as-keywords-lp:885144-test \
@@ -1257,7 +1254,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-beginning-of-def-or-class-test \
 --funcall py-electric-delete-test \
 --funcall near-bob-beginning-of-statement-test \
---funcall honor-comments-indent-test \
 --funcall first-line-offset-test \
 --funcall assignment-indent-test \
 --funcall if-elif-test \
@@ -1439,3 +1435,8 @@ est \
 --funcall py-fill-string-pep-257-nn-test \
 --funcall py-fill-string-symmetric-test \
 --funcall forward-sexp-test \
+--funcall comments-start-a-new-line-lp-1092847-n1-test \
+--funcall incorrect-indentation-of-comments-in-a-multiline-list-lp-1077063-test \
+--funcall indentation-wrong-after-multi-line-parameter-list-lp:871698-test \
+--funcall indent-after-inline-comment-lp:873372-test \
+--funcall honor-comments-indent-test \

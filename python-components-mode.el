@@ -3019,8 +3019,17 @@ Use `M-x customize-variable' to set it permanently"
                :help "If comments should be indented like code. Default is `nil'.
 
 Use `M-x customize-variable' to set it permanently"
-               :style toggle :selected py-indent-comments])
+               :style toggle :selected py-indent-comments]
 
+            ["Indent honors inline comment"
+             (setq py-indent-honors-inline-comment
+                   (not py-indent-honors-inline-comment))
+             :help "If non-nil, indents to column of inlined comment start\.
+Default is nil\. Use `M-x customize-variable' to set it permanently"
+             :style toggle :selected py-indent-honors-inline-comment]
+
+            )
+            
              "-"
 
              ["pychecker-run" py-pychecker-run

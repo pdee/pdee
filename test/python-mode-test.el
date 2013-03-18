@@ -1112,7 +1112,7 @@ if foo:
 (defun py-partial-expression-base ()
   (goto-char 102)
   (assert (eq 100 (py-beginning-of-partial-expression)) nil "py-partial-expression-test #1 failed")
-  (assert (eq 108 (py-end-of-partial-expression)) nil "py-partial-expression-test #2 failed")
+  (assert (eq 113 (py-end-of-partial-expression)) nil "py-partial-expression-test #2 failed")
   (goto-char 178)
   (assert (eq 177 (py-beginning-of-partial-expression)) nil "py-partial-expression-test #3 failed")
   (assert (eq 181 (py-end-of-partial-expression)) nil "py-partial-expression-test #3 failed")
