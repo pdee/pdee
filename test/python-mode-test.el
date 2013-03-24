@@ -101,7 +101,6 @@
        'py-execute-statement-jython-dedicated-test
        'py-execute-statement-jython-dedicated-switch-test
        'py-separator-char-test
-       'py-execute-block-python-test
        'py-execute-block-python-switch-test
        'py-execute-block-python-noswitch-test
        'py-execute-block-python-dedicated-test
@@ -423,6 +422,7 @@
        'switch-windows-on-execute-p-test
        'py-install-directory-path-test
        'UnicodeEncodeError-python3-test
+       'py-execute-block-python-test
 
        ))
 

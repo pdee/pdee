@@ -1115,6 +1115,27 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-font-lock-keywords) nil \"py-font-lock-keywords not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall py-execute-block-or-clause-python3-test \
+--funcall py-execute-block-or-clause-python2-test \
+--funcall py-execute-block-or-clause-python2.7-test \
+--funcall py-execute-block-or-clause-python2.7-switch-test \
+--funcall py-execute-block-or-clause-python2.7-noswitch-test \
+--funcall py-execute-block-or-clause-python2.7-dedicated-test \
+--funcall py-execute-block-or-clause-python2.7-dedicated-switch-test \
+--funcall py-execute-partial-expression-test \
+--funcall py-execute-partial-expression-python3-test \
+--funcall py-execute-partial-expression-python2-test \
+--funcall py-execute-partial-expression-python2.7-test \
+est \
+--funcall py-execute-line-python-test \
+--funcall py-execute-line-python3-test \
+--funcall py-execute-line-python2-test \
+--funcall py-execute-line-python2.7-test \
+--funcall py-execute-line-python2.7-switch-test \
+--funcall py-execute-line-python2.7-noswitch-test \
+--funcall py-execute-line-python2.7-dedicated-test \
+--funcall py-execute-line-python2.7-dedicated-switch-test \
+--funcall py-execute-expression-python-test \
 --funcall infinite-loop-on-lp-1156426-test \
 --funcall py-smart-operator-test \
 --funcall python-mode-very-slow-lp-1107037-test \
@@ -1318,34 +1339,10 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-execute-partial-expression-python-noswitch-test \
 --funcall py-execute-partial-expression-python-dedicated-test \
 --funcall py-execute-partial-expression-python-dedicated-switch-test \
---funcall py-execute-block-python-test \
 --funcall py-execute-block-python3-test \
 --funcall py-execute-block-python2-test \
 --funcall py-execute-block-python2.7-test \
---funcall py-execute-block-or-clause-python-test \
---funcall py-execute-block-or-clause-python3-test \
---funcall py-execute-block-or-clause-python2-test \
---funcall py-execute-block-or-clause-python2.7-test \
---funcall py-execute-block-or-clause-python2.7-switch-test \
---funcall py-execute-block-or-clause-python2.7-noswitch-test \
---funcall py-execute-block-or-clause-python2.7-dedicated-test \
---funcall py-execute-block-or-clause-python2.7-dedicated-switch-test \
---funcall py-execute-partial-expression-test \
---funcall py-execute-partial-expression-python3-test \
---funcall py-execute-partial-expression-python2-test \
---funcall py-execute-partial-expression-python2.7-test \
-est \
---funcall py-execute-line-python-test \
---funcall py-execute-line-python3-test \
---funcall py-execute-line-python2-test \
---funcall py-execute-line-python2.7-test \
---funcall py-execute-line-python2.7-switch-test \
---funcall py-execute-line-python2.7-noswitch-test \
---funcall py-execute-line-python2.7-dedicated-test \
---funcall py-execute-line-python2.7-dedicated-switch-test \
---funcall py-execute-expression-python-test \
 \
---funcall master-file-not-honored-lp:794850-test \
 --funcall py-shell-invoking-python3-lp:835151-test \
 --funcall py-shell-invoking-python2-lp:835151-test \
 --funcall py-shell-invoking-python2.7-lp:835151-test \
@@ -1374,7 +1371,6 @@ est \
 --funcall indent-triplequoted-to-itself-lp:752252-test \
 --funcall complaint-about-non-ASCII-character-lp-1042949-test \
 --funcall py-beginning-of-block-test \
---funcall inconvenient-window-splitting-behavior-python-lp-1018996-test \
 --funcall stalls-emacs-probably-due-to-syntax-highlighting-lp-1058261-test \
 --funcall tqs-lp:302834-lp:1018994-test \
 --funcall py-end-of-def-test \
@@ -1440,3 +1436,7 @@ est \
 --funcall indentation-wrong-after-multi-line-parameter-list-lp:871698-test \
 --funcall indent-after-inline-comment-lp:873372-test \
 --funcall honor-comments-indent-test \
+--funcall py-execute-block-python-test \
+--funcall py-execute-block-or-clause-python-test \
+--funcall master-file-not-honored-lp:794850-test \
+--funcall inconvenient-window-splitting-behavior-python-lp-1018996-test \

@@ -2129,7 +2129,9 @@ Returns versioned string, nil if nothing appropriate found "
         (message "%s" "Could not detect Python on your system")))
     erg))
 
-;; (defalias 'py-toggle-shells 'py-choose-shell)
+;; requested by org-mode still
+(defalias 'py-toggle-shells 'py-choose-shell)
+
 (defalias 'py-which-shell 'py-choose-shell)
 (defun py-choose-shell (&optional arg pyshell dedicated py-edit-only-p)
   "Return an appropriate executable as a string.
