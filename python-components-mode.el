@@ -143,6 +143,19 @@ Any non-integer value means do not use a different value of
                  (const :tag "Use the current `fill-column'" t))
   :group 'python-mode)
 
+(defcustom py-paragraph-fill-docstring-p nil
+  "If `py-fill-paragraph', when inside a docstring, should fill the complete string.
+
+Default is nil.
+
+Convenient use of `M-q' inside docstrings
+See also `py-docstring-style'
+"
+
+  :type 'boolean
+  :group 'python-mode)
+(make-variable-buffer-local 'py-paragraph-fill-docstring-p)
+
 (defcustom py-fontify-shell-buffer-p nil
   "If code in Python shell should be highlighted as in script buffer.
 
@@ -170,7 +183,6 @@ Default is nil. Note: when `py-shell-name' is specified with path, it's shown as
 Default is nil "
   :type 'boolean
   :group 'python-mode)
-
 
 (defun py-smart-operator-check ()
   "Check, if smart-operator-mode is loaded resp. available.
@@ -1180,7 +1192,6 @@ See also `py-execute-directory'"
   :type 'string
   :group 'python-mode)
 
-
 (defvar py-ffap-p nil)
 (defvar py-ffap nil)
 (defvar python-ffap nil)
@@ -2022,16 +2033,17 @@ Includes def and class. ")
 
 (make-obsolete-variable 'jpython-mode-hook 'jython-mode-hook nil)
 
-(defun py-docstring-p (pos)
+(defun py-docstring-p (&optional beginning-of-string-position)
   "Check to see if there is a docstring at POS."
-  (save-excursion
-    (goto-char pos)
-    (if (looking-at-p "'''\\|\"\"\"")
-        (progn
-          (py-beginning-of-statement)
-          (or (bobp)
-              (py-beginning-of-def-or-class-p)))
-      nil)))
+  (let ((pos (or beginning-of-string-position (and (nth 3 (syntax-ppss)) (nth 8 (syntax-ppss))))))
+    (save-excursion
+      (goto-char pos)
+      (if (looking-at-p "'''\\|\"\"\"")
+          (progn
+            (py-beginning-of-statement)
+            (or (bobp)
+                (py-beginning-of-def-or-class-p)))
+        nil))))
 
 (defun py-font-lock-syntactic-face-function (state)
   (if (nth 3 state)
@@ -2685,6 +2697,7 @@ character address of the specified TYPE."
 
             ("Switches"
              :help "Toggle useful modes like `highlight-indentation'"
+
              ("Docstring styles"
               :help "Toggle values of `py-docstring-style'
 In order to set permanently customize this variable"
@@ -2698,7 +2711,7 @@ Use `M-x customize-variable' to set it permanently"
   Returns value of `py-docstring-style' switched to
 
 Use `M-x customize-variable' to set it permanently"]
-
+               
                ["Nil on" py-nil-docstring-style-on
                 :help "Make sure, nil docstring-style is on
 
@@ -2807,7 +2820,8 @@ Use `M-x customize-variable' to set it permanently"]
                ["Django off" py-django-docstring-style-off
                 :help "Restores default value of `py-docstring-style'
 
-Use `M-x customize-variable' to set it permanently"]))
+Use `M-x customize-variable' to set it permanently"])
+              )
 
               ("Underscore word syntax"
                :help "Toggle `py-underscore-word-syntax-p'"
@@ -2839,6 +2853,19 @@ Returns value of `py-underscore-word-syntax-p'\. .
 
 Use `M-x customize-variable' to set it permanently"])
 
+              
+              ["Fill-paragraph fill docstring "
+               (setq py-paragraph-fill-docstring-p
+                     (not py-paragraph-fill-docstring-p))
+               :help "If `py-fill-paragraph', when inside a docstring, should fill the complete string\.
+
+Default is nil\.
+
+Convenient use of `M-q' inside docstrings
+See also `py-docstring-style'
+Use `M-x customize-variable' to set it permanently"
+               :style toggle :selected py-paragraph-fill-docstring-p]
+              
               ["Tab shifts region "
                (setq py-tab-shifts-region-p
                      (not py-tab-shifts-region-p))
@@ -3031,7 +3058,7 @@ Default is nil\. Use `M-x customize-variable' to set it permanently"
              :style toggle :selected py-indent-honors-inline-comment]
 
             )
-            
+
              "-"
 
              ["pychecker-run" py-pychecker-run

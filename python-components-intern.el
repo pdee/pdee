@@ -1028,14 +1028,18 @@ Eval resulting buffer to install it, see customizable `py-extensions'. "
     (if (file-readable-p (concat py-install-directory "/" py-extensions))
         (find-file (concat py-install-directory "/" py-extensions)))))
 
-(defun py-end-of-string-intern (pps)
+(defun py-end-of-string (&optional beginning-of-string-position)
   "Go to end of string at point, return position.
 
 Takes the result of (syntax-ppss)"
-  (goto-char (nth 8 pps))
-  (and (looking-at "\"\"\"\\|'''\\|\"\\|\'")
-       (goto-char (match-end 0))
-       (search-forward (match-string-no-properties 0))))
+  (interactive) 
+  (let ((beginning-of-string-position (or beginning-of-string-position (and (nth 3 (syntax-ppss))(nth 8 (syntax-ppss))))))
+    (goto-char beginning-of-string-position)
+    ;; (and (looking-at "\"\"\"\\|'''\\|\"\\|\'")
+    (forward-sexp))
+  (point))
+;; (goto-char (match-end 0))
+;; (search-forward (match-string-no-properties 0))))
 
 (defun py-until-found (search-string liste)
   "Search liste for search-string until found. "

@@ -1440,3 +1440,4 @@ est \
 --funcall py-execute-block-or-clause-python-test \
 --funcall master-file-not-honored-lp:794850-test \
 --funcall inconvenient-window-splitting-behavior-python-lp-1018996-test \
+--funcall fill-paragraph-in-docstring-lp-1161232-test \

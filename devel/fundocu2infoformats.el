@@ -114,4 +114,76 @@
           (insert (concat (cdr ele) "\n\n")))
         (write-file (concat directory-out "commands-" reSTname))
         (find-file (concat directory-out "commands-" reSTname))))))
-;; (dolist (ele commandslist)))
+
+
+
+(defun write-defcustom-docus (&optional buffer directory-in directory-out)
+  "Writes all customizable variables w/ documentation into directory \"doc\" as \*.org and \*rst file ."
+  (interactive)
+  (let* ((oldbuf (buffer-name (or buffer (current-buffer))))
+         ;; (file (buffer-file-name))
+         (orgname (concat (substring oldbuf 0 (string-match "\\." oldbuf)) ".org"))
+         (reSTname (concat (substring oldbuf 0 (string-match "\\." oldbuf)) ".rst"))
+         (directory-in (or directory-in (and (not (string= "" py-devel-directory-in)) py-devel-directory-in) default-directory))
+         (directory-out (or directory-out (expand-file-name finds-directory-out))))
+    (defcustom-docu-base oldbuf orgname reSTname directory-in directory-out)))
+
+(defun defcustom-docu (oldbuf orgname reSTname directory-in directory-out)
+  (save-restriction
+    (let ((suffix (file-name-nondirectory (buffer-file-name)))
+          varslist)
+      ;; (widen)
+      (goto-char (point-min))
+      ;; (eval-buffer)
+      (while (and (not (eobp))(re-search-forward "^(defcustom [[:alpha:]]\\|^;;; .+" nil t 1))
+        (if (save-match-data (commandp (symbol-at-point)))
+            (let* ((name (symbol-at-point))
+                   (docu (documentation name)))
+              (unless docu (message "don't see docu string for %s" (prin1-to-string name)))
+              (add-to-list 'varslist (cons (prin1-to-string name) docu))
+              (forward-line 1)
+              ;; (message "%s" (car varslist))
+              ;; (end-of-defun)
+              )
+          (add-to-list 'varslist (list (match-string-no-properties 0)))))
+      (setq varslist (nreverse varslist))
+      (with-temp-buffer
+        (switch-to-buffer (current-buffer))
+        (insert (concat ";; a list of " suffix " commands
+\(setq " (replace-regexp-in-string "\\." "-" suffix) "-commands (quote "))
+        (insert (prin1-to-string varslist))
+        (insert "))")
+        (eval-buffer)
+        ;; (write-file (concat directory-out "commands-" suffix))
+        )
+      ;; (with-temp-buffer
+      ;;   (dolist (ele varslist)
+      ;;     (insert (concat (car ele) "\n")))
+      ;;   (write-file (concat directory-out suffix "-commands.txt")))
+
+      (with-temp-buffer
+        ;; org
+        ;; (insert (concat (capitalize (substring oldbuf 0 (string-match "\." oldbuf))) " commands" "\n\n"))
+        (insert (concat suffix " commands\n\n"))
+        (dolist (ele varslist)
+          (if (string-match "^;;; " (car ele))
+              (unless (or (string-match "^;;; Constants\\|^;;; Commentary\\|^;;; Code\\|^;;; Macro definitions\\|^;;; Customization" (car ele)))
+
+                (insert (concat (replace-regexp-in-string "^;;; " "* " (car ele)) "\n")))
+            (insert (concat "** "(car ele) "\n"))
+            (insert (concat "   " (cdr ele) "\n"))))
+        (write-file (concat directory-out "commands-" orgname))
+        (find-file (concat directory-out "commands-" orgname)))
+      (with-temp-buffer
+        ;; reST
+        ;; (insert (concat (capitalize (substring oldbuf 0 (string-match "\." oldbuf))) " commands" "\n"))
+        (insert "Python-mode commands\n\n")
+        ;; (insert (concat (make-string (length (concat (substring oldbuf 0 (string-match "\." oldbuf)) " commands")) ?\=) "\n\n"))
+        (insert "====================\n\n")
+        (dolist (ele varslist)
+          (insert (concat (car ele) "\n"))
+          (insert (concat (make-string (length (car ele)) ?\-) "\n"))
+          (insert (concat (cdr ele) "\n\n")))
+        (write-file (concat directory-out "commands-" reSTname))
+        (find-file (concat directory-out "commands-" reSTname))))))
+

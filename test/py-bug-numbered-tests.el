@@ -4380,24 +4380,10 @@ class IBanManager(Interface):
   (py-bug-tests-intern 'several-new-bugs-with-paragraph-filling-lp-1066489-base arg teststring)))
 
 (defun several-new-bugs-with-paragraph-filling-lp-1066489-base ()
-  (goto-char 932)
-  (py-fill-paragraph)
-  (assert (re-search-forward "^ +:type email") nil "several-new-bugs-with-paragraph-filling-lp-1066489-test #1 failed")
-  (goto-char 220)
-  (push-mark)
-  (goto-char 1075)
-  (narrow-to-region 220 1045)
-  (py-fill-paragraph nil nil (point-min) (point-max))
-  (widen)
-  (assert (re-search-forward "^ +:type email") nil "several-new-bugs-with-paragraph-filling-lp-1066489-test #2 failed")
-  (goto-char 1108)
-  (push-mark)
-  (goto-char (point-max))
-  (py-fill-paragraph nil nil 1108 (point))
-  (widen)
-  (goto-char 1108)
-  (assert (re-search-forward "^ +:type email") nil "several-new-bugs-with-paragraph-filling-lp-1066489-test #3 failed")
-  (py-fill-paragraph))
+  (let (py-paragraph-fill-docstring-p)
+    (goto-char 932)
+    (py-fill-paragraph)
+    (assert (re-search-forward "^ +:type email") nil "several-new-bugs-with-paragraph-filling-lp-1066489-test failed")))
 
 (defun incorrect-indentation-of-one-line-functions-lp-1067633-test (&optional arg)
   (interactive "p")
@@ -5444,7 +5430,6 @@ class Test(object):
     (assert (looking-at "        pass") nil "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #3b failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #3b done")))
 
-
 (defun infinite-loop-on-lp-1156426-test (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
@@ -5462,8 +5447,24 @@ while mvi.t2 <= T:
     (setq py-indent-comments)
     (assert (eq 0 (py-compute-indentation)) nil "infinite-loop-on-lp-1156426-test #2 failed"))
 
+(defun fill-paragraph-in-docstring-lp-1161232-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+def foo ():
+    \"\"\"Returns a rewritten path.
 
+Assuming that ``cr`` is a :class:`ContextRewriter` instance,
+that the rewriter maps the path ``views/<filename>`` to\"\"\"
+    pass
+"))
+  (py-bug-tests-intern 'fill-paragraph-in-docstring-lp-1161232-base arg teststring)))
 
+(defun fill-paragraph-in-docstring-lp-1161232-base ()
+    (goto-char 94)
+    (fill-paragraph)
+    (sit-for 0.1)
+    (assert (eq (point) 102) nil "fill-paragraph-in-docstring-lp-1161232-test failed"))
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

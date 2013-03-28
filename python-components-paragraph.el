@@ -23,80 +23,23 @@
 ;;
 
 ;;; Code:
-(defun py-fill-paragraph (&optional justify style start end)
-  "`fill-paragraph-function'
+(defun py-fill-paragraph (&optional justify style start end docstring)
+  "`fill-paragraph-function' 
 
-commands py-fill-paragraph-SUFFIX
-choose one of the following implemented styles:
-
-DJANGO, ONETWO, PEP-257, PEP-257-NN, SYMMETRIC
-
-Otherwise `py-docstring-style' is used. Explanation:
-
-DJANGO:
-
-    \"\"\"
-    Process foo, return bar.
-    \"\"\"
-
-    \"\"\"
-    Process foo, return bar.
-
-    If processing fails throw ProcessingError.
-    \"\"\"
-
-ONETWO:
-
-    \"\"\"Process foo, return bar.\"\"\"
-
-    \"\"\"
-    Process foo, return bar.
-
-    If processing fails throw ProcessingError.
-
-    \"\"\"
-
-PEP-257:
-
-    \"\"\"Process foo, return bar.\"\"\"
-
-    \"\"\"Process foo, return bar.
-
-    If processing fails throw ProcessingError.
-
-    \"\"\"
-
-PEP-257-NN:
-
-    \"\"\"Process foo, return bar.\"\"\"
-
-    \"\"\"Process foo, return bar.
-
-    If processing fails throw ProcessingError.
-    \"\"\"
-
-SYMMETRIC:
-
-    \"\"\"Process foo, return bar.\"\"\"
-
-    \"\"\"
-    Process foo, return bar.
-
-    If processing fails throw ProcessingError.
-    \"\"\"
-"
+See also `py-fill-string' "
   (interactive "P")
   (or (fill-comment-paragraph justify)
-      (let ((orig (copy-marker (point)))
-            (pps (syntax-ppss))
-            (beg (or start (if (use-region-p) (region-beginning) (py-beginning-of-paragraph-position))))
-            (end (copy-marker (or end (if (use-region-p) (region-end) (py-end-of-paragraph-position)))))
-            (style (or style py-docstring-style))
-            (this-end (point-min)))
+      (let* ((orig (copy-marker (point)))
+             (pps (syntax-ppss))
+             (docstring (and py-paragraph-fill-docstring-p (or docstring (py-docstring-p (nth 8 pps)))))
+             (beg (or start (and (use-region-p) (region-beginning)) (and py-paragraph-fill-docstring-p docstring (nth 8 pps)) (py-beginning-of-paragraph-position)))
+             (end (copy-marker (or end (and (use-region-p) (region-end)) (and py-paragraph-fill-docstring-p docstring (py-end-of-string (nth 8 pps))) (py-end-of-paragraph-position))))
+             (style (or style py-docstring-style))
+             (this-end (point-min)))
         (when (and (nth 3 pps) (< beg (nth 8 pps))
                    (py-docstring-p (nth 8 pps))
                    (setq beg (nth 8 pps)))
-          (setq end (py-end-of-string-intern pps)))
+          (setq end (py-end-of-string (nth 8 pps))))
         (save-excursion
           (save-restriction
             (narrow-to-region beg end)
@@ -110,7 +53,7 @@ SYMMETRIC:
                          (syntax-after (point)))
                   (looking-at py-string-delim-re))
               (goto-char beg)
-              (py-fill-string justify style nil nil pps)
+              (py-fill-string justify style beg end pps)
               (goto-char this-end))
              ;; Decorators
              ((save-excursion
@@ -128,7 +71,10 @@ SYMMETRIC:
              ;;        (skip-syntax-forward "^(" (line-end-position))
              ;;        (looking-at (python-rx open-paren))))
              ;;  (py-fill-paren pps justify))
-             (t t)))))
+             (t t))))
+        (goto-char orig)
+        (back-to-indentation))
+        (recenter-top-bottom)
       ;; fill-paragraph expexts t
       t))
 
@@ -226,7 +172,74 @@ See lp:1066489 "
 
 (defun py-fill-string (&optional justify style beg end pps)
   "String fill function for `py-fill-paragraph'.
-JUSTIFY should be used (if applicable) as in `fill-paragraph'."
+JUSTIFY should be used (if applicable) as in `fill-paragraph'.
+
+If `py-paragraph-fill-docstring-p' is `t', `M-q` fills the
+complete docstring according to setting of `py-docstring-style'
+
+Implemented docstring styles are:
+
+DJANGO, ONETWO, PEP-257, PEP-257-NN, SYMMETRIC
+
+Explanation:
+
+DJANGO, ONETWO, PEP-257, PEP-257-NN, SYMMETRIC
+
+Otherwise `py-docstring-style' is used. Explanation:
+
+DJANGO:
+
+    \"\"\"
+    Process foo, return bar.
+    \"\"\"
+
+    \"\"\"
+    Process foo, return bar.
+
+    If processing fails throw ProcessingError.
+    \"\"\"
+
+ONETWO:
+
+    \"\"\"Process foo, return bar.\"\"\"
+
+    \"\"\"
+    Process foo, return bar.
+
+    If processing fails throw ProcessingError.
+
+    \"\"\"
+
+PEP-257:
+
+    \"\"\"Process foo, return bar.\"\"\"
+
+    \"\"\"Process foo, return bar.
+
+    If processing fails throw ProcessingError.
+
+    \"\"\"
+
+PEP-257-NN:
+
+    \"\"\"Process foo, return bar.\"\"\"
+
+    \"\"\"Process foo, return bar.
+
+    If processing fails throw ProcessingError.
+    \"\"\"
+
+SYMMETRIC:
+
+    \"\"\"Process foo, return bar.\"\"\"
+
+    \"\"\"
+    Process foo, return bar.
+
+    If processing fails throw ProcessingError.
+    \"\"\"
+
+"
   (interactive "P")
   (save-excursion
     (save-restriction
@@ -249,7 +262,9 @@ JUSTIFY should be used (if applicable) as in `fill-paragraph'."
                                     (syntax-after (point)))
                              (point-marker)))))
              ;; Assume docstrings at BOL resp. indentation
-             (docstring-p (progn (goto-char beg)(skip-chars-backward "\"'") (py-docstring-p (point))))
+             (docstring-p (py-docstring-p (nth 8 pps))) 
+             ;; (progn (goto-char beg)(skip-chars-backward "\"'") (py-docstring-p (point)))
+              
              (end (or (ignore-errors (and end (goto-char end) (skip-chars-backward "\"'")(copy-marker (point))))
                       (progn (goto-char (nth 8 pps)) (forward-sexp) (skip-chars-backward "\"'") (point-marker))))
              multi-line-p

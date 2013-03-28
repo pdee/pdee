@@ -689,7 +689,7 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
       (message "%s not readable. %s" file "Do you have permissions?"))
     erg))
 
-(defun py-execute-buffer-finally (start end &optional pyshellname dedicated switch nostars sepchar split)
+(defun py-execute-buffer-finally (&optional start end pyshellname dedicated switch nostars sepchar split string)
   (let* ((oldbuf (current-buffer))
          (pyshellname (or pyshellname (py-choose-shell)))
          (execute-directory
@@ -703,7 +703,7 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
                  py-execute-directory)
                 ((getenv "VIRTUAL_ENV"))
                 (t (getenv "HOME"))))
-         (strg (buffer-substring-no-properties start end))
+         (strg (or string (buffer-substring-no-properties start end)))
          (sepchar (or sepchar (char-to-string py-separator-char)))
          (py-buffer-name (py-buffer-name-prepare pyshellname sepchar))
          (temp (make-temp-name
