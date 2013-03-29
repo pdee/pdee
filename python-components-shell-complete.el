@@ -92,6 +92,32 @@ Then switch to the process buffer."
   (py-send-region start end)
   (py-switch-to-python t))
 
+
+;; (defun py-load-file (file-name)
+;;   "Load a Python file FILE-NAME into the inferior Python process.
+;; 
+;; If the file has extension `.py' import or reload it as a module.
+;; Treating it as a module keeps the global namespace clean, provides
+;; function location information for debugging, and supports users of
+;; module-qualified names."
+;;   (interactive (comint-get-source "Load Python file: " python-prev-dir/file
+;; 				  python-source-modes
+;; 				  t))	; because execfile needs exact name
+;;   (comint-check-source file-name)     ; Check to see if buffer needs saving.
+;;   (setq python-prev-dir/file (cons (file-name-directory file-name)
+;; 				   (file-name-nondirectory file-name)))
+;;   (with-current-buffer (process-buffer (py-proc)) ;Runs python if needed.
+;;     ;; Fixme: I'm not convinced by this logic from python-mode.el.
+;;     (python-send-command
+;;      (if (string-match "\\.py\\'" file-name)
+;; 	 (let ((module (file-name-sans-extension
+;; 			(file-name-nondirectory file-name))))
+;; 	   (format "emacs.eimport(%S,%S)"
+;; 		   module (file-name-directory file-name)))
+;;        (format "execfile(%S)" file-name)))
+;;     (message "%s loaded" file-name)))
+
+
 (defun py-load-file (file-name)
   "Load a Python file FILE-NAME into the inferior Python process.
 
@@ -99,23 +125,10 @@ If the file has extension `.py' import or reload it as a module.
 Treating it as a module keeps the global namespace clean, provides
 function location information for debugging, and supports users of
 module-qualified names."
-  (interactive (comint-get-source "Load Python file: " python-prev-dir/file
-				  python-source-modes
-				  t))	; because execfile needs exact name
-  (comint-check-source file-name)     ; Check to see if buffer needs saving.
-  (setq python-prev-dir/file (cons (file-name-directory file-name)
-				   (file-name-nondirectory file-name)))
-  (with-current-buffer (process-buffer (py-proc)) ;Runs python if needed.
-    ;; Fixme: I'm not convinced by this logic from python-mode.el.
-    (python-send-command
-     (if (string-match "\\.py\\'" file-name)
-	 (let ((module (file-name-sans-extension
-			(file-name-nondirectory file-name))))
-	   (format "emacs.eimport(%S,%S)"
-		   module (file-name-directory file-name)))
-       (format "execfile(%S)" file-name)))
-    (message "%s loaded" file-name)))
-
+  (interactive "f") 
+  (py-execute-file-base (get-buffer-process (get-buffer (py-shell))) file-name
+   ;; (format "execfile(%S)" file-name)
+))
 
 (defun py-shell-send-setup-code (process)
   "Send all setup code for shell.
@@ -123,7 +136,7 @@ This function takes the list of setup code to send from the
 `py-setup-codes' list."
   (accept-process-output process 1)
   (dolist (code py-setup-codes)
-    (py-shell-send-string-no-output
+    (py-send-string-no-output
      (symbol-value code) process)
     (sit-for 0.1)))
 
@@ -149,7 +162,7 @@ When `py-verbose-p' and MSG is non-nil messages the first line of STRING."
                 (string-match "\n[ \t].*\n?$" string))
         (comint-send-string process "\n")))))
 
-(defun py-shell-send-string-no-output (string &optional process msg)
+(defun py-send-string-no-output (string &optional process msg)
   "Send STRING to PROCESS and inhibit output.
 When MSG is non-nil messages the first line of STRING.  Return
 the output."
@@ -261,6 +274,50 @@ The list is sorted. "
        (delete-dups completions)
        #'string<))))
 
+
+(defun py-shell--do-completion-at-point (process imports input)
+  "Do completion at point for PROCESS."
+  (with-syntax-table py-dotty-syntax-table
+    (when imports (py-send-string-no-output imports process))
+    (let* ((code python-shell-module-completion-string-code)
+           (completions
+            (python-shell-completion--get-completions
+             input process code))
+           (completion (when completions
+                         (try-completion input completions))))
+      (cond ((eq completion t)
+             (if (eq this-command last-command)
+                 (when py-completion-last-window-configuration
+                   (set-window-configuration
+                    py-completion-last-window-configuration)))
+             ;; (setq py-completion-last-window-configuration nil)
+             (if py-no-completion-calls-dabbrev-expand-p
+                 (or (ignore-errors (dabbrev-expand nil))(when py-indent-no-completion-p
+                                                           (tab-to-tab-stop)))
+               (when py-indent-no-completion-p
+                 (tab-to-tab-stop)))
+             nil)
+            ((null completion)
+             (if py-no-completion-calls-dabbrev-expand-p
+                 (or (dabbrev-expand nil)(when py-indent-no-completion-p
+                                           (tab-to-tab-stop))(message "Can't find completion "))
+               (when py-indent-no-completion-p
+                 (tab-to-tab-stop)))
+             nil)
+            ((not (string= input completion))
+             (progn (delete-char (- (length input)))
+                    (insert completion)
+                    ;; minibuffer.el expects a list, a bug IMO
+                    nil))
+            (t
+             (unless py-completion-last-window-configuration
+               (setq py-completion-last-window-configuration
+                     (current-window-configuration)))
+             (with-output-to-temp-buffer "*Python Completions*"
+               (display-completion-list
+                (all-completions input completions)))
+             nil)))))
+
 (defun py-python-script-complete (&optional shell imports beg end word)
   "Complete word before point, if any.
 
@@ -293,7 +350,7 @@ When `py-no-completion-calls-dabbrev-expand-p' is non-nil, try dabbrev-expand. O
                            (if imports
                                (setq imports (concat imports (match-string-no-properties 0) ";"))
                              (setq imports (match-string-no-properties 0)))))))
-                   (python-shell-completion--do-completion-at-point proc imports word))
+                   (py-shell--do-completion-at-point proc imports word))
                (error "No completion process at proc"))))))
 
 (defun py-python2-shell-complete (&optional shell)
@@ -310,7 +367,7 @@ When `py-no-completion-calls-dabbrev-expand-p' is non-nil, try dabbrev-expand. O
            (tab-to-tab-stop))
           (t (or (setq proc (get-buffer-process shell))
                  (setq proc (get-buffer-process (py-shell nil nil shell))))
-             (python-shell-completion--do-completion-at-point proc nil word))))
+             (py-shell--do-completion-at-point proc nil word))))
   nil)
 
 (defun py-python3-shell-complete (&optional shell)
@@ -324,7 +381,7 @@ When `py-no-completion-calls-dabbrev-expand-p' is non-nil, try dabbrev-expand. O
     (cond ((string= word "")
            (tab-to-tab-stop))
           (t
-           (python-shell-completion--do-completion-at-point (get-buffer-process (current-buffer)) nil word)
+           (py-shell--do-completion-at-point (get-buffer-process (current-buffer)) nil word)
            nil))))
 
 (defun py-shell-complete (&optional shell debug)
@@ -354,7 +411,7 @@ When `py-no-completion-calls-dabbrev-expand-p' is non-nil, try dabbrev-expand. O
                 (cond ((string= word "")
                        (tab-to-tab-stop))
                       ((string-match "[pP]ython3[^[:alpha:]]*$" shell)
-                       (python-shell-completion--do-completion-at-point proc imports word))
+                       (py-shell--do-completion-at-point proc imports word))
                       (t (py-shell-complete-intern word beg end shell imports proc))))))
         ;; complete in script buffer
         (let* (
@@ -374,7 +431,7 @@ When `py-no-completion-calls-dabbrev-expand-p' is non-nil, try dabbrev-expand. O
                 ((string-match "[iI][pP]ython" shell)
                  (ipython-complete nil nil beg end word nil debug imports))
                 ((string-match "[pP]ython3[^[:alpha:]]*$" shell)
-                 (python-shell-completion--do-completion-at-point proc (buffer-substring-no-properties beg end) word))
+                 (py-shell--do-completion-at-point proc (buffer-substring-no-properties beg end) word))
                 ;; deals better with imports
                 ;; (imports
                 ;; (py-python-script-complete shell imports beg end word))
@@ -382,7 +439,7 @@ When `py-no-completion-calls-dabbrev-expand-p' is non-nil, try dabbrev-expand. O
 
 (defun py-shell-complete-intern (word &optional beg end shell imports proc debug)
   (when imports
-    (py-shell-send-string-no-output imports proc))
+    (py-send-string-no-output imports proc))
   (let ((result (py-shell-execute-string-now (format "
 def print_completions(namespace, text, prefix=''):
    for name in namespace:

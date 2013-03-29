@@ -2326,7 +2326,6 @@ See original source: http://pymacs.progiciels-bpi.ca"
 (require 'python-extended-executes)
 ;; (require 'python-mode-test)
 (require 'column-marker)
-(require 'feg-python-el-extracts)
 (require 'python-abbrev-propose)
 (require 'python-extended-executes-test)
 (require 'python-components-switches)
@@ -5680,7 +5679,7 @@ Stuff originallye23 authored by Dave Love, errors are mine -ar "
 
 The result is what follows `_emacs_out' in the output.
 This is a no-op if `py-check-comint-prompt' returns nil."
-  (or (py-shell-send-string-no-output string)
+  (or (py-send-string-no-output string)
       (let ((proc (py-proc)))
         (with-current-buffer (process-buffer proc)
           (when (py-check-comint-prompt proc)
@@ -5703,7 +5702,7 @@ This is a no-op if `py-check-comint-prompt' returns nil."
     (if (not process)
         nil
       (let ((module-file
-             (py-shell-send-string-no-output
+             (py-send-string-no-output
               (format python-ffap-string-code module) process)))
         (when module-file
           (substring-no-properties module-file 1 -1))))))
@@ -6222,15 +6221,6 @@ For running multiple processes in multiple buffers, see `py-buffer-name'.
                                          (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
                                          "\\|")
                               "\\)"))))
-  ;; (define-key inferior-python-mode-map [remap complete-symbol]
-  ;;   'completion-at-point)
-  ;; (add-hook 'completion-at-point-functions
-  ;;           'python-shell-completion-complete-at-point nil 'local)
-  ;; (add-to-list (make-local-variable 'comint-dynamic-complete-functions)
-  ;;              'python-shell-completion-complete-at-point)
-  ;; (define-key inferior-python-mode-map "\t"
-  ;;   'python-shell-completion-complete-or-indent)
-
   (if py-complete-function
       (add-hook 'completion-at-point-functions
                 py-complete-function nil 'local)

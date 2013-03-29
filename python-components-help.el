@@ -31,6 +31,12 @@ of current line."
     (when (interactive-p) (message "%s" erg))
     erg))
 
+(defcustom py-eldoc-string-code
+  "__PYDOC_get_help('''%s''')\n"
+  "Python code used to get a string with the documentation of an object."
+  :type 'string
+  :group 'python-mode)
+
 (defun py-eldoc ()
   "`eldoc-documentation-function' for Python.
 Only works when point is in a function name, not its arg list, for
@@ -141,6 +147,93 @@ Useful for newly defined symbol, not known to python yet. "
             (erase-buffer)
             (when (interactive-p) (switch-to-buffer (current-buffer)))
             (insert erg)))))))
+
+(defun py-eldoc--get-doc-at-point (&optional input)
+  "Get documentation at point.
+If not INPUT is passed then what `current-word' returns
+will be used. "
+  (interactive) 
+  (let ((process (py-proc)))
+    (if (not process)
+        "Eldoc needs an inferior Python process running."
+      (let* ((current-defun (py-info-current-defun))
+             (input (or input
+                        (with-syntax-table py-dotty-syntax-table
+                          (if (not current-defun)
+                              (current-word)
+                            (concat current-defun "." (current-word))))))
+             (ppss (syntax-ppss))
+             (help (when (and input
+                              (not (string= input (concat current-defun ".")))
+                              (not (or (python-info-ppss-context 'string ppss)
+                                       (python-info-ppss-context 'comment ppss))))
+                     (when (string-match (concat
+                                          (regexp-quote (concat current-defun "."))
+                                          "self\\.") input)
+                       (with-temp-buffer
+                         (insert input)
+                         (goto-char (point-min))
+                         (forward-word)
+                         (forward-char)
+                         (delete-region (point-marker) (search-forward "self."))
+                         (setq input (buffer-substring (point-min) (point-max)))))
+                     (py-send-string-no-output
+                      (format python-eldoc-string-code input) process))))
+        (with-current-buffer (process-buffer process)
+          (when comint-last-prompt-overlay
+            (delete-region comint-last-input-end
+                           (overlay-start comint-last-prompt-overlay))))
+        (when (and help
+                   (not (string= help "\n")))
+          help)))))
+
+(defun py-eldoc-at-point (symbol)
+  "Get help on SYMBOL using `help'.
+Interactively, prompt for symbol."
+  (interactive
+   (let ((symbol (with-syntax-table py-dotty-syntax-table
+                   (current-word)))
+         (enable-recursive-minibuffers t))
+     (list (read-string (if symbol
+                            (format "Describe symbol (default %s): " symbol)
+                          "Describe symbol: ")
+                        nil nil symbol))))
+  (let ((process (python-shell-get-process)))
+    (if (not process)
+        (message "Eldoc needs an inferior Python process running.")
+      (message (py-eldoc--get-doc-at-point symbol process)))))
+
+(defun py-info-current-defun (&optional include-type)
+  "Return name of surrounding function with Python compatible dotty syntax.
+Optional argument INCLUDE-TYPE indicates to include the type of the defun.
+This function is compatible to be used as
+`add-log-current-defun-function' since it returns nil if point is
+not inside a defun."
+  (interactive) 
+  (let ((names '())
+        (min-indent)
+        (first-run t))
+    (save-restriction
+      (widen)
+      (save-excursion
+        (goto-char (line-end-position))
+        (forward-comment -9999)
+        (setq min-indent (current-indentation))
+        (while (py-beginning-of-def-or-class)
+          (when (or (< (current-indentation) min-indent)
+                    first-run)
+            (setq first-run nil)
+            (setq min-indent (current-indentation))
+            (looking-at py-def-or-class-re)
+            (setq names (cons
+                         (if (not include-type)
+                             (match-string-no-properties 1)
+                           (mapconcat 'identity
+                                      (split-string
+                                       (match-string-no-properties 0)) " "))
+                         names))))))
+    (when names
+      (mapconcat (lambda (string) string) names "."))))
 
 (defalias 'py-help-at-point 'py-describe-symbol)
 (defun py-describe-symbol (&optional debug)
@@ -1007,7 +1100,7 @@ i.e. spaces, tabs, carriage returns, newlines and newpages. "
     (if (not process)
         nil
       (let ((module-file
-             (py-shell-send-string-no-output
+             (py-send-string-no-output
               (format python-ffap-string-code module) process)))
         (when module-file
           (substring-no-properties module-file 1 -1))))))

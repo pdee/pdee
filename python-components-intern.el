@@ -1055,5 +1055,78 @@ Takes the result of (syntax-ppss)"
           (setq element (cdr element))))
       element)))
 
+(defun py-shell-send-string (string &optional process msg)
+  "Send STRING to inferior Python PROCESS.
+When `py-verbose-p' and MSG is non-nil messages the first line of STRING."
+  (interactive "sPython command: ")
+  (let* ((process (or process (get-buffer-process (py-shell))))
+         (lines (split-string string "\n" t))
+         (temp-file-name (concat (with-current-buffer (process-buffer process)
+                                   (file-remote-p default-directory))
+                                 (py-normalize-directory py-temp-directory)
+                                 "psss-temp.py"))
+         (file-name (or (buffer-file-name) temp-file-name)))
+    (if (> (length lines) 1)
+        (progn
+          (with-temp-file temp-file-name
+            (insert string)
+            (delete-trailing-whitespace))
+          (py-send-file file-name process temp-file-name))
+      (comint-send-string process string)
+      (when (or (not (string-match "\n$" string))
+                (string-match "\n[ \t].*\n?$" string))
+        (comint-send-string process "\n")))))
+
+(defun py-send-string-no-output (string &optional process msg)
+  "Send STRING to PROCESS and inhibit output.
+When MSG is non-nil messages the first line of STRING.  Return
+the output."
+  (let* ((output-buffer)
+         (process (or process (get-buffer-process (py-shell))))
+         (comint-preoutput-filter-functions
+          (append comint-preoutput-filter-functions
+                  '(ansi-color-filter-apply
+                    (lambda (string)
+                      (setq output-buffer (concat output-buffer string))
+                      "")))))
+    (py-shell-send-string string process msg)
+    (accept-process-output process 1)
+    (when output-buffer
+      (replace-regexp-in-string
+       (if (> (length py-shell-prompt-output-regexp) 0)
+           (format "\n*%s$\\|^%s\\|\n$"
+                   python-shell-prompt-regexp
+                   (or py-shell-prompt-output-regexp ""))
+         (format "\n*$\\|^%s\\|\n$"
+                 python-shell-prompt-regexp))
+       "" output-buffer))))
+
+(defun py-send-string-return-output (string &optional process msg)
+  "Send STRING to PROCESS and return output.
+
+When MSG is non-nil messages the first line of STRING.  Return
+the output."
+  (let* (output-buffer
+         (process (or process (get-buffer-process (py-shell))))
+         (comint-preoutput-filter-functions
+          (append comint-preoutput-filter-functions
+                  '(ansi-color-filter-apply
+                    (lambda (string)
+                      (setq output-buffer (concat output-buffer string))
+                      "")))))
+    (py-shell-send-string string process msg)
+    (accept-process-output process 1)
+    (when output-buffer
+      (setq output-buffer
+            (replace-regexp-in-string
+             (if (> (length py-shell-prompt-output-regexp) 0)
+                 (format "\n*%s$\\|^%s\\|\n$"
+                         python-shell-prompt-regexp
+                         (or py-shell-prompt-output-regexp ""))
+               (format "\n*$\\|^%s\\|\n$"
+                       python-shell-prompt-regexp))
+             "" output-buffer)))
+    output-buffer))
+
 (provide 'python-components-intern)
 ;;; python-components-intern.el ends here
