@@ -6313,6 +6313,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
          '(py-font-lock-keywords nil nil nil nil
                                  (font-lock-syntactic-keywords
                                   . py-font-lock-syntactic-keywords))))
+  (set (make-local-variable 'which-func-functions) 'py-which-def-or-class) 
   (set (make-local-variable 'parse-sexp-lookup-properties) t)
   (set (make-local-variable 'parse-sexp-ignore-comments) t)
   (set (make-local-variable 'comment-start) "#")

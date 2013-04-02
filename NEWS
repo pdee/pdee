@@ -22,6 +22,7 @@ New in version 6.1.2
   affects autopair.el, smart-operator.el  
   Kept  menu switches resp. commands will issue a warning 
 
+- `py-which-def-or-class', command, now used `which-function-mode' 
 
 New in version 6.1.1
 ---------------------

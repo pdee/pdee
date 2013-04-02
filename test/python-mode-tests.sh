@@ -1378,7 +1378,6 @@ est \
 --funcall python-mode-slow-lp:803275-test \
 --funcall beg-end-of-defun-lp:303622-test \
 --funcall py-nested-block-or-clause-test \
---funcall no-completion-at-all-lp:1001328-test \
 --funcall ipython-shell-complete-test \
 --funcall usr-bin-ipython-shell-complete-test \
 --funcall inconvenient-window-splitting-behavior-ipython-lp-1018996-test \
@@ -1441,3 +1440,4 @@ est \
 --funcall master-file-not-honored-lp:794850-test \
 --funcall inconvenient-window-splitting-behavior-python-lp-1018996-test \
 --funcall fill-paragraph-in-docstring-lp-1161232-test \
+--funcall no-completion-at-all-lp:1001328-test \

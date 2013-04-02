@@ -5303,7 +5303,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.5 $\"
+__version__ = \"$Revision: 1.6 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -5465,6 +5465,37 @@ that the rewriter maps the path ``views/<filename>`` to\"\"\"
     (fill-paragraph)
     (sit-for 0.1)
     (assert (eq (point) 102) nil "fill-paragraph-in-docstring-lp-1161232-test failed"))
+
+(defun wfmc-lp-1160022-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+# which-func-misses-class-lp-1160022
+class kugel(object):
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    # zeit = time.strftime('%Y-%m-%d--%H-%M-%S')
+    spiel = []
+
+    def pylauf(self):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        pass
+
+a = \"asdf\"
+"))
+  (py-bug-tests-intern 'wfmc-lp-1160022-base arg teststring)))
+
+(defun wfmc-lp-1160022-base ()
+  (imenu-add-menubar-index)
+  (goto-char 251)
+  (which-func-mode)
+  (company-mode -1)
+  (yas/minor-mode -1)
+  (hs-minor-mode -1)
+  (undo-tree-mode -1)
+  (abbrev-mode -1)
+  ;; (car (nth 2 (car '((#1="class kugel" (#1# . 85) ("kugel.pylauf" . 224))))))
+  (assert (string= "kugel.pylauf" (car (nth 2 (eval '(car imenu--index-alist))))) nil "wfmc-lp-1160022-test failed"))
+
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

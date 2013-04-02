@@ -668,7 +668,7 @@ and `pass'.  This doesn't catch embedded statements."
         (looking-at py-block-closing-keywords-re)
       (goto-char here))))
 
-;; py-look-downward-for-clause
+;;; py-look-downward-for-clause
 (defun py-end-base (regexp &optional orig decorator)
   "Used internal by functions going to the end forms. "
   (unless (eobp)
@@ -1032,7 +1032,7 @@ Eval resulting buffer to install it, see customizable `py-extensions'. "
   "Go to end of string at point, return position.
 
 Takes the result of (syntax-ppss)"
-  (interactive) 
+  (interactive)
   (let ((beginning-of-string-position (or beginning-of-string-position (and (nth 3 (syntax-ppss))(nth 8 (syntax-ppss))))))
     (goto-char beginning-of-string-position)
     ;; (and (looking-at "\"\"\"\\|'''\\|\"\\|\'")
@@ -1127,6 +1127,41 @@ the output."
                        python-shell-prompt-regexp))
              "" output-buffer)))
     output-buffer))
+
+(defun py-which-def-or-class ()
+  "Returns concatenated `def' and `class' names in hierarchical order, if cursor is inside.
+
+Returns \"???\" otherwise
+Used by variable `which-func-functions' "
+  (interactive)
+  (let* ((orig (point))
+         (first t)
+         def-or-class
+         done last erg)
+    (and first (looking-at "[ \t]*\\_<\\(def\\|class\\)\\_>[ \n\t]\\([[:alnum:]_]+\\)")(not (nth 8 (syntax-ppss)))
+         (add-to-list 'def-or-class (match-string-no-properties 2)))
+    (while
+        (and (not (bobp)) (not done) (or (< 0 (current-indentation)) first))
+      (py-beginning-of-def-or-class)
+      (looking-at "[ \t]*\\_<\\(def\\|class\\)\\_>[ \n\t]\\([[:alnum:]_]+\\)")
+      (setq last (point))
+      (setq name (match-string-no-properties 2))
+      (if first
+          (progn
+            (setq first nil)
+            (py-end-of-def-or-class)
+            (if
+                (<= orig (point))
+                (goto-char last)
+              (setq done t)
+              (goto-char orig)))
+        t)
+      (unless done (add-to-list 'def-or-class name)))
+    (unless done (setq def-or-class (mapconcat 'identity def-or-class ".")))
+    (goto-char orig)
+    (or def-or-class (setq def-or-class "???"))
+    (when (interactive-p) (message "%s" def-or-class))
+    def-or-class))
 
 (provide 'python-components-intern)
 ;;; python-components-intern.el ends here

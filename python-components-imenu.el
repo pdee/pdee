@@ -210,11 +210,13 @@ of the first definition found."
         (if sub-method-alist
             ;; we put the last element on the index-alist on the start
             ;; of the submethod alist so the user can still get to it.
-            (let ((save-elmt (pop index-alist)))
+            (let* ((save-elmt (pop index-alist))
+                   (classname (and (string-match "^class " (car save-elmt))(replace-regexp-in-string "^class " "" (car save-elmt)))))
+              (if (and classname (not (string-match "^class " (caar sub-method-alist))))
+                  (setcar (car sub-method-alist) (concat classname "." (caar sub-method-alist))))
               (push (cons prev-name
                           (cons save-elmt sub-method-alist))
                     index-alist))))
-       ;; found less indented expression, we're done.
        (t
         (setq looking-p nil)
         (re-search-backward py-imenu-generic-regexp (point-min) t)))
