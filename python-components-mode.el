@@ -1524,9 +1524,9 @@ can write into: the value (if any) of the environment variable TMPDIR,
 (defvar py-string-delim-re "\\(\"\"\"\\|'''\\|\"\\|'\\)"
   "When looking at beginning of string. ")
 
-(defvar py-labelled-re "[ \\t]*:[[:print:]]+:"
+(defvar py-labelled-re "[ \\t]*:[[:print:]]+"
   "When looking at label. ")
-(setq py-labelled-re "[ \\t]*:[[:graph:]]+:")
+(setq py-labelled-re "[ \\t]*:[[:graph:]]+")
 
 (defvar py-expression-skip-regexp "[^ (=:#\t\r\n\f]"
   "py-expression assumes chars indicated possible composing a py-expression, skip it. ")
@@ -2037,7 +2037,7 @@ Includes def and class. ")
   "Check to see if there is a docstring at POS."
   (let ((pos (or beginning-of-string-position (and (nth 3 (syntax-ppss)) (nth 8 (syntax-ppss))))))
     (save-excursion
-      (goto-char pos)
+      (and pos (goto-char pos))
       (if (looking-at-p "'''\\|\"\"\"")
           (progn
             (py-beginning-of-statement)

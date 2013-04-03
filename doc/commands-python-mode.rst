@@ -1186,6 +1186,7 @@ py-fill-paragraph
 -----------------
 `fill-paragraph-function'
 
+If `py-paragraph-fill-docstring-p' and inside a docstring, the whole docstring is formatted.
 See also `py-fill-string' 
 
 py-fill-labelled-string
@@ -1199,72 +1200,9 @@ py-fill-string
 String fill function for `py-fill-paragraph'.
 JUSTIFY should be used (if applicable) as in `fill-paragraph'.
 
+DOCSTRING is either a boolean or 'no
 If `py-paragraph-fill-docstring-p' is `t', `M-q` fills the
-complete docstring according to setting of `py-docstring-style'
-
-Implemented docstring styles are:
-
-DJANGO, ONETWO, PEP-257, PEP-257-NN, SYMMETRIC
-
-Explanation:
-
-DJANGO, ONETWO, PEP-257, PEP-257-NN, SYMMETRIC
-
-Otherwise `py-docstring-style' is used. Explanation:
-
-DJANGO:
-
-    """
-    Process foo, return bar.
-    """
-
-    """
-    Process foo, return bar.
-
-    If processing fails throw ProcessingError.
-    """
-
-ONETWO:
-
-    """Process foo, return bar."""
-
-    """
-    Process foo, return bar.
-
-    If processing fails throw ProcessingError.
-
-    """
-
-PEP-257:
-
-    """Process foo, return bar."""
-
-    """Process foo, return bar.
-
-    If processing fails throw ProcessingError.
-
-    """
-
-PEP-257-NN:
-
-    """Process foo, return bar."""
-
-    """Process foo, return bar.
-
-    If processing fails throw ProcessingError.
-    """
-
-SYMMETRIC:
-
-    """Process foo, return bar."""
-
-    """
-    Process foo, return bar.
-
-    If processing fails throw ProcessingError.
-    """
-
-
+complete docstring according to setting of `py-docstring-style' 
 
 py-fill-paren
 -------------
@@ -1401,6 +1339,13 @@ Sort multiline imports.
 
 Put point inside the parentheses of a multiline import and hit
 M-x py-sort-imports to sort the imports lexicographically
+
+py-which-def-or-class
+---------------------
+Returns concatenated `def' and `class' names in hierarchical order, if cursor is inside.
+
+Returns "???" otherwise
+Used by variable `which-func-functions' 
 
 py-which-function
 -----------------
