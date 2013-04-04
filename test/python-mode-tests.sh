@@ -1441,3 +1441,4 @@ est \
 --funcall inconvenient-window-splitting-behavior-python-lp-1018996-test \
 --funcall fill-paragraph-in-docstring-lp-1161232-test \
 --funcall no-completion-at-all-lp:1001328-test \
+--funcall tab-results-in-never-ending-process-lp-1163423-test \

@@ -5497,5 +5497,31 @@ a = \"asdf\"
   (assert (string= "kugel.pylauf" (car (nth 2 (eval '(car imenu--index-alist))))) nil "wfmc-lp-1160022-test failed"))
 
 
+(defun tab-results-in-never-ending-process-lp-1163423-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -\*- coding: utf-8 -\*-
+    class asdf(object):
+        zeit = time.strftime('%Y%m%d--%H-%M-%S')
+
+        def utf8_exists(filename):
+            return os.path.exists(filename.encode('utf-8'))
+"))
+  (py-bug-tests-intern 'tab-results-in-never-ending-process-lp-1163423-base arg teststring)))
+
+(defun tab-results-in-never-ending-process-lp-1163423-base ()
+  (let ((py-tab-indents-region-p t)
+        (py-tab-indent t))
+    (goto-char 216)
+    (push-mark)
+    (goto-char 122)
+    (exchange-point-and-mark) 
+    (transient-mark-mode 1)
+    (py-indent-line)
+    (sit-for 0.1) 
+    (message "point: %s" (point))
+    (assert (eq (point) 216) nil "tab-results-in-never-ending-process-lp-1163423-test failed")))
+
+
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

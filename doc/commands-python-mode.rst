@@ -639,9 +639,7 @@ When `py-tab-shifts-region-p' is `t', not just the current line,
 but the region is shiftet that way.
 
 If `py-tab-indents-region-p' is `t' and first TAB doesn't shift
---as indent is at outmost reasonable--, indent-region is called.
-
-Optional arg RECURSIVE is ignored presently. 
+--as indent is at outmost reasonable--, indent-region is called. 
 
 py-newline-and-indent
 ---------------------

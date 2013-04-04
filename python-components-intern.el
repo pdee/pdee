@@ -259,9 +259,14 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
                   (back-to-indentation)
                   (py-compute-indentation orig origline closing line inside t indent-offset)))
                ((and (not line)(eq origline (py-count-lines))
-                     (save-excursion (and (setq erg (py-go-to-keyword py-extended-block-or-clause-re))
-                                          (ignore-errors (< orig (or (py-end-of-block-or-clause)(point)))))))
-                (+ (car erg) (if py-smart-indentation (py-guess-indent-offset nil orig origline) indent-offset)))
+                     (save-excursion
+                       (and (setq erg (py-go-to-keyword py-extended-block-or-clause-re))
+                            (if py-smart-indentation (setq indent (py-guess-indent-offset)) t) 
+                            (ignore-errors (< orig (or (py-end-of-block-or-clause)(point)))))))
+                (+ (car erg) (if py-smart-indentation 
+                                 ;; (py-guess-indent-offset nil orig origline)
+                                 (or indent (py-guess-indent-offset))
+                               indent-offset)))
                ((and (not line)(eq origline (py-count-lines))
                      (py-beginning-of-statement-p))
                 (py-beginning-of-statement)
