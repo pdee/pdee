@@ -1060,19 +1060,24 @@ Takes the result of (syntax-ppss)"
           (setq element (cdr element))))
       element)))
 
-(defun py-shell-send-string (string &optional process msg)
+(defun py-shell-send-string (string &optional process msg filename)
   "Send STRING to inferior Python PROCESS.
 When `py-verbose-p' and MSG is non-nil messages the first line of STRING."
   (interactive "sPython command: ")
   (let* ((process (or process (get-buffer-process (py-shell))))
-         (lines (split-string string "\n" t))
+         (lines (split-string string "\n"))
          (temp-file-name (concat (with-current-buffer (process-buffer process)
                                    (file-remote-p default-directory))
                                  (py-normalize-directory py-temp-directory)
                                  "psss-temp.py"))
-         (file-name (or (buffer-file-name) temp-file-name)))
+         (file-name (or filename (buffer-file-name) temp-file-name)))
     (if (> (length lines) 1)
-        (progn
+        (let* ((temporary-file-directory
+                (if (file-remote-p default-directory)
+                    (concat (file-remote-p default-directory) "/tmp")
+                  temporary-file-directory))
+               (temp-file-name (make-temp-file "py"))
+               (file-name (or (buffer-file-name) temp-file-name)))
           (with-temp-file temp-file-name
             (insert string)
             (delete-trailing-whitespace))
@@ -1100,10 +1105,10 @@ the output."
       (replace-regexp-in-string
        (if (> (length py-shell-prompt-output-regexp) 0)
            (format "\n*%s$\\|^%s\\|\n$"
-                   python-shell-prompt-regexp
+                   py-shell-prompt-regexp
                    (or py-shell-prompt-output-regexp ""))
          (format "\n*$\\|^%s\\|\n$"
-                 python-shell-prompt-regexp))
+                 py-shell-prompt-regexp))
        "" output-buffer))))
 
 (defun py-send-string-return-output (string &optional process msg)
@@ -1126,10 +1131,10 @@ the output."
             (replace-regexp-in-string
              (if (> (length py-shell-prompt-output-regexp) 0)
                  (format "\n*%s$\\|^%s\\|\n$"
-                         python-shell-prompt-regexp
+                         py-shell-prompt-regexp
                          (or py-shell-prompt-output-regexp ""))
                (format "\n*$\\|^%s\\|\n$"
-                       python-shell-prompt-regexp))
+                       py-shell-prompt-regexp))
              "" output-buffer)))
     output-buffer))
 

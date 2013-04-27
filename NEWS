@@ -4,9 +4,13 @@ Python Mode News
 New in version 6.1.2
 ---------------------
 
-- boolean `py-electric-kill-backward-p', default is nil.
-  If behind a delimited form of braces, brackets or parentheses,
-  py-electric-backspace will kill it's contents
+- commands deleting all commented lines:
+  `py-delete-comments-in-def-or-class'
+  `py-delete-comments-in-class'
+  `py-delete-comments-in-block'
+  `py-delete-comments-in-region'
+
+-  command `py-empty-out-list-backward'
 
   With when cursor after 
   mystring[0:1]
@@ -15,6 +19,10 @@ New in version 6.1.2
   mystring[]
   ---------^
   In result cursor is insided emptied delimited form."
+
+- boolean `py-electric-kill-backward-p', default is nil.
+  If behind a delimited form of braces, brackets or parentheses,
+  `py-electric-backspace' runs `py-empty-out-list-backward'
 
 - unused variable `py-backspace-function' removed
 

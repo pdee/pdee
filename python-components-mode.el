@@ -512,6 +512,11 @@ Messaging increments the prompt counter of IPython shell. "
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-use-execute-ge24-3-p nil
+  "Seems Emacs-24.3 provided a way executing stuff without temporary files. "
+  :type 'boolean
+  :group 'python-mode)
+
 (defcustom py-lhs-inbound-indent 1
   "When line starts a multiline-assignment: How many colums indent should be more than opening bracket, brace or parenthesis. "
   :type 'integer
@@ -1236,11 +1241,12 @@ Default is  nil "
   :type 'string
   :group 'python-mode)
 
-(defcustom python-shell-prompt-regexp ">>> "
+(defcustom py-shell-prompt-regexp ">>> "
   "Regular Expression matching top\-level input prompt of python shell.
 It should not contain a caret (^) at the beginning."
   :type 'string
   :group 'python-mode)
+(defvar py-shell-prompt-regexp ">>> ")
 
 (defcustom python-ffap-setup-code
   "def __FFAP_get_module_path(module):
@@ -1303,7 +1309,6 @@ If underscore chars should be of syntax-class `word', not of `symbol'.
 Underscores in word-class makes `forward-word' etc. travel the indentifiers. Default is `t'.
 See also command `toggle-py-underscore-word-syntax-p' ")
 
-(defvar py-shell-prompt-regexp ">>> ")
 
 (defvar py-autofill-timer nil)
 (defvar py-fill-column-orig fill-column)
@@ -1585,13 +1590,14 @@ set in py-execute-region and used in py-jump-to-exception.")
 
 (defvar match-paren-no-use-syntax-pps nil)
 
+;; "[ \t]+File \"\\([^\"]+\\)\", line \\([0-9]+\\)"
 (defvar py-traceback-line-re
-  "^IPython\\|^In \\[[0-9]+\\]: *\\|^>>>\\|^[^ \t>]+>[^0-9]+\\([0-9]+\\)\\|^[ \t]+File \"\\([^\"]+\\)\", line \\([0-9]+\\)"
+  "^IPython\\|^In \\[[0-9]+\\]: *\\|[ \t]+File \"\\([^\"]+\\)\", line \\([0-9]+\\)\\|^[^ \t>]+>[^0-9]+\\([0-9]+\\)"
   "Regular expression that describes tracebacks.
 Inludes Python shell-prompt in order to stop further searches. ")
 
-(setq py-traceback-line-re
-  "^IPython\\|^In \\[[0-9]+\\]: *\\|^>>> \\|^[ \t]+File \"\\([^\"]+\\)\", line \\([0-9]+\\)\\|^[^ \t>]+>[^0-9]+\\([0-9]+\\)")
+;; (setq py-traceback-line-re
+;; "^IPython\\|^In \\[[0-9]+\\]: *\\|[ \t]+File \"\\([^\"]+\\)\", line \\([0-9]+\\)\\|^[^ \t>]+>[^0-9]+\\([0-9]+\\)")
 
 (defvar py-bol-forms-last-indent nil
   "For internal use. Stores indent from last py-end-of-FORM-bol command.
@@ -2710,7 +2716,7 @@ Use `M-x customize-variable' to set it permanently"
   Returns value of `py-docstring-style' switched to
 
 Use `M-x customize-variable' to set it permanently"]
-               
+
                ["Nil on" py-nil-docstring-style-on
                 :help "Make sure, nil docstring-style is on
 
@@ -2852,7 +2858,6 @@ Returns value of `py-underscore-word-syntax-p'\. .
 
 Use `M-x customize-variable' to set it permanently"])
 
-              
               ["Fill-paragraph fill docstring "
                (setq py-paragraph-fill-docstring-p
                      (not py-paragraph-fill-docstring-p))
@@ -2864,7 +2869,7 @@ Convenient use of `M-q' inside docstrings
 See also `py-docstring-style'
 Use `M-x customize-variable' to set it permanently"
                :style toggle :selected py-paragraph-fill-docstring-p]
-              
+
               ["Tab shifts region "
                (setq py-tab-shifts-region-p
                      (not py-tab-shifts-region-p))
@@ -6313,7 +6318,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
          '(py-font-lock-keywords nil nil nil nil
                                  (font-lock-syntactic-keywords
                                   . py-font-lock-syntactic-keywords))))
-  (set (make-local-variable 'which-func-functions) 'py-which-def-or-class) 
+  (set (make-local-variable 'which-func-functions) 'py-which-def-or-class)
   (set (make-local-variable 'parse-sexp-lookup-properties) t)
   (set (make-local-variable 'parse-sexp-ignore-comments) t)
   (set (make-local-variable 'comment-start) "#")

@@ -4,6 +4,13 @@ Put the following into your initialization file:
   (add-to-list 'load-path py-install-directory)
   (require 'python-mode)
 
+
+Unless other libraries depend on python.el, unloading 'python is recommended, as it seems to destroy python-mode user defined abbreviations:
+
+  (when (featurep 'python) (unload-feature 'python t))
+
+
+
 ;;;;;;;;;
 
 Customize default Python shell as `py-shell-name'
@@ -148,7 +155,10 @@ Comment- and docstring settings might be disabled by
 any non-integer value, which means: do not use a
 different value of `fill-column' than emacs-wide
 
+;;;;;;;;;
 
+External packages
 
-
-
+emacs-mirror reported conflicts wrt to versions number
+of external packages bundled here; removed
+smart-operator.el and autopair.el.

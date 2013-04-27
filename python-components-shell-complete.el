@@ -92,10 +92,9 @@ Then switch to the process buffer."
   (py-send-region start end)
   (py-switch-to-python t))
 
-
 ;; (defun py-load-file (file-name)
 ;;   "Load a Python file FILE-NAME into the inferior Python process.
-;; 
+;;
 ;; If the file has extension `.py' import or reload it as a module.
 ;; Treating it as a module keeps the global namespace clean, provides
 ;; function location information for debugging, and supports users of
@@ -117,7 +116,6 @@ Then switch to the process buffer."
 ;;        (format "execfile(%S)" file-name)))
 ;;     (message "%s loaded" file-name)))
 
-
 (defun py-load-file (file-name)
   "Load a Python file FILE-NAME into the inferior Python process.
 
@@ -125,7 +123,7 @@ If the file has extension `.py' import or reload it as a module.
 Treating it as a module keeps the global namespace clean, provides
 function location information for debugging, and supports users of
 module-qualified names."
-  (interactive "f") 
+  (interactive "f")
   (py-execute-file-base (get-buffer-process (get-buffer (py-shell))) file-name
    ;; (format "execfile(%S)" file-name)
 ))
@@ -139,28 +137,6 @@ This function takes the list of setup code to send from the
     (py-send-string-no-output
      (symbol-value code) process)
     (sit-for 0.1)))
-
-(defun py-shell-send-string (string &optional process msg)
-  "Send STRING to inferior Python PROCESS.
-When `py-verbose-p' and MSG is non-nil messages the first line of STRING."
-  (interactive "sPython command: ")
-  (let* ((process (or process (get-buffer-process (py-shell))))
-         (lines (split-string string "\n" t))
-         (temp-file-name (concat (with-current-buffer (process-buffer process)
-                                   (file-remote-p default-directory))
-                                 (py-normalize-directory py-temp-directory)
-                                 "psss-temp.py"))
-         (file-name (or (buffer-file-name) temp-file-name)))
-    (if (> (length lines) 1)
-        (progn
-          (with-temp-file temp-file-name
-            (insert string)
-            (delete-trailing-whitespace))
-          (py-send-file file-name process temp-file-name))
-      (comint-send-string process string)
-      (when (or (not (string-match "\n$" string))
-                (string-match "\n[ \t].*\n?$" string))
-        (comint-send-string process "\n")))))
 
 (defun py-send-string-no-output (string &optional process msg)
   "Send STRING to PROCESS and inhibit output.
@@ -204,7 +180,8 @@ FILE-NAME."
       (concat "__pyfile = open('''%s''');"
               "exec(compile(__pyfile.read(), '''%s''', 'exec'));"
               "__pyfile.close()")
-      (or (file-remote-p temp-file-name 'localname) file-name) file-name)
+      ;; (or (file-remote-p temp-file-name 'localname) file-name) file-name)
+      (or (file-remote-p temp-file-name 'localname) file-name) "Fehlerdatei")
      process)))
 
 ;; Author: Lukasz Pankowski, patch sent for lp:328836
@@ -227,20 +204,6 @@ FILE-NAME."
 ;;     ))
 
 ;;;
-
-;; (defun py-completion-at-point ()
-;;   "An alternative completion, similar the way python.el does it. "
-;;   (interactive "*")
-;;   (python-find-imports)
-;;   (let* ((start (when (skip-chars-backward "[[:alnum:]_]")(point)))
-;;          (end (progn (skip-chars-forward "[[:alnum:]_]")(point)))
-;;          (completion (when start
-;;                        (py-symbol-completions (buffer-substring-no-properties start end)))))
-;;     (if completion
-;;         (progn
-;;           (delete-region start end)
-;;           (insert (car completion)))
-;;       (tab-to-tab-stop))))
 
 (defun py-script-complete ()
   (interactive "*")
@@ -273,7 +236,6 @@ The list is sorted. "
        ;; We can get duplicates from the above -- don't know why.
        (delete-dups completions)
        #'string<))))
-
 
 (defun py-shell--do-completion-at-point (process imports input)
   "Do completion at point for PROCESS."
@@ -606,7 +568,6 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
               (when py-indent-no-completion-p
                 (tab-to-tab-stop))))
         (message "%s" "No response from Python process. Please check your configuration. If config is okay, please file a bug-regport at http://launchpad.net/python-mode")))))
-
 
 (provide 'python-components-shell-complete)
 

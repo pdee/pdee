@@ -313,12 +313,13 @@ Needed when file-path names are contructed from maybe numbered buffer names like
           py-split-windows-on-execute-p
           (or (eq switch 'noswitch)
               (not (eq switch 'switch))))
+         (delete-other-windows)
          (if (< (count-windows) py-max-split-windows)
              (progn
                (funcall py-split-windows-on-execute-function)
+               (pop-to-buffer oldbuf)
                (display-buffer py-buffer-name 'display-buffer-reuse-window))
-           (display-buffer py-buffer-name 'display-buffer-reuse-window))
-         (pop-to-buffer oldbuf))
+           (display-buffer py-buffer-name 'display-buffer-reuse-window)))
         ;; no split, switch
         ((or (eq switch 'switch)
              (and (not (eq switch 'noswitch))
@@ -609,7 +610,7 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
   (when (buffer-live-p localname)
     (kill-buffer localname)))
 
-(defun py-execute-python-mode-v5 (start end &optional pyshellname dedicated switch nostars sepchar split file)
+(defun py-execute-python-mode-v5 (start end &optional pyshellname)
   (let ((py-exception-buffer (current-buffer))
         (cmd (concat (or pyshellname py-shell-name) (if (string-equal py-which-bufname
                                                                       "Jython")
@@ -622,21 +623,16 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
     (if (not (get-buffer py-output-buffer))
         (message "No output.")
 
-      (let ((err-p (py-postprocess-output-buffer py-output-buffer py-exception-buffer start end)))
+      (let* ((err-p (py-postprocess-output-buffer py-output-buffer))
+             (line (cadr err-p)))
         (if err-p
-            (pop-to-buffer py-exception-buffer)
+            (when (and py-jump-on-exception line)
+              (beep)
+              (py-jump-to-exception (or py-exception-buffer file) line))
+          (pop-to-buffer py-exception-buffer)
           (pop-to-buffer py-output-buffer)
           (goto-char (point-max))
           (setq erg (copy-marker (point))))))))
-
-(defun py-execute-base (start end &optional pyshellname dedicated switch nostars sepchar split file)
-  "Select the handler. "
-  (cond (;; enforce proceeding as python-mode.el v5
-         python-mode-v5-behavior-p (py-execute-python-mode-v5 start end pyshellname dedicated switch nostars sepchar split file))
-        ;; No need for a temporary file than
-        ((and (not (buffer-modified-p)) file)
-         (py-execute-buffer-file start end pyshellname dedicated switch nostars sepchar split file))
-        (t (py-execute-buffer-finally start end pyshellname dedicated switch nostars sepchar split))))
 
 (defun py-execute-buffer-file (start end pyshellname dedicated switch nostars sepchar split file)
   (let* ((oldbuf (current-buffer))
@@ -666,16 +662,14 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
          ;; (filebuf (get-buffer file))
          (pec (if (string-match "[pP]ython ?3" py-buffer-name)
                   (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" localname localname)
-                (format "execfile(r'%s') # PYTHON-MODE\n" localname)))
-         ;; (comint-scroll-to-bottom-on-output t)
-)
+                (format "execfile(r'%s') # PYTHON-MODE\n" localname))))
     (if (file-readable-p file)
         (progn
           (when (string-match "ipython" (process-name proc))
             (sit-for py-ipython-execute-delay))
           (setq erg (py-execute-file-base proc file pec procbuf))
           (sit-for 0.2)
-          (unless (py-postprocess-output-buffer procbuf oldbuf start end file)
+          (unless (py-postprocess-output-buffer procbuf)
             (pop-to-buffer oldbuf)
             (py-shell-manage-windows switch split oldbuf py-buffer-name))
           (unless (string= (buffer-name (current-buffer)) (buffer-name procbuf))
@@ -683,7 +677,7 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
       (message "%s not readable. %s" file "Do you have permissions?"))
     erg))
 
-(defun py-execute-buffer-finally (&optional start end pyshellname dedicated switch nostars sepchar split string)
+(defun py-execute-buffer-finally (start end &optional pyshellname dedicated switch nostars sepchar split)
   (let* ((oldbuf (current-buffer))
          (pyshellname (or pyshellname (py-choose-shell)))
          (execute-directory
@@ -697,7 +691,7 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
                  py-execute-directory)
                 ((getenv "VIRTUAL_ENV"))
                 (t (getenv "HOME"))))
-         (strg (or string (buffer-substring-no-properties start end)))
+         (strg (buffer-substring-no-properties start end))
          (sepchar (or sepchar (char-to-string py-separator-char)))
          (py-buffer-name (py-buffer-name-prepare pyshellname sepchar))
          (temp (make-temp-name
@@ -735,7 +729,7 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
             (sit-for py-ipython-execute-delay))
           (setq erg (py-execute-file-base proc file pec procbuf))
           (sit-for 0.1)
-          (setq err-p (py-postprocess-output-buffer procbuf oldbuf start end file))
+          (setq err-p (py-postprocess-output-buffer py-buffer-name))
           (py-shell-manage-windows switch split oldbuf py-buffer-name)
           (unless (string= (buffer-name (current-buffer)) (buffer-name procbuf))
             (when py-verbose-p (message "Output buffer: %s" procbuf))
@@ -744,6 +738,90 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
             (sit-for 0.1)))
       (message "%s not readable. %s" file "Do you have write permissions?"))
     erg))
+
+(defun py-execute-ge24.3 (start end &optional pyshellname dedicated switch nostars sepchar split file)
+  "Select the handler. "
+  (and (buffer-file-name) buffer-offer-save (buffer-modified-p) (y-or-n-p "Save buffer before executing? ")
+       (write-file (buffer-file-name)))
+  (let* ((start (copy-marker start))
+         (end (copy-marker end))
+         (py-exception-buffer (current-buffer))
+         (line (count-lines (point-min) start))
+         (pyshellname (or pyshellname (py-choose-shell)))
+         (execute-directory
+          (cond ((ignore-errors (file-name-directory (file-remote-p (buffer-file-name) 'localname))))
+                ((and py-use-current-dir-when-execute-p (buffer-file-name))
+                 (file-name-directory (buffer-file-name)))
+                ((and py-use-current-dir-when-execute-p
+                      py-fileless-buffer-use-default-directory-p)
+                 (expand-file-name default-directory))
+                ((stringp py-execute-directory)
+                 py-execute-directory)
+                ((getenv "VIRTUAL_ENV"))
+                (t (getenv "HOME"))))
+         (strg (buffer-substring-no-properties start end))
+         (sepchar (or sepchar (char-to-string py-separator-char)))
+         (py-buffer-name (py-buffer-name-prepare pyshellname sepchar))
+         (temp (make-temp-name
+                (concat (replace-regexp-in-string (regexp-quote sepchar) "-" (replace-regexp-in-string (concat "^" (regexp-quote sepchar)) "" (replace-regexp-in-string ":" "-" pyshellname))) "-")))
+         (localname (or (buffer-file-name) (concat (expand-file-name py-temp-directory) sepchar (replace-regexp-in-string (regexp-quote sepchar) "-" temp) ".py")))
+         (switch (or switch py-switch-buffers-on-execute-p))
+         (split (or split py-split-windows-on-execute-p))
+         (proc (if dedicated
+                   (get-buffer-process (py-shell nil dedicated pyshellname switch sepchar py-buffer-name t))
+                 (or (get-buffer-process py-buffer-name)
+                     (get-buffer-process (py-shell nil dedicated pyshellname switch sepchar py-buffer-name t)))))
+         (procbuf (process-buffer proc))
+         (file (or file (with-current-buffer py-buffer-name ; create the file to be executed in context of the shell
+                          (concat (file-remote-p default-directory) localname))))
+         (filebuf (get-buffer-create file))
+         (pec (if (string-match "[pP]ython ?3" py-buffer-name)
+                  (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" localname localname)
+                (format "execfile(r'%s') # PYTHON-MODE\n" localname)))
+         (comint-scroll-to-bottom-on-output t)
+         err-p)
+    (set-buffer filebuf)
+    (erase-buffer)
+    ;; (switch-to-buffer (current-buffer))
+    (newline line)
+    (save-excursion
+      (insert strg))
+    (py-fix-start (point) (point-max))
+    (unless (string-match "[jJ]ython" pyshellname)
+      (when (and execute-directory py-use-current-dir-when-execute-p
+                 (not (string= execute-directory default-directory)))
+        (message "Warning: options `execute-directory' and `py-use-current-dir-when-execute-p' may conflict"))
+      (and execute-directory
+           (process-send-string proc (concat "import os; os.chdir(\"" execute-directory "\")\n"))
+           ;; (py-send-string-no-output (concat "import os; os.chdir(\"" execute-directory "\")\n") proc)
+           ))
+    (set-buffer filebuf)
+    (process-send-string proc
+                         (buffer-substring-no-properties
+                          (point-min) (point-max)))
+    ;; (write-file (buffer-name filebuf))
+    ;; (py-execute-file-base proc file pec procbuf)
+    ;; (py-shell-send-string (buffer-substring-no-properties (point-min) (point-max)) proc t file)
+    (sit-for 0.1)
+    (if (and (setq err-string (py-postprocess-output-buffer procbuf))
+             (car err-string)
+             (not (markerp err-string)))
+        (py-jump-to-exception err-string beg end)
+      (py-shell-manage-windows switch split py-exception-buffer py-buffer-name)
+      (unless (string= (buffer-name (current-buffer)) (buffer-name procbuf))
+        (when py-verbose-p (message "Output buffer: %s" procbuf))))))
+
+(defun py-execute-base (start end &optional pyshellname dedicated switch nostars sepchar split file)
+  "Select the handler. "
+  (cond (;; enforce proceeding as python-mode.el v5
+         python-mode-v5-behavior-p (py-execute-python-mode-v5 start end pyshellname dedicated switch nostars sepchar split file))
+        (py-use-execute-ge24-3-p
+         (py-execute-ge24.3 start end pyshellname dedicated switch nostars sepchar split file))
+        ;; No need for a temporary file than
+        ((and (not (buffer-modified-p)) file)
+         (py-execute-buffer-file start end pyshellname dedicated switch nostars sepchar split file))
+        (t (py-execute-buffer-finally start end pyshellname dedicated switch nostars sepchar split))))
+
 
 (defun py-execute-string (&optional string shell dedicated)
   "Send the argument STRING to a Python interpreter.
@@ -832,16 +910,16 @@ Avoid empty lines at the beginning. "
   ;; (switch-to-buffer (current-buffer))
   (python-mode)
   (goto-char start)
-  (let ((beg (copy-marker start)))
-    (while (empty-line-p)
-      (delete-region (line-beginning-position) (1+ (line-end-position))))
-    (back-to-indentation)
-    (unless (py-beginning-of-statement-p)
-      (py-down-statement))
-    (while (not (eq (current-indentation) 0))
-      (py-shift-left py-indent-offset start end))
-    (setq py-line-number-offset (count-lines 1 start))
-    beg))
+  (while (empty-line-p)
+    (delete-region (line-beginning-position) (1+ (line-end-position))))
+  (back-to-indentation)
+  (unless (py-beginning-of-statement-p)
+    (py-down-statement))
+  (while (not (eq (current-indentation) 0))
+    (py-shift-left py-indent-offset start end))
+  (goto-char (point-max))
+  (unless (empty-line-p)
+    (newline)))
 
 (defun py-fetch-py-master-file ()
   "Lookup if a `py-master-file' is specified.
@@ -966,7 +1044,6 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch) "
         (beg (point-min))
         (end (point-max)))
     (py-execute-region beg end shell dedicated switch nostars sepchar split file)))
-
 
 (defun py-execute-buffer-dedicated (&optional shell)
   "Send the contents of the buffer to a unique Python interpreter.
@@ -1301,7 +1378,11 @@ Returns position where output starts. "
             ;; (switch-to-buffer (current-buffer))
             (funcall (process-filter proc) proc msg))))
     (set-buffer procbuf)
+    ;; (switch-to-buffer (current-buffer))
+    ;; (accept-process-output 1)
     (process-send-string proc cmd)
+    (goto-char (point-max))
+    (recenter-top-bottom)
     (setq erg (process-mark proc))
     erg))
 
@@ -1351,84 +1432,185 @@ Returns position where output starts. "
   "Internal use only - when `py-up-exception' is called in
   source-buffer, this will deliver the exception-buffer again. ")
 
-(defun py-postprocess-output-buffer (buf exception-buffer start end &optional file)
-  "Highlight exceptions found in BUF.
-If an exception occurred return t, otherwise return nil.  BUF must exist."
-  (let ((file file)
-        (expression (concat "^[ 	]+File \"\\(" file "\\)\", line \\([0-9]+\\)"))
-        line err-p pattern)
-    (when
-        (or (and file (re-search-forward expression nil t))
-            (and file (re-search-backward expression nil t))
-            ;; File "/tmp/python-2246WCK.py", line 7, in <module>
-            ;; "^IPython\\|^In \\[[0-9]+\\]: *\\|^>>> \\|^[ 	]+File \"\\([^\"]+\\)\", line \\([0-9]+\\)\\|^[^ 	>]+>[^0-9]+\\([0-9]+\\)"
-            (re-search-forward py-traceback-line-re nil t)
-            (re-search-backward py-traceback-line-re nil t))
-      (or file (setq file (match-string 1)))
-      (setq line (if (and (match-string-no-properties 2)
-                          (save-match-data (string-match "[0-9]" (match-string-no-properties 2))))
-                     (string-to-number (match-string 2))
-                   (when (and (match-string-no-properties 3)
-                              (save-match-data (string-match "[0-9]" (match-string-no-properties 3))))
-                     (string-to-number (match-string-no-properties 3))))))
-    (overlay-put (make-overlay (match-beginning 0) (match-end 0))
-                 'face 'highlight)
-    (setq pattern (progn (forward-line 1)(back-to-indentation)(looking-at ".+")(match-string-no-properties 0)))
-    (goto-char (point-max))
-    (when (and py-jump-on-exception line)
-      (beep)
-      (py-jump-to-exception file line py-line-number-offset exception-buffer pattern start end)
-      (setq err-p t))
-    err-p))
+;;; v5 way
 
-(defun py-jump-to-exception (file line py-line-number-offset &optional buffer pattern start end)
+(defun py-jump-to-exception (file line)
   "Jump to the Python code in FILE at LINE."
-  (if buffer
-      (progn
-        (set-buffer buffer)
-        ;; (switch-to-buffer (current-buffer))
-        (goto-char start)
-        (search-forward pattern end nil))
-    (let ((buffer (cond ((string-equal file "<stdin>")
-                         (if (consp py-exception-buffer)
-                             (cdr py-exception-buffer)
-                           py-exception-buffer))
-                        ((and (consp py-exception-buffer)
-                              (string-equal file (car py-exception-buffer)))
-                         (cdr py-exception-buffer))
-                        ((ignore-errors (find-file-noselect file)))
-                        ;; could not figure out what file the exception
-                        ;; is pointing to, so prompt for it
-                        (t (find-file (read-file-name "Exception file: "
-                                                      nil
-                                                      file t))))))
-      ;; Fiddle about with line number
-      (setq line (+ py-line-number-offset line))
-      (pop-to-buffer buffer)
-      ;; Force Python mode
-      (unless (eq major-mode 'python-mode)
+  (let ((buffer (cond ((string-equal file "<stdin>")
+                       (if (consp py-exception-buffer)
+                           (cdr py-exception-buffer)
+                         py-exception-buffer))
+                      ((and (consp py-exception-buffer)
+                            (string-equal file (car py-exception-buffer)))
+                       (cdr py-exception-buffer))
+                      ((py-safe (find-file-noselect file)))
+                      ;; could not figure out what file the exception
+                      ;; is pointing to, so prompt for it
+                      (t (find-file (read-file-name "Exception file: "
+                                                    nil
+                                                    file t))))))
+    ;; Fiddle about with line number
+    (setq line (+ py-line-number-offset line))
+
+    (pop-to-buffer buffer)
+    ;; Force Python mode
+    (if (not (eq major-mode 'python-mode))
         (python-mode))
-      (goto-char (point-min))
-      (forward-line (1- line))
-      (message "Jumping to exception in file %s on line %d" file line))))
+    (forward-line (1+ line))
+    (message "Jumping to exception in file %s on line %d" file line)))
+
+(defun py-mouseto-exception (event)
+  "Jump to the code which caused the Python exception at EVENT.
+EVENT is usually a mouse click."
+  (interactive "e")
+  (cond
+   ((fboundp 'event-point)
+    ;; XEmacs
+    (let* ((point (event-point event))
+           (buffer (event-buffer event))
+           (e (and point buffer (extent-at point buffer 'py-exc-info)))
+           (info (and e (extent-property e 'py-exc-info))))
+      (message "Event point: %d, info: %s" point info)
+      (and info
+           (py-jump-to-exception (car info) (cdr info)))
+      ))
+   ;; Emacs -- Please port this!
+   ))
+
+(defun py-goto-exception ()
+  "Go to the line indicated by the traceback."
+  (interactive)
+  (let (file line)
+    (save-excursion
+      (beginning-of-line)
+      (if (looking-at py-traceback-line-re)
+          (setq file (match-string 1)
+                line (string-to-number (match-string 2)))))
+    (if (not file)
+        (error "Not on a traceback line"))
+    (py-jump-to-exception file line)))
+
+(defun py-find-next-exception (start buffer searchdir errwhere)
+  "Find the next Python exception and jump to the code that caused it.
+START is the buffer position in BUFFER from which to begin searching
+for an exception.  SEARCHDIR is a function, either
+`re-search-backward' or `re-search-forward' indicating the direction
+to search.  ERRWHERE is used in an error message if the limit (top or
+bottom) of the trackback stack is encountered."
+  (let (file line)
+    (save-excursion
+      (set-buffer buffer)
+      (goto-char (py-point start))
+      (if (funcall searchdir py-traceback-line-re nil t)
+          (setq file (match-string 1)
+                line (string-to-number (match-string 2)))))
+    (if (and file line)
+        (py-jump-to-exception file line)
+      (error "%s of traceback" errwhere))))
+
+;; (defun py-find-next-exception (start buffer searchdir errwhere)
+;;   "Find the next Python exception and jump to the code that caused it.
+;; START is the buffer position in BUFFER from which to begin searching
+;; for an exception.  SEARCHDIR is a function, either
+;; `re-search-backward' or `re-search-forward' indicating the direction
+;; to search.  ERRWHERE is used in an error message if the limit (top or
+;; bottom) of the trackback stack is encountered."
+;;   (let ((orig (point))
+;;         (origline (py-count-lines))
+;;         file line pos)
+;;     (goto-char (py-point start))
+;;     (if (funcall searchdir py-traceback-line-re nil t)
+;;         (if (save-match-data (eq (py-count-lines) origline))
+;;             (progn
+;;               (forward-line (if (string= errwhere "Top") -1 1))
+;;               (py-find-next-exception start buffer searchdir errwhere))
+;;           (if (not (save-match-data (string-match "^IPython\\|^In \\[[0-9]+\\]: *\\|^>>>" (match-string-no-properties 0))))
+;;               (progn
+;;                 (setq py-last-exeption-buffer (current-buffer))
+;;                 (if (save-match-data (string-match "File" (match-string-no-properties 0)))
+;;                     (progn
+;;                       (setq file (match-string-no-properties 2)
+;;                             pos (point)
+;;                             line (string-to-number (match-string-no-properties 3))))
+;;                   (save-excursion
+;;                     ;; file and line-number are in different lines
+;;                     (setq line (string-to-number (match-string-no-properties 1))
+;;                           pos (point)
+;;                           file (progn
+;;                                  (when (and (re-search-backward "\\(^IPython\\|^In \\[[0-9]+\\]: *\\|^>>>\\|^[^\t >]+\\)>?[ \t]+in[ \t]+\\([^ \t\n]+\\)" nil t 1)
+;;                                             (not (save-match-data (string-match "<\\|^IPython\\|^In \\[[0-9]+\\]: *\\|^>>>" (match-string-no-properties 1)))))
+;;                                    (match-string-no-properties 1))))))
+;;                 (if file
+;;                     (when (string-match ".+\.pyc" file)
+;;                       (setq file (substring file 0 -1)))
+;;                   (error "%s of traceback" errwhere))
+;;                 (if (and file line)
+;;                     (if
+;;                         (and (string= "<stdin>" file) (eq 1 line))
+;;                         (error "%s of traceback" errwhere)
+;;                       (py-jump-to-exception file line py-line-number-offset))
+;;                   (error "%s of traceback" errwhere)))
+;;             (goto-char orig)
+;;             (error "%s of traceback" errwhere))))))
 
 (defun py-down-exception (&optional bottom)
   "Go to the next line down in the traceback.
-
-With \\[universal-argument] (programmatically, optional argument
+With \\[univeral-argument] (programmatically, optional argument
 BOTTOM), jump to the bottom (innermost) exception in the exception
 stack."
   (interactive "P")
-  (py-find-next-exception-prepare 'down (when (eq 4 (prefix-numeric-value bottom)) "BOTTOM")))
+  (let* ((proc (get-process "Python"))
+         (buffer (if proc "*Python*" py-output-buffer)))
+    (if bottom
+        (py-find-next-exception 'eob buffer 're-search-backward "Bottom")
+      (py-find-next-exception 'eol buffer 're-search-forward "Bottom"))))
 
 (defun py-up-exception (&optional top)
   "Go to the previous line up in the traceback.
-
 With \\[universal-argument] (programmatically, optional argument TOP)
 jump to the top (outermost) exception in the exception stack."
   (interactive "P")
-  (unless py-last-exeption-buffer (setq py-last-exeption-buffer (current-buffer)))
-  (py-find-next-exception-prepare 'up (when (eq 4 (prefix-numeric-value top)) "TOP")))
+  (let* ((proc (get-process "Python"))
+         (buffer (if proc "*Python*" py-output-buffer)))
+    (if top
+        (py-find-next-exception 'bob buffer 're-search-forward "Top")
+      (py-find-next-exception 'bol buffer 're-search-backward "Top"))))
+;;;
+
+(defun py-postprocess-output-buffer (buf)
+  "Highlight exceptions found in BUF.
+If an exception occurred return error-string, otherwise return nil.  BUF must exist."
+  (let ((poma (point-max))
+        line file bol err-p estring ecode)
+    (save-excursion
+      (set-buffer buf)
+      (display-buffer buf)
+      ;; (switch-to-buffer (current-buffer))
+      (goto-char poma)
+      (forward-line -1)
+      (end-of-line)
+      (when (and (re-search-backward (concat comint-prompt-regexp "\\|" py-traceback-line-re) nil t)
+                 (looking-at py-traceback-line-re))
+        (setq file (substring-no-properties (match-string 1))
+              line (string-to-number (match-string 2)))
+        (add-to-list 'err-p line)
+        (add-to-list 'err-p file)
+        (overlay-put (make-overlay (match-beginning 0) (match-end 0))
+                     'face 'highlight)
+        (forward-line 1)
+        (if (looking-at "[ \t]*\\([^\t\n\r\f]+\\)[ \t]*$")
+            (progn
+              (setq estring (match-string-no-properties 1))
+              (add-to-list 'err-p estring t)
+              (setq ecode (buffer-substring-no-properties (line-end-position)
+                                                          (progn (re-search-forward comint-prompt-regexp nil t 1)(match-beginning 0))))
+              ;; (setq ecode (concat (split-string ecode "[ \n\t\f\r^]" t)))
+              (setq ecode (replace-regexp-in-string "[ \n\t\f\r^]+" " " ecode))
+              (add-to-list 'err-p ecode t))
+          (setq err-p t)))
+      (goto-char poma)
+      ;; (and py-verbose-p (message "%s" (nth 2 err-p)))
+      err-p)))
 
 (defun py-find-next-exception-prepare (direction start)
   "Setup exception regexps depending from kind of Python shell. "
@@ -1447,51 +1629,6 @@ jump to the top (outermost) exception in the exception stack."
       (if (string= start "BOTTOM")
           (py-find-next-exception 'eob buffer 're-search-backward "Bottom")
         (py-find-next-exception 'eol buffer 're-search-forward "Bottom")))))
-
-(defun py-find-next-exception (start buffer searchdir errwhere)
-  "Find the next Python exception and jump to the code that caused it.
-START is the buffer position in BUFFER from which to begin searching
-for an exception.  SEARCHDIR is a function, either
-`re-search-backward' or `re-search-forward' indicating the direction
-to search.  ERRWHERE is used in an error message if the limit (top or
-bottom) of the trackback stack is encountered."
-  (let ((orig (point))
-        (origline (py-count-lines))
-        file line pos)
-    (goto-char (py-point start))
-    (if (funcall searchdir py-traceback-line-re nil t)
-        (if (save-match-data (eq (py-count-lines) origline))
-            (progn
-              (forward-line (if (string= errwhere "Top") -1 1))
-              (py-find-next-exception start buffer searchdir errwhere))
-          (if (not (save-match-data (string-match "^IPython\\|^In \\[[0-9]+\\]: *\\|^>>>" (match-string-no-properties 0))))
-              (progn
-                (setq py-last-exeption-buffer (current-buffer))
-                (if (save-match-data (string-match "File" (match-string-no-properties 0)))
-                    (progn
-                      (setq file (match-string-no-properties 2)
-                            pos (point)
-                            line (string-to-number (match-string-no-properties 3))))
-                  (save-excursion
-                    ;; file and line-number are in different lines
-                    (setq line (string-to-number (match-string-no-properties 1))
-                          pos (point)
-                          file (progn
-                                 (when (and (re-search-backward "\\(^IPython\\|^In \\[[0-9]+\\]: *\\|^>>>\\|^[^\t >]+\\)>?[ \t]+in[ \t]+\\([^ \t\n]+\\)" nil t 1)
-                                            (not (save-match-data (string-match "<\\|^IPython\\|^In \\[[0-9]+\\]: *\\|^>>>" (match-string-no-properties 1)))))
-                                   (match-string-no-properties 1))))))
-                (if file
-                    (when (string-match ".+\.pyc" file)
-                      (setq file (substring file 0 -1)))
-                  (error "%s of traceback" errwhere))
-                (if (and file line)
-                    (if
-                        (and (string= "<stdin>" file) (eq 1 line))
-                        (error "%s of traceback" errwhere)
-                      (py-jump-to-exception file line py-line-number-offset buffer))
-                  (error "%s of traceback" errwhere)))
-            (goto-char orig)
-            (error "%s of traceback" errwhere))))))
 
 (defalias 'ipython-send-and-indent 'py-execute-line-ipython)
 (defalias 'py-execute-region-in-shell 'py-execute-region)

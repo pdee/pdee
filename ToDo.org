@@ -5,3 +5,5 @@
 * TODO dispay index in speedbar
 * TODO python3 smart detect for py-execute-
 * TODO py-electric-colon: insert colon
+* TODO py-decomment
+* TODO py-output-buffer
