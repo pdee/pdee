@@ -178,7 +178,7 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
                   (if (< 1 (- origline this-line))
                       (py-fetch-previous-indent orig)
                     (if (looking-at "from +\\([^ \t\n]+\\) +import")
-                        5
+                        py-backslashed-lines-indent-offset
                       (+ (current-indentation) py-continuation-offset)))))
                ((and (looking-at py-block-closing-keywords-re)(eq (py-count-lines) origline))
                 (skip-chars-backward "[ \t\r\n\f]")

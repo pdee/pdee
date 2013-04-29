@@ -20,6 +20,10 @@ New in version 6.1.2
   ---------^
   In result cursor is insided emptied delimited form."
 
+- customizable `py-backslashed-lines-indent-offset', default is 5
+  Amount of offset per level of indentation of backslashed.
+  No semantic indent,  which diff to `py-indent-offset' indicates
+
 - boolean `py-electric-kill-backward-p', default is nil.
   If behind a delimited form of braces, brackets or parentheses,
   `py-electric-backspace' runs `py-empty-out-list-backward'
