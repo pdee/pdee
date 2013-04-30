@@ -291,16 +291,22 @@ def main(argv):
 If no `load-branch-function' is specified, make sure the appropriate branch is loaded. Otherwise default python-mode will be checked. "
   (interactive "p")
   (let ((teststring "
-    d = {'a':{'b':3,
-              'c':4}}
+d = {'a':{'b':3,
+          'c':4
+          }
+     }
 "))
     (py-bug-tests-intern 'nested-dictionaries-indent-lp:328791 arg teststring)))
 
 (defun nested-dictionaries-indent-lp:328791 ()
   (let ((py-indent-honors-multiline-listing t))
-    (goto-char (point-min))
-    (forward-line 2)
-    (assert (eq 14 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test failed")))
+    (goto-char 19)
+    (assert (eq 10 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #1 failed")
+    (goto-char 35)
+    (assert (eq 10 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #2 failed")
+    (goto-char 47)
+    (assert (eq 5 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #3 failed")
+    ))
 
 (defun mark-block-region-lp:328806-test (&optional arg)
   "With ARG greater 1 keep test buffer open.

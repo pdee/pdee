@@ -2772,133 +2772,279 @@ Go to beginning one level below of compound statement or definition at point. "]
          ["Python-mode customize group" (customize-group 'python-mode)
           :help "Open the customization buffer for Python mode"]
          ("Switches"
-          
           :help "Toggle useful modes like `highlight-indentation'"
           
-          ("Docstring styles"
-           :help "Toggle values of `py-docstring-style'
-In order to set permanently customize this variable"
+          ("Interpreter"
            
-           ("Nil"
-            :help "Toggle nil value of `py-docstring-style'
+           ["Enforce py-shell-name" force-py-shell-name-p-on
+            :help "Enforce customized default `py-shell-name' should upon execution. "]
+           
+           ["Don't enforce default interpreter" force-py-shell-name-p-off
+            :help "Make execute commands guess interpreter from environment"]
+           
+           ["Enforce local Python shell " py-force-local-shell-on
+            :help "Locally indicated Python being enforced upon sessions execute commands. "]
+           
+           ["Remove local Python shell enforcement, restore default" py-force-local-shell-off
+            :help "Restore `py-shell-name' default value and `behaviour'. "]
+           
+           )
+          
+          ("TAB related"
+           
+           ["indent-tabs-mode"
+            (setq indent-tabs-mode
+                  (not indent-tabs-mode))
+            :help "Indentation can insert tabs if this is non-nil\.
+
+Use `M-x customize-variable' to set it permanently"
+            :style toggle :selected indent-tabs-mode]
+           
+           ["Tab shifts region "
+            (setq py-tab-shifts-region-p
+                  (not py-tab-shifts-region-p))
+            :help "If `t', TAB will indent/cycle the region, not just the current line\.
+
+Default is nil
+See also `py-tab-indents-region-p'
+
+Use `M-x customize-variable' to set it permanently"
+            :style toggle :selected py-tab-shifts-region-p]
+           
+           ["Tab indents region "
+            (setq py-tab-indents-region-p
+                  (not py-tab-indents-region-p))
+            :help "When `t' and first TAB doesn't shift, indent-region is called\.
+
+Default is nil
+See also `py-tab-shifts-region-p'
+
+Use `M-x customize-variable' to set it permanently"
+            :style toggle :selected py-tab-indents-region-p]
+           
+           )
+          
+          ("Filling"
+           
+           ("Docstring styles"
+            :help "Toggle values of `py-docstring-style'
+In order to set permanently customize this variable"
+            
+            ("Nil"
+             :help "Toggle nil value of `py-docstring-style'
+Use `M-x customize-variable' to set it permanently"
+             
+             ["Toggle nil docstring style" toggle-py-nil-docstring-style
+              :help "If nil docstring-style should be on or off
+  Returns value of `py-docstring-style' switched to
+
+Use `M-x customize-variable' to set it permanently"]
+             
+             ["Nil on" py-nil-docstring-style-on
+              :help "Make sure, nil docstring-style is on
+
+Use `M-x customize-variable' to set it permanently"]
+             
+             ["Nil off" py-nil-docstring-style-off
+              :help "Restores default value of `py-docstring-style'
+
+Use `M-x customize-variable' to set it permanently"])
+            
+            ("Onetwo"
+             :help "Toggle onetwo value of `py-docstring-style'
+In order to set permanently customize this variable"
+             
+             ["Toggle onetwo docstring style" toggle-py-onetwo-docstring-style
+              :help "If onetwo docstring-style should be on or off
+  Returns value of `py-docstring-style' switched to
+
+Use `M-x customize-variable' to set it permanently"]
+             
+             ["Onetwo on" py-onetwo-docstring-style-on
+              :help "Make sure, onetwo docstring-style is on
+
+Use `M-x customize-variable' to set it permanently"]
+             
+             ["Onetwo off" py-onetwo-docstring-style-off
+              :help " Restores default value of `py-docstring-style'
+
+Use `M-x customize-variable' to set it permanently"])
+            
+            ("Pep 257"
+             :help "Toggle pep-257 value of `py-docstring-style'
+In order to set permanently customize this variable"
+             
+             ["Toggle pep 257 docstring style" toggle-py-pep-257-docstring-style
+              :help "If pep-257 docstring-style should be on or off
+  Returns value of `py-docstring-style' switched to
+
+Use `M-x customize-variable' to set it permanently"]
+             
+             ["Pep 257 on" py-pep-257-docstring-style-on
+              :help "Make sure, pep-257 docstring-style is on
+
+Use `M-x customize-variable' to set it permanently"]
+             
+             ["Pep 257 off" py-pep-257-docstring-style-off
+              :help " Restores default value of `py-docstring-style'
+
+Use `M-x customize-variable' to set it permanently"])
+            
+            ("Pep 257 nn"
+             :help "Toggle pep-257-nn value of `py-docstring-style'
+In order to set permanently customize this variable"
+             
+             ["Toggle pep 257 nn docstring style" toggle-py-pep-257-nn-docstring-style
+              :help "If pep-257-nn docstring-style should be on or off
+  Returns value of `py-docstring-style' switched to
+
+Use `M-x customize-variable' to set it permanently"]
+             
+             ["Pep 257 nn on" py-pep-257-nn-docstring-style-on
+              :help "Make sure, pep-257-nn docstring-style is on
+
+Use `M-x customize-variable' to set it permanently"]
+             
+             ["Pep 257 nn off" py-pep-257-nn-docstring-style-off
+              :help " Restores default value of `py-docstring-style'
+
+Use `M-x customize-variable' to set it permanently"])
+            
+            ("Symmetric"
+             :help "Toggle symmetric value of `py-docstring-style'
+In order to set permanently customize this variable"
+             
+             ["Toggle symmetric docstring style" toggle-py-symmetric-docstring-style
+              :help "If symmetric docstring-style should be on or off
+  Returns value of `py-docstring-style' switched to
+
+Use `M-x customize-variable' to set it permanently"]
+             
+             ["Symmetric on" py-symmetric-docstring-style-on
+              :help "Make sure, symmetric docstring-style is on
+
+Use `M-x customize-variable' to set it permanently"]
+             
+             ["Symmetric off" py-symmetric-docstring-style-off
+              :help " Restores default value of `py-docstring-style'
+
+Use `M-x customize-variable' to set it permanently"])
+            
+            ("Django"
+             :help "Toggle django value of `py-docstring-style'
+In order to set permanently customize this variable"
+             
+             ["Toggle django docstring style" toggle-py-django-docstring-style
+              :help "If django docstring-style should be on or off
+  Returns value of `py-docstring-style' switched to
+
+Use `M-x customize-variable' to set it permanently"]
+             
+             ["Django on" py-django-docstring-style-on
+              :help "Make sure, django docstring-style is on
+
+Use `M-x customize-variable' to set it permanently"]
+             
+             ["Django off" py-django-docstring-style-off
+              :help "Restores default value of `py-docstring-style'
+
+Use `M-x customize-variable' to set it permanently"])
+            )
+           
+           
+           ["Fill-paragraph fill docstring "
+            (setq py-paragraph-fill-docstring-p
+                  (not py-paragraph-fill-docstring-p))
+            :help "If `py-fill-paragraph', when inside a docstring, should fill the complete string\.
+
+Default is nil\.
+
+Convenient use of `M-q' inside docstrings
+See also `py-docstring-style'
+Use `M-x customize-variable' to set it permanently"
+            :style toggle :selected py-paragraph-fill-docstring-p]
+           
+           
+           ["Auto-fill mode"
+            (setq py-set-fill-column-p
+                  (not py-set-fill-column-p))
+            :help "Set Python specific `fill-column' according to `py-docstring-fill-column' and `py-comment-fill-column'
+
+Use `M-x customize-variable' to set it permanently"
+            :style toggle :selected py-set-fill-column-p]
+           
+           ["Use current dir when execute"
+            (setq py-use-current-dir-when-execute-p
+                  (not py-use-current-dir-when-execute-p))
+            :help " `toggle-py-use-current-dir-when-execute-p'
+
+Use `M-x customize-variable' to set it permanently"
+            :style toggle :selected py-use-current-dir-when-execute-p]
+           
+           )
+          
+          ("Indent"
+           
+           
+           ["Indent comment "
+            (setq py-indent-comments
+                  (not py-indent-comments))
+            :help "If comments should be indented like code. Default is `nil'.
+
+Use `M-x customize-variable' to set it permanently"
+            :style toggle :selected py-indent-comments]
+           
+           ["Indent honors inline comment"
+            (setq py-indent-honors-inline-comment
+                  (not py-indent-honors-inline-comment))
+            :help "If non-nil, indents to column of inlined comment start\.
+Default is nil\. Use `M-x customize-variable' to set it permanently"
+            :style toggle :selected py-indent-honors-inline-comment]
+           
+           ("Smart indentation"
+            :help "Toggle py-smart-indentation'
+
 Use `M-x customize-variable' to set it permanently"
             
-            ["Toggle nil docstring style" toggle-py-nil-docstring-style
-             :help "If nil docstring-style should be on or off
-  Returns value of `py-docstring-style' switched to
+            ["Toggle py-smart-indentation" toggle-py-smart-indentation
+             :help "Toggles py-smart-indentation
 
 Use `M-x customize-variable' to set it permanently"]
             
-            ["Nil on" py-nil-docstring-style-on
-             :help "Make sure, nil docstring-style is on
+            ["py-smart-indentation on" py-smart-indentation-on
+             :help "Switches py-smart-indentation on
 
 Use `M-x customize-variable' to set it permanently"]
             
-            ["Nil off" py-nil-docstring-style-off
-             :help "Restores default value of `py-docstring-style'
+            ["py-smart-indentation off" py-smart-indentation-off
+             :help "Switches py-smart-indentation off
 
-Use `M-x customize-variable' to set it permanently"])
+Use `M-x customize-variable' to set it permanently"]
+            
+            )
            
-           ("Onetwo"
-            :help "Toggle onetwo value of `py-docstring-style'
-In order to set permanently customize this variable"
-            
-            ["Toggle onetwo docstring style" toggle-py-onetwo-docstring-style
-             :help "If onetwo docstring-style should be on or off
-  Returns value of `py-docstring-style' switched to
+           ["Highlight indentation"
+            (setq highlight-indentation
+                  (not highlight-indentation))
+            :help "Toggle highlight indentation\.
+Optional argument INDENT-WIDTH specifies which indentation
+level (spaces only) should be highlighted, if omitted
+indent-width will be guessed from current major-mode
 
-Use `M-x customize-variable' to set it permanently"]
-            
-            ["Onetwo on" py-onetwo-docstring-style-on
-             :help "Make sure, onetwo docstring-style is on
-
-Use `M-x customize-variable' to set it permanently"]
-            
-            ["Onetwo off" py-onetwo-docstring-style-off
-             :help " Restores default value of `py-docstring-style'
-
-Use `M-x customize-variable' to set it permanently"])
+Use `M-x customize-variable' to set it permanently"
+            :style toggle :selected highlight-indentation]
            
-           ("Pep 257"
-            :help "Toggle pep-257 value of `py-docstring-style'
-In order to set permanently customize this variable"
-            
-            ["Toggle pep 257 docstring style" toggle-py-pep-257-docstring-style
-             :help "If pep-257 docstring-style should be on or off
-  Returns value of `py-docstring-style' switched to
-
-Use `M-x customize-variable' to set it permanently"]
-            
-            ["Pep 257 on" py-pep-257-docstring-style-on
-             :help "Make sure, pep-257 docstring-style is on
-
-Use `M-x customize-variable' to set it permanently"]
-            
-            ["Pep 257 off" py-pep-257-docstring-style-off
-             :help " Restores default value of `py-docstring-style'
-
-Use `M-x customize-variable' to set it permanently"])
            
-           ("Pep 257 nn"
-            :help "Toggle pep-257-nn value of `py-docstring-style'
-In order to set permanently customize this variable"
-            
-            ["Toggle pep 257 nn docstring style" toggle-py-pep-257-nn-docstring-style
-             :help "If pep-257-nn docstring-style should be on or off
-  Returns value of `py-docstring-style' switched to
+           ["Electric comment "
+            (setq py-electric-comment-p
+                  (not py-electric-comment-p))
+            :help "If \"#\" should call `py-electric-comment'\. Default is `nil'\.
 
-Use `M-x customize-variable' to set it permanently"]
-            
-            ["Pep 257 nn on" py-pep-257-nn-docstring-style-on
-             :help "Make sure, pep-257-nn docstring-style is on
-
-Use `M-x customize-variable' to set it permanently"]
-            
-            ["Pep 257 nn off" py-pep-257-nn-docstring-style-off
-             :help " Restores default value of `py-docstring-style'
-
-Use `M-x customize-variable' to set it permanently"])
+Use `M-x customize-variable' to set it permanently"
+            :style toggle :selected py-electric-comment-p]
            
-           ("Symmetric"
-            :help "Toggle symmetric value of `py-docstring-style'
-In order to set permanently customize this variable"
-            
-            ["Toggle symmetric docstring style" toggle-py-symmetric-docstring-style
-             :help "If symmetric docstring-style should be on or off
-  Returns value of `py-docstring-style' switched to
-
-Use `M-x customize-variable' to set it permanently"]
-            
-            ["Symmetric on" py-symmetric-docstring-style-on
-             :help "Make sure, symmetric docstring-style is on
-
-Use `M-x customize-variable' to set it permanently"]
-            
-            ["Symmetric off" py-symmetric-docstring-style-off
-             :help " Restores default value of `py-docstring-style'
-
-Use `M-x customize-variable' to set it permanently"])
-           
-           ("Django"
-            :help "Toggle django value of `py-docstring-style'
-In order to set permanently customize this variable"
-            
-            ["Toggle django docstring style" toggle-py-django-docstring-style
-             :help "If django docstring-style should be on or off
-  Returns value of `py-docstring-style' switched to
-
-Use `M-x customize-variable' to set it permanently"]
-            
-            ["Django on" py-django-docstring-style-on
-             :help "Make sure, django docstring-style is on
-
-Use `M-x customize-variable' to set it permanently"]
-            
-            ["Django off" py-django-docstring-style-off
-             :help "Restores default value of `py-docstring-style'
-
-Use `M-x customize-variable' to set it permanently"])
            )
+          
           
           ("Underscore word syntax"
            :help "Toggle `py-underscore-word-syntax-p'"
@@ -2929,56 +3075,6 @@ Make sure, `py-underscore-word-syntax-p' is off\.
 Returns value of `py-underscore-word-syntax-p'\. .
 
 Use `M-x customize-variable' to set it permanently"])
-          
-          ["Fill-paragraph fill docstring "
-           (setq py-paragraph-fill-docstring-p
-                 (not py-paragraph-fill-docstring-p))
-           :help "If `py-fill-paragraph', when inside a docstring, should fill the complete string\.
-
-Default is nil\.
-
-Convenient use of `M-q' inside docstrings
-See also `py-docstring-style'
-Use `M-x customize-variable' to set it permanently"
-           :style toggle :selected py-paragraph-fill-docstring-p]
-          
-          ["Tab shifts region "
-           (setq py-tab-shifts-region-p
-                 (not py-tab-shifts-region-p))
-           :help "If `t', TAB will indent/cycle the region, not just the current line\.
-
-Default is nil
-See also `py-tab-indents-region-p'
-
-Use `M-x customize-variable' to set it permanently"
-           :style toggle :selected py-tab-shifts-region-p]
-          
-          ["Tab indents region "
-           (setq py-tab-indents-region-p
-                 (not py-tab-indents-region-p))
-           :help "When `t' and first TAB doesn't shift, indent-region is called\.
-
-Default is nil
-See also `py-tab-shifts-region-p'
-
-Use `M-x customize-variable' to set it permanently"
-           :style toggle :selected py-tab-indents-region-p]
-          
-          ["Auto-fill mode"
-           (setq py-set-fill-column-p
-                 (not py-set-fill-column-p))
-           :help "Set Python specific `fill-column' according to `py-docstring-fill-column' and `py-comment-fill-column'
-
-Use `M-x customize-variable' to set it permanently"
-           :style toggle :selected py-set-fill-column-p]
-          
-          ["Use current dir when execute"
-           (setq py-use-current-dir-when-execute-p
-                 (not py-use-current-dir-when-execute-p))
-           :help " `toggle-py-use-current-dir-when-execute-p'
-
-Use `M-x customize-variable' to set it permanently"
-           :style toggle :selected py-use-current-dir-when-execute-p]
           
           ["Jump on exception"
            (setq py-jump-on-exception
@@ -3016,25 +3112,6 @@ v5 did it - lp:990079\. This might fail with certain chars - see UnicodeEncodeEr
 Use `M-x customize-variable' to set it permanently"
            :style toggle :selected python-mode-v5-behavior-p]
           
-          ["Highlight indentation"
-           (setq highlight-indentation
-                 (not highlight-indentation))
-           :help "Toggle highlight indentation\.
-Optional argument INDENT-WIDTH specifies which indentation
-level (spaces only) should be highlighted, if omitted
-indent-width will be guessed from current major-mode
-
-Use `M-x customize-variable' to set it permanently"
-           :style toggle :selected highlight-indentation]
-          
-          ["indent-tabs-mode"
-           (setq indent-tabs-mode
-                 (not indent-tabs-mode))
-           :help "Indentation can insert tabs if this is non-nil\.
-
-Use `M-x customize-variable' to set it permanently"
-           :style toggle :selected indent-tabs-mode]
-          
           ("Autopair mode"
            :help "Toggle `autopair-mode'"
            
@@ -3061,27 +3138,6 @@ Returns value of `autopair-mode'\. . "]
            
            )
           
-          ("Smart indentation"
-           :help "Toggle py-smart-indentation'
-
-Use `M-x customize-variable' to set it permanently"
-           
-           ["Toggle py-smart-indentation" toggle-py-smart-indentation
-            :help "Toggles py-smart-indentation
-
-Use `M-x customize-variable' to set it permanently"]
-           
-           ["py-smart-indentation on" py-smart-indentation-on
-            :help "Switches py-smart-indentation on
-
-Use `M-x customize-variable' to set it permanently"]
-           
-           ["py-smart-indentation off" py-smart-indentation-off
-            :help "Switches py-smart-indentation off
-
-Use `M-x customize-variable' to set it permanently"]
-           
-           )
           
           
           ["Switch index-function" py-switch-imenu-index-function
@@ -3116,44 +3172,6 @@ Returns value of `smart-operator-mode'\. . "]
            
            )
           
-          ["Electric comment "
-           (setq py-electric-comment-p
-                 (not py-electric-comment-p))
-           :help "If \"#\" should call `py-electric-comment'\. Default is `nil'\.
-
-Use `M-x customize-variable' to set it permanently"
-           :style toggle :selected py-electric-comment-p]
-          
-          ["Indent comment "
-           (setq py-indent-comments
-                 (not py-indent-comments))
-           :help "If comments should be indented like code. Default is `nil'.
-
-Use `M-x customize-variable' to set it permanently"
-           :style toggle :selected py-indent-comments]
-          
-          ["Indent honors inline comment"
-           (setq py-indent-honors-inline-comment
-                 (not py-indent-honors-inline-comment))
-           :help "If non-nil, indents to column of inlined comment start\.
-Default is nil\. Use `M-x customize-variable' to set it permanently"
-           :style toggle :selected py-indent-honors-inline-comment]
-          
-          ["Enforce py-shell-name" force-py-shell-name-p-on
-           :help "Enforce customized default `py-shell-name' should upon execution. "]
-          
-          ["Don't enforce default interpreter" force-py-shell-name-p-off
-           :help "Make execute commands guess interpreter from environment"]
-          
-          ;; ["Enforce locally Python shell sessions interpreter " toggle-force-local-shell
-          ;; :help "If locally indicated Python shell should be taken and
-          ;; enforced upon sessions execute commands. "]
-          
-          ["Enforce local Python shell " py-force-local-shell-on
-           :help "Locally indicated Python being enforced upon sessions execute commands. "]
-          
-          ["Remove local Python shell enforcement, restore default" py-force-local-shell-off
-           :help "Restore `py-shell-name' default value and `behaviour'. "]
           
           )
          )
