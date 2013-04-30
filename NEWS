@@ -3,6 +3,8 @@ Python Mode News
 
 New in version 6.1.2
 ---------------------
+- simplified menu
+  Adapts version 5.2.0 style, augmented by a "More" button
 
 - commands deleting all commented lines:
   `py-delete-comments-in-def-or-class'
