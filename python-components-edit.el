@@ -1078,6 +1078,47 @@ Returns the string inserted. "
   (let ((comment-start py-block-comment-prefix))
     (comment-region beg end arg)))
 
+(defun py-delete-comments-in-def-or-class ()
+  "Delete all commented lines in def-or-class at point"
+  (interactive "*")
+  (save-excursion
+    (let ((beg (py-beginning-of-def-or-class-position))
+          (end (py-end-of-def-or-class-position)))
+      (and beg end (py--delete-comments-intern beg end)))))
+
+
+(defun py-delete-comments-in-class ()
+  "Delete all commented lines in class at point"
+  (interactive "*")
+  (save-excursion
+    (let ((beg (py-beginning-of-class-position))
+          (end (py-end-of-class-position)))
+      (and beg end (py--delete-comments-intern beg end)))))
+
+(defun py-delete-comments-in-block ()
+  "Delete all commented lines in block at point"
+  (interactive "*")
+  (save-excursion
+    (let ((beg (py-beginning-of-block-position))
+          (end (py-end-of-block-position)))
+      (and beg end (py--delete-comments-intern beg end)))))
+
+(defun py-delete-comments-in-region (beg end)
+  "Delete all commented lines in region. "
+  (interactive "r*")
+  (save-excursion
+    (py--delete-comments-intern beg end)))
+
+(defun py--delete-comments-intern (beg end)
+  (save-restriction
+    (narrow-to-region beg end)
+    (goto-char beg)
+    (while (and (< (line-end-position) end) (not (eobp)))
+      (beginning-of-line)
+      (if (looking-at (concat "[ \t]*" comment-start))
+          (delete-region (point) (1+ (line-end-position)))
+        (forward-line 1)))))
+
 (provide 'python-components-edit)
 
 ;;; python-components-edit.el ends here
