@@ -3712,8 +3712,13 @@ Shift def left. "]
 Shift block-or-clause left. "]
            
            )
-          ("Extended "
+          ("More"
            :help "extended edit commands'"
+           
+           ["Empty out list backward" py-empty-out-list-backward
+            :help " `py-empty-out-list-backward' 
+Deletes all elements from list before point. "]
+
            ["Revert boolean assignent" py-boolswitch
             :help " `py-boolswitch'
 Edit the assigment of a boolean variable, rever them.

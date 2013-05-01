@@ -13,7 +13,7 @@ New in version 6.1.2
   `py-delete-comments-in-region'
 
 -  command `py-empty-out-list-backward'
-
+  Deletes all elements from list before point
   With when cursor after 
   mystring[0:1]
   -------------^
