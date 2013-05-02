@@ -239,7 +239,7 @@ The list is sorted. "
 
 (defun py-shell--do-completion-at-point (process imports input)
   "Do completion at point for PROCESS."
-  (with-syntax-table py-dotty-syntax-table
+  (with-syntax-table py-dotted-expression-syntax-table
     (when imports (py-send-string-no-output imports process))
     (let* ((code python-shell-module-completion-string-code)
            (completions

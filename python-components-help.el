@@ -41,7 +41,7 @@ of current line."
   "`eldoc-documentation-function' for Python.
 Only works when point is in a function name, not its arg list, for
 instance.  Assumes an inferior Python is running."
-  (let ((symbol (with-syntax-table python-dotty-syntax-table
+  (let ((symbol (with-syntax-table py-dotted-expression-syntax-table
                   (current-word)))
         (imports (py-find-imports)))
     ;; This is run from timers, so inhibit-quit tends to be set.
@@ -158,7 +158,7 @@ will be used. "
         "Eldoc needs an inferior Python process running."
       (let* ((current-defun (py-info-current-defun))
              (input (or input
-                        (with-syntax-table py-dotty-syntax-table
+                        (with-syntax-table py-dotted-expression-syntax-table
                           (if (not current-defun)
                               (current-word)
                             (concat current-defun "." (current-word))))))
@@ -191,7 +191,7 @@ will be used. "
   "Get help on SYMBOL using `help'.
 Interactively, prompt for symbol."
   (interactive
-   (let ((symbol (with-syntax-table py-dotty-syntax-table
+   (let ((symbol (with-syntax-table py-dotted-expression-syntax-table
                    (current-word)))
          (enable-recursive-minibuffers t))
      (list (read-string (if symbol
@@ -204,7 +204,7 @@ Interactively, prompt for symbol."
       (message (py-eldoc--get-doc-at-point symbol process)))))
 
 (defun py-info-current-defun (&optional include-type)
-  "Return name of surrounding function with Python compatible dotty syntax.
+  "Return name of surrounding function with Python compatible dotted expression syntax.
 Optional argument INCLUDE-TYPE indicates to include the type of the defun.
 This function is compatible to be used as
 `add-log-current-defun-function' since it returns nil if point is
