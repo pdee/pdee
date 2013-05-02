@@ -2707,7 +2707,8 @@ character address of the specified TYPE."
      (easy-menu-define
       py-menu map "Python Mode menu"
       `("Python"
-        ["Start interpreter..." py-shell
+        ("Interpreter"
+        ["Default interpreter..." py-shell
          :help " `py-shell'
 
 Start an interactive Python interpreter.
@@ -2718,6 +2719,298 @@ If `default-directory' is a remote file name, it is also prompted
 to change if called with a prefix arg\.
 
 . "]
+        ("Other"
+          :help "Alternative Python Shells"
+          
+          ["ipython" ipython
+           :help "`ipython'
+Start an IPython interpreter.
+
+Optional C-u prompts for options to pass to the IPython interpreter. See `py-python-command-args'."]
+          ["python3" python3
+           :help "`python3'
+Start an Python3 interpreter.
+
+Optional C-u prompts for options to pass to the Python3 interpreter. See `py-python-command-args'."]
+          ["python2" python2
+           :help "`python2'
+Start an Python2 interpreter.
+
+Optional C-u prompts for options to pass to the Python2 interpreter. See `py-python-command-args'."]
+          ["python2.7" python2.7
+           :help "`python2.7'
+Start an Python2.7 interpreter.
+
+Optional C-u prompts for options to pass to the Python2.7 interpreter. See `py-python-command-args'."]
+          ["jython" jython
+           :help "`jython'
+Start an Jython interpreter.
+
+Optional C-u prompts for options to pass to the Jython interpreter. See `py-python-command-args'."]
+          ["python3.2" python3.2
+           :help "`python3.2'
+Start an Python3.2 interpreter.
+
+Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'."]
+          
+          ["python3.3" python3.3
+           :help "`python3.3'
+Start an Python3.3 interpreter.
+
+Optional C-u prompts for options to pass to the Python3.3 interpreter. See `py-python-command-args'."]
+          
+          "-"
+          ["python-dedicated" python-dedicated
+           :help "`python-dedicated'
+Start an unique Python interpreter in another window.
+
+Optional C-u prompts for options to pass to the Python interpreter. See `py-python-command-args'."]
+          ["ipython-dedicated" ipython-dedicated
+           :help "`ipython-dedicated'
+Start an unique IPython interpreter in another window.
+
+Optional C-u prompts for options to pass to the IPython interpreter. See `py-python-command-args'."]
+          ["python3-dedicated" python3-dedicated
+           :help "`python3-dedicated'
+Start an unique Python3 interpreter in another window.
+
+Optional C-u prompts for options to pass to the Python3 interpreter. See `py-python-command-args'."]
+          ["python2-dedicated" python2-dedicated
+           :help "`python2-dedicated'
+Start an unique Python2 interpreter in another window.
+
+Optional C-u prompts for options to pass to the Python2 interpreter. See `py-python-command-args'."]
+          ["python2.7-dedicated" python2.7-dedicated
+           :help "`python2'.7-dedicated
+Start an unique Python2.7 interpreter in another window.
+
+Optional C-u prompts for options to pass to the Python2.7 interpreter. See `py-python-command-args'."]
+          ["jython-dedicated" jython-dedicated
+           :help "`jython-dedicated'
+Start an unique Jython interpreter in another window.
+
+Optional C-u prompts for options to pass to the Jython interpreter. See `py-python-command-args'."]
+          ["python3.2-dedicated" python3.2-dedicated
+           :help "`python3.2-dedicated'
+Start an unique Python3.2 interpreter in another window.
+
+Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'."]
+          "-"
+          ("Ignoring defaults "
+                     :help "Commands will ignore default setting of
+`py-switch-buffers-on-execute-p' and `py-split-windows-on-execute-p'"
+                     
+                     ["Execute file python switch" py-execute-file-python-switch
+                      :help " `py-execute-file-python-switch'
+Send file to a Python interpreter\.
+Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
+                     
+                     ["Execute file python noswitch" py-execute-file-python-noswitch
+                      :help " `py-execute-file-python-noswitch'
+Send file to a Python interpreter\.
+Ignores default of `py-switch-buffers-on-execute-p', uses it with value "nil". "]
+                     
+                     ["Execute file python dedicated" py-execute-file-python-dedicated
+                      :help " `py-execute-file-python-dedicated'
+Send file to a Python interpreter\.
+
+Uses a dedicated shell\.. "]
+                     
+                     ["Execute file python dedicated switch" py-execute-file-python-dedicated-switch
+                      :help " `py-execute-file-python-dedicated-switch'
+Send file to a Python interpreter\.
+
+Uses a dedicated shell\.
+Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
+                     
+                     ["Execute file ipython switch" py-execute-file-ipython-switch
+                      :help " `py-execute-file-ipython-switch'
+Send file to a Ipython interpreter\.
+Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
+                     
+                     ["Execute file ipython noswitch" py-execute-file-ipython-noswitch
+                      :help " `py-execute-file-ipython-noswitch'
+Send file to a Ipython interpreter\.
+Ignores default of `py-switch-buffers-on-execute-p', uses it with value "nil". "]
+                     
+                     ["Execute file ipython dedicated" py-execute-file-ipython-dedicated
+                      :help " `py-execute-file-ipython-dedicated'
+Send file to a Ipython interpreter\.
+
+Uses a dedicated shell\.. "]
+                     
+                     ["Execute file ipython dedicated switch" py-execute-file-ipython-dedicated-switch
+                      :help " `py-execute-file-ipython-dedicated-switch'
+Send file to a Ipython interpreter\.
+
+Uses a dedicated shell\.
+Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
+                     
+                     ["Execute file python3 switch" py-execute-file-python3-switch
+                      :help " `py-execute-file-python3-switch'
+Send file to a Python3 interpreter\.
+Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
+                     
+                     ["Execute file python3 noswitch" py-execute-file-python3-noswitch
+                      :help " `py-execute-file-python3-noswitch'
+Send file to a Python3 interpreter\.
+Ignores default of `py-switch-buffers-on-execute-p', uses it with value "nil". "]
+                     
+                     ["Execute file python3 dedicated" py-execute-file-python3-dedicated
+                      :help " `py-execute-file-python3-dedicated'
+Send file to a Python3 interpreter\.
+
+Uses a dedicated shell\.. "]
+                     
+                     ["Execute file python3 dedicated switch" py-execute-file-python3-dedicated-switch
+                      :help " `py-execute-file-python3-dedicated-switch'
+Send file to a Python3 interpreter\.
+
+Uses a dedicated shell\.
+Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
+                     
+                     ["Execute file python2 switch" py-execute-file-python2-switch
+                      :help " `py-execute-file-python2-switch'
+Send file to a Python2 interpreter\.
+Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
+                     
+                     ["Execute file python2 noswitch" py-execute-file-python2-noswitch
+                      :help " `py-execute-file-python2-noswitch'
+Send file to a Python2 interpreter\.
+Ignores default of `py-switch-buffers-on-execute-p', uses it with value "nil". "]
+                     
+                     ["Execute file python2 dedicated" py-execute-file-python2-dedicated
+                      :help " `py-execute-file-python2-dedicated'
+Send file to a Python2 interpreter\.
+
+Uses a dedicated shell\.. "]
+                     
+                     ["Execute file python2 dedicated switch" py-execute-file-python2-dedicated-switch
+                      :help " `py-execute-file-python2-dedicated-switch'
+Send file to a Python2 interpreter\.
+
+Uses a dedicated shell\.
+Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
+                     
+                     ["Execute file python2.7 switch" py-execute-file-python2.7-switch
+                      :help " `py-execute-file-python2.7-switch'
+Send file to a Python2\.7 interpreter\.
+Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
+                     
+                     ["Execute file python2.7 noswitch" py-execute-file-python2.7-noswitch
+                      :help " `py-execute-file-python2.7-noswitch'
+Send file to a Python2\.7 interpreter\.
+Ignores default of `py-switch-buffers-on-execute-p', uses it with value "nil". "]
+                     
+                     ["Execute file python2.7 dedicated" py-execute-file-python2.7-dedicated
+                      :help " `py-execute-file-python2.7-dedicated'
+Send file to a Python2\.7 interpreter\.
+
+Uses a dedicated shell\.. "]
+                     
+                     ["Execute file python2.7 dedicated switch" py-execute-file-python2.7-dedicated-switch
+                      :help " `py-execute-file-python2.7-dedicated-switch'
+Send file to a Python2\.7 interpreter\.
+
+Uses a dedicated shell\.
+Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
+                     
+                     ["Execute file jython switch" py-execute-file-jython-switch
+                      :help " `py-execute-file-jython-switch'
+Send file to a Jython interpreter\.
+Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
+                     
+                     ["Execute file jython noswitch" py-execute-file-jython-noswitch
+                      :help " `py-execute-file-jython-noswitch'
+Send file to a Jython interpreter\.
+Ignores default of `py-switch-buffers-on-execute-p', uses it with value "nil". "]
+                     
+                     ["Execute file jython dedicated" py-execute-file-jython-dedicated
+                      :help " `py-execute-file-jython-dedicated'
+Send file to a Jython interpreter\.
+
+Uses a dedicated shell\.. "]
+                     
+                     ["Execute file jython dedicated switch" py-execute-file-jython-dedicated-switch
+                      :help " `py-execute-file-jython-dedicated-switch'
+Send file to a Jython interpreter\.
+
+Uses a dedicated shell\.
+Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
+                     
+                     ["Execute file python3.2 switch" py-execute-file-python3.2-switch
+                      :help " `py-execute-file-python3.2-switch'
+Send file to a Python3\.2 interpreter\.
+Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
+                     
+                     ["Execute file python3.2 noswitch" py-execute-file-python3.2-noswitch
+                      :help " `py-execute-file-python3.2-noswitch'
+Send file to a Python3\.2 interpreter\.
+Ignores default of `py-switch-buffers-on-execute-p', uses it with value "nil". "]
+                     
+                     ["Execute file python3.2 dedicated" py-execute-file-python3.2-dedicated
+                      :help " `py-execute-file-python3.2-dedicated'
+Send file to a Python3\.2 interpreter\.
+
+Uses a dedicated shell\.. "]
+                     
+                     ["Execute file python3.2 dedicated switch" py-execute-file-python3.2-dedicated-switch
+                      :help " `py-execute-file-python3.2-dedicated-switch'
+Send file to a Python3\.2 interpreter\.
+
+Uses a dedicated shell\.
+Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
+                     
+                     ["Execute file python3.3 switch" py-execute-file-python3.3-switch
+                      :help " `py-execute-file-python3.3-switch'
+Send file to a Python3\.3 interpreter\.
+Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
+                     
+                     ["Execute file python3.3 noswitch" py-execute-file-python3.3-noswitch
+                      :help " `py-execute-file-python3.3-noswitch'
+Send file to a Python3\.3 interpreter\.
+Ignores default of `py-switch-buffers-on-execute-p', uses it with value "nil". "]
+                     
+                     ["Execute file python3.3 dedicated" py-execute-file-python3.3-dedicated
+                      :help " `py-execute-file-python3.3-dedicated'
+Send file to a Python3\.3 interpreter\.
+
+Uses a dedicated shell\.. "]
+                     
+                     ["Execute file python3.3 dedicated switch" py-execute-file-python3.3-dedicated-switch
+                      :help " `py-execute-file-python3.3-dedicated-switch'
+Send file to a Python3\.3 interpreter\.
+
+Uses a dedicated shell\.
+Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
+                     
+                     ["Execute file bpython switch" py-execute-file-bpython-switch
+                      :help " `py-execute-file-bpython-switch'
+Send file to a Bpython interpreter\.
+Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
+                     
+                     ["Execute file bpython noswitch" py-execute-file-bpython-noswitch
+                      :help " `py-execute-file-bpython-noswitch'
+Send file to a Bpython interpreter\.
+Ignores default of `py-switch-buffers-on-execute-p', uses it with value "nil". "]
+                     
+                     ["Execute file bpython dedicated" py-execute-file-bpython-dedicated
+                      :help " `py-execute-file-bpython-dedicated'
+Send file to a Bpython interpreter\.
+
+Uses a dedicated shell\.. "]
+                     
+                     ["Execute file bpython dedicated switch" py-execute-file-bpython-dedicated-switch
+                      :help " `py-execute-file-bpython-dedicated-switch'
+Send file to a Bpython interpreter\.
+
+Uses a dedicated shell\.
+Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
+                     )
+          
+          )
+        )
+        
         
         "-"
         ["Mark current block"   py-mark-block t]
@@ -4252,305 +4545,9 @@ Make sure, `smart-operator-mode' is off\.
 Returns value of `smart-operator-mode'\. . "]
            
            )
-          
-          
           )
          )
         ("More... "
-         
-         ("Alternative Interpreter"
-          :help "Alternative Python Shells"
-          
-          ["ipython" ipython
-           :help "`ipython'
-Start an IPython interpreter.
-
-Optional C-u prompts for options to pass to the IPython interpreter. See `py-python-command-args'."]
-          ["python3" python3
-           :help "`python3'
-Start an Python3 interpreter.
-
-Optional C-u prompts for options to pass to the Python3 interpreter. See `py-python-command-args'."]
-          ["python2" python2
-           :help "`python2'
-Start an Python2 interpreter.
-
-Optional C-u prompts for options to pass to the Python2 interpreter. See `py-python-command-args'."]
-          ["python2.7" python2.7
-           :help "`python2.7'
-Start an Python2.7 interpreter.
-
-Optional C-u prompts for options to pass to the Python2.7 interpreter. See `py-python-command-args'."]
-          ["jython" jython
-           :help "`jython'
-Start an Jython interpreter.
-
-Optional C-u prompts for options to pass to the Jython interpreter. See `py-python-command-args'."]
-          ["python3.2" python3.2
-           :help "`python3.2'
-Start an Python3.2 interpreter.
-
-Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'."]
-          
-          ["python3.3" python3.3
-           :help "`python3.3'
-Start an Python3.3 interpreter.
-
-Optional C-u prompts for options to pass to the Python3.3 interpreter. See `py-python-command-args'."]
-          
-          "-"
-          ["python-dedicated" python-dedicated
-           :help "`python-dedicated'
-Start an unique Python interpreter in another window.
-
-Optional C-u prompts for options to pass to the Python interpreter. See `py-python-command-args'."]
-          ["ipython-dedicated" ipython-dedicated
-           :help "`ipython-dedicated'
-Start an unique IPython interpreter in another window.
-
-Optional C-u prompts for options to pass to the IPython interpreter. See `py-python-command-args'."]
-          ["python3-dedicated" python3-dedicated
-           :help "`python3-dedicated'
-Start an unique Python3 interpreter in another window.
-
-Optional C-u prompts for options to pass to the Python3 interpreter. See `py-python-command-args'."]
-          ["python2-dedicated" python2-dedicated
-           :help "`python2-dedicated'
-Start an unique Python2 interpreter in another window.
-
-Optional C-u prompts for options to pass to the Python2 interpreter. See `py-python-command-args'."]
-          ["python2.7-dedicated" python2.7-dedicated
-           :help "`python2'.7-dedicated
-Start an unique Python2.7 interpreter in another window.
-
-Optional C-u prompts for options to pass to the Python2.7 interpreter. See `py-python-command-args'."]
-          ["jython-dedicated" jython-dedicated
-           :help "`jython-dedicated'
-Start an unique Jython interpreter in another window.
-
-Optional C-u prompts for options to pass to the Jython interpreter. See `py-python-command-args'."]
-          ["python3.2-dedicated" python3.2-dedicated
-           :help "`python3.2-dedicated'
-Start an unique Python3.2 interpreter in another window.
-
-Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'."]
-          "-"
-          ("Ignoring defaults "
-                     :help "Commands will ignore default setting of
-`py-switch-buffers-on-execute-p' and `py-split-windows-on-execute-p'"
-                     
-                     ["Execute file python switch" py-execute-file-python-switch
-                      :help " `py-execute-file-python-switch'
-Send file to a Python interpreter\.
-Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
-                     
-                     ["Execute file python noswitch" py-execute-file-python-noswitch
-                      :help " `py-execute-file-python-noswitch'
-Send file to a Python interpreter\.
-Ignores default of `py-switch-buffers-on-execute-p', uses it with value "nil". "]
-                     
-                     ["Execute file python dedicated" py-execute-file-python-dedicated
-                      :help " `py-execute-file-python-dedicated'
-Send file to a Python interpreter\.
-
-Uses a dedicated shell\.. "]
-                     
-                     ["Execute file python dedicated switch" py-execute-file-python-dedicated-switch
-                      :help " `py-execute-file-python-dedicated-switch'
-Send file to a Python interpreter\.
-
-Uses a dedicated shell\.
-Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
-                     
-                     ["Execute file ipython switch" py-execute-file-ipython-switch
-                      :help " `py-execute-file-ipython-switch'
-Send file to a Ipython interpreter\.
-Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
-                     
-                     ["Execute file ipython noswitch" py-execute-file-ipython-noswitch
-                      :help " `py-execute-file-ipython-noswitch'
-Send file to a Ipython interpreter\.
-Ignores default of `py-switch-buffers-on-execute-p', uses it with value "nil". "]
-                     
-                     ["Execute file ipython dedicated" py-execute-file-ipython-dedicated
-                      :help " `py-execute-file-ipython-dedicated'
-Send file to a Ipython interpreter\.
-
-Uses a dedicated shell\.. "]
-                     
-                     ["Execute file ipython dedicated switch" py-execute-file-ipython-dedicated-switch
-                      :help " `py-execute-file-ipython-dedicated-switch'
-Send file to a Ipython interpreter\.
-
-Uses a dedicated shell\.
-Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
-                     
-                     ["Execute file python3 switch" py-execute-file-python3-switch
-                      :help " `py-execute-file-python3-switch'
-Send file to a Python3 interpreter\.
-Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
-                     
-                     ["Execute file python3 noswitch" py-execute-file-python3-noswitch
-                      :help " `py-execute-file-python3-noswitch'
-Send file to a Python3 interpreter\.
-Ignores default of `py-switch-buffers-on-execute-p', uses it with value "nil". "]
-                     
-                     ["Execute file python3 dedicated" py-execute-file-python3-dedicated
-                      :help " `py-execute-file-python3-dedicated'
-Send file to a Python3 interpreter\.
-
-Uses a dedicated shell\.. "]
-                     
-                     ["Execute file python3 dedicated switch" py-execute-file-python3-dedicated-switch
-                      :help " `py-execute-file-python3-dedicated-switch'
-Send file to a Python3 interpreter\.
-
-Uses a dedicated shell\.
-Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
-                     
-                     ["Execute file python2 switch" py-execute-file-python2-switch
-                      :help " `py-execute-file-python2-switch'
-Send file to a Python2 interpreter\.
-Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
-                     
-                     ["Execute file python2 noswitch" py-execute-file-python2-noswitch
-                      :help " `py-execute-file-python2-noswitch'
-Send file to a Python2 interpreter\.
-Ignores default of `py-switch-buffers-on-execute-p', uses it with value "nil". "]
-                     
-                     ["Execute file python2 dedicated" py-execute-file-python2-dedicated
-                      :help " `py-execute-file-python2-dedicated'
-Send file to a Python2 interpreter\.
-
-Uses a dedicated shell\.. "]
-                     
-                     ["Execute file python2 dedicated switch" py-execute-file-python2-dedicated-switch
-                      :help " `py-execute-file-python2-dedicated-switch'
-Send file to a Python2 interpreter\.
-
-Uses a dedicated shell\.
-Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
-                     
-                     ["Execute file python2.7 switch" py-execute-file-python2.7-switch
-                      :help " `py-execute-file-python2.7-switch'
-Send file to a Python2\.7 interpreter\.
-Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
-                     
-                     ["Execute file python2.7 noswitch" py-execute-file-python2.7-noswitch
-                      :help " `py-execute-file-python2.7-noswitch'
-Send file to a Python2\.7 interpreter\.
-Ignores default of `py-switch-buffers-on-execute-p', uses it with value "nil". "]
-                     
-                     ["Execute file python2.7 dedicated" py-execute-file-python2.7-dedicated
-                      :help " `py-execute-file-python2.7-dedicated'
-Send file to a Python2\.7 interpreter\.
-
-Uses a dedicated shell\.. "]
-                     
-                     ["Execute file python2.7 dedicated switch" py-execute-file-python2.7-dedicated-switch
-                      :help " `py-execute-file-python2.7-dedicated-switch'
-Send file to a Python2\.7 interpreter\.
-
-Uses a dedicated shell\.
-Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
-                     
-                     ["Execute file jython switch" py-execute-file-jython-switch
-                      :help " `py-execute-file-jython-switch'
-Send file to a Jython interpreter\.
-Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
-                     
-                     ["Execute file jython noswitch" py-execute-file-jython-noswitch
-                      :help " `py-execute-file-jython-noswitch'
-Send file to a Jython interpreter\.
-Ignores default of `py-switch-buffers-on-execute-p', uses it with value "nil". "]
-                     
-                     ["Execute file jython dedicated" py-execute-file-jython-dedicated
-                      :help " `py-execute-file-jython-dedicated'
-Send file to a Jython interpreter\.
-
-Uses a dedicated shell\.. "]
-                     
-                     ["Execute file jython dedicated switch" py-execute-file-jython-dedicated-switch
-                      :help " `py-execute-file-jython-dedicated-switch'
-Send file to a Jython interpreter\.
-
-Uses a dedicated shell\.
-Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
-                     
-                     ["Execute file python3.2 switch" py-execute-file-python3.2-switch
-                      :help " `py-execute-file-python3.2-switch'
-Send file to a Python3\.2 interpreter\.
-Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
-                     
-                     ["Execute file python3.2 noswitch" py-execute-file-python3.2-noswitch
-                      :help " `py-execute-file-python3.2-noswitch'
-Send file to a Python3\.2 interpreter\.
-Ignores default of `py-switch-buffers-on-execute-p', uses it with value "nil". "]
-                     
-                     ["Execute file python3.2 dedicated" py-execute-file-python3.2-dedicated
-                      :help " `py-execute-file-python3.2-dedicated'
-Send file to a Python3\.2 interpreter\.
-
-Uses a dedicated shell\.. "]
-                     
-                     ["Execute file python3.2 dedicated switch" py-execute-file-python3.2-dedicated-switch
-                      :help " `py-execute-file-python3.2-dedicated-switch'
-Send file to a Python3\.2 interpreter\.
-
-Uses a dedicated shell\.
-Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
-                     
-                     ["Execute file python3.3 switch" py-execute-file-python3.3-switch
-                      :help " `py-execute-file-python3.3-switch'
-Send file to a Python3\.3 interpreter\.
-Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
-                     
-                     ["Execute file python3.3 noswitch" py-execute-file-python3.3-noswitch
-                      :help " `py-execute-file-python3.3-noswitch'
-Send file to a Python3\.3 interpreter\.
-Ignores default of `py-switch-buffers-on-execute-p', uses it with value "nil". "]
-                     
-                     ["Execute file python3.3 dedicated" py-execute-file-python3.3-dedicated
-                      :help " `py-execute-file-python3.3-dedicated'
-Send file to a Python3\.3 interpreter\.
-
-Uses a dedicated shell\.. "]
-                     
-                     ["Execute file python3.3 dedicated switch" py-execute-file-python3.3-dedicated-switch
-                      :help " `py-execute-file-python3.3-dedicated-switch'
-Send file to a Python3\.3 interpreter\.
-
-Uses a dedicated shell\.
-Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
-                     
-                     ["Execute file bpython switch" py-execute-file-bpython-switch
-                      :help " `py-execute-file-bpython-switch'
-Send file to a Bpython interpreter\.
-Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
-                     
-                     ["Execute file bpython noswitch" py-execute-file-bpython-noswitch
-                      :help " `py-execute-file-bpython-noswitch'
-Send file to a Bpython interpreter\.
-Ignores default of `py-switch-buffers-on-execute-p', uses it with value "nil". "]
-                     
-                     ["Execute file bpython dedicated" py-execute-file-bpython-dedicated
-                      :help " `py-execute-file-bpython-dedicated'
-Send file to a Bpython interpreter\.
-
-Uses a dedicated shell\.. "]
-                     
-                     ["Execute file bpython dedicated switch" py-execute-file-bpython-dedicated-switch
-                      :help " `py-execute-file-bpython-dedicated-switch'
-Send file to a Bpython interpreter\.
-
-Uses a dedicated shell\.
-Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
-                     )
-          
-          )
-
-         "-"
-         
          ("Edit commands "
           ("Mark "
            ["Mark statement" py-mark-statement
