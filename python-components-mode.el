@@ -1325,6 +1325,15 @@ See also command `toggle-py-underscore-word-syntax-p' ")
 (defvar python-mode-message-string "python-components-mode.el"
   "Internally used. Reports the python-mode branch in use.")
 
+
+;; Skip's XE workaround
+(unless (fboundp 'string-to-syntax)
+  (defun string-to-syntax (s)
+    (cond
+     ((equal s "|") '(15))
+     ((equal s "_") '(3))
+     (t (error "Unhandled string: %s" s)))))
+
 (defvar python-mode-syntax-table nil
   "Give punctuation syntax to ASCII that normally has symbol
 syntax or has word syntax and isn't a letter.")
@@ -1959,14 +1968,6 @@ Includes def and class. ")
      ((nth 3 ppss) 'string)
      ((nth 4 ppss) 'comment)
      (t nil))))
-
-;; Skip's XE workaround
-(unless (fboundp 'string-to-syntax)
-  (defun string-to-syntax (s)
-    (cond
-     ((equal s "|") '(15))
-     ((equal s "_") '(3))
-     (t (error "Unhandled string: %s" s)))))
 
 (defface py-XXX-tag-face
   '((t (:inherit font-lock-string-face)))

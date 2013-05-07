@@ -291,21 +291,51 @@ def main(argv):
 If no `load-branch-function' is specified, make sure the appropriate branch is loaded. Otherwise default python-mode will be checked. "
   (interactive "p")
   (let ((teststring "
-d = {'a':{'b':3,
-          'c':4
-          }
+d = {
+    'a':{
+        'b':3,
+        'c':4
+         }
      }
+
+d = {'a':{
+          'b':3,
+          'c':4
+         }
+    }
+
+data = {
+    'key':
+    {
+        'objlist': [
+            {
+                'pk': 1,
+                'name': 'first',
+            },
+            {
+                'pk': 2,
+                'name': 'second',
+            }
+        ]
+    }
+}
+
 "))
     (py-bug-tests-intern 'nested-dictionaries-indent-lp:328791 arg teststring)))
 
 (defun nested-dictionaries-indent-lp:328791 ()
   (let ((py-indent-honors-multiline-listing t))
-    (goto-char 19)
-    (assert (eq 10 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #1 failed")
-    (goto-char 35)
-    (assert (eq 10 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #2 failed")
-    (goto-char 47)
-    (assert (eq 5 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #3 failed")
+    (goto-char 12)
+    (assert (eq 4 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #1 failed")
+    (goto-char 26)
+    (assert (eq 8 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #2 failed")
+    (goto-char 55)
+    (assert (eq 8 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #3 failed")
+    (goto-char 57)
+    (assert (eq 4 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #4 failed")
+    (goto-char 63)
+    (assert (eq 0 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #5 failed")
+
     ))
 
 (defun mark-block-region-lp:328806-test (&optional arg)
@@ -4966,6 +4996,7 @@ def foo():
   (let ((py-newline-delete-trailing-whitespace-p t))
     (goto-char 286)
     (py-newline-and-indent)
+    (sit-for 0.1)
     (skip-chars-backward " \t\r\n\f")
     (assert (eq (char-after) 10) nil "py-newline-and-indent-leaves-eol-whitespace-lp-1100892-test failed")))
 
@@ -5266,8 +5297,8 @@ def foo():
   (py-bug-tests-intern 'cascading-indent-lp-1101962-base arg teststring)))
 
 (defun cascading-indent-lp-1101962-base ()
-    (goto-char 315)
-    (assert (eq 8 (py-compute-indentation)) nil "cascading-indent-lp-1101962-test failed"))
+    (goto-char 87)
+    (assert (eq 4 (py-compute-indentation)) nil "cascading-indent-lp-1101962-test failed"))
 
 (defun python-mode-very-slow-lp-1107037-test (&optional arg)
   (interactive "p")
@@ -5309,7 +5340,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.8 $\"
+__version__ = \"$Revision: 1.9 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
