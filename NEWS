@@ -38,6 +38,9 @@ New in version 6.1.2
 
 - `py-which-def-or-class', command, now used `which-function-mode' 
 
+- customizable `py-closing-list-space', default 1
+  Number of chars, closing parentesis outdent from opening
+
 New in version 6.1.1
 ---------------------
 

@@ -292,9 +292,9 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
   (interactive "p")
   (let ((teststring "
 d = {
-    'a':{
-        'b':3,
-        'c':4
+     'a':{
+          'b':3,
+          'c':4
          }
      }
 
@@ -326,7 +326,7 @@ data = {
 (defun nested-dictionaries-indent-lp:328791 ()
   (let ((py-indent-honors-multiline-listing t))
     (goto-char 12)
-    (assert (eq 4 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #1 failed")
+    (assert (eq 5 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #1 failed")
     (goto-char 26)
     (assert (eq 8 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #2 failed")
     (goto-char 55)
@@ -1091,12 +1091,13 @@ except:
   (interactive "p")
   (let ((teststring "def foo():
     something()
+
     another(
 "))
     (py-bug-tests-intern 'unbalanced-parentheses-lp:784645-base arg teststring)))
 
 (defun unbalanced-parentheses-lp:784645-base ()
-  (goto-char 40)
+  (goto-char 28)
   (assert (eq 4 (py-compute-indentation)) nil "unbalanced-parentheses-lp:784645-test failed"))
 
 (defun explicitly-indent-in-list-lp:785018-test (&optional arg)
@@ -1552,7 +1553,8 @@ if __name__ == '__main__':
   (goto-char 206)
   (assert (eq 0 (py-compute-indentation)) nil "comments-indent-honor-setting-lp:824427-test failed"))
 
-(defun infinite-loop-after-tqs-lp:826044-test (&optional arg)
+(defun infinite-loop-after-tqs-lp:826044-teso
+t (&optional arg)
   (interactive "p")
   (let ((teststring "\"\"\"
 hey
@@ -5340,7 +5342,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.9 $\"
+__version__ = \"$Revision: 1.12 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -5533,7 +5535,6 @@ a = \"asdf\"
   ;; (car (nth 2 (car '((#1="class kugel" (#1# . 85) ("kugel.pylauf" . 224))))))
   (assert (string= "kugel.pylauf" (car (nth 2 (eval '(car imenu--index-alist))))) nil "wfmc-lp-1160022-test failed"))
 
-
 (defun tab-results-in-never-ending-process-lp-1163423-test (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
@@ -5552,13 +5553,58 @@ a = \"asdf\"
     (goto-char 216)
     (push-mark)
     (goto-char 122)
-    (exchange-point-and-mark) 
+    (exchange-point-and-mark)
     (transient-mark-mode 1)
     (py-indent-line)
-    (sit-for 0.1) 
+    (sit-for 0.1)
     (message "point: %s" (point))
     (assert (eq (point) 216) nil "tab-results-in-never-ending-process-lp-1163423-test failed")))
 
+(defun loops-on-if-else-lp-328777-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "x = (if 1: 2
+     else: 3)
+"))
+  (py-bug-tests-intern 'loops-on-if-else-lp-328777-base arg teststring)))
+
+(defun loops-on-if-else-lp-328777-base ()
+    (goto-char 14)
+    (assert (eq 5 (py-compute-indentation)) nil "loops-on-if-else-lp-328777-test failed"))
+
+(defun nested-dictionaries-indent-again-lp:1174174-test (&optional arg)
+  "With ARG greater 1 keep test buffer open.
+
+If no `load-branch-function' is specified, make sure the appropriate branch is loaded. Otherwise default python-mode will be checked. "
+  (interactive "p")
+  (let ((teststring "
+d = {'a':{'b':3,
+          'c':4
+          }
+     }
+
+d = {'a':{
+          'b':3,
+          'c':4
+         }
+     }
+"))
+    1174174
+    (py-bug-tests-intern 'nested-dictionaries-indent-again-lp:1174174 arg teststring)))
+
+(defun nested-dictionaries-indent-again-lp:1174174 ()
+  (let ((py-indent-honors-multiline-listing t))
+    (goto-char 19)
+    (assert (eq 10 (py-compute-indentation)) nil "nested-dictionaries-indent-again-lp:1174174-test #1 failed")
+    (goto-char 35)
+    (assert (eq 10 (py-compute-indentation)) nil "nested-dictionaries-indent-again-lp:1174174-test #2 failed")
+    (goto-char 47)
+    (assert (eq 5 (py-compute-indentation)) nil "nested-dictionaries-indent-again-lp:1174174-test #3 failed")
+    ;; (goto-char 57)
+    ;; (assert (eq 4 (py-compute-indentation)) nil "nested-dictionaries-indent-again-lp:1174174-test #4 failed")
+    ;; (goto-char 63)
+    ;; (assert (eq 0 (py-compute-indentation)) nil "nested-dictionaries-indent-again-lp:1174174-test #5 failed")
+
+    ))
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

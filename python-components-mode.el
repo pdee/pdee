@@ -381,6 +381,11 @@ Default is nil. "
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-closing-list-space 1
+  "Number of chars, closing parentesis outdent from opening, default is 1 "
+  :type 'number
+  :group 'python-mode)
+
 (defcustom py-electric-kill-backward-p nil
   "Affects `py-electric-backspace'. Default is nil.
 

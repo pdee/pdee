@@ -1115,6 +1115,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-font-lock-keywords) nil \"py-font-lock-keywords not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall loops-on-if-else-lp-328777-test \
 --funcall py-execute-block-or-clause-python3-test \
 --funcall py-execute-block-or-clause-python2-test \
 --funcall py-execute-block-or-clause-python2.7-test \
@@ -1185,9 +1186,7 @@ est \
 --funcall py-end-of-statement-test \
 --funcall shebang-interpreter-not-detected-lp:1001327-test \
 --funcall new-problem-with-py-temp-directory-lp:965762-test \
---funcall nested-dictionaries-indent-lp:328791-test \
 --funcall new-problem-with-py-temp-directory-lp:965762-test \
---funcall nested-dictionaries-indent-lp:328791-test \
 --funcall dq-in-tqs-string-lp:328813-test \
 --funcall py-current-defun-lp:328846-test \
 --funcall cls-pseudo-keyword-lp:328849-test \
@@ -1366,7 +1365,6 @@ est \
 --funcall py-end-of-expression-test \
 --funcall py-partial-expression-test \
 --funcall bob-beginning-of-statement-test \
---funcall infinite-loop-after-tqs-lp:826044-test \
 --funcall completion-at-gentoo-lp-1008842-test \
 --funcall indent-triplequoted-to-itself-lp:752252-test \
 --funcall complaint-about-non-ASCII-character-lp-1042949-test \
@@ -1442,4 +1440,5 @@ est \
 --funcall fill-paragraph-in-docstring-lp-1161232-test \
 --funcall no-completion-at-all-lp:1001328-test \
 --funcall tab-results-in-never-ending-process-lp-1163423-test \
-
+--funcall nested-dictionaries-indent-lp:328791-test \
+--funcall infinite-loop-after-tqs-lp:826044-test\
