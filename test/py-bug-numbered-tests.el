@@ -1584,9 +1584,9 @@ if foo:
 
 (defun closing-list-lp:826144-base ()
   (goto-char 241)
-  (assert (eq 12 (py-compute-indentation)) nil "infinite-loop-after-tqs-lp:826044-test failed")
+  (assert (eq 12 (py-compute-indentation)) nil "closing-list-lp:826144-test #1 failed")
   (goto-char 251)
-  (assert (eq 8 (py-compute-indentation)) nil "infinite-loop-after-tqs-lp:826044-test failed")
+  (assert (eq 8 (py-compute-indentation)) nil "closing-list-lp:826144-test #2 failed")
   )
 
 (defun py-electric-comment-add-space-lp:828398-test (&optional arg)
@@ -5342,7 +5342,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.12 $\"
+__version__ = \"$Revision: 1.14 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -5605,6 +5605,42 @@ d = {'a':{
     ;; (assert (eq 0 (py-compute-indentation)) nil "nested-dictionaries-indent-again-lp:1174174-test #5 failed")
 
     ))
+
+(defun TAB-leaves-point-in-the-wrong-lp-1178453-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+# r1225
+
+import tarfile
+
+src = tarfile.open('src.tgz', 'r:gz')
+dst = tarfile.open('dst.tgz', 'w:gz')
+
+for name in src.getnames():
+    print('name:', name)
+    info = src.getmember(name)
+    fp = src.extractfile(name)
+    dst.addfile(info, fp)
+
+src.close()
+dst.close()
+
+# Put point at the end of the `dst.addfile` line and hit return. Point is
+# properly left on the next line right under the first 'd'. Now hit TAB. Point is
+# correctly left at the beginning of the line. Hit TAB one more time.
+# 
+# Now, while 4 spaces have been added to the beginning of the line, point is left
+# at the beginning of the line instead of at the end of the just inserted
+# whitespace. Point should be at column 4.
+"))
+  (py-bug-tests-intern 'TAB-leaves-point-in-the-wrong-lp-1178453-base arg teststring)))
+
+(defun TAB-leaves-point-in-the-wrong-lp-1178453-base ()
+    (goto-char 292)
+    (py-indent-line) 
+    (assert (eq 4 (current-column)) nil "TAB-leaves-point-in-the-wrong-lp-1178453-test failed"))
+
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

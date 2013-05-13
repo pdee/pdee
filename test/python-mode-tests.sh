@@ -1115,6 +1115,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-font-lock-keywords) nil \"py-font-lock-keywords not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall TAB-leaves-point-in-the-wrong-lp-1178453-test \
 --funcall loops-on-if-else-lp-328777-test \
 --funcall py-execute-block-or-clause-python3-test \
 --funcall py-execute-block-or-clause-python2-test \
