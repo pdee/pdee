@@ -386,6 +386,11 @@ Default is nil. "
   :type 'number
   :group 'python-mode)
 
+(defcustom py-closing-list-keeps-space nil
+  "If non-nil, closing parentesis dedents onto column of opening plus `py-closing-list-space', default is nil "
+  :type 'boolean
+  :group 'python-mode)
+
 (defcustom py-electric-kill-backward-p nil
   "Affects `py-electric-backspace'. Default is nil.
 

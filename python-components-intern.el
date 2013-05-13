@@ -33,6 +33,18 @@
       (skip-chars-backward " \t\r\n\f")
       (py-beginning-of-commented-section))))
 
+(defun py-empty-arglist-indent (nesting py-indent-offset)
+  "Internally used by `py-compute-indentation'"
+  (if
+      (and (eq 1 nesting)
+           (save-excursion
+             (back-to-indentation)
+             (looking-at py-extended-block-or-clause-re)))
+      (progn
+        (back-to-indentation)
+        (+ (current-column) (* 2 (or indent-offset py-indent-offset))))
+    (+ (current-indentation) py-indent-offset)))
+
 (defalias 'py-count-indentation 'py-compute-indentation)
 (defun py-compute-indentation (&optional orig origline closing line nesting repeat indent-offset)
   "Compute Python indentation.
@@ -142,10 +154,12 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
                            (closing
                             (cond ((looking-back "^[ \t]*")
                                    (current-column))
-                                  ((eq 1 closing)
-                                   (if py-closing-list-dedents-bos
-                                       (current-indentation)
-                                     (+ (current-column) py-closing-list-space)))
+                                  ((and (eq 1 closing) (looking-at "\\s([ \t]*$") py-closing-list-dedents-bos)
+                                   (current-indentation))
+                                  ((and (eq 1 closing) (looking-at "\\s([ \t]*$") py-closing-list-keeps-space)
+                                   (+ (current-column) py-closing-list-space))
+                                  ((and (eq 1 closing)(looking-at "\\s([ \t]*$"))
+                                   (py-empty-arglist-indent nesting py-indent-offset))
                                   (t (py-fetch-previous-indent orig))))
                            ;; (if py-closing-list-dedents-bos
                            ;;     (current-indentation)
@@ -154,21 +168,14 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
                             (+ (current-indentation) py-indent-offset))
                            (t (py-fetch-previous-indent orig)))
                         (cond ((looking-at "\\s([ \t]*$")
-                               (if
-                                   (and (eq 1 nesting)
-                                        ;; (progn
-                                        (save-excursion
-                                          (back-to-indentation)
-                                          (looking-at py-extended-block-or-clause-re)))
-                                   (progn
-                                     (back-to-indentation)
-                                     (+ (current-column) (* 2 (or indent-offset py-indent-offset))))
-                                 (+ (current-indentation) py-indent-offset)))
+                               (py-empty-arglist-indent nesting py-indent-offset))
                               ((looking-at "\\s([ \t]*\\([^ \t]+.*\\)$")
                                (goto-char (match-beginning 1))
                                (current-column))
                               (t (+ (current-column) (* (nth 0 pps)))))))
-
+                     ((not (py-beginning-of-statement-p))
+                      (py-beginning-of-statement)
+                      (py-compute-indentation orig origline closing line nesting repeat indent-offset))
                      (t (1+ (current-column))))))
                  ((and (not nesting) line)
                   (py-beginning-of-statement)
