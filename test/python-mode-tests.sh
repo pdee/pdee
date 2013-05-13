@@ -1115,6 +1115,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-font-lock-keywords) nil \"py-font-lock-keywords not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test \
 --funcall incorrect-indentation-of-comments-in-a-multiline-list-lp-1077063-test \
 --funcall indentation-wrong-after-multi-line-parameter-list-lp:871698-test \
 --funcall indent-after-inline-comment-lp:873372-test \

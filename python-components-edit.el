@@ -448,21 +448,6 @@ The defun visible is the one that contains point or follows point. "
 ;;       (backward-paragraph))))
 
 (defalias 'py-end-of-paragraph 'forward-paragraph)
-;; (defun py-end-of-paragraph ()
-;;   "Go to end of paragraph.
-;;
-;; If in a string starting which starts at current indentation, consider end-of-string as paragraph end "
-;;   (interactive)
-;;   (let* ((pps (syntax-ppss))
-;;          (erg (or (and (nth 3 pps)(nth 8 pps))
-;;                   (and (looking-at "\"\"\"\\|'''\\|\"\\|'")(looking-back "^[ \t]*]")))))
-;;
-;;     (if (and erg (back-to-indentation) (looking-at "\"\"\"\\|'''\\|\"\\|'"))
-;;         (progn
-;;           (goto-char (match-end 0))
-;;           (search-forward (match-string-no-properties 0) (line-end-position))
-;;           (match-end 0))
-;;       (forward-paragraph))))
 
 ;;;
 (defun py-indent-and-forward ()
@@ -491,8 +476,10 @@ Returns and keeps relative position "
                            (or indent-offset py-indent-offset))))
     (goto-char beg)
     (while (< (line-end-position) end)
-      (py-indent-and-forward))
-    (unless (empty-line-p) (py-indent-line nil t))
+      (if (empty-line-p)
+          (forward-line 1)
+        (py-indent-and-forward)))
+    (unless (empty-line-p) (py-indent-line))
     (goto-char orig)))
 
 ;;; Positions

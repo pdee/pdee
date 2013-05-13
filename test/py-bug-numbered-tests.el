@@ -5642,5 +5642,35 @@ dst.close()
     (assert (eq 4 (current-column)) nil "TAB-leaves-point-in-the-wrong-lp-1178453-test failed"))
 
 
+(defun Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+# r1225
+
+def foo():
+    \"\"\"Line one of a comment.
+
+    A paragraph of comments.
+    These should get wrapped correctly.
+    They do, but whooboy!
+
+    Last line of comment.
+    \"\"\"
+
+# Put point somewhere in the middle paragraph and hit M-q (fill-paragraph).
+#
+# The paragraph gets properly wrapped, but the blank line before it and after it
+# get additional 4 bogus spaces at the beginning of their lines.
+"))
+  (py-bug-tests-intern 'Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-base arg teststring)))
+
+(defun Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-base ()
+    (goto-char 140)
+    (fill-paragraph)
+    (goto-char 98)
+    (assert (and (bolp) (eolp)) nil "Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test failed"))
+
+
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

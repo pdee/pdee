@@ -93,3 +93,4 @@ test/python-mode-shell-complete-test.sh
 python-components-completion.el
 RCS
 ToDo.org
+devel/notes.org
