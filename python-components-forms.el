@@ -1,4 +1,4 @@
-;;; python-components-forms.el --- Execute forms at point
+;;; python-components-forms.el -- Forms start/end at beginning of line
 
 ;; Author: Andreas Roehler <andreas.roehler@online.de>
 ;; Keywords: languages, convenience
@@ -16,168 +16,451 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-(defun py-execute-statement (&optional shell dedicated switch)
-  "Send statement at point to a Python interpreter.
+;;; Commentary:
 
-When called with \\[univeral-argument], execution through `default-value' of `py-shell-name' is forced.
+;;; Code:
 
-When called with \\[univeral-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
+;;; Beginning of line forms
+(defun py-mark-base (form &optional py-mark-decorators)
+  (let* ((begform (intern-soft (concat "py-beginning-of-" form)))
+         (endform (intern-soft (concat "py-end-of-" form)))
+         (begcheckform (intern-soft (concat "py-beginning-of-" form "-p")))
+         (orig (point))
+         beg end erg)
+    (setq beg (if
+                  (setq beg (funcall begcheckform))
+                  beg
+                (funcall begform)))
+    (when py-mark-decorators
+      (save-excursion
+        (when (setq erg (py-beginning-of-decorator))
+          (setq beg erg))))
+    (setq end (funcall endform))
+    (push-mark beg t t)
+    (unless end (when (< beg (point))
+                  (setq end (point))))
+    (when (interactive-p) (message "%s %s" beg end))
+    (cons beg end)))
 
-When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
+(defun py-beginning-of-block-p ()
+  "Returns position, if cursor is at the beginning of a block, nil otherwise. "
+  (when (and (looking-at py-block-re)
+             (not (py-in-string-or-comment-p)))
+    (point)))
 
-Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)"
+(defalias 'py-beginning-of-block-lc 'py-beginning-of-block)
+(defun py-beginning-of-block (&optional indent)
+  "Goto beginning of line where block starts.
+  Returns position reached, if successful, nil otherwise."
   (interactive)
-  (save-excursion
-    (let ((beg (prog1
-                   (or (py-beginning-of-statement-p)
-                       (py-beginning-of-statement))))
-          (end (py-end-of-block-or-clause)))
-      (py-execute-region beg end shell dedicated switch))))
+  (let ((indent (and (looking-at py-block-re)
+                     (current-indentation))))
+    (py-beginning-of-form-intern py-block-re (interactive-p) indent)))
 
-(defun py-execute-block (&optional shell dedicated switch)
-  "Send block at point to a Python interpreter.
+(defalias 'py-down-block-lc 'py-end-of-block)
+(defun py-end-of-block (&optional indent)
+  "Go to end of block.
 
-When called with \\[univeral-argument], execution through `default-value' of `py-shell-name' is forced.
+Returns end of block if successful, nil otherwise
 
-When called with \\[univeral-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html"
+  (interactive "P")
+  (let* ((orig (point))
+         (erg (py-end-base 'py-block-re orig)))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
 
-When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
+(defalias 'py-down-block-lc 'py-end-of-block-lc)
+(defun py-end-of-block-lc ()
+  "Goto beginning of line following end of block.
+  Returns position reached, if successful, nil otherwise.
 
-Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)"
+See also `py-down-block': down from current definition to next beginning of block below. "
   (interactive)
-  (save-excursion
-    (let ((beg (prog1
-                   (or (py-beginning-of-block-p)
-                       (py-beginning-of-block))))
-          (end (py-end-of-block-or-clause)))
-      (py-execute-region beg end shell dedicated switch))))
+  (let ((erg (py-end-of-block)))
+    (when erg
+      (unless (eobp)
+        (forward-line 1)
+        (beginning-of-line)
+        (setq erg (point))))
+  (when (interactive-p) (message "%s" erg))
+  erg))
 
-(defun py-execute-clause (&optional shell dedicated switch)
-  "Send clause at point to a Python interpreter.
+(defun py-beginning-of-minor-block-p ()
+  "Returns position, if cursor is at the beginning of a minor-block, nil otherwise. "
+  (when (and (looking-at py-minor-block-re)
+             (not (py-in-string-or-comment-p)))
+    (point)))
 
-When called with \\[univeral-argument], execution through `default-value' of `py-shell-name' is forced.
-
-When called with \\[univeral-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
-
-When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
-
-Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)"
+(defalias 'py-beginning-of-minor-block-lc 'py-beginning-of-minor-block)
+(defun py-beginning-of-minor-block (&optional indent)
+  "Goto beginning of line where minor-block starts.
+  Returns position reached, if successful, nil otherwise."
   (interactive)
-  (save-excursion
-    (let ((beg (prog1
-                   (or (py-beginning-of-clause-p)
-                       (py-beginning-of-clause))))
-          (end (py-end-of-block-or-clause)))
-      (py-execute-region beg end shell dedicated switch))))
+  (let ((indent (and (looking-at py-minor-block-re)
+                     (current-indentation))))
+    (py-beginning-of-form-intern py-minor-block-re (interactive-p) indent)))
 
-(defun py-execute-block-or-clause (&optional shell dedicated switch)
-  "Send block-or-clause at point to a Python interpreter.
+(defalias 'py-down-minor-block-lc 'py-end-of-minor-block)
+(defun py-end-of-minor-block (&optional indent)
+  "Go to end of minor-block.
 
-When called with \\[univeral-argument], execution through `default-value' of `py-shell-name' is forced.
+Returns end of minor-block if successful, nil otherwise
 
-When called with \\[univeral-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html"
+  (interactive "P")
+  (let* ((orig (point))
+         (erg (py-end-base 'py-minor-block-re orig)))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
 
-When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
+(defalias 'py-down-minor-block-lc 'py-end-of-minor-block-lc)
+(defun py-end-of-minor-block-lc ()
+  "Goto beginning of line following end of minor-block.
+  Returns position reached, if successful, nil otherwise.
 
-Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)"
+See also `py-down-minor-block': down from current definition to next beginning of minor-block below. "
   (interactive)
-  (save-excursion
-    (let ((beg (prog1
-                   (or (py-beginning-of-block-or-clause-p)
-                       (py-beginning-of-block-or-clause))))
-          (end (py-end-of-block-or-clause)))
-      (py-execute-region beg end shell dedicated switch))))
+  (let ((erg (py-end-of-minor-block)))
+    (when erg
+      (unless (eobp)
+        (forward-line 1)
+        (beginning-of-line)
+        (setq erg (point))))
+  (when (interactive-p) (message "%s" erg))
+  erg))
 
-(defun py-execute-def (&optional shell dedicated switch)
-  "Send def at point to a Python interpreter.
+(defun py-beginning-of-clause-p ()
+  "Returns position, if cursor is at the beginning of a clause, nil otherwise. "
+  (when (and (looking-at py-clause-re)
+             (not (py-in-string-or-comment-p)))
+    (point)))
 
-When called with \\[univeral-argument], execution through `default-value' of `py-shell-name' is forced.
-
-When called with \\[univeral-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
-
-When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
-
-Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)"
+(defalias 'py-beginning-of-clause-lc 'py-beginning-of-clause)
+(defun py-beginning-of-clause (&optional indent)
+  "Goto beginning of line where clause starts.
+  Returns position reached, if successful, nil otherwise."
   (interactive)
-  (save-excursion
-    (let ((beg (prog1
-                   (or (py-beginning-of-def-p)
-                       (py-beginning-of-def))))
-          (end (py-end-of-block-or-clause)))
-      (py-execute-region beg end shell dedicated switch))))
+  (let ((indent (and (looking-at py-clause-re)
+                     (current-indentation))))
+    (py-beginning-of-form-intern py-clause-re (interactive-p) indent)))
 
-(defun py-execute-class (&optional shell dedicated switch)
-  "Send class at point to a Python interpreter.
+(defalias 'py-down-clause-lc 'py-end-of-clause)
+(defun py-end-of-clause (&optional indent)
+  "Go to end of clause.
 
-When called with \\[univeral-argument], execution through `default-value' of `py-shell-name' is forced.
+Returns end of clause if successful, nil otherwise
 
-When called with \\[univeral-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html"
+  (interactive "P")
+  (let* ((orig (point))
+         (erg (py-end-base 'py-clause-re orig)))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
 
-When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
+(defalias 'py-down-clause-lc 'py-end-of-clause-lc)
+(defun py-end-of-clause-lc ()
+  "Goto beginning of line following end of clause.
+  Returns position reached, if successful, nil otherwise.
 
-Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)"
+See also `py-down-clause': down from current definition to next beginning of clause below. "
   (interactive)
-  (save-excursion
-    (let ((beg (prog1
-                   (or (py-beginning-of-class-p)
-                       (py-beginning-of-class))))
-          (end (py-end-of-block-or-clause)))
-      (py-execute-region beg end shell dedicated switch))))
+  (let ((erg (py-end-of-clause)))
+    (when erg
+      (unless (eobp)
+        (forward-line 1)
+        (beginning-of-line)
+        (setq erg (point))))
+  (when (interactive-p) (message "%s" erg))
+  erg))
 
-(defun py-execute-def-or-class (&optional shell dedicated switch)
-  "Send def-or-class at point to a Python interpreter.
+(defun py-beginning-of-block-or-clause-p ()
+  "Returns position, if cursor is at the beginning of a block-or-clause, nil otherwise. "
+  (when (and (looking-at py-block-or-clause-re)
+             (not (py-in-string-or-comment-p)))
+    (point)))
 
-When called with \\[univeral-argument], execution through `default-value' of `py-shell-name' is forced.
-
-When called with \\[univeral-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
-
-When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
-
-Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)"
+(defalias 'py-beginning-of-block-or-clause-lc 'py-beginning-of-block-or-clause)
+(defun py-beginning-of-block-or-clause (&optional indent)
+  "Goto beginning of line where block-or-clause starts.
+  Returns position reached, if successful, nil otherwise."
   (interactive)
-  (save-excursion
-    (let ((beg (prog1
-                   (or (py-beginning-of-def-or-class-p)
-                       (py-beginning-of-def-or-class))))
-          (end (py-end-of-block-or-clause)))
-      (py-execute-region beg end shell dedicated switch))))
+  (let ((indent (and (looking-at py-block-or-clause-re)
+                     (current-indentation))))
+    (py-beginning-of-form-intern py-block-or-clause-re (interactive-p) indent)))
 
-(defun py-execute-expression (&optional shell dedicated switch)
-  "Send expression at point to a Python interpreter.
+(defalias 'py-down-block-or-clause-lc 'py-end-of-block-or-clause)
+(defun py-end-of-block-or-clause (&optional indent)
+  "Go to end of block-or-clause.
 
-When called with \\[univeral-argument], execution through `default-value' of `py-shell-name' is forced.
+Returns end of block-or-clause if successful, nil otherwise
 
-When called with \\[univeral-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html"
+  (interactive "P")
+  (let* ((orig (point))
+         (erg (py-end-base 'py-block-or-clause-re orig)))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
 
-When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
+(defalias 'py-down-block-or-clause-lc 'py-end-of-block-or-clause-lc)
+(defun py-end-of-block-or-clause-lc ()
+  "Goto beginning of line following end of block-or-clause.
+  Returns position reached, if successful, nil otherwise.
 
-Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)"
+See also `py-down-block-or-clause': down from current definition to next beginning of block-or-clause below. "
   (interactive)
-  (save-excursion
-    (let ((beg (prog1
-                   (or (py-beginning-of-expression-p)
-                       (py-beginning-of-expression))))
-          (end (py-end-of-block-or-clause)))
-      (py-execute-region beg end shell dedicated switch))))
+  (let ((erg (py-end-of-block-or-clause)))
+    (when erg
+      (unless (eobp)
+        (forward-line 1)
+        (beginning-of-line)
+        (setq erg (point))))
+  (when (interactive-p) (message "%s" erg))
+  erg))
 
-(defun py-execute-partial-expression (&optional shell dedicated switch)
-  "Send partial-expression at point to a Python interpreter.
+(defun py-beginning-of-def-p ()
+  "Returns position, if cursor is at the beginning of a def, nil otherwise. "
+  (when (and (looking-at py-def-re)
+             (not (py-in-string-or-comment-p)))
+    (point)))
 
-When called with \\[univeral-argument], execution through `default-value' of `py-shell-name' is forced.
-
-When called with \\[univeral-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
-
-When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
-
-Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)"
+(defalias 'py-beginning-of-def-lc 'py-beginning-of-def)
+(defun py-beginning-of-def (&optional indent)
+  "Goto beginning of line where def starts.
+  Returns position reached, if successful, nil otherwise."
   (interactive)
-  (save-excursion
-    (let ((beg (prog1
-                   (or (py-beginning-of-partial-expression-p)
-                       (py-beginning-of-partial-expression))))
-          (end (py-end-of-block-or-clause)))
-      (py-execute-region beg end shell dedicated switch))))
+  (let ((indent (and (looking-at py-def-re)
+                     (current-indentation))))
+    (py-beginning-of-form-intern py-def-re (interactive-p) indent)))
 
+(defalias 'py-down-def-lc 'py-end-of-def)
+(defun py-end-of-def (&optional indent)
+  "Go to end of def.
+
+Returns end of def if successful, nil otherwise
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html"
+  (interactive "P")
+  (let* ((orig (point))
+         (erg (py-end-base 'py-def-re orig)))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defalias 'py-down-def-lc 'py-end-of-def-lc)
+(defun py-end-of-def-lc ()
+  "Goto beginning of line following end of def.
+  Returns position reached, if successful, nil otherwise.
+
+See also `py-down-def': down from current definition to next beginning of def below. "
+  (interactive)
+  (let ((erg (py-end-of-def)))
+    (when erg
+      (unless (eobp)
+        (forward-line 1)
+        (beginning-of-line)
+        (setq erg (point))))
+  (when (interactive-p) (message "%s" erg))
+  erg))
+
+(defun py-mark-def ()
+  "Mark def at point.
+
+Returns beginning and end positions of marked area, a cons. "
+  (interactive)
+  (let (erg)
+    (setq erg (py-mark-base "def"))
+    (exchange-point-and-mark)
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defun py-copy-def ()
+  "Mark def at point.
+
+Returns beginning and end positions of marked area, a cons. "
+  (interactive)
+  (let ((erg (py-mark-base "def")))
+    (kill-new (buffer-substring-no-properties (car erg) (cdr erg)))))
+
+(defun py-kill-def ()
+  "Delete def  at point.
+
+Stores data in kill ring. Might be yanked back using `C-y'. "
+  (interactive "*")
+  (let ((erg (py-mark-base "ele")))
+    (kill-region (car erg) (cdr erg))))
+
+(defun py-delete-def ()
+  "Delete def  at point.
+
+Don't store data in kill ring. "
+  (interactive "*")
+  (let ((erg (py-mark-base "ele")))
+    (delete-region (car erg) (cdr erg))))
+
+(defun py-beginning-of-class-p ()
+  "Returns position, if cursor is at the beginning of a class, nil otherwise. "
+  (when (and (looking-at py-class-re)
+             (not (py-in-string-or-comment-p)))
+    (point)))
+
+(defalias 'py-beginning-of-class-lc 'py-beginning-of-class)
+(defun py-beginning-of-class (&optional indent)
+  "Goto beginning of line where class starts.
+  Returns position reached, if successful, nil otherwise."
+  (interactive)
+  (let ((indent (and (looking-at py-class-re)
+                     (current-indentation))))
+    (py-beginning-of-form-intern py-class-re (interactive-p) indent)))
+
+(defalias 'py-down-class-lc 'py-end-of-class)
+(defun py-end-of-class (&optional indent)
+  "Go to end of class.
+
+Returns end of class if successful, nil otherwise
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html"
+  (interactive "P")
+  (let* ((orig (point))
+         (erg (py-end-base 'py-class-re orig)))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defalias 'py-down-class-lc 'py-end-of-class-lc)
+(defun py-end-of-class-lc ()
+  "Goto beginning of line following end of class.
+  Returns position reached, if successful, nil otherwise.
+
+See also `py-down-class': down from current definition to next beginning of class below. "
+  (interactive)
+  (let ((erg (py-end-of-class)))
+    (when erg
+      (unless (eobp)
+        (forward-line 1)
+        (beginning-of-line)
+        (setq erg (point))))
+  (when (interactive-p) (message "%s" erg))
+  erg))
+
+(defun py-mark-class ()
+  "Mark class at point.
+
+Returns beginning and end positions of marked area, a cons. "
+  (interactive)
+  (let (erg)
+    (setq erg (py-mark-base "class"))
+    (exchange-point-and-mark)
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defun py-copy-class ()
+  "Mark class at point.
+
+Returns beginning and end positions of marked area, a cons. "
+  (interactive)
+  (let ((erg (py-mark-base "class")))
+    (kill-new (buffer-substring-no-properties (car erg) (cdr erg)))))
+
+(defun py-kill-class ()
+  "Delete class  at point.
+
+Stores data in kill ring. Might be yanked back using `C-y'. "
+  (interactive "*")
+  (let ((erg (py-mark-base "ele")))
+    (kill-region (car erg) (cdr erg))))
+
+(defun py-delete-class ()
+  "Delete class  at point.
+
+Don't store data in kill ring. "
+  (interactive "*")
+  (let ((erg (py-mark-base "ele")))
+    (delete-region (car erg) (cdr erg))))
+
+(defun py-beginning-of-def-or-class-p ()
+  "Returns position, if cursor is at the beginning of a def-or-class, nil otherwise. "
+  (when (and (looking-at py-def-or-class-re)
+             (not (py-in-string-or-comment-p)))
+    (point)))
+
+(defalias 'py-beginning-of-def-or-class-lc 'py-beginning-of-def-or-class)
+(defun py-beginning-of-def-or-class (&optional indent)
+  "Goto beginning of line where def-or-class starts.
+  Returns position reached, if successful, nil otherwise."
+  (interactive)
+  (let ((indent (and (looking-at py-def-or-class-re)
+                     (current-indentation))))
+    (py-beginning-of-form-intern py-def-or-class-re (interactive-p) indent)))
+
+(defalias 'py-down-def-or-class-lc 'py-end-of-def-or-class)
+(defun py-end-of-def-or-class (&optional indent)
+  "Go to end of def-or-class.
+
+Returns end of def-or-class if successful, nil otherwise
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html"
+  (interactive "P")
+  (let* ((orig (point))
+         (erg (py-end-base 'py-def-or-class-re orig)))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defalias 'py-down-def-or-class-lc 'py-end-of-def-or-class-lc)
+(defun py-end-of-def-or-class-lc ()
+  "Goto beginning of line following end of def-or-class.
+  Returns position reached, if successful, nil otherwise.
+
+See also `py-down-def-or-class': down from current definition to next beginning of def-or-class below. "
+  (interactive)
+  (let ((erg (py-end-of-def-or-class)))
+    (when erg
+      (unless (eobp)
+        (forward-line 1)
+        (beginning-of-line)
+        (setq erg (point))))
+  (when (interactive-p) (message "%s" erg))
+  erg))
+
+(defun py-mark-def-or-class ()
+  "Mark def-or-class at point.
+
+Returns beginning and end positions of marked area, a cons. "
+  (interactive)
+  (let (erg)
+    (setq erg (py-mark-base "def-or-class"))
+    (exchange-point-and-mark)
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defun py-copy-def-or-class ()
+  "Mark def-or-class at point.
+
+Returns beginning and end positions of marked area, a cons. "
+  (interactive)
+  (let ((erg (py-mark-base "def-or-class")))
+    (kill-new (buffer-substring-no-properties (car erg) (cdr erg)))))
+
+(defun py-kill-def-or-class ()
+  "Delete def-or-class  at point.
+
+Stores data in kill ring. Might be yanked back using `C-y'. "
+  (interactive "*")
+  (let ((erg (py-mark-base "ele")))
+    (kill-region (car erg) (cdr erg))))
+
+(defun py-delete-def-or-class ()
+  "Delete def-or-class  at point.
+
+Don't store data in kill ring. "
+  (interactive "*")
+  (let ((erg (py-mark-base "ele")))
+    (delete-region (car erg) (cdr erg))))
+
+;; python-components-forms.el ends here
 (provide 'python-components-forms)
-;;; python-components-forms.el ends here
- 

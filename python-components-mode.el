@@ -2329,8 +2329,10 @@ See original source: http://pymacs.progiciels-bpi.ca"
 (require 'python-components-shift-forms)
 (require 'python-components-execute-file)
 (require 'python-components-comment)
+;; (require 'python-components-forms)
 (require 'python-components-auto-fill)
 (require 'highlight-indentation)
+
 
 ;; toggle-py-underscore-word-syntax-p must be known already
 ;; circular: toggle-py-underscore-word-syntax-p sets and calls it
@@ -6598,6 +6600,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (set (make-local-variable 'which-func-functions) 'py-which-def-or-class)
   (set (make-local-variable 'parse-sexp-lookup-properties) t)
   (set (make-local-variable 'parse-sexp-ignore-comments) t)
+  (set (make-local-variable 'comment-use-syntax) t)
   (set (make-local-variable 'comment-start) "#")
   (if empty-comment-line-separates-paragraph-p
       (progn

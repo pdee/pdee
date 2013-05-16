@@ -2082,6 +2082,170 @@ Don't store data in kill ring. \"
   (switch-to-buffer (current-buffer))
   (emacs-lisp-mode))
 
+(defun py-write-forms ()
+  (interactive)
+    (set-buffer (get-buffer-create "form-menu.el"))
+    (erase-buffer)
+    (dolist (ele py-down-forms)
+      (insert (concat "(\" " (capitalize ele) "  ... \"
+             [\"Beginning of " ele " \" py-beginning-of-" ele "
+              :help \"`py-beginning-of-" ele "'
+Go to beginning of line at beginning of " ele ".
+
+Returns position reached, if successful, nil otherwise. \"]\n"))
+
+  (insert (concat "
+             [\"End of " ele " \" py-end-of-" ele "
+              :help \"`py-end-of-" ele "'
+Go to beginning of line following end of " ele ".
+
+Returns position reached, if successful, nil otherwise. \"]
+
+             [\"Up " ele " \" py-up-" ele "
+              :help \"`py-up-" ele "'
+Go to next " ele " upwards in buffer if any. Go to beginning of line.
+
+Returns position reached, if successful, nil otherwise. \"]
+
+             [\"Down " ele " \" py-down-" ele "
+              :help \"`py-down-" ele "'
+Go to next " ele " downwards in buffer if any. Go to beginning of line.
+
+Returns position reached, if successful, nil otherwise. \"]
+
+             [\"Mark " ele " \" py-mark-" ele "
+              :help \"`py-mark-" ele "'
+Mark " ele " at point. \"]
+
+             [\"Copy " ele " \" py-copy-" ele "
+              :help \"`py-copy-" ele "'
+Copy " ele " at point. \"]
+
+             [\"Kill " ele " \" py-kill-" ele "
+              :help \"`py-kill-" ele "'
+Kill " ele " at point. \"]
+
+             [\"Delete " ele " \" py-delete-" ele "
+              :help \"`py-delete-" ele "'
+Delete " ele " at point. \"]\n)\n")))
+
+  (set-buffer (get-buffer-create "python-components-forms.el"))
+  (erase-buffer)
+  (insert ";;; python-components-forms.el -- Forms start/end at beginning of line\n")
+  (insert arkopf)
+  (insert ";;; Beginning of line forms
+\(defun py-mark-base (form &optional py-mark-decorators)
+  (let\* ((begform (intern-soft (concat \"py-beginning-of-\" form)))
+         (endform (intern-soft (concat \"py-end-of-\" form)))
+         (begcheckform (intern-soft (concat \"py-beginning-of-\" form \"-p\")))
+         (orig (point))
+         beg end erg)
+    (setq beg (if
+                  (setq beg (funcall begcheckform))
+                  beg
+                (funcall begform)))
+    (when py-mark-decorators
+      (save-excursion
+        (when (setq erg (py-beginning-of-decorator))
+          (setq beg erg))))
+    (setq end (funcall endform))
+    (push-mark beg t t)
+    (unless end (when (< beg (point))
+                  (setq end (point))))
+    (when (interactive-p) (message \"%s %s\" beg end))
+    (cons beg end)))\n")
+  (dolist (ele py-down-forms)
+;; beg-end check forms
+    (insert (concat "
+\(defun py-beginning-of-" ele "-p ()
+  \"Returns position, if cursor is at the beginning of a " ele ", nil otherwise. \"
+  (when (and (looking-at py-" ele "-re)
+             (not (py-in-string-or-comment-p)))
+    (point)))
+
+\(defalias 'py-beginning-of-" ele "-lc 'py-beginning-of-" ele ")
+\(defun py-beginning-of-" ele " (&optional indent)
+  \"Goto beginning of line where " ele " starts.
+  Returns position reached, if successful, nil otherwise.\"
+  (interactive)
+  (let ((indent (and (looking-at py-" ele "-re)
+                     (current-indentation))))
+    (py-beginning-of-form-intern py-" ele "-re (interactive-p) indent)))
+
+\(defalias 'py-down-" ele "-lc 'py-end-of-" ele ")
+\(defun py-end-of-" ele " (&optional indent)
+  \"Go to end of " ele ".
+
+Returns end of " ele " if successful, nil otherwise
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html\"
+  (interactive \"P\")
+  (let\* ((orig (point))
+         (erg (py-end-base 'py-" ele "-re orig)))
+    (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
+    erg))
+
+\(defalias 'py-down-" ele "-lc 'py-end-of-" ele "-lc)
+\(defun py-end-of-" ele "-lc ()
+  \"Goto beginning of line following end of " ele ".
+  Returns position reached, if successful, nil otherwise.
+
+See also `py-down-" ele "': down from current definition to next beginning of " ele " below. \"
+  (interactive)
+  (let ((erg (py-end-of-" ele ")))
+    (when erg
+      (unless (eobp)
+        (forward-line 1)
+        (beginning-of-line)
+        (setq erg (point))))
+  (when (interactive-p) (message \"%s\" erg))
+  erg))
+"))
+
+    ;; Mark
+    (if (string-match "def\\|class" ele)
+        (insert (concat "
+\(defun py-mark-" ele " ()
+  \"Mark " ele " at point.
+
+Returns beginning and end positions of marked area, a cons. \"
+  (interactive)
+  (let (erg)
+    (setq erg (py-mark-base \"" ele "\"))
+    (exchange-point-and-mark)
+    (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
+    erg))
+
+\(defun py-copy-" ele " ()
+  \"Mark " ele " at point.
+
+Returns beginning and end positions of marked area, a cons. \"
+  (interactive)
+  (let ((erg (py-mark-base \"" ele "\")))
+    (kill-new (buffer-substring-no-properties (car erg) (cdr erg)))))
+
+\(defun py-kill-" ele " ()
+  \"Delete " ele "  at point.
+
+Stores data in kill ring. Might be yanked back using `C-y'. \"
+  (interactive \"\*\")
+  (let ((erg (py-mark-base \"ele\")))
+    (kill-region (car erg) (cdr erg))))
+
+\(defun py-delete-" ele " ()
+  \"Delete " ele "  at point.
+
+Don't store data in kill ring. \"
+  (interactive \"\*\")
+  (let ((erg (py-mark-base \"ele\")))
+    (delete-region (car erg) (cdr erg))))
+"))))
+  (insert "\n;; python-components-forms.el ends here
+\(provide 'python-components-forms)")
+  (switch-to-buffer (current-buffer))
+  (emacs-lisp-mode))
+
 (defun py-write-up-down-forms ()
   (interactive)
   (set-buffer (get-buffer-create "python-components-up-down.el"))

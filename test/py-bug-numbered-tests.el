@@ -5342,7 +5342,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.14 $\"
+__version__ = \"$Revision: 1.16 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -5413,9 +5413,10 @@ class Test(object):
     (fill-paragraph)
     (back-to-indentation)
     (sit-for 0.1)
-    (assert (eq (char-after) ?\i) nil "more-docstring-filling-woes-lp-1102296-nil-test #3a failed")
+    (assert (eq (char-after) 34) nil "more-docstring-filling-woes-lp-1102296-nil-test #3a failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-nil-test #3a done")
-    (forward-line 1)
+    (search-forward "pass" nil t 1)
+    (beginning-of-line) 
     (assert (looking-at "        pass") nil "more-docstring-filling-woes-lp-1102296-nil-test #3c failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-nil-test #3c done")))
 
@@ -5464,7 +5465,8 @@ class Test(object):
     (sit-for 0.1)
     (assert (eq (skip-chars-forward " ")  8) nil "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #3a failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #3a done")
-    (forward-line 1)
+    (search-forward "pass")
+    (beginning-of-line) 
     (sit-for 0.1)
     (assert (looking-at "        pass") nil "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #3b failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #3b done")))
@@ -5670,6 +5672,50 @@ def foo():
     (fill-paragraph)
     (goto-char 98)
     (assert (and (bolp) (eolp)) nil "Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test failed"))
+
+
+(defun trouble-with-py-fill-paragraph-lp-1180653.py-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -\*- coding: utf-8 -\*-
+# I'm trying to refill the following docstring:
+
+class BlockCache(object):
+
+    def remove(self, inode, start_no, end_no=None):
+        \"\"\"Remove blocks for `inode`
+
+        If `end_no` is not specified, remove just the `start_no`
+        block.
+        Otherwise removes all blocks from `start_no` to, but not
+        including, `end_no`.
+
+        Note: if `get` and `remove` are called concurrently, then
+it is
+        possible that a block that has been requested with `get`
+and
+        passed to `remove` for deletion will not be deleted.
+        \"\"\"
+
+        log.debug('remove(inode=%d, start=%d, end=%s): start',
+inode, start_no, end_no)
+
+        if end_no is None:
+            end_no = start_no + 1
+
+# When I place the cursor on e.g. the first line (\"If `end_no`...)
+# and execute M-x py-fill-paragraph, the buffer is scrolled such that
+# this becomes the first visible line, and the indentation is
+# removed. No filling occurs at all.
+# 
+# Am I doing something wrong? py-docstring-style is set to
+# pep-256-nn.
+"))
+  (py-bug-tests-intern 'trouble-with-py-fill-paragraph-lp-1180653.py-base arg teststring)))
+
+(defun trouble-with-py-fill-paragraph-lp-1180653.py-base ()
+    (goto-char 214)
+    (assert nil "trouble-with-py-fill-paragraph-lp-1180653.py-test failed"))
 
 
 (provide 'py-bug-numbered-tests)

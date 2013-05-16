@@ -150,7 +150,8 @@ complete docstring according to setting of `py-docstring-style' "
              (end (or (ignore-errors (and end (goto-char end) (skip-chars-backward "\"'")(copy-marker (point))))
                       (progn (goto-char (nth 8 pps)) (forward-sexp) (skip-chars-backward "\"'") (point-marker))))
              multi-line-p
-             delimiters-style)
+             delimiters-style
+             erg)
         ;; whitespace and newline will be added according to mode again
         (goto-char beg)
         (setq beg (progn (skip-chars-forward "\"'") (copy-marker (point))))
@@ -200,9 +201,15 @@ complete docstring according to setting of `py-docstring-style' "
               (and
                (cdr delimiters-style)
                (or (newline (cdr delimiters-style)) t)))
-            (setq end (progn (skip-chars-forward " \t\r\n\f")(skip-chars-forward "\"'")(point)))
-            (setq beg (progn (goto-char beg) (skip-chars-backward " \t\r\n\f")(skip-chars-backward "\"'") (point)))
-            (indent-region beg end)))))))
+            (setq end (progn (skip-chars-forward " \t\r\n\f")(skip-chars-forward "\"'")(copy-marker (point))))
+            (setq beg (progn (goto-char beg) (skip-chars-backward " \t\r\n\f")(skip-chars-backward "\"'") (copy-marker (point))))
+            (indent-region beg end)
+            ;; indent-region fails sometimes at last line
+            (goto-char end)
+            (beginning-of-line)
+            (unless (eq (current-indentation) (setq erg (py-compute-indentation)))
+              (fixup-whitespace)
+              (indent-to erg))))))))
 
 (defun py-fill-comment (&optional justify)
   "Fill the comment paragraph at point"
