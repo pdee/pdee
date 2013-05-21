@@ -4177,14 +4177,17 @@ Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil
 
             ["pychecker-run" py-pychecker-run
              :help "`py-pychecker-run'
-Run pychecker"]
+Run pychecker
+
+Call `easy_install pyflakes' resp. `pip... 'if not available"]
 
             ("Pylint "
              :help "Extendet report options
-call `easy_install pylint' if not available"
 
-             ["pylint-run" py-pylint-run
-              :help "`pylint-run'
+Call `easy_install pylint' resp. `pip...' if not available"
+
+             ["py-pylint-run" py-pylint-run
+              :help "`py-pylint-run'
 Pylint will display a number of messages as it analyzes the code,
 as well as some statistics about the number of warnings and
 errors found in different files - unless called with arg \"--errors-only\". The messages are classified
@@ -4195,11 +4198,11 @@ well-formed according to your coding standard, if declared
 interfaces are truly implemented, and much more. Additionally, it
 is possible to write plugins.
 
-call `easy_install pylint' if not available
+Call `easy_install pylint' resp. `pip...' if not available
 "]
 
-             ["pylint-help" pylint-help
-              :help "`pylint-help'
+             ["py-pylint-help" py-pylint-help
+              :help "`py-pylint-help'
 List extendet report options
 "]
              ["pylint-flymake-mode" pylint-flymake-mode
@@ -4209,12 +4212,14 @@ Toggle flymake-mode running `pylint'
 
             ("pep8 "
              :help "Check formatting
-call `easy_install pep8' if not available"
+
+Call `easy_install pep8' resp. `pip...' if not available"
 
              ["pep8-run" py-pep8-run
               :help "`py-pep8-run'
 Check formatting (default on the file currently visited)
-call `easy_install pep8' if not available
+
+Call `easy_install pep8' resp. `pip...' if not available
 "]
 
              ["pep8-help" py-pep8-help
@@ -4227,14 +4232,14 @@ Display help for pep8 format checker)
 Toggle flymake-mode running `pep8'
 "])
 
-            ("Pyflakes " :help "Non intrusive code
-             checker call `easy_install pyflakes' if
-             not available"
+            ("Pyflakes " :help "Non intrusive code checker
+
+Call `easy_install pyflakes' resp. `pip...' if not available"
 
              ["pyflakes-run" py-pyflakes-run :help
-              "`py-pyflakes-run' Run pyflakes call
-              `easy_install pyflakes' if not
-              available"]
+              "`py-pyflakes-run' Run pyflakes
+
+Call `easy_install pyflakes' resp. `pip...' if not available"]
 
              ["pyflakes-help" py-pyflakes-help :help
               "`py-pyflakes-help' Display help for
@@ -4246,11 +4251,12 @@ Toggle flymake-mode running `pyflakes' "])
 
             ("Pyflakes-pep8 " :help
              "Non intrusive code checker running `pyflakes' and `pep8'
-call `easy_install pyflakes' and `easy_install pep8' if basics not available"
+call `easy_install pyflakes' resp. `pip...' and `easy_install pep8' if basics not available"
 
              ["pyflakespep8-run" py-pyflakespep8-run :help
               "`py-pyflakespep8-run' Run `pyflakespep8'
-call `easy_install pyflakes' if not available"]
+
+Call `easy_install pyflakes' resp. `pip...' if not available"]
 
              ["pyflakespep8-help" py-pyflakespep8-help :help
               "`py-pyflakespep8-help' Display help for

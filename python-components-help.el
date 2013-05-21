@@ -152,7 +152,7 @@ Useful for newly defined symbol, not known to python yet. "
   "Get documentation at point.
 If not INPUT is passed then what `current-word' returns
 will be used. "
-  (interactive) 
+  (interactive)
   (let ((process (py-proc)))
     (if (not process)
         "Eldoc needs an inferior Python process running."
@@ -209,7 +209,7 @@ Optional argument INCLUDE-TYPE indicates to include the type of the defun.
 This function is compatible to be used as
 `add-log-current-defun-function' since it returns nil if point is
 not inside a defun."
-  (interactive) 
+  (interactive)
   (let ((names '())
         (min-indent)
         (first-run t))
@@ -829,31 +829,20 @@ Home-page: http://www.logilab.org/project/pylint "
                        (buffer-file-name))
              (format "%s %s" py-pylint-command
                      (mapconcat 'identity py-pylint-command-args " "))))
-         (last (when py-pylint-history
-                 (let* ((lastcmd (car py-pylint-history))
-                        (cmd (cdr (reverse (split-string lastcmd))))
-                        (newcmd (reverse (cons (buffer-file-name) cmd))))
-                   (mapconcat 'identity newcmd " ")))))
+         (last (and py-pylint-history (car py-pylint-history)))
+         erg)
 
      (list
       (if (fboundp 'read-shell-command)
           (read-shell-command "Run pylint like this: "
-                              (if last
-                                  last
-                                default)
+                              (or last default)
                               'py-pylint-history)
         (read-string "Run pylint like this: "
-                     (if last
-                         last
-                       default)
+                     (or last default)
                      'py-pylint-history)))))
-  (save-some-buffers (not py-ask-about-save) nil)
-  (if (fboundp 'compilation-start)
-      ;; Emacs.
-      (compilation-start command)
-    ;; XEmacs.
-    (when (featurep 'xemacs)
-      (compile-internal command "No more errors"))))
+  (save-some-buffers (not py-ask-about-save))
+  (shell-command (concat command " " buffer-file-name)))
+
 
 (defalias 'pylint-help 'py-pylint-help)
 (defun py-pylint-help ()
