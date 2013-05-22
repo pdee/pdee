@@ -5342,7 +5342,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.16 $\"
+__version__ = \"$Revision: 1.17 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -5416,7 +5416,7 @@ class Test(object):
     (assert (eq (char-after) 34) nil "more-docstring-filling-woes-lp-1102296-nil-test #3a failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-nil-test #3a done")
     (search-forward "pass" nil t 1)
-    (beginning-of-line) 
+    (beginning-of-line)
     (assert (looking-at "        pass") nil "more-docstring-filling-woes-lp-1102296-nil-test #3c failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-nil-test #3c done")))
 
@@ -5466,7 +5466,7 @@ class Test(object):
     (assert (eq (skip-chars-forward " ")  8) nil "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #3a failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #3a done")
     (search-forward "pass")
-    (beginning-of-line) 
+    (beginning-of-line)
     (sit-for 0.1)
     (assert (looking-at "        pass") nil "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #3b failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #3b done")))
@@ -5631,7 +5631,7 @@ dst.close()
 # Put point at the end of the `dst.addfile` line and hit return. Point is
 # properly left on the next line right under the first 'd'. Now hit TAB. Point is
 # correctly left at the beginning of the line. Hit TAB one more time.
-# 
+#
 # Now, while 4 spaces have been added to the beginning of the line, point is left
 # at the beginning of the line instead of at the end of the just inserted
 # whitespace. Point should be at column 4.
@@ -5640,7 +5640,7 @@ dst.close()
 
 (defun TAB-leaves-point-in-the-wrong-lp-1178453-base ()
     (goto-char 292)
-    (py-indent-line) 
+    (py-indent-line)
     (assert (eq 4 (current-column)) nil "TAB-leaves-point-in-the-wrong-lp-1178453-test failed"))
 
 
@@ -5707,7 +5707,7 @@ inode, start_no, end_no)
 # and execute M-x py-fill-paragraph, the buffer is scrolled such that
 # this becomes the first visible line, and the indentation is
 # removed. No filling occurs at all.
-# 
+#
 # Am I doing something wrong? py-docstring-style is set to
 # pep-256-nn.
 "))
@@ -5717,6 +5717,20 @@ inode, start_no, end_no)
     (goto-char 214)
     (assert nil "trouble-with-py-fill-paragraph-lp-1180653.py-test failed"))
 
+(defun py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test (&optional arg)
+  (interactive "p")
+  (let ((teststring ""))
+  (py-bug-tests-intern 'py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-base arg teststring)))
+
+(defun py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-base ()
+  (let (py-split-windows-on-execute-p py-switch-buffers-on-execute-p)
+    (shell)
+    (delete-other-windows)
+    (py-shell)
+    (assert (string= "*shell*" (buffer-name)) nil "py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test #1 failed")
+    (py-shell nil nil nil t)
+    (assert (string= "*Python*" (buffer-name)) nil "py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test #2 failed")
+    ))
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

@@ -321,7 +321,7 @@ Needed when file-path names are contructed from maybe numbered buffer names like
                (display-buffer py-buffer-name 'display-buffer-reuse-window))
            (display-buffer py-buffer-name 'display-buffer-reuse-window)))
         ;; no split, switch
-        ((or (eq switch 'switch)
+        ((or switch (eq switch 'switch)
              (and (not (eq switch 'noswitch))
                   py-switch-buffers-on-execute-p))
          (let (pop-up-windows)
@@ -507,6 +507,7 @@ Optional symbol SPLIT ('split/'nosplit) precedes `py-split-buffers-on-execute-p'
     (remove-hook 'comint-output-filter-functions 'python-pdbtrack-track-stack-file t)
     (setq py-pdbtrack-do-tracking-p t)
     (set-syntax-table python-mode-syntax-table)
+    (goto-char (point-max)) 
     ;; (add-hook 'py-shell-hook 'py-dirstack-hook)
     (when py-shell-hook (run-hooks 'py-shell-hook))
     (unless done (py-shell-manage-windows switch split oldbuf py-buffer-name))
