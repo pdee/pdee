@@ -5728,9 +5728,23 @@ inode, start_no, end_no)
     (delete-other-windows)
     (py-shell)
     (assert (string= "*shell*" (buffer-name)) nil "py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test #1 failed")
-    (py-shell nil nil nil t)
+    (py-shell nil nil nil 'switch)
     (assert (string= "*Python*" (buffer-name)) nil "py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test #2 failed")
     ))
+
+(defun from-within-py-shell-call-another-instance-lp-1169687-test (&optional arg)
+  (interactive "p")
+  (let ((teststring ""))
+  (py-bug-tests-intern 'from-within-py-shell-call-another-instance-lp-1169687-base arg teststring)))
+
+(defun from-within-py-shell-call-another-instance-lp-1169687-base ()
+    (let ((py-split-windows-on-execute-p t)
+          (py-switch-buffers-on-execute-p t))
+    (py-shell)
+    (sit-for 0.1)
+    (py-shell nil nil nil t nil nil nil t)
+    (assert (string= "*Python*<2>" (buffer-name)) nil "from-within-py-shell-call-another-instance-lp-1169687-test failed")))
+
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

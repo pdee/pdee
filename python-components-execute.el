@@ -321,7 +321,7 @@ Needed when file-path names are contructed from maybe numbered buffer names like
                (display-buffer py-buffer-name 'display-buffer-reuse-window))
            (display-buffer py-buffer-name 'display-buffer-reuse-window)))
         ;; no split, switch
-        ((or switch (eq switch 'switch)
+        ((or (eq switch 'switch)
              (and (not (eq switch 'noswitch))
                   py-switch-buffers-on-execute-p))
          (let (pop-up-windows)
@@ -426,6 +426,10 @@ Optional symbol SPLIT ('split/'nosplit) precedes `py-split-buffers-on-execute-p'
                            (py-buffer-name
                             (py-report-executable py-buffer-name))))
          proc)
+    ;; lp:1169687, if called from within an existing py-shell, open a new one
+    (and (string= py-buffer-name (buffer-name oldbuf))
+         (setq py-buffer-name (generate-new-buffer-name py-buffer-name)))
+
     (unless (comint-check-proc py-buffer-name)
       (set-buffer (apply 'make-comint-in-buffer executable py-buffer-name executable nil args))
       (set (make-local-variable 'comint-prompt-regexp)
@@ -456,58 +460,58 @@ Optional symbol SPLIT ('split/'nosplit) precedes `py-split-buffers-on-execute-p'
       (set (make-local-variable 'comment-column) 40)
       (set (make-local-variable 'comment-indent-function) #'py-comment-indent-function)
       (setq py-smart-indentation)
-      (font-lock-fontify-buffer))
-    (set (make-local-variable 'indent-region-function) 'py-indent-region)
-    (set (make-local-variable 'indent-line-function) 'py-indent-line)
-    ;; (font-lock-unfontify-region (point-min) (line-beginning-position))
-    (setq proc (get-buffer-process py-buffer-name))
-    ;; (goto-char (point-max))
-    (move-marker (process-mark proc) (point-max))
-    ;; (funcall (process-filter proc) proc "")
-    (py-shell-send-setup-code proc)
-    ;; (accept-process-output proc 1)
-    (compilation-shell-minor-mode 1)
-    ;; (sit-for 0.1)
-    (setq comint-input-sender 'py-shell-simple-send)
-    (setq comint-input-ring-file-name
-          (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
-                 (if py-honor-IPYTHONDIR-p
-                     (if (getenv "IPYTHONDIR")
-                         (concat (getenv "IPYTHONDIR") "/history")
-                       py-ipython-history)
-                   py-ipython-history))
-                (t
-                 (if py-honor-PYTHONHISTORY-p
-                     (if (getenv "PYTHONHISTORY")
-                         (concat (getenv "PYTHONHISTORY") "/" (py-report-executable py-buffer-name) "_history")
-                       py-ipython-history)
-                   py-ipython-history))
-                ;; (dedicated
-                ;; (concat "~/." (substring py-buffer-name 0 (string-match "-" py-buffer-name)) "_history"))
-                ;; .pyhistory might be locked from outside Emacs
-                ;; (t "~/.pyhistory")
-                ;; (t (concat "~/." (py-report-executable py-buffer-name) "_history"))
-                ))
-    (comint-read-input-ring t)
-    (set-process-sentinel (get-buffer-process py-buffer-name)
-                          #'shell-write-history-on-exit)
-    ;; (comint-send-string proc "import emacs\n")
-    ;; (process-send-string proc "import emacs")
-    (add-hook 'comint-output-filter-functions
-              'ansi-color-process-output)
+      (font-lock-fontify-buffer)
+      (set (make-local-variable 'indent-region-function) 'py-indent-region)
+      (set (make-local-variable 'indent-line-function) 'py-indent-line)
+      ;; (font-lock-unfontify-region (point-min) (line-beginning-position))
+      (setq proc (get-buffer-process py-buffer-name))
+      ;; (goto-char (point-max))
+      (move-marker (process-mark proc) (point-max))
+      ;; (funcall (process-filter proc) proc "")
+      (py-shell-send-setup-code proc)
+      ;; (accept-process-output proc 1)
+      (compilation-shell-minor-mode 1)
+      ;; (sit-for 0.1)
+      (setq comint-input-sender 'py-shell-simple-send)
+      (setq comint-input-ring-file-name
+            (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
+                   (if py-honor-IPYTHONDIR-p
+                       (if (getenv "IPYTHONDIR")
+                           (concat (getenv "IPYTHONDIR") "/history")
+                         py-ipython-history)
+                     py-ipython-history))
+                  (t
+                   (if py-honor-PYTHONHISTORY-p
+                       (if (getenv "PYTHONHISTORY")
+                           (concat (getenv "PYTHONHISTORY") "/" (py-report-executable py-buffer-name) "_history")
+                         py-ipython-history)
+                     py-ipython-history))
+                  ;; (dedicated
+                  ;; (concat "~/." (substring py-buffer-name 0 (string-match "-" py-buffer-name)) "_history"))
+                  ;; .pyhistory might be locked from outside Emacs
+                  ;; (t "~/.pyhistory")
+                  ;; (t (concat "~/." (py-report-executable py-buffer-name) "_history"))
+                  ))
+      (comint-read-input-ring t)
+      (set-process-sentinel (get-buffer-process py-buffer-name)
+                            #'shell-write-history-on-exit)
+      ;; (comint-send-string proc "import emacs\n")
+      ;; (process-send-string proc "import emacs")
+      (add-hook 'comint-output-filter-functions
+                'ansi-color-process-output)
 
-    ;; (add-hook 'comint-preoutput-filter-functions
-    ;; '(ansi-color-filter-apply
-    ;; (lambda (string) (buffer-substring comint-last-output-start
-    ;; (process-mark (get-buffer-process (current-buffer)))))))
-    ;; (ansi-color-for-comint-mode-on)
-    (use-local-map py-shell-map)
-    ;; pdbtrack
-    (add-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file t)
-    (remove-hook 'comint-output-filter-functions 'python-pdbtrack-track-stack-file t)
-    (setq py-pdbtrack-do-tracking-p t)
-    (set-syntax-table python-mode-syntax-table)
-    (goto-char (point-max)) 
+      ;; (add-hook 'comint-preoutput-filter-functions
+      ;; '(ansi-color-filter-apply
+      ;; (lambda (string) (buffer-substring comint-last-output-start
+      ;; (process-mark (get-buffer-process (current-buffer)))))))
+      ;; (ansi-color-for-comint-mode-on)
+      (use-local-map py-shell-map)
+      ;; pdbtrack
+      (add-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file t)
+      (remove-hook 'comint-output-filter-functions 'python-pdbtrack-track-stack-file t)
+      (setq py-pdbtrack-do-tracking-p t)
+      (set-syntax-table python-mode-syntax-table))
+    (goto-char (point-max))
     ;; (add-hook 'py-shell-hook 'py-dirstack-hook)
     (when py-shell-hook (run-hooks 'py-shell-hook))
     (unless done (py-shell-manage-windows switch split oldbuf py-buffer-name))
