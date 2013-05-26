@@ -846,21 +846,19 @@ print \"Poet Friedrich Hölderlin\""))
 If no `load-branch-function' is specified, make sure the appropriate branch is loaded. Otherwise default python-mode will be checked."
   (interactive "p")
   (let ((teststring "
-self.last_abc_attr = \
-self.last_xyz_attr = \
-self.last_abc_other = \
-self.last_xyz_other = None
-
+# py-continuation-offset: 2 
 self.last_abc_attr = \\
 self.last_xyz_attr = \\
 self.last_abc_other = \\
 self.last_xyz_other = None
 
+# py-continuation-offset: 4
 self.last_abc_attr = \\
 self.last_xyz_attr = \\
 self.last_abc_other = \\
 self.last_xyz_other = None
 
+# py-continuation-offset: 6
 self.last_abc_attr = \\
 self.last_xyz_attr = \\
 self.last_abc_other = \\
@@ -870,23 +868,20 @@ self.last_xyz_other = None
 
 (defun backslashed-continuation-line-indent-lp:742993 ()
   (let ((py-continuation-offset 2))
-    (goto-char 93)
-    (insert (concat "\n# py-continuation-offset: " (number-to-string py-continuation-offset)))
-    (goto-char 145)
-    (indent-to (py-compute-indentation))
-    (assert (eq 2 (current-indentation)) nil "backslashed-continuation-line-indent-lp:742993-test #1 failed")
-    (goto-char 170)
-    (assert (eq (py-compute-indentation) py-continuation-offset) nil "backslashed-continuation-line-indent-lp:742993-test #2 failed")
+    (goto-char 54)
+    (assert (eq 2 (py-compute-indentation)) nil "backslashed-continuation-line-indent-lp:742993-test #1a failed")
+    (assert (eq (py-compute-indentation) py-continuation-offset) nil "backslashed-continuation-line-indent-lp:742993-test #1b failed")
 
     (setq py-continuation-offset 4)
-    (forward-line 2)
-    (insert (concat "\n# py-continuation-offset: " (number-to-string py-continuation-offset)))
-    (goto-char 277)
-    (assert (eq (py-compute-indentation) py-continuation-offset) nil "backslashed-continuation-line-indent-lp:742993-test #4 failed")
+    (goto-char 180)
+    (assert (eq 4 (py-compute-indentation)) nil "backslashed-continuation-line-indent-lp:742993-test #2a failed")
+    (assert (eq (py-compute-indentation) py-continuation-offset) nil "backslashed-continuation-line-indent-lp:742993-test #2b failed")
 
     (setq py-continuation-offset 6)
-    (forward-line 3)
-    (insert (concat "\n# py-continuation-offset: " (number-to-string py-continuation-offset)))))
+    (goto-char 306)
+    (assert (eq 6 (py-compute-indentation)) nil "backslashed-continuation-line-indent-lp:742993-test #3a failed")
+    (assert (eq (py-compute-indentation) py-continuation-offset) nil "backslashed-continuation-line-indent-lp:742993-test #3b failed")
+    ))
 
 (defun py-decorators-face-lp:744335-test (&optional arg)
   "With ARG greater 1 keep test buffer open.
@@ -5342,7 +5337,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.17 $\"
+__version__ = \"$Revision: 1.19 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))

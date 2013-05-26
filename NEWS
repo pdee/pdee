@@ -41,6 +41,9 @@ New in version 6.1.2
 - customizable `py-closing-list-space', default 1
   Number of chars, closing parentesis outdent from opening
 
+- customizable `py-uncomment-indents-p', default nil
+  When non-nil, after uncomment indent lines.
+
 New in version 6.1.1
 ---------------------
 

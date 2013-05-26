@@ -608,6 +608,11 @@ If you ignore the location `M-x py-guess-pdb-path' might display it.
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-uncomment-indents-p nil
+  "When non-nil, after uncomment indent lines. "
+  :type 'boolean
+  :group 'python-mode)
+
 (defcustom py-separator-char ?\/
   "The character, which separates the system file-path components.
 
@@ -1326,7 +1331,6 @@ If underscore chars should be of syntax-class `word', not of `symbol'.
 Underscores in word-class makes `forward-word' etc. travel the indentifiers. Default is `t'.
 See also command `toggle-py-underscore-word-syntax-p' ")
 
-
 (defvar py-autofill-timer nil)
 (defvar py-fill-column-orig fill-column)
 
@@ -1334,7 +1338,6 @@ See also command `toggle-py-underscore-word-syntax-p' ")
 
 (defvar python-mode-message-string "python-components-mode.el"
   "Internally used. Reports the python-mode branch in use.")
-
 
 ;; Skip's XE workaround
 (unless (fboundp 'string-to-syntax)
@@ -1738,7 +1741,6 @@ for options to pass to the DOCNAME interpreter. \"
     (when (interactive-p) (switch-to-buffer (current-buffer))
           (goto-char (point-max)))))
 ")
-
 
 ;;; Constants
 (defconst py-blank-or-comment-re "[ \t]*\\($\\|#\\)"
@@ -2334,7 +2336,6 @@ See original source: http://pymacs.progiciels-bpi.ca"
 (require 'python-components-auto-fill)
 (require 'highlight-indentation)
 
-
 ;; toggle-py-underscore-word-syntax-p must be known already
 ;; circular: toggle-py-underscore-word-syntax-p sets and calls it
 (defcustom py-underscore-word-syntax-p t
@@ -2686,7 +2687,6 @@ character address of the specified TYPE."
         (substitute-key-definition 'down-list 'py-down
                                    map global-map)
 
-
         (and (ignore-errors (require 'easymenu) t)
              ;; (easy-menu-define py-menu map "Python Tools"
              ;;           `("PyTools"
@@ -2997,7 +2997,6 @@ Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil
           )
          )
 
-
         "-"
         ("Mark"
          ["Mark current block"   py-mark-block t]
@@ -3042,8 +3041,65 @@ Mark commented section at point"]
         ("Comment"
          ["Comment Region"   py-comment-region (point) (mark)
           :help "Like `comment-region' but uses double hash (`#') comment starter." ]
+         ["Uncomment" py-uncomment
+          :help " `py-uncomment'
+
+Uncomment commented lines at point\.
+
+If region is active, restrict uncommenting at region . "]
+
          ["Uncomment Region"     (py-comment-region (point) (mark) '(4))
           :help "(py-comment-region (point) (mark) '(4))" ]
+        "-"
+         ["Comment block" py-comment-block
+          :help " `py-comment-block'
+Comments block at point\.
+
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
+the default. "]
+
+         ["Comment clause" py-comment-clause
+          :help " `py-comment-clause'
+Comments clause at point\.
+
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
+the default. "]
+
+         ["Comment block or clause" py-comment-block-or-clause
+          :help " `py-comment-block-or-clause'
+Comments block-or-clause at point\.
+
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
+the default. "]
+
+         ["Comment def" py-comment-def
+          :help " `py-comment-def'
+Comments def at point\.
+
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
+the default. "]
+
+         ["Comment class" py-comment-class
+          :help " `py-comment-class'
+Comments class at point\.
+
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
+the default. "]
+
+         ["Comment def or class" py-comment-def-or-class
+          :help " `py-comment-def-or-class'
+Comments def-or-class at point\.
+
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
+the default. "]
+
+         ["Comment statement" py-comment-statement
+          :help " `py-comment-statement'
+Comments statement at point\.
+
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
+the default. "]
+
          )
         "-"
         ("Moves"
@@ -3055,6 +3111,15 @@ Mark commented section at point"]
          "-"
          ["Move to start of def" py-beginning-of-def-or-class t]
          ["Move to end of def"   py-end-of-def-or-class t]
+         "-"
+         ["Beginning of comment" py-beginning-of-comment
+          :help " `py-beginning-of-comment'
+Go to beginning of comment at point. "]
+         ["End of comment" py-end-of-comment
+          :help " `py-end-of-comment'
+
+Go to end of comment at point. "]
+
          "-"
          ["Backward into nomenclature" py-backward-into-nomenclature
           :help " `py-backward-into-nomenclature'
@@ -4452,7 +4517,6 @@ Use `M-x customize-variable' to set it permanently"]
 Use `M-x customize-variable' to set it permanently"])
             )
 
-
            ["Fill-paragraph fill docstring "
             (setq py-paragraph-fill-docstring-p
                   (not py-paragraph-fill-docstring-p))
@@ -4464,7 +4528,6 @@ Convenient use of `M-q' inside docstrings
 See also `py-docstring-style'
 Use `M-x customize-variable' to set it permanently"
             :style toggle :selected py-paragraph-fill-docstring-p]
-
 
            ["Auto-fill mode"
             (setq py-set-fill-column-p
@@ -4485,7 +4548,6 @@ Use `M-x customize-variable' to set it permanently"
            )
 
           ("Indent"
-
 
            ["Indent comment "
             (setq py-indent-comments
@@ -4535,7 +4597,6 @@ indent-width will be guessed from current major-mode
 Use `M-x customize-variable' to set it permanently"
             :style toggle :selected highlight-indentation]
 
-
            ["Electric comment "
             (setq py-electric-comment-p
                   (not py-electric-comment-p))
@@ -4545,7 +4606,6 @@ Use `M-x customize-variable' to set it permanently"
             :style toggle :selected py-electric-comment-p]
 
            )
-
 
           ("Underscore word syntax"
            :help "Toggle `py-underscore-word-syntax-p'"
@@ -4639,12 +4699,9 @@ Returns value of `autopair-mode'\. . "]
 
            )
 
-
-
           ["Switch index-function" py-switch-imenu-index-function
            :help "`py-switch-imenu-index-function'
 Switch between `py-imenu-create-index' from 5.1 series and `py-imenu-create-index-new'."]
-
 
           ;; py-smart-operator-mode-p forms
           ("Smart operator mode"
@@ -4676,7 +4733,6 @@ Returns value of `smart-operator-mode'\. . "]
          )
         ("More... "
          ("Edit commands "
-
 
           ("Copy "
            ["Copy statement" py-copy-statement
@@ -4770,65 +4826,6 @@ Delete class at point, don't store deleted string in kill-ring"]
            ["Delete def" py-delete-def
             :help "`py-delete-def'
 Delete def at point, don't store deleted string in kill-ring"])
-
-          ("Comment "
-           :help "Comment forms"
-
-           ["Uncomment" py-uncomment
-            :help " `py-uncomment'
-
-Uncomment lines at point\.
-
-If region is active, restrict uncommenting at region . "]
-
-           ["Comment block" py-comment-block
-            :help " `py-comment-block'
-Comments block at point\.
-
-Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
-the default. "]
-
-           ["Comment clause" py-comment-clause
-            :help " `py-comment-clause'
-Comments clause at point\.
-
-Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
-the default. "]
-
-           ["Comment block or clause" py-comment-block-or-clause
-            :help " `py-comment-block-or-clause'
-Comments block-or-clause at point\.
-
-Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
-the default. "]
-
-           ["Comment def" py-comment-def
-            :help " `py-comment-def'
-Comments def at point\.
-
-Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
-the default. "]
-
-           ["Comment class" py-comment-class
-            :help " `py-comment-class'
-Comments class at point\.
-
-Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
-the default. "]
-
-           ["Comment def or class" py-comment-def-or-class
-            :help " `py-comment-def-or-class'
-Comments def-or-class at point\.
-
-Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
-the default. "]
-
-           ["Comment statement" py-comment-statement
-            :help " `py-comment-statement'
-Comments statement at point\.
-
-Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
-the default. "])
 
           ("Shift right "
            ["Shift block right" py-shift-block-right
@@ -4938,7 +4935,6 @@ Returns indentation if block found, nil otherwise. "]
 Go upwards to the beginning of next block below in buffer.
 
 Returns indentation if block found, nil otherwise. "]
-
 
            ["Copy block" py-copy-block
             :help "`py-copy-block'
@@ -5279,7 +5275,9 @@ Shift def left. "]
 Comments def at point\.
 
 Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
-the default. "])
+the default. "]
+
+           )
 
           (" Block bol "
 
@@ -5775,7 +5773,6 @@ Needs Pymacs"]
            :help " `py-electric-yank'
 Perform command `yank' followed by an `indent-according-to-mode' . "])
 
-
          ("Abbrevs"
              :help "see also `py-add-abbrev'"
              :filter (lambda (&rest junk)
@@ -5783,7 +5780,6 @@ Perform command `yank' followed by an `indent-according-to-mode' . "])
             ["add-abbrev" py-add-abbrev
              :help "Defines python-mode specific abbrev for last expressions before point.
 Argument is how many `py-partial-expression's form the expansion; or zero means the region is the expansion. "]
-
 
         ("Skeletons"
              :help "See also templates in YASnippet"
@@ -5820,7 +5816,6 @@ Use pydoc on symbol at point"]
              ["Signature" py-complete-signature-expr
               :help " Print object's signature\n
 Needs Pymacs"])
-
 
         ("Completion"
          :help "Completion options"

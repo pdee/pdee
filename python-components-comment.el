@@ -20,12 +20,11 @@
 
 ;;; Code:
 
-
 (defun py-beginning-of-comment ()
   "Go to the beginning of current line's comment, if any.
 
 Returns position if succesful. "
-  (interactive) 
+  (interactive)
   (save-restriction
     (widen)
     (let ((pps (syntax-ppss)))
@@ -35,7 +34,7 @@ Returns position if succesful. "
 
 ;; (defun py-beginning-of-comment ()
 ;;   "Go to beginning of comment at point.
-;; 
+;;
 ;; Returns position, nil if not in comment."
 ;;   (interactive)
 ;;   (let ((orig (point))
@@ -74,8 +73,13 @@ Returns position, nil if not in comment."
           (point))
       last)))
 
-(defun py-uncomment ()
-  "Uncomment lines at point.
+(defun py-uncomment-intern (beg end)
+  (uncomment-region beg end)
+  (when py-uncomment-indents
+    (py-indent-region beg end)))
+
+(defun py-uncomment (&optional beg end)
+  "Uncomment commented lines at point.
 
 If region is active, restrict uncommenting at region "
   (interactive "*")
@@ -83,10 +87,12 @@ If region is active, restrict uncommenting at region "
     (save-restriction
       (when (use-region-p)
         (narrow-to-region (region-beginning) (region-end)))
-      (let ((beg (or (py-beginning-of-comment)(and (looking-at (concat "[ \t]*" comment-start)) (point)))))
-        (push-mark)
-        (py-end-of-comment)
-        (uncomment-region beg (point))))))
+      (let ((beg (or beg (progn (goto-char (point-min))
+                                (search-forward comment-start)
+                                (match-beginning 0))))
+            end)
+        (setq end (or end (py-end-of-comment)))
+        (py-uncomment-intern beg (point))))))
 
 (defun py-comment-region (beg end &optional arg)
   "Like `comment-region' but uses double hash (`#') comment starter."
@@ -214,7 +220,6 @@ the default"
       (push-mark)
       (goto-char end)
       (comment-region beg end arg))))
-
 
 ;; python-components-comment ends here
 (provide 'python-components-comment)
