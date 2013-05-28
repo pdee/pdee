@@ -834,19 +834,6 @@ Returns beginning and end positions of marked area, a cons. "
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
-(defun py-mark-def (&optional arg)
-  "Mark def at point.
-
-With \\[universal argument] or `py-mark-decorators' set to `t', decorators are marked too.
-Returns beginning and end positions of marked area, a cons. "
-  (interactive "P")
-  (let ((py-mark-decorators (or arg py-mark-decorators))
-        erg)
-    (py-mark-base "def" py-mark-decorators)
-    (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-    erg))
-
 (defun py-mark-class (&optional arg)
   "Mark class at point.
 

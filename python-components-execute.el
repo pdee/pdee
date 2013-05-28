@@ -425,13 +425,14 @@ Optional symbol SPLIT ('split/'nosplit) precedes `py-split-buffers-on-execute-p'
          (executable (cond (pyshellname)
                            (py-buffer-name
                             (py-report-executable py-buffer-name))))
-         proc)
+         proc py-smart-indentation)
     ;; lp:1169687, if called from within an existing py-shell, open a new one
     (and (string= py-buffer-name (buffer-name oldbuf))
          (setq py-buffer-name (generate-new-buffer-name py-buffer-name)))
 
     (unless (comint-check-proc py-buffer-name)
       (set-buffer (apply 'make-comint-in-buffer executable py-buffer-name executable nil args))
+      (unless (interactive-p) (sit-for 0.3))
       (set (make-local-variable 'comint-prompt-regexp)
            (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
                   (concat "\\("
@@ -450,29 +451,23 @@ Optional symbol SPLIT ('split/'nosplit) precedes `py-split-buffers-on-execute-p'
       (set (make-local-variable 'compilation-error-regexp-alist)
            python-compilation-regexp-alist)
       ;; (setq completion-at-point-functions nil)
-      (when py-fontify-shell-buffer-p
-        (set (make-local-variable 'font-lock-defaults)
-             '(py-font-lock-keywords nil nil nil nil
-                                     (font-lock-syntactic-keywords
-                                      . py-font-lock-syntactic-keywords))))
+      (and py-fontify-shell-buffer-p
+           (set (make-local-variable 'font-lock-defaults)
+                '(py-font-lock-keywords nil nil nil nil
+                                        (font-lock-syntactic-keywords
+                                         . py-font-lock-syntactic-keywords))))
       (set (make-local-variable 'comment-start) "# ")
       (set (make-local-variable 'comment-start-skip) "^[ \t]*#+ *")
       (set (make-local-variable 'comment-column) 40)
       (set (make-local-variable 'comment-indent-function) #'py-comment-indent-function)
-      (setq py-smart-indentation)
-      (font-lock-fontify-buffer)
       (set (make-local-variable 'indent-region-function) 'py-indent-region)
       (set (make-local-variable 'indent-line-function) 'py-indent-line)
-      ;; (font-lock-unfontify-region (point-min) (line-beginning-position))
       (setq proc (get-buffer-process py-buffer-name))
-      ;; (goto-char (point-max))
       (move-marker (process-mark proc) (point-max))
-      ;; (funcall (process-filter proc) proc "")
       (py-shell-send-setup-code proc)
-      ;; (accept-process-output proc 1)
       (compilation-shell-minor-mode 1)
-      ;; (sit-for 0.1)
       (setq comint-input-sender 'py-shell-simple-send)
+      (sit-for 1)
       (setq comint-input-ring-file-name
             (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
                    (if py-honor-IPYTHONDIR-p
@@ -485,13 +480,7 @@ Optional symbol SPLIT ('split/'nosplit) precedes `py-split-buffers-on-execute-p'
                        (if (getenv "PYTHONHISTORY")
                            (concat (getenv "PYTHONHISTORY") "/" (py-report-executable py-buffer-name) "_history")
                          py-ipython-history)
-                     py-ipython-history))
-                  ;; (dedicated
-                  ;; (concat "~/." (substring py-buffer-name 0 (string-match "-" py-buffer-name)) "_history"))
-                  ;; .pyhistory might be locked from outside Emacs
-                  ;; (t "~/.pyhistory")
-                  ;; (t (concat "~/." (py-report-executable py-buffer-name) "_history"))
-                  ))
+                     py-ipython-history))))
       (comint-read-input-ring t)
       (set-process-sentinel (get-buffer-process py-buffer-name)
                             #'shell-write-history-on-exit)
@@ -499,12 +488,6 @@ Optional symbol SPLIT ('split/'nosplit) precedes `py-split-buffers-on-execute-p'
       ;; (process-send-string proc "import emacs")
       (add-hook 'comint-output-filter-functions
                 'ansi-color-process-output)
-
-      ;; (add-hook 'comint-preoutput-filter-functions
-      ;; '(ansi-color-filter-apply
-      ;; (lambda (string) (buffer-substring comint-last-output-start
-      ;; (process-mark (get-buffer-process (current-buffer)))))))
-      ;; (ansi-color-for-comint-mode-on)
       (use-local-map py-shell-map)
       ;; pdbtrack
       (add-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file t)
@@ -513,6 +496,7 @@ Optional symbol SPLIT ('split/'nosplit) precedes `py-split-buffers-on-execute-p'
       (set-syntax-table python-mode-syntax-table))
     (goto-char (point-max))
     ;; (add-hook 'py-shell-hook 'py-dirstack-hook)
+    (and py-fontify-shell-buffer-p (font-lock-fontify-buffer))
     (when py-shell-hook (run-hooks 'py-shell-hook))
     (unless done (py-shell-manage-windows switch split oldbuf py-buffer-name))
     py-buffer-name))

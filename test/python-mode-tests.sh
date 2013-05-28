@@ -1357,7 +1357,6 @@ est \
 --funcall py-electric-backspace-test \
 --funcall py-insert-super-python3-test \
 \
---funcall python-shell-complete-test \
 --funcall usr-bin-python-shell-complete-test \
 --funcall dict-error-test \
 --funcall py-install-directory-path-test \
@@ -1384,10 +1383,8 @@ est \
 --funcall beg-end-of-defun-lp:303622-test \
 --funcall py-nested-block-or-clause-test \
 --funcall indent-region-lp:997958-test \
---funcall not-that-useful-completion-lp:1003580-test \
 --funcall wrong-type-argument-lp:901541-test \
 --funcall indentation-bug-inside-docstrings-lp:899455-test \
---funcall tqs-list-error-test \
 --funcall does-not-dedent-regions-lp-1072869-test \
 --funcall impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test \
 --funcall py-ipython-complete-lp:927136-test \
@@ -1445,3 +1442,6 @@ est \
 --funcall ipython-shell-complete-test \
 --funcall usr-bin-ipython-shell-complete-test \
 --funcall inconvenient-window-splitting-behavior-ipython-lp-1018996-test \
+--funcall python-shell-complete-test \
+--funcall not-that-useful-completion-lp:1003580-test \
+--funcall tqs-list-error-test \

@@ -768,7 +768,8 @@ Imports done are displayed in message buffer. "
         (message "%s" erg))
       erg)))
 
-;;; pep8
+;;; Code-Checker
+;; pep8
 (defalias 'pep8 'py-pep8-run)
 (defun py-pep8-run (command)
   "*Run pep8, check formatting (default on the file currently visited).
@@ -814,7 +815,7 @@ Imports done are displayed in message buffer. "
   (erase-buffer)
   (shell-command "pep8 --help" "*pep8-Help*"))
 
-;;; Pylint
+;; Pylint
 (defalias 'pylint 'py-pylint-run)
 (defun py-pylint-run (command)
   "*Run pylint (default on the file currently visited).
@@ -864,7 +865,7 @@ Calls `pylint --full-documentation'"
   (erase-buffer)
   (shell-command "pylint --full-documentation" "*Pylint-Documentation*"))
 
-;;; Pyflakes
+;; Pyflakes
 (defalias 'pyflakes 'py-pyflakes-run)
 (defun py-pyflakes-run (command)
   "*Run pyflakes (default on the file currently visited).
@@ -942,7 +943,7 @@ Let's have this until more Emacs-like help is prepared "
 Extracted from http://manpages.ubuntu.com/manpages/natty/man1/pyflakes.1.html
 "))))
 
-;;; Pyflakes-pep8
+;; Pyflakes-pep8
 (defalias 'pyflakespep8 'py-pyflakespep8-run)
 (defun py-pyflakespep8-run (command)
   "*Run pyflakespep8, check formatting (default on the file currently visited).
@@ -988,7 +989,7 @@ Extracted from http://manpages.ubuntu.com/manpages/natty/man1/pyflakes.1.html
   (erase-buffer)
   (shell-command "pyflakespep8 --help" "*pyflakespep8-Help*"))
 
-;;; Pychecker
+;; Pychecker
 ;; hack for GNU Emacs
 ;; (unless (fboundp 'read-shell-command)
 ;; (defalias 'read-shell-command 'read-string))
@@ -1051,6 +1052,52 @@ See `python-check-command' for the default."
 	 (cons '("(\\([^,]+\\), line \\([0-9]+\\))" 1 2)
 	       compilation-error-regexp-alist)))
     (compilation-start command)))
+
+;; flakes8
+(defalias 'flakes8 'py-flakes8-run)
+(defun py-flakes8-run (command)
+  "Run flakes8, check formatting (default on the file currently visited).
+"
+  (interactive
+   (let ((default
+           (if (buffer-file-name)
+               (format "%s %s %s" py-flakes8-command
+                       (mapconcat 'identity py-flakes8-command-args " ")
+                       (buffer-file-name))
+             (format "%s %s" py-flakes8-command
+                     (mapconcat 'identity py-flakes8-command-args " "))))
+         (last (when py-flakes8-history
+                 (let* ((lastcmd (car py-flakes8-history))
+                        (cmd (cdr (reverse (split-string lastcmd))))
+                        (newcmd (reverse (cons (buffer-file-name) cmd))))
+                   (mapconcat 'identity newcmd " ")))))
+
+     (list
+      (if (fboundp 'read-shell-command)
+          (read-shell-command "Run flakes8 like this: "
+                              (if last
+                                  last
+                                default)
+                              'py-flakes8-history)
+        (read-string "Run flakes8 like this: "
+                     (if last
+                         last
+                       default)
+                     'py-flakes8-history)))))
+  (save-some-buffers (not py-ask-about-save) nil)
+  (if (fboundp 'compilation-start)
+      ;; Emacs.
+      (compilation-start command)
+    ;; XEmacs.
+    (when (featurep 'xemacs)
+      (compile-internal command "No more errors"))))
+
+(defun py-flakes8-help ()
+  "Display flakes8 command line help messages. "
+  (interactive)
+  (set-buffer (get-buffer-create "*flakes8-Help*"))
+  (erase-buffer)
+  (shell-command "flakes8 --help" "*flakes8-Help*"))
 
 ;;; from string-strip.el --- Strip CHARS from STRING
 

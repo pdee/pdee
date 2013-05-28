@@ -356,7 +356,7 @@ When `py-no-completion-calls-dabbrev-expand-p' is non-nil, try dabbrev-expand. O
     (setq py-completion-last-window-configuration
           (current-window-configuration)))
   (let ((orig (point)))
-    (ignore-errors (comint-dynamic-complete))
+    ;; (ignore-errors (comint-dynamic-complete))
     (when (eq (point) orig)
       (if (or (eq major-mode 'comint-mode)(eq major-mode 'inferior-python-mode))
           ;;  kind of completion resp. to shell

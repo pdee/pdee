@@ -20,7 +20,7 @@
 
 ;;; Code:
 
-;;; Beginning of line forms
+;; Mark
 (defun py-mark-base (form &optional py-mark-decorators)
   (let* ((begform (intern-soft (concat "py-beginning-of-" form)))
          (endform (intern-soft (concat "py-end-of-" form)))
@@ -42,6 +42,135 @@
     (when (interactive-p) (message "%s %s" beg end))
     (cons beg end)))
 
+
+(defun py-mark-paragraph ()
+  "Mark paragraph at point.
+
+Returns beginning and end positions of marked area, a cons. "
+  (interactive)
+  (let (erg)
+    (setq erg (py-mark-base "paragraph"))
+    (exchange-point-and-mark)
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defun py-mark-block ()
+  "Mark block at point.
+
+Returns beginning and end positions of marked area, a cons. "
+  (interactive)
+  (let (erg)
+    (setq erg (py-mark-base "block"))
+    (exchange-point-and-mark)
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defun py-mark-clause ()
+  "Mark clause at point.
+
+Returns beginning and end positions of marked area, a cons. "
+  (interactive)
+  (let (erg)
+    (setq erg (py-mark-base "clause"))
+    (exchange-point-and-mark)
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defun py-mark-block-or-clause ()
+  "Mark block-or-clause at point.
+
+Returns beginning and end positions of marked area, a cons. "
+  (interactive)
+  (let (erg)
+    (setq erg (py-mark-base "block-or-clause"))
+    (exchange-point-and-mark)
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defun py-mark-def (&optional arg)
+  "Mark def at point.
+
+With \\[universal argument] or `py-mark-decorators' set to `t', decorators are marked too.
+Returns beginning and end positions of marked area, a cons. "
+  (interactive "P")
+  (let ((py-mark-decorators (or arg py-mark-decorators))
+        erg)
+    (py-mark-base "def" py-mark-decorators)
+    (exchange-point-and-mark)
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defun py-mark-class (&optional arg)
+  "Mark class at point.
+
+With \\[universal argument] or `py-mark-decorators' set to `t', decorators are marked too.
+Returns beginning and end positions of marked area, a cons. "
+  (interactive "P")
+  (let ((py-mark-decorators (or arg py-mark-decorators))
+        erg)
+    (py-mark-base "class" py-mark-decorators)
+    (exchange-point-and-mark)
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defun py-mark-def-or-class (&optional arg)
+  "Mark def-or-class at point.
+
+With \\[universal argument] or `py-mark-decorators' set to `t', decorators are marked too.
+Returns beginning and end positions of marked area, a cons. "
+  (interactive "P")
+  (let ((py-mark-decorators (or arg py-mark-decorators))
+        erg)
+    (py-mark-base "def-or-class" py-mark-decorators)
+    (exchange-point-and-mark)
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defun py-mark-line ()
+  "Mark line at point.
+
+Returns beginning and end positions of marked area, a cons. "
+  (interactive)
+  (let (erg)
+    (setq erg (py-mark-base "line"))
+    (exchange-point-and-mark)
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defun py-mark-statement ()
+  "Mark statement at point.
+
+Returns beginning and end positions of marked area, a cons. "
+  (interactive)
+  (let (erg)
+    (setq erg (py-mark-base "statement"))
+    (exchange-point-and-mark)
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defun py-mark-expression ()
+  "Mark expression at point.
+
+Returns beginning and end positions of marked area, a cons. "
+  (interactive)
+  (let (erg)
+    (setq erg (py-mark-base "expression"))
+    (exchange-point-and-mark)
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defun py-mark-partial-expression ()
+  "Mark partial-expression at point.
+
+Returns beginning and end positions of marked area, a cons. "
+  (interactive)
+  (let (erg)
+    (setq erg (py-mark-base "partial-expression"))
+    (exchange-point-and-mark)
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+;; Beginning of line forms
 (defun py-beginning-of-block-p ()
   "Returns position, if cursor is at the beginning of a block, nil otherwise. "
   (when (and (looking-at py-block-re)
@@ -145,7 +274,7 @@ See also `py-down-minor-block': down from current definition to next beginning o
   (interactive)
   (let ((indent (and (looking-at py-clause-re)
                      (current-indentation))))
-    (py-beginning-of-form-intern py-clause-re (interactive-p) indent)))
+    (py-beginning-of-form-intern py-extended-block-or-clause-re (interactive-p) indent)))
 
 (defalias 'py-down-clause-lc 'py-end-of-clause)
 (defun py-end-of-clause (&optional indent)
@@ -267,24 +396,6 @@ See also `py-down-def': down from current definition to next beginning of def be
   (when (interactive-p) (message "%s" erg))
   erg))
 
-(defun py-mark-def ()
-  "Mark def at point.
-
-Returns beginning and end positions of marked area, a cons. "
-  (interactive)
-  (let (erg)
-    (setq erg (py-mark-base "def"))
-    (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-    erg))
-
-(defun py-copy-def ()
-  "Mark def at point.
-
-Returns beginning and end positions of marked area, a cons. "
-  (interactive)
-  (let ((erg (py-mark-base "def")))
-    (kill-new (buffer-substring-no-properties (car erg) (cdr erg)))))
 
 (defun py-kill-def ()
   "Delete def  at point.
@@ -358,13 +469,6 @@ Returns beginning and end positions of marked area, a cons. "
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
-(defun py-copy-class ()
-  "Mark class at point.
-
-Returns beginning and end positions of marked area, a cons. "
-  (interactive)
-  (let ((erg (py-mark-base "class")))
-    (kill-new (buffer-substring-no-properties (car erg) (cdr erg)))))
 
 (defun py-kill-class ()
   "Delete class  at point.
@@ -438,13 +542,6 @@ Returns beginning and end positions of marked area, a cons. "
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
-(defun py-copy-def-or-class ()
-  "Mark def-or-class at point.
-
-Returns beginning and end positions of marked area, a cons. "
-  (interactive)
-  (let ((erg (py-mark-base "def-or-class")))
-    (kill-new (buffer-substring-no-properties (car erg) (cdr erg)))))
 
 (defun py-kill-def-or-class ()
   "Delete def-or-class  at point.

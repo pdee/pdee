@@ -22,6 +22,8 @@ New in version 6.1.2
   ---------^
   In result cursor is insided emptied delimited form."
 
+- py-flakes8-run, flakes8 API
+
 - customizable `py-backslashed-lines-indent-offset', default is 5
   Amount of offset per level of indentation of backslashed.
   No semantic indent,  which diff to `py-indent-offset' indicates
@@ -30,19 +32,19 @@ New in version 6.1.2
   If behind a delimited form of braces, brackets or parentheses,
   `py-electric-backspace' runs `py-empty-out-list-backward'
 
-- unused variable `py-backspace-function' removed
-
-- Bundled third-party-stuff removed as reported conflicting at emacs-mirror, lp:1153998 
-  affects autopair.el, smart-operator.el  
-  Kept  menu switches resp. commands will issue a warning 
-
-- `py-which-def-or-class', command, now used `which-function-mode' 
-
 - customizable `py-closing-list-space', default 1
   Number of chars, closing parentesis outdent from opening
 
 - customizable `py-uncomment-indents-p', default nil
   When non-nil, after uncomment indent lines.
+
+- `py-which-def-or-class', command, now used `which-function-mode' 
+
+- unused variable `py-backspace-function' removed
+
+- Bundled third-party-stuff removed as reported conflicting at emacs-mirror, lp:1153998 
+  affects autopair.el, smart-operator.el  
+  Kept  menu switches resp. commands will issue a warning 
 
 New in version 6.1.1
 ---------------------
