@@ -602,6 +602,10 @@ comment or by universal prefix C-u.
 Switched by `py-electric-colon-active-p', default is nil
 See also `py-electric-colon-greedy-p' 
 
+py-empty-out-list-backward
+--------------------------
+Deletes all elements from list before point. 
+
 py-electric-backspace
 ---------------------
 Delete preceding character or level of indentation.
@@ -1111,11 +1115,9 @@ Go to the end of comment at point.
 
 Returns position, nil if not in comment.
 
-py-uncomment
-------------
-Uncomment lines at point.
+;;; Comment forms
+-----------------
 
-If region is active, restrict uncommenting at region 
 
 py-comment-region
 -----------------
@@ -1169,6 +1171,28 @@ Comments statement at point.
 
 Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
 the default
+
+py-uncomment
+------------
+Uncomment commented lines at point.
+
+If region is active, restrict uncommenting at region 
+
+py-delete-comments-in-def-or-class
+----------------------------------
+Delete all commented lines in def-or-class at point
+
+py-delete-comments-in-class
+---------------------------
+Delete all commented lines in class at point
+
+py-delete-comments-in-block
+---------------------------
+Delete all commented lines in block at point
+
+py-delete-comments-in-region
+----------------------------
+Delete all commented lines in region. 
 
 py-fill-comment
 ---------------
@@ -1522,13 +1546,8 @@ http://docs.python.org/reference/compound_stmts.html
 
 py-beginning-of-clause
 ----------------------
-Go to beginning of clause.
-
-With C-u, go to beginning one level above.
-Returns beginning of clause if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html
+Goto beginning of line where clause starts.
+  Returns position reached, if successful, nil otherwise.
 
 py-end-of-clause
 ----------------
@@ -1710,8 +1729,20 @@ py-goto-statement-below
 -----------------------
 Goto beginning of next statement. 
 
-;;; Mark forms
---------------
+py-beginning-of-decorator
+-------------------------
+Go to the beginning of a decorator.
+
+Returns position if succesful 
+
+py-end-of-decorator
+-------------------
+Go to the end of a decorator.
+
+Returns position if succesful 
+
+;;; Mark
+--------
 
 
 py-mark-paragraph
@@ -1782,18 +1813,6 @@ py-mark-partial-expression
 Mark partial-expression at point.
 
 Returns beginning and end positions of marked area, a cons. 
-
-py-beginning-of-decorator
--------------------------
-Go to the beginning of a decorator.
-
-Returns position if succesful 
-
-py-end-of-decorator
--------------------
-Go to the end of a decorator.
-
-Returns position if succesful 
 
 ;;; Copyin
 ----------
@@ -3394,6 +3413,15 @@ py-pyflakespep8-run
 py-pyflakespep8-help
 --------------------
 Display pyflakespep8 command line help messages. 
+
+py-flakes8-run
+--------------
+Run flakes8, check formatting (default on the file currently visited).
+
+
+py-flakes8-help
+---------------
+Display flakes8 command line help messages. 
 
 py-pychecker-run
 ----------------
@@ -5649,6 +5677,10 @@ Go to the previous line up in the traceback.
 With C-u (programmatically, optional argument TOP)
 jump to the top (outermost) exception in the exception stack.
 
+py-goto-exception
+-----------------
+Go to the line indicated by the traceback.
+
 py-output-buffer-filter
 -----------------------
 Clear output buffer from py-shell-input prompt etc. 
@@ -5656,6 +5688,13 @@ Clear output buffer from py-shell-input prompt etc.
 py-send-string
 --------------
 Evaluate STRING in inferior Python process.
+
+py-send-file
+------------
+Send FILE-NAME to inferior Python PROCESS.
+If TEMP-FILE-NAME is passed then that file is used for processing
+instead, while internally the shell will continue to use
+FILE-NAME.
 
 py-load-pycomplete
 ------------------
