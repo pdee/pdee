@@ -1115,6 +1115,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-font-lock-keywords) nil \"py-font-lock-keywords not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall nested-if-test \
 --funcall from-within-py-shell-call-another-instance-lp-1169687-test \
 --funcall py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test \
 --funcall Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test \

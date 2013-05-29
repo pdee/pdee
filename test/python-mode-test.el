@@ -2311,8 +2311,31 @@ Es muß die aufzurufende Ziehungszahl als Argument angegeben werden:
   (message "forward-sexp-function: %s" forward-sexp-function)
   (goto-char 71)
   (forward-sexp 1)
-  (sit-for 0.1) 
+  (sit-for 0.1)
   (assert (eq 231 (point)) nil "forward-sexp-test failed"))
+
+
+(defun nested-if-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+if foo:
+    bar = \"p\"
+elif bar:
+    if baz == True:
+        print(\" \")
+else:
+    bar = baz
+"))
+  (py-bug-tests-intern 'nested-if-base arg teststring)))
+
+(defun nested-if-base ()
+  (py-beginning-of-block)
+  (assert (eq 48 (point)) nil "nested-if-test #1 failed")
+  (goto-char 118)
+  (py-beginning-of-block)
+  (assert (eq 84 (point)) nil "nested-if-test #1 failed"))
+
 
 ;; imenu--subalist-p
 (provide 'python-mode-test)

@@ -5740,6 +5740,5 @@ inode, start_no, end_no)
     (py-shell nil nil nil t nil nil nil t)
     (assert (string= "*Python*<2>" (buffer-name)) nil "from-within-py-shell-call-another-instance-lp-1169687-test failed")))
 
-
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
