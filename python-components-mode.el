@@ -3041,13 +3041,6 @@ Mark innermost definition at point"]
          ["Mark comment" py-mark-comment
           :help "`py-mark-comment'
 Mark commented section at point"]
-         ["Mark if-block" py-mark-if-block
-          :help "`py-mark-if-block'
-Mark if-block at point. "]
-         
-         ["Mark try-block" py-mark-try-block
-          :help "`py-mark-try-block'
-Mark try-block at point. "]
          
          "-"
          
