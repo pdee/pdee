@@ -2999,40 +2999,94 @@ Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil
 
         "-"
         ("Mark"
-         ["Mark current block"   py-mark-block t]
-         ["Mark current def"     py-mark-def-or-class t]
-         ["Mark current class"   (py-mark-def-or-class t) t]
-         ("More "
-          ["Mark statement" py-mark-statement
-           :help "`py-mark-statement'
+         
+         ["Mark block" py-mark-block
+          :help " `py-mark-block'
+
+Mark block at point\.
+
+Returns beginning and end positions of marked area, a cons\. "]
+         
+         ["Mark def or class" py-mark-def-or-class
+          :help " `py-mark-def-or-class'
+
+Mark def-or-class at point\.
+
+Returns beginning and end positions of marked area, a cons\. "]
+         
+         ["Mark statement" py-mark-statement
+          :help "`py-mark-statement'
 Mark statement at point"]
-
-          ["Mark clause" py-mark-clause
-           :help "`py-mark-clause'
+         
+         ["Mark clause" py-mark-clause
+          :help "`py-mark-clause'
 Mark innermost compound statement at point"]
-
-          ["Mark def" py-mark-def
-           :help "`py-mark-def'
+         
+         ["Mark def" py-mark-def
+          :help "`py-mark-def'
 Mark innermost definition at point"]
-          ["Mark expression" py-mark-expression
-           :help "`py-mark-expression'
+         
+         ["Mark expression" py-mark-expression
+          :help "`py-mark-expression'
 Mark expression at point"]
-          ["Mark partial expression" py-mark-partial-expression
-           :help "`py-mark-partial-expression'
+         
+         ["Mark partial expression" py-mark-partial-expression
+          :help "`py-mark-partial-expression'
 \".\" operators delimit a partial-expression expression on it's level"]
-          ["Mark class" py-mark-class
-           :help "`py-mark-class'
+         
+         ["Mark class" py-mark-class
+          :help "`py-mark-class'
 Mark innermost definition at point"]
-
-          ["Mark Def-or-Class" py-mark-def-or-class
-           :help "`py-mark-def-or-class'
-Mark innermost definition at point"]
-
-          ["Mark comment" py-mark-comment
-           :help "`py-mark-comment'
+         
+         ["Mark comment" py-mark-comment
+          :help "`py-mark-comment'
 Mark commented section at point"]
-
-          )
+         ["Mark if-block" py-mark-if-block
+          :help "`py-mark-if-block'
+Mark if-block at point. "]
+         
+         ["Mark try-block" py-mark-try-block
+          :help "`py-mark-try-block'
+Mark try-block at point. "]
+         
+         "-"
+         
+         ["Mark block bol" py-mark-block-bol
+          :help "`py-mark-block-bol'
+Mark block at point reaching beginning-of-line. "]
+         
+         ["Mark clause bol" py-mark-clause-bol
+          :help "`py-mark-clause-bol'
+Mark clause at point reaching beginning-of-line. "]
+         
+         ["Mark block-or-clause bol" py-mark-block-or-clause-bol
+          :help "`py-mark-block-or-clause-bol'
+Mark block-or-clause at point reaching beginning-of-line. "]
+         
+         ["Mark def bol" py-mark-def-bol
+          :help "`py-mark-def-bol'
+Mark def at point reaching beginning-of-line. "]
+         
+         ["Mark class bol" py-mark-class-bol
+          :help "`py-mark-class-bol'
+Mark class at point reaching beginning-of-line. "]
+         
+         ["Mark def-or-class bol" py-mark-def-or-class-bol
+          :help "`py-mark-def-or-class-bol'
+Mark def-or-class at point reaching beginning-of-line. "]
+         
+         ["Mark if-block bol" py-mark-if-block-bol
+          :help "`py-mark-if-block-bol'
+Mark if-block at point reaching beginning-of-line. "]
+         
+         ["Mark try-block bol" py-mark-try-block-bol
+          :help "`py-mark-try-block-bol'
+Mark try-block at point reaching beginning-of-line. "]
+         
+         ["Mark minor-block bol" py-mark-minor-block-bol
+          :help "`py-mark-minor-block-bol'
+Mark minor-block at point reaching beginning-of-line. "]
+         
          )
         "-"
         ["Shift region left"    py-shift-region-left]
@@ -3047,59 +3101,59 @@ Mark commented section at point"]
 Uncomment commented lines at point\.
 
 If region is active, restrict uncommenting at region . "]
-
+         
          ["Uncomment Region"     (py-comment-region (point) (mark) '(4))
           :help "(py-comment-region (point) (mark) '(4))" ]
-        "-"
+         "-"
          ["Comment block" py-comment-block
           :help " `py-comment-block'
 Comments block at point\.
 
 Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
 the default. "]
-
+         
          ["Comment clause" py-comment-clause
           :help " `py-comment-clause'
 Comments clause at point\.
 
 Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
 the default. "]
-
+         
          ["Comment block or clause" py-comment-block-or-clause
           :help " `py-comment-block-or-clause'
 Comments block-or-clause at point\.
 
 Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
 the default. "]
-
+         
          ["Comment def" py-comment-def
           :help " `py-comment-def'
 Comments def at point\.
 
 Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
 the default. "]
-
+         
          ["Comment class" py-comment-class
           :help " `py-comment-class'
 Comments class at point\.
 
 Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
 the default. "]
-
+         
          ["Comment def or class" py-comment-def-or-class
           :help " `py-comment-def-or-class'
 Comments def-or-class at point\.
 
 Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
 the default. "]
-
+         
          ["Comment statement" py-comment-statement
           :help " `py-comment-statement'
 Comments statement at point\.
 
 Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
 the default. "]
-
+         
          )
         "-"
         ("Moves"
@@ -3119,7 +3173,7 @@ Go to beginning of comment at point. "]
           :help " `py-end-of-comment'
 
 Go to end of comment at point. "]
-
+         
          "-"
          ["Backward into nomenclature" py-backward-into-nomenclature
           :help " `py-backward-into-nomenclature'
@@ -3139,7 +3193,7 @@ A nomenclature is a fancy way of saying AWordWithMixedCaseNotUnderscores. "]
          ["Go to start of minor-expression" (py-beginning-of-minor-expression t) t]
          ["Move to end of minor-expression" (py-end-of-minor-expression t) t]
          "-"
-
+         
          ["Up level" py-up
           :help " `py-up'
 Go to beginning one level above of compound statement or definition at point. "]
@@ -3147,17 +3201,17 @@ Go to beginning one level above of compound statement or definition at point. "]
          ["Down level" py-down
           :help " `py-down'
 Go to beginning one level below of compound statement or definition at point. "]
-
+         
          )
         "-"
-
+        
         ["Execute region" py-execute-region
          :help " `py-execute-region'
 
 Send the region to a Python interpreter\.
 
 When called with C-u followed by a number different from 4 and 1, user is prompted to specify a shell\. This might be the name of a system-wide shell or include the path to a virtual environment\. "]
-
+        
         ["Execute buffer" py-execute-buffer
          :help " `py-execute-buffer'
 
@@ -3168,7 +3222,7 @@ When called with C-u followed by a number different from 4 and 1, user is prompt
 
 If the file local variable `py-master-file' is non-nil, execute the
 named file instead of the buffer's file\."]
-
+        
         ["Execute def or class" py-execute-def-or-class
          :help " `py-execute-def-or-class'
 
