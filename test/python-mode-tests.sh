@@ -1115,7 +1115,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-font-lock-keywords) nil \"py-font-lock-keywords not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
---funcall nested-if-test \
+--funcall nested-if-test-1 \
 --funcall from-within-py-shell-call-another-instance-lp-1169687-test \
 --funcall py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test \
 --funcall Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test \
@@ -1386,7 +1386,6 @@ est \
 --funcall indent-region-lp:997958-test \
 --funcall wrong-type-argument-lp:901541-test \
 --funcall indentation-bug-inside-docstrings-lp:899455-test \
---funcall does-not-dedent-regions-lp-1072869-test \
 --funcall impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test \
 --funcall py-ipython-complete-lp:927136-test \
 --funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n1-test 2 \
@@ -1446,3 +1445,4 @@ est \
 --funcall python-shell-complete-test \
 --funcall not-that-useful-completion-lp:1003580-test \
 --funcall tqs-list-error-test \
+--funcall does-not-dedent-regions-lp-1072869-test \

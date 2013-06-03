@@ -177,15 +177,6 @@ Returns beginning and end positions of marked area, a cons. "
              (not (py-in-string-or-comment-p)))
     (point)))
 
-(defalias 'py-beginning-of-block-lc 'py-beginning-of-block)
-(defun py-beginning-of-block (&optional indent)
-  "Goto beginning of line where block starts.
-  Returns position reached, if successful, nil otherwise."
-  (interactive)
-  (let ((indent (and (looking-at py-block-re)
-                     (current-indentation))))
-    (py-beginning-of-form-intern py-block-re (interactive-p) indent)))
-
 (defalias 'py-down-block-lc 'py-end-of-block)
 (defun py-end-of-block (&optional indent)
   "Go to end of block.
@@ -221,15 +212,6 @@ See also `py-down-block': down from current definition to next beginning of bloc
   (when (and (looking-at py-minor-block-re)
              (not (py-in-string-or-comment-p)))
     (point)))
-
-(defalias 'py-beginning-of-minor-block-lc 'py-beginning-of-minor-block)
-(defun py-beginning-of-minor-block (&optional indent)
-  "Goto beginning of line where minor-block starts.
-  Returns position reached, if successful, nil otherwise."
-  (interactive)
-  (let ((indent (and (looking-at py-minor-block-re)
-                     (current-indentation))))
-    (py-beginning-of-form-intern py-minor-block-re (interactive-p) indent)))
 
 (defalias 'py-down-minor-block-lc 'py-end-of-minor-block)
 (defun py-end-of-minor-block (&optional indent)
@@ -267,15 +249,6 @@ See also `py-down-minor-block': down from current definition to next beginning o
              (not (py-in-string-or-comment-p)))
     (point)))
 
-(defalias 'py-beginning-of-clause-lc 'py-beginning-of-clause)
-(defun py-beginning-of-clause (&optional indent)
-  "Goto beginning of line where clause starts.
-  Returns position reached, if successful, nil otherwise."
-  (interactive)
-  (let ((indent (and (looking-at py-clause-re)
-                     (current-indentation))))
-    (py-beginning-of-form-intern py-extended-block-or-clause-re (interactive-p) indent)))
-
 (defalias 'py-down-clause-lc 'py-end-of-clause)
 (defun py-end-of-clause (&optional indent)
   "Go to end of clause.
@@ -312,15 +285,6 @@ See also `py-down-clause': down from current definition to next beginning of cla
              (not (py-in-string-or-comment-p)))
     (point)))
 
-(defalias 'py-beginning-of-block-or-clause-lc 'py-beginning-of-block-or-clause)
-(defun py-beginning-of-block-or-clause (&optional indent)
-  "Goto beginning of line where block-or-clause starts.
-  Returns position reached, if successful, nil otherwise."
-  (interactive)
-  (let ((indent (and (looking-at py-block-or-clause-re)
-                     (current-indentation))))
-    (py-beginning-of-form-intern py-block-or-clause-re (interactive-p) indent)))
-
 (defalias 'py-down-block-or-clause-lc 'py-end-of-block-or-clause)
 (defun py-end-of-block-or-clause (&optional indent)
   "Go to end of block-or-clause.
@@ -356,15 +320,6 @@ See also `py-down-block-or-clause': down from current definition to next beginni
   (when (and (looking-at py-def-re)
              (not (py-in-string-or-comment-p)))
     (point)))
-
-(defalias 'py-beginning-of-def-lc 'py-beginning-of-def)
-(defun py-beginning-of-def (&optional indent)
-  "Goto beginning of line where def starts.
-  Returns position reached, if successful, nil otherwise."
-  (interactive)
-  (let ((indent (and (looking-at py-def-re)
-                     (current-indentation))))
-    (py-beginning-of-form-intern py-def-re (interactive-p) indent)))
 
 (defalias 'py-down-def-lc 'py-end-of-def)
 (defun py-end-of-def (&optional indent)
@@ -418,15 +373,6 @@ Don't store data in kill ring. "
   (when (and (looking-at py-class-re)
              (not (py-in-string-or-comment-p)))
     (point)))
-
-(defalias 'py-beginning-of-class-lc 'py-beginning-of-class)
-(defun py-beginning-of-class (&optional indent)
-  "Goto beginning of line where class starts.
-  Returns position reached, if successful, nil otherwise."
-  (interactive)
-  (let ((indent (and (looking-at py-class-re)
-                     (current-indentation))))
-    (py-beginning-of-form-intern py-class-re (interactive-p) indent)))
 
 (defalias 'py-down-class-lc 'py-end-of-class)
 (defun py-end-of-class (&optional indent)
@@ -491,29 +437,6 @@ Don't store data in kill ring. "
   (when (and (looking-at py-def-or-class-re)
              (not (py-in-string-or-comment-p)))
     (point)))
-
-(defalias 'py-beginning-of-def-or-class-lc 'py-beginning-of-def-or-class)
-(defun py-beginning-of-def-or-class (&optional indent)
-  "Goto beginning of line where def-or-class starts.
-  Returns position reached, if successful, nil otherwise."
-  (interactive)
-  (let ((indent (and (looking-at py-def-or-class-re)
-                     (current-indentation))))
-    (py-beginning-of-form-intern py-def-or-class-re (interactive-p) indent)))
-
-(defalias 'py-down-def-or-class-lc 'py-end-of-def-or-class)
-(defun py-end-of-def-or-class (&optional indent)
-  "Go to end of def-or-class.
-
-Returns end of def-or-class if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
-  (interactive "P")
-  (let* ((orig (point))
-         (erg (py-end-base 'py-def-or-class-re orig)))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-    erg))
 
 (defalias 'py-down-def-or-class-lc 'py-end-of-def-or-class-lc)
 (defun py-end-of-def-or-class-lc ()

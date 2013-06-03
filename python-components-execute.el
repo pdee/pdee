@@ -361,7 +361,7 @@ This function is appropriate for `comint-output-filter-functions'."
         (let ((pyproc (get-buffer-process (current-buffer))))
           (py-execute-file-base pyproc (car py-file-queue))))))
 
-(defun py-shell (&optional argprompt dedicated pyshellname switch sepchar py-buffer-name done split)
+(defun py-shell (&optional argprompt dedicated pyshellname switch sepchar py-buffer-name done  split)
   "Start an interactive Python interpreter in another window.
 Interactively, \\[universal-argument] 4 prompts for a buffer.
 \\[universal-argument] 2 prompts for `py-python-command-args'.
@@ -1578,10 +1578,11 @@ If an exception occurred return error-string, otherwise return nil.  BUF must ex
       (goto-char poma)
       (forward-line -1)
       (end-of-line)
-      (when (and (re-search-backward (concat comint-prompt-regexp "\\|" py-traceback-line-re) nil t)
-                 (looking-at py-traceback-line-re))
-        (setq file (substring-no-properties (match-string 1))
-              line (string-to-number (match-string 2)))
+      (when (and (re-search-backward py-traceback-line-re nil t)
+                 (looking-at py-traceback-line-re)
+                 (or (match-string 1) (match-string 3)))
+        (and (match-string 1) (match-string 2)
+              (setq line (string-to-number (match-string 2))))
         (add-to-list 'err-p line)
         (add-to-list 'err-p file)
         (overlay-put (make-overlay (match-beginning 0) (match-end 0))

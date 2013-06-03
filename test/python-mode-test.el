@@ -501,9 +501,9 @@
 (defun py-beginning-of-block-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring python-mode-teststring))
-    (py-bug-tests-intern 'py-beginning-of-block-base arg teststring)))
+    (py-bug-tests-intern 'py-beginning-of-block-test-base arg teststring)))
 
-(defun py-beginning-of-block-base ()
+(defun py-beginning-of-block-test-base ()
   (goto-char (point-max))
   (py-beginning-of-block)
   (assert (eq (point) 325) nil "py-beginning-of-block-test failed"))
@@ -1263,7 +1263,7 @@ def main(argv):
   (goto-char 306)
   (assert (eq 8 (py-compute-indentation)) nil "nested-try-test failed"))
 
-(defun nested-if-test (&optional arg load-branch-function)
+(defun nested-if-test-1 (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
@@ -1285,11 +1285,11 @@ else:
     print \"asbd\"
 
 ")))
-    (py-bug-tests-intern 'nested-if-base arg teststring)))
+    (py-bug-tests-intern 'nested-if-base-1 arg teststring)))
 
-(defun nested-if-base ()
+(defun nested-if-base-1 ()
   (goto-char 299)
-  (assert (eq 8 (py-compute-indentation)) nil "nested-if-test failed"))
+  (assert (eq 8 (py-compute-indentation)) nil "nested-if-test-1 failed"))
 
 (defun nested-try-finally-test (&optional arg load-branch-function)
   (interactive "p")
@@ -2334,7 +2334,10 @@ else:
   (assert (eq 48 (point)) nil "nested-if-test #1 failed")
   (goto-char 118)
   (py-beginning-of-block)
-  (assert (eq 84 (point)) nil "nested-if-test #1 failed"))
+  (assert (eq 84 (point)) nil "nested-if-test #2 failed")
+  (py-beginning-of-block)
+  (assert (eq 48 (point)) nil "nested-if-test #3 failed")
+  )
 
 
 ;; imenu--subalist-p

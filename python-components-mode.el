@@ -96,6 +96,12 @@
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-load-skeletons-p nil
+  "If skeleton definitions should be loaded, default is nil. "
+
+  :type 'boolean
+  :group 'python-mode)
+
 (defcustom py-use-font-lock-doc-face-p nil
   "If documention string inside of def or class get `font-lock-doc-face'.
 
@@ -246,6 +252,12 @@ See also `py-indent-no-completion-p'"
   "If completion function should insert a TAB when no completion found. Default is `t'
 
 See also `py-no-completion-calls-dabbrev-expand-p'"
+  :type 'boolean
+  :group 'python-mode)
+
+(defcustom py-company-pycomplete-p nil
+  "Load company-pycomplete stuff. Default is  nil"
+
   :type 'boolean
   :group 'python-mode)
 
@@ -2303,6 +2315,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
 
 (require 'python-components-edit)
 (require 'python-components-intern)
+(require 'python-components-beginning-forms)
 (require 'python-components-move)
 (require 'python-components-execute)
 (require 'python-components-send)
@@ -2317,7 +2330,6 @@ See original source: http://pymacs.progiciels-bpi.ca"
 (require 'python-components-electric)
 (require 'virtualenv)
 ;;(require 'components-shell-completion)
-(require 'python-components-skeletons)
 (require 'python-components-re-forms)
 (require 'python-components-up-down)
 (require 'python-components-bol-forms)
@@ -3150,6 +3162,12 @@ the default. "]
          )
         "-"
         ("Moves"
+         
+         ["Beginning of top level" py-beginning-of-top-level
+          :help " `py-beginning-of-top-level'
+
+Go to the very beginning of current block. "]
+
          ["Go to start of block" py-beginning-of-block]
          ["Go to end of block" py-end-of-block]
          "-"
@@ -6059,98 +6077,8 @@ This is a no-op if `py-check-comint-prompt' returns nil."
 
 (add-hook 'python-mode-hook 'py-set-ffap-form)
 
-;;;; Find-function support
-
-;; Fixme: key binding?
 
 
-;;; Skeletons
-(eval-when-compile
-  ;; Define a user-level skeleton and add it to the abbrev table.
-  (defmacro def-python-skeleton (name &rest elements)
-    (let* ((name (symbol-name name))
-           (function (intern (concat "python-insert-" name))))
-      `(progn
-         ;; Usual technique for inserting a skeleton, but expand
-         ;; to the original abbrev instead if in a comment or string.
-         ;; (when python-use-skeletons
-         ;;   (define-abbrev python-mode-abbrev-table ,name ""
-         ;;     ',function
-         ;;     nil t))                      ; system abbrev
-         (define-skeleton ,function
-           ,(format "Insert Python \"%s\" template." name)
-           ,@elements)))))
-(put 'def-python-skeleton 'lisp-indent-function 2)
-
-(def-python-skeleton if
-    "Condition: "
-  "if " str ":" \n
-  > -1	   ; Fixme: I don't understand the spurious space this removes.
-  _ \n
-  ("other condition, %s: "
-   <			; Avoid wrong indentation after block opening.
-   "elif " str ":" \n
-   > _ \n nil)
-  '(python-else) | ^)
-
-(define-skeleton python-else
-  "Auxiliary skeleton."
-  nil
-  (unless (eq ?y (read-char "Add `else' clause? (y for yes or RET for no) "))
-    (signal 'quit t))
-  < "else:" \n
-  > _ \n)
-
-(def-python-skeleton while
-    "Condition: "
-  "while " str ":" \n
-  > -1 _ \n
-  '(python-else) | ^)
-
-(def-python-skeleton for
-    "Target, %s: "
-  "for " str " in " (skeleton-read "Expression, %s: ") ":" \n
-  > -1 _ \n
-  '(python-else) | ^)
-
-(def-python-skeleton try/except
-    nil
-  "try:" \n
-  > -1 _ \n
-  ("Exception, %s: "
-   < "except " str '(python-target) ":" \n
-   > _ \n nil)
-  < "except:" \n
-  > _ \n
-  '(python-else) | ^)
-
-(define-skeleton python-target
-  "Auxiliary skeleton."
-  "Target, %s: " ", " str | -2)
-
-(def-python-skeleton try/finally
-    nil
-  "try:" \n
-  > -1 _ \n
-  < "finally:" \n
-  > _ \n)
-
-(def-python-skeleton def
-    "Name: "
-  "def " str " (" ("Parameter, %s: " (unless (equal ?\( (char-before)) ", ")
-                   str) "):" \n
-                   "\"\"\"" - "\"\"\"" \n     ; Fixme:  extra space inserted -- why?).
-                   > _ \n)
-
-(def-python-skeleton class
-    "Name: "
-  "class " str " (" ("Inheritance, %s: "
-		     (unless (equal ?\( (char-before)) ", ")
-		     str)
-  & ")" | -2				; close list or remove opening
-  ":" \n
-  "\"\"\"" - "\"\"\"" \n
-  > _ \n)
 
 
 ;;;; Modes.
@@ -6690,10 +6618,12 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (set (make-local-variable 'tab-width) py-indent-offset)
   (set (make-local-variable 'eldoc-documentation-function)
        #'py-eldoc-function)
-  (set (make-local-variable 'skeleton-further-elements)
-       '((< '(backward-delete-char-untabify (min py-indent-offset
-                                                 (current-column))))
-         (^ '(- (1+ (current-indentation))))))
+  (and py-load-skeletons-p
+       (py-load-skeletons)
+       (set (make-local-variable 'skeleton-further-elements)
+            '((< '(backward-delete-char-untabify (min py-indent-offset
+                                                      (current-column))))
+              (^ '(- (1+ (current-indentation)))))))
   (set (make-local-variable 'imenu-create-index-function) 'py-imenu-create-index-function)
   (py-set-load-path)
   ;; (add-to-list 'load-path py-install-directory)
@@ -6766,6 +6696,9 @@ Runs `jython-mode-hook' after `python-mode-hook'."
 
   :group 'python-mode
   (py-toggle-shell "jython"))
+
+(and py-load-skeletons-p (require 'python-components-skeletons))
+(and py-company-pycomplete-p     (require 'company-pycomplete))
 
 (provide 'python-components-mode)
 (provide 'python-mode)

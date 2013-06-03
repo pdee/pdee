@@ -24,6 +24,10 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Some of this forms to generate parts of
+;; python-mode.el are just drafts, others outdated.
+;; Kept for inspiration.
+
 ;;; Code:
 
 (defvar arkopf)
@@ -81,6 +85,12 @@
 
 (defvar py-re-forms-names '("block" "clause" "block-or-clause" "def" "class" "def-or-class" "if-block" "try-block" "minor-block")
   "Forms whose start is described by a regexp in python-mode." )
+
+(setq py-re-forms-names '("block" "clause" "block-or-clause" "def" "class" "def-or-class" "if-block" "try-block" "minor-block"))
+
+
+;; (setq py-re-forms-names '("block" "clause" "block-or-clause" "def" "class" "def-or-class")
+
 
 ;; (defvar py-down-forms (list "block" "minor-block" "clause" "block-or-clause" "def" "class" "def-or-class" "statement"))
 ;;
@@ -2586,5 +2596,68 @@ Returns beginning and end positions of region, a cons. \"
               :help \"`py-mark-" ele "-bol'
 Mark " ele " at point reaching beginning-of-line. \"]
 ")))
+  (switch-to-buffer (current-buffer))
+  (emacs-lisp-mode))
+
+
+
+;; (defun py-beginning-of-block (&optional indent)
+;;   "Goto beginning of statement where block starts.
+;;   Returns position reached, if successful, nil otherwise."
+;;   (interactive)
+;;   (py-beginning-of-prepare indent 'py-block-re 'py-clause-re (interactive-p)))
+
+(defun py-write-beginning-forms ()
+  (interactive)
+  (set-buffer (get-buffer-create "python-components-beginning-forms.el"))
+  (erase-buffer)
+  (switch-to-buffer (current-buffer))
+  (insert ";;; python-components-beginning-forms.el --- Forms start described by a regular-expression \n")
+  (insert arkopf)
+  (dolist (ele py-re-forms-names)
+    (insert (concat "
+\(defun py-beginning-of-" ele " (&optional indent)"
+"\n \"Go to beginning " ele ", skip whitespace at BOL.
+
+Returns beginning of " ele " if successful, nil otherwise\n
+"))
+    (when (string-match "def\\|class" ele)
+      (insert "When `py-mark-decorators' is non-nil, decorators are considered too.\n\n"))
+    (insert "Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html\"\n")
+    (insert "  (interactive)")
+    (cond ((string-match "def\\|class" ele)
+           (insert (concat "
+  (py-beginning-of-prepare indent 'py-" ele "-re 'py-extended-block-or-clause-re (interactive-p)))\n")))
+          ((string-match "clause" ele)
+           (insert (concat "
+  (py-beginning-of-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (interactive-p)))\n")))
+          (t (insert (concat "
+  (py-beginning-of-prepare indent 'py-" ele "-re 'py-clause-re (interactive-p)))\n")))))
+  ;; lc forms
+  (dolist (ele py-re-forms-names)
+    (insert (concat "
+\(defalias 'py-beginning-of-" ele "-bol 'py-beginning-of-" ele"-lc)
+\(defun py-beginning-of-" ele "-lc (&optional indent)"
+"\n \"Go to beginning " ele ", go to BOL.
+
+Returns beginning of " ele " if successful, nil otherwise\n
+"))
+    (when (string-match "def\\|class" ele)
+      (insert "When `py-mark-decorators' is non-nil, decorators are considered too.\n\n"))
+    (insert "Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html\"\n")
+    (insert "  (interactive)")
+    (cond ((string-match "def\\|class" ele)
+           (insert (concat "
+  (py-beginning-of-prepare indent 'py-" ele "-re 'py-extended-block-or-clause-re (interactive-p) t))\n")))
+          ((string-match "clause" ele)
+           (insert (concat "
+  (py-beginning-of-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (interactive-p) t))\n")))
+          (t (insert (concat "
+  (py-beginning-of-prepare indent 'py-" ele "-re 'py-clause-re (interactive-p) t))\n")))))
+  (insert "\n(provide 'python-components-beginning-forms)
+;; python-components-beginning-forms.el ends here\n")
+
   (switch-to-buffer (current-buffer))
   (emacs-lisp-mode))

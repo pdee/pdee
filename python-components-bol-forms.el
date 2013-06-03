@@ -55,27 +55,6 @@
         (setq erg orig))
       erg)))
 
-(defalias 'py-beginning-of-block-lc 'py-beginning-of-block-bol)
-(defun py-beginning-of-block-bol (&optional indent)
-  "Goto beginning of line where block starts.
-  Returns position reached, if successful, nil otherwise.
-
-See also `py-up-block': up from current definition to next beginning of block above. "
-  (interactive)
-  (let* ((indent (or indent (when (eq 'py-end-of-block-bol (car py-bol-forms-last-indent))(cdr py-bol-forms-last-indent))))
-         erg)
-    (if indent
-        (while (and (setq erg (py-beginning-of-block)) (< indent (current-indentation))(not (bobp))))
-      (setq erg (py-beginning-of-block)))
-    ;; reset
-    (setq py-bol-forms-last-indent nil)
-    (when erg
-      (unless (eobp)
-        (beginning-of-line)
-        (setq erg (point))))
-    (when (interactive-p) (message "%s" erg))
-    erg))
-
 (defalias 'py-down-block-lc 'py-end-of-block-bol)
 (defun py-end-of-block-bol ()
   "Goto beginning of line following end of block.
@@ -139,27 +118,6 @@ Don't store data in kill ring. "
       (when (eq orig (point))
         (setq erg orig))
       erg)))
-
-(defalias 'py-beginning-of-clause-lc 'py-beginning-of-clause-bol)
-(defun py-beginning-of-clause-bol (&optional indent)
-  "Goto beginning of line where clause starts.
-  Returns position reached, if successful, nil otherwise.
-
-See also `py-up-clause': up from current definition to next beginning of clause above. "
-  (interactive)
-  (let* ((indent (or indent (when (eq 'py-end-of-clause-bol (car py-bol-forms-last-indent))(cdr py-bol-forms-last-indent))))
-         erg)
-    (if indent
-        (while (and (setq erg (py-beginning-of-clause)) (< indent (current-indentation))(not (bobp))))
-      (setq erg (py-beginning-of-clause)))
-    ;; reset
-    (setq py-bol-forms-last-indent nil)
-    (when erg
-      (unless (eobp)
-        (beginning-of-line)
-        (setq erg (point))))
-    (when (interactive-p) (message "%s" erg))
-    erg))
 
 (defalias 'py-down-clause-lc 'py-end-of-clause-bol)
 (defun py-end-of-clause-bol ()
@@ -225,27 +183,6 @@ Don't store data in kill ring. "
         (setq erg orig))
       erg)))
 
-(defalias 'py-beginning-of-block-or-clause-lc 'py-beginning-of-block-or-clause-bol)
-(defun py-beginning-of-block-or-clause-bol (&optional indent)
-  "Goto beginning of line where block-or-clause starts.
-  Returns position reached, if successful, nil otherwise.
-
-See also `py-up-block-or-clause': up from current definition to next beginning of block-or-clause above. "
-  (interactive)
-  (let* ((indent (or indent (when (eq 'py-end-of-block-or-clause-bol (car py-bol-forms-last-indent))(cdr py-bol-forms-last-indent))))
-         erg)
-    (if indent
-        (while (and (setq erg (py-beginning-of-block-or-clause)) (< indent (current-indentation))(not (bobp))))
-      (setq erg (py-beginning-of-block-or-clause)))
-    ;; reset
-    (setq py-bol-forms-last-indent nil)
-    (when erg
-      (unless (eobp)
-        (beginning-of-line)
-        (setq erg (point))))
-    (when (interactive-p) (message "%s" erg))
-    erg))
-
 (defalias 'py-down-block-or-clause-lc 'py-end-of-block-or-clause-bol)
 (defun py-end-of-block-or-clause-bol ()
   "Goto beginning of line following end of block-or-clause.
@@ -309,27 +246,6 @@ Don't store data in kill ring. "
       (when (eq orig (point))
         (setq erg orig))
       erg)))
-
-(defalias 'py-beginning-of-def-lc 'py-beginning-of-def-bol)
-(defun py-beginning-of-def-bol (&optional indent)
-  "Goto beginning of line where def starts.
-  Returns position reached, if successful, nil otherwise.
-
-See also `py-up-def': up from current definition to next beginning of def above. "
-  (interactive)
-  (let* ((indent (or indent (when (eq 'py-end-of-def-bol (car py-bol-forms-last-indent))(cdr py-bol-forms-last-indent))))
-         erg)
-    (if indent
-        (while (and (setq erg (py-beginning-of-def)) (< indent (current-indentation))(not (bobp))))
-      (setq erg (py-beginning-of-def)))
-    ;; reset
-    (setq py-bol-forms-last-indent nil)
-    (when erg
-      (unless (eobp)
-        (beginning-of-line)
-        (setq erg (point))))
-    (when (interactive-p) (message "%s" erg))
-    erg))
 
 (defalias 'py-down-def-lc 'py-end-of-def-bol)
 (defun py-end-of-def-bol ()
@@ -397,27 +313,6 @@ Don't store data in kill ring. "
         (setq erg orig))
       erg)))
 
-(defalias 'py-beginning-of-class-lc 'py-beginning-of-class-bol)
-(defun py-beginning-of-class-bol (&optional indent)
-  "Goto beginning of line where class starts.
-  Returns position reached, if successful, nil otherwise.
-
-See also `py-up-class': up from current definition to next beginning of class above. "
-  (interactive)
-  (let* ((indent (or indent (when (eq 'py-end-of-class-bol (car py-bol-forms-last-indent))(cdr py-bol-forms-last-indent))))
-         erg)
-    (if indent
-        (while (and (setq erg (py-beginning-of-class)) (< indent (current-indentation))(not (bobp))))
-      (setq erg (py-beginning-of-class)))
-    ;; reset
-    (setq py-bol-forms-last-indent nil)
-    (when erg
-      (unless (eobp)
-        (beginning-of-line)
-        (setq erg (point))))
-    (when (interactive-p) (message "%s" erg))
-    erg))
-
 (defalias 'py-down-class-lc 'py-end-of-class-bol)
 (defun py-end-of-class-bol ()
   "Goto beginning of line following end of class.
@@ -483,27 +378,6 @@ Don't store data in kill ring. "
       (when (eq orig (point))
         (setq erg orig))
       erg)))
-
-(defalias 'py-beginning-of-def-or-class-lc 'py-beginning-of-def-or-class-bol)
-(defun py-beginning-of-def-or-class-bol (&optional indent)
-  "Goto beginning of line where def-or-class starts.
-  Returns position reached, if successful, nil otherwise.
-
-See also `py-up-def-or-class': up from current definition to next beginning of def-or-class above. "
-  (interactive)
-  (let* ((indent (or indent (when (eq 'py-end-of-def-or-class-bol (car py-bol-forms-last-indent))(cdr py-bol-forms-last-indent))))
-         erg)
-    (if indent
-        (while (and (setq erg (py-beginning-of-def-or-class)) (< indent (current-indentation))(not (bobp))))
-      (setq erg (py-beginning-of-def-or-class)))
-    ;; reset
-    (setq py-bol-forms-last-indent nil)
-    (when erg
-      (unless (eobp)
-        (beginning-of-line)
-        (setq erg (point))))
-    (when (interactive-p) (message "%s" erg))
-    erg))
 
 (defalias 'py-down-def-or-class-lc 'py-end-of-def-or-class-bol)
 (defun py-end-of-def-or-class-bol ()

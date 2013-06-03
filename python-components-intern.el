@@ -1190,5 +1190,65 @@ Used by variable `which-func-functions' "
     (when (interactive-p) (message "%s" def-or-class))
     def-or-class))
 
+
+(defun py-beginning-of-form-intern (regexp &optional iact indent orig lc)
+  "Go to beginning of FORM.
+
+With INDENT, go to beginning one level above.
+Whit IACT, print result in message buffer.
+
+Returns beginning of FORM if successful, nil otherwise
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html"
+  (interactive "P")
+  (let (erg)
+    (unless (bobp)
+      (let* ((orig (or orig (point)))
+             (indent (or indent (progn
+                                  (back-to-indentation)
+                                  (or (py-beginning-of-statement-p)
+                                      (py-beginning-of-statement))
+                                  (current-indentation)))))
+        (setq erg (cond ((and (< (point) orig) (looking-at (symbol-value regexp)))
+                         (point))
+                        ((and (eq 0 (current-column)) (numberp indent) (< 0 indent))
+                         (when (< 0 (abs (skip-chars-backward " \t\r\n\f")))
+                           (py-beginning-of-statement)
+                           (unless (looking-at (symbol-value regexp))
+                             (cdr (py-go-to-keyword (symbol-value regexp) (current-indentation))))))
+                        ;; indent from first beginning of clause matters
+                        ((not (looking-at py-extended-block-or-clause-re))
+                         (py-go-to-keyword py-extended-block-or-clause-re indent)
+                         (if (looking-at (symbol-value regexp))
+                             (setq erg (point))
+                           (py-beginning-of-form-intern regexp iact (current-indentation) orig)))
+                        ((numberp indent)
+                         (ignore-errors
+                           (cdr (py-go-to-keyword (symbol-value regexp) indent))))
+                        (t (ignore-errors
+                             (cdr (py-go-to-keyword (symbol-value regexp)
+                                                    (- (progn (if (py-beginning-of-statement-p) (current-indentation) (save-excursion (py-beginning-of-statement) (current-indentation)))) py-indent-offset)))))))
+        (when lc (beginning-of-line) (setq erg (point)))))
+    (when (and py-verbose-p iact) (message "%s" erg))
+    erg))
+
+(defun py-beginning-of-prepare (indent final-re &optional inter-re iact lc)
+  (let ((orig (point))
+        (indent (or indent
+                    (progn (or (py-beginning-of-statement-p)
+                               (py-beginning-of-statement))
+                           (if (looking-at (symbol-value inter-re))
+                               (current-indentation)
+                             (- (current-indentation) py-indent-offset)))))
+        erg)
+    (if (and (< (point) orig) (looking-at (symbol-value final-re)))
+        (progn
+          (and lc (beginning-of-line))
+          (setq erg (point))
+          (when (and py-verbose-p iact) (message "%s" erg))
+          erg)
+      (py-beginning-of-form-intern final-re iact indent orig lc))))
+
 (provide 'python-components-intern)
 ;;; python-components-intern.el ends here

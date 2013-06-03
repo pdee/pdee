@@ -38,6 +38,9 @@ New in version 6.1.2
 - customizable `py-uncomment-indents-p', default nil
   When non-nil, after uncomment indent lines.
 
+- boolean `py-load-skeletons-p', default nil
+  If skeleton definitions should be loaded
+
 - `py-which-def-or-class', command, now used `which-function-mode' 
 
 - unused variable `py-backspace-function' removed

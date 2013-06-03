@@ -21,7 +21,6 @@
 ;;; Code:
 
 ;;; Beg-end forms
-
 (defun py-beginning-of-top-level ()
   "Go to beginning of block until level of indentation is null.
 
@@ -30,57 +29,17 @@ Returns beginning of block if successful, nil otherwise
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
-  (let ((erg (ignore-errors (cdr (py-go-to-keyword py-block-re 0)))))
-    erg))
+  (py-beginning-of-block)
+  (unless (or (bobp) (bolp))
+    (py-beginning-of-top-level)))
 
-(defun py-beginning-of-form-intern (regexp &optional iact indent orig)
-  "Go to beginning of FORM.
-
-With INDENT, go to beginning one level above.
-Whit IACT, print result in message buffer.
-
-Returns beginning of FORM if successful, nil otherwise
+(defun py-beginning ()
+  "Go to beginning of compound statement or definition at point.
 
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
-  (interactive "P")
-  (let* ((orig (or orig (point)))
-         (indent (or indent (progn
-                              (back-to-indentation)
-                              (or (py-beginning-of-statement-p)
-                                  (py-beginning-of-statement))
-                              (current-indentation))))
-         (erg (cond ((and (< (point) orig) (looking-at regexp))
-                     (point))
-                    ((and (eq 0 (current-column)) (numberp indent) (< 0 indent))
-                     (when (< 0 (abs (skip-chars-backward " \t\r\n\f")))
-                       (py-beginning-of-statement)
-                       (unless (looking-at regexp)
-                         (cdr (py-go-to-keyword regexp (current-indentation))))))
-                    ;; indent from first beginning of clause matters
-                    ((not (looking-at py-extended-block-or-clause-re))
-                     (py-go-to-keyword py-extended-block-or-clause-re (current-indentation))
-                     (py-beginning-of-form-intern regexp iact (current-indentation) orig))
-
-                    ((numberp indent)
-                     (ignore-errors
-                       (cdr (py-go-to-keyword regexp indent))))
-                    (t (ignore-errors
-                         (cdr (py-go-to-keyword regexp
-                                                (- (progn (if (py-beginning-of-statement-p) (current-indentation) (save-excursion (py-beginning-of-statement) (current-indentation)))) py-indent-offset))))))))
-    (when (and py-verbose-p iact) (message "%s" erg))
-    erg))
-
-(defun py-beginning (&optional indent)
- "Go to beginning of compound statement or definition at point.
-
-With \\[universal-argument], go to beginning one level above.
-Returns position if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
-  (interactive "P")
-  (py-beginning-of-form-intern py-extended-block-or-clause-re (interactive-p) indent))
+  (interactive)
+  (py-beginning-of-form-intern 'py-extended-block-or-clause-re (interactive-p)))
 
 (defun py-end (&optional indent)
  "Go to end of of compound statement or definition at point.
@@ -108,7 +67,7 @@ http://docs.python.org/reference/compound_stmts.html"
   (let ((pps (syntax-ppss)))
     (cond ((nth 8 pps) (goto-char (nth 8 pps)))
           ((nth 1 pps) (goto-char (nth 1 pps)))
-          ((py-beginning-of-statement-p) (py-beginning-of-form-intern py-extended-block-or-clause-re (interactive-p) t))
+          ((py-beginning-of-statement-p) (py-beginning-of-form-intern 'py-extended-block-or-clause-re (interactive-p)))
           (t (py-beginning-of-statement)))))
 
 (defun py-down (&optional indent)
@@ -146,17 +105,6 @@ http://docs.python.org/reference/compound_stmts.html"
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
-(defun py-beginning-of-block (&optional indent)
- "Go to beginning of block.
-
-With \\[universal-argument], go to beginning one level above.
-Returns beginning of block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
-  (interactive "P")
-  (py-beginning-of-form-intern py-block-re (interactive-p) indent))
-
 (defun py-end-of-block (&optional indent)
  "Go to end of block.
 
@@ -169,19 +117,6 @@ http://docs.python.org/reference/compound_stmts.html"
            (erg (py-end-base 'py-block-re orig)))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg))
-
-(defun py-beginning-of-clause (&optional indent)
-  "Go to beginning of clause.
-
-With \\[universal-argument], go to beginning one level above.
-Returns beginning of clause if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
-  (interactive "P")
-  (let ((indent (and (looking-at py-clause-re)
-                     (current-indentation))))
-    (py-beginning-of-form-intern py-block-or-clause-re (interactive-p) indent)))
 
 (defun py-end-of-clause (&optional indent)
  "Go to end of clause.
@@ -196,18 +131,6 @@ http://docs.python.org/reference/compound_stmts.html"
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg))
 
-(defun py-beginning-of-block-or-clause (&optional indent)
- "Go to beginning of block-or-clause.
-
-With \\[universal-argument], go to beginning one level above.
-Travels buffer upward by clauses.
-Returns beginning of block-or-clause if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
-  (interactive "P")
-  (py-beginning-of-form-intern py-block-or-clause-re (interactive-p) indent))
-
 (defun py-end-of-block-or-clause (&optional indent)
  "Go to end of block-or-clause.
 
@@ -221,18 +144,6 @@ http://docs.python.org/reference/compound_stmts.html"
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg))
 
-(defun py-beginning-of-def (&optional indent)
- "Go to beginning of def.
-
-With \\[universal-argument], go to beginning one level above.
-Returns beginning of def if successful, nil otherwise
-
-When `py-mark-decorators' is non-nil, decorators are considered too.
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
-  (interactive "P")
-  (py-beginning-of-form-intern py-def-re (interactive-p) indent))
 
 (defun py-end-of-def (&optional indent)
  "Go to end of def.
@@ -249,19 +160,6 @@ http://docs.python.org/reference/compound_stmts.html"
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg))
 
-(defun py-beginning-of-class (&optional indent)
- "Go to beginning of class.
-
-With \\[universal-argument], go to beginning one level above.
-Returns beginning of class if successful, nil otherwise
-
-When `py-mark-decorators' is non-nil, decorators are considered too.
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
-  (interactive "P")
-  (py-beginning-of-form-intern py-class-re (interactive-p) indent))
-
 (defun py-end-of-class (&optional indent)
  "Go to end of class.
 
@@ -276,19 +174,6 @@ http://docs.python.org/reference/compound_stmts.html"
            (erg (py-end-base 'py-class-re orig)))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg))
-
-(defun py-beginning-of-def-or-class (&optional indent)
- "Go to beginning of def-or-class.
-
-With \\[universal-argument], go to beginning one level above.
-Returns beginning of def-or-class if successful, nil otherwise
-
-When `py-mark-decorators' is non-nil, decorators are considered too.
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
-  (interactive "P")
-  (py-beginning-of-form-intern py-def-or-class-re (interactive-p) indent))
 
 (defun py-end-of-def-or-class (&optional indent)
  "Go to end of def-or-class.
@@ -306,17 +191,6 @@ http://docs.python.org/reference/compound_stmts.html"
           (message "%s" erg))
       erg))
 
-(defun py-beginning-of-if-block (&optional indent)
- "Go to beginning of if-block.
-
-With \\[universal-argument], go to beginning one level above.
-Returns beginning of if-block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
-  (interactive "P")
-  (py-beginning-of-form-intern py-if-block-re (interactive-p) indent))
-
 (defun py-end-of-if-block (&optional indent)
  "Go to end of if-block.
 
@@ -330,17 +204,6 @@ http://docs.python.org/reference/compound_stmts.html"
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg))
 
-(defun py-beginning-of-try-block (&optional indent)
- "Go to beginning of try-block.
-
-With \\[universal-argument], go to beginning one level above.
-Returns beginning of try-block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
-  (interactive "P")
-  (py-beginning-of-form-intern py-try-block-re (interactive-p) indent))
-
 (defun py-end-of-try-block (&optional indent)
  "Go to end of try-block.
 
@@ -353,17 +216,6 @@ http://docs.python.org/reference/compound_stmts.html"
            (erg (py-end-base 'py-try-block-re orig)))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg))
-
-(defun py-beginning-of-minor-block (&optional indent)
- "Go to beginning of minor-block.
-
-With \\[universal-argument], go to beginning one level above.
-Returns beginning of minor-block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
-  (interactive "P")
-  (py-beginning-of-form-intern py-minor-block-re (interactive-p) indent))
 
 (defun py-end-of-minor-block (&optional indent)
  "Go to end of minor-block.
