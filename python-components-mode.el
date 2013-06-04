@@ -1559,29 +1559,26 @@ can write into: the value (if any) of the environment variable TMPDIR,
 (defvar py-expression-skip-chars "^ (:=#\t\r\n\f"
   "py-expression assumes chars indicated possible composing a py-expression, skip it. ")
 
-(defvar py-expression-looking-re "[^ =#\t\r\n\f]+"
+(defvar py-expression-re "[^ =#\t\r\n\f]+"
   "py-expression assumes chars indicated possible composing a py-expression, when looking-at or -back. ")
 
 (defvar py-not-expression-regexp "[ .=#\t\r\n\f)]+"
   "py-expression assumes chars indicated probably will not compose a py-expression. ")
 
-(defvar py-not-expression-chars " .=#\t\r\n\f"
+(defvar py-not-expression-chars " #\t\r\n\f"
   "py-expression assumes chars indicated probably will not compose a py-expression. ")
+;; (setq py-not-expression-chars " #\t\r\n\f")
 
-(defvar py-partial-expression-skip-chars "^ .()[]{}=:#\t\r\n\f"
+(defvar py-partial-expression-skip-chars "^ ,\"'()[]{}:#\t\r\n\f"
   "py-partial-expression assumes chars indicated possible composing a py-partial-expression, skip it. ")
+;; (setq py-partial-expression-skip-chars "^ ,\"'()[]{}:#\t\r\n\f")
 
-(defvar py-partial-expression-forward-regexp "[^ .()}=:#\t\r\n\f]"
-  "py-partial-expression assumes chars indicated possible composing a py-partial-expression, skip it. ")
+(defvar py-partial-expression-forward-chars "^ \"')}:#\t\r\n\f")
+;; (setq py-partial-expression-forward-chars "^ \"')}:#\t\r\n\f")
 
-(defvar py-partial-expression-skip-backward-chars "^ .\"(){}[]=:#\t\r\n\f"
-  "py-partial-expression assumes chars indicated possible composing a py-partial-expression, skip it. ")
-
-(defvar py-not-partial-expression-skip-chars " \\.=:#\t\r\n\f"
-  "py-partial-expression assumes chars indicated may not compose a py-partial-expression, skip it. ")
-
-(defvar py-partial-expression-looking-regexp "[^ ).=:#\t\r\n\f]"
+(defvar py-partial-expression-regexp "[^ ):#\t\r\n\f]"
   "py-partial-expression assumes chars indicated possible composing a py-partial-expression, when looking-at or -back. ")
+;; (setq py-partial-expression-regexp "[^ ):#\t\r\n\f]")
 
 (defvar py-not-partial-expression-regexp "[ ).=:#\t\r\n\f]"
   "py-partial-expression assumes chars indicated probably will not compose a py-partial-expression. ")
@@ -1922,37 +1919,7 @@ Includes def and class. ")
 
 (setq py-history-filter-regexp "\\`\\s-*\\S-?\\S-?\\s-*\\'\\|'''/tmp/\\|^__pyfile = open('''\\|^execfile(r'[.+]/tmp/")
 
-;;; py-expression variables start
 
-;; (setq py-expression-skip-regexp "[^ (=#\t\r\n\f]")
-
-;; (setq py-expression-skip-chars "^ (=#\t\r\n\f")
-
-;; (setq py-expression-looking-re "[^ =#\t\r\n\f)]")
-
-;; (setq py-not-expression-regexp "[ .=#\t\r\n\f)]+")
-
-;; (setq py-not-expression-chars "[ .=#\t\r\n\f)]+")
-
-;; (setq py-partial-expression-skip-chars "^ .(){}=:#\t\r\n\f")
-
-(setq py-partial-expression-forward-regexp "^ .()}=:#\t\r\n\f")
-
-;; (setq py-partial-expression-skip-backward-chars "^ .\"(){}\[]=:#\t\r\n\f")
-
-;; (setq py-not-partial-expression-skip-chars " )\]\\.=:#\t\r\n\f")
-
-;; (setq py-partial-expression-looking-regexp "[^ ).=:#\t\r\n\f]")
-
-;; (setq py-not-partial-expression-regexp "[ .=:#\t\r\n\f)]")
-
-;; (setq py-operator-regexp "[ \t]*\\(+\\|-\\|*\\|//\\|//\\|&\\|%\\||\\|\\^\\|>>\\|<<\\|<\\|<=\\|>\\|>=\\|==\\|!=\\)[ \t]*")
-
-;; (setq  py-assignment-regexp "[ \t]*=[^=]")
-
-;; (setq py-delimiter-regexp "\\(,\\|;\\:\\)[ \t\n]")
-
-;;;
 
 (defsubst py-keep-region-active ()
   "Keep the region active in XEmacs."

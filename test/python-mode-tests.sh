@@ -427,7 +427,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-execute-def) nil \"py-execute-def not detected as command\")" \
 -eval "(assert (commandp 'py-execute-def-or-class) nil \"py-execute-def-or-class not detected as command\")" \
 -eval "(assert (commandp 'py-execute-expression) nil \"py-execute-expression not detected as command\")" \
--eval "(assert (commandp 'py-execute-partial-expression) nil \"py-execute-partial-expression not detected as command\")" \
 -eval "(assert (commandp 'py-execute-statement) nil \"py-execute-statement not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file) nil \"py-execute-file not detected as command\")" \
 -eval "(assert (commandp 'py-down-exception) nil \"py-down-exception not detected as command\")" \
@@ -734,36 +733,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-execute-expression-jython-noswitch) nil \"py-execute-expression-jython-noswitch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-expression-jython-dedicated) nil \"py-execute-expression-jython-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-expression-jython-dedicated-switch) nil \"py-execute-expression-jython-dedicated-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-partial-expression-python-switch) nil \"py-execute-partial-expression-python-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-partial-expression-python) nil \"py-execute-partial-expression-python not detected as command\")" \
--eval "(assert (commandp 'py-execute-partial-expression-python-noswitch) nil \"py-execute-partial-expression-python-noswitch not detected as command\")" \
--eval "(assert (commandp 'py-execute-partial-expression-python-dedicated) nil \"py-execute-partial-expression-python-dedicated not detected as command\")" \
--eval "(assert (commandp 'py-execute-partial-expression-python-dedicated-switch) nil \"py-execute-partial-expression-python-dedicated-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-partial-expression-ipython) nil \"py-execute-partial-expression-ipython not detected as command\")" \
--eval "(assert (commandp 'py-execute-partial-expression-ipython-switch) nil \"py-execute-partial-expression-ipython-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-partial-expression-ipython-noswitch) nil \"py-execute-partial-expression-ipython-noswitch not detected as command\")" \
--eval "(assert (commandp 'py-execute-partial-expression-ipython-dedicated) nil \"py-execute-partial-expression-ipython-dedicated not detected as command\")" \
--eval "(assert (commandp 'py-execute-partial-expression-ipython-dedicated-switch) nil \"py-execute-partial-expression-ipython-dedicated-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-partial-expression-python3) nil \"py-execute-partial-expression-python3 not detected as command\")" \
--eval "(assert (commandp 'py-execute-partial-expression-python3-switch) nil \"py-execute-partial-expression-python3-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-partial-expression-python3-noswitch) nil \"py-execute-partial-expression-python3-noswitch not detected as command\")" \
--eval "(assert (commandp 'py-execute-partial-expression-python3-dedicated) nil \"py-execute-partial-expression-python3-dedicated not detected as command\")" \
--eval "(assert (commandp 'py-execute-partial-expression-python3-dedicated-switch) nil \"py-execute-partial-expression-python3-dedicated-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-partial-expression-python2) nil \"py-execute-partial-expression-python2 not detected as command\")" \
--eval "(assert (commandp 'py-execute-partial-expression-python2-switch) nil \"py-execute-partial-expression-python2-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-partial-expression-python2-noswitch) nil \"py-execute-partial-expression-python2-noswitch not detected as command\")" \
--eval "(assert (commandp 'py-execute-partial-expression-python2-dedicated) nil \"py-execute-partial-expression-python2-dedicated not detected as command\")" \
--eval "(assert (commandp 'py-execute-partial-expression-python2-dedicated-switch) nil \"py-execute-partial-expression-python2-dedicated-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-partial-expression-python2.7) nil \"py-execute-partial-expression-python2.7 not detected as command\")" \
--eval "(assert (commandp 'py-execute-partial-expression-python2.7-switch) nil \"py-execute-partial-expression-python2.7-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-partial-expression-python2.7-noswitch) nil \"py-execute-partial-expression-python2.7-noswitch not detected as command\")" \
--eval "(assert (commandp 'py-execute-partial-expression-python2.7-dedicated) nil \"py-execute-partial-expression-python2.7-dedicated not detected as command\")" \
--eval "(assert (commandp 'py-execute-partial-expression-python2.7-dedicated-switch) nil \"py-execute-partial-expression-python2.7-dedicated-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-partial-expression-jython) nil \"py-execute-partial-expression-jython not detected as command\")" \
--eval "(assert (commandp 'py-execute-partial-expression-jython-switch) nil \"py-execute-partial-expression-jython-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-partial-expression-jython-noswitch) nil \"py-execute-partial-expression-jython-noswitch not detected as command\")" \
--eval "(assert (commandp 'py-execute-partial-expression-jython-dedicated) nil \"py-execute-partial-expression-jython-dedicated not detected as command\")" \
--eval "(assert (commandp 'py-execute-partial-expression-jython-dedicated-switch) nil \"py-execute-partial-expression-jython-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-mark-block-clause-misbehave-lp:949310-test) nil \"py-mark-block-clause-misbehave-lp:949310-test not detected as command\")" \
 -eval "(assert (commandp 'broken-font-locking-lp:961231-test) nil \"broken-font-locking-lp:961231-test not detected as command\")" \
 -eval "(assert (commandp 'py-mark-clause-misbehave-lp:949310-test) nil \"py-mark-clause-misbehave-lp:949310-test not detected as command\")" \
@@ -1036,15 +1005,12 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-labelled-re) nil \"py-labelled-re not a variable\")" \
 -eval "(assert (boundp 'py-expression-skip-regexp) nil \"py-expression-skip-regexp not a variable\")" \
 -eval "(assert (boundp 'py-expression-skip-chars) nil \"py-expression-skip-chars not a variable\")" \
--eval "(assert (boundp 'py-expression-looking-re) nil \"py-expression-looking-re not a variable\")" \
+-eval "(assert (boundp 'py-expression-re) nil \"py-expression-re not a variable\")" \
 -eval "(assert (boundp 'py-not-expression-regexp) nil \"py-not-expression-regexp not a variable\")" \
 -eval "(assert (boundp 'py-not-expression-chars) nil \"py-not-expression-chars not a variable\")" \
 -eval "(assert (boundp 'py-not-expression-chars) nil \"py-not-expression-chars not a variable\")" \
 -eval "(assert (boundp 'py-partial-expression-skip-chars) nil \"py-partial-expression-skip-chars not a variable\")" \
--eval "(assert (boundp 'py-partial-expression-forward-regexp) nil \"py-partial-expression-forward-regexp not a variable\")" \
--eval "(assert (boundp 'py-partial-expression-skip-backward-chars) nil \"py-partial-expression-skip-backward-chars not a variable\")" \
--eval "(assert (boundp 'py-not-partial-expression-skip-chars) nil \"py-not-partial-expression-skip-chars not a variable\")" \
--eval "(assert (boundp 'py-partial-expression-looking-regexp) nil \"py-partial-expression-looking-regexp not a variable\")" \
+-eval "(assert (boundp 'py-partial-expression-regexp) nil \"py-partial-expression-regexp not a variable\")" \
 -eval "(assert (boundp 'py-not-partial-expression-regexp) nil \"py-not-partial-expression-regexp not a variable\")" \
 -eval "(assert (boundp 'py-operator-regexp) nil \"py-operator-regexp not a variable\")" \
 -eval "(assert (boundp 'py-assignment-regexp) nil \"py-assignment-regexp not a variable\")" \
@@ -1132,11 +1098,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-execute-block-or-clause-python2.7-noswitch-test \
 --funcall py-execute-block-or-clause-python2.7-dedicated-test \
 --funcall py-execute-block-or-clause-python2.7-dedicated-switch-test \
---funcall py-execute-partial-expression-test \
---funcall py-execute-partial-expression-python3-test \
---funcall py-execute-partial-expression-python2-test \
---funcall py-execute-partial-expression-python2.7-test \
-est \
 --funcall py-execute-line-python-test \
 --funcall py-execute-line-python3-test \
 --funcall py-execute-line-python2-test \
@@ -1341,11 +1302,6 @@ est \
 --funcall py-execute-expression-python3-test \
 --funcall py-execute-expression-python2-test \
 --funcall py-execute-expression-python2.7-test \
---funcall py-execute-partial-expression-python-test \
---funcall py-execute-partial-expression-python-switch-test \
---funcall py-execute-partial-expression-python-noswitch-test \
---funcall py-execute-partial-expression-python-dedicated-test \
---funcall py-execute-partial-expression-python-dedicated-switch-test \
 --funcall py-execute-block-python3-test \
 --funcall py-execute-block-python2-test \
 --funcall py-execute-block-python2.7-test \
@@ -1387,7 +1343,6 @@ est \
 --funcall wrong-type-argument-lp:901541-test \
 --funcall indentation-bug-inside-docstrings-lp:899455-test \
 --funcall impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test \
---funcall py-ipython-complete-lp:927136-test \
 --funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n1-test 2 \
 --funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n2-test 2 \
 --funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n3-test 2 \
@@ -1418,7 +1373,6 @@ est \
 --funcall py-shell-invoking-ipython-lp:835151-test \
 --funcall py-execute-block-ipython-test \
 --funcall py-execute-block-or-clause-ipython-test \
---funcall py-execute-partial-expression-ipython-test \
 --funcall py-execute-line-ipython-test \
 --funcall script-buffer-appears-instead-of-python-shell-buffer-lp:957561-test \
 --funcall completion-fails-in-python-script-r989-lp:1004613-test \
@@ -1446,3 +1400,4 @@ est \
 --funcall not-that-useful-completion-lp:1003580-test \
 --funcall tqs-list-error-test \
 --funcall does-not-dedent-regions-lp-1072869-test \
+--funcall py-ipython-complete-lp:927136-test \
