@@ -1569,12 +1569,12 @@ can write into: the value (if any) of the environment variable TMPDIR,
   "py-expression assumes chars indicated probably will not compose a py-expression. ")
 ;; (setq py-not-expression-chars " #\t\r\n\f")
 
-(defvar py-partial-expression-skip-chars "^ ,\"'()[]{}:#\t\r\n\f"
+(defvar py-partial-expression-backward-chars "^ ,\"'()[]{}:#\t\r\n\f"
   "py-partial-expression assumes chars indicated possible composing a py-partial-expression, skip it. ")
-;; (setq py-partial-expression-skip-chars "^ ,\"'()[]{}:#\t\r\n\f")
+;; (setq py-partial-expression-backward-chars "^ ,\"'()[]{}:#\t\r\n\f")
 
-(defvar py-partial-expression-forward-chars "^ \"')}:#\t\r\n\f")
-;; (setq py-partial-expression-forward-chars "^ \"')}:#\t\r\n\f")
+(defvar py-partial-expression-forward-chars "^ \"')}]:#\t\r\n\f")
+;; (setq py-partial-expression-forward-chars "^ \"')}]:#\t\r\n\f")
 
 (defvar py-partial-expression-regexp "[^ ):#\t\r\n\f]"
   "py-partial-expression assumes chars indicated possible composing a py-partial-expression, when looking-at or -back. ")
@@ -3126,18 +3126,18 @@ the default. "]
 
          )
         "-"
-        ("Moves"
-
+        ("Move"
+         
          ["Beginning of top level" py-beginning-of-top-level
           :help " `py-beginning-of-top-level'
 
 Go to the very beginning of current block. "]
-
+         
          ["Beginning of block" py-beginning-of-block
           :help " `py-beginning-of-block'
 
 Go to beginning block, skip whitespace at BOL\. "]
-
+         
          ["Go to end of block" py-end-of-block]
          "-"
          ["Go to start of def or class" (py-beginning-of-def-or-class t) t]
@@ -3146,12 +3146,12 @@ Go to beginning block, skip whitespace at BOL\. "]
          ["Move to start of def" py-beginning-of-def t]
          ["Move to end of def"   py-end-of-def t]
          "-"
-
+         
          ["Beginning of clause" py-beginning-of-clause
           :help " `py-beginning-of-clause'
 
 Go to beginning clause, skip whitespace at BOL\. "]
-
+         
          ["End of clause" py-end-of-clause
           :help " `py-end-of-clause'
 
@@ -3164,7 +3164,7 @@ Go to beginning of comment at point. "]
           :help " `py-end-of-comment'
 
 Go to end of comment at point. "]
-
+         
          "-"
          ["Backward into nomenclature" py-backward-into-nomenclature
           :help " `py-backward-into-nomenclature'
@@ -3184,7 +3184,7 @@ A nomenclature is a fancy way of saying AWordWithMixedCaseNotUnderscores. "]
          ["Go to start of minor-expression" (py-beginning-of-minor-expression t) t]
          ["Move to end of minor-expression" (py-end-of-minor-expression t) t]
          "-"
-
+         
          ["Up level" py-up
           :help " `py-up'
 Go to beginning one level above of compound statement or definition at point. "]
@@ -3192,17 +3192,46 @@ Go to beginning one level above of compound statement or definition at point. "]
          ["Down level" py-down
           :help " `py-down'
 Go to beginning one level below of compound statement or definition at point. "]
-
+         
          )
         "-"
-
+        ("Copy "
+         ["Copy statement" py-copy-statement
+          :help "`py-copy-statement'
+Copy statement at point"]
+         ["Copy clause" py-copy-clause
+          :help "`py-copy-clause'
+Copy innermost compound statement at point"]
+         
+         ["Copy block" py-copy-block
+          :help "`py-copy-block'
+Copy innermost compound statement at point"]
+         
+         ["Copy def" py-copy-def
+          :help "`py-copy-def'
+Copy innermost definition at point"]
+         ["Copy expression" py-copy-expression
+          :help "`py-copy-expression'
+Copy expression at point"]
+         ["Copy partial expression" py-copy-partial-expression
+          :help "`py-copy-partial-expression'
+\".\" operators delimit a partial-expression expression on it's level"]
+         ["Copy class" py-copy-class
+          :help "`py-copy-class'
+Copy innermost definition at point"]
+         
+         ["Copy Def-or-Class" py-copy-def-or-class
+          :help "`py-copy-def-or-class'
+Copy innermost definition at point"])
+        "-"
+        
         ["Execute region" py-execute-region
          :help " `py-execute-region'
 
 Send the region to a Python interpreter\.
 
 When called with C-u followed by a number different from 4 and 1, user is prompted to specify a shell\. This might be the name of a system-wide shell or include the path to a virtual environment\. "]
-
+        
         ["Execute buffer" py-execute-buffer
          :help " `py-execute-buffer'
 
@@ -4779,34 +4808,7 @@ Returns value of `smart-operator-mode'\. . "]
         ("More... "
          ("Edit commands "
 
-          ("Copy "
-           ["Copy statement" py-copy-statement
-            :help "`py-copy-statement'
-Copy statement at point"]
-           ["Copy clause" py-copy-clause
-            :help "`py-copy-clause'
-Copy innermost compound statement at point"]
-
-           ["Copy block" py-copy-block
-            :help "`py-copy-block'
-Copy innermost compound statement at point"]
-
-           ["Copy def" py-copy-def
-            :help "`py-copy-def'
-Copy innermost definition at point"]
-           ["Copy expression" py-copy-expression
-            :help "`py-copy-expression'
-Copy expression at point"]
-           ["Copy partial expression" py-copy-partial-expression
-            :help "`py-copy-partial-expression'
-\".\" operators delimit a partial-expression expression on it's level"]
-           ["Copy class" py-copy-class
-            :help "`py-copy-class'
-Copy innermost definition at point"]
-
-           ["Copy Def-or-Class" py-copy-def-or-class
-            :help "`py-copy-def-or-class'
-Copy innermost definition at point"])
+          
           ("Kill "
 
            ["Kill statement" py-kill-statement

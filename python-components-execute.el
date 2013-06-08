@@ -803,7 +803,8 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
 (defun py-execute-base (start end &optional pyshellname dedicated switch nostars sepchar split file)
   "Select the handler. "
   (cond (;; enforce proceeding as python-mode.el v5
-         python-mode-v5-behavior-p (py-execute-python-mode-v5 start end pyshellname dedicated switch nostars sepchar split file))
+         python-mode-v5-behavior-p
+         (py-execute-python-mode-v5 start end pyshellname))
         (py-use-execute-ge24-3-p
          (py-execute-ge24.3 start end pyshellname dedicated switch nostars sepchar split file))
         ;; No need for a temporary file than
@@ -1014,7 +1015,7 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch) "
                       (set-buffer
                        (or (get-file-buffer filename)
                            (get-file-buffer (find-file-noselect filename))))))
-                (when (buffer-file-name) (buffer-file-name))))
+                (buffer-file-name)))
          (beg (point-min))
          (end (point-max)))
     (py-execute-region beg end shell dedicated switch nostars sepchar split file)))
@@ -1425,14 +1426,14 @@ Returns position where output starts. "
 
 (defun py-jump-to-exception (file line)
   "Jump to the Python code in FILE at LINE."
-  (let ((buffer (cond ((string-equal file "<stdin>")
+  (let ((buffer (cond ((ignore-errors (string-equal file "<stdin>"))
                        (if (consp py-exception-buffer)
                            (cdr py-exception-buffer)
                          py-exception-buffer))
                       ((and (consp py-exception-buffer)
                             (string-equal file (car py-exception-buffer)))
                        (cdr py-exception-buffer))
-                      ((py-safe (find-file-noselect file)))
+                      ((ignore-errors (find-file-noselect file)))
                       ;; could not figure out what file the exception
                       ;; is pointing to, so prompt for it
                       (t (find-file (read-file-name "Exception file: "

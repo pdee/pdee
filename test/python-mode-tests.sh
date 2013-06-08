@@ -1009,7 +1009,8 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-not-expression-regexp) nil \"py-not-expression-regexp not a variable\")" \
 -eval "(assert (boundp 'py-not-expression-chars) nil \"py-not-expression-chars not a variable\")" \
 -eval "(assert (boundp 'py-not-expression-chars) nil \"py-not-expression-chars not a variable\")" \
--eval "(assert (boundp 'py-partial-expression-skip-chars) nil \"py-partial-expression-skip-chars not a variable\")" \
+-eval "(assert (boundp 'py-partial-expression-forward-chars) nil \"py-partial-expression-forward-chars not a variable\")" \
+-eval "(assert (boundp 'py-partial-expression-backward-chars) nil \"py-partial-expression-backward-chars not a variable\")" \
 -eval "(assert (boundp 'py-partial-expression-regexp) nil \"py-partial-expression-regexp not a variable\")" \
 -eval "(assert (boundp 'py-not-partial-expression-regexp) nil \"py-not-partial-expression-regexp not a variable\")" \
 -eval "(assert (boundp 'py-operator-regexp) nil \"py-operator-regexp not a variable\")" \
@@ -1108,7 +1109,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-execute-line-python2.7-dedicated-switch-test \
 --funcall py-execute-expression-python-test \
 --funcall infinite-loop-on-lp-1156426-test \
---funcall py-smart-operator-test \
 --funcall python-mode-very-slow-lp-1107037-test \
 --funcall cascading-indent-lp-1101962-test \
 --funcall line-after-colon-with-inline-comment-lp-1109946-test \
@@ -1401,3 +1401,4 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall tqs-list-error-test \
 --funcall does-not-dedent-regions-lp-1072869-test \
 --funcall py-ipython-complete-lp:927136-test \
+--funcall py-smart-operator-test \

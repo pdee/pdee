@@ -31,17 +31,15 @@
                   (setq beg (funcall begcheckform))
                   beg
                 (funcall begform)))
-    (when py-mark-decorators
-      (save-excursion
-        (when (setq erg (py-beginning-of-decorator))
-          (setq beg erg))))
-    (setq end (funcall endform))
+    (and py-mark-decorators
+         (and (setq erg (py-beginning-of-decorator))
+              (setq beg erg)))
     (push-mark beg t t)
+    (setq end (funcall endform))
     (unless end (when (< beg (point))
                   (setq end (point))))
     (when (interactive-p) (message "%s %s" beg end))
     (cons beg end)))
-
 
 (defun py-mark-paragraph ()
   "Mark paragraph at point.
@@ -95,7 +93,7 @@ Returns beginning and end positions of marked area, a cons. "
   (interactive "P")
   (let ((py-mark-decorators (or arg py-mark-decorators))
         erg)
-    (py-mark-base "def" py-mark-decorators)
+    (setq erg (py-mark-base "def" py-mark-decorators))
     (exchange-point-and-mark)
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
@@ -351,7 +349,6 @@ See also `py-down-def': down from current definition to next beginning of def be
   (when (interactive-p) (message "%s" erg))
   erg))
 
-
 (defun py-kill-def ()
   "Delete def  at point.
 
@@ -415,7 +412,6 @@ Returns beginning and end positions of marked area, a cons. "
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
-
 (defun py-kill-class ()
   "Delete class  at point.
 
@@ -464,7 +460,6 @@ Returns beginning and end positions of marked area, a cons. "
     (exchange-point-and-mark)
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
-
 
 (defun py-kill-def-or-class ()
   "Delete def-or-class  at point.
