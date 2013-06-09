@@ -569,7 +569,7 @@
     (py-bug-tests-intern 'py-end-of-block-or-clause-base arg teststring)))
 
 (defun py-end-of-block-or-clause-base ()
-  (py-beginning-of-block-or-clause)
+  (goto-char 602)
   (py-end-of-block-or-clause)
   (assert (eq (point) 626) nil "py-end-of-block-or-clause-test failed"))
 
@@ -1535,7 +1535,7 @@ def foo()
   (goto-char 127)
   (assert (eq 8 (py-compute-indentation)) nil "py-compute-indentation-test #2 failed"))
 
-(defun py-end-of-statement-test (&optional arg)
+(defun py-end-of-statement-test-1 (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/python
 # -*- coding: utf-8 -*-
@@ -1544,19 +1544,35 @@ c = Cat()
 c.hello() #causes error, but emacs tracking fails
 import sys, os; os.remove('do/something/nasty') # lp:1025000
 "))
-    (py-bug-tests-intern 'py-end-of-statement-base arg teststring)))
+    (py-bug-tests-intern 'py-end-of-statement-1-base arg teststring)))
 
-(defun py-end-of-statement-base ()
+(defun py-end-of-statement-1-base ()
   (goto-char (point-min))
   (py-end-of-statement)
-  (assert (eq 55 (point)) nil "py-end-of-statement-test #1 failed")
+  (assert (eq 55 (point)) nil "py-end-of-statement-test-1 #1 failed")
   (goto-char 65)
   (py-end-of-statement)
-  (assert (eq 75 (point)) nil "py-end-of-statement-test #2 failed")
+  (assert (eq 75 (point)) nil "py-end-of-statement-test-1 #2 failed")
   (goto-char 99)
   (py-end-of-statement)
-  (assert (eq 163 (point)) nil "py-end-of-statement-test #3 failed")
-  )
+  (assert (eq 163 (point)) nil "py-end-of-statement-test-1 #3 failed"))
+
+(defun py-end-of-statement-test-2 (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/python
+# -*- coding: utf-8 -*-
+pdb.set_trace()
+# r'\\fB\$\{\\f([BI])([^}]+)\\f\1([^\\]+)\\fB}(.+)$')
+result = w_behandlung(aus, i, line, klammer1=w.group(1), klammer2=w.group(2), klammer3=w.group(3), klammer4=w.group(4))
+aus.write(result + \"\\n\")
+"))
+    (py-bug-tests-intern 'py-end-of-statement-2-base arg teststring)))
+
+(defun py-end-of-statement-2-base ()
+  (goto-char 59)
+  (py-end-of-statement)
+  (assert (eq 225 (point)) nil "py-end-of-statement-test-2 #1 failed"))
+
 
 (defun key-binding-tests (&optional arg)
   (interactive "p")
@@ -1981,21 +1997,21 @@ def fooBaz( bar ):  # version 2003/9/7
 
 (defun py-guess-indent-offset-base ()
   (goto-char 49)
-  (assert (eq 2 (py-guess-indent-offset)) nil "py-guess-indent-offset-test #1 failed")
-  (message "%s" "py-guess-indent-offset-test #1  done")
+  (assert (eq 4 (py-guess-indent-offset)) nil "py-guess-indent-offset-test #1 failed")
+  (message "%s" "py-guess-indent-offset-test #1 done")
   (goto-char 168)
   (assert (eq 2 (py-guess-indent-offset)) nil "py-guess-indent-offset-test #2 failed")
-  (message "%s" "py-guess-indent-offset-test #2  done")
+  (message "%s" "py-guess-indent-offset-test #2 done")
   (goto-char 251)
   (assert (eq 4 (py-guess-indent-offset)) nil "py-guess-indent-offset-test #3 failed")
-  (message "%s" "py-guess-indent-offset-test #3  done")
+  (message "%s" "py-guess-indent-offset-test #3 done")
   (goto-char 280)
   (assert (eq 4 (py-guess-indent-offset)) nil "py-guess-indent-offset-test #4 failed")
-  (message "%s" "py-guess-indent-offset-test #4  done")
+  (message "%s" "py-guess-indent-offset-test #4 done")
   (goto-char 298)
   ;; indent might be eithe 4 or 2
-  (assert (eq 2 (py-guess-indent-offset)) nil "py-guess-indent-offset-test #5 failed"))
-  (message "%s" "py-guess-indent-offset-test #5  done")
+  (assert (eq 2 (py-guess-indent-offset)) nil "py-guess-indent-offset-test #5 failed")
+  (message "%s" "py-guess-indent-offset-test #5 done"))
 
 (defun autopair-mode-test (&optional arg)
   (interactive "p")
@@ -2177,7 +2193,7 @@ asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf
 
 (defun py-down-statement-base ()
     (goto-char (point-min))
-    (assert (eq 146 (py-down-statement)) nil "py-down-statement-test failed"))
+    (assert (eq 31 (py-down-statement)) nil "py-down-statement-test failed"))
   (message "%s" "py-down-statement-test  done")
 
 (defun py-nested-block-or-clause-test (&optional arg)

@@ -342,16 +342,11 @@ http://docs.python.org/reference/compound_stmts.html
           (done done)
           erg)
       (cond
-       ((or (empty-line-p)(nth 8 pps))
-        ;; when travelling large sections of empty or comment lines
-        ;; recursive calls might run into `max-specpdl-size' error
-        (while (and (not (bobp)) (or (empty-line-p) (setq this (nth 8 (syntax-ppss)))))
-          (if (empty-line-p)
-              (skip-chars-backward " \t\r\n\f")
-            (goto-char this)
-            (skip-chars-backward " \t\r\n\f")))
+       ((empty-line-p)
+        (skip-chars-backward " \t\r\n\f")
         (py-beginning-of-statement orig done))
        ((nth 8 pps)
+        (and (nth 3 pps) (setq done t))
         (goto-char (nth 8 pps))
         (py-beginning-of-statement orig done))
        ((nth 1 pps)
@@ -363,33 +358,37 @@ http://docs.python.org/reference/compound_stmts.html
         (back-to-indentation)
         (setq done t)
         (py-beginning-of-statement orig done))
-       ((looking-at py-string-delim-re)
-        (when (< 0 (abs (skip-chars-backward " \t\r\n\f")))
-          (setq done t))
+       ((and (looking-at "[ \t]*#")(looking-back "^[ \t]*"))
+        (forward-comment -1)
+        (while (and (not (bobp)) (looking-at "[ \t]*#")(looking-back "^[ \t]*"))
+          (forward-comment -1))
+        (unless (bobp)
+          (py-beginning-of-statement orig done)))
+       ((looking-at "[ \t]*#")
+        (skip-chars-backward (concat "^" comment-start) (line-beginning-position))
         (back-to-indentation)
-        (py-beginning-of-statement orig done))
-       ((and (eq (point) orig)(looking-back ";[ \t]*"))
-        (goto-char (match-beginning 0))
-        (skip-chars-backward ";")
-        (py-beginning-of-statement orig done))
-       ((and (not (eq (point) orig))(looking-back ";[ \t]*"))
+        (unless (bobp)
+          (py-beginning-of-statement orig done)))
+       ((looking-at py-string-delim-re)
+        (unless done
+          (when (< 0 (abs (skip-chars-backward " \t\r\n\f")))
+            (setq done t))
+          (back-to-indentation)
+          (py-beginning-of-statement orig done)))
+       ((and (not (eq (point) orig))(looking-back "^[ \t]*"))
         (setq erg (point)))
        ((and (not done) (not (eq 0 (skip-chars-backward " \t\r\n\f"))))
         ;; (setq done t)
         (py-beginning-of-statement orig done))
        ((not (eq (current-column) (current-indentation)))
-        (if (< 0 (abs (skip-chars-backward "^;\t\r\n\f")))
+        (if (< 0 (abs (skip-chars-backward "^\t\r\n\f")))
             (progn
               (setq done t)
               (back-to-indentation)
               (py-beginning-of-statement orig done))
           (back-to-indentation)
           (setq done t)
-          (py-beginning-of-statement orig done)))
-       ((looking-at "[ \t]*#")
-        (skip-chars-backward " \t\r\n\f")
-        (setq done t)
-        (py-beginning-of-statement orig done)))
+          (py-beginning-of-statement orig done))))
       (unless (and (looking-at "[ \t]*#") (looking-back "^[ \t]*"))
         (when (< (point) orig)(setq erg (point))))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
@@ -482,11 +481,14 @@ To go just beyond the final line of the current statement, use `py-down-statemen
           (py-end-of-statement orig done origline)))
        ((py-current-line-backslashed-p)
         (end-of-line)
-        (py-handle-eol)
-        (when (and (eq (char-before (point)) ?\\ )
-                   (py-escaped))
-          (forward-line 1))
-        (py-end-of-statement orig done origline))
+        (skip-chars-backward " \t\r\n\f" (line-beginning-position))
+        (while (and (eq (char-before (point)) ?\\ )
+                    (py-escaped))
+          (forward-line 1)
+          (end-of-line) 
+          (skip-chars-backward " \t\r\n\f" (line-beginning-position)))
+        (unless (eobp)
+          (py-end-of-statement orig done origline)))
        ((and (not done)(looking-at "[ \t]*#"))
         (py-eos-handle-comment-start)
         (py-end-of-statement orig done origline))
@@ -510,6 +512,8 @@ To go just beyond the final line of the current statement, use `py-down-statemen
         (back-to-indentation)
         (py-end-of-statement orig done origline))
        ((and (not done)
+             (or (eq (current-column) (current-indentation))
+                 (eq origline (py-count-lines)))
              (< 0 (abs (skip-chars-forward (concat "^" comment-start) (line-end-position)))))
         (py-handle-eol)
         ;; with trailing whitespaces at orig
@@ -519,18 +523,13 @@ To go just beyond the final line of the current statement, use `py-down-statemen
               (py-end-of-statement orig done origline)
             (forward-line 1)
             (py-handle-eol)))
-        (setq done t)
         (py-end-of-statement orig done origline))
-       ((and (not done) (< 0 (skip-chars-forward " \t\r\n\f")))
+       ((and (not done)
+             (or (eq (current-column) (current-indentation))
+                 (eq origline (py-count-lines)))
+             (< 0 (skip-chars-forward " \t\r\n\f")))
         (when (looking-at "[ \t]*#")
           (py-eos-handle-comment-start))
-        (py-end-of-statement orig done origline))
-       ((py-current-line-backslashed-p)
-        (skip-chars-forward " \t\r\n\f")
-        (skip-chars-forward (concat "^" comment-start) (line-end-position))
-        (py-beginning-of-comment)
-        (skip-chars-backward " " (line-beginning-position))
-        (setq done t)
         (py-end-of-statement orig done origline))
        ((and (not done) (eq (point) orig)(looking-at ";"))
         (skip-chars-forward ";" (line-end-position))
@@ -582,7 +581,7 @@ To go just beyond the final line of the current statement, use `py-down-statemen
 
 ;; (defun py-mark-paragraph ()
 ;;   "Mark paragraph at point.
-;; 
+;;
 ;; Returns beginning and end positions of marked area, a cons. "
 ;;   (interactive)
 ;;   (let (erg)
@@ -590,10 +589,10 @@ To go just beyond the final line of the current statement, use `py-down-statemen
 ;;     (exchange-point-and-mark)
 ;;     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
 ;;     erg))
-;; 
+;;
 ;; (defun py-mark-block ()
 ;;   "Mark block at point.
-;; 
+;;
 ;; Returns beginning and end positions of marked area, a cons. "
 ;;   (interactive)
 ;;   (let (erg)
@@ -601,10 +600,10 @@ To go just beyond the final line of the current statement, use `py-down-statemen
 ;;     (exchange-point-and-mark)
 ;;     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
 ;;     erg))
-;; 
+;;
 ;; (defun py-mark-clause ()
 ;;   "Mark clause at point.
-;; 
+;;
 ;; Returns beginning and end positions of marked area, a cons. "
 ;;   (interactive)
 ;;   (let (erg)
@@ -612,10 +611,10 @@ To go just beyond the final line of the current statement, use `py-down-statemen
 ;;     (exchange-point-and-mark)
 ;;     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
 ;;     erg))
-;; 
+;;
 ;; (defun py-mark-block-or-clause ()
 ;;   "Mark block-or-clause at point.
-;; 
+;;
 ;; Returns beginning and end positions of marked area, a cons. "
 ;;   (interactive)
 ;;   (let (erg)
@@ -623,10 +622,10 @@ To go just beyond the final line of the current statement, use `py-down-statemen
 ;;     (exchange-point-and-mark)
 ;;     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
 ;;     erg))
-;; 
+;;
 ;; (defun py-mark-class (&optional arg)
 ;;   "Mark class at point.
-;; 
+;;
 ;; With \\[universal argument] or `py-mark-decorators' set to `t', decorators are marked too.
 ;; Returns beginning and end positions of marked area, a cons. "
 ;;   (interactive "P")
@@ -636,10 +635,10 @@ To go just beyond the final line of the current statement, use `py-down-statemen
 ;;     (exchange-point-and-mark)
 ;;     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
 ;;     erg))
-;; 
+;;
 ;; (defun py-mark-def-or-class (&optional arg)
 ;;   "Mark def-or-class at point.
-;; 
+;;
 ;; With \\[universal argument] or `py-mark-decorators' set to `t', decorators are marked too.
 ;; Returns beginning and end positions of marked area, a cons. "
 ;;   (interactive "P")
@@ -649,10 +648,10 @@ To go just beyond the final line of the current statement, use `py-down-statemen
 ;;     (exchange-point-and-mark)
 ;;     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
 ;;     erg))
-;; 
+;;
 ;; (defun py-mark-line ()
 ;;   "Mark line at point.
-;; 
+;;
 ;; Returns beginning and end positions of marked area, a cons. "
 ;;   (interactive)
 ;;   (let (erg)
@@ -660,10 +659,10 @@ To go just beyond the final line of the current statement, use `py-down-statemen
 ;;     (exchange-point-and-mark)
 ;;     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
 ;;     erg))
-;; 
+;;
 ;; (defun py-mark-statement ()
 ;;   "Mark statement at point.
-;; 
+;;
 ;; Returns beginning and end positions of marked area, a cons. "
 ;;   (interactive)
 ;;   (let (erg)
@@ -671,10 +670,10 @@ To go just beyond the final line of the current statement, use `py-down-statemen
 ;;     (exchange-point-and-mark)
 ;;     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
 ;;     erg))
-;; 
+;;
 ;; (defun py-mark-expression ()
 ;;   "Mark expression at point.
-;; 
+;;
 ;; Returns beginning and end positions of marked area, a cons. "
 ;;   (interactive)
 ;;   (let (erg)
@@ -682,10 +681,10 @@ To go just beyond the final line of the current statement, use `py-down-statemen
 ;;     (exchange-point-and-mark)
 ;;     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
 ;;     erg))
-;; 
+;;
 ;; (defun py-mark-partial-expression ()
 ;;   "Mark partial-expression at point.
-;; 
+;;
 ;; Returns beginning and end positions of marked area, a cons. "
 ;;   (interactive)
 ;;   (let (erg)
@@ -1305,7 +1304,7 @@ With universal arg \C-u insert a `%'. "
 Takes a list, INDENT and START position. "
   (unless (eobp)
     (let ((orig (or orig (point)))
-          last else)
+          last)
       (while (and (setq last (point))(not (eobp))(py-end-of-statement)
                   (save-excursion (or (<= indent (progn  (py-beginning-of-statement)(current-indentation)))(eq last (line-beginning-position))))
                   (py-end-of-statement-p)))

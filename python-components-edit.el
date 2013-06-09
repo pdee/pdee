@@ -303,109 +303,186 @@ Returns value of `indent-tabs-mode' switched to. "
 (defun py-guessed-sanity-check (guessed)
   (and (>= guessed 2)(<= guessed 8)(eq 0 (% guessed 2))))
 
-(defun py-guess-indent-offset (&optional global orig origline)
-  "Guess a value for, and change, `py-indent-offset'.
+(defun py-guess-indent-final (indents orig)
+  "Calculate and do sanity-check. "
+  (let* ((first (car indents))
+         (second (cadr indents))
+         (erg (if (and first second)
+                  (if (< second first)
+                      ;; (< (point) orig)
+                      (- first second)
+                    (- second first))
+                (default-value 'py-indent-offset))))
+    (setq erg (and (py-guessed-sanity-check erg) erg))
+    erg))
 
-By default, make a buffer-local copy of `py-indent-offset' with the
-new value.
-With optional argument GLOBAL change the global value of `py-indent-offset'.
 
-Returns `py-indent-offset'"
-  (interactive "P")
+(defun py-guess-indent-forward ()
+  "Called when moving to end of a form and `py-smart-indentation' is on. "
+  (interactive) 
+  (let* ((first (if
+                    (py-beginning-of-statement-p)
+                    (current-indentation)
+                  (progn
+                    (py-end-of-statement)
+                    (py-beginning-of-statement)
+                    (current-indentation))))
+         (second (if (or (looking-at py-extended-block-or-clause-re)(eq 0 first))
+                     (progn
+                       (py-end-of-statement)
+                       (py-end-of-statement)
+                       (py-beginning-of-statement)
+                       (current-indentation))
+                   ;; when not starting from block, look above
+                   (while (and (re-search-backward py-extended-block-or-clause-re nil 'movet 1)
+                               (or (>= (current-indentation) first)
+                                   (nth 8 (syntax-ppss)))))
+                   (current-indentation))))
+    (list first second)))
+
+(defun py-guess-indent-backward ()
+  "Called when moving to beginning of a form and `py-smart-indentation' is on. "
+  (let* ((cui (current-indentation))
+         (indent (if (< 0 cui) cui 999))
+         (pos (progn (while (and (re-search-backward py-extended-block-or-clause-re nil 'movet 1)
+                                 (or (>= (current-indentation) indent)
+                                     (nth 8 (syntax-ppss)))))
+                     (unless (bobp) (point))))
+         (first (and pos (current-indentation)))
+         (second (and pos (py-end-of-statement) (py-end-of-statement) (py-beginning-of-statement)(current-indentation))))
+    (list first second)))
+
+(defun py-guess-indent-offset (&optional direction)
+  "Guess `py-indent-offset'.
+
+Set local value of `py-indent-offset', return it
+
+Might change local value of `py-indent-offset' only when called
+downwards from beginning of block followed by a statement. Otherwise default-value is returned.
+"
+  (interactive)
   (save-excursion
-    (let* ((orig (or orig (point)))
-           (origline (or origline (py-count-lines)))
-           last down done firstindent secondindent
-           (count 0)
-           guessed)
-      (back-to-indentation)
-      (when (looking-at py-block-closing-keywords-re)
-        (setq count (1+ count)))
-      (skip-chars-backward " \t\r\n\f")
-      (back-to-indentation)
-      (when (looking-at py-block-closing-keywords-re)
-        (setq count (1+ count)))
-      (when (< 0 count)
-        (while (and (< 0 count)(re-search-backward py-block-re nil t 1)
-                    (or
-                     (nth 8 (parse-partial-sexp (point-min) (point)))
-                     (progn (setq count (1- count)) t))))
-        (setq firstindent (current-indentation)))
-      (unless firstindent
-        (setq firstindent
-              (cond ((and (py-beginning-of-statement-p) (looking-at py-extended-block-or-clause-re))
-                     (current-indentation))
-                    ((and (py-beginning-of-statement-p)(looking-at py-block-closing-keywords-re))
-                     (while (and (re-search-backward py-extended-block-or-clause-re nil t 1)(nth 8 (syntax-ppss))))
-                     ;; (py-beginning-of-statement)
-                     (when (py-beginning-of-statement-p) (current-indentation)))
-                    ((and (py-beginning-of-statement)(looking-at py-extended-block-or-clause-re))
-                     (current-indentation))
-                    (t (while (and (setq last (py-beginning-of-statement))(not (looking-at py-extended-block-or-clause-re))))
-                       (if last
-                           (progn
-                             (setq last (point))
-                             (setq down t)
-                             (current-indentation))
-                         (if (and (goto-char orig)
-                                  (py-end-of-statement)
-                                  (py-end-of-statement)
-                                  (py-beginning-of-statement)
-                                  (looking-at py-extended-block-or-clause-re))
-
-                             (prog1
-                                 (current-indentation)
-                               (setq last (point))
-                               (goto-char orig))
-                           (while (and (setq last (py-down-statement))(not (looking-at py-extended-block-or-clause-re)))
-                             (if last
-                                 (progn (setq last (point))
-                                        (setq down t)
-                                        (current-column))
-                               ;; if nothing suitable around, us default
-                               (setq done t)
-                               (default-value 'py-indent-offset)))))))))
-      (setq secondindent
-            (unless done
-              (if (and firstindent (numberp firstindent))
-                  ;; let's look if inside a clause
-                  (cond ((and
-                          ;; (goto-char orig)
-                          (not (eobp))(py-end-of-statement)(py-end-of-statement)(setq last (point))
-                          (save-excursion (< firstindent (progn (py-beginning-of-statement)(current-indentation))))
-                          (py-end-of-statement-p))
-                         (py-beginning-of-statement) (current-indentation))
-                        (t (if (progn (setq orig (point)) (while (and (py-beginning-of-statement)(>= firstindent (current-indentation)) (setq last (point)) (not (looking-at py-extended-block-or-clause-re)))) last)
-                               (current-indentation)
-                             (goto-char orig)
-                             (while (and (not (eobp))(py-end-of-statement)(setq last (point))
-                                         (save-excursion (or (>= firstindent (progn (py-beginning-of-statement)(current-indentation)))(eq last (line-beginning-position))))
-                                         (py-end-of-statement-p)))
-                             (when last (py-beginning-of-statement) (current-indentation))))))))
-      (unless (or done secondindent)
-        (setq secondindent
-              (when (and (py-end-of-statement)
-                         (py-end-of-statement)
-                         (py-beginning-of-statement))
-                (current-indentation))))
-      (when (and secondindent (numberp secondindent) (numberp firstindent))
-        (when (eq 0 (abs (- secondindent firstindent)))
-          (when (if (py-beginning-of-statement) (< (current-indentation) secondindent))
-            (setq secondindent (current-indentation))))
-        (setq guessed
-              (abs (- secondindent firstindent)))
-        (when (and (eq 0 guessed)(not (eq 0 secondindent)))
-          (setq guessed secondindent)))
-      (if (and guessed (py-guessed-sanity-check guessed))
-          (setq py-indent-offset guessed)
-        (setq py-indent-offset (default-value 'py-indent-offset)))
-      (funcall (if global 'kill-local-variable 'make-local-variable)
-               'py-indent-offset)
-      (when (and py-verbose-p (interactive-p))
-        (message "%s value of py-indent-offset:  %d"
-                 (if global "Global" "Local")
-                 py-indent-offset))
+    (let* ((orig (point))
+           (indents
+            (cond (direction
+                   (if (eq 'forward direction)
+                       (py-guess-indent-forward)
+                     (py-guess-indent-backward)))
+                  ;; guess some usable indent is above current position
+                  ((eq 0 (current-indentation))
+                   (py-guess-indent-forward))
+                  (t (py-guess-indent-backward))))
+           (erg (py-guess-indent-final indents orig)))
+      (if erg (setq py-indent-offset erg)
+        (setq py-indent-offset
+              (default-value 'py-indent-offset))) 
+      (when (interactive-p) (message "%s" py-indent-offset))
       py-indent-offset)))
+
+;; (defun py-guess-indent-offset (&optional global orig origline)
+;;   "Guess a value for, and change, `py-indent-offset'.
+;;
+;; By default, make a buffer-local copy of `py-indent-offset' with the
+;; new value.
+;; With optional argument GLOBAL change the global value of `py-indent-offset'.
+;;
+;; Returns `py-indent-offset'"
+;;   (interactive "P")
+;;   (save-excursion
+;;     (let* ((orig (or orig (point)))
+;;            (origline (or origline (py-count-lines)))
+;;            last down done firstindent secondindent
+;;            (count 0)
+;;            guessed)
+;;       (back-to-indentation)
+;;       (when (looking-at py-block-closing-keywords-re)
+;;         (setq count (1+ count)))
+;;       (skip-chars-backward " \t\r\n\f")
+;;       (back-to-indentation)
+;;       (when (looking-at py-block-closing-keywords-re)
+;;         (setq count (1+ count)))
+;;       (when (< 0 count)
+;;         (while (and (< 0 count)(re-search-backward py-block-re nil t 1)
+;;                     (or
+;;                      (nth 8 (parse-partial-sexp (point-min) (point)))
+;;                      (progn (setq count (1- count)) t))))
+;;         (setq firstindent (current-indentation)))
+;;       (unless firstindent
+;;         (setq firstindent
+;;               (cond ((and (py-beginning-of-statement-p) (looking-at py-extended-block-or-clause-re))
+;;                      (current-indentation))
+;;                     ((and (py-beginning-of-statement-p)(looking-at py-block-closing-keywords-re))
+;;                      (while (and (re-search-backward py-extended-block-or-clause-re nil t 1)(nth 8 (syntax-ppss))))
+;;                      ;; (py-beginning-of-statement)
+;;                      (when (py-beginning-of-statement-p) (current-indentation)))
+;;                     ((and (py-beginning-of-statement)(looking-at py-extended-block-or-clause-re))
+;;                      (current-indentation))
+;;                     (t (while (and (setq last (py-beginning-of-statement))(not (looking-at py-extended-block-or-clause-re))))
+;;                        (if last
+;;                            (progn
+;;                              (setq last (point))
+;;                              (setq down t)
+;;                              (current-indentation))
+;;                          (if (and (goto-char orig)
+;;                                   (py-end-of-statement)
+;;                                   (py-end-of-statement)
+;;                                   (py-beginning-of-statement)
+;;                                   (looking-at py-extended-block-or-clause-re))
+;;
+;;                              (prog1
+;;                                  (current-indentation)
+;;                                (setq last (point))
+;;                                (goto-char orig))
+;;                            (while (and (setq last (py-down-statement))(not (looking-at py-extended-block-or-clause-re)))
+;;                              (if last
+;;                                  (progn (setq last (point))
+;;                                         (setq down t)
+;;                                         (current-column))
+;;                                ;; if nothing suitable around, us default
+;;                                (setq done t)
+;;                                (default-value 'py-indent-offset)))))))))
+;;       (setq secondindent
+;;             (unless done
+;;               (if (and firstindent (numberp firstindent))
+;;                   ;; let's look if inside a clause
+;;                   (cond ((and
+;;                           ;; (goto-char orig)
+;;                           (not (eobp))(py-end-of-statement)(py-end-of-statement)(setq last (point))
+;;                           (save-excursion (< firstindent (progn (py-beginning-of-statement)(current-indentation))))
+;;                           (py-end-of-statement-p))
+;;                          (py-beginning-of-statement) (current-indentation))
+;;                         (t (if (progn (setq orig (point)) (while (and (py-beginning-of-statement)(>= firstindent (current-indentation)) (setq last (point)) (not (looking-at py-extended-block-or-clause-re)))) last)
+;;                                (current-indentation)
+;;                              (goto-char orig)
+;;                              (while (and (not (eobp))(py-end-of-statement)(setq last (point))
+;;                                          (save-excursion (or (>= firstindent (progn (py-beginning-of-statement)(current-indentation)))(eq last (line-beginning-position))))
+;;                                          (py-end-of-statement-p)))
+;;                              (when last (py-beginning-of-statement) (current-indentation))))))))
+;;       (unless (or done secondindent)
+;;         (setq secondindent
+;;               (when (and (py-end-of-statement)
+;;                          (py-end-of-statement)
+;;                          (py-beginning-of-statement))
+;;                 (current-indentation))))
+;;       (when (and secondindent (numberp secondindent) (numberp firstindent))
+;;         (when (eq 0 (abs (- secondindent firstindent)))
+;;           (when (if (py-beginning-of-statement) (< (current-indentation) secondindent))
+;;             (setq secondindent (current-indentation))))
+;;         (setq guessed
+;;               (abs (- secondindent firstindent)))
+;;         (when (and (eq 0 guessed)(not (eq 0 secondindent)))
+;;           (setq guessed secondindent)))
+;;       (if (and guessed (py-guessed-sanity-check guessed))
+;;           (setq py-indent-offset guessed)
+;;         (setq py-indent-offset (default-value 'py-indent-offset)))
+;;       (funcall (if global 'kill-local-variable 'make-local-variable)
+;;                'py-indent-offset)
+;;       (when (and py-verbose-p (interactive-p))
+;;         (message "%s value of py-indent-offset:  %d"
+;;                  (if global "Global" "Local")
+;;                  py-indent-offset))
+;;       py-indent-offset))
+  ;; )
 
 (defun py-comment-indent-function ()
   "Python version of `comment-indent-function'."
@@ -1086,7 +1163,6 @@ Returns the string inserted. "
           (end (py-end-of-def-or-class-position)))
       (and beg end (py--delete-comments-intern beg end)))))
 
-
 (defun py-delete-comments-in-class ()
   "Delete all commented lines in class at point"
   (interactive "*")
@@ -1120,5 +1196,3 @@ Returns the string inserted. "
         (forward-line 1)))))
 
 (provide 'python-components-edit)
-
-;;; python-components-edit.el ends here

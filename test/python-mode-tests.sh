@@ -1082,6 +1082,8 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-font-lock-keywords) nil \"py-font-lock-keywords not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall py-end-of-statement-test-1 \
+--funcall py-end-of-statement-test-2 \
 --funcall nested-if-test-1 \
 --funcall from-within-py-shell-call-another-instance-lp-1169687-test \
 --funcall py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test \
@@ -1129,7 +1131,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall spuriously-indents-whole-line-while-making-some-portion-inline-comment-lp-1080973-test \
 --funcall fill-paragraph-in-a-comment-does-not-stop-at-empty-comment-lines-lp-1077139-test \
 --funcall fails-to-indent-abs-wrong-type-argument-lp-1075673-test \
---funcall py-down-statement-test \
 --funcall several-new-bugs-with-paragraph-filling-lp-1066489-test \
 --funcall py-indent-after-assigment-test \
 --funcall incorrect-indentation-of-one-line-functions-lp-1067633-test \
@@ -1152,7 +1153,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128.py-test \
 --funcall empty-triple-quote-lp:1009318-test \
 --funcall spurious-trailing-whitespace-lp-1008679-test \
---funcall py-end-of-statement-test \
 --funcall shebang-interpreter-not-detected-lp:1001327-test \
 --funcall new-problem-with-py-temp-directory-lp:965762-test \
 --funcall new-problem-with-py-temp-directory-lp:965762-test \
@@ -1167,10 +1167,8 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall nested-indents-lp:328775-test \
 --funcall imenu-matches-in-docstring-lp:436285-test \
 --funcall exceptions-not-highlighted-lp:473525-test \
---funcall previous-statement-lp:637955-test \
 --funcall inbound-indentation-multiline-assignment-lp:629916-test \
 --funcall indentation-of-continuation-lines-lp:691185-test \
---funcall goto-beginning-of-tqs-lp:735328-test \
 --funcall class-treated-as-keyword-lp:709478-test \
 --funcall backslashed-continuation-line-indent-lp:742993-test \
 --funcall py-decorators-face-lp:744335-test \
@@ -1402,3 +1400,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall does-not-dedent-regions-lp-1072869-test \
 --funcall py-ipython-complete-lp:927136-test \
 --funcall py-smart-operator-test \
+--funcall py-down-statement-test \
+--funcall previous-statement-lp:637955-test \
+--funcall goto-beginning-of-tqs-lp:735328-test \
