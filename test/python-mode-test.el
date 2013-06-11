@@ -504,7 +504,7 @@
     (py-bug-tests-intern 'py-beginning-of-block-test-base arg teststring)))
 
 (defun py-beginning-of-block-test-base ()
-  (goto-char 627)
+  (goto-char (point-max))
   (py-beginning-of-block)
   (assert (eq (point) 325) nil "py-beginning-of-block-test failed"))
 
@@ -553,7 +553,7 @@
     (py-bug-tests-intern 'py-beginning-of-block-or-clause-base arg teststring)))
 
 (defun py-beginning-of-block-or-clause-base ()
-  (goto-char 627)
+  (goto-char (point-max))
   (py-beginning-of-block-or-clause)
   (assert (looking-at "else") nil "py-beginning-of-block-or-clause-test failed")
   (py-beginning-of-block-or-clause)
@@ -579,7 +579,6 @@
     (py-bug-tests-intern 'py-beginning-of-def-base arg teststring)))
 
 (defun py-beginning-of-def-base ()
-  (goto-char 627)
   (py-beginning-of-def)
   (assert (eq (point) 238) nil "py-beginning-of-def-test failed")
   )
@@ -601,7 +600,6 @@
     (py-bug-tests-intern 'py-beginning-of-def-or-class-base arg teststring)))
 
 (defun py-beginning-of-def-or-class-base ()
-  (goto-char 627)
   (py-beginning-of-def-or-class 4)
   (assert (eq (point) 238) nil "py-beginning-of-def-or-class-test failed"))
 
@@ -611,7 +609,6 @@
     (py-bug-tests-intern 'py-end-of-def-or-class-base arg teststring)))
 
 (defun py-end-of-def-or-class-base ()
-  (goto-char 627)
   (assert (eq 238 (py-beginning-of-def-or-class)) nil "py-end-of-def-or-class-test #1 failed")
   (assert (eq 146 (py-beginning-of-def-or-class)) nil "py-end-of-def-or-class-test #2 failed")
   (goto-char 201)
@@ -686,7 +683,7 @@ class foo(bar):
 
 (defun dict-error-base ()
   (goto-char 78)
-  (assert (eq 166 (py-end-of-statement)) nil "dict-error-test failed"))
+  (assert (eq 166 (progn (py-end-of-statement) (sit-for 0.1) (point) )) nil "dict-error-test failed"))
 
 (defun py-expand-abbrev-pst-pdb.set_trace-test (&optional arg load-branch-function)
   (interactive "p")
@@ -1346,7 +1343,9 @@ class foo(bar, baz):
 
 (defun tqs-list-error-base ()
   (goto-char 90)
-  (assert (eq 175   (py-end-of-statement)) nil "tqs-list-error-test failed"))
+  (py-end-of-statement)
+  (sit-for 0.2)
+  (assert (eq 184 (point)) nil "tqs-list-error-test failed"))
 
 (defun py-smart-indent-eight-test (&optional arg load-branch-function)
   (interactive "p")
