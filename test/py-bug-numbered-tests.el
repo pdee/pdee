@@ -846,7 +846,7 @@ print \"Poet Friedrich Hölderlin\""))
 If no `load-branch-function' is specified, make sure the appropriate branch is loaded. Otherwise default python-mode will be checked."
   (interactive "p")
   (let ((teststring "
-# py-continuation-offset: 2 
+# py-continuation-offset: 2
 self.last_abc_attr = \\
 self.last_xyz_attr = \\
 self.last_abc_other = \\
@@ -5751,6 +5751,26 @@ wrong_indent
 
 (defun multibuffer-mayhem-lp-1162272.py-base ()
     (assert (py-execute-buffer) nil "multibuffer-mayhem-lp-1162272.py-test failed"))
+
+
+(defun incorrect-indentation-with-tertiary-lp-1189604-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# Put point right after the 'c' on the last line and hit return. You
+# will be indented to column 8 when you should be indented to column
+# 13.
+
+def foo(c):
+    a = 1
+    other = ('yes'
+             if a == c
+"))
+  (py-bug-tests-intern 'incorrect-indentation-with-tertiary-lp-1189604-base arg teststring)))
+
+(defun incorrect-indentation-with-tertiary-lp-1189604-base ()
+  (assert (eq 13 (py-compute-indentation)) nil "incorrect-indentation-with-tertiary-lp-1189604-test failed"))
 
 
 (provide 'py-bug-numbered-tests)

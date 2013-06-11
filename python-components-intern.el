@@ -161,9 +161,9 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
                                   ((and (eq 1 closing)(looking-at "\\s([ \t]*$"))
                                    (py-empty-arglist-indent nesting py-indent-offset))
                                   (t (py-fetch-previous-indent orig))))
-                           ;; (if py-closing-list-dedents-bos
-                           ;;     (current-indentation)
-                           ;;   (+ (current-indentation) (or indent-offset py-indent-offset))))
+                           ;; already behind a dedented element in list
+                           ((<= 2 (- origline this-line))
+                            (py-fetch-previous-indent orig))
                            ((< (current-indentation) (current-column))
                             (+ (current-indentation) py-indent-offset))
                            (t (py-fetch-previous-indent orig)))
