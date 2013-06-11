@@ -5337,7 +5337,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.21 $\"
+__version__ = \"$Revision: 1.23 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -5740,7 +5740,6 @@ inode, start_no, end_no)
     (py-shell nil nil nil t nil nil nil t)
     (assert (string= "*Python*<2>" (buffer-name)) nil "from-within-py-shell-call-another-instance-lp-1169687-test failed")))
 
-<<<<<<< HEAD
 (defun multibuffer-mayhem-lp-1162272.py-test (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
@@ -5774,7 +5773,5 @@ def foo(c):
   (assert (eq 13 (py-compute-indentation)) nil "incorrect-indentation-with-tertiary-lp-1189604-test failed"))
 
 
-=======
->>>>>>> parent of b35264a... `py-beginning-of-statement', `py-end-of-statement' fixed
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
