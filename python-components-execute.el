@@ -668,6 +668,7 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
 
 (defun py-execute-buffer-finally (start end &optional pyshellname dedicated switch nostars sepchar split)
   (let* ((oldbuf (current-buffer))
+         (py-exception-buffer (or py-exception-buffer oldbuf))
          (pyshellname (or pyshellname (py-choose-shell)))
          (execute-directory
           (cond ((ignore-errors (file-name-directory (file-remote-p (buffer-file-name) 'localname))))
@@ -719,7 +720,9 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
           (setq erg (py-execute-file-base proc file pec procbuf))
           (sit-for 0.1)
           (setq err-p (py-postprocess-output-buffer py-buffer-name))
-          (py-shell-manage-windows switch split oldbuf py-buffer-name)
+          (if err-p
+              (py-jump-to-exception err-p py-exception-buffer)
+            (py-shell-manage-windows switch split oldbuf py-buffer-name))
           (unless (string= (buffer-name (current-buffer)) (buffer-name procbuf))
             (when py-verbose-p (message "Output buffer: %s" procbuf))
             (when (and (not err-p) py-cleanup-temporary)
@@ -1422,31 +1425,25 @@ Returns position where output starts. "
   "Internal use only - when `py-up-exception' is called in
   source-buffer, this will deliver the exception-buffer again. ")
 
-;;; v5 way
-
-(defun py-jump-to-exception (file line)
+;; Result: (nil 5 "print(34ed)" " SyntaxError: invalid token ")
+(defun py-jump-to-exception (err-p py-exception-buffer)
   "Jump to the Python code in FILE at LINE."
-  (let ((buffer (cond ((ignore-errors (string-equal file "<stdin>"))
-                       (if (consp py-exception-buffer)
-                           (cdr py-exception-buffer)
-                         py-exception-buffer))
-                      ((and (consp py-exception-buffer)
-                            (string-equal file (car py-exception-buffer)))
-                       (cdr py-exception-buffer))
-                      ((ignore-errors (find-file-noselect file)))
-                      ;; could not figure out what file the exception
-                      ;; is pointing to, so prompt for it
-                      (t (find-file (read-file-name "Exception file: "
-                                                    nil
-                                                    file t))))))
+  (message "%s" py-exception-buffer)
+  (let ((file (car err-p))
+        (line (cadr err-p))
+        (action (nth 2 err-p))
+        (errm (nth 3 err-p)))
     ;; Fiddle about with line number
     (setq line (+ py-line-number-offset line))
-
-    (pop-to-buffer buffer)
-    ;; Force Python mode
-    (if (not (eq major-mode 'python-mode))
-        (python-mode))
-    (forward-line (1+ line))
+    (cond ((and py-exception-buffer
+                (buffer-live-p py-exception-buffer))
+           (pop-to-buffer py-exception-buffer))
+          ((file-readable-p file)
+           (find-file file)
+           (forward-line (1+ line)))
+          (t (find-file (read-file-name "Exception file: "
+                                        nil
+                                        file t))))
     (message "Jumping to exception in file %s on line %d" file line)))
 
 (defun py-mouseto-exception (event)
@@ -1462,8 +1459,7 @@ EVENT is usually a mouse click."
            (info (and e (extent-property e 'py-exc-info))))
       (message "Event point: %d, info: %s" point info)
       (and info
-           (py-jump-to-exception (car info) (cdr info)))
-      ))
+           (py-jump-to-exception (car info) (cdr info)))))
    ;; Emacs -- Please port this!
    ))
 
@@ -1570,20 +1566,20 @@ jump to the top (outermost) exception in the exception stack."
 (defun py-postprocess-output-buffer (buf)
   "Highlight exceptions found in BUF.
 If an exception occurred return error-string, otherwise return nil.  BUF must exist."
-  (let ((poma (point-max))
-        line file bol err-p estring ecode)
+  (let (line file bol err-p estring ecode)
     (save-excursion
       (set-buffer buf)
-      (display-buffer buf)
-      ;; (switch-to-buffer (current-buffer))
-      (goto-char poma)
+      ;; (display-buffer buf)
+      (switch-to-buffer (current-buffer))
+      (goto-char (point-max))
       (forward-line -1)
       (end-of-line)
       (when (and (re-search-backward py-traceback-line-re nil t)
                  (looking-at py-traceback-line-re)
                  (or (match-string 1) (match-string 3)))
         (and (match-string 1) (match-string 2)
-              (setq line (string-to-number (match-string 2))))
+             (setq file (match-string-no-properties 1))
+             (setq line (string-to-number (match-string-no-properties 2))))
         (add-to-list 'err-p line)
         (add-to-list 'err-p file)
         (overlay-put (make-overlay (match-beginning 0) (match-end 0))
@@ -1599,7 +1595,7 @@ If an exception occurred return error-string, otherwise return nil.  BUF must ex
               (setq ecode (replace-regexp-in-string "[ \n\t\f\r^]+" " " ecode))
               (add-to-list 'err-p ecode t))
           (setq err-p t)))
-      (goto-char poma)
+      (goto-char (point-max))
       ;; (and py-verbose-p (message "%s" (nth 2 err-p)))
       err-p)))
 

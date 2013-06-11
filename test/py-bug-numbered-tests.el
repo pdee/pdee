@@ -5337,7 +5337,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.21 $\"
+__version__ = \"$Revision: 1.22 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -5739,6 +5739,19 @@ inode, start_no, end_no)
     (sit-for 0.1)
     (py-shell nil nil nil t nil nil nil t)
     (assert (string= "*Python*<2>" (buffer-name)) nil "from-within-py-shell-call-another-instance-lp-1169687-test failed")))
+
+(defun multibuffer-mayhem-lp-1162272.py-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+def do_something():
+wrong_indent
+"))
+  (py-bug-tests-intern 'multibuffer-mayhem-lp-1162272.py-base arg teststring)))
+
+(defun multibuffer-mayhem-lp-1162272.py-base ()
+    (assert (py-execute-buffer) nil "multibuffer-mayhem-lp-1162272.py-test failed"))
+
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
