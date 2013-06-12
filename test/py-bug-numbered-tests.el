@@ -4681,7 +4681,7 @@ for lines in f:
 (defun temporary-files-remain-when-python-raises-exception-lp-1083973-n1-base ()
   (let ((python-mode-v5-behavior-p t))
     (py-execute-buffer)
-    (assert (eq 72 (point)) nil "temporary-files-remain-when-python-raises-exception-lp-1083973-n1-test failed")))
+    (assert (eobp)  nil "temporary-files-remain-when-python-raises-exception-lp-1083973-n1-test failed")))
 
 (defun temporary-files-remain-when-python-raises-exception-lp-1083973-n2-test (&optional arg)
   (interactive "p")
@@ -5337,7 +5337,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.23 $\"
+__version__ = \"$Revision: 1.24 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -5478,10 +5478,11 @@ while mvi.t2 <= T:
   (py-bug-tests-intern 'infinite-loop-on-lp-1156426-base arg teststring)))
 
 (defun infinite-loop-on-lp-1156426-base ()
-    (let ((py-indent-comments t))
+  (let ((py-indent-comments t))
+    (goto-char 68)
     (assert (eq 4 (py-compute-indentation)) nil "infinite-loop-on-lp-1156426-test #1 failed"))
-    (setq py-indent-comments)
-    (assert (eq 0 (py-compute-indentation)) nil "infinite-loop-on-lp-1156426-test #2 failed"))
+  (goto-char (point-max))
+  (assert (eq 0 (py-compute-indentation)) nil "infinite-loop-on-lp-1156426-test #2 failed"))
 
 (defun fill-paragraph-in-docstring-lp-1161232-test (&optional arg)
   (interactive "p")
@@ -5771,6 +5772,24 @@ def foo(c):
 
 (defun incorrect-indentation-with-tertiary-lp-1189604-base ()
   (assert (eq 13 (py-compute-indentation)) nil "incorrect-indentation-with-tertiary-lp-1189604-test failed"))
+
+
+(defun indentation-doesnt-honor-comment-on-preceding-lp-1190288-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+# Put point at the end of the comment line and hit return. The next
+# line indents to column 8 when it should indent to column 4.
+
+def foo():
+    with bar() as baz:
+        baz.frobnicate()
+    # This is a comment
+"))
+  (py-bug-tests-intern 'indentation-doesnt-honor-comment-on-preceding-lp-1190288-base arg teststring)))
+
+(defun indentation-doesnt-honor-comment-on-preceding-lp-1190288-base ()
+    (assert (eq 4 (py-compute-indentation)) nil "indentation-doesnt-honor-comment-on-preceding-lp-1190288-test failed"))
 
 
 (provide 'py-bug-numbered-tests)

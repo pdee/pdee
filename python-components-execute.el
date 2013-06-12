@@ -361,7 +361,7 @@ This function is appropriate for `comint-output-filter-functions'."
         (let ((pyproc (get-buffer-process (current-buffer))))
           (py-execute-file-base pyproc (car py-file-queue))))))
 
-(defun py-shell (&optional argprompt dedicated pyshellname switch sepchar py-buffer-name done  split)
+(defun py-shell (&optional argprompt dedicated pyshellname switch sepchar py-buffer-name done split)
   "Start an interactive Python interpreter in another window.
 Interactively, \\[universal-argument] 4 prompts for a buffer.
 \\[universal-argument] 2 prompts for `py-python-command-args'.
@@ -490,9 +490,9 @@ Optional symbol SPLIT ('split/'nosplit) precedes `py-split-buffers-on-execute-p'
                 'ansi-color-process-output)
       (use-local-map py-shell-map)
       ;; pdbtrack
-      (add-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file t)
-      (remove-hook 'comint-output-filter-functions 'python-pdbtrack-track-stack-file t)
-      (setq py-pdbtrack-do-tracking-p t)
+      (and py-pdbtrack-do-tracking-p
+           (add-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file t)
+           (remove-hook 'comint-output-filter-functions 'python-pdbtrack-track-stack-file t))
       (set-syntax-table python-mode-syntax-table))
     (goto-char (point-max))
     ;; (add-hook 'py-shell-hook 'py-dirstack-hook)
@@ -656,9 +656,15 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
             (sit-for py-ipython-execute-delay))
           (setq erg (py-execute-file-base proc file pec procbuf))
           (sit-for 0.2)
-          (unless (py-postprocess-output-buffer procbuf)
-            (pop-to-buffer oldbuf)
+          (setq err-p (py-postprocess-output-buffer procbuf))
+          (if err-p
+              (progn
+                (setnth 1 err-p (1- (nth 1 err-p)))
+                (py-jump-to-exception err-p py-exception-buffer))
             (py-shell-manage-windows switch split oldbuf py-buffer-name))
+          ;; (unless (py-postprocess-output-buffer procbuf)
+          ;; (pop-to-buffer oldbuf)
+          ;; (py-shell-manage-windows switch split oldbuf py-buffer-name))
           (unless (string= (buffer-name (current-buffer)) (buffer-name procbuf))
             (when py-verbose-p (message "Output buffer: %s" procbuf))))
       (message "%s not readable. %s" file "Do you have permissions?"))
@@ -719,10 +725,12 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
           (sit-for 0.1)
           (setq err-p (py-postprocess-output-buffer py-buffer-name))
           (if err-p
-              (py-jump-to-exception err-p py-exception-buffer)
-            (py-shell-manage-windows switch split oldbuf py-buffer-name))
-          (unless (string= (buffer-name (current-buffer)) (buffer-name procbuf))
-            (when py-verbose-p (message "Output buffer: %s" procbuf))
+              (progn
+                (setnth 1 err-p (1- (nth 1 err-p)))
+                (py-jump-to-exception err-p py-exception-buffer))
+            (py-shell-manage-windows switch split oldbuf py-buffer-name)
+            (unless (string= (buffer-name (current-buffer)) (buffer-name procbuf))
+              (when py-verbose-p (message "Output buffer: %s" procbuf)))
             (when (and (not err-p) py-cleanup-temporary)
               (py-delete-temporary file localname filebuf))
             (sit-for 0.1)))
@@ -1426,7 +1434,6 @@ Returns position where output starts. "
 ;; Result: (nil 5 "print(34ed)" " SyntaxError: invalid token ")
 (defun py-jump-to-exception (err-p py-exception-buffer)
   "Jump to the Python code in FILE at LINE."
-  (message "%s" py-exception-buffer)
   (let ((file (car err-p))
         (line (cadr err-p))
         (action (nth 2 err-p))
@@ -1435,7 +1442,9 @@ Returns position where output starts. "
     (setq line (+ py-line-number-offset line))
     (cond ((and py-exception-buffer
                 (buffer-live-p py-exception-buffer))
-           (pop-to-buffer py-exception-buffer))
+           (pop-to-buffer py-exception-buffer)
+           (goto-char (point-min))
+           (forward-line line))
           ((file-readable-p file)
            (find-file file)
            (forward-line (1+ line)))
@@ -1570,8 +1579,9 @@ If an exception occurred return error-string, otherwise return nil.  BUF must ex
       (goto-char (point-max))
       (forward-line -1)
       (end-of-line)
+      (switch-to-buffer (current-buffer))
       (save-excursion
-        (setq limit (re-search-backward py-shell-prompt-regexp nil t 1))) 
+        (setq limit (re-search-backward py-shell-prompt-regexp nil t 1)))
       (when (and (re-search-backward py-traceback-line-re limit t)
                  (message "%s" (match-string-no-properties 0))
                  (or (match-string 1) (match-string 3)))

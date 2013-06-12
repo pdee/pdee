@@ -1082,6 +1082,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-font-lock-keywords) nil \"py-font-lock-keywords not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall indentation-doesnt-honor-comment-on-preceding-lp-1190288-test \
 --funcall incorrect-indentation-with-tertiary-lp-1189604-test \
 --funcall py-end-of-statement-test-1 \
 --funcall py-end-of-statement-test-2 \
@@ -1342,8 +1343,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall wrong-type-argument-lp:901541-test \
 --funcall indentation-bug-inside-docstrings-lp:899455-test \
 --funcall impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test \
---funcall py-electric-comment-add-space-lp:828398-test \
---funcall py-electric-comment-add-space-t-lp:828398-test \
 --funcall more-docstring-filling-woes-lp-1102296-pep-257-test \
 --funcall more-docstring-filling-woes-lp-1102296-pep-257-nn-test \
 --funcall more-docstring-filling-woes-lp-1102296-nil-test \
@@ -1404,3 +1403,5 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n2-test 2 \
 --funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n3-test 2 \
 --funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n4-test 2 \
+--funcall py-electric-comment-add-space-lp:828398-test \
+--funcall py-electric-comment-add-space-t-lp:828398-test \

@@ -219,34 +219,14 @@ If `py-tab-indents-region-p' is `t' and first TAB doesn't shift
   "Add a newline and indent to outmost reasonable indent.
 When indent is set back manually, this is honoured in following lines. "
   (interactive "*")
-  (let ((ci (current-indentation))
-        (orig (point))
+  (let ((orig (point))
         erg)
-    (if (< ci (current-column))         ; if point beyond indentation
-        (progn
-          (newline)
-          (save-excursion
-            (goto-char orig)
-            (when py-trailing-whitespace-smart-delete-p
-              (delete-trailing-whitespace)))
-          (setq erg (indent-to-column (py-compute-indentation))))
-      (beginning-of-line)
-      (insert-char ?\n 1)
-      (if indent-tabs-mode
-	  (insert (make-string (/ (setq erg (py-compute-indentation)) py-indent-offset) 9))
-	(insert (make-string (setq erg (py-compute-indentation)) 32)))
-      ;; (move-to-column erg)
-      (when (looking-at "\\([ \t]+\\)") (delete-region (match-beginning 1) (match-end 1))))
-    (when (and (looking-at "[ \t]+")
-               (nth 1 (if (featurep 'xemacs)
-                          (parse-partial-sexp (point-min) (point))
-                        (syntax-ppss))))
-      (delete-region (match-beginning 0) (match-end 0)))
-    (save-excursion
-      (and py-newline-delete-trailing-whitespace-p
-           (goto-char orig)
-           (< 0 (abs (skip-chars-backward " \t\r\n\f")))
-           (delete-region (point) (line-end-position))))
+    (newline)
+    (when (or py-newline-delete-trailing-whitespace-p py-trailing-whitespace-smart-delete-p)
+      (save-excursion
+        (goto-char orig)
+        (delete-trailing-whitespace)))
+    (setq erg (indent-to-column (py-compute-indentation)))
     (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
 
@@ -319,7 +299,7 @@ Returns value of `indent-tabs-mode' switched to. "
 
 (defun py-guess-indent-forward ()
   "Called when moving to end of a form and `py-smart-indentation' is on. "
-  (interactive) 
+  (interactive)
   (let* ((first (if
                     (py-beginning-of-statement-p)
                     (current-indentation)
@@ -375,7 +355,7 @@ downwards from beginning of block followed by a statement. Otherwise default-val
            (erg (py-guess-indent-final indents orig)))
       (if erg (setq py-indent-offset erg)
         (setq py-indent-offset
-              (default-value 'py-indent-offset))) 
+              (default-value 'py-indent-offset)))
       (when (interactive-p) (message "%s" py-indent-offset))
       py-indent-offset)))
 

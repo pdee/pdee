@@ -24,14 +24,17 @@
 ;;; Code:
 (require 'python-components-macros)
 
-(defun py-beginning-of-commented-section ()
+(defun py-beginning-of-commented-section (&optional last)
   "Leave upwards comments and/or empty lines. "
   (interactive)
-  (let ((pps (syntax-ppss)))
-    (and (nth 4 pps)(goto-char (nth 8 pps)))
-    (while (and (looking-back "^[ \t]*")(not (bobp)))
-      (skip-chars-backward " \t\r\n\f")
-      (py-beginning-of-commented-section))))
+  (let ((pps (syntax-ppss))
+        (last (or last (point))))
+    (if (and (or (and (nth 4 pps)(goto-char (nth 8 pps)))(looking-at comment-start))
+             (looking-back "^[ \t]*")(not (bobp)))
+        (progn
+          (skip-chars-backward " \t\r\n\f")
+          (py-beginning-of-commented-section last))
+      (goto-char last))))
 
 (defun py-empty-arglist-indent (nesting py-indent-offset)
   "Internally used by `py-compute-indentation'"
@@ -133,10 +136,12 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
 
                       (py-compute-indentation orig origline closing line nesting repeat indent-offset))
                   0))
-               ((and (looking-at "[ \t]*#") (looking-back "^[ \t]*")(not (eq (line-beginning-position) (point-min))))
-                (skip-chars-backward " \t\r\n\f")
-                (setq line t)
-                (py-compute-indentation orig origline closing line nesting repeat indent-offset))
+               ((and (looking-at "[ \t]*#") (looking-back "^[ \t]*")(not (eq origline (py-count-lines))))
+                (current-indentation))
+               ;; ((and (looking-at "[ \t]*#") (looking-back "^[ \t]*")(not (eq (line-beginning-position) (point-min))))
+               ;;  (skip-chars-backward " \t\r\n\f")
+               ;;  (setq line t)
+               ;;  (py-compute-indentation orig origline closing line nesting repeat indent-offset))
                ((and (eq ?\# (char-after)) line py-indent-honors-inline-comment)
                 (current-column))
                ;; lists

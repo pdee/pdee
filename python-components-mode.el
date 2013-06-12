@@ -1613,8 +1613,8 @@ set in py-execute-region and used in py-jump-to-exception.")
   "Regular expression that describes tracebacks.
 Inludes Python shell-prompt in order to stop further searches. ")
 
-(setq py-traceback-line-re
-  "^IPython\\|^In \\[[0-9]+\\]: *\\|[ \t]+File \"\\([^\"]+\\)\", line \\([0-9]+\\)")
+;; (setq py-traceback-line-re
+  ;; "^^IPython\\|^In \\[[0-9]+\\]: *\\|[ \t]+File \"\\([^\"]+\\)\", line \\([0-9]+\\)")
 
 
 (defvar py-bol-forms-last-indent nil
