@@ -48,7 +48,7 @@
          (second (if (string-match ".+.py$" (buffer-file-name))
                      (buffer-file-name) (replace-regexp-in-string "^\\([^ ]+\\) +\\(.+\\)$" "\\2" (car gud-pdb-history))))
          (erg (concat first " " second)))
-    (push erg gud-pdb-history)))
+    (push erg gud-pdb-history))) 
 
 (defun py-pdbtrack-overlay-arrow (activation)
   "Activate or de arrow at beginning-of-line in current buffer."
@@ -211,22 +211,13 @@ named for funcname or define a function funcname."
 (defun py-pdbtrack-toggle-stack-tracking (arg)
   "Set variable `py-pdbtrack-do-tracking-p'. "
   (interactive "P")
-  ;; (if (not (get-buffer-process (current-buffer)))
-  ;; (error "No process associated with buffer '%s'" (current-buffer)))
-
+  (if (not (get-buffer-process (current-buffer)))
+      (error "No process associated with buffer '%s'" (current-buffer)))
   ;; missing or 0 is toggle, >0 turn on, <0 turn off
-  (cond ((not arg)
-         (setq py-pdbtrack-do-tracking-p (not py-pdbtrack-do-tracking-p)))
-        ((zerop (prefix-numeric-value arg))
-         (setq py-pdbtrack-do-tracking-p nil))
-        ((> (prefix-numeric-value arg) 0)
-         (setq py-pdbtrack-do-tracking-p t)))
-  (if py-pdbtrack-do-tracking-p
-      (progn
-        (add-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file t)
-        (remove-hook 'comint-output-filter-functions 'python-pdbtrack-track-stack-file t))
-    (remove-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file t)
-    (remove-hook 'comint-output-filter-functions 'python-pdbtrack-track-stack-file t))
+  (if (or (not arg)
+          (zerop (setq arg (prefix-numeric-value arg))))
+      (setq py-pdbtrack-do-tracking-p (not py-pdbtrack-do-tracking-p))
+    (setq py-pdbtrack-do-tracking-p (> arg 0)))
   (message "%sabled Python's pdbtrack"
            (if py-pdbtrack-do-tracking-p "En" "Dis")))
 
