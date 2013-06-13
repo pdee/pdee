@@ -148,16 +148,20 @@ complete docstring according to setting of `py-docstring-style' "
              ;; (progn (goto-char beg)(skip-chars-backward "\"'") (py-docstring-p (point)))
 
              (end (or (ignore-errors (and end (goto-char end) (skip-chars-backward "\"'")(copy-marker (point))))
-                      (progn (goto-char (nth 8 pps)) (forward-sexp) (skip-chars-backward "\"'") (point-marker))))
+                      (progn (goto-char (nth 8 pps)) (scan-sexps (point) 1) (skip-chars-backward "\"'") (point-marker))))
              multi-line-p
              delimiters-style
              erg)
         ;; whitespace and newline will be added according to mode again
         (goto-char beg)
         (setq beg (progn (skip-chars-forward "\"'") (copy-marker (point))))
-        (and docstring py-paragraph-fill-docstring-p (delete-region (point) (progn (skip-chars-forward " \t\r\n\f") (skip-chars-forward " \t\r\n\f")(point))))
+        (and docstring
+             ;; py-paragraph-fill-docstring-p
+             (delete-region (point) (progn (skip-chars-forward " \t\r\n\f") (skip-chars-forward " \t\r\n\f")(point))))
         (goto-char end)
-        (and docstring py-paragraph-fill-docstring-p (delete-region (point) (progn (skip-chars-backward " \t\r\n\f")(point))))
+        (and docstring
+             ;; py-paragraph-fill-docstring-p
+             (delete-region (point) (progn (skip-chars-backward " \t\r\n\f")(point))))
         (cond
          ((and docstring py-paragraph-fill-docstring-p (string-match (concat "^" py-labelled-re) (buffer-substring-no-properties beg end)))
           (py-fill-labelled-string beg end))

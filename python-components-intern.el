@@ -1069,7 +1069,7 @@ Takes the result of (syntax-ppss)"
   (let ((beginning-of-string-position (or beginning-of-string-position (and (nth 3 (syntax-ppss))(nth 8 (syntax-ppss))))))
     (goto-char beginning-of-string-position)
     ;; (and (looking-at "\"\"\"\\|'''\\|\"\\|\'")
-    (forward-sexp))
+    (goto-char (scan-sexps (point) 1)))
   (point))
 ;; (goto-char (match-end 0))
 ;; (search-forward (match-string-no-properties 0))))

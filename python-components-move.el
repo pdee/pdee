@@ -282,7 +282,7 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
     ;; group arg
     (and
      (looking-at "[\[{(]")
-     (forward-sexp))
+     (goto-char (scan-sexps (point) 1)))
     (setq erg (point))
     (when (interactive-p) (message "%s" erg))
     erg))
@@ -404,7 +404,7 @@ http://docs.python.org/reference/compound_stmts.html
 (defun py-eos-handle-string-start ()
   "Internal use, find possible end of statement from string start. "
   (when
-      (and (setq this (point)) (progn (or (if (save-match-data (string-match "'" (match-string-no-properties 0))) (ignore-errors (forward-sexp))) (while (and (search-forward (match-string-no-properties 0) nil t 1) (nth 8 (syntax-ppss))))) (< this (point))))
+      (and (setq this (point)) (progn (or (if (save-match-data (string-match "'" (match-string-no-properties 0))) (ignore-errors (goto-char (scan-sexps (point) 1)))) (while (and (search-forward (match-string-no-properties 0) nil t 1) (nth 8 (syntax-ppss))))) (< this (point))))
     (skip-chars-forward (concat "^" comment-start) (line-end-position))
     (skip-chars-backward " \t\r\n\f")))
 
@@ -418,7 +418,7 @@ http://docs.python.org/reference/compound_stmts.html
 (defun py-eos-handle-singlequoted-string-start ()
   "Internal use, find possible end of statement from string start. "
   (when
-      (and (setq this (point)) (progn (ignore-errors (forward-sexp)) (< this (point))))
+      (and (setq this (point)) (progn (ignore-errors (goto-char (scan-sexps (point) 1))) (< this (point))))
     (skip-chars-forward (concat "^" comment-start) (line-end-position))
     (skip-chars-backward " \t\r\n\f")))
 
