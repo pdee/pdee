@@ -5402,6 +5402,7 @@ class Test(object):
     (goto-char 259)
     (fill-paragraph)
     (forward-line 1)
+    (sit-for 0.1) 
     (assert (looking-at "        pass") nil "more-docstring-filling-woes-lp-1102296-nil-test #2 failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-nil-test #2 done")
     (goto-char 380)
