@@ -407,3 +407,8 @@ result = some_function_that_takes_arguments(
     (let ((indent-tabs-mode))
       (py-newline-and-indent)
       (should (looking-back "^    ")))))
+
+(ert-deftest py-pyflakespep-command-test ()
+  (py-tests-with-temp-buffer
+      ""
+      (file-readable-p py-pyflakespep8-command)))

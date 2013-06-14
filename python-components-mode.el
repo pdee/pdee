@@ -796,7 +796,7 @@ Default is \"\" "
   :group 'python-mode
   :tag "PEP 8 Command Args")
 
-(defcustom py-pyflakespep8-command (concat py-install-directory "pyflakespep8.py")
+(defcustom py-pyflakespep8-command (concat py-install-directory "/pyflakespep8.py")
   "*Shell command used to run `pyflakespep8'."
   :type 'string
   :group 'python-mode
