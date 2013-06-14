@@ -90,7 +90,6 @@
   :type 'string
   :group 'python-mode)
 
-
 (defcustom py-pylint-offer-current-p t
   "If current buffers file should be offered for check.
 
@@ -1062,7 +1061,7 @@ without the user's realization (e.g. to perform completion)."
   :group 'python-mode)
 
 (defcustom py-setup-codes '(python-shell-completion-setup-code
-                                      python-ffap-setup-code
+                                      py-ffap-setup-code
                                       py-eldoc-setup-code
                                       py-emacs-import-code
                                       )
@@ -1278,7 +1277,7 @@ Default is  nil "
          (py-set-ffap-form)))
 
 ;; the python-el way
-(defcustom python-ffap-string-code
+(defcustom py-ffap-string-code
   "__FFAP_get_module_path('''%s''')\n"
   "Python code used to get a string with the path of a module."
   :type 'string
@@ -1291,7 +1290,7 @@ It should not contain a caret (^) at the beginning."
   :group 'python-mode)
 (defvar py-shell-prompt-regexp ">>> ")
 
-(defcustom python-ffap-setup-code
+(defcustom py-ffap-setup-code
   "def __FFAP_get_module_path(module):
     try:
         import os
@@ -1624,7 +1623,6 @@ Inludes Python shell-prompt in order to stop further searches. ")
 
 ;; (setq py-traceback-line-re
   ;; "^^IPython\\|^In \\[[0-9]+\\]: *\\|[ \t]+File \"\\([^\"]+\\)\", line \\([0-9]+\\)")
-
 
 (defvar py-bol-forms-last-indent nil
   "For internal use. Stores indent from last py-end-of-FORM-bol command.
@@ -2453,9 +2451,9 @@ See bug report at launchpad, lp:940812 "
                                  (? ?\[ (+ (not (any ?\]))) ?\]) (* space)
                                  assignment-operator)))
               (when (re-search-forward re limit t)
-                (while (and (py-info-ppss-context 'paren)
+                (while (and (nth 1 (syntax-ppss))
                             (re-search-forward re limit t)))
-                (if (and (not (py-info-ppss-context 'paren))
+                (if (and (not (nth 1 (syntax-ppss)))
                          (not (equal (char-after (point-marker)) ?=)))
                     t
                   (set-match-data nil)))))
@@ -2468,10 +2466,10 @@ See bug report at launchpad, lp:940812 "
                                  assignment-operator)))
               (when (and (re-search-forward re limit t)
                          (goto-char (nth 3 (match-data))))
-                (while (and (py-info-ppss-context 'paren)
+                (while (and (nth 1 (syntax-ppss))
                             (re-search-forward re limit t))
                   (goto-char (nth 3 (match-data))))
-                (if (not (py-info-ppss-context 'paren))
+                (if (not (nth 1 (syntax-ppss)))
                     t
                   (set-match-data nil)))))
          (1 py-variable-name-face nil nil))
@@ -2565,20 +2563,6 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
 ;;         (put-text-property (match-beginning 2) (match-end 2)
 ;;                            'syntax-table (string-to-syntax "|"))))
 ;;       )))
-
-(defun py-info-ppss-context (type &optional syntax-ppss)
-  "Return non-nil if point is on TYPE using SYNTAX-PPSS.
-TYPE can be 'comment, 'string or 'paren.  It returns the start
-character address of the specified TYPE."
-  (let ((ppss (or syntax-ppss (syntax-ppss))))
-    (cond ((eq type 'comment)
-           (and (nth 4 ppss)
-                (nth 8 ppss)))
-          ((eq type 'string)
-           (nth 8 ppss))
-          ((eq type 'paren)
-           (nth 1 ppss))
-          (t nil))))
 
 ;; ;; Credits to github.com/fgallina/python.el/issues42
 ;; (defvar font-lock-number "[0-9]+\\([eE][+-]?[0-9]*\\)?")
@@ -4822,7 +4806,6 @@ Returns value of `smart-operator-mode'\. . "]
         ("More... "
          ("Edit commands "
 
-
           ("Kill "
 
            ["Kill statement" py-kill-statement
@@ -6067,7 +6050,7 @@ This is a no-op if `py-check-comint-prompt' returns nil."
         nil
       (let ((module-file
              (py-send-string-no-output
-              (format python-ffap-string-code module) process)))
+              (format py-ffap-string-code module) process)))
         (when module-file
           (substring-no-properties module-file 1 -1))))))
 

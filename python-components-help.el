@@ -1144,7 +1144,7 @@ i.e. spaces, tabs, carriage returns, newlines and newpages. "
         nil
       (let ((module-file
              (py-send-string-no-output
-              (format python-ffap-string-code module) process)))
+              (format py-ffap-string-code module) process)))
         (when module-file
           (substring-no-properties module-file 1 -1))))))
 
