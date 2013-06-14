@@ -90,6 +90,15 @@
   :type 'string
   :group 'python-mode)
 
+
+(defcustom py-pylint-offer-current-p t
+  "If current buffers file should be offered for check.
+
+Default is non-nil. If nil, `py-pylint-run' offers filename from history "
+
+  :type 'boolean
+  :group 'python-mode)
+
 (defcustom py-hide-show-minor-mode-p nil
   "If hide-show minor-mode should be on, default is nil. "
 
@@ -2011,7 +2020,9 @@ Includes def and class. ")
 
 (defun py-docstring-p (&optional beginning-of-string-position)
   "Check to see if there is a docstring at POS."
-  (let ((pos (or beginning-of-string-position (and (nth 3 (syntax-ppss)) (nth (syntax-ppss))))))
+  (let* (pps
+        (pos (or beginning-of-string-position
+                 (and (nth 3 (setq pps (syntax-ppss))) (nth 8 pps)))))
     (save-restriction
       (widen)
       (save-excursion

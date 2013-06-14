@@ -31,6 +31,10 @@ New in version 6.1.2
 - `py-minor-expression' reconsidered, numeric args dropped
   grasps keyword-arguments
 
+- boolean `py-pylint-offer-current-p', default is non-nil.
+  If current buffers file should be offered for check.
+  Otherwise `py-pylint-run' looks up filename from history
+
 - boolean `py-electric-kill-backward-p', default is nil.
   If behind a delimited form of braces, brackets or parentheses,
   `py-electric-backspace' runs `py-empty-out-list-backward'

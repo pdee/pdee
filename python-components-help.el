@@ -828,20 +828,27 @@ Home-page: http://www.logilab.org/project/pylint "
                (format "%s %s %s" py-pylint-command
                        (mapconcat 'identity py-pylint-command-args " ")
                        (buffer-file-name))
-             (format "%s %s" py-pylint-command
-                     (mapconcat 'identity py-pylint-command-args " "))))
+             (format "%s %s %s" py-pylint-command
+                     (mapconcat 'identity py-pylint-command-args " ")
+                     (buffer-name (current-buffer)))))
          (last (and py-pylint-history (car py-pylint-history)))
          erg)
 
      (list
       (if (fboundp 'read-shell-command)
           (read-shell-command "Run pylint like this: "
-                              (or last default)
+                              (if py-pylint-offer-current-p
+                                  (or default last)
+                                (or last default))
                               'py-pylint-history)
         (read-string "Run pylint like this: "
-                     (or last default)
+                     (if py-pylint-offer-current-p
+                         (or default last)
+                       (or last default))
                      'py-pylint-history)))))
   (save-some-buffers (not py-ask-about-save))
+  (unless (file-readable-p buffer-file-name)
+    (message "Warning: %s" "pylint needs a file"))
   (shell-command (concat command " " buffer-file-name)))
 
 
