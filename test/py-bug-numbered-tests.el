@@ -5095,7 +5095,7 @@ class Test(object):
     (message "%s" "more-docstring-filling-woes-lp-1102296-pep-257-test #2 done")
     (goto-char 357)
     (fill-paragraph)
-    (goto-char 437)
+    (goto-char 436)
     (sit-for 0.1)
     (assert (empty-line-p) nil "more-docstring-filling-woes-lp-1102296-pep-257-test #3a failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-pep-257-test #3a done")
@@ -5337,7 +5337,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.25 $\"
+__version__ = \"$Revision: 1.26 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -5458,7 +5458,7 @@ class Test(object):
     (fill-paragraph)
     (beginning-of-line)
     (sit-for 0.1)
-    (assert (eq (skip-chars-forward " ")  8) nil "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #3a failed")
+    (assert (eq (current-indentation) 8) nil "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #3a failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #3a done")
     (search-forward "pass")
     (beginning-of-line)
@@ -5741,7 +5741,7 @@ inode, start_no, end_no)
     (py-shell nil nil nil t nil nil nil t)
     (assert (string= "*Python*<2>" (buffer-name)) nil "from-within-py-shell-call-another-instance-lp-1169687-test failed")))
 
-(defun multibuffer-mayhem-lp-1162272.py-test (&optional arg)
+(defun multibuffer-mayhem-lp-1162q272.py-test (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
@@ -5790,6 +5790,49 @@ def foo():
 
 (defun indentation-doesnt-honor-comment-on-preceding-lp-1190288-base ()
     (assert (eq 4 (py-compute-indentation)) nil "indentation-doesnt-honor-comment-on-preceding-lp-1190288-test failed"))
+
+
+(defun fill-paragraph-corrupts-the-lp-1162912-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# Put point on the whitespace at the beginning of the line that
+# starts with 'The' inside the docstring and hit M-q. You end up with
+# the following:
+# 
+# -----snip snip-----
+# def foo():
+#     \"\"\"This is a function.
+# The function does some stuff that is very interesting. It's hard to
+#     describe, but you will certainly love it when you try it. It's
+# one
+#     of the best functions ever written, not just by me, but by all
+# of
+#     mankind. Well, that may be overstating it, but it is a wondeful
+#     function. \"\"\"
+
+def foo():
+    \"\"\"This is a function.
+
+    The function does some stuff that is very interesting. It's
+hard to
+    describe, but you will certainly love it when you try it. It's
+one of the
+    best functions ever written, not just by me, but by all of
+mankind.
+    Well, that may be overstating it, but it is a wondeful
+function.
+    \"\"\"
+
+"))
+  (py-bug-tests-intern 'fill-paragraph-corrupts-the-lp-1162912-base arg teststring)))
+
+(defun fill-paragraph-corrupts-the-lp-1162912-base ()
+    (goto-char 616)
+    (fill-paragraph)
+    (forward-line 1) 
+    (assert (eq 4 (current-indentation))  nil "fill-paragraph-corrupts-the-lp-1162912-test failed"))
 
 
 (provide 'py-bug-numbered-tests)

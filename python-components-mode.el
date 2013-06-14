@@ -2012,14 +2012,16 @@ Includes def and class. ")
 (defun py-docstring-p (&optional beginning-of-string-position)
   "Check to see if there is a docstring at POS."
   (let ((pos (or beginning-of-string-position (and (nth 3 (syntax-ppss)) (nth (syntax-ppss))))))
-    (save-excursion
-      (and pos (goto-char pos))
-      (if (looking-at-p "'''\\|\"\"\"")
-          (progn
-            (py-beginning-of-statement)
-            (or (bobp)
-                (py-beginning-of-def-or-class-p)))
-        nil))))
+    (save-restriction
+      (widen)
+      (save-excursion
+        (and pos (goto-char pos))
+        (if (looking-at-p "'''\\|\"\"\"")
+            (progn
+              (py-beginning-of-statement)
+              (or (bobp)
+                  (py-beginning-of-def-or-class-p)))
+          nil)))))
 
 (defun py-font-lock-syntactic-face-function (state)
   (if (nth 3 state)

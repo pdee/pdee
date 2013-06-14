@@ -52,6 +52,8 @@ New in version 6.1.2
   affects autopair.el, smart-operator.el  
   Kept  menu switches resp. commands will issue a warning 
 
+- dropped `py-paragraph-fill-docstring-p'; just `fill-paragraph' should DTRT
+
 New in version 6.1.1
 ---------------------
 
