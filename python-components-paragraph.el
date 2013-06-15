@@ -86,14 +86,6 @@ docstring (nth 8 pps)) (py-beginning-of-paragraph-position)))
                             ;; (point))
                             ?\@)))
               (py-fill-decorator justify))
-             ;; Parens
-             ;; is there a need to fill parentized expressions?
-             ;; ((or (nth 1 pps)
-             ;;      (looking-at (python-rx open-paren))
-             ;;      (save-excursion
-             ;;        (skip-syntax-forward "^(" (line-end-position))
-             ;;        (looking-at (python-rx open-paren))))
-             ;;  (py-fill-paren pps justify))
              (t t))))
         (goto-char orig)
         (back-to-indentation))

@@ -224,12 +224,16 @@ If `py-tab-indents-region-p' is `t' and first TAB doesn't shift
 When indent is set back manually, this is honoured in following lines. "
   (interactive "*")
   (let ((orig (point))
-        erg)
+        erg pos)
     (newline)
     (when (or py-newline-delete-trailing-whitespace-p py-trailing-whitespace-smart-delete-p)
+      (setq pos (copy-marker (point)))
       (save-excursion
         (goto-char orig)
-        (delete-trailing-whitespace)))
+        (if (empty-line-p)
+            (delete-trailing-whitespace (line-beginning-position) pos)
+          (skip-chars-backward " \t") 
+          (delete-trailing-whitespace (point)  pos))))
     (setq erg (indent-to-column (py-compute-indentation)))
     (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))

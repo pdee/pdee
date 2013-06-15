@@ -599,6 +599,18 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
   (when (buffer-live-p localname)
     (kill-buffer localname)))
 
+(defun py-execute-fake-imported ()
+  "Make sure code inside `if __name__ == \"__main__:\"' block is not sent to interpreter.
+
+See `py-execute-fake-imported-p' "
+  (unless (eobp)
+    (unless (looking-at "if __name__ == \"__main__:")
+      (py-down-block)
+      (and (looking-at "if __name__ == \"__main__:")
+          (py-delete-block))
+        (unless (eobp)
+          (py-execute-fake-imported)))))
+
 (defun py-execute-python-mode-v5 (start end &optional pyshellname)
   (let ((py-exception-buffer (current-buffer))
         (cmd (concat (or pyshellname py-shell-name) (if (string-equal py-which-bufname
@@ -712,6 +724,7 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
     (insert strg)
     (py-fix-start (point-min)(point-max))
     (py-if-needed-insert-shell (prin1-to-string proc) sepchar)
+    (and py-execute-fake-imported-p (py-execute-fake-imported)) 
     (unless wholebuf (py-insert-coding))
     (unless (string-match "[jJ]ython" pyshellname) (py-insert-execute-directory execute-directory))
     (set-buffer filebuf)

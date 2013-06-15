@@ -2358,6 +2358,26 @@ else:
   )
 
 
-;; imenu--subalist-p
+
+(defun py-execute-fake-imported-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+#! /usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+if __name__ == \"__main__\":
+    print(\"__name__ == '__main__' run\")
+
+else:
+    print(\"__name__ == '__main__' supressed\")
+"))
+  (py-bug-tests-intern 'py-execute-fake-imported-base arg teststring)))
+
+(defun py-execute-fake-imported-base ()
+  (let ((py-execute-fake-imported-p t))
+    (goto-char 40)
+    (assert nil "py-execute-fake-imported-test failed")))
+
+
 (provide 'python-mode-test)
-;;; python-mode-test.el ends here

@@ -5402,7 +5402,7 @@ class Test(object):
     (goto-char 259)
     (fill-paragraph)
     (forward-line 1)
-    (sit-for 0.1) 
+    (sit-for 0.1)
     (assert (looking-at "        pass") nil "more-docstring-filling-woes-lp-1102296-nil-test #2 failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-nil-test #2 done")
     (goto-char 380)
@@ -5640,7 +5640,6 @@ dst.close()
     (py-indent-line)
     (assert (eq 4 (current-column)) nil "TAB-leaves-point-in-the-wrong-lp-1178453-test failed"))
 
-
 (defun Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
@@ -5669,7 +5668,6 @@ def foo():
     (fill-paragraph)
     (goto-char 98)
     (assert (and (bolp) (eolp)) nil "Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test failed"))
-
 
 (defun trouble-with-py-fill-paragraph-lp-1180653.py-test (&optional arg)
   (interactive "p")
@@ -5754,7 +5752,6 @@ wrong_indent
 (defun multibuffer-mayhem-lp-1162272.py-base ()
     (assert (py-execute-buffer) nil "multibuffer-mayhem-lp-1162272.py-test failed"))
 
-
 (defun incorrect-indentation-with-tertiary-lp-1189604-test (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
@@ -5774,7 +5771,6 @@ def foo(c):
 (defun incorrect-indentation-with-tertiary-lp-1189604-base ()
   (assert (eq 13 (py-compute-indentation)) nil "incorrect-indentation-with-tertiary-lp-1189604-test failed"))
 
-
 (defun indentation-doesnt-honor-comment-on-preceding-lp-1190288-test (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
@@ -5792,7 +5788,6 @@ def foo():
 (defun indentation-doesnt-honor-comment-on-preceding-lp-1190288-base ()
     (assert (eq 4 (py-compute-indentation)) nil "indentation-doesnt-honor-comment-on-preceding-lp-1190288-test failed"))
 
-
 (defun fill-paragraph-corrupts-the-lp-1162912-test (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
@@ -5801,7 +5796,7 @@ def foo():
 # Put point on the whitespace at the beginning of the line that
 # starts with 'The' inside the docstring and hit M-q. You end up with
 # the following:
-# 
+#
 # -----snip snip-----
 # def foo():
 #     \"\"\"This is a function.
@@ -5832,8 +5827,32 @@ function.
 (defun fill-paragraph-corrupts-the-lp-1162912-base ()
     (goto-char 616)
     (fill-paragraph)
-    (forward-line 1) 
+    (forward-line 1)
     (assert (eq 4 (current-indentation))  nil "fill-paragraph-corrupts-the-lp-1162912-test failed"))
+
+(defun return-key-is-broken-lp-1191158-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+# A recent change broke the return key.
+#
+# Put point at the end of the last line and hit return. You correctly end
+# up on a new line at column 8. But hit return again and point doesn't
+# move! It should insert a blank line and leave you at column 8 on a new
+# line.
+
+def foo():
+    with open('foo') as fp:
+        do_something()"))
+  (py-bug-tests-intern 'return-key-is-broken-lp-1191158-base arg teststring)))
+
+(defun return-key-is-broken-lp-1191158-base ()
+  (goto-char 378)
+  (py-newline-and-indent)
+  (py-newline-and-indent)
+  (message "%s" (point) )
+  ;; (sit-for 0.1) 
+  (assert (and (eq 14 (count-lines  (point-min) (point))) (eq 8 (current-column)))  nil "return-key-is-broken-lp-1191158-test failed"))
 
 
 (provide 'py-bug-numbered-tests)

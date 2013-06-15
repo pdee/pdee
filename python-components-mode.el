@@ -1222,6 +1222,14 @@ See also `py-execute-directory'"
   :type 'boolean
   :group 'python-mode)
 
+
+(defcustom py-execute-fake-imported-p nil
+  "When non-nil, code inside `if __name__ == \"__main__:\"' block is  not send to interpreter.
+
+Default is nil "
+  :type 'boolean
+  :group 'python-mode)
+
 (defcustom py-keep-shell-dir-when-execute-p nil
   "Don't change Python shell's current working directory when sending code.
 
@@ -1786,9 +1794,9 @@ for options to pass to the DOCNAME interpreter. \"
   ".*:?[ \t]*\\_<\\(return\\)\\_>[ \n\t]"
   "Regular expression matching keyword which typically closes a function. ")
 
-(defconst py-no-outdent-re "\\(try:\\|except\\(\\s +.*\\)?:\\|while\\s +.*:\\|for\\s +.*:\\|if\\s +.*:\\|elif\\s +.*:\\)\\([ 	]*\\_<\\(return\\|raise\\|break\\|continue\\|pass\\)\\_>[ 	\n]\\)")
+(defconst py-no-outdent-re "\\(try:\\|except\\(\\s *.*\\)?:\\|while\\s *.*:\\|for\\s *.*:\\|if\\s *.*:\\|elif\\s *.*:\\)\\([ 	]*\\_<\\(return\\|raise\\|break\\|continue\\|pass\\)\\_>[ 	\n]\\)")
 
-;; (setq py-no-outdent-re "[ 	]*\\_<\\(try:\\|except\\(\\s +.*\\)?:\\|while\\s +.*:\\|for\\s +.*:\\|if\\s +.*:\\|elif\\s +.*:\\|return\\|raise\\|break\\|continue\\|pass\\)\\_>[ 	\n]*")
+;; (setq py-no-outdent-re "\\(try:\\|except\\(\\s *.*\\)?:\\|while\\s *.*:\\|for\\s *.*:\\|if\\s *.*:\\|elif\\s *.*:\\)\\([ 	]*\\_<\\(return\\|raise\\|break\\|continue\\|pass\\)\\_>[ 	\n]\\)")
 
 (defconst py-assignment-re "\\_<\\w+\\_>[ \t]*\\(=\\|+=\\|*=\\|%=\\|&=\\|^=\\|<<=\\|-=\\|/=\\|**=\\||=\\|>>=\\|//=\\)"
   "If looking at the beginning of an assignment. ")
