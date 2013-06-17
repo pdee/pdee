@@ -148,61 +148,6 @@ Useful for newly defined symbol, not known to python yet. "
             (when (interactive-p) (switch-to-buffer (current-buffer)))
             (insert erg)))))))
 
-(defun py-eldoc--get-doc-at-point (&optional input)
-  "Get documentation at point.
-If not INPUT is passed then what `current-word' returns
-will be used. "
-  (interactive)
-  (let ((process (py-proc)))
-    (if (not process)
-        "Eldoc needs an inferior Python process running."
-      (let* ((current-defun (py-info-current-defun))
-             (input (or input
-                        (with-syntax-table py-dotted-expression-syntax-table
-                          (if (not current-defun)
-                              (current-word)
-                            (concat current-defun "." (current-word))))))
-             (ppss (syntax-ppss))
-             (help (when (and input
-                              (not (string= input (concat current-defun ".")))
-                              (not (or (python-info-ppss-context 'string ppss)
-                                       (python-info-ppss-context 'comment ppss))))
-                     (when (string-match (concat
-                                          (regexp-quote (concat current-defun "."))
-                                          "self\\.") input)
-                       (with-temp-buffer
-                         (insert input)
-                         (goto-char (point-min))
-                         (forward-word)
-                         (forward-char)
-                         (delete-region (point-marker) (search-forward "self."))
-                         (setq input (buffer-substring (point-min) (point-max)))))
-                     (py-send-string-no-output
-                      (format python-eldoc-string-code input) process))))
-        (with-current-buffer (process-buffer process)
-          (when comint-last-prompt-overlay
-            (delete-region comint-last-input-end
-                           (overlay-start comint-last-prompt-overlay))))
-        (when (and help
-                   (not (string= help "\n")))
-          help)))))
-
-(defun py-eldoc-at-point (symbol)
-  "Get help on SYMBOL using `help'.
-Interactively, prompt for symbol."
-  (interactive
-   (let ((symbol (with-syntax-table py-dotted-expression-syntax-table
-                   (current-word)))
-         (enable-recursive-minibuffers t))
-     (list (read-string (if symbol
-                            (format "Describe symbol (default %s): " symbol)
-                          "Describe symbol: ")
-                        nil nil symbol))))
-  (let ((process (python-shell-get-process)))
-    (if (not process)
-        (message "Eldoc needs an inferior Python process running.")
-      (message (py-eldoc--get-doc-at-point symbol process)))))
-
 (defun py-info-current-defun (&optional include-type)
   "Return name of surrounding function with Python compatible dotted expression syntax.
 Optional argument INCLUDE-TYPE indicates to include the type of the defun.

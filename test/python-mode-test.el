@@ -61,7 +61,7 @@
        'autopair-mode-test
        'py-smart-operator-test
        'py-guess-indent-offset-test
-       'py-moves-test
+       'py-bol-moves-test
        ;; broken
        ;; 'augmented-assigment-test
        'key-binding-tests
@@ -1804,7 +1804,7 @@ foo "))
   (assert (py-switch-imenu-index-function) nil "py-switch-imenu-index-function-test failed")
   (assert (listp imenu--index-alist) nil "py-switch-imenu-index-function-test failed"))
 
-(defun py-moves-test (&optional arg load-branch-function)
+(defun py-bol-moves-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring python-mode-teststring))
     (py-bug-tests-intern 'py-bol-moves-base arg teststring)))

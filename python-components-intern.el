@@ -253,8 +253,11 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
                ((looking-at py-block-closing-keywords-re)
                 (py-beginning-of-block)
                 (current-indentation))
-               ((and (< (py-count-lines) origline)(looking-at py-assignment-re))
-                (goto-char (match-end 0))
+               ((and (< (py-count-lines) origline)
+                     (eq (current-column) (current-indentation))) 
+                (and
+                 (looking-at py-assignment-re)
+                 (goto-char (match-end 0)))
                 ;; multiline-assignment
                 (if (and nesting (looking-at " *[[{(]")(not (looking-at ".+[]})][ \t]*$")))
                     (+ (current-indentation) py-indent-offset)

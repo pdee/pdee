@@ -5337,7 +5337,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.27 $\"
+__version__ = \"$Revision: 1.29 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -5853,6 +5853,20 @@ def foo():
   (message "%s" (point) )
   ;; (sit-for 0.1) 
   (assert (and (eq 14 (count-lines  (point-min) (point))) (eq 8 (current-column)))  nil "return-key-is-broken-lp-1191158-test failed"))
+
+
+(defun indent-refused-lp-1191133-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+def(foo):
+"))
+  (py-bug-tests-intern 'indent-refused-lp-1191133-base arg teststring)))
+
+(defun indent-refused-lp-1191133-base ()
+  (message "%s" (current-buffer))
+  (switch-to-buffer (current-buffer)) 
+  (assert (eq 4 (py-compute-indentation)) nil "indent-refused-lp-1191133-test failed"))
 
 
 (provide 'py-bug-numbered-tests)

@@ -1222,7 +1222,6 @@ See also `py-execute-directory'"
   :type 'boolean
   :group 'python-mode)
 
-
 (defcustom py-execute-fake-imported-p nil
   "When non-nil, code inside `if __name__ == \"__main__:\"' block is  not send to interpreter.
 
@@ -1783,28 +1782,52 @@ for options to pass to the DOCNAME interpreter. \"
   "Regular expression matching keyword which closes a try-block. ")
 
 (defconst py-except-re
-  "[ \t]*\\_<except\\_>[: \n\t]"
+  "[ \t]*\\_<except\\_>[:( \n\t]*"
   "Regular expression matching keyword which composes a try-block. ")
 
 (defconst py-else-re
-  "[ \t]*\\_<else\\_>[: \n\t]"
+  "[ \t]*\\_<else\\_>[: \n\t]*"
   "Regular expression matching keyword which closes a for- if- or try-block. ")
 
 (defconst py-return-re
-  ".*:?[ \t]*\\_<\\(return\\)\\_>[ \n\t]"
+  ".*:?[ \t]*\\_<\\(return\\)\\_>[ \n\t]*"
   "Regular expression matching keyword which typically closes a function. ")
 
-(defconst py-no-outdent-re "\\(try:\\|except\\(\\s *.*\\)?:\\|while\\s *.*:\\|for\\s *.*:\\|if\\s *.*:\\|elif\\s *.*:\\)\\([ 	]*\\_<\\(return\\|raise\\|break\\|continue\\|pass\\)\\_>[ 	\n]\\)")
-
-;; (setq py-no-outdent-re "\\(try:\\|except\\(\\s *.*\\)?:\\|while\\s *.*:\\|for\\s *.*:\\|if\\s *.*:\\|elif\\s *.*:\\)\\([ 	]*\\_<\\(return\\|raise\\|break\\|continue\\|pass\\)\\_>[ 	\n]\\)")
+(defconst py-no-outdent-re
+  (concat
+   "[ \t]*\\_<\\("
+   (mapconcat 'identity
+              (list
+               "try:"
+               "except"
+               "while"
+               "for"
+               "if"
+               "elif"
+               )
+              "\\|"
+              )
+   "\\)\\_>[( \t]+.*:[( \t]\\_<\\("
+   (mapconcat 'identity
+              (list
+               "return"
+               "raise"
+               "break"
+               "continue"
+               "pass"
+               )
+              "\\|"
+              )
+              "\\)\\_>[ )\t]*$")
+  "Regular expression matching lines not to augment indent after.")
 
 (defconst py-assignment-re "\\_<\\w+\\_>[ \t]*\\(=\\|+=\\|*=\\|%=\\|&=\\|^=\\|<<=\\|-=\\|/=\\|**=\\||=\\|>>=\\|//=\\)"
   "If looking at the beginning of an assignment. ")
 
-(defconst py-block-re "[ \t]*\\_<\\(class\\|def\\|for\\|if\\|try\\|while\\|with\\)\\_>[: \n\t]"
+(defconst py-block-re "[ \t]*\\_<\\(class\\|def\\|for\\|if\\|try\\|while\\|with\\)\\_>[:( \n\t]*"
   "Matches the beginning of a compound statement. ")
 
-(defconst py-minor-block-re "[ \t]*\\_<\\(for\\|if\\|try\\|with\\)\\_>[: \n\t]"
+(defconst py-minor-block-re "[ \t]*\\_<\\(for\\|if\\|try\\|with\\)\\_>[:( \n\t]*"
   "Matches the beginning of an `for', `if', `try' or `with' block. ")
 
 (defconst py-try-block-re "[ \t]*\\_<try\\_>[: \n\t]"
@@ -1819,26 +1842,45 @@ for options to pass to the DOCNAME interpreter. \"
 (defconst py-def-re "[ \t]*\\_<\\(def\\)\\_>[ \n\t]"
   "Matches the beginning of a functions definition. ")
 
-(defconst py-block-or-clause-re "[ \t]*\\_<\\(def\\|class\\|if\\|else\\|elif\\|while\\|for\\|try\\|except\\|finally\\|with\\)\\_>[: \n\t]"
+(defconst py-block-or-clause-re "[ \t]*\\_<\\(def\\|class\\|if\\|else\\|elif\\|while\\|for\\|try\\|except\\|finally\\|with\\)\\_>[:( \n\t]*"
   "Matches the beginning of a compound statement or it's clause. ")
 
-(defconst py-extended-block-or-clause-re "[ \t]*\\_<\\(def\\|class\\|if\\|else\\|elif\\|while\\|for\\|try\\|except\\|finally\\|with\\)\\_>[: \n\t]"
+(defconst py-extended-block-or-clause-re "[ \t]*\\_<\\(def\\|class\\|if\\|else\\|elif\\|while\\|for\\|try\\|except\\|finally\\|with\\)\\_>[:( \n\t]*"
   "Matches the beginning of a compound statement or it's clause.
 Includes def and class. ")
 
-(defconst py-clause-re "[ \t]*\\_<else\\_>[: \n\t]\\|[ \t]*\\_<elif\\_>[: \n\t]\\|[ \t]*\\_<except\\_>[: \n\t]\\|[ \t]*\\_<finally\\_>[: \n\t]"
-  "Matches the beginning of a compound statement's clause. ")
+(defconst py-clause-re
+  (concat
+   "[ \t]*\\_<\\("
+   (mapconcat 'identity
+              (list
+               "elif"
+               "else"
+               "except"
+               "finally")
+              "\\|")
+   "\\)\\_>[( \t]*.*:?")
+  "Regular expression matching lines not to augment indent after.")
 
-(defconst py-elif-re "[ \t]*\\_<\\elif\\_>[: \n\t]"
+(defconst py-elif-re "[ \t]*\\_<\\elif\\_>[:( \n\t]*"
   "Matches the beginning of a compound if-statement's clause exclusively. ")
 
-(defconst py-try-clause-re "[ \t]*\\_<\\(except\\|else\\|finally\\)\\_>[: \n\t]"
+(defconst py-try-clause-re
+  (concat
+   "[ \t]*\\_<\\("
+   (mapconcat 'identity
+              (list
+               "else"
+               "except"
+               "finally")
+              "\\|")
+   "\\)\\_>[( \t]*.*:")
   "Matches the beginning of a compound try-statement's clause. ")
 
-(defconst py-if-re "[ \t]*\\_<if\\_>[ \n\t]"
+(defconst py-if-re "[ \t]*\\_<if\\_>[( \n\t]*"
   "Matches the beginning of a compound statement saying `if'. ")
 
-(defconst py-try-re "[ \t]*\\_<try\\_>[: \n\t]"
+(defconst py-try-re "[ \t]*\\_<try\\_>[:( \n\t]*"
   "Matches the beginning of a compound statement saying `try'. " )
 
 (defconst python-compilation-regexp-alist
@@ -1941,21 +1983,6 @@ Includes def and class. ")
        (setq zmacs-region-stays t)))
 
 ;;; Constants
-
-;; (defconst py-no-outdent-re
-;;   (concat
-;;    "\\("
-;;    (mapconcat 'identity
-;;               (list "try:"
-;;                     "except\\(\\s +.*\\)?:"
-;;                     "while\\s +.*:"
-;;                     "for\\s +.*:"
-;;                     "if\\s +.*:"
-;;                     "elif\\s +.*:"
-;;                     (concat py-block-closing-keywords-re "[ \t\n]"))
-;;               "\\|")
-;;    "\\)")
-;;   "Regular expression matching lines not to dedent after.")
 
 ;; (setq py-traceback-line-re
 ;; "^IPython\\|^In \\[[0-9]+\\]: *\\|^>>>\\|^[^ \t>]+>[^0-9]+\\([0-9]+\\)\\|^[ \t]+File \"\\([^\"]+\\)\", line \\([0-9]+\\)")

@@ -1082,6 +1082,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-font-lock-keywords) nil \"py-font-lock-keywords not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall indent-refused-lp-1191133-test \
 --funcall return-key-is-broken-lp-1191158-test \
 --funcall indentation-doesnt-honor-comment-on-preceding-lp-1190288-test \
 --funcall incorrect-indentation-with-tertiary-lp-1189604-test \
@@ -1123,7 +1124,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-underscore-word-syntax-p-customization-has-no-effect-lp-1100947-test \
 --funcall py-up-test-python-el-111-test \
 --funcall py-down-python-el-112-test \
---funcall py-moves-test \
+--funcall py-bol-moves-test \
 --funcall enter-key-does-not-indent-properly-after-return-statement-lp-1098793-test \
 --funcall comments-start-a-new-line-lp-1092847-n2-test \
 --funcall wrong-indentation-after-return-or-pass-keyword-lp-1087499-test \
@@ -1406,3 +1407,4 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-electric-comment-add-space-t-lp:828398-test \
 --funcall more-docstring-filling-woes-lp-1102296-pep-257-test \
 --funcall more-docstring-filling-woes-lp-1102296-pep-257-nn-test \
+
