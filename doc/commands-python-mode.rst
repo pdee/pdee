@@ -662,15 +662,19 @@ With positive ARG switch `indent-tabs-mode' on.
 With negative ARG switch `indent-tabs-mode' off.
 Returns value of `indent-tabs-mode' switched to. 
 
+py-guess-indent-forward
+-----------------------
+Called when moving to end of a form and `py-smart-indentation' is on. 
+
 py-guess-indent-offset
 ----------------------
-Guess a value for, and change, `py-indent-offset'.
+Guess `py-indent-offset'.
 
-By default, make a buffer-local copy of `py-indent-offset' with the
-new value.
-With optional argument GLOBAL change the global value of `py-indent-offset'.
+Set local value of `py-indent-offset', return it
 
-Returns `py-indent-offset'
+Might change local value of `py-indent-offset' only when called
+downwards from beginning of block followed by a statement. Otherwise default-value is returned.
+
 
 py-narrow-to-defun
 ------------------
@@ -1226,11 +1230,6 @@ DOCSTRING is either a boolean or 'no
 If `py-paragraph-fill-docstring-p' is `t', `M-q` fills the
 complete docstring according to setting of `py-docstring-style' 
 
-py-fill-paren
--------------
-Paren fill function for `py-fill-paragraph'.
-
-
 py-fill-string-django
 ---------------------
 Fill docstring according to Django's coding standards style.
@@ -1413,25 +1412,11 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
 
 py-beginning-of-partial-expression
 ----------------------------------
-Go to the beginning of a minor python expression.
 
-With numeric ARG do it that many times.
-
-"." operators delimit a minor expression on their level.
-Expression here is conceived as the syntactical component of a statement in Python. See http://docs.python.org/reference
-Operators however are left aside resp. limit py-expression designed for edit-purposes.
-
-If already at the beginning or before a partial-expression, go to next partial-expression in buffer upwards 
 
 py-end-of-partial-expression
 ----------------------------
-Go to the end of a minor python expression.
 
-With numeric ARG do it that many times.
-
-"." operators delimit a minor expression on their level.
-Expression here is conceived as the syntactical component of a statement in Python. See http://docs.python.org/reference
-Operators however are left aside resp. limit py-expression designed for edit-purposes. 
 
 py-beginning-of-line
 --------------------
@@ -1474,6 +1459,10 @@ Returns beginning of block if successful, nil otherwise
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html
 
+;;; Beginning of forms
+----------------------
+
+
 py-beginning-of-form-intern
 ---------------------------
 Go to beginning of FORM.
@@ -1486,12 +1475,183 @@ Returns beginning of FORM if successful, nil otherwise
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html
 
+py-beginning-of-block
+---------------------
+Go to beginning block, skip whitespace at BOL.
+
+Returns beginning of block if successful, nil otherwise
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html
+
+py-beginning-of-clause
+----------------------
+Go to beginning clause, skip whitespace at BOL.
+
+Returns beginning of clause if successful, nil otherwise
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html
+
+py-beginning-of-block-or-clause
+-------------------------------
+Go to beginning block-or-clause, skip whitespace at BOL.
+
+Returns beginning of block-or-clause if successful, nil otherwise
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html
+
+py-beginning-of-def
+-------------------
+Go to beginning def, skip whitespace at BOL.
+
+Returns beginning of def if successful, nil otherwise
+
+When `py-mark-decorators' is non-nil, decorators are considered too.
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html
+
+py-beginning-of-class
+---------------------
+Go to beginning class, skip whitespace at BOL.
+
+Returns beginning of class if successful, nil otherwise
+
+When `py-mark-decorators' is non-nil, decorators are considered too.
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html
+
+py-beginning-of-def-or-class
+----------------------------
+Go to beginning def-or-class, skip whitespace at BOL.
+
+Returns beginning of def-or-class if successful, nil otherwise
+
+When `py-mark-decorators' is non-nil, decorators are considered too.
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html
+
+py-beginning-of-if-block
+------------------------
+Go to beginning if-block, skip whitespace at BOL.
+
+Returns beginning of if-block if successful, nil otherwise
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html
+
+py-beginning-of-try-block
+-------------------------
+Go to beginning try-block, skip whitespace at BOL.
+
+Returns beginning of try-block if successful, nil otherwise
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html
+
+py-beginning-of-minor-block
+---------------------------
+Go to beginning minor-block, skip whitespace at BOL.
+
+Returns beginning of minor-block if successful, nil otherwise
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html
+
+py-beginning-of-block-lc
+------------------------
+Go to beginning block, go to BOL.
+
+Returns beginning of block if successful, nil otherwise
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html
+
+py-beginning-of-clause-lc
+-------------------------
+Go to beginning clause, go to BOL.
+
+Returns beginning of clause if successful, nil otherwise
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html
+
+py-beginning-of-block-or-clause-lc
+----------------------------------
+Go to beginning block-or-clause, go to BOL.
+
+Returns beginning of block-or-clause if successful, nil otherwise
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html
+
+py-beginning-of-def-lc
+----------------------
+Go to beginning def, go to BOL.
+
+Returns beginning of def if successful, nil otherwise
+
+When `py-mark-decorators' is non-nil, decorators are considered too.
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html
+
+py-beginning-of-class-lc
+------------------------
+Go to beginning class, go to BOL.
+
+Returns beginning of class if successful, nil otherwise
+
+When `py-mark-decorators' is non-nil, decorators are considered too.
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html
+
+py-beginning-of-def-or-class-lc
+-------------------------------
+Go to beginning def-or-class, go to BOL.
+
+Returns beginning of def-or-class if successful, nil otherwise
+
+When `py-mark-decorators' is non-nil, decorators are considered too.
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html
+
+py-beginning-of-if-block-lc
+---------------------------
+Go to beginning if-block, go to BOL.
+
+Returns beginning of if-block if successful, nil otherwise
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html
+
+py-beginning-of-try-block-lc
+----------------------------
+Go to beginning try-block, go to BOL.
+
+Returns beginning of try-block if successful, nil otherwise
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html
+
+py-beginning-of-minor-block-lc
+------------------------------
+Go to beginning minor-block, go to BOL.
+
+Returns beginning of minor-block if successful, nil otherwise
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html
+
 py-beginning
 ------------
 Go to beginning of compound statement or definition at point.
-
-With C-u, go to beginning one level above.
-Returns position if successful, nil otherwise
 
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html
@@ -1525,16 +1685,6 @@ Returns position if successful, nil otherwise
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html
 
-py-beginning-of-block
----------------------
-Go to beginning of block.
-
-With C-u, go to beginning one level above.
-Returns beginning of block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html
-
 py-end-of-block
 ---------------
 Go to end of block.
@@ -1543,11 +1693,6 @@ Returns end of block if successful, nil otherwise
 
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html
-
-py-beginning-of-clause
-----------------------
-Goto beginning of line where clause starts.
-  Returns position reached, if successful, nil otherwise.
 
 py-end-of-clause
 ----------------
@@ -1558,33 +1703,11 @@ Returns end of clause if successful, nil otherwise
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html
 
-py-beginning-of-block-or-clause
--------------------------------
-Go to beginning of block-or-clause.
-
-With C-u, go to beginning one level above.
-Returns beginning of block-or-clause if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html
-
 py-end-of-block-or-clause
 -------------------------
 Go to end of block-or-clause.
 
 Returns end of block-or-clause if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html
-
-py-beginning-of-def
--------------------
-Go to beginning of def.
-
-With C-u, go to beginning one level above.
-Returns beginning of def if successful, nil otherwise
-
-When `py-mark-decorators' is non-nil, decorators are considered too.
 
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html
@@ -1600,18 +1723,6 @@ With M-x universal argument or `py-mark-decorators' set to `t', decorators are m
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html
 
-py-beginning-of-class
----------------------
-Go to beginning of class.
-
-With C-u, go to beginning one level above.
-Returns beginning of class if successful, nil otherwise
-
-When `py-mark-decorators' is non-nil, decorators are considered too.
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html
-
 py-end-of-class
 ---------------
 Go to end of class.
@@ -1619,18 +1730,6 @@ Go to end of class.
 Returns end of class if successful, nil otherwise
 
 With M-x universal argument or `py-mark-decorators' set to `t', decorators are marked too.
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html
-
-py-beginning-of-def-or-class
-----------------------------
-Go to beginning of def-or-class.
-
-With C-u, go to beginning one level above.
-Returns beginning of def-or-class if successful, nil otherwise
-
-When `py-mark-decorators' is non-nil, decorators are considered too.
 
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html
@@ -1646,16 +1745,6 @@ With M-x universal argument or `py-mark-decorators' set to `t', decorators are m
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html
 
-py-beginning-of-if-block
-------------------------
-Go to beginning of if-block.
-
-With C-u, go to beginning one level above.
-Returns beginning of if-block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html
-
 py-end-of-if-block
 ------------------
 Go to end of if-block.
@@ -1665,31 +1754,11 @@ Returns end of if-block if successful, nil otherwise
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html
 
-py-beginning-of-try-block
--------------------------
-Go to beginning of try-block.
-
-With C-u, go to beginning one level above.
-Returns beginning of try-block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html
-
 py-end-of-try-block
 -------------------
 Go to end of try-block.
 
 Returns end of try-block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html
-
-py-beginning-of-minor-block
----------------------------
-Go to beginning of minor-block.
-
-With C-u, go to beginning one level above.
-Returns beginning of minor-block if successful, nil otherwise
 
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html
@@ -1987,13 +2056,6 @@ py-beginning-of-block-bol-p
 ---------------------------
 Returns position, if cursor is at the beginning of block, at beginning of line, nil otherwise. 
 
-py-beginning-of-block-bol
--------------------------
-Goto beginning of line where block starts.
-  Returns position reached, if successful, nil otherwise.
-
-See also `py-up-block': up from current definition to next beginning of block above. 
-
 py-end-of-block-bol
 -------------------
 Goto beginning of line following end of block.
@@ -2028,13 +2090,6 @@ Don't store data in kill ring.
 py-beginning-of-clause-bol-p
 ----------------------------
 Returns position, if cursor is at the beginning of clause, at beginning of line, nil otherwise. 
-
-py-beginning-of-clause-bol
---------------------------
-Goto beginning of line where clause starts.
-  Returns position reached, if successful, nil otherwise.
-
-See also `py-up-clause': up from current definition to next beginning of clause above. 
 
 py-end-of-clause-bol
 --------------------
@@ -2071,13 +2126,6 @@ py-beginning-of-block-or-clause-bol-p
 -------------------------------------
 Returns position, if cursor is at the beginning of block-or-clause, at beginning of line, nil otherwise. 
 
-py-beginning-of-block-or-clause-bol
------------------------------------
-Goto beginning of line where block-or-clause starts.
-  Returns position reached, if successful, nil otherwise.
-
-See also `py-up-block-or-clause': up from current definition to next beginning of block-or-clause above. 
-
 py-end-of-block-or-clause-bol
 -----------------------------
 Goto beginning of line following end of block-or-clause.
@@ -2112,13 +2160,6 @@ Don't store data in kill ring.
 py-beginning-of-def-bol-p
 -------------------------
 Returns position, if cursor is at the beginning of def, at beginning of line, nil otherwise. 
-
-py-beginning-of-def-bol
------------------------
-Goto beginning of line where def starts.
-  Returns position reached, if successful, nil otherwise.
-
-See also `py-up-def': up from current definition to next beginning of def above. 
 
 py-end-of-def-bol
 -----------------
@@ -2156,13 +2197,6 @@ py-beginning-of-class-bol-p
 ---------------------------
 Returns position, if cursor is at the beginning of class, at beginning of line, nil otherwise. 
 
-py-beginning-of-class-bol
--------------------------
-Goto beginning of line where class starts.
-  Returns position reached, if successful, nil otherwise.
-
-See also `py-up-class': up from current definition to next beginning of class above. 
-
 py-end-of-class-bol
 -------------------
 Goto beginning of line following end of class.
@@ -2198,13 +2232,6 @@ Don't store data in kill ring.
 py-beginning-of-def-or-class-bol-p
 ----------------------------------
 Returns position, if cursor is at the beginning of def-or-class, at beginning of line, nil otherwise. 
-
-py-beginning-of-def-or-class-bol
---------------------------------
-Goto beginning of line where def-or-class starts.
-  Returns position reached, if successful, nil otherwise.
-
-See also `py-up-def-or-class': up from current definition to next beginning of def-or-class above. 
 
 py-end-of-def-or-class-bol
 --------------------------
@@ -3430,6 +3457,10 @@ py-pychecker-run
 ;;; Skeletons
 -------------
 
+
+py-load-skeletons
+-----------------
+These skeletons are loaded by python-mode, if `py-load-skeletons-p' is non-nil. 
 
 ;;; Virtualenv
 --------------

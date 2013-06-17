@@ -5337,7 +5337,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.29 $\"
+__version__ = \"$Revision: 1.30 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -5851,7 +5851,7 @@ def foo():
   (py-newline-and-indent)
   (py-newline-and-indent)
   (message "%s" (point) )
-  ;; (sit-for 0.1) 
+  ;; (sit-for 0.1)
   (assert (and (eq 14 (count-lines  (point-min) (point))) (eq 8 (current-column)))  nil "return-key-is-broken-lp-1191158-test failed"))
 
 
@@ -5865,8 +5865,38 @@ def(foo):
 
 (defun indent-refused-lp-1191133-base ()
   (message "%s" (current-buffer))
-  (switch-to-buffer (current-buffer)) 
+  (switch-to-buffer (current-buffer))
   (assert (eq 4 (py-compute-indentation)) nil "indent-refused-lp-1191133-test failed"))
+
+
+(defun Parens-span-multiple-lines-lp-1191225-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+# On Jun 14, 2013, at 05:04 PM, Felipe Reyes wrote:
+def foo():
+    if (foo &&
+        baz):
+        bar()
+# >> This example raises a pep8 warning[0],
+# >> I've been dealing with it and manually
+# >> adding another indentation level to not leave 'baz' aligned with 'baz
+# ()'
+# >>
+def foo():
+    if (foo &&
+            baz):
+        bar()
+"))
+  (py-bug-tests-intern 'Parens-span-multiple-lines-lp-1191225-base arg teststring)))
+
+(defun Parens-span-multiple-lines-lp-1191225-base ()
+  (let (py-indent-paren-spanned-multilines-p)
+    (goto-char 126)
+    (assert (eq 8 (py-compute-indentation)) nil "Parens-span-multiple-lines-lp-1191225-test #1 failed")
+    (goto-char 354)
+    (setq py-indent-paren-spanned-multilines-p t)
+    (assert (eq 12 (py-compute-indentation)) nil "Parens-span-multiple-lines-lp-1191225-test #2 failed")))
 
 
 (provide 'py-bug-numbered-tests)

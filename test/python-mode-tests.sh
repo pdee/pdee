@@ -1082,6 +1082,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-font-lock-keywords) nil \"py-font-lock-keywords not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall Parens-span-multiple-lines-lp-1191225-test \
 --funcall indent-refused-lp-1191133-test \
 --funcall return-key-is-broken-lp-1191158-test \
 --funcall indentation-doesnt-honor-comment-on-preceding-lp-1190288-test \

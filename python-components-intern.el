@@ -176,7 +176,9 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
                                (py-empty-arglist-indent nesting py-indent-offset))
                               ((looking-at "\\s([ \t]*\\([^ \t]+.*\\)$")
                                (goto-char (match-beginning 1))
-                               (current-column))
+                               (if py-indent-paren-spanned-multilines-p
+                                   (+ (current-column) py-indent-offset)
+                                 (current-column)))
                               (t (+ (current-column) (* (nth 0 pps)))))))
                      ((not (py-beginning-of-statement-p))
                       (py-beginning-of-statement)
@@ -254,7 +256,7 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
                 (py-beginning-of-block)
                 (current-indentation))
                ((and (< (py-count-lines) origline)
-                     (eq (current-column) (current-indentation))) 
+                     (eq (current-column) (current-indentation)))
                 (and
                  (looking-at py-assignment-re)
                  (goto-char (match-end 0)))

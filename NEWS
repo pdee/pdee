@@ -45,6 +45,20 @@ New in version 6.1.2
 - customizable `py-uncomment-indents-p', default nil
   When non-nil, after uncomment indent lines.
 
+- boolean `py-indent-paren-spanned-multilines-p, default is nil
+  If non-nil, indents elements of list a value of `py-indent-offset' to first element: 
+  def foo():
+      if (foo &&
+              baz):
+          bar()
+
+  Default lines up with first element:
+
+  def foo():
+      if (foo &&
+          baz):
+          bar()
+
 - boolean `py-load-skeletons-p', default nil
   If skeleton definitions should be loaded
 

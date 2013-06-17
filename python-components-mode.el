@@ -390,9 +390,26 @@ Default is nil. "
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-indent-honors-inline-comment nil
-  "If non-nil, indents to column of inlined comment start.
-Default is nil. "
+(defcustom py-indent-honors-multiline-listing nil
+  "If `t', indents to 1+ column of opening delimiter. If `nil', indent adds one level to the beginning of statement. Default is `nil'. "
+  :type 'boolean
+  :group 'python-mode)
+
+(defcustom py-indent-paren-spanned-multilines-p nil
+  "If non-nil, indents elements of list a value of `py-indent-offset' to first element: 
+
+def foo():
+    if (foo &&
+            baz):
+        bar()
+
+Default lines up with first element:
+
+def foo():
+    if (foo &&
+        baz):
+        bar()
+"
   :type 'boolean
   :group 'python-mode)
 
@@ -6268,13 +6285,6 @@ Should you need more shells to select, extend this command by adding inside the 
       (error (concat "Could not detect " py-shell-name " on your sys
 tem")))))
 
-;; (unless (string= (buffer-name (current-buffer)) py-which-bufname)
-;;   (unless (buffer-live-p py-which-bufname)
-;;     (py-shell nil nil py-shell-name)
-;;     (set-buffer (get-buffer-create py-which-bufname))
-;;     (when py-switch-buffers-on-execute-p
-;;       (switch-to-buffer (current-buffer)) )))
-
 (defun py-toggle-local-default-use ()
   (interactive)
   "Toggle boolean value of `py-use-local-default'.
@@ -6321,30 +6331,6 @@ as it leaves your system default unchanged."
               (lambda (arg)
                 (py-end-of-block-or-clause))
               nil))
-
-;; Fixme: This should inherit some stuff from `python-mode', but I'm
-;; not sure how much: at least some keybindings, like C-c C-f;
-;; syntax?; font-locking, e.g. for triple-quoted strings?
-;; (define-derived-mode inferior-python-mode comint-mode "Inferior Python"
-;;   "Major mode for interacting with an inferior Python process.
-;; A Python process can be started with \\[py-shell].
-;;
-;; Hooks `comint-mode-hook' and `inferior-python-mode-hook' are run in
-;; that order.
-;;
-;; You can send text to the inferior Python process from other buffers
-;; containing Python source.
-;;  * \\[python-switch-to-python] switches the current buffer to the Python
-;;     process buffer.
-;;  * \\[py-send-region] sends the current region to the Python process.
-;;  * \\[py-send-region-and-go] switches to the Python process buffer
-;;     after sending the text.
-;; For running multiple processes in multiple buffers, see `run-python' and
-;; `py-buffer-name'.
-;;
-;; \\{inferior-python-mode-map}"
-;;   :group 'python-mode
-;;   (setq mode-line-process '(":%s")))
 
 ;;;
 
