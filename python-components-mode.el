@@ -126,6 +126,12 @@ Default is  non-nil"
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-indent-honors-inline-comment nil
+  "If non-nil, indents to column of inlined comment start.
+Default is nil. "
+  :type 'boolean
+  :group 'python-mode)
+
 (defcustom py-set-fill-column-p nil
   "If python-mode should set fill-column
 
