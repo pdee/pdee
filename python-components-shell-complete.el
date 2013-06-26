@@ -184,25 +184,6 @@ FILE-NAME."
       (or (file-remote-p temp-file-name 'localname) file-name) "Fehlerdatei")
      process)))
 
-;; Author: Lukasz Pankowski, patch sent for lp:328836
-;;; need to clear py-shell-input-lines if primary prompt found
-;; (defun py-comint-output-filter-function (string)
-;;   "Watch output for Python prompt and exec next file waiting in queue.
-;; This function is appropriate for `comint-output-filter-functions'."
-;;   ;; TBD: this should probably use split-string
-;;   (when (and (or (string-equal string ">>> ")
-;; 		 (and (>= (length string) 5)
-;; 		      (string-equal (substring string -5) "\n>>> ")))
-;; 	     (or (setq py-shell-input-lines nil)
-;; 		 py-file-queue))
-;;     (pop-to-buffer (current-buffer))
-;;     (py-safe (delete-file (car py-file-queue)))
-;;     (setq py-file-queue (cdr py-file-queue))
-;;     (if py-file-queue
-;; 	(let ((pyproc (get-buffer-process (current-buffer))))
-;; 	  (py-execute-file pyproc (car py-file-queue))))
-;;     ))
-
 ;;;
 
 (defun py-script-complete ()

@@ -5337,7 +5337,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.30 $\"
+__version__ = \"$Revision: 1.31 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -5402,7 +5402,7 @@ class Test(object):
     (goto-char 259)
     (fill-paragraph)
     (forward-line 1)
-    (sit-for 0.1)
+    (sit-for 0.2)
     (assert (looking-at "        pass") nil "more-docstring-filling-woes-lp-1102296-nil-test #2 failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-nil-test #2 done")
     (goto-char 380)

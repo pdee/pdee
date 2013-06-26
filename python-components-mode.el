@@ -141,6 +141,12 @@ Default is  nil"
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-error-markup-delay 4
+  "Seconds error's are highlighted in exception buffer. "
+
+  :type 'integer
+  :group 'python-mode)
+
 (defcustom py-autofill-timer-delay 1
   "Delay when idle before functions ajusting  `py-docstring-fill-column' resp. `py-comment-fill-column' are called. "
   :type 'integer
@@ -402,7 +408,7 @@ Default is nil. "
   :group 'python-mode)
 
 (defcustom py-indent-paren-spanned-multilines-p nil
-  "If non-nil, indents elements of list a value of `py-indent-offset' to first element: 
+  "If non-nil, indents elements of list a value of `py-indent-offset' to first element:
 
 def foo():
     if (foo &&
@@ -565,7 +571,7 @@ Messaging increments the prompt counter of IPython shell. "
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-use-execute-ge24-3-p nil
+(defcustom py-execute-no-temp-p nil
   "Seems Emacs-24.3 provided a way executing stuff without temporary files. "
   :type 'boolean
   :group 'python-mode)
@@ -2102,20 +2108,23 @@ Includes def and class. ")
 (and (fboundp 'make-obsolete-variable)
      (make-obsolete-variable 'py-mode-hook 'python-mode-hook nil))
 
-(defun py-choose-shell-by-shebang ()
+(defun py-choose-shell-by-shebang (&optional shebang)
   "Choose shell by looking at #! on the first line.
 
-Returns the specified Python resp. Jython shell command name. "
+If SHEBANG is non-nil, returns the shebang as string,
+otherwise the Python resp. Jython shell command name. "
   (interactive)
   ;; look for an interpreter specified in the first line
   (let* (erg res)
     (save-excursion
       (goto-char (point-min))
       (when (looking-at py-shebang-regexp)
-        (setq erg (split-string (match-string-no-properties 0) "[#! \t]"))
-        (dolist (ele erg)
-          (when (string-match "[bijp]+ython" ele)
-            (setq res ele)))))
+        (if shebang
+            (setq erg (match-string-no-properties 0))
+          (setq erg (split-string (match-string-no-properties 0) "[#! \t]"))
+          (dolist (ele erg)
+            (when (string-match "[bijp]+ython" ele)
+              (setq res ele))))))
     (when (and py-verbose-p (interactive-p)) (message "%s" res))
     res))
 

@@ -638,38 +638,6 @@ Interactively, prompt for SYMBOL."
       sourcefile)))
 
 (defalias 'py-find-function 'py-find-definition)
-;; (defun py-find-definition (&optional arg)
-;;   "Find source of definition of function NAME.
-;;
-;; Interactively, prompt for name.
-;;
-;; Search in current buffer first. "
-;;   (interactive "P")
-;;   (let* ((name (or (and (eq 4 (prefix-numeric-value arg))
-;;                         (read-from-minibuffer "Name: "
-;;                                               (with-syntax-table py-dotted-expression-syntax-table
-;;                                                 (current-word))))
-;;                    (with-syntax-table py-dotted-expression-syntax-table
-;;                      (current-word))))
-;;          (imports (replace-regexp-in-string ";$" "" (py-find-imports)))
-;;          ;; (enable-recursive-minibuffers t)
-;;          (erg (progn (goto-char (point-min))
-;;                      (when
-;;                          (re-search-forward (concat "^[ \t]*def " name "(") nil t 1)
-;;                        (forward-char -2)
-;;                        (point)))))
-;;     (unless erg
-;;       ;; (error "Not called from buffer visiting Python file")
-;;       (let* ((loc (py-send-receive (format "%s;emacs.location_of%S)"
-;;                                            imports name )))
-;;              (loc (car (read-from-string loc)))
-;;              (file (car loc))
-;;              (line (cdr loc)))
-;;         (unless file (error "Don't know where `%s' is defined" name))
-;;         (pop-to-buffer (find-file-noselect file))
-;;         (when (integerp line)
-;;           (goto-char (point-min))
-;;           (forward-line (1- line)))))))
 
 (defun py-find-imports ()
   "Find top-level imports.
