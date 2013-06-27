@@ -2358,26 +2358,45 @@ else:
   )
 
 
-
-(defun py-execute-fake-imported-test (&optional arg)
+;; py-if-name-main-permission-p
+(defun py-if-name-main-permission-lp-326620-test (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
-#! /usr/bin/env python3
-# -*- coding: utf-8 -*-
+def py_if_name_main_permission_test():
+    if __name__ == \"__main__\" :
+        print(\"__name__ == '__main__' run\")
+        return True
 
-if __name__ == \"__main__\":
-    print(\"__name__ == '__main__' run\")
+    else:
+        print(\"__name__ == '__main__' supressed\")
+        return False
 
-else:
-    print(\"__name__ == '__main__' supressed\")
+py_if_name_main_permission_test()
 "))
-  (py-bug-tests-intern 'py-execute-fake-imported-base arg teststring)))
+  (py-bug-tests-intern 'py-if-name-main-permission-lp-326620-base arg teststring)))
 
-(defun py-execute-fake-imported-base ()
-  (let ((py-execute-fake-imported-p t))
-    (goto-char 40)
-    (assert nil "py-execute-fake-imported-test failed")))
-
+(defun py-if-name-main-permission-lp-326620-base ()
+  (save-excursion
+    (let ((py-if-name-main-permission-p t)
+          (py-shell-name (py-choose-shell)))
+      (py-execute-buffer)
+      (set-buffer "*Python*")
+      (switch-to-buffer (current-buffer))
+      (goto-char (point-max))
+      (forward-line -1)
+      (end-of-line)
+      (sit-for 0.2) 
+      (assert (looking-back "run") nil "py-if-name-main-permission-test #1 failed")))
+  (let (py-if-name-main-permission-p)
+    (py-execute-buffer)
+    (set-buffer "*Python*")
+    (switch-to-buffer (current-buffer))
+    (goto-char (point-max))
+    (forward-line -1)
+    (end-of-line)
+    (sit-for 0.2) 
+    (assert (looking-back "supressed") nil "py-if-name-main-permission-test #2 failed")))
 
 (provide 'python-mode-test)
+

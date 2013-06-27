@@ -5738,7 +5738,7 @@ inode, start_no, end_no)
     (py-shell)
     (sit-for 0.1)
     (py-shell nil nil nil t nil nil nil t)
-    (assert (string= "*Python*<2>" (buffer-name)) nil "from-within-py-shell-call-another-instance-lp-1169687-test failed")))
+    (assert (string-match "\\*Python\\*\<[0-9]+\>" (buffer-name)) nil "from-within-py-shell-call-another-instance-lp-1169687-test failed")))
 
 (defun multibuffer-mayhem-lp-1162q272.py-test (&optional arg)
   (interactive "p")

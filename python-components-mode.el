@@ -110,6 +110,15 @@ Default is non-nil. If nil, `py-pylint-run' offers filename from history "
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-if-name-main-permission-p t
+  "Allow execution of code inside blocks started
+by \"if __name__== '__main__':\".
+
+Default is non-nil"
+
+  :type 'boolean
+  :group 'python-mode)
+
 (defcustom py-use-font-lock-doc-face-p nil
   "If documention string inside of def or class get `font-lock-doc-face'.
 
@@ -1248,13 +1257,6 @@ Used by Python-shell for output of `py-execute-buffer' and related commands. See
   "When `t', current directory is used by Python-shell for output of `py-execute-buffer' and related commands.
 
 See also `py-execute-directory'"
-  :type 'boolean
-  :group 'python-mode)
-
-(defcustom py-execute-fake-imported-p nil
-  "When non-nil, code inside `if __name__ == \"__main__:\"' block is  not send to interpreter.
-
-Default is nil "
   :type 'boolean
   :group 'python-mode)
 
@@ -4775,6 +4777,17 @@ Make sure, `py-underscore-word-syntax-p' is off\.
 Returns value of `py-underscore-word-syntax-p'\. .
 
 Use `M-x customize-variable' to set it permanently"])
+
+          ["Execute \"if name == main\" blocks p"
+           (setq py-if-name-main-permission-p
+                 (not py-if-name-main-permission-p))
+ :help " `py-if-name-main-permission-p'
+
+Allow execution of code inside blocks delimited by 
+if __name__ == '__main__'
+
+Default is non-nil. "
+           :style toggle :selected py-if-name-main-permission-p]
 
           ["Jump on exception"
            (setq py-jump-on-exception

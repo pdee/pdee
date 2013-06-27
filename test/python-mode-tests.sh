@@ -1082,6 +1082,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-font-lock-keywords) nil \"py-font-lock-keywords not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall py-if-name-main-permission-lp-326620-test \
 --funcall Parens-span-multiple-lines-lp-1191225-test \
 --funcall indent-refused-lp-1191133-test \
 --funcall return-key-is-broken-lp-1191158-test \
@@ -1090,7 +1091,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-end-of-statement-test-1 \
 --funcall py-end-of-statement-test-2 \
 --funcall nested-if-test-1 \
---funcall from-within-py-shell-call-another-instance-lp-1169687-test \
 --funcall py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test \
 --funcall Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test \
 --funcall incorrect-indentation-of-comments-in-a-multiline-list-lp-1077063-test \
@@ -1317,7 +1317,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-electric-backspace-test \
 --funcall py-insert-super-python3-test \
 \
---funcall usr-bin-python-shell-complete-test \
 --funcall dict-error-test \
 --funcall py-install-directory-path-test \
 --funcall py-execute-region-python3-noswitch-test \
@@ -1408,4 +1407,5 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-electric-comment-add-space-t-lp:828398-test \
 --funcall more-docstring-filling-woes-lp-1102296-pep-257-test \
 --funcall more-docstring-filling-woes-lp-1102296-pep-257-nn-test \
-
+--funcall from-within-py-shell-call-another-instance-lp-1169687-test \
+--funcall usr-bin-python-shell-complete-test \

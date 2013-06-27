@@ -309,7 +309,8 @@ Needed when file-path names are contructed from maybe numbered buffer names like
                   py-switch-buffers-on-execute-p))
          (when (< (count-windows) py-max-split-windows)
            (funcall py-split-windows-on-execute-function))
-         (pop-to-buffer py-buffer-name)
+         (set-buffer py-buffer-name)
+         (switch-to-buffer (current-buffer))
          (display-buffer oldbuf))
         ;; split, not switch
         ((and
@@ -331,7 +332,9 @@ Needed when file-path names are contructed from maybe numbered buffer names like
              (and (not (eq switch 'noswitch))
                   py-switch-buffers-on-execute-p))
          (let (pop-up-windows)
-           (pop-to-buffer py-buffer-name)))
+
+           (set-buffer py-buffer-name)
+           (switch-to-buffer (current-buffer))))
         ;; no split, no switch
         ((or (eq switch 'noswitch)
              (not py-switch-buffers-on-execute-p))
@@ -607,18 +610,6 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
   (when (buffer-live-p localname)
     (kill-buffer localname)))
 
-(defun py-execute-fake-imported ()
-  "Make sure code inside `if __name__ == \"__main__:\"' block is not sent to interpreter.
-
-See `py-execute-fake-imported-p' "
-  (unless (eobp)
-    (unless (looking-at "if __name__ == \"__main__:")
-      (py-down-block)
-      (and (looking-at "if __name__ == \"__main__:")
-          (py-delete-block))
-        (unless (eobp)
-          (py-execute-fake-imported)))))
-
 (defun py-execute-python-mode-v5 (start end &optional pyshellname)
   (let ((py-exception-buffer (current-buffer))
         (cmd (concat (or pyshellname py-shell-name) (if (string-equal py-which-bufname
@@ -736,11 +727,14 @@ See `py-execute-fake-imported-p' "
          erg err-p lineadd)
     (set-buffer filebuf)
     (erase-buffer)
+    (unless py-if-name-main-permission-p
+       (setq strg (replace-regexp-in-string
+                  "if[( ]__name__[) ]*==[( ]*['\"]\\{1,3\\}__main__['\"]\\{1,3\\}[ )]:"
+                  ;; space after __main__, i.e. will not be executed
+                  "if __name__ == '__main__ ':" strg)))
     (insert strg)
     (py-fix-start (point-min)(point-max))
     (py-if-needed-insert-shell pyshellname sepchar)
-    ;; supress if __name__ == "__main__" forms
-    (and py-execute-fake-imported-p (py-execute-fake-imported))
     (unless wholebuf (py-insert-coding))
     (unless (string-match "[jJ]ython" pyshellname) (py-insert-execute-directory execute-directory))
     ;; fix offline amount, make erorr point at the corect line
@@ -1491,7 +1485,7 @@ Returns position where output starts. "
 (defun py-jump-to-exception (err-p py-exception-buffer &optional file)
   "Jump to the Python code in FILE at LINE."
   (let (
-        (inhibit-point-motion-hooks t)
+        ;; (inhibit-point-motion-hooks t)
         (file (or file (car err-p)))
         (line (cadr err-p))
         (action (nth 2 err-p))
