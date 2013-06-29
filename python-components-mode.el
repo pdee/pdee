@@ -1289,11 +1289,6 @@ See also `py-execute-directory'"
          (setq ffap-alist (remove '(python-mode . py-ffap-module-path) ffap-alist))
          (setq ffap-alist (remove '(inferior-python-mode . py-ffap-module-path)
                                   ffap-alist)))
-        ((and py-ffap-p (eq py-ffap-p 'python-ffap))
-         (eval-after-load "ffap"
-           '(push '(python-mode . py-ffap-module-path) ffap-alist))
-         (setq ffap-alist (remove '(python-mode . py-module-path) ffap-alist))
-         ffap-alist)
         (t (setq ffap-alist (remove '(python-mode . py-ffap-module-path) ffap-alist))
            (setq ffap-alist (remove '(inferior-python-mode . py-ffap-module-path)
                                     ffap-alist))
@@ -1303,12 +1298,11 @@ See also `py-execute-directory'"
 
   "Select python-modes way to find file at point.
 
-Default is  nil "
+Default is nil "
 
   :type '(choice
           (const :tag "default" nil)
-          (const :tag "use py-ffap, emacs.py" py-ffap)
-          (const :tag "use python-ffap" python-ffap))
+          (const :tag "use py-ffap" py-ffap))
   :group 'python-mode
   :set (lambda (symbol value)
          (set-default symbol value)
@@ -1719,14 +1713,6 @@ Currently-active file is at the head of the list.")
 
 (defvar py-preoutput-skip-next-prompt nil)
 
-(defvar python-prev-dir/file nil
-  "Caches (directory . file) pair used in the last `py-load-file' command.
-Used for determining the default in the next one.")
-
-(defvar python-prev-dir/file nil
-  "Caches (directory . file) pair used in the last `py-load-file' command.
-Used for determining the default in the next one.")
-
 (defvar python-default-template "if"
   "Default template to expand by `python-expand-template'.
 Updated on each expansion.")
@@ -1767,13 +1753,6 @@ and resending the lines later. The lines are stored in reverse order")
     ;; This will inherit from comint-mode-map.
     (define-key map "\C-c\C-l" 'py-load-file)
     (define-key map "\C-c\C-v" 'py-check-command)
-    ;; Note that we _can_ still use these commands which send to the
-    ;; Python process even at the prompt iff we have a normal prompt,
-    ;; i.e. '>>> ' and not '... '.  See the comment before
-    ;; py-send-region.  Fixme: uncomment these if we address that.
-
-    ;; (define-key map [(meta ?\t)] 'python-complete-symbol)
-    ;; (define-key map "\C-c\C-f" 'python-describe-symbol)
     map))
 
 (defvar py-already-guessed-indent-offset nil
@@ -4783,7 +4762,7 @@ Use `M-x customize-variable' to set it permanently"])
                  (not py-if-name-main-permission-p))
  :help " `py-if-name-main-permission-p'
 
-Allow execution of code inside blocks delimited by 
+Allow execution of code inside blocks delimited by
 if __name__ == '__main__'
 
 Default is non-nil. "
@@ -6031,26 +6010,13 @@ Don't save anything for STR matching `py-history-filter-regexp'."
 
 (defun py-load-file (file-name)
   "Load a Python file FILE-NAME into the inferior Python process.
+
 If the file has extension `.py' import or reload it as a module.
 Treating it as a module keeps the global namespace clean, provides
 function location information for debugging, and supports users of
 module-qualified names."
-  (interactive (comint-get-source "Load Python file: " python-prev-dir/file
-                                  python-source-modes
-                                  t))	; because execfile needs exact name
-  (comint-check-source file-name)     ; Check to see if buffer needs saving.
-  (setq python-prev-dir/file (cons (file-name-directory file-name)
-                                   (file-name-nondirectory file-name)))
-  (with-current-buffer (process-buffer (py-proc)) ;Runs python if needed.
-    ;; Fixme: I'm not convinced by this logic from python-mode.el.
-    (py-send-command
-     (if (string-match "\\.py\\'" file-name)
-         (let ((module (file-name-sans-extension
-                        (file-name-nondirectory file-name))))
-           (format "emacs.eimport(%S,%S)"
-                   module (file-name-directory file-name)))
-       (format "execfile(%S)" file-name)))
-    (message "%s loaded" file-name)))
+  (interactive "f")
+  (py-execute-file-base (get-buffer-process (get-buffer (py-shell))) file-name))
 
 (defun py-proc (&optional dedicated)
   "Return the current Python process.
@@ -6116,9 +6082,7 @@ This is a no-op if `py-check-comint-prompt' returns nil."
               (kill-local-variable 'py-preoutput-result)))))))
 
 ;;; FFAP support
-(defun py-module-path (module)
-  "Function for `ffap-alist' to return path to MODULE."
-  (py-send-receive (format "emacs.modpath (%S)" module)))
+(defalias 'py-module-path 'py-ffap-module-path)
 
 (defun py-ffap-module-path (module)
   "Function for `ffap-alist' to return path for MODULE."
@@ -6136,9 +6100,6 @@ This is a no-op if `py-check-comint-prompt' returns nil."
 
 (add-hook 'python-mode-hook 'py-set-ffap-form)
 
-
-
-
 ;;;; Modes.
 
 ;; pdb tracking is alert once this file is loaded, but takes no action if
@@ -6502,10 +6463,9 @@ You can send text to the inferior Python process from other buffers
 containing Python source.
  * \\[py-switch-to-shell] switches the current buffer to the Python
     process buffer.
- * \\[py-send-region] sends the current region to the Python process.
+ * \\[py-execute-region] sends the current region to the Python process.
  * \\[py-send-region-and-go] switches to the Python process buffer
     after sending the text.
-For running multiple processes in multiple buffers, see `py-buffer-name'.
 
 \\{inferior-python-mode-map}"
   :group 'python

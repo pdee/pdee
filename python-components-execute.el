@@ -546,6 +546,7 @@ Ignores setting of `py-switch-buffers-on-execute-p', buffer with region stays cu
   (interactive "r\nP")
   (py-execute-base start end py-shell-name dedicated 'noswitch))
 
+(defalias 'py-send-region 'py-execute-region)
 ;;; execute region
 (defun py-execute-region (start end &optional shell dedicated switch nostars sepchar split file)
   "Send the region to a Python interpreter.
@@ -1417,47 +1418,6 @@ Returns position where output starts. "
     ;; (process-send-string proc cmd)
     (setq erg (process-mark proc))
     erg))
-
-(defun py-send-region (start end)
-  "Send the region to the inferior Python process."
-  ;; The region is evaluated from a temporary file.  This avoids
-  ;; problems with blank lines, which have different semantics
-  ;; interactively and in files.  It also saves the inferior process
-  ;; buffer filling up with interpreter prompts.  We need a Python
-  ;; function to remove the temporary file when it has been evaluated
-  ;; (though we could probably do it in Lisp with a Comint output
-  ;; filter).  This function also catches exceptions and truncates
-  ;; tracebacks not to mention the frame of the function itself.
-  ;;
-  ;; The `compilation-shell-minor-mode' parsing takes care of relating
-  ;; the reference to the temporary file to the source.
-  ;;
-  ;; Fixme: Write a `coding' header to the temp file if the region is
-  ;; non-ASCII.
-  (interactive "r")
-  (let* ((f (make-temp-file "py"))
-	 (command
-          ;; IPython puts the FakeModule module into __main__ so
-          ;; emacs.eexecfile becomes useless.
-          (if (string-match "^ipython" python-command)
-              (format "execfile %S" f)
-            (format "emacs.eexecfile(%S)" f)))
-	 (orig-start (copy-marker start)))
-    (when (save-excursion
-	    (goto-char start)
-	    (/= 0 (current-indentation))) ; need dummy block
-      (save-excursion
-	(goto-char orig-start)
-	;; Wrong if we had indented code at buffer start.
-	(set-marker orig-start (line-beginning-position 0)))
-      (write-region "if True:\n" nil f nil 'nomsg))
-    (write-region start end f t 'nomsg)
-    (python-send-command command)
-    (with-current-buffer (process-buffer (py-proc))
-      ;; Tell compile.el to redirect error locations in file `f' to
-      ;; positions past marker `orig-start'.  It has to be done *after*
-      ;; `python-send-command''s call to `compilation-forget-errors'.
-      (compilation-fake-loc orig-start f))))
 
 ;;; Subprocess utilities and filters
 (defvar py-last-exeption-buffer nil

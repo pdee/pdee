@@ -92,41 +92,6 @@ Then switch to the process buffer."
   (py-send-region start end)
   (py-switch-to-python t))
 
-;; (defun py-load-file (file-name)
-;;   "Load a Python file FILE-NAME into the inferior Python process.
-;;
-;; If the file has extension `.py' import or reload it as a module.
-;; Treating it as a module keeps the global namespace clean, provides
-;; function location information for debugging, and supports users of
-;; module-qualified names."
-;;   (interactive (comint-get-source "Load Python file: " python-prev-dir/file
-;; 				  python-source-modes
-;; 				  t))	; because execfile needs exact name
-;;   (comint-check-source file-name)     ; Check to see if buffer needs saving.
-;;   (setq python-prev-dir/file (cons (file-name-directory file-name)
-;; 				   (file-name-nondirectory file-name)))
-;;   (with-current-buffer (process-buffer (py-proc)) ;Runs python if needed.
-;;     ;; Fixme: I'm not convinced by this logic from python-mode.el.
-;;     (python-send-command
-;;      (if (string-match "\\.py\\'" file-name)
-;; 	 (let ((module (file-name-sans-extension
-;; 			(file-name-nondirectory file-name))))
-;; 	   (format "emacs.eimport(%S,%S)"
-;; 		   module (file-name-directory file-name)))
-;;        (format "execfile(%S)" file-name)))
-;;     (message "%s loaded" file-name)))
-
-(defun py-load-file (file-name)
-  "Load a Python file FILE-NAME into the inferior Python process.
-
-If the file has extension `.py' import or reload it as a module.
-Treating it as a module keeps the global namespace clean, provides
-function location information for debugging, and supports users of
-module-qualified names."
-  (interactive "f")
-  (py-execute-file-base (get-buffer-process (get-buffer (py-shell))) file-name
-   ;; (format "execfile(%S)" file-name)
-))
 
 (defun py-shell-send-setup-code (process)
   "Send all setup code for shell.
@@ -186,37 +151,7 @@ FILE-NAME."
 
 ;;;
 
-(defun py-script-complete ()
-  (interactive "*")
-  (let ((end (point))
-	(start (save-excursion
-		 (and (re-search-backward
-		       (rx (or buffer-start (regexp "[^[:alnum:]._]"))
-			   (group (1+ (regexp "[[:alnum:]._]"))) point)
-		       nil t)
-		      (match-beginning 1)))))
-    (when start
-      (list start end
-            (completion-table-dynamic 'py-symbol-completions)))))
-
-(defun py-symbol-completions (symbol)
-  "Return a list of completions of the string SYMBOL from Python process.
-
-The list is sorted. "
-  (when (stringp symbol)
-    (let* ((py-imports (py-find-imports))
-           (completions
-            (condition-case ()
-                (car (read-from-string
-                      (py-send-receive
-                       (format "emacs.complete(%S,%s)"
-                               (substring-no-properties symbol)
-                               py-imports))))
-              (error nil))))
-      (sort
-       ;; We can get duplicates from the above -- don't know why.
-       (delete-dups completions)
-       #'string<))))
+(defalias 'py-script-complete 'py-shell-complete)
 
 (defun py-shell--do-completion-at-point (process imports input)
   "Do completion at point for PROCESS."

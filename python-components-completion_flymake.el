@@ -77,7 +77,6 @@ This function is appropriate for `comint-output-filter-functions'."
   'py-shell-dynamic-simple-complete
   'comint-dynamic-simple-complete)
 
-
 (defun py-shell-execute-string-now (string &optional shell)
   "Send to Python interpreter process PROC \"exec STRING in {}\".
 and return collected output"
@@ -131,38 +130,6 @@ and return collected output"
   (buffer-substring-no-properties
    (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point))
    (point)))
-
-(defun py-send-region-and-go (start end)
-  "Send the region to the inferior Python process.
-
-Then switch to the process buffer."
-  (interactive "r")
-  (py-send-region start end)
-  (py-switch-to-shell))
-
-(defun py-load-file (file-name)
-  "Load a Python file FILE-NAME into the inferior Python process.
-
-If the file has extension `.py' import or reload it as a module.
-Treating it as a module keeps the global namespace clean, provides
-function location information for debugging, and supports users of
-module-qualified names."
-  (interactive (comint-get-source "Load Python file: " python-prev-dir/file
-				  python-source-modes
-				  t))	; because execfile needs exact name
-  (comint-check-source file-name)     ; Check to see if buffer needs saving.
-  (setq python-prev-dir/file (cons (file-name-directory file-name)
-				   (file-name-nondirectory file-name)))
-  (with-current-buffer (process-buffer (python-proc)) ;Runs python if needed.
-    ;; Fixme: I'm not convinced by this logic from python-mode.el.
-    (python-send-command
-     (if (string-match "\\.py\\'" file-name)
-	 (let ((module (file-name-sans-extension
-			(file-name-nondirectory file-name))))
-	   (format "emacs.eimport(%S,%S)"
-		   module (file-name-directory file-name)))
-       (format "execfile(%S)" file-name)))
-    (message "%s loaded" file-name)))
 
 (defun py-set-proc ()
   "Set the default value of `py-buffer-name' to correspond to this buffer.
@@ -424,7 +391,6 @@ Default is \"\\.py\\'\" "
     (list (concat (py-normalize-directory py-install-directory) "pyflakespep8.py") (list local-file)))
   )
 
-
 ;; (when (load "flymake" t)
 ;;   (defun flymake-pychecker-init ()
 ;;     (let* ((temp-file (flymake-init-create-temp-buffer-copy
@@ -435,7 +401,6 @@ Default is \"\\.py\\'\" "
 ;;       (list "/PATH/TO/pyflakespep8.py" (list local-file))))
 ;;   (add-to-list 'flymake-allowed-file-name-masks
 ;;                '("\\.py\\'" flymake-pychecker-init)))
-
 
 (defun pylint-flymake ()
   "Toggle `pylint' `flymake-mode'. "
