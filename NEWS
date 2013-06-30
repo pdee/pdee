@@ -4,7 +4,7 @@ Python Mode News
 New in version 6.1.2
 ---------------------
 - simplified menu
-  Adapts version 5.2.0 style, augmented by a "More" button
+  Adapts version 5.2.0 style, augmented by "More" buttons
 
 - commands deleting all commented lines:
   `py-delete-comments-in-def-or-class'
@@ -59,12 +59,33 @@ New in version 6.1.2
           baz):
           bar()
 
+- boolean `py-enforce-output-buffer-p' 
+- `py-output-buffer' made customizable, default follows `py-shell-name'.
+  In python-mode.el v6 series output of
+  `py-execute-...'-commands arrives in buffer created by
+  `py-shell'. It's name is composed WRT to Python version
+  used, it's path etc.
+  
+  v5 used a single buffer, "*Python Output*", this
+  bevavior is still provided by command
+  `py-execute-python-mode-v5'
+  
+  Now, let's choose the name of output-buffer freely,
+  also permitting a function which composes it, using date
+  and time for example.
+
 - boolean `py-load-skeletons-p', default nil
   If skeleton definitions should be loaded
 
 - boolean `py-if-name-main-permission-p', default is non-nil.
   Allows execution of code inside blocks started by
   if __name__== '__main__'
+
+- `py-execute-...'-commands return result as string 
+  boolean `py-store-result-p', Default is nil
+  When non-nil, put resulting string of `py-execute-...' into kill-ring, so it might be yanked. 
+
+- exception displayed points to source, not to the temporary file executed internally
 
 - `py-which-def-or-class', command, now used `which-function-mode' 
 

@@ -2319,7 +2319,7 @@ I am using version 6.0.4
 
 (defun py-shell-invoking-python-lp:835151-base ()
   (setq py-shell-name "python")
-  (assert (markerp (py-execute-buffer)) nil "py-shell-invoking-python-lp:835151-test failed"))
+  (assert (stringp (py-execute-buffer)) nil "py-shell-invoking-python-lp:835151-test failed"))
 
 (defun py-shell-invoking-ipython-lp:835151-test (&optional arg)
   (interactive "p")
@@ -2328,7 +2328,7 @@ I am using version 6.0.4
 
 (defun py-shell-invoking-ipython-lp:835151-base ()
   (setq py-shell-name "ipython")
-  (assert (markerp (py-execute-buffer "ipython")) nil "py-shell-invoking-ipython-lp:835151-test failed"))
+  (assert (stringp (py-execute-buffer "ipython")) nil "py-shell-invoking-ipython-lp:835151-test failed"))
 
 (defun py-shell-invoking-python3-lp:835151-test (&optional arg)
   (interactive "p")
@@ -2337,7 +2337,7 @@ I am using version 6.0.4
 
 (defun py-shell-invoking-python3-lp:835151-base ()
   (setq py-shell-name "python3")
-  (assert (markerp (py-execute-buffer)) nil "py-shell-invoking-python3-lp:835151-test failed"))
+  (assert (stringp (py-execute-buffer)) nil "py-shell-invoking-python3-lp:835151-test failed"))
 
 (defun py-shell-invoking-python2-lp:835151-test (&optional arg)
   (interactive "p")
@@ -2346,7 +2346,7 @@ I am using version 6.0.4
 
 (defun py-shell-invoking-python2-lp:835151-base ()
   (setq py-shell-name "python2")
-  (assert (markerp (py-execute-buffer)) nil "py-shell-invoking-python2-lp:835151-test failed"))
+  (assert (stringp (py-execute-buffer)) nil "py-shell-invoking-python2-lp:835151-test failed"))
 
 (defun py-shell-invoking-python2.7-lp:835151-test (&optional arg)
   (interactive "p")
@@ -2355,7 +2355,7 @@ I am using version 6.0.4
 
 (defun py-shell-invoking-python2.7-lp:835151-base ()
   (setq py-shell-name "python2.7")
-  (assert (markerp (py-execute-buffer)) nil "py-shell-invoking-python2.7-lp:835151-test failed"))
+  (assert (stringp (py-execute-buffer)) nil "py-shell-invoking-python2.7-lp:835151-test failed"))
 
 (defun py-shell-invoking-jython-lp:835151-test (&optional arg)
   (interactive "p")
@@ -2366,7 +2366,7 @@ I am using version 6.0.4
   (let ((py-shell-name "jython")
         (erg (py-execute-buffer)))
     (sit-for 0.1)
-    (assert (markerp erg) nil "py-shell-invoking-jython-lp:835151-test failed")))
+    (assert (stringp erg) nil "py-shell-invoking-jython-lp:835151-test failed")))
 
 (defun py-shell-invoking-python3.2-lp:835151-test (&optional arg)
   (interactive "p")
@@ -2375,7 +2375,7 @@ I am using version 6.0.4
 
 (defun py-shell-invoking-python3.2-lp:835151-base ()
   (setq py-shell-name "python3.2")
-  (assert (markerp (py-execute-buffer)) nil "py-shell-invoking-python3.2-lp:835151-test failed"))
+  (assert (stringp (py-execute-buffer)) nil "py-shell-invoking-python3.2-lp:835151-test failed"))
 
 (defun py-mark-block-clause-misbehave-lp:949310-test (&optional arg)
   (interactive "p")
@@ -2703,7 +2703,7 @@ print(\"I'm the temp-buffer-affected-by-py-shell-name-lp:958987-test\")
 
 (defun temp-buffer-affected-by-py-shell-name-lp:958987-base ()
   (message "%s" py-shell-name)
-  (assert (markerp (py-execute-buffer)) nil "temp-buffer-affected-by-py-shell-name-lp:958987-test failed"))
+  (assert (stringp (py-execute-buffer)) nil "temp-buffer-affected-by-py-shell-name-lp:958987-test failed"))
 
 (defun toggle-force-local-shell-lp:988091-test (&optional arg)
   (interactive "p")
@@ -4437,8 +4437,8 @@ def foo():
   (py-bug-tests-intern 'does-not-dedent-regions-lp-1072869-base arg teststring)))
 
 (defun does-not-dedent-regions-lp-1072869-base ()
-  (assert (markerp (py-execute-buffer-ipython)) nil "does-not-dedent-regions-lp-1072869-test #1 failed")
-  (assert (markerp (py-execute-buffer-python)) nil "does-not-dedent-regions-lp-1072869-test #2 failed")
+  (assert (stringp (py-execute-buffer-ipython)) nil "does-not-dedent-regions-lp-1072869-test #1 failed")
+  (assert (stringp (py-execute-buffer-python)) nil "does-not-dedent-regions-lp-1072869-test #2 failed")
   )
 
 (defun inconvenient-py-switch-buffers-on-execute-lp-1073-test (&optional arg)
@@ -4625,7 +4625,7 @@ print(i)
 
 (defun py-execute-buffer-python3-looks-broken-lp-1085386-base ()
   (let ((py-use-current-dir-when-execute-p t))
-    (assert (markerp (py-execute-buffer-python3)) nil "py-execute-buffer-python3-looks-broken-lp-1085386-test failed")))
+    (assert (stringp (py-execute-buffer-python3)) nil "py-execute-buffer-python3-looks-broken-lp-1085386-test failed")))
 
 (defun wrong-indent-after-asignment-lp-1087404-test (&optional arg)
   (interactive "p")

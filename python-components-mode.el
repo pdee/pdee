@@ -98,6 +98,14 @@ Default is non-nil. If nil, `py-pylint-run' offers filename from history "
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-store-result-p nil
+ "When non-nil, put resulting string of `py-execute-...' into kill-ring, so it might be yanked. 
+
+Default is nil" 
+
+:type 'boolean
+:group 'python-mode)
+
 (defcustom py-hide-show-minor-mode-p nil
   "If hide-show minor-mode should be on, default is nil. "
 
@@ -1308,6 +1316,24 @@ Default is nil "
          (set-default symbol value)
          (py-set-ffap-form)))
 
+(defcustom py-output-buffer "*Python Output*"
+  "When `py-enforce-output-buffer-p' is non-nil, provides the
+default for output-buffer. "
+  :type 'string
+  :group 'python-mode)
+(make-variable-buffer-local 'py-output-buffer)
+
+(defcustom py-enforce-output-buffer-p nil
+ "When non-nil, value of `py-output-buffer' is used regardless of
+environment. Default is nil.
+
+When nil, output of `py-execute-...'-commands arrives in buffer
+created by `py-shell'. It's name is composed WRT to Python
+version used, it's path etc. "
+
+:type 'boolean
+:group 'python-mode)
+
 ;; the python-el way
 (defcustom py-ffap-string-code
   "__FFAP_get_module_path('''%s''')\n"
@@ -1582,9 +1608,6 @@ can write into: the value (if any) of the environment variable TMPDIR,
   "Internal use: restore py-restore-window-configuration when completion is done resp. abandoned. ")
 
 (defvar py-exception-buffer nil)
-
-(defvar py-output-buffer "*Python Output*")
-(make-variable-buffer-local 'py-output-buffer)
 
 (defvar py-string-delim-re "\\(\"\"\"\\|'''\\|\"\\|'\\)"
   "When looking at beginning of string. ")
@@ -4475,6 +4498,36 @@ Toggle flymake-mode running `pyflakespep8' "])
             :help "Restore `py-shell-name' default value and `behaviour'. "]
 
            )
+          
+          ("Execute"
+           ["Enforce py-output-buffer"
+            (setq py-enforce-output-buffer-p
+                  (not py-enforce-output-buffer-p))
+            :help " `py-enforce-output-buffer-p'
+
+When non-nil, value of `py-output-buffer' is used for output,
+regardless of environment\. Default is nil."
+            :style toggle :selected py-enforce-output-buffer-p]
+           
+           ["Execute \"if name == main\" blocks p"
+            (setq py-if-name-main-permission-p
+                  (not py-if-name-main-permission-p))
+            :help " `py-if-name-main-permission-p'
+
+Allow execution of code inside blocks delimited by
+if __name__ == '__main__'
+
+Default is non-nil. "
+            :style toggle :selected py-if-name-main-permission-p]
+
+           
+           ["Store result" py-store-result-p
+            :help " `py-store-result-p'
+
+When non-nil, put resulting string of `py-execute-\.\.\.' into kill-ring, so it might be yanked\. . "
+            :style toggle :selected py-store-result-p]
+
+           )
 
           ("TAB related"
 
@@ -4756,17 +4809,6 @@ Make sure, `py-underscore-word-syntax-p' is off\.
 Returns value of `py-underscore-word-syntax-p'\. .
 
 Use `M-x customize-variable' to set it permanently"])
-
-          ["Execute \"if name == main\" blocks p"
-           (setq py-if-name-main-permission-p
-                 (not py-if-name-main-permission-p))
- :help " `py-if-name-main-permission-p'
-
-Allow execution of code inside blocks delimited by
-if __name__ == '__main__'
-
-Default is non-nil. "
-           :style toggle :selected py-if-name-main-permission-p]
 
           ["Jump on exception"
            (setq py-jump-on-exception
