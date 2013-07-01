@@ -99,9 +99,9 @@ Default is non-nil. If nil, `py-pylint-run' offers filename from history "
   :group 'python-mode)
 
 (defcustom py-store-result-p nil
- "When non-nil, put resulting string of `py-execute-...' into kill-ring, so it might be yanked. 
+ "When non-nil, put resulting string of `py-execute-...' into kill-ring, so it might be yanked.
 
-Default is nil" 
+Default is nil"
 
 :type 'boolean
 :group 'python-mode)
@@ -2310,29 +2310,30 @@ See original source: http://pymacs.progiciels-bpi.ca"
 
 (when py-load-pymacs-p (py-load-pymacs))
 
-(defun py-load-pycomplete ()
-  "Load Pymacs based pycomplete."
-  (interactive)
-  (let* ((path (getenv "PYTHONPATH"))
-         (py-install-directory (cond ((string= "" py-install-directory)
-                                      (py-guess-py-install-directory))
-                                     (t (py-normalize-directory py-install-directory))))
-         (pycomplete-directory (concat (expand-file-name py-install-directory) "completion")))
-    (if (py-install-directory-check)
-        (progn
-          ;; If the Pymacs process is already running, augment its path.
-          (when (and (get-process "pymacs") (fboundp 'pymacs-exec))
-            (pymacs-exec (concat "sys.path.insert(0, '" pycomplete-directory "')")))
-          (require 'pymacs)
-          (setenv "PYTHONPATH" (concat
-                                pycomplete-directory
-                                (if path (concat path-separator path))))
-          (add-to-list 'load-path pycomplete-directory)
-          (require 'pycomplete)
-          (add-hook 'python-mode-hook 'py-complete-initialize))
-      (error "`py-install-directory' not set, see INSTALL"))))
+(when (or py-load-pymacs-p (featurep 'pymacs))
+  (defun py-load-pycomplete ()
+    "Load Pymacs based pycomplete."
+    (interactive)
+    (let* ((path (getenv "PYTHONPATH"))
+           (py-install-directory (cond ((string= "" py-install-directory)
+                                        (py-guess-py-install-directory))
+                                       (t (py-normalize-directory py-install-directory))))
+           (pycomplete-directory (concat (expand-file-name py-install-directory) "completion")))
+      (if (py-install-directory-check)
+          (progn
+            ;; If the Pymacs process is already running, augment its path.
+            (when (and (get-process "pymacs") (fboundp 'pymacs-exec))
+              (pymacs-exec (concat "sys.path.insert(0, '" pycomplete-directory "')")))
+            (require 'pymacs)
+            (setenv "PYTHONPATH" (concat
+                                  pycomplete-directory
+                                  (if path (concat path-separator path))))
+            (add-to-list 'load-path pycomplete-directory)
+            (require 'pycomplete)
+            (add-hook 'python-mode-hook 'py-complete-initialize))
+        (error "`py-install-directory' not set, see INSTALL")))))
 
-(when (or (eq py-complete-function 'py-complete-completion-at-point) py-load-pymacs-p)
+(and (or (eq py-complete-function 'py-complete-completion-at-point) py-load-pymacs-p (featurep 'pymacs))
   (py-load-pycomplete))
 
 (defun py-set-load-path ()
@@ -4498,7 +4499,7 @@ Toggle flymake-mode running `pyflakespep8' "])
             :help "Restore `py-shell-name' default value and `behaviour'. "]
 
            )
-          
+
           ("Execute"
            ["Enforce py-output-buffer"
             (setq py-enforce-output-buffer-p
@@ -4508,7 +4509,7 @@ Toggle flymake-mode running `pyflakespep8' "])
 When non-nil, value of `py-output-buffer' is used for output,
 regardless of environment\. Default is nil."
             :style toggle :selected py-enforce-output-buffer-p]
-           
+
            ["Execute \"if name == main\" blocks p"
             (setq py-if-name-main-permission-p
                   (not py-if-name-main-permission-p))
@@ -4520,7 +4521,7 @@ if __name__ == '__main__'
 Default is non-nil. "
             :style toggle :selected py-if-name-main-permission-p]
 
-           
+
            ["Store result" py-store-result-p
             :help " `py-store-result-p'
 
@@ -6627,10 +6628,10 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (set (make-local-variable 'comment-start) "#")
   (if empty-comment-line-separates-paragraph-p
       (progn
-        (set (make-local-variable 'paragraph-separate) "^[ \t\f]*$\\|^#[ \t]*$")
-        (set (make-local-variable 'paragraph-start) "^[ \t\f]*$\\|^#[ \t]*$"))
-    (set (make-local-variable 'paragraph-separate) "^[ \t]*$")
-    (set (make-local-variable 'paragraph-start) "^[ \t]*$"))
+        (set (make-local-variable 'paragraph-separate) "[ \t\f]*$\\|^#[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$")
+        (set (make-local-variable 'paragraph-start) "[ \t\f]*$\\|^#[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$"))
+    (set (make-local-variable 'paragraph-separate) "[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$")
+    (set (make-local-variable 'paragraph-start) "[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$"))
   (set (make-local-variable 'comment-start-skip) "^[ \t]*#+ *")
   (set (make-local-variable 'comment-column) 40)
   (set (make-local-variable 'comment-indent-function) #'py-comment-indent-function)

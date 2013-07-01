@@ -6,3 +6,14 @@
 * TODO py-electric-colon: insert colon
 * TODO py-decomment
 * TODO py-output-buffer
+* TODO Emacs Python Tested Environment
+  Many Emacs users keep there own environemt composed
+  of the extensions around. Therefor offering everthing
+  possibly needed right from the spot is not that
+  promising as elsewhere - moreover, there is a
+  probability, stuff delivered might disturb existing
+  workflow. OTOH many users will spend more time than
+  necessary collecting all this stuff from a plenty of
+  sources, which often need some tweaks. A Solution
+  might be indicating tested install examples.
+  

@@ -23,6 +23,11 @@
 ;;
 
 ;;; Code:
+(defun py-fill-this-paragraph ()
+  "Fill just the paragraph at point. "
+  (interactive "*")
+  (py-fill-string justify style (if (py-beginning-of-paragraph-p) (point) (progn (py-beginning-of-paragraph)(point))) (progn (py-end-of-paragraph)(point))))
+
 (defun py-fill-paragraph (&optional justify style start end docstring)
   "`fill-paragraph-function'
 
@@ -37,12 +42,12 @@ See also `py-fill-string' "
 
                          (or docstring (py-docstring-p (nth 8 pps)))))
              (beg (or start (and (use-region-p) (region-beginning)) (and
-;; py-paragraph-fill-docstring-p
-docstring (nth 8 pps)) (py-beginning-of-paragraph-position)))
+                                                                     ;; py-paragraph-fill-docstring-p
+                                                                     docstring (nth 8 pps)) (py-beginning-of-paragraph-position)))
              (end (copy-marker (or end (and (use-region-p) (region-end)) (and
                                                                           ;; py-paragraph-fill-docstring-p
 
- docstring (py-end-of-string (nth 8 pps))) (py-end-of-paragraph-position))))
+                                                                          docstring (py-end-of-string (nth 8 pps))) (py-end-of-paragraph-position))))
              (style (or style py-docstring-style))
              (this-end (point-min)))
         (when (and (nth 3 pps) (< beg (nth 8 pps))
@@ -62,7 +67,9 @@ docstring (nth 8 pps)) (py-beginning-of-paragraph-position)))
                          (syntax-after (point)))
                   (looking-at py-string-delim-re))
               (goto-char beg)
-              (if (and py-paragraph-fill-docstring-p docstring (re-search-forward (concat "^" py-labelled-re) nil t))
+              (if (and py-paragraph-fill-docstring-p docstring
+                       ;; (re-search-forward (concat "^" py-labelled-re) nil t)
+                       )
                   (progn
                     (goto-char beg)
                     ;; must process one by one
@@ -70,14 +77,15 @@ docstring (nth 8 pps)) (py-beginning-of-paragraph-position)))
                       (save-restriction
                         (narrow-to-region last this-end)
                         (goto-char last)
-                        (if (re-search-forward (concat "^" py-labelled-re) nil t this-end)
-                            (py-fill-labelled-string last this-end)
+                        ;; (if (re-search-forward (concat "^" py-labelled-re) nil t this-end)
+                        ;; (py-fill-labelled-string last this-end)
 
-                          (py-fill-string justify style last this-end pps 'no))
+                        (py-fill-string justify style last this-end pps 'no)
+                        ;;)
                         (goto-char this-end)
                         (widen))))
-                (py-fill-string justify style beg end pps))
-              (goto-char this-end))
+                (goto-char orig)
+                (py-fill-this-paragraph)))
              ;; Decorators
              ((save-excursion
                 (and (py-beginning-of-statement)
@@ -86,7 +94,8 @@ docstring (nth 8 pps)) (py-beginning-of-paragraph-position)))
                             ;; (point))
                             ?\@)))
               (py-fill-decorator justify))
-             (t t))))
+             (t (goto-char orig)
+                (py-fill-string justify style (if (py-beginning-of-paragraph-p) (point) (py-beginning-of-paragraph)) (py-end-of-paragraph))))))
         (goto-char orig)
         (back-to-indentation))
       (recenter-top-bottom)
