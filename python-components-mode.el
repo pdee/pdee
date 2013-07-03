@@ -2356,7 +2356,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
           (when (interactive-p) (message "%s" load-path)))))
 
 ;; (when (boundp 'py-install-directory) (py-set-load-path))
-(py-set-load-path)
+;; (py-set-load-path)
 
 (unless py-install-directory
   (add-to-list 'load-path default-directory)
@@ -6650,7 +6650,6 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (set (make-local-variable 'add-log-current-defun-function) 'py-current-defun)
   (set (make-local-variable 'fill-paragraph-function) 'py-fill-paragraph)
   (set (make-local-variable 'require-final-newline) mode-require-final-newline)
-  (make-local-variable 'python-saved-check-command)
   (set (make-local-variable 'tab-width) py-indent-offset)
   (set (make-local-variable 'eldoc-documentation-function)
        #'py-eldoc-function)
@@ -6661,7 +6660,7 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
                                                       (current-column))))
               (^ '(- (1+ (current-indentation)))))))
   (set (make-local-variable 'imenu-create-index-function) 'py-imenu-create-index-function)
-  (py-set-load-path)
+  (and py-guess-py-install-directory-p (py-set-load-path))
   ;; (add-to-list 'load-path py-install-directory)
   ;; (add-to-list 'load-path (concat py-install-directory "extensions"))
   (and py-autopair-mode (py-autopair-check)

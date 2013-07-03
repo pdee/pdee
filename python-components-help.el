@@ -924,9 +924,6 @@ Extracted from http://manpages.ubuntu.com/manpages/natty/man1/pyflakes.1.html
     (when (featurep 'xemacs)
       (compile-internal command "No more errors"))))
 
-(defvar python-saved-check-command nil
-  "Internal use.")
-
 ;; After `sgml-validate-command'.
 (defun py-check-command (command)
   "Check a Python file (default current buffer's file).
@@ -934,12 +931,10 @@ Runs COMMAND, a shell command, as if by `compile'.
 See `python-check-command' for the default."
   (interactive
    (list (read-string "Checker command: "
-		      (or python-saved-check-command
-			  (concat python-check-command " "
-				  (let ((name (buffer-file-name)))
-				    (if name
-					(file-name-nondirectory name))))))))
-  (setq python-saved-check-command command)
+                      (concat python-check-command " "
+                              (let ((name (buffer-file-name)))
+                                (if name
+                                    (file-name-nondirectory name)))))))
   (require 'compile)                    ;To define compilation-* variables.
   (save-some-buffers (not compilation-ask-about-save) nil)
   (let ((compilation-error-regexp-alist
