@@ -1082,6 +1082,8 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-font-lock-keywords) nil \"py-font-lock-keywords not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test \
+--funcall Bogus-dedent-when-typing-colon-in-dictionary-literal-lp-1197171-test \
 --funcall py-if-name-main-permission-lp-326620-test \
 --funcall Parens-span-multiple-lines-lp-1191225-test \
 --funcall indent-refused-lp-1191133-test \
@@ -1092,7 +1094,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-end-of-statement-test-2 \
 --funcall nested-if-test-1 \
 --funcall py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test \
---funcall Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test \
 --funcall incorrect-indentation-of-comments-in-a-multiline-list-lp-1077063-test \
 --funcall indentation-wrong-after-multi-line-parameter-list-lp:871698-test \
 --funcall indent-after-inline-comment-lp:873372-test \

@@ -180,6 +180,10 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
                                    (+ (current-column) py-indent-offset)
                                  (current-column)))
                               (t (+ (current-column) (* (nth 0 pps)))))))
+                     ((nth 1 (syntax-ppss))
+                      (goto-char (nth 1 (syntax-ppss)))
+                      (setq line (< (py-count-lines) origline))
+                      (py-compute-indentation orig origline closing line nesting repeat indent-offset))
                      ((not (py-beginning-of-statement-p))
                       (py-beginning-of-statement)
                       (py-compute-indentation orig origline closing line nesting repeat indent-offset))
@@ -195,6 +199,8 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
                  (t
                   (goto-char (nth 1 pps))
                   (py-compute-indentation orig origline closing line nesting repeat indent-offset))))
+               ((and (eq (char-after) (or ?\( ?\{ ?\[)) line)
+                (1+ (current-column)))
                ((py-preceding-line-backslashed-p)
                 (progn
                   (py-beginning-of-statement)

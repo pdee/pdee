@@ -6005,6 +6005,12 @@ These are Python temporary files awaiting execution."
     (push '(py-pdbtrack-is-tracking-p py-pdbtrack-minor-mode-string)
           minor-mode-alist))
 
+;; bottle.py
+;; py   = sys.version_info
+;; py3k = py >= (3,0,0)
+;; py25 = py <  (2,6,0)
+;; py31 = (3,1,0) <= py < (3,2,0)
+
 (defun py-python-version (&optional executable verbose)
   "Returns versions number of a Python EXECUTABLE, string.
 
@@ -6628,10 +6634,10 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (set (make-local-variable 'comment-start) "#")
   (if empty-comment-line-separates-paragraph-p
       (progn
-        (set (make-local-variable 'paragraph-separate) "[ \t\f]*$\\|^#[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$")
-        (set (make-local-variable 'paragraph-start) "[ \t\f]*$\\|^#[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$"))
-    (set (make-local-variable 'paragraph-separate) "[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$")
-    (set (make-local-variable 'paragraph-start) "[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$"))
+        (set (make-local-variable 'paragraph-separate) "\f\\|^[ \t]*$\\|^[ \t]*#[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$")
+        (set (make-local-variable 'paragraph-start) "\f\\|^[ \t]*$\\|^[ \t]*#[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$"))
+    (set (make-local-variable 'paragraph-separate) "\f\\|^[ \t]*$\\|^[ \t]*#[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$")
+    (set (make-local-variable 'paragraph-start) "\f\\|^[ \t]*$\\|^[ \t]*#[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$"))
   (set (make-local-variable 'comment-start-skip) "^[ \t]*#+ *")
   (set (make-local-variable 'comment-column) 40)
   (set (make-local-variable 'comment-indent-function) #'py-comment-indent-function)

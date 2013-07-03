@@ -6,6 +6,26 @@ New in version 6.1.2
 - simplified menu
   Adapts version 5.2.0 style, augmented by "More" buttons
 
+- `py-output-buffer' made customizable, default follows `py-shell-name'.
+  In python-mode.el v6 series output of
+  `py-execute-...'-commands arrives in buffer created by
+  `py-shell'. It's name is composed WRT to Python version
+  used, it's path etc.
+  
+  v5 used a single buffer, "*Python Output*", this
+  bevavior is still provided by command
+  `py-execute-python-mode-v5'
+  
+  Now, let's choose the name of output-buffer freely,
+  also permitting a function which composes it, using date
+  and time for example.
+- boolean `py-enforce-output-buffer-p' 
+
+
+- `py-execute-...'-commands return result as string 
+  boolean `py-store-result-p', Default is nil
+  When non-nil, put resulting string of `py-execute-...' into kill-ring, so it might be yanked. 
+
 - commands deleting all commented lines:
   `py-delete-comments-in-def-or-class'
   `py-delete-comments-in-class'
@@ -22,6 +42,10 @@ New in version 6.1.2
   ---------^
   In result cursor is insided emptied delimited form."
 
+- boolean `py-electric-kill-backward-p', default is nil.
+  If behind a delimited form of braces, brackets or parentheses,
+  `py-electric-backspace' runs `py-empty-out-list-backward'
+
 - py-flakes8-run, flakes8 API
 
 - customizable `py-backslashed-lines-indent-offset', default is 5
@@ -34,10 +58,6 @@ New in version 6.1.2
 - boolean `py-pylint-offer-current-p', default is non-nil.
   If current buffers file should be offered for check.
   Otherwise `py-pylint-run' looks up filename from history
-
-- boolean `py-electric-kill-backward-p', default is nil.
-  If behind a delimited form of braces, brackets or parentheses,
-  `py-electric-backspace' runs `py-empty-out-list-backward'
 
 - customizable `py-closing-list-space', default 1
   Number of chars, closing parentesis outdent from opening
@@ -59,31 +79,12 @@ New in version 6.1.2
           baz):
           bar()
 
-- boolean `py-enforce-output-buffer-p' 
-- `py-output-buffer' made customizable, default follows `py-shell-name'.
-  In python-mode.el v6 series output of
-  `py-execute-...'-commands arrives in buffer created by
-  `py-shell'. It's name is composed WRT to Python version
-  used, it's path etc.
-  
-  v5 used a single buffer, "*Python Output*", this
-  bevavior is still provided by command
-  `py-execute-python-mode-v5'
-  
-  Now, let's choose the name of output-buffer freely,
-  also permitting a function which composes it, using date
-  and time for example.
-
 - boolean `py-load-skeletons-p', default nil
   If skeleton definitions should be loaded
 
 - boolean `py-if-name-main-permission-p', default is non-nil.
   Allows execution of code inside blocks started by
   if __name__== '__main__'
-
-- `py-execute-...'-commands return result as string 
-  boolean `py-store-result-p', Default is nil
-  When non-nil, put resulting string of `py-execute-...' into kill-ring, so it might be yanked. 
 
 - exception displayed points to source, not to the temporary file executed internally
 

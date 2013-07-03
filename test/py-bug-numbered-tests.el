@@ -38,6 +38,8 @@
 
 (setq bug-numbered-tests
       (list
+       'Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test
+       'Bogus-dedent-when-typing-colon-in-dictionary-literal-lp-1197171-test
        'python-mode-very-slow-lp-1107037-test
        'cascading-indent-lp-1101962-test
        'line-after-colon-with-inline-comment-lp-1109946-test
@@ -5649,7 +5651,7 @@ dst.close()
 def foo():
     \"\"\"Line one of a comment.
 
-    A paragraph of comments.
+    A paragraph of comments. These should get wrapped correctly. These should get wrapped correctly.
     These should get wrapped correctly.
     They do, but whooboy!
 
@@ -5664,10 +5666,24 @@ def foo():
   (py-bug-tests-intern 'Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-base arg teststring)))
 
 (defun Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-base ()
-    (goto-char 140)
-    (fill-paragraph)
-    (goto-char 98)
-    (assert (and (bolp) (eolp)) nil "Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test failed"))
+  (goto-char 97)
+  (message "paragraph-start: %s" paragraph-start)
+  (message "Fehler? %s" (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
+  (fill-paragraph)
+  (message "Fehler? %s" (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
+  (forward-line 1)
+  (sit-for 1)
+  (assert (and (bolp) (eolp)) nil "Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test #1 failed")
+  (goto-char 140)
+  (fill-paragraph)
+  (end-of-line)
+  (assert (eq 70 (current-column)) nil "Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test #2 failed")
+  (forward-line 3)
+  (assert (and (bolp) (eolp)) nil "Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test #3 failed")
+  (goto-char 273)
+  (fill-paragraph)
+  (end-of-line)
+  (assert (eq 25 (current-column)) nil "Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test #4 failed"))
 
 (defun trouble-with-py-fill-paragraph-lp-1180653.py-test (&optional arg)
   (interactive "p")
@@ -5897,6 +5913,27 @@ def foo():
     (goto-char 354)
     (setq py-indent-paren-spanned-multilines-p t)
     (assert (eq 12 (py-compute-indentation)) nil "Parens-span-multiple-lines-lp-1191225-test #2 failed")))
+
+
+(defun Bogus-dedent-when-typing-colon-in-dictionary-literal-lp-1197171-test (&optional arg)
+  (interactive "p")
+  (let
+      ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+def foo():
+    bar('thing',
+        {'another'
+
+# Put point at the end of the last line and hit colon, as you would to
+# separate the key from the value. The last line will incorrectly dedent
+# to column 4. Indentation should not change.
+
+"))
+    (py-bug-tests-intern 'Bogus-dedent-when-typing-colon-in-dictionary-literal-lp-1197171-base arg teststring)))
+
+(defun Bogus-dedent-when-typing-colon-in-dictionary-literal-lp-1197171-base ()
+    (goto-char 94)
+    (assert (eq 8 (py-compute-indentation)) nil "Bogus-dedent-when-typing-colon-in-dictionary-literal-lp-1197171-test failed"))
 
 
 (provide 'py-bug-numbered-tests)

@@ -41,19 +41,30 @@ See also `py-fill-string' "
                          ;; py-paragraph-fill-docstring-p
 
                          (or docstring (py-docstring-p (nth 8 pps)))))
-             (beg (or start (and (use-region-p) (region-beginning)) (and
-                                                                     ;; py-paragraph-fill-docstring-p
-                                                                     docstring (nth 8 pps)) (py-beginning-of-paragraph-position)))
-             (end (copy-marker (or end (and (use-region-p) (region-end)) (and
-                                                                          ;; py-paragraph-fill-docstring-p
-
-                                                                          docstring (py-end-of-string (nth 8 pps))) (py-end-of-paragraph-position))))
+             (beg (cond (start)
+                        ((use-region-p)
+                         (region-beginning))
+                        ((and docstring
+                              ;; (or py-paragraph-fill-docstring-p
+                              ;; pep-257-nn, delimiters are on first line
+                              ;; (and
+                              ;; (eq py-docstring-style 'pep-257-nn)
+                              (ignore-errors (<= (py-beginning-of-paragraph-position)(nth 8 pps))))
+                         (nth 8 pps))
+                        (t (py-beginning-of-paragraph-position))))
+             (end (copy-marker
+                   (cond (end)
+                         ((use-region-p) (region-end))
+                         (docstring (py-end-of-string (nth 8 pps)))
+                         (t (if (or (looking-at paragraph-start)(re-search-forward paragraph-start nil t 1))
+                                (progn (skip-chars-backward " \t\r\n\f")(point))
+                              (point))))))
              (style (or style py-docstring-style))
              (this-end (point-min)))
-        (when (and (nth 3 pps) (< beg (nth 8 pps))
-                   (py-docstring-p (nth 8 pps))
-                   (setq beg (nth 8 pps)))
-          (setq end (py-end-of-string (nth 8 pps))))
+        ;; (when (and (nth 3 pps) (< beg (nth 8 pps))
+        ;; docstring
+        ;; (setq beg (nth 8 pps)))
+        ;; (setq end (py-end-of-string (nth 8 pps))))
         (save-excursion
           (save-restriction
             (narrow-to-region beg end)

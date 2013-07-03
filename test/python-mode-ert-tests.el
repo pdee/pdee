@@ -155,19 +155,17 @@ def foo(a, b, c):
 (ert-deftest py-indent-after-backslash-lp-852052-1 ()
   "The most common case."
   (py-tests-with-temp-buffer
-   "
+      "
 from foo.bar.baz import something, something_1 \\
-    something_2 something_3, \\
-    something_4, something_5
+     something_2 something_3, \\
+     something_4, something_5
 "
-   (py-tests-go-to "from foo.bar.baz import something, something_1")
-   (should (= (py-compute-indentation) 0))
-   (py-tests-go-to "something_2 something_3,")
-   (should (= (py-compute-indentation) 5))
-   (py-tests-go-to "something_4, something_5")
-   (should (= (py-compute-indentation) 5))
-   (goto-char (point-max))
-   (should (= (py-compute-indentation) 0))))
+    (py-tests-go-to "from foo.bar.baz import something, something_1")
+    (should (= (py-compute-indentation) 0))
+    (py-tests-go-to "something_2 something_3,")
+    (should (= (py-compute-indentation) 5))
+    (py-tests-go-to "something_4, something_5")
+    (should (= (py-compute-indentation) 5))))
 
 (ert-deftest py-indent-closing ()
   ""
