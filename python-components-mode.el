@@ -273,7 +273,8 @@ URL: http://autopair.googlecode.com "
   :type 'boolean
   :group 'python-mode
   :set (lambda (symbol value)
-         (and (py-autopair-check)
+         (and
+          ;; (py-autopair-check)
               (set-default symbol value)
               (autopair-mode (if value 1 0)))))
 (make-variable-buffer-local 'py-autopair-mode)
@@ -2385,9 +2386,8 @@ See original source: http://pymacs.progiciels-bpi.ca"
 (require 'python-components-exec-forms)
 (require 'python-extended-executes)
 ;; (require 'python-mode-test)
-(require 'column-marker)
+;; (require 'column-marker)
 (require 'python-abbrev-propose)
-(require 'python-extended-executes-test)
 (require 'python-components-switches)
 (require 'python-components-paragraph)
 (require 'python-components-shift-forms)
@@ -6641,7 +6641,6 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (set (make-local-variable 'comment-start-skip) "^[ \t]*#+ *")
   (set (make-local-variable 'comment-column) 40)
   (set (make-local-variable 'comment-indent-function) #'py-comment-indent-function)
-  (set (make-local-variable 'ar-indent-uncomment-lor) nil)
   (set (make-local-variable 'indent-region-function) 'py-indent-region)
   (set (make-local-variable 'indent-line-function) 'py-indent-line)
   (set (make-local-variable 'hs-hide-comments-when-hiding-all) 'py-hide-comments-when-hiding-all)
@@ -6663,7 +6662,8 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (and py-guess-py-install-directory-p (py-set-load-path))
   ;; (add-to-list 'load-path py-install-directory)
   ;; (add-to-list 'load-path (concat py-install-directory "extensions"))
-  (and py-autopair-mode (py-autopair-check)
+  (and py-autopair-mode
+       ;; (py-autopair-check)
        (load-library "autopair")
        (add-hook 'python-mode-hook
                  #'(lambda ()

@@ -410,3 +410,34 @@ result = some_function_that_takes_arguments(
   (py-tests-with-temp-buffer
       ""
       (file-readable-p py-pyflakespep8-command)))
+
+(ert-deftest Bogus-dedent-when-typing-colon-in-dictionary-literal-lp-1197171 ()
+  (py-tests-with-temp-buffer
+      "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+# Put point at the end of the last line and hit colon, as you would to
+# separate the key from the value. The last line will incorrectly dedent
+# to column 4. Indentation should not change.
+
+def foo():
+    bar('thing',
+        {'another'"
+    (goto-char (point-max))
+    (should (eq 8 (py-compute-indentation)))))
+
+(ert-deftest exception-buffer-and-line ()
+  (py-tests-with-temp-buffer
+      "#! /usr/bin/env python
+# -*- coding: utf-8 -\*-
+      with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
+    for i in range(anzahl):
+        klauf.pylauf()
+            datei.write(str(spiel[i]) + \"\\n\")
+
+    datei.write(\"treffer; schwarz; gruen; rot; pair; impair; passe; manque; spiel\\n\")
+    print(4+5d)"
+    (switch-to-buffer (current-buffer)) 
+    (goto-char (point-max))
+    ;; error should report its just a buffer, not a file
+    (should (string-match "SyntaxError: invalid syntax" (py-execute-statement)))))
+
