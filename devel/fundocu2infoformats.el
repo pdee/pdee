@@ -81,14 +81,7 @@
 \(setq " (replace-regexp-in-string "\\." "-" suffix) "-commands (quote "))
         (insert (prin1-to-string commandslist))
         (insert "))")
-        (eval-buffer)
-        ;; (write-file (concat directory-out "commands-" suffix))
-        )
-      ;; (with-temp-buffer
-      ;;   (dolist (ele commandslist)
-      ;;     (insert (concat (car ele) "\n")))
-      ;;   (write-file (concat directory-out suffix "-commands.txt")))
-
+        (eval-buffer))
       (with-temp-buffer
         ;; org
         ;; (insert (concat (capitalize (substring oldbuf 0 (string-match "\." oldbuf))) " commands" "\n\n"))
@@ -104,7 +97,6 @@
         (find-file (concat directory-out "commands-" orgname)))
       (with-temp-buffer
         ;; reST
-        ;; (insert (concat (capitalize (substring oldbuf 0 (string-match "\." oldbuf))) " commands" "\n"))
         (insert "Python-mode commands\n\n")
         ;; (insert (concat (make-string (length (concat (substring oldbuf 0 (string-match "\." oldbuf)) " commands")) ?\=) "\n\n"))
         (insert "====================\n\n")
@@ -114,8 +106,6 @@
           (insert (concat (cdr ele) "\n\n")))
         (write-file (concat directory-out "commands-" reSTname))
         (find-file (concat directory-out "commands-" reSTname))))))
-
-
 
 (defun write-defcustom-docus (&optional buffer directory-in directory-out)
   "Writes all customizable variables w/ documentation into directory \"doc\" as \*.org and \*rst file ."
@@ -128,62 +118,50 @@
          (directory-out (or directory-out (expand-file-name finds-directory-out))))
     (defcustom-docu-base oldbuf orgname reSTname directory-in directory-out)))
 
-(defun defcustom-docu (oldbuf orgname reSTname directory-in directory-out)
+(defun defcustom-docu-base (oldbuf orgname reSTname directory-in directory-out)
   (save-restriction
     (let ((suffix (file-name-nondirectory (buffer-file-name)))
-          varslist)
-      ;; (widen)
+          varslist last)
       (goto-char (point-min))
-      ;; (eval-buffer)
-      (while (and (not (eobp))(re-search-forward "^(defcustom [[:alpha:]]\\|^;;; .+" nil t 1))
-        (if (save-match-data (commandp (symbol-at-point)))
-            (let* ((name (symbol-at-point))
-                   (docu (documentation name)))
+      (while (and (not (eobp))(re-search-forward "^(defcustom [[:alpha:]]" nil t 1))
+        (if (save-match-data (boundp (symbol-at-point)))
+            (let* ((name (variable-at-point))
+                   (docu
+                    (or (documentation-property
+                         name 'variable-documentation)
+                        (documentation-property
+                         alias 'variable-documentation))))
               (unless docu (message "don't see docu string for %s" (prin1-to-string name)))
               (add-to-list 'varslist (cons (prin1-to-string name) docu))
-              (forward-line 1)
-              ;; (message "%s" (car varslist))
-              ;; (end-of-defun)
-              )
+              (forward-line 1))
           (add-to-list 'varslist (list (match-string-no-properties 0)))))
       (setq varslist (nreverse varslist))
       (with-temp-buffer
-        (switch-to-buffer (current-buffer))
-        (insert (concat ";; a list of " suffix " commands
-\(setq " (replace-regexp-in-string "\\." "-" suffix) "-commands (quote "))
-        (insert (prin1-to-string varslist))
-        (insert "))")
-        (eval-buffer)
-        ;; (write-file (concat directory-out "commands-" suffix))
-        )
-      ;; (with-temp-buffer
-      ;;   (dolist (ele varslist)
-      ;;     (insert (concat (car ele) "\n")))
-      ;;   (write-file (concat directory-out suffix "-commands.txt")))
-
-      (with-temp-buffer
-        ;; org
-        ;; (insert (concat (capitalize (substring oldbuf 0 (string-match "\." oldbuf))) " commands" "\n\n"))
-        (insert (concat suffix " commands\n\n"))
+        ;; (switch-to-buffer (current-buffer))
+        (insert (concat suffix " variables\n\n"))
         (dolist (ele varslist)
-          (if (string-match "^;;; " (car ele))
-              (unless (or (string-match "^;;; Constants\\|^;;; Commentary\\|^;;; Code\\|^;;; Macro definitions\\|^;;; Customization" (car ele)))
-
-                (insert (concat (replace-regexp-in-string "^;;; " "* " (car ele)) "\n")))
-            (insert (concat "** "(car ele) "\n"))
-            (insert (concat "   " (cdr ele) "\n"))))
-        (write-file (concat directory-out "commands-" orgname))
-        (find-file (concat directory-out "commands-" orgname)))
+          (insert (concat "** "(car ele) "\n"))
+          (insert (concat "   " (cdr ele) "\n\n"))
+          (setq last (point)))
+        (goto-char last)
+        (push-mark)
+        ;; (delete-region (point) (goto-char (point-max)))
+        (delete-region (point)(point-max))
+        (org-mode)
+        (push-mark)
+        (goto-char (point-min))
+        (indent-region (point-min) (point-max) )
+        (write-file (concat directory-out "variables-" orgname))
+        (find-file (concat directory-out "variables-" orgname)))
       (with-temp-buffer
         ;; reST
-        ;; (insert (concat (capitalize (substring oldbuf 0 (string-match "\." oldbuf))) " commands" "\n"))
-        (insert "Python-mode commands\n\n")
+        (insert "python-mode.el variables\n\n")
         ;; (insert (concat (make-string (length (concat (substring oldbuf 0 (string-match "\." oldbuf)) " commands")) ?\=) "\n\n"))
         (insert "====================\n\n")
         (dolist (ele varslist)
           (insert (concat (car ele) "\n"))
           (insert (concat (make-string (length (car ele)) ?\-) "\n"))
           (insert (concat (cdr ele) "\n\n")))
-        (write-file (concat directory-out "commands-" reSTname))
-        (find-file (concat directory-out "commands-" reSTname))))))
-
+        (write-file (concat directory-out "variables-" reSTname))
+        (find-file (concat directory-out "variables-" reSTname))
+      ))))
