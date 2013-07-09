@@ -98,6 +98,9 @@ New in version 6.1.2
 
 - dropped `py-paragraph-fill-docstring-p'; just `fill-paragraph' should DTRT
 
+- customizable variables listed in directory in doc:
+  variables-python-mode.org, variables-python-mode.rst
+
 New in version 6.1.1
 ---------------------
 
