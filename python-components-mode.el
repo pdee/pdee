@@ -1110,7 +1110,6 @@ without the user's realization (e.g. to perform completion)."
 (defcustom py-setup-codes '(python-shell-completion-setup-code
                                       py-ffap-setup-code
                                       py-eldoc-setup-code
-                                      py-emacs-import-code
                                       )
   "List of code run by `python-shell-send-setup-codes'."
   :type '(repeat symbol)
@@ -1412,8 +1411,6 @@ See also command `toggle-py-underscore-word-syntax-p' ")
 
 (defvar py-autofill-timer nil)
 (defvar py-fill-column-orig fill-column)
-
-(defvar py-emacs-import-code "import emacs")
 
 (defvar python-mode-message-string "python-components-mode.el"
   "Internally used. Reports the python-mode branch in use.")
@@ -6119,7 +6116,6 @@ Stuff originallye23 authored by Dave Love, errors are mine -ar "
 (defun py-send-receive (string)
   "Send STRING to inferior Python (if any) and return result.
 
-The result is what follows `_emacs_out' in the output.
 This is a no-op if `py-check-comint-prompt' returns nil."
   (or (py-send-string-no-output string)
       (let ((proc (py-proc)))
@@ -6396,7 +6392,7 @@ Don't save anything for STR matching `inferior-python-filter-regexp'."
                    (string-match comint-prompt-regexp line))
           (setq py-preoutput-skip-next-prompt nil)
           (setq line (substring line (match-end 0))))
-        ;; Recognize special _emacs_out lines.
+        ;;  probably obsolet _emacs_out lines of Emacs-24.3 python.el
         (if (and (string-match "\\`_emacs_out \\(.*\\)\n\\'" line)
                  (local-variable-p 'py-preoutput-result))
             (progn
@@ -6694,7 +6690,6 @@ py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
   (when py-menu
     (easy-menu-add py-menu))
   (when py-hide-show-minor-mode-p (hs-minor-mode 1))
-  ;; (py-send-string "import emacs")
 
   (when py-start-run-py-shell
     ;; py-shell may split window, provide restore

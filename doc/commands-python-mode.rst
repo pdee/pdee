@@ -26,7 +26,6 @@ Check, if autopair-mode is available.
 
 Give some hints, if not.
 
-(defun p
 --------
 
 
@@ -561,15 +560,6 @@ py-switch-to-python
 Switch to the Python process buffer, maybe starting new process.
 
 With prefix arg, position cursor at end of buffer.
-
-py-load-file
-------------
-Load a Python file FILE-NAME into the inferior Python process.
-
-If the file has extension `.py' import or reload it as a module.
-Treating it as a module keeps the global namespace clean, provides
-function location information for debugging, and supports users of
-module-qualified names.
 
 py-proc
 -------
@@ -1207,6 +1197,10 @@ py-end-of-string
 Go to end of string at point, return position.
 
 Takes the result of (syntax-ppss)
+
+py-fill-this-paragraph
+----------------------
+Fill just the paragraph at point. 
 
 py-fill-paragraph
 -----------------
@@ -2820,6 +2814,10 @@ py-execute-region-default-dedicated
 -----------------------------------
 Send the region to an unique shell of systems default Python. 
 
+py-execute-python-mode-v5
+-------------------------
+
+
 py-execute-string
 -----------------
 Send the argument STRING to a Python interpreter.
@@ -2953,6 +2951,10 @@ py-execute-line
 ---------------
 Send current line from beginning of indent to Python interpreter. 
 
+py-output-filter
+----------------
+Clear output buffer from py-shell-input prompt etc. 
+
 py-execute-file
 ---------------
 When called interactively, user is prompted for filename. 
@@ -3007,6 +3009,15 @@ Optional C-u used for debugging, will prevent deletion of temp file.
 py-describe-mode
 ----------------
 Dump long form of `python-mode' docs.
+
+py-load-file
+------------
+Load a Python file FILE-NAME into the inferior Python process.
+
+If the file has extension `.py' import or reload it as a module.
+Treating it as a module keeps the global namespace clean, provides
+function location information for debugging, and supports users of
+module-qualified names.
 
 py-find-definition
 ------------------
@@ -3316,10 +3327,6 @@ Eval resulting buffer to install it, see customizable `py-extensions'.
 py-completion-at-point
 ----------------------
 An alternative completion, similar the way python.el does it. 
-
-py-script-complete
-------------------
-
 
 py-python-script-complete
 -------------------------
@@ -5726,8 +5733,4 @@ Send FILE-NAME to inferior Python PROCESS.
 If TEMP-FILE-NAME is passed then that file is used for processing
 instead, while internally the shell will continue to use
 FILE-NAME.
-
-py-load-pycomplete
-------------------
-Load Pymacs based pycomplete.
 

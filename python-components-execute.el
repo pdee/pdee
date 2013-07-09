@@ -497,8 +497,6 @@ Optional symbol SPLIT ('split/'nosplit) precedes `py-split-buffers-on-execute-p'
       (comint-read-input-ring t)
       (set-process-sentinel (get-buffer-process py-buffer-name)
                             #'shell-write-history-on-exit)
-      ;; (comint-send-string proc "import emacs\n")
-      ;; (process-send-string proc "import emacs")
       (add-hook 'comint-output-filter-functions
                 'ansi-color-process-output)
       (use-local-map py-shell-map)
