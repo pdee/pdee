@@ -4757,16 +4757,14 @@ Use `M-x customize-variable' to set it permanently"]
 
             )
 
-           ["Highlight indentation"
-            (setq highlight-indentation
-                  (not highlight-indentation))
+           ["Highlight indentation" highlight-indentation 
             :help "Toggle highlight indentation\.
-Optional argument INDENT-WIDTH specifies which indentation
-level (spaces only) should be highlighted, if omitted
-indent-width will be guessed from current major-mode
 
-Use `M-x customize-variable' to set it permanently"
-            :style toggle :selected highlight-indentation]
+Use `M-x customize-variable' to set it permanently
+
+Make sure `highlight-indentation' is  installed"
+            
+            ]
 
            ["Electric comment "
             (setq py-electric-comment-p
@@ -6596,13 +6594,22 @@ continuation lines.  Paragraphs are separated by blank lines only.
 
 COMMANDS
 
+`py-shell'\tStart an interactive Python interpreter in another window
+`py-execute-statement'\tSend statement at point to a Python interpreter
+`py-beginning-of-statement'\tGo to the initial line of a simple statement
+
+etc.
+
+See available commands listed in files commands-python-mode at directory doc
+
 VARIABLES
 
-py-indent-offset\t\tindentation increment
-py-block-comment-prefix\t\tcomment string used by `comment-region'
-py-shell-name\t\tshell command to invoke Python interpreter
-py-temp-directory\t\tdirectory used for temp files (if needed)
-py-beep-if-tab-change\t\tring the bell if `tab-width' is changed
+`py-indent-offset'	indentation increment
+`py-shell-name'		shell command to invoke Python interpreter
+`py-split-windows-on-execute-p'		When non-nil split windows
+`py-switch-buffers-on-execute-p'	When non-nil switch to the Python output buffer
+
+See available customizations listed in files variables-python-mode at directory doc
 
 \\{python-mode-map}"
   :group 'python-mode
