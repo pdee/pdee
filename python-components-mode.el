@@ -2375,7 +2375,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
 (require 'python-components-named-shells)
 (require 'python-components-shell-complete)
 (require 'python-components-electric)
-(require 'virtualenv)
+(require 'python-components-virtualenv)
 ;;(require 'components-shell-completion)
 (require 'python-components-re-forms)
 (require 'python-components-up-down)
@@ -4377,7 +4377,60 @@ Send file to a Bpython interpreter\.
 Uses a dedicated shell\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "])))
         "-"
-        ["Import/reload file"   py-execute-import-or-reload t]
+        ("Virtualenv"
+
+         ["Virtualenv workon" virtualenv-workon
+          :help " runs `virtualenv-workon'
+
+Make sure virtualenv is provided
+
+"]
+
+         ["Virtualenv activate" virtualenv-activate
+          :help " `virtualenv-activate'
+
+Activate the virtualenv located in DIR. "]
+
+        ["Virtualenv deactivate" virtualenv-deactivate
+         :help " `virtualenv-deactivate'
+
+Deactivate the current virtual enviroment. "]
+
+
+        ["Virtualenv p" virtualenv-p
+         :help " `virtualenv-p'
+
+Check if a directory is a virtualenv. "]
+
+        )
+
+        ["Execute import or reload" py-execute-import-or-reload
+         :help " `py-execute-import-or-reload'
+
+Import the current buffer's file in a Python interpreter\.
+
+If the file has already been imported, then do reload instead to get
+the latest version\.
+
+If the file's name does not end in "\.py", then do execfile instead\.
+
+If the current buffer is not visiting a file, do `py-execute-buffer'
+instead\.
+
+If the file local variable `py-master-file' is non-nil, import or
+reload the named file instead of the buffer's file\.  The file may be
+saved based on the value of `py-execute-import-or-reload-save-p'\.
+
+See also `M-x py-execute-region'\.
+
+This may be preferable to `M-x py-execute-buffer' because:
+
+ - Definitions stay in their module rather than appearing at top
+   level, where they would clutter the global namespace and not affect
+   uses of qualified names (MODULE\.NAME)\.
+
+ - The Python debugger gets line number information about the functions\.. "]
+
         ["Describe mode"        py-describe-mode t]
         ["Debugger" pdb :help "`pdb' Run pdb under GUD"]
         ("Checks"
@@ -4483,6 +4536,14 @@ Toggle flymake-mode running `pyflakespep8' "])
 
           ("Interpreter"
 
+           ["Execute without temporary file"
+            (setq py-execute-no-temp-p
+                  (not py-execute-no-temp-p))
+            :help " `py-execute-no-temp-p'
+Seems Emacs-24\.3 provided a way executing stuff without temporary files.
+In experimental state yet "
+            :style toggle :selected py-execute-no-temp-p]
+
            ["Enforce py-shell-name" force-py-shell-name-p-on
             :help "Enforce customized default `py-shell-name' should upon execution. "]
 
@@ -4517,7 +4578,6 @@ if __name__ == '__main__'
 
 Default is non-nil. "
             :style toggle :selected py-if-name-main-permission-p]
-
 
            ["Store result" py-store-result-p
             :help " `py-store-result-p'
@@ -4757,13 +4817,13 @@ Use `M-x customize-variable' to set it permanently"]
 
             )
 
-           ["Highlight indentation" highlight-indentation 
+           ["Highlight indentation" highlight-indentation
             :help "Toggle highlight indentation\.
 
 Use `M-x customize-variable' to set it permanently
 
 Make sure `highlight-indentation' is  installed"
-            
+
             ]
 
            ["Electric comment "

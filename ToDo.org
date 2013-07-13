@@ -18,3 +18,6 @@
   might be indicating tested install examples.
   
 * TODO py-down-block-same-level
+* TODO py-execute-statement-version
+  generic command, execute according to version customized in `py-execute-version'
+* TODO describe-mode remove unused key labels

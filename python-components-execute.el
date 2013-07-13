@@ -811,9 +811,9 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
          (file (or file (with-current-buffer py-buffer-name ; create the file to be executed in context of the shell
                           (concat (file-remote-p default-directory) localname))))
          (filebuf (get-buffer-create file))
-         (pec (if (string-match "[pP]ython ?3" py-buffer-name)
-                  (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" localname localname)
-                (format "execfile(r'%s') # PYTHON-MODE\n" localname)))
+         ;; (pec (if (string-match "[pP]ython ?3" py-buffer-name)
+         ;;          (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" localname localname)
+         ;;        (format "execfile(r'%s') # PYTHON-MODE\n" localname)))
          (comint-scroll-to-bottom-on-output t)
          err-p)
     (set-buffer filebuf)
@@ -1055,8 +1055,6 @@ When called with \\[universal-argument] followed by a number different from 4 an
 
 If the file local variable `py-master-file' is non-nil, execute the
 named file instead of the buffer's file.
-
-When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
 
 When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
 
@@ -1602,9 +1600,11 @@ jump to the top (outermost) exception in the exception stack."
       (py-find-next-exception 'bol buffer 're-search-backward "Top"))))
 ;;;
 
-(defun py-postprocess-output-buffer (buf exception-buffer)
+(defun py-postprocess-output-buffer (buf exception-buffer &optional line)
   "Highlight exceptions found in BUF.
-If an exception occurred return error-string, otherwise return nil.  BUF must exist."
+If an exception occurred return error-string, otherwise return nil.  BUF must exist.
+
+Indicate LINE if code wasn't run from a file, thus remember line of source buffer "
   (let (line file bol err-p estring ecode limit)
     (save-excursion
       (set-buffer buf)
@@ -1615,7 +1615,7 @@ If an exception occurred return error-string, otherwise return nil.  BUF must ex
       (save-excursion
         (when (re-search-backward py-shell-prompt-regexp nil t 1)
           ;; not a useful message, delete it - please tell when thinking otherwise
-          (and (re-search-forward "File \"<stdin>\", line 1, in <module>\n" nil t)
+          (and (re-search-forward "File \"<stdin>\", line 1,.*\n" nil t)
                (replace-match ""))
           (when (and (re-search-forward py-traceback-line-re limit t)
                      ;; (message "%s" (match-string-no-properties 0))

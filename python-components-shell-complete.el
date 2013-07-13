@@ -153,13 +153,24 @@ FILE-NAME."
 
 (defalias 'py-script-complete 'py-shell-complete)
 
+(defun py-shell-completion--get-completions (input process completion-code)
+  "Retrieve available completions for INPUT using PROCESS.
+Argument COMPLETION-CODE is the python code used to get
+completions on the current context."
+  (with-current-buffer (process-buffer process)
+    (let ((completions
+           (py-send-string-no-output
+            (format completion-code input) process)))
+      (when (> (length completions) 2)
+        (split-string completions "^'\\|^\"\\|;\\|'$\\|\"$" t)))))
+
 (defun py-shell--do-completion-at-point (process imports input)
   "Do completion at point for PROCESS."
   (with-syntax-table py-dotted-expression-syntax-table
     (when imports (py-send-string-no-output imports process))
     (let* ((code python-shell-module-completion-string-code)
            (completions
-            (python-shell-completion--get-completions
+            (py-shell-completion--get-completions
              input process code))
            (completion (when completions
                          (try-completion input completions))))
