@@ -669,14 +669,17 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
             (sit-for py-ipython-execute-delay))
           (setq erg (py-execute-file-base proc file pec procbuf))
           (sit-for 0.2)
-          (setq err-p (py-postprocess-output-buffer procbuf py-exception-buffer))
-          (if err-p
-              (progn
-                (setnth 1 err-p (1- (nth 1 err-p)))
-                (py-jump-to-exception err-p py-exception-buffer))
-            (py-shell-manage-windows switch split oldbuf py-buffer-name))
-          (unless (string= (buffer-name (current-buffer)) (buffer-name procbuf))
-            (when py-verbose-p (message "Output buffer: %s" procbuf))))
+          (if (string-match (concat py-pdbtrack-input-prompt "\\|" py-pydbtrack-input-prompt) erg)
+              (progn (set-buffer procbuf)
+                     (switch-to-buffer (current-buffer)))
+            (setq err-p (py-postprocess-output-buffer procbuf py-exception-buffer))
+            (if err-p
+                (progn
+                  (setnth 1 err-p (1- (nth 1 err-p)))
+                  (py-jump-to-exception err-p py-exception-buffer))
+              (py-shell-manage-windows switch split oldbuf py-buffer-name))
+            (unless (string= (buffer-name (current-buffer)) (buffer-name procbuf))
+              (when py-verbose-p (message "Output buffer: %s" procbuf)))))
       (message "%s not readable. %s" file "Do you have permissions?"))
     erg))
 
