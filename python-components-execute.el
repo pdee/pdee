@@ -296,55 +296,53 @@ Needed when file-path names are contructed from maybe numbered buffer names like
     "\*" ""
     string)))
 
-(defun py-shell-manage-windows (switch split oldbuf output-buffer &optional windows-displayed windows-config err-p)
-  (let ((exception-buffer (or py-exception-buffer oldbuf)))
-    (cond (err-p
-           (and (eq 1 (length windows-displayed))
-                (funcall py-split-windows-on-execute-function)
-                (display-buffer output-buffer))
-           (py-jump-to-exception err-p py-exception-buffer))
-          ;; split and switch
-          ((and (not (eq split 'nosplit))
-                py-split-windows-on-execute-p
-                (not (eq switch 'noswitch))
-                (or (eq switch 'switch)
-                    py-switch-buffers-on-execute-p))
-           (when (< (count-windows) py-max-split-windows)
-             (funcall py-split-windows-on-execute-function))
-           (set-buffer output-buffer)
-           (switch-to-buffer (current-buffer))
-           (display-buffer oldbuf))
-          ;; split, not switch
-          ((and
-            (not (eq split 'nosplit))
-            py-split-windows-on-execute-p
-            (or (eq switch 'noswitch)
-                (not (eq switch 'switch))))
-           (delete-other-windows)
-           (if (< (count-windows) py-max-split-windows)
-               (progn
-                 (funcall py-split-windows-on-execute-function)
-                 ;; (pop-to-buffer oldbuf)
-                 (set-buffer oldbuf)
-                 (switch-to-buffer (current-buffer))
-                 (display-buffer output-buffer 'display-buffer-reuse-window))
-             (display-buffer output-buffer 'display-buffer-reuse-window)))
-          ;; no split, switch
-          ((or (eq switch 'switch)
-               (and (not (eq switch 'noswitch))
-                    py-switch-buffers-on-execute-p))
-           (let (pop-up-windows)
+(defun py-shell-manage-windows (switch split output-buffer &optional windows-displayed windows-config err-p)
+  (cond (err-p
+         (and (eq 1 (length windows-displayed))
+              (funcall py-split-windows-on-execute-function)
+              (display-buffer output-buffer))
+         (py-jump-to-exception err-p py-exception-buffer))
+        ;; split and switch
+        ((and (not (eq split 'nosplit))
+              py-split-windows-on-execute-p
+              (not (eq switch 'noswitch))
+              (or (eq switch 'switch)
+                  py-switch-buffers-on-execute-p))
+         (when (< (count-windows) py-max-split-windows)
+           (funcall py-split-windows-on-execute-function))
+         (set-buffer output-buffer)
+         (switch-to-buffer (current-buffer))
+         (display-buffer py-exception-buffer))
+        ;; split, not switch
+        ((and
+          (not (eq split 'nosplit))
+          py-split-windows-on-execute-p
+          (or (eq switch 'noswitch)
+              (not (eq switch 'switch))))
+         (delete-other-windows)
+         (if (< (count-windows) py-max-split-windows)
+             (progn
+               (funcall py-split-windows-on-execute-function)
+               (set-buffer py-exception-buffer)
+               (switch-to-buffer (current-buffer))
+               (display-buffer output-buffer 'display-buffer-reuse-window))
+           (display-buffer output-buffer 'display-buffer-reuse-window)))
+        ;; no split, switch
+        ((or (eq switch 'switch)
+             (and (not (eq switch 'noswitch))
+                  py-switch-buffers-on-execute-p))
+         (let (pop-up-windows)
 
-             (set-buffer output-buffer)
-             (switch-to-buffer (current-buffer))))
-          ;; no split, no switch
-          ((or (eq switch 'noswitch)
-               (not py-switch-buffers-on-execute-p))
-           (if (equal (window-list-1) windows-displayed)
-               (jump-to-register 313465889)
-             (let (pop-up-windows)
-               (set-buffer oldbuf)
-               (switch-to-buffer (current-buffer))))))))
+           (set-buffer output-buffer)
+           (switch-to-buffer (current-buffer))))
+        ;; no split, no switch
+        ((or (eq switch 'noswitch)
+             (not py-switch-buffers-on-execute-p))
+         (if (equal (window-list-1) windows-displayed)
+             (jump-to-register 313465889)
+           (let (pop-up-windows)
+             (set-buffer py-exception-buffer)
+             (switch-to-buffer (current-buffer)))))))
 
 (defun py-report-executable (py-buffer-name)
   (let ((erg (downcase (replace-regexp-in-string
@@ -390,13 +388,13 @@ When DONE is `t', `py-shell-manage-windows' is omitted
 Optional symbol SPLIT ('split/'nosplit) precedes `py-split-buffers-on-execute-p'
 "
   (interactive "P")
-  (let* ((coding-system-for-read 'utf-8)
+  (let* ((py-exception-buffer (or py-exception-buffer (current-buffer)))
+         (coding-system-for-read 'utf-8)
          (coding-system-for-write 'utf-8)
          (switch (or switch py-switch-buffers-on-execute-p))
          (split (or split py-split-windows-on-execute-p))
          (sepchar (or sepchar (char-to-string py-separator-char)))
          (args py-python-command-args)
-         (oldbuf (current-buffer))
          (path (getenv "PYTHONPATH"))
          ;; reset later on
          (py-buffer-name
@@ -440,7 +438,7 @@ Optional symbol SPLIT ('split/'nosplit) precedes `py-split-buffers-on-execute-p'
                             (py-report-executable py-buffer-name))))
          proc py-smart-indentation)
     ;; lp:1169687, if called from within an existing py-shell, open a new one
-    (and (string= py-buffer-name (buffer-name oldbuf))
+    (and (string= py-buffer-name (buffer-name py-exception-buffer))
          (setq py-buffer-name (generate-new-buffer-name py-buffer-name)))
 
     (unless (comint-check-proc py-buffer-name)
@@ -509,7 +507,7 @@ Optional symbol SPLIT ('split/'nosplit) precedes `py-split-buffers-on-execute-p'
     ;; (add-hook 'py-shell-hook 'py-dirstack-hook)
     (and py-fontify-shell-buffer-p (font-lock-fontify-buffer))
     (when py-shell-hook (run-hooks 'py-shell-hook))
-    (unless done (py-shell-manage-windows switch split oldbuf py-buffer-name))
+    (unless done (py-shell-manage-windows switch split py-buffer-name))
     py-buffer-name))
 
 (defun py-shell-get-process (&optional argprompt dedicated pyshellname switch sepchar py-buffer-name done)
@@ -634,9 +632,26 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
           (goto-char (point-max))
           (setq erg (copy-marker (point))))))))
 
+(defun py-insert-offset-lines (line)
+  "Fix offline amount, make error point at the corect line. "
+  (insert (make-string (- line (count-lines (point-min) (point))) 10)))
+
+
+(defun py-execute-base (start end &optional pyshellname dedicated switch nostars sepchar split file)
+  "Select the handler. "
+  (let ((py-exception-buffer (current-buffer)))
+    (cond (;; enforce proceeding as python-mode.el v5
+           python-mode-v5-behavior-p
+           (py-execute-python-mode-v5 start end pyshellname))
+          (py-execute-no-temp-p
+           (py-execute-ge24.3 start end pyshellname dedicated switch nostars sepchar split file))
+          ;; No need for a temporary file than
+          ((and (not (buffer-modified-p)) file)
+           (py-execute-buffer-file start end pyshellname dedicated switch nostars sepchar split file))
+          (t (py-execute-buffer-finally start end pyshellname dedicated switch nostars sepchar split)))))
+
 (defun py-execute-buffer-file (start end pyshellname dedicated switch nostars sepchar split file)
-  (let* ((oldbuf (current-buffer))
-         (pyshellname (or pyshellname (py-choose-shell)))
+  (let* ((pyshellname (or pyshellname (py-choose-shell)))
          (execute-directory
           (cond ((ignore-errors (file-name-directory (file-remote-p (buffer-file-name) 'localname))))
                 ((and py-use-current-dir-when-execute-p (buffer-file-name))
@@ -659,7 +674,6 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
                  (or (get-buffer-process py-buffer-name)
                      (get-buffer-process (py-shell nil dedicated pyshellname switch sepchar py-buffer-name t)))))
          (procbuf (process-buffer proc))
-         ;; (filebuf (get-buffer file))
          (pec (if (string-match "[pP]ython ?3" py-buffer-name)
                   (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" localname localname)
                 (format "execfile(r'%s') # PYTHON-MODE\n" localname))))
@@ -670,28 +684,21 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
           (setq erg (py-execute-file-base proc file pec procbuf))
           (sit-for 0.2)
           (if (string-match (concat py-pdbtrack-input-prompt "\\|" py-pydbtrack-input-prompt) erg)
-              (progn (set-buffer procbuf)
-                     (switch-to-buffer (current-buffer)))
+              (set-buffer procbuf)
             (setq err-p (py-postprocess-output-buffer procbuf py-exception-buffer))
             (if err-p
                 (progn
                   (setnth 1 err-p (1- (nth 1 err-p)))
                   (py-jump-to-exception err-p py-exception-buffer))
-              (py-shell-manage-windows switch split oldbuf py-buffer-name))
+              (py-shell-manage-windows switch split py-buffer-name))
             (unless (string= (buffer-name (current-buffer)) (buffer-name procbuf))
               (when py-verbose-p (message "Output buffer: %s" procbuf)))))
       (message "%s not readable. %s" file "Do you have permissions?"))
     erg))
 
-(defun py-insert-offset-lines (line)
-  "Fix offline amount, make error point at the corect line. "
-  (insert (make-string (- line (count-lines (point-min) (point))) 10)))
-
 (defun py-execute-buffer-finally (start end &optional pyshell--name dedicated switch nostars sepchar split)
   (let* ((windows-config (window-configuration-to-register 313465889))
          (windows-displayed (window-list-1))
-         (oldbuf (current-buffer))
-         (exception-buffer (or py-exception-buffer oldbuf))
          (pyshellname (or pyshell--name (py-choose-shell)))
          (execute-directory
           (cond ((ignore-errors (file-name-directory (file-remote-p (buffer-file-name) 'localname))))
@@ -735,7 +742,6 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
                   ;; space after __main__, i.e. will not be executed
                   "if __name__ == '__main__ ':" strg)))
     (insert strg)
-    (switch-to-buffer (current-buffer))
     (py-fix-start (point-min)(point-max))
     (py-if-needed-insert-shell pyshellname sepchar)
     (unless wholebuf (py-insert-coding))
@@ -747,31 +753,7 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
     (write-region (point-min) (point-max) file nil t nil 'ask)
     (set-buffer-modified-p 'nil)
     (unwind-protect
-        (if (file-readable-p file)
-            (progn
-              (and (string-match "ipython" (process-name proc))
-                   (sit-for py-ipython-execute-delay))
-              ;; if only a part of buffer is executed, messaging `executing file...' is pointless
-              (let (py-verbose-p)
-                (setq erg (py-execute-file-base proc file pec procbuf
-                                                (if (buffer-file-name oldbuf)
-                                                    (buffer-file-name oldbuf)
-                                                  (buffer-name oldbuf))))
-                (sit-for 0.1)
-                (setq err-p (py-postprocess-output-buffer py-buffer-name (or (buffer-file-name exception-buffer) (buffer-name exception-buffer))))
-                (when py-enforce-output-buffer-p
-                  (setq output-buffer py-output-buffer)
-                  ;; maybe (or py-execute-python-mode-v5 ?
-                  (set-buffer (get-buffer-create output-buffer))
-                  (erase-buffer)
-                  (insert erg))
-                (py-shell-manage-windows switch split oldbuf (or output-buffer py-buffer-name) windows-displayed windows-config err-p))
-              (unless (or (string= (buffer-name (current-buffer)) (buffer-name procbuf))
-                          err-p)
-                (when py-verbose-p (message "Output buffer: %s" (or output-buffer procbuf))))
-              (sit-for 0.1))
-          ;;)
-          (message "%s not readable. %s" file "Do you have write permissions?")))
+        (py-execute-file-intern))
     (and py-cleanup-temporary
          (py-delete-temporary file localname filebuf))
     (and py-store-result-p (kill-new erg))
@@ -821,7 +803,6 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
          err-p)
     (set-buffer filebuf)
     (erase-buffer)
-    ;; (switch-to-buffer (current-buffer))
     (newline line)
     (save-excursion
       (insert strg))
@@ -849,18 +830,6 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
       (py-shell-manage-windows switch split py-exception-buffer py-buffer-name)
       (unless (string= (buffer-name (current-buffer)) (buffer-name procbuf))
         (when py-verbose-p (message "Output buffer: %s" procbuf))))))
-
-(defun py-execute-base (start end &optional pyshellname dedicated switch nostars sepchar split file)
-  "Select the handler. "
-  (cond (;; enforce proceeding as python-mode.el v5
-         python-mode-v5-behavior-p
-         (py-execute-python-mode-v5 start end pyshellname))
-        (py-execute-no-temp-p
-         (py-execute-ge24.3 start end pyshellname dedicated switch nostars sepchar split file))
-        ;; No need for a temporary file than
-        ((and (not (buffer-modified-p)) file)
-         (py-execute-buffer-file start end pyshellname dedicated switch nostars sepchar split file))
-        (t (py-execute-buffer-finally start end pyshellname dedicated switch nostars sepchar split))))
 
 (defun py-execute-string (&optional string shell dedicated)
   "Send the argument STRING to a Python interpreter.
@@ -909,7 +878,6 @@ See also `py-execute-region'. "
             (if (string-match (concat "^" erg) "ipython")
                 (progn
                   (shell-command "type ipython" t)
-                  (switch-to-buffer (current-buffer))
                   (when (looking-at "[^/\n\r]+")
                     (replace-match "#! ")))
               (if (string-match (regexp-quote sepchar) erg)
@@ -935,7 +903,6 @@ See also `py-execute-region'. "
              (insert (concat "import os; os.chdir(\"" directory "\")\n"))))))
 
 (defun py-insert-coding ()
-  ;; (switch-to-buffer (current-buffer))
   (goto-char (point-min))
   (unless (re-search-forward py-encoding-string-re nil t)
     (goto-char (point-min))
@@ -956,7 +923,6 @@ Inserts an incentive true form \"if 1:\\n.\" "
 (defun py-fix-start (start end)
   "Internal use by py-execute... functions.
 Avoid empty lines at the beginning. "
-  ;; (switch-to-buffer (current-buffer))
   (python-mode)
   (goto-char start)
   (while (empty-line-p)
@@ -1340,7 +1306,6 @@ Optional OUTPUT-BUFFER and ERROR-BUFFER might be given. "
       (py-insert-coding)
       (py-if-needed-insert-shell shell)
       (setq header (buffer-substring-no-properties (point-min) (point)))
-      (switch-to-buffer (current-buffer))
       (setq cmd (py-which-execute-file-command file))
       (write-file file))
     (py-exec-execfile file cmd header (concat temp "-output"))
@@ -1367,7 +1332,6 @@ Optional OUTPUT-BUFFER and ERROR-BUFFER might be given.')
         (progn
           (set-buffer (get-buffer-create output-buffer))
           (erase-buffer)
-          (switch-to-buffer (current-buffer))
           (shell-command (concat "python " exec-execfile) output-buffer error-buffer))
       (with-temp-buffer
         (shell-command (concat "python " exec-execfile) output-buffer error-buffer)))))
@@ -1381,11 +1345,33 @@ Optional OUTPUT-BUFFER and ERROR-BUFFER might be given.')
                       (point))))
       (py-execute-region beg (line-end-position)))))
 
+(defun py-execute-file-intern ()
+  (if (file-readable-p file)
+      (progn
+        (and (string-match "ipython" (process-name proc))
+             (sit-for py-ipython-execute-delay))
+        (let (py-verbose-p)
+          (setq erg (py-execute-file-base proc file pec procbuf
+                                          py-exception-buffer))
+          (sit-for 0.1)
+          (setq err-p (py-postprocess-output-buffer py-buffer-name))
+          (when py-enforce-output-buffer-p
+            (setq output-buffer py-output-buffer)
+            ;; maybe (or py-execute-python-mode-v5 ?
+            (set-buffer (get-buffer-create output-buffer))
+            (erase-buffer)
+            (insert erg))
+          (py-shell-manage-windows switch split (or output-buffer py-buffer-name) windows-displayed windows-config err-p))
+        (unless (or (string= (buffer-name (current-buffer)) (buffer-name procbuf))
+                    err-p)
+          (when py-verbose-p (message "Output buffer: %s" (or output-buffer procbuf))))
+        (sit-for 0.1))
+    (message "%s not readable. %s" file "Do you have write permissions?")))
+
 (defun py-execute-file (&optional filename shell dedicated switch)
   "When called interactively, user is prompted for filename. "
   (interactive "fFile: ")
-  (let* ((oldbuf (current-buffer))
-         (file (or (expand-file-name filename) (when (ignore-errors (file-readable-p (buffer-file-name))) (buffer-file-name))))
+  (let* ((file (or (expand-file-name filename) (when (ignore-errors (file-readable-p (buffer-file-name))) (buffer-file-name))))
          (shell (or shell (progn (with-temp-buffer (insert-file-contents file)(py-choose-shell)))))
          (name (py-process-name shell dedicated))
          (proc (get-buffer-process (py-shell nil dedicated (or shell (downcase name)))))
@@ -1398,8 +1384,8 @@ Optional OUTPUT-BUFFER and ERROR-BUFFER might be given.')
     (if (file-readable-p file)
         (progn
           (setq erg (py-execute-file-base proc file pec))
-          (setq py-exception-buffer (cons file (current-buffer)))
-          (py-shell-manage-windows switch split oldbuf py-buffer-name)
+          (setq py-exception-buffer file)
+          (py-shell-manage-windows switch split py-buffer-name)
           (sit-for 0.1)
           erg)
       (message "File not readable: %s" "Do you have write permissions?"))))
@@ -1436,7 +1422,7 @@ Returns position where output starts. "
            (buffer-substring-no-properties orig (point))))
     ;; "Traceback (most recent call last):\n  File \"<stdin>\", line 1, in <module>\n  File \"/tmp/python3-6503yvo.py\", line 135\n    print(44*0e)\n              ^\nSyntaxError: invalid token"
     (and origfile (string-match "\\(.+\\) File \"[^\"]+\", line \\(.+\\)" erg)
-         (setq erg (replace-regexp-in-string  "\\(.+\\) File \"[^\"]+\", line \\(.+\\)" (concat (match-string-no-properties 1) " File \"" origfile "\", line " (match-string-no-properties 2)) erg)))
+         (setq erg (replace-regexp-in-string  "\\(.+\\) File \"[^\"]+\", line \\(.+\\)" (concat (match-string-no-properties 1) " File \"" (or (and (stringp origfile) origfile)(buffer-name origfile)) "\", line " (match-string-no-properties 2)) erg)))
     erg))
 
 ;;; Subprocess utilities and filters
@@ -1603,7 +1589,7 @@ jump to the top (outermost) exception in the exception stack."
       (py-find-next-exception 'bol buffer 're-search-backward "Top"))))
 ;;;
 
-(defun py-postprocess-output-buffer (buf exception-buffer &optional line)
+(defun py-postprocess-output-buffer (buf &optional line)
   "Highlight exceptions found in BUF.
 If an exception occurred return error-string, otherwise return nil.  BUF must exist.
 
@@ -1614,29 +1600,26 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
       (goto-char (point-max))
       (forward-line -1)
       (end-of-line)
-      (switch-to-buffer (current-buffer))
       (save-excursion
         (when (re-search-backward py-shell-prompt-regexp nil t 1)
           ;; not a useful message, delete it - please tell when thinking otherwise
           (and (re-search-forward "File \"<stdin>\", line 1,.*\n" nil t)
                (replace-match ""))
           (when (and (re-search-forward py-traceback-line-re limit t)
-                     ;; (message "%s" (match-string-no-properties 0))
                      (or (match-string 1) (match-string 3)))
-            (when (match-string-no-properties 1) (match-string-no-properties 2)
-                  (replace-match exception-buffer nil nil nil 1)
-                  (setq file exception-buffer)
-                  (setq line (string-to-number (match-string-no-properties 2)))
-                  (goto-char (match-beginning 0))
-                  ;; if no buffer-file exists, signal "Buffer", not "File"
-                  (save-match-data
-                    (and (not (buffer-file-name (or
-                                                 (get-buffer exception-buffer)
-                                                 (get-buffer (file-name-nondirectory exception-buffer))))) (string-match "^[ \t]*File" (buffer-substring-no-properties (match-beginning 0) (match-end 0)))
-
-                     (looking-at "[ \t]*File")
-                     (replace-match "Buffer"))
-                    ))
+            (when (match-string-no-properties 1)
+              (replace-match (buffer-name py-exception-buffer) nil nil nil 1)
+              (setq file py-exception-buffer)
+              (setq line (string-to-number (match-string-no-properties 2)))
+              (goto-char (match-beginning 0))
+              ;; if no buffer-file exists, signal "Buffer", not "File"
+              (save-match-data
+                (and (not (buffer-file-name
+                           (or
+                            (get-buffer py-exception-buffer)
+                            (get-buffer (file-name-nondirectory py-exception-buffer))))) (string-match "^[ \t]*File" (buffer-substring-no-properties (match-beginning 0) (match-end 0)))
+                            (looking-at "[ \t]*File")
+                            (replace-match "Buffer"))))
             (add-to-list 'err-p line)
             (add-to-list 'err-p file)
             (overlay-put (make-overlay (match-beginning 0) (match-end 0))

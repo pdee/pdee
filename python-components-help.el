@@ -642,13 +642,13 @@ Returns imports "
 Imports done are displayed in message buffer. "
   (interactive)
   (save-excursion
-    (let ((oldbuf (current-buffer))
+    (let ((py-exception-buffer (current-buffer))
           (orig (point))
           (erg (py-find-imports)))
 
           ;; (mapc 'py-execute-string (split-string (car (read-from-string (py-find-imports))) "\n" t)))
       ;; (setq erg (car (read-from-string python-imports)))
-      (set-buffer oldbuf)
+      (set-buffer py-exception-buffer)
       (goto-char orig)
       (when (interactive-p)
         (switch-to-buffer (current-buffer))

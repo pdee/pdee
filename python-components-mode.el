@@ -1605,7 +1605,8 @@ can write into: the value (if any) of the environment variable TMPDIR,
 (defvar py-completion-last-window-configuration nil
   "Internal use: restore py-restore-window-configuration when completion is done resp. abandoned. ")
 
-(defvar py-exception-buffer nil)
+(defvar py-exception-buffer nil
+  "Set internally, remember source buffer where error might occur. ")
 
 (defvar py-string-delim-re "\\(\"\"\"\\|'''\\|\"\\|'\\)"
   "When looking at beginning of string. ")
@@ -6765,7 +6766,7 @@ See available customizations listed in files variables-python-mode at directory 
       (let ((oldbuf (current-buffer)))
         (save-excursion
           (py-shell)
-          (set-buffer oldbuf))))
+          (set-buffer py-exception-buffer))))
     ;; (jump-to-register 213465879)
     )
   ;; (run-mode-hooks 'python-mode-hook)
