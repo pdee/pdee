@@ -26,6 +26,7 @@ Check, if autopair-mode is available.
 
 Give some hints, if not.
 
+(defun p
 --------
 
 
@@ -2911,8 +2912,6 @@ named file instead of the buffer's file.
 
 When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
 
-When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
-
 Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch) 
 
 py-execute-buffer-no-switch
@@ -2936,16 +2935,6 @@ py-process-file
 Process "python filename".
 
 Optional OUTPUT-BUFFER and ERROR-BUFFER might be given. 
-
-py-exec-execfile-region
------------------------
-Execute the region in a Python interpreter. 
-
-py-exec-execfile
-----------------
-Process "python filename",
-Optional OUTPUT-BUFFER and ERROR-BUFFER might be given.')
-
 
 py-execute-line
 ---------------
@@ -3200,6 +3189,10 @@ py-switch-imenu-index-function
 ------------------------------
 Switch between series 5. index machine `py-imenu-create-index' and `py-imenu-create-index-new', which also lists modules variables 
 
+py-toggle-local-default-use
+---------------------------
+
+
 py-choose-shell-by-path
 -----------------------
 Select Python executable according to version desplayed in path, current buffer-file is selected from.
@@ -3400,7 +3393,7 @@ Keegan Carruthers-Smith
 
 py-pep8-run
 -----------
-*Run pep8, check formatting (default on the file currently visited).
+Run pep8, check formatting (default on the file currently visited).
 
 
 py-pep8-help
@@ -3409,7 +3402,7 @@ Display pep8 command line help messages.
 
 py-pylint-run
 -------------
-*Run pylint (default on the file currently visited).
+Run pylint (default on the file currently visited).
 
 For help see M-x pylint-help resp. M-x pylint-long-help.
 Home-page: http://www.logilab.org/project/pylint 
@@ -3428,7 +3421,7 @@ Calls `pylint --full-documentation'
 
 py-pyflakes-run
 ---------------
-*Run pyflakes (default on the file currently visited).
+Run pyflakes (default on the file currently visited).
 
 For help see M-x pyflakes-help resp. M-x pyflakes-long-help.
 Home-page: http://www.logilab.org/project/pyflakes 
@@ -3441,7 +3434,7 @@ Let's have this until more Emacs-like help is prepared
 
 py-pyflakespep8-run
 -------------------
-*Run pyflakespep8, check formatting (default on the file currently visited).
+Run pyflakespep8, check formatting (default on the file currently visited).
 
 
 py-pyflakespep8-help
@@ -3459,7 +3452,7 @@ Display flakes8 command line help messages.
 
 py-pychecker-run
 ----------------
-*Run pychecker (default on the file currently visited).
+Run pychecker (default on the file currently visited).
 
 ;;; Skeletons
 -------------
@@ -3479,7 +3472,7 @@ These skeletons are loaded by python-mode, if `py-load-skeletons-p' is non-nil.
 
 virtualenv-current
 ------------------
-barfs the current activated virtualenv
+Barfs the current activated virtualenv
 
 virtualenv-activate
 -------------------
@@ -3492,10 +3485,6 @@ Deactivate the current virtual enviroment
 virtualenv-workon
 -----------------
 Issue a virtualenvwrapper-like virtualenv-workon command
-
-py-toggle-local-default-use
----------------------------
-
 
 ;;; Execute
 -----------

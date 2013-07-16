@@ -420,8 +420,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-execute-buffer-no-switch) nil \"py-execute-buffer-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-defun) nil \"py-execute-defun not detected as command\")" \
 -eval "(assert (commandp 'py-process-file) nil \"py-process-file not detected as command\")" \
--eval "(assert (commandp 'py-exec-execfile-region) nil \"py-exec-execfile-region not detected as command\")" \
--eval "(assert (commandp 'py-exec-execfile) nil \"py-exec-execfile not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block) nil \"py-execute-block not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-or-clause) nil \"py-execute-block-or-clause not detected as command\")" \
 -eval "(assert (commandp 'py-execute-class) nil \"py-execute-class not detected as command\")" \
