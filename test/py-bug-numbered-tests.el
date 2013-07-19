@@ -271,9 +271,9 @@ py_if_name_main_permission_test()
       (goto-char (point-max))
       (forward-line -1)
       (end-of-line)
-      (sit-for 0.2) 
+      (sit-for 0.2)
       (assert (looking-back "run") nil "py-if-name-main-permission-lp-326620-test #1 failed")))
-  (switch-to-buffer (current-buffer)) 
+  (switch-to-buffer (current-buffer))
   (let (py-if-name-main-permission-p)
     (py-execute-buffer)
     (set-buffer "*Python*")
@@ -281,7 +281,7 @@ py_if_name_main_permission_test()
     (goto-char (point-max))
     (forward-line -1)
     (end-of-line)
-    (sit-for 0.2) 
+    (sit-for 0.2)
     (assert (looking-back "supressed") nil "py-if-name-main-permission-lp-326620-test #2 failed")))
 
 (defun sexp-commands-lp:328778-test (&optional arg)
@@ -5381,7 +5381,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.38 $\"
+__version__ = \"$Revision: 1.39 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -5776,17 +5776,17 @@ inode, start_no, end_no)
   (py-bug-tests-intern 'py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-base arg teststring)))
 
 (defun py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-base ()
-  (let (py-split-windows-on-execute-p py-switch-buffers-on-execute-p)
+  (let (py-split-windows-on-execute-p)
     (shell)
     (delete-other-windows)
     ;; (set-buffer (py-shell))
     (py-shell)
     ;; (assert (string= "*shell*" (buffer-name)) nil "py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test #1 failed")
     (assert (string= "*shell*" (buffer-name)) nil "py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test #1 failed")
-    (py-shell nil nil nil 'switch)
-    (sit-for 0.1) 
-    (assert (string= "*Python*" (buffer-name)) nil "py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test #2 failed")
-    ))
+    (let ((py-switch-buffers-on-execute-p t))
+      (py-shell))
+    (sit-for 0.1)
+    (assert (string= "*Python*" (buffer-name)) nil "py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test #2 failed")))
 
 (defun from-within-py-shell-call-another-instance-lp-1169687-test (&optional arg)
   (interactive "p")
