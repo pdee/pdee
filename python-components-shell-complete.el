@@ -15,140 +15,6 @@
 
 ;;; Code
 
-(defun py-restore-window-configuration ()
-  "Restore py-restore-window-configuration when completion is done resp. abandoned. "
-  (interactive)
-  (if py-completion-last-window-configuration
-      (set-window-configuration py-completion-last-window-configuration)
-    (delete-other-windows))
-  (when (buffer-live-p (get-buffer "*Python Completions*"))
-    (kill-buffer (get-buffer "*Python Completions*"))))
-
-(defun py-shell-execute-string-now (string &optional shell buffer proc)
-  "Send to Python interpreter process PROC \"exec STRING in {}\".
-and return collected output"
-  (let* ((procbuf (or buffer (process-buffer proc) (py-shell nil nil shell)))
-
-         (proc (or proc (get-buffer-process procbuf)))
-	 (cmd (format "exec '''%s''' in {}"
-		      (mapconcat 'identity (split-string string "\n") "\\n")))
-         (outbuf (get-buffer-create " *pyshellcomplete-output*"))
-         ;; (lines (reverse py-shell-input-lines))
-         )
-    ;; (when proc
-    (unwind-protect
-        (condition-case nil
-            (progn
-              ;; (if lines
-              ;;     (with-current-buffer procbuf
-              ;;       (comint-redirect-send-command-to-process
-              ;;        "\C-c" outbuf proc nil t)
-              ;;       ;; wait for output
-              ;;       (while (not comint-redirect-completed)
-              ;;         (accept-process-output proc 1))))
-              (with-current-buffer outbuf
-                (delete-region (point-min) (point-max)))
-              (with-current-buffer procbuf
-                (comint-redirect-send-command-to-process
-                 cmd outbuf proc nil t)
-                (while (not comint-redirect-completed) ; wait for output
-                  (accept-process-output proc 1)))
-              (with-current-buffer outbuf
-                (buffer-substring (point-min) (point-max))))
-          (quit (with-current-buffer procbuf
-                  (interrupt-process proc comint-ptyp)
-                  (while (not comint-redirect-completed) ; wait for output
-                    (accept-process-output proc 1)))
-                (signal 'quit nil)))
-      ;; (if (with-current-buffer procbuf comint-redirect-completed)
-      ;;     (while lines
-      ;;       (with-current-buffer procbuf
-      ;;         (comint-redirect-send-command-to-process
-      ;;          (car lines) outbuf proc nil t))
-      ;;       (accept-process-output proc 1)
-      ;;       (setq lines (cdr lines))))
-      )))
-
-(defun py-dot-word-before-point ()
-  (buffer-substring-no-properties
-   (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point))
-   (point)))
-
-(defun py-switch-to-python (eob-p)
-  "Switch to the Python process buffer, maybe starting new process.
-
-With prefix arg, position cursor at end of buffer."
-  (interactive "P")
-  (pop-to-buffer (process-buffer (py-proc)) t) ;Runs python if needed.
-  (when eob-p
-    (push-mark)
-    (goto-char (point-max))))
-
-(defun py-send-region-and-go (start end)
-  "Send the region to the inferior Python process.
-
-Then switch to the process buffer."
-  (interactive "r")
-  (py-send-region start end)
-  (py-switch-to-python t))
-
-
-(defun py-shell-send-setup-code (process)
-  "Send all setup code for shell.
-This function takes the list of setup code to send from the
-`py-setup-codes' list."
-  (accept-process-output process 1)
-  (dolist (code py-setup-codes)
-    (py-send-string-no-output
-     (symbol-value code) process)
-    (sit-for 0.1)))
-
-(defun py-send-string-no-output (string &optional process msg)
-  "Send STRING to PROCESS and inhibit output.
-When MSG is non-nil messages the first line of STRING.  Return
-the output."
-  (let* ((output-buffer)
-         (process (or process (get-buffer-process (py-shell))))
-         (comint-preoutput-filter-functions
-          (append comint-preoutput-filter-functions
-                  '(ansi-color-filter-apply
-                    (lambda (string)
-                      (setq output-buffer (concat output-buffer string))
-                      "")))))
-    (py-shell-send-string string process msg)
-    (accept-process-output process 1)
-    (when output-buffer
-      (replace-regexp-in-string
-       (if (> (length py-shell-prompt-output-regexp) 0)
-           (format "\n*%s$\\|^%s\\|\n$"
-                   py-shell-prompt-regexp
-                   (or py-shell-prompt-output-regexp ""))
-         (format "\n*$\\|^%s\\|\n$"
-                 py-shell-prompt-regexp))
-       "" output-buffer))))
-
-(defun py-send-file (file-name &optional process temp-file-name)
-  "Send FILE-NAME to inferior Python PROCESS.
-If TEMP-FILE-NAME is passed then that file is used for processing
-instead, while internally the shell will continue to use
-FILE-NAME."
-  (interactive "fFile to send: ")
-  (let* ((process (or process (get-buffer-process (py-shell))))
-         (temp-file-name (when temp-file-name
-                           (expand-file-name temp-file-name)))
-         (file-name (or (expand-file-name file-name) temp-file-name))
-         py-python-command-args)
-    (when (not file-name)
-      (error "If FILE-NAME is nil then TEMP-FILE-NAME must be non-nil"))
-    (py-shell-send-string
-     (format
-      (concat "__pyfile = open('''%s''');"
-              "exec(compile(__pyfile.read(), '''%s''', 'exec'));"
-              "__pyfile.close()")
-      ;; (or (file-remote-p temp-file-name 'localname) file-name) file-name)
-      (or (file-remote-p temp-file-name 'localname) file-name) "Fehlerdatei")
-     process)))
-
 ;;;
 
 (defalias 'py-script-complete 'py-shell-complete)
@@ -421,9 +287,6 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
          (pattern (or word (buffer-substring-no-properties beg end)))
          (sep ";")
          (shell (or shell (py-choose-shell)))
-         (pyshellname (if (string-match "ipython" shell)
-                          shell
-                        "ipython"))
          (processlist (process-list))
          (imports (or imports (py-find-imports)))
          done
@@ -431,17 +294,17 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
           (if ipython-complete-use-separate-shell-p
               (unless (and (buffer-live-p " *IPython-Complete*")
                            (comint-check-proc (process-name (get-buffer-process " *IPython-Complete*"))))
-                (get-buffer-process (py-shell nil nil pyshellname 'noswitch nil " *IPython-Complete*")))
+                (get-buffer-process (py-shell nil nil py-shell-name 'noswitch nil " *IPython-Complete*")))
             (progn
               (while (and processlist (not done))
                 (when (and
-                       (string= pyshellname (process-name (car processlist)))
+                       (string= py-shell-name (process-name (car processlist)))
                        (processp (car processlist))
                        (setq done (car processlist))))
                 (setq processlist (cdr processlist)))
               done)))
          (python-process (or process
-                             (get-buffer-process (py-shell nil nil (if (string-match "[iI][pP]ython[^[:alpha:]]*$"  pyshellname) pyshellname "ipython") 'noswitch nil))))
+                             (get-buffer-process (py-shell nil nil (if (string-match "[iI][pP]ython[^[:alpha:]]*$"  py-shell-name) py-shell-name "ipython") 'noswitch nil))))
          (comint-output-filter-functions
           (delq 'py-comint-output-filter-function comint-output-filter-functions))
          (comint-output-filter-functions

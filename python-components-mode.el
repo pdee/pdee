@@ -680,12 +680,16 @@ If you ignore the location `M-x py-guess-pdb-path' might display it.
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-separator-char ?\/
+(defcustom py-separator-char 47
   "The character, which separates the system file-path components.
 
 Precedes guessing when not empty, returned by function `py-separator-char'. "
   :type 'character
   :group 'python-mode)
+;; (make-variable-buffer-local 'py-separator-char)
+;; used as a string finally
+;; kept a character not to break existing customizations
+(and (characterp py-separator-char)(setq py-separator-char (char-to-string py-separator-char)))
 
 (defcustom py-custom-temp-directory ""
   "If set, will take precedence over guessed values from `py-temp-directory'. Default is the empty string. "
@@ -1290,6 +1294,9 @@ See also `py-execute-directory'"
 (defvar python-ffap nil)
 (defvar ffap-alist nil)
 
+(defvar py-buffer-name nil
+  "Internally set. ")
+
 (defun py-set-ffap-form ()
   (cond ((and py-ffap-p py-ffap)
          (eval-after-load "ffap"
@@ -1502,7 +1509,7 @@ ipython0.11-completion-command-string also covers version 0.12")
   "Detecting the shell in head of file. ")
 (setq py-shebang-regexp   "#![ \t]?\\([^ \t\n]+\\)[ \t]*\\([biptj]+ython[^ \t\n]*\\)")
 
-(defvar py-separator-char 47
+(defvar py-separator-char "/"
   "Values set by defcustom only will not be seen in batch-mode. ")
 
 (defvar py-temp-directory
@@ -1534,8 +1541,8 @@ ipython0.11-completion-command-string also covers version 0.12")
           (funcall ok "/var/folders")
           (setq erg "/var/folders"))
      (and (or (eq system-type 'ms-dos)(eq system-type 'windows-nt))
-          (funcall ok (concat "c:" (char-to-string py-separator-char) "Users"))
-          (setq erg (concat "c:" (char-to-string py-separator-char) "Users")))
+          (funcall ok (concat "c:" py-separator-char "Users"))
+          (setq erg (concat "c:" py-separator-char "Users")))
      ;; (funcall ok ".")
      (error
       "Couldn't find a usable temp directory -- set `py-temp-directory'"))
@@ -1552,8 +1559,12 @@ can write into: the value (if any) of the environment variable TMPDIR,
 (defvar py-pydbtrack-input-prompt)
 
 (defvar py-exec-command nil
-  "Mode commands will set this. ")
+  "Internally used. ")
 (make-variable-buffer-local 'py-exec-command)
+
+(defvar py-python-major-version nil
+  "Internally used. ")
+(make-variable-buffer-local 'py-python-major-version)
 
 (defvar py-exec-string-command nil
   "Mode commands will set this. ")
@@ -1973,9 +1984,6 @@ Includes def and class. ")
 
 (put 'py-indent-offset 'safe-local-variable 'integerp)
 
-;; (defvar py-separator-char 47
-;;  (setq py-separator-char 47)
-
 ;; ipython.el
 ;; Recognize the ipython pdb, whose prompt is 'ipdb>' or  'ipydb>'
 ;;instead of '(Pdb)'
@@ -2083,6 +2091,16 @@ Includes def and class. ")
 
 (make-obsolete-variable 'jpython-mode-hook 'jython-mode-hook nil)
 
+(defun py-shell-send-setup-code (process)
+  "Send all setup code for shell.
+This function takes the list of setup code to send from the
+`py-setup-codes' list."
+  (accept-process-output process 1)
+  (dolist (code py-setup-codes)
+    (py-send-string-no-output
+     (symbol-value code) process)
+    (sit-for 0.1)))
+
 (defun py-docstring-p (&optional beginning-of-string-position)
   "Check to see if there is a docstring at POS."
   (let* (pps
@@ -2148,18 +2166,18 @@ return `jython', otherwise return nil."
                         'jython))))
     mode))
 
-(defun py-choose-shell-by-path (&optional file-separator-char)
+(defun py-choose-shell-by-path (&optional py-separator-char)
   "Select Python executable according to version desplayed in path, current buffer-file is selected from.
 
 Returns versioned string, nil if nothing appropriate found "
   (interactive)
   (lexical-let ((path (buffer-file-name))
-                (file-separator-char (or file-separator-char (char-to-string py-separator-char)))
+                (py-separator-char (or py-separator-char py-separator-char))
                 erg)
-    (when (and path file-separator-char
-               (string-match (concat file-separator-char "[iI]?[pP]ython[0-9.]+" file-separator-char) path))
+    (when (and path py-separator-char
+               (string-match (concat py-separator-char "[iI]?[pP]ython[0-9.]+" py-separator-char) path))
       (setq erg (substring path
-                           (1+ (string-match (concat file-separator-char "[iI]?[pP]ython[0-9.]+" file-separator-char) path)) (1- (match-end 0)))))
+                           (1+ (string-match (concat py-separator-char "[iI]?[pP]ython[0-9.]+" py-separator-char) path)) (1- (match-end 0)))))
     (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -2232,8 +2250,9 @@ With \\[universal-argument] 4 is called `py-switch-shell' see docu there.
                       ((py-choose-shell-by-shebang))
                       ((py-choose-shell-by-import))
                       ((py-choose-shell-by-path))
-                      (py-shell-name py-shell-name)
-                      (t (default-value 'py-shell-name))))
+                      (t (or 
+                          (default-value 'py-shell-name)
+                          "python"))))
            (cmd (if py-edit-only-p erg
                   (executable-find erg))))
       (if cmd
@@ -2243,15 +2262,14 @@ With \\[universal-argument] 4 is called `py-switch-shell' see docu there.
       erg)))
 
 
-(defun py-normalize-directory (directory &optional file-separator-char)
+(defun py-normalize-directory (directory)
   "Make sure DIRECTORY ends with a file-path separator char.
 
 Returns DIRECTORY"
-  (let* ((file-separator-char (or file-separator-char (char-to-string py-separator-char)))
-         (erg (cond ((string-match (concat file-separator-char "$") directory)
-                     directory)
-                    ((not (string= "" directory))
-                     (concat directory file-separator-char)))))
+  (let ((erg (cond ((string-match (concat py-separator-char "$") directory)
+                    directory)
+                   ((not (string= "" directory))
+                    (concat directory py-separator-char)))))
     (unless erg (when py-verbose-p (message "Warning: directory is empty")))
     erg))
 
@@ -2338,15 +2356,14 @@ See original source: http://pymacs.progiciels-bpi.ca"
 (defun py-set-load-path ()
   "Include needed subdirs of python-mode directory. "
   (interactive)
-  (let ((py-install-directory (py-normalize-directory py-install-directory (char-to-string py-separator-char))))
+  (let ((py-install-directory (py-normalize-directory py-install-directory)))
     (cond ((and (not (string= "" py-install-directory))(stringp py-install-directory))
            (add-to-list 'load-path (expand-file-name py-install-directory))
            (add-to-list 'load-path (concat (expand-file-name py-install-directory) "completion"))
            (add-to-list 'load-path (concat (expand-file-name py-install-directory) "extensions"))
            (add-to-list 'load-path (concat (expand-file-name py-install-directory) "test"))
            (add-to-list 'load-path (concat (expand-file-name py-install-directory) "tools"))
-           (add-to-list 'load-path (concat (expand-file-name py-install-directory) "autopair"))
-           )
+           (add-to-list 'load-path (concat (expand-file-name py-install-directory) "autopair")))
           ((when py-guess-py-install-directory-p
              (let ((guessed-py-install-directory (py-guess-py-install-directory)))
                (when guessed-py-install-directory
@@ -2367,6 +2384,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
 (require 'python-components-move)
 (require 'python-components-execute)
 (require 'python-components-send)
+(require 'python-components-shell-complete)
 (require 'python-components-pdb)
 (require 'python-components-help)
 (require 'python-components-extensions)
@@ -2374,7 +2392,6 @@ See original source: http://pymacs.progiciels-bpi.ca"
 (require 'python-components-imenu)
 ;; (require 'python-components-completion)
 (require 'python-components-named-shells)
-(require 'python-components-shell-complete)
 (require 'python-components-electric)
 (require 'python-components-virtualenv)
 ;;(require 'components-shell-completion)
@@ -4397,7 +4414,6 @@ Activate the virtualenv located in DIR. "]
 
 Deactivate the current virtual enviroment. "]
 
-
         ["Virtualenv p" virtualenv-p
          :help " `virtualenv-p'
 
@@ -6211,7 +6227,7 @@ This is a no-op if `py-check-comint-prompt' returns nil."
 ;; (setq pdb-path '/usr/lib/python2.7/pdb.py
 ;;      gud-pdb-command-name (symbol-name pdb-path))
 
-(unless py-separator-char (setq py-separator-char (py-separator-char)))
+(unless py-separator-char (setq py-separator-char (py-update-separator-char)))
 
 ;;; Hooks
 ;; arrange to kill temp files when Emacs exists
@@ -6346,17 +6362,17 @@ Should you need more shells to select, extend this command by adding inside the 
                  mode-name "IPython"))
           ((string-match "python3" name)
            (setq py-shell-name name
-                 py-which-bufname (py-buffer-name-prepare name)
+                 py-which-bufname (py-buffer-name-prepare)
                  msg "CPython"
-                 mode-name (py-buffer-name-prepare name)))
+                 mode-name (py-buffer-name-prepare)))
           ((string-match "jython" name)
            (setq py-shell-name name
-                 py-which-bufname (py-buffer-name-prepare name)
+                 py-which-bufname (py-buffer-name-prepare)
                  msg "Jython"
-                 mode-name (py-buffer-name-prepare name)))
+                 mode-name (py-buffer-name-prepare)))
           ((string-match "python" name)
            (setq py-shell-name name
-                 py-which-bufname (py-buffer-name-prepare name)
+                 py-which-bufname (py-buffer-name-prepare)
                  msg "CPython"
                  mode-name py-which-bufname))
           (t
@@ -6492,7 +6508,7 @@ Don't save anything for STR matching `inferior-python-filter-regexp'."
 ;;           (lambda ()
 ;;             (when py-load-highlight-indentation-p
 ;;               (unless (featurep 'highlight-indentation)
-;;                 (load (concat (py-normalize-directory py-install-directory) "extensions" (char-to-string py-separator-char) "highlight-indentation.el"))))))
+;;                 (load (concat (py-normalize-directory py-install-directory) "extensions" py-separator-char "highlight-indentation.el"))))))
 
 (add-to-list 'same-window-buffer-names (purecopy "*Python*"))
 (add-to-list 'same-window-buffer-names (purecopy "*IPython*"))

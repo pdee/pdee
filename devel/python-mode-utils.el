@@ -318,8 +318,9 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)\"\
 
                        (funcall (intern-soft (concat \"py-beginning-of-\" form)))
                        (push-mark))))
-          (end (funcall (intern-soft (concat \"py-end-of-\" form)))))
-      (py-execute-base beg end shell dedicated switch))))\n\n")
+          (end (funcall (intern-soft (concat \"py-end-of-\" form))))
+          (py-shell-name shell))
+      (py-execute-base beg end dedicated switch))))\n\n")
     ;; see also `py-checker-command-names'
     (dolist (ele py-bounds-command-names)
       (dolist (elt py-shells)
@@ -350,7 +351,8 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)\"\
           (insert "\"\n")
           (cond ((string= "region" ele)
                  (insert (concat "  (interactive \"r\")
-  (py-execute-base beg end \"" elt "\"")))
+  (let ((py-shell-name \"" elt "\"))
+    (py-execute-base beg end")))
                 ((string= "buffer" ele)
                  (insert "  (interactive)
   \(save-excursion
@@ -377,13 +379,16 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)\"\
                 ((string= "noswitch" pyo)
                  (insert " 'noswitch"))
                 (t (insert " nil")))
-          (if (string= "buffer" ele)
-              (insert "))))\n\n")
-            (insert "))\n\n"))))))
+          (cond ((string= "region" ele)
+                 (insert ")))\n\n"))
+                ((string= "buffer" ele)
+                 (insert "))))\n\n"))
+            (t (insert "))\n\n")))
+          ))))
   (if path-to-shell
       (insert (concat "(provide '" path-to-shell) ")
 ;;; " path-to-shell ".el ends here\n")
-    (insert "(provide 'python-extend8ed-executes)
+    (insert "(provide 'python-extended-executes)
 ;;; python-extended-executes.el ends here\n "))
   (emacs-lisp-mode))
 

@@ -1083,7 +1083,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
 --funcall Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test \
 --funcall Bogus-dedent-when-typing-colon-in-dictionary-literal-lp-1197171-test \
---funcall py-if-name-main-permission-lp-326620-test \
 --funcall Parens-span-multiple-lines-lp-1191225-test \
 --funcall indent-refused-lp-1191133-test \
 --funcall return-key-is-broken-lp-1191158-test \
@@ -1356,6 +1355,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall filename-completion-fails-in-ipython-lp-1027265-n2-test \
 --funcall py-shell-invoking-python-lp:835151-test \
 --funcall usr-bin-python2.7-shell-complete-test \
+--funcall usr-bin-python-shell-complete-test \
 --funcall py-run-shell-complete-tests \
 --funcall py-execute-statement-ipython-test \
 --funcall py-execute-buffer-ipython-switch-test \
@@ -1408,4 +1408,4 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall more-docstring-filling-woes-lp-1102296-pep-257-test \
 --funcall more-docstring-filling-woes-lp-1102296-pep-257-nn-test \
 --funcall from-within-py-shell-call-another-instance-lp-1169687-test \
---funcall usr-bin-python-shell-complete-test \
+--funcall py-if-name-main-permission-lp-326620-test \

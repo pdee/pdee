@@ -242,6 +242,48 @@ on."
             (kill-process (get-buffer-process (current-buffer))))
        (kill-buffer (current-buffer)))))
 
+
+;; py-if-name-main-permission-p
+(defun py-if-name-main-permission-lp-326620-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+def py_if_name_main_permission_test():
+    if __name__ == \"__main__\" :
+        print(\"__name__ == '__main__' run\")
+        return True
+
+    else:
+        print(\"__name__ == '__main__' supressed\")
+        return False
+
+py_if_name_main_permission_test()
+"))
+  (py-bug-tests-intern 'py-if-name-main-permission-lp-326620-base arg teststring)))
+
+(defun py-if-name-main-permission-lp-326620-base ()
+  (save-excursion
+    (let ((py-if-name-main-permission-p t)
+          (py-shell-name (py-choose-shell)))
+      (py-execute-buffer)
+      (set-buffer "*Python*")
+      ;; (switch-to-buffer (current-buffer))
+      (goto-char (point-max))
+      (forward-line -1)
+      (end-of-line)
+      (sit-for 0.2) 
+      (assert (looking-back "run") nil "py-if-name-main-permission-lp-326620-test #1 failed")))
+  (switch-to-buffer (current-buffer)) 
+  (let (py-if-name-main-permission-p)
+    (py-execute-buffer)
+    (set-buffer "*Python*")
+    ;; (switch-to-buffer (current-buffer))
+    (goto-char (point-max))
+    (forward-line -1)
+    (end-of-line)
+    (sit-for 0.2) 
+    (assert (looking-back "supressed") nil "py-if-name-main-permission-lp-326620-test #2 failed")))
+
 (defun sexp-commands-lp:328778-test (&optional arg)
   "With ARG greater 1 keep test buffer open.
 If no `load-branch-function' is specified, make sure the appropriate branch is loaded. Otherwise default python-mode will be checked.
@@ -5339,7 +5381,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.34 $\"
+__version__ = \"$Revision: 1.38 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -5737,9 +5779,12 @@ inode, start_no, end_no)
   (let (py-split-windows-on-execute-p py-switch-buffers-on-execute-p)
     (shell)
     (delete-other-windows)
+    ;; (set-buffer (py-shell))
     (py-shell)
+    ;; (assert (string= "*shell*" (buffer-name)) nil "py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test #1 failed")
     (assert (string= "*shell*" (buffer-name)) nil "py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test #1 failed")
     (py-shell nil nil nil 'switch)
+    (sit-for 0.1) 
     (assert (string= "*Python*" (buffer-name)) nil "py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test #2 failed")
     ))
 

@@ -29,8 +29,9 @@
 
                        (funcall (intern-soft (concat "py-beginning-of-" form)))
                        (push-mark))))
-          (end (funcall (intern-soft (concat "py-end-of-" form)))))
-      (py-execute-base beg end shell dedicated switch))))
+          (end (funcall (intern-soft (concat "py-end-of-" form))))
+          (py-shell-name shell))
+      (py-execute-base beg end dedicated switch))))
 
 (defun py-execute-statement-python ()
   "Send statement at point to Python interpreter. "
@@ -1601,263 +1602,308 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
 (defun py-execute-region-python (beg end)
   "Send region at point to Python interpreter. "
   (interactive "r")
-  (py-execute-base beg end "python" nil nil))
+  (let ((py-shell-name "python"))
+    (py-execute-base beg end nil nil)))
 
 (defun py-execute-region-python-switch (beg end)
   "Send region at point to Python interpreter. 
 
 Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
   (interactive "r")
-  (py-execute-base beg end "python" nil 'switch))
+  (let ((py-shell-name "python"))
+    (py-execute-base beg end nil 'switch)))
 
 (defun py-execute-region-python-noswitch (beg end)
   "Send region at point to Python interpreter. 
 
 Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
   (interactive "r")
-  (py-execute-base beg end "python" nil 'noswitch))
+  (let ((py-shell-name "python"))
+    (py-execute-base beg end nil 'noswitch)))
 
 (defun py-execute-region-python-dedicated (beg end)
   "Send region at point to Python unique interpreter. "
   (interactive "r")
-  (py-execute-base beg end "python" t nil))
+  (let ((py-shell-name "python"))
+    (py-execute-base beg end t nil)))
 
 (defun py-execute-region-python-dedicated-switch (beg end)
   "Send region at point to Python unique interpreter and switch to result. "
   (interactive "r")
-  (py-execute-base beg end "python" t 'switch))
+  (let ((py-shell-name "python"))
+    (py-execute-base beg end t 'switch)))
 
 (defun py-execute-region-ipython (beg end)
   "Send region at point to IPython interpreter. "
   (interactive "r")
-  (py-execute-base beg end "ipython" nil nil))
+  (let ((py-shell-name "ipython"))
+    (py-execute-base beg end nil nil)))
 
 (defun py-execute-region-ipython-switch (beg end)
   "Send region at point to IPython interpreter. 
 
 Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
   (interactive "r")
-  (py-execute-base beg end "ipython" nil 'switch))
+  (let ((py-shell-name "ipython"))
+    (py-execute-base beg end nil 'switch)))
 
 (defun py-execute-region-ipython-noswitch (beg end)
   "Send region at point to IPython interpreter. 
 
 Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
   (interactive "r")
-  (py-execute-base beg end "ipython" nil 'noswitch))
+  (let ((py-shell-name "ipython"))
+    (py-execute-base beg end nil 'noswitch)))
 
 (defun py-execute-region-ipython-dedicated (beg end)
   "Send region at point to IPython unique interpreter. "
   (interactive "r")
-  (py-execute-base beg end "ipython" t nil))
+  (let ((py-shell-name "ipython"))
+    (py-execute-base beg end t nil)))
 
 (defun py-execute-region-ipython-dedicated-switch (beg end)
   "Send region at point to IPython unique interpreter and switch to result. "
   (interactive "r")
-  (py-execute-base beg end "ipython" t 'switch))
+  (let ((py-shell-name "ipython"))
+    (py-execute-base beg end t 'switch)))
 
 (defun py-execute-region-python3 (beg end)
   "Send region at point to Python3 interpreter. "
   (interactive "r")
-  (py-execute-base beg end "python3" nil nil))
+  (let ((py-shell-name "python3"))
+    (py-execute-base beg end nil nil)))
 
 (defun py-execute-region-python3-switch (beg end)
   "Send region at point to Python3 interpreter. 
 
 Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
   (interactive "r")
-  (py-execute-base beg end "python3" nil 'switch))
+  (let ((py-shell-name "python3"))
+    (py-execute-base beg end nil 'switch)))
 
 (defun py-execute-region-python3-noswitch (beg end)
   "Send region at point to Python3 interpreter. 
 
 Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
   (interactive "r")
-  (py-execute-base beg end "python3" nil 'noswitch))
+  (let ((py-shell-name "python3"))
+    (py-execute-base beg end nil 'noswitch)))
 
 (defun py-execute-region-python3-dedicated (beg end)
   "Send region at point to Python3 unique interpreter. "
   (interactive "r")
-  (py-execute-base beg end "python3" t nil))
+  (let ((py-shell-name "python3"))
+    (py-execute-base beg end t nil)))
 
 (defun py-execute-region-python3-dedicated-switch (beg end)
   "Send region at point to Python3 unique interpreter and switch to result. "
   (interactive "r")
-  (py-execute-base beg end "python3" t 'switch))
+  (let ((py-shell-name "python3"))
+    (py-execute-base beg end t 'switch)))
 
 (defun py-execute-region-python2 (beg end)
   "Send region at point to Python2 interpreter. "
   (interactive "r")
-  (py-execute-base beg end "python2" nil nil))
+  (let ((py-shell-name "python2"))
+    (py-execute-base beg end nil nil)))
 
 (defun py-execute-region-python2-switch (beg end)
   "Send region at point to Python2 interpreter. 
 
 Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
   (interactive "r")
-  (py-execute-base beg end "python2" nil 'switch))
+  (let ((py-shell-name "python2"))
+    (py-execute-base beg end nil 'switch)))
 
 (defun py-execute-region-python2-noswitch (beg end)
   "Send region at point to Python2 interpreter. 
 
 Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
   (interactive "r")
-  (py-execute-base beg end "python2" nil 'noswitch))
+  (let ((py-shell-name "python2"))
+    (py-execute-base beg end nil 'noswitch)))
 
 (defun py-execute-region-python2-dedicated (beg end)
   "Send region at point to Python2 unique interpreter. "
   (interactive "r")
-  (py-execute-base beg end "python2" t nil))
+  (let ((py-shell-name "python2"))
+    (py-execute-base beg end t nil)))
 
 (defun py-execute-region-python2-dedicated-switch (beg end)
   "Send region at point to Python2 unique interpreter and switch to result. "
   (interactive "r")
-  (py-execute-base beg end "python2" t 'switch))
+  (let ((py-shell-name "python2"))
+    (py-execute-base beg end t 'switch)))
 
 (defun py-execute-region-python2.7 (beg end)
   "Send region at point to Python2.7 interpreter. "
   (interactive "r")
-  (py-execute-base beg end "python2.7" nil nil))
+  (let ((py-shell-name "python2.7"))
+    (py-execute-base beg end nil nil)))
 
 (defun py-execute-region-python2.7-switch (beg end)
   "Send region at point to Python2.7 interpreter. 
 
 Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
   (interactive "r")
-  (py-execute-base beg end "python2.7" nil 'switch))
+  (let ((py-shell-name "python2.7"))
+    (py-execute-base beg end nil 'switch)))
 
 (defun py-execute-region-python2.7-noswitch (beg end)
   "Send region at point to Python2.7 interpreter. 
 
 Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
   (interactive "r")
-  (py-execute-base beg end "python2.7" nil 'noswitch))
+  (let ((py-shell-name "python2.7"))
+    (py-execute-base beg end nil 'noswitch)))
 
 (defun py-execute-region-python2.7-dedicated (beg end)
   "Send region at point to Python2.7 unique interpreter. "
   (interactive "r")
-  (py-execute-base beg end "python2.7" t nil))
+  (let ((py-shell-name "python2.7"))
+    (py-execute-base beg end t nil)))
 
 (defun py-execute-region-python2.7-dedicated-switch (beg end)
   "Send region at point to Python2.7 unique interpreter and switch to result. "
   (interactive "r")
-  (py-execute-base beg end "python2.7" t 'switch))
+  (let ((py-shell-name "python2.7"))
+    (py-execute-base beg end t 'switch)))
 
 (defun py-execute-region-jython (beg end)
   "Send region at point to Jython interpreter. "
   (interactive "r")
-  (py-execute-base beg end "jython" nil nil))
+  (let ((py-shell-name "jython"))
+    (py-execute-base beg end nil nil)))
 
 (defun py-execute-region-jython-switch (beg end)
   "Send region at point to Jython interpreter. 
 
 Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
   (interactive "r")
-  (py-execute-base beg end "jython" nil 'switch))
+  (let ((py-shell-name "jython"))
+    (py-execute-base beg end nil 'switch)))
 
 (defun py-execute-region-jython-noswitch (beg end)
   "Send region at point to Jython interpreter. 
 
 Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
   (interactive "r")
-  (py-execute-base beg end "jython" nil 'noswitch))
+  (let ((py-shell-name "jython"))
+    (py-execute-base beg end nil 'noswitch)))
 
 (defun py-execute-region-jython-dedicated (beg end)
   "Send region at point to Jython unique interpreter. "
   (interactive "r")
-  (py-execute-base beg end "jython" t nil))
+  (let ((py-shell-name "jython"))
+    (py-execute-base beg end t nil)))
 
 (defun py-execute-region-jython-dedicated-switch (beg end)
   "Send region at point to Jython unique interpreter and switch to result. "
   (interactive "r")
-  (py-execute-base beg end "jython" t 'switch))
+  (let ((py-shell-name "jython"))
+    (py-execute-base beg end t 'switch)))
 
 (defun py-execute-region-python3.2 (beg end)
   "Send region at point to Python3.2 interpreter. "
   (interactive "r")
-  (py-execute-base beg end "python3.2" nil nil))
+  (let ((py-shell-name "python3.2"))
+    (py-execute-base beg end nil nil)))
 
 (defun py-execute-region-python3.2-switch (beg end)
   "Send region at point to Python3.2 interpreter. 
 
 Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
   (interactive "r")
-  (py-execute-base beg end "python3.2" nil 'switch))
+  (let ((py-shell-name "python3.2"))
+    (py-execute-base beg end nil 'switch)))
 
 (defun py-execute-region-python3.2-noswitch (beg end)
   "Send region at point to Python3.2 interpreter. 
 
 Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
   (interactive "r")
-  (py-execute-base beg end "python3.2" nil 'noswitch))
+  (let ((py-shell-name "python3.2"))
+    (py-execute-base beg end nil 'noswitch)))
 
 (defun py-execute-region-python3.2-dedicated (beg end)
   "Send region at point to Python3.2 unique interpreter. "
   (interactive "r")
-  (py-execute-base beg end "python3.2" t nil))
+  (let ((py-shell-name "python3.2"))
+    (py-execute-base beg end t nil)))
 
 (defun py-execute-region-python3.2-dedicated-switch (beg end)
   "Send region at point to Python3.2 unique interpreter and switch to result. "
   (interactive "r")
-  (py-execute-base beg end "python3.2" t 'switch))
+  (let ((py-shell-name "python3.2"))
+    (py-execute-base beg end t 'switch)))
 
 (defun py-execute-region-python3.3 (beg end)
   "Send region at point to Python3.3 interpreter. "
   (interactive "r")
-  (py-execute-base beg end "python3.3" nil nil))
+  (let ((py-shell-name "python3.3"))
+    (py-execute-base beg end nil nil)))
 
 (defun py-execute-region-python3.3-switch (beg end)
   "Send region at point to Python3.3 interpreter. 
 
 Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
   (interactive "r")
-  (py-execute-base beg end "python3.3" nil 'switch))
+  (let ((py-shell-name "python3.3"))
+    (py-execute-base beg end nil 'switch)))
 
 (defun py-execute-region-python3.3-noswitch (beg end)
   "Send region at point to Python3.3 interpreter. 
 
 Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
   (interactive "r")
-  (py-execute-base beg end "python3.3" nil 'noswitch))
+  (let ((py-shell-name "python3.3"))
+    (py-execute-base beg end nil 'noswitch)))
 
 (defun py-execute-region-python3.3-dedicated (beg end)
   "Send region at point to Python3.3 unique interpreter. "
   (interactive "r")
-  (py-execute-base beg end "python3.3" t nil))
+  (let ((py-shell-name "python3.3"))
+    (py-execute-base beg end t nil)))
 
 (defun py-execute-region-python3.3-dedicated-switch (beg end)
   "Send region at point to Python3.3 unique interpreter and switch to result. "
   (interactive "r")
-  (py-execute-base beg end "python3.3" t 'switch))
+  (let ((py-shell-name "python3.3"))
+    (py-execute-base beg end t 'switch)))
 
 (defun py-execute-region-bpython (beg end)
   "Send region at point to Bpython interpreter. "
   (interactive "r")
-  (py-execute-base beg end "bpython" nil nil))
+  (let ((py-shell-name "bpython"))
+    (py-execute-base beg end nil nil)))
 
 (defun py-execute-region-bpython-switch (beg end)
   "Send region at point to Bpython interpreter. 
 
 Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
   (interactive "r")
-  (py-execute-base beg end "bpython" nil 'switch))
+  (let ((py-shell-name "bpython"))
+    (py-execute-base beg end nil 'switch)))
 
 (defun py-execute-region-bpython-noswitch (beg end)
   "Send region at point to Bpython interpreter. 
 
 Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
   (interactive "r")
-  (py-execute-base beg end "bpython" nil 'noswitch))
+  (let ((py-shell-name "bpython"))
+    (py-execute-base beg end nil 'noswitch)))
 
 (defun py-execute-region-bpython-dedicated (beg end)
   "Send region at point to Bpython unique interpreter. "
   (interactive "r")
-  (py-execute-base beg end "bpython" t nil))
+  (let ((py-shell-name "bpython"))
+    (py-execute-base beg end t nil)))
 
 (defun py-execute-region-bpython-dedicated-switch (beg end)
   "Send region at point to Bpython unique interpreter and switch to result. "
   (interactive "r")
-  (py-execute-base beg end "bpython" t 'switch))
+  (let ((py-shell-name "bpython"))
+    (py-execute-base beg end t 'switch)))
 
 (defun py-execute-buffer-python ()
   "Send buffer at point to Python interpreter. "

@@ -37,7 +37,7 @@
 ;;         (and (nth 4 pps)
 ;;              (goto-char (nth 8 pps)))))))
 
-(defun py-separator-char ()
+(defun py-update-separator-char ()
   "Return the file-path separator char from current machine.
 
 When `py-separator-char' is customized, its taken.
