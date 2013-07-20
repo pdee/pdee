@@ -218,49 +218,49 @@ Optional \\[universal-argument] prompts for options to pass to the Python3.2 int
 
 Optional \\[universal-argument] prompts for options to pass to the Python interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-shell argprompt dedicated "python" 'noswitch))
+  (py-shell argprompt dedicated "python" 'no-switch))
 
 (defun ipython-no-switch (&optional argprompt dedicated)
   "Open an IPython interpreter in another window, but do not switch to it.
 
 Optional \\[universal-argument] prompts for options to pass to the IPython interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-shell argprompt dedicated "ipython" 'noswitch))
+  (py-shell argprompt dedicated "ipython" 'no-switch))
 
 (defun python3-no-switch (&optional argprompt dedicated)
   "Open an Python3 interpreter in another window, but do not switch to it.
 
 Optional \\[universal-argument] prompts for options to pass to the Python3 interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-shell argprompt dedicated "python3" 'noswitch))
+  (py-shell argprompt dedicated "python3" 'no-switch))
 
 (defun python2-no-switch (&optional argprompt dedicated)
   "Open an Python2 interpreter in another window, but do not switch to it.
 
 Optional \\[universal-argument] prompts for options to pass to the Python2 interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-shell argprompt dedicated "python2" 'noswitch))
+  (py-shell argprompt dedicated "python2" 'no-switch))
 
 (defun python2.7-no-switch (&optional argprompt dedicated)
   "Open an Python2.7 interpreter in another window, but do not switch to it.
 
 Optional \\[universal-argument] prompts for options to pass to the Python2.7 interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-shell argprompt dedicated "python2.7" 'noswitch))
+  (py-shell argprompt dedicated "python2.7" 'no-switch))
 
 (defun jython-no-switch (&optional argprompt dedicated)
   "Open an Jython interpreter in another window, but do not switch to it.
 
 Optional \\[universal-argument] prompts for options to pass to the Jython interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-shell argprompt dedicated "jython" 'noswitch))
+  (py-shell argprompt dedicated "jython" 'no-switch))
 
 (defun python3.2-no-switch (&optional argprompt dedicated)
   "Open an Python3.2 interpreter in another window, but do not switch to it.
 
 Optional \\[universal-argument] prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'."
   (interactive "P")
-  (py-shell argprompt dedicated "python3.2" 'noswitch))
+  (py-shell argprompt dedicated "python3.2" 'no-switch))
 
 (defalias 'python-dedicated-switch 'python-switch-dedicated)
 (defun python-switch-dedicated (&optional argprompt)

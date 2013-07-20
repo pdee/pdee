@@ -493,243 +493,243 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-toggle-local-default-use) nil \"py-toggle-local-default-use not detected as command\")" \
 -eval "(assert (commandp 'py-execute-statement-python) nil \"py-execute-statement-python not detected as command\")" \
 -eval "(assert (commandp 'py-execute-statement-python-switch) nil \"py-execute-statement-python-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-statement-python-noswitch) nil \"py-execute-statement-python-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement-python-no-switch) nil \"py-execute-statement-python-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-statement-python-dedicated) nil \"py-execute-statement-python-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-statement-python-dedicated-switch) nil \"py-execute-statement-python-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-statement-ipython) nil \"py-execute-statement-ipython not detected as command\")" \
 -eval "(assert (commandp 'py-execute-statement-ipython-switch) nil \"py-execute-statement-ipython-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-statement-ipython-noswitch) nil \"py-execute-statement-ipython-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement-ipython-no-switch) nil \"py-execute-statement-ipython-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-statement-ipython-dedicated) nil \"py-execute-statement-ipython-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-statement-ipython-dedicated-switch) nil \"py-execute-statement-ipython-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-statement-python3) nil \"py-execute-statement-python3 not detected as command\")" \
 -eval "(assert (commandp 'py-execute-statement-python3.2) nil \"py-execute-statement-python3 not detected as command\")" \
 -eval "(assert (commandp 'py-execute-statement-python3-switch) nil \"py-execute-statement-python3-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-statement-python3-noswitch) nil \"py-execute-statement-python3-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement-python3-no-switch) nil \"py-execute-statement-python3-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-statement-python3-dedicated) nil \"py-execute-statement-python3-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-statement-python3-dedicated-switch) nil \"py-execute-statement-python3-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-statement-python2) nil \"py-execute-statement-python2 not detected as command\")" \
 -eval "(assert (commandp 'py-execute-statement-python2-switch) nil \"py-execute-statement-python2-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-statement-python2-noswitch) nil \"py-execute-statement-python2-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement-python2-no-switch) nil \"py-execute-statement-python2-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-statement-python2-dedicated) nil \"py-execute-statement-python2-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-statement-python2-dedicated-switch) nil \"py-execute-statement-python2-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-statement-python2.7) nil \"py-execute-statement-python2.7 not detected as command\")" \
 -eval "(assert (commandp 'py-execute-statement-python2.7-switch) nil \"py-execute-statement-python2.7-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-statement-python2.7-noswitch) nil \"py-execute-statement-python2.7-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement-python2.7-no-switch) nil \"py-execute-statement-python2.7-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-statement-python2.7-dedicated) nil \"py-execute-statement-python2.7-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-statement-python2.7-dedicated-switch) nil \"py-execute-statement-python2.7-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-statement-jython) nil \"py-execute-statement-jython not detected as command\")" \
 -eval "(assert (commandp 'py-execute-statement-jython-switch) nil \"py-execute-statement-jython-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-statement-jython-noswitch) nil \"py-execute-statement-jython-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-statement-jython-no-switch) nil \"py-execute-statement-jython-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-statement-jython-dedicated) nil \"py-execute-statement-jython-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-statement-jython-dedicated-switch) nil \"py-execute-statement-jython-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-python) nil \"py-execute-block-python not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-python-switch) nil \"py-execute-block-python-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-block-python-noswitch) nil \"py-execute-block-python-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-python-no-switch) nil \"py-execute-block-python-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-python-dedicated) nil \"py-execute-block-python-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-python-dedicated-switch) nil \"py-execute-block-python-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-ipython) nil \"py-execute-block-ipython not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-ipython-switch) nil \"py-execute-block-ipython-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-block-ipython-noswitch) nil \"py-execute-block-ipython-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-ipython-no-switch) nil \"py-execute-block-ipython-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-ipython-dedicated) nil \"py-execute-block-ipython-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-ipython-dedicated-switch) nil \"py-execute-block-ipython-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-python3) nil \"py-execute-block-python3 not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-python3-switch) nil \"py-execute-block-python3-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-block-python3-noswitch) nil \"py-execute-block-python3-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-python3-no-switch) nil \"py-execute-block-python3-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-python3-dedicated) nil \"py-execute-block-python3-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-python3-dedicated-switch) nil \"py-execute-block-python3-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-python2) nil \"py-execute-block-python2 not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-python2-switch) nil \"py-execute-block-python2-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-block-python2-noswitch) nil \"py-execute-block-python2-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-python2-no-switch) nil \"py-execute-block-python2-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-python2-dedicated) nil \"py-execute-block-python2-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-python2-dedicated-switch) nil \"py-execute-block-python2-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-python2.7) nil \"py-execute-block-python2.7 not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-python2.7-switch) nil \"py-execute-block-python2.7-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-block-python2.7-noswitch) nil \"py-execute-block-python2.7-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-python2.7-no-switch) nil \"py-execute-block-python2.7-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-python2.7-dedicated) nil \"py-execute-block-python2.7-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-python2.7-dedicated-switch) nil \"py-execute-block-python2.7-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-jython) nil \"py-execute-block-jython not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-jython-switch) nil \"py-execute-block-jython-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-block-jython-noswitch) nil \"py-execute-block-jython-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-jython-no-switch) nil \"py-execute-block-jython-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-jython-dedicated) nil \"py-execute-block-jython-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-jython-dedicated-switch) nil \"py-execute-block-jython-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-or-clause-python) nil \"py-execute-block-or-clause-python not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-or-clause-python-switch) nil \"py-execute-block-or-clause-python-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-block-or-clause-python-noswitch) nil \"py-execute-block-or-clause-python-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-or-clause-python-no-switch) nil \"py-execute-block-or-clause-python-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-or-clause-python-dedicated) nil \"py-execute-block-or-clause-python-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-or-clause-python-dedicated-switch) nil \"py-execute-block-or-clause-python-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-or-clause-ipython) nil \"py-execute-block-or-clause-ipython not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-or-clause-ipython-switch) nil \"py-execute-block-or-clause-ipython-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-block-or-clause-ipython-noswitch) nil \"py-execute-block-or-clause-ipython-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-or-clause-ipython-no-switch) nil \"py-execute-block-or-clause-ipython-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-or-clause-ipython-dedicated) nil \"py-execute-block-or-clause-ipython-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-or-clause-ipython-dedicated-switch) nil \"py-execute-block-or-clause-ipython-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-or-clause-python3) nil \"py-execute-block-or-clause-python3 not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-or-clause-python3-switch) nil \"py-execute-block-or-clause-python3-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-block-or-clause-python3-noswitch) nil \"py-execute-block-or-clause-python3-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-or-clause-python3-no-switch) nil \"py-execute-block-or-clause-python3-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-or-clause-python3-dedicated) nil \"py-execute-block-or-clause-python3-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-or-clause-python3-dedicated-switch) nil \"py-execute-block-or-clause-python3-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-or-clause-python2) nil \"py-execute-block-or-clause-python2 not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-or-clause-python2-switch) nil \"py-execute-block-or-clause-python2-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-block-or-clause-python2-noswitch) nil \"py-execute-block-or-clause-python2-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-or-clause-python2-no-switch) nil \"py-execute-block-or-clause-python2-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-or-clause-python2-dedicated) nil \"py-execute-block-or-clause-python2-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-or-clause-python2-dedicated-switch) nil \"py-execute-block-or-clause-python2-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-or-clause-python2.7) nil \"py-execute-block-or-clause-python2.7 not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-or-clause-python2.7-switch) nil \"py-execute-block-or-clause-python2.7-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-block-or-clause-python2.7-noswitch) nil \"py-execute-block-or-clause-python2.7-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-or-clause-python2.7-no-switch) nil \"py-execute-block-or-clause-python2.7-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-or-clause-python2.7-dedicated) nil \"py-execute-block-or-clause-python2.7-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-or-clause-python2.7-dedicated-switch) nil \"py-execute-block-or-clause-python2.7-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-or-clause-jython) nil \"py-execute-block-or-clause-jython not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-or-clause-jython-switch) nil \"py-execute-block-or-clause-jython-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-block-or-clause-jython-noswitch) nil \"py-execute-block-or-clause-jython-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-block-or-clause-jython-no-switch) nil \"py-execute-block-or-clause-jython-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-or-clause-jython-dedicated) nil \"py-execute-block-or-clause-jython-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-block-or-clause-jython-dedicated-switch) nil \"py-execute-block-or-clause-jython-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-def-python) nil \"py-execute-def-python not detected as command\")" \
 -eval "(assert (commandp 'py-execute-def-python-switch) nil \"py-execute-def-python-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-def-python-noswitch) nil \"py-execute-def-python-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def-python-no-switch) nil \"py-execute-def-python-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-def-python-dedicated) nil \"py-execute-def-python-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-def-python-dedicated-switch) nil \"py-execute-def-python-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-def-ipython) nil \"py-execute-def-ipython not detected as command\")" \
 -eval "(assert (commandp 'py-execute-def-ipython-switch) nil \"py-execute-def-ipython-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-def-ipython-noswitch) nil \"py-execute-def-ipython-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def-ipython-no-switch) nil \"py-execute-def-ipython-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-def-ipython-dedicated) nil \"py-execute-def-ipython-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-def-ipython-dedicated-switch) nil \"py-execute-def-ipython-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-def-python3) nil \"py-execute-def-python3 not detected as command\")" \
 -eval "(assert (commandp 'py-execute-def-python3-switch) nil \"py-execute-def-python3-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-def-python3-noswitch) nil \"py-execute-def-python3-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def-python3-no-switch) nil \"py-execute-def-python3-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-def-python3-dedicated) nil \"py-execute-def-python3-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-def-python3-dedicated-switch) nil \"py-execute-def-python3-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-def-python2) nil \"py-execute-def-python2 not detected as command\")" \
 -eval "(assert (commandp 'py-execute-def-python2-switch) nil \"py-execute-def-python2-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-def-python2-noswitch) nil \"py-execute-def-python2-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def-python2-no-switch) nil \"py-execute-def-python2-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-def-python2-dedicated) nil \"py-execute-def-python2-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-def-python2-dedicated-switch) nil \"py-execute-def-python2-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-def-python2.7) nil \"py-execute-def-python2.7 not detected as command\")" \
 -eval "(assert (commandp 'py-execute-def-python2.7-switch) nil \"py-execute-def-python2.7-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-def-python2.7-noswitch) nil \"py-execute-def-python2.7-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def-python2.7-no-switch) nil \"py-execute-def-python2.7-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-def-python2.7-dedicated) nil \"py-execute-def-python2.7-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-def-python2.7-dedicated-switch) nil \"py-execute-def-python2.7-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-def-jython) nil \"py-execute-def-jython not detected as command\")" \
 -eval "(assert (commandp 'py-execute-def-jython-switch) nil \"py-execute-def-jython-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-def-jython-noswitch) nil \"py-execute-def-jython-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-def-jython-no-switch) nil \"py-execute-def-jython-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-def-jython-dedicated) nil \"py-execute-def-jython-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-def-jython-dedicated-switch) nil \"py-execute-def-jython-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-class-python) nil \"py-execute-class-python not detected as command\")" \
 -eval "(assert (commandp 'py-execute-class-python-switch) nil \"py-execute-class-python-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-class-python-noswitch) nil \"py-execute-class-python-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-class-python-no-switch) nil \"py-execute-class-python-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-class-python-dedicated) nil \"py-execute-class-python-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-class-python-dedicated-switch) nil \"py-execute-class-python-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-class-ipython) nil \"py-execute-class-ipython not detected as command\")" \
 -eval "(assert (commandp 'py-execute-class-ipython-switch) nil \"py-execute-class-ipython-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-class-ipython-noswitch) nil \"py-execute-class-ipython-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-class-ipython-no-switch) nil \"py-execute-class-ipython-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-class-ipython-dedicated) nil \"py-execute-class-ipython-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-class-ipython-dedicated-switch) nil \"py-execute-class-ipython-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-class-python3) nil \"py-execute-class-python3 not detected as command\")" \
 -eval "(assert (commandp 'py-execute-class-python3-switch) nil \"py-execute-class-python3-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-class-python3-noswitch) nil \"py-execute-class-python3-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-class-python3-no-switch) nil \"py-execute-class-python3-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-class-python3-dedicated) nil \"py-execute-class-python3-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-class-python3-dedicated-switch) nil \"py-execute-class-python3-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-class-python2) nil \"py-execute-class-python2 not detected as command\")" \
 -eval "(assert (commandp 'py-execute-class-python2-switch) nil \"py-execute-class-python2-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-class-python2-noswitch) nil \"py-execute-class-python2-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-class-python2-no-switch) nil \"py-execute-class-python2-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-class-python2-dedicated) nil \"py-execute-class-python2-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-class-python2-dedicated-switch) nil \"py-execute-class-python2-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-class-python2.7) nil \"py-execute-class-python2.7 not detected as command\")" \
 -eval "(assert (commandp 'py-execute-class-python2.7-switch) nil \"py-execute-class-python2.7-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-class-python2.7-noswitch) nil \"py-execute-class-python2.7-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-class-python2.7-no-switch) nil \"py-execute-class-python2.7-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-class-python2.7-dedicated) nil \"py-execute-class-python2.7-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-class-python2.7-dedicated-switch) nil \"py-execute-class-python2.7-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-class-jython) nil \"py-execute-class-jython not detected as command\")" \
 -eval "(assert (commandp 'py-execute-class-jython-switch) nil \"py-execute-class-jython-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-class-jython-noswitch) nil \"py-execute-class-jython-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-class-jython-no-switch) nil \"py-execute-class-jython-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-class-jython-dedicated) nil \"py-execute-class-jython-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-class-jython-dedicated-switch) nil \"py-execute-class-jython-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-region-python) nil \"py-execute-region-python not detected as command\")" \
 -eval "(assert (commandp 'py-execute-region-python-switch) nil \"py-execute-region-python-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-region-python-noswitch) nil \"py-execute-region-python-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-python-no-switch) nil \"py-execute-region-python-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-region-python-dedicated) nil \"py-execute-region-python-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-region-python-dedicated-switch) nil \"py-execute-region-python-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-region-ipython) nil \"py-execute-region-ipython not detected as command\")" \
 -eval "(assert (commandp 'py-execute-region-ipython-switch) nil \"py-execute-region-ipython-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-region-ipython-noswitch) nil \"py-execute-region-ipython-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-ipython-no-switch) nil \"py-execute-region-ipython-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-region-ipython-dedicated) nil \"py-execute-region-ipython-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-region-ipython-dedicated-switch) nil \"py-execute-region-ipython-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-region-python3) nil \"py-execute-region-python3 not detected as command\")" \
 -eval "(assert (commandp 'py-execute-region-python3-switch) nil \"py-execute-region-python3-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-region-python3-noswitch) nil \"py-execute-region-python3-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-python3-no-switch) nil \"py-execute-region-python3-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-region-python3-dedicated) nil \"py-execute-region-python3-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-region-python3-dedicated-switch) nil \"py-execute-region-python3-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-region-python2) nil \"py-execute-region-python2 not detected as command\")" \
 -eval "(assert (commandp 'py-execute-region-python2-switch) nil \"py-execute-region-python2-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-region-python2-noswitch) nil \"py-execute-region-python2-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-python2-no-switch) nil \"py-execute-region-python2-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-region-python2-dedicated) nil \"py-execute-region-python2-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-region-python2-dedicated-switch) nil \"py-execute-region-python2-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-region-python2.7) nil \"py-execute-region-python2.7 not detected as command\")" \
 -eval "(assert (commandp 'py-execute-region-python2.7-switch) nil \"py-execute-region-python2.7-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-region-python2.7-noswitch) nil \"py-execute-region-python2.7-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-python2.7-no-switch) nil \"py-execute-region-python2.7-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-region-python2.7-dedicated) nil \"py-execute-region-python2.7-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-region-python2.7-dedicated-switch) nil \"py-execute-region-python2.7-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-region-jython) nil \"py-execute-region-jython not detected as command\")" \
 -eval "(assert (commandp 'py-execute-region-jython-switch) nil \"py-execute-region-jython-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-region-jython-noswitch) nil \"py-execute-region-jython-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-region-jython-no-switch) nil \"py-execute-region-jython-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-region-jython-dedicated) nil \"py-execute-region-jython-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-region-jython-dedicated-switch) nil \"py-execute-region-jython-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-buffer-python) nil \"py-execute-buffer-python not detected as command\")" \
 -eval "(assert (commandp 'py-execute-buffer-python-switch) nil \"py-execute-buffer-python-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-buffer-python-noswitch) nil \"py-execute-buffer-python-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-python-no-switch) nil \"py-execute-buffer-python-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-buffer-python-dedicated) nil \"py-execute-buffer-python-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-buffer-python-dedicated-switch) nil \"py-execute-buffer-python-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-buffer-ipython) nil \"py-execute-buffer-ipython not detected as command\")" \
 -eval "(assert (commandp 'py-execute-buffer-ipython-switch) nil \"py-execute-buffer-ipython-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-buffer-ipython-noswitch) nil \"py-execute-buffer-ipython-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-ipython-no-switch) nil \"py-execute-buffer-ipython-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-buffer-ipython-dedicated) nil \"py-execute-buffer-ipython-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-buffer-ipython-dedicated-switch) nil \"py-execute-buffer-ipython-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-buffer-python3) nil \"py-execute-buffer-python3 not detected as command\")" \
 -eval "(assert (commandp 'py-execute-buffer-python3-switch) nil \"py-execute-buffer-python3-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-buffer-python3-noswitch) nil \"py-execute-buffer-python3-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-python3-no-switch) nil \"py-execute-buffer-python3-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-buffer-python3-dedicated) nil \"py-execute-buffer-python3-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-buffer-python3-dedicated-switch) nil \"py-execute-buffer-python3-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-buffer-python2) nil \"py-execute-buffer-python2 not detected as command\")" \
 -eval "(assert (commandp 'py-execute-buffer-python2-switch) nil \"py-execute-buffer-python2-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-buffer-python2-noswitch) nil \"py-execute-buffer-python2-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-python2-no-switch) nil \"py-execute-buffer-python2-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-buffer-python2-dedicated) nil \"py-execute-buffer-python2-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-buffer-python2-dedicated-switch) nil \"py-execute-buffer-python2-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-buffer-python2.7) nil \"py-execute-buffer-python2.7 not detected as command\")" \
 -eval "(assert (commandp 'py-execute-buffer-python2.7-switch) nil \"py-execute-buffer-python2.7-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-buffer-python2.7-noswitch) nil \"py-execute-buffer-python2.7-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-python2.7-no-switch) nil \"py-execute-buffer-python2.7-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-buffer-python2.7-dedicated) nil \"py-execute-buffer-python2.7-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-buffer-python2.7-dedicated-switch) nil \"py-execute-buffer-python2.7-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-buffer-jython) nil \"py-execute-buffer-jython not detected as command\")" \
 -eval "(assert (commandp 'py-execute-buffer-jython-switch) nil \"py-execute-buffer-jython-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-buffer-jython-noswitch) nil \"py-execute-buffer-jython-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-buffer-jython-no-switch) nil \"py-execute-buffer-jython-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-buffer-jython-dedicated) nil \"py-execute-buffer-jython-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-buffer-jython-dedicated-switch) nil \"py-execute-buffer-jython-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-expression-python) nil \"py-execute-expression-python not detected as command\")" \
 -eval "(assert (commandp 'py-execute-expression-python-switch) nil \"py-execute-expression-python-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-expression-python-noswitch) nil \"py-execute-expression-python-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-expression-python-no-switch) nil \"py-execute-expression-python-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-expression-python-dedicated) nil \"py-execute-expression-python-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-expression-python-dedicated-switch) nil \"py-execute-expression-python-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-expression-ipython) nil \"py-execute-expression-ipython not detected as command\")" \
 -eval "(assert (commandp 'py-execute-expression-ipython-switch) nil \"py-execute-expression-ipython-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-expression-ipython-noswitch) nil \"py-execute-expression-ipython-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-expression-ipython-no-switch) nil \"py-execute-expression-ipython-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-expression-ipython-dedicated) nil \"py-execute-expression-ipython-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-expression-ipython-dedicated-switch) nil \"py-execute-expression-ipython-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-expression-python3) nil \"py-execute-expression-python3 not detected as command\")" \
 -eval "(assert (commandp 'py-execute-expression-python3-switch) nil \"py-execute-expression-python3-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-expression-python3-noswitch) nil \"py-execute-expression-python3-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-expression-python3-no-switch) nil \"py-execute-expression-python3-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-expression-python3-dedicated) nil \"py-execute-expression-python3-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-expression-python3-dedicated-switch) nil \"py-execute-expression-python3-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-expression-python2) nil \"py-execute-expression-python2 not detected as command\")" \
 -eval "(assert (commandp 'py-execute-expression-python2-switch) nil \"py-execute-expression-python2-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-expression-python2-noswitch) nil \"py-execute-expression-python2-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-expression-python2-no-switch) nil \"py-execute-expression-python2-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-expression-python2-dedicated) nil \"py-execute-expression-python2-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-expression-python2-dedicated-switch) nil \"py-execute-expression-python2-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-expression-python2.7) nil \"py-execute-expression-python2.7 not detected as command\")" \
 -eval "(assert (commandp 'py-execute-expression-python2.7-switch) nil \"py-execute-expression-python2.7-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-expression-python2.7-noswitch) nil \"py-execute-expression-python2.7-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-expression-python2.7-no-switch) nil \"py-execute-expression-python2.7-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-expression-python2.7-dedicated) nil \"py-execute-expression-python2.7-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-expression-python2.7-dedicated-switch) nil \"py-execute-expression-python2.7-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-expression-jython) nil \"py-execute-expression-jython not detected as command\")" \
 -eval "(assert (commandp 'py-execute-expression-jython-switch) nil \"py-execute-expression-jython-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-expression-jython-noswitch) nil \"py-execute-expression-jython-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-expression-jython-no-switch) nil \"py-execute-expression-jython-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-expression-jython-dedicated) nil \"py-execute-expression-jython-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-expression-jython-dedicated-switch) nil \"py-execute-expression-jython-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-mark-block-clause-misbehave-lp:949310-test) nil \"py-mark-block-clause-misbehave-lp:949310-test not detected as command\")" \
@@ -808,47 +808,47 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-fill-string-symmetric) nil \"py-fill-string-symmetric not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-python) nil \"py-execute-file-python not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-python-switch) nil \"py-execute-file-python-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-file-python-noswitch) nil \"py-execute-file-python-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-file-python-no-switch) nil \"py-execute-file-python-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-python-dedicated) nil \"py-execute-file-python-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-python-dedicated-switch) nil \"py-execute-file-python-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-ipython) nil \"py-execute-file-ipython not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-ipython-switch) nil \"py-execute-file-ipython-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-file-ipython-noswitch) nil \"py-execute-file-ipython-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-file-ipython-no-switch) nil \"py-execute-file-ipython-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-ipython-dedicated) nil \"py-execute-file-ipython-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-ipython-dedicated-switch) nil \"py-execute-file-ipython-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-python3) nil \"py-execute-file-python3 not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-python3-switch) nil \"py-execute-file-python3-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-file-python3-noswitch) nil \"py-execute-file-python3-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-file-python3-no-switch) nil \"py-execute-file-python3-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-python3-dedicated) nil \"py-execute-file-python3-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-python3-dedicated-switch) nil \"py-execute-file-python3-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-python2) nil \"py-execute-file-python2 not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-python2-switch) nil \"py-execute-file-python2-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-file-python2-noswitch) nil \"py-execute-file-python2-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-file-python2-no-switch) nil \"py-execute-file-python2-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-python2-dedicated) nil \"py-execute-file-python2-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-python2-dedicated-switch) nil \"py-execute-file-python2-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-python2.7) nil \"py-execute-file-python2.7 not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-python2.7-switch) nil \"py-execute-file-python2.7-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-file-python2.7-noswitch) nil \"py-execute-file-python2.7-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-file-python2.7-no-switch) nil \"py-execute-file-python2.7-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-python2.7-dedicated) nil \"py-execute-file-python2.7-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-python2.7-dedicated-switch) nil \"py-execute-file-python2.7-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-jython) nil \"py-execute-file-jython not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-jython-switch) nil \"py-execute-file-jython-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-file-jython-noswitch) nil \"py-execute-file-jython-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-file-jython-no-switch) nil \"py-execute-file-jython-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-jython-dedicated) nil \"py-execute-file-jython-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-jython-dedicated-switch) nil \"py-execute-file-jython-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-python3.2) nil \"py-execute-file-python3.2 not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-python3.2-switch) nil \"py-execute-file-python3.2-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-file-python3.2-noswitch) nil \"py-execute-file-python3.2-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-file-python3.2-no-switch) nil \"py-execute-file-python3.2-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-python3.2-dedicated) nil \"py-execute-file-python3.2-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-python3.2-dedicated-switch) nil \"py-execute-file-python3.2-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-python3.3) nil \"py-execute-file-python3.3 not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-python3.3-switch) nil \"py-execute-file-python3.3-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-file-python3.3-noswitch) nil \"py-execute-file-python3.3-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-file-python3.3-no-switch) nil \"py-execute-file-python3.3-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-python3.3-dedicated) nil \"py-execute-file-python3.3-dedicated not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-python3.3-dedicated-switch) nil \"py-execute-file-python3.3-dedicated-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-bpython) nil \"py-execute-file-bpython not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-bpython-switch) nil \"py-execute-file-bpython-switch not detected as command\")" \
--eval "(assert (commandp 'py-execute-file-bpython-noswitch) nil \"py-execute-file-bpython-noswitch not detected as command\")" \
+-eval "(assert (commandp 'py-execute-file-bpython-no-switch) nil \"py-execute-file-bpython-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-bpython-dedicated) nil \"py-execute-file-bpython-dedicated not detected as command\")" \
 -eval "(assert (functionp 'py-font-lock-syntactic-face-function) nil \"py-font-lock-syntactic-face-function not detected function\")" \
 -eval "(setq enable-local-variables :all)" \
@@ -1102,7 +1102,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-execute-block-or-clause-python2-test \
 --funcall py-execute-block-or-clause-python2.7-test \
 --funcall py-execute-block-or-clause-python2.7-switch-test \
---funcall py-execute-block-or-clause-python2.7-noswitch-test \
+--funcall py-execute-block-or-clause-python2.7-no-switch-test \
 --funcall py-execute-block-or-clause-python2.7-dedicated-test \
 --funcall py-execute-block-or-clause-python2.7-dedicated-switch-test \
 --funcall py-execute-line-python-test \
@@ -1110,7 +1110,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-execute-line-python2-test \
 --funcall py-execute-line-python2.7-test \
 --funcall py-execute-line-python2.7-switch-test \
---funcall py-execute-line-python2.7-noswitch-test \
+--funcall py-execute-line-python2.7-no-switch-test \
 --funcall py-execute-line-python2.7-dedicated-test \
 --funcall py-execute-line-python2.7-dedicated-switch-test \
 --funcall py-execute-expression-python-test \
@@ -1284,7 +1284,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-execute-statement-python3-test \
 --funcall py-execute-statement-python2-test \
 --funcall py-execute-statement-python2.7-switch-test \
---funcall py-execute-statement-python2.7-noswitch-test \
+--funcall py-execute-statement-python2.7-no-switch-test \
 --funcall py-execute-statement-python2.7-dedicated-test \
 --funcall py-execute-statement-python2.7-dedicated-switch-test \
 \
@@ -1318,7 +1318,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 \
 --funcall dict-error-test \
 --funcall py-install-directory-path-test \
---funcall py-execute-region-python3-noswitch-test \
+--funcall py-execute-region-python3-no-switch-test \
 --funcall py-end-of-print-statement-test \
 --funcall py-describe-symbol-fails-on-modules-lp:919719-test \
 --funcall py-find-imports-lp-1023236-test \

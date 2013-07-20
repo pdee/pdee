@@ -30,7 +30,7 @@ When called with \\[universal-argument] followed by a number different from 4 an
 
 When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
 
-Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)"
+Optional arguments DEDICATED (boolean) and SWITCH (symbols 'no-switch/'switch)"
   (interactive "P")
   (let ((beg (prog1
                  (or (py-beginning-of-statement-p)
@@ -48,7 +48,7 @@ When called with \\[universal-argument] followed by a number different from 4 an
 
 When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
 
-Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)"
+Optional arguments DEDICATED (boolean) and SWITCH (symbols 'no-switch/'switch)"
   (interactive "P")
   (save-excursion
     (let ((beg (prog1
@@ -67,7 +67,7 @@ When called with \\[universal-argument] followed by a number different from 4 an
 
 When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
 
-Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)"
+Optional arguments DEDICATED (boolean) and SWITCH (symbols 'no-switch/'switch)"
   (interactive "P")
   (save-excursion
     (let ((beg (prog1
@@ -86,7 +86,7 @@ When called with \\[universal-argument] followed by a number different from 4 an
 
 When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
 
-Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)"
+Optional arguments DEDICATED (boolean) and SWITCH (symbols 'no-switch/'switch)"
   (interactive "P")
   (save-excursion
     (let ((beg (prog1
@@ -105,7 +105,7 @@ When called with \\[universal-argument] followed by a number different from 4 an
 
 When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
 
-Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)"
+Optional arguments DEDICATED (boolean) and SWITCH (symbols 'no-switch/'switch)"
   (interactive "P")
   (save-excursion
     (let ((beg (prog1
@@ -124,7 +124,7 @@ When called with \\[universal-argument] followed by a number different from 4 an
 
 When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
 
-Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)"
+Optional arguments DEDICATED (boolean) and SWITCH (symbols 'no-switch/'switch)"
   (interactive "P")
   (save-excursion
     (let ((beg (prog1
@@ -143,7 +143,7 @@ When called with \\[universal-argument] followed by a number different from 4 an
 
 When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
 
-Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)"
+Optional arguments DEDICATED (boolean) and SWITCH (symbols 'no-switch/'switch)"
   (interactive "P")
   (save-excursion
     (let ((beg (prog1
@@ -162,7 +162,7 @@ When called with \\[universal-argument] followed by a number different from 4 an
 
 When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
 
-Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)"
+Optional arguments DEDICATED (boolean) and SWITCH (symbols 'no-switch/'switch)"
   (interactive "P")
   (save-excursion
     (let ((beg (prog1

@@ -1297,6 +1297,12 @@ See also `py-execute-directory'"
 (defvar py-buffer-name nil
   "Internally set. ")
 
+(defvar py-dedicated-process-p nil
+  "Internally set. ")
+
+(defvar py-orig-buffer-or-file nil
+  "Internally set. ")
+
 (defun py-set-ffap-form ()
   (cond ((and py-ffap-p py-ffap)
          (eval-after-load "ffap"
@@ -2220,7 +2226,7 @@ Returns versioned string, nil if nothing appropriate found "
 (defalias 'py-toggle-shells 'py-choose-shell)
 
 (defalias 'py-which-shell 'py-choose-shell)
-(defun py-choose-shell (&optional arg pyshell dedicated py-edit-only-p)
+(defun py-choose-shell (&optional arg pyshell py-dedicated-process-p py-edit-only-p)
   "Return an appropriate executable as a string.
 
 Returns nil, if no executable found.
@@ -2853,8 +2859,8 @@ Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-p
 Send file to a Python interpreter\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
 
-           ["Execute file python noswitch" py-execute-file-python-noswitch
-            :help " `py-execute-file-python-noswitch'
+           ["Execute file python no-switch" py-execute-file-python-no-switch
+            :help " `py-execute-file-python-no-switch'
 Send file to a Python interpreter\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "nil". "]
 
@@ -2876,8 +2882,8 @@ Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil
 Send file to a Ipython interpreter\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
 
-           ["Execute file ipython noswitch" py-execute-file-ipython-noswitch
-            :help " `py-execute-file-ipython-noswitch'
+           ["Execute file ipython no-switch" py-execute-file-ipython-no-switch
+            :help " `py-execute-file-ipython-no-switch'
 Send file to a Ipython interpreter\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "nil". "]
 
@@ -2899,8 +2905,8 @@ Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil
 Send file to a Python3 interpreter\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
 
-           ["Execute file python3 noswitch" py-execute-file-python3-noswitch
-            :help " `py-execute-file-python3-noswitch'
+           ["Execute file python3 no-switch" py-execute-file-python3-no-switch
+            :help " `py-execute-file-python3-no-switch'
 Send file to a Python3 interpreter\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "nil". "]
 
@@ -2922,8 +2928,8 @@ Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil
 Send file to a Python2 interpreter\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
 
-           ["Execute file python2 noswitch" py-execute-file-python2-noswitch
-            :help " `py-execute-file-python2-noswitch'
+           ["Execute file python2 no-switch" py-execute-file-python2-no-switch
+            :help " `py-execute-file-python2-no-switch'
 Send file to a Python2 interpreter\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "nil". "]
 
@@ -2945,8 +2951,8 @@ Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil
 Send file to a Python2\.7 interpreter\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
 
-           ["Execute file python2.7 noswitch" py-execute-file-python2.7-noswitch
-            :help " `py-execute-file-python2.7-noswitch'
+           ["Execute file python2.7 no-switch" py-execute-file-python2.7-no-switch
+            :help " `py-execute-file-python2.7-no-switch'
 Send file to a Python2\.7 interpreter\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "nil". "]
 
@@ -2968,8 +2974,8 @@ Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil
 Send file to a Jython interpreter\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
 
-           ["Execute file jython noswitch" py-execute-file-jython-noswitch
-            :help " `py-execute-file-jython-noswitch'
+           ["Execute file jython no-switch" py-execute-file-jython-no-switch
+            :help " `py-execute-file-jython-no-switch'
 Send file to a Jython interpreter\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "nil". "]
 
@@ -2991,8 +2997,8 @@ Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil
 Send file to a Python3\.2 interpreter\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
 
-           ["Execute file python3.2 noswitch" py-execute-file-python3.2-noswitch
-            :help " `py-execute-file-python3.2-noswitch'
+           ["Execute file python3.2 no-switch" py-execute-file-python3.2-no-switch
+            :help " `py-execute-file-python3.2-no-switch'
 Send file to a Python3\.2 interpreter\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "nil". "]
 
@@ -3014,8 +3020,8 @@ Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil
 Send file to a Python3\.3 interpreter\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
 
-           ["Execute file python3.3 noswitch" py-execute-file-python3.3-noswitch
-            :help " `py-execute-file-python3.3-noswitch'
+           ["Execute file python3.3 no-switch" py-execute-file-python3.3-no-switch
+            :help " `py-execute-file-python3.3-no-switch'
 Send file to a Python3\.3 interpreter\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "nil". "]
 
@@ -3037,8 +3043,8 @@ Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil
 Send file to a Bpython interpreter\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
 
-           ["Execute file bpython noswitch" py-execute-file-bpython-noswitch
-            :help " `py-execute-file-bpython-noswitch'
+           ["Execute file bpython no-switch" py-execute-file-bpython-no-switch
+            :help " `py-execute-file-bpython-no-switch'
 Send file to a Bpython interpreter\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "nil". "]
 
@@ -4193,8 +4199,8 @@ Send file to a Bpython interpreter\.. "]
 Send file to a Python interpreter\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
 
-           ["Execute file python noswitch" py-execute-file-python-noswitch
-            :help " `py-execute-file-python-noswitch'
+           ["Execute file python no-switch" py-execute-file-python-no-switch
+            :help " `py-execute-file-python-no-switch'
 Send file to a Python interpreter\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "nil". "]
 
@@ -4216,8 +4222,8 @@ Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil
 Send file to a Ipython interpreter\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
 
-           ["Execute file ipython noswitch" py-execute-file-ipython-noswitch
-            :help " `py-execute-file-ipython-noswitch'
+           ["Execute file ipython no-switch" py-execute-file-ipython-no-switch
+            :help " `py-execute-file-ipython-no-switch'
 Send file to a Ipython interpreter\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "nil". "]
 
@@ -4239,8 +4245,8 @@ Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil
 Send file to a Python3 interpreter\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
 
-           ["Execute file python3 noswitch" py-execute-file-python3-noswitch
-            :help " `py-execute-file-python3-noswitch'
+           ["Execute file python3 no-switch" py-execute-file-python3-no-switch
+            :help " `py-execute-file-python3-no-switch'
 Send file to a Python3 interpreter\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "nil". "]
 
@@ -4262,8 +4268,8 @@ Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil
 Send file to a Python2 interpreter\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
 
-           ["Execute file python2 noswitch" py-execute-file-python2-noswitch
-            :help " `py-execute-file-python2-noswitch'
+           ["Execute file python2 no-switch" py-execute-file-python2-no-switch
+            :help " `py-execute-file-python2-no-switch'
 Send file to a Python2 interpreter\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "nil". "]
 
@@ -4285,8 +4291,8 @@ Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil
 Send file to a Python2\.7 interpreter\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
 
-           ["Execute file python2.7 noswitch" py-execute-file-python2.7-noswitch
-            :help " `py-execute-file-python2.7-noswitch'
+           ["Execute file python2.7 no-switch" py-execute-file-python2.7-no-switch
+            :help " `py-execute-file-python2.7-no-switch'
 Send file to a Python2\.7 interpreter\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "nil". "]
 
@@ -4308,8 +4314,8 @@ Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil
 Send file to a Jython interpreter\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
 
-           ["Execute file jython noswitch" py-execute-file-jython-noswitch
-            :help " `py-execute-file-jython-noswitch'
+           ["Execute file jython no-switch" py-execute-file-jython-no-switch
+            :help " `py-execute-file-jython-no-switch'
 Send file to a Jython interpreter\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "nil". "]
 
@@ -4331,8 +4337,8 @@ Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil
 Send file to a Python3\.2 interpreter\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
 
-              ["Execute file python3.2 noswitch" py-execute-file-python3.2-noswitch
-               :help " `py-execute-file-python3.2-noswitch'
+              ["Execute file python3.2 no-switch" py-execute-file-python3.2-no-switch
+               :help " `py-execute-file-python3.2-no-switch'
 Send file to a Python3\.2 interpreter\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "nil". "]
 
@@ -4354,8 +4360,8 @@ Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil
 Send file to a Python3\.3 interpreter\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
 
-              ["Execute file python3.3 noswitch" py-execute-file-python3.3-noswitch
-               :help " `py-execute-file-python3.3-noswitch'
+              ["Execute file python3.3 no-switch" py-execute-file-python3.3-no-switch
+               :help " `py-execute-file-python3.3-no-switch'
 Send file to a Python3\.3 interpreter\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "nil". "]
 
@@ -4377,8 +4383,8 @@ Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil
 Send file to a Bpython interpreter\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
 
-              ["Execute file bpython noswitch" py-execute-file-bpython-noswitch
-               :help " `py-execute-file-bpython-noswitch'
+              ["Execute file bpython no-switch" py-execute-file-bpython-no-switch
+               :help " `py-execute-file-bpython-no-switch'
 Send file to a Bpython interpreter\.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "nil". "]
 
@@ -6139,18 +6145,18 @@ module-qualified names."
   (interactive "f")
   (py-execute-file-base (get-buffer-process (get-buffer (py-shell))) file-name))
 
-(defun py-proc (&optional dedicated)
+(defun py-proc (&optional py-dedicated-process-p)
   "Return the current Python process.
 
 Start a new process if necessary. "
   (interactive)
   (let (py-split-windows-on-execute-p
         (erg
-         (cond ((and (not dedicated) (comint-check-proc (current-buffer)))
+         (cond ((and (not py-dedicated-process-p) (comint-check-proc (current-buffer)))
          (get-buffer-process (buffer-name (current-buffer))))
-        ((not dedicated)
-         (get-buffer-process (py-shell nil nil nil 'noswitch nil nil nil 'nosplit)))
-        ((py-shell nil dedicated 'noswitch nil nil nil 'nosplit)))))
+        ((not py-dedicated-process-p)
+         (get-buffer-process (py-shell nil nil nil 'no-switch nil nil nil 'nosplit)))
+        ((py-shell nil py-dedicated-process-p 'no-switch nil nil nil 'nosplit)))))
     (when (interactive-p) (message "%S" erg))
     erg))
 

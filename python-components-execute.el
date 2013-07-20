@@ -24,7 +24,6 @@
 ;;; Code:
 (require 'python-components-macros)
 
-
 (defun py-restore-window-configuration ()
   "Restore py-restore-window-configuration when completion is done resp. abandoned. "
   (interactive)
@@ -348,7 +347,7 @@ interpreter.
       (setq ipython-completion-command-string (if (< ipython-version 11) ipython0.10-completion-command-string ipython0.11-completion-command-string))
       ipython-completion-command-string)))
 
-(defun py-process-name (&optional name dedicated)
+(defun py-process-name (&optional name py-dedicated-process-p)
   "Return the name of the running Python process, `get-process' willsee it. "
   (let* ((thisname (if name
                        (if (string-match py-separator-char name)
@@ -356,7 +355,7 @@ interpreter.
 
                          name)
                      (substring py-shell-name (or (string-match (concat py-separator-char ".+$") py-shell-name) 0))))
-         (nname (cond (dedicated
+         (nname (cond (py-dedicated-process-p
                        (make-temp-name (concat thisname "-")))
                       ;; ((string-match "\*" (buffer-name))
                       ;; (replace-regexp-in-string "\*" "" (buffer-name)))
@@ -397,7 +396,7 @@ SEPCHAR is the file-path separator of your system. "
                 ((string-match "python3" name)
                  (replace-regexp-in-string "python3" "Python3" name))
                 (t name)))
-    (when dedicated
+    (when py-dedicated-process-p
       (setq erg (make-temp-name (concat erg "-"))))
     (cond ((and prefix (string-match "^\*" erg))
            (setq erg (replace-regexp-in-string "^\*" (concat "*" prefix " ") erg)))
@@ -486,7 +485,7 @@ This function is appropriate for `comint-output-filter-functions'."
         (let ((pyproc (get-buffer-process (current-buffer))))
           (py-execute-file-base pyproc (car py-file-queue))))))
 
-(defun py-shell (&optional argprompt dedicated shell buffer-name done)
+(defun py-shell (&optional argprompt py-dedicated-process-p shell buffer-name done)
   "Start an interactive Python interpreter in another window.
 Interactively, \\[universal-argument] 4 prompts for a buffer.
 \\[universal-argument] 2 prompts for `py-python-command-args'.
@@ -625,10 +624,10 @@ When DONE is `t', `py-shell-manage-windows' is omitted
     (when py-shell-hook (run-hooks 'py-shell-hook))
     py-buffer-name))
 
-(defun py-shell-get-process (&optional argprompt dedicated shell switch py-buffer-name done)
+(defun py-shell-get-process (&optional argprompt py-dedicated-process-p shell switch py-buffer-name done)
   "Get appropriate Python process for current buffer and return it."
   (interactive)
-  (let ((erg (get-buffer-process (py-shell argprompt dedicated shell switch py-buffer-name done))))
+  (let ((erg (get-buffer-process (py-shell argprompt py-dedicated-process-p shell switch py-buffer-name done))))
     (when (interactive-p) (message "%S" erg))
     erg))
 
@@ -638,7 +637,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
   (interactive)
   (pop-to-buffer (py-shell) t))
 
-;; Code execution commands
+;;; Code execution commands
 (defun py-which-execute-file-command (filename)
   "Return the command appropriate to Python version.
 
@@ -651,17 +650,9 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
     (when (interactive-p) (message "%s" (prin1-to-string cmd)))
     cmd))
 
-(defun py-execute-region-no-switch (start end)
-  "Send the region to a Python interpreter.
-
-Ignores setting of `py-switch-buffers-on-execute-p', buffer with region stays current.
- "
-  (interactive "r")
-  (py-execute-base start end dedicated 'noswitch))
-
 (defalias 'py-send-region 'py-execute-region)
 ;;; execute region
-(defun py-execute-region (start end &optional shell dedicated file)
+(defun py-execute-region (start end &optional shell py-dedicated-process-p file)
   "Send the region to a Python interpreter.
 
 When called with \\[universal-argument], execution through `default-value' of `py-shell-name' is forced.
@@ -678,13 +669,21 @@ Optional DEDICATED (boolean)
                      ((and (numberp shell) (not (eq 1 (prefix-numeric-value shell))))
                       (read-from-minibuffer "(path-to-)shell-name: " (default-value 'py-shell-name)))
                      (t shell))))
-    (py-execute-base start end dedicated file)))
+    (py-execute-base start end  file)))
 
-(defun py-execute-region-default (start end &optional dedicated)
+(defun py-execute-region-default (start end &optional py-dedicated-process-p)
   "Send the region to the systems default Python interpreter.
 See also `py-execute-region'. "
   (interactive "r\nP")
-  (py-execute-base start end (default-value 'py-shell-name) dedicated))
+  (py-execute-base start end (default-value 'py-shell-name) py-dedicated-process-p))
+
+(defun py-execute-region-no-switch (start end)
+  "Send the region to a Python interpreter.
+
+Ignores setting of `py-switch-buffers-on-execute-p', buffer with region stays current.
+ "
+  (interactive "r")
+  (py-execute-base start end  'no-switch))
 
 (defun py-execute-region-dedicated (start end &optional shell)
   "Get the region processed by an unique Python interpreter.
@@ -700,13 +699,13 @@ When called from a programm, it accepts a string specifying a shell which will b
                      (t shell))))
     (py-execute-base start end t)))
 
-(defun py-execute-region-switch (start end &optional shell dedicated)
+(defun py-execute-region-switch (start end &optional shell py-dedicated-process-p)
   "Send the region to a Python interpreter.
 
 Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being switched to.
 "
   (interactive "r\nP")
-  (py-execute-base start end py-shell-name dedicated 'switch))
+  (py-execute-base start end py-shell-name py-dedicated-process-p 'switch))
 
 (defalias 'py-execute-region-dedicated-default 'py-execute-region-default-dedicated)
 (defun py-execute-region-default-dedicated (start end)
@@ -714,15 +713,13 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
   (interactive "r")
   (py-execute-base start end (default-value 'py-shell-name) t))
 
-(defun py-delete-temporary (&optional file localname filebuf)
+(defun py-delete-temporary (&optional file filebuf)
   (when (file-readable-p file)
     (delete-file file))
   (when (buffer-live-p filebuf)
     (set-buffer filebuf)
     (set-buffer-modified-p 'nil)
-    (kill-buffer filebuf))
-  (when (buffer-live-p localname)
-    (kill-buffer localname)))
+    (kill-buffer filebuf)))
 
 (defun py-execute-python-mode-v5 (start end)
   (interactive "r")
@@ -752,11 +749,11 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
   (insert (make-string (- line (count-lines (point-min) (point))) 10)))
 
 (defun py-execute-file-intern ()
-  (if (file-readable-p file)
+  (if (file-readable-p tempfile)
       (progn
-        (and (string-match "[Ii]python" py-shell-name)
-             (sit-for py-ipython-execute-delay))
-        (setq erg (py-execute-file-base nil file nil nil))
+        ;; (and (string-match "[Ii]python" py-shell-name)
+             ;; (sit-for py-ipython-execute-delay))
+        (setq erg (py-execute-file-base nil tempfile nil nil py-orig-buffer-or-file))
         (sit-for 0.1)
         (setq err-p (py-postprocess-output-buffer py-buffer-name))
         (when py-enforce-output-buffer-p
@@ -770,23 +767,26 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
         (sit-for 0.1))
     (message "%s not readable. %s" file "Do you have write permissions?")))
 
-(defun py-execute-file (&optional filename shell dedicated)
+(defun py-execute-file (file)
   "When called interactively, user is prompted for filename. "
-  (interactive "fFile: ")
-  (let* ((file (or (expand-file-name filename) (when (ignore-errors (file-readable-p (buffer-file-name))) (buffer-file-name))))
-         ;; (shell (or shell (progn (with-temp-buffer (insert-file-contents file)(py-choose-shell)))))
-         ;; (name (py-process-name shell dedicated))
-         (proc (and (or shell dedicated switch)(get-buffer-process (py-shell nil dedicated (or shell (downcase name))))))
-         ;; (py-buffer-name (buffer-name (process-buffer proc)))
-         erg)
-    (if (file-readable-p file)
-        (progn
-          (setq py-exception-buffer file)
-          (setq erg (py-execute-file-base proc file))
-          (py-shell-manage-windows py-output-buffer)
-          (sit-for 0.1)
-          erg)
-      (message "File not readable: %s" "Do you have write permissions?"))))
+  (interactive "fFilename")
+  (if (file-readable-p file)
+      (progn
+        (and (string-match "[Ii]python" py-shell-name)
+             (sit-for py-ipython-execute-delay))
+        (setq erg (py-execute-file-base nil file nil nil (or (and (boundp 'py-orig-buffer-or-file) py-orig-buffer-or-file) file)))
+        (sit-for 0.1)
+        (setq err-p (py-postprocess-output-buffer py-buffer-name))
+        (when py-enforce-output-buffer-p
+          (setq output-buffer py-output-buffer)
+          ;; maybe (or py-execute-python-mode-v5 ?
+          (set-buffer (get-buffer-create output-buffer))
+          (erase-buffer)
+          (insert erg))
+        (py-shell-manage-windows (or output-buffer py-buffer-name) windows-displayed windows-config err-p)
+        (when py-verbose-p (message "Output buffer: %s" py-buffer-name))
+        (sit-for 0.1))
+    (message "%s not readable. %s" file "Do you have write permissions?")))
 
 (defun py-execute-file-base (&optional proc filename cmd procbuf origfile)
   "Send to Python interpreter process PROC, in Python version 2.. \"execfile('FILENAME')\".
@@ -795,10 +795,10 @@ Make that process's buffer visible and force display.  Also make
 comint believe the user typed this string so that
 `kill-output-from-shell' does The Right Thing.
 Returns position where output starts. "
-  (let* ((proc (or proc (if dedicated
-                            (get-buffer-process (py-shell nil dedicated py-shell-name py-buffer-name t))
+  (let* ((proc (or proc (if py-dedicated-process-p
+                            (get-buffer-process (py-shell nil py-dedicated-process-p py-shell-name py-buffer-name t))
                           (or (and (boundp 'py-buffer-name) (get-buffer-process py-buffer-name))
-                              (get-buffer-process (py-shell nil dedicated py-shell-name (and (boundp 'py-buffer-name) py-buffer-name) t))))))
+                              (get-buffer-process (py-shell nil py-dedicated-process-p py-shell-name (and (boundp 'py-buffer-name) py-buffer-name) t))))))
          (procbuf (or procbuf (process-buffer proc)))
          ;; filename might be a temporary, message the orig rather
          (msg (and py-verbose-p (format "## executing %s...\n" (or origfile filename))))
@@ -825,7 +825,7 @@ Returns position where output starts. "
          (setq erg (replace-regexp-in-string "\\(.+\\) File \"[^\"]+\", line \\(.+\\)" (concat (match-string-no-properties 1) " File \"" (or (and (stringp origfile) origfile)(buffer-name origfile)) "\", line " (match-string-no-properties 2)) erg)))
     erg))
 
-(defun py-execute-base (start end &optional dedicated file)
+(defun py-execute-base (start end &optional py-dedicated-process-p file)
   "Select the handler. "
   (let* ((windows-config (window-configuration-to-register 313465889))
          (windows-displayed (window-list-1))
@@ -842,18 +842,19 @@ Returns position where output starts. "
                  py-execute-directory)
                 ((getenv "VIRTUAL_ENV"))
                 (t (getenv "HOME"))))
-         (py-buffer-name (or py-buffer-name (py-buffer-name-prepare))))
+         (py-buffer-name (or py-buffer-name (py-buffer-name-prepare)))
+         (py-orig-buffer-or-file (current-buffer)))
     (cond (;; enforce proceeding as python-mode.el v5
            python-mode-v5-behavior-p
            (py-execute-python-mode-v5 start end))
           (py-execute-no-temp-p
-           (py-execute-ge24.3 start end dedicated file))
+           (py-execute-ge24.3 start end py-dedicated-process-p file))
           ;; No need for a temporary file than
           ((and (not (buffer-modified-p)) file)
-           (py-execute-buffer-file dedicated file))
-          (t (py-execute-buffer-finally start end dedicated)))))
+           (py-execute-buffer-file py-dedicated-process-p file))
+          (t (py-execute-buffer-finally start end py-dedicated-process-p)))))
 
-(defun py-execute-buffer-file (dedicated file)
+(defun py-execute-buffer-file (py-dedicated-process-p file)
   (if (file-readable-p file)
       (progn
         (setq erg (py-execute-file-base nil file))
@@ -871,24 +872,16 @@ Returns position where output starts. "
     (message "%s not readable. %s" file "Do you have permissions?"))
   erg)
 
-(defun py-execute-buffer-finally (start end &optional dedicated)
+(defun py-execute-buffer-finally (start end &optional py-dedicated-process-p)
   (let* ((strg (buffer-substring-no-properties start end))
          (line (save-restriction (widen) (count-lines (point-min) start)))
          (temp (make-temp-name
                 (concat (replace-regexp-in-string py-separator-char "-" (replace-regexp-in-string (concat "^" py-separator-char) "" (replace-regexp-in-string ":" "-" py-shell-name))) "-")))
-         (localname (concat (expand-file-name py-temp-directory) py-separator-char (replace-regexp-in-string py-separator-char "-" temp) ".py"))
-         (py-buffer-name (or py-buffer-name (py-buffer-name-prepare)))
-         (file (with-current-buffer
-                   (cond ((and (bufferp (get-buffer py-buffer-name))(comint-check-proc py-buffer-name))
-                          py-buffer-name)
-                         ((stringp py-buffer-name)
-                          (py-shell nil dedicated py-shell-name py-buffer-name t))
-                         ((py-buffer-name-prepare))); create the file to be executed in context of the shell
-                 (concat (file-remote-p default-directory) localname)))
-         (filebuf (get-buffer-create file))
+         (tempfile (concat (expand-file-name py-temp-directory) py-separator-char (replace-regexp-in-string py-separator-char "-" temp) ".py"))
+         (tempbuf (get-buffer-create temp))
          (wholebuf (when (boundp 'wholebuf) wholebuf))
          erg err-p lineadd output-buffer)
-    (set-buffer filebuf)
+    (set-buffer tempbuf)
     (erase-buffer)
     (unless py-if-name-main-permission-p
       (setq strg (replace-regexp-in-string
@@ -900,20 +893,20 @@ Returns position where output starts. "
     (py-if-needed-insert-shell)
     (unless wholebuf (py-insert-coding))
     (unless (string-match "[jJ]ython" py-shell-name) (py-insert-execute-directory execute-directory))
-    ;; fix offline amount, make erorr point at the corect line
+    ;; fix offline amount, make erorr point at the correct line
     (setq lineadd (- line (+ 2 (count-lines (point-min) (point)))))
     (and (< 0 lineadd) (insert (make-string lineadd 10)))
-    (set-buffer filebuf)
-    (write-region (point-min) (point-max) file nil t nil 'ask)
+    (set-buffer tempbuf)
+    (write-region (point-min) (point-max) tempfile nil t nil 'ask)
     (set-buffer-modified-p 'nil)
     (unwind-protect
         (py-execute-file-intern)
       (and py-cleanup-temporary
-           (py-delete-temporary file localname filebuf)))
+           (py-delete-temporary tempfile tempbuf)))
     (and py-store-result-p (kill-new erg))
     erg))
 
-(defun py-execute-ge24.3 (start end &optional dedicated file)
+(defun py-execute-ge24.3 (start end &optional py-dedicated-process-p file)
   "Select the handler. "
   (and (buffer-file-name) buffer-offer-save (buffer-modified-p) (y-or-n-p "Save buffer before executing? ")
        (write-file (buffer-file-name)))
@@ -922,16 +915,15 @@ Returns position where output starts. "
          (py-exception-buffer (current-buffer))
          (line (count-lines (point-min) start))
          (strg (buffer-substring-no-properties start end))
-         (localname (or (buffer-file-name) (concat (expand-file-name py-temp-directory) py-separator-char (replace-regexp-in-string py-separator-char "-" temp) ".py")))
+         (tempfile (or (buffer-file-name) (concat (expand-file-name py-temp-directory) py-separator-char (replace-regexp-in-string py-separator-char "-" temp) ".py")))
 
-
-         (proc (if dedicated
-                   (get-buffer-process (py-shell nil dedicated py-shell-name switch py-buffer-name t))
+         (proc (if py-dedicated-process-p
+                   (get-buffer-process (py-shell nil py-dedicated-process-p py-shell-name switch py-buffer-name t))
                  (or (get-buffer-process py-buffer-name)
-                     (get-buffer-process (py-shell nil dedicated py-shell-name switch py-buffer-name t)))))
+                     (get-buffer-process (py-shell nil py-dedicated-process-p py-shell-name switch py-buffer-name t)))))
          (procbuf (process-buffer proc))
          (file (or file (with-current-buffer py-buffer-name
-                          (concat (file-remote-p default-directory) localname))))
+                          (concat (file-remote-p default-directory) tempfile))))
          (filebuf (get-buffer-create file))
          err-p)
     (set-buffer filebuf)
@@ -961,7 +953,7 @@ Returns position where output starts. "
       (unless (string= (buffer-name (current-buffer)) (buffer-name procbuf))
         (when py-verbose-p (message "Output buffer: %s" procbuf))))))
 
-(defun py-execute-string (&optional string shell dedicated)
+(defun py-execute-string (&optional string shell py-dedicated-process-p)
   "Send the argument STRING to a Python interpreter.
 
 See also `py-execute-region'. "
@@ -970,7 +962,7 @@ See also `py-execute-region'. "
         (shell (or shell (default-value 'py-shell-name))))
     (with-temp-buffer
       (insert string)
-      (py-execute-region (point-min) (point-max) shell dedicated))))
+      (py-execute-region (point-min) (point-max) shell py-dedicated-process-p))))
 
 (defun py-execute-string-dedicated (&optional string shell)
   "Send the argument STRING to an unique Python interpreter.
@@ -1069,7 +1061,7 @@ See also doku of variable `py-master-file' "
           (setq py-master-file (match-string-no-properties 2))))))
   (when (interactive-p) (message "%s" py-master-file)))
 
-(defun py-execute-import-or-reload (&optional argprompt shell dedicated)
+(defun py-execute-import-or-reload (&optional argprompt shell py-dedicated-process-p)
   "Import the current buffer's file in a Python interpreter.
 
 If the file has already been imported, then do reload instead to get
@@ -1100,12 +1092,12 @@ This may be preferable to `\\[py-execute-buffer]' because:
              (buffer (or (get-file-buffer filename)
                          (find-file-noselect filename))))
         (set-buffer buffer)))
-  (let ((py-shell-name (or shell (py-choose-shell argprompt shell dedicated)))
+  (let ((py-shell-name (or shell (py-choose-shell argprompt shell py-dedicated-process-p)))
         (file (buffer-file-name (current-buffer))))
     (if file
         (let ((proc (or
                      (ignore-errors (get-process (file-name-directory shell)))
-                     (get-buffer-process (py-shell argprompt dedicated shell (or shell (default-value 'py-shell-name)))))))
+                     (get-buffer-process (py-shell argprompt py-dedicated-process-p shell (or shell (default-value 'py-shell-name)))))))
           ;; Maybe save some buffers
           (save-some-buffers (not py-ask-about-save) nil)
           (py-execute-file-base proc file
@@ -1134,7 +1126,7 @@ Basically, this goes down the directory tree as long as there are __init__.py fi
              (file-name-sans-extension (file-name-nondirectory file)))))
 
 ;;; execute buffer
-(defun py-execute-buffer (&optional shell dedicated file)
+(defun py-execute-buffer (&optional shell py-dedicated-process-p file)
   "Send the contents of the buffer to a Python interpreter.
 
 When called with \\[universal-argument], execution through `default-value' of `py-shell-name' is forced.
@@ -1145,7 +1137,7 @@ named file instead of the buffer's file.
 
 When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
 
-Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch) "
+Optional arguments DEDICATED (boolean) and SWITCH (symbols 'no-switch/'switch) "
   (interactive "P")
   (let* ((wholebuf t)
          (py-master-file (or py-master-file (py-fetch-py-master-file)))
@@ -1159,9 +1151,9 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch) "
                 (buffer-file-name)))
          (beg (point-min))
          (end (point-max)))
-    (py-execute-region beg end shell dedicated file)))
+    (py-execute-region beg end shell py-dedicated-process-p file)))
 
-(defun py-execute-buffer-base (&optional shell dedicated file)
+(defun py-execute-buffer-base (&optional shell py-dedicated-process-p file)
   "Honor `py-master-file'. "
   (let ((py-master-file (or py-master-file (py-fetch-py-master-file)))
         (file (or
@@ -1174,7 +1166,7 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch) "
                (when (buffer-file-name) (buffer-file-name))))
         (beg (point-min))
         (end (point-max)))
-    (py-execute-region beg end shell dedicated file)))
+    (py-execute-region beg end shell py-dedicated-process-p file)))
 
 (defun py-execute-buffer-dedicated (&optional shell)
   "Send the contents of the buffer to a unique Python interpreter.
@@ -1189,7 +1181,7 @@ See also `\\[py-execute-region]'. "
   (interactive "P")
   (py-execute-buffer-base shell t))
 
-(defun py-execute-buffer-switch (&optional shell dedicated)
+(defun py-execute-buffer-switch (&optional shell py-dedicated-process-p)
   "Send the contents of the buffer to a Python interpreter and switches to output.
 
 If the file local variable `py-master-file' is non-nil, execute the
@@ -1200,9 +1192,9 @@ If a clipping restriction is in effect, only the accessible portion of the buffe
 With \\[universal-argument] user is prompted to specify another then default shell.
 See also `\\[py-execute-region]'. "
   (interactive "P")
-  (py-execute-buffer-base shell dedicated 'switch))
+  (py-execute-buffer-base shell py-dedicated-process-p 'switch))
 
-(defun py-execute-buffer-no-switch (&optional shell dedicated)
+(defun py-execute-buffer-no-switch (&optional shell py-dedicated-process-p)
   "Send the contents of the buffer to a Python interpreter but don't switch to output.
 
 If the file local variable `py-master-file' is non-nil, execute the
@@ -1213,7 +1205,7 @@ If a clipping restriction is in effect, only the accessible portion of the buffe
 With \\[universal-argument] user is prompted to specify another then default shell.
 See also `\\[py-execute-region]'. "
   (interactive "P")
-  (py-execute-buffer-base shell dedicated 'noswitch))
+  (py-execute-buffer-base shell py-dedicated-process-py 'no-switch))
 
 (defalias 'py-execute-buffer-switch-dedicated 'py-execute-buffer-dedicated-switch)
 (defun py-execute-buffer-dedicated-switch (&optional shell)
@@ -1234,7 +1226,8 @@ See also `\\[py-execute-region]'. "
 (defun py-execute-region-python (start end)
   "Send the region to a common shell calling the python interpreter. "
   (interactive "r")
-  (py-execute-base start end "python"))
+  (let ((py-shell-name "python"))
+    (py-execute-base start end)))
 
 (defun py-execute-region-python-switch (start end)
   "Send the region to a common shell calling the python interpreter.
@@ -1244,138 +1237,156 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
   (let ((py-switch-buffers-on-execute-p t))
     (py-execute-base start end "python")))
 
-(defun py-execute-region-python-no-switch (start end)
-  "Send the region to a common shell calling the python interpreter.
+(defun py-execute-region-python-no-switch (beg end)
+  "Send region at point to Python interpreter.
 
-Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will not being switched to."
+Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
   (interactive "r")
-  (let ((py-switch-buffers-on-execute-p))
-    (py-execute-base start end "python")))
+  (let ((py-shell-name "python")
+        py-switch-buffers-on-execute-p)
+    (py-execute-base beg end)))
 
 (defun py-execute-region-python2 (start end)
   "Send the region to a common shell calling the python2 interpreter. "
   (interactive "r")
-  (py-execute-base start end "python2"))
+  (let ((py-shell-name "python2"))
+    (py-execute-base start end)))
 
 (defun py-execute-region-python2-switch (start end)
   "Send the region to a common shell calling the python2 interpreter.
 Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being switched to. "
   (interactive "r")
-  (let ((py-switch-buffers-on-execute-p t))
-    (py-execute-base start end "python2")))
+  (let ((py-shell-name "python2")
+        (py-switch-buffers-on-execute-p t))
+    (py-execute-base start end)))
 
 (defun py-execute-region-python2-no-switch (start end)
   "Send the region to a common shell calling the python2 interpreter.
 
 Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will not being switched to."
   (interactive "r")
-  (let ((py-switch-buffers-on-execute-p))
+  (let (py-switch-buffers-on-execute-p)
     (py-execute-base start end "python2")))
 
 (defun py-execute-region-python2.7 (start end)
   "Send the region to a common shell calling the python2.7 interpreter. "
   (interactive "r")
-  (py-execute-base start end "python2.7"))
+  (let ((py-shell-name "python2.7"))
+    (py-execute-base start end)))
 
 (defun py-execute-region-python2.7-switch (start end)
   "Send the region to a common shell calling the python2.7 interpreter.
 
 Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being switched to. "
   (interactive "r")
-  (let ((py-switch-buffers-on-execute-p t))
-    (py-execute-base start end "python2.7")))
+  (let ((py-shell-name "python2.7")
+        (py-switch-buffers-on-execute-p t))
+    (py-execute-base start end)))
 
 (defun py-execute-region-python2.7-no-switch (start end)
   "Send the region to a common shell calling the python2.7 interpreter.
 
 Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will not being switched to."
   (interactive "r")
-  (let ((py-switch-buffers-on-execute-p))
-    (py-execute-base start end "python2.7")))
+  (let ((py-shell-name "python2.7")
+        (py-switch-buffers-on-execute-p))
+    (py-execute-base start end)))
 
 (defun py-execute-region-python3 (start end)
   "Send the region to a common shell calling the python3 interpreter. "
   (interactive "r")
-  (py-execute-base start end "python3"))
+  (let ((py-shell-name "python3"))
+    (py-execute-base start end)))
 
 (defun py-execute-region-python3-switch (start end)
   "Send the region to a common shell calling the python3 interpreter.
 
 Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being switched to. "
   (interactive "r")
-  (let ((py-switch-buffers-on-execute-p t))
-    (py-execute-base start end "python3")))
+  (let ((py-shell-name "python3")
+        (py-switch-buffers-on-execute-p t))
+    (py-execute-base start end)))
 
 (defun py-execute-region-python3-no-switch (start end)
   "Send the region to a common shell calling the python3 interpreter.
 
 Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will not being switched to."
   (interactive "r")
-  (let ((py-switch-buffers-on-execute-p))
-    (py-execute-base start end "python3")))
+  (let ((py-shell-name "python3")
+        (py-switch-buffers-on-execute-p))
+    (py-execute-base start end)))
 
 (defun py-execute-region-python3.2 (start end)
   "Send the region to a common shell calling the python3.2 interpreter. "
   (interactive "r")
-  (py-execute-base start end "python3.2"))
+  (let ((py-shell-name "python3.2"))
+    (py-execute-base start end)))
 
 (defun py-execute-region-python3.2-switch (start end)
   "Send the region to a common shell calling the python3.2 interpreter.
 
 Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being switched to. "
   (interactive "r")
-  (let ((py-switch-buffers-on-execute-p t))
-    (py-execute-base start end "python3.2")))
+  (let ((py-shell-name "python3.2")
+        (py-switch-buffers-on-execute-p t))
+    (py-execute-base start end)))
 
 (defun py-execute-region-python3.2-no-switch (start end)
   "Send the region to a common shell calling the python3.2 interpreter.
 
 Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will not being switched to."
   (interactive "r")
-  (let ((py-switch-buffers-on-execute-p))
-    (py-execute-base start end "python3.2")))
+  (let ((py-shell-name "python3.2")
+        (py-switch-buffers-on-execute-p))
+    (py-execute-base start end)))
 
 (defun py-execute-region-ipython (start end)
   "Send the region to a common shell calling the ipython interpreter. "
   (interactive "r")
-  (py-execute-base start end "ipython"))
+  (let ((py-shell-name "ipython"))
+    (py-execute-base start end)))
 
 (defun py-execute-region-ipython-switch (start end)
   "Send the region to a common shell calling the ipython interpreter.
 
 Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being switched to. "
   (interactive "r")
-  (let ((py-switch-buffers-on-execute-p t))
-    (py-execute-base start end "ipython")))
+  (let ((py-shell-name "ipython")
+        (py-switch-buffers-on-execute-p t))
+    (py-execute-base start end)))
 
 (defun py-execute-region-ipython-no-switch (start end)
   "Send the region to a common shell calling the ipython interpreter.
 
 Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will not being switched to."
   (interactive "r")
-  (let ((py-switch-buffers-on-execute-p))
-    (py-execute-base start end "ipython")))
+  (let ((py-shell-name "ipython")
+        (py-switch-buffers-on-execute-p))
+    (py-execute-base start end)))
 
 (defun py-execute-region-jython (start end)
   "Send the region to a common shell calling the jython interpreter. "
   (interactive "r")
-  (py-execute-base start end "jython"))
+  (let ((py-shell-name "jython"))
+    (py-execute-base start end)))
 
 (defun py-execute-region-jython-switch (start end)
   "Send the region to a common shell calling the jython interpreter.
 
 Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being switched to. "
   (interactive "r")
-  (let ((py-switch-buffers-on-execute-p t))
-    (py-execute-base start end "jython")))
+  (let ((py-shell-name "jython")
+        (py-switch-buffers-on-execute-p t))
+    (py-execute-base start end)))
 
 (defun py-execute-region-jython-no-switch (start end)
   "Send the region to a common shell calling the jython interpreter.
 
 Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will not being switched to."
   (interactive "r")
-  (let ((py-switch-buffers-on-execute-p))
-    (py-execute-base start end "jython")))
+  (let ((py-shell-name "jython")
+        (py-switch-buffers-on-execute-p))
+    (py-execute-base start end)))
 
 ;; Specifying shells end
 

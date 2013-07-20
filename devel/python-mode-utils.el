@@ -61,7 +61,7 @@
 
 (defvar docstring-styles (list "django" "onetwo" "pep-257" "pep-257-nn" "symmetric"))
 
-(setq py-options (list "" "switch" "noswitch" "dedicated" "dedicated-switch"))
+(setq py-options (list "" "switch" "no-switch" "dedicated" "dedicated-switch"))
 
 (defvar py-shells
   (list "python" "ipython" "python3" "python2" "python2.7" "jython" "python3.2" "python3.3" "bpython")
@@ -124,7 +124,7 @@ When called with \\\\[universal-argument] followed by a number different from 4 
 
 When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
 
-Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)\"\n")
+Optional arguments DEDICATED (boolean) and SWITCH (symbols 'no-switch/'switch)\"\n")
       (insert (concat "  (interactive \"P\")
   (save-excursion
     (let ((beg (prog1
@@ -139,7 +139,7 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)\"\
 (defun write-options-dokumentation-subform (pyo)
   (cond ((string-match "dedicated" pyo)
          (insert "\n\nUses a dedicated shell.")))
-  (cond ((string-match "noswitch" pyo)
+  (cond ((string-match "no-switch" pyo)
          (insert "\nIgnores default of `py-switch-buffers-on-execute-p', uses it with value \\\"nil\\\""))
         ((string-match "switch" pyo)
          (insert "\nIgnores default of `py-switch-buffers-on-execute-p', uses it with value \\\"non-nil\\\""))))
@@ -227,8 +227,8 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)\"\
       (cond ((string-match "dedicated" pyo)
              (insert " 'dedicated"))
             (t (insert " nil")))
-      (cond ((string-match "noswitch" pyo)
-             (insert " 'noswitch"))
+      (cond ((string-match "no-switch" pyo)
+             (insert " 'no-switch"))
             ((string-match "switch" pyo)
              (insert " 'switch"))
             (t (insert " nil")))
@@ -346,7 +346,7 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)\"\
                 (t (insert " interpreter. ")))
           (cond ((string= pyo "switch")
                  (insert "\n\nSwitch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "))
-                ((string= pyo "noswitch")
+                ((string= pyo "no-switch")
                  (insert "\n\nKeep current buffer. Ignores `py-switch-buffers-on-execute-p' ")))
           (insert "\"\n")
           (cond ((string= "region" ele)
@@ -376,8 +376,8 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'noswitch/'switch)\"\
           (cond ((or (string= "switch" pyo)
                      (string= "dedicated-switch" pyo))
                  (insert " 'switch"))
-                ((string= "noswitch" pyo)
-                 (insert " 'noswitch"))
+                ((string= "no-switch" pyo)
+                 (insert " 'no-switch"))
                 (t (insert " nil")))
           (cond ((string= "region" ele)
                  (insert ")))\n\n"))
@@ -939,7 +939,7 @@ Optional \\\\[universal-argument] prompts for options to pass to the "))
   (interactive \"P\")
   (py-set-shell-completion-environment)
   (py-shell argprompt dedicated \"" ele "\" 'switch))\n\n")))
-    ;; noswitch
+    ;; no-switch
     (dolist (ele py-shells)
       (insert (concat "(defun " ele "-no-switch (&optional argprompt dedicated)
   \"Open an "))
@@ -955,7 +955,7 @@ Optional \\\\[universal-argument] prompts for options to pass to the "))
       (insert (concat " interpreter. See `py-python-command-args'.\"
   (interactive \"P\")
   (py-set-shell-completion-environment)
-  (py-shell argprompt dedicated \"" ele "\" 'noswitch))\n\n")))
+  (py-shell argprompt dedicated \"" ele "\" 'no-switch))\n\n")))
     ;; dedicated switch
     (dolist (ele py-shells)
       (insert (concat "(defalias '" ele "-dedicated-switch '" ele "-switch-dedicated)\n"))
