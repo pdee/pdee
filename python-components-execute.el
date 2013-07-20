@@ -669,7 +669,7 @@ Optional DEDICATED (boolean)
                      ((and (numberp shell) (not (eq 1 (prefix-numeric-value shell))))
                       (read-from-minibuffer "(path-to-)shell-name: " (default-value 'py-shell-name)))
                      (t shell))))
-    (py-execute-base start end  file)))
+    (py-execute-base start end py-dedicated-process-p file)))
 
 (defun py-execute-region-default (start end &optional py-dedicated-process-p)
   "Send the region to the systems default Python interpreter.
@@ -748,42 +748,23 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
   "Fix offline amount, make error point at the corect line. "
   (insert (make-string (- line (count-lines (point-min) (point))) 10)))
 
-(defun py-execute-file-intern ()
-  (if (file-readable-p tempfile)
-      (progn
-        ;; (and (string-match "[Ii]python" py-shell-name)
-             ;; (sit-for py-ipython-execute-delay))
-        (setq erg (py-execute-file-base nil tempfile nil nil py-orig-buffer-or-file))
-        (sit-for 0.1)
-        (setq err-p (py-postprocess-output-buffer py-buffer-name))
-        (when py-enforce-output-buffer-p
-          (setq output-buffer py-output-buffer)
-          ;; maybe (or py-execute-python-mode-v5 ?
-          (set-buffer (get-buffer-create output-buffer))
-          (erase-buffer)
-          (insert erg))
-        (py-shell-manage-windows (or output-buffer py-buffer-name) windows-displayed windows-config err-p)
-        (when py-verbose-p (message "Output buffer: %s" py-buffer-name))
-        (sit-for 0.1))
-    (message "%s not readable. %s" file "Do you have write permissions?")))
-
 (defun py-execute-file (file)
   "When called interactively, user is prompted for filename. "
   (interactive "fFilename")
   (if (file-readable-p file)
       (progn
-        (and (string-match "[Ii]python" py-shell-name)
-             (sit-for py-ipython-execute-delay))
+        ;; (and (string-match "[Ii]python" py-shell-name)
+        ;; (sit-for py-ipython-execute-delay))
         (setq erg (py-execute-file-base nil file nil nil (or (and (boundp 'py-orig-buffer-or-file) py-orig-buffer-or-file) file)))
         (sit-for 0.1)
         (setq err-p (py-postprocess-output-buffer py-buffer-name))
-        (when py-enforce-output-buffer-p
-          (setq output-buffer py-output-buffer)
-          ;; maybe (or py-execute-python-mode-v5 ?
-          (set-buffer (get-buffer-create output-buffer))
-          (erase-buffer)
-          (insert erg))
-        (py-shell-manage-windows (or output-buffer py-buffer-name) windows-displayed windows-config err-p)
+        (if py-enforce-output-buffer-p
+            (progn
+              (set-buffer (get-buffer-create py-output-buffer))
+              (erase-buffer)
+              (insert erg)
+              (py-shell-manage-windows py-output-buffer windows-displayed windows-config err-p))
+          (py-shell-manage-windows py-buffer-name windows-displayed windows-config err-p))
         (when py-verbose-p (message "Output buffer: %s" py-buffer-name))
         (sit-for 0.1))
     (message "%s not readable. %s" file "Do you have write permissions?")))
@@ -851,26 +832,8 @@ Returns position where output starts. "
            (py-execute-ge24.3 start end py-dedicated-process-p file))
           ;; No need for a temporary file than
           ((and (not (buffer-modified-p)) file)
-           (py-execute-buffer-file py-dedicated-process-p file))
+           (py-execute-file file))
           (t (py-execute-buffer-finally start end py-dedicated-process-p)))))
-
-(defun py-execute-buffer-file (py-dedicated-process-p file)
-  (if (file-readable-p file)
-      (progn
-        (setq erg (py-execute-file-base nil file))
-        (sit-for 0.2)
-        (if (string-match (concat py-pdbtrack-input-prompt "\\|" py-pydbtrack-input-prompt) erg)
-            (set-buffer procbuf)
-          (setq err-p (py-postprocess-output-buffer procbuf py-exception-buffer))
-          (if err-p
-              (progn
-                (setnth 1 err-p (1- (nth 1 err-p)))
-                (py-jump-to-exception err-p py-exception-buffer))
-            (py-shell-manage-windows py-buffer-name))
-          (unless (string= (buffer-name (current-buffer)) (buffer-name procbuf))
-            (when py-verbose-p (message "Output buffer: %s" procbuf)))))
-    (message "%s not readable. %s" file "Do you have permissions?"))
-  erg)
 
 (defun py-execute-buffer-finally (start end &optional py-dedicated-process-p)
   (let* ((strg (buffer-substring-no-properties start end))
@@ -900,7 +863,7 @@ Returns position where output starts. "
     (write-region (point-min) (point-max) tempfile nil t nil 'ask)
     (set-buffer-modified-p 'nil)
     (unwind-protect
-        (py-execute-file-intern)
+        (py-execute-file tempfile)
       (and py-cleanup-temporary
            (py-delete-temporary tempfile tempbuf)))
     (and py-store-result-p (kill-new erg))
