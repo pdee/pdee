@@ -1295,13 +1295,13 @@ See also `py-execute-directory'"
 (defvar ffap-alist nil)
 
 (defvar py-buffer-name nil
-  "Internally set. ")
+  "Internal use. ")
 
 (defvar py-dedicated-process-p nil
-  "Internally set. ")
+  "Internal use. ")
 
 (defvar py-orig-buffer-or-file nil
-  "Internally set. ")
+  "Internal use. ")
 
 (defun py-set-ffap-form ()
   (cond ((and py-ffap-p py-ffap)
@@ -4454,11 +4454,33 @@ This may be preferable to `M-x py-execute-buffer' because:
 
  - The Python debugger gets line number information about the functions\.. "]
 
-        ["Describe mode"        py-describe-mode t]
+        ("Help"
+
+         ["Describe mode"        py-describe-mode t]
+
+         ["Help on symbol" py-describe-symbol
+          :help "`py-describe-symbol'\n
+Use pydoc on symbol at point"]
+         
+         ;;          ["py-complete-help" py-complete-help
+         ;;           :help " `py-complete-help'
+         ;; Get help on a Python expression.\n
+         ;; Needs Pymacs "]
+         ;;          
+         ;;          ["Help thing at point" py-complete-help-thing-at-point
+         ;;           :help " `py-complete-help-thing-at-point'\n
+         ;; Needs Pymacs "]
+         
+         ;;          ["Signature" py-complete-signature-expr
+         ;;           :help " Print object's signature\n
+         ;; Needs Pymacs"]
+         
+         )
+        
         ["Debugger" pdb :help "`pdb' Run pdb under GUD"]
         ("Checks"
-
-            ["pychecker-run" py-pychecker-run
+         
+         ["pychecker-run" py-pychecker-run
              :help "`py-pychecker-run'
 Run pychecker
 
@@ -6023,23 +6045,6 @@ Argument is how many `py-partial-expression's form the expansion; or zero means 
 
              )
 
-            ("Help"
-             ["py-complete-help" py-complete-help
-              :help " `py-complete-help'
-Get help on a Python expression.\n
-Needs Pymacs "]
-
-             ["Help thing at point" py-complete-help-thing-at-point
-              :help " `py-complete-help-thing-at-point'\n
-Needs Pymacs "]
-
-             ["Help on symbol" py-describe-symbol
-              :help "`py-describe-symbol'\n
-Use pydoc on symbol at point"]
-
-             ["Signature" py-complete-signature-expr
-              :help " Print object's signature\n
-Needs Pymacs"])
 
             ("Completion"
              :help "Completion options"
