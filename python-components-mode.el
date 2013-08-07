@@ -490,11 +490,6 @@ Default is nil"
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-electric-colon-active-p nil
-  "`py-electric-colon' feature.  Default is `nil'. See lp:837065 for discussions. "
-  :type 'boolean
-  :group 'python-mode)
-
 (defcustom py-electric-colon-greedy-p nil
   "If py-electric-colon should indent to the outmost reasonable level.
 
@@ -4825,6 +4820,13 @@ Use `M-x customize-variable' to set it permanently"
 
           ("Indent"
 
+           ["Electric colon"
+            (setq py-electric-colon-active-p
+                  (not py-electric-colon-active-p))
+            :help " `py-electric-colon-active-p'
+
+`py-electric-colon' feature\.  Default is `nil'\. See lp:837065 for discussions\. . "]
+           
            ["Indent comment "
             (setq py-indent-comments
                   (not py-indent-comments))
