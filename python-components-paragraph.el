@@ -165,7 +165,7 @@ complete docstring according to setting of `py-docstring-style' "
                              (point-marker)))))
              ;; Assume docstrings at BOL resp. indentation
              (docstring (and (not (eq 'no docstring))(py-docstring-p (nth 8 pps))))
-             (end (or (ignore-errors (and end (goto-char end) (skip-chars-backward "\"'")(copy-marker (point))))
+             (end (or (ignore-errors (and end (goto-char end) (skip-chars-backward "\"' \t\f\n")(copy-marker (point))))
                       (progn (goto-char (nth 8 pps)) (scan-sexps (point) 1) (skip-chars-backward "\"'") (point-marker))))
              multi-line-p
              delimiters-style

@@ -418,7 +418,7 @@ Needed when file-path names are contructed from maybe numbered buffer names like
 
 (defun py-shell-manage-windows (output-buffer &optional windows-displayed windows-config err-p)
   (cond (err-p
-         (and (eq 1 (length windows-displayed))
+         (and windows-displayed (eq 1 (length windows-displayed))
               (funcall py-split-windows-on-execute-function)
               (display-buffer output-buffer))
          (py-jump-to-exception err-p py-exception-buffer))
@@ -451,11 +451,13 @@ Needed when file-path names are contructed from maybe numbered buffer names like
            (switch-to-buffer (current-buffer))))
         ;; no split, no switch
         ((not py-switch-buffers-on-execute-p)
-         (if (equal (window-list-1) windows-displayed)
-             (jump-to-register 313465889)
+         ;; (if (equal (window-list-1) windows-displayed)
+             ;; (jump-to-register 313465889)
            (let (pop-up-windows)
              (set-buffer py-exception-buffer)
-             (switch-to-buffer (current-buffer)))))))
+             (switch-to-buffer (current-buffer)))
+           ;; )
+         )))
 
 (defun py-report-executable (py-buffer-name)
   (let ((erg (downcase (replace-regexp-in-string
@@ -763,8 +765,8 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
               (set-buffer (get-buffer-create py-output-buffer))
               (erase-buffer)
               (insert erg)
-              (py-shell-manage-windows py-output-buffer windows-displayed windows-config err-p))
-          (py-shell-manage-windows py-buffer-name windows-displayed windows-config err-p))
+              (py-shell-manage-windows py-output-buffer nil windows-config err-p))
+          (py-shell-manage-windows py-buffer-name nil windows-config err-p))
         (when py-verbose-p (message "Output buffer: %s" py-buffer-name))
         (sit-for 0.1))
     (message "%s not readable. %s" file "Do you have write permissions?")))
@@ -809,7 +811,6 @@ Returns position where output starts. "
 (defun py-execute-base (start end &optional py-dedicated-process-p file)
   "Select the handler. "
   (let* ((windows-config (window-configuration-to-register 313465889))
-         (windows-displayed (window-list-1))
          (py-shell-name (or py-shell-name (py-choose-shell)))
          (py-exception-buffer (current-buffer))
          (execute-directory

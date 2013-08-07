@@ -231,9 +231,17 @@ When indent is set back manually, this is honoured in following lines. "
       (save-excursion
         (goto-char orig)
         (if (empty-line-p)
-            (delete-trailing-whitespace (line-beginning-position) pos)
-          (skip-chars-backward " \t") 
-          (delete-trailing-whitespace (point)  pos))))
+            (if (string-match "23.4" emacs-version)
+                (progn (save-restriction
+                         (narrow-to-region (point) pos)
+                         (delete-trailing-whitespace)))
+              (delete-trailing-whitespace (line-beginning-position) pos))
+          (skip-chars-backward " \t")
+          (if (string-match "23.4" emacs-version)
+              (progn (save-restriction
+                       (narrow-to-region (point) pos)
+                       (delete-trailing-whitespace)))
+            (delete-trailing-whitespace (point) (marker-position pos))))))
     (setq erg (indent-to-column (py-compute-indentation)))
     (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))

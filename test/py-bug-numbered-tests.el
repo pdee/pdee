@@ -5381,7 +5381,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.39 $\"
+__version__ = \"$Revision: 1.40 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -5711,7 +5711,8 @@ def foo():
   (goto-char 97)
   (message "paragraph-start: %s" paragraph-start)
   (message "Fehler? %s" (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
-  (fill-paragraph)
+  (fill-paragraph t)
+  (sit-for 0.1) 
   (message "Fehler? %s" (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
   (forward-line 1)
   (sit-for 1)
