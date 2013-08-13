@@ -487,7 +487,19 @@ In result cursor is insided emptied delimited form."
   :group 'python-mode)
 
 (defcustom py-electric-colon-active-p nil
-  "`py-electric-colon' feature.  Default is `nil'. See lp:837065 for discussions. "
+  "`py-electric-colon' feature.  Default is `nil'. See lp:837065 for discussions. 
+
+See also `py-electric-colon-bobl-only' "
+  :type 'boolean
+  :group 'python-mode)
+
+
+(defcustom py-electric-colon-bobl-only t
+
+  "When inserting a colon, do not indent lines unless at beginning of block 
+
+See lp:1207405 resp. `py-electric-colon-active-p' "
+
   :type 'boolean
   :group 'python-mode)
 
@@ -4840,6 +4852,15 @@ Use `M-x customize-variable' to set it permanently"
 
 `py-electric-colon' feature\.  Default is `nil'\. See lp:837065 for discussions\. . "]
 
+           
+           ["Electric colon at beginning of block only"
+            (setq py-electric-colon-bobl-only
+                  (not py-electric-colon-bobl-only))
+            :help "When inserting a colon, do not indent lines unless at beginning of block. 
+
+Use `M-x customize-variable' to set it permanently"
+            :style toggle :selected py-electric-colon-bobl-only]
+           
            ["Indent comment "
             (setq py-indent-comments
                   (not py-indent-comments))

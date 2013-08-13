@@ -5984,5 +5984,34 @@ def foo():
     (assert (eq 8 (py-compute-indentation)) nil "Bogus-dedent-when-typing-colon-in-dictionary-literal-lp-1197171-test failed"))
 
 
+(defun Non-indenting-colon-lp-1207405-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -\*- coding: utf-8 -\*-
+def foo(bar):
+ for i in range(10)
+        print(i)
+    tied = bar[
+
+# Put point on the last line, after the open bracket. Hit colon (as if you
+# were going to type bar[:]). The line gets incorrectly indented to under
+# the `print`.
+#
+# There may be other situations where colons should not re-indent the
+# line.
+
+"))
+  (py-bug-tests-intern 'Non-indenting-colon-lp-1207405-base arg teststring)))
+
+(defun Non-indenting-colon-lp-1207405-base ()
+  (goto-char 81)
+  (py-electric-colon t)
+  (message "(current-indentation): %s" (current-indentation))
+  (assert (eq 4 (current-indentation)) nil "Non-indenting-colon-lp-1207405-test #1 failed")
+  (goto-char 118)
+  (ignore-errors (py-electric-colon 1))
+  (assert (eq 4 (current-indentation)) nil "Non-indenting-colon-lp-1207405-test #2 failed"))
+
+
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
