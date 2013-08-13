@@ -401,21 +401,21 @@ http://docs.python.org/reference/compound_stmts.html
   ;; (skip-chars-backward " \t\r\n\f" (line-beginning-position))
   )
 
-(defun py-eos-handle-string-start ()
+(defun py-eos-handle-string-start (this)
   "Internal use, find possible end of statement from string start. "
   (when
       (and (setq this (point)) (progn (or (if (save-match-data (string-match "'" (match-string-no-properties 0))) (ignore-errors (goto-char (scan-sexps (point) 1)))) (while (and (search-forward (match-string-no-properties 0) nil t 1) (nth 8 (syntax-ppss))))) (< this (point))))
     (skip-chars-forward (concat "^" comment-start) (line-end-position))
     (skip-chars-backward " \t\r\n\f")))
 
-(defun py-eos-handle-doublequoted-string-start ()
+(defun py-eos-handle-doublequoted-string-start (this)
   "Internal use, find possible end of statement from string start. "
   (when
       (and (setq this (point)) (progn (while (and (not (eobp)) (search-forward (match-string-no-properties 0) nil t 1) (nth 8 (syntax-ppss)))) (< this (point))))
     (skip-chars-forward (concat "^" comment-start) (line-end-position))
     (skip-chars-backward " \t\r\n\f")))
 
-(defun py-eos-handle-singlequoted-string-start ()
+(defun py-eos-handle-singlequoted-string-start (this)
   "Internal use, find possible end of statement from string start. "
   (when
       (and (setq this (point)) (progn (ignore-errors (goto-char (scan-sexps (point) 1))) (< this (point))))
@@ -465,9 +465,9 @@ To go just beyond the final line of the current statement, use `py-down-statemen
         (unless (looking-back "^[ \t]*")
           (setq stm t))
         (when (looking-at "'''\\|'")
-          (py-eos-handle-singlequoted-string-start))
+          (py-eos-handle-singlequoted-string-start this))
         (when (looking-at "\"\"\"\\|\"")
-          (py-eos-handle-doublequoted-string-start))
+          (py-eos-handle-doublequoted-string-start this))
         (when stm (setq done t))
         (setq stm nil)
         (unless (nth 3 (syntax-ppss))
@@ -493,17 +493,17 @@ To go just beyond the final line of the current statement, use `py-down-statemen
         (py-eos-handle-comment-start)
         (py-end-of-statement orig done origline))
        ((looking-at "'''\\|'")
-        (py-eos-handle-singlequoted-string-start)
+        (py-eos-handle-singlequoted-string-start this)
         ;; string not terminated
         (unless (nth 3 (syntax-ppss))
           (py-end-of-statement orig done origline)))
        ((looking-at "\"\"\"\\|\"")
-        (py-eos-handle-doublequoted-string-start)
+        (py-eos-handle-doublequoted-string-start this)
         ;; string not terminated
         (unless (nth 3 (syntax-ppss))
           (py-end-of-statement orig done origline)))
        ((looking-at py-string-delim-re)
-        (py-eos-handle-string-start)
+        (py-eos-handle-string-start this)
         (py-end-of-statement orig done origline))
        ((and (looking-at py-no-outdent-re)(not (nth 8 pps)))
         (end-of-line)

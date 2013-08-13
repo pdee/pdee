@@ -462,7 +462,7 @@ To set permanently,  customize this variable "
   Returns value of `py-docstring-style' switched to. 
 To set permanently,  customize this variable "
   (interactive)
-  (let ((arg (or arg (if (eq py-docstring-style onetwo) -1 1))))
+  (let ((arg (or arg (if (eq py-docstring-style 'onetwo) -1 1))))
     (if (< 0 arg)
         (setq py-docstring-style 'onetwo)
       (setq py-docstring-style nil))
@@ -495,7 +495,7 @@ To set permanently,  customize this variable "
 
   Returns value of `py-pep-257-docstring-style' switched to. "
   (interactive)
-  (let ((arg (or arg (if (eq py-docstring-style pep-257) -1 1))))
+  (let ((arg (or arg (if (eq py-docstring-style 'pep-257) -1 1))))
     (if (< 0 arg)
         (setq py-docstring-style 'pep-257)
       (setq py-docstring-style nil))
@@ -526,7 +526,7 @@ Returns value of `py-pep-257-docstring-style'. "
 
   Returns value of `py-pep-257-nn-docstring-style' switched to. "
   (interactive)
-  (let ((arg (or arg (if (eq py-docstring-style pep-257-nn) -1 1))))
+  (let ((arg (or arg (if (eq py-docstring-style 'pep-257-nn) -1 1))))
     (if (< 0 arg)
         (setq py-docstring-style 'pep-257-nn)
       (setq py-docstring-style nil))
@@ -560,7 +560,7 @@ To set permanently,  customize this variable "
   Returns value of `py-docstring-style' switched to. 
 To set permanently,  customize this variable "
   (interactive)
-  (let ((arg (or arg (if (eq py-docstring-style symmetric) -1 1))))
+  (let ((arg (or arg (if (eq py-docstring-style 'symmetric) -1 1))))
     (if (< 0 arg)
         (setq py-docstring-style 'symmetric)
       (setq py-docstring-style nil))
@@ -594,7 +594,7 @@ To set permanently,  customize this variable "
   Returns value of `py-docstring-style' switched to. 
 To set permanently,  customize this variable "
   (interactive)
-  (let ((arg (or arg (if (eq py-docstring-style django) -1 1))))
+  (let ((arg (or arg (if (eq py-docstring-style 'django) -1 1))))
     (if (< 0 arg)
         (setq py-docstring-style 'django)
       (setq py-docstring-style nil))

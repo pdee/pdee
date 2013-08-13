@@ -88,7 +88,8 @@ http://docs.python.org/reference/compound_stmts.html"
                      (current-indentation)
                    (progn
                      (py-beginning-of-statement)
-                     (current-indentation)))))
+                     (current-indentation))))
+         last)
     (while (and (setq last (point)) (py-end-of-statement) (py-end-of-statement) (py-beginning-of-statement) (eq (current-indentation) indent)))
     (if (< indent (current-indentation))
         (setq erg (point))

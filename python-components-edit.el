@@ -88,7 +88,7 @@ With optional \\[universal-argument] an indent with length `py-indent-offset' is
   ;; (exchange-point-and-mark)
   )
 
-(defun py-indent-line-intern (need cui py-indent-offset &optional beg end region)
+(defun py-indent-line-intern (need cui py-indent-offset col &optional beg end region)
   (if py-tab-indent
       (progn
         (and py-tab-indents-region-p region
@@ -202,8 +202,8 @@ If `py-tab-indents-region-p' is `t' and first TAB doesn't shift
 		 (indent-to (+ need py-indent-offset)))
 		((not (eq 1 (prefix-numeric-value arg)))
 		 (py-smart-indentation-off)
-		 (py-indent-line-intern need cui this-indent-offset beg end region))
-		(t (py-indent-line-intern need cui this-indent-offset beg end region)))
+		 (py-indent-line-intern need cui this-indent-offset col beg end region))
+		(t (py-indent-line-intern need cui this-indent-offset col beg end region)))
 	  (when (and (interactive-p) py-verbose-p)(message "%s" (current-indentation)))
 	  (current-indentation))
 	(goto-char orig)

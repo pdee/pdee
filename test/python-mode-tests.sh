@@ -1134,7 +1134,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-smart-indentation-test \
 --funcall exception-in-except-clause-highlighted-as-keyword-lp-909205-test \
 --funcall pyindex-mishandles-class-definitions-lp-1018164-test \
---funcall IndentationError-expected-an-indented-block-when-execute-lp-1055569-test \
 --funcall py-guess-indent-offset-test \
 --funcall py-end-of-block-or-clause-test \
 --funcall mark-decorators-lp:328851-test \
@@ -1281,7 +1280,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-execute-statement-python2.7-dedicated-switch-test \
 \
 --funcall py-shell-complete-test \
---funcall another-broken-font-locking-lp:961231-test \
 --funcall py-execute-def-python-test \
 --funcall py-execute-def-python3-test \
 --funcall py-execute-def-python2-test \
@@ -1429,3 +1427,5 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-if-name-main-permission-lp-326620-test \
 --funcall Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test \
 --funcall py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test \
+--funcall another-broken-font-locking-lp:961231-test \
+--funcall IndentationError-expected-an-indented-block-when-execute-lp-1055569-test \

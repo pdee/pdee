@@ -98,6 +98,11 @@ Default is non-nil. If nil, `py-pylint-run' offers filename from history "
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-dedicated-process-p nil
+  "If commands executing code use a dedicated shell.
+
+Default is nil")
+
 (defcustom py-store-result-p nil
  "When non-nil, put resulting string of `py-execute-...' into kill-ring, so it might be yanked.
 
@@ -250,6 +255,9 @@ Give some hints, if not."
       nil)))
 
 (defvar smart-operator-mode nil)
+(defvar highlight-indent-active nil)
+(defvar autopair-mode nil)
+
 (defcustom py-smart-operator-mode-p t
   "If python-mode calls (smart-operator-mode-on)
 
@@ -1292,9 +1300,6 @@ See also `py-execute-directory'"
 (defvar py-buffer-name nil
   "Internal use. ")
 
-(defvar py-dedicated-process-p nil
-  "Internal use. ")
-
 (defvar py-orig-buffer-or-file nil
   "Internal use. ")
 
@@ -2185,9 +2190,8 @@ Returns versioned string, nil if nothing appropriate found "
 (defun py-which-python ()
   "Returns version of Python of current environment, a number. "
   (interactive)
-  (let* (treffer
-         (cmd (py-choose-shell))
-         version)
+  (let* (treffer (cmd (py-choose-shell))
+         version erg)
     (setq treffer (string-match "\\([23]*\\.?[0-9\\.]*\\)$" cmd))
     (if treffer
         ;; if a number if part of python name, assume it's the version
@@ -2251,7 +2255,7 @@ With \\[universal-argument] 4 is called `py-switch-shell' see docu there.
                       ((py-choose-shell-by-shebang))
                       ((py-choose-shell-by-import))
                       ((py-choose-shell-by-path))
-                      (t (or 
+                      (t (or
                           (default-value 'py-shell-name)
                           "python"))))
            (cmd (if py-edit-only-p erg
@@ -4456,25 +4460,25 @@ This may be preferable to `M-x py-execute-buffer' because:
          ["Help on symbol" py-describe-symbol
           :help "`py-describe-symbol'\n
 Use pydoc on symbol at point"]
-         
+
          ;;          ["py-complete-help" py-complete-help
          ;;           :help " `py-complete-help'
          ;; Get help on a Python expression.\n
          ;; Needs Pymacs "]
-         ;;          
+         ;;
          ;;          ["Help thing at point" py-complete-help-thing-at-point
          ;;           :help " `py-complete-help-thing-at-point'\n
          ;; Needs Pymacs "]
-         
+
          ;;          ["Signature" py-complete-signature-expr
          ;;           :help " Print object's signature\n
          ;; Needs Pymacs"]
-         
+
          )
-        
+
         ["Debugger" pdb :help "`pdb' Run pdb under GUD"]
         ("Checks"
-         
+
          ["pychecker-run" py-pychecker-run
              :help "`py-pychecker-run'
 Run pychecker
@@ -4595,6 +4599,15 @@ In experimental state yet "
 
            ["Remove local Python shell enforcement, restore default" py-force-local-shell-off
             :help "Restore `py-shell-name' default value and `behaviour'. "]
+
+           
+           ["Run `py-shell' at start"
+            (setq py-start-run-py-shell
+                  (not py-start-run-py-shell))
+            :help "If `python-mode' should start a python-shell, `py-shell'\.
+
+Default is `nil'\. Use `M-x customize-variable' to set it permanently"
+            :style toggle :selected py-start-run-py-shell]
 
            )
 
@@ -4826,7 +4839,7 @@ Use `M-x customize-variable' to set it permanently"
             :help " `py-electric-colon-active-p'
 
 `py-electric-colon' feature\.  Default is `nil'\. See lp:837065 for discussions\. . "]
-           
+
            ["Indent comment "
             (setq py-indent-comments
                   (not py-indent-comments))
@@ -6047,7 +6060,6 @@ Argument is how many `py-partial-expression's form the expansion; or zero means 
 
              )
 
-
             ("Completion"
              :help "Completion options"
 
@@ -6791,7 +6803,7 @@ See available customizations listed in files variables-python-mode at directory 
   (when py-start-run-py-shell
     ;; py-shell may split window, provide restore
     (window-configuration-to-register 213465879)
-    (unless (get-process (py-process-name))
+    (unless (get-process (py-process-name py-shell-name))
       (let ((oldbuf (current-buffer)))
         (save-excursion
           (py-shell)

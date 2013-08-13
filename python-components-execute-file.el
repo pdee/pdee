@@ -25,26 +25,26 @@
 (defun py-execute-file-python (&optional filename)
   "Send file to a Python interpreter."
   (interactive "fFile: ")
-  (py-execute-file filename "python" nil nil))
+  (py-execute-prepare filename "python" nil nil nil nil t))
 
 (defun py-execute-file-python-switch (&optional filename)
   "Send file to a Python interpreter.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value \"non-nil\""
   (interactive "fFile: ")
-  (py-execute-file filename "python" nil 'switch))
+  (py-execute-prepare filename "python" nil 'switch nil nil t))
 
 (defun py-execute-file-python-no-switch (&optional filename)
   "Send file to a Python interpreter.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value \"nil\""
   (interactive "fFile: ")
-  (py-execute-file filename "python" nil 'no-switch))
+  (py-execute-prepare filename "python" nil 'no-switch nil nil t))
 
 (defun py-execute-file-python-dedicated (&optional filename)
   "Send file to a Python interpreter.
 
 Uses a dedicated shell."
   (interactive "fFile: ")
-  (py-execute-file filename "python" 'dedicated nil))
+  (py-execute-prepare filename "python" 'dedicated nil nil nil t))
 
 (defun py-execute-file-python-dedicated-switch (&optional filename)
   "Send file to a Python interpreter.
@@ -52,31 +52,31 @@ Uses a dedicated shell."
 Uses a dedicated shell.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value \"non-nil\""
   (interactive "fFile: ")
-  (py-execute-file filename "python" 'dedicated 'switch))
+  (py-execute-prepare filename "python" 'dedicated 'switch nil nil t))
 
 (defun py-execute-file-ipython (&optional filename)
   "Send file to a Ipython interpreter."
   (interactive "fFile: ")
-  (py-execute-file filename "ipython" nil nil))
+  (py-execute-prepare filename "ipython" nil nil nil nil t))
 
 (defun py-execute-file-ipython-switch (&optional filename)
   "Send file to a Ipython interpreter.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value \"non-nil\""
   (interactive "fFile: ")
-  (py-execute-file filename "ipython" nil 'switch))
+  (py-execute-prepare filename "ipython" nil 'switch nil nil t))
 
 (defun py-execute-file-ipython-no-switch (&optional filename)
   "Send file to a Ipython interpreter.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value \"nil\""
   (interactive "fFile: ")
-  (py-execute-file filename "ipython" nil 'no-switch))
+  (py-execute-prepare filename "ipython" nil 'no-switch nil nil t))
 
 (defun py-execute-file-ipython-dedicated (&optional filename)
   "Send file to a Ipython interpreter.
 
 Uses a dedicated shell."
   (interactive "fFile: ")
-  (py-execute-file filename "ipython" 'dedicated nil))
+  (py-execute-prepare filename "ipython" 'dedicated nil nil nil t))
 
 (defun py-execute-file-ipython-dedicated-switch (&optional filename)
   "Send file to a Ipython interpreter.
@@ -84,31 +84,31 @@ Uses a dedicated shell."
 Uses a dedicated shell.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value \"non-nil\""
   (interactive "fFile: ")
-  (py-execute-file filename "ipython" 'dedicated 'switch))
+  (py-execute-prepare filename "ipython" 'dedicated 'switch nil nil t))
 
 (defun py-execute-file-python3 (&optional filename)
   "Send file to a Python3 interpreter."
   (interactive "fFile: ")
-  (py-execute-file filename "python3" nil nil))
+  (py-execute-prepare filename "python3" nil nil nil nil t))
 
 (defun py-execute-file-python3-switch (&optional filename)
   "Send file to a Python3 interpreter.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value \"non-nil\""
   (interactive "fFile: ")
-  (py-execute-file filename "python3" nil 'switch))
+  (py-execute-prepare filename "python3" nil 'switch nil nil t))
 
 (defun py-execute-file-python3-no-switch (&optional filename)
   "Send file to a Python3 interpreter.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value \"nil\""
   (interactive "fFile: ")
-  (py-execute-file filename "python3" nil 'no-switch))
+  (py-execute-prepare filename "python3" nil 'no-switch nil nil t))
 
 (defun py-execute-file-python3-dedicated (&optional filename)
   "Send file to a Python3 interpreter.
 
 Uses a dedicated shell."
   (interactive "fFile: ")
-  (py-execute-file filename "python3" 'dedicated nil))
+  (py-execute-prepare filename "python3" 'dedicated nil nil nil t))
 
 (defun py-execute-file-python3-dedicated-switch (&optional filename)
   "Send file to a Python3 interpreter.
@@ -116,31 +116,31 @@ Uses a dedicated shell."
 Uses a dedicated shell.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value \"non-nil\""
   (interactive "fFile: ")
-  (py-execute-file filename "python3" 'dedicated 'switch))
+  (py-execute-prepare filename "python3" 'dedicated 'switch nil nil t))
 
 (defun py-execute-file-python2 (&optional filename)
   "Send file to a Python2 interpreter."
   (interactive "fFile: ")
-  (py-execute-file filename "python2" nil nil))
+  (py-execute-prepare filename "python2" nil nil nil nil t))
 
 (defun py-execute-file-python2-switch (&optional filename)
   "Send file to a Python2 interpreter.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value \"non-nil\""
   (interactive "fFile: ")
-  (py-execute-file filename "python2" nil 'switch))
+  (py-execute-prepare filename "python2" nil 'switch nil nil t))
 
 (defun py-execute-file-python2-no-switch (&optional filename)
   "Send file to a Python2 interpreter.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value \"nil\""
   (interactive "fFile: ")
-  (py-execute-file filename "python2" nil 'no-switch))
+  (py-execute-prepare filename "python2" nil 'no-switch nil nil t))
 
 (defun py-execute-file-python2-dedicated (&optional filename)
   "Send file to a Python2 interpreter.
 
 Uses a dedicated shell."
   (interactive "fFile: ")
-  (py-execute-file filename "python2" 'dedicated nil))
+  (py-execute-prepare filename "python2" 'dedicated nil nil nil t))
 
 (defun py-execute-file-python2-dedicated-switch (&optional filename)
   "Send file to a Python2 interpreter.
@@ -148,31 +148,31 @@ Uses a dedicated shell."
 Uses a dedicated shell.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value \"non-nil\""
   (interactive "fFile: ")
-  (py-execute-file filename "python2" 'dedicated 'switch))
+  (py-execute-prepare filename "python2" 'dedicated 'switch nil nil t))
 
 (defun py-execute-file-python2.7 (&optional filename)
   "Send file to a Python2.7 interpreter."
   (interactive "fFile: ")
-  (py-execute-file filename "python2.7" nil nil))
+  (py-execute-prepare filename "python2.7" nil nil nil nil t))
 
 (defun py-execute-file-python2.7-switch (&optional filename)
   "Send file to a Python2.7 interpreter.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value \"non-nil\""
   (interactive "fFile: ")
-  (py-execute-file filename "python2.7" nil 'switch))
+  (py-execute-prepare filename "python2.7" nil 'switch nil nil t))
 
 (defun py-execute-file-python2.7-no-switch (&optional filename)
   "Send file to a Python2.7 interpreter.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value \"nil\""
   (interactive "fFile: ")
-  (py-execute-file filename "python2.7" nil 'no-switch))
+  (py-execute-prepare filename "python2.7" nil 'no-switch nil nil t))
 
 (defun py-execute-file-python2.7-dedicated (&optional filename)
   "Send file to a Python2.7 interpreter.
 
 Uses a dedicated shell."
   (interactive "fFile: ")
-  (py-execute-file filename "python2.7" 'dedicated nil))
+  (py-execute-prepare filename "python2.7" 'dedicated nil nil nil t))
 
 (defun py-execute-file-python2.7-dedicated-switch (&optional filename)
   "Send file to a Python2.7 interpreter.
@@ -180,31 +180,31 @@ Uses a dedicated shell."
 Uses a dedicated shell.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value \"non-nil\""
   (interactive "fFile: ")
-  (py-execute-file filename "python2.7" 'dedicated 'switch))
+  (py-execute-prepare filename "python2.7" 'dedicated 'switch nil nil t))
 
 (defun py-execute-file-jython (&optional filename)
   "Send file to a Jython interpreter."
   (interactive "fFile: ")
-  (py-execute-file filename "jython" nil nil))
+  (py-execute-prepare filename "jython" nil nil nil nil t))
 
 (defun py-execute-file-jython-switch (&optional filename)
   "Send file to a Jython interpreter.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value \"non-nil\""
   (interactive "fFile: ")
-  (py-execute-file filename "jython" nil 'switch))
+  (py-execute-prepare filename "jython" nil 'switch nil nil t))
 
 (defun py-execute-file-jython-no-switch (&optional filename)
   "Send file to a Jython interpreter.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value \"nil\""
   (interactive "fFile: ")
-  (py-execute-file filename "jython" nil 'no-switch))
+  (py-execute-prepare filename "jython" nil 'no-switch nil nil t))
 
 (defun py-execute-file-jython-dedicated (&optional filename)
   "Send file to a Jython interpreter.
 
 Uses a dedicated shell."
   (interactive "fFile: ")
-  (py-execute-file filename "jython" 'dedicated nil))
+  (py-execute-prepare filename "jython" 'dedicated nil nil nil t))
 
 (defun py-execute-file-jython-dedicated-switch (&optional filename)
   "Send file to a Jython interpreter.
@@ -212,31 +212,31 @@ Uses a dedicated shell."
 Uses a dedicated shell.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value \"non-nil\""
   (interactive "fFile: ")
-  (py-execute-file filename "jython" 'dedicated 'switch))
+  (py-execute-prepare filename "jython" 'dedicated 'switch nil nil t))
 
 (defun py-execute-file-python3.2 (&optional filename)
   "Send file to a Python3.2 interpreter."
   (interactive "fFile: ")
-  (py-execute-file filename "python3.2" nil nil))
+  (py-execute-prepare filename "python3.2" nil nil nil nil t))
 
 (defun py-execute-file-python3.2-switch (&optional filename)
   "Send file to a Python3.2 interpreter.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value \"non-nil\""
   (interactive "fFile: ")
-  (py-execute-file filename "python3.2" nil 'switch))
+  (py-execute-prepare filename "python3.2" nil 'switch nil nil t))
 
 (defun py-execute-file-python3.2-no-switch (&optional filename)
   "Send file to a Python3.2 interpreter.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value \"nil\""
   (interactive "fFile: ")
-  (py-execute-file filename "python3.2" nil 'no-switch))
+  (py-execute-prepare filename "python3.2" nil 'no-switch nil nil t))
 
 (defun py-execute-file-python3.2-dedicated (&optional filename)
   "Send file to a Python3.2 interpreter.
 
 Uses a dedicated shell."
   (interactive "fFile: ")
-  (py-execute-file filename "python3.2" 'dedicated nil))
+  (py-execute-prepare filename "python3.2" 'dedicated nil nil nil t))
 
 (defun py-execute-file-python3.2-dedicated-switch (&optional filename)
   "Send file to a Python3.2 interpreter.
@@ -244,31 +244,31 @@ Uses a dedicated shell."
 Uses a dedicated shell.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value \"non-nil\""
   (interactive "fFile: ")
-  (py-execute-file filename "python3.2" 'dedicated 'switch))
+  (py-execute-prepare filename "python3.2" 'dedicated 'switch nil nil t))
 
 (defun py-execute-file-python3.3 (&optional filename)
   "Send file to a Python3.3 interpreter."
   (interactive "fFile: ")
-  (py-execute-file filename "python3.3" nil nil))
+  (py-execute-prepare filename "python3.3" nil nil nil nil t))
 
 (defun py-execute-file-python3.3-switch (&optional filename)
   "Send file to a Python3.3 interpreter.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value \"non-nil\""
   (interactive "fFile: ")
-  (py-execute-file filename "python3.3" nil 'switch))
+  (py-execute-prepare filename "python3.3" nil 'switch nil nil t))
 
 (defun py-execute-file-python3.3-no-switch (&optional filename)
   "Send file to a Python3.3 interpreter.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value \"nil\""
   (interactive "fFile: ")
-  (py-execute-file filename "python3.3" nil 'no-switch))
+  (py-execute-prepare filename "python3.3" nil 'no-switch nil nil t))
 
 (defun py-execute-file-python3.3-dedicated (&optional filename)
   "Send file to a Python3.3 interpreter.
 
 Uses a dedicated shell."
   (interactive "fFile: ")
-  (py-execute-file filename "python3.3" 'dedicated nil))
+  (py-execute-prepare filename "python3.3" 'dedicated nil nil nil t))
 
 (defun py-execute-file-python3.3-dedicated-switch (&optional filename)
   "Send file to a Python3.3 interpreter.
@@ -276,31 +276,31 @@ Uses a dedicated shell."
 Uses a dedicated shell.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value \"non-nil\""
   (interactive "fFile: ")
-  (py-execute-file filename "python3.3" 'dedicated 'switch))
+  (py-execute-prepare filename "python3.3" 'dedicated 'switch nil nil t))
 
 (defun py-execute-file-bpython (&optional filename)
   "Send file to a Bpython interpreter."
   (interactive "fFile: ")
-  (py-execute-file filename "bpython" nil nil))
+  (py-execute-prepare filename "bpython" nil nil nil nil t))
 
 (defun py-execute-file-bpython-switch (&optional filename)
   "Send file to a Bpython interpreter.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value \"non-nil\""
   (interactive "fFile: ")
-  (py-execute-file filename "bpython" nil 'switch))
+  (py-execute-prepare filename "bpython" nil 'switch nil nil t))
 
 (defun py-execute-file-bpython-no-switch (&optional filename)
   "Send file to a Bpython interpreter.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value \"nil\""
   (interactive "fFile: ")
-  (py-execute-file filename "bpython" nil 'no-switch))
+  (py-execute-prepare filename "bpython" nil 'no-switch nil nil t))
 
 (defun py-execute-file-bpython-dedicated (&optional filename)
   "Send file to a Bpython interpreter.
 
 Uses a dedicated shell."
   (interactive "fFile: ")
-  (py-execute-file filename "bpython" 'dedicated nil))
+  (py-execute-prepare filename "bpython" 'dedicated nil nil nil t))
 
 (defun py-execute-file-bpython-dedicated-switch (&optional filename)
   "Send file to a Bpython interpreter.
@@ -308,7 +308,7 @@ Uses a dedicated shell."
 Uses a dedicated shell.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value \"non-nil\""
   (interactive "fFile: ")
-  (py-execute-file filename "bpython" 'dedicated 'switch))
+  (py-execute-prepare filename "bpython" 'dedicated 'switch nil nil t))
 
 (provide 'python-components-execute-file)
 ;;; 'python-components-execute-file.el ends here

@@ -114,24 +114,16 @@
     (insert arkopf)
     (insert ";;; Execute forms at point\n\n")
     (dolist (ele py-bounds-command-names)
-      (insert (concat "(defun py-execute-" ele " (&optional shell dedicated switch)"))
+      (insert (concat "(defun py-execute-" ele " ()"))
       (insert (concat "
-  \"Send " ele " at point to a Python interpreter.\n\n"))
-      (insert "When called with \\\\[universal-argument], execution through `default-value' of `py-shell-name' is forced.
-See also `py-force-py-shell-name-p'.
-
-When called with \\\\[universal-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
-
-When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
-
-Optional arguments DEDICATED (boolean) and SWITCH (symbols 'no-switch/'switch)\"\n")
-      (insert (concat "  (interactive \"P\")
+  \"Send " ele " at point to a Python interpreter. \"\n"))
+      (insert (concat "  (interactive)
   (save-excursion
     (let ((beg (prog1
                    (or (py-beginning-of-" ele "-p)
                        (py-beginning-of-" ele "))))
           (end (py-end-of-" ele")))
-      (py-execute-region beg end shell dedicated switch))))\n\n"))))
+      (py-execute-region beg end))))\n\n"))))
   (insert "(provide 'python-components-exec-forms)
 ;;; python-components-exec-forms.el ends here\n ")
   (emacs-lisp-mode))
@@ -223,7 +215,7 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'no-switch/'switch)\"
       (write-options-dokumentation-subform pyo)
       (insert (concat "\"
   (interactive \"fFile: \")
-  (py-execute-file filename \"" ele "\""))
+  (py-execute-prepare filename \"" ele "\""))
       (cond ((string-match "dedicated" pyo)
              (insert " 'dedicated"))
             (t (insert " nil")))
@@ -232,7 +224,7 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'no-switch/'switch)\"
             ((string-match "switch" pyo)
              (insert " 'switch"))
             (t (insert " nil")))
-      (insert "))\n")))
+      (insert " nil nil t))\n")))
   (insert "\n(provide 'python-components-execute-file)
 ;;; 'python-components-execute-file.el ends here\n ")
   (emacs-lisp-mode))
@@ -288,6 +280,24 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'no-switch/'switch)\"
   (emacs-lisp-mode)
   (switch-to-buffer (current-buffer)))
 
+(defun write-extended-execute-forms-endings ()
+  "Internally used by write-extended-execute-forms"
+
+  (if (string-match "dedicated" pyo)
+      (insert " t")
+    (insert " nil"))
+  (cond ((or (string= "switch" pyo)
+             (string= "dedicated-switch" pyo))
+         (insert " 'switch"))
+        ((string= "no-switch" pyo)
+         (insert " 'no-switch"))
+        (t (insert " nil")))
+  (cond ((string= "region" ele)
+         (insert " beg end"))
+        ((string= "buffer" ele)
+         (insert " (point-min) (point-max)))")))
+  (insert "))\n\n"))
+
 (defun write-extended-execute-forms (&optional path-to-shell command option)
   "Write `py-execute-block...' etc. "
   (interactive)
@@ -310,17 +320,41 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'no-switch/'switch)\"
 
     (insert "
 ;; created by `write-extended-execute-forms'
-\(defun py-execute-prepare (form &optional shell dedicated switch)
+\(defun py-masterfile ()
+  \"Internal use. Set master-file, if given. \"
+  (and (or py-master-file (py-fetch-py-master-file))
+       (let\* ((filename (expand-file-name py-master-file))
+              (buffer (or (get-file-buffer filename)
+                          (find-file-noselect filename))))
+         (set-buffer buffer))))
+
+
+\(defun py-execute-prepare (form &optional shell dedicated switch beg end file)
   \"Used by python-extended-executes .\"
   (save-excursion
-    (let ((beg (prog1
-                   (or (funcall (intern-soft (concat \"py-beginning-of-\" form \"-p\")))
+    (let ((beg (unless file
+                 (prog1
+                     (or beg (funcall (intern-soft (concat \"py-beginning-of-\" form \"-p\")))
 
-                       (funcall (intern-soft (concat \"py-beginning-of-\" form)))
-                       (push-mark))))
-          (end (funcall (intern-soft (concat \"py-end-of-\" form))))
-          (py-shell-name shell))
-      (py-execute-base beg end dedicated switch))))\n\n")
+                         (funcall (intern-soft (concat \"py-beginning-of-\" form)))
+                         (push-mark)))))
+          (end (unless file
+                 (or end (funcall (intern-soft (concat \"py-end-of-\" form))))))
+          (py-shell-name shell)
+          (py-dedicated-process-p dedicated)
+          (py-switch-buffers-on-execute-p (cond ((eq 'switch switch)
+                                                 t)
+                                                ((eq 'no-switch switch)
+                                                 nil)
+                                                (t py-switch-buffers-on-execute-p)))
+          filename)
+      (if file
+          (progn
+            (setq filename (expand-file-name form))
+            (if (file-readable-p filename)
+                (setq erg (py-execute-file-base nil filename nil nil (or (and (boundp 'py-orig-buffer-or-file) py-orig-buffer-or-file) filename)))
+              (message \"%s not readable. %s\" file \"Do you have write permissions?\")))
+        (py-execute-base beg end)))))\\n\n")
     ;; see also `py-checker-command-names'
     (dolist (ele py-bounds-command-names)
       (dolist (elt py-shells)
@@ -351,8 +385,10 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'no-switch/'switch)\"
           (insert "\"\n")
           (cond ((string= "region" ele)
                  (insert (concat "  (interactive \"r\")
-  (let ((py-shell-name \"" elt "\"))
-    (py-execute-base beg end")))
+    (py-execute-prepare \"" ele "\" \"" elt "\""))
+                 (write-extended-execute-forms-endings)
+
+                 )
                 ((string= "buffer" ele)
                  (insert "  (interactive)
   \(save-excursion
@@ -364,26 +400,31 @@ Optional arguments DEDICATED (boolean) and SWITCH (symbols 'no-switch/'switch)\"
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end \"" elt "\""))
-                (t (insert (concat "  (interactive)
-  (py-execute-prepare \"" ele "\" \"" elt "\""))))
+      (py-execute-prepare \"" ele "\" \"" elt "\"")
+                 (write-extended-execute-forms-endings)
 
-          (if (string-match "dedicated" pyo)
-              (insert " t")
-            (insert " nil"))
-          (cond ((or (string= "switch" pyo)
-                     (string= "dedicated-switch" pyo))
-                 (insert " 'switch"))
-                ((string= "no-switch" pyo)
-                 (insert " 'no-switch"))
-                (t (insert " nil")))
-          (cond ((string= "region" ele)
-                 (insert ")))\n\n"))
-                ((string= "buffer" ele)
-                 (insert "))))\n\n"))
-            (t (insert "))\n\n")))
+                 )
+                (t (insert (concat "  (interactive)
+  (py-execute-prepare \"" ele "\" \"" elt "\""))
+    (write-extended-execute-forms-endings)
+                   )
+                )
+
+          ;; (unless (string= "buffer" ele)
+          ;;   (if (string-match "dedicated" pyo)
+          ;;       (insert " t")
+          ;;     (insert " nil"))
+          ;;   (cond ((or (string= "switch" pyo)
+          ;;              (string= "dedicated-switch" pyo))
+          ;;          (insert " 'switch"))
+          ;;         ((string= "no-switch" pyo)
+          ;;          (insert " 'no-switch"))
+          ;;         (t (insert " nil")))
+          ;;   (cond ((string= "region" ele)
+          ;;          (insert ")))\n\n"))
+          ;;         ((string= "buffer" ele)
+          ;;          (insert "))))\n\n"))
+          ;;         (t (insert "))\n\n"))))
           ))))
   (if path-to-shell
       (insert (concat "(provide '" path-to-shell) ")
@@ -890,7 +931,7 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. \"]\n")))
     (insert ";;; Python named shells")
     (newline)
     (dolist (ele py-shells)
-      (insert (concat "(defun " ele " (&optional argprompt dedicated switch)
+      (insert (concat "(defun " ele " (&optional argprompt)
   \"Start an "))
       (if (string= "ipython" ele)
           (insert "IPython")
@@ -901,10 +942,9 @@ Optional \\\\[universal-argument] prompts for options to pass to the "))
       (if (string= "ipython" ele)
           (insert "IPython")
         (insert (capitalize ele)))
-      (insert (concat " interpreter. See `py-python-command-args'.
-   Optional DEDICATED SWITCH are provided for use from programs. \"
+      (insert (concat " interpreter. See `py-python-command-args'. \"
   (interactive \"P\")
-  (py-shell argprompt dedicated \"" ele "\" switch))\n\n")))
+  (py-shell argprompt nil \"" ele "\"))\n\n")))
     (insert ";; dedicated\n")
     (dolist (ele py-shells)
       (insert (concat "(defun " ele "-dedicated (&optional argprompt switch)
@@ -919,12 +959,12 @@ Optional \\\\[universal-argument] prompts for options to pass to the "))
           (insert "IPython")
         (insert (capitalize ele)))
       (insert (concat " interpreter. See `py-python-command-args'.\"
-  (interactive \"P\")
-  (py-set-shell-completion-environment)
-  (py-shell argprompt t \"" ele "\" switch))\n\n")))
+  (interactive \"P\")"))
+      (insert "\n  (let ((py-dedicated-process-p t))\n")
+      (insert (concat "    (py-shell argprompt t \"" ele "\")))\n\n")))
     (insert ";; switch\n")
     (dolist (ele py-shells)
-      (insert (concat "(defun " ele "-switch (&optional argprompt dedicated)
+      (insert (concat "(defun " ele "-switch (&optional argprompt)
   \"Switch to "))
       (if (string= "ipython" ele)
           (insert "IPython")
@@ -936,12 +976,12 @@ Optional \\\\[universal-argument] prompts for options to pass to the "))
           (insert "IPython")
         (insert (capitalize ele)))
       (insert (concat " interpreter. See `py-python-command-args'.\"
-  (interactive \"P\")
-  (py-set-shell-completion-environment)
-  (py-shell argprompt dedicated \"" ele "\" 'switch))\n\n")))
-    ;; no-switch
+  (interactive \"P\")"))
+      (insert "\n  (let ((py-switch-buffers-on-execute-p t))\n")
+      (insert (concat "    (py-shell argprompt nil \"" ele "\")))\n\n")))
+    (insert ";; no-switch\n")
     (dolist (ele py-shells)
-      (insert (concat "(defun " ele "-no-switch (&optional argprompt dedicated)
+      (insert (concat "(defun " ele "-no-switch (&optional argprompt)
   \"Open an "))
       (if (string= "ipython" ele)
           (insert "IPython")
@@ -953,10 +993,10 @@ Optional \\\\[universal-argument] prompts for options to pass to the "))
           (insert "IPython")
         (insert (capitalize ele)))
       (insert (concat " interpreter. See `py-python-command-args'.\"
-  (interactive \"P\")
-  (py-set-shell-completion-environment)
-  (py-shell argprompt dedicated \"" ele "\" 'no-switch))\n\n")))
-    ;; dedicated switch
+  (interactive \"P\")"))
+      (insert "\n  (let (py-switch-buffers-on-execute-p)\n")
+      (insert (concat "    (py-shell argprompt nil \"" ele "\")))\n\n")))
+    (insert ";; dedicated switch\n")
     (dolist (ele py-shells)
       (insert (concat "(defalias '" ele "-dedicated-switch '" ele "-switch-dedicated)\n"))
       (insert (concat "(defun " ele "-switch-dedicated (&optional argprompt)
@@ -970,10 +1010,11 @@ Optional \\\\[universal-argument] prompts for options to pass to the "))
       (if (string= "ipython" ele)
           (insert "IPython")
         (insert (capitalize ele)))
-      (insert (concat " interpreter. See `py-python-command-args'.\"
-  (interactive \"P\")
-  (py-set-shell-completion-environment)
-  (py-shell argprompt t \"" ele "\" 'switch))\n\n"))))
+      (insert " interpreter. See `py-python-command-args'.\"
+  \(interactive \"P\")")
+  (insert "\n  (let ((py-dedicated-process-p t)
+        (py-switch-buffers-on-execute-p t))\n")
+  (insert (concat "    (py-shell argprompt t \"" ele "\")))\n\n"))))
   (emacs-lisp-mode)
   (switch-to-buffer (current-buffer)))
 
@@ -1406,19 +1447,19 @@ A complementary command travelling right, whilst `py-beginning-of-" ele "' stops
   (erase-buffer)
   (dolist (ele py-shells)
     (insert (concat "
-\(defun py-execute-region-" ele " (start end &optional async)
+\(defun py-execute-region-" ele " (start end)
   \"Send the region to a common shell calling the " ele " interpreter. \"
   (interactive \"r\\nP\")
-  (py-execute-base start end async \"" ele "\"))
+  (py-execute-base start end \"" ele "\"))
 
-\(defun py-execute-region-" ele "-switch (start end &optional async)
+\(defun py-execute-region-" ele "-switch (start end)
   \"Send the region to a common shell calling the " ele " interpreter.
   Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being switched to. \"
   (interactive \"r\\nP\")
   (let ((py-switch-buffers-on-execute-p t))
     (py-execute-base start end async \"" ele "\")))
 
-\(defun py-execute-region-" ele "-no-switch (start end &optional async)
+\(defun py-execute-region-" ele "-no-switch (start end)
   \"Send the region to a common shell calling the " ele " interpreter.
   Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will not being switched to.\"
   (interactive \"r\\nP\")

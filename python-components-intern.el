@@ -36,7 +36,7 @@
           (py-beginning-of-commented-section last))
       (goto-char last))))
 
-(defun py-empty-arglist-indent (nesting py-indent-offset)
+(defun py-empty-arglist-indent (nesting py-indent-offset indent-offset)
   "Internally used by `py-compute-indentation'"
   (if
       (and (eq 1 nesting)
@@ -164,7 +164,7 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
                                   ((and (eq 1 closing) (looking-at "\\s([ \t]*$") py-closing-list-keeps-space)
                                    (+ (current-column) py-closing-list-space))
                                   ((and (eq 1 closing)(looking-at "\\s([ \t]*$"))
-                                   (py-empty-arglist-indent nesting py-indent-offset))
+                                   (py-empty-arglist-indent nesting py-indent-offset indent-offset))
                                   (t (py-fetch-previous-indent orig))))
                            ;; already behind a dedented element in list
                            ((<= 2 (- origline this-line))
@@ -173,7 +173,7 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
                             (+ (current-indentation) py-indent-offset))
                            (t (py-fetch-previous-indent orig)))
                         (cond ((looking-at "\\s([ \t]*$")
-                               (py-empty-arglist-indent nesting py-indent-offset))
+                               (py-empty-arglist-indent nesting py-indent-offset indent-offset))
                               ((looking-at "\\s([ \t]*\\([^ \t]+.*\\)$")
                                (goto-char (match-beginning 1))
                                (if py-indent-paren-spanned-multilines-p
@@ -1042,7 +1042,7 @@ Eval resulting buffer to install it, see customizable `py-extensions'. "
                              "/"
                            "\\" t))
          (shells (split-string (shell-command-to-string (concat "find " local-dir " -maxdepth 9 -type f -executable -name \"*python\""))))
-         erg newshell prefix akt end orig)
+         erg newshell prefix akt end orig curexe aktpath)
     (set-buffer (get-buffer-create py-extensions))
     (erase-buffer)
     (switch-to-buffer (current-buffer))
@@ -1187,7 +1187,7 @@ Used by variable `which-func-functions' "
   (let* ((orig (point))
          (first t)
          def-or-class
-         done last erg)
+         done last erg name)
     (and first (looking-at "[ \t]*\\_<\\(def\\|class\\)\\_>[ \n\t]\\([[:alnum:]_]+\\)")(not (nth 8 (syntax-ppss)))
          (add-to-list 'def-or-class (match-string-no-properties 2)))
     (while

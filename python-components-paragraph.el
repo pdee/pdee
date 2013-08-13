@@ -23,7 +23,7 @@
 ;;
 
 ;;; Code:
-(defun py-fill-this-paragraph ()
+(defun py-fill-this-paragraph (justify style)
   "Fill just the paragraph at point. "
   (interactive "*")
   (py-fill-string justify style (if (py-beginning-of-paragraph-p) (point) (progn (py-beginning-of-paragraph)(point))) (progn (py-end-of-paragraph)(point))))
@@ -60,7 +60,8 @@ See also `py-fill-string' "
                                 (progn (skip-chars-backward " \t\r\n\f")(point))
                               (point))))))
              (style (or style py-docstring-style))
-             (this-end (point-min)))
+             (this-end (point-min))
+             last)
         ;; (when (and (nth 3 pps) (< beg (nth 8 pps))
         ;; docstring
         ;; (setq beg (nth 8 pps)))
@@ -96,7 +97,7 @@ See also `py-fill-string' "
                         (goto-char this-end)
                         (widen))))
                 (goto-char orig)
-                (py-fill-this-paragraph)))
+                (py-fill-this-paragraph justify style)))
              ;; Decorators
              ((save-excursion
                 (and (py-beginning-of-statement)

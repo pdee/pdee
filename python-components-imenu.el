@@ -228,7 +228,7 @@ of the first definition found."
                                     (point-max) 'move))))
     (nreverse index-alist)))
 
-(defun py-imenu-create-index-new-intern (&optional thisend)
+(defun py-imenu-create-index-new-intern (&optional thisend end)
   (let* ((pos (match-beginning 0))
          (name (match-string-no-properties 2))
          (classname (concat "class " name))
@@ -240,7 +240,7 @@ of the first definition found."
              (classname (concat "class " name))
              (thisend (or thisend (save-match-data (py-end-of-def-or-class-position)))))
         (if (string= "class" (match-string-no-properties 1))
-            (py-imenu-create-index-new-intern (save-match-data (py-end-of-def-or-class-position)))
+            (py-imenu-create-index-new-intern (save-match-data (py-end-of-def-or-class-position) end))
           (push (cons (concat " " name) pos) sublist))))
     (if classname
         (progn
@@ -255,7 +255,7 @@ of the first definition found."
   (let ((orig (point))
         (beg (or beg (point-min)))
         (end (or end (point-max)))
-        index-alist vars thisend sublist classname)
+        index-alist vars thisend sublist classname pos name)
     (goto-char beg)
     (while (and (re-search-forward "^[ \t]*\\(def\\|class\\)[ \t]+\\(\\sw+\\)" end t 1)(not (nth 8 (syntax-ppss))))
       (if (save-match-data (string= "class" (match-string-no-properties 1)))
@@ -271,7 +271,7 @@ of the first definition found."
                      (classname (concat "class " name))
                      (thisend (or thisend (save-match-data (py-end-of-def-or-class-position)))))
                 (if (string= "class" (match-string-no-properties 1))
-                    (py-imenu-create-index-new-intern (save-match-data (py-end-of-def-or-class-position)))
+                    (py-imenu-create-index-new-intern (save-match-data (py-end-of-def-or-class-position)) end)
                   (push (cons (concat " " name) pos) sublist))))
             (if classname
                 (progn

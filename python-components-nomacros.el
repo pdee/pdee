@@ -37,7 +37,7 @@
 ;;         (and (nth 4 pps)
 ;;              (goto-char (nth 8 pps)))))))
 
-(defun py-update-separator-char ()
+(defun py-separator-char ()
   "Return the file-path separator char from current machine.
 
 When `py-separator-char' is customized, its taken.
@@ -48,12 +48,12 @@ Returns char found. "
                    ((and
                      (string-match "[Ii][Pp]ython" py-shell-name)
                      (string-match "epd\\|EPD" py-shell-name))
-                    (setq erg (shell-command-to-string (concat py-shell-name " -c \"import os; print(os.sep)\"")))
-                    (setq erg (replace-regexp-in-string "\n" "" erg))
-                    (when (string-match "^$" erg)
-                      (setq erg (substring erg (string-match "^$" erg)))))
-                   (t (setq erg (shell-command-to-string (concat py-shell-name " -W ignore" " -c \"import os; print(os.sep)\"")))))))
-    (replace-regexp-in-string "\n" "" erg)))
+                    (replace-regexp-in-string "\n" ""
+                                              (shell-command-to-string (concat py-shell-name " -c \"import os; print(os.sep)\"")))))))
+    (if (and erg (string-match "^$" erg))
+        (setq erg (substring erg (string-match "^$" erg)))
+      (setq erg (replace-regexp-in-string "\n" "" (shell-command-to-string (concat py-shell-name " -W ignore" " -c \"import os; print(os.sep)\"")))))
+    erg))
 
 (defun pps-emacs-version ()
   "Include the appropriate `parse-partial-sexp' "

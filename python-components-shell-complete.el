@@ -85,12 +85,13 @@ When `py-no-completion-calls-dabbrev-expand-p' is non-nil, try dabbrev-expand. O
          (beg (or beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point))))
          (end (or end (point)))
          (word (or word (buffer-substring-no-properties beg end)))
-         (imports (or imports (py-find-imports))))
+         (imports (or imports (py-find-imports)))
+         proc)
     (cond ((string= word "")
            (if py-indent-no-completion-p
                (tab-to-tab-stop)
              (message "%s" "Nothing to complete. ")))
-          (t (or (setq proc (get-buffer-process (py-buffer-name-prepare shell)))
+          (t (or (setq proc (get-buffer-process (py-buffer-name-prepare)))
                  (setq proc (get-buffer-process (py-shell nil nil shell))))
              (if (processp proc)
                  (progn
@@ -116,7 +117,8 @@ When `py-no-completion-calls-dabbrev-expand-p' is non-nil, try dabbrev-expand. O
          (orig (point))
          (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
          (end (point))
-         (word (buffer-substring-no-properties beg end)))
+         (word (buffer-substring-no-properties beg end))
+         proc)
     (cond ((string= word "")
            (message "%s" "Nothing to complete. ")
            (tab-to-tab-stop))
@@ -294,7 +296,7 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
           (if ipython-complete-use-separate-shell-p
               (unless (and (buffer-live-p " *IPython-Complete*")
                            (comint-check-proc (process-name (get-buffer-process " *IPython-Complete*"))))
-                (get-buffer-process (py-shell nil nil py-shell-name 'no-switch nil " *IPython-Complete*")))
+                (get-buffer-process (py-shell nil nil py-shell-name " *IPython-Complete*")))
             (progn
               (while (and processlist (not done))
                 (when (and
@@ -304,7 +306,7 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
                 (setq processlist (cdr processlist)))
               done)))
          (python-process (or process
-                             (get-buffer-process (py-shell nil nil (if (string-match "[iI][pP]ython[^[:alpha:]]*$"  py-shell-name) py-shell-name "ipython") 'no-switch nil))))
+                             (get-buffer-process (py-shell nil nil (if (string-match "[iI][pP]ython[^[:alpha:]]*$"  py-shell-name) "ipython") nil))))
          (comint-output-filter-functions
           (delq 'py-comint-output-filter-function comint-output-filter-functions))
          (comint-output-filter-functions
@@ -318,9 +320,11 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
          (ccs (or completion-command-string
                   (if imports
                       (concat imports (py-set-ipython-completion-command-string
-                                       (process-name python-process)))
+                                       ;; (process-name python-process)
+                                       ))
                     (py-set-ipython-completion-command-string
-                     (process-name python-process)))))
+                     ;; (process-name python-process)
+                     ))))
          completion completions completion-table ugly-return)
     (if (string= pattern "")
         (tab-to-tab-stop)

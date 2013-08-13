@@ -40,14 +40,14 @@ Return position if statement found, nil otherwise. "
 Return position if statement found, nil otherwise. "
   (interactive)
   (let* ((orig (point))
-         (erg 
+         (erg
           (cond ((py-end-of-statement-p)
-                 (setq erg (and (py-end-of-statement) (py-beginning-of-statement))))
+                 (and (py-end-of-statement) (py-beginning-of-statement)))
                 ((ignore-errors (< orig (progn (py-end-of-statement) (py-beginning-of-statement))))
-                 (point)) 
+                 (point))
                 (t (goto-char orig) (and (py-end-of-statement) (py-end-of-statement)(py-beginning-of-statement))))))
-          (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-          erg))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
 
 (defun py-up-base (regexp &optional indent)
   "Go to the beginning of next form upwards in buffer.

@@ -49,7 +49,7 @@ or may be omitted (it is usually omitted).  "
 (defun py-add-abbrev-propose (table type arg &optional dont-ask)
   (save-excursion
     (let ((orig (point))
-          proposal exp)
+          proposal exp name)
       (while (< 0 arg)
         (py-beginning-of-partial-expression)
         (when (looking-at "[[:alpha:]]")

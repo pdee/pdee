@@ -21,19 +21,41 @@
 
 
 ;; created by `write-extended-execute-forms'
-(defun py-execute-prepare (form &optional shell dedicated switch)
+(defun py-masterfile ()
+  "Internal use. Set master-file, if given. "
+  (and (or py-master-file (py-fetch-py-master-file))
+       (let* ((filename (expand-file-name py-master-file))
+              (buffer (or (get-file-buffer filename)
+                          (find-file-noselect filename))))
+         (set-buffer buffer))))
+
+
+(defun py-execute-prepare (form &optional shell dedicated switch beg end file)
   "Used by python-extended-executes ."
   (save-excursion
-    (let ((beg (prog1
-                   (or (funcall (intern-soft (concat "py-beginning-of-" form "-p")))
+    (let ((beg (unless file
+                 (prog1
+                     (or beg (funcall (intern-soft (concat "py-beginning-of-" form "-p")))
 
-                       (funcall (intern-soft (concat "py-beginning-of-" form)))
-                       (push-mark))))
-          (end (funcall (intern-soft (concat "py-end-of-" form))))
+                         (funcall (intern-soft (concat "py-beginning-of-" form)))
+                         (push-mark)))))
+          (end (unless file
+                 (or end (funcall (intern-soft (concat "py-end-of-" form))))))
           (py-shell-name shell)
-          (py-switch-buffers-on-execute-p (or switch py-switch-buffers-on-execute-p))
-          (py-dedicated-process-p (or dedicated py-dedicated-process-p)))
-      (py-execute-base beg end py-dedicated-process-p))))
+          (py-dedicated-process-p dedicated)
+          (py-switch-buffers-on-execute-p (cond ((eq 'switch switch)
+                                                 t)
+                                                ((eq 'no-switch switch)
+                                                 nil)
+                                                (t py-switch-buffers-on-execute-p)))
+          filename)
+      (if file
+          (progn
+            (setq filename (expand-file-name form))
+            (if (file-readable-p filename)
+                (setq erg (py-execute-file-base nil filename nil nil (or (and (boundp 'py-orig-buffer-or-file) py-orig-buffer-or-file) filename)))
+              (message "%s not readable. %s" file "Do you have write permissions?")))
+        (py-execute-base beg end)))))
 
 (defun py-execute-statement-python ()
   "Send statement at point to Python interpreter. "
@@ -1604,308 +1626,263 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
 (defun py-execute-region-python (beg end)
   "Send region at point to Python interpreter. "
   (interactive "r")
-  (let ((py-shell-name "python"))
-    (py-execute-base beg end nil nil)))
+    (py-execute-prepare "region" "python" nil nil beg end))
 
 (defun py-execute-region-python-switch (beg end)
   "Send region at point to Python interpreter.
 
 Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
   (interactive "r")
-  (let ((py-shell-name "python"))
-    (py-execute-base beg end nil 'switch)))
+    (py-execute-prepare "region" "python" nil 'switch beg end))
 
 (defun py-execute-region-python-no-switch (beg end)
   "Send region at point to Python interpreter.
 
 Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
   (interactive "r")
-  (let ((py-shell-name "python"))
-    (py-execute-base beg end nil 'no-switch)))
+    (py-execute-prepare "region" "python" nil 'no-switch beg end))
 
 (defun py-execute-region-python-dedicated (beg end)
   "Send region at point to Python unique interpreter. "
   (interactive "r")
-  (let ((py-shell-name "python"))
-    (py-execute-base beg end t nil)))
+    (py-execute-prepare "region" "python" t nil beg end))
 
 (defun py-execute-region-python-dedicated-switch (beg end)
   "Send region at point to Python unique interpreter and switch to result. "
   (interactive "r")
-  (let ((py-shell-name "python"))
-    (py-execute-base beg end t 'switch)))
+    (py-execute-prepare "region" "python" t 'switch beg end))
 
 (defun py-execute-region-ipython (beg end)
   "Send region at point to IPython interpreter. "
   (interactive "r")
-  (let ((py-shell-name "ipython"))
-    (py-execute-base beg end nil nil)))
+    (py-execute-prepare "region" "ipython" nil nil beg end))
 
 (defun py-execute-region-ipython-switch (beg end)
   "Send region at point to IPython interpreter.
 
 Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
   (interactive "r")
-  (let ((py-shell-name "ipython"))
-    (py-execute-base beg end nil 'switch)))
+    (py-execute-prepare "region" "ipython" nil 'switch beg end))
 
 (defun py-execute-region-ipython-no-switch (beg end)
   "Send region at point to IPython interpreter.
 
 Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
   (interactive "r")
-  (let ((py-shell-name "ipython"))
-    (py-execute-base beg end nil 'no-switch)))
+    (py-execute-prepare "region" "ipython" nil 'no-switch beg end))
 
 (defun py-execute-region-ipython-dedicated (beg end)
   "Send region at point to IPython unique interpreter. "
   (interactive "r")
-  (let ((py-shell-name "ipython"))
-    (py-execute-base beg end t nil)))
+    (py-execute-prepare "region" "ipython" t nil beg end))
 
 (defun py-execute-region-ipython-dedicated-switch (beg end)
   "Send region at point to IPython unique interpreter and switch to result. "
   (interactive "r")
-  (let ((py-shell-name "ipython"))
-    (py-execute-base beg end t 'switch)))
+    (py-execute-prepare "region" "ipython" t 'switch beg end))
 
 (defun py-execute-region-python3 (beg end)
   "Send region at point to Python3 interpreter. "
   (interactive "r")
-  (let ((py-shell-name "python3"))
-    (py-execute-base beg end nil nil)))
+    (py-execute-prepare "region" "python3" nil nil beg end))
 
 (defun py-execute-region-python3-switch (beg end)
   "Send region at point to Python3 interpreter.
 
 Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
   (interactive "r")
-  (let ((py-shell-name "python3"))
-    (py-execute-base beg end nil 'switch)))
+    (py-execute-prepare "region" "python3" nil 'switch beg end))
 
 (defun py-execute-region-python3-no-switch (beg end)
   "Send region at point to Python3 interpreter.
 
 Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
   (interactive "r")
-  (let ((py-shell-name "python3"))
-    (py-execute-base beg end nil 'no-switch)))
+    (py-execute-prepare "region" "python3" nil 'no-switch beg end))
 
 (defun py-execute-region-python3-dedicated (beg end)
   "Send region at point to Python3 unique interpreter. "
   (interactive "r")
-  (let ((py-shell-name "python3"))
-    (py-execute-base beg end t nil)))
+    (py-execute-prepare "region" "python3" t nil beg end))
 
 (defun py-execute-region-python3-dedicated-switch (beg end)
   "Send region at point to Python3 unique interpreter and switch to result. "
   (interactive "r")
-  (let ((py-shell-name "python3"))
-    (py-execute-base beg end t 'switch)))
+    (py-execute-prepare "region" "python3" t 'switch beg end))
 
 (defun py-execute-region-python2 (beg end)
   "Send region at point to Python2 interpreter. "
   (interactive "r")
-  (let ((py-shell-name "python2"))
-    (py-execute-base beg end nil nil)))
+    (py-execute-prepare "region" "python2" nil nil beg end))
 
 (defun py-execute-region-python2-switch (beg end)
   "Send region at point to Python2 interpreter.
 
 Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
   (interactive "r")
-  (let ((py-shell-name "python2"))
-    (py-execute-base beg end nil 'switch)))
+    (py-execute-prepare "region" "python2" nil 'switch beg end))
 
 (defun py-execute-region-python2-no-switch (beg end)
   "Send region at point to Python2 interpreter.
 
 Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
   (interactive "r")
-  (let ((py-shell-name "python2"))
-    (py-execute-base beg end nil 'no-switch)))
+    (py-execute-prepare "region" "python2" nil 'no-switch beg end))
 
 (defun py-execute-region-python2-dedicated (beg end)
   "Send region at point to Python2 unique interpreter. "
   (interactive "r")
-  (let ((py-shell-name "python2"))
-    (py-execute-base beg end t nil)))
+    (py-execute-prepare "region" "python2" t nil beg end))
 
 (defun py-execute-region-python2-dedicated-switch (beg end)
   "Send region at point to Python2 unique interpreter and switch to result. "
   (interactive "r")
-  (let ((py-shell-name "python2"))
-    (py-execute-base beg end t 'switch)))
+    (py-execute-prepare "region" "python2" t 'switch beg end))
 
 (defun py-execute-region-python2.7 (beg end)
   "Send region at point to Python2.7 interpreter. "
   (interactive "r")
-  (let ((py-shell-name "python2.7"))
-    (py-execute-base beg end nil nil)))
+    (py-execute-prepare "region" "python2.7" nil nil beg end))
 
 (defun py-execute-region-python2.7-switch (beg end)
   "Send region at point to Python2.7 interpreter.
 
 Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
   (interactive "r")
-  (let ((py-shell-name "python2.7"))
-    (py-execute-base beg end nil 'switch)))
+    (py-execute-prepare "region" "python2.7" nil 'switch beg end))
 
 (defun py-execute-region-python2.7-no-switch (beg end)
   "Send region at point to Python2.7 interpreter.
 
 Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
   (interactive "r")
-  (let ((py-shell-name "python2.7"))
-    (py-execute-base beg end nil 'no-switch)))
+    (py-execute-prepare "region" "python2.7" nil 'no-switch beg end))
 
 (defun py-execute-region-python2.7-dedicated (beg end)
   "Send region at point to Python2.7 unique interpreter. "
   (interactive "r")
-  (let ((py-shell-name "python2.7"))
-    (py-execute-base beg end t nil)))
+    (py-execute-prepare "region" "python2.7" t nil beg end))
 
 (defun py-execute-region-python2.7-dedicated-switch (beg end)
   "Send region at point to Python2.7 unique interpreter and switch to result. "
   (interactive "r")
-  (let ((py-shell-name "python2.7"))
-    (py-execute-base beg end t 'switch)))
+    (py-execute-prepare "region" "python2.7" t 'switch beg end))
 
 (defun py-execute-region-jython (beg end)
   "Send region at point to Jython interpreter. "
   (interactive "r")
-  (let ((py-shell-name "jython"))
-    (py-execute-base beg end nil nil)))
+    (py-execute-prepare "region" "jython" nil nil beg end))
 
 (defun py-execute-region-jython-switch (beg end)
   "Send region at point to Jython interpreter.
 
 Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
   (interactive "r")
-  (let ((py-shell-name "jython"))
-    (py-execute-base beg end nil 'switch)))
+    (py-execute-prepare "region" "jython" nil 'switch beg end))
 
 (defun py-execute-region-jython-no-switch (beg end)
   "Send region at point to Jython interpreter.
 
 Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
   (interactive "r")
-  (let ((py-shell-name "jython"))
-    (py-execute-base beg end nil 'no-switch)))
+    (py-execute-prepare "region" "jython" nil 'no-switch beg end))
 
 (defun py-execute-region-jython-dedicated (beg end)
   "Send region at point to Jython unique interpreter. "
   (interactive "r")
-  (let ((py-shell-name "jython"))
-    (py-execute-base beg end t nil)))
+    (py-execute-prepare "region" "jython" t nil beg end))
 
 (defun py-execute-region-jython-dedicated-switch (beg end)
   "Send region at point to Jython unique interpreter and switch to result. "
   (interactive "r")
-  (let ((py-shell-name "jython"))
-    (py-execute-base beg end t 'switch)))
+    (py-execute-prepare "region" "jython" t 'switch beg end))
 
 (defun py-execute-region-python3.2 (beg end)
   "Send region at point to Python3.2 interpreter. "
   (interactive "r")
-  (let ((py-shell-name "python3.2"))
-    (py-execute-base beg end nil nil)))
+    (py-execute-prepare "region" "python3.2" nil nil beg end))
 
 (defun py-execute-region-python3.2-switch (beg end)
   "Send region at point to Python3.2 interpreter.
 
 Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
   (interactive "r")
-  (let ((py-shell-name "python3.2"))
-    (py-execute-base beg end nil 'switch)))
+    (py-execute-prepare "region" "python3.2" nil 'switch beg end))
 
 (defun py-execute-region-python3.2-no-switch (beg end)
   "Send region at point to Python3.2 interpreter.
 
 Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
   (interactive "r")
-  (let ((py-shell-name "python3.2"))
-    (py-execute-base beg end nil 'no-switch)))
+    (py-execute-prepare "region" "python3.2" nil 'no-switch beg end))
 
 (defun py-execute-region-python3.2-dedicated (beg end)
   "Send region at point to Python3.2 unique interpreter. "
   (interactive "r")
-  (let ((py-shell-name "python3.2"))
-    (py-execute-base beg end t nil)))
+    (py-execute-prepare "region" "python3.2" t nil beg end))
 
 (defun py-execute-region-python3.2-dedicated-switch (beg end)
   "Send region at point to Python3.2 unique interpreter and switch to result. "
   (interactive "r")
-  (let ((py-shell-name "python3.2"))
-    (py-execute-base beg end t 'switch)))
+    (py-execute-prepare "region" "python3.2" t 'switch beg end))
 
 (defun py-execute-region-python3.3 (beg end)
   "Send region at point to Python3.3 interpreter. "
   (interactive "r")
-  (let ((py-shell-name "python3.3"))
-    (py-execute-base beg end nil nil)))
+    (py-execute-prepare "region" "python3.3" nil nil beg end))
 
 (defun py-execute-region-python3.3-switch (beg end)
   "Send region at point to Python3.3 interpreter.
 
 Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
   (interactive "r")
-  (let ((py-shell-name "python3.3"))
-    (py-execute-base beg end nil 'switch)))
+    (py-execute-prepare "region" "python3.3" nil 'switch beg end))
 
 (defun py-execute-region-python3.3-no-switch (beg end)
   "Send region at point to Python3.3 interpreter.
 
 Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
   (interactive "r")
-  (let ((py-shell-name "python3.3"))
-    (py-execute-base beg end nil 'no-switch)))
+    (py-execute-prepare "region" "python3.3" nil 'no-switch beg end))
 
 (defun py-execute-region-python3.3-dedicated (beg end)
   "Send region at point to Python3.3 unique interpreter. "
   (interactive "r")
-  (let ((py-shell-name "python3.3"))
-    (py-execute-base beg end t nil)))
+    (py-execute-prepare "region" "python3.3" t nil beg end))
 
 (defun py-execute-region-python3.3-dedicated-switch (beg end)
   "Send region at point to Python3.3 unique interpreter and switch to result. "
   (interactive "r")
-  (let ((py-shell-name "python3.3"))
-    (py-execute-base beg end t 'switch)))
+    (py-execute-prepare "region" "python3.3" t 'switch beg end))
 
 (defun py-execute-region-bpython (beg end)
   "Send region at point to Bpython interpreter. "
   (interactive "r")
-  (let ((py-shell-name "bpython"))
-    (py-execute-base beg end nil nil)))
+    (py-execute-prepare "region" "bpython" nil nil beg end))
 
 (defun py-execute-region-bpython-switch (beg end)
   "Send region at point to Bpython interpreter.
 
 Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
   (interactive "r")
-  (let ((py-shell-name "bpython"))
-    (py-execute-base beg end nil 'switch)))
+    (py-execute-prepare "region" "bpython" nil 'switch beg end))
 
 (defun py-execute-region-bpython-no-switch (beg end)
   "Send region at point to Bpython interpreter.
 
 Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
   (interactive "r")
-  (let ((py-shell-name "bpython"))
-    (py-execute-base beg end nil 'no-switch)))
+    (py-execute-prepare "region" "bpython" nil 'no-switch beg end))
 
 (defun py-execute-region-bpython-dedicated (beg end)
   "Send region at point to Bpython unique interpreter. "
   (interactive "r")
-  (let ((py-shell-name "bpython"))
-    (py-execute-base beg end t nil)))
+    (py-execute-prepare "region" "bpython" t nil beg end))
 
 (defun py-execute-region-bpython-dedicated-switch (beg end)
   "Send region at point to Bpython unique interpreter and switch to result. "
   (interactive "r")
-  (let ((py-shell-name "bpython"))
-    (py-execute-base beg end t 'switch)))
+    (py-execute-prepare "region" "bpython" t 'switch beg end))
 
 (defun py-execute-buffer-python ()
   "Send buffer at point to Python interpreter. "
@@ -1919,9 +1896,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "python" nil nil))))
+      (py-execute-prepare "buffer" "python" nil nil (point-min) (point-max)))))
 
 (defun py-execute-buffer-python-switch ()
   "Send buffer at point to Python interpreter.
@@ -1937,9 +1912,7 @@ Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "python" nil 'switch))))
+      (py-execute-prepare "buffer" "python" nil 'switch (point-min) (point-max)))))
 
 (defun py-execute-buffer-python-no-switch ()
   "Send buffer at point to Python interpreter.
@@ -1955,9 +1928,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "python" nil 'no-switch))))
+      (py-execute-prepare "buffer" "python" nil 'no-switch (point-min) (point-max)))))
 
 (defun py-execute-buffer-python-dedicated ()
   "Send buffer at point to Python unique interpreter. "
@@ -1971,9 +1942,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "python" t nil))))
+      (py-execute-prepare "buffer" "python" t nil (point-min) (point-max)))))
 
 (defun py-execute-buffer-python-dedicated-switch ()
   "Send buffer at point to Python unique interpreter and switch to result. "
@@ -1987,9 +1956,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "python" t 'switch))))
+      (py-execute-prepare "buffer" "python" t 'switch (point-min) (point-max)))))
 
 (defun py-execute-buffer-ipython ()
   "Send buffer at point to IPython interpreter. "
@@ -2003,9 +1970,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "ipython" nil nil))))
+      (py-execute-prepare "buffer" "ipython" nil nil (point-min) (point-max)))))
 
 (defun py-execute-buffer-ipython-switch ()
   "Send buffer at point to IPython interpreter.
@@ -2021,9 +1986,7 @@ Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "ipython" nil 'switch))))
+      (py-execute-prepare "buffer" "ipython" nil 'switch (point-min) (point-max)))))
 
 (defun py-execute-buffer-ipython-no-switch ()
   "Send buffer at point to IPython interpreter.
@@ -2039,9 +2002,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "ipython" nil 'no-switch))))
+      (py-execute-prepare "buffer" "ipython" nil 'no-switch (point-min) (point-max)))))
 
 (defun py-execute-buffer-ipython-dedicated ()
   "Send buffer at point to IPython unique interpreter. "
@@ -2055,9 +2016,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "ipython" t nil))))
+      (py-execute-prepare "buffer" "ipython" t nil (point-min) (point-max)))))
 
 (defun py-execute-buffer-ipython-dedicated-switch ()
   "Send buffer at point to IPython unique interpreter and switch to result. "
@@ -2071,9 +2030,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "ipython" t 'switch))))
+      (py-execute-prepare "buffer" "ipython" t 'switch (point-min) (point-max)))))
 
 (defun py-execute-buffer-python3 ()
   "Send buffer at point to Python3 interpreter. "
@@ -2087,9 +2044,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "python3" nil nil))))
+      (py-execute-prepare "buffer" "python3" nil nil (point-min) (point-max)))))
 
 (defun py-execute-buffer-python3-switch ()
   "Send buffer at point to Python3 interpreter.
@@ -2105,9 +2060,7 @@ Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "python3" nil 'switch))))
+      (py-execute-prepare "buffer" "python3" nil 'switch (point-min) (point-max)))))
 
 (defun py-execute-buffer-python3-no-switch ()
   "Send buffer at point to Python3 interpreter.
@@ -2123,9 +2076,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "python3" nil 'no-switch))))
+      (py-execute-prepare "buffer" "python3" nil 'no-switch (point-min) (point-max)))))
 
 (defun py-execute-buffer-python3-dedicated ()
   "Send buffer at point to Python3 unique interpreter. "
@@ -2139,9 +2090,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "python3" t nil))))
+      (py-execute-prepare "buffer" "python3" t nil (point-min) (point-max)))))
 
 (defun py-execute-buffer-python3-dedicated-switch ()
   "Send buffer at point to Python3 unique interpreter and switch to result. "
@@ -2155,9 +2104,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "python3" t 'switch))))
+      (py-execute-prepare "buffer" "python3" t 'switch (point-min) (point-max)))))
 
 (defun py-execute-buffer-python2 ()
   "Send buffer at point to Python2 interpreter. "
@@ -2171,9 +2118,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "python2" nil nil))))
+      (py-execute-prepare "buffer" "python2" nil nil (point-min) (point-max)))))
 
 (defun py-execute-buffer-python2-switch ()
   "Send buffer at point to Python2 interpreter.
@@ -2189,9 +2134,7 @@ Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "python2" nil 'switch))))
+      (py-execute-prepare "buffer" "python2" nil 'switch (point-min) (point-max)))))
 
 (defun py-execute-buffer-python2-no-switch ()
   "Send buffer at point to Python2 interpreter.
@@ -2207,9 +2150,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "python2" nil 'no-switch))))
+      (py-execute-prepare "buffer" "python2" nil 'no-switch (point-min) (point-max)))))
 
 (defun py-execute-buffer-python2-dedicated ()
   "Send buffer at point to Python2 unique interpreter. "
@@ -2223,9 +2164,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "python2" t nil))))
+      (py-execute-prepare "buffer" "python2" t nil (point-min) (point-max)))))
 
 (defun py-execute-buffer-python2-dedicated-switch ()
   "Send buffer at point to Python2 unique interpreter and switch to result. "
@@ -2239,9 +2178,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "python2" t 'switch))))
+      (py-execute-prepare "buffer" "python2" t 'switch (point-min) (point-max)))))
 
 (defun py-execute-buffer-python2.7 ()
   "Send buffer at point to Python2.7 interpreter. "
@@ -2255,9 +2192,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "python2.7" nil nil))))
+      (py-execute-prepare "buffer" "python2.7" nil nil (point-min) (point-max)))))
 
 (defun py-execute-buffer-python2.7-switch ()
   "Send buffer at point to Python2.7 interpreter.
@@ -2273,9 +2208,7 @@ Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "python2.7" nil 'switch))))
+      (py-execute-prepare "buffer" "python2.7" nil 'switch (point-min) (point-max)))))
 
 (defun py-execute-buffer-python2.7-no-switch ()
   "Send buffer at point to Python2.7 interpreter.
@@ -2291,9 +2224,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "python2.7" nil 'no-switch))))
+      (py-execute-prepare "buffer" "python2.7" nil 'no-switch (point-min) (point-max)))))
 
 (defun py-execute-buffer-python2.7-dedicated ()
   "Send buffer at point to Python2.7 unique interpreter. "
@@ -2307,9 +2238,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "python2.7" t nil))))
+      (py-execute-prepare "buffer" "python2.7" t nil (point-min) (point-max)))))
 
 (defun py-execute-buffer-python2.7-dedicated-switch ()
   "Send buffer at point to Python2.7 unique interpreter and switch to result. "
@@ -2323,9 +2252,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "python2.7" t 'switch))))
+      (py-execute-prepare "buffer" "python2.7" t 'switch (point-min) (point-max)))))
 
 (defun py-execute-buffer-jython ()
   "Send buffer at point to Jython interpreter. "
@@ -2339,9 +2266,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "jython" nil nil))))
+      (py-execute-prepare "buffer" "jython" nil nil (point-min) (point-max)))))
 
 (defun py-execute-buffer-jython-switch ()
   "Send buffer at point to Jython interpreter.
@@ -2357,9 +2282,7 @@ Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "jython" nil 'switch))))
+      (py-execute-prepare "buffer" "jython" nil 'switch (point-min) (point-max)))))
 
 (defun py-execute-buffer-jython-no-switch ()
   "Send buffer at point to Jython interpreter.
@@ -2375,9 +2298,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "jython" nil 'no-switch))))
+      (py-execute-prepare "buffer" "jython" nil 'no-switch (point-min) (point-max)))))
 
 (defun py-execute-buffer-jython-dedicated ()
   "Send buffer at point to Jython unique interpreter. "
@@ -2391,9 +2312,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "jython" t nil))))
+      (py-execute-prepare "buffer" "jython" t nil (point-min) (point-max)))))
 
 (defun py-execute-buffer-jython-dedicated-switch ()
   "Send buffer at point to Jython unique interpreter and switch to result. "
@@ -2407,9 +2326,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "jython" t 'switch))))
+      (py-execute-prepare "buffer" "jython" t 'switch (point-min) (point-max)))))
 
 (defun py-execute-buffer-python3.2 ()
   "Send buffer at point to Python3.2 interpreter. "
@@ -2423,9 +2340,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "python3.2" nil nil))))
+      (py-execute-prepare "buffer" "python3.2" nil nil (point-min) (point-max)))))
 
 (defun py-execute-buffer-python3.2-switch ()
   "Send buffer at point to Python3.2 interpreter.
@@ -2441,9 +2356,7 @@ Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "python3.2" nil 'switch))))
+      (py-execute-prepare "buffer" "python3.2" nil 'switch (point-min) (point-max)))))
 
 (defun py-execute-buffer-python3.2-no-switch ()
   "Send buffer at point to Python3.2 interpreter.
@@ -2459,9 +2372,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "python3.2" nil 'no-switch))))
+      (py-execute-prepare "buffer" "python3.2" nil 'no-switch (point-min) (point-max)))))
 
 (defun py-execute-buffer-python3.2-dedicated ()
   "Send buffer at point to Python3.2 unique interpreter. "
@@ -2475,9 +2386,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "python3.2" t nil))))
+      (py-execute-prepare "buffer" "python3.2" t nil (point-min) (point-max)))))
 
 (defun py-execute-buffer-python3.2-dedicated-switch ()
   "Send buffer at point to Python3.2 unique interpreter and switch to result. "
@@ -2491,9 +2400,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "python3.2" t 'switch))))
+      (py-execute-prepare "buffer" "python3.2" t 'switch (point-min) (point-max)))))
 
 (defun py-execute-buffer-python3.3 ()
   "Send buffer at point to Python3.3 interpreter. "
@@ -2507,9 +2414,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "python3.3" nil nil))))
+      (py-execute-prepare "buffer" "python3.3" nil nil (point-min) (point-max)))))
 
 (defun py-execute-buffer-python3.3-switch ()
   "Send buffer at point to Python3.3 interpreter.
@@ -2525,9 +2430,7 @@ Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "python3.3" nil 'switch))))
+      (py-execute-prepare "buffer" "python3.3" nil 'switch (point-min) (point-max)))))
 
 (defun py-execute-buffer-python3.3-no-switch ()
   "Send buffer at point to Python3.3 interpreter.
@@ -2543,9 +2446,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "python3.3" nil 'no-switch))))
+      (py-execute-prepare "buffer" "python3.3" nil 'no-switch (point-min) (point-max)))))
 
 (defun py-execute-buffer-python3.3-dedicated ()
   "Send buffer at point to Python3.3 unique interpreter. "
@@ -2559,9 +2460,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "python3.3" t nil))))
+      (py-execute-prepare "buffer" "python3.3" t nil (point-min) (point-max)))))
 
 (defun py-execute-buffer-python3.3-dedicated-switch ()
   "Send buffer at point to Python3.3 unique interpreter and switch to result. "
@@ -2575,9 +2474,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "python3.3" t 'switch))))
+      (py-execute-prepare "buffer" "python3.3" t 'switch (point-min) (point-max)))))
 
 (defun py-execute-buffer-bpython ()
   "Send buffer at point to Bpython interpreter. "
@@ -2591,9 +2488,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "bpython" nil nil))))
+      (py-execute-prepare "buffer" "bpython" nil nil (point-min) (point-max)))))
 
 (defun py-execute-buffer-bpython-switch ()
   "Send buffer at point to Bpython interpreter.
@@ -2609,9 +2504,7 @@ Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "bpython" nil 'switch))))
+      (py-execute-prepare "buffer" "bpython" nil 'switch (point-min) (point-max)))))
 
 (defun py-execute-buffer-bpython-no-switch ()
   "Send buffer at point to Bpython interpreter.
@@ -2627,9 +2520,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "bpython" nil 'no-switch))))
+      (py-execute-prepare "buffer" "bpython" nil 'no-switch (point-min) (point-max)))))
 
 (defun py-execute-buffer-bpython-dedicated ()
   "Send buffer at point to Bpython unique interpreter. "
@@ -2643,9 +2534,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "bpython" t nil))))
+      (py-execute-prepare "buffer" "bpython" t nil (point-min) (point-max)))))
 
 (defun py-execute-buffer-bpython-dedicated-switch ()
   "Send buffer at point to Bpython unique interpreter and switch to result. "
@@ -2659,9 +2548,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (setq beg (point-min))
-      (setq end (point-max))
-      (py-execute-region beg end "bpython" t 'switch))))
+      (py-execute-prepare "buffer" "bpython" t 'switch (point-min) (point-max)))))
 
 (defun py-execute-expression-python ()
   "Send expression at point to Python interpreter. "
