@@ -4850,7 +4850,8 @@ Use `M-x customize-variable' to set it permanently"
                   (not py-electric-colon-active-p))
             :help " `py-electric-colon-active-p'
 
-`py-electric-colon' feature\.  Default is `nil'\. See lp:837065 for discussions\. . "]
+`py-electric-colon' feature\.  Default is `nil'\. See lp:837065 for discussions\. . "
+            :style toggle :selected py-electric-colon-active-p]
 
            
            ["Electric colon at beginning of block only"

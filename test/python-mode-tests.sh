@@ -1101,6 +1101,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-font-lock-keywords) nil \"py-font-lock-keywords not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall beginning-of-block-fails-from-wrong-indent-test \
 --funcall cascading-indent-lp-1101962-test \
 --funcall Bogus-dedent-when-typing-colon-in-dictionary-literal-lp-1197171-test \
 --funcall Parens-span-multiple-lines-lp-1191225-test \
@@ -1429,3 +1430,4 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test \
 --funcall another-broken-font-locking-lp:961231-test \
 --funcall IndentationError-expected-an-indented-block-when-execute-lp-1055569-test \
+

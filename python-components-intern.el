@@ -1258,15 +1258,19 @@ http://docs.python.org/reference/compound_stmts.html"
 
 (defun py-beginning-of-prepare (indent final-re &optional inter-re iact lc)
   (let ((orig (point))
-        (indent (or indent
-                    (progn (back-to-indentation)
-                           (or (py-beginning-of-statement-p)
-                               (py-beginning-of-statement))
-                           (cond ((eq 0 (current-indentation))
-                                  (current-indentation))
-                                 ((looking-at (symbol-value inter-re))
-                                  (current-indentation))
-                                 (t (- (current-indentation) (if py-smart-indentation (py-guess-indent-offset) py-indent-offset)))))))
+        (indent
+         (or indent
+             (progn (back-to-indentation)
+                    (or (py-beginning-of-statement-p)
+                        (py-beginning-of-statement))
+                    (cond ((eq 0 (current-indentation))
+                           (current-indentation))
+                          ((looking-at (symbol-value inter-re))
+                           (current-indentation))
+                          (t
+                           (if (<= py-indent-offset (current-indentation))
+                               (- (current-indentation) (if py-smart-indentation (py-guess-indent-offset) py-indent-offset))
+                             py-indent-offset))))))
         erg)
     (if (and (< (point) orig) (looking-at (symbol-value final-re)))
         (progn
