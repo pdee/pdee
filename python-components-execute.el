@@ -568,18 +568,11 @@ When DONE is `t', `py-shell-manage-windows' is omitted
       (set (make-local-variable 'comment-indent-function) #'py-comment-indent-function)
       (set (make-local-variable 'indent-region-function) 'py-indent-region)
       (set (make-local-variable 'indent-line-function) 'py-indent-line)
-      ;; (setq proc (get-buffer-process py-buffer-name))
       (setq proc (get-buffer-process (current-buffer)))
-      ;; (switch-to-buffer (current-buffer))
-      (goto-char (point-max))
-      (push-mark)
       (py-shell-send-setup-code proc)
-      ;; (comint-send-input)
-      ;; delete the prompts
-      ;; (delete-region (mark) (point-max))
       (compilation-shell-minor-mode 1)
       (setq comint-input-sender 'py-shell-simple-send)
-      (sit-for 1)
+      ;; (sit-for 0.1)
       (setq comint-input-ring-file-name
             (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
                    (if py-honor-IPYTHONDIR-p
@@ -883,12 +876,14 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
   (comint-send-string proc (concat "import os;os.chdir(\"" dir "\")\n")))
 
 (defun py-update-execute-directory (proc procbuf execute-directory)
-  (let ((orig (point))
-        (oldbuf (current-buffer)))
+  (let ((oldbuf (current-buffer))
+        orig cwd)
     (set-buffer procbuf)
-    (unless (string= execute-directory (py-current-working-directory))
-      (py-update-execute-directory-intern (or py-execute-directory execute-directory) proc))
-    ;; (delete-region orig (point-max))
+    (setq cwd (py-current-working-directory))
+    (setq orig (point))
+    (unless (string= execute-directory (concat cwd "/"))
+      (py-update-execute-directory-intern (or py-execute-directory execute-directory) proc)
+      (delete-region orig (point-max)))
     (set-buffer oldbuf)))
 
 (defun py-execute-file-base (&optional proc filename cmd procbuf origfile execute-directory)
@@ -902,38 +897,18 @@ Returns position where output starts. "
          (msg (and py-verbose-p (format "## executing %s...\n" (or origfile filename))))
          erg orig)
     (set-buffer procbuf)
-    ;; (and py-verbose-p (funcall (process-filter proc) proc msg))
-    (goto-char (point-max))
-    ;; (switch-to-buffer (current-buffer))
     (setq orig (point))
     (comint-send-string proc cmd)
-    ;; (switch-to-buffer (current-buffer))
-    ;; (goto-char (point-max))
-    ;; (sit-for 0.1)
-    ;; no exception-buffer if just a file is executed
     (if
         (setq err-p (py-postprocess-output-buffer (buffer-name (current-buffer))))
         (progn
           (py-jump-to-exception err-p procbuf origfile)
           (py-shell-manage-windows (current-buffer) nil windows-config))
-
       (setq erg
             (py-output-filter
              (buffer-substring-no-properties orig (point))))
-      ;; "Traceback (most recent call last):\n File \"<stdin>\", line 1, in <module>\n File \"/tmp/python3-6503yvo.py\", line 135\n print(44*0e)\n ^\nSyntaxError: invalid token"
-      ;; (and origfile (string-match "\\(.+\\) File \"[^\"]+\", line \\(.+\\)" erg)
-      ;;      (setq erg (replace-regexp-in-string "\\(.+\\) File \"[^\"]+\", line \\(.+\\)" (concat (match-string-no-properties 1) " File \"" (or (and (stringp origfile) origfile)(buffer-name origfile)) "\", line " (match-string-no-properties 2)) erg)))
       (py-shell-manage-windows (current-buffer) nil windows-config)
       erg)))
-
-    ;; (and py-verbose-p
-    ;; (unwind-protect
-    ;; (save-excursion
-    ;; (set-buffer procbuf)
-    ;; (funcall (process-filter proc) proc msg))))
-    ;; (set-buffer procbuf)
-    ;; (goto-char (point-max))
-    ;; (setq orig (point))
 
 (defun py-execute-string (&optional string shell)
   "Send the argument STRING to a Python interpreter.
@@ -1485,7 +1460,6 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
   (let (line file bol err-p estring ecode limit)
     (goto-char (point-max))
     (save-excursion
-      ;; (set-buffer buf)
       (forward-line -1)
       (end-of-line)
       (when (re-search-backward py-shell-prompt-regexp nil t 1)
@@ -1512,7 +1486,6 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
             (overlay-put (make-overlay (match-beginning 0) (match-end 0))
                          'face 'highlight))
           ;; If not file exists, just a buffer, correct message
-
           (forward-line 1)
           (when (looking-at "[ \t]*\\([^\t\n\r\f]+\\)[ \t]*$")
             (setq estring (match-string-no-properties 1))
