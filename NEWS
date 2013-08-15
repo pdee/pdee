@@ -79,6 +79,10 @@ New in version 6.1.2
           baz):
           bar()
 
+- boolean `py-prompt-on-changed-p', default is `t' 
+  When called interactively, ask for save before a
+  changed buffer is sent to interpreter.
+
 - boolean `py-load-skeletons-p', default nil
   If skeleton definitions should be loaded
 

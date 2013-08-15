@@ -98,6 +98,14 @@ Default is non-nil. If nil, `py-pylint-run' offers filename from history "
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-prompt-on-changed-p t
+ "When called interactively, ask for save before a changed buffer is sent to interpreter. 
+
+Default is `t'" 
+
+:type 'boolean
+:group 'python-mode)
+
 (defcustom py-dedicated-process-p nil
   "If commands executing code use a dedicated shell.
 
