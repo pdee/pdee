@@ -319,12 +319,8 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
 
          (ccs (or completion-command-string
                   (if imports
-                      (concat imports (py-set-ipython-completion-command-string
-                                       ;; (process-name python-process)
-                                       ))
-                    (py-set-ipython-completion-command-string
-                     ;; (process-name python-process)
-                     ))))
+                      (concat imports (py-set-ipython-completion-command-string))
+                    (py-set-ipython-completion-command-string))))
          completion completions completion-table ugly-return)
     (if (string= pattern "")
         (tab-to-tab-stop)

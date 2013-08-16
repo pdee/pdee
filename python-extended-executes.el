@@ -48,7 +48,7 @@
                                                 ((eq 'no-switch switch)
                                                  nil)
                                                 (t py-switch-buffers-on-execute-p)))
-          filename)
+          filename erg)
       (if file
           (progn
             (setq filename (expand-file-name form))

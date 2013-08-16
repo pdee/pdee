@@ -895,7 +895,7 @@ comint believe the user typed this string so that
 Returns position where output starts. "
   (let* ((cmd (or cmd (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" filename filename)))
          (msg (and py-verbose-p (format "## executing %s...\n" (or origfile filename))))
-         erg orig)
+         erg orig err-p)
     (set-buffer procbuf)
     (setq orig (point))
     (comint-send-string proc cmd)
@@ -1375,10 +1375,10 @@ Optional OUTPUT-BUFFER and ERROR-BUFFER might be given. "
            (set-buffer file)
            (switch-to-buffer (current-buffer))
            (py-jump-to-exception-intern line action file))
-          (t setq file (find-file (read-file-name "Exception file: "
-                                                  nil
-                                                  file t)))
-          (py-jump-to-exception-intern line action file))))
+          (t (setq file (find-file (read-file-name "Exception file: "
+                                                   nil
+                                                   file t)))
+             (py-jump-to-exception-intern line action file)))))
 
 (defun py-mouseto-exception (event)
   "Jump to the code which caused the Python exception at EVENT.
@@ -1395,20 +1395,24 @@ EVENT is usually a mouse click."
       (and info
            (py-jump-to-exception (car info) (cdr info)))))
    ;; Emacs -- Please port this!
-   ))
+))
 
-(defun py-goto-exception ()
+(defun py-goto-exception (&optional file line)
   "Go to the line indicated by the traceback."
   (interactive)
-  (let (file line)
-    (save-excursion
-      (beginning-of-line)
-      (if (looking-at py-traceback-line-re)
-          (setq file (match-string 1)
-                line (string-to-number (match-string 2)))))
+  (let ((file file)
+        (line line))
+    (unless (and file line)
+      (save-excursion
+        (beginning-of-line)
+        (if (looking-at py-traceback-line-re)
+            (setq file (substring-no-properties (match-string 1))
+                  line (string-to-number (match-string 2))))))
     (if (not file)
         (error "Not on a traceback line"))
-    (py-jump-to-exception file line)))
+    (find-file file)
+    (goto-char (point-min))
+    (forward-line (1- line))))
 
 (defun py-find-next-exception (start buffer searchdir errwhere)
   "Find the next Python exception and jump to the code that caused it.
@@ -1425,7 +1429,7 @@ bottom) of the trackback stack is encountered."
           (setq file (match-string 1)
                 line (string-to-number (match-string 2)))))
     (if (and file line)
-        (py-jump-to-exception file line)
+        (py-goto-exception file line)
       (error "%s of traceback" errwhere))))
 
 (defun py-down-exception (&optional bottom)
