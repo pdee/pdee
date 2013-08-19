@@ -102,6 +102,9 @@ New in version 6.1.2
 
 - dropped `py-paragraph-fill-docstring-p'; just `fill-paragraph' should DTRT
 
+- `py-set-pager-cat-p', default is nil
+   If non-nil, $PAGER is set to 'cat'
+
 - customizable variables listed in directory in doc:
   variables-python-mode.org, variables-python-mode.rst
 

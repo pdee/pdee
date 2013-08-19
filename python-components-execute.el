@@ -520,7 +520,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
          ;; correctly (Bug#5794) and IPython does not work at
          ;; all (Bug#5390). python.el
          (process-connection-type t)
-         (comint-scroll-to-bottom-on-output t)
+         ;; (comint-scroll-to-bottom-on-output t)
          ;; already in py-choose-shell
          (py-use-local-default
           (if (not (string= "" py-shell-local-path))
@@ -570,6 +570,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
       (set (make-local-variable 'indent-line-function) 'py-indent-line)
       (setq proc (get-buffer-process (current-buffer)))
       (py-shell-send-setup-code proc)
+      (and py-set-pager-cat-p (comint-simple-send proc "import os;os.environ['PAGER'] = 'cat'"))
       (compilation-shell-minor-mode 1)
       (setq comint-input-sender 'py-shell-simple-send)
       ;; (sit-for 0.1)

@@ -98,6 +98,18 @@ Default is non-nil. If nil, `py-pylint-run' offers filename from history "
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-set-pager-cat-p nil
+ "If the shell environment variable $PAGER should set to `cat'.
+
+If `t', use `C-c C-r' to jump to beginning of output. Then scroll normally.
+
+Avoids lp:783828, \"Terminal not fully functional\", for help('COMMAND') in python-shell 
+
+When non-nil, imports module `os' " 
+
+:type 'boolean
+:group 'python-mode)
+
 (defcustom py-prompt-on-changed-p t
  "When called interactively, ask for save before a changed buffer is sent to interpreter. 
 
