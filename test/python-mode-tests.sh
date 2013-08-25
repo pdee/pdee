@@ -1154,7 +1154,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall new-problem-with-py-temp-directory-lp:965762-test \
 --funcall dq-in-tqs-string-lp:328813-test \
 --funcall py-current-defun-lp:328846-test \
---funcall cls-pseudo-keyword-lp:328849-test \
 --funcall flexible-indentation-lp:328842-test \
 --funcall hungry-delete-backwards-lp:328853-test \
 --funcall hungry-delete-forward-lp:328853-test \
@@ -1430,4 +1429,5 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test \
 --funcall another-broken-font-locking-lp:961231-test \
 --funcall IndentationError-expected-an-indented-block-when-execute-lp-1055569-test \
-
+--funcall missing-py-variable-name-face-lp-1215791-test \
+--funcall cls-pseudo-keyword-lp:328849-test \

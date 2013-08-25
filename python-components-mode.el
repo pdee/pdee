@@ -2570,25 +2570,21 @@ See bug report at launchpad, lp:940812 "
         ;; 1 py-variable-name-face)
         ;; asignations
         ;; support for a = b = c = 5
-        (,(lambda (limit)
-            (let ((re (python-rx (group (+ (any word ?. ?_)))
-                                 (? ?\[ (+ (not (any ?\]))) ?\]) (* space)
-                                 assignment-operator)))
-              (when (re-search-forward re limit t)
-                (while (and (nth 1 (syntax-ppss))
-                            (re-search-forward re limit t)))
-                (if (and (not (nth 1 (syntax-ppss)))
-                         (not (equal (char-after (point-marker)) ?=)))
-                    t
-                  (set-match-data nil)))))
+        ("\\([._[:word:]]+\\)\\(?:\\[[^]]+]\\)?[[:space:]]*\\(?:\\(?:\\*\\*\\|//\\|<<\\|>>\\|[%&*+/|^-]\\)?=\\)"
          (1 py-variable-name-face nil nil))
         ;; support for a, b, c = (1, 2, 3)
         (,(lambda (limit)
-            (let ((re (python-rx (group (+ (any word ?. ?_))) (* space)
-                                 (* ?, (* space) (+ (any word ?. ?_)) (* space))
-                                 ?, (* space) (+ (any word ?. ?_)) (* space)
-                                 assignment-operator)))
-              (when (and (re-search-forward re limit t)
+            (let ((re
+
+                   ;; "\\([._[:word:]]+\\)[[:space:]]*,[[:space:]]*\\([._[:word:]]+\\)[[:space:]]*,[[:space:]]*\\([._[:word:]]+\\)[[:space:]]*\\(\\(?:\\*\\*\\|//\\|<<\\|>>\\|[%&*+/|^-]\\)?=\\)"
+                      
+                   (python-rx (group (+ (any word ?. ?_))) (* space)
+                              (* ?, (* space)) (group (+ (any word ?. ?_)) (* space))
+                              (* ?, (* space)) (group (+ (any word ?. ?_)) (* space)
+                              assignment-operator)
+
+                      )))
+                            (when (and (re-search-forward re limit t)
                          (goto-char (nth 3 (match-data))))
                 (while (and (nth 1 (syntax-ppss))
                             (re-search-forward re limit t))
@@ -2596,8 +2592,19 @@ See bug report at launchpad, lp:940812 "
                 (if (not (nth 1 (syntax-ppss)))
                     t
                   (set-match-data nil)))))
-         (1 py-variable-name-face nil nil))
-        ;; (,(rx (or space line-start) symbol-start "range" symbol-end) . py-builtins-face)
+         (1 py-variable-name-face)
+         (2 py-variable-name-face)
+         (3 py-variable-name-face)
+         ;; (3 py-variable-name-face)
+         )
+
+        ;; ("\\([._[:word:]]+\\)[[:space:]]*,[[:space:]]*\\([._[:word:]]+\\)[[:space:]]*,[[:space:]]*\\([._[:word:]]+\\)[[:space:]]*\\(\\(?:\\*\\*\\|//\\|<<\\|>>\\|[%&*+/|^-]\\)?=\\)"
+        ;;  (1 py-variable-name-face)
+        ;;  (2 py-variable-name-face)
+        ;;  (3 py-variable-name-face)
+        ;;  ;; (4 font-lock-doc-face)
+        ;;  )
+
         ;; Numbers
         (,(rx symbol-start (or (1+ digit) (1+ hex-digit)) symbol-end) . py-number-face)))
 

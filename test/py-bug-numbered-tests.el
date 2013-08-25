@@ -242,7 +242,6 @@ on."
             (kill-process (get-buffer-process (current-buffer))))
        (kill-buffer (current-buffer)))))
 
-
 ;; py-if-name-main-permission-p
 (defun py-if-name-main-permission-lp-326620-test (&optional arg)
   (interactive "p")
@@ -5383,7 +5382,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.44 $\"
+__version__ = \"$Revision: 1.48 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -5918,7 +5917,6 @@ def foo():
   ;; (sit-for 0.1)
   (assert (and (eq 14 (count-lines  (point-min) (point))) (eq 8 (current-column)))  nil "return-key-is-broken-lp-1191158-test failed"))
 
-
 (defun indent-refused-lp-1191133-test (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
@@ -5931,7 +5929,6 @@ def(foo):
   (message "%s" (current-buffer))
   (switch-to-buffer (current-buffer))
   (assert (eq 4 (py-compute-indentation)) nil "indent-refused-lp-1191133-test failed"))
-
 
 (defun Parens-span-multiple-lines-lp-1191225-test (&optional arg)
   (interactive "p")
@@ -5962,7 +5959,6 @@ def foo():
     (setq py-indent-paren-spanned-multilines-p t)
     (assert (eq 12 (py-compute-indentation)) nil "Parens-span-multiple-lines-lp-1191225-test #2 failed")))
 
-
 (defun Bogus-dedent-when-typing-colon-in-dictionary-literal-lp-1197171-test (&optional arg)
   (interactive "p")
   (let
@@ -5982,7 +5978,6 @@ def foo():
 (defun Bogus-dedent-when-typing-colon-in-dictionary-literal-lp-1197171-base ()
     (goto-char 94)
     (assert (eq 8 (py-compute-indentation)) nil "Bogus-dedent-when-typing-colon-in-dictionary-literal-lp-1197171-test failed"))
-
 
 (defun Non-indenting-colon-lp-1207405-test (&optional arg)
   (interactive "p")
@@ -6012,6 +6007,77 @@ def foo(bar):
   (ignore-errors (py-electric-colon 1))
   (assert (eq 4 (current-indentation)) nil "Non-indenting-colon-lp-1207405-test #2 failed"))
 
+;; (defun missing-py-variable-name-face-lp-1215791-test (&optional arg)
+;;   (interactive "p")
+;;    (let ((teststring "a = b = c = 5
+;; a, b, c = (1, 2, 3)
+;; # http://lists.gnu.org/archive/html/bug-gnu-emacs/2013-08/msg00740.
+;; # html
+;; #
+;; # The symptom is that in the code:
+;; 
+;;     # no s'ha trobat cap oferta, l'alumne queda sense assignar
+;;     # (alumne.assignacio == None)
+;;     self._logger.info(
+;;          u\"no assigna '%s'\",
+;;          alumne.id
+;;          )
+;;     alumne.assignacio = None
+;; 
+;; # 'alumne.assignacio' isn't properly colorized after visiting the
+;; # file.
+;; #
+;; # In order to reproduce this behaviour:
+;; #
+;; # emacs -Q /tmp/bugtest.py
+;; #
+;; # type:
+;; 
+;; # a =
+;; variable = \"value\"
+;; a = b = c = 5
+;; a, b, c = (1, 2, 3)
+;; "))
+;;   (py-bug-tests-intern 'missing-py-variable-name-face-lp-1215791-base arg teststring)))
+
+(defun missing-py-variable-name-face-lp-1215791-test (&optional arg)
+  (interactive "p")
+   (let ((teststring "# a ==
+variable = \"value\"
+a = b = c = 5
+a, b, c = (1, 2, 3)
+# http://lists.gnu.org/archive/html/bug-gnu-emacs/2013-08/msg00740.
+# html
+#
+# The symptom is that in the code:
+
+    # no s'ha trobat cap oferta, l'alumne queda sense assignar
+    # (alumne.assignacio == None)
+    self._logger.info(
+         u\"no assigna '%s'\",
+         alumne.id
+         )
+    alumne.assignacio = None
+
+# 'alumne.assignacio' isn't properly colorized after visiting the
+# file.
+#
+# In order to reproduce this behaviour:
+
+"))
+  (py-bug-tests-intern 'missing-py-variable-name-face-lp-1215791-base arg teststring)))
+
+(defun missing-py-variable-name-face-lp-1215791-base ()
+  ;; (goto-char 6)
+  (goto-char 27)
+  (sit-for 0.1) 
+  (assert (eq (get-char-property (point) 'face) 'py-variable-name-face) nil "missing-py-variable-name-face-lp-1215791-test #1 failed")
+  (goto-char 44)
+  (assert (eq (get-char-property (point) 'face) 'py-variable-name-face) nil "missing-py-variable-name-face-lp-1215791-test #2 failed")
+  (goto-char 360)
+  (assert (eq (get-char-property (point) 'face) 'py-variable-name-face) nil "missing-py-variable-name-face-lp-1215791-test #3 failed")
+
+  )
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
