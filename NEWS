@@ -91,6 +91,11 @@ New in version 6.1.2
   if __name__== '__main__'
 
 - exception displayed points to source, not to the temporary file executed internally
+- boolean `py-highlight-error-source-p', default is nil
+  When py-execute-... commands raise an error, respective code in source-buffer will be highlighted.
+
+- `py-remove-overlays-at-point', command
+  Remove overlays as set when `py-highlight-error-source-p' is non-nil. 
 
 - `py-which-def-or-class', command, now used `which-function-mode' 
 

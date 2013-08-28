@@ -416,18 +416,64 @@ Needed when file-path names are contructed from maybe numbered buffer names like
     "\*" ""
     string)))
 
-(defun py-shell-manage-windows (output-buffer &optional windows-displayed windows-config err-p)
+
+(defun py-jump-to-exception-intern (action exception-buffer)
+  (let (erg)
+    (set-buffer exception-buffer)
+    ;; (message "%s" (current-buffer))
+    (goto-char (point-min))
+    (forward-line (1- origline))
+    (switch-to-buffer (current-buffer))
+    (push-mark)
+    (and (search-forward action (line-end-position) t)
+         (and py-verbose-p (message "Exception in file %s on line %d" py-exception-buffer origline))
+         (and py-highlight-error-source-p
+              (setq erg (make-overlay (match-beginning 0) (match-end 0)))
+              (overlay-put erg
+                           'face 'highlight))
+         ;; (remove-overlays (match-beginning 0) (match-end 0) 'face 'highlight)
+         )))
+
+;; Result: (nil 5 "print(34ed)" " SyntaxError: invalid token ")
+(defun py-jump-to-exception (err-p &optional file)
+  "Jump to the Python code in FILE at LINE."
+  (let (
+        ;; (inhibit-point-motion-hooks t)
+        (file (or file (car err-p)))
+        (line (cadr err-p))
+        (action (nth 2 err-p))
+        (errm (nth 3 err-p)))
+    (cond ((and py-exception-buffer 
+                (buffer-live-p py-exception-buffer))
+           ;; (pop-to-buffer procbuf)
+           (py-jump-to-exception-intern action py-exception-buffer))
+          ((ignore-errors (file-readable-p file))
+           (find-file file)
+           (py-jump-to-exception-intern action (get-buffer (file-name-nondirectory file))))
+          ((buffer-live-p (get-buffer file))
+           (set-buffer file)
+           (switch-to-buffer (current-buffer))
+           (py-jump-to-exception-intern action file))
+          (t (setq file (find-file (read-file-name "Exception file: "
+                                                   nil
+                                                   file t)))
+             (py-jump-to-exception-intern action file)))))
+
+(defun py-shell-manage-windows (output-buffer &optional windows-displayed windows-config)
   (cond (err-p
-         (and windows-displayed (eq 1 (length windows-displayed))
-              (funcall py-split-windows-on-execute-function)
-              (display-buffer output-buffer))
-         (py-jump-to-exception err-p py-exception-buffer))
+         (py-jump-to-exception err-p py-exception-buffer)
+         ;; (and windows-displayed (eq 1 (length windows-displayed))
+         ;; (funcall py-split-windows-on-execute-function)
+         (display-buffer output-buffer)
+         (goto-char (point-max)) )
+
         ;; split and switch
         ((and py-split-windows-on-execute-p
               py-switch-buffers-on-execute-p)
          (when (< (count-windows) py-max-split-windows)
            (funcall py-split-windows-on-execute-function))
          (set-buffer output-buffer)
+         (goto-char (point-max))
          (switch-to-buffer (current-buffer))
          (display-buffer py-exception-buffer))
         ;; split, not switch
@@ -438,6 +484,8 @@ Needed when file-path names are contructed from maybe numbered buffer names like
          (if (< (count-windows) py-max-split-windows)
              (progn
                (funcall py-split-windows-on-execute-function)
+               (set-buffer output-buffer)
+               (goto-char (point-max))
                (and (bufferp py-exception-buffer)(set-buffer py-exception-buffer)
                     (switch-to-buffer (current-buffer))
                     (display-buffer output-buffer 'display-buffer-reuse-window))
@@ -448,6 +496,7 @@ Needed when file-path names are contructed from maybe numbered buffer names like
           (not py-split-windows-on-execute-p))
          (let (pop-up-windows)
            (set-buffer output-buffer)
+           (goto-char (point-max))
            (switch-to-buffer (current-buffer))))
         ;; no split, no switch
         ((not py-switch-buffers-on-execute-p)
@@ -638,6 +687,7 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 
 When optional FILE is `t', no temporary file is needed. "
   (let* ((windows-config (window-configuration-to-register 313465889))
+         (origline (save-restriction (widen) (count-lines (point-min) start)))
          (py-shell-name (or shell (py-choose-shell)))
          (py-exception-buffer (current-buffer))
          (execute-directory
@@ -676,7 +726,6 @@ When optional FILE is `t', no temporary file is needed. "
 
 (defun py-execute-buffer-finally (start end execute-directory)
   (let* ((strg (buffer-substring-no-properties start end))
-         (line (save-restriction (widen) (count-lines (point-min) start)))
          (temp (make-temp-name
                 (concat (replace-regexp-in-string py-separator-char "-" (replace-regexp-in-string (concat "^" py-separator-char) "" (replace-regexp-in-string ":" "-" py-shell-name))) "-")))
          (tempfile (concat (expand-file-name py-temp-directory) py-separator-char (replace-regexp-in-string py-separator-char "-" temp) ".py"))
@@ -749,7 +798,7 @@ When optional FILE is `t', no temporary file is needed. "
                          (buffer-substring-no-properties
                           (point-min) (point-max)))
     (sit-for 0.1)
-    (if (and (setq err-p (py-postprocess-output-buffer procbuf py-exception-buffer))
+    (if (and (setq err-p (save-excursion (py-postprocess-output-buffer procbuf)))
              (car err-p)
              (not (markerp err-p)))
         (py-jump-to-exception err-p)
@@ -847,7 +896,7 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
     (if (not (get-buffer py-output-buffer))
         (message "No output.")
 
-      (let* ((err-p (py-postprocess-output-buffer py-output-buffer py-exception-buffer))
+      (let* ((err-p (py-postprocess-output-buffer py-output-buffer))
              (line (cadr err-p)))
         (if err-p
             (when (and py-jump-on-exception line)
@@ -901,10 +950,8 @@ Returns position where output starts. "
     (setq orig (point))
     (comint-send-string proc cmd)
     (if
-        (setq err-p (py-postprocess-output-buffer (buffer-name (current-buffer))))
-        (progn
-          (py-jump-to-exception err-p procbuf origfile)
-          (py-shell-manage-windows (current-buffer) nil windows-config))
+        (setq err-p (save-excursion (py-postprocess-output-buffer procbuf)))
+        (py-shell-manage-windows py-buffer-name nil windows-config)
       (setq erg
             (py-output-filter
              (buffer-substring-no-properties orig (point))))
@@ -1339,47 +1386,10 @@ Optional OUTPUT-BUFFER and ERROR-BUFFER might be given. "
   "Internal use only - when `py-up-exception' is called in
   source-buffer, this will deliver the exception-buffer again. ")
 
-(defun py-jump-to-exception-intern (line action exception-buffer)
-  (set-buffer exception-buffer)
-  ;; (message "%s" (current-buffer) )
-  (goto-char (point-min))
-  (forward-line (1- line))
-  (switch-to-buffer (current-buffer))
-  (push-mark)
-  (and (search-forward action (line-end-position) t)
-       (and py-verbose-p (message "Exception in file %s on line %d" py-exception-buffer (1+ line)))
-       (overlay-put (make-overlay (match-beginning 0) (match-end 0))
-                    'face 'highlight)
-       (sit-for py-error-markup-delay)
-       ;; (sit-for 4)
-       (remove-overlays (match-beginning 0) (match-end 0) 'face 'highlight)
-       ;; (exchange-point-and-mark)
-))
-
-;; Result: (nil 5 "print(34ed)" " SyntaxError: invalid token ")
-(defun py-jump-to-exception (err-p exception-buffer &optional file)
-  "Jump to the Python code in FILE at LINE."
-  (let (
-        ;; (inhibit-point-motion-hooks t)
-        (file (or file (car err-p)))
-        (line (cadr err-p))
-        (action (nth 2 err-p))
-        (errm (nth 3 err-p)))
-    (cond ((and exception-buffer
-                (buffer-live-p exception-buffer))
-           ;; (pop-to-buffer exception-buffer)
-           (py-jump-to-exception-intern line action exception-buffer))
-          ((file-readable-p file)
-           (find-file file)
-           (py-jump-to-exception-intern line action (get-buffer (file-name-nondirectory file))))
-          ((buffer-live-p (get-buffer file))
-           (set-buffer file)
-           (switch-to-buffer (current-buffer))
-           (py-jump-to-exception-intern line action file))
-          (t (setq file (find-file (read-file-name "Exception file: "
-                                                   nil
-                                                   file t)))
-             (py-jump-to-exception-intern line action file)))))
+(defun py-remove-overlays-at-point ()
+  "Remove overlays as set when `py-highlight-error-source-p' is non-nil. "
+  (interactive "*")
+  (delete-overlay (car (overlays-at (point)))))
 
 (defun py-mouseto-exception (event)
   "Jump to the code which caused the Python exception at EVENT.
@@ -1457,13 +1467,17 @@ jump to the top (outermost) exception in the exception stack."
       (py-find-next-exception 'bol buffer 're-search-backward "Top"))))
 ;;;
 
-(defun py-postprocess-output-buffer (buf &optional line)
+(defun py-postprocess-output-buffer (buf)
   "Highlight exceptions found in BUF.
 If an exception occurred return error-string, otherwise return nil.  BUF must exist.
 
 Indicate LINE if code wasn't run from a file, thus remember line of source buffer "
-  (let (line file bol err-p estring ecode limit)
+  (let (file bol err-p estring ecode limit)
+    (set-buffer py-buffer-name)
+    ;; (switch-to-buffer py-buffer-name)
     (goto-char (point-max))
+    (sit-for 1)
+    ;; (message "%s" origline)
     (save-excursion
       (forward-line -1)
       (end-of-line)
@@ -1476,7 +1490,8 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
           (when (match-string-no-properties 1)
             (replace-match (buffer-name py-exception-buffer) nil nil nil 1)
             (setq file py-exception-buffer)
-            (setq line (string-to-number (match-string-no-properties 2)))
+            (and origline
+                 (replace-match (number-to-string origline) nil nil nil 2))
             (goto-char (match-beginning 0))
             ;; if no buffer-file exists, signal "Buffer", not "File"
             (save-match-data
@@ -1486,7 +1501,7 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
                           (get-buffer (file-name-nondirectory py-exception-buffer))))) (string-match "^[ \t]*File" (buffer-substring-no-properties (match-beginning 0) (match-end 0)))
                           (looking-at "[ \t]*File")
                           (replace-match "Buffer")))
-            (add-to-list 'err-p line)
+            (add-to-list 'err-p origline)
             (add-to-list 'err-p file)
             (overlay-put (make-overlay (match-beginning 0) (match-end 0))
                          'face 'highlight))

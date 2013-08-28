@@ -98,6 +98,14 @@ Default is non-nil. If nil, `py-pylint-run' offers filename from history "
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-highlight-error-source-p nil
+ "When py-execute-... commands raise an error, respective code in source-buffer will be highlighted. Default is nil.
+
+M-x `py-remove-overlays-at-point' removes that highlighting.
+ " 
+:type 'boolean
+:group 'python-mode)
+
 (defcustom py-set-pager-cat-p nil
  "If the shell environment variable $PAGER should set to `cat'.
 
@@ -4973,19 +4981,32 @@ Make sure, `py-underscore-word-syntax-p' is off\.
 
 Returns value of `py-underscore-word-syntax-p'\. .
 
-Use `M-x customize-variable' to set it permanently"])
+Use `M-x customize-variable' to set it permanently"]
 
-          ["Jump on exception"
-           (setq py-jump-on-exception
-                 (not py-jump-on-exception))
-           :help "Jump to innermost exception frame in Python output buffer\.
+           )
+
+          ("Exception"
+           
+           ["Jump on exception"
+            (setq py-jump-on-exception
+                  (not py-jump-on-exception))
+            :help "Jump to innermost exception frame in Python output buffer\.
 When this variable is non-nil and an exception occurs when running
 Python code synchronously in a subprocess, jump immediately to the
 source code of the innermost traceback frame\.
 
 Use `M-x customize-variable' to set it permanently"
-           :style toggle :selected py-jump-on-exception]
+            :style toggle :selected py-jump-on-exception]
 
+
+           ["Highlight error in source "
+            (setq py-highlight-error-source-p           
+                  (not py-highlight-error-source-p           ))
+            :help "Use `M-x customize-variable' to set it permanently"
+            :style toggle :selected py-highlight-error-source-p]
+           
+           )
+          
           ["Switch buffers on execute"
            (setq py-switch-buffers-on-execute-p
                  (not py-switch-buffers-on-execute-p))
@@ -5207,8 +5228,15 @@ Deletes all elements from list before point. "]
             :help " `py-boolswitch'
 Edit the assigment of a boolean variable, rever them.
 
-I.e. switch it from \"True\" to \"False\" and vice versa "])
+I.e. switch it from \"True\" to \"False\" and vice versa "]
 
+           ["Remove overlays at point" py-remove-overlays-at-point
+            :help " `py-remove-overlays-at-point'
+
+Remove overlays as set when `py-highlight-error-source-p' is non-nil\. . "]
+           
+           )
+          
           )
 
          "-"
