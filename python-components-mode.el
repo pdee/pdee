@@ -102,7 +102,7 @@ Default is non-nil. If nil, `py-pylint-run' offers filename from history "
  "When py-execute-... commands raise an error, respective code in source-buffer will be highlighted. Default is nil.
 
 M-x `py-remove-overlays-at-point' removes that highlighting.
- " 
+ "
 :type 'boolean
 :group 'python-mode)
 
@@ -111,17 +111,17 @@ M-x `py-remove-overlays-at-point' removes that highlighting.
 
 If `t', use `C-c C-r' to jump to beginning of output. Then scroll normally.
 
-Avoids lp:783828, \"Terminal not fully functional\", for help('COMMAND') in python-shell 
+Avoids lp:783828, \"Terminal not fully functional\", for help('COMMAND') in python-shell
 
-When non-nil, imports module `os' " 
+When non-nil, imports module `os' "
 
 :type 'boolean
 :group 'python-mode)
 
 (defcustom py-prompt-on-changed-p t
- "When called interactively, ask for save before a changed buffer is sent to interpreter. 
+ "When called interactively, ask for save before a changed buffer is sent to interpreter.
 
-Default is `t'" 
+Default is `t'"
 
 :type 'boolean
 :group 'python-mode)
@@ -515,7 +515,7 @@ In result cursor is insided emptied delimited form."
   :group 'python-mode)
 
 (defcustom py-electric-colon-active-p nil
-  "`py-electric-colon' feature.  Default is `nil'. See lp:837065 for discussions. 
+  "`py-electric-colon' feature.  Default is `nil'. See lp:837065 for discussions.
 
 See also `py-electric-colon-bobl-only' "
   :type 'boolean
@@ -524,7 +524,7 @@ See also `py-electric-colon-bobl-only' "
 
 (defcustom py-electric-colon-bobl-only t
 
-  "When inserting a colon, do not indent lines unless at beginning of block 
+  "When inserting a colon, do not indent lines unless at beginning of block
 
 See lp:1207405 resp. `py-electric-colon-active-p' "
 
@@ -2580,39 +2580,20 @@ See bug report at launchpad, lp:940812 "
         ;; support for a = b = c = 5
         ("\\([._[:word:]]+\\)\\(?:\\[[^]]+]\\)?[[:space:]]*\\(?:\\(?:\\*\\*\\|//\\|<<\\|>>\\|[%&*+/|^-]\\)?=\\)"
          (1 py-variable-name-face nil nil))
-        ;; support for a, b, c = (1, 2, 3)
+        ;; a, b, c = (1, 2, 3)
         (,(lambda (limit)
-            (let ((re
-
-                   ;; "\\([._[:word:]]+\\)[[:space:]]*,[[:space:]]*\\([._[:word:]]+\\)[[:space:]]*,[[:space:]]*\\([._[:word:]]+\\)[[:space:]]*\\(\\(?:\\*\\*\\|//\\|<<\\|>>\\|[%&*+/|^-]\\)?=\\)"
-                      
-                   (python-rx (group (+ (any word ?. ?_))) (* space)
-                              (* ?, (* space)) (group (+ (any word ?. ?_)) (* space))
-                              (* ?, (* space)) (group (+ (any word ?. ?_)) (* space)
-                              assignment-operator)
-
-                      )))
-                            (when (and (re-search-forward re limit t)
-                         (goto-char (nth 3 (match-data))))
-                (while (and (nth 1 (syntax-ppss))
-                            (re-search-forward re limit t))
-                  (goto-char (nth 3 (match-data))))
-                (if (not (nth 1 (syntax-ppss)))
-                    t
-                  (set-match-data nil)))))
-         (1 py-variable-name-face)
-         (2 py-variable-name-face)
-         (3 py-variable-name-face)
-         ;; (3 py-variable-name-face)
-         )
-
-        ;; ("\\([._[:word:]]+\\)[[:space:]]*,[[:space:]]*\\([._[:word:]]+\\)[[:space:]]*,[[:space:]]*\\([._[:word:]]+\\)[[:space:]]*\\(\\(?:\\*\\*\\|//\\|<<\\|>>\\|[%&*+/|^-]\\)?=\\)"
-        ;;  (1 py-variable-name-face)
-        ;;  (2 py-variable-name-face)
-        ;;  (3 py-variable-name-face)
-        ;;  ;; (4 font-lock-doc-face)
-        ;;  )
-
+            (let ((re (python-rx (group (+ (any word ?. ?_))) (* space)
+                                 (* ?, (* space) (+ (any word ?. ?_)) (* space))
+                                 ?, (* space) (+ (any word ?. ?_)) (* space)
+                                 assignment-operator))
+                  (res nil))
+              (while (and (setq res (re-search-forward re limit t))
+                          (goto-char (match-end 1))
+                          (nth 1 (syntax-ppss))
+                          ;; (python-syntax-context 'paren)
+                          ))
+              res))
+         (1 py-variable-name-face nil nil))
         ;; Numbers
         (,(rx symbol-start (or (1+ digit) (1+ hex-digit)) symbol-end) . py-number-face)))
 
@@ -4647,7 +4628,7 @@ In experimental state yet "
            ["Remove local Python shell enforcement, restore default" py-force-local-shell-off
             :help "Restore `py-shell-name' default value and `behaviour'. "]
 
-           
+
            ["Run `py-shell' at start"
             (setq py-start-run-py-shell
                   (not py-start-run-py-shell))
@@ -4888,15 +4869,15 @@ Use `M-x customize-variable' to set it permanently"
 `py-electric-colon' feature\.  Default is `nil'\. See lp:837065 for discussions\. . "
             :style toggle :selected py-electric-colon-active-p]
 
-           
+
            ["Electric colon at beginning of block only"
             (setq py-electric-colon-bobl-only
                   (not py-electric-colon-bobl-only))
-            :help "When inserting a colon, do not indent lines unless at beginning of block. 
+            :help "When inserting a colon, do not indent lines unless at beginning of block.
 
 Use `M-x customize-variable' to set it permanently"
             :style toggle :selected py-electric-colon-bobl-only]
-           
+
            ["Indent comment "
             (setq py-indent-comments
                   (not py-indent-comments))
@@ -4986,7 +4967,7 @@ Use `M-x customize-variable' to set it permanently"]
            )
 
           ("Exception"
-           
+
            ["Jump on exception"
             (setq py-jump-on-exception
                   (not py-jump-on-exception))
@@ -5000,13 +4981,13 @@ Use `M-x customize-variable' to set it permanently"
 
 
            ["Highlight error in source "
-            (setq py-highlight-error-source-p           
+            (setq py-highlight-error-source-p
                   (not py-highlight-error-source-p           ))
             :help "Use `M-x customize-variable' to set it permanently"
             :style toggle :selected py-highlight-error-source-p]
-           
+
            )
-          
+
           ["Switch buffers on execute"
            (setq py-switch-buffers-on-execute-p
                  (not py-switch-buffers-on-execute-p))
@@ -5234,9 +5215,9 @@ I.e. switch it from \"True\" to \"False\" and vice versa "]
             :help " `py-remove-overlays-at-point'
 
 Remove overlays as set when `py-highlight-error-source-p' is non-nil\. . "]
-           
+
            )
-          
+
           )
 
          "-"
