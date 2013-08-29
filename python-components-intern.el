@@ -48,6 +48,11 @@
         (+ (current-column) (* 2 (or indent-offset py-indent-offset))))
     (+ (current-indentation) py-indent-offset)))
 
+(defun py-line-backward-maybe ()
+  (skip-chars-backward " \t\f" (line-beginning-position))
+  (when (< 0 (abs (skip-chars-backward " \t\r\n\f")))
+    (setq line t)))
+
 (defalias 'py-count-indentation 'py-compute-indentation)
 (defun py-compute-indentation (&optional orig origline closing line nesting repeat indent-offset)
   "Compute Python indentation.
@@ -310,11 +315,6 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
                (t (current-indentation))))
         (when (and py-verbose-p (interactive-p)) (message "%s" indent))
         indent))))
-
-(defun py-line-backward-maybe ()
-  (skip-chars-backward " \t\f" (line-beginning-position))
-  (when (< 0 (abs (skip-chars-backward " \t\r\n\f")))
-    (setq line t)))
 
 (defun py-fetch-previous-indent (orig)
   "Report the preceding indent. "
@@ -1212,7 +1212,6 @@ Used by variable `which-func-functions' "
     (or def-or-class (setq def-or-class "???"))
     (when (interactive-p) (message "%s" def-or-class))
     def-or-class))
-
 
 (defun py-beginning-of-form-intern (regexp &optional iact indent orig lc)
   "Go to beginning of FORM.

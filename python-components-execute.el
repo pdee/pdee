@@ -443,7 +443,7 @@ Needed when file-path names are contructed from maybe numbered buffer names like
         (line (cadr err-p))
         (action (nth 2 err-p))
         (errm (nth 3 err-p)))
-    (cond ((and py-exception-buffer 
+    (cond ((and py-exception-buffer
                 (buffer-live-p py-exception-buffer))
            ;; (pop-to-buffer procbuf)
            (py-jump-to-exception-intern action py-exception-buffer))
@@ -460,7 +460,7 @@ Needed when file-path names are contructed from maybe numbered buffer names like
              (py-jump-to-exception-intern action file)))))
 
 (defun py-shell-manage-windows (output-buffer &optional windows-displayed windows-config)
-  (cond (err-p
+  (cond ((and (boundp 'err-p) err-p)
          (py-jump-to-exception err-p py-exception-buffer)
          ;; (and windows-displayed (eq 1 (length windows-displayed))
          ;; (funcall py-split-windows-on-execute-function)
@@ -687,7 +687,13 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 
 When optional FILE is `t', no temporary file is needed. "
   (let* ((windows-config (window-configuration-to-register 313465889))
-         (origline (save-restriction (widen) (count-lines (point-min) start)))
+         (origline
+          (save-restriction
+            (widen)
+            (count-lines
+             (point-min)
+             ;; count-lines doesn't honor current line when at BOL
+             (or (and (eq start (line-beginning-position)) (not (eobp)) (1+ start)) start))))
          (py-shell-name (or shell (py-choose-shell)))
          (py-exception-buffer (current-buffer))
          (execute-directory
@@ -707,7 +713,8 @@ When optional FILE is `t', no temporary file is needed. "
          (proc (or proc (if py-dedicated-process-p
                             (get-buffer-process (py-shell nil py-dedicated-process-p py-shell-name py-buffer-name t))
                           (or (and (boundp 'py-buffer-name) (get-buffer-process py-buffer-name))
-                              (get-buffer-process (py-shell nil py-dedicated-process-p py-shell-name (and (boundp 'py-buffer-name) py-buffer-name) t)))))))
+                              (get-buffer-process (py-shell nil py-dedicated-process-p py-shell-name (and (boundp 'py-buffer-name) py-buffer-name) t))))))
+         err-p)
     (set-buffer py-exception-buffer)
     (py-update-execute-directory proc py-buffer-name execute-directory)
     (cond (;; enforce proceeding as python-mode.el v5
@@ -717,11 +724,9 @@ When optional FILE is `t', no temporary file is needed. "
            (py-execute-ge24.3 start end filename execute-directory))
           ;; No need for a temporary filename than
           ((or file (and (not (buffer-modified-p)) filename))
-           (py-execute-file-base proc filename nil py-buffer-name filename execute-directory)
-           ;; (py-execute-file filename)
-           )
+           (py-execute-file-base proc filename nil py-buffer-name filename execute-directory))
           (t
-           ;; (message "%s" (current-buffer) )
+           ;; (message "%s" (current-buffer))
            (py-execute-buffer-finally start end execute-directory)))))
 
 (defun py-execute-buffer-finally (start end execute-directory)
@@ -820,12 +825,13 @@ When called from a programm, it accepts a string specifying a shell which will b
 Optional DEDICATED (boolean)
 "
   (interactive "r\nP")
-  (let ((py-shell-name (cond ((or py-force-py-shell-name-p (eq 4 (prefix-numeric-value shell))) (default-value 'py-shell-name))
-                             ((and (numberp shell) (not (eq 1 (prefix-numeric-value shell))))
-                              (read-from-minibuffer "(path-to-)shell-name: " (default-value 'py-shell-name)))
-                             (t shell)))
-        (py-dedicated-process-p (or dedicated py-dedicated-process-p)))
-    (py-execute-base start end)))
+  (save-excursion
+    (let ((py-shell-name (cond ((or py-force-py-shell-name-p (eq 4 (prefix-numeric-value shell))) (default-value 'py-shell-name))
+                               ((and (numberp shell) (not (eq 1 (prefix-numeric-value shell))))
+                                (read-from-minibuffer "(path-to-)shell-name: " (default-value 'py-shell-name)))
+                               (t shell)))
+          (py-dedicated-process-p (or dedicated py-dedicated-process-p)))
+      (py-execute-base start end))))
 
 (defun py-execute-region-default (start end)
   "Send the region to the systems default Python interpreter. "

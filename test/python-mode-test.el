@@ -1575,7 +1575,6 @@ aus.write(result + \"\\n\")
   (py-end-of-statement)
   (assert (eq 225 (point)) nil "py-end-of-statement-test-2 #1 failed"))
 
-
 (defun key-binding-tests (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
@@ -2332,7 +2331,6 @@ Es muß die aufzurufende Ziehungszahl als Argument angegeben werden:
   (sit-for 0.1)
   (assert (eq 231 (point)) nil "forward-sexp-test failed"))
 
-
 (defun nested-if-test (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
@@ -2354,9 +2352,48 @@ else:
   (py-beginning-of-block)
   (assert (eq 84 (point)) nil "nested-if-test #2 failed")
   (py-beginning-of-block)
-  (assert (eq 48 (point)) nil "nested-if-test #3 failed")
-  )
+  (assert (eq 48 (point)) nil "nested-if-test #3 failed"))
 
+(defun py-execute-region-error-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
+    for i in range(anzahl):
+        klauf.pylauf()
+            datei.write(str(spiel[i]) + \"\\n\")
+    print(F)
+"))
+    (py-bug-tests-intern 'py-execute-region-base arg teststring)))
+
+(defun py-execute-region-base ()
+  (goto-char 152)
+  (push-mark)
+  (end-of-line)
+  (py-execute-region (line-beginning-position) (line-end-position))
+  (set-buffer "*Python*")
+  (goto-char (point-max))
+  (switch-to-buffer (current-buffer))
+  (assert (and (re-search-backward py-shell-prompt-regexp nil t 2)
+               (search-forward "line 5")) nil "py-execute-region-test failed"))
+
+(defun py-execute-statement-error-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
+    for i in range(anzahl):
+        klauf.pylauf()
+            datei.write(str(spiel[i]) + \"\\n\")
+    print(F)
+"))
+    (py-bug-tests-intern 'py-execute-statement-base arg teststring)))
+
+(defun py-execute-statement-base ()
+  (goto-char 152)
+  (push-mark)
+  (end-of-line)
+  (py-execute-statement)
+  (set-buffer "*Python*")
+  (goto-char (point-max))
+  (switch-to-buffer (current-buffer))
+  (assert (and (re-search-backward py-shell-prompt-regexp nil t 2)
+               (search-forward "line 5")) nil "py-execute-statement-test failed"))
 
 (provide 'python-mode-test)
-

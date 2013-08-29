@@ -1431,3 +1431,5 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall IndentationError-expected-an-indented-block-when-execute-lp-1055569-test \
 --funcall missing-py-variable-name-face-lp-1215791-test \
 --funcall cls-pseudo-keyword-lp:328849-test \
+--funcall py-execute-region-error-test \
+--funcall py-execute-statement-error-test \
