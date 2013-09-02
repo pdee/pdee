@@ -268,8 +268,8 @@ Give some hints, if not."
   (if (featurep 'smart-operator)
       't
     (progn
-      (message "%s" "Don't see smart-operator.el. Make sure, it's installed. See in menu Options, Manage Emacs Packages. Or get it from source: URL: http://xwl.appspot.com/ref/smart-operator.el")
-      nil)))
+      (and (boundp 'py-smart-operator-mode-p) py-smart-operator-mode-p (message "%s" "Don't see smart-operator.el. Make sure, it's installed. See in menu Options, Manage Emacs Packages. Or get it from source: URL: http://xwl.appspot.com/ref/smart-operator.el")
+           nil))))
 
 (defun py-autopair-check ()
   "Check, if autopair-mode is available.
@@ -3258,13 +3258,13 @@ Go to the very beginning of current block. "]
 Go to beginning block, skip whitespace at BOL\. "]
                   ["Go to end of block" py-end-of-block]
                   "-"
-                  
+
                   ["Beginning of statement" py-beginning-of-statement
                    :help " `py-beginning-of-statement'
 
 Go to the initial line of a simple statement. "]
 
-                  
+
 ["End of statement" py-end-of-statement
  :help " `py-end-of-statement'
 
