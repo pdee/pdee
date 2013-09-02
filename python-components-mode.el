@@ -286,7 +286,7 @@ Give some hints, if not."
 (defvar highlight-indent-active nil)
 (defvar autopair-mode nil)
 
-(defcustom py-smart-operator-mode-p t
+(defcustom py-smart-operator-mode-p nil
   "If python-mode calls (smart-operator-mode-on)
 
 Default is non-nil. "
