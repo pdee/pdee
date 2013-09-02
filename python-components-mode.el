@@ -1893,6 +1893,7 @@ for options to pass to the DOCNAME interpreter. \"
                "for"
                "if"
                "elif"
+               "else"
                )
               "\\|"
               )
@@ -3255,18 +3256,32 @@ Go to the very beginning of current block. "]
           :help " `py-beginning-of-block'
 
 Go to beginning block, skip whitespace at BOL\. "]
+                  ["Go to end of block" py-end-of-block]
+                  "-"
+                  
+                  ["Beginning of statement" py-beginning-of-statement
+                   :help " `py-beginning-of-statement'
 
-         ["Go to end of block" py-end-of-block]
-         "-"
-         ["Go to start of def or class" (py-beginning-of-def-or-class t) t]
-         ["Move to end of def or class" (py-end-of-def-or-class t) t]
-         "-"
-         ["Move to start of def" py-beginning-of-def t]
-         ["Move to end of def"   py-end-of-def t]
-         "-"
+Go to the initial line of a simple statement. "]
 
-         ["Beginning of clause" py-beginning-of-clause
-          :help " `py-beginning-of-clause'
+                  
+["End of statement" py-end-of-statement
+ :help " `py-end-of-statement'
+
+Go to the last char of current statement.
+
+To go just beyond the final line of the current statement, use `py-down-statement-bol'. . "]
+
+                  "-"
+                  ["Go to start of def or class" (py-beginning-of-def-or-class t) t]
+                  ["Move to end of def or class" (py-end-of-def-or-class t) t]
+                  "-"
+                  ["Move to start of def" py-beginning-of-def t]
+                  ["Move to end of def"   py-end-of-def t]
+                  "-"
+
+                  ["Beginning of clause" py-beginning-of-clause
+                   :help " `py-beginning-of-clause'
 
 Go to beginning clause, skip whitespace at BOL\. "]
 

@@ -488,10 +488,6 @@ py-switch-to-shell
 ------------------
 Switch to inferior Python process buffer.
 
-python-shell-completion-complete-at-point
------------------------------------------
-Perform completion at point in inferior Python process.
-
 python-shell-completion-complete-or-indent
 ------------------------------------------
 Complete or indent depending on the context.
@@ -1675,6 +1671,8 @@ py-down
 -------
 Go to beginning one level below of compound statement or definition at point.
 
+If no statement or block below, but a delimited form --string or list-- go to it's beginning. Repeated call from there will behave like down-list.
+
 Returns position if successful, nil otherwise
 
 Referring python program structures see for example:
@@ -2524,74 +2522,63 @@ Go to the matching brace, bracket or parenthesis if on its counterpart.
 Otherwise insert the character, the key is assigned to, here `%'.
 With universal arg  insert a `%'. 
 
-;;; Named shells
-----------------
+;;; Python named shells
+-----------------------
 
 
 python
 ------
 Start an Python interpreter.
 
-Optional C-u prompts for options to pass to the Python interpreter. See `py-python-command-args'.
-   Optional DEDICATED SWITCH are provided for use from programs. 
+Optional C-u prompts for options to pass to the Python interpreter. See `py-python-command-args'. 
 
 ipython
 -------
 Start an IPython interpreter.
 
-Optional C-u prompts for options to pass to the IPython interpreter. See `py-python-command-args'.
-   Optional DEDICATED SWITCH are provided for use from programs. 
+Optional C-u prompts for options to pass to the IPython interpreter. See `py-python-command-args'. 
 
 python3
 -------
 Start an Python3 interpreter.
 
-Optional C-u prompts for options to pass to the Python3 interpreter. See `py-python-command-args'.
-   Optional DEDICATED SWITCH are provided for use from programs. 
+Optional C-u prompts for options to pass to the Python3 interpreter. See `py-python-command-args'. 
 
 python2
 -------
 Start an Python2 interpreter.
 
-Optional C-u prompts for options to pass to the Python2 interpreter. See `py-python-command-args'.
-   Optional DEDICATED SWITCH are provided for use from programs. 
+Optional C-u prompts for options to pass to the Python2 interpreter. See `py-python-command-args'. 
 
 python2\.7
 ----------
 Start an Python2.7 interpreter.
 
-Optional C-u prompts for options to pass to the Python2.7 interpreter. See `py-python-command-args'.
-   Optional DEDICATED SWITCH are provided for use from programs. 
+Optional C-u prompts for options to pass to the Python2.7 interpreter. See `py-python-command-args'. 
 
 jython
 ------
 Start an Jython interpreter.
 
-Optional C-u prompts for options to pass to the Jython interpreter. See `py-python-command-args'.
-   Optional DEDICATED SWITCH are provided for use from programs. 
-
-bpython
--------
-Start an BPython interpreter.
-
-Optional C-u prompts for options to pass to the Jython interpreter. See `py-python-command-args'.
-   Optional DEDICATED SWITCH are provided for use from programs. 
+Optional C-u prompts for options to pass to the Jython interpreter. See `py-python-command-args'. 
 
 python3\.2
 ----------
 Start an Python3.2 interpreter.
 
-Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'.
-   Optional DEDICATED SWITCH are provided for use from programs. 
+Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'. 
 
 python3\.3
 ----------
 Start an Python3.3 interpreter.
 
-Optional C-u prompts for options to pass to the Python3.3 interpreter. See `py-python-command-args'.
-   Optional DEDICATED SWITCH are provided for use from programs.
+Optional C-u prompts for options to pass to the Python3.3 interpreter. See `py-python-command-args'. 
 
-Command expects Python3.3 installed at your system. 
+bpython
+-------
+Start an Bpython interpreter.
+
+Optional C-u prompts for options to pass to the Bpython interpreter. See `py-python-command-args'. 
 
 python-dedicated
 ----------------
@@ -2635,6 +2622,18 @@ Start an unique Python3.2 interpreter in another window.
 
 Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'.
 
+python3\.3-dedicated
+--------------------
+Start an unique Python3.3 interpreter in another window.
+
+Optional C-u prompts for options to pass to the Python3.3 interpreter. See `py-python-command-args'.
+
+bpython-dedicated
+-----------------
+Start an unique Bpython interpreter in another window.
+
+Optional C-u prompts for options to pass to the Bpython interpreter. See `py-python-command-args'.
+
 python-switch
 -------------
 Switch to Python interpreter in another window.
@@ -2676,6 +2675,18 @@ python3\.2-switch
 Switch to Python3.2 interpreter in another window.
 
 Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'.
+
+python3\.3-switch
+-----------------
+Switch to Python3.3 interpreter in another window.
+
+Optional C-u prompts for options to pass to the Python3.3 interpreter. See `py-python-command-args'.
+
+bpython-switch
+--------------
+Switch to Bpython interpreter in another window.
+
+Optional C-u prompts for options to pass to the Bpython interpreter. See `py-python-command-args'.
 
 python-no-switch
 ----------------
@@ -2719,6 +2730,18 @@ Open an Python3.2 interpreter in another window, but do not switch to it.
 
 Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'.
 
+python3\.3-no-switch
+--------------------
+Open an Python3.3 interpreter in another window, but do not switch to it.
+
+Optional C-u prompts for options to pass to the Python3.3 interpreter. See `py-python-command-args'.
+
+bpython-no-switch
+-----------------
+Open an Bpython interpreter in another window, but do not switch to it.
+
+Optional C-u prompts for options to pass to the Bpython interpreter. See `py-python-command-args'.
+
 python-switch-dedicated
 -----------------------
 Switch to an unique Python interpreter in another window.
@@ -2761,6 +2784,18 @@ Switch to an unique Python3.2 interpreter in another window.
 
 Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-python-command-args'.
 
+python3\.3-switch-dedicated
+---------------------------
+Switch to an unique Python3.3 interpreter in another window.
+
+Optional C-u prompts for options to pass to the Python3.3 interpreter. See `py-python-command-args'.
+
+bpython-switch-dedicated
+------------------------
+Switch to an unique Bpython interpreter in another window.
+
+Optional C-u prompts for options to pass to the Bpython interpreter. See `py-python-command-args'.
+
 ;;; Code execution
 ------------------
 
@@ -2799,8 +2834,7 @@ Optional DEDICATED (boolean)
 
 py-execute-region-default
 -------------------------
-Send the region to the systems default Python interpreter.
-See also `py-execute-region'. 
+Send the region to the systems default Python interpreter. 
 
 py-execute-region-dedicated
 ---------------------------
@@ -2865,66 +2899,25 @@ This may be preferable to `M-x py-execute-buffer' because:
 
 py-execute-buffer-dedicated
 ---------------------------
-Send the contents of the buffer to a unique Python interpreter.
-
-If the file local variable `py-master-file' is non-nil, execute the
-named file instead of the buffer's file.
-
-If a clipping restriction is in effect, only the accessible portion of the buffer is sent. A trailing newline will be supplied if needed.
-
-With C-u user is prompted to specify another then default shell.
-See also `M-x py-execute-region'. 
+Send the contents of the buffer to a unique Python interpreter. 
 
 py-execute-buffer-switch
 ------------------------
-Send the contents of the buffer to a Python interpreter and switches to output.
-
-If the file local variable `py-master-file' is non-nil, execute the
-named file instead of the buffer's file.
-If there is a *Python* process buffer, it is used.
-If a clipping restriction is in effect, only the accessible portion of the buffer is sent. A trailing newline will be supplied if needed.
-
-With C-u user is prompted to specify another then default shell.
-See also `M-x py-execute-region'. 
+Send the contents of the buffer to a Python interpreter and switches to output. 
 
 py-execute-buffer-dedicated-switch
 ----------------------------------
 Send the contents of the buffer to an unique Python interpreter.
 
-Ignores setting of `py-switch-buffers-on-execute-p'.
-If the file local variable `py-master-file' is non-nil, execute the
-named file instead of the buffer's file.
-
-If a clipping restriction is in effect, only the accessible portion of the buffer is sent. A trailing newline will be supplied if needed.
-
-With C-u user is prompted to specify another then default shell.
-See also `M-x py-execute-region'. 
+Ignores setting of `py-switch-buffers-on-execute-p'. 
 
 py-execute-buffer
 -----------------
-Send the contents of the buffer to a Python interpreter.
-
-When called with C-u, execution through `default-value' of `py-shell-name' is forced.
-When called with C-u followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
-
-If the file local variable `py-master-file' is non-nil, execute the
-named file instead of the buffer's file.
-
-When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
-
-Optional arguments DEDICATED (boolean) and SWITCH (symbols 'no-switch/'switch) 
+Send the contents of the buffer to a Python interpreter. 
 
 py-execute-buffer-no-switch
 ---------------------------
-Send the contents of the buffer to a Python interpreter but don't switch to output.
-
-If the file local variable `py-master-file' is non-nil, execute the
-named file instead of the buffer's file.
-If there is a *Python* process buffer, it is used.
-If a clipping restriction is in effect, only the accessible portion of the buffer is sent. A trailing newline will be supplied if needed.
-
-With C-u user is prompted to specify another then default shell.
-See also `M-x py-execute-region'. 
+Send the contents of the buffer to a Python interpreter but don't switch to output. 
 
 py-execute-defun
 ----------------
@@ -3039,6 +3032,10 @@ py-beginning-of-commented-section
 ---------------------------------
 Leave upwards comments and/or empty lines. 
 
+py-continuation-offset
+----------------------
+With numeric ARG different from 1 py-continuation-offset is set to that value; returns py-continuation-offset. 
+
 py-compute-indentation
 ----------------------
 Compute Python indentation.
@@ -3048,10 +3045,6 @@ When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
 
 Optional arguments are flags resp. values set and used by `py-compute-indentation' internally
 
-
-py-continuation-offset
-----------------------
-With numeric ARG different from 1 py-continuation-offset is set to that value; returns py-continuation-offset. 
 
 py-indentation-of-statement
 ---------------------------
@@ -3076,6 +3069,8 @@ interpreter.
 
 py-shell
 --------
+:around advice: `ad-Advice-py-shell'
+
 Start an interactive Python interpreter in another window.
 Interactively, C-u 4 prompts for a buffer.
 C-u 2 prompts for `py-python-command-args'.
@@ -3087,6 +3082,7 @@ Optional string PYSHELLNAME overrides default `py-shell-name'.
 BUFFER allows specifying a name, the Python process is connected to
 When DONE is `t', `py-shell-manage-windows' is omitted
 
+(fn &optional ARGPROMPT DEDICATED SHELL BUFFER-NAME DONE)
 
 py-indent-forward-line
 ----------------------
@@ -3343,24 +3339,9 @@ Complete the python symbol before point.
 If no completion available, insert a TAB.
 Returns the completed symbol, a string, if successful, nil otherwise. 
 
-ipython-complete-py-shell-name
-------------------------------
-Complete the python symbol before point.
-
-If no completion available, insert a TAB.
-Returns the completed symbol, a string, if successful, nil otherwise.
-
-Bug: if no IPython-shell is running, fails first time due to header returned, which messes up the result. Please repeat once then. 
-
 ;;; Checker
 -----------
 
-
-clear-flymake-allowed-file-name-masks
--------------------------------------
-Remove entries with SUFFIX from `flymake-allowed-file-name-masks'.
-
-Default is "\.py\'" 
 
 pylint-flymake-mode
 -------------------
@@ -3483,116 +3464,48 @@ virtualenv-workon
 -----------------
 Issue a virtualenvwrapper-like virtualenv-workon command
 
-;;; Execute
------------
+;;; Execute forms at point
+--------------------------
 
 
 py-execute-statement
 --------------------
-Send statement at point to a Python interpreter.
-
-When called with C-u, execution through `default-value' of `py-shell-name' is forced.
-See also `py-force-py-shell-name-p'.
-
-When called with C-u followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
-
-When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
-
-Optional arguments DEDICATED (boolean) and SWITCH (symbols 'no-switch/'switch)
+Send statement at point to a Python interpreter. 
 
 py-execute-block
 ----------------
-Send block at point to a Python interpreter.
-
-When called with C-u, execution through `default-value' of `py-shell-name' is forced.
-See also `py-force-py-shell-name-p'.
-
-When called with C-u followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
-
-When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
-
-Optional arguments DEDICATED (boolean) and SWITCH (symbols 'no-switch/'switch)
+Send block at point to a Python interpreter. 
 
 py-execute-block-or-clause
 --------------------------
-Send block-or-clause at point to a Python interpreter.
-
-When called with C-u, execution through `default-value' of `py-shell-name' is forced.
-See also `py-force-py-shell-name-p'.
-
-When called with C-u followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
-
-When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
-
-Optional arguments DEDICATED (boolean) and SWITCH (symbols 'no-switch/'switch)
+Send block-or-clause at point to a Python interpreter. 
 
 py-execute-def
 --------------
-Send def at point to a Python interpreter.
-
-When called with C-u, execution through `default-value' of `py-shell-name' is forced.
-See also `py-force-py-shell-name-p'.
-
-When called with C-u followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
-
-When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
-
-Optional arguments DEDICATED (boolean) and SWITCH (symbols 'no-switch/'switch)
+Send def at point to a Python interpreter. 
 
 py-execute-class
 ----------------
-Send class at point to a Python interpreter.
-
-When called with C-u, execution through `default-value' of `py-shell-name' is forced.
-See also `py-force-py-shell-name-p'.
-
-When called with C-u followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
-
-When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
-
-Optional arguments DEDICATED (boolean) and SWITCH (symbols 'no-switch/'switch)
+Send class at point to a Python interpreter. 
 
 py-execute-def-or-class
 -----------------------
-Send def-or-class at point to a Python interpreter.
-
-When called with C-u, execution through `default-value' of `py-shell-name' is forced.
-See also `py-force-py-shell-name-p'.
-
-When called with C-u followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
-
-When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
-
-Optional arguments DEDICATED (boolean) and SWITCH (symbols 'no-switch/'switch)
+Send def-or-class at point to a Python interpreter. 
 
 py-execute-expression
 ---------------------
-Send expression at point to a Python interpreter.
-
-When called with C-u, execution through `default-value' of `py-shell-name' is forced.
-See also `py-force-py-shell-name-p'.
-
-When called with C-u followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
-
-When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
-
-Optional arguments DEDICATED (boolean) and SWITCH (symbols 'no-switch/'switch)
+Send expression at point to a Python interpreter. 
 
 py-execute-partial-expression
 -----------------------------
-Send partial-expression at point to a Python interpreter.
-
-When called with C-u, execution through `default-value' of `py-shell-name' is forced.
-See also `py-force-py-shell-name-p'.
-
-When called with C-u followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
-
-When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
-
-Optional arguments DEDICATED (boolean) and SWITCH (symbols 'no-switch/'switch)
+Send partial-expression at point to a Python interpreter. 
 
 ;;; Execute line
 ----------------
+
+
+;;; Execute file commands
+-------------------------
 
 
 py-execute-file-python
@@ -6222,6 +6135,10 @@ Send line at point to Bpython unique interpreter and switch to result.
 ------------------------------------
 
 
+py-remove-overlays-at-point
+---------------------------
+Remove overlays as set when `py-highlight-error-source-p' is non-nil. 
+
 py-down-exception
 -----------------
 Go to the next line down in the traceback.
@@ -6236,6 +6153,11 @@ Go to the previous line up in the traceback.
 
 With C-u (programmatically, optional argument TOP)
 jump to the top (outermost) exception in the exception stack.
+
+py-mouseto-exception
+--------------------
+Jump to the code which caused the Python exception at EVENT.
+EVENT is usually a mouse click.
 
 py-goto-exception
 -----------------

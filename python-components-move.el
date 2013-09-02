@@ -396,10 +396,7 @@ http://docs.python.org/reference/compound_stmts.html
 
 (defun py-eos-handle-comment-start ()
   (end-of-line)
-  (forward-comment 99999)
-  ;; (skip-chars-forward (concat "^" comment-start) (line-end-position))
-  ;; (skip-chars-backward " \t\r\n\f" (line-beginning-position))
-  )
+  (forward-comment 99999))
 
 (defun py-eos-handle-string-start (this)
   "Internal use, find possible end of statement from string start. "
@@ -485,7 +482,7 @@ To go just beyond the final line of the current statement, use `py-down-statemen
         (while (and (eq (char-before (point)) ?\\ )
                     (py-escaped))
           (forward-line 1)
-          (end-of-line) 
+          (end-of-line)
           (skip-chars-backward " \t\r\n\f" (line-beginning-position)))
         (unless (eobp)
           (py-end-of-statement orig done origline)))

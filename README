@@ -157,8 +157,13 @@ different value of `fill-column' than emacs-wide
 
 ;;;;;;;;;
 
-External packages
+- customizable `py-output-buffer'.
 
-emacs-mirror reported conflicts wrt to versions number
-of external packages bundled here; removed
-smart-operator.el and autopair.el.
+  `py-execute-...'-commands arrive in buffer created by
+  `py-shell'. It's name is composed WRT to Python
+  version used, it's path etc. If boolean
+  `py-enforce-output-buffer-p' is non-nil, value of
+  `py-output-buffer' is taken instead.
+  
+
+
