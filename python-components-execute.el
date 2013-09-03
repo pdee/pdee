@@ -1482,8 +1482,7 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
     (set-buffer py-buffer-name)
     ;; (switch-to-buffer py-buffer-name)
     (goto-char (point-max))
-    (sit-for 1)
-    ;; (message "%s" origline)
+    (sit-for 0.1)
     (save-excursion
       (forward-line -1)
       (end-of-line)
