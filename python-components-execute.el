@@ -693,7 +693,7 @@ When optional FILE is `t', no temporary file is needed. "
             (count-lines
              (point-min)
              ;; count-lines doesn't honor current line when at BOL
-             (or (and (eq start (line-beginning-position)) (not (eobp)) (1+ start)) start))))
+             (or (and (eq start (line-beginning-position)) (not (eobp)) (1+ start)) (or start (1+ (line-beginning-position) ))))))
          (py-shell-name (or shell (py-choose-shell)))
          (py-exception-buffer (current-buffer))
          (execute-directory
