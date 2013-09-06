@@ -38,6 +38,7 @@
 
 (setq bug-numbered-tests
       (list
+       'C-c-C-c-lp:1221310-and-store-result-test
        'Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test
        'Bogus-dedent-when-typing-colon-in-dictionary-literal-lp-1197171-test
        'python-mode-very-slow-lp-1107037-test
@@ -1657,7 +1658,7 @@ if foo:
 (defun execute-indented-code-lp:828314-base ()
   (let ((debug-on-error t))
     (goto-char 28)
-    (assert (eq nil (py-execute-line)) nil "execute-indented-code-lp:828314-test failed")))
+    (assert (py-execute-line) nil "execute-indented-code-lp:828314-test failed")))
 
 (defun wrong-indentation-of-function-arguments-lp:840891-test (&optional arg)
   (interactive "p")
@@ -2306,7 +2307,7 @@ print(u'\\xA9')
 (defun execute-buffer-ipython-fails-lp:928087-base ()
   (let (py-split-windows-on-execute-p
         py-shell-switch-buffers-on-execute-p)
-    (assert (not (py-execute-buffer)) nil "execute-buffer-ipython-fails-lp:928087-test failed")))
+    (assert (py-execute-buffer) nil "execute-buffer-ipython-fails-lp:928087-test failed")))
 
 (defun fourth-level-blocks-indent-incorrectly-lp:939577-test (&optional arg)
   (interactive "p")
@@ -2380,7 +2381,7 @@ I am using version 6.0.4
 
 (defun py-shell-invoking-python3-lp:835151-base ()
   (setq py-shell-name "python3")
-  (assert (eq nil (py-execute-buffer)) nil "py-shell-invoking-python3-lp:835151-test failed"))
+  (assert (py-execute-buffer) nil "py-shell-invoking-python3-lp:835151-test failed"))
 
 (defun py-shell-invoking-python2-lp:835151-test (&optional arg)
   (interactive "p")
@@ -2389,7 +2390,7 @@ I am using version 6.0.4
 
 (defun py-shell-invoking-python2-lp:835151-base ()
   (setq py-shell-name "python2")
-  (assert (eq nil (py-execute-buffer)) nil "py-shell-invoking-python2-lp:835151-test failed"))
+  (assert (py-execute-buffer) nil "py-shell-invoking-python2-lp:835151-test failed"))
 
 (defun py-shell-invoking-python2.7-lp:835151-test (&optional arg)
   (interactive "p")
@@ -2398,7 +2399,7 @@ I am using version 6.0.4
 
 (defun py-shell-invoking-python2.7-lp:835151-base ()
   (setq py-shell-name "python2.7")
-  (assert (eq nil (py-execute-buffer)) nil "py-shell-invoking-python2.7-lp:835151-test failed"))
+  (assert (py-execute-buffer) nil "py-shell-invoking-python2.7-lp:835151-test failed"))
 
 (defun py-shell-invoking-jython-lp:835151-test (&optional arg)
   (interactive "p")
@@ -2408,7 +2409,7 @@ I am using version 6.0.4
 (defun py-shell-invoking-jython-lp:835151-base ()
   (let ((py-shell-name "jython")
         (sit-for 0.1))
-    (assert (eq nil (py-execute-buffer)) nil "py-shell-invoking-jython-lp:835151-test failed")))
+    (assert (py-execute-buffer) nil "py-shell-invoking-jython-lp:835151-test failed")))
 
 (defun py-shell-invoking-python3.2-lp:835151-test (&optional arg)
   (interactive "p")
@@ -2417,7 +2418,7 @@ I am using version 6.0.4
 
 (defun py-shell-invoking-python3.2-lp:835151-base ()
   (setq py-shell-name "python3.2")
-  (assert (eq nil (py-execute-buffer)) nil "py-shell-invoking-python3.2-lp:835151-test failed"))
+  (assert (py-execute-buffer) nil "py-shell-invoking-python3.2-lp:835151-test failed"))
 
 (defun py-mark-block-clause-misbehave-lp:949310-test (&optional arg)
   (interactive "p")
@@ -2745,7 +2746,7 @@ print(\"I'm the temp-buffer-affected-by-py-shell-name-lp:958987-test\")
 
 (defun temp-buffer-affected-by-py-shell-name-lp:958987-base ()
   (message "%s" py-shell-name)
-  (assert (eq nil (py-execute-buffer)) nil "temp-buffer-affected-by-py-shell-name-lp:958987-test failed"))
+  (assert (py-execute-buffer) nil "temp-buffer-affected-by-py-shell-name-lp:958987-test failed"))
 
 (defun toggle-force-local-shell-lp:988091-test (&optional arg)
   (interactive "p")
@@ -2793,6 +2794,7 @@ os.chmod
 (defun py-describe-symbol-fails-on-modules-lp:919719-base ()
   (goto-char 61)
   (py-describe-symbol)
+  (sit-for 0.1)
   (set-buffer "*Python-Help*")
   (goto-char (point-min))
   (assert (looking-at "Help on built-in function chmod in os:")  nil "py-describe-symbol-fails-on-modules-lp:919719-test failed"))
@@ -3122,7 +3124,8 @@ for something:
   (py-bug-tests-intern 'complaint-about-non-ASCII-character-lp-1042949-base arg teststring)))
 
 (defun complaint-about-non-ASCII-character-lp-1042949-base ()
-  (assert (not (py-execute-buffer)) nil "complaint-about-non-ASCII-character-lp-1042949-test failed"))
+  (sit-for 0.1)
+  (assert (py-execute-buffer) nil "complaint-about-non-ASCII-character-lp-1042949-test failed"))
 
 (defun dont-indent-code-unnecessarily-lp-1048778-test (&optional arg)
   (interactive "p")
@@ -4419,7 +4422,8 @@ print(\"I'm the \\\"impossible-to-execute-a-buffer-with-from-future-imports-lp-1
   (py-bug-tests-intern 'impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-base arg teststring)))
 
 (defun impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-base ()
-    (assert (not (py-execute-buffer)) nil "impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test failed"))
+  (sit-for 0.1)
+  (assert (py-execute-buffer) nil "impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test failed"))
 
 (defun several-new-bugs-with-paragraph-filling-lp-1066489-test (&optional arg)
   (interactive "p")
@@ -4482,8 +4486,8 @@ def foo():
   (py-bug-tests-intern 'does-not-dedent-regions-lp-1072869-base arg teststring)))
 
 (defun does-not-dedent-regions-lp-1072869-base ()
-  (assert (eq nil (py-execute-buffer-ipython)) nil "does-not-dedent-regions-lp-1072869-test #1 failed")
-  (assert (eq nil (py-execute-buffer-python)) nil "does-not-dedent-regions-lp-1072869-test #2 failed")
+  (assert (py-execute-buffer-ipython) nil "does-not-dedent-regions-lp-1072869-test #1 failed")
+  (assert (py-execute-buffer-python) nil "does-not-dedent-regions-lp-1072869-test #2 failed")
   )
 
 (defun inconvenient-py-switch-buffers-on-execute-lp-1073-test (&optional arg)
@@ -4670,7 +4674,7 @@ print(i)
 
 (defun py-execute-buffer-python3-looks-broken-lp-1085386-base ()
   (let ((py-use-current-dir-when-execute-p t))
-    (assert (eq nil (py-execute-buffer-python3)) nil "py-execute-buffer-python3-looks-broken-lp-1085386-test failed")))
+    (assert (py-execute-buffer-python3) nil "py-execute-buffer-python3-looks-broken-lp-1085386-test failed")))
 
 (defun wrong-indent-after-asignment-lp-1087404-test (&optional arg)
   (interactive "p")
@@ -5813,7 +5817,7 @@ wrong_indent
   (py-bug-tests-intern 'multibuffer-mayhem-lp-1162272.py-base arg teststring)))
 
 (defun multibuffer-mayhem-lp-1162272.py-base ()
-    (assert (not (py-execute-buffer)) nil "multibuffer-mayhem-lp-1162272.py-test failed"))
+    (assert (py-execute-buffer) nil "multibuffer-mayhem-lp-1162272.py-test failed"))
 
 (defun incorrect-indentation-with-tertiary-lp-1189604-test (&optional arg)
   (interactive "p")
@@ -6015,7 +6019,7 @@ def foo(bar):
 ;; # html
 ;; #
 ;; # The symptom is that in the code:
-;; 
+;;
 ;;     # no s'ha trobat cap oferta, l'alumne queda sense assignar
 ;;     # (alumne.assignacio == None)
 ;;     self._logger.info(
@@ -6023,7 +6027,7 @@ def foo(bar):
 ;;          alumne.id
 ;;          )
 ;;     alumne.assignacio = None
-;; 
+;;
 ;; # 'alumne.assignacio' isn't properly colorized after visiting the
 ;; # file.
 ;; #
@@ -6032,7 +6036,7 @@ def foo(bar):
 ;; # emacs -Q /tmp/bugtest.py
 ;; #
 ;; # type:
-;; 
+;;
 ;; # a =
 ;; variable = \"value\"
 ;; a = b = c = 5
@@ -6070,7 +6074,7 @@ a, b, c = (1, 2, 3)
 (defun missing-py-variable-name-face-lp-1215791-base ()
   ;; (goto-char 6)
   (goto-char 27)
-  (sit-for 0.1) 
+  (sit-for 0.1)
   (assert (eq (get-char-property (point) 'face) 'py-variable-name-face) nil "missing-py-variable-name-face-lp-1215791-test #1 failed")
   (goto-char 44)
   (assert (eq (get-char-property (point) 'face) 'py-variable-name-face) nil "missing-py-variable-name-face-lp-1215791-test #2 failed")
@@ -6078,6 +6082,19 @@ a, b, c = (1, 2, 3)
   (assert (eq (get-char-property (point) 'face) 'py-variable-name-face) nil "missing-py-variable-name-face-lp-1215791-test #3 failed")
 
   )
+
+(defun C-c-C-c-lp:1221310-and-store-result-test (&optional arg)
+  (interactive "p")
+   (let ((teststring "print(\"C-c-C-c-lp:1221310-and-store-result-test\")
+"))
+  (py-bug-tests-intern 'C-c-C-c-lp:1221310-and-store-result-base arg teststring)))
+
+(defun C-c-C-c-lp:1221310-and-store-result-base ()
+  (write-file (concat py-temp-directory "/lp-1221310.py"))
+  (assert (let ((py-store-result-p t))
+            (sit-for 0.1)
+            (string= "C-c-C-c-lp:1221310-and-store-result-test" (py-execute-base))) nil "C-c-C-c-lp:1221310-and-store-result-test failed"))
+
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

@@ -4675,7 +4675,9 @@ if __name__ == '__main__'
 Default is non-nil. "
             :style toggle :selected py-if-name-main-permission-p]
 
-           ["Store result" py-store-result-p
+           ["Store result"
+            (setq py-store-result-p
+                  (not py-store-result-p))
             :help " `py-store-result-p'
 
 When non-nil, put resulting string of `py-execute-\.\.\.' into kill-ring, so it might be yanked\. . "

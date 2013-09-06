@@ -224,7 +224,7 @@
 		    ((region-active-p)
 		     (copy-marker (region-end)))
 		    (t (copy-marker (line-end-position)))))
-	 (line (count-lines (point-min) (point)))
+	 (line (count-lines (point-min) (if (eq (point) (line-beginning-position)) (1+ (point)) (point))))
          (comment-end-not-empty (not (string= "" comment-end)))
          ;; comment-add should be set by progmodes
 	 (add (if comment-end-not-empty 0 comment-add))

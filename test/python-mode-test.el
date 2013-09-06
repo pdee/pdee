@@ -1391,7 +1391,7 @@ print(\"I'm the switch-windows-on-execute-p-test\")
 (defun switch-windows-on-execute-p-base ()
   (let ((py-shell-switch-buffers-on-execute-p t)
         (erg (buffer-name)))
-    (assert (eq nil (py-execute-buffer)) nil "switch-windows-on-execute-p-test failed")))
+    (assert (py-execute-buffer) nil "switch-windows-on-execute-p-test failed")))
 
 (defun split-windows-on-execute-p-test (&optional arg load-branch-function)
   (interactive "p")

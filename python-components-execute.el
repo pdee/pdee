@@ -686,14 +686,16 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
   "Select the handler.
 
 When optional FILE is `t', no temporary file is needed. "
-  (let* ((windows-config (window-configuration-to-register 313465889))
+  (let* ((start (or start (and (use-region-p) (region-beginning)) (point-min)))
+         (end (or end (and (use-region-p) (region-end)) (point-max)))
+         (windows-config (window-configuration-to-register 313465889))
          (origline
           (save-restriction
             (widen)
             (count-lines
              (point-min)
              ;; count-lines doesn't honor current line when at BOL
-             (or (and (eq start (line-beginning-position)) (not (eobp)) (1+ start)) (or start (1+ (line-beginning-position) ))))))
+             end)))
          (py-shell-name (or shell (py-choose-shell)))
          (py-exception-buffer (current-buffer))
          (execute-directory
@@ -708,7 +710,7 @@ When optional FILE is `t', no temporary file is needed. "
                 ((getenv "VIRTUAL_ENV"))
                 (t (getenv "HOME"))))
          (py-buffer-name (or py-buffer-name (py-buffer-name-prepare)))
-         (filename (and filename (expand-file-name filename)))
+         (filename (or (and filename (expand-file-name filename)) (and (not (buffer-modified-p)) (buffer-file-name))))
          (py-orig-buffer-or-file (or filename (current-buffer)))
          (proc (or proc (if py-dedicated-process-p
                             (get-buffer-process (py-shell nil py-dedicated-process-p py-shell-name py-buffer-name t))
@@ -723,7 +725,7 @@ When optional FILE is `t', no temporary file is needed. "
           (py-execute-no-temp-p
            (py-execute-ge24.3 start end filename execute-directory))
           ;; No need for a temporary filename than
-          ((or file (and (not (buffer-modified-p)) filename))
+          (filename
            (py-execute-file-base proc filename nil py-buffer-name filename execute-directory))
           (t
            ;; (message "%s" (current-buffer))
@@ -757,7 +759,7 @@ When optional FILE is `t', no temporary file is needed. "
     (write-region (point-min) (point-max) tempfile nil t nil 'ask)
     (set-buffer-modified-p 'nil)
     (unwind-protect
-        (py-execute-file-base proc tempfile nil py-buffer-name py-orig-buffer-or-file execute-directory)
+        (setq erg (py-execute-file-base proc tempfile nil py-buffer-name py-orig-buffer-or-file execute-directory))
       (sit-for 0.1)
       (and py-cleanup-temporary
            (py-delete-temporary tempfile tempbuf)))
@@ -771,7 +773,7 @@ When optional FILE is `t', no temporary file is needed. "
   (let* ((start (copy-marker start))
          (end (copy-marker end))
          (py-exception-buffer (current-buffer))
-         (line (count-lines (point-min) start))
+         (line (count-lines (point-min) (if (eq start (line-beginning-position)) (1+ start) start)))
          (strg (buffer-substring-no-properties start end))
          (tempfile (or (buffer-file-name) (concat (expand-file-name py-temp-directory) py-separator-char (replace-regexp-in-string py-separator-char "-" "temp") ".py")))
 
@@ -953,6 +955,8 @@ Returns position where output starts. "
          (msg (and py-verbose-p (format "## executing %s...\n" (or origfile filename))))
          erg orig err-p)
     (set-buffer procbuf)
+    (goto-char (point-max)) 
+    ;; (switch-to-buffer (current-buffer)) 
     (setq orig (point))
     (comint-send-string proc cmd)
     (if
@@ -960,7 +964,7 @@ Returns position where output starts. "
         (py-shell-manage-windows py-buffer-name nil windows-config)
       (setq erg
             (py-output-filter
-             (buffer-substring-no-properties orig (point))))
+             (buffer-substring-no-properties orig (point-max))))
       (py-shell-manage-windows (current-buffer) nil windows-config)
       erg)))
 
