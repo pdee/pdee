@@ -1105,6 +1105,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-font-lock-keywords) nil \"py-font-lock-keywords not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall py-execute-file-test \
 --funcall C-c-C-c-lp:1221310-and-store-result-test \
 --funcall beginning-of-block-fails-from-wrong-indent-test \
 --funcall cascading-indent-lp-1101962-test \
@@ -1144,8 +1145,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-end-of-block-or-clause-test \
 --funcall mark-decorators-lp:328851-test \
 --funcall py-expression-index-test \
---funcall py-execute-buffer-python3-switch-test \
---funcall py-execute-buffer-python2-switch-test \
 --funcall py-guess-indent-offset-dont-detect-indent-of-2-lp-1027389-test \
 --funcall key-binding-tests \
 --funcall py-narrow-to-defun-lp-1020531-test \
@@ -1270,7 +1269,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 \
 --funcall dict-error-test \
 --funcall py-install-directory-path-test \
---funcall py-execute-region-python3-no-switch-test \
 --funcall py-end-of-print-statement-test \
 --funcall py-describe-symbol-fails-on-modules-lp:919719-test \
 --funcall py-find-imports-lp-1023236-test \
@@ -1291,19 +1289,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall indent-region-lp:997958-test \
 --funcall wrong-type-argument-lp:901541-test \
 --funcall indentation-bug-inside-docstrings-lp:899455-test \
---funcall script-buffer-appears-instead-of-python-shell-buffer-lp:957561-test \
---funcall completion-fails-in-python-script-r989-lp:1004613-test \
---funcall augmented-assigment-test \
---funcall py-fill-string-django-test \
---funcall py-fill-string-onetwo-test \
---funcall py-fill-string-pep-257-test \
---funcall py-fill-string-pep-257-nn-test \
---funcall py-fill-string-symmetric-test \
---funcall forward-sexp-test \
 --funcall comments-start-a-new-line-lp-1092847-n1-test \
---funcall py-execute-block-python-test \
---funcall py-execute-block-or-clause-python-test \
---funcall master-file-not-honored-lp:794850-test \
 --funcall inconvenient-window-splitting-behavior-python-lp-1018996-test \
 --funcall fill-paragraph-in-docstring-lp-1161232-test \
 --funcall no-completion-at-all-lp:1001328-test \
@@ -1437,3 +1423,18 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-execute-block-ipython-test \
 --funcall py-execute-block-or-clause-ipython-test \
 --funcall py-execute-line-ipython-test \
+--funcall py-execute-buffer-python3-switch-test \
+--funcall py-execute-buffer-python2-switch-test \
+--funcall py-execute-region-python3-no-switch-test \
+--funcall script-buffer-appears-instead-of-python-shell-buffer-lp:957561-test \
+--funcall completion-fails-in-python-script-r989-lp:1004613-test \
+--funcall augmented-assigment-test \
+--funcall py-fill-string-django-test \
+--funcall py-fill-string-onetwo-test \
+--funcall py-fill-string-pep-257-test \
+--funcall py-fill-string-pep-257-nn-test \
+--funcall py-fill-string-symmetric-test \
+--funcall forward-sexp-test \
+--funcall py-execute-block-python-test \
+--funcall py-execute-block-or-clause-python-test \
+--funcall master-file-not-honored-lp:794850-test \

@@ -436,8 +436,7 @@ def foo():
 
     datei.write(\"treffer; schwarz; gruen; rot; pair; impair; passe; manque; spiel\\n\")
     print(4+5d)"
-    (switch-to-buffer (current-buffer)) 
+    (switch-to-buffer (current-buffer))
     (goto-char (point-max))
     ;; error should report its just a buffer, not a file
     (should (string-match "SyntaxError: invalid syntax" (py-execute-statement)))))
-

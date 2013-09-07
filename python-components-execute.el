@@ -36,7 +36,7 @@
 (defun py-shell-execute-string-now (string &optional shell buffer proc)
   "Send to Python interpreter process PROC \"exec STRING in {}\".
 and return collected output"
-  (let* ((procbuf (or buffer (process-buffer proc) (py-shell nil nil shell)))
+  (let* ((procbuf (or buffer (process-buffer proc) (py-shell nil nil shell t)))
 
          (proc (or proc (get-buffer-process procbuf)))
 	 (cmd (format "exec '''%s''' in {}"
@@ -460,53 +460,54 @@ Needed when file-path names are contructed from maybe numbered buffer names like
              (py-jump-to-exception-intern action file)))))
 
 (defun py-shell-manage-windows (output-buffer &optional windows-displayed windows-config)
-  (cond ((and (boundp 'err-p) err-p)
-         (py-jump-to-exception err-p py-exception-buffer)
-         ;; (and windows-displayed (eq 1 (length windows-displayed))
-         ;; (funcall py-split-windows-on-execute-function)
-         (display-buffer output-buffer)
-         (goto-char (point-max)) )
+  (let (val)
+    (cond ((and (boundp 'err-p) err-p)
+           (py-jump-to-exception err-p py-exception-buffer)
+           ;; (and windows-displayed (eq 1 (length windows-displayed))
+           ;; (funcall py-split-windows-on-execute-function)
+           (display-buffer output-buffer)
+           (goto-char (point-max)))
 
-        ;; split and switch
-        ((and py-split-windows-on-execute-p
-              py-switch-buffers-on-execute-p)
-         (when (< (count-windows) py-max-split-windows)
-           (funcall py-split-windows-on-execute-function))
-         (set-buffer output-buffer)
-         (goto-char (point-max))
-         (switch-to-buffer (current-buffer))
-         (display-buffer py-exception-buffer))
-        ;; split, not switch
-        ((and
-          py-split-windows-on-execute-p
-          (not py-switch-buffers-on-execute-p))
-         (delete-other-windows)
-         (if (< (count-windows) py-max-split-windows)
-             (progn
-               (funcall py-split-windows-on-execute-function)
-               (set-buffer output-buffer)
-               (goto-char (point-max))
-               (and (bufferp py-exception-buffer)(set-buffer py-exception-buffer)
-                    (switch-to-buffer (current-buffer))
-                    (display-buffer output-buffer 'display-buffer-reuse-window))
-               (display-buffer output-buffer 'display-buffer-reuse-window))))
-        ;; no split, switch
-        ((and
-          py-switch-buffers-on-execute-p
-          (not py-split-windows-on-execute-p))
-         (let (pop-up-windows)
+          ;; split and switch
+          ((and py-split-windows-on-execute-p
+                py-switch-buffers-on-execute-p)
+           (when (< (count-windows) py-max-split-windows)
+             (funcall py-split-windows-on-execute-function))
            (set-buffer output-buffer)
            (goto-char (point-max))
-           (switch-to-buffer (current-buffer))))
-        ;; no split, no switch
-        ((not py-switch-buffers-on-execute-p)
-         ;; (if (equal (window-list-1) windows-displayed)
-         ;; (jump-to-register 313465889)
-         (let (pop-up-windows)
-           (set-buffer py-exception-buffer)
-           (switch-to-buffer (current-buffer)))
-         ;;)
-         )))
+           (switch-to-buffer (current-buffer))
+           (display-buffer py-exception-buffer))
+          ;; split, not switch
+          ((and
+            py-split-windows-on-execute-p
+            (not py-switch-buffers-on-execute-p))
+           (delete-other-windows)
+           (if (< (count-windows) py-max-split-windows)
+               (progn
+                 (funcall py-split-windows-on-execute-function)
+                 (set-buffer output-buffer)
+                 (goto-char (point-max))
+                 (and (bufferp py-exception-buffer)(set-buffer py-exception-buffer)
+                      (switch-to-buffer (current-buffer))
+                      (display-buffer output-buffer 'display-buffer-reuse-window))
+                 (display-buffer output-buffer 'display-buffer-reuse-window))))
+          ;; no split, switch
+          ((and
+            py-switch-buffers-on-execute-p
+            (not py-split-windows-on-execute-p))
+           (let (pop-up-windows)
+             (set-buffer output-buffer)
+             (goto-char (point-max))
+             (switch-to-buffer (current-buffer))))
+          ;; no split, no switch
+          ((not py-switch-buffers-on-execute-p)
+           ;; (if (equal (window-list-1) windows-displayed)
+           ;; (jump-to-register 313465889)
+           (let (pop-up-windows)
+             (and (setq val (get-register 313465889))(and (consp val) (window-configuration-p (car val))(markerp (cadr val)))(marker-buffer (cadr val))
+             (jump-to-register 313465889))))
+          ;;)
+          )))
 
 (defun py-report-executable (py-buffer-name)
   (let ((erg (downcase (replace-regexp-in-string
@@ -656,10 +657,10 @@ When DONE is `t', `py-shell-manage-windows' is omitted
     (when py-shell-hook (run-hooks 'py-shell-hook))
     py-buffer-name))
 
-(defun py-shell-get-process (&optional argprompt py-dedicated-process-p shell switch py-buffer-name done)
+(defun py-shell-get-process (&optional argprompt py-dedicated-process-p shell switch py-buffer-name)
   "Get appropriate Python process for current buffer and return it."
   (interactive)
-  (let ((erg (get-buffer-process (py-shell argprompt py-dedicated-process-p shell py-buffer-name done))))
+  (let ((erg (get-buffer-process (py-shell argprompt py-dedicated-process-p shell py-buffer-name t))))
     (when (interactive-p) (message "%S" erg))
     erg))
 
@@ -917,12 +918,18 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
   "Fix offline amount, make error point at the corect line. "
   (insert (make-string (- line (count-lines (point-min) (point))) 10)))
 
-(defun py-execute-file (file)
+(defun py-execute-file (filename &optional proc cmd
+                                 procbuf origfile execute-directory)
   "When called interactively, user is prompted for filename. "
   (interactive "fFilename: ")
-  (let (erg)
-    (if (file-readable-p file)
-        (setq erg (py-execute-base nil nil nil file nil (or (and (boundp 'py-orig-buffer-or-file) py-orig-buffer-or-file) file)))
+  (let ((windows-config (window-configuration-to-register 313465889))
+        (py-exception-buffer filename)
+        erg)
+    (if (file-readable-p filename)
+        (if py-store-result-p
+            (setq erg (py-execute-file-base proc (expand-file-name filename) cmd procbuf origfile execute-directory))
+          (py-execute-file-base proc (expand-file-name filename) cmd
+                                procbuf origfile execute-directory))
       (message "%s not readable. %s" file "Do you have write permissions?"))
     erg))
 
@@ -953,18 +960,21 @@ comint believe the user typed this string so that
 Returns position where output starts. "
   (let* ((cmd (or cmd (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" filename filename)))
          (msg (and py-verbose-p (format "## executing %s...\n" (or origfile filename))))
+         (procbuf (or procbuf (py-shell nil nil nil procbuf t)))
+         (proc (or proc (get-buffer-process procbuf)))
          erg orig err-p)
     (set-buffer procbuf)
-    (goto-char (point-max)) 
-    ;; (switch-to-buffer (current-buffer)) 
+    (goto-char (point-max))
+    ;; (switch-to-buffer (current-buffer))
     (setq orig (point))
     (comint-send-string proc cmd)
     (if
         (setq err-p (save-excursion (py-postprocess-output-buffer procbuf)))
         (py-shell-manage-windows py-buffer-name nil windows-config)
-      (setq erg
-            (py-output-filter
-             (buffer-substring-no-properties orig (point-max))))
+      (and py-store-result-p
+           (setq erg
+                 (py-output-filter
+                  (buffer-substring-no-properties orig (point-max)))))
       (py-shell-manage-windows (current-buffer) nil windows-config)
       erg)))
 
@@ -1113,7 +1123,7 @@ This may be preferable to `\\[py-execute-buffer]' because:
     (if file
         (let ((proc (or
                      (ignore-errors (get-process (file-name-directory shell)))
-                     (get-buffer-process (py-shell argprompt py-dedicated-process-p shell (or shell (default-value 'py-shell-name)))))))
+                     (get-buffer-process (py-shell argprompt py-dedicated-process-p shell (or shell (default-value 'py-shell-name)) t)))))
           ;; Maybe save some buffers
           (save-some-buffers (not py-ask-about-save) nil)
           (py-execute-file-base proc file
@@ -1483,7 +1493,7 @@ If an exception occurred return error-string, otherwise return nil.  BUF must ex
 
 Indicate LINE if code wasn't run from a file, thus remember line of source buffer "
   (let (file bol err-p estring ecode limit)
-    (set-buffer py-buffer-name)
+    (set-buffer buf)
     ;; (switch-to-buffer py-buffer-name)
     (goto-char (point-max))
     (sit-for 0.1)

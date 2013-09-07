@@ -662,6 +662,7 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
 (defun previous-statement-lp:637955 ()
   (beginning-of-line)
   (py-previous-statement)
+  (sit-for 0.1) 
   (assert (eq 31 (point)) nil "previous-statement-lp:637955-test failed."))
 
 (defun nested-indents-lp:328775-test (&optional arg)
@@ -2609,6 +2610,7 @@ print(\"I'm the script-buffer-appears-instead-of-python-shell-buffer-lp:957561-t
         (py-split-windows-on-execute-p t))
     (delete-other-windows)
     (ipython)
+    (sit-for 0.1) 
     (assert (and (py-execute-buffer-ipython) (set-buffer "script-buffer-appears-instead-of-python-shell-buffer-lp:957561-test") (not (window-full-height-p))) nil "script-buffer-appears-instead-of-python-shell-buffer-lp:957561-test failed")))
 
 (defun new-problem-with-py-temp-directory-lp:965762-test (&optional arg)
@@ -4811,9 +4813,9 @@ def x():
 # indentation) but nothing related to the comment itself. Nor the strange carriage return.
 
 "))
-  (py-bug-tests-intern 'comments-start-a-new-line-lp-1092847-base arg teststring)))
+  (py-bug-tests-intern 'comments-start-a-new-line-lp-1092847-n1-base arg teststring)))
 
-(defun comments-start-a-new-line-lp-1092847-base ()
+(defun comments-start-a-new-line-lp-1092847-n1-base ()
   (let ((py-electric-comment-p t))
     (goto-char 258)
     (py-electric-comment 1)
@@ -5386,7 +5388,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.49 $\"
+__version__ = \"$Revision: 1.50 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))

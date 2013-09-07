@@ -6249,8 +6249,8 @@ Start a new process if necessary. "
          (cond ((and (not py-dedicated-process-p) (comint-check-proc (current-buffer)))
          (get-buffer-process (buffer-name (current-buffer))))
         ((not py-dedicated-process-p)
-         (get-buffer-process (py-shell nil nil nil 'no-switch nil nil nil 'nosplit)))
-        ((py-shell nil py-dedicated-process-p 'no-switch nil nil nil 'nosplit)))))
+         (get-buffer-process (py-shell nil nil nil nil t)))
+        ((py-shell nil py-dedicated-process-p nil nil t)))))
     (when (interactive-p) (message "%S" erg))
     erg))
 

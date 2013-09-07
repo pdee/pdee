@@ -2325,8 +2325,9 @@ Es muß die aufzurufende Ziehungszahl als Argument angegeben werden:
   (py-bug-tests-intern 'forward-sexp-base arg teststring)))
 
 (defun forward-sexp-base ()
-  (message "forward-sexp-function: %s" forward-sexp-function)
+  ;; (message "forward-sexp-function: %s" forward-sexp-function)
   (goto-char 71)
+  (sit-for 0.1) 
   (forward-sexp 1)
   (sit-for 0.1)
   (assert (eq 231 (point)) nil "forward-sexp-test failed"))

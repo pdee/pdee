@@ -177,7 +177,7 @@ When `py-no-completion-calls-dabbrev-expand-p' is non-nil, try dabbrev-expand. O
                py-split-windows-on-execute-p
                py-switch-buffers-on-execute-p
                (proc (or (get-process shell)
-                         (get-buffer-process (py-shell nil nil shell 'no-switch nil))))
+                         (get-buffer-process (py-shell nil nil shell nil t))))
                (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
                (end (point))
                (word (buffer-substring-no-properties beg end))
@@ -288,7 +288,7 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
          (end (or end (point)))
          (pattern (or word (buffer-substring-no-properties beg end)))
          (sep ";")
-         (shell (or shell (py-choose-shell)))
+         (py-shell-name (or shell (py-choose-shell)))
          (processlist (process-list))
          (imports (or imports (py-find-imports)))
          done
