@@ -26,12 +26,14 @@
 
 (defun py-restore-window-configuration ()
   "Restore py-restore-window-configuration when completion is done resp. abandoned. "
-  (interactive)
-  (if py-completion-last-window-configuration
-      (set-window-configuration py-completion-last-window-configuration)
-    (delete-other-windows))
-  (when (buffer-live-p (get-buffer "*Python Completions*"))
-    (kill-buffer (get-buffer "*Python Completions*"))))
+  (and (setq val (get-register 313465889))(and (consp val) (window-configuration-p (car val))(markerp (cadr val)))(marker-buffer (cadr val))
+       (jump-to-register 313465889)))
+  ;; (interactive)
+  ;; (if py-completion-last-window-configuration
+  ;;     (set-window-configuration py-completion-last-window-configuration)
+  ;;   (delete-other-windows))
+  ;; (when (buffer-live-p (get-buffer "*Python Completions*"))
+  ;;   (kill-buffer (get-buffer "*Python Completions*"))))
 
 (defun py-shell-execute-string-now (string &optional shell buffer proc)
   "Send to Python interpreter process PROC \"exec STRING in {}\".
@@ -460,13 +462,15 @@ Needed when file-path names are contructed from maybe numbered buffer names like
              (py-jump-to-exception-intern action file)))))
 
 (defun py-shell-manage-windows (output-buffer &optional windows-displayed windows-config)
+  "Adapt or restore window configuration. Return nil "
   (let (val)
     (cond ((and (boundp 'err-p) err-p)
            (py-jump-to-exception err-p py-exception-buffer)
            ;; (and windows-displayed (eq 1 (length windows-displayed))
            ;; (funcall py-split-windows-on-execute-function)
            (display-buffer output-buffer)
-           (goto-char (point-max)))
+           (goto-char (point-max))
+           nil)
 
           ;; split and switch
           ((and py-split-windows-on-execute-p
@@ -476,7 +480,8 @@ Needed when file-path names are contructed from maybe numbered buffer names like
            (set-buffer output-buffer)
            (goto-char (point-max))
            (switch-to-buffer (current-buffer))
-           (display-buffer py-exception-buffer))
+           (display-buffer py-exception-buffer)
+           nil)
           ;; split, not switch
           ((and
             py-split-windows-on-execute-p
@@ -490,7 +495,8 @@ Needed when file-path names are contructed from maybe numbered buffer names like
                  (and (bufferp py-exception-buffer)(set-buffer py-exception-buffer)
                       (switch-to-buffer (current-buffer))
                       (display-buffer output-buffer 'display-buffer-reuse-window))
-                 (display-buffer output-buffer 'display-buffer-reuse-window))))
+                 (display-buffer output-buffer 'display-buffer-reuse-window)))
+           nil)
           ;; no split, switch
           ((and
             py-switch-buffers-on-execute-p
@@ -498,16 +504,15 @@ Needed when file-path names are contructed from maybe numbered buffer names like
            (let (pop-up-windows)
              (set-buffer output-buffer)
              (goto-char (point-max))
-             (switch-to-buffer (current-buffer))))
+             (switch-to-buffer (current-buffer)))
+           nil)
           ;; no split, no switch
           ((not py-switch-buffers-on-execute-p)
            ;; (if (equal (window-list-1) windows-displayed)
            ;; (jump-to-register 313465889)
            (let (pop-up-windows)
-             (and (setq val (get-register 313465889))(and (consp val) (window-configuration-p (car val))(markerp (cadr val)))(marker-buffer (cadr val))
-             (jump-to-register 313465889))))
-          ;;)
-          )))
+             (py-restore-window-configuration))
+           nil))))
 
 (defun py-report-executable (py-buffer-name)
   (let ((erg (downcase (replace-regexp-in-string
@@ -764,7 +769,7 @@ When optional FILE is `t', no temporary file is needed. "
       (sit-for 0.1)
       (and py-cleanup-temporary
            (py-delete-temporary tempfile tempbuf)))
-    (and py-store-result-p (kill-new erg))
+    (and erg py-store-result-p (kill-new erg))
     erg))
 
 (defun py-execute-ge24.3 (start end file execute-directory)

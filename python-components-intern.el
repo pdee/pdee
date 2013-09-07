@@ -79,6 +79,7 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
              (repeat repeat)
              ;; nesting: started nesting a list
              (nesting nesting)
+             (indent-offset (or indent-offset py-indent-offset))
              erg indent this-line)
         (unless repeat (setq nesting (nth 0 pps))
                 (setq repeat t))

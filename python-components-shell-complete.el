@@ -150,7 +150,13 @@ When `py-no-completion-calls-dabbrev-expand-p' is non-nil, try dabbrev-expand. O
   (unless (buffer-live-p (get-buffer "*Python Completions*"))
     (setq py-completion-last-window-configuration
           (current-window-configuration)))
-  (let ((orig (point)))
+  (let* ((windows-config (window-configuration-to-register 313465889))
+         (orig (point))
+         (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
+         (end (point))
+         (word (buffer-substring-no-properties beg end))
+         ;; used by window-configuration
+         val)
     ;; (ignore-errors (comint-dynamic-complete))
     (when (eq (point) orig)
       (if (or (eq major-mode 'comint-mode)(eq major-mode 'inferior-python-mode))
@@ -161,9 +167,7 @@ When `py-no-completion-calls-dabbrev-expand-p' is non-nil, try dabbrev-expand. O
             (if (string-match "[iI][pP]ython" shell)
                 (ipython-complete nil nil nil nil nil shell debug imports)
               (let* ((orig (point))
-                     (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
-                     (end (point))
-                     (word (buffer-substring-no-properties beg end))
+
                      (proc (get-buffer-process (current-buffer))))
                 (cond ((string= word "")
                        (tab-to-tab-stop))
@@ -178,9 +182,6 @@ When `py-no-completion-calls-dabbrev-expand-p' is non-nil, try dabbrev-expand. O
                py-switch-buffers-on-execute-p
                (proc (or (get-process shell)
                          (get-buffer-process (py-shell nil nil shell nil t))))
-               (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
-               (end (point))
-               (word (buffer-substring-no-properties beg end))
                (imports (py-find-imports)))
           ;; (window-configuration-to-register a)
           (cond ((string= word "")
@@ -192,7 +193,10 @@ When `py-no-completion-calls-dabbrev-expand-p' is non-nil, try dabbrev-expand. O
                 ;; deals better with imports
                 ;; (imports
                 ;; (py-python-script-complete shell imports beg end word))
-                (t (py-shell-complete-intern word beg end shell imports proc debug))))))))
+                (t (py-shell-complete-intern word beg end shell imports proc debug)))))
+      (and (setq val (get-register 313465889))(and (consp val) (window-configuration-p (car val))(markerp (cadr val)))(marker-buffer (cadr val))
+             (jump-to-register 313465889))
+      )))
 
 (defun py-shell-complete-intern (word &optional beg end shell imports proc debug)
   (when imports

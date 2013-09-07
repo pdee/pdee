@@ -5538,22 +5538,24 @@ while mvi.t2 <= T:
 
 (defun fill-paragraph-in-docstring-lp-1161232-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-def foo ():
+  (let ((teststring "def foo ():
     \"\"\"Returns a rewritten path.
 
-Assuming that ``cr`` is a :class:`ContextRewriter` instance,
-that the rewriter maps the path ``views/<filename>`` to\"\"\"
+Assuming that ``cr`` is a :class:`ContextRewriter` instance, that the rewriter maps the path ``views/<filename>`` to asdf asdf asdf asdf asdf asdf asdf asdf asdfasdf asdfasdf asdf asdf \"\"\" 
     pass
 "))
   (py-bug-tests-intern 'fill-paragraph-in-docstring-lp-1161232-base arg teststring)))
 
 (defun fill-paragraph-in-docstring-lp-1161232-base ()
     (goto-char 94)
-    (fill-paragraph)
+    (fill-paragraph t)
     (sit-for 0.1)
-    (assert (eq (point) 102) nil "fill-paragraph-in-docstring-lp-1161232-test failed"))
+    (assert (eq (point) 51) nil "fill-paragraph-in-docstring-lp-1161232-test #1 failed")
+    (goto-char 249)
+    (sit-for 1)
+    (message "%s" (buffer-substring-no-properties (line-beginning-position) (line-end-position) ))
+    (assert (looking-at "    pass") nil "fill-paragraph-in-docstring-lp-1161232-test #2 failed")
+    )
 
 (defun wfmc-lp-1160022-test (&optional arg)
   (interactive "p")
@@ -5603,12 +5605,10 @@ a = \"asdf\"
     (goto-char 216)
     (push-mark)
     (goto-char 122)
-    (exchange-point-and-mark)
-    (transient-mark-mode 1)
-    (py-indent-line)
+    (call-interactively 'py-indent-line)
     (sit-for 0.1)
-    (message "point: %s" (point))
-    (assert (eq (point) 216) nil "tab-results-in-never-ending-process-lp-1163423-test failed")))
+    ;; (message "point: %s" (point))
+    (assert (bolp)  nil "tab-results-in-never-ending-process-lp-1163423-test failed")))
 
 (defun loops-on-if-else-lp-328777-test (&optional arg)
   (interactive "p")

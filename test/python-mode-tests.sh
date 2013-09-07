@@ -1105,7 +1105,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-font-lock-keywords) nil \"py-font-lock-keywords not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
---funcall py-execute-file-test \
 --funcall C-c-C-c-lp:1221310-and-store-result-test \
 --funcall beginning-of-block-fails-from-wrong-indent-test \
 --funcall cascading-indent-lp-1101962-test \
@@ -1291,9 +1290,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall indentation-bug-inside-docstrings-lp:899455-test \
 --funcall comments-start-a-new-line-lp-1092847-n1-test \
 --funcall inconvenient-window-splitting-behavior-python-lp-1018996-test \
---funcall fill-paragraph-in-docstring-lp-1161232-test \
 --funcall no-completion-at-all-lp:1001328-test \
---funcall tab-results-in-never-ending-process-lp-1163423-test \
 --funcall nested-dictionaries-indent-lp:328791-test \
 --funcall infinite-loop-after-tqs-lp:826044-test\
 --funcall ipython-shell-complete-test \
@@ -1435,6 +1432,9 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-fill-string-pep-257-nn-test \
 --funcall py-fill-string-symmetric-test \
 --funcall forward-sexp-test \
+--funcall py-execute-file-test \
 --funcall py-execute-block-python-test \
 --funcall py-execute-block-or-clause-python-test \
 --funcall master-file-not-honored-lp:794850-test \
+--funcall fill-paragraph-in-docstring-lp-1161232-test \
+--funcall tab-results-in-never-ending-process-lp-1163423-test \
