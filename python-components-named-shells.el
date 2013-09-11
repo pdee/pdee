@@ -79,6 +79,13 @@ Optional \\[universal-argument] prompts for options to pass to the Python3.3 int
   (interactive "P")
   (py-shell argprompt nil "python3.3"))
 
+(defun python3.4 (&optional argprompt)
+  "Start an Python3.3 interpreter.
+
+Optional \\[universal-argument] prompts for options to pass to the Python3.4 interpreter. See `py-python-command-args'. "
+  (interactive "P")
+  (py-shell argprompt nil "python3.4"))
+
 (defun bpython (&optional argprompt)
   "Start an Bpython interpreter.
 

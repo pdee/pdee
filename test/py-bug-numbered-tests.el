@@ -335,18 +335,22 @@ def main(argv):
 If no `load-branch-function' is specified, make sure the appropriate branch is loaded. Otherwise default python-mode will be checked. "
   (interactive "p")
   (let ((teststring "
-d = {
-     'a':{
-          'b':3,
-          'c':4
-         }
-     }
 
-d = {'a':{
-          'b':3,
-          'c':4
-         }
+# hanging
+d = {
+    'a':{
+         'b':3,
+         'c':4
+        }
     }
+
+# closing
+d = {
+    'a':{
+        'b':3,
+        'c':4
+    }
+}
 
 data = {
     'key':
@@ -5388,7 +5392,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.50 $\"
+__version__ = \"$Revision: 1.53 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))

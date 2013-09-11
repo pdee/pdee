@@ -23,3 +23,5 @@
 * TODO py-execute-statement-version
   generic command, execute according to version customized in `py-execute-version'
 * TODO describe-mode remove unused key labels
+* TODO KEYWORDS = frozenset(keyword.kwlist + ['print']) - SINGLETONS
+  grasp keyword.kwlist as py-minor-expression

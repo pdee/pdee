@@ -182,6 +182,12 @@ Default is nil. "
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-hanging-indent-p t
+ "" 
+
+ :type 'boolean
+ :group 'python-mode)
+
 (defcustom py-set-fill-column-p nil
   "If python-mode should set fill-column
 
@@ -2840,6 +2846,12 @@ Optional C-u prompts for options to pass to the Python3.2 interpreter. See `py-p
 Start an Python3.3 interpreter.
 
 Optional C-u prompts for options to pass to the Python3.3 interpreter. See `py-python-command-args'."]
+
+          ["python3.4" python3.4
+           :help "`python3.3'
+Start an Python3.4 interpreter.
+
+Optional C-u prompts for options to pass to the Python3.4 interpreter. See `py-python-command-args'."]
 
           "-"
           ["python-dedicated" python-dedicated
@@ -6627,16 +6639,23 @@ Don't save anything for STR matching `inferior-python-filter-regexp'."
 ;;;###autoload
 (add-to-list 'interpreter-mode-alist (cons (purecopy "python") 'python-mode))
 
-(let ((modes '(("jython" . jython-mode)
+(let ((modes '(("ipython" . python-mode)
+               ("ipython2" . python-mode)
+               ("ipython3" . python-mode)
+               ("jython" . jython-mode)
                ("python" . python-mode)
                ("python2" . python-mode)
+               ("python2.4" . python-mode)
+               ("python2.5" . python-mode)
                ("python2.6" . python-mode)
                ("python2.7" . python-mode)
                ("python3" . python-mode)
                ("python3.0" . python-mode)
                ("python3.1" . python-mode)
                ("python3.2" . python-mode)
-               ("python3.3" . python-mode))))
+               ("python3.3" . python-mode)
+               ("python3.4" . python-mode)
+               )))
   (while modes
     (when (not (assoc (car modes) interpreter-mode-alist))
       (push (car modes) interpreter-mode-alist))

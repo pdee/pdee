@@ -163,7 +163,8 @@ If `py-tab-indents-region-p' is `t' and first TAB doesn't shift
             (region (use-region-p))
             ;; (startmarke (copy-marker (mark t)))
             ;; (startpos (point))
-            behind cui col
+            ;; behind
+            cui col
             ;; endmarke endpos
             beg end)
         (and region
