@@ -165,7 +165,7 @@ When `py-no-completion-calls-dabbrev-expand-p' is non-nil, try dabbrev-expand. O
                 (shell (or shell (py-report-executable (buffer-name (current-buffer)))))
                 (imports (py-find-imports)))
             (if (string-match "[iI][pP]ython" shell)
-                (ipython-complete nil nil nil nil nil shell debug imports)
+                (ipython-complete nil nil beg end word shell debug imports)
               (let* ((orig (point))
 
                      (proc (get-buffer-process (current-buffer))))
@@ -195,7 +195,8 @@ When `py-no-completion-calls-dabbrev-expand-p' is non-nil, try dabbrev-expand. O
                 ;; (py-python-script-complete shell imports beg end word))
                 (t (py-shell-complete-intern word beg end shell imports proc debug)))))
       (and (setq val (get-register 313465889))(and (consp val) (window-configuration-p (car val))(markerp (cadr val)))(marker-buffer (cadr val))
-             (jump-to-register 313465889))
+           (jump-to-register 313465889)
+           (goto-char (line-end-position) ) )
       )))
 
 (defun py-shell-complete-intern (word &optional beg end shell imports proc debug)
