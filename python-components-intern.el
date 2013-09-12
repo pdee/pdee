@@ -66,6 +66,8 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
   (save-excursion
     (save-restriction
       (widen)
+      ;; needed by closing
+      (unless orig (back-to-indentation))
       (let* ((orig (or orig (point)))
              (origline (or origline (py-count-lines)))
              ;; closing indicates: when started, looked
@@ -73,7 +75,13 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
              ;; line: moved already a line backward
              (line line)
              (pps (syntax-ppss))
-             (closing (or closing (and (nth 1 pps) (looking-at ".*\\s)")(nth 0 pps))))
+             (closing
+              (or closing
+                  (and (nth 1 pps)
+                       (looking-at ".*\\(\\s)\\)")(nth 0 pps)
+                       ;; char doesn't matter for now, maybe drop
+                       (string-to-char (match-string-no-properties 1))
+                       )))
 
              ;; in a recursive call already
              (repeat repeat)
@@ -163,15 +171,20 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
                       (if (< 1 (- origline this-line))
                           (cond
                            (closing
-                            (cond ((looking-back "^[ \t]*")
-                                   (current-column))
-                                  ((and (eq 1 closing) (looking-at "\\s([ \t]*$") py-closing-list-dedents-bos)
-                                   (current-indentation))
-                                  ((and (eq 1 closing) (looking-at "\\s([ \t]*$") py-closing-list-keeps-space)
-                                   (+ (current-column) py-closing-list-space))
-                                  ((and (eq 1 closing)(looking-at "\\s([ \t]*$"))
-                                   (py-empty-arglist-indent nesting py-indent-offset indent-offset))
-                                  (t (py-fetch-previous-indent orig))))
+                            (cond
+                             (py-closing-list-dedents-bos
+                              (goto-char (nth 1 pps))
+                              (current-indentation))
+                             ((looking-back "^[ \t]*")
+                              (current-column))
+                             (
+                              (and
+                               ;; (or (eq closing ?\})(eq closing ?\]))
+                               (looking-at "\\s([ \t]*$") py-closing-list-keeps-space)
+                              (+ (current-column) py-closing-list-space))
+                             ((looking-at "\\s([ \t]*$")
+                              (py-empty-arglist-indent nesting py-indent-offset indent-offset))
+                             (t (py-fetch-previous-indent orig))))
                            ;; already behind a dedented element in list
                            ((<= 2 (- origline this-line))
                             (py-fetch-previous-indent orig))

@@ -935,7 +935,7 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
             (setq erg (py-execute-file-base proc (expand-file-name filename) cmd procbuf origfile execute-directory))
           (py-execute-file-base proc (expand-file-name filename) cmd
                                 procbuf origfile execute-directory))
-      (message "%s not readable. %s" file "Do you have write permissions?"))
+      (message "%s not readable. %s" filename "Do you have write permissions?"))
     erg))
 
 (defun py-current-working-directory (&optional shell)

@@ -1105,6 +1105,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-font-lock-keywords) nil \"py-font-lock-keywords not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall infinite-loop-after-tqs-lp:826044-test \
 --funcall C-c-C-c-lp:1221310-and-store-result-test \
 --funcall beginning-of-block-fails-from-wrong-indent-test \
 --funcall cascading-indent-lp-1101962-test \
@@ -1191,7 +1192,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-variable-name-face-lp:798538-test \
 --funcall colon-causes-error-lp:818665-test \
 --funcall if-indentation-lp:818720-test \
---funcall closing-parentesis-indent-lp:821820-test \
+--funcall closing-parenthesis-indent-lp:821820-test \
 --funcall py-indent-line-lp:822532-test \
 --funcall indent-honor-arglist-whitespaces-lp:822540-test \
 --funcall comments-indent-honor-setting-lp:824427-test \
@@ -1262,7 +1263,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-separator-char-test \
 --funcall python-dedicated-test \
 \
-\
 --funcall py-electric-backspace-test \
 --funcall py-insert-super-python3-test \
 \
@@ -1292,7 +1292,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall inconvenient-window-splitting-behavior-python-lp-1018996-test \
 --funcall no-completion-at-all-lp:1001328-test \
 --funcall nested-dictionaries-indent-lp:328791-test \
---funcall infinite-loop-after-tqs-lp:826044-test\
 --funcall ipython-shell-complete-test \
 --funcall usr-bin-ipython-shell-complete-test \
 --funcall inconvenient-window-splitting-behavior-ipython-lp-1018996-test \

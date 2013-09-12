@@ -182,12 +182,6 @@ Default is nil. "
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-hanging-indent-p t
- "" 
-
- :type 'boolean
- :group 'python-mode)
-
 (defcustom py-set-fill-column-p nil
   "If python-mode should set fill-column
 
@@ -486,17 +480,45 @@ def foo():
   :group 'python-mode)
 
 (defcustom py-closing-list-dedents-bos nil
-  "If non-nil, closing parentesis dedents onto column of statement, otherwise keeps additional `py-indent-offset', default is nil "
+  "When non-nil, indent list's closing delimiter like start-column.
+
+It will be lined up under the first character of
+ the line that starts the multi-line construct, as in:
+
+my_list = [
+    1, 2, 3,
+    4, 5, 6,
+]
+
+result = some_function_that_takes_arguments(
+    'a', 'b', 'c',
+    'd', 'e', 'f',
+)
+
+Default is nil, i.e.
+
+my_list = [
+    1, 2, 3,
+    4, 5, 6,
+    ]
+result = some_function_that_takes_arguments(
+    'a', 'b', 'c',
+    'd', 'e', 'f',
+    )
+
+Examples from PEP8
+"
+
   :type 'boolean
   :group 'python-mode)
 
 (defcustom py-closing-list-space 1
-  "Number of chars, closing parentesis outdent from opening, default is 1 "
+  "Number of chars, closing parenthesis outdent from opening, default is 1 "
   :type 'number
   :group 'python-mode)
 
 (defcustom py-closing-list-keeps-space nil
-  "If non-nil, closing parentesis dedents onto column of opening plus `py-closing-list-space', default is nil "
+  "If non-nil, closing parenthesis dedents onto column of opening plus `py-closing-list-space', default is nil "
   :type 'boolean
   :group 'python-mode)
 
@@ -526,7 +548,6 @@ In result cursor is insided emptied delimited form."
 See also `py-electric-colon-bobl-only' "
   :type 'boolean
   :group 'python-mode)
-
 
 (defcustom py-electric-colon-bobl-only t
 
@@ -3276,7 +3297,6 @@ Go to beginning block, skip whitespace at BOL\. "]
 
 Go to the initial line of a simple statement. "]
 
-
 ["End of statement" py-end-of-statement
  :help " `py-end-of-statement'
 
@@ -4655,7 +4675,6 @@ In experimental state yet "
            ["Remove local Python shell enforcement, restore default" py-force-local-shell-off
             :help "Restore `py-shell-name' default value and `behaviour'. "]
 
-
            ["Run `py-shell' at start"
             (setq py-start-run-py-shell
                   (not py-start-run-py-shell))
@@ -4890,6 +4909,23 @@ Use `M-x customize-variable' to set it permanently"
 
           ("Indent"
 
+
+           ["Close at start column"
+            (setq py-closing-list-dedents-bos
+                  (not py-closing-list-dedents-bos))
+            :help "When non-nil, indent list's closing delimiter like start-column.
+
+It will be lined up under the first character of
+ the line that starts the multi-line construct, as in:
+
+my_list = \[
+    1, 2, 3,
+    4, 5, 6,
+]
+
+Use `M-x customize-variable' to set it permanently"
+            :style toggle :selected py-closing-list-dedents-bos]
+
            ["Electric colon"
             (setq py-electric-colon-active-p
                   (not py-electric-colon-active-p))
@@ -4897,7 +4933,6 @@ Use `M-x customize-variable' to set it permanently"
 
 `py-electric-colon' feature\.  Default is `nil'\. See lp:837065 for discussions\. . "
             :style toggle :selected py-electric-colon-active-p]
-
 
            ["Electric colon at beginning of block only"
             (setq py-electric-colon-bobl-only
@@ -5007,7 +5042,6 @@ source code of the innermost traceback frame\.
 
 Use `M-x customize-variable' to set it permanently"
             :style toggle :selected py-jump-on-exception]
-
 
            ["Highlight error in source "
             (setq py-highlight-error-source-p

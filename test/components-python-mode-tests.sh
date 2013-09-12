@@ -774,7 +774,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-variable-name-face-lp:798538-test \
 --funcall colon-causes-error-lp:818665-test \
 --funcall if-indentation-lp:818720-test \
---funcall closing-parentesis-indent-lp:821820-test \
+--funcall closing-parenthesis-indent-lp:821820-test \
 --funcall py-indent-line-lp:822532-test \
 --funcall indent-honor-arglist-whitespaces-lp:822540-test \
 --funcall comments-indent-honor-setting-lp:824427-test \

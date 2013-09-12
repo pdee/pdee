@@ -2574,6 +2574,12 @@ Start an Python3.3 interpreter.
 
 Optional C-u prompts for options to pass to the Python3.3 interpreter. See `py-python-command-args'. 
 
+python3\.4
+----------
+Start an Python3.3 interpreter.
+
+Optional C-u prompts for options to pass to the Python3.3 interpreter. See `py-python-command-args'. 
+
 bpython
 -------
 Start an Bpython interpreter.
@@ -3069,8 +3075,6 @@ interpreter.
 
 py-shell
 --------
-:around advice: `ad-Advice-py-shell'
-
 Start an interactive Python interpreter in another window.
 Interactively, C-u 4 prompts for a buffer.
 C-u 2 prompts for `py-python-command-args'.
@@ -3082,7 +3086,6 @@ Optional string PYSHELLNAME overrides default `py-shell-name'.
 BUFFER allows specifying a name, the Python process is connected to
 When DONE is `t', `py-shell-manage-windows' is omitted
 
-(fn &optional ARGPROMPT DEDICATED SHELL BUFFER-NAME DONE)
 
 py-indent-forward-line
 ----------------------

@@ -440,3 +440,104 @@ def foo():
     (goto-char (point-max))
     ;; error should report its just a buffer, not a file
     (should (string-match "SyntaxError: invalid syntax" (py-execute-statement)))))
+
+(ert-deftest pep-arglist-indent ()
+  (py-tests-with-temp-buffer
+      "# Aligned with opening delimiter
+foo = long_function_name(var_one, var_two,
+                         var_three, var_four)
+
+# More indentation included to distinguish this from the rest.
+def long_function_name(
+        var_one, var_two, var_three,
+        var_four):
+    print(var_one)
+"
+    (search-forward "var_three")
+    (should (eq 25 (py-compute-indentation)))
+    (search-forward "var_three")
+    (should (eq 8 (py-compute-indentation)))
+
+    ))
+
+(ert-deftest close-at-start-column ()
+  (py-tests-with-temp-buffer
+      "# boolean `py-closing-list-dedents-bos',
+
+# Current behavior matches default nil
+
+my_list = [
+    1, 2, 3,
+    4, 5, 6,
+    ]
+
+result = some_function_that_takes_arguments(
+    'a', 'b', 'c',
+    'd', 'e', 'f',
+    )
+
+# When non-nil, it will be lined up under the first character of the line that starts the multi-line construct, as in:
+
+my_list = [
+    1, 2, 3,
+    4, 5, 6,
+]
+
+result = some_function_that_takes_arguments(
+    'a', 'b', 'c',
+    'd', 'e', 'f',
+)
+
+# Examples see PEP8
+
+asdf = {
+    'a':{
+        'b':3,
+        'c':4
+    }
+}
+
+data = {
+    'key':
+    {
+        'objlist': [
+            {
+                'pk': 1,
+                'name': 'first',
+            },
+            {
+                'pk': 2,
+                'name': 'second',
+            }
+        ]
+    }
+}
+
+"
+    (let (py-closing-list-dedents-bos)
+      (switch-to-buffer (current-buffer)) 
+      (search-forward "]")
+      (should (eq 4 (py-compute-indentation)))
+      (search-forward ")")
+      (should (eq 4 (py-compute-indentation)))
+      (setq py-closing-list-dedents-bos t)
+      (search-forward "]")
+      (should (eq 0 (py-compute-indentation)))
+      (search-forward ")")
+      (should (eq 0 (py-compute-indentation)))
+      ;; dicts
+      (search-forward "}")
+      (should (eq 4 (py-compute-indentation)))
+      (search-forward "}")
+      (should (eq 0 (py-compute-indentation)))
+      (search-forward "}")
+      (should (eq 12 (py-compute-indentation)))
+      (search-forward "]")
+      (should (eq 8 (py-compute-indentation)))
+      (search-forward "}")
+      (should (eq 4 (py-compute-indentation)))
+      (search-forward "}")
+      (should (eq 0 (py-compute-indentation)))
+
+
+      )))

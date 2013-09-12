@@ -144,7 +144,7 @@
        'py-variable-name-face-lp:798538-test
        'colon-causes-error-lp:818665-test
        'if-indentation-lp:818720-test
-       'closing-parentesis-indent-lp:821820-test
+       'closing-parenthesis-indent-lp:821820-test
        'py-indent-line-lp:822532-test
        'indent-honor-arglist-whitespaces-lp:822540-test
        'comments-indent-honor-setting-lp:824427-test
@@ -337,7 +337,7 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
   (let ((teststring "
 
 # hanging
-d = {
+asdf = {
     'a':{
          'b':3,
          'c':4
@@ -345,7 +345,7 @@ d = {
     }
 
 # closing
-d = {
+asdf = {
     'a':{
         'b':3,
         'c':4
@@ -372,19 +372,32 @@ data = {
     (py-bug-tests-intern 'nested-dictionaries-indent-lp:328791 arg teststring)))
 
 (defun nested-dictionaries-indent-lp:328791 ()
-  (let ((py-indent-honors-multiline-listing t))
-    (goto-char 12)
-    (assert (eq 5 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #1 failed")
-    (goto-char 26)
+  (let ((py-indent-honors-multiline-listing t)
+        py-closing-list-dedents-bos)
+    (goto-char (point-min))
+    (search-forward "'a':{")
+    (assert (eq 4 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #1 failed")
+    (search-forward "}")
     (assert (eq 8 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #2 failed")
-    (goto-char 55)
-    (assert (eq 8 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #3 failed")
-    (goto-char 57)
-    (assert (eq 4 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #4 failed")
-    (goto-char 63)
-    (assert (eq 0 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #5 failed")
+    (search-forward "}")
+    (assert (eq 4 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #3 failed")
 
-    ))
+    ;; py-closing-list-dedents-bos
+    (setq py-closing-list-dedents-bos t)
+    (search-forward "'a':{")
+    (assert (eq 4 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #1 failed")
+    (search-forward "}")
+    (assert (eq 4 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #1 failed")
+    (search-forward "}")
+    (assert (eq 0 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #2 failed")
+    (search-forward "}" nil nil 2)
+    (assert (eq 12 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #2 failed")
+    (search-forward "]")
+    (assert (eq 8 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #2 failed")
+    (search-forward "}")
+    (assert (eq 4 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #2 failed")
+    (search-forward "}")
+    (assert (eq 0 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #2 failed")))
 
 (defun mark-block-region-lp:328806-test (&optional arg)
   "With ARG greater 1 keep test buffer open.
@@ -666,7 +679,7 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
 (defun previous-statement-lp:637955 ()
   (beginning-of-line)
   (py-previous-statement)
-  (sit-for 0.1) 
+  (sit-for 0.1)
   (assert (eq 31 (point)) nil "previous-statement-lp:637955-test failed."))
 
 (defun nested-indents-lp:328775-test (&optional arg)
@@ -1524,7 +1537,7 @@ class X():
   (goto-char 196)
   (assert (eq 12 (py-compute-indentation)) nil "if-indentation-lp:818720-test failed"))
 
-(defun closing-parentesis-indent-lp:821820-test (&optional arg)
+(defun closing-parenthesis-indent-lp:821820-test (&optional arg)
   (interactive "p")
   (let ((teststring (concat py-test-shebang "
 # -*- coding: utf-8 -*-
@@ -1539,12 +1552,12 @@ if foo:
         )
     )
 ")))
-    (py-bug-tests-intern 'closing-parentesis-indent-lp:821820-base arg teststring)))
+    (py-bug-tests-intern 'closing-parenthesis-indent-lp:821820-base arg teststring)))
 
-(defun closing-parentesis-indent-lp:821820-base ()
+(defun closing-parenthesis-indent-lp:821820-base ()
   (let ((py-closing-list-dedents-bos t))
     (forward-line -1)
-    (assert (eq 4 (py-compute-indentation)) nil "closing-parentesis-indent-lp:821820-test failed")))
+    (assert (eq 4 (py-compute-indentation)) nil "closing-parenthesis-indent-lp:821820-test failed")))
 
 (defun py-indent-line-lp:822532-test (&optional arg)
   (interactive "p")
@@ -1597,8 +1610,7 @@ if __name__ == '__main__':
   (goto-char 206)
   (assert (eq 0 (py-compute-indentation)) nil "comments-indent-honor-setting-lp:824427-test failed"))
 
-(defun infinite-loop-after-tqs-lp:826044-teso
-t (&optional arg)
+(defun infinite-loop-after-tqs-lp:826044-test (&optional arg)
   (interactive "p")
   (let ((teststring "\"\"\"
 hey
@@ -1627,11 +1639,18 @@ if foo:
     (py-bug-tests-intern 'closing-list-lp:826144-base arg teststring)))
 
 (defun closing-list-lp:826144-base ()
-  (goto-char 241)
-  (assert (eq 12 (py-compute-indentation)) nil "closing-list-lp:826144-test #1 failed")
-  (goto-char 251)
-  (assert (eq 8 (py-compute-indentation)) nil "closing-list-lp:826144-test #2 failed")
-  )
+  (let (py-closing-list-dedents-bos)
+    (goto-char (point-min))
+    (re-search-forward ") *$" nil t 1)
+    (assert (eq 12 (py-compute-indentation)) nil "closing-list-lp:826144-test #1 failed")
+    (re-search-forward ") *$" nil t 1)
+    (assert (eq 8 (py-compute-indentation)) nil "closing-list-lp:826144-test #2 failed")
+    (setq py-closing-list-dedents-bos t)
+    (goto-char (point-min)) 
+    (re-search-forward ") *$" nil t 1)
+    (assert (eq 8 (py-compute-indentation)) nil "closing-list-lp:826144-test #1 failed")
+    (re-search-forward ") *$" nil t 1)
+    (assert (eq 4 (py-compute-indentation)) nil "closing-list-lp:826144-test #2 failed")))
 
 (defun py-electric-comment-add-space-lp:828398-test (&optional arg)
   (interactive "p")
@@ -2614,7 +2633,7 @@ print(\"I'm the script-buffer-appears-instead-of-python-shell-buffer-lp:957561-t
         (py-split-windows-on-execute-p t))
     (delete-other-windows)
     (ipython)
-    (sit-for 0.1) 
+    (sit-for 0.1)
     (assert (and (py-execute-buffer-ipython) (set-buffer "script-buffer-appears-instead-of-python-shell-buffer-lp:957561-test") (not (window-full-height-p))) nil "script-buffer-appears-instead-of-python-shell-buffer-lp:957561-test failed")))
 
 (defun new-problem-with-py-temp-directory-lp:965762-test (&optional arg)
@@ -5392,7 +5411,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.53 $\"
+__version__ = \"$Revision: 1.56 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -5545,7 +5564,7 @@ while mvi.t2 <= T:
   (let ((teststring "def foo ():
     \"\"\"Returns a rewritten path.
 
-Assuming that ``cr`` is a :class:`ContextRewriter` instance, that the rewriter maps the path ``views/<filename>`` to asdf asdf asdf asdf asdf asdf asdf asdf asdfasdf asdfasdf asdf asdf \"\"\" 
+Assuming that ``cr`` is a :class:`ContextRewriter` instance, that the rewriter maps the path ``views/<filename>`` to asdf asdf asdf asdf asdf asdf asdf asdf asdfasdf asdfasdf asdf asdf \"\"\"
     pass
 "))
   (py-bug-tests-intern 'fill-paragraph-in-docstring-lp-1161232-base arg teststring)))
