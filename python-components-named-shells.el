@@ -30,6 +30,7 @@ Optional \\[universal-argument] prompts for options to pass to the Python interp
   (interactive "P")
   (py-shell argprompt nil "python"))
 
+(defalias 'iypthon 'ipython)
 (defun ipython (&optional argprompt)
   "Start an IPython interpreter.
 

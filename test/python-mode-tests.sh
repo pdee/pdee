@@ -1292,8 +1292,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall inconvenient-window-splitting-behavior-python-lp-1018996-test \
 --funcall no-completion-at-all-lp:1001328-test \
 --funcall nested-dictionaries-indent-lp:328791-test \
---funcall ipython-shell-complete-test \
---funcall usr-bin-ipython-shell-complete-test \
 --funcall inconvenient-window-splitting-behavior-ipython-lp-1018996-test \
 --funcall python-shell-complete-test \
 --funcall not-that-useful-completion-lp:1003580-test \
@@ -1437,3 +1435,5 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall master-file-not-honored-lp:794850-test \
 --funcall fill-paragraph-in-docstring-lp-1161232-test \
 --funcall tab-results-in-never-ending-process-lp-1163423-test \
+--funcall ipython-shell-complete-test \
+--funcall usr-bin-ipython-shell-complete-test \
