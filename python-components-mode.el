@@ -6717,9 +6717,9 @@ Complete symbol before point using Pymacs . "])
 Try to find source definition of function at point"]
 
             )
-
+        
         )
-
+               
                ))
 
         map))

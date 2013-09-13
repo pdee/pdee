@@ -1160,15 +1160,16 @@ Basically, this goes down the directory tree as long as there are __init__.py fi
 (defun py-execute-buffer ()
   "Send the contents of the buffer to a Python interpreter. "
   (interactive)
-  (if (and py-prompt-on-changed-p (buffer-file-name) (interactive-p) (buffer-modified-p))
-      (if (y-or-n-p "Buffer changed, save first? ")
-          (progn
-            (write-file (buffer-file-name))
-            (py-execute-buffer-base))
-        (py-execute-region (point-min) (point-max)))
-    (if (buffer-file-name)
-        (py-execute-buffer-base)
-      (py-execute-region (point-min) (point-max)))))
+  (let ((origline 1))
+    (if (and py-prompt-on-changed-p (buffer-file-name) (interactive-p) (buffer-modified-p))
+        (if (y-or-n-p "Buffer changed, save first? ")
+            (progn
+              (write-file (buffer-file-name))
+              (py-execute-buffer-base))
+          (py-execute-region (point-min) (point-max)))
+      (if (buffer-file-name)
+          (py-execute-buffer-base)
+        (py-execute-region (point-min) (point-max))))))
 
 (defun py-execute-buffer-base ()
   "Honor `py-master-file'. "
@@ -1499,48 +1500,49 @@ If an exception occurred return error-string, otherwise return nil.  BUF must ex
 Indicate LINE if code wasn't run from a file, thus remember line of source buffer "
   (let (file bol err-p estring ecode limit)
     (set-buffer buf)
-    ;; (switch-to-buffer py-buffer-name)
+    ;; (switch-to-buffer (current-buffer))
     (goto-char (point-max))
     (sit-for 0.1)
-    (save-excursion
-      (forward-line -1)
-      (end-of-line)
-      (when (re-search-backward py-shell-prompt-regexp nil t 1)
-        ;; not a useful message, delete it - please tell when thinking otherwise
-        (and (re-search-forward "File \"<stdin>\", line 1,.*\n" nil t)
-             (replace-match ""))
-        (when (and (re-search-forward py-traceback-line-re limit t)
-                   (or (match-string 1) (match-string 3)))
-          (when (match-string-no-properties 1)
-            (replace-match (buffer-name py-exception-buffer) nil nil nil 1)
-            (setq file py-exception-buffer)
-            (and origline
-                 (replace-match (number-to-string origline) nil nil nil 2))
-            (goto-char (match-beginning 0))
-            ;; if no buffer-file exists, signal "Buffer", not "File"
-            (save-match-data
-              (and (not (buffer-file-name
-                         (or
-                          (get-buffer py-exception-buffer)
-                          (get-buffer (file-name-nondirectory py-exception-buffer))))) (string-match "^[ \t]*File" (buffer-substring-no-properties (match-beginning 0) (match-end 0)))
-                          (looking-at "[ \t]*File")
-                          (replace-match "Buffer")))
-            (add-to-list 'err-p origline)
-            (add-to-list 'err-p file)
-            (overlay-put (make-overlay (match-beginning 0) (match-end 0))
-                         'face 'highlight))
-          ;; If not file exists, just a buffer, correct message
-          (forward-line 1)
-          (when (looking-at "[ \t]*\\([^\t\n\r\f]+\\)[ \t]*$")
-            (setq estring (match-string-no-properties 1))
-            (add-to-list 'err-p estring t)
-            (setq ecode (buffer-substring-no-properties (line-end-position)
-                                                        (progn (re-search-forward comint-prompt-regexp nil t 1)(match-beginning 0))))
-            ;; (setq ecode (concat (split-string ecode "[ \n\t\f\r^]" t)))
-            (setq ecode (replace-regexp-in-string "[ \n\t\f\r^]+" " " ecode))
-            (add-to-list 'err-p ecode t)))
-        ;; (and py-verbose-p (message "%s" (nth 2 err-p)))
-        err-p))))
+    (unless (looking-back py-pdbtrack-input-prompt)
+      (save-excursion
+        (forward-line -1)
+        (end-of-line)
+        (when (re-search-backward py-shell-prompt-regexp nil t 1)
+          ;; not a useful message, delete it - please tell when thinking otherwise
+          (and (re-search-forward "File \"<stdin>\", line 1,.*\n" nil t)
+               (replace-match ""))
+          (when (and (re-search-forward py-traceback-line-re limit t)
+                     (or (match-string 1) (match-string 3)))
+            (when (match-string-no-properties 1)
+              (replace-match (buffer-name py-exception-buffer) nil nil nil 1)
+              (setq file py-exception-buffer)
+              (and origline
+                   (replace-match (number-to-string origline) nil nil nil 2))
+              (goto-char (match-beginning 0))
+              ;; if no buffer-file exists, signal "Buffer", not "File"
+              (save-match-data
+                (and (not (buffer-file-name
+                           (or
+                            (get-buffer py-exception-buffer)
+                            (get-buffer (file-name-nondirectory py-exception-buffer))))) (string-match "^[ \t]*File" (buffer-substring-no-properties (match-beginning 0) (match-end 0)))
+                            (looking-at "[ \t]*File")
+                            (replace-match "Buffer")))
+              (add-to-list 'err-p origline)
+              (add-to-list 'err-p file)
+              (overlay-put (make-overlay (match-beginning 0) (match-end 0))
+                           'face 'highlight))
+            ;; If not file exists, just a buffer, correct message
+            (forward-line 1)
+            (when (looking-at "[ \t]*\\([^\t\n\r\f]+\\)[ \t]*$")
+              (setq estring (match-string-no-properties 1))
+              (add-to-list 'err-p estring t)
+              (setq ecode (buffer-substring-no-properties (line-end-position)
+                                                          (progn (re-search-forward comint-prompt-regexp nil t 1)(match-beginning 0))))
+              ;; (setq ecode (concat (split-string ecode "[ \n\t\f\r^]" t)))
+              (setq ecode (replace-regexp-in-string "[ \n\t\f\r^]+" " " ecode))
+              (add-to-list 'err-p ecode t)))
+          ;; (and py-verbose-p (message "%s" (nth 2 err-p)))
+          err-p)))))
 
 (defun py-find-next-exception-prepare (direction start)
   "Setup exception regexps depending from kind of Python shell. "
