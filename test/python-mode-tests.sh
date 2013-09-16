@@ -478,7 +478,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-printform-insert) nil \"py-printform-insert not detected as command\")" \
 -eval "(assert (commandp 'py-line-to-printform-python2) nil \"py-line-to-printform-python2 not detected as command\")" \
 -eval "(assert (commandp 'py-switch-imenu-index-function) nil \"py-switch-imenu-index-function not detected as command\")" \
--eval "(assert (commandp 'py-completion-at-point) nil \"py-completion-at-point not detected as command\")" \
 -eval "(assert (commandp 'py-choose-shell-by-shebang) nil \"py-choose-shell-by-shebang not detected as command\")" \
 -eval "(assert (commandp 'py-which-python) nil \"py-which-python not detected as command\")" \
 -eval "(assert (commandp 'py-python-current-environment) nil \"py-python-current-environment not detected as command\")" \

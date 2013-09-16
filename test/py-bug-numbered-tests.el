@@ -2305,19 +2305,17 @@ return SOME_Constant + blah
   ;; (py-shell nil nil "ipython" 'noswitch)
   (let ((teststring (concat py-ipython-test-shebang "
 # -*- coding: utf-8 -*-
-impo
-ex")))
+ex
+")))
     (py-bug-tests-intern 'py-ipython-complete-lp:927136-base arg teststring)))
 
 (defun py-ipython-complete-lp:927136-base ()
-  (goto-char 53)
-  (save-excursion (ipython-complete))
-  (sit-for 0.1)
-  (assert (looking-at "import") nil "py-ipython-complete-lp:927136-test #1 failed")
-  (goto-char 62)
-  (sit-for 0.1)
+  (goto-char (point-min)) 
+  (search-forward "ex")
   (ipython-complete)
-  (assert (buffer-live-p (get-buffer "*IPython Completions*")) nil "py-ipython-complete-lp:927136-test #2 lp:1026705 failed"))
+  (sit-for 0.1)
+  (assert (buffer-live-p (get-buffer "*IPython Completions*")) nil "py-ipython-complete-lp:927136-test #2 lp:1026705 failed")
+  )
 
 (defun execute-buffer-ipython-fails-lp:928087-test (&optional arg)
   (interactive "p")
@@ -5411,7 +5409,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.58 $\"
+__version__ = \"$Revision: 1.60 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))

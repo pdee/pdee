@@ -459,10 +459,12 @@ Needed when file-path names are contructed from maybe numbered buffer names like
   "Adapt or restore window configuration. Return nil "
   (let (val)
     (cond ((and (boundp 'err-p) err-p)
+           (py-restore-window-configuration)
+           (display-buffer output-buffer)
            (py-jump-to-exception err-p py-exception-buffer)
            ;; (and windows-displayed (eq 1 (length windows-displayed))
            ;; (funcall py-split-windows-on-execute-function)
-           (display-buffer output-buffer)
+
            (goto-char (point-max))
            nil)
 
@@ -568,8 +570,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
          ;; If we use a pipe, Unicode characters are not printed
          ;; correctly (Bug#5794) and IPython does not work at
          ;; all (Bug#5390). python.el
-         (process-connection-type t)
-         ;; (comint-scroll-to-bottom-on-output t)
+         ;; (process-connection-type t)
          ;; already in py-choose-shell
          (py-use-local-default
           (if (not (string= "" py-shell-local-path))
@@ -1502,11 +1503,16 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
       (save-excursion
         (forward-line -1)
         (end-of-line)
-        (when (re-search-backward py-shell-prompt-regexp nil t 1)
+        (when (or (re-search-backward py-shell-prompt-regexp nil t 1)
+                  ;; (and (string= "ipython" (process-name proc))
+                  (re-search-backward ipython-de-input-prompt-regexp nil t 1))
           ;; not a useful message, delete it - please tell when thinking otherwise
           (and (re-search-forward "File \"<stdin>\", line 1,.*\n" nil t)
                (replace-match ""))
+          ;; File "/tmp/ipython-3984xMQ.py", line 1
+          ;; print(3*5f)
           (when (and (re-search-forward py-traceback-line-re limit t)
+                     (match-string-no-properties 0) 
                      (or (match-string 1) (match-string 3)))
             (when (match-string-no-properties 1)
               (replace-match (buffer-name py-exception-buffer) nil nil nil 1)
@@ -1521,7 +1527,7 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
                             (get-buffer py-exception-buffer)
                             (get-buffer (file-name-nondirectory py-exception-buffer))))) (string-match "^[ \t]*File" (buffer-substring-no-properties (match-beginning 0) (match-end 0)))
                             (looking-at "[ \t]*File")
-                            (replace-match "Buffer")))
+                            (replace-match " Buffer")))
               (add-to-list 'err-p origline)
               (add-to-list 'err-p file)
               (overlay-put (make-overlay (match-beginning 0) (match-end 0))

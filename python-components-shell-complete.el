@@ -246,7 +246,7 @@ complete('%s')" word) shell nil proc)))
          (end (point))
          (word (buffer-substring-no-properties beg end))
          (imports (py-find-imports))
-         val)
+         py-fontify-shell-buffer-p)
     ;; (ignore-errors (comint-dynamic-complete))
     (if (or (eq major-mode 'comint-mode)(eq major-mode 'inferior-python-mode))
         ;;  kind of completion resp. to shell
@@ -283,7 +283,8 @@ If no completion available, insert a TAB.
 Returns the completed symbol, a string, if successful, nil otherwise. "
 
   (interactive "*")
-  (let* ((beg (or beg (progn (save-excursion (skip-chars-backward "a-z0-9A-Z_." (point-at-bol))
+  (let* (py-fontify-shell-buffer-p
+         (beg (or beg (progn (save-excursion (skip-chars-backward "a-z0-9A-Z_." (point-at-bol))
                                              (point)))))
          (end (or end (point)))
          (pattern (or word (buffer-substring-no-properties beg end)))

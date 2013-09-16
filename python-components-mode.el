@@ -295,7 +295,7 @@ Give some hints, if not."
 (defvar py-close-completions-timer nil
   "Internally used by `py-timer-close-completion-buffer")
 
-(defvar py-python-completions "Python Completions"
+(defvar py-python-completions "*Python Completions*"
   "Buffer name for Python-shell completions, internally used")
 
 (defvar py-ipython-completions "IPython Completions"
@@ -631,7 +631,7 @@ If nil, default, it will not move from at any reasonable level. "
 (defcustom py-complete-function 'py-shell-complete
   "When set, enforces function todo completion, default is nil.
 
-Normally python-mode, resp. inferior-python-mode know best which function to use. "
+Normally python-mode know best which function to use. "
   :type '(choice
           (const :tag "default" nil)
           (const :tag "py-completion-at-point" py-completion-at-point)
@@ -1774,14 +1774,9 @@ set in py-execute-region and used in py-jump-to-exception.")
 
 (defvar match-paren-no-use-syntax-pps nil)
 
-;; "[ \t]+File \"\\([^\"]+\\)\", line \\([0-9]+\\)"
 (defvar py-traceback-line-re
-  "^IPython\\|^In \\[[0-9]+\\]: *\\|[ \t]+File \"\\([^\"]+\\)\", line \\([0-9]+\\)\\|^[^ \t>]+>[^0-9]+\\([0-9]+\\)"
-  "Regular expression that describes tracebacks.
-Inludes Python shell-prompt in order to stop further searches. ")
-
-;; (setq py-traceback-line-re
-  ;; "^^IPython\\|^In \\[[0-9]+\\]: *\\|[ \t]+File \"\\([^\"]+\\)\", line \\([0-9]+\\)")
+  "[ \t]+File \"\\([^\"]+\\)\", line \\([0-9]+\\)"
+  "Regular expression that describes tracebacks.")
 
 (defvar py-bol-forms-last-indent nil
   "For internal use. Stores indent from last py-end-of-FORM-bol command.
@@ -6843,24 +6838,24 @@ Start a new process if necessary. "
   'comint-dynamic-simple-complete)
 
 ;;; Completion.
-(defun py-completion-at-point ()
-  "Completion adapting the python.el-way, as shipped with Emacs23.
-
-Stuff originallye23 authored by Dave Love, errors are mine -ar "
-  (interactive "*")
-  ;;
-  (add-hook 'comint-preoutput-filter-functions #'py-preoutput-filter
-	    nil t)
-  (let ((end (point))
-	(start (save-excursion
-		 (and (re-search-backward
-		       (rx (or buffer-start (regexp "[^[:alnum:]._]"))
-			   (group (1+ (regexp "[[:alnum:]._]"))) point)
-		       nil t)
-		      (match-beginning 1)))))
-    (when start
-      (list start end
-            (completion-table-dynamic 'py-symbol-completions)))))
+;; (defun py-completion-at-point ()
+;;   "Completion adapting the python.el-way, as shipped with Emacs23.
+;; 
+;; Stuff originallye23 authored by Dave Love, errors are mine -ar "
+;;   (interactive "*")
+;;   ;;
+;;   (add-hook 'comint-preoutput-filter-functions #'py-preoutput-filter
+;; 	    nil t)
+;;   (let ((end (point))
+;; 	(start (save-excursion
+;; 		 (and (re-search-backward
+;; 		       (rx (or buffer-start (regexp "[^[:alnum:]._]"))
+;; 			   (group (1+ (regexp "[[:alnum:]._]"))) point)
+;; 		       nil t)
+;; 		      (match-beginning 1)))))
+;;     (when start
+;;       (list start end
+;;             (completion-table-dynamic 'py-symbol-completions)))))
 
 (defun py-send-receive (string)
   "Send STRING to inferior Python (if any) and return result.
