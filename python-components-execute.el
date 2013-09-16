@@ -28,12 +28,6 @@
   "Restore py-restore-window-configuration when completion is done resp. abandoned. "
   (and (setq val (get-register 313465889))(and (consp val) (window-configuration-p (car val))(markerp (cadr val)))(marker-buffer (cadr val))
        (jump-to-register 313465889)))
-  ;; (interactive)
-  ;; (if py-completion-last-window-configuration
-  ;;     (set-window-configuration py-completion-last-window-configuration)
-  ;;   (delete-other-windows))
-  ;; (when (buffer-live-p (get-buffer "*Python Completions*"))
-  ;;   (kill-buffer (get-buffer "*Python Completions*"))))
 
 (defun py-shell-execute-string-now (string &optional shell buffer proc)
   "Send to Python interpreter process PROC \"exec STRING in {}\".
@@ -647,6 +641,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
                             #'shell-write-history-on-exit)
       (add-hook 'comint-output-filter-functions
                 'ansi-color-process-output)
+      (add-hook 'after-change-functions 'py-after-change-function nil t)
       (use-local-map py-shell-map)
       ;; pdbtrack
       (and py-pdbtrack-do-tracking-p

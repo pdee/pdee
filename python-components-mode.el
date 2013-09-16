@@ -197,6 +197,12 @@ Default is  nil"
   :type 'integer
   :group 'python-mode)
 
+(defcustom py-completion-delay 4
+  "Seconds completion-buffer is shown, if any. "
+
+  :type 'integer
+  :group 'python-mode)
+
 (defcustom py-autofill-timer-delay 1
   "Delay when idle before functions ajusting  `py-docstring-fill-column' resp. `py-comment-fill-column' are called. "
   :type 'integer
@@ -285,6 +291,21 @@ Give some hints, if not."
 (defvar smart-operator-mode nil)
 (defvar highlight-indent-active nil)
 (defvar autopair-mode nil)
+
+(defvar py-close-completions-timer nil
+  "Internally used by `py-timer-close-completion-buffer")
+
+(defvar py-python-completions "Python Completions"
+  "Buffer name for Python-shell completions, internally used")
+
+(defvar py-ipython-completions "IPython Completions"
+  "Buffer name for IPython-shell completions, internally used")
+
+(defcustom py-timer-close-completions-p t
+ "If `py-timer-close-completion-buffer' should run, default is non-nil. "
+
+:type 'boolean
+:group 'python-mode)
 
 (defcustom py-smart-operator-mode-p nil
   "If python-mode calls (smart-operator-mode-on)
@@ -1843,24 +1864,6 @@ and resending the lines later. The lines are stored in reverse order")
     (define-key map "\C-c=" 'py-down-exception))
   map)
 
-(defvar python-shell-mode-map
-  (let ((map (copy-keymap comint-mode-map)))
-    (define-key map (kbd "RET") 'comint-send-input)
-    (substitute-key-definition 'complete-symbol 'completion-at-point map global-map)
-    ;; (if py-complete-function
-    ;;     (progn
-    ;;         (substitute-key-definition 'complete-symbol py-complete-function
-    ;;                            map global-map)
-    ;;     (define-key map [tab] py-complete-function))
-    ;;   (define-key map [tab] 'py-completion-at-point))
-    (define-key map "\C-c-" 'py-up-exception)
-    (define-key map "\C-c=" 'py-down-exception)
-
-    ;; This will inherit from comint-mode-map.
-    (define-key map "\C-c\C-l" 'py-load-file)
-    (define-key map "\C-c\C-v" 'py-check-command)
-    map))
-
 (defvar py-already-guessed-indent-offset nil
   "Internal use by py-indent-line.
 
@@ -2050,6 +2053,13 @@ Includes def and class. ")
 ;; (setq ipython-complete-function 'py-completion-at-point)
 
 ;; (setq py-encoding-string-re "^[ \t]*#[ \t]*-\\*-[ \t]*coding:.+-\\*-")
+
+(defconst py-windows-config-register 313465889
+  "Internal used")
+
+;; (windows-config (window-configuration-to-register 313465889))
+(defvar py-windows-config nil
+  "Completion stores py-windows-config-register here")
 
 (setq symbol-definition-start-re "^[ \t]*(\\(defun\\|defvar\\|defcustom\\)")
 
@@ -6717,9 +6727,9 @@ Complete symbol before point using Pymacs . "])
 Try to find source definition of function at point"]
 
             )
-        
+
         )
-               
+
                ))
 
         map))
@@ -6927,6 +6937,7 @@ This is a no-op if `py-check-comint-prompt' returns nil."
             ))
 
 (add-hook 'python-mode-hook 'py-find-imports)
+
 
 ;; (when py-sexp-function
 ;;   (add-hook 'python-mode-hook
@@ -7243,7 +7254,7 @@ Don't save anything for STR matching `inferior-python-filter-regexp'."
              'py-set-auto-fill-values)))))
 
 ;;;
-(define-derived-mode inferior-python-mode comint-mode "Inferior Python"
+(define-derived-mode py-shell-mode comint-mode "Inferior Python"
   "Major mode for interacting with an inferior Python process.
 A Python process can be started with \\[py-shell].
 
@@ -7283,51 +7294,6 @@ containing Python source.
     (add-hook 'completion-at-point-functions
               'py-completion-at-point nil 'local))
   (compilation-shell-minor-mode 1))
-
-(define-derived-mode python-shell-mode comint-mode "Python Shell"
-  "Major mode for interacting with an inferior Python process.
-
-Hooks `comint-mode-hook' and `inferior-python-mode-hook' are run in
-that order.
-
-You can send text to the inferior Python process from other buffers
-containing Python source.
-
-\\{python-shell-mode-map}"
-  (setq mode-line-process '(":%s"))
-
-  (set (make-local-variable 'comint-input-filter) 'python-input-filter)
-
-  (set (make-local-variable 'compilation-error-regexp-alist)
-       python-compilation-regexp-alist)
-  (if py-complete-function
-      (add-hook 'completion-at-point-functions
-                py-complete-function nil 'local)
-    (add-hook 'completion-at-point-functions
-              'py-completion-at-point nil 'local))
-  (set (make-local-variable 'comint-prompt-regexp)
-           (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
-                  (concat "\\("
-                          (mapconcat 'identity
-                                     (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
-                                     "\\|")
-                          "\\)"))
-                 (t (concat "\\("
-                            (mapconcat 'identity
-                                       (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
-                                       "\\|")
-                            "\\)"))))
-  (compilation-shell-minor-mode 1)
-  (substitute-key-definition 'complete-symbol 'completion-at-point map global-map)
-  ;; (substitute-key-definition 'complete-symbol 'py-shell-complete
-  ;; python-shell-mode-map global-map)
-
-  (define-key python-shell-mode-map (kbd "RET") 'comint-send-input)
-  (if py-complete-function
-      (define-key python-shell-mode-map [tab] py-complete-function)
-    (define-key python-shell-mode-map [tab] 'py-completion-at-point))
-  (define-key python-shell-mode-map "\C-c-" 'py-up-exception)
-  (define-key python-shell-mode-map "\C-c=" 'py-down-exception))
 
 (define-derived-mode python-mode fundamental-mode python-mode-modeline-display
   "Major mode for editing Python files.
@@ -7437,6 +7403,8 @@ See available customizations listed in files variables-python-mode at directory 
   (if py-set-fill-column-p
       (add-hook 'python-mode-hook 'py-run-auto-fill-timer)
     (remove-hook 'python-mode-hook 'py-run-auto-fill-timer))
+  (add-hook 'after-change-functions 'py-after-change-function nil t)
+  ;; (add-hook 'post-command-hook 'py-after-change-function nil t)
   (when (and py-imenu-create-index-p
              (fboundp 'imenu-add-to-menubar)
              (ignore-errors (require 'imenu)))

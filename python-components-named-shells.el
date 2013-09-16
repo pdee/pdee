@@ -405,10 +405,17 @@ Optional \\[universal-argument] prompts for options to pass to the Bpython inter
     (py-shell argprompt t "bpython")))
 
 (defalias 'Python 'python)
+(defalias 'pyhotn 'python)
+(defalias 'pyhton 'python)
+(defalias 'pyt 'python)
+
 (defalias 'Python2 'python2)
 (defalias 'Python3 'python3)
+
 (defalias 'IPython 'ipython)
 (defalias 'Ipython 'ipython)
+(defalias 'ipy 'ipython)
+
 
 (provide 'python-components-named-shells)
 ;;; python-components-named-shells.el ends here

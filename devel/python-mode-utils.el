@@ -1907,7 +1907,8 @@ http://repo.or.cz/w/elbb.git/blob/HEAD:/code/Go-to-Emacs-Lisp-Definition.el
       (setq ele (replace-regexp-in-string  "/+" "-" (replace-regexp-in-string  "^[/~]+" "" ele)))
       (insert (concat "\(defun " ele "-shell-complete-test ()
   (interactive)
-  (let (py-switch-buffers-on-execute-p
+  (let ((py-completion-delay 0)
+        py-switch-buffers-on-execute-p
         py-split-windows-on-execute-p)
     (set-buffer (py-shell nil t \"" elt "\" nil \"" sepchar "\"))
     (sit-for 0.2 t)

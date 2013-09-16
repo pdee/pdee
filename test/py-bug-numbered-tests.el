@@ -2961,8 +2961,8 @@ ex
     (py-bug-tests-intern 'completion-fails-in-python-script-r989-lp:1004613-base arg teststring)))
 
 (defun completion-fails-in-python-script-r989-lp:1004613-base ()
-  (when (buffer-live-p (get-buffer "*Python Completions*"))
-    (kill-buffer "*Python Completions*"))
+  (when (buffer-live-p (get-buffer py-python-completions))
+    (kill-buffer py-python-completions))
   (goto-char 51)
   (ipython-complete nil nil nil nil nil nil t)
   (set-buffer "*IPython Completions*")
@@ -3011,7 +3011,7 @@ re.s
 (defun completion-at-gentoo-lp-1008842-base ()
   (goto-char 62)
   (py-shell-complete)
-  (assert (buffer-live-p (get-buffer  "*Python Completions*")) nil "completion-at-gentoo-lp-1008842-test failed"))
+  (assert (buffer-live-p (get-buffer  py-python-completions)) nil "completion-at-gentoo-lp-1008842-test failed"))
 
 (defun converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128.py-test (&optional arg)
   (interactive "p")
@@ -5411,7 +5411,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.56 $\"
+__version__ = \"$Revision: 1.58 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
