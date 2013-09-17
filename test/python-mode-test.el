@@ -414,7 +414,6 @@
        'nested-if-test
        'nested-try-finally-test
        'py-shell-complete-test
-       'py-completion-at-point-test
        'python-dedicated-test
        'tqs-list-error-test
        'py-mark-def-commandp-test
@@ -1443,20 +1442,6 @@ print(\"I'm the `py-menu-pyshell-test'\")
 (defun py-separator-char-base ()
   (assert (stringp (py-separator-char)) nil "py-separator-char-test failed"))
 
-(defun py-completion-at-point-test (&optional arg load-branch-function)
-  (interactive "p")
-  (let ((teststring (concat py-test-shebang "
-# -*- coding: utf-8 -*-
-pri")))
-    (py-bug-tests-intern 'py-completion-at-point-base 2 teststring)))
-
-(defun py-completion-at-point-base ()
-  (when (and (boundp 'company-mode) company-mode) (company-abort))
-  (delete-other-windows)
-  (completion-at-point)
-  (sit-for 0.1)
-  (assert (looking-back "print") nil "py-completion-at-point-test failed"))
-
 (defun py-shell-complete-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring (concat py-test-shebang "
@@ -1467,7 +1452,7 @@ impo")))
 (defun py-shell-complete-base ()
   (py-shell-complete)
   (sit-for 0.1)
-  (assert (looking-back "import") nil "py-completion-at-point-test failed"))
+  (assert (looking-back "import") nil "py-shell-complete-test failed"))
 
 (defun toggle-force-py-shell-name-p-test (&optional arg)
   (interactive "p")

@@ -634,7 +634,6 @@ If nil, default, it will not move from at any reasonable level. "
 Normally python-mode know best which function to use. "
   :type '(choice
           (const :tag "default" nil)
-          (const :tag "py-completion-at-point" py-completion-at-point)
           (const :tag "Pymacs based py-complete-completion-at-point" py-complete-completion-at-point)
           (const :tag "py-shell-complete" py-shell-complete)
           (const :tag "IPython's ipython-complete" ipython-complete)
@@ -644,8 +643,7 @@ Normally python-mode know best which function to use. "
 
 (defcustom ipython-complete-function 'ipython-complete
   "Function used for completion in IPython shell buffers. "
-  :type '(choice (const :tag "py-completion-at-point" py-completion-at-point)
-                 (const :tag "py-shell-complete" py-shell-complete)
+  :type '(choice (const :tag "py-shell-complete" py-shell-complete)
                  (const :tag "Pymacs based py-complete" py-complete)
                  (const :tag "IPython's ipython-complete" ipython-complete))
   :group 'python-mode)
@@ -1854,7 +1852,7 @@ and resending the lines later. The lines are stored in reverse order")
     (define-key map (kbd "RET") 'comint-send-input)
     (if py-complete-function
         (define-key map [tab] 'py-complete-function)
-      (define-key map [tab] 'py-completion-at-point))
+      )
     (define-key map "\C-c-" 'py-up-exception)
     (define-key map "\C-c=" 'py-down-exception))
   map)
@@ -2044,10 +2042,6 @@ Includes def and class. ")
 ;; commit 1dd379d857f836c9e8af4576cecaeb413fcba4e5
 ;; Date:   Tue Feb 14 19:47:04 2012 -0800
 ;; "print(';'.join(get_ipython().complete('%s', '%s')[1])) #PYTHON-MODE SILENT\n"
-
-;; (setq ipython-complete-function 'py-completion-at-point)
-
-;; (setq py-encoding-string-re "^[ \t]*#[ \t]*-\\*-[ \t]*coding:.+-\\*-")
 
 (defconst py-windows-config-register 313465889
   "Internal used")
@@ -6838,25 +6832,6 @@ Start a new process if necessary. "
   'comint-dynamic-simple-complete)
 
 ;;; Completion.
-;; (defun py-completion-at-point ()
-;;   "Completion adapting the python.el-way, as shipped with Emacs23.
-;; 
-;; Stuff originallye23 authored by Dave Love, errors are mine -ar "
-;;   (interactive "*")
-;;   ;;
-;;   (add-hook 'comint-preoutput-filter-functions #'py-preoutput-filter
-;; 	    nil t)
-;;   (let ((end (point))
-;; 	(start (save-excursion
-;; 		 (and (re-search-backward
-;; 		       (rx (or buffer-start (regexp "[^[:alnum:]._]"))
-;; 			   (group (1+ (regexp "[[:alnum:]._]"))) point)
-;; 		       nil t)
-;; 		      (match-beginning 1)))))
-;;     (when start
-;;       (list start end
-;;             (completion-table-dynamic 'py-symbol-completions)))))
-
 (defun py-send-receive (string)
   "Send STRING to inferior Python (if any) and return result.
 
@@ -7272,22 +7247,22 @@ containing Python source.
   (set (make-local-variable 'compilation-error-regexp-alist)
        python-compilation-regexp-alist)
   (set (make-local-variable 'comint-prompt-regexp)
-             (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
-                    (concat "\\("
-                            (mapconcat 'identity
-                                       (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
-                                       "\\|")
-                            "\\)"))
-                   (t (concat "\\("
-                              (mapconcat 'identity
-                                         (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
-                                         "\\|")
-                              "\\)"))))
+       (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
+              (concat "\\("
+                      (mapconcat 'identity
+                                 (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
+                                 "\\|")
+                      "\\)"))
+             (t (concat "\\("
+                        (mapconcat 'identity
+                                   (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
+                                   "\\|")
+                        "\\)"))))
   (if py-complete-function
       (add-hook 'completion-at-point-functions
                 py-complete-function nil 'local)
     (add-hook 'completion-at-point-functions
-              'py-completion-at-point nil 'local))
+              'py-shell-complete nil 'local))
   (compilation-shell-minor-mode 1))
 
 (define-derived-mode python-mode fundamental-mode python-mode-modeline-display

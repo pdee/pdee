@@ -1105,7 +1105,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
 --funcall infinite-loop-after-tqs-lp:826044-test \
---funcall C-c-C-c-lp:1221310-and-store-result-test \
 --funcall beginning-of-block-fails-from-wrong-indent-test \
 --funcall cascading-indent-lp-1101962-test \
 --funcall Bogus-dedent-when-typing-colon-in-dictionary-literal-lp-1197171-test \
@@ -1436,3 +1435,4 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall usr-bin-ipython-shell-complete-test \
 --funcall inconvenient-window-splitting-behavior-ipython-lp-1018996-test \
 --funcall does-not-dedent-regions-lp-1072869-test \
+--funcall C-c-C-c-lp:1221310-and-store-result-test \

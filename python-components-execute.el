@@ -462,9 +462,6 @@ Needed when file-path names are contructed from maybe numbered buffer names like
            (py-restore-window-configuration)
            (display-buffer output-buffer)
            (py-jump-to-exception err-p py-exception-buffer)
-           ;; (and windows-displayed (eq 1 (length windows-displayed))
-           ;; (funcall py-split-windows-on-execute-function)
-
            (goto-char (point-max))
            nil)
 
@@ -973,6 +970,7 @@ Returns position where output starts. "
         (setq err-p (save-excursion (py-postprocess-output-buffer procbuf)))
         (py-shell-manage-windows py-buffer-name nil windows-config)
       (and py-store-result-p
+           (sit-for 0.1) 
            (setq erg
                  (py-output-filter
                   (buffer-substring-no-properties orig (point-max)))))
@@ -1494,11 +1492,10 @@ jump to the top (outermost) exception in the exception stack."
 If an exception occurred return error-string, otherwise return nil.  BUF must exist.
 
 Indicate LINE if code wasn't run from a file, thus remember line of source buffer "
-  (let (file bol err-p estring ecode limit)
-    (set-buffer buf)
-    ;; (switch-to-buffer (current-buffer))
-    (goto-char (point-max))
-    (sit-for 0.1)
+  (set-buffer buf)
+  ;; (sit-for 0.1)
+  (let ((pmx (copy-marker (point-max)))
+        file bol err-p estring ecode limit)
     (unless (looking-back py-pdbtrack-input-prompt)
       (save-excursion
         (forward-line -1)
@@ -1512,7 +1509,7 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
           ;; File "/tmp/ipython-3984xMQ.py", line 1
           ;; print(3*5f)
           (when (and (re-search-forward py-traceback-line-re limit t)
-                     (match-string-no-properties 0) 
+                     (match-string-no-properties 0)
                      (or (match-string 1) (match-string 3)))
             (when (match-string-no-properties 1)
               (replace-match (buffer-name py-exception-buffer) nil nil nil 1)
@@ -1543,7 +1540,67 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
               (setq ecode (replace-regexp-in-string "[ \n\t\f\r^]+" " " ecode))
               (add-to-list 'err-p ecode t)))
           ;; (and py-verbose-p (message "%s" (nth 2 err-p)))
-          err-p)))))
+          )))
+
+    ;; (goto-char pmx)
+    err-p))
+
+;; (defun py-postprocess-output-buffer (buf)
+;;   "Highlight exceptions found in BUF.
+;; If an exception occurred return error-string, otherwise return nil.  BUF must exist.
+;;
+;; Indicate LINE if code wasn't run from a file, thus remember line of source buffer "
+;;   (let (file bol err-p estring ecode limit)
+;;     (set-buffer buf)
+;;     ;; (switch-to-buffer (current-buffer))
+;;     (goto-char (point-max))
+;;     (sit-for 0.1)
+;;     (unless (looking-back py-pdbtrack-input-prompt)
+;;       (save-excursion
+;;         (forward-line -1)
+;;         (end-of-line)
+;;         (when (or (re-search-backward py-shell-prompt-regexp nil t 1)
+;;                   ;; (and (string= "ipython" (process-name proc))
+;;                   (re-search-backward ipython-de-input-prompt-regexp nil t 1))
+;;           ;; not a useful message, delete it - please tell when thinking otherwise
+;;           (and (re-search-forward "File \"<stdin>\", line 1,.*\n" nil t)
+;;                (replace-match ""))
+;;           ;; File "/tmp/ipython-3984xMQ.py", line 1
+;;           ;; print(3*5f)
+;;           (when (and (re-search-forward py-traceback-line-re limit t)
+;;                      (match-string-no-properties 0)
+;;                      (or (match-string 1) (match-string 3)))
+;;             (when (match-string-no-properties 1)
+;;               (replace-match (buffer-name py-exception-buffer) nil nil nil 1)
+;;               (setq file py-exception-buffer)
+;;               (and origline
+;;                    (replace-match (number-to-string origline) nil nil nil 2))
+;;               (goto-char (match-beginning 0))
+;;               ;; if no buffer-file exists, signal "Buffer", not "File"
+;;               (save-match-data
+;;                 (and (not (buffer-file-name
+;;                            (or
+;;                             (get-buffer py-exception-buffer)
+;;                             (get-buffer (file-name-nondirectory py-exception-buffer))))) (string-match "^[ \t]*File" (buffer-substring-no-properties (match-beginning 0) (match-end 0)))
+;;                             (looking-at "[ \t]*File")
+;;                             (replace-match " Buffer")))
+;;               (add-to-list 'err-p origline)
+;;               (add-to-list 'err-p file)
+;;               (overlay-put (make-overlay (match-beginning 0) (match-end 0))
+;;                            'face 'highlight))
+;;             ;; If not file exists, just a buffer, correct message
+;;             (forward-line 1)
+;;             (when (looking-at "[ \t]*\\([^\t\n\r\f]+\\)[ \t]*$")
+;;               (setq estring (match-string-no-properties 1))
+;;               (add-to-list 'err-p estring t)
+;;               (setq ecode (buffer-substring-no-properties (line-end-position)
+;;                                                           (progn (re-search-forward comint-prompt-regexp nil t 1)(match-beginning 0))))
+;;               ;; (setq ecode (concat (split-string ecode "[ \n\t\f\r^]" t)))
+;;               (setq ecode (replace-regexp-in-string "[ \n\t\f\r^]+" " " ecode))
+;;               (add-to-list 'err-p ecode t)))
+;;           ;; (recenter)
+;;           ;; (and py-verbose-p (message "%s" (nth 2 err-p)))
+;;           err-p)))))
 
 (defun py-find-next-exception-prepare (direction start)
   "Setup exception regexps depending from kind of Python shell. "
