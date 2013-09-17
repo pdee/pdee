@@ -72,16 +72,18 @@
 (setq py-test-shells
       (list "python" "ipython" "python3" "python2" "python2.7"))
 
-(setq py-shift-forms (list "paragraph" "block" "clause" "block-or-clause" "def" "class" "def-or-class" "line" "statement" "comment"))
+(setq py-shift-forms (list "paragraph" "block" "clause" "block-or-clause" "def" "class" "def-or-class" "line" "statement" "comment" "top-level"))
 
 (setq py-core-command-name '("statement" "block" "def" "class" "region" "file"))
 
-(defvar py-bounds-command-names (list "statement" "block" "clause" "block-or-clause" "def" "class" "region" "buffer" "expression" "partial-expression" "line"))
-(setq  py-bounds-command-names (list "statement" "block" "clause" "block-or-clause" "def" "class" "region" "buffer" "expression" "partial-expression" "line"))
+(defvar py-bounds-command-names (list "statement" "block" "clause" "block-or-clause" "def" "class" "region" "buffer" "expression" "partial-expression" "line" "top-level"))
+(setq  py-bounds-command-names (list "statement" "block" "clause" "block-or-clause" "def" "class" "region" "buffer" "expression" "partial-expression" "line" "top-level"))
 
 (setq py-checker-command-names '("clear-flymake-allowed-file-name-masks" "pylint-flymake-mode" "pyflakes-flymake-mode" "pychecker-flymake-mode" "pep8-flymake-mode" "pyflakespep8-flymake-mode" "py-pylint-doku" "py-pyflakes-run" "py-pyflakespep8-run" "py-pyflakespep8-help"))
 
-(setq py-execute-forms-names (list "statement" "block" "block-or-clause" "def" "class" "def-or-class" "expression" "partial-expression"))
+(setq py-execute-forms-names (list "statement" "block" "block-or-clause" "def" "class" "def-or-class" "expression" "partial-expression" "top-level"))
+
+(setq py-delete-forms (list "statement" "top-level" "block" "block-or-clause" "def" "class" "def-or-class" "expression" "partial-expression" "minor-block"))
 
 (defvar py-re-forms-names '("block" "clause" "block-or-clause" "def" "class" "def-or-class" "if-block" "try-block" "minor-block")
   "Forms whose start is described by a regexp in python-mode." )
@@ -94,9 +96,9 @@
 
 ;; (defvar py-down-forms (list "block" "minor-block" "clause" "block-or-clause" "def" "class" "def-or-class" "statement"))
 ;;
-(defvar py-down-forms (list "block" "minor-block" "clause" "block-or-clause" "def" "class" "def-or-class" "statement"))
+(defvar py-down-forms (list "block" "minor-block" "clause" "block-or-clause" "def" "class" "def-or-class" "statement" "top-level"))
 
-(setq py-down-forms (list "block" "minor-block" "clause" "block-or-clause" "def" "class" "def-or-class" "statement"))
+(setq py-down-forms (list "block" "minor-block" "clause" "block-or-clause" "def" "class" "def-or-class" "statement" "top-level"))
 
 (setq py-comment-forms (list "block" "clause" "block-or-clause" "def" "class" "def-or-class" "statement"))
 
@@ -2708,3 +2710,42 @@ http://docs.python.org/reference/compound_stmts.html\"\n")
 
   (switch-to-buffer (current-buffer))
   (emacs-lisp-mode))
+
+(defun py-write-delete-forms ()
+  (interactive)
+  (set-buffer (get-buffer-create "python-components-delete.el"))
+  (erase-buffer)
+  (switch-to-buffer (current-buffer))
+  (insert ";;; python-components-delete.el --- Delete \n")
+  (insert arkopf)
+  (dolist (ele py-delete-forms)
+    (insert (concat "
+\(defun py-delete-" ele " ()
+  \"Delete " (upcase ele) " at point.
+
+Don't store data in kill ring. \"
+  (interactive \"\*\")
+  (let ((erg (py-mark-base \"" ele "\")))
+    (delete-region (car erg) (cdr erg))))
+")))
+  (insert "\n;; python-components-delete ends here
+\(provide 'python-components-delete)")
+  
+  (switch-to-buffer (current-buffer))
+  (emacs-lisp-mode))
+
+(defun py-write-delete-menu ()
+  (interactive)
+    (set-buffer (get-buffer-create "Delete-menu.el"))
+    (erase-buffer)
+    (insert "         (\"Delete\"")
+    (dolist (ele py-delete-forms)
+      (insert (concat "
+             [\"Delete " ele " \" py-delete-" ele "
+              :help \"`py-delete-" ele "'
+Delete " (upcase ele) " at point, don't store in kill-ring. \"]
+")))
+    (insert "          )\n        \"-\"\n")
+  (switch-to-buffer (current-buffer))
+  (emacs-lisp-mode))
+

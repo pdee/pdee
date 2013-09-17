@@ -22,16 +22,45 @@
 
 ;;; Beg-end forms
 (defun py-beginning-of-top-level ()
-  "Go to beginning of block until level of indentation is null.
+  "Go up to beginning of statments until level of indentation is null.
 
-Returns beginning of block if successful, nil otherwise
+Returns position if successful, nil otherwise
 
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
-  (py-beginning-of-block)
-  (unless (or (bobp) (bolp))
-    (py-beginning-of-top-level)))
+  (let (erg)
+    (unless (bobp)
+      (while (and (not (bobp)) (setq erg (py-beginning-of-statement))
+                  (< 0 (current-indentation))))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+      erg)))
+
+(defun py-end-of-top-level ()
+  "Go to end of top-level form at point.
+
+Returns position if successful, nil otherwise
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html"
+  (interactive)
+  (let ((orig (point))
+        erg)
+    (unless (eobp)
+      (unless (py-beginning-of-statement-p)
+        (py-beginning-of-statement))
+      (unless (eq 0 (current-column))
+        (py-beginning-of-top-level))
+      (if (looking-at py-block-re)
+          (setq erg (py-end-of-block))
+        (setq erg (py-end-of-statement)))
+      (unless (< orig (point))
+        (while (and (not (eobp)) (py-down-statement)(< 0 (current-indentation))))
+        (if (looking-at py-block-re)
+            (setq erg (py-end-of-block))
+          (setq erg (py-end-of-statement))))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+      erg)))
 
 (defun py-beginning ()
   "Go to beginning of compound statement or definition at point.

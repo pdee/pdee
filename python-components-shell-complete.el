@@ -295,9 +295,9 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
          done
          (process
           (if ipython-complete-use-separate-shell-p
-              (unless (and (buffer-live-p " *IPython-Complete*")
-                           (comint-check-proc (process-name (get-buffer-process " *IPython-Complete*"))))
-                (get-buffer-process (py-shell nil nil py-shell-name " *IPython-Complete*")))
+              (unless (and (buffer-live-p py-ipython-completions)
+                           (comint-check-proc (process-name (get-buffer-process py-ipython-completions))))
+                (get-buffer-process (py-shell nil nil py-shell-name py-ipython-completions)))
             (progn
               (while (and processlist (not done))
                 (when (and

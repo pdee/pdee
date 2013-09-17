@@ -32,6 +32,16 @@
           (end (py-end-of-statement)))
       (py-execute-region beg end))))
 
+(defun py-execute-top-level ()
+  "Send top-level form at point to a Python interpreter. "
+  (interactive)
+  (save-excursion
+    (let ((beg (prog1
+                   (or (py-beginning-of-top-level-p)
+                       (py-beginning-of-top-level))))
+          (end (py-end-of-top-level)))
+      (py-execute-region beg end))))
+
 (defun py-execute-block ()
   "Send block at point to a Python interpreter. "
   (interactive)

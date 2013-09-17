@@ -146,6 +146,17 @@ Returns beginning and end positions of marked area, a cons. "
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
+(defun py-mark-top-level ()
+  "Mark top-level form at point.
+
+Returns beginning and end positions of marked area, a cons. "
+  (interactive)
+  (let (erg)
+    (setq erg (py-mark-base "top-level"))
+    (exchange-point-and-mark)
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
 (defun py-mark-expression ()
   "Mark expression at point.
 
@@ -357,14 +368,6 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
   (let ((erg (py-mark-base "ele")))
     (kill-region (car erg) (cdr erg))))
 
-(defun py-delete-def ()
-  "Delete def  at point.
-
-Don't store data in kill ring. "
-  (interactive "*")
-  (let ((erg (py-mark-base "ele")))
-    (delete-region (car erg) (cdr erg))))
-
 (defun py-beginning-of-class-p ()
   "Returns position, if cursor is at the beginning of a class, nil otherwise. "
   (when (and (looking-at py-class-re)
@@ -420,14 +423,6 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
   (let ((erg (py-mark-base "ele")))
     (kill-region (car erg) (cdr erg))))
 
-(defun py-delete-class ()
-  "Delete class  at point.
-
-Don't store data in kill ring. "
-  (interactive "*")
-  (let ((erg (py-mark-base "ele")))
-    (delete-region (car erg) (cdr erg))))
-
 (defun py-beginning-of-def-or-class-p ()
   "Returns position, if cursor is at the beginning of a def-or-class, nil otherwise. "
   (when (and (looking-at py-def-or-class-re)
@@ -468,14 +463,6 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
   (let ((erg (py-mark-base "ele")))
     (kill-region (car erg) (cdr erg))))
-
-(defun py-delete-def-or-class ()
-  "Delete def-or-class  at point.
-
-Don't store data in kill ring. "
-  (interactive "*")
-  (let ((erg (py-mark-base "ele")))
-    (delete-region (car erg) (cdr erg))))
 
 ;; python-components-forms.el ends here
 (provide 'python-components-forms)

@@ -791,27 +791,28 @@ Also for existing commands a shorthand is defined:
 
 (defalias 'py-statement 'py-copy-statement)
 (defun py-copy-statement ()
-  "Mark statement at point.
-
-Returns beginning and end positions of marked area, a cons. "
+  "Mark statement at point. "
   (interactive)
   (let ((erg (py-mark-base "statement")))
     (kill-new (buffer-substring-no-properties (car erg) (cdr erg)))))
 
+(defalias 'py-top-level 'py-copy-top-level)
+(defun py-copy-top-level ()
+  "Copy top-level form at point. "
+  (interactive)
+  (let ((erg (py-mark-base "top-level")))
+    (kill-new (buffer-substring-no-properties (car erg) (cdr erg)))))
+
 (defalias 'py-block 'py-copy-block)
 (defun py-copy-block ()
-  "Mark block at point.
-
-Returns beginning and end positions of marked area, a cons. "
+  "Mark block at point. "
   (interactive)
   (let ((erg (py-mark-base "block")))
     (kill-new (buffer-substring-no-properties (car erg) (cdr erg)))))
 
 (defalias 'py-block-or-clause 'py-copy-block-or-clause)
 (defun py-copy-block-or-clause ()
-  "Mark block-or-clause at point.
-
-Returns beginning and end positions of marked area, a cons. "
+  "Mark block-or-clause at point. "
   (interactive)
   (let ((erg (py-mark-base "block-or-clause")))
     (kill-new (buffer-substring-no-properties (car erg) (cdr erg)))))
@@ -881,6 +882,14 @@ Returns beginning and end positions of marked area, a cons."
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
   (let ((erg (py-mark-base "statement")))
+    (kill-region (car erg) (cdr erg))))
+
+(defun py-kill-top-level ()
+  "Delete top-level form at point.
+
+Stores data in kill ring. Might be yanked back using `C-y'. "
+  (interactive "*")
+  (let ((erg (py-mark-base "top-level")))
     (kill-region (car erg) (cdr erg))))
 
 (defun py-kill-block ()
@@ -1308,5 +1317,6 @@ Takes a list, INDENT and START position. "
       (when (< orig last)
         last))))
 
+(defalias 'py-beginning-of-decorator-bol 'py-beginning-of-decorator)
 (provide 'python-components-move)
 ;;; python-components-move.el ends here

@@ -29,14 +29,35 @@ result = some_function_that_takes_arguments(
     'd', 'e', 'f',
 )
 
+- Keys C-M-a, C-M-e usable for all top-level form, lp:1191078
+
+  Boolean `py-defun-use-top-level-p'
+  If non-nil, beginning- end-of-defun forms will use
+  `py-beginning-of-top-level', `py-end-of-top-level',
+  mark-defun marks top-level form at point etc.
+
+Keys C-M-a, C-M-e usable for all top-level form, lp:1191078
+
+- New commands:
+  py-beginning-of-top-level
+  py-beginning-of-top-level
+  py-end-of-top-level
+  py-mark-top-level
+  py-copy-top-level
+  py-delete-top-level
+  py-kill-top-level
+  py-execute-top-level
+  py-top-level-form-p
+  py-comment-top-level
+  py-beginning-of-top-level-p
 
 New in version 6.1.2
 ---------------------
 - simplified menu
 
-- `py-execute-...'-commands return result as string 
+- `py-execute-...'-commands return result as string
   Controlled by boolean `py-store-result-p', Default is nil
-  When non-nil, put resulting string of `py-execute-...' into kill-ring, so it might be yanked. 
+  When non-nil, put resulting string of `py-execute-...' into kill-ring, so it might be yanked.
 
 - commands deleting all commented lines:
   `py-delete-comments-in-def-or-class'
@@ -45,7 +66,7 @@ New in version 6.1.2
   `py-delete-comments-in-region'
 
 - boolean `py-indent-paren-spanned-multilines-p, default is nil
-  If non-nil, indents elements of list a value of `py-indent-offset' to first element: 
+  If non-nil, indents elements of list a value of `py-indent-offset' to first element:
   def foo():
       if (foo &&
               baz):
@@ -59,16 +80,16 @@ New in version 6.1.2
           bar()
 
 - `py-output-buffer' made customizable
-  See boolean `py-enforce-output-buffer-p' 
+  See boolean `py-enforce-output-buffer-p'
 
 - exceptions following executed regions made point to source
 
 -  command `py-empty-out-list-backward'
   Deletes all elements from list before point
-  With when cursor after 
+  With when cursor after
   mystring[0:1]
   -------------^
-  ==> 
+  ==>
   mystring[]
   ---------^
   In result cursor is insided emptied delimited form."
@@ -109,15 +130,15 @@ New in version 6.1.2
   When py-execute-... commands raise an error, respective code in source-buffer will be highlighted.
 
 - `py-remove-overlays-at-point', command
-  Remove overlays as set when `py-highlight-error-source-p' is non-nil. 
+  Remove overlays as set when `py-highlight-error-source-p' is non-nil.
 
-- `py-which-def-or-class', command, now used `which-function-mode' 
+- `py-which-def-or-class', command, now used `which-function-mode'
 
 - unused variable `py-backspace-function' removed
 
-- Bundled third-party-stuff removed as reported conflicting at emacs-mirror, lp:1153998 
-  affects autopair.el, smart-operator.el  
-  Kept  menu switches resp. commands will issue a warning 
+- Bundled third-party-stuff removed as reported conflicting at emacs-mirror, lp:1153998
+  affects autopair.el, smart-operator.el
+  Kept  menu switches resp. commands will issue a warning
 
 - dropped `py-paragraph-fill-docstring-p'; just `fill-paragraph' should DTRT
 
@@ -131,7 +152,7 @@ New in version 6.1.1
 ---------------------
 
 - comment-related commands:
-  py-uncomment 
+  py-uncomment
   py-comment-block, py-comment-clause,
   py-comment-block-or-clause, py-comment-def,
   py-comment-class, py-comment-def-or-class,
@@ -145,16 +166,16 @@ New in version 6.1.1
 - boolean `py-tab-shifts-region-p'
   when `t', TAB will indent/cycle the region, not just the current line.
 
-- boolean `py-tab-indents-region-p' 
+- boolean `py-tab-indents-region-p'
   when `t', when first TAB doesn't shift, `indent-region' is called
 
 - command from RET customizable via `py-return-key':
   `py-newline-and-indent', `newline' or `py-newline-and-dedent'
 
-- boolean `py-use-font-lock-doc-face-p', default is nil 
+- boolean `py-use-font-lock-doc-face-p', default is nil
   If non-nil, documention strings get `font-lock-doc-face'
 
-- boolean `py-newline-delete-trailing-whitespace-p' 
+- boolean `py-newline-delete-trailing-whitespace-p'
   Delete trailing whitespace maybe left by `py-newline-and-indent'
 
 - `py-electric-comment-p' new default nil
@@ -166,7 +187,7 @@ New in version 6.1.1
 
 - py-down minor API change:
   Go to beginning of one level below of compound statement or definition at point.
-  If no statement or block below, but a delimited form --string or list-- go to it's beginning. 
+  If no statement or block below, but a delimited form --string or list-- go to it's beginning.
   Repeated call from there will behave like down-list.
 
 - commands make underscore syntax changes easier:
@@ -183,12 +204,12 @@ New in version 6.1.1
 New in version 6.1.0
 ---------------------
 
-- py-up 
+- py-up
   Go to beginning one level above of compound statement or definition at point.
 - py-down
   Go to beginning one level below of compound statement or definition at point.
 
-- Customizable output directory 
+- Customizable output directory
   After checking for a remote shell, the following variables are consulted:
 
   py-use-current-dir-when-execute-p, default t
@@ -206,7 +227,7 @@ New in version 6.1.0
 
 - Set of commands calling Python3.3
 
-- fill docstrings according to style, commands 
+- fill docstrings according to style, commands
   py-fill-string-django
   py-fill-string-onetwo
   py-fill-string-pep-257
@@ -328,11 +349,11 @@ New in version 6.0.12
   py-end-of-clause-bol
   etc.
 
-- While commands "py-beginning..." resp. "py-end..." compute the context, 
+- While commands "py-beginning..." resp. "py-end..." compute the context,
   selecting the corresponding beginning or end,
-  new "py-up...", "py-down..." jump regexp-based to the 
+  new "py-up...", "py-down..." jump regexp-based to the
   next element in buffer.
-  See also menu PyEdit. 
+  See also menu PyEdit.
 
 New in version 6.0.11
 ---------------------

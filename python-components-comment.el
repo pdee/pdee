@@ -119,6 +119,23 @@ the default"
       (goto-char end)
       (comment-region beg end arg))))
 
+(defun py-comment-top-level (&optional beg end arg)
+  "Comments top-level form at point.
+
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+the default"
+  (interactive "*")
+  (save-excursion
+    (let ((comment-start (if py-block-comment-prefix-p
+                             py-block-comment-prefix
+                           comment-start))
+          (beg (or beg (py-beginning-of-top-level-position)))
+          (end (or end (py-end-of-top-level-position))))
+      (goto-char beg)
+      (push-mark)
+      (goto-char end)
+      (comment-region beg end arg))))
+
 (defun py-comment-clause (&optional beg end arg)
   "Comments clause at point.
 

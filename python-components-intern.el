@@ -451,6 +451,15 @@ will work.
         erg))))
 
 ;;; Beginning-of- p
+(defun py-beginning-of-top-level-p ()
+  "Returns position, if cursor is at the beginning of a top-level, nil otherwise. "
+  (interactive)
+  (let (erg)
+    (and (py-beginning-of-statement-p)
+         (eq 0 (current-column))
+         (setq erg (point)) 
+      erg)))
+
 (defun py-beginning-of-line-p ()
   "Returns position, if cursor is at the beginning of a line, nil otherwise. "
   (when (bolp)(point)))

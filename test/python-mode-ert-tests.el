@@ -538,6 +538,23 @@ data = {
       (should (eq 4 (py-compute-indentation)))
       (search-forward "}")
       (should (eq 0 (py-compute-indentation)))
-
-
       )))
+
+(ert-deftest top-level ()
+  (py-tests-with-temp-buffer
+      "klauf = kugel()
+
+with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
+    for i in range(anzahl):
+        klauf.pylauf()
+            datei.write(str(spiel[i]) + \"\\n\")
+"
+    (switch-to-buffer (current-buffer)) 
+    (should (eq 16 (py-end-of-top-level)))
+    (should (eq 168 (py-end-of-top-level))) 
+
+    (should (eq 18 (py-beginning-of-top-level)))
+    (should (eq 1 (py-beginning-of-top-level)))
+    (should (eq 1 (py-beginning-of-top-level-p)))
+
+    ))

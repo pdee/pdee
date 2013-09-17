@@ -298,7 +298,7 @@ Give some hints, if not."
 (defvar py-python-completions "*Python Completions*"
   "Buffer name for Python-shell completions, internally used")
 
-(defvar py-ipython-completions "IPython Completions"
+(defvar py-ipython-completions "*IPython Completions*"
   "Buffer name for IPython-shell completions, internally used")
 
 (defcustom py-timer-close-completions-p t
@@ -612,6 +612,21 @@ If nil, default, it will not move from at any reasonable level. "
   "If py-mark-def-or-class functions should mark decorators too. Default is `nil'. "
   :type 'boolean
   :group 'python-mode)
+
+(defcustom py-defun-use-top-level-p nil
+ "When non-nil, keys C-M-a, C-M-e address top-level form.
+
+Default is nil.
+
+Beginning- end-of-defun forms use
+commands `py-beginning-of-top-level', `py-end-of-top-level'
+
+mark-defun marks top-level form at point etc.
+" 
+
+:type 'boolean
+:group 'python-mode)
+
 
 (defcustom py-tab-indent t
   "Non-nil means TAB in Python mode calls `py-indent-line'."
@@ -2471,6 +2486,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
 (require 'python-components-up-down)
 (require 'python-components-bol-forms)
 (require 'python-components-exec-forms)
+(require 'python-components-delete)
 (require 'python-extended-executes)
 ;; (require 'python-mode-test)
 ;; (require 'column-marker)
@@ -2752,9 +2768,6 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
         (define-key map [(control c)(control n)] 'py-end-of-statement)
         (define-key map [(control c)(control u)] 'py-beginning-of-block)
         (define-key map [(control c)(control q)] 'py-end-of-block)
-        (define-key map [(control meta a)] 'py-beginning-of-def-or-class)
-        (define-key map [(control meta e)] 'py-end-of-def-or-class)
-
         ;; (define-key map [(meta i)] 'py-indent-forward-line)
         (define-key map [(control j)] 'py-newline-and-indent)
         ;; Most Pythoneers expect RET `py-newline-and-indent'
@@ -3146,6 +3159,13 @@ Returns beginning and end positions of marked area, a cons\. "]
           :help "`py-mark-statement'
 Mark statement at point"]
 
+         ["Mark top level" py-mark-top-level
+          :help " `py-mark-top-level'
+
+Mark top-level form at point\.
+
+Returns beginning and end positions of marked area, a cons\. . "]
+
          ["Mark clause" py-mark-clause
           :help "`py-mark-clause'
 Mark innermost compound statement at point"]
@@ -3233,6 +3253,14 @@ Comments block at point\.
 Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
 the default. "]
 
+         ["Comment top level" py-comment-top-level
+          :help " `py-comment-top-level'
+
+Comments top-level form at point\.
+
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+the default. "]
+
          ["Comment clause" py-comment-clause
           :help " `py-comment-clause'
 Comments clause at point\.
@@ -3282,7 +3310,14 @@ the default. "]
          ["Beginning of top level" py-beginning-of-top-level
           :help " `py-beginning-of-top-level'
 
-Go to the very beginning of current block. "]
+Go to the very beginning of top-level form at point. "]
+
+         ["End of top level" py-end-of-top-level
+          :help " `py-end-of-top-level'
+
+Go to end of top-level form at point. "]
+
+         "-"
 
          ["Beginning of block" py-beginning-of-block
           :help " `py-beginning-of-block'
@@ -3363,6 +3398,12 @@ Go to beginning one level below of compound statement or definition at point. "]
          ["Copy statement" py-copy-statement
           :help "`py-copy-statement'
 Copy statement at point"]
+         
+         ["Copy top level" py-copy-top-level
+          :help " `py-copy-top-level'
+
+Copy top-level form at point. "]
+
          ["Copy clause" py-copy-clause
           :help "`py-copy-clause'
 Copy innermost compound statement at point"]
@@ -3435,6 +3476,11 @@ Send the argument STRING to a Python interpreter\.
 See also `py-execute-region'\. . "]
         ("More... "
          :help "Python-specific features"
+
+         ["Execute top level" py-execute-top-level
+          :help " `py-execute-top-level'
+
+Send top-level form at point to a Python interpreter\. . "]
 
          ["Execute block" py-execute-block
           :help "`py-execute-block'
@@ -5439,6 +5485,17 @@ Use `M-x customize-variable' to set it permanently"
 
           ("Other"
 
+           ["Defun use top level "
+            (setq py-defun-use-top-level-p
+                  (not py-defun-use-top-level-p))
+            :help "When non-nil, keys C-M-a, C-M-e address top-level form\.
+
+Beginning- end-of-defun forms use
+commands `py-beginning-of-top-level', `py-end-of-top-level'
+
+mark-defun marks top-level form at point etc. "
+            :style toggle :selected py-defun-use-top-level-p]
+
            ["Python mode v5 behavior"
            (setq python-mode-v5-behavior-p
                  (not python-mode-v5-behavior-p))
@@ -5648,6 +5705,13 @@ Returns value of `smart-operator-mode'\. . "]
             :help "`py-kill-statement'
 Delete innermost compound statement at point, store deleted string in kill-ring"]
 
+           ["Kill top level" py-kill-top-level
+            :help " `py-kill-top-level'
+
+Delete top-level form at point\.
+
+Stores data in kill ring\. Might be yanked back using `C-y'\. . "]
+
            ["Kill clause" py-kill-clause
             :help "`py-kill-clause'
 Delete innermost compound statement at point, store deleted string in kill-ring"]
@@ -5675,37 +5739,51 @@ Delete innermost compound statement at point, store deleted string in kill-ring"
            ["Kill def" py-kill-def
             :help "`py-kill-def'
 Delete innermost compound statement at point, store deleted string in kill-ring"])
-          ("Delete "
-           ["Delete block" py-delete-block
-            :help "`py-delete-block'
-Delete innermost compound statement at point, don't store deleted string in kill-ring"]
 
-           ["Delete def-or-class" py-delete-def-or-class
-            :help "`py-delete-def-or-class'
-Delete def-or-class at point, don't store deleted string in kill-ring"]
+         ("Delete"
+             ["Delete statement " py-delete-statement
+              :help "`py-delete-statement'
+Delete STATEMENT at point, don't store in kill-ring. "]
 
-           ["Delete clause" py-delete-clause
-            :help "`py-delete-clause'
-Delete innermost compound statement at point, don't store deleted string in kill-ring"]
-           ["Delete statement" py-delete-statement
-            :help "`py-delete-statement'
-Delete statement at point, don't store deleted string in kill-ring"]
+             ["Delete top-level " py-delete-top-level
+              :help "`py-delete-top-level'
+Delete TOP-LEVEL at point, don't store in kill-ring. "]
 
-           ["Delete expression" py-delete-expression
-            :help "`py-delete-expression'
-Delete expression at point, don't store deleted string in kill-ring"]
+             ["Delete block " py-delete-block
+              :help "`py-delete-block'
+Delete BLOCK at point, don't store in kill-ring. "]
 
-           ["Delete partial-expression" py-delete-partial-expression
-            :help "`py-delete-partial-expression'
-Delete partial-expression at point, don't store deleted string in kill-ring"]
+             ["Delete block-or-clause " py-delete-block-or-clause
+              :help "`py-delete-block-or-clause'
+Delete BLOCK-OR-CLAUSE at point, don't store in kill-ring. "]
 
-           ["Delete class" py-delete-class
-            :help "`py-delete-class'
-Delete class at point, don't store deleted string in kill-ring"]
+             ["Delete def " py-delete-def
+              :help "`py-delete-def'
+Delete DEF at point, don't store in kill-ring. "]
 
-           ["Delete def" py-delete-def
-            :help "`py-delete-def'
-Delete def at point, don't store deleted string in kill-ring"])
+             ["Delete class " py-delete-class
+              :help "`py-delete-class'
+Delete CLASS at point, don't store in kill-ring. "]
+
+             ["Delete def-or-class " py-delete-def-or-class
+              :help "`py-delete-def-or-class'
+Delete DEF-OR-CLASS at point, don't store in kill-ring. "]
+
+             ["Delete expression " py-delete-expression
+              :help "`py-delete-expression'
+Delete EXPRESSION at point, don't store in kill-ring. "]
+
+             ["Delete partial-expression " py-delete-partial-expression
+              :help "`py-delete-partial-expression'
+Delete PARTIAL-EXPRESSION at point, don't store in kill-ring. "]
+
+             ["Delete minor-block " py-delete-minor-block
+              :help "`py-delete-minor-block'
+Delete MINOR-BLOCK at point, don't store in kill-ring. "]
+          )
+        "-"
+
+
 
           ("Shift right "
            ["Shift block right" py-shift-block-right
@@ -6901,8 +6979,7 @@ This is a no-op if `py-check-comint-prompt' returns nil."
 (add-hook 'python-mode-hook
           (lambda ()
             (setq indent-tabs-mode py-indent-tabs-mode)
-            (set (make-local-variable 'beginning-of-defun-function) 'py-beginning-of-def-or-class)
-            (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class)
+            
             ;; (orgstruct-mode 1)
             ))
 
@@ -7374,6 +7451,16 @@ See available customizations listed in files variables-python-mode at directory 
       (add-hook 'python-mode-hook 'py-run-auto-fill-timer)
     (remove-hook 'python-mode-hook 'py-run-auto-fill-timer))
   (add-hook 'after-change-functions 'py-after-change-function nil t)
+  (if py-defun-use-top-level-p
+      (progn
+        (set (make-local-variable 'beginning-of-defun-function) 'py-beginning-of-top-level)
+        (set (make-local-variable 'end-of-defun-function) 'py-end-of-top-level)
+        (define-key python-mode-map [(control meta a)] 'py-beginning-of-top-level)
+        (define-key python-mode-map [(control meta e)] 'py-end-of-top-level))
+    (set (make-local-variable 'beginning-of-defun-function) 'py-beginning-of-def-or-class)
+    (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class)
+    (define-key python-mode-map [(control meta a)] 'py-beginning-of-def-or-class)
+    (define-key python-mode-map [(control meta e)] 'py-end-of-def-or-class))
   ;; (add-hook 'post-command-hook 'py-after-change-function nil t)
   (when (and py-imenu-create-index-p
              (fboundp 'imenu-add-to-menubar)
