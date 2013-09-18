@@ -72,7 +72,9 @@
 (setq py-test-shells
       (list "python" "ipython" "python3" "python2" "python2.7"))
 
-(setq py-shift-forms (list "paragraph" "block" "clause" "block-or-clause" "def" "class" "def-or-class" "line" "statement" "comment" "top-level"))
+(setq py-shift-forms (list "paragraph" "block" "minor-block" "clause" "block-or-clause" "def" "class" "def-or-class" "line" "statement" "comment" "top-level"))
+
+(setq py-positions-forms (list "paragraph" "block" "minor-block" "clause" "block-or-clause" "def" "class" "def-or-class" "line" "statement" "comment" "top-level" "partial-expression" "expression"))
 
 (setq py-core-command-name '("statement" "block" "def" "class" "region" "file"))
 
@@ -1185,14 +1187,14 @@ http://docs.python.org/reference/compound_stmts.html\"\n")
   (set-buffer (get-buffer-create "Positions"))
   (erase-buffer)
   (insert ";;; Positions")
-  (dolist (ele py-shift-forms)
+  (dolist (ele py-positions-forms)
     (insert (concat "
 \(defun py-beginning-of-" ele "-position ()
   \"Returns beginning of " ele " position. \"
   (interactive)
   (save-excursion
     (let ((erg (py-beginning-of-" ele ")))
-      (when (interactive-p) (message \"%s\" erg))
+      (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
       erg)))
 
 \(defun py-end-of-" ele "-position ()
@@ -1200,11 +1202,12 @@ http://docs.python.org/reference/compound_stmts.html\"\n")
   (interactive)
   (save-excursion
     (let ((erg (py-end-of-" ele ")))
-      (when (interactive-p) (message \"%s\" erg))
+      (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
       erg)))
 "))
     (switch-to-buffer (current-buffer))
     (emacs-lisp-mode)))
+
 
 (defun py-write-end-position-forms ()
   (interactive)

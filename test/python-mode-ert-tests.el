@@ -558,3 +558,48 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
     (should (eq 1 (py-beginning-of-top-level-p)))
 
     ))
+
+(ert-deftest position-tests ()
+  (interactive) 
+  (py-tests-with-temp-buffer
+      "class kugel(object):
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    def pylauf(self):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
+        if treffer in gruen:
+            # print \"0, Gruen\"
+        elif treffer in schwarz:
+            # print \"%i, Schwarz\" % (treffer)
+            ausgabe[1] = treffer
+        else:
+            # print \"%i, manque\" % (treffer)
+            ausgabe[7] = treffer
+"
+    (switch-to-buffer (current-buffer)) 
+    (search-forward "else:")
+    (should (eq 1 (py-beginning-of-paragraph-position)))
+    (should (eq 446 (py-end-of-paragraph-position)))
+    (should (eq 190 (py-beginning-of-block-position)))
+    (should (eq 445 (py-end-of-block-position)))
+    (should (eq 190 (py-beginning-of-minor-block-position)))
+    (should (eq 445 (py-end-of-minor-block-position)))
+    (should (eq 362 (py-beginning-of-clause-position)))
+    (should (eq 445 (py-end-of-clause-position)))
+    (should (eq 362 (py-beginning-of-block-or-clause-position)))
+    (should (eq 445 (py-end-of-block-or-clause-position)))
+    (should (eq 71 (py-beginning-of-def-position)))
+    (should (eq 445 (py-end-of-def-position)))
+    (should (eq 1 (py-beginning-of-class-position)))
+    (should (eq 445 (py-end-of-class-position)))
+    (should (eq 71 (py-beginning-of-def-or-class-position)))
+    (should (eq 445 (py-end-of-def-or-class-position)))
+    (should (eq 354 (py-beginning-of-line-position)))
+    (should (eq 445 (py-end-of-line-position)))
+    (should (eq 362 (py-beginning-of-statement-position)))
+    (should (eq 445 (py-end-of-statement-position)))
+    (should (eq 1 (py-beginning-of-comment-position)))
+    (should (eq 1 (py-end-of-comment-position)))
+    (should (eq 1 (py-beginning-of-top-level-position)))
+    (should (eq 1 (py-end-of-top-level-position)))
+    ))

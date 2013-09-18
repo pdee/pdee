@@ -518,7 +518,13 @@ The defun visible is the one that contains point or follows point. "
       (narrow-to-region (point) start))))
 
 ;; make general form below work also in these cases
-(defalias 'py-beginning-of-paragraph 'backward-paragraph)
+;; (defalias 'py-beginning-of-paragraph 'backward-paragraph)
+(defun py-beginning-of-paragraph ()
+  (interactive)
+  (let ((erg (and (backward-paragraph)(point))))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
 ;; (defun py-beginning-of-paragraph ()
 ;;   "Go to beginning of paragraph.
 ;;
@@ -530,7 +536,13 @@ The defun visible is the one that contains point or follows point. "
 ;;         erg
 ;;       (backward-paragraph))))
 
-(defalias 'py-end-of-paragraph 'forward-paragraph)
+;; (defalias 'py-end-of-paragraph 'forward-paragraph)
+(defun py-end-of-paragraph ()
+  (interactive)
+  (let ((erg (and (forward-paragraph)(point))))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
 
 ;;;
 (defun py-indent-and-forward ()
@@ -570,16 +582,16 @@ Returns and keeps relative position "
   "Returns beginning of paragraph position. "
   (interactive)
   (save-excursion
-    (let ((erg (progn (py-beginning-of-paragraph) (skip-chars-forward " \t\r\n\f") (point))))
-      (when (interactive-p) (message "%s" erg))
+    (let ((erg (py-beginning-of-paragraph)))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py-end-of-paragraph-position ()
   "Returns end of paragraph position. "
   (interactive)
   (save-excursion
-    (let ((erg (progn (py-end-of-paragraph) (skip-chars-backward " \t\r\n\f") (point))))
-      (when (interactive-p) (message "%s" erg))
+    (let ((erg (py-end-of-paragraph)))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py-beginning-of-block-position ()
@@ -587,7 +599,7 @@ Returns and keeps relative position "
   (interactive)
   (save-excursion
     (let ((erg (py-beginning-of-block)))
-      (when (interactive-p) (message "%s" erg))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py-end-of-block-position ()
@@ -595,7 +607,23 @@ Returns and keeps relative position "
   (interactive)
   (save-excursion
     (let ((erg (py-end-of-block)))
-      (when (interactive-p) (message "%s" erg))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+      erg)))
+
+(defun py-beginning-of-minor-block-position ()
+  "Returns beginning of minor-block position. "
+  (interactive)
+  (save-excursion
+    (let ((erg (py-beginning-of-minor-block)))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+      erg)))
+
+(defun py-end-of-minor-block-position ()
+  "Returns end of minor-block position. "
+  (interactive)
+  (save-excursion
+    (let ((erg (py-end-of-minor-block)))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py-beginning-of-clause-position ()
@@ -603,7 +631,7 @@ Returns and keeps relative position "
   (interactive)
   (save-excursion
     (let ((erg (py-beginning-of-clause)))
-      (when (interactive-p) (message "%s" erg))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py-end-of-clause-position ()
@@ -611,7 +639,7 @@ Returns and keeps relative position "
   (interactive)
   (save-excursion
     (let ((erg (py-end-of-clause)))
-      (when (interactive-p) (message "%s" erg))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py-beginning-of-block-or-clause-position ()
@@ -619,7 +647,7 @@ Returns and keeps relative position "
   (interactive)
   (save-excursion
     (let ((erg (py-beginning-of-block-or-clause)))
-      (when (interactive-p) (message "%s" erg))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py-end-of-block-or-clause-position ()
@@ -627,7 +655,7 @@ Returns and keeps relative position "
   (interactive)
   (save-excursion
     (let ((erg (py-end-of-block-or-clause)))
-      (when (interactive-p) (message "%s" erg))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py-beginning-of-def-position ()
@@ -635,7 +663,7 @@ Returns and keeps relative position "
   (interactive)
   (save-excursion
     (let ((erg (py-beginning-of-def)))
-      (when (interactive-p) (message "%s" erg))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py-end-of-def-position ()
@@ -643,7 +671,7 @@ Returns and keeps relative position "
   (interactive)
   (save-excursion
     (let ((erg (py-end-of-def)))
-      (when (interactive-p) (message "%s" erg))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py-beginning-of-class-position ()
@@ -651,7 +679,7 @@ Returns and keeps relative position "
   (interactive)
   (save-excursion
     (let ((erg (py-beginning-of-class)))
-      (when (interactive-p) (message "%s" erg))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py-end-of-class-position ()
@@ -659,7 +687,7 @@ Returns and keeps relative position "
   (interactive)
   (save-excursion
     (let ((erg (py-end-of-class)))
-      (when (interactive-p) (message "%s" erg))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py-beginning-of-def-or-class-position ()
@@ -667,7 +695,7 @@ Returns and keeps relative position "
   (interactive)
   (save-excursion
     (let ((erg (py-beginning-of-def-or-class)))
-      (when (interactive-p) (message "%s" erg))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py-end-of-def-or-class-position ()
@@ -675,7 +703,7 @@ Returns and keeps relative position "
   (interactive)
   (save-excursion
     (let ((erg (py-end-of-def-or-class)))
-      (when (interactive-p) (message "%s" erg))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py-beginning-of-line-position ()
@@ -683,7 +711,7 @@ Returns and keeps relative position "
   (interactive)
   (save-excursion
     (let ((erg (py-beginning-of-line)))
-      (when (interactive-p) (message "%s" erg))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py-end-of-line-position ()
@@ -691,7 +719,7 @@ Returns and keeps relative position "
   (interactive)
   (save-excursion
     (let ((erg (py-end-of-line)))
-      (when (interactive-p) (message "%s" erg))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py-beginning-of-statement-position ()
@@ -699,7 +727,7 @@ Returns and keeps relative position "
   (interactive)
   (save-excursion
     (let ((erg (py-beginning-of-statement)))
-      (when (interactive-p) (message "%s" erg))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py-end-of-statement-position ()
@@ -707,23 +735,39 @@ Returns and keeps relative position "
   (interactive)
   (save-excursion
     (let ((erg (py-end-of-statement)))
-      (when (interactive-p) (message "%s" erg))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
-(defun py-beginning-of-expression-position ()
-  "Returns beginning of expression position. "
+(defun py-beginning-of-comment-position ()
+  "Returns beginning of comment position. "
   (interactive)
   (save-excursion
-    (let ((erg (py-beginning-of-expression)))
-      (when (interactive-p) (message "%s" erg))
+    (let ((erg (py-beginning-of-comment)))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
-(defun py-end-of-expression-position ()
-  "Returns end of expression position. "
+(defun py-end-of-comment-position ()
+  "Returns end of comment position. "
   (interactive)
   (save-excursion
-    (let ((erg (py-end-of-expression)))
-      (when (interactive-p) (message "%s" erg))
+    (let ((erg (py-end-of-comment)))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+      erg)))
+
+(defun py-beginning-of-top-level-position ()
+  "Returns beginning of top-level position. "
+  (interactive)
+  (save-excursion
+    (let ((erg (py-beginning-of-top-level)))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+      erg)))
+
+(defun py-end-of-top-level-position ()
+  "Returns end of top-level position. "
+  (interactive)
+  (save-excursion
+    (let ((erg (py-end-of-top-level)))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py-beginning-of-partial-expression-position ()
@@ -731,7 +775,7 @@ Returns and keeps relative position "
   (interactive)
   (save-excursion
     (let ((erg (py-beginning-of-partial-expression)))
-      (when (interactive-p) (message "%s" erg))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py-end-of-partial-expression-position ()
@@ -739,7 +783,23 @@ Returns and keeps relative position "
   (interactive)
   (save-excursion
     (let ((erg (py-end-of-partial-expression)))
-      (when (interactive-p) (message "%s" erg))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+      erg)))
+
+(defun py-beginning-of-expression-position ()
+  "Returns beginning of expression position. "
+  (interactive)
+  (save-excursion
+    (let ((erg (py-beginning-of-expression)))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+      erg)))
+
+(defun py-end-of-expression-position ()
+  "Returns end of expression position. "
+  (interactive)
+  (save-excursion
+    (let ((erg (py-end-of-expression)))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 ;;; Bounds
