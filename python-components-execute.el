@@ -762,7 +762,7 @@ When optional FILE is `t', no temporary file is needed. "
       (sit-for 0.1)
       (and py-cleanup-temporary
            (py-delete-temporary tempfile tempbuf)))
-    (and erg py-store-result-p (kill-new erg))
+    (and erg py-store-result-p (unless (string= (car kill-ring) erg) (kill-new erg)))
     erg))
 
 (defun py-execute-ge24.3 (start end file execute-directory)
@@ -916,8 +916,7 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
   "Fix offline amount, make error point at the corect line. "
   (insert (make-string (- line (count-lines (point-min) (point))) 10)))
 
-(defun py-execute-file (filename &optional proc cmd
-                                 procbuf origfile execute-directory)
+(defun py-execute-file (filename)
   "When called interactively, user is prompted for filename. "
   (interactive "fFilename: ")
   (let ((windows-config (window-configuration-to-register 313465889))
@@ -925,9 +924,8 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
         erg)
     (if (file-readable-p filename)
         (if py-store-result-p
-            (setq erg (py-execute-file-base proc (expand-file-name filename) cmd procbuf origfile execute-directory))
-          (py-execute-file-base proc (expand-file-name filename) cmd
-                                procbuf origfile execute-directory))
+            (setq erg (py-execute-file-base nil (expand-file-name filename)))
+          (py-execute-file-base nil (expand-file-name filename)))
       (message "%s not readable. %s" filename "Do you have write permissions?"))
     erg))
 
@@ -970,10 +968,11 @@ Returns position where output starts. "
         (setq err-p (save-excursion (py-postprocess-output-buffer procbuf)))
         (py-shell-manage-windows py-buffer-name nil windows-config)
       (and py-store-result-p
-           (sit-for 0.1) 
+           (sit-for 0.1)
            (setq erg
                  (py-output-filter
-                  (buffer-substring-no-properties orig (point-max)))))
+                  (buffer-substring-no-properties orig (point-max))))
+           (unless (string= (car kill-ring) erg) (kill-new erg)))
       (py-shell-manage-windows (current-buffer) nil windows-config)
       erg)))
 
@@ -1155,15 +1154,11 @@ Basically, this goes down the directory tree as long as there are __init__.py fi
   "Send the contents of the buffer to a Python interpreter. "
   (interactive)
   (let ((origline 1))
-    (if (and py-prompt-on-changed-p (buffer-file-name) (interactive-p) (buffer-modified-p))
-        (if (y-or-n-p "Buffer changed, save first? ")
-            (progn
-              (write-file (buffer-file-name))
-              (py-execute-buffer-base))
-          (py-execute-region (point-min) (point-max)))
-      (if (buffer-file-name)
-          (py-execute-buffer-base)
-        (py-execute-region (point-min) (point-max))))))
+    (and py-prompt-on-changed-p (buffer-file-name) (interactive-p) (buffer-modified-p)
+         (y-or-n-p "Buffer changed, save first? ")
+         (write-file (buffer-file-name)))
+    (py-execute-region (point-min) (point-max))))
+
 
 (defun py-execute-buffer-base ()
   "Honor `py-master-file'. "

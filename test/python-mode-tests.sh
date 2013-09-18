@@ -193,17 +193,6 @@ TESTFILE3="python-extended-executes-test.el"
 TESTFILE4="python-executes-test.el"
 TESTFILE5="py-shell-completion-tests.el"
 CEXEC="python-extended-executes.el"
-# PCOT="$TESTDIR"
-
-# export PYTHONPATH="$PDIR/completion/:~/tmp/"
-
-# python-mode file to load
-if [ -s "$PDIR/python-components-mode.el" ];
-then
-    PYTHONMODE="$PDIR/python-components-mode.el"
-else
-    PYTHONMODE="$PDIR/python-mode.el"
-fi
 
 echo "\$PYMACS: $PYMACS"
 echo "\$PYTHONMODE: $PYTHONMODE"
