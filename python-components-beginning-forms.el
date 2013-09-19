@@ -111,9 +111,8 @@ http://docs.python.org/reference/compound_stmts.html"
  "Go to beginning minor-block, skip whitespace at BOL.
 
 Returns beginning of minor-block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+A minor block is started by a `for', `if', `try' or `with'.
+"
   (interactive)
   (py-beginning-of-prepare indent 'py-minor-block-re 'py-clause-re (interactive-p)))
 

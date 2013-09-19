@@ -20,7 +20,6 @@
 
 ;;; Code:
 
-
 (defalias 'py-shift-region-left 'py-shift-left)
 (defun py-shift-left (&optional count start end)
   "Dedent region according to `py-indent-offset' by COUNT times.
@@ -125,7 +124,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "block" (or arg py-indent-offset))))
-        (when (interactive-p) (message "%s" erg))
+    (when (interactive-p) (message "%s" erg))
     erg))
 
 (defun py-shift-block-left (&optional arg)
@@ -138,6 +137,32 @@ Returns outmost indentation reached. "
   (interactive "*P")
   (let ((erg (py-shift-forms-base "block" (- (or arg py-indent-offset)))))
     (when (interactive-p) (message "%s" erg))
+    erg))
+
+(defun py-shift-minor-block-left (&optional arg)
+  "Dedent minor-block by COUNT spaces.
+
+COUNT defaults to `py-indent-offset',
+use \[universal-argument] to specify a different value.
+
+Returns outmost indentation reached.
+A minor block is started by a `for', `if', `try' or `with'. "
+  (interactive "*P")
+  (let ((erg (py-shift-forms-base "minor-block" (- (or arg py-indent-offset)))))
+    (when (interactive-p) (message "%s" erg))
+    erg))
+
+(defun py-shift-minor-block-right (&optional arg)
+  "Indent minor-block by COUNT spaces.
+
+COUNT defaults to `py-indent-offset',
+use \[universal-argument] to specify a different value.
+
+Returns outmost indentation reached.
+A minor block is started by a `for', `if', `try' or `with'. "
+  (interactive "*P")
+  (let ((erg (py-shift-forms-base "minor-block" (or arg py-indent-offset))))
+        (when (interactive-p) (message "%s" erg))
     erg))
 
 (defun py-shift-clause-right (&optional arg)
@@ -310,4 +335,3 @@ Returns outmost indentation reached. "
 
 (provide 'python-components-shift-forms)
 ;;; python-components-shift-forms.el ends here
- 

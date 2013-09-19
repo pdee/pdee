@@ -763,7 +763,7 @@ and `pass'.  This doesn't catch embedded statements."
                                      thisregexp))
                                  (when (py-statement-opens-block-p py-extended-block-or-clause-re)
                                    (point)))))))
-           ind erg last pps)
+           ind erg last pps thisindent)
       (if this
           (progn
             (setq thisindent (current-indentation))

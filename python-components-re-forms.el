@@ -24,10 +24,7 @@
 (defun py-beginning-of-top-level ()
   "Go up to beginning of statments until level of indentation is null.
 
-Returns position if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns position if successful, nil otherwise "
   (interactive)
   (let (erg)
     (unless (bobp)
@@ -252,8 +249,8 @@ http://docs.python.org/reference/compound_stmts.html"
 
 Returns end of minor-block if successful, nil otherwise
 
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+A minor block is started by a `for', `if', `try' or `with'.
+"
   (interactive "P")
     (let* ((orig (point))
            (erg (py-end-base 'py-minor-block-re orig)))

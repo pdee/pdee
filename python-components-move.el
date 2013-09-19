@@ -729,137 +729,7 @@ Returns position if succesful "
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
-;;; Copying
-
-(defalias 'py-expression 'py-copy-expression)
-(defun py-copy-expression ()
-  "Mark expression at point.
-
-Returns beginning and end positions of marked area, a cons.
-See also py-partial-expression. "
-  (interactive)
-  (let ((erg (py-mark-base "expression")))
-    (kill-new (buffer-substring-no-properties (car erg) (cdr erg)))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-    erg))
-
-(defalias 'py-minor-expression 'py-copy-partial-expression)
-(defalias 'py-partial-expression 'py-copy-partial-expression)
-(defun py-copy-partial-expression ()
-  "Mark partial-expression at point.
-
-Returns beginning and end positions of marked area, a cons.
-
-\".\" operators delimit a partial-expression expression on it's level, that's the difference to compound expressions.
-
-Given the function below, `py-partial-expression'
-called at pipe symbol would copy and return:
-
-def usage():
-    print \"\"\"Usage: %s
-    ....\"\"\" % (
-        os.path.basename(sys.argv[0]))
-------------|-------------------------
-==> path
-
-        os.path.basename(sys.argv[0]))
-------------------|-------------------
-==> basename(sys.argv[0]))
-
-        os.path.basename(sys.argv[0]))
---------------------------|-----------
-==> sys
-
-        os.path.basename(sys.argv[0]))
-------------------------------|-------
-==> argv[0]
-
-while `py-expression' would copy and return
-
-\(
- os.path.basename(sys.argv[0]))
-
-;;;;;
-
-Also for existing commands a shorthand is defined:
-
-\(defalias 'py-statement 'py-copy-statement)"
-
-  (interactive)
-  (let ((erg (py-mark-base "partial-expression")))
-    (kill-new (buffer-substring-no-properties (car erg) (cdr erg)))))
-
-(defalias 'py-statement 'py-copy-statement)
-(defun py-copy-statement ()
-  "Mark statement at point. "
-  (interactive)
-  (let ((erg (py-mark-base "statement")))
-    (kill-new (buffer-substring-no-properties (car erg) (cdr erg)))))
-
-(defalias 'py-top-level 'py-copy-top-level)
-(defun py-copy-top-level ()
-  "Copy top-level form at point. "
-  (interactive)
-  (let ((erg (py-mark-base "top-level")))
-    (kill-new (buffer-substring-no-properties (car erg) (cdr erg)))))
-
-(defalias 'py-block 'py-copy-block)
-(defun py-copy-block ()
-  "Mark block at point. "
-  (interactive)
-  (let ((erg (py-mark-base "block")))
-    (kill-new (buffer-substring-no-properties (car erg) (cdr erg)))))
-
-(defalias 'py-block-or-clause 'py-copy-block-or-clause)
-(defun py-copy-block-or-clause ()
-  "Mark block-or-clause at point. "
-  (interactive)
-  (let ((erg (py-mark-base "block-or-clause")))
-    (kill-new (buffer-substring-no-properties (car erg) (cdr erg)))))
-
-(defalias 'py-def 'py-copy-def)
-(defun py-copy-def (&optional arg)
-  "Mark def at point.
-
-With universal argument or `py-mark-decorators' set to `t' decorators are copied too.
-Returns beginning and end positions of marked area, a cons."
-
-  (interactive "P")
-  (let ((py-mark-decorators (or arg py-mark-decorators))
-        (erg (py-mark-base "def" py-mark-decorators)))
-    (kill-new (buffer-substring-no-properties (car erg) (cdr erg)))))
-
-(defun py-copy-def-or-class (&optional arg)
-  "Mark def-or-class at point.
-
-With universal argument or `py-mark-decorators' set to `t' decorators are copied too.
-Returns beginning and end positions of marked area, a cons."
-  (interactive "P")
-  (let ((py-mark-decorators (or arg py-mark-decorators))
-        (erg (py-mark-base "def-or-class" py-mark-decorators)))
-    (kill-new (buffer-substring-no-properties (car erg) (cdr erg)))))
-
-(defalias 'py-class 'py-copy-class)
-(defun py-copy-class (&optional arg)
-  "Mark class at point.
-
-With universal argument or `py-mark-decorators' set to `t' decorators are copied too.
-Returns beginning and end positions of marked area, a cons."
-
-  (interactive "P")
-  (let ((py-mark-decorators (or arg py-mark-decorators))
-        (erg (py-mark-base "class" py-mark-decorators)))
-    (kill-new (buffer-substring-no-properties (car erg) (cdr erg)))))
-
-(defalias 'py-clause 'py-copy-clause)
-(defun py-copy-clause ()
-  "Mark clause at point.
-  Returns beginning and end positions of marked area, a cons. "
-  (interactive)
-  (let ((erg (py-mark-base "clause")))
-    (kill-new (buffer-substring-no-properties (car erg) (cdr erg)))))
-
-;; Deleting
+;;; Kill
 (defun py-kill-expression ()
   "Delete expression at point.
   Stores data in kill ring. Might be yanked back using `C-y'. "
@@ -898,6 +768,14 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
   (let ((erg (py-mark-base "block")))
+    (kill-region (car erg) (cdr erg))))
+
+(defun py-kill-minor-block ()
+  "Delete minor-block at point.
+
+Stores data in kill ring. Might be yanked back using `C-y'. "
+  (interactive "*")
+  (let ((erg (py-mark-base "minor-block")))
     (kill-region (car erg) (cdr erg))))
 
 (defun py-kill-block-or-clause ()

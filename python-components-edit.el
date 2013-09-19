@@ -590,7 +590,11 @@ Returns and keeps relative position "
   "Returns end of paragraph position. "
   (interactive)
   (save-excursion
-    (let ((erg (py-end-of-paragraph)))
+    (let ((erg (progn
+                 (when (looking-at "[ \\t\\r\\n\\f]*$")
+                   (skip-chars-backward " \t\r\n\f")
+                   (forward-char -1))
+                 (py-end-of-paragraph))))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
@@ -606,7 +610,11 @@ Returns and keeps relative position "
   "Returns end of block position. "
   (interactive)
   (save-excursion
-    (let ((erg (py-end-of-block)))
+    (let ((erg (progn
+                 (when (looking-at "[ \\t\\r\\n\\f]*$")
+                   (skip-chars-backward " \t\r\n\f")
+                   (forward-char -1))
+                 (py-end-of-block))))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
@@ -622,7 +630,11 @@ Returns and keeps relative position "
   "Returns end of minor-block position. "
   (interactive)
   (save-excursion
-    (let ((erg (py-end-of-minor-block)))
+    (let ((erg (progn
+                 (when (looking-at "[ \\t\\r\\n\\f]*$")
+                   (skip-chars-backward " \t\r\n\f")
+                   (forward-char -1))
+                 (py-end-of-minor-block))))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
@@ -638,7 +650,11 @@ Returns and keeps relative position "
   "Returns end of clause position. "
   (interactive)
   (save-excursion
-    (let ((erg (py-end-of-clause)))
+    (let ((erg (progn
+                 (when (looking-at "[ \\t\\r\\n\\f]*$")
+                   (skip-chars-backward " \t\r\n\f")
+                   (forward-char -1))
+                 (py-end-of-clause))))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
@@ -654,7 +670,11 @@ Returns and keeps relative position "
   "Returns end of block-or-clause position. "
   (interactive)
   (save-excursion
-    (let ((erg (py-end-of-block-or-clause)))
+    (let ((erg (progn
+                 (when (looking-at "[ \\t\\r\\n\\f]*$")
+                   (skip-chars-backward " \t\r\n\f")
+                   (forward-char -1))
+                 (py-end-of-block-or-clause))))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
@@ -670,7 +690,11 @@ Returns and keeps relative position "
   "Returns end of def position. "
   (interactive)
   (save-excursion
-    (let ((erg (py-end-of-def)))
+    (let ((erg (progn
+                 (when (looking-at "[ \\t\\r\\n\\f]*$")
+                   (skip-chars-backward " \t\r\n\f")
+                   (forward-char -1))
+                 (py-end-of-def))))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
@@ -686,7 +710,11 @@ Returns and keeps relative position "
   "Returns end of class position. "
   (interactive)
   (save-excursion
-    (let ((erg (py-end-of-class)))
+    (let ((erg (progn
+                 (when (looking-at "[ \\t\\r\\n\\f]*$")
+                   (skip-chars-backward " \t\r\n\f")
+                   (forward-char -1))
+                 (py-end-of-class))))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
@@ -702,7 +730,11 @@ Returns and keeps relative position "
   "Returns end of def-or-class position. "
   (interactive)
   (save-excursion
-    (let ((erg (py-end-of-def-or-class)))
+    (let ((erg (progn
+                 (when (looking-at "[ \\t\\r\\n\\f]*$")
+                   (skip-chars-backward " \t\r\n\f")
+                   (forward-char -1))
+                 (py-end-of-def-or-class))))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
@@ -718,7 +750,11 @@ Returns and keeps relative position "
   "Returns end of line position. "
   (interactive)
   (save-excursion
-    (let ((erg (py-end-of-line)))
+    (let ((erg (progn
+                 (when (looking-at "[ \\t\\r\\n\\f]*$")
+                   (skip-chars-backward " \t\r\n\f")
+                   (forward-char -1))
+                 (py-end-of-line))))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
@@ -734,7 +770,11 @@ Returns and keeps relative position "
   "Returns end of statement position. "
   (interactive)
   (save-excursion
-    (let ((erg (py-end-of-statement)))
+    (let ((erg (progn
+                 (when (looking-at "[ \\t\\r\\n\\f]*$")
+                   (skip-chars-backward " \t\r\n\f")
+                   (forward-char -1))
+                 (py-end-of-statement))))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
@@ -750,7 +790,11 @@ Returns and keeps relative position "
   "Returns end of comment position. "
   (interactive)
   (save-excursion
-    (let ((erg (py-end-of-comment)))
+    (let ((erg (progn
+                 (when (looking-at "[ \\t\\r\\n\\f]*$")
+                   (skip-chars-backward " \t\r\n\f")
+                   (forward-char -1))
+                 (py-end-of-comment))))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
@@ -766,7 +810,11 @@ Returns and keeps relative position "
   "Returns end of top-level position. "
   (interactive)
   (save-excursion
-    (let ((erg (py-end-of-top-level)))
+    (let ((erg (progn
+                 (when (looking-at "[ \\t\\r\\n\\f]*$")
+                   (skip-chars-backward " \t\r\n\f")
+                   (forward-char -1))
+                 (py-end-of-top-level))))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
@@ -782,7 +830,11 @@ Returns and keeps relative position "
   "Returns end of partial-expression position. "
   (interactive)
   (save-excursion
-    (let ((erg (py-end-of-partial-expression)))
+    (let ((erg (progn
+                 (when (looking-at "[ \\t\\r\\n\\f]*$")
+                   (skip-chars-backward " \t\r\n\f")
+                   (forward-char -1))
+                 (py-end-of-partial-expression))))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
@@ -798,7 +850,11 @@ Returns and keeps relative position "
   "Returns end of expression position. "
   (interactive)
   (save-excursion
-    (let ((erg (py-end-of-expression)))
+    (let ((erg (progn
+                 (when (looking-at "[ \\t\\r\\n\\f]*$")
+                   (skip-chars-backward " \t\r\n\f")
+                   (forward-char -1))
+                 (py-end-of-expression))))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 

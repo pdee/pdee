@@ -205,6 +205,20 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --eval "(when (file-exists-p \"~/.abbrev_defs\") (quietly-read-abbrev-file (expand-file-name \"~/.abbrev_defs\")))" \
 \
 -eval "(assert (functionp 'word-at-point) nil \"new completion bug, lp:1034656, word-at-point not known\")" \
+-eval "(assert (functionp 'py-beginning-of-top-level-p) nil \"py-beginning-of-top-level-p not detected as function\")" \
+-eval "(assert (functionp 'py-beginning-of-line-p) nil \"py-beginning-of-line-p not detected as function\")" \
+-eval "(assert (functionp 'py-beginning-of-buffer-p) nil \"py-beginning-of-buffer-p not detected as function\")" \
+-eval "(assert (functionp 'py-beginning-of-paragraph-p) nil \"py-beginning-of-paragraph-p not detected as function\")" \
+-eval "(assert (functionp 'py-beginning-of-statement-p) nil \"py-beginning-of-statement-p not detected as function\")" \
+-eval "(assert (functionp 'py-beginning-of-expression-p) nil \"py-beginning-of-expression-p not detected as function\")" \
+-eval "(assert (functionp 'py-beginning-of-partial-expression-p) nil \"py-beginning-of-partial-expression-p not detected as function\")" \
+-eval "(assert (functionp 'py-beginning-of-block-p) nil \"py-beginning-of-block-p not detected as function\")" \
+-eval "(assert (functionp 'py-beginning-of-clause-p) nil \"py-beginning-of-clause-p not detected as function\")" \
+-eval "(assert (functionp 'py-beginning-of-block-or-clause-p) nil \"py-beginning-of-block-or-clause-p not detected as function\")" \
+-eval "(assert (functionp 'py-beginning-of-def-p) nil \"py-beginning-of-def-p not detected as function\")" \
+-eval "(assert (functionp 'py-beginning-of-class-p) nil \"py-beginning-of-class-p not detected as function\")" \
+-eval "(assert (functionp 'py-beginning-of-def-or-class-p) nil \"py-beginning-of-def-or-class-p not detected as function\")" \
+-eval "(assert (functionp 'py-beginning-of-minor-block-p) nil \"py-beginning-of-minor-block-p not detected as function\")" \
 \
 -eval "(assert (commandp 'pylint-flymake-mode) nil \"pylint-flymake-mode not detected as command\")" \
 -eval "(assert (commandp 'pyflakes-flymake-mode) nil \"pyflakes-flymake-mode not detected as command\")" \
@@ -856,6 +870,29 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-execute-file-bpython-switch) nil \"py-execute-file-bpython-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-bpython-no-switch) nil \"py-execute-file-bpython-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-bpython-dedicated) nil \"py-execute-file-bpython-dedicated not detected as command\")" \
+-eval "(assert (functionp 'py-top-level-form-p) nil \"py-top-level-form-p not detected as function\")" \
+-eval "(assert (commandp 'py-beginning-of-top-level-position) nil \"py-beginning-of-top-level-position not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-top-level-position) nil \"py-end-of-top-level-position not detected as command\")" \
+-eval "(assert (commandp 'py-comment-top-level) nil \"py-comment-top-level not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-top-level-p) nil \"py-beginning-of-top-level-p not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-top-level) nil \"py-beginning-of-top-level not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-top-level) nil \"py-beginning-of-top-level not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-top-level) nil \"py-end-of-top-level not detected as command\")" \
+-eval "(assert (commandp 'py-mark-top-level) nil \"py-mark-top-level not detected as command\")" \
+-eval "(assert (commandp 'py-copy-top-level) nil \"py-copy-top-level not detected as command\")" \
+-eval "(assert (commandp 'py-delete-top-level) nil \"py-delete-top-level not detected as command\")" \
+-eval "(assert (commandp 'py-kill-top-level) nil \"py-kill-top-level not detected as command\")" \
+-eval "(assert (commandp 'py-execute-top-level) nil \"py-execute-top-level not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-minor-block-position) nil \"py-beginning-of-minor-block-position not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-minor-block-position) nil \"py-end-of-minor-block-position not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-minor-block) nil \"py-beginning-of-minor-block not detected as command\")" \
+-eval "(assert (commandp 'py-beginning-of-minor-block-lc) nil \"py-beginning-of-minor-block-lc not detected as command\")" \
+-eval "(assert (commandp 'py-end-of-minor-block) nil \"py-end-of-minor-block not detected as command\")" \
+-eval "(assert (commandp 'py-delete-minor-block) nil \"py-delete-minor-block not detected as command\")" \
+-eval "(assert (commandp 'py-up-minor-block) nil \"py-up-minor-block not detected as command\")" \
+-eval "(assert (commandp 'py-down-minor-block) nil \"py-down-minor-block not detected as command\")" \
+-eval "(assert (commandp 'py-up-minor-block-bol) nil \"py-up-minor-block-bol not detected as command\")" \
+-eval "(assert (commandp 'py-down-minor-block-bol) nil \"py-down-minor-block-bol not detected as command\")" \
 -eval "(assert (functionp 'py-font-lock-syntactic-face-function) nil \"py-font-lock-syntactic-face-function not detected function\")" \
 -eval "(setq enable-local-variables :all)" \
 -eval "(assert (boundp 'py-version) nil \"py-version not a variable\")" \

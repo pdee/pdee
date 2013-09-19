@@ -2373,9 +2373,11 @@ I am using version 6.0.4
 
 (defun py-mark-expression-marks-too-much-lp:941140-base ()
   (goto-char 60)
-  (assert (eq 73 (cdr (py-expression))) nil "py-mark-expression-marks-too-much-lp:941140-test failed")
+  (py-expression)
+  (assert (string-match "some" (car kill-ring)) nil "py-mark-expression-marks-too-much-lp:941140-test failed")
   (goto-char 417)
-  (assert (eq 418 (cdr (py-expression))) nil "py-mark-expression-marks-too-much-lp:941140-test failed"))
+  (py-expression)
+  (assert (string-match "a" (car kill-ring)) nil "py-mark-expression-marks-too-much-lp:941140-test failed"))
 
 ;;; Py-shell tests
 (defun py-shell-invoking-python-lp:835151-test (&optional arg)
@@ -5409,7 +5411,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.60 $\"
+__version__ = \"$Revision: 1.61 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))

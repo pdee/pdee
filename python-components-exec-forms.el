@@ -52,6 +52,19 @@
           (end (py-end-of-block)))
       (py-execute-region beg end))))
 
+(defun py-execute-minor-block ()
+  "Send minor-block at point to a Python interpreter.
+
+A minor block is started by a `for', `if', `try' or `with'.
+"
+  (interactive)
+  (save-excursion
+    (let ((beg (prog1
+                   (or (py-beginning-of-minor-block-p)
+                       (py-beginning-of-minor-block))))
+          (end (py-end-of-minor-block)))
+      (py-execute-region beg end))))
+
 (defun py-execute-block-or-clause ()
   "Send block-or-clause at point to a Python interpreter. "
   (interactive)

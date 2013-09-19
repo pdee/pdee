@@ -75,7 +75,7 @@ Returns position, nil if not in comment."
 
 (defun py-uncomment-intern (beg end)
   (uncomment-region beg end)
-  (when py-uncomment-indents
+  (when py-uncomment-indents-p
     (py-indent-region beg end)))
 
 (defun py-uncomment (&optional beg end)
@@ -87,11 +87,11 @@ If region is active, restrict uncommenting at region "
     (save-restriction
       (when (use-region-p)
         (narrow-to-region (region-beginning) (region-end)))
-      (let ((beg (or beg (progn (goto-char (point-min))
-                                (search-forward comment-start)
-                                (match-beginning 0))))
-            end)
-        (setq end (or end (py-end-of-comment)))
+      (let* (last
+             (beg (or beg (save-excursion
+                            (while (and (py-beginning-of-comment) (setq last (point))(prog1 (forward-line -1)(end-of-line))))
+                            last))))
+        (and (py-end-of-comment))
         (py-uncomment-intern beg (point))))))
 
 (defun py-comment-region (beg end &optional arg)
@@ -114,6 +114,23 @@ the default"
                            comment-start))
           (beg (or beg (py-beginning-of-block-position)))
           (end (or end (py-end-of-block-position))))
+      (goto-char beg)
+      (push-mark)
+      (goto-char end)
+      (comment-region beg end arg))))
+
+(defun py-comment-minor-block (&optional beg end arg)
+  "Comments a block started by a `for', `if', `try' or `with'.
+
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+the default"
+  (interactive "*")
+  (save-excursion
+    (let ((comment-start (if py-block-comment-prefix-p
+                             py-block-comment-prefix
+                           comment-start))
+          (beg (or beg (py-beginning-of-minor-block-position)))
+          (end (or end (py-end-of-minor-block-position))))
       (goto-char beg)
       (push-mark)
       (goto-char end)

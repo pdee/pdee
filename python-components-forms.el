@@ -63,6 +63,17 @@ Returns beginning and end positions of marked area, a cons. "
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
+(defun py-mark-minor-block ()
+  "Mark minor-block at point.
+
+Returns beginning and end positions of marked area, a cons. "
+  (interactive)
+  (let (erg)
+    (setq erg (py-mark-base "minor-block"))
+    (exchange-point-and-mark)
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
 (defun py-mark-clause ()
   "Mark clause at point.
 
@@ -217,7 +228,10 @@ See also `py-down-block': down from current definition to next beginning of bloc
   erg))
 
 (defun py-beginning-of-minor-block-p ()
-  "Returns position, if cursor is at the beginning of a minor-block, nil otherwise. "
+  "Returns position, if cursor is at the beginning of a minor-block, nil otherwise. 
+
+A minor block is started by a `for', `if', `try' or `with'.
+"
   (when (and (looking-at py-minor-block-re)
              (not (py-in-string-or-comment-p)))
     (point)))

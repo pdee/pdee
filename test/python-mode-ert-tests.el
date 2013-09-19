@@ -515,7 +515,7 @@ data = {
 
 "
     (let (py-closing-list-dedents-bos)
-      (switch-to-buffer (current-buffer)) 
+      (switch-to-buffer (current-buffer))
       (search-forward "]")
       (should (eq 4 (py-compute-indentation)))
       (search-forward ")")
@@ -549,18 +549,16 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
         klauf.pylauf()
             datei.write(str(spiel[i]) + \"\\n\")
 "
-    (switch-to-buffer (current-buffer)) 
+    (switch-to-buffer (current-buffer))
     (should (eq 16 (py-end-of-top-level)))
-    (should (eq 168 (py-end-of-top-level))) 
+    (should (eq 168 (py-end-of-top-level)))
 
     (should (eq 18 (py-beginning-of-top-level)))
     (should (eq 1 (py-beginning-of-top-level)))
-    (should (eq 1 (py-beginning-of-top-level-p)))
-
-    ))
+    (should (eq 1 (py-beginning-of-top-level-p)))))
 
 (ert-deftest position-tests ()
-  (interactive) 
+  (interactive)
   (py-tests-with-temp-buffer
       "class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
@@ -576,8 +574,15 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
             # print \"%i, manque\" % (treffer)
             ausgabe[7] = treffer
 "
-    (switch-to-buffer (current-buffer)) 
+    (switch-to-buffer (current-buffer))
     (search-forward "else:")
+    (forward-char -1)
+    (should (eq 1 (py-beginning-of-top-level-position)))
+    (should (eq 445 (py-end-of-top-level-position)))
+    (should (eq 362 (py-beginning-of-statement-position)))
+    (should (eq 367 (py-end-of-statement-position)))
+    (should (eq 367 (py-end-of-line-position)))
+    (should (eq 354 (py-beginning-of-line-position)))
     (should (eq 1 (py-beginning-of-paragraph-position)))
     (should (eq 446 (py-end-of-paragraph-position)))
     (should (eq 190 (py-beginning-of-block-position)))
@@ -594,12 +599,6 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
     (should (eq 445 (py-end-of-class-position)))
     (should (eq 71 (py-beginning-of-def-or-class-position)))
     (should (eq 445 (py-end-of-def-or-class-position)))
-    (should (eq 354 (py-beginning-of-line-position)))
-    (should (eq 445 (py-end-of-line-position)))
-    (should (eq 362 (py-beginning-of-statement-position)))
-    (should (eq 445 (py-end-of-statement-position)))
-    (should (eq 1 (py-beginning-of-comment-position)))
-    (should (eq 1 (py-end-of-comment-position)))
-    (should (eq 1 (py-beginning-of-top-level-position)))
-    (should (eq 1 (py-end-of-top-level-position)))
-    ))
+    (search-forward "#")
+    (should (eq 380 (py-beginning-of-comment-position)))
+    (should (eq 412 (py-end-of-comment-position)))))

@@ -83,9 +83,11 @@
 
 (setq py-checker-command-names '("clear-flymake-allowed-file-name-masks" "pylint-flymake-mode" "pyflakes-flymake-mode" "pychecker-flymake-mode" "pep8-flymake-mode" "pyflakespep8-flymake-mode" "py-pylint-doku" "py-pyflakes-run" "py-pyflakespep8-run" "py-pyflakespep8-help"))
 
-(setq py-execute-forms-names (list "statement" "block" "block-or-clause" "def" "class" "def-or-class" "expression" "partial-expression" "top-level"))
+(setq py-execute-forms-names (list "statement" "block" "block-or-clause" "def" "class" "def-or-class" "expression" "partial-expression" "top-level" "clause"))
 
-(setq py-delete-forms (list "statement" "top-level" "block" "block-or-clause" "def" "class" "def-or-class" "expression" "partial-expression" "minor-block"))
+(setq py-delete-forms (list "statement" "top-level" "block" "block-or-clause" "def" "class" "def-or-class" "expression" "partial-expression" "minor-block" "clause"))
+
+(setq py-copy-forms (list "statement" "top-level" "block" "clause" "block-or-clause" "def" "class" "def-or-class" "expression" "partial-expression" "minor-block"))
 
 (defvar py-re-forms-names '("block" "clause" "block-or-clause" "def" "class" "def-or-class" "if-block" "try-block" "minor-block")
   "Forms whose start is described by a regexp in python-mode." )
@@ -1201,7 +1203,11 @@ http://docs.python.org/reference/compound_stmts.html\"\n")
   \"Returns end of " ele " position. \"
   (interactive)
   (save-excursion
-    (let ((erg (py-end-of-" ele ")))
+    (let ((erg (progn
+                 (when (looking-at \"[ \\\\t\\\\r\\\\n\\\\f]\*\$\")
+                   (skip-chars-backward \" \\t\\r\\n\\f\")
+                   (forward-char -1))
+                 (py-end-of-" ele "))))
       (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
       erg)))
 "))
@@ -2752,3 +2758,28 @@ Delete " (upcase ele) " at point, don't store in kill-ring. \"]
   (switch-to-buffer (current-buffer))
   (emacs-lisp-mode))
 
+(defun py-write-copy-forms ()
+  (interactive)
+  (set-buffer (get-buffer-create "python-components-copy.el"))
+  (erase-buffer)
+  (switch-to-buffer (current-buffer))
+  (insert ";;; python-components-copy.el --- Copy \n")
+  (insert arkopf)
+  (dolist (ele py-copy-forms)
+    (insert (concat "
+\(defalias 'py-" ele " 'py-copy-" ele ")
+\(defun py-copy-" ele " ()
+  \"Copy " ele " at point.
+
+Store data in kill ring, so it might yanked back. \"
+  (interactive \"\*\")
+  (let ((erg (py-mark-base \"" ele "\")))
+    (copy-region-as-kill (car erg) (cdr erg))))
+")))
+  (insert "\n;; python-components-copy ends here
+\(provide 'python-components-copy)")
+  
+  (switch-to-buffer (current-buffer))
+  (emacs-lisp-mode))
+
+;;; Copying

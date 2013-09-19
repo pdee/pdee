@@ -51,6 +51,10 @@ Keys C-M-a, C-M-e usable for all top-level form, lp:1191078
   py-comment-top-level
   py-beginning-of-top-level-p
 
+- `minor-block' commands added
+  A minor block is started by a `for', `if', `try' or `with',
+  while block covers also `def' or `class'
+
 New in version 6.1.2
 ---------------------
 - simplified menu
