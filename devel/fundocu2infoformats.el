@@ -92,7 +92,7 @@
 
                 (insert (concat (replace-regexp-in-string "^;;; " "* " (car ele)) "\n")))
             (insert (concat "** "(car ele) "\n"))
-            (insert (concat "   " (cdr ele) "\n"))))
+            (insert (concat "   " (cdr ele) "\n\n"))))
         (write-file (concat directory-out "commands-" orgname))
         (find-file (concat directory-out "commands-" orgname)))
       (with-temp-buffer

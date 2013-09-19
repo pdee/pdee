@@ -167,6 +167,18 @@ If documention string inside of def or class get `font-lock-doc-face'.
 `font-lock-doc-face' inherits `font-lock-string-face'.
 Call M-x `customize-face' in order to have a visible effect. 
 
+py-defun-use-top-level-p
+------------------------
+When non-nil, keys C-M-a, C-M-e address top-level form.
+
+Default is nil.
+
+Beginning- end-of-defun forms use
+commands `py-beginning-of-top-level', `py-end-of-top-level'
+
+mark-defun marks top-level form at point etc.
+
+
 py-tab-shifts-region-p
 ----------------------
 If `t', TAB will indent/cycle the region, not just the current line.
