@@ -160,6 +160,84 @@ When `py-no-completion-calls-dabbrev-expand-p' is non-nil, try dabbrev-expand. O
      py-completion-last-window-configuration))
   (goto-char end))
 
+(defalias 'ipyhton-complete 'ipython-complete)
+(defun ipython-complete (&optional done completion-command-string beg end word shell debug imports)
+  "Complete the python symbol before point.
+
+If no completion available, insert a TAB.
+Returns the completed symbol, a string, if successful, nil otherwise. "
+
+  (interactive "*")
+  (let* (py-fontify-shell-buffer-p
+         (beg (or beg (progn (save-excursion (skip-chars-backward "a-z0-9A-Z_." (point-at-bol))
+                                             (point)))))
+         (end (or end (point)))
+         (pattern (or word (buffer-substring-no-properties beg end)))
+         (sep ";")
+         (py-shell-name (or shell (py-choose-shell)))
+         (processlist (process-list))
+         (imports (or imports (py-find-imports)))
+         done
+         (process
+          (if ipython-complete-use-separate-shell-p
+              (unless (and (buffer-live-p py-ipython-completions)
+                           (comint-check-proc (process-name (get-buffer-process py-ipython-completions))))
+                (get-buffer-process (py-shell nil nil py-shell-name py-ipython-completions)))
+            (progn
+              (while (and processlist (not done))
+                (when (and
+                       (string= py-shell-name (process-name (car processlist)))
+                       (processp (car processlist))
+                       (setq done (car processlist))))
+                (setq processlist (cdr processlist)))
+              done)))
+         (proc (or process
+                   (get-buffer-process (py-shell nil nil (if (string-match "[iI][pP]ython[^[:alpha:]]*$"  py-shell-name) "ipython") nil))))
+         (comint-output-filter-functions
+          (delq 'py-comint-output-filter-function comint-output-filter-functions))
+         (comint-preoutput-filter-functions
+          (append comint-preoutput-filter-functions
+                  '(ansi-color-filter-apply
+                    (lambda (string)
+                      (setq ugly-return (concat ugly-return string))
+                      ""))))
+         (ccs (or completion-command-string
+                  (if imports
+                      (concat imports (py-set-ipython-completion-command-string))
+                    (py-set-ipython-completion-command-string))))
+         completion completions completion-table ugly-return)
+    (if (string= pattern "")
+        (tab-to-tab-stop)
+      (process-send-string proc (format ccs pattern))
+      (accept-process-output proc 0.1)
+      (if ugly-return
+          (progn
+            (setq completions
+                  (split-string (substring ugly-return 0 (position ?\n ugly-return)) sep))
+            (when debug (setq py-shell-complete-debug completions))
+            (if (and completions (not (string= "" (car completions))))
+                (cond ((eq completions t)
+                       (message "Can't find completion for \"%s\"" pattern)
+                       (ding)
+                       nil)
+                      ((< 1 (length completions))
+                       (sit-for 0.1)
+                       (with-output-to-temp-buffer "*IPython Completions*"
+                         (display-completion-list
+                          (all-completions pattern completions)))
+                       (recenter)
+                       (skip-chars-forward "^ \t\r\n\f"))
+                      ((not (string= pattern (car completions)))
+                       (progn (delete-char (- (length pattern)))
+                              (insert (car completions))
+                              nil)))
+              (when py-no-completion-calls-dabbrev-expand-p
+                (ignore-errors (dabbrev-expand nil))
+                (and py-verbose-p (< end (point))(message "%s" "Completion found by dabbrev-expand")))
+              (when py-indent-no-completion-p
+                (tab-to-tab-stop))))
+        (message "%s" "No response from Python process. Please check your configuration. If config is okay, please file a bug-regport at http://launchpad.net/python-mode")))))
+
 (defun py-shell-complete-intern (word &optional beg end shell imports proc debug)
   (when imports
     (py-send-string-no-output imports proc))
@@ -274,84 +352,6 @@ complete('%s')" word) shell nil proc)))
               ;; (imports
               ;; (py-python-script-complete shell imports beg end word))
               (t (py-shell-complete-intern word beg end shell imports proc debug)))))))
-
-(defalias 'ipyhton-complete 'ipython-complete)
-(defun ipython-complete (&optional done completion-command-string beg end word shell debug imports)
-  "Complete the python symbol before point.
-
-If no completion available, insert a TAB.
-Returns the completed symbol, a string, if successful, nil otherwise. "
-
-  (interactive "*")
-  (let* (py-fontify-shell-buffer-p
-         (beg (or beg (progn (save-excursion (skip-chars-backward "a-z0-9A-Z_." (point-at-bol))
-                                             (point)))))
-         (end (or end (point)))
-         (pattern (or word (buffer-substring-no-properties beg end)))
-         (sep ";")
-         (py-shell-name (or shell (py-choose-shell)))
-         (processlist (process-list))
-         (imports (or imports (py-find-imports)))
-         done
-         (process
-          (if ipython-complete-use-separate-shell-p
-              (unless (and (buffer-live-p py-ipython-completions)
-                           (comint-check-proc (process-name (get-buffer-process py-ipython-completions))))
-                (get-buffer-process (py-shell nil nil py-shell-name py-ipython-completions)))
-            (progn
-              (while (and processlist (not done))
-                (when (and
-                       (string= py-shell-name (process-name (car processlist)))
-                       (processp (car processlist))
-                       (setq done (car processlist))))
-                (setq processlist (cdr processlist)))
-              done)))
-         (proc (or process
-                   (get-buffer-process (py-shell nil nil (if (string-match "[iI][pP]ython[^[:alpha:]]*$"  py-shell-name) "ipython") nil))))
-         (comint-output-filter-functions
-          (delq 'py-comint-output-filter-function comint-output-filter-functions))
-         (comint-output-filter-functions
-          (append comint-output-filter-functions
-                  '(ansi-color-filter-apply
-                    (lambda (string)
-                      (setq ugly-return (concat ugly-return string))
-                      (delete-region comint-last-output-start
-                                     (process-mark (get-buffer-process (current-buffer))))))))
-
-         (ccs (or completion-command-string
-                  (if imports
-                      (concat imports (py-set-ipython-completion-command-string))
-                    (py-set-ipython-completion-command-string))))
-         completion completions completion-table ugly-return)
-    (if (string= pattern "")
-        (tab-to-tab-stop)
-      (process-send-string proc (format ccs pattern))
-      (accept-process-output proc 0.1)
-      (if ugly-return
-          (progn
-            (setq completions
-                  (split-string (substring ugly-return 0 (position ?\n ugly-return)) sep))
-            (when debug (setq py-shell-complete-debug completions))
-            (if (and completions (not (string= "" (car completions))))
-                (cond ((eq completions t)
-                       (message "Can't find completion for \"%s\"" pattern)
-                       (ding)
-                       nil)
-                      ((< 1 (length completions))
-                       (sit-for 0.1)
-                       (with-output-to-temp-buffer "*IPython Completions*"
-                         (display-completion-list
-                          (all-completions pattern completions)))
-                       (recenter))
-                      ((not (string= pattern (car completions)))
-                       (progn (delete-char (- (length pattern)))
-                              (insert (car completions))
-                              nil)))
-              (when py-no-completion-calls-dabbrev-expand-p
-                (ignore-errors (dabbrev-expand nil)))
-              (when py-indent-no-completion-p
-                (tab-to-tab-stop))))
-        (message "%s" "No response from Python process. Please check your configuration. If config is okay, please file a bug-regport at http://launchpad.net/python-mode")))))
 
 (provide 'python-components-shell-complete)
 
