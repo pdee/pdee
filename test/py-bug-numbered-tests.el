@@ -2906,7 +2906,7 @@ CLASS_INS.someDe
     (write-file testfile2)
     (goto-char 107)
     (unwind-protect
-        (py-python-script-complete)
+        (py-shell-complete)
       (beginning-of-line))
     (when (file-readable-p testfile1) (delete-file testfile1))
     (when (file-readable-p testfile2) (delete-file testfile2)))
@@ -2931,7 +2931,7 @@ basd
 
 (defun no-completion-at-all-lp:1001328-base ()
   (goto-char 40)
-  (py-python-script-complete)
+  (py-python-shell-complete)
   (beginning-of-line)
   (sit-for 0.1)
   (assert (looking-at "basdklfjasdf") nil "no-completion-at-all-lp:1001328-test failed"))
@@ -2948,7 +2948,6 @@ def test_bu():
 
 (defun not-that-useful-completion-lp:1003580-base ()
   (goto-char 86)
-  ;; (py-python-script-complete)
   (py-shell-complete nil t)
   (assert (string-match  "^numpy." (car py-shell-complete-debug)) nil "not-that-useful-completion-lp:1003580-test failed"))
 
@@ -5411,7 +5410,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.61 $\"
+__version__ = \"$Revision: 1.63 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))

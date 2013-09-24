@@ -73,41 +73,6 @@ completions on the current context."
                 (all-completions input completions)))
              nil)))))
 
-(defun py-python-script-complete (&optional shell imports beg end word)
-  "Complete word before point, if any.
-
-When `py-no-completion-calls-dabbrev-expand-p' is non-nil, try dabbrev-expand. Otherwise, when `py-indent-no-completion-p' is non-nil, call `tab-to-tab-stop'. "
-  (interactive)
-  (let* (py-split-windows-on-execute-p
-         py-switch-buffers-on-execute-p
-         (orig (point))
-         (shell (or shell py-local-versioned-command (py-choose-shell)))
-         (beg (or beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point))))
-         (end (or end (point)))
-         (word (or word (buffer-substring-no-properties beg end)))
-         (imports (or imports (py-find-imports)))
-         proc)
-    (cond ((string= word "")
-           (if py-indent-no-completion-p
-               (tab-to-tab-stop)
-             (message "%s" "Nothing to complete. ")))
-          (t (or (setq proc (get-buffer-process (py-buffer-name-prepare)))
-                 (setq proc (get-buffer-process (py-shell nil nil shell))))
-             (if (processp proc)
-                 (progn
-                   ;; when completing instances, make them known
-                   (when (string-match "^\\(^[a-zA-Z0-9_]+\\)\\.\\([a-zA-Z0-9_]+\\)$" word)
-                     ;; (message "%s" (match-string 1 word))
-                     (save-excursion
-                       (save-match-data
-                         (goto-char (point-min))
-                         (when (re-search-forward (concat "^[ \t]*" (match-string-no-properties 1 word) "[ \t]*=[ \t]*[^ \n\r\f\t]+") nil t 1)
-                           (when py-verbose-p (message "%s" (match-string-no-properties 0)))
-                           (if imports
-                               (setq imports (concat imports (match-string-no-properties 0) ";"))
-                             (setq imports (match-string-no-properties 0)))))))
-                   (py-shell--do-completion-at-point proc imports word))
-               (error "No completion process at proc"))))))
 
 (defun py-python2-shell-complete (&optional shell)
   (interactive)
@@ -177,6 +142,7 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
          (py-shell-name (or shell (py-choose-shell)))
          (processlist (process-list))
          (imports (or imports (py-find-imports)))
+         (py-completion-buffer py-ipython-completions)
          done
          (process
           (if ipython-complete-use-separate-shell-p
@@ -215,33 +181,41 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
             (setq completions
                   (split-string (substring ugly-return 0 (position ?\n ugly-return)) sep))
             (when debug (setq py-shell-complete-debug completions))
-            (if (and completions (not (string= "" (car completions))))
-                (cond ((eq completions t)
-                       (message "Can't find completion for \"%s\"" pattern)
-                       (ding)
-                       nil)
-                      ((< 1 (length completions))
-                       (sit-for 0.1)
-                       (with-output-to-temp-buffer "*IPython Completions*"
-                         (display-completion-list
-                          (all-completions pattern completions)))
-                       (recenter)
-                       (skip-chars-forward "^ \t\r\n\f"))
-                      ((not (string= pattern (car completions)))
-                       (progn (delete-char (- (length pattern)))
-                              (insert (car completions))
-                              nil)))
-              (when py-no-completion-calls-dabbrev-expand-p
-                (ignore-errors (dabbrev-expand nil))
-                (and py-verbose-p (< end (point))(message "%s" "Completion found by dabbrev-expand")))
-              (when py-indent-no-completion-p
-                (tab-to-tab-stop))))
+
+            (py-shell-complete-finally))
         (message "%s" "No response from Python process. Please check your configuration. If config is okay, please file a bug-regport at http://launchpad.net/python-mode")))))
+
+(defun py-shell-complete-finally ()
+  (if (and completions (not (string= "" (car completions))))
+      (cond ((eq completions t)
+             (when (buffer-live-p (get-buffer py-completion-buffer))
+               (kill-buffer (get-buffer py-python-completions)))
+             (message "Can't find completion for \"%s\"" word)
+             (ding)
+             nil)
+            ((< 1 (length completions))
+             (with-output-to-temp-buffer py-completion-buffer
+               (display-completion-list
+                (all-completions word completions)
+                word))
+             nil)
+            ((not (string= word (car completions)))
+             (completion-in-region beg end completions)
+             (when (buffer-live-p (get-buffer py-python-completions))
+               (kill-buffer (get-buffer py-python-completions)))
+             nil))
+    (when py-no-completion-calls-dabbrev-expand-p
+      (ignore-errors (dabbrev-expand nil)))
+    (when py-indent-no-completion-p
+      (tab-to-tab-stop)
+      (when (buffer-live-p (get-buffer py-python-completions))
+        (kill-buffer (get-buffer py-python-completions))))))
 
 (defun py-shell-complete-intern (word &optional beg end shell imports proc debug)
   (when imports
     (py-send-string-no-output imports proc))
-  (let ((result (py-shell-execute-string-now (format "
+  (let ((py-completion-buffer py-python-completions)
+        (result (py-shell-execute-string-now (format "
 def print_completions(namespace, text, prefix=''):
    for name in namespace:
        if name.startswith(text):
@@ -283,35 +257,9 @@ complete('%s')" word) shell nil proc)))
                              (split-string result "\n")))
               #'string<)))
         (when debug (setq py-shell-complete-debug completions))
-        (if (and completions (not (string= "" (car completions))))
-            (cond ((eq completions t)
-                   ;; (if (eq this-command last-command)
-                       ;; (when py-completion-last-window-configuration
-                         ;; (set-window-configuration
-                          ;; py-completion-last-window-configuration)))
-                   ;; (setq py-completion-last-window-configuration nil)
-                   (when (buffer-live-p (get-buffer py-python-completions))
-                     (kill-buffer (get-buffer py-python-completions)))
-                   (message "Can't find completion for \"%s\"" word)
-                   (ding)
-                   nil)
-                  ((< 1 (length completions))
-                   (with-output-to-temp-buffer py-python-completions
-                     (display-completion-list
-                      (all-completions word completions)
-                      word))
-                   nil)
-                  ((not (string= word (car completions)))
-                   (completion-in-region beg end completions)
-                   (when (buffer-live-p (get-buffer py-python-completions))
-                     (kill-buffer (get-buffer py-python-completions)))
-                   nil))
-          (when py-no-completion-calls-dabbrev-expand-p
-            (ignore-errors (dabbrev-expand nil)))
-          (when py-indent-no-completion-p
-            (tab-to-tab-stop)
-            (when (buffer-live-p (get-buffer py-python-completions))
-              (kill-buffer (get-buffer py-python-completions)))))))))
+        (py-shell-complete-finally)
+
+        ))))
 
 (defun py-shell-complete (&optional shell debug)
   "Complete word before point, if any. Otherwise insert TAB. "
@@ -320,11 +268,13 @@ complete('%s')" word) shell nil proc)))
         (current-window-configuration))
   (when debug (setq py-shell-complete-debug nil))
   (let* ((orig (point))
-         (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point)))
+         (beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.('") (point)))
          (end (point))
          (word (buffer-substring-no-properties beg end))
          (imports (py-find-imports))
-         py-fontify-shell-buffer-p)
+         py-fontify-shell-buffer-p py-completion-buffer)
+    ;; (and (string= "open('" word)
+    ;; (comint-dynamic-complete-filename))
     ;; (ignore-errors (comint-dynamic-complete))
     (if (or (eq major-mode 'comint-mode)(eq major-mode 'inferior-python-mode))
         ;;  kind of completion resp. to shell
@@ -348,9 +298,6 @@ complete('%s')" word) shell nil proc)))
                (ipython-complete nil nil beg end word shell debug imports))
               ((string-match "[pP]ython3[^[:alpha:]]*$" shell)
                (py-shell--do-completion-at-point proc imports word))
-              ;; deals better with imports
-              ;; (imports
-              ;; (py-python-script-complete shell imports beg end word))
               (t (py-shell-complete-intern word beg end shell imports proc debug)))))))
 
 (provide 'python-components-shell-complete)

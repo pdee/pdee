@@ -29,7 +29,7 @@
   (and (setq val (get-register 313465889))(and (consp val) (window-configuration-p (car val))(markerp (cadr val)))(marker-buffer (cadr val))
        (jump-to-register 313465889)))
 
-(defun py-shell-execute-string-now (string &optional shell buffer proc)
+(defun py-shell-execute-string-now (string &optional shell buffer proc output-buffer)
   "Send to Python interpreter process PROC \"exec STRING in {}\".
 and return collected output"
   (let* ((procbuf (or buffer (process-buffer proc) (py-shell nil nil shell t)))
@@ -37,20 +37,10 @@ and return collected output"
          (proc (or proc (get-buffer-process procbuf)))
 	 (cmd (format "exec '''%s''' in {}"
 		      (mapconcat 'identity (split-string string "\n") "\\n")))
-         (outbuf (get-buffer-create " *pyshellcomplete-output*"))
-         ;; (lines (reverse py-shell-input-lines))
-         )
-    ;; (when proc
+         (outbuf (get-buffer-create (or output-buffer py-output-buffer))))
     (unwind-protect
         (condition-case nil
             (progn
-              ;; (if lines
-              ;;     (with-current-buffer procbuf
-              ;;       (comint-redirect-send-command-to-process
-              ;;        "\C-c" outbuf proc nil t)
-              ;;       ;; wait for output
-              ;;       (while (not comint-redirect-completed)
-              ;;         (accept-process-output proc 1))))
               (with-current-buffer outbuf
                 (delete-region (point-min) (point-max)))
               (with-current-buffer procbuf
@@ -64,15 +54,7 @@ and return collected output"
                   (interrupt-process proc comint-ptyp)
                   (while (not comint-redirect-completed) ; wait for output
                     (accept-process-output proc 1)))
-                (signal 'quit nil)))
-      ;; (if (with-current-buffer procbuf comint-redirect-completed)
-      ;;     (while lines
-      ;;       (with-current-buffer procbuf
-      ;;         (comint-redirect-send-command-to-process
-      ;;          (car lines) outbuf proc nil t))
-      ;;       (accept-process-output proc 1)
-      ;;       (setq lines (cdr lines))))
-      )))
+                (signal 'quit nil))))))
 
 (defun py-dot-word-before-point ()
   (buffer-substring-no-properties

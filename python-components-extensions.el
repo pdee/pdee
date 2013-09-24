@@ -244,7 +244,7 @@ With arg, do it that many times.
       (when (eq (point) cuc)
 	(ar-py-end-of-block)))))
 
-;; from sh-beg-end.el. Introduced here for convenience.
+;; from sh-werkstatt.el. Introduced here for convenience.
 (unless (boundp 'empty-line-p-chars)
   (defcustom empty-line-p-chars "^[ \t\f\r]*$"
     "Empty-line-p-chars."
