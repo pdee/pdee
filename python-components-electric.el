@@ -46,8 +46,8 @@ See also `py-electric-colon-greedy-p' "
              (let ((orig (copy-marker (point)))
                    (indent (py-compute-indentation)))
                (unless (or (eq (current-indentation) indent)
-                           (and (not py-electric-colon-greedy-p)
-                                (eq (current-indentation)(save-excursion (beginning-of-line) (py-beginning-of-block)(current-indentation))))
+                           (and py-electric-colon-greedy-p
+                                (eq indent (save-excursion (py-beginning-of-statement)(current-indentation))))
                            (and (py-top-level-form-p)(< (current-indentation) indent)))
                  (beginning-of-line)
                  (delete-horizontal-space)

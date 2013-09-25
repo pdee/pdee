@@ -315,15 +315,17 @@ interpreter.
 (defun py-set-ipython-completion-command-string ()
   "Set and return `ipython-completion-command-string'. "
   (interactive)
-  (let* ((ipython-version
-          (if (string-match "ipython" py-shell-name)
-              (string-to-number (substring (shell-command-to-string (concat py-shell-name " -V")) 2 -1))
-            ;; choose default installed IPython
-            (string-to-number (substring (shell-command-to-string (concat "ipython" " -V")) 2 -1))
-            )))
-    (when ipython-version
-      (setq ipython-completion-command-string (if (< ipython-version 11) ipython0.10-completion-command-string ipython0.11-completion-command-string))
-      ipython-completion-command-string)))
+  (let* ((ipython-version (shell-command-to-string (concat py-shell-name " -V"))))
+    (setq ipython-completion-command-string
+          (cond ((string-match "^1.1.*" ipython-version)
+                 ipython0.11-completion-command-string)
+                ((string-match "^0.1[1-3]" ipython-version)
+                 ipython0.11-completion-command-string)
+                ((string= "^0.10" ipython-version)
+                 ipython0.10-completion-command-string)))))
+
+;; (setq ipython-completion-command-string (if (< ipython-version 11) ipython0.10-completion-command-string ipython0.11-completion-command-string))
+;; ipython-completion-command-string)))
 
 (defun py-process-name (&optional name)
   "Return the name of the running Python process, `get-process' willsee it. "
@@ -597,6 +599,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
       (set (make-local-variable 'comment-indent-function) #'py-comment-indent-function)
       (set (make-local-variable 'indent-region-function) 'py-indent-region)
       (set (make-local-variable 'indent-line-function) 'py-indent-line)
+      (set (make-local-variable 'inhibit-point-motion-hooks) t)
       (setq proc (get-buffer-process (current-buffer)))
       (py-shell-send-setup-code proc)
       (and py-set-pager-cat-p (comint-simple-send proc "import os;os.environ['PAGER'] = 'cat'"))
@@ -622,6 +625,20 @@ When DONE is `t', `py-shell-manage-windows' is omitted
       (add-hook 'comint-output-filter-functions
                 'ansi-color-process-output)
       (add-hook 'after-change-functions 'py-after-change-function nil t)
+      ;; Introduce `remove-hook
+      ;; comint-output-filter-functions', got the
+      ;; following error running ipython-complete:
+      ;;
+      ;; Debugger entered--Lisp error: (args-out-of-range 9285 9285)
+      ;; get-text-property(9285 font-lock-multiline)
+      ;; font-lock-extend-jit-lock-region-after-change(9286 9295 9)
+      ;; run-hook-with-args(font-lock-extend-jit-lock-region-after-change 9286 9295 9)
+      ;; jit-lock-after-change(9286 9295 9)
+      ;; remove-text-properties(#<marker at 9286 in *Ipython*> #<marker at 9295 in *Ipython*> (font-lock-face))
+      ;; comint-output-filter(#<process ipython> "except;exe-shell.el;exec;execfile;exit\n")
+      ;; accept-process-output(#<process ipython> 0.2)
+      (remove-hook 'comint-output-filter-functions
+                   'font-lock-extend-jit-lock-region-after-change)
       (use-local-map py-shell-map)
       ;; pdbtrack
       (and py-pdbtrack-do-tracking-p
@@ -1094,10 +1111,10 @@ This may be preferable to `\\[py-execute-buffer]' because:
   (interactive "P")
   ;; Check file local variable py-master-file
   (when py-master-file
-      (let* ((filename (expand-file-name py-master-file))
-             (buffer (or (get-file-buffer filename)
-                         (find-file-noselect filename))))
-        (set-buffer buffer)))
+    (let* ((filename (expand-file-name py-master-file))
+           (buffer (or (get-file-buffer filename)
+                       (find-file-noselect filename))))
+      (set-buffer buffer)))
   (let ((py-shell-name (or shell (py-choose-shell argprompt shell)))
         (file (buffer-file-name (current-buffer))))
     (if file
@@ -1401,9 +1418,7 @@ EVENT is usually a mouse click."
            (info (and e (extent-property e 'py-exc-info))))
       (message "Event point: %d, info: %s" point info)
       (and info
-           (py-jump-to-exception (car info) (cdr info)))))
-   ;; Emacs -- Please port this!
-))
+           (py-jump-to-exception (car info) (cdr info)))))))
 
 (defun py-goto-exception (&optional file line)
   "Go to the line indicated by the traceback."
