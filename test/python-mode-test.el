@@ -2382,4 +2382,6 @@ else:
   (assert (and (re-search-backward py-shell-prompt-regexp nil t 2)
                (search-forward "line 5")) nil "py-execute-statement-test failed"))
 
+
+
 (provide 'python-mode-test)

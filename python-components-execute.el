@@ -316,13 +316,15 @@ interpreter.
   "Set and return `ipython-completion-command-string'. "
   (interactive)
   (let* ((ipython-version (shell-command-to-string (concat py-shell-name " -V"))))
-    (setq ipython-completion-command-string
-          (cond ((string-match "^1.1.*" ipython-version)
-                 ipython0.11-completion-command-string)
-                ((string-match "^0.1[1-3]" ipython-version)
-                 ipython0.11-completion-command-string)
-                ((string= "^0.10" ipython-version)
-                 ipython0.10-completion-command-string)))))
+    (if (string-match "[0-9]" ipython-version)
+        (setq ipython-completion-command-string
+              (cond ((string-match "^1.1.*" ipython-version)
+                     ipython0.11-completion-command-string)
+                    ((string-match "^0.1[1-3]" ipython-version)
+                     ipython0.11-completion-command-string)
+                    ((string= "^0.10" ipython-version)
+                     ipython0.10-completion-command-string))))
+    (error ipython-version)))
 
 ;; (setq ipython-completion-command-string (if (< ipython-version 11) ipython0.10-completion-command-string ipython0.11-completion-command-string))
 ;; ipython-completion-command-string)))
@@ -444,9 +446,12 @@ Needed when file-path names are contructed from maybe numbered buffer names like
   (let (val)
     (cond ((and (boundp 'err-p) err-p)
            (py-restore-window-configuration)
-           (display-buffer output-buffer)
            (py-jump-to-exception err-p py-exception-buffer)
            (goto-char (point-max))
+           (and (window-full-height-p)
+                (funcall py-split-windows-on-execute-function))
+           (display-buffer output-buffer)
+
            nil)
 
           ;; split and switch

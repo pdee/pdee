@@ -118,6 +118,22 @@ When non-nil, imports module `os' "
 :type 'boolean
 :group 'python-mode)
 
+(defcustom empty-line-closes-block-p nil
+ "When non-nil, dedent after empty line following block
+
+if True:
+    print(\"Part of the if-statement\")
+
+print(\"Not part of the if-statement\")
+
+Default is nil
+
+If non-nil, a C-j from empty line dedents.
+" 
+
+:type 'boolean
+:group 'python-mode)
+
 (defcustom py-prompt-on-changed-p t
  "When called interactively, ask for save before a changed buffer is sent to interpreter.
 
@@ -5229,7 +5245,23 @@ Use `M-x customize-variable' to set it permanently"
                            (not py-electric-comment-add-space-p))
                      :help "If py-electric-comment should add a space\.  Default is `nil'\. Use `M-x customize-variable' to set it permanently"
                      :style toggle :selected py-electric-comment-add-space-p]
+                    
+                    ["Empty line closes block "
+                     (setq empty-line-closes-block-p
+                           (not empty-line-closes-block-p))
+                     :help "When non-nil, dedent after empty line following block
 
+if True:
+    print(\"Part of the if-statement\")
+
+print(\"Not part of the if-statement\")
+
+Default is nil
+
+If non-nil, a C-j from empty line dedents.
+Use `M-x customize-variable' to set it permanently"
+:style toggle :selected empty-line-closes-block-p]
+                    
                     )
 
                    ("Fontification"

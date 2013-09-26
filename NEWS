@@ -55,6 +55,16 @@ Keys C-M-a, C-M-e usable for all top-level form, lp:1191078
   A minor block is started by a `for', `if', `try' or `with',
   while block covers also `def' or `class'
 
+- boolean empty-line-closes-block-p, default is nil
+  When non-nil, dedent after empty line following block
+  If non-nil, a C-j from empty line would dedent.
+
+  if True:
+      print("Part of the if-statement")
+
+  print("Not part of the if-statement")
+
+ 
 New in version 6.1.2
 ---------------------
 - simplified menu
