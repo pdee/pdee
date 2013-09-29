@@ -323,8 +323,8 @@ interpreter.
                     ((string-match "^0.1[1-3]" ipython-version)
                      ipython0.11-completion-command-string)
                     ((string= "^0.10" ipython-version)
-                     ipython0.10-completion-command-string))))
-    (error ipython-version)))
+                     ipython0.10-completion-command-string)))
+      (error ipython-version))))
 
 ;; (setq ipython-completion-command-string (if (< ipython-version 11) ipython0.10-completion-command-string ipython0.11-completion-command-string))
 ;; ipython-completion-command-string)))
@@ -509,7 +509,7 @@ Needed when file-path names are contructed from maybe numbered buffer names like
       (setq erg (substring erg 0 (string-match "-" erg))))
     erg))
 
-(defun py-shell (&optional argprompt dedicated shell buffer-name done)
+(defun py-shell (&optional argprompt dedicated shell buffer-name no-window-managment)
   "Start an interactive Python interpreter in another window.
 Interactively, \\[universal-argument] 4 prompts for a buffer.
 \\[universal-argument] 2 prompts for `py-python-command-args'.
@@ -655,7 +655,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
     (and py-fontify-shell-buffer-p (font-lock-fontify-buffer))
     ;; (py-send-string-return-output
 
-    (unless done (py-shell-manage-windows py-buffer-name))
+    (unless no-window-managment (py-shell-manage-windows py-buffer-name))
     (when py-shell-hook (run-hooks 'py-shell-hook))
     py-buffer-name))
 
