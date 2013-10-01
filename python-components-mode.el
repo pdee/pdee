@@ -213,6 +213,12 @@ Default is  nil"
   :type 'integer
   :group 'python-mode)
 
+(defcustom py-new-shell-delay 0.2
+  "If a new comint buffer is connected to Python, commands like completion might need some delay. "
+
+  :type 'integer
+  :group 'python-mode)
+
 (defcustom py-completion-delay 4
   "Seconds completion-buffer is shown, if any. "
 

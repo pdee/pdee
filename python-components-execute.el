@@ -32,22 +32,24 @@
 (defun py-shell-execute-string-now (string &optional shell buffer proc output-buffer)
   "Send to Python interpreter process PROC \"exec STRING in {}\".
 and return collected output"
-  (let* ((procbuf (or buffer (process-buffer proc) (py-shell nil nil shell t)))
-
+  (let* (wait
+         (procbuf (or buffer (process-buffer proc) (progn (setq wait py-new-shell-delay) (py-shell nil nil shell nil t))))
          (proc (or proc (get-buffer-process procbuf)))
 	 (cmd (format "exec '''%s''' in {}"
 		      (mapconcat 'identity (split-string string "\n") "\\n")))
          (outbuf (get-buffer-create (or output-buffer py-output-buffer))))
+    ;; wait is used only when a new py-shell buffer was connected
+    (and wait (sit-for wait))
     (unwind-protect
         (condition-case nil
             (progn
               (with-current-buffer outbuf
                 (delete-region (point-min) (point-max)))
               (with-current-buffer procbuf
+                ;; (sit-for 3)
                 (comint-redirect-send-command-to-process
                  cmd outbuf proc nil t)
-                (while (not comint-redirect-completed) ; wait for output
-                  (accept-process-output proc 1)))
+                (accept-process-output proc 1 1))
               (with-current-buffer outbuf
                 (buffer-substring (point-min) (point-max))))
           (quit (with-current-buffer procbuf
@@ -78,30 +80,6 @@ Then switch to the process buffer."
   (interactive "r")
   (py-send-region start end)
   (py-switch-to-python t))
-
-(defun py-send-string-no-output (string &optional process msg)
-  "Send STRING to PROCESS and inhibit output.
-When MSG is non-nil messages the first line of STRING.  Return
-the output."
-  (let* ((output-buffer)
-         (process (or process (get-buffer-process (py-shell))))
-         (comint-preoutput-filter-functions
-          (append comint-preoutput-filter-functions
-                  '(ansi-color-filter-apply
-                    (lambda (string)
-                      (setq output-buffer (concat output-buffer string))
-                      "")))))
-    (py-shell-send-string string process msg)
-    (accept-process-output process 1)
-    (when output-buffer
-      (replace-regexp-in-string
-       (if (> (length py-shell-prompt-output-regexp) 0)
-           (format "\n*%s$\\|^%s\\|\n$"
-                   py-shell-prompt-regexp
-                   (or py-shell-prompt-output-regexp ""))
-         (format "\n*$\\|^%s\\|\n$"
-                 py-shell-prompt-regexp))
-       "" output-buffer))))
 
 (defun py-send-file (file-name &optional process temp-file-name)
   "Send FILE-NAME to inferior Python PROCESS.
@@ -398,7 +376,6 @@ Needed when file-path names are contructed from maybe numbered buffer names like
     "\*" ""
     string)))
 
-
 (defun py-jump-to-exception-intern (action exception-buffer)
   (let (erg)
     (set-buffer exception-buffer)
@@ -574,7 +551,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
 
     (unless (comint-check-proc py-buffer-name)
       (set-buffer (apply 'make-comint-in-buffer executable py-buffer-name executable nil args))
-      (unless (interactive-p) (sit-for 0.3))
+      (unless (interactive-p) (sit-for 0.1))
       (set (make-local-variable 'comint-prompt-regexp)
            (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
                   (concat "\\("
@@ -923,7 +900,9 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
 (defun py-execute-file (filename)
   "When called interactively, user is prompted for filename. "
   (interactive "fFilename: ")
-  (let ((windows-config (window-configuration-to-register 313465889))
+  (let (;; py-postprocess-output-buffer might want origline
+        (origline 1)
+        (windows-config (window-configuration-to-register 313465889))
         (py-exception-buffer filename)
         erg)
     (if (file-readable-p filename)
@@ -1162,7 +1141,6 @@ Basically, this goes down the directory tree as long as there are __init__.py fi
          (y-or-n-p "Buffer changed, save first? ")
          (write-file (buffer-file-name)))
     (py-execute-region (point-min) (point-max))))
-
 
 (defun py-execute-buffer-base ()
   "Honor `py-master-file'. "
@@ -1533,71 +1511,9 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
               (add-to-list 'err-p estring t)
               (setq ecode (buffer-substring-no-properties (line-end-position)
                                                           (progn (re-search-forward comint-prompt-regexp nil t 1)(match-beginning 0))))
-              ;; (setq ecode (concat (split-string ecode "[ \n\t\f\r^]" t)))
               (setq ecode (replace-regexp-in-string "[ \n\t\f\r^]+" " " ecode))
-              (add-to-list 'err-p ecode t)))
-          ;; (and py-verbose-p (message "%s" (nth 2 err-p)))
-          )))
-
-    ;; (goto-char pmx)
+              (add-to-list 'err-p ecode t))))))
     err-p))
-
-;; (defun py-postprocess-output-buffer (buf)
-;;   "Highlight exceptions found in BUF.
-;; If an exception occurred return error-string, otherwise return nil.  BUF must exist.
-;;
-;; Indicate LINE if code wasn't run from a file, thus remember line of source buffer "
-;;   (let (file bol err-p estring ecode limit)
-;;     (set-buffer buf)
-;;     ;; (switch-to-buffer (current-buffer))
-;;     (goto-char (point-max))
-;;     (sit-for 0.1)
-;;     (unless (looking-back py-pdbtrack-input-prompt)
-;;       (save-excursion
-;;         (forward-line -1)
-;;         (end-of-line)
-;;         (when (or (re-search-backward py-shell-prompt-regexp nil t 1)
-;;                   ;; (and (string= "ipython" (process-name proc))
-;;                   (re-search-backward ipython-de-input-prompt-regexp nil t 1))
-;;           ;; not a useful message, delete it - please tell when thinking otherwise
-;;           (and (re-search-forward "File \"<stdin>\", line 1,.*\n" nil t)
-;;                (replace-match ""))
-;;           ;; File "/tmp/ipython-3984xMQ.py", line 1
-;;           ;; print(3*5f)
-;;           (when (and (re-search-forward py-traceback-line-re limit t)
-;;                      (match-string-no-properties 0)
-;;                      (or (match-string 1) (match-string 3)))
-;;             (when (match-string-no-properties 1)
-;;               (replace-match (buffer-name py-exception-buffer) nil nil nil 1)
-;;               (setq file py-exception-buffer)
-;;               (and origline
-;;                    (replace-match (number-to-string origline) nil nil nil 2))
-;;               (goto-char (match-beginning 0))
-;;               ;; if no buffer-file exists, signal "Buffer", not "File"
-;;               (save-match-data
-;;                 (and (not (buffer-file-name
-;;                            (or
-;;                             (get-buffer py-exception-buffer)
-;;                             (get-buffer (file-name-nondirectory py-exception-buffer))))) (string-match "^[ \t]*File" (buffer-substring-no-properties (match-beginning 0) (match-end 0)))
-;;                             (looking-at "[ \t]*File")
-;;                             (replace-match " Buffer")))
-;;               (add-to-list 'err-p origline)
-;;               (add-to-list 'err-p file)
-;;               (overlay-put (make-overlay (match-beginning 0) (match-end 0))
-;;                            'face 'highlight))
-;;             ;; If not file exists, just a buffer, correct message
-;;             (forward-line 1)
-;;             (when (looking-at "[ \t]*\\([^\t\n\r\f]+\\)[ \t]*$")
-;;               (setq estring (match-string-no-properties 1))
-;;               (add-to-list 'err-p estring t)
-;;               (setq ecode (buffer-substring-no-properties (line-end-position)
-;;                                                           (progn (re-search-forward comint-prompt-regexp nil t 1)(match-beginning 0))))
-;;               ;; (setq ecode (concat (split-string ecode "[ \n\t\f\r^]" t)))
-;;               (setq ecode (replace-regexp-in-string "[ \n\t\f\r^]+" " " ecode))
-;;               (add-to-list 'err-p ecode t)))
-;;           ;; (recenter)
-;;           ;; (and py-verbose-p (message "%s" (nth 2 err-p)))
-;;           err-p)))))
 
 (defun py-find-next-exception-prepare (direction start)
   "Setup exception regexps depending from kind of Python shell. "

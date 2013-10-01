@@ -1646,7 +1646,7 @@ if foo:
     (re-search-forward ") *$" nil t 1)
     (assert (eq 8 (py-compute-indentation)) nil "closing-list-lp:826144-test #2 failed")
     (setq py-closing-list-dedents-bos t)
-    (goto-char (point-min)) 
+    (goto-char (point-min))
     (re-search-forward ") *$" nil t 1)
     (assert (eq 8 (py-compute-indentation)) nil "closing-list-lp:826144-test #1 failed")
     (re-search-forward ") *$" nil t 1)
@@ -2310,7 +2310,7 @@ ex
     (py-bug-tests-intern 'py-ipython-complete-lp:927136-base arg teststring)))
 
 (defun py-ipython-complete-lp:927136-base ()
-  (goto-char (point-min)) 
+  (goto-char (point-min))
   (search-forward "ex")
   (ipython-complete)
   (sit-for 0.1)
@@ -2931,8 +2931,12 @@ basd
 
 (defun no-completion-at-all-lp:1001328-base ()
   (goto-char 40)
-  (py-python-shell-complete)
+  (py-shell-complete)
   (beginning-of-line)
+  (sit-for 0.1)
+  (unless (looking-at "basdklfjasdf")
+    
+    (py-shell-complete))
   (sit-for 0.1)
   (assert (looking-at "basdklfjasdf") nil "no-completion-at-all-lp:1001328-test failed"))
 
@@ -5410,7 +5414,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.63 $\"
+__version__ = \"$Revision: 1.64 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
