@@ -1878,9 +1878,6 @@ Updated on each expansion.")
 order to allow injecting completion command between keyboard interrupt
 and resending the lines later. The lines are stored in reverse order")
 
-(defvar py-shell-map (make-sparse-keymap)
-  "Keymap used in *Python* shell buffers.")
-
 (defvar inferior-python-mode-map
   (let ((map (copy-keymap comint-mode-map)))
     ;; (substitute-key-definition 'complete-symbol 'py-shell-complete map global-map)
@@ -7227,6 +7224,10 @@ This is a no-op if `py-check-comint-prompt' returns nil."
                #'(lambda () (interactive) (beep))))
            (where-is-internal 'self-insert-command)))
 
+
+(defvar py-shell-map (make-sparse-keymap)
+  "Keymap used in *Python* shell buffers.")
+
 (setq py-shell-map
       (let ((map (copy-keymap comint-mode-map)))
         (substitute-key-definition 'complete-symbol 'completion-at-point
@@ -7237,6 +7238,7 @@ This is a no-op if `py-check-comint-prompt' returns nil."
         ;; defined three times one should succed
         (define-key map (kbd "TAB") 'py-shell-complete)
         (define-key map [tab] 'py-shell-complete)
+        (define-key map [(control c)(!)] 'py-shell)
         (define-key map "\t" 'py-shell-complete)
         (define-key map [(meta tab)] 'py-shell-complete)
         map))

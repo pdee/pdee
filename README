@@ -179,3 +179,19 @@ starting a session, first completion might fail, while
 succeeding afterwards. Any bug reports, which might
 help truck down the issue, are highly appreciated.
 
+;;;;;;;;;
+
+Troubleshooting
+
+Start with Emacs -Q from the directory where python-mode.el lives.
+Open python-mode.el and evaluate it.
+
+Open a file with ending ".py".
+
+M-x python RET
+
+a regular Python-shell should appear
+
+M-x IPython RET
+
+an IPython-shell should be opened
