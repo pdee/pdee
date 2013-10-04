@@ -49,9 +49,18 @@
     (+ (current-indentation) py-indent-offset)))
 
 (defun py-line-backward-maybe ()
-  (skip-chars-backward " \t\f" (line-beginning-position))
-  (when (< 0 (abs (skip-chars-backward " \t\r\n\f")))
-    (setq line t)))
+  (let ((orig (point)))
+    (skip-chars-backward " \t\f" (line-beginning-position))
+    (when (< 0 (abs (skip-chars-backward " \t\r\n\f")))
+      (setq line t))))
+
+(defun py-after-empty-line ()
+  "Return `t' if line before contains only whitespace characters. "
+  (save-excursion
+    (beginning-of-line)
+    (forward-line -1)
+    (beginning-of-line)
+    (looking-at "\\s-*$")))
 
 (defalias 'py-count-indentation 'py-compute-indentation)
 (defun py-compute-indentation (&optional orig origline closing line nesting repeat indent-offset)
@@ -313,6 +322,10 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
                   (setq line t)
                   (back-to-indentation)
                   (py-compute-indentation orig origline closing line nesting t indent-offset)))
+               ((and py-empty-line-closes-p (py-after-empty-line))
+                            (progn (py-beginning-of-statement)
+                                   (- (current-indentation) py-indent-offset)))
+
                ((and (not line)(eq origline (py-count-lines))
                      (save-excursion
                        (and (setq erg (py-go-to-keyword py-extended-block-or-clause-re))

@@ -38,6 +38,7 @@
 
 (setq bug-numbered-tests
       (list
+       'py-empty-line-closes-p-lp-1235324-test
        'C-c-C-c-lp:1221310-and-store-result-test
        'Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test
        'Bogus-dedent-when-typing-colon-in-dictionary-literal-lp-1197171-test
@@ -2935,7 +2936,7 @@ basd
   (beginning-of-line)
   (sit-for 0.1)
   (unless (looking-at "basdklfjasdf")
-    
+
     (py-shell-complete))
   (sit-for 0.1)
   (assert (looking-at "basdklfjasdf") nil "no-completion-at-all-lp:1001328-test failed"))
@@ -6122,6 +6123,27 @@ a, b, c = (1, 2, 3)
   (assert (let ((py-store-result-p t))
             (sit-for 0.1)
             (string= "C-c-C-c-lp:1221310-and-store-result-test" (py-execute-base))) nil "C-c-C-c-lp:1221310-and-store-result-test failed"))
+
+
+(defun py-empty-line-closes-p-lp-1235324-test (&optional arg)
+  (interactive "p")
+   (let ((teststring "#! /usr/bin/env python
+if True:
+    if True:
+        print(\"This line is part of the inner statement\")
+
+    print(\"This line is NOT part of the inner statement\")
+\")
+"))
+  (py-bug-tests-intern 'py-empty-line-closes-p-lp-1235324-base arg teststring)))
+
+(defun py-empty-line-closes-p-lp-1235324-base ()
+  (goto-char (point-min)) 
+  (let (py-empty-line-closes-p)
+    (search-forward "print" nil t 2) 
+    (assert (eq 8 (py-compute-indentation)) nil "py-empty-line-closes-p-lp-1235324-test #1 failed"))
+  (let ((py-empty-line-closes-p t))
+    (assert (eq 4 (py-compute-indentation)) nil "py-empty-line-closes-p-lp-1235324-test #2 failed")))
 
 
 (provide 'py-bug-numbered-tests)

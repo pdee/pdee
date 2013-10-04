@@ -118,7 +118,7 @@ When non-nil, imports module `os' "
 :type 'boolean
 :group 'python-mode)
 
-(defcustom empty-line-closes-block-p nil
+(defcustom py-empty-line-closes-p nil
  "When non-nil, dedent after empty line following block
 
 if True:
@@ -129,7 +129,7 @@ print(\"Not part of the if-statement\")
 Default is nil
 
 If non-nil, a C-j from empty line dedents.
-" 
+"
 
 :type 'boolean
 :group 'python-mode)
@@ -2787,6 +2787,9 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
         (define-key map [(control c)(control n)] 'py-end-of-statement)
         (define-key map [(control c)(control u)] 'py-beginning-of-block)
         (define-key map [(control c)(control q)] 'py-end-of-block)
+        (define-key map [(control meta a)] 'py-beginning-of-def-or-class)
+        (define-key map [(control meta e)] 'py-end-of-def-or-class)
+
         ;; (define-key map [(meta i)] 'py-indent-forward-line)
         (define-key map [(control j)] 'py-newline-and-indent)
         ;; Most Pythoneers expect RET `py-newline-and-indent'
@@ -3639,52 +3642,52 @@ Optional \\[universal-argument] forces switch to output buffer, ignores `py-swit
                    ("Ignoring defaults "
                     :help "Commands will ignore default setting of
 `py-switch-buffers-on-execute-p' and `py-split-windows-on-execute-p'"            ;; switch
-                    
+
                     ["py-execute-statement-python-switch" py-execute-statement-python-switch
                      :help "Execute statement through a Python interpreter.
 With \\[universal-argument] use an unique Python interpreter. "]
-                    
+
                     ["py-execute-statement-ipython-switch" py-execute-statement-ipython-switch
                      :help "Execute statement through an IPython interpreter.
 With \\[universal-argument] use an unique IPython interpreter. "]
-                    
+
                     ["py-execute-statement-python3-switch" py-execute-statement-python3-switch
                      :help "Execute statement through a Python3 interpreter.
 With \\[universal-argument] use an unique Python3 interpreter. "]
-                    
+
                     ["py-execute-statement-python2-switch" py-execute-statement-python2-switch
                      :help "Execute statement through a Python2 interpreter.
 With \\[universal-argument] use an unique Python2 interpreter. "]
-                    
+
                     ["py-execute-statement-python2.7-switch" py-execute-statement-python2.7-switch
                      :help "Execute statement through a Python2.7 interpreter.
 With \\[universal-argument] use an unique Python2.7 interpreter. "]
-                    
+
                     ["py-execute-statement-jython-switch" py-execute-statement-jython-switch
                      :help "Execute statement through a Jython interpreter.
 With \\[universal-argument] use an unique Jython interpreter. "]
-                    
+
                     ["py-execute-statement-python3.3-switch" py-execute-statement-python3.3-switch
                      :help "Execute statement through a Python3.3 interpreter.
 With \\[universal-argument] use an unique Python3.3 interpreter. "]
-                    
+
                     ["py-execute-statement-bpython-switch" py-execute-statement-bpython-switch
                      :help "Execute statement through a Bpython interpreter.
 With \\[universal-argument] use an unique Bpython interpreter. "]
                     ;; dedicated-switch
-                    
+
                     ["py-execute-statement-python-dedicated-switch" py-execute-statement-python-dedicated-switch
                      :help "Execute statement through a unique Python interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p' "]
-                    
+
                     ["py-execute-statement-ipython-dedicated-switch" py-execute-statement-ipython-dedicated-switch
                      :help "Execute statement through a uniquen IPython interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p' "]
-                    
+
                     ["py-execute-statement-python3-dedicated-switch" py-execute-statement-python3-dedicated-switch
                      :help "Execute statement through a unique Python3 interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p' "]
-                    
+
                     ["py-execute-statement-python2-dedicated-switch" py-execute-statement-python2-dedicated-switch
                      :help "Execute statement through a unique Python2 interpreter.
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p' "]
@@ -5188,7 +5191,7 @@ Default is nil\. Use `M-x customize-variable' to set it permanently"
                            (not py-kill-empty-line))
                      :help "If t, py-indent-forward-line kills empty lines\. Use `M-x customize-variable' to set it permanently"
                      :style toggle :selected py-kill-empty-line]
-
+                    
                     ("Smart indentation"
                      :help "Toggle py-smart-indentation'
 
@@ -5248,10 +5251,10 @@ Use `M-x customize-variable' to set it permanently"
                            (not py-electric-comment-add-space-p))
                      :help "If py-electric-comment should add a space\.  Default is `nil'\. Use `M-x customize-variable' to set it permanently"
                      :style toggle :selected py-electric-comment-add-space-p]
-                    
-                    ["Empty line closes block "
-                     (setq empty-line-closes-block-p
-                           (not empty-line-closes-block-p))
+
+                    ["Empty line closes "
+                     (setq py-empty-line-closes-p
+                           (not py-empty-line-closes-p))
                      :help "When non-nil, dedent after empty line following block
 
 if True:
@@ -5263,8 +5266,8 @@ Default is nil
 
 If non-nil, a C-j from empty line dedents.
 Use `M-x customize-variable' to set it permanently"
-:style toggle :selected empty-line-closes-block-p]
-                    
+:style toggle :selected py-empty-line-closes-p]
+
                     )
 
                    ("Fontification"
@@ -7223,7 +7226,6 @@ This is a no-op if `py-check-comint-prompt' returns nil."
              (define-key py-mode-output-map key
                #'(lambda () (interactive) (beep))))
            (where-is-internal 'self-insert-command)))
-
 
 (defvar py-shell-map (make-sparse-keymap)
   "Keymap used in *Python* shell buffers.")
