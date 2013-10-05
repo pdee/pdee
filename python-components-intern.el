@@ -1054,11 +1054,18 @@ Eval resulting buffer to install it, see customizable `py-extensions'. "
 
 Takes the result of (syntax-ppss)"
   (interactive)
-  (let ((beginning-of-string-position (or beginning-of-string-position (and (nth 3 (syntax-ppss))(nth 8 (syntax-ppss))))))
-    (goto-char beginning-of-string-position)
-    ;; (and (looking-at "\"\"\"\\|'''\\|\"\\|\'")
-    (goto-char (scan-sexps (point) 1)))
-  (point))
+  (let ((beginning-of-string-position (or beginning-of-string-position (and (nth 3 (syntax-ppss))(nth 8 (syntax-ppss)))
+                                          (and (looking-at "\"\"\"\\|'''\\|\"\\|\'")(match-beginning 0))))
+        erg)
+    (if beginning-of-string-position
+        (progn
+          (goto-char beginning-of-string-position)
+          (goto-char (scan-sexps (point) 1))
+          (setq erg (point)))
+      (error (concat "py-end-of-string: don't see end-of-string at " (buffer-name (current-buffer)) "at pos " (point))))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
 ;; (goto-char (match-end 0))
 ;; (search-forward (match-string-no-properties 0))))
 

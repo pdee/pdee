@@ -63,7 +63,13 @@ Keys C-M-a, C-M-e usable for all top-level form, lp:1191078
       print("Part of the if-statement")
 
   print("Not part of the if-statement")
- 
+
+- heuristic exit
+  new var `py-max-specpdl-size', default is `max-specpdl-size'
+  py-end-of-statement will error if number of
+  `py-max-specpdl-size' loops is completed, thus avoiding
+  a hang from a possibly eternal loop.
+
 New in version 6.1.2
 ---------------------
 - simplified menu

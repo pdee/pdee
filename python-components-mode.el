@@ -560,6 +560,16 @@ Examples from PEP8
   :type 'number
   :group 'python-mode)
 
+(defcustom py-max-specpdl-size max-specpdl-size
+  "Heuristic exit. Limiting number of recursive calls by py-end-of-statement and related functions. Default is max-specpdl-size.
+
+This treshold is just an approximation. It might set far higher maybe.
+
+See lp:1235375. In case code is not to navigate due to errors, `which-function-mode' and others might make Emacs hang. Rather exit than. "
+
+  :type 'number
+  :group 'python-mode)
+
 (defcustom py-closing-list-keeps-space nil
   "If non-nil, closing parenthesis dedents onto column of opening plus `py-closing-list-space', default is nil "
   :type 'boolean
