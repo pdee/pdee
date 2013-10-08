@@ -1893,12 +1893,11 @@ and resending the lines later. The lines are stored in reverse order")
     ;; (substitute-key-definition 'complete-symbol 'py-shell-complete map global-map)
     (substitute-key-definition 'complete-symbol 'completion-at-point map global-map)
     (define-key map (kbd "RET") 'comint-send-input)
-    (if py-complete-function
-        (define-key map [tab] 'py-complete-function)
-      )
+    (and py-complete-function
+         (define-key map [tab] 'py-complete-function))
     (define-key map "\C-c-" 'py-up-exception)
-    (define-key map "\C-c=" 'py-down-exception))
-  map)
+    (define-key map "\C-c=" 'py-down-exception)
+    map))
 
 (defvar py-already-guessed-indent-offset nil
   "Internal use by py-indent-line.
@@ -5201,7 +5200,7 @@ Default is nil\. Use `M-x customize-variable' to set it permanently"
                            (not py-kill-empty-line))
                      :help "If t, py-indent-forward-line kills empty lines\. Use `M-x customize-variable' to set it permanently"
                      :style toggle :selected py-kill-empty-line]
-                    
+
                     ("Smart indentation"
                      :help "Toggle py-smart-indentation'
 
