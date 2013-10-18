@@ -458,7 +458,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-down-exception) nil \"py-down-exception not detected as command\")" \
 -eval "(assert (commandp 'py-up-exception) nil \"py-up-exception not detected as command\")" \
 -eval "(assert (commandp 'py-output-buffer-filter) nil \"py-output-buffer-filter not detected as command\")" \
--eval "(assert (commandp 'py-send-string) nil \"py-send-string not detected as command\")" \
 -eval "(assert (commandp 'py-pdbtrack-toggle-stack-tracking) nil \"py-pdbtrack-toggle-stack-tracking not detected as command\")" \
 -eval "(assert (commandp 'turn-on-pdbtrack) nil \"turn-on-pdbtrack not detected as command\")" \
 -eval "(assert (commandp 'turn-off-pdbtrack) nil \"turn-off-pdbtrack not detected as command\")" \
@@ -499,9 +498,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-guess-py-install-directory) nil \"py-guess-py-install-directory not detected as command\")" \
 -eval "(assert (commandp 'py-set-load-path) nil \"py-set-load-path not detected as command\")" \
 -eval "(assert (commandp 'py-version) nil \"py-version not detected as command\")" \
--eval "(assert (commandp 'py-send-region) nil \"py-send-region not detected as command\")" \
 -eval "(assert (commandp 'py-switch-to-python) nil \"py-switch-to-python not detected as command\")" \
--eval "(assert (commandp 'py-send-region-and-go) nil \"py-send-region-and-go not detected as command\")" \
 -eval "(assert (commandp 'py-load-file) nil \"py-load-file not detected as command\")" \
 -eval "(assert (commandp 'py-shell-complete) nil \"py-shell-complete not detected as command\")" \
 -eval "(assert (commandp 'ipython-complete) nil \"ipython-complete not detected as command\")" \

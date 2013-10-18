@@ -7556,11 +7556,7 @@ that order.
 
 You can send text to the inferior Python process from other buffers
 containing Python source.
- * \\[py-switch-to-shell] switches the current buffer to the Python
-    process buffer.
  * \\[py-execute-region] sends the current region to the Python process.
- * \\[py-send-region-and-go] switches to the Python process buffer
-    after sending the text.
 
 \\{inferior-python-mode-map}"
   :group 'python
