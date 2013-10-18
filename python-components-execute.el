@@ -58,10 +58,11 @@ and return collected output"
                     (accept-process-output proc 1)))
                 (signal 'quit nil))))))
 
-(defun py-dot-word-before-point ()
-  (buffer-substring-no-properties
-   (save-excursion (skip-chars-backward "a-zA-Z0-9_.") (point))
-   (point)))
+(defun py-shell-switch (&optional argprompt dedicated shell buffer-name no-window-managment)
+  "Switch to the Python process buffer, maybe starting new process. "
+  (interactive)
+  (let ((py-switch-buffers-on-execute-p t)) 
+  (py-shell argprompt dedicated shell buffer-name no-window-managment)))
 
 (defun py-switch-to-python (eob-p)
   "Switch to the Python process buffer, maybe starting new process.
