@@ -3015,6 +3015,7 @@ re.s
 (defun completion-at-gentoo-lp-1008842-base ()
   (goto-char 62)
   (py-shell-complete)
+  (sit-for 0.1) 
   (assert (buffer-live-p (get-buffer  py-python-completions)) nil "completion-at-gentoo-lp-1008842-test failed"))
 
 (defun converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128.py-test (&optional arg)
@@ -5415,7 +5416,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.66 $\"
+__version__ = \"$Revision: 1.67 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))

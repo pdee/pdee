@@ -1231,7 +1231,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall wrongly-highlighted-as-keywords-lp:885144-test \
 --funcall glitch-when-indenting-lists-lp:886473-test \
 --funcall another-indentation-bug-inside-docstrings-lp:900684-test \
---funcall incorrect-use-of-region-in-py-shift-left-lp:875951-test \
 --funcall indentation-keyword-lp:885143-test \
 --funcall fore-00007F-breaks-indentation-lp:328788-test \
 --funcall indent-offset-not-guessed-when-loading-lp:902890-test \
@@ -1294,7 +1293,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-end-of-expression-test \
 --funcall py-partial-expression-test \
 --funcall bob-beginning-of-statement-test \
---funcall completion-at-gentoo-lp-1008842-test \
 --funcall indent-triplequoted-to-itself-lp:752252-test \
 --funcall py-beginning-of-block-test \
 --funcall stalls-emacs-probably-due-to-syntax-highlighting-lp-1058261-test \
@@ -1309,7 +1307,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall indentation-bug-inside-docstrings-lp:899455-test \
 --funcall comments-start-a-new-line-lp-1092847-n1-test \
 --funcall inconvenient-window-splitting-behavior-python-lp-1018996-test \
---funcall no-completion-at-all-lp:1001328-test \
 --funcall nested-dictionaries-indent-lp:328791-test \
 --funcall python-shell-complete-test \
 --funcall not-that-useful-completion-lp:1003580-test \
@@ -1457,3 +1454,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall inconvenient-window-splitting-behavior-ipython-lp-1018996-test \
 --funcall does-not-dedent-regions-lp-1072869-test \
 --funcall C-c-C-c-lp:1221310-and-store-result-test \
+--funcall completion-at-gentoo-lp-1008842-test \
+--funcall incorrect-use-of-region-in-py-shift-left-lp:875951-test \
+--funcall no-completion-at-all-lp:1001328-test \

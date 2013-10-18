@@ -30,7 +30,7 @@ completions on the current context."
       (when (> (length completions) 2)
         (split-string completions "^'\\|^\"\\|;\\|'$\\|\"$" t)))))
 
-(defun py-shell--do-completion-at-point (process imports input)
+(defun py-shell--do-completion-at-point (process imports input orig)
   "Do completion at point for PROCESS."
   (with-syntax-table py-dotted-expression-syntax-table
     (when imports (py-send-string-no-output imports process))
@@ -40,7 +40,9 @@ completions on the current context."
              input process code))
            (completion (when completions
                          (try-completion input completions))))
-      (set-buffer oldbuf)
+      ;; (set-buffer oldbuf)
+      (with-current-buffer oldbuf
+      ;; (goto-char orig)
       (cond ((eq completion t)
              (if py-no-completion-calls-dabbrev-expand-p
                  (or (ignore-errors (dabbrev-expand nil))(when py-indent-no-completion-p
@@ -68,8 +70,7 @@ completions on the current context."
              (move-marker pos (point))
              nil))
       (and (goto-char pos)
-           nil))))
-
+           nil)))))
 
 (defun py-python2-shell-complete (&optional shell)
   (interactive)
@@ -86,7 +87,7 @@ completions on the current context."
            (tab-to-tab-stop))
           (t (or (setq proc (get-buffer-process shell))
                  (setq proc (get-buffer-process (py-shell nil nil shell t))))
-             (py-shell--do-completion-at-point proc nil word))))
+             (py-shell--do-completion-at-point proc nil word orig))))
   nil)
 
 (defun py-python3-shell-complete (&optional shell)
@@ -100,7 +101,7 @@ completions on the current context."
     (cond ((string= word "")
            (tab-to-tab-stop))
           (t
-           (py-shell--do-completion-at-point (get-buffer-process (current-buffer)) nil word)
+           (py-shell--do-completion-at-point (get-buffer-process (current-buffer)) nil word orig)
            nil))))
 
 ;; post-command-hook
@@ -187,8 +188,6 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
         (message "%s" "No response from Python process. Please check your configuration. If config is okay, please file a bug-regport at http://launchpad.net/python-mode")))))
 
 (defun py-shell-complete-finally ()
-  (set-buffer oldbuf)
-  (goto-char pos)
   (if (and completions (not (string= "" (car completions))))
       (cond ((eq completions t)
              (when (buffer-live-p (get-buffer py-completion-buffer))
@@ -214,9 +213,9 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
       (tab-to-tab-stop)
       (when (buffer-live-p (get-buffer py-python-completions))
         (kill-buffer (get-buffer py-python-completions)))))
-  (and (goto-char pos)
-       ;; completion-at-point requires a list as return value, so givem
-       nil))
+  (progn (set-buffer oldbuf)(goto-char pos)
+         ;; completion-at-point requires a list as return value, so givem
+         nil))
 
 (defun py-shell-complete-intern (word &optional beg end shell imports proc debug)
   (when imports
@@ -276,9 +275,11 @@ complete('%s')" word) shell nil proc)))
       (let ((proc (get-buffer-process (current-buffer))))
         (cond ((string= word "")
                (tab-to-tab-stop))
-              ((string-match "[pP]ython3[^[:alpha:]]*$" shell)
-               (py-shell--do-completion-at-point proc imports word))
-              (t (py-shell-complete-intern word beg end shell imports proc)))))))
+              (t
+               ;; (string-match "[pP]ython3[^[:alpha:]]*$" shell)
+               (py-shell--do-completion-at-point proc imports word pos))
+              ;; (t (py-shell-complete-intern word beg end shell imports proc))
+              )))))
 
 (defun py-complete--base (shell pos beg end word imports debug)
   (let* (wait
@@ -289,9 +290,11 @@ complete('%s')" word) shell nil proc)))
            (tab-to-tab-stop))
           ((string-match "[iI][pP]ython" shell)
            (ipython-complete nil nil beg end word shell debug imports pos))
-          ((string-match "[pP]ython3[^[:alpha:]]*$" shell)
-           (py-shell--do-completion-at-point proc imports word))
-          (t (py-shell-complete-intern word beg end shell imports proc debug)))))
+          (t
+           ;; (string-match "[pP]ython3[^[:alpha:]]*$" shell)
+           (py-shell--do-completion-at-point proc imports word pos))
+          ;; (t (py-shell-complete-intern word beg end shell imports proc debug))
+          )))
 
 (defun py-shell-complete (&optional shell debug)
   "Complete word before point, if any. Otherwise insert TAB. "
@@ -311,7 +314,9 @@ complete('%s')" word) shell nil proc)))
     ;; (ignore-errors (comint-dynamic-complete))
     (if (or (eq major-mode 'comint-mode)(eq major-mode 'inferior-python-mode))
         (py-comint--complete shell pos beg end word imports debug)
-      (py-complete--base shell pos beg end word imports debug))))
+      (py-complete--base shell pos beg end word imports debug))
+    (goto-char pos)
+    nil))
 
 (provide 'python-components-shell-complete)
 
