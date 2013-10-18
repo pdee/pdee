@@ -207,10 +207,7 @@ http://docs.python.org/reference/compound_stmts.html"
 
 Returns end of def-or-class if successful, nil otherwise
 
-With \\[universal argument] or `py-mark-decorators' set to `t', decorators are marked too.
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+With \\[universal argument] or `py-mark-decorators' set to `t', decorators are marked too. "
   (interactive "P")
     (let* ((orig (point))
            (erg (py-end-base 'py-def-or-class-re orig)))
