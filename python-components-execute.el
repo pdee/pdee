@@ -61,7 +61,7 @@ and return collected output"
 (defun py-shell-switch (&optional argprompt dedicated shell buffer-name no-window-managment)
   "Switch to the Python process buffer, maybe starting new process. "
   (interactive)
-  (let ((py-switch-buffers-on-execute-p t)) 
+  (let ((py-switch-buffers-on-execute-p t))
   (py-shell argprompt dedicated shell buffer-name no-window-managment)))
 
 (defun py-switch-to-python (eob-p)
@@ -413,58 +413,55 @@ Needed when file-path names are contructed from maybe numbered buffer names like
 
 (defun py-shell-manage-windows (output-buffer &optional windows-displayed windows-config)
   "Adapt or restore window configuration. Return nil "
-  (let (val)
-    (cond ((and (boundp 'err-p) err-p)
-           (py-restore-window-configuration)
-           (py-jump-to-exception err-p py-exception-buffer)
-           (goto-char (point-max))
-           (and (window-full-height-p)
-                (funcall py-split-windows-on-execute-function))
-           (display-buffer output-buffer)
-
-           nil)
-
-          ;; split and switch
-          ((and py-split-windows-on-execute-p
-                py-switch-buffers-on-execute-p)
-           (when (< (count-windows) py-max-split-windows)
-             (funcall py-split-windows-on-execute-function))
+  (cond ((eq py-keep-windows-configuration 'force)
+         (py-restore-window-configuration))
+        ((and (boundp 'err-p) err-p)
+         (py-restore-window-configuration)
+         (py-jump-to-exception err-p py-exception-buffer)
+         ;; (goto-char (point-max))
+         (and (window-full-height-p)
+              (funcall py-split-windows-on-execute-function))
+         (display-buffer output-buffer t))
+        (py-keep-windows-configuration
+         (py-restore-window-configuration))
+        ;; split and switch
+        ((and py-split-windows-on-execute-p
+              py-switch-buffers-on-execute-p)
+         (when (< (count-windows) py-max-split-windows)
+           (funcall py-split-windows-on-execute-function))
+         (set-buffer output-buffer)
+         (goto-char (point-max))
+         (switch-to-buffer (current-buffer))
+         (display-buffer py-exception-buffer))
+        ;; split, not switch
+        ((and
+          py-split-windows-on-execute-p
+          (not py-switch-buffers-on-execute-p))
+         (delete-other-windows)
+         (if (< (count-windows) py-max-split-windows)
+             (progn
+               (funcall py-split-windows-on-execute-function)
+               (set-buffer output-buffer)
+               (goto-char (point-max))
+               (and (bufferp py-exception-buffer)(set-buffer py-exception-buffer)
+                    (switch-to-buffer (current-buffer))
+                    (display-buffer output-buffer 'display-buffer-reuse-window))
+               (display-buffer output-buffer 'display-buffer-reuse-window))))
+        ;; no split, switch
+        ((and
+          py-switch-buffers-on-execute-p
+          (not py-split-windows-on-execute-p))
+         (let (pop-up-windows)
            (set-buffer output-buffer)
            (goto-char (point-max))
-           (switch-to-buffer (current-buffer))
-           (display-buffer py-exception-buffer)
-           nil)
-          ;; split, not switch
-          ((and
-            py-split-windows-on-execute-p
-            (not py-switch-buffers-on-execute-p))
-           (delete-other-windows)
-           (if (< (count-windows) py-max-split-windows)
-               (progn
-                 (funcall py-split-windows-on-execute-function)
-                 (set-buffer output-buffer)
-                 (goto-char (point-max))
-                 (and (bufferp py-exception-buffer)(set-buffer py-exception-buffer)
-                      (switch-to-buffer (current-buffer))
-                      (display-buffer output-buffer 'display-buffer-reuse-window))
-                 (display-buffer output-buffer 'display-buffer-reuse-window)))
-           nil)
-          ;; no split, switch
-          ((and
-            py-switch-buffers-on-execute-p
-            (not py-split-windows-on-execute-p))
-           (let (pop-up-windows)
-             (set-buffer output-buffer)
-             (goto-char (point-max))
-             (switch-to-buffer (current-buffer)))
-           nil)
-          ;; no split, no switch
-          ((not py-switch-buffers-on-execute-p)
-           ;; (if (equal (window-list-1) windows-displayed)
-           ;; (jump-to-register 313465889)
-           (let (pop-up-windows)
-             (py-restore-window-configuration))
-           nil))))
+           (switch-to-buffer (current-buffer))))
+        ;; no split, no switch
+        ((not py-switch-buffers-on-execute-p)
+         ;; (if (equal (window-list-1) windows-displayed)
+         ;; (jump-to-register 313465889)
+         (let (pop-up-windows)
+           (py-restore-window-configuration))))
+  nil)
 
 (defun py-report-executable (py-buffer-name)
   (let ((erg (downcase (replace-regexp-in-string
