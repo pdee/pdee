@@ -55,6 +55,16 @@ Keys C-M-a, C-M-e usable for all top-level form, lp:1191078
   A minor block is started by a `for', `if', `try' or `with',
   while block covers also `def' or `class'
 
+- variable `py-keep-windows-configuration', default is nil
+  Setting `py-keep-windows-configuration' to `t' will
+  restore windows-configuration regardless of
+  `py-switch-buffers-on-execute-p' and
+  `py-split-windows-on-execute-p' settings. However, if
+  an error occurs, it's displayed.
+
+  To suppres window-changes due to error-signaling
+  also, set `py-keep-windows-configuration' onto 'force
+
 - boolean empty-line-closes-p, default is nil
   When non-nil, dedent after empty line following block
   If non-nil, a C-j from empty line would dedent.
