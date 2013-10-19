@@ -3015,7 +3015,7 @@ re.s
 (defun completion-at-gentoo-lp-1008842-base ()
   (goto-char 62)
   (py-shell-complete)
-  (sit-for 0.1) 
+  (sit-for 0.1)
   (assert (buffer-live-p (get-buffer  py-python-completions)) nil "completion-at-gentoo-lp-1008842-test failed"))
 
 (defun converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128.py-test (&optional arg)
@@ -5416,7 +5416,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.67 $\"
+__version__ = \"$Revision: 1.68 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -6139,12 +6139,30 @@ if True:
   (py-bug-tests-intern 'py-empty-line-closes-p-lp-1235324-base arg teststring)))
 
 (defun py-empty-line-closes-p-lp-1235324-base ()
-  (goto-char (point-min)) 
+  (goto-char (point-min))
   (let (py-empty-line-closes-p)
-    (search-forward "print" nil t 2) 
+    (search-forward "print" nil t 2)
     (assert (eq 8 (py-compute-indentation)) nil "py-empty-line-closes-p-lp-1235324-test #1 failed"))
   (let ((py-empty-line-closes-p t))
     (assert (eq 4 (py-compute-indentation)) nil "py-empty-line-closes-p-lp-1235324-test #2 failed")))
+
+
+(defun py-docstring-style-pep-257-nn-closing-quotes-lp-1241147-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+class Class(object):
+    \"\"\"A long long long long long long long long long long long
+long long long long long long long line.\"\"\"
+"))
+    (py-bug-tests-intern 'py-docstring-style-pep-257-nn-closing-quotes-lp-1241147-base arg teststring)))
+
+(defun py-docstring-style-pep-257-nn-closing-quotes-lp-1241147-base ()
+  (let ((py-docstring-style 'pep-257-nn))
+    (forward-line -1)
+    (fill-paragraph)
+    (sit-for 0.1) 
+    (assert (search-forward "    \"\"\"") nil "py-docstring-style-pep-257-nn-closing-quotes-lp-1241147-test failed")))
 
 
 (provide 'py-bug-numbered-tests)

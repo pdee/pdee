@@ -153,7 +153,15 @@ complete docstring according to setting of `py-docstring-style' "
              ;; unset python-mode value this time
              forward-sexp-function
              (orig (point-marker))
-             (pps (or pps (syntax-ppss)))
+             (pps-raw (or pps (syntax-ppss)))
+             (pps (or (nth 8 pps-raw)(and (equal (string-to-syntax "|")
+                                                 (syntax-after (point)))
+                                          (skip-chars-forward "\"'")
+                                          (syntax-ppss))
+                      (and (equal (string-to-syntax "|")
+                                  (syntax-after (1- (point))))
+                           (skip-chars-backward "\"'")
+                           (syntax-ppss))))
              ;; if beginning of string is closer than arg beg, use this
              (beg (or (and (numberp beg)
                            (ignore-errors (copy-marker beg)))
@@ -163,11 +171,15 @@ complete docstring according to setting of `py-docstring-style' "
                              (copy-marker (point)))
                             ((equal (string-to-syntax "|")
                                     (syntax-after (point)))
-                             (point-marker)))))
+                             (copy-marker (point))))))
              ;; Assume docstrings at BOL resp. indentation
-             (docstring (and (not (eq 'no docstring))(py-docstring-p (nth 8 pps))))
+             (docstring (unless (eq 'no docstring)
+                          (py-docstring-p (nth 8 pps))))
              (end (or (ignore-errors (and end (goto-char end) (skip-chars-backward "\"' \t\f\n")(copy-marker (point))))
-                      (progn (goto-char (nth 8 pps)) (scan-sexps (point) 1) (skip-chars-backward "\"'") (point-marker))))
+                      (progn (or (eq (marker-position beg) (point)) (goto-char (nth 8 pps)))
+                             (forward-sexp)
+                             ;; (scan-sexps (point) 1)
+                             (skip-chars-backward "\"'") (point-marker))))
              multi-line-p
              delimiters-style
              erg)
@@ -216,6 +228,9 @@ complete docstring according to setting of `py-docstring-style' "
              (unless (or (empty-line-p) (save-excursion (forward-line -1)(empty-line-p)))
                (or (newline (car delimiters-style)) t))
              (indent-region beg end))
+            (and multi-line-p
+                 (forward-line 1)
+                 (unless (empty-line-p) (insert "\n")))
             ;; Add the number of newlines indicated by the selected style
             ;; at the end of the docstring.
             (goto-char end)
