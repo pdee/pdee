@@ -1860,6 +1860,12 @@ When this-command is py-beginning-of-FORM-bol, last-command's indent will be con
 
 (defvar py-exception-name-face 'py-exception-name-face)
 
+(defvar py-import-from-face 'py-import-from-face)
+
+(defvar py-def-class-face 'py-def-class-face)
+
+(defvar py-try-if-face 'py-try-if-face)
+
 (defvar py-file-queue nil
   "Queue of Python temp files awaiting execution.
 Currently-active file is at the head of the list.")
@@ -2186,7 +2192,6 @@ Includes def and class. ")
 
 (defface py-variable-name-face
   '((t (:inherit default)))
-  ;; '((t (:inherit 'font-lock-variable-name-face)))
   "Face method decorators."
   :group 'python-mode)
 
@@ -2194,6 +2199,21 @@ Includes def and class. ")
   '((t (:inherit default)))
   ;; '((t (:inherit 'font-lock-variable-name-face)))
   "Highlight numbers. "
+  :group 'python-mode)
+
+(defface py-try-if-face
+  '((t (:inherit font-lock-keyword-face)))
+  "Highlight keywords. "
+  :group 'python-mode)
+
+(defface py-import-from-face
+  '((t (:inherit font-lock-keyword-face)))
+  "Highlight keywords. "
+  :group 'python-mode)
+
+(defface py-def-class-face
+  '((t (:inherit font-lock-keyword-face)))
+  "Highlight keywords. "
   :group 'python-mode)
 
 ;; PEP 318 decorators
@@ -2605,17 +2625,20 @@ See bug report at launchpad, lp:940812 "
 (setq py-font-lock-keywords
       ;; Keywords
       `(,(rx symbol-start
-             (or "and" "del" "from" "not" "while" "as" "elif" "global" "or" "with"
-                 "assert" "else" "if" "pass" "yield" "break" "import"
+             (or "and" "del"  "not" "while" "as" "elif" "global" "or" "with"
+                 "assert" "else"  "pass" "yield" "break"
                  "print" "exec" "in" "continue" "finally" "is" "except" "raise"
-                 "return" "def" "for" "lambda" "try")
+                 "return"  "for" "lambda")
              symbol-end)
+        (,(rx symbol-start (or "def" "class") symbol-end) . py-def-class-face)
+        (,(rx symbol-start (or "import" "from") symbol-end) . py-import-from-face)
+        (,(rx symbol-start (or "try" "if") symbol-end) . py-try-if-face)
         ;; functions
         (,(rx symbol-start "def" (1+ space) (group (1+ (or word ?_))))
          (1 font-lock-function-name-face))
         ;; classes
         (,(rx symbol-start (group "class") (1+ space) (group (1+ (or word ?_))))
-         (1 font-lock-keyword-face) (2 py-class-name-face))
+         (1 py-def-class-face) (2 py-class-name-face))
         ;; (,(rx symbol-start
         ;; (or "raise" "except")
         ;; symbol-end) . py-exception-name-face)
@@ -2623,6 +2646,7 @@ See bug report at launchpad, lp:940812 "
         ;; (,(rx symbol-start
         ;;       (or "None" "True" "False" "__debug__" "NotImplemented")
         ;;       symbol-end) . font-lock-constant-face)
+
         (,(rx symbol-start
               (or "cls" "self" "cls" "Ellipsis" "True" "False" "None"  "__debug__" "NotImplemented")
               symbol-end) . py-pseudo-keyword-face)
