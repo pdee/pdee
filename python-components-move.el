@@ -437,14 +437,14 @@ http://docs.python.org/reference/compound_stmts.html
 (defun py-end-of-statement (&optional orig done origline repeat)
   "Go to the last char of current statement.
 
-To go just beyond the final line of the current statement, use `py-down-statement-bol'. 
+To go just beyond the final line of the current statement, use `py-down-statement-bol'.
 
 Optional argument REPEAT, the number of loops done already, is checked for py-max-specpdl-size error. Avoid eternal loops due to missing string delimters etc. "
   (interactive)
   (unless (eobp)
     (let ((pps (syntax-ppss))
           (origline (or origline (py-count-lines)))
-          (repeat (or (and repeat (1+ repeat)) 0)) 
+          (repeat (or (and repeat (1+ repeat)) 0))
           (orig (or orig (point)))
           erg this
           ;; use by scan-lists
@@ -455,7 +455,7 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
       (cond
        ;; wich-function-mode, lp:1235375
        ((< py-max-specpdl-size repeat)
-        (error "py-end-of-statement reached loops max. If no error, customize `py-max-specpdl-size'")) 
+        (error "py-end-of-statement reached loops max. If no error, customize `py-max-specpdl-size'"))
        ((nth 1 pps)
         (when (< orig (point))
           (setq orig (point)))
@@ -520,6 +520,12 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
        ((and (looking-at py-no-outdent-re)(not (nth 8 pps)))
         (end-of-line)
         (py-handle-eol))
+       ((looking-at py-extended-block-or-clause-re)
+        (skip-chars-forward "^:")
+        (and (eq 58 (char-after))(forward-char 1))
+        (setq pps (syntax-ppss))
+        (and (or (nth 8 pps)(nth 1 pps))
+             (py-end-of-statement orig t origline t)))
        ((and (eq (point) orig) (< (current-column) (current-indentation)))
         (back-to-indentation)
         (py-end-of-statement orig done origline repeat))
