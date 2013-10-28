@@ -151,6 +151,8 @@ This function is normally used by `indent-line-function' resp.
 \\[indent-for-tab-command].
 Returns current indentation
 
+When bound to TAB, C-q TAB inserts a TAB.
+
 When `py-tab-shifts-region-p' is `t', not just the current line,
 but the region is shiftet that way.
 
@@ -161,21 +163,14 @@ If `py-tab-indents-region-p' is `t' and first TAB doesn't shift
       ;; TAB-leaves-point-in-the-wrong-lp-1178453-test
       (let ((orig (copy-marker (point)))
             (region (use-region-p))
-            ;; (startmarke (copy-marker (mark t)))
-            ;; (startpos (point))
-            ;; behind
-            cui col
-            ;; endmarke endpos
-            beg end)
+            cui col beg end)
         (and region
              (setq beg (region-beginning))
              (setq end (region-end))
              (save-excursion
                (goto-char beg)
                (setq cui (current-indentation))
-               (setq col (current-column)))
-             ;; (and (< beg (point)) (setq behind t))
-             )
+               (setq col (current-column))))
         (let* ((cui (or cui (current-indentation)))
                (col (current-column))
                (this-indent-offset (cond ((and py-smart-indentation (not (eq this-command last-command)))
@@ -1318,5 +1313,21 @@ Returns the string inserted. "
       (if (looking-at (concat "[ \t]*" comment-start))
           (delete-region (point) (1+ (line-end-position)))
         (forward-line 1)))))
+
+(defun py-indent-or-complete ()
+  (interactive "*")
+  "From inside a (I)Python shell:
+
+Expand word before point, if any.
+Indent line, unless maximum indent reached.
+If neiter expansion nor indent occured, insert `py-indent-offset'"
+  (let* ((orig (point)) 
+         (beg  (save-excursion (skip-chars-backward "a-zA-Z0-9_.('") (point)))
+         (end (point))
+         (word (buffer-substring-no-properties beg end)))
+    (and (not (string= "" word))
+         (py-shell-complete (py-shell nil nil (process-name (get-buffer-process (current-buffer))) (concat (buffer-name (current-buffer)) "-completions")) nil beg end word))))
+
+
 
 (provide 'python-components-edit)

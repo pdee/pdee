@@ -75,6 +75,7 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
   (save-excursion
     (save-restriction
       (widen)
+      ;; in shell, narrow from previous prompt
       ;; needed by closing
       (unless orig (back-to-indentation))
       (let* ((orig (or orig (point)))
@@ -89,259 +90,268 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
                   (and (nth 1 pps)
                        (looking-at ".*\\(\\s)\\)")(nth 0 pps)
                        ;; char doesn't matter for now, maybe drop
-                       (string-to-char (match-string-no-properties 1))
-                       )))
+                       (string-to-char (match-string-no-properties 1)))))
 
              ;; in a recursive call already
              (repeat repeat)
              ;; nesting: started nesting a list
              (nesting nesting)
              (indent-offset (or indent-offset py-indent-offset))
+             (name (current-buffer))
              erg indent this-line)
-        (unless repeat (setq nesting (nth 0 pps))
-                (setq repeat t))
-        (setq indent
-              (cond
-               ((and (bobp)
-                     (and (not line)(eq origline (py-count-lines))))
-                (current-indentation))
-               ((and (bobp)(py-statement-opens-block-p py-extended-block-or-clause-re))
-                (+ (if py-smart-indentation (py-guess-indent-offset) indent-offset) (current-indentation)))
-               ((and (bobp)(not (py-statement-opens-block-p py-extended-block-or-clause-re)))
-                (current-indentation))
-               ;; in string
-               ((and (nth 3 pps)(nth 8 pps))
-                (if (and (not line)(eq origline (py-count-lines)))
-                    (progn
-                      (forward-line -1)
-                      (end-of-line)
-                      (skip-chars-backward " \t\r\n\f")
-                      (if (ignore-errors (< (nth 8 (syntax-ppss)) (line-beginning-position)))
-                          (current-indentation)
-                        (ignore-errors (goto-char (nth 8 pps)))
-                        (py-line-backward-maybe)
-                        (back-to-indentation)
-                        (py-compute-indentation orig origline closing line nesting repeat indent-offset)))
-                  (goto-char (nth 8 pps))
-                  (current-indentation)))
-               ((and (looking-at "\"\"\"\\|'''")(not (bobp)))
-                (py-beginning-of-statement)
-                (py-compute-indentation orig origline closing line nesting repeat indent-offset))
-               ;; comments
-               ((nth 8 pps)
-                (if (and (not line)(eq origline (py-count-lines)))
-                    (progn
-                      (goto-char (nth 8 pps))
-                      (py-line-backward-maybe)
-                      (skip-chars-backward " \t")
-                      (py-compute-indentation orig origline closing line nesting repeat indent-offset))
-                  (goto-char (nth 8 pps))
-                  (if
-                      line
-                      (if py-indent-honors-inline-comment
-                          (current-column)
-                        (if py-indent-comments
-                            (progn
-                              (py-beginning-of-commented-section)
-                              (py-compute-indentation orig origline closing line nesting repeat indent-offset))
-                          0))
-                    (forward-char -1)
-                    (py-compute-indentation orig origline closing line nesting repeat indent-offset))))
-               ((and (looking-at "[ \t]*#") (looking-back "^[ \t]*")(not line)(eq origline (py-count-lines)))
-                (if py-indent-comments
-                    (progn
-                      (setq line t)
-                      (skip-chars-backward " \t\r\n\f")
-                      ;; as previous comment-line might
-                      ;; be wrongly unindented, travel
-                      ;; whole commented section
-                      (py-beginning-of-commented-section)
-
-                      (py-compute-indentation orig origline closing line nesting repeat indent-offset))
-                  0))
-               ((and (looking-at "[ \t]*#") (looking-back "^[ \t]*")(not (eq origline (py-count-lines))))
-                (current-indentation))
-               ;; ((and (looking-at "[ \t]*#") (looking-back "^[ \t]*")(not (eq (line-beginning-position) (point-min))))
-               ;;  (skip-chars-backward " \t\r\n\f")
-               ;;  (setq line t)
-               ;;  (py-compute-indentation orig origline closing line nesting repeat indent-offset))
-               ((and (eq ?\# (char-after)) line py-indent-honors-inline-comment)
-                (current-column))
-               ;; lists
-               ((nth 1 pps)
+        ;; indent in Shell
+        (if (and (not repeat)
+                 (and (comint-check-proc (current-buffer))
+                      (re-search-backward (concat py-shell-prompt-regexp "\\|" ipython-de-output-prompt-regexp "\\|" ipython-de-input-prompt-regexp) nil t 1)))
+            ;; common recursion not suitable because of prompt
+            (with-temp-buffer
+              (insert-buffer-substring name (match-end 0) orig)
+              (goto-char orig)
+              (setq indent (py-compute-indentation)))
+          (unless repeat (setq nesting (nth 0 pps))
+                  (setq repeat t))
+          (setq indent
                 (cond
-                 ((and nesting (not line))
-                  ;; still at original line
-                  (save-excursion
-                    (goto-char (nth 1 pps))
-                    (setq this-line (py-count-lines))
-                    (cond
-                     ((< 0 (- origline this-line))
-                      (if (< 1 (- origline this-line))
-                          (cond
-                           (closing
-                            (cond
-                             (py-closing-list-dedents-bos
-                              (goto-char (nth 1 pps))
-                              (current-indentation))
-                             ((looking-back "^[ \t]*")
-                              (current-column))
-                             (
-                              (and
-                               ;; (or (eq closing ?\})(eq closing ?\]))
-                               (looking-at "\\s([ \t]*$") py-closing-list-keeps-space)
-                              (+ (current-column) py-closing-list-space))
-                             ((looking-at "\\s([ \t]*$")
-                              (py-empty-arglist-indent nesting py-indent-offset indent-offset))
-                             (t (py-fetch-previous-indent orig))))
-                           ;; already behind a dedented element in list
-                           ((<= 2 (- origline this-line))
-                            (py-fetch-previous-indent orig))
-                           ((< (current-indentation) (current-column))
-                            (+ (current-indentation) py-indent-offset))
-                           (t (py-fetch-previous-indent orig)))
-                        (cond ((looking-at "\\s([ \t]*$")
-                               (py-empty-arglist-indent nesting py-indent-offset indent-offset))
-                              ((looking-at "\\s([ \t]*\\([^ \t]+.*\\)$")
-                               (goto-char (match-beginning 1))
-                               (if py-indent-paren-spanned-multilines-p
-                                   (+ (current-column) py-indent-offset)
-                                 (current-column)))
-                              (t (+ (current-column) (* (nth 0 pps)))))))
-                     ((nth 1 (syntax-ppss))
-                      (goto-char (nth 1 (syntax-ppss)))
-                      (setq line (< (py-count-lines) origline))
-                      (py-compute-indentation orig origline closing line nesting repeat indent-offset))
-                     ((not (py-beginning-of-statement-p))
-                      (py-beginning-of-statement)
-                      (py-compute-indentation orig origline closing line nesting repeat indent-offset))
-                     (t (1+ (current-column))))))
-                 ((and (not nesting) line)
+                 ((and (bobp)
+                       (and (not line)(eq origline (py-count-lines))))
+                  (current-indentation))
+                 ((and (bobp)(py-statement-opens-block-p py-extended-block-or-clause-re))
+                  (+ (if py-smart-indentation (py-guess-indent-offset) indent-offset) (current-indentation)))
+                 ((and (bobp)(not (py-statement-opens-block-p py-extended-block-or-clause-re)))
+                  (current-indentation))
+                 ;; in string
+                 ((and (nth 3 pps)(nth 8 pps))
+                  (if (and (not line)(eq origline (py-count-lines)))
+                      (progn
+                        (forward-line -1)
+                        (end-of-line)
+                        (skip-chars-backward " \t\r\n\f")
+                        (if (ignore-errors (< (nth 8 (syntax-ppss)) (line-beginning-position)))
+                            (current-indentation)
+                          (ignore-errors (goto-char (nth 8 pps)))
+                          (py-line-backward-maybe)
+                          (back-to-indentation)
+                          (py-compute-indentation orig origline closing line nesting repeat indent-offset)))
+                    (goto-char (nth 8 pps))
+                    (current-indentation)))
+                 ((and (looking-at "\"\"\"\\|'''")(not (bobp)))
                   (py-beginning-of-statement)
                   (py-compute-indentation orig origline closing line nesting repeat indent-offset))
-                 ((not nesting)
-                  (progn (goto-char (+ py-lhs-inbound-indent (nth 1 pps)))
-                         (when (looking-at "[ \t]+")
-                           (goto-char (match-end 0)))
-                         (current-column)))
-                 (t
-                  (goto-char (nth 1 pps))
-                  (py-compute-indentation orig origline closing line nesting repeat indent-offset))))
-               ((and (eq (char-after) (or ?\( ?\{ ?\[)) line)
-                (1+ (current-column)))
-               ((py-preceding-line-backslashed-p)
-                (progn
-                  (py-beginning-of-statement)
-                  (setq this-line (py-count-lines))
-                  (if (< 1 (- origline this-line))
-                      (py-fetch-previous-indent orig)
-                    (if (looking-at "from +\\([^ \t\n]+\\) +import")
-                        py-backslashed-lines-indent-offset
-                      (+ (current-indentation) py-continuation-offset)))))
-               ((and (looking-at py-block-closing-keywords-re)(eq (py-count-lines) origline))
-                (skip-chars-backward "[ \t\r\n\f]")
-                (py-beginning-of-statement)
-                (cond ((looking-at py-extended-block-or-clause-re)
-                       (+
-                        (if py-smart-indentation (py-guess-indent-offset) indent-offset)
-                        (current-indentation)))
-                      ((looking-at py-block-closing-keywords-re)
-
-                       (- (current-indentation) py-indent-offset))
-                      (t (current-column))))
-               ((looking-at py-block-closing-keywords-re)
-                (if (< (line-end-position) orig)
-                    (- (current-indentation) py-indent-offset)
-                  (py-beginning-of-block-or-clause (current-indentation))
-                  (current-indentation)))
-               ((looking-at py-no-outdent-re)
-                (if (eq (py-count-lines) origline)
-                    (progn
-                      (back-to-indentation)
-                      (py-line-backward-maybe)
-                      (py-compute-indentation orig origline closing line nesting repeat indent-offset))
-                  (current-indentation)))
-               ((and (looking-at py-elif-re) (eq (py-count-lines) origline))
-                (py-line-backward-maybe)
-                (car (py-clause-lookup-keyword py-elif-re -1 nil orig origline)))
-               ((and (looking-at py-clause-re)(not line)(eq origline (py-count-lines)))
-                (cond ((looking-at py-finally-re)
-                       (car (py-clause-lookup-keyword py-finally-re -1 nil orig origline)))
-                      ((looking-at py-except-re)
-                       (car (py-clause-lookup-keyword py-except-re -1 nil orig origline)))
-                      ((looking-at py-else-re)
-                       (car (py-clause-lookup-keyword py-else-re -1 nil orig origline)))
-                      ((looking-at py-elif-re)
-                       (car (py-clause-lookup-keyword py-elif-re -1 nil orig origline)))
-                      ;; maybe at if, try, with
-                      (t (car (py-clause-lookup-keyword py-block-or-clause-re -1 nil orig origline)))))
-               ((looking-at py-block-or-clause-re)
-                (cond ((and (not line)(eq origline (py-count-lines)))
-                       (py-line-backward-maybe)
-                       (setq line t)
-                       (py-compute-indentation orig origline closing line nesting t indent-offset))
-                      (t (+
-                          (cond (indent-offset)
-                                (py-smart-indentation
-                                 (py-guess-indent-offset))
-                                (t py-indent-offset))
-                          (current-indentation)))))
-               ((looking-at py-block-closing-keywords-re)
-                (py-beginning-of-block)
-                (current-indentation))
-               ((and (< (py-count-lines) origline)
-                     (eq (current-column) (current-indentation)))
-                (and
-                 (looking-at py-assignment-re)
-                 (goto-char (match-end 0)))
-                ;; multiline-assignment
-                (if (and nesting (looking-at " *[[{(]")(not (looking-at ".+[]})][ \t]*$")))
-                    (+ (current-indentation) py-indent-offset)
-                  (current-indentation)))
-               ((looking-at py-assignment-re)
-                (py-beginning-of-statement)
-                (py-compute-indentation orig origline closing line nesting repeat indent-offset))
-               ((and (< (current-indentation) (current-column))(not line))
-                (back-to-indentation)
-                (unless line
-                  (setq nesting (nth 0 (syntax-ppss))))
-                (py-compute-indentation orig origline closing line nesting repeat indent-offset))
-               ((and (not (py-beginning-of-statement-p)) (not (and line (eq ?\# (char-after)))))
-                (if (bobp)
-                    (current-column)
-                  (if (eq (point) orig)
+                 ;; comments
+                 ((nth 8 pps)
+                  (if (and (not line)(eq origline (py-count-lines)))
                       (progn
+                        (goto-char (nth 8 pps))
+                        (py-line-backward-maybe)
+                        (skip-chars-backward " \t")
+                        (py-compute-indentation orig origline closing line nesting repeat indent-offset))
+                    (goto-char (nth 8 pps))
+                    (if
+                        line
+                        (if py-indent-honors-inline-comment
+                            (current-column)
+                          (if py-indent-comments
+                              (progn
+                                (py-beginning-of-commented-section)
+                                (py-compute-indentation orig origline closing line nesting repeat indent-offset))
+                            0))
+                      (forward-char -1)
+                      (py-compute-indentation orig origline closing line nesting repeat indent-offset))))
+                 ((and (looking-at "[ \t]*#") (looking-back "^[ \t]*")(not line)(eq origline (py-count-lines)))
+                  (if py-indent-comments
+                      (progn
+                        (setq line t)
+                        (skip-chars-backward " \t\r\n\f")
+                        ;; as previous comment-line might
+                        ;; be wrongly unindented, travel
+                        ;; whole commented section
+                        (py-beginning-of-commented-section)
+
+                        (py-compute-indentation orig origline closing line nesting repeat indent-offset))
+                    0))
+                 ((and (looking-at "[ \t]*#") (looking-back "^[ \t]*")(not (eq origline (py-count-lines))))
+                  (current-indentation))
+                 ;; ((and (looking-at "[ \t]*#") (looking-back "^[ \t]*")(not (eq (line-beginning-position) (point-min))))
+                 ;;  (skip-chars-backward " \t\r\n\f")
+                 ;;  (setq line t)
+                 ;;  (py-compute-indentation orig origline closing line nesting repeat indent-offset))
+                 ((and (eq ?\# (char-after)) line py-indent-honors-inline-comment)
+                  (current-column))
+                 ;; lists
+                 ((nth 1 pps)
+                  (cond
+                   ((and nesting (not line))
+                    ;; still at original line
+                    (save-excursion
+                      (goto-char (nth 1 pps))
+                      (setq this-line (py-count-lines))
+                      (cond
+                       ((< 0 (- origline this-line))
+                        (if (< 1 (- origline this-line))
+                            (cond
+                             (closing
+                              (cond
+                               (py-closing-list-dedents-bos
+                                (goto-char (nth 1 pps))
+                                (current-indentation))
+                               ((looking-back "^[ \t]*")
+                                (current-column))
+                               (
+                                (and
+                                 ;; (or (eq closing ?\})(eq closing ?\]))
+                                 (looking-at "\\s([ \t]*$") py-closing-list-keeps-space)
+                                (+ (current-column) py-closing-list-space))
+                               ((looking-at "\\s([ \t]*$")
+                                (py-empty-arglist-indent nesting py-indent-offset indent-offset))
+                               (t (py-fetch-previous-indent orig))))
+                             ;; already behind a dedented element in list
+                             ((<= 2 (- origline this-line))
+                              (py-fetch-previous-indent orig))
+                             ((< (current-indentation) (current-column))
+                              (+ (current-indentation) py-indent-offset))
+                             (t (py-fetch-previous-indent orig)))
+                          (cond ((looking-at "\\s([ \t]*$")
+                                 (py-empty-arglist-indent nesting py-indent-offset indent-offset))
+                                ((looking-at "\\s([ \t]*\\([^ \t]+.*\\)$")
+                                 (goto-char (match-beginning 1))
+                                 (if py-indent-paren-spanned-multilines-p
+                                     (+ (current-column) py-indent-offset)
+                                   (current-column)))
+                                (t (+ (current-column) (* (nth 0 pps)))))))
+                       ((nth 1 (syntax-ppss))
+                        (goto-char (nth 1 (syntax-ppss)))
+                        (setq line (< (py-count-lines) origline))
+                        (py-compute-indentation orig origline closing line nesting repeat indent-offset))
+                       ((not (py-beginning-of-statement-p))
+                        (py-beginning-of-statement)
+                        (py-compute-indentation orig origline closing line nesting repeat indent-offset))
+                       (t (1+ (current-column))))))
+                   ((and (not nesting) line)
+                    (py-beginning-of-statement)
+                    (py-compute-indentation orig origline closing line nesting repeat indent-offset))
+                   ((not nesting)
+                    (progn (goto-char (+ py-lhs-inbound-indent (nth 1 pps)))
+                           (when (looking-at "[ \t]+")
+                             (goto-char (match-end 0)))
+                           (current-column)))
+                   (t
+                    (goto-char (nth 1 pps))
+                    (py-compute-indentation orig origline closing line nesting repeat indent-offset))))
+                 ((and (eq (char-after) (or ?\( ?\{ ?\[)) line)
+                  (1+ (current-column)))
+                 ((py-preceding-line-backslashed-p)
+                  (progn
+                    (py-beginning-of-statement)
+                    (setq this-line (py-count-lines))
+                    (if (< 1 (- origline this-line))
+                        (py-fetch-previous-indent orig)
+                      (if (looking-at "from +\\([^ \t\n]+\\) +import")
+                          py-backslashed-lines-indent-offset
+                        (+ (current-indentation) py-continuation-offset)))))
+                 ((and (looking-at py-block-closing-keywords-re)(eq (py-count-lines) origline))
+                  (skip-chars-backward "[ \t\r\n\f]")
+                  (py-beginning-of-statement)
+                  (cond ((looking-at py-extended-block-or-clause-re)
+                         (+
+                          (if py-smart-indentation (py-guess-indent-offset) indent-offset)
+                          (current-indentation)))
+                        ((looking-at py-block-closing-keywords-re)
+
+                         (- (current-indentation) py-indent-offset))
+                        (t (current-column))))
+                 ((looking-at py-block-closing-keywords-re)
+                  (if (< (line-end-position) orig)
+                      (- (current-indentation) py-indent-offset)
+                    (py-beginning-of-block-or-clause (current-indentation))
+                    (current-indentation)))
+                 ((looking-at py-no-outdent-re)
+                  (if (eq (py-count-lines) origline)
+                      (progn
+                        (back-to-indentation)
                         (py-line-backward-maybe)
                         (py-compute-indentation orig origline closing line nesting repeat indent-offset))
-                    (py-beginning-of-statement)
-                    (py-compute-indentation orig origline closing line nesting repeat indent-offset))))
-               ((or (py-statement-opens-block-p py-extended-block-or-clause-re)(looking-at "@"))
-                (if (< (py-count-lines) origline)
-                    (+ (if py-smart-indentation (py-guess-indent-offset) indent-offset) (current-indentation))
-                  (skip-chars-backward " \t\r\n\f")
-                  (setq line t)
+                    (current-indentation)))
+                 ((and (looking-at py-elif-re) (eq (py-count-lines) origline))
+                  (py-line-backward-maybe)
+                  (car (py-clause-lookup-keyword py-elif-re -1 nil orig origline)))
+                 ((and (looking-at py-clause-re)(not line)(eq origline (py-count-lines)))
+                  (cond ((looking-at py-finally-re)
+                         (car (py-clause-lookup-keyword py-finally-re -1 nil orig origline)))
+                        ((looking-at py-except-re)
+                         (car (py-clause-lookup-keyword py-except-re -1 nil orig origline)))
+                        ((looking-at py-else-re)
+                         (car (py-clause-lookup-keyword py-else-re -1 nil orig origline)))
+                        ((looking-at py-elif-re)
+                         (car (py-clause-lookup-keyword py-elif-re -1 nil orig origline)))
+                        ;; maybe at if, try, with
+                        (t (car (py-clause-lookup-keyword py-block-or-clause-re -1 nil orig origline)))))
+                 ((looking-at py-block-or-clause-re)
+                  (cond ((and (not line)(eq origline (py-count-lines)))
+                         (py-line-backward-maybe)
+                         (setq line t)
+                         (py-compute-indentation orig origline closing line nesting t indent-offset))
+                        (t (+
+                            (cond (indent-offset)
+                                  (py-smart-indentation
+                                   (py-guess-indent-offset))
+                                  (t py-indent-offset))
+                            (current-indentation)))))
+                 ((looking-at py-block-closing-keywords-re)
+                  (py-beginning-of-block)
+                  (current-indentation))
+                 ((and (< (py-count-lines) origline)
+                       (eq (current-column) (current-indentation)))
+                  (and
+                   (looking-at py-assignment-re)
+                   (goto-char (match-end 0)))
+                  ;; multiline-assignment
+                  (if (and nesting (looking-at " *[[{(]")(not (looking-at ".+[]})][ \t]*$")))
+                      (+ (current-indentation) py-indent-offset)
+                    (current-indentation)))
+                 ((looking-at py-assignment-re)
+                  (py-beginning-of-statement)
+                  (py-compute-indentation orig origline closing line nesting repeat indent-offset))
+                 ((and (< (current-indentation) (current-column))(not line))
                   (back-to-indentation)
-                  (py-compute-indentation orig origline closing line nesting t indent-offset)))
-               ((and py-empty-line-closes-p (py-after-empty-line))
-                            (progn (py-beginning-of-statement)
-                                   (- (current-indentation) py-indent-offset)))
+                  (unless line
+                    (setq nesting (nth 0 (syntax-ppss))))
+                  (py-compute-indentation orig origline closing line nesting repeat indent-offset))
+                 ((and (not (py-beginning-of-statement-p)) (not (and line (eq ?\# (char-after)))))
+                  (if (bobp)
+                      (current-column)
+                    (if (eq (point) orig)
+                        (progn
+                          (py-line-backward-maybe)
+                          (py-compute-indentation orig origline closing line nesting repeat indent-offset))
+                      (py-beginning-of-statement)
+                      (py-compute-indentation orig origline closing line nesting repeat indent-offset))))
+                 ((or (py-statement-opens-block-p py-extended-block-or-clause-re)(looking-at "@"))
+                  (if (< (py-count-lines) origline)
+                      (+ (if py-smart-indentation (py-guess-indent-offset) indent-offset) (current-indentation))
+                    (skip-chars-backward " \t\r\n\f")
+                    (setq line t)
+                    (back-to-indentation)
+                    (py-compute-indentation orig origline closing line nesting t indent-offset)))
+                 ((and py-empty-line-closes-p (py-after-empty-line))
+                  (progn (py-beginning-of-statement)
+                         (- (current-indentation) py-indent-offset)))
 
-               ((and (not line)(eq origline (py-count-lines))
-                     (save-excursion
-                       (and (setq erg (py-go-to-keyword py-extended-block-or-clause-re))
-                            (if py-smart-indentation (setq indent (py-guess-indent-offset)) t)
-                            (ignore-errors (< orig (or (py-end-of-block-or-clause)(point)))))))
-                (+ (car erg) (if py-smart-indentation
-                                 ;; (py-guess-indent-offset)
-                                 (or indent (py-guess-indent-offset))
-                               indent-offset)))
-               ((and (not line)(eq origline (py-count-lines))
-                     (py-beginning-of-statement-p))
-                (py-beginning-of-statement)
-                (py-compute-indentation orig origline closing line nesting repeat indent-offset))
-               (t (current-indentation))))
-        (when (and py-verbose-p (interactive-p)) (message "%s" indent))
-        indent))))
+                 ((and (not line)(eq origline (py-count-lines))
+                       (save-excursion
+                         (and (setq erg (py-go-to-keyword py-extended-block-or-clause-re))
+                              (if py-smart-indentation (setq indent (py-guess-indent-offset)) t)
+                              (ignore-errors (< orig (or (py-end-of-block-or-clause)(point)))))))
+                  (+ (car erg) (if py-smart-indentation
+                                   ;; (py-guess-indent-offset)
+                                   (or indent (py-guess-indent-offset))
+                                 indent-offset)))
+                 ((and (not line)(eq origline (py-count-lines))
+                       (py-beginning-of-statement-p))
+                  (py-beginning-of-statement)
+                  (py-compute-indentation orig origline closing line nesting repeat indent-offset))
+                 (t (current-indentation))))
+          (when (and py-verbose-p (interactive-p)) (message "%s" indent))
+          indent)))))
 
 (defun py-fetch-previous-indent (orig)
   "Report the preceding indent. "

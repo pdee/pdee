@@ -5416,7 +5416,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.69 $\"
+__version__ = \"$Revision: 1.70 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -6125,7 +6125,6 @@ a, b, c = (1, 2, 3)
             (sit-for 0.1)
             (string= "C-c-C-c-lp:1221310-and-store-result-test" (py-execute-base))) nil "C-c-C-c-lp:1221310-and-store-result-test failed"))
 
-
 (defun py-empty-line-closes-p-lp-1235324-test (&optional arg)
   (interactive "p")
    (let ((teststring "#! /usr/bin/env python
@@ -6146,7 +6145,6 @@ if True:
   (let ((py-empty-line-closes-p t))
     (assert (eq 4 (py-compute-indentation)) nil "py-empty-line-closes-p-lp-1235324-test #2 failed")))
 
-
 (defun py-docstring-style-pep-257-nn-closing-quotes-lp-1241147-test (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
@@ -6161,9 +6159,20 @@ long long long long long long long line.\"\"\"
   (let ((py-docstring-style 'pep-257-nn))
     (forward-line -1)
     (fill-paragraph)
-    (sit-for 0.1) 
+    (sit-for 0.1)
     (assert (search-forward "    \"\"\"") nil "py-docstring-style-pep-257-nn-closing-quotes-lp-1241147-test failed")))
 
+(defun indentation-after-parentized-assignment-lp-1243012-test (&optional arg)
+  (interactive "p")
+   (let ((teststring "#! /usr/bin/env python
+def main():
+    (a, b) = (1, 2)
+"))
+  (py-bug-tests-intern 'indentation-after-parentized-assignment-lp-1243012-base arg teststring)))
+
+(defun indentation-after-parentized-assignment-lp-1243012-base ()
+    (goto-char 40)
+    (assert nil "indentation-after-parentized-assignment-lp-1243012-test failed"))
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

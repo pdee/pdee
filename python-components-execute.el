@@ -1467,7 +1467,7 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
         (end-of-line)
         (when (or (re-search-backward py-shell-prompt-regexp nil t 1)
                   ;; (and (string= "ipython" (process-name proc))
-                  (re-search-backward ipython-de-input-prompt-regexp nil t 1))
+                  (re-search-backward (concat ipython-de-input-prompt-regexp "\\|" ipython-de-output-prompt-regexp) nil t 1))
           ;; not a useful message, delete it - please tell when thinking otherwise
           (and (re-search-forward "File \"<stdin>\", line 1,.*\n" nil t)
                (replace-match ""))

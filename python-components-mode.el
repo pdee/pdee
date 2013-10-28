@@ -2648,7 +2648,9 @@ See bug report at launchpad, lp:940812 "
         ;;       symbol-end) . font-lock-constant-face)
 
         (,(rx symbol-start
-              (or "cls" "self" "cls" "Ellipsis" "True" "False" "None"  "__debug__" "NotImplemented")
+              (or "cls"
+                  ;; "self"
+                  "cls" "Ellipsis" "True" "False" "None"  "__debug__" "NotImplemented")
               symbol-end) . py-pseudo-keyword-face)
         ;; Decorators.
         (,(rx line-start (* (any " \t")) (group "@" (1+ (or word ?_))
@@ -7313,17 +7315,14 @@ This is a no-op if `py-check-comint-prompt' returns nil."
 
 (setq py-shell-map
       (let ((map (copy-keymap comint-mode-map)))
-        (substitute-key-definition 'complete-symbol 'completion-at-point
-                                   map global-map)
         (define-key map (kbd "RET") 'comint-send-input)
         (define-key map "\C-c-" 'py-up-exception)
         (define-key map "\C-c=" 'py-down-exception)
-        ;; defined three times one should succed
-        (define-key map (kbd "TAB") 'py-shell-complete)
-        (define-key map [tab] 'py-shell-complete)
-        (define-key map [(control c)(!)] 'py-shell)
-        (define-key map "\t" 'py-shell-complete)
+        (define-key map (kbd "TAB") 'py-indent-line)
+        ;; (define-key map [tab] 'tab-to-tab-stop)
+        ;; (define-key map "\t" 'py-shell-complete)
         (define-key map [(meta tab)] 'py-shell-complete)
+        (define-key map [(control c)(!)] 'py-shell)
         map))
 
 ;; backward compatibility
