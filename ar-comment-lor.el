@@ -510,7 +510,7 @@ Comments empty lines ignoring value of `ar-comment-empty-lines-lor'"
                    (t (copy-marker (line-end-position))))))
     (goto-char beg)
     (while (and  ;; (empty-line-p)
-  (eq 9 (char-after)) (not (eobp)))
+            (eq 9 (char-after)) (not (eobp)))
       (forward-line 1))
     (back-to-indentation)
     (if (looking-at comment-start)

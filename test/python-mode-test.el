@@ -1244,6 +1244,7 @@ somme errors
 
 (defun py-end-of-print-statement-base ()
   (goto-char 66)
+  (sit-for 0.1) 
   (assert (eq 146 (py-end-of-statement)) nil "py-end-of-print-statement-test #1 failed")
   
   (assert (eq 160 (py-end-of-statement)) nil "py-end-of-print-statement-test #2 failed")
@@ -1548,14 +1549,10 @@ import sys, os; os.remove('do/something/nasty') # lp:1025000
 
 (defun py-end-of-statement-1-base ()
   (goto-char (point-min))
-  (py-end-of-statement)
-  (assert (eq 55 (point)) nil "py-end-of-statement-test-1 #1 failed")
-  (goto-char 65)
-  (py-end-of-statement)
-  (assert (eq 75 (point)) nil "py-end-of-statement-test-1 #2 failed")
-  (goto-char 99)
-  (py-end-of-statement)
-  (assert (eq 131 (point)) nil "py-end-of-statement-test-1 #3 failed")
+  (assert (eq 55 (py-end-of-statement)) nil "py-end-of-statement-test-1 #1 failed")
+  (assert (eq 65 (py-end-of-statement)) nil "py-end-of-statement-test-1 #2 failed")
+  (assert (eq 75 (py-end-of-statement)) nil "py-end-of-statement-test-1 #2 failed")
+  (assert (eq 131 (py-end-of-statement)) nil "py-end-of-statement-test-1 #3 failed")
   (py-end-of-statement)
   (assert (eq 163 (point)) nil "py-end-of-statement-test-1 #4 failed"))
 

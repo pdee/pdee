@@ -1289,7 +1289,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-end-of-expression-test \
 --funcall py-partial-expression-test \
 --funcall bob-beginning-of-statement-test \
---funcall indent-triplequoted-to-itself-lp:752252-test \
 --funcall py-beginning-of-block-test \
 --funcall stalls-emacs-probably-due-to-syntax-highlighting-lp-1058261-test \
 --funcall tqs-lp:302834-lp:1018994-test \
@@ -1455,3 +1454,4 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall no-completion-at-all-lp:1001328-test \
 --funcall py-docstring-style-pep-257-nn-closing-quotes-lp-1241147-test \
 --funcall py-end-of-block-test \
+--funcall indent-triplequoted-to-itself-lp:752252-test \
