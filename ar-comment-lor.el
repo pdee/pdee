@@ -509,7 +509,8 @@ Comments empty lines ignoring value of `ar-comment-empty-lines-lor'"
                     (copy-marker (region-end)))
                    (t (copy-marker (line-end-position))))))
     (goto-char beg)
-    (while (and (empty-line-p) (not (eobp)))
+    (while (and  ;; (empty-line-p)
+  (eq 9 (char-after)) (not (eobp)))
       (forward-line 1))
     (back-to-indentation)
     (if (looking-at comment-start)
@@ -540,7 +541,8 @@ region is commented alltogether. "
       (cond
        ((ar-in-comment-p-lor)
         (funcall ar-uncomment-function-lor copy beg end))
-       ((empty-line-p)
+       ( ;; (empty-line-p)
+        (eq 9 (char-after))
 	(forward-line 1))
        (t (funcall ar-comment-function-lor copy beg end))))))
 

@@ -1248,7 +1248,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall before-inline-comment-test \
 --funcall toggle-force-py-shell-name-p-test \
 --funcall multiline-list-indent-test \
---funcall py-end-of-block-test \
 --funcall py-beginning-of-block-or-clause-test \
 --funcall py-beginning-of-def-test \
 --funcall py-beginning-of-def-or-class-test \
@@ -1455,3 +1454,4 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall incorrect-use-of-region-in-py-shift-left-lp:875951-test \
 --funcall no-completion-at-all-lp:1001328-test \
 --funcall py-docstring-style-pep-257-nn-closing-quotes-lp-1241147-test \
+--funcall py-end-of-block-test \

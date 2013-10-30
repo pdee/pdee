@@ -1232,12 +1232,25 @@ def usage():
 somme errors
 \"\"\" % (
           os.path.basename(sys.argv[0]))
+
+def usage():
+    print '''Error: %s
+somme errors
+''' % (
+          os.path.basename(sys.argv[0]))
+
 ")))
     (py-bug-tests-intern 'py-end-of-print-statement-base arg teststring)))
 
 (defun py-end-of-print-statement-base ()
   (goto-char 66)
-  (assert (eq 146 (py-end-of-statement)) nil "py-end-of-print-statement-test failed"))
+  (assert (eq 146 (py-end-of-statement)) nil "py-end-of-print-statement-test #1 failed")
+  
+  (assert (eq 160 (py-end-of-statement)) nil "py-end-of-print-statement-test #2 failed")
+
+  (assert (eq 245 (py-end-of-statement)) nil "py-end-of-print-statement-test #3 failed")
+
+  )
 
 (defun nested-try-test (&optional arg load-branch-function)
   (interactive "p")
@@ -1542,7 +1555,9 @@ import sys, os; os.remove('do/something/nasty') # lp:1025000
   (assert (eq 75 (point)) nil "py-end-of-statement-test-1 #2 failed")
   (goto-char 99)
   (py-end-of-statement)
-  (assert (eq 163 (point)) nil "py-end-of-statement-test-1 #3 failed"))
+  (assert (eq 131 (point)) nil "py-end-of-statement-test-1 #3 failed")
+  (py-end-of-statement)
+  (assert (eq 163 (point)) nil "py-end-of-statement-test-1 #4 failed"))
 
 (defun py-end-of-statement-test-2 (&optional arg)
   (interactive "p")
@@ -2312,7 +2327,7 @@ Es muß die aufzurufende Ziehungszahl als Argument angegeben werden:
 (defun forward-sexp-base ()
   ;; (message "forward-sexp-function: %s" forward-sexp-function)
   (goto-char 71)
-  (sit-for 0.1) 
+  (sit-for 0.1)
   (forward-sexp 1)
   (sit-for 0.1)
   (assert (eq 231 (point)) nil "forward-sexp-test failed"))

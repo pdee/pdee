@@ -233,7 +233,7 @@ When indent is set back manually, this is honoured in following lines. "
         erg pos)
     (newline)
     (if (and py-empty-line-closes-p (or (eq this-command last-command)(py-after-empty-line)))
-        (setq erg (indent-to-column (save-excursion (py-beginning-of-statement)(- (current-indentation) py-indent-offset))))  
+        (setq erg (indent-to-column (save-excursion (py-beginning-of-statement)(- (current-indentation) py-indent-offset))))
     (when (or py-newline-delete-trailing-whitespace-p py-trailing-whitespace-smart-delete-p)
       (setq pos (copy-marker (point)))
       (save-excursion
@@ -347,7 +347,7 @@ Returns value of `indent-tabs-mode' switched to. "
   "Called when moving to beginning of a form and `py-smart-indentation' is on. "
   (let* ((cui (current-indentation))
          (indent (if (< 0 cui) cui 999))
-         (pos (progn (while (and (re-search-backward py-extended-block-or-clause-re nil 'movet 1)
+         (pos (progn (while (and (re-search-backward py-extended-block-or-clause-re nil 'move 1)
                                  (or (>= (current-indentation) indent)
                                      (nth 8 (syntax-ppss)))))
                      (unless (bobp) (point))))
@@ -1321,7 +1321,7 @@ Returns the string inserted. "
 Expand word before point, if any.
 Indent line, unless maximum indent reached.
 If neiter expansion nor indent occured, insert `py-indent-offset'"
-  (let* ((orig (point)) 
+  (let* ((orig (point))
          (beg  (save-excursion (skip-chars-backward "a-zA-Z0-9_.('") (point)))
          (end (point))
          (word (buffer-substring-no-properties beg end)))

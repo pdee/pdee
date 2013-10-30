@@ -980,7 +980,8 @@ See also `py-execute-region'. "
           ;; closing ">"
           (setq erg (substring erg 0 (1- (length erg)))))
     (goto-char (point-min))
-    (while (empty-line-p) (delete-region (point) (1+ (line-end-position))))
+    (while  ;; (empty-line-p)
+  (eq 9 (char-after)) (delete-region (point) (1+ (line-end-position))))
     (unless (looking-at py-shebang-regexp)
       (if (string-match (concat "^" erg) "ipython")
           (progn
@@ -1006,7 +1007,8 @@ See also `py-execute-region'. "
            (setq done (point))
            (py-insert-execute-directory directory orig done))
           (t (forward-line 1)
-             (unless (empty-line-p) (newline))
+             (unless  ;; (empty-line-p)
+                 (eq 9 (char-after)) (newline))
              (insert (concat "import os; os.chdir(\"" directory "\")\n"))))))
 
 (defun py-insert-coding ()
@@ -1032,7 +1034,8 @@ Inserts an incentive true form \"if 1:\\n.\" "
 Avoid empty lines at the beginning. "
   (python-mode)
   (goto-char start)
-  (while (empty-line-p)
+  (while  ;; (empty-line-p)
+      (eq 9 (char-after))
     (delete-region (line-beginning-position) (1+ (line-end-position))))
   (back-to-indentation)
   (unless (py-beginning-of-statement-p)
