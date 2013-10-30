@@ -484,7 +484,10 @@ Default is nil. "
 (make-variable-buffer-local 'py-sexp-function)
 
 (defcustom py-close-provides-newline t
-  "If a newline is inserted, when line after block isn't empty. Default is non-nil. "
+  "If a newline is inserted, when line after block isn't empty. Default is non-nil. 
+
+When non-nil, `py-end-of-def' and related will work faster
+"
   :type 'boolean
   :group 'python-mode)
 (make-variable-buffer-local 'py-close-provides-newline)

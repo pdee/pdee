@@ -415,7 +415,6 @@ http://docs.python.org/reference/compound_stmts.html
 ;;     (skip-chars-forward (concat "^" comment-start "\\|" (match-string-no-properties 0)) (line-end-position))
 ;;     (skip-chars-backward " \t\r\n\f")))
 
-
 (defun py-eos-handle-doublequoted-string-start (this)
   "Internal use, find possible end of statement from string start. "
   (when
@@ -441,7 +440,6 @@ http://docs.python.org/reference/compound_stmts.html
            (skip-chars-forward ";" (line-end-position))
          (skip-chars-backward " \t" (line-beginning-position)))
        (setq done t)))
-
 
 (defun py--eos-in-string ()
   "Return stm, i.e. if string is part of a (print)-statement. "
@@ -470,13 +468,13 @@ http://docs.python.org/reference/compound_stmts.html
   (and (eq pos (point)) (prog1 (forward-line 1) (back-to-indentation))
        (while (member (char-after) (list ?# 10))(forward-line 1)(back-to-indentation))))
 
-(defun py-end-of-statement-intern ()
+(defun py--end-of-statement-intern ()
   (py--skip-to-comment-or-semicolon)
   (let ((pos (point))
         (pps (syntax-ppss))
         stm)
     (cond ((nth 3 pps)
-           (and (py--eos-in-string) (py-end-of-statement-intern)))
+           (and (py--eos-in-string) (py--end-of-statement-intern)))
           ((nth 4 pps)
            (py--end-of-comment-intern pos))
           ((nth 1 pps)
@@ -534,7 +532,7 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
             (goto-char orig))))
        ;; string
        ((nth 3 pps)
-        (and (py--eos-in-string) (py-end-of-statement-intern))
+        (and (py--eos-in-string) (py--end-of-statement-intern))
         (setq pps (syntax-ppss))
         (unless (and done (not (or (nth 1 pps) (nth 8 pps)))) (py-end-of-statement orig t repeat)))
        ;; in comment
@@ -568,13 +566,13 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
         (or (py--skip-to-comment-or-semicolon)
             (forward-char 1))
         (setq pps (syntax-ppss))
-        (unless done (py-end-of-statement-intern)
+        (unless done (py--end-of-statement-intern)
                 (py-end-of-statement orig done repeat)))
 
        ((eq orig (point))
         (skip-chars-forward " \t\r\n\f#'\"")
         (py--skip-to-comment-or-semicolon)
-        (py-end-of-statement-intern)
+        (py--end-of-statement-intern)
         (py-end-of-statement orig done repeat)))
       (unless
           (or
@@ -596,7 +594,6 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
       (py-beginning-of-statement))))
 
 ;;; Mark forms
-
 
 ;; (defun py-mark-paragraph ()
 ;;   "Mark paragraph at point.

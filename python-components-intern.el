@@ -786,20 +786,28 @@ and `pass'.  This doesn't catch embedded statements."
                                      thisregexp))
                                  (when (py-statement-opens-block-p py-extended-block-or-clause-re)
                                    (point)))))))
-           ind erg last pps thisindent)
-      (if this
-          (progn
-            (setq thisindent (current-indentation))
-            (while
-                (and (py-down-statement)
-                     (or (< thisindent (current-indentation))
-                         (and (eq thisindent (current-indentation))
-                              (or (eq regexp 'py-minor-block-re)
-                                  (eq regexp 'py-block-re))
-                              (looking-at py-clause-re)))
-                     (py-end-of-statement)(setq last (point))))
-            (goto-char last))
-        (goto-char orig))
+           ind erg last pps thisindent done)
+      (cond (this
+             (setq thisindent (current-indentation))
+             (cond ((and py-close-provides-newline
+                         (or (eq regexp 'py-def-re)(eq regexp 'py-class-re)(eq regexp 'py-def-or-class-re)))
+                    (while (and (setq last (point))(re-search-forward "^$")(skip-chars-forward " \t\r\n\f")(or (nth 8 (setq pps (syntax-ppss))) (nth 1 pps) (< thisindent (current-column)))))
+                    ;; (goto-char last)
+                    (skip-chars-backward " \t\r\n\f")
+                    (setq done t)
+                    (and (nth 8 (setq pps (syntax-ppss)))
+                         (py-beginning-of-statement)
+                         (py-end-of-statement)))
+                   (t (while
+                          (and (py-down-statement)
+                               (or (< thisindent (current-indentation))
+                                   (and (eq thisindent (current-indentation))
+                                        (or (eq regexp 'py-minor-block-re)
+                                            (eq regexp 'py-block-re))
+                                        (looking-at py-clause-re)))
+                               (py-end-of-statement)(setq last (point))))
+                      (goto-char last))))
+            (t (goto-char orig)))
       (when (and (<= (point) orig)(not (looking-at (symbol-value regexp))))
         ;; found the end above
         ;; py-travel-current-indent will stop of clause at equal indent
