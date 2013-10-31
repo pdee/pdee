@@ -39,6 +39,9 @@ result = some_function_that_takes_arguments(
 Keys C-M-a, C-M-e usable for all top-level form, lp:1191078
 
 - New commands:
+  py-beginning-of-block-current-column
+  "Reach the beginning of block which starts at current column "
+
   py-beginning-of-top-level
   py-beginning-of-top-level
   py-end-of-top-level

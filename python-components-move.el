@@ -1215,10 +1215,24 @@ Takes a list, INDENT and START position. "
       (while (and (setq last (point))(not (eobp))(py-end-of-statement)
                   (save-excursion (or (<= indent (progn  (py-beginning-of-statement)(current-indentation)))(eq last (line-beginning-position))))x
                   ;; (py-end-of-statement-p)
-                  ))
+))
       (goto-char last)
       (when (< orig last)
         last))))
+
+(defun py-beginning-of-block-current-column ()
+  "Reach the beginning of block which starts at current column.
+
+Return position"
+  (interactive)
+  (let* ((cuco (current-column))
+         (str (make-string cuco ?\s))
+         pps erg)
+    (while (and (not (bobp))(re-search-backward (concat "^" str py-block-keywords) nil t)(or (nth 8 (setq pps (syntax-ppss))) (nth 1 pps))))
+    (back-to-indentation)
+    (setq erg (point)) 
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg)) 
+    erg))
 
 (defalias 'py-beginning-of-decorator-bol 'py-beginning-of-decorator)
 

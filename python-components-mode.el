@@ -2030,6 +2030,9 @@ for options to pass to the DOCNAME interpreter. \"
   "Matches the beginning of a compound statement or it's clause.
 Includes def and class. ")
 
+(defconst py-block-keywords "\\_<\\(def\\|class\\|if\\|else\\|elif\\|while\\|for\\|try\\|except\\|finally\\|with\\)\\_>"
+  "Matches known keywords opening a block. ")
+
 (defconst py-clause-re
   (concat
    "[ \t]*\\_<\\("
