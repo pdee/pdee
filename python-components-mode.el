@@ -2012,7 +2012,10 @@ for options to pass to the DOCNAME interpreter. \"
   "Matches the beginning of an `for', `if', `try' or `with' block. ")
 
 (defconst py-try-block-re "[ \t]*\\_<try\\_>[: \n\t]"
-  "Matches the beginning of an `if' or `try' block. ")
+  "Matches the beginning of a `try' block. ")
+
+(defconst py-if-block-re "[ \t]*\\_<if\\_>[: \n\t]"
+  "Matches the beginning of an `if' block. ")
 
 (defconst py-class-re "[ \t]*\\_<\\(class\\)\\_>[ \n\t]"
   "Matches the beginning of a class definition. ")
