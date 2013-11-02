@@ -3472,6 +3472,15 @@ Go to the very beginning of top-level form at point. "]
 Go to end of top-level form at point. "]
 
                    "-"
+                   
+                   ["Beginning of block current-column" py-beginning-of-block-current-column
+                    :help " `py-beginning-of-block-current-column'
+
+Reach next beginning of block upwards which starts at current column\.
+
+Return position. "]
+
+                   "-"
 
                    ["Move to start of def" py-beginning-of-def t]
 
@@ -3532,7 +3541,9 @@ Returns end of minor-block if successful, nil otherwise
 
 A minor block is started by a `for', `if', `try' or `with'. "]
 
-                   ))
+                   )
+
+                  )
 
                  "-"
 
