@@ -153,14 +153,15 @@ Returns current indentation
 
 When bound to TAB, C-q TAB inserts a TAB.
 
-If `tab-always-indent' is set to 'complete, it completes if max
-indent is reached. However cycling won't work than.
-
 When `py-tab-shifts-region-p' is `t', not just the current line,
 but the region is shiftet that way.
 
 If `py-tab-indents-region-p' is `t' and first TAB doesn't shift
---as indent is at outmost reasonable--, indent-region is called. "
+--as indent is at outmost reasonable--, indent-region is called.
+
+If `tab-always-indent' is set to 'complete, it completes if max
+indent is reached. However cycling might be blocked than.
+"
   (interactive "P")
   (if (interactive-p)
       ;; TAB-leaves-point-in-the-wrong-lp-1178453-test
@@ -196,7 +197,7 @@ If `py-tab-indents-region-p' is `t' and first TAB doesn't shift
             (setq py-already-guessed-indent-offset this-indent-offset))
           (if (and (eq tab-always-indent 'complete)
                    (eq (current-indentation) need)
-                   (skip-syntax-forward "\sw")
+                   (skip-syntax-forward "w")
                    (setq done t))
               (funcall py-complete-function)
             (cond ((eq 4 (prefix-numeric-value arg))
