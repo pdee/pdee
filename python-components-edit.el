@@ -159,68 +159,70 @@ but the region is shiftet that way.
 If `py-tab-indents-region-p' is `t' and first TAB doesn't shift
 --as indent is at outmost reasonable--, indent-region is called.
 
-If `tab-always-indent' is set to 'complete, it completes if max
-indent is reached. However cycling might be blocked than.
 "
   (interactive "P")
-  (if (interactive-p)
-      ;; TAB-leaves-point-in-the-wrong-lp-1178453-test
-      (let ((orig (copy-marker (point)))
-            (region (use-region-p))
-            cui col beg end done)
-        (and region
-             (setq beg (region-beginning))
-             (setq end (region-end))
-             (save-excursion
-               (goto-char beg)
-               (setq cui (current-indentation))
-               (setq col (current-column))))
-        (let* ((cui (or cui (current-indentation)))
-               (col (current-column))
-               (this-indent-offset (cond ((and py-smart-indentation (not (eq this-command last-command)))
-                                          (py-guess-indent-offset))
-                                         ((and py-smart-indentation (eq this-command last-command) py-already-guessed-indent-offset)
-                                          py-already-guessed-indent-offset)
-                                         (t (default-value 'py-indent-offset))))
-               (need (if (and (eq this-command last-command) py-already-guessed-indent-offset)
-                         (if region
-                             (save-excursion
-                               ;; if previous command was an indent
-                               ;; already, position reached might
-                               ;; produce false guesses
-                               (goto-char beg) (py-compute-indentation beg nil nil nil nil nil py-already-guessed-indent-offset))
-                           (py-compute-indentation nil nil nil nil nil nil py-already-guessed-indent-offset))
-                       (if region
-                           (save-excursion (goto-char beg) (py-compute-indentation nil nil nil nil nil nil this-indent-offset))
-                         (py-compute-indentation nil nil nil nil nil nil this-indent-offset)))))
+  (let ((orig (copy-marker (point)))
+        (cui (current-indentation))
+        need)
+    (if (interactive-p)
+        ;; TAB-leaves-point-in-the-wrong-lp-1178453-test
+        (let ((region (use-region-p))
+              col beg end done)
           (unless (eq this-command last-command)
-            (setq py-already-guessed-indent-offset this-indent-offset))
-          (if (and (eq tab-always-indent 'complete)
-                   (eq (current-indentation) need)
-                   (skip-syntax-forward "w")
-                   (setq done t))
-              (funcall py-complete-function)
-            (cond ((eq 4 (prefix-numeric-value arg))
-                   (beginning-of-line)
-                   (delete-horizontal-space)
-                   (indent-to (+ need py-indent-offset)))
-                  ((not (eq 1 (prefix-numeric-value arg)))
-                   (py-smart-indentation-off)
-                   (py-indent-line-intern need cui this-indent-offset col beg end region))
-                  (t (py-indent-line-intern need cui this-indent-offset col beg end region)))
+            (setq py-already-guessed-indent-offset nil))
+          (and region
+               (setq beg (region-beginning))
+               (setq end (region-end))
+               (save-excursion
+                 (goto-char beg)
+                 (setq cui (current-indentation))
+                 (setq col (current-column))))
+          (let* ((col (or col (current-column)))
+                 (this-indent-offset
+                  (cond ((and py-smart-indentation (not (eq this-command last-command)))
+                         (py-guess-indent-offset))
+                        ((and py-smart-indentation (eq this-command last-command) py-already-guessed-indent-offset)
+                         py-already-guessed-indent-offset)
+                        (t (default-value 'py-indent-offset)))))
+            (setq need (if (and (eq this-command last-command) py-already-guessed-indent-offset)
+                           (if region
+                               (save-excursion
+                                 ;; if previous command was an indent
+                                 ;; already, position reached might
+                                 ;; produce false guesses
+                                 (goto-char beg) (py-compute-indentation beg nil nil nil nil nil py-already-guessed-indent-offset))
+                             (py-compute-indentation nil nil nil nil nil nil py-already-guessed-indent-offset))
+                         (if region
+                             (save-excursion (goto-char beg) (py-compute-indentation nil nil nil nil nil nil this-indent-offset))
+                           (py-compute-indentation nil nil nil nil nil nil this-indent-offset))))
+            ;; First TAB: do nothing at correct indent
+            (unless (and (not (eq this-command last-command))
+                         (eq cui need))
+              (cond ((eq 4 (prefix-numeric-value arg))
+                     (beginning-of-line)
+                     (delete-horizontal-space)
+                     (indent-to (+ need py-indent-offset)))
+                    ((not (eq 1 (prefix-numeric-value arg)))
+                     (py-smart-indentation-off)
+                     (py-indent-line-intern need cui this-indent-offset col beg end region))
+                    (t (py-indent-line-intern need cui this-indent-offset col beg end region)))
+              ;; after completion, don't go to orig
+              ;; (unless done (goto-char orig))
+              (if region
+                  (and (or py-tab-shifts-region-p
+                           py-tab-indents-region-p)
+                       (not (eq (point) orig))
+                       (exchange-point-and-mark))
+                (and (< (current-column) (current-indentation))(back-to-indentation))))
             (when (and (interactive-p) py-verbose-p)(message "%s" (current-indentation)))
             (current-indentation)))
-        ;; after completion, don't go to orig
-        (unless done (goto-char orig))
-        (if region
-            (and (or py-tab-shifts-region-p
-                     py-tab-indents-region-p)
-                 (not (eq (point) orig))
-                 (exchange-point-and-mark))
-          (and (< (current-column) (current-indentation))(back-to-indentation))))
-    (beginning-of-line)
-    (delete-horizontal-space)
-    (indent-to (py-compute-indentation))))
+
+      (setq need (py-compute-indentation))
+      (unless (eq cui need)
+        (beginning-of-line)
+        (delete-horizontal-space)
+        (indent-to need)
+        (if (< (point) orig) (goto-char orig)(back-to-indentation))))))
 
 (defun py-newline-and-indent ()
   "Add a newline and indent to outmost reasonable indent.

@@ -120,5 +120,7 @@ Store data in kill ring, so it might yanked back. "
   (let ((erg (py-mark-base "minor-block")))
     (copy-region-as-kill (car erg) (cdr erg))))
 
+(defalias 'py-minor-expression 'py-copy-partial-expression)
+
 ;; python-components-copy ends here
 (provide 'python-components-copy)
