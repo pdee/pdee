@@ -133,7 +133,7 @@ New in version 6.1.2
   If behind a delimited form of braces, brackets or parentheses,
   `py-electric-backspace' runs `py-empty-out-list-backward'
 
-- py-flakes8-run, flakes8 API
+- py-flake8-run, flake8 API
 
 - customizable `py-backslashed-lines-indent-offset'
 

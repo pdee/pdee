@@ -738,7 +738,6 @@ Home-page: http://www.logilab.org/project/pylint "
     (message "Warning: %s" "pylint needs a file"))
   (shell-command (concat command " " buffer-file-name)))
 
-
 (defalias 'pylint-help 'py-pylint-help)
 (defun py-pylint-help ()
   "Display Pylint command line help messages.
@@ -942,37 +941,53 @@ See `python-check-command' for the default."
 	       compilation-error-regexp-alist)))
     (compilation-start command)))
 
-;; flakes8
-(defalias 'flakes8 'py-flakes8-run)
-(defun py-flakes8-run (command)
-  "Run flakes8, check formatting (default on the file currently visited).
+;; flake8
+(defalias 'flake8 'py-flake8-run)
+(defun py-flake8-run (command)
+  "Flake8 is a wrapper around these tools:
+        - PyFlakes
+        - pep8
+        - Ned Batchelder's McCabe script
+
+        It also adds features:
+        - files that contain this line are skipped::
+            # flake8: noqa
+        - lines that contain a ``# noqa`` comment at the end will not issue warnings.
+        - a Git and a Mercurial hook.
+        - a McCabe complexity checker.
+        - extendable through ``flake8.extension`` entry points.
+
 "
   (interactive
-   (let ((default
-           (if (buffer-file-name)
-               (format "%s %s %s" py-flakes8-command
-                       (mapconcat 'identity py-flakes8-command-args " ")
-                       (buffer-file-name))
-             (format "%s %s" py-flakes8-command
-                     (mapconcat 'identity py-flakes8-command-args " "))))
-         (last (when py-flakes8-history
-                 (let* ((lastcmd (car py-flakes8-history))
-                        (cmd (cdr (reverse (split-string lastcmd))))
-                        (newcmd (reverse (cons (buffer-file-name) cmd))))
-                   (mapconcat 'identity newcmd " ")))))
-
+   (let* ((py-flake8-command
+           (if (string= "" py-flake8-command)
+               (executable-find "flake8")
+             py-flake8-command))
+          (default
+            (if (buffer-file-name)
+                (format "%s %s %s" py-flake8-command
+                        (mapconcat 'identity py-flake8-command-args " ")
+                        (buffer-file-name))
+              (format "%s %s" py-flake8-command
+                      (mapconcat 'identity py-flake8-command-args " "))))
+          (last
+           (when py-flake8-history
+             (let* ((lastcmd (car py-flake8-history))
+                    (cmd (cdr (reverse (split-string lastcmd))))
+                    (newcmd (reverse (cons (buffer-file-name) cmd))))
+               (mapconcat 'identity newcmd " ")))))
      (list
       (if (fboundp 'read-shell-command)
-          (read-shell-command "Run flakes8 like this: "
-                              (if last
-                                  last
-                                default)
-                              'py-flakes8-history)
-        (read-string "Run flakes8 like this: "
+          (read-shell-command "Run flake8 like this: "
+                              ;; (if last
+                              ;; last
+                              default
+                              'py-flake8-history1)
+        (read-string "Run flake8 like this: "
                      (if last
                          last
                        default)
-                     'py-flakes8-history)))))
+                     'py-flake8-history)))))
   (save-some-buffers (not py-ask-about-save) nil)
   (if (fboundp 'compilation-start)
       ;; Emacs.
@@ -981,12 +996,12 @@ See `python-check-command' for the default."
     (when (featurep 'xemacs)
       (compile-internal command "No more errors"))))
 
-(defun py-flakes8-help ()
-  "Display flakes8 command line help messages. "
+(defun py-flake8-help ()
+  "Display flake8 command line help messages. "
   (interactive)
-  (set-buffer (get-buffer-create "*flakes8-Help*"))
+  (set-buffer (get-buffer-create "*flake8-Help*"))
   (erase-buffer)
-  (shell-command "flakes8 --help" "*flakes8-Help*"))
+  (shell-command "flake8 --help" "*flake8-Help*"))
 
 ;;; from string-strip.el --- Strip CHARS from STRING
 
@@ -1101,7 +1116,6 @@ Keegan Carruthers-Smith
       (flymake-mode)
     (py-toggle-flymake-intern "pyflakespep8" "pyflakespep8")
     (flymake-mode)))
-
 
 (provide 'python-components-help)
 ;;; python-components-help.el ends here

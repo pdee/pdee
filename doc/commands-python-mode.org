@@ -2904,12 +2904,12 @@ Let's have this until more Emacs-like help is prepared
 ** py-pyflakespep8-help
    Display pyflakespep8 command line help messages. 
 
-** py-flakes8-run
-   Run flakes8, check formatting (default on the file currently visited).
+** py-flake8-run
+   Run flake8, check formatting (default on the file currently visited).
 
 
-** py-flakes8-help
-   Display flakes8 command line help messages. 
+** py-flake8-help
+   Display flake8 command line help messages. 
 
 ** py-pychecker-run
    Run pychecker (default on the file currently visited).

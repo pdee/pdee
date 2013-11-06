@@ -484,7 +484,7 @@ Default is nil. "
 (make-variable-buffer-local 'py-sexp-function)
 
 (defcustom py-close-provides-newline t
-  "If a newline is inserted, when line after block isn't empty. Default is non-nil. 
+  "If a newline is inserted, when line after block isn't empty. Default is non-nil.
 
 When non-nil, `py-end-of-def' and related will work faster
 "
@@ -719,6 +719,26 @@ Normally python-mode know best which function to use. "
   :type '(repeat string)
   :group 'python-mode
   :tag "Jython Command Args")
+
+(defcustom py-flake8-command ""
+  "Which command to call flake8.
+
+If empty, python-mode will guess some "
+  :type 'string
+  :group 'python-mode)
+
+(defcustom py-flake8-command-args ""
+  "Arguments used by flake8.
+
+Default is the empty string. "
+  :type 'string
+  :group 'python-mode)
+
+(defvar py-flake8-history nil
+  "Used by flake8, resp. py-flake8-command.
+
+Default is nil. ")
+
 
 (defcustom py-message-executing-temporary-file t
   "If execute functions using a temporary file should message it. Default is `t'.
@@ -3475,7 +3495,7 @@ Go to the very beginning of top-level form at point. "]
 Go to end of top-level form at point. "]
 
                    "-"
-                   
+
                    ["Beginning of block current-column" py-beginning-of-block-current-column
                     :help " `py-beginning-of-block-current-column'
 
@@ -4707,60 +4727,90 @@ List extendet report options
                     :help "`pylint-flymake-mode'
 Toggle flymake-mode running `pylint'
 "])
-
+                  
                   ("pep8 "
                    :help "Check formatting
 
 Call `easy_install pep8' resp. `pip...' if not available"
-
+                   
                    ["pep8-run" py-pep8-run
                     :help "`py-pep8-run'
 Check formatting (default on the file currently visited)
 
 Call `easy_install pep8' resp. `pip...' if not available
 "]
-
+                   
                    ["pep8-help" py-pep8-help
                     :help "`py-pep8-help'
 Display help for pep8 format checker)
 "]
-
+                   
                    ["pep8-flymake-mode" pep8-flymake-mode
                     :help "`pep8-flymake-mode'
 Toggle flymake-mode running `pep8'
 "])
-
+                  
                   ("Pyflakes " :help "Non intrusive code checker
 
 Call `easy_install pyflakes' resp. `pip...' if not available"
-
+                   
                    ["pyflakes-run" py-pyflakes-run :help
                     "`py-pyflakes-run' Run pyflakes
 
 Call `easy_install pyflakes' resp. `pip...' if not available"]
-
+                   
                    ["pyflakes-help" py-pyflakes-help :help
                     "`py-pyflakes-help' Display help for
               Pyflakes "]
-
+                   
                    ["pyflakes-flymake-mode" pyflakes-flymake-mode :help
                     "`pyflakes-flymake-mode'
-Toggle flymake-mode running `pyflakes' "])
+Toggle flymake-mode running `pyflakes' "]
+                   
+                   )
+                  
+                  ("Flake8 " :help
+                   "code checker running "
+                   
+                   ["Flake8 run" py-flake8-run
+                    :help " `py-flake8-run'
 
+        Flake8 is a wrapper around these tools:
+        - PyFlakes
+        - pep8
+        - Ned Batchelder's McCabe script
+
+        It also adds features:
+        - files that contain this line are skipped::
+            # flake8: noqa
+        - lines that contain a ``# noqa`` comment at the end will not issue warnings.
+        - a Git and a Mercurial hook.
+        - a McCabe complexity checker.
+        - extendable through ``flake8.extension`` entry points.
+
+. "]
+                   
+                   ["Flake8 help" py-flake8-help
+                    :help " `py-flake8-help'
+
+Display flake8 command line help messages. "]
+                   
+                   )
+                  
                   ("Pyflakes-pep8 " :help
                    "Non intrusive code checker running `pyflakes' and `pep8'
 call `easy_install pyflakes' resp. `pip...' and `easy_install pep8' if basics not available"
-
+                   
                    ["pyflakespep8-run" py-pyflakespep8-run :help
                     "`py-pyflakespep8-run' Run `pyflakespep8'
 
 Call `easy_install pyflakes' resp. `pip...' if not available"]
-
+                   
                    ["pyflakespep8-help" py-pyflakespep8-help :help
                     "`py-pyflakespep8-help' Display help for
               Pyflakespep8 "]
-
-                   ["pyflakespep8-flymake-mode" pyflakespep8-flymake-mode :help
+                   
+                    ["pyflakespep8-flymake-mode" pyflakespep8-flymake-mode :help
                     "`pyflakespep8-flymake-mode'
 Toggle flymake-mode running `pyflakespep8' "])
 
