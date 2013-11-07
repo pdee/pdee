@@ -961,7 +961,9 @@ See `python-check-command' for the default."
   (interactive
    (let* ((py-flake8-command
            (if (string= "" py-flake8-command)
-               (executable-find "flake8")
+               (or (executable-find "flake8")
+                   (error "Don't see \"flake8\" on your system.
+Consider \"pip install flake8\" resp. visit \"pypi.python.org\""))
              py-flake8-command))
           (default
             (if (buffer-file-name)
