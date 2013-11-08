@@ -285,7 +285,7 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
                          (car (py-clause-lookup-keyword py-elif-re -1 nil orig origline)))
                         ;; maybe at if, try, with
                         (t (car (py-clause-lookup-keyword py-block-or-clause-re -1 nil orig origline)))))
-                 ((looking-at py-block-or-clause-re)
+                 ((looking-at py-extended-block-or-clause-re)
                   (cond ((and (not line)(eq origline (py-count-lines)))
                          (py-line-backward-maybe)
                          (setq line t)
@@ -296,9 +296,6 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
                                    (py-guess-indent-offset))
                                   (t py-indent-offset))
                             (current-indentation)))))
-                 ((looking-at py-block-closing-keywords-re)
-                  (py-beginning-of-block)
-                  (current-indentation))
                  ((and (< (py-count-lines) origline)
                        (eq (current-column) (current-indentation)))
                   (and
@@ -886,20 +883,6 @@ See customizable variables `py-current-defun-show' and `py-current-defun-delay'.
                    (sit-for py-current-defun-delay)))
         (when iact (message (prin1-to-string erg)))
         erg))))
-
-(defun py-outdent-p ()
-  "Returns non-nil if the current line should dedent one level."
-  (save-excursion
-    (and (progn (back-to-indentation)
-                (looking-at py-clause-re))
-         ;; short circuit infloop on illegal construct
-         (not (bobp))
-         (progn (forward-line -1)
-                (py-beginning-of-statement)
-                (back-to-indentation)
-                (when (looking-at py-blank-or-comment-re)
-                  (backward-to-indentation 1))
-                (not (looking-at py-no-outdent-re))))))
 
 (defun py-sort-imports ()
   "Sort multiline imports.

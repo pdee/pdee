@@ -866,26 +866,26 @@ From a programm use macro `py-beginning-of-comment' instead "
     (when (and py-verbose-p (interactive-p))
       (message "%s" erg))))
 
-(defun py-go-to-keyword (regexp &optional maxindent)
-  "Returns a list, whose car is indentation, cdr position. "
-  (let ((orig (point))
-        (maxindent (or maxindent (and (< 0 (current-indentation))(current-indentation))
-                       ;; make maxindent large enough if not set
-                       (* 99 py-indent-offset)))
-        (first t)
-        done erg cui)
-    (while (and (not done) (not (bobp)))
-      (py-beginning-of-statement)
-      (if (and (looking-at regexp)(if maxindent
-                                      (<= (current-indentation) maxindent) t))
-          (progn
-            (setq erg (point))
-            (setq done t))
-        (when (and first (not maxindent))
-          (setq maxindent (current-indentation))
-          (setq first nil))))
-    (when erg (setq erg (cons (current-indentation) erg)))
-    erg))
+;; (defun py-go-to-keyword (regexp &optional maxindent)
+;;   "Returns a list, whose car is indentation, cdr position. "
+;;   (let ((orig (point))
+;;         (maxindent (or maxindent (and (< 0 (current-indentation))(current-indentation))
+;;                        ;; make maxindent large enough if not set
+;;                        (* 99 py-indent-offset)))
+;;         (first t)
+;;         done erg cui)
+;;     (while (and (not done) (not (bobp)))
+;;       (py-beginning-of-statement)
+;;       (if (and (looking-at regexp)(if maxindent
+;;                                       (<= (current-indentation) maxindent) t))
+;;           (progn
+;;             (setq erg (point))
+;;             (setq done t))
+;;         (when (and first (not maxindent))
+;;           (setq maxindent (current-indentation))
+;;           (setq first nil))))
+;;     (when erg (setq erg (cons (current-indentation) erg)))
+;;     erg))
 
 (defun py-go-to-keyword (regexp &optional maxindent)
   "Returns a list, whose car is indentation, cdr position. "

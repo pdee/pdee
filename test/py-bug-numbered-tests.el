@@ -5416,7 +5416,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.70 $\"
+__version__ = \"$Revision: 1.71 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -5961,7 +5961,7 @@ def(foo):
 
 (defun indent-refused-lp-1191133-base ()
   (message "%s" (current-buffer))
-  (switch-to-buffer (current-buffer))
+  ;; (switch-to-buffer (current-buffer))
   (assert (eq 4 (py-compute-indentation)) nil "indent-refused-lp-1191133-test failed"))
 
 (defun Parens-span-multiple-lines-lp-1191225-test (&optional arg)

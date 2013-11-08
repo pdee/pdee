@@ -739,7 +739,6 @@ Default is the empty string. "
 
 Default is nil. ")
 
-
 (defcustom py-message-executing-temporary-file t
   "If execute functions using a temporary file should message it. Default is `t'.
 
@@ -1993,34 +1992,36 @@ for options to pass to the DOCNAME interpreter. \"
   ".*:?[ \t]*\\_<\\(return\\)\\_>[ \n\t]*"
   "Regular expression matching keyword which typically closes a function. ")
 
+(defconst py-no-outdent-1-re-raw
+  (list
+   "elif"
+   "else"
+   "except"
+   "for"
+   "if"
+   "try"
+   "while"
+   ))
+
+(defconst py-no-outdent-2-re-raw
+  (list
+   "break"
+   "continue"
+   "pass"
+   "raise"
+   "return"
+   ))
+
 (defconst py-no-outdent-re
   (concat
    "[ \t]*\\_<\\("
-   (mapconcat 'identity
-              (list
-               "try:"
-               "except"
-               "while"
-               "for"
-               "if"
-               "elif"
-               "else"
-               )
-              "\\|"
-              )
+   (regexp-opt py-no-outdent-1-re-raw)
    "\\)\\_>[( \t]+.*:[( \t]\\_<\\("
-   (mapconcat 'identity
-              (list
-               "return"
-               "raise"
-               "break"
-               "continue"
-               "pass"
-               )
-              "\\|"
-              )
-              "\\)\\_>[ )\t]*$")
-  "Regular expression matching lines not to augment indent after.")
+   (regexp-opt py-no-outdent-2-re-raw)
+   "\\)\\_>[)\t]*$")
+  "Regular expression matching lines not to augment indent after.
+
+See py-no-outdent-1-re-raw, py-no-outdent-2-re-raw for better readable content ")
 
 (defconst py-assignment-re "\\_<\\w+\\_>[ \t]*\\(=\\|+=\\|*=\\|%=\\|&=\\|^=\\|<<=\\|-=\\|/=\\|**=\\||=\\|>>=\\|//=\\)"
   "If looking at the beginning of an assignment. ")
@@ -2046,15 +2047,25 @@ for options to pass to the DOCNAME interpreter. \"
 (defconst py-def-re "[ \t]*\\_<\\(def\\)\\_>[ \n\t]"
   "Matches the beginning of a functions definition. ")
 
-(defconst py-block-or-clause-re "[ \t]*\\_<\\(def\\|class\\|if\\|else\\|elif\\|while\\|for\\|try\\|except\\|finally\\|with\\)\\_>[:( \n\t]*"
+(defconst py-block-or-clause-re-raw
+  (list
+   "elif"
+   "else"
+   "except"
+   "finally"
+   "for"
+   "if"
+   "try"
+   "while"
+   "with")
   "Matches the beginning of a compound statement or it's clause. ")
 
-(defconst py-extended-block-or-clause-re "[ \t]*\\_<\\(def\\|class\\|if\\|else\\|elif\\|while\\|for\\|try\\|except\\|finally\\|with\\)\\_>[:( \n\t]*"
-  "Matches the beginning of a compound statement or it's clause.
-Includes def and class. ")
-
-(defconst py-block-keywords "\\_<\\(def\\|class\\|if\\|else\\|elif\\|while\\|for\\|try\\|except\\|finally\\|with\\)\\_>"
-  "Matches known keywords opening a block. ")
+(defvar py-block-or-clause-re
+  (concat
+   "[ \t]*\\_<\\("
+   (regexp-opt  py-block-or-clause-re-raw)
+   "\\)\\_>[( \t]*.*:?")
+  "See py-block-or-clause-re-raw, which it reads. ")
 
 (defconst py-clause-re
   (concat
@@ -2068,6 +2079,72 @@ Includes def and class. ")
               "\\|")
    "\\)\\_>[( \t]*.*:?")
   "Regular expression matching lines not to augment indent after.")
+
+(defconst py-extended-block-or-clause-re-raw
+  (list
+   "class"
+   "def"
+   "elif"
+   "else"
+   "except"
+   "finally"
+   "for"
+   "if"
+   "try"
+   "while"
+   "with")
+  "Matches the beginning of a compound statement or it's clause. ")
+
+(defconst py-extended-block-or-clause-re
+  (concat
+   "[ \t]*\\_<\\("
+   (regexp-opt  py-extended-block-or-clause-re-raw)
+   "\\)\\_>[( \t]*.*:?")
+  "See py-block-or-clause-re-raw, which it reads. ")
+
+;; (defconst py-extended-block-or-clause-re "[ \t]*\\_<\\(def\\|class\\|if\\|else\\|elif\\|while\\|for\\|try\\|except\\|finally\\|with\\)\\_>[:( \n\t]*"
+;;   "Matches the beginning of a compound statement or it's clause.
+;; Includes def and class. ")
+
+(defconst py-block-keywords
+  (concat
+   "\\_<\\("
+   (regexp-opt py-block-or-clause-re-raw)
+   "\\)\\_>")
+  "Matches known keywords opening a block. ")
+
+;; (defconst py-block-keywords "\\_<\\(def\\|class\\|if\\|else\\|elif\\|while\\|for\\|try\\|except\\|finally\\|with\\)\\_>"
+;;   "Matches known keywords opening a block. ")
+
+
+(defconst py-clause-re-raw
+  (list
+   "elif"
+   "else"
+   "except"
+   "finally"
+   )
+  "Matches the beginning of a clause. ")
+
+(defconst py-clause-re
+  (concat
+   "[ \t]*\\_<\\("
+   (regexp-opt  py-clause-re-raw)
+   "\\)\\_>[( \t]*.*:?")
+  "See py-clause-re-raw, which it reads. ")
+
+;; (defconst py-clause-re
+;;   (concat
+;;    "[ \t]*\\_<\\("
+;;    (mapconcat 'identity
+;;               (list
+;;                "elif"
+;;                "else"
+;;                "except"
+;;                "finally")
+;;               "\\|")
+;;    "\\)\\_>[( \t]*.*:?")
+;;   "Regular expression matching lines not to augment indent after.")
 
 (defconst py-elif-re "[ \t]*\\_<\\elif\\_>[:( \n\t]*"
   "Matches the beginning of a compound if-statement's clause exclusively. ")
@@ -4727,51 +4804,51 @@ List extendet report options
                     :help "`pylint-flymake-mode'
 Toggle flymake-mode running `pylint'
 "])
-                  
+
                   ("pep8 "
                    :help "Check formatting
 
 Call `easy_install pep8' resp. `pip...' if not available"
-                   
+
                    ["pep8-run" py-pep8-run
                     :help "`py-pep8-run'
 Check formatting (default on the file currently visited)
 
 Call `easy_install pep8' resp. `pip...' if not available
 "]
-                   
+
                    ["pep8-help" py-pep8-help
                     :help "`py-pep8-help'
 Display help for pep8 format checker)
 "]
-                   
+
                    ["pep8-flymake-mode" pep8-flymake-mode
                     :help "`pep8-flymake-mode'
 Toggle flymake-mode running `pep8'
 "])
-                  
+
                   ("Pyflakes " :help "Non intrusive code checker
 
 Call `easy_install pyflakes' resp. `pip...' if not available"
-                   
+
                    ["pyflakes-run" py-pyflakes-run :help
                     "`py-pyflakes-run' Run pyflakes
 
 Call `easy_install pyflakes' resp. `pip...' if not available"]
-                   
+
                    ["pyflakes-help" py-pyflakes-help :help
                     "`py-pyflakes-help' Display help for
               Pyflakes "]
-                   
+
                    ["pyflakes-flymake-mode" pyflakes-flymake-mode :help
                     "`pyflakes-flymake-mode'
 Toggle flymake-mode running `pyflakes' "]
-                   
+
                    )
-                  
+
                   ("Flake8 " :help
                    "code checker running "
-                   
+
                    ["Flake8 run" py-flake8-run
                     :help " `py-flake8-run'
 
@@ -4789,27 +4866,27 @@ Toggle flymake-mode running `pyflakes' "]
         - extendable through ``flake8.extension`` entry points.
 
 . "]
-                   
+
                    ["Flake8 help" py-flake8-help
                     :help " `py-flake8-help'
 
 Display flake8 command line help messages. "]
-                   
+
                    )
-                  
+
                   ("Pyflakes-pep8 " :help
                    "Non intrusive code checker running `pyflakes' and `pep8'
 call `easy_install pyflakes' resp. `pip...' and `easy_install pep8' if basics not available"
-                   
+
                    ["pyflakespep8-run" py-pyflakespep8-run :help
                     "`py-pyflakespep8-run' Run `pyflakespep8'
 
 Call `easy_install pyflakes' resp. `pip...' if not available"]
-                   
+
                    ["pyflakespep8-help" py-pyflakespep8-help :help
                     "`py-pyflakespep8-help' Display help for
               Pyflakespep8 "]
-                   
+
                     ["pyflakespep8-flymake-mode" pyflakespep8-flymake-mode :help
                     "`pyflakespep8-flymake-mode'
 Toggle flymake-mode running `pyflakespep8' "])
