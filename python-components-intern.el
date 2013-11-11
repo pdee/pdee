@@ -24,9 +24,13 @@
 ;;; Code:
 (require 'python-components-macros)
 (defun py-set-command-args (arguments)
+  "Set Python arguments on the fly, override defaults in this session. 
+
+Use `defcustom' to keep value across sessions "
   (interactive
    (list
-    (read-from-minibuffer "Command args: " py-python-command-args))))
+    (read-from-minibuffer "Command args: " py-python-command-args)))
+    (setq py-python-command-args arguments))
 
 (defun py-beginning-of-commented-section (&optional last)
   "Leave upwards comments and/or empty lines. "

@@ -83,8 +83,7 @@ FILE-NAME."
   (let* ((process (or process (get-buffer-process (py-shell))))
          (temp-file-name (when temp-file-name
                            (expand-file-name temp-file-name)))
-         (file-name (or (expand-file-name file-name) temp-file-name))
-         py-python-command-args)
+         (file-name (or (expand-file-name file-name) temp-file-name)))
     (when (not file-name)
       (error "If FILE-NAME is nil then TEMP-FILE-NAME must be non-nil"))
     (py-shell-send-string

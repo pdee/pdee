@@ -720,6 +720,8 @@ Normally python-mode know best which function to use. "
   :group 'python-mode
   :tag "Jython Command Args")
 
+(make-obsolete-variable 'py-jpython-command-args 'py-jython-command-args nil)
+
 (defcustom py-flake8-command ""
   "Which command to call flake8.
 
@@ -2230,9 +2232,6 @@ See py-no-outdent-1-re-raw, py-no-outdent-2-re-raw for better readable content "
   "Completion stores py-windows-config-register here")
 
 (setq symbol-definition-start-re "^[ \t]*(\\(defun\\|defvar\\|defcustom\\)")
-
-(set-default 'py-python-command-args  '("-i"))
-(make-obsolete-variable 'py-jpython-command-args 'py-jython-command-args nil)
 
 (put 'py-indent-offset 'safe-local-variable 'integerp)
 
