@@ -77,6 +77,11 @@ Keys C-M-a, C-M-e usable for all top-level form, lp:1191078
 
   print("Not part of the if-statement")
 
+- boolean py-debug-p, default is nil
+  When non-nil, keep resp. store information useful for
+  debugging. Temporary files are not deleted. Other
+  functions might implement some logging etc.
+
 - heuristic exit
   new var `py-max-specpdl-size', default is `max-specpdl-size'
   py-end-of-statement will error if number of

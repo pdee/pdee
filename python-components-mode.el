@@ -1788,7 +1788,15 @@ can write into: the value (if any) of the environment variable TMPDIR,
 (defvar python-mode-v5-behavior nil)
 
 (defvar py-shell-complete-debug nil
-  "For interal use when debugging." )
+  "For interal use when debugging, stores completions." )
+
+(defcustom py-debug-p nil
+  "When non-nil, keep resp. store information useful for debugging.
+
+Temporary files are not deleted. Other functions might implement
+some logging etc. "
+  :type 'boolean
+  :group 'python-mode)
 
 (defvar py-completion-last-window-configuration nil
   "Internal use: restore py-restore-window-configuration when completion is done resp. abandoned. ")

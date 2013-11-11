@@ -731,9 +731,9 @@ When optional FILE is `t', no temporary file is needed. "
     (unwind-protect
         (setq erg (py-execute-file-base proc tempfile nil py-buffer-name py-orig-buffer-or-file execute-directory))
       (sit-for 0.1)
-      (and py-cleanup-temporary
+      (and (or py-debug-p py-cleanup-temporary)
            (py-delete-temporary tempfile tempbuf)))
-    (and erg py-store-result-p (unless (string= (car kill-ring) erg) (kill-new erg)))
+    (and erg (or py-debug-p py-store-result-p) (unless (string= (car kill-ring) erg) (kill-new erg)))
     erg))
 
 (defun py-execute-ge24.3 (start end file execute-directory)
@@ -934,7 +934,7 @@ Returns position where output starts. "
          erg orig err-p)
     (set-buffer procbuf)
     (goto-char (point-max))
-    ;; (switch-to-buffer (current-buffer))
+    (switch-to-buffer (current-buffer))
     (setq orig (point))
     (comint-send-string proc cmd)
     (if

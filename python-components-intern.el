@@ -23,6 +23,10 @@
 
 ;;; Code:
 (require 'python-components-macros)
+(defun py-set-command-args (arguments)
+  (interactive
+   (list
+    (read-from-minibuffer "Command args: " py-python-command-args))))
 
 (defun py-beginning-of-commented-section (&optional last)
   "Leave upwards comments and/or empty lines. "
