@@ -88,6 +88,10 @@ Keys C-M-a, C-M-e usable for all top-level form, lp:1191078
   `py-max-specpdl-size' loops is completed, thus avoiding
   a hang from a possibly eternal loop.
 
+- `py-statement' no longer refferred to `py-copy-statement'
+  Same with block, def, expression etc. `py-statement' made
+  own command, which returns statement, a string. 
+
 New in version 6.1.2
 ---------------------
 - simplified menu

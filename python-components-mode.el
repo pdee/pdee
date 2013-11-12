@@ -2675,6 +2675,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
 (require 'python-components-execute-file)
 (require 'python-components-comment)
 (require 'python-components-forms)
+(require 'python-components-forms-code)
 (require 'python-components-auto-fill)
 (require 'highlight-indentation)
 

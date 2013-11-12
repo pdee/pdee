@@ -1164,8 +1164,8 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-guess-indent-offset-dont-detect-indent-of-2-lp-1027389-test \
 --funcall key-binding-tests \
 --funcall py-narrow-to-defun-lp-1020531-test \
---funcall return-statement-indented-incorrectly-lp-1019601.py-test \
---funcall converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128.py-test \
+--funcall return-statement-indented-incorrectly-lp-1019601-test \
+--funcall converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128-test \
 --funcall empty-triple-quote-lp:1009318-test \
 --funcall spurious-trailing-whitespace-lp-1008679-test \
 --funcall shebang-interpreter-not-detected-lp:1001327-test \

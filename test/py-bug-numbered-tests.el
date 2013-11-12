@@ -82,8 +82,8 @@
        'stalls-emacs-probably-due-to-syntax-highlighting-lp-1058261-test
        'py-find-imports-lp-1023236-test
        'pycomplete-imports-not-found-error-when-no-symbol-lp:1019791-test
-       'return-statement-indented-incorrectly-lp-1019601.py-test
-       'converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128.py-test
+       'return-statement-indented-incorrectly-lp-1019601-test
+       'converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128-test
        'empty-triple-quote-lp:1009318-test
        'spurious-trailing-whitespace-lp-1008679-test
        'completion-fails-in-python-script-r989-lp:1004613-test
@@ -2374,11 +2374,10 @@ I am using version 6.0.4
 
 (defun py-mark-expression-marks-too-much-lp:941140-base ()
   (goto-char 60)
-  (py-expression)
-  (assert (string-match "some" (car kill-ring)) nil "py-mark-expression-marks-too-much-lp:941140-test failed")
+  
+  (assert (string-match "some" (py-expression)) nil "py-mark-expression-marks-too-much-lp:941140-test failed")
   (goto-char 417)
-  (py-expression)
-  (assert (string-match "a" (car kill-ring)) nil "py-mark-expression-marks-too-much-lp:941140-test failed"))
+  (assert (string-match "a" (py-expression)) nil "py-mark-expression-marks-too-much-lp:941140-test failed"))
 
 ;;; Py-shell tests
 (defun py-shell-invoking-python-lp:835151-test (&optional arg)
@@ -3018,23 +3017,23 @@ re.s
   (sit-for 0.1)
   (assert (buffer-live-p (get-buffer  py-python-completions)) nil "completion-at-gentoo-lp-1008842-test failed"))
 
-(defun converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128.py-test (&optional arg)
+(defun converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128-test (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 setup(
 	name = \"fail2ban\",
 "))
-    (py-bug-tests-intern 'converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128.py-base arg teststring)))
+    (py-bug-tests-intern 'converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128-base arg teststring)))
 
-(defun converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128.py-base ()
+(defun converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128-base ()
   (let ((indent-tabs-mode t))
     (goto-char 74)
     (py-newline-and-indent)
     (beginning-of-line))
-  (assert (looking-at "\t") nil "converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128.py-test failed"))
+  (assert (looking-at "\t") nil "converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128-test failed"))
 
-(defun return-statement-indented-incorrectly-lp-1019601.py-test (&optional arg)
+(defun return-statement-indented-incorrectly-lp-1019601-test (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
@@ -3044,11 +3043,11 @@ def foo():
     baz()
         return 1
 "))
-    (py-bug-tests-intern 'return-statement-indented-incorrectly-lp-1019601.py-base arg teststring)))
+    (py-bug-tests-intern 'return-statement-indented-incorrectly-lp-1019601-base arg teststring)))
 
-(defun return-statement-indented-incorrectly-lp-1019601.py-base ()
+(defun return-statement-indented-incorrectly-lp-1019601-base ()
   (goto-char 99)
-  (assert (eq 4 (py-compute-indentation)) nil "return-statement-indented-incorrectly-lp-1019601.py-test failed"))
+  (assert (eq 4 (py-compute-indentation)) nil "return-statement-indented-incorrectly-lp-1019601-test failed"))
 
 (defun pycomplete-imports-not-found-error-when-no-symbol-lp:1019791-test (&optional arg)
   (interactive "p")
@@ -5763,7 +5762,7 @@ def foo():
   (end-of-line)
   (assert (eq 25 (current-column)) nil "Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test #4 failed"))
 
-(defun trouble-with-py-fill-paragraph-lp-1180653.py-test (&optional arg)
+(defun trouble-with-py-fill-paragraph-lp-1180653-test (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
 # -\*- coding: utf-8 -\*-
@@ -5800,11 +5799,11 @@ inode, start_no, end_no)
 # Am I doing something wrong? py-docstring-style is set to
 # pep-256-nn.
 "))
-  (py-bug-tests-intern 'trouble-with-py-fill-paragraph-lp-1180653.py-base arg teststring)))
+  (py-bug-tests-intern 'trouble-with-py-fill-paragraph-lp-1180653-base arg teststring)))
 
-(defun trouble-with-py-fill-paragraph-lp-1180653.py-base ()
+(defun trouble-with-py-fill-paragraph-lp-1180653-base ()
     (goto-char 214)
-    (assert nil "trouble-with-py-fill-paragraph-lp-1180653.py-test failed"))
+    (assert nil "trouble-with-py-fill-paragraph-lp-1180653-test failed"))
 
 (defun py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test (&optional arg)
   (interactive "p")
@@ -5837,17 +5836,17 @@ inode, start_no, end_no)
     (py-shell nil nil nil t nil nil nil t)
     (assert (string-match "\\*Python\\*\<[0-9]+\>" (buffer-name)) nil "from-within-py-shell-call-another-instance-lp-1169687-test failed")))
 
-(defun multibuffer-mayhem-lp-1162q272.py-test (&optional arg)
+(defun multibuffer-mayhem-lp-1162q272-test (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 def do_something():
 wrong_indent
 "))
-  (py-bug-tests-intern 'multibuffer-mayhem-lp-1162272.py-base arg teststring)))
+  (py-bug-tests-intern 'multibuffer-mayhem-lp-1162272-base arg teststring)))
 
-(defun multibuffer-mayhem-lp-1162272.py-base ()
-    (assert (py-execute-buffer) nil "multibuffer-mayhem-lp-1162272.py-test failed"))
+(defun multibuffer-mayhem-lp-1162272-base ()
+    (assert (py-execute-buffer) nil "multibuffer-mayhem-lp-1162272-test failed"))
 
 (defun incorrect-indentation-with-tertiary-lp-1189604-test (&optional arg)
   (interactive "p")

@@ -238,5 +238,25 @@ named for funcname or define a function funcname."
   (interactive)
   (py-pdbtrack-toggle-stack-tracking 0))
 
+(defun py-execute-statement-pdb ()
+  (interactive)
+  (let ((py-python-command-args "-i -m pdb"))
+    (py-execute-statement)))
+
+(defun py-execute-region-pdb (beg end)
+  (interactive "r")
+  (let ((py-python-command-args (list "-i" "-m" "pdb")))
+    (py-execute-region beg end)))
+
+
+(defun py-pdb-execute-statement ()
+  (interactive)
+  (let ((stm (progn (py-statement) (car kill-ring))))
+    (py-execute-string (concat "import pdb;pdb.run('" stm "')"))))
+
+
+
+
+
 (provide 'python-components-pdb)
 ;;; python-components-pdb.el ends here

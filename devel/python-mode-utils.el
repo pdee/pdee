@@ -2767,7 +2767,6 @@ Delete " (upcase ele) " at point, don't store in kill-ring. \"]
   (insert arkopf)
   (dolist (ele py-copy-forms)
     (insert (concat "
-\(defalias 'py-" ele " 'py-copy-" ele ")
 \(defun py-copy-" ele " ()
   \"Copy " ele " at point.
 
@@ -2778,6 +2777,30 @@ Store data in kill ring, so it might yanked back. \"
 ")))
   (insert "\n;; python-components-copy ends here
 \(provide 'python-components-copy)")
+  
+  (switch-to-buffer (current-buffer))
+  (emacs-lisp-mode))
+
+
+(defun py-write-forms-code ()
+  (interactive)
+  (set-buffer (get-buffer-create "python-components-forms-code.el"))
+  (erase-buffer)
+  (switch-to-buffer (current-buffer))
+  (insert ";;; python-components-forms-code.el --- Return Python forms' code \n")
+  (insert arkopf)
+  (dolist (ele py-copy-forms)
+    (insert (concat "
+\(defun py-" ele " ()
+  \"" (capitalize ele) " at point.
+
+Return code of `py-" ele "' at point, a string. \"
+  (interactive)
+  (let ((erg (py--base \"" ele "\")))
+    (buffer-substring-no-properties (car erg) (cdr erg))))
+")))
+  (insert "\n;; python-components-forms-code.el ends here
+\(provide 'python-components-forms-code)")
   
   (switch-to-buffer (current-buffer))
   (emacs-lisp-mode))

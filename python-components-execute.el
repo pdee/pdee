@@ -718,12 +718,6 @@ When optional FILE is `t', no temporary file is needed. "
                   "if __name__ == '__main__ ':" strg)))
     (insert strg)
     (py-fix-start (point-min)(point-max))
-    ;; (py-if-needed-insert-shell)
-    ;; (unless wholebuf (py-insert-coding))
-    ;; (unless (string-match "[jJ]ython" py-shell-name) (py-insert-execute-directory execute-directory))
-    ;; fix offline amount, make erorr point at the correct line
-    ;; (setq lineadd (- line (+ 2 (count-lines (point-min) (point)))))
-    ;; (and (< 0 lineadd) (insert (make-string lineadd 10)))
     (set-buffer tempbuf)
     (write-region (point-min) (point-max) tempfile nil t nil 'ask)
     (set-buffer-modified-p 'nil)

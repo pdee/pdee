@@ -21,7 +21,8 @@
 ;;; Code:
 
 ;; Mark
-(defun py-mark-base (form &optional py-mark-decorators)
+(defun py--base (form &optional py-mark-decorators)
+  "Returns boundaries of FORM, a cons. "
   (let* ((begform (intern-soft (concat "py-beginning-of-" form)))
          (endform (intern-soft (concat "py-end-of-" form)))
          (begcheckform (intern-soft (concat "py-beginning-of-" form "-p")))
@@ -34,12 +35,36 @@
     (and py-mark-decorators
          (and (setq erg (py-beginning-of-decorator))
               (setq beg erg)))
-    (push-mark beg t t)
     (setq end (funcall endform))
     (unless end (when (< beg (point))
                   (setq end (point))))
     (when (interactive-p) (message "%s %s" beg end))
     (cons beg end)))
+
+(defun py-mark-base (form &optional py-mark-decorators)
+  "Calls py--base "
+  (let ((beg (car (py--base form py-mark-decorators))))
+    (push-mark beg t t)))
+
+;; (defun py-mark-base (form &optional py-mark-decorators)
+;;   (let* ((begform (intern-soft (concat "py-beginning-of-" form)))
+;;          (endform (intern-soft (concat "py-end-of-" form)))
+;;          (begcheckform (intern-soft (concat "py-beginning-of-" form "-p")))
+;;          (orig (point))
+;;          beg end erg)
+;;     (setq beg (if
+;;                   (setq beg (funcall begcheckform))
+;;                   beg
+;;                 (funcall begform)))
+;;     (and py-mark-decorators
+;;          (and (setq erg (py-beginning-of-decorator))
+;;               (setq beg erg)))
+;;     (push-mark beg t t)
+;;     (setq end (funcall endform))
+;;     (unless end (when (< beg (point))
+;;                   (setq end (point))))
+;;     (when (interactive-p) (message "%s %s" beg end))
+;;     (cons beg end)))
 
 (defun py-mark-paragraph ()
   "Mark paragraph at point.
@@ -228,7 +253,7 @@ See also `py-down-block': down from current definition to next beginning of bloc
   erg))
 
 (defun py-beginning-of-minor-block-p ()
-  "Returns position, if cursor is at the beginning of a minor-block, nil otherwise. 
+  "Returns position, if cursor is at the beginning of a minor-block, nil otherwise.
 
 A minor block is started by a `for', `if', `try' or `with'.
 "
