@@ -42,9 +42,11 @@
     (cons beg end)))
 
 (defun py-mark-base (form &optional py-mark-decorators)
-  "Calls py--base "
-  (let ((beg (car (py--base form py-mark-decorators))))
-    (push-mark beg t t)))
+  "Calls py--base, returns bounds of form, a cons. "
+  (let* ((bounds (py--base form py-mark-decorators))
+         (beg (car bounds)))
+    (push-mark beg t t)
+    bounds))
 
 ;; (defun py-mark-base (form &optional py-mark-decorators)
 ;;   (let* ((begform (intern-soft (concat "py-beginning-of-" form)))

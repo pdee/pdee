@@ -58,59 +58,6 @@ always located at the beginning of buffer."
       (should (eq ?\} (char-after)))
       )))
 
-;; (ert-deftest py-indent-inside-paren-1 ()
-;;   "The most simple inside-paren case that shouldn't fail."
-;;   (with-temp-buffer
-;;    (insert "
-;; data = {
-;;     'key':
-;;     {
-;;         'objlist': [
-;;             {
-;;                 'pk': 1,
-;;                 'name': 'first',
-;;             },
-;;             {
-;;                 'pk': 2,
-;;                 'name': 'second',
-;;             }
-;;         ]
-;;     }
-;; }
-;; ")
-;;    (switch-to-buffer (current-buffer))
-;;    (py-tests-go-to "data = {")
-;;    (should (= (py-compute-indentation) 0))
-;;    (py-tests-go-to "'key':")
-;;    (should (= (py-compute-indentation) 4))
-;;    (py-tests-go-to "{")
-;;    (should (= (py-compute-indentation) 4))
-;;    (py-tests-go-to "'objlist': [")
-;;    (should (= (py-compute-indentation) 8))
-;;    (py-tests-go-to "{")
-;;    (should (= (py-compute-indentation) 12))
-;;    (py-tests-go-to "'pk': 1,")
-;;    (should (= (py-compute-indentation) 16))
-;;    (py-tests-go-to "'name': 'first',")
-;;    (should (= (py-compute-indentation) 16))
-;;    (py-tests-go-to "},")
-;;    (should (= (py-compute-indentation) 12))
-;;    (py-tests-go-to "{")
-;;    (should (= (py-compute-indentation) 12))
-;;    (py-tests-go-to "'pk': 2,")
-;;    (should (= (py-compute-indentation) 16))
-;;    (py-tests-go-to "'name': 'second',")
-;;    (should (= (py-compute-indentation) 16))
-;;    (py-tests-go-to "}")
-;;    (should (= (py-compute-indentation) 12))
-;;    (py-tests-go-to "]")
-;;    (should (= (py-compute-indentation) 8))
-;;    (py-tests-go-to "}")
-;;    (should (= (py-compute-indentation) 4))
-;;    (py-tests-go-to "}")
-;;    (should (= (py-compute-indentation) 0))))
-
-
 (ert-deftest py-indent-dedenters-1 ()
   "Check all dedenters."
   (py-tests-with-temp-buffer
@@ -151,7 +98,6 @@ def foo(a, b, c):
    (py-tests-go-to "print ('nor a, nor b are true')")
    (should (= (py-compute-indentation) 12))))
 
-
 (ert-deftest py-indent-after-backslash-lp-852052-1 ()
   "The most common case."
   (py-tests-with-temp-buffer
@@ -184,7 +130,6 @@ result = some_function_that_takes_arguments(
    (should (eq 4 (py-compute-indentation)))
    (goto-char 129)
    (should (eq 4 (py-compute-indentation)))))
-
 
 (ert-deftest py-moves ()
   (py-tests-with-temp-buffer
@@ -602,3 +547,11 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
     (search-forward "#")
     (should (eq 380 (py-beginning-of-comment-position)))
     (should (eq 412 (py-end-of-comment-position)))))
+
+(ert-deftest py-copy-statement-test ()
+  (interactive) 
+  (py-tests-with-temp-buffer
+   "from foo.bar.baz import something
+"
+   (should (and (not (py-copy-statement))(string-match "from foo.bar.baz import something" (car kill-ring))))))
+
