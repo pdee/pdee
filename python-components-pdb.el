@@ -255,7 +255,10 @@ named for funcname or define a function funcname."
     (py-execute-string (concat "import pdb;pdb.run('" stm "')"))))
 
 
-
+(defun py-pdb-help ()
+  "Print generic pdb.help() message "
+  (interactive)
+  (py-execute-string "import pdb;pdb.help()"))
 
 
 (provide 'python-components-pdb)

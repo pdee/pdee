@@ -1613,7 +1613,7 @@ aus.write(result + \"\\n\")
   (assert (eq (key-binding [(control c)(\#)]) 'py-comment-region) nil "py-comment-region key-binding test failed")
   (assert (eq (key-binding [(control c)(\?)]) 'py-describe-mode) nil "py-describe-mode key-binding test failed")
 
-  (assert (eq (key-binding [(control c)(control e)]) 'py-describe-symbol) nil "py-describe-symbol key-binding test failed")
+  (assert (eq (key-binding [(control c)(control e)]) 'py-help-at-point) nil "py-describe-symbol key-binding test failed")
   (assert (eq (key-binding [(control c)(-)]) 'py-up-exception) nil "py-up-exception key-binding test failed")
   (assert (eq (key-binding [(control c)(=)]) 'py-down-exception) nil "py-down-exception key-binding test failed")
   (assert (eq (key-binding [(control x) (n) (d)]) 'py-narrow-to-defun) nil "py-narrow-to-defun key-binding test failed")

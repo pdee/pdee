@@ -2818,7 +2818,7 @@ os.chmod
 
 (defun py-describe-symbol-fails-on-modules-lp:919719-base ()
   (goto-char 61)
-  (py-describe-symbol)
+  (py-help-at-point)
   (sit-for 0.1)
   (set-buffer "*Python-Help*")
   (goto-char (point-min))

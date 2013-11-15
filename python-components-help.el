@@ -154,11 +154,12 @@ not inside a defun."
     (when names
       (mapconcat (lambda (string) string) names "."))))
 
-(defalias 'py-help-at-point 'py-describe-symbol)
-(defun py-describe-symbol (&optional debug)
+(defalias 'py-describe-symbol 'py-help-at-point)
+(defalias 'py-eldoc-function 'py-help-at-point)
+(defun py-help-at-point (&optional debug)
   "Print help on symbol at point.
 
-If symbol is defined in current buffer, jump to it's definition instead
+If symbol is defined in current buffer, jump to it's definition
 Optional \\[universal-argument] used for debugging, will prevent deletion of temp file. "
   (interactive "P")
   (let* ((orig (point))
@@ -195,49 +196,18 @@ Optional \\[universal-argument] used for debugging, will prevent deletion of tem
         (insert cmd)
         (write-file file))
       (setq erg (py-process-file file "*Python-Help*"))
-      (message "%s" erg)
+      (if py-max-help-buffer-p
+          (progn
+            (set-buffer "*Python-Help*")
+            (switch-to-buffer (current-buffer))
+            ;; (sit-for 0.1)
+            (help-mode)
+            (delete-other-windows))
+        (message "%s" erg))
+
       (when (file-readable-p file)
         (unless (eq 4 (prefix-numeric-value debug)) (delete-file file))))))
 
-(defun py-eldoc-function ()
-  "Print help on symbol at point. "
-  (interactive)
-  (if (unless (looking-at " ")
-        (or
-
-         (eq (get-char-property (point) 'face) 'font-lock-keyword-face)
-         (eq (get-char-property (point) 'face) 'py-builtins-face)
-         (eq (get-char-property (point) 'face) 'py-exception-name-face)
-         (eq (get-char-property (point) 'face) 'py-class-name-face)
-
-         ))
-
-      (lexical-let* ((sym (prin1-to-string (symbol-at-point)))
-                     (origfile (buffer-file-name))
-                     (temp (make-temp-name (buffer-name)))
-                     (file (concat (expand-file-name temp py-temp-directory) ".py"))
-                     (cmd (py-find-imports))
-                     (no-quotes (save-excursion
-                                  (skip-chars-backward "A-Za-z_0-9.")
-                                  (and (looking-at "[A-Za-z_0-9.]+")
-                                       (string-match "\\." (match-string-no-properties 0))))))
-        (setq cmd (concat "import pydoc\n"
-                          cmd))
-        (if no-quotes
-            (setq cmd (concat cmd
-                              "try: pydoc.help(" sym ")\n"))
-          (setq cmd (concat cmd "try: pydoc.help('" sym "')\n")))
-        (setq cmd (concat cmd
-                          "except:
-    print 'No help available on:', \"" sym "\""))
-        (with-temp-buffer
-          (insert cmd)
-          (write-file file))
-        (py-process-file file "*Python-Help*")
-        (when (file-readable-p file)
-          (delete-file file)))
-    (delete-other-windows)))
-
 ;; Documentation functions
 
 ;; dump the long form of the mode blurb; does the usual doc escapes,
