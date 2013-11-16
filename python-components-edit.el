@@ -88,7 +88,7 @@ With optional \\[universal-argument] an indent with length `py-indent-offset' is
   ;; (exchange-point-and-mark)
   )
 
-(defun py-indent-line-intern (need cui py-indent-offset col &optional beg end region)
+(defun py--indent-line-intern (need cui py-indent-offset col &optional beg end region)
   (if py-tab-indent
       (progn
         (and py-tab-indents-region-p region
@@ -138,6 +138,21 @@ With optional \\[universal-argument] an indent with length `py-indent-offset' is
                    (beginning-of-line))))))
     (insert-tab)))
 
+(defun py--indent-line-base ()
+  (unless (and (not (eq this-command last-command))
+               (eq cui need))
+    (cond ((eq 4 (prefix-numeric-value arg))
+           (if (and (eq cui (current-indentation))
+                    (<= need cui))
+               (if indent-tabs-mode (insert "\t")(insert (make-string py-indent-offset 32)))
+             (beginning-of-line)
+             (delete-horizontal-space)
+             (indent-to (+ need py-indent-offset))))
+          ((not (eq 1 (prefix-numeric-value arg)))
+           (py-smart-indentation-off)
+           (py--indent-line-intern need cui this-indent-offset col beg end region))
+          (t (py--indent-line-intern need cui this-indent-offset col beg end region)))))
+
 (defun py-indent-line (&optional arg)
   "Indent the current line according to Python rules.
 
@@ -159,6 +174,7 @@ but the region is shiftet that way.
 If `py-tab-indents-region-p' is `t' and first TAB doesn't shift
 --as indent is at outmost reasonable--, indent-region is called.
 
+C-q TAB inserts a literal TAB-character.
 "
   (interactive "P")
   (let ((orig (copy-marker (point)))
@@ -195,28 +211,15 @@ If `py-tab-indents-region-p' is `t' and first TAB doesn't shift
                          (if region
                              (save-excursion (goto-char beg) (py-compute-indentation nil nil nil nil nil nil this-indent-offset))
                            (py-compute-indentation nil nil nil nil nil nil this-indent-offset))))
-            ;; First TAB: do nothing at correct indent
-            (unless (and (not (eq this-command last-command))
-                         (eq cui need))
-              (cond ((eq 4 (prefix-numeric-value arg))
-                     (beginning-of-line)
-                     (delete-horizontal-space)
-                     (indent-to (+ need py-indent-offset)))
-                    ((not (eq 1 (prefix-numeric-value arg)))
-                     (py-smart-indentation-off)
-                     (py-indent-line-intern need cui this-indent-offset col beg end region))
-                    (t (py-indent-line-intern need cui this-indent-offset col beg end region)))
-              ;; after completion, don't go to orig
-              ;; (unless done (goto-char orig))
-              (if region
+            (py--indent-line-base)
+            (if region
                   (and (or py-tab-shifts-region-p
                            py-tab-indents-region-p)
                        (not (eq (point) orig))
                        (exchange-point-and-mark))
-                (and (< (current-column) (current-indentation))(back-to-indentation))))
+                (and (< (current-column) (current-indentation))(back-to-indentation)))
             (when (and (interactive-p) py-verbose-p)(message "%s" (current-indentation)))
             (current-indentation)))
-
       (setq need (py-compute-indentation))
       (unless (eq cui need)
         (beginning-of-line)
@@ -1327,6 +1330,19 @@ If neiter expansion nor indent occured, insert `py-indent-offset'"
     (and (not (string= "" word))
          (py-shell-complete (py-shell nil nil (process-name (get-buffer-process (current-buffer))) (concat (buffer-name (current-buffer)) "-completions")) nil beg end word))))
 
+
+(defun py-complete-or-indent (arg)
+  "Complete or indent depending on the context.
+If content before pointer is all whitespace indent.  If not try
+to complete."
+  (interactive "P")
+  (if (eq 4 (prefix-numeric-value arg))
+      (if indent-tabs-mode (insert "\t")(insert (make-string py-indent-offset 32)))
+    (if (string-match "^[[:space:]]*$"
+                      (buffer-substring (comint-line-beginning-position)
+                                        (point-marker)))
+        (indent-for-tab-command)
+      (completion-at-point))))
 
 
 (provide 'python-components-edit)
