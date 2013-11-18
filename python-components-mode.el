@@ -2945,80 +2945,8 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
 
 
 ;;; Keymap
-(defvar python-mode-map)
-(setq python-mode-map
-      (let ((map (make-sparse-keymap)))
-        ;; electric keys
-        (define-key map [(:)] 'py-electric-colon)
-        (define-key map [(\#)] 'py-electric-comment)
-        (define-key map [(delete)] 'py-electric-delete)
-        (define-key map [(backspace)] 'py-electric-backspace)
-        (define-key map [(control backspace)] 'py-hungry-delete-backwards)
-        (define-key map [(control c) (delete)] 'py-hungry-delete-forward)
-        ;; (define-key map [(control y)] 'py-electric-yank)
-        ;; moving point
-        (define-key map [(control c)(control p)] 'py-beginning-of-statement)
-        (define-key map [(control c)(control n)] 'py-end-of-statement)
-        (define-key map [(control c)(control u)] 'py-beginning-of-block)
-        (define-key map [(control c)(control q)] 'py-end-of-block)
-        (define-key map [(control meta a)] 'py-beginning-of-def-or-class)
-        (define-key map [(control meta e)] 'py-end-of-def-or-class)
-        
-        ;; (define-key map [(meta i)] 'py-indent-forward-line)
-        (define-key map [(control j)] 'py-newline-and-indent)
-        ;; Most Pythoneers expect RET `py-newline-and-indent'
-        ;; (define-key map (kbd "RET") 'py-newline-and-dedent)
-        (define-key map (kbd "RET") py-return-key)
-        ;; (define-key map (kbd "RET") 'newline)
-        (define-key map [(super backspace)] 'py-dedent)
-        ;; (define-key map [(control return)] 'py-newline-and-dedent)
-        ;; indentation level modifiers
-        (define-key map [(control c)(control l)] 'py-shift-left)
-        (define-key map [(control c)(control r)] 'py-shift-right)
-        (define-key map [(control c)(<)] 'py-shift-left)
-        (define-key map [(control c)(>)] 'py-shift-right)
-        (define-key map [(control c)(tab)] 'py-indent-region)
-        (define-key map [(control c)(:)] 'py-guess-indent-offset)
-        ;; subprocess commands
-        (define-key map [(control c)(control c)] 'py-execute-buffer)
-        (define-key map [(control c)(control m)] 'py-execute-import-or-reload)
-        (define-key map [(control c)(control s)] 'py-execute-string)
-        (define-key map [(control c)(|)] 'py-execute-region)
-        (define-key map [(control meta x)] 'py-execute-def-or-class)
-        (define-key map [(control c)(!)] 'py-shell)
-        (define-key map [(control c)(control t)] 'py-toggle-shell)
-        (define-key map [(control meta h)] 'py-mark-def-or-class)
-        (define-key map [(control c)(control k)] 'py-mark-block-or-clause)
-        (define-key map [(control c)(.)] 'py-expression)
-        ;; Miscellaneous
-        (define-key map [(super q)] 'py-copy-statement)
-        (define-key map [(control c)(control d)] 'py-pdbtrack-toggle-stack-tracking)
-        (define-key map [(control c)(control f)] 'py-sort-imports)
-        (define-key map [(control c)(\#)] 'py-comment-region)
-        (define-key map [(control c)(\?)] 'py-describe-mode)
-        (define-key map [(control c)(control e)] 'py-help-at-point)
-        (define-key map [(control c)(-)] 'py-up-exception)
-        (define-key map [(control c)(=)] 'py-down-exception)
-        (define-key map [(control x) (n) (d)] 'py-narrow-to-defun)
-        ;; information
-        (define-key map [(control c)(control b)] 'py-submit-bug-report)
-        (define-key map [(control c)(control v)] 'py-version)
-        (define-key map [(control c)(control w)] 'py-pychecker-run)
-        (define-key map (kbd "TAB") 'py-indent-line)
-        ;; (if py-complete-function
-        ;;     (progn
-        ;;       (define-key map [(meta tab)] py-complete-function)
-        ;;       (define-key map [(esc) (tab)] py-complete-function))
-        ;;   (define-key map [(meta tab)] 'py-shell-complete)
-        ;;   (define-key map [(esc) (tab)] 'py-shell-complete))
-        (substitute-key-definition 'complete-symbol 'completion-at-point
-                                   map global-map)
-        (substitute-key-definition 'backward-up-list 'py-up
-                                   map global-map)
-        (substitute-key-definition 'down-list 'py-down
-                                   map global-map)
-        
-        (and (ignore-errors (require 'easymenu) t)
+(defun py--init-easy-menu ()
+  (and (ignore-errors (require 'easymenu) t)
              ;; (easy-menu-define py-menu map "Python Tools"
              ;;           `("PyTools"
              (easy-menu-define
@@ -7251,7 +7179,82 @@ Complete symbol before point using Pymacs . "])
                    :help "`py-find-function'
 Try to find source definition of function at point"]
                   
-                  ))))
+                  )))))
+
+(defvar python-mode-map)
+(setq python-mode-map
+      (let ((map (make-sparse-keymap)))
+        ;; electric keys
+        (define-key map [(:)] 'py-electric-colon)
+        (define-key map [(\#)] 'py-electric-comment)
+        (define-key map [(delete)] 'py-electric-delete)
+        (define-key map [(backspace)] 'py-electric-backspace)
+        (define-key map [(control backspace)] 'py-hungry-delete-backwards)
+        (define-key map [(control c) (delete)] 'py-hungry-delete-forward)
+        ;; (define-key map [(control y)] 'py-electric-yank)
+        ;; moving point
+        (define-key map [(control c)(control p)] 'py-beginning-of-statement)
+        (define-key map [(control c)(control n)] 'py-end-of-statement)
+        (define-key map [(control c)(control u)] 'py-beginning-of-block)
+        (define-key map [(control c)(control q)] 'py-end-of-block)
+        (define-key map [(control meta a)] 'py-beginning-of-def-or-class)
+        (define-key map [(control meta e)] 'py-end-of-def-or-class)
+        
+        ;; (define-key map [(meta i)] 'py-indent-forward-line)
+        (define-key map [(control j)] 'py-newline-and-indent)
+        ;; Most Pythoneers expect RET `py-newline-and-indent'
+        ;; (define-key map (kbd "RET") 'py-newline-and-dedent)
+        (define-key map (kbd "RET") py-return-key)
+        ;; (define-key map (kbd "RET") 'newline)
+        (define-key map [(super backspace)] 'py-dedent)
+        ;; (define-key map [(control return)] 'py-newline-and-dedent)
+        ;; indentation level modifiers
+        (define-key map [(control c)(control l)] 'py-shift-left)
+        (define-key map [(control c)(control r)] 'py-shift-right)
+        (define-key map [(control c)(<)] 'py-shift-left)
+        (define-key map [(control c)(>)] 'py-shift-right)
+        (define-key map [(control c)(tab)] 'py-indent-region)
+        (define-key map [(control c)(:)] 'py-guess-indent-offset)
+        ;; subprocess commands
+        (define-key map [(control c)(control c)] 'py-execute-buffer)
+        (define-key map [(control c)(control m)] 'py-execute-import-or-reload)
+        (define-key map [(control c)(control s)] 'py-execute-string)
+        (define-key map [(control c)(|)] 'py-execute-region)
+        (define-key map [(control meta x)] 'py-execute-def-or-class)
+        (define-key map [(control c)(!)] 'py-shell)
+        (define-key map [(control c)(control t)] 'py-toggle-shell)
+        (define-key map [(control meta h)] 'py-mark-def-or-class)
+        (define-key map [(control c)(control k)] 'py-mark-block-or-clause)
+        (define-key map [(control c)(.)] 'py-expression)
+        ;; Miscellaneous
+        (define-key map [(super q)] 'py-copy-statement)
+        (define-key map [(control c)(control d)] 'py-pdbtrack-toggle-stack-tracking)
+        (define-key map [(control c)(control f)] 'py-sort-imports)
+        (define-key map [(control c)(\#)] 'py-comment-region)
+        (define-key map [(control c)(\?)] 'py-describe-mode)
+        (define-key map [(control c)(control e)] 'py-help-at-point)
+        (define-key map [(control c)(-)] 'py-up-exception)
+        (define-key map [(control c)(=)] 'py-down-exception)
+        (define-key map [(control x) (n) (d)] 'py-narrow-to-defun)
+        ;; information
+        (define-key map [(control c)(control b)] 'py-submit-bug-report)
+        (define-key map [(control c)(control v)] 'py-version)
+        (define-key map [(control c)(control w)] 'py-pychecker-run)
+        (define-key map (kbd "TAB") 'py-indent-line)
+        ;; (if py-complete-function
+        ;;     (progn
+        ;;       (define-key map [(meta tab)] py-complete-function)
+        ;;       (define-key map [(esc) (tab)] py-complete-function))
+        ;;   (define-key map [(meta tab)] 'py-shell-complete)
+        ;;   (define-key map [(esc) (tab)] 'py-shell-complete))
+        (substitute-key-definition 'complete-symbol 'completion-at-point
+                                   map global-map)
+        (substitute-key-definition 'backward-up-list 'py-up
+                                   map global-map)
+        (substitute-key-definition 'down-list 'py-down
+                                   map global-map)
+        
+        (py--init-easy-menu)
         map))
 
 (defvaralias 'py-mode-map 'python-mode-map)
