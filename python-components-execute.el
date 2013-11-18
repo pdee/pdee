@@ -475,6 +475,22 @@ Needed when file-path names are contructed from maybe numbered buffer names like
       (setq erg (substring erg 0 (string-match "-" erg))))
     erg))
 
+(defun py--shell-make-comint ()
+  (set-buffer (apply 'make-comint-in-buffer executable py-buffer-name executable nil args))
+  (unless (interactive-p) (sit-for 0.1))
+  (set (make-local-variable 'comint-prompt-regexp)
+       (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
+              (concat "\\("
+                      (mapconcat 'identity
+                                 (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
+                                 "\\|")
+                      "\\)"))
+             (t (concat "\\("
+                        (mapconcat 'identity
+                                   (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
+                                   "\\|")
+                        "\\)")))))
+
 (defun py-shell (&optional argprompt dedicated shell buffer-name no-window-managment)
   "Start an interactive Python interpreter in another window.
 Interactively, \\[universal-argument] 4 prompts for a buffer.
@@ -539,20 +555,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
          (setq py-buffer-name (generate-new-buffer-name py-buffer-name)))
 
     (unless (comint-check-proc py-buffer-name)
-      (set-buffer (apply 'make-comint-in-buffer executable py-buffer-name executable nil args))
-      (unless (interactive-p) (sit-for 0.1))
-      (set (make-local-variable 'comint-prompt-regexp)
-           (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
-                  (concat "\\("
-                          (mapconcat 'identity
-                                     (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
-                                     "\\|")
-                          "\\)"))
-                 (t (concat "\\("
-                            (mapconcat 'identity
-                                       (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
-                                       "\\|")
-                            "\\)"))))
+      (py--shell-make-comint)
       (set (make-local-variable 'comint-input-filter) 'py-history-input-filter)
       (set (make-local-variable 'comint-prompt-read-only) py-shell-prompt-read-only)
       (set (make-local-variable 'comint-use-prompt-regexp) nil)
@@ -596,18 +599,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
       (add-hook 'comint-output-filter-functions
                 'ansi-color-process-output)
       (add-hook 'after-change-functions 'py-after-change-function nil t)
-      ;; Introduce `remove-hook
-      ;; comint-output-filter-functions', got the
-      ;; following error running ipython-complete:
-      ;;
-      ;; Debugger entered--Lisp error: (args-out-of-range 9285 9285)
-      ;; get-text-property(9285 font-lock-multiline)
-      ;; font-lock-extend-jit-lock-region-after-change(9286 9295 9)
-      ;; run-hook-with-args(font-lock-extend-jit-lock-region-after-change 9286 9295 9)
-      ;; jit-lock-after-change(9286 9295 9)
-      ;; remove-text-properties(#<marker at 9286 in *Ipython*> #<marker at 9295 in *Ipython*> (font-lock-face))
-      ;; comint-output-filter(#<process ipython> "except;exe-shell.el;exec;execfile;exit\n")
-      ;; accept-process-output(#<process ipython> 0.2)
+      
       (remove-hook 'comint-output-filter-functions
                    'font-lock-extend-jit-lock-region-after-change)
       (use-local-map py-shell-map)
