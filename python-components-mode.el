@@ -7754,7 +7754,7 @@ Don't save anything for STR matching `inferior-python-filter-regexp'."
              'py-set-auto-fill-values)))))
 
 ;;;
-(define-derived-mode py-shell-mode comint-mode "Inferior Python"
+(define-derived-mode py-shell-mode comint-mode "Py"
   "Major mode for interacting with an inferior Python process.
 A Python process can be started with \\[py-shell].
 
@@ -7769,21 +7769,19 @@ containing Python source.
   :group 'python
   (require 'ansi-color) ; for ipython
   (setq mode-line-process '(":%s"))
-  (set (make-local-variable 'comint-input-filter) 'py-input-filter)
-  (set (make-local-variable 'compilation-error-regexp-alist)
-       python-compilation-regexp-alist)
-  (set (make-local-variable 'comint-prompt-regexp)
-       (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
-              (concat "\\("
-                      (mapconcat 'identity
-                                 (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
-                                 "\\|")
-                      "\\)"))
-             (t (concat "\\("
-                        (mapconcat 'identity
-                                   (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
-                                   "\\|")
-                        "\\)"))))
+  ;; (set (make-local-variable 'comint-input-filter) 'py-input-filter)
+  ;; (set (make-local-variable 'comint-prompt-regexp)
+  ;;      (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
+  ;;             (concat "\\("
+  ;;                     (mapconcat 'identity
+  ;;                                (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
+  ;;                                "\\|")
+  ;;                     "\\)"))
+  ;;            (t (concat "\\("
+  ;;                       (mapconcat 'identity
+  ;;                                  (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
+  ;;                                  "\\|")
+  ;;                       "\\)"))))
   (if py-complete-function
       (add-hook 'completion-at-point-functions
                 py-complete-function nil 'local)
@@ -7955,6 +7953,78 @@ Runs `jython-mode-hook' after `python-mode-hook'."
 
   :group 'python-mode
   (py-toggle-shell "jython"))
+
+(define-derived-mode inferior-python-mode comint-mode "Py"
+  "Major mode for Python inferior process.
+Runs a Python interpreter as a subprocess of Emacs, with Python
+I/O through an Emacs buffer.  Variables
+`py-python-command' and `py-python-command-args'
+controls which Python interpreter is run.  Variables
+`py-shell-prompt-regexp',
+`py-shell-prompt-output-regexp',
+`python-shell-prompt-block-regexp',
+`python-shell-enable-font-lock',
+`python-shell-completion-setup-code',
+`python-shell-completion-string-code',
+`python-shell-completion-module-string-code',
+`python-eldoc-setup-code', `python-eldoc-string-code',
+`python-ffap-setup-code' and `python-ffap-string-code' can
+customize this mode for different Python interpreters.
+
+You can also add additional setup code to be run at
+initialization of the interpreter via `python-shell-setup-codes'
+variable.
+
+\(Type \\[describe-mode] in the process buffer for a list of commands.)"
+  ;; (and python-shell--parent-buffer
+  ;; (python-util-clone-local-variables python-shell--parent-buffer))
+  (setq comint-prompt-regexp (format "^\\(?:%s\\|%s\\|%s\\)"
+                                     python-shell-prompt-regexp
+                                     python-shell-prompt-block-regexp
+                                     python-shell-prompt-pdb-regexp))
+  (setq mode-line-process '(":%s"))
+  (make-local-variable 'comint-output-filter-functions)
+  (add-hook 'comint-output-filter-functions
+            'python-comint-output-filter-function)
+  (add-hook 'comint-output-filter-functions
+            'python-pdbtrack-comint-output-filter-function)
+  (set (make-local-variable 'compilation-error-regexp-alist)
+       python-shell-compilation-regexp-alist)
+  (define-key inferior-python-mode-map [remap complete-symbol]
+    'completion-at-point)
+  (add-hook 'completion-at-point-functions
+            'python-shell-completion-complete-at-point nil 'local)
+  (add-to-list (make-local-variable 'comint-dynamic-complete-functions)
+               'python-shell-completion-complete-at-point)
+  (define-key inferior-python-mode-map "\t"
+    'python-shell-completion-complete-or-indent)
+  (make-local-variable 'python-pdbtrack-buffers-to-kill)
+  (make-local-variable 'python-pdbtrack-tracked-buffer)
+  (make-local-variable 'python-shell-internal-last-output)
+  (when python-shell-enable-font-lock
+    (set-syntax-table python-mode-syntax-table)
+    (set (make-local-variable 'font-lock-defaults)
+         '(python-font-lock-keywords nil nil nil nil))
+    (set (make-local-variable 'syntax-propertize-function)
+         (eval
+          ;; XXX: Unfortunately eval is needed here to make use of the
+          ;; dynamic value of `comint-prompt-regexp'.
+          `(syntax-propertize-rules
+            (,comint-prompt-regexp
+             (0 (ignore
+                 (put-text-property
+                  comint-last-input-start end 'syntax-table
+                  python-shell-output-syntax-table)
+                 ;; XXX: This might look weird, but it is the easiest
+                 ;; way to ensure font lock gets cleaned up before the
+                 ;; current prompt, which is needed for unclosed
+                 ;; strings to not mess up with current input.
+                 (font-lock-unfontify-region comint-last-input-start end))))
+            (,(python-rx string-delimiter)
+             (0 (ignore
+                 (and (not (eq (get-text-property start 'field) 'output))
+                      (python-syntax-stringify)))))))))
+  (compilation-shell-minor-mode 1))
 
 (and py-load-skeletons-p (require 'python-components-skeletons))
 (and py-company-pycomplete-p     (require 'company-pycomplete))
