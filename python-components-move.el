@@ -341,21 +341,15 @@ http://docs.python.org/reference/compound_stmts.html
   (interactive)
   (save-restriction
     (unless (bobp)
+      (py--narrow-in-comint-modes done limit)
       (let* ((orig (or orig (point)))
              (this (point))
              (cui (current-indentation))
-             (limit
-              (or limit
-                  (and
-                   (or (eq major-mode 'comint-mode)(eq major-mode 'inferior-python-mode))
-                   (if (re-search-backward comint-prompt-regexp nil t 1)
-                       (match-end 0)
-                     (error (format "py-beginning-of-statement: No prompt found in %s mode" major-mode))))))
+
              (pps (progn (goto-char this)
                          (parse-partial-sexp (or limit (point-min))(point))))
              (done done)
              erg)
-        (and limit (not done) (narrow-to-region limit orig))
         (cond
          ((and (bolp)(eolp))
           (skip-chars-backward " \t\r\n\f")

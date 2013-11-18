@@ -24,7 +24,7 @@
 ;;; Code:
 (require 'python-components-macros)
 (defun py-set-command-args (arguments)
-  "Set Python arguments on the fly, override defaults in this session. 
+  "Set Python arguments on the fly, override defaults in this session.
 
 Use `defcustom' to keep value across sessions "
   (interactive
@@ -1272,6 +1272,17 @@ http://docs.python.org/reference/compound_stmts.html"
           (when (and py-verbose-p iact) (message "%s" erg))
           erg)
       (py-beginning-of-form-intern final-re iact indent orig lc))))
+
+(defun py--narrow-in-comint-modes (&optional done limit)
+  "In comint-modes, limit region to previous prompt. "
+  (let ((limit
+         (or limit
+             (and
+              (or (eq major-mode 'comint-mode)(eq major-mode 'inferior-python-mode))
+              (if (re-search-backward comint-prompt-regexp nil t 1)
+                  (match-end 0)
+                (error (format "py-beginning-of-statement: No prompt found in %s mode" major-mode)))))))
+    (and limit (not done) (narrow-to-region limit orig))))
 
 (provide 'python-components-intern)
 ;;; python-components-intern.el ends here
