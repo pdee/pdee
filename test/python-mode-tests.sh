@@ -1455,3 +1455,4 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-docstring-style-pep-257-nn-closing-quotes-lp-1241147-test \
 --funcall py-end-of-block-test \
 --funcall indent-triplequoted-to-itself-lp:752252-test \
+--funcall py-execute-buffer-ipython-lp-1252643-test \

@@ -38,6 +38,7 @@
 
 (setq bug-numbered-tests
       (list
+       'py-execute-buffer-ipython-lp-1252643-test
        'py-empty-line-closes-p-lp-1235324-test
        'C-c-C-c-lp:1221310-and-store-result-test
        'Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test
@@ -2374,7 +2375,7 @@ I am using version 6.0.4
 
 (defun py-mark-expression-marks-too-much-lp:941140-base ()
   (goto-char 60)
-  
+
   (assert (string-match "some" (py-expression)) nil "py-mark-expression-marks-too-much-lp:941140-test failed")
   (goto-char 417)
   (assert (string-match "a" (py-expression)) nil "py-mark-expression-marks-too-much-lp:941140-test failed"))
@@ -6172,6 +6173,20 @@ def main():
 (defun indentation-after-parentized-assignment-lp-1243012-base ()
     (goto-char 40)
     (assert nil "indentation-after-parentized-assignment-lp-1243012-test failed"))
+
+(defun py-execute-buffer-ipython-lp-1252643-test (&optional arg)
+  (interactive "p")
+   (let ((teststring "#! /usr/bin/env python
+print(1234)
+"))
+  (py-bug-tests-intern 'py-execute-buffer-ipython-lp-1252643-base arg teststring)))
+
+(defun py-execute-buffer-ipython-lp-1252643-base ()
+  (let ((py-switch-buffers-on-execute-p t))
+    (py-execute-buffer-ipython)
+    (sit-for 1) 
+    (assert (string= "*Ipython*" (buffer-name (current-buffer))) nil "py-execute-buffer-ipython-lp-1252643-test failed")))
+
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

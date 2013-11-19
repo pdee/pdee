@@ -2945,8 +2945,80 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
 
 
 ;;; Keymap
-(defun py--init-easy-menu ()
-  (and (ignore-errors (require 'easymenu) t)
+(defvar python-mode-map)
+(setq python-mode-map
+      (let ((map (make-sparse-keymap)))
+        ;; electric keys
+        (define-key map [(:)] 'py-electric-colon)
+        (define-key map [(\#)] 'py-electric-comment)
+        (define-key map [(delete)] 'py-electric-delete)
+        (define-key map [(backspace)] 'py-electric-backspace)
+        (define-key map [(control backspace)] 'py-hungry-delete-backwards)
+        (define-key map [(control c) (delete)] 'py-hungry-delete-forward)
+        ;; (define-key map [(control y)] 'py-electric-yank)
+        ;; moving point
+        (define-key map [(control c)(control p)] 'py-beginning-of-statement)
+        (define-key map [(control c)(control n)] 'py-end-of-statement)
+        (define-key map [(control c)(control u)] 'py-beginning-of-block)
+        (define-key map [(control c)(control q)] 'py-end-of-block)
+        (define-key map [(control meta a)] 'py-beginning-of-def-or-class)
+        (define-key map [(control meta e)] 'py-end-of-def-or-class)
+        
+        ;; (define-key map [(meta i)] 'py-indent-forward-line)
+        (define-key map [(control j)] 'py-newline-and-indent)
+        ;; Most Pythoneers expect RET `py-newline-and-indent'
+        ;; (define-key map (kbd "RET") 'py-newline-and-dedent)
+        (define-key map (kbd "RET") py-return-key)
+        ;; (define-key map (kbd "RET") 'newline)
+        (define-key map [(super backspace)] 'py-dedent)
+        ;; (define-key map [(control return)] 'py-newline-and-dedent)
+        ;; indentation level modifiers
+        (define-key map [(control c)(control l)] 'py-shift-left)
+        (define-key map [(control c)(control r)] 'py-shift-right)
+        (define-key map [(control c)(<)] 'py-shift-left)
+        (define-key map [(control c)(>)] 'py-shift-right)
+        (define-key map [(control c)(tab)] 'py-indent-region)
+        (define-key map [(control c)(:)] 'py-guess-indent-offset)
+        ;; subprocess commands
+        (define-key map [(control c)(control c)] 'py-execute-buffer)
+        (define-key map [(control c)(control m)] 'py-execute-import-or-reload)
+        (define-key map [(control c)(control s)] 'py-execute-string)
+        (define-key map [(control c)(|)] 'py-execute-region)
+        (define-key map [(control meta x)] 'py-execute-def-or-class)
+        (define-key map [(control c)(!)] 'py-shell)
+        (define-key map [(control c)(control t)] 'py-toggle-shell)
+        (define-key map [(control meta h)] 'py-mark-def-or-class)
+        (define-key map [(control c)(control k)] 'py-mark-block-or-clause)
+        (define-key map [(control c)(.)] 'py-expression)
+        ;; Miscellaneous
+        (define-key map [(super q)] 'py-copy-statement)
+        (define-key map [(control c)(control d)] 'py-pdbtrack-toggle-stack-tracking)
+        (define-key map [(control c)(control f)] 'py-sort-imports)
+        (define-key map [(control c)(\#)] 'py-comment-region)
+        (define-key map [(control c)(\?)] 'py-describe-mode)
+        (define-key map [(control c)(control e)] 'py-help-at-point)
+        (define-key map [(control c)(-)] 'py-up-exception)
+        (define-key map [(control c)(=)] 'py-down-exception)
+        (define-key map [(control x) (n) (d)] 'py-narrow-to-defun)
+        ;; information
+        (define-key map [(control c)(control b)] 'py-submit-bug-report)
+        (define-key map [(control c)(control v)] 'py-version)
+        (define-key map [(control c)(control w)] 'py-pychecker-run)
+        (define-key map (kbd "TAB") 'py-indent-line)
+        ;; (if py-complete-function
+        ;;     (progn
+        ;;       (define-key map [(meta tab)] py-complete-function)
+        ;;       (define-key map [(esc) (tab)] py-complete-function))
+        ;;   (define-key map [(meta tab)] 'py-shell-complete)
+        ;;   (define-key map [(esc) (tab)] 'py-shell-complete))
+        (substitute-key-definition 'complete-symbol 'completion-at-point
+                                   map global-map)
+        (substitute-key-definition 'backward-up-list 'py-up
+                                   map global-map)
+        (substitute-key-definition 'down-list 'py-down
+                                   map global-map)
+        
+        (and (ignore-errors (require 'easymenu) t)
              ;; (easy-menu-define py-menu map "Python Tools"
              ;;           `("PyTools"
              (easy-menu-define
@@ -7179,82 +7251,7 @@ Complete symbol before point using Pymacs . "])
                    :help "`py-find-function'
 Try to find source definition of function at point"]
                   
-                  )))))
-
-(defvar python-mode-map)
-(setq python-mode-map
-      (let ((map (make-sparse-keymap)))
-        ;; electric keys
-        (define-key map [(:)] 'py-electric-colon)
-        (define-key map [(\#)] 'py-electric-comment)
-        (define-key map [(delete)] 'py-electric-delete)
-        (define-key map [(backspace)] 'py-electric-backspace)
-        (define-key map [(control backspace)] 'py-hungry-delete-backwards)
-        (define-key map [(control c) (delete)] 'py-hungry-delete-forward)
-        ;; (define-key map [(control y)] 'py-electric-yank)
-        ;; moving point
-        (define-key map [(control c)(control p)] 'py-beginning-of-statement)
-        (define-key map [(control c)(control n)] 'py-end-of-statement)
-        (define-key map [(control c)(control u)] 'py-beginning-of-block)
-        (define-key map [(control c)(control q)] 'py-end-of-block)
-        (define-key map [(control meta a)] 'py-beginning-of-def-or-class)
-        (define-key map [(control meta e)] 'py-end-of-def-or-class)
-        
-        ;; (define-key map [(meta i)] 'py-indent-forward-line)
-        (define-key map [(control j)] 'py-newline-and-indent)
-        ;; Most Pythoneers expect RET `py-newline-and-indent'
-        ;; (define-key map (kbd "RET") 'py-newline-and-dedent)
-        (define-key map (kbd "RET") py-return-key)
-        ;; (define-key map (kbd "RET") 'newline)
-        (define-key map [(super backspace)] 'py-dedent)
-        ;; (define-key map [(control return)] 'py-newline-and-dedent)
-        ;; indentation level modifiers
-        (define-key map [(control c)(control l)] 'py-shift-left)
-        (define-key map [(control c)(control r)] 'py-shift-right)
-        (define-key map [(control c)(<)] 'py-shift-left)
-        (define-key map [(control c)(>)] 'py-shift-right)
-        (define-key map [(control c)(tab)] 'py-indent-region)
-        (define-key map [(control c)(:)] 'py-guess-indent-offset)
-        ;; subprocess commands
-        (define-key map [(control c)(control c)] 'py-execute-buffer)
-        (define-key map [(control c)(control m)] 'py-execute-import-or-reload)
-        (define-key map [(control c)(control s)] 'py-execute-string)
-        (define-key map [(control c)(|)] 'py-execute-region)
-        (define-key map [(control meta x)] 'py-execute-def-or-class)
-        (define-key map [(control c)(!)] 'py-shell)
-        (define-key map [(control c)(control t)] 'py-toggle-shell)
-        (define-key map [(control meta h)] 'py-mark-def-or-class)
-        (define-key map [(control c)(control k)] 'py-mark-block-or-clause)
-        (define-key map [(control c)(.)] 'py-expression)
-        ;; Miscellaneous
-        (define-key map [(super q)] 'py-copy-statement)
-        (define-key map [(control c)(control d)] 'py-pdbtrack-toggle-stack-tracking)
-        (define-key map [(control c)(control f)] 'py-sort-imports)
-        (define-key map [(control c)(\#)] 'py-comment-region)
-        (define-key map [(control c)(\?)] 'py-describe-mode)
-        (define-key map [(control c)(control e)] 'py-help-at-point)
-        (define-key map [(control c)(-)] 'py-up-exception)
-        (define-key map [(control c)(=)] 'py-down-exception)
-        (define-key map [(control x) (n) (d)] 'py-narrow-to-defun)
-        ;; information
-        (define-key map [(control c)(control b)] 'py-submit-bug-report)
-        (define-key map [(control c)(control v)] 'py-version)
-        (define-key map [(control c)(control w)] 'py-pychecker-run)
-        (define-key map (kbd "TAB") 'py-indent-line)
-        ;; (if py-complete-function
-        ;;     (progn
-        ;;       (define-key map [(meta tab)] py-complete-function)
-        ;;       (define-key map [(esc) (tab)] py-complete-function))
-        ;;   (define-key map [(meta tab)] 'py-shell-complete)
-        ;;   (define-key map [(esc) (tab)] 'py-shell-complete))
-        (substitute-key-definition 'complete-symbol 'completion-at-point
-                                   map global-map)
-        (substitute-key-definition 'backward-up-list 'py-up
-                                   map global-map)
-        (substitute-key-definition 'down-list 'py-down
-                                   map global-map)
-        
-        (py--init-easy-menu)
+                  ))))
         map))
 
 (defvaralias 'py-mode-map 'python-mode-map)
@@ -7757,7 +7754,7 @@ Don't save anything for STR matching `inferior-python-filter-regexp'."
              'py-set-auto-fill-values)))))
 
 ;;;
-(define-derived-mode py-shell-mode comint-mode "Py"
+(define-derived-mode py-shell-mode comint-mode "Inferior Python"
   "Major mode for interacting with an inferior Python process.
 A Python process can be started with \\[py-shell].
 
@@ -7772,19 +7769,21 @@ containing Python source.
   :group 'python
   (require 'ansi-color) ; for ipython
   (setq mode-line-process '(":%s"))
-  ;; (set (make-local-variable 'comint-input-filter) 'py-input-filter)
-  ;; (set (make-local-variable 'comint-prompt-regexp)
-  ;;      (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
-  ;;             (concat "\\("
-  ;;                     (mapconcat 'identity
-  ;;                                (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
-  ;;                                "\\|")
-  ;;                     "\\)"))
-  ;;            (t (concat "\\("
-  ;;                       (mapconcat 'identity
-  ;;                                  (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
-  ;;                                  "\\|")
-  ;;                       "\\)"))))
+  (set (make-local-variable 'comint-input-filter) 'py-input-filter)
+  (set (make-local-variable 'compilation-error-regexp-alist)
+       python-compilation-regexp-alist)
+  (set (make-local-variable 'comint-prompt-regexp)
+       (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
+              (concat "\\("
+                      (mapconcat 'identity
+                                 (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
+                                 "\\|")
+                      "\\)"))
+             (t (concat "\\("
+                        (mapconcat 'identity
+                                   (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
+                                   "\\|")
+                        "\\)"))))
   (if py-complete-function
       (add-hook 'completion-at-point-functions
                 py-complete-function nil 'local)
@@ -7956,78 +7955,6 @@ Runs `jython-mode-hook' after `python-mode-hook'."
 
   :group 'python-mode
   (py-toggle-shell "jython"))
-
-(define-derived-mode inferior-python-mode comint-mode "Py"
-  "Major mode for Python inferior process.
-Runs a Python interpreter as a subprocess of Emacs, with Python
-I/O through an Emacs buffer.  Variables
-`py-python-command' and `py-python-command-args'
-controls which Python interpreter is run.  Variables
-`py-shell-prompt-regexp',
-`py-shell-prompt-output-regexp',
-`python-shell-prompt-block-regexp',
-`python-shell-enable-font-lock',
-`python-shell-completion-setup-code',
-`python-shell-completion-string-code',
-`python-shell-completion-module-string-code',
-`python-eldoc-setup-code', `python-eldoc-string-code',
-`python-ffap-setup-code' and `python-ffap-string-code' can
-customize this mode for different Python interpreters.
-
-You can also add additional setup code to be run at
-initialization of the interpreter via `python-shell-setup-codes'
-variable.
-
-\(Type \\[describe-mode] in the process buffer for a list of commands.)"
-  ;; (and python-shell--parent-buffer
-  ;; (python-util-clone-local-variables python-shell--parent-buffer))
-  (setq comint-prompt-regexp (format "^\\(?:%s\\|%s\\|%s\\)"
-                                     python-shell-prompt-regexp
-                                     python-shell-prompt-block-regexp
-                                     python-shell-prompt-pdb-regexp))
-  (setq mode-line-process '(":%s"))
-  (make-local-variable 'comint-output-filter-functions)
-  (add-hook 'comint-output-filter-functions
-            'python-comint-output-filter-function)
-  (add-hook 'comint-output-filter-functions
-            'python-pdbtrack-comint-output-filter-function)
-  (set (make-local-variable 'compilation-error-regexp-alist)
-       python-shell-compilation-regexp-alist)
-  (define-key inferior-python-mode-map [remap complete-symbol]
-    'completion-at-point)
-  (add-hook 'completion-at-point-functions
-            'python-shell-completion-complete-at-point nil 'local)
-  (add-to-list (make-local-variable 'comint-dynamic-complete-functions)
-               'python-shell-completion-complete-at-point)
-  (define-key inferior-python-mode-map "\t"
-    'python-shell-completion-complete-or-indent)
-  (make-local-variable 'python-pdbtrack-buffers-to-kill)
-  (make-local-variable 'python-pdbtrack-tracked-buffer)
-  (make-local-variable 'python-shell-internal-last-output)
-  (when python-shell-enable-font-lock
-    (set-syntax-table python-mode-syntax-table)
-    (set (make-local-variable 'font-lock-defaults)
-         '(python-font-lock-keywords nil nil nil nil))
-    (set (make-local-variable 'syntax-propertize-function)
-         (eval
-          ;; XXX: Unfortunately eval is needed here to make use of the
-          ;; dynamic value of `comint-prompt-regexp'.
-          `(syntax-propertize-rules
-            (,comint-prompt-regexp
-             (0 (ignore
-                 (put-text-property
-                  comint-last-input-start end 'syntax-table
-                  python-shell-output-syntax-table)
-                 ;; XXX: This might look weird, but it is the easiest
-                 ;; way to ensure font lock gets cleaned up before the
-                 ;; current prompt, which is needed for unclosed
-                 ;; strings to not mess up with current input.
-                 (font-lock-unfontify-region comint-last-input-start end))))
-            (,(python-rx string-delimiter)
-             (0 (ignore
-                 (and (not (eq (get-text-property start 'field) 'output))
-                      (python-syntax-stringify)))))))))
-  (compilation-shell-minor-mode 1))
 
 (and py-load-skeletons-p (require 'python-components-skeletons))
 (and py-company-pycomplete-p     (require 'company-pycomplete))
