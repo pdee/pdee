@@ -341,7 +341,6 @@ http://docs.python.org/reference/compound_stmts.html
   (interactive)
   (save-restriction
     (unless (bobp)
-      (py--narrow-in-comint-modes done limit)
       (let* ((orig (or orig (point)))
              (this (point))
              (cui (current-indentation))

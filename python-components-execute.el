@@ -490,61 +490,72 @@ Needed when file-path names are contructed from maybe numbered buffer names like
                                    (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
                                    "\\|")
                         "\\)")))))
-(defun py--shell-setup ()
-    (set (make-local-variable 'comint-input-filter) 'py-history-input-filter)
-      (set (make-local-variable 'comint-prompt-read-only) py-shell-prompt-read-only)
-      (set (make-local-variable 'comint-use-prompt-regexp) nil)
-      (set (make-local-variable 'compilation-error-regexp-alist)
-           python-compilation-regexp-alist)
-      ;; (setq completion-at-point-functions nil)
-      (and py-fontify-shell-buffer-p
-           (set (make-local-variable 'font-lock-defaults)
-                '(py-font-lock-keywords nil nil nil nil
-                                        (font-lock-syntactic-keywords
-                                         . py-font-lock-syntactic-keywords))))
-      (set (make-local-variable 'comment-start) "# ")
-      (set (make-local-variable 'comment-start-skip) "^[ \t]*#+ *")
-      (set (make-local-variable 'comment-column) 40)
-      (set (make-local-variable 'comment-indent-function) #'py-comment-indent-function)
-      (set (make-local-variable 'indent-region-function) 'py-indent-region)
-      (set (make-local-variable 'indent-line-function) 'py-indent-line)
-      (set (make-local-variable 'inhibit-point-motion-hooks) t)
-      (setq proc (get-buffer-process (current-buffer)))
-      (py-shell-send-setup-code proc)
-      (and py-set-pager-cat-p (comint-simple-send proc "import os;os.environ['PAGER'] = 'cat'"))
-      (compilation-shell-minor-mode 1)
-      (setq comint-input-sender 'py-shell-simple-send)
-      ;; (sit-for 0.1)
-      (setq comint-input-ring-file-name
-            (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
-                   (if py-honor-IPYTHONDIR-p
-                       (if (getenv "IPYTHONDIR")
-                           (concat (getenv "IPYTHONDIR") "/history")
-                         py-ipython-history)
-                     py-ipython-history))
-                  (t
-                   (if py-honor-PYTHONHISTORY-p
-                       (if (getenv "PYTHONHISTORY")
-                           (concat (getenv "PYTHONHISTORY") "/" (py-report-executable py-buffer-name) "_history")
-                         py-ipython-history)
-                     py-ipython-history))))
-      (comint-read-input-ring t)
-      (set-process-sentinel (get-buffer-process py-buffer-name)
-                            #'shell-write-history-on-exit)
-      (add-hook 'comint-output-filter-functions
-                'ansi-color-process-output)
-      (add-hook 'after-change-functions 'py-after-change-function nil t)
-      
-      (remove-hook 'comint-output-filter-functions
-                   'font-lock-extend-jit-lock-region-after-change)
-      (use-local-map py-shell-map)
-      ;; pdbtrack
-      (and py-pdbtrack-do-tracking-p
-           (add-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file t)
-           (remove-hook 'comint-output-filter-functions 'python-pdbtrack-track-stack-file t))
-      (set-syntax-table python-mode-syntax-table))
 
-(defun py-shell (&optional argprompt dedicated shell buffer-name no-window-managment)
+(defun py--shell-setup ()
+  (set (make-local-variable 'comint-input-filter) 'py-history-input-filter)
+  (set (make-local-variable 'comint-prompt-read-only) py-shell-prompt-read-only)
+  (set (make-local-variable 'comint-use-prompt-regexp) nil)
+  (set (make-local-variable 'compilation-error-regexp-alist)
+       python-compilation-regexp-alist)
+  ;; (setq completion-at-point-functions nil)
+  (and py-fontify-shell-buffer-p
+       (set (make-local-variable 'font-lock-defaults)
+            '(py-font-lock-keywords nil nil nil nil
+                                    (font-lock-syntactic-keywords
+                                     . py-font-lock-syntactic-keywords))))
+  (set (make-local-variable 'comment-start) "# ")
+  (set (make-local-variable 'comment-start-skip) "^[ \t]*#+ *")
+  (set (make-local-variable 'comment-column) 40)
+  (set (make-local-variable 'comment-indent-function) #'py-comment-indent-function)
+  (set (make-local-variable 'indent-region-function) 'py-indent-region)
+  (set (make-local-variable 'indent-line-function) 'py-indent-line)
+  (set (make-local-variable 'inhibit-point-motion-hooks) t)
+  (setq proc (get-buffer-process (current-buffer)))
+  (py-shell-send-setup-code proc)
+  (and py-set-pager-cat-p (comint-simple-send proc "import os;os.environ['PAGER'] = 'cat'"))
+  (compilation-shell-minor-mode 1)
+  (setq comint-input-sender 'py-shell-simple-send)
+  ;; (sit-for 0.1)
+  (setq comint-input-ring-file-name
+        (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
+               (if py-honor-IPYTHONDIR-p
+                   (if (getenv "IPYTHONDIR")
+                       (concat (getenv "IPYTHONDIR") "/history")
+                     py-ipython-history)
+                 py-ipython-history))
+              (t
+               (if py-honor-PYTHONHISTORY-p
+                   (if (getenv "PYTHONHISTORY")
+                       (concat (getenv "PYTHONHISTORY") "/" (py-report-executable py-buffer-name) "_history")
+                     py-ipython-history)
+                 py-ipython-history))))
+  (comint-read-input-ring t)
+  (set-process-sentinel (get-buffer-process py-buffer-name)
+                        #'shell-write-history-on-exit)
+  (add-hook 'comint-output-filter-functions
+            'ansi-color-process-output)
+  (add-hook 'after-change-functions 'py-after-change-function nil t)
+
+  (remove-hook 'comint-output-filter-functions
+               'font-lock-extend-jit-lock-region-after-change)
+  (use-local-map py-shell-map)
+  (cond
+   (py-complete-function
+    (add-hook 'completion-at-point-functions
+              py-complete-function nil 'local))
+   (py-load-pymacs-p
+    (add-hook 'completion-at-point-functions
+              'py-complete-completion-at-point nil 'local))
+   (t
+    (add-hook 'completion-at-point-functions
+              'py-shell-complete nil 'local)))
+  ;; pdbtrack
+  (and py-pdbtrack-do-tracking-p
+       (add-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file t)
+       (remove-hook 'comint-output-filter-functions 'python-pdbtrack-track-stack-file t))
+  (set-syntax-table python-mode-syntax-table))
+
+(defun py-shell (&optional argprompt dedicated shell buffer-name no-window-managment) 
   "Start an interactive Python interpreter in another window.
 Interactively, \\[universal-argument] 4 prompts for a buffer.
 \\[universal-argument] 2 prompts for `py-python-command-args'.
