@@ -153,6 +153,25 @@ With optional \\[universal-argument] an indent with length `py-indent-offset' is
            (py--indent-line-intern need cui this-indent-offset col beg end region))
           (t (py--indent-line-intern need cui this-indent-offset col beg end region)))))
 
+(defun py-complete-or-indent (&optional beg end)
+  "If after symbol-characters, try to complete, otherwise indent. "
+
+  (interactive "*")
+  (let* ((beg
+          (or beg
+              (save-excursion
+                (skip-chars-backward "a-zA-Z0-9_.('") (point))))
+         (end (or end (point)))
+         (word (or word (buffer-substring-no-properties beg end)))
+
+         (end (or end (point))))
+
+    (if (string= "" word)
+        (completion-at-point)
+      (unless (and (or (eq major-mode 'comint-mode)(eq major-mode 'inferior-python-model))
+                   (re-search-backward comint-prompt-regexp (line-beginning-position) t 1)
+                   (py-indent-line))))))
+
 (defun py-indent-line (&optional arg)
   "Indent the current line according to Python rules.
 
@@ -213,11 +232,11 @@ C-q TAB inserts a literal TAB-character.
                            (py-compute-indentation nil nil nil nil nil nil this-indent-offset))))
             (py--indent-line-base)
             (if region
-                  (and (or py-tab-shifts-region-p
-                           py-tab-indents-region-p)
-                       (not (eq (point) orig))
-                       (exchange-point-and-mark))
-                (and (< (current-column) (current-indentation))(back-to-indentation)))
+                (and (or py-tab-shifts-region-p
+                         py-tab-indents-region-p)
+                     (not (eq (point) orig))
+                     (exchange-point-and-mark))
+              (and (< (current-column) (current-indentation))(back-to-indentation)))
             (when (and (interactive-p) py-verbose-p)(message "%s" (current-indentation)))
             (current-indentation)))
       (setq need (py-compute-indentation))
