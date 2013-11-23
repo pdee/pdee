@@ -26,12 +26,15 @@
 
 Returns position if successful, nil otherwise "
   (interactive)
-  (let (erg)
+  (let ((orig (point))
+        erg last)
     (unless (bobp)
-      (while (and (not (bobp)) (setq erg (py-beginning-of-statement))
-                  (< 0 (current-indentation))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-      erg)))
+      (while (and (setq last (re-search-backward py-top-level-form-re nil 'move 1))(nth 8 (syntax-ppss))))
+      ;; (while (and (not (bobp)) (setq erg (py-beginning-of-statement))
+      ;;             (< 0 (current-indentation))))
+      (and last (< last orig)(setq erg (point))))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
 
 (defun py-end-of-top-level ()
   "Go to end of top-level form at point.

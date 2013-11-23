@@ -2120,6 +2120,13 @@ See py-no-outdent-1-re-raw, py-no-outdent-2-re-raw for better readable content "
    "\\)\\_>[( \t]*.*:?")
   "See py-block-or-clause-re-raw, which it reads. ")
 
+(defconst py-top-level-form-re
+  (concat
+   "^\\_<[a-zA-Z_]\\|^\\_<\\("
+   (regexp-opt  py-extended-block-or-clause-re-raw)
+   "\\)\\_>[( \t]*.*:?")
+  "A form which starts at zero indent level, but is not a comment. ")
+
 ;; (defconst py-extended-block-or-clause-re "[ \t]*\\_<\\(def\\|class\\|if\\|else\\|elif\\|while\\|for\\|try\\|except\\|finally\\|with\\)\\_>[:( \n\t]*"
 ;;   "Matches the beginning of a compound statement or it's clause.
 ;; Includes def and class. ")
@@ -7824,6 +7831,7 @@ See available customizations listed in files variables-python-mode at directory 
 \\{python-mode-map}"
   :group 'python-mode
   ;; Local vars
+  (set (make-local-variable 'electric-indent-inhibit) nil)
   (set (make-local-variable 'outline-regexp)
        (concat (mapconcat 'identity
                           (mapcar #'(lambda (x) (concat "^\\s-*" x "\\_>"))

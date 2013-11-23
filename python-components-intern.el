@@ -120,9 +120,7 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
                   (setq repeat t))
           (setq indent
                 (cond
-                 ((and (bobp)
-                       (and (not line)
-                            (eq liep (line-end-position))))
+                 ((and (bobp) (eq liep (line-end-position)))
                   (current-indentation))
                  ((and (bobp)(py-statement-opens-block-p py-extended-block-or-clause-re))
                   (+ (if py-smart-indentation (py-guess-indent-offset) indent-offset) (current-indentation)))
@@ -130,8 +128,9 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
                   (current-indentation))
                  ;; in string
                  ((and (nth 3 pps)(nth 8 pps))
-                  (if (and (not line)
-                           (eq liep (line-end-position)))
+                  (if
+                      ;; still at original line
+                      (eq liep (line-end-position))
                       (progn
                         (forward-line -1)
                         (end-of-line)
@@ -149,8 +148,7 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
                   (py-compute-indentation orig origline closing line nesting t indent-offset liep))
                  ;; comments
                  ((nth 8 pps)
-                  (if (and (not line)
-                           (eq liep (line-end-position)))
+                  (if (eq liep (line-end-position))
                       (progn
                         (goto-char (nth 8 pps))
                         (py-line-backward-maybe)
@@ -341,8 +339,8 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
                  ((and py-empty-line-closes-p (py-after-empty-line))
                   (progn (py-beginning-of-statement)
                          (- (current-indentation) py-indent-offset)))
-                 ((and (not line)
-                       (eq liep (line-end-position))
+                 ;; still at orignial line
+                 ((and (eq liep (line-end-position))
                        (save-excursion
                          (and (setq erg (py-go-to-keyword py-extended-block-or-clause-re))
                               (if py-smart-indentation (setq indent-offset (py-guess-indent-offset)) t)
@@ -1234,11 +1232,11 @@ http://docs.python.org/reference/compound_stmts.html"
                            (unless (looking-at (symbol-value regexp))
                              (cdr (py-go-to-keyword (symbol-value regexp) (current-indentation))))))
                         ;; indent from first beginning of clause matters
-                        ((not (looking-at py-extended-block-or-clause-re))
-                         (py-go-to-keyword py-extended-block-or-clause-re indent)
-                         (if (looking-at (symbol-value regexp))
-                             (setq erg (point))
-                           (py-beginning-of-form-intern regexp iact (current-indentation) orig)))
+                        ;; ((not (looking-at py-extended-block-or-clause-re))
+                        ;;  (py-go-to-keyword py-extended-block-or-clause-re indent)
+                        ;;  (if (looking-at (symbol-value regexp))
+                        ;;      (setq erg (point))
+                        ;;    (py-beginning-of-form-intern regexp iact (current-indentation) orig)))
                         ((numberp indent)
                          (ignore-errors
                            (cdr (py-go-to-keyword (symbol-value regexp) indent))))
