@@ -19,6 +19,8 @@
 
 ;;; Code:
 
+;; (require 'ert)
+
 (defmacro py-tests-with-temp-buffer (contents &rest body)
   "Create a `python-mode' enabled temp buffer with CONTENTS.
 BODY is code to be executed within the temp buffer.  Point is
@@ -356,6 +358,7 @@ result = some_function_that_takes_arguments(
       ""
       (file-readable-p py-pyflakespep8-command)))
 
+
 (ert-deftest Bogus-dedent-when-typing-colon-in-dictionary-literal-lp-1197171 ()
   (py-tests-with-temp-buffer
       "#! /usr/bin/env python
@@ -369,6 +372,7 @@ def foo():
         {'another'"
     (goto-char (point-max))
     (should (eq 8 (py-compute-indentation)))))
+
 
 (ert-deftest exception-buffer-and-line ()
   (py-tests-with-temp-buffer
@@ -485,6 +489,7 @@ data = {
       (should (eq 0 (py-compute-indentation)))
       )))
 
+
 (ert-deftest top-level ()
   (py-tests-with-temp-buffer
       "klauf = kugel()
@@ -554,4 +559,3 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
    "from foo.bar.baz import something
 "
    (should (and (not (py-copy-statement))(string-match "from foo.bar.baz import something" (car kill-ring))))))
-
