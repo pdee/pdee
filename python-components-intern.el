@@ -107,7 +107,9 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
              (indent-offset (or indent-offset py-indent-offset))
              (name (current-buffer))
              erg indent this-line)
-        ;; indent in Shell
+        ;; `parse-partial-sexp' isn't reliable in Shell,
+        ;; as banner or previous output might mess it
+        ;; up - use a temp-buffer instead
         (if (and (not repeat)
                  (and (comint-check-proc (current-buffer))
                       (re-search-backward (concat py-shell-prompt-regexp "\\|" ipython-de-output-prompt-regexp "\\|" ipython-de-input-prompt-regexp) nil t 1)))
@@ -1273,14 +1275,15 @@ http://docs.python.org/reference/compound_stmts.html"
 
 (defun py--narrow-in-comint-modes (&optional done limit)
   "In comint-modes, limit region to previous prompt. "
-  (let ((limit
+  (let ((pos (point)) 
+        (limit
          (or limit
              (and
               (or (eq major-mode 'comint-mode)(eq major-mode 'inferior-python-mode))
               (if (re-search-backward comint-prompt-regexp nil t 1)
                   (match-end 0)
                 (error (format "py-beginning-of-statement: No prompt found in %s mode" major-mode)))))))
-    (and limit (not done) (narrow-to-region limit orig))))
+    (and limit (not done) (goto-char (match-end 0)) (skip-chars-forward " \t") (narrow-to-region (point) pos))))
 
 (provide 'python-components-intern)
 ;;; python-components-intern.el ends here
