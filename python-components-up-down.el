@@ -78,7 +78,7 @@ Return position if form found, nil otherwise. "
            erg)
       (if (eobp)
           (setq erg nil)
-        (while (and (re-search-forward regexp nil t 1)
+        (while (and (re-search-forward regexp nil 'move 1)
                     (nth 8 (syntax-ppss))))
         (back-to-indentation)
         (when (looking-at regexp) (setq erg (point)))

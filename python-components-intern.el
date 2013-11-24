@@ -107,9 +107,6 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
              (indent-offset (or indent-offset py-indent-offset))
              (name (current-buffer))
              erg indent this-line)
-        ;; `parse-partial-sexp' isn't reliable in Shell,
-        ;; as banner or previous output might mess it
-        ;; up - use a temp-buffer instead
         (if (and (not repeat)
                  (and (comint-check-proc (current-buffer))
                       (re-search-backward (concat py-shell-prompt-regexp "\\|" ipython-de-output-prompt-regexp "\\|" ipython-de-input-prompt-regexp) nil t 1)))
@@ -225,7 +222,11 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
                                 (t (+ (current-column) (* (nth 0 pps)))))))
                        ((nth 1 (syntax-ppss))
                         (goto-char (nth 1 (syntax-ppss)))
-                        (setq line (< (py-count-lines) origline))
+                        (setq line
+                              ;; should be faster
+                              (< (line-end-position) liep)
+                              ;; (< (py-count-lines) origline)
+                              )
                         (py-compute-indentation orig origline closing line nesting t indent-offset liep))
                        ((not (py-beginning-of-statement-p))
                         (py-beginning-of-statement)
