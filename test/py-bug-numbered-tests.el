@@ -6184,8 +6184,32 @@ print(1234)
 (defun py-execute-buffer-ipython-lp-1252643-base ()
   (let ((py-switch-buffers-on-execute-p t))
     (py-execute-buffer-ipython)
-    (sit-for 1) 
+    (sit-for 1)
     (assert (string= "*Ipython*" (buffer-name (current-buffer))) nil "py-execute-buffer-ipython-lp-1252643-test failed")))
+
+
+(defun Execute-region_statement-runs-full-file-lp-1269855-test (&optional arg)
+  (interactive "p")
+   (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+def s (n):
+    sum=0
+    for i in range(1,n+1):
+         sum += i
+         #print i
+    return sum
+
+print s(10)
+print s(100)
+print s(500)
+"))
+  (py-bug-tests-intern 'Execute-region_statement-runs-full-file-lp-1269855-base arg teststring)))
+
+(defun Execute-region_statement-runs-full-file-lp-1269855-base ()
+  (py-execute-buffer)
+  (goto-char 149)
+  (py-execute-statement)
+  (assert nil "Execute-region_statement-runs-full-file-lp-1269855-test failed"))
 
 
 (provide 'py-bug-numbered-tests)

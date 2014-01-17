@@ -555,7 +555,7 @@ Needed when file-path names are contructed from maybe numbered buffer names like
        (remove-hook 'comint-output-filter-functions 'python-pdbtrack-track-stack-file t))
   (set-syntax-table python-mode-syntax-table))
 
-(defun py-shell (&optional argprompt dedicated shell buffer-name no-window-managment) 
+(defun py-shell (&optional argprompt dedicated shell buffer-name no-window-managment)
   "Start an interactive Python interpreter in another window.
 Interactively, \\[universal-argument] 4 prompts for a buffer.
 \\[universal-argument] 2 prompts for `py-python-command-args'.
@@ -695,7 +695,7 @@ When optional FILE is `t', no temporary file is needed. "
            python-mode-v5-behavior-p
            (py-execute-python-mode-v5 start end))
           (py-execute-no-temp-p
-           (py-execute-ge24.3 start end filename execute-directory))
+           (py-execute-ge24.3 start end filename execute-directory py-exception-buffer proc))
           ;; No need for a temporary filename than
           (filename
            (py-execute-file-base proc filename nil py-buffer-name filename execute-directory))
@@ -732,21 +732,23 @@ When optional FILE is `t', no temporary file is needed. "
     (and erg (or py-debug-p py-store-result-p) (unless (string= (car kill-ring) erg) (kill-new erg)))
     erg))
 
-(defun py-execute-ge24.3 (start end file execute-directory)
-  "Select the handler. "
+(defun py-execute-ge24.3 (start end file execute-directory &optional py-exception-buffer proc)
+  "An alternative way to do it. 
+
+May we get rid of the temporary file? "
   (and (buffer-file-name) buffer-offer-save (buffer-modified-p) (y-or-n-p "Save buffer before executing? ")
        (write-file (buffer-file-name)))
   (let* ((start (copy-marker start))
          (end (copy-marker end))
-         (py-exception-buffer (current-buffer))
+         (py-exception-buffer (or py-exception-buffer (current-buffer)))
          (line (count-lines (point-min) (if (eq start (line-beginning-position)) (1+ start) start)))
          (strg (buffer-substring-no-properties start end))
          (tempfile (or (buffer-file-name) (concat (expand-file-name py-temp-directory) py-separator-char (replace-regexp-in-string py-separator-char "-" "temp") ".py")))
 
-         (proc (if py-dedicated-process-p
+         (proc (or proc (if py-dedicated-process-p
                    (get-buffer-process (py-shell nil py-dedicated-process-p py-shell-name py-buffer-name t))
                  (or (get-buffer-process py-buffer-name)
-                     (get-buffer-process (py-shell nil py-dedicated-process-p py-shell-name py-buffer-name t)))))
+                     (get-buffer-process (py-shell nil py-dedicated-process-p py-shell-name py-buffer-name t))))))
          (procbuf (process-buffer proc))
          (file (or file (with-current-buffer py-buffer-name
                           (concat (file-remote-p default-directory) tempfile))))
@@ -775,7 +777,7 @@ When optional FILE is `t', no temporary file is needed. "
              (car err-p)
              (not (markerp err-p)))
         (py-jump-to-exception err-p)
-      (py-shell-manage-windows py-exception-buffer py-buffer-name)
+      (py-shell-manage-windows procbuf py-buffer-name)
       (unless (string= (buffer-name (current-buffer)) (buffer-name procbuf))
         (when py-verbose-p (message "Output buffer: %s" procbuf))))))
 

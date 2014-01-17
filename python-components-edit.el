@@ -1361,9 +1361,4 @@ to complete."
         (indent-for-tab-command)
       (completion-at-point))))
 
-(defun py-insert-punct-re ()
-  "Insert a regexp which matches punct chararacters. "
-  (interactive "*")
-  (insert "([!#$%&\\'()*+,-.\\\\\\\\/:;<=>?@[\\]^_`{|}~]+)"))
-
 (provide 'python-components-edit)
