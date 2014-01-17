@@ -320,7 +320,7 @@ Returns value of `indent-tabs-mode' switched to. "
   (py-indent-tabs-mode (abs arg)(interactive-p)))
 
 (defun py-indent-tabs-mode-off (arg)
-  "Switch `indent-tabs-mode' on. "
+  "Switch `indent-tabs-mode' off. "
   (interactive "p")
   (py-indent-tabs-mode (- (abs arg))(interactive-p)))
 
@@ -560,7 +560,6 @@ The defun visible is the one that contains point or follows point. "
   (let ((erg (and (forward-paragraph)(point))))
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
-
 
 ;;;
 (defun py-indent-and-forward ()
@@ -1349,7 +1348,6 @@ If neiter expansion nor indent occured, insert `py-indent-offset'"
     (and (not (string= "" word))
          (py-shell-complete (py-shell nil nil (process-name (get-buffer-process (current-buffer))) (concat (buffer-name (current-buffer)) "-completions")) nil beg end word))))
 
-
 (defun py-complete-or-indent (arg)
   "Complete or indent depending on the context.
 If content before pointer is all whitespace indent.  If not try
@@ -1363,5 +1361,9 @@ to complete."
         (indent-for-tab-command)
       (completion-at-point))))
 
+(defun py-insert-punct-re ()
+  "Insert a regexp which matches punct chararacters. "
+  (interactive "*")
+  (insert "([!#$%&\\'()*+,-.\\\\\\\\/:;<=>?@[\\]^_`{|}~]+)"))
 
 (provide 'python-components-edit)

@@ -942,7 +942,8 @@ Returns position where output starts. "
                  (py-output-filter
                   (buffer-substring-no-properties orig (point-max))))
            (unless (string= (car kill-ring) erg) (kill-new erg)))
-      (py-shell-manage-windows (current-buffer) nil windows-config)
+      ;; (py-shell-manage-windows (current-buffer) nil windows-config)
+      (py-shell-manage-windows procbuf nil windows-config)
       erg)))
 
 (defun py-execute-string (&optional string shell)

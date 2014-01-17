@@ -2056,6 +2056,9 @@ See py-no-outdent-1-re-raw, py-no-outdent-2-re-raw for better readable content "
 (defconst py-if-block-re "[ \t]*\\_<if\\_>[: \n\t]"
   "Matches the beginning of an `if' block. ")
 
+(defconst py-elif-block-re "[ \t]*\\_<elif\\_>[: \n\t]"
+  "Matches the beginning of an `elif' block. ")
+
 (defconst py-class-re "[ \t]*\\_<\\(class\\)\\_>[ \n\t]"
   "Matches the beginning of a class definition. ")
 

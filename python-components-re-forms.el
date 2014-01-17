@@ -235,6 +235,19 @@ http://docs.python.org/reference/compound_stmts.html"
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg))
 
+(defun py-end-of-elif-block (&optional indent)
+ "Go to end of if-block.
+
+Returns end of if-block if successful, nil otherwise
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html"
+  (interactive "P")
+    (let* ((orig (point))
+           (erg (py-end-base 'py-elif-block-re orig)))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+      erg))
+
 (defun py-end-of-try-block (&optional indent)
  "Go to end of try-block.
 
