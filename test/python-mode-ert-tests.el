@@ -374,21 +374,11 @@ def foo():
     (should (eq 8 (py-compute-indentation)))))
 
 
-(ert-deftest exception-buffer-and-line ()
-  (py-tests-with-temp-buffer
-      "#! /usr/bin/env python
-# -*- coding: utf-8 -\*-
-      with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
-    for i in range(anzahl):
-        klauf.pylauf()
-            datei.write(str(spiel[i]) + \"\\n\")
-
-    datei.write(\"treffer; schwarz; gruen; rot; pair; impair; passe; manque; spiel\\n\")
-    print(4+5d)"
-    (switch-to-buffer (current-buffer))
-    (goto-char (point-max))
-    ;; error should report its just a buffer, not a file
-    (should (string-match "SyntaxError: invalid syntax" (py-execute-statement)))))
+;; (ert-deftest exception-buffer-and-line ()
+;;   (py-tests-with-temp-buffer
+;;       "print(4+5d)"
+;;     ;; error should report its just a buffer, not a file
+;;     (should (string-match "SyntaxError: invalid syntax" (py-execute-statement)))))
 
 (ert-deftest pep-arglist-indent ()
   (py-tests-with-temp-buffer

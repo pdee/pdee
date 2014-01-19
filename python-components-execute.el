@@ -436,16 +436,14 @@ Needed when file-path names are contructed from maybe numbered buffer names like
         ((and
           py-split-windows-on-execute-p
           (not py-switch-buffers-on-execute-p))
-         (delete-other-windows)
-         (if (< (count-windows) py-max-split-windows)
-             (progn
-               (funcall py-split-windows-on-execute-function)
-               (set-buffer output-buffer)
-               (goto-char (point-max))
-               (and (bufferp py-exception-buffer)(set-buffer py-exception-buffer)
-                    (switch-to-buffer (current-buffer))
-                    (display-buffer output-buffer 'display-buffer-reuse-window))
-               (display-buffer output-buffer 'display-buffer-reuse-window))))
+         (pop-to-buffer output-buffer))
+         ;; (delete-other-windows)
+         ;; (when (< (count-windows) py-max-split-windows)
+         ;;   (funcall py-split-windows-on-execute-function)
+         ;;   (set-buffer output-buffer)
+         ;;   (goto-char (point-max)))
+         ;; ;; get-buffer-window-list, window-list, get-buffer-window
+         ;; (display-buffer output-buffer 'display-buffer-reuse-window))
         ;; no split, switch
         ((and
           py-switch-buffers-on-execute-p
@@ -654,12 +652,13 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
     (when (interactive-p) (message "%s" (prin1-to-string cmd)))
     cmd))
 
-(defun py-execute-base (&optional start end shell filename proc file)
+(defun py-execute-base (&optional start end shell filename proc file wholebuf)
   "Select the handler.
 
 When optional FILE is `t', no temporary file is needed. "
   (let* ((start (or start (and (use-region-p) (region-beginning)) (point-min)))
          (end (or end (and (use-region-p) (region-end)) (point-max)))
+         (wholebuf (unless file (or wholebuf (and (eq (buffer-size) (- end start))))))
          (windows-config (window-configuration-to-register 313465889))
          (origline
           (save-restriction
@@ -697,13 +696,13 @@ When optional FILE is `t', no temporary file is needed. "
           (py-execute-no-temp-p
            (py-execute-ge24.3 start end filename execute-directory py-exception-buffer proc))
           ;; No need for a temporary filename than
-          (filename
+          ((and filename wholebuf)
            (py-execute-file-base proc filename nil py-buffer-name filename execute-directory))
           (t
            ;; (message "%s" (current-buffer))
-           (py-execute-buffer-finally start end execute-directory)))))
+           (py-execute-buffer-finally start end execute-directory wholebuf)))))
 
-(defun py-execute-buffer-finally (start end execute-directory)
+(defun py-execute-buffer-finally (start end execute-directory wholebuf)
   (let* ((strg (buffer-substring-no-properties start end))
          (temp (make-temp-name
                 (concat (replace-regexp-in-string py-separator-char "-" (replace-regexp-in-string (concat "^" py-separator-char) "" (replace-regexp-in-string ":" "-" py-shell-name))) "-")))
@@ -733,7 +732,7 @@ When optional FILE is `t', no temporary file is needed. "
     erg))
 
 (defun py-execute-ge24.3 (start end file execute-directory &optional py-exception-buffer proc)
-  "An alternative way to do it. 
+  "An alternative way to do it.
 
 May we get rid of the temporary file? "
   (and (buffer-file-name) buffer-offer-save (buffer-modified-p) (y-or-n-p "Save buffer before executing? ")
@@ -761,9 +760,9 @@ May we get rid of the temporary file? "
       (insert strg))
     (py-fix-start (point) (point-max))
     (unless (string-match "[jJ]ython" py-shell-name)
-      (when (and execute-directory py-use-current-dir-when-execute-p
-                 (not (string= execute-directory default-directory)))
-        (message "Warning: options `execute-directory' and `py-use-current-dir-when-execute-p' may conflict"))
+      ;; (when (and execute-directory py-use-current-dir-when-execute-p
+      ;; (not (string= execute-directory default-directory)))
+      ;; (message "Warning: options `execute-directory' and `py-use-current-dir-when-execute-p' may conflict"))
       (and execute-directory
            (process-send-string proc (concat "import os; os.chdir(\"" execute-directory "\")\n"))
            ;; (py-send-string-no-output (concat "import os; os.chdir(\"" execute-directory "\")\n") proc)

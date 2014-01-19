@@ -30,7 +30,7 @@
          (set-buffer buffer))))
 
 
-(defun py-execute-prepare (form &optional shell dedicated switch beg end file)
+(defun py-execute-prepare (form &optional shell dedicated switch beg end file wholebuf)
   "Used by python-extended-executes ."
   (save-excursion
     (let ((beg (unless file
@@ -55,7 +55,7 @@
             (if (file-readable-p filename)
                 (setq erg (py-execute-file-base nil filename nil nil (or (and (boundp 'py-orig-buffer-or-file) py-orig-buffer-or-file) filename)))
               (message "%s not readable. %s" file "Do you have write permissions?")))
-        (py-execute-base beg end shell)))))
+        (py-execute-base beg end shell nil nil wholebuf)))))
 
 (defun py-execute-statement-python ()
   "Send statement at point to Python interpreter. "
