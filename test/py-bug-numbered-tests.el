@@ -6212,5 +6212,17 @@ print s(500)
   (assert nil "Execute-region_statement-runs-full-file-lp-1269855-test failed"))
 
 
+(defun abbrevs-changed-t-when-starting-lp-1270631-test (&optional arg)
+  (interactive "p")
+   (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"))
+  (py-bug-tests-intern 'abbrevs-changed-t-when-starting-lp-1270631-base arg teststring)))
+
+(defun abbrevs-changed-t-when-starting-lp-1270631-base ()
+  (assert (eq nil abbrevs-changed) nil "abbrevs-changed-t-when-starting-lp-1270631-test failed"))
+
+
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

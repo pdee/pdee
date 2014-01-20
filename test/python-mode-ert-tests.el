@@ -27,10 +27,12 @@ BODY is code to be executed within the temp buffer.  Point is
 always located at the beginning of buffer."
   (declare (indent 1) (debug t))
   `(with-temp-buffer
-     (python-mode)
-     (insert ,contents)
-     (goto-char (point-min))
-     ,@body))
+     (let (hs-minor-mode)
+       (python-mode)
+       (insert ,contents)
+       (message "ERT %s" (point))
+       (goto-char (point-min))
+       ,@body)))
 
 (defun py-tests-go-to (string)
   "Move point at beginning of STRING in the current test. "
@@ -544,8 +546,36 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
     (should (eq 412 (py-end-of-comment-position)))))
 
 (ert-deftest py-copy-statement-test ()
-  (interactive) 
+  (interactive)
   (py-tests-with-temp-buffer
    "from foo.bar.baz import something
 "
    (should (and (not (py-copy-statement))(string-match "from foo.bar.baz import something" (car kill-ring))))))
+
+(ert-deftest execute-runs-full-file-lp-1269855 ()
+  (interactive)
+  (py-tests-with-temp-buffer
+      ;; (switch-to-buffer (buffer-name (current-buffer)))
+      "a = 0
+a += 8
+a += 1
+print(a)
+eval(a)
+"
+    (py-execute-buffer)
+    (goto-char 14)
+    (py-execute-statement)
+    (goto-char 22)
+    (py-execute-statement)
+    (goto-char 31)
+    (py-execute-statement)))
+
+
+(ert-deftest abbrevs-modified-when-starting-lp-1270631 ()
+  (interactive)
+  (py-tests-with-temp-buffer
+    "# sdsd "
+    (should (not abbrevs-changed))
+))
+
+(provide 'python-mode-ert-tests)
