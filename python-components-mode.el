@@ -1456,6 +1456,9 @@ See also `py-execute-directory'"
   :type 'string
   :group 'python-mode)
 
+(defvar py-this-abbrevs-changed nil
+  "Internally used by python-mode-hook")
+
 (defvar py-ffap-p nil)
 (defvar py-ffap nil)
 (defvar python-ffap nil)
@@ -2686,7 +2689,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
 (require 'python-extended-executes)
 ;; (require 'python-mode-test)
 ;; (require 'column-marker)
-;; (require 'python-abbrev-propose)
+(require 'python-abbrev-propose)
 (require 'python-components-switches)
 (require 'python-components-paragraph)
 (require 'python-components-shift-forms)
@@ -7603,9 +7606,11 @@ as it leaves your system default unchanged."
 
 ;; FixMe: for unknown reasons this is not done by mode
 (if (file-readable-p abbrev-file-name)
-    (progn
-      (add-hook 'python-mode-hook '(lambda () (setq abbrev-changed nil)))
-      (add-hook 'python-mode-hook '(lambda () (load abbrev-file-name nil t))))
+    (add-hook 'python-mode-hook
+              (lambda ()
+                (setq py-this-abbrevs-changed abbrevs-changed)
+                (load abbrev-file-name nil t)
+                (setq abbrevs-changed py-this-abbrevs-changed)))
   (message "Warning: %s" "no abbrev-file found, customize `abbrev-file-name' in order to make mode-specific abbrevs work. "))
 
 ;;;

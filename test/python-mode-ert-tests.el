@@ -360,7 +360,6 @@ result = some_function_that_takes_arguments(
       ""
       (file-readable-p py-pyflakespep8-command)))
 
-
 (ert-deftest Bogus-dedent-when-typing-colon-in-dictionary-literal-lp-1197171 ()
   (py-tests-with-temp-buffer
       "#! /usr/bin/env python
@@ -374,7 +373,6 @@ def foo():
         {'another'"
     (goto-char (point-max))
     (should (eq 8 (py-compute-indentation)))))
-
 
 ;; (ert-deftest exception-buffer-and-line ()
 ;;   (py-tests-with-temp-buffer
@@ -481,7 +479,6 @@ data = {
       (should (eq 0 (py-compute-indentation)))
       )))
 
-
 (ert-deftest top-level ()
   (py-tests-with-temp-buffer
       "klauf = kugel()
@@ -570,12 +567,14 @@ eval(a)
     (goto-char 31)
     (py-execute-statement)))
 
-
-(ert-deftest abbrevs-modified-when-starting-lp-1270631 ()
+(ert-deftest py-abbrevs-changed-lp-1270631 ()
   (interactive)
-  (py-tests-with-temp-buffer
-    "# sdsd "
-    (should (not abbrevs-changed))
-))
+  (with-temp-buffer
+    (insert "foo")
+    (emacs-lisp-mode)
+    (define-abbrev lisp-mode-abbrev-table "foo" "foo")
+    (should abbrevs-changed)
+    (python-mode)
+    (should abbrevs-changed)))
 
 (provide 'python-mode-ert-tests)
