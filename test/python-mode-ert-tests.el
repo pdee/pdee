@@ -488,6 +488,7 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
         klauf.pylauf()
             datei.write(str(spiel[i]) + \"\\n\")
 "
+    (message "%s" (point))
     (switch-to-buffer (current-buffer))
     (should (eq 16 (py-end-of-top-level)))
     (should (eq 168 (py-end-of-top-level)))
