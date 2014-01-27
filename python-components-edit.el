@@ -599,7 +599,9 @@ Returns and keeps relative position "
   "Returns beginning of paragraph position. "
   (interactive)
   (save-excursion
-    (let ((erg (py-beginning-of-paragraph)))
+    (let ((erg (progn
+		 (py-beginning-of-paragraph)
+		 (point))))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
@@ -611,7 +613,8 @@ Returns and keeps relative position "
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
-                 (py-end-of-paragraph))))
+                 (py-end-of-paragraph)
+		 (point))))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 

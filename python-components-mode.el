@@ -4776,8 +4776,8 @@ This may be preferable to `M-x py-execute-buffer' because:
 
                   ["Describe mode"        py-describe-mode t]
 
-                  ["Help on symbol" py-describe-symbol
-                   :help "`py-describe-symbol'\n
+                  ["Help on symbol" py-help-at-point
+                   :help "`py-help-at-point'\n
 Use pydoc on symbol at point"]
 
                   ;;          ["py-complete-help" py-complete-help
