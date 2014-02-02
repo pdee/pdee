@@ -63,7 +63,7 @@ always located at the beginning of buffer."
       (should (eq ?\} (char-after)))
       )))
 
-(ert-deftest py-indent-dedenters-1 ()
+(ert-deftest py-ert-indent-dedenters-1 ()
   "Check all dedenters."
   (py-tests-with-temp-buffer
    "
@@ -103,7 +103,7 @@ def foo(a, b, c):
    (py-tests-go-to "print ('nor a, nor b are true')")
    (should (= (py-compute-indentation) 12))))
 
-(ert-deftest py-indent-after-backslash-lp-852052-1 ()
+(ert-deftest py-ert-indent-after-backslash-lp-852052-1 ()
   "The most common case."
   (py-tests-with-temp-buffer
       "
@@ -118,7 +118,7 @@ from foo.bar.baz import something, something_1 \\
     (py-tests-go-to "something_4, something_5")
     (should (= (py-compute-indentation) 5))))
 
-(ert-deftest py-indent-closing ()
+(ert-deftest py-ert-indent-closing ()
   ""
   (py-tests-with-temp-buffer
    "
@@ -136,7 +136,7 @@ result = some_function_that_takes_arguments(
    (goto-char 129)
    (should (eq 4 (py-compute-indentation)))))
 
-(ert-deftest py-moves ()
+(ert-deftest py-ert-moves ()
   (py-tests-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
@@ -340,7 +340,7 @@ result = some_function_that_takes_arguments(
   (message "%s" "py-beginning-of-def-bol-test of `py-moves-test'  done")
   ))
 
-(ert-deftest py-indent-tabs-mode-test ()
+(ert-deftest py-ert-indent-tabs-mode-test ()
   (py-tests-with-temp-buffer
       "class OrderedDict1(dict):"
     (end-of-line)
@@ -348,7 +348,7 @@ result = some_function_that_takes_arguments(
       (py-newline-and-indent)
       (should (looking-back "^\t")))))
 
-(ert-deftest py-no-indent-tabs-mode-test ()
+(ert-deftest py-ert-no-indent-tabs-mode-test ()
   (py-tests-with-temp-buffer
       "class OrderedDict1(dict):"
     (end-of-line)
@@ -356,7 +356,7 @@ result = some_function_that_takes_arguments(
       (py-newline-and-indent)
       (should (looking-back "^    ")))))
 
-(ert-deftest py-pyflakespep-command-test ()
+(ert-deftest py-ert-pyflakespep-command-test ()
   (py-tests-with-temp-buffer
       ""
       (file-readable-p py-pyflakespep8-command)))
@@ -544,32 +544,32 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
     (should (eq 380 (py-beginning-of-comment-position)))
     (should (eq 412 (py-end-of-comment-position)))))
 
-(ert-deftest py-copy-statement-test ()
+(ert-deftest py-ert-copy-statement-test ()
   (interactive)
   (py-tests-with-temp-buffer
    "from foo.bar.baz import something
 "
    (should (and (not (py-copy-statement))(string-match "from foo.bar.baz import something" (car kill-ring))))))
 
-(ert-deftest execute-runs-full-file-lp-1269855 ()
-  (interactive)
-  (py-tests-with-temp-buffer
-      ;; (switch-to-buffer (buffer-name (current-buffer)))
-      "a = 0
-a += 8
-a += 1
-print(a)
-eval(a)
-"
-    (py-execute-buffer)
-    (goto-char 14)
-    (py-execute-statement)
-    (goto-char 22)
-    (py-execute-statement)
-    (goto-char 31)
-    (py-execute-statement)))
+;; (ert-deftest py-ert-execute-runs-full-file-lp-1269855 ()
+;;   (interactive)
+;;   (py-tests-with-temp-buffer
+;;       (let (py-switch-buffers-on-execute-p
+;; 	    py-split-windows-on-execute-p
+;; 	    py-smart-indentation)
+;; 	;; (switch-to-buffer (buffer-name (current-buffer)))
+;; 	"a = 0
+;; a += 8
+;; a += 1
+;; print(a)
+;; "
+;; 	(py-execute-buffer)
+;; 	(goto-char 14)
+;; 	(py-execute-statement)
+;; 	(goto-char 22)
+;; 	(py-execute-statement))))
 
-(ert-deftest py-abbrevs-changed-lp-1270631 ()
+(ert-deftest py-ert-abbrevs-changed-lp-1270631 ()
   (interactive)
   (with-temp-buffer
     (insert "foo")
@@ -578,5 +578,34 @@ eval(a)
     (should abbrevs-changed)
     (python-mode)
     (should abbrevs-changed)))
+
+;; the way save-excursion in called now creates
+;; a bug in execute forms, a result of manage-windows is negated
+;; (ert-deftest py-ert-execute-statement-switch-no-split ()
+;;   (py-tests-with-temp-buffer
+;;       "print(123)"
+;;     (setq py-switch-buffers-on-execute-p t)
+;;     (setq py-split-windows-on-execute-p nil)
+;;     ;;      (if (or iact (interactive-p))
+;;     ;; 	  (should (eq 2 (length (window-list))))
+;;     ;; 	(should (one-window-p)))
+;;     (py-execute-statement)
+;;     (message "%s" (current-buffer))
+;;     (should (eq py-buffer-name (buffer-name (current-buffer))))))
+
+(ert-deftest py-ert-execute-statement-split ()
+  (py-tests-with-temp-buffer
+      "print(123)"
+    (let ((py-split-windows-on-execute-p t))
+      (py-execute-statement)
+      (should (not (one-window-p))))))
+
+;; (ert-deftest py-ert-toggle-split-on-execute-function ()
+;;   (py-tests-with-temp-buffer
+;;       "print(123)"
+;;     (let ((py-split-windows-on-execute-p t))
+;;       (py-toggle-split-windows-function)
+;;       (py-execute-statement)
+;;       (should (not (one-window-p))))))
 
 (provide 'python-mode-ert-tests)

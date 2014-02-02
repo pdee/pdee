@@ -1109,7 +1109,6 @@ Otherwise value of py-python-history is used. "
                  (const :tag "split-window-horizontally" split-window-horizontally)
                  )
   :group 'python-mode)
-(make-variable-buffer-local 'py-split-windows-on-execute-function)
 
 (defcustom py-hide-show-keywords
   '("class"    "def"    "elif"    "else"    "except"
@@ -5602,6 +5601,16 @@ See also `py-execute-directory'Use `M-x customize-variable' to set it permanentl
                     )
 
                    ("Display"
+
+                    ["Which split windows on execute function"
+                     (progn 
+                       (if (eq 'split-window-vertically py-split-windows-on-execute-function)
+                           (setq py-split-windows-on-execute-function'split-window-horizontally)
+                         (setq py-split-windows-on-execute-function 'split-window-vertically))
+                       (message "py-split-windows-on-execute-function set to: %s" py-split-windows-on-execute-function))
+
+                     :help "If `split-window-vertically' or `...-horizontally'. Use `M-x customize-variable' RET `py-split-windows-on-execute-function' RET to set it permanently"
+                     :style toggle :selected py-split-windows-on-execute-function]
 
                     ["Modeline display full path "
                      (setq py-modeline-display-full-path-p

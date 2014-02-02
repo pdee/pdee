@@ -1,6 +1,15 @@
 Python Mode News
 ================
 
+New in version 6.1.4
+---------------------
+
+- command py-toggle-split-windows-function
+  If window is splitted vertically or horizontally.
+  Sets customizable variable
+  `py-split-windows-on-execute-function'
+  Also in menu Python/Customize/Switches/Display/Which split windows
+
 New in version 6.1.3
 ---------------------
 
