@@ -193,8 +193,7 @@ but the region is shiftet that way.
 If `py-tab-indents-region-p' is `t' and first TAB doesn't shift
 --as indent is at outmost reasonable--, indent-region is called.
 
-C-q TAB inserts a literal TAB-character.
-"
+C-q TAB inserts a literal TAB-character."
   (interactive "P")
   (let ((orig (copy-marker (point)))
         (cui (current-indentation))
@@ -382,8 +381,7 @@ Returns value of `indent-tabs-mode' switched to. "
 Set local value of `py-indent-offset', return it
 
 Might change local value of `py-indent-offset' only when called
-downwards from beginning of block followed by a statement. Otherwise default-value is returned.
-"
+downwards from beginning of block followed by a statement. Otherwise default-value is returned."
   (interactive)
   (save-excursion
     (let* ((orig (point))

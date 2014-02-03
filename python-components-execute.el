@@ -810,8 +810,7 @@ When called with \\[universal-argument] followed by a number different from 4 an
 
 When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
 
-Optional DEDICATED (boolean)
-"
+Optional DEDICATED "
   (interactive "r\nP")
   (save-excursion
     (let ((py-shell-name (cond ((or py-force-py-shell-name-p (eq 4 (prefix-numeric-value shell))) (default-value 'py-shell-name))

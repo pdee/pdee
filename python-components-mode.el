@@ -136,8 +136,7 @@ print(\"Not part of the if-statement\")
 
 Default is nil
 
-If non-nil, a C-j from empty line dedents.
-"
+If non-nil, a C-j from empty line dedents."
 
 :type 'boolean
 :group 'python-mode)
@@ -261,8 +260,7 @@ Any non-integer value means do not use a different value of
 Default is nil.
 
 Convenient use of `M-q' inside docstrings
-See also `py-docstring-style'
-"
+See also `py-docstring-style'"
 
   :type 'boolean
   :group 'python-mode)
@@ -494,8 +492,7 @@ Default is nil. "
 (defcustom py-close-provides-newline t
   "If a newline is inserted, when line after block isn't empty. Default is non-nil.
 
-When non-nil, `py-end-of-def' and related will work faster
-"
+When non-nil, `py-end-of-def' and related will work faster"
   :type 'boolean
   :group 'python-mode)
 (make-variable-buffer-local 'py-close-provides-newline)
@@ -560,8 +557,7 @@ result = some_function_that_takes_arguments(
     'd', 'e', 'f',
     )
 
-Examples from PEP8
-"
+Examples from PEP8"
 
   :type 'boolean
   :group 'python-mode)
@@ -664,8 +660,7 @@ Default is nil.
 Beginning- end-of-defun forms use
 commands `py-beginning-of-top-level', `py-end-of-top-level'
 
-mark-defun marks top-level form at point etc.
-"
+mark-defun marks top-level form at point etc."
 
 :type 'boolean
 :group 'python-mode)
@@ -832,8 +827,7 @@ No semantic indent,  which diff to `py-indent-offset' indicates "
 (defcustom pdb-path '/usr/lib/python2.7/pdb.py
   "Where to find pdb.py. Edit this according to your system.
 
-If you ignore the location `M-x py-guess-pdb-path' might display it.
- "
+If you ignore the location `M-x py-guess-pdb-path' might display it."
   :type 'variable
   :group 'python-mode)
 
@@ -2517,8 +2511,7 @@ This does the following:
 
 When interactivly called, messages the shell name, Emacs would in the given circtumstances.
 
-With \\[universal-argument] 4 is called `py-switch-shell' see docu there.
-"
+With \\[universal-argument] 4 is called `py-switch-shell' see docu there."
   (interactive "P")
   (if (eq 4 (prefix-numeric-value arg))
       (py-switch-shell '(4))
@@ -7533,8 +7526,7 @@ ARG might be a python-version string to set to.
 Should you need more shells to select, extend this command by adding inside the first cond:
 
                     ((eq NUMBER (prefix-numeric-value arg))
-                     \"MY-PATH-TO-SHELL\")
-"
+                     \"MY-PATH-TO-SHELL\")"
   (interactive "P")
   (let ((name (cond ((eq 2 (prefix-numeric-value arg))
                      "python2")

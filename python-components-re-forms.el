@@ -266,8 +266,7 @@ http://docs.python.org/reference/compound_stmts.html"
 
 Returns end of minor-block if successful, nil otherwise
 
-A minor block is started by a `for', `if', `try' or `with'.
-"
+A minor block is started by a `for', `if', `try' or `with'."
   (interactive "P")
     (let* ((orig (point))
            (erg (py-end-base 'py-minor-block-re orig)))

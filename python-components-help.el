@@ -631,8 +631,7 @@ Imports done are displayed in message buffer. "
 ;; pep8
 (defalias 'pep8 'py-pep8-run)
 (defun py-pep8-run (command)
-  "*Run pep8, check formatting (default on the file currently visited).
-"
+  "*Run pep8, check formatting - default on the file currently visited."
   (interactive
    (let ((default
            (if (buffer-file-name)
@@ -805,8 +804,7 @@ Let's have this until more Emacs-like help is prepared "
        is 2. When warnings (but no errors) are found
        the exit status is 1.
 
-Extracted from http://manpages.ubuntu.com/manpages/natty/man1/pyflakes.1.html
-"))))
+Extracted from http://manpages.ubuntu.com/manpages/natty/man1/pyflakes.1.html"))))
 
 ;; Pyflakes-pep8
 (defalias 'pyflakespep8 'py-pyflakespep8-run)
@@ -927,9 +925,7 @@ See `python-check-command' for the default."
         - lines that contain a ``# noqa`` comment at the end will not issue warnings.
         - a Git and a Mercurial hook.
         - a McCabe complexity checker.
-        - extendable through ``flake8.extension`` entry points.
-
-"
+        - extendable through ``flake8.extension`` entry points."
   (interactive
    (let* ((py-flake8-command
            (if (string= "" py-flake8-command)
@@ -1080,10 +1076,7 @@ i.e. spaces, tabs, carriage returns, newlines and newpages. "
   "Toggle `pyflakespep8' `flymake-mode'.
 
 Joint call to pyflakes and pep8 as proposed by
-
-Keegan Carruthers-Smith
-
-"
+Keegan Carruthers-Smith"
   (interactive)
   (if flymake-mode
       ;; switch off

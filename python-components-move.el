@@ -36,8 +36,7 @@ A a compound python expression might be concatenated by \".\" operator, thus com
 If already at the beginning or before a expression, go to next expression in buffer upwards
 
 Expression here is conceived as the syntactical component of a statement in Python. See http://docs.python.org/reference
-Operators however are left aside resp. limit py-expression designed for edit-purposes.
-"
+Operators however are left aside resp. limit py-expression designed for edit-purposes."
   (interactive "p")
   (or arg (setq arg 1))
   (let (erg)
@@ -336,8 +335,7 @@ For beginning of compound statement use py-beginning-of-block.
 For beginning of clause py-beginning-of-clause.
 
 Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html
-"
+http://docs.python.org/reference/compound_stmts.html"
   (interactive)
   (save-restriction
     (unless (bobp)
