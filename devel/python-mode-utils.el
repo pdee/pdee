@@ -124,12 +124,13 @@
       (insert (concat "
   \"Send " ele " at point to a Python interpreter. \"\n"))
       (insert (concat "  (interactive)
-  (save-excursion
-    (let ((beg (prog1
-                   (or (py-beginning-of-" ele "-p)
-                       (py-beginning-of-" ele "))))
-          (end (py-end-of-" ele")))
-      (py-execute-region beg end))))\n\n"))))
+  (let ((beg (prog1
+		 (or (py-beginning-of-" ele "-p)
+		     (save-excursion
+		       (py-beginning-of-" ele ")))))
+	(end (save-excursion
+	       (py-end-of-" ele"))))
+    (py-execute-region beg end)))\n\n"))))
   (insert "(provide 'python-components-exec-forms)
 ;;; python-components-exec-forms.el ends here\n ")
   (emacs-lisp-mode))

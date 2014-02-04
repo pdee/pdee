@@ -260,7 +260,11 @@ named for funcname or define a function funcname."
   (interactive)
   (py-execute-string "import pdb;pdb.help()"))
 
-
+(defun py-pdb ()
+  (interactive)
+  ;; (let ((file (or file (buffer-file-name))))
+    (pdb 'asdf))
+;; (list file))))
 
 (provide 'python-components-pdb)
 ;;; python-components-pdb.el ends here

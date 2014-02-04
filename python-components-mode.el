@@ -4786,9 +4786,11 @@ Use pydoc on symbol at point"]
                   ;; Needs Pymacs"]
 
                   )
+                 ("Debugger"
 
-                 ["Debugger" pdb :help "`pdb' Run pdb under GUD"]
+                  ["Debugger" pdb :help "`pdb' Run pdb under GUD"]
 
+                  )
                  ("Checks"
 
                   ["pychecker-run" py-pychecker-run
@@ -7892,8 +7894,7 @@ See available customizations listed in files variables-python-mode at directory 
               (^ '(- (1+ (current-indentation)))))))
   (set (make-local-variable 'imenu-create-index-function) 'py-imenu-create-index-function)
   (and py-guess-py-install-directory-p (py-set-load-path))
-  ;; (add-to-list 'load-path py-install-directory)
-  ;; (add-to-list 'load-path (concat py-install-directory "extensions"))
+;;  (unless gud-pdb-history (when (buffer-file-name) (add-to-list 'gud-pdb-history (buffer-file-name)))) 
   (and py-autopair-mode
        ;; (py-autopair-check)
        (load-library "autopair")
