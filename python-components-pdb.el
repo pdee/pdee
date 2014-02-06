@@ -239,6 +239,7 @@ named for funcname or define a function funcname."
   (py-pdbtrack-toggle-stack-tracking 0))
 
 (defun py-execute-statement-pdb ()
+  "Execute statement running pdb. "
   (interactive)
   (let ((py-python-command-args "-i -m pdb"))
     (py-execute-statement)))
@@ -260,11 +261,9 @@ named for funcname or define a function funcname."
   (interactive)
   (py-execute-string "import pdb;pdb.help()"))
 
-(defun py-pdb ()
+(defun py-pdb-break (&optional line file condition)
   (interactive)
-  ;; (let ((file (or file (buffer-file-name))))
-    (pdb 'asdf))
-;; (list file))))
+  (py-execute-string (concat "import pdb;pdb.break('" stm "')")))
 
 (provide 'python-components-pdb)
 ;;; python-components-pdb.el ends here
