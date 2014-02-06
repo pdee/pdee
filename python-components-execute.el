@@ -289,8 +289,8 @@ interpreter.
   (let* ((ipython-version (shell-command-to-string (concat py-shell-name " -V"))))
     (if (string-match "[0-9]" ipython-version)
         (setq ipython-completion-command-string
-              (cond ((string-match "^1.1.*" ipython-version)
-                     ipython0.11-completion-command-string)
+              (cond ((string-match "^[^0].+" ipython-version)
+		     ipython0.11-completion-command-string)
                     ((string-match "^0.1[1-3]" ipython-version)
                      ipython0.11-completion-command-string)
                     ((string= "^0.10" ipython-version)
