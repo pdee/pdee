@@ -979,7 +979,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-hide-show-hide-docstrings) nil \"py-hide-show-hide-docstrings not a variable\")" \
 -eval "(assert (boundp 'python-mode-hook) nil \"python-mode-hook not a variable\")" \
 -eval "(assert (boundp 'py-imenu-create-index-p) nil \"py-imenu-create-index-p not a variable\")" \
--eval "(assert (boundp 'py-imenu-create-index-function) nil \"py-imenu-create-index-function not a variable\")" \
 -eval "(assert (boundp 'py-shell-name) nil \"py-shell-name not a variable\")" \
 -eval "(assert (boundp 'py-shell-toggle-1) nil \"py-shell-toggle-1 not a variable\")" \
 -eval "(assert (boundp 'py-shell-toggle-2) nil \"py-shell-toggle-2 not a variable\")" \

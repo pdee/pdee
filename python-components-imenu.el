@@ -108,7 +108,6 @@ alternative for finding the index.")
         (funcall imenu-create-index-function))
     (error "%s" "Only available in buffers set to python-mode")))
 
-(defalias 'py-imenu-create-index-function 'py-imenu-create-index)
 (defun py-imenu-create-index ()
   "Python interface function for the Imenu package.
 Finds all Python classes and functions/methods. Calls function
@@ -122,7 +121,7 @@ of how this works."
   ;; Warning: When the buffer has no classes or functions, this will
   ;; return nil, which seems proper according to the Imenu API, but
   ;; causes an error in the XEmacs port of Imenu.  Sigh.
-  (py-imenu-create-index-engine nil))
+  (setq index-alist (cdr (py-imenu-create-index-engine nil))))
 
 (defun py-imenu-create-index-engine (&optional start-indent)
   "Function for finding Imenu definitions in Python.
