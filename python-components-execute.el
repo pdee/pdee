@@ -477,6 +477,10 @@ Internal use"
         ((not py-switch-buffers-on-execute-p)
          (let (pop-up-windows)
            (py-restore-window-configuration))))
+  ;; (set-buffer output-buffer)
+  ;; (goto-char (point-min)) 
+  ;; (shrink-window-if-larger-than-buffer)
+  ;; (goto-char (point-max)) 
   nil)
 
 (defun py-report-executable (py-buffer-name)
@@ -637,13 +641,13 @@ When DONE is `t', `py-shell-manage-windows' is omitted
 
     (unless (comint-check-proc py-buffer-name)
       (py--shell-make-comint)
-      (py--shell-setup)
-      ;; (py--init-easy-menu)
+      (py--shell-setup))
+    ;; (py--init-easy-menu)
     ;; (add-hook 'py-shell-hook 'py-dirstack-hook)
     (and py-fontify-shell-buffer-p (font-lock-fontify-buffer))
     (unless no-window-managment (py-shell-manage-windows py-buffer-name))
     (when py-shell-hook (run-hooks 'py-shell-hook))
-    py-buffer-name)))
+    py-buffer-name))
 
 (defun py-shell-get-process (&optional argprompt py-dedicated-process-p shell switch py-buffer-name)
   "Get appropriate Python process for current buffer and return it."

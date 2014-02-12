@@ -5605,6 +5605,18 @@ See also `py-execute-directory'Use `M-x customize-variable' to set it permanentl
 
                    ("Display"
 
+                    ["Keep windows configuration"
+                     (setq py-keep-windows-configuration
+                           (not py-keep-windows-configuration))
+                     :help "If a windows is splitted displaying results, this is directed by variable `py-split-windows-on-execute-p'\. Also setting `py-switch-buffers-on-execute-p' affects window-configuration\. While commonly a screen splitted into source and Python-shell buffer is assumed, user may want to keep a different config\.
+
+Setting `py-keep-windows-configuration' to `t' will restore windows-config regardless of settings mentioned above\. However, if an error occurs, it's displayed\.
+
+To suppres window-changes due to error-signaling also: M-x customize-variable RET. Set `py-keep-4windows-configuration' onto 'force
+
+Default is nil Use `M-x customize-variable' to set it permanently"
+                     :style toggle :selected py-keep-windows-configuration]
+
                     ["Which split windows on execute function"
                      (progn
                        (if (eq 'split-window-vertically py-split-windows-on-execute-function)
