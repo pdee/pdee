@@ -254,23 +254,23 @@ When indent is set back manually, this is honoured in following lines. "
     (newline)
     (if (and py-empty-line-closes-p (or (eq this-command last-command)(py-after-empty-line)))
         (setq erg (indent-to-column (save-excursion (py-beginning-of-statement)(- (current-indentation) py-indent-offset))))
-    (when (or py-newline-delete-trailing-whitespace-p py-trailing-whitespace-smart-delete-p)
-      (setq pos (copy-marker (point)))
-      (save-excursion
-        (goto-char orig)
-        (if (empty-line-p)
-            (if (string-match "23.4" emacs-version)
-                (progn (save-restriction
-                         (narrow-to-region (point) pos)
-                         (delete-trailing-whitespace)))
-              (delete-trailing-whitespace (line-beginning-position) pos))
-          (skip-chars-backward " \t")
-          (if (string-match "23.4" emacs-version)
-              (progn (save-restriction
-                       (narrow-to-region (point) pos)
-                       (delete-trailing-whitespace)))
-            (delete-trailing-whitespace (point) (marker-position pos))))))
-    (setq erg (indent-to-column (py-compute-indentation))))
+      (when (or py-newline-delete-trailing-whitespace-p py-trailing-whitespace-smart-delete-p)
+        (setq pos (copy-marker (point)))
+        (save-excursion
+          (goto-char orig)
+          (if (empty-line-p)
+              (if (<= 23 (string-to-number (car (split-string emacs-version "\\."))))
+                  (delete-trailing-whitespace (line-beginning-position) pos)
+                (save-restriction
+                  (narrow-to-region (point) pos)
+                  (delete-trailing-whitespace)))
+            (skip-chars-backward " \t")
+            (if (<= 23 (string-to-number (car (split-string emacs-version "\\."))))
+                (delete-trailing-whitespace (line-beginning-position) pos)
+              (save-restriction
+                (narrow-to-region (point) pos)
+                (delete-trailing-whitespace))))))
+      (setq erg (indent-to-column (py-compute-indentation))))
     (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
 
