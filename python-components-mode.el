@@ -90,6 +90,17 @@
   :type 'string
   :group 'python-mode)
 
+
+(defcustom info-lookup-mode "python"
+  "Which Python documentation should be queried.
+
+Make sure it's accessible from Emacs by M-x info RET ...
+See INSTALL-INFO-FILES for help. "
+
+  :type 'string
+  :group 'python-mode)
+
+
 (defcustom py-pylint-offer-current-p t
   "If current buffers file should be offered for check.
 

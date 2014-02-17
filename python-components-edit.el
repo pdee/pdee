@@ -245,8 +245,8 @@ C-q TAB inserts a literal TAB-character."
         (indent-to need)
         (if (< (point) orig) (goto-char orig)(back-to-indentation))))))
 
-(defun py--delete-trailing-whitepace ()
-  "Delete trailing whitepace if either `py-newline-delete-trailing-whitespace-p' or `py-trailing-whitespace-smart-delete-p' are `t' "
+(defun py--delete-trailing-whitespace ()
+  "Delete trailing whitespace if either `py-newline-delete-trailing-whitespace-p' or `py-trailing-whitespace-smart-delete-p' are `t' "
   (when (or py-newline-delete-trailing-whitespace-p py-trailing-whitespace-smart-delete-p)
     (setq pos (copy-marker (point)))
     (save-excursion
@@ -268,14 +268,16 @@ C-q TAB inserts a literal TAB-character."
   "Add a newline and indent to outmost reasonable indent.
 When indent is set back manually, this is honoured in following lines. "
   (interactive "*")
-  (let ((orig (point))
-	;; lp:1280982, deliberatly dedented by user
-	(this-dedent (when (or (and (eq (char-after) 10)(string-match "backspace" (prin1-to-string last-command))(< 0 (current-column))(looking-back "^[ \t]+"))
-			       (py-after-empty-line))
-		       (current-column)))
-        erg pos)
+  (let* ((orig (point))
+	 (lkmd (prin1-to-string last-command))
+	 ;; lp:1280982, deliberatly dedented by user
+	 (this-dedent
+	  (when (and (or (eq 10 (char-after))(eobp))(looking-back "^[ \t]*")
+		     (or (string-match "backspace" lkmd)(string-match "indent" lkmd) (string-match "newline" lkmd)))
+	    (current-column)))
+	 erg pos)
     (newline)
-    (py--delete-trailing-whitepace)
+    (py--delete-trailing-whitespace)
     (setq erg
 	  (cond (this-dedent
 		 (indent-to-column this-dedent))

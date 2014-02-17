@@ -1,6 +1,12 @@
 Wilfred Hughes provides a tool which seems to permit
 building info docu for any Python version.
 
+It seems built upon originated from
+
+http://bitbucket.org/jonwaltman/pydoc-info
+
+residing now at
+
 http://github.com/wilfred/python-info
 
 After unpacking, either follow the recipes in README.md
@@ -22,8 +28,3 @@ in file "dir".
 
 At Linux that directory which keeps the info-files
 should appear in $INFOPATH.
-
- 
-
-
-
