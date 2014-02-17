@@ -608,4 +608,20 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
 ;;       (py-execute-statement)
 ;;       (should (not (one-window-p))))))
 
+(ert-deftest py-ert-honor-dedent-lp-1280982 ()
+  (py-tests-with-temp-buffer
+      "def foo():
+    def bar():
+        asdf
+    "
+    (goto-char (point-max))
+    (py-newline-and-indent)
+    (py-electric-backspace)
+    (py-newline-and-indent) 
+    (should (eq 46 (point)))))
+
+
+
+
+
 (provide 'python-mode-ert-tests)

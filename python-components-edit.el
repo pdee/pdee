@@ -245,32 +245,44 @@ C-q TAB inserts a literal TAB-character."
         (indent-to need)
         (if (< (point) orig) (goto-char orig)(back-to-indentation))))))
 
+(defun py--delete-trailing-whitepace ()
+  "Delete trailing whitepace if either `py-newline-delete-trailing-whitespace-p' or `py-trailing-whitespace-smart-delete-p' are `t' "
+  (when (or py-newline-delete-trailing-whitespace-p py-trailing-whitespace-smart-delete-p)
+    (setq pos (copy-marker (point)))
+    (save-excursion
+      (goto-char orig)
+      (if (empty-line-p)
+	  (if (< 23 (string-to-number (car (split-string emacs-version "\\."))))
+	      (delete-trailing-whitespace (line-beginning-position) pos)
+	    (save-restriction
+	      (narrow-to-region (point) pos)
+	      (delete-trailing-whitespace)))
+	(skip-chars-backward " \t")
+	(if (< 23 (string-to-number (car (split-string emacs-version "\\."))))
+	    (delete-trailing-whitespace (line-beginning-position) pos)
+	  (save-restriction
+	    (narrow-to-region (point) pos)
+	    (delete-trailing-whitespace)))))))
+
 (defun py-newline-and-indent ()
   "Add a newline and indent to outmost reasonable indent.
 When indent is set back manually, this is honoured in following lines. "
   (interactive "*")
   (let ((orig (point))
+	;; lp:1280982, deliberatly dedented by user
+	(this-dedent (when (or (and (eq (char-after) 10)(string-match "backspace" (prin1-to-string last-command))(< 0 (current-column))(looking-back "^[ \t]+"))
+			       (py-after-empty-line))
+		       (current-column)))
         erg pos)
     (newline)
-    (if (and py-empty-line-closes-p (or (eq this-command last-command)(py-after-empty-line)))
-        (setq erg (indent-to-column (save-excursion (py-beginning-of-statement)(- (current-indentation) py-indent-offset))))
-      (when (or py-newline-delete-trailing-whitespace-p py-trailing-whitespace-smart-delete-p)
-        (setq pos (copy-marker (point)))
-        (save-excursion
-          (goto-char orig)
-          (if (empty-line-p)
-              (if (< 23 (string-to-number (car (split-string emacs-version "\\."))))
-                  (delete-trailing-whitespace (line-beginning-position) pos)
-                (save-restriction
-                  (narrow-to-region (point) pos)
-                  (delete-trailing-whitespace)))
-            (skip-chars-backward " \t")
-            (if (< 23 (string-to-number (car (split-string emacs-version "\\."))))
-                (delete-trailing-whitespace (line-beginning-position) pos)
-              (save-restriction
-                (narrow-to-region (point) pos)
-                (delete-trailing-whitespace))))))
-      (setq erg (indent-to-column (py-compute-indentation))))
+    (py--delete-trailing-whitepace)
+    (setq erg
+	  (cond (this-dedent
+		 (indent-to-column this-dedent))
+		((and py-empty-line-closes-p (or (eq this-command last-command)(py-after-empty-line)))
+		 (indent-to-column (save-excursion (py-beginning-of-statement)(- (current-indentation) py-indent-offset))))
+		(t
+		 (indent-to-column (py-compute-indentation)))))
     (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
 

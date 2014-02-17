@@ -554,22 +554,22 @@ Internal use"
   (set-process-sentinel (get-buffer-process py-buffer-name)
                         #'shell-write-history-on-exit)
   (add-hook 'comint-output-filter-functions
-            'ansi-color-process-output)
+            'ansi-color-process-output nil t)
   (add-hook 'after-change-functions 'py-after-change-function nil t)
 
   (remove-hook 'comint-output-filter-functions
-               'font-lock-extend-jit-lock-region-after-change)
+               'font-lock-extend-jit-lock-region-after-change t)
   (use-local-map py-shell-map)
   (cond
    (py-complete-function
     (add-hook 'completion-at-point-functions
-              py-complete-function nil 'local))
+              py-complete-function nil t))
    (py-load-pymacs-p
     (add-hook 'completion-at-point-functions
-              'py-complete-completion-at-point nil 'local))
+              'py-complete-completion-at-point nil t))
    (t
     (add-hook 'completion-at-point-functions
-              'py-shell-complete nil 'local)))
+              'py-shell-complete nil t)))
   ;; pdbtrack
   (and py-pdbtrack-do-tracking-p
        (add-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file t)

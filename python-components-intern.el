@@ -226,7 +226,7 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
                               ;; should be faster
                               (< (line-end-position) liep)
                               ;; (< (py-count-lines) origline)
-                              )
+			      )
                         (py-compute-indentation orig origline closing line nesting t indent-offset liep))
                        ((not (py-beginning-of-statement-p))
                         (py-beginning-of-statement)
