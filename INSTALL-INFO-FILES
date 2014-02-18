@@ -1,12 +1,12 @@
 Wilfred Hughes provides a tool which seems to permit
 building info docu for any Python version.
 
-It seems built upon originated from
-
+There is a related tool by Jonathan Waltman:
 http://bitbucket.org/jonwaltman/pydoc-info
 
-residing now at
+No idea which was earlier resp. is derived
 
+Source here:
 http://github.com/wilfred/python-info
 
 After unpacking, either follow the recipes in README.md

@@ -4,6 +4,10 @@ Python Mode News
 New in version 6.1.4
 ---------------------
 
+- new indent feature/behavior, lp:1280982
+  If an empty line was dedented deliberatly, this is
+  honored by next lines indent
+
 - command py-toggle-split-windows-function
   If window is splitted vertically or horizontally.
   Sets customizable variable
