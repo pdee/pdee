@@ -8,6 +8,11 @@ New in version 6.1.4
   If an empty line was dedented deliberatly, this is
   honored by next lines indent
 
+- info-lookup-symbol made working with Python
+  patched python-info.el available at
+  https://bitbucket.org/andreas_roehler/pydoc-info
+  See also INSTALL-INFO-FILES
+
 - command py-toggle-split-windows-function
   If window is splitted vertically or horizontally.
   Sets customizable variable

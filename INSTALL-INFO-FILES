@@ -1,11 +1,6 @@
 Wilfred Hughes provides a tool which seems to permit
 building info docu for any Python version.
 
-There is a related tool by Jonathan Waltman:
-http://bitbucket.org/jonwaltman/pydoc-info
-
-No idea which was earlier resp. is derived
-
 Source here:
 http://github.com/wilfred/python-info
 
@@ -28,3 +23,12 @@ in file "dir".
 
 At Linux that directory which keeps the info-files
 should appear in $INFOPATH.
+
+######
+
+`info-lookup-symbol' needs patched python-info.el available at
+http://bitbucket.org/andreas_roehler/pydoc-info
+
+Thanks Jonathan Waltman providing the original python-info.el:
+http://bitbucket.org/jonwaltman/pydoc-info
+
