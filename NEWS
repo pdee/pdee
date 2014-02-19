@@ -4,7 +4,6 @@ Python Mode News
 New in version 6.1.4
 ---------------------
 
-<<<<<<< HEAD
 - new indent feature/behavior, lp:1280982
   If an empty line was dedented deliberatly, this is
   honored by next lines indent
@@ -14,13 +13,19 @@ New in version 6.1.4
   https://bitbucket.org/andreas_roehler/pydoc-info
   See also INSTALL-INFO-FILES
 
-=======
->>>>>>> parent of 78c8d77... `py-newline-and-indent' honor dedent, lp:1280982
-- command py-toggle-split-windows-function
+New commands
+
+- py-info-lookup-symbol ()
+  Calls `info-lookup-symbol'. Sends help if stuff is missing.
+
+- py-toggle-split-windows-function
   If window is splitted vertically or horizontally.
   Sets customizable variable
   `py-split-windows-on-execute-function'
   Also in menu Python/Customize/Switches/Display/Which split windows
+
+- py-symbol-at-point
+  Return the Python symbol under cursor
 
 New in version 6.1.3
 ---------------------

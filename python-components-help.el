@@ -40,59 +40,14 @@ of current line."
 (defalias 'py-eldoc 'py-eldoc-function)
 
 ;;; Info-look functionality.
+(defun py-info-lookup-symbol ()
+  (interactive) 
+  "Calls `info-lookup-symbol'.
 
-(declare-function info-lookup-maybe-add-help "info-look" (&rest arg))
-
-(defun py-after-info-look ()
-  "Set up info-look for Python.
-Used with `eval-after-load'."
-  (let* ((version (let ((s (shell-command-to-string (concat py-shell-name
-                                                            " -V"))))
-                    (string-match "^Python \\([0-9]+\\.[0-9.]+\\_>\\)" s)
-                    (match-string 1 s)))
-         ;; Whether info files have a Python version suffix, e.g. in Debian.
-         (versioned
-          (with-temp-buffer
-            (with-no-warnings (Info-mode))
-            (condition-case ()
-                ;; Don't use `info' because it would pop-up a *info* buffer.
-                (with-no-warnings
-                  (Info-goto-node (format "(python%s-lib)Miscellaneous Index"
-                                          version))
-                  t)
-              (error nil)))))
-    (info-lookup-maybe-add-help
-     :mode 'python-mode
-     :regexp "[[:alnum:]_]+"
-     :doc-spec
-     ;; Fixme: Can this reasonably be made specific to indices with
-     ;; different rules?  Is the order of indices optimal?
-     ;; (Miscellaneous in -ref first prefers lookup of keywords, for
-     ;; instance.)
-     (if versioned
-         ;; The empty prefix just gets us highlighted terms.
-         `((,(concat "(python" version "-ref)Miscellaneous Index") nil "")
-           (,(concat "(python" version "-ref)Module Index" nil ""))
-           (,(concat "(python" version "-ref)Function-Method-Variable Index"
-                     nil ""))
-           (,(concat "(python" version "-ref)Class-Exception-Object Index"
-                     nil ""))
-           (,(concat "(python" version "-lib)Module Index" nil ""))
-           (,(concat "(python" version "-lib)Class-Exception-Object Index"
-                     nil ""))
-           (,(concat "(python" version "-lib)Function-Method-Variable Index"
-                     nil ""))
-           (,(concat "(python" version "-lib)Miscellaneous Index" nil "")))
-       '(("(python-ref)Miscellaneous Index" nil "")
-         ("(python-ref)Module Index" nil "")
-         ("(python-ref)Function-Method-Variable Index" nil "")
-         ("(python-ref)Class-Exception-Object Index" nil "")
-         ("(python-lib)Module Index" nil "")
-         ("(python-lib)Class-Exception-Object Index" nil "")
-         ("(python-lib)Function-Method-Variable Index" nil "")
-         ("(python-lib)Miscellaneous Index" nil ""))))))
-
-(eval-after-load "info-look" '(py-after-info-look))
+Sends help if stuff is missing. "
+  (if (functionp 'pydoc-info-add-help)
+      (call-interactively 'info-lookup-symbol)
+    (message "pydoc-info-add-help not found. Please check INSTALL-INFO-FILES"))))
 
 (defun py-warn-tmp-files-left ()
   "Detect and warn about file of form \"py11046IoE\" in py-temp-directory. "

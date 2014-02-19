@@ -56,6 +56,15 @@ Use `defcustom' to keep value across sessions "
         (+ (current-column) (* 2 (or indent-offset py-indent-offset))))
     (+ (current-indentation) py-indent-offset)))
 
+(defun py-symbol-at-point ()
+  "Return the current Python symbol."
+  (interactive)
+  (let ((erg (with-syntax-table
+                 py-dotted-expression-syntax-table
+               (current-word))))
+    (when (interactive-p) (message "%s" erg))
+    erg))
+
 (defun py-line-backward-maybe ()
   (let ((orig (point)))
     (skip-chars-backward " \t\f" (line-beginning-position))
@@ -1276,7 +1285,7 @@ http://docs.python.org/reference/compound_stmts.html"
 
 (defun py--narrow-in-comint-modes (&optional done limit)
   "In comint-modes, limit region to previous prompt. "
-  (let ((pos (point)) 
+  (let ((pos (point))
         (limit
          (or limit
              (and

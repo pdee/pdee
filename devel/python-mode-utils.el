@@ -2510,7 +2510,7 @@ Return position if " ele " found, nil otherwise \"
       (when doku (insert (regexp-quote doku)))
 
       (insert (concat
-               ". \"]\n")))
+               " \"]\n")))
     (skip-chars-forward "[[:punct:]]")
     (capitalize-word 1)))
 
