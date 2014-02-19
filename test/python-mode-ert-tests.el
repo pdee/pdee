@@ -617,8 +617,9 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
     (goto-char (point-max))
     (py-newline-and-indent)
     (py-electric-backspace)
+    (setq last-command 'py-electric-backspace)
     (py-newline-and-indent) 
-    (should (eq 42 (point)))))
+    (should (eq 46 (point)))))
 
 
 

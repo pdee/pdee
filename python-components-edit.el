@@ -255,7 +255,7 @@ C-q TAB inserts a literal TAB-character."
 	  (if (< 23 (string-to-number (car (split-string emacs-version "\\."))))
 	      (delete-trailing-whitespace (line-beginning-position) pos)
 	    (save-restriction
-	      (narrow-to-region (line-beginning-position) pos)
+	      (narrow-to-region (point) pos)
 	      (delete-trailing-whitespace)))
 	(skip-chars-backward " \t")
 	(if (< 23 (string-to-number (car (split-string emacs-version "\\."))))
@@ -273,8 +273,7 @@ When indent is set back manually, this is honoured in following lines. "
 	 ;; lp:1280982, deliberatly dedented by user
 	 (this-dedent
 	  (when (and (or (eq 10 (char-after))(eobp))(looking-back "^[ \t]*")
-		     ;; (or (string-match "backspace" lkmd)(string-match "indent" lkmd) (string-match "newline" lkmd))
-                     )
+		     (or (string-match "backspace" lkmd)(string-match "indent" lkmd) (string-match "newline" lkmd)))
 	    (current-column)))
 	 erg pos)
     (newline)

@@ -60,39 +60,37 @@ Used with `eval-after-load'."
                   (Info-goto-node (format "(python%s-lib)Miscellaneous Index"
                                           version))
                   t)
-              (error nil)))))))
-
-
-    ;; (info-lookup-maybe-add-help
-    ;;  :mode 'python-mode
-    ;;  :regexp "[[:alnum:]_]+"
-    ;;  :doc-spec
-    ;;  ;; Fixme: Can this reasonably be made specific to indices with
-    ;;  ;; different rules?  Is the order of indices optimal?
-    ;;  ;; (Miscellaneous in -ref first prefers lookup of keywords, for
-    ;;  ;; instance.)
-    ;;  (if versioned
-    ;;      ;; The empty prefix just gets us highlighted terms.
-    ;;      `((,(concat "(python" version "-ref)Miscellaneous Index") nil "")
-    ;;        (,(concat "(python" version "-ref)Module Index" nil ""))
-    ;;        (,(concat "(python" version "-ref)Function-Method-Variable Index"
-    ;;                  nil ""))
-    ;;        (,(concat "(python" version "-ref)Class-Exception-Object Index"
-    ;;                  nil ""))
-    ;;        (,(concat "(python" version "-lib)Module Index" nil ""))
-    ;;        (,(concat "(python" version "-lib)Class-Exception-Object Index"
-    ;;                  nil ""))
-    ;;        (,(concat "(python" version "-lib)Function-Method-Variable Index"
-    ;;                  nil ""))
-    ;;        (,(concat "(python" version "-lib)Miscellaneous Index" nil "")))
-    ;;    '(("(python-ref)Miscellaneous Index" nil "")
-    ;;      ("(python-ref)Module Index" nil "")
-    ;;      ("(python-ref)Function-Method-Variable Index" nil "")
-    ;;      ("(python-ref)Class-Exception-Object Index" nil "")
-    ;;      ("(python-lib)Module Index" nil "")
-    ;;      ("(python-lib)Class-Exception-Object Index" nil "")
-    ;;      ("(python-lib)Function-Method-Variable Index" nil "")
-    ;;      ("(python-lib)Miscellaneous Index" nil ""))))))
+              (error nil)))))
+    (info-lookup-maybe-add-help
+     :mode 'python-mode
+     :regexp "[[:alnum:]_]+"
+     :doc-spec
+     ;; Fixme: Can this reasonably be made specific to indices with
+     ;; different rules?  Is the order of indices optimal?
+     ;; (Miscellaneous in -ref first prefers lookup of keywords, for
+     ;; instance.)
+     (if versioned
+         ;; The empty prefix just gets us highlighted terms.
+         `((,(concat "(python" version "-ref)Miscellaneous Index") nil "")
+           (,(concat "(python" version "-ref)Module Index" nil ""))
+           (,(concat "(python" version "-ref)Function-Method-Variable Index"
+                     nil ""))
+           (,(concat "(python" version "-ref)Class-Exception-Object Index"
+                     nil ""))
+           (,(concat "(python" version "-lib)Module Index" nil ""))
+           (,(concat "(python" version "-lib)Class-Exception-Object Index"
+                     nil ""))
+           (,(concat "(python" version "-lib)Function-Method-Variable Index"
+                     nil ""))
+           (,(concat "(python" version "-lib)Miscellaneous Index" nil "")))
+       '(("(python-ref)Miscellaneous Index" nil "")
+         ("(python-ref)Module Index" nil "")
+         ("(python-ref)Function-Method-Variable Index" nil "")
+         ("(python-ref)Class-Exception-Object Index" nil "")
+         ("(python-lib)Module Index" nil "")
+         ("(python-lib)Class-Exception-Object Index" nil "")
+         ("(python-lib)Function-Method-Variable Index" nil "")
+         ("(python-lib)Miscellaneous Index" nil ""))))))
 
 (eval-after-load "info-look" '(py-after-info-look))
 

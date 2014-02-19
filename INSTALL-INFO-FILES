@@ -1,7 +1,16 @@
 Wilfred Hughes provides a tool which seems to permit
 building info docu for any Python version.
 
+<<<<<<< HEAD
 Source here:
+=======
+It seems built upon originated from
+
+http://bitbucket.org/jonwaltman/pydoc-info
+
+residing now at
+
+>>>>>>> parent of 78c8d77... `py-newline-and-indent' honor dedent, lp:1280982
 http://github.com/wilfred/python-info
 
 After unpacking, either follow the recipes in README.md
@@ -22,6 +31,7 @@ created info-files containes a line, which must appear
 in file "dir".
 
 At Linux that directory which keeps the info-files
+<<<<<<< HEAD
 should appear in $INFOPATH.
 
 ######
@@ -32,3 +42,6 @@ http://bitbucket.org/andreas_roehler/pydoc-info
 Thanks Jonathan Waltman providing the original python-info.el:
 http://bitbucket.org/jonwaltman/pydoc-info
 
+=======
+should appear in $INFOPATH.
+>>>>>>> parent of 78c8d77... `py-newline-and-indent' honor dedent, lp:1280982
