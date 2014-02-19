@@ -40,6 +40,9 @@ of current line."
 (defalias 'py-eldoc 'py-eldoc-function)
 
 ;;; Info-look functionality.
+(require 'info-look)
+(eval-when-compile (require 'info))
+
 (defun py-info-lookup-symbol ()
   (interactive) 
   "Calls `info-lookup-symbol'.
@@ -47,8 +50,95 @@ of current line."
 Sends help if stuff is missing. "
   (if (functionp 'pydoc-info-add-help)
       (call-interactively 'info-lookup-symbol)
-    (message "pydoc-info-add-help not found. Please check INSTALL-INFO-FILES"))))
+    (message "pydoc-info-add-help not found. Please check INSTALL-INFO-FILES")))
 
+
+(info-lookup-add-help
+ :mode 'python-mode
+ :regexp "[[:alnum:]_]+"
+ :doc-spec
+'(("(python)Index" nil "")))
+
+(defun python-after-info-look ()
+  "Set up info-look for Python.
+
+Tries to take account of versioned Python Info files, e.g. Debian's
+python2.5-ref.info.gz.
+Used with `eval-after-load'."
+  (let* ((version (let ((s (shell-command-to-string (concat py-python-command
+							    " -V"))))
+		    (string-match "^Python \\([0-9]+\\.[0-9]+\\>\\)" s)
+		    (match-string 1 s)))
+	 ;; Whether info files have a Python version suffix, e.g. in Debian.
+	 (versioned
+	  (with-temp-buffer
+	    (Info-mode)
+	    ;; First look for Info files corresponding to the version
+	    ;; of the interpreter we're running.
+	    (condition-case ()
+		;; Don't use `info' because it would pop-up a *info* buffer.
+		(progn
+		  (Info-goto-node (format "(python%s-lib)Miscellaneous Index"
+					  version))
+		  t)
+	      (error
+	       ;; Otherwise see if we actually have an un-versioned one.
+	       (condition-case ()
+		   (progn
+		     (Info-goto-node
+		      (format "(python-lib)Miscellaneous Index" version))
+		     nil)
+		 (error
+		  ;; Otherwise look for any versioned Info file.
+		  (condition-case ()
+		      (let (found)
+			(dolist (dir (or Info-directory-list
+					 Info-default-directory-list))
+			  (unless found
+			    (let ((file (car (file-expand-wildcards
+					      (expand-file-name "python*-lib*"
+								dir)))))
+			      (if (and file
+				       (string-match
+					"\\<python\\([0-9]+\\.[0-9]+\\>\\)-"
+					file))
+				  (setq version (match-string 1 file)
+					found t)))))
+			found)
+		    (error)))))))))
+    (info-lookup-maybe-add-help
+     :mode 'python-mode
+     :regexp "[[:alnum:]_]+"
+     :doc-spec
+     ;; Fixme: Can this reasonably be made specific to indices with
+     ;; different rules?  Is the order of indices optimal?
+     ;; (Miscellaneous in -ref first prefers lookup of keywords, for
+     ;; instance.)
+     (if versioned
+	 ;; The empty prefix just gets us highlighted terms.
+	 `((,(concat "(python" version "-ref)Miscellaneous Index"))
+	   (,(concat "(python" version "-ref)Module Index"))
+	   (,(concat "(python" version "-ref)Function-Method-Variable Index"))
+	   (,(concat "(python" version "-ref)Class-Exception-Object Index"))
+	   (,(concat "(python" version "-lib)Module Index"))
+	   (,(concat "(python" version "-lib)Class-Exception-Object Index"))
+	   (,(concat "(python" version "-lib)Function-Method-Variable Index"))
+	   (,(concat "(python" version "-lib)Miscellaneous Index")))
+       '(("(python-ref)Miscellaneous Index")
+	 ("(python-ref)Module Index")
+	 ("(python-ref)Function-Method-Variable Index")
+	 ("(python-ref)Class-Exception-Object Index")
+	 ("(python-lib)Module Index")
+	 ("(python-lib)Class-Exception-Object Index")
+	 ("(python-lib)Function-Method-Variable Index")
+	 ("(python-lib)Miscellaneous Index"))))))
+
+;; (if (featurep 'info-look)
+;;     (python-after-info-look))  
+
+;; (eval-after-load "info-look" '(python-after-info-look))
+
+;;;
 (defun py-warn-tmp-files-left ()
   "Detect and warn about file of form \"py11046IoE\" in py-temp-directory. "
   (let ((erg1 (file-readable-p (concat py-temp-directory (char-to-string py-separator-char)  (car (directory-files  py-temp-directory nil "py[[:alnum:]]+$"))))))
