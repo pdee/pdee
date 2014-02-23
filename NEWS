@@ -27,6 +27,9 @@ New commands
 - py-symbol-at-point
   Return the Python symbol under cursor
 
+- py-report-comint-variable-setting
+  Display Py-shell' comint-mode variables of interest.
+
 New in version 6.1.3
 ---------------------
 
