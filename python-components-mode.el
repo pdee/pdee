@@ -1953,11 +1953,6 @@ Currently-active file is at the head of the list.")
   "Default template to expand by `python-expand-template'.
 Updated on each expansion.")
 
-(defvar py-shell-input-lines nil
-  "Collect input lines send interactively to the Python process in
-order to allow injecting completion command between keyboard interrupt
-and resending the lines later. The lines are stored in reverse order")
-
 (defvar inferior-python-mode-map
   (let ((map (copy-keymap comint-mode-map)))
     ;; (substitute-key-definition 'complete-symbol 'py-shell-complete map global-map)
@@ -7413,10 +7408,7 @@ Start a new process if necessary. "
     erg))
 
 ;;; Miscellany.
-
-;;; need to clear py-shell-input-lines if primary prompt found
 (defun py-shell-simple-send (proc string)
-  (setq py-shell-input-lines (cons string py-shell-input-lines))
   (comint-simple-send proc string))
 
 (defalias

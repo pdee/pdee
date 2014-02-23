@@ -535,7 +535,7 @@ Internal use"
   (py-shell-send-setup-code proc)
   (and py-set-pager-cat-p (comint-simple-send proc "import os;os.environ['PAGER'] = 'cat'"))
   (compilation-shell-minor-mode 1)
-  (setq comint-input-sender 'py-shell-simple-send)
+  ;; (setq comint-input-sender 'py-shell-simple-send)
   ;; (sit-for 0.1)
   (setq comint-input-ring-file-name
         (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
