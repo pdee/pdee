@@ -535,7 +535,7 @@ Internal use"
   (py-shell-send-setup-code proc)
   (and py-set-pager-cat-p (comint-simple-send proc "import os;os.environ['PAGER'] = 'cat'"))
   (compilation-shell-minor-mode 1)
-  ;; (setq comint-input-sender 'py-shell-simple-send)
+  (set (make-local-variable 'comint-input-sender) 'py-shell-simple-send)
   ;; (sit-for 0.1)
   (setq comint-input-ring-file-name
         (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
@@ -589,6 +589,8 @@ BUFFER allows specifying a name, the Python process is connected to
 When DONE is `t', `py-shell-manage-windows' is omitted
 "
   (interactive "P")
+  (setenv "PAGER" "cat")
+  (setenv "TERM" "dumb")
   (let* ((dedicated (or dedicated py-dedicated-process-p))
          (py-exception-buffer (or py-exception-buffer (current-buffer)))
          (coding-system-for-read 'utf-8)

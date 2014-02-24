@@ -7409,7 +7409,13 @@ Start a new process if necessary. "
 
 ;;; Miscellany.
 (defun py-shell-simple-send (proc string)
-  (comint-simple-send proc string))
+  (let* ((strg (substring-no-properties string))
+         (nln (string-match "\n$" strg)))
+    ;; (or nln (setq strg (concat strg "\n")))
+    ;; (comint-simple-send proc (substring-no-properties string))
+    (process-send-string proc strg)
+    (or nln (process-send-string proc "\n")
+    )))
 
 (defalias
   'py-shell-redirect-send-command-to-process
@@ -7681,58 +7687,6 @@ as it leaves your system default unchanged."
   "`comint-input-filter' function for inferior Python.
 Don't save anything for STR matching `inferior-python-filter-regexp'."
   (not (string-match inferior-python-filter-regexp str)))
-
-;; Using this stops us getting lines in the buffer like
-;; >>> ... ... >>>
-;; Also look for (and delete) an `_emacs_ok' string and call
-;; `python-preoutput-continuation' if we get it.
-(defun py-preoutput-filter (s)
-  "`comint-preoutput-filter-functions' function: ignore prompts not at bol."
-  (when py-preoutput-leftover
-    (setq s (concat py-preoutput-leftover s))
-    (setq py-preoutput-leftover nil))
-  (let ((start 0)
-        (res ""))
-    ;; First process whole lines.
-    (while (string-match "\n" s start)
-      (let ((line (substring s start (setq start (match-end 0)))))
-        ;; Skip prompt if needed.
-        (when (and py-preoutput-skip-next-prompt
-                   (string-match comint-prompt-regexp line))
-          (setq py-preoutput-skip-next-prompt nil)
-          (setq line (substring line (match-end 0))))
-        ;;  probably obsolet _emacs_out lines of Emacs-24.3 python.el
-        (if (and (string-match "\\`_emacs_out \\(.*\\)\n\\'" line)
-                 (local-variable-p 'py-preoutput-result))
-            (progn
-              (setq py-preoutput-result (match-string 1 line))
-              (set (make-local-variable 'py-preoutput-skip-next-prompt) t)
-              py-preoutput-result)
-          (setq res (concat res line)))))
-    ;; Then process the remaining partial line.
-    (unless (zerop start) (setq s (substring s start)))
-    (cond ((and (string-match comint-prompt-regexp s)
-                ;; Drop this prompt if it follows an _emacs_out...
-                (or py-preoutput-skip-next-prompt
-                    ;; ... or if it's not gonna be inserted at BOL.
-                    ;; Maybe we could be more selective here.
-                    (if (zerop (length res))
-                        (not (bolp))
-                      (string-match ".\\'" res))))
-           ;; The need for this seems to be system-dependent:
-           ;; What is this all about, exactly?  --Stef
-           ;; (if (and (eq ?. (aref s 0)))
-           ;;     (accept-process-output (get-buffer-process (current-buffer)) 1))
-           (setq py-preoutput-skip-next-prompt nil)
-           res)
-          ((let ((end (min (length "_emacs_out ") (length s))))
-             (eq t (compare-strings s nil end "_emacs_out " nil end)))
-           ;; The leftover string is a prefix of _emacs_out so we don't know
-           ;; yet whether it's an _emacs_out or something else: wait until we
-           ;; get more output so we can resolve this ambiguity.
-           (set (make-local-variable 'py-preoutput-leftover) s)
-           res)
-          (t (concat res s)))))
 
 (make-obsolete 'jpython-mode 'jython-mode nil)
 (autoload 'comint-check-proc "comint")
