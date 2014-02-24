@@ -1315,7 +1315,7 @@ else:
   :type 'string
   :group 'python-mode)
 
-(defcustom python-shell-module-completion-string-code ""
+(defcustom python-shell-module-completion-string-code "';'.join(__COMPLETER_all_completions('''%s'''))"
   "Python code used to get completions separated by semicolons for imports.
 
 For IPython v0.11, add the following line to

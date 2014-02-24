@@ -1301,22 +1301,14 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall wrong-type-argument-lp:901541-test \
 --funcall indentation-bug-inside-docstrings-lp:899455-test \
 --funcall comments-start-a-new-line-lp-1092847-n1-test \
---funcall inconvenient-window-splitting-behavior-python-lp-1018996-test \
 --funcall nested-dictionaries-indent-lp:328791-test \
 --funcall python-shell-complete-test \
 --funcall not-that-useful-completion-lp:1003580-test \
 --funcall tqs-list-error-test \
---funcall py-ipython-complete-lp:927136-test \
 --funcall py-smart-operator-test \
 --funcall py-down-statement-test \
 --funcall previous-statement-lp:637955-test \
 --funcall goto-beginning-of-tqs-lp:735328-test \
---funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n1-test 2 \
---funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n2-test 2 \
---funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n3-test 2 \
---funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n4-test 2 \
---funcall py-electric-comment-add-space-lp:828398-test \
---funcall py-electric-comment-add-space-t-lp:828398-test \
 --funcall py-execute-block-or-clause-python3-test \
 --funcall py-execute-block-or-clause-python2-test \
 --funcall py-execute-block-or-clause-python2.7-test \
@@ -1456,3 +1448,11 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-end-of-block-test \
 --funcall indent-triplequoted-to-itself-lp:752252-test \
 --funcall py-execute-buffer-ipython-lp-1252643-test \
+--funcall inconvenient-window-splitting-behavior-python-lp-1018996-test \
+--funcall py-ipython-complete-lp:927136-test \
+--funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n1-test 2 \
+--funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n2-test 2 \
+--funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n3-test 2 \
+--funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n4-test 2 \
+--funcall py-electric-comment-add-space-lp:828398-test \
+--funcall py-electric-comment-add-space-t-lp:828398-test \

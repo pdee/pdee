@@ -822,7 +822,7 @@ and `pass'.  This doesn't catch embedded statements."
                                             (eq regexp 'py-block-re))
                                         (looking-at py-clause-re)))
                                (py-end-of-statement)(setq last (point))))
-                      (goto-char last))))
+                      (and last (goto-char last)))))
             (t (goto-char orig)))
       (when (and (<= (point) orig)(not (looking-at (symbol-value regexp))))
         ;; found the end above
