@@ -2953,6 +2953,7 @@ def test_bu():
 (defun not-that-useful-completion-lp:1003580-base ()
   (goto-char 88)
   (py-shell-complete nil t)
+  (sit-for 0.3) 
   (assert (looking-back "numpy.CLIP") nil "not-that-useful-completion-lp:1003580-test failed"))
 
 (defun completion-fails-in-python-script-r989-lp:1004613-test (&optional arg)
@@ -4705,7 +4706,7 @@ print(i)
 
 (defun py-execute-buffer-python3-looks-broken-lp-1085386-base ()
   (let ((py-use-current-dir-when-execute-p t))
-    (assert (py-execute-buffer-python3) nil "py-execute-buffer-python3-looks-broken-lp-1085386-test failed")))
+    (assert (progn (py-execute-buffer-python3) (set-buffer (py--fetch-first-python-buffer))(goto-char (point-min)) (search-forward "1"))  nil "py-execute-buffer-python3-looks-broken-lp-1085386-test failed")))
 
 (defun wrong-indent-after-asignment-lp-1087404-test (&optional arg)
   (interactive "p")

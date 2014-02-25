@@ -1120,6 +1120,12 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-font-lock-keywords) nil \"py-font-lock-keywords not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall py-execute-block-or-clause-python3-test \
+--funcall py-execute-block-or-clause-python2-test \
+--funcall py-execute-line-python-test \
+--funcall py-execute-line-python3-test \
+--funcall py-execute-line-python2-test \
+--funcall py-execute-expression-python-test \
 --funcall abbrevs-changed-t-when-starting-lp-1270631-test \
 --funcall py-empty-line-closes-p-lp-1235324-test \
 --funcall infinite-loop-after-tqs-lp:826044-test \
@@ -1303,28 +1309,11 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall comments-start-a-new-line-lp-1092847-n1-test \
 --funcall nested-dictionaries-indent-lp:328791-test \
 --funcall python-shell-complete-test \
---funcall not-that-useful-completion-lp:1003580-test \
 --funcall tqs-list-error-test \
 --funcall py-smart-operator-test \
 --funcall py-down-statement-test \
 --funcall previous-statement-lp:637955-test \
 --funcall goto-beginning-of-tqs-lp:735328-test \
---funcall py-execute-block-or-clause-python3-test \
---funcall py-execute-block-or-clause-python2-test \
---funcall py-execute-block-or-clause-python2.7-test \
---funcall py-execute-block-or-clause-python2.7-switch-test \
---funcall py-execute-block-or-clause-python2.7-no-switch-test \
---funcall py-execute-block-or-clause-python2.7-dedicated-test \
---funcall py-execute-block-or-clause-python2.7-dedicated-switch-test \
---funcall py-execute-line-python-test \
---funcall py-execute-line-python3-test \
---funcall py-execute-line-python2-test \
---funcall py-execute-line-python2.7-test \
---funcall py-execute-line-python2.7-switch-test \
---funcall py-execute-line-python2.7-no-switch-test \
---funcall py-execute-line-python2.7-dedicated-test \
---funcall py-execute-line-python2.7-dedicated-switch-test \
---funcall py-execute-expression-python-test \
 --funcall python-mode-very-slow-lp-1107037-test \
 --funcall module-docstring-when-following-comment-lp-1102011-test \
 --funcall docstring-style-switches-test \
@@ -1456,3 +1445,14 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n4-test 2 \
 --funcall py-electric-comment-add-space-lp:828398-test \
 --funcall py-electric-comment-add-space-t-lp:828398-test \
+--funcall py-execute-block-or-clause-python2.7-dedicated-switch-test \
+--funcall py-execute-block-or-clause-python2.7-test \
+--funcall py-execute-block-or-clause-python2.7-switch-test \
+--funcall py-execute-block-or-clause-python2.7-no-switch-test \
+--funcall py-execute-block-or-clause-python2.7-dedicated-test \
+--funcall py-execute-line-python2.7-test \
+--funcall py-execute-line-python2.7-switch-test \
+--funcall py-execute-line-python2.7-no-switch-test \
+--funcall py-execute-line-python2.7-dedicated-test \
+--funcall py-execute-line-python2.7-dedicated-switch-test \
+--funcall not-that-useful-completion-lp:1003580-test \

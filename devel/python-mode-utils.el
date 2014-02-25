@@ -393,9 +393,7 @@
           (cond ((string= "region" ele)
                  (insert (concat "  (interactive \"r\")
     (py-execute-prepare \"" ele "\" \"" elt "\""))
-                 (write-extended-execute-forms-endings)
-
-                 )
+                 (write-extended-execute-forms-endings))
                 ((string= "buffer" ele)
                  (insert "  (interactive)
   \(save-excursion
@@ -408,14 +406,10 @@
                            (find-file-noselect filename))))
           (set-buffer buffer)))
       (py-execute-prepare \"" ele "\" \"" elt "\"")
-                 (write-extended-execute-forms-endings)
-
-                 )
+                 (write-extended-execute-forms-endings))
                 (t (insert (concat "  (interactive)
   (py-execute-prepare \"" ele "\" \"" elt "\""))
-    (write-extended-execute-forms-endings)
-                   )
-                )
+    (write-extended-execute-forms-endings)))
 
           ;; (unless (string= "buffer" ele)
           ;;   (if (string-match "dedicated" pyo)
@@ -432,13 +426,25 @@
           ;;         ((string= "buffer" ele)
           ;;          (insert "))))\n\n"))
           ;;         (t (insert "))\n\n"))))
-          ))))
+))))
   (if path-to-shell
       (insert (concat "(provide '" path-to-shell) ")
 ;;; " path-to-shell ".el ends here\n")
     (insert "(provide 'python-extended-executes)
 ;;; python-extended-executes.el ends here\n "))
   (emacs-lisp-mode))
+
+(defun py--fetch-first-python-buffer-from-list ()
+  "Returns first (I)Python-buffer found in `buffer-list'"
+  (interactive)
+  (let ((buli (buffer-list))
+        erg)
+    (while (and buli (not erg))
+      (if (string-match "Python" (prin1-to-string (car buli)))
+          (setq erg (car buli))
+        (setq buli (cdr buli))))
+    erg))
+
 
 (defun write-extended-execute-forms-test (&optional command path-to-shell option)
   "Write `py-execute-block...' etc. "
@@ -493,11 +499,26 @@
           (unless (string= pyo "")(insert (concat "-" pyo)))
           (insert "-base ()\n")
           (if (string= "" elt)
-              (insert (concat "  (assert (markerp (py-execute-" ele))
-            (insert (concat "  (assert (markerp (py-execute-" ele "-" elt)))
-          (unless (string= pyo "")(insert (concat "-" pyo)))                  (cond ((string= "region" ele)
-                                                                                     (insert " (line-beginning-position) (line-end-position)")))
-          (insert "))")
+              (insert (concat "  (assert (progn (py-execute-" ele))
+            (insert (concat "  (assert (progn (py-execute-" ele "-" elt)))
+          (unless (string= pyo "")(insert (concat "-" pyo)))
+
+
+	  (cond ((string= "region" ele)
+               (insert " (line-beginning-position) (line-end-position)")))
+          (insert ")")
+
+	  (if (string= "" elt)
+	      (progn
+		(insert (concat "(set-buffer (py--fetch-first-python-buffer))(goto-char (point-min))(search-forward \"the py-execute-"))
+		(unless (string= pyo "")(insert (concat "-" pyo)))
+		(insert "-test\" nil nil 1))"))
+	    (insert (concat "(set-buffer (py--fetch-first-python-buffer))(goto-char (point-min))(search-forward \"the py-execute-" ele "-" elt))
+	    (unless (string= pyo "")(insert (concat "-" pyo)))
+
+	    (insert "-test\" nil nil 1))"))
+
+
           (if (string= "" elt)
               (insert (concat "
            nil \"py-execute-" ele))
@@ -2740,7 +2761,7 @@ Don't store data in kill ring. \"
 ")))
   (insert "\n;; python-components-delete ends here
 \(provide 'python-components-delete)")
-  
+
   (switch-to-buffer (current-buffer))
   (emacs-lisp-mode))
 
@@ -2778,7 +2799,7 @@ Store data in kill ring, so it might yanked back. \"
 ")))
   (insert "\n;; python-components-copy ends here
 \(provide 'python-components-copy)")
-  
+
   (switch-to-buffer (current-buffer))
   (emacs-lisp-mode))
 
@@ -2802,7 +2823,7 @@ Return code of `py-" ele "' at point, a string. \"
 ")))
   (insert "\n;; python-components-forms-code.el ends here
 \(provide 'python-components-forms-code)")
-  
+
   (switch-to-buffer (current-buffer))
   (emacs-lisp-mode))
 
