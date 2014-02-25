@@ -5103,13 +5103,21 @@ In experimental state yet "
 
                     ("Completion"
 
+                     ["No completion calls dabbrev expand "
+                      (setq py-no-completion-calls-dabbrev-expand-p
+                            (not py-no-completion-calls-dabbrev-expand-p))
+                      :help "If completion function should call dabbrev-expand when no completion found\. Default is `t'
+
+See also `py-indent-no-completion-p'Use `M-x customize-variable' to set it permanently"
+                      :style toggle :selected py-no-completion-calls-dabbrev-expand-p]
+
                      ["Ipython complete use separate shell "
                       (setq ipython-complete-use-separate-shell-p
                             (not ipython-complete-use-separate-shell-p))
                       :help "If `ipython-complete' should use a separate shell. Thus prompt-counter is not incremented by completion. Use `M-x customize-variable' to set it permanently"
                       :style toggle :selected ipython-complete-use-separate-shell-p]
 
-                     ["Set complete keymap "
+                     ["Set Pymacs-based complete keymap "
                       (setq py-set-complete-keymap-p
                             (not py-set-complete-keymap-p))
                       :help "If `py-complete-initialize', which sets up enviroment for Pymacs based py-complete, should load it's keys into `python-mode-map'
