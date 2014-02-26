@@ -371,9 +371,9 @@ data = {
 }
 
 "))
-    (py-bug-tests-intern 'nested-dictionaries-indent-lp:328791 arg teststring)))
+    (py-bug-tests-intern 'nested-dictionaries-indent-lp:328791-base arg teststring)))
 
-(defun nested-dictionaries-indent-lp:328791 ()
+(defun nested-dictionaries-indent-lp:328791-base ()
   (let ((py-indent-honors-multiline-listing t)
         py-closing-list-dedents-bos)
     (goto-char (point-min))
@@ -5419,7 +5419,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.77 $\"
+__version__ = \"$Revision: 1.78 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))

@@ -553,8 +553,8 @@ Internal use"
   (comint-read-input-ring t)
   (set-process-sentinel (get-buffer-process py-buffer-name)
                         #'shell-write-history-on-exit)
-  (add-hook 'comint-output-filter-functions
-            'ansi-color-process-output nil t)
+  ;; (add-hook 'comint-output-filter-functions
+  ;; 'ansi-color-process-output nil t)
   (add-hook 'after-change-functions 'py-after-change-function nil t)
 
   (remove-hook 'comint-output-filter-functions

@@ -55,7 +55,7 @@
 (require 'custom)
 (require 'cl)
 (require 'compile)
-(require 'ansi-color)
+;; (require 'ansi-color)
 (require 'cc-cmds)
 (require 'shell)
 ;; (require 'python)
@@ -7788,7 +7788,7 @@ containing Python source.
 
 \\{inferior-python-mode-map}"
   :group 'python
-  (require 'ansi-color) ; for ipython
+  ;; (require 'ansi-color) ; for ipython
   (setq mode-line-process '(":%s"))
   (set (make-local-variable 'comint-input-filter) 'py-input-filter)
   (set (make-local-variable 'compilation-error-regexp-alist)

@@ -163,12 +163,12 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
                    (get-buffer-process (py-shell nil nil (if (string-match "[iI][pP]ython[^[:alpha:]]*$"  py-shell-name) "ipython") nil t))))
          (comint-output-filter-functions
           (delq 'py-comint-output-filter-function comint-output-filter-functions))
-         (comint-preoutput-filter-functions
-          (append comint-preoutput-filter-functions
-                  '(ansi-color-filter-apply
-                    (lambda (string)
-                      (setq ugly-return (concat ugly-return string))
-                      ""))))
+         ;; (comint-preoutput-filter-functions
+         ;;  (append comint-preoutput-filter-functions
+         ;;          '(ansi-color-filter-apply
+         ;;            (lambda (string)
+         ;;              (setq ugly-return (concat ugly-return string))
+         ;;              ""))))
          (ccs (or completion-command-string
                   (if imports
                       (concat imports (py-set-ipython-completion-command-string))
