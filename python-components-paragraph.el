@@ -174,7 +174,7 @@ complete docstring according to setting of `py-docstring-style' "
                              (copy-marker (point))))))
              ;; Assume docstrings at BOL resp. indentation
              (docstring (unless (eq 'no docstring)
-                          (py-docstring-p (nth 8 pps))))
+                          (py-docstring-p pps)))
              (end (or (ignore-errors (and end (goto-char end) (skip-chars-backward "\"' \t\f\n")(copy-marker (point))))
                       (progn (or (eq (marker-position beg) (point)) (goto-char (nth 8 pps)))
                              (forward-sexp)

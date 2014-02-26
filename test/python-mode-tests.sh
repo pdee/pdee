@@ -1120,6 +1120,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-font-lock-keywords) nil \"py-font-lock-keywords not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall from-within-py-shell-call-another-instance-lp-1169687-test \
 --funcall py-execute-block-or-clause-python3-test \
 --funcall py-execute-block-or-clause-python2-test \
 --funcall py-execute-line-python-test \
@@ -1323,13 +1324,8 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-bol-moves-test \
 --funcall py-execute-buffer-python3-looks-broken-lp-1085386-test \
 --funcall fails-to-indent-abs-wrong-type-argument-lp-1075673-test \
---funcall several-new-bugs-with-paragraph-filling-lp-1066489-test \
---funcall more-docstring-filling-woes-lp-1102296-pep-257-test \
---funcall more-docstring-filling-woes-lp-1102296-pep-257-nn-test \
---funcall from-within-py-shell-call-another-instance-lp-1169687-test \
 --funcall py-if-name-main-permission-lp-326620-test \
 --funcall Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test \
---funcall py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test \
 --funcall another-broken-font-locking-lp:961231-test \
 --funcall IndentationError-expected-an-indented-block-when-execute-lp-1055569-test \
 --funcall missing-py-variable-name-face-lp-1215791-test \
@@ -1433,7 +1429,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall completion-at-gentoo-lp-1008842-test \
 --funcall incorrect-use-of-region-in-py-shift-left-lp:875951-test \
 --funcall no-completion-at-all-lp:1001328-test \
---funcall py-docstring-style-pep-257-nn-closing-quotes-lp-1241147-test \
 --funcall py-end-of-block-test \
 --funcall indent-triplequoted-to-itself-lp:752252-test \
 --funcall py-execute-buffer-ipython-lp-1252643-test \
@@ -1456,3 +1451,8 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-execute-line-python2.7-dedicated-test \
 --funcall py-execute-line-python2.7-dedicated-switch-test \
 --funcall not-that-useful-completion-lp:1003580-test \
+--funcall several-new-bugs-with-paragraph-filling-lp-1066489-test \
+--funcall more-docstring-filling-woes-lp-1102296-pep-257-test \
+--funcall py-docstring-style-pep-257-nn-closing-quotes-lp-1241147-test \
+--funcall more-docstring-filling-woes-lp-1102296-pep-257-nn-test \
+--funcall py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test \

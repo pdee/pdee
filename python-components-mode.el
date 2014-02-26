@@ -2806,7 +2806,7 @@ See bug report at launchpad, lp:940812 "
               word-end) . py-exception-name-face)
         ;; (,(rx (or space line-start) symbol-start "range
         ;; Builtins
-        (,(rx (or space line-start) symbol-start
+        (,(rx (or space (syntax open-parenthesis) line-start) symbol-start
               (or "_" "__doc__" "__import__" "__name__" "__package__" "abs" "all"
                   "any" "apply" "basestring" "bin" "bool" "buffer" "bytearray"
                   "bytes" "callable" "chr" "classmethod" "cmp" "coerce" "compile"

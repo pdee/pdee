@@ -3184,9 +3184,9 @@ def foo(a):
   (py-bug-tests-intern 'IndentationError-expected-an-indented-block-when-execute-lp-1055569-base 1 teststring)))
 
 (defun IndentationError-expected-an-indented-block-when-execute-lp-1055569-base ()
-    (assert
-     (string= "IndentationError-expected-an-indented-block-when-execute-lp-1055569-test" (py-execute-buffer))
+    (assert (progn (py-execute-buffer)(set-buffer (py--fetch-first-python-buffer))(goto-char (point-min))(search-forward "IndentationError-expected-an-indented-block-when-execute-lp-1055569-test" nil nil 1)) 
      ;; (progn (py-execute-buffer) t)
+
      nil "IndentationError-expected-an-indented-block-when-execute-lp-1055569-test failed"))
 
 (defun stalls-emacs-probably-due-to-syntax-highlighting-lp-1058261-test (&optional arg)
@@ -4497,6 +4497,7 @@ class IBanManager(Interface):
   (let (py-paragraph-fill-docstring-p)
     (goto-char 932)
     (py-fill-paragraph)
+    (sit-for 0.1) 
     (assert (re-search-forward "^ +:type email") nil "several-new-bugs-with-paragraph-filling-lp-1066489-test failed")))
 
 (defun incorrect-indentation-of-one-line-functions-lp-1067633-test (&optional arg)
@@ -5177,11 +5178,11 @@ class Test(object):
     (message "%s" "more-docstring-filling-woes-lp-1102296-pep-257-test #2 done")
     (goto-char 357)
     (fill-paragraph)
-    (goto-char 436)
+    (forward-line 1) 
     (sit-for 0.1)
     (assert (empty-line-p) nil "more-docstring-filling-woes-lp-1102296-pep-257-test #3a failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-pep-257-test #3a done")
-    (forward-line 2)
+    (forward-line 3)
     (assert (looking-at "        pass") nil "more-docstring-filling-woes-lp-1102296-pep-257-test #3c failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-pep-257-test #3c done")))
 
@@ -5419,7 +5420,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.78 $\"
+__version__ = \"$Revision: 1.79 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -5815,7 +5816,8 @@ inode, start_no, end_no)
   (py-bug-tests-intern 'py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-base arg teststring)))
 
 (defun py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-base ()
-  (let (py-split-windows-on-execute-p)
+  (let ((py-switch-buffers-on-execute-p)
+        (py-split-windows-on-execute-p))
     (shell)
     (delete-other-windows)
     ;; (set-buffer (py-shell))
@@ -5837,7 +5839,7 @@ inode, start_no, end_no)
           (py-switch-buffers-on-execute-p t))
     (py-shell)
     (sit-for 0.1)
-    (py-shell nil nil nil t nil nil nil t)
+    (py-shell nil t nil nil t)
     (assert (string-match "\\*Python\\*\<[0-9]+\>" (buffer-name)) nil "from-within-py-shell-call-another-instance-lp-1169687-test failed")))
 
 (defun multibuffer-mayhem-lp-1162q272-test (&optional arg)
