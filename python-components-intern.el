@@ -1139,8 +1139,7 @@ the output."
          (process (or process (get-buffer-process (py-shell))))
          (comint-preoutput-filter-functions
           (append comint-preoutput-filter-functions
-                  ;; ansi-color-filter-apply
-                  '(identity
+                  '(ansi-color-filter-apply
                     (lambda (string)
                       (setq output string)
                       "")))))
@@ -1163,13 +1162,12 @@ When MSG is non-nil messages the first line of STRING.  Return
 the output."
   (let* (output-buffer
          (process (or process (get-buffer-process (py-shell))))
-         ;; (comint-preoutput-filter-functions
-         ;;  (append comint-preoutput-filter-functions
-         ;;          '(ansi-color-filter-apply
-         ;;            (lambda (string)
-         ;;              (setq output-buffer (concat output-buffer string))
-         ;;              ""))))
-         )
+         (comint-preoutput-filter-functions
+          (append comint-preoutput-filter-functions
+                  '(ansi-color-filter-apply
+                    (lambda (string)
+                      (setq output-buffer (concat output-buffer string))
+                      "")))))
     (py-shell-send-string string process msg)
     (accept-process-output process 1)
     (when output-buffer

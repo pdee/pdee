@@ -87,6 +87,7 @@
         ;; (insert (concat (capitalize (substring oldbuf 0 (string-match "\." oldbuf))) " variables" "\n\n"))
         ;; (insert (concat suffix " variables\n\n"))
         (insert "Python-mode variables\n\n")
+        (switch-to-buffer (current-buffer)) 
         (dolist (ele variableslist)
           (if (string-match "^;;; " (car ele))
               (unless (or (string-match "^;;; Constants\\|^;;; Commentary\\|^;;; Code\\|^;;; Macro definitions\\|^;;; Customization" (car ele)))
@@ -131,16 +132,16 @@
       ;; (widen)
       (goto-char (point-min))
       ;; (eval-buffer)
-      (while (and (not (eobp))(re-search-forward "^(defun [[:alpha:]]\\|^;;; .+" nil t 1))
-        (when (save-match-data (commandp (symbol-at-point)))
-          (let* ((name (symbol-at-point))
-                 (docu (documentation name)))
-            (if docu
-                (add-to-list 'commandslist (cons (prin1-to-string name) docu))
-              (message "don't see docu string for %s" (prin1-to-string name)))))
-        ;; (add-to-list 'commandslist (list (match-string-no-properties 0)))
+      (while (and (not (eobp))(re-search-forward "^(defun [[:alpha:]]\\|^;;; .+" nil t 1)) ;
+                                                     (when (save-match-data (commandp (symbol-at-point)))
+                                                       (let* ((name (symbol-at-point))
+                                                              (docu (documentation name)))
+                                                         (if docu
+                                                             (add-to-list 'commandslist (cons (prin1-to-string name) docu))
+                                                           (message "don't see docu string for %s" (prin1-to-string name)))))
+                                                     ;; (add-to-list 'commandslist (list (match-string-no-properties 0)))
 
-        (forward-line 1))
+                                                     (forward-line 1))
       (setq commandslist (nreverse commandslist))
       (with-temp-buffer
         (switch-to-buffer (current-buffer))

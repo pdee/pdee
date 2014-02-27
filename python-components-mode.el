@@ -55,7 +55,7 @@
 (require 'custom)
 (require 'cl)
 (require 'compile)
-;; (require 'ansi-color)
+(require 'ansi-color)
 (require 'cc-cmds)
 (require 'shell)
 ;; (require 'python)

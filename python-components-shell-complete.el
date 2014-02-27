@@ -165,8 +165,7 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
           (delq 'py-comint-output-filter-function comint-output-filter-functions))
          (comint-preoutput-filter-functions
           (append comint-preoutput-filter-functions
-                  ;; '(ansi-color-filter-apply
-                  '(identity
+                  '(ansi-color-filter-apply
                     (lambda (string)
                       (setq ugly-return (concat ugly-return string))
                       ""))))
