@@ -297,6 +297,17 @@ interpreter.
                      ipython0.10-completion-command-string)))
       (error ipython-version))))
 
+(defun py-ipython--module-completion-import (proc)
+  "Import module-completion "
+  (interactive)
+  (let ((ipython-version (shell-command-to-string (concat py-shell-name " -V"))))
+    (when (and (string-match "^[0-9]" ipython-version)
+               (string-match "^[^0].+" ipython-version))
+      (process-send-string proc "from IPython.core.completerlib import module_completion")
+      (process-send-string proc "\n")
+      ;; (sit-for 0.1)
+      )))
+
 ;; (setq ipython-completion-command-string (if (< ipython-version 11) ipython0.10-completion-command-string ipython0.11-completion-command-string))
 ;; ipython-completion-command-string)))
 
@@ -478,9 +489,9 @@ Internal use"
          (let (pop-up-windows)
            (py-restore-window-configuration))))
   ;; (set-buffer output-buffer)
-  ;; (goto-char (point-min)) 
+  ;; (goto-char (point-min))
   ;; (shrink-window-if-larger-than-buffer)
-  ;; (goto-char (point-max)) 
+  ;; (goto-char (point-max))
   nil)
 
 (defun py-report-executable (py-buffer-name)
@@ -512,7 +523,7 @@ Internal use"
                                    "\\|")
                         "\\)")))))
 
-(defun py--shell-setup ()
+(defun py--shell-setup (proc)
   (set (make-local-variable 'comint-input-filter) 'py-history-input-filter)
   (set (make-local-variable 'comint-prompt-read-only) py-shell-prompt-read-only)
   (set (make-local-variable 'comint-use-prompt-regexp) nil)
@@ -532,6 +543,8 @@ Internal use"
   (set (make-local-variable 'indent-line-function) 'py-indent-line)
   (set (make-local-variable 'inhibit-point-motion-hooks) t)
   (setq proc (get-buffer-process (current-buffer)))
+  (and (string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
+       (py-ipython--module-completion-import proc))
   (py-shell-send-setup-code proc)
   (and py-set-pager-cat-p (comint-simple-send proc "import os;os.environ['PAGER'] = 'cat'"))
   (compilation-shell-minor-mode 1)
@@ -553,7 +566,7 @@ Internal use"
   (comint-read-input-ring t)
   (set-process-sentinel (get-buffer-process py-buffer-name)
                         #'shell-write-history-on-exit)
-  ;; (add-hook 'comint-output-filter-functions
+  ;; (add-hook 'comint-preoutput-filter-functions
   ;; 'ansi-color-process-output nil t)
   (add-hook 'after-change-functions 'py-after-change-function nil t)
 
@@ -595,9 +608,9 @@ When DONE is `t', `py-shell-manage-windows' is omitted
          (py-exception-buffer (or py-exception-buffer (current-buffer)))
          (coding-system-for-read 'utf-8)
          (coding-system-for-write 'utf-8)
-         (args py-python-command-args)
          (path (getenv "PYTHONPATH"))
          (py-shell-name (or shell py-shell-name (py-choose-shell)))
+         (args (if (string-match "^[Ii]" py-shell-name) py-ipython-command-args py-python-command-args))
 
          ;; reset later on
          (py-buffer-name
@@ -643,10 +656,11 @@ When DONE is `t', `py-shell-manage-windows' is omitted
 
     (unless (comint-check-proc py-buffer-name)
       (py--shell-make-comint)
-      (py--shell-setup))
+      (py--shell-setup (get-buffer-process (current-buffer))))
     ;; (py--init-easy-menu)
     ;; (add-hook 'py-shell-hook 'py-dirstack-hook)
     (and py-fontify-shell-buffer-p (font-lock-fontify-buffer))
+    (goto-char (point-max))
     (unless no-window-managment (py-shell-manage-windows py-buffer-name))
     (when py-shell-hook (run-hooks 'py-shell-hook))
     py-buffer-name))

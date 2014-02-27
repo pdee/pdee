@@ -728,6 +728,12 @@ Normally python-mode know best which function to use. "
   :group 'python-mode)
 (make-variable-buffer-local 'py-python-command-args)
 
+(defcustom py-ipython-command-args '("")
+  "List of string arguments to be used when starting a Python shell."
+  :type '(repeat string)
+  :group 'python-mode)
+(make-variable-buffer-local 'py-ipython-command-args)
+
 (defcustom py-jython-command-args '("-i")
   "List of string arguments to be used when starting a Jython shell."
   :type '(repeat string)
@@ -2376,7 +2382,7 @@ See py-no-outdent-1-re-raw, py-no-outdent-2-re-raw for better readable content "
 (make-obsolete-variable 'jpython-mode-hook 'jython-mode-hook nil)
 
 (defun py-shell-send-setup-code (process)
-  "Send all setup code for shell.
+   "Send all setup code for shell.
 This function takes the list of setup code to send from the
 `py-setup-codes' list."
   (accept-process-output process 1)
@@ -7422,8 +7428,7 @@ Start a new process if necessary. "
     ;; (or nln (setq strg (concat strg "\n")))
     ;; (comint-simple-send proc (substring-no-properties string))
     (process-send-string proc strg)
-    (or nln (process-send-string proc "\n")
-    )))
+    (or nln (process-send-string proc "\n"))))
 
 (defalias
   'py-shell-redirect-send-command-to-process

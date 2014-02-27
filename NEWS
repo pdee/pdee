@@ -13,6 +13,9 @@ New in version 6.1.4
   https://bitbucket.org/andreas_roehler/pydoc-info
   See also INSTALL-INFO-FILES
 
+Calls to IPython are to customizable now via
+`ipython-command-args'
+
 New commands
 
 - py-info-lookup-symbol ()

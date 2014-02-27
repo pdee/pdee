@@ -205,6 +205,9 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --eval "(when (file-exists-p \"~/.abbrev_defs\") (quietly-read-abbrev-file (expand-file-name \"~/.abbrev_defs\")))" \
 \
 -eval "(assert (functionp 'word-at-point) nil \"new completion bug, lp:1034656, word-at-point not known\")" \
+-eval "(assert (functionp 'py-shell-simple-send) nil \"py-shell-simple-send not detected as function\")" \
+-eval "(assert (functionp 'py--shell-setup) nil \"py--shell-setup not detected as function\")" \
+-eval "(assert (functionp 'py-shell-send-setup-code) nil \"py-shell-send-setup-code not detected as function\")" \
 -eval "(assert (functionp 'py-beginning-of-top-level-p) nil \"py-beginning-of-top-level-p not detected as function\")" \
 -eval "(assert (functionp 'py-beginning-of-line-p) nil \"py-beginning-of-line-p not detected as function\")" \
 -eval "(assert (functionp 'py-beginning-of-buffer-p) nil \"py-beginning-of-buffer-p not detected as function\")" \
@@ -1327,8 +1330,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-if-name-main-permission-lp-326620-test \
 --funcall Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test \
 --funcall another-broken-font-locking-lp:961231-test \
---funcall IndentationError-expected-an-indented-block-when-execute-lp-1055569-test \
---funcall missing-py-variable-name-face-lp-1215791-test \
 --funcall cls-pseudo-keyword-lp:328849-test \
 --funcall py-execute-region-error-test \
 --funcall py-execute-statement-error-test \
@@ -1456,3 +1457,5 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-docstring-style-pep-257-nn-closing-quotes-lp-1241147-test \
 --funcall more-docstring-filling-woes-lp-1102296-pep-257-nn-test \
 --funcall py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test \
+--funcall missing-py-variable-name-face-lp-1215791-test \
+--funcall IndentationError-expected-an-indented-block-when-execute-lp-1055569-test \
