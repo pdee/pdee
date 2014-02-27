@@ -45,6 +45,74 @@
              (find-file (concat "~/arbeit/emacs/python-modes/python-mode/" ele)))
       (finds))))
 
+(defun variable-finds (&optional buffer directory-in directory-out)
+  "Writes all commands in BUFFER alongside with their documentation into directory \"doc\" as \*.org and \*rst file ."
+  (interactive)
+  (let* ((oldbuf (buffer-name (or buffer (current-buffer))))
+         ;; (file (buffer-file-name))
+         (orgname (concat (substring oldbuf 0 (string-match "\\." oldbuf)) ".org"))
+         (reSTname (concat (substring oldbuf 0 (string-match "\\." oldbuf)) ".rst"))
+         (directory-in (or directory-in (and (not (string= "" py-devel-directory-in)) py-devel-directory-in) default-directory))
+         (directory-out (or directory-out (expand-file-name finds-directory-out))))
+    (variable-finds-base oldbuf orgname reSTname directory-in directory-out)))
+
+(defun variable-finds-base (oldbuf orgname reSTname directory-in directory-out)
+  (save-restriction
+    (let ((suffix (file-name-nondirectory (buffer-file-name)))
+          variableslist)
+      ;; (widen)
+      (goto-char (point-min))
+      ;; (eval-buffer)
+      (while (and (not (eobp))(re-search-forward "^(defvar [[:alpha:]]\\|^(defcustom [[:alpha:]]\\|^(defconst [[:alpha:]]" nil t 1))
+        (let* ((name (symbol-at-point))
+               (docu (documentation-property name 'variable-documentation)))
+                         ;; (documentation-property alias 'variable-documentation))))
+          ;; (docu (get 'variable-documentation name)))
+          (if docu
+              (add-to-list 'variableslist (cons (prin1-to-string name) docu))
+            (message "don't see docu string for %s" (prin1-to-string name))))
+        ;; (add-to-list 'variableslist (list (match-string-no-properties 0)))
+
+        (forward-line 1))
+      (setq variableslist (nreverse variableslist))
+;;       (with-temp-buffer
+;;         (switch-to-buffer (current-buffer))
+;;         (insert (concat ";; a list of " suffix " variables
+;; \(setq " (replace-regexp-in-string "\\." "-" suffix) "-variables (quote "))
+;;         (insert (prin1-to-string variableslist))
+;;         (insert "))"))
+        ;; (eval-buffer)
+      (with-temp-buffer
+        ;; org
+        ;; (insert (concat (capitalize (substring oldbuf 0 (string-match "\." oldbuf))) " variables" "\n\n"))
+        ;; (insert (concat suffix " variables\n\n"))
+        (insert "Python-mode variables\n\n")
+        (dolist (ele variableslist)
+          (if (string-match "^;;; " (car ele))
+              (unless (or (string-match "^;;; Constants\\|^;;; Commentary\\|^;;; Code\\|^;;; Macro definitions\\|^;;; Customization" (car ele)))
+
+                (insert (concat (replace-regexp-in-string "^;;; " "* " (car ele)) "\n")))
+            (insert (concat "\n** "(car ele) "\n"))
+            (insert (concat "   " (cdr ele) "\n\n")))
+        (richten)
+        (sit-for 0.1) 
+        (write-file (concat directory-out "variables-" orgname))
+        (find-file (concat directory-out "variables-" orgname))))
+
+      (with-temp-buffer
+        ;; reST
+        (insert "Python-mode variables\n\n")
+        ;; (insert (concat (make-string (length (concat (substring oldbuf 0 (string-match "\." oldbuf)) " variables")) ?\=) "\n\n"))
+        (insert "====================\n\n")
+        (dolist (ele variableslist)
+          (insert (concat "\n" (car ele) "\n"))
+          (insert (concat (make-string (length (car ele)) ?\-) "\n"))
+          (insert (concat (cdr ele) "\n\n")))
+        (richten)
+        (sit-for 0.1) 
+        (write-file (concat directory-out "variables-" reSTname))
+        (find-file (concat directory-out "variables-" reSTname))))))
+
 (defun finds (&optional buffer directory-in directory-out)
   "Writes all commands in BUFFER alongside with their documentation into directory \"doc\" as \*.org and \*rst file ."
   (interactive)
