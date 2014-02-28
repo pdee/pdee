@@ -1178,7 +1178,9 @@ Basically, this goes down the directory tree as long as there are __init__.py fi
           (if py-master-file
               (expand-file-name py-master-file)
             (buffer-file-name))))
-    (py-execute-file file)))
+    (if file
+	(py-execute-file file)
+      (py-execute-region (point-min) (point-max)))))
 
 (defun py-execute-buffer-dedicated ()
   "Send the contents of the buffer to a unique Python interpreter. "
