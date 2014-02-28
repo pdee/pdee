@@ -624,15 +624,15 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
   (py-tests-with-temp-buffer
       "import socket"
     (py-execute-buffer-dedicated)
-    (set-buffer (py--fetch-first-python-buffer))(goto-char (point-min)) 
+    (set-buffer (py--fetch-first-python-buffer))(goto-char (point-min))
     ;;    (sit-for 0.1)
-    (switch-to-buffer (current-buffer))
+    ;;    (switch-to-buffer (current-buffer))
     (goto-char (point-max))
     (insert "socket.")
     (py-shell-complete)
     (set-buffer "*Python Completions*")
     ;;    (sit-for 0.1)
-    (switch-to-buffer (current-buffer))
+    ;;    (switch-to-buffer (current-buffer))
     (goto-char (point-min))
     (should (search-forward "socket."))))
 
