@@ -617,11 +617,23 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
     (goto-char (point-max))
     (py-newline-and-indent)
     (py-electric-backspace)
-    (py-newline-and-indent) 
+    (py-newline-and-indent)
     (should (eq 42 (point)))))
 
-
-
-
+(ert-deftest socket-modul-completion-lp-1284141 ()
+  (py-tests-with-temp-buffer
+      "import socket"
+    (py-execute-buffer-dedicated)
+    (set-buffer (py--fetch-first-python-buffer))(goto-char (point-min)) 
+    ;;    (sit-for 0.1)
+    (switch-to-buffer (current-buffer))
+    (goto-char (point-max))
+    (insert "socket.")
+    (py-shell-complete)
+    (set-buffer "*Python Completions*")
+    ;;    (sit-for 0.1)
+    (switch-to-buffer (current-buffer))
+    (goto-char (point-min))
+    (should (search-forward "socket."))))
 
 (provide 'python-mode-ert-tests)

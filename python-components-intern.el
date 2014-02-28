@@ -1116,12 +1116,12 @@ When `py-verbose-p' and MSG is non-nil messages the first line of STRING."
          (file-name (or filename (buffer-file-name) temp-file-name)))
     (if (> (length lines) 1)
         (let* ()
-            ;; ((temporary-file-directory
-            ;;     (if (file-remote-p default-directory)
-            ;;         (concat (file-remote-p default-directory) "/tmp")
-            ;;       temporary-file-directory))
-            ;;    (temp-file-name (make-temp-file "py"))
-            ;;    (file-name (or (buffer-file-name) temp-file-name)))
+          ;; ((temporary-file-directory
+          ;;     (if (file-remote-p default-directory)
+          ;;         (concat (file-remote-p default-directory) "/tmp")
+          ;;       temporary-file-directory))
+          ;;    (temp-file-name (make-temp-file "py"))
+          ;;    (file-name (or (buffer-file-name) temp-file-name)))
           (with-temp-file temp-file-name
             (insert string)
             (delete-trailing-whitespace))
