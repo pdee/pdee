@@ -49,7 +49,7 @@ and return collected output"
                 ;; (sit-for 3)
                 (comint-redirect-send-command-to-process
                  cmd outbuf proc nil t)
-                (accept-process-output proc 1 1))
+                (accept-process-output proc 5))
               (with-current-buffer outbuf
                 (buffer-substring (point-min) (point-max))))
           (quit (with-current-buffer procbuf

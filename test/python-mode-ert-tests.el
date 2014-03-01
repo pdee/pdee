@@ -636,4 +636,9 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
     (goto-char (point-min))
     (should (search-forward "socket."))))
 
+;; (ert-deftest py-execute-statement-test ()
+;;  (py-tests-with-temp-buffer
+;;      
+;;  )
+  
 (provide 'python-mode-ert-tests)

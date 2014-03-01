@@ -177,7 +177,7 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
     (if (string= pattern "")
         (tab-to-tab-stop)
       (process-send-string proc (format ccs pattern))
-      (accept-process-output proc 0.2)
+      (accept-process-output proc 1)
       (if ugly-return
           (progn
             (setq completions
