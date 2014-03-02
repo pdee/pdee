@@ -636,12 +636,13 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
       (and (should (search-forward "socket."))
 	   (py-kill-buffer-unconditional oldbuf)))))
 
-;; (ert-deftest py-execute-statement-test ()
-;;  (py-tests-with-temp-buffer
-;;      "print(\"I'm the py-execute-statement-test\")"
+(ert-deftest py-execute-statement-test ()
+ (py-tests-with-temp-buffer
+     "print(\"I'm the py-execute-statement-test\")"
+   (py-execute-statement-dedicated)
 
 
-;;  ))
+ ))
 
 (provide 'python-mode-ert-tests)
 
