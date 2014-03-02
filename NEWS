@@ -33,6 +33,10 @@ New commands
 - py-report-comint-variable-setting
   Display Py-shell' comint-mode variables of interest.
 
+- py-kill-buffer-unconditional
+  Kill buffer unconditional; kill also any buffer-process.
+
+
 New in version 6.1.3
 ---------------------
 
