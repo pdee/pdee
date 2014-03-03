@@ -76,8 +76,8 @@
     (error nil)))
 
 (defconst highlight-thing-no-color (if (boundp 'xemacs-logo)
-                                       '[]
-                                     nil)
+				       '[]
+				     nil)
   "'color' value that represents \"no color\".")
 
 ;; Compatibility code - Set highlight-foregroundcolor.

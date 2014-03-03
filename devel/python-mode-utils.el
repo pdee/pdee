@@ -1,6 +1,6 @@
 ;;; python-mode-utils.el - generating parts of python-mode.el
 
-;; Copyright (C) 2011  Andreas Roehler
+;; Copyright (C) 2011-2014  Andreas Roehler
 
 ;; Author: Andreas Roehler <andreas.roehler@online.de>
 ;; Keywords: languages, processes, python, oop
@@ -33,7 +33,8 @@
 (defvar arkopf)
 
 (setq arkopf
-      "\n;; Author: Andreas Roehler <andreas.roehler@online.de>
+      "\n;; Copyright (C) 2011-2014  Andreas Roehler
+;; Author: Andreas Roehler <andreas.roehler@online.de>
 ;; Keywords: languages, convenience
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -284,6 +285,49 @@
       (insert "-test failed\"))\n\n")))
   (insert "\n\n(provide 'python-extended-executes-test)
 ;;; python-extended-executes-test.el ends here\n ")
+  (emacs-lisp-mode)
+  (switch-to-buffer (current-buffer)))
+
+(defun write-execute-ert-tests (&optional command path-to-shell option)
+  "Write `py-execute-block...' etc. "
+  (interactive)
+  ;; (load-shells)
+  (let ((py-bounds-command-names (if command (list command) py-bounds-command-names))
+        (py-test-shells (if path-to-shell (list path-to-shell) py-shells))
+        (py-options (if option (list option) py-options)))
+    (if path-to-shell
+        (set-buffer (get-buffer-create (concat path-to-shell ".el")))
+      (set-buffer (get-buffer-create "python-executes-test.el")))
+    (erase-buffer)
+    (switch-to-buffer (current-buffer))
+    (insert ";;; ")
+    (if path-to-shell
+        (insert (concat path-to-shell ".el"))
+      (insert "python-executes-ert-tests.el"))
+    (insert " --- executes ert tests")
+    (insert arkopf)
+    (dolist (ele py-bounds-command-names)
+      ;; (dolist (elt py-shells)
+      ;; (dolist (pyo py-options)
+      (insert (concat "(defun py-execute-" ele "-test ()
+  (py-tests-with-temp-buffer \n    "))
+      (cond ((or (string-match "block" ele)(string-match "clause" ele))
+             (insert (concat "if True: print(\\\"I'm the py-execute-" ele)))
+            ((string-match "def" ele)
+             (insert (concat "def foo (): print(\\\"I'm the py-execute-" ele)))
+            ((string= "class" ele)
+             (insert (concat "class foo (): print(\\\"I'm the py-execute-" ele)))
+            (t (insert (concat "\"print(\\\"I'm the py-execute-" ele))))
+      (insert "-test\\\")\"))")
+      (insert (concat "
+    (py-execute-" ele ")"))
+      (insert (concat "    (set-buffer (py--fetch-first-python-buffer))
+    (goto-char (point-max))
+    (and (should (search-backward \"py-execute-" ele " -test" nil t 1))
+	 (py-kill-buffer-unconditional (current-buffer))))
+
+  (insert "\n\n(provide 'python-executes-ert-tests)
+;;; python-executes-ert-tests.el ends here\n ")
   (emacs-lisp-mode)
   (switch-to-buffer (current-buffer)))
 

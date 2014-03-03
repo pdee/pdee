@@ -40,14 +40,14 @@ always located at the beginning of buffer."
   (and (eq (point) (point-max))(goto-char (point-min)))
   (search-forward string nil t 1))
 
-(ert-deftest electric-kill-backward-test1 ()
+(ert-deftest py-ert-electric-kill-backward-test1 ()
   (let ((py-electric-kill-backward-p t))
     (with-temp-buffer
       (insert "mystring[0:1]")
       (py-electric-backspace 1)
       (should (eq ?\] (char-after))))))
 
-(ert-deftest electric-kill-backward-test2 ()
+(ert-deftest py-ert-electric-kill-backward-test2 ()
   (let ((py-electric-kill-backward-p t))
     (with-temp-buffer
       (insert "mystring(\"asdf\")")
@@ -55,7 +55,7 @@ always located at the beginning of buffer."
       (should (eq ?\) (char-after)))
       )))
 
-(ert-deftest electric-kill-backward-test3 ()
+(ert-deftest py-ert-electric-kill-backward-test3 ()
   (let ((py-electric-kill-backward-p t))
     (with-temp-buffer
       (insert "mystring{0 . 1}")
@@ -361,7 +361,7 @@ result = some_function_that_takes_arguments(
       ""
       (file-readable-p py-pyflakespep8-command)))
 
-(ert-deftest Bogus-dedent-when-typing-colon-in-dictionary-literal-lp-1197171 ()
+(ert-deftest py-ert-bogus-dedent-when-typing-colon-in-dictionary-literal-lp-1197171 ()
   (py-tests-with-temp-buffer
       "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
@@ -381,7 +381,7 @@ def foo():
 ;;     ;; error should report its just a buffer, not a file
 ;;     (should (string-match "SyntaxError: invalid syntax" (py-execute-statement)))))
 
-(ert-deftest pep-arglist-indent ()
+(ert-deftest py-ert-pep-arglist-indent ()
   (py-tests-with-temp-buffer
       "# Aligned with opening delimiter
 foo = long_function_name(var_one, var_two,
@@ -400,7 +400,7 @@ def long_function_name(
 
     ))
 
-(ert-deftest close-at-start-column ()
+(ert-deftest py-ert-close-at-start-column ()
   (py-tests-with-temp-buffer
       "# boolean `py-closing-list-dedents-bos',
 
@@ -480,7 +480,7 @@ data = {
       (should (eq 0 (py-compute-indentation)))
       )))
 
-(ert-deftest top-level ()
+(ert-deftest py-ert-top-level ()
   (py-tests-with-temp-buffer
       "klauf = kugel()
 
@@ -498,7 +498,7 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
     (should (eq 1 (py-beginning-of-top-level)))
     (should (eq 1 (py-beginning-of-top-level-p)))))
 
-(ert-deftest position-tests ()
+(ert-deftest py-ert-position-tests ()
   (interactive)
   (py-tests-with-temp-buffer
       "class kugel(object):
@@ -579,20 +579,6 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
     (python-mode)
     (should abbrevs-changed)))
 
-;; the way save-excursion in called now creates
-;; a bug in execute forms, a result of manage-windows is negated
-;; (ert-deftest py-ert-execute-statement-switch-no-split ()
-;;   (py-tests-with-temp-buffer
-;;       "print(123)"
-;;     (setq py-switch-buffers-on-execute-p t)
-;;     (setq py-split-windows-on-execute-p nil)
-;;     ;;      (if (or iact (interactive-p))
-;;     ;; 	  (should (eq 2 (length (window-list))))
-;;     ;; 	(should (one-window-p)))
-;;     (py-execute-statement)
-;;     (message "%s" (current-buffer))
-;;     (should (eq py-buffer-name (buffer-name (current-buffer))))))
-
 (ert-deftest py-ert-execute-statement-split ()
   (py-tests-with-temp-buffer
       "print(123)"
@@ -620,7 +606,7 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
     (py-newline-and-indent)
     (should (eq 42 (point)))))
 
-(ert-deftest socket-modul-completion-lp-1284141 ()
+(ert-deftest py-ert-socket-modul-completion-lp-1284141 ()
   (py-tests-with-temp-buffer
       "import socket"
     (let (oldbuf)
@@ -632,17 +618,35 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
       (py-shell-complete)
       (set-buffer "*Python Completions*")
       (goto-char (point-min))
-      (sit-for 0.1) 
+      (sit-for 0.1)
       (and (should (search-forward "socket."))
 	   (py-kill-buffer-unconditional oldbuf)))))
 
-(ert-deftest py-execute-statement-test ()
- (py-tests-with-temp-buffer
-     "print(\"I'm the py-execute-statement-test\")"
-   (py-execute-statement-dedicated)
+(ert-deftest py-ert-execute-statement-test ()
+  (py-tests-with-temp-buffer
+      "print(\"I'm the py-execute-statement-test\")"
+    (py-execute-statement)
+    (set-buffer (py--fetch-first-python-buffer))
+    (goto-char (point-max))
+    (and (should (search-backward "py-execute-statement-test" nil t 1))
+	 (py-kill-buffer-unconditional (current-buffer)))))
 
+(ert-deftest py-execute-statement-python2-test ()
+  (py-tests-with-temp-buffer
+      "print(\"I'm the py-execute-statement-python2-test\")"
+    (py-execute-statement-python2)
+    (set-buffer (py--fetch-first-python-buffer))
+    (goto-char (point-max))
+    (and (should (search-backward "py-execute-statement-python2-test" nil t 1))
+	 (py-kill-buffer-unconditional (current-buffer)))))
 
- ))
+(ert-deftest py-execute-statement-python3-test ()
+  (py-tests-with-temp-buffer
+      "print(\"I'm the py-execute-statement-python3-test\")"
+    (py-execute-statement-python3)
+    (set-buffer (py--fetch-first-python-buffer))
+    (goto-char (point-max))
+    (and (should (search-backward "py-execute-statement-python3-test" nil t 1))
+	 (py-kill-buffer-unconditional (current-buffer)))))
 
 (provide 'python-mode-ert-tests)
-
