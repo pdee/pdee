@@ -23,19 +23,6 @@
 ;;; Code:
 (require 'python-components-macros)
 
-(defun py-kill-buffer-unconditional (&optional buffer)
-  "Kill buffer unconditional, kill buffer-process if existing. 
-
-Sometimes being queried sucks..."
-  (interactive)
-  (let ((proc (get-buffer-process (or buffer (current-buffer))))
-	kill-buffer-query-functions)
-    (and proc (kill-process proc))
-    (when buffer
-      (set-buffer buffer))
-    (set-buffer-modified-p 'nil)
-    (kill-buffer (current-buffer))))
-
 (defun py-outline-level ()
   "`outline-level' function for Python mode.
 The level is the number of `py-indent-offset' steps of indentation
