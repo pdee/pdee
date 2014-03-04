@@ -218,7 +218,7 @@ on."
          (enable-local-variables :all)
          py-load-pymacs-p
          py-split-windows-on-execute-p
-         py-shell-switch-buffers-on-execute-p
+         py-switch-buffers-on-execute-p
          py-start-run-py-shell
          proc
          py-fontify-shell-buffer-p
@@ -2329,7 +2329,7 @@ print(u'\\xA9')
 
 (defun execute-buffer-ipython-fails-lp:928087-base ()
   (let (py-split-windows-on-execute-p
-        py-shell-switch-buffers-on-execute-p)
+        py-switch-buffers-on-execute-p)
     (assert (py-execute-buffer) nil "execute-buffer-ipython-fails-lp:928087-test failed")))
 
 (defun fourth-level-blocks-indent-incorrectly-lp:939577-test (&optional arg)
@@ -2629,7 +2629,7 @@ print(\"I'm the script-buffer-appears-instead-of-python-shell-buffer-lp:957561-t
     (py-bug-tests-intern 'script-buffer-appears-instead-of-python-shell-buffer-lp:957561-base arg teststring)))
 
 (defun script-buffer-appears-instead-of-python-shell-buffer-lp:957561-base ()
-  (let (py-shell-switch-buffers-on-execute-p
+  (let (py-switch-buffers-on-execute-p
         (py-split-windows-on-execute-p t))
     (delete-other-windows)
     (ipython)

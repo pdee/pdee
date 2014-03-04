@@ -488,10 +488,6 @@ Internal use"
         ((not py-switch-buffers-on-execute-p)
          (let (pop-up-windows)
            (py-restore-window-configuration))))
-  ;; (set-buffer output-buffer)
-  ;; (goto-char (point-min))
-  ;; (shrink-window-if-larger-than-buffer)
-  ;; (goto-char (point-max))
   nil)
 
 (defun py-report-executable (py-buffer-name)
@@ -1501,9 +1497,12 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
   (set-buffer buf)
   ;; (sit-for 0.1)
   (let ((pmx (copy-marker (point-max)))
-        file bol err-p estring ecode limit)
-    (unless (looking-back py-pdbtrack-input-prompt)
-      (save-excursion
+	;;  (let ((pmx (copy-marker (process-mark (get-buffer-process (current-buffer)))))
+	file bol err-p estring ecode limit)
+    (goto-char pmx)
+    (sit-for 0.1)
+    (save-excursion
+      (unless (looking-back py-pdbtrack-input-prompt)
         (forward-line -1)
         (end-of-line)
         (when (or (re-search-backward py-shell-prompt-regexp nil t 1)
@@ -1543,8 +1542,8 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
               (setq ecode (buffer-substring-no-properties (line-end-position)
                                                           (progn (re-search-forward comint-prompt-regexp nil t 1)(match-beginning 0))))
               (setq ecode (replace-regexp-in-string "[ \n\t\f\r^]+" " " ecode))
-              (add-to-list 'err-p ecode t))))))
-    err-p))
+              (add-to-list 'err-p ecode t)))))
+      err-p)))
 
 (defun py-find-next-exception-prepare (direction start)
   "Setup exception regexps depending from kind of Python shell. "

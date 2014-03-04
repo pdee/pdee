@@ -188,8 +188,8 @@ fi
 PYCO="$PDIR/completion/pycomplete.el"
 
 
-# $EMACS -Q -batch -l $HOME/emacs_20130227/lisp/emacs-lisp/cl-lib.el -l $HOME/emacs_20130227/lisp/emacs-lisp/ert.el -l ${PCOT}/python-mode-ert-tests.el -f ert-run-tests-batch-and-exit
+# $EMACS -Q -batch -l $HOME/emacs_20130227/lisp/emacs-lisp/cl-lib.el -l $HOME/emacs_20130227/lisp/emacs-lisp/ert.el -l ${PCOT}/py-ert-tests.el -f ert-run-tests-batch-and-exit
 # $EMACS -Q -batch -load ${EMACS_DIR}lisp/emacs-lisp/ert.el -load ${PCOT}/python-mode-ert-tests.el -f ert-run-tests-batch-and-exit
-$EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'python)(unload-feature 'python t))" --eval "(when (featurep 'python-mode)(unload-feature 'python-mode t))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$TESTDIR/\")" --eval "(setq py-install-directory \"$PDIR\"))" --eval "(message \"py-install-directory: %s\" py-install-directory)" --eval "(setq py-load-pymacs-p nil)" -load $BYTECOMP -load $CC_CMDS -load $COMINT -load $ANSICOLOR -load $CLMACS -load $CUSTOM -load $SKELETON -load $SO -load $COLMK -load $HIGHL -load $PYTHONMODE  --eval "(message \"py-temp-directory: %s\" py-temp-directory)" -l python-mode-ert-tests.el -f ert-run-tests-batch-and-exit
+$EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'python)(unload-feature 'python t))" --eval "(when (featurep 'python-mode)(unload-feature 'python-mode t))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$TESTDIR/\")" --eval "(setq py-install-directory \"$PDIR\"))" --eval "(message \"py-install-directory: %s\" py-install-directory)" --eval "(setq py-load-pymacs-p nil)" -load $BYTECOMP -load $CC_CMDS -load $COMINT -load $ANSICOLOR -load $CLMACS -load $CUSTOM -load $SKELETON -load $SO -load $COLMK -load $HIGHL -load $PYTHONMODE  --eval "(message \"py-temp-directory: %s\" py-temp-directory)" -l py-ert-tests.el -f ert-run-tests-batch-and-exit
 
 # | tee -a python-mode-ert-results.txt && cat python-mode-ert-results.txt | grep FAILED

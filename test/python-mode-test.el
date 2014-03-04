@@ -27,7 +27,7 @@
 
 
 (defun py-kill-buffer-unconditional (&optional buffer)
-  "Kill buffer unconditional, kill buffer-process if existing. 
+  "Kill buffer unconditional, kill buffer-process if existing.
 
 Sometimes being queried sucks...
 Used by tests"
@@ -676,7 +676,7 @@ print(\'\\xA9\')
 (defun UnicodeEncodeError-python3-base ()
   (delete-other-windows)
   (let ((py-split-windows-on-execute-p t)
-        (py-shell-switch-buffers-on-execute-p t)
+        (py-switch-buffers-on-execute-p t)
         erg pos)
     (py-execute-region 50 63)
     (setq erg (goto-char (point-max)))
@@ -1144,7 +1144,7 @@ if foo:
 
 (defun py-execute-block-base ()
   (beginning-of-line)
-  (let ((py-shell-switch-buffers-on-execute-p nil)
+  (let ((py-switch-buffers-on-execute-p nil)
         (py-cleanup-temporary nil))
     (assert (py-execute-block) nil "py-execute-block-test failed")))
 
@@ -1168,7 +1168,7 @@ print u'\\xA9'
 
 (defun no-switch-no-split-base ()
   (let ((oldbuf (current-buffer))
-        py-split-windows-on-execute py-shell-switch-buffers-on-execute-p)
+        py-split-windows-on-execute py-switch-buffers-on-execute-p)
     (goto-char 49)
     (push-mark)
     (end-of-line)
@@ -1259,9 +1259,9 @@ somme errors
 
 (defun py-end-of-print-statement-base ()
   (goto-char 66)
-  (sit-for 0.1) 
+  (sit-for 0.1)
   (assert (eq 146 (py-end-of-statement)) nil "py-end-of-print-statement-test #1 failed")
-  
+
   (assert (eq 160 (py-end-of-statement)) nil "py-end-of-print-statement-test #2 failed")
 
   (assert (eq 245 (py-end-of-statement)) nil "py-end-of-print-statement-test #3 failed")
@@ -1417,9 +1417,10 @@ print(\"I'm the switch-windows-on-execute-p-test\")
     (py-bug-tests-intern 'switch-windows-on-execute-p-base arg teststring)))
 
 (defun switch-windows-on-execute-p-base ()
-  (let ((py-shell-switch-buffers-on-execute-p t)
+  (let ((py-switch-buffers-on-execute-p t)
         (erg (buffer-name)))
-    (assert (py-execute-buffer) nil "switch-windows-on-execute-p-test failed")))
+    (py-execute-buffer)
+    (assert (string= "*Python*" (buffer-name (current-buffer))) nil "switch-windows-on-execute-p-test failed")))
 
 (defun split-windows-on-execute-p-test (&optional arg load-branch-function)
   (interactive "p")
@@ -1433,7 +1434,7 @@ print(\"I'm the `split-windows-on-execute-p-test'\")
   (delete-other-windows)
   (let ((py-split-windows-on-execute-p t)
         (py-split-windows-on-execute-function 'split-window-vertically)
-        (py-shell-switch-buffers-on-execute-p t)
+        (py-switch-buffers-on-execute-p t)
         (erg (current-window-configuration)))
     (py-execute-buffer)
     (assert (not (window-full-height-p)) nil "split-windows-on-execute-p-test failed")))
@@ -2396,16 +2397,16 @@ else:
             datei.write(str(spiel[i]) + \"\\n\")
     print(F)
 "))
-    (py-bug-tests-intern 'py-execute-statement-base arg teststring)))
+    (py-bug-tests-intern 'py-execute-statement-error-base arg teststring)))
 
-(defun py-execute-statement-base ()
+(defun py-execute-statement-error-base ()
   (goto-char 152)
   (push-mark)
   (end-of-line)
   (py-execute-statement)
   (set-buffer "*Python*")
   (goto-char (point-max))
-  (switch-to-buffer (current-buffer))
+  ;;  (switch-to-buffer (current-buffer))
   (assert (and (re-search-backward py-shell-prompt-regexp nil t 2)
                (search-forward "line 5")) nil "py-execute-statement-error-test failed"))
 

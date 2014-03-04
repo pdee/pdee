@@ -1,4 +1,4 @@
-;;; python-mode-ert-tests.el --- Tests, some adapted from python.el
+;;; py-ert-tests.el --- Tests, some adapted from python.el
 
 ;; Copyright (C) 2013 Free Software Foundation, Inc.
 ;; Copyright (C) 2014 Andreas Roehler, <andreas.roehler@online.de>
@@ -21,6 +21,10 @@
 ;;; Code:
 
 ;; (require 'ert)
+
+;; tests are expected to run from directory test
+(add-to-list 'load-path default-directory) 
+(require 'python-mode-test)
 
 (defmacro py-tests-with-temp-buffer (contents &rest body)
   "Create a `python-mode' enabled temp buffer with CONTENTS.
@@ -626,12 +630,13 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
   (py-tests-with-temp-buffer
       "print(\"I'm the py-execute-statement-test\")"
     (py-execute-statement)
+    (message "%s" (buffer-list))
     (set-buffer (py--fetch-first-python-buffer))
     (goto-char (point-max))
     (and (should (search-backward "py-execute-statement-test" nil t 1))
 	 (py-kill-buffer-unconditional (current-buffer)))))
 
-(ert-deftest py-execute-statement-python2-test ()
+(ert-deftest py-ert-execute-statement-python2-test ()
   (py-tests-with-temp-buffer
       "print(\"I'm the py-execute-statement-python2-test\")"
     (py-execute-statement-python2)
@@ -640,13 +645,15 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
     (and (should (search-backward "py-execute-statement-python2-test" nil t 1))
 	 (py-kill-buffer-unconditional (current-buffer)))))
 
-(ert-deftest py-execute-statement-python3-test ()
+(ert-deftest py-ert-execute-statement-python3-dedicated-test ()
   (py-tests-with-temp-buffer
-      "print(\"I'm the py-execute-statement-python3-test\")"
-    (py-execute-statement-python3)
+      "print(\"I'm the py-execute-statement-python3-dedicated-test\")"
+    (py-execute-statement-python3-dedicated)
     (set-buffer (py--fetch-first-python-buffer))
-    (goto-char (point-max))
-    (and (should (search-backward "py-execute-statement-python3-test" nil t 1))
+    (message "%s" (current-buffer))
+    (goto-char (point-min))
+    (sit-for 1) 
+    (and (should (search-forward "py-execute-statement-python3-dedicated-test" nil t 1))
 	 (py-kill-buffer-unconditional (current-buffer)))))
 
-(provide 'python-mode-ert-tests)
+(provide 'py-ert-tests)
