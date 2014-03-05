@@ -32,6 +32,11 @@ Use `defcustom' to keep value across sessions "
     (read-from-minibuffer "Command args: " py-python-command-args)))
     (setq py-python-command-args arguments))
 
+
+(defun py--emacs-version-greater-23 ()
+  "Return `t' if emacs major version is above 23"
+  (< 23 (string-to-number (car (split-string emacs-version "\\.")))))
+
 (defun py-beginning-of-commented-section (&optional last)
   "Leave upwards comments and/or empty lines. "
   (interactive)

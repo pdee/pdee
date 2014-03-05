@@ -252,13 +252,13 @@ C-q TAB inserts a literal TAB-character."
     (save-excursion
       (goto-char orig)
       (if (empty-line-p)
-	  (if (< 23 (string-to-number (car (split-string emacs-version "\\."))))
+	  (if (py--emacs-version-greater-23)
 	      (delete-trailing-whitespace (line-beginning-position) pos)
 	    (save-restriction
 	      (narrow-to-region (line-beginning-position) pos)
 	      (delete-trailing-whitespace)))
 	(skip-chars-backward " \t")
-	(if (< 23 (string-to-number (car (split-string emacs-version "\\."))))
+	(if (py--emacs-version-greater-23)
 	    (delete-trailing-whitespace (line-beginning-position) pos)
 	  (save-restriction
 	    (narrow-to-region (point) pos)

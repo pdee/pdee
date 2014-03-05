@@ -828,13 +828,15 @@ When called from a programm, it accepts a string specifying a shell which will b
 
 Optional DEDICATED "
   (interactive "r\nP")
-  (save-excursion
-    (let ((py-shell-name (cond ((or py-force-py-shell-name-p (eq 4 (prefix-numeric-value shell))) (default-value 'py-shell-name))
-                               ((and (numberp shell) (not (eq 1 (prefix-numeric-value shell))))
-                                (read-from-minibuffer "(path-to-)shell-name: " (default-value 'py-shell-name)))
-                               (t shell)))
-          (py-dedicated-process-p (or dedicated py-dedicated-process-p)))
-      (py-execute-base start end))))
+  (let ((orig (point))
+	(py-shell-name (cond ((or py-force-py-shell-name-p (eq 4 (prefix-numeric-value shell))) (default-value 'py-shell-name))
+			     ((and (numberp shell) (not (eq 1 (prefix-numeric-value shell))))
+			      (read-from-minibuffer "(path-to-)shell-name: " (default-value 'py-shell-name)))
+			     (t shell)))
+	(py-dedicated-process-p (or dedicated py-dedicated-process-p)))
+    (py-execute-base start end)
+;;  (goto-char orig)
+  ))
 
 (defun py-execute-region-default (start end)
   "Send the region to the systems default Python interpreter. "
