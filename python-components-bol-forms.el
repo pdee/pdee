@@ -106,6 +106,86 @@ Don't store data in kill ring. "
   (let ((erg (py-mark-base-bol "block")))
     (delete-region (car erg) (cdr erg))))
 
+;;
+
+(defun py-beginning-of-minor-block-bol-p ()
+  "Returns position, if cursor is at the beginning of a minor block, at beginning of line, nil otherwise. 
+
+See `py-minor-block-re'"
+  (interactive) 
+  (let ((orig (point))
+        (indent (current-indentation))
+        erg)
+    (save-excursion
+      (py-end-of-minor-block-bol)
+      (py-beginning-of-minor-block-bol indent)
+      (when (eq orig (point))
+        (setq erg orig))
+      erg)))
+
+(defalias 'py-end-of-minor-block-lc 'py-down-minor-block-bol) 
+(defun py-end-of-minor-block-bol ()
+  "Goto beginning of line following end of a minor block.
+  Returns position reached, if successful, nil otherwise.
+
+See also `py-down-block': down from current definition to next beginning of a minor block below. 
+
+See `py-minor-block-re'"
+  (interactive)
+  (let ((erg (py-end-of-block)))
+    (when erg
+      (unless (eobp)
+        (forward-line 1)
+        (beginning-of-line)
+        (setq erg (point))))
+    (when (interactive-p) (message "%s" erg))
+    erg))
+
+(defun py-mark-minor-block-bol ()
+  "Mark minor block, take beginning of line positions. 
+
+Returns beginning and end positions of region, a cons. 
+
+See `py-minor-block-re'"
+  (interactive)
+  (let (erg)
+    (setq erg (py-mark-base-bol "minor-block"))
+    (exchange-point-and-mark)
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defun py-copy-minor-block-bol ()
+  "Delete minor block bol at point.
+
+Stores data in kill ring. Might be yanked back using `C-y'. 
+
+See `py-minor-block-re'"
+  (interactive "*")
+  (let ((erg (py-mark-base-bol "minor-block")))
+    (copy-region-as-kill (car erg) (cdr erg))))
+
+(defun py-kill-minor-block-bol ()
+  "Delete minor block bol at point.
+
+Stores data in kill ring. Might be yanked back using `C-y'. 
+
+See `py-minor-block-re'"
+  (interactive "*")
+  (let ((erg (py-mark-base-bol "minor-block")))
+    (kill-region (car erg) (cdr erg))))
+
+(defun py-delete-minor-block-bol ()
+  "Delete minor block bol at point.
+
+Don't store data in kill ring. 
+
+See `py-minor-block-re'"
+  (interactive "*")
+  (let ((erg (py-mark-base-bol "minor-block")))
+    (delete-region (car erg) (cdr erg))))
+
+;;
+
 (defun py-beginning-of-clause-bol-p ()
   "Returns position, if cursor is at the beginning of clause, at beginning of line, nil otherwise. "
   (interactive) 

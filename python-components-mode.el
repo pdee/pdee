@@ -3581,13 +3581,13 @@ A nomenclature is a fancy way of saying AWordWithMixedCaseNotUnderscores. "]
 
                   "-"
 
-                  ("Stop move at beginning of line"
-                   ("Beginning forms"
+                  ("BOL forms"
+                   ("Beginning"
 
                     ["Beginning of block bol" py-beginning-of-block-bol
                      :help " `py-beginning-of-block-bol'
 
-Go to beginning block, go to BOL\.
+Go to beginning block, go to beginning-of-line\.
 
 Returns beginning of block if successful, nil otherwise
 
@@ -3597,7 +3597,7 @@ http://docs\.python\.org/reference/compound_stmts\.html "]
                     ["Beginning of clause bol" py-beginning-of-clause-bol
                      :help " `py-beginning-of-clause-bol'
 
-Go to beginning clause, go to BOL\.
+Go to beginning clause, go to beginning-of-line\.
 
 Returns beginning of clause if successful, nil otherwise
 
@@ -3607,7 +3607,7 @@ http://docs\.python\.org/reference/compound_stmts\.html "]
                     ["Beginning of block or clause bol" py-beginning-of-block-or-clause-bol
                      :help " `py-beginning-of-block-or-clause-bol'
 
-Go to beginning block-or-clause, go to BOL\.
+Go to beginning block-or-clause, go to beginning-of-line\.
 
 Returns beginning of block-or-clause if successful, nil otherwise
 
@@ -3617,7 +3617,7 @@ http://docs\.python\.org/reference/compound_stmts\.html "]
                     ["Beginning of def bol" py-beginning-of-def-bol
                      :help " `py-beginning-of-def-bol'
 
-Go to beginning def, go to BOL\.
+Go to beginning def, go to beginning-of-line\.
 
 Returns beginning of def if successful, nil otherwise
 
@@ -3629,7 +3629,7 @@ http://docs\.python\.org/reference/compound_stmts\.html "]
                     ["Beginning of class bol" py-beginning-of-class-bol
                      :help " `py-beginning-of-class-bol'
 
-Go to beginning class, go to BOL\.
+Go to beginning class, go to beginning-of-line\.
 
 Returns beginning of class if successful, nil otherwise
 
@@ -3641,7 +3641,7 @@ http://docs\.python\.org/reference/compound_stmts\.html "]
                     ["Beginning of def or class bol" py-beginning-of-def-or-class-bol
                      :help " `py-beginning-of-def-or-class-bol'
 
-Go to beginning def-or-class, go to BOL\.
+Go to beginning def-or-class, go to beginning-of-line\.
 
 Returns beginning of def-or-class if successful, nil otherwise
 
@@ -3653,7 +3653,7 @@ http://docs\.python\.org/reference/compound_stmts\.html "]
                     ["Beginning of if block bol" py-beginning-of-if-block-bol
                      :help " `py-beginning-of-if-block-bol'
 
-Go to beginning if-block, go to BOL\.
+Go to beginning if-block, go to beginning-of-line\.
 
 Returns beginning of if-block if successful, nil otherwise
 
@@ -3663,7 +3663,7 @@ http://docs\.python\.org/reference/compound_stmts\.html "]
                     ["Beginning of try block bol" py-beginning-of-try-block-bol
                      :help " `py-beginning-of-try-block-bol'
 
-Go to beginning try-block, go to BOL\.
+Go to beginning try-block, go to beginning-of-line\.
 
 Returns beginning of try-block if successful, nil otherwise
 
@@ -3673,7 +3673,7 @@ http://docs\.python\.org/reference/compound_stmts\.html "]
                     ["Beginning of minor block bol" py-beginning-of-minor-block-bol
                      :help " `py-beginning-of-minor-block-bol'
 
-Go to beginning minor-block, go to BOL\.
+Go to beginning minor-block, go to beginning-of-line\.
 
 Returns beginning of minor-block if successful, nil otherwise
 
@@ -3908,9 +3908,70 @@ Copy innermost definition at point"]
                    :help "`py-copy-def-or-class'
 Copy innermost definition at point"]
 
+                  ("BOL forms"
+
+                   ["Copy block bol" py-copy-block-bol
+                    :help " `py-copy-block-bol'
+
+Delete block bol at point\.
+
+Stores data in kill ring\. Might be yanked back using `C-y'\.  "]
+
+                   ["Copy clause bol" py-copy-clause-bol
+                    :help " `py-copy-clause-bol'
+
+Delete clause bol at point\.
+
+Stores data in kill ring\. Might be yanked back using `C-y'\.  "]
+
+                   ["Copy block or clause bol" py-copy-block-or-clause-bol
+                    :help " `py-copy-block-or-clause-bol'
+
+Delete block-or-clause bol at point\.
+
+Stores data in kill ring\. Might be yanked back using `C-y'\.  "]
+
+                   ["Copy def bol" py-copy-def-bol
+                    :help " `py-copy-def-bol'
+
+Delete def bol at point\.
+
+Stores data in kill ring\. Might be yanked back using `C-y'\.  "]
+
+                   ["Copy class bol" py-copy-class-bol
+                    :help " `py-copy-class-bol'
+
+Delete class bol at point\.
+
+Stores data in kill ring\. Might be yanked back using `C-y'\.  "]
+
+                   ["Copy def or class bol" py-copy-def-or-class-bol
+                    :help " `py-copy-def-or-class-bol'
+
+Delete def-or-class bol at point\.
+
+Stores data in kill ring\. Might be yanked back using `C-y'\.  "]
+
+                   ["Copy statement bol" py-copy-statement-bol
+                    :help " `py-copy-statement-bol'
+
+Delete statement bol at point\.
+
+Stores data in kill ring\. Might be yanked back using `C-y'\.  "]
+                   
+                   ["Copy minor block bol" py-copy-minor-block-bol
+                    :help " `py-copy-minor-block-bol'
+
+Delete block bol at point\.
+
+Stores data in kill ring\. Might be yanked back using `C-y'\. 
+
+See `py-minor-block-re' "]
+
+                   )
                   )
 
-                 "-"
+                  "-"
 
                  ["Execute region" py-execute-region
                   :help " `py-execute-region'

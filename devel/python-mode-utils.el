@@ -479,7 +479,7 @@
   (emacs-lisp-mode))
 
 (defun write-unified-extended-execute-forms (&optional path-to-shell command option)
-  "Write `py-execute-statement, ...' etc. 
+  "Write `py-execute-statement, ...' etc.
 
 Include default forms "
   (interactive)
@@ -593,7 +593,7 @@ Include default forms "
                 (t (insert (concat "  (interactive)
   (py-execute-prepare \"" ele "\" \"" elt "\""))
 		   (write-extended-execute-forms-endings)))
-          
+
 	  ))))
   (if path-to-shell
       (insert (concat "(provide '" path-to-shell) ")
@@ -3017,20 +3017,40 @@ Return code of `py-" ele "' at point, a string. \"
 'py-end-of-minor-block-bol
 'py-end-of-statement-bol))
 
+(setq py-bol-copy-forms
+      (list 'py-copy-block-bol
+            'py-copy-clause-bol
+            'py-copy-block-or-clause-bol
+            'py-copy-def-bol
+            'py-copy-class-bol
+            'py-copy-def-or-class-bol
+            'py-copy-statement-bol))
+
+
+
+
+(defun py-write-copy-bol-menu ()
+  (interactive "*")
+  (dolist (ele py-bol-copy-forms)
+    (emen (prin1-to-string ele))
+    (skip-chars-forward "^]")
+    (forward-char 1)
+    (newline)))
+
 (defun py-write-bol-menu ()
-  (interactive "*") 
+  (interactive "*")
   (dolist (ele py-bol-forms)
     (emen (prin1-to-string ele))
     (skip-chars-forward "^]")
-    (forward-char 1) 
-    (newline))) 
+    (forward-char 1)
+    (newline)))
 
 (defun py-write-bol-end-menu ()
-  (interactive "*") 
+  (interactive "*")
   (dolist (ele py-bol-end-forms)
     (emen (prin1-to-string ele))
     (skip-chars-forward "^]")
-    (forward-char 1) 
-    (newline))) 
+    (forward-char 1)
+    (newline)))
 
 ;;; Copying

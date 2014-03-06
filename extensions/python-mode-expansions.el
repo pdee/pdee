@@ -43,6 +43,8 @@
 
 (defvar er--python-string-delimiter "'\"")
 
+(defalias 'py-goto-beyond-clause 'py-end-of-clause-bol)
+
 (defun er/mark-outside-python-string ()
   "Marks region outside a (possibly multi-line) Python string"
   (interactive)

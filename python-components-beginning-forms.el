@@ -115,7 +115,7 @@ A minor block is started by a `for', `if', `try' or `with'.
 
 (defalias 'py-beginning-of-block-bol 'py-beginning-of-block-lc)
 (defun py-beginning-of-block-lc (&optional indent)
-  "Go to beginning block, go to BOL.
+  "Go to beginning block, go to beginning-of-line.
 
 Returns beginning of block if successful, nil otherwise
 
@@ -126,7 +126,7 @@ http://docs.python.org/reference/compound_stmts.html"
 
 (defalias 'py-beginning-of-clause-bol 'py-beginning-of-clause-lc)
 (defun py-beginning-of-clause-lc (&optional indent)
-  "Go to beginning clause, go to BOL.
+  "Go to beginning clause, go to beginning-of-line.
 
 Returns beginning of clause if successful, nil otherwise
 
@@ -137,7 +137,7 @@ http://docs.python.org/reference/compound_stmts.html"
 
 (defalias 'py-beginning-of-block-or-clause-bol 'py-beginning-of-block-or-clause-lc)
 (defun py-beginning-of-block-or-clause-lc (&optional indent)
-  "Go to beginning block-or-clause, go to BOL.
+  "Go to beginning block-or-clause, go to beginning-of-line.
 
 Returns beginning of block-or-clause if successful, nil otherwise
 
@@ -148,7 +148,7 @@ http://docs.python.org/reference/compound_stmts.html"
 
 (defalias 'py-beginning-of-def-bol 'py-beginning-of-def-lc)
 (defun py-beginning-of-def-lc (&optional indent)
-  "Go to beginning def, go to BOL.
+  "Go to beginning def, go to beginning-of-line.
 
 Returns beginning of def if successful, nil otherwise
 
@@ -161,7 +161,7 @@ http://docs.python.org/reference/compound_stmts.html"
 
 (defalias 'py-beginning-of-class-bol 'py-beginning-of-class-lc)
 (defun py-beginning-of-class-lc (&optional indent)
-  "Go to beginning class, go to BOL.
+  "Go to beginning class, go to beginning-of-line.
 
 Returns beginning of class if successful, nil otherwise
 
@@ -174,7 +174,7 @@ http://docs.python.org/reference/compound_stmts.html"
 
 (defalias 'py-beginning-of-def-or-class-bol 'py-beginning-of-def-or-class-lc)
 (defun py-beginning-of-def-or-class-lc (&optional indent)
-  "Go to beginning def-or-class, go to BOL.
+  "Go to beginning def-or-class, go to beginning-of-line.
 
 Returns beginning of def-or-class if successful, nil otherwise
 
@@ -187,7 +187,7 @@ http://docs.python.org/reference/compound_stmts.html"
 
 (defalias 'py-beginning-of-if-block-bol 'py-beginning-of-if-block-lc)
 (defun py-beginning-of-if-block-lc (&optional indent)
-  "Go to beginning if-block, go to BOL.
+  "Go to beginning if-block, go to beginning-of-line.
 
 Returns beginning of if-block if successful, nil otherwise
 
@@ -198,7 +198,7 @@ http://docs.python.org/reference/compound_stmts.html"
 
 (defalias 'py-beginning-of-try-block-bol 'py-beginning-of-try-block-lc)
 (defun py-beginning-of-try-block-lc (&optional indent)
-  "Go to beginning try-block, go to BOL.
+  "Go to beginning try-block, go to beginning-of-line.
 
 Returns beginning of try-block if successful, nil otherwise
 
@@ -209,7 +209,7 @@ http://docs.python.org/reference/compound_stmts.html"
 
 (defalias 'py-beginning-of-minor-block-bol 'py-beginning-of-minor-block-lc)
 (defun py-beginning-of-minor-block-lc (&optional indent)
-  "Go to beginning minor-block, go to BOL.
+  "Go to beginning minor-block, go to beginning-of-line.
 
 Returns beginning of minor-block if successful, nil otherwise
 
