@@ -2995,4 +2995,42 @@ Return code of `py-" ele "' at point, a string. \"
   (switch-to-buffer (current-buffer))
   (emacs-lisp-mode))
 
+(setq py-bol-forms (list 'py-beginning-of-block-bol
+'py-beginning-of-clause-bol
+'py-beginning-of-block-or-clause-bol
+'py-beginning-of-def-bol
+'py-beginning-of-class-bol
+'py-beginning-of-def-or-class-bol
+'py-beginning-of-if-block-bol
+'py-beginning-of-try-block-bol
+'py-beginning-of-minor-block-bol
+'py-beginning-of-statement-bol))
+
+(defvar py-bol-end-forms (list 'py-end-of-block-bol
+'py-end-of-clause-bol
+'py-end-of-block-or-clause-bol
+'py-end-of-def-bol
+'py-end-of-class-bol
+'py-end-of-def-or-class-bol
+'py-end-of-if-block-bol
+'py-end-of-try-block-bol
+'py-end-of-minor-block-bol
+'py-end-of-statement-bol))
+
+(defun py-write-bol-menu ()
+  (interactive "*") 
+  (dolist (ele py-bol-forms)
+    (emen (prin1-to-string ele))
+    (skip-chars-forward "^]")
+    (forward-char 1) 
+    (newline))) 
+
+(defun py-write-bol-end-menu ()
+  (interactive "*") 
+  (dolist (ele py-bol-end-forms)
+    (emen (prin1-to-string ele))
+    (skip-chars-forward "^]")
+    (forward-char 1) 
+    (newline))) 
+
 ;;; Copying

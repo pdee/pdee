@@ -3581,6 +3581,192 @@ A nomenclature is a fancy way of saying AWordWithMixedCaseNotUnderscores. "]
 
                   "-"
 
+                  ("Stop move at beginning of line"
+                   ("Beginning forms"
+
+                    ["Beginning of block bol" py-beginning-of-block-bol
+                     :help " `py-beginning-of-block-bol'
+
+Go to beginning block, go to BOL\.
+
+Returns beginning of block if successful, nil otherwise
+
+Referring python program structures see for example:
+http://docs\.python\.org/reference/compound_stmts\.html "]
+
+                    ["Beginning of clause bol" py-beginning-of-clause-bol
+                     :help " `py-beginning-of-clause-bol'
+
+Go to beginning clause, go to BOL\.
+
+Returns beginning of clause if successful, nil otherwise
+
+Referring python program structures see for example:
+http://docs\.python\.org/reference/compound_stmts\.html "]
+
+                    ["Beginning of block or clause bol" py-beginning-of-block-or-clause-bol
+                     :help " `py-beginning-of-block-or-clause-bol'
+
+Go to beginning block-or-clause, go to BOL\.
+
+Returns beginning of block-or-clause if successful, nil otherwise
+
+Referring python program structures see for example:
+http://docs\.python\.org/reference/compound_stmts\.html "]
+
+                    ["Beginning of def bol" py-beginning-of-def-bol
+                     :help " `py-beginning-of-def-bol'
+
+Go to beginning def, go to BOL\.
+
+Returns beginning of def if successful, nil otherwise
+
+When `py-mark-decorators' is non-nil, decorators are considered too\.
+
+Referring python program structures see for example:
+http://docs\.python\.org/reference/compound_stmts\.html "]
+
+                    ["Beginning of class bol" py-beginning-of-class-bol
+                     :help " `py-beginning-of-class-bol'
+
+Go to beginning class, go to BOL\.
+
+Returns beginning of class if successful, nil otherwise
+
+When `py-mark-decorators' is non-nil, decorators are considered too\.
+
+Referring python program structures see for example:
+http://docs\.python\.org/reference/compound_stmts\.html "]
+
+                    ["Beginning of def or class bol" py-beginning-of-def-or-class-bol
+                     :help " `py-beginning-of-def-or-class-bol'
+
+Go to beginning def-or-class, go to BOL\.
+
+Returns beginning of def-or-class if successful, nil otherwise
+
+When `py-mark-decorators' is non-nil, decorators are considered too\.
+
+Referring python program structures see for example:
+http://docs\.python\.org/reference/compound_stmts\.html "]
+
+                    ["Beginning of if block bol" py-beginning-of-if-block-bol
+                     :help " `py-beginning-of-if-block-bol'
+
+Go to beginning if-block, go to BOL\.
+
+Returns beginning of if-block if successful, nil otherwise
+
+Referring python program structures see for example:
+http://docs\.python\.org/reference/compound_stmts\.html "]
+
+                    ["Beginning of try block bol" py-beginning-of-try-block-bol
+                     :help " `py-beginning-of-try-block-bol'
+
+Go to beginning try-block, go to BOL\.
+
+Returns beginning of try-block if successful, nil otherwise
+
+Referring python program structures see for example:
+http://docs\.python\.org/reference/compound_stmts\.html "]
+
+                    ["Beginning of minor block bol" py-beginning-of-minor-block-bol
+                     :help " `py-beginning-of-minor-block-bol'
+
+Go to beginning minor-block, go to BOL\.
+
+Returns beginning of minor-block if successful, nil otherwise
+
+Referring python program structures see for example:
+http://docs\.python\.org/reference/compound_stmts\.html "]
+
+                    ["Beginning of statement bol" py-beginning-of-statement-bol
+                     :help " `py-beginning-of-statement-bol'
+
+Goto beginning of line where statement starts\.
+  Returns position reached, if successful, nil otherwise\.
+
+See also `py-up-statement': up from current definition to next beginning of statement above\.  "]
+
+                    )
+                   ("End"
+
+                    ["End of block bol" py-end-of-block-bol
+                     :help " `py-end-of-block-bol'
+
+Goto beginning of line following end of block\.
+  Returns position reached, if successful, nil otherwise\.
+
+See also `py-down-block': down from current definition to next beginning of block below\.  "]
+
+                    ["End of clause bol" py-end-of-clause-bol
+                     :help " `py-end-of-clause-bol'
+
+Goto beginning of line following end of clause\.
+  Returns position reached, if successful, nil otherwise\.
+
+See also `py-down-clause': down from current definition to next beginning of clause below\.  "]
+
+                    ["End of block or clause bol" py-end-of-block-or-clause-bol
+                     :help " `py-end-of-block-or-clause-bol'
+
+Goto beginning of line following end of block-or-clause\.
+  Returns position reached, if successful, nil otherwise\.
+
+See also `py-down-block-or-clause': down from current definition to next beginning of block-or-clause below\.  "]
+
+                    ["End of def bol" py-end-of-def-bol
+                     :help " `py-end-of-def-bol'
+
+Goto beginning of line following end of def\.
+  Returns position reached, if successful, nil otherwise\.
+
+See also `py-down-def': down from current definition to next beginning of def below\.  "]
+
+                    ["End of class bol" py-end-of-class-bol
+                     :help " `py-end-of-class-bol'
+
+Goto beginning of line following end of class\.
+  Returns position reached, if successful, nil otherwise\.
+
+See also `py-down-class': down from current definition to next beginning of class below\.  "]
+
+                    ["End of def or class bol" py-end-of-def-or-class-bol
+                     :help " `py-end-of-def-or-class-bol'
+
+Goto beginning of line following end of def-or-class\.
+  Returns position reached, if successful, nil otherwise\.
+
+See also `py-down-def-or-class': down from current definition to next beginning of def-or-class below\.  "]
+
+                    ["End of if block bol" py-end-of-if-block-bol
+                     :help " `py-end-of-if-block-bol'
+
+ "]
+
+                    ["End of try block bol" py-end-of-try-block-bol
+                     :help " `py-end-of-try-block-bol'
+
+ "]
+
+                    ["End of minor block bol" py-end-of-minor-block-bol
+                     :help " `py-end-of-minor-block-bol'
+
+ "]
+
+                    ["End of statement bol" py-end-of-statement-bol
+                     :help " `py-end-of-statement-bol'
+
+Goto beginning of line following end of statement\.
+  Returns position reached, if successful, nil otherwise\.
+
+See also `py-down-statement': down from current definition to next beginning of statement below\.  "]
+                   
+                    )
+                   )
+
+                  "-"
+
                   ("More"
 
                    ["Up level" py-up
