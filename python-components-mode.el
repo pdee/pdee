@@ -3913,56 +3913,56 @@ Copy innermost definition at point"]
                    ["Copy block bol" py-copy-block-bol
                     :help " `py-copy-block-bol'
 
-Delete block bol at point\.
+Delete block, use position from beginning-of-line\.
 
 Stores data in kill ring\. Might be yanked back using `C-y'\.  "]
 
                    ["Copy clause bol" py-copy-clause-bol
                     :help " `py-copy-clause-bol'
 
-Delete clause bol at point\.
+Delete clause, use position from beginning-of-line\.
 
 Stores data in kill ring\. Might be yanked back using `C-y'\.  "]
 
                    ["Copy block or clause bol" py-copy-block-or-clause-bol
                     :help " `py-copy-block-or-clause-bol'
 
-Delete block-or-clause bol at point\.
+Delete block-or-clause, use position from beginning-of-line\.
 
 Stores data in kill ring\. Might be yanked back using `C-y'\.  "]
 
                    ["Copy def bol" py-copy-def-bol
                     :help " `py-copy-def-bol'
 
-Delete def bol at point\.
+Delete def, use position from beginning-of-line\.
 
 Stores data in kill ring\. Might be yanked back using `C-y'\.  "]
 
                    ["Copy class bol" py-copy-class-bol
                     :help " `py-copy-class-bol'
 
-Delete class bol at point\.
+Delete class, use position from beginning-of-line\.
 
 Stores data in kill ring\. Might be yanked back using `C-y'\.  "]
 
                    ["Copy def or class bol" py-copy-def-or-class-bol
                     :help " `py-copy-def-or-class-bol'
 
-Delete def-or-class bol at point\.
+Delete def-or-class, use position from beginning-of-line\.
 
 Stores data in kill ring\. Might be yanked back using `C-y'\.  "]
 
                    ["Copy statement bol" py-copy-statement-bol
                     :help " `py-copy-statement-bol'
 
-Delete statement bol at point\.
+Delete statement, use position from beginning-of-line\.
 
 Stores data in kill ring\. Might be yanked back using `C-y'\.  "]
                    
                    ["Copy minor block bol" py-copy-minor-block-bol
                     :help " `py-copy-minor-block-bol'
 
-Delete block bol at point\.
+Delete block, use position from beginning-of-line\.
 
 Stores data in kill ring\. Might be yanked back using `C-y'\. 
 
