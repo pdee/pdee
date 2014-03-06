@@ -55,7 +55,7 @@
         (setq erg orig))
       erg)))
 
-(defalias 'py-down-block-lc 'py-end-of-block-bol)
+(defalias 'py-end-of-block-lc 'py-down-block-bol) 
 (defun py-end-of-block-bol ()
   "Goto beginning of line following end of block.
   Returns position reached, if successful, nil otherwise.
