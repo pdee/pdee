@@ -3378,49 +3378,50 @@ Mark innermost definition at point"]
                    :help "`py-mark-comment'
 Mark commented section at point"]
 
-                  "-"
+                  ("BOL forms"
 
-                  ["Mark block bol" py-mark-block-bol
-                   :help "`py-mark-block-bol'
+		   ["Mark block bol" py-mark-block-bol
+		    :help "`py-mark-block-bol'
 Mark block at point reaching beginning-of-line. "]
 
-                  ["Mark clause bol" py-mark-clause-bol
-                   :help "`py-mark-clause-bol'
+		   ["Mark clause bol" py-mark-clause-bol
+		    :help "`py-mark-clause-bol'
 Mark clause at point reaching beginning-of-line. "]
 
-                  ["Mark block-or-clause bol" py-mark-block-or-clause-bol
-                   :help "`py-mark-block-or-clause-bol'
+		   ["Mark block-or-clause bol" py-mark-block-or-clause-bol
+		    :help "`py-mark-block-or-clause-bol'
 Mark block-or-clause at point reaching beginning-of-line. "]
 
-                  ["Mark def bol" py-mark-def-bol
-                   :help "`py-mark-def-bol'
+		   ["Mark def bol" py-mark-def-bol
+		    :help "`py-mark-def-bol'
 Mark def at point reaching beginning-of-line. "]
 
-                  ["Mark class bol" py-mark-class-bol
-                   :help "`py-mark-class-bol'
+		   ["Mark class bol" py-mark-class-bol
+		    :help "`py-mark-class-bol'
 Mark class at point reaching beginning-of-line. "]
 
-                  ["Mark def-or-class bol" py-mark-def-or-class-bol
-                   :help "`py-mark-def-or-class-bol'
+		   ["Mark def-or-class bol" py-mark-def-or-class-bol
+		    :help "`py-mark-def-or-class-bol'
 Mark def-or-class at point reaching beginning-of-line. "]
 
-                  ["Mark if-block bol" py-mark-if-block-bol
-                   :help "`py-mark-if-block-bol'
+		   ["Mark if-block bol" py-mark-if-block-bol
+		    :help "`py-mark-if-block-bol'
 Mark if-block at point reaching beginning-of-line. "]
 
-                  ["Mark try-block bol" py-mark-try-block-bol
-                   :help "`py-mark-try-block-bol'
+		   ["Mark try-block bol" py-mark-try-block-bol
+		    :help "`py-mark-try-block-bol'
 Mark try-block at point reaching beginning-of-line. "]
 
-                  ["Mark minor-block bol" py-mark-minor-block-bol
-                   :help "`py-mark-minor-block-bol'
+		   ["Mark minor-block bol" py-mark-minor-block-bol
+		    :help "`py-mark-minor-block-bol'
 
 Mark minor-block at point reaching beginning-of-line.
 A minor block is started by a `for', `if', `try' or `with'."]
 
-                  )
+		   )
+		  )
 
-                 "-"
+		 "-"
 
                  ["Shift region left" py-shift-region-left
                   :help " `py-shift-region-left'
