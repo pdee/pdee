@@ -24,6 +24,12 @@
 
 ;;; Code:
 (require 'python-components-macros)
+
+;; backward compatibility
+;; some third party relying on v5 serie might use this
+(defalias 'py-goto-beyond-block 'py-end-of-block-bol)
+(defalias 'py-goto-beyond-final-line 'py-end-of-statement-bol)
+
 ;; Expression
 (defalias 'py-backward-expression 'py-beginning-of-expression)
 (defun py-beginning-of-expression (&optional arg)
