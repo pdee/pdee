@@ -5463,46 +5463,6 @@ Returns value of `smart-operator-mode'. "]
 
                      )
 
-                    ("TAB related"
-
-                     ["indent-tabs-mode"
-                      (setq indent-tabs-mode
-                            (not indent-tabs-mode))
-                      :help "Indentation can insert tabs if this is non-nil.
-
-Use `M-x customize-variable' to set it permanently"
-                      :style toggle :selected indent-tabs-mode]
-
-                     ["Tab indent"
-                      (setq py-tab-indent
-                            (not py-tab-indent))
-                      :help "Non-nil means TAB in Python mode calls `py-indent-line'.Use `M-x customize-variable' to set it permanently"
-                      :style toggle :selected py-tab-indent]
-
-                     ["Tab shifts region "
-                      (setq py-tab-shifts-region-p
-                            (not py-tab-shifts-region-p))
-                      :help "If `t', TAB will indent/cycle the region, not just the current line.
-
-Default is nil
-See also `py-tab-indents-region-p'
-
-Use `M-x customize-variable' to set it permanently"
-                      :style toggle :selected py-tab-shifts-region-p]
-
-                     ["Tab indents region "
-                      (setq py-tab-indents-region-p
-                            (not py-tab-indents-region-p))
-                      :help "When `t' and first TAB doesn't shift, indent-region is called.
-
-Default is nil
-See also `py-tab-shifts-region-p'
-
-Use `M-x customize-variable' to set it permanently"
-                      :style toggle :selected py-tab-indents-region-p]
-
-                     )
-
                     ("Filling"
 
                      ("Docstring styles"
@@ -5661,6 +5621,45 @@ Use `M-x customize-variable' to set it permanently"
                      )
 
                     ("Indent"
+		     ("TAB related"
+
+		      ["indent-tabs-mode"
+		       (setq indent-tabs-mode
+			     (not indent-tabs-mode))
+		       :help "Indentation can insert tabs if this is non-nil.
+
+Use `M-x customize-variable' to set it permanently"
+		       :style toggle :selected indent-tabs-mode]
+
+		      ["Tab indent"
+		       (setq py-tab-indent
+			     (not py-tab-indent))
+		       :help "Non-nil means TAB in Python mode calls `py-indent-line'.Use `M-x customize-variable' to set it permanently"
+		       :style toggle :selected py-tab-indent]
+
+		      ["Tab shifts region "
+		       (setq py-tab-shifts-region-p
+			     (not py-tab-shifts-region-p))
+		       :help "If `t', TAB will indent/cycle the region, not just the current line.
+
+Default is nil
+See also `py-tab-indents-region-p'
+
+Use `M-x customize-variable' to set it permanently"
+		       :style toggle :selected py-tab-shifts-region-p]
+
+		      ["Tab indents region "
+		       (setq py-tab-indents-region-p
+			     (not py-tab-indents-region-p))
+		       :help "When `t' and first TAB doesn't shift, indent-region is called.
+
+Default is nil
+See also `py-tab-shifts-region-p'
+
+Use `M-x customize-variable' to set it permanently"
+		       :style toggle :selected py-tab-indents-region-p]
+
+		      )
 
                      ["Close at start column"
                       (setq py-closing-list-dedents-bos

@@ -106,10 +106,10 @@ line and selecting the surrounding block."
         (while (> (current-column) start-col)
           (forward-line -1) (back-to-indentation)))
       (set-mark (point))
-      (py-goto-beyond-clause) (forward-line) (back-to-indentation)
+      (py-end-of-clause-bol) (forward-line) (back-to-indentation)
       (while (and (looking-at secondary-re)
                   (>= (current-column) start-col))
-        (py-goto-beyond-clause) (forward-line) (back-to-indentation))
+        (py-end-of-clause-bol) (forward-line) (back-to-indentation))
       (forward-line -1) (end-of-line)
       (exchange-point-and-mark))))
 
