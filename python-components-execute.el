@@ -454,7 +454,6 @@ Internal use"
 
 (defun py-shell-manage-windows (output-buffer &optional windows-displayed windows-config)
   "Adapt or restore window configuration. Return nil "
- (message "manage-windows py-switch-buffers-on-execute-p: %s" py-switch-buffers-on-execute-p)
   (cond ((eq py-keep-windows-configuration 'force)
          (py-restore-window-configuration))
         ((and (boundp 'err-p) err-p)
@@ -489,7 +488,6 @@ Internal use"
         ((not py-switch-buffers-on-execute-p)
          (let (pop-up-windows)
            (py-restore-window-configuration))))
-  (message "mw: %s" (current-buffer))
   nil)
 
 (defun py-report-executable (py-buffer-name)
@@ -969,19 +967,20 @@ Returns position where output starts. "
          erg orig err-p)
     (set-buffer procbuf)
     (goto-char (point-max))
-    ;; (switch-to-buffer (current-buffer))
+    (switch-to-buffer (current-buffer))
     (setq orig (point))
     (comint-send-string proc cmd)
     (if
         (setq err-p (save-excursion (py-postprocess-output-buffer procbuf)))
-        (py-shell-manage-windows py-buffer-name windows-config)
+        (py-shell-manage-windows py-buffer-name nil windows-config)
       (and py-store-result-p
            (sit-for 0.1)
            (setq erg
                  (py-output-filter
                   (buffer-substring-no-properties orig (point-max))))
            (unless (string= (car kill-ring) erg) (kill-new erg)))
-      (py-shell-manage-windows procbuf windows-config)
+      ;; (py-shell-manage-windows (current-buffer) nil windows-config)
+      (py-shell-manage-windows procbuf nil windows-config)
       erg)))
 
 (defun py-execute-string (&optional string shell)

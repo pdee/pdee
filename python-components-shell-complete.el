@@ -42,35 +42,35 @@ completions on the current context."
                          (try-completion input completions))))
       ;; (set-buffer oldbuf)
       (with-current-buffer oldbuf
-      ;; (goto-char orig)
-      (cond ((eq completion t)
-             (if py-no-completion-calls-dabbrev-expand-p
-                 (or (ignore-errors (dabbrev-expand nil))(when py-indent-no-completion-p
-                                                           (tab-to-tab-stop)))
-               (when py-indent-no-completion-p
-                 (tab-to-tab-stop)))
-             nil)
-            ((null completion)
-             (if py-no-completion-calls-dabbrev-expand-p
-                 (or (dabbrev-expand nil)(when py-indent-no-completion-p
-                                           (tab-to-tab-stop))(message "Can't find completion "))
-               (when py-indent-no-completion-p
-                 (tab-to-tab-stop)))
-             nil)
-            ((not (string= input completion))
-             (progn (delete-char (- (length input)))
-                    (insert completion)
-                    (move-marker pos (point))
-                    ;; minibuffer.el expects a list, a bug IMO
-                    nil))
-            (t
-             (with-output-to-temp-buffer py-python-completions
-               (display-completion-list
-                (all-completions input completions)))
-             (move-marker pos (point))
-             nil))
-      (and (goto-char pos)
-           nil)))))
+        ;; (goto-char orig)
+        (cond ((eq completion t)
+               (if py-no-completion-calls-dabbrev-expand-p
+                   (or (ignore-errors (dabbrev-expand nil))(when py-indent-no-completion-p
+                                                             (tab-to-tab-stop)))
+                 (when py-indent-no-completion-p
+                   (tab-to-tab-stop)))
+               nil)
+              ((null completion)
+               (if py-no-completion-calls-dabbrev-expand-p
+                   (or (dabbrev-expand nil)(when py-indent-no-completion-p
+                                             (tab-to-tab-stop))(message "Can't find completion "))
+                 (when py-indent-no-completion-p
+                   (tab-to-tab-stop)))
+               nil)
+              ((not (string= input completion))
+               (progn (delete-char (- (length input)))
+                      (insert completion)
+                      (move-marker pos (point))
+                      ;; minibuffer.el expects a list, a bug IMO
+                      nil))
+              (t
+               (with-output-to-temp-buffer py-python-completions
+                 (display-completion-list
+                  (all-completions input completions)))
+               (move-marker pos (point))
+               nil))
+        (and (goto-char pos)
+             nil)))))
 
 (defun py-python2-shell-complete (&optional shell)
   (interactive)

@@ -616,6 +616,7 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
     (let (oldbuf)
       (py-execute-buffer-dedicated)
       (set-buffer (py--fetch-first-python-buffer))(goto-char (point-min))
+      (message "this-buf: %s" (current-buffer))
       (setq oldbuf (current-buffer))
       (goto-char (point-max))
       (insert "socket.")
