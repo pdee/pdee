@@ -657,4 +657,62 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
     (and (should (search-forward "py-execute-statement-python3-dedicated-test" nil t 1))
 	 (py-kill-buffer-unconditional (current-buffer)))))
 
+(ert-deftest fill-paragraph-lp-1286318 ()
+    (let ((fill-column 72)) 
+      (py-tests-with-temp-buffer
+	"# r1416
+
+def baz():
+    \"\"\"Hello there.
+
+    This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
+    \"\"\"
+    return 7
+
+# The last line of the docstring is longer than fill-column (set to
+# 78 = for me). Put point on the 'T' in 'This' and hit M-q= . Nothing
+# happens.
+# 
+# Another example:
+# 
+def baz():
+    \"\"\"Hello there.
+
+    This is a multiline
+    function definition.
+    Don't worry, be happy.
+    Be very very happy.
+    Very. happy.
+    \"\"\"
+    return 7
+
+# All of those lines are shorter than fill-column. Put point anywhere
+# = in that paragraph and hit M-q. Nothing happens.
+# 
+# In both cases I would expect to end up with:
+# 
+def baz():
+    \"\"\"Hello there.
+
+    This is a multiline function definition. Don= 't worry, be happy. Be very
+    very happy. Very. happy.
+    \"\"\"
+    return 7
+"
+      (goto-char 49)
+      (switch-to-buffer (current-buffer)) 
+      (fill-paragraph)
+      (end-of-line) 
+      (should (eq 72 (current-column)))
+      (goto-char 409)
+      (fill-paragraph)
+      (end-of-line) 
+      (should (eq 72 (current-column)))
+      (goto-char 731)
+      (fill-paragraph)
+      (end-of-line) 
+      (should (eq 72 (current-column)))
+      )))
+
+
 (provide 'py-ert-tests)

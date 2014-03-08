@@ -1334,7 +1334,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-execute-region-error-test \
 --funcall py-execute-statement-error-test \
 --funcall split-windows-on-execute-p-test \
---funcall switch-windows-on-execute-p-test \
 --funcall py-execute-statement-test \
 --funcall py-execute-block-test \
 --funcall py-execute-block-or-clause-test \
@@ -1459,3 +1458,4 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test \
 --funcall missing-py-variable-name-face-lp-1215791-test \
 --funcall IndentationError-expected-an-indented-block-when-execute-lp-1055569-test \
+--funcall switch-windows-on-execute-p-test \
