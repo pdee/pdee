@@ -1334,7 +1334,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-execute-region-error-test \
 --funcall py-execute-statement-error-test \
 --funcall split-windows-on-execute-p-test \
---funcall py-execute-statement-test \
 --funcall py-execute-block-test \
 --funcall py-execute-block-or-clause-test \
 --funcall py-execute-def-test \

@@ -1146,7 +1146,10 @@ if foo:
   (beginning-of-line)
   (let ((py-switch-buffers-on-execute-p nil)
         (py-cleanup-temporary nil))
-    (assert (py-execute-block) nil "py-execute-block-test failed")))
+    (py-execute-block)
+    (set-buffer py-output-buffer)
+    (switch-to-buffer (current-buffer)) 
+    (assert (looking-at "asdf") nil "py-execute-block-test failed")))
 
 (defun multiline-list-indent-test (&optional arg load-branch-function)
   (interactive "p")
