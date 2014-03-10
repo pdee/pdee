@@ -190,7 +190,7 @@ PYCO="$PDIR/completion/pycomplete.el"
 TESTFILE="py-bug-numbered-tests.el"
 TESTFILE2="python-mode-test.el"
 TESTFILE3="python-extended-executes-test.el"
-TESTFILE4="python-executes-test.el"
+# TESTFILE4="python-executes-test.el"
 TESTFILE5="py-shell-completion-tests.el"
 CEXEC="python-extended-executes.el"
 
@@ -201,7 +201,7 @@ echo "\$PDIR/\$TESTFILE: $PDIR/$TESTFILE"
 
 # $EMACS -Q -batch -l $HOME/emacs_20130227/lisp/emacs-lisp/cl-lib.el -l $HOME/emacs_20130227/lisp/emacs-lisp/ert.el -l ${PCOT}/python-mode-ert-tests.el -f ert-run-tests-batch-and-exit
 # $EMACS -Q -batch -load ${EMACS_DIR}lisp/emacs-lisp/ert.el -load ${PCOT}/python-mode-ert-tests.el -f ert-run-tests-batch-and-exit
-$EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'python)(unload-feature 'python t))" --eval "(when (featurep 'python-mode)(unload-feature 'python-mode t))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$TESTDIR/\")" --eval "(setq py-install-directory \"$PDIR\"))" --eval "(message \"py-install-directory: %s\" py-install-directory)" --eval "(setq py-load-pymacs-p nil)" -load $BYTECOMP -load $CC_CMDS -load $COMINT -load $ANSICOLOR -load $CLMACS -load $CUSTOM -load $SKELETON -load $SO -load $COLMK -load $HIGHL -load $PYTHONMODE  --eval "(message \"py-temp-directory: %s\" py-temp-directory)" -load $PCOT/$TESTFILE -load $PCOT/$TESTFILE2 -load $PCOT/$TESTFILE3 -load $PCOT/$TESTFILE4 -load $PCOT/$TESTFILE5 \
+$EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'python)(unload-feature 'python t))" --eval "(when (featurep 'python-mode)(unload-feature 'python-mode t))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$TESTDIR/\")" --eval "(setq py-install-directory \"$PDIR\"))" --eval "(message \"py-install-directory: %s\" py-install-directory)" --eval "(setq py-load-pymacs-p nil)" -load $BYTECOMP -load $CC_CMDS -load $COMINT -load $ANSICOLOR -load $CLMACS -load $CUSTOM -load $SKELETON -load $SO -load $COLMK -load $HIGHL -load $PYTHONMODE  --eval "(message \"py-temp-directory: %s\" py-temp-directory)" -load $PCOT/$TESTFILE -load $PCOT/$TESTFILE2 -load $PCOT/$TESTFILE3 -load $PCOT/$TESTFILE5 \
 --eval "(when (file-exists-p \"~/.abbrev_defs\") (quietly-read-abbrev-file (expand-file-name \"~/.abbrev_defs\")))" \
 \
 -eval "(assert (functionp 'word-at-point) nil \"new completion bug, lp:1034656, word-at-point not known\")" \
@@ -1334,39 +1334,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-execute-region-error-test \
 --funcall py-execute-statement-error-test \
 --funcall split-windows-on-execute-p-test \
---funcall py-execute-block-test \
---funcall py-execute-block-or-clause-test \
---funcall py-execute-def-test \
---funcall py-execute-class-test \
---funcall py-execute-region-test \
---funcall py-execute-buffer-test \
---funcall py-execute-expression-test \
---funcall py-execute-line-test \
-\
---funcall py-execute-statement-python-test \
---funcall py-execute-statement-python3-test \
---funcall py-execute-statement-python2-test \
---funcall py-execute-statement-python2.7-switch-test \
---funcall py-execute-statement-python2.7-no-switch-test \
---funcall py-execute-statement-python2.7-dedicated-test \
---funcall py-execute-statement-python2.7-dedicated-switch-test \
---funcall py-execute-def-python-test \
---funcall py-execute-def-python3-test \
---funcall py-execute-def-python2-test \
---funcall py-execute-def-python2.7-test \
---funcall py-execute-class-python-test \
---funcall py-execute-class-python3-test \
---funcall py-execute-class-python2-test \
---funcall py-execute-class-python2.7-test \
---funcall py-execute-region-python-test \
---funcall py-execute-region-python3-test \
---funcall py-execute-region-python2-switch-test \
---funcall py-execute-expression-python3-test \
---funcall py-execute-expression-python2-test \
---funcall py-execute-expression-python2.7-test \
---funcall py-execute-block-python3-test \
---funcall py-execute-block-python2-test \
---funcall py-execute-block-python2.7-test \
 --funcall py-shell-complete-test \
 \
 --funcall py-shell-invoking-python3-lp:835151-test \
@@ -1439,16 +1406,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n4-test 2 \
 --funcall py-electric-comment-add-space-lp:828398-test \
 --funcall py-electric-comment-add-space-t-lp:828398-test \
---funcall py-execute-block-or-clause-python2.7-dedicated-switch-test \
---funcall py-execute-block-or-clause-python2.7-test \
---funcall py-execute-block-or-clause-python2.7-switch-test \
---funcall py-execute-block-or-clause-python2.7-no-switch-test \
---funcall py-execute-block-or-clause-python2.7-dedicated-test \
---funcall py-execute-line-python2.7-test \
---funcall py-execute-line-python2.7-switch-test \
---funcall py-execute-line-python2.7-no-switch-test \
---funcall py-execute-line-python2.7-dedicated-test \
---funcall py-execute-line-python2.7-dedicated-switch-test \
 --funcall not-that-useful-completion-lp:1003580-test \
 --funcall several-new-bugs-with-paragraph-filling-lp-1066489-test \
 --funcall more-docstring-filling-woes-lp-1102296-pep-257-test \

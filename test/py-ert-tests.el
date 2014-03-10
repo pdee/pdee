@@ -379,12 +379,6 @@ def foo():
     (goto-char (point-max))
     (should (eq 8 (py-compute-indentation)))))
 
-;; (ert-deftest exception-buffer-and-line ()
-;;   (py-tests-with-temp-buffer
-;;       "print(4+5d)"
-;;     ;; error should report its just a buffer, not a file
-;;     (should (string-match "SyntaxError: invalid syntax" (py-execute-statement)))))
-
 (ert-deftest py-ert-pep-arglist-indent ()
   (py-tests-with-temp-buffer
       "# Aligned with opening delimiter
@@ -583,12 +577,6 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
     (python-mode)
     (should abbrevs-changed)))
 
-(ert-deftest py-ert-execute-statement-split ()
-  (py-tests-with-temp-buffer
-      "print(123)"
-    (let ((py-split-windows-on-execute-p t))
-      (py-execute-statement)
-      (should (not (one-window-p))))))
 
 ;; (ert-deftest py-ert-toggle-split-on-execute-function ()
 ;;   (py-tests-with-temp-buffer
@@ -626,36 +614,6 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
       (sit-for 0.1)
       (and (should (search-forward "socket."))
 	   (py-kill-buffer-unconditional oldbuf)))))
-
-(ert-deftest py-ert-execute-statement-test ()
-  (py-tests-with-temp-buffer
-      "print(\"I'm the py-execute-statement-test\")"
-    (py-execute-statement)
-    (message "%s" (buffer-list))
-    (set-buffer (py--fetch-first-python-buffer))
-    (goto-char (point-max))
-    (and (should (search-backward "py-execute-statement-test" nil t 1))
-	 (py-kill-buffer-unconditional (current-buffer)))))
-
-(ert-deftest py-ert-execute-statement-python2-test ()
-  (py-tests-with-temp-buffer
-      "print(\"I'm the py-execute-statement-python2-test\")"
-    (py-execute-statement-python2)
-    (set-buffer (py--fetch-first-python-buffer))
-    (goto-char (point-max))
-    (and (should (search-backward "py-execute-statement-python2-test" nil t 1))
-	 (py-kill-buffer-unconditional (current-buffer)))))
-
-(ert-deftest py-ert-execute-statement-python3-dedicated-test ()
-  (py-tests-with-temp-buffer
-      "print(\"I'm the py-execute-statement-python3-dedicated-test\")"
-    (py-execute-statement-python3-dedicated)
-    (set-buffer (py--fetch-first-python-buffer))
-    (message "%s" (current-buffer))
-    (goto-char (point-min))
-    (sit-for 1) 
-    (and (should (search-forward "py-execute-statement-python3-dedicated-test" nil t 1))
-	 (py-kill-buffer-unconditional (current-buffer)))))
 
 (ert-deftest fill-paragraph-lp-1286318 ()
     (let ((fill-column 72)) 
@@ -714,5 +672,70 @@ def baz():
       (should (eq 72 (current-column)))
       )))
 
+;;; execute tests
+(ert-deftest py-ert-execute-expression-test ()
+  (py-tests-with-temp-buffer
+      "print(\"I'm the py-execute-expression-test\")"
+    (py-execute-expression)
+    (message "%s" (buffer-list))
+    (set-buffer (py--fetch-first-python-buffer))
+    (goto-char (point-max))
+    (and (should (search-backward "py-execute-expression-test" nil t 1))
+	 (py-kill-buffer-unconditional (current-buffer)))))
+
+(ert-deftest py-ert-execute-line-test ()
+  (py-tests-with-temp-buffer
+      "print(\"I'm the py-execute-line-test\")"
+    (py-execute-line)
+    (message "%s" (buffer-list))
+    (set-buffer (py--fetch-first-python-buffer))
+    (goto-char (point-max))
+    (and (should (search-backward "py-execute-line-test" nil t 1))
+	 (py-kill-buffer-unconditional (current-buffer)))))
+
+
+(ert-deftest py-ert-execute-statement-test ()
+  (py-tests-with-temp-buffer
+      "print(\"I'm the py-execute-statement-test\")"
+    (py-execute-statement)
+    (message "%s" (buffer-list))
+    (set-buffer (py--fetch-first-python-buffer))
+    (goto-char (point-max))
+    (and (should (search-backward "py-execute-statement-test" nil t 1))
+	 (py-kill-buffer-unconditional (current-buffer)))))
+
+(ert-deftest py-ert-execute-statement-python2-test ()
+  (py-tests-with-temp-buffer
+      "print(\"I'm the py-execute-statement-python2-test\")"
+    (py-execute-statement-python2)
+    (set-buffer (py--fetch-first-python-buffer))
+    (goto-char (point-max))
+    (and (should (search-backward "py-execute-statement-python2-test" nil t 1))
+	 (py-kill-buffer-unconditional (current-buffer)))))
+
+(ert-deftest py-ert-execute-statement-python3-dedicated-test ()
+  (py-tests-with-temp-buffer
+      "print(\"I'm the py-execute-statement-python3-dedicated-test\")"
+    (py-execute-statement-python3-dedicated)
+    (set-buffer (py--fetch-first-python-buffer))
+    (message "%s" (current-buffer))
+    (goto-char (point-min))
+    (sit-for 1) 
+    (and (should (search-forward "py-execute-statement-python3-dedicated-test" nil t 1))
+	 (py-kill-buffer-unconditional (current-buffer)))))
+
+(ert-deftest py-ert-execute-statement-split ()
+  (py-tests-with-temp-buffer
+      "print(123)"
+    (let ((py-split-windows-on-execute-p t))
+      (py-execute-statement)
+      (should (not (one-window-p))))))
+
+;;;
+
+;; py-execute-buffer
+;; --funcall py-execute-expression-test \
+;; --funcall py-execute-line-test \
+;; \
 
 (provide 'py-ert-tests)

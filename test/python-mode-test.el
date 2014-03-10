@@ -1136,21 +1136,6 @@ if foo:
   (assert (eq 195 (py-end-of-partial-expression)) nil "py-partial-expression-test #3 failed")
   )
 
-(defun py-execute-block-test (&optional arg load-branch-function)
-  (interactive "p")
-  (let ((teststring "if True:
-    print \"asdf\""))
-    (py-bug-tests-intern 'py-execute-block-base 2 teststring)))
-
-(defun py-execute-block-base ()
-  (beginning-of-line)
-  (let ((py-switch-buffers-on-execute-p nil)
-        (py-cleanup-temporary nil))
-    (py-execute-block)
-    (set-buffer py-output-buffer)
-    (switch-to-buffer (current-buffer)) 
-    (assert (looking-at "asdf") nil "py-execute-block-test failed")))
-
 (defun multiline-list-indent-test (&optional arg load-branch-function)
   (interactive "p")
   (let ((teststring "print [1, 2,
@@ -2416,5 +2401,20 @@ else:
                (search-forward "line 5")) nil "py-execute-statement-error-test failed"))
 
 
+
+(defun beginning-of-block-fails-from-wrong-indent-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
+ for i in range(anzahl):
+        klauf.pylauf()
+            datei.write(str(spiel[i]) + \"\\n\")
+"))
+  (py-bug-tests-intern 'beginning-of-block-fails-from-wrong-indent-base arg teststring)))
+
+(defun beginning-of-block-fails-from-wrong-indent-base ()
+    (goto-char 102)
+    (assert (eq 48 (py-beginning-of-block)) nil "beginning-of-block-fails-from-wrong-indent-test failed"))
 
 (provide 'python-mode-test)
