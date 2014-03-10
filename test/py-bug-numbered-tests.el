@@ -782,15 +782,10 @@ print(u'\\xA9')
 
 (defun UnicodeEncodeError-lp:550661-base ()
   (goto-char 48)
-  (push-mark)
   (end-of-line)
   (py-execute-region-switch (line-beginning-position) (point))
-  (sit-for 0.2)
-  (unless (looking-at "©")
-    (when (looking-back comint-prompt-regexp)
-      (goto-char (1- (match-beginning 0))))
-    (sit-for 0.1))
-  (assert (or (looking-back "©")(looking-at "©")) nil "UnicodeEncodeError-lp:550661-test failed"))
+  (set-buffer "*Python*")
+  (assert (or (eq (char-after) ?\@)(search-backward "©")) nil "UnicodeEncodeError-lp:550661-test failed"))
 
 (defun indentation-of-continuation-lines-lp:691185-test (&optional arg)
   "With ARG greater 1 keep test buffer open.
@@ -1684,7 +1679,10 @@ if foo:
 (defun execute-indented-code-lp:828314-base ()
   (let ((debug-on-error t))
     (goto-char 28)
-    (assert (py-execute-line) nil "execute-indented-code-lp:828314-test failed")))
+    (py-execute-line)
+    (set-buffer "*Python*")
+    (goto-char (point-max))
+    (assert (search-backward "execute-indented-code-lp:828314-test") nil "execute-indented-code-lp:828314-test failed")))
 
 (defun wrong-indentation-of-function-arguments-lp:840891-test (&optional arg)
   (interactive "p")
@@ -2330,7 +2328,7 @@ print(u'\\xA9')
 (defun execute-buffer-ipython-fails-lp:928087-base ()
   (let (py-split-windows-on-execute-p
         py-switch-buffers-on-execute-p)
-    (assert (py-execute-buffer) nil "execute-buffer-ipython-fails-lp:928087-test failed")))
+    (assert (not (py-execute-buffer)) nil "execute-buffer-ipython-fails-lp:928087-test failed")))
 
 (defun fourth-level-blocks-indent-incorrectly-lp:939577-test (&optional arg)
   (interactive "p")
@@ -2747,7 +2745,7 @@ print(\"I'm the temp-buffer-affected-by-py-shell-name-lp:958987-test\")
 
 (defun temp-buffer-affected-by-py-shell-name-lp:958987-base ()
   (message "%s" py-shell-name)
-  (assert (py-execute-buffer) nil "temp-buffer-affected-by-py-shell-name-lp:958987-test failed"))
+  (assert (not (py-execute-buffer)) nil "temp-buffer-affected-by-py-shell-name-lp:958987-test failed"))
 
 (defun toggle-force-local-shell-lp:988091-test (&optional arg)
   (interactive "p")
@@ -3130,8 +3128,7 @@ for something:
   (py-bug-tests-intern 'complaint-about-non-ASCII-character-lp-1042949-base arg teststring)))
 
 (defun complaint-about-non-ASCII-character-lp-1042949-base ()
-  (sit-for 0.1)
-  (assert (py-execute-buffer) nil "complaint-about-non-ASCII-character-lp-1042949-test failed"))
+  (assert (not (py-execute-buffer)) nil "complaint-about-non-ASCII-character-lp-1042949-test failed"))
 
 (defun dont-indent-code-unnecessarily-lp-1048778-test (&optional arg)
   (interactive "p")
@@ -4430,8 +4427,8 @@ print(\"I'm the \\\"impossible-to-execute-a-buffer-with-from-future-imports-lp-1
   (py-bug-tests-intern 'impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-base arg teststring)))
 
 (defun impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-base ()
-  (sit-for 0.1)
-  (assert (py-execute-buffer) nil "impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test failed"))
+;;  (sit-for 0.1)
+  (assert (not (py-execute-buffer)) nil "impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test failed"))
 
 (defun several-new-bugs-with-paragraph-filling-lp-1066489-test (&optional arg)
   (interactive "p")
@@ -5396,7 +5393,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.81 $\"
+__version__ = \"$Revision: 1.82 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -5456,7 +5453,10 @@ class Test(object):
 (defun more-docstring-filling-woes-lp-1102296-nil-base ()
   (let ((py-docstring-style nil))
     (goto-char 178)
-    (assert (fill-paragraph) nil "more-docstring-filling-woes-lp-1102296-nil-test #1 failed")
+    (fill-paragraph)
+    (end-of-line)
+    (message "(current-column): %s" (current-column))
+    (assert (eq 51 (current-column)) nil "more-docstring-filling-woes-lp-1102296-nil-test #1 failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-nil-test #1 done")
     (goto-char 259)
     (fill-paragraph)
@@ -5828,7 +5828,7 @@ wrong_indent
   (py-bug-tests-intern 'multibuffer-mayhem-lp-1162272-base arg teststring)))
 
 (defun multibuffer-mayhem-lp-1162272-base ()
-    (assert (py-execute-buffer) nil "multibuffer-mayhem-lp-1162272-test failed"))
+    (assert (not (py-execute-buffer)) nil "multibuffer-mayhem-lp-1162272-test failed"))
 
 (defun incorrect-indentation-with-tertiary-lp-1189604-test (&optional arg)
   (interactive "p")

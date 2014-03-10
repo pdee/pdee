@@ -60,7 +60,65 @@
 
 (setq py-toggle-form-vars (list "py-nil-docstring-style" "py-onetwo-docstring-style" "py-pep-257-docstring-style" "py-pep-257-nn-docstring-style" "py-symmetric-docstring-style" "py-django-docstring-style" ))
 
-(defvar docstring-styles (list "django" "onetwo" "pep-257" "pep-257-nn" "symmetric"))
+(defvar docstring-styles (list "django" "onetwo" "pep-257" "pep-257-nn" "symmetric")
+  "Customizable variable `py-fill-docstring-style' provides default value
+  used by `py-fill-string', `py-fill-paragraph'
+
+  DJANGO:
+
+      \"\"\"
+      Process foo, return bar.
+      \"\"\"
+
+      \"\"\"
+      Process foo, return bar.
+
+      If processing fails throw ProcessingError.
+      \"\"\"
+
+  ONETWO:
+
+      \"\"\"Process foo, return bar.\"\"\"
+
+      \"\"\"
+      Process foo, return bar.
+
+      If processing fails throw ProcessingError.
+
+      \"\"\"
+
+  PEP-257:
+
+      \"\"\"Process foo, return bar.\"\"\"
+
+      \"\"\"Process foo, return bar.
+
+      If processing fails throw ProcessingError.
+
+      \"\"\"
+
+  PEP-257-NN:
+
+      \"\"\"Process foo, return bar.\"\"\"
+
+      \"\"\"Process foo, return bar.
+
+      If processing fails throw ProcessingError.
+      \"\"\"
+
+  SYMMETRIC:
+
+      \"\"\"Process foo, return bar.\"\"\"
+
+      \"\"\"
+      Process foo, return bar.
+
+      If processing fails throw ProcessingError.
+      \"\"\"
+
+  Built upon code seen at python.el, thanks Fabian")
+
+			       
 
 (setq py-options (list "" "switch" "no-switch" "dedicated" "dedicated-switch"))
 
