@@ -2404,8 +2404,10 @@ I am using version 6.0.4
     (py-bug-tests-intern 'py-shell-invoking-python3-lp:835151-base arg teststring)))
 
 (defun py-shell-invoking-python3-lp:835151-base ()
-  (setq py-shell-name "python3")
-  (assert (py-execute-buffer) nil "py-shell-invoking-python3-lp:835151-test failed"))
+  (let ((py-force-py-shell-name-p t)
+	(py-shell-name "python3"))
+    (py-execute-buffer)
+    (assert (buffer-live-p (get-buffer "*Python3*")) nil "py-shell-invoking-python3-lp:835151-test failed")))
 
 (defun py-shell-invoking-python2-lp:835151-test (&optional arg)
   (interactive "p")
@@ -2413,36 +2415,10 @@ I am using version 6.0.4
     (py-bug-tests-intern 'py-shell-invoking-python2-lp:835151-base arg teststring)))
 
 (defun py-shell-invoking-python2-lp:835151-base ()
-  (setq py-shell-name "python2")
-  (assert (py-execute-buffer) nil "py-shell-invoking-python2-lp:835151-test failed"))
-
-(defun py-shell-invoking-python2.7-lp:835151-test (&optional arg)
-  (interactive "p")
-  (let ((teststring "print(\"py-shell-name: python2.7\")"))
-    (py-bug-tests-intern 'py-shell-invoking-python2.7-lp:835151-base arg teststring)))
-
-(defun py-shell-invoking-python2.7-lp:835151-base ()
-  (setq py-shell-name "python2.7")
-  (assert (py-execute-buffer) nil "py-shell-invoking-python2.7-lp:835151-test failed"))
-
-(defun py-shell-invoking-jython-lp:835151-test (&optional arg)
-  (interactive "p")
-  (let ((teststring "print(\"py-shell-name: jython\")"))
-    (py-bug-tests-intern 'py-shell-invoking-jython-lp:835151-base arg teststring)))
-
-(defun py-shell-invoking-jython-lp:835151-base ()
-  (let ((py-shell-name "jython")
-        (sit-for 0.1))
-    (assert (py-execute-buffer) nil "py-shell-invoking-jython-lp:835151-test failed")))
-
-(defun py-shell-invoking-python3.2-lp:835151-test (&optional arg)
-  (interactive "p")
-  (let ((teststring "print(\"py-shell-name: python3.2\")"))
-    (py-bug-tests-intern 'py-shell-invoking-python3.2-lp:835151-base arg teststring)))
-
-(defun py-shell-invoking-python3.2-lp:835151-base ()
-  (setq py-shell-name "python3.2")
-  (assert (py-execute-buffer) nil "py-shell-invoking-python3.2-lp:835151-test failed"))
+  (let ((py-force-py-shell-name-p t)
+	(py-shell-name "python2"))
+    (py-execute-buffer)
+    (assert (buffer-live-p (get-buffer "*Python2*")) nil "py-shell-invoking-python2-lp:835151-test failed")))
 
 (defun py-mark-block-clause-misbehave-lp:949310-test (&optional arg)
   (interactive "p")
@@ -2953,7 +2929,7 @@ def test_bu():
 (defun not-that-useful-completion-lp:1003580-base ()
   (goto-char 88)
   (py-shell-complete nil t)
-  (sit-for 0.3) 
+  (sit-for 0.3)
   (assert (looking-back "numpy.CLIP") nil "not-that-useful-completion-lp:1003580-test failed"))
 
 (defun completion-fails-in-python-script-r989-lp:1004613-test (&optional arg)
@@ -3184,7 +3160,7 @@ def foo(a):
   (py-bug-tests-intern 'IndentationError-expected-an-indented-block-when-execute-lp-1055569-base 1 teststring)))
 
 (defun IndentationError-expected-an-indented-block-when-execute-lp-1055569-base ()
-    (assert (progn (py-execute-buffer)(set-buffer (py--fetch-first-python-buffer))(goto-char (point-min))(search-forward "IndentationError-expected-an-indented-block-when-execute-lp-1055569-test" nil nil 1)) 
+    (assert (progn (py-execute-buffer)(set-buffer (py--fetch-first-python-buffer))(goto-char (point-min))(search-forward "IndentationError-expected-an-indented-block-when-execute-lp-1055569-test" nil nil 1))
      ;; (progn (py-execute-buffer) t)
 
      nil "IndentationError-expected-an-indented-block-when-execute-lp-1055569-test failed"))
@@ -4497,7 +4473,7 @@ class IBanManager(Interface):
   (let (py-paragraph-fill-docstring-p)
     (goto-char 932)
     (py-fill-paragraph)
-    (sit-for 0.1) 
+    (sit-for 0.1)
     (assert (re-search-forward "^ +:type email") nil "several-new-bugs-with-paragraph-filling-lp-1066489-test failed")))
 
 (defun incorrect-indentation-of-one-line-functions-lp-1067633-test (&optional arg)
@@ -5178,7 +5154,7 @@ class Test(object):
     (message "%s" "more-docstring-filling-woes-lp-1102296-pep-257-test #2 done")
     (goto-char 357)
     (fill-paragraph)
-    (forward-line 1) 
+    (forward-line 1)
     (sit-for 0.1)
     (assert (empty-line-p) nil "more-docstring-filling-woes-lp-1102296-pep-257-test #3a failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-pep-257-test #3a done")

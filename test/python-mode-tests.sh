@@ -1123,6 +1123,8 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-font-lock-keywords) nil \"py-font-lock-keywords not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall py-shell-invoking-python3-lp:835151-test \
+--funcall py-shell-invoking-python2-lp:835151-test \
 --funcall from-within-py-shell-call-another-instance-lp-1169687-test \
 --funcall py-execute-block-or-clause-python3-test \
 --funcall py-execute-block-or-clause-python2-test \
@@ -1336,10 +1338,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall split-windows-on-execute-p-test \
 --funcall py-shell-complete-test \
 \
---funcall py-shell-invoking-python3-lp:835151-test \
---funcall py-shell-invoking-python2-lp:835151-test \
---funcall py-shell-invoking-python2.7-lp:835151-test \
---funcall py-shell-invoking-jython-lp:835151-test \
 --funcall execute-indented-code-lp:828314-test \
 --funcall py-execute-region-python2.7-switch-test \
 --funcall py-execute-buffer-python-switch-test \
