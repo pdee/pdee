@@ -2399,13 +2399,15 @@ This function takes the list of setup code to send from the
     (save-restriction
       (widen)
       (save-excursion
-        (and pos (goto-char pos))
-        (if (looking-at-p "'''\\|\"\"\"")
-            (progn
-              (py-beginning-of-statement)
-              (or (bobp)
-                  (py-beginning-of-def-or-class-p)))
-          nil)))))
+	(py-beginning-of-statement) 
+;;        (and pos (goto-char pos))
+;;        (if 
+	    (looking-at-p "'''\\|\"\"\"")))))
+;;            (progn
+;;              (py-beginning-of-statement)
+;;              (or (bobp)
+;;                  (py-beginning-of-def-or-class-p)))
+;;          nil)))))
 
 (defun py-font-lock-syntactic-face-function (state)
   (if (nth 3 state)

@@ -2897,7 +2897,8 @@ CLASS_INS.someDe
 
 (defun no-completion-at-all-lp:1001328-test (&optional arg)
   (interactive "p")
-  (let ((teststring "#!/usr/bin/python
+  (let ((py-no-completion-calls-dabbrev-expand-p t)
+        (teststring "#!/usr/bin/python
 basdklfjasdf = 3
 basd
 "))
@@ -2907,10 +2908,6 @@ basd
   (goto-char 40)
   (py-shell-complete)
   (beginning-of-line)
-  (sit-for 0.1)
-  (unless (looking-at "basdklfjasdf")
-
-    (py-shell-complete))
   (sit-for 0.1)
   (assert (looking-at "basdklfjasdf") nil "no-completion-at-all-lp:1001328-test failed"))
 
@@ -4492,9 +4489,11 @@ def foo():
   (py-bug-tests-intern 'does-not-dedent-regions-lp-1072869-base arg teststring)))
 
 (defun does-not-dedent-regions-lp-1072869-base ()
-  (assert (py-execute-buffer-ipython) nil "does-not-dedent-regions-lp-1072869-test #1 failed")
-  (assert (py-execute-buffer-python) nil "does-not-dedent-regions-lp-1072869-test #2 failed")
-  )
+  (let ((oldbuf (current-buffer)))
+    (assert (progn (py-execute-buffer-python)(set-buffer "*Python*")(goto-char (point-max))(search-backward "HELLO")) nil "does-not-dedent-regions-lp-1072869-test #2 failed")
+    (kill-buffer-unconditional "*Python*")
+    (set-buffer oldbuf)
+    (assert (progn (py-execute-buffer-ipython)(set-buffer "*Ipython*")(goto-char (point-max))(search-backward "HELLO")) nil "does-not-dedent-regions-lp-1072869-test #1 failed")))
 
 (defun inconvenient-py-switch-buffers-on-execute-lp-1073-test (&optional arg)
   (interactive "p")
@@ -4867,27 +4866,27 @@ def x():
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
-a = open('/ho')
+a = open('/ho
 "))
-  (py-bug-tests-intern 'filename-completion-fails-in-ipython-lp-1027265-n1-base arg teststring)))
+    (py-bug-tests-intern 'filename-completion-fails-in-ipython-lp-1027265-n1-base arg teststring)))
 
 (defun filename-completion-fails-in-ipython-lp-1027265-n1-base ()
-    (goto-char 61)
-    (completion-at-point)
-    (assert (eq 63 (point)) nil "filename-completion-fails-in-ipython-lp-1027265-n1-test failed"))
+  (goto-char 61)
+  (py-shell-complete)
+  (assert (looking-back "home") nil "filename-completion-fails-in-ipython-lp-1027265-n1-test failed"))
 
 (defun filename-completion-fails-in-ipython-lp-1027265-n2-test (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env ipython
 # -*- coding: utf-8 -*-
-a = open('/ho')
+a = open('/ho
 "))
-  (py-bug-tests-intern 'filename-completion-fails-in-ipython-lp-1027265-n2-base arg teststring)))
+    (py-bug-tests-intern 'filename-completion-fails-in-ipython-lp-1027265-n2-base arg teststring)))
 
 (defun filename-completion-fails-in-ipython-lp-1027265-n2-base ()
-    (goto-char 62)
-    (completion-at-point)
-    (assert (eq 65 (point)) nil "filename-completion-fails-in-ipython-lp-1027265-n2-test failed"))
+  (goto-char 62)
+  (py-shell-complete)
+  (assert (looking-back "home") nil "filename-completion-fails-in-ipython-lp-1027265-n2-test failed"))
 
 (defun enter-key-does-not-indent-properly-after-return-statement-lp-1098793-test (&optional arg)
   (interactive "p")
@@ -5393,7 +5392,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.82 $\"
+__version__ = \"$Revision: 1.84 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -6163,10 +6162,12 @@ print(1234)
   (py-bug-tests-intern 'py-execute-buffer-ipython-lp-1252643-base arg teststring)))
 
 (defun py-execute-buffer-ipython-lp-1252643-base ()
+  (ignore-errors (kill-buffer-unconditional "*Ipython*"))
   (let ((py-switch-buffers-on-execute-p t))
     (py-execute-buffer-ipython)
-    (sit-for 1)
-    (assert (string= "*Ipython*" (buffer-name (current-buffer))) nil "py-execute-buffer-ipython-lp-1252643-test failed")))
+    (buffer-live-p (get-buffer  "*Ipython*"))
+    ;; (sit-for 1)
+    (assert (progn (set-buffer "*Ipython*")(goto-char (point-max)) (search-backward "1234")) nil "py-execute-buffer-ipython-lp-1252643-test failed")))
 
 
 (defun Execute-region_statement-runs-full-file-lp-1269855-test (&optional arg)

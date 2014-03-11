@@ -165,7 +165,9 @@ complete docstring according to setting of `py-docstring-style' "
              ;; if beginning of string is closer than arg beg, use this
              (beg (or (and (numberp beg)
                            (ignore-errors (copy-marker beg)))
-                      (cond ((and (nth 3 pps) (nth 8 pps))
+                      (cond ((numberp pps)
+			     (copy-marker pps))
+			    ((and (nth 3 pps) (nth 8 pps))
                              (goto-char (nth 8 pps))
                              (skip-chars-forward "\"'")
                              (copy-marker (point)))

@@ -141,7 +141,7 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
          (end (or end (point)))
          (pattern (or word (buffer-substring-no-properties beg end)))
          (sep ";")
-         (py-shell-name (or shell (py-choose-shell)))
+         (py-shell-name (or shell "ipython"))
          (processlist (process-list))
          (imports (or imports (py-find-imports)))
          (py-completion-buffer py-ipython-completions)
@@ -174,10 +174,11 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
                       (concat imports (py-set-ipython-completion-command-string))
                     (py-set-ipython-completion-command-string))))
          completion completions completion-table ugly-return)
+    (unless (interactive-p) (sit-for 0.1))
     (if (string= pattern "")
         (tab-to-tab-stop)
       (process-send-string proc (format ccs pattern))
-      (accept-process-output proc 1)
+      (accept-process-output proc 5)
       (if ugly-return
           (progn
             (setq completions
@@ -287,8 +288,8 @@ complete('%s')" word) shell nil proc)))
                    (get-buffer-process (progn (setq wait py-new-shell-delay) (py-shell nil nil shell nil t))))))
     (cond ((string= word "")
            (tab-to-tab-stop))
-          ;; ((string-match "[iI][pP]ython" shell)
-           ;; (ipython-complete nil nil beg end word shell debug imports pos))
+          ((string-match "[iI][pP]ython" shell)
+           (ipython-complete nil nil beg end word shell debug imports pos))
           (t
            ;; (string-match "[pP]ython3[^[:alpha:]]*$" shell)
            (py-shell--do-completion-at-point proc imports word pos))
@@ -303,17 +304,40 @@ complete('%s')" word) shell nil proc)))
   (when debug (setq py-shell-complete-debug nil))
   (let* ((oldbuf (current-buffer))
          (pos (copy-marker (point)))
-         (beg (or beg (save-excursion (skip-chars-backward "a-zA-Z0-9_.('") (point))))
+	 (pps (syntax-ppss))
+	 (in-string (when (nth 3 pps) (nth 8 pps)))
+         (beg
+	  (save-excursion
+	    (or beg
+		(and in-string
+		     ;; possible completion of filenames
+		     (progn
+		       (goto-char in-string)
+		       (and
+			(save-excursion
+			  (skip-chars-backward "^ \t\r\n\f")(looking-at "open")))
+
+		       (skip-chars-forward "\"'")(point)))
+		(progn (skip-chars-backward "a-zA-Z0-9_.('") (point)))))
          (end (or end (point)))
+	 ;;
          (word (or word (buffer-substring-no-properties beg end)))
+	 (ausdruck (and (string-match "^/" word)(setq word (substring-no-properties word 1))(concat "\"" word "*\"")))
+	 ;; when in string, assume looking for filename
+	 (filenames (and in-string ausdruck
+			 (list (replace-regexp-in-string "\n" "" (shell-command-to-string (concat "find / -maxdepth 1 -name " ausdruck))))))
          (imports (py-find-imports))
          py-fontify-shell-buffer-p py-completion-buffer)
     ;; (and (string= "open('" word)
     ;; (comint-dynamic-complete-filename))
     ;; (ignore-errors (comint-dynamic-complete))
-    (if (or (eq major-mode 'comint-mode)(eq major-mode 'inferior-python-mode))
-        (py-comint--complete shell pos beg end word imports debug)
-      (py-complete--base shell pos beg end word imports debug))
+    (cond ((and in-string filenames)
+	   (when (setq erg (try-completion (concat "/" word) filenames))
+	     (delete-region beg end)
+	     (insert erg)))
+	  ((or (eq major-mode 'comint-mode)(eq major-mode 'inferior-python-mode))
+	   (py-comint--complete shell pos beg end word imports debug))
+	  (t (py-complete--base shell pos beg end word imports debug)))
     ;; (goto-char pos)
     nil))
 
