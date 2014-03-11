@@ -5392,7 +5392,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.84 $\"
+__version__ = \"$Revision: 1.85 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -5729,13 +5729,13 @@ def foo():
   (sit-for 0.1)
   (message "Fehler? %s" (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
   (forward-line 1)
-  (sit-for 1)
+;;  (sit-for 1)
   (assert (and (bolp) (eolp)) nil "Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test #1 failed")
   (goto-char 140)
   (fill-paragraph)
   (end-of-line)
   (assert (eq 70 (current-column)) nil "Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test #2 failed")
-  (forward-line 3)
+  (forward-line 4)
   (assert (and (bolp) (eolp)) nil "Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test #3 failed")
   (goto-char 273)
   (fill-paragraph)

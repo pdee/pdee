@@ -1137,21 +1137,13 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall incorrect-use-of-region-in-py-shift-left-lp:875951-test \
 --funcall py-end-of-block-test \
 --funcall inconvenient-window-splitting-behavior-python-lp-1018996-test \
---funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n1-test 2 \
---funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n2-test 2 \
---funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n3-test 2 \
---funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n4-test 2 \
---funcall py-electric-comment-add-space-lp:828398-test \
---funcall py-electric-comment-add-space-t-lp:828398-test \
 --funcall not-that-useful-completion-lp:1003580-test \
 --funcall several-new-bugs-with-paragraph-filling-lp-1066489-test \
 --funcall more-docstring-filling-woes-lp-1102296-pep-257-test \
 --funcall py-docstring-style-pep-257-nn-closing-quotes-lp-1241147-test \
 --funcall more-docstring-filling-woes-lp-1102296-pep-257-nn-test \
 --funcall py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test \
---funcall missing-py-variable-name-face-lp-1215791-test \
 --funcall IndentationError-expected-an-indented-block-when-execute-lp-1055569-test \
---funcall switch-windows-on-execute-p-test \
 \
 --funcall py-execute-region-python2.7-switch-test \
 --funcall execute-indented-code-lp:828314-test \
@@ -1414,3 +1406,11 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall indent-triplequoted-to-itself-lp:752252-test \
 --funcall py-execute-buffer-ipython-lp-1252643-test \
 --funcall py-ipython-complete-lp:927136-test \
+--funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n1-test \
+--funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n2-test \
+--funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n3-test \
+--funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n4-test \
+--funcall py-electric-comment-add-space-lp:828398-test \
+--funcall py-electric-comment-add-space-t-lp:828398-test \
+--funcall missing-py-variable-name-face-lp-1215791-test \
+--funcall switch-windows-on-execute-p-test \

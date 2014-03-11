@@ -33,7 +33,8 @@ completions on the current context."
 (defun py-shell--do-completion-at-point (process imports input orig)
   "Do completion at point for PROCESS."
   (with-syntax-table py-dotted-expression-syntax-table
-    (when imports (py-send-string-no-output imports process))
+    (when imports
+      (py-send-string-no-output imports process))
     (let* ((code python-shell-module-completion-string-code)
            (completions
             (py-shell-completion--get-completions
@@ -318,7 +319,8 @@ complete('%s')" word) shell nil proc)))
 			  (skip-chars-backward "^ \t\r\n\f")(looking-at "open")))
 
 		       (skip-chars-forward "\"'")(point)))
-		(progn (skip-chars-backward "a-zA-Z0-9_.('") (point)))))
+		(progn (and (eq (char-before) ?\()(forward-char -1))
+		       (skip-chars-backward "a-zA-Z0-9_.'") (point)))))
          (end (or end (point)))
 	 ;;
          (word (or word (buffer-substring-no-properties beg end)))

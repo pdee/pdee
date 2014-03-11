@@ -733,6 +733,14 @@ def baz():
 
 ;;;
 
+(ert-deftest py-imports-in-interactive-shell-lp-1290709 ()
+  ""
+  (ignore-errors (kill-buffer-unconditional "*Python*"))
+  (py-shell)
+  (switch-to-buffer "*Python*")
+  (insert "import os;print(os.get")
+  (py-shell-complete))
+
 ;; py-execute-buffer
 ;; --funcall py-execute-expression-test \
 ;; --funcall py-execute-line-test \
