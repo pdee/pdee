@@ -1123,6 +1123,9 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-font-lock-keywords) nil \"py-font-lock-keywords not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall more-docstring-filling-woes-lp-1102296-pep-257-test \
+--funcall py-docstring-style-pep-257-nn-closing-quotes-lp-1241147-test \
+--funcall more-docstring-filling-woes-lp-1102296-pep-257-nn-test \
 --funcall py-execute-buffer-python-switch-test \
 --funcall complaint-about-non-ASCII-character-lp-1042949-test \
 --funcall impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test \
@@ -1139,9 +1142,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall inconvenient-window-splitting-behavior-python-lp-1018996-test \
 --funcall not-that-useful-completion-lp:1003580-test \
 --funcall several-new-bugs-with-paragraph-filling-lp-1066489-test \
---funcall more-docstring-filling-woes-lp-1102296-pep-257-test \
---funcall py-docstring-style-pep-257-nn-closing-quotes-lp-1241147-test \
---funcall more-docstring-filling-woes-lp-1102296-pep-257-nn-test \
 --funcall py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test \
 --funcall IndentationError-expected-an-indented-block-when-execute-lp-1055569-test \
 \

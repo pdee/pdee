@@ -5141,7 +5141,9 @@ class Test(object):
 (defun more-docstring-filling-woes-lp-1102296-pep-257-base ()
   (let ((py-docstring-style 'pep-257))
     (goto-char 178)
-    (assert (fill-paragraph) nil "more-docstring-filling-woes-lp-1102296-pep-257-test #1 failed")
+    (fill-paragraph)
+    (end-of-line) 
+    (assert (looking-back "\"\"\"")  nil "more-docstring-filling-woes-lp-1102296-pep-257-test #1 failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-pep-257-test #1 done")
     (goto-char 259)
     (fill-paragraph)
@@ -5151,10 +5153,10 @@ class Test(object):
     (goto-char 357)
     (fill-paragraph)
     (forward-line 1)
-    (sit-for 0.1)
+    ;; (sit-for 0.1)
     (assert (empty-line-p) nil "more-docstring-filling-woes-lp-1102296-pep-257-test #3a failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-pep-257-test #3a done")
-    (forward-line 3)
+    (forward-line 4)
     (assert (looking-at "        pass") nil "more-docstring-filling-woes-lp-1102296-pep-257-test #3c failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-pep-257-test #3c done")))
 
@@ -5188,9 +5190,12 @@ class Test(object):
   (py-bug-tests-intern 'more-docstring-filling-woes-lp-1102296-onetwo-base arg teststring)))
 
 (defun more-docstring-filling-woes-lp-1102296-onetwo-base ()
-  (let ((py-docstring-style 'onetwo))
+  (let ((py-paragraph-fill-docstring-p t)
+        (py-docstring-style 'onetwo))
     (goto-char 178)
-    (assert (fill-paragraph) nil "more-docstring-filling-woes-lp-1102296-onetwo-test #1 failed")
+    (fill-paragraph)
+    (end-of-line) 
+    (assert (looking-back "\"\"\"")  nil "more-docstring-filling-woes-lp-1102296-onetwo-test #1 failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-onetwo-test #1 done")
     (goto-char 259)
     (fill-paragraph)
@@ -5200,16 +5205,16 @@ class Test(object):
     (goto-char 357)
     (fill-paragraph)
     (beginning-of-line)
-    (sit-for 1)
+    (sit-for 0.1)
     ;; (message "%d" (skip-chars-forward " "))
     (assert (eq (skip-chars-forward " ") 8) nil "more-docstring-filling-woes-lp-1102296-onetwo-test #3a failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-onetwo-test #3a done")
     (save-excursion
       (goto-char 357)
-      (forward-line 2)
+      (forward-line 1)
       (assert (empty-line-p) nil "more-docstring-filling-woes-lp-1102296-onetwo-test #3b failed")
       (message "%s" "more-docstring-filling-woes-lp-1102296-onetwo-test #3b done"))
-    (forward-line 1)
+    (forward-line 5)
     (assert (looking-at "        pass") nil "more-docstring-filling-woes-lp-1102296-onetwo-test #3c failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-onetwo-test #3c done")))
 
@@ -5392,7 +5397,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.85 $\"
+__version__ = \"$Revision: 1.88 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -5723,11 +5728,11 @@ def foo():
 
 (defun Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-base ()
   (goto-char 97)
-  (message "paragraph-start: %s" paragraph-start)
-  (message "Fehler? %s" (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
+  ;; (message "paragraph-start: %s" paragraph-start)
+  ;; (message "Fehler? %s" (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
   (fill-paragraph t)
-  (sit-for 0.1)
-  (message "Fehler? %s" (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
+  ;; (sit-for 0.1)
+  ;; (message "Fehler? %s" (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
   (forward-line 1)
 ;;  (sit-for 1)
   (assert (and (bolp) (eolp)) nil "Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test #1 failed")

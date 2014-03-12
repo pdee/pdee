@@ -265,7 +265,7 @@ Any non-integer value means do not use a different value of
                  (const :tag "Use the current `fill-column'" t))
   :group 'python-mode)
 
-(defcustom py-paragraph-fill-docstring-p nil
+(defcustom py-paragraph-fill-docstring-p t
   "If `py-fill-paragraph', when inside a docstring, should fill the complete string.
 
 Default is nil.
@@ -275,7 +275,6 @@ See also `py-docstring-style'"
 
   :type 'boolean
   :group 'python-mode)
-(make-variable-buffer-local 'py-paragraph-fill-docstring-p)
 
 (defcustom py-fontify-shell-buffer-p nil
   "If code in Python shell should be highlighted as in script buffer.
@@ -2394,20 +2393,13 @@ This function takes the list of setup code to send from the
 (defun py-docstring-p (&optional beginning-of-string-position)
   "Check to see if there is a docstring at POS."
   (let* (pps
-        (pos (or beginning-of-string-position
-                 (and (nth 3 (setq pps (syntax-ppss))) (nth 8 pps)))))
+         (pos (or beginning-of-string-position
+                  (and (nth 3 (setq pps (syntax-ppss))) (nth 8 pps)))))
     (save-restriction
       (widen)
       (save-excursion
-	(py-beginning-of-statement) 
-;;        (and pos (goto-char pos))
-;;        (if 
-	    (looking-at-p "'''\\|\"\"\"")))))
-;;            (progn
-;;              (py-beginning-of-statement)
-;;              (or (bobp)
-;;                  (py-beginning-of-def-or-class-p)))
-;;          nil)))))
+	(py-beginning-of-statement)
+        (looking-at-p "'''\\|\"\"\"")))))
 
 (defun py-font-lock-syntactic-face-function (state)
   (if (nth 3 state)
@@ -3764,7 +3756,7 @@ Goto beginning of line following end of statement\.
   Returns position reached, if successful, nil otherwise\.
 
 See also `py-down-statement': down from current definition to next beginning of statement below\.  "]
-                   
+
                     )
                    )
 
@@ -3961,13 +3953,13 @@ Stores data in kill ring\. Might be yanked back using `C-y'\.  "]
 Delete statement, use position from beginning-of-line\.
 
 Stores data in kill ring\. Might be yanked back using `C-y'\.  "]
-                   
+
                    ["Copy minor block bol" py-copy-minor-block-bol
                     :help " `py-copy-minor-block-bol'
 
 Delete block, use position from beginning-of-line\.
 
-Stores data in kill ring\. Might be yanked back using `C-y'\. 
+Stores data in kill ring\. Might be yanked back using `C-y'\.
 
 See `py-minor-block-re' "]
 
@@ -4020,7 +4012,7 @@ When called with C-u followed by a number different from 4 and 1, user is prompt
 Send the argument STRING to a Python interpreter.
 
 See also `py-execute-region'. "]
-                 
+
                  ["Execute line" py-execute-line
                   :help " `py-execute-line'
 
