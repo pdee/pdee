@@ -26,7 +26,6 @@
 (defun py-fill-paragraph (&optional justify style start end docstring)
   "`fill-paragraph-function'
 
-If `py-paragraph-fill-docstring-p' and inside a docstring, the whole docstring is formatted.
 See also `py-fill-string' "
   (interactive "P")
   (or (fill-comment-paragraph justify)
@@ -109,9 +108,7 @@ See lp:1066489 "
   "String fill function for `py-fill-paragraph'.
 JUSTIFY should be used (if applicable) as in `fill-paragraph'.
 
-DOCSTRING is either a boolean or 'no
-If `py-paragraph-fill-docstring-p' is `t', `M-q` fills the
-complete docstring according to setting of `py-docstring-style' "
+Fill according to `py-docstring-style' "
   (interactive "P")
   (save-excursion
     (save-restriction

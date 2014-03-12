@@ -5584,18 +5584,6 @@ Use `M-x customize-variable' to set it permanently"]
 Use `M-x customize-variable' to set it permanently"])
                       )
 
-                     ["Fill-paragraph fill docstring "
-                      (setq py-paragraph-fill-docstring-p
-                            (not py-paragraph-fill-docstring-p))
-                      :help "If `py-fill-paragraph', when inside a docstring, should fill the complete string.
-
-Default is nil.
-
-Convenient use of `M-q' inside docstrings
-See also `py-docstring-style'
-Use `M-x customize-variable' to set it permanently"
-                      :style toggle :selected py-paragraph-fill-docstring-p]
-
                      ["Auto-fill mode"
                       (setq py-set-fill-column-p
                             (not py-set-fill-column-p))
