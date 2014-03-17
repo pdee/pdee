@@ -28,59 +28,55 @@
 
 See also `py-fill-string' "
   (interactive "P")
-  (or (fill-comment-paragraph justify)
-      (let* ((orig (copy-marker (point)))
-             (pps (syntax-ppss))
-             (docstring (or docstring (py-docstring-p (nth 8 pps))))
-             (beg (cond (start)
-                        ((use-region-p)
-                         (region-beginning))
-                        ((and docstring
-                              (ignore-errors (<= (py-beginning-of-paragraph-position)(nth 8 pps))))
-                         (nth 8 pps))
-                        (t (py-beginning-of-paragraph-position))))
-             (end (copy-marker
-                   (cond (end)
-                         ((use-region-p) (region-end))
-                         (docstring (py-end-of-string (nth 8 pps)))
-                         (t (if (or (looking-at paragraph-start)(re-search-forward paragraph-start nil t 1))
-                                (progn (skip-chars-backward " \t\r\n\f")(point))
-                              (point))))))
-             (style (or style py-docstring-style))
-             (this-end (point-min))
-             last)
-        ;; (when (and (nth 3 pps) (< beg (nth 8 pps))
-        ;; docstring
-        ;; (setq beg (nth 8 pps)))
-        ;; (setq end (py-end-of-string (nth 8 pps))))
-        (save-excursion
-          (save-restriction
-            (narrow-to-region beg end)
-            (cond
-             ;; Comments
-             ((nth 4 pps)
-              (py-fill-comment justify))
-             ;; Strings/Docstrings
-             ((or (nth 3 pps)
-                  (equal (string-to-syntax "|")
-                         (syntax-after (point)))
-                  (looking-at py-string-delim-re))
-              (py-fill-string justify style beg end docstring))
-             ;; Decorators
-             ((save-excursion
-                (and (py-beginning-of-statement)
-                     (equal (char-after)
-                            ;; (back-to-indentation)
-                            ;; (point))
-                            ?\@)))
-              (py-fill-decorator justify))
-             (t (goto-char orig)
-                (py-fill-string justify style (if (py-beginning-of-paragraph-p) (point) (py-beginning-of-paragraph)) (py-end-of-paragraph))))))
-        (goto-char orig)
-        (back-to-indentation))
-      (recenter-top-bottom)
-      ;; fill-paragraph expexts t
-      t))
+  (save-excursion
+    (if (looking-at "[ \t]*$")
+        (progn
+          (skip-chars-backward " \t\r\n\f")
+          (when (member (char-before) (list ?\' ?\"))
+            (skip-chars-backward "'\"")))
+      (end-of-line) (skip-chars-backward " \t\r\n\f'\""))
+    (or (fill-comment-paragraph justify)
+        (let* ((windows-config (window-configuration-to-register 313465889))
+               (orig (copy-marker (point)))
+	       (pps (syntax-ppss))
+	       (docstring (or docstring (py-docstring-p (nth 8 pps))))
+               (beg (cond (start)
+                          ((use-region-p)
+                           (region-beginning))
+                          (docstring)
+                          (t (py-beginning-of-paragraph-position))))
+               (end (copy-marker
+                     (cond (end)
+                           ((use-region-p) (region-end))
+                           (docstring (py-end-of-string (nth 8 pps)))
+                           (t (if (or (looking-at paragraph-start)(re-search-forward paragraph-start nil t 1))
+                                  (progn (skip-chars-backward " \t\r\n\f")(point))
+                                (point))))))
+               (style (or style py-docstring-style))
+               (this-end (point-min))
+               last)
+          (save-excursion
+            (save-restriction
+              (narrow-to-region beg end)
+              (cond
+               ;; Comments
+               ((nth 4 pps)
+                (py-fill-comment justify))
+               ;; Strings/Docstrings
+               ((or (nth 3 pps)
+                    (equal (string-to-syntax "|")
+                           (syntax-after (point)))
+                    (looking-at py-string-delim-re))
+                (py-fill-string justify style beg end docstring))
+               ;; Decorators
+               ((save-excursion
+                  (and (py-beginning-of-statement)
+                       (equal (char-after) ?\@)))
+                (py-fill-decorator justify))
+               (t (goto-char orig)
+                  (py-fill-string justify style (if (py-beginning-of-paragraph-p) (point) (py-beginning-of-paragraph)) (py-end-of-paragraph)))))))
+        (py-restore-window-configuration)
+        t)))
 
 (defun py-fill-labelled-string (beg end)
   "Fill string or paragraph containing lines starting with label
@@ -124,7 +120,6 @@ Fill according to `py-docstring-style' "
                    (progn
                      (and (eobp)(skip-chars-backward "\"'"))
                      (syntax-ppss))))
-             ;; if beginning of string is closer than arg beg, use this
              (beg (or (and beg (copy-marker beg))
                       ;; take the beginning of a TQS
                       (cond ((and (nth 3 pps) (nth 8 pps))
@@ -137,18 +132,25 @@ Fill according to `py-docstring-style' "
              ;; Assume docstrings at BOL resp. indentation
              (docstring (or docstring (unless (eq 'no docstring)
                                         (py-docstring-p pps))))
+	     (fill-column
+	      (if (or (eq style 'pep-257-nn)(eq style 'pep-257))
+		  (- py-docstring-fill-column py-indent-offset)
+		py-docstring-fill-column))
+	     ;; 	     (fill-column py-docstring-fill-column)
              (end (or (ignore-errors (and end (goto-char end) (skip-chars-backward "\"' \t\f\n")(copy-marker (point))))
                       (progn (or (eq (marker-position beg) (point)) (goto-char (nth 8 pps)))
                              (forward-sexp)
-                             ;; (scan-sexps (point) 1)
                              (skip-chars-backward "\"'") (point-marker))))
              multi-line-p
              delimiters-style
              erg)
-        ;; whitespace and newline will be added according to mode again
         (goto-char beg)
-        (setq beg (progn (skip-chars-forward "\"'") (copy-marker (point))))
-        (and docstring
+	;; Line 1 of a multiline comment has to be formatted
+	;; differently
+	(if (or (eq style 'pep-257-nn)(eq style 'pep-257))
+	    (skip-chars-forward "\"'")
+	  (setq beg (progn (skip-chars-forward "\"'") (copy-marker (point)))))
+	(and docstring
              (delete-region (point) (progn (skip-chars-forward " \t\r\n\f")(point))))
         (goto-char end)
         (and docstring
@@ -157,12 +159,11 @@ Fill according to `py-docstring-style' "
          ((and docstring
                (string-match (concat "^" py-labelled-re) (buffer-substring-no-properties beg end)))
           (py-fill-labelled-string beg end))
-         ((and docstring)
-          (narrow-to-region beg end)
-          (fill-region (point-min) (point-max)))
          (t (narrow-to-region beg end)
-            (sit-for 0.1)
-            (fill-region beg end)))
+            (goto-char beg)
+            (while (re-search-forward "[\n\r \t]+" nil t 1)
+              (replace-match " "))
+            (fill-region (point-min) (point-max))))
         (and docstring (setq multi-line-p
                              (> (count-matches "\n" beg end) 0)))
         (and docstring
@@ -183,7 +184,7 @@ Fill according to `py-docstring-style' "
         (save-excursion
           (when (and docstring style)
             ;; Add the number of newlines indicated by the selected style
-            ;; at the start of the docstring.
+            ;; at the start.
             (goto-char beg)
             (and
              (car delimiters-style)
@@ -194,7 +195,7 @@ Fill according to `py-docstring-style' "
                  (forward-line 1)
                  (unless (empty-line-p) (insert "\n")))
             ;; Add the number of newlines indicated by the selected style
-            ;; at the end of the docstring.
+            ;; at the end.
             (goto-char end)
             (unless (eq (char-after) ?\n)
               (and

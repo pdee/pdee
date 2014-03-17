@@ -593,9 +593,8 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
 	(py-kill-buffer-unconditional "py-buffer-name.txt")))))
 
 (ert-deftest fill-paragraph-lp-1286318 ()
-    (let ((fill-column 72))
-      (py-tests-with-temp-buffer
-	"# r1416
+  (py-tests-with-temp-buffer
+      "# r1416
 
 def baz():
     \"\"\"Hello there.
@@ -634,20 +633,20 @@ def baz():
     \"\"\"
     return 7
 "
-      (goto-char 49)
-      (switch-to-buffer (current-buffer))
-      (fill-paragraph)
-      (end-of-line)
-      (should (eq 72 (current-column)))
-      (goto-char 409)
-      (fill-paragraph)
-      (end-of-line)
-      (should (eq 72 (current-column)))
-      (goto-char 731)
-      (fill-paragraph)
-      (end-of-line)
-      (should (eq 72 (current-column)))
-      )))
+    (goto-char 49)
+    (switch-to-buffer (current-buffer))
+    (fill-paragraph)
+    (end-of-line)
+    (should (<= (current-column) 72))
+    (goto-char 409)
+    (fill-paragraph)
+    (end-of-line)
+    (should (<= (current-column) 72))
+    (goto-char 731)
+    (fill-paragraph)
+    (end-of-line)
+    (should (<= (current-column) 72))
+    ))
 
 ;;; execute tests
 (ert-deftest py-ert-execute-expression-test ()
