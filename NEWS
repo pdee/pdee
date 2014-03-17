@@ -15,7 +15,7 @@ Support for large output
 
   Both processes might run in 
   - session, i.e. start from possible previous state (DEFAULT)
-  - dedicated, run in separate process
+  - dedicated, (`py-dedicated-process-p', run in separate process)
 
 - new indent feature/behavior, lp:1280982
   If an empty line was dedented deliberatly, this is
