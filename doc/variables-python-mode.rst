@@ -21,11 +21,11 @@ pdb-path
 --------
 Where to find pdb.py. Edit this according to your system.
 
-If you ignore the location `M-x py-guess-pdb-path' might display it.
+If you ignore the location `M-x py-guess-pdb-path' might display it
 
 py-verbose-p
 ------------
-If functions should report results.
+If indenting functions should report reached indent level.
 
 Default is nil.
 
@@ -40,6 +40,16 @@ py-store-result-p
 When non-nil, put resulting string of `py-execute-...' into kill-ring, so it might be yanked.
 
 Default is nil
+
+py-fast-process-p
+-----------------
+Use `py-fast-process'.
+
+Commands prefixed "py-fast-..." suitable for large output
+
+See: large output makes Emacs freeze, lp:1253907
+
+Results arrive in py-output-buffer, which is not in comint-mode
 
 py-load-skeletons-p
 -------------------
@@ -214,14 +224,12 @@ py-tab-shifts-region-p
 If `t', TAB will indent/cycle the region, not just the current line.
 
 Default is  nil
-See also `py-tab-indents-region-p'
 
 py-tab-indents-region-p
 -----------------------
 When `t' and first TAB doesn't shift, indent-region is called.
 
 Default is  nil
-See also `py-tab-shifts-region-p'
 
 py-block-comment-prefix-p
 -------------------------
@@ -270,8 +278,6 @@ Default is `nil'.
 py-close-provides-newline
 -------------------------
 If a newline is inserted, when line after block isn't empty. Default is non-nil.
-
-When non-nil, `py-end-of-def' and related will work faster
 
 py-dedent-keep-relative-column
 ------------------------------
@@ -410,7 +416,7 @@ py-complete-function
 --------------------
 When set, enforces function todo completion, default is nil.
 
-Normally python-mode know best which function to use.
+Normally python-mode, resp. inferior-python-mode know best which function to use.
 
 ipython-complete-function
 -------------------------
@@ -438,7 +444,7 @@ List of string arguments to be used when starting a Jython shell.
 
 py-flake8-command
 -----------------
-Which command to call flake8.
+Which command to call flakes8.
 
 If empty, python-mode will guess some
 
@@ -481,9 +487,11 @@ Only guessed values between 2 and 8 are considered.  If a valid
 guess can't be made (perhaps because you are visiting a new
 file), then the value in `py-indent-offset' is used.
 
-2. `tab-width' is setq to `py-indent-offset' if not equal
-already. `indent-tabs-mode' inserts one tab one
-indentation level, otherwise spaces are used.
+2. `indent-tabs-mode' is turned off if `py-indent-offset' does not
+equal `tab-width' (`indent-tabs-mode' is never turned on by
+Python mode).  This means that for newly written code, tabs are
+only inserted in indentation if one tab is one indentation
+level, otherwise only spaces are used.
 
 Note that both these settings occur *after* `python-mode-hook' is run,
 so if you want to defeat the automagic configuration, you must also
@@ -513,6 +521,8 @@ py-custom-temp-directory
 ------------------------
 If set, will take precedence over guessed values from `py-temp-directory'. Default is the empty string.
 
+When set, make sure the directory exists.
+
 py-beep-if-tab-change
 ---------------------
 Ring the bell if `tab-width' is changed.
@@ -537,6 +547,10 @@ py-ask-about-save
 -----------------
 If not nil, ask about which buffers to save before executing some code.
 Otherwise, all modified buffers are saved without asking.
+
+py-backspace-function
+---------------------
+Function called by `py-electric-backspace' when deleting backwards.
 
 py-delete-function
 ------------------
@@ -727,6 +741,7 @@ How window should get splitted to display results of py-execute-... functions.
 py-hide-show-keywords
 ---------------------
 Keywords composing visible heads.
+Also used by (minor-)outline-mode
 
 py-hide-show-hide-docstrings
 ----------------------------
@@ -743,7 +758,9 @@ See also `py-docstring-style'
 
 python-mode-hook
 ----------------
-Hook run when entering Python mode.
+Hook run after entering python-mode-modeline-display mode.
+No problems result if this variable is not bound.
+`add-hook' automatically binds it.  (This is true for all hook variables.)
 
 py-imenu-create-index-p
 -----------------------
@@ -891,11 +908,38 @@ py-ipython-execute-delay
 ------------------------
 Delay needed by execute functions when no IPython shell is running.
 
+python-shell-buffer-name
+------------------------
+Default buffer name for Python interpreter.
+
+python-shell-interpreter
+------------------------
+Default Python interpreter for shell.
+
+python-shell-prompt-regexp
+--------------------------
+Regular Expression matching top-level input prompt of python shell.
+It should not contain a caret (^) at the beginning.
+
 py-ffap-p
 ---------
 Select python-modes way to find file at point.
 
 Default is nil
+
+ffap-alist
+----------
+Alist of (KEY . FUNCTION) pairs parsed by `ffap-file-at-point'.
+If string NAME at point (maybe "") is not a file or URL, these pairs
+specify actions to try creating such a string.  A pair matches if either
+KEY is a symbol, and it equals `major-mode', or
+KEY is a string, it should match NAME as a regexp.
+On a match, (FUNCTION NAME) is called and should return a file, an
+URL, or nil.  If nil, search the alist for further matches.
+
+python-ffap-setup-code
+----------------------
+Python code to get a module path.
 
 py-ffap-string-code
 -------------------
@@ -907,7 +951,7 @@ Python code to setup documentation retrieval.
 
 py-setup-codes
 --------------
-List of code run by `python-shell-send-setup-codes'.
+List of code run by `py-shell-send-setup-codes'.
 
 py-shell-prompt-regexp
 ----------------------
@@ -1010,7 +1054,7 @@ See bug report at launchpad, lp:940812
 
 python-mode-message-string
 --------------------------
-Internally used. Reports the python-mode branch in use.
+Reports the python-mode branch in use.
 
 py-local-command
 ----------------
@@ -1026,7 +1070,7 @@ Returns locally used executable-name including its version.
 
 py-shell-complete-debug
 -----------------------
-For interal use when debugging, stores completions.
+For interal use when debugging.
 
 py-debug-p
 ----------
@@ -1091,8 +1135,7 @@ When this-command is py-beginning-of-FORM-bol, last-command's indent will be con
 
 python-mode-syntax-table
 ------------------------
-Give punctuation syntax to ASCII that normally has symbol
-syntax or has word syntax and isn't a letter.
+Syntax table for Python files.
 
 py-dotted-expression-syntax-table
 ---------------------------------
@@ -1155,12 +1198,8 @@ default for output-buffer.
 
 py-enforce-output-buffer-p
 --------------------------
-When non-nil, value of `py-output-buffer' is used regardless of
-environment. Default is nil.
-
-When nil, output of `py-execute-...'-commands arrives in buffer
-created by `py-shell'. It's name is composed WRT to Python
-version used, it's path etc.
+When non-nil, current value of `py-output-buffer' is used for output,
+regardless of environment. Default is nil
 
 py-exception-buffer
 -------------------
@@ -1252,16 +1291,25 @@ Currently-active file is at the head of the list.
 
 python-mode-abbrev-table
 ------------------------
-Abbrev table for `python-mode'.
+Abbrev table for Python mode.
+
+inferior-python-mode-abbrev-table
+---------------------------------
+Not in use.
 
 py-shell-map
 ------------
 Keymap used in *Python* shell buffers.
 
+py-font-lock-keywords
+---------------------
+Additional expressions to highlight in Python mode.
+
 jython-mode-hook
 ----------------
-Hook called by `jython-mode'. `jython-mode' also calls
-`python-mode-hook'.
+Hook run after entering Jython mode.
+No problems result if this variable is not bound.
+`add-hook' automatically binds it.  (This is true for all hook variables.)
 
 py-shell-hook
 -------------
@@ -1328,6 +1376,10 @@ py-mode-output-map
 ------------------
 Keymap used in *Python Output* buffers.
 
+inferior-python-mode-map
+------------------------
+Keymap for `inferior-python-mode'.
+
 py-menu
 -------
 Python Mode menu
@@ -1345,6 +1397,10 @@ These variables are bound while interpreting a skeleton.  Their value may
 in turn be any valid skeleton element if they are themselves to be used as
 skeleton elements.
 
+inferior-python-mode-syntax-table
+---------------------------------
+Syntax table for `inferior-python-mode'.
+
 autopair-mode
 -------------
 Non-nil if Autopair mode is enabled.
@@ -1352,12 +1408,11 @@ Use the command `autopair-mode' to change this variable.
 
 highlight-indentation
 ---------------------
-If level of indentation should be displayed at start.
-Toggle buffer local status via `M-x highlight-indentation' during session.
+Menu  PyEdit fails when not bound
 
 py-blank-or-comment-re
 ----------------------
-regular expression matching a blank or comment line.
+Regular expression matching a blank or comment line.
 
 py-block-closing-keywords-re
 ----------------------------
@@ -1465,6 +1520,10 @@ py-try-re
 ---------
 Matches the beginning of a compound statement saying `try'.
 
+py-space-backslash-table
+------------------------
+`python-mode-syntax-table' with backslash given whitespace syntax.
+
 py-pdbtrack-stack-entry-regexp
 ------------------------------
 Regular expression pdbtrack uses to find a stack trace entry.
@@ -1500,944 +1559,3 @@ is preferable for that.
 python-mode-map
 ---------------
 Keymap for `python-mode'.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
