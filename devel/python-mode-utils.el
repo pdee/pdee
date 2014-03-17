@@ -56,55 +56,6 @@
 
 ")
 
-
-
-(setq py-fast-forms (list
-
-'py-fast-send-string
-'py-process-region-fast
-'py-execute-statement-fast
-'py-execute-block-fast
-'py-execute-block-or-clause-fast
-'py-execute-def-fast
-'py-execute-class-fast
-'py-execute-def-or-class-fast
-'py-execute-expression-fast
-'py-execute-partial-expression-fast
-'py-execute-top-level-fast
-'py-execute-clause-fast
-))
-
-(setq py-bol-forms (list 'py-beginning-of-block-bol
-'py-beginning-of-clause-bol
-'py-beginning-of-block-or-clause-bol
-'py-beginning-of-def-bol
-'py-beginning-of-class-bol
-'py-beginning-of-def-or-class-bol
-'py-beginning-of-if-block-bol
-'py-beginning-of-try-block-bol
-'py-beginning-of-minor-block-bol
-'py-beginning-of-statement-bol))
-
-(defvar py-bol-end-forms (list 'py-end-of-block-bol
-'py-end-of-clause-bol
-'py-end-of-block-or-clause-bol
-'py-end-of-def-bol
-'py-end-of-class-bol
-'py-end-of-def-or-class-bol
-'py-end-of-if-block-bol
-'py-end-of-try-block-bol
-'py-end-of-minor-block-bol
-'py-end-of-statement-bol))
-
-(setq py-bol-copy-forms
-      (list 'py-copy-block-bol
-            'py-copy-clause-bol
-            'py-copy-block-or-clause-bol
-            'py-copy-def-bol
-            'py-copy-class-bol
-            'py-copy-def-or-class-bol
-            'py-copy-statement-bol))
-
 ;; (defvar py-toggle-form-vars (list "py-set-nil-docstring-style" "py-set-onetwo-docstring-style" "py-set-pep-257-docstring-style" "py-set-pep-257-nn-docstring-style" "py-set-symmetric-docstring-style" "py-set-django-docstring-style" ))
 
 (setq py-toggle-form-vars (list "py-nil-docstring-style" "py-onetwo-docstring-style" "py-pep-257-docstring-style" "py-pep-257-nn-docstring-style" "py-symmetric-docstring-style" "py-django-docstring-style" ))
@@ -167,6 +118,8 @@
 
   Built upon code seen at python.el, thanks Fabian")
 
+			       
+
 (setq py-options (list "" "switch" "no-switch" "dedicated" "dedicated-switch"))
 
 (defvar py-shells
@@ -200,7 +153,9 @@
 
 (setq py-re-forms-names '("block" "clause" "block-or-clause" "def" "class" "def-or-class" "if-block" "try-block" "minor-block"))
 
+
 ;; (setq py-re-forms-names '("block" "clause" "block-or-clause" "def" "class" "def-or-class")
+
 
 ;; (defvar py-down-forms (list "block" "minor-block" "clause" "block-or-clause" "def" "class" "def-or-class" "statement"))
 ;;
@@ -252,7 +207,7 @@
     (dolist (ele py-bounds-command-names)
       (insert (concat "(defun py-execute-" ele "-fast ()"))
       (insert (concat "
-  \"Process " ele " at point by a Python interpreter.
+  \"Process " ele " at point by a Python interpreter. 
 
 Suitable for large output, doesn't mess up interactive shell.
 Result arrives in `py-output-buffer', which is not in
@@ -513,6 +468,7 @@ comint-mode\"\n"))
                           (find-file-noselect filename))))
          (set-buffer buffer))))
 
+
 \(defun py-execute-prepare (form &optional shell dedicated switch beg end file)
   \"Used by python-extended-executes .\"
   (save-excursion
@@ -746,6 +702,7 @@ Include default forms "
         (setq buli (cdr buli))))
     erg))
 
+
 (defun write-extended-execute-forms-test (&optional command path-to-shell option)
   "Write `py-execute-block...' etc. "
   (interactive)
@@ -803,6 +760,7 @@ Include default forms "
             (insert (concat "  (assert (progn (py-execute-" ele "-" elt)))
           (unless (string= pyo "")(insert (concat "-" pyo)))
 
+
 	  (cond ((string= "region" ele)
                (insert " (line-beginning-position) (line-end-position)")))
           (insert ")")
@@ -816,6 +774,7 @@ Include default forms "
 	    (unless (string= pyo "")(insert (concat "-" pyo)))
 
 	    (insert "-test\" nil nil 1))"))
+
 
           (if (string= "" elt)
               (insert (concat "
@@ -1534,6 +1493,7 @@ http://docs.python.org/reference/compound_stmts.html\"\n")
     (switch-to-buffer (current-buffer))
     (emacs-lisp-mode)))
 
+
 (defun py-write-end-position-forms ()
   (interactive)
   (set-buffer (get-buffer-create "py-write-end-position-forms"))
@@ -2035,6 +1995,8 @@ Returns value of `" ele "'. \"
       ;; (set-buffer buffer-out)
       ;; (switch-to-buffer (current-buffer))
       )
+
+
 
 (defun write-commandp-forms ()
   "Write forms according to `py-bounds-command-names' "
@@ -2938,6 +2900,9 @@ the default\"
 
 ;;;
 
+
+
+
 (defun py-write-mark-bol ()
   (interactive)
     (set-buffer (get-buffer-create "mark-bol.el"))
@@ -2970,6 +2935,8 @@ Mark " ele " at point reaching beginning-of-line. \"]
 ")))
   (switch-to-buffer (current-buffer))
   (emacs-lisp-mode))
+
+
 
 ;; (defun py-beginning-of-block (&optional indent)
 ;;   "Goto beginning of statement where block starts.
@@ -3093,6 +3060,7 @@ Store data in kill ring, so it might yanked back. \"
   (switch-to-buffer (current-buffer))
   (emacs-lisp-mode))
 
+
 (defun py-write-forms-code ()
   (interactive)
   (set-buffer (get-buffer-create "python-components-forms-code.el"))
@@ -3115,6 +3083,40 @@ Return code of `py-" ele "' at point, a string. \"
 
   (switch-to-buffer (current-buffer))
   (emacs-lisp-mode))
+
+(setq py-bol-forms (list 'py-beginning-of-block-bol
+'py-beginning-of-clause-bol
+'py-beginning-of-block-or-clause-bol
+'py-beginning-of-def-bol
+'py-beginning-of-class-bol
+'py-beginning-of-def-or-class-bol
+'py-beginning-of-if-block-bol
+'py-beginning-of-try-block-bol
+'py-beginning-of-minor-block-bol
+'py-beginning-of-statement-bol))
+
+(defvar py-bol-end-forms (list 'py-end-of-block-bol
+'py-end-of-clause-bol
+'py-end-of-block-or-clause-bol
+'py-end-of-def-bol
+'py-end-of-class-bol
+'py-end-of-def-or-class-bol
+'py-end-of-if-block-bol
+'py-end-of-try-block-bol
+'py-end-of-minor-block-bol
+'py-end-of-statement-bol))
+
+(setq py-bol-copy-forms
+      (list 'py-copy-block-bol
+            'py-copy-clause-bol
+            'py-copy-block-or-clause-bol
+            'py-copy-def-bol
+            'py-copy-class-bol
+            'py-copy-def-or-class-bol
+            'py-copy-statement-bol))
+
+
+
 
 (defun py-write-copy-bol-menu ()
   (interactive "*")
@@ -3139,15 +3141,5 @@ Return code of `py-" ele "' at point, a string. \"
     (skip-chars-forward "^]")
     (forward-char 1)
     (newline)))
-
-(defun py-write-fast-menu ()
-  (interactive "*")
-  (dolist (ele py-fast-forms)
-    (push-mark)
-    (emen (prin1-to-string ele))
-    (skip-chars-forward "^]")
-    (forward-char 1)
-    (newline)
-    (indent-region (mark) (point))))
 
 ;;; Copying
