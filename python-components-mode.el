@@ -109,6 +109,29 @@ Default is non-nil. If nil, `py-pylint-run' offers filename from history "
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-fast-process-p nil
+  "Use `py-fast-process'.
+
+Commands prefixed \"py-fast-...\" suitable for large output
+
+See: large output makes Emacs freeze, lp:1253907
+
+Results arrive in py-output-buffer, which is not in comint-mode"
+
+  :type 'boolean
+  :group 'python-mode)
+
+(defcustom py-session-p t
+  "If commands would use an existing process.
+
+If nil, a maybe existing process at py-buffer-name would be killed and re-started
+
+See also `py-dedicated-process-p'
+"
+
+  :type 'boolean
+  :group 'python-mode)
+
 (defcustom py-max-help-buffer-p nil
  "If \"\*Python-Help\*\"-buffer should appear as the only visible.
 
@@ -163,7 +186,10 @@ Default is `t'"
 (defcustom py-dedicated-process-p nil
   "If commands executing code use a dedicated shell.
 
-Default is nil")
+Default is nil
+
+When non-nil and `py-session-p', an existing dedicated process is re-used instead of default - which allows executing stuff in parallel.
+")
 
 (defcustom py-store-result-p nil
  "When non-nil, put resulting string of `py-execute-...' into kill-ring, so it might be yanked.
@@ -2692,8 +2718,10 @@ See original source: http://pymacs.progiciels-bpi.ca"
 (require 'python-components-shift-forms)
 (require 'python-components-execute-file)
 (require 'python-components-comment)
+(require 'python-components-fast)
 (require 'python-components-forms)
 (require 'python-components-forms-code)
+(require 'python-components-fast-forms)
 (require 'python-components-auto-fill)
 (require 'highlight-indentation)
 
@@ -3310,6 +3338,22 @@ Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil
                     )
 
                    )
+                  "-"
+                  
+                  ["Kill shell unconditional" py-kill-shell-unconditional
+                   :help " `py-kill-shell-unconditional'
+
+With optional argument SHELL\.
+
+Otherwise kill default (I)Python shell\.
+Kill buffer and its process.
+Receives a buffer-name as argument "]
+
+                  ["Kill default shell unconditional" py-kill-default-shell-unconditional
+                   :help " `py-kill-default-shell-unconditional'
+
+Kill buffer \"*Python*\" and its process\.  "]
+
                   )
 
                  "-"
@@ -5202,6 +5246,18 @@ Toggle flymake-mode running `pyflakespep8' "])
 
                    ("Interpreter"
 
+                    ["Fast process "
+                     (setq py-fast-process-p
+                           (not py-fast-process-p))
+                     :help "Use `py-fast-process'\.
+
+Commands prefixed "py-fast-\.\.\." suitable for large output
+
+See: large output makes Emacs freeze, lp:1253907
+
+Results arrive in py-output-buffer, which is not in comint-modeUse `M-x customize-variable' to set it permanently"
+:style toggle :selected py-fast-process-p]
+
                     ["Run Python shell at start"
                      (setq py-start-run-py-shell
                            (not py-start-run-py-shell))
@@ -6444,6 +6500,11 @@ Shift block-or-clause left. "]
                    ("More"
                     :help "extended edit commands'"
 
+                    ["Kill buffer unconditional" py-kill-buffer-unconditional
+                     :help " `py-kill-buffer-unconditional'
+
+Kill buffer unconditional, kill buffer-process if existing\. "]
+
                     ["Empty out list backward" py-empty-out-list-backward
                      :help " `py-empty-out-list-backward'
 Deletes all elements from list before point. "]
@@ -7685,25 +7746,6 @@ This is a no-op if `py-check-comint-prompt' returns nil."
             (accept-process-output proc 5)
             (prog1 py-preoutput-result
               (kill-local-variable 'py-preoutput-result)))))))
-
-;;; FFAP support
-(defalias 'py-module-path 'py-ffap-module-path)
-
-(defun py-ffap-module-path (module)
-  "Function for `ffap-alist' to return path for MODULE."
-  (let ((process (or
-                  (and (eq major-mode 'inferior-python-mode)
-                       (get-buffer-process (current-buffer)))
-                  (py-shell-get-process))))
-    (if (not process)
-        nil
-      (let ((module-file
-             (py-send-string-no-output
-              (format py-ffap-string-code module) process)))
-        (when module-file
-          (substring-no-properties module-file 1 -1))))))
-
-(add-hook 'python-mode-hook 'py-set-ffap-form)
 
 ;;;; Modes.
 

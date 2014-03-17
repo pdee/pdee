@@ -1,5 +1,6 @@
 ;;; python-components-exec-forms.el --- Execute forms at point
 
+;; Copyright (C) 2011-2014  Andreas Roehler
 ;; Author: Andreas Roehler <andreas.roehler@online.de>
 ;; Keywords: languages, convenience
 
@@ -21,116 +22,56 @@
 ;;; Code:
 
 ;;; Execute forms at point
-
 (defun py-execute-statement ()
   "Send statement at point to a Python interpreter. "
   (interactive)
-  (let ((beg (prog1
-		 (or (py-beginning-of-statement-p)
-		     (save-excursion
-		       (py-beginning-of-statement)))))
-	(end (save-excursion
-	       (py-end-of-statement))))
-    (py-execute-region beg end)))
+  (py-execute-prepare "statement"))
 
 (defun py-execute-block ()
   "Send block at point to a Python interpreter. "
   (interactive)
-  (let ((beg (prog1
-		 (or (py-beginning-of-block-p)
-		     (save-excursion
-		       (py-beginning-of-block)))))
-	(end (save-excursion
-	       (py-end-of-block))))
-    (py-execute-region beg end)))
+  (py-execute-prepare "block"))
 
 (defun py-execute-block-or-clause ()
   "Send block-or-clause at point to a Python interpreter. "
   (interactive)
-  (let ((beg (prog1
-		 (or (py-beginning-of-block-or-clause-p)
-		     (save-excursion
-		       (py-beginning-of-block-or-clause)))))
-	(end (save-excursion
-	       (py-end-of-block-or-clause))))
-    (py-execute-region beg end)))
+  (py-execute-prepare "block-or-clause"))
 
 (defun py-execute-def ()
   "Send def at point to a Python interpreter. "
   (interactive)
-  (let ((beg (prog1
-		 (or (py-beginning-of-def-p)
-		     (save-excursion
-		       (py-beginning-of-def)))))
-	(end (save-excursion
-	       (py-end-of-def))))
-    (py-execute-region beg end)))
+  (py-execute-prepare "def"))
 
 (defun py-execute-class ()
   "Send class at point to a Python interpreter. "
   (interactive)
-  (let ((beg (prog1
-		 (or (py-beginning-of-class-p)
-		     (save-excursion
-		       (py-beginning-of-class)))))
-	(end (save-excursion
-	       (py-end-of-class))))
-    (py-execute-region beg end)))
+  (py-execute-prepare "class"))
 
 (defun py-execute-def-or-class ()
   "Send def-or-class at point to a Python interpreter. "
   (interactive)
-  (let ((beg (prog1
-		 (or (py-beginning-of-def-or-class-p)
-		     (save-excursion
-		       (py-beginning-of-def-or-class)))))
-	(end (save-excursion
-	       (py-end-of-def-or-class))))
-    (py-execute-region beg end)))
+  (py-execute-prepare "def-or-class"))
 
 (defun py-execute-expression ()
   "Send expression at point to a Python interpreter. "
   (interactive)
-  (let ((beg (prog1
-		 (or (py-beginning-of-expression-p)
-		     (save-excursion
-		       (py-beginning-of-expression)))))
-	(end (save-excursion
-	       (py-end-of-expression))))
-    (py-execute-region beg end)))
+  (py-execute-prepare "expression"))
 
 (defun py-execute-partial-expression ()
   "Send partial-expression at point to a Python interpreter. "
   (interactive)
-  (let ((beg (prog1
-		 (or (py-beginning-of-partial-expression-p)
-		     (save-excursion
-		       (py-beginning-of-partial-expression)))))
-	(end (save-excursion
-	       (py-end-of-partial-expression))))
-    (py-execute-region beg end)))
+  (py-execute-prepare "partial-expression"))
 
 (defun py-execute-top-level ()
   "Send top-level at point to a Python interpreter. "
   (interactive)
-  (let ((beg (prog1
-		 (or (py-beginning-of-top-level-p)
-		     (save-excursion
-		       (py-beginning-of-top-level)))))
-	(end (save-excursion
-	       (py-end-of-top-level))))
-    (py-execute-region beg end)))
+  (py-execute-prepare "top-level"))
 
 (defun py-execute-clause ()
   "Send clause at point to a Python interpreter. "
   (interactive)
-  (let ((beg (prog1
-		 (or (py-beginning-of-clause-p)
-		     (save-excursion
-		       (py-beginning-of-clause)))))
-	(end (save-excursion
-	       (py-end-of-clause))))
-    (py-execute-region beg end)))
+  (py-execute-prepare "clause"))
 
 (provide 'python-components-exec-forms)
 ;;; python-components-exec-forms.el ends here
+ 

@@ -70,6 +70,20 @@ Use `defcustom' to keep value across sessions "
     (when (interactive-p) (message "%s" erg))
     erg))
 
+(defun py-kill-buffer-unconditional (&optional buffer)
+  "Kill buffer unconditional, kill buffer-process if existing. "
+  (interactive)
+  (let ((buffer (or buffer (current-buffer)))
+        proc kill-buffer-query-functions)
+    (if (buffer-live-p buffer)
+        (progn
+          (setq proc (get-buffer-process buffer))
+          (and proc (kill-process proc))
+          (set-buffer buffer)
+          (set-buffer-modified-p 'nil)
+          (kill-buffer (current-buffer)))
+      (and (interactive-p) (message "Can't see a buffer %s" buffer)))))
+
 (defun py-line-backward-maybe ()
   (let ((orig (point)))
     (skip-chars-backward " \t\f" (line-beginning-position))
@@ -530,7 +544,8 @@ will work.
   (let ((orig (point))
         erg)
     (save-excursion
-      (py-end-of-statement)
+      (unless (and (eolp) (not (empty-line-p)))
+        (py-end-of-statement))
       (py-beginning-of-statement)
       (when (eq orig (point))
         (setq erg orig))
@@ -1047,7 +1062,7 @@ Eval resulting buffer to install it, see customizable `py-extensions'. "
          erg newshell prefix akt end orig curexe aktpath)
     (set-buffer (get-buffer-create py-extensions))
     (erase-buffer)
-    (switch-to-buffer (current-buffer))
+;;    (switch-to-buffer (current-buffer))
     (dolist (elt shells)
       (setq prefix "")
       (setq curexe (substring elt (1+ (string-match "/[^/]+$" elt))))
@@ -1121,12 +1136,6 @@ When `py-verbose-p' and MSG is non-nil messages the first line of STRING."
          (file-name (or filename (buffer-file-name) temp-file-name)))
     (if (> (length lines) 1)
         (let* ()
-          ;; ((temporary-file-directory
-          ;;     (if (file-remote-p default-directory)
-          ;;         (concat (file-remote-p default-directory) "/tmp")
-          ;;       temporary-file-directory))
-          ;;    (temp-file-name (make-temp-file "py"))
-          ;;    (file-name (or (buffer-file-name) temp-file-name)))
           (with-temp-file temp-file-name
             (insert string)
             (delete-trailing-whitespace))

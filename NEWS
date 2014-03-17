@@ -4,6 +4,19 @@ Python Mode News
 New in version 6.1.4
 ---------------------
 
+Support for large output
+
+  new commands py-fast-process, py-fast-...
+  Fixes: large output makes Emacs freeze, lp:1253907
+
+  Python code now might be processed by an
+  - interactive Python shell (DEFAULT)
+  - non-interactive Python (`py-fast-process-p', if large output)
+
+  Both processes might run in 
+  - session, i.e. start from possible previous state (DEFAULT)
+  - dedicated, run in separate process
+
 - new indent feature/behavior, lp:1280982
   If an empty line was dedented deliberatly, this is
   honored by next lines indent
@@ -18,6 +31,11 @@ Calls to IPython are to customizable now via
 
 New commands
 
+- py-kill-shell-unconditional
+  With optional argument SHELL, otherwise kill default
+  (I)Python shell.
+
+Receives a buffer-name as optional argument"
 - py-info-lookup-symbol ()
   Calls `info-lookup-symbol'. Sends help if stuff is missing.
 
@@ -36,6 +54,11 @@ New commands
 - py-kill-buffer-unconditional
   Kill buffer unconditional; kill also any buffer-process.
 
+Booleans
+- py-fast-process-p 
+  If `t', stuff is executed through `py-fast-...'-
+  commands, suitable for large output. Result arrives
+  in py-output-buffer, which is not in comint-mode
 
 New in version 6.1.3
 ---------------------

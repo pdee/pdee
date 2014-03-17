@@ -965,15 +965,6 @@ From a programm use macro `py-beginning-of-comment' instead "
                (funcall function)
                (setq done t)
                (not (and (eq indent (current-indentation)) (looking-at "try"))))))
-         ;; ((and (looking-at "\\<except\\>[: \n\t]")(save-match-data (string-match "else" regexp)))
-         ;;  (setq indent (current-indentation))
-         ;;  (setq count (1+ count))
-         ;;  (while
-         ;;      (and
-         ;;       (not (eval stop))
-         ;;       (funcall function)
-         ;;       (setq done t)
-         ;;       (not (and (eq indent (current-indentation)) (looking-at "try\\|if"))))))
          ((and (looking-at "\\<else\\>[: \n\t]")(save-match-data (string-match "else" regexp)))
           (setq indent (current-indentation))
           (setq count (1+ count))

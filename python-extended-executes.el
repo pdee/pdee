@@ -29,7 +29,6 @@
                           (find-file-noselect filename))))
          (set-buffer buffer))))
 
-
 (defun py-execute-prepare (form &optional shell dedicated switch beg end file wholebuf)
   "Used by python-extended-executes ."
   (save-excursion
@@ -41,8 +40,8 @@
                          (push-mark)))))
           (end (unless file
                  (or end (funcall (intern-soft (concat "py-end-of-" form))))))
-          (py-shell-name (or shell py-shell-name))
-          (py-dedicated-process-p dedicated)
+	  ;;          (shell (or shell py-shell-name))
+	  (py-dedicated-process-p (or py-dedicated-process-p dedicated))
           (py-switch-buffers-on-execute-p (cond ((eq 'switch switch)
                                                  t)
                                                 ((eq 'no-switch switch)

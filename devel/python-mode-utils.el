@@ -194,6 +194,37 @@
 ;;; python-components-exec-forms.el ends here\n ")
   (emacs-lisp-mode))
 
+(defun write-fast-execute-forms (&optional command)
+  "Write `py-process-block...' etc. "
+  (interactive)
+  (let ((py-bounds-command-names (if command (list command) py-execute-forms-names)))
+    (set-buffer (get-buffer-create "python-components-fast-forms.el"))
+    (erase-buffer)
+    (switch-to-buffer (current-buffer))
+    (insert ";;; python-components-fast-forms.el --- Execute forms at point\n")
+    (insert arkopf)
+    (insert ";;; Process forms fast\n\n")
+    (dolist (ele py-bounds-command-names)
+      (insert (concat "(defun py-execute-" ele "-fast ()"))
+      (insert (concat "
+  \"Process " ele " at point by a Python interpreter. 
+
+Suitable for large output, doesn't mess up interactive shell.
+Result arrives in `py-output-buffer', which is not in
+comint-mode\"\n"))
+      (insert (concat "  (interactive)
+  (let ((py-fast-process-p t)
+        (beg (prog1
+		 (or (py-beginning-of-" ele "-p)
+		     (save-excursion
+		       (py-beginning-of-" ele ")))))
+	(end (save-excursion
+	       (py-end-of-" ele"))))
+    (py-execute-region beg end)))\n\n"))))
+  (insert "(provide 'python-components-fast-forms)
+;;; python-components-fast-forms.el ends here\n ")
+  (emacs-lisp-mode))
+
 (defun write-options-dokumentation-subform (pyo)
   (cond ((string-match "dedicated" pyo)
          (insert "\n\nUses a dedicated shell.")))

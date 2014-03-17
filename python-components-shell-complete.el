@@ -41,9 +41,7 @@ completions on the current context."
              input process code))
            (completion (when completions
                          (try-completion input completions))))
-      ;; (set-buffer oldbuf)
       (with-current-buffer oldbuf
-        ;; (goto-char orig)
         (cond ((eq completion t)
                (if py-no-completion-calls-dabbrev-expand-p
                    (or (ignore-errors (dabbrev-expand nil))(when py-indent-no-completion-p

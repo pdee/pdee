@@ -23,7 +23,10 @@
 ;; (require 'ert)
 
 ;; tests are expected to run from directory test
-(add-to-list 'load-path default-directory) 
+
+(setq ert-test-default-buffer "*Python*")
+
+(add-to-list 'load-path default-directory)
 (require 'python-mode-test)
 
 (defmacro py-tests-with-temp-buffer (contents &rest body)
@@ -549,24 +552,6 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
 "
    (should (and (not (py-copy-statement))(string-match "from foo.bar.baz import something" (car kill-ring))))))
 
-;; (ert-deftest py-ert-execute-runs-full-file-lp-1269855 ()
-;;   (interactive)
-;;   (py-tests-with-temp-buffer
-;;       (let (py-switch-buffers-on-execute-p
-;; 	    py-split-windows-on-execute-p
-;; 	    py-smart-indentation)
-;; 	;; (switch-to-buffer (buffer-name (current-buffer)))
-;; 	"a = 0
-;; a += 8
-;; a += 1
-;; print(a)
-;; "
-;; 	(py-execute-buffer)
-;; 	(goto-char 14)
-;; 	(py-execute-statement)
-;; 	(goto-char 22)
-;; 	(py-execute-statement))))
-
 (ert-deftest py-ert-abbrevs-changed-lp-1270631 ()
   (interactive)
   (with-temp-buffer
@@ -576,15 +561,6 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
     (should abbrevs-changed)
     (python-mode)
     (should abbrevs-changed)))
-
-
-;; (ert-deftest py-ert-toggle-split-on-execute-function ()
-;;   (py-tests-with-temp-buffer
-;;       "print(123)"
-;;     (let ((py-split-windows-on-execute-p t))
-;;       (py-toggle-split-windows-function)
-;;       (py-execute-statement)
-;;       (should (not (one-window-p))))))
 
 (ert-deftest py-ert-honor-dedent-lp-1280982 ()
   (py-tests-with-temp-buffer
@@ -601,10 +577,10 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
 (ert-deftest py-ert-socket-modul-completion-lp-1284141 ()
   (py-tests-with-temp-buffer
       "import socket"
-    (let (oldbuf)
+    (let ((py-debug-p t)
+	  oldbuf)
       (py-execute-buffer-dedicated)
-      (set-buffer (py--fetch-first-python-buffer))(goto-char (point-min))
-      (message "this-buf: %s" (current-buffer))
+      (set-buffer (progn (find-file "/tmp/py-buffer-name.txt")(buffer-substring-no-properties (point-min) (point-max))))
       (setq oldbuf (current-buffer))
       (goto-char (point-max))
       (insert "socket.")
@@ -612,11 +588,12 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
       (set-buffer "*Python Completions*")
       (goto-char (point-min))
       (sit-for 0.1)
-      (and (should (search-forward "socket."))
-	   (py-kill-buffer-unconditional oldbuf)))))
+      (prog1 (should (search-forward "socket."))
+	(py-kill-buffer-unconditional oldbuf)
+	(py-kill-buffer-unconditional "py-buffer-name.txt")))))
 
 (ert-deftest fill-paragraph-lp-1286318 ()
-    (let ((fill-column 72)) 
+    (let ((fill-column 72))
       (py-tests-with-temp-buffer
 	"# r1416
 
@@ -630,9 +607,9 @@ def baz():
 # The last line of the docstring is longer than fill-column (set to
 # 78 = for me). Put point on the 'T' in 'This' and hit M-q= . Nothing
 # happens.
-# 
+#
 # Another example:
-# 
+#
 def baz():
     \"\"\"Hello there.
 
@@ -646,9 +623,9 @@ def baz():
 
 # All of those lines are shorter than fill-column. Put point anywhere
 # = in that paragraph and hit M-q. Nothing happens.
-# 
+#
 # In both cases I would expect to end up with:
-# 
+#
 def baz():
     \"\"\"Hello there.
 
@@ -658,17 +635,17 @@ def baz():
     return 7
 "
       (goto-char 49)
-      (switch-to-buffer (current-buffer)) 
+      (switch-to-buffer (current-buffer))
       (fill-paragraph)
-      (end-of-line) 
+      (end-of-line)
       (should (eq 72 (current-column)))
       (goto-char 409)
       (fill-paragraph)
-      (end-of-line) 
+      (end-of-line)
       (should (eq 72 (current-column)))
       (goto-char 731)
       (fill-paragraph)
-      (end-of-line) 
+      (end-of-line)
       (should (eq 72 (current-column)))
       )))
 
@@ -677,52 +654,44 @@ def baz():
   (py-tests-with-temp-buffer
       "print(\"I'm the py-execute-expression-test\")"
     (py-execute-expression)
-    (message "%s" (buffer-list))
-    (set-buffer (py--fetch-first-python-buffer))
-    (goto-char (point-max))
-    (and (should (search-backward "py-execute-expression-test" nil t 1))
+    (set-buffer ert-test-default-buffer)
+    (and (should (search-forward "py-execute-expression-test" nil t 1))
 	 (py-kill-buffer-unconditional (current-buffer)))))
 
 (ert-deftest py-ert-execute-line-test ()
   (py-tests-with-temp-buffer
       "print(\"I'm the py-execute-line-test\")"
     (py-execute-line)
-    (message "%s" (buffer-list))
-    (set-buffer (py--fetch-first-python-buffer))
-    (goto-char (point-max))
-    (and (should (search-backward "py-execute-line-test" nil t 1))
+    (set-buffer ert-test-default-buffer)
+    (and (should (search-forward "py-execute-line-test" nil t 1))
 	 (py-kill-buffer-unconditional (current-buffer)))))
-
 
 (ert-deftest py-ert-execute-statement-test ()
   (py-tests-with-temp-buffer
       "print(\"I'm the py-execute-statement-test\")"
     (py-execute-statement)
-    (message "%s" (buffer-list))
-    (set-buffer (py--fetch-first-python-buffer))
-    (goto-char (point-max))
-    (and (should (search-backward "py-execute-statement-test" nil t 1))
+    (set-buffer ert-test-default-buffer)
+    (and (should (search-forward "py-execute-statement-test" nil t 1))
 	 (py-kill-buffer-unconditional (current-buffer)))))
 
 (ert-deftest py-ert-execute-statement-python2-test ()
   (py-tests-with-temp-buffer
       "print(\"I'm the py-execute-statement-python2-test\")"
     (py-execute-statement-python2)
-    (set-buffer (py--fetch-first-python-buffer))
-    (goto-char (point-max))
-    (and (should (search-backward "py-execute-statement-python2-test" nil t 1))
+    (set-buffer "*Python2*")
+    (and (should (search-forward "py-execute-statement-python2-test" nil t 1))
 	 (py-kill-buffer-unconditional (current-buffer)))))
 
 (ert-deftest py-ert-execute-statement-python3-dedicated-test ()
   (py-tests-with-temp-buffer
       "print(\"I'm the py-execute-statement-python3-dedicated-test\")"
-    (py-execute-statement-python3-dedicated)
-    (set-buffer (py--fetch-first-python-buffer))
-    (message "%s" (current-buffer))
-    (goto-char (point-min))
-    (sit-for 1) 
-    (and (should (search-forward "py-execute-statement-python3-dedicated-test" nil t 1))
-	 (py-kill-buffer-unconditional (current-buffer)))))
+    (let ((py-debug-p t))
+      (py-execute-statement-python3-dedicated)
+      (set-buffer (progn (find-file "/tmp/py-buffer-name.txt")(buffer-substring-no-properties (point-min) (point-max))))
+      (prog1 (should (search-forward "py-execute-statement-python3-dedicated-test" nil t 1))
+	(py-kill-buffer-unconditional (current-buffer))
+	(py-kill-buffer-unconditional (get-buffer "py-buffer-name.txt"))
+	))))
 
 (ert-deftest py-ert-execute-statement-split ()
   (py-tests-with-temp-buffer
@@ -741,9 +710,32 @@ def baz():
   (insert "import os;print(os.get")
   (py-shell-complete))
 
-;; py-execute-buffer
-;; --funcall py-execute-expression-test \
-;; --funcall py-execute-line-test \
-;; \
+(ert-deftest py-ert-execute-statement-fast ()
+  (py-tests-with-temp-buffer
+      "print(1)"
+    (let ((py-fast-process-p t))
+      (py-execute-statement)
+      (set-buffer py-output-buffer)
+      (eq 1 (char-after)))))
+
+(ert-deftest py-ert-execute-block-fast ()
+  (py-tests-with-temp-buffer
+      "if True:
+    a = 1
+    print(a)"
+    (let ((py-fast-process-p t))
+      (py-execute-block)
+      (set-buffer py-output-buffer)
+      (eq 1 (char-after)))))
+
+(ert-deftest py-ert-execute-block-fast-2 ()
+  (py-tests-with-temp-buffer
+      "if True:
+    a += 1
+    print(a)"
+    (let ((py-fast-process-p t))
+      (py-execute-block)
+      (set-buffer py-output-buffer)
+      (eq 2 (char-after)))))
 
 (provide 'py-ert-tests)

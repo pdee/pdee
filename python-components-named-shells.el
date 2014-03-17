@@ -28,7 +28,9 @@
 
 Optional \\[universal-argument] prompts for options to pass to the Python interpreter. See `py-python-command-args'. "
   (interactive "P")
-  (py-shell argprompt nil "python"))
+  (let ((py-fast-process-p
+         (if (interactive-p) nil py-fast-process-p)))
+    (py-shell argprompt nil "python")))
 
 (defalias 'iypthon 'ipython)
 (defun ipython (&optional argprompt)

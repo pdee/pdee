@@ -1135,16 +1135,12 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall filename-completion-fails-in-ipython-lp-1027265-n2-test \
 --funcall master-file-not-honored-lp:794850-test \
 --funcall tab-results-in-never-ending-process-lp-1163423-test \
---funcall C-c-C-c-lp:1221310-and-store-result-test \
 --funcall completion-at-gentoo-lp-1008842-test \
 --funcall incorrect-use-of-region-in-py-shift-left-lp:875951-test \
 --funcall py-end-of-block-test \
---funcall inconvenient-window-splitting-behavior-python-lp-1018996-test \
 --funcall not-that-useful-completion-lp:1003580-test \
 --funcall several-new-bugs-with-paragraph-filling-lp-1066489-test \
 --funcall py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test \
---funcall IndentationError-expected-an-indented-block-when-execute-lp-1055569-test \
-\
 --funcall py-execute-region-python2.7-switch-test \
 --funcall execute-indented-code-lp:828314-test \
 --funcall py-shell-invoking-python3-lp:835151-test \
@@ -1414,3 +1410,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-electric-comment-add-space-t-lp:828398-test \
 --funcall missing-py-variable-name-face-lp-1215791-test \
 --funcall switch-windows-on-execute-p-test \
+--funcall C-c-C-c-lp:1221310-and-store-result-test \
+--funcall inconvenient-window-splitting-behavior-python-lp-1018996-test \
+--funcall IndentationError-expected-an-indented-block-when-execute-lp-1055569-test \

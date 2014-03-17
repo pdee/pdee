@@ -51,17 +51,18 @@ Install a local shell by evaluating
 
 ;;;;;;;;;
 
-When code is executed from current buffer, either
 
-- python-mode-v5-behavior, a quite simple and effective way.
-  Setting `python-mode-v5-behavior-p' to `t' makes it the default.
+Python code might be processed by an
 
-- if a buffer-file exists and buffer is unchanged, it's file is executed as is.
+- interactive Python shell (DEFAULT)
+- non-interactive Python (`py-fast-process-p', if large output)
 
-- in all other cases a temporary file is created.
-  Setback: in case of error, returned error code points
-  here, i.e. indicated error-line-numbers are not that of
-  orginal buffer.
+Both processes might run in 
+- session, i.e. start from possible previous state (DEFAULT)
+- dedicated, (`py-dedicated-process-p') run in separate process
+
+There is also
+- python-mode-v5-behavior
 
 ;;;;;;;;;
 To enable code auto-completion:

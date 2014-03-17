@@ -331,10 +331,10 @@ interpreter.
     (unless (string-match "^\*" erg)(setq erg (concat "*" erg "*")))
     erg))
 
-(defun py-buffer-name-prepare ()
+(defun py-buffer-name-prepare (&optional name)
   "Return an appropriate name to display in modeline.
 SEPCHAR is the file-path separator of your system. "
-  (let ((name (capitalize py-shell-name))
+  (let ((name (or name (capitalize py-shell-name)))
         prefix erg suffix liste)
     (when (string-match py-separator-char name)
       (unless py-modeline-acronym-display-home-p
@@ -367,7 +367,7 @@ SEPCHAR is the file-path separator of your system. "
           (prefix
            (setq erg (concat "*" prefix " " erg "*")))
 
-          (t (setq erg (concat "*" erg "*"))))
+          (t (unless (string-match "^\*" erg)(setq erg (concat "*" erg "*")))))
     erg))
 
 (defun py-delete-numbers-and-stars-from-string (string)
@@ -386,7 +386,7 @@ Needed when file-path names are contructed from maybe numbered buffer names like
     ;; (message "%s" (current-buffer))
     (goto-char (point-min))
     (forward-line (1- origline))
-    (switch-to-buffer (current-buffer))
+;;    (switch-to-buffer (current-buffer))
     (push-mark)
     (and (search-forward action (line-end-position) t)
          (and py-verbose-p (message "Exception in file %s on line %d" py-exception-buffer origline))
@@ -415,7 +415,7 @@ Needed when file-path names are contructed from maybe numbered buffer names like
            (py-jump-to-exception-intern action (get-buffer (file-name-nondirectory file))))
           ((buffer-live-p (get-buffer file))
            (set-buffer file)
-           (switch-to-buffer (current-buffer))
+;;           (switch-to-buffer (current-buffer))
            (py-jump-to-exception-intern action file))
           (t (setq file (find-file (read-file-name "Exception file: "
                                                    nil
@@ -489,6 +489,21 @@ Internal use"
          (let (pop-up-windows)
            (py-restore-window-configuration))))
   nil)
+
+(defun py-kill-shell-unconditional (&optional shell)
+  "With optional argument SHELL.
+
+Otherwise kill default (I)Python shell.
+Kill buffer and its process.
+Receives a buffer-name as argument"
+  (interactive)
+  (let ((shell (or shell (py-shell))))
+    (py-kill-buffer-unconditional shell)))
+
+(defun py-kill-default-shell-unconditional ()
+  "Kill buffer \"\*Python\*\" and its process. "
+  (interactive)
+  (py-kill-buffer-unconditional "*Python*"))
 
 (defun py-report-executable (py-buffer-name)
   (let ((erg (downcase (replace-regexp-in-string
@@ -585,6 +600,32 @@ Internal use"
        (remove-hook 'comint-output-filter-functions 'python-pdbtrack-track-stack-file t))
   (set-syntax-table python-mode-syntax-table))
 
+(defun py--guess-buffer-name ()
+  "Guess the buffer-name core string. "
+  (cond
+   ((and py-fast-process-p (not py-dedicated-process-p)) py-output-buffer)
+   (buffer-name)
+   (t (and (not dedicated) argprompt
+           (cond
+            ((eq 4 (prefix-numeric-value argprompt))
+             (prog1
+                 (read-buffer "Py-Shell buffer: "
+                              (generate-new-buffer-name (py-buffer-name-prepare)))
+               (when (file-remote-p default-directory)
+                 ;; It must be possible to declare a local default-directory.
+                 (setq default-directory
+                       (expand-file-name
+                        (read-file-name
+                         "Default directory: " default-directory default-directory
+                         t nil 'file-directory-p)))
+                 (setq py-separator-char (py-separator-char)))))
+            ((and (eq 2 (prefix-numeric-value argprompt))
+                  (fboundp 'split-string))
+             (setq args (split-string
+                         (read-string "Py-Shell arguments: "
+                                      (concat
+                                       (mapconcat 'identity py-python-command-args " ") " "))))))))))
+
 (defun py-shell (&optional argprompt dedicated shell buffer-name no-window-managment)
   "Start an interactive Python interpreter in another window.
 Interactively, \\[universal-argument] 4 prompts for a buffer.
@@ -600,37 +641,17 @@ When DONE is `t', `py-shell-manage-windows' is omitted
   (interactive "P")
   (setenv "PAGER" "cat")
   (setenv "TERM" "dumb")
-  (let* ((dedicated (or dedicated py-dedicated-process-p))
+  (let* ((py-fast-process-p (when (not (interactive-p)) py-fast-process-p))
+         (dedicated (or dedicated py-dedicated-process-p))
          (py-exception-buffer (or py-exception-buffer (current-buffer)))
          ;; (coding-system-for-read 'utf-8)
          ;; (coding-system-for-write 'utf-8)
          (path (getenv "PYTHONPATH"))
          (py-shell-name (or shell py-shell-name (py-choose-shell)))
-         (args (if (string-match "^[Ii]" py-shell-name) py-ipython-command-args py-python-command-args))
-
-         ;; reset later on
-         (py-buffer-name
-          (cond (buffer-name)
-                (t (and (not dedicated) argprompt
-                        (cond
-                         ((eq 4 (prefix-numeric-value argprompt))
-                          (prog1
-                              (read-buffer "Py-Shell buffer: "
-                                           (generate-new-buffer-name (py-buffer-name-prepare)))
-                            (when (file-remote-p default-directory)
-                              ;; It must be possible to declare a local default-directory.
-                              (setq default-directory
-                                    (expand-file-name
-                                     (read-file-name
-                                      "Default directory: " default-directory default-directory
-                                      t nil 'file-directory-p)))
-                              (setq py-separator-char (py-separator-char)))))
-                         ((and (eq 2 (prefix-numeric-value argprompt))
-                               (fboundp 'split-string))
-                          (setq args (split-string
-                                      (read-string "Py-Shell arguments: "
-                                                   (concat
-                                                    (mapconcat 'identity py-python-command-args " ") " "))))))))))
+         (args
+          (cond (py-fast-process-p nil)
+                ((string-match "^[Ii]" py-shell-name) py-ipython-command-args)
+                (t py-python-command-args)))
          ;; If we use a pipe, Unicode characters are not printed
          ;; correctly (Bug#5794) and IPython does not work at
          ;; all (Bug#5390). python.el
@@ -641,6 +662,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
               (expand-file-name py-shell-local-path)
             (when py-use-local-default
               (error "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'"))))
+         (py-buffer-name (py--guess-buffer-name))
          (py-buffer-name (or py-buffer-name (py-buffer-name-prepare)))
          (executable (cond (py-shell-name)
                            (py-buffer-name
@@ -649,16 +671,19 @@ When DONE is `t', `py-shell-manage-windows' is omitted
     ;; lp:1169687, if called from within an existing py-shell, open a new one
     (and (bufferp py-exception-buffer)(string= py-buffer-name (buffer-name py-exception-buffer))
          (setq py-buffer-name (generate-new-buffer-name py-buffer-name)))
-
-    (unless (comint-check-proc py-buffer-name)
-      (py--shell-make-comint)
-      (py--shell-setup (get-buffer-process (current-buffer))))
-    ;; (py--init-easy-menu)
-    ;; (add-hook 'py-shell-hook 'py-dirstack-hook)
-    (and py-fontify-shell-buffer-p (font-lock-fontify-buffer))
-    (goto-char (point-max))
-    (unless no-window-managment (py-shell-manage-windows py-buffer-name))
-    (when py-shell-hook (run-hooks 'py-shell-hook))
+    (if py-fast-process-p
+        (unless (get-buffer-process (get-buffer py-buffer-name))
+          (py-fast-process)
+          (setq py-output-buffer py-buffer-name))
+      (unless (comint-check-proc py-buffer-name)
+        (py--shell-make-comint)
+        (py--shell-setup (get-buffer-process (current-buffer))))
+      ;; (py--init-easy-menu)
+      ;; (add-hook 'py-shell-hook 'py-dirstack-hook)
+      (and py-fontify-shell-buffer-p (font-lock-fontify-buffer))
+      (goto-char (point-max))
+      (unless no-window-managment (py-shell-manage-windows py-buffer-name))
+      (when py-shell-hook (run-hooks 'py-shell-hook)))
     py-buffer-name))
 
 (defun py-shell-get-process (&optional argprompt py-dedicated-process-p shell switch py-buffer-name)
@@ -686,6 +711,24 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
                 (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" filename filename))))
     (when (interactive-p) (message "%s" (prin1-to-string cmd)))
     cmd))
+
+(defun py--choose-buffer-name ()
+  "Python code might be processed by an
+- interactive Python shell (DEFAULT)
+- non-interactive Python (py-fast-process-p), select for large
+  output
+
+Both processes might run in
+
+- session, i.e. start from previous state (DEFAULT)
+- dedicated, open or follow a separate line of execution
+
+Default is interactive, i.e. py-fast-process-p nil, and `py-session'"
+
+  (cond ((and py-fast-process-p py-dedicated-process-p)
+	 (py-buffer-name-prepare py-output-buffer))
+        (py-fast-process-p py-output-buffer)
+        (t (py-buffer-name-prepare))))
 
 (defun py-execute-base (&optional start end shell filename proc file wholebuf)
   "Select the handler.
@@ -715,14 +758,19 @@ When optional FILE is `t', no temporary file is needed. "
                  py-execute-directory)
                 ((getenv "VIRTUAL_ENV"))
                 (t (getenv "HOME"))))
-         (py-buffer-name (or py-buffer-name (py-buffer-name-prepare)))
+         (py-buffer-name (py--choose-buffer-name))
          (filename (or (and filename (expand-file-name filename)) (and (not (buffer-modified-p)) (buffer-file-name))))
          (py-orig-buffer-or-file (or filename (current-buffer)))
-         (proc (or proc (if py-dedicated-process-p
-                            (get-buffer-process (py-shell nil py-dedicated-process-p py-shell-name py-buffer-name t))
-                          (or (and (boundp 'py-buffer-name) (get-buffer-process py-buffer-name))
-                              (get-buffer-process (py-shell nil py-dedicated-process-p py-shell-name (and (boundp 'py-buffer-name) py-buffer-name) t))))))
+         (proc (cond (proc)
+                     (py-fast-process-p
+                      (or (get-buffer-process (get-buffer py-buffer-name))
+                          (py-fast-process py-buffer-name)))
+                     (py-dedicated-process-p
+                      (get-buffer-process (py-shell nil py-dedicated-process-p py-shell-name py-buffer-name t)))
+                     (t (or (and (boundp 'py-buffer-name) (get-buffer-process py-buffer-name))
+                            (get-buffer-process (py-shell nil py-dedicated-process-p py-shell-name (and (boundp 'py-buffer-name) py-buffer-name) t))))))
          err-p)
+    (and py-debug-p (with-temp-file "/tmp/py-buffer-name.txt" (insert py-buffer-name))) 
     (set-buffer py-exception-buffer)
     (py-update-execute-directory proc py-buffer-name execute-directory)
     (cond (;; enforce proceeding as python-mode.el v5
@@ -733,9 +781,7 @@ When optional FILE is `t', no temporary file is needed. "
           ;; No need for a temporary filename than
           ((and filename wholebuf)
            (py-execute-file-base proc filename nil py-buffer-name filename execute-directory))
-          (t
-           ;; (message "%s" (current-buffer))
-           (py-execute-buffer-finally start end execute-directory wholebuf)))))
+          (t (py-execute-buffer-finally start end execute-directory wholebuf)))))
 
 (defun py-execute-buffer-finally (start end execute-directory wholebuf)
   (let* ((strg (buffer-substring-no-properties start end))
@@ -755,14 +801,20 @@ When optional FILE is `t', no temporary file is needed. "
                   "if __name__ == '__main__ ':" strg)))
     (insert strg)
     (py-fix-start (point-min)(point-max))
-    (set-buffer tempbuf)
-    (write-region (point-min) (point-max) tempfile nil t nil 'ask)
-    (set-buffer-modified-p 'nil)
-    (unwind-protect
-        (setq erg (py-execute-file-base proc tempfile nil py-buffer-name py-orig-buffer-or-file execute-directory))
-      (sit-for 0.1)
-      (and (or py-debug-p py-cleanup-temporary)
-           (py-delete-temporary tempfile tempbuf)))
+    (if py-fast-process-p
+	(progn
+          (with-current-buffer py-buffer-name
+            (erase-buffer))
+	  (setq strg (buffer-substring-no-properties (point-min) (point-max)))
+	  (py-fast-send-string strg)
+          (py--postprocess))
+      (write-region (point-min) (point-max) tempfile nil t nil 'ask)
+      (set-buffer-modified-p 'nil)
+      (unwind-protect
+	  (setq erg (py-execute-file-base proc tempfile nil py-buffer-name py-orig-buffer-or-file execute-directory))
+	(sit-for 0.1)
+	(when py-cleanup-temporary
+	     (py-delete-temporary tempfile tempbuf))))
     (and erg (or py-debug-p py-store-result-p) (unless (string= (car kill-ring) erg) (kill-new erg)))
     erg))
 
@@ -817,33 +869,38 @@ May we get rid of the temporary file? "
 
 (defalias 'py-send-region 'py-execute-region)
 ;;; execute region
-
 (defun py-execute-region (start end &optional shell dedicated)
   "Send the region to a Python interpreter.
 
-When called with \\[universal-argument], execution through `default-value' of `py-shell-name' is forced.
-When called with \\[universal-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
+When called with \\[universal-argument], execution through
+`default-value' of `py-shell-name' is forced.
 
-When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument.
+When called with \\[universal-argument] followed by a number
+different from 4 and 1, user is prompted to specify a shell. This
+might be the name of a system-wide shell or include the path to a
+virtual environment.
+
+When called from a programm, it accepts a string specifying a
+shell which will be forced upon execute as argument.
 
 Optional DEDICATED "
   (interactive "r\nP")
-  (let ((orig (point))
-	(py-shell-name (cond ((or py-force-py-shell-name-p (eq 4 (prefix-numeric-value shell))) (default-value 'py-shell-name))
-			     ((and (numberp shell) (not (eq 1 (prefix-numeric-value shell))))
-			      (read-from-minibuffer "(path-to-)shell-name: " (default-value 'py-shell-name)))
-			     (t shell)))
-	(py-dedicated-process-p (or dedicated py-dedicated-process-p)))
-    (py-execute-base start end)
-;;  (goto-char orig)
-  ))
+  (save-excursion
+    (let ((orig (point))
+	  (py-shell-name (cond ((or py-force-py-shell-name-p (eq 4 (prefix-numeric-value shell))) (default-value 'py-shell-name))
+			       ((and (numberp shell) (not (eq 1 (prefix-numeric-value shell))))
+				(read-from-minibuffer "(path-to-)shell-name: " (default-value 'py-shell-name)))
+			       (t shell)))
+	  (py-dedicated-process-p (or dedicated py-dedicated-process-p)))
+      (py-execute-base start end))))
 
 (defun py-execute-region-default (start end)
   "Send the region to the systems default Python interpreter. "
   (interactive "r")
-  (let ((py-dedicated-process-p (default-value 'py-dedicated-process-p))
-        (py-shell-name (default-value 'py-shell-name)))
-    (py-execute-base start end)))
+  (save-excursion
+    (let ((py-dedicated-process-p (default-value 'py-dedicated-process-p))
+	  (py-shell-name (default-value 'py-shell-name)))
+      (py-execute-base start end))))
 
 (defun py-execute-region-no-switch (start end)
   "Send the region to a Python interpreter.
@@ -857,17 +914,25 @@ Ignores setting of `py-switch-buffers-on-execute-p', buffer with region stays cu
 (defun py-execute-region-dedicated (start end &optional shell)
   "Get the region processed by an unique Python interpreter.
 
-When called with \\[universal-argument], execution through `default-value' of `py-shell-name' is forced.
-When called with \\[universal-argument] followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment.
+When called with \\[universal-argument], execution through
+`default-value' of `py-shell-name' is forced.
 
-When called from a programm, it accepts a string specifying a shell which will be forced upon execute as argument. "
+When called with \\[universal-argument] followed by a number
+different from 4 and 1, user is prompted to specify a shell. This
+might be the name of a system-wide shell or include the path to a
+virtual environment.
+
+When called from a programm, it accepts a string specifying a
+shell which will be forced upon execute as argument. "
+
   (interactive "r\nP")
-  (let ((py-shell-name (cond ((eq 4 (prefix-numeric-value shell)) (default-value 'py-shell-name))
-                             ((and (numberp shell) (not (eq 1 (prefix-numeric-value shell))))
-                              (read-from-minibuffer "(path-to-)shell-name: " (default-value 'py-shell-name)))
-                             (t shell)))
-        (py-dedicated-process-p t))
-    (py-execute-base start end)))
+  (save-excursion
+    (let ((py-shell-name (cond ((eq 4 (prefix-numeric-value shell)) (default-value 'py-shell-name))
+			       ((and (numberp shell) (not (eq 1 (prefix-numeric-value shell))))
+				(read-from-minibuffer "(path-to-)shell-name: " (default-value 'py-shell-name)))
+			       (t shell)))
+	  (py-dedicated-process-p t))
+      (py-execute-base start end))))
 
 (defun py-execute-region-switch (start end)
   "Send the region to a Python interpreter.
@@ -882,8 +947,9 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
 (defun py-execute-region-default-dedicated (start end)
   "Send the region to an unique shell of systems default Python. "
   (interactive "r")
-  (let ((py-dedicated-process-p t))
-    (py-execute-base start end (default-value 'py-shell-name))))
+  (save-excursion
+    (let ((py-dedicated-process-p t))
+      (py-execute-base start end (default-value 'py-shell-name)))))
 
 (defun py-delete-temporary (&optional file filebuf)
   (when (file-readable-p file)
@@ -953,6 +1019,24 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
       (delete-region orig (point-max)))
     (set-buffer oldbuf)))
 
+(defun py--postprocess ()
+  "Provide return values, check result for error, manage windows. "
+  (if
+      (setq err-p (save-excursion (py-postprocess-output-buffer py-output-buffer)))
+      (py-shell-manage-windows py-buffer-name nil windows-config)
+    (when py-fast-process-p
+      (goto-char (point-min))
+      (while (re-search-forward py-shell-prompt-regexp nil t 1)
+	(replace-match "")))
+    (and py-store-result-p
+	 (sit-for 0.1)
+	 (setq erg
+	       (py-output-filter
+		(buffer-substring-no-properties orig (point-max))))
+	 (unless (string= (car kill-ring) erg) (kill-new erg)))
+    (py-shell-manage-windows py-output-buffer nil windows-config)
+    erg))
+
 (defun py-execute-file-base (&optional proc filename cmd procbuf origfile execute-directory)
   "Send to Python interpreter process PROC, in Python version 2.. \"execfile('FILENAME')\".
 
@@ -962,26 +1046,14 @@ comint believe the user typed this string so that
 Returns position where output starts. "
   (let* ((cmd (or cmd (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" filename filename)))
          (msg (and py-verbose-p (format "## executing %s...\n" (or origfile filename))))
-         (procbuf (or procbuf (py-shell nil nil nil procbuf t)))
-         (proc (or proc (get-buffer-process procbuf)))
+         (py-output-buffer (or procbuf (py-shell nil nil nil procbuf t)))
+         (proc (or proc (get-buffer-process py-output-buffer)))
          erg orig err-p)
-    (set-buffer procbuf)
+    (set-buffer py-output-buffer)
     (goto-char (point-max))
-    (switch-to-buffer (current-buffer))
     (setq orig (point))
     (comint-send-string proc cmd)
-    (if
-        (setq err-p (save-excursion (py-postprocess-output-buffer procbuf)))
-        (py-shell-manage-windows py-buffer-name nil windows-config)
-      (and py-store-result-p
-           (sit-for 0.1)
-           (setq erg
-                 (py-output-filter
-                  (buffer-substring-no-properties orig (point-max))))
-           (unless (string= (car kill-ring) erg) (kill-new erg)))
-      ;; (py-shell-manage-windows (current-buffer) nil windows-config)
-      (py-shell-manage-windows procbuf nil windows-config)
-      erg)))
+    (py--postprocess)))
 
 (defun py-execute-string (&optional string shell)
   "Send the argument STRING to a Python interpreter.
@@ -1556,7 +1628,7 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
                        (py-last-exeption-buffer (buffer-name py-last-exeption-buffer))
                        (t (error "Don't see exeption buffer")))))
     (when buffer (set-buffer (get-buffer buffer)))
-    (switch-to-buffer (current-buffer))
+;;    (switch-to-buffer (current-buffer))
     (if (eq direction 'up)
         (if (string= start "TOP")
             (py-find-next-exception 'bob buffer 're-search-forward "Top")
