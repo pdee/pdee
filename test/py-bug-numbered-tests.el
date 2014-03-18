@@ -5397,7 +5397,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.89 $\"
+__version__ = \"$Revision: 1.90 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -6209,6 +6209,14 @@ print s(500)
 
 (defun abbrevs-changed-t-when-starting-lp-1270631-base ()
   (assert (eq nil abbrevs-changed) nil "abbrevs-changed-t-when-starting-lp-1270631-test failed"))
+
+(defun wrong-type-argument-inserted-chars-lp-1293172-test (&optional arg)
+  (interactive "p")
+   (let ((teststring ""))
+  (py-bug-tests-intern 'wrong-type-argument-inserted-chars-lp-1293172-base arg teststring)))
+
+(defun wrong-type-argument-inserted-chars-lp-1293172-base ()
+      (assert (insert-file-contents (concat py-install-directory "/test/tn_clippy.txt")) nil "wrong-type-argument-inserted-chars-lp-1293172-test failed"))
 
 
 (provide 'py-bug-numbered-tests)

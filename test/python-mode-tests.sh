@@ -1123,6 +1123,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-font-lock-keywords) nil \"py-font-lock-keywords not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall wrong-type-argument-inserted-chars-lp-1293172-test \
 --funcall more-docstring-filling-woes-lp-1102296-pep-257-test \
 --funcall py-docstring-style-pep-257-nn-closing-quotes-lp-1241147-test \
 --funcall more-docstring-filling-woes-lp-1102296-pep-257-nn-test \

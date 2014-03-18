@@ -104,6 +104,7 @@ completions on the current context."
            nil))))
 
 ;; post-command-hook
+;; caused insert-file-contents error lp:1293172
 (defun py-after-change-function (beg end len)
   "Restore window-confiuration after completion. "
   (when
