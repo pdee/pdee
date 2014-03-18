@@ -4013,15 +4013,15 @@ See `py-minor-block-re' "]
 
                   "-"
 
-                 ["Execute region" py-execute-region
-                  :help " `py-execute-region'
+                  ["Execute region" py-execute-region
+                   :help " `py-execute-region'
 
 Send the region to a Python interpreter.
 
 When called with C-u followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment. "]
 
-                 ["Execute buffer" py-execute-buffer
-                  :help " `py-execute-buffer'
+                  ["Execute buffer" py-execute-buffer
+                   :help " `py-execute-buffer'
 
 Send the contents of the buffer to a Python interpreter.
 
@@ -4031,8 +4031,8 @@ When called with C-u followed by a number different from 4 and 1, user is prompt
 If the file local variable `py-master-file' is non-nil, execute the
 named file instead of the buffer's file."]
 
-                 ["Execute def or class" py-execute-def-or-class
-                  :help " `py-execute-def-or-class'
+                  ["Execute def or class" py-execute-def-or-class
+                   :help " `py-execute-def-or-class'
 
 Send def-or-class at point to a Python interpreter.
 
@@ -4041,8 +4041,8 @@ See also `py-force-py-shell-name-p'.
 
 When called with C-u followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment."]
 
-                 ["Execute statement" py-execute-statement
-                  :help " `py-execute-statement'
+                  ["Execute statement" py-execute-statement
+                   :help " `py-execute-statement'
 
 Send statement at point to a Python interpreter.
 
@@ -4051,15 +4051,15 @@ See also `py-force-py-shell-name-p'.
 
 When called with C-u followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment."]
 
-                 ["Execute string" py-execute-string
-                  :help " `py-execute-string'
+                  ["Execute string" py-execute-string
+                   :help " `py-execute-string'
 
 Send the argument STRING to a Python interpreter.
 
 See also `py-execute-region'. "]
 
-                 ["Execute line" py-execute-line
-                  :help " `py-execute-line'
+                  ["Execute line" py-execute-line
+                   :help " `py-execute-line'
 
 Send current line from beginning of indent to Python interpreter\.  "]
 
@@ -5013,7 +5013,6 @@ Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil
                    )
                   )
 
-<<<<<<< HEAD
                  ("Fast process..."
 
                   ["Fast send string" py-fast-send-string
@@ -5121,8 +5120,6 @@ comint-mode "]
 
                   )
 
-=======
->>>>>>> parent of eae1e46... Provide menu for fast processing commands, lp:1253907
                  "-"
 
                  ("Virtualenv"

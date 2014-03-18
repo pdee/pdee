@@ -592,7 +592,7 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
 	(py-kill-buffer-unconditional oldbuf)
 	(py-kill-buffer-unconditional "py-buffer-name.txt")))))
 
-(ert-deftest fill-paragraph-lp-1286318 ()
+(ert-deftest py-ert-fill-paragraph-lp-1286318 ()
   (py-tests-with-temp-buffer
       "# r1416
 
@@ -646,7 +646,151 @@ def baz():
     (fill-paragraph)
     (end-of-line)
     (should (<= (current-column) 72))
+    (search-forward "\"\"\"")
+    (forward-line -1)
+    (should (not (empty-line-p)))
+
     ))
+
+(ert-deftest py-ert-fill-paragraph-pep-257-nn ()
+  (let ((py-docstring-style 'pep-257-nn))
+    (py-tests-with-temp-buffer
+	"# r1416
+
+def baz():
+    \"\"\"Hello there. This is a multiline function definition. Don= 't wor ry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
+
+    This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
+    \"\"\"
+    return 7
+"
+      (goto-char 49)
+      (switch-to-buffer (current-buffer))
+      (fill-paragraph)
+      (end-of-line)
+      (should (<= (current-column) 72))
+      (forward-line 2)
+      (end-of-line) 
+      (should (<= (current-column) 72))
+      (forward-line 1)
+      (end-of-line) 
+      (should (<= (current-column) 72))
+      (forward-line 1)
+      (end-of-line) 
+      (should (<= (current-column) 72))
+      (search-forward "\"\"\"")
+      (forward-line -1)
+      (should (not (empty-line-p)))
+      )))
+
+(ert-deftest py-ert-fill-paragraph-pep-257 ()
+  (let ((py-docstring-style 'pep-257))
+    (py-tests-with-temp-buffer
+	"# r1416
+
+def baz():
+    \"\"\"Hello there. This is a multiline function definition. Don= 't wor ry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
+
+    This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
+    \"\"\"
+    return 7
+"
+      (goto-char 49)
+      (switch-to-buffer (current-buffer))
+      (fill-paragraph)
+      (end-of-line)
+      (should (<= (current-column) 72))
+      (forward-line 2)
+      (end-of-line) 
+      (should (<= (current-column) 72))
+      (forward-line 1)
+      (end-of-line) 
+      (should (<= (current-column) 72))
+      (forward-line 1)
+      (end-of-line) 
+      (should (<= (current-column) 72))
+      (search-forward "\"\"\"")
+      (forward-line -1)
+      (should (empty-line-p)) 
+      )))
+
+(ert-deftest py-ert-fill-paragraph-onetwo ()
+  (let ((py-docstring-style 'onetwo))
+    (py-tests-with-temp-buffer
+	"# r1416
+
+def baz():
+    \"\"\"Hello there. This is a multiline function definition. Don= 't wor ry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
+
+    This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
+    \"\"\"
+    return 7
+"
+      (goto-char 49)
+      (switch-to-buffer (current-buffer))
+      (fill-paragraph)
+      (search-backward "\"\"\"")
+      (goto-char (match-end 0)) 
+      (eolp)
+      (forward-line 1) 
+      (end-of-line)
+      (should (<= (current-column) 72))
+      (search-forward "\"\"\"")
+      (forward-line -1)
+      (should (empty-line-p)) 
+      )))
+
+(ert-deftest py-ert-fill-paragraph-django ()
+  (let ((py-docstring-style 'django))
+    (py-tests-with-temp-buffer
+	"# r1416
+
+def baz():
+    \"\"\"Hello there. This is a multiline function definition. Don= 't wor ry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
+
+    This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
+    \"\"\"
+    return 7
+"
+      (goto-char 49)
+      (switch-to-buffer (current-buffer))
+      (fill-paragraph)
+      (search-backward "\"\"\"")
+      (goto-char (match-end 0)) 
+      (eolp)
+      (forward-line 1) 
+      (end-of-line)
+      (should (<= (current-column) 72))
+      (search-forward "\"\"\"")
+      (forward-line -1)
+      (should (not (empty-line-p)))
+      )))
+
+(ert-deftest py-ert-fill-paragraph-symmetric ()
+  (let ((py-docstring-style 'symmetric))
+    (py-tests-with-temp-buffer
+	"# r1416
+
+def baz():
+    \"\"\"Hello there. This is a multiline function definition. Don= 't wor ry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
+
+    This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
+    \"\"\"
+    return 7
+"
+      (goto-char 49)
+      (switch-to-buffer (current-buffer))
+      (fill-paragraph)
+      (search-backward "\"\"\"")
+      (goto-char (match-end 0)) 
+      (eolp)
+      (forward-line 1) 
+      (end-of-line)
+      (should (<= (current-column) 72))
+      (search-forward "\"\"\"")
+      (forward-line -1)
+      (should (not (empty-line-p)))
+      )))
 
 ;;; execute tests
 (ert-deftest py-ert-execute-expression-test ()
@@ -701,7 +845,7 @@ def baz():
 
 ;;;
 
-(ert-deftest py-imports-in-interactive-shell-lp-1290709 ()
+(ert-deftest py-ert-imports-in-interactive-shell-lp-1290709 ()
   ""
   (ignore-errors (kill-buffer-unconditional "*Python*"))
   (py-shell)

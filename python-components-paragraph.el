@@ -109,9 +109,9 @@ Fill according to `py-docstring-style' "
   (save-excursion
     (save-restriction
       (let* ((style (or style py-docstring-style))
-             (fill-column (if (integerp py-docstring-fill-column)
-                              py-docstring-fill-column
-                            fill-column))
+             (fill-column (- (if (integerp py-docstring-fill-column)
+				 py-docstring-fill-column
+			       fill-column) py-indent-offset))
              ;; unset python-mode value this time
              forward-sexp-function
              (pps (or
@@ -132,10 +132,10 @@ Fill according to `py-docstring-style' "
              ;; Assume docstrings at BOL resp. indentation
              (docstring (or docstring (unless (eq 'no docstring)
                                         (py-docstring-p pps))))
-	     (fill-column
-	      (if (or (eq style 'pep-257-nn)(eq style 'pep-257))
-		  (- py-docstring-fill-column py-indent-offset)
-		py-docstring-fill-column))
+	     ;; 	     (fill-column
+	     ;; 	      (if (or (eq style 'pep-257-nn)(eq style 'pep-257))
+	     ;; 		  (- py-docstring-fill-column py-indent-offset)
+	     ;; 		py-docstring-fill-column))
 	     ;; 	     (fill-column py-docstring-fill-column)
              (end (or (ignore-errors (and end (goto-char end) (skip-chars-backward "\"' \t\f\n")(copy-marker (point))))
                       (progn (or (eq (marker-position beg) (point)) (goto-char (nth 8 pps)))
