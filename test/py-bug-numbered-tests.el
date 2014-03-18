@@ -5460,7 +5460,7 @@ class Test(object):
     (fill-paragraph)
     (end-of-line)
     (message "(current-column): %s" (current-column))
-    (assert (eq 51 (current-column)) nil "more-docstring-filling-woes-lp-1102296-nil-test #1 failed")
+    (assert (eq 54 (current-column)) nil "more-docstring-filling-woes-lp-1102296-nil-test #1 failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-nil-test #1 done")
     (goto-char 259)
     (fill-paragraph)

@@ -792,6 +792,24 @@ def baz():
       (should (not (empty-line-p)))
       )))
 
+
+
+(ert-deftest py-ert-fill-paragraph-lp-1291493 ()
+  (py-tests-with-temp-buffer
+      "if True:
+    if True:
+        if True:
+            if True:
+                pass
+
+def foo():
+    \"\"\"Foo\"\"\"
+"
+    (switch-to-buffer (current-buffer)) 
+    (search-forward "\"\"\"")
+    (fill-paragraph)
+    (should (eq 7 (current-column))))) 
+
 ;;; execute tests
 (ert-deftest py-ert-execute-expression-test ()
   (py-tests-with-temp-buffer

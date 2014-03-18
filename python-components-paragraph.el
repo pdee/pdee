@@ -132,11 +132,6 @@ Fill according to `py-docstring-style' "
              ;; Assume docstrings at BOL resp. indentation
              (docstring (or docstring (unless (eq 'no docstring)
                                         (py-docstring-p pps))))
-	     ;; 	     (fill-column
-	     ;; 	      (if (or (eq style 'pep-257-nn)(eq style 'pep-257))
-	     ;; 		  (- py-docstring-fill-column py-indent-offset)
-	     ;; 		py-docstring-fill-column))
-	     ;; 	     (fill-column py-docstring-fill-column)
              (end (or (ignore-errors (and end (goto-char end) (skip-chars-backward "\"' \t\f\n")(copy-marker (point))))
                       (progn (or (eq (marker-position beg) (point)) (goto-char (nth 8 pps)))
                              (forward-sexp)
@@ -165,7 +160,8 @@ Fill according to `py-docstring-style' "
               (replace-match " "))
             (fill-region (point-min) (point-max))))
         (and docstring (setq multi-line-p
-                             (> (count-matches "\n" beg end) 0)))
+			     (or (< fill-column (- end beg))
+				 (> (count-matches "\n" beg end) 0))))
         (and docstring
              (setq delimiters-style
                    (case style
@@ -201,8 +197,10 @@ Fill according to `py-docstring-style' "
               (and
                (cdr delimiters-style)
                (or (newline (cdr delimiters-style)) t)))
-            (setq end (progn (skip-chars-forward " \t\r\n\f")(skip-chars-forward "\"'")(copy-marker (point))))
-            (setq beg (progn (goto-char beg) (skip-chars-backward " \t\r\n\f")(skip-chars-backward "\"'") (copy-marker (point)))))
+	    ;; lp:1291493
+	    (setq end (progn (skip-chars-forward " \t\r\n\f")(skip-chars-forward "\"'")(copy-marker (point))))
+	    ;; (setq beg (progn (goto-char beg) (skip-chars-backward " \t\r\n\f")(skip-chars-backward "\"'") (copy-marker (point))))
+	    )
           (indent-region beg end)
           (goto-char end)
           (beginning-of-line)
