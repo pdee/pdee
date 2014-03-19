@@ -386,7 +386,6 @@ Needed when file-path names are contructed from maybe numbered buffer names like
     ;; (message "%s" (current-buffer))
     (goto-char (point-min))
     (forward-line (1- origline))
-;;    (switch-to-buffer (current-buffer))
     (push-mark)
     (and (search-forward action (line-end-position) t)
          (and py-verbose-p (message "Exception in file %s on line %d" py-exception-buffer origline))
@@ -415,7 +414,6 @@ Needed when file-path names are contructed from maybe numbered buffer names like
            (py-jump-to-exception-intern action (get-buffer (file-name-nondirectory file))))
           ((buffer-live-p (get-buffer file))
            (set-buffer file)
-;;           (switch-to-buffer (current-buffer))
            (py-jump-to-exception-intern action file))
           (t (setq file (find-file (read-file-name "Exception file: "
                                                    nil
@@ -677,6 +675,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
           (setq py-output-buffer py-buffer-name))
       (unless (comint-check-proc py-buffer-name)
         (py--shell-make-comint)
+	(sit-for 1) 
         (py--shell-setup (get-buffer-process (current-buffer))))
       ;; (py--init-easy-menu)
       ;; (add-hook 'py-shell-hook 'py-dirstack-hook)
@@ -890,7 +889,7 @@ Optional DEDICATED "
 	  (py-shell-name (cond ((or py-force-py-shell-name-p (eq 4 (prefix-numeric-value shell))) (default-value 'py-shell-name))
 			       ((and (numberp shell) (not (eq 1 (prefix-numeric-value shell))))
 				(read-from-minibuffer "(path-to-)shell-name: " (default-value 'py-shell-name)))
-			       (t shell)))
+			       (t (or shell py-shell-name))))
 	  (py-dedicated-process-p (or dedicated py-dedicated-process-p)))
       (py-execute-base start end))))
 
@@ -1628,7 +1627,6 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
                        (py-last-exeption-buffer (buffer-name py-last-exeption-buffer))
                        (t (error "Don't see exeption buffer")))))
     (when buffer (set-buffer (get-buffer buffer)))
-;;    (switch-to-buffer (current-buffer))
     (if (eq direction 'up)
         (if (string= start "TOP")
             (py-find-next-exception 'bob buffer 're-search-forward "Top")

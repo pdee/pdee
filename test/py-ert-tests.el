@@ -176,8 +176,6 @@ result = some_function_that_takes_arguments(
 ''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
 '''
 "
-    (switch-to-buffer (current-buffer))
-    ;; (sit-for 1)
   (message "comment-start: %s" comment-start)
   (goto-char 592)
   ;; (sit-for 1)
@@ -456,7 +454,6 @@ data = {
 
 "
     (let (py-closing-list-dedents-bos)
-      (switch-to-buffer (current-buffer))
       (search-forward "]")
       (should (eq 4 (py-compute-indentation)))
       (search-forward ")")
@@ -491,7 +488,6 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
             datei.write(str(spiel[i]) + \"\\n\")
 "
     (message "%s" (point))
-    (switch-to-buffer (current-buffer))
     (should (eq 16 (py-end-of-top-level)))
     (should (eq 168 (py-end-of-top-level)))
 
@@ -516,7 +512,6 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
             # print \"%i, manque\" % (treffer)
             ausgabe[7] = treffer
 "
-    (switch-to-buffer (current-buffer))
     (search-forward "else:")
     (forward-char -1)
     (should (eq 1 (py-beginning-of-top-level-position)))
@@ -634,7 +629,6 @@ def baz():
     return 7
 "
     (goto-char 49)
-    (switch-to-buffer (current-buffer))
     (fill-paragraph)
     (end-of-line)
     (should (<= (current-column) 72))
@@ -665,7 +659,6 @@ def baz():
     return 7
 "
       (goto-char 49)
-      (switch-to-buffer (current-buffer))
       (fill-paragraph)
       (end-of-line)
       (should (<= (current-column) 72))
@@ -696,7 +689,6 @@ def baz():
     return 7
 "
       (goto-char 49)
-      (switch-to-buffer (current-buffer))
       (fill-paragraph)
       (end-of-line)
       (should (<= (current-column) 72))
@@ -727,7 +719,6 @@ def baz():
     return 7
 "
       (goto-char 49)
-      (switch-to-buffer (current-buffer))
       (fill-paragraph)
       (search-backward "\"\"\"")
       (goto-char (match-end 0))
@@ -753,7 +744,6 @@ def baz():
     return 7
 "
       (goto-char 49)
-      (switch-to-buffer (current-buffer))
       (fill-paragraph)
       (search-backward "\"\"\"")
       (goto-char (match-end 0))
@@ -779,7 +769,6 @@ def baz():
     return 7
 "
       (goto-char 49)
-      (switch-to-buffer (current-buffer))
       (fill-paragraph)
       (search-backward "\"\"\"")
       (goto-char (match-end 0))
@@ -911,5 +900,18 @@ else:
     (should (eq 'font-lock-keyword-face (get-char-property (point) 'face)))
     (forward-line 2)
     (should (eq 'font-lock-keyword-face (get-char-property (point) 'face)))))
+
+(ert-deftest py-ert-execute-region-lp-1294796 ()
+  (py-tests-with-temp-buffer
+      "print(1)"
+    (switch-to-buffer (current-buffer))
+    (and (buffer-live-p (get-buffer "*Ipython*"))
+	 (kill-buffer-unconditional (get-buffer "*Ipython*")))
+    (setq py-shell-name "ipython")
+    (py-execute-buffer)
+    (set-buffer "*Ipython*")
+    (sit-for 0.1)
+    (switch-to-buffer (current-buffer))
+    (should (eq 49 (char-after)))))
 
 (provide 'py-ert-tests)

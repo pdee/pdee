@@ -5142,7 +5142,7 @@ class Test(object):
   (let ((py-docstring-style 'pep-257))
     (goto-char 178)
     (fill-paragraph)
-    (end-of-line) 
+    (end-of-line)
     (assert (looking-back "\"\"\"")  nil "more-docstring-filling-woes-lp-1102296-pep-257-test #1 failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-pep-257-test #1 done")
     (goto-char 259)
@@ -5194,7 +5194,7 @@ class Test(object):
         (py-docstring-style 'onetwo))
     (goto-char 178)
     (fill-paragraph)
-    (end-of-line) 
+    (end-of-line)
     (assert (looking-back "\"\"\"")  nil "more-docstring-filling-woes-lp-1102296-onetwo-test #1 failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-onetwo-test #1 done")
     (goto-char 259)
@@ -6286,6 +6286,20 @@ def expand(self, leading=0, subs={}):
     (goto-char 40)
     (assert nil "py-mark-def-hangs-lp-1294478.py-test failed"))
 
+
+(defun execute-region-lp-1294796-test (&optional arg)
+  (interactive "p")
+   (let ((teststring "print(1)
+"))
+  (py-bug-tests-intern 'execute-region-lp-1294796-base arg teststring)))
+
+(defun execute-region-lp-1294796-base ()
+  (let ((py-shell-name "ipython"))
+    (py-execute-buffer)
+    (sit-for 1)
+    (set-buffer "*Ipython*")
+    (switch-to-buffer (current-buffer))
+    (assert (eq 49 (char-after)) nil "execute-region-lp-1294796-test failed")))
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

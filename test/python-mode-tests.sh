@@ -1,4 +1,4 @@
- #!/bin/bash
+#!/bin/bash
 
 # Author: Andreas Roehler <andreas.roehler@online.de>
 
@@ -1414,3 +1414,4 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall C-c-C-c-lp:1221310-and-store-result-test \
 --funcall inconvenient-window-splitting-behavior-python-lp-1018996-test \
 --funcall IndentationError-expected-an-indented-block-when-execute-lp-1055569-test \
+--funcall execute-region-lp-1294796-test \
