@@ -5397,7 +5397,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.90 $\"
+__version__ = \"$Revision: 1.92 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -6217,6 +6217,74 @@ print s(500)
 
 (defun wrong-type-argument-inserted-chars-lp-1293172-base ()
       (assert (insert-file-contents (concat py-install-directory "/test/tn_clippy.txt")) nil "wrong-type-argument-inserted-chars-lp-1293172-test failed"))
+
+
+(defun py-mark-def-hangs-lp-1294478.py-test (&optional arg)
+  (interactive "p")
+   (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+def expand(self, leading=0, subs={}):
+    for tracking_ln in self.template_list:
+	# count leading blanks
+	# find \$x and \${x} form
+	# expand each sub string before replacement
+	# replace \$x and \${x} form
+	tLinePreCnt = len(tLine)-len(fullstr.lstrip())
+	tracking_ndx = tLinePreCnt
+
+	# breakdown line
+	# don't process a line starting with a hash
+	# first look for the \$. Then it should be followed by
+	# either a \$,{ or a-zA-Z add spaces iff sub is multi-line
+
+	character position = template line.find(\"#\")
+	if character position == trailing index:
+	    # skip this line
+	    expansion_list.append (template line)
+	    break
+
+	working_line = template line [0: trailing index]
+	while(True):
+	    #scan for all \$ combos
+	    character position = template line.find (\"\$\", trailing index)
+	    if character position == -1:
+		# copy the rest of the line
+		working_line.append (template line [trailing index: -1])
+		break
+
+	    elif template line[character position + 1] is \"\$\":
+		# this is a quoted \$?  de-quote
+		working_line.append (template line [trailing index: character position]
+		trailing index = character position+2
+
+	    elif template line[character position + 1] is \"{\":
+		# extract alphanum + _
+		working_line.append (template line [trailing index: character position -1])
+		start bracket = character position+1
+		end bracket = template line.find (\"}\", start bracket)
+		if end bracket == -1:
+		    #no closing bracket. time to raise exception.
+		    raise
+		# substitution key is between start bracket and end bracket
+		substitution key = template line [start bracket+1:end bracket-1]
+		sub_string = sub[substitution key]
+		expanded lines = self.recursive_expand(sub_string)
+		# append the first line to working line, then append the
+		# rest of the lines after adding preamble
+
+	    elif template line [character position + 1].isalnum():
+		# \$a-z form
+		print \"not implemented yet\"
+	    else:
+		print \"why am I here\"
+
+     return expansion_list
+"))
+  (py-bug-tests-intern 'py-mark-def-hangs-lp-1294478.py-base arg teststring)))
+
+(defun py-mark-def-hangs-lp-1294478.py-base ()
+    (goto-char 40)
+    (assert nil "py-mark-def-hangs-lp-1294478.py-test failed"))
 
 
 (provide 'py-bug-numbered-tests)

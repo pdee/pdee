@@ -791,69 +791,102 @@ and `pass'.  This doesn't catch embedded statements."
         (looking-at py-block-closing-keywords-re)
       (goto-char here))))
 
+(defun py--record-list-error (pps)
+  "When encountering a missing parenthesis, store its line, position. `py-verbose-p'  must be t
+
+Unclosed-string errors are not handled here, as made visible by fontification already.
+"
+  (let ((this-err
+         (save-excursion
+           (list
+            (nth 1 pps)
+            (progn
+              (goto-char (nth 1 pps))
+              (py-count-lines (point-min) (point)))))))
+    this-err))
+
+(defun py--message-error (err)
+  "Receives a list (position line) "
+  (message "Closing paren missed: line %s pos %s" (cadr err) (car err)))
+
 ;;; py-look-downward-for-clause
 (defun py-end-base (regexp &optional orig decorator)
   "Used internal by functions going to the end forms. "
   (unless (eobp)
-    (let* ((orig (or orig (point)))
-           (regexp (or regexp 'py-extended-block-or-clause-re))
-           (thisregexp
-            (cond ((eq regexp 'py-def-or-class-re)
-                   (concat "@\\|" py-def-or-class-re))
-                  ((eq regexp 'py-def-re)
-                   (concat "@\\|" py-def-re))
-                  ((eq regexp 'py-class-re)
-                   (concat "@\\|" py-class-re))
-                  ((eq regexp 'py-minor-block-re)
-                   py-minor-block-re)
-                  (t (concat "@\\|" py-extended-block-or-clause-re))))
+    (catch 'exit
+      (let* ((orig (or orig (point)))
+             (regexp (or regexp 'py-extended-block-or-clause-re))
+             (thisregexp
+              (cond ((eq regexp 'py-def-or-class-re)
+                     (concat "@\\|" py-def-or-class-re))
+                    ((eq regexp 'py-def-re)
+                     (concat "@\\|" py-def-re))
+                    ((eq regexp 'py-class-re)
+                     (concat "@\\|" py-class-re))
+                    ((eq regexp 'py-minor-block-re)
+                     py-minor-block-re)
+                    (t (concat "@\\|" py-extended-block-or-clause-re))))
 
-           bofst
-           (this (progn (back-to-indentation)
-                        (setq bofst (py-beginning-of-statement-p))
-                        (cond ((and bofst (eq regexp 'py-clause-re)(looking-at py-extended-block-or-clause-re))
-                               (point))
-                              ((and bofst (looking-at (symbol-value regexp)))
-                               (point))
-                              (t
-                               (when
-                                   (cdr-safe
-                                    (py-go-to-keyword
-                                     thisregexp))
-                                 (when (py-statement-opens-block-p py-extended-block-or-clause-re)
-                                   (point)))))))
-           ind erg last pps thisindent done)
-      (cond (this
-             (setq thisindent (current-indentation))
-             (cond ((and py-close-provides-newline
-                         (or (eq regexp 'py-def-re)(eq regexp 'py-class-re)(eq regexp 'py-def-or-class-re)))
-                    (while (and (setq last (point))(re-search-forward "^$")(skip-chars-forward " \t\r\n\f")(or (nth 8 (setq pps (syntax-ppss))) (nth 1 pps) (< thisindent (current-column)))))
-                    ;; (goto-char last)
-                    (skip-chars-backward " \t\r\n\f")
-                    (setq done t)
-                    (and (nth 8 (setq pps (syntax-ppss)))
-                         (py-beginning-of-statement)
-                         (py-end-of-statement)))
-                   (t (while
-                          (and (py-down-statement)
-                               (or (< thisindent (current-indentation))
-                                   (and (eq thisindent (current-indentation))
-                                        (or (eq regexp 'py-minor-block-re)
-                                            (eq regexp 'py-block-re))
-                                        (looking-at py-clause-re)))
-                               (py-end-of-statement)(setq last (point))))
-                      (and last (goto-char last)))))
-            (t (goto-char orig)))
-      (when (and (<= (point) orig)(not (looking-at (symbol-value regexp))))
-        ;; found the end above
-        ;; py-travel-current-indent will stop of clause at equal indent
-        (when (py-look-downward-for-beginning (symbol-value regexp))
-          (py-end-base regexp orig)))
-      (setq pps (syntax-ppss))
-      (if (and (< orig (point)) (not (or (looking-at comment-start) (nth 8 pps) (nth 1 pps))))
-          (point)
-        (goto-char (point-max))
-        nil))))
+             bofst
+             (this (progn (back-to-indentation)
+                          (setq bofst (py-beginning-of-statement-p))
+                          (cond ((and bofst (eq regexp 'py-clause-re)(looking-at py-extended-block-or-clause-re))
+                                 (point))
+                                ((and bofst (looking-at (symbol-value regexp)))
+                                 (point))
+                                (t
+                                 (when
+                                     (cdr-safe
+                                      (py-go-to-keyword
+                                       thisregexp))
+                                   (when (py-statement-opens-block-p py-extended-block-or-clause-re)
+                                     (point)))))))
+             ind erg last pps thisindent done err)
+        (cond (this
+               (setq thisindent (current-indentation))
+               (cond ((and py-close-provides-newline
+                           (or (eq regexp 'py-def-re)(eq regexp 'py-class-re)(eq regexp 'py-def-or-class-re)))
+                      (while
+                          (and
+                           ;; lp:1294478 py-mark-def hangs
+                           (if last
+                               (if (< last (point))
+                                   t
+                                 (when (nth 1 pps)
+                                   (if py-verbose-p
+                                       (throw 'exit (py--message-error (py--record-list-error pps)))
+                                     (throw 'exit nil))))
+
+                             t)
+                           (setq last (point))(re-search-forward "^$" nil t)(skip-chars-forward " \t\r\n\f")(or (nth 8 (setq pps (syntax-ppss))) (nth 1 pps) (< thisindent (current-column)))))
+                      ;; (goto-char last)
+                      (skip-chars-backward " \t\r\n\f")
+                      (setq done t)
+                      (and (nth 8 (setq pps (syntax-ppss)))
+                           (py-beginning-of-statement)
+                           (py-end-of-statement)))
+                     (t (while
+                            (and (py-down-statement)
+                                 (or (< thisindent (current-indentation))
+                                     (and (eq thisindent (current-indentation))
+                                          (or (eq regexp 'py-minor-block-re)
+                                              (eq regexp 'py-block-re))
+                                          (looking-at py-clause-re)))
+                                 (py-end-of-statement)(setq last (point))))
+                        (and last (goto-char last)))))
+              (t (goto-char orig)))
+        (when (and (<= (point) orig)(not (looking-at (symbol-value regexp))))
+          ;; found the end above
+          ;; py-travel-current-indent will stop of clause at equal indent
+          (when (py-look-downward-for-beginning (symbol-value regexp))
+            (py-end-base regexp orig)))
+        (setq pps (syntax-ppss))
+        ;; (catch 'exit)
+        (and err py-verbose-p (py--message-error err))
+        (if (and (< orig (point)) (not (or (looking-at comment-start) (nth 8 pps) (nth 1 pps))))
+            (point)
+          (goto-char (point-max))
+          nil)))))
 
 (defun py-look-downward-for-beginning (regexp)
   "When above any beginning of FORM, search downward. "
