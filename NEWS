@@ -60,6 +60,11 @@ Booleans
   commands, suitable for large output. Result arrives
   in py-output-buffer, which is not in comint-mode
 
+Dropped booleans:
+`py-start-run-py-shell', 
+`py-start-run-ipython-shell',
+`py-pylint-offer-current-p'
+
 New in version 6.1.3
 ---------------------
 

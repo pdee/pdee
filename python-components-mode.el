@@ -445,20 +445,6 @@ Default is nil. "
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-start-run-py-shell nil
-  "If `python-mode' should start a python-shell, `py-shell'.
-
-Default is `nil'. "
-  :type 'boolean
-  :group 'python-mode)
-
-(defcustom py-start-run-ipython-shell nil
-  "If `python-mode' should start an ipython-shell.
-
-Default is `nil'. "
-  :type 'boolean
-  :group 'python-mode)
-
 (defcustom py-set-complete-keymap-p  nil
   "If `py-complete-initialize', which sets up enviroment for Pymacs based py-complete, should load it's keys into `python-mode-map'
 
@@ -5357,22 +5343,6 @@ See: large output makes Emacs freeze, lp:1253907
 Results arrive in py-output-buffer, which is not in comint-modeUse `M-x customize-variable' to set it permanently"
 :style toggle :selected py-fast-process-p]
 
-                    ["Run Python shell at start"
-                     (setq py-start-run-py-shell
-                           (not py-start-run-py-shell))
-                     :help "If `python-mode' should start a python-shell, `py-shell'.
-
-Default is `nil'. Use `M-x customize-variable' to set it permanently"
-                     :style toggle :selected py-start-run-py-shell]
-
-                    ["Run IPython shell at start"
-                     (setq py-start-run-ipython-shell
-                           (not py-start-run-ipython-shell))
-                     :help "If `python-mode' should start an ipython-shell.
-
-Default is `nil'. Use `M-x customize-variable' to set it permanently"
-                     :style toggle :selected py-start-run-ipython-shell]
-
                     ["Shell prompt read only"
                      (setq py-shell-prompt-read-only
                            (not py-shell-prompt-read-only))
@@ -8323,17 +8293,6 @@ See available customizations listed in files variables-python-mode at directory 
   (when py-menu
     (easy-menu-add py-menu))
   (when py-hide-show-minor-mode-p (hs-minor-mode 1))
-  (when py-start-run-py-shell
-    ;; py-shell may split window, provide restore
-    (window-configuration-to-register 213465879)
-    (unless (get-process (py-process-name py-shell-name))
-      (let ((oldbuf (current-buffer)))
-        (save-excursion
-          (py-shell)
-          (set-buffer py-exception-buffer))))
-    ;; (jump-to-register 213465879)
-    )
-  ;; (run-mode-hooks 'python-mode-hook)
   (when py-outline-minor-mode-p (outline-minor-mode 1))
   (when (interactive-p) (message "python-mode loaded from: %s" python-mode-message-string)))
 
