@@ -920,14 +920,10 @@ Home-page: http://www.logilab.org/project/pylint "
      (list
       (if (fboundp 'read-shell-command)
           (read-shell-command "Run pylint like this: "
-                              (if py-pylint-offer-current-p
-                                  (or default last)
-                                (or last default))
+			      (or last default)
                               'py-pylint-history)
         (read-string "Run pylint like this: "
-                     (if py-pylint-offer-current-p
-                         (or default last)
-                       (or last default))
+		     (or default last)
                      'py-pylint-history)))))
   (save-some-buffers (not py-ask-about-save))
   (unless (file-readable-p buffer-file-name)

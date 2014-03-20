@@ -100,15 +100,6 @@ See INSTALL-INFO-FILES for help. "
   :type 'string
   :group 'python-mode)
 
-
-(defcustom py-pylint-offer-current-p t
-  "If current buffers file should be offered for check.
-
-Default is non-nil. If nil, `py-pylint-run' offers filename from history "
-
-  :type 'boolean
-  :group 'python-mode)
-
 (defcustom py-fast-process-p nil
   "Use `py-fast-process'.
 
@@ -5177,25 +5168,6 @@ This may be preferable to `M-x py-execute-buffer' because:
 
                  ("Help"
 
-                  ["Describe mode"        py-describe-mode t]
-
-                  ["Help on symbol" py-help-at-point
-                   :help "`py-help-at-point'\n
-Use pydoc on symbol at point"]
-
-                  ;;          ["py-complete-help" py-complete-help
-                  ;;           :help " `py-complete-help'
-                  ;; Get help on a Python expression.\n
-                  ;; Needs Pymacs "]
-                  ;;
-                  ;;          ["Help thing at point" py-complete-help-thing-at-point
-                  ;;           :help " `py-complete-help-thing-at-point'\n
-                  ;; Needs Pymacs "]
-
-                  ;;          ["Signature" py-complete-signature-expr
-                  ;;           :help " Print object's signature\n
-                  ;; Needs Pymacs"]
-
                   ["Info lookup symbol" py-info-lookup-symbol
                    :help " `py-info-lookup-symbol'
 
@@ -5208,7 +5180,26 @@ Sends help if stuff is missing. "]
 
 Return the current Python symbol\. "]
 
+		  "-"
+
+                  ["Describe mode"        py-describe-mode t]
+
+                  ["Help on symbol" py-help-at-point
+                   :help "`py-help-at-point'\n
+Use pydoc on symbol at point"]
+
+
+		  ["Report comint variable setting" py-report-comint-variable-setting
+		   :help " `py-report-comint-variable-setting'
+
+Display some comint-mode variables of interest for debugging\.
+
+Some vars like comint-mode maps and tables are not displayed here because of its amount\.
+
+Typing `q' will close the buffer displayed "]
+
                   )
+
                  ("Debugger"
 
                   ["pdb" pdb
