@@ -918,8 +918,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'ipython-complete-use-separate-shell-p) nil \"ipython-complete-use-separate-shell-p not a variable\")" \
 -eval "(assert (boundp 'py-outline-minor-mode-p) nil \"py-outline-minor-mode-p not a variable\")" \
 -eval "(assert (boundp 'py-outline-mode-keywords) nil \"py-outline-mode-keywords not a variable\")" \
--eval "(assert (boundp 'py-start-run-py-shell) nil \"py-start-run-py-shell not a variable\")" \
--eval "(assert (boundp 'py-start-run-ipython-shell) nil \"py-start-run-ipython-shell not a variable\")" \
 -eval "(assert (boundp 'py-close-provides-newline) nil \"py-close-provides-newline not a variable\")" \
 -eval "(assert (boundp 'py-dedent-keep-relative-column) nil \"py-dedent-keep-relative-column not a variable\")" \
 -eval "(assert (boundp 'py-indent-honors-inline-comment) nil \"py-indent-honors-inline-comment not a variable\")" \
