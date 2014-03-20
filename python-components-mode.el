@@ -220,6 +220,14 @@ Call M-x `customize-face' in order to have a visible effect. "
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-fontify-self-p nil
+  "If \"self\" shold get `py-pseudo-keyword-face'
+
+Default is nil"
+
+  :type 'boolean
+  :group 'python-mode)
+
 (defcustom empty-comment-line-separates-paragraph-p t
   "Consider paragraph start/end lines with nothing inside but comment sign.
 
@@ -1909,6 +1917,8 @@ When this-command is py-beginning-of-FORM-bol, last-command's indent will be con
 
 (defvar py-decorators-face 'py-decorators-face)
 
+(defvar py-object-reference-face 'py-object-reference-face)
+
 (defvar py-builtins-face 'py-builtins-face)
 
 (defvar py-class-name-face 'py-class-name-face)
@@ -2328,6 +2338,11 @@ See py-no-outdent-1-re-raw, py-no-outdent-2-re-raw for better readable content "
 (defface py-pseudo-keyword-face
   '((t (:inherit font-lock-keyword-face)))
   "Face for pseudo keywords in Python mode, like self, True, False, Ellipsis."
+  :group 'python-mode)
+
+(defface py-object-reference-face
+  '((t (:inherit default)))
+  "Face when referencing object members from its class resp. method. , commonly \"cls\" and \"self\""
   :group 'python-mode)
 
 (defface py-variable-name-face
@@ -2786,14 +2801,15 @@ See bug report at launchpad, lp:940812 "
         ;;       symbol-end) . font-lock-constant-face)
 
         (,(rx symbol-start
-              (or "cls"
-                  ;; "self"
-                  "cls" "Ellipsis" "True" "False" "None"  "__debug__" "NotImplemented")
+              (or "Ellipsis" "True" "False" "None"  "__debug__" "NotImplemented")
               symbol-end) . py-pseudo-keyword-face)
         ;; Decorators.
         (,(rx line-start (* (any " \t")) (group "@" (1+ (or word ?_))
                                                 (0+ "." (1+ (or word ?_)))))
          (1 py-decorators-face))
+	(,(rx symbol-start (or "cls" "self")
+	      symbol-end) . py-object-reference-face)
+
         ;; Builtin Exceptions
         (,(rx word-start
               (or "ArithmeticError" "AssertionError" "AttributeError"

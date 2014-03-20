@@ -60,6 +60,9 @@ Booleans
   commands, suitable for large output. Result arrives
   in py-output-buffer, which is not in comint-mode
 
+py-object-reference-face', think "self" or "cls"
+ Inherits default face, needs customization to be visible
+
 Dropped booleans:
 `py-start-run-py-shell', 
 `py-start-run-ipython-shell',
