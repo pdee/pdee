@@ -6233,14 +6233,6 @@ Use `M-x customize-variable' to set it permanently"
                      :help "Use `M-x customize-variable' to set it permanently"
                      :style toggle :selected py-highlight-error-source-p]
 
-                    ["Pylint offer current "
-                     (setq py-pylint-offer-current-p
-                           (not py-pylint-offer-current-p))
-                     :help "If current buffers file should be offered for check.
-
-Default is non-nil. If nil, `py-pylint-run' offers filename from history Use `M-x customize-variable' to set it permanently"
-                     :style toggle :selected py-pylint-offer-current-p]
-
                     )
 
                    ("Other"
