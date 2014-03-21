@@ -781,8 +781,6 @@ def baz():
       (should (not (empty-line-p)))
       )))
 
-
-
 (ert-deftest py-ert-fill-paragraph-lp-1291493 ()
   (py-tests-with-temp-buffer
       "if True:
@@ -900,18 +898,46 @@ def foo():
       (set-buffer py-output-buffer)
       (eq 2 (char-after)))))
 
-(ert-deftest py-ert-faces-lp-1294742 ()
+(ert-deftest py-ert-keyword-face-lp-1294742 ()
   (py-tests-with-temp-buffer
-      "if foo:
-    bar()
-else:
-    baz()
-"
+      " and as assert break continue del elif else except exec finally for global if in is lambda not or pass raise return while with yield"
+    (font-lock-fontify-buffer)
+    (while (and (not (eobp))(< 0 (skip-chars-forward " ")))
+      (should (eq 'font-lock-keyword-face (get-char-property (point) 'face)))
+      (skip-chars-forward "^ \n"))))
+
+(ert-deftest py-ert-exception-name-face-lp-1294742 ()
+  (py-tests-with-temp-buffer
+      " ArithmeticError AssertionError AttributeError BaseException BufferError BytesWarning DeprecationWarning EOFError EnvironmentError Exception FloatingPointError FutureWarning GeneratorExit IOError ImportError ImportWarning IndentationError IndexError KeyError KeyboardInterrupt LookupError MemoryError NameError NoResultFound NotImplementedError OSError OverflowError PendingDeprecationWarning ReferenceError RuntimeError RuntimeWarning StandardError StopIteration SyntaxError SyntaxWarning SystemError SystemExit TabError TypeError UnboundLocalError UnicodeDecodeError UnicodeEncodeError UnicodeError UnicodeTranslateError UnicodeWarning UserWarning ValueError Warning ZeroDivisionError"
+    (font-lock-fontify-buffer)
+    (while (and (not (eobp))(< 0 (skip-chars-forward " ")))
+      (should (eq 'py-exception-name-face (get-char-property (point) 'face)))
+      (skip-chars-forward "^ \n"))))
+
+(ert-deftest py-ert-builtins-face-lp-1294742 ()
+  (py-tests-with-temp-buffer
+      " _ __doc__ __import__ __name__ __package__ abs all any apply basestring bin bool buffer bytearray bytes callable chr classmethod cmp coerce compile complex delattr dict dir divmod enumerate eval execfile file filter float format frozenset getattr globals hasattr hash help hex id input int intern isinstance issubclass iter len list locals long map max min next object oct open ord pow print property range raw_input reduce reload repr reversed round set setattr slice sorted staticmethod str sum super tuple type unichr unicode vars xrange zip"
     (font-lock-fontify-buffer)
     (switch-to-buffer (current-buffer))
-    (should (eq 'font-lock-keyword-face (get-char-property (point) 'face)))
-    (forward-line 2)
-    (should (eq 'font-lock-keyword-face (get-char-property (point) 'face)))))
+    (while (and (not (eobp))(< 0 (skip-chars-forward " ")))
+      (should (eq 'py-builtins-face (get-char-property (point) 'face)))
+      (skip-chars-forward "^ \n"))))
+
+(ert-deftest py-ert-py-pseudo-keyword-face-lp-1294742 ()
+  (py-tests-with-temp-buffer
+      "  Ellipsis True False None  __debug__ NotImplemented"
+    (font-lock-fontify-buffer)
+    (while (and (not (eobp))(< 0 (skip-chars-forward " ")))
+      (should (eq 'py-pseudo-keyword-face (get-char-property (point) 'face)))
+      (skip-chars-forward "^ \n"))))
+
+(ert-deftest py-ert-py-object-reference-face-lp-1294742 ()
+  (py-tests-with-temp-buffer
+      " self cls"
+    (font-lock-fontify-buffer)
+    (while (and (not (eobp))(< 0 (skip-chars-forward " ")))
+      (should (eq 'py-object-reference-face (get-char-property (point) 'face)))
+      (skip-chars-forward "^ \n"))))
 
 (ert-deftest py-ert-execute-region-lp-1294796 ()
   (py-tests-with-temp-buffer

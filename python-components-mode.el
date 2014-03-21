@@ -2324,26 +2324,6 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
 ;; prevent ipython.el's setting
 (setq ipython-de-input-prompt-regexp "In \\[[0-9]+\\]:\\|^[ ]\\{3\\}[.]\\{3,\\}:" )
 
-;; (setq ipython-de-input-prompt-regexp "In \\[[0-9]+\\]:\\|^[ ]\\{3\\}[.]\\{3,\\}:")
-
-;; ipython.el
-;; (defvar ipython-de-input-prompt-regexp "\\(?:
-;; In \\[[0-9]+\\]: *.*
-;; ----+> \\(.*
-;; \\)[\n]?\\)\\|\\(?:
-;; In \\[[0-9]+\\]: *\\(.*
-;; \\)\\)\\|^[ ]\\{3\\}[.]\\{3,\\}: *\\(.*
-;; \\)"
-;;   "A regular expression to match the IPython input prompt and the python
-;; command after it. The first match group is for a command that is rewritten,
-;; the second for a 'normal' command, and the third for a multiline command.")
-
-;; (custom-add-option 'python-mode-hook 'python-setup-brm)
-
-;; (defvar python-command py-shell-name)
-
-;; for toggling between CPython and JPython
-
 (setq py-history-filter-regexp "\\`\\s-*\\S-?\\S-?\\s-*\\'\\|'''/tmp/\\|^__pyfile = open('''\\|^execfile(r'[.+]/tmp/")
 
 (defsubst py-keep-region-active ()
@@ -2352,15 +2332,6 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
        (setq zmacs-region-stays t)))
 
 ;;; Constants
-
-;; (setq py-traceback-line-re
-;; "^IPython\\|^In \\[[0-9]+\\]: *\\|^>>>\\|^[^ \t>]+>[^0-9]+\\([0-9]+\\)\\|^[ \t]+File \"\\([^\"]+\\)\", line \\([0-9]+\\)")
-
-;; (setq py-block-or-clause-re "[ \t]*\\_<\\(if\\|else\\|elif\\|while\\|for\\|try\\|except\\|finally\\|with\\)\\_>[: \n\t]")
-
-;; (setq py-clause-re "[ \t]*\\_<\\(else\\|elif\\|except\\|finally\\)\\_>[: \n\t]")
-
-;;;
 
 ;; GNU's syntax-ppss-context
 (unless (functionp 'syntax-ppss-context)
@@ -2818,10 +2789,11 @@ See bug report at launchpad, lp:940812 "
 (setq py-font-lock-keywords
       ;; Keywords
       `(,(rx symbol-start
-             (or "if" "and" "del"  "not" "while" "as" "elif" "global" "or" "with"
-                 "assert" "else"  "pass" "yield" "break"
-                 "print" "exec" "in" "continue" "finally" "is" "except" "raise"
-                 "return"  "for" "lambda")
+             (or
+	      "if" "and" "del"  "not" "while" "as" "elif" "global"
+	      "or" "with" "assert" "else"  "pass" "yield" "break" 
+	      "exec" "in" "continue" "finally" "is" "except" "raise"
+	      "return"  "for" "lambda")
              symbol-end)
         (,(rx symbol-start (or "def" "class") symbol-end) . py-def-class-face)
         (,(rx symbol-start (or "import" "from") symbol-end) . py-import-from-face)
@@ -2842,7 +2814,7 @@ See bug report at launchpad, lp:940812 "
 	(,(rx symbol-start (or "cls" "self")
 	      symbol-end) . py-object-reference-face)
 
-        ;; Builtin Exceptions
+        ;; Exceptions
         (,(rx word-start
               (or "ArithmeticError" "AssertionError" "AttributeError"
                   "BaseException" "BufferError" "BytesWarning" "DeprecationWarning"
