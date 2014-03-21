@@ -26,8 +26,8 @@
 
 (defun py-restore-window-configuration ()
   "Restore py-restore-window-configuration when completion is done resp. abandoned. "
-  (and (setq val (get-register 313465889))(and (consp val) (window-configuration-p (car val))(markerp (cadr val)))(marker-buffer (cadr val))
-       (jump-to-register 313465889)))
+  (and (setq val (get-register py-windows-config-register))(and (consp val) (window-configuration-p (car val))(markerp (cadr val)))(marker-buffer (cadr val))
+       (jump-to-register py-windows-config-register)))
 
 (defun py-shell-execute-string-now (string &optional shell buffer proc output-buffer)
   "Send to Python interpreter process PROC \"exec STRING in {}\".

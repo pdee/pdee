@@ -2231,6 +2231,47 @@ See py-no-outdent-1-re-raw, py-no-outdent-2-re-raw for better readable content "
      1 2))
   "`compilation-error-regexp-alist' for inferior Python.")
 
+(defun py-quote-syntax (n)
+  "Put `syntax-table' property correctly on triple quote.
+Used for syntactic keywords.  N is the match number (1, 2 or 3)."
+  ;; Given a triple quote, we have to check the context to know
+  ;; whether this is an opening or closing triple or whether it's
+  ;; quoted anyhow, and should be ignored.  (For that we need to do
+  ;; the same job as `syntax-ppss' to be correct and it seems to be OK
+  ;; to use it here despite initial worries.)  We also have to sort
+  ;; out a possible prefix -- well, we don't _have_ to, but I think it
+  ;; should be treated as part of the string.
+
+  ;; Test cases:
+  ;;  ur"""ar""" x='"' # """
+  ;; x = ''' """ ' a
+  ;; '''
+  ;; x '"""' x """ \"""" x
+  (save-excursion
+    (goto-char (match-beginning 0))
+    (cond
+     ;; Consider property for the last char if in a fenced string.
+     ((= n 3)
+      (let* ((font-lock-syntactic-keywords nil)
+	     (syntax (syntax-ppss)))
+	(when (eq t (nth 3 syntax))	; after unclosed fence
+	  (goto-char (nth 8 syntax))	; fence position
+	  ;; (skip-chars-forward "uUrR")	; skip any prefix
+	  ;; Is it a matching sequence?
+	  (if (eq (char-after) (char-after (match-beginning 2)))
+	      (eval-when-compile (string-to-syntax "|"))))))
+     ;; Consider property for initial char, accounting for prefixes.
+     ((or (and (= n 2)			; leading quote (not prefix)
+	       (not (match-end 1)))     ; prefix is null
+	  (and (= n 1)			; prefix
+	       (match-end 1)))          ; non-empty
+      (let ((font-lock-syntactic-keywords nil))
+	(unless (eq 'string (syntax-ppss-context (syntax-ppss)))
+	  (eval-when-compile (string-to-syntax "|")))))
+     ;; Otherwise (we're in a non-matching string) the property is
+     ;; nil, which is OK.
+     )))
+
 (defconst py-font-lock-syntactic-keywords
   ;; Make outer chars of matching triple-quote sequences into generic
   ;; string delimiters.  Fixme: Is there a better way?
@@ -2773,7 +2814,6 @@ See bug report at launchpad, lp:940812 "
           (t
            (rx-to-string (car regexps) t)))))
 
-
 ;;; Font-lock and syntax
 (setq py-font-lock-keywords
       ;; Keywords
@@ -2792,14 +2832,6 @@ See bug report at launchpad, lp:940812 "
         ;; classes
         (,(rx symbol-start (group "class") (1+ space) (group (1+ (or word ?_))))
          (1 py-def-class-face) (2 py-class-name-face))
-        ;; (,(rx symbol-start
-        ;; (or "raise" "except")
-        ;; symbol-end) . py-exception-name-face)
-        ;; already pseudo-keyword
-        ;; (,(rx symbol-start
-        ;;       (or "None" "True" "False" "__debug__" "NotImplemented")
-        ;;       symbol-end) . font-lock-constant-face)
-
         (,(rx symbol-start
               (or "Ellipsis" "True" "False" "None"  "__debug__" "NotImplemented")
               symbol-end) . py-pseudo-keyword-face)
@@ -2842,10 +2874,6 @@ See bug report at launchpad, lp:940812 "
                   "sorted" "staticmethod" "str" "sum" "super" "tuple" "type"
                   "unichr" "unicode" "vars" "xrange" "zip")
               symbol-end) . py-builtins-face)
-        ;; (,(python-rx line-start (* (any " \t"))(group (** 0 2 "_") word (0+ (or word ?_))(** 0 2 "_"))(* (any " \t")) assignment-operator)
-        ;; 1 py-variable-name-face)
-        ;; asignations
-        ;; support for a = b = c = 5
         ("\\([._[:word:]]+\\)\\(?:\\[[^]]+]\\)?[[:space:]]*\\(?:\\(?:\\*\\*\\|//\\|<<\\|>>\\|[%&*+/|^-]\\)?=\\)"
          (1 py-variable-name-face nil nil))
         ;; a, b, c = (1, 2, 3)
@@ -2873,107 +2901,7 @@ See bug report at launchpad, lp:940812 "
 ;;               "\\(?:\\('\\)'\\('\\)\\|\\(?2:\"\\)\"\\(?3:\"\\)\\)")
 ;;      (3 (py-quote-syntax)))))
 
-(defun py-quote-syntax (n)
-  "Put `syntax-table' property correctly on triple quote.
-Used for syntactic keywords.  N is the match number (1, 2 or 3)."
-  ;; Given a triple quote, we have to check the context to know
-  ;; whether this is an opening or closing triple or whether it's
-  ;; quoted anyhow, and should be ignored.  (For that we need to do
-  ;; the same job as `syntax-ppss' to be correct and it seems to be OK
-  ;; to use it here despite initial worries.)  We also have to sort
-  ;; out a possible prefix -- well, we don't _have_ to, but I think it
-  ;; should be treated as part of the string.
 
-  ;; Test cases:
-  ;;  ur"""ar""" x='"' # """
-  ;; x = ''' """ ' a
-  ;; '''
-  ;; x '"""' x """ \"""" x
-  (save-excursion
-    (goto-char (match-beginning 0))
-    (cond
-     ;; Consider property for the last char if in a fenced string.
-     ((= n 3)
-      (let* ((font-lock-syntactic-keywords nil)
-	     (syntax (syntax-ppss)))
-	(when (eq t (nth 3 syntax))	; after unclosed fence
-	  (goto-char (nth 8 syntax))	; fence position
-	  ;; (skip-chars-forward "uUrR")	; skip any prefix
-	  ;; Is it a matching sequence?
-	  (if (eq (char-after) (char-after (match-beginning 2)))
-	      (eval-when-compile (string-to-syntax "|"))))))
-     ;; Consider property for initial char, accounting for prefixes.
-     ((or (and (= n 2)			; leading quote (not prefix)
-	       (not (match-end 1)))     ; prefix is null
-	  (and (= n 1)			; prefix
-	       (match-end 1)))          ; non-empty
-      (let ((font-lock-syntactic-keywords nil))
-	(unless (eq 'string (syntax-ppss-context (syntax-ppss)))
-	  (eval-when-compile (string-to-syntax "|")))))
-     ;; Otherwise (we're in a non-matching string) the property is
-     ;; nil, which is OK.
-     )))
-
-;; (defun py-quote-syntax ()
-;;   "Put `syntax-table' property correctly on triple quote.
-;; Used for syntactic keywords.  N is the match number (1, 2 or 3)."
-;;   ;; Given a triple quote, we have to check the context to know
-;;   ;; whether this is an opening or closing triple or whether it's
-;;   ;; quoted anyhow, and should be ignored.  (For that we need to do
-;;   ;; the same job as `syntax-ppss' to be correct and it seems to be OK
-;;   ;; to use it here despite initial worries.)  We also have to sort
-;;   ;; out a possible prefix -- well, we don't _have_ to, but I think it
-;;   ;; should be treated as part of the string.
-;;
-;;   ;; Test cases:
-;;   ;;  ur"""ar""" x='"' # """
-;;   ;; x = ''' """ ' a
-;;   ;; '''
-;;   ;; x '"""' x """ \"""" x
-;;   (save-excursion
-;;     (goto-char (match-beginning 0))
-;;     (let ((syntax (save-match-data (syntax-ppss))))
-;;       (cond
-;;        ((eq t (nth 3 syntax))           ; after unclosed fence
-;;         ;; Consider property for the last char if in a fenced string.
-;;         (goto-char (nth 8 syntax))	; fence position
-;;         (skip-chars-forward "uUrR")	; skip any prefix
-;;         ;; Is it a matching sequence?
-;;         (if (eq (char-after) (char-after (match-beginning 2)))
-;;             (put-text-property (match-beginning 3) (match-end 3)
-;;                                'syntax-table (string-to-syntax "|"))))
-;;        ((match-end 1)
-;;         ;; Consider property for initial char, accounting for prefixes.
-;;         (put-text-property (match-beginning 1) (match-end 1)
-;;                            'syntax-table (string-to-syntax "|")))
-;;        (t
-;;         ;; Consider property for initial char, accounting for prefixes.
-;;         (put-text-property (match-beginning 2) (match-end 2)
-;;                            'syntax-table (string-to-syntax "|"))))
-;;       )))
-
-;; ;; Credits to github.com/fgallina/python.el/issues42
-;; (defvar font-lock-number "[0-9]+\\([eE][+-]?[0-9]*\\)?")
-;; (defvar font-lock-hexnumber "0[xX][0-9a-fA-F]+")
-;;
-
-;;
-;; (defconst py-font-lock-syntactic-keywords
-;;   ;; Make outer chars of matching triple-quote sequences into generic
-;;   ;; string delimiters.  Fixme: Is there a better way?
-;;   ;; First avoid a sequence preceded by an odd number of backslashes.
-;;   `((,(concat "\\(?:^\\|[^\\]\\(?:\\\\.\\)*\\)" ;Prefix.
-;;               "\\(?:\\('\\)\\('\\)\\('\\)\\|\\(?1:\"\\)\\(?2:\"\\)\\(?3:\"\\)\\)")
-;;      (1 (python-quote-syntax 1) nil lax)
-;;      (2 (python-quote-syntax 2))
-;;      (3 (python-quote-syntax 3)))
-;;     ;; This doesn't really help.
-;; ;;;     (,(rx (and ?\\ (group ?\n))) (1 " "))
-;;     ))
-;;
-
-;; An auxiliary syntax table which places underscore and dot in the
-;; symbol class for simplicity
 
 
 ;;; Keymap
