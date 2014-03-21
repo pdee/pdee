@@ -443,12 +443,11 @@ Internal use"
    (funcall py-split-windows-on-execute-function)))
 
 (defun py--manage-windows-set-and-switch (buffer)
-    "Switch to output-buffer, go to point-max.
+  "Switch to output-buffer, go to point-max.
 
 Internal use"
   (set-buffer buffer)
-  (goto-char (point-max))
-  (switch-to-buffer (current-buffer)))
+  (goto-char (process-mark (get-buffer-process (current-buffer)))))
 
 (defun py-shell-manage-windows (output-buffer &optional windows-displayed windows-config)
   "Adapt or restore window configuration. Return nil "
@@ -473,8 +472,7 @@ Internal use"
           (not py-switch-buffers-on-execute-p))
          (delete-other-windows)
          (py--manage-windows-split)
-	 (py--manage-windows-set-and-switch py-exception-buffer)
-         ;; 	 (py-restore-window-configuration)
+	 (py--manage-windows-set-and-switch py-output-buffer)
          (display-buffer output-buffer t))
         ;; no split, switch
         ((and
@@ -486,7 +484,7 @@ Internal use"
         ((not py-switch-buffers-on-execute-p)
          (let (pop-up-windows)
            (py-restore-window-configuration))))
-  nil)
+  )
 
 (defun py-kill-shell-unconditional (&optional shell)
   "With optional argument SHELL.
@@ -675,7 +673,8 @@ When DONE is `t', `py-shell-manage-windows' is omitted
           (setq py-output-buffer py-buffer-name))
       (unless (comint-check-proc py-buffer-name)
         (py--shell-make-comint)
-	(sit-for 1) 
+	(sit-for 0.1)
+	(setq py-output-buffer (buffer-name (current-buffer)))
         (py--shell-setup (get-buffer-process (current-buffer))))
       ;; (py--init-easy-menu)
       ;; (add-hook 'py-shell-hook 'py-dirstack-hook)
@@ -769,7 +768,7 @@ When optional FILE is `t', no temporary file is needed. "
                      (t (or (and (boundp 'py-buffer-name) (get-buffer-process py-buffer-name))
                             (get-buffer-process (py-shell nil py-dedicated-process-p py-shell-name (and (boundp 'py-buffer-name) py-buffer-name) t))))))
          err-p)
-    (and py-debug-p (with-temp-file "/tmp/py-buffer-name.txt" (insert py-buffer-name))) 
+    (and py-debug-p (with-temp-file "/tmp/py-buffer-name.txt" (insert py-buffer-name)))
     (set-buffer py-exception-buffer)
     (py-update-execute-directory proc py-buffer-name execute-directory)
     (cond (;; enforce proceeding as python-mode.el v5

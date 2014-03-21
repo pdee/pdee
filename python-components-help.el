@@ -52,7 +52,6 @@ Sends help if stuff is missing. "
       (call-interactively 'info-lookup-symbol)
     (message "pydoc-info-add-help not found. Please check INSTALL-INFO-FILES")))
 
-
 (info-lookup-add-help
  :mode 'python-mode
  :regexp "[[:alnum:]_]+"
@@ -695,23 +694,6 @@ Used for debugging in \"*Python*\" shell buffer for example"
 	 (insert (concat "comint-use-prompt-regexp" " --> " (prin1-to-string comint-use-prompt-regexp) "\n")))
     (and (boundp 'comint-use-prompt-regexp-instead-of-fields)
 	 (insert (concat "comint-use-prompt-regexp-instead-of-fields" " --> " (prin1-to-string comint-use-prompt-regexp-instead-of-fields) "\n")))))
-
-(defun py-report-comint-variable-setting ()
-  "Display some comint-mode variables of interest for debugging.
-
-Some vars like comint-mode maps and tables are not displayed here because of its amount.
-
-Typing `q' will close the buffer displayed"
-  (interactive)
-  (let ((help-window-select t))
-    (with-help-window "*Comint variables*"
-      (set-buffer "*Comint variables*")
-      (erase-buffer)
-      (switch-to-buffer (current-buffer))
-      (py--report-comint-variable-setting-intern))))
-
-
-
 
 ;; (require 'info-look)
 ;; The info-look package does not always provide this function (it

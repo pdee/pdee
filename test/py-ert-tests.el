@@ -803,33 +803,44 @@ def foo():
 (ert-deftest py-ert-execute-expression-test ()
   (py-tests-with-temp-buffer
       "print(\"I'm the py-execute-expression-test\")"
-    (py-execute-expression)
-    (set-buffer ert-test-default-buffer)
-    (and (should (search-forward "py-execute-expression-test" nil t 1))
-	 (py-kill-buffer-unconditional (current-buffer)))))
+    (let ((py-shell-name "python"))
+      (py-execute-expression)
+      (set-buffer ert-test-default-buffer)
+      (and (should
+	    (or
+	     (search-backward "py-execute-expression-test" nil t 1)
+	     (search-forward "py-execute-expression-test" nil t 1)))
+	   (py-kill-buffer-unconditional (current-buffer))))))
 
 (ert-deftest py-ert-execute-line-test ()
   (py-tests-with-temp-buffer
       "print(\"I'm the py-execute-line-test\")"
-    (py-execute-line)
-    (set-buffer ert-test-default-buffer)
-    (and (should (search-forward "py-execute-line-test" nil t 1))
-	 (py-kill-buffer-unconditional (current-buffer)))))
+    (let ((py-shell-name "python"))
+      (py-execute-line)
+      (set-buffer ert-test-default-buffer)
+      (switch-to-buffer (current-buffer))
+      (and (should
+	    (or
+	     (search-backward "py-execute-line-test" nil t 1)
+	     (search-forward "py-execute-line-test" nil t 1)))
+	   (py-kill-buffer-unconditional (current-buffer))))))
 
 (ert-deftest py-ert-execute-statement-test ()
   (py-tests-with-temp-buffer
       "print(\"I'm the py-execute-statement-test\")"
-    (py-execute-statement)
-    (set-buffer ert-test-default-buffer)
-    (and (should (search-forward "py-execute-statement-test" nil t 1))
-	 (py-kill-buffer-unconditional (current-buffer)))))
+    (let ((py-shell-name "python"))
+      (py-execute-statement)
+      (set-buffer ert-test-default-buffer)
+      (switch-to-buffer (current-buffer))
+      (and (should (search-backward "py-execute-statement-test" nil t 1))
+	   (py-kill-buffer-unconditional (current-buffer))))))
 
 (ert-deftest py-ert-execute-statement-python2-test ()
   (py-tests-with-temp-buffer
       "print(\"I'm the py-execute-statement-python2-test\")"
     (py-execute-statement-python2)
     (set-buffer "*Python2*")
-    (and (should (search-forward "py-execute-statement-python2-test" nil t 1))
+    (and (should (search-backward "py-execute-statement-python2-test" nil t 1))
 	 (py-kill-buffer-unconditional (current-buffer)))))
 
 (ert-deftest py-ert-execute-statement-python3-dedicated-test ()
@@ -838,7 +849,8 @@ def foo():
     (let ((py-debug-p t))
       (py-execute-statement-python3-dedicated)
       (set-buffer (progn (find-file "/tmp/py-buffer-name.txt")(buffer-substring-no-properties (point-min) (point-max))))
-      (prog1 (should (search-forward "py-execute-statement-python3-dedicated-test" nil t 1))
+      (switch-to-buffer (current-buffer))
+      (prog1 (should (search-backward "py-execute-statement-python3-dedicated-test" nil t 1))
 	(py-kill-buffer-unconditional (current-buffer))
 	(py-kill-buffer-unconditional (get-buffer "py-buffer-name.txt"))
 	))))
@@ -903,15 +915,13 @@ else:
 
 (ert-deftest py-ert-execute-region-lp-1294796 ()
   (py-tests-with-temp-buffer
-      "print(1)"
-    (switch-to-buffer (current-buffer))
-    (and (buffer-live-p (get-buffer "*Ipython*"))
-	 (kill-buffer-unconditional (get-buffer "*Ipython*")))
-    (setq py-shell-name "ipython")
-    (py-execute-buffer)
-    (set-buffer "*Ipython*")
-    (sit-for 0.1)
-    (switch-to-buffer (current-buffer))
-    (should (eq 49 (char-after)))))
+      "print(1)
+"
+    (let ((py-shell-name "ipython")
+	  py-split-windows-on-execute-p
+	  py-switch-buffers-on-execute-p)
+      (py-execute-buffer)
+      (set-buffer "*Ipython*")
+      (should (search-backward "1")))))
 
 (provide 'py-ert-tests)
