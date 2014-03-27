@@ -45,18 +45,13 @@
              (find-file (concat "~/arbeit/emacs/python-modes/python-mode/" ele)))
       (finds))))
 
-(defun variable-finds (&optional buffer directory-in directory-out)
-  "Writes all commands in BUFFER alongside with their documentation into directory \"doc\" as \*.org and \*rst file ."
+(defun variable-docu (&optional buffer directory-in directory-out)
+  "Writes all variable in BUFFER alongside with their documentation into directory \"doc\" as \*.org and \*rst file ."
   (interactive)
-  (let* ((oldbuf (buffer-name (or buffer (current-buffer))))
-         ;; (file (buffer-file-name))
-         (orgname (concat (substring oldbuf 0 (string-match "\\." oldbuf)) ".org"))
-         (reSTname (concat (substring oldbuf 0 (string-match "\\." oldbuf)) ".rst"))
-         (directory-in (or directory-in (and (not (string= "" py-devel-directory-in)) py-devel-directory-in) default-directory))
-         (directory-out (or directory-out (expand-file-name finds-directory-out))))
-    (variable-finds-base oldbuf orgname reSTname directory-in directory-out)))
+  (variables-prepare "docu"))
 
-(defun variable-finds-base (oldbuf orgname reSTname directory-in directory-out)
+
+(defun variables-base-docu (oldbuf orgname reSTname directory-in directory-out)
   (save-restriction
     (let ((suffix (file-name-nondirectory (buffer-file-name)))
           variableslist)
@@ -87,7 +82,7 @@
         ;; (insert (concat (capitalize (substring oldbuf 0 (string-match "\." oldbuf))) " variables" "\n\n"))
         ;; (insert (concat suffix " variables\n\n"))
         (insert "Python-mode variables\n\n")
-        (switch-to-buffer (current-buffer)) 
+        (switch-to-buffer (current-buffer))
         (dolist (ele variableslist)
           (if (string-match "^;;; " (car ele))
               (unless (or (string-match "^;;; Constants\\|^;;; Commentary\\|^;;; Code\\|^;;; Macro definitions\\|^;;; Customization" (car ele)))
@@ -96,7 +91,7 @@
             (insert (concat "\n** "(car ele) "\n"))
             (insert (concat "   " (cdr ele) "\n\n")))
         (richten)
-        (sit-for 0.1) 
+        (sit-for 0.1)
         (write-file (concat directory-out "variables-" orgname))
         (find-file (concat directory-out "variables-" orgname))))
 
@@ -110,7 +105,7 @@
           (insert (concat (make-string (length (car ele)) ?\-) "\n"))
           (insert (concat (cdr ele) "\n\n")))
         (richten)
-        (sit-for 0.1) 
+        (sit-for 0.1)
         (write-file (concat directory-out "variables-" reSTname))
         (find-file (concat directory-out "variables-" reSTname))))))
 
@@ -233,3 +228,5 @@
         (write-file (concat directory-out "variables-" reSTname))
         (find-file (concat directory-out "variables-" reSTname))
       ))))
+
+

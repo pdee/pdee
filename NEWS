@@ -51,6 +51,9 @@ Receives a buffer-name as optional argument"
 - py-report-comint-variable-setting
   Display Py-shell' comint-mode variables of interest.
 
+- variables-state
+  Diplays state of python-mode variables in an org-mode buffer 
+
 - py-kill-buffer-unconditional
   Kill buffer unconditional; kill also any buffer-process.
 
@@ -67,6 +70,7 @@ Dropped booleans:
 `py-start-run-py-shell', 
 `py-start-run-ipython-shell',
 `py-pylint-offer-current-p'
+
 
 New in version 6.1.3
 ---------------------

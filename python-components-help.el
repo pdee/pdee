@@ -1285,5 +1285,70 @@ Keegan Carruthers-Smith"
     (py-toggle-flymake-intern "pyflakespep8" "pyflakespep8")
     (flymake-mode)))
 
+;;;
+(defun variables-state (&optional buffer directory-in directory-out)
+  "Diplays state of python-mode variables in an org-mode buffer. 
+
+Variables which would produce a large output are left out:
+- syntax-tables
+- python-mode-map
+
+Maybe call M-x describe-variable RET to query its value. "
+  (interactive)
+  (variables-prepare "state"))
+
+(defun variables-prepare (kind)
+  "Used by variable-finds, variable-states. "
+  (let* ((oldbuf (buffer-name (or buffer (current-buffer))))
+         ;; (file (buffer-file-name))
+         (orgname (concat (substring oldbuf 0 (string-match "\\." oldbuf)) ".org"))
+         (reSTname (concat (substring oldbuf 0 (string-match "\\." oldbuf)) ".rst"))
+         (directory-in (or directory-in (and (not (string= "" py-devel-directory-in)) py-devel-directory-in) default-directory))
+         (directory-out (or directory-out (expand-file-name finds-directory-out)))
+	 (command (concat "variables-base-" kind)))
+    (funcall (intern-soft command) oldbuf orgname reSTname directory-in directory-out)))
+
+(defun variables-base-state (oldbuf orgname reSTname directory-in directory-out)
+  (save-restriction
+    (let ((suffix (file-name-nondirectory (buffer-file-name)))
+          variableslist)
+      ;; (widen)
+      (goto-char (point-min))
+      ;; (eval-buffer)
+      (while (and (not (eobp))(re-search-forward "^(defvar [[:alpha:]]\\|^(defcustom [[:alpha:]]\\|^(defconst [[:alpha:]]" nil t 1))
+        (let* ((name (symbol-at-point))
+               (state
+                (unless
+                          (or (eq name 'py-menu)
+                              (eq name 'python-mode-map)
+                              (string-match "syntax-table" (prin1-to-string name))
+                              )
+
+                           (prin1-to-string (symbol-value name)))))
+          (if state
+              (add-to-list 'variableslist (cons (prin1-to-string name) state))
+            (message "don't see a state for %s" (prin1-to-string name))))
+        (forward-line 1))
+      (setq variableslist (nreverse variableslist))
+      ;; (with-temp-buffer
+      (set-buffer (get-buffer-create "State-of-Python-mode-variables.org"))
+      (erase-buffer)
+        ;; org
+        (insert "State of python-mode variables\n\n")
+        (switch-to-buffer (current-buffer))
+        (dolist (ele variableslist)
+          (if (string-match "^;;; " (car ele))
+              (unless (or (string-match "^;;; Constants\\|^;;; Commentary\\|^;;; Code\\|^;;; Macro definitions\\|^;;; Customization" (car ele)))
+
+                (insert (concat (replace-regexp-in-string "^;;; " "* " (car ele)) "\n")))
+            (insert (concat "\n** "(car ele) "\n"))
+            (insert (concat "   " (cdr ele) "\n\n")))
+	  (richten)
+	  (sit-for 0.01)
+          )
+        (sit-for 0.01) 
+        (org-mode)
+        )))
+
 (provide 'python-components-help)
 ;;; python-components-help.el ends here
