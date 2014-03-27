@@ -88,6 +88,10 @@ Removed commands:
  -py-django-docstring-style-on
  -py-django-docstring-style-off
 
+Boolean `py-set-fill-column-p' renamed `py-auto-fill-mode' 
+ Fill according to `py-docstring-fill-column' and
+`py-comment-fill-column'
+
 New booleans
 - py-fast-process-p 
   If `t', stuff is executed through `py-fast-...'-

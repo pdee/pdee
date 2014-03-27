@@ -241,7 +241,7 @@ Default is nil. "
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-set-fill-column-p nil
+(defcustom py-auto-fill-mode nil
   "If python-mode should set fill-column
 
 according values in `py-comment-fill-column' and `py-docstring-fill-column'.
@@ -5615,12 +5615,12 @@ Use `M-x customize-variable' to set it permanently"])
                       )
 
                      ["Auto-fill mode"
-                      (setq py-set-fill-column-p
-                            (not py-set-fill-column-p))
-                      :help "Set Python specific `fill-column' according to `py-docstring-fill-column' and `py-comment-fill-column'
+                      (setq py-auto-fill-mode
+                            (not py-auto-fill-mode))
+                      :help "Fill according to `py-docstring-fill-column' and `py-comment-fill-column'
 
 Use `M-x customize-variable' to set it permanently"
-                      :style toggle :selected py-set-fill-column-p]
+                      :style toggle :selected py-auto-fill-mode]
 
                      ["Use current dir when execute"
                       (setq py-use-current-dir-when-execute-p
@@ -8015,7 +8015,7 @@ Don't save anything for STR matching `inferior-python-filter-regexp'."
 
 (defun py-run-auto-fill-timer ()
   "Set fill-column to values of `py-docstring-fill-column' resp. to `py-comment-fill-column' according to environment. "
-  (when py-set-fill-column-p
+  (when py-auto-fill-mode
     (unless py-autofill-timer
       (setq py-autofill-timer
             (run-with-idle-timer
@@ -8164,7 +8164,7 @@ See available customizations listed in files variables-python-mode at directory 
    (t
     (add-hook 'completion-at-point-functions
               'py-shell-complete nil 'local)))
-  (if py-set-fill-column-p
+  (if py-auto-fill-mode
       (add-hook 'python-mode-hook 'py-run-auto-fill-timer)
     (remove-hook 'python-mode-hook 'py-run-auto-fill-timer))
   ;; caused insert-file-contents error lp:1293172
