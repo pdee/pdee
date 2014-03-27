@@ -35,6 +35,7 @@ BODY is code to be executed within the temp buffer.  Point is
 always located at the beginning of buffer."
   (declare (indent 1) (debug t))
   `(with-temp-buffer
+;;     (and (featurep 'python) (unload-feature 'python))
      (let (hs-minor-mode)
        (python-mode)
        (insert ,contents)
@@ -628,6 +629,7 @@ def baz():
     \"\"\"
     return 7
 "
+    (font-lock-fontify-buffer)
     (goto-char 49)
     (fill-paragraph)
     (end-of-line)
@@ -658,8 +660,10 @@ def baz():
     \"\"\"
     return 7
 "
+      (font-lock-fontify-buffer)
+;;      (switch-to-buffer (current-buffer))
       (goto-char 49)
-      (fill-paragraph)
+      (py-fill-string)
       (end-of-line)
       (should (<= (current-column) 72))
       (forward-line 2)
@@ -673,7 +677,9 @@ def baz():
       (should (<= (current-column) 72))
       (search-forward "\"\"\"")
       (forward-line -1)
-      (should (not (empty-line-p)))
+      (fill-paragraph)
+      (end-of-line)
+      (should (<= (current-column) 72))
       )))
 
 (ert-deftest py-ert-fill-paragraph-pep-257 ()
@@ -688,6 +694,8 @@ def baz():
     \"\"\"
     return 7
 "
+      (font-lock-fontify-buffer)
+;;      (switch-to-buffer (current-buffer))
       (goto-char 49)
       (fill-paragraph)
       (end-of-line)
@@ -718,6 +726,7 @@ def baz():
     \"\"\"
     return 7
 "
+      (font-lock-fontify-buffer)
       (goto-char 49)
       (fill-paragraph)
       (search-backward "\"\"\"")
@@ -737,13 +746,15 @@ def baz():
 	"# r1416
 
 def baz():
-    \"\"\"Hello there. This is a multiline function definition. Don= 't wor ry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
+    \"\"\"Hello there. This is a multiline function definition. Don't wor ry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy.
 
-    This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
+    This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy.
     \"\"\"
     return 7
 "
+      (font-lock-fontify-buffer)
       (goto-char 49)
+;;      (switch-to-buffer (current-buffer))
       (fill-paragraph)
       (search-backward "\"\"\"")
       (goto-char (match-end 0))
@@ -768,6 +779,7 @@ def baz():
     \"\"\"
     return 7
 "
+      (font-lock-fontify-buffer)
       (goto-char 49)
       (fill-paragraph)
       (search-backward "\"\"\"")
@@ -792,7 +804,8 @@ def baz():
 def foo():
     \"\"\"Foo\"\"\"
 "
-    (switch-to-buffer (current-buffer))
+    (font-lock-fontify-buffer)
+;;    (switch-to-buffer (current-buffer))
     (search-forward "\"\"\"")
     (fill-paragraph)
     (should (eq 7 (current-column)))))
@@ -816,7 +829,6 @@ def foo():
     (let ((py-shell-name "python"))
       (py-execute-line)
       (set-buffer ert-test-default-buffer)
-      (switch-to-buffer (current-buffer))
       (and (should
 	    (or
 	     (search-backward "py-execute-line-test" nil t 1)
@@ -829,7 +841,6 @@ def foo():
     (let ((py-shell-name "python"))
       (py-execute-statement)
       (set-buffer ert-test-default-buffer)
-      (switch-to-buffer (current-buffer))
       (and (should (search-backward "py-execute-statement-test" nil t 1))
 	   (py-kill-buffer-unconditional (current-buffer))))))
 
@@ -847,7 +858,6 @@ def foo():
     (let ((py-debug-p t))
       (py-execute-statement-python3-dedicated)
       (set-buffer (progn (find-file "/tmp/py-buffer-name.txt")(buffer-substring-no-properties (point-min) (point-max))))
-      (switch-to-buffer (current-buffer))
       (prog1 (should (search-backward "py-execute-statement-python3-dedicated-test" nil t 1))
 	(py-kill-buffer-unconditional (current-buffer))
 	(py-kill-buffer-unconditional (get-buffer "py-buffer-name.txt"))
@@ -918,7 +928,6 @@ def foo():
   (py-tests-with-temp-buffer
       " _ __doc__ __import__ __name__ __package__ abs all any apply basestring bin bool buffer bytearray bytes callable chr classmethod cmp coerce compile complex delattr dict dir divmod enumerate eval execfile file filter float format frozenset getattr globals hasattr hash help hex id input int intern isinstance issubclass iter len list locals long map max min next object oct open ord pow print property range raw_input reduce reload repr reversed round set setattr slice sorted staticmethod str sum super tuple type unichr unicode vars xrange zip"
     (font-lock-fontify-buffer)
-    (switch-to-buffer (current-buffer))
     (while (and (not (eobp))(< 0 (skip-chars-forward " ")))
       (should (eq 'py-builtins-face (get-char-property (point) 'face)))
       (skip-chars-forward "^ \n"))))
@@ -949,5 +958,118 @@ def foo():
       (py-execute-buffer)
       (set-buffer "*Ipython*")
       (should (search-backward "1")))))
+
+(ert-deftest py-ert-borks-all-lp-1294820 ()
+  (py-tests-with-temp-buffer
+      "# M-q within some code (not in= a docstring) completely borks all previous
+# code in the file:
+#
+# E.g. here, if I M-q within the last function:
+
+def foo(self):
+    some_actual_code()
+
+def bar(self):
+    some_actual_code()
+
+def baz(self):
+    some_actual_code()
+
+# def foo(self): some_actual_code() def bar(self): some_actual_code() def
+# baz(self):
+#     some_actual_code()
+"
+    (font-lock-fontify-buffer)
+    (search-forward "def baz(self):")
+    (fill-paragraph)
+    (forward-line -1)
+    (should (eq (char-after) ?\n))))
+
+(ert-deftest py-ert-respect-paragraph-1294829.py ()
+  (py-tests-with-temp-buffer
+      "# py-fill-paragraph doesn';t respect existing paragraph breaks when
+# reflowing the docstring, e.g.
+
+def foo(self)
+    \"\"\"One-line summary.
+
+    Some other stuff which I don't want a paragraph break inserted into
+    the middle of.
+
+    And another para hjkdfgh fdjkg hfdjkg hdfjk ghdfk ghjkdf
+    ghjkdf ghjdf ghjdkf k
+    \"\"\"
+
+def foo(self)
+    \"\"\"One-line summary. Some other stuff which I don't want a
+paragraph
+
+    break inserted into the middle of. And another para hjkdfgh
+fdjkg
+    hfdjkg hdfjk ghdfk ghjkdf ghjkdf ghjdf ghjdkf k \"\"\"
+
+# I feel it would be better if it didn't attempt to
+# reflow the whole docstring, rather just reflow the
+# particular paragraph within it which the point is
+# positioned in.
+
+# It would also be good if it could avoid mangling parameter
+# descriptions like this:
+
+def foo(self):
+    \"\"\"Summary line.
+
+    Foo bar fhgdjkfd hgjfd hgjkfd ghjkdf ghjkdf hgjdf ghjkdf
+hgjdf hjgk dfhjkg dfhjkg dfhjkg fdhjkg hjfdkg
+
+    Parameters
+    ----------
+    endog : array-like
+        1-d endogenous response variable. The dependent variable.
+    exog : array-like
+        A nobs x k array where `nobs` is the number of
+observations and `k`
+        is the number of regressors. An interecept is not
+included by default
+        and should be added by the user. See
+        `statsmodels.tools.add_constant`.\"\"\"
+
+def foo(self):
+    \"\"\"Summary line. Foo bar fhgdjkfdhgjfd hgjkfd ghjkdf ghjkdf
+hgjdf
+
+    ghjkdf hgjdf hjgk dfhjkg dfhjkg dfhjkg fdhjkghjfdkg
+Parameters
+    ---------- endog : array-like 1-d endogenous response
+variable. The
+    dependent variable. exog : array-like A nobs x karray where
+`nobs`
+    is the number of observations and `k` is the number of
+regressors.
+    An interecept is not included by default and should be added
+by the
+    user. See `statsmodels.tools.add_constant`.
+    \"\"\"
+
+# Failing that though, if I can at least choose to
+# reflow individual paragraphs in the docstring and
+# leave others intact, I can format these things
+# manually while still being able to flow other
+# paragraphs using M-q.
+"
+    (font-lock-fontify-buffer)
+    (search-forward "Some other")
+    (fill-paragraph)
+    (forward-line -1)
+    (should (eq (char-after) ?\n))
+    (search-forward "One-line summary.")
+    (fill-paragraph)
+    (forward-line 2)
+    (end-of-line)
+    (should (eq 13 (current-column)))
+    (search-forward "Foo bar")
+    (fill-paragraph)
+    (forward-line 2)
+    (should (eq (char-after) ?\n)) ))
 
 (provide 'py-ert-tests)

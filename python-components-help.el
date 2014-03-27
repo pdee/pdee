@@ -1287,7 +1287,9 @@ Keegan Carruthers-Smith"
 
 ;;;
 (defun variables-state (&optional buffer directory-in directory-out)
-  "Diplays state of python-mode variables in an org-mode buffer. 
+  "Diplays state of python-mode variables in an org-mode buffer.
+
+Reads variables from python-mode.el as current buffer.
 
 Variables which would produce a large output are left out:
 - syntax-tables
@@ -1319,12 +1321,11 @@ Maybe call M-x describe-variable RET to query its value. "
         (let* ((name (symbol-at-point))
                (state
                 (unless
-                          (or (eq name 'py-menu)
-                              (eq name 'python-mode-map)
-                              (string-match "syntax-table" (prin1-to-string name))
-                              )
+                    (or (eq name 'py-menu)
+                        (eq name 'python-mode-map)
+                        (string-match "syntax-table" (prin1-to-string name)))
 
-                           (prin1-to-string (symbol-value name)))))
+                  (prin1-to-string (symbol-value name)))))
           (if state
               (add-to-list 'variableslist (cons (prin1-to-string name) state))
             (message "don't see a state for %s" (prin1-to-string name))))
@@ -1333,22 +1334,20 @@ Maybe call M-x describe-variable RET to query its value. "
       ;; (with-temp-buffer
       (set-buffer (get-buffer-create "State-of-Python-mode-variables.org"))
       (erase-buffer)
-        ;; org
-        (insert "State of python-mode variables\n\n")
-        (switch-to-buffer (current-buffer))
-        (dolist (ele variableslist)
-          (if (string-match "^;;; " (car ele))
-              (unless (or (string-match "^;;; Constants\\|^;;; Commentary\\|^;;; Code\\|^;;; Macro definitions\\|^;;; Customization" (car ele)))
+      ;; org
+      (insert "State of python-mode variables\n\n")
+      (switch-to-buffer (current-buffer))
+      (dolist (ele variableslist)
+        (if (string-match "^;;; " (car ele))
+            (unless (or (string-match "^;;; Constants\\|^;;; Commentary\\|^;;; Code\\|^;;; Macro definitions\\|^;;; Customization" (car ele)))
 
-                (insert (concat (replace-regexp-in-string "^;;; " "* " (car ele)) "\n")))
-            (insert (concat "\n** "(car ele) "\n"))
-            (insert (concat "   " (cdr ele) "\n\n")))
-	  (richten)
-	  (sit-for 0.01)
-          )
-        (sit-for 0.01) 
-        (org-mode)
-        )))
+              (insert (concat (replace-regexp-in-string "^;;; " "* " (car ele)) "\n")))
+          (insert (concat "\n** "(car ele) "\n"))
+          (insert (concat "   " (cdr ele) "\n\n")))
+        ;; (richten)
+        (sit-for 0.01))
+      (sit-for 0.01)
+      (org-mode))))
 
 (provide 'python-components-help)
 ;;; python-components-help.el ends here
