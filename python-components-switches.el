@@ -98,7 +98,6 @@ Returns value of `py-smart-indentation'. "
   (interactive)
   (customize-variable 'py-sexp-function))
 
-
 ;; Autopair mode
 ;; py-autopair-mode forms
 (defalias 'toggle-py-autopair-mode 'py-toggle-autopair-mode)
@@ -125,7 +124,6 @@ Returns value of `py-autopair-mode'. "
   (interactive)
   (setq py-autopair-mode (autopair-mode 0)))
 
-
 ;; Smart operator
 ;; py-smart-operator-mode-p forms
 (defun toggle-py-smart-operator-mode-p (&optional arg)
@@ -150,9 +148,6 @@ Returns value of `py-smart-operator-mode-p'. "
 Returns value of `py-smart-operator-mode-p'. "
   (interactive)
   (setq py-smart-operator-mode-p (smart-operator-mode 0)))
-
-
-
 
 ;;; py-switch-buffers-on-execute-p forms
 (defun toggle-py-switch-buffers-on-execute-p (&optional arg)
@@ -420,207 +415,6 @@ Returns value of `py-underscore-word-syntax-p'. "
   (toggle-py-underscore-word-syntax-p -1)
   (when (or py-verbose-p (interactive-p)) (message "py-underscore-word-syntax-p: %s" py-underscore-word-syntax-p))
   py-underscore-word-syntax-p)
-
-;;; py-docstring-style forms
-(defun toggle-py-nil-docstring-style (&optional arg)
-  "If nil docstring-style should be on or off.
-
-  Returns value of `py-docstring-style' switched to. 
-To set permanently,  customize this variable "
-  (interactive)
-  (let ((arg (or arg (if (eq py-docstring-style nil) -1 1))))
-    (if (< 0 arg)
-        (setq py-docstring-style 'nil)
-      (setq py-docstring-style nil))
-    (when (or py-verbose-p (interactive-p)) (message "py-docstring-style: %s" py-docstring-style))
-    py-docstring-style))
-
-(defun py-nil-docstring-style-on (&optional arg)
-  "Make sure, nil docstring-style' is on.
-
-  Returns value of `py-docstring-style'. 
-To set permanently,  customize this variable "
-  (interactive)
-  (let ((arg (or arg 1)))
-    (toggle-py-nil-docstring-style arg))
-  (when (or py-verbose-p (interactive-p)) (message "py-docstring-style: %s" py-docstring-style))
-  py-docstring-style)
-
-(defun py-nil-docstring-style-off ()
-  "Make sure, nil docstring-style is off.
-
-  Returns value of `py-docstring-style'. 
-To set permanently,  customize this variable "
-  (interactive)
-  (toggle-py-nil-docstring-style -1)
-  (when (or py-verbose-p (interactive-p)) (message "py-docstring-style: %s" py-docstring-style))
-  py-docstring-style)
-
-(defun toggle-py-onetwo-docstring-style (&optional arg)
-  "If onetwo docstring-style should be on or off.
-
-  Returns value of `py-docstring-style' switched to. 
-To set permanently,  customize this variable "
-  (interactive)
-  (let ((arg (or arg (if (eq py-docstring-style 'onetwo) -1 1))))
-    (if (< 0 arg)
-        (setq py-docstring-style 'onetwo)
-      (setq py-docstring-style nil))
-    (when (or py-verbose-p (interactive-p)) (message "py-docstring-style: %s" py-docstring-style))
-    py-docstring-style))
-
-(defun py-onetwo-docstring-style-on (&optional arg)
-  "Make sure, onetwo docstring-style' is on.
-
-  Returns value of `py-docstring-style'. 
-To set permanently,  customize this variable "
-  (interactive)
-  (let ((arg (or arg 1)))
-    (toggle-py-onetwo-docstring-style arg))
-  (when (or py-verbose-p (interactive-p)) (message "py-docstring-style: %s" py-docstring-style))
-  py-docstring-style)
-
-(defun py-onetwo-docstring-style-off ()
-  "Make sure, onetwo docstring-style is off.
-
-  Returns value of `py-docstring-style'. 
-To set permanently,  customize this variable "
-  (interactive)
-  (toggle-py-onetwo-docstring-style -1)
-  (when (or py-verbose-p (interactive-p)) (message "py-docstring-style: %s" py-docstring-style))
-  py-docstring-style)
-
-(defun toggle-py-pep-257-docstring-style (&optional arg)
-  "If pep-257 docstring-style should be on or off.
-
-  Returns value of `py-pep-257-docstring-style' switched to. "
-  (interactive)
-  (let ((arg (or arg (if (eq py-docstring-style 'pep-257) -1 1))))
-    (if (< 0 arg)
-        (setq py-docstring-style 'pep-257)
-      (setq py-docstring-style nil))
-    (when (or py-verbose-p (interactive-p)) (message "py-docstring-style: %s" py-docstring-style))
-    py-docstring-style))
-
-(defun py-pep-257-docstring-style-on (&optional arg)
-  "Make sure, pep-257 docstring-style' is on.
-
-Returns value of `py-pep-257-docstring-style'. "
-  (interactive)
-  (let ((arg (or arg 1)))
-    (toggle-py-pep-257-docstring-style arg))
-  (when (or py-verbose-p (interactive-p)) (message "py-docstring-style: %s" py-docstring-style))
-  py-docstring-style)
-
-(defun py-pep-257-docstring-style-off ()
-  "Make sure, pep-257 docstring-style is off.
-
-Returns value of `py-pep-257-docstring-style'. "
-  (interactive)
-  (toggle-py-pep-257-docstring-style -1)
-  (when (or py-verbose-p (interactive-p)) (message "py-docstring-style: %s" py-docstring-style))
-  py-docstring-style)
-
-(defun toggle-py-pep-257-nn-docstring-style (&optional arg)
-  "If pep-257-nn docstring-style should be on or off.
-
-  Returns value of `py-pep-257-nn-docstring-style' switched to. "
-  (interactive)
-  (let ((arg (or arg (if (eq py-docstring-style 'pep-257-nn) -1 1))))
-    (if (< 0 arg)
-        (setq py-docstring-style 'pep-257-nn)
-      (setq py-docstring-style nil))
-    (when (or py-verbose-p (interactive-p)) (message "py-docstring-style: %s" py-docstring-style))
-    py-docstring-style))
-
-(defun py-pep-257-nn-docstring-style-on (&optional arg)
-  "Make sure, pep-257-nn docstring-style' is on.
-
-  Returns value of `py-docstring-style'. 
-To set permanently,  customize this variable "
-  (interactive)
-  (let ((arg (or arg 1)))
-    (toggle-py-pep-257-nn-docstring-style arg))
-  (when (or py-verbose-p (interactive-p)) (message "py-docstring-style: %s" py-docstring-style))
-  py-docstring-style)
-
-(defun py-pep-257-nn-docstring-style-off ()
-  "Make sure, pep-257-nn docstring-style is off.
-
-  Returns value of `py-docstring-style'. 
-To set permanently,  customize this variable "
-  (interactive)
-  (toggle-py-pep-257-nn-docstring-style -1)
-  (when (or py-verbose-p (interactive-p)) (message "py-docstring-style: %s" py-docstring-style))
-  py-docstring-style)
-
-(defun toggle-py-symmetric-docstring-style (&optional arg)
-  "If symmetric docstring-style should be on or off.
-
-  Returns value of `py-docstring-style' switched to. 
-To set permanently,  customize this variable "
-  (interactive)
-  (let ((arg (or arg (if (eq py-docstring-style 'symmetric) -1 1))))
-    (if (< 0 arg)
-        (setq py-docstring-style 'symmetric)
-      (setq py-docstring-style nil))
-    (when (or py-verbose-p (interactive-p)) (message "py-docstring-style: %s" py-docstring-style))
-    py-docstring-style))
-
-(defun py-symmetric-docstring-style-on (&optional arg)
-  "Make sure, symmetric docstring-style' is on.
-
-  Returns value of `py-docstring-style'. 
-To set permanently,  customize this variable "
-  (interactive)
-  (let ((arg (or arg 1)))
-    (toggle-py-symmetric-docstring-style arg))
-  (when (or py-verbose-p (interactive-p)) (message "py-docstring-style: %s" py-docstring-style))
-  py-docstring-style)
-
-(defun py-symmetric-docstring-style-off ()
-  "Make sure, symmetric docstring-style is off.
-
-  Returns value of `py-docstring-style'. 
-To set permanently,  customize this variable "
-  (interactive)
-  (toggle-py-symmetric-docstring-style -1)
-  (when (or py-verbose-p (interactive-p)) (message "py-docstring-style: %s" py-docstring-style))
-  py-docstring-style)
-
-(defun toggle-py-django-docstring-style (&optional arg)
-  "If django docstring-style should be on or off.
-
-  Returns value of `py-docstring-style' switched to. 
-To set permanently,  customize this variable "
-  (interactive)
-  (let ((arg (or arg (if (eq py-docstring-style 'django) -1 1))))
-    (if (< 0 arg)
-        (setq py-docstring-style 'django)
-      (setq py-docstring-style nil))
-    (when (or py-verbose-p (interactive-p)) (message "py-docstring-style: %s" py-docstring-style))
-    py-docstring-style))
-
-(defun py-django-docstring-style-on (&optional arg)
-  "Make sure, django docstring-style' is on.
-
-  Returns value of `py-docstring-style'. 
-To set permanently,  customize this variable "
-  (interactive)
-  (let ((arg (or arg 1)))
-    (toggle-py-django-docstring-style arg))
-  (when (or py-verbose-p (interactive-p)) (message "py-docstring-style: %s" py-docstring-style))
-  py-docstring-style)
-
-(defun py-django-docstring-style-off ()
-  "Make sure, django docstring-style is off.
-
-  Returns value of `py-docstring-style'. 
-To set permanently,  customize this variable "
-  (interactive)
-  (toggle-py-django-docstring-style -1)
-  (when (or py-verbose-p (interactive-p)) (message "py-docstring-style: %s" py-docstring-style))
-  py-docstring-style)
 
 (provide 'python-components-switches)
 ;;; python-components-switches.el ends here

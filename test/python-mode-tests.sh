@@ -892,6 +892,12 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-up-minor-block) nil \"py-up-minor-block not detected as command\")" \
 -eval "(assert (commandp 'py-down-minor-block) nil \"py-down-minor-block not detected as command\")" \
 -eval "(assert (commandp 'py-up-minor-block-bol) nil \"py-up-minor-block-bol not detected as command\")" \
+-eval "(assert (commandp 'py-set-nil-docstring-style) nil \"py-set-nil-docstring-style not detected as command\")" \
+-eval "(assert (commandp 'py-set-pep-257-nn-docstring-style) nil \"py-set-pep-257-nn-docstring-style not detected as command\")" \
+-eval "(assert (commandp 'py-set-pep-257-docstring-style) nil \"py-set-pep-257-docstring-style not detected as command\")" \
+-eval "(assert (commandp 'py-set-django-docstring-style) nil \"py-set-django-docstring-style not detected as command\")" \
+-eval "(assert (commandp 'py-set-symmetric-docstring-style) nil \"py-set-symmetric-docstring-style not detected as command\")" \
+-eval "(assert (commandp 'py-set-onetwo-docstring-style) nil \"py-set-onetwo-docstring-style not detected as command\")" \
 -eval "(assert (commandp 'py-down-minor-block-bol) nil \"py-down-minor-block-bol not detected as command\")" \
 -eval "(assert (functionp 'py-font-lock-syntactic-face-function) nil \"py-font-lock-syntactic-face-function not detected function\")" \
 -eval "(setq enable-local-variables :all)" \
@@ -1121,6 +1127,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-font-lock-keywords) nil \"py-font-lock-keywords not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall docstring-style-switches-test \
 --funcall wrong-type-argument-inserted-chars-lp-1293172-test \
 --funcall py-docstring-style-pep-257-nn-closing-quotes-lp-1241147-test \
 --funcall py-execute-buffer-python-switch-test \
@@ -1339,7 +1346,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall goto-beginning-of-tqs-lp:735328-test \
 --funcall python-mode-very-slow-lp-1107037-test \
 --funcall module-docstring-when-following-comment-lp-1102011-test \
---funcall docstring-style-switches-test \
 --funcall py-newline-and-indent-leaves-eol-whitespace-lp-1100892-test \
 --funcall enter-key-does-not-indent-properly-after-return-statement-lp-1098793-test \
 --funcall comments-start-a-new-line-lp-1092847-n2-test \

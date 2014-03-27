@@ -57,7 +57,38 @@ Receives a buffer-name as optional argument"
 - py-kill-buffer-unconditional
   Kill buffer unconditional; kill also any buffer-process.
 
-Booleans
+Setting docstring style simplified; a style is all needed.
+  New commands:
+
+ -py-set-nil-docstring-style
+ -py-set-pep-257-nn-docstring-style
+ -py-set-pep-257-docstring-style
+ -py-set-django-docstring-style
+ -py-set-symmetric-docstring-style
+ -py-set-onetwo-docstring-style
+
+Removed commands: 
+
+ -toggle-py-nil-docstring-style
+ -py-nil-docstring-style-on
+ -py-nil-docstring-style-off
+ -toggle-py-onetwo-docstring-style
+ -py-onetwo-docstring-style-on
+ -py-onetwo-docstring-style-off
+ -toggle-py-pep-257-docstring-style
+ -py-pep-257-docstring-style-on
+ -py-pep-257-docstring-style-off
+ -toggle-py-pep-257-nn-docstring-style
+ -py-pep-257-nn-docstring-style-on
+ -py-pep-257-nn-docstring-style-off
+ -toggle-py-symmetric-docstring-style
+ -py-symmetric-docstring-style-on
+ -py-symmetric-docstring-style-off
+ -toggle-py-django-docstring-style
+ -py-django-docstring-style-on
+ -py-django-docstring-style-off
+
+New booleans
 - py-fast-process-p 
   If `t', stuff is executed through `py-fast-...'-
   commands, suitable for large output. Result arrives

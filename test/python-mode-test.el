@@ -2280,19 +2280,19 @@ else:
 
 (defun docstring-style-switches-base ()
 
-  (py-django-docstring-style-on)
+  (py-set-django-docstring-style)
   (assert (eq 'django py-docstring-style) nil "django not py-docstring-style")
 
-  (py-onetwo-docstring-style-on)
+  (py-set-onetwo-docstring-style)
   (assert (eq 'onetwo py-docstring-style) nil "onetwo not py-docstring-style")
 
-  (py-pep-257-docstring-style-on)
+  (py-set-pep-257-docstring-style)
   (assert (eq 'pep-257 py-docstring-style) nil "pep-257 not py-docstring-style")
 
-  (py-pep-257-nn-docstring-style-on)
+  (py-set-pep-257-nn-docstring-style)
   (assert (eq 'pep-257-nn py-docstring-style) nil "pep-257-nn not py-docstring-style")
 
-  (py-symmetric-docstring-style-on)
+  (py-set-symmetric-docstring-style)
   (assert (eq 'symmetric py-docstring-style) nil "symmetric not py-docstring-style")
 
 )
