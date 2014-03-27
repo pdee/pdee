@@ -2791,7 +2791,7 @@ See bug report at launchpad, lp:940812 "
       `(,(rx symbol-start
              (or
 	      "if" "and" "del"  "not" "while" "as" "elif" "global"
-	      "or" "with" "assert" "else"  "pass" "yield" "break"
+	      "or" "with" "assert" "else"  "pass" "yield" "break" 
 	      "exec" "in" "continue" "finally" "is" "except" "raise"
 	      "return"  "for" "lambda")
              symbol-end)
@@ -8019,10 +8019,10 @@ Don't save anything for STR matching `inferior-python-filter-regexp'."
   "Internal use by `py-run-auto-fill-timer'"
   (let ((pps (syntax-ppss)))
     (cond ((and (nth 4 pps)(numberp py-comment-fill-column))
-           (setq fill-column py-comment-fill-column))
+           (set (make-local-variable 'fill-column) py-comment-fill-column))
           ((and (nth 3 pps)(numberp py-docstring-fill-column))
            (set (make-local-variable 'fill-column) py-docstring-fill-column))
-          (t (setq fill-column py-fill-column-orig)))))
+          (t (set (make-local-variable 'fill-column) py-fill-column-orig)))))
 
 (defun py-run-auto-fill-timer ()
   "Set fill-column to values of `py-docstring-fill-column' resp. to `py-comment-fill-column' according to environment. "

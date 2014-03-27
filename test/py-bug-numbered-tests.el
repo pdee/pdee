@@ -5140,20 +5140,17 @@ class Test(object):
 
 (defun more-docstring-filling-woes-lp-1102296-pep-257-base ()
   (let ((py-docstring-style 'pep-257))
-    (goto-char (point-min)) 
-    (search-forward "Builds")
-    (sit-for 0.1) 
+    (goto-char 178)
     (fill-paragraph)
-    (sit-for 1) 
     (end-of-line)
-    (assert (looking-back "\"\"\"") nil "more-docstring-filling-woes-lp-1102296-pep-257-test #1 failed")
+    (assert (looking-back "\"\"\"")  nil "more-docstring-filling-woes-lp-1102296-pep-257-test #1 failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-pep-257-test #1 done")
-    (search-forward "Return")
+    (goto-char 259)
     (fill-paragraph)
     (forward-line 1)
     (assert (looking-at "        pass") nil "more-docstring-filling-woes-lp-1102296-pep-257-test #2 failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-pep-257-test #2 done")
-    (search-forward "Load")
+    (goto-char 357)
     (fill-paragraph)
     (forward-line 1)
     ;; (sit-for 0.1)
@@ -5400,7 +5397,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.94 $\"
+__version__ = \"$Revision: 1.93 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
