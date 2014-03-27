@@ -290,17 +290,6 @@ Any non-integer value means do not use a different value of
                  (const :tag "Use the current `fill-column'" t))
   :group 'python-mode)
 
-(defcustom py-paragraph-fill-docstring-p t
-  "If `py-fill-paragraph', when inside a docstring, should fill the complete string.
-
-Default is nil.
-
-Convenient use of `M-q' inside docstrings
-See also `py-docstring-style'"
-
-  :type 'boolean
-  :group 'python-mode)
-
 (defcustom py-fontify-shell-buffer-p nil
   "If code in Python shell should be highlighted as in script buffer.
 

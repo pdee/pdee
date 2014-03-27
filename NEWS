@@ -70,7 +70,7 @@ Dropped booleans:
 `py-start-run-py-shell', 
 `py-start-run-ipython-shell',
 `py-pylint-offer-current-p'
-
+`py-paragraph-fill-docstring-p'
 
 New in version 6.1.3
 ---------------------
