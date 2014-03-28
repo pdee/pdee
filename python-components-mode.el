@@ -90,7 +90,6 @@
   :type 'string
   :group 'python-mode)
 
-
 (defcustom info-lookup-mode "python"
   "Which Python documentation should be queried.
 
@@ -2862,8 +2861,6 @@ See bug report at launchpad, lp:940812 "
 ;;               "\\(?:\\('\\)'\\('\\)\\|\\(?2:\"\\)\"\\(?3:\"\\)\\)")
 ;;      (3 (py-quote-syntax)))))
 
-
-
 
 ;;; Keymap
 (defvar python-mode-map)
@@ -5079,7 +5076,6 @@ Return the current Python symbol\. "]
                    :help "`py-help-at-point'\n
 Use pydoc on symbol at point"]
 
-
 		  ["Report comint variable setting" py-report-comint-variable-setting
 		   :help " `py-report-comint-variable-setting'
 
@@ -6255,8 +6251,6 @@ Avoids lp:783828, \"Terminal not fully functional\", for help('COMMAND') in pyth
 When non-nil, imports module `os' Use `M-x customize-variable' to
 set it permanently"
                      :style toggle :selected py-set-pager-cat-p]
-
-
 
                     ["Edit only "
                      (setq py-edit-only-p
@@ -8110,6 +8104,11 @@ See available customizations listed in files variables-python-mode at directory 
          '(py-font-lock-keywords nil nil nil nil
                                  (font-lock-syntactic-keywords
                                   . py-font-lock-syntactic-keywords))))
+  (if (string-match "python3" (py-choose-shell))
+      (font-lock-add-keywords 'python-mode
+			      '(("\\<print\\>" . 'py-builtins-face)))
+    (font-lock-add-keywords 'python-mode
+			    '(("\\<print\\>" . 'font-lock-keyword-face))))
   (set (make-local-variable 'which-func-functions) 'py-which-def-or-class)
   (set (make-local-variable 'parse-sexp-lookup-properties) t)
   (set (make-local-variable 'parse-sexp-ignore-comments) t)
@@ -8168,7 +8167,7 @@ See available customizations listed in files variables-python-mode at directory 
       (add-hook 'python-mode-hook 'py-run-auto-fill-timer)
     (remove-hook 'python-mode-hook 'py-run-auto-fill-timer))
   ;; caused insert-file-contents error lp:1293172
-;;  (add-hook 'after-change-functions 'py-after-change-function nil t)
+  ;;  (add-hook 'after-change-functions 'py-after-change-function nil t)
   (if py-defun-use-top-level-p
       (progn
         (set (make-local-variable 'beginning-of-defun-function) 'py-beginning-of-top-level)

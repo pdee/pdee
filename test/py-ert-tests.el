@@ -925,12 +925,14 @@ def foo():
       (skip-chars-forward "^ \n"))))
 
 (ert-deftest py-ert-builtins-face-lp-1294742 ()
-  (py-tests-with-temp-buffer
-      " _ __doc__ __import__ __name__ __package__ abs all any apply basestring bin bool buffer bytearray bytes callable chr classmethod cmp coerce compile complex delattr dict dir divmod enumerate eval execfile file filter float format frozenset getattr globals hasattr hash help hex id input int intern isinstance issubclass iter len list locals long map max min next object oct open ord pow print property range raw_input reduce reload repr reversed round set setattr slice sorted staticmethod str sum super tuple type unichr unicode vars xrange zip"
-    (font-lock-fontify-buffer)
-    (while (and (not (eobp))(< 0 (skip-chars-forward " ")))
-      (should (eq 'py-builtins-face (get-char-property (point) 'face)))
-      (skip-chars-forward "^ \n"))))
+  (let ((py-shell-name "python3"))
+    (py-tests-with-temp-buffer
+	" _ __doc__ __import__ __name__ __package__ abs all any apply basestring bin bool buffer bytearray bytes callable chr classmethod cmp coerce compile complex delattr dict dir divmod enumerate eval execfile file filter float format frozenset getattr globals hasattr hash help hex id input int intern isinstance issubclass iter len list locals long map max min next object oct open ord pow print property range raw_input reduce reload repr reversed round set setattr slice sorted staticmethod str sum super tuple type unichr unicode vars xrange zip"
+      (font-lock-fontify-buffer)
+;;      (switch-to-buffer (current-buffer))
+      (while (and (not (eobp))(< 0 (skip-chars-forward " ")))
+	(should (eq 'py-builtins-face (get-char-property (point) 'face)))
+	(skip-chars-forward "^ \n")))))
 
 (ert-deftest py-ert-py-pseudo-keyword-face-lp-1294742 ()
   (py-tests-with-temp-buffer
