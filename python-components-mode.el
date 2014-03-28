@@ -390,7 +390,7 @@ URL: http://autopair.googlecode.com "
 (defcustom py-no-completion-calls-dabbrev-expand-p t
   "If completion function should call dabbrev-expand when no completion found. Default is `t'
 
-See also `py-indent-no-completion-p'"
+See  `py-indent-no-completion-p'"
   :type 'boolean
   :group 'python-mode)
 
@@ -3214,10 +3214,7 @@ Uses a dedicated shell. "]
 Send file to a Bpython interpreter.
 
 Uses a dedicated shell.
-Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
-                    )
-
-                   )
+Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]))
                   "-"
 
                   ["Kill shell unconditional" py-kill-shell-unconditional
@@ -3232,9 +3229,7 @@ Receives a buffer-name as argument "]
                   ["Kill default shell unconditional" py-kill-default-shell-unconditional
                    :help " `py-kill-default-shell-unconditional'
 
-Kill buffer \"*Python*\" and its process\.  "]
-
-                  )
+Kill buffer \"*Python*\" and its process\.  "])
 
                  "-"
                  ("Mark"
@@ -3334,10 +3329,7 @@ Mark try-block at point reaching beginning-of-line. "]
 		    :help "`py-mark-minor-block-bol'
 
 Mark minor-block at point reaching beginning-of-line.
-A minor block is started by a `for', `if', `try' or `with'."]
-
-		   )
-		  )
+A minor block is started by a `for', `if', `try' or `with'."]))
 
 		 "-"
 
@@ -3392,7 +3384,7 @@ the default. "]
 
 Comments top-level form at point.
 
-Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
 the default. "]
 
                   ["Comment clause" py-comment-clause
@@ -3435,9 +3427,7 @@ the default. "]
 Comments statement at point.
 
 Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
-the default. "]
-
-                  )
+the default. "])
 
                  "-"
 
@@ -3605,9 +3595,7 @@ http://docs\.python\.org/reference/compound_stmts\.html "]
 Goto beginning of line where statement starts\.
   Returns position reached, if successful, nil otherwise\.
 
-See also `py-up-statement': up from current definition to next beginning of statement above\.  "]
-
-                    )
+See also `py-up-statement': up from current definition to next beginning of statement above\.  "])
                    ("End"
 
                     ["End of block bol" py-end-of-block-bol
@@ -3679,10 +3667,7 @@ See also `py-down-def-or-class': down from current definition to next beginning 
 Goto beginning of line following end of statement\.
   Returns position reached, if successful, nil otherwise\.
 
-See also `py-down-statement': down from current definition to next beginning of statement below\.  "]
-
-                    )
-                   )
+See also `py-down-statement': down from current definition to next beginning of statement below\.  "]))
 
                   "-"
 
@@ -3776,11 +3761,7 @@ Go to end of minor-block.
 
 Returns end of minor-block if successful, nil otherwise
 
-A minor block is started by a `for', `if', `try' or `with'. "]
-
-                   )
-
-                  )
+A minor block is started by a `for', `if', `try' or `with'. "]))
 
                  "-"
 
@@ -3885,22 +3866,19 @@ Delete block, use position from beginning-of-line\.
 
 Stores data in kill ring\. Might be yanked back using `C-y'\.
 
-See `py-minor-block-re' "]
+See `py-minor-block-re' "]))
 
-                   )
-                  )
+                 "-"
 
-                  "-"
-
-                  ["Execute region" py-execute-region
-                   :help " `py-execute-region'
+                 ["Execute region" py-execute-region
+                  :help " `py-execute-region'
 
 Send the region to a Python interpreter.
 
 When called with C-u followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment. "]
 
-                  ["Execute buffer" py-execute-buffer
-                   :help " `py-execute-buffer'
+                 ["Execute buffer" py-execute-buffer
+                  :help " `py-execute-buffer'
 
 Send the contents of the buffer to a Python interpreter.
 
@@ -3910,8 +3888,8 @@ When called with C-u followed by a number different from 4 and 1, user is prompt
 If the file local variable `py-master-file' is non-nil, execute the
 named file instead of the buffer's file."]
 
-                  ["Execute def or class" py-execute-def-or-class
-                   :help " `py-execute-def-or-class'
+                 ["Execute def or class" py-execute-def-or-class
+                  :help " `py-execute-def-or-class'
 
 Send def-or-class at point to a Python interpreter.
 
@@ -3920,8 +3898,8 @@ See also `py-force-py-shell-name-p'.
 
 When called with C-u followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment."]
 
-                  ["Execute statement" py-execute-statement
-                   :help " `py-execute-statement'
+                 ["Execute statement" py-execute-statement
+                  :help " `py-execute-statement'
 
 Send statement at point to a Python interpreter.
 
@@ -3930,15 +3908,15 @@ See also `py-force-py-shell-name-p'.
 
 When called with C-u followed by a number different from 4 and 1, user is prompted to specify a shell. This might be the name of a system-wide shell or include the path to a virtual environment."]
 
-                  ["Execute string" py-execute-string
-                   :help " `py-execute-string'
+                 ["Execute string" py-execute-string
+                  :help " `py-execute-string'
 
 Send the argument STRING to a Python interpreter.
 
 See also `py-execute-region'. "]
 
-                  ["Execute line" py-execute-line
-                   :help " `py-execute-line'
+                 ["Execute line" py-execute-line
+                  :help " `py-execute-line'
 
 Send current line from beginning of indent to Python interpreter\.  "]
 
@@ -4887,10 +4865,7 @@ Uses a dedicated shell. "]
 Send file to a Bpython interpreter.
 
 Uses a dedicated shell.
-Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]
-                    )
-                   )
-                  )
+Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "])))
 
                  ("Fast process..."
 
@@ -4995,9 +4970,7 @@ Process clause at point by a Python interpreter\.
 
 Suitable for large output, doesn't mess up interactive shell\.
 Result arrives in `py-output-buffer', which is not in
-comint-mode "]
-
-                  )
+comint-mode "])
 
                  "-"
 
@@ -5023,9 +4996,7 @@ Deactivate the current virtual enviroment. "]
                   ["Virtualenv p" virtualenv-p
                    :help " `virtualenv-p'
 
-Check if a directory is a virtualenv. "]
-
-                  )
+Check if a directory is a virtualenv. "])
 
                  ["Execute import or reload" py-execute-import-or-reload
                   :help " `py-execute-import-or-reload'
@@ -5083,9 +5054,7 @@ Display some comint-mode variables of interest for debugging\.
 
 Some vars like comint-mode maps and tables are not displayed here because of its amount\.
 
-Typing `q' will close the buffer displayed "]
-
-                  )
+Typing `q' will close the buffer displayed "])
 
                  ("Debugger"
 
@@ -5095,9 +5064,7 @@ Typing `q' will close the buffer displayed "]
 		  ["Execute statement pdb" py-execute-statement-pdb
 		   :help " `py-execute-statement-pdb'
 
-Execute statement running pdb\. . "]
-
-                  )
+Execute statement running pdb\. . "])
                  ("Checks"
 
                   ["pychecker-run" py-pychecker-run
@@ -5172,9 +5139,7 @@ Call `easy_install pyflakes' resp. `pip...' if not available"]
 
                    ["pyflakes-flymake-mode" pyflakes-flymake-mode :help
                     "`pyflakes-flymake-mode'
-Toggle flymake-mode running `pyflakes' "]
-
-                   )
+Toggle flymake-mode running `pyflakes' "])
 
                   ("Flake8 " :help
                    "code checker running "
@@ -5200,9 +5165,7 @@ Toggle flymake-mode running `pyflakes' "]
                    ["Flake8 help" py-flake8-help
                     :help " `py-flake8-help'
 
-Display flake8 command line help messages. "]
-
-                   )
+Display flake8 command line help messages. "])
 
                   ("Pyflakes-pep8 " :help
                    "Non intrusive code checker running `pyflakes' and `pep8'
@@ -5219,9 +5182,7 @@ Call `easy_install pyflakes' resp. `pip...' if not available"]
 
                    ["pyflakespep8-flymake-mode" pyflakespep8-flymake-mode :help
                     "`pyflakespep8-flymake-mode'
-Toggle flymake-mode running `pyflakespep8' "])
-
-                  )
+Toggle flymake-mode running `pyflakespep8' "]))
 
                  ("Customize"
 
@@ -5288,9 +5249,7 @@ Otherwise value of py-python-history is used. Use `M-x customize-variable' to se
                      :help "Locally indicated Python being enforced upon sessions execute commands. "]
 
                     ["Remove local Python shell enforcement, restore default" py-force-local-shell-off
-                     :help "Restore `py-shell-name' default value and `behaviour'. "]
-
-                    )
+                     :help "Restore `py-shell-name' default value and `behaviour'. "])
 
                    ("Execute"
 
@@ -5375,9 +5334,7 @@ In experimental state yet "
                      (setq py-warn-tmp-files-left-p
                            (not py-warn-tmp-files-left-p))
                      :help "Messages a warning, when `py-temp-directory' contains files susceptible being left by previous Python-mode sessions. See also lp:987534 Use `M-x customize-variable' to set it permanently"
-                     :style toggle :selected py-warn-tmp-files-left-p]
-
-                    )
+                     :style toggle :selected py-warn-tmp-files-left-p])
 
                    ("Edit"
 
@@ -5425,10 +5382,8 @@ See also `py-no-completion-calls-dabbrev-expand-p'Use `M-x customize-variable' t
                      ["Company pycomplete "
                       (setq py-company-pycomplete-p
                             (not py-company-pycomplete-p))
-                      :help "Load company-pycomplete stuff. Default is  nilUse `M-x customize-variable' to set it permanently"
-                      :style toggle :selected py-company-pycomplete-p]
-
-                     )
+                      :help "Load company-pycomplete stuff. Default is nilUse `M-x customize-variable' to set it permanently"
+                      :style toggle :selected py-company-pycomplete-p])
 
                     ("Autopair mode"
                      :help "Toggle `autopair-mode'"
@@ -5452,9 +5407,7 @@ Returns value of `autopair-mode'. "]
 
 Make sure, `autopair-mode' is off.
 
-Returns value of `autopair-mode'. "]
-
-                     )
+Returns value of `autopair-mode'. "])
 
                     ;; py-smart-operator-mode-p forms
                     ("Smart operator mode"
@@ -5479,136 +5432,42 @@ Returns value of `smart-operator-mode'. "]
 
 Make sure, `smart-operator-mode' is off.
 
-Returns value of `smart-operator-mode'. "]
-
-                     )
+Returns value of `smart-operator-mode'. "])
 
                     ("Filling"
 
                      ("Docstring styles"
-                      :help "Toggle values of `py-docstring-style'
-In order to set permanently customize this variable"
+                      :help "Switch docstring-style"
 
-                      ("Nil"
-                       :help "Toggle nil value of `py-docstring-style'
-Use `M-x customize-variable' to set it permanently"
+                      ["Nil" py-set-nil-docstring-style
+                       :help " `py-set-nil-docstring-style'
 
-                       ["Toggle nil docstring style" toggle-py-nil-docstring-style
-                        :help "If nil docstring-style should be on or off
-  Returns value of `py-docstring-style' switched to
+Set py-docstring-style to nil, format string normally. "]
 
-Use `M-x customize-variable' to set it permanently"]
+                      ["pep-257-nn" py-set-pep-257-nn-docstring-style
+                       :help " `py-set-pep-257-nn-docstring-style'
 
-                       ["Nil on" py-nil-docstring-style-on
-                        :help "Make sure, nil docstring-style is on
+Set py-docstring-style to 'pep-257-nn "]
 
-Use `M-x customize-variable' to set it permanently"]
+                      ["pep-257" py-set-pep-257-docstring-style
+                       :help " `py-set-pep-257-docstring-style'
 
-                       ["Nil off" py-nil-docstring-style-off
-                        :help "Restores default value of `py-docstring-style'
+Set py-docstring-style to 'pep-257 "]
 
-Use `M-x customize-variable' to set it permanently"])
+                      ["django" py-set-django-docstring-style
+                       :help " `py-set-django-docstring-style'
 
-                      ("Onetwo"
-                       :help "Toggle onetwo value of `py-docstring-style'
-In order to set permanently customize this variable"
+Set py-docstring-style to 'django "]
 
-                       ["Toggle onetwo docstring style" toggle-py-onetwo-docstring-style
-                        :help "If onetwo docstring-style should be on or off
-  Returns value of `py-docstring-style' switched to
+                      ["onetwo" py-set-onetwo-docstring-style
+                       :help " `py-set-onetwo-docstring-style'
 
-Use `M-x customize-variable' to set it permanently"]
+Set py-docstring-style to 'onetwo "]
 
-                       ["Onetwo on" py-onetwo-docstring-style-on
-                        :help "Make sure, onetwo docstring-style is on
+                      ["symmetric" py-set-symmetric-docstring-style
+                       :help " `py-set-symmetric-docstring-style'
 
-Use `M-x customize-variable' to set it permanently"]
-
-                       ["Onetwo off" py-onetwo-docstring-style-off
-                        :help " Restores default value of `py-docstring-style'
-
-Use `M-x customize-variable' to set it permanently"])
-
-                      ("Pep 257"
-                       :help "Toggle pep-257 value of `py-docstring-style'
-In order to set permanently customize this variable"
-
-                       ["Toggle pep 257 docstring style" toggle-py-pep-257-docstring-style
-                        :help "If pep-257 docstring-style should be on or off
-  Returns value of `py-docstring-style' switched to
-
-Use `M-x customize-variable' to set it permanently"]
-
-                       ["Pep 257 on" py-pep-257-docstring-style-on
-                        :help "Make sure, pep-257 docstring-style is on
-
-Use `M-x customize-variable' to set it permanently"]
-
-                       ["Pep 257 off" py-pep-257-docstring-style-off
-                        :help " Restores default value of `py-docstring-style'
-
-Use `M-x customize-variable' to set it permanently"])
-
-                      ("Pep 257 nn"
-                       :help "Toggle pep-257-nn value of `py-docstring-style'
-In order to set permanently customize this variable"
-
-                       ["Toggle pep 257 nn docstring style" toggle-py-pep-257-nn-docstring-style
-                        :help "If pep-257-nn docstring-style should be on or off
-  Returns value of `py-docstring-style' switched to
-
-Use `M-x customize-variable' to set it permanently"]
-
-                       ["Pep 257 nn on" py-pep-257-nn-docstring-style-on
-                        :help "Make sure, pep-257-nn docstring-style is on
-
-Use `M-x customize-variable' to set it permanently"]
-
-                       ["Pep 257 nn off" py-pep-257-nn-docstring-style-off
-                        :help " Restores default value of `py-docstring-style'
-
-Use `M-x customize-variable' to set it permanently"])
-
-                      ("Symmetric"
-                       :help "Toggle symmetric value of `py-docstring-style'
-In order to set permanently customize this variable"
-
-                       ["Toggle symmetric docstring style" toggle-py-symmetric-docstring-style
-                        :help "If symmetric docstring-style should be on or off
-  Returns value of `py-docstring-style' switched to
-
-Use `M-x customize-variable' to set it permanently"]
-
-                       ["Symmetric on" py-symmetric-docstring-style-on
-                        :help "Make sure, symmetric docstring-style is on
-
-Use `M-x customize-variable' to set it permanently"]
-
-                       ["Symmetric off" py-symmetric-docstring-style-off
-                        :help " Restores default value of `py-docstring-style'
-
-Use `M-x customize-variable' to set it permanently"])
-
-                      ("Django"
-                       :help "Toggle django value of `py-docstring-style'
-In order to set permanently customize this variable"
-
-                       ["Toggle django docstring style" toggle-py-django-docstring-style
-                        :help "If django docstring-style should be on or off
-  Returns value of `py-docstring-style' switched to
-
-Use `M-x customize-variable' to set it permanently"]
-
-                       ["Django on" py-django-docstring-style-on
-                        :help "Make sure, django docstring-style is on
-
-Use `M-x customize-variable' to set it permanently"]
-
-                       ["Django off" py-django-docstring-style-off
-                        :help "Restores default value of `py-docstring-style'
-
-Use `M-x customize-variable' to set it permanently"])
-                      )
+Set py-docstring-style to 'symmetric "])
 
                      ["Auto-fill mode"
                       (setq py-auto-fill-mode
@@ -5616,17 +5475,15 @@ Use `M-x customize-variable' to set it permanently"])
                       :help "Fill according to `py-docstring-fill-column' and `py-comment-fill-column'
 
 Use `M-x customize-variable' to set it permanently"
-                      :style toggle :selected py-auto-fill-mode]
+                      :style toggle :selected py-auto-fill-mode])
 
-                     ["Use current dir when execute"
-                      (setq py-use-current-dir-when-execute-p
-                            (not py-use-current-dir-when-execute-p))
-                      :help " `toggle-py-use-current-dir-when-execute-p'
+                    ["Use current dir when execute"
+                     (setq py-use-current-dir-when-execute-p
+                           (not py-use-current-dir-when-execute-p))
+                     :help " `toggle-py-use-current-dir-when-execute-p'
 
 Use `M-x customize-variable' to set it permanently"
-                      :style toggle :selected py-use-current-dir-when-execute-p]
-
-                     )
+                     :style toggle :selected py-use-current-dir-when-execute-p]
 
                     ("Indent"
 		     ("TAB related"
@@ -5665,9 +5522,7 @@ Default is nil
 See also `py-tab-shifts-region-p'
 
 Use `M-x customize-variable' to set it permanently"
-		       :style toggle :selected py-tab-indents-region-p]
-
-		      )
+		       :style toggle :selected py-tab-indents-region-p])
 
                      ["Close at start column"
                       (setq py-closing-list-dedents-bos
@@ -5702,7 +5557,7 @@ Use `M-x customize-variable' to set it permanently"
                             (not py-tab-shifts-region-p))
                       :help "If `t', TAB will indent/cycle the region, not just the current line.
 
-Default is  nil
+Default is nil
 See also `py-tab-indents-region-p'Use `M-x customize-variable' to set it permanently"
                       :style toggle :selected py-tab-shifts-region-p]
 
@@ -5740,12 +5595,12 @@ Use `M-x customize-variable' to set it permanently"
                       :help " When non-nil, `yank' will be followed by an `indent-according-to-mode'.
 
 Default is nilUse `M-x customize-variable' to set it permanently"
-                     :style toggle :selected py-electric-yank-active-p]
+                      :style toggle :selected py-electric-yank-active-p]
 
-                    ["Electric kill backward "
-                     (setq py-electric-kill-backward-p
-                           (not py-electric-kill-backward-p))
-                     :help "Affects `py-electric-backspace'. Default is nil.
+                     ["Electric kill backward "
+                      (setq py-electric-kill-backward-p
+                            (not py-electric-kill-backward-p))
+                      :help "Affects `py-electric-backspace'. Default is nil.
 
 If behind a delimited form of braces, brackets or parentheses,
 backspace will kill it's contents
@@ -5760,36 +5615,36 @@ my_string\[]
 ----------^
 
 In result cursor is insided emptied delimited form.Use `M-x customize-variable' to set it permanently"
-                     :style toggle :selected py-electric-kill-backward-p]
+                      :style toggle :selected py-electric-kill-backward-p]
 
-                    ["Trailing whitespace smart delete "
-                     (setq py-trailing-whitespace-smart-delete-p
-                           (not py-trailing-whitespace-smart-delete-p))
-                     :help "Default is nil. When t, python-mode calls
+                     ["Trailing whitespace smart delete "
+                      (setq py-trailing-whitespace-smart-delete-p
+                            (not py-trailing-whitespace-smart-delete-p))
+                      :help "Default is nil. When t, python-mode calls
     (add-hook 'before-save-hook 'delete-trailing-whitespace nil 'local)
 
 Also commands may delete trailing whitespace by the way.
 When editing other peoples code, this may produce a larger diff than expected Use `M-x customize-variable' to set it permanently"
-                     :style toggle :selected py-trailing-whitespace-smart-delete-p]
+                      :style toggle :selected py-trailing-whitespace-smart-delete-p]
 
-                    ["Newline delete trailing whitespace "
-                     (setq py-newline-delete-trailing-whitespace-p
-                           (not py-newline-delete-trailing-whitespace-p))
-                     :help "Delete trailing whitespace maybe left by `py-newline-and-indent'.
+                     ["Newline delete trailing whitespace "
+                      (setq py-newline-delete-trailing-whitespace-p
+                            (not py-newline-delete-trailing-whitespace-p))
+                      :help "Delete trailing whitespace maybe left by `py-newline-and-indent'.
 
 Default is `t'. See lp:1100892 Use `M-x customize-variable' to set it permanently"
-                     :style toggle :selected py-newline-delete-trailing-whitespace-p]
+                      :style toggle :selected py-newline-delete-trailing-whitespace-p]
 
-                    ["Dedent keep relative column"
-                     (setq py-dedent-keep-relative-column
-                           (not py-dedent-keep-relative-column))
-                     :help "If point should follow dedent or kind of electric move to end of line. Default is t - keep relative position. Use `M-x customize-variable' to set it permanently"
-                     :style toggle :selected py-dedent-keep-relative-column]
+                     ["Dedent keep relative column"
+                      (setq py-dedent-keep-relative-column
+                            (not py-dedent-keep-relative-column))
+                      :help "If point should follow dedent or kind of electric move to end of line. Default is t - keep relative position. Use `M-x customize-variable' to set it permanently"
+                      :style toggle :selected py-dedent-keep-relative-column]
 
-                    ["Indent paren spanned multilines "
-                     (setq py-indent-paren-spanned-multilines-p
-                           (not py-indent-paren-spanned-multilines-p))
-                     :help "If non-nil, indents elements of list a value of `py-indent-offset' to first element:
+                     ["Indent paren spanned multilines "
+                      (setq py-indent-paren-spanned-multilines-p
+                            (not py-indent-paren-spanned-multilines-p))
+                      :help "If non-nil, indents elements of list a value of `py-indent-offset' to first element:
 
 def foo():
     if (foo &&
@@ -5803,67 +5658,65 @@ def foo():
         baz):
         bar()
 Use `M-x customize-variable' to set it permanently"
-                     :style toggle :selected py-indent-paren-spanned-multilines-p]
+                      :style toggle :selected py-indent-paren-spanned-multilines-p]
 
-                    ["Indent honors multiline listing"
-                     (setq py-indent-honors-multiline-listing
-                           (not py-indent-honors-multiline-listing))
-                     :help "If `t', indents to 1\+ column of opening delimiter. If `nil', indent adds one level to the beginning of statement. Default is `nil'. Use `M-x customize-variable' to set it permanently"
-                     :style toggle :selected py-indent-honors-multiline-listing]
+                     ["Indent honors multiline listing"
+                      (setq py-indent-honors-multiline-listing
+                            (not py-indent-honors-multiline-listing))
+                      :help "If `t', indents to 1\+ column of opening delimiter. If `nil', indent adds one level to the beginning of statement. Default is `nil'. Use `M-x customize-variable' to set it permanently"
+                      :style toggle :selected py-indent-honors-multiline-listing]
 
-                    ["Indent comment "
-                     (setq py-indent-comments
-                           (not py-indent-comments))
-                     :help "If comments should be indented like code. Default is `nil'.
+                     ["Indent comment "
+                      (setq py-indent-comments
+                            (not py-indent-comments))
+                      :help "If comments should be indented like code. Default is `nil'.
 
 Use `M-x customize-variable' to set it permanently"
-                     :style toggle :selected py-indent-comments]
+                      :style toggle :selected py-indent-comments]
 
-                    ["Uncomment indents "
-                     (setq py-uncomment-indents-p
-                           (not py-uncomment-indents-p))
-                     :help "When non-nil, after uncomment indent lines. Use `M-x customize-variable' to set it permanently"
-                     :style toggle :selected py-uncomment-indents-p]
+                     ["Uncomment indents "
+                      (setq py-uncomment-indents-p
+                            (not py-uncomment-indents-p))
+                      :help "When non-nil, after uncomment indent lines. Use `M-x customize-variable' to set it permanently"
+                      :style toggle :selected py-uncomment-indents-p]
 
-                    ["Indent honors inline comment"
-                     (setq py-indent-honors-inline-comment
-                           (not py-indent-honors-inline-comment))
-                     :help "If non-nil, indents to column of inlined comment start.
+                     ["Indent honors inline comment"
+                      (setq py-indent-honors-inline-comment
+                            (not py-indent-honors-inline-comment))
+                      :help "If non-nil, indents to column of inlined comment start.
 Default is nil. Use `M-x customize-variable' to set it permanently"
-                     :style toggle :selected py-indent-honors-inline-comment]
+                      :style toggle :selected py-indent-honors-inline-comment]
 
-                    ["Kill empty line"
-                     (setq py-kill-empty-line
-                           (not py-kill-empty-line))
-                     :help "If t, py-indent-forward-line kills empty lines. Use `M-x customize-variable' to set it permanently"
-                     :style toggle :selected py-kill-empty-line]
+                     ["Kill empty line"
+                      (setq py-kill-empty-line
+                            (not py-kill-empty-line))
+                      :help "If t, py-indent-forward-line kills empty lines. Use `M-x customize-variable' to set it permanently"
+                      :style toggle :selected py-kill-empty-line]
 
-                    ("Smart indentation"
-                     :help "Toggle py-smart-indentation'
+                     ("Smart indentation"
+                      :help "Toggle py-smart-indentation'
 
 Use `M-x customize-variable' to set it permanently"
 
-                     ["Toggle py-smart-indentation" toggle-py-smart-indentation
-                      :help "Toggles py-smart-indentation
+                      ["Toggle py-smart-indentation" toggle-py-smart-indentation
+                       :help "Toggles py-smart-indentation
 
 Use `M-x customize-variable' to set it permanently"]
 
-                     ["py-smart-indentation on" py-smart-indentation-on
-                      :help "Switches py-smart-indentation on
+                      ["py-smart-indentation on" py-smart-indentation-on
+                       :help "Switches py-smart-indentation on
 
 Use `M-x customize-variable' to set it permanently"]
 
-                     ["py-smart-indentation off" py-smart-indentation-off
-                      :help "Switches py-smart-indentation off
+                      ["py-smart-indentation off" py-smart-indentation-off
+                       :help "Switches py-smart-indentation off
 
-Use `M-x customize-variable' to set it permanently"]
+Use `M-x customize-variable' to set it permanently"])
 
-                     )
-
-                    ["Beep if tab change"
-                     (setq py-beep-if-tab-change
-                           (not py-beep-if-tab-change))
-                     :help "Ring the bell if `tab-width' is changed.
+                     ["Beep if tab change"
+                      (setq py-beep-if-tab-change
+                            (not py-beep-if-tab-change))
+                      :help "Ring the bell if `tab-width' is changed.
 If a comment of the form
 
                            	# vi:set tabsize=<number>:
@@ -5873,35 +5726,35 @@ current value of (the general Emacs variable) `tab-width' does not
 equal <number>, `tab-width' is set to <number>, a message saying so is
 displayed in the echo area, and if `py-beep-if-tab-change' is non-nil
 the Emacs bell is also rung as a warning.Use `M-x customize-variable' to set it permanently"
-                     :style toggle :selected py-beep-if-tab-change]
+                      :style toggle :selected py-beep-if-tab-change]
 
-                    ["Highlight indentation" highlight-indentation
-                     :help "Toggle highlight indentation.
+                     ["Highlight indentation" highlight-indentation
+                      :help "Toggle highlight indentation.
 
 Use `M-x customize-variable' to set it permanently
 
-Make sure `highlight-indentation' is  installed"
+Make sure `highlight-indentation' is installed"
 
-                     ]
+                      ]
 
-                    ["Electric comment "
-                     (setq py-electric-comment-p
-                           (not py-electric-comment-p))
-                     :help "If \"#\" should call `py-electric-comment'. Default is `nil'.
+                     ["Electric comment "
+                      (setq py-electric-comment-p
+                            (not py-electric-comment-p))
+                      :help "If \"#\" should call `py-electric-comment'. Default is `nil'.
 
 Use `M-x customize-variable' to set it permanently"
-                     :style toggle :selected py-electric-comment-p]
+                      :style toggle :selected py-electric-comment-p]
 
-                    ["Electric comment add space "
-                     (setq py-electric-comment-add-space-p
-                           (not py-electric-comment-add-space-p))
-                     :help "If py-electric-comment should add a space.  Default is `nil'. Use `M-x customize-variable' to set it permanently"
-                     :style toggle :selected py-electric-comment-add-space-p]
+                     ["Electric comment add space "
+                      (setq py-electric-comment-add-space-p
+                            (not py-electric-comment-add-space-p))
+                      :help "If py-electric-comment should add a space.  Default is `nil'. Use `M-x customize-variable' to set it permanently"
+                      :style toggle :selected py-electric-comment-add-space-p]
 
-                    ["Empty line closes "
-                     (setq py-empty-line-closes-p
-                           (not py-empty-line-closes-p))
-                     :help "When non-nil, dedent after empty line following block
+                     ["Empty line closes "
+                      (setq py-empty-line-closes-p
+                            (not py-empty-line-closes-p))
+                      :help "When non-nil, dedent after empty line following block
 
 if True:
     print(\"Part of the if-statement\")
@@ -5912,9 +5765,7 @@ Default is nil
 
 If non-nil, a C-j from empty line dedents.
 Use `M-x customize-variable' to set it permanently"
-                     :style toggle :selected py-empty-line-closes-p]
-
-                    )
+                      :style toggle :selected py-empty-line-closes-p])
                     ["Defun use top level "
                      (setq py-defun-use-top-level-p
                            (not py-defun-use-top-level-p))
@@ -5938,8 +5789,7 @@ mark-defun marks top-level form at point etc. "
                      :help "If py-comment inserts py-block-comment-prefix.
 
 Default is tUse `M-x customize-variable' to set it permanently"
-                     :style toggle :selected py-block-comment-prefix-p]
-                    )
+                     :style toggle :selected py-block-comment-prefix-p])
 
                    ("Display"
 
@@ -5959,9 +5809,7 @@ When non-nil, arguments are printed.Use `M-x customize-variable' to set it perma
                       :style toggle :selected py-imenu-show-method-args-p]
                      ["Switch index-function" py-switch-imenu-index-function
                       :help "`py-switch-imenu-index-function'
-Switch between `py-imenu-create-index' from 5.1 series and `py-imenu-create-index-new'."]
-
-                     )
+Switch between `py-imenu-create-index' from 5.1 series and `py-imenu-create-index-new'."])
 
                     ("Fontification"
 
@@ -5991,9 +5839,7 @@ Might not be TRT when a lot of output arrives Use `M-x customize-variable' to se
 `font-lock-doc-face' inherits `font-lock-string-face'.
 
 Call M-x `customize-face' in order to have a visible effect. Use `M-x customize-variable' to set it permanently"
-                      :style toggle :selected py-use-font-lock-doc-face-p]
-
-                     )
+                      :style toggle :selected py-use-font-lock-doc-face-p])
 
                     ["Switch buffers on execute"
                      (setq py-switch-buffers-on-execute-p
@@ -6084,9 +5930,7 @@ Default is `t'.Use `M-x customize-variable' to set it permanently"
 This vice versa, to beginning first.
 Sets `py-match-paren-key' in python-mode-map.
 Customize `py-match-paren-key' which key to use. Use `M-x customize-variable' to set it permanently"
-                     :style toggle :selected py-match-paren-mode]
-
-                    )
+                     :style toggle :selected py-match-paren-mode])
 
                    ("Debug"
 
@@ -6114,11 +5958,9 @@ Use `M-x customize-variable' to set it permanently"
 
                     ["Highlight error in source "
                      (setq py-highlight-error-source-p
-                           (not py-highlight-error-source-p           ))
+                           (not py-highlight-error-source-p))
                      :help "Use `M-x customize-variable' to set it permanently"
-                     :style toggle :selected py-highlight-error-source-p]
-
-                    )
+                     :style toggle :selected py-highlight-error-source-p])
 
                    ("Other"
 
@@ -6160,8 +6002,7 @@ See also `py-execute-directory'Use `M-x customize-variable' to set it permanentl
                       (setq py-fileless-buffer-use-default-directory-p
                             (not py-fileless-buffer-use-default-directory-p))
                       :help "When `py-use-current-dir-when-execute-p' is non-nil and no buffer-file exists, value of `default-directory' sets current working directory of Python output shellUse `M-x customize-variable' to set it permanently"
-                      :style toggle :selected py-fileless-buffer-use-default-directory-p]
-                     )
+                      :style toggle :selected py-fileless-buffer-use-default-directory-p])
 
                     ("Underscore word syntax"
                      :help "Toggle `py-underscore-word-syntax-p'"
@@ -6191,9 +6032,7 @@ Make sure, `py-underscore-word-syntax-p' is off.
 
 Returns value of `py-underscore-word-syntax-p'. .
 
-Use `M-x customize-variable' to set it permanently"]
-
-                     )
+Use `M-x customize-variable' to set it permanently"])
 
                     ["Python mode v5 behavior"
                      (setq python-mode-v5-behavior-p
@@ -6228,7 +6067,7 @@ Default is nil. Use `M-x customize-variable' to set it permanently"
                            (not empty-comment-line-separates-paragraph-p))
                      :help "Consider paragraph start/end lines with nothing inside but comment sign.
 
-Default is  non-nilUse `M-x customize-variable' to set it permanently"
+Default is non-nilUse `M-x customize-variable' to set it permanently"
                      :style toggle :selected empty-comment-line-separates-paragraph-p]
 
                     ["Org cycle "
@@ -6258,10 +6097,7 @@ set it permanently"
                      :help "When `t' `python-mode' will not take resort nor check for installed Python executables. Default is nil.
 
 See bug report at launchpad, lp:944093. Use `M-x customize-variable' to set it permanently"
-                     :style toggle :selected py-edit-only-p]
-                    )
-                   )
-                  )
+                     :style toggle :selected py-edit-only-p])))
 
                  ("More... "
                   ("Edit commands "
@@ -6355,8 +6191,7 @@ Delete PARTIAL-EXPRESSION at point, don't store in kill-ring. "]
                      :help "`py-delete-minor-block'
 Delete MINOR-BLOCK at point, don't store in kill-ring.
 
-A minor block is started by a `for', `if', `try' or `with'. "]
-                    )
+A minor block is started by a `for', `if', `try' or `with'. "])
                    "-"
 
                    ("Shift right "
@@ -6412,9 +6247,7 @@ Returns indentation reached. "]
 Indent region according to `py-indent-offset' by COUNT times.
 
 If no region is active, current line is indented.
-Returns indentation reached. "]
-
-                    )
+Returns indentation reached. "])
 
                    ("Shift left "
 
@@ -6454,9 +6287,7 @@ Shift def left. "]
 
                     ["Shift block-or-clause left" py-shift-block-or-clause-left
                      :help "`py-shift-block-or-clause-left'
-Shift block-or-clause left. "]
-
-                    )
+Shift block-or-clause left. "])
                    ("More"
                     :help "extended edit commands'"
 
@@ -6478,11 +6309,7 @@ I.e. switch it from \"True\" to \"False\" and vice versa "]
                     ["Remove overlays at point" py-remove-overlays-at-point
                      :help " `py-remove-overlays-at-point'
 
-Remove overlays as set when `py-highlight-error-source-p' is non-nil. "]
-
-                    )
-
-                   )
+Remove overlays as set when `py-highlight-error-source-p' is non-nil. "]))
 
                   "-"
                   ("Forms "
@@ -6495,8 +6322,7 @@ Go to beginning of comment at point. "]
                     ["End of comment" py-end-of-comment
                      :help " `py-end-of-comment'
 
-Go to end of comment at point. "]
-                    )
+Go to end of comment at point. "])
                    ("Block"
                     ["Beginning of block" py-beginning-of-block
                      :help "`py-beginning-of-block'
@@ -6545,9 +6371,7 @@ Shift block left. "]
 Comments block at point.
 
 Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
-the default. "]
-
-                    )
+the default. "])
 
                    ("Top-level form"
 
@@ -6587,9 +6411,7 @@ Delete top-level form at point, don't store deleted string in kill-ring"]
 Comments top-level form at point.
 
 Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
-the default. "]
-
-                    )
+the default. "])
 
                    ("Minor-block"
 
@@ -6640,9 +6462,7 @@ Shift minor-block left. "]
 Comments minor-block at point.
 
 Uses double hash (`#') comment starter when `py-minor-block-comment-prefix-p' is `t',
-the default. "]
-
-                    )
+the default. "])
 
                    ("Def-or-class "
 
@@ -6954,9 +6774,7 @@ Shift def left. "]
 Comments def at point.
 
 Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is `t',
-the default. "]
-
-                    )
+the default. "])
 
                    "-"
 
@@ -7008,8 +6826,7 @@ Shift block right. "]
 
                     ["Shift block left" py-shift-block-left
                      :help "`py-shift-block-left'
-Shift block left. "]
-                    )
+Shift block left. "])
 
                    ("Minor-block bol "
 
@@ -7075,9 +6892,7 @@ A minor block is started by a `for', `if', `try' or `with'. "]
                      :help "`py-shift-minor-block-left'
 Shift minor-block left.
 
-A minor block is started by a `for', `if', `try' or `with'. "]
-
-                    )
+A minor block is started by a `for', `if', `try' or `with'. "])
 
                    ("Clause bol "
 
@@ -7325,9 +7140,7 @@ Shift def-or-class right. "]
 
                     ["Shift def-or-class left" py-shift-def-or-class-left
                      :help "`py-shift-def-or-class-left'
-Shift def-or-class left. "]
-
-                    )
+Shift def-or-class left. "])
 
                    ("Statement bol "
                     ["Beginning of statement bol" py-beginning-of-statement-bol
@@ -7364,8 +7177,7 @@ Shift statement right. "]
 
                     ["Shift statement left" py-shift-statement-left
                      :help "`py-shift-statement-left'
-Shift statement left. "])
-                   )
+Shift statement left. "]))
                   "-"
                   ("Filling"
                    :help "see also customizable `py-docstring-style'"
@@ -7561,9 +7373,7 @@ Argument is how many `py-partial-expression's form the expansion; or zero means 
                    ["py-try/finally" py-try/finally
                     :help "Inserts py-try/finally-statement"]
                    ["py-try/except" py-try/except
-                    :help "Inserts py-try/except-statement"]
-
-                   )
+                    :help "Inserts py-try/except-statement"])
 
                   ("Completion"
                    :help "Completion options"
@@ -7578,9 +7388,7 @@ Complete symbol before point using Pymacs . "])
 
                   ["Find function" py-find-function
                    :help "`py-find-function'
-Try to find source definition of function at point"]
-
-                  ))))
+Try to find source definition of function at point"]))))
         map))
 
 (defvaralias 'py-mode-map 'python-mode-map)
