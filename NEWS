@@ -31,6 +31,11 @@ Calls to IPython are to customizable now via
 
 New commands
 
+- `py-backward-same-level'
+  While `py-up' will go upward from beginning of block, this travels
+  same level, but goes up if no element left in level.  If callled
+  from inside a string or list, go to its beginning.
+
 - py-kill-shell-unconditional
   With optional argument SHELL, otherwise kill default
   (I)Python shell.

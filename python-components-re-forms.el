@@ -90,8 +90,8 @@ http://docs.python.org/reference/compound_stmts.html"
 (defun py-up (&optional indent)
   "Go up or to beginning of form if inside.
 
-If inside a delimited form --string or list-- go to it's beginning.
-If not at beginning of a statement or block, go to it's beginning.
+If inside a delimited form --string or list-- go to its beginning.
+If not at beginning of a statement or block, go to its beginning.
 If at beginning of a statement or block, go to beginning one level above of compound statement or definition at point.
 
 Referring python program structures see for example:
@@ -107,7 +107,7 @@ http://docs.python.org/reference/compound_stmts.html"
 
   "Go to beginning one level below of compound statement or definition at point.
 
-If no statement or block below, but a delimited form --string or list-- go to it's beginning. Repeated call from there will behave like down-list.
+If no statement or block below, but a delimited form --string or list-- go to its beginning. Repeated call from there will behave like down-list.
 
 Returns position if successful, nil otherwise
 
@@ -138,6 +138,23 @@ http://docs.python.org/reference/compound_stmts.html"
       (goto-char orig))
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
+
+(defun py-backward-same-level ()
+  "Go backward or to beginning of form if inside.
+
+If inside a delimited form --string or list-- go to its beginning.
+If not at beginning of a statement or block, go to its beginning.
+If at beginning of a statement or block, go to previous beginning of compound statement or definition at point.
+If no further element at same level, go one level up.
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html"
+  (interactive)
+  (let ((pps (syntax-ppss)))
+    (cond ((nth 8 pps) (goto-char (nth 8 pps)))
+          ((nth 1 pps) (goto-char (nth 1 pps)))
+          ((py-beginning-of-statement-p) (py-beginning-of-form-intern 'py-extended-block-or-clause-re (interactive-p)))
+          (t (py-beginning-of-statement)))))
 
 (defun py-end-of-block (&optional indent)
  "Go to end of block.

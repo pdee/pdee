@@ -1074,4 +1074,46 @@ by the
     (forward-line 2)
     (should (eq (char-after) ?\n)) ))
 
+
+(ert-deftest py-ert-py-up-level-test ()
+ (py-tests-with-temp-buffer
+     "def foo():
+    if True:
+        def bar():
+            pass
+    elif False:
+        def baz():
+            pass
+    else:
+        try:
+            1 == 1
+        except True:
+            def foo1():
+                if True:
+                    def bar1():
+                        pass
+                elif False:
+                    def baz1():
+                        pass
+                else:
+                    try:
+                        1 == 1
+                    except True:
+                        pass
+                    else True:
+                        pass
+                    finally:
+                        pass
+        else True:
+            pass
+        finally:
+            pass
+"
+   (font-lock-fontify-buffer) 
+   (switch-to-buffer (current-buffer))
+   (goto-char 632)
+   (py-up)
+   (should (looking-at "finally"))))
+
+
 (provide 'py-ert-tests)
