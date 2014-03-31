@@ -1287,7 +1287,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-beginning-of-block-or-clause-test \
 --funcall py-beginning-of-def-test \
 --funcall py-beginning-of-def-or-class-test \
---funcall py-electric-delete-test \
 --funcall near-bob-beginning-of-statement-test \
 --funcall first-line-offset-test \
 --funcall assignment-indent-test \
@@ -1419,3 +1418,4 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall execute-region-lp-1294796-test \
 --funcall more-docstring-filling-woes-lp-1102296-pep-257-test \
 --funcall more-docstring-filling-woes-lp-1102296-pep-257-nn-test \
+--funcall py-electric-delete-test \
