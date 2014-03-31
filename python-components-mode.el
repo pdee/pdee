@@ -2716,6 +2716,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
 (require 'python-components-forms-code)
 (require 'python-components-fast-forms)
 (require 'python-components-auto-fill)
+(require 'python-components-hide-show)
 (require 'highlight-indentation)
 
 ;; toggle-py-underscore-word-syntax-p must be known already
@@ -3877,6 +3878,121 @@ Delete block, use position from beginning-of-line\.
 Stores data in kill ring\. Might be yanked back using `C-y'\.
 
 See `py-minor-block-re' "]))
+
+		 ("Hide-Show"
+		  
+		  ["Hide region" py-hide-region
+		   :help " `py-hide-region'
+
+Hide active region\. "]
+
+		  ["Hide statement" py-hide-statement
+		   :help " `py-hide-statement'
+
+Hide statement at point\. "]
+
+		  ["Hide block" py-hide-block
+		   :help " `py-hide-block'
+
+Hide block at point\. "]
+
+		  ["Hide clause" py-hide-clause
+		   :help " `py-hide-clause'
+
+Hide clause at point\. "]
+
+		  ["Hide block or clause" py-hide-block-or-clause
+		   :help " `py-hide-block-or-clause'
+
+Hide block-or-clause at point\. "]
+
+		  ["Hide def" py-hide-def
+		   :help " `py-hide-def'
+
+Hide def at point\. "]
+
+		  ["Hide class" py-hide-class
+		   :help " `py-hide-class'
+
+Hide class at point\. "]
+
+		  ["Hide expression" py-hide-expression
+		   :help " `py-hide-expression'
+
+Hide expression at point\. "]
+
+		  ["Hide partial expression" py-hide-partial-expression
+		   :help " `py-hide-partial-expression'
+
+Hide partial-expression at point\. "]
+
+		  ["Hide line" py-hide-line
+		   :help " `py-hide-line'
+
+Hide line at point\. "]
+
+		  ["Hide top level" py-hide-top-level
+		   :help " `py-hide-top-level'
+
+Hide top-level at point\. "]
+
+		  ("Show"
+
+		   ["Show region" py-show-region
+		    :help " `py-show-region'
+
+Un-hide active region\. "]
+
+		   ["Show statement" py-show-statement
+		    :help " `py-show-statement'
+
+Show statement at point\. "]
+
+		   ["Show block" py-show-block
+		    :help " `py-show-block'
+
+Show block at point\. "]
+
+		   ["Show clause" py-show-clause
+		    :help " `py-show-clause'
+
+Show clause at point\. "]
+
+		   ["Show block or clause" py-show-block-or-clause
+		    :help " `py-show-block-or-clause'
+
+Show block-or-clause at point\. "]
+
+		   ["Show def" py-show-def
+		    :help " `py-show-def'
+
+Show def at point\. "]
+
+		   ["Show class" py-show-class
+		    :help " `py-show-class'
+
+Show class at point\. "]
+
+		   ["Show expression" py-show-expression
+		    :help " `py-show-expression'
+
+Show expression at point\. "]
+
+		   ["Show partial expression" py-show-partial-expression
+		    :help " `py-show-partial-expression'
+
+Show partial-expression at point\. "]
+
+		   ["Show line" py-show-line
+		    :help " `py-show-line'
+
+Show line at point\. "]
+
+		   ["Show top level" py-show-top-level
+		    :help " `py-show-top-level'
+
+Show top-level at point\. "]))
+
 
                  "-"
 
@@ -6110,7 +6226,112 @@ See bug report at launchpad, lp:944093. Use `M-x customize-variable' to set it p
                      :style toggle :selected py-edit-only-p])))
 
                  ("More... "
+		  
+
                   ("Edit commands "
+
+		   ("Hide"
+		    ["Hide statement" py-hide-statement
+		     :help " `py-hide-statement'
+
+Hide statement at point\. "]
+
+		    ["Hide block" py-hide-block
+		     :help " `py-hide-block'
+
+Hide block at point\. "]
+
+		    ["Hide clause" py-hide-clause
+		     :help " `py-hide-clause'
+
+Hide clause at point\. "]
+
+		    ["Hide block or clause" py-hide-block-or-clause
+		     :help " `py-hide-block-or-clause'
+
+Hide block-or-clause at point\. "]
+
+		    ["Hide def" py-hide-def
+		     :help " `py-hide-def'
+
+Hide def at point\. "]
+
+		    ["Hide class" py-hide-class
+		     :help " `py-hide-class'
+
+Hide class at point\. "]
+
+		    ["Hide expression" py-hide-expression
+		     :help " `py-hide-expression'
+
+Hide expression at point\. "]
+
+		    ["Hide partial expression" py-hide-partial-expression
+		     :help " `py-hide-partial-expression'
+
+Hide partial-expression at point\. "]
+
+		    ["Hide line" py-hide-line
+		     :help " `py-hide-line'
+
+Hide line at point\. "]
+
+		    ["Hide top level" py-hide-top-level
+		     :help " `py-hide-top-level'
+
+Hide top-level at point\. "])
+
+		   ("Show"
+
+		    ["Show statement" py-show-statement
+		     :help " `py-show-statement'
+
+Show statement at point\. "]
+
+		    ["Show block" py-show-block
+		     :help " `py-show-block'
+
+Show block at point\. "]
+
+		    ["Show clause" py-show-clause
+		     :help " `py-show-clause'
+
+Show clause at point\. "]
+
+		    ["Show block or clause" py-show-block-or-clause
+		     :help " `py-show-block-or-clause'
+
+Show block-or-clause at point\. "]
+
+		    ["Show def" py-show-def
+		     :help " `py-show-def'
+
+Show def at point\. "]
+
+		    ["Show class" py-show-class
+		     :help " `py-show-class'
+
+Show class at point\. "]
+
+		    ["Show expression" py-show-expression
+		     :help " `py-show-expression'
+
+Show expression at point\. "]
+
+		    ["Show partial expression" py-show-partial-expression
+		     :help " `py-show-partial-expression'
+
+Show partial-expression at point\. "]
+
+		    ["Show line" py-show-line
+		     :help " `py-show-line'
+
+Show line at point\. "]
+
+		    ["Show top level" py-show-top-level
+		     :help " `py-show-top-level'
+
+Show top-level at point\. "])
 
                    ("Kill "
 

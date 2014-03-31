@@ -40,7 +40,30 @@ New commands
   With optional argument SHELL, otherwise kill default
   (I)Python shell.
 
-Receives a buffer-name as optional argument"
+- Python specific hide-show
+  py-hide-region
+  py-show-region
+  py-hide-statement
+  py-show-statement
+  py-hide-block
+  py-show-block
+  py-hide-clause
+  py-show-clause
+  py-hide-block-or-clause
+  py-show-block-or-clause
+  py-hide-def
+  py-show-def
+  py-hide-class
+  py-show-class
+  py-hide-expression
+  py-show-expression
+  py-hide-partial-expression
+  py-show-partial-expression
+  py-hide-line
+  py-show-line
+  py-hide-top-level
+  py-show-top-level
+
 - py-info-lookup-symbol ()
   Calls `info-lookup-symbol'. Sends help if stuff is missing.
 

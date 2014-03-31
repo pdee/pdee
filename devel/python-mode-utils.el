@@ -185,6 +185,11 @@
 (setq py-core-command-name '("statement" "block" "def" "class" "region" "file"))
 
 (defvar py-bounds-command-names (list "statement" "block" "clause" "block-or-clause" "def" "class" "region" "buffer" "expression" "partial-expression" "line" "top-level"))
+
+(defvar py-hide-names (list "region" "statement" "block" "clause" "block-or-clause" "def" "class" "expression" "partial-expression" "line" "top-level"))
+
+(setq py-hide-names (list "region" "statement" "block" "clause" "block-or-clause" "def" "class" "expression" "partial-expression" "line" "top-level"))
+
 (setq  py-bounds-command-names (list "statement" "block" "clause" "block-or-clause" "def" "class" "region" "buffer" "expression" "partial-expression" "line" "top-level"))
 
 (setq py-checker-command-names '("clear-flymake-allowed-file-name-masks" "pylint-flymake-mode" "pyflakes-flymake-mode" "pychecker-flymake-mode" "pep8-flymake-mode" "pyflakespep8-flymake-mode" "py-pylint-doku" "py-pyflakes-run" "py-pyflakespep8-run" "py-pyflakespep8-help"))
@@ -2826,7 +2831,7 @@ Return position if " ele " found, nil otherwise \"
       (when doku (insert (regexp-quote doku)))
 
       (insert (concat
-               " \"]\n")))
+               "\"]\n")))
     (skip-chars-forward "[[:punct:]]")
     (capitalize-word 1)))
 
@@ -3149,5 +3154,124 @@ Return code of `py-" ele "' at point, a string. \"
     (forward-char 1)
     (newline)
     (indent-region (mark) (point))))
+
+
+(defun py-write-hide-forms ()
+  (interactive "*")
+  (set-buffer (get-buffer-create "python-components-hide-show.el"))
+  (erase-buffer)
+  (insert ";;; python-components-hide-show.el --- Provide hs-minor-mode forms\n")
+  (insert arkopf)
+  (insert"
+\;; (setq hs-block-start-regexp 'py-extended-block-or-clause-re)
+\;; (setq hs-forward-sexp-func 'py-end-of-block)
+
+\(defun py-hide-base (form &optional beg end)
+  \"Hide visibility of existing form at point. \"
+  (hs-minor-mode 1)
+  (save-excursion
+    (let\* ((form (prin1-to-string form))
+	   (beg (or beg (or (funcall (intern-soft (concat \"py-beginning-of-\" form \"-p\")))
+			    (funcall (intern-soft (concat \"py-beginning-of-\" form))))))
+	   (end (or end (funcall (intern-soft (concat \"py-end-of-\" form)))))
+	   (modified (buffer-modified-p))
+	   (inhibit-read-only t))
+      (if (and beg end)
+	  (progn
+	    (hs-make-overlay beg end 'code)
+	    (set-buffer-modified-p modified))
+	(error (concat \"No \" (format \"%s\" form) \" at point!\"))))))
+
+\(defun py-show-base (form &optional beg end)
+  \"Remove invisibility of existing form at point. \"
+  (save-excursion
+    (let\* ((form (prin1-to-string form))
+	   (beg (or beg (or (funcall (intern-soft (concat \"py-beginning-of-\" form \"-p\")))
+			    (funcall (intern-soft (concat \"py-beginning-of-\" form))))))
+	   (end (or end (funcall (intern-soft (concat \"py-end-of-\" form)))))
+	   (modified (buffer-modified-p))
+	   (inhibit-read-only t))
+      (if (and beg end)
+	  (progn
+	    (hs-discard-overlays beg end)
+	    (set-buffer-modified-p modified))
+	(error (concat \"No \" (format \"%s\" form) \" at point!\"))))))
+
+\(defun py-hide-show (&optional form beg end)
+  \"Toggle visibility of existing forms at point. \"
+  (interactive)
+  (save-excursion
+    (let\* ((form (prin1-to-string form))
+	   (beg (or beg (or (funcall (intern-soft (concat \"py-beginning-of-\" form \"-p\")))
+			    (funcall (intern-soft (concat \"py-beginning-of-\" form))))))
+	   (end (or end (funcall (intern-soft (concat \"py-end-of-\" form)))))
+	   (modified (buffer-modified-p))
+	   (inhibit-read-only t))
+      (if (and beg end)
+	  (if (overlays-in beg end)
+	      (hs-discard-overlays beg end)
+	    (hs-make-overlay beg end 'code))
+	(error (concat \"No \" (format \"%s\" form) \" at point!\")))
+      (set-buffer-modified-p modified))))
+
+\(defun py-hide-region (beg end)
+  \"Hide active region. \"
+  (interactive
+   (list
+    (and (use-region-p) (region-beginning))(and (use-region-p) (region-end))))
+  (py-hide-base 'region beg end))
+
+\(defun py-show-region (beg end)
+  \"Un-hide active region. \"
+  (interactive
+   (list
+    (and (use-region-p) (region-beginning))(and (use-region-p) (region-end))))
+  (py-show-base 'region beg end))
+")
+  (dolist (ele py-hide-names)
+    (insert (concat "
+\(defun py-hide-" ele " ()
+  \"Hide " ele " at point. \"
+  (interactive)
+  (py-hide-base '" ele "))
+
+\(defun py-show-" ele " ()
+  \"Show " ele " at point. \"
+  (interactive)
+  (py-show-base '" ele "))
+")))
+
+  (insert "\n;; python-components-hide-show.el ends here
+\(provide 'python-components-hide-show)")
+  (switch-to-buffer (current-buffer))
+  (emacs-lisp-mode))
+
+
+(defun py-write-hide-menu ()
+  (interactive)
+  (set-buffer (get-buffer-create "python-components-hide-Menu.el"))
+  (erase-buffer)
+  (switch-to-buffer (current-buffer))
+  (emacs-lisp-mode)
+  (insert "(\"Hide-Show\"")
+
+  (dolist (ele py-hide-names)
+    (emen (concat "py-hide-" ele))
+    (goto-char (point-max))
+    )
+  (insert "(\"Show\"\n")
+
+  (dolist (ele py-hide-names)
+    (emen (concat "py-show-" ele))
+    (goto-char (point-max))
+
+    )
+
+  (insert "))\n")
+  )
+  (richten nil (point-min) (point-max))
+
+  (switch-to-buffer (current-buffer))
+  (emacs-lisp-mode))
 
 ;;; Copying
