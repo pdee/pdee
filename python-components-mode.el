@@ -3433,6 +3433,16 @@ the default. "])
 
                  ("Move"
 
+		  ["Backward same level" py-backward-same-level
+		   :help " `py-backward-same-level'
+
+Go form backward keeping indent level if possible\.
+
+If inside a delimited form --string or list-- go to its beginning\.
+If not at beginning of a statement or block, go to its beginning\.
+If at beginning of a statement or block, go to previous beginning of compound statement or definition at point\.
+If no further element at same level, go one level up. "]
+
                   ["Beginning of block" py-beginning-of-block
                    :help " `py-beginning-of-block'
 

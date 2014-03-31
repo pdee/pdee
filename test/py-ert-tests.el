@@ -1075,9 +1075,72 @@ by the
     (should (eq (char-after) ?\n)) ))
 
 
+(ert-deftest py-backward-same-level-test ()
+  (py-tests-with-temp-buffer
+      "def foo():
+    if True:
+        def bar():
+            pass
+    elif False:
+        def baz():
+            pass
+    else:
+        try:
+            1 == 1
+        except True:
+            def foo1():
+                if True:
+                    def bar1():
+                        pass
+                elif False:
+                    def baz1():
+                        pass
+                else:
+                    try:
+                        1 == 1
+                    except True:
+                        pass
+                    else:
+                        pass
+                    finally:
+                        pass
+        else True:
+            pass
+        finally:
+            pass
+"
+    (font-lock-fontify-buffer)
+    (goto-char 632)
+    (py-backward-same-level)
+    (should (eq (char-after) ?p))
+    (py-backward-same-level)
+    (should (eq (char-after) ?f))
+    (py-backward-same-level)
+    (should (eq (char-after) ?e))
+    (py-backward-same-level)
+    (should (eq (char-after) ?e))
+    (py-backward-same-level)
+    (should (eq (char-after) ?t))
+    (py-backward-same-level)
+    (should (eq (char-after) ?e))
+    (py-backward-same-level)
+    (should (eq (char-after) ?e))
+    (py-backward-same-level)
+    (should (eq (char-after) ?i))
+    (py-backward-same-level)
+    (should (eq (char-after) ?d))
+    (py-backward-same-level)
+    (should (eq (char-after) ?e))
+    (py-backward-same-level)
+    (should (eq (char-after) ?t))
+    (py-backward-same-level)
+    (should (eq (char-after) ?e))
+    (py-backward-same-level)
+    (should (eq (char-after) ?e))))
+
 (ert-deftest py-ert-py-up-level-test ()
- (py-tests-with-temp-buffer
-     "def foo():
+  (py-tests-with-temp-buffer
+      "def foo():
     if True:
         def bar():
             pass
@@ -1109,11 +1172,22 @@ by the
         finally:
             pass
 "
-   (font-lock-fontify-buffer) 
-   (switch-to-buffer (current-buffer))
-   (goto-char 632)
-   (py-up)
-   (should (looking-at "finally"))))
+    (font-lock-fontify-buffer)
+    (goto-char 632)
+    (py-up)
+    (should (eq (char-after) ?p))
+    (py-up)
+    (should (eq (char-after) ?f))
+    (py-up)
+    (should (eq (char-after) ?e))
+    (py-up)
+    (should (eq (char-after) ?d))
+    (py-up)
+    (should (eq (char-after) ?e))
+    (py-up)
+    (should (eq (char-after) ?e))
+    (py-up)
+    (should (eq (char-after) ?d))))
 
 
 (provide 'py-ert-tests)

@@ -100,7 +100,7 @@ http://docs.python.org/reference/compound_stmts.html"
   (let ((pps (syntax-ppss)))
     (cond ((nth 8 pps) (goto-char (nth 8 pps)))
           ((nth 1 pps) (goto-char (nth 1 pps)))
-          ((py-beginning-of-statement-p) (py-beginning-of-form-intern 'py-extended-block-or-clause-re (interactive-p)))
+          ((py-beginning-of-statement-p) (py-beginning-of-form-intern 'py-extended-block-or-clause-re (interactive-p) t))
           (t (py-beginning-of-statement)))))
 
 (defun py-down (&optional indent)
@@ -140,7 +140,7 @@ http://docs.python.org/reference/compound_stmts.html"
     erg))
 
 (defun py-backward-same-level ()
-  "Go backward or to beginning of form if inside.
+  "Go form backward keeping indent level if possible.
 
 If inside a delimited form --string or list-- go to its beginning.
 If not at beginning of a statement or block, go to its beginning.
