@@ -254,6 +254,48 @@
     (insert ";;; python-components-fast-forms.el --- Execute forms at point\n")
     (insert arkopf)
     (insert ";;; Process forms fast\n\n")
+    (insert "
+
+\(defun py-fast-process (&optional buffer)
+  \"Connect am (I)Python process suitable for large output.
+
+Output arrives in py-output-buffer, \\\"\\\*Python Output\\\*\\\" by default
+It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to the freeze reported by lp:1253907\"
+  (interactive)
+  (let ((this-buffer
+         (set-buffer (or (and buffer (get-buffer-create buffer))
+                         (get-buffer-create py-buffer-name)))))
+    (let ((proc (start-process py-shell-name this-buffer py-shell-name)))
+      (with-current-buffer this-buffer
+        (erase-buffer))
+      (setq py-output-buffer this-buffer)
+      proc)))
+
+\(defun py-fast-send-string (string)
+  \"Process Python strings, being prepared for large output.
+
+Output arrives in py-output-buffer, \\\"\\\*Python Output\\\*\\\" by default
+See also `py-fast-shell'
+
+\"
+  (let ((proc (or (get-buffer-process (get-buffer py-output-buffer))
+                  (py-fast-process))))
+    ;;    (with-current-buffer py-output-buffer
+    ;;      (erase-buffer))
+    (process-send-string proc string)
+    (or (string-match \"\\n\$\" string)
+	(process-send-string proc \"\\n\"))
+    (accept-process-output proc 1)
+    (switch-to-buffer py-output-buffer)
+    (beginning-of-line)
+    (skip-chars-backward \"\\r\\n\")
+    (delete-region (point) (point-max))))
+
+\(defun py-process-region-fast (beg end)
+  (interactive \"r\")
+  (let ((py-fast-process-p t))
+    (py-execute-region beg end)))
+")
     (dolist (ele py-bounds-command-names)
       (insert (concat "(defun py-execute-" ele "-fast ()"))
       (insert (concat "
