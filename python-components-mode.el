@@ -1522,22 +1522,10 @@ Default is nil "
   :group 'python-mode)
 
 (defcustom py-output-buffer "*Python Output*"
-  "When `py-enforce-output-buffer-p' is non-nil, provides the
-default for output-buffer. "
+  ""
   :type 'string
   :group 'python-mode)
 (make-variable-buffer-local 'py-output-buffer)
-
-(defcustom py-enforce-output-buffer-p nil
- "When non-nil, value of `py-output-buffer' is used regardless of
-environment. Default is nil.
-
-When nil, output of `py-execute-...'-commands arrives in buffer
-created by `py-shell'. It's name is composed WRT to Python
-version used, it's path etc. "
-
-:type 'boolean
-:group 'python-mode)
 
 ;; the python-el way
 (defcustom py-ffap-string-code
@@ -5383,15 +5371,6 @@ Otherwise value of py-python-history is used. Use `M-x customize-variable' to se
                            (not py-force-py-shell-name-p))
                      :help "When `t', execution with kind of Python specified in `py-shell-name' is enforced, possibly shebang doesn't take precedence. Use `M-x customize-variable' to set it permanently"
                      :style toggle :selected py-force-py-shell-name-p]
-
-                    ["Enforce py-output-buffer"
-                     (setq py-enforce-output-buffer-p
-                           (not py-enforce-output-buffer-p))
-                     :help " `py-enforce-output-buffer-p'
-
-When non-nil, value of `py-output-buffer' is used for output,
-regardless of environment. Default is nil."
-                     :style toggle :selected py-enforce-output-buffer-p]
 
                     ["Cleanup temporary"
                      (setq py-cleanup-temporary
