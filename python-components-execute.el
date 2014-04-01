@@ -473,7 +473,11 @@ Internal use"
          (delete-other-windows)
          (py--manage-windows-split)
 	 (py--manage-windows-set-and-switch py-output-buffer)
-         (display-buffer output-buffer t))
+         (display-buffer output-buffer t)
+	 ;; fast-... fails
+	 (unless (eq (current-buffer) py-exception-buffer)
+	   (set-buffer py-exception-buffer)
+	   (switch-to-buffer (current-buffer))) )
         ;; no split, switch
         ((and
           py-switch-buffers-on-execute-p
@@ -483,8 +487,7 @@ Internal use"
         ;; no split, no switch
         ((not py-switch-buffers-on-execute-p)
          (let (pop-up-windows)
-           (py-restore-window-configuration))))
-  )
+           (py-restore-window-configuration)))))
 
 (defun py-kill-shell-unconditional (&optional shell)
   "With optional argument SHELL.
