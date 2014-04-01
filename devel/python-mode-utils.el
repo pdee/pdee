@@ -3268,7 +3268,7 @@ Return code of `py-" ele "' at point, a string. \"
     )
 
   (insert "))\n")
-  )
+  
   (richten nil (point-min) (point-max))
 
   (switch-to-buffer (current-buffer))
