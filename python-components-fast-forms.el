@@ -46,7 +46,7 @@ Output arrives in py-output-buffer, \"\*Python Output\*\" by default
 See also `py-fast-shell'
 
 "
-  (let ((proc (or (get-buffer-process (get-buffer py-output-buffer))
+  (let ((proc (or (get-buffer-process (get-buffer py-buffer-name))
                   (py-fast-process))))
     ;;    (with-current-buffer py-output-buffer
     ;;      (erase-buffer))
@@ -54,7 +54,7 @@ See also `py-fast-shell'
     (or (string-match "\n$" string)
 	(process-send-string proc "\n"))
     (accept-process-output proc 1)
-    (switch-to-buffer py-output-buffer)
+    (switch-to-buffer py-buffer-name)
     (beginning-of-line)
     (skip-chars-backward "\r\n")
     (delete-region (point) (point-max))))
