@@ -47,18 +47,32 @@ Output arrives in py-output-buffer, \"\*Python Output\*\" by default
 See also `py-fast-shell'
 
 "
-  (let ((proc (or (get-buffer-process (get-buffer py-output-buffer))
+  (let ((py-fast-filter (concat "\\("
+				(mapconcat 'identity
+					   (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
+					   "\\|")
+				"\\)"))
+
+	(proc (or (get-buffer-process (get-buffer py-output-buffer))
                   (py-fast-process))))
-    ;;    (with-current-buffer py-output-buffer
-    ;;      (erase-buffer))
     (process-send-string proc string)
     (or (string-match "\n$" string)
 	(process-send-string proc "\n"))
+    (process-send-string proc "\n")
     (accept-process-output proc 1)
-    (switch-to-buffer py-output-buffer)
+    (set-buffer py-output-buffer)
+    ;;    (switch-to-buffer (current-buffer))
+    (sit-for 0.01)
     (beginning-of-line)
     (skip-chars-backward "\r\n")
-    (delete-region (point) (point-max))))
+    (delete-region (point) (point-max))
+    ;; filter the end and the beginning, but not the whole result
+    (goto-char (point-min))
+    (while (looking-at py-fast-filter)
+      (delete-region (match-beginning 0) (match-end 0)))
+    ;; erg let-bound by py-execute-buffer-finally
+    (setq erg (buffer-substring-no-properties (point-min) (point-max)))
+    (py-shell-manage-windows py-output-buffer nil windows-config)))
 
 (defun py-process-region-fast (beg end)
   (interactive "r")
@@ -167,4 +181,3 @@ comint-mode"
 
 (provide 'python-components-fast-forms)
 ;;; python-components-fast-forms.el ends here
- 

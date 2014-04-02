@@ -470,14 +470,18 @@ Internal use"
         ((and
           py-split-windows-on-execute-p
           (not py-switch-buffers-on-execute-p))
+	 (set-buffer oldbuf)
+;; 	 (sit-for 0.1) 
+	 (switch-to-buffer (current-buffer)) 
          (delete-other-windows)
          (py--manage-windows-split)
 	 (py--manage-windows-set-and-switch py-output-buffer)
          (display-buffer output-buffer t)
 	 ;; fast-... fails
-	 (unless (eq (current-buffer) py-exception-buffer)
-	   (set-buffer py-exception-buffer)
-	   (switch-to-buffer (current-buffer))) )
+;; 	 (unless (eq (current-buffer) py-exception-buffer)
+;; 	   (set-buffer py-exception-buffer)
+;; 	   (switch-to-buffer (current-buffer)))
+	 )
         ;; no split, switch
         ((and
           py-switch-buffers-on-execute-p
@@ -640,7 +644,8 @@ When DONE is `t', `py-shell-manage-windows' is omitted
   (interactive "P")
   (setenv "PAGER" "cat")
   (setenv "TERM" "dumb")
-  (let* ((py-fast-process-p (when (not (interactive-p)) py-fast-process-p))
+  (let* ((oldbuf (current-buffer)) 
+	 (py-fast-process-p (when (not (interactive-p)) py-fast-process-p))
          (dedicated (or dedicated py-dedicated-process-p))
          (py-exception-buffer (or py-exception-buffer (current-buffer)))
          ;; (coding-system-for-read 'utf-8)
@@ -735,7 +740,8 @@ Default is interactive, i.e. py-fast-process-p nil, and `py-session'"
   "Select the handler.
 
 When optional FILE is `t', no temporary file is needed. "
-  (let* ((start (or start (and (use-region-p) (region-beginning)) (point-min)))
+  (let* ((oldbuf (current-buffer))
+	 (start (or start (and (use-region-p) (region-beginning)) (point-min)))
          (end (or end (and (use-region-p) (region-end)) (point-max)))
          (wholebuf (unless file (or wholebuf (and (eq (buffer-size) (- end start))))))
          (windows-config (window-configuration-to-register 313465889))
@@ -764,7 +770,7 @@ When optional FILE is `t', no temporary file is needed. "
          (py-orig-buffer-or-file (or filename (current-buffer)))
          (proc (cond (proc)
                      (py-fast-process-p
-                      (or (get-buffer-process (get-buffer py-buffer-name))
+                      (or (get-buffer-process (get-buffer py-shell-name))
                           (py-fast-process py-buffer-name)))
                      (py-dedicated-process-p
                       (get-buffer-process (py-shell nil py-dedicated-process-p py-shell-name py-buffer-name t)))
@@ -803,19 +809,20 @@ When optional FILE is `t', no temporary file is needed. "
     (insert strg)
     (py-fix-start (point-min)(point-max))
     (if py-fast-process-p
-	(progn
-          (with-current-buffer py-buffer-name
-            (erase-buffer))
-	  (setq strg (buffer-substring-no-properties (point-min) (point-max)))
-	  (py-fast-send-string strg)
-          (py--postprocess))
+	(unwind-protect
+	    (with-current-buffer py-buffer-name
+	      (erase-buffer))
+	  (progn
+	    (setq strg (buffer-substring-no-properties (point-min) (point-max)))
+	    (py-fast-send-string strg))
+	  (py-kill-buffer-unconditional tempbuf))
       (write-region (point-min) (point-max) tempfile nil t nil 'ask)
       (set-buffer-modified-p 'nil)
       (unwind-protect
 	  (setq erg (py-execute-file-base proc tempfile nil py-buffer-name py-orig-buffer-or-file execute-directory))
 	(sit-for 0.1)
 	(when py-cleanup-temporary
-	     (py-delete-temporary tempfile tempbuf))))
+	  (py-delete-temporary tempfile tempbuf))))
     (and erg (or py-debug-p py-store-result-p) (unless (string= (car kill-ring) erg) (kill-new erg)))
     erg))
 

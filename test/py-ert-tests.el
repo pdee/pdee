@@ -1246,4 +1246,34 @@ x = {'abc':'def',
     (py-electric-delete)
     (should (eq 4 (current-indentation)))))
 
+;; (ert-deftest py-ert-execute-fast ()
+;;   (py-tests-with-temp-buffer "
+;; def foo():
+;;     if True:
+;;         print(1)
+;; "
+
+;;    (goto-char 39)
+;; ;;    (search-forward "1") 
+;;     (switch-to-buffer (current-buffer)) 
+;;     (let ((py-store-result-p t))
+;;       (py-execute-statement-fast)
+;;       (should (string= "1" (car kill-ring)))
+;;       (forward-char 1) 
+;;       (delete-char 1)
+;;       (insert "2")
+;;       (py-execute-clause-fast)
+;;       (should (string= "1" (car kill-ring)))
+;;       (py-execute-block-or-clause-fast)
+;;       (should (string= "1" (car kill-ring)))
+;;       (py-execute-def-fast)
+;;       (should (string= "1" (car kill-ring)))
+;;       (py-execute-def-or-class-fast)
+;;       (should (string= "1" (car kill-ring)))
+;;       (py-execute-class-fast)
+;;       (should (string= "1" (car kill-ring)))
+
+;;       )
+;;     ))
+    
 (provide 'py-ert-tests)
