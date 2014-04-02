@@ -8052,19 +8052,19 @@ containing Python source.
   (set (make-local-variable 'comint-input-filter) 'py-input-filter)
   (set (make-local-variable 'compilation-error-regexp-alist)
        python-compilation-regexp-alist)
-  (set (make-local-variable 'comint-use-prompt-regexp) t)
-  (set (make-local-variable 'comint-prompt-regexp)
-       (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
-              (concat "\\("
-                      (mapconcat 'identity
-                                 (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
-                                 "\\|")
-                      "\\)"))
-             (t (concat "\\("
-                        (mapconcat 'identity
-                                   (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
-                                   "\\|")
-                        "\\)"))))
+  ;;  py--shell-make-comint does it
+  ;; (set (make-local-variable 'comint-prompt-regexp)
+  ;;      (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
+  ;;             (concat "\\("
+  ;;                     (mapconcat 'identity
+  ;;                                (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
+  ;;                                "\\|")
+  ;;                     "\\)"))
+  ;;            (t (concat "\\("
+  ;;                       (mapconcat 'identity
+  ;;                                  (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
+  ;;                                  "\\|")
+  ;;                       "\\)"))))
   (if py-complete-function
       (add-hook 'completion-at-point-functions
                 py-complete-function nil 'local)

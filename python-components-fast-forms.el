@@ -40,14 +40,15 @@ It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to t
       (setq py-output-buffer this-buffer)
       proc)))
 
-(defun py-fast-send-string (string)
+(defun py-fast-send-string (string &optional windows-config)
   "Process Python strings, being prepared for large output.
 
 Output arrives in py-output-buffer, \"\*Python Output\*\" by default
 See also `py-fast-shell'
 
 "
-  (let ((py-fast-filter (concat "\\("
+  (let ((windows-config (or windows-config (window-configuration-to-register 313465889)))
+	(py-fast-filter (concat "\\("
 				(mapconcat 'identity
 					   (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
 					   "\\|")
@@ -56,23 +57,18 @@ See also `py-fast-shell'
 	(proc (or (get-buffer-process (get-buffer py-output-buffer))
                   (py-fast-process))))
     (process-send-string proc string)
-    (or (string-match "\n$" string)
-	(process-send-string proc "\n"))
+;;    (or (string-match "\n$" string)
+;; 	(process-send-string proc "\n"))
     (process-send-string proc "\n")
-    (accept-process-output proc 1)
-    (set-buffer py-output-buffer)
-    ;;    (switch-to-buffer (current-buffer))
+    (accept-process-output proc 5)
     (sit-for 0.01)
-    (beginning-of-line)
-    (skip-chars-backward "\r\n")
-    (delete-region (point) (point-max))
-    ;; filter the end and the beginning, but not the whole result
+    (set-buffer py-output-buffer)
+    ;; py--fast-filter
+    (delete-region (point) (progn (skip-chars-backward "^\n")(point))) 
     (goto-char (point-min))
     (while (looking-at py-fast-filter)
-      (delete-region (match-beginning 0) (match-end 0)))
-    ;; erg let-bound by py-execute-buffer-finally
-    (setq erg (buffer-substring-no-properties (point-min) (point-max)))
-    (py-shell-manage-windows py-output-buffer nil windows-config)))
+      (replace-match ""))
+    (py--postprocess windows-config)))
 
 (defun py-process-region-fast (beg end)
   (interactive "r")

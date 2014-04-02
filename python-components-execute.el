@@ -471,11 +471,11 @@ Internal use"
           py-split-windows-on-execute-p
           (not py-switch-buffers-on-execute-p))
 	 (set-buffer oldbuf)
-;; 	 (sit-for 0.1) 
-	 (switch-to-buffer (current-buffer)) 
+;; 	 (sit-for 0.1)
+	 (switch-to-buffer (current-buffer))
          (delete-other-windows)
          (py--manage-windows-split)
-	 (py--manage-windows-set-and-switch py-output-buffer)
+	 (py--manage-windows-set-and-switch output-buffer)
          (display-buffer output-buffer t)
 	 ;; fast-... fails
 ;; 	 (unless (eq (current-buffer) py-exception-buffer)
@@ -644,7 +644,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
   (interactive "P")
   (setenv "PAGER" "cat")
   (setenv "TERM" "dumb")
-  (let* ((oldbuf (current-buffer)) 
+  (let* ((oldbuf (current-buffer))
 	 (py-fast-process-p (when (not (interactive-p)) py-fast-process-p))
          (dedicated (or dedicated py-dedicated-process-p))
          (py-exception-buffer (or py-exception-buffer (current-buffer)))
@@ -675,7 +675,10 @@ When DONE is `t', `py-shell-manage-windows' is omitted
     ;; lp:1169687, if called from within an existing py-shell, open a new one
     (and (bufferp py-exception-buffer)(string= py-buffer-name (buffer-name py-exception-buffer))
          (setq py-buffer-name (generate-new-buffer-name py-buffer-name)))
-    (if py-fast-process-p
+    (if (and py-fast-process-p
+	     ;; user may want just to open a interactive shell
+	     (not (interactive-p))
+	     )
         (unless (get-buffer-process (get-buffer py-buffer-name))
           (py-fast-process)
           (setq py-output-buffer py-buffer-name))
@@ -777,7 +780,7 @@ When optional FILE is `t', no temporary file is needed. "
                      (t (or (and (boundp 'py-buffer-name) (get-buffer-process py-buffer-name))
                             (get-buffer-process (py-shell nil py-dedicated-process-p py-shell-name (and (boundp 'py-buffer-name) py-buffer-name) t))))))
          err-p)
-    (and py-debug-p (with-temp-file "/tmp/py-buffer-name.txt" (insert py-buffer-name)))
+    (when py-debug-p (with-temp-file "/tmp/py-buffer-name.txt" (insert py-buffer-name)))
     (set-buffer py-exception-buffer)
     (py-update-execute-directory proc py-buffer-name execute-directory)
     (cond (;; enforce proceeding as python-mode.el v5
@@ -808,6 +811,7 @@ When optional FILE is `t', no temporary file is needed. "
                   "if __name__ == '__main__ ':" strg)))
     (insert strg)
     (py-fix-start (point-min)(point-max))
+    ;; fast-process avoids temporary files
     (if py-fast-process-p
 	(unwind-protect
 	    (with-current-buffer py-buffer-name
@@ -822,9 +826,48 @@ When optional FILE is `t', no temporary file is needed. "
 	  (setq erg (py-execute-file-base proc tempfile nil py-buffer-name py-orig-buffer-or-file execute-directory))
 	(sit-for 0.1)
 	(when py-cleanup-temporary
+	  (py-kill-buffer-unconditional tempbuf)
 	  (py-delete-temporary tempfile tempbuf))))
     (and erg (or py-debug-p py-store-result-p) (unless (string= (car kill-ring) erg) (kill-new erg)))
     erg))
+
+(defun py--fast-filter ()
+  "Run where fast-output arrives, normally at \"*Python Output*\" buffer. "
+  (delete-region (point) (progn (skip-chars-backward "^\n")(point)))
+  (goto-char (point-min))
+  (while (looking-at py-fast-filter)
+    (replace-match "")))
+
+(defun py--postprocess (windows-config)
+  "Provide return values, check result for error, manage windows. "
+  (if
+      (setq err-p (save-excursion (py-postprocess-output-buffer py-output-buffer)))
+      (py-shell-manage-windows py-buffer-name nil windows-config)
+    (when py-store-result-p
+      ;; 	(sit-for 0.1)
+      (setq erg
+	    (py-output-filter (buffer-substring-no-properties (point) (point-max)))))
+    (and erg (not (string= (car kill-ring) erg)) (kill-new erg))
+    (py-shell-manage-windows py-output-buffer nil windows-config)
+    erg))
+
+(defun py-execute-file-base (&optional proc filename cmd procbuf origfile execute-directory)
+  "Send to Python interpreter process PROC, in Python version 2.. \"execfile('FILENAME')\".
+
+Make that process's buffer visible and force display.  Also make
+comint believe the user typed this string so that
+`kill-output-from-shell' does The Right Thing.
+Returns position where output starts. "
+  (let* ((cmd (or cmd (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" filename filename)))
+         (msg (and py-verbose-p (format "## executing %s...\n" (or origfile filename))))
+         (py-output-buffer (or procbuf (py-shell nil nil nil procbuf t)))
+         (proc (or proc (get-buffer-process py-output-buffer)))
+         erg orig err-p)
+    (set-buffer py-output-buffer)
+    (goto-char (point-max))
+    (setq orig (point))
+    (comint-send-string proc cmd)
+    (py--postprocess windows-config)))
 
 (defun py-execute-ge24.3 (start end file execute-directory &optional py-exception-buffer proc)
   "An alternative way to do it.
@@ -1026,42 +1069,6 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
       (py-update-execute-directory-intern (or py-execute-directory execute-directory) proc)
       (delete-region orig (point-max)))
     (set-buffer oldbuf)))
-
-(defun py--postprocess ()
-  "Provide return values, check result for error, manage windows. "
-  (if
-      (setq err-p (save-excursion (py-postprocess-output-buffer py-output-buffer)))
-      (py-shell-manage-windows py-buffer-name nil windows-config)
-    (when py-fast-process-p
-      (goto-char (point-min))
-      (while (re-search-forward py-shell-prompt-regexp nil t 1)
-	(replace-match "")))
-    (and py-store-result-p
-	 (sit-for 0.1)
-	 (setq erg
-	       (py-output-filter
-		(buffer-substring-no-properties orig (point-max))))
-	 (unless (string= (car kill-ring) erg) (kill-new erg)))
-    (py-shell-manage-windows py-output-buffer nil windows-config)
-    erg))
-
-(defun py-execute-file-base (&optional proc filename cmd procbuf origfile execute-directory)
-  "Send to Python interpreter process PROC, in Python version 2.. \"execfile('FILENAME')\".
-
-Make that process's buffer visible and force display.  Also make
-comint believe the user typed this string so that
-`kill-output-from-shell' does The Right Thing.
-Returns position where output starts. "
-  (let* ((cmd (or cmd (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" filename filename)))
-         (msg (and py-verbose-p (format "## executing %s...\n" (or origfile filename))))
-         (py-output-buffer (or procbuf (py-shell nil nil nil procbuf t)))
-         (proc (or proc (get-buffer-process py-output-buffer)))
-         erg orig err-p)
-    (set-buffer py-output-buffer)
-    (goto-char (point-max))
-    (setq orig (point))
-    (comint-send-string proc cmd)
-    (py--postprocess)))
 
 (defun py-execute-string (&optional string shell)
   "Send the argument STRING to a Python interpreter.
@@ -1583,6 +1590,7 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
 	file bol err-p estring ecode limit)
     (goto-char pmx)
     (sit-for 0.1)
+;;    (switch-to-buffer (current-buffer))
     (save-excursion
       (unless (looking-back py-pdbtrack-input-prompt)
         (forward-line -1)
