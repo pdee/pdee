@@ -14,127 +14,29 @@ Check, if autopair-mode is available.
 
 Give some hints, if not.
 
-toggle-py-nil-docstring-style
------------------------------
-If nil docstring-style should be on or off.
-
-  Returns value of `py-docstring-style' switched to.
-To set permanently,  customize this variable 
-
-py-nil-docstring-style-on
--------------------------
-Make sure, nil docstring-style' is on.
-
-  Returns value of `py-docstring-style'.
-To set permanently,  customize this variable 
-
-py-nil-docstring-style-off
+py-set-nil-docstring-style
 --------------------------
-Make sure, nil docstring-style is off.
+Set py-docstring-style to 'nil
 
-  Returns value of `py-docstring-style'.
-To set permanently,  customize this variable 
-
-toggle-py-onetwo-docstring-style
---------------------------------
-If onetwo docstring-style should be on or off.
-
-  Returns value of `py-docstring-style' switched to.
-To set permanently,  customize this variable 
-
-py-onetwo-docstring-style-on
-----------------------------
-Make sure, onetwo docstring-style' is on.
-
-  Returns value of `py-docstring-style'.
-To set permanently,  customize this variable 
-
-py-onetwo-docstring-style-off
------------------------------
-Make sure, onetwo docstring-style is off.
-
-  Returns value of `py-docstring-style'.
-To set permanently,  customize this variable 
-
-toggle-py-pep-257-docstring-style
+py-set-pep-257-nn-docstring-style
 ---------------------------------
-If pep-257 docstring-style should be on or off.
+Set py-docstring-style to 'pep-257-nn
 
-  Returns value of `py-pep-257-docstring-style' switched to. 
-
-py-pep-257-docstring-style-on
------------------------------
-Make sure, pep-257 docstring-style' is on.
-
-Returns value of `py-pep-257-docstring-style'. 
-
-py-pep-257-docstring-style-off
+py-set-pep-257-docstring-style
 ------------------------------
-Make sure, pep-257 docstring-style is off.
+Set py-docstring-style to 'pep-257
 
-Returns value of `py-pep-257-docstring-style'. 
-
-toggle-py-pep-257-nn-docstring-style
-------------------------------------
-If pep-257-nn docstring-style should be on or off.
-
-  Returns value of `py-pep-257-nn-docstring-style' switched to. 
-
-py-pep-257-nn-docstring-style-on
---------------------------------
-Make sure, pep-257-nn docstring-style' is on.
-
-  Returns value of `py-docstring-style'.
-To set permanently,  customize this variable 
-
-py-pep-257-nn-docstring-style-off
----------------------------------
-Make sure, pep-257-nn docstring-style is off.
-
-  Returns value of `py-docstring-style'.
-To set permanently,  customize this variable 
-
-toggle-py-symmetric-docstring-style
------------------------------------
-If symmetric docstring-style should be on or off.
-
-  Returns value of `py-docstring-style' switched to.
-To set permanently,  customize this variable 
-
-py-symmetric-docstring-style-on
--------------------------------
-Make sure, symmetric docstring-style' is on.
-
-  Returns value of `py-docstring-style'.
-To set permanently,  customize this variable 
-
-py-symmetric-docstring-style-off
---------------------------------
-Make sure, symmetric docstring-style is off.
-
-  Returns value of `py-docstring-style'.
-To set permanently,  customize this variable 
-
-toggle-py-django-docstring-style
---------------------------------
-If django docstring-style should be on or off.
-
-  Returns value of `py-docstring-style' switched to.
-To set permanently,  customize this variable 
-
-py-django-docstring-style-on
-----------------------------
-Make sure, django docstring-style' is on.
-
-  Returns value of `py-docstring-style'.
-To set permanently,  customize this variable 
-
-py-django-docstring-style-off
+py-set-django-docstring-style
 -----------------------------
-Make sure, django docstring-style is off.
+Set py-docstring-style to 'django
 
-  Returns value of `py-docstring-style'.
-To set permanently,  customize this variable 
+py-set-symmetric-docstring-style
+--------------------------------
+Set py-docstring-style to 'symmetric
+
+py-set-onetwo-docstring-style
+-----------------------------
+Set py-docstring-style to 'onetwo
 
 toggle-py-underscore-word-syntax-p
 ----------------------------------
@@ -1166,17 +1068,9 @@ Go to end of string at point, return position.
 
 Takes the result of (syntax-ppss)
 
-py-fill-paragraph
------------------
-`fill-paragraph-function'
-
-See also `py-fill-string' 
-
-py-fill-labelled-string
------------------------
-Fill string or paragraph containing lines starting with label
-
-See lp:1066489 
+py--string-fence-delete-spaces
+------------------------------
+Delete spaces following or preceding delimiters of string at point. 
 
 py-fill-string
 --------------
@@ -1184,6 +1078,12 @@ String fill function for `py-fill-paragraph'.
 JUSTIFY should be used (if applicable) as in `fill-paragraph'.
 
 Fill according to `py-docstring-style' 
+
+py-fill-labelled-string
+-----------------------
+Fill string or paragraph containing lines starting with label
+
+See lp:1066489 
 
 py-fill-string-django
 ---------------------
@@ -1201,6 +1101,7 @@ Fill docstring according to Django's coding standards style.
 
 See available styles at `py-fill-paragraph' or var `py-docstring-style'
 
+
 py-fill-string-onetwo
 ---------------------
 One newline and start and Two at end style.
@@ -1216,6 +1117,7 @@ One newline and start and Two at end style.
 
 See available styles at `py-fill-paragraph' or var `py-docstring-style'
 
+
 py-fill-string-pep-257
 ----------------------
 PEP-257 with 2 newlines at end of string.
@@ -1230,6 +1132,7 @@ PEP-257 with 2 newlines at end of string.
 
 See available styles at `py-fill-paragraph' or var `py-docstring-style'
 
+
 py-fill-string-pep-257-nn
 -------------------------
 PEP-257 with 1 newline at end of string.
@@ -1242,6 +1145,7 @@ PEP-257 with 1 newline at end of string.
     """
 
 See available styles at `py-fill-paragraph' or var `py-docstring-style'
+
 
 py-fill-string-symmetric
 ------------------------
@@ -1256,6 +1160,7 @@ Symmetric style.
     """
 
 See available styles at `py-fill-paragraph' or var `py-docstring-style'
+
 
 py-beginning-of-top-level-p
 ---------------------------
@@ -1601,8 +1506,8 @@ py-up
 -----
 Go up or to beginning of form if inside.
 
-If inside a delimited form --string or list-- go to it's beginning.
-If not at beginning of a statement or block, go to it's beginning.
+If inside a delimited form --string or list-- go to its beginning.
+If not at beginning of a statement or block, go to its beginning.
 If at beginning of a statement or block, go to beginning one level above of compound statement or definition at point.
 
 Referring python program structures see for example:
@@ -1612,9 +1517,21 @@ py-down
 -------
 Go to beginning one level below of compound statement or definition at point.
 
-If no statement or block below, but a delimited form --string or list-- go to it's beginning. Repeated call from there will behave like down-list.
+If no statement or block below, but a delimited form --string or list-- go to its beginning. Repeated call from there will behave like down-list.
 
 Returns position if successful, nil otherwise
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html
+
+py-backward-same-level
+----------------------
+Go form backward keeping indent level if possible.
+
+If inside a delimited form --string or list-- go to its beginning.
+If not at beginning of a statement or block, go to its beginning.
+If at beginning of a statement or block, go to previous beginning of compound statement or definition at point.
+If no further element at same level, go one level up.
 
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html
@@ -1951,11 +1868,103 @@ Copy minor-block at point.
 
 Store data in kill ring, so it might yanked back. 
 
+py-hide-show
+------------
+Toggle visibility of existing forms at point. 
+
+py-hide-region
+--------------
+Hide active region. 
+
+py-show-region
+--------------
+Un-hide active region. 
+
+py-hide-statement
+-----------------
+Hide statement at point. 
+
+py-show-statement
+-----------------
+Show statement at point. 
+
+py-hide-block
+-------------
+Hide block at point. 
+
+py-show-block
+-------------
+Show block at point. 
+
+py-hide-clause
+--------------
+Hide clause at point. 
+
+py-show-clause
+--------------
+Show clause at point. 
+
+py-hide-block-or-clause
+-----------------------
+Hide block-or-clause at point. 
+
+py-show-block-or-clause
+-----------------------
+Show block-or-clause at point. 
+
+py-hide-def
+-----------
+Hide def at point. 
+
+py-show-def
+-----------
+Show def at point. 
+
+py-hide-class
+-------------
+Hide class at point. 
+
+py-show-class
+-------------
+Show class at point. 
+
+py-hide-expression
+------------------
+Hide expression at point. 
+
+py-show-expression
+------------------
+Show expression at point. 
+
+py-hide-partial-expression
+--------------------------
+Hide partial-expression at point. 
+
+py-show-partial-expression
+--------------------------
+Show partial-expression at point. 
+
+py-hide-line
+------------
+Hide line at point. 
+
+py-show-line
+------------
+Show line at point. 
+
+py-hide-top-level
+-----------------
+Hide top-level at point. 
+
+py-show-top-level
+-----------------
+Show top-level at point. 
+
 py-mark-minor-block-bol
 -----------------------
-Mark minor block, take beginning of line positions. 
+Mark minor block, take beginning of line positions.
 
-Returns beginning and end positions of region, a cons. 
+Returns beginning and end positions of region, a cons.
 
 See `py-minor-block-re'
 
@@ -1963,7 +1972,7 @@ py-copy-minor-block-bol
 -----------------------
 Delete minor block, use position from beginning-of-line.
 
-Stores data in kill ring. Might be yanked back using `C-y'. 
+Stores data in kill ring. Might be yanked back using `C-y'.
 
 See `py-minor-block-re'
 
@@ -1971,7 +1980,7 @@ py-kill-minor-block-bol
 -----------------------
 Delete minor block, use position from beginning-of-line.
 
-Stores data in kill ring. Might be yanked back using `C-y'. 
+Stores data in kill ring. Might be yanked back using `C-y'.
 
 See `py-minor-block-re'
 
@@ -1979,7 +1988,7 @@ py-delete-minor-block-bol
 -------------------------
 Delete minor block, use position from beginning-of-line.
 
-Don't store data in kill ring. 
+Don't store data in kill ring.
 
 See `py-minor-block-re'
 
@@ -3054,6 +3063,18 @@ py-describe-mode
 ----------------
 Dump long form of `python-mode' docs.
 
+variables-state
+---------------
+Diplays state of python-mode variables in an org-mode buffer.
+
+Reads variables from python-mode.el as current buffer.
+
+Variables which would produce a large output are left out:
+- syntax-tables
+- python-mode-map
+
+Maybe call M-x describe-variable RET to query its value. 
+
 py-load-file
 ------------
 Load a Python file FILE-NAME into the inferior Python process.
@@ -3154,13 +3175,6 @@ Receives a buffer-name as argument
 py-kill-default-shell-unconditional
 -----------------------------------
 Kill buffer "*Python*" and its process. 
-
-py-fast-process
----------------
-Connect am (I)Python process suitable for large output.
-
-Output arrives in py-output-buffer, "*Python Output*" by default
-It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to the freeze reported by lp:1253907
 
 py-shell
 --------
@@ -3441,7 +3455,7 @@ Display pep8 command line help messages.
 
 py-pylint-run
 -------------
-Run pylint (default on the file currently visited).
+*Run pylint (default on the file currently visited).
 
 For help see M-x pylint-help resp. M-x pylint-long-help.
 Home-page: http://www.logilab.org/project/pylint 
@@ -3562,9 +3576,16 @@ py-execute-clause
 -----------------
 Send clause at point to a Python interpreter. 
 
+py-fast-process
+---------------
+Connect am (I)Python process suitable for large output.
+
+Output arrives in py-output-buffer, "*Python Output*" by default
+It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to the freeze reported by lp:1253907
+
 py-execute-statement-fast
 -------------------------
-Process statement at point by a Python interpreter. 
+Process statement at point by a Python interpreter.
 
 Suitable for large output, doesn't mess up interactive shell.
 Result arrives in `py-output-buffer', which is not in
@@ -3572,7 +3593,7 @@ comint-mode
 
 py-execute-block-fast
 ---------------------
-Process block at point by a Python interpreter. 
+Process block at point by a Python interpreter.
 
 Suitable for large output, doesn't mess up interactive shell.
 Result arrives in `py-output-buffer', which is not in
@@ -3580,7 +3601,7 @@ comint-mode
 
 py-execute-block-or-clause-fast
 -------------------------------
-Process block-or-clause at point by a Python interpreter. 
+Process block-or-clause at point by a Python interpreter.
 
 Suitable for large output, doesn't mess up interactive shell.
 Result arrives in `py-output-buffer', which is not in
@@ -3588,7 +3609,7 @@ comint-mode
 
 py-execute-def-fast
 -------------------
-Process def at point by a Python interpreter. 
+Process def at point by a Python interpreter.
 
 Suitable for large output, doesn't mess up interactive shell.
 Result arrives in `py-output-buffer', which is not in
@@ -3596,7 +3617,7 @@ comint-mode
 
 py-execute-class-fast
 ---------------------
-Process class at point by a Python interpreter. 
+Process class at point by a Python interpreter.
 
 Suitable for large output, doesn't mess up interactive shell.
 Result arrives in `py-output-buffer', which is not in
@@ -3604,7 +3625,7 @@ comint-mode
 
 py-execute-def-or-class-fast
 ----------------------------
-Process def-or-class at point by a Python interpreter. 
+Process def-or-class at point by a Python interpreter.
 
 Suitable for large output, doesn't mess up interactive shell.
 Result arrives in `py-output-buffer', which is not in
@@ -3612,7 +3633,7 @@ comint-mode
 
 py-execute-expression-fast
 --------------------------
-Process expression at point by a Python interpreter. 
+Process expression at point by a Python interpreter.
 
 Suitable for large output, doesn't mess up interactive shell.
 Result arrives in `py-output-buffer', which is not in
@@ -3620,7 +3641,7 @@ comint-mode
 
 py-execute-partial-expression-fast
 ----------------------------------
-Process partial-expression at point by a Python interpreter. 
+Process partial-expression at point by a Python interpreter.
 
 Suitable for large output, doesn't mess up interactive shell.
 Result arrives in `py-output-buffer', which is not in
@@ -3628,7 +3649,7 @@ comint-mode
 
 py-execute-top-level-fast
 -------------------------
-Process top-level at point by a Python interpreter. 
+Process top-level at point by a Python interpreter.
 
 Suitable for large output, doesn't mess up interactive shell.
 Result arrives in `py-output-buffer', which is not in
@@ -3636,7 +3657,7 @@ comint-mode
 
 py-execute-clause-fast
 ----------------------
-Process clause at point by a Python interpreter. 
+Process clause at point by a Python interpreter.
 
 Suitable for large output, doesn't mess up interactive shell.
 Result arrives in `py-output-buffer', which is not in

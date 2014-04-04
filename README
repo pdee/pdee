@@ -4,13 +4,6 @@ Put the following into your initialization file:
   (add-to-list 'load-path py-install-directory)
   (require 'python-mode)
 
-
-Unless other libraries depend on python.el, unloading 'python is recommended, as it seems to destroy python-mode user defined abbreviations:
-
-  (when (featurep 'python) (unload-feature 'python t))
-
-
-
 ;;;;;;;;;
 
 Customize default Python shell as `py-shell-name'
@@ -65,10 +58,6 @@ There is also
 - python-mode-v5-behavior
 
 ;;;;;;;;;
-To enable code auto-completion:
-
-  (setq py-load-pymacs-p t)
-
 To use auto-complete, just prepend the following lines:
 
   (require 'auto-complete-config)
@@ -78,30 +67,9 @@ or for company:
 
   (autoload 'company-mode "company" nil t)
 
-If you do not use one of those visual completion interfaces, key bindings exist:
-  - C-tab complete symbol
-  - f1    show help
-  - S-f1  show signature
-  - f2    go to
-
-If `py-complete-function' is set, it takes precedence
-
 ;;;;;;;;;
 
-smart-operator minor mode
-
-for example with key "+"
-inserts " + "
-
-smart-operator extended by augmented-assigments
-C-u +
-inserts " += "
-
-customizable boolean `py-smart-operator-mode-p'
-
-;;;;;;;;;
-
-Beside common moves like `defun', `statement' specific Python-mode edits are delivered:
+Beside common moves like `defun', `statement', block specific Python-mode edits are delivered:
 
 `py-expression' and `py-partial-expression'. 
 
@@ -128,22 +96,6 @@ it yields `'spam','
 
 ;;;;;;;;;
 
-Moving, copying, deleting
-
-When moving over or mark code, commands with suffix
-"-bol" take the correspond beginning of line as start
-resp. end. Commands without that suffix take the
-indentation at the beginning resp. the last printable
-character the end - see in menu PyEdit whats implemented.
-
-While commands "py-beginning..." resp. "py-end..." compute the context, 
-selecting the corresponding beginning or end
-new "py-up...", "py-down..." jump regexp-based to the 
-next element in buffer.
-Listed in PyMenu. 
-
-;;;;;;;;;
-
 Customize boolean `py-set-fill-column-p'
 
 If `t', enables use Python specific `fill-column' according to
@@ -158,13 +110,14 @@ different value of `fill-column' than emacs-wide
 
 ;;;;;;;;;
 
-- customizable `py-output-buffer'.
+- Output
 
   `py-execute-...'-commands arrive in buffer created by
   `py-shell'. It's name is composed WRT to Python
-  version used, it's path etc. If boolean
-  `py-enforce-output-buffer-p' is non-nil, value of
-  `py-output-buffer' is taken instead.
+  version used, it's path etc. 
+
+  Result of commands ending  "-fast"
+  arrives in `py-output-buffer'
   
 ;;;;;;;;;
 
