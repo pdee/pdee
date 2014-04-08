@@ -3125,7 +3125,7 @@ for something:
   (py-bug-tests-intern 'complaint-about-non-ASCII-character-lp-1042949-base arg teststring)))
 
 (defun complaint-about-non-ASCII-character-lp-1042949-base ()
-  (assert (not (py-execute-buffer)) nil "complaint-about-non-ASCII-character-lp-1042949-test failed"))
+  (assert (not (ignore (py-execute-buffer))) nil "complaint-about-non-ASCII-character-lp-1042949-test failed"))
 
 (defun dont-indent-code-unnecessarily-lp-1048778-test (&optional arg)
   (interactive "p")
@@ -4425,7 +4425,7 @@ print(\"I'm the \\\"impossible-to-execute-a-buffer-with-from-future-imports-lp-1
 
 (defun impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-base ()
 ;;  (sit-for 0.1)
-  (assert (not (py-execute-buffer)) nil "impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test failed"))
+  (assert (not (ignore (py-execute-buffer))) nil "impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test failed"))
 
 (defun several-new-bugs-with-paragraph-filling-lp-1066489-test (&optional arg)
   (interactive "p")
@@ -5398,7 +5398,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.95 $\"
+__version__ = \"$Revision: 1.96 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))

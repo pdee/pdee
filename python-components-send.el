@@ -43,9 +43,12 @@
 (defun py-output-filter (string)
   "Clear output buffer from py-shell-input prompt etc. "
   (interactive "*")
-  (replace-regexp-in-string
-   (concat "\\(\n\\|" py-shell-input-prompt-1-regexp "\\|"
-	   py-shell-input-prompt-2-regexp "\\|" "^In \\[[0-9]+\\]: *" "\\)") "" string))
+  (let (erg)
+    (while
+	(not (equal erg (setq erg (replace-regexp-in-string
+				   (concat "\\(\n\\|" py-shell-input-prompt-1-regexp "\\|"
+					   py-shell-input-prompt-2-regexp "\\|" "^In \\[[0-9]+\\]: *" "\\)") "" string)))))
+    erg))
 
 (defun py-send-string (string &optional process)
   "Evaluate STRING in inferior Python process."

@@ -1052,7 +1052,7 @@ Default is \"--errors-only\" "
 
 (defcustom py-shell-input-prompt-1-regexp "^>>> "
   "A regular expression to match the input prompt of the shell."
-  :type 'string
+  :type 'regexp
   :group 'python-mode)
 
 (defcustom py-shell-input-prompt-2-regexp "^[.][.][.] "
@@ -1740,9 +1740,9 @@ can write into: the value (if any) of the environment variable TMPDIR,
 
                           `py-custom-temp-directory' will take precedence when setq ")
 
-(defvar py-pdbtrack-input-prompt)
+(defvar py-pdbtrack-input-prompt nil)
 
-(defvar py-pydbtrack-input-prompt)
+(defvar py-pydbtrack-input-prompt nil)
 
 (defvar py-exec-command nil
   "Internally used. ")
@@ -1978,6 +1978,14 @@ for options to pass to the DOCNAME interpreter. \"
     (when (interactive-p) (switch-to-buffer (current-buffer))
           (goto-char (point-max)))))
 ")
+
+
+(defvar py-fast-filter-re (concat "\\("
+			       (mapconcat 'identity
+					  (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
+					  "\\|")
+			       "\\)")
+  "Internally used by `py-fast-filter'. ")
 
 ;;; Constants
 (defconst py-blank-or-comment-re "[ \t]*\\($\\|#\\)"
@@ -3867,7 +3875,7 @@ Stores data in kill ring\. Might be yanked back using `C-y'\.
 See `py-minor-block-re' "]))
 
 		 ("Hide-Show"
-		  
+
 		  ["Hide region" py-hide-region
 		   :help " `py-hide-region'
 
@@ -6204,7 +6212,7 @@ See bug report at launchpad, lp:944093. Use `M-x customize-variable' to set it p
                      :style toggle :selected py-edit-only-p])))
 
                  ("More... "
-		  
+
 
                   ("Edit commands "
 

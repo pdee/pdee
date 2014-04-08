@@ -29,15 +29,21 @@
   "Connect am (I)Python process suitable for large output.
 
 Output arrives in py-output-buffer, \"\*Python Output\*\" by default
-It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to the freeze reported by lp:1253907"
+It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to the freeze reported by lp:1253907
+
+Return the process"
   (interactive)
   (let ((this-buffer
-         (set-buffer (or (and buffer (get-buffer-create buffer))
-                         (get-buffer-create py-buffer-name)))))
-    (let ((proc (start-process py-shell-name this-buffer py-shell-name)))
+	 (set-buffer (or (and buffer (get-buffer-create buffer))
+			 (get-buffer-create py-output-buffer)))))
+    (let ((proc
+	   (or (get-buffer-process this-buffer)
+
+	       (start-process py-shell-name this-buffer py-shell-name))))
       (with-current-buffer this-buffer
         (erase-buffer))
       (setq py-output-buffer this-buffer)
+;;      (switch-to-buffer this-buffer)
       proc)))
 
 (defun py-fast-send-string (string &optional windows-config)
@@ -48,27 +54,30 @@ See also `py-fast-shell'
 
 "
   (let ((windows-config (or windows-config (window-configuration-to-register 313465889)))
-	(py-fast-filter (concat "\\("
-				(mapconcat 'identity
-					   (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
-					   "\\|")
-				"\\)"))
-
-	(proc (or (get-buffer-process (get-buffer py-output-buffer))
+	(proc (or (get-buffer-process (get-buffer py-buffer-name))
                   (py-fast-process))))
+    (py--fast-send-string-intern string proc py-output-buffer)
+    (py--postprocess windows-config)))
+
+
+(defun py--fast-send-string-intern (string proc py-output-buffer)
+  (let (erg)
     (process-send-string proc string)
-;;    (or (string-match "\n$" string)
-;; 	(process-send-string proc "\n"))
+    ;;    (or (string-match "\n$" string)
+    ;; 	(process-send-string proc "\n"))
     (process-send-string proc "\n")
     (accept-process-output proc 5)
     (sit-for 0.01)
     (set-buffer py-output-buffer)
-    ;; py--fast-filter
-    (delete-region (point) (progn (skip-chars-backward "^\n")(point))) 
+    (switch-to-buffer (current-buffer))
+    ;; delete last line prompts
+    (delete-region (point) (progn (skip-chars-backward "^\n")(point)))
+    (delete-region (point) (progn (skip-chars-backward "\n\r \t\f")(point)))
     (goto-char (point-min))
-    (while (looking-at py-fast-filter)
+    (while (looking-at py-fast-filter-re)
       (replace-match ""))
-    (py--postprocess windows-config)))
+    (and py-store-result-p (setq erg (buffer-substring-no-properties (point-min) (point-max))))
+    erg))
 
 (defun py-process-region-fast (beg end)
   (interactive "r")
