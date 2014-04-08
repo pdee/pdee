@@ -334,7 +334,10 @@ interpreter.
 (defun py-buffer-name-prepare (&optional name)
   "Return an appropriate name to display in modeline.
 SEPCHAR is the file-path separator of your system. "
-  (let ((name (or name (capitalize py-shell-name)))
+  (let ((name (cond (name)
+		    ((string-match "^[iI]" py-shell-name)
+		     (concat "IP" (substring py-shell-name 2)))
+		    (t (capitalize py-shell-name))))
         prefix erg suffix liste)
     (when (string-match py-separator-char name)
       (unless py-modeline-acronym-display-home-p

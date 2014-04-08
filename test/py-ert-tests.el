@@ -1254,29 +1254,82 @@ x = {'abc':'def',
 ;; "
 
 ;;    (goto-char 39)
-;; ;;    (search-forward "1") 
-;;     (switch-to-buffer (current-buffer)) 
+;; ;;    (search-forward "1")
+;;     (switch-to-buffer (current-buffer))
 ;;     (let ((py-store-result-p t))
 ;;       (py-execute-statement-fast)
-;;       (sit-for 0.01) 
+;;       (sit-for 0.01)
 ;;       (should (string= "1" (car kill-ring)))
 ;;       (py-execute-clause-fast)
-;;       (sit-for 0.01) 
+;;       (sit-for 0.01)
 ;;       (should (string= "1" (car kill-ring)))
 ;;       (py-execute-block-or-clause-fast)
-;;       (sit-for 0.01) 
+;;       (sit-for 0.01)
 ;;       (should (string= "1" (car kill-ring)))
 ;;       (py-execute-def-fast)
-;;       (sit-for 0.01) 
+;;       (sit-for 0.01)
 ;;       (should (string= "" (car kill-ring)))
 ;;       (py-execute-def-or-class-fast)
-;;       (sit-for 0.01) 
+;;       (sit-for 0.01)
 ;;       (should (string= "" (car kill-ring)))
 ;;       (py-execute-class-fast)
-;;       (sit-for 0.01) 
+;;       (sit-for 0.01)
 ;;       (should (string= "" (car kill-ring)))
 
 ;;       )
 ;;     ))
-    
+
+(ert-deftest py-ert-add-execute ()
+  (let ((py-store-result-p t))
+    (py-tests-with-temp-buffer "
+def foo():
+    global x
+    if 'x' in globals():
+        x += 1
+    else:
+        x = 1
+    return(x)
+
+y = foo()
+print(y)
+"
+      (py-execute-buffer)
+      (sit-for 0.1) 
+      (should (string= "1" (car kill-ring)))
+      (py-execute-buffer)
+      (sit-for 0.1) 
+      (should (string= "2" (car kill-ring)))
+      (py-execute-buffer)
+      (sit-for 0.1) 
+      (should (string= "3" (car kill-ring)))
+
+      )))
+
+(ert-deftest py-ert-add-execute-fast ()
+  (let ((py-store-result-p t)
+	(py-fast-process-p t))
+    (py-tests-with-temp-buffer "
+def foo():
+    global x
+    if 'x' in globals():
+        x += 1
+    else:
+        x = 1
+    return(x)
+
+y = foo()
+print(y)
+"
+      (py-execute-buffer)
+      (sit-for 0.1) 
+      (should (string= "1" (car kill-ring)))
+      (py-execute-buffer)
+      (sit-for 0.1) 
+      (should (string= "2" (car kill-ring)))
+      (py-execute-buffer)
+      (sit-for 0.1) 
+      (should (string= "3" (car kill-ring)))
+
+      )))
+
 (provide 'py-ert-tests)
