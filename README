@@ -4,7 +4,9 @@ Put the following into your initialization file:
   (add-to-list 'load-path py-install-directory)
   (require 'python-mode)
 
-;;;;;;;;;
+#########
+
+Selecting a Python shell:
 
 Customize default Python shell as `py-shell-name'
 
@@ -12,7 +14,20 @@ Customize default Python shell as `py-shell-name'
 shell command `type' would display, but also a
 PATH/TO/(I)PYTHON, of a virtualenv for example
 
-To change the Python default shell see also INSTALL
+You might run code by another (I)Python-version than default.
+
+Normally this would happen if a shebang in buffer specifies it.
+Shebang precedes default py-shell-name.
+
+In case you will run code by default-shell, ignoring shebang, set
+`py-force-py-shell-name-p' to. This might be done also via menu
+Python/.../Switches
+
+Another way to enforce a different shell than default is using
+commands which end in version like `py-execute-statement-python3'
+See menu Python/Interpreter/Other/Ignoring Defaults
+
+#########
 
 Most python-mode.el commands start with prefix `py-'
 

@@ -7744,8 +7744,6 @@ This is a no-op if `py-check-comint-prompt' returns nil."
 ;;; Hooks
 ;; arrange to kill temp files when Emacs exists
 (add-hook 'kill-emacs-hook 'py-kill-emacs-hook)
-;; done inside py-shell
-;; (add-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file)
 
 (remove-hook 'python-mode-hook 'python-setup-brm)
 ;; (add-hook 'python-mode-hook
