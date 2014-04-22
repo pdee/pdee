@@ -579,7 +579,7 @@ Examples from PEP8"
 (defcustom py-max-specpdl-size max-specpdl-size
   "Heuristic exit. Limiting number of recursive calls by py-end-of-statement and related functions. Default is max-specpdl-size.
 
-This treshold is just an approximation. It might set far higher maybe.
+This threshold is just an approximation. It might set far higher maybe.
 
 See lp:1235375. In case code is not to navigate due to errors, `which-function-mode' and others might make Emacs hang. Rather exit than. "
 
