@@ -1074,7 +1074,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-pydbtrack-input-prompt) nil \"py-pydbtrack-input-prompt not a variable\")" \
 -eval "(assert (boundp 'py-pdbtrack-is-tracking-p) nil \"py-pdbtrack-is-tracking-p not a variable\")" \
 -eval "(assert (boundp 'py-shell-map) nil \"py-shell-map not a variable\")" \
--eval "(assert (boundp 'py-font-lock-keywords) nil \"py-font-lock-keywords not a variable\")" \
+-eval "(assert (boundp 'python-font-lock-keywords) nil \"python-font-lock-keywords not a variable\")" \
 -eval "(assert (boundp 'py-dotted-expression-syntax-table) nil \"py-dotted-expression-syntax-table not a variable\")" \
 -eval "(assert (boundp 'jython-mode-hook) nil \"jython-mode-hook not a variable\")" \
 -eval "(assert (boundp 'py-shell-hook) nil \"py-shell-hook not a variable\")" \
@@ -1125,8 +1125,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-pdbtrack-marker-regexp-funcname-group) nil \"py-pdbtrack-marker-regexp-funcname-group not a variable\")" \
 -eval "(assert (boundp 'py-pdbtrack-track-range) nil \"py-pdbtrack-track-range not a variable\")" \
 -eval "(assert (boundp 'python-compilation-regexp-alist) nil \"python-compilation-regexp-alist not a variable\")" \
--eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
--eval "(assert (boundp 'py-font-lock-keywords) nil \"py-font-lock-keywords not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
 --funcall docstring-style-switches-test \

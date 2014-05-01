@@ -224,7 +224,7 @@ Returns value of `py-split-windows-on-execute-p'. "
         (progn
           (setq py-fontify-shell-buffer-p t)
           (set (make-local-variable 'font-lock-defaults)
-             '(py-font-lock-keywords nil nil nil nil
+             '(python-font-lock-keywords nil nil nil nil
                                          (font-lock-syntactic-keywords
                                           . py-font-lock-syntactic-keywords)))
           (unless (looking-at comint-prompt-regexp)

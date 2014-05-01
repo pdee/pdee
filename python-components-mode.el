@@ -1918,7 +1918,7 @@ Currently-active file is at the head of the list.")
 (defvar py-shell-hook nil
   "Hook called by `py-shell'.")
 
-(defvar py-font-lock-keywords nil)
+(defvar python-font-lock-keywords nil)
 
 (defvar py-dotted-expression-syntax-table
   (let ((table (make-syntax-table python-mode-syntax-table)))
@@ -2770,7 +2770,7 @@ See bug report at launchpad, lp:940812 "
            (rx-to-string (car regexps) t)))))
 
 ;;; Font-lock and syntax
-(setq py-font-lock-keywords
+(setq python-font-lock-keywords
       ;; Keywords
       `(,(rx symbol-start
              (or
@@ -8119,13 +8119,13 @@ See available customizations listed in files variables-python-mode at directory 
                           "\\|")))
   (if py-use-font-lock-doc-face-p
       (set (make-local-variable 'font-lock-defaults)
-           '(py-font-lock-keywords nil nil nil nil
+           '(python-font-lock-keywords nil nil nil nil
                                    (font-lock-syntactic-keywords
                                     . py-font-lock-syntactic-keywords)
                                    (font-lock-syntactic-face-function
                                     . py-font-lock-syntactic-face-function)))
     (set (make-local-variable 'font-lock-defaults)
-         '(py-font-lock-keywords nil nil nil nil
+         '(python-font-lock-keywords nil nil nil nil
                                  (font-lock-syntactic-keywords
                                   . py-font-lock-syntactic-keywords))))
   (if (string-match "python3" (py-choose-shell))

@@ -120,6 +120,9 @@ Boolean `py-set-fill-column-p' renamed `py-auto-fill-mode'
  Fill according to `py-docstring-fill-column' and
 `py-comment-fill-column'
 
+`py-font-lock-keywords' renamed `python-font-lock-keywords',
+  lp:1314921
+
 New booleans
 - py-fast-process-p 
   If `t', stuff is executed through `py-fast-...'-
@@ -135,6 +138,7 @@ Dropped booleans:
 `py-pylint-offer-current-p'
 `py-paragraph-fill-docstring-p'
 `py-enforce-output-buffer-p'
+
 
 New in version 6.1.3
 ---------------------

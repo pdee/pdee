@@ -549,7 +549,7 @@ Receives a buffer-name as argument"
   ;; (setq completion-at-point-functions nil)
   (and py-fontify-shell-buffer-p
        (set (make-local-variable 'font-lock-defaults)
-            '(py-font-lock-keywords nil nil nil nil
+            '(python-font-lock-keywords nil nil nil nil
                                     (font-lock-syntactic-keywords
                                      . py-font-lock-syntactic-keywords))))
   (set (make-local-variable 'comment-start) "# ")
