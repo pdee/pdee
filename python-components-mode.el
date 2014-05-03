@@ -343,6 +343,9 @@ Give some hints, if not."
 (defvar highlight-indent-active nil)
 (defvar autopair-mode nil)
 
+(defvar py-error nil
+  "Internally used. Takes the error-messages from Python process. ") 
+
 (defvar py-close-completions-timer nil
   "Internally used by `py-timer-close-completion-buffer")
 
@@ -2347,8 +2350,8 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
   :group 'python-mode)
 
 (defface py-number-face
-  '((t (:inherit default)))
-  ;; '((t (:inherit 'font-lock-variable-name-face)))
+ '((t (:inherit default)))
+;;  '((t (:inherit 'font-lock-variable-name-face)))
   "Highlight numbers. "
   :group 'python-mode)
 
@@ -2847,7 +2850,9 @@ See bug report at launchpad, lp:940812 "
               res))
          (1 py-variable-name-face nil nil))
         ;; Numbers
-        (,(rx symbol-start (or (1+ digit) (1+ hex-digit)) symbol-end) . py-number-face)))
+;;        (,(rx symbol-start (or (1+ digit) (1+ hex-digit)) symbol-end) . py-number-face)
+	(,(rx symbol-start (1+ digit) symbol-end) . py-number-face)
+	))
 
 ;; (defconst py-font-lock-syntactic-keywords
 ;;   ;; Make outer chars of matching triple-quote sequences into generic

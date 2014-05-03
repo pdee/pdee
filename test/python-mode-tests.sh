@@ -920,6 +920,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-install-directory) nil \"py-install-directory not a variable\")" \
 -eval "(assert (boundp 'py-guess-py-install-directory-p) nil \"py-guess-py-install-directory-p not a variable\")" \
 -eval "(assert (boundp 'py-extensions) nil \"py-extensions not a variable\")" \
+-eval "(assert (boundp 'py-error) nil \"py-error not a variable\")" \
 -eval "(assert (boundp 'py-hide-show-minor-mode-p) nil \"py-hide-show-minor-mode-p not a variable\")" \
 -eval "(assert (boundp 'empty-comment-line-separates-paragraph-p) nil \"empty-comment-line-separates-paragraph-p not a variable\")" \
 -eval "(assert (boundp 'py-org-cycle-p) nil \"py-org-cycle-p not a variable\")" \

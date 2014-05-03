@@ -386,7 +386,6 @@ Needed when file-path names are contructed from maybe numbered buffer names like
 (defun py-jump-to-exception-intern (action exception-buffer)
   (let (erg)
     (set-buffer exception-buffer)
-    ;; (message "%s" (current-buffer))
     (goto-char (point-min))
     (forward-line (1- origline))
     (push-mark)
@@ -395,19 +394,17 @@ Needed when file-path names are contructed from maybe numbered buffer names like
          (and py-highlight-error-source-p
               (setq erg (make-overlay (match-beginning 0) (match-end 0)))
               (overlay-put erg
-                           'face 'highlight))
-         ;; (remove-overlays (match-beginning 0) (match-end 0) 'face 'highlight)
-         )))
+                           'face 'highlight)))))
 
 ;; Result: (nil 5 "print(34ed)" " SyntaxError: invalid token ")
-(defun py-jump-to-exception (err-p &optional file)
+(defun py-jump-to-exception (py-error &optional file)
   "Jump to the Python code in FILE at LINE."
   (let (
         ;; (inhibit-point-motion-hooks t)
-        (file (or file (car err-p)))
-        (line (cadr err-p))
-        (action (nth 2 err-p))
-        (errm (nth 3 err-p)))
+        (file (or file (car py-error)))
+        (line (cadr py-error))
+        (action (nth 2 py-error))
+        (errm (nth 3 py-error)))
     (cond ((and py-exception-buffer
                 (buffer-live-p py-exception-buffer))
            ;; (pop-to-buffer procbuf)
@@ -456,9 +453,9 @@ Internal use"
   "Adapt or restore window configuration. Return nil "
   (cond ((eq py-keep-windows-configuration 'force)
          (py-restore-window-configuration))
-        ((and (boundp 'err-p) err-p)
+        ((and (boundp 'py-error) py-error)
          (py-restore-window-configuration)
-         (py-jump-to-exception err-p py-exception-buffer)
+         (py-jump-to-exception py-error py-exception-buffer)
          (py--manage-windows-split)
          (display-buffer output-buffer t))
         (py-keep-windows-configuration
@@ -780,8 +777,8 @@ When optional FILE is `t', no temporary file is needed. "
                      (py-dedicated-process-p
                       (get-buffer-process (py-shell nil py-dedicated-process-p py-shell-name py-buffer-name t)))
                      (t (or (get-buffer-process py-buffer-name)
-                            (get-buffer-process (py-shell nil py-dedicated-process-p py-shell-name py-buffer-name t))))))
-         err-p)
+                            (get-buffer-process (py-shell nil py-dedicated-process-p py-shell-name py-buffer-name t)))))))
+    (setq py-error nil)
     (when py-debug-p (with-temp-file "/tmp/py-buffer-name.txt" (insert py-buffer-name)))
     (set-buffer py-exception-buffer)
     (py-update-execute-directory proc py-buffer-name execute-directory)
@@ -802,7 +799,7 @@ When optional FILE is `t', no temporary file is needed. "
          (tempfile (concat (expand-file-name py-temp-directory) py-separator-char (replace-regexp-in-string py-separator-char "-" temp) ".py"))
          (tempbuf (get-buffer-create temp))
          (wholebuf (when (boundp 'wholebuf) wholebuf))
-         erg err-p lineadd output-buffer)
+         erg lineadd output-buffer)
     ;; (message "%s" strg)
     (set-buffer tempbuf)
     (erase-buffer)
@@ -834,7 +831,7 @@ When optional FILE is `t', no temporary file is needed. "
   (when py-cleanup-temporary
     (py-kill-buffer-unconditional tempbuf)
     (py-delete-temporary tempfile tempbuf))
-  (and erg (or py-debug-p py-store-result-p) (unless (string= (car kill-ring) erg) (kill-new erg)))
+  (and (not py-error) erg (or py-debug-p py-store-result-p) (unless (string= (car kill-ring) erg) (kill-new erg)))
   erg)
 
 (defun py--fast-filter ()
@@ -847,13 +844,15 @@ When optional FILE is `t', no temporary file is needed. "
 (defun py--postprocess (windows-config)
   "Provide return values, check result for error, manage windows. "
   (if
-      (setq err-p (save-excursion (py-postprocess-output-buffer py-output-buffer)))
-      (py-shell-manage-windows py-buffer-name nil windows-config)
+      (setq py-error (save-excursion (py-postprocess-output-buffer py-output-buffer)))
+      (prog1
+	  (setq erg py-error)
+	(py-shell-manage-windows py-buffer-name nil windows-config))
     (when py-store-result-p
       ;; 	(sit-for 0.1)
       (setq erg
-	    (py-output-filter (buffer-substring-no-properties (point) (point-max)))))
-    (and erg (not (string= (car kill-ring) erg)) (kill-new erg))
+	    (py-output-filter (buffer-substring-no-properties (point) (point-max))))
+      (and erg (not (string= (car kill-ring) erg)) (kill-new erg)))
     erg))
 
 (defun py-execute-file-base (&optional proc filename cmd procbuf origfile execute-directory)
@@ -867,12 +866,13 @@ Returns position where output starts. "
          (msg (and py-verbose-p (format "## executing %s...\n" (or origfile filename))))
          (py-output-buffer (or procbuf (py-shell nil nil nil procbuf t)))
          (proc (or proc (get-buffer-process py-output-buffer)))
-         erg orig err-p)
+         erg orig)
     (set-buffer py-output-buffer)
     (goto-char (point-max))
     (setq orig (point))
     (comint-send-string proc cmd)
     (setq erg (py--postprocess windows-config))
+    (message "%s" py-error)
     erg))
 
 (defun py-execute-ge24.3 (start end file execute-directory &optional py-exception-buffer proc)
@@ -889,14 +889,13 @@ May we get rid of the temporary file? "
          (tempfile (or (buffer-file-name) (concat (expand-file-name py-temp-directory) py-separator-char (replace-regexp-in-string py-separator-char "-" "temp") ".py")))
 
          (proc (or proc (if py-dedicated-process-p
-                   (get-buffer-process (py-shell nil py-dedicated-process-p py-shell-name py-buffer-name t))
-                 (or (get-buffer-process py-buffer-name)
-                     (get-buffer-process (py-shell nil py-dedicated-process-p py-shell-name py-buffer-name t))))))
+                            (get-buffer-process (py-shell nil py-dedicated-process-p py-shell-name py-buffer-name t))
+                          (or (get-buffer-process py-buffer-name)
+                              (get-buffer-process (py-shell nil py-dedicated-process-p py-shell-name py-buffer-name t))))))
          (procbuf (process-buffer proc))
          (file (or file (with-current-buffer py-buffer-name
                           (concat (file-remote-p default-directory) tempfile))))
-         (filebuf (get-buffer-create file))
-         err-p)
+         (filebuf (get-buffer-create file)))
     (set-buffer filebuf)
     (erase-buffer)
     (newline line)
@@ -909,17 +908,16 @@ May we get rid of the temporary file? "
       ;; (message "Warning: options `execute-directory' and `py-use-current-dir-when-execute-p' may conflict"))
       (and execute-directory
            (process-send-string proc (concat "import os; os.chdir(\"" execute-directory "\")\n"))
-           ;; (py-send-string-no-output (concat "import os; os.chdir(\"" execute-directory "\")\n") proc)
            ))
     (set-buffer filebuf)
     (process-send-string proc
                          (buffer-substring-no-properties
                           (point-min) (point-max)))
     (sit-for 0.1)
-    (if (and (setq err-p (save-excursion (py-postprocess-output-buffer procbuf)))
-             (car err-p)
-             (not (markerp err-p)))
-        (py-jump-to-exception err-p)
+    (if (and (setq py-error (save-excursion (py-postprocess-output-buffer procbuf)))
+             (car py-error)
+             (not (markerp py-error)))
+        (py-jump-to-exception py-error)
       (py-shell-manage-windows procbuf py-buffer-name)
       (unless (string= (buffer-name (current-buffer)) (buffer-name procbuf))
         (when py-verbose-p (message "Output buffer: %s" procbuf))))))
@@ -1029,10 +1027,9 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
                                pcmd py-output-buffer))
     (if (not (get-buffer py-output-buffer))
         (message "No output.")
-
-      (let* ((err-p (py-postprocess-output-buffer py-output-buffer))
-             (line (cadr err-p)))
-        (if err-p
+      (setq py-error (py-postprocess-output-buffer py-output-buffer))
+      (let* ((line (cadr py-error)))
+        (if py-error
             (when (and py-jump-on-exception line)
               (pop-to-buffer py-exception-buffer))
           (pop-to-buffer py-output-buffer)
@@ -1593,10 +1590,10 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
   ;; (sit-for 0.1)
   (let ((pmx (copy-marker (point-max)))
 	;;  (let ((pmx (copy-marker (process-mark (get-buffer-process (current-buffer)))))
-	file bol err-p estring ecode limit)
+	file bol estring ecode limit)
     (goto-char pmx)
     (sit-for 0.1)
-;;    (switch-to-buffer (current-buffer))
+    ;;    (switch-to-buffer (current-buffer))
     (save-excursion
       (unless (looking-back py-pdbtrack-input-prompt)
         (forward-line -1)
@@ -1626,20 +1623,20 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
                             (get-buffer (file-name-nondirectory py-exception-buffer))))) (string-match "^[ \t]*File" (buffer-substring-no-properties (match-beginning 0) (match-end 0)))
                             (looking-at "[ \t]*File")
                             (replace-match " Buffer")))
-              (add-to-list 'err-p origline)
-              (add-to-list 'err-p file)
+              (add-to-list 'py-error origline)
+              (add-to-list 'py-error file)
               (overlay-put (make-overlay (match-beginning 0) (match-end 0))
                            'face 'highlight))
             ;; If not file exists, just a buffer, correct message
             (forward-line 1)
             (when (looking-at "[ \t]*\\([^\t\n\r\f]+\\)[ \t]*$")
               (setq estring (match-string-no-properties 1))
-              (add-to-list 'err-p estring t)
+              (add-to-list 'py-error estring t)
               (setq ecode (buffer-substring-no-properties (line-end-position)
                                                           (progn (re-search-forward comint-prompt-regexp nil t 1)(match-beginning 0))))
               (setq ecode (replace-regexp-in-string "[ \n\t\f\r^]+" " " ecode))
-              (add-to-list 'err-p ecode t)))))
-      err-p)))
+              (add-to-list 'py-error ecode t)))))
+      py-error)))
 
 (defun py-find-next-exception-prepare (direction start)
   "Setup exception regexps depending from kind of Python shell. "

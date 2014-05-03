@@ -13,13 +13,9 @@ Support for large output
   - interactive Python shell (DEFAULT)
   - non-interactive Python (`py-fast-process-p', if large output)
 
-  Both processes might run in 
+  Both processes might run in
   - session, i.e. start from possible previous state (DEFAULT)
   - dedicated, (`py-dedicated-process-p', run in separate process)
-
-- new indent feature/behavior, lp:1280982
-  If an empty line was dedented deliberatly, this is
-  honored by next lines indent
 
 - info-lookup-symbol made working with Python
   patched python-info.el available at
@@ -80,7 +76,7 @@ New commands
   Display Py-shell' comint-mode variables of interest.
 
 - variables-state
-  Diplays state of python-mode variables in an org-mode buffer 
+  Diplays state of python-mode variables in an org-mode buffer
 
 - py-kill-buffer-unconditional
   Kill buffer unconditional; kill also any buffer-process.
@@ -95,7 +91,17 @@ Setting docstring style simplified; a style is all needed.
  -py-set-symmetric-docstring-style
  -py-set-onetwo-docstring-style
 
-Removed commands: 
+- new indent feature/behavior, lp:1280982
+  If an empty line was dedented deliberatly, this is
+  honored by next lines indent
+
+- py-object-reference-face'
+  commonly "self" or "cls", inherits default face
+
+- py-error
+  In case of error, list messages from Python process
+
+Removed commands:
 
  -toggle-py-nil-docstring-style
  -py-nil-docstring-style-on
@@ -116,7 +122,7 @@ Removed commands:
  -py-django-docstring-style-on
  -py-django-docstring-style-off
 
-Boolean `py-set-fill-column-p' renamed `py-auto-fill-mode' 
+Boolean `py-set-fill-column-p' renamed `py-auto-fill-mode'
  Fill according to `py-docstring-fill-column' and
 `py-comment-fill-column'
 
@@ -124,21 +130,17 @@ Boolean `py-set-fill-column-p' renamed `py-auto-fill-mode'
   lp:1314921
 
 New booleans
-- py-fast-process-p 
+- py-fast-process-p
   If `t', stuff is executed through `py-fast-...'-
   commands, suitable for large output. Result arrives
   in py-output-buffer, which is not in comint-mode
 
-py-object-reference-face', think "self" or "cls"
- Inherits default face, needs customization to be visible
-
 Dropped booleans:
-`py-start-run-py-shell', 
+`py-start-run-py-shell',
 `py-start-run-ipython-shell',
 `py-pylint-offer-current-p'
 `py-paragraph-fill-docstring-p'
 `py-enforce-output-buffer-p'
-
 
 New in version 6.1.3
 ---------------------

@@ -68,8 +68,7 @@ always located at the beginning of buffer."
     (with-temp-buffer
       (insert "mystring{0 . 1}")
       (py-electric-backspace 1)
-      (should (eq ?\} (char-after)))
-      )))
+      (should (eq ?\} (char-after))))))
 
 (ert-deftest py-ert-indent-dedenters-1 ()
   "Check all dedenters."
@@ -879,7 +878,7 @@ def foo():
   (set-buffer "*Python*")
   (switch-to-buffer (current-buffer))
   (py-send-string "import os" (get-buffer-process (current-buffer)))
-  (sit-for 0.1) 
+  (sit-for 0.1)
   (insert "print(os.get")
   (call-interactively 'py-shell-complete))
 
@@ -962,7 +961,7 @@ def foo():
 ;; 	  py-switch-buffers-on-execute-p)
 ;;       (py-execute-buffer)
 ;;       (set-buffer "*IPython*")
-;;       (sit-for 0.1) 
+;;       (sit-for 0.1)
 ;;       (should (search-backward "1")))))
 
 (ert-deftest py-ert-borks-all-lp-1294820 ()
@@ -1077,7 +1076,6 @@ by the
     (fill-paragraph)
     (forward-line 2)
     (should (eq (char-after) ?\n)) ))
-
 
 (ert-deftest py-ert-backward-same-level-test ()
   (py-tests-with-temp-buffer
@@ -1250,91 +1248,13 @@ x = {'abc':'def',
     (py-electric-delete)
     (should (eq 4 (current-indentation)))))
 
-;; (ert-deftest py-ert-execute-fast ()
-;;   (py-tests-with-temp-buffer "
-;; def foo():
-;;     if True:
-;;         print(1)
-;; "
-
-;;    (goto-char 39)
-;; ;;    (search-forward "1")
-;;     (switch-to-buffer (current-buffer))
-;;     (let ((py-store-result-p t))
-;;       (py-execute-statement-fast)
-;;       (sit-for 0.01)
-;;       (should (string= "1" (car kill-ring)))
-;;       (py-execute-clause-fast)
-;;       (sit-for 0.01)
-;;       (should (string= "1" (car kill-ring)))
-;;       (py-execute-block-or-clause-fast)
-;;       (sit-for 0.01)
-;;       (should (string= "1" (car kill-ring)))
-;;       (py-execute-def-fast)
-;;       (sit-for 0.01)
-;;       (should (string= "" (car kill-ring)))
-;;       (py-execute-def-or-class-fast)
-;;       (sit-for 0.01)
-;;       (should (string= "" (car kill-ring)))
-;;       (py-execute-class-fast)
-;;       (sit-for 0.01)
-;;       (should (string= "" (car kill-ring)))
-
-;;       )
-;;     ))
-
-;; (ert-deftest py-ert-add-execute ()
-;;   (let ((py-store-result-p t))
-;;     (py-tests-with-temp-buffer "
-;; def foo():
-;;     global vrfe
-;;     if 'vrfe' in globals():
-;;         vrfe += 1
-;;     else:
-;;         vrfe = 1
-;;     return(vrfe)
-
-;; ysa = foo()
-;; print(ysa)
-;; "
-;;       ;; (switch-to-buffer (current-buffer)) 
-;;       (py-execute-buffer)
-;;       (sit-for 0.1) 
-;;       (should (string= "1" (car kill-ring)))
-;;       (py-execute-buffer)
-;;       (sit-for 0.1) 
-;;       (should (string= "2" (car kill-ring)))
-;;       (py-execute-buffer)
-;;       (sit-for 0.1) 
-;;       (should (string= "3" (car kill-ring)))
-
-;;       )))
-
-;; (ert-deftest py-ert-add-execute-fast ()
-;;   (let ((py-store-result-p t)
-;; 	(py-fast-process-p t))
-;;     (py-tests-with-temp-buffer "
-;; def foo():
-;;     global x
-;;     if 'x' in globals():
-;;         x += 1
-;;     else:
-;;         x = 1
-;;     return(x)
-
-;; y = foo()
-;; print(y)
-;; "
-;;       (py-execute-buffer)
-;;       (sit-for 0.1) 
-;;       (should (string= "1" (car kill-ring)))
-;;       (py-execute-buffer)
-;;       (sit-for 0.1) 
-;;       (should (string= "2" (car kill-ring)))
-;;       (py-execute-buffer)
-;;       (sit-for 0.1) 
-;;       (should (string= "3" (car kill-ring)))
-
-;;       )))
+(ert-deftest py-ert-wrong-python-test ()
+  "Python3 incompatible code should return error."
+  (py-tests-with-temp-buffer
+      "print 123"
+    (let ((py-shell-name "python3"))
+      (py-execute-statement)
+      (message "%s" (prin1-to-string py-error))
+      (should (and py-error (listp py-error))))))
 
 (provide 'py-ert-tests)
