@@ -6302,5 +6302,50 @@ def expand(self, leading=0, subs={}):
     (switch-to-buffer (current-buffer))
     (assert (eq 49 (char-after)) nil "execute-region-lp-1294796-test failed")))
 
+(defun wrong-coloring-lp:1315186-test (&optional arg)
+  (interactive "p")
+   (let ((teststring "if show_search_box and jquery_path:
+    search_box= '<form id=\"pubSearchBox\" name=\"pubSearchBox\"><input id=\"pubSearchInputBox\" type=\"text\" name=\"keyword\" />&nbsp;<input id=\"pubSearchButton\" type=\"button\" value=\"Search\" onClick=\"searchFunction()\" /></form><script type=\"text/javascript\" src=\"'+jquery_path+\"\"\"\"></script><script type=\"text/javascript\">
+  function getURLParameter(name) {
+    return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|\$)').exec(location.search)||[,\"\"])[1].replace(/\\+/g, '%20'))||null;
+  }
+  jQuery( document ).ready(function() {
+    jQuery('#pubSearchInputBox').val(getURLParameter(\"keyword\"));
+    searchFunction();
+  });
+function searchFunction() {
+  var searchTerms = document.pubSearchBox.keyword.value.split(\" \");
+  jQuery( \".bib-item\").css( \"display\", \"none\" );
+  var q = \".bib-item\";
+  jQuery.each(searchTerms, function(i,x) {q = q + \":contains('\"+x+\"')\";});
+  jQuery(q).css( \"display\", \"block\" );
+}
+  jQuery(function() {    // <== Doc ready  
+  // stackoverflow q 3971524
+    var inputVal = jQuery(\"#pubSearchInputBox\").val(), 
+        timer,
+        checkForChange = function() {
+            var self = this; // or just use .bind(this)
+            if (timer) { clearTimeout(timer); }
+            // check for change of the text field after each key up
+            timer = setTimeout(function() {
+                if(self.value != inputVal) {
+                    searchFunction();
+                    inputVal = self.value
+                }
+            }, 250);
+        };
+    jQuery(\"#pubSearchInputBox\").bind('keyup paste cut', checkForChange);
+});</script>
+\"\"\"
+"))
+  (py-bug-tests-intern 'wrong-coloring-lp:1315186-base arg teststring)))
+
+(defun wrong-coloring-lp:1315186-base ()
+    (goto-char (point-min))
+    (search-forward "getURLParameter")
+    (assert (eq (face-at-point) 'font-lock-string-face) nil "wrong-coloring-lp:1315186-test failed"))
+
+
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
