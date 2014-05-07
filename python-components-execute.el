@@ -559,7 +559,7 @@ Receives a buffer-name as argument"
   (setq proc (get-buffer-process (current-buffer)))
   (and (string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
        (py-ipython--module-completion-import proc))
-  (py-shell-send-setup-code proc)
+  ;; (py-shell-send-setup-code proc)
   (and py-set-pager-cat-p (comint-simple-send proc "import os;os.environ['PAGER'] = 'cat'"))
   (compilation-shell-minor-mode 1)
   (set (make-local-variable 'comint-input-sender) 'py-shell-simple-send)

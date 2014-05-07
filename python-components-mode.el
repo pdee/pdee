@@ -364,7 +364,7 @@ Give some hints, if not."
 (defcustom py-smart-operator-mode-p nil
   "If python-mode calls (smart-operator-mode-on)
 
-Default is non-nil. "
+Default is nil. "
 
   :type 'boolean
   :group 'python-mode
@@ -2411,7 +2411,9 @@ This function takes the list of setup code to send from the
   (dolist (code py-setup-codes)
     (py-send-string-no-output
      (symbol-value code) process)
-    (sit-for 0.1)))
+    (sit-for 0.1))
+  ;; (switch-to-buffer (current-buffer))
+  )
 
 (defun py-docstring-p (&optional beginning-of-string-position)
   "Check to see if there is a docstring at POS."
