@@ -3223,6 +3223,22 @@ Send file to a Bpython interpreter.
 Uses a dedicated shell.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]))
                   "-"
+		  
+		  ["Toggle shell" py-toggle-shell
+		   :help " `py-toggle-shell'
+
+Toggles between the interpreter customized in `py-shell-toggle-1' resp\. `py-shell-toggle-2'\. Was hard-coded CPython and Jython in earlier versions, now starts with Python2 and Python3 by default\.
+
+ARG might be a python-version string to set to\.
+
+C-u `py-toggle-shell' prompts to specify a reachable Python command\.
+C-u followed by numerical arg 2 or 3, `py-toggle-shell' opens a respective Python shell\.
+C-u followed by numerical arg 5 opens a Jython shell\.
+
+Should you need more shells to select, extend this command by adding inside the first cond:
+
+                    ((eq NUMBER (prefix-numeric-value arg))
+                     "MY-PATH-TO-SHELL")"]
 
                   ["Kill shell unconditional" py-kill-shell-unconditional
                    :help " `py-kill-shell-unconditional'
