@@ -122,6 +122,8 @@ Removed commands:
  -py-django-docstring-style-on
  -py-django-docstring-style-off
 
+New variable `py-ipython-command' - (PATH-TO)-IPython
+
 Boolean `py-set-fill-column-p' renamed `py-auto-fill-mode'
  Fill according to `py-docstring-fill-column' and
 `py-comment-fill-column'
