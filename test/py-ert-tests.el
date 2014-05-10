@@ -582,7 +582,7 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
       (py-shell-complete)
       (set-buffer "*Python Completions*")
       (goto-char (point-min))
-      (sit-for 0.1)
+      (sit-for 0.2)
       (prog1 (should (search-forward "socket."))
 	(py-kill-buffer-unconditional oldbuf)
 	(py-kill-buffer-unconditional "py-buffer-name.txt")))))

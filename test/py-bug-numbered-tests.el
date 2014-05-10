@@ -1679,7 +1679,7 @@ if foo:
 (defun execute-indented-code-lp:828314-base ()
   (let ((debug-on-error t))
     (goto-char 28)
-    (py-execute-line)
+    (py-execute-line-python)
     (set-buffer "*Python*")
     (goto-char (point-max))
     (assert (search-backward "execute-indented-code-lp:828314-test") nil "execute-indented-code-lp:828314-test failed")))
@@ -5398,7 +5398,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.97 $\"
+__version__ = \"$Revision: 1.98 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -5797,8 +5797,8 @@ inode, start_no, end_no)
   (py-bug-tests-intern 'py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-base arg teststring)))
 
 (defun py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-base ()
-  (let ((py-switch-buffers-on-execute-p)
-        (py-split-windows-on-execute-p))
+  (let (py-switch-buffers-on-execute-p
+        py-split-windows-on-execute-p)
     (shell)
     (delete-other-windows)
     ;; (set-buffer (py-shell))
@@ -5808,7 +5808,7 @@ inode, start_no, end_no)
     (let ((py-switch-buffers-on-execute-p t))
       (py-shell))
     (sit-for 0.1)
-    (assert (string= "*Python*" (buffer-name)) nil "py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test #2 failed")))
+    (assert (string-match "*Python" (buffer-name)) nil "py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test #2 failed")))
 
 (defun from-within-py-shell-call-another-instance-lp-1169687-test (&optional arg)
   (interactive "p")
@@ -5821,7 +5821,7 @@ inode, start_no, end_no)
     (py-shell)
     (sit-for 0.1)
     (py-shell nil t nil nil t)
-    (assert (string-match "\\*Python\\*\<[0-9]+\>" (buffer-name)) nil "from-within-py-shell-call-another-instance-lp-1169687-test failed")))
+    (assert (string-match "\\*Python" (buffer-name)) nil "from-within-py-shell-call-another-instance-lp-1169687-test failed")))
 
 (defun multibuffer-mayhem-lp-1162q272-test (&optional arg)
   (interactive "p")
@@ -6320,9 +6320,9 @@ function searchFunction() {
   jQuery.each(searchTerms, function(i,x) {q = q + \":contains('\"+x+\"')\";});
   jQuery(q).css( \"display\", \"block\" );
 }
-  jQuery(function() {    // <== Doc ready  
+  jQuery(function() {    // <== Doc ready
   // stackoverflow q 3971524
-    var inputVal = jQuery(\"#pubSearchInputBox\").val(), 
+    var inputVal = jQuery(\"#pubSearchInputBox\").val(),
         timer,
         checkForChange = function() {
             var self = this; // or just use .bind(this)

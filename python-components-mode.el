@@ -344,7 +344,7 @@ Give some hints, if not."
 (defvar autopair-mode nil)
 
 (defvar py-error nil
-  "Internally used. Takes the error-messages from Python process. ") 
+  "Internally used. Takes the error-messages from Python process. ")
 
 (defvar py-close-completions-timer nil
   "Internally used by `py-timer-close-completion-buffer")
@@ -1154,8 +1154,18 @@ Otherwise value of py-python-history is used. "
   :group 'python-mode
   :type 'hook)
 
-(defcustom py-shell-name "python"
-  "A PATH/TO/EXECUTABLE or default value `py-shell' may look for, if no shell is specified by command. "
+;;; Default shells
+(defcustom py-shell-name
+  (if (eq system-type 'windows-nt)
+      "C:\Python27\python"
+    "/usr/bin/python3")
+
+  "A PATH/TO/EXECUTABLE or default value `py-shell' may look for, if no shell is specified by command.
+
+On Windows default is C:\Python27\python
+--there is no garantee it exists, please check your system--
+
+Else python"
   :type 'string
   :group 'python-mode)
 (make-variable-buffer-local 'py-shell-name)
@@ -1178,6 +1188,50 @@ Otherwise value of py-python-history is used. "
   :type 'string
   :group 'python-mode)
 (make-variable-buffer-local 'py-shell-toggle-2)
+
+(defcustom py-python3-command
+  (if (eq system-type 'windows-nt)
+      "C:\Python33\python.exe"
+    "/usr/bin/python3")
+
+  "A PATH/TO/EXECUTABLE or default value `py-shell' may look for, if
+  no shell is specified by command.
+
+On Windows default is C:\Python3\python.exe
+--there is no garantee it exists, please check your system--
+
+Else /usr/bin/python3"
+
+  :type 'string
+  :group 'python-mode)
+
+(defcustom py-python2-command
+  (if (eq system-type 'windows-nt)
+      "C:\Python27\python"
+    "/usr/bin/python3")
+
+  "A PATH/TO/EXECUTABLE or default value `py-shell' may look for, if no shell is specified by command.
+
+On Windows default is C:\Python33\python.exe
+--there is no garantee it exists, please check your system--
+
+at GNU systems default is /usr/bin/python3"
+
+  :type 'string
+  :group 'python-mode)
+
+(defcustom py-jpython-command ""
+  "Executable or PATH/TO/EXECUTABLE (required on Windows-systems)"
+  :type 'string
+  :group 'python-mode)
+
+(defcustom py-jython-command ""
+  "Executable or PATH/TO/EXECUTABLE (required on Windows-systems)"
+  :type 'string
+  :group 'python-mode)
+
+(defvaralias 'py-default-interpreter 'py-shell-name)
+;;;
 
 (defcustom py-imenu-create-index-p nil
   "Non-nil means Python mode creates and displays an index menu of functions and global variables. "
@@ -1787,14 +1841,6 @@ can write into: the value (if any) of the environment variable TMPDIR,
 (defvar py-mode-output-map nil
   "Keymap used in *Python Output* buffers.")
 
-(defvar py-python-command py-shell-name)
-
-(defvar py-jpython-command py-shell-name)
-
-(defvar py-jython-command py-shell-name)
-
-(defvar py-default-interpreter py-shell-name)
-
 (defvar hs-hide-comments-when-hiding-all t
   "Defined in hideshow.el, silence compiler warnings here. ")
 
@@ -1987,7 +2033,6 @@ for options to pass to the DOCNAME interpreter. \"
     (when (interactive-p) (switch-to-buffer (current-buffer))
           (goto-char (point-max)))))
 ")
-
 
 (defvar py-fast-filter-re (concat "\\("
 			       (mapconcat 'identity
@@ -3225,7 +3270,7 @@ Send file to a Bpython interpreter.
 Uses a dedicated shell.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil". "]))
                   "-"
-		  
+
 		  ["Toggle shell" py-toggle-shell
 		   :help " `py-toggle-shell'
 
@@ -4016,7 +4061,6 @@ Show line at point\. "]
 		    :help " `py-show-top-level'
 
 Show top-level at point\. "]))
-
 
                  "-"
 
@@ -6241,7 +6285,6 @@ See bug report at launchpad, lp:944093. Use `M-x customize-variable' to set it p
                      :style toggle :selected py-edit-only-p])))
 
                  ("More... "
-
 
                   ("Edit commands "
 

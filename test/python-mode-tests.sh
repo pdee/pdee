@@ -1128,6 +1128,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'python-compilation-regexp-alist) nil \"python-compilation-regexp-alist not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall completion-at-gentoo-lp-1008842-test \
 --funcall docstring-style-switches-test \
 --funcall wrong-type-argument-inserted-chars-lp-1293172-test \
 --funcall py-docstring-style-pep-257-nn-closing-quotes-lp-1241147-test \
@@ -1140,17 +1141,13 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall filename-completion-fails-in-ipython-lp-1027265-n2-test \
 --funcall master-file-not-honored-lp:794850-test \
 --funcall tab-results-in-never-ending-process-lp-1163423-test \
---funcall completion-at-gentoo-lp-1008842-test \
 --funcall incorrect-use-of-region-in-py-shift-left-lp:875951-test \
 --funcall py-end-of-block-test \
---funcall not-that-useful-completion-lp:1003580-test \
 --funcall several-new-bugs-with-paragraph-filling-lp-1066489-test \
---funcall py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test \
 --funcall py-execute-region-python2.7-switch-test \
 --funcall execute-indented-code-lp:828314-test \
 --funcall py-shell-invoking-python3-lp:835151-test \
 --funcall py-shell-invoking-python2-lp:835151-test \
---funcall from-within-py-shell-call-another-instance-lp-1169687-test \
 --funcall py-execute-block-or-clause-python3-test \
 --funcall py-execute-block-or-clause-python2-test \
 --funcall py-execute-line-python-test \
@@ -1420,3 +1417,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall more-docstring-filling-woes-lp-1102296-pep-257-test \
 --funcall more-docstring-filling-woes-lp-1102296-pep-257-nn-test \
 --funcall py-electric-delete-test \
+--funcall not-that-useful-completion-lp:1003580-test \
+--funcall py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test \
+--funcall from-within-py-shell-call-another-instance-lp-1169687-test \
