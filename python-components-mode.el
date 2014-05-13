@@ -1157,12 +1157,12 @@ Otherwise value of py-python-history is used. "
 ;;; Default shells
 (defcustom py-shell-name
   (if (eq system-type 'windows-nt)
-      "C:\Python27\python"
+      "C:/Python27/python"
     "/usr/bin/python3")
 
   "A PATH/TO/EXECUTABLE or default value `py-shell' may look for, if no shell is specified by command.
 
-On Windows default is C:\Python27\python
+On Windows default is C:/Python27/python
 --there is no garantee it exists, please check your system--
 
 Else python"
@@ -1171,54 +1171,67 @@ Else python"
 (make-variable-buffer-local 'py-shell-name)
 (defvaralias 'py-python-command 'py-shell-name)
 
-(defcustom py-ipython-command "ipython"
-  "A PATH/TO/EXECUTABLE or default value `M-x IPython RET' may look for, if no IPython-shell is specified by command. "
+(defcustom py-ipython-command
+  (if (eq system-type 'windows-nt)
+      "C:/Python33/Lib/site-packages/IPython"
+    "ipython")
+
+  "A PATH/TO/EXECUTABLE or default value `M-x IPython RET' may look for, if no IPython-shell is specified by command. 
+
+On Windows default is C:/Python33/Lib/site-packages/IPython
+--there is no garantee it exists, please check your system--
+
+Else ipython"
+
   :type 'string
   :group 'python-mode)
 (make-variable-buffer-local 'py-ipython-command)
 
-(defcustom py-shell-toggle-1 py-shell-name
-  "A PATH/TO/EXECUTABLE or default value used by `py-toggle-shell'. "
-  :type 'string
-  :group 'python-mode)
-(make-variable-buffer-local 'py-shell-toggle-1)
-
-(defcustom py-shell-toggle-2 "python3"
-  "A PATH/TO/EXECUTABLE or default value used by `py-toggle-shell'. "
-  :type 'string
-  :group 'python-mode)
-(make-variable-buffer-local 'py-shell-toggle-2)
-
 (defcustom py-python3-command
   (if (eq system-type 'windows-nt)
-      "C:\Python33\python.exe"
+      "C:/Python33/python.exe"
     "/usr/bin/python3")
 
   "A PATH/TO/EXECUTABLE or default value `py-shell' may look for, if
   no shell is specified by command.
 
-On Windows default is C:\Python3\python.exe
+On Windows default is C:/Python3/python.exe
 --there is no garantee it exists, please check your system--
 
-Else /usr/bin/python3"
+At GNU systems default is /usr/bin/python3"
 
   :type 'string
   :group 'python-mode)
 
 (defcustom py-python2-command
   (if (eq system-type 'windows-nt)
-      "C:\Python27\python"
-    "/usr/bin/python3")
+      "C:/Python27/python"
+    "/usr/bin/python2")
 
   "A PATH/TO/EXECUTABLE or default value `py-shell' may look for, if no shell is specified by command.
 
-On Windows default is C:\Python33\python.exe
---there is no garantee it exists, please check your system--
+On Windows default is C:/Python33/python.exe
 
-at GNU systems default is /usr/bin/python3"
+That may differ depending of enviroment installed.
+With Anaconda for example path might be:
+C:/Users/YOUR_NAME/Anaconda/python.exe
+
+at GNU systems default is /usr/bin/python2"
 
   :type 'string
   :group 'python-mode)
+
+(defcustom py-shell-toggle-1 py-python2-command
+  "A PATH/TO/EXECUTABLE or default value used by `py-toggle-shell'. "
+  :type 'string
+  :group 'python-mode)
+(make-variable-buffer-local 'py-shell-toggle-1)
+
+(defcustom py-shell-toggle-2 py-python3-command
+  "A PATH/TO/EXECUTABLE or default value used by `py-toggle-shell'. "
+  :type 'string
+  :group 'python-mode)
+(make-variable-buffer-local 'py-shell-toggle-2)
 
 (defcustom py-jpython-command ""
   "Executable or PATH/TO/EXECUTABLE (required on Windows-systems)"

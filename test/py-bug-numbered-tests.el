@@ -5398,7 +5398,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.98 $\"
+__version__ = \"$Revision: 1.99 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -6345,6 +6345,25 @@ function searchFunction() {
     (goto-char (point-min))
     (search-forward "getURLParameter")
     (assert (eq (face-at-point) 'font-lock-string-face) nil "wrong-coloring-lp:1315186-test failed"))
+
+
+(defun shell-not-advanced-lp-1294809-test (&optional arg)
+  (interactive "p")
+   (let ((py-split-windows-on-execute-p t)
+	 (teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+print(123)
+print(123w)
+print(123)
+print(123)
+print(123)
+")
+	 py-prompt-on-changed-p)
+  (py-bug-tests-intern 'shell-not-advanced-lp-1294809-base arg teststring)))
+
+(defun shell-not-advanced-lp-1294809-base ()
+  (py-execute-buffer)
+  (assert nil "shell-not-advanced-lp-1294809-test failed"))
 
 
 (provide 'py-bug-numbered-tests)
