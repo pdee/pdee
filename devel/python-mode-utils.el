@@ -173,6 +173,12 @@
   (list "python" "ipython" "python3" "python2" "python2.7" "jython" "python3.2" "python3.3" "bpython")
   "Python-mode will generate commands opening shells mentioned here. Edit this list \w resp. to your machine. ")
 
+(defvar py-commands
+  (list "py-python-command" "py-ipython-command" "py-python3-command" "py-python2-command" "py-jython-command" "py-bpython-command")
+  "Python-mode will generate commands opening shells mentioned here. Edit this list \w resp. to your machine. ")
+
+
+
 ;; (setq  py-shells (list "python" "ipython" "python3" "python2" "python2.7" "jython" "python3.2" "python3.3" "bpython"))
 
 (setq py-test-shells

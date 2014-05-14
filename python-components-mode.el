@@ -723,26 +723,6 @@ Normally python-mode know best which function to use. "
   :type 'string
   :group 'python-mode)
 
-(defcustom py-python-command-args '("-i")
-  "List of string arguments to be used when starting a Python shell."
-  :type '(repeat string)
-  :group 'python-mode)
-(make-variable-buffer-local 'py-python-command-args)
-
-(defcustom py-ipython-command-args '("")
-  "List of string arguments to be used when starting a Python shell."
-  :type '(repeat string)
-  :group 'python-mode)
-(make-variable-buffer-local 'py-ipython-command-args)
-
-(defcustom py-jython-command-args '("-i")
-  "List of string arguments to be used when starting a Jython shell."
-  :type '(repeat string)
-  :group 'python-mode
-  :tag "Jython Command Args")
-
-(make-obsolete-variable 'py-jpython-command-args 'py-jython-command-args nil)
-
 (defcustom py-flake8-command ""
   "Which command to call flake8.
 
@@ -1171,21 +1151,33 @@ Else python"
 (make-variable-buffer-local 'py-shell-name)
 (defvaralias 'py-python-command 'py-shell-name)
 
+(defcustom py-python-command-args '("-i")
+  "List of string arguments to be used when starting a Python shell."
+  :type '(repeat string)
+  :group 'python-mode)
+(make-variable-buffer-local 'py-python-command-args)
+
 (defcustom py-ipython-command
   (if (eq system-type 'windows-nt)
       "C:/Python33/Lib/site-packages/IPython"
-    "ipython")
+    "/usr/bin/ipython")
 
-  "A PATH/TO/EXECUTABLE or default value `M-x IPython RET' may look for, if no IPython-shell is specified by command. 
+  "A PATH/TO/EXECUTABLE or default value `M-x IPython RET' may look for, if no IPython-shell is specified by command.
 
 On Windows default is C:/Python33/Lib/site-packages/IPython
 --there is no garantee it exists, please check your system--
 
-Else ipython"
+Else /usr/bin/ipython"
 
   :type 'string
   :group 'python-mode)
 (make-variable-buffer-local 'py-ipython-command)
+
+(defcustom py-ipython-command-args '("")
+  "List of string arguments to be used when starting a Python shell."
+  :type '(repeat string)
+  :group 'python-mode)
+(make-variable-buffer-local 'py-ipython-command-args)
 
 (defcustom py-python3-command
   (if (eq system-type 'windows-nt)
@@ -1221,6 +1213,79 @@ at GNU systems default is /usr/bin/python2"
   :type 'string
   :group 'python-mode)
 
+(defcustom py-python2-command-args '("-i")
+  "List of string arguments to be used when starting a Python2 shell."
+  :type '(repeat string)
+  :group 'python-mode)
+(make-variable-buffer-local 'py-python2-command-args)
+
+(defcustom py-python3-command
+  (if (eq system-type 'windows-nt)
+      "C:/Python33/python.exe"
+    "/usr/bin/python3")
+
+  "A PATH/TO/EXECUTABLE or default value `py-shell' may look for, if no shell is specified by command.
+
+On Windows default is C:/Python33/python.exe
+
+That may differ depending of enviroment installed.
+With Anaconda for example path might be:
+C:/Users/YOUR_NAME/Anaconda/python.exe
+
+at GNU systems default is /usr/bin/python3"
+
+  :type 'string
+  :group 'python-mode)
+
+(defcustom py-python3-command-args '("-i")
+  "List of string arguments to be used when starting a Python3 shell."
+  :type '(repeat string)
+  :group 'python-mode)
+(make-variable-buffer-local 'py-python3-command-args)
+
+
+(defcustom py-jython-command
+  (if (eq system-type 'windows-nt)
+      ;; not known to work at windows
+      ""
+    "/usr/bin/jython")
+
+  "A PATH/TO/EXECUTABLE or default value `M-x Jython RET' may look for, if no Jython-shell is specified by command.
+
+Not known to work at windows
+Default /usr/bin/jython"
+
+  :type 'string
+  :group 'python-mode)
+(make-variable-buffer-local 'py-jython-command)
+
+(defcustom py-jython-command-args '("")
+  "List of string arguments to be used when starting a Python shell."
+  :type '(repeat string)
+  :group 'python-mode)
+(make-variable-buffer-local 'py-jython-command-args)
+
+(defcustom py-bpython-command
+  (if (eq system-type 'windows-nt)
+      ;; not known to work at windows
+      ""
+    "/usr/bin/bpython")
+
+  "A PATH/TO/EXECUTABLE or default value `M-x Bpython RET' may look for, if no Bpython-shell is specified by command.
+
+Not known to work at windows
+Default /usr/bin/bpython"
+
+  :type 'string
+  :group 'python-mode)
+(make-variable-buffer-local 'py-bpython-command)
+
+(defcustom py-bpython-command-args '("")
+  "List of string arguments to be used when starting a Python shell."
+  :type '(repeat string)
+  :group 'python-mode)
+(make-variable-buffer-local 'py-bpython-command-args)
+
 (defcustom py-shell-toggle-1 py-python2-command
   "A PATH/TO/EXECUTABLE or default value used by `py-toggle-shell'. "
   :type 'string
@@ -1233,17 +1298,8 @@ at GNU systems default is /usr/bin/python2"
   :group 'python-mode)
 (make-variable-buffer-local 'py-shell-toggle-2)
 
-(defcustom py-jpython-command ""
-  "Executable or PATH/TO/EXECUTABLE (required on Windows-systems)"
-  :type 'string
-  :group 'python-mode)
-
-(defcustom py-jython-command ""
-  "Executable or PATH/TO/EXECUTABLE (required on Windows-systems)"
-  :type 'string
-  :group 'python-mode)
-
 (defvaralias 'py-default-interpreter 'py-shell-name)
+
 ;;;
 
 (defcustom py-imenu-create-index-p nil
