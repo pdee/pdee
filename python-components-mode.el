@@ -5453,20 +5453,7 @@ Toggle flymake-mode running `pyflakespep8' "]))
                    :help "Open the customization buffer for Python mode"]
                   ("Switches"
                    :help "Toggle useful modes like `highlight-indentation'"
-
                    ("Interpreter"
-
-                    ["Fast process "
-                     (setq py-fast-process-p
-                           (not py-fast-process-p))
-                     :help "Use `py-fast-process'\.
-
-Commands prefixed "py-fast-\.\.\." suitable for large output
-
-See: large output makes Emacs freeze, lp:1253907
-
-Results arrive in py-output-buffer, which is not in comint-modeUse `M-x customize-variable' to set it permanently"
-:style toggle :selected py-fast-process-p]
 
                     ["Shell prompt read only"
                      (setq py-shell-prompt-read-only
