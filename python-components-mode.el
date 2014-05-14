@@ -5460,6 +5460,27 @@ Otherwise value of py-python-history is used. Use `M-x customize-variable' to se
 
                    ("Execute"
 
+		    ["Fast process" py-fast-process-p
+		     :help " `py-fast-process-p'
+
+Use `py-fast-process'\.
+
+Commands prefixed \"py-fast-...\" suitable for large output
+
+See: large output makes Emacs freeze, lp:1253907
+
+Results arrive in py-output-buffer, which is not in comint-mode"
+		     :style toggle :selected py-fast-process-p]
+
+		    ["Python mode v5 behavior"
+                     (setq python-mode-v5-behavior-p
+                           (not python-mode-v5-behavior-p))
+                     :help "Execute region through `shell-command-on-region' as
+v5 did it - lp:990079. This might fail with certain chars - see UnicodeEncodeError lp:550661
+
+Use `M-x customize-variable' to set it permanently"
+                     :style toggle :selected python-mode-v5-behavior-p]
+
                     ["Force shell name "
                      (setq py-force-py-shell-name-p
                            (not py-force-py-shell-name-p))
@@ -5471,12 +5492,6 @@ Otherwise value of py-python-history is used. Use `M-x customize-variable' to se
                            (not py-cleanup-temporary))
                      :help "If temporary buffers and files used by functions executing region should be deleted afterwards. Use `M-x customize-variable' to set it permanently"
                      :style toggle :selected py-cleanup-temporary]
-
-                    ["Execute no temp "
-                     (setq py-execute-no-temp-p
-                           (not py-execute-no-temp-p))
-                     :help "Seems Emacs-24.3 provided a way executing stuff without temporary files. Use `M-x customize-variable' to set it permanently"
-                     :style toggle :selected py-execute-no-temp-p]
 
                     ["Execute \"if name == main\" blocks p"
                      (setq py-if-name-main-permission-p
@@ -6231,15 +6246,6 @@ Make sure, `py-underscore-word-syntax-p' is off.
 Returns value of `py-underscore-word-syntax-p'. .
 
 Use `M-x customize-variable' to set it permanently"])
-
-                    ["Python mode v5 behavior"
-                     (setq python-mode-v5-behavior-p
-                           (not python-mode-v5-behavior-p))
-                     :help "Execute region through `shell-command-on-region' as
-v5 did it - lp:990079. This might fail with certain chars - see UnicodeEncodeError lp:550661
-
-Use `M-x customize-variable' to set it permanently"
-                     :style toggle :selected python-mode-v5-behavior-p]
 
                     ["Load pymacs "
                      (setq py-load-pymacs-p
