@@ -337,6 +337,12 @@ SEPCHAR is the file-path separator of your system. "
   (let ((name (cond (name)
 		    ((string-match "^[iI]" py-shell-name)
 		     (concat "IP" (substring py-shell-name 2)))
+		    ((string= (prin1-to-string py-shell-name) (default-value 'py-shell-name))
+		     (default-value 'py-shell-name))
+		    ;; a path is the default now
+		    ;; which must not be shown in all cases
+		    ((string-match "^/usr/bin" py-shell-name) 
+		     (capitalize (substring py-shell-name (1+ (string-match "/[^/]+$" py-shell-name))))) 
 		    (t (capitalize py-shell-name))))
         prefix erg suffix liste)
     (when (string-match py-separator-char name)
@@ -645,7 +651,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
   (setenv "PAGER" "cat")
   (setenv "TERM" "dumb")
   (let* ((oldbuf (current-buffer))
-	 (py-fast-process-p (when (not (interactive-p)) py-fast-process-p))
+	 ;; (py-fast-process-p (when (not (interactive-p)) py-fast-process-p))
          (dedicated (or dedicated py-dedicated-process-p))
          (py-exception-buffer (or py-exception-buffer (current-buffer)))
          ;; (coding-system-for-read 'utf-8)
