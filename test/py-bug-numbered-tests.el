@@ -1677,7 +1677,8 @@ if foo:
     (py-bug-tests-intern 'execute-indented-code-lp:828314-base 2 teststring)))
 
 (defun execute-indented-code-lp:828314-base ()
-  (let ((debug-on-error t))
+  (let ((debug-on-error t)
+	(py-shell-name "python"))
     (goto-char 28)
     (py-execute-line-python)
     (set-buffer "*Python*")
@@ -5398,7 +5399,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.99 $\"
+__version__ = \"$Revision: 1.100 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))

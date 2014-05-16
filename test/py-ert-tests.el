@@ -581,6 +581,7 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
       (insert "socket.")
       (py-shell-complete)
       (set-buffer "*Python Completions*")
+      (switch-to-buffer (current-buffer)) 
       (goto-char (point-min))
       (sit-for 0.2)
       (prog1 (should (search-forward "socket."))
@@ -837,6 +838,7 @@ def foo():
 (ert-deftest py-ert-execute-statement-test ()
   (py-tests-with-temp-buffer
       "print(\"I'm the py-execute-statement-test\")"
+    ;; (switch-to-buffer (current-buffer)) 
     (let ((py-shell-name "python"))
       (py-execute-statement)
       (set-buffer ert-test-default-buffer)

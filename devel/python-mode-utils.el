@@ -170,14 +170,15 @@
 (setq py-options (list "" "switch" "no-switch" "dedicated" "dedicated-switch"))
 
 (defvar py-shells
-  (list "python" "ipython" "python3" "python2" "python2.7" "jython" "python3.2" "python3.3" "bpython")
+  (list 'python 'ipython 'python3 'python2 'jython 'bpython)
   "Python-mode will generate commands opening shells mentioned here. Edit this list \w resp. to your machine. ")
+
+(setq py-shells
+  (list 'python 'ipython 'python2  'jython 'python3 'bpython))
 
 (defvar py-commands
   (list "py-python-command" "py-ipython-command" "py-python3-command" "py-python2-command" "py-jython-command" "py-bpython-command")
   "Python-mode will generate commands opening shells mentioned here. Edit this list \w resp. to your machine. ")
-
-
 
 ;; (setq  py-shells (list "python" "ipython" "python3" "python2" "python2.7" "jython" "python3.2" "python3.3" "bpython"))
 
@@ -529,134 +530,6 @@ comint-mode\"\n"))
          (insert " (point-min) (point-max)))")))
   (insert "))\n\n"))
 
-(defun write-extended-execute-forms (&optional path-to-shell command option)
-  "Write `py-execute-block...' etc. "
-  (interactive)
-  ;; (load-shells)
-  (let ((py-bounds-command-names (if command (list command) py-bounds-command-names))
-        (py-shells (if path-to-shell (list path-to-shell) py-shells))
-        (py-options (if option (list option) py-options)))
-    (if path-to-shell
-        (set-buffer (get-buffer-create (concat path-to-shell ".el")))
-      (set-buffer (get-buffer-create "python-extended-executes.el")))
-    (erase-buffer)
-    (switch-to-buffer (current-buffer))
-    (insert ";;; Extended executes")
-    (if path-to-shell
-        (insert (concat path-to-shell ".el"))
-      ;; (insert "python-extended-executes.el")
-)
-    (insert " --- more execute forms")
-    (insert arkopf)
-
-    (insert "
-;; created by `write-extended-execute-forms'
-\(defun py-masterfile ()
-  \"Internal use. Set master-file, if given. \"
-  (and (or py-master-file (py-fetch-py-master-file))
-       (let\* ((filename (expand-file-name py-master-file))
-              (buffer (or (get-file-buffer filename)
-                          (find-file-noselect filename))))
-         (set-buffer buffer))))
-
-\(defun py-execute-prepare (form &optional shell dedicated switch beg end file)
-  \"Used by python-extended-executes .\"
-  (save-excursion
-    (let ((beg (unless file
-                 (prog1
-                     (or beg (funcall (intern-soft (concat \"py-beginning-of-\" form \"-p\")))
-
-                         (funcall (intern-soft (concat \"py-beginning-of-\" form)))
-                         (push-mark)))))
-          (end (unless file
-                 (or end (funcall (intern-soft (concat \"py-end-of-\" form))))))
-          (py-shell-name shell)
-          (py-dedicated-process-p dedicated)
-          (py-switch-buffers-on-execute-p (cond ((eq 'switch switch)
-                                                 t)
-                                                ((eq 'no-switch switch)
-                                                 nil)
-                                                (t py-switch-buffers-on-execute-p)))
-          filename)
-      (if file
-          (progn
-            (setq filename (expand-file-name form))
-            (if (file-readable-p filename)
-                (setq erg (py-execute-file-base nil filename nil nil (or (and (boundp 'py-orig-buffer-or-file) py-orig-buffer-or-file) filename)))
-              (message \"%s not readable. %s\" file \"Do you have write permissions?\")))
-        (py-execute-base beg end)))))\\n\n")
-    ;; see also `py-checker-command-names'
-    (dolist (ele py-bounds-command-names)
-      (dolist (elt py-shells)
-        (dolist (pyo py-options)
-          (if (string= "" elt)
-              (insert (concat "(defun py-execute-" ele))
-            (insert (concat "(defun py-execute-" ele "-" elt)))
-          (unless (string= pyo "")(insert (concat "-" pyo)))
-          (if (string= "region" ele)
-              (insert " (beg end)")
-            (insert " ()"))
-          (insert (concat "
-  \"Send " ele " at point to "))
-          (if (string= "ipython" elt)
-              (insert "IPython")
-            (insert (capitalize elt)))
-          (cond ((string= pyo "dedicated")
-                 (insert " unique interpreter. "))
-                ((string= pyo "dedicated-switch")
-                 (insert " unique interpreter and switch to result. "))
-                ((string= "" elt)
-                 (insert "default interpreter. "))
-                (t (insert " interpreter. ")))
-          (cond ((string= pyo "switch")
-                 (insert "\n\nSwitch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "))
-                ((string= pyo "no-switch")
-                 (insert "\n\nKeep current buffer. Ignores `py-switch-buffers-on-execute-p' ")))
-          (insert "\"\n")
-          (cond ((string= "region" ele)
-                 (insert (concat "  (interactive \"r\")
-    (py-execute-prepare \"" ele "\" \"" elt "\""))
-                 (write-extended-execute-forms-endings))
-                ((string= "buffer" ele)
-                 (insert "  (interactive)
-  \(save-excursion
-    (let ((wholebuf t)
-          (py-master-file (or py-master-file (py-fetch-py-master-file)))
-          beg end)
-      (when py-master-file
-        (let* ((filename (expand-file-name py-master-file))
-               (buffer (or (get-file-buffer filename)
-                           (find-file-noselect filename))))
-          (set-buffer buffer)))
-      (py-execute-prepare \"" ele "\" \"" elt "\"")
-                 (write-extended-execute-forms-endings))
-                (t (insert (concat "  (interactive)
-  (py-execute-prepare \"" ele "\" \"" elt "\""))
-    (write-extended-execute-forms-endings)))
-
-          ;; (unless (string= "buffer" ele)
-          ;;   (if (string-match "dedicated" pyo)
-          ;;       (insert " t")
-          ;;     (insert " nil"))
-          ;;   (cond ((or (string= "switch" pyo)
-          ;;              (string= "dedicated-switch" pyo))
-          ;;          (insert " 'switch"))
-          ;;         ((string= "no-switch" pyo)
-          ;;          (insert " 'no-switch"))
-          ;;         (t (insert " nil")))
-          ;;   (cond ((string= "region" ele)
-          ;;          (insert ")))\n\n"))
-          ;;         ((string= "buffer" ele)
-          ;;          (insert "))))\n\n"))
-          ;;         (t (insert "))\n\n"))))
-))))
-  (if path-to-shell
-      (insert (concat "(provide '" path-to-shell) ")
-;;; " path-to-shell ".el ends here\n")
-    (insert "(provide 'python-extended-executes)
-;;; python-extended-executes.el ends here\n "))
-  (emacs-lisp-mode))
-
 (defun write-unified-extended-execute-forms (&optional path-to-shell command option)
   "Write `py-execute-statement, ...' etc.
 
@@ -664,7 +537,7 @@ Include default forms "
   (interactive)
   ;; (load-shells)
   (let ((py-bounds-command-names (if command (list command) py-bounds-command-names))
-        (py-shells (if path-to-shell (list path-to-shell) py-shells))
+	(py-shells py-commands)
         (py-options (if option (list option) py-options)))
     (if path-to-shell
         (set-buffer (get-buffer-create (concat path-to-shell ".el")))
@@ -680,7 +553,7 @@ Include default forms "
     (insert arkopf)
 
     (insert "
-;; created by `write-extended-execute-forms'
+;; created by `write-unified-extended-execute-forms'
 \(defun py-masterfile ()
   \"Internal use. Set master-file, if given. \"
   (and (or py-master-file (py-fetch-py-master-file))
@@ -692,69 +565,69 @@ Include default forms "
 \(defun py-execute-prepare (form &optional shell dedicated switch beg end file)
   \"Used by python-extended-executes .\"
   (save-excursion
-    (let ((beg (unless file
-                 (prog1
-                     (or beg (funcall (intern-soft (concat \"py-beginning-of-\" form \"-p\")))
+    (let* ((beg (unless file
+		  (prog1
+		      (or beg (funcall (intern-soft (concat \"py-beginning-of-\" form \"-p\")))
 
-                         (funcall (intern-soft (concat \"py-beginning-of-\" form)))
-                         (push-mark)))))
-          (end (unless file
-                 (or end (funcall (intern-soft (concat \"py-end-of-\" form))))))
-          (py-shell-name (or shell py-shell-name))
-          (py-dedicated-process-p dedicated)
-          (py-switch-buffers-on-execute-p (cond ((eq 'switch switch)
-                                                 t)
-                                                ((eq 'no-switch switch)
-                                                 nil)
-                                                (t py-switch-buffers-on-execute-p)))
-          filename)
+			  (funcall (intern-soft (concat \"py-beginning-of-\" form)))
+			  (push-mark)))))
+	   (end (unless file
+		  (or end (funcall (intern-soft (concat \"py-end-of-\" form))))))
+	   (shell (or shell py-shell-name))
+	   (py-dedicated-process-p dedicated)
+	   (py-switch-buffers-on-execute-p (cond ((eq 'switch switch)
+						  t)
+						 ((eq 'no-switch switch)
+						  nil)
+						 (t py-switch-buffers-on-execute-p)))
+	   filename)
       (if file
           (progn
             (setq filename (expand-file-name form))
             (if (file-readable-p filename)
                 (setq erg (py-execute-file-base nil filename nil nil (or (and (boundp 'py-orig-buffer-or-file) py-orig-buffer-or-file) filename)))
               (message \"%s not readable. %s\" file \"Do you have write permissions?\")))
-        (py-execute-base beg end)))))\\n\n")
+        (py-execute-base beg end shell)))))\n\n")
+
     ;; see also `py-checker-command-names'
     (dolist (ele py-bounds-command-names)
       (dolist (elt py-shells)
+	(setq kurz (nth 1 (split-string elt "-")))
         (dolist (pyo py-options)
           (if (string= "default" elt)
               (insert (concat "\n(defun py-execute-" ele))
-            (insert (concat "(defun py-execute-" ele "-" elt)))
+            (insert (concat "(defun py-execute-" ele  "-" kurz)))
           (unless (string= pyo "")(insert (concat "-" pyo)))
           (if (string= "region" ele)
               (insert " (beg end)")
             (insert " ()"))
           (insert (concat "
   \"Send " ele " at point to "))
-          (cond ((string= "ipython" elt)
+          (cond ((string-match "ipython" kurz)
 		 (insert "IPython"))
-		((string= "default" elt)
+		((string= "python" kurz)
 		 (insert "default"))
-		(t (insert (capitalize elt))))
+		(t (insert (capitalize kurz))))
           (cond ((string= pyo "dedicated")
                  (insert " unique interpreter. "))
                 ((string= pyo "dedicated-switch")
                  (insert " unique interpreter and switch to result. "))
-                ((string= "default" elt)
-                 (insert " interpreter. "))
                 (t (insert " interpreter. ")))
           (cond ((string= pyo "switch")
                  (insert "\n\nSwitch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "))
                 ((string= pyo "no-switch")
-                 (insert "\n\nKeep current buffer. Ignores `py-switch-buffers-on-execute-p' ")))
+                 (insert "\n\nKeep current buffer. Ignores `py-switch-buffers-on-execute-p' "))
+
+		)
+	  (when (string= "python" kurz)
+		 (insert "\n\nFor `default' see value of `py-shell-name'"))
           (insert "\"\n")
           (cond
-;; 	   ((string= "default" elt)
-;;                 (insert (concat "  (interactive)
-;;    (py-execute-prepare \"" ele "\""))
-;;                 (write-extended-execute-forms-endings))
 	   ((string= "region" ele)
 	    (insert "  (interactive \"r\")\n")
 	    (if (string= "default" elt)
 		(insert (concat "  (py-execute-prepare \"" ele "\""))
-	      (insert (concat "  (py-execute-prepare \"" ele "\" \"" elt "\"")))
+	      (insert (concat "  (py-execute-prepare \"" ele "\" '" elt "")))
 	    (write-extended-execute-forms-endings))
 	   ((string= "buffer" ele)
 	    (insert "  (interactive)
@@ -767,10 +640,10 @@ Include default forms "
                (buffer (or (get-file-buffer filename)
                            (find-file-noselect filename))))
           (set-buffer buffer)))
-      (py-execute-prepare \"" ele "\" \"" elt "\"")
+      (py-execute-prepare \"" ele "\" '" elt)
                  (write-extended-execute-forms-endings))
                 (t (insert (concat "  (interactive)
-  (py-execute-prepare \"" ele "\" \"" elt "\""))
+  (py-execute-prepare \"" ele "\" '" elt))
 		   (write-extended-execute-forms-endings)))
 
 	  ))))

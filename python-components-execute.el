@@ -331,20 +331,22 @@ interpreter.
     (unless (string-match "^\*" erg)(setq erg (concat "*" erg "*")))
     erg))
 
-(defun py-buffer-name-prepare (&optional name)
+(defun py-buffer-name-prepare (&optional arg)
   "Return an appropriate name to display in modeline.
 SEPCHAR is the file-path separator of your system. "
-  (let ((name (cond (name)
-		    ((string-match "^[iI]" py-shell-name)
-		     (concat "IP" (substring py-shell-name 2)))
-		    ((string= (prin1-to-string py-shell-name) (default-value 'py-shell-name))
-		     (default-value 'py-shell-name))
-		    ;; a path is the default now
-		    ;; which must not be shown in all cases
-		    ((string-match "^/usr/bin" py-shell-name) 
-		     (capitalize (substring py-shell-name (1+ (string-match "/[^/]+$" py-shell-name))))) 
-		    (t (capitalize py-shell-name))))
-        prefix erg suffix liste)
+  (let* ((name-first (or arg py-shell-name))
+	 (name-raw (and name-first (if (stringp name-first) name-first (prin1-to-string name-first))))
+	 (name
+	  (cond ((string-match "^[iI]" name-raw)
+		 (concat "IP" (substring name-raw 2)))
+		;; a path is the default now
+		;; which must not be shown in all cases
+		((string-match "^/usr/bin" name-raw)
+		 (capitalize (substring name-raw (1+ (string-match "/[^/]+$" name-raw)))))
+		((string-match "^py-" name-raw)
+		 (nth 1 (split-string name-raw "-")))
+		(t (capitalize name-raw))))
+	 prefix erg suffix liste)
     (when (string-match py-separator-char name)
       (unless py-modeline-acronym-display-home-p
         (when (string-match (concat "^" (expand-file-name "~")) name)
@@ -355,7 +357,6 @@ SEPCHAR is the file-path separator of your system. "
         (unless (string= "" ele)
           (setq prefix (concat prefix (char-to-string (aref ele 0))))))
       (unless py-modeline-display-full-path-p
-
         (setq name (substring name (1+ (string-match (concat py-separator-char "[^" py-separator-char "]+$") name))))))
     (setq erg
           (cond ((string= "ipython" name)
@@ -660,7 +661,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
          (py-shell-name (or shell py-shell-name (py-choose-shell)))
          (args
           (cond (py-fast-process-p nil)
-                ((string-match "^[Ii]" py-shell-name) py-ipython-command-args)
+                ((string-match "^[Ii]" (prin1-to-string py-shell-name)) py-ipython-command-args)
                 (t py-python-command-args)))
          ;; If we use a pipe, Unicode characters are not printed
          ;; correctly (Bug#5794) and IPython does not work at
@@ -727,7 +728,7 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
     (when (interactive-p) (message "%s" (prin1-to-string cmd)))
     cmd))
 
-(defun py--choose-buffer-name ()
+(defun py--choose-buffer-name (&optional name)
   "Python code might be processed by an
 - interactive Python shell (DEFAULT)
 - non-interactive Python (py-fast-process-p), select for large
@@ -743,7 +744,7 @@ Default is interactive, i.e. py-fast-process-p nil, and `py-session'"
   (cond ((and py-fast-process-p py-dedicated-process-p)
 	 (py-buffer-name-prepare (default-value 'py-output-buffer)))
         (py-fast-process-p py-output-buffer)
-        (t (py-buffer-name-prepare))))
+        (t (py-buffer-name-prepare name))))
 
 (defun py-execute-base (&optional start end shell filename proc file wholebuf)
   "Select the handler.
@@ -761,7 +762,8 @@ When optional FILE is `t', no temporary file is needed. "
              (point-min)
              ;; count-lines doesn't honor current line when at BOL
              end)))
-         (py-shell-name (or shell (py-choose-shell)))
+	 ;; argument SHELL might be a string like "python", "IPython" "python3" or a symbol holding PATH/TO/EXECUTABLE
+         (which-shell (or (and (stringp shell) shell) (ignore-errors (eval shell)) (py-choose-shell)))
          (py-exception-buffer (current-buffer))
          (execute-directory
           (cond ((ignore-errors (file-name-directory (file-remote-p (buffer-file-name) 'localname))))
@@ -774,16 +776,16 @@ When optional FILE is `t', no temporary file is needed. "
                  py-execute-directory)
                 ((getenv "VIRTUAL_ENV"))
                 (t (getenv "HOME"))))
-         (py-buffer-name (py--choose-buffer-name))
+         (py-buffer-name (py--choose-buffer-name which-shell))
          (filename (or (and filename (expand-file-name filename)) (and (not (buffer-modified-p)) (buffer-file-name))))
          (py-orig-buffer-or-file (or filename (current-buffer)))
          (proc (cond (proc)
 		     ;; will deal with py-dedicated-process-p also
                      (py-fast-process-p (py-fast-process py-buffer-name))
                      (py-dedicated-process-p
-                      (get-buffer-process (py-shell nil py-dedicated-process-p py-shell-name py-buffer-name t)))
+                      (get-buffer-process (py-shell nil py-dedicated-process-p which-shell py-buffer-name t)))
                      (t (or (get-buffer-process py-buffer-name)
-                            (get-buffer-process (py-shell nil py-dedicated-process-p py-shell-name py-buffer-name t)))))))
+                            (get-buffer-process (py-shell nil py-dedicated-process-p which-shell py-buffer-name t)))))))
     (setq py-error nil)
     (when py-debug-p (with-temp-file "/tmp/py-buffer-name.txt" (insert py-buffer-name)))
     (set-buffer py-exception-buffer)
@@ -801,7 +803,8 @@ When optional FILE is `t', no temporary file is needed. "
 (defun py-execute-buffer-finally (start end execute-directory wholebuf)
   (let* ((strg (buffer-substring-no-properties start end))
          (temp (make-temp-name
-                (concat (replace-regexp-in-string py-separator-char "-" (replace-regexp-in-string (concat "^" py-separator-char) "" (replace-regexp-in-string ":" "-" py-shell-name))) "-")))
+		;; FixMe: that should be simpler
+                (concat (replace-regexp-in-string py-separator-char "-" (replace-regexp-in-string (concat "^" py-separator-char) "" (replace-regexp-in-string ":" "-" (if (stringp which-shell) which-shell (prin1-to-string which-shell))))) "-")))
          (tempfile (concat (expand-file-name py-temp-directory) py-separator-char (replace-regexp-in-string py-separator-char "-" temp) ".py"))
          (tempbuf (get-buffer-create temp))
          (wholebuf (when (boundp 'wholebuf) wholebuf))
@@ -895,9 +898,9 @@ May we get rid of the temporary file? "
          (tempfile (or (buffer-file-name) (concat (expand-file-name py-temp-directory) py-separator-char (replace-regexp-in-string py-separator-char "-" "temp") ".py")))
 
          (proc (or proc (if py-dedicated-process-p
-                            (get-buffer-process (py-shell nil py-dedicated-process-p py-shell-name py-buffer-name t))
+                            (get-buffer-process (py-shell nil py-dedicated-process-p which-shell py-buffer-name t))
                           (or (get-buffer-process py-buffer-name)
-                              (get-buffer-process (py-shell nil py-dedicated-process-p py-shell-name py-buffer-name t))))))
+                              (get-buffer-process (py-shell nil py-dedicated-process-p which-shell py-buffer-name t))))))
          (procbuf (process-buffer proc))
          (file (or file (with-current-buffer py-buffer-name
                           (concat (file-remote-p default-directory) tempfile))))
@@ -908,7 +911,7 @@ May we get rid of the temporary file? "
     (save-excursion
       (insert strg))
     (py-fix-start (point) (point-max))
-    (unless (string-match "[jJ]ython" py-shell-name)
+    (unless (string-match "[jJ]ython" which-shell)
       ;; (when (and execute-directory py-use-current-dir-when-execute-p
       ;; (not (string= execute-directory default-directory)))
       ;; (message "Warning: options `execute-directory' and `py-use-current-dir-when-execute-p' may conflict"))
