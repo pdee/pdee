@@ -8,6 +8,8 @@ Enhanced Windows support:
   - customizable versioned py-python[23]-commands, taking the path to
     executables
 
+C-u py-shell RET prompts for a Path/To/Executable
+  Py-shell-buffer will display its acronym: "*PTE Python*"
 
 Support for large output
 

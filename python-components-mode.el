@@ -8254,19 +8254,26 @@ See available customizations listed in files variables-python-mode at directory 
   (if py-use-font-lock-doc-face-p
       (set (make-local-variable 'font-lock-defaults)
            '(python-font-lock-keywords nil nil nil nil
-                                   (font-lock-syntactic-keywords
-                                    . py-font-lock-syntactic-keywords)
-                                   (font-lock-syntactic-face-function
-                                    . py-font-lock-syntactic-face-function)))
+				       (font-lock-syntactic-keywords
+					. py-font-lock-syntactic-keywords)
+				       (font-lock-syntactic-face-function
+					. py-font-lock-syntactic-face-function)))
     (set (make-local-variable 'font-lock-defaults)
          '(python-font-lock-keywords nil nil nil nil
-                                 (font-lock-syntactic-keywords
-                                  . py-font-lock-syntactic-keywords))))
-  (if (string-match "python3" (py-choose-shell))
-      (font-lock-add-keywords 'python-mode
-			      '(("\\<print\\>" . 'py-builtins-face)))
-    (font-lock-add-keywords 'python-mode
-			    '(("\\<print\\>" . 'font-lock-keyword-face))))
+				     (font-lock-syntactic-keywords
+				      . py-font-lock-syntactic-keywords))))
+  ;; avoid to run py-choose-shell again from `py-fix-start'
+  (cond ((and (boundp 'py-buffer-name) py-buffer-name)
+	 (if (string-match "python3" py-buffer-name)
+	     (font-lock-add-keywords 'python-mode
+				     '(("\\<print\\>" . 'py-builtins-face)))
+	   '(("\\<print\\>" . 'font-lock-keyword-face))))
+	((string-match "python3" (py-choose-shell))
+	 (font-lock-add-keywords 'python-mode
+				 '(("\\<print\\>" . 'py-builtins-face))))
+	(t (font-lock-add-keywords 'python-mode
+				   '(("\\<print\\>" . 'font-lock-keyword-face)))))
+
   (set (make-local-variable 'which-func-functions) 'py-which-def-or-class)
   (set (make-local-variable 'parse-sexp-lookup-properties) t)
   (set (make-local-variable 'parse-sexp-ignore-comments) t)

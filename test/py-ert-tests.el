@@ -579,9 +579,12 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
       (setq oldbuf (current-buffer))
       (goto-char (point-max))
       (insert "socket.")
+      (sit-for 0.1) 
+      ;; (switch-to-buffer (current-buffer)) 
       (py-shell-complete)
+      (sit-for 0.1) 
       (set-buffer "*Python Completions*")
-      (switch-to-buffer (current-buffer)) 
+      ;; (switch-to-buffer (current-buffer)) 
       (goto-char (point-min))
       (sit-for 0.2)
       (prog1 (should (search-forward "socket."))
@@ -849,6 +852,7 @@ def foo():
   (py-tests-with-temp-buffer
       "print(\"I'm the py-execute-statement-python2-test\")"
     (py-execute-statement-python2)
+    (switch-to-buffer (current-buffer)) 
     (set-buffer "*Python2*")
     (and (should (search-backward "py-execute-statement-python2-test" nil t 1))
 	 (py-kill-buffer-unconditional (current-buffer)))))

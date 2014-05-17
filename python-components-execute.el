@@ -336,13 +336,17 @@ interpreter.
 SEPCHAR is the file-path separator of your system. "
   (let* ((name-first (or arg py-shell-name))
 	 (name-raw (and name-first (if (stringp name-first) name-first (prin1-to-string name-first))))
+	 ein
 	 (name
 	  (cond ((string-match "^[iI]" name-raw)
 		 (concat "IP" (substring name-raw 2)))
-		;; a path is the default now
-		;; which must not be shown in all cases
-		((string-match "^/usr/bin" name-raw)
-		 (capitalize (substring name-raw (1+ (string-match "/[^/]+$" name-raw)))))
+		;; When a given path is the default
+		;; it must not be shown
+		((and (string-match "/[^/]+$" name-raw)
+		      (setq ein (substring name-raw (1+ (string-match "/[^/]+$" name-raw))))
+		      (string= (eval (car (read-from-string (concat "py-" ein "-command")))) name-raw))
+		 ;; (string-match "^/usr/bin" name-raw)
+		 (capitalize ein))
 		((string-match "^py-" name-raw)
 		 (nth 1 (split-string name-raw "-")))
 		(t (capitalize name-raw))))
@@ -614,21 +618,9 @@ Receives a buffer-name as argument"
   "Guess the buffer-name core string. "
   (cond
    ((and py-fast-process-p (not py-dedicated-process-p)) py-output-buffer)
-   (buffer-name)
+   ;; (buffer-name)
    (t (and (not dedicated) argprompt
            (cond
-            ((eq 4 (prefix-numeric-value argprompt))
-             (prog1
-                 (read-buffer "Py-Shell buffer: "
-                              (generate-new-buffer-name (py-buffer-name-prepare)))
-               (when (file-remote-p default-directory)
-                 ;; It must be possible to declare a local default-directory.
-                 (setq default-directory
-                       (expand-file-name
-                        (read-file-name
-                         "Default directory: " default-directory default-directory
-                         t nil 'file-directory-p)))
-                 (setq py-separator-char (py-separator-char)))))
             ((and (eq 2 (prefix-numeric-value argprompt))
                   (fboundp 'split-string))
              (setq args (split-string
@@ -638,7 +630,7 @@ Receives a buffer-name as argument"
 
 (defun py-shell (&optional argprompt dedicated shell buffer-name no-window-managment)
   "Start an interactive Python interpreter in another window.
-Interactively, \\[universal-argument] 4 prompts for a buffer.
+Interactively, \\[universal-argument] prompts for a PATH/TO/EXECUTABLE to use.
 \\[universal-argument] 2 prompts for `py-python-command-args'.
 If `default-directory' is a remote file name, it is also prompted
 to change if called with a prefix arg.
@@ -651,14 +643,16 @@ When DONE is `t', `py-shell-manage-windows' is omitted
   (interactive "P")
   (setenv "PAGER" "cat")
   (setenv "TERM" "dumb")
-  (let* ((oldbuf (current-buffer))
+  (let* ((newpath (when (eq 4 (prefix-numeric-value argprompt))
+		    (read-from-minibuffer "PATH/TO/EXECUTABLE/[I]python[version]: ")))
+	 (oldbuf (current-buffer))
 	 ;; (py-fast-process-p (when (not (interactive-p)) py-fast-process-p))
          (dedicated (or dedicated py-dedicated-process-p))
          (py-exception-buffer (or py-exception-buffer (current-buffer)))
          ;; (coding-system-for-read 'utf-8)
          ;; (coding-system-for-write 'utf-8)
          (path (getenv "PYTHONPATH"))
-         (py-shell-name (or shell py-shell-name (py-choose-shell)))
+         (py-shell-name (or newpath shell py-shell-name (py-choose-shell)))
          (args
           (cond (py-fast-process-p nil)
                 ((string-match "^[Ii]" (prin1-to-string py-shell-name)) py-ipython-command-args)
@@ -673,8 +667,8 @@ When DONE is `t', `py-shell-manage-windows' is omitted
               (expand-file-name py-shell-local-path)
             (when py-use-local-default
               (error "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'"))))
-         (py-buffer-name (py--guess-buffer-name))
-         (py-buffer-name (or py-buffer-name (py-buffer-name-prepare)))
+         (py-buffer-name (or buffer-name (py--guess-buffer-name)))
+         (py-buffer-name (or py-buffer-name (py-buffer-name-prepare newpath)))
          (executable (cond (py-shell-name)
                            (py-buffer-name
                             (py-report-executable py-buffer-name))))
@@ -776,7 +770,7 @@ When optional FILE is `t', no temporary file is needed. "
                  py-execute-directory)
                 ((getenv "VIRTUAL_ENV"))
                 (t (getenv "HOME"))))
-         (py-buffer-name (py--choose-buffer-name which-shell))
+         (py-buffer-name (or py-buffer-name  (py--choose-buffer-name which-shell)))
          (filename (or (and filename (expand-file-name filename)) (and (not (buffer-modified-p)) (buffer-file-name))))
          (py-orig-buffer-or-file (or filename (current-buffer)))
          (proc (cond (proc)
