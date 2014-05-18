@@ -1169,13 +1169,15 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. \"]\n")))
 
 (defun py-provide-installed-shells-commands ()
   "Reads py-shells, provides commands opening these shell. "
-  (interactive)
-  (let ((temp-buffer "Python-Shell-Install-Buffer"))
+  (interactive)  
+  (let ((temp-buffer "python-components-named-shells.el"))
     (set-buffer (get-buffer-create temp-buffer))
     (erase-buffer)
     (insert ";;; Python named shells")
+    (insert arkopf)
     (newline)
     (dolist (ele py-shells)
+      (setq ele (prin1-to-string ele))
       (insert (concat "(defun " ele " (&optional argprompt)
   \"Start an "))
       (if (string= "ipython" ele)
@@ -1183,15 +1185,13 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. \"]\n")))
         (insert (capitalize ele)))
       (insert (concat " interpreter.
 
-Optional \\\\[universal-argument] prompts for options to pass to the "))
-      (if (string= "ipython" ele)
-          (insert "IPython")
-        (insert (capitalize ele)))
-      (insert (concat " interpreter. See `py-python-command-args'. \"
+Optional \\\\[universal-argument] prompts for path to the"))
+      (insert (concat " interpreter. \"
   (interactive \"P\")
   (py-shell argprompt nil \"" ele "\"))\n\n")))
     (insert ";; dedicated\n")
     (dolist (ele py-shells)
+      (setq ele (prin1-to-string ele))
       (insert (concat "(defun " ele "-dedicated (&optional argprompt switch)
   \"Start an unique "))
       (if (string= "ipython" ele)
@@ -1199,16 +1199,14 @@ Optional \\\\[universal-argument] prompts for options to pass to the "))
         (insert (capitalize ele)))
       (insert (concat " interpreter in another window.
 
-Optional \\\\[universal-argument] prompts for options to pass to the "))
-      (if (string= "ipython" ele)
-          (insert "IPython")
-        (insert (capitalize ele)))
-      (insert (concat " interpreter. See `py-python-command-args'.\"
+Optional \\\\[universal-argument] prompts for path to the"))
+            (insert (concat " interpreter. \"
   (interactive \"P\")"))
       (insert "\n  (let ((py-dedicated-process-p t))\n")
       (insert (concat "    (py-shell argprompt t \"" ele "\")))\n\n")))
     (insert ";; switch\n")
     (dolist (ele py-shells)
+      (setq ele (prin1-to-string ele))
       (insert (concat "(defun " ele "-switch (&optional argprompt)
   \"Switch to "))
       (if (string= "ipython" ele)
@@ -1216,16 +1214,17 @@ Optional \\\\[universal-argument] prompts for options to pass to the "))
         (insert (capitalize ele)))
       (insert (concat " interpreter in another window.
 
-Optional \\\\[universal-argument] prompts for options to pass to the "))
-      (if (string= "ipython" ele)
-          (insert "IPython")
-        (insert (capitalize ele)))
-      (insert (concat " interpreter. See `py-python-command-args'.\"
+Optional \\\\[universal-argument] prompts for path to the"))
+      ;; (if (string= "ipython" ele)
+      ;;     (insert "IPython")
+      ;;   (insert (capitalize ele)))
+      (insert (concat " interpreter. \"
   (interactive \"P\")"))
       (insert "\n  (let ((py-switch-buffers-on-execute-p t))\n")
       (insert (concat "    (py-shell argprompt nil \"" ele "\")))\n\n")))
     (insert ";; no-switch\n")
     (dolist (ele py-shells)
+      (setq ele (prin1-to-string ele))
       (insert (concat "(defun " ele "-no-switch (&optional argprompt)
   \"Open an "))
       (if (string= "ipython" ele)
@@ -1233,16 +1232,17 @@ Optional \\\\[universal-argument] prompts for options to pass to the "))
         (insert (capitalize ele)))
       (insert (concat " interpreter in another window, but do not switch to it.
 
-Optional \\\\[universal-argument] prompts for options to pass to the "))
-      (if (string= "ipython" ele)
-          (insert "IPython")
-        (insert (capitalize ele)))
-      (insert (concat " interpreter. See `py-python-command-args'.\"
+Optional \\\\[universal-argument] prompts for path to the"))
+      ;; (if (string= "ipython" ele)
+      ;;     (insert "IPython")
+      ;;   (insert (capitalize ele)))
+      (insert (concat " interpreter. \"
   (interactive \"P\")"))
       (insert "\n  (let (py-switch-buffers-on-execute-p)\n")
       (insert (concat "    (py-shell argprompt nil \"" ele "\")))\n\n")))
     (insert ";; dedicated switch\n")
     (dolist (ele py-shells)
+      (setq ele (prin1-to-string ele))
       (insert (concat "(defalias '" ele "-dedicated-switch '" ele "-switch-dedicated)\n"))
       (insert (concat "(defun " ele "-switch-dedicated (&optional argprompt)
   \"Switch to an unique "))
@@ -1251,17 +1251,36 @@ Optional \\\\[universal-argument] prompts for options to pass to the "))
         (insert (capitalize ele)))
       (insert (concat " interpreter in another window.
 
-Optional \\\\[universal-argument] prompts for options to pass to the "))
-      (if (string= "ipython" ele)
-          (insert "IPython")
-        (insert (capitalize ele)))
-      (insert " interpreter. See `py-python-command-args'.\"
+Optional \\\\[universal-argument] prompts for path to the"))
+      ;; (if (string= "ipython" ele)
+      ;;     (insert "IPython")
+      ;;   (insert (capitalize ele)))
+      (insert " interpreter. \"
   \(interactive \"P\")")
   (insert "\n  (let ((py-dedicated-process-p t)
         (py-switch-buffers-on-execute-p t))\n")
-  (insert (concat "    (py-shell argprompt t \"" ele "\")))\n\n"))))
+  (insert (concat "    (py-shell argprompt t \"" ele "\")))\n\n")))
+    (insert "
+\(defalias 'Python 'python)
+\(defalias 'pyhotn 'python)
+\(defalias 'pyhton 'python)
+\(defalias 'pyt 'python)
+\
+\(defalias 'Python2 'python2)
+\(defalias 'Python3 'python3)
+\
+\(defalias 'IPython 'ipython)
+\(defalias 'Ipython 'ipython)
+\(defalias 'iyp 'ipython)
+\(defalias 'ipy 'ipython)
+
+
+\(provide 'python-components-named-shells)
+;;; python-components-named-shells.el ends here
+")
+  (switch-to-buffer (current-buffer))
   (emacs-lisp-mode)
-  (switch-to-buffer (current-buffer)))
+  ))
 
 (defun py-write-re-beg-end-forms ()
   (interactive)
