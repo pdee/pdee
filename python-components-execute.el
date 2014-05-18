@@ -644,7 +644,7 @@ When DONE is `t', `py-shell-manage-windows' is omitted
   (setenv "PAGER" "cat")
   (setenv "TERM" "dumb")
   (let* ((newpath (when (eq 4 (prefix-numeric-value argprompt))
-		    (read-from-minibuffer "PATH/TO/EXECUTABLE/[I]python[version]: ")))
+		    (read-shell-command "PATH/TO/EXECUTABLE/[I]python[version]: ")))
 	 (oldbuf (current-buffer))
 	 ;; (py-fast-process-p (when (not (interactive-p)) py-fast-process-p))
          (dedicated (or dedicated py-dedicated-process-p))
