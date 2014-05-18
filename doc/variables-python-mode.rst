@@ -81,7 +81,7 @@ py-smart-operator-mode-p
 ------------------------
 If python-mode calls (smart-operator-mode-on)
 
-Default is non-nil. 
+Default is nil. 
 
 py-sexp-function
 ----------------
@@ -401,18 +401,6 @@ py-shebang-startstring
 ----------------------
 Detecting the shell in head of file. 
 
-py-python-command-args
-----------------------
-List of string arguments to be used when starting a Python shell.
-
-py-ipython-command-args
------------------------
-List of string arguments to be used when starting a Python shell.
-
-py-jython-command-args
-----------------------
-List of string arguments to be used when starting a Jython shell.
-
 py-flake8-command
 -----------------
 Which command to call flakes8.
@@ -673,7 +661,7 @@ py-max-specpdl-size
 -------------------
 Heuristic exit. Limiting number of recursive calls by py-end-of-statement and related functions. Default is max-specpdl-size.
 
-This treshold is just an approximation. It might set far higher maybe.
+This threshold is just an approximation. It might set far higher maybe.
 
 See lp:1235375. In case code is not to navigate due to errors, `which-function-mode' and others might make Emacs hang. Rather exit than. 
 
@@ -734,7 +722,83 @@ Switch between `py-imenu-create-index-new', which also lists modules variables, 
 
 py-shell-name
 -------------
-A PATH/TO/EXECUTABLE or default value `py-shell' may look for, if no shell is specified by command. 
+A PATH/TO/EXECUTABLE or default value `py-shell' may look for, if no shell is specified by command.
+
+On Windows default is C:/Python27/python
+--there is no garantee it exists, please check your system--
+
+Else python
+
+py-python-command-args
+----------------------
+List of string arguments to be used when starting a Python shell.
+
+py-ipython-command
+------------------
+A PATH/TO/EXECUTABLE or default value `M-x IPython RET' may look for, if no IPython-shell is specified by command.
+
+On Windows default is C:/Python33/Lib/site-packages/IPython
+--there is no garantee it exists, please check your system--
+
+Else /usr/bin/ipython
+
+py-ipython-command-args
+-----------------------
+List of string arguments to be used when starting a Python shell.
+
+py-python3-command
+------------------
+A PATH/TO/EXECUTABLE or default value `py-shell' may look for, if no shell is specified by command.
+
+On Windows default is C:/Python33/python.exe
+
+That may differ depending of enviroment installed.
+With Anaconda for example path might be:
+C:/Users/YOUR_NAME/Anaconda/python.exe
+
+at GNU systems default is /usr/bin/python3
+
+py-python2-command
+------------------
+A PATH/TO/EXECUTABLE or default value `py-shell' may look for, if no shell is specified by command.
+
+On Windows default is C:/Python33/python.exe
+
+That may differ depending of enviroment installed.
+With Anaconda for example path might be:
+C:/Users/YOUR_NAME/Anaconda/python.exe
+
+at GNU systems default is /usr/bin/python2
+
+py-python2-command-args
+-----------------------
+List of string arguments to be used when starting a Python2 shell.
+
+py-python3-command-args
+-----------------------
+List of string arguments to be used when starting a Python3 shell.
+
+py-jython-command
+-----------------
+A PATH/TO/EXECUTABLE or default value `M-x Jython RET' may look for, if no Jython-shell is specified by command.
+
+Not known to work at windows
+Default /usr/bin/jython
+
+py-jython-command-args
+----------------------
+List of string arguments to be used when starting a Python shell.
+
+py-bpython-command
+------------------
+A PATH/TO/EXECUTABLE or default value `M-x Bpython RET' may look for, if no Bpython-shell is specified by command.
+
+Not known to work at windows
+Default /usr/bin/bpython
+
+py-bpython-command-args
+-----------------------
+List of string arguments to be used when starting a Python shell.
 
 py-shell-toggle-1
 -----------------
