@@ -1161,6 +1161,7 @@ Inserts an incentive true form \"if 1:\\n.\" "
 Avoid empty lines at the beginning. "
   (python-mode)
   (goto-char start)
+  (switch-to-buffer (current-buffer)) 
   (while  ;; (empty-line-p)
       (eq 9 (char-after))
     (delete-region (line-beginning-position) (1+ (line-end-position))))

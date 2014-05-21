@@ -2945,8 +2945,8 @@ http://docs.python.org/reference/compound_stmts.html\"\n")
   ;; lc forms
   (dolist (ele py-re-forms-names)
     (insert (concat "
-\(defalias 'py-beginning-of-" ele "-bol 'py-beginning-of-" ele"-lc)
-\(defun py-beginning-of-" ele "-lc (&optional indent)"
+\(defalias 'py-beginning-of-" ele "-lc 'py-beginning-of-" ele"-bol)
+\(defun py-beginning-of-" ele "-bol (&optional indent)"
 "\n \"Go to beginning " ele ", go to BOL.
 
 Returns beginning of " ele " if successful, nil otherwise\n

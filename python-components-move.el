@@ -443,11 +443,14 @@ http://docs.python.org/reference/compound_stmts.html"
     (skip-chars-backward " \t\r\n\f" (line-beginning-position))))
 
 (defun py--skip-to-comment-or-semicolon ()
-  (and (< 0 (abs (skip-chars-forward "^#;" (line-end-position))))
-       (if (eq ?\; (char-after))
-           (skip-chars-forward ";" (line-end-position))
-         (skip-chars-backward " \t" (line-beginning-position)))
-       (setq done t)))
+  "Returns position reached if point was moved. "
+  (let ((orig (point)))
+    (and (< 0 (abs (skip-chars-forward "^#;" (line-end-position))))
+	 (if (eq ?\; (char-after))
+	     (skip-chars-forward ";" (line-end-position))
+	   (skip-chars-backward " \t" (line-beginning-position)))
+	 (setq done t)
+	 (and (< orig (point)) (point)))))
 
 (defun py--eos-in-string ()
   "Return stm, i.e. if string is part of a (print)-statement. "
@@ -479,10 +482,10 @@ http://docs.python.org/reference/compound_stmts.html"
 (defun py--end-of-statement-intern ()
   (py--skip-to-comment-or-semicolon)
   (let ((pos (point))
-        (pps (syntax-ppss))
+        (pps (parse-partial-sexp (point-min) (point)))
         stm)
     (cond ((nth 3 pps)
-           (and (py--eos-in-string) (py--end-of-statement-intern)))
+           (and (py--eos-in-string) (not (eobp)) (py--end-of-statement-intern)))
           ((nth 4 pps)
            (py--end-of-comment-intern pos))
           ((nth 1 pps)
@@ -517,7 +520,7 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
           stringchar stm pps err)
       (unless done
         (py--skip-to-comment-or-semicolon))
-      (setq pps (syntax-ppss))
+      (setq pps (parse-partial-sexp (point-min) (point)))
       ;; (origline (or origline (py-count-lines)))
       (cond
        ;; wich-function-mode, lp:1235375
@@ -544,9 +547,9 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
 		  (goto-char orig))))))
        ;; string
        ((nth 3 pps)
-	(and (py--eos-in-string) (py--end-of-statement-intern))
-	(setq pps (syntax-ppss))
-	(unless (and done (not (or (nth 1 pps) (nth 8 pps)))) (py-end-of-statement orig t repeat)))
+	(py-end-of-string)
+	(setq pps (parse-partial-sexp (point-min) (point)))
+	(unless (and done (not (or (nth 1 pps) (nth 8 pps))) (eolp)) (py-end-of-statement orig t repeat)))
        ;; in comment
        ((nth 4 pps)
 	(py--end-of-comment-intern (point))
@@ -579,6 +582,8 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
 	(skip-chars-forward " \t\r\n\f#'\"")
 	(py--skip-to-comment-or-semicolon)
 	(py--end-of-statement-intern)
+	(py-end-of-statement orig done repeat))
+       ((and (looking-at "[[:print:]]+$") (py--skip-to-comment-or-semicolon))
 	(py-end-of-statement orig done repeat)))
       (unless
 	  (or

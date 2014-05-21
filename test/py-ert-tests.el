@@ -29,10 +29,10 @@
 (add-to-list 'load-path default-directory)
 (require 'python-mode-test)
 
-(defmacro py-tests-with-temp-buffer (contents &rest body)
-  "Create a `python-mode' enabled temp buffer with CONTENTS.
+(defmacro py-test-with-temp-buffer-point-min (contents &rest body)
+  "Create temp buffer in `python-mode' inserting CONTENTS.
 BODY is code to be executed within the temp buffer.  Point is
-always located at the beginning of buffer."
+ at the beginning of buffer."
   (declare (indent 1) (debug t))
   `(with-temp-buffer
 ;;     (and (featurep 'python) (unload-feature 'python))
@@ -41,6 +41,20 @@ always located at the beginning of buffer."
        (insert ,contents)
        (message "ERT %s" (point))
        (goto-char (point-min))
+       ,@body)))
+
+(defmacro py-test-with-temp-buffer (contents &rest body)
+  "Create temp buffer in `python-mode' inserting CONTENTS.
+BODY is code to be executed within the temp buffer.  Point is
+ at the end of buffer."
+  (declare (indent 1) (debug t))
+  `(with-temp-buffer
+;;     (and (featurep 'python) (unload-feature 'python))
+     (let (hs-minor-mode)
+       (python-mode)
+       (insert ,contents)
+       (message "ERT %s" (point))
+
        ,@body)))
 
 (defun py-tests-go-to (string)
@@ -72,7 +86,7 @@ always located at the beginning of buffer."
 
 (ert-deftest py-ert-indent-dedenters-1 ()
   "Check all dedenters."
-  (py-tests-with-temp-buffer
+  (py-test-with-temp-buffer-point-min
    "
 def foo(a, b, c):
     if a:
@@ -112,7 +126,7 @@ def foo(a, b, c):
 
 (ert-deftest py-ert-indent-after-backslash-lp-852052-1 ()
   "The most common case."
-  (py-tests-with-temp-buffer
+  (py-test-with-temp-buffer-point-min
       "
 from foo.bar.baz import something, something_1 \\
      something_2 something_3, \\
@@ -127,7 +141,7 @@ from foo.bar.baz import something, something_1 \\
 
 (ert-deftest py-ert-indent-closing ()
   ""
-  (py-tests-with-temp-buffer
+  (py-test-with-temp-buffer-point-min
    "
 my_list = [
     1, 2, 3,
@@ -144,7 +158,7 @@ result = some_function_that_takes_arguments(
    (should (eq 4 (py-compute-indentation)))))
 
 (ert-deftest py-ert-moves ()
-  (py-tests-with-temp-buffer
+  (py-test-with-temp-buffer-point-min
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -346,7 +360,7 @@ result = some_function_that_takes_arguments(
   ))
 
 (ert-deftest py-ert-indent-tabs-mode-test ()
-  (py-tests-with-temp-buffer
+  (py-test-with-temp-buffer-point-min
       "class OrderedDict1(dict):"
     (end-of-line)
     (let ((indent-tabs-mode t))
@@ -354,7 +368,7 @@ result = some_function_that_takes_arguments(
       (should (looking-back "^\t")))))
 
 (ert-deftest py-ert-no-indent-tabs-mode-test ()
-  (py-tests-with-temp-buffer
+  (py-test-with-temp-buffer-point-min
       "class OrderedDict1(dict):"
     (end-of-line)
     (let ((indent-tabs-mode))
@@ -362,12 +376,12 @@ result = some_function_that_takes_arguments(
       (should (looking-back "^    ")))))
 
 (ert-deftest py-ert-pyflakespep-command-test ()
-  (py-tests-with-temp-buffer
+  (py-test-with-temp-buffer-point-min
       ""
       (file-readable-p py-pyflakespep8-command)))
 
 (ert-deftest py-ert-bogus-dedent-when-typing-colon-in-dictionary-literal-lp-1197171 ()
-  (py-tests-with-temp-buffer
+  (py-test-with-temp-buffer
       "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 # Put point at the end of the last line and hit colon, as you would to
@@ -377,11 +391,10 @@ result = some_function_that_takes_arguments(
 def foo():
     bar('thing',
         {'another'"
-    (goto-char (point-max))
     (should (eq 8 (py-compute-indentation)))))
 
 (ert-deftest py-ert-pep-arglist-indent ()
-  (py-tests-with-temp-buffer
+  (py-test-with-temp-buffer-point-min
       "# Aligned with opening delimiter
 foo = long_function_name(var_one, var_two,
                          var_three, var_four)
@@ -400,7 +413,7 @@ def long_function_name(
     ))
 
 (ert-deftest py-ert-close-at-start-column ()
-  (py-tests-with-temp-buffer
+  (py-test-with-temp-buffer-point-min
       "# boolean `py-closing-list-dedents-bos',
 
 # Current behavior matches default nil
@@ -479,7 +492,7 @@ data = {
       )))
 
 (ert-deftest py-ert-top-level ()
-  (py-tests-with-temp-buffer
+  (py-test-with-temp-buffer-point-min
       "klauf = kugel()
 
 with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
@@ -497,7 +510,7 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
 
 (ert-deftest py-ert-position-tests ()
   (interactive)
-  (py-tests-with-temp-buffer
+  (py-test-with-temp-buffer-point-min
       "class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
     def pylauf(self):
@@ -542,7 +555,7 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
 
 (ert-deftest py-ert-copy-statement-test ()
   (interactive)
-  (py-tests-with-temp-buffer
+  (py-test-with-temp-buffer-point-min
    "from foo.bar.baz import something
 "
    (should (and (not (py-copy-statement))(string-match "from foo.bar.baz import something" (car kill-ring))))))
@@ -558,19 +571,18 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
     (should abbrevs-changed)))
 
 (ert-deftest py-ert-honor-dedent-lp-1280982 ()
-  (py-tests-with-temp-buffer
+  (py-test-with-temp-buffer
       "def foo():
     def bar():
         asdf
     "
-    (goto-char (point-max))
     (py-newline-and-indent)
     (py-electric-backspace)
     (py-newline-and-indent)
     (should (eq 42 (point)))))
 
 (ert-deftest py-ert-socket-modul-completion-lp-1284141 ()
-  (py-tests-with-temp-buffer
+  (py-test-with-temp-buffer-point-min
       "import socket"
     (let ((py-debug-p t)
 	  oldbuf)
@@ -592,7 +604,7 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
 	(py-kill-buffer-unconditional "py-buffer-name.txt")))))
 
 (ert-deftest py-ert-fill-paragraph-lp-1286318 ()
-  (py-tests-with-temp-buffer
+  (py-test-with-temp-buffer-point-min
       "# r1416
 
 def baz():
@@ -653,7 +665,7 @@ def baz():
 
 (ert-deftest py-ert-fill-paragraph-pep-257-nn ()
   (let ((py-docstring-style 'pep-257-nn))
-    (py-tests-with-temp-buffer
+    (py-test-with-temp-buffer-point-min
 	"# r1416
 
 def baz():
@@ -687,7 +699,7 @@ def baz():
 
 (ert-deftest py-ert-fill-paragraph-pep-257 ()
   (let ((py-docstring-style 'pep-257))
-    (py-tests-with-temp-buffer
+    (py-test-with-temp-buffer-point-min
 	"# r1416
 
 def baz():
@@ -719,7 +731,7 @@ def baz():
 
 (ert-deftest py-ert-fill-paragraph-onetwo ()
   (let ((py-docstring-style 'onetwo))
-    (py-tests-with-temp-buffer
+    (py-test-with-temp-buffer-point-min
 	"# r1416
 
 def baz():
@@ -745,7 +757,7 @@ def baz():
 
 (ert-deftest py-ert-fill-paragraph-django ()
   (let ((py-docstring-style 'django))
-    (py-tests-with-temp-buffer
+    (py-test-with-temp-buffer-point-min
 	"# r1416
 
 def baz():
@@ -772,7 +784,7 @@ def baz():
 
 (ert-deftest py-ert-fill-paragraph-symmetric ()
   (let ((py-docstring-style 'symmetric))
-    (py-tests-with-temp-buffer
+    (py-test-with-temp-buffer-point-min
 	"# r1416
 
 def baz():
@@ -797,7 +809,7 @@ def baz():
       )))
 
 (ert-deftest py-ert-fill-paragraph-lp-1291493 ()
-  (py-tests-with-temp-buffer
+  (py-test-with-temp-buffer-point-min
       "if True:
     if True:
         if True:
@@ -815,7 +827,7 @@ def foo():
 
 ;;; execute tests
 (ert-deftest py-ert-execute-expression-test ()
-  (py-tests-with-temp-buffer
+  (py-test-with-temp-buffer-point-min
       "print(\"I'm the py-execute-expression-test\")"
     (let ((py-shell-name "python"))
       (py-execute-expression)
@@ -827,7 +839,7 @@ def foo():
 	   (py-kill-buffer-unconditional (current-buffer))))))
 
 (ert-deftest py-ert-execute-line-test ()
-  (py-tests-with-temp-buffer
+  (py-test-with-temp-buffer-point-min
       "print(\"I'm the py-execute-line-test\")"
     (let ((py-shell-name "python"))
       (py-execute-line)
@@ -839,7 +851,7 @@ def foo():
 	   (py-kill-buffer-unconditional (current-buffer))))))
 
 (ert-deftest py-ert-execute-statement-test ()
-  (py-tests-with-temp-buffer
+  (py-test-with-temp-buffer-point-min
       "print(\"I'm the py-execute-statement-test\")"
     ;; (switch-to-buffer (current-buffer)) 
     (let ((py-shell-name "python"))
@@ -849,7 +861,7 @@ def foo():
 	   (py-kill-buffer-unconditional (current-buffer))))))
 
 (ert-deftest py-ert-execute-statement-python2-test ()
-  (py-tests-with-temp-buffer
+  (py-test-with-temp-buffer-point-min
       "print(\"I'm the py-execute-statement-python2-test\")"
     (py-execute-statement-python2)
     (switch-to-buffer (current-buffer)) 
@@ -858,7 +870,7 @@ def foo():
 	 (py-kill-buffer-unconditional (current-buffer)))))
 
 (ert-deftest py-ert-execute-statement-python3-dedicated-test ()
-  (py-tests-with-temp-buffer
+  (py-test-with-temp-buffer-point-min
       "print(\"I'm the py-execute-statement-python3-dedicated-test\")"
     (let ((py-debug-p t))
       (py-execute-statement-python3-dedicated)
@@ -869,7 +881,7 @@ def foo():
 	))))
 
 (ert-deftest py-ert-execute-statement-split ()
-  (py-tests-with-temp-buffer
+  (py-test-with-temp-buffer-point-min
       "print(123)"
     (let ((py-split-windows-on-execute-p t))
       (py-execute-statement)
@@ -889,7 +901,7 @@ def foo():
   (call-interactively 'py-shell-complete))
 
 (ert-deftest py-ert-execute-statement-fast ()
-  (py-tests-with-temp-buffer
+  (py-test-with-temp-buffer-point-min
       "print(1)"
     (let ((py-fast-process-p t))
       (py-execute-statement)
@@ -897,7 +909,7 @@ def foo():
       (eq 1 (char-after)))))
 
 (ert-deftest py-ert-execute-block-fast ()
-  (py-tests-with-temp-buffer
+  (py-test-with-temp-buffer-point-min
       "if True:
     a = 1
     print(a)"
@@ -907,7 +919,7 @@ def foo():
       (eq 1 (char-after)))))
 
 (ert-deftest py-ert-execute-block-fast-2 ()
-  (py-tests-with-temp-buffer
+  (py-test-with-temp-buffer-point-min
       "if True:
     a += 1
     print(a)"
@@ -917,7 +929,7 @@ def foo():
       (eq 2 (char-after)))))
 
 (ert-deftest py-ert-keyword-face-lp-1294742 ()
-  (py-tests-with-temp-buffer
+  (py-test-with-temp-buffer-point-min
       " and as assert break continue del elif else except exec finally for global if in is lambda not or pass raise return while with yield"
     (font-lock-fontify-buffer)
     (while (and (not (eobp))(< 0 (skip-chars-forward " ")))
@@ -925,7 +937,7 @@ def foo():
       (skip-chars-forward "^ \n"))))
 
 (ert-deftest py-ert-exception-name-face-lp-1294742 ()
-  (py-tests-with-temp-buffer
+  (py-test-with-temp-buffer-point-min
       " ArithmeticError AssertionError AttributeError BaseException BufferError BytesWarning DeprecationWarning EOFError EnvironmentError Exception FloatingPointError FutureWarning GeneratorExit IOError ImportError ImportWarning IndentationError IndexError KeyError KeyboardInterrupt LookupError MemoryError NameError NoResultFound NotImplementedError OSError OverflowError PendingDeprecationWarning ReferenceError RuntimeError RuntimeWarning StandardError StopIteration SyntaxError SyntaxWarning SystemError SystemExit TabError TypeError UnboundLocalError UnicodeDecodeError UnicodeEncodeError UnicodeError UnicodeTranslateError UnicodeWarning UserWarning ValueError Warning ZeroDivisionError"
     (font-lock-fontify-buffer)
     (while (and (not (eobp))(< 0 (skip-chars-forward " ")))
@@ -934,7 +946,7 @@ def foo():
 
 (ert-deftest py-ert-builtins-face-lp-1294742 ()
   (let ((py-shell-name "python3"))
-    (py-tests-with-temp-buffer
+    (py-test-with-temp-buffer-point-min
 	" _ __doc__ __import__ __name__ __package__ abs all any apply basestring bin bool buffer bytearray bytes callable chr classmethod cmp coerce compile complex delattr dict dir divmod enumerate eval execfile file filter float format frozenset getattr globals hasattr hash help hex id input int intern isinstance issubclass iter len list locals long map max min next object oct open ord pow print property range raw_input reduce reload repr reversed round set setattr slice sorted staticmethod str sum super tuple type unichr unicode vars xrange zip"
       (font-lock-fontify-buffer)
 ;;      (switch-to-buffer (current-buffer))
@@ -943,7 +955,7 @@ def foo():
 	(skip-chars-forward "^ \n")))))
 
 (ert-deftest py-ert-py-pseudo-keyword-face-lp-1294742 ()
-  (py-tests-with-temp-buffer
+  (py-test-with-temp-buffer-point-min
       "  Ellipsis True False None  __debug__ NotImplemented"
     (font-lock-fontify-buffer)
     (while (and (not (eobp))(< 0 (skip-chars-forward " ")))
@@ -951,7 +963,7 @@ def foo():
       (skip-chars-forward "^ \n"))))
 
 (ert-deftest py-ert-py-object-reference-face-lp-1294742 ()
-  (py-tests-with-temp-buffer
+  (py-test-with-temp-buffer-point-min
       " self cls"
     (font-lock-fontify-buffer)
     (while (and (not (eobp))(< 0 (skip-chars-forward " ")))
@@ -959,7 +971,7 @@ def foo():
       (skip-chars-forward "^ \n"))))
 
 ;; (ert-deftest py-ert-execute-region-lp-1294796 ()
-;;   (py-tests-with-temp-buffer
+;;   (py-test-with-temp-buffer-point-min
 ;;       "print(1)
 ;; "
 ;;     (let ((py-shell-name "ipython")
@@ -971,7 +983,7 @@ def foo():
 ;;       (should (search-backward "1")))))
 
 (ert-deftest py-ert-borks-all-lp-1294820 ()
-  (py-tests-with-temp-buffer
+  (py-test-with-temp-buffer-point-min
       "# M-q within some code (not in= a docstring) completely borks all previous
 # code in the file:
 #
@@ -997,7 +1009,7 @@ def baz(self):
     (should (eq (char-after) ?\n))))
 
 (ert-deftest py-ert-respect-paragraph-1294829.py ()
-  (py-tests-with-temp-buffer
+  (py-test-with-temp-buffer-point-min
       "# py-fill-paragraph doesn';t respect existing paragraph breaks when
 # reflowing the docstring, e.g.
 
@@ -1084,7 +1096,7 @@ by the
     (should (eq (char-after) ?\n)) ))
 
 (ert-deftest py-ert-backward-same-level-test ()
-  (py-tests-with-temp-buffer
+  (py-test-with-temp-buffer-point-min
       "def foo():
     if True:
         def bar():
@@ -1147,7 +1159,7 @@ by the
     (should (eq (char-after) ?e))))
 
 (ert-deftest py-ert-py-up-level-test ()
-  (py-tests-with-temp-buffer
+  (py-test-with-temp-buffer-point-min
       "def foo():
     if True:
         def bar():
@@ -1199,7 +1211,7 @@ by the
 
 (ert-deftest py-ert-hide-test ()
 
-  (py-tests-with-temp-buffer "
+  (py-test-with-temp-buffer-point-min "
 class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
 
@@ -1246,7 +1258,7 @@ class kugel(object):
     (should (not (string-match "overlay" (prin1-to-string (car (overlays-at (point)))))))))
 
 (ert-deftest py-ert-deletes-too-much-lp:1300270 ()
-  (py-tests-with-temp-buffer "
+  (py-test-with-temp-buffer "
 x = {'abc':'def',
          'ghi':'jkl'}
 "
@@ -1256,7 +1268,7 @@ x = {'abc':'def',
 
 (ert-deftest py-ert-wrong-python-test ()
   "Python3 incompatible code should return error."
-  (py-tests-with-temp-buffer
+  (py-test-with-temp-buffer
       "print 123"
     (let ((py-shell-name "python3"))
       (py-execute-statement)
