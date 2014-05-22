@@ -36,7 +36,7 @@
          (sheb (concat "#! " erg)))
     (insert sheb)))
 
-(defun py-top-level-form-p ()
+(defun py--top-level-form-p ()
   "Return non-nil, if line starts with a top level definition.
 
 Used by `py-electric-colon', which will not indent than. "
@@ -67,7 +67,7 @@ With optional \\[universal-argument] an indent with length `py-indent-offset' is
              (delete-horizontal-space)
              (indent-to need))))))
 
-(defun py-indent-fix-region-intern (beg end)
+(defun py--indent-fix-region-intern (beg end)
   "Used when `py-tab-indents-region-p' is non-nil. "
   (let (indent)
     (save-excursion
@@ -90,7 +90,7 @@ With optional \\[universal-argument] an indent with length `py-indent-offset' is
   (if py-tab-indent
       (progn
         (and py-tab-indents-region-p region
-             (py-indent-fix-region-intern beg end))
+             (py--indent-fix-region-intern beg end))
         (cond ((eq need cui)
                (if (or (eq this-command last-command)
                        (eq this-command 'py-indent-line))
@@ -248,13 +248,13 @@ C-q TAB inserts a literal TAB-character."
     (save-excursion
       (goto-char orig)
       (if (empty-line-p)
-	  (if (py--emacs-version-greater-23)
+	  (if (py---emacs-version-greater-23)
 	      (delete-trailing-whitespace (line-beginning-position) pos)
 	    (save-restriction
 	      (narrow-to-region (line-beginning-position) pos)
 	      (delete-trailing-whitespace)))
 	(skip-chars-backward " \t")
-	(if (py--emacs-version-greater-23)
+	(if (py---emacs-version-greater-23)
 	    (delete-trailing-whitespace (line-beginning-position) pos)
 	  (save-restriction
 	    (narrow-to-region (point) pos)
@@ -276,7 +276,7 @@ When indent is set back manually, this is honoured in following lines. "
     (setq erg
 	  (cond (this-dedent
 		 (indent-to-column this-dedent))
-		((and py-empty-line-closes-p (or (eq this-command last-command)(py-after-empty-line)))
+		((and py-empty-line-closes-p (or (eq this-command last-command)(py--after-empty-line)))
 		 (indent-to-column (save-excursion (py-beginning-of-statement)(- (current-indentation) py-indent-offset))))
 		(t
 		 (indent-to-column (py-compute-indentation)))))
@@ -336,7 +336,7 @@ Returns value of `indent-tabs-mode' switched to. "
 (defun py-guessed-sanity-check (guessed)
   (and (>= guessed 2)(<= guessed 8)(eq 0 (% guessed 2))))
 
-(defun py-guess-indent-final (indents orig)
+(defun py--guess-indent-final (indents orig)
   "Calculate and do sanity-check. "
   (let* ((first (car indents))
          (second (cadr indents))
@@ -349,11 +349,10 @@ Returns value of `indent-tabs-mode' switched to. "
     (setq erg (and (py-guessed-sanity-check erg) erg))
     erg))
 
-(defun py-guess-indent-forward ()
+(defun py--guess-indent-forward ()
   "Called when moving to end of a form and `py-smart-indentation' is on. "
-  (interactive)
   (let* ((first (if
-                    (py-beginning-of-statement-p)
+                    (py--beginning-of-statement-p)
                     (current-indentation)
                   (progn
                     (py-end-of-statement)
@@ -372,7 +371,7 @@ Returns value of `indent-tabs-mode' switched to. "
                    (current-indentation))))
     (list first second)))
 
-(defun py-guess-indent-backward ()
+(defun py--guess-indent-backward ()
   "Called when moving to beginning of a form and `py-smart-indentation' is on. "
   (let* ((cui (current-indentation))
          (indent (if (< 0 cui) cui 999))
@@ -397,20 +396,20 @@ downwards from beginning of block followed by a statement. Otherwise default-val
            (indents
             (cond (direction
                    (if (eq 'forward direction)
-                       (py-guess-indent-forward)
-                     (py-guess-indent-backward)))
+                       (py--guess-indent-forward)
+                     (py--guess-indent-backward)))
                   ;; guess some usable indent is above current position
                   ((eq 0 (current-indentation))
-                   (py-guess-indent-forward))
-                  (t (py-guess-indent-backward))))
-           (erg (py-guess-indent-final indents orig)))
+                   (py--guess-indent-forward))
+                  (t (py--guess-indent-backward))))
+           (erg (py--guess-indent-final indents orig)))
       (if erg (setq py-indent-offset erg)
         (setq py-indent-offset
               (default-value 'py-indent-offset)))
       (when (interactive-p) (message "%s" py-indent-offset))
       py-indent-offset)))
 
-(defun py-comment-indent-function ()
+(defun py--comment-indent-function ()
   "Python version of `comment-indent-function'."
   ;; This is required when filladapt is turned off.  Without it, when
   ;; filladapt is not used, comments which start in column zero
@@ -431,7 +430,7 @@ downwards from beginning of block followed by a statement. Otherwise default-val
 The defun visible is the one that contains point or follows point. "
   (interactive)
   (save-excursion
-    (let ((start (if (py-statement-opens-def-or-class-p)
+    (let ((start (if (py--statement-opens-def-or-class-p)
                      (point)
                    (py-beginning-of-def-or-class))))
       (py-end-of-def-or-class)
@@ -486,7 +485,7 @@ Returns and keeps relative position "
     (goto-char orig)))
 
 ;;; Positions
-(defun py-beginning-of-paragraph-position ()
+(defun py--beginning-of-paragraph-position ()
   "Returns beginning of paragraph position. "
   (interactive)
   (save-excursion
@@ -496,7 +495,7 @@ Returns and keeps relative position "
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
-(defun py-end-of-paragraph-position ()
+(defun py--end-of-paragraph-position ()
   "Returns end of paragraph position. "
   (interactive)
   (save-excursion
@@ -509,7 +508,7 @@ Returns and keeps relative position "
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
-(defun py-beginning-of-block-position ()
+(defun py--beginning-of-block-position ()
   "Returns beginning of block position. "
   (interactive)
   (save-excursion
@@ -517,7 +516,7 @@ Returns and keeps relative position "
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
-(defun py-end-of-block-position ()
+(defun py--end-of-block-position ()
   "Returns end of block position. "
   (interactive)
   (save-excursion
@@ -549,7 +548,7 @@ Returns and keeps relative position "
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
-(defun py-beginning-of-clause-position ()
+(defun py--beginning-of-clause-position ()
   "Returns beginning of clause position. "
   (interactive)
   (save-excursion
@@ -557,7 +556,7 @@ Returns and keeps relative position "
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
-(defun py-end-of-clause-position ()
+(defun py--end-of-clause-position ()
   "Returns end of clause position. "
   (interactive)
   (save-excursion
@@ -569,7 +568,7 @@ Returns and keeps relative position "
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
-(defun py-beginning-of-block-or-clause-position ()
+(defun py--beginning-of-block-or-clause-position ()
   "Returns beginning of block-or-clause position. "
   (interactive)
   (save-excursion
@@ -577,7 +576,7 @@ Returns and keeps relative position "
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
-(defun py-end-of-block-or-clause-position ()
+(defun py--end-of-block-or-clause-position ()
   "Returns end of block-or-clause position. "
   (interactive)
   (save-excursion
@@ -589,7 +588,7 @@ Returns and keeps relative position "
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
-(defun py-beginning-of-def-position ()
+(defun py--beginning-of-def-position ()
   "Returns beginning of def position. "
   (interactive)
   (save-excursion
@@ -597,7 +596,7 @@ Returns and keeps relative position "
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
-(defun py-end-of-def-position ()
+(defun py--end-of-def-position ()
   "Returns end of def position. "
   (interactive)
   (save-excursion
@@ -609,7 +608,7 @@ Returns and keeps relative position "
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
-(defun py-beginning-of-class-position ()
+(defun py--beginning-of-class-position ()
   "Returns beginning of class position. "
   (interactive)
   (save-excursion
@@ -617,7 +616,7 @@ Returns and keeps relative position "
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
-(defun py-end-of-class-position ()
+(defun py--end-of-class-position ()
   "Returns end of class position. "
   (interactive)
   (save-excursion
@@ -629,7 +628,7 @@ Returns and keeps relative position "
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
-(defun py-beginning-of-def-or-class-position ()
+(defun py--beginning-of-def-or-class-position ()
   "Returns beginning of def-or-class position. "
   (interactive)
   (save-excursion
@@ -637,7 +636,7 @@ Returns and keeps relative position "
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
-(defun py-end-of-def-or-class-position ()
+(defun py--end-of-def-or-class-position ()
   "Returns end of def-or-class position. "
   (interactive)
   (save-excursion
@@ -649,7 +648,7 @@ Returns and keeps relative position "
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
-(defun py-beginning-of-line-position ()
+(defun py--beginning-of-line-position ()
   "Returns beginning of line position. "
   (interactive)
   (save-excursion
@@ -657,7 +656,7 @@ Returns and keeps relative position "
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
-(defun py-end-of-line-position ()
+(defun py--end-of-line-position ()
   "Returns end of line position. "
   (interactive)
   (save-excursion
@@ -669,7 +668,7 @@ Returns and keeps relative position "
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
-(defun py-beginning-of-statement-position ()
+(defun py--beginning-of-statement-position ()
   "Returns beginning of statement position. "
   (interactive)
   (save-excursion
@@ -677,7 +676,7 @@ Returns and keeps relative position "
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
-(defun py-end-of-statement-position ()
+(defun py--end-of-statement-position ()
   "Returns end of statement position. "
   (interactive)
   (save-excursion
@@ -729,7 +728,7 @@ Returns and keeps relative position "
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
-(defun py-beginning-of-partial-expression-position ()
+(defun py--beginning-of-partial-expression-position ()
   "Returns beginning of partial-expression position. "
   (interactive)
   (save-excursion
@@ -737,7 +736,7 @@ Returns and keeps relative position "
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
-(defun py-end-of-partial-expression-position ()
+(defun py--end-of-partial-expression-position ()
   "Returns end of partial-expression position. "
   (interactive)
   (save-excursion
@@ -749,7 +748,7 @@ Returns and keeps relative position "
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
-(defun py-beginning-of-expression-position ()
+(defun py--beginning-of-expression-position ()
   "Returns beginning of expression position. "
   (interactive)
   (save-excursion
@@ -757,7 +756,7 @@ Returns and keeps relative position "
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
-(defun py-end-of-expression-position ()
+(defun py--end-of-expression-position ()
   "Returns end of expression position. "
   (interactive)
   (save-excursion
@@ -780,8 +779,8 @@ Returns a list, whose car is beg, cdr - end."
     (save-restriction
       (widen)
       (when position (goto-char position))
-      (let ((beg (py-beginning-of-statement-position))
-            (end (py-end-of-statement-position)))
+      (let ((beg (py--beginning-of-statement-position))
+            (end (py--end-of-statement-position)))
         (if (and beg end)
             (when (interactive-p) (message "%s" (list beg end)))
           (list beg end))))))
@@ -796,8 +795,8 @@ Returns a list, whose car is beg, cdr - end."
     (save-restriction
       (widen)
       (when position (goto-char position))
-      (let ((beg (py-beginning-of-block-position))
-            (end (py-end-of-block-position)))
+      (let ((beg (py--beginning-of-block-position))
+            (end (py--end-of-block-position)))
         (if (and beg end)
             (when (interactive-p) (message "%s" (list beg end)))
           (list beg end))))))
@@ -812,8 +811,8 @@ Returns a list, whose car is beg, cdr - end."
     (save-restriction
       (widen)
       (when position (goto-char position))
-      (let ((beg (py-beginning-of-clause-position))
-            (end (py-end-of-clause-position)))
+      (let ((beg (py--beginning-of-clause-position))
+            (end (py--end-of-clause-position)))
         (if (and beg end)
             (when (interactive-p) (message "%s" (list beg end)))
           (list beg end))))))
@@ -828,8 +827,8 @@ Returns a list, whose car is beg, cdr - end."
     (save-restriction
       (widen)
       (when position (goto-char position))
-      (let ((beg (py-beginning-of-block-or-clause-position))
-            (end (py-end-of-block-or-clause-position)))
+      (let ((beg (py--beginning-of-block-or-clause-position))
+            (end (py--end-of-block-or-clause-position)))
         (if (and beg end)
             (when (interactive-p) (message "%s" (list beg end)))
           (list beg end))))))
@@ -844,8 +843,8 @@ Returns a list, whose car is beg, cdr - end."
     (save-restriction
       (widen)
       (when position (goto-char position))
-      (let ((beg (py-beginning-of-def-position))
-            (end (py-end-of-def-position)))
+      (let ((beg (py--beginning-of-def-position))
+            (end (py--end-of-def-position)))
         (if (and beg end)
             (when (interactive-p) (message "%s" (list beg end)))
           (list beg end))))))
@@ -860,8 +859,8 @@ Returns a list, whose car is beg, cdr - end."
     (save-restriction
       (widen)
       (when position (goto-char position))
-      (let ((beg (py-beginning-of-class-position))
-            (end (py-end-of-class-position)))
+      (let ((beg (py--beginning-of-class-position))
+            (end (py--end-of-class-position)))
         (if (and beg end)
             (when (interactive-p) (message "%s" (list beg end)))
           (list beg end))))))
@@ -890,8 +889,8 @@ Returns a list, whose car is beg, cdr - end."
     (save-restriction
       (widen)
       (when position (goto-char position))
-      (let ((beg (py-beginning-of-buffer-position))
-            (end (py-end-of-buffer-position)))
+      (let ((beg (py--beginning-of-buffer-position))
+            (end (py--end-of-buffer-position)))
         (if (and beg end)
             (when (interactive-p) (message "%s" (list beg end)))
           (list beg end))))))
@@ -906,8 +905,8 @@ Returns a list, whose car is beg, cdr - end."
     (save-restriction
       (widen)
       (when position (goto-char position))
-      (let ((beg (py-beginning-of-expression-position))
-            (end (py-end-of-expression-position)))
+      (let ((beg (py--beginning-of-expression-position))
+            (end (py--end-of-expression-position)))
         (if (and beg end)
             (when (interactive-p) (message "%s" (list beg end)))
           (list beg end))))))
@@ -922,16 +921,16 @@ Returns a list, whose car is beg, cdr - end."
     (save-restriction
       (widen)
       (when position (goto-char position))
-      (let ((beg (py-beginning-of-partial-expression-position))
-            (end (py-end-of-partial-expression-position)))
+      (let ((beg (py--beginning-of-partial-expression-position))
+            (end (py--end-of-partial-expression-position)))
         (if (and beg end)
             (when (interactive-p) (message "%s" (list beg end)))
           (list beg end))))))
 
-(defun py-beginning-of-buffer-position ()
+(defun py--beginning-of-buffer-position ()
   (point-min))
 
-(defun py-end-of-buffer-position ()
+(defun py--end-of-buffer-position ()
   (point-max))
 
 ;;; Declarations start
@@ -945,9 +944,9 @@ See also py-bounds-of-statements "
   (interactive)
   (let* ((orig-indent (progn
                         (back-to-indentation)
-                        (unless (py-beginning-of-statement-p)
+                        (unless (py--beginning-of-statement-p)
                           (py-beginning-of-statement))
-                        (unless (py-beginning-of-block-p)
+                        (unless (py--beginning-of-block-p)
                           (current-indentation))))
          (orig (point))
          last beg end)
@@ -956,17 +955,17 @@ See also py-bounds-of-statements "
       ;; look upward first
       (while (and
               (progn
-                (unless (py-beginning-of-statement-p)
+                (unless (py--beginning-of-statement-p)
                   (py-beginning-of-statement))
                 (line-beginning-position))
               (py-beginning-of-statement)
-              (not (py-beginning-of-block-p))
+              (not (py--beginning-of-block-p))
               (eq (current-indentation) orig-indent))
         (setq beg (line-beginning-position)))
       (goto-char orig)
       (while (and (setq last (line-end-position))
                   (setq end (py-down-statement))
-                  (not (py-beginning-of-block-p))
+                  (not (py--beginning-of-block-p))
                   (eq (py-indentation-of-statement) orig-indent)))
       (setq end last)
       (goto-char beg)
@@ -1038,9 +1037,9 @@ Indented same level, which don't open blocks. "
   (interactive)
   (let* ((orig-indent (progn
                         (back-to-indentation)
-                        (unless (py-beginning-of-statement-p)
+                        (unless (py--beginning-of-statement-p)
                           (py-beginning-of-statement))
-                        (unless (py-beginning-of-block-p)
+                        (unless (py--beginning-of-block-p)
                           (current-indentation))))
          (orig (point))
          last beg end)
@@ -1051,14 +1050,14 @@ Indented same level, which don't open blocks. "
                         (when (py-beginning-of-statement)
                           (line-beginning-position)))
                   (not (py-in-string-p))
-                  (not (py-beginning-of-block-p))
+                  (not (py--beginning-of-block-p))
                   (eq (current-indentation) orig-indent)))
       (setq beg last)
       (goto-char orig)
       (setq end (line-end-position))
       (while (and (setq last (line-end-position))
                   (setq end (py-down-statement))
-                  (not (py-beginning-of-block-p))
+                  (not (py--beginning-of-block-p))
                   ;; (not (looking-at py-keywords))
                   ;; (not (looking-at "pdb\."))
                   (not (py-in-string-p))
@@ -1124,7 +1123,7 @@ Store deleted statements in kill-ring "
       (delete-region beg end))))
 ;;;
 
-(defun py-join-words-wrapping (words separator line-prefix line-length)
+(defun py--join-words-wrapping (words separator line-prefix line-length)
   (let ((lines ())
         (current-line line-prefix))
     (while words
@@ -1139,7 +1138,7 @@ Store deleted statements in kill-ring "
                        current-line 0 (- 0 (length separator) 1)) lines))
     (mapconcat 'identity (nreverse lines) "\n")))
 
-(defun py-fix-this-indent (indent)
+(defun py--fix-this-indent (indent)
   (unless (and (eq (current-indentation) (current-column))
                (eq (current-column) indent))
     (beginning-of-line)
@@ -1192,24 +1191,24 @@ Returns the string inserted. "
   "Delete all commented lines in def-or-class at point"
   (interactive "*")
   (save-excursion
-    (let ((beg (py-beginning-of-def-or-class-position))
-          (end (py-end-of-def-or-class-position)))
+    (let ((beg (py--beginning-of-def-or-class-position))
+          (end (py--end-of-def-or-class-position)))
       (and beg end (py--delete-comments-intern beg end)))))
 
 (defun py-delete-comments-in-class ()
   "Delete all commented lines in class at point"
   (interactive "*")
   (save-excursion
-    (let ((beg (py-beginning-of-class-position))
-          (end (py-end-of-class-position)))
+    (let ((beg (py--beginning-of-class-position))
+          (end (py--end-of-class-position)))
       (and beg end (py--delete-comments-intern beg end)))))
 
 (defun py-delete-comments-in-block ()
   "Delete all commented lines in block at point"
   (interactive "*")
   (save-excursion
-    (let ((beg (py-beginning-of-block-position))
-          (end (py-end-of-block-position)))
+    (let ((beg (py--beginning-of-block-position))
+          (end (py--end-of-block-position)))
       (and beg end (py--delete-comments-intern beg end)))))
 
 (defun py-delete-comments-in-region (beg end)

@@ -81,7 +81,7 @@ information.")
    py-imenu-method-no-arg-parens)
   "Generic Python expression which may be used directly with Imenu.
 Used by setting the variable `imenu-generic-expression' to this value.
-Also, see the function \\[py-imenu-create-index] for a better
+Also, see the function \\[py--imenu-create-index] for a better
 alternative for finding the index.")
 
 ;; These next two variables are used when searching for the Python
@@ -93,25 +93,25 @@ alternative for finding the index.")
 (defvar py-imenu-generic-parens nil)
 
 (defun py-switch-imenu-index-function ()
-  "Switch between series 5. index machine `py-imenu-create-index' and `py-imenu-create-index-new', which also lists modules variables "
+  "Switch between series 5. index machine `py--imenu-create-index' and `py--imenu-create-index-new', which also lists modules variables "
   (interactive)
   (if (eq major-mode 'python-mode)
       (progn
-        (if (eq py-imenu-create-index-function 'py-imenu-create-index-new)
-            ;; (setq py-imenu-create-index-function 'py-imenu-create-index)
-            (set (make-local-variable 'py-imenu-create-index-function) 'py-imenu-create-index)
-          ;; (setq py-imenu-create-index-function 'py-imenu-create-index-new)
-          (set (make-local-variable 'py-imenu-create-index-function) 'py-imenu-create-index-new))
+        (if (eq py--imenu-create-index-function 'py--imenu-create-index-new)
+            ;; (setq py--imenu-create-index-function 'py-imenu-create-index)
+            (set (make-local-variable 'py--imenu-create-index-function) 'py-imenu-create-index)
+          ;; (setq py--imenu-create-index-function 'py--imenu-create-index-new)
+          (set (make-local-variable 'py--imenu-create-index-function) 'py--imenu-create-index-new))
         (when py-menu
           (easy-menu-add py-menu))
-        (when py-verbose-p (message "imenu-create-index-function: %s" (prin1-to-string py-imenu-create-index-function)))
+        (when py-verbose-p (message "imenu-create-index-function: %s" (prin1-to-string py--imenu-create-index-function)))
         (funcall imenu-create-index-function))
     (error "%s" "Only available in buffers set to python-mode")))
 
-(defun py-imenu-create-index ()
+(defun py--imenu-create-index ()
   "Python interface function for the Imenu package.
 Finds all Python classes and functions/methods. Calls function
-\\[py-imenu-create-index-engine].  See that function for the details
+\\[py--imenu-create-index-engine].  See that function for the details
 of how this works."
   (setq py-imenu-generic-regexp (car py-imenu-generic-expression)
         py-imenu-generic-parens (if py-imenu-show-method-args-p
@@ -121,9 +121,9 @@ of how this works."
   ;; Warning: When the buffer has no classes or functions, this will
   ;; return nil, which seems proper according to the Imenu API, but
   ;; causes an error in the XEmacs port of Imenu.  Sigh.
-  (setq index-alist (cdr (py-imenu-create-index-engine nil))))
+  (setq index-alist (cdr (py--imenu-create-index-engine nil))))
 
-(defun py-imenu-create-index-engine (&optional start-indent)
+(defun py--imenu-create-index-engine (&optional start-indent)
   "Function for finding Imenu definitions in Python.
 
 Finds all definitions (classes, methods, or functions) in a Python
@@ -140,7 +140,7 @@ list as in
 
 This function should not be called directly, as it calls itself
 recursively and requires some setup.  Rather this is the engine for
-the function \\[py-imenu-create-index-function].
+the function \\[py--imenu-create-index-function].
 
 It works recursively by looking for all definitions at the current
 indention level.  When it finds one, it adds it to the alist.  If it
@@ -194,7 +194,7 @@ of the first definition found."
       ;; or shallower indentation
       (cond
        ;; Skip code in comments and strings
-       ((py-in-literal))
+       ((py--in-literal))
        ;; at the same indent level, add it to the list...
        ((= start-indent cur-indent)
         (push (cons def-name def-pos) index-alist))
@@ -205,7 +205,7 @@ of the first definition found."
         ;; call will find this place again and add it to the correct
         ;; list
         (re-search-backward py-imenu-generic-regexp (point-min) 'move)
-        (setq sub-method-alist (py-imenu-create-index-engine cur-indent))
+        (setq sub-method-alist (py--imenu-create-index-engine cur-indent))
         (if sub-method-alist
             ;; we put the last element on the index-alist on the start
             ;; of the submethod alist so the user can still get to it.
@@ -227,19 +227,19 @@ of the first definition found."
                                     (point-max) 'move))))
     (nreverse index-alist)))
 
-(defun py-imenu-create-index-new-intern (&optional thisend end)
+(defun py--imenu-create-index-new-intern (&optional thisend end)
   (let* ((pos (match-beginning 0))
          (name (match-string-no-properties 2))
          (classname (concat "class " name))
-         (thisend (or thisend (save-match-data (py-end-of-def-or-class-position))))
+         (thisend (or thisend (save-match-data (py--end-of-def-or-class-position))))
          sublist)
     (while (and (re-search-forward "^[ \t]*\\(?:\\(def\\|class\\)\\)[ \t]+\\(?:\\(\\sw+\\)\\)" (or thisend end) t 1)(not (nth 8 (syntax-ppss))))
       (let* ((pos (match-beginning 0))
              (name (match-string-no-properties 2))
              (classname (concat "class " name))
-             (thisend (or thisend (save-match-data (py-end-of-def-or-class-position)))))
+             (thisend (or thisend (save-match-data (py--end-of-def-or-class-position)))))
         (if (string= "class" (match-string-no-properties 1))
-            (py-imenu-create-index-new-intern (save-match-data (py-end-of-def-or-class-position) end))
+            (py--imenu-create-index-new-intern (save-match-data (py--end-of-def-or-class-position) end))
           (push (cons (concat " " name) pos) sublist))))
     (if classname
         (progn
@@ -248,7 +248,7 @@ of the first definition found."
           (push (cons classname sublist) index-alist))
       (push sublist index-alist))))
 
-(defun py-imenu-create-index-new (&optional beg end)
+(defun py--imenu-create-index-new (&optional beg end)
   "`imenu-create-index-function' for Python. "
   (set (make-local-variable 'imenu-max-items) 99)
   (let ((orig (point))
@@ -262,15 +262,15 @@ of the first definition found."
             (setq pos (match-beginning 0)
                   name (match-string-no-properties 2)
                   classname (concat "class " name)
-                  thisend (save-match-data (py-end-of-def-or-class-position))
+                  thisend (save-match-data (py--end-of-def-or-class-position))
                   sublist '())
             (while (and (re-search-forward "^[ \t]*\\(def\\|class\\)[ \t]+\\(\\sw+\\)" (or thisend end) t 1)(not (nth 8 (syntax-ppss))))
               (let* ((pos (match-beginning 0))
                      (name (match-string-no-properties 2))
                      (classname (concat "class " name))
-                     (thisend (or thisend (save-match-data (py-end-of-def-or-class-position)))))
+                     (thisend (or thisend (save-match-data (py--end-of-def-or-class-position)))))
                 (if (string= "class" (match-string-no-properties 1))
-                    (py-imenu-create-index-new-intern (save-match-data (py-end-of-def-or-class-position)) end)
+                    (py--imenu-create-index-new-intern (save-match-data (py--end-of-def-or-class-position)) end)
                   (push (cons (concat " " name) pos) sublist))))
             (if classname
                 (progn

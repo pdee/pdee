@@ -46,7 +46,7 @@ or may be omitted (it is usually omitted).  "
       (goto-char (point-min))
       (search-forward (concat "(" (format "%s" mat))))))
 
-(defun py-add-abbrev-propose (table type arg &optional dont-ask)
+(defun py--add-abbrev-propose (table type arg &optional dont-ask)
   (save-excursion
     (let ((orig (point))
           proposal exp name)
@@ -81,7 +81,7 @@ expansion.
 Don't use this function in a Lisp program; use `define-abbrev' instead."
   (interactive "p")
   (save-excursion
-    (py-add-abbrev-propose
+    (py--add-abbrev-propose
      (if only-global-abbrevs
          global-abbrev-table
        (or local-abbrev-table

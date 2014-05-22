@@ -21,10 +21,10 @@
 ;;; Code:
 
 ;;; Beginning of line forms
-(defun py-mark-base-bol (form &optional py-mark-decorators)
+(defun py--mark-base-bol (form &optional py-mark-decorators)
   (let* ((begform (intern-soft (concat "py-beginning-of-" form "-bol")))
          (endform (intern-soft (concat "py-end-of-" form "-bol")))
-         (begcheckform (intern-soft (concat "py-beginning-of-" form "-bol-p")))
+         (begcheckform (intern-soft (concat "py--beginning-of-" form "-bol-p")))
          (orig (point))
          beg end erg)
     (setq beg (if
@@ -77,7 +77,7 @@ See also `py-down-block': down from current definition to next beginning of bloc
 Returns beginning and end positions of region, a cons. "
   (interactive)
   (let (erg)
-    (setq erg (py-mark-base-bol "block"))
+    (setq erg (py--mark-base-bol "block"))
     (exchange-point-and-mark)
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
@@ -87,7 +87,7 @@ Returns beginning and end positions of region, a cons. "
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (let ((erg (py-mark-base-bol "block")))
+  (let ((erg (py--mark-base-bol "block")))
     (copy-region-as-kill (car erg) (cdr erg))))
 
 (defun py-kill-block-bol ()
@@ -95,7 +95,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (let ((erg (py-mark-base-bol "block")))
+  (let ((erg (py--mark-base-bol "block")))
     (kill-region (car erg) (cdr erg))))
 
 (defun py-delete-block-bol ()
@@ -103,7 +103,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
 
 Don't store data in kill ring. "
   (interactive "*")
-  (let ((erg (py-mark-base-bol "block")))
+  (let ((erg (py--mark-base-bol "block")))
     (delete-region (car erg) (cdr erg))))
 
 ;;
@@ -149,7 +149,7 @@ Returns beginning and end positions of region, a cons.
 See `py-minor-block-re'"
   (interactive)
   (let (erg)
-    (setq erg (py-mark-base-bol "minor-block"))
+    (setq erg (py--mark-base-bol "minor-block"))
     (exchange-point-and-mark)
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
@@ -161,7 +161,7 @@ Stores data in kill ring. Might be yanked back using `C-y'.
 
 See `py-minor-block-re'"
   (interactive "*")
-  (let ((erg (py-mark-base-bol "minor-block")))
+  (let ((erg (py--mark-base-bol "minor-block")))
     (copy-region-as-kill (car erg) (cdr erg))))
 
 (defun py-kill-minor-block-bol ()
@@ -171,7 +171,7 @@ Stores data in kill ring. Might be yanked back using `C-y'.
 
 See `py-minor-block-re'"
   (interactive "*")
-  (let ((erg (py-mark-base-bol "minor-block")))
+  (let ((erg (py--mark-base-bol "minor-block")))
     (kill-region (car erg) (cdr erg))))
 
 (defun py-delete-minor-block-bol ()
@@ -181,7 +181,7 @@ Don't store data in kill ring.
 
 See `py-minor-block-re'"
   (interactive "*")
-  (let ((erg (py-mark-base-bol "minor-block")))
+  (let ((erg (py--mark-base-bol "minor-block")))
     (delete-region (car erg) (cdr erg))))
 
 ;;
@@ -221,7 +221,7 @@ See also `py-down-clause': down from current definition to next beginning of cla
 Returns beginning and end positions of region, a cons. "
   (interactive)
   (let (erg)
-    (setq erg (py-mark-base-bol "clause"))
+    (setq erg (py--mark-base-bol "clause"))
     (exchange-point-and-mark)
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
@@ -231,7 +231,7 @@ Returns beginning and end positions of region, a cons. "
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (let ((erg (py-mark-base-bol "clause")))
+  (let ((erg (py--mark-base-bol "clause")))
     (copy-region-as-kill (car erg) (cdr erg))))
 
 (defun py-kill-clause-bol ()
@@ -239,7 +239,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (let ((erg (py-mark-base-bol "block")))
+  (let ((erg (py--mark-base-bol "block")))
     (kill-region (car erg) (cdr erg))))
 
 (defun py-delete-clause-bol ()
@@ -247,7 +247,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
 
 Don't store data in kill ring. "
   (interactive "*")
-  (let ((erg (py-mark-base-bol "block")))
+  (let ((erg (py--mark-base-bol "block")))
     (delete-region (car erg) (cdr erg))))
 
 (defun py-beginning-of-block-or-clause-bol-p ()
@@ -285,7 +285,7 @@ See also `py-down-block-or-clause': down from current definition to next beginni
 Returns beginning and end positions of region, a cons. "
   (interactive)
   (let (erg)
-    (setq erg (py-mark-base-bol "block-or-clause"))
+    (setq erg (py--mark-base-bol "block-or-clause"))
     (exchange-point-and-mark)
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
@@ -295,7 +295,7 @@ Returns beginning and end positions of region, a cons. "
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (let ((erg (py-mark-base-bol "block-or-clause")))
+  (let ((erg (py--mark-base-bol "block-or-clause")))
     (copy-region-as-kill (car erg) (cdr erg))))
 
 (defun py-kill-block-or-clause-bol ()
@@ -303,7 +303,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (let ((erg (py-mark-base-bol "block")))
+  (let ((erg (py--mark-base-bol "block")))
     (kill-region (car erg) (cdr erg))))
 
 (defun py-delete-block-or-clause-bol ()
@@ -311,7 +311,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
 
 Don't store data in kill ring. "
   (interactive "*")
-  (let ((erg (py-mark-base-bol "block")))
+  (let ((erg (py--mark-base-bol "block")))
     (delete-region (car erg) (cdr erg))))
 
 (defun py-beginning-of-def-bol-p ()
@@ -351,7 +351,7 @@ Returns beginning and end positions of region, a cons. "
   (interactive "P")
   (let ((py-mark-decorators (or arg py-mark-decorators))
         erg)
-    (py-mark-base-bol "def" py-mark-decorators)
+    (py--mark-base-bol "def" py-mark-decorators)
     (exchange-point-and-mark)
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
@@ -361,7 +361,7 @@ Returns beginning and end positions of region, a cons. "
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (let ((erg (py-mark-base-bol "def")))
+  (let ((erg (py--mark-base-bol "def")))
     (copy-region-as-kill (car erg) (cdr erg))))
 
 (defun py-kill-def-bol ()
@@ -369,7 +369,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (let ((erg (py-mark-base-bol "block")))
+  (let ((erg (py--mark-base-bol "block")))
     (kill-region (car erg) (cdr erg))))
 
 (defun py-delete-def-bol ()
@@ -377,7 +377,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
 
 Don't store data in kill ring. "
   (interactive "*")
-  (let ((erg (py-mark-base-bol "block")))
+  (let ((erg (py--mark-base-bol "block")))
     (delete-region (car erg) (cdr erg))))
 
 (defun py-beginning-of-class-bol-p ()
@@ -417,7 +417,7 @@ Returns beginning and end positions of region, a cons. "
   (interactive "P")
   (let ((py-mark-decorators (or arg py-mark-decorators))
         erg)
-    (py-mark-base-bol "class" py-mark-decorators)
+    (py--mark-base-bol "class" py-mark-decorators)
     (exchange-point-and-mark)
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
@@ -427,7 +427,7 @@ Returns beginning and end positions of region, a cons. "
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (let ((erg (py-mark-base-bol "class")))
+  (let ((erg (py--mark-base-bol "class")))
     (copy-region-as-kill (car erg) (cdr erg))))
 
 (defun py-kill-class-bol ()
@@ -435,7 +435,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (let ((erg (py-mark-base-bol "block")))
+  (let ((erg (py--mark-base-bol "block")))
     (kill-region (car erg) (cdr erg))))
 
 (defun py-delete-class-bol ()
@@ -443,7 +443,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
 
 Don't store data in kill ring. "
   (interactive "*")
-  (let ((erg (py-mark-base-bol "block")))
+  (let ((erg (py--mark-base-bol "block")))
     (delete-region (car erg) (cdr erg))))
 
 (defun py-beginning-of-def-or-class-bol-p ()
@@ -483,7 +483,7 @@ Returns beginning and end positions of region, a cons. "
   (interactive "P")
   (let ((py-mark-decorators (or arg py-mark-decorators))
         erg)
-    (py-mark-base-bol "def-or-class" py-mark-decorators)
+    (py--mark-base-bol "def-or-class" py-mark-decorators)
     (exchange-point-and-mark)
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
@@ -493,7 +493,7 @@ Returns beginning and end positions of region, a cons. "
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (let ((erg (py-mark-base-bol "def-or-class")))
+  (let ((erg (py--mark-base-bol "def-or-class")))
     (copy-region-as-kill (car erg) (cdr erg))))
 
 (defun py-kill-def-or-class-bol ()
@@ -501,7 +501,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (let ((erg (py-mark-base-bol "block")))
+  (let ((erg (py--mark-base-bol "block")))
     (kill-region (car erg) (cdr erg))))
 
 (defun py-delete-def-or-class-bol ()
@@ -509,7 +509,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
 
 Don't store data in kill ring. "
   (interactive "*")
-  (let ((erg (py-mark-base-bol "block")))
+  (let ((erg (py--mark-base-bol "block")))
     (delete-region (car erg) (cdr erg))))
 
 (defun py-beginning-of-statement-bol-p ()
@@ -568,7 +568,7 @@ See also `py-down-statement': down from current definition to next beginning of 
 Returns beginning and end positions of region, a cons. "
   (interactive)
   (let (erg)
-    (setq erg (py-mark-base-bol "statement"))
+    (setq erg (py--mark-base-bol "statement"))
     (exchange-point-and-mark)
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
@@ -578,7 +578,7 @@ Returns beginning and end positions of region, a cons. "
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (let ((erg (py-mark-base-bol "statement")))
+  (let ((erg (py--mark-base-bol "statement")))
     (copy-region-as-kill (car erg) (cdr erg))))
 
 (defun py-kill-statement-bol ()
@@ -586,7 +586,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (let ((erg (py-mark-base-bol "block")))
+  (let ((erg (py--mark-base-bol "block")))
     (kill-region (car erg) (cdr erg))))
 
 (defun py-delete-statement-bol ()
@@ -594,7 +594,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
 
 Don't store data in kill ring. "
   (interactive "*")
-  (let ((erg (py-mark-base-bol "block")))
+  (let ((erg (py--mark-base-bol "block")))
     (delete-region (car erg) (cdr erg))))
 
 ;; python-components-bol-forms.el ends here

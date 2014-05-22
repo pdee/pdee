@@ -257,7 +257,7 @@ See lp:1066489 "
 			(progn
 			  (< 0 (skip-chars-forward "\"'"))
 			  (nth 8 (syntax-ppss)))))))
-      (and n8pps (py-docstring-p n8pps)))))
+      (and n8pps (py--docstring-p n8pps)))))
 
 (defun py--string-fence-delete-spaces (&optional start)
   "Delete spaces following or preceding delimiters of string at point. "
@@ -364,8 +364,8 @@ See lp:1066489 "
 		     (skip-syntax-forward "^\|")
 		     (skip-chars-forward "\"'")
                      (point))))
-         (parabeg (progn (goto-char orig) (py-beginning-of-paragraph-position)))
-         (paraend (progn (goto-char orig) (py-end-of-paragraph-position)))
+         (parabeg (progn (goto-char orig) (py--beginning-of-paragraph-position)))
+         (paraend (progn (goto-char orig) (py--end-of-paragraph-position)))
          ;; if paragraph is a substring, take it
          (beg (copy-marker (if (< thisbeg parabeg) parabeg thisbeg)))
          (end (copy-marker (if (< thisend paraend) thisend paraend)))
@@ -402,7 +402,7 @@ Fill according to `py-docstring-style' "
       (list (if current-prefix-arg 'full) t))
     py-docstring-style
     (py--in-or-behind-or-before-a-docstring)))
-  (let ((py-current-indent (save-excursion (or (py-beginning-of-statement-p) (py-beginning-of-statement)) (current-indentation)))
+  (let ((py-current-indent (save-excursion (or (py--beginning-of-statement-p) (py-beginning-of-statement)) (current-indentation)))
 	;; fill-paragraph sets orig
 	(orig (if (boundp 'orig) (copy-marker orig) (copy-marker (point))))
 	(docstring (if (and docstring (not (number-or-marker-p docstring)))

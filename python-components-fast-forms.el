@@ -46,7 +46,7 @@ Return the process"
 ;;      (switch-to-buffer this-buffer)
       proc)))
 
-(defun py-fast-send-string (string &optional windows-config)
+(defun py--fast-send-string (string &optional windows-config)
   "Process Python strings, being prepared for large output.
 
 Output arrives in py-output-buffer, \"\*Python Output\*\" by default
@@ -92,7 +92,7 @@ Result arrives in `py-output-buffer', which is not in
 comint-mode"
   (interactive)
   (let ((py-fast-process-p t))
-    (py-execute-prepare "statement")))
+    (py--execute-prepare "statement")))
 
 (defun py-execute-block-fast ()
   "Process block at point by a Python interpreter.
@@ -102,7 +102,7 @@ Result arrives in `py-output-buffer', which is not in
 comint-mode"
   (interactive)
   (let ((py-fast-process-p t))
-    (py-execute-prepare "block")))
+    (py--execute-prepare "block")))
 
 (defun py-execute-block-or-clause-fast ()
   "Process block-or-clause at point by a Python interpreter.
@@ -112,7 +112,7 @@ Result arrives in `py-output-buffer', which is not in
 comint-mode"
   (interactive)
   (let ((py-fast-process-p t))
-    (py-execute-prepare "block-or-clause")))
+    (py--execute-prepare "block-or-clause")))
 
 (defun py-execute-def-fast ()
   "Process def at point by a Python interpreter.
@@ -122,7 +122,7 @@ Result arrives in `py-output-buffer', which is not in
 comint-mode"
   (interactive)
   (let ((py-fast-process-p t))
-    (py-execute-prepare "def")))
+    (py--execute-prepare "def")))
 
 (defun py-execute-class-fast ()
   "Process class at point by a Python interpreter.
@@ -132,7 +132,7 @@ Result arrives in `py-output-buffer', which is not in
 comint-mode"
   (interactive)
   (let ((py-fast-process-p t))
-    (py-execute-prepare "class")))
+    (py--execute-prepare "class")))
 
 (defun py-execute-def-or-class-fast ()
   "Process def-or-class at point by a Python interpreter.
@@ -142,7 +142,7 @@ Result arrives in `py-output-buffer', which is not in
 comint-mode"
   (interactive)
   (let ((py-fast-process-p t))
-    (py-execute-prepare "def-or-class")))
+    (py--execute-prepare "def-or-class")))
 
 (defun py-execute-expression-fast ()
   "Process expression at point by a Python interpreter.
@@ -152,7 +152,7 @@ Result arrives in `py-output-buffer', which is not in
 comint-mode"
   (interactive)
   (let ((py-fast-process-p t))
-    (py-execute-prepare "expression")))
+    (py--execute-prepare "expression")))
 
 (defun py-execute-partial-expression-fast ()
   "Process partial-expression at point by a Python interpreter.
@@ -162,7 +162,7 @@ Result arrives in `py-output-buffer', which is not in
 comint-mode"
   (interactive)
   (let ((py-fast-process-p t))
-    (py-execute-prepare "partial-expression")))
+    (py--execute-prepare "partial-expression")))
 
 (defun py-execute-top-level-fast ()
   "Process top-level at point by a Python interpreter.
@@ -172,7 +172,7 @@ Result arrives in `py-output-buffer', which is not in
 comint-mode"
   (interactive)
   (let ((py-fast-process-p t))
-    (py-execute-prepare "top-level")))
+    (py--execute-prepare "top-level")))
 
 (defun py-execute-clause-fast ()
   "Process clause at point by a Python interpreter.
@@ -182,7 +182,7 @@ Result arrives in `py-output-buffer', which is not in
 comint-mode"
   (interactive)
   (let ((py-fast-process-p t))
-    (py-execute-prepare "clause")))
+    (py--execute-prepare "clause")))
 
 (provide 'python-components-fast-forms)
 ;;; python-components-fast-forms.el ends here

@@ -25,52 +25,52 @@
 (defun py-execute-statement ()
   "Send statement at point to a Python interpreter. "
   (interactive)
-  (py-execute-prepare "statement"))
+  (py--execute-prepare "statement"))
 
 (defun py-execute-block ()
   "Send block at point to a Python interpreter. "
   (interactive)
-  (py-execute-prepare "block"))
+  (py--execute-prepare "block"))
 
 (defun py-execute-block-or-clause ()
   "Send block-or-clause at point to a Python interpreter. "
   (interactive)
-  (py-execute-prepare "block-or-clause"))
+  (py--execute-prepare "block-or-clause"))
 
 (defun py-execute-def ()
   "Send def at point to a Python interpreter. "
   (interactive)
-  (py-execute-prepare "def"))
+  (py--execute-prepare "def"))
 
 (defun py-execute-class ()
   "Send class at point to a Python interpreter. "
   (interactive)
-  (py-execute-prepare "class"))
+  (py--execute-prepare "class"))
 
 (defun py-execute-def-or-class ()
   "Send def-or-class at point to a Python interpreter. "
   (interactive)
-  (py-execute-prepare "def-or-class"))
+  (py--execute-prepare "def-or-class"))
 
 (defun py-execute-expression ()
   "Send expression at point to a Python interpreter. "
   (interactive)
-  (py-execute-prepare "expression"))
+  (py--execute-prepare "expression"))
 
 (defun py-execute-partial-expression ()
   "Send partial-expression at point to a Python interpreter. "
   (interactive)
-  (py-execute-prepare "partial-expression"))
+  (py--execute-prepare "partial-expression"))
 
 (defun py-execute-top-level ()
   "Send top-level at point to a Python interpreter. "
   (interactive)
-  (py-execute-prepare "top-level"))
+  (py--execute-prepare "top-level"))
 
 (defun py-execute-clause ()
   "Send clause at point to a Python interpreter. "
   (interactive)
-  (py-execute-prepare "clause"))
+  (py--execute-prepare "clause"))
 
 (provide 'python-components-exec-forms)
 ;;; python-components-exec-forms.el ends here

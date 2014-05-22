@@ -71,7 +71,7 @@
   "Assumes that point is in a python block that is surrounded by
 another that is not the entire module. Uses `py-indent-offset' to
 find the beginning of the surrounding block because
-`py-beginning-of-block-position' just looks for the previous
+`py--beginning-of-block-position' just looks for the previous
 block-starting key word syntactically."
   (while (> (current-column) (- start-column py-indent-offset))
     (forward-line -1)

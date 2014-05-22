@@ -941,8 +941,8 @@ Default is `t'."
   :type 'number
   :group 'python-mode)
 
-(defcustom py-send-receive-delay 5
-  "Seconds to wait for output, used by `py-send-receive'. "
+(defcustom py--send-receive-delay 5
+  "Seconds to wait for output, used by `py--send-receive'. "
 
   :type 'number
   :group 'python-mode)
@@ -1302,7 +1302,7 @@ Default /usr/bin/bpython"
 
 ;;;
 
-(defcustom py-imenu-create-index-p nil
+(defcustom py--imenu-create-index-p nil
   "Non-nil means Python mode creates and displays an index menu of functions and global variables. "
   :type 'boolean
   :group 'python-mode)
@@ -1386,7 +1386,7 @@ Default is `t'. See lp:1100892 "
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-warn-tmp-files-left-p nil
+(defcustom py--warn-tmp-files-left-p nil
   "Messages a warning, when `py-temp-directory' contains files susceptible being left by previous Python-mode sessions. See also lp:987534 "
   :type 'boolean
   :group 'python-mode)
@@ -1465,10 +1465,10 @@ and use the following as the value of this variable:
   :type 'string
   :group 'python-mode)
 
-(defcustom py-imenu-create-index-function 'py-imenu-create-index-new
-  "Switch between `py-imenu-create-index-new', which also lists modules variables,  and series 5. index-machine"
-  :type '(choice (const :tag "'py-imenu-create-index-new, also lists modules variables " py-imenu-create-index-new)
-                 (const :tag "py-imenu-create-index, series 5. index-machine" py-imenu-create-index))
+(defcustom py--imenu-create-index-function 'py--imenu-create-index-new
+  "Switch between `py--imenu-create-index-new', which also lists modules variables,  and series 5. index-machine"
+  :type '(choice (const :tag "'py--imenu-create-index-new, also lists modules variables " py--imenu-create-index-new)
+                 (const :tag "py--imenu-create-index, series 5. index-machine" py-imenu-create-index))
   :group 'python-mode)
 
 (defcustom python-source-modes '(python-mode jython-mode)
@@ -1610,7 +1610,7 @@ See also `py-execute-directory'"
 (defvar py-orig-buffer-or-file nil
   "Internal use. ")
 
-(defun py-set-ffap-form ()
+(defun py--set-ffap-form ()
   (cond ((and py-ffap-p py-ffap)
          (eval-after-load "ffap"
            '(push '(python-mode . py-module-path) ffap-alist))
@@ -1634,7 +1634,7 @@ Default is nil "
   :group 'python-mode
   :set (lambda (symbol value)
          (set-default symbol value)
-         (py-set-ffap-form)))
+         (py--set-ffap-form)))
 
 (defcustom py-keep-windows-configuration nil
   "If a windows is splitted displaying results, this is directed by variable `py-split-windows-on-execute-p'. Also setting `py-switch-buffers-on-execute-p' affects window-configuration. While commonly a screen splitted into source and Python-shell buffer is assumed, user may want to keep a different config.
@@ -1994,7 +1994,7 @@ See also `py-operator-regexp' ")
   "When an exception occurs as a result of py-execute-region, a
 subsequent py-up-exception needs the line number where the region
 started, in order to jump to the correct file line.  This variable is
-set in py-execute-region and used in py-jump-to-exception.")
+set in py-execute-region and used in py--jump-to-exception.")
 
 (defvar match-paren-no-use-syntax-pps nil)
 
@@ -2338,7 +2338,7 @@ See py-no-outdent-1-re-raw, py-no-outdent-2-re-raw for better readable content "
      1 2))
   "`compilation-error-regexp-alist' for inferior Python.")
 
-(defun py-quote-syntax (n)
+(defun py--quote-syntax (n)
   "Put `syntax-table' property correctly on triple quote.
 Used for syntactic keywords.  N is the match number (1, 2 or 3)."
   ;; Given a triple quote, we have to check the context to know
@@ -2385,10 +2385,10 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
   ;; First avoid a sequence preceded by an odd number of backslashes.
   `((,(concat "\\(?:^\\|[^\\]\\(?:\\\\.\\)*\\)" ;Prefix.
               "\\(?1:\"\\)\\(?2:\"\\)\\(?3:\"\\)\\(?4:\"\\)\\(?5:\"\\)\\(?6:\"\\)\\|\\(?1:\"\\)\\(?2:\"\\)\\(?3:\"\\)\\|\\(?1:'\\)\\(?2:'\\)\\(?3:'\\)\\(?4:'\\)\\(?5:'\\)\\(?6:'\\)\\|\\(?1:'\\)\\(?2:'\\)\\(?3:'\\)\\(?4:'\\)\\(?5:'\\)\\(?6:'\\)\\|\\(?1:'\\)\\(?2:'\\)\\(?3:'\\)")
-     (1 (py-quote-syntax 1) t t)
-     (2 (py-quote-syntax 2) t t)
-     (3 (py-quote-syntax 3) t t)
-     (6 (py-quote-syntax 1) t t))))
+     (1 (py--quote-syntax 1) t t)
+     (2 (py--quote-syntax 2) t t)
+     (3 (py--quote-syntax 3) t t)
+     (6 (py--quote-syntax 1) t t))))
 
 (custom-add-option 'python-mode-hook 'imenu-add-menubar-index)
 (custom-add-option 'python-mode-hook
@@ -2517,19 +2517,19 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
 
 (make-obsolete-variable 'jpython-mode-hook 'jython-mode-hook nil)
 
-(defun py-shell-send-setup-code (process)
+(defun py--shell-send-setup-code (process)
    "Send all setup code for shell.
 This function takes the list of setup code to send from the
 `py-setup-codes' list."
   (accept-process-output process 1)
   (dolist (code py-setup-codes)
-    (py-send-string-no-output
+    (py--send-string-no-output
      (symbol-value code) process)
     (sit-for 0.1))
   ;; (switch-to-buffer (current-buffer))
   )
 
-(defun py-docstring-p (&optional beginning-of-string-position)
+(defun py--docstring-p (&optional beginning-of-string-position)
   "Check to see if there is a docstring at POS."
   (let* (pps
          (pos (or beginning-of-string-position
@@ -2541,9 +2541,9 @@ This function takes the list of setup code to send from the
         (and (looking-at "'''\\|\"\"\"")
 	     (point))))))
 
-(defun py-font-lock-syntactic-face-function (state)
+(defun py--font-lock-syntactic-face-function (state)
   (if (nth 3 state)
-      (if (py-docstring-p (nth 8 state))
+      (if (py--docstring-p (nth 8 state))
           font-lock-doc-face
         font-lock-string-face)
     font-lock-comment-face))
@@ -2573,7 +2573,7 @@ otherwise the Python resp. Jython shell command name. "
     (when (and py-verbose-p (interactive-p)) (message "%s" res))
     res))
 
-(defun py-choose-shell-by-import ()
+(defun py--choose-shell-by-import ()
   "Choose CPython or Jython mode based imports.
 
 If a file imports any packages in `py-jython-packages', within
@@ -2650,7 +2650,7 @@ Returns nil, if no executable found.
 
 This does the following:
  - look for an interpreter with `py-choose-shell-by-shebang'
- - examine imports using `py-choose-shell-by-import'
+ - examine imports using `py--choose-shell-by-import'
  - look if Path/To/File indicates a Python version
  - if not successful, return default value of `py-shell-name'
 
@@ -2670,7 +2670,7 @@ With \\[universal-argument] 4 is called `py-switch-shell' see docu there."
                             (string-match "ython" (process-name (get-buffer-process (current-buffer)))))
                        (process-name (get-buffer-process (current-buffer))))
                       ((py-choose-shell-by-shebang))
-                      ((py-choose-shell-by-import))
+                      ((py--choose-shell-by-import))
                       ((py-choose-shell-by-path))
                       (t (or
                           (default-value 'py-shell-name)
@@ -2684,7 +2684,7 @@ With \\[universal-argument] 4 is called `py-switch-shell' see docu there."
       erg)))
 
 
-(defun py-normalize-directory (directory)
+(defun py--normalize-directory (directory)
   "Make sure DIRECTORY ends with a file-path separator char.
 
 Returns DIRECTORY"
@@ -2732,7 +2732,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
         (path (getenv "PYTHONPATH"))
         (py-install-directory (cond ((string= "" py-install-directory)
                                      (py-guess-py-install-directory))
-                                    (t (py-normalize-directory py-install-directory)))))
+                                    (t (py--normalize-directory py-install-directory)))))
     (if (py-install-directory-check)
         (progn
           ;; If Pymacs has not been loaded before, prepend py-install-directory to
@@ -2756,7 +2756,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
     (let* ((path (getenv "PYTHONPATH"))
            (py-install-directory (cond ((string= "" py-install-directory)
                                         (py-guess-py-install-directory))
-                                       (t (py-normalize-directory py-install-directory))))
+                                       (t (py--normalize-directory py-install-directory))))
            (pycomplete-directory (concat (expand-file-name py-install-directory) "completion")))
       (if (py-install-directory-check)
           (progn
@@ -2778,7 +2778,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
 (defun py-set-load-path ()
   "Include needed subdirs of python-mode directory. "
   (interactive)
-  (let ((py-install-directory (py-normalize-directory py-install-directory)))
+  (let ((py-install-directory (py--normalize-directory py-install-directory)))
     (cond ((and (not (string= "" py-install-directory))(stringp py-install-directory))
            (add-to-list 'load-path (expand-file-name py-install-directory))
            (add-to-list 'load-path (concat (expand-file-name py-install-directory) "completion"))
@@ -2982,7 +2982,7 @@ See bug report at launchpad, lp:940812 "
 ;;   ;; First avoid a sequence preceded by an odd number of backslashes.
 ;;   `((,(concat "\\(?:\\([RUru]\\)[Rr]?\\|^\\|[^\\]\\(?:\\\\.\\)*\\)" ;Prefix.
 ;;               "\\(?:\\('\\)'\\('\\)\\|\\(?2:\"\\)\"\\(?3:\"\\)\\)")
-;;      (3 (py-quote-syntax)))))
+;;      (3 (py--quote-syntax)))))
 
 
 ;;; Keymap
@@ -5132,8 +5132,8 @@ Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil
 
                  ("Fast process..."
 
-                  ["Fast send string" py-fast-send-string
-                   :help " `py-fast-send-string'
+                  ["Fast send string" py--fast-send-string
+                   :help " `py--fast-send-string'
 
 Process Python strings, being prepared for large output\.
 
@@ -5587,10 +5587,10 @@ In experimental state yet "
                      :style toggle :selected py-execute-no-temp-p]
 
                     ["Warn tmp files left "
-                     (setq py-warn-tmp-files-left-p
-                           (not py-warn-tmp-files-left-p))
+                     (setq py--warn-tmp-files-left-p
+                           (not py--warn-tmp-files-left-p))
                      :help "Messages a warning, when `py-temp-directory' contains files susceptible being left by previous Python-mode sessions. See also lp:987534 Use `M-x customize-variable' to set it permanently"
-                     :style toggle :selected py-warn-tmp-files-left-p])
+                     :style toggle :selected py--warn-tmp-files-left-p])
 
                    ("Edit"
 
@@ -6052,10 +6052,10 @@ Default is tUse `M-x customize-variable' to set it permanently"
                     ("Index"
 
                      ["Imenu create index "
-                      (setq py-imenu-create-index-p
-                            (not py-imenu-create-index-p))
+                      (setq py--imenu-create-index-p
+                            (not py--imenu-create-index-p))
                       :help "Non-nil means Python mode creates and displays an index menu of functions and global variables. Use `M-x customize-variable' to set it permanently"
-                      :style toggle :selected py-imenu-create-index-p]
+                      :style toggle :selected py--imenu-create-index-p]
 
                      ["Imenu show method args "
                       (setq py-imenu-show-method-args-p
@@ -6065,7 +6065,7 @@ When non-nil, arguments are printed.Use `M-x customize-variable' to set it perma
                       :style toggle :selected py-imenu-show-method-args-p]
                      ["Switch index-function" py-switch-imenu-index-function
                       :help "`py-switch-imenu-index-function'
-Switch between `py-imenu-create-index' from 5.1 series and `py-imenu-create-index-new'."])
+Switch between `py--imenu-create-index' from 5.1 series and `py--imenu-create-index-new'."])
 
                     ("Fontification"
 
@@ -7747,7 +7747,7 @@ Try to find source definition of function at point"]))))
 (when py-org-cycle-p
   (define-key python-mode-map (kbd "<backtab>") 'org-cycle))
 
-(defun py-kill-emacs-hook ()
+(defun py--kill-emacs-hook ()
   "Delete files in `py-file-queue'.
 These are Python temporary files awaiting execution."
   (mapc #'(lambda (filename)
@@ -7793,18 +7793,18 @@ Don't save anything for STR matching `py-history-filter-regexp'."
   (not (string-match py-history-filter-regexp str)))
 
 ;; Fixme: Loses with quoted whitespace.
-(defun py-args-to-list (string)
+(defun py--args-to-list (string)
   (let ((where (string-match "[ \t]" string)))
     (cond ((null where) (list string))
           ((not (= where 0))
            (cons (substring string 0 where)
-                 (py-args-to-list (substring string (+ 1 where)))))
+                 (py--args-to-list (substring string (+ 1 where)))))
           (t (let ((pos (string-match "[^ \t]" string)))
-               (if pos (py-args-to-list (substring string pos))))))))
+               (if pos (py--args-to-list (substring string pos))))))))
 
-(defun py-send-command (command)
+(defun py--send-command (command)
   "Like `py-send-string' but resets `compilation-shell-minor-mode'."
-  (when (py-check-comint-prompt)
+  (when (py--check-comint-prompt)
     (with-current-buffer (process-buffer (python-proc))
       (goto-char (point-max))
       (compilation-forget-errors)
@@ -7819,7 +7819,7 @@ Treating it as a module keeps the global namespace clean, provides
 function location information for debugging, and supports users of
 module-qualified names."
   (interactive "f")
-  (py-execute-file-base (get-buffer-process (get-buffer (py-shell))) file-name))
+  (py--execute-file-base (get-buffer-process (get-buffer (py-shell))) file-name))
 
 (defun py-proc (&optional py-dedicated-process-p)
   "Return the current Python process.
@@ -7837,7 +7837,7 @@ Start a new process if necessary. "
     erg))
 
 ;;; Miscellany.
-(defun py-shell-simple-send (proc string)
+(defun py--shell-simple-send (proc string)
   (let* ((strg (substring-no-properties string))
          (nln (string-match "\n$" strg)))
     ;; (or nln (setq strg (concat strg "\n")))
@@ -7853,14 +7853,14 @@ Start a new process if necessary. "
   'comint-dynamic-simple-complete)
 
 ;;; Completion.
-(defun py-send-receive (string)
+(defun py--send-receive (string)
   "Send STRING to inferior Python (if any) and return result.
 
-This is a no-op if `py-check-comint-prompt' returns nil."
-  (or (py-send-string-no-output string)
+This is a no-op if `py--check-comint-prompt' returns nil."
+  (or (py--send-string-no-output string)
       (let ((proc (py-proc)))
         (with-current-buffer (process-buffer proc)
-          (when (py-check-comint-prompt proc)
+          (when (py--check-comint-prompt proc)
             (set (make-local-variable 'py-preoutput-result) nil)
             (accept-process-output proc 5)
             (prog1 py-preoutput-result
@@ -7877,7 +7877,7 @@ This is a no-op if `py-check-comint-prompt' returns nil."
 
 ;;; Hooks
 ;; arrange to kill temp files when Emacs exists
-(add-hook 'kill-emacs-hook 'py-kill-emacs-hook)
+(add-hook 'kill-emacs-hook 'py--kill-emacs-hook)
 
 (remove-hook 'python-mode-hook 'python-setup-brm)
 ;; (add-hook 'python-mode-hook
@@ -7912,8 +7912,8 @@ This is a no-op if `py-check-comint-prompt' returns nil."
 ;;             (lambda ()
 ;;               (set (make-local-variable 'forward-sexp-function) py-sexp-function))))
 
-(when py-warn-tmp-files-left-p
-  (add-hook 'python-mode-hook 'py-warn-tmp-files-left))
+(when py--warn-tmp-files-left-p
+  (add-hook 'python-mode-hook 'py--warn-tmp-files-left))
 
 
 (defun py-guess-pdb-path ()
@@ -8005,17 +8005,17 @@ Should you need more shells to select, extend this command by adding inside the 
                  mode-name "IPython"))
           ((string-match "python3" name)
            (setq py-shell-name name
-                 py-which-bufname (py-buffer-name-prepare)
+                 py-which-bufname (py--buffer-name-prepare)
                  msg "CPython"
-                 mode-name (py-buffer-name-prepare)))
+                 mode-name (py--buffer-name-prepare)))
           ((string-match "jython" name)
            (setq py-shell-name name
-                 py-which-bufname (py-buffer-name-prepare)
+                 py-which-bufname (py--buffer-name-prepare)
                  msg "Jython"
-                 mode-name (py-buffer-name-prepare)))
+                 mode-name (py--buffer-name-prepare)))
           ((string-match "python" name)
            (setq py-shell-name name
-                 py-which-bufname (py-buffer-name-prepare)
+                 py-which-bufname (py--buffer-name-prepare)
                  msg "CPython"
                  mode-name py-which-bufname))
           (t
@@ -8090,7 +8090,7 @@ as it leaves your system default unchanged."
 
 ;;;
 
-(defun py-input-filter (str)
+(defun py--input-filter (str)
   "`comint-input-filter' function for inferior Python.
 Don't save anything for STR matching `inferior-python-filter-regexp'."
   (not (string-match inferior-python-filter-regexp str)))
@@ -8103,7 +8103,7 @@ Don't save anything for STR matching `inferior-python-filter-regexp'."
 ;;           (lambda ()
 ;;             (when py-load-highlight-indentation-p
 ;;               (unless (featurep 'highlight-indentation)
-;;                 (load (concat (py-normalize-directory py-install-directory) "extensions" py-separator-char "highlight-indentation.el"))))))
+;;                 (load (concat (py--normalize-directory py-install-directory) "extensions" py-separator-char "highlight-indentation.el"))))))
 
 (add-to-list 'same-window-buffer-names (purecopy "*Python*"))
 (add-to-list 'same-window-buffer-names (purecopy "*IPython*"))
@@ -8155,8 +8155,8 @@ Don't save anything for STR matching `inferior-python-filter-regexp'."
 (autoload 'comint-get-source "comint")
 ;;; auto-fill modes
 
-(defun py-set-auto-fill-values ()
-  "Internal use by `py-run-auto-fill-timer'"
+(defun py--set-auto-fill-values ()
+  "Internal use by `py--run-auto-fill-timer'"
   (let ((pps (syntax-ppss)))
     (cond ((and (nth 4 pps)(numberp py-comment-fill-column))
            (setq fill-column py-comment-fill-column))
@@ -8164,14 +8164,14 @@ Don't save anything for STR matching `inferior-python-filter-regexp'."
            (set (make-local-variable 'fill-column) py-docstring-fill-column))
           (t (setq fill-column py-fill-column-orig)))))
 
-(defun py-run-auto-fill-timer ()
+(defun py--run-auto-fill-timer ()
   "Set fill-column to values of `py-docstring-fill-column' resp. to `py-comment-fill-column' according to environment. "
   (when py-auto-fill-mode
     (unless py-autofill-timer
       (setq py-autofill-timer
             (run-with-idle-timer
              py-autofill-timer-delay t
-             'py-set-auto-fill-values)))))
+             'py--set-auto-fill-values)))))
 
 ;;;
 (define-derived-mode py-shell-mode comint-mode "Inferior Python"
@@ -8189,7 +8189,7 @@ containing Python source.
   :group 'python
   ;; (require 'ansi-color) ; for ipython
   (setq mode-line-process '(":%s"))
-  (set (make-local-variable 'comint-input-filter) 'py-input-filter)
+  (set (make-local-variable 'comint-input-filter) 'py--input-filter)
   (set (make-local-variable 'compilation-error-regexp-alist)
        python-compilation-regexp-alist)
   ;;  py--shell-make-comint does it
@@ -8257,12 +8257,12 @@ See available customizations listed in files variables-python-mode at directory 
 				       (font-lock-syntactic-keywords
 					. py-font-lock-syntactic-keywords)
 				       (font-lock-syntactic-face-function
-					. py-font-lock-syntactic-face-function)))
+					. py--font-lock-syntactic-face-function)))
     (set (make-local-variable 'font-lock-defaults)
          '(python-font-lock-keywords nil nil nil nil
 				     (font-lock-syntactic-keywords
 				      . py-font-lock-syntactic-keywords))))
-  ;; avoid to run py-choose-shell again from `py-fix-start'
+  ;; avoid to run py-choose-shell again from `py--fix-start'
   (cond ((and (boundp 'py-buffer-name) py-buffer-name)
 	 (if (string-match "python3" py-buffer-name)
 	     (font-lock-add-keywords 'python-mode
@@ -8287,7 +8287,7 @@ See available customizations listed in files variables-python-mode at directory 
     (set (make-local-variable 'paragraph-start) "\f\\|^[ \t]*$\\|^[ \t]*#[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$"))
   (set (make-local-variable 'comment-start-skip) "^[ \t]*#+ *")
   (set (make-local-variable 'comment-column) 40)
-  (set (make-local-variable 'comment-indent-function) #'py-comment-indent-function)
+  (set (make-local-variable 'comment-indent-function) #'py--comment-indent-function)
   (set (make-local-variable 'indent-region-function) 'py-indent-region)
   (set (make-local-variable 'indent-line-function) 'py-indent-line)
   (set (make-local-variable 'hs-hide-comments-when-hiding-all) 'py-hide-comments-when-hiding-all)
@@ -8305,7 +8305,7 @@ See available customizations listed in files variables-python-mode at directory 
             '((< '(backward-delete-char-untabify (min py-indent-offset
                                                       (current-column))))
               (^ '(- (1+ (current-indentation)))))))
-  (set (make-local-variable 'imenu-create-index-function) 'py-imenu-create-index-function)
+  (set (make-local-variable 'imenu-create-index-function) 'py--imenu-create-index-function)
   (and py-guess-py-install-directory-p (py-set-load-path))
   ;;  (unless gud-pdb-history (when (buffer-file-name) (add-to-list 'gud-pdb-history (buffer-file-name))))
   (and py-autopair-mode
@@ -8329,10 +8329,10 @@ See available customizations listed in files variables-python-mode at directory 
     (add-hook 'completion-at-point-functions
               'py-shell-complete nil 'local)))
   (if py-auto-fill-mode
-      (add-hook 'python-mode-hook 'py-run-auto-fill-timer)
-    (remove-hook 'python-mode-hook 'py-run-auto-fill-timer))
+      (add-hook 'python-mode-hook 'py--run-auto-fill-timer)
+    (remove-hook 'python-mode-hook 'py--run-auto-fill-timer))
   ;; caused insert-file-contents error lp:1293172
-  ;;  (add-hook 'after-change-functions 'py-after-change-function nil t)
+  ;;  (add-hook 'after-change-functions 'py--after-change-function nil t)
   (if py-defun-use-top-level-p
       (progn
         (set (make-local-variable 'beginning-of-defun-function) 'py-beginning-of-top-level)
@@ -8343,11 +8343,11 @@ See available customizations listed in files variables-python-mode at directory 
     (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class)
     (define-key python-mode-map [(control meta a)] 'py-beginning-of-def-or-class)
     (define-key python-mode-map [(control meta e)] 'py-end-of-def-or-class))
-  (when (and py-imenu-create-index-p
+  (when (and py--imenu-create-index-p
              (fboundp 'imenu-add-to-menubar)
              (ignore-errors (require 'imenu)))
-    (setq imenu--index-alist (funcall py-imenu-create-index-function))
-    ;; (setq imenu--index-alist (py-imenu-create-index-new))
+    (setq imenu--index-alist (funcall py--imenu-create-index-function))
+    ;; (setq imenu--index-alist (py--imenu-create-index-new))
     ;; (message "imenu--index-alist: %s" imenu--index-alist)
     (imenu-add-to-menubar "PyIndex"))
   ;; add the menu

@@ -129,6 +129,14 @@ Removed commands:
  -py-django-docstring-style-on
  -py-django-docstring-style-off
 
+Some commands not so useful made common functions, like
+  py-statement-opens-block-p
+  py-statement-opens-clause-p ...
+
+Internally used functions preferably are prefixed `py--':
+  py--statement-opens-block-p
+  py--statement-opens-clause-p ...
+
 New variable `py-ipython-command' - (PATH-TO)-IPython
 
 Boolean `py-set-fill-column-p' renamed `py-auto-fill-mode'

@@ -28,7 +28,7 @@ Return position if statement found, nil otherwise. "
   (interactive)
   (let ((orig (point))
         erg)
-  (if (py-beginning-of-statement-p)
+  (if (py--beginning-of-statement-p)
       (setq erg (py-beginning-of-statement))
     (setq erg (and (py-beginning-of-statement) (py-beginning-of-statement))))
   (when (and py-verbose-p (interactive-p)) (message "%s" erg))
@@ -41,7 +41,7 @@ Return position if statement found, nil otherwise. "
   (interactive)
   (let* ((orig (point))
          (erg
-          (cond ((py-end-of-statement-p)
+          (cond ((py--end-of-statement-p)
                  (and (py-end-of-statement) (py-beginning-of-statement)))
                 ((ignore-errors (< orig (progn (py-end-of-statement) (py-beginning-of-statement))))
                  (point))

@@ -32,7 +32,7 @@
   (interactive "P")
   ;; (let ((indent indent))
   (unless (featurep 'highlight-indentation)
-    (load (concat (py-normalize-directory py-install-directory) "extensions" (char-to-string py-separator-char) "highlight-indentation.el")))
+    (load (concat (py--normalize-directory py-install-directory) "extensions" (char-to-string py-separator-char) "highlight-indentation.el")))
   (highlight-indentation indent)
   (when py-verbose-p (message "highlight-indent-active: %s" highlight-indent-active))
   highlight-indent-active)
@@ -41,7 +41,7 @@
   "If `highlight-indentation-p' should be on or off. "
   (interactive)
   (unless (featurep 'highlight-indentation)
-    (load (concat (py-normalize-directory py-install-directory) "extensions" (char-to-string py-separator-char) "highlight-indentation.el")))
+    (load (concat (py--normalize-directory py-install-directory) "extensions" (char-to-string py-separator-char) "highlight-indentation.el")))
   (highlight-indentation-off)
   (when py-verbose-p (message "highlight-indent-active: %s" highlight-indent-active))
   highlight-indent-active)
@@ -50,7 +50,7 @@
   "If `highlight-indentation-p' should be on or off. "
   (interactive "P")
   (unless (featurep 'highlight-indentation)
-    (load (concat (py-normalize-directory py-install-directory) "extensions" (char-to-string py-separator-char) "highlight-indentation.el")))
+    (load (concat (py--normalize-directory py-install-directory) "extensions" (char-to-string py-separator-char) "highlight-indentation.el")))
   (highlight-indentation-on)
   (when py-verbose-p (message "highlight-indent-active: %s" highlight-indent-active))
   highlight-indent-active)

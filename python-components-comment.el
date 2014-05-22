@@ -73,7 +73,7 @@ Returns position, nil if not in comment."
           (point))
       last)))
 
-(defun py-uncomment-intern (beg end)
+(defun py--uncomment-intern (beg end)
   (uncomment-region beg end)
   (when py-uncomment-indents-p
     (py-indent-region beg end)))
@@ -92,7 +92,7 @@ If region is active, restrict uncommenting at region "
                             (while (and (py-beginning-of-comment) (setq last (point))(prog1 (forward-line -1)(end-of-line))))
                             last))))
         (and (py-end-of-comment))
-        (py-uncomment-intern beg (point))))))
+        (py--uncomment-intern beg (point))))))
 
 (defun py-comment-region (beg end &optional arg)
   "Like `comment-region' but uses double hash (`#') comment starter."
@@ -112,8 +112,8 @@ the default"
     (let ((comment-start (if py-block-comment-prefix-p
                              py-block-comment-prefix
                            comment-start))
-          (beg (or beg (py-beginning-of-block-position)))
-          (end (or end (py-end-of-block-position))))
+          (beg (or beg (py--beginning-of-block-position)))
+          (end (or end (py--end-of-block-position))))
       (goto-char beg)
       (push-mark)
       (goto-char end)
@@ -163,8 +163,8 @@ the default"
     (let ((comment-start (if py-block-comment-prefix-p
                              py-block-comment-prefix
                            comment-start))
-          (beg (or beg (py-beginning-of-clause-position)))
-          (end (or end (py-end-of-clause-position))))
+          (beg (or beg (py--beginning-of-clause-position)))
+          (end (or end (py--end-of-clause-position))))
       (goto-char beg)
       (push-mark)
       (goto-char end)
@@ -180,8 +180,8 @@ the default"
     (let ((comment-start (if py-block-comment-prefix-p
                              py-block-comment-prefix
                            comment-start))
-          (beg (or beg (py-beginning-of-block-or-clause-position)))
-          (end (or end (py-end-of-block-or-clause-position))))
+          (beg (or beg (py--beginning-of-block-or-clause-position)))
+          (end (or end (py--end-of-block-or-clause-position))))
       (goto-char beg)
       (push-mark)
       (goto-char end)
@@ -197,8 +197,8 @@ the default"
     (let ((comment-start (if py-block-comment-prefix-p
                              py-block-comment-prefix
                            comment-start))
-          (beg (or beg (py-beginning-of-def-position)))
-          (end (or end (py-end-of-def-position))))
+          (beg (or beg (py--beginning-of-def-position)))
+          (end (or end (py--end-of-def-position))))
       (goto-char beg)
       (push-mark)
       (goto-char end)
@@ -214,8 +214,8 @@ the default"
     (let ((comment-start (if py-block-comment-prefix-p
                              py-block-comment-prefix
                            comment-start))
-          (beg (or beg (py-beginning-of-class-position)))
-          (end (or end (py-end-of-class-position))))
+          (beg (or beg (py--beginning-of-class-position)))
+          (end (or end (py--end-of-class-position))))
       (goto-char beg)
       (push-mark)
       (goto-char end)
@@ -231,8 +231,8 @@ the default"
     (let ((comment-start (if py-block-comment-prefix-p
                              py-block-comment-prefix
                            comment-start))
-          (beg (or beg (py-beginning-of-def-or-class-position)))
-          (end (or end (py-end-of-def-or-class-position))))
+          (beg (or beg (py--beginning-of-def-or-class-position)))
+          (end (or end (py--end-of-def-or-class-position))))
       (goto-char beg)
       (push-mark)
       (goto-char end)
@@ -248,8 +248,8 @@ the default"
     (let ((comment-start (if py-block-comment-prefix-p
                              py-block-comment-prefix
                            comment-start))
-          (beg (or beg (py-beginning-of-statement-position)))
-          (end (or end (py-end-of-statement-position))))
+          (beg (or beg (py--beginning-of-statement-position)))
+          (end (or end (py--end-of-statement-position))))
       (goto-char beg)
       (push-mark)
       (goto-char end)

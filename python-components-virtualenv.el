@@ -89,8 +89,8 @@
   (setq virtualenv-old-exec-path exec-path)
 
   (setenv "VIRTUAL_ENV" dir)
-  (virtualenv-add-to-path (concat (py-normalize-directory dir) "bin"))
-  (add-to-list 'exec-path (concat (py-normalize-directory dir) "bin"))
+  (virtualenv-add-to-path (concat (py--normalize-directory dir) "bin"))
+  (add-to-list 'exec-path (concat (py--normalize-directory dir) "bin"))
 
   (setq virtualenv-name dir)
 )
@@ -128,8 +128,8 @@
   "Issue a virtualenvwrapper-like virtualenv-workon command"
   (interactive (list (completing-read "Virtualenv: " (virtualenv-workon-complete))))
   (if (getenv "WORKON_HOME")
-      (virtualenv-activate (concat (py-normalize-directory (getenv "WORKON_HOME")) name))
-    (virtualenv-activate (concat (py-normalize-directory virtualenv-workon-home) name))))
+      (virtualenv-activate (concat (py--normalize-directory (getenv "WORKON_HOME")) name))
+    (virtualenv-activate (concat (py--normalize-directory virtualenv-workon-home) name))))
 
 (provide 'python-components-virtualenv)
 ;; python-components-virtualenv.el ends here

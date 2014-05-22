@@ -54,7 +54,7 @@ With \\[universal argument] just indent.
   (let ((orig (point))
         erg)
     (unless (eobp)
-      (if (and (py-in-comment-p)(not py-indent-comments))
+      (if (and (py--in-comment-p)(not py-indent-comments))
           (forward-line 1)
         (py-indent-line-outmost)
         (unless (eq 4 (prefix-numeric-value arg))
@@ -104,10 +104,10 @@ Affected by `py-dedent-keep-relative-column'. "
     (when (interactive-p) (message "%s" erg))
     erg))
 
-(defun py-close-intern (regexp)
+(defun py--close-intern (regexp)
   "Core function, internal used only. "
-  (let ((cui (ignore-errors (car (py-go-to-keyword (symbol-value regexp))))))
-    (py-end-base regexp (point))
+  (let ((cui (ignore-errors (car (py--go-to-keyword (symbol-value regexp))))))
+    (py--end-base regexp (point))
     (forward-line 1)
     (if py-close-provides-newline
         (unless (empty-line-p) (split-line))
@@ -120,7 +120,7 @@ Affected by `py-dedent-keep-relative-column'. "
 
 If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline. "
   (interactive "*")
-  (let ((erg (py-close-intern py-def-re)))
+  (let ((erg (py--close-intern py-def-re)))
     (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -129,7 +129,7 @@ If final line isn't empty and `py-close-block-provides-newline' non-nil, insert 
 
 If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline. "
   (interactive "*")
-  (let ((erg (py-close-intern py-class-re)))
+  (let ((erg (py--close-intern py-class-re)))
     (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -138,7 +138,7 @@ If final line isn't empty and `py-close-block-provides-newline' non-nil, insert 
 
 If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline. "
   (interactive "*")
-  (let ((erg (py-close-intern py-clause-re)))
+  (let ((erg (py--close-intern py-clause-re)))
     (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -147,7 +147,7 @@ If final line isn't empty and `py-close-block-provides-newline' non-nil, insert 
 
 If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline. "
   (interactive "*")
-  (let ((erg (py-close-intern 'py-block-re)))
+  (let ((erg (py--close-intern 'py-block-re)))
     (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -349,7 +349,7 @@ With optional \\[universal-argument] print as string"
 I.e. switch it from \"True\" to \"False\" and vice versa"
   (interactive "*")
   (save-excursion
-    (unless (py-end-of-statement-p)
+    (unless (py--end-of-statement-p)
       (py-end-of-statement))
     (backward-word)
     (cond ((looking-at "True")

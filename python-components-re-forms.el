@@ -47,7 +47,7 @@ http://docs.python.org/reference/compound_stmts.html"
   (let ((orig (point))
         erg)
     (unless (eobp)
-      (unless (py-beginning-of-statement-p)
+      (unless (py--beginning-of-statement-p)
         (py-beginning-of-statement))
       (unless (eq 0 (current-column))
         (py-beginning-of-top-level))
@@ -72,7 +72,7 @@ http://docs.python.org/reference/compound_stmts.html"
 Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
-  (py-beginning-of-form-intern 'py-extended-block-or-clause-re (interactive-p)))
+  (py--beginning-of-form-intern 'py-extended-block-or-clause-re (interactive-p)))
 
 (defun py-end (&optional indent)
  "Go to end of of compound statement or definition at point.
@@ -83,7 +83,7 @@ Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive "P")
     (let* ((orig (point))
-           (erg (py-end-base 'py-extended-block-or-clause-re orig)))
+           (erg (py--end-base 'py-extended-block-or-clause-re orig)))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg))
 
@@ -100,7 +100,7 @@ http://docs.python.org/reference/compound_stmts.html"
   (let ((pps (syntax-ppss)))
     (cond ((nth 8 pps) (goto-char (nth 8 pps)))
           ((nth 1 pps) (goto-char (nth 1 pps)))
-          ((py-beginning-of-statement-p) (py-beginning-of-form-intern 'py-extended-block-or-clause-re (interactive-p) t))
+          ((py--beginning-of-statement-p) (py--beginning-of-form-intern 'py-extended-block-or-clause-re (interactive-p) t))
           (t (py-beginning-of-statement)))))
 
 (defun py-down (&optional indent)
@@ -117,7 +117,7 @@ http://docs.python.org/reference/compound_stmts.html"
   (let* ((orig (point))
          erg
          (indent (if
-                     (py-beginning-of-statement-p)
+                     (py--beginning-of-statement-p)
                      (current-indentation)
                    (progn
                      (py-beginning-of-statement)
@@ -153,7 +153,7 @@ http://docs.python.org/reference/compound_stmts.html"
   (let ((pps (syntax-ppss)))
     (cond ((nth 8 pps) (goto-char (nth 8 pps)))
           ((nth 1 pps) (goto-char (nth 1 pps)))
-          ((py-beginning-of-statement-p) (py-beginning-of-form-intern 'py-extended-block-or-clause-re (interactive-p)))
+          ((py--beginning-of-statement-p) (py--beginning-of-form-intern 'py-extended-block-or-clause-re (interactive-p)))
           (t (py-beginning-of-statement)))))
 
 (defun py-end-of-block (&optional indent)
@@ -165,7 +165,7 @@ Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive "P")
     (let* ((orig (point))
-           (erg (py-end-base 'py-block-re orig)))
+           (erg (py--end-base 'py-block-re orig)))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg))
 
@@ -178,7 +178,7 @@ Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive "P")
     (let* ((orig (point))
-           (erg (py-end-base 'py-clause-re orig)))
+           (erg (py--end-base 'py-clause-re orig)))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg))
 
@@ -191,7 +191,7 @@ Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive "P")
     (let* ((orig (point))
-           (erg (py-end-base 'py-block-or-clause-re orig)))
+           (erg (py--end-base 'py-block-or-clause-re orig)))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg))
 
@@ -207,7 +207,7 @@ Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive "P")
     (let* ((orig (point))
-           (erg (py-end-base 'py-def-re orig)))
+           (erg (py--end-base 'py-def-re orig)))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg))
 
@@ -222,7 +222,7 @@ Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive "P")
     (let* ((orig (point))
-           (erg (py-end-base 'py-class-re orig)))
+           (erg (py--end-base 'py-class-re orig)))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg))
 
@@ -234,7 +234,7 @@ Returns end of def-or-class if successful, nil otherwise
 With \\[universal argument] or `py-mark-decorators' set to `t', decorators are marked too. "
   (interactive "P")
     (let* ((orig (point))
-           (erg (py-end-base 'py-def-or-class-re orig)))
+           (erg (py--end-base 'py-def-or-class-re orig)))
       (when (and py-verbose-p (interactive-p))
           (message "%s" erg))
       erg))
@@ -248,7 +248,7 @@ Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive "P")
     (let* ((orig (point))
-           (erg (py-end-base 'py-if-block-re orig)))
+           (erg (py--end-base 'py-if-block-re orig)))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg))
 
@@ -261,7 +261,7 @@ Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive "P")
     (let* ((orig (point))
-           (erg (py-end-base 'py-elif-block-re orig)))
+           (erg (py--end-base 'py-elif-block-re orig)))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg))
 
@@ -274,7 +274,7 @@ Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive "P")
     (let* ((orig (point))
-           (erg (py-end-base 'py-try-block-re orig)))
+           (erg (py--end-base 'py-try-block-re orig)))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg))
 
@@ -286,7 +286,7 @@ Returns end of minor-block if successful, nil otherwise
 A minor block is started by a `for', `if', `try' or `with'."
   (interactive "P")
     (let* ((orig (point))
-           (erg (py-end-base 'py-minor-block-re orig)))
+           (erg (py--end-base 'py-minor-block-re orig)))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg))
 

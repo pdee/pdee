@@ -138,11 +138,11 @@ Used with `eval-after-load'."
 ;; (eval-after-load "info-look" '(python-after-info-look))
 
 ;;;
-(defun py-warn-tmp-files-left ()
+(defun py--warn-tmp-files-left ()
   "Detect and warn about file of form \"py11046IoE\" in py-temp-directory. "
   (let ((erg1 (file-readable-p (concat py-temp-directory (char-to-string py-separator-char)  (car (directory-files  py-temp-directory nil "py[[:alnum:]]+$"))))))
     (when (and py-verbose-p erg1)
-      (message "py-warn-tmp-files-left: %s ?" (concat py-temp-directory (char-to-string py-separator-char) (car (directory-files  py-temp-directory nil "py[[:alnum:]]*$")))))))
+      (message "py--warn-tmp-files-left: %s ?" (concat py-temp-directory (char-to-string py-separator-char) (car (directory-files  py-temp-directory nil "py[[:alnum:]]*$")))))))
 
 (defun py-fetch-docu ()
   "Lookup in current buffer for the doku for the symbol at point.
@@ -261,7 +261,7 @@ Optional \\[universal-argument] used for debugging, will prevent deletion of tem
 ;; out of the right places, along with the keys they're on & current
 ;; values
 
-(defun py-dump-help-string (str)
+(defun py--dump-help-string (str)
   (with-output-to-temp-buffer "*Help*"
     (let ((locals (buffer-local-variables))
           (comint-vars-p (eq major-mode 'comint-mode))
@@ -294,7 +294,7 @@ Optional \\[universal-argument] used for debugging, will prevent deletion of tem
                         "Value: "
                         (prin1-to-string (symbol-value func))))))
          (t                             ; unexpected
-          (error "Error in py-dump-help-string, tag `%s'" funckind)))
+          (error "Error in py--dump-help-string, tag `%s'" funckind)))
         (princ (format "\n-> %s:\t%s\t%s\n\n"
                        (if (equal funckind "c") "Command" "Variable")
                        funcname keys))
@@ -309,7 +309,7 @@ Optional \\[universal-argument] used for debugging, will prevent deletion of tem
 (defun py-describe-mode ()
   "Dump long form of `python-mode' docs."
   (interactive)
-  (py-dump-help-string "Major mode for editing Python files.
+  (py--dump-help-string "Major mode for editing Python files.
 Knows about Python indentation, tokens, comments and continuation lines.
 Paragraphs are separated by blank lines only.
 
@@ -731,8 +731,8 @@ Interactively, prompt for SYMBOL."
             symbol))
          (orig (point))
          (local (or
-                 (py-until-found (concat "class " symbol) imenu--index-alist)
-                 (py-until-found symbol imenu--index-alist)))
+                 (py--until-found (concat "class " symbol) imenu--index-alist)
+                 (py--until-found symbol imenu--index-alist)))
          source sourcefile path)
     ;; ismethod(), isclass(), isfunction() or isbuiltin()
     ;; ismethod isclass isfunction isbuiltin)
@@ -745,7 +745,7 @@ Interactively, prompt for SYMBOL."
               (goto-char (match-beginning 0))
               (exchange-point-and-mark))
           (error "%s" "local not a number"))
-      (setq source (py-send-string-return-output (concat imports "import inspect;inspect.getmodule(" symbol ")")))
+      (setq source (py--send-string-return-output (concat imports "import inspect;inspect.getmodule(" symbol ")")))
       (cond ((string-match "SyntaxError" source)
              (setq source (substring-no-properties source (match-beginning 0)))
              (set-window-configuration last-window-configuration)
@@ -756,8 +756,8 @@ Interactively, prompt for SYMBOL."
                (set-window-configuration last-window-configuration)
                ;; (jump-to-register 98888888)
                     (message "%s" source)))
-            ((and source (setq path (replace-regexp-in-string "'" "" (py-send-string-return-output "import os;os.getcwd()")))
-                  (setq sourcefile (replace-regexp-in-string "'" "" (py-send-string-return-output (concat "inspect.getsourcefile(" symbol ")"))))
+            ((and source (setq path (replace-regexp-in-string "'" "" (py--send-string-return-output "import os;os.getcwd()")))
+                  (setq sourcefile (replace-regexp-in-string "'" "" (py--send-string-return-output (concat "inspect.getsourcefile(" symbol ")"))))
                   (interactive-p) (message "sourcefile: %s" sourcefile)
                   (find-file (concat path (char-to-string py-separator-char) sourcefile))
                   (goto-char (point-min))
@@ -800,7 +800,7 @@ Returns imports "
 	(goto-char (point-min))
 	(while (re-search-forward
 		"^import *[A-Za-z_][A-Za-z_0-9].*\\|^from +[A-Za-z_][A-Za-z_0-9.]+ +import .*" nil t)
-	  (unless (py-end-of-statement-p)
+	  (unless (py--end-of-statement-p)
 	    (py-end-of-statement))
 	  (setq imports
 		(concat
@@ -1211,7 +1211,7 @@ i.e. spaces, tabs, carriage returns, newlines and newpages. "
     (if (not process)
         nil
       (let ((module-file
-             (py-send-string-no-output
+             (py--send-string-no-output
               (format py-ffap-string-code module) process)))
         (when module-file
           (substring-no-properties module-file 1 -1))))))

@@ -28,7 +28,7 @@ If no region is active, current line is dedented.
 Returns indentation reached. "
   (interactive "p")
   (setq count (or count 1))
-  (let ((erg (py-shift-intern (- count) start end)))
+  (let ((erg (py--shift-intern (- count) start end)))
     (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
 
@@ -40,11 +40,11 @@ If no region is active, current line is indented.
 Returns indentation reached. "
   (interactive "p")
   (setq count (or count 1))
-  (let ((erg (py-shift-intern count beg end)))
+  (let ((erg (py--shift-intern count beg end)))
     (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
 
-(defun py-shift-intern (count &optional start end)
+(defun py--shift-intern (count &optional start end)
   (save-excursion
     (let* ((inhibit-point-motion-hooks t)
            deactivate-mark
@@ -71,7 +71,7 @@ Returns indentation reached. "
       (skip-chars-backward " \t\r\n\f"))
     (py-indentation-of-statement)))
 
-(defun py-shift-forms-base (form arg &optional beg end)
+(defun py--shift-forms-base (form arg &optional beg end)
   (let* ((begform (intern-soft (concat "py-beginning-of-" form)))
          (endform (intern-soft (concat "py-end-of-" form)))
          (orig (copy-marker (point)))
@@ -87,7 +87,7 @@ Returns indentation reached. "
                     ((region-active-p)
                      (region-end))
                     (t (funcall endform))))
-         (erg (py-shift-intern arg beg end)))
+         (erg (py--shift-intern arg beg end)))
     (goto-char orig)
     erg))
 
@@ -99,7 +99,7 @@ use \[universal-argument] to specify a different value.
 
 Returns outmost indentation reached. "
   (interactive "*P")
-  (let ((erg (py-shift-forms-base "paragraph" (or arg py-indent-offset))))
+  (let ((erg (py--shift-forms-base "paragraph" (or arg py-indent-offset))))
         (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -111,7 +111,7 @@ use \[universal-argument] to specify a different value.
 
 Returns outmost indentation reached. "
   (interactive "*P")
-  (let ((erg (py-shift-forms-base "paragraph" (- (or arg py-indent-offset)))))
+  (let ((erg (py--shift-forms-base "paragraph" (- (or arg py-indent-offset)))))
     (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -123,7 +123,7 @@ use \[universal-argument] to specify a different value.
 
 Returns outmost indentation reached. "
   (interactive "*P")
-  (let ((erg (py-shift-forms-base "block" (or arg py-indent-offset))))
+  (let ((erg (py--shift-forms-base "block" (or arg py-indent-offset))))
     (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -135,7 +135,7 @@ use \[universal-argument] to specify a different value.
 
 Returns outmost indentation reached. "
   (interactive "*P")
-  (let ((erg (py-shift-forms-base "block" (- (or arg py-indent-offset)))))
+  (let ((erg (py--shift-forms-base "block" (- (or arg py-indent-offset)))))
     (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -148,7 +148,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached.
 A minor block is started by a `for', `if', `try' or `with'. "
   (interactive "*P")
-  (let ((erg (py-shift-forms-base "minor-block" (- (or arg py-indent-offset)))))
+  (let ((erg (py--shift-forms-base "minor-block" (- (or arg py-indent-offset)))))
     (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -161,7 +161,7 @@ use \[universal-argument] to specify a different value.
 Returns outmost indentation reached.
 A minor block is started by a `for', `if', `try' or `with'. "
   (interactive "*P")
-  (let ((erg (py-shift-forms-base "minor-block" (or arg py-indent-offset))))
+  (let ((erg (py--shift-forms-base "minor-block" (or arg py-indent-offset))))
         (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -173,7 +173,7 @@ use \[universal-argument] to specify a different value.
 
 Returns outmost indentation reached. "
   (interactive "*P")
-  (let ((erg (py-shift-forms-base "clause" (or arg py-indent-offset))))
+  (let ((erg (py--shift-forms-base "clause" (or arg py-indent-offset))))
         (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -185,7 +185,7 @@ use \[universal-argument] to specify a different value.
 
 Returns outmost indentation reached. "
   (interactive "*P")
-  (let ((erg (py-shift-forms-base "clause" (- (or arg py-indent-offset)))))
+  (let ((erg (py--shift-forms-base "clause" (- (or arg py-indent-offset)))))
     (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -197,7 +197,7 @@ use \[universal-argument] to specify a different value.
 
 Returns outmost indentation reached. "
   (interactive "*P")
-  (let ((erg (py-shift-forms-base "block-or-clause" (or arg py-indent-offset))))
+  (let ((erg (py--shift-forms-base "block-or-clause" (or arg py-indent-offset))))
         (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -209,7 +209,7 @@ use \[universal-argument] to specify a different value.
 
 Returns outmost indentation reached. "
   (interactive "*P")
-  (let ((erg (py-shift-forms-base "block-or-clause" (- (or arg py-indent-offset)))))
+  (let ((erg (py--shift-forms-base "block-or-clause" (- (or arg py-indent-offset)))))
     (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -221,7 +221,7 @@ use \[universal-argument] to specify a different value.
 
 Returns outmost indentation reached. "
   (interactive "*P")
-  (let ((erg (py-shift-forms-base "def" (or arg py-indent-offset))))
+  (let ((erg (py--shift-forms-base "def" (or arg py-indent-offset))))
         (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -233,7 +233,7 @@ use \[universal-argument] to specify a different value.
 
 Returns outmost indentation reached. "
   (interactive "*P")
-  (let ((erg (py-shift-forms-base "def" (- (or arg py-indent-offset)))))
+  (let ((erg (py--shift-forms-base "def" (- (or arg py-indent-offset)))))
     (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -245,7 +245,7 @@ use \[universal-argument] to specify a different value.
 
 Returns outmost indentation reached. "
   (interactive "*P")
-  (let ((erg (py-shift-forms-base "class" (or arg py-indent-offset))))
+  (let ((erg (py--shift-forms-base "class" (or arg py-indent-offset))))
         (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -257,7 +257,7 @@ use \[universal-argument] to specify a different value.
 
 Returns outmost indentation reached. "
   (interactive "*P")
-  (let ((erg (py-shift-forms-base "class" (- (or arg py-indent-offset)))))
+  (let ((erg (py--shift-forms-base "class" (- (or arg py-indent-offset)))))
     (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -269,7 +269,7 @@ use \[universal-argument] to specify a different value.
 
 Returns outmost indentation reached. "
   (interactive "*P")
-  (let ((erg (py-shift-forms-base "def-or-class" (or arg py-indent-offset))))
+  (let ((erg (py--shift-forms-base "def-or-class" (or arg py-indent-offset))))
         (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -281,7 +281,7 @@ use \[universal-argument] to specify a different value.
 
 Returns outmost indentation reached. "
   (interactive "*P")
-  (let ((erg (py-shift-forms-base "def-or-class" (- (or arg py-indent-offset)))))
+  (let ((erg (py--shift-forms-base "def-or-class" (- (or arg py-indent-offset)))))
     (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -293,7 +293,7 @@ use \[universal-argument] to specify a different value.
 
 Returns outmost indentation reached. "
   (interactive "*P")
-  (let ((erg (py-shift-forms-base "line" (or arg py-indent-offset))))
+  (let ((erg (py--shift-forms-base "line" (or arg py-indent-offset))))
         (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -305,7 +305,7 @@ use \[universal-argument] to specify a different value.
 
 Returns outmost indentation reached. "
   (interactive "*P")
-  (let ((erg (py-shift-forms-base "line" (- (or arg py-indent-offset)))))
+  (let ((erg (py--shift-forms-base "line" (- (or arg py-indent-offset)))))
     (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -317,7 +317,7 @@ use \[universal-argument] to specify a different value.
 
 Returns outmost indentation reached. "
   (interactive "*P")
-  (let ((erg (py-shift-forms-base "statement" (or arg py-indent-offset))))
+  (let ((erg (py--shift-forms-base "statement" (or arg py-indent-offset))))
         (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -329,7 +329,7 @@ use \[universal-argument] to specify a different value.
 
 Returns outmost indentation reached. "
   (interactive "*P")
-  (let ((erg (py-shift-forms-base "statement" (- (or arg py-indent-offset)))))
+  (let ((erg (py--shift-forms-base "statement" (- (or arg py-indent-offset)))))
     (when (interactive-p) (message "%s" erg))
     erg))
 

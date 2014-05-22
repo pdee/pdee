@@ -207,22 +207,22 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --eval "(when (file-exists-p \"~/.abbrev_defs\") (quietly-read-abbrev-file (expand-file-name \"~/.abbrev_defs\")))" \
 \
 -eval "(assert (functionp 'word-at-point) nil \"new completion bug, lp:1034656, word-at-point not known\")" \
--eval "(assert (functionp 'py-shell-simple-send) nil \"py-shell-simple-send not detected as function\")" \
+-eval "(assert (functionp 'py--shell-simple-send) nil \"py-shell-simple-send not detected as function\")" \
 -eval "(assert (functionp 'py--shell-setup) nil \"py--shell-setup not detected as function\")" \
--eval "(assert (functionp 'py-shell-send-setup-code) nil \"py-shell-send-setup-code not detected as function\")" \
+-eval "(assert (functionp 'py--shell-send-setup-code) nil \"py-shell-send-setup-code not detected as function\")" \
 -eval "(assert (functionp 'py-beginning-of-top-level-p) nil \"py-beginning-of-top-level-p not detected as function\")" \
--eval "(assert (functionp 'py-beginning-of-line-p) nil \"py-beginning-of-line-p not detected as function\")" \
--eval "(assert (functionp 'py-beginning-of-buffer-p) nil \"py-beginning-of-buffer-p not detected as function\")" \
--eval "(assert (functionp 'py-beginning-of-paragraph-p) nil \"py-beginning-of-paragraph-p not detected as function\")" \
--eval "(assert (functionp 'py-beginning-of-statement-p) nil \"py-beginning-of-statement-p not detected as function\")" \
--eval "(assert (functionp 'py-beginning-of-expression-p) nil \"py-beginning-of-expression-p not detected as function\")" \
--eval "(assert (functionp 'py-beginning-of-partial-expression-p) nil \"py-beginning-of-partial-expression-p not detected as function\")" \
--eval "(assert (functionp 'py-beginning-of-block-p) nil \"py-beginning-of-block-p not detected as function\")" \
--eval "(assert (functionp 'py-beginning-of-clause-p) nil \"py-beginning-of-clause-p not detected as function\")" \
--eval "(assert (functionp 'py-beginning-of-block-or-clause-p) nil \"py-beginning-of-block-or-clause-p not detected as function\")" \
--eval "(assert (functionp 'py-beginning-of-def-p) nil \"py-beginning-of-def-p not detected as function\")" \
--eval "(assert (functionp 'py-beginning-of-class-p) nil \"py-beginning-of-class-p not detected as function\")" \
--eval "(assert (functionp 'py-beginning-of-def-or-class-p) nil \"py-beginning-of-def-or-class-p not detected as function\")" \
+-eval "(assert (functionp 'py--beginning-of-line-p) nil \"py-beginning-of-line-p not detected as function\")" \
+-eval "(assert (functionp 'py--beginning-of-buffer-p) nil \"py-beginning-of-buffer-p not detected as function\")" \
+-eval "(assert (functionp 'py--beginning-of-paragraph-p) nil \"py-beginning-of-paragraph-p not detected as function\")" \
+-eval "(assert (functionp 'py--beginning-of-statement-p) nil \"py-beginning-of-statement-p not detected as function\")" \
+-eval "(assert (functionp 'py--beginning-of-expression-p) nil \"py-beginning-of-expression-p not detected as function\")" \
+-eval "(assert (functionp 'py--beginning-of-partial-expression-p) nil \"py-beginning-of-partial-expression-p not detected as function\")" \
+-eval "(assert (functionp 'py--beginning-of-block-p) nil \"py-beginning-of-block-p not detected as function\")" \
+-eval "(assert (functionp 'py--beginning-of-clause-p) nil \"py-beginning-of-clause-p not detected as function\")" \
+-eval "(assert (functionp 'py--beginning-of-block-or-clause-p) nil \"py-beginning-of-block-or-clause-p not detected as function\")" \
+-eval "(assert (functionp 'py--beginning-of-def-p) nil \"py-beginning-of-def-p not detected as function\")" \
+-eval "(assert (functionp 'py--beginning-of-class-p) nil \"py-beginning-of-class-p not detected as function\")" \
+-eval "(assert (functionp 'py--beginning-of-def-or-class-p) nil \"py-beginning-of-def-or-class-p not detected as function\")" \
 -eval "(assert (functionp 'py-beginning-of-minor-block-p) nil \"py-beginning-of-minor-block-p not detected as function\")" \
 \
 -eval "(assert (commandp 'pylint-flymake-mode) nil \"pylint-flymake-mode not detected as command\")" \
@@ -270,28 +270,28 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-shift-statement-right) nil \"py-shift-statement-right not detected as command\")" \
 -eval "(assert (commandp 'py-shift-statement-left) nil \"py-shift-statement-left not detected as command\")" \
 -eval "(assert (commandp 'py-indent-region) nil \"py-indent-region not detected as command\")" \
--eval "(assert (commandp 'py-beginning-of-paragraph-position) nil \"py-beginning-of-paragraph-position not detected as command\")" \
--eval "(assert (commandp 'py-end-of-paragraph-position) nil \"py-end-of-paragraph-position not detected as command\")" \
--eval "(assert (commandp 'py-beginning-of-block-position) nil \"py-beginning-of-block-position not detected as command\")" \
--eval "(assert (commandp 'py-end-of-block-position) nil \"py-end-of-block-position not detected as command\")" \
--eval "(assert (commandp 'py-beginning-of-clause-position) nil \"py-beginning-of-clause-position not detected as command\")" \
--eval "(assert (commandp 'py-end-of-clause-position) nil \"py-end-of-clause-position not detected as command\")" \
--eval "(assert (commandp 'py-beginning-of-block-or-clause-position) nil \"py-beginning-of-block-or-clause-position not detected as command\")" \
--eval "(assert (commandp 'py-end-of-block-or-clause-position) nil \"py-end-of-block-or-clause-position not detected as command\")" \
--eval "(assert (commandp 'py-beginning-of-def-position) nil \"py-beginning-of-def-position not detected as command\")" \
--eval "(assert (commandp 'py-end-of-def-position) nil \"py-end-of-def-position not detected as command\")" \
--eval "(assert (commandp 'py-beginning-of-class-position) nil \"py-beginning-of-class-position not detected as command\")" \
--eval "(assert (commandp 'py-end-of-class-position) nil \"py-end-of-class-position not detected as command\")" \
--eval "(assert (commandp 'py-beginning-of-def-or-class-position) nil \"py-beginning-of-def-or-class-position not detected as command\")" \
--eval "(assert (commandp 'py-end-of-def-or-class-position) nil \"py-end-of-def-or-class-position not detected as command\")" \
--eval "(assert (commandp 'py-beginning-of-line-position) nil \"py-beginning-of-line-position not detected as command\")" \
--eval "(assert (commandp 'py-end-of-line-position) nil \"py-end-of-line-position not detected as command\")" \
--eval "(assert (commandp 'py-beginning-of-statement-position) nil \"py-beginning-of-statement-position not detected as command\")" \
--eval "(assert (commandp 'py-end-of-statement-position) nil \"py-end-of-statement-position not detected as command\")" \
--eval "(assert (commandp 'py-beginning-of-expression-position) nil \"py-beginning-of-expression-position not detected as command\")" \
--eval "(assert (commandp 'py-end-of-expression-position) nil \"py-end-of-expression-position not detected as command\")" \
--eval "(assert (commandp 'py-beginning-of-partial-expression-position) nil \"py-beginning-of-partial-expression-position not detected as command\")" \
--eval "(assert (commandp 'py-end-of-partial-expression-position) nil \"py-end-of-partial-expression-position not detected as command\")" \
+-eval "(assert (commandp 'py--beginning-of-paragraph-position) nil \"py-beginning-of-paragraph-position not detected as command\")" \
+-eval "(assert (commandp 'py--end-of-paragraph-position) nil \"py-end-of-paragraph-position not detected as command\")" \
+-eval "(assert (commandp 'py--beginning-of-block-position) nil \"py-beginning-of-block-position not detected as command\")" \
+-eval "(assert (commandp 'py--end-of-block-position) nil \"py-end-of-block-position not detected as command\")" \
+-eval "(assert (commandp 'py--beginning-of-clause-position) nil \"py-beginning-of-clause-position not detected as command\")" \
+-eval "(assert (commandp 'py--end-of-clause-position) nil \"py-end-of-clause-position not detected as command\")" \
+-eval "(assert (commandp 'py--beginning-of-block-or-clause-position) nil \"py-beginning-of-block-or-clause-position not detected as command\")" \
+-eval "(assert (commandp 'py--end-of-block-or-clause-position) nil \"py-end-of-block-or-clause-position not detected as command\")" \
+-eval "(assert (commandp 'py--beginning-of-def-position) nil \"py-beginning-of-def-position not detected as command\")" \
+-eval "(assert (commandp 'py--end-of-def-position) nil \"py-end-of-def-position not detected as command\")" \
+-eval "(assert (commandp 'py--beginning-of-class-position) nil \"py-beginning-of-class-position not detected as command\")" \
+-eval "(assert (commandp 'py--end-of-class-position) nil \"py-end-of-class-position not detected as command\")" \
+-eval "(assert (commandp 'py--beginning-of-def-or-class-position) nil \"py-beginning-of-def-or-class-position not detected as command\")" \
+-eval "(assert (commandp 'py--end-of-def-or-class-position) nil \"py-end-of-def-or-class-position not detected as command\")" \
+-eval "(assert (commandp 'py--beginning-of-line-position) nil \"py-beginning-of-line-position not detected as command\")" \
+-eval "(assert (commandp 'py--end-of-line-position) nil \"py-end-of-line-position not detected as command\")" \
+-eval "(assert (commandp 'py--beginning-of-statement-position) nil \"py-beginning-of-statement-position not detected as command\")" \
+-eval "(assert (commandp 'py--end-of-statement-position) nil \"py-end-of-statement-position not detected as command\")" \
+-eval "(assert (commandp 'py--beginning-of-expression-position) nil \"py-beginning-of-expression-position not detected as command\")" \
+-eval "(assert (commandp 'py--end-of-expression-position) nil \"py-end-of-expression-position not detected as command\")" \
+-eval "(assert (commandp 'py--beginning-of-partial-expression-position) nil \"py-beginning-of-partial-expression-position not detected as command\")" \
+-eval "(assert (commandp 'py--end-of-partial-expression-position) nil \"py-end-of-partial-expression-position not detected as command\")" \
 -eval "(assert (commandp 'py-bounds-of-statement) nil \"py-bounds-of-statement not detected as command\")" \
 -eval "(assert (commandp 'py-bounds-of-block) nil \"py-bounds-of-block not detected as command\")" \
 -eval "(assert (commandp 'py-bounds-of-clause) nil \"py-bounds-of-clause not detected as command\")" \
@@ -322,12 +322,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-in-triplequoted-string-p) nil \"py-in-triplequoted-string-p not detected as command\")" \
 -eval "(assert (commandp 'py-in-string-p) nil \"py-in-string-p not detected as command\")" \
 -eval "(assert (commandp 'py-in-statement-p) nil \"py-in-statement-p not detected as command\")" \
--eval "(assert (commandp 'py-statement-opens-block-p) nil \"py-statement-opens-block-p not detected as command\")" \
--eval "(assert (commandp 'py-statement-opens-clause-p) nil \"py-statement-opens-clause-p not detected as command\")" \
--eval "(assert (commandp 'py-statement-opens-block-or-clause-p) nil \"py-statement-opens-block-or-clause-p not detected as command\")" \
--eval "(assert (commandp 'py-statement-opens-class-p) nil \"py-statement-opens-class-p not detected as command\")" \
--eval "(assert (commandp 'py-statement-opens-def-p) nil \"py-statement-opens-def-p not detected as command\")" \
--eval "(assert (commandp 'py-statement-opens-def-or-class-p) nil \"py-statement-opens-def-or-class-p not detected as command\")" \
 -eval "(assert (commandp 'py-current-defun) nil \"py-current-defun not detected as command\")" \
 -eval "(assert (commandp 'py-sort-imports) nil \"py-sort-imports not detected as command\")" \
 -eval "(assert (commandp 'py-which-function) nil \"py-which-function not detected as command\")" \
@@ -809,7 +803,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-execute-file-bpython-switch) nil \"py-execute-file-bpython-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-bpython-no-switch) nil \"py-execute-file-bpython-no-switch not detected as command\")" \
 -eval "(assert (commandp 'py-execute-file-bpython-dedicated) nil \"py-execute-file-bpython-dedicated not detected as command\")" \
--eval "(assert (functionp 'py-top-level-form-p) nil \"py-top-level-form-p not detected as function\")" \
+-eval "(assert (functionp 'py--top-level-form-p) nil \"py-top-level-form-p not detected as function\")" \
 -eval "(assert (commandp 'py-beginning-of-top-level-position) nil \"py-beginning-of-top-level-position not detected as command\")" \
 -eval "(assert (commandp 'py-end-of-top-level-position) nil \"py-end-of-top-level-position not detected as command\")" \
 -eval "(assert (commandp 'py-comment-top-level) nil \"py-comment-top-level not detected as command\")" \
@@ -838,7 +832,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-set-symmetric-docstring-style) nil \"py-set-symmetric-docstring-style not detected as command\")" \
 -eval "(assert (commandp 'py-set-onetwo-docstring-style) nil \"py-set-onetwo-docstring-style not detected as command\")" \
 -eval "(assert (commandp 'py-down-minor-block-bol) nil \"py-down-minor-block-bol not detected as command\")" \
--eval "(assert (functionp 'py-font-lock-syntactic-face-function) nil \"py-font-lock-syntactic-face-function not detected function\")" \
+-eval "(assert (functionp 'py--font-lock-syntactic-face-function) nil \"py-font-lock-syntactic-face-function not detected function\")" \
 -eval "(setq enable-local-variables :all)" \
 -eval "(assert (boundp 'py-version) nil \"py-version not a variable\")" \
 -eval "(assert (boundp 'python-mode-modeline-display) nil \"python-mode-modeline-display not a variable\")" \
@@ -925,7 +919,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-hide-show-keywords) nil \"py-hide-show-keywords not a variable\")" \
 -eval "(assert (boundp 'py-hide-show-hide-docstrings) nil \"py-hide-show-hide-docstrings not a variable\")" \
 -eval "(assert (boundp 'python-mode-hook) nil \"python-mode-hook not a variable\")" \
--eval "(assert (boundp 'py-imenu-create-index-p) nil \"py-imenu-create-index-p not a variable\")" \
+-eval "(assert (boundp 'py--imenu-create-index-p) nil \"py-imenu-create-index-p not a variable\")" \
 -eval "(assert (boundp 'py-shell-name) nil \"py-shell-name not a variable\")" \
 -eval "(assert (boundp 'py-shell-toggle-1) nil \"py-shell-toggle-1 not a variable\")" \
 -eval "(assert (boundp 'py-shell-toggle-2) nil \"py-shell-toggle-2 not a variable\")" \
@@ -941,7 +935,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-force-py-shell-name-p) nil \"py-force-py-shell-name-p not a variable\")" \
 -eval "(assert (boundp 'python-mode-v5-behavior-p) nil \"python-mode-v5-behavior-p not a variable\")" \
 -eval "(assert (boundp 'py-trailing-whitespace-smart-delete-p) nil \"py-trailing-whitespace-smart-delete-p not a variable\")" \
--eval "(assert (boundp 'py-warn-tmp-files-left-p) nil \"py-warn-tmp-files-left-p not a variable\")" \
+-eval "(assert (boundp 'py--warn-tmp-files-left-p) nil \"py-warn-tmp-files-left-p not a variable\")" \
 -eval "(assert (boundp 'py-ipython-execute-delay) nil \"py-ipython-execute-delay not a variable\")" \
 -eval "(assert (boundp 'strip-chars-before) nil \"strip-chars-before not a variable\")" \
 -eval "(assert (boundp 'strip-chars-after) nil \"strip-chars-after not a variable\")" \

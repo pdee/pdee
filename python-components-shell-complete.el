@@ -19,25 +19,25 @@
 
 (defalias 'py-script-complete 'py-shell-complete)
 
-(defun py-shell-completion--get-completions (input process completion-code)
+(defun py--shell-completion--get-completions (input process completion-code)
   "Retrieve available completions for INPUT using PROCESS.
 Argument COMPLETION-CODE is the python code used to get
 completions on the current context."
   (with-current-buffer (process-buffer process)
     (let ((completions
-           (py-send-string-no-output
+           (py--send-string-no-output
             (format completion-code input) process)))
       (when (> (length completions) 2)
         (split-string completions "^'\\|^\"\\|;\\|'$\\|\"$" t)))))
 
-(defun py-shell--do-completion-at-point (process imports input orig)
+(defun py--shell--do-completion-at-point (process imports input orig)
   "Do completion at point for PROCESS."
   (with-syntax-table py-dotted-expression-syntax-table
     (when imports
-      (py-send-string-no-output imports process))
+      (py--send-string-no-output imports process))
     (let* ((code python-shell-module-completion-string-code)
            (completions
-            (py-shell-completion--get-completions
+            (py--shell-completion--get-completions
              input process code))
            (completion (when completions
                          (try-completion input completions))))
@@ -86,7 +86,7 @@ completions on the current context."
            (tab-to-tab-stop))
           (t (or (setq proc (get-buffer-process shell))
                  (setq proc (get-buffer-process (py-shell nil nil shell t))))
-             (py-shell--do-completion-at-point proc nil word orig))))
+             (py--shell--do-completion-at-point proc nil word orig))))
   nil)
 
 (defun py-python3-shell-complete (&optional shell)
@@ -100,12 +100,12 @@ completions on the current context."
     (cond ((string= word "")
            (tab-to-tab-stop))
           (t
-           (py-shell--do-completion-at-point (get-buffer-process (current-buffer)) nil word orig)
+           (py--shell--do-completion-at-point (get-buffer-process (current-buffer)) nil word orig)
            nil))))
 
 ;; post-command-hook
 ;; caused insert-file-contents error lp:1293172
-(defun py-after-change-function (beg end len)
+(defun py--after-change-function (beg end len)
   "Restore window-confiuration after completion. "
   (when
       (and (or
@@ -185,10 +185,10 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
                   (split-string (substring ugly-return 0 (position ?\n ugly-return)) sep))
             (when debug (setq py-shell-complete-debug completions))
 
-            (py-shell-complete-finally))
+            (py--shell-complete-finally))
         (message "%s" "No response from Python process. Please check your configuration. If config is okay, please file a bug-regport at http://launchpad.net/python-mode")))))
 
-(defun py-shell-complete-finally ()
+(defun py--shell-complete-finally ()
   (if (and completions (not (string= "" (car completions))))
       (cond ((eq completions t)
              (when (buffer-live-p (get-buffer py-completion-buffer))
@@ -219,9 +219,9 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
          ;; completion-at-point requires a list as return value, so givem
          nil))
 
-(defun py-shell-complete-intern (word &optional beg end shell imports proc debug)
+(defun py--shell-complete-intern (word &optional beg end shell imports proc debug)
   (when imports
-    (py-send-string-no-output imports proc))
+    (py--send-string-no-output imports proc))
   (let ((py-completion-buffer py-python-completions)
         (result (py-shell-execute-string-now (format "
 def print_completions(namespace, text, prefix=''):
@@ -265,10 +265,10 @@ complete('%s')" word) shell nil proc)))
                              (split-string result "\n")))
               #'string<)))
         (when debug (setq py-shell-complete-debug completions))
-        (py-shell-complete-finally)))))
+        (py--shell-complete-finally)))))
 
 (defun py-comint--complete (shell pos beg end word imports debug)
-  (let ((shell (or shell (py-report-executable (buffer-name (current-buffer)))))
+  (let ((shell (or shell (py--report-executable (buffer-name (current-buffer)))))
         py-fontify-shell-buffer-p)
     (if (string-match "[iI][pP]ython" shell)
         (ipython-complete nil nil beg end word shell debug imports)
@@ -277,8 +277,8 @@ complete('%s')" word) shell nil proc)))
                (tab-to-tab-stop))
               (t
                ;; (string-match "[pP]ython3[^[:alpha:]]*$" shell)
-               (py-shell--do-completion-at-point proc imports word pos))
-              ;; (t (py-shell-complete-intern word beg end shell imports proc))
+               (py--shell--do-completion-at-point proc imports word pos))
+              ;; (t (py--shell-complete-intern word beg end shell imports proc))
               )))))
 
 (defun py-complete--base (shell pos beg end word imports debug)
@@ -292,8 +292,8 @@ complete('%s')" word) shell nil proc)))
            (ipython-complete nil nil beg end word shell debug imports pos))
           (t
            ;; (string-match "[pP]ython3[^[:alpha:]]*$" shell)
-           (py-shell--do-completion-at-point proc imports word pos))
-          ;; (t (py-shell-complete-intern word beg end shell imports proc debug))
+           (py--shell--do-completion-at-point proc imports word pos))
+          ;; (t (py--shell-complete-intern word beg end shell imports proc debug))
 )))
 
 (defun py-shell-complete (&optional shell debug beg end word)

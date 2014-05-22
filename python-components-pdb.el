@@ -50,7 +50,7 @@
          (erg (concat first " " second)))
     (push erg gud-pdb-history)))
 
-(defun py-pdbtrack-overlay-arrow (activation)
+(defun py--pdbtrack-overlay-arrow (activation)
   "Activate or de arrow at beginning-of-line in current buffer."
   ;; This was derived/simplified from edebug-overlay-arrow
   (cond (activation
@@ -62,7 +62,7 @@
          (setq overlay-arrow-position nil)
          (setq py-pdbtrack-is-tracking-p nil))))
 
-(defun py-pdbtrack-track-stack-file (text)
+(defun py--pdbtrack-track-stack-file (text)
   "Show the file indicated by the pdb stack entry line, in a separate window.
 
 Activity is disabled if the buffer-local variable
@@ -90,7 +90,7 @@ script, and set to python-mode, and pdbtrack will find it.)"
          (currproc (get-buffer-process origbuf)))
 
     (if (not (and currproc py-pdbtrack-do-tracking-p))
-        (py-pdbtrack-overlay-arrow nil)
+        (py--pdbtrack-overlay-arrow nil)
 
       (let* ((procmark (process-mark currproc))
              (block (buffer-substring (max comint-last-input-end
@@ -100,9 +100,9 @@ script, and set to python-mode, and pdbtrack will find it.)"
              target target_fname target_lineno target_buffer)
 
         (if (not (string-match (concat py-pdbtrack-input-prompt "$") block))
-            (py-pdbtrack-overlay-arrow nil)
+            (py--pdbtrack-overlay-arrow nil)
 
-          (setq target (py-pdbtrack-get-source-buffer block))
+          (setq target (py--pdbtrack-get-source-buffer block))
 
           (if (stringp target)
               (message "pdbtrack: %s" target)
@@ -114,11 +114,11 @@ script, and set to python-mode, and pdbtrack will find it.)"
             (goto-char (point-min))
             (forward-line (1- target_lineno))
             (message "pdbtrack: line %s, file %s" target_lineno target_fname)
-            (py-pdbtrack-overlay-arrow t)
+            (py--pdbtrack-overlay-arrow t)
             (pop-to-buffer origbuf t)))))))
 
 
-(defun py-pdbtrack-map-filename (filename)
+(defun py--pdbtrack-map-filename (filename)
 
   (let
       ((replacement-val (assoc-default
@@ -132,7 +132,7 @@ script, and set to python-mode, and pdbtrack will find it.)"
         (replace-match replacement-val 't 't filename)
       filename)))
 
-(defun py-pdbtrack-get-source-buffer (block)
+(defun py--pdbtrack-get-source-buffer (block)
   "Return line number and buffer of code indicated by block's traceback text.
 
 We look first to visit the file indicated in the trace.
@@ -160,10 +160,10 @@ problem as best as we can determine."
       (cond ((file-exists-p filename)
              (list lineno (find-file-noselect filename)))
 
-            ((file-exists-p (py-pdbtrack-map-filename filename))
-             (list lineno (find-file-noselect (py-pdbtrack-map-filename filename))))
+            ((file-exists-p (py--pdbtrack-map-filename filename))
+             (list lineno (find-file-noselect (py--pdbtrack-map-filename filename))))
 
-            ((setq funcbuffer (py-pdbtrack-grub-for-buffer funcname lineno))
+            ((setq funcbuffer (py--pdbtrack-grub-for-buffer funcname lineno))
              (if (string-match "/Script (Python)$" filename)
                  ;; Add in number of lines for leading '##' comments:
                  (setq lineno
@@ -183,7 +183,7 @@ problem as best as we can determine."
 
             (t (format "Not found: %s(), %s" funcname filename))))))
 
-(defun py-pdbtrack-grub-for-buffer (funcname lineno)
+(defun py--pdbtrack-grub-for-buffer (funcname lineno)
   "Find most recent buffer itself named or having function funcname.
 
 We walk the buffer-list history for python-mode buffers that are
@@ -223,9 +223,9 @@ named for funcname or define a function funcname."
          (setq py-pdbtrack-do-tracking-p t)))
   (if py-pdbtrack-do-tracking-p
       (progn
-        (add-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file t)
+        (add-hook 'comint-output-filter-functions 'py--pdbtrack-track-stack-file t)
         (remove-hook 'comint-output-filter-functions 'python-pdbtrack-track-stack-file t))
-    (remove-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file t)
+    (remove-hook 'comint-output-filter-functions 'py--pdbtrack-track-stack-file t)
     (remove-hook 'comint-output-filter-functions 'python-pdbtrack-track-stack-file t))
   (message "%sabled Python's pdbtrack"
            (if py-pdbtrack-do-tracking-p "En" "Dis")))

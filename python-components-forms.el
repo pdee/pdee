@@ -25,7 +25,7 @@
   "Returns boundaries of FORM, a cons. "
   (let* ((begform (intern-soft (concat "py-beginning-of-" form)))
          (endform (intern-soft (concat "py-end-of-" form)))
-         (begcheckform (intern-soft (concat "py-beginning-of-" form "-p")))
+         (begcheckform (intern-soft (concat "py--beginning-of-" form "-p")))
          (orig (point))
          beg end erg)
     (setq beg (if
@@ -47,26 +47,6 @@
          (beg (car bounds)))
     (push-mark beg t t)
     bounds))
-
-;; (defun py-mark-base (form &optional py-mark-decorators)
-;;   (let* ((begform (intern-soft (concat "py-beginning-of-" form)))
-;;          (endform (intern-soft (concat "py-end-of-" form)))
-;;          (begcheckform (intern-soft (concat "py-beginning-of-" form "-p")))
-;;          (orig (point))
-;;          beg end erg)
-;;     (setq beg (if
-;;                   (setq beg (funcall begcheckform))
-;;                   beg
-;;                 (funcall begform)))
-;;     (and py-mark-decorators
-;;          (and (setq erg (py-beginning-of-decorator))
-;;               (setq beg erg)))
-;;     (push-mark beg t t)
-;;     (setq end (funcall endform))
-;;     (unless end (when (< beg (point))
-;;                   (setq end (point))))
-;;     (when (interactive-p) (message "%s %s" beg end))
-;;     (cons beg end)))
 
 (defun py-mark-paragraph ()
   "Mark paragraph at point.
@@ -218,7 +198,7 @@ Returns beginning and end positions of marked area, a cons. "
     erg))
 
 ;; Beginning of line forms
-(defun py-beginning-of-block-p ()
+(defun py--beginning-of-block-p ()
   "Returns position, if cursor is at the beginning of a block, nil otherwise. "
   (when (and (looking-at py-block-re)
              (not (py-in-string-or-comment-p)))
@@ -234,7 +214,7 @@ Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive "P")
   (let* ((orig (point))
-         (erg (py-end-base 'py-block-re orig)))
+         (erg (py--end-base 'py-block-re orig)))
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
@@ -273,7 +253,7 @@ Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive "P")
   (let* ((orig (point))
-         (erg (py-end-base 'py-minor-block-re orig)))
+         (erg (py--end-base 'py-minor-block-re orig)))
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
@@ -293,7 +273,7 @@ See also `py-down-minor-block': down from current definition to next beginning o
   (when (interactive-p) (message "%s" erg))
   erg))
 
-(defun py-beginning-of-clause-p ()
+(defun py--beginning-of-clause-p ()
   "Returns position, if cursor is at the beginning of a clause, nil otherwise. "
   (when (and (looking-at py-clause-re)
              (not (py-in-string-or-comment-p)))
@@ -309,7 +289,7 @@ Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive "P")
   (let* ((orig (point))
-         (erg (py-end-base 'py-clause-re orig)))
+         (erg (py--end-base 'py-clause-re orig)))
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
@@ -329,7 +309,7 @@ See also `py-down-clause': down from current definition to next beginning of cla
   (when (interactive-p) (message "%s" erg))
   erg))
 
-(defun py-beginning-of-block-or-clause-p ()
+(defun py--beginning-of-block-or-clause-p ()
   "Returns position, if cursor is at the beginning of a block-or-clause, nil otherwise. "
   (when (and (looking-at py-block-or-clause-re)
              (not (py-in-string-or-comment-p)))
@@ -345,7 +325,7 @@ Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive "P")
   (let* ((orig (point))
-         (erg (py-end-base 'py-block-or-clause-re orig)))
+         (erg (py--end-base 'py-block-or-clause-re orig)))
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
@@ -365,7 +345,7 @@ See also `py-down-block-or-clause': down from current definition to next beginni
   (when (interactive-p) (message "%s" erg))
   erg))
 
-(defun py-beginning-of-def-p ()
+(defun py--beginning-of-def-p ()
   "Returns position, if cursor is at the beginning of a def, nil otherwise. "
   (when (and (looking-at py-def-re)
              (not (py-in-string-or-comment-p)))
@@ -381,7 +361,7 @@ Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive "P")
   (let* ((orig (point))
-         (erg (py-end-base 'py-def-re orig)))
+         (erg (py--end-base 'py-def-re orig)))
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
@@ -409,7 +389,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
   (let ((erg (py-mark-base "ele")))
     (kill-region (car erg) (cdr erg))))
 
-(defun py-beginning-of-class-p ()
+(defun py--beginning-of-class-p ()
   "Returns position, if cursor is at the beginning of a class, nil otherwise. "
   (when (and (looking-at py-class-re)
              (not (py-in-string-or-comment-p)))
@@ -425,7 +405,7 @@ Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive "P")
   (let* ((orig (point))
-         (erg (py-end-base 'py-class-re orig)))
+         (erg (py--end-base 'py-class-re orig)))
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
@@ -464,7 +444,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
   (let ((erg (py-mark-base "ele")))
     (kill-region (car erg) (cdr erg))))
 
-(defun py-beginning-of-def-or-class-p ()
+(defun py--beginning-of-def-or-class-p ()
   "Returns position, if cursor is at the beginning of a def-or-class, nil otherwise. "
   (when (and (looking-at py-def-or-class-re)
              (not (py-in-string-or-comment-p)))

@@ -224,7 +224,7 @@ on."
          py-fontify-shell-buffer-p
          )
      (if ,use-find-file
-         (find-file (concat (py-normalize-directory py-temp-directory)
+         (find-file (concat (py--normalize-directory py-temp-directory)
                             (replace-regexp-in-string "\\\\" "" (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname)))))
          (set-buffer (get-buffer-create (replace-regexp-in-string "\\\\" "" (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname))))))
      ;; (with-temp-buffer
@@ -2831,7 +2831,7 @@ datei.write(str(baz[i]) + \"\\n\")
 def someDef():
     print(\"I'm someDef\")
 ")
-    (write-file (concat (py-normalize-directory py-temp-directory) "somedef.py")))
+    (write-file (concat (py--normalize-directory py-temp-directory) "somedef.py")))
 
   (let ((teststring "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
@@ -2841,7 +2841,7 @@ someDe
     (py-bug-tests-intern 'pycomplete-same-folder-def-lp:889052-base arg teststring t)))
 
 (defun pycomplete-same-folder-def-lp:889052-base ()
-  (write-file (concat (py-normalize-directory py-temp-directory) "samefolder.py"))
+  (write-file (concat (py--normalize-directory py-temp-directory) "samefolder.py"))
   (goto-char 76)
   (py-complete)
   (beginning-of-line)
@@ -2859,9 +2859,9 @@ class Blah():
     def someDef():
         print(\"I'm someDef\")
 ")
-    ;; (write-file (concat (py-normalize-directory py-temp-directory) "classblah.py")))
+    ;; (write-file (concat (py--normalize-directory py-temp-directory) "classblah.py")))
     ;; as completion is  already in $PYTHONPATH
-   (write-file (concat (expand-file-name (py-normalize-directory py-install-directory)) "completion" "/" "classblah.py"))
+   (write-file (concat (expand-file-name (py--normalize-directory py-install-directory)) "completion" "/" "classblah.py"))
      (set-buffer-modified-p 'nil)
   (kill-buffer (current-buffer)))
   (let ((teststring "#! /usr/bin/env python
@@ -2874,8 +2874,8 @@ CLASS_INS.someDe
 
 (defun pycomplete-same-folder-class-lp:889052-base ()
   (let (
-(testfile1 (concat (expand-file-name (py-normalize-directory py-install-directory)) "completion" "/" "classblah.py"))
-        (testfile2 (concat (expand-file-name (py-normalize-directory py-install-directory)) "completion" "/" "somedef.py"))
+(testfile1 (concat (expand-file-name (py--normalize-directory py-install-directory)) "completion" "/" "classblah.py"))
+        (testfile2 (concat (expand-file-name (py--normalize-directory py-install-directory)) "completion" "/" "somedef.py"))
         py-no-completion-calls-dabbrev-expand-p
         py-indent-no-completion-p)
     (write-file testfile2)
@@ -5399,7 +5399,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.100 $\"
+__version__ = \"$Revision: 1.101 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -5424,7 +5424,7 @@ __version__ = \"$Revision: 1.100 $\"
   (let ((py-ffap-p t)
         (python-ffap t))
     (goto-char 60)
-    (assert (member 'py-set-ffap-form python-mode-hook) nil "add-custom-switch-for-ffap-hooks-lp-1117119-test #1 failed")
+    (assert (member 'py--set-ffap-form python-mode-hook) nil "add-custom-switch-for-ffap-hooks-lp-1117119-test #1 failed")
     ))
 
 (defun more-docstring-filling-woes-lp-1102296-nil-test (&optional arg)
@@ -6110,7 +6110,7 @@ a, b, c = (1, 2, 3)
   (write-file (concat py-temp-directory "/lp-1221310.py"))
   (assert (let ((py-store-result-p t))
             (sit-for 0.1)
-            (string= "C-c-C-c-lp:1221310-and-store-result-test" (py-execute-base))) nil "C-c-C-c-lp:1221310-and-store-result-test failed"))
+            (string= "C-c-C-c-lp:1221310-and-store-result-test" (py--execute-base))) nil "C-c-C-c-lp:1221310-and-store-result-test failed"))
 
 (defun py-empty-line-closes-p-lp-1235324-test (&optional arg)
   (interactive "p")

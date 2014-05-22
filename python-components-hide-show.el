@@ -29,7 +29,7 @@
   (hs-minor-mode 1)
   (save-excursion
     (let* ((form (prin1-to-string form))
-	   (beg (or beg (or (funcall (intern-soft (concat "py-beginning-of-" form "-p")))
+	   (beg (or beg (or (funcall (intern-soft (concat "py--beginning-of-" form "-p")))
 			    (funcall (intern-soft (concat "py-beginning-of-" form))))))
 	   (end (or end (funcall (intern-soft (concat "py-end-of-" form)))))
 	   (modified (buffer-modified-p))
@@ -44,7 +44,7 @@
   "Remove invisibility of existing form at point. "
   (save-excursion
     (let* ((form (prin1-to-string form))
-	   (beg (or beg (or (funcall (intern-soft (concat "py-beginning-of-" form "-p")))
+	   (beg (or beg (or (funcall (intern-soft (concat "py--beginning-of-" form "-p")))
 			    (funcall (intern-soft (concat "py-beginning-of-" form))))))
 	   (end (or end (funcall (intern-soft (concat "py-end-of-" form)))))
 	   (modified (buffer-modified-p))
@@ -60,7 +60,7 @@
   (interactive)
   (save-excursion
     (let* ((form (prin1-to-string form))
-	   (beg (or beg (or (funcall (intern-soft (concat "py-beginning-of-" form "-p")))
+	   (beg (or beg (or (funcall (intern-soft (concat "py--beginning-of-" form "-p")))
 			    (funcall (intern-soft (concat "py-beginning-of-" form))))))
 	   (end (or end (funcall (intern-soft (concat "py-end-of-" form)))))
 	   (modified (buffer-modified-p))

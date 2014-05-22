@@ -37,7 +37,7 @@ See also `py-electric-colon-greedy-p' "
   (interactive "*P")
   (cond ((not py-electric-colon-active-p)
          (self-insert-command (prefix-numeric-value arg)))
-        ((and py-electric-colon-bobl-only (save-excursion (py-beginning-of-statement) (not (py-beginning-of-block-p))))
+        ((and py-electric-colon-bobl-only (save-excursion (py-beginning-of-statement) (not (py--beginning-of-block-p))))
          (self-insert-command (prefix-numeric-value arg)))
         ((eq 4 (prefix-numeric-value arg))
          (self-insert-command 1))
@@ -48,7 +48,7 @@ See also `py-electric-colon-greedy-p' "
                (unless (or (eq (current-indentation) indent)
                            (and py-electric-colon-greedy-p
                                 (eq indent (save-excursion (py-beginning-of-statement)(current-indentation))))
-                           (and (py-top-level-form-p)(< (current-indentation) indent)))
+                           (and (py--top-level-form-p)(< (current-indentation) indent)))
                  (beginning-of-line)
                  (delete-horizontal-space)
                  (indent-to indent))
