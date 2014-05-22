@@ -363,6 +363,7 @@ http://docs.python.org/reference/compound_stmts.html"
           (py-beginning-of-statement orig done limit))
          ((nth 1 pps)
           (goto-char (1- (nth 1 pps)))
+	  (py--skip-to-semicolon-backward (save-excursion (back-to-indentation)(point))) 
           (setq done t)
           (py-beginning-of-statement orig done limit))
          ((py-preceding-line-backslashed-p)
@@ -377,10 +378,12 @@ http://docs.python.org/reference/compound_stmts.html"
           (unless (bobp)
             (py-beginning-of-statement orig done limit)))
          ((looking-at "[ \t]*#")
-          (skip-chars-backward (concat "^" comment-start) (line-beginning-position))
-          (back-to-indentation)
-          (unless (bobp)
-            (py-beginning-of-statement orig done limit)))
+	  (when (py--skip-to-semicolon-backward (save-excursion (back-to-indentation)(point)))
+	    ;; (skip-chars-backward (concat "^" comment-start) (line-beginning-position))
+	    ;; (back-to-indentation)
+	    (skip-chars-forward " \t") 
+	    (unless (bobp)
+	      (py-beginning-of-statement orig done limit))))
          ((and (not done) (looking-at py-string-delim-re))
           (when (< 0 (abs (skip-chars-backward " \t\r\n\f")))
             (setq done t))
@@ -391,7 +394,12 @@ http://docs.python.org/reference/compound_stmts.html"
          ((and (not done) (not (eq 0 (skip-chars-backward " \t\r\n\f"))))
           ;; (setq done t)
           (py-beginning-of-statement orig done limit))
-         ((not (eq (current-column) (current-indentation)))
+	 ((unless done)
+	  (and (py--skip-to-semicolon-backward (save-excursion (back-to-indentation)(point)))
+	       (back-to-indentation)
+	       (not (bobp)) 
+	       (py-beginning-of-statement orig done limit)))
+         ((and (not done)(not (eq (current-column) (current-indentation))))
           (if (< 0 (abs (skip-chars-backward "^\t\r\n\f")))
               (progn
                 (setq done t)
@@ -451,6 +459,19 @@ http://docs.python.org/reference/compound_stmts.html"
 	   (skip-chars-backward " \t" (line-beginning-position)))
 	 (setq done t)
 	 (and (< orig (point)) (point)))))
+
+(defun py--skip-to-semicolon-backward (&optional limit)
+  "Fetch the beginning of statement after a semicolon.
+
+Returns position reached if point was moved. "
+  (let ((orig (point)))
+    (and (< 0 (abs (skip-chars-backward "^;" (or limit (line-beginning-position)))))
+	 ;; (if (eq ?\; (char-after))
+	 ;; (skip-chars-forward ";" (line-end-position))
+	   (skip-chars-forward " \t" (line-beginning-position))
+	   ;; )
+	 (setq done t)
+	 (and (< (point) orig) (point)))))
 
 (defun py--eos-in-string ()
   "Return stm, i.e. if string is part of a (print)-statement. "

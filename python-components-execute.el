@@ -344,7 +344,7 @@ SEPCHAR is the file-path separator of your system. "
 		;; it must not be shown
 		((and (string-match "/[^/]+$" name-raw)
 		      (setq ein (substring name-raw (1+ (string-match "/[^/]+$" name-raw))))
-		      (string= (eval (car (read-from-string (concat "py-" ein "-command")))) name-raw))
+		      (string= (eval (car (read-from-string (concat "py-" (downcase ein) "-command")))) name-raw))
 		 ;; (string-match "^/usr/bin" name-raw)
 		 (capitalize ein))
 		((string-match "^py-" name-raw)
@@ -770,7 +770,7 @@ When optional FILE is `t', no temporary file is needed. "
                  py-execute-directory)
                 ((getenv "VIRTUAL_ENV"))
                 (t (getenv "HOME"))))
-         (py-buffer-name (or py-buffer-name  (py--choose-buffer-name which-shell)))
+         (py-buffer-name (or py-buffer-name (py--choose-buffer-name which-shell)))
          (filename (or (and filename (expand-file-name filename)) (and (not (buffer-modified-p)) (buffer-file-name))))
          (py-orig-buffer-or-file (or filename (current-buffer)))
          (proc (cond (proc)
@@ -779,7 +779,8 @@ When optional FILE is `t', no temporary file is needed. "
                      (py-dedicated-process-p
                       (get-buffer-process (py-shell nil py-dedicated-process-p which-shell py-buffer-name t)))
                      (t (or (get-buffer-process py-buffer-name)
-                            (get-buffer-process (py-shell nil py-dedicated-process-p which-shell py-buffer-name t)))))))
+                            (get-buffer-process (py-shell nil py-dedicated-process-p which-shell py-buffer-name t))))))
+	 erg)
     (setq py-error nil)
     (when py-debug-p (with-temp-file "/tmp/py-buffer-name.txt" (insert py-buffer-name)))
     (set-buffer py-exception-buffer)
@@ -789,9 +790,12 @@ When optional FILE is `t', no temporary file is needed. "
            (py-execute-python-mode-v5 start end))
           (py-execute-no-temp-p
            (py-execute-ge24.3 start end filename execute-directory py-exception-buffer proc))
-          ;; No need for a temporary filename than
           ((and filename wholebuf)
-           (py-execute-file-base proc filename nil py-buffer-name filename execute-directory))
+	   ;; No temporary file than
+	   (let (py-cleanup-temporary) 
+	     (py-execute-file-base proc filename nil py-buffer-name filename execute-directory)
+	     (py--close-execution)
+	     (py-shell-manage-windows py-buffer-name)))
           (t (py-execute-buffer-finally start end execute-directory wholebuf)))))
 
 (defun py-execute-buffer-finally (start end execute-directory wholebuf)
@@ -802,7 +806,7 @@ When optional FILE is `t', no temporary file is needed. "
          (tempfile (concat (expand-file-name py-temp-directory) py-separator-char (replace-regexp-in-string py-separator-char "-" temp) ".py"))
          (tempbuf (get-buffer-create temp))
          (wholebuf (when (boundp 'wholebuf) wholebuf))
-         erg lineadd output-buffer)
+         lineadd output-buffer)
     ;; (message "%s" strg)
     (set-buffer tempbuf)
     (erase-buffer)
@@ -1161,7 +1165,7 @@ Inserts an incentive true form \"if 1:\\n.\" "
 Avoid empty lines at the beginning. "
   (python-mode)
   (goto-char start)
-  (switch-to-buffer (current-buffer)) 
+  (switch-to-buffer (current-buffer))
   (while  ;; (empty-line-p)
       (eq 9 (char-after))
     (delete-region (line-beginning-position) (1+ (line-end-position))))

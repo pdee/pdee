@@ -1065,10 +1065,10 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'python-compilation-regexp-alist) nil \"python-compilation-regexp-alist not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall py-beginning-of-statement-test-1 \
 --funcall completion-at-gentoo-lp-1008842-test \
 --funcall docstring-style-switches-test \
 --funcall wrong-type-argument-inserted-chars-lp-1293172-test \
---funcall py-docstring-style-pep-257-nn-closing-quotes-lp-1241147-test \
 --funcall py-execute-buffer-python-switch-test \
 --funcall complaint-about-non-ASCII-character-lp-1042949-test \
 --funcall impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test \
@@ -1274,9 +1274,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall python-shell-complete-test \
 --funcall tqs-list-error-test \
 --funcall py-smart-operator-test \
---funcall py-down-statement-test \
---funcall previous-statement-lp:637955-test \
---funcall goto-beginning-of-tqs-lp:735328-test \
 --funcall python-mode-very-slow-lp-1107037-test \
 --funcall module-docstring-when-following-comment-lp-1102011-test \
 --funcall py-newline-and-indent-leaves-eol-whitespace-lp-1100892-test \
@@ -1355,3 +1352,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall not-that-useful-completion-lp:1003580-test \
 --funcall py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test \
 --funcall from-within-py-shell-call-another-instance-lp-1169687-test \
+--funcall py-docstring-style-pep-257-nn-closing-quotes-lp-1241147-test \
+--funcall py-down-statement-test \
+--funcall previous-statement-lp:637955-test \
+--funcall goto-beginning-of-tqs-lp:735328-test \

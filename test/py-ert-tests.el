@@ -190,6 +190,7 @@ result = some_function_that_takes_arguments(
 ''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
 '''
 "
+    ;; (switch-to-buffer (current-buffer)) 
   (message "comment-start: %s" comment-start)
   (goto-char 592)
   ;; (sit-for 1)

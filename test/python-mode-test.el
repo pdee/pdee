@@ -1574,13 +1574,11 @@ import sys, os; os.remove('do/something/nasty') # lp:1025000
 
 (defun py-beginning-of-statement-1-base ()
   (py-beginning-of-statement)
-  (assert (eq 163 (point)) nil "py-beginning-of-statement-test-1 #4 failed")
-  (assert (eq 131 (py-beginning-of-statement)) nil "py-beginning-of-statement-test-1 #3 failed")
-  (assert (eq 75 (py-beginning-of-statement)) nil "py-beginning-of-statement-test-1 #2 failed")
-  (assert (eq 65 (py-beginning-of-statement)) nil "py-beginning-of-statement-test-1 #2 failed")
-  (assert (eq 55 (py-beginning-of-statement)) nil "py-beginning-of-statement-test-1 #1 failed")
-
-  )
+  (assert (eq 132 (point)) nil "py-beginning-of-statement-test-1 #4 failed")
+  (assert (eq 116 (py-beginning-of-statement)) nil "py-beginning-of-statement-test-1 #3 failed")
+  (assert (eq 66 (py-beginning-of-statement)) nil "py-beginning-of-statement-test-1 #2 failed")
+  (assert (eq 56 (py-beginning-of-statement)) nil "py-beginning-of-statement-test-1 #2 failed")
+  (assert (eq 44 (py-beginning-of-statement)) nil "py-beginning-of-statement-test-1 #1 failed"))
 
 (defun key-binding-tests (&optional arg)
   (interactive "p")
@@ -2201,7 +2199,8 @@ asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf
 
 (defun py-down-statement-base ()
     (goto-char (point-min))
-    (assert (eq 31 (py-down-statement)) nil "py-down-statement-test failed"))
+    (py-down-statement)
+    (assert (eq 31 (point)) nil "py-down-statement-test failed"))
   (message "%s" "py-down-statement-test  done")
 
 (defun py-nested-block-or-clause-test (&optional arg)
