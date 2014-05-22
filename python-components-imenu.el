@@ -98,9 +98,7 @@ alternative for finding the index.")
   (if (eq major-mode 'python-mode)
       (progn
         (if (eq py--imenu-create-index-function 'py--imenu-create-index-new)
-            ;; (setq py--imenu-create-index-function 'py-imenu-create-index)
-            (set (make-local-variable 'py--imenu-create-index-function) 'py-imenu-create-index)
-          ;; (setq py--imenu-create-index-function 'py--imenu-create-index-new)
+            (set (make-local-variable 'py--imenu-create-index-function) 'py--imenu-create-index)
           (set (make-local-variable 'py--imenu-create-index-function) 'py--imenu-create-index-new))
         (when py-menu
           (easy-menu-add py-menu))
