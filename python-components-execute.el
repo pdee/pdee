@@ -1160,7 +1160,6 @@ Inserts an incentive true form \"if 1:\\n.\" "
 Avoid empty lines at the beginning. "
   (python-mode)
   (goto-char start)
-  (switch-to-buffer (current-buffer))
   (while  ;; (empty-line-p)
       (eq 9 (char-after))
     (delete-region (line-beginning-position) (1+ (line-end-position))))
@@ -1590,14 +1589,10 @@ If an exception occurred return error-string, otherwise return nil.  BUF must ex
 
 Indicate LINE if code wasn't run from a file, thus remember line of source buffer "
   (set-buffer buf)
-  ;; (sit-for 0.1)
-  (switch-to-buffer (current-buffer))
   (let ((pmx (copy-marker (point-max)))
-	;;  (let ((pmx (copy-marker (process-mark (get-buffer-process (current-buffer)))))
 	file bol estring ecode limit erg)
     (goto-char pmx)
     (sit-for 0.1)
-       (switch-to-buffer (current-buffer))
     (save-excursion
       (unless (looking-back py-pdbtrack-input-prompt)
         (forward-line -1)
@@ -1605,29 +1600,30 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
         (when (or (re-search-backward py-shell-prompt-regexp nil t 1)
                   ;; (and (string= "ipython" (process-name proc))
                   (re-search-backward (concat ipython-de-input-prompt-regexp "\\|" ipython-de-output-prompt-regexp) nil t 1))
-          ;; not a useful message, delete it - please tell when thinking otherwise
           (save-excursion
-            (when (re-search-forward "File \"\\(.+\\)\", line \\([0-9]+\\)\\(.+\\)$" nil t)
+            (when (re-search-forward "File \"\\(.+\\)\", line \\([0-9]+\\)\\(.*\\)$" nil t)
               (setq erg (copy-marker (point)))
-              (delete-region (line-beginning-position) (line-end-position))
-               (insert (concat "    File " (buffer-name py-exception-buffer) ", line "
-                       ;; (if (or wholebuf py-execute-no-temp-p)
-                       ;; (match-string 3)
-                         (prin1-to-string origline)
-                         ;; )
+              (delete-region (progn (beginning-of-line)
+				    (save-match-data 
+				    (when (looking-at
+					   ;; all prompt-regexp known
+					   py-fast-filter-re)
+				      (goto-char (match-end 0)))) 
 
-                       ))))
-          ;; ;; File "/tmp/ipython-3984xMQ.py", line 1
-          ;; ;; print(3*5f)
-          ;; (when (and (re-search-forward py-traceback-line-re limit t)
-          ;;            (match-string-no-properties 0)
-          ;;            (or (match-string 1) (match-string 3)))
-          ;;   (when (match-string-no-properties 1)
-          ;;     (replace-match (buffer-name py-exception-buffer) nil nil nil 1)
-          ;; (setq file py-exception-buffer)
-          ;; (and origline
-          ;;      (replace-match (number-to-string origline) nil nil nil 2))
-          ;; (goto-char (match-beginning 0))
+				    (skip-chars-forward " \t\r\n\f")(point))   (line-end-position))
+	      (insert (concat "    File " (buffer-name py-exception-buffer) ", line "
+			      ;; (if (or wholebuf py-execute-no-temp-p)
+			      ;; (match-string 3)
+			      (prin1-to-string origline)
+			      ;;)
+			      ))))
+	  ;; Delete links at temporary files created by py--execute-buffer-finally
+	  ;; these are let-bound as `tempbuf'
+	  (and (boundp 'tempbuf) 
+	       ;; (message "%s" tempbuf)
+	       (search-forward (buffer-name tempbuf) nil t)
+	       (delete-region (line-beginning-position) (1+ (line-end-position))) 
+	       )
           ;; if no buffer-file exists, signal "Buffer", not "File(when
           (when erg
             (goto-char erg)
@@ -1638,17 +1634,19 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
               (and (not (buffer-file-name
                          (or
                           (get-buffer py-exception-buffer)
-                          (get-buffer (file-name-nondirectory py-exception-buffer))))) (string-match "^[ \t]*File" (buffer-substring-no-properties (match-beginning 0) (match-end 0)))
+                          (get-buffer (file-name-nondirectory py-exception-buffer)))))
+		   (string-match "^[ \t]*File" (buffer-substring-no-properties (point)  (line-end-position)))
                           (looking-at "[ \t]*File")
                           (replace-match " Buffer")))
             (add-to-list 'py-error origline)
             (add-to-list 'py-error (buffer-name py-exception-buffer))
-            (overlay-put (make-overlay (match-beginning 0)
-				       erg
 
-				       ;; (match-end 0)
-				       )
-                         'face 'highlight)
+	    ;; (put-text-property (line-beginning-position) (line-end-position) 'font-lock-face 'comint-error)
+            ;; (put-text-property (line-beginning-position) (line-end-position) 'font-lock-face 'comint-highlight-prompt)
+	    ;; (overlay-put (make-overlay (line-beginning-position)
+	    ;; (1- (line-end-position) ))
+	    ;; 'face 'highlight)
+
             ;; If not file exists, just a buffer, correct message
             (forward-line 1)
             (when (looking-at "[ \t]*\\([^\t\n\r\f]+\\)[ \t]*$")
