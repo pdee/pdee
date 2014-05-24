@@ -33,7 +33,7 @@
   "Send to Python interpreter process PROC \"exec STRING in {}\".
 and return collected output"
   (let* (wait
-         (procbuf (or buffer (process-buffer proc) (progn (setq wait py-new-shell-delay) (py-shell nil nil shell nil t))))
+         (procbuf (or buffer (process-buffer proc) (progn (setq wait py-new-shell-delay) (py-shell nil nil shell))))
          (proc (or proc (get-buffer-process procbuf)))
 	 (cmd (format "exec '''%s''' in {}"
 		      (mapconcat 'identity (split-string string "\n") "\\n")))
@@ -634,7 +634,6 @@ to change if called with a prefix arg.
 Returns py-shell's buffer-name.
 Optional string PYSHELLNAME overrides default `py-shell-name'.
 BUFFER allows specifying a name, the Python process is connected to
-When DONE is `t', `py--shell-manage-windows' is omitted
 "
   (interactive "P")
   (setenv "PAGER" "cat")
@@ -695,7 +694,7 @@ When DONE is `t', `py--shell-manage-windows' is omitted
 (defun py-shell-get-process (&optional argprompt py-dedicated-process-p shell switch py-buffer-name)
   "Get appropriate Python process for current buffer and return it."
   (interactive)
-  (let ((erg (get-buffer-process (py-shell argprompt py-dedicated-process-p shell py-buffer-name t))))
+  (let ((erg (get-buffer-process (py-shell argprompt py-dedicated-process-p shell py-buffer-name))))
     (when (interactive-p) (message "%S" erg))
     erg))
 
@@ -773,9 +772,9 @@ When optional FILE is `t', no temporary file is needed. "
 		     ;; will deal with py-dedicated-process-p also
                      (py-fast-process-p (py-fast-process py-buffer-name))
                      (py-dedicated-process-p
-                      (get-buffer-process (py-shell nil py-dedicated-process-p which-shell py-buffer-name t)))
+                      (get-buffer-process (py-shell nil py-dedicated-process-p which-shell py-buffer-name)))
                      (t (or (get-buffer-process py-buffer-name)
-                            (get-buffer-process (py-shell nil py-dedicated-process-p which-shell py-buffer-name t))))))
+                            (get-buffer-process (py-shell nil py-dedicated-process-p which-shell py-buffer-name))))))
 	 erg)
     (setq py-error nil)
     (when py-debug-p (with-temp-file "/tmp/py-buffer-name.txt" (insert py-buffer-name)))
@@ -867,7 +866,7 @@ comint believe the user typed this string so that
 Returns position where output starts. "
   (let* ((cmd (or cmd (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" filename filename)))
          (msg (and py-verbose-p (format "## executing %s...\n" (or origfile filename))))
-         (py-output-buffer (or procbuf (py-shell nil nil nil procbuf t)))
+         (py-output-buffer (or procbuf (py-shell nil nil nil procbuf)))
          (proc (or proc (get-buffer-process py-output-buffer)))
          erg orig)
     (set-buffer py-output-buffer)
@@ -892,9 +891,9 @@ May we get rid of the temporary file? "
          (tempfile (or (buffer-file-name) (concat (expand-file-name py-temp-directory) py-separator-char (replace-regexp-in-string py-separator-char "-" "temp") ".py")))
 
          (proc (or proc (if py-dedicated-process-p
-                            (get-buffer-process (py-shell nil py-dedicated-process-p which-shell py-buffer-name t))
+                            (get-buffer-process (py-shell nil py-dedicated-process-p which-shell py-buffer-name))
                           (or (get-buffer-process py-buffer-name)
-                              (get-buffer-process (py-shell nil py-dedicated-process-p which-shell py-buffer-name t))))))
+                              (get-buffer-process (py-shell nil py-dedicated-process-p which-shell py-buffer-name))))))
          (procbuf (process-buffer proc))
          (file (or file (with-current-buffer py-buffer-name
                           (concat (file-remote-p default-directory) tempfile))))
@@ -1225,7 +1224,7 @@ This may be preferable to `\\[py-execute-buffer]' because:
     (if file
         (let ((proc (or
                      (ignore-errors (get-process (file-name-directory shell)))
-                     (get-buffer-process (py-shell argprompt py-dedicated-process-p shell (or shell (default-value 'py-shell-name)) t)))))
+                     (get-buffer-process (py-shell argprompt py-dedicated-process-p shell (or shell (default-value 'py-shell-name)))))))
           ;; Maybe save some buffers
           (save-some-buffers (not py-ask-about-save) nil)
           (py--execute-file-base proc file
@@ -1610,7 +1609,7 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
           (save-excursion
             (when (re-search-forward "File \"\\(.+\\)\", line \\([0-9]+\\)\\(.+\\)$" nil t)
               (setq erg (copy-marker (point)))
-              (delete-region (line-beginning-position) (line-end-position)) 
+              (delete-region (line-beginning-position) (line-end-position))
                (insert (concat "    File " (buffer-name py-exception-buffer) ", line "
                        ;; (if (or wholebuf py-execute-no-temp-p)
                        ;; (match-string 3)
@@ -1646,7 +1645,7 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
             (add-to-list 'py-error (buffer-name py-exception-buffer))
             (overlay-put (make-overlay (match-beginning 0)
 				       erg
-				       
+
 				       ;; (match-end 0)
 				       )
                          'face 'highlight)

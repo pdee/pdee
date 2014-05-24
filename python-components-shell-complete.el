@@ -150,7 +150,7 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
           (if ipython-complete-use-separate-shell-p
               (unless (and (buffer-live-p py-ipython-completions)
                            (comint-check-proc (process-name (get-buffer-process py-ipython-completions))))
-                (get-buffer-process (py-shell nil nil py-shell-name py-ipython-completions t)))
+                (get-buffer-process (py-shell nil nil py-shell-name py-ipython-completions)))
             (progn
               (while (and processlist (not done))
                 (when (and
@@ -160,7 +160,7 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
                 (setq processlist (cdr processlist)))
               done)))
          (proc (or process
-                   (get-buffer-process (py-shell nil nil (if (string-match "[iI][pP]ython[^[:alpha:]]*$"  py-shell-name) "ipython") nil t))))
+                   (get-buffer-process (py-shell nil nil (when (string-match "[iI][pP]ython[^[:alpha:]]*$"  py-shell-name) "ipython")))))
          (comint-output-filter-functions
           (delq 'py-comint-output-filter-function comint-output-filter-functions))
          (comint-preoutput-filter-functions
@@ -285,7 +285,7 @@ complete('%s')" word) shell nil proc)))
   (let* (wait
          (shell (or shell (py-choose-shell)))
          (proc (or (get-process shell)
-                   (get-buffer-process (progn (setq wait py-new-shell-delay) (py-shell nil nil shell nil t))))))
+                   (get-buffer-process (progn (setq wait py-new-shell-delay) (py-shell nil nil shell))))))
     (cond ((string= word "")
            (tab-to-tab-stop))
           ((string-match "[iI][pP]ython" shell)
