@@ -342,6 +342,17 @@ complete('%s')" word) shell nil proc)))
     ;; (goto-char pos)
     nil))
 
+(defun py-shell-complete-or-indent ()
+  "Complete or indent depending on the context.
+If content before pointer is all whitespace, indent.
+If not try to complete."
+  (interactive "*")
+  (if (string-match "^[[:space:]]*$"
+                    (buffer-substring (comint-line-beginning-position)
+                                      (point-marker)))
+      (indent-for-tab-command)
+    (completion-at-point)))
+
 (provide 'python-components-shell-complete)
 
 ;; pyshell-complete.el ends here

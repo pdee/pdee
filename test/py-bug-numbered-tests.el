@@ -5739,13 +5739,14 @@ def foo():
 ;;  (sit-for 1)
   (assert (and (bolp) (eolp)) nil "Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test #1 failed")
   (goto-char 140)
-  (fill-paragraph)
+  (fill-paragraph t)
   (end-of-line)
   (assert (eq 70 (current-column)) nil "Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test #2 failed")
-  (forward-line 4)
+  (forward-line 3)
   (assert (and (bolp) (eolp)) nil "Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test #3 failed")
   (goto-char 273)
-  (fill-paragraph)
+  (sit-for 0.1)
+  (fill-paragraph t)
   (end-of-line)
   (assert (eq 25 (current-column)) nil "Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test #4 failed"))
 
@@ -6365,6 +6366,19 @@ print(123)
 (defun shell-not-advanced-lp-1294809-base ()
   (py-execute-buffer)
   (assert nil "shell-not-advanced-lp-1294809-test failed"))
+
+
+(defun show-source-code-lp-1318991-test (&optional arg)
+  (interactive "p")
+   (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+1/0
+"))
+  (py-bug-tests-intern 'show-source-code-lp-1318991-base arg teststring)))
+
+(defun show-source-code-lp-1318991-base ()
+  (py-execute-buffer-python2-switch)
+  (assert nil "show-source-code-lp-1318991-test failed"))
 
 
 (provide 'py-bug-numbered-tests)

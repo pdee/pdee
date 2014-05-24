@@ -7742,7 +7742,7 @@ Complete symbol before point using Pymacs . "])
 Try to find source definition of function at point"]))))
         map))
 
-(defvaralias 'py-mode-map 'python-mode-map)
+;; (defvaralias 'py-mode-map 'python-mode-map)
 
 (when py-org-cycle-p
   (define-key python-mode-map (kbd "<backtab>") 'org-cycle))
@@ -7958,7 +7958,7 @@ This is a no-op if `py--check-comint-prompt' returns nil."
         (define-key map (kbd "RET") 'comint-send-input)
         (define-key map "\C-c-" 'py-up-exception)
         (define-key map "\C-c=" 'py-down-exception)
-        (define-key map (kbd "TAB") 'py-indent-line)
+        (define-key map (kbd "TAB") 'py-shell-complete-or-indent)
         ;; (define-key map [tab] 'tab-to-tab-stop)
         ;; (define-key map "\t" 'py-shell-complete)
         (define-key map [(meta tab)] 'py-shell-complete)
