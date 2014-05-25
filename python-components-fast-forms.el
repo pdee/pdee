@@ -23,8 +23,6 @@
 
 ;;; Process forms fast
 
-
-
 (defun py-fast-process (&optional buffer)
   "Connect am (I)Python process suitable for large output.
 
@@ -57,8 +55,7 @@ See also `py-fast-shell'
 	(proc (or (get-buffer-process (get-buffer py-buffer-name))
                   (py-fast-process))))
     (py--fast-send-string-intern string proc py-output-buffer)
-    (py--postprocess windows-config)))
-
+    (py--postprocess)))
 
 (defun py--fast-send-string-intern (string proc py-output-buffer)
   (let (erg)

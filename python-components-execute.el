@@ -843,19 +843,14 @@ When optional FILE is `t', no temporary file is needed. "
   (while (looking-at py-fast-filter-re)
     (replace-match "")))
 
-(defun py--postprocess (windows-config)
+(defun py--postprocess ()
   "Provide return values, check result for error, manage windows. "
-  (if
-      (setq py-error (save-excursion (py--postprocess-output-buffer py-output-buffer)))
-      (prog1
-	  (setq erg py-error)
-	(py--shell-manage-windows py-buffer-name nil windows-config))
-    (when py-store-result-p
-      ;; 	(sit-for 0.1)
-      (setq erg
-	    (py-output-filter (buffer-substring-no-properties (point) (point-max))))
-      (and erg (not (string= (car kill-ring) erg)) (kill-new erg)))
-    erg))
+  (setq py-error (save-excursion (py--postprocess-output-buffer py-output-buffer)))
+  (when py-store-result-p
+    (setq erg
+	  (py-output-filter (buffer-substring-no-properties (point) (point-max))))
+    (and erg (not (string= (car kill-ring) erg)) (kill-new erg)))
+  erg)
 
 (defun py--execute-file-base (&optional proc filename cmd procbuf origfile execute-directory)
   "Send to Python interpreter process PROC, in Python version 2.. \"execfile('FILENAME')\".
@@ -873,7 +868,7 @@ Returns position where output starts. "
     (goto-char (point-max))
     (setq orig (point))
     (comint-send-string proc cmd)
-    (setq erg (py--postprocess windows-config))
+    (setq erg (py--postprocess))
     (message "%s" py-error)
     erg))
 
@@ -1593,6 +1588,7 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
 	file bol estring ecode limit erg)
     (goto-char pmx)
     (sit-for 0.1)
+    (switch-to-buffer (current-buffer))
     (save-excursion
       (unless (looking-back py-pdbtrack-input-prompt)
         (forward-line -1)
@@ -1604,11 +1600,11 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
             (when (re-search-forward "File \"\\(.+\\)\", line \\([0-9]+\\)\\(.*\\)$" nil t)
               (setq erg (copy-marker (point)))
               (delete-region (progn (beginning-of-line)
-				    (save-match-data 
+				    (save-match-data
 				    (when (looking-at
 					   ;; all prompt-regexp known
 					   py-fast-filter-re)
-				      (goto-char (match-end 0)))) 
+				      (goto-char (match-end 0))))
 
 				    (skip-chars-forward " \t\r\n\f")(point))   (line-end-position))
 	      (insert (concat "    File " (buffer-name py-exception-buffer) ", line "
@@ -1619,10 +1615,10 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
 			      ))))
 	  ;; Delete links at temporary files created by py--execute-buffer-finally
 	  ;; these are let-bound as `tempbuf'
-	  (and (boundp 'tempbuf) 
+	  (and (boundp 'tempbuf)
 	       ;; (message "%s" tempbuf)
 	       (search-forward (buffer-name tempbuf) nil t)
-	       (delete-region (line-beginning-position) (1+ (line-end-position))) 
+	       (delete-region (line-beginning-position) (1+ (line-end-position)))
 	       )
           ;; if no buffer-file exists, signal "Buffer", not "File(when
           (when erg
