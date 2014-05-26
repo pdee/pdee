@@ -687,7 +687,7 @@ BUFFER allows specifying a name, the Python process is connected to
       ;; (add-hook 'py-shell-hook 'py-dirstack-hook)
       (and py-fontify-shell-buffer-p (font-lock-fontify-buffer))
       (goto-char (point-max))
-      (when (interactive-p) (py--shell-manage-windows py-buffer-name))
+      (when (or (string-match "[BbIi]*[Pp]ython" (prin1-to-string this-command))(interactive-p)) (py--shell-manage-windows py-buffer-name))
       (when py-shell-hook (run-hooks 'py-shell-hook)))
     py-buffer-name))
 
