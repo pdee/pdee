@@ -226,7 +226,7 @@ named for funcname or define a function funcname."
         (add-hook 'comint-output-filter-functions 'py--pdbtrack-track-stack-file t)
         (remove-hook 'comint-output-filter-functions 'python-pdbtrack-track-stack-file t))
     (remove-hook 'comint-output-filter-functions 'py--pdbtrack-track-stack-file t)
-    (remove-hook 'comint-output-filter-functions 'python-pdbtrack-track-stack-file t))
+    )
   (message "%sabled Python's pdbtrack"
            (if py-pdbtrack-do-tracking-p "En" "Dis")))
 

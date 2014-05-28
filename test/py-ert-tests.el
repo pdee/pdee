@@ -190,7 +190,7 @@ result = some_function_that_takes_arguments(
 ''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
 '''
 "
-    ;; (switch-to-buffer (current-buffer)) 
+    ;; (switch-to-buffer (current-buffer))
   (message "comment-start: %s" comment-start)
   (goto-char 592)
   ;; (sit-for 1)
@@ -592,12 +592,12 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
       (setq oldbuf (current-buffer))
       (goto-char (point-max))
       (insert "socket.")
-      (sit-for 0.1) 
-      ;; (switch-to-buffer (current-buffer)) 
+      (sit-for 0.1)
+      ;; (switch-to-buffer (current-buffer))
       (py-shell-complete)
-      (sit-for 0.1) 
+      (sit-for 0.1)
       (set-buffer "*Python Completions*")
-      ;; (switch-to-buffer (current-buffer)) 
+      ;; (switch-to-buffer (current-buffer))
       (goto-char (point-min))
       (sit-for 0.2)
       (prog1 (should (search-forward "socket."))
@@ -854,7 +854,7 @@ def foo():
 (ert-deftest py-ert-execute-statement-test ()
   (py-test-with-temp-buffer-point-min
       "print(\"I'm the py-execute-statement-test\")"
-    ;; (switch-to-buffer (current-buffer)) 
+    ;; (switch-to-buffer (current-buffer))
     (let ((py-shell-name "python"))
       (py-execute-statement)
       (set-buffer ert-test-default-buffer)
@@ -865,7 +865,7 @@ def foo():
   (py-test-with-temp-buffer-point-min
       "print(\"I'm the py-execute-statement-python2-test\")"
     (py-execute-statement-python2)
-    (switch-to-buffer (current-buffer)) 
+    ;; (switch-to-buffer (current-buffer))
     (set-buffer "*Python2*")
     (and (should (search-backward "py-execute-statement-python2-test" nil t 1))
 	 (py-kill-buffer-unconditional (current-buffer)))))
@@ -895,11 +895,14 @@ def foo():
   (ignore-errors (kill-buffer-unconditional (get-buffer "*Python*")))
   (py-shell nil nil "python")
   (set-buffer "*Python*")
-  (switch-to-buffer (current-buffer))
-  (py-send-string "import os" (get-buffer-process (current-buffer)))
-  (sit-for 0.1)
-  (insert "print(os.get")
-  (call-interactively 'py-shell-complete))
+  (delete-other-windows)
+  (let ((full-height (window-height)))
+    ;; (switch-to-buffer (current-buffer))
+    (py-send-string "import os" (get-buffer-process (current-buffer)))
+    (sit-for 0.1)
+    (insert "print(os.get")
+    (call-interactively 'py-shell-complete)
+    (should (< (window-height) full-height))))
 
 (ert-deftest py-ert-execute-statement-fast ()
   (py-test-with-temp-buffer-point-min
@@ -1226,7 +1229,7 @@ class kugel(object):
             datei.write(str(spiel[i]) + \"\\n\")
 "
     (font-lock-fontify-buffer)
-    (switch-to-buffer (current-buffer))
+    ;; (switch-to-buffer (current-buffer))
     (search-forward "+ \"")
 
     (py-hide-partial-expression)
