@@ -708,7 +708,7 @@ Used for debugging in \"*Python*\" shell buffer for example"
                ("(python-lib)Miscellaneous Index"))))
 
 ;; Find function stuff, lifted from python.el
-
+(defalias 'py-find-function 'py-find-definition)
 (defun py-find-definition (&optional symbol)
   "Find source of definition of SYMBOL.
 
@@ -767,8 +767,6 @@ Interactively, prompt for SYMBOL."
              (exchange-point-and-mark)
              (display-buffer oldbuf)))
       sourcefile)))
-
-(defalias 'py-find-function 'py-find-definition)
 
 (defun py-find-imports ()
   "Find top-level imports.
