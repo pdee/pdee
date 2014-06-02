@@ -997,7 +997,12 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
   (save-excursion
     (let ((count 0)
           (orig (point)))
-      (goto-char (point-min))
+      (save-match-data 
+	(if (eq major-mode 'python-mode)
+	    (goto-char (point-min))
+	  (if (re-search-backward py-fast-filter-re nil t 1)
+	  (goto-char (match-end 0))
+	  (error "py-count-lines: Don't see py-fast-filter-re here"))))
       (while (and (< (point) orig)(not (eobp)) (skip-chars-forward "^\n" orig))
         (setq count (1+ count))
         (unless (or (not (< (point) orig)) (eobp)) (forward-char 1)
