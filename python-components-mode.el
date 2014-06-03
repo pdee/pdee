@@ -7971,8 +7971,6 @@ This is a no-op if `py--check-comint-prompt' returns nil."
         (define-key map "\C-c-" 'py-up-exception)
         (define-key map "\C-c=" 'py-down-exception)
         (define-key map (kbd "TAB") 'py-shell-complete-or-indent)
-        ;; (define-key map [tab] 'tab-to-tab-stop)
-        ;; (define-key map "\t" 'py-shell-complete)
         (define-key map [(meta tab)] 'py-shell-complete)
         (define-key map [(control c)(!)] 'py-shell)
         map))

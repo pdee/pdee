@@ -27,7 +27,7 @@ completions on the current context."
     (let ((completions
            (py--send-string-no-output
             (format completion-code input) process)))
-      (sit-for 0.1) 
+      (sit-for 0.1)
       (when (> (length completions) 2)
         (split-string completions "^'\\|^\"\\|;\\|'$\\|\"$" t)))))
 
@@ -347,22 +347,38 @@ complete('%s')" word) shell nil proc)))
 	   (when (setq erg (try-completion (concat "/" word) filenames))
 	     (delete-region beg end)
 	     (insert erg)))
-	  ((or (eq major-mode 'comint-mode)(eq major-mode 'inferior-python-mode))
-	   (py-comint--complete shell pos beg end word imports debug))
+	  ;; ((or (eq major-mode 'comint-mode)(eq major-mode 'inferior-python-mode))
+	  ;; (py-comint--complete shell pos beg end word imports debug))
 	  (t (py-complete--base shell pos beg end word imports debug)))
     ;; (goto-char pos)
     nil))
 
 (defun py-shell-complete-or-indent ()
   "Complete or indent depending on the context.
-If content before pointer is all whitespace, indent.
-If not try to complete."
+
+If cursor is at current-indentation and further indent
+seems reasonable, indent. Otherwise try to complete "
   (interactive "*")
-  (if (string-match "^[[:space:]]*$"
-                    (buffer-substring (comint-line-beginning-position)
-                                      (point-marker)))
-      (indent-for-tab-command)
-    (completion-at-point)))
+  (let ((current 0)
+	indent count cui)
+    (if (string-match "^[[:space:]]*$"
+		      (buffer-substring (comint-line-beginning-position)
+					(point-marker)))
+	(indent-for-tab-command)
+      (setq indent (py-compute-indentation))
+      (setq cui (current-indentation))
+      (if (or (eq cui indent)
+	      (progn
+		;; indent might be less than outmost
+		;; see if in list of reasonable values
+		(setq count (/ indent py-indent-offset))
+		(while (< 0 count)
+		  (setq current (+ current py-indent-offset))
+		  (add-to-list 'values current)
+		  (setq count (1- count)))
+		(member cui values)))
+	  (funcall py-complete-function)
+	(py-indent-line)))))
 
 (provide 'python-components-shell-complete)
 
