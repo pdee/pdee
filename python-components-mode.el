@@ -1984,8 +1984,10 @@ See also `py-assignment-regexp' ")
 
 See also `py-operator-regexp' ")
 
-(defvar py-delimiter-regexp "\\(,\\|;\\|:\\)[ \t\n]"
+(defvar py-delimiter-regexp "\\(\\.[[:alnum:]]\\|,\\|;\\|:\\)[ \t\n]"
   "Delimiting elements of lists or other programming constructs. ")
+
+;; (setq py-delimiter-regexp "\\(\\.[[:alnum:]]\\|,\\|;\\|:\\)[ \t\n]")
 
 (defvar py-delimiter-chars ",;."
   "Chars delimiting elements of lists or other programming constructs. ")

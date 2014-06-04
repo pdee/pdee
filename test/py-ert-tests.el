@@ -1229,7 +1229,6 @@ class kugel(object):
             datei.write(str(spiel[i]) + \"\\n\")
 "
     (font-lock-fontify-buffer)
-    ;; (switch-to-buffer (current-buffer))
     (search-forward "+ \"")
 
     (py-hide-partial-expression)
@@ -1278,5 +1277,18 @@ x = {'abc':'def',
       (py-execute-statement)
       (message "%s" (prin1-to-string py-error))
       (should (and py-error (listp py-error))))))
+
+(ert-deftest py-ert-mark-expression-test ()
+    "Avoid infinite loop"
+  (py-test-with-temp-buffer
+      "assert pycompletions('TestClass.test' , name) == \
+          ['testclassmeth', 'testmeth', 'testprop', 'teststaticmeth']
+"
+    (py-mark-expression)
+    (should (eq 120 (mark)))
+    (goto-char 44)
+    (py-mark-expression)
+    (should (eq 46 (mark)))
+    ))
 
 (provide 'py-ert-tests)

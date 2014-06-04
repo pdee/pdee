@@ -38,8 +38,13 @@
     (setq end (funcall endform))
     (unless end (when (< beg (point))
                   (setq end (point))))
-    (when (interactive-p) (message "%s %s" beg end))
-    (cons beg end)))
+    (if (and beg end (<= beg orig) (<= orig end))
+	(progn
+	  (when (interactive-p) (message "%s %s" beg end))
+	  (cons beg end))
+      (when (interactive-p) (message "%s" "nil"))
+      (goto-char orig) 
+      nil)))
 
 (defun py-mark-base (form &optional py-mark-decorators)
   "Calls py--base, returns bounds of form, a cons. "
