@@ -560,9 +560,9 @@ py-new-shell-delay
 ------------------
 If a new comint buffer is connected to Python, commands like completion might need some delay. 
 
-py-send-receive-delay
----------------------
-Seconds to wait for output, used by `py-send-receive'. 
+py--send-receive-delay
+----------------------
+Seconds to wait for output, used by `py--send-receive'. 
 
 py-honor-IPYTHONDIR-p
 ---------------------
@@ -712,13 +712,13 @@ Hook run after entering python-mode-modeline-display mode.
 No problems result if this variable is not bound.
 `add-hook' automatically binds it.  (This is true for all hook variables.)
 
-py-imenu-create-index-p
------------------------
+py--imenu-create-index-p
+------------------------
 Non-nil means Python mode creates and displays an index menu of functions and global variables. 
 
-py-imenu-create-index-function
-------------------------------
-Switch between `py-imenu-create-index-new', which also lists modules variables,  and series 5. index-machine
+py--imenu-create-index-function
+-------------------------------
+Switch between `py--imenu-create-index-new', which also lists modules variables,  and series 5. index-machine
 
 py-shell-name
 -------------
@@ -926,8 +926,8 @@ Delete trailing whitespace maybe left by `py-newline-and-indent'.
 
 Default is `t'. See lp:1100892 
 
-py-warn-tmp-files-left-p
-------------------------
+py--warn-tmp-files-left-p
+-------------------------
 Messages a warning, when `py-temp-directory' contains files susceptible being left by previous Python-mode sessions. See also lp:987534 
 
 py-ipython-execute-delay
@@ -967,7 +967,7 @@ Python code to setup documentation retrieval.
 
 py-setup-codes
 --------------
-List of code run by `py-shell-send-setup-codes'.
+List of code run by `py--shell-send-setup-codes'.
 
 py-shell-prompt-regexp
 ----------------------

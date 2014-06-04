@@ -39,10 +39,15 @@ New commands
   same level, but goes up if no element left in level.  If callled
   from inside a string or list, go to its beginning.
 
-- py-kill-shell-unconditional
+- `py-kill-shell-unconditional'
   With optional argument SHELL, otherwise kill default
   (I)Python shell.
 
+- `py-shell-complete-or-indent'
+  In shell: complete or indent depending on the context.
+  If cursor is at current-indentation and further indent
+  seems reasonable, indent. Otherwise try to complete.
+  
 - Python specific hide-show
   py-hide-region
   py-show-region

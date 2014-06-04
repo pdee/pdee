@@ -469,8 +469,8 @@ Default is `t'.
 ** py-new-shell-delay
    If a new comint buffer is connected to Python, commands like completion might need some delay. 
 
-** py-send-receive-delay
-   Seconds to wait for output, used by `py-send-receive'. 
+** py--send-receive-delay
+   Seconds to wait for output, used by `py--send-receive'. 
 
 ** py-honor-IPYTHONDIR-p
    When non-nil ipython-history file is constructed by $IPYTHONDIR
@@ -592,11 +592,11 @@ Also used by (minor-)outline-mode
 No problems result if this variable is not bound.
 `add-hook' automatically binds it.  (This is true for all hook variables.)
 
-** py-imenu-create-index-p
+** py--imenu-create-index-p
    Non-nil means Python mode creates and displays an index menu of functions and global variables. 
 
-** py-imenu-create-index-function
-   Switch between `py-imenu-create-index-new', which also lists modules variables,  and series 5. index-machine
+** py--imenu-create-index-function
+   Switch between `py--imenu-create-index-new', which also lists modules variables,  and series 5. index-machine
 
 ** py-shell-name
    A PATH/TO/EXECUTABLE or default value `py-shell' may look for, if no shell is specified by command.
@@ -771,7 +771,7 @@ When editing other peoples code, this may produce a larger diff than expected
 
 Default is `t'. See lp:1100892 
 
-** py-warn-tmp-files-left-p
+** py--warn-tmp-files-left-p
    Messages a warning, when `py-temp-directory' contains files susceptible being left by previous Python-mode sessions. See also lp:987534 
 
 ** py-ipython-execute-delay
@@ -802,7 +802,7 @@ Default is nil
    Python code to setup documentation retrieval.
 
 ** py-setup-codes
-   List of code run by `py-shell-send-setup-codes'.
+   List of code run by `py--shell-send-setup-codes'.
 
 ** py-shell-prompt-regexp
    Regular Expression matching top-level input prompt of python shell.
