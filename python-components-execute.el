@@ -1588,38 +1588,32 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
 	file bol estring ecode limit erg)
     (goto-char pmx)
     (sit-for 0.1)
-    (switch-to-buffer (current-buffer))
+    ;; (switch-to-buffer (current-buffer))
     (save-excursion
       (unless (looking-back py-pdbtrack-input-prompt)
         (forward-line -1)
         (end-of-line)
         (when (or (re-search-backward py-shell-prompt-regexp nil t 1)
-                  ;; (and (string= "ipython" (process-name proc))
                   (re-search-backward (concat ipython-de-input-prompt-regexp "\\|" ipython-de-output-prompt-regexp) nil t 1))
           (save-excursion
             (when (re-search-forward "File \"\\(.+\\)\", line \\([0-9]+\\)\\(.*\\)$" nil t)
               (setq erg (copy-marker (point)))
               (delete-region (progn (beginning-of-line)
 				    (save-match-data
-				    (when (looking-at
-					   ;; all prompt-regexp known
-					   py-fast-filter-re)
-				      (goto-char (match-end 0))))
+				      (when (looking-at
+					     ;; all prompt-regexp known
+					     py-fast-filter-re)
+					(goto-char (match-end 0))))
 
-				    (skip-chars-forward " \t\r\n\f")(point))   (line-end-position))
+				    (skip-chars-forward " \t\r\n\f")(point)) (line-end-position))
 	      (insert (concat "    File " (buffer-name py-exception-buffer) ", line "
-			      ;; (if (or wholebuf py-execute-no-temp-p)
-			      ;; (match-string 3)
-			      (prin1-to-string origline)
-			      ;;)
-			      ))))
+			      (prin1-to-string origline)))))
 	  ;; Delete links at temporary files created by py--execute-buffer-finally
 	  ;; these are let-bound as `tempbuf'
 	  (and (boundp 'tempbuf)
 	       ;; (message "%s" tempbuf)
 	       (search-forward (buffer-name tempbuf) nil t)
-	       (delete-region (line-beginning-position) (1+ (line-end-position)))
-	       )
+	       (delete-region (line-beginning-position) (1+ (line-end-position))))
           ;; if no buffer-file exists, signal "Buffer", not "File(when
           (when erg
             (goto-char erg)
@@ -1631,16 +1625,16 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
                          (or
                           (get-buffer py-exception-buffer)
                           (get-buffer (file-name-nondirectory py-exception-buffer)))))
-		   (string-match "^[ \t]*File" (buffer-substring-no-properties (point)  (line-end-position)))
-                          (looking-at "[ \t]*File")
-                          (replace-match " Buffer")))
+		   (string-match "^[ \t]*File" (buffer-substring-no-properties (point) (line-end-position)))
+		   (looking-at "[ \t]*File")
+		   (replace-match " Buffer")))
             (add-to-list 'py-error origline)
             (add-to-list 'py-error (buffer-name py-exception-buffer))
 
 	    ;; (put-text-property (line-beginning-position) (line-end-position) 'font-lock-face 'comint-error)
             ;; (put-text-property (line-beginning-position) (line-end-position) 'font-lock-face 'comint-highlight-prompt)
 	    ;; (overlay-put (make-overlay (line-beginning-position)
-	    ;; (1- (line-end-position) ))
+	    ;; (1- (line-end-position)))
 	    ;; 'face 'highlight)
 
             ;; If not file exists, just a buffer, correct message
