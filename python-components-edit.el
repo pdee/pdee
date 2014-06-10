@@ -1138,15 +1138,6 @@ Store deleted statements in kill-ring "
                        current-line 0 (- 0 (length separator) 1)) lines))
     (mapconcat 'identity (nreverse lines) "\n")))
 
-(defun py--fix-this-indent (indent)
-  (unless (and (eq (current-indentation) (current-column))
-               (eq (current-column) indent))
-    (beginning-of-line)
-    (indent-to-column indent)
-    (delete-region
-     (point)
-     (progn (skip-chars-forward " \t") (point)))))
-
 (defun py-insert-super ()
   "Insert a function \"super()\" from current environment.
 
