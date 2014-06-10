@@ -41,7 +41,6 @@ Return the process"
       (with-current-buffer this-buffer
         (erase-buffer))
       (setq py-output-buffer this-buffer)
-;;      (switch-to-buffer this-buffer)
       proc)))
 
 (defun py--fast-send-string (string &optional windows-config)

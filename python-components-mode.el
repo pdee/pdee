@@ -2112,6 +2112,13 @@ for options to pass to the DOCNAME interpreter. \"
 			       "\\)")
   "Internally used by `py-fast-filter'. ")
 
+(defvar py-no-output-filter-re (concat "\\("
+			       (mapconcat 'identity
+					  (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
+					  "\\|")
+			       "\\)")
+  "Internally used by `py-comint-output-filter-function'. ")
+
 ;;; Constants
 (defconst py-blank-or-comment-re "[ \t]*\\($\\|#\\)"
   "regular expression matching a blank or comment line.")
@@ -2520,16 +2527,14 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
 (make-obsolete-variable 'jpython-mode-hook 'jython-mode-hook nil)
 
 (defun py--shell-send-setup-code (process)
-   "Send all setup code for shell.
+  "Send all setup code for shell.
 This function takes the list of setup code to send from the
 `py-setup-codes' list."
-  (accept-process-output process 1)
+  (accept-process-output process 5)
   (dolist (code py-setup-codes)
     (py--send-string-no-output
-     (symbol-value code) process)
-    (sit-for 0.1))
-  ;; (switch-to-buffer (current-buffer))
-  )
+     (py--fix-start (symbol-value code)) process)
+    (sit-for 0.1)))
 
 (defun py--docstring-p (&optional beginning-of-string-position)
   "Check to see if there is a docstring at POS."

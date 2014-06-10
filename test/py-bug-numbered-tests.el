@@ -680,7 +680,7 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
 
 (defun previous-statement-lp:637955 ()
   (beginning-of-line)
-  (py-previous-statement)
+  (py-beginning-of-statement)
   (sit-for 0.1)
   (assert (eq 31 (point)) nil "previous-statement-lp:637955-test failed."))
 
@@ -819,6 +819,7 @@ This docstring isn't indented, test should pass anyway.
 
 (defun goto-beginning-of-tqs-lp:735328 ()
   (goto-char 84)
+  (sit-for 0.1) 
   (assert (eq 4 (py-compute-indentation)) nil "goto-beginning-of-tqs-lp:735328-test failed")
   )
 

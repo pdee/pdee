@@ -23,13 +23,12 @@
   "Retrieve available completions for INPUT using PROCESS.
 Argument COMPLETION-CODE is the python code used to get
 completions on the current context."
-  (with-current-buffer (process-buffer process)
-    (let ((completions
-           (py--send-string-no-output
-            (format completion-code input) process)))
-      (sit-for 0.1)
-      (when (> (length completions) 2)
-        (split-string completions "^'\\|^\"\\|;\\|'$\\|\"$" t)))))
+  (let ((completions
+	 (py--send-string-return-output
+	  (format completion-code input) process)))
+    (sit-for 0.1)
+    (when (> (length completions) 2)
+      (split-string completions "^'\\|^\"\\|;\\|'$\\|\"$" t))))
 
 (defun py--shell--do-completion-at-point (process imports input orig)
   "Do completion at point for PROCESS."

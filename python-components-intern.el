@@ -1156,30 +1156,18 @@ Takes the result of (syntax-ppss)"
           (setq element (cdr element))))
       element)))
 
-(defun py-shell-send-string (string &optional process msg filename)
+(defun py-shell-send-string (string &optional process msg)
   "Send STRING to inferior Python PROCESS.
 When `py-verbose-p' and MSG is non-nil messages the first line of STRING."
   (interactive "sPython command: ")
-  (let* ((process (or process (get-buffer-process (py-shell))))
-         (lines (split-string string "\n"))
-         (temp-file-name (concat (with-current-buffer (process-buffer process)
-                                   (file-remote-p default-directory))
-                                 (py--normalize-directory py-temp-directory)
-                                 "psss-temp.py"))
-         (file-name (or filename (buffer-file-name) temp-file-name)))
-    (if (> (length lines) 1)
-        (let* ()
-          (with-temp-file temp-file-name
-            (insert string)
-            (delete-trailing-whitespace))
-          (py-send-file temp-file-name process temp-file-name))
-      (comint-send-string process string)
-      (when (or (not (string-match "\n$" string))
-                (string-match "\n[ \t].*\n?$" string))
-        (comint-send-string process "\n")))))
+  (let* ((process (or process (get-buffer-process (py-shell)))))
+    (comint-send-string process string)
+    (when (or (not (string-match "\n$" string))
+	      (string-match "\n[ \t].*\n?$" string))
+      (comint-send-string process "\n"))))
 
 (defun py--send-string-no-output (string &optional process msg)
-  "Send STRING to PROCESS and inhibit output.
+  "Send STRING to PROCESS and inhibit output display.
 When MSG is non-nil messages the first line of STRING.  Return
 the output."
   (let* (output
@@ -1207,27 +1195,29 @@ the output."
 
 When MSG is non-nil messages the first line of STRING.  Return
 the output."
-  (let* (output
-         (process (or process (get-buffer-process (py-shell))))
-         (comint-preoutput-filter-functions
-          (append comint-preoutput-filter-functions
-                  '(ansi-color-filter-apply
-                    (lambda (string)
-                      (setq output (concat output string))
-                      "")))))
-    (py-shell-send-string string process msg)
-    (accept-process-output process 5)
-    (when (and output (not (string= "" output)))
-      (setq output
-            (replace-regexp-in-string
-             (if (> (length py-shell-prompt-output-regexp) 0)
-                 (format "\n*%s$\\|^%s\\|\n$"
-                         py-shell-prompt-regexp
-                         (or py-shell-prompt-output-regexp ""))
-               (format "\n*$\\|^%s\\|\n$"
-                       py-shell-prompt-regexp))
-             "" output)))
-    output))
+  (with-current-buffer (process-buffer process)
+    (let* (output
+	   (process (or process (get-buffer-process (py-shell))))
+	   (comint-preoutput-filter-functions
+	    (append comint-preoutput-filter-functions
+		    '(ansi-color-filter-apply
+		      (lambda (string)
+			(setq output (concat output string))
+			"")))))
+      (py-shell-send-string string process msg)
+      (accept-process-output process 5)
+      (sit-for 0.1)
+      (when (and output (not (string= "" output)))
+	(setq output
+	      (replace-regexp-in-string
+	       (if (> (length py-shell-prompt-output-regexp) 0)
+		   (format "\n*%s$\\|^%s\\|\n$"
+			   py-shell-prompt-regexp
+			   (or py-shell-prompt-output-regexp ""))
+		 (format "\n*$\\|^%s\\|\n$"
+			 py-shell-prompt-regexp))
+	       "" output)))
+      output)))
 
 (defun py-which-def-or-class ()
   "Returns concatenated `def' and `class' names in hierarchical order, if cursor is inside.
