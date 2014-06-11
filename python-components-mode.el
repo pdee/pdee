@@ -2526,15 +2526,24 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
 
 (make-obsolete-variable 'jpython-mode-hook 'jython-mode-hook nil)
 
+
+(defun py--delete-all-but-first-prompt ()
+  "Don't let prompts from setup-codes sent clutter buffer. "
+  (let (last erg)
+    (when (re-search-backward py-fast-filter-re nil t 1)
+      (setq erg (match-end 0))
+      (while (and (re-search-backward py-fast-filter-re nil t 1) (setq erg (match-end 0))))
+      (delete-region erg (point-max)))))
+
 (defun py--shell-send-setup-code (process)
   "Send all setup code for shell.
 This function takes the list of setup code to send from the
 `py-setup-codes' list."
-  (accept-process-output process 5)
   (dolist (code py-setup-codes)
     (py--send-string-no-output
      (py--fix-start (symbol-value code)) process)
-    (sit-for 0.1)))
+    (sit-for 0.1))
+  (py--delete-all-but-first-prompt))
 
 (defun py--docstring-p (&optional beginning-of-string-position)
   "Check to see if there is a docstring at POS."

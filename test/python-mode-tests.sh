@@ -1060,12 +1060,9 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
 --funcall py-beginning-of-statement-test-1 \
---funcall completion-at-gentoo-lp-1008842-test \
 --funcall docstring-style-switches-test \
---funcall wrong-type-argument-inserted-chars-lp-1293172-test \
---funcall py-execute-buffer-python-switch-test \
---funcall complaint-about-non-ASCII-character-lp-1042949-test \
 --funcall impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test \
+--funcall complaint-about-non-ASCII-character-lp-1042949-test \
 --funcall UnicodeEncodeError-python3-test \
 --funcall UnicodeEncodeError-lp:550661-test \
 --funcall filename-completion-fails-in-ipython-lp-1027265-n1-test \
@@ -1350,3 +1347,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-down-statement-test \
 --funcall previous-statement-lp:637955-test \
 --funcall goto-beginning-of-tqs-lp:735328-test \
+--funcall completion-at-gentoo-lp-1008842-test \
+--funcall py-execute-buffer-python-switch-test \
+--funcall wrong-type-argument-inserted-chars-lp-1293172-test \

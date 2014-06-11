@@ -3122,7 +3122,7 @@ for something:
   (interactive "p")
   (let ((teststring "# -*- coding: utf-8 -*-
 
-# 11–14
+# 11–14 ä
 "))
   (py-bug-tests-intern 'complaint-about-non-ASCII-character-lp-1042949-base arg teststring)))
 
@@ -5400,7 +5400,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.102 $\"
+__version__ = \"$Revision: 1.103 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))

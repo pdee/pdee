@@ -1610,7 +1610,6 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
 	file bol estring ecode limit erg)
     (goto-char pmx)
     (sit-for 0.1)
-    ;; (switch-to-buffer (current-buffer))
     (save-excursion
       (unless (looking-back py-pdbtrack-input-prompt)
         (forward-line -1)

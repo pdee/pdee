@@ -1095,7 +1095,6 @@ Eval resulting buffer to install it, see customizable `py-extensions'. "
          erg newshell prefix akt end orig curexe aktpath)
     (set-buffer (get-buffer-create py-extensions))
     (erase-buffer)
-;;    (switch-to-buffer (current-buffer))
     (dolist (elt shells)
       (setq prefix "")
       (setq curexe (substring elt (1+ (string-match "/[^/]+$" elt))))
