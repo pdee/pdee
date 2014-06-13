@@ -80,7 +80,7 @@ FILE-NAME."
          (file-name (or (expand-file-name file-name) temp-file-name)))
     (when (not file-name)
       (error "If FILE-NAME is nil then TEMP-FILE-NAME must be non-nil"))
-    (py-shell-send-string
+    (py-send-string
      (format
       (concat "__pyfile = open('''%s''');"
               "exec(compile(__pyfile.read(), '''%s''', 'exec'));"

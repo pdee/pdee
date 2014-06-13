@@ -1155,15 +1155,37 @@ Takes the result of (syntax-ppss)"
           (setq element (cdr element))))
       element)))
 
-(defun py-shell-send-string (string &optional process msg)
+;; (defun py-shell-send-string (string &optional process msg)
+;; "Send STRING to inferior Python PROCESS.
+;; When `py-verbose-p' and MSG is non-nil messages the first line of STRING."
+;; (interactive "sPython command: ")
+;; (let* ((process (or process (get-buffer-process (py-shell)))))
+;; (comint-send-string process string)
+;; (when (or (not (string-match "\n$" string))
+;; (string-match "\n[ \t].*\n?$" string))
+;; (comint-send-string process "\n"))))
+;;
+
+(defun py-shell-send-string (string &optional process msg filename)
   "Send STRING to inferior Python PROCESS.
 When `py-verbose-p' and MSG is non-nil messages the first line of STRING."
   (interactive "sPython command: ")
-  (let* ((process (or process (get-buffer-process (py-shell)))))
-    (comint-send-string process string)
-    (when (or (not (string-match "\n$" string))
-	      (string-match "\n[ \t].*\n?$" string))
-      (comint-send-string process "\n"))))
+  (let* ((process (or process (get-buffer-process (py-shell))))
+         (lines (split-string string "\n"))
+         (temp-file-name (concat (with-current-buffer (process-buffer process)
+                                   (file-remote-p default-directory))
+                                 (py--normalize-directory py-temp-directory)
+                                 "psss-temp.py"))
+         (file-name (or filename (buffer-file-name) temp-file-name)))
+    (if (> (length lines) 1)
+	(with-temp-file temp-file-name
+	  (insert string)
+	  (delete-trailing-whitespace)
+	  (py-send-file temp-file-name process temp-file-name))
+      (comint-send-string process string)
+      (when (or (not (string-match "\n$" string))
+                (string-match "\n[ \t].*\n?$" string))
+        (comint-send-string process "\n")))))
 
 (defun py--send-string-no-output (string &optional process msg)
   "Send STRING to PROCESS and inhibit output display.
