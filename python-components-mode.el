@@ -7821,16 +7821,6 @@ Interactively output of `--version' is displayed. "
 Don't save anything for STR matching `py-history-filter-regexp'."
   (not (string-match py-history-filter-regexp str)))
 
-;; Fixme: Loses with quoted whitespace.
-(defun py--args-to-list (string)
-  (let ((where (string-match "[ \t]" string)))
-    (cond ((null where) (list string))
-          ((not (= where 0))
-           (cons (substring string 0 where)
-                 (py--args-to-list (substring string (+ 1 where)))))
-          (t (let ((pos (string-match "[^ \t]" string)))
-               (if pos (py--args-to-list (substring string pos))))))))
-
 (defun py-load-file (file-name)
   "Load a Python file FILE-NAME into the inferior Python process.
 
