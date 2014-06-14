@@ -7831,15 +7831,6 @@ Don't save anything for STR matching `py-history-filter-regexp'."
           (t (let ((pos (string-match "[^ \t]" string)))
                (if pos (py--args-to-list (substring string pos))))))))
 
-(defun py--send-command (command)
-  "Like `py-send-string' but resets `compilation-shell-minor-mode'."
-  (when (py--check-comint-prompt)
-    (with-current-buffer (process-buffer (python-proc))
-      (goto-char (point-max))
-      (compilation-forget-errors)
-      (py-send-string command)
-      (setq compilation-last-buffer (current-buffer)))))
-
 (defun py-load-file (file-name)
   "Load a Python file FILE-NAME into the inferior Python process.
 
