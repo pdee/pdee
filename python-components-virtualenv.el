@@ -63,27 +63,19 @@
   (interactive)
   (message virtualenv-name))
 
-(defun virtualenv-activate (dir)
-  "Activate the virtualenv located in DIR"
-  (interactive "DVirtualenv Directory: ")
-  (let ((cmd (concat "source " dir "/bin/activate\n")))
-    (comint-send-string (get-process (get-buffer-process "*shell*")) cmd)
-    ;; (comint-send-input (get-process (get-buffer-process "*shell*")) "\n")
-    ))
-
 (defun virtualenv-deactivate (dir)
   "Activate the virtualenv located in DIR"
   (interactive "DVirtualenv Directory: ")
   (shell-command "deactivate"))
 
-(defun virtualenv-activate ()
-  (interactive) 
-  (let ((venv  (getenv "VIRTUAL_ENV"))))
-
+(defun virtualenv-activate (dir)
+  "Activate the virtualenv located in DIR"
+  (interactive "DVirtualenv Directory: ")
   ;; Eventually deactivate previous virtualenv
   (when virtualenv-name
     (virtualenv-deactivate))
-
+  (let ((cmd (concat "source " dir "/bin/activate\n")))
+    (comint-send-string (get-process (get-buffer-process "*shell*")) cmd)
   ;; Storing old variables
   (setq virtualenv-old-path (getenv "PATH"))
   (setq virtualenv-old-exec-path exec-path)
@@ -94,6 +86,7 @@
 
   (setq virtualenv-name dir)
 )
+  )
   ;; (message (concat "Virtualenv '" virtualenv-name "' activated.")))
 
 (defun virtualenv-deactivate ()

@@ -30,7 +30,7 @@ completions on the current context."
     (when (> (length completions) 2)
       (split-string completions "^'\\|^\"\\|;\\|'$\\|\"$" t))))
 
-(defun py--shell--do-completion-at-point (process imports input orig)
+(defun py--shell--do-completion-at-point (process imports input orig oldbuf)
   "Do completion at point for PROCESS."
   (with-syntax-table py-dotted-expression-syntax-table
     (when imports
@@ -133,7 +133,7 @@ completions on the current context."
   (goto-char end))
 
 (defalias 'ipyhton-complete 'ipython-complete)
-(defun ipython-complete (&optional done completion-command-string beg end word shell debug imports pos)
+(defun ipython-complete (&optional done completion-command-string beg end word shell debug imports pos oldbuf)
   "Complete the python symbol before point.
 
 If no completion available, insert a TAB.
@@ -290,7 +290,7 @@ complete('%s')" word) shell nil proc)))
               ;; (t (py--shell-complete-intern word beg end shell imports proc))
               )))))
 
-(defun py-complete--base (shell pos beg end word imports debug)
+(defun py-complete--base (shell pos beg end word imports debug oldbuf)
   (let* (wait
          (shell (or shell (py-choose-shell)))
          (proc (or (get-process shell)
@@ -298,10 +298,10 @@ complete('%s')" word) shell nil proc)))
     (cond ((string= word "")
            (tab-to-tab-stop))
           ((string-match "[iI][pP]ython" shell)
-           (ipython-complete nil nil beg end word shell debug imports pos))
+           (ipython-complete nil nil beg end word shell debug imports pos oldbuf))
           (t
            ;; (string-match "[pP]ython3[^[:alpha:]]*$" shell)
-           (py--shell--do-completion-at-point proc imports word pos))
+           (py--shell--do-completion-at-point proc imports word pos oldbuf))
           ;; (t (py--shell-complete-intern word beg end shell imports proc debug))
 )))
 
@@ -348,7 +348,7 @@ complete('%s')" word) shell nil proc)))
 	     (insert erg)))
 	  ;; ((or (eq major-mode 'comint-mode)(eq major-mode 'inferior-python-mode))
 	  ;; (py-comint--complete shell pos beg end word imports debug))
-	  (t (py-complete--base shell pos beg end word imports debug)))
+	  (t (py-complete--base shell pos beg end word imports debug oldbuf)))
     ;; (goto-char pos)
     nil))
 
