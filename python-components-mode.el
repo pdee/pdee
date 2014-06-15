@@ -1307,11 +1307,15 @@ Default /usr/bin/bpython"
   :type 'boolean
   :group 'python-mode)
 
+(defvar py-history-filter-regexp "\\`\\s-*\\S-?\\S-?\\s-*\\'\\|'''/tmp/\\|^__pyfile = open('''\\|^execfile(r'[.+]/tmp/")
+
 (defcustom py-history-filter-regexp "\\`\\s-*\\S-?\\S-?\\s-*\\'\\|'''/tmp/"
   "Input matching this regexp is not saved on the history list.
 Default ignores all inputs of 0, 1, or 2 non-blank characters."
   :type 'regexp
   :group 'python-mode)
+
+;; (setq py-history-filter-regexp "\\`\\s-*\\S-?\\S-?\\s-*\\'\\|'''/tmp/\\|^__pyfile = open('''\\|^execfile(r'[.+]/tmp/")
 
 (defcustom py-match-paren-mode nil
   "Non-nil means, cursor will jump to beginning or end of a block.
@@ -1913,8 +1917,6 @@ can write into: the value (if any) of the environment variable TMPDIR,
 (defvar hs-hide-comments-when-hiding-all t
   "Defined in hideshow.el, silence compiler warnings here. ")
 
-(defvar py-history-filter-regexp "\\`\\s-*\\S-?\\S-?\\s-*\\'\\|'''/tmp/\\|^__pyfile = open('''\\|^execfile(r'[.+]/tmp/")
-
 (defvar py-force-local-shell-p nil
   "Used internally, see `toggle-force-local-shell'. ")
 
@@ -2439,8 +2441,6 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
 
 ;; prevent ipython.el's setting
 (setq ipython-de-input-prompt-regexp "In \\[[0-9]+\\]:\\|^[ ]\\{3\\}[.]\\{3,\\}:" )
-
-(setq py-history-filter-regexp "\\`\\s-*\\S-?\\S-?\\s-*\\'\\|'''/tmp/\\|^__pyfile = open('''\\|^execfile(r'[.+]/tmp/")
 
 (defsubst py-keep-region-active ()
   "Keep the region active in XEmacs."
@@ -5339,14 +5339,7 @@ Return the current Python symbol\. "]
                    :help "`py-help-at-point'\n
 Use pydoc on symbol at point"]
 
-		  ["Report comint variable setting" py-report-comint-variable-setting
-		   :help " `py-report-comint-variable-setting'
-
-Display some comint-mode variables of interest for debugging\.
-
-Some vars like comint-mode maps and tables are not displayed here because of its amount\.
-
-Typing `q' will close the buffer displayed "])
+		  )
 
                  ("Debugger"
 
