@@ -547,7 +547,8 @@ Receives a buffer-name as argument"
 (defun py--shell-setup (proc)
   (set (make-local-variable 'comint-input-filter) 'py-history-input-filter)
   (set (make-local-variable 'comint-prompt-read-only) py-shell-prompt-read-only)
-  (set (make-local-variable 'comint-use-prompt-regexp) nil)
+  ;; It might be useful having a different setting of `comint-use-prompt-regexp' in py-shell - please report when a use-case shows up
+  ;; (set (make-local-variable 'comint-use-prompt-regexp) nil)
   (set (make-local-variable 'compilation-error-regexp-alist)
        python-compilation-regexp-alist)
   ;; (setq completion-at-point-functions nil)
