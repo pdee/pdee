@@ -7829,13 +7829,12 @@ module-qualified names."
 
 Start a new process if necessary. "
   (interactive)
-  (let (py-split-windows-on-execute-p
-        (erg
+  (let ((erg
          (cond ((and (not py-dedicated-process-p) (comint-check-proc (current-buffer)))
-         (get-buffer-process (buffer-name (current-buffer))))
-        ((not py-dedicated-process-p)
-         (get-buffer-process (py-shell)))
-        ((py-shell nil py-dedicated-process-p)))))
+		(get-buffer-process (buffer-name (current-buffer))))
+	       ((not py-dedicated-process-p)
+		(get-buffer-process (py-shell)))
+	       ((py-shell nil py-dedicated-process-p)))))
     (when (interactive-p) (message "%S" erg))
     erg))
 
@@ -7855,22 +7854,7 @@ Start a new process if necessary. "
   'py-shell-dynamic-simple-complete
   'comint-dynamic-simple-complete)
 
-;;; Completion.
-(defun py--send-receive (string)
-  "Send STRING to inferior Python (if any) and return result.
-
-This is a no-op if `py--check-comint-prompt' returns nil."
-  (or (py--send-string-no-output string)
-      (let ((proc (py-proc)))
-        (with-current-buffer (process-buffer proc)
-          (when (py--check-comint-prompt proc)
-            (set (make-local-variable 'py-preoutput-result) nil)
-            (accept-process-output proc 5)
-            (prog1 py-preoutput-result
-              (kill-local-variable 'py-preoutput-result)))))))
-
 ;;;; Modes.
-
 ;; pdb tracking is alert once this file is loaded, but takes no action if
 
 ;; (setq pdb-path '/usr/lib/python2.7/pdb.py
