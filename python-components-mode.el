@@ -2549,8 +2549,8 @@ This function takes the list of setup code to send from the
 (defun py--docstring-p (&optional beginning-of-string-position)
   "Check to see if there is a docstring at POS."
   (let* (pps
-         (pos (or beginning-of-string-position
-                  (and (nth 3 (setq pps (syntax-ppss))) (nth 8 pps)))))
+	 (pos (or beginning-of-string-position
+		  (and (nth 3 (setq pps (syntax-ppss))) (nth 8 pps)))))
     (save-restriction
       (widen)
       (save-excursion

@@ -41,7 +41,7 @@ completions on the current context."
              input process code))
            ;; (completion (when completions
 	   ;; (try-completion input completions)))
-	   newlist)
+	   newlist erg)
       (with-current-buffer oldbuf
         (cond ((eq completion t)
 	       (and py-verbose-p (message "py--shell--do-completion-at-point %s" "`t' is returned, not completion. Might be a bug."))
@@ -52,7 +52,7 @@ completions on the current context."
               ((ignore-errors (not (string= input completion)))
                (progn (delete-char (- (length input)))
                       (insert completion)
-                      (move-marker pos (point))
+                      (move-marker orig (point))
                       ;; minibuffer.el expects a list, a bug IMO
                       nil))
               (t
@@ -67,9 +67,9 @@ completions on the current context."
                (with-output-to-temp-buffer py-python-completions
                  (display-completion-list
                   (all-completions input (or newlist completion))))
-               (move-marker pos (point))
+               (move-marker orig (point))
                nil))
-	(and (goto-char pos)
+	(and (goto-char orig)
 	     nil)))))
 
 (defun py-python2-shell-complete (&optional shell)
