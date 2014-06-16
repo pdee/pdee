@@ -273,7 +273,7 @@ See lp:1066489 "
       (skip-chars-backward "\"'")
       (delete-region (point) (progn (skip-chars-backward " \t\r\n\f")(point))))))
 
-(defun py--fill-fix-end (thisend orig)
+(defun py--fill-fix-end (thisend orig docstring)
   ;; Add the number of newlines indicated by the selected style
   ;; at the end.
   (widen)
@@ -287,7 +287,7 @@ See lp:1066489 "
   (indent-region docstring thisend)
   (goto-char orig))
 
-(defun py--fill-docstring-base ()
+(defun py--fill-docstring-base (thisbeg thisend style multi-line-p first-line-p beg end)
   (widen)
   (narrow-to-region thisbeg thisend)
   (setq delimiters-style
@@ -316,7 +316,7 @@ See lp:1066489 "
     (and multi-line-p first-line-p
 	 (forward-line 1)
 	 (unless (empty-line-p) (insert "\n"))))
-  (py--fill-fix-end thisend orig))
+  (py--fill-fix-end thisend orig docstring))
 
 (defun py--fill-docstring-last-line ()
   (widen)
@@ -330,7 +330,7 @@ See lp:1066489 "
   (when multi-line-p
     ;; adjust the region to fill according to style
     (goto-char end)
-    (py--fill-docstring-base))
+    (py--fill-docstring-base thisbeg thisend style multi-line-p first-line-p beg end))
   (goto-char orig))
 
 (defun py--fill-docstring-first-line ()
@@ -350,7 +350,7 @@ See lp:1066489 "
       ;; if TQS is at a single line, re-fill remaining line
       (setq beg (point))
       (fill-region beg end))
-    (py--fill-docstring-base)))
+    (py--fill-docstring-base thisbeg thisend style multi-line-p first-line-p beg end)))
 
 (defun py--fill-docstring (justify style docstring)
   ;; Delete spaces after/before string fence
@@ -388,7 +388,7 @@ See lp:1066489 "
            (py--fill-docstring-last-line))
           (t (narrow-to-region beg end)
 	     (fill-region beg end justify)))
-    (py--fill-docstring-base)))
+    (py--fill-docstring-base thisbeg thisend style multi-line-p first-line-p beg end)))
 
 (defun py-fill-string (&optional justify style docstring)
   "String fill function for `py-fill-paragraph'.
