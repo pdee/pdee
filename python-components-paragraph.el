@@ -273,7 +273,7 @@ See lp:1066489 "
       (skip-chars-backward "\"'")
       (delete-region (point) (progn (skip-chars-backward " \t\r\n\f")(point))))))
 
-(defun py--fill-fix-end ()
+(defun py--fill-fix-end (thisend orig)
   ;; Add the number of newlines indicated by the selected style
   ;; at the end.
   (widen)
@@ -316,7 +316,7 @@ See lp:1066489 "
     (and multi-line-p first-line-p
 	 (forward-line 1)
 	 (unless (empty-line-p) (insert "\n"))))
-  (py--fill-fix-end))
+  (py--fill-fix-end thisend orig))
 
 (defun py--fill-docstring-last-line ()
   (widen)
