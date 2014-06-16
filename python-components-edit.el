@@ -134,7 +134,7 @@ With optional \\[universal-argument] an indent with length `py-indent-offset' is
                    (beginning-of-line))))))
     (insert-tab)))
 
-(defun py--indent-line-base ()
+(defun py--indent-line-base (beg end region cui need arg this-indent-offset col)
   (unless (and (not (eq this-command last-command))
                (eq cui need))
     (cond ((eq 4 (prefix-numeric-value arg))
@@ -225,7 +225,7 @@ C-q TAB inserts a literal TAB-character."
                          (if region
                              (save-excursion (goto-char beg) (py-compute-indentation nil nil nil nil nil nil this-indent-offset))
                            (py-compute-indentation nil nil nil nil nil nil this-indent-offset))))
-            (py--indent-line-base)
+            (py--indent-line-base beg end region cui need arg this-indent-offset col)
             (if region
                 (and (or py-tab-shifts-region-p
                          py-tab-indents-region-p)
