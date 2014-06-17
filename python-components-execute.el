@@ -609,7 +609,7 @@ Receives a buffer-name as argument"
        (remove-hook 'comint-output-filter-functions 'python-pdbtrack-track-stack-file t))
   (set-syntax-table python-mode-syntax-table))
 
-(defun py--guess-buffer-name ()
+(defun py--guess-buffer-name (argprompt)
   "Guess the buffer-name core string. "
   (cond
    ((and py-fast-process-p (not py-dedicated-process-p)) py-output-buffer)
@@ -670,7 +670,7 @@ BUFFER allows specifying a name, the Python process is connected to
               (expand-file-name py-shell-local-path)
             (when py-use-local-default
               (error "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'"))))
-         (py-buffer-name (or buffer-name (py--guess-buffer-name)))
+         (py-buffer-name (or buffer-name (py--guess-buffer-name argprompt)))
          (py-buffer-name (or py-buffer-name (py--buffer-name-prepare newpath)))
          (executable (cond (py-shell-name)
                            (py-buffer-name
