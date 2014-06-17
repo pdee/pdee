@@ -469,7 +469,7 @@ Returns position reached if point was moved. "
 	 (setq done t)
 	 (and (< (point) orig) (point)))))
 
-(defun py--eos-in-string ()
+(defun py--eos-in-string (pps)
   "Return stm, i.e. if string is part of a (print)-statement. "
   (let ((orig (point))
         pos stm)
@@ -502,7 +502,7 @@ Returns position reached if point was moved. "
         (pps (parse-partial-sexp (point-min) (point)))
         stm)
     (cond ((nth 3 pps)
-           (and (py--eos-in-string) (not (eobp)) (py--end-of-statement-intern)))
+           (and (py--eos-in-string pps) (not (eobp)) (py--end-of-statement-intern)))
           ((nth 4 pps)
            (py--end-of-comment-intern pos))
           ((nth 1 pps)
@@ -1060,58 +1060,6 @@ Return beginning position, nil if not inside."
           (py-beginning-of-list-pps iact last ppstart orig done))
       (when iact (message "%s" last))
       last)))
-
-(defun py-beginning-of-list (&optional iact orig limit done last)
-  "Go to beginning of any parentized, braced or bracketed expression in statement. "
-  (interactive "p")
-  (save-restriction
-    (let ((orig (or orig (point)))
-          (done done)
-          (limit (or limit (re-search-backward "^[a-zA-Z]" nil t 1)))
-          (last last))
-      (unless (or done (not limit)) (narrow-to-region limit (point-max)))
-      (setq done t)
-      (goto-char orig)
-      (let* ((pt (car-safe (ar-in-parentized-p-atpt)))
-             (br (car-safe (ar-in-braced-p-atpt)))
-             (bk (car-safe (ar-in-bracketed-p-atpt)))
-             (erg (car (sort (delq nil (list pt br bk)) '<))))
-        (if erg
-            (progn
-              (goto-char (1- erg))
-              (setq last erg)
-              (py-beginning-of-list iact (1- erg) limit done last))
-          (when last
-            (goto-char last))
-          (when iact (message "%s" last))
-          last)))))
-
-(defun py-end-of-list (&optional iact orig limit done last)
-  "Go to end of any parentized, braced or bracketed expression in statement. "
-  (interactive "p")
-  (save-restriction
-    (let ((orig (or orig (point)))
-          (done done)
-          (limit (or limit (re-search-backward "^[a-zA-Z]" nil t 1)))
-          (last last))
-      (unless (or done (not limit)) (narrow-to-region limit (point-max)))
-      (setq done t)
-      (goto-char orig)
-      (let* ((pt (car-safe (ar-in-parentized-p-atpt)))
-             (br (car-safe (ar-in-braced-p-atpt)))
-             (bk (car-safe (ar-in-bracketed-p-atpt)))
-             (erg (car (sort (delq nil (list pt br bk)) '<))))
-        (if erg
-            (progn
-              (goto-char (1- erg))
-              (setq last erg)
-              (py-end-of-list iact (1- erg) limit done last))
-          (when last
-            (goto-char last)
-            (match-paren)
-            (setq last (1+ (point)))
-            (when iact (message "%s" last))
-            last))))))
 
 (defun py-forward-into-nomenclature (&optional arg iact)
   "Move forward to end of a nomenclature section or word.

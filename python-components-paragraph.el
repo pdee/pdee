@@ -352,7 +352,7 @@ See lp:1066489 "
       (fill-region beg end))
     (py--fill-docstring-base thisbeg thisend style multi-line-p first-line-p beg end)))
 
-(defun py--fill-docstring (justify style docstring)
+(defun py--fill-docstring (justify style docstring orig)
   ;; Delete spaces after/before string fence
   (py--string-fence-delete-spaces docstring)
   (let* ((thisbeg docstring)
@@ -409,7 +409,7 @@ Fill according to `py-docstring-style' "
 		       (py--in-or-behind-or-before-a-docstring)
 		     docstring)))
     (if (and docstring (or style py-docstring-style))
-	(py--fill-docstring justify style docstring)
+	(py--fill-docstring justify style docstring orig)
       (fill-paragraph justify))))
 
 (defun py-fill-paragraph (&optional justify)
