@@ -2803,10 +2803,10 @@ See original source: http://pymacs.progiciels-bpi.ca"
            (add-to-list 'load-path (concat (expand-file-name py-install-directory) "test"))
            (add-to-list 'load-path (concat (expand-file-name py-install-directory) "tools"))
            (add-to-list 'load-path (concat (expand-file-name py-install-directory) "autopair")))
-          ((when py-guess-py-install-directory-p
-             (let ((guessed-py-install-directory (py-guess-py-install-directory)))
-               (when guessed-py-install-directory
-                 (add-to-list 'load-path guessed-py-install-directory)))))
+          (py-guess-py-install-directory-p
+	   (let ((guessed-py-install-directory (py-guess-py-install-directory)))
+	     (when guessed-py-install-directory
+	       (add-to-list 'load-path guessed-py-install-directory))))
           (t (error "Please set `py-install-directory', see INSTALL"))
           (when (interactive-p) (message "%s" load-path)))))
 
