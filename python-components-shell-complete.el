@@ -324,7 +324,7 @@ complete('%s')" word) shell nil proc)))
 	 (filenames (and in-string ausdruck
 			 (list (replace-regexp-in-string "\n" "" (shell-command-to-string (concat "find / -maxdepth 1 -name " ausdruck))))))
          (imports (py-find-imports))
-         py-fontify-shell-buffer-p py-completion-buffer)
+         py-fontify-shell-buffer-p py-completion-buffer erg)
     ;; (and (string= "open('" word)
     ;; (comint-dynamic-complete-filename))
     ;; (ignore-errors (comint-dynamic-complete))
