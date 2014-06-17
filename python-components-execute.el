@@ -389,7 +389,7 @@ Needed when file-path names are contructed from maybe numbered buffer names like
     "\*" ""
     string)))
 
-(defun py--jump-to-exception-intern (action exception-buffer)
+(defun py--jump-to-exception-intern (action exception-buffer origline)
   (let (erg)
     (set-buffer exception-buffer)
     (goto-char (point-min))
@@ -403,7 +403,7 @@ Needed when file-path names are contructed from maybe numbered buffer names like
                            'face 'highlight)))))
 
 ;; Result: (nil 5 "print(34ed)" " SyntaxError: invalid token ")
-(defun py--jump-to-exception (py-error &optional file)
+(defun py--jump-to-exception (py-error origline &optional file)
   "Jump to the Python code in FILE at LINE."
   (let (
         ;; (inhibit-point-motion-hooks t)
@@ -414,17 +414,17 @@ Needed when file-path names are contructed from maybe numbered buffer names like
     (cond ((and py-exception-buffer
                 (buffer-live-p py-exception-buffer))
            ;; (pop-to-buffer procbuf)
-           (py--jump-to-exception-intern action py-exception-buffer))
+           (py--jump-to-exception-intern action py-exception-buffer origline))
           ((ignore-errors (file-readable-p file))
            (find-file file)
-           (py--jump-to-exception-intern action (get-buffer (file-name-nondirectory file))))
+           (py--jump-to-exception-intern action (get-buffer (file-name-nondirectory file origline))))
           ((buffer-live-p (get-buffer file))
            (set-buffer file)
-           (py--jump-to-exception-intern action file))
+           (py--jump-to-exception-intern action file origline))
           (t (setq file (find-file (read-file-name "Exception file: "
                                                    nil
                                                    file t)))
-             (py--jump-to-exception-intern action file)))))
+             (py--jump-to-exception-intern action file origline)))))
 
 (defalias 'py-toggle-split-windows-on-execute-function 'py-toggle-split-windows-function)
 (defun py-toggle-split-windows-function ()
@@ -458,48 +458,41 @@ Internal use"
 (defun py--shell-manage-windows (output-buffer &optional windows-displayed windows-config)
   "Adapt or restore window configuration. Return nil "
   (cond
-   ;; ((eq py-keep-windows-configuration 'force)
-   ;; (py-restore-window-configuration))
-        ;; ((and (boundp 'py-error) py-error)
-        ;;  (py-restore-window-configuration)
-        ;;  (py--jump-to-exception py-error py-exception-buffer)
-        ;;  (py--manage-windows-split)
-        ;;  (display-buffer output-buffer t))
-        (py-keep-windows-configuration
-         (py-restore-window-configuration))
-        ((and py-split-windows-on-execute-p
-              py-switch-buffers-on-execute-p)
-	 (py-restore-window-configuration)
-         (delete-other-windows)
-         (py--manage-windows-split)
-         (pop-to-buffer output-buffer)
-         (display-buffer py-exception-buffer))
-        ;; split, not switch
-        ((and
-          py-split-windows-on-execute-p
-          (not py-switch-buffers-on-execute-p))
-	 (set-buffer oldbuf)
-;; 	 (sit-for 0.1)
-	 (switch-to-buffer (current-buffer))
-         (delete-other-windows)
-         (py--manage-windows-split)
-	 (py--manage-windows-set-and-switch output-buffer)
-         (display-buffer output-buffer t)
-	 ;; fast-... fails
-;; 	 (unless (eq (current-buffer) py-exception-buffer)
-;; 	   (set-buffer py-exception-buffer)
-;; 	   (switch-to-buffer (current-buffer)))
-	 )
-        ;; no split, switch
-        ((and
-          py-switch-buffers-on-execute-p
-          (not py-split-windows-on-execute-p))
-         (let (pop-up-windows)
-	   (py--manage-windows-set-and-switch output-buffer)))
-        ;; no split, no switch
-        ((not py-switch-buffers-on-execute-p)
-         (let (pop-up-windows)
-           (py-restore-window-configuration)))))
+   (py-keep-windows-configuration
+    (py-restore-window-configuration))
+   ((and py-split-windows-on-execute-p
+	 py-switch-buffers-on-execute-p)
+    (py-restore-window-configuration)
+    (delete-other-windows)
+    (py--manage-windows-split)
+    (pop-to-buffer output-buffer)
+    (display-buffer py-exception-buffer))
+   ;; split, not switch
+   ((and
+     py-split-windows-on-execute-p
+     (not py-switch-buffers-on-execute-p))
+    (set-buffer oldbuf)
+    ;; 	 (sit-for 0.1)
+    (switch-to-buffer (current-buffer))
+    (delete-other-windows)
+    (py--manage-windows-split)
+    (py--manage-windows-set-and-switch output-buffer)
+    (display-buffer output-buffer t)
+    ;; fast-... fails
+    ;; 	 (unless (eq (current-buffer) py-exception-buffer)
+    ;; 	   (set-buffer py-exception-buffer)
+    ;; 	   (switch-to-buffer (current-buffer)))
+    )
+   ;; no split, switch
+   ((and
+     py-switch-buffers-on-execute-p
+     (not py-split-windows-on-execute-p))
+    (let (pop-up-windows)
+      (py--manage-windows-set-and-switch output-buffer)))
+   ;; no split, no switch
+   ((not py-switch-buffers-on-execute-p)
+    (let (pop-up-windows)
+      (py-restore-window-configuration)))))
 
 (defun py-kill-shell-unconditional (&optional shell)
   "With optional argument SHELL.
@@ -917,7 +910,7 @@ May we get rid of the temporary file? "
     (if (and (setq py-error (save-excursion (py--postprocess-output-buffer procbuf origline)))
              (car py-error)
              (not (markerp py-error)))
-        (py--jump-to-exception py-error)
+        (py--jump-to-exception py-error origline)
       (py--shell-manage-windows procbuf py-buffer-name)
       (unless (string= (buffer-name (current-buffer)) (buffer-name procbuf))
         (when py-verbose-p (message "Output buffer: %s" procbuf))))))
@@ -1531,7 +1524,7 @@ EVENT is usually a mouse click."
            (info (and e (extent-property e 'py-exc-info))))
       (message "Event point: %d, info: %s" point info)
       (and info
-           (py--jump-to-exception (car info) (cdr info)))))))
+           (py--jump-to-exception (car info) origline (cdr info)))))))
 
 (defun py-goto-exception (&optional file line)
   "Go to the line indicated by the traceback."
