@@ -1145,15 +1145,6 @@ See also `py-execute-region'. "
           (insert (concat py-encoding-string "\n")))
       (insert (concat py-encoding-string "\n")))))
 
-(defun py--if-needed-insert-if ()
-  "Internal use by py-execute... functions.
-Inserts an incentive true form \"if 1:\\n.\" "
-  (let ((needs-if (/= (py--point 'bol) (py-point 'boi))))
-    (when needs-if
-      (insert "if 1:\n")
-      (setq py-line-number-offset (- py-line-number-offset 1)))))
-
-
 (defun py--fix-if-name-main-permission (string)
   "Remove \"if __name__ == '__main__ '\" from code to execute.
 
