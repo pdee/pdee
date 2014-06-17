@@ -848,7 +848,7 @@ When optional FILE is `t', no temporary file is needed. "
 
 (defun py--postprocess ()
   "Provide return values, check result for error, manage windows. "
-  (setq py-error (save-excursion (py--postprocess-output-buffer py-output-buffer)))
+  (setq py-error (save-excursion (py--postprocess-output-buffer py-output-buffer origline)))
   (when py-store-result-p
     (setq erg
 	  (py-output-filter (buffer-substring-no-properties (point) (point-max))))
@@ -914,7 +914,7 @@ May we get rid of the temporary file? "
                          (buffer-substring-no-properties
                           (point-min) (point-max)))
     (sit-for 0.1)
-    (if (and (setq py-error (save-excursion (py--postprocess-output-buffer procbuf)))
+    (if (and (setq py-error (save-excursion (py--postprocess-output-buffer procbuf origline)))
              (car py-error)
              (not (markerp py-error)))
         (py--jump-to-exception py-error)
@@ -1027,7 +1027,7 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
                                pcmd py-output-buffer))
     (if (not (get-buffer py-output-buffer))
         (message "No output.")
-      (setq py-error (py--postprocess-output-buffer py-output-buffer))
+      (setq py-error (py--postprocess-output-buffer py-output-buffer origline))
       (let* ((line (cadr py-error)))
         (if py-error
             (when (and py-jump-on-exception line)
@@ -1592,7 +1592,7 @@ jump to the top (outermost) exception in the exception stack."
       (py--find-next-exception 'bol buffer 're-search-backward "Top"))))
 ;;;
 
-(defun py--postprocess-output-buffer (buf)
+(defun py--postprocess-output-buffer (buf origline)
   "Highlight exceptions found in BUF.
 If an exception occurred return error-string, otherwise return nil.  BUF must exist.
 
