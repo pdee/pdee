@@ -744,6 +744,13 @@ Default is interactive, i.e. py-fast-process-p nil, and `py-session'"
         (py-fast-process-p py-output-buffer)
         (t (py--buffer-name-prepare name))))
 
+(defun py--close-execution (tempbuf erg)
+  (when py-cleanup-temporary
+    (py-kill-buffer-unconditional tempbuf)
+    (py-delete-temporary tempfile tempbuf))
+  (and (not py-error) erg (or py-debug-p py-store-result-p) (unless (string= (car kill-ring) erg) (kill-new erg)))
+  erg)
+
 (defun py--execute-base (&optional start end shell filename proc file wholebuf)
   "Select the handler.
 
@@ -798,7 +805,7 @@ When optional FILE is `t', no temporary file is needed. "
 	   ;; No temporary file than
 	   (let (py-cleanup-temporary)
 	     (py--execute-file-base proc filename nil py-buffer-name filename execute-directory)
-	     (py--close-execution)
+	     (py--close-execution tempbuf erg)
 	     (py--shell-manage-windows py-buffer-name)))
           (t (py--execute-buffer-finally start end execute-directory wholebuf which-shell proc)))))
 
@@ -829,15 +836,8 @@ When optional FILE is `t', no temporary file is needed. "
 	  ;; (set-buffer-modified-p 'nil)
 	  (setq erg (py--execute-file-base proc tempfile nil py-buffer-name py-orig-buffer-or-file execute-directory))
 	  (sit-for 0.1))
-      (py--close-execution)
+      (py--close-execution tempbuf erg)
       (py--shell-manage-windows py-buffer-name))))
-
-(defun py--close-execution ()
-  (when py-cleanup-temporary
-    (py-kill-buffer-unconditional tempbuf)
-    (py-delete-temporary tempfile tempbuf))
-  (and (not py-error) erg (or py-debug-p py-store-result-p) (unless (string= (car kill-ring) erg) (kill-new erg)))
-  erg)
 
 (defun py--fast-filter ()
   "Run where fast-output arrives, normally at \"*Python Output*\" buffer. "
