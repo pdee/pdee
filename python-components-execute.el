@@ -1156,8 +1156,8 @@ See `py-if-name-main-permission-p'"
 		 "if __name__ == '__main__ ':" string))))
     strg))
 
-(defun py--fix-start-intern ()
-  (goto-char (point-min))
+(defun py--fix-start-intern (start end)
+  (goto-char start)
   (while
       (member (char-after) (list 9 32))
     (delete-char 1))
@@ -1175,7 +1175,7 @@ See `py-if-name-main-permission-p'"
 Avoid empty lines at the beginning. "
   (with-temp-buffer
     (insert string)
-    (py--fix-start-intern)
+    (py--fix-start-intern (point-min) (point-max))
     ;; FixMe: Maybe conditial from from some use-tempfile var?
     (and (ignore-errors tempfile)
 	 (write-region (point-min) (point-max) tempfile nil t nil 'ask))
