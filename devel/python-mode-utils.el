@@ -554,14 +554,6 @@ Include default forms "
 
     (insert "
 ;; created by `write-unified-extended-execute-forms'
-\(defun py--masterfile ()
-  \"Internal use. Set master-file, if given. \"
-  (and (or py-master-file (py-fetch-py-master-file))
-       (let\* ((filename (expand-file-name py-master-file))
-              (buffer (or (get-file-buffer filename)
-                          (find-file-noselect filename))))
-         (set-buffer buffer))))
-
 \(defun py--execute-prepare (form &optional shell dedicated switch beg end file)
   \"Used by python-extended-executes .\"
   (save-excursion

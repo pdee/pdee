@@ -774,16 +774,6 @@ For stricter sense specify regexp. "
   "Return `t' if the statement opens a functions or class definition, nil otherwise. "
   (py--statement-opens-base py-def-or-class-re))
 
-(defun py--statement-closes-block-p ()
-  "Return t iff the current statement closes a block.
-I.e., if the line starts with `return', `raise', `break', `continue',
-and `pass'.  This doesn't catch embedded statements."
-  (let ((here (point)))
-    (unless (py--beginning-of-statement-p) (py-beginning-of-statement))
-    (prog1
-        (looking-at py-block-closing-keywords-re)
-      (goto-char here))))
-
 (defun py--record-list-error (pps)
   "When encountering a missing parenthesis, store its line, position. `py-verbose-p'  must be t
 
@@ -1340,18 +1330,6 @@ http://docs.python.org/reference/compound_stmts.html"
           (when (and py-verbose-p iact) (message "%s" erg))
           erg)
       (py--beginning-of-form-intern final-re iact indent orig lc))))
-
-(defun py--narrow-in-comint-modes (&optional done limit)
-  "In comint-modes, limit region to previous prompt. "
-  (let ((pos (point))
-        (limit
-         (or limit
-             (and
-              (or (eq major-mode 'comint-mode)(eq major-mode 'inferior-python-mode))
-              (if (re-search-backward comint-prompt-regexp nil t 1)
-                  (match-end 0)
-                (error (format "py-beginning-of-statement: No prompt found in %s mode" major-mode)))))))
-    (and limit (not done) (goto-char (match-end 0)) (skip-chars-forward " \t") (narrow-to-region (point) pos))))
 
 (defun py--fetch-first-python-buffer ()
   "Returns first (I)Python-buffer found in `buffer-list'"

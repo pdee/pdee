@@ -299,32 +299,7 @@ interpreter.
     (when (and (string-match "^[0-9]" ipython-version)
                (string-match "^[^0].+" ipython-version))
       (process-send-string proc "from IPython.core.completerlib import module_completion")
-      (process-send-string proc "\n")
-      ;; (sit-for 0.1)
-      )))
-
-;; (setq ipython-completion-command-string (if (< ipython-version 11) ipython0.10-completion-command-string ipython0.11-completion-command-string))
-;; ipython-completion-command-string)))
-
-(defun py--process-name (&optional name)
-  "Return the name of the running Python process, `get-process' willsee it. "
-  (let* ((thisname (if name
-                       (if (string-match py-separator-char name)
-                           (substring name (progn (string-match (concat "\\(.+\\)"py-separator-char "\\(.+\\)$") name) (match-beginning 2)))
-
-                         name)
-                     (substring py-shell-name (or (string-match (concat py-separator-char ".+$") py-shell-name) 0))))
-         (nname (cond (py-dedicated-process-p
-                       (make-temp-name (concat thisname "-")))
-                      ;; ((string-match "\*" (buffer-name))
-                      ;; (replace-regexp-in-string "\*" "" (buffer-name)))
-                      (t thisname)))
-         (erg (cond ((or (string-match "ipython" nname)
-                         (string-match "IPython" nname))
-                     "IPython")
-                    (nname))))
-    (unless (string-match "^\*" erg)(setq erg (concat "*" erg "*")))
-    erg))
+      (process-send-string proc "\n"))))
 
 (defun py--buffer-name-prepare (&optional arg)
   "Return an appropriate name to display in modeline.
@@ -378,16 +353,6 @@ SEPCHAR is the file-path separator of your system. "
 
           (t (unless (string-match "^\*" erg)(setq erg (concat "*" erg "*")))))
     erg))
-
-(defun py--delete-numbers-and-stars-from-string (string)
-  "Delete numbering and star chars from string, return result.
-
-Needed when file-path names are contructed from maybe numbered buffer names like \"\*Python\*<2> \""
-  (replace-regexp-in-string
-   "<\\([0-9]+\\)>" ""
-   (replace-regexp-in-string
-    "\*" ""
-    string)))
 
 (defun py--jump-to-exception-intern (action exception-buffer origline)
   (let (erg)
@@ -832,13 +797,6 @@ When optional FILE is `t', no temporary file is needed. "
       (py--close-execution tempbuf erg)
       (py--shell-manage-windows py-buffer-name))))
 
-(defun py--fast-filter ()
-  "Run where fast-output arrives, normally at \"*Python Output*\" buffer. "
-  (delete-region (point) (progn (skip-chars-backward "^\n")(point)))
-  (goto-char (point-min))
-  (while (looking-at py-fast-filter-re)
-    (replace-match "")))
-
 (defun py--postprocess ()
   "Provide return values, check result for error, manage windows. "
   (setq py-error (save-excursion (py--postprocess-output-buffer py-output-buffer origline)))
@@ -1089,26 +1047,6 @@ See also `py-execute-region'. "
       (insert string)
       (py-execute-region (point-min) (point-max) shell))))
 
-(defun py--if-needed-insert-shell ()
-  (let ((erg (or (py-choose-shell-by-shebang)
-                 (py--choose-shell-by-import)
-                 py-shell-name)))
-    (when (string-match " " erg) (setq erg (substring erg (1+ (string-match " " erg))))
-          ;; closing ">"
-          (setq erg (substring erg 0 (1- (length erg)))))
-    (goto-char (point-min))
-    (while  ;; (empty-line-p)
-  (eq 9 (char-after)) (delete-region (point) (1+ (line-end-position))))
-    (unless (looking-at py-shebang-regexp)
-      (if (string-match (concat "^" erg) "ipython")
-          (progn
-            (shell-command "type ipython" t)
-            (when (looking-at "[^/\n\r]+")
-              (replace-match "#! ")))
-        (if (string-match py-separator-char erg)
-            (insert (concat "#! " erg "\n"))
-          (insert (concat py-shebang-startstring " " erg "\n")))))))
-
 (defun py--insert-execute-directory (directory &optional orig done)
   (let ((orig (or orig (point)))
         (done done))
@@ -1127,16 +1065,6 @@ See also `py-execute-region'. "
              (unless  ;; (empty-line-p)
                  (eq 9 (char-after)) (newline))
              (insert (concat "import os; os.chdir(\"" directory "\")\n"))))))
-
-(defun py--insert-coding ()
-  (goto-char (point-min))
-  (unless (re-search-forward py-encoding-string-re nil t)
-    (goto-char (point-min))
-    (if (re-search-forward py-shebang-regexp nil t 1)
-        (progn
-          (newline)
-          (insert (concat py-encoding-string "\n")))
-      (insert (concat py-encoding-string "\n")))))
 
 (defun py--fix-if-name-main-permission (string)
   "Remove \"if __name__ == '__main__ '\" from code to execute.

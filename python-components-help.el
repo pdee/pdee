@@ -23,13 +23,6 @@
 ;;; Code:
 (require 'python-components-macros)
 
-(defun py-outline-level ()
-  "`outline-level' function for Python mode.
-The level is the number of `py-indent-offset' steps of indentation
-of current line."
-  (let ((erg (1+ (/ (current-indentation) py-indent-offset))))
-    (when (interactive-p) (message "%s" erg))
-    erg))
 
 (defcustom py-eldoc-string-code
   "__PYDOC_get_help('''%s''')\n"

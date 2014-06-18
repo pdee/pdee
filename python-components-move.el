@@ -250,9 +250,9 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
           (py--end-of-expression-intern orig)))
        ((looking-at (concat "\\([[:alnum:] ]+ \\)" py-assignment-regexp))
 	(goto-char (match-end 1))
-	(skip-chars-backward " \t\r\n\f")) 
+	(skip-chars-backward " \t\r\n\f"))
        ((and (eq orig (point)) (looking-at (concat "[ \t]*" "[^(\t\n\r\f]+" py-operator-regexp)))
-	(skip-chars-forward " \t\r\n\f") 
+	(skip-chars-forward " \t\r\n\f")
 	(when (< 0 (skip-chars-forward py-expression-skip-chars))
 	  (py--end-of-expression-intern orig)))
        ((and (eq orig (point)) (looking-at py-not-expression-regexp))
@@ -264,10 +264,10 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
         (unless (or (looking-at "[ \n\t\r\f]*$")(looking-at py-assignment-regexp))
           (py--end-of-expression-intern orig)))
        ((and (eq (point) orig)
-	     (skip-chars-forward " \t\r\n\f") 
+	     (skip-chars-forward " \t\r\n\f")
 	     (< 0 (skip-chars-forward py-expression-skip-chars)))
 	(py--end-of-expression-intern orig)))
-      
+
       (unless (or (eq (point) orig)(and (eobp)(bolp)))
         (setq erg (point)))
       erg)))
@@ -408,43 +408,6 @@ http://docs.python.org/reference/compound_stmts.html"
           (when (< (point) orig)(setq erg (point))))
         (when (and py-verbose-p (interactive-p)) (message "%s" erg))
         erg))))
-
-(defun py--eos-handle-comment-start ()
-  (end-of-line)
-  (forward-comment 99999))
-
-(defun py--eos-handle-string-start (this)
-  "Internal use, find possible end of statement from string start. "
-  (when
-      (and (setq this (point)) (progn (or (if (save-match-data (string-match "'" (match-string-no-properties 0))) (ignore-errors (goto-char (scan-sexps (point) 1)))) (while (and (search-forward (match-string-no-properties 0) nil t 1) (nth 8 (syntax-ppss))))) (< this (point))))
-    (skip-chars-forward (concat "^" comment-start) (line-end-position))
-    (skip-chars-backward " \t\r\n\f")))
-
-;; (defun py-eos-handle-doublequoted-string-start (this)
-;;   "Internal use, find possible end of statement from string start. "
-;;   (when
-;;       (and (setq this (point)) (progn (while (and (not (eobp)) (search-forward (match-string-no-properties 0) nil t 1) (nth 8 (syntax-ppss)))) (< this (point))))
-;;     (skip-chars-forward (concat "^" comment-start "\\|" (match-string-no-properties 0)) (line-end-position))
-;;     (skip-chars-backward " \t\r\n\f")))
-
-(defun py-eos-handle-doublequoted-string-start (this)
-  "Internal use, find possible end of statement from string start. "
-  (when
-      (and (setq this (point)) (progn (while (and (not (eobp)) (search-forward (match-string-no-properties 0) nil t 1) (nth 8 (syntax-ppss)))) (< this (point))))
-    (skip-chars-forward (concat "^" comment-start "\\|" (match-string-no-properties 0)) (line-end-position))
-    (skip-chars-backward " \t\r\n\f")))
-
-(defun py--eos-handle-singlequoted-string-start (this)
-  "Internal use, find possible end of statement from string start. "
-  (when
-      (and (setq this (point)) (progn (ignore-errors (goto-char (scan-sexps (point) 1))) (< this (point))))
-    (skip-chars-forward (concat "^" comment-start) (line-end-position))
-    (skip-chars-backward " \t\r\n\f")))
-
-(defun py--handle-eol ()
-  (skip-chars-backward " \t\r\n\f" (line-beginning-position))
-  (when (py-beginning-of-comment)
-    (skip-chars-backward " \t\r\n\f" (line-beginning-position))))
 
 (defun py--skip-to-comment-or-semicolon ()
   "Returns position reached if point was moved. "
@@ -918,30 +881,6 @@ From a programm use macro `py-beginning-of-comment' instead "
     (when erg (setq erg (cons (current-indentation) erg)))
     erg))
 
-(defun py--go-to-keyword-above (regexp &optional maxindent)
-  "Returns a list, whose car is indentation, cdr position. "
-  (let ((orig (point))
-        (maxindent (or maxindent (and (< 0 (current-indentation))(current-indentation))
-                       ;; make maxindent large enough if not set
-                       (* 99 py-indent-offset)))
-        (first t)
-        done erg cui)
-    (while (and (not done) (not (bobp)))
-      (py-beginning-of-statement)
-      (if (and (looking-at regexp)(if maxindent
-                                      (< (current-indentation) maxindent) t))
-          (progn
-            (setq erg (point))
-            (setq done t))
-        (when (and first (not maxindent))
-          (setq maxindent (current-indentation))
-          (setq first nil))))
-    (when erg
-      (if (looking-at regexp)
-          (setq erg (cons (current-indentation) erg))
-        (setq erg nil
-              )))
-    erg))
 
 (defun py--clause-lookup-keyword (regexp arg &optional indent orig origline)
   "Returns a list, whose car is indentation, cdr position. "
