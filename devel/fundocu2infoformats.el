@@ -50,7 +50,6 @@
   (interactive)
   (variables-prepare "docu"))
 
-
 (defun variables-base-docu (oldbuf orgname reSTname directory-in directory-out)
   (save-restriction
     (let ((suffix (file-name-nondirectory (buffer-file-name)))
@@ -229,4 +228,48 @@
         (find-file (concat directory-out "variables-" reSTname))
       ))))
 
+(defun py-variables-unused (&optional buffer directory-in directory-out)
+  "Report unused variables. "
+  (interactive)
+  (variables-prepare "unused"))
 
+(defun variables-prepare (kind)
+  "Used by variable-finds, variable-states. "
+  (let* ((oldbuf (buffer-name (or buffer (current-buffer))))
+         ;; (file (buffer-file-name))
+         (orgname (concat (substring oldbuf 0 (string-match "\\." oldbuf)) ".org"))
+         (reSTname (concat (substring oldbuf 0 (string-match "\\." oldbuf)) ".rst"))
+         (directory-in default-directory)
+         (directory-out (or directory-out (expand-file-name finds-directory-out)))
+	 (command (concat "variables-base-" kind)))
+    (funcall (intern-soft command) oldbuf orgname reSTname directory-in directory-out)))
+
+(defun variables-base-unused (oldbuf orgname reSTname directory-in directory-out)
+  (save-restriction
+    (let ((suffix (file-name-nondirectory (buffer-file-name)))
+          variableslist)
+      ;; (widen)
+      (goto-char (point-min))
+      ;; (eval-buffer)
+      (while (and (not (eobp))(re-search-forward "^(defvar [[:alpha:]]\\|^(defcustom [[:alpha:]]\\|^(defconst [[:alpha:]]" nil t 1))
+        (let* ((name (symbol-at-point)))
+	  (unless
+	      (or (eq name 'py-menu)
+		  (eq name 'python-mode-map)
+		  (string-match "syntax-table" (prin1-to-string name))
+		  (save-excursion
+		    (re-search-forward (concat "\\_<" (prin1-to-string name) "\\_>") nil t 1)))
+	    (add-to-list 'variableslist (prin1-to-string name))))
+        (forward-line 1))
+      (setq variableslist (nreverse variableslist))
+      ;; (with-temp-buffer
+      (set-buffer (get-buffer-create "Unused-Python-mode-variables.txt"))
+      (erase-buffer)
+      ;; org
+      (insert "Unused python-mode variables\n\n")
+      (switch-to-buffer (current-buffer))
+      (dolist (ele variableslist)
+	(insert (concat ele "\n"))
+        (sit-for 0.01))
+      (sit-for 0.01)
+      )))
