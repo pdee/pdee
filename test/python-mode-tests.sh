@@ -975,7 +975,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'eldoc-documentation-function) nil \"eldoc-documentation-function not a variable\")" \
 -eval "(assert (boundp 'py-completion-last-window-configuration) nil \"py-completion-last-window-configuration not a variable\")" \
 -eval "(assert (boundp 'py-shell-template) nil \"py-shell-template not a variable\")" \
--eval "(assert (boundp 'py-imports) nil \"py-imports not a variable\")" \
 -eval "(assert (boundp 'py-execute-directory) nil \"py-execute-directory not a variable\")" \
 -eval "(assert (boundp 'py-use-current-dir-when-execute-p) nil \"py-use-current-dir-when-execute-p not a variable\")" \
 -eval "(assert (boundp 'py-exception-buffer) nil \"py-exception-buffer not a variable\")" \
@@ -990,12 +989,9 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-not-expression-chars) nil \"py-not-expression-chars not a variable\")" \
 -eval "(assert (boundp 'py-partial-expression-forward-chars) nil \"py-partial-expression-forward-chars not a variable\")" \
 -eval "(assert (boundp 'py-partial-expression-backward-chars) nil \"py-partial-expression-backward-chars not a variable\")" \
--eval "(assert (boundp 'py-partial-expression-regexp) nil \"py-partial-expression-regexp not a variable\")" \
--eval "(assert (boundp 'py-not-partial-expression-regexp) nil \"py-not-partial-expression-regexp not a variable\")" \
 -eval "(assert (boundp 'py-operator-regexp) nil \"py-operator-regexp not a variable\")" \
 -eval "(assert (boundp 'py-assignment-regexp) nil \"py-assignment-regexp not a variable\")" \
 -eval "(assert (boundp 'py-delimiter-regexp) nil \"py-delimiter-regexp not a variable\")" \
--eval "(assert (boundp 'py-delimiter-chars) nil \"py-delimiter-chars not a variable\")" \
 -eval "(assert (boundp 'py-line-number-offset) nil \"py-line-number-offset not a variable\")" \
 -eval "(assert (boundp 'match-paren-no-use-syntax-pps) nil \"match-paren-no-use-syntax-pps not a variable\")" \
 -eval "(assert (boundp 'py-traceback-line-re) nil \"py-traceback-line-re not a variable\")" \
@@ -1030,7 +1026,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
 -eval "(assert (boundp 'python-mode-syntax-table) nil \"python-mode-syntax-table not a variable\")" \
 -eval "(assert (boundp 'py-shell-template) nil \"py-shell-template not a variable\")" \
--eval "(assert (boundp 'py-blank-or-comment-re) nil \"py-blank-or-comment-re not a variable\")" \
 -eval "(assert (boundp 'py-block-closing-keywords-re) nil \"py-block-closing-keywords-re not a variable\")" \
 -eval "(assert (boundp 'py-finally-re) nil \"py-finally-re not a variable\")" \
 -eval "(assert (boundp 'py-except-re) nil \"py-except-re not a variable\")" \

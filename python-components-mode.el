@@ -346,9 +346,6 @@ Give some hints, if not."
 (defvar py-error nil
   "Internally used. Takes the error-messages from Python process. ")
 
-(defvar py-close-completions-timer nil
-  "Internally used by `py-timer-close-completion-buffer")
-
 (defvar py-python-completions "*Python Completions*"
   "Buffer name for Python-shell completions, internally used")
 
@@ -1605,7 +1602,6 @@ See also `py-execute-directory'"
 
 (defvar py-ffap-p nil)
 (defvar py-ffap nil)
-(defvar python-ffap nil)
 (defvar ffap-alist nil)
 
 (defvar py-buffer-name nil
@@ -1920,8 +1916,6 @@ can write into: the value (if any) of the environment variable TMPDIR,
 (defvar py-force-local-shell-p nil
   "Used internally, see `toggle-force-local-shell'. ")
 
-(defvar python-mode-v5-behavior nil)
-
 (defvar py-shell-complete-debug nil
   "For interal use when debugging, stores completions." )
 
@@ -1969,13 +1963,6 @@ some logging etc. "
 (defvar py-partial-expression-forward-chars "^ \"')}]:#\t\r\n\f")
 ;; (setq py-partial-expression-forward-chars "^ \"')}]:#\t\r\n\f")
 
-(defvar py-partial-expression-regexp "[^ ):#\t\r\n\f]"
-  "py-partial-expression assumes chars indicated possible composing a py-partial-expression, when looking-at or -back. ")
-;; (setq py-partial-expression-regexp "[^ ):#\t\r\n\f]")
-
-(defvar py-not-partial-expression-regexp "[ ).=:#\t\r\n\f]"
-  "py-partial-expression assumes chars indicated probably will not compose a py-partial-expression. ")
-
 (defvar py-operator-regexp "[ \t]*\\(\\.\\|+\\|-\\|*\\|//\\|//\\|&\\|%\\||\\|\\^\\|>>\\|<<\\|<\\|<=\\|>\\|>=\\|==\\|!=\\)[ \t]*"
   "Matches most of Python operators inclusive whitespaces around.
 
@@ -1988,11 +1975,6 @@ See also `py-operator-regexp' ")
 
 (defvar py-delimiter-regexp "\\(\\.[[:alnum:]]\\|,\\|;\\|:\\)[ \t\n]"
   "Delimiting elements of lists or other programming constructs. ")
-
-;; (setq py-delimiter-regexp "\\(\\.[[:alnum:]]\\|,\\|;\\|:\\)[ \t\n]")
-
-(defvar py-delimiter-chars ",;."
-  "Chars delimiting elements of lists or other programming constructs. ")
 
 (defvar py-line-number-offset 0
   "When an exception occurs as a result of py-execute-region, a
@@ -2064,13 +2046,6 @@ Currently-active file is at the head of the list.")
     ;; (modify-syntax-entry ?\" "." st)
     st))
 
-(defvar py-preoutput-result nil
-  "Data from last `_emacs_out' line seen by the preoutput filter.")
-
-(defvar py-preoutput-leftover nil)
-
-(defvar py-preoutput-skip-next-prompt nil)
-
 (defvar python-default-template "if"
   "Default template to expand by `python-expand-template'.
 Updated on each expansion.")
@@ -2091,8 +2066,6 @@ Updated on each expansion.")
 
 When `this-command' is `eq' to `last-command', use the guess already computed. ")
 (make-variable-buffer-local 'py-already-guessed-indent-offset)
-
-(defvar py-imports nil)
 
 (defvar py-shell-template "
 \(defun NAME (&optional argprompt)
@@ -2122,9 +2095,6 @@ for options to pass to the DOCNAME interpreter. \"
   "Internally used by `py-comint-output-filter-function'. ")
 
 ;;; Constants
-(defconst py-blank-or-comment-re "[ \t]*\\($\\|#\\)"
-  "regular expression matching a blank or comment line.")
-
 (defconst py-block-closing-keywords-re
   "[ \t]*\\_<\\(return\\|raise\\|break\\|continue\\|pass\\)\\_>[ \n\t]"
   "Matches the beginning of a class, method or compound statement. ")
