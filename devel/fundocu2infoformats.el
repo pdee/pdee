@@ -273,3 +273,65 @@
         (sit-for 0.01))
       (sit-for 0.01)
       )))
+
+(defun functions-list-base (oldbuf orgname reSTname directory-in directory-out)
+  (save-restriction
+    (let ((suffix (file-name-nondirectory (buffer-file-name)))
+          functionslist)
+      ;; (widen)
+      (goto-char (point-min))
+      ;; (eval-buffer)
+      (while (and (not (eobp))(re-search-forward "^(defun [[:alpha:]]+" nil t 1)) ;
+	(unless (save-match-data (commandp (symbol-at-point)))
+	  (let* ((name (symbol-at-point)))
+	    (add-to-list 'functionslist name)))
+	(forward-line 1))
+      (set-buffer (get-buffer-create "Unused-Python-mode-functions.txt"))
+      (erase-buffer)
+      ;; org
+      (insert "Unused python-mode functions\n\n")
+      (switch-to-buffer (current-buffer))
+      (dolist (ele functionslist)
+	(insert (concat (prin1-to-string ele) "\n"))
+        (sit-for 0.01))
+      (sit-for 0.01))))
+
+(defun py-functions-unused (&optional buffer directory-in directory-out)
+  "Report unused functions. "
+  (interactive)
+  (functions-prepare "unused"))
+
+(defun functions-prepare (kind)
+  "Used by variable-finds, variable-states. "
+  (let* ((oldbuf (buffer-name (or buffer (current-buffer))))
+         ;; (file (buffer-file-name))
+         (orgname (concat (substring oldbuf 0 (string-match "\\." oldbuf)) ".org"))
+         (reSTname (concat (substring oldbuf 0 (string-match "\\." oldbuf)) ".rst"))
+         (directory-in default-directory)
+         (directory-out (or directory-out (expand-file-name finds-directory-out)))
+	 (command (concat "functions-base-" kind)))
+    (funcall (intern-soft command) oldbuf orgname reSTname directory-in directory-out)))
+
+(defun functions-base-unused (oldbuf orgname reSTname directory-in directory-out)
+  (save-restriction
+    (let ((suffix (file-name-nondirectory (buffer-file-name)))
+          functionslist name)
+      ;; (widen)
+      (goto-char (point-min))
+      ;; (eval-buffer)
+      (while (and (not (eobp))(re-search-forward "^(defun [[:alpha:]]+" nil t 1)) ;
+	(unless (or (save-match-data (commandp (setq name (symbol-at-point))))
+		    (save-excursion
+		      (goto-char (point-min)) 
+		      (re-search-forward (concat "\\_<\(" (prin1-to-string name) "\\_>") nil t 1)))
+	  (add-to-list 'functionslist name))
+	(forward-line 1))
+      (set-buffer (get-buffer-create "Unused-Python-mode-functions.txt"))
+      (erase-buffer)
+      ;; org
+      (insert "Unused python-mode functions\n\n")
+      (switch-to-buffer (current-buffer))
+      (dolist (ele functionslist)
+	(insert (concat (prin1-to-string ele) "\n"))
+        (sit-for 0.01))
+      (sit-for 0.01))))
