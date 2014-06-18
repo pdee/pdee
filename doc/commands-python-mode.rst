@@ -3261,16 +3261,6 @@ Builds Python-shell commands from executable found in LOCAL.
 If LOCAL is empty, shell-command `find' searches beneath current directory.
 Eval resulting buffer to install it, see customizable `py-extensions'. 
 
-py-python-script-complete
--------------------------
-Complete word before point, if any.
-
-When `py-no-completion-calls-dabbrev-expand-p' is non-nil, try dabbrev-expand. Otherwise, when `py-indent-no-completion-p' is non-nil, call `tab-to-tab-stop'. 
-
-py-python3-shell-complete
--------------------------
-Complete word before point, if any. Otherwise insert TAB. 
-
 py-shell-complete
 -----------------
 Complete word before point, if any. Otherwise insert TAB. 
