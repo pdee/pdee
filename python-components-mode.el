@@ -2295,22 +2295,21 @@ See py-no-outdent-1-re-raw, py-no-outdent-2-re-raw for better readable content "
 (defconst py-try-re "[ \t]*\\_<try\\_>[:( \n\t]*"
   "Matches the beginning of a compound statement saying `try'. " )
 
-(defconst python-compilation-regexp-alist
-  ;; FIXME: maybe these should move to compilation-error-regexp-alist-alist.
-  ;;   The first already is (for CAML), but the second isn't.  Anyhow,
-  ;;   these are specific to the inferior buffer.  -- fx
-  `((,(rx bol (1+ (any " \t")) "File \""
+(defcustom py-compilation-regexp-alist
+  `((,(rx line-start (1+ (any " \t")) "File \""
           (group (1+ (not (any "\"<")))) ; avoid `<stdin>' &c
           "\", line " (group (1+ digit)))
      1 2)
     (,(rx " in file " (group (1+ not-newline)) " on line "
           (group (1+ digit)))
      1 2)
-    ;; pdb stack trace
-    (,(rx bol "> " (group (1+ (not (any "(\"<"))))
+    (,(rx line-start "> " (group (1+ (not (any "(\"<"))))
           "(" (group (1+ digit)) ")" (1+ (not (any "("))) "()")
      1 2))
-  "`compilation-error-regexp-alist' for inferior Python.")
+  "Fetch errors from Py-shell.
+hooked into `compilation-error-regexp-alist'  "
+  :type '(alist string)
+  :group 'python-mode)
 
 (defun py--quote-syntax (n)
   "Put `syntax-table' property correctly on triple quote.
@@ -8138,7 +8137,7 @@ containing Python source.
   (make-local-variable 'comint-output-filter-functions)
   (set (make-local-variable 'comint-input-filter) 'py--input-filter)
   (set (make-local-variable 'compilation-error-regexp-alist)
-       python-compilation-regexp-alist)
+       py-compilation-regexp-alist)
   (if py-complete-function
       (add-hook 'completion-at-point-functions
                 py-complete-function nil 'local)

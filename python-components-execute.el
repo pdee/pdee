@@ -509,7 +509,7 @@ Receives a buffer-name as argument"
   ;; It might be useful having a different setting of `comint-use-prompt-regexp' in py-shell - please report when a use-case shows up
   ;; (set (make-local-variable 'comint-use-prompt-regexp) nil)
   (set (make-local-variable 'compilation-error-regexp-alist)
-       python-compilation-regexp-alist)
+       py-compilation-regexp-alist)
   ;; (setq completion-at-point-functions nil)
   (and py-fontify-shell-buffer-p
        (set (make-local-variable 'font-lock-defaults)
