@@ -131,8 +131,6 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
               done)))
          (proc (or process
                    (get-buffer-process (py-shell nil nil (when (string-match "[iI][pP]ython[^[:alpha:]]*$"  py-shell-name) "ipython")))))
-         (comint-output-filter-functions
-          (delq 'py-comint-output-filter-function comint-output-filter-functions))
          (comint-preoutput-filter-functions
           (append comint-preoutput-filter-functions
                   '(ansi-color-filter-apply

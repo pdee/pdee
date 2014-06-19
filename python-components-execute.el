@@ -582,15 +582,6 @@ Receives a buffer-name as argument"
                                       (concat
                                        (mapconcat 'identity py-python-command-args " ") " "))))))))))
 
-(defun py-comint-output-filter-function (string)
-  "Watch output for Python prompt and exec next file waiting in queue.
-This function is appropriate for `comint-output-filter-functions'."
-  ;;remove ansi terminal escape sequences from string, not sure why they are
-  ;;still around...
-  (let* ((string (ansi-color-filter-apply string))
-	 (erg (replace-regexp-in-string py-output-filter-re string))))
-  erg)
-
 (defun py-shell (&optional argprompt dedicated shell buffer-name)
   "Start an interactive Python interpreter in another window.
 Interactively, \\[universal-argument] prompts for a PATH/TO/EXECUTABLE to use.
