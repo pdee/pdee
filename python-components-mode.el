@@ -7769,7 +7769,7 @@ Complete symbol before point using Pymacs . "])
 Try to find source definition of function at point"]))))
         map))
 
-(defvar py-shell-mode-map)
+(defvar py-shell-mode-map nil)
 (setq py-shell-mode-map
       (let ((map (make-sparse-keymap)))
 	(define-key map (kbd "RET") 'comint-send-input)
@@ -11310,19 +11310,6 @@ Start a new process if necessary. "
                #'(lambda () (interactive) (beep))))
            (where-is-internal 'self-insert-command)))
 
-(defvar py-shell-map (make-sparse-keymap)
-  "Keymap used in *Python* shell buffers.")
-
-;; (setq py-shell-map
-;;       (let ((map (copy-keymap comint-mode-map)))
-;;         (define-key map (kbd "RET") 'comint-send-input)
-;;         (define-key map "\C-c-" 'py-up-exception)
-;;         (define-key map "\C-c=" 'py-down-exception)
-;;         (define-key map (kbd "TAB") 'py-shell-complete-or-indent)
-;;         (define-key map [(meta tab)] 'py-shell-complete)
-;;         (define-key map [(control c)(!)] 'py-shell)
-;;         map))
-
 ;; backward compatibility
 (defalias 'py-switch-shells 'py-switch-shell)
 (defalias 'py-toggle-shell 'py-switch-shell)
@@ -11710,7 +11697,7 @@ containing Python source.
 
 Sets basic comint variables, see also versions-related stuff in `py-shell'.
 \\{py-shell-mode-map}"
-  :group 'python
+  :group 'python-mode
   ;; (require 'ansi-color) ; for ipython
   (setq mode-line-process '(":%s"))
   (set-syntax-table python-mode-syntax-table)
