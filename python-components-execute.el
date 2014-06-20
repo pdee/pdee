@@ -488,20 +488,12 @@ Receives a buffer-name as argument"
     erg))
 
 (defun py--shell-make-comint (executable py-buffer-name args)
-  (set-buffer (apply 'make-comint-in-buffer executable py-buffer-name executable nil args))
-  (unless (interactive-p) (sit-for 0.1))
-  (set (make-local-variable 'comint-prompt-regexp)
-       (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
-              (concat "\\("
-                      (mapconcat 'identity
-                                 (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
-                                 "\\|")
-                      "\\)"))
-             (t (concat "\\("
-                        (mapconcat 'identity
-                                   (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
-                                   "\\|")
-                        "\\)")))))
+  (let ((buffer (apply 'make-comint-in-buffer executable py-buffer-name executable nil args)))
+    (with-current-buffer buffer
+      (py-shell-mode))
+    ;; (accept-process-output (get-buffer-process buffer))
+    (unless (interactive-p) (sit-for 0.1))
+    buffer))
 
 (defun py--shell-setup (proc)
   (set (make-local-variable 'comint-input-filter) 'py-history-input-filter)
@@ -511,11 +503,7 @@ Receives a buffer-name as argument"
   (set (make-local-variable 'compilation-error-regexp-alist)
        py-compilation-regexp-alist)
   ;; (setq completion-at-point-functions nil)
-  (and py-fontify-shell-buffer-p
-       (set (make-local-variable 'font-lock-defaults)
-            '(python-font-lock-keywords nil nil nil nil
-                                    (font-lock-syntactic-keywords
-                                     . py-font-lock-syntactic-keywords))))
+
   (set (make-local-variable 'comment-start) "# ")
   (set (make-local-variable 'comment-start-skip) "^[ \t]*#+ *")
   (set (make-local-variable 'comment-column) 40)
@@ -523,7 +511,6 @@ Receives a buffer-name as argument"
   (set (make-local-variable 'indent-region-function) 'py-indent-region)
   (set (make-local-variable 'indent-line-function) 'py-indent-line)
   (set (make-local-variable 'inhibit-point-motion-hooks) t)
-  (setq proc (get-buffer-process (current-buffer)))
   (and (string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
        (py-ipython--module-completion-import proc))
   (py--shell-send-setup-code proc)
@@ -545,28 +532,7 @@ Receives a buffer-name as argument"
                      py-ipython-history)
                  py-ipython-history))))
   (comint-read-input-ring t)
-  (set-process-sentinel (get-buffer-process py-buffer-name)
-                        #'shell-write-history-on-exit)
-  ;; (add-hook 'comint-preoutput-filter-functions
-  ;; 'ansi-color-process-output nil t)
-  ;; (add-hook 'after-change-functions 'py--after-change-function nil t)
-
-  (remove-hook 'comint-output-filter-functions 'font-lock-extend-jit-lock-region-after-change t)
-  (use-local-map py-shell-map)
-  (cond
-   (py-complete-function
-    (add-hook 'completion-at-point-functions
-              py-complete-function nil t))
-   (py-load-pymacs-p
-    (add-hook 'completion-at-point-functions
-              'py-complete-completion-at-point nil t))
-   (t
-    (add-hook 'completion-at-point-functions
-              'py-shell-complete nil t)))
-  ;; pdbtrack
-  (and py-pdbtrack-do-tracking-p (add-hook 'comint-output-filter-functions 'py--pdbtrack-track-stack-file t)
-       (remove-hook 'comint-output-filter-functions 'python-pdbtrack-track-stack-file t))
-  (set-syntax-table python-mode-syntax-table))
+  (set-process-sentinel proc #'shell-write-history-on-exit))
 
 (defun py--guess-buffer-name (argprompt)
   "Guess the buffer-name core string. "
@@ -599,11 +565,8 @@ BUFFER allows specifying a name, the Python process is connected to
   (let* ((newpath (when (eq 4 (prefix-numeric-value argprompt))
 		    (read-shell-command "PATH/TO/EXECUTABLE/[I]python[version]: ")))
 	 (oldbuf (current-buffer))
-	 ;; (py-fast-process-p (when (not (interactive-p)) py-fast-process-p))
          (dedicated (or dedicated py-dedicated-process-p))
          (py-exception-buffer (or py-exception-buffer (current-buffer)))
-         ;; (coding-system-for-read 'utf-8)
-         ;; (coding-system-for-write 'utf-8)
          (path (getenv "PYTHONPATH"))
          (py-shell-name (or newpath shell py-shell-name (py-choose-shell)))
          (args
@@ -631,20 +594,16 @@ BUFFER allows specifying a name, the Python process is connected to
          (setq py-buffer-name (generate-new-buffer-name py-buffer-name)))
     (if (and py-fast-process-p
 	     ;; user may want just to open a interactive shell
-	     (not (interactive-p))
-	     )
-        (unless (get-buffer-process (get-buffer py-buffer-name))
+	     (not (interactive-p)))
+        (unless (get-buffer-process (get-buffer (default-value 'py-buffer-name)))
           (py-fast-process)
-          (setq py-output-buffer py-buffer-name))
+          (setq py-output-buffer (default-value 'py-buffer-name)))
       (unless (comint-check-proc py-buffer-name)
         (py--shell-make-comint executable py-buffer-name args)
 	(sit-for 0.1)
-	(setq py-output-buffer (buffer-name (current-buffer)))
-        (py--shell-setup (get-buffer-process (current-buffer))))
-      ;; (py--init-easy-menu)
-      ;; (add-hook 'py-shell-hook 'py-dirstack-hook)
-      (and py-fontify-shell-buffer-p (font-lock-fontify-buffer))
-      (goto-char (point-max))
+	(setq py-output-buffer py-buffer-name)
+        (py--shell-setup (get-buffer-process py-buffer-name)))
+      ;; (goto-char (point-max))
       (when (or (string-match "[BbIi]*[Pp]ython" (prin1-to-string this-command))(interactive-p)) (py--shell-manage-windows py-buffer-name))
       (when py-shell-hook (run-hooks 'py-shell-hook)))
     py-buffer-name))
@@ -730,7 +689,10 @@ When optional FILE is `t', no temporary file is needed. "
                  py-execute-directory)
                 ((getenv "VIRTUAL_ENV"))
                 (t (getenv "HOME"))))
-         (py-buffer-name (or py-buffer-name (py--choose-buffer-name which-shell)))
+         (py-buffer-name
+	  (or py-buffer-name
+	      (and py-fast-process-p (default-value 'py-output-buffer))
+	      (py--choose-buffer-name which-shell)))
          (filename (or (and filename (expand-file-name filename)) (and (not (buffer-modified-p)) (buffer-file-name))))
          (py-orig-buffer-or-file (or filename (current-buffer)))
          (proc (cond (proc)
@@ -775,12 +737,11 @@ When optional FILE is `t', no temporary file is needed. "
     (unwind-protect
 	(if py-fast-process-p
 	    (progn
-
-	      (with-current-buffer py-buffer-name
-		(erase-buffer))
-	      (setq strg (buffer-substring-no-properties (point-min) (point-max)))
-	      (setq erg (py--fast-send-string-intern strg proc py-output-buffer))
-	      (py-kill-buffer-unconditional tempbuf))
+	      (setq output-buffer (default-value 'py-output-buffer))
+	      (with-current-buffer output-buffer
+		(erase-buffer)
+		(setq erg (py--fast-send-string-intern strg proc output-buffer))
+		(py-kill-buffer-unconditional tempbuf)))
 
 	  ;; (set-buffer-modified-p 'nil)
 	  (setq erg (py--execute-file-base proc tempfile nil py-buffer-name py-orig-buffer-or-file execute-directory))
@@ -788,9 +749,10 @@ When optional FILE is `t', no temporary file is needed. "
       (py--close-execution tempbuf erg)
       (py--shell-manage-windows py-buffer-name))))
 
-(defun py--postprocess ()
+(defun py--postprocess (buffer)
   "Provide return values, check result for error, manage windows. "
-  (setq py-error (save-excursion (py--postprocess-output-buffer py-output-buffer origline)))
+  ;; py--fast-send-string doesn't set origline
+  (setq py-error (save-excursion (py--postprocess-output-buffer buffer)))
   (when py-store-result-p
     (setq erg
 	  (py-output-filter (buffer-substring-no-properties (point) (point-max))))
@@ -806,14 +768,14 @@ comint believe the user typed this string so that
 Returns position where output starts. "
   (let* ((cmd (or cmd (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" filename filename)))
          (msg (and py-verbose-p (format "## executing %s...\n" (or origfile filename))))
-         (py-output-buffer (or procbuf (py-shell nil nil nil procbuf)))
-         (proc (or proc (get-buffer-process py-output-buffer)))
+         (buffer (or procbuf (py-shell nil nil nil procbuf)))
+         (proc (or proc (get-buffer-process buffer)))
          erg orig)
-    (set-buffer py-output-buffer)
+    (set-buffer buffer)
     (goto-char (point-max))
     (setq orig (point))
     (comint-send-string proc cmd)
-    (setq erg (py--postprocess))
+    (setq erg (py--postprocess buffer))
     (message "%s" py-error)
     erg))
 
@@ -1504,14 +1466,14 @@ jump to the top (outermost) exception in the exception stack."
       (py--find-next-exception 'bol buffer 're-search-backward "Top"))))
 ;;;
 
-(defun py--postprocess-output-buffer (buf origline)
+(defun py--postprocess-output-buffer (buf &optional origline)
   "Highlight exceptions found in BUF.
 If an exception occurred return error-string, otherwise return nil.  BUF must exist.
 
 Indicate LINE if code wasn't run from a file, thus remember line of source buffer "
   (set-buffer buf)
-  (let ((pmx (copy-marker (point-max)))
-	file bol estring ecode limit erg)
+  (let* ((pmx (copy-marker (point-max)))
+	 file bol estring ecode limit erg)
     (goto-char pmx)
     (sit-for 0.1)
     (save-excursion

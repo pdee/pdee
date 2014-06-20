@@ -33,7 +33,7 @@
 			  (push-mark)))))
 	   (end (unless file
 		  (or end (funcall (intern-soft (concat "py-end-of-" form))))))
-	   (shell (or shell py-shell-name))
+	   (shell (or shell (py-choose-shell)))
 	   (py-dedicated-process-p dedicated)
 	   (py-switch-buffers-on-execute-p (cond ((eq 'switch switch)
 						  t)
@@ -2164,7 +2164,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
 
 For `default' see value of `py-shell-name'"
   (interactive)
-  (py--execute-prepare "line" 'py-python-command nil nil))
+  (py--execute-prepare "line" 'python nil nil))
 
 (defun py-execute-line-python-switch ()
   "Send line at point to default interpreter.

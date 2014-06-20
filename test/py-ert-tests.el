@@ -904,13 +904,20 @@ def foo():
     (call-interactively 'py-shell-complete)
     (should (< (window-height) full-height))))
 
-(ert-deftest py-ert-execute-statement-fast ()
+(ert-deftest py-ert-execute-statement-fast-1 ()
   (py-test-with-temp-buffer-point-min
       "print(1)"
     (let ((py-fast-process-p t))
       (py-execute-statement)
       (set-buffer py-output-buffer)
       (eq 1 (char-after)))))
+
+(ert-deftest py-ert-execute-statement-fast-2 ()
+  (py-test-with-temp-buffer-point-min
+      "print(2)"
+    (py-execute-statement-fast)
+    (set-buffer py-output-buffer)
+    (eq 2 (char-after))))
 
 (ert-deftest py-ert-execute-block-fast ()
   (py-test-with-temp-buffer-point-min

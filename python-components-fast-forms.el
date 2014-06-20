@@ -33,14 +33,14 @@ Return the process"
   (interactive)
   (let ((this-buffer
 	 (set-buffer (or (and buffer (get-buffer-create buffer))
-			 (get-buffer-create py-output-buffer)))))
+			 (get-buffer-create (default-value 'py-output-buffer))))))
     (let ((proc
 	   (or (get-buffer-process this-buffer)
 
 	       (start-process py-shell-name this-buffer py-shell-name))))
       (with-current-buffer this-buffer
         (erase-buffer))
-      (setq py-output-buffer this-buffer)
+      ;; (setq py-output-buffer this-buffer)
       proc)))
 
 (defun py--fast-send-string (string &optional windows-config)
@@ -50,11 +50,12 @@ Output arrives in py-output-buffer, \"\*Python Output\*\" by default
 See also `py-fast-shell'
 
 "
-  (let ((windows-config (or windows-config (window-configuration-to-register 313465889)))
-	(proc (or (get-buffer-process (get-buffer py-buffer-name))
-                  (py-fast-process))))
-    (py--fast-send-string-intern string proc py-output-buffer)
-    (py--postprocess)))
+  (let* ((windows-config (or windows-config (window-configuration-to-register 313465889)))
+	(proc (or (ignore-errors (get-buffer-process (get-buffer py-buffer-name)))
+                  (py-fast-process)))
+	(buffer (process-buffer proc)))
+    (py--fast-send-string-intern string proc buffer)
+    (py--postprocess buffer)))
 
 (defun py--fast-send-string-intern (string proc py-output-buffer)
   (let (erg)
@@ -65,7 +66,7 @@ See also `py-fast-shell'
     (accept-process-output proc 5)
     (sit-for 0.01)
     (set-buffer py-output-buffer)
-    (switch-to-buffer (current-buffer))
+    ;; (switch-to-buffer (current-buffer))
     ;; delete last line prompts
     (delete-region (point) (progn (skip-chars-backward "^\n")(point)))
     (delete-region (point) (progn (skip-chars-backward "\n\r \t\f")(point)))
