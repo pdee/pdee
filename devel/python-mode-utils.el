@@ -537,7 +537,7 @@ Include default forms "
   (interactive)
   ;; (load-shells)
   (let ((py-bounds-command-names (if command (list command) py-bounds-command-names))
-	(py-shells py-commands)
+	;; (py-shells py-commands)
         (py-options (if option (list option) py-options)))
     (if path-to-shell
         (set-buffer (get-buffer-create (concat path-to-shell ".el")))
@@ -559,7 +559,7 @@ Include default forms "
   (save-excursion
     (let* ((beg (unless file
 		  (prog1
-		      (or beg (funcall (intern-soft (concat \"py-beginning-of-\" form \"-p\")))
+		      (or beg (funcall (intern-soft (concat \"py--beginning-of-\" form \"-p\")))
 
 			  (funcall (intern-soft (concat \"py-beginning-of-\" form)))
 			  (push-mark)))))
@@ -584,7 +584,8 @@ Include default forms "
     ;; see also `py-checker-command-names'
     (dolist (ele py-bounds-command-names)
       (dolist (elt py-shells)
-	(setq kurz (nth 1 (split-string elt "-")))
+	(setq elt (prin1-to-string elt)) 
+	(setq kurz elt)
         (dolist (pyo py-options)
           (if (string= "default" elt)
               (insert (concat "\n(defun py-execute-" ele))

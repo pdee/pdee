@@ -1150,7 +1150,7 @@ Else python"
   :type 'string
   :group 'python-mode)
 (make-variable-buffer-local 'py-shell-name)
-(defvaralias 'py-python-command 'py-shell-name)
+(defvar py-python-command py-shell-name)
 (defvar py-default-interpreter py-shell-name)
 
 (defcustom py-python-command-args '("-i")
@@ -2633,7 +2633,7 @@ With \\[universal-argument] 4 is called `py-switch-shell' see docu there."
   (if (eq 4 (prefix-numeric-value arg))
       (py-switch-shell '(4))
     (let* ((erg (cond (py-force-py-shell-name-p
-                       py-shell-name)
+                       (default-value 'py-shell-name))
                       (py-use-local-default
                        (if (not (string= "" py-shell-local-path))
                            (expand-file-name py-shell-local-path)
@@ -11138,8 +11138,6 @@ Complete symbol before point using Pymacs . "])
 Try to find source definition of function at point"]))))
         map))
 
-
-;; (defvaralias 'py-mode-map 'python-mode-map)
 
 (when py-org-cycle-p
   (define-key python-mode-map (kbd "<backtab>") 'org-cycle))

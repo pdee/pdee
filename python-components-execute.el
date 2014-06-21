@@ -675,8 +675,13 @@ When optional FILE is `t', no temporary file is needed. "
              (point-min)
              ;; count-lines doesn't honor current line when at BOL
              end)))
-	 ;; argument SHELL might be a string like "python", "IPython" "python3" or a symbol holding PATH/TO/EXECUTABLE
-         (which-shell (or (and (stringp shell) shell) (ignore-errors (eval shell)) (py-choose-shell)))
+	 ;; argument SHELL might be a string like "python", "IPython" "python3", a symbol holding PATH/TO/EXECUTABLE or just a symbol like 'python3
+         (which-shell
+	  (if shell (progn
+		      (or (stringp shell) shell)
+		      (ignore-errors (eval shell))
+		      (and (symbolp shell) (prin1-to-string shell)))
+	    (py-choose-shell)))
          (py-exception-buffer (current-buffer))
          (execute-directory
           (cond ((ignore-errors (file-name-directory (file-remote-p (buffer-file-name) 'localname))))

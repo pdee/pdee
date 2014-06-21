@@ -1054,6 +1054,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-compilation-regexp-alist) nil \"py-compilation-regexp-alist not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall specify-default-interpreter-lp-1332652-test \
 --funcall py-beginning-of-statement-test-1 \
 --funcall docstring-style-switches-test \
 --funcall impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test \

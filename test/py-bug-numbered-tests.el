@@ -819,7 +819,7 @@ This docstring isn't indented, test should pass anyway.
 
 (defun goto-beginning-of-tqs-lp:735328 ()
   (goto-char 84)
-  (sit-for 0.1) 
+  (sit-for 0.1)
   (assert (eq 4 (py-compute-indentation)) nil "goto-beginning-of-tqs-lp:735328-test failed")
   )
 
@@ -5400,7 +5400,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.104 $\"
+__version__ = \"$Revision: 1.105 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -6381,6 +6381,13 @@ print(123)
   (py-execute-buffer-python2-switch)
   (assert nil "show-source-code-lp-1318991-test failed"))
 
+(defun specify-default-interpreter-lp-1332652-test ()
+  (interactive)
+  (with-current-buffer
+      (set-buffer (get-buffer-create (get-buffer-create "default.py")))
+    (set (make-local-variable 'py-shell-name) "python3.4")
+    (switch-to-buffer (current-buffer))
+    (assert (string= "python3.4" py-shell-name) nil "specify-default-interpreter-lp-1332652-test failed")))
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
