@@ -7833,7 +7833,7 @@ Try to find source definition of function at point"]))))
                py-shell-menu map "Py-Shell menu"
                `("Py-Shell"
                  ("Interpreter"
-		  
+
 		  ["Comint send input" comint-send-input
 		   :help " `comint-send-input'
 
@@ -11615,7 +11615,7 @@ See available customizations listed in files variables-python-mode at directory 
   (set (make-local-variable 'indent-region-function) 'py-indent-region)
   (set (make-local-variable 'indent-line-function) 'py-indent-line)
   (set (make-local-variable 'hs-hide-comments-when-hiding-all) 'py-hide-comments-when-hiding-all)
-  (set (make-local-variable 'outline-heading-end-regexp) ":\\s-*\n")
+  (set (make-local-variable 'outline-heading-end-regexp) ":[^\n]*\n")
   (set (make-local-variable 'open-paren-in-column-0-is-defun-start) nil)
   (set (make-local-variable 'add-log-current-defun-function) 'py-current-defun)
   (set (make-local-variable 'fill-paragraph-function) 'py-fill-paragraph)
