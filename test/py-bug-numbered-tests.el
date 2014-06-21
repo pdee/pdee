@@ -6389,5 +6389,36 @@ print(123)
     (switch-to-buffer (current-buffer))
     (assert (string= "python3.4" py-shell-name) nil "specify-default-interpreter-lp-1332652-test failed")))
 
+(defun vertical-alignment-lp-1332245-test (&optional arg)
+  (interactive "p")
+   (let ((teststring "#! /usr/bin/env python
+# -\*- coding: utf-8 -\*-
+# According to PEP-8, \"[c]ontinuation lines should align wrapped
+# elements either vertically using Python's implicit line joining
+# inside parentheses, brackets and braces, or using a hanging
+# indent\". py-newline-and-indent does the job of aligning the next
+# line with the opening parenthesis fine. However, when TAB is then
+# pressed, this position is lost and multiples of py-python-offset
+# are used instead. At the same, running M-x indent-for-tab-command
+# or indent-according-to-mode fixes the problem.
+#
+# This is with python-mode 6.1.3 and Emacs 24.3.1.
+# Marcin (antyfilidor) on 2014-06-19
+
+# For instance in the PEP 8 example
+
+foo = long_function_name(var_one, var_two,
+                        var_three,
+                        var_four)
+"))
+  (py-bug-tests-intern 'vertical-alignment-lp-1332245-base arg teststring)))
+
+(defun vertical-alignment-lp-1332245-base ()
+  (goto-char 755)
+  (let ((need (py-compute-indentation)))
+    (call-interactively 'py-indent-line) 
+    (assert (eq (current-indentation) need) nil "Vertical-alignment-with-opening-lp-1332245-test failed")))
+
+
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

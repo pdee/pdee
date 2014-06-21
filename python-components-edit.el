@@ -87,52 +87,57 @@ With optional \\[universal-argument] an indent with length `py-indent-offset' is
           (indent-to (py-compute-indentation)))))))
 
 (defun py--indent-line-intern (need cui py-indent-offset col &optional beg end region)
-  (if py-tab-indent
-      (progn
-        (and py-tab-indents-region-p region
-             (py--indent-fix-region-intern beg end))
-        (cond ((eq need cui)
-               (if (or (eq this-command last-command)
-                       (eq this-command 'py-indent-line))
-                   (if (and py-tab-shifts-region-p region)
-                       (while (and (goto-char beg) (< 0 (current-indentation)))
-                         (py-shift-region-left 1 beg end))
-                     (beginning-of-line)
-                     (delete-horizontal-space)
-                     (if (<= (line-beginning-position) (+ (point) (- col cui)))
-                         (forward-char (- col cui))
-                       (beginning-of-line)))))
-              ((< cui need)
-               (if (and py-tab-shifts-region-p region)
-                   (progn
-                     (py-shift-region-right 1))
-                 (progn
-                   (beginning-of-line)
-                   (delete-horizontal-space)
-                   (indent-to (+ (* (/ cui py-indent-offset) py-indent-offset) py-indent-offset))
-                   (forward-char (- col cui)))))
-              ((< need cui)
-               (if (and py-tab-shifts-region-p region)
-                   (progn
-                     (when (eq (point) (region-end))
-                       (exchange-point-and-mark))
-                     (while (< 0 (current-indentation))
-                       (py-shift-region-left 1)))
-                 (beginning-of-line)
-                 (delete-horizontal-space)))
-              (t
-               (if (and py-tab-shifts-region-p region)
-                   (progn
-                     (while (< (current-indentation) need)
-                       (py-shift-region-right 1)))
-                 (beginning-of-line)
-                 (delete-horizontal-space)
-                 (indent-to need)
-                 (back-to-indentation)
-                 (if (<= (line-beginning-position) (+ (point) (- col cui)))
-                     (forward-char (- col cui))
-                   (beginning-of-line))))))
-    (insert-tab)))
+  (let (erg)
+    (if py-tab-indent
+	(progn
+	  (and py-tab-indents-region-p region
+	       (py--indent-fix-region-intern beg end))
+	  (cond ((eq need cui)
+		 (if (or (eq this-command last-command)
+			 (eq this-command 'py-indent-line))
+		     (if (and py-tab-shifts-region-p region)
+			 (while (and (goto-char beg) (< 0 (current-indentation)))
+			   (py-shift-region-left 1 beg end))
+		       (beginning-of-line)
+		       (delete-horizontal-space)
+		       (if (<= (line-beginning-position) (+ (point) (- col cui)))
+			   (forward-char (- col cui))
+			 (beginning-of-line)))))
+		((< cui need)
+		 (if (and py-tab-shifts-region-p region)
+		     (progn
+		       (py-shift-region-right 1))
+		   (progn
+		     (beginning-of-line)
+		     (delete-horizontal-space)
+		     ;; indent one py-indent-offset only if goal < need
+		     (setq erg (+ (* (/ cui py-indent-offset) py-indent-offset) py-indent-offset))
+		     (if (< need erg)
+			 (indent-to need)
+		       (indent-to erg))
+		     (forward-char (- col cui)))))
+		((< need cui)
+		 (if (and py-tab-shifts-region-p region)
+		     (progn
+		       (when (eq (point) (region-end))
+			 (exchange-point-and-mark))
+		       (while (< 0 (current-indentation))
+			 (py-shift-region-left 1)))
+		   (beginning-of-line)
+		   (delete-horizontal-space)))
+		(t
+		 (if (and py-tab-shifts-region-p region)
+		     (progn
+		       (while (< (current-indentation) need)
+			 (py-shift-region-right 1)))
+		   (beginning-of-line)
+		   (delete-horizontal-space)
+		   (indent-to need)
+		   (back-to-indentation)
+		   (if (<= (line-beginning-position) (+ (point) (- col cui)))
+		       (forward-char (- col cui))
+		     (beginning-of-line))))))
+      (insert-tab))))
 
 (defun py--indent-line-base (beg end region cui need arg this-indent-offset col)
   (unless (and (not (eq this-command last-command))
