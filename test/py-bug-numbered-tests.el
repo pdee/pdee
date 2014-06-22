@@ -6416,8 +6416,19 @@ foo = long_function_name(var_one, var_two,
 (defun vertical-alignment-lp-1332245-base ()
   (goto-char 755)
   (let ((need (py-compute-indentation)))
-    (call-interactively 'py-indent-line) 
+    (call-interactively 'py-indent-line)
     (assert (eq (current-indentation) need) nil "Vertical-alignment-with-opening-lp-1332245-test failed")))
+
+
+(defun stop-before-prompt-lp-1331953-test ()
+  (interactive)
+  (let ((erg (py-shell nil t)))
+    (set-buffer erg)
+    (switch-to-buffer erg)
+    (goto-char (point-max))
+    (insert "print(123)")
+    (py-beginning-of-statement)
+    (assert (eq 4 (current-column)) nil "stop-before-prompt-lp-1331953-test failed")))
 
 
 (provide 'py-bug-numbered-tests)

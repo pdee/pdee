@@ -396,7 +396,7 @@ http://docs.python.org/reference/compound_stmts.html"
 	       (not (bobp))
 	       (py-beginning-of-statement orig done limit)))
          ((and (not done)(not (eq (current-column) (current-indentation))))
-          (if (< 0 (abs (skip-chars-backward "^\t\r\n\f")))
+          (if (< 0 (abs (skip-chars-backward "^\t\r\n\f" (line-beginning-position))))
               (progn
                 (setq done t)
                 (back-to-indentation)
