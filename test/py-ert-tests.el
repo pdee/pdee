@@ -1295,7 +1295,13 @@ x = {'abc':'def',
     (should (eq 120 (mark)))
     (goto-char 44)
     (py-mark-expression)
-    (should (eq 46 (mark)))
-    ))
+    (should (eq 46 (mark)))))
+
+(ert-deftest py-dedicated-shell-test ()
+  ""
+  (let ((erg (py-shell nil t "python")))
+    (should (< 8 (length erg)))
+    (should (eq 0 (string-match "^*Python" erg)))))
+
 
 (provide 'py-ert-tests)

@@ -75,14 +75,12 @@ Use `defcustom' to keep value across sessions "
   (interactive)
   (let ((buffer (or buffer (current-buffer)))
         proc kill-buffer-query-functions)
-    (if (buffer-live-p buffer)
-        (progn
-          (setq proc (get-buffer-process buffer))
-          (and proc (kill-process proc))
-          (set-buffer buffer)
-          (set-buffer-modified-p 'nil)
-          (kill-buffer (current-buffer)))
-      (and (interactive-p) (message "Can't see a buffer %s" buffer)))))
+    (ignore-errors
+      (setq proc (get-buffer-process buffer))
+      (and proc (kill-process proc))
+      (set-buffer buffer)
+      (set-buffer-modified-p 'nil)  
+      (kill-buffer (current-buffer)))))
 
 (defun py--line-backward-maybe ()
   (let ((orig (point)))

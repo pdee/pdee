@@ -1054,6 +1054,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-compilation-regexp-alist) nil \"py-compilation-regexp-alist not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall stop-before-prompt-lp-1331953-test \
 --funcall vertical-alignment-lp-1332245-test \
 --funcall specify-default-interpreter-lp-1332652-test \
 --funcall py-beginning-of-statement-test-1 \

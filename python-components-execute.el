@@ -301,7 +301,7 @@ interpreter.
       (process-send-string proc "from IPython.core.completerlib import module_completion")
       (process-send-string proc "\n"))))
 
-(defun py--buffer-name-prepare (&optional arg)
+(defun py--buffer-name-prepare (&optional arg dedicated)
   "Return an appropriate name to display in modeline.
 SEPCHAR is the file-path separator of your system. "
   (let* ((name-first (or arg py-shell-name))
@@ -344,7 +344,7 @@ SEPCHAR is the file-path separator of your system. "
                 ((string-match "python3" name)
                  (replace-regexp-in-string "python3" "Python3" name))
                 (t name)))
-    (when py-dedicated-process-p
+    (when (or dedicated py-dedicated-process-p)
       (setq erg (make-temp-name (concat erg "-"))))
     (cond ((and prefix (string-match "^\*" erg))
            (setq erg (replace-regexp-in-string "^\*" (concat "*" prefix " ") erg)))
@@ -584,7 +584,7 @@ BUFFER allows specifying a name, the Python process is connected to
             (when py-use-local-default
               (error "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'"))))
          (py-buffer-name (or buffer-name (py--guess-buffer-name argprompt)))
-         (py-buffer-name (or py-buffer-name (py--buffer-name-prepare newpath)))
+         (py-buffer-name (or py-buffer-name (py--buffer-name-prepare newpath dedicated)))
          (executable (cond (py-shell-name)
                            (py-buffer-name
                             (py--report-executable py-buffer-name))))
