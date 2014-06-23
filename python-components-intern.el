@@ -1163,7 +1163,7 @@ When `py-verbose-p' and MSG is non-nil messages the first line of STRING."
          (temp-file-name (concat (with-current-buffer (process-buffer process)
                                    (file-remote-p default-directory))
                                  (py--normalize-directory py-temp-directory)
-                                 "psss-temp.py"))
+                                 (md5 (user-login-name)) "-psss-temp.py"))
          (file-name (or filename (buffer-file-name) temp-file-name)))
     (if (> (length lines) 1)
 	(with-temp-file temp-file-name
