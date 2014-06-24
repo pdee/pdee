@@ -2035,10 +2035,6 @@ can write into: the value (if any) of the environment variable TMPDIR,
   "Internally used. ")
 (make-variable-buffer-local 'py-exec-command)
 
-(defvar py-python-major-version nil
-  "Internally used. ")
-(make-variable-buffer-local 'py-python-major-version)
-
 (defvar py-exec-string-command nil
   "Mode commands will set this. ")
 (make-variable-buffer-local 'py-exec-string-command)
