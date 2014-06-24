@@ -242,9 +242,7 @@ complete('%s')" word) shell nil proc)))
                (tab-to-tab-stop))
               (t
                ;; (string-match "[pP]ython3[^[:alpha:]]*$" shell)
-               (py--shell--do-completion-at-point proc imports word pos oldbuf))
-              ;; (t (py--shell-complete-intern word beg end shell imports proc))
-              )))))
+               (py--shell--do-completion-at-point proc imports word pos oldbuf)))))))
 
 (defun py-complete--base (shell pos beg end word imports debug oldbuf)
   (let* (wait
@@ -257,9 +255,7 @@ complete('%s')" word) shell nil proc)))
            (ipython-complete nil nil beg end word shell debug imports pos oldbuf))
           (t
            ;; (string-match "[pP]ython3[^[:alpha:]]*$" shell)
-           (py--shell--do-completion-at-point proc imports word pos oldbuf))
-          ;; (t (py--shell-complete-intern word beg end shell imports proc debug))
-)))
+           (py--shell--do-completion-at-point proc imports word pos oldbuf)))))
 
 (defun py-shell-complete (&optional shell debug beg end word)
   "Complete word before point, if any. Otherwise insert TAB. "

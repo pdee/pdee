@@ -959,7 +959,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-separator-char) nil \"py-separator-char not a variable\")" \
 -eval "(assert (boundp 'py-temp-directory) nil \"py-temp-directory not a variable\")" \
 -eval "(assert (boundp 'py-exec-command) nil \"py-exec-command not a variable\")" \
--eval "(assert (boundp 'py-exec-string-command) nil \"py-exec-string-command not a variable\")" \
 -eval "(assert (boundp 'py-which-bufname) nil \"py-which-bufname not a variable\")" \
 -eval "(assert (boundp 'py-pychecker-history) nil \"py-pychecker-history not a variable\")" \
 -eval "(assert (boundp 'py-pep8-history) nil \"py-pep8-history not a variable\")" \
