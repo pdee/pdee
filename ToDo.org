@@ -1,4 +1,3 @@
-* TODO py-comint--complete and py-complete--base
 * TODO py-max-help-buffer-p
 * TODO py-beginning-of-elif
 * TODO py-execute-python-mode-v5 returns position, now result
