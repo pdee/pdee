@@ -2035,10 +2035,6 @@ can write into: the value (if any) of the environment variable TMPDIR,
   "Internally used. ")
 (make-variable-buffer-local 'py-exec-command)
 
-(defvar py-exec-string-command nil
-  "Mode commands will set this. ")
-(make-variable-buffer-local 'py-exec-string-command)
-
 (defvar py-which-bufname "Python")
 (make-variable-buffer-local 'py-which-bufname)
 
@@ -11654,29 +11650,6 @@ Don't save anything for STR matching `inferior-python-filter-regexp'."
              'py--set-auto-fill-values)))))
 
 ;;;
-
-(define-derived-mode python2-mode python-mode "Python2"
-  "Edit and run code used by Python version 2 series. "
-  :group 'python-mode
-  (set (make-local-variable 'py-exec-command) '(format "execfile(r'%s') # PYTHON-MODE\n" filename))
-  (set (make-local-variable 'py-exec-string-command) '(format "exec(r'%s') # PYTHON-MODE\n" string))
-  (py-toggle-shell "python2"))
-
-(define-derived-mode python3-mode python-mode "Python3"
-  "Edit and run code used by Python version 3 series. "
-  :group 'python-mode
-  (set (make-local-variable 'py-exec-command) '(format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" file file))
-  (set (make-local-variable 'py-exec-string-command) '(format "exec(r'(%s)') # PYTHON-MODE\n" string))
-  (py-toggle-shell "python3"))
-
-(define-derived-mode jython-mode python-mode "Jython"
-  "Major mode for editing Jython files.
-Like `python-mode', but sets up parameters for Jython subprocesses.
-Runs `jython-mode-hook' after `python-mode-hook'."
-
-  :group 'python-mode
-  (py-toggle-shell "jython"))
-
 (and py-load-skeletons-p (require 'python-components-skeletons))
 (and py-company-pycomplete-p     (require 'company-pycomplete))
 
