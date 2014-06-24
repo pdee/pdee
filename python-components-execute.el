@@ -312,7 +312,7 @@ SEPCHAR is the file-path separator of your system. "
 		 (concat "IP" (substring name-raw 2)))
 		;; When a given path is the default
 		;; it must not be shown
-		((and (string-match "/[^/]+$" name-raw)
+		((and (string-match "/[^/]+\\|\\\\" name-raw)
 		      (setq ein (substring name-raw (1+ (string-match "/[^/]+$" name-raw))))
 		      (string= (eval (car (read-from-string (concat "py-" (downcase ein) "-command")))) name-raw))
 		 ;; (string-match "^/usr/bin" name-raw)
@@ -548,6 +548,20 @@ Receives a buffer-name as argument"
                                       (concat
                                        (mapconcat 'identity py-python-command-args " ") " "))))))))))
 
+(defun py--configured-shell (name)
+  "Return the configured PATH/TO/STRING if any. "
+  (if (string-match "//\\|\\\\" name)
+      name
+    (cond ((string-match "^[Ii]" name)
+	   py-ipython-command)
+	  ((string-match "[Pp]ython3" name)
+	   py-python3-command)
+	  ((string-match "[Pp]ython2" name)
+	   py-python2-command)
+	  ((string-match "[Jj]ython" name)
+	   py-jython-command)
+	  (t py-python-command))))
+
 (defun py-shell (&optional argprompt dedicated shell buffer-name)
   "Start an interactive Python interpreter in another window.
 Interactively, \\[universal-argument] prompts for a PATH/TO/EXECUTABLE to use.
@@ -568,10 +582,14 @@ BUFFER allows specifying a name, the Python process is connected to
          (dedicated (or dedicated py-dedicated-process-p))
          (py-exception-buffer (or py-exception-buffer (current-buffer)))
          (path (getenv "PYTHONPATH"))
-         (py-shell-name (or newpath shell py-shell-name (py-choose-shell)))
+         (py-shell-name-raw (or newpath shell py-shell-name (py-choose-shell)))
+	 ;; unless Path is given with `py-shell-name'
+	 ;; call configured command
+	 (py-shell-name (py--configured-shell py-shell-name-raw))
          (args
           (cond (py-fast-process-p nil)
-                ((string-match "^[Ii]" (prin1-to-string py-shell-name)) py-ipython-command-args)
+                ((string-match "^[Ii]" py-shell-name)
+		 py-ipython-command-args)
                 (t py-python-command-args)))
          ;; If we use a pipe, Unicode characters are not printed
          ;; correctly (Bug#5794) and IPython does not work at

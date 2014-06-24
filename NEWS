@@ -4,15 +4,23 @@ Python Mode News
 New in version 6.1.4
 ---------------------
 
-`py-shell' uses new `py-shell-mode', `py-shell-mode-map'
- M-x describe-mode RET mentions edit available commands
- Menu "Py-Shell"
+- `py-shell' uses new `py-shell-mode', `py-shell-mode-map'
+  M-x describe-mode RET mentions edit available commands
+  Menu "Py-Shell"
 
-Enhanced Windows support:
-  - customizable versioned py-python[23]-commands, taking the path to
-    executables
+- Improved customization of Python2, Python3, IPython executables
+  receive defaults depending from system
+  py-python-command - defaults to python2
+  py-python2-command
+  py-python3-command
+  py-ipython-command
 
-C-u py-shell RET prompts for a Path/To/Executable
+  py-python-command-args
+  py-python2-command-args
+  py-python3-command-args
+  py-ipython-command-args
+
+- C-u py-shell RET prompts for a Path/To/Executable
   Py-shell-buffer will display its acronym: "*PTE Python*"
 
 Support for large output

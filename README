@@ -13,6 +13,15 @@ Customize default Python shell as `py-shell-name'
 `py-shell-name' might be an installed default executable as shell
 command `type' would display, but also a PATH/TO/EXECUTABLE
 
+If different flavours of Python are installed, customize
+  py-python-command - python2
+  py-python3-command
+  py-ipython-command
+
+  py-python-command-args
+  py-python3-command-args
+  py-ipython-command-args
+
 You might run code by another installed (I)Python-version than
 default.
 

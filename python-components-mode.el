@@ -49,7 +49,6 @@
 ;; (add-to-list 'load-path (concat py-install-directory "extensions"))
 ;; make it easier to run from different branches
 
-
 (provide 'python-components-mode)
 (provide 'python-mode)
 
@@ -1150,8 +1149,25 @@ Else python"
   :type 'string
   :group 'python-mode)
 (make-variable-buffer-local 'py-shell-name)
-(defvar py-python-command py-shell-name)
 (defvar py-default-interpreter py-shell-name)
+
+(defcustom py-python-command
+  (if (eq system-type 'windows-nt)
+      ;; "C:\\Python27\\python.exe"
+      "python.exe"
+   ;; "C:/Python33/Lib/site-packages/IPython"
+    "/usr/bin/python")
+
+  "Make sure, the directory where python.exe resides in in the PATH-variable. If needed, edit in \"Advanced System Settings/Environment Variables\"
+
+With Anaconda for example the following works here:
+\"C:\\\\Users\\\\My-User-Name\\\\Anaconda\\\\Scripts\\\\python.exe\"
+
+Else /usr/bin/python"
+
+  :type 'string
+  :group 'python-mode)
+(make-variable-buffer-local 'py-python-command)
 
 (defcustom py-python-command-args '("-i")
   "List of string arguments to be used when starting a Python shell."
@@ -1159,27 +1175,28 @@ Else python"
   :group 'python-mode)
 (make-variable-buffer-local 'py-python-command-args)
 
-(defcustom py-ipython-command
+
+(defcustom py-python2-command
   (if (eq system-type 'windows-nt)
-      "C:/Python33/Lib/site-packages/IPython"
-    "/usr/bin/ipython")
+   "C:\\Python27\\python.exe"
+   ;; "C:/Python33/Lib/site-packages/IPython"
+    "/usr/bin/python")
 
-  "A PATH/TO/EXECUTABLE or default value `M-x IPython RET' may look for, if no IPython-shell is specified by command.
+  "Make sure, the directory where python.exe resides in in the PATH-variable. If needed, edit in \"Advanced System Settings/Environment Variables\"
 
-On Windows default is C:/Python33/Lib/site-packages/IPython
---there is no garantee it exists, please check your system--
+With Anaconda for example the following works here:
+\"C:\\\\Users\\\\My-User-Name\\\\Anaconda\\\\Scripts\\\\python.exe\"
 
-Else /usr/bin/ipython"
+Else /usr/bin/python"
 
   :type 'string
   :group 'python-mode)
-(make-variable-buffer-local 'py-ipython-command)
+(make-variable-buffer-local 'py-python2-command)
 
-(defcustom py-ipython-command-args '("")
+(defcustom py-python2-command-args '("-i")
   "List of string arguments to be used when starting a Python shell."
   :type '(repeat string)
   :group 'python-mode)
-(make-variable-buffer-local 'py-ipython-command-args)
 
 (defcustom py-python3-command
   (if (eq system-type 'windows-nt)
@@ -1196,30 +1213,6 @@ At GNU systems default is /usr/bin/python3"
 
   :type 'string
   :group 'python-mode)
-
-(defcustom py-python2-command
-  (if (eq system-type 'windows-nt)
-      "C:/Python27/python"
-    "/usr/bin/python2")
-
-  "A PATH/TO/EXECUTABLE or default value `py-shell' may look for, if no shell is specified by command.
-
-On Windows default is C:/Python33/python.exe
-
-That may differ depending of enviroment installed.
-With Anaconda for example path might be:
-C:/Users/YOUR_NAME/Anaconda/python.exe
-
-at GNU systems default is /usr/bin/python2"
-
-  :type 'string
-  :group 'python-mode)
-
-(defcustom py-python2-command-args '("-i")
-  "List of string arguments to be used when starting a Python2 shell."
-  :type '(repeat string)
-  :group 'python-mode)
-(make-variable-buffer-local 'py-python2-command-args)
 
 (defcustom py-python3-command
   (if (eq system-type 'windows-nt)
@@ -1246,10 +1239,169 @@ at GNU systems default is /usr/bin/python3"
 (make-variable-buffer-local 'py-python3-command-args)
 
 
+(defcustom py-ipython-command
+  (if (eq system-type 'windows-nt)
+   "C:\\Python27\\python.exe"
+   ;; "C:/Python33/Lib/site-packages/IPython"
+    "/usr/bin/ipython")
+
+  "A PATH/TO/EXECUTABLE or default value `M-x IPython RET' may look for, if no IPython-shell is specified by command.
+
+On Windows default is \"C:\\\\Python27\\\\python.exe\"
+While with Anaconda for example the following works here:
+\"C:\\\\Users\\\\My-User-Name\\\\Anaconda\\\\Scripts\\\\ipython.exe\"
+
+Else /usr/bin/ipython"
+
+  :type 'string
+  :group 'python-mode)
+(make-variable-buffer-local 'py-ipython-command)
+
+(defcustom py-ipython-command-args
+  (if (eq system-type 'windows-nt)
+      "ipython-script.py"
+    "")
+  "List of string arguments to be used when starting a Python shell.
+At Windows make sure ipython-script.py is PATH. Also setting PATH/TO/SCRIPT here should work, for example;
+C:\\Python27\\Scripts\\ipython-script.py
+With Anaconda the following is known to work:
+\"C:\\\\Users\\\\My-User-Name\\\\Anaconda\\\\Scripts\\\\ipython-script-py\"
+"
+  :type '(repeat string)
+  :group 'python-mode)
+(make-variable-buffer-local 'py-ipython-command-args)
+
+(defcustom py-ipython-command
+  (if (eq system-type 'windows-nt)
+   "C:\\Python27\\python.exe"
+   ;; "C:/Python33/Lib/site-packages/IPython"
+    "/usr/bin/ipython")
+
+  "A PATH/TO/EXECUTABLE or default value `M-x IPython RET' may look for, if no IPython-shell is specified by command.
+
+On Windows default is \"C:\\\\Python27\\\\python.exe\"
+While with Anaconda for example the following works here:
+\"C:\\\\Users\\\\My-User-Name\\\\Anaconda\\\\Scripts\\\\ipython.exe\"
+
+Else /usr/bin/ipython"
+
+  :type 'string
+  :group 'python-mode)
+(make-variable-buffer-local 'py-ipython-command)
+
+(defcustom py-ipython-command-args
+  (if (eq system-type 'windows-nt)
+      "ipython-script.py"
+    "")
+  "List of string arguments to be used when starting a Python shell.
+At Windows make sure ipython-script.py is PATH. Also setting PATH/TO/SCRIPT here should work, for example;
+C:\\Python27\\Scripts\\ipython-script.py
+With Anaconda the following is known to work:
+\"C:\\\\Users\\\\My-User-Name\\\\Anaconda\\\\Scripts\\\\ipython-script-py\"
+"
+  :type '(repeat string)
+  :group 'python-mode)
+(make-variable-buffer-local 'py-ipython-command-args)
+
+(defcustom py-ipython-command
+  (if (eq system-type 'windows-nt)
+   "C:\\Python27\\python.exe"
+   ;; "C:/Python33/Lib/site-packages/IPython"
+    "/usr/bin/ipython")
+
+  "A PATH/TO/EXECUTABLE or default value `M-x IPython RET' may look for, if no IPython-shell is specified by command.
+
+On Windows default is \"C:\\\\Python27\\\\python.exe\"
+While with Anaconda for example the following works here:
+\"C:\\\\Users\\\\My-User-Name\\\\Anaconda\\\\Scripts\\\\ipython.exe\"
+
+Else /usr/bin/ipython"
+
+  :type 'string
+  :group 'python-mode)
+(make-variable-buffer-local 'py-ipython-command)
+
+(defcustom py-ipython-command-args
+  (if (eq system-type 'windows-nt)
+      "ipython-script.py"
+    "")
+  "List of string arguments to be used when starting a Python shell.
+At Windows make sure ipython-script.py is PATH. Also setting PATH/TO/SCRIPT here should work, for example;
+C:\\Python27\\Scripts\\ipython-script.py
+With Anaconda the following is known to work:
+\"C:\\\\Users\\\\My-User-Name\\\\Anaconda\\\\Scripts\\\\ipython-script-py\"
+"
+  :type '(repeat string)
+  :group 'python-mode)
+(make-variable-buffer-local 'py-ipython-command-args)
+
+(defcustom py-ipython-command
+  (if (eq system-type 'windows-nt)
+   "C:\\Python27\\python.exe"
+   ;; "C:/Python33/Lib/site-packages/IPython"
+    "/usr/bin/ipython")
+
+  "A PATH/TO/EXECUTABLE or default value `M-x IPython RET' may look for, if no IPython-shell is specified by command.
+
+On Windows default is \"C:\\\\Python27\\\\python.exe\"
+While with Anaconda for example the following works here:
+\"C:\\\\Users\\\\My-User-Name\\\\Anaconda\\\\Scripts\\\\ipython.exe\"
+
+Else /usr/bin/ipython"
+
+  :type 'string
+  :group 'python-mode)
+(make-variable-buffer-local 'py-ipython-command)
+
+(defcustom py-ipython-command-args
+  (if (eq system-type 'windows-nt)
+      "ipython-script.py"
+    "")
+  "List of string arguments to be used when starting a Python shell.
+At Windows make sure ipython-script.py is PATH. Also setting PATH/TO/SCRIPT here should work, for example;
+C:\\Python27\\Scripts\\ipython-script.py
+With Anaconda the following is known to work:
+\"C:\\\\Users\\\\My-User-Name\\\\Anaconda\\\\Scripts\\\\ipython-script-py\"
+"
+  :type '(repeat string)
+  :group 'python-mode)
+(make-variable-buffer-local 'py-ipython-command-args)
+
+(defcustom py-ipython-command
+  (if (eq system-type 'windows-nt)
+   "C:\\Python27\\python.exe"
+   ;; "C:/Python33/Lib/site-packages/IPython"
+    "/usr/bin/ipython")
+
+  "A PATH/TO/EXECUTABLE or default value `M-x IPython RET' may look for, if no IPython-shell is specified by command.
+
+On Windows default is \"C:\\\\Python27\\\\python.exe\"
+While with Anaconda for example the following works here:
+\"C:\\\\Users\\\\My-User-Name\\\\Anaconda\\\\Scripts\\\\ipython.exe\"
+
+Else /usr/bin/ipython"
+
+  :type 'string
+  :group 'python-mode)
+(make-variable-buffer-local 'py-ipython-command)
+
+(defcustom py-ipython-command-args
+  (if (eq system-type 'windows-nt)
+      "ipython-script.py"
+    "")
+  "List of string arguments to be used when starting a Python shell.
+At Windows make sure ipython-script.py is PATH. Also setting PATH/TO/SCRIPT here should work, for example;
+C:\\Python27\\Scripts\\ipython-script.py
+With Anaconda the following is known to work:
+\"C:\\\\Users\\\\My-User-Name\\\\Anaconda\\\\Scripts\\\\ipython-script-py\"
+"
+  :type '(repeat string)
+  :group 'python-mode)
+(make-variable-buffer-local 'py-ipython-command-args)
+
 (defcustom py-jython-command
   (if (eq system-type 'windows-nt)
-      ;; not known to work at windows
-      ""
+      "jython"
     "/usr/bin/jython")
 
   "A PATH/TO/EXECUTABLE or default value `M-x Jython RET' may look for, if no Jython-shell is specified by command.
@@ -1299,7 +1451,6 @@ Default /usr/bin/bpython"
   :type 'string
   :group 'python-mode)
 (make-variable-buffer-local 'py-shell-toggle-2)
-
 
 ;;;
 
@@ -2480,7 +2631,6 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
 ;; have to bind py-file-queue before installing the kill-emacs-hook
 
 (make-obsolete-variable 'jpython-mode-hook 'jython-mode-hook nil)
-
 
 (defun py--delete-all-but-first-prompt ()
   "Don't let prompts from setup-codes sent clutter buffer. "
@@ -7855,7 +8005,6 @@ The input is entered into the input history ring, if the value of variable
 
 \(fn &optional NO-NEWLINE ARTIFICIAL)"]
 
-
 		  ["Shell complete or indent" py-shell-complete-or-indent
 		   :help " `py-shell-complete-or-indent'
 
@@ -7863,7 +8012,6 @@ Complete or indent depending on the context\.
 
 If cursor is at current-indentation and further indent
 seems reasonable, indent\. Otherwise try to complete "]
-
 
 		  ["Shell complete" py-shell-complete
 		   :help " `py-shell-complete'
@@ -11139,7 +11287,6 @@ Complete symbol before point using Pymacs . "])
 Try to find source definition of function at point"]))))
         map))
 
-
 (when py-org-cycle-p
   (define-key python-mode-map (kbd "<backtab>") 'org-cycle))
 
@@ -11736,6 +11883,5 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
             '(python-font-lock-keywords nil nil nil nil
 					(font-lock-syntactic-keywords
 					 . py-font-lock-syntactic-keywords)))))
-
 
 ;;; python-components-mode.el ends here
