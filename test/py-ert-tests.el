@@ -1304,5 +1304,30 @@ x = {'abc':'def',
     (should (< 8 (length erg)))
     (should (eq 0 (string-match "^*Python" erg)))))
 
+(ert-deftest py-python-shell-test ()
+  ""
+  (let ((erg (python)))
+    (should (bufferp (get-buffer erg)))
+    (should (get-buffer-process erg))))
+
+(ert-deftest py-python2-shell-test ()
+  ""
+  (let ((erg (python2)))
+    (should (bufferp (get-buffer erg)))
+    (should (get-buffer-process erg))))
+
+(ert-deftest py-python3-shell-test ()
+  ""
+  (let ((erg (python3)))
+    (should (bufferp (get-buffer erg)))
+    (should (get-buffer-process erg))))
+
+(ert-deftest py-ipython-shell-test ()
+  ""
+  (let ((erg (ipython)))
+    (should (bufferp (get-buffer erg)))
+    (should (get-buffer-process erg))))
+
+
 
 (provide 'py-ert-tests)

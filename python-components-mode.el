@@ -2640,9 +2640,7 @@ This function takes the list of setup code to send from the
     (py--send-string-no-output
      (py--fix-start (symbol-value code)) process)
     (sit-for 0.1))
-  (py--delete-all-but-first-prompt)
-  ;; (when py-verbose-p (message "%s" "py--shell-send-setup-code sent"))
-  )
+  (py--delete-all-but-first-prompt))
 
 (defun py--docstring-p (&optional beginning-of-string-position)
   "Check to see if there is a docstring at POS."
