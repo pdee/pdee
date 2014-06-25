@@ -564,63 +564,65 @@ Receives a buffer-name as argument"
 
 (defun py-shell (&optional argprompt dedicated shell buffer-name)
   "Start an interactive Python interpreter in another window.
-Interactively, \\[universal-argument] prompts for a PATH/TO/EXECUTABLE to use.
-\\[universal-argument] 2 prompts for `py-python-command-args'.
-If `default-directory' is a remote file name, it is also prompted
-to change if called with a prefix arg.
+  Interactively, \\[universal-argument] prompts for a PATH/TO/EXECUTABLE to use.
+  \\[universal-argument] 2 prompts for `py-python-command-args'.
+  If `default-directory' is a remote file name, it is also prompted
+  to change if called with a prefix arg.
 
-Returns py-shell's buffer-name.
-Optional string PYSHELLNAME overrides default `py-shell-name'.
-BUFFER allows specifying a name, the Python process is connected to
-"
+  Returns py-shell's buffer-name.
+  Optional string PYSHELLNAME overrides default `py-shell-name'.
+  BUFFER allows specifying a name, the Python process is connected to
+  "
   (interactive "P")
   (setenv "PAGER" "cat")
   (setenv "TERM" "dumb")
   (let* ((newpath (when (eq 4 (prefix-numeric-value argprompt))
 		    (read-shell-command "PATH/TO/EXECUTABLE/[I]python[version]: ")))
 	 (oldbuf (current-buffer))
-         (dedicated (or dedicated py-dedicated-process-p))
-         (py-exception-buffer (or py-exception-buffer (current-buffer)))
-         (path (getenv "PYTHONPATH"))
-         (py-shell-name-raw (or newpath shell py-shell-name (py-choose-shell)))
+	 (dedicated (or dedicated py-dedicated-process-p))
+	 (py-exception-buffer (or py-exception-buffer (current-buffer)))
+	 (path (getenv "PYTHONPATH"))
+	 (py-shell-name-raw (or newpath shell py-shell-name (py-choose-shell)))
 	 ;; unless Path is given with `py-shell-name'
 	 ;; call configured command
 	 (py-shell-name (py--configured-shell py-shell-name-raw))
-         (args
-          (cond (py-fast-process-p nil)
-                ((string-match "^[Ii]" py-shell-name)
+	 (args
+	  (cond (py-fast-process-p nil)
+		((string-match "^[Ii]" py-shell-name)
 		 py-ipython-command-args)
-                (t py-python-command-args)))
-         ;; If we use a pipe, Unicode characters are not printed
-         ;; correctly (Bug#5794) and IPython does not work at
-         ;; all (Bug#5390). python.el
-         ;; (process-connection-type t)
-         ;; already in py-choose-shell
-         (py-use-local-default
-          (if (not (string= "" py-shell-local-path))
-              (expand-file-name py-shell-local-path)
-            (when py-use-local-default
-              (error "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'"))))
-         (py-buffer-name (or buffer-name (py--guess-buffer-name argprompt)))
-         (py-buffer-name (or py-buffer-name (py--buffer-name-prepare newpath dedicated)))
-         (executable (cond (py-shell-name)
-                           (py-buffer-name
-                            (py--report-executable py-buffer-name))))
-         proc py-smart-indentation)
+		(t py-python-command-args)))
+	 ;; If we use a pipe, Unicode characters are not printed
+	 ;; correctly (Bug#5794) and IPython does not work at
+	 ;; all (Bug#5390). python.el
+	 ;; (process-connection-type t)
+	 ;; already in py-choose-shell
+	 (py-use-local-default
+	  (if (not (string= "" py-shell-local-path))
+	      (expand-file-name py-shell-local-path)
+	    (when py-use-local-default
+	      (error "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'"))))
+	 (py-buffer-name (or buffer-name (py--guess-buffer-name argprompt)))
+	 (py-buffer-name (or py-buffer-name (py--buffer-name-prepare newpath dedicated)))
+	 (executable (cond (py-shell-name)
+			   (py-buffer-name
+			    (py--report-executable py-buffer-name))))
+	 proc py-smart-indentation)
     ;; lp:1169687, if called from within an existing py-shell, open a new one
     (and (bufferp py-exception-buffer)(string= py-buffer-name (buffer-name py-exception-buffer))
-         (setq py-buffer-name (generate-new-buffer-name py-buffer-name)))
+	 (setq py-buffer-name (generate-new-buffer-name py-buffer-name)))
     (if (and py-fast-process-p
 	     ;; user may want just to open a interactive shell
 	     (not (interactive-p)))
-        (unless (get-buffer-process (get-buffer (default-value 'py-buffer-name)))
-          (py-fast-process)
-          (setq py-output-buffer (default-value 'py-buffer-name)))
+	(unless (get-buffer-process (get-buffer (default-value 'py-buffer-name)))
+	  (py-fast-process)
+	  (setq py-output-buffer (default-value 'py-buffer-name)))
       (unless (comint-check-proc py-buffer-name)
-        (py--shell-make-comint executable py-buffer-name args)
+	(py--shell-make-comint executable py-buffer-name args)
 	(sit-for 0.1)
 	(setq py-output-buffer py-buffer-name)
-        (py--shell-setup (get-buffer-process py-buffer-name)))
+	(if (comint-check-proc py-buffer-name)
+	    (py--shell-setup (get-buffer-process py-buffer-name))
+	  (error (concat "py-shell: No process in " py-buffer-name))))
       ;; (goto-char (point-max))
       (when (or (string-match "[BbIi]*[Pp]ython" (prin1-to-string this-command))(interactive-p)) (py--shell-manage-windows py-buffer-name))
       (when py-shell-hook (run-hooks 'py-shell-hook)))

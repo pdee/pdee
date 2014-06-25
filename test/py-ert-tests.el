@@ -1325,6 +1325,7 @@ x = {'abc':'def',
 (ert-deftest py-ipython-shell-test ()
   ""
   (let ((erg (ipython)))
+    (sit-for 1) 
     (should (bufferp (get-buffer erg)))
     (should (get-buffer-process erg))))
 
