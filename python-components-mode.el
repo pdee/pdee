@@ -1574,7 +1574,7 @@ without the user's realization (e.g. to perform completion)."
   :type 'float
   :group 'python-mode)
 
-(defcustom py-setup-codes '(python-shell-completion-setup-code
+(defcustom py-setup-codes '(py-shell-completion-setup-code
                                       py-ffap-setup-code
                                       py-eldoc-setup-code
                                       )
@@ -1582,7 +1582,7 @@ without the user's realization (e.g. to perform completion)."
   :type '(repeat symbol)
   :group 'python-mode)
 
-(defcustom python-shell-completion-setup-code
+(defcustom py-shell-completion-setup-code
   "try:
     import readline
 except ImportError:
@@ -1611,7 +1611,7 @@ else:
   "Python code used to get completions separated by semicolons for imports.
 
 For IPython v0.11, add the following line to
-`python-shell-completion-setup-code':
+`py-shell-completion-setup-code':
 
 from IPython.core.completerlib import module_completion
 

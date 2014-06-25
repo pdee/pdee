@@ -621,7 +621,9 @@ Receives a buffer-name as argument"
 	(sit-for 0.1)
 	(setq py-output-buffer py-buffer-name)
 	(if (comint-check-proc py-buffer-name)
-	    (py--shell-setup (get-buffer-process py-buffer-name))
+	    (with-current-buffer py-buffer-name
+	      (setq proc (get-buffer-process py-buffer-name))
+	      (py--shell-setup proc))
 	  (error (concat "py-shell: No process in " py-buffer-name))))
       ;; (goto-char (point-max))
       (when (or (string-match "[BbIi]*[Pp]ython" (prin1-to-string this-command))(interactive-p)) (py--shell-manage-windows py-buffer-name))

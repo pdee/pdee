@@ -183,54 +183,6 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
          ;; completion-at-point requires a list as return value, so givem
          nil))
 
-(defun py--shell-complete-intern (word &optional beg end shell imports proc debug oldbuf)
-  (when imports
-    (py--send-string-no-output imports proc))
-  (let ((completion-buffer py-python-completions)
-        (result (py-shell-execute-string-now (format "
-def print_completions(namespace, text, prefix=''):
-   for name in namespace:
-       if name.startswith(text):
-           print(prefix + name)
-
-def complete(text):
-    import __builtin__
-    import __main__
-    if '.' in text:
-        terms = text.split('.')
-        try:
-            if hasattr(__main__, terms[0]):
-                obj = getattr(__main__, terms[0])
-            else:
-                obj = getattr(__builtin__, terms[0])
-            for term in terms[1:-1]:
-                obj = getattr(obj, term)
-            print_completions(dir(obj), terms[-1], text[:text.rfind('.') + 1])
-        except AttributeError:
-            pass
-    else:
-        import keyword
-        print_completions(keyword.kwlist, text)
-        print_completions(dir(__builtin__), text)
-        print_completions(dir(__main__), text)
-complete('%s')" word) shell nil proc)))
-    (if (or (eq result nil)(string= "" result))
-        (progn
-          (if py-no-completion-calls-dabbrev-expand-p
-              (or (ignore-errors (dabbrev-expand nil)) (message "Can't complete"))
-            (message "No completion found")))
-
-      (setq result (replace-regexp-in-string comint-prompt-regexp "" result))
-      (let ((comint-completion-addsuffix nil)
-            (completions
-             (sort
-              (delete-dups (if (split-string "\n" "\n")
-                               (split-string result "\n" t) ; XEmacs
-                             (split-string result "\n")))
-              #'string<)))
-        (when debug (setq py-shell-complete-debug completions))
-        (py--shell-complete-finally oldbuf completions completion-buffer)))))
-
 (defun py-complete--base (shell pos beg end word imports debug oldbuf)
   (let* (wait
          (shell (or shell (py-choose-shell)))
