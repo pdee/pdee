@@ -187,7 +187,11 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
   (let* (wait
          (shell (or shell (py-choose-shell)))
          (proc (or (get-process shell)
-                   (get-buffer-process (progn (setq wait py-new-shell-delay) (py-shell nil nil shell))))))
+                   ;; (get-buffer-process (progn (setq wait py-new-shell-delay) (py-shell nil nil shell))))))
+		   (progn
+		     (set wait py-new-shell-delay)
+		     (sit-for wait)
+		     (get-buffer-process (py-shell nil nil shell))))))
     (cond ((string= word "")
            (tab-to-tab-stop))
           ((string-match "[iI][pP]ython" shell)
