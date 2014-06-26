@@ -154,25 +154,6 @@ With optional \\[universal-argument] an indent with length `py-indent-offset' is
            (py--indent-line-intern need cui this-indent-offset col beg end region))
           (t (py--indent-line-intern need cui this-indent-offset col beg end region)))))
 
-(defun py-complete-or-indent (&optional beg end)
-  "If after symbol-characters, try to complete, otherwise indent. "
-
-  (interactive "*")
-  (let* ((beg
-          (or beg
-              (save-excursion
-                (skip-chars-backward "a-zA-Z0-9_.('") (point))))
-         (end (or end (point)))
-         (word (or word (buffer-substring-no-properties beg end)))
-
-         (end (or end (point))))
-
-    (if (string= "" word)
-        (completion-at-point)
-      (unless (and (or (eq major-mode 'comint-mode)(eq major-mode 'inferior-python-model))
-                   (re-search-backward comint-prompt-regexp (line-beginning-position) t 1)
-                   (py-indent-line))))))
-
 (defun py-indent-line (&optional arg)
   "Indent the current line according to Python rules.
 
@@ -1222,32 +1203,5 @@ Returns the string inserted. "
       (if (looking-at (concat "[ \t]*" comment-start))
           (delete-region (point) (1+ (line-end-position)))
         (forward-line 1)))))
-
-(defun py-indent-or-complete ()
-  (interactive "*")
-  "From inside a (I)Python shell:
-
-Expand word before point, if any.
-Indent line, unless maximum indent reached.
-If neiter expansion nor indent occured, insert `py-indent-offset'"
-  (let* ((orig (point))
-         (beg  (save-excursion (skip-chars-backward "a-zA-Z0-9_.('") (point)))
-         (end (point))
-         (word (buffer-substring-no-properties beg end)))
-    (and (not (string= "" word))
-         (py-shell-complete (py-shell nil nil (process-name (get-buffer-process (current-buffer))) (concat (buffer-name (current-buffer)) "-completions")) nil beg end word))))
-
-(defun py-complete-or-indent (arg)
-  "Complete or indent depending on the context.
-If content before pointer is all whitespace indent.  If not try
-to complete."
-  (interactive "P")
-  (if (eq 4 (prefix-numeric-value arg))
-      (if indent-tabs-mode (insert "\t")(insert (make-string py-indent-offset 32)))
-    (if (string-match "^[[:space:]]*$"
-                      (buffer-substring (comint-line-beginning-position)
-                                        (point-marker)))
-        (indent-for-tab-command)
-      (completion-at-point))))
 
 (provide 'python-components-edit)

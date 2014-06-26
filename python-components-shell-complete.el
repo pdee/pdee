@@ -18,6 +18,9 @@
 ;;;
 
 (defalias 'py-script-complete 'py-shell-complete)
+(defalias 'py-python2-shell-complete 'py-shell-complete)
+(defalias 'py-python3-shell-complete 'py-shell-complete)
+
 
 (defun py--shell-completion--get-completions (input process completion-code)
   "Retrieve available completions for INPUT using PROCESS.
@@ -30,47 +33,6 @@ completions on the current context."
     (when (> (length completions) 2)
       (split-string completions "^'\\|^\"\\|;\\|'$\\|\"$" t))))
 
-(defun py--shell--do-completion-at-point (process imports input orig oldbuf)
-  "Do completion at point for PROCESS."
-  (with-syntax-table py-dotted-expression-syntax-table
-    (when imports
-      (py--send-string-no-output imports process))
-    (let* ((code python-shell-module-completion-string-code)
-           (completion
-            (py--shell-completion--get-completions
-             input process code))
-           ;; (completion (when completions
-	   ;; (try-completion input completions)))
-	   newlist erg)
-      (with-current-buffer oldbuf
-        (cond ((eq completion t)
-	       (and py-verbose-p (message "py--shell--do-completion-at-point %s" "`t' is returned, not completion. Might be a bug."))
-               nil)
-              ((null completion)
-	       (and py-verbose-p (message "py--shell--do-completion-at-point %s" "Don't see a completion"))
-               nil)
-              ((ignore-errors (not (string= input completion)))
-               (progn (delete-char (- (length input)))
-                      (insert completion)
-                      (move-marker orig (point))
-                      ;; minibuffer.el expects a list, a bug IMO
-                      nil))
-              (t
-	       (when (and (stringp (setq erg (try-completion input completion)))
-			  (looking-back input)
-			  (not (string= input erg)))
-		 (delete-region (match-beginning 0) (match-end 0))
-		 (insert erg)
-		 (dolist (elt completion)
-		   (unless (string= erg elt)
-		     (add-to-list 'newlist elt))))
-               (with-output-to-temp-buffer py-python-completions
-                 (display-completion-list
-                  (all-completions input (or newlist completion))))
-               (move-marker orig (point))
-               nil))
-	(and (goto-char orig)
-	     nil)))))
 
 
 ;; post-command-hook
@@ -183,13 +145,56 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
          ;; completion-at-point requires a list as return value, so givem
          nil))
 
+(defun py--shell--do-completion-at-point (process imports input orig oldbuf code)
+  "Do completion at point for PROCESS."
+    (when imports
+      (py--send-string-no-output imports process))
+    (let* ((completion
+            (py--shell-completion--get-completions
+             input process code))
+           ;; (completion (when completions
+	   ;; (try-completion input completions)))
+	   newlist erg)
+      (with-current-buffer oldbuf
+        (cond ((eq completion t)
+	       (and py-verbose-p (message "py--shell--do-completion-at-point %s" "`t' is returned, not completion. Might be a bug."))
+               nil)
+              ((null completion)
+	       (and py-verbose-p (message "py--shell--do-completion-at-point %s" "Don't see a completion"))
+               nil)
+              ((ignore-errors (not (string= input completion)))
+               (progn (delete-char (- (length input)))
+                      (insert completion)
+                      (move-marker orig (point))
+                      ;; minibuffer.el expects a list, a bug IMO
+                      nil))
+              (t
+	       (when (and (stringp (setq erg (try-completion input completion)))
+			  (looking-back input)
+			  (not (string= input erg)))
+		 (delete-region (match-beginning 0) (match-end 0))
+		 (insert erg)
+		 (dolist (elt completion)
+		   (unless (string= erg elt)
+		     (add-to-list 'newlist elt))))
+               (with-output-to-temp-buffer py-python-completions
+                 (display-completion-list
+                  (all-completions input (or newlist completion))))
+               (move-marker orig (point))
+               nil))
+	(and (goto-char orig)
+	     nil))))
+
 (defun py--complete-base (shell pos beg end word imports debug oldbuf)
   (let* ((shell (or shell (py-choose-shell)))
          (proc (or (get-process shell)
-		   (progn
-		     (get-buffer-process (py-shell nil nil shell))
-		     (sit-for py-new-shell-delay)))))
-    (py--shell--do-completion-at-point proc imports word pos oldbuf)))
+		   (prog1
+		       (get-buffer-process (py-shell nil nil shell))
+		     (sit-for py-new-shell-delay))))
+	 (code (if (string-match "^[Ii][Pp]ython" shell)
+		   (py-set-ipython-completion-command-string)
+		 python-shell-module-completion-string-code)))
+    (py--shell--do-completion-at-point proc imports word pos oldbuf code)))
 
 (defun py-shell-complete (&optional shell debug beg end word)
   "Complete word before point, if any. Otherwise insert TAB. "
@@ -235,32 +240,29 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
 (defun py-shell-complete-or-indent ()
   "Complete or indent depending on the context.
 
-If cursor is at current-indentation and further indent
-seems reasonable, indent. Otherwise try to complete "
+If cursor is at end of line, try to complete.
+Otherwise call `py-indent-line' "
   (interactive "*")
-  (let ((current 0)
-	indent count cui)
-    (if (string-match "^[[:space:]]*$"
-		      (buffer-substring (comint-line-beginning-position)
-					(point-marker)))
-	(indent-for-tab-command)
-      (setq indent (py-compute-indentation))
-      (setq cui (current-indentation))
-      (if (or (eq cui indent)
-	      (progn
-		;; indent might be less than outmost
-		;; see if in list of reasonable values
-		(setq count (/ indent py-indent-offset))
-		(while (< 0 count)
-		  (setq current (+ current py-indent-offset))
-		  (add-to-list 'values current)
-		  (setq count (1- count)))
-		(member cui values)))
-	  (funcall py-complete-function)
-	(py-indent-line)))))
+  (if (eolp)
+      (py-shell-complete)
+    (py-indent-line)))
 
-(defalias 'py-python2-shell-complete 'py-shell-complete)
-(defalias 'py-python3-shell-complete 'py-shell-complete)
+     ;; (setq indent (py-compute-indentation))
+     ;;  (setq cui (current-indentation))
+     ;;  (if (or (eq cui indent)
+     ;; 	      (progn
+     ;; 		;; indent might be less than outmost
+     ;; 		;; see if in list of reasonable values
+     ;; 		(setq count (/ indent py-indent-offset))
+     ;; 		(while (< 0 count)
+     ;; 		  (setq current (+ current py-indent-offset))
+     ;; 		  (add-to-list 'values current)
+     ;; 		  (setq count (1- count)))
+     ;; 		(member cui values)))
+     ;; 	  (funcall py-complete-function)
+     ;; 	(py-indent-line)))
+
+
 
 (provide 'python-components-shell-complete)
 
