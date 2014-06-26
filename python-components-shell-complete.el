@@ -144,7 +144,7 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
          completion completions completion-table ugly-return)
     (unless (interactive-p) (sit-for 0.1))
     (if (string= pattern "")
-        (tab-to-tab-stop)
+        (py-indent-line)
       (process-send-string proc (format ccs pattern))
       (accept-process-output proc 5)
       (if ugly-return
@@ -183,7 +183,7 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
          ;; completion-at-point requires a list as return value, so givem
          nil))
 
-(defun py-complete--base (shell pos beg end word imports debug oldbuf)
+(defun py--complete-base (shell pos beg end word imports debug oldbuf)
   (let* ((shell (or shell (py-choose-shell)))
          (proc (or (get-process shell)
 		   (progn
@@ -229,7 +229,7 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
 	   (when (setq erg (try-completion (concat "/" word) filenames))
 	     (delete-region beg end)
 	     (insert erg)))
-	  (t (py-complete--base shell pos beg end word imports debug oldbuf)))
+	  (t (py--complete-base shell pos beg end word imports debug oldbuf)))
     nil))
 
 (defun py-shell-complete-or-indent ()

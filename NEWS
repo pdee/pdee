@@ -4,6 +4,10 @@ Python Mode News
 New in version 6.1.4
 ---------------------
 
+- TAB bound to `py-indent-or-complete', completes at EOL.
+  Calls to `tab-to-tab-stop' removed, as these would conflict.
+  Use `C-q TAB' to insert a literally TAB-character.
+
 - `py-shell' uses new `py-shell-mode', `py-shell-mode-map'
   M-x describe-mode RET mentions edit available commands
   Menu "Py-Shell"
@@ -23,8 +27,7 @@ New in version 6.1.4
 - C-u py-shell RET prompts for a Path/To/Executable
   Py-shell-buffer will display its acronym: "*PTE Python*"
 
-Support for large output
-
+- Support for large output
   new commands py-fast-process, py-fast-...
   Fixes: large output makes Emacs freeze, lp:1253907
 
@@ -40,11 +43,6 @@ Support for large output
   patched python-info.el available at
   https://bitbucket.org/andreas_roehler/pydoc-info
   See also INSTALL-INFO-FILES
-
-Calls to IPython are to customizable now via
-`ipython-command-args'
-
-New commands
 
 - `py-backward-same-level'
   While `py-up' will go upward from beginning of block, this travels
