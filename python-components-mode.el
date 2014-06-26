@@ -3211,8 +3211,9 @@ This variant of `rx' supports common python named REGEXPS."
         (define-key map [(control c)(control b)] 'py-submit-bug-report)
         (define-key map [(control c)(control v)] 'py-version)
         (define-key map [(control c)(control w)] 'py-pychecker-run)
-        (define-key map (kbd "TAB") 'py-indent-line)
-        ;; (if py-complete-function
+        ;; (define-key map (kbd "TAB") 'py-indent-line)
+        (define-key map (kbd "TAB") 'py-indent-or-complete)
+	;; (if py-complete-function
         ;;     (progn
         ;;       (define-key map [(meta tab)] py-complete-function)
         ;;       (define-key map [(esc) (tab)] py-complete-function))
@@ -7919,7 +7920,7 @@ Try to find source definition of function at point"]))))
 	(define-key map (kbd "RET") 'comint-send-input)
         (define-key map [(control c)(-)] 'py-up-exception)
         (define-key map [(control c)(=)] 'py-down-exception)
-	(define-key map (kbd "TAB") 'py-shell-complete-or-indent)
+	(define-key map (kbd "TAB") 'py-indent-or-complete)
 	(define-key map [(meta tab)] 'py-shell-complete)
 	(define-key map [(control c)(!)] 'py-shell)
 	(define-key map [(control c)(control t)] 'py-toggle-shell)
@@ -7998,8 +7999,8 @@ The input is entered into the input history ring, if the value of variable
 
 \(fn &optional NO-NEWLINE ARTIFICIAL)"]
 
-		  ["Shell complete or indent" py-shell-complete-or-indent
-		   :help " `py-shell-complete-or-indent'
+		  ["Complete or indent" py-indent-or-complete
+		   :help " `py-indent-or-complete'
 
 Complete or indent depending on the context\.
 

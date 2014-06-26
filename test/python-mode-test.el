@@ -1638,7 +1638,7 @@ import sys, os; os.remove('do/something/nasty') # lp:1025000
   (assert (eq (key-binding [(control c)(control b)]) 'py-submit-bug-report) nil "py-submit-bug-report key-binding test failed")
   (assert (eq (key-binding [(control c)(control v)]) 'py-version) nil "py-version key-binding test failed")
   (assert (eq (key-binding [(control c)(control w)]) 'py-pychecker-run) nil "py-pychecker-run key-binding test failed")
-  (assert (eq (key-binding (kbd "TAB")) 'py-indent-line) nil "py-indent-line key-binding test failed")
+  (assert (eq (key-binding (kbd "TAB")) 'py-indent-or-complete) nil "py-indent-or-complete key-binding test failed")
   (assert (eq (key-binding [(control c)(control p)]) 'py-beginning-of-statement) nil "py-beginning-of-statement key-binding test failed")
   (assert (eq (key-binding [(control c)(control n)]) 'py-end-of-statement) nil "py-end-of-statement key-binding test failed")
   (assert (eq (key-binding [(control j)]) 'py-newline-and-indent) nil "py-newline-and-indent key-binding test failed")

@@ -237,11 +237,13 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
 	  (t (py--complete-base shell pos beg end word imports debug oldbuf)))
     nil))
 
-(defun py-shell-complete-or-indent ()
+(defun py-indent-or-complete ()
   "Complete or indent depending on the context.
 
-If cursor is at end of line, try to complete.
-Otherwise call `py-indent-line' "
+If cursor is at end of line, try to complete
+Otherwise call `py-indent-line' 
+
+Use `C-q TAB' to insert a literally TAB-character "
   (interactive "*")
   (if (eolp)
       (py-shell-complete)

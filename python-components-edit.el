@@ -180,7 +180,8 @@ C-q TAB inserts a literal TAB-character."
   (let ((orig (copy-marker (point)))
         (cui (current-indentation))
         need)
-    (if (interactive-p)
+    ;; this-command might be `py-indent-or-complete'
+    (if (or (interactive-p) (eq this-command last-command))
         ;; TAB-leaves-point-in-the-wrong-lp-1178453-test
         (let ((region (use-region-p))
               col beg end done)
