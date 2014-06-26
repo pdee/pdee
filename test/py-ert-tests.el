@@ -982,17 +982,17 @@ def foo():
       (should (eq 'py-object-reference-face (get-char-property (point) 'face)))
       (skip-chars-forward "^ \n"))))
 
-;; (ert-deftest py-ert-execute-region-lp-1294796 ()
-;;   (py-test-with-temp-buffer-point-min
-;;       "print(1)
-;; "
-;;     (let ((py-shell-name "ipython")
-;; 	  py-split-windows-on-execute-p
-;; 	  py-switch-buffers-on-execute-p)
-;;       (py-execute-buffer)
-;;       (set-buffer "*IPython*")
-;;       (sit-for 0.1)
-;;       (should (search-backward "1")))))
+(ert-deftest py-ert-execute-region-lp-1294796 ()
+  (py-test-with-temp-buffer-point-min
+      "print(1)
+"
+    (let ((py-shell-name "ipython")
+	  py-split-windows-on-execute-p
+	  py-switch-buffers-on-execute-p)
+      (py-execute-buffer)
+      (set-buffer "*IPython*")
+      (sit-for 0.1)
+      (should (search-backward "1")))))
 
 (ert-deftest py-ert-borks-all-lp-1294820 ()
   (py-test-with-temp-buffer-point-min

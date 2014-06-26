@@ -191,7 +191,7 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
 		   (prog1
 		       (get-buffer-process (py-shell nil nil shell))
 		     (sit-for py-new-shell-delay))))
-	 (code (if (string-match "^[Ii][Pp]ython" shell)
+	 (code (if (string-match "[Ii][Pp]ython*" shell)
 		   (py-set-ipython-completion-command-string)
 		 python-shell-module-completion-string-code)))
     (py--shell--do-completion-at-point proc imports word pos oldbuf code)))
@@ -241,7 +241,7 @@ Returns the completed symbol, a string, if successful, nil otherwise. "
   "Complete or indent depending on the context.
 
 If cursor is at end of line, try to complete
-Otherwise call `py-indent-line' 
+Otherwise call `py-indent-line'
 
 Use `C-q TAB' to insert a literally TAB-character "
   (interactive "*")
