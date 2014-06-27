@@ -301,56 +301,131 @@ interpreter.
       (process-send-string proc "from IPython.core.completerlib import module_completion")
       (process-send-string proc "\n"))))
 
+;; (defun py--buffer-name-prepare (&optional arg dedicated)
+;;   "Return an appropriate name to display in modeline.
+;; SEPCHAR is the file-path separator of your system. "
+;;   (let* ((name-first (or arg py-shell-name))
+;; 	 (name-raw (and name-first (if (stringp name-first) name-first (prin1-to-string name-first))))
+;; 	 ein
+;; 	 (name
+;; 	  (cond ((string-match "^[iI]" name-raw)
+;; 		 (concat "IP" (substring name-raw 2)))
+;; 		;; When a given path is the default
+;; 		;; it must not be shown
+;; 		((and (string-match "/[^/]+\\|\\\\" name-raw)
+;; 		      (setq ein (substring name-raw (1+ (string-match "/[^/]+$" name-raw))))
+;; 		      (string= (eval (car (read-from-string (concat "py-" (downcase ein) "-command")))) name-raw))
+;; 		 ;; (string-match "^/usr/bin" name-raw)
+;; 		 (capitalize ein))
+;; 		((string-match "^py-" name-raw)
+;; 		 (nth 1 (split-string name-raw "-")))
+;; 		(t (capitalize name-raw))))
+;; 	 prefix erg suffix liste)
+;;     (when (string-match py-separator-char name)
+;;       (unless py-modeline-acronym-display-home-p
+;;         (when (string-match (concat "^" (expand-file-name "~")) name)
+;;           (setq name (replace-regexp-in-string (concat "^" (expand-file-name "~")) "" name))))
+;;       (save-match-data
+;;         (setq liste (split-string name py-separator-char)))
+;;       (dolist (ele liste)
+;;         (unless (string= "" ele)
+;;           (setq prefix (concat prefix (char-to-string (aref ele 0))))))
+;;       (unless py-modeline-display-full-path-p
+;;         (setq name (substring name (1+ (string-match (concat py-separator-char "[^" py-separator-char "]+$") name))))))
+;;     (setq erg
+;;           (cond ((string= "ipython" name)
+;;                  (replace-regexp-in-string "ipython" "IPython" name))
+;;                 ((string= "jython" name)
+;;                  (replace-regexp-in-string "jython" "Jython" name))
+;;                 ((string= "python" name)
+;;                  (replace-regexp-in-string "python" "Python" name))
+;;                 ((string-match "python2" name)
+;;                  (replace-regexp-in-string "python2" "Python2" name))
+;;                 ((string-match "python3" name)
+;;                  (replace-regexp-in-string "python3" "Python3" name))
+;;                 (t name)))
+;;     (when (or dedicated py-dedicated-process-p)
+;;       (setq erg (make-temp-name (concat erg "-"))))
+;;     (cond ((and prefix (string-match "^\*" erg))
+;;            (setq erg (replace-regexp-in-string "^\*" (concat "*" prefix " ") erg)))
+;;           (prefix
+;;            (setq erg (concat "*" prefix " " erg "*")))
+
+;;           (t (unless (string-match "^\*" erg)(setq erg (concat "*" erg "*")))))
+;;     erg))
+
+(defun py--compose-buffer-name-initials (liste)
+  (let (erg)
+    (dolist (ele liste)
+      (unless (string= "" ele)
+	(setq erg (concat erg (char-to-string (aref ele 0))))))
+    erg))
+
+(defun py--remove-home-directory-from-list (liste)
+  "Prepare for compose-buffer-name-initials. "
+  (let ((case-fold-search t)
+	(liste liste)
+	erg)
+    (if (listp (setq erg (split-string (expand-file-name "~") "\/")))
+	erg
+      (setq erg (split-string (expand-file-name "~") "\\\\")))
+     (while erg
+      (when (member (car erg) liste)
+	(setq liste (cdr (member (car erg) liste))))
+      (setq erg (cdr erg)))
+    (butlast liste)))
+
 (defun py--buffer-name-prepare (&optional arg dedicated)
   "Return an appropriate name to display in modeline.
 SEPCHAR is the file-path separator of your system. "
   (let* ((name-first (or arg py-shell-name))
-	 (name-raw (and name-first (if (stringp name-first) name-first (prin1-to-string name-first))))
-	 ein
-	 (name
-	  (cond ((string-match "^[iI]" name-raw)
-		 (concat "IP" (substring name-raw 2)))
-		;; When a given path is the default
-		;; it must not be shown
-		((and (string-match "/[^/]+\\|\\\\" name-raw)
-		      (setq ein (substring name-raw (1+ (string-match "/[^/]+$" name-raw))))
-		      (string= (eval (car (read-from-string (concat "py-" (downcase ein) "-command")))) name-raw))
-		 ;; (string-match "^/usr/bin" name-raw)
-		 (capitalize ein))
-		((string-match "^py-" name-raw)
-		 (nth 1 (split-string name-raw "-")))
-		(t (capitalize name-raw))))
-	 prefix erg suffix liste)
-    (when (string-match py-separator-char name)
-      (unless py-modeline-acronym-display-home-p
-        (when (string-match (concat "^" (expand-file-name "~")) name)
-          (setq name (replace-regexp-in-string (concat "^" (expand-file-name "~")) "" name))))
+	 (erg (when name-first (if (stringp name-first) name-first (prin1-to-string name-first))))
+	 prefix suffix liste)
+    ;; remove suffix
+    (when (string-match "[.]" erg)
+      (setq erg (substring erg 0 (string-match "[.]" erg))))
+    ;; remove prefix
+    (when (string-match "^py-" erg)
+      (setq erg (nth 1 (split-string erg "-"))))
+    ;; remove home-directory from prefix to display
+    (unless py-modeline-acronym-display-home-p
       (save-match-data
-        (setq liste (split-string name py-separator-char)))
-      (dolist (ele liste)
-        (unless (string= "" ele)
-          (setq prefix (concat prefix (char-to-string (aref ele 0))))))
-      (unless py-modeline-display-full-path-p
-        (setq name (substring name (1+ (string-match (concat py-separator-char "[^" py-separator-char "]+$") name))))))
+	(let ((case-fold-search t))
+	  (when (string-match (concat ".*" (expand-file-name "~")) erg)
+	    (setq erg (replace-regexp-in-string (concat "^" (expand-file-name "~")) "" erg))))))
+    (if (or (and (setq prefix (split-string erg "\\\\"))
+		 (< 1 (length prefix)))
+	    (and (setq prefix (split-string erg "\/"))
+		 (< 1 (length prefix))))
+	(progn
+	  ;; exect something like default py-shell-name
+	  (setq erg (car (last prefix)))
+	  (unless py-modeline-acronym-display-home-p
+	    ;; home-directory may still inside
+	    (setq prefix (py--remove-home-directory-from-list prefix))
+	    (setq prefix (py--compose-buffer-name-initials prefix))))
+      (setq erg (or arg py-shell-name))
+      (setq prefix nil))
+
+    ;; (setq name (substring name (1+ (string-match "/[^/]+\\|\\\\[[:alnum:].]+$" name)))))
     (setq erg
-          (cond ((string= "ipython" name)
-                 (replace-regexp-in-string "ipython" "IPython" name))
-                ((string= "jython" name)
-                 (replace-regexp-in-string "jython" "Jython" name))
-                ((string= "python" name)
-                 (replace-regexp-in-string "python" "Python" name))
-                ((string-match "python2" name)
-                 (replace-regexp-in-string "python2" "Python2" name))
-                ((string-match "python3" name)
-                 (replace-regexp-in-string "python3" "Python3" name))
-                (t name)))
+          (cond ((string= "ipython" erg)
+                 (replace-regexp-in-string "ipython" "IPython" erg))
+                ((string= "jython" erg)
+                 (replace-regexp-in-string "jython" "Jython" erg))
+                ((string= "python" erg)
+                 (replace-regexp-in-string "python" "Python" erg))
+                ((string-match "python2" erg)
+                 (replace-regexp-in-string "python2" "Python2" erg))
+                ((string-match "python3" erg)
+                 (replace-regexp-in-string "python3" "Python3" erg))
+                (t erg)))
     (when (or dedicated py-dedicated-process-p)
       (setq erg (make-temp-name (concat erg "-"))))
     (cond ((and prefix (string-match "^\*" erg))
            (setq erg (replace-regexp-in-string "^\*" (concat "*" prefix " ") erg)))
           (prefix
            (setq erg (concat "*" prefix " " erg "*")))
-
           (t (unless (string-match "^\*" erg)(setq erg (concat "*" erg "*")))))
     erg))
 

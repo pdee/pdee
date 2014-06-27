@@ -1061,7 +1061,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall docstring-style-switches-test \
 --funcall impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test \
 --funcall complaint-about-non-ASCII-character-lp-1042949-test \
---funcall UnicodeEncodeError-python3-test \
 --funcall UnicodeEncodeError-lp:550661-test \
 --funcall filename-completion-fails-in-ipython-lp-1027265-n1-test \
 --funcall filename-completion-fails-in-ipython-lp-1027265-n2-test \
@@ -1073,7 +1072,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall execute-indented-code-lp:828314-test \
 --funcall py-shell-invoking-python3-lp:835151-test \
 --funcall py-shell-invoking-python2-lp:835151-test \
---funcall py-execute-block-or-clause-python3-test \
 --funcall py-execute-block-or-clause-python2-test \
 --funcall py-execute-line-python-test \
 --funcall py-execute-line-python3-test \
@@ -1271,6 +1269,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-execute-buffer-python3-looks-broken-lp-1085386-test \
 --funcall fails-to-indent-abs-wrong-type-argument-lp-1075673-test \
 --funcall py-if-name-main-permission-lp-326620-test \
+--funcall UnicodeEncodeError-python3-test \
 --funcall Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test \
 --funcall another-broken-font-locking-lp:961231-test \
 --funcall cls-pseudo-keyword-lp:328849-test \
@@ -1347,3 +1346,4 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-execute-buffer-python-switch-test \
 --funcall wrong-type-argument-inserted-chars-lp-1293172-test \
 --funcall previous-statement-lp:637955-test \
+--funcall py-execute-block-or-clause-python3-test \
