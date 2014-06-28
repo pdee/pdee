@@ -637,6 +637,20 @@ Receives a buffer-name as argument"
 	   py-jython-command)
 	  (t py-python-command))))
 
+(defun py--unfontify-banner ()
+  "Unfontify the banner-text inserting at head of shell "
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    ;; (push-mark)
+    (let ((end
+	   ;; 133
+	   (progn (re-search-forward py-fast-filter-re)
+		  (forward-line -1)
+		  (end-of-line)
+		  (point))))
+      (font-lock-unfontify-region 1 end))))
+
 (defun py-shell (&optional argprompt dedicated shell buffer-name)
   "Start an interactive Python interpreter in another window.
   Interactively, \\[universal-argument] prompts for a PATH/TO/EXECUTABLE to use.
@@ -655,17 +669,18 @@ Receives a buffer-name as argument"
 		    (read-shell-command "PATH/TO/EXECUTABLE/[I]python[version]: ")))
 	 (oldbuf (current-buffer))
 	 (dedicated (or dedicated py-dedicated-process-p))
-	 (py-exception-buffer (or py-exception-buffer (current-buffer)))
+	 (py-exception-buffer (or py-exception-buffer (and (or (eq 'major-mode 'python-mode)(eq 'major-mode 'py-shell-mode)) (current-buffer))))
 	 (path (getenv "PYTHONPATH"))
 	 (py-shell-name-raw (or newpath shell py-shell-name (py-choose-shell)))
+	 (args
+	  (cond (py-fast-process-p nil)
+		((string-match "^[Ii]" py-shell-name-raw)
+		 py-ipython-command-args)
+		(t py-python-command-args)))
 	 ;; unless Path is given with `py-shell-name'
 	 ;; call configured command
 	 (py-shell-name (py--configured-shell py-shell-name-raw))
-	 (args
-	  (cond (py-fast-process-p nil)
-		((string-match "^[Ii]" py-shell-name)
-		 py-ipython-command-args)
-		(t py-python-command-args)))
+
 	 ;; If we use a pipe, Unicode characters are not printed
 	 ;; correctly (Bug#5794) and IPython does not work at
 	 ;; all (Bug#5390). python.el
@@ -702,7 +717,12 @@ Receives a buffer-name as argument"
 	  (error (concat "py-shell: No process in " py-buffer-name))))
       ;; (goto-char (point-max))
       (when (or (string-match "[BbIi]*[Pp]ython" (prin1-to-string this-command))(interactive-p)) (py--shell-manage-windows py-buffer-name))
-      (when py-shell-hook (run-hooks 'py-shell-hook)))
+      ;; (when py-shell-mode-hook (run-hooks 'py-shell-mode-hook))
+      (when (string-match "[BbIi][Pp]ython" py-buffer-name)
+	(sit-for 0.3))
+      (sit-for 0.1)
+      (with-current-buffer py-buffer-name
+	(py--unfontify-banner)))
     py-buffer-name))
 
 (defun py-shell-get-process (&optional argprompt py-dedicated-process-p shell switch py-buffer-name)

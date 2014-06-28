@@ -261,7 +261,7 @@ Default is  nil"
 (defcustom py-new-shell-delay
     (if (eq system-type 'windows-nt)
       2.0
-    0.1)
+    0.2)
 
   "If a new comint buffer is connected to Python, commands like completion might need some delay. "
 
@@ -1267,7 +1267,7 @@ Else /usr/bin/ipython"
 (defcustom py-ipython-command-args
   (if (eq system-type 'windows-nt)
       "ipython-script.py"
-    "")
+    '(""))
   "List of string arguments to be used when starting a Python shell.
 At Windows make sure ipython-script.py is PATH. Also setting PATH/TO/SCRIPT here should work, for example;
 C:\\Python27\\Scripts\\ipython-script.py
@@ -11852,8 +11852,7 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
   		 'py-shell-complete))
   (when py-shell-menu
     (easy-menu-add py-menu))
-
-  (and py-fontify-shell-buffer-p
+  (when py-fontify-shell-buffer-p
        (set (make-local-variable 'font-lock-defaults)
             '(python-font-lock-keywords nil nil nil nil
 					(font-lock-syntactic-keywords
