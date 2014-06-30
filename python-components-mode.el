@@ -11695,6 +11695,11 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
   :group 'python-mode
   ;; (require 'ansi-color) ; for ipython
   (setq mode-line-process '(":%s"))
+  (when py-fontify-shell-buffer-p
+    (set (make-local-variable 'font-lock-defaults)
+	 '(python-font-lock-keywords nil nil nil nil
+				     (font-lock-syntactic-keywords
+				      . py-font-lock-syntactic-keywords))))
   (setenv "PAGER" "cat")
   (setenv "TERM" "dumb")
   (set-syntax-table python-mode-syntax-table)
@@ -11717,7 +11722,7 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
   (set (make-local-variable 'comint-input-filter) 'py--input-filter)
   (set (make-local-variable 'compilation-error-regexp-alist)
        py-compilation-regexp-alist)
-    (set (make-local-variable 'comint-input-filter) 'py-history-input-filter)
+  (set (make-local-variable 'comint-input-filter) 'py-history-input-filter)
   (set (make-local-variable 'comint-prompt-read-only) py-shell-prompt-read-only)
   ;; It might be useful having a different setting of `comint-use-prompt-regexp' in py-shell - please report when a use-case shows up
   ;; (set (make-local-variable 'comint-use-prompt-regexp) nil)
@@ -11749,7 +11754,7 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
                  py-ipython-history))))
   (comint-read-input-ring t)
   (compilation-shell-minor-mode 1)
-;;
+  ;;
   (if py-complete-function
       (progn
   	(add-hook 'completion-at-point-functions
@@ -11761,11 +11766,6 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
     (add-to-list (make-local-variable 'comint-dynamic-complete-functions)
   		 'py-shell-complete))
   (when py-shell-menu
-    (easy-menu-add py-menu))
-  (when py-fontify-shell-buffer-p
-       (set (make-local-variable 'font-lock-defaults)
-            '(python-font-lock-keywords nil nil nil nil
-					(font-lock-syntactic-keywords
-					 . py-font-lock-syntactic-keywords)))))
+    (easy-menu-add py-menu)))
 
 ;;; python-components-mode.el ends here
