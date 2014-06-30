@@ -7887,19 +7887,6 @@ The input is entered into the input history ring, if the value of variable
 
 \(fn &optional NO-NEWLINE ARTIFICIAL)"]
 
-		  ["Complete or indent" py-indent-or-complete
-		   :help " `py-indent-or-complete'
-
-Complete or indent depending on the context\.
-
-If cursor is at current-indentation and further indent
-seems reasonable, indent\. Otherwise try to complete "]
-
-		  ["Shell complete" py-shell-complete
-		   :help " `py-shell-complete'
-
-Complete word before point, if any\. Otherwise insert TAB\. "]
-
 		  ["Up exception" py-up-exception
 		   :help " `py-up-exception'
 
@@ -8015,6 +8002,27 @@ Receives a buffer-name as argument "]
                    :help " `py-kill-default-shell-unconditional'
 
 Kill buffer \"*Python*\" and its process\.  "])
+		                   ("Completion"
+                   :help "Completion options"
+
+		   ["Indent or complete" py-indent-or-complete
+		    :help " `py-indent-or-complete'
+
+Complete or indent depending on the context\.
+
+If cursor is at end of line, try to complete
+Otherwise call `py-indent-line'
+
+Use `C-q TAB' to insert a literally TAB-character "]
+
+                   ["Complete symbol" py-shell-complete
+                    :help "`py-shell-complete'
+Complete (qualified) symbol before point"]
+
+                   ["Complete" py-complete
+                    :help " `py-complete'
+Complete symbol before point using Pymacs . "]
+		   )
 
                  "-"
                  ("Mark"
@@ -12050,27 +12058,6 @@ Argument is how many `py-partial-expression's form the expansion; or zero means 
                     :help "Inserts py-try/finally-statement"]
                    ["py-try/except" py-try/except
                     :help "Inserts py-try/except-statement"])
-
-                  ("Completion"
-                   :help "Completion options"
-
-		   ["Indent or complete" py-indent-or-complete
-		    :help " `py-indent-or-complete'
-
-Complete or indent depending on the context\.
-
-If cursor is at end of line, try to complete
-Otherwise call `py-indent-line'
-
-Use `C-q TAB' to insert a literally TAB-character "]
-
-                   ["Complete symbol" py-shell-complete
-                    :help "`py-shell-complete'
-Complete (qualified) symbol before point"]
-
-                   ["Complete" py-complete
-                    :help " `py-complete'
-Complete symbol before point using Pymacs . "])
 
                   ["Find function" py-find-function
                    :help "`py-find-function'
