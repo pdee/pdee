@@ -606,16 +606,13 @@ Receives a buffer-name as argument"
 (defun py--unfontify-banner ()
   "Unfontify the banner-text inserting at head of shell "
   (interactive)
-  (save-excursion
-    (goto-char (point-min))
-    ;; (push-mark)
-    (let ((end
-	   ;; 133
-	   (progn (re-search-forward py-fast-filter-re)
-		  (forward-line -1)
-		  (end-of-line)
-		  (point))))
-      (font-lock-unfontify-region 1 end))))
+  (when py-debug-p (message "%s" (concat "py--unfontify-banner: " (buffer-name (current-buffer)))))
+  (goto-char (point-min))
+  (font-lock-unfontify-region (point-min)
+			      (or (ignore-errors (car comint-last-prompt))
+				  (re-search-forward comint-prompt-regexp nil t 1)
+				  (error (concat "py--unfontify-banner: Don't see a prompt in buffer " (buffer-name (current-buffer))))))
+  (goto-char (point-max)))
 
 (defun py-shell (&optional argprompt dedicated shell buffer-name)
   "Start an interactive Python interpreter in another window.
@@ -835,14 +832,29 @@ When optional FILE is `t', no temporary file is needed. "
       (py--close-execution tempbuf erg)
       (py--shell-manage-windows py-buffer-name))))
 
+(defun py--fetch-comint-result ()
+  (save-excursion
+    (if (and
+	 (goto-char (car comint-last-prompt))
+	 (re-search-backward py-fast-filter-re nil t 1))
+	(progn
+	  (goto-char (match-end 0))
+	  (buffer-substring-no-properties (point) (car comint-last-prompt)))
+      (error (concat "py--fetch-comint-result: Don't see a prompt at " (current-buffer))))))
+
 (defun py--postprocess (buffer)
   "Provide return values, check result for error, manage windows. "
   ;; py--fast-send-string doesn't set origline
-  (setq py-error (save-excursion (py--postprocess-output-buffer buffer)))
-  (when py-store-result-p
-    (setq erg
-	  (py-output-filter (buffer-substring-no-properties (point) (point-max))))
-    (and erg (not (string= (car kill-ring) erg)) (kill-new erg)))
+  (with-current-buffer buffer
+    (setq py-error (py--postprocess-intern buffer))
+    (when py-store-result-p
+      (setq erg
+	    (if (eq major-mode 'comint-mode)
+		(py-output-filter (py--fetch-comint-result))
+	      (py-output-filter (buffer-substring-no-properties (point) (point-max)))))
+      (and erg (not (string= (car kill-ring) erg)) (kill-new erg)))
+    ;; (run-with-idle-timer 1 nil 'py--unfontify-banner)
+    (py--unfontify-banner))
   erg)
 
 (defun py--execute-file-base (&optional proc filename cmd procbuf origfile execute-directory)
@@ -857,13 +869,13 @@ Returns position where output starts. "
          (buffer (or procbuf (py-shell nil nil nil procbuf)))
          (proc (or proc (get-buffer-process buffer)))
          erg orig)
-    (set-buffer buffer)
-    (goto-char (point-max))
-    (setq orig (point))
-    (comint-send-string proc cmd)
-    (setq erg (py--postprocess buffer))
-    (message "%s" py-error)
-    erg))
+    (with-current-buffer buffer
+      (goto-char (point-max))
+      (setq orig (point))
+      (comint-send-string proc cmd)
+      (setq erg (py--postprocess buffer))
+      (message "%s" py-error)
+      erg)))
 
 (defun py--execute-ge24.3 (start end filename execute-directory which-shell &optional py-exception-buffer proc)
   "An alternative way to do it.
@@ -904,7 +916,7 @@ May we get rid of the temporary file? "
                          (buffer-substring-no-properties
                           (point-min) (point-max)))
     (sit-for 0.1)
-    (if (and (setq py-error (save-excursion (py--postprocess-output-buffer procbuf origline)))
+    (if (and (setq py-error (save-excursion (py--postprocess-intern procbuf origline)))
              (car py-error)
              (not (markerp py-error)))
         (py--jump-to-exception py-error origline)
@@ -1017,7 +1029,7 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
                                pcmd py-output-buffer))
     (if (not (get-buffer py-output-buffer))
         (message "No output.")
-      (setq py-error (py--postprocess-output-buffer py-output-buffer origline))
+      (setq py-error (py--postprocess-intern py-output-buffer origline))
       (let* ((line (cadr py-error)))
         (if py-error
             (when (and py-jump-on-exception line)
@@ -1552,12 +1564,11 @@ jump to the top (outermost) exception in the exception stack."
       (py--find-next-exception 'bol buffer 're-search-backward "Top"))))
 ;;;
 
-(defun py--postprocess-output-buffer (buf &optional origline)
+(defun py--postprocess-intern (buf &optional origline)
   "Highlight exceptions found in BUF.
 If an exception occurred return error-string, otherwise return nil.  BUF must exist.
 
 Indicate LINE if code wasn't run from a file, thus remember line of source buffer "
-  (set-buffer buf)
   (let* ((pmx (copy-marker (point-max)))
 	 file bol estring ecode limit erg)
     (goto-char pmx)
