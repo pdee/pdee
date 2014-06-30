@@ -702,9 +702,9 @@ mark-defun marks top-level form at point etc."
 Normally python-mode know best which function to use. "
   :type '(choice
           (const :tag "default" nil)
-          (const :tag "Pymacs based py-complete-completion-at-point" py-complete-completion-at-point)
+          (const :tag "Pymacs and company based py-complete" py-complete)
           (const :tag "py-shell-complete" py-shell-complete)
-          (const :tag "IPython's ipython-complete" ipython-complete)
+          (const :tag "py-indent-or-complete" py-indent-or-complete)
           )
   :group 'python-mode)
 ;; (make-variable-buffer-local 'py-complete-function)
