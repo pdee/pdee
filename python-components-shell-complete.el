@@ -21,7 +21,7 @@
 (defalias 'py-python2-shell-complete 'py-shell-complete)
 (defalias 'py-python3-shell-complete 'py-shell-complete)
 
-(defun py--shell-completion--get-completions (input process completion-code)
+(defun py--shell-completion-get-completions (input process completion-code)
   "Retrieve available completions for INPUT using PROCESS.
 Argument COMPLETION-CODE is the python code used to get
 completions on the current context."
@@ -58,7 +58,7 @@ completions on the current context."
     (when imports
       (py--send-string-no-output imports process))
     (let* ((completion
-            (py--shell-completion--get-completions
+            (py--shell-completion-get-completions
              input process code))
            ;; (completion (when completions
 	   ;; (try-completion input completions)))
