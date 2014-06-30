@@ -58,6 +58,8 @@ New in version 6.1.4
   If cursor is at current-indentation and further indent
   seems reasonable, indent. Otherwise try to complete.
   
+- `ipython-complete' alias of `py-shell-complete'
+   Now unused sympols removed: `ipython-complete', `py--shell-complete-finally', `ipython-complete-use-separate-shell-p'
 - Python specific hide-show
   py-hide-region
   py-show-region

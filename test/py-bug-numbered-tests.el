@@ -2314,7 +2314,7 @@ execf
 (defun py-ipython-complete-lp:927136-base ()
   (goto-char (point-min))
   (search-forward "execf")
-  (ipython-complete)
+  (py-shell-complete)
   (sit-for 0.1)
   (assert (looking-back "execfile")  nil "py-ipython-complete-lp:927136-test #2 lp:1026705 failed"))
 
@@ -5105,10 +5105,11 @@ re.
 (defun ipython-complete-lp-1102226-base ()
   (and (featurep 'company)(company-mode -1))
   (goto-char 62)
-  (ipython-complete)
+  ;; (switch-to-buffer (current-buffer)) 
+  (py-shell-complete)
   ;; (set-buffer "*IPython Completions*")
   ;; (switch-to-buffer (current-buffer))
-  (assert (bufferp (get-buffer "*IPython Completions*")) nil "ipython-complete-lp-1102226-test failed"))
+  (assert (bufferp (get-buffer "*Python Completions*")) nil "ipython-complete-lp-1102226-test failed"))
 
 (defun more-docstring-filling-woes-lp-1102296-pep-257-test (&optional arg)
   (interactive "p")
@@ -5400,7 +5401,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.109 $\"
+__version__ = \"$Revision: 1.110 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))

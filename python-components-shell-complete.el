@@ -21,7 +21,6 @@
 (defalias 'py-python2-shell-complete 'py-shell-complete)
 (defalias 'py-python3-shell-complete 'py-shell-complete)
 
-
 (defun py--shell-completion--get-completions (input process completion-code)
   "Retrieve available completions for INPUT using PROCESS.
 Argument COMPLETION-CODE is the python code used to get
@@ -32,8 +31,6 @@ completions on the current context."
     (sit-for 0.1)
     (when (> (length completions) 2)
       (split-string completions "^'\\|^\"\\|;\\|'$\\|\"$" t))))
-
-
 
 ;; post-command-hook
 ;; caused insert-file-contents error lp:1293172
@@ -55,96 +52,7 @@ completions on the current context."
      py-completion-last-window-configuration))
   (goto-char end))
 
-(defalias 'ipyhton-complete 'ipython-complete)
-(defun ipython-complete (&optional done completion-command-string beg end word shell debug imports pos oldbuf)
-  "Complete the python symbol before point.
-
-If no completion available, insert a TAB.
-Returns the completed symbol, a string, if successful, nil otherwise. "
-
-  (interactive "*")
-  (setq py-completion-last-window-configuration
-        (current-window-configuration))
-  (let* (py-fontify-shell-buffer-p
-         (oldbuf (current-buffer))
-         (pos (or pos (copy-marker (point))))
-         (beg (or beg (save-excursion (skip-chars-backward "a-z0-9A-Z_." (point-at-bol))
-                                      (point))))
-         (end (or end (point)))
-         (pattern (or word (buffer-substring-no-properties beg end)))
-         (sep ";")
-         (py-shell-name (or shell "ipython"))
-         (processlist (process-list))
-         (imports (or imports (py-find-imports)))
-         (completion-buffer py-ipython-completions)
-         done
-         (process
-          (if ipython-complete-use-separate-shell-p
-              (unless (and (buffer-live-p py-ipython-completions)
-                           (comint-check-proc (process-name (get-buffer-process py-ipython-completions))))
-                (get-buffer-process (py-shell nil nil py-shell-name py-ipython-completions)))
-            (progn
-              (while (and processlist (not done))
-                (when (and
-                       (string= py-shell-name (process-name (car processlist)))
-                       (processp (car processlist))
-                       (setq done (car processlist))))
-                (setq processlist (cdr processlist)))
-              done)))
-         (proc (or process
-                   (get-buffer-process (py-shell nil nil (when (string-match "[iI][pP]ython[^[:alpha:]]*$"  py-shell-name) "ipython")))))
-         (comint-preoutput-filter-functions
-          (append comint-preoutput-filter-functions
-                  '(ansi-color-filter-apply
-                    (lambda (string)
-                      (setq ugly-return (concat ugly-return string))
-                      ""))))
-         (ccs (or completion-command-string
-                  (if imports
-                      (concat imports (py-set-ipython-completion-command-string))
-                    (py-set-ipython-completion-command-string))))
-         completion completions completion-table ugly-return)
-    (unless (interactive-p) (sit-for 0.1))
-    (if (string= pattern "")
-        (py-indent-line)
-      (process-send-string proc (format ccs pattern))
-      (accept-process-output proc 5)
-      (if ugly-return
-          (progn
-            (setq completions
-                  (split-string (substring ugly-return 0 (position ?\n ugly-return)) sep))
-            (when debug (setq py-shell-complete-debug completions))
-
-            (py--shell-complete-finally oldbuf completions completion-buffer))
-        (message "%s" "No response from Python process. Please check your configuration. If config is okay, please file a bug-regport at http://launchpad.net/python-mode")))))
-
-(defun py--shell-complete-finally (oldbuf completions completion-buffer)
-  (if (and completions (not (string= "" (car completions))))
-      (cond ((eq completions t)
-             (when (buffer-live-p (get-buffer completion-buffer))
-               (kill-buffer (get-buffer py-python-completions)))
-             (message "Can't find completion for \"%s\"" word)
-             (ding)
-             nil)
-            ((< 1 (length completions))
-             (with-output-to-temp-buffer completion-buffer
-               (display-completion-list completions
-                                        word)
-               nil))
-            ((not (string= word (car completions)))
-             (sit-for 0.1)
-             (completion-in-region beg end completions)
-             (move-marker pos (point))
-             (when (buffer-live-p (get-buffer py-python-completions))
-               (kill-buffer (get-buffer py-python-completions)))
-             nil))
-    (when py-no-completion-calls-dabbrev-expand-p
-      (ignore-errors (dabbrev-expand nil))))
-  (progn (set-buffer oldbuf)
-         ;; (goto-char pos)
-         ;; completion-at-point requires a list as return value, so givem
-         nil))
-
+(defalias 'ipython-complete 'py-shell-complete)
 (defun py--shell--do-completion-at-point (process imports input orig oldbuf code)
   "Do completion at point for PROCESS."
     (when imports
@@ -248,23 +156,6 @@ Use `C-q TAB' to insert a literally TAB-character "
   (if (eolp)
       (py-shell-complete)
     (py-indent-line)))
-
-     ;; (setq indent (py-compute-indentation))
-     ;;  (setq cui (current-indentation))
-     ;;  (if (or (eq cui indent)
-     ;; 	      (progn
-     ;; 		;; indent might be less than outmost
-     ;; 		;; see if in list of reasonable values
-     ;; 		(setq count (/ indent py-indent-offset))
-     ;; 		(while (< 0 count)
-     ;; 		  (setq current (+ current py-indent-offset))
-     ;; 		  (add-to-list 'values current)
-     ;; 		  (setq count (1- count)))
-     ;; 		(member cui values)))
-     ;; 	  (funcall py-complete-function)
-     ;; 	(py-indent-line)))
-
-
 
 (provide 'python-components-shell-complete)
 

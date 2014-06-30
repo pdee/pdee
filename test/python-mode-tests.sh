@@ -493,7 +493,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (commandp 'py-switch-to-python) nil \"py-switch-to-python not detected as command\")" \
 -eval "(assert (commandp 'py-load-file) nil \"py-load-file not detected as command\")" \
 -eval "(assert (commandp 'py-shell-complete) nil \"py-shell-complete not detected as command\")" \
--eval "(assert (commandp 'ipython-complete) nil \"ipython-complete not detected as command\")" \
 -eval "(assert (commandp 'py-pychecker-run) nil \"py-pychecker-run not detected as command\")" \
 -eval "(assert (commandp 'virtualenv-current) nil \"virtualenv-current not detected as command\")" \
 -eval "(assert (commandp 'virtualenv-activate) nil \"virtualenv-activate not detected as command\")" \
@@ -855,7 +854,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-hide-show-minor-mode-p) nil \"py-hide-show-minor-mode-p not a variable\")" \
 -eval "(assert (boundp 'empty-comment-line-separates-paragraph-p) nil \"empty-comment-line-separates-paragraph-p not a variable\")" \
 -eval "(assert (boundp 'py-org-cycle-p) nil \"py-org-cycle-p not a variable\")" \
--eval "(assert (boundp 'ipython-complete-use-separate-shell-p) nil \"ipython-complete-use-separate-shell-p not a variable\")" \
 -eval "(assert (boundp 'py-outline-minor-mode-p) nil \"py-outline-minor-mode-p not a variable\")" \
 -eval "(assert (boundp 'py-outline-mode-keywords) nil \"py-outline-mode-keywords not a variable\")" \
 -eval "(assert (boundp 'py-close-provides-newline) nil \"py-close-provides-newline not a variable\")" \

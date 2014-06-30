@@ -457,11 +457,6 @@ See also resp. edit `py-complete-set-keymap' "
   :type 'boolean
   :group 'python-mode)
 
-(defcustom ipython-complete-use-separate-shell-p nil
-
-  "If `ipython-complete' should use a separate shell. Thus prompt-counter is not incremented by completion. "
-  :type 'boolean :group 'python-mode)
-
 (defcustom py-outline-minor-mode-p t
   "If outline minor-mode should be on, default is `t'. "
 
@@ -5656,12 +5651,6 @@ In experimental state yet "
 See also `py-indent-no-completion-p'Use `M-x customize-variable' to set it permanently"
                       :style toggle :selected py-no-completion-calls-dabbrev-expand-p]
 
-                     ["Ipython complete use separate shell "
-                      (setq ipython-complete-use-separate-shell-p
-                            (not ipython-complete-use-separate-shell-p))
-                      :help "If `ipython-complete' should use a separate shell. Thus prompt-counter is not incremented by completion. Use `M-x customize-variable' to set it permanently"
-                      :style toggle :selected ipython-complete-use-separate-shell-p]
-
                      ["Set Pymacs-based complete keymap "
                       (setq py-set-complete-keymap-p
                             (not py-set-complete-keymap-p))
@@ -9041,12 +9030,6 @@ Otherwise value of py-python-history is used. Use `M-x customize-variable' to se
 See also `py-indent-no-completion-p'Use `M-x customize-variable' to set it permanently"
                       :style toggle :selected py-no-completion-calls-dabbrev-expand-p]
 
-                     ["Ipython complete use separate shell "
-                      (setq ipython-complete-use-separate-shell-p
-                            (not ipython-complete-use-separate-shell-p))
-                      :help "If `ipython-complete' should use a separate shell. Thus prompt-counter is not incremented by completion. Use `M-x customize-variable' to set it permanently"
-                      :style toggle :selected ipython-complete-use-separate-shell-p]
-
                      ["Set Pymacs-based complete keymap "
                       (setq py-set-complete-keymap-p
                             (not py-set-complete-keymap-p))
@@ -9938,12 +9921,6 @@ In experimental state yet "
 
 See also `py-indent-no-completion-p'Use `M-x customize-variable' to set it permanently"
                       :style toggle :selected py-no-completion-calls-dabbrev-expand-p]
-
-                     ["Ipython complete use separate shell "
-                      (setq ipython-complete-use-separate-shell-p
-                            (not ipython-complete-use-separate-shell-p))
-                      :help "If `ipython-complete' should use a separate shell. Thus prompt-counter is not incremented by completion. Use `M-x customize-variable' to set it permanently"
-                      :style toggle :selected ipython-complete-use-separate-shell-p]
 
                      ["Set Pymacs-based complete keymap "
                       (setq py-set-complete-keymap-p
