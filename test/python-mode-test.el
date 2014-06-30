@@ -41,7 +41,8 @@
     (if (stringp (ignore-errors (symbol-value elt)))
         (insert (concat (symbol-value elt) "\n\n"))
       (insert (concat (prin1-to-string (ignore-errors (symbol-value elt))) "\n\n"))))
-  (switch-to-buffer (current-buffer)))
+  ;; (switch-to-buffer (current-buffer))
+  )
 
 (setq python-mode-tests
       (list
@@ -661,10 +662,6 @@ print(\'\\xA9\')
   (delete-other-windows)
   (py-execute-region 50 63)
   (set-buffer "*Python3*")
-  (switch-to-buffer (current-buffer))
-
-  ;;  (goto-char (point-max))
-  ;;  (sit-for 1.0)
   (assert (eq (char-after) ?\©) nil "UnicodeEncodeError-python3-test failed"))
 
 (defun dict-error-test (&optional arg load-branch-function)
@@ -2389,7 +2386,6 @@ else:
   (py-execute-region (line-beginning-position) (line-end-position))
   (set-buffer "*Python*")
   (goto-char (point-max))
-  (switch-to-buffer (current-buffer))
   (assert (and (re-search-backward py-shell-prompt-regexp nil t 2)
                (search-forward "line 5")) nil "py-execute-region-test failed"))
 
