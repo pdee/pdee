@@ -278,10 +278,10 @@ interpreter.
   (interactive "P")
   (py-shell argprompt t))
 
-(defun py-set-ipython-completion-command-string ()
+(defun py-set-ipython-completion-command-string (shell)
   "Set and return `ipython-completion-command-string'. "
   (interactive)
-  (let* ((ipython-version (shell-command-to-string (concat py-shell-name " -V"))))
+  (let* ((ipython-version (shell-command-to-string (concat shell " -V"))))
     (if (string-match "[0-9]" ipython-version)
         (setq ipython-completion-command-string
               (cond ((string-match "^[^0].+" ipython-version)
@@ -300,59 +300,6 @@ interpreter.
                (string-match "^[^0].+" ipython-version))
       (process-send-string proc "from IPython.core.completerlib import module_completion")
       (process-send-string proc "\n"))))
-
-;; (defun py--buffer-name-prepare (&optional arg dedicated)
-;;   "Return an appropriate name to display in modeline.
-;; SEPCHAR is the file-path separator of your system. "
-;;   (let* ((name-first (or arg py-shell-name))
-;; 	 (name-raw (and name-first (if (stringp name-first) name-first (prin1-to-string name-first))))
-;; 	 ein
-;; 	 (name
-;; 	  (cond ((string-match "^[iI]" name-raw)
-;; 		 (concat "IP" (substring name-raw 2)))
-;; 		;; When a given path is the default
-;; 		;; it must not be shown
-;; 		((and (string-match "/[^/]+\\|\\\\" name-raw)
-;; 		      (setq ein (substring name-raw (1+ (string-match "/[^/]+$" name-raw))))
-;; 		      (string= (eval (car (read-from-string (concat "py-" (downcase ein) "-command")))) name-raw))
-;; 		 ;; (string-match "^/usr/bin" name-raw)
-;; 		 (capitalize ein))
-;; 		((string-match "^py-" name-raw)
-;; 		 (nth 1 (split-string name-raw "-")))
-;; 		(t (capitalize name-raw))))
-;; 	 prefix erg suffix liste)
-;;     (when (string-match py-separator-char name)
-;;       (unless py-modeline-acronym-display-home-p
-;;         (when (string-match (concat "^" (expand-file-name "~")) name)
-;;           (setq name (replace-regexp-in-string (concat "^" (expand-file-name "~")) "" name))))
-;;       (save-match-data
-;;         (setq liste (split-string name py-separator-char)))
-;;       (dolist (ele liste)
-;;         (unless (string= "" ele)
-;;           (setq prefix (concat prefix (char-to-string (aref ele 0))))))
-;;       (unless py-modeline-display-full-path-p
-;;         (setq name (substring name (1+ (string-match (concat py-separator-char "[^" py-separator-char "]+$") name))))))
-;;     (setq erg
-;;           (cond ((string= "ipython" name)
-;;                  (replace-regexp-in-string "ipython" "IPython" name))
-;;                 ((string= "jython" name)
-;;                  (replace-regexp-in-string "jython" "Jython" name))
-;;                 ((string= "python" name)
-;;                  (replace-regexp-in-string "python" "Python" name))
-;;                 ((string-match "python2" name)
-;;                  (replace-regexp-in-string "python2" "Python2" name))
-;;                 ((string-match "python3" name)
-;;                  (replace-regexp-in-string "python3" "Python3" name))
-;;                 (t name)))
-;;     (when (or dedicated py-dedicated-process-p)
-;;       (setq erg (make-temp-name (concat erg "-"))))
-;;     (cond ((and prefix (string-match "^\*" erg))
-;;            (setq erg (replace-regexp-in-string "^\*" (concat "*" prefix " ") erg)))
-;;           (prefix
-;;            (setq erg (concat "*" prefix " " erg "*")))
-
-;;           (t (unless (string-match "^\*" erg)(setq erg (concat "*" erg "*")))))
-;;     erg))
 
 (defun py--compose-buffer-name-initials (liste)
   (let (erg)
@@ -569,7 +516,7 @@ Receives a buffer-name as argument"
     (sit-for 0.1)
     buffer))
 
-(defun py--shell-setup (proc)
+(defun py--shell-setup (buffer proc)
   (py--shell-send-setup-code proc)
   (and (string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
        (py-ipython--module-completion-import proc))
@@ -674,7 +621,7 @@ Receives a buffer-name as argument"
 	(setq py-output-buffer py-buffer-name)
 	(if (comint-check-proc py-buffer-name)
 	    (with-current-buffer py-buffer-name
-	      (py--shell-setup (get-buffer-process py-buffer-name)))
+	      (py--shell-setup py-buffer-name (get-buffer-process py-buffer-name)))
 	  (error (concat "py-shell: No process in " py-buffer-name))))
       ;; (goto-char (point-max))
       (when (or (string-match "[BbIi]*[Pp]ython" (prin1-to-string this-command))(interactive-p)) (py--shell-manage-windows py-buffer-name))

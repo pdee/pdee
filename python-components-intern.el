@@ -79,7 +79,7 @@ Use `defcustom' to keep value across sessions "
       (setq proc (get-buffer-process buffer))
       (and proc (kill-process proc))
       (set-buffer buffer)
-      (set-buffer-modified-p 'nil)  
+      (set-buffer-modified-p 'nil)
       (kill-buffer (current-buffer)))))
 
 (defun py--line-backward-maybe ()
@@ -1190,14 +1190,11 @@ the output."
     (py-shell-send-string string process msg)
     (accept-process-output process 5)
     (when (and output (not (string= "" output)))
-      (replace-regexp-in-string
-       (if (> (length py-shell-prompt-output-regexp) 0)
-           (format "\n*%s$\\|^%s\\|\n$"
-                   py-shell-prompt-regexp
-                   (or py-shell-prompt-output-regexp ""))
-         (format "\n*$\\|^%s\\|\n$"
-                 py-shell-prompt-regexp))
-       "" output))))
+      (setq output
+	    (replace-regexp-in-string
+	     (format "^[ \n]*%s[ \n]*$" py-fast-filter-re)
+	     "" output)))
+    output))
 
 (defun py--send-string-return-output (string &optional process msg)
   "Send STRING to PROCESS and return output.
@@ -1215,16 +1212,11 @@ the output."
 			"")))))
       (py-shell-send-string string process msg)
       (accept-process-output process 5)
-      (sit-for 0.1)
       (when (and output (not (string= "" output)))
 	(setq output
 	      (replace-regexp-in-string
-	       (if (> (length py-shell-prompt-output-regexp) 0)
-		   (format "\n*%s$\\|^%s\\|\n$"
-			   py-shell-prompt-regexp
-			   (or py-shell-prompt-output-regexp ""))
-		 (format "\n*$\\|^%s\\|\n$"
-			 py-shell-prompt-regexp))
+	       (format "^%s\\|\n$"
+		       py-fast-filter-re)
 	       "" output)))
       output)))
 

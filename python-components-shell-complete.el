@@ -26,7 +26,7 @@
 Argument COMPLETION-CODE is the python code used to get
 completions on the current context."
   (let ((completions
-	 (py--send-string-return-output
+	 (py--send-string-no-output
 	  (format completion-code input) process)))
     (sit-for 0.1)
     (when (> (length completions) 2)
@@ -100,7 +100,7 @@ completions on the current context."
 		       (get-buffer-process (py-shell nil nil shell))
 		     (sit-for py-new-shell-delay))))
 	 (code (if (string-match "[Ii][Pp]ython*" shell)
-		   (py-set-ipython-completion-command-string)
+		   (py-set-ipython-completion-command-string shell)
 		 python-shell-module-completion-string-code)))
     (py--shell--do-completion-at-point proc imports word pos oldbuf code)))
 
@@ -158,5 +158,4 @@ Use `C-q TAB' to insert a literally TAB-character "
     (py-indent-line)))
 
 (provide 'python-components-shell-complete)
-
 ;; pyshell-complete.el ends here
