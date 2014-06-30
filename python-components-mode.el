@@ -11821,7 +11821,10 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
   :group 'python-mode
   ;; (require 'ansi-color) ; for ipython
   (setq mode-line-process '(":%s"))
+  (setenv "PAGER" "cat")
+  (setenv "TERM" "dumb")
   (set-syntax-table python-mode-syntax-table)
+  ;; comint settings
   (set (make-local-variable 'comint-prompt-regexp)
        (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
 	      (concat "\\("
@@ -11840,6 +11843,39 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
   (set (make-local-variable 'comint-input-filter) 'py--input-filter)
   (set (make-local-variable 'compilation-error-regexp-alist)
        py-compilation-regexp-alist)
+    (set (make-local-variable 'comint-input-filter) 'py-history-input-filter)
+  (set (make-local-variable 'comint-prompt-read-only) py-shell-prompt-read-only)
+  ;; It might be useful having a different setting of `comint-use-prompt-regexp' in py-shell - please report when a use-case shows up
+  ;; (set (make-local-variable 'comint-use-prompt-regexp) nil)
+  (set (make-local-variable 'compilation-error-regexp-alist)
+       py-compilation-regexp-alist)
+  ;; (setq completion-at-point-functions nil)
+
+  (set (make-local-variable 'comment-start) "# ")
+  (set (make-local-variable 'comment-start-skip) "^[ \t]*#+ *")
+  (set (make-local-variable 'comment-column) 40)
+  (set (make-local-variable 'comment-indent-function) #'py--comment-indent-function)
+  (set (make-local-variable 'indent-region-function) 'py-indent-region)
+  (set (make-local-variable 'indent-line-function) 'py-indent-line)
+  (set (make-local-variable 'inhibit-point-motion-hooks) t)
+  (set (make-local-variable 'comint-input-sender) 'py--shell-simple-send)
+  ;; (sit-for 0.1)
+  (setq comint-input-ring-file-name
+        (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
+               (if py-honor-IPYTHONDIR-p
+                   (if (getenv "IPYTHONDIR")
+                       (concat (getenv "IPYTHONDIR") "/history")
+                     py-ipython-history)
+                 py-ipython-history))
+              (t
+               (if py-honor-PYTHONHISTORY-p
+                   (if (getenv "PYTHONHISTORY")
+                       (concat (getenv "PYTHONHISTORY") "/" (py--report-executable py-buffer-name) "_history")
+                     py-ipython-history)
+                 py-ipython-history))))
+  (comint-read-input-ring t)
+  (compilation-shell-minor-mode 1)
+;;
   (if py-complete-function
       (progn
   	(add-hook 'completion-at-point-functions
