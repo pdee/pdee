@@ -1250,9 +1250,11 @@ at GNU systems default is /usr/bin/python3"
 
 (defcustom py-ipython-command
   (if (eq system-type 'windows-nt)
-   "C:\\Python27\\python.exe"
-   ;; "C:/Python33/Lib/site-packages/IPython"
-    "/usr/bin/ipython")
+      "ipython"
+    ;; "C:\\Python27\\python.exe"
+    ;; "C:/Python33/Lib/site-packages/IPython"
+    ;; "/usr/bin/ipython"
+    "ipython")
 
   "A PATH/TO/EXECUTABLE or default value `M-x IPython RET' may look for, if no IPython-shell is specified by command.
 
@@ -1266,7 +1268,7 @@ Else /usr/bin/ipython"
   :group 'python-mode)
 ;; (make-variable-buffer-local 'py-ipython-command)
 
-(defcustom py-ipython-command-argsw
+(defcustom py-ipython-command-args
   (if (eq system-type 'windows-nt)
       "ipython-script.py"
     '(""))
@@ -7778,7 +7780,7 @@ Argument is how many `py-partial-expression's form the expansion; or zero means 
 
                   ("Completion"
                    :help "Completion options"
-		   
+
 		   ["Indent or complete" py-indent-or-complete
 		    :help " `py-indent-or-complete'
 
