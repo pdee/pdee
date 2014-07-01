@@ -586,6 +586,8 @@ Receives a buffer-name as argument"
 	  (cond (py-fast-process-p nil)
 		((string-match "^[Ii]" py-shell-name-raw)
 		 py-ipython-command-args)
+		((string-match "^[^-]+3" py-shell-name-raw)
+		 py-python3-command-args)
 		(t py-python-command-args)))
 	 ;; unless Path is given with `py-shell-name'
 	 ;; call configured command
