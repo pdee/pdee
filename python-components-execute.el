@@ -558,7 +558,8 @@ Receives a buffer-name as argument"
   (font-lock-unfontify-region (point-min)
 			      (or (and (boundp 'comint-last-prompt)(ignore-errors (car comint-last-prompt)))
 				  (re-search-forward comint-prompt-regexp nil t 1)
-				  (error (concat "py--unfontify-banner: Don't see a prompt in buffer " (buffer-name (current-buffer))))))
+				  (progn (and py-debug-p (message "%s" (concat "py--unfontify-banner: Don't see a prompt in buffer " (buffer-name (current-buffer)))))
+					 (point-max))))
   (goto-char (point-max)))
 
 (defun py-shell (&optional argprompt dedicated shell buffer-name)
