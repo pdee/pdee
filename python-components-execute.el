@@ -459,7 +459,6 @@ Internal use"
      py-split-windows-on-execute-p
      (not py-switch-buffers-on-execute-p))
     (set-buffer oldbuf)
-    ;; 	 (sit-for 0.1)
     (switch-to-buffer (current-buffer))
     (delete-other-windows)
     (py--manage-windows-split)
@@ -513,7 +512,7 @@ Receives a buffer-name as argument"
   (let ((buffer (apply 'make-comint-in-buffer executable py-buffer-name executable nil args)))
     (with-current-buffer buffer
       (py-shell-mode))
-    (sit-for 0.1)
+    (sit-for 0.1 t)
     buffer))
 
 (defun py--shell-setup (buffer proc)
@@ -555,7 +554,7 @@ Receives a buffer-name as argument"
   (interactive)
   (when py-debug-p (message "%s" (concat "py--unfontify-banner: " (buffer-name (current-buffer)))))
   (goto-char (point-min))
-  (sit-for 0.2 t)
+  (sit-for 0.3 t)
   (font-lock-unfontify-region (point-min)
 			      (or (and (boundp 'comint-last-prompt)(ignore-errors (car comint-last-prompt)))
 				  (re-search-forward comint-prompt-regexp nil t 1)
@@ -618,7 +617,7 @@ Receives a buffer-name as argument"
 	  (setq py-output-buffer (default-value 'py-buffer-name)))
       (unless (comint-check-proc py-buffer-name)
 	(py--shell-make-comint executable py-buffer-name args)
-	(sit-for 0.1)
+	(sit-for 0.1 t)
 	(setq py-output-buffer py-buffer-name)
 	(if (comint-check-proc py-buffer-name)
 	    (with-current-buffer py-buffer-name
@@ -863,7 +862,7 @@ May we get rid of the temporary file? "
     (process-send-string proc
                          (buffer-substring-no-properties
                           (point-min) (point-max)))
-    (sit-for 0.1)
+    (sit-for 0.1 t)
     (if (and (setq py-error (save-excursion (py--postprocess-intern procbuf origline)))
              (car py-error)
              (not (markerp py-error)))
@@ -1520,7 +1519,7 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
   (let* ((pmx (copy-marker (point-max)))
 	 file bol estring ecode limit erg)
     (goto-char pmx)
-    (sit-for 0.1)
+    (sit-for 0.1 t)
     (save-excursion
       (unless (looking-back py-pdbtrack-input-prompt)
         (forward-line -1)

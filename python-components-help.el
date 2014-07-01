@@ -239,7 +239,6 @@ Optional \\[universal-argument] used for debugging, will prevent deletion of tem
           (progn
             (set-buffer "*Python-Help*")
             (switch-to-buffer (current-buffer))
-            ;; (sit-for 0.1)
             (help-mode)
             (delete-other-windows))
         (message "%s" erg))

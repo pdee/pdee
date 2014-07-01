@@ -12142,23 +12142,6 @@ Start a new process if necessary. "
 (add-hook 'kill-emacs-hook 'py--kill-emacs-hook)
 
 (remove-hook 'python-mode-hook 'python-setup-brm)
-;; (add-hook 'python-mode-hook
-;;           #'(lambda ()
-;;               (when py-smart-indentation
-;;                 (sit-for 0.1)
-;;                 (if (bobp)
-;;                     (save-excursion
-;;                       (save-restriction
-;;                         (widen)
-;;                         (while (and (not (eobp))
-;;                                     (or
-;;                                      (let ((erg (syntax-ppss)))
-;;                                        (or (nth 1 erg) (nth 8 erg)))
-;;                                      (eq 0 (current-indentation))))
-;;                           (forward-line 1))
-;;                         (back-to-indentation)
-;;                         (py-guess-indent-offset)))
-;;                   (py-guess-indent-offset)))))
 
 (add-hook 'python-mode-hook
           (lambda ()

@@ -28,7 +28,7 @@ completions on the current context."
   (let ((completions
 	 (py--send-string-no-output
 	  (format completion-code input) process)))
-    (sit-for 0.1)
+    (sit-for 0.1 t)
     (when (> (length completions) 2)
       (split-string completions "^'\\|^\"\\|;\\|'$\\|\"$" t))))
 
@@ -137,7 +137,7 @@ completions on the current context."
 			 (list (replace-regexp-in-string "\n" "" (shell-command-to-string (concat "find / -maxdepth 1 -name " ausdruck))))))
          (imports (py-find-imports))
          py-fontify-shell-buffer-p completion-buffer erg)
-    (sit-for 0.1)
+    (sit-for 0.1 t)
     (cond ((and in-string filenames)
 	   (when (setq erg (try-completion (concat "/" word) filenames))
 	     (delete-region beg end)
