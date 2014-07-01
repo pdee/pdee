@@ -555,8 +555,9 @@ Receives a buffer-name as argument"
   (interactive)
   (when py-debug-p (message "%s" (concat "py--unfontify-banner: " (buffer-name (current-buffer)))))
   (goto-char (point-min))
+  (sit-for 0.2 t)
   (font-lock-unfontify-region (point-min)
-			      (or (ignore-errors (car comint-last-prompt))
+			      (or (and (boundp 'comint-last-prompt)(ignore-errors (car comint-last-prompt)))
 				  (re-search-forward comint-prompt-regexp nil t 1)
 				  (error (concat "py--unfontify-banner: Don't see a prompt in buffer " (buffer-name (current-buffer))))))
   (goto-char (point-max)))
@@ -627,8 +628,8 @@ Receives a buffer-name as argument"
       (when (or (string-match "[BbIi]*[Pp]ython" (prin1-to-string this-command))(interactive-p)) (py--shell-manage-windows py-buffer-name))
       ;; (when py-shell-mode-hook (run-hooks 'py-shell-mode-hook))
       (when (string-match "[BbIi][Pp]ython" py-buffer-name)
-	(sit-for 0.3))
-      (sit-for 0.1)
+	(sit-for 0.3 t))
+      (sit-for 0.1 t)
       (with-current-buffer py-buffer-name
 	(py--unfontify-banner)))
     py-buffer-name))
@@ -796,7 +797,7 @@ When optional FILE is `t', no temporary file is needed. "
     (setq py-error (py--postprocess-intern buffer))
     (when py-store-result-p
       (setq erg
-	    (if (eq major-mode 'comint-mode)
+	    (if (eq major-mode 'py-shell-mode)
 		(py-output-filter (py--fetch-comint-result))
 	      (py-output-filter (buffer-substring-no-properties (point) (point-max)))))
       (and erg (not (string= (car kill-ring) erg)) (kill-new erg)))

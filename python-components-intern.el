@@ -1192,7 +1192,7 @@ the output."
     (when (and output (not (string= "" output)))
       (setq output
 	    (replace-regexp-in-string
-	     (format "^[ \n]*%s[ \n]*$" py-fast-filter-re)
+	     (format "[ \n]*%s[ \n]*" py-fast-filter-re)
 	     "" output)))
     output))
 
