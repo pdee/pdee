@@ -1136,8 +1136,8 @@ Otherwise value of py-python-history is used. "
 ;;; Default shells
 (defcustom py-shell-name
   (if (eq system-type 'windows-nt)
-      ;; "C:/Python27/python"
-      "python"
+      "C:/Python27/python"
+    ;; "python"
     "python")
 
   "A PATH/TO/EXECUTABLE or default value `py-shell' may look for, if no shell is specified by command.
@@ -1179,10 +1179,9 @@ Else /usr/bin/python"
 
 (defcustom py-python2-command
   (if (eq system-type 'windows-nt)
-      ;; "C:\\Python27\\python.exe"
-   "python"
-   ;; "C:/Python33/Lib/site-packages/IPython"
-    "python")
+      "C:\\Python27\\python"
+    ;; "python2"
+    "python2")
 
   "Make sure, the directory where python.exe resides in in the PATH-variable.
 
@@ -1203,8 +1202,8 @@ Else /usr/bin/python"
 
 (defcustom py-python3-command
   (if (eq system-type 'windows-nt)
-      "python3"
-    ;; "C:/Python33/python.exe"
+      ;; "python3"
+    "C:/Python33/python"
     ;; "/usr/bin/python3"
     "python3")
 
@@ -1219,23 +1218,6 @@ At GNU systems see /usr/bin/python3"
   :type 'string
   :group 'python-mode)
 
-(defcustom py-python3-command
-  (if (eq system-type 'windows-nt)
-      ;; "C:/Python33/python.exe"
-      "python3"
-    "python3")
-
-  "A PATH/TO/EXECUTABLE or default value `py-shell' may look for, if no shell is specified by command.
-
-On Windows default is C:/Python33/python.exe
-With Anaconda path might be:
-C:/Users/YOUR_NAME/Anaconda/python.exe
-
-at GNU systems default is /usr/bin/python3"
-
-  :type 'string
-  :group 'python-mode)
-
 (defcustom py-python3-command-args '("-i")
   "List of string arguments to be used when starting a Python3 shell."
   :type '(repeat string)
@@ -1245,8 +1227,8 @@ at GNU systems default is /usr/bin/python3"
 
 (defcustom py-ipython-command
   (if (eq system-type 'windows-nt)
-      "ipython"
-    ;; "C:\\Python27\\python.exe"
+      ;; "ipython"
+    "C:\\Python27\\python"
     ;; "C:/Python33/Lib/site-packages/IPython"
     ;; "/usr/bin/ipython"
     "ipython")
@@ -1265,8 +1247,8 @@ Else /usr/bin/ipython"
 
 (defcustom py-ipython-command-args
   (if (eq system-type 'windows-nt)
-      "ipython-script.py"
-    '(""))
+      '("-i" "C:\\Python27\\Scripts\\ipython-script.py")
+    '("--pylab"))
   "List of string arguments to be used when starting a Python shell.
 At Windows make sure ipython-script.py is PATH. Also setting PATH/TO/SCRIPT here should work, for example;
 C:\\Python27\\Scripts\\ipython-script.py

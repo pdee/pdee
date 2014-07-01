@@ -1,3 +1,4 @@
+* sys.version_info
 * py-ipython-complete-lp:927136-test
 * TODO py-max-help-buffer-p
 * TODO py-beginning-of-elif
