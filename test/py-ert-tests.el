@@ -1325,10 +1325,18 @@ x = {'abc':'def',
 (ert-deftest py-ipython-shell-test ()
   ""
   (let ((erg (ipython)))
-    (sit-for 1) 
+    (sit-for 1)
     (should (bufferp (get-buffer erg)))
     (should (get-buffer-process erg))))
 
+(ert-deftest py-keep-windows-configuration-test ()
+  "print('py-keep-windows-configuration-test-string')"
+  (delete-other-windows)
+  (let ((py-keep-windows-configuration t)
+	(py-split-windows-on-execute-p t)
+	(full-height (window-height)))
+    (py-execute-statement)
+    (should (eq (window-height) full-height))))
 
 
 (provide 'py-ert-tests)

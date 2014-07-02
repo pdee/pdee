@@ -784,13 +784,14 @@ When optional FILE is `t', no temporary file is needed. "
 
 (defun py--fetch-comint-result ()
   (save-excursion
-    (if (and
-	 (goto-char (car comint-last-prompt))
-	 (re-search-backward py-fast-filter-re nil t 1))
-	(progn
-	  (goto-char (match-end 0))
-	  (buffer-substring-no-properties (point) (car comint-last-prompt)))
-      (error (concat "py--fetch-comint-result: Don't see a prompt at " (current-buffer))))))
+    (or (and
+	 (boundp 'comint-last-prompt)
+	 (goto-char (car comint-last-prompt)))
+	(goto-char (point-max)))
+    (re-search-backward py-fast-filter-re nil t 1))
+  (goto-char (match-end 0))
+  (buffer-substring-no-properties (point) (car comint-last-prompt)))
+
 
 (defun py--postprocess (buffer)
   "Provide return values, check result for error, manage windows. "

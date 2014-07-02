@@ -1078,13 +1078,17 @@ Otherwise value of py-python-history is used. "
   :group 'python-mode)
 
 (defcustom py-switch-buffers-on-execute-p nil
-  "When non-nil switch to the Python output buffer. "
+  "When non-nil switch to the Python output buffer. 
+
+If `py-keep-windows-configuration' is t, this will take precedence over setting here. "
 
   :type 'boolean
   :group 'python-mode)
 
 (defcustom py-split-windows-on-execute-p t
-  "When non-nil split windows. "
+  "When non-nil split windows. 
+
+If `py-keep-windows-configuration' is t, this will take precedence over setting here. "
   :type 'boolean
   :group 'python-mode)
 
@@ -1652,11 +1656,9 @@ Default is nil "
          (py--set-ffap-form)))
 
 (defcustom py-keep-windows-configuration nil
-  "If a windows is splitted displaying results, this is directed by variable `py-split-windows-on-execute-p'. Also setting `py-switch-buffers-on-execute-p' affects window-configuration. While commonly a screen splitted into source and Python-shell buffer is assumed, user may want to keep a different config.
+  "Takes precedence over `py-split-windows-on-execute-p' and `py-switch-buffers-on-execute-p'. 
 
 See lp:1239498
-
-Setting `py-keep-windows-configuration' to `t' will restore windows-config regardless of settings mentioned above. However, if an error occurs, it's displayed.
 
 To suppres window-changes due to error-signaling also, set `py-keep-windows-configuration' onto 'force
 
