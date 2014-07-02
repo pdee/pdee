@@ -928,7 +928,8 @@ def foo():
     (let ((py-fast-process-p t))
       (py-execute-block)
       (set-buffer py-output-buffer)
-      (eq 1 (char-after)))))
+      (goto-char (point-min))
+      (should (eq 49 (char-after))))))
 
 (ert-deftest py-ert-execute-block-fast-2 ()
   (py-test-with-temp-buffer-point-min
@@ -938,7 +939,8 @@ def foo():
     (let ((py-fast-process-p t))
       (py-execute-block)
       (set-buffer py-output-buffer)
-      (eq 2 (char-after)))))
+      (goto-char (point-min)) 
+      (should (eq 50 (char-after))))))
 
 (ert-deftest py-ert-keyword-face-lp-1294742 ()
   (py-test-with-temp-buffer-point-min
@@ -991,6 +993,7 @@ def foo():
 	  py-switch-buffers-on-execute-p)
       (py-execute-buffer)
       (set-buffer "*IPython*")
+      (switch-to-buffer (current-buffer)) 
       (sit-for 0.1)
       (should (search-backward "1")))))
 
