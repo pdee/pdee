@@ -623,7 +623,7 @@ Takes a buffer as argument. "
 	;; buffer might exist but not being empty
 	(when (buffer-live-p py-buffer-name)
 	  (with-current-buffer py-buffer-name
-	    (erase-buffer))) 
+	    (erase-buffer)))
 	(py--shell-make-comint executable py-buffer-name args)
 	(sit-for 0.1 t)
 	(setq py-output-buffer py-buffer-name)
@@ -775,7 +775,7 @@ When optional FILE is `t', no temporary file is needed. "
     (unwind-protect
 	(if py-fast-process-p
 	    (with-current-buffer (setq output-buffer (process-buffer  proc))
-	      (sit-for 0.1 t) 
+	      (sit-for 0.1 t)
 	      (erase-buffer)
 	      (setq erg (py--fast-send-string-intern strg
 						     proc
@@ -789,13 +789,14 @@ When optional FILE is `t', no temporary file is needed. "
 
 (defun py--fetch-comint-result ()
   (save-excursion
-    (or (and
-	 (boundp 'comint-last-prompt)
-	 (goto-char (car comint-last-prompt)))
-	(goto-char (point-max)))
-    (re-search-backward py-fast-filter-re nil t 1))
-  (goto-char (match-end 0))
-  (buffer-substring-no-properties (point) (car comint-last-prompt)))
+    (let (erg)
+      (or (and
+	   (boundp 'comint-last-prompt)
+	   (goto-char (setq erg (car comint-last-prompt))))
+	  (goto-char (setq erg (point-max))))
+      (re-search-backward py-fast-filter-re nil t 1)
+      (goto-char (match-end 0))
+      (buffer-substring-no-properties (point) erg))))
 
 (defun py--postprocess (buffer)
   "Provide return values, check result for error, manage windows. "
