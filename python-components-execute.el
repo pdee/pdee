@@ -767,13 +767,16 @@ When optional FILE is `t', no temporary file is needed. "
     (unless py-if-name-main-permission-p
       (setq strg (py--fix-if-name-main-permission strg)))
     (setq strg (py--fix-start strg))
-
     ;; fast-process avoids temporary files
     (unwind-protect
 	(if py-fast-process-p
-	    (with-current-buffer (setq output-buffer (default-value 'py-output-buffer))
+	    (with-current-buffer (setq output-buffer (process-buffer  proc))
+	      (sit-for 0.1 t) 
 	      (erase-buffer)
-	      (setq erg (py--fast-send-string-intern strg (py-fast-process output-buffer) output-buffer))
+	      (setq erg (py--fast-send-string-intern strg
+						     proc
+						     ;; (py-fast-process output-buffer)
+						     output-buffer))
 	      (py-kill-buffer-unconditional tempbuf))
 	  (setq erg (py--execute-file-base proc tempfile nil py-buffer-name py-orig-buffer-or-file execute-directory))
 	  (sit-for 0.1))

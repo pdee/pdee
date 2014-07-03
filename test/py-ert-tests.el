@@ -928,6 +928,8 @@ def foo():
     (let ((py-fast-process-p t))
       (py-execute-block)
       (set-buffer py-output-buffer)
+      (sit-for 0.1 t) 
+      (and py-debug-p (message "py-ert-execute-block-fast: %s" (current-buffer)) )
       (goto-char (point-min))
       (should (eq 49 (char-after))))))
 
@@ -993,8 +995,8 @@ def foo():
 	  py-switch-buffers-on-execute-p)
       (py-execute-buffer)
       (set-buffer "*IPython*")
-      (switch-to-buffer (current-buffer)) 
-      (sit-for 0.1)
+      ;; (switch-to-buffer (current-buffer)) 
+      (sit-for 0.1 t)
       (should (search-backward "1")))))
 
 (ert-deftest py-ert-borks-all-lp-1294820 ()

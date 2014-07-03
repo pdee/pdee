@@ -109,7 +109,7 @@ Commands prefixed \"py-fast-...\" suitable for large output
 
 See: large output makes Emacs freeze, lp:1253907
 
-Results arrive in py-output-buffer, which is not in comint-mode"
+Results arrive in output buffer, which is not in comint-mode"
 
   :type 'boolean
   :group 'python-mode)
@@ -1680,7 +1680,12 @@ Default is nil "
   ""
   :type 'string
   :group 'python-mode)
-;; (make-variable-buffer-local 'py-output-buffer)
+(make-variable-buffer-local 'py-output-buffer)
+
+(defcustom py-fast-output-buffer "*Python Fast Output*"
+  ""
+  :type 'string
+  :group 'python-mode)
 
 ;; the python-el way
 (defcustom py-ffap-string-code
@@ -12404,7 +12409,7 @@ Don't save anything for STR matching `inferior-python-filter-regexp'."
 	    (setq py--timer
 		  (run-with-idle-timer
 		   (if py--timer-delay (setq py--timer-delay 3)
-		     (setq py--timer-delay 0.3))
+		     (setq py--timer-delay 0.1))
 		   t
 		   #'py--unfontify-banner buffer)))
 	(cancel-timer py--timer)))))

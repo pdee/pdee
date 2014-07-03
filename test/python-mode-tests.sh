@@ -1338,10 +1338,10 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test \
 --funcall from-within-py-shell-call-another-instance-lp-1169687-test \
 --funcall py-docstring-style-pep-257-nn-closing-quotes-lp-1241147-test \
---funcall py-down-statement-test \
 --funcall goto-beginning-of-tqs-lp:735328-test \
 --funcall completion-at-gentoo-lp-1008842-test \
 --funcall py-execute-buffer-python-switch-test \
 --funcall wrong-type-argument-inserted-chars-lp-1293172-test \
 --funcall previous-statement-lp:637955-test \
 --funcall py-execute-block-or-clause-python3-test \
+

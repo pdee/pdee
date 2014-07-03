@@ -2138,7 +2138,6 @@ def foo()
   (assert (nth 3 (syntax-ppss))  nil "py-fill-string-pep-257-test #1 failed")
   (message "%s" "py-fill-string-pep-257-test #1  done")
   (assert (empty-line-p)  nil "py-fill-string-pep-257-test #2 failed"))
-  (message "%s" "py-fill-string-pep-257-test #2  done")
 
 (defun py-fill-string-pep-257-nn-test (&optional arg)
   (interactive "p")
@@ -2157,7 +2156,6 @@ def foo()
   (message "%s" "py-fill-string-pep-257-nn-test #1  done")
   (re-search-forward "py-string-delim-re" nil t 1)
   (assert (not (empty-line-p))  nil "py-fill-string-pep-257-non-nil-test #2 failed"))
-  (message "%s" "py-fill-string-pep-257-non-nil-test #2  done")
 
 (defun py-fill-string-symmetric-test (&optional arg)
   (interactive "p")
@@ -2178,12 +2176,10 @@ asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf
   (sit-for 0.1)
   (forward-line -4)
   (assert (empty-line-p) nil "py-fill-string-symmetric-test failed")
-  (message "%s" "py-fill-string-symmetric-test  done")
+  (message "%s" "py-fill-string-symmetric-test done")
   (re-search-forward py-string-delim-re nil t 3)
   (goto-char (match-beginning 0))
-  (assert (looking-at (concat py-string-delim-re "$"))  nil "py-fill-string-symmetric-test failed")
-  (message "%s" "$")
-)
+  (assert (looking-at (concat py-string-delim-re "$")) nil "py-fill-string-symmetric-test failed"))
 
 (defun py-electric-yank-test (&optional arg)
   (interactive "p")
@@ -2200,7 +2196,7 @@ asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf
     (end-of-line)
     (py-electric-yank)
     (assert (eq 12 (current-indentation))  nil "py-electric-yank-test #2 failed")))
-  (message "%s" "py-electric-yank-test #2  done")
+
 
 (defun py-down-statement-test (&optional arg)
   (interactive "p")
@@ -2211,7 +2207,6 @@ asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf
     (goto-char (point-min))
     (py-down-statement)
     (assert (eq 31 (point)) nil "py-down-statement-test failed"))
-  (message "%s" "py-down-statement-test  done")
 
 (defun py-nested-block-or-clause-test (&optional arg)
   (interactive "p")
