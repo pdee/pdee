@@ -335,3 +335,15 @@
 	(insert (concat (prin1-to-string ele) "\n"))
         (sit-for 0.01))
       (sit-for 0.01))))
+
+(defun py-all-docu ()
+  "Write documentations commands and user-defined variables "
+  (interactive)
+  (find-file "~/arbeit/emacs/python-modes/python-mode/python-mode.el")
+  (eval-buffer)
+  (sit-for 0.1 t) 
+  (finds)
+  (sit-for 0.1 t)
+  (write-defcustom-docus))
+  
+  
