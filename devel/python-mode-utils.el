@@ -975,7 +975,7 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. \"]\n")))
 '(\"Py-Shell\"
   :help \"Python Shells\"\n
   \[\"Switch to interpreter\" py-shell
-   :help \"Switch to `inferior' Python in separate buffer\"]\n")
+   :help \"Switch to Python process in separate buffer\"]\n")
     (let ((liste py-shells)
           erg)
       (while liste

@@ -70,7 +70,7 @@ With prefix arg, position cursor at end of buffer."
     (goto-char (point-max))))
 
 (defun py-send-file (file-name &optional process temp-file-name)
-  "Send FILE-NAME to inferior Python PROCESS.
+  "Send FILE-NAME to Python PROCESS.
 If TEMP-FILE-NAME is passed then that file is used for processing
 instead, while internally the shell will continue to use
 FILE-NAME."
@@ -646,7 +646,7 @@ Takes a buffer as argument. "
 
 (defalias 'py-switch-to-python 'py-switch-to-shell)
 (defun py-switch-to-shell ()
-  "Switch to inferior Python process buffer."
+  "Switch to Python process buffer."
   (interactive)
   (pop-to-buffer (py-shell) t))
 
@@ -1404,7 +1404,7 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will not bein
 ;; Fixme: Try to define the function or class within the relevant
 ;; module, not just at top level.
 (defun py-execute-defun ()
-  "Send the current defun (class or method) to the inferior Python process."
+  "Send the current defun (class or method) to the Python process."
   (interactive)
   (save-excursion (py-execute-region (progn (beginning-of-defun) (point))
                                      (progn (end-of-defun) (point)))))

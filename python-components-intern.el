@@ -987,7 +987,7 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
           (orig (point)))
       (save-match-data
 	(if (or (eq major-mode 'comint-mode)
-		(eq major-mode 'inferior-python-mode))
+		(eq major-mode 'py-shell-mode))
 	    (cond
 	     ((re-search-backward py-fast-filter-re nil t 1)
 	      (goto-char (match-end 0)))
@@ -1143,19 +1143,8 @@ Takes the result of (syntax-ppss)"
           (setq element (cdr element))))
       element)))
 
-;; (defun py-shell-send-string (string &optional process msg)
-;; "Send STRING to inferior Python PROCESS.
-;; When `py-verbose-p' and MSG is non-nil messages the first line of STRING."
-;; (interactive "sPython command: ")
-;; (let* ((process (or process (get-buffer-process (py-shell)))))
-;; (comint-send-string process string)
-;; (when (or (not (string-match "\n$" string))
-;; (string-match "\n[ \t].*\n?$" string))
-;; (comint-send-string process "\n"))))
-;;
-
 (defun py-shell-send-string (string &optional process msg filename)
-  "Send STRING to inferior Python PROCESS.
+  "Send STRING to Python PROCESS.
 When `py-verbose-p' and MSG is non-nil messages the first line of STRING."
   (interactive "sPython command: ")
   (let* ((process (or process (get-buffer-process (py-shell))))

@@ -51,7 +51,7 @@
     erg))
 
 (defun py-send-string (string &optional process)
-  "Evaluate STRING in inferior Python process."
+  "Evaluate STRING in Python process."
   (interactive "sPython command: ")
   (let ((proc (or process (get-buffer-process (py-shell)))))
     (comint-send-string proc string)

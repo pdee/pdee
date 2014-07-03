@@ -1426,12 +1426,11 @@ Default is `t'. See lp:1100892 "
 (defcustom py-remove-cwd-from-path t
   "Whether to allow loading of Python modules from the current directory.
 If this is non-nil, Emacs removes '' from sys.path when starting
-an inferior Python process.  This is the default, for security
+a Python process.  This is the default, for security
 reasons, as it is easy for the Python process to be started
 without the user's realization (e.g. to perform completion)."
   :type 'boolean
-  :group 'python
-  :version "23.3")
+  :group 'python-mode)
 
 (defcustom py-shell-local-path ""
   "If `py-use-local-default' is non-nil, `py-shell' will use EXECUTABLE indicated here incl. path. "
@@ -1473,7 +1472,7 @@ else:
         except NameError:
             pass
         return completions"
-  "Code used to setup completion in inferior Python processes."
+  "Code used to setup completion in Python processes."
   :type 'string
   :group 'python-mode)
 
@@ -1505,11 +1504,12 @@ value to determine defaults."
   :type '(repeat function)
   :group 'python-mode)
 
-(defcustom inferior-python-filter-regexp "\\`\\s-*\\S-?\\S-?\\s-*\\'"
+(defcustom py-input-filter-re "\\`\\s-*\\S-?\\S-?\\s-*\\'"
   "Input matching this regexp is not saved on the history list.
 Default ignores all inputs of 0, 1, or 2 non-blank characters."
   :type 'regexp
   :group 'python-mode)
+(defvaralias 'inferior-python-filter-regexp 'py-input-filter-re)
 
 (defcustom strip-chars-before  "\\`[ \t\r\n]*"
   "Regexp indicating which chars shall be stripped before STRING - which is defined by `string-chars-preserve'."
@@ -1640,10 +1640,10 @@ See also `py-execute-directory'"
          (eval-after-load "ffap"
            '(push '(python-mode . py-module-path) ffap-alist))
          (setq ffap-alist (remove '(python-mode . py-ffap-module-path) ffap-alist))
-         (setq ffap-alist (remove '(inferior-python-mode . py-ffap-module-path)
+         (setq ffap-alist (remove '(py-shell-mode . py-ffap-module-path)
                                   ffap-alist)))
         (t (setq ffap-alist (remove '(python-mode . py-ffap-module-path) ffap-alist))
-           (setq ffap-alist (remove '(inferior-python-mode . py-ffap-module-path)
+           (setq ffap-alist (remove '(py-shell-mode . py-ffap-module-path)
                                     ffap-alist))
            (setq ffap-alist (remove '(python-mode . py-module-path) ffap-alist)))))
 
@@ -2056,15 +2056,6 @@ Currently-active file is at the head of the list.")
     (modify-syntax-entry ?. "_" table)
     table)
   "Syntax table used to identify Python dotted expressions.")
-
-(defvar inferior-python-mode-syntax-table
-  (let ((st (make-syntax-table python-mode-syntax-table)))
-    ;; Don't get confused by apostrophes in the process's output (e.g. if
-    ;; you execute "help(os)").
-    (modify-syntax-entry ?\' "." st)
-    ;; Maybe we should do the same for double quotes?
-    ;; (modify-syntax-entry ?\" "." st)
-    st))
 
 (defvar python-default-template "if"
   "Default template to expand by `python-expand-template'.
@@ -5508,7 +5499,7 @@ Toggle flymake-mode running `pyflakespep8' "]))
                            (not py-remove-cwd-from-path))
                      :help "Whether to allow loading of Python modules from the current directory.
 If this is non-nil, Emacs removes '' from sys.path when starting
-an inferior Python process.  This is the default, for security
+a Python process.  This is the default, for security
 reasons, as it is easy for the Python process to be started
 without the user's realization (e.g. to perform completion).Use `M-x customize-variable' to set it permanently"
                      :style toggle :selected py-remove-cwd-from-path]
@@ -8976,7 +8967,7 @@ Toggle flymake-mode running `pyflakespep8' "]))
                            (not py-remove-cwd-from-path))
                      :help "Whether to allow loading of Python modules from the current directory.
 If this is non-nil, Emacs removes '' from sys.path when starting
-an inferior Python process.  This is the default, for security
+a Python process.  This is the default, for security
 reasons, as it is easy for the Python process to be started
 without the user's realization (e.g. to perform completion).Use `M-x customize-variable' to set it permanently"
                      :style toggle :selected py-remove-cwd-from-path]
@@ -9779,7 +9770,7 @@ See bug report at launchpad, lp:944093. Use `M-x customize-variable' to set it p
                            (not py-remove-cwd-from-path))
                      :help "Whether to allow loading of Python modules from the current directory.
 If this is non-nil, Emacs removes '' from sys.path when starting
-an inferior Python process.  This is the default, for security
+a Python process.  This is the default, for security
 reasons, as it is easy for the Python process to be started
 without the user's realization (e.g. to perform completion).Use `M-x customize-variable' to set it permanently"
                      :style toggle :selected py-remove-cwd-from-path]
@@ -12082,12 +12073,12 @@ Interactively output of `--version' is displayed. "
 
 ;;dereived from shipped python.el
 (defun py-history-input-filter (str)
-  "`comint-input-filter' function for inferior Python.
+  "`comint-input-filter' function for Python process.
 Don't save anything for STR matching `py-history-filter-regexp'."
   (not (string-match py-history-filter-regexp str)))
 
 (defun py-load-file (file-name)
-  "Load a Python file FILE-NAME into the inferior Python process.
+  "Load a Python file FILE-NAME into the Python process.
 
 If the file has extension `.py' import or reload it as a module.
 Treating it as a module keeps the global namespace clean, provides
@@ -12316,9 +12307,10 @@ as it leaves your system default unchanged."
 ;;;
 
 (defun py--input-filter (str)
-  "`comint-input-filter' function for inferior Python.
-Don't save anything for STR matching `inferior-python-filter-regexp'."
-  (not (string-match inferior-python-filter-regexp str)))
+  "`comint-input-filter' function for Python.
+
+Don't save anything for STR matching `py-input-filter-re' "
+  (not (string-match py-input-filter-re str)))
 
 (make-obsolete 'jpython-mode 'jython-mode nil)
 (autoload 'comint-check-proc "comint")
@@ -12568,10 +12560,10 @@ See available customizations listed in files variables-python-mode at directory 
   (when (interactive-p) (message "python-mode loaded from: %s" python-mode-message-string)))
 
 (define-derived-mode py-shell-mode comint-mode "Py"
-  "Major mode for interacting with an Python process.
+  "Major mode for interacting with a Python process.
 A Python process can be started with \\[py-shell].
 
-You can send text to the inferior Python process from other buffers
+You can send text to the Python process from other buffers
 containing Python source.
  * \\[py-execute-region] sends the current region to the Python process.
 
@@ -12610,7 +12602,7 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
   (remove-hook 'comint-output-filter-functions 'font-lock-extend-jit-lock-region-after-change t)
 
   (make-local-variable 'comint-output-filter-functions)
-  (set (make-local-variable 'comint-input-filter) 'py--input-filter)
+  ;; (set (make-local-variable 'comint-input-filter) 'py--input-filter)
   (set (make-local-variable 'compilation-error-regexp-alist)
        py-compilation-regexp-alist)
   (set (make-local-variable 'comint-input-filter) 'py-history-input-filter)

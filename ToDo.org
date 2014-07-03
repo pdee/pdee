@@ -1,3 +1,4 @@
+* py-remove-cwd-from-path
 * sys.version_info
 * py-ipython-complete-lp:927136-test
 * TODO py-max-help-buffer-p

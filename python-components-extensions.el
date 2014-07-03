@@ -326,7 +326,7 @@ With optional \\[universal-argument] print as string"
   (let* ((name (string-strip (or arg (car kill-ring))))
          ;; guess if doublequotes or parentheses are needed
          (numbered (not (eq 4 (prefix-numeric-value arg))))
-         (form (cond ((or (eq major-mode 'python-mode)(eq major-mode 'inferior-python-mode))
+         (form (cond ((or (eq major-mode 'python-mode)(eq major-mode 'py-shell-mode))
                       (if numbered
                           (concat "print(\"" name ": %s \" % (" name "))")
                         (concat "print(\"" name ": %s \" % \"" name "\")"))))))
@@ -336,7 +336,7 @@ With optional \\[universal-argument] print as string"
   "Transforms the item on current in a print statement. "
   (interactive "*")
   (let* ((name (thing-at-point 'word))
-         (form (cond ((or (eq major-mode 'python-mode)(eq major-mode 'inferior-python-mode))
+         (form (cond ((or (eq major-mode 'python-mode)(eq major-mode 'py-shell-mode))
                       (concat "print(\"" name ": %s \" % " name ")")))))
     (delete-region (line-beginning-position) (line-end-position))
     (insert form))

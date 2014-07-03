@@ -1055,7 +1055,7 @@ i.e. spaces, tabs, carriage returns, newlines and newpages. "
 (defun py-ffap-module-path (module)
   "Function for `ffap-alist' to return path for MODULE."
   (let ((process (or
-                  (and (eq major-mode 'inferior-python-mode)
+                  (and (eq major-mode 'py-shell-mode)
                        (get-buffer-process (current-buffer)))
                   (py-shell-get-process))))
     (if (not process)
@@ -1069,7 +1069,7 @@ i.e. spaces, tabs, carriage returns, newlines and newpages. "
 (eval-after-load "ffap"
   '(progn
      (push '(python-mode . py-ffap-module-path) ffap-alist)
-     (push '(inferior-python-mode . py-ffap-module-path) ffap-alist)))
+     (push '(py-shell-mode . py-ffap-module-path) ffap-alist)))
 
 ;;; Flymake
 (defun py-toggle-flymake-intern (name command)
