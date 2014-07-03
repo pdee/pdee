@@ -114,6 +114,14 @@ Results arrive in py-output-buffer, which is not in comint-mode"
   :type 'boolean
   :group 'python-mode)
 
+(defcustom py-shell-unfontify-p t
+ "Run `py--run-unfontify-timer' unfontifying the shell banner-text.
+
+Default is nil "
+
+:type 'boolean
+:group 'python-mode)
+
 (defcustom py-session-p t
   "If commands would use an existing process.
 
@@ -1078,7 +1086,7 @@ Otherwise value of py-python-history is used. "
   :group 'python-mode)
 
 (defcustom py-switch-buffers-on-execute-p nil
-  "When non-nil switch to the Python output buffer. 
+  "When non-nil switch to the Python output buffer.
 
 If `py-keep-windows-configuration' is t, this will take precedence over setting here. "
 
@@ -1086,7 +1094,7 @@ If `py-keep-windows-configuration' is t, this will take precedence over setting 
   :group 'python-mode)
 
 (defcustom py-split-windows-on-execute-p t
-  "When non-nil split windows. 
+  "When non-nil split windows.
 
 If `py-keep-windows-configuration' is t, this will take precedence over setting here. "
   :type 'boolean
@@ -1180,7 +1188,6 @@ Else /usr/bin/python"
   :group 'python-mode)
 ;; (make-variable-buffer-local 'py-python-command-args)
 
-
 (defcustom py-python2-command
   (if (eq system-type 'windows-nt)
       "C:\\Python27\\python"
@@ -1227,7 +1234,6 @@ At GNU systems see /usr/bin/python3"
   :type '(repeat string)
   :group 'python-mode)
 ;; (make-variable-buffer-local 'py-python3-command-args)
-
 
 (defcustom py-ipython-command
   (if (eq system-type 'windows-nt)
@@ -1656,7 +1662,7 @@ Default is nil "
          (py--set-ffap-form)))
 
 (defcustom py-keep-windows-configuration nil
-  "Takes precedence over `py-split-windows-on-execute-p' and `py-switch-buffers-on-execute-p'. 
+  "Takes precedence over `py-split-windows-on-execute-p' and `py-switch-buffers-on-execute-p'.
 
 See lp:1239498
 
@@ -5163,7 +5169,7 @@ Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil
 
 Process Python strings, being prepared for large output\.
 
-Output arrives in py-output-buffer, \"\\\*Python Output\\\*\" by default
+Result arrives in py-output-buffer, \"\\\*Python Output\\\*\" by default
 See also `py-fast-shell'"]
 
                   ["Process region fast" py-process-region-fast
@@ -12380,6 +12386,29 @@ Don't save anything for STR matching `inferior-python-filter-regexp'."
              py-autofill-timer-delay t
              'py--set-auto-fill-values)))))
 
+(defvar py--timer nil
+  "Used by `py--run-unfontify-timer'")
+(make-variable-buffer-local 'py--timer)
+
+(defvar py--timer-delay nil
+  "Used by `py--run-unfontify-timer'")
+(make-variable-buffer-local 'py--timer-delay)
+
+(defun py--run-unfontify-timer (&optional buffer)
+  "Unfontify the shell banner-text "
+  (when py--shell-unfontify
+    (let ((buffer (or buffer (current-buffer)))
+	  done)
+      (if (and (buffer-live-p buffer)(eq major-mode 'py-shell-mode))
+	  (unless py--timer
+	    (setq py--timer
+		  (run-with-idle-timer
+		   (if py--timer-delay (setq py--timer-delay 3)
+		     (setq py--timer-delay 0.3))
+		   t
+		   #'py--unfontify-banner buffer)))
+	(cancel-timer py--timer)))))
+
 ;;;
 (and py-load-skeletons-p (require 'python-components-skeletons))
 (and py-company-pycomplete-p     (require 'company-pycomplete))
@@ -12554,6 +12583,12 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
   (setenv "PAGER" "cat")
   (setenv "TERM" "dumb")
   (set-syntax-table python-mode-syntax-table)
+  (set (make-local-variable 'py--shell-unfontify) 'py-shell-unfontify-p)
+
+  (if py-shell-unfontify-p
+      (add-hook 'py-shell-mode-hook #'py--run-unfontify-timer (current-buffer))
+    (remove-hook 'py-shell-mode-hook 'py--run-unfontify-timer))
+
   ;; comint settings
   (set (make-local-variable 'comint-prompt-regexp)
        (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)

@@ -46,7 +46,7 @@ Return the process"
 (defun py--fast-send-string (string &optional windows-config)
   "Process Python strings, being prepared for large output.
 
-Output arrives in py-output-buffer, \"\*Python Output\*\" by default
+Result arrives in py-output-buffer, \"\*Python Output\*\" by default
 See also `py-fast-shell'
 
 "
@@ -57,7 +57,7 @@ See also `py-fast-shell'
     (py--fast-send-string-intern string proc buffer)
     (py--postprocess buffer)))
 
-(defun py--fast-send-string-intern (string proc py-output-buffer)
+(defun py--fast-send-string-intern (string proc output-buffer)
   (let (erg)
     (process-send-string proc string)
     ;;    (or (string-match "\n$" string)
@@ -65,8 +65,8 @@ See also `py-fast-shell'
     (process-send-string proc "\n")
     (accept-process-output proc 5)
     (sit-for 0.01)
-    (set-buffer py-output-buffer)
-    ;; (switch-to-buffer (current-buffer))
+    ;; (set-buffer output-buffer)
+    (switch-to-buffer (current-buffer))
     ;; delete last line prompts
     (delete-region (point) (progn (skip-chars-backward "^\n")(point)))
     (delete-region (point) (progn (skip-chars-backward "\n\r \t\f")(point)))

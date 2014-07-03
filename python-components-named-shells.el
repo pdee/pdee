@@ -275,11 +275,15 @@ Optional \\[universal-argument] prompts for path to the interpreter. "
 (defalias 'Python 'python)
 (defalias 'pyhotn 'python)
 (defalias 'pyhton 'python)
+(defalias 'pyton 'python)
 (defalias 'pyt 'python)
 (defalias 'Python2 'python2)
 (defalias 'Python3 'python3)
 (defalias 'IPython 'ipython)
 (defalias 'Ipython 'ipython)
+(defalias 'IPyton 'ipython)
+(defalias 'Ipyton 'ipython)
+(defalias 'ipyton 'ipython)
 (defalias 'ipy 'ipython)
 
 

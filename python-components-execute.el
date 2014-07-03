@@ -549,18 +549,19 @@ Receives a buffer-name as argument"
 	   py-jython-command)
 	  (t py-python-command))))
 
-(defun py--unfontify-banner ()
-  "Unfontify the banner-text inserting at head of shell "
+(defun py--unfontify-banner (buffer)
+  "Unfontify the shell banner-text.
+
+Takes a buffer as argument. "
   (interactive)
-  (when py-debug-p (message "%s" (concat "py--unfontify-banner: " (buffer-name (current-buffer)))))
-  (goto-char (point-min))
-  (sit-for 0.3 t)
-  (font-lock-unfontify-region (point-min)
-			      (or (and (boundp 'comint-last-prompt)(ignore-errors (car comint-last-prompt)))
-				  (re-search-forward comint-prompt-regexp nil t 1)
-				  (progn (and py-debug-p (message "%s" (concat "py--unfontify-banner: Don't see a prompt in buffer " (buffer-name (current-buffer)))))
-					 (point-max))))
-  (goto-char (point-max)))
+  (when (ignore-errors (buffer-live-p buffer))
+    (with-current-buffer buffer
+      ;; (when py-debug-p (message "%s" (concat "py--unfontify-banner: " (buffer-name buffer))))
+      ;; (sit-for 0.3 t)
+      (let ((erg (and (boundp 'comint-last-prompt)(ignore-errors (car comint-last-prompt)))))
+	(if erg
+	    (font-lock-unfontify-region (point-min) erg)
+	  (progn (and py-debug-p (message "%s" (concat "py--unfontify-banner: Don't see a prompt in buffer " (buffer-name buffer))))))))))
 
 (defun py-shell (&optional argprompt dedicated shell buffer-name)
   "Start an interactive Python interpreter in another window.
@@ -632,8 +633,8 @@ Receives a buffer-name as argument"
       (when (string-match "[BbIi][Pp]ython" py-buffer-name)
 	(sit-for 0.3 t))
       (sit-for 0.1 t)
-      (with-current-buffer py-buffer-name
-	(py--unfontify-banner)))
+      ;; (py--unfontify-banner (get-buffer py-buffer-name))
+      )
     py-buffer-name))
 
 (defun py-shell-get-process (&optional argprompt py-dedicated-process-p shell switch py-buffer-name)
@@ -761,22 +762,19 @@ When optional FILE is `t', no temporary file is needed. "
          (tempfile (concat (expand-file-name py-temp-directory) py-separator-char (replace-regexp-in-string py-separator-char "-" temp) ".py"))
          (tempbuf (get-buffer-create temp))
          (wholebuf (when (boundp 'wholebuf) wholebuf))
-         lineadd output-buffer)
+	 output-buffer)
     ;; (message "%s" strg)
     (unless py-if-name-main-permission-p
       (setq strg (py--fix-if-name-main-permission strg)))
     (setq strg (py--fix-start strg))
+
     ;; fast-process avoids temporary files
     (unwind-protect
 	(if py-fast-process-p
-	    (progn
-	      (setq output-buffer (default-value 'py-output-buffer))
-	      (with-current-buffer output-buffer
-		(erase-buffer)
-		(setq erg (py--fast-send-string-intern strg proc output-buffer))
-		(py-kill-buffer-unconditional tempbuf)))
-
-	  ;; (set-buffer-modified-p 'nil)
+	    (with-current-buffer (setq output-buffer (default-value 'py-output-buffer))
+	      (erase-buffer)
+	      (setq erg (py--fast-send-string-intern strg (py-fast-process output-buffer) output-buffer))
+	      (py-kill-buffer-unconditional tempbuf))
 	  (setq erg (py--execute-file-base proc tempfile nil py-buffer-name py-orig-buffer-or-file execute-directory))
 	  (sit-for 0.1))
       (py--close-execution tempbuf erg)
@@ -792,7 +790,6 @@ When optional FILE is `t', no temporary file is needed. "
   (goto-char (match-end 0))
   (buffer-substring-no-properties (point) (car comint-last-prompt)))
 
-
 (defun py--postprocess (buffer)
   "Provide return values, check result for error, manage windows. "
   ;; py--fast-send-string doesn't set origline
@@ -805,7 +802,8 @@ When optional FILE is `t', no temporary file is needed. "
 	      (py-output-filter (buffer-substring-no-properties (point) (point-max)))))
       (and erg (not (string= (car kill-ring) erg)) (kill-new erg)))
     ;; (run-with-idle-timer 1 nil 'py--unfontify-banner)
-    (py--unfontify-banner))
+    ;; xpco(py--unfontify-banner (current-buffer))
+    )
   erg)
 
 (defun py--execute-file-base (&optional proc filename cmd procbuf origfile execute-directory)
