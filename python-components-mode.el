@@ -7779,6 +7779,9 @@ Complete symbol before point using Pymacs . "])
 Try to find source definition of function at point"]))))
         map))
 
+;; avoid errors from ipython.el - which isn't needed anymore
+(defvaralias 'py-mode-map 'python-mode-map)
+
 (defvar py-shell-mode-map nil)
 (setq py-shell-mode-map
       (let ((map (make-sparse-keymap)))
@@ -12028,6 +12031,8 @@ Argument is how many `py-partial-expression's form the expansion; or zero means 
                    :help "`py-find-function'
 Try to find source definition of function at point"]))))
         map))
+;; avoid errors from ipython.el - which isn't needed anymore
+(defvaralias 'py-shell-map 'py-shell-mode-map)
 
 (when py-org-cycle-p
   (define-key python-mode-map (kbd "<backtab>") 'org-cycle))

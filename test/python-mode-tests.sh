@@ -999,6 +999,8 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-pydbtrack-input-prompt) nil \"py-pydbtrack-input-prompt not a variable\")" \
 -eval "(assert (boundp 'py-pdbtrack-is-tracking-p) nil \"py-pdbtrack-is-tracking-p not a variable\")" \
 -eval "(assert (boundp 'py-shell-mode-map) nil \"py-shell-mode-map not a variable\")" \
+-eval "(assert (boundp 'py-shell-map) nil \"py-shell-map not a variable\")" \
+-eval "(assert (boundp 'py-mode-map) nil \"py-mode-map not a variable\")" \
 -eval "(assert (boundp 'python-font-lock-keywords) nil \"python-font-lock-keywords not a variable\")" \
 -eval "(assert (boundp 'py-dotted-expression-syntax-table) nil \"py-dotted-expression-syntax-table not a variable\")" \
 -eval "(assert (boundp 'jython-mode-hook) nil \"jython-mode-hook not a variable\")" \
