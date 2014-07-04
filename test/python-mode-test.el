@@ -2306,21 +2306,25 @@ else:
 (defun docstring-style-switches-base ()
 
   (py-set-django-docstring-style)
-  (assert (eq 'django py-docstring-style) nil "django not py-docstring-style")
-
+  (when
+      (assert (eq 'django py-docstring-style) nil "django not py-docstring-style")
+    (message "%s" "django not py-docstring-passed"))
   (py-set-onetwo-docstring-style)
-  (assert (eq 'onetwo py-docstring-style) nil "onetwo not py-docstring-style")
-
+  (when
+      (assert (eq 'onetwo py-docstring-style) nil "onetwo not py-docstring-style")
+    (message "%s" "onetwo not py-docstring-passed"))
   (py-set-pep-257-docstring-style)
-  (assert (eq 'pep-257 py-docstring-style) nil "pep-257 not py-docstring-style")
-
+  (when
+      (assert (eq 'pep-257 py-docstring-style) nil "pep-257 not py-docstring-style")
+    (message "%s" "pep-257 not py-docstring-passed"))
   (py-set-pep-257-nn-docstring-style)
-  (assert (eq 'pep-257-nn py-docstring-style) nil "pep-257-nn not py-docstring-style")
-
+  (when
+      (assert (eq 'pep-257-nn py-docstring-style) nil "pep-257-nn not py-docstring-style")
+    (message "%s" "pep-257-nn not py-docstring-passed"))
   (py-set-symmetric-docstring-style)
-  (assert (eq 'symmetric py-docstring-style) nil "symmetric not py-docstring-style")
-
-)
+  (when
+      (assert (eq 'symmetric py-docstring-style) nil "symmetric not py-docstring-style")
+    (message "%s" "symmetric not py-docstring-passed")))
 
 (defun forward-sexp-test (&optional arg)
   (interactive "p")
@@ -2341,7 +2345,9 @@ Es muß die aufzurufende Ziehungszahl als Argument angegeben werden:
   (sit-for 0.1)
   (forward-sexp 1)
   (sit-for 0.1)
-  (assert (eq 231 (point)) nil "forward-sexp-test failed"))
+  (when
+      (assert (eq 231 (point)) nil "forward-sexp-test failed"))
+  (message "%s" "forward-sexp-test passed"))
 
 (defun nested-if-test (&optional arg)
   (interactive "p")
@@ -2358,13 +2364,18 @@ else:
   (py-bug-tests-intern 'nested-if-base arg teststring)))
 
 (defun nested-if-base ()
-  (py-beginning-of-block)
-  (assert (eq 48 (point)) nil "nested-if-test #1 failed")
   (goto-char 118)
   (py-beginning-of-block)
-  (assert (eq 84 (point)) nil "nested-if-test #2 failed")
+  (when
+      (assert (eq (char-after) ?i) nil "nested-if-test #1 failed")
+    (message "%s" "nested-if-test #1 passed"))
   (py-beginning-of-block)
-  (assert (eq 48 (point)) nil "nested-if-test #3 failed"))
+  (when
+      (assert (eq (char-after) ?i) nil "nested-if-test #2 failed")
+    (message "%s" "nested-if-test #2 passed"))
+  (when
+      (assert (not (py-beginning-of-block)) nil "nested-if-test #3 failed"))
+  (message "%s" "nested-if-test #3 passed"))
 
 (defun py-execute-region-error-test (&optional arg)
   (interactive "p")
@@ -2403,9 +2414,9 @@ else:
   (py-execute-statement)
   (set-buffer "*Python*")
   (goto-char (point-max))
-  ;;  (switch-to-buffer (current-buffer))
-  (assert (and (re-search-backward py-shell-prompt-regexp nil t 2)
-               (search-forward "line 5")) nil "py-execute-statement-error-test failed"))
+  (when (assert (and (re-search-backward py-shell-prompt-regexp nil t 2)
+		     (search-forward "line 5")) nil "py-execute-statement-error-test failed")
+    (message "%s" "py-execute-statement-error-test passed")))
 
 (defun beginning-of-block-fails-from-wrong-indent-test (&optional arg)
   (interactive "p")

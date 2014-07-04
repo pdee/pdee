@@ -833,6 +833,7 @@ def foo():
     (let ((py-shell-name "python"))
       (py-execute-expression)
       (set-buffer ert-test-default-buffer)
+      (switch-to-buffer (current-buffer)) 
       (and (should
 	    (or
 	     (search-backward "py-execute-expression-test" nil t 1)
@@ -925,11 +926,13 @@ def foo():
       "if True:
     a = 1
     print(a)"
-    (let ((py-fast-process-p t))
+    (let ((py-fast-process-p t)
+	  (py-debug-p t))
       (py-execute-block)
       (set-buffer py-output-buffer)
-      (sit-for 0.1 t) 
+      (sit-for 0.2 t) 
       (and py-debug-p (message "py-ert-execute-block-fast: %s" (current-buffer)) )
+      (and py-debug-p (message "py-ert-execute-block-fast: %s" (buffer-substring-no-properties (point-min) (point-max))))
       (goto-char (point-min))
       (should (eq 49 (char-after))))))
 

@@ -274,8 +274,9 @@ py_if_name_main_permission_test()
       (forward-line -1)
       (end-of-line)
       (sit-for 0.2)
-      (assert (looking-back "run") nil "py-if-name-main-permission-lp-326620-test #1 failed")))
-  (switch-to-buffer (current-buffer))
+      (or
+	  (assert (looking-back "run") nil "py-if-name-main-permission-lp-326620-test #1 failed")
+	(message "%s" "py-if-name-main-permission-lp-326620-test #1 passed"))))
   (let (py-if-name-main-permission-p)
     (py-execute-buffer)
     (set-buffer "*Python*")
@@ -284,7 +285,9 @@ py_if_name_main_permission_test()
     (forward-line -1)
     (end-of-line)
     (sit-for 0.2)
-    (assert (looking-back "supressed") nil "py-if-name-main-permission-lp-326620-test #2 failed")))
+    (or
+	(assert (looking-back "supressed") nil "py-if-name-main-permission-lp-326620-test #2 failed")
+      (message "%s" "py-if-name-main-permission-lp-326620-test #2 passed"))))
 
 (defun sexp-commands-lp:328778-test (&optional arg)
   "With ARG greater 1 keep test buffer open.
@@ -322,14 +325,19 @@ def main(argv):
     (goto-char (point-min))
     (forward-line 15)
     (py-kill-clause)
-    (assert (< (buffer-size) size) nil "sexp-commands-lp:328778-test failed")
-    (assert (eq (buffer-size) 526) nil "sexp-commands-lp:328778-test failed")
+    (or
+	(assert (< (buffer-size) size) nil "sexp-commands-lp:328778-test #1 failed")
+      (message "%s" "sexp-commands-lp:328778-test #1 passed"))
     (kill-line 1)
     (indent-according-to-mode)
+    (or
+	(assert (eq (buffer-size) 404) nil "sexp-commands-lp:328778-test #2 failed")
+      (message "%s" "sexp-commands-lp:328778-test #2 passed"))
     (forward-line -4)
     (py-kill-block)
-    (assert (eq (buffer-size) 324) nil "sexp-commands-lp:328778-test failed")
-    ))
+    (or
+	(assert (eq (buffer-size) 233) nil "sexp-commands-lp:328778-test #3 failed")
+      (message "%s" "sexp-commands-lp:328778-test #3 passed"))))
 
 (defun nested-dictionaries-indent-lp:328791-test (&optional arg)
   "With ARG greater 1 keep test buffer open.
@@ -378,28 +386,48 @@ data = {
         py-closing-list-dedents-bos)
     (goto-char (point-min))
     (search-forward "'a':{")
-    (assert (eq 4 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #1 failed")
+    (or
+	(assert (eq 4 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #1 failed")
+      (message "%s" "nested-dictionaries-indent-lp:328791-test #1 passed"))
     (search-forward "}")
-    (assert (eq 8 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #2 failed")
+    (or
+	(assert (eq 8 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #2 failed")
+      (message "%s" "nested-dictionaries-indent-lp:328791-test #2 passed"))
     (search-forward "}")
-    (assert (eq 4 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #3 failed")
+    (or
+	(assert (eq 4 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #3 failed")
+      (message "%s" "nested-dictionaries-indent-lp:328791-test #3 passed"))
 
     ;; py-closing-list-dedents-bos
     (setq py-closing-list-dedents-bos t)
     (search-forward "'a':{")
-    (assert (eq 4 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #1 failed")
+    (or
+	(assert (eq 4 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #4 failed")
+      (message "%s" "nested-dictionaries-indent-lp:328791-test #4 passed"))
     (search-forward "}")
-    (assert (eq 4 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #1 failed")
+    (or
+	(assert (eq 4 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #5 failed")
+      (message "%s" "nested-dictionaries-indent-lp:328791-test #5 passed"))
     (search-forward "}")
-    (assert (eq 0 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #2 failed")
+    (or
+	(assert (eq 0 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #6 failed")
+      (message "%s" "nested-dictionaries-indent-lp:328791-test #6 passed"))
     (search-forward "}" nil nil 2)
-    (assert (eq 12 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #2 failed")
+    (or
+	(assert (eq 12 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #7 failed")
+      (message "%s" "nested-dictionaries-indent-lp:328791-test #7 passed"))
     (search-forward "]")
-    (assert (eq 8 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #2 failed")
+    (or
+	(assert (eq 8 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #8 failed")
+      (message "%s" "nested-dictionaries-indent-lp:328791-test #8 passed"))
     (search-forward "}")
-    (assert (eq 4 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #2 failed")
+    (or
+	(assert (eq 4 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #9 failed")
+      (message "%s" "nested-dictionaries-indent-lp:328791-test #9 passed"))
     (search-forward "}")
-    (assert (eq 0 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #2 failed")))
+    (or
+	(assert (eq 0 (py-compute-indentation)) nil "nested-dictionaries-indent-lp:328791-test #10 failed")
+      (message "%s" "nested-dictionaries-indent-lp:328791-test #10 passed"))))
 
 (defun mark-block-region-lp:328806-test (&optional arg)
   "With ARG greater 1 keep test buffer open.
@@ -2911,7 +2939,9 @@ basd
   (py-shell-complete)
   (beginning-of-line)
   (sit-for 0.1)
-  (assert (looking-at "basdklfjasdf") nil "no-completion-at-all-lp:1001328-test failed"))
+  (when
+      (assert (looking-at "basdklfjasdf") nil "no-completion-at-all-lp:1001328-test failed")
+    (message "%s" "no-completion-at-all-lp:1001328-test passed")))
 
 (defun not-that-useful-completion-lp:1003580-test (&optional arg)
   (interactive "p")
@@ -2927,7 +2957,9 @@ def test_bu():
   (goto-char 88)
   (py-shell-complete nil t)
   (sit-for 0.3)
-  (assert (looking-back "numpy.CLIP") nil "not-that-useful-completion-lp:1003580-test failed"))
+  (when
+      (assert (looking-back "numpy.CLIP") nil "not-that-useful-completion-lp:1003580-test failed")
+    (message "%s" "not-that-useful-completion-lp:1003580-test passed")))
 
 (defun completion-fails-in-python-script-r989-lp:1004613-test (&optional arg)
   (interactive "p")
@@ -2943,7 +2975,9 @@ ex
   (goto-char 51)
   (ipython-complete nil nil nil nil nil nil t)
   (set-buffer "*IPython Completions*")
-  (assert (search-forward "except") nil "completion-fails-in-python-script-r989-lp:1004613-test failed"))
+  (when
+      (assert (search-forward "except") nil "completion-fails-in-python-script-r989-lp:1004613-test failed")
+    (message "%s" "completion-fails-in-python-script-r989-lp:1004613-test passed")))
 
 (defun spurious-trailing-whitespace-lp-1008679-test (&optional arg)
   (interactive "p")
@@ -2959,7 +2993,9 @@ def foo():        X
     (py-newline-and-indent)
     (forward-line -1)
     (end-of-line)
-    (assert (eq (point) 58) nil "spurious-trailing-whitespace-lp-1008679-test failed")))
+    (or
+	(assert (eq (point) 58) nil "spurious-trailing-whitespace-lp-1008679-test failed")
+      (message "%s" "spurious-trailing-whitespace-lp-1008679-test passed"))))
 
 (defun empty-triple-quote-lp:1009318-test (&optional arg)
   (interactive "p")
@@ -2972,9 +3008,13 @@ def foo():        X
 
 (defun empty-triple-quote-lp:1009318-base ()
   (goto-char 54)
-  (assert (not (nth 4 (syntax-ppss))) nil "empty-triple-quote-lp:1009318-test #1 failed")
-  (goto-char 61)
-  (assert (not (nth 4 (syntax-ppss))) nil "empty-triple-quote-lp:1009318-test #2 failed"))
+  (when
+      (assert (not (nth 4 (syntax-ppss))) nil "empty-triple-quote-lp:1009318-test #1 failed")
+    (message "%s" "empty-triple-quote-lp:1009318-test #1 passed")
+    (goto-char 61))
+  (when
+      (assert (not (nth 4 (syntax-ppss))) nil "empty-triple-quote-lp:1009318-test #2 failed")
+    (message "%s" "empty-triple-quote-lp:1009318-test #2 passed")))
 
 (defun completion-at-gentoo-lp-1008842-test (&optional arg)
   (interactive "p")
@@ -2989,7 +3029,10 @@ re.s
   (goto-char 62)
   (py-shell-complete)
   (sit-for 0.1)
-  (assert (buffer-live-p (get-buffer  py-python-completions)) nil "completion-at-gentoo-lp-1008842-test failed"))
+  (when
+      (assert (buffer-live-p (get-buffer py-python-completions)) nil "completion-at-gentoo-lp-1008842-test failed")
+
+    (message "%s" "completion-at-gentoo-lp-1008842-test passed")))
 
 (defun converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128-test (&optional arg)
   (interactive "p")
@@ -3005,7 +3048,9 @@ setup(
     (goto-char 74)
     (py-newline-and-indent)
     (beginning-of-line))
-  (assert (looking-at "\t") nil "converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128-test failed"))
+  (when
+      (assert (looking-at "\t") nil "converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128-test failed"
+	      (message "%s" "converts-tabs-to-spaces-in-indent-tabs-mode-t-lp-1019128-test passed"))))
 
 (defun return-statement-indented-incorrectly-lp-1019601-test (&optional arg)
   (interactive "p")
@@ -4425,8 +4470,9 @@ print(\"I'm the \\\"impossible-to-execute-a-buffer-with-from-future-imports-lp-1
   (py-bug-tests-intern 'impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-base arg teststring)))
 
 (defun impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-base ()
-;;  (sit-for 0.1)
-  (assert (not (ignore (py-execute-buffer))) nil "impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test failed"))
+  (when
+      (assert (not (ignore (py-execute-buffer))) nil "impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test failed")
+    (message "%s" "impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test passed")))
 
 (defun several-new-bugs-with-paragraph-filling-lp-1066489-test (&optional arg)
   (interactive "p")
@@ -4468,7 +4514,9 @@ class IBanManager(Interface):
   (goto-char 932)
   (py-fill-paragraph)
   (sit-for 0.1)
-  (assert (re-search-forward "^ +:type email") nil "several-new-bugs-with-paragraph-filling-lp-1066489-test failed"))
+  (when
+      (assert (re-search-forward "^ +:type email") nil "several-new-bugs-with-paragraph-filling-lp-1066489-test failed")
+    (message "%s" "several-new-bugs-with-paragraph-filling-lp-1066489-test passed")))
 
 (defun incorrect-indentation-of-one-line-functions-lp-1067633-test (&optional arg)
   (interactive "p")
@@ -4480,8 +4528,10 @@ def foo():
   (py-bug-tests-intern 'incorrect-indentation-of-one-line-functions-lp-1067633-base arg teststring)))
 
 (defun incorrect-indentation-of-one-line-functions-lp-1067633-base ()
-    (goto-char 67)
-    (assert (eq 4 (py-compute-indentation)) nil "incorrect-indentation-of-one-line-functions-lp-1067633-test failed"))
+  (goto-char 67)
+  (when
+      (assert (eq 4 (py-compute-indentation)) nil "incorrect-indentation-of-one-line-functions-lp-1067633-test failed")
+    (message "%s" "incorrect-indentation-of-one-line-functions-lp-1067633-test passed")))
 
 (defun does-not-dedent-regions-lp-1072869-test (&optional arg)
   (interactive "p")
@@ -4490,10 +4540,14 @@ def foo():
 
 (defun does-not-dedent-regions-lp-1072869-base ()
   (let ((oldbuf (current-buffer)))
-    (assert (progn (py-execute-buffer-python)(set-buffer "*Python*")(goto-char (point-max))(search-backward "HELLO")) nil "does-not-dedent-regions-lp-1072869-test #2 failed")
+    (or
+	(assert (progn (py-execute-buffer-python)(set-buffer "*Python*")(goto-char (point-max))(search-backward "HELLO")) nil "does-not-dedent-regions-lp-1072869-test #2 failed")
+      (message "%s" "does-not-dedent-regions-lp-1072869-test #2 passed"))
     (kill-buffer-unconditional "*Python*")
     (set-buffer oldbuf)
-    (assert (progn (py-execute-buffer-ipython)(set-buffer "*Ipython*")(goto-char (point-max))(search-backward "HELLO")) nil "does-not-dedent-regions-lp-1072869-test #1 failed")))
+    (or
+	(assert (progn (py-execute-buffer-ipython)(set-buffer "*Ipython*")(goto-char (point-max))(search-backward "HELLO")) nil "does-not-dedent-regions-lp-1072869-test #1 failed")
+      (message "%s" "does-not-dedent-regions-lp-1072869-test #1 passed"))))
 
 (defun inconvenient-py-switch-buffers-on-execute-lp-1073-test (&optional arg)
   (interactive "p")
@@ -5400,7 +5454,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.111 $\"
+__version__ = \"$Revision: 1.112 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -6387,7 +6441,9 @@ print(123)
       (set-buffer (get-buffer-create (get-buffer-create "default.py")))
     (set (make-local-variable 'py-shell-name) "python3.4")
     (switch-to-buffer (current-buffer))
-    (assert (string= "python3.4" py-shell-name) nil "specify-default-interpreter-lp-1332652-test failed")))
+    (or
+	(assert (string= "python3.4" py-shell-name) nil "specify-default-interpreter-lp-1332652-test failed")
+      (message "%s" "specify-default-interpreter-lp-1332652-test passed"))))
 
 (defun vertical-alignment-lp-1332245-test (&optional arg)
   (interactive "p")
@@ -6417,7 +6473,9 @@ foo = long_function_name(var_one, var_two,
   (goto-char 755)
   (let ((need (py-compute-indentation)))
     (call-interactively 'py-indent-line)
-    (assert (eq (current-indentation) need) nil "Vertical-alignment-with-opening-lp-1332245-test failed")))
+    (or
+	(assert (eq (current-indentation) need) nil "Vertical-alignment-with-opening-lp-1332245-test failed")
+      (message "%s" "Vertical-alignment-with-opening-lp-1332245-test passed"))))
 
 
 (defun stop-before-prompt-lp-1331953-test ()
@@ -6428,7 +6486,9 @@ foo = long_function_name(var_one, var_two,
       (goto-char (point-max))
       (insert "print(123)")
       (py-beginning-of-statement)
-      (assert (eq 4 (current-column)) nil "stop-before-prompt-lp-1331953-test failed"))
+      (or
+	  (assert (eq 4 (current-column)) nil "stop-before-prompt-lp-1331953-test failed")
+	(message "%s" "stop-before-prompt-lp-1331953-test passed")))
     (py-kill-buffer-unconditional erg)))
 
 

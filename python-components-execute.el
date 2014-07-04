@@ -699,6 +699,10 @@ When optional FILE is `t', no temporary file is needed. "
   (let* ((oldbuf (current-buffer))
 	 (start (or start (and (use-region-p) (region-beginning)) (point-min)))
          (end (or end (and (use-region-p) (region-end)) (point-max)))
+	 (strg (if py-if-name-main-permission-p
+		   (buffer-substring-no-properties start end)
+		 (py--fix-if-name-main-permission (buffer-substring-no-properties start end))))
+	 (strg (py--fix-start strg))
          (wholebuf (unless file (or wholebuf (and (eq (buffer-size) (- end start))))))
          (windows-config (window-configuration-to-register 313465889))
          (origline
@@ -740,52 +744,50 @@ When optional FILE is `t', no temporary file is needed. "
                       (get-buffer-process (py-shell nil py-dedicated-process-p which-shell py-buffer-name)))
                      (t (or (get-buffer-process py-buffer-name)
                             (get-buffer-process (py-shell nil py-dedicated-process-p which-shell py-buffer-name))))))
-	 erg)
+	 output-buffer erg)
     (setq py-error nil)
-    (when py-debug-p (with-temp-file "/tmp/py-buffer-name.txt" (insert py-buffer-name)))
+    (when py-debug-p
+      (with-temp-file "/tmp/py-buffer-name.txt" (insert py-buffer-name)))
     (set-buffer py-exception-buffer)
     (py--update-execute-directory proc py-buffer-name execute-directory)
-    (cond (;; enforce proceeding as python-mode.el v5
-           python-mode-v5-behavior-p
-           (py-execute-python-mode-v5 start end))
-          (py-execute-no-temp-p
-           (py--execute-ge24.3 start end filename execute-directory which-shell py-exception-buffer proc))
-          ((and filename wholebuf)
+    (cond (py-fast-process-p
+	   (with-current-buffer (setq output-buffer (process-buffer proc))
+	     ;; (switch-to-buffer (current-buffer)) 
+	     (sit-for 1 t)
+	     (erase-buffer)
+	     (setq erg
+		   (py--fast-send-string-intern strg
+						proc
+						output-buffer))
+	     (sit-for 0.1)
+	     (py--shell-manage-windows output-buffer)))
+	  ;; enforce proceeding as python-mode.el v5
+	  (python-mode-v5-behavior-p
+	   (py-execute-python-mode-v5 start end))
+	  (py-execute-no-temp-p
+	   (py--execute-ge24.3 start end filename execute-directory which-shell py-exception-buffer proc))
+	  ((and filename wholebuf)
 	   ;; No temporary file than
 	   (let (py-cleanup-temporary)
 	     (py--execute-file-base proc filename nil py-buffer-name filename execute-directory)
 	     (py--close-execution tempbuf erg)
 	     (py--shell-manage-windows py-buffer-name)))
-          (t (py--execute-buffer-finally start end execute-directory wholebuf which-shell proc)))))
+	  (t (py--execute-buffer-finally strg execute-directory wholebuf which-shell proc)))))
 
-(defun py--execute-buffer-finally (start end execute-directory wholebuf which-shell proc)
-  (let* ((strg (buffer-substring-no-properties start end))
-         (temp (make-temp-name
+(defun py--execute-buffer-finally (strg execute-directory wholebuf which-shell proc)
+  (let* ((temp (make-temp-name
 		;; FixMe: that should be simpler
                 (concat (replace-regexp-in-string py-separator-char "-" (replace-regexp-in-string (concat "^" py-separator-char) "" (replace-regexp-in-string ":" "-" (if (stringp which-shell) which-shell (prin1-to-string which-shell))))) "-")))
          (tempfile (concat (expand-file-name py-temp-directory) py-separator-char (replace-regexp-in-string py-separator-char "-" temp) ".py"))
-         (tempbuf (get-buffer-create temp))
-         (wholebuf (when (boundp 'wholebuf) wholebuf))
-	 output-buffer)
-    ;; (message "%s" strg)
-    (unless py-if-name-main-permission-p
-      (setq strg (py--fix-if-name-main-permission strg)))
-    (setq strg (py--fix-start strg))
-    ;; fast-process avoids temporary files
+         (tempbuf (get-buffer-create temp)))
+    (with-current-buffer tempbuf
+      (insert strg)
+      (write-file tempfile))
     (unwind-protect
-	(if py-fast-process-p
-	    (with-current-buffer (setq output-buffer (process-buffer  proc))
-	      (sit-for 0.1 t)
-	      (erase-buffer)
-	      (setq erg (py--fast-send-string-intern strg
-						     proc
-						     ;; (py-fast-process output-buffer)
-						     output-buffer))
-	      (py-kill-buffer-unconditional tempbuf))
-	  (setq erg (py--execute-file-base proc tempfile nil py-buffer-name py-orig-buffer-or-file execute-directory))
-	  (sit-for 0.1))
-      (py--close-execution tempbuf erg)
-      (py--shell-manage-windows py-buffer-name))))
+	(setq erg (py--execute-file-base proc tempfile nil py-buffer-name py-orig-buffer-or-file execute-directory)))
+    (sit-for 0.1 t)
+    (py--close-execution tempbuf erg)
+    (py--shell-manage-windows py-buffer-name)))
 
 (defun py--fetch-comint-result ()
   (save-excursion
