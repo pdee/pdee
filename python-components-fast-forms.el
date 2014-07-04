@@ -70,8 +70,10 @@ See also `py-fast-shell'
     (goto-char (point-min))
     (while (looking-at py-fast-filter-re)
       (replace-match ""))
-    (and py-store-result-p (setq erg (buffer-substring-no-properties (point-min) (point-max))))
-    erg))
+    (and py-store-result-p
+	 (setq erg (buffer-substring-no-properties (point-min) (point-max)))
+	 (kill-new erg)
+	 erg)))
 
 (defun py-process-region-fast (beg end)
   (interactive "r")
