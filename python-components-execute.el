@@ -576,7 +576,8 @@ Takes a buffer as argument. "
   "
   (interactive "P")
   ;; done by py-shell-mode
-  (let* ((newpath (when (eq 4 (prefix-numeric-value argprompt))
+  (let* ((iact (ignore-errors (eq 1 argprompt))) ;; interactively?
+	 (newpath (when (eq 4 (prefix-numeric-value argprompt))
 		    (read-shell-command "PATH/TO/EXECUTABLE/[I]python[version]: ")))
 	 (oldbuf (current-buffer))
 	 (dedicated (or dedicated py-dedicated-process-p))
@@ -625,7 +626,8 @@ Takes a buffer as argument. "
 	  (with-current-buffer py-buffer-name
 	    (erase-buffer)))
 	(py--shell-make-comint executable py-buffer-name args)
-	(sit-for 0.1 t)
+	;; if called from a program, banner needs some delay
+	(or iact (sit-for 0.3 t))
 	(setq py-output-buffer py-buffer-name)
 	(if (comint-check-proc py-buffer-name)
 	    (with-current-buffer py-buffer-name
@@ -756,7 +758,6 @@ When optional FILE is `t', no temporary file is needed. "
     (py--update-execute-directory proc py-buffer-name execute-directory)
     (cond (py-fast-process-p
 	   (with-current-buffer (setq output-buffer (process-buffer proc))
-	     ;; (switch-to-buffer (current-buffer))
 	     (sit-for 1 t)
 	     (erase-buffer)
 	     (py--fast-send-string-intern strg
@@ -1154,7 +1155,7 @@ This may be preferable to `\\[py-execute-buffer]' because:
    uses of qualified names (MODULE.NAME).
 
  - The Python debugger gets line number information about the functions."
-  (interactive "P")
+  (interactive "p") c
   ;; Check file local variable py-master-file
   (when py-master-file
     (let* ((filename (expand-file-name py-master-file))
