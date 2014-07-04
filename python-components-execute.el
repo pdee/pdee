@@ -746,6 +746,17 @@ Default is interactive, i.e. py-fast-process-p nil, and `py-session'"
 			    (get-buffer-process (py-shell nil py-dedicated-process-p which-shell py-buffer-name)))))))
     (py--execute-base-intern strg shell filename proc file wholebuf)))
 
+(defun py--send-to-fast-process (strg proc output-buffer)
+  "Called inside of `py--execute-base-intern' "
+  (with-current-buffer (setq output-buffer (process-buffer proc))
+    (sit-for 1 t)
+    (erase-buffer)
+    (py--fast-send-string-intern strg
+				 proc
+				 output-buffer)
+    (sit-for 0.1)
+    (py--shell-manage-windows output-buffer)))
+
 (defun py--execute-base-intern (strg shell filename proc file wholebuf)
   "Select the handler.
 
@@ -756,15 +767,7 @@ When optional FILE is `t', no temporary file is needed. "
       (with-temp-file "/tmp/py-buffer-name.txt" (insert py-buffer-name)))
     (set-buffer py-exception-buffer)
     (py--update-execute-directory proc py-buffer-name execute-directory)
-    (cond (py-fast-process-p
-	   (with-current-buffer (setq output-buffer (process-buffer proc))
-	     (sit-for 1 t)
-	     (erase-buffer)
-	     (py--fast-send-string-intern strg
-					  proc
-					  output-buffer)
-	     (sit-for 0.1)
-	     (py--shell-manage-windows output-buffer)))
+    (cond (py-fast-process-p (py--send-to-fast-process strg proc output-buffer))
 	  ;; enforce proceeding as python-mode.el v5
 	  (python-mode-v5-behavior-p
 	   (py-execute-python-mode-v5 start end))
