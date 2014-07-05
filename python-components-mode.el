@@ -2363,15 +2363,6 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
      (3 (py--quote-syntax 3) t t)
      (6 (py--quote-syntax 1) t t))))
 
-(custom-add-option 'python-mode-hook 'imenu-add-menubar-index)
-(custom-add-option 'python-mode-hook
-                   (lambda ()
-                     "Turn off Indent Tabs mode."
-                     (setq indent-tabs-mode nil)))
-(custom-add-option 'python-mode-hook 'turn-on-eldoc-mode)
-(custom-add-option 'python-mode-hook 'abbrev-mode)
-(custom-add-option 'python-mode-hook 'py-find-imports)
-
 ;; IPython Completion start
 
 ;; see also
