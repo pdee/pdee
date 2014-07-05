@@ -805,10 +805,13 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
   (let ((teststring (concat py-test-shebang "
 # -\*- coding: utf-8 -\*-
 print(u'\\xA9')
-")))
+"))
+	py-smart-indentation)
     (py-bug-tests-intern 'UnicodeEncodeError-lp:550661-base 2 teststring)))
 
 (defun UnicodeEncodeError-lp:550661-base ()
+  ;; (py-execute-buffer-switch)
+  (message "py-smart-indentation: %s" py-smart-indentation)
   (goto-char 48)
   (end-of-line)
   (py-execute-region-switch (line-beginning-position) (point))
