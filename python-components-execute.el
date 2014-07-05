@@ -627,7 +627,7 @@ Takes a buffer as argument. "
 	    (erase-buffer)))
 	(py--shell-make-comint executable py-buffer-name args)
 	;; if called from a program, banner needs some delay
-	(or iact (sit-for 0.3 t))
+	(or iact (sit-for 0.5 t))
 	(setq py-output-buffer py-buffer-name)
 	(if (comint-check-proc py-buffer-name)
 	    (with-current-buffer py-buffer-name
@@ -687,11 +687,16 @@ Default is interactive, i.e. py-fast-process-p nil, and `py-session'"
         (py-fast-process-p py-output-buffer)
         (t (py--buffer-name-prepare name))))
 
+(defun py--store-result-maybe (erg)
+  "If no error occurred and `py-store-result-p' store result for yank. "
+  (and (not py-error) erg (or py-debug-p py-store-result-p) (kill-new erg)))
+
 (defun py--close-execution (tempbuf erg)
+  "Delete temporary buffer and and run `py--store-result-maybe'"
   (when py-cleanup-temporary
     (py-kill-buffer-unconditional tempbuf)
     (py-delete-temporary tempfile tempbuf))
-  (and (not py-error) erg (or py-debug-p py-store-result-p) (unless (string= (car kill-ring) erg) (kill-new erg)))
+  (py--store-result-maybe erg)
   erg)
 
 (defun py--execute-base (&optional start end shell filename proc file wholebuf)
@@ -774,10 +779,10 @@ When optional FILE is `t', no temporary file is needed. "
 	  (py-execute-no-temp-p
 	   (py--execute-ge24.3 start end filename execute-directory which-shell py-exception-buffer proc))
 	  ((and filename wholebuf)
-	   ;; No temporary file than
+	   ;; No temporary file needed than
 	   (let (py-cleanup-temporary)
 	     (py--execute-file-base proc filename nil py-buffer-name filename execute-directory)
-	     (py--close-execution tempbuf erg)
+	     (py--store-result-maybe erg)
 	     (py--shell-manage-windows py-buffer-name)))
 	  (t (py--execute-buffer-finally strg execute-directory wholebuf which-shell proc)))))
 

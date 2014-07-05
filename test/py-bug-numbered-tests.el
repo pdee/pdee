@@ -5457,7 +5457,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.113 $\"
+__version__ = \"$Revision: 1.114 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -6493,6 +6493,18 @@ foo = long_function_name(var_one, var_two,
 	  (assert (eq 4 (current-column)) nil "stop-before-prompt-lp-1331953-test failed")
 	(message "%s" "stop-before-prompt-lp-1331953-test passed")))
     (py-kill-buffer-unconditional erg)))
+
+
+(defun execute-buffer-lp-1338134-test (&optional arg)
+  (interactive "p")
+   (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+print(123)
+"))
+  (py-bug-tests-intern 'execute-buffer-lp-1338134-base arg teststring)))
+
+(defun execute-buffer-lp-1338134-base ()
+  (assert (py-execute-buffer) nil "execute-buffer-lp-1338134-test failed"))
 
 
 (provide 'py-bug-numbered-tests)
