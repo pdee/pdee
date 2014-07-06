@@ -2807,6 +2807,9 @@ See original source: http://pymacs.progiciels-bpi.ca"
 (require 'python-components-hide-show)
 (require 'highlight-indentation)
 
+(and py-load-skeletons-p (require 'python-components-skeletons))
+(and py-company-pycomplete-p (require 'company-pycomplete))
+
 ;; toggle-py-underscore-word-syntax-p must be known already
 ;; circular: toggle-py-underscore-word-syntax-p sets and calls it
 (defcustom py-underscore-word-syntax-p t
