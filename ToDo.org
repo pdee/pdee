@@ -1,3 +1,4 @@
+with-output-to-temp-buffer, 
 * py-orig-buffer-or-file
 * py-remove-cwd-from-path
 * sys.version_info

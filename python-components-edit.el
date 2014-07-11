@@ -165,7 +165,6 @@ Similar to `toggle-py-smart-indentation' resp. `py-smart-indentation-off' follow
 
 This function is normally used by `indent-line-function' resp.
 \\[indent-for-tab-command].
-Returns current indentation
 
 When bound to TAB, C-q TAB inserts a TAB.
 

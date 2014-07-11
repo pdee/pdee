@@ -6507,5 +6507,19 @@ print(123)
   (assert (py-execute-buffer) nil "execute-buffer-lp-1338134-test failed"))
 
 
+(defun dont-complete-empty-line-lp-1340824-test (&optional arg)
+  (interactive "p")
+   (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+class Foo:a
+"))
+  (py-bug-tests-intern 'dont-complete-empty-line-lp-1340824-base arg teststring)))
+
+(defun dont-complete-empty-line-lp-1340824-base ()
+  (py-indent-or-complete)
+  (sit-for 0.1 t) 
+  (assert (eq 4 (current-indentation)) nil "dont-complete-empty-line-lp-1340824-test failed"))
+
+
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

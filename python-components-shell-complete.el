@@ -55,43 +55,43 @@ completions on the current context."
 (defalias 'ipython-complete 'py-shell-complete)
 (defun py--shell--do-completion-at-point (process imports input orig oldbuf code)
   "Do completion at point for PROCESS."
-    (when imports
-      (py--send-string-no-output imports process))
-    (let* ((completion
-            (py--shell-completion-get-completions
-             input process code))
-           ;; (completion (when completions
-	   ;; (try-completion input completions)))
-	   newlist erg)
-      (with-current-buffer oldbuf
-        (cond ((eq completion t)
-	       (and py-verbose-p (message "py--shell--do-completion-at-point %s" "`t' is returned, not completion. Might be a bug."))
-               nil)
-              ((null completion)
-	       (and py-verbose-p (message "py--shell--do-completion-at-point %s" "Don't see a completion"))
-               nil)
-              ((ignore-errors (not (string= input completion)))
-               (progn (delete-char (- (length input)))
-                      (insert completion)
-                      (move-marker orig (point))
-                      ;; minibuffer.el expects a list, a bug IMO
-                      nil))
-              (t
-	       (when (and (stringp (setq erg (try-completion input completion)))
-			  (looking-back input)
-			  (not (string= input erg)))
-		 (delete-region (match-beginning 0) (match-end 0))
-		 (insert erg)
-		 (dolist (elt completion)
-		   (unless (string= erg elt)
-		     (add-to-list 'newlist elt))))
-               (with-output-to-temp-buffer py-python-completions
-                 (display-completion-list
-                  (all-completions input (or newlist completion))))
-               (move-marker orig (point))
-               nil))
-	(and (goto-char orig)
-	     nil))))
+  (when imports
+    (py--send-string-no-output imports process))
+  (let* ((completion
+	  (py--shell-completion-get-completions
+	   input process code))
+	 ;; (completion (when completions
+	 ;; (try-completion input completions)))
+	 newlist erg)
+    (set-buffer oldbuf)
+    (cond ((eq completion t)
+	   (and py-verbose-p (message "py--shell--do-completion-at-point %s" "`t' is returned, not completion. Might be a bug."))
+	   nil)
+	  ((null completion)
+	   (and py-verbose-p (message "py--shell--do-completion-at-point %s" "Don't see a completion"))
+	   nil)
+	  ((ignore-errors (not (string= input completion)))
+	   (progn (delete-char (- (length input)))
+		  (insert completion)
+		  (move-marker orig (point))
+		  ;; minibuffer.el expects a list, a bug IMO
+		  nil))
+	  (t
+	   (when (and (stringp (setq erg (try-completion input completion)))
+		      (looking-back input)
+		      (not (string= input erg)))
+	     (delete-region (match-beginning 0) (match-end 0))
+	     (insert erg)
+	     (dolist (elt completion)
+	       (unless (string= erg elt)
+		 (add-to-list 'newlist elt))))
+	   (with-output-to-temp-buffer py-python-completions
+	     (display-completion-list
+	      (all-completions input (or newlist completion))))
+	   (move-marker orig (point))
+	   nil))
+    (and (goto-char orig)
+	 nil)))
 
 (defun py--complete-base (shell pos beg end word imports debug oldbuf)
   (let* ((shell (or shell (py-choose-shell)))
@@ -153,7 +153,7 @@ Otherwise call `py-indent-line'
 
 Use `C-q TAB' to insert a literally TAB-character "
   (interactive "*")
-  (if (eolp)
+  (if (and (eolp)(not (bolp)))
       (py-shell-complete)
     (py-indent-line)))
 
