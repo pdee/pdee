@@ -94,3 +94,5 @@ python-components-completion.el
 RCS
 ToDo.org
 devel/notes.org
+auto-complete-rest.el
+py--buffer-name-prepare.el

@@ -627,7 +627,7 @@ Takes a buffer as argument. "
 	    (erase-buffer)))
 	(py--shell-make-comint executable py-buffer-name args)
 	;; if called from a program, banner needs some delay
-	(or iact (sit-for 0.6 t))
+	(or iact (sit-for 0.5 t))
 	(setq py-output-buffer py-buffer-name)
 	(if (comint-check-proc py-buffer-name)
 	    (with-current-buffer py-buffer-name
@@ -822,7 +822,10 @@ When optional FILE is `t', no temporary file is needed. "
 	    (if (eq major-mode 'py-shell-mode)
 		(py-output-filter (py--fetch-comint-result))
 	      (py-output-filter (buffer-substring-no-properties (point) (point-max)))))
-      (and erg (not (string= (car kill-ring) erg)) (kill-new erg))))
+      (and erg (not (string= (car kill-ring) erg)) (kill-new erg)))
+    ;; (run-with-idle-timer 1 nil 'py--unfontify-banner)
+    ;; xpco(py--unfontify-banner (current-buffer))
+    )
   erg)
 
 (defun py--execute-file-base (&optional proc filename cmd procbuf origfile execute-directory)
