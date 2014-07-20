@@ -38,6 +38,7 @@
 
 (setq bug-numbered-tests
       (list
+       'auto-indent-lp-134258-test
        'py-execute-buffer-ipython-lp-1252643-test
        'py-empty-line-closes-p-lp-1235324-test
        'C-c-C-c-lp:1221310-and-store-result-test
@@ -5457,7 +5458,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.116 $\"
+__version__ = \"$Revision: 1.117 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -6519,6 +6520,21 @@ class Foo:a
   (py-indent-or-complete)
   (sit-for 0.1 t) 
   (assert (eq 4 (current-indentation)) nil "dont-complete-empty-line-lp-1340824-test failed"))
+
+
+(defun auto-indent-lp-134258-test (&optional arg)
+  (interactive "p")
+   (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+for d in os.listdir('console'):
+    if('Scripts' != d):
+"))
+  (py-bug-tests-intern 'auto-indent-lp-134258-base arg teststring)))
+
+(defun auto-indent-lp-134258-base ()
+    (goto-char 80)
+    (py-newline-and-indent) 
+    (assert (eq 4 (current-indentation)) nil "auto-indent-lp-134258-test failed"))
 
 
 (provide 'py-bug-numbered-tests)

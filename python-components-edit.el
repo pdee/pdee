@@ -265,6 +265,7 @@ When indent is set back manually, this is honoured in following lines. "
 		((and py-empty-line-closes-p (or (eq this-command last-command)(py--after-empty-line)))
 		 (indent-to-column (save-excursion (py-beginning-of-statement)(- (current-indentation) py-indent-offset))))
 		(t
+		 (fixup-whitespace) 
 		 (indent-to-column (py-compute-indentation)))))
     (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
