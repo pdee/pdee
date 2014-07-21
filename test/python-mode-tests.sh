@@ -1349,4 +1349,4 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall wrong-type-argument-inserted-chars-lp-1293172-test \
 --funcall previous-statement-lp:637955-test \
 --funcall py-execute-block-or-clause-python3-test \
-
+--funcall py-object-reference-face-should-inherit-from-lp-1340455-test \

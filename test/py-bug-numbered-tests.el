@@ -5458,7 +5458,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.117 $\"
+__version__ = \"$Revision: 1.118 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -6518,7 +6518,7 @@ class Foo:a
 
 (defun dont-complete-empty-line-lp-1340824-base ()
   (py-indent-or-complete)
-  (sit-for 0.1 t) 
+  (sit-for 0.1 t)
   (assert (eq 4 (current-indentation)) nil "dont-complete-empty-line-lp-1340824-test failed"))
 
 
@@ -6533,8 +6533,23 @@ for d in os.listdir('console'):
 
 (defun auto-indent-lp-134258-base ()
     (goto-char 80)
-    (py-newline-and-indent) 
+    (py-newline-and-indent)
     (assert (eq 4 (current-indentation)) nil "auto-indent-lp-134258-test failed"))
+
+(defun py-object-reference-face-should-inherit-from-lp-1340455-test (&optional arg)
+  (interactive "p")
+   (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+def foo(self):
+"))
+  (py-bug-tests-intern 'py-object-reference-face-should-inherit-from-lp-1340455-base arg teststring)))
+
+(defun py-object-reference-face-should-inherit-from-lp-1340455-base ()
+  (goto-char 57)
+  (sit-for 0.1)
+  (message "py-object-reference-face-should-inherit-from-lp-1340455-test: %s" (prin1-to-string  (get-char-property (point) 'face)))
+  (assert (eq (get-char-property (point) 'face) py-object-reference-face) nil " py-object-reference-face-should-inherit-from-lp-1340455-test failed")
+  )
 
 
 (provide 'py-bug-numbered-tests)

@@ -230,14 +230,6 @@ Call M-x `customize-face' in order to have a visible effect. "
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-fontify-self-p nil
-  "If \"self\" shold get `py-pseudo-keyword-face'
-
-Default is nil"
-
-  :type 'boolean
-  :group 'python-mode)
-
 (defcustom empty-comment-line-separates-paragraph-p t
   "Consider paragraph start/end lines with nothing inside but comment sign.
 
@@ -2415,15 +2407,17 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
   "XXX\\|TODO\\|FIXME "
   :group 'python-mode)
 
-;; ;; Face for None, True, False, self, and Ellipsis
 (defface py-pseudo-keyword-face
   '((t (:inherit font-lock-keyword-face)))
-  "Face for pseudo keywords in Python mode, like self, True, False, Ellipsis."
+  "Face for pseudo keywords in Python mode, like self, True, False,
+  Ellipsis.
+
+See also `py-object-reference-face'"
   :group 'python-mode)
 
 (defface py-object-reference-face
-  '((t (:inherit default)))
-  "Face when referencing object members from its class resp. method. , commonly \"cls\" and \"self\""
+  '((t (:inherit py-pseudo-keyword-face)))
+  "Face when referencing object members from its class resp. method., commonly \"cls\" and \"self\""
   :group 'python-mode)
 
 (defface py-variable-name-face
