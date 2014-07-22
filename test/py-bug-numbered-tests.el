@@ -5458,7 +5458,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.118 $\"
+__version__ = \"$Revision: 1.119 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -6550,6 +6550,19 @@ def foo(self):
   (message "py-object-reference-face-should-inherit-from-lp-1340455-test: %s" (prin1-to-string  (get-char-property (point) 'face)))
   (assert (eq (get-char-property (point) 'face) py-object-reference-face) nil " py-object-reference-face-should-inherit-from-lp-1340455-test failed")
   )
+
+
+(defun tab-complete-dict-keys-lp-1251690-test (&optional arg)
+  (interactive "p")
+   (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+d = {\"apple\": 1, \"banana\": 2}
+d[\"a\""))
+  (py-bug-tests-intern 'tab-complete-dict-keys-lp-1251690-base arg teststring)))
+
+(defun tab-complete-dict-keys-lp-1251690-base ()
+    (goto-char 40)
+    (assert nil "tab-complete-dict-keys-lp-1251690-test failed"))
 
 
 (provide 'py-bug-numbered-tests)

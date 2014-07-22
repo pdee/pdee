@@ -12043,6 +12043,7 @@ These are Python temporary files awaiting execution."
 ;; py25 = py <  (2,6,0)
 ;; py31 = (3,1,0) <= py < (3,2,0)
 
+;; sys.version_info[0]
 (defun py-python-version (&optional executable verbose)
   "Returns versions number of a Python EXECUTABLE, string.
 

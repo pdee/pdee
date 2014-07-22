@@ -627,7 +627,7 @@ Takes a buffer as argument. "
 	    (erase-buffer)))
 	(py--shell-make-comint executable py-buffer-name args)
 	;; if called from a program, banner needs some delay
-	(or iact (sit-for 0.5 t))
+	(sit-for 0.5 t)
 	(setq py-output-buffer py-buffer-name)
 	(if (comint-check-proc py-buffer-name)
 	    (with-current-buffer py-buffer-name
