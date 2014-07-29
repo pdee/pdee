@@ -5458,7 +5458,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.120 $\"
+__version__ = \"$Revision: 1.121 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -6563,6 +6563,21 @@ d[\"a\""))
 (defun tab-complete-dict-keys-lp-1251690-base ()
     (goto-char 40)
     (assert nil "tab-complete-dict-keys-lp-1251690-test failed"))
+
+
+(defun py-shell-name-no-op-lp-1349549-test (&optional arg)
+  (interactive "p")
+   (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+"))
+  (py-bug-tests-intern 'py-shell-name-no-op-lp-1349549-base arg teststring)))
+
+(defun py-shell-name-no-op-lp-1349549-base ()
+  (let ((py-switch-buffers-on-execute-p t)
+	(py-force-py-shell-name-p t)
+	(py-shell-name "ipython"))
+    (py-shell)
+    (assert (string-match "\*IP" (buffer-name (current-buffer))) nil "py-shell-name-no-op-lp-1349549-test failed")))
 
 
 (provide 'py-bug-numbered-tests)

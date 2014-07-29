@@ -442,7 +442,7 @@ Internal use"
   (set-buffer buffer)
   (goto-char (process-mark (get-buffer-process (current-buffer)))))
 
-(defun py--shell-manage-windows (output-buffer &optional windows-displayed windows-config)
+(defun py--shell-manage-windows (output-buffer &optional windows-displayed windows-config) 
   "Adapt or restore window configuration. Return nil "
   (cond
    (py-keep-windows-configuration
@@ -540,14 +540,14 @@ Receives a buffer-name as argument"
   (if (string-match "//\\|\\\\" name)
       name
     (cond ((string-match "^[Ii]" name)
-	   py-ipython-command)
+	   (or py-ipython-command name))
 	  ((string-match "[Pp]ython3" name)
-	   py-python3-command)
+	   (or py-python3-command name))
 	  ((string-match "[Pp]ython2" name)
-	   py-python2-command)
+	   (or py-python2-command name))
 	  ((string-match "[Jj]ython" name)
-	   py-jython-command)
-	  (t py-python-command))))
+	   (or py-jython-command name))
+	  (t (or py-python-command name)))))
 
 (defun py--unfontify-banner (buffer)
   "Unfontify the shell banner-text.
@@ -583,17 +583,19 @@ Takes a buffer as argument. "
 	 (dedicated (or dedicated py-dedicated-process-p))
 	 (py-exception-buffer (or py-exception-buffer (and (or (eq 'major-mode 'python-mode)(eq 'major-mode 'py-shell-mode)) (current-buffer))))
 	 (path (getenv "PYTHONPATH"))
-	 (py-shell-name-raw (or newpath shell py-shell-name (py-choose-shell)))
+	 (py-shell-name (or newpath shell
+			    ;; (py--configured-shell (py-choose-shell))
+			    (py-choose-shell)))
 	 (args
 	  (cond (py-fast-process-p nil)
-		((string-match "^[Ii]" py-shell-name-raw)
+		((string-match "^[Ii]" py-shell-name)
 		 py-ipython-command-args)
-		((string-match "^[^-]+3" py-shell-name-raw)
+		((string-match "^[^-]+3" py-shell-name)
 		 py-python3-command-args)
 		(t py-python-command-args)))
 	 ;; unless Path is given with `py-shell-name'
 	 ;; call configured command
-	 (py-shell-name (py--configured-shell py-shell-name-raw))
+	 ;; (py-shell-name (py--configured-shell py-shell-name-raw))
 
 	 ;; If we use a pipe, Unicode characters are not printed
 	 ;; correctly (Bug#5794) and IPython does not work at
@@ -634,7 +636,7 @@ Takes a buffer as argument. "
 	      (py--shell-setup py-buffer-name (get-buffer-process py-buffer-name)))
 	  (error (concat "py-shell: No process in " py-buffer-name))))
       ;; (goto-char (point-max))
-      (when (or (string-match "[BbIi]*[Pp]ython" (prin1-to-string this-command))(interactive-p)) (py--shell-manage-windows py-buffer-name))
+      (when (or (interactive-p)py-switch-buffers-on-execute-p py-split-windows-on-execute-p) (py--shell-manage-windows py-buffer-name))
       ;; (when py-shell-mode-hook (run-hooks 'py-shell-mode-hook))
       (when (string-match "[BbIi][Pp]ython" py-buffer-name)
 	(sit-for 0.3 t))

@@ -284,6 +284,7 @@ Optional \\[universal-argument] prompts for path to the interpreter. "
 (defalias 'IPyton 'ipython)
 (defalias 'Ipyton 'ipython)
 (defalias 'ipyton 'ipython)
+(defalias 'ipyhton 'ipython)
 (defalias 'ipy 'ipython)
 
 

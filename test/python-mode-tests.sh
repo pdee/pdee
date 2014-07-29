@@ -1056,7 +1056,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall auto-indent-lp-134258-test \
 --funcall dont-complete-empty-line-lp-1340824-test \
 --funcall execute-buffer-lp-1338134-test \
---funcall python-shell-complete-test \
 --funcall stop-before-prompt-lp-1331953-test \
 --funcall vertical-alignment-lp-1332245-test \
 --funcall specify-default-interpreter-lp-1332652-test \
@@ -1350,3 +1349,5 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall previous-statement-lp:637955-test \
 --funcall py-execute-block-or-clause-python3-test \
 --funcall py-object-reference-face-should-inherit-from-lp-1340455-test \
+--funcall python-shell-complete-test \
+--funcall py-shell-name-no-op-lp-1349549-test \
