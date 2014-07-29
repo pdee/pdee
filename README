@@ -170,6 +170,17 @@ succeeding afterwards. Any bug reports, which might
 help truck down the issue, are highly appreciated.
 
 ;;;;;;;;;
+Auto-completion  
+
+Either use Pymacs and `company-mode' with `pycomplete.el' etc. --load
+stuff from folder completion--
+
+or switch `py-auto-completion-mode-p' - which relies on
+`py-shell-complete', i.e. calls the current Python process.
+
+Extern tools like jedi-server/mode should work too.
+
+;;;;;;;;;
 
 Troubleshooting
 

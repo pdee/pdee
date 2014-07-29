@@ -268,6 +268,14 @@ Default is  nil"
   :type 'float
   :group 'python-mode)
 
+(defcustom py-ac-length-min 2
+  "Auto-complete takes action only with minimum length of word before point, set here.
+
+Default is 2"
+
+  :type 'integer
+  :group 'python-mode)
+
 (defcustom py-completion-delay 4
   "Seconds completion-buffer is shown, if any. "
 
@@ -413,6 +421,36 @@ See also `py-no-completion-calls-dabbrev-expand-p'"
 
   :type 'boolean
   :group 'python-mode)
+
+(defvar py-auto-completion-mode-p nil
+  "Internally used by `py-auto-completion-mode'")
+
+(defvar py-complete-last-modified nil
+  "Internally used by `py-auto-completion-mode'")
+
+(defvar py--auto-complete-timer nil
+  "Internally used by `py-auto-completion-mode'")
+
+(defvar py-auto-completion-buffer nil
+  "Internally used by `py-auto-completion-mode'")
+
+(defvar py--auto-complete-timer nil)
+;; (make-variable-buffer-local 'py--auto-complete-timer)
+
+(defcustom py--auto-complete-timer-delay 1
+  "Seconds Emacs must be idle to trigger auto-completion.
+
+See `py-auto-completion-mode'"
+
+  :type 'number
+  :group 'python-mode)
+
+(defcustom py-auto-complete-p nil
+  "Run python-mode's built-in auto-completion via py-complete-function. Default is  nil"
+
+  :type 'boolean
+  :group 'python-mode)
+(make-variable-buffer-local 'py-auto-complete-p)
 
 (defcustom py-tab-shifts-region-p nil
   "If `t', TAB will indent/cycle the region, not just the current line.
@@ -7744,6 +7782,14 @@ Argument is how many `py-partial-expression's form the expansion; or zero means 
                   ("Completion"
                    :help "Completion options"
 
+		   ["Auto complete mode"
+		    (setq py-auto-complete-p
+			  (not py-auto-complete-p))
+		    :help "Auto complete mode
+
+Use `M-x customize-variable' to set it permanently"
+		    :style toggle :selected py-auto-complete-p]
+
 		   ["Indent or complete" py-indent-or-complete
 		    :help " `py-indent-or-complete'
 
@@ -12121,22 +12167,6 @@ Start a new process if necessary. "
 ;; arrange to kill temp files when Emacs exists
 (add-hook 'kill-emacs-hook 'py--kill-emacs-hook)
 
-(remove-hook 'python-mode-hook 'python-setup-brm)
-
-(add-hook 'python-mode-hook
-          (lambda ()
-            (setq indent-tabs-mode py-indent-tabs-mode)
-
-            ;; (orgstruct-mode 1)
-            ))
-
-(add-hook 'python-mode-hook 'py-find-imports)
-
-;; (when py-sexp-function
-;;   (add-hook 'python-mode-hook
-;;             (lambda ()
-;;               (set (make-local-variable 'forward-sexp-function) py-sexp-function))))
-
 (when py--warn-tmp-files-left-p
   (add-hook 'python-mode-hook 'py--warn-tmp-files-left))
 
@@ -12400,10 +12430,59 @@ Don't save anything for STR matching `py-input-filter-re' "
 		   #'py--unfontify-banner buffer)))
 	(cancel-timer py--timer)))))
 
-;;;
-(and py-load-skeletons-p (require 'python-components-skeletons))
-(and py-company-pycomplete-p     (require 'company-pycomplete))
+;;; unconditional Hooks
+;; (orgstruct-mode 1)
+(add-hook 'python-mode-hook
+	  (lambda ()
+	    (setq imenu-create-index-function 'py--imenu-create-index-function)
+	    (setq indent-tabs-mode py-indent-tabs-mode)))
 
+(remove-hook 'python-mode-hook 'python-setup-brm)
+;;;
+
+(defun py-complete-auto ()
+  "Auto-complete function using py-complete. "
+  ;; disable company
+  ;; (when company-mode (company-mode))
+  (let ((modified (buffer-chars-modified-tick)))
+    ;; don't try completion if buffer wasn't modified
+    (unless (eq modified py-complete-last-modified)
+      (if py-auto-completion-mode-p
+	  (if (string= "*PythonCompletions*" (buffer-name (current-buffer)))
+	      (sit-for 1 t)
+	    (if
+		(eq py-auto-completion-buffer (current-buffer))
+		;; not after whitespace, TAB or newline
+		(unless (member (char-before) (list 32 9 10))
+		  (py-complete)
+		  (setq py-complete-last-modified (buffer-chars-modified-tick)))
+	      (setq py-auto-completion-mode-p nil
+		    py-auto-completion-buffer nil)
+	      (cancel-timer py--auto-complete-timer)))))))
+
+(define-derived-mode py-auto-completion-mode python-mode "Pac"
+  "Run auto-completion"
+  ;; disable company
+  ;; (when company-mode (company-mode))
+  (if py-auto-completion-mode-p
+      (progn
+	(setq py-auto-completion-mode-p nil
+	      py-auto-completion-buffer nil)
+	(when (timerp py--auto-complete-timer)(cancel-timer py--auto-complete-timer)))
+    (setq py-auto-completion-mode-p t
+	  py-auto-completion-buffer (current-buffer))
+    (setq py--auto-complete-timer
+	  (run-with-idle-timer
+	   py--auto-complete-timer-delay
+	   ;; 1
+	   t
+	   #'py-complete-auto))))
+
+;; (add-hook 'after-change-major-mode-hook #'py-protect-other-buffers-ac)
+
+;; after-change-major-mode-hook
+
+;;;
 (define-derived-mode python-mode fundamental-mode python-mode-modeline-display
   "Major mode for editing Python files.
 
@@ -12499,7 +12578,7 @@ See available customizations listed in files variables-python-mode at directory 
               (^ '(- (1+ (current-indentation)))))))
   ;; (set (make-local-variable 'imenu-create-index-function) 'py--imenu-create-index-function)
   (setq imenu-create-index-function 'py--imenu-create-index-function)
-  (add-hook 'python-mode-hook (lambda ()(setq imenu-create-index-function 'py--imenu-create-index-function)))
+
   (and py-guess-py-install-directory-p (py-set-load-path))
   ;;  (unless gud-pdb-history (when (buffer-file-name) (add-to-list 'gud-pdb-history (buffer-file-name))))
   (and py-autopair-mode
@@ -12524,9 +12603,17 @@ See available customizations listed in files variables-python-mode at directory 
    (t
     (add-hook 'completion-at-point-functions
               'py-shell-complete nil 'local)))
+  ;; (if py-auto-complete-p
+  ;; (add-hook 'python-mode-hook 'py--run-completion-timer)
+  ;; (remove-hook 'python-mode-hook 'py--run-completion-timer))
+  ;; (when py-auto-complete-p
+  ;; (add-hook 'python-mode-hook
+  ;; (lambda ()
+  ;; (run-with-idle-timer 1 t 'py-shell-complete))))
   (if py-auto-fill-mode
       (add-hook 'python-mode-hook 'py--run-auto-fill-timer)
     (remove-hook 'python-mode-hook 'py--run-auto-fill-timer))
+
   ;; caused insert-file-contents error lp:1293172
   ;;  (add-hook 'after-change-functions 'py--after-change-function nil t)
   (if py-defun-use-top-level-p
@@ -12575,7 +12662,9 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
   (setenv "TERM" "dumb")
   (set-syntax-table python-mode-syntax-table)
   (set (make-local-variable 'py--shell-unfontify) 'py-shell-unfontify-p)
-
+  ;; (if py-auto-complete-p
+  ;; (add-hook 'py-shell-mode-hook 'py--run-completion-timer)
+  ;; (remove-hook 'py-shell-mode-hook 'py--run-completion-timer))
   (if py-shell-unfontify-p
       (add-hook 'py-shell-mode-hook #'py--run-unfontify-timer (current-buffer))
     (remove-hook 'py-shell-mode-hook 'py--run-unfontify-timer))
