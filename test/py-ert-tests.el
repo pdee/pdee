@@ -852,6 +852,27 @@ def foo():
 	     (search-forward "py-execute-line-test" nil t 1)))
 	   (py-kill-buffer-unconditional (current-buffer))))))
 
+;; (ert-deftest py-ert-execute-line-test-2 ()
+;;   (py-test-with-temp-buffer-point-min
+;;       "foo=1"
+;;     (let ((py-shell-name "python"))
+;;       (py-execute-line)
+;;       (beginning-of-line)
+;;       (py-execute-partial-expression)
+;;       (set-buffer ert-test-default-buffer)
+;;       (switch-to-buffer (current-buffer))
+;;       (and (should
+;; 	    (or
+;; 	     (search-backward "1" nil t 1)
+;; 	     (search-forward "1" nil t 1)))
+;; 	   (py-kill-buffer-unconditional (current-buffer))))))
+
+(ert-deftest py-partial-expression-test ()
+  (py-test-with-temp-buffer-point-min
+      "foo=1"
+    (and (should (string= "foo" (py-partial-expression)))
+	 (py-kill-buffer-unconditional (current-buffer)))))
+
 (ert-deftest py-ert-execute-statement-test ()
   (py-test-with-temp-buffer-point-min
       "print(\"I'm the py-execute-statement-test\")"
@@ -930,7 +951,7 @@ def foo():
 	  (py-debug-p t))
       (py-execute-block)
       (set-buffer py-output-buffer)
-      (sit-for 0.2 t) 
+      (sit-for 0.2 t)
       (and py-debug-p (message "py-ert-execute-block-fast: %s" (current-buffer)) )
       (and py-debug-p (message "py-ert-execute-block-fast: %s" (buffer-substring-no-properties (point-min) (point-max))))
       (goto-char (point-min))

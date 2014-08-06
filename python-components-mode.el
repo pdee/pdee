@@ -2006,9 +2006,9 @@ some logging etc. "
   "py-expression assumes chars indicated probably will not compose a py-expression. ")
 ;; (setq py-not-expression-chars " #\t\r\n\f")
 
-(defvar py-partial-expression-backward-chars "^ ,\"'()[]{}:#\t\r\n\f"
+(defvar py-partial-expression-backward-chars "^ =,\"'()[]{}:#\t\r\n\f"
   "py-partial-expression assumes chars indicated possible composing a py-partial-expression, skip it. ")
-;; (setq py-partial-expression-backward-chars "^ ,\"'()[]{}:#\t\r\n\f")
+;; (setq py-partial-expression-backward-chars "^ =,\"'()[]{}:#\t\r\n\f")
 
 (defvar py-partial-expression-forward-chars "^ \"')}]:#\t\r\n\f")
 ;; (setq py-partial-expression-forward-chars "^ \"')}]:#\t\r\n\f")
