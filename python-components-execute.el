@@ -442,7 +442,7 @@ Internal use"
   (set-buffer buffer)
   (goto-char (process-mark (get-buffer-process (current-buffer)))))
 
-(defun py--shell-manage-windows (output-buffer &optional windows-displayed windows-config) 
+(defun py--shell-manage-windows (output-buffer &optional windows-displayed windows-config)
   "Adapt or restore window configuration. Return nil "
   (cond
    (py-keep-windows-configuration
@@ -810,8 +810,8 @@ When optional FILE is `t', no temporary file is needed. "
 	   (boundp 'comint-last-prompt)
 	   (goto-char (setq erg (car comint-last-prompt))))
 	  (goto-char (setq erg (point-max))))
-      (re-search-backward py-fast-filter-re nil t 1)
-      (goto-char (match-end 0))
+      (and (re-search-backward py-fast-filter-re nil t 1)
+	   (goto-char (match-end 0)))
       (buffer-substring-no-properties (point) erg))))
 
 (defun py--postprocess (buffer)
