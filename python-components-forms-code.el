@@ -16,7 +16,9 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;;; Commentary:
+;;; Commentary: This fiel is generated `py-write-forms-code' from
+;;; python-mode-utils.el in directory devel. I.e. edits here might not
+;;; be persistent.
 
 ;;; Code:
 
