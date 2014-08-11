@@ -2551,10 +2551,8 @@ print myobj.range()
   (goto-char 637)
   (assert (eq (get-char-property (point) 'face) 'py-object-reference-face) nil "broken-font-locking-lp:961231-test #3 failed")
   (goto-char 775)
+  ;; also covers lp:1354872 bad-syntax-highlight-for-py-builtin-face
   (assert (eq (get-char-property (point) 'face) 'nil) nil "broken-font-locking-lp:961231-test #4 failed")
-  ;; (goto-char 911)
-  ;; (assert (eq (get-char-property (point) 'face) 'default) nil "broken-font-locking-lp:961231-test #4 failed")
-
   )
 
 (defun regression-in-py-execute-region-lp:962227-test (&optional arg)
