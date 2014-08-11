@@ -808,7 +808,7 @@ When optional FILE is `t', no temporary file is needed. "
     (let (erg)
       (or (and
 	   (boundp 'comint-last-prompt)
-	   (goto-char (setq erg (car comint-last-prompt))))
+	   (goto-char (setq erg (cdr comint-last-prompt))))
 	  (goto-char (setq erg (point-max))))
       (and (re-search-backward py-fast-filter-re nil t 1)
 	   (goto-char (match-end 0)))
