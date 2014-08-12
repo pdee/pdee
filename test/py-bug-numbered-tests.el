@@ -4545,7 +4545,7 @@ def foo():
     (or
 	(assert (progn (py-execute-buffer-python)(set-buffer "*Python*")(goto-char (point-max))(search-backward "HELLO")) nil "does-not-dedent-regions-lp-1072869-test #2 failed")
       (message "%s" "does-not-dedent-regions-lp-1072869-test #2 passed"))
-    (kill-buffer-unconditional "*Python*")
+    (py-kill-buffer-unconditional "*Python*")
     (set-buffer oldbuf)
     (or
 	(assert (progn (py-execute-buffer-ipython)(set-buffer "*Ipython*")(goto-char (point-max))(search-backward "HELLO")) nil "does-not-dedent-regions-lp-1072869-test #1 failed")
@@ -6227,7 +6227,7 @@ print(1234)
   (py-bug-tests-intern 'py-execute-buffer-ipython-lp-1252643-base arg teststring)))
 
 (defun py-execute-buffer-ipython-lp-1252643-base ()
-  (ignore-errors (kill-buffer-unconditional "*Ipython*"))
+  (ignore-errors (py-kill-buffer-unconditional "*Ipython*"))
   (let ((py-switch-buffers-on-execute-p t))
     (py-execute-buffer-ipython)
     (buffer-live-p (get-buffer  "*Ipython*"))
@@ -6577,6 +6577,90 @@ d[\"a\""))
     (py-shell)
     (assert (string-match "\*IP" (buffer-name (current-buffer))) nil "py-shell-name-no-op-lp-1349549-test failed")))
 
+
+(defun interpreter-mode-alist-lp-1355458-test-1 (&optional arg)
+  (interactive "p")
+   (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+"))
+  (py-bug-tests-intern 'interpreter-mode-alist-lp-1355458-base-1 arg teststring)))
+
+(defun interpreter-mode-alist-lp-1355458-base-1 ()
+  (write-file (concat py-temp-directory "/ein.py"))
+  (find-file (concat py-temp-directory "/ein.py"))
+  (assert (eq 'python-mode major-mode) nil "interpreter-mode-alist-lp-1355458-test-1 failed")
+  (py-kill-buffer-unconditional (current-buffer)))
+
+(defun interpreter-mode-alist-lp-1355458-test-2 (&optional arg)
+  (interactive "p")
+   (let ((teststring "#! /usr/bin/env python2
+# -*- coding: utf-8 -*-
+"))
+  (py-bug-tests-intern 'interpreter-mode-alist-lp-1355458-base-2 arg teststring)))
+
+(defun interpreter-mode-alist-lp-1355458-base-2 ()
+  (write-file (concat py-temp-directory "/ein.py"))
+  (py-kill-buffer-unconditional (current-buffer)) 
+  (find-file (concat py-temp-directory "/ein.py"))
+  (assert (eq 'python-mode major-mode) nil "interpreter-mode-alist-lp-1355458-test-2 failed")
+  (py-kill-buffer-unconditional (current-buffer)))
+
+(defun interpreter-mode-alist-lp-1355458-test-3 (&optional arg)
+  (interactive "p")
+   (let ((teststring "#! /usr/bin/env python3
+# -*- coding: utf-8 -*-
+"))
+  (py-bug-tests-intern 'interpreter-mode-alist-lp-1355458-base-3 arg teststring)))
+
+(defun interpreter-mode-alist-lp-1355458-base-3 ()
+  (write-file (concat py-temp-directory "/ein.py"))
+  (py-kill-buffer-unconditional (current-buffer)) 
+  (find-file (concat py-temp-directory "/ein.py"))
+  (assert (eq 'python-mode major-mode) nil "interpreter-mode-alist-lp-1355458-test-3 failed")
+  (py-kill-buffer-unconditional (current-buffer)))
+
+(defun interpreter-mode-alist-lp-1355458-test-4 (&optional arg)
+  (interactive "p")
+   (let ((teststring "#! /usr/bin/env ipython
+# -*- coding: utf-8 -*-
+"))
+  (py-bug-tests-intern 'interpreter-mode-alist-lp-1355458-base-4 arg teststring)))
+
+(defun interpreter-mode-alist-lp-1355458-base-4 ()
+  (write-file (concat py-temp-directory "/ein.py"))
+  (py-kill-buffer-unconditional (current-buffer)) 
+  (find-file (concat py-temp-directory "/ein.py"))
+  (assert (eq 'python-mode major-mode) nil "interpreter-mode-alist-lp-1355458-test-4 failed")
+  (py-kill-buffer-unconditional (current-buffer)))
+
+(defun interpreter-mode-alist-lp-1355458-test-5 (&optional arg)
+  (interactive "p")
+   (let ((teststring "#! /usr/bin/env bpython
+# -*- coding: utf-8 -*-
+"))
+  (py-bug-tests-intern 'interpreter-mode-alist-lp-1355458-base-5 arg teststring)))
+
+(defun interpreter-mode-alist-lp-1355458-base-5 ()
+  (write-file (concat py-temp-directory "/ein.py"))
+  (py-kill-buffer-unconditional (current-buffer)) 
+  (find-file (concat py-temp-directory "/ein.py"))
+  (assert (eq 'python-mode major-mode) nil "interpreter-mode-alist-lp-1355458-test-5 failed")
+  (py-kill-buffer-unconditional (current-buffer)))
+
+
+(defun interpreter-mode-alist-lp-1355458-test-6 (&optional arg)
+  (interactive "p")
+   (let ((teststring "#! /usr/bin/env jython
+# -*- coding: utf-8 -*-
+"))
+  (py-bug-tests-intern 'interpreter-mode-alist-lp-1355458-base-6 arg teststring)))
+
+(defun interpreter-mode-alist-lp-1355458-base-6 ()
+  (write-file (concat py-temp-directory "/ein.py"))
+  (py-kill-buffer-unconditional (current-buffer)) 
+  (find-file (concat py-temp-directory "/ein.py"))
+  (assert (eq 'jython-mode major-mode) nil "interpreter-mode-alist-lp-1355458-test-6 failed")
+  (py-kill-buffer-unconditional (current-buffer)))
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
