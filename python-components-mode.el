@@ -52,20 +52,19 @@
 (provide 'python-components-mode)
 (provide 'python-mode)
 
-(require 'comint)
-(require 'hippie-exp)
-(require 'comint)
-(require 'custom)
-(require 'cl)
-(require 'compile)
 (require 'ansi-color)
 (require 'cc-cmds)
-(require 'shell)
-;; (require 'python)
+(require 'cl)
+(require 'comint)
+(require 'compile)
+(require 'custom)
 (require 'flymake)
+(require 'hippie-exp)
 (require 'python-components-macros)
 (require 'python-components-nomacros)
+(require 'shell)
 (require 'thingatpt)
+;; (require 'python)
 
 (defgroup python-mode nil
   "Support for the Python programming language, <http://www.python.org/>"
@@ -2994,7 +2993,7 @@ This variant of `rx' supports common python named REGEXPS."
               word-end) . py-exception-name-face)
         ;; (,(rx (or space line-start) symbol-start "range
         ;; Builtins
-        (,(rx (or space 
+        (,(rx (or space
 		  ;; (syntax open-parenthesis)
 		  line-start) symbol-start
               (or "_" "__doc__" "__import__" "__name__" "__package__" "abs" "all"
@@ -12339,57 +12338,19 @@ Don't save anything for STR matching `py-input-filter-re' "
   (not (string-match py-input-filter-re str)))
 
 (make-obsolete 'jpython-mode 'jython-mode nil)
-(autoload 'comint-check-proc "comint")
 
 (add-to-list 'same-window-buffer-names (purecopy "*Python*"))
 (add-to-list 'same-window-buffer-names (purecopy "*IPython*"))
 
-;;; interpreter-mode-alist
-
-;;;
-;; It's handy to add recognition of Python files to the
-;; interpreter-mode-alist and to auto-mode-alist.  With the former, we
-;; can specify different `derived-modes' based on the #! line, but
-;; with the latter, we can't.  So we just won't add them if they're
-;; already added.
-
-;;;###autoload
 (add-to-list 'auto-mode-alist (cons (purecopy "\\.py\\'")  'python-mode))
-;;;###autoload
-(add-to-list 'interpreter-mode-alist (cons (purecopy "python") 'python-mode))
 
-(let ((modes '(("ipython" . python-mode)
-               ("ipython2" . python-mode)
-               ("ipython3" . python-mode)
-               ("jython" . jython-mode)
-               ("python" . python-mode)
-               ("python2" . python-mode)
-               ("python2.4" . python-mode)
-               ("python2.5" . python-mode)
-               ("python2.6" . python-mode)
-               ("python2.7" . python-mode)
-               ("python3" . python-mode)
-               ("python3.0" . python-mode)
-               ("python3.1" . python-mode)
-               ("python3.2" . python-mode)
-               ("python3.3" . python-mode)
-               ("python3.4" . python-mode)
-               )))
-  (while modes
-    (when (not (assoc (car modes) interpreter-mode-alist))
-      (push (car modes) interpreter-mode-alist))
-    (setq modes (cdr modes))))
+(add-to-list 'interpreter-mode-alist
+	     (cons (purecopy "[bi]*python[0-9.]*") 'python-mode))
 
-(when (not (or (rassq 'python-mode auto-mode-alist)
-               (rassq 'jython-mode auto-mode-alist)))
-  (push '("\\.py$" . python-mode) auto-mode-alist))
+(add-to-list 'interpreter-mode-alist
+	     (cons (purecopy "jython[0-9.]*") 'jython-mode))
 
-;; (add-to-list 'interpreter-mode-alist (cons (purecopy "jython") 'jython-mode))
-;; (add-to-list 'interpreter-mode-alist (cons (purecopy "python") 'python-mode))
-;; (add-to-list 'auto-mode-alist (cons (purecopy "\\.py\\'")  'python-mode))
-
-(autoload 'comint-get-source "comint")
-;;; auto-fill modes
+;; lp:1355458, what about using `magic-mode-alist'?
 
 (defun py--set-auto-fill-values ()
   "Internal use by `py--run-auto-fill-timer'"
