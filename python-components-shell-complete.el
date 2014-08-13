@@ -126,7 +126,7 @@ completions on the current context."
     (py--shell--do-completion-at-point proc imports word pos oldbuf code)))
 
 (defun py-shell-complete (&optional shell debug beg end word)
-  "Complete word before point, if any. Otherwise insert TAB. "
+  "Complete word before point, if any. "
   (interactive)
   (setq py-completion-last-window-configuration
         (current-window-configuration))
