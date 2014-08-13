@@ -932,14 +932,14 @@ def foo():
       "print(1)"
     (let ((py-fast-process-p t))
       (py-execute-statement)
-      (set-buffer py-output-buffer)
+      (set-buffer py-fast-output-buffer)
       (eq 1 (char-after)))))
 
 (ert-deftest py-ert-execute-statement-fast-2 ()
   (py-test-with-temp-buffer-point-min
       "print(2)"
     (py-execute-statement-fast)
-    (set-buffer py-output-buffer)
+    (set-buffer py-fast-output-buffer)
     (eq 2 (char-after))))
 
 (ert-deftest py-ert-execute-block-fast ()
@@ -950,7 +950,7 @@ def foo():
     (let ((py-fast-process-p t)
 	  (py-debug-p t))
       (py-execute-block)
-      (set-buffer py-output-buffer)
+      (set-buffer py-fast-output-buffer)
       (sit-for 0.2 t)
       (and py-debug-p (message "py-ert-execute-block-fast: %s" (current-buffer)) )
       (and py-debug-p (message "py-ert-execute-block-fast: %s" (buffer-substring-no-properties (point-min) (point-max))))
@@ -964,7 +964,7 @@ def foo():
     print(a)"
     (let ((py-fast-process-p t))
       (py-execute-block)
-      (set-buffer py-output-buffer)
+      (set-buffer py-fast-output-buffer)
       (goto-char (point-min)) 
       (should (eq 50 (char-after))))))
 

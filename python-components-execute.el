@@ -38,7 +38,7 @@ and return collected output"
          (proc (or proc (get-buffer-process procbuf)))
 	 (cmd (format "exec '''%s''' in {}"
 		      (mapconcat 'identity (split-string string "\n") "\\n")))
-         (outbuf (get-buffer-create (or output-buffer py-output-buffer))))
+         (outbuf (get-buffer-create (or output-buffer py-fast-output-buffer))))
     ;; wait is used only when a new py-shell buffer was connected
     (and wait (sit-for wait))
     (unwind-protect
@@ -524,7 +524,7 @@ Receives a buffer-name as argument"
 (defun py--guess-buffer-name (argprompt)
   "Guess the buffer-name core string. "
   (cond
-   ((and py-fast-process-p (not py-dedicated-process-p)) py-output-buffer)
+   ((and py-fast-process-p (not py-dedicated-process-p)) py-fast-output-buffer)
    ;; (buffer-name)
    (t (and (not dedicated) argprompt
            (cond
@@ -686,7 +686,7 @@ Default is interactive, i.e. py-fast-process-p nil, and `py-session'"
 
   (cond ((and py-fast-process-p py-dedicated-process-p)
 	 (py--buffer-name-prepare (default-value 'py-output-buffer)))
-        (py-fast-process-p py-output-buffer)
+        (py-fast-process-p py-fast-output-buffer)
         (t (py--buffer-name-prepare name))))
 
 (defun py--store-result-maybe (erg)
@@ -740,7 +740,7 @@ Default is interactive, i.e. py-fast-process-p nil, and `py-session'"
 		(t (getenv "HOME"))))
 	 (py-buffer-name
 	  (or py-buffer-name
-	      (and py-fast-process-p (default-value 'py-output-buffer))
+	      (and py-fast-process-p (default-value 'py-fast-output-buffer))
 	      (py--choose-buffer-name which-shell)))
 	 (filename (or (and filename (expand-file-name filename)) (and (not (buffer-modified-p)) (buffer-file-name))))
 	 (py-orig-buffer-or-file (or filename (current-buffer)))

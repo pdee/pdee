@@ -153,7 +153,7 @@ different value of `fill-column' than emacs-wide
   version used, it's path etc. 
 
   Result of commands ending  "-fast"
-  arrives in `py-output-buffer'
+  arrives in `py-fast-output-buffer'
   
 ;;;;;;;;;
 

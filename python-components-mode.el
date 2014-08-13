@@ -1705,11 +1705,17 @@ Default is nil "
           (const :tag "force" 'force))
   :group 'python-mode)
 
+(defvar py-fast-output-buffer "*Python Fast Output*"
+  "Output from py-fast-process arrives here")
+
 (defcustom py-output-buffer "*Python Output*"
-  ""
+  "Currently unused.
+
+Output arrives in interactive shell or py-fast-output-buffer"
   :type 'string
   :group 'python-mode)
 (make-variable-buffer-local 'py-output-buffer)
+
 
 (defcustom py-fast-output-buffer "*Python Fast Output*"
   ""
@@ -2836,6 +2842,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
 (require 'python-components-fast-forms)
 (require 'python-components-auto-fill)
 (require 'python-components-hide-show)
+(require 'python-components-fast-complete)
 (require 'highlight-indentation)
 
 (and py-load-skeletons-p (require 'python-components-skeletons))
@@ -5192,7 +5199,7 @@ Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil
 
 Process Python strings, being prepared for large output\.
 
-Result arrives in py-output-buffer, \"\\\*Python Output\\\*\" by default
+Result arrives in py-fast-output-buffer, \"\\\*Python Fast Output\\\*\" by default
 See also `py-fast-shell'"]
 
                   ["Process region fast" py-process-region-fast
@@ -5206,7 +5213,7 @@ See also `py-fast-shell'"]
 Process statement at point by a Python interpreter\.
 
 Suitable for large output, doesn't mess up interactive shell\.
-Result arrives in `py-output-buffer', which is not in
+Result arrives in `py-fast-output-buffer', which is not in
 comint-mode "]
 
                   ["Execute block fast" py-execute-block-fast
@@ -5215,7 +5222,7 @@ comint-mode "]
 Process block at point by a Python interpreter\.
 
 Suitable for large output, doesn't mess up interactive shell\.
-Result arrives in `py-output-buffer', which is not in
+Result arrives in `py-fast-output-buffer', which is not in
 comint-mode "]
 
                   ["Execute block or clause fast" py-execute-block-or-clause-fast
@@ -5224,7 +5231,7 @@ comint-mode "]
 Process block-or-clause at point by a Python interpreter\.
 
 Suitable for large output, doesn't mess up interactive shell\.
-Result arrives in `py-output-buffer', which is not in
+Result arrives in `py-fast-output-buffer', which is not in
 comint-mode "]
 
                   ["Execute def fast" py-execute-def-fast
@@ -5233,7 +5240,7 @@ comint-mode "]
 Process def at point by a Python interpreter\.
 
 Suitable for large output, doesn't mess up interactive shell\.
-Result arrives in `py-output-buffer', which is not in
+Result arrives in `py-fast-output-buffer', which is not in
 comint-mode "]
 
                   ["Execute class fast" py-execute-class-fast
@@ -5242,7 +5249,7 @@ comint-mode "]
 Process class at point by a Python interpreter\.
 
 Suitable for large output, doesn't mess up interactive shell\.
-Result arrives in `py-output-buffer', which is not in
+Result arrives in `py-fast-output-buffer', which is not in
 comint-mode "]
 
                   ["Execute def or class fast" py-execute-def-or-class-fast
@@ -5251,7 +5258,7 @@ comint-mode "]
 Process def-or-class at point by a Python interpreter\.
 
 Suitable for large output, doesn't mess up interactive shell\.
-Result arrives in `py-output-buffer', which is not in
+Result arrives in `py-fast-output-buffer', which is not in
 comint-mode "]
 
                   ["Execute expression fast" py-execute-expression-fast
@@ -5260,7 +5267,7 @@ comint-mode "]
 Process expression at point by a Python interpreter\.
 
 Suitable for large output, doesn't mess up interactive shell\.
-Result arrives in `py-output-buffer', which is not in
+Result arrives in `py-fast-output-buffer', which is not in
 comint-mode "]
 
                   ["Execute partial expression fast" py-execute-partial-expression-fast
@@ -5269,7 +5276,7 @@ comint-mode "]
 Process partial-expression at point by a Python interpreter\.
 
 Suitable for large output, doesn't mess up interactive shell\.
-Result arrives in `py-output-buffer', which is not in
+Result arrives in `py-fast-output-buffer', which is not in
 comint-mode "]
 
                   ["Execute top level fast" py-execute-top-level-fast
@@ -5278,7 +5285,7 @@ comint-mode "]
 Process top-level at point by a Python interpreter\.
 
 Suitable for large output, doesn't mess up interactive shell\.
-Result arrives in `py-output-buffer', which is not in
+Result arrives in `py-fast-output-buffer', which is not in
 comint-mode "]
 
                   ["Execute clause fast" py-execute-clause-fast
@@ -5287,7 +5294,7 @@ comint-mode "]
 Process clause at point by a Python interpreter\.
 
 Suitable for large output, doesn't mess up interactive shell\.
-Result arrives in `py-output-buffer', which is not in
+Result arrives in `py-fast-output-buffer', which is not in
 comint-mode "])
 
                  "-"
@@ -5572,7 +5579,7 @@ Commands prefixed \"py-fast-...\" suitable for large output
 
 See: large output makes Emacs freeze, lp:1253907
 
-Results arrive in py-output-buffer, which is not in comint-mode"
+Results arrive in py-fast-output-buffer, which is not in comint-mode"
 		     :style toggle :selected py-fast-process-p]
 
 		    ["Python mode v5 behavior"
@@ -9854,7 +9861,7 @@ Commands prefixed \"py-fast-...\" suitable for large output
 
 See: large output makes Emacs freeze, lp:1253907
 
-Results arrive in py-output-buffer, which is not in comint-mode"
+Results arrive in py-fast-output-buffer, which is not in comint-mode"
 		     :style toggle :selected py-fast-process-p]
 
 		    ["Python mode v5 behavior"

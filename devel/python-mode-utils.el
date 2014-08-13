@@ -269,7 +269,7 @@
 \(defun py-fast-process (&optional buffer)
   \"Connect am (I)Python process suitable for large output.
 
-Output arrives in py-output-buffer, \\\"\\\*Python Output\\\*\\\" by default
+Output arrives in py-fast-output-buffer, \\\"\\\*Python Fast Output\\\*\\\" by default
 It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to the freeze reported by lp:1253907\"
   (interactive)
   (let ((this-buffer
@@ -278,25 +278,25 @@ It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to t
     (let ((proc (start-process py-shell-name this-buffer py-shell-name)))
       (with-current-buffer this-buffer
         (erase-buffer))
-      (setq py-output-buffer this-buffer)
+      (setq py-fast-output-buffer this-buffer)
       proc)))
 
 \(defun py--fast-send-string (string)
   \"Process Python strings, being prepared for large output.
 
-Output arrives in py-output-buffer, \\\"\\\*Python Output\\\*\\\" by default
+Output arrives in py-fast-output-buffer, \\\"\\\*Python Fast Output\\\*\\\" by default
 See also `py-fast-shell'
 
 \"
-  (let ((proc (or (get-buffer-process (get-buffer py-output-buffer))
+  (let ((proc (or (get-buffer-process (get-buffer py-fast-output-buffer))
                   (py-fast-process))))
-    ;;    (with-current-buffer py-output-buffer
+    ;;    (with-current-buffer py-fast-output-buffer
     ;;      (erase-buffer))
     (process-send-string proc string)
     (or (string-match \"\\n\$\" string)
 	(process-send-string proc \"\\n\"))
     (accept-process-output proc 1)
-    (switch-to-buffer py-output-buffer)
+    (switch-to-buffer py-fast-output-buffer)
     (beginning-of-line)
     (skip-chars-backward \"\\r\\n\")
     (delete-region (point) (point-max))))
@@ -311,7 +311,7 @@ See also `py-fast-shell'
   \"Process " ele " at point by a Python interpreter.
 
 Suitable for large output, doesn't mess up interactive shell.
-Result arrives in `py-output-buffer', which is not in
+Result arrives in `py-fast-output-buffer', which is not in
 comint-mode\"\n"))
       (insert (concat "  (interactive)
   (let ((py-fast-process-p t))

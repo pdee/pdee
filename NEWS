@@ -170,7 +170,7 @@ New booleans
 - py-fast-process-p
   If `t', stuff is executed through `py-fast-...'-
   commands, suitable for large output. Result arrives
-  in py-output-buffer, which is not in comint-mode
+  in py-fast-output-buffer, which is not in comint-mode
 
 Dropped booleans:
 `py-start-run-py-shell',
