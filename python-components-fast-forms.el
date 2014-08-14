@@ -34,6 +34,7 @@ Return the process"
   (let ((this-buffer
 	 (set-buffer (or (and buffer (get-buffer-create buffer))
 			 (get-buffer-create (default-value 'py-fast-output-buffer))))))
+    (erase-buffer)
     (let ((proc
 	   (or (get-buffer-process this-buffer)
 
@@ -57,6 +58,26 @@ See also `py-fast-shell'
     (py--fast-send-string-intern string proc buffer)
     (py--postprocess buffer)))
 
+(defun py--fast-send-string-no-output (string &optional proc)
+  "Process Python string, ignore output.
+
+Used to update Python process
+
+Result arrives in py-fast-output-buffer, \"\*Python Fast Output\*\" by default
+See also `py-fast-shell'
+
+"
+  (let* (
+	 ;; (windows-config (or windows-config (window-configuration-to-register 313465889)))
+	 (proc (or proc
+		   (ignore-errors (get-buffer-process (get-buffer py-buffer-name)))
+		   (py-fast-process)))
+	 (buffer (process-buffer proc)))
+    (py--fast-send-string-intern string proc buffer)
+    (switch-to-buffer buffer)
+    ;; (py--postprocess buffer)
+))
+
 (defun py--fast-send-string-intern (string proc output-buffer)
   (let (erg)
     (process-send-string proc string)
@@ -64,6 +85,7 @@ See also `py-fast-shell'
     (accept-process-output proc 5)
     (sit-for 0.01)
     (set-buffer output-buffer)
+    (switch-to-buffer (current-buffer))
     ;; delete last line prompts
     (delete-region (point) (progn (skip-chars-backward "^\n")(point)))
     (delete-region (point) (progn (skip-chars-backward "\n\r \t\f")(point)))
@@ -72,7 +94,7 @@ See also `py-fast-shell'
       (replace-match ""))
     (and py-store-result-p
 	 (setq erg (buffer-substring-no-properties (point-min) (point-max)))
-	 (kill-new erg)
+	 (unless (string= "" erg)(kill-new erg))
 	 erg)))
 
 (defun py-process-region-fast (beg end)
