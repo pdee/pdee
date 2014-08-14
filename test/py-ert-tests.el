@@ -833,7 +833,7 @@ def foo():
     (let ((py-shell-name "python"))
       (py-execute-expression)
       (set-buffer ert-test-default-buffer)
-      (switch-to-buffer (current-buffer)) 
+      (switch-to-buffer (current-buffer))
       (and (should
 	    (or
 	     (search-backward "py-execute-expression-test" nil t 1)

@@ -44,7 +44,7 @@ Return the process"
       ;; (setq py-fast-output-buffer this-buffer)
       proc)))
 
-(defun py--fast-send-string (string &optional windows-config)
+(defun py--fast-send-string (string &optional proc windows-config)
   "Process Python strings, being prepared for large output.
 
 Result arrives in py-fast-output-buffer, \"\*Python Fast Output\*\" by default
@@ -52,11 +52,18 @@ See also `py-fast-shell'
 
 "
   (let* ((windows-config (or windows-config (window-configuration-to-register 313465889)))
-	(proc (or (ignore-errors (get-buffer-process (get-buffer py-buffer-name)))
-                  (py-fast-process)))
-	(buffer (process-buffer proc)))
-    (py--fast-send-string-intern string proc buffer)
-    (py--postprocess buffer)))
+	 (proc (or proc
+		   (ignore-errors (get-buffer-process (get-buffer py-buffer-name)))
+		   (py-fast-process)))
+	 (buffer (process-buffer proc)))
+    (py--fast-send-string-intern string proc buffer)))
+
+(defun py-fast-send-string (string)
+  "Evaluate STRING in Python process which is not in comint-mode.
+
+From a programm use `py--fast-send-string'"
+  (interactive "sPython command: ")
+  (py--fast-send-string string))
 
 (defun py--fast-send-string-no-output (string &optional proc)
   "Process Python string, ignore output.
@@ -74,28 +81,24 @@ See also `py-fast-shell'
 		   (py-fast-process)))
 	 (buffer (process-buffer proc)))
     (py--fast-send-string-intern string proc buffer)
-    (switch-to-buffer buffer)
-    ;; (py--postprocess buffer)
-))
+    (switch-to-buffer buffer)))
 
 (defun py--fast-send-string-intern (string proc output-buffer)
-  (let (erg)
-    (process-send-string proc string)
+  (with-current-buffer output-buffer
+    (widen)
+    (erase-buffer)
     (process-send-string proc "\n")
-    (accept-process-output proc 5)
-    (sit-for 0.01)
-    (set-buffer output-buffer)
-    (switch-to-buffer (current-buffer))
-    ;; delete last line prompts
-    (delete-region (point) (progn (skip-chars-backward "^\n")(point)))
-    (delete-region (point) (progn (skip-chars-backward "\n\r \t\f")(point)))
-    (goto-char (point-min))
-    (while (looking-at py-fast-filter-re)
-      (replace-match ""))
-    (and py-store-result-p
-	 (setq erg (buffer-substring-no-properties (point-min) (point-max)))
-	 (unless (string= "" erg)(kill-new erg))
-	 erg)))
+    (let ((orig (point)))
+      (process-send-string proc string)
+      (process-send-string proc "\n")
+      (accept-process-output proc 5)
+      (setq py-result (replace-regexp-in-string py-fast-filter-re "" (buffer-substring-no-properties orig (point-max))))
+      ;; remove trailing newline
+      (and (string-match "\n$" py-result)
+	   (setq py-result (substring py-result 0 (match-beginning 0))))
+      (and py-store-result-p (not (string= "" py-result))
+	   (kill-new py-result)
+	   py-result))))
 
 (defun py-process-region-fast (beg end)
   (interactive "r")
