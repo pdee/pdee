@@ -357,6 +357,9 @@ Give some hints, if not."
 (defvar highlight-indent-active nil)
 (defvar autopair-mode nil)
 
+(defvar py-result nil
+  "Internally used. May store result from Python process. ")
+
 (defvar py-error nil
   "Internally used. Takes the error-messages from Python process. ")
 
