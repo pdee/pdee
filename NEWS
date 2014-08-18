@@ -4,11 +4,26 @@ Python Mode News
 New in version 6.1.4
 ---------------------
 
+- Support for large output
+  new commands py-fast-process, py-fast-...
+  Fixes: large output makes Emacs freeze, lp:1253907
+
+  Python code now might be processed by an
+  - interactive Python shell (DEFAULT)
+  - non-interactive Python (`py-fast-process-p', if large output)
+
+  Both processes might run in
+  - session, i.e. start from possible previous state (DEFAULT)
+  - dedicated, (`py-dedicated-process-p', run in separate process)
+
 - TAB bound to `py-indent-or-complete', completes at EOL.
   Calls to `tab-to-tab-stop' removed, as these would conflict.
   Use `C-q TAB' to insert a literally TAB-character.
 
-- auto-completion calling `py-shell-complete'
+- py-fast-complete
+  Complete word before point, if any, use `py-fast-process
+
+- built-in auto-completion 
   `py-auto-completion-mode-p' might be switched from menu
 
 - `py-shell' uses new `py-shell-mode', `py-shell-mode-map'
@@ -29,18 +44,6 @@ New in version 6.1.4
 
 - C-u py-shell RET prompts for a Path/To/Executable
   Py-shell-buffer will display its acronym: "*PTE Python*"
-
-- Support for large output
-  new commands py-fast-process, py-fast-...
-  Fixes: large output makes Emacs freeze, lp:1253907
-
-  Python code now might be processed by an
-  - interactive Python shell (DEFAULT)
-  - non-interactive Python (`py-fast-process-p', if large output)
-
-  Both processes might run in
-  - session, i.e. start from possible previous state (DEFAULT)
-  - dedicated, (`py-dedicated-process-p', run in separate process)
 
 - info-lookup-symbol made working with Python
   patched python-info.el available at

@@ -51,9 +51,8 @@ Result arrives in py-fast-output-buffer, \"\*Python Fast Output\*\" by default
 See also `py-fast-shell'
 
 "
-  (let* ((windows-config (or windows-config (window-configuration-to-register 313465889)))
-	 (proc (or proc
-		   (ignore-errors (get-buffer-process (get-buffer py-buffer-name)))
+  (let* ((proc (or proc
+		   (ignore-errors (get-buffer-process (get-buffer py-fast-output-buffer)))
 		   (py-fast-process)))
 	 (buffer (process-buffer proc)))
     (py--fast-send-string-intern string proc buffer)))
@@ -74,14 +73,25 @@ Result arrives in py-fast-output-buffer, \"\*Python Fast Output\*\" by default
 See also `py-fast-shell'
 
 "
-  (let* (
-	 ;; (windows-config (or windows-config (window-configuration-to-register 313465889)))
-	 (proc (or proc
-		   (ignore-errors (get-buffer-process (get-buffer py-buffer-name)))
+  (let* ((proc (or proc
+		   (ignore-errors (get-buffer-process (get-buffer py-fast-output)))
 		   (py-fast-process)))
-	 (buffer (process-buffer proc)))
-    (py--fast-send-string-intern string proc buffer)
-    (switch-to-buffer buffer)))
+	 (buffer (process-buffer proc))
+	 py-store-result-p)
+    (py--fast-send-string-intern string proc buffer)))
+
+(defun py--filter-result ()
+  "Set `py-result' according to `py-fast-filter-re'.
+
+Remove trailing newline"
+  (setq py-result (replace-regexp-in-string py-fast-filter-re "" (buffer-substring-no-properties orig (point-max))))
+  ;; remove trailing newline
+  (and (string-match "\n$" py-result)
+       (setq py-result (substring py-result 0 (match-beginning 0))))
+  (and py-store-result-p
+       (not (string= "" py-result))
+       (kill-new py-result))
+  (setq py-result (split-string py-result "\n")))
 
 (defun py--fast-send-string-intern (string proc output-buffer)
   (with-current-buffer output-buffer
@@ -92,13 +102,12 @@ See also `py-fast-shell'
       (process-send-string proc string)
       (process-send-string proc "\n")
       (accept-process-output proc 5)
-      (setq py-result (replace-regexp-in-string py-fast-filter-re "" (buffer-substring-no-properties orig (point-max))))
-      ;; remove trailing newline
-      (and (string-match "\n$" py-result)
-	   (setq py-result (substring py-result 0 (match-beginning 0))))
-      (and py-store-result-p (not (string= "" py-result))
-	   (kill-new py-result)
-	   py-result))))
+      ;; `py--fast-send-string-no-output' sets `py-store-result-p' to
+      ;; nil
+      (when (or py-store-result-p py-return-result-p)
+	(py--filter-result))
+      (when py-return-result-p
+	py-result))))
 
 (defun py-process-region-fast (beg end)
   (interactive "r")

@@ -1,4 +1,13 @@
-with-output-to-temp-buffer, 
+* in py-shell
+  (args
+	  (cond (py-fast-process-p nil)
+* py-auto-completion-mode-p
+* Complete from end-of-word only
+* Warning: defvar ignored because hs-minor-mode is let-bound
+  Warning: defvar ignored because hs-minor-mode is let-bound
+  Making hs-minor-mode buffer-local while let-bound!
+
+*  with-output-to-temp-buffer, 
 * py-orig-buffer-or-file
 * py-remove-cwd-from-path
 * sys.version_info

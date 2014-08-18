@@ -199,6 +199,11 @@ Default is nil"
 :type 'boolean
 :group 'python-mode)
 
+(defvar py-return-result-p t
+ "Internally used. When non-nil, return resulting string of `py-execute-...' functions. Imports will use it with nil.
+
+Default is t")
+
 (defcustom py-hide-show-minor-mode-p nil
   "If hide-show minor-mode should be on, default is nil. "
 

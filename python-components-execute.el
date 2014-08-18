@@ -617,7 +617,7 @@ Takes a buffer as argument. "
     (and (bufferp py-exception-buffer)(string= py-buffer-name (buffer-name py-exception-buffer))
 	 (setq py-buffer-name (generate-new-buffer-name py-buffer-name)))
     (if (and py-fast-process-p
-	     ;; user may want just to open a interactive shell
+	     ;; user rather wants an interactive shell
 	     (not (interactive-p)))
 	(unless (get-buffer-process (get-buffer (default-value 'py-buffer-name)))
 	  (py-fast-process)
@@ -674,7 +674,7 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 (defun py--choose-buffer-name (&optional name)
   "Python code might be processed by an
 - interactive Python shell (DEFAULT)
-- non-interactive Python (py-fast-process-p), select for large
+- non-interactive Python py-fast-process-p, select for large
   output
 
 Both processes might run in

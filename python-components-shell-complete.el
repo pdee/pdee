@@ -125,15 +125,7 @@ completions on the current context."
 		 python-shell-module-completion-string-code)))
     (py--shell--do-completion-at-point proc imports word pos oldbuf code)))
 
-(defun py-shell-complete (&optional shell debug beg end word)
-  "Complete word before point, if any. "
-  (interactive)
-  (save-excursion
-    (and (buffer-live-p (get-buffer "*Python Completions*"))
-	 (py-kill-buffer-unconditional "*Python Completions*")))
-  (setq py-completion-last-window-configuration
-        (current-window-configuration))
-  (when debug (setq py-shell-complete-debug nil))
+(defun py--complete-prepare (shell debug beg end word fast-complete)
   (let* ((oldbuf (current-buffer))
          (pos (copy-marker (point)))
 	 (pps (syntax-ppss))
@@ -161,13 +153,24 @@ completions on the current context."
 			 (list (replace-regexp-in-string "\n" "" (shell-command-to-string (concat "find / -maxdepth 1 -name " ausdruck))))))
          (imports (py-find-imports))
          py-fontify-shell-buffer-p completion-buffer erg)
-    (sit-for 0.1 t)
-    (cond ((and in-string filenames)
+    (cond (fast-complete (py--fast-complete-base shell pos beg end word imports debug oldbuf))
+	  ((and in-string filenames)
 	   (when (setq erg (try-completion (concat "/" word) filenames))
 	     (delete-region beg end)
 	     (insert erg)))
 	  (t (py--complete-base shell pos beg end word imports debug oldbuf)))
     nil))
+
+(defun py-shell-complete (&optional shell debug beg end word)
+  "Complete word before point, if any. "
+  (interactive)
+  (save-excursion
+    (and (buffer-live-p (get-buffer "*Python Completions*"))
+	 (py-kill-buffer-unconditional "*Python Completions*")))
+  (setq py-completion-last-window-configuration
+        (current-window-configuration))
+  (when debug (setq py-shell-complete-debug nil))
+  (py--complete-prepare shell debug beg end word nil))
 
 (defun py-indent-or-complete ()
   "Complete or indent depending on the context.
@@ -179,7 +182,7 @@ Use `C-q TAB' to insert a literally TAB-character "
   (interactive "*")
   (if (member (char-before)(list 32 10 9))
       (py-indent-line)
-    (py-shell-complete)))
+    (funcall py-complete-function)))
 
 
 (provide 'python-components-shell-complete)

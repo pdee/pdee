@@ -190,7 +190,6 @@ result = some_function_that_takes_arguments(
 ''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
 '''
 "
-    ;; (switch-to-buffer (current-buffer))
   (message "comment-start: %s" comment-start)
   (goto-char 592)
   ;; (sit-for 1)
@@ -920,27 +919,38 @@ def foo():
     (set-buffer buffer)
     (delete-other-windows)
     (let ((full-height (window-height)))
-      ;; (switch-to-buffer (current-buffer))
       (py-send-string "import os" (get-buffer-process (current-buffer)))
       (sit-for 0.1)
       (insert "print(os.get")
       (call-interactively 'py-shell-complete)
       (should (< (window-height) full-height)))))
 
+;;; fast-process
+(ert-deftest py-ert-fast-complete-1 ()
+  (py-test-with-temp-buffer
+      "pri"
+    (let ((py-return-result-p t)
+	  py-result py-store-result-p)
+      (py-fast-complete)
+      (should (eq (char-before) 40)))))
+
 (ert-deftest py-ert-execute-statement-fast-1 ()
   (py-test-with-temp-buffer-point-min
       "print(1)"
-    (let ((py-fast-process-p t))
+    (let ((py-fast-process-p t)
+	  (py-return-result-p t)
+	  py-result py-store-result-p)
       (py-execute-statement)
-      (set-buffer py-fast-output-buffer)
-      (eq 1 (char-after)))))
+      (should (string= "1"(car py-result))))))
 
 (ert-deftest py-ert-execute-statement-fast-2 ()
   (py-test-with-temp-buffer-point-min
       "print(2)"
-    (py-execute-statement-fast)
-    (set-buffer py-fast-output-buffer)
-    (eq 2 (char-after))))
+    (let ((py-fast-process-p t)
+	  (py-return-result-p t)
+	  py-result py-store-result-p)
+      (py-execute-statement-fast)
+      (should (string= "2" (car py-result))))))
 
 (ert-deftest py-ert-execute-block-fast ()
   (py-test-with-temp-buffer-point-min
@@ -948,26 +958,29 @@ def foo():
     a = 1
     print(a)"
     (let ((py-fast-process-p t)
-	  (py-debug-p t))
+	  (py-return-result-p t)
+	  (py-debug-p t)
+	  py-result)
       (py-execute-block)
-      (set-buffer py-fast-output-buffer)
-      (sit-for 0.2 t)
-      (and py-debug-p (message "py-ert-execute-block-fast: %s" (current-buffer)) )
-      (and py-debug-p (message "py-ert-execute-block-fast: %s" (buffer-substring-no-properties (point-min) (point-max))))
-      (goto-char (point-min))
-      (should (eq 49 (char-after))))))
+      (should (string= "1" (car py-result))))))
 
 (ert-deftest py-ert-execute-block-fast-2 ()
   (py-test-with-temp-buffer-point-min
-      "if True:
-    a += 1
+      "try:
+    a
+except NameError:
+    a=1
+finally:
+    a+=1
     print(a)"
-    (let ((py-fast-process-p t))
+    (let ((py-fast-process-p t)
+	  (py-return-result-p t)
+	  (py-debug-p t)
+	  py-result)
       (py-execute-block)
-      (set-buffer py-fast-output-buffer)
-      (goto-char (point-min)) 
-      (should (eq 50 (char-after))))))
+      (should (string< (car py-result) (cadr py-result))))))
 
+;;;
 (ert-deftest py-ert-keyword-face-lp-1294742 ()
   (py-test-with-temp-buffer-point-min
       " and as assert break continue del elif else except exec finally for global if in is lambda not or pass raise return while with yield"
@@ -989,7 +1002,6 @@ def foo():
     (py-test-with-temp-buffer-point-min
 	" _ __doc__ __import__ __name__ __package__ abs all any apply basestring bin bool buffer bytearray bytes callable chr classmethod cmp coerce compile complex delattr dict dir divmod enumerate eval execfile file filter float format frozenset getattr globals hasattr hash help hex id input int intern isinstance issubclass iter len list locals long map max min next object oct open ord pow print property range raw_input reduce reload repr reversed round set setattr slice sorted staticmethod str sum super tuple type unichr unicode vars xrange zip"
       (font-lock-fontify-buffer)
-;;      (switch-to-buffer (current-buffer))
       (while (and (not (eobp))(< 0 (skip-chars-forward " ")))
 	(should (eq 'py-builtins-face (get-char-property (point) 'face)))
 	(skip-chars-forward "^ \n")))))
@@ -1019,7 +1031,6 @@ def foo():
 	  py-switch-buffers-on-execute-p)
       (py-execute-buffer)
       (set-buffer "*IPython*")
-      ;; (switch-to-buffer (current-buffer)) 
       (sit-for 0.1 t)
       (should (search-backward "1")))))
 
