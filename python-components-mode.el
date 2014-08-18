@@ -736,7 +736,7 @@ mark-defun marks top-level form at point etc."
           )
   :group 'python-mode)
 
-(defcustom py-complete-function 'py-shell-complete
+(defcustom py-complete-function 'py-fast-complete
   "When set, enforces function todo completion, default is nil.
 
 Normally python-mode know best which function to use. "
@@ -745,6 +745,7 @@ Normally python-mode know best which function to use. "
           (const :tag "Pymacs and company based py-complete" py-complete)
           (const :tag "py-shell-complete" py-shell-complete)
           (const :tag "py-indent-or-complete" py-indent-or-complete)
+	  (const :tag "py-fast-complete" py-fast-complete)
           )
   :group 'python-mode)
 ;; (make-variable-buffer-local 'py-complete-function)
