@@ -1,3 +1,5 @@
+* py-mode-output-map
+* python-mode-utils.el aktualisieren - fast-process Output buffer 
 * in py-shell
   (args
 	  (cond (py-fast-process-p nil)

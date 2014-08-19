@@ -269,7 +269,7 @@
 \(defun py-fast-process (&optional buffer)
   \"Connect am (I)Python process suitable for large output.
 
-Output arrives in py-fast-output-buffer, \\\"\\\*Python Fast Output\\\*\\\" by default
+Output buffer displays \\\"Fast\\\"  by default
 It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to the freeze reported by lp:1253907\"
   (interactive)
   (let ((this-buffer
@@ -278,13 +278,12 @@ It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to t
     (let ((proc (start-process py-shell-name this-buffer py-shell-name)))
       (with-current-buffer this-buffer
         (erase-buffer))
-      (setq py-fast-output-buffer this-buffer)
       proc)))
 
 \(defun py--fast-send-string (string)
   \"Process Python strings, being prepared for large output.
 
-Output arrives in py-fast-output-buffer, \\\"\\\*Python Fast Output\\\*\\\" by default
+Output buffer displays \\\"Fast\\\"  by default
 See also `py-fast-shell'
 
 \"
@@ -311,8 +310,7 @@ See also `py-fast-shell'
   \"Process " ele " at point by a Python interpreter.
 
 Suitable for large output, doesn't mess up interactive shell.
-Result arrives in `py-fast-output-buffer', which is not in
-comint-mode\"\n"))
+Output buffer not in comint-mode, displays \\\"Fast\\\"  by default\"\n"))
       (insert (concat "  (interactive)
   (let ((py-fast-process-p t))
     (py--execute-prepare \"" ele "\")))\n\n")))

@@ -1,4 +1,4 @@
-;;; py-ert-tests.el --- Tests, some adapted from python.el
+;; py-ert-tests.el --- Tests, some adapted from python.el
 
 ;; Copyright (C) 2013 Free Software Foundation, Inc.
 ;; Copyright (C) 2014 Andreas Roehler, <andreas.roehler@online.de>

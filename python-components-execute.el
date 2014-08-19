@@ -38,7 +38,8 @@ and return collected output"
          (proc (or proc (get-buffer-process procbuf)))
 	 (cmd (format "exec '''%s''' in {}"
 		      (mapconcat 'identity (split-string string "\n") "\\n")))
-         (outbuf (get-buffer-create (or output-buffer py-fast-output-buffer))))
+	 ;; TBD remove redundant outbuf
+         (outbuf procbuf))
     ;; wait is used only when a new py-shell buffer was connected
     (and wait (sit-for wait))
     (unwind-protect
@@ -322,11 +323,12 @@ interpreter.
       (setq erg (cdr erg)))
     (butlast liste)))
 
-(defun py--buffer-name-prepare (&optional arg dedicated)
+(defun py--buffer-name-prepare (&optional arg dedicated fast-process)
   "Return an appropriate name to display in modeline.
 SEPCHAR is the file-path separator of your system. "
   (let* ((name-first (or arg py-shell-name))
 	 (erg (when name-first (if (stringp name-first) name-first (prin1-to-string name-first))))
+	 (fast-process (or fast-process py-fast-process-p))
 	 prefix suffix liste)
     ;; remove suffix
     (when (string-match "[.]" erg)
@@ -353,18 +355,19 @@ SEPCHAR is the file-path separator of your system. "
 	    (setq prefix (py--compose-buffer-name-initials prefix))))
       (setq erg (or arg py-shell-name))
       (setq prefix nil))
+    (when fast-process (setq erg (concat erg " Fast")))
 
     ;; (setq name (substring name (1+ (string-match "/[^/]+\\|\\\\[[:alnum:].]+$" name)))))
     (setq erg
-          (cond ((string= "ipython" erg)
+          (cond ((string-match "^ipython" erg)
                  (replace-regexp-in-string "ipython" "IPython" erg))
-                ((string= "jython" erg)
+                ((string-match "^jython" erg)
                  (replace-regexp-in-string "jython" "Jython" erg))
-                ((string= "python" erg)
+                ((string-match "^python" erg)
                  (replace-regexp-in-string "python" "Python" erg))
-                ((string-match "python2" erg)
+                ((string-match "^python2" erg)
                  (replace-regexp-in-string "python2" "Python2" erg))
-                ((string-match "python3" erg)
+                ((string-match "^python3" erg)
                  (replace-regexp-in-string "python3" "Python3" erg))
                 (t erg)))
     (when (or dedicated py-dedicated-process-p)
@@ -523,17 +526,15 @@ Receives a buffer-name as argument"
 
 (defun py--guess-buffer-name (argprompt)
   "Guess the buffer-name core string. "
-  (cond
-   ((and py-fast-process-p (not py-dedicated-process-p)) py-fast-output-buffer)
-   ;; (buffer-name)
-   (t (and (not dedicated) argprompt
+   (and (not dedicated) argprompt
            (cond
             ((and (eq 2 (prefix-numeric-value argprompt))
                   (fboundp 'split-string))
              (setq args (split-string
                          (read-string "Py-Shell arguments: "
                                       (concat
-                                       (mapconcat 'identity py-python-command-args " ") " "))))))))))
+                                       (mapconcat 'identity py-python-command-args " ") " "))))))))
+
 
 (defun py--configured-shell (name)
   "Return the configured PATH/TO/STRING if any. "
@@ -563,7 +564,13 @@ Takes a buffer as argument. "
 	    (font-lock-unfontify-region (point-min) erg)
 	  (progn (and py-debug-p (message "%s" (concat "py--unfontify-banner: Don't see a prompt in buffer " (buffer-name buffer))))))))))
 
-(defun py-shell (&optional argprompt dedicated shell buffer-name)
+(defun py--start-fast-process (shell buffer)
+  (let ((proc (start-process shell buffer shell)))
+    (with-current-buffer buffer
+      (erase-buffer))
+    proc))
+
+(defun py-shell (&optional argprompt dedicated shell buffer-name fast-process)
   "Start an interactive Python interpreter in another window.
   Interactively, \\[universal-argument] prompts for a PATH/TO/EXECUTABLE to use.
   \\[universal-argument] 2 prompts for `py-python-command-args'.
@@ -577,6 +584,7 @@ Takes a buffer as argument. "
   (interactive "P")
   ;; done by py-shell-mode
   (let* ((iact (ignore-errors (eq 1 argprompt))) ;; interactively?
+	 (fast-process (or fast-process py-fast-process-p))
 	 (newpath (when (eq 4 (prefix-numeric-value argprompt))
 		    (read-shell-command "PATH/TO/EXECUTABLE/[I]python[version]: ")))
 	 (oldbuf (current-buffer))
@@ -587,7 +595,7 @@ Takes a buffer as argument. "
 			    ;; (py--configured-shell (py-choose-shell))
 			    (py-choose-shell)))
 	 (args
-	  (cond (py-fast-process-p nil)
+	  (cond (fast-process nil)
 		((string-match "^[Ii]" py-shell-name)
 		 py-ipython-command-args)
 		((string-match "^[^-]+3" py-shell-name)
@@ -608,7 +616,7 @@ Takes a buffer as argument. "
 	    (when py-use-local-default
 	      (error "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'"))))
 	 (py-buffer-name (or buffer-name (py--guess-buffer-name argprompt)))
-	 (py-buffer-name (or py-buffer-name (py--buffer-name-prepare newpath dedicated)))
+	 (py-buffer-name (or py-buffer-name (py--buffer-name-prepare newpath dedicated fast-process)))
 	 (executable (cond (py-shell-name)
 			   (py-buffer-name
 			    (py--report-executable py-buffer-name))))
@@ -616,12 +624,11 @@ Takes a buffer as argument. "
     ;; lp:1169687, if called from within an existing py-shell, open a new one
     (and (bufferp py-exception-buffer)(string= py-buffer-name (buffer-name py-exception-buffer))
 	 (setq py-buffer-name (generate-new-buffer-name py-buffer-name)))
-    (if (and py-fast-process-p
+    (if fast-process
 	     ;; user rather wants an interactive shell
-	     (not (interactive-p)))
-	(unless (get-buffer-process (get-buffer (default-value 'py-buffer-name)))
-	  (py-fast-process)
-	  (setq py-output-buffer (default-value 'py-buffer-name)))
+	(unless (get-buffer-process (get-buffer py-buffer-name))
+	  (py--start-fast-process py-shell-name py-buffer-name)
+	  (setq py-output-buffer py-buffer-name))
       (unless (comint-check-proc py-buffer-name)
 	;; buffer might exist but not being empty
 	(when (buffer-live-p py-buffer-name)
@@ -683,11 +690,7 @@ Both processes might run in
 - dedicated, open or follow a separate line of execution
 
 Default is interactive, i.e. py-fast-process-p nil, and `py-session'"
-
-  (cond ((and py-fast-process-p py-dedicated-process-p)
-	 (py--buffer-name-prepare (default-value 'py-output-buffer)))
-        (py-fast-process-p py-fast-output-buffer)
-        (t (py--buffer-name-prepare name))))
+  (py--buffer-name-prepare name))
 
 (defun py--store-result-maybe (erg)
   "If no error occurred and `py-store-result-p' store result for yank. "
@@ -721,10 +724,11 @@ Default is interactive, i.e. py-fast-process-p nil, and `py-session'"
 	     end)))
 	 ;; argument SHELL might be a string like "python", "IPython" "python3", a symbol holding PATH/TO/EXECUTABLE or just a symbol like 'python3
 	 (which-shell
-	  (if shell (progn
-		      (or (stringp shell) shell)
-		      (ignore-errors (eval shell))
-		      (and (symbolp shell) (prin1-to-string shell)))
+	  (if shell
+	      ;; shell might be specified in different ways
+	      (or (and (stringp shell) shell)
+		  (ignore-errors (eval shell))
+		  (and (symbolp shell) (prin1-to-string shell)))
 	    (py-choose-shell)))
 	 (py-exception-buffer (current-buffer))
 	 (execute-directory
@@ -740,13 +744,12 @@ Default is interactive, i.e. py-fast-process-p nil, and `py-session'"
 		(t (getenv "HOME"))))
 	 (py-buffer-name
 	  (or py-buffer-name
-	      (and py-fast-process-p (default-value 'py-fast-output-buffer))
 	      (py--choose-buffer-name which-shell)))
 	 (filename (or (and filename (expand-file-name filename)) (and (not (buffer-modified-p)) (buffer-file-name))))
 	 (py-orig-buffer-or-file (or filename (current-buffer)))
 	 (proc (cond (proc)
 		     ;; will deal with py-dedicated-process-p also
-		     (py-fast-process-p (py-fast-process py-buffer-name))
+		     (py-fast-process-p (get-buffer-process (py-fast-process py-buffer-name)))
 		     (py-dedicated-process-p
 		      (get-buffer-process (py-shell nil py-dedicated-process-p which-shell py-buffer-name)))
 		     (t (or (get-buffer-process py-buffer-name)
@@ -760,7 +763,7 @@ Default is interactive, i.e. py-fast-process-p nil, and `py-session'"
     (erase-buffer)
     (py--fast-send-string-intern strg
 				 proc
-				 output-buffer)
+				 output-buffer py-store-result-p py-return-result-p)
     (sit-for 0.1)
     (py--shell-manage-windows output-buffer)))
 
