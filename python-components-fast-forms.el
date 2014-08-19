@@ -38,7 +38,7 @@ Return the process"
 
 Remove trailing newline"
   (setq py-result (replace-regexp-in-string py-fast-filter-re "" (buffer-substring-no-properties orig pos)))
-  (sit-for 1 t) 
+  (sit-for 1 t)
   ;; remove trailing newline
   (and (string-match "\n$" py-result)
        (setq py-result (substring py-result 0 (match-beginning 0))))
@@ -59,6 +59,7 @@ Remove trailing newline"
       ;; `py--fast-send-string-no-output' sets `py-store-result-p' to
       ;; nil
       (when (or store return)
+	(sit-for py-fast-completion-delay t)
 	(py--filter-result orig (point-max) store))
       (when return
 	py-result))))

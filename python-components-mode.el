@@ -262,6 +262,12 @@ Default is  nil"
   :type 'integer
   :group 'python-mode)
 
+(defcustom py-fast-completion-delay 0.1
+  "Used by py--fast-send-string-intern. "
+
+  :type 'float
+  :group 'python-mode)
+
 (defcustom py-new-shell-delay
     (if (eq system-type 'windows-nt)
       2.0
