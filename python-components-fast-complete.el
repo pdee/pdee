@@ -83,7 +83,8 @@ Use `py-fast-process' "
   (interactive)
   (setq py-completion-last-window-configuration
         (current-window-configuration))
-  (let ((py-fast-process-p t)
+  (let (py-switch-buffers-on-execute-p
+	(py-fast-process-p t)
 	(py-fast-complete-p t)
 	(py-return-result-p t))
     (py--complete-prepare shell debug beg end word t)))

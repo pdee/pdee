@@ -650,7 +650,8 @@ With FAST-PROCESS, connect a Python-process to a buffer not in comint-mode
 	    (with-current-buffer py-buffer-name
 	      (py--shell-setup py-buffer-name (get-buffer-process py-buffer-name)))
 	  (error (concat "py-shell: No process in " py-buffer-name)))))
-    (when (or (interactive-p)py-switch-buffers-on-execute-p py-split-windows-on-execute-p) (py--shell-manage-windows py-buffer-name))
+    (unless py-fast-process-p
+      (when (or (interactive-p)py-switch-buffers-on-execute-p py-split-windows-on-execute-p) (py--shell-manage-windows py-buffer-name)))
     (when (string-match "[BbIi][Pp]ython" py-buffer-name)
       (sit-for 0.3 t))
     (sit-for 0.1 t)
