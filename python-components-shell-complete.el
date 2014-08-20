@@ -178,11 +178,16 @@ completions on the current context."
 If cursor is at end of line, try to complete
 Otherwise call `py-indent-line'
 
-Use `C-q TAB' to insert a literally TAB-character "
+Use `C-q TAB' to insert a literally TAB-character 
+
+In python-mode `py-complete-function' is called,
+in py-shell-mode `py-shell-complete'"
   (interactive "*")
   (if (member (char-before)(list 32 10 9))
       (py-indent-line)
-    (funcall py-complete-function)))
+    (if (eq major-mode 'python-mode)
+	(funcall py-complete-function)
+      (py-shell-complete))))
 
 
 (provide 'python-components-shell-complete)
