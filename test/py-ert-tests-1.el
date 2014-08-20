@@ -820,9 +820,11 @@ def foo():
     \"\"\"Foo\"\"\"
 "
     (font-lock-fontify-buffer)
+    (sit-for 0.1 t) 
 ;;    (switch-to-buffer (current-buffer))
     (search-forward "\"\"\"")
     (fill-paragraph)
+    (sit-for 0.1 t) 
     (should (eq 7 (current-column)))))
 
 ;;; execute tests
