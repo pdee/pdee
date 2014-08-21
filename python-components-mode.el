@@ -6211,6 +6211,15 @@ Default is nil Use `M-x customize-variable' to set it permanently"
 
                      :help "If `split-window-vertically' or `...-horizontally'. Use `M-x customize-variable' RET `py-split-windows-on-execute-function' RET to set it permanently"
                      :style toggle :selected py-split-windows-on-execute-function]
+		    
+		    ["More windows "
+		     (setq py-always-split-windows-p
+			   (not py-always-split-windows-p))
+		     :help "When `t', split current buffer's window unconditionally, default is nil\. 
+
+Split according to settings of `split-height-threshold', `split-width-threshold'; 
+as far as `window-min-height', `window-min-width' permit Use `M-x customize-variable' to set it permanently"
+		     :style toggle :selected py-always-split-windows-p]
 
                     ["Modeline display full path "
                      (setq py-modeline-display-full-path-p

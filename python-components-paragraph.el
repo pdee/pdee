@@ -273,7 +273,7 @@ See lp:1066489 "
       (skip-chars-backward "\"'")
       (delete-region (point) (progn (skip-chars-backward " \t\r\n\f")(point))))))
 
-(defun py--fill-fix-end (thisend orig docstring)
+(defun py--fill-fix-end (thisend orig docstring delimiters-style)
   ;; Add the number of newlines indicated by the selected style
   ;; at the end.
   (widen)
@@ -316,7 +316,7 @@ See lp:1066489 "
     (and multi-line-p first-line-p
 	 (forward-line 1)
 	 (unless (empty-line-p) (insert "\n"))))
-  (py--fill-fix-end thisend orig docstring))
+  (py--fill-fix-end thisend orig docstring delimiters-style))
 
 (defun py--fill-docstring-last-line ()
   (widen)
@@ -370,8 +370,6 @@ See lp:1066489 "
          (beg (copy-marker (if (< thisbeg parabeg) parabeg thisbeg)))
          (end (copy-marker (if (< thisend paraend) thisend paraend)))
 	 (multi-line-p (string-match "\n" (buffer-substring-no-properties thisbeg thisend)))
-	 ;; (strg (replace-regexp-in-string "[ \t]+" " " (buffer-substring-no-properties beg end)))
-         ;; (delimiters-style style)
 	 erg
          first-line-p)
     ;;    (narrow-to-region beg end)
