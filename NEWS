@@ -125,6 +125,9 @@ Setting docstring style simplified; a style is all needed.
   If an empty line was dedented deliberatly, this is
   honored by next lines indent
 
+- `py-always-split-windows-p', if `t' splits for any new shell
+  Default is nil, show just one shell alongside with source
+
 - py-object-reference-face'
   commonly "self" or "cls", inherits default face
 

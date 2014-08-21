@@ -1140,15 +1140,26 @@ If `py-keep-windows-configuration' is t, this will take precedence over setting 
 (defcustom py-split-windows-on-execute-p t
   "When non-nil split windows.
 
-If `py-keep-windows-configuration' is t, this will take precedence over setting here. "
+If `py-keep-windows-configuration' is t, this will take precedence over setting here. 
+
+If screen is already splitted, reuse other window.
+See also `py-always-split-windows-p'"
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-max-split-windows 2
-  "When split windows is enabled the maximum windows to allow
-  before reusing other windows."
-  :type 'number
+(defcustom py-always-split-windows-p nil
+  "When `t', split current buffer's window unconditionally, default is nil. 
+
+Split according to settings of `split-height-threshold', `split-width-threshold'; 
+as far as `window-min-height', `window-min-width' permit "
+  :type 'boolean
   :group 'python-mode)
+
+;; currently unused
+;; (defcustom py-max-split-windows 2
+;;   "When split windows is enabled the maximum windows to allow. "
+;;   :type 'number
+;;   :group 'python-mode)
 
 (defcustom py-split-windows-on-execute-function 'split-window-vertically
   "How window should get splitted to display results of py-execute-... functions. "
