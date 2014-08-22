@@ -547,7 +547,6 @@ Receives a buffer-name as argument"
                                       (concat
                                        (mapconcat 'identity py-python-command-args " ") " "))))))))
 
-
 (defun py--configured-shell (name)
   "Return the configured PATH/TO/STRING if any. "
   (if (string-match "//\\|\\\\" name)
@@ -845,26 +844,6 @@ When optional FILE is `t', no temporary file is needed. "
     )
   erg)
 
-(defun py--execute-file-base (&optional proc filename cmd procbuf origfile execute-directory)
-  "Send to Python interpreter process PROC, in Python version 2.. \"execfile('FILENAME')\".
-
-Make that process's buffer visible and force display.  Also make
-comint believe the user typed this string so that
-`kill-output-from-shell' does The Right Thing.
-Returns position where output starts. "
-  (let* ((cmd (or cmd (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" filename filename)))
-         (msg (and py-verbose-p (format "## executing %s...\n" (or origfile filename))))
-         (buffer (or procbuf (py-shell nil nil nil procbuf)))
-         (proc (or proc (get-buffer-process buffer)))
-         erg orig)
-    (with-current-buffer buffer
-      (goto-char (point-max))
-      (setq orig (point))
-      (comint-send-string proc cmd)
-      (setq erg (py--postprocess buffer))
-      (message "%s" py-error)
-      erg)))
-
 (defun py--execute-ge24.3 (start end filename execute-directory which-shell &optional py-exception-buffer proc)
   "An alternative way to do it.
 
@@ -1029,6 +1008,26 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
 (defun py--insert-offset-lines (line)
   "Fix offline amount, make error point at the corect line. "
   (insert (make-string (- line (count-lines (point-min) (point))) 10)))
+
+(defun py--execute-file-base (&optional proc filename cmd procbuf origfile execute-directory)
+  "Send to Python interpreter process PROC, in Python version 2.. \"execfile('FILENAME')\".
+
+Make that process's buffer visible and force display.  Also make
+comint believe the user typed this string so that
+`kill-output-from-shell' does The Right Thing.
+Returns position where output starts. "
+  (let* ((cmd (or cmd (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" filename filename)))
+         (msg (and py-verbose-p (format "## executing %s...\n" (or origfile filename))))
+         (buffer (or procbuf (py-shell nil nil nil procbuf)))
+         (proc (or proc (get-buffer-process buffer)))
+         erg orig)
+    (with-current-buffer buffer
+      (goto-char (point-max))
+      (setq orig (point))
+      (comint-send-string proc cmd)
+      (setq erg (py--postprocess buffer))
+      (message "%s" py-error)
+      erg)))
 
 (defun py-execute-file (filename)
   "When called interactively, user is prompted for filename. "
