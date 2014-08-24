@@ -379,9 +379,10 @@ See lp:1066489 "
            (py-fill-labelled-string beg end))
           (first-line-p
            (py--fill-docstring-first-line))
-          ((save-excursion (goto-char end)
-			   (or (member (char-after) (list ?\" ?\'))
-			       (member (char-before) (list ?\" ?\'))))
+          ((setq last-line-p
+                 (save-excursion (goto-char end)
+                                 (or (member (char-after) (list ?\" ?\'))
+                                     (member (char-before) (list ?\" ?\')))))
            (py--fill-docstring-last-line thisbeg thisend beg end style))
           (t (narrow-to-region beg end)
 	     (fill-region beg end justify)))

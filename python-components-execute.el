@@ -561,19 +561,30 @@ Receives a buffer-name as argument"
 	   (or py-jython-command name))
 	  (t (or py-python-command name)))))
 
+(defun py--grab-prompt-ps1 ()
+  (py--fast-send-string-no-output "import sys"
+				  proc)
+  (py--fast-send-string-intern "sys.ps1" proc buffer nil t))
+
 (defun py--unfontify-banner (buffer)
   "Unfontify the shell banner-text.
 
-Takes a buffer as argument. "
+Cancels `py--timer'
+Expects being called by `py--run-unfontify-timer' "
   (interactive)
   (when (ignore-errors (buffer-live-p buffer))
     (with-current-buffer buffer
-      ;; (when py-debug-p (message "%s" (concat "py--unfontify-banner: " (buffer-name buffer))))
-      ;; (sit-for 0.3 t)
-      (let ((erg (and (boundp 'comint-last-prompt)(ignore-errors (car comint-last-prompt)))))
+      (goto-char (point-min))  
+      (let ((erg  (if
+		      (re-search-forward py-fast-filter-re nil t 1)
+		      (point) 
+		    (and (boundp 'comint-last-prompt)(ignore-errors (car comint-last-prompt))))))
 	(if erg
+	    (progn 
 	    (font-lock-unfontify-region (point-min) erg)
-	  (progn (and py-debug-p (message "%s" (concat "py--unfontify-banner: Don't see a prompt in buffer " (buffer-name buffer))))))))))
+	    (goto-char (point-max))) 
+	  (progn (and py-debug-p (message "%s" (concat "py--unfontify-banner: Don't see a prompt in buffer " (buffer-name buffer)))))))
+      (and (timerp py--timer)(cancel-timer py--timer)))))
 
 (defun py--start-fast-process (shell buffer)
   (let ((proc (start-process shell buffer shell)))
@@ -659,7 +670,6 @@ Takes a buffer as argument. "
       (when (string-match "[BbIi][Pp]ython" py-buffer-name)
 	(sit-for 0.3 t))
       (sit-for 0.1 t)
-      ;; (py--unfontify-banner (get-buffer py-buffer-name))
       )
     py-buffer-name))
 
@@ -839,8 +849,6 @@ When optional FILE is `t', no temporary file is needed. "
 		(py-output-filter (py--fetch-comint-result))
 	      (py-output-filter (buffer-substring-no-properties (point) (point-max)))))
       (and erg (not (string= (car kill-ring) erg)) (kill-new erg)))
-    ;; (run-with-idle-timer 1 nil 'py--unfontify-banner)
-    ;; xpco(py--unfontify-banner (current-buffer))
     )
   erg)
 
