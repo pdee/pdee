@@ -830,14 +830,18 @@ When optional FILE is `t', no temporary file is needed. "
 
 (defun py--fetch-comint-result ()
   (save-excursion
-    (let (erg)
-      (or (and
-	   (boundp 'comint-last-prompt)
-	   (goto-char (setq erg (cdr comint-last-prompt))))
-	  (goto-char (setq erg (point-max))))
-      (and (re-search-backward py-fast-filter-re nil t 1)
-	   (goto-char (match-end 0)))
-      (buffer-substring-no-properties (point) erg))))
+    (let (end)
+      (save-excursion
+	(or (and
+	     (boundp 'comint-last-prompt)
+	     (switch-to-buffer (current-buffer))
+	     (goto-char (setq erg (cdr comint-last-prompt))))
+	    (goto-char (setq erg (point-max))))
+	(and (re-search-backward py-fast-filter-re nil t 1)
+	     (setq end (point))
+	     (re-search-backward py-fast-filter-re nil t 1)
+	     (goto-char (match-end 0)))
+	(buffer-substring-no-properties (point) end)))))
 
 (defun py--postprocess (buffer)
   "Provide return values, check result for error, manage windows. "
