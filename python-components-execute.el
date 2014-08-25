@@ -471,7 +471,6 @@ Internal use"
    ((and py-split-windows-on-execute-p
 	 py-switch-buffers-on-execute-p)
     (py-restore-window-configuration)
-    ;; (unless py-always-split-windows-p (delete-other-windows))
     (py--manage-windows-split)
     (pop-to-buffer output-buffer)
     (goto-char (point-max))
@@ -482,8 +481,6 @@ Internal use"
      (not py-switch-buffers-on-execute-p))
     (set-buffer oldbuf)
     (switch-to-buffer (current-buffer))
-    ;; (unless py-always-split-windows-p (delete-other-windows))
-    ;; (py--manage-windows-split)
     (display-buffer output-buffer t))
    ;; no split, switch
    ((and

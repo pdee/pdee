@@ -1,3 +1,4 @@
+* make-temp-name zu md5, ein.py
 * `py-always-split-windows-p' renamed py-split-if-not-visible-p
 * py-buffer-name.txt
 * py-mode-output-map
