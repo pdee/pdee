@@ -1,3 +1,4 @@
+* `py-always-split-windows-p' renamed py-split-if-not-visible-p
 * py-buffer-name.txt
 * py-mode-output-map
 * python-mode-utils.el aktualisieren - fast-process Output buffer 

@@ -489,6 +489,7 @@ Internal use"
      py-switch-buffers-on-execute-p
      (not py-split-windows-on-execute-p))
     (let (pop-up-windows)
+      (display-buffer-reuse-window output-buffer nil)
       (py--manage-windows-set-and-switch output-buffer)))
    ;; no split, no switch
    ((not py-switch-buffers-on-execute-p)
@@ -574,15 +575,15 @@ Expects being called by `py--run-unfontify-timer' "
   (interactive)
   (when (ignore-errors (buffer-live-p buffer))
     (with-current-buffer buffer
-      (goto-char (point-min))  
+      (goto-char (point-min))
       (let ((erg  (if
 		      (re-search-forward py-fast-filter-re nil t 1)
-		      (point) 
+		      (point)
 		    (and (boundp 'comint-last-prompt)(ignore-errors (car comint-last-prompt))))))
 	(if erg
-	    (progn 
+	    (progn
 	    (font-lock-unfontify-region (point-min) erg)
-	    (goto-char (point-max))) 
+	    (goto-char (point-max)))
 	  (progn (and py-debug-p (message "%s" (concat "py--unfontify-banner: Don't see a prompt in buffer " (buffer-name buffer)))))))
       (and (timerp py--timer)(cancel-timer py--timer)))))
 
@@ -842,14 +843,14 @@ When optional FILE is `t', no temporary file is needed. "
   "Provide return values, check result for error, manage windows. "
   ;; py--fast-send-string doesn't set origline
   (with-current-buffer buffer
+    ;; (switch-to-buffer (current-buffer))
     (setq py-error (py--postprocess-intern buffer))
     (when py-store-result-p
       (setq erg
 	    (if (eq major-mode 'py-shell-mode)
 		(py-output-filter (py--fetch-comint-result))
 	      (py-output-filter (buffer-substring-no-properties (point) (point-max)))))
-      (and erg (not (string= (car kill-ring) erg)) (kill-new erg)))
-    )
+      (and erg (not (string= "" erg))(not (string= (car kill-ring) erg)) (kill-new erg))))
   erg)
 
 (defun py--execute-ge24.3 (start end filename execute-directory which-shell &optional py-exception-buffer proc)
