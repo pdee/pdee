@@ -449,6 +449,7 @@ With `py-always-split-windows-p' set to `t', look for suitable split"
      ;; resp. `window-min-height', `window-min-width'
      ;; try alternative split
      ;; (py--manage-windows-set-and-switch py-output-buffer)
+
      (set-buffer py-output-buffer)
      (unless (ignore-errors (funcall (py--alternative-split-windows-on-execute-function)))
        ;; if alternative split fails, look for larger window
@@ -470,7 +471,7 @@ Internal use"
    ((and py-split-windows-on-execute-p
 	 py-switch-buffers-on-execute-p)
     (py-restore-window-configuration)
-    (unless py-always-split-windows-p (delete-other-windows))
+    ;; (unless py-always-split-windows-p (delete-other-windows))
     (py--manage-windows-split)
     (pop-to-buffer output-buffer)
     (goto-char (point-max))
@@ -481,8 +482,8 @@ Internal use"
      (not py-switch-buffers-on-execute-p))
     (set-buffer oldbuf)
     (switch-to-buffer (current-buffer))
-    (unless py-always-split-windows-p (delete-other-windows))
-    (py--manage-windows-split)
+    ;; (unless py-always-split-windows-p (delete-other-windows))
+    ;; (py--manage-windows-split)
     (display-buffer output-buffer t))
    ;; no split, switch
    ((and
@@ -666,7 +667,9 @@ Expects being called by `py--run-unfontify-timer' "
 	      (py--shell-setup py-buffer-name (get-buffer-process py-buffer-name)))
 	  (error (concat "py-shell: No process in " py-buffer-name))))
       ;; (goto-char (point-max))
-      (when (and (interactive-p)(or py-switch-buffers-on-execute-p py-split-windows-on-execute-p) (py--shell-manage-windows py-buffer-name)))
+      (when (and (or (interactive-p)
+		     ;; M-x python RET sends from interactive "p"
+		     (eq 1 argprompt))(or py-switch-buffers-on-execute-p py-split-windows-on-execute-p) (py--shell-manage-windows py-buffer-name)))
       ;; (when py-shell-mode-hook (run-hooks 'py-shell-mode-hook))
       (when (string-match "[BbIi][Pp]ython" py-buffer-name)
 	(sit-for 0.3 t))
@@ -833,7 +836,7 @@ When optional FILE is `t', no temporary file is needed. "
       (save-excursion
 	(or (and
 	     (boundp 'comint-last-prompt)
-	     (switch-to-buffer (current-buffer))
+	     ;; (switch-to-buffer (current-buffer))
 	     (goto-char (setq erg (cdr comint-last-prompt))))
 	    (goto-char (setq erg (point-max))))
 	(and (re-search-backward py-fast-filter-re nil t 1)
