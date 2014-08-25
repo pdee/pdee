@@ -648,7 +648,7 @@ Expects being called by `py--run-unfontify-timer' "
     (and (bufferp py-exception-buffer)(string= py-buffer-name (buffer-name py-exception-buffer))
 	 (setq py-buffer-name (generate-new-buffer-name py-buffer-name)))
     (if fast-process
-	     ;; user rather wants an interactive shell
+	;; user rather wants an interactive shell
 	(unless (get-buffer-process (get-buffer py-buffer-name))
 	  (py--start-fast-process py-shell-name py-buffer-name)
 	  (setq py-output-buffer py-buffer-name))
@@ -666,12 +666,11 @@ Expects being called by `py--run-unfontify-timer' "
 	      (py--shell-setup py-buffer-name (get-buffer-process py-buffer-name)))
 	  (error (concat "py-shell: No process in " py-buffer-name))))
       ;; (goto-char (point-max))
-      (when (or (interactive-p)py-switch-buffers-on-execute-p py-split-windows-on-execute-p) (py--shell-manage-windows py-buffer-name))
+      (when (and (interactive-p)(or py-switch-buffers-on-execute-p py-split-windows-on-execute-p) (py--shell-manage-windows py-buffer-name)))
       ;; (when py-shell-mode-hook (run-hooks 'py-shell-mode-hook))
       (when (string-match "[BbIi][Pp]ython" py-buffer-name)
 	(sit-for 0.3 t))
-      (sit-for 0.1 t)
-      )
+      (sit-for 0.1 t))
     py-buffer-name))
 
 (defun py-shell-get-process (&optional argprompt py-dedicated-process-p shell switch py-buffer-name)
