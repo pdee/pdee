@@ -33,7 +33,7 @@
 			  (push-mark)))))
 	   (end (unless file
 		  (or end (funcall (intern-soft (concat "py-end-of-" form))))))
-	   (shell (or shell py-shell-name))
+	   (shell (or shell (py-choose-shell)))
 	   (py-dedicated-process-p dedicated)
 	   (py-switch-buffers-on-execute-p (cond ((eq 'switch switch)
 						  t)
