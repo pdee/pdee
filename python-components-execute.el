@@ -471,7 +471,6 @@ Internal use"
    ((and py-split-windows-on-execute-p
 	 py-switch-buffers-on-execute-p)
     (py-restore-window-configuration)
-    (py--manage-windows-split)
     (pop-to-buffer output-buffer)
     (goto-char (point-max))
     (and py-exception-buffer (display-buffer py-exception-buffer)))
