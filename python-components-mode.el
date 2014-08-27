@@ -1140,26 +1140,18 @@ If `py-keep-windows-configuration' is t, this will take precedence over setting 
 (defcustom py-split-windows-on-execute-p t
   "When non-nil split windows.
 
+If `always' split according to settings of `split-height-threshold', `split-width-threshold'; 
+as far as `window-min-height', `window-min-width' permit. 
+
+If screen is already splitted, reuse other window. 
 If `py-keep-windows-configuration' is t, this will take precedence over setting here. 
+"
+      :type '(choice
+          (const :tag "single" t)
+          (const :tag "no split" nil)
+          (const :tag "multiple" always))
 
-If screen is already splitted, reuse other window.
-See also `py-always-split-windows-p'"
-  :type 'boolean
   :group 'python-mode)
-
-(defcustom py-always-split-windows-p nil
-  "When `t', split current buffer's window unconditionally, default is nil. 
-
-Split according to settings of `split-height-threshold', `split-width-threshold'; 
-as far as `window-min-height', `window-min-width' permit "
-  :type 'boolean
-  :group 'python-mode)
-
-;; currently unused
-;; (defcustom py-max-split-windows 2
-;;   "When split windows is enabled the maximum windows to allow. "
-;;   :type 'number
-;;   :group 'python-mode)
 
 (defcustom py-split-windows-on-execute-function 'split-window-vertically
   "How window should get splitted to display results of py-execute-... functions. "
@@ -6212,15 +6204,6 @@ Default is nil Use `M-x customize-variable' to set it permanently"
                      :help "If `split-window-vertically' or `...-horizontally'. Use `M-x customize-variable' RET `py-split-windows-on-execute-function' RET to set it permanently"
                      :style toggle :selected py-split-windows-on-execute-function]
 		    
-		    ["More windows "
-		     (setq py-always-split-windows-p
-			   (not py-always-split-windows-p))
-		     :help "When `t', split current buffer's window unconditionally, default is nil\. 
-
-Split according to settings of `split-height-threshold', `split-width-threshold'; 
-as far as `window-min-height', `window-min-width' permit Use `M-x customize-variable' to set it permanently"
-		     :style toggle :selected py-always-split-windows-p]
-
                     ["Modeline display full path "
                      (setq py-modeline-display-full-path-p
                            (not py-modeline-display-full-path-p))

@@ -912,7 +912,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-shell-prompt-read-only) nil \"py-shell-prompt-read-only not a variable\")" \
 -eval "(assert (boundp 'py-switch-buffers-on-execute-p) nil \"py-switch-buffers-on-execute-p not a variable\")" \
 -eval "(assert (boundp 'py-split-windows-on-execute-p) nil \"py-split-windows-on-execute-p not a variable\")" \
--eval "(assert (boundp 'py-always-split-windows-p) nil \"py-always-split-windows-p not a variable\")" \
 -eval "(assert (boundp 'py-split-windows-on-execute-function) nil \"py-split-windows-on-execute-function not a variable\")" \
 -eval "(assert (boundp 'py-hide-show-keywords) nil \"py-hide-show-keywords not a variable\")" \
 -eval "(assert (boundp 'py-hide-show-hide-docstrings) nil \"py-hide-show-hide-docstrings not a variable\")" \
@@ -1053,6 +1052,11 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-compilation-regexp-alist) nil \"py-compilation-regexp-alist not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall py-split-multi-and-switch-on-execute-lp-1361531-test \
+--funcall py-split-multi-no-switch-on-execute-lp-1361531-test \
+--funcall py-single-split-no-switch-on-execute-lp-1361531-test \
+--funcall py-no-split-switch-on-execute-lp-1361531-test \
+--funcall py-no-split-no-switch-execute-lp-1361531-test \
 --funcall interpreter-mode-alist-lp-1355458-test-1 \
 --funcall interpreter-mode-alist-lp-1355458-test-2 \
 --funcall interpreter-mode-alist-lp-1355458-test-3 \

@@ -430,32 +430,6 @@ Customizable variable `py-split-windows-on-execute-function' tells how to split 
   (when (and py-verbose-p (interactive-p))
     (message "py-split-windows-on-execute-function set to: %s" py-split-windows-on-execute-function)))
 
-(defun py--alternative-split-windows-on-execute-function ()
-  "If `py--split-windows-on-execute-function' is `split-window-vertically' return `split-window-horizontally' and vice versa"
-  (if (eq py-split-windows-on-execute-function 'split-window-vertically)
-      'split-window-horizontally
-    'split-window-vertically))
-
-(defun py--manage-windows-split ()
-  "If one window, split according to `py-split-windows-on-execute-function.
-
-With `py-always-split-windows-p' set to `t', look for suitable split"
-  (and
-   (or (one-window-p t) py-always-split-windows-p)
-   (unless
-       (ignore-errors (funcall py-split-windows-on-execute-function))
-     ;; If call didn't succeed according to settings of
-     ;; `split-height-threshold', `split-width-threshold'
-     ;; resp. `window-min-height', `window-min-width'
-     ;; try alternative split
-     ;; (py--manage-windows-set-and-switch py-output-buffer)
-
-     (set-buffer py-output-buffer)
-     (unless (ignore-errors (funcall (py--alternative-split-windows-on-execute-function)))
-       ;; if alternative split fails, look for larger window
-       (other-window 1)
-       (ignore-errors (funcall (py--alternative-split-windows-on-execute-function)))))))
-
 (defun py--manage-windows-set-and-switch (buffer)
   "Switch to output-buffer, go to point-max.
 
@@ -463,31 +437,74 @@ Internal use"
   (set-buffer buffer)
   (goto-char (process-mark (get-buffer-process (current-buffer)))))
 
+(defun py--alternative-split-windows-on-execute-function ()
+  "If `py--split-windows-on-execute-function' is `split-window-vertically' return `split-window-horizontally' and vice versa"
+  (if (eq py-split-windows-on-execute-function 'split-window-vertically)
+      'split-window-horizontally
+    'split-window-vertically))
+
+(defun py--manage-windows-split ()
+  "If one window, split according to `py-split-windows-on-execute-function. "
+  (interactive)
+  (or
+   (ignore-errors (funcall py-split-windows-on-execute-function))
+   ;; If call didn't succeed according to settings of
+   ;; `split-height-threshold', `split-width-threshold'
+   ;; resp. `window-min-height', `window-min-width'
+   ;; try alternative split
+   ;; (py--manage-windows-set-and-switch py-output-buffer)
+
+   (unless (ignore-errors (funcall (py--alternative-split-windows-on-execute-function)))
+     ;; if alternative split fails, look for larger window
+     (other-window 1)
+     (ignore-errors (funcall (py--alternative-split-windows-on-execute-function))))))
+;; )
+
+
 (defun py--shell-manage-windows (output-buffer &optional windows-displayed windows-config)
   "Adapt or restore window configuration. Return nil "
+  ;; (message "oldbuf: %s" oldbuf)
   (cond
    (py-keep-windows-configuration
     (py-restore-window-configuration))
-   ((and py-split-windows-on-execute-p
+   ((and (eq py-split-windows-on-execute-p 'always)
 	 py-switch-buffers-on-execute-p)
-    (py-restore-window-configuration)
-    (pop-to-buffer output-buffer)
-    (goto-char (point-max))
-    (and py-exception-buffer (display-buffer py-exception-buffer)))
-   ;; split, not switch
+    (if (member (get-buffer-window output-buffer)(window-list))
+	;; (delete-window (get-buffer-window output-buffer))
+	(select-window (get-buffer-window output-buffer))
+      (py--manage-windows-split)
+      ;; otherwise new window appears above
+      (save-excursion
+	(other-window 1)
+	(switch-to-buffer output-buffer)))
+    (display-buffer oldbuf))
    ((and
+     (eq py-split-windows-on-execute-p 'always)
+     (not py-switch-buffers-on-execute-p))
+    (if (member (get-buffer-window output-buffer)(window-list))
+	;; (delete-window (get-buffer-window output-buffer))
+	(select-window (get-buffer-window output-buffer))
+      (py--manage-windows-split)
+      ;; otherwise new window appears above
+      (save-excursion
+	(other-window 1)
+	(switch-to-buffer output-buffer)))
+    (pop-to-buffer oldbuf))
+   ((and
+     ;; just two windows, `py-split-windows-on-execute-p' is `t'
      py-split-windows-on-execute-p
      (not py-switch-buffers-on-execute-p))
-    (set-buffer oldbuf)
-    (switch-to-buffer (current-buffer))
-    (display-buffer output-buffer t))
-   ;; no split, switch
+    (delete-other-windows)
+    (py--manage-windows-split)
+    (save-excursion
+      (other-window 1)
+      (switch-to-buffer output-buffer))
+    (pop-to-buffer oldbuf))
    ((and
      py-switch-buffers-on-execute-p
      (not py-split-windows-on-execute-p))
-    (let (pop-up-windows)
-      (display-buffer-reuse-window output-buffer nil)
-      (py--manage-windows-set-and-switch output-buffer)))
+    (set-buffer output-buffer)
+    (switch-to-buffer (current-buffer)))
    ;; no split, no switch
    ((not py-switch-buffers-on-execute-p)
     (let (pop-up-windows)
@@ -603,7 +620,8 @@ Expects being called by `py--run-unfontify-timer' "
   "
   (interactive "P")
   ;; done by py-shell-mode
-  (let* ((iact (ignore-errors (eq 1 argprompt))) ;; interactively?
+  (let* ((iact (interactive-p)) ;; interactively?
+	 (windows-config (and iact (window-configuration-to-register 313465889)))
 	 (fast-process (or fast-process py-fast-process-p))
 	 (newpath (when (eq 4 (prefix-numeric-value argprompt))
 		    (read-shell-command "PATH/TO/EXECUTABLE/[I]python[version]: ")))
@@ -832,6 +850,7 @@ When optional FILE is `t', no temporary file is needed. "
       (save-excursion
 	(or (and
 	     (boundp 'comint-last-prompt)
+	     (number-or-marker-p (cdr comint-last-prompt))
 	     ;; (switch-to-buffer (current-buffer))
 	     (goto-char (setq erg (cdr comint-last-prompt))))
 	    (goto-char (setq erg (point-max))))
