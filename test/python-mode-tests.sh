@@ -912,7 +912,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-shell-prompt-read-only) nil \"py-shell-prompt-read-only not a variable\")" \
 -eval "(assert (boundp 'py-switch-buffers-on-execute-p) nil \"py-switch-buffers-on-execute-p not a variable\")" \
 -eval "(assert (boundp 'py-split-windows-on-execute-p) nil \"py-split-windows-on-execute-p not a variable\")" \
--eval "(assert (boundp 'py-max-split-windows) nil \"py-max-split-windows not a variable\")" \
 -eval "(assert (boundp 'py-split-windows-on-execute-function) nil \"py-split-windows-on-execute-function not a variable\")" \
 -eval "(assert (boundp 'py-hide-show-keywords) nil \"py-hide-show-keywords not a variable\")" \
 -eval "(assert (boundp 'py-hide-show-hide-docstrings) nil \"py-hide-show-hide-docstrings not a variable\")" \

@@ -836,8 +836,11 @@ When optional FILE is `t', no temporary file is needed. "
          (tempfile (concat (expand-file-name py-temp-directory) py-separator-char (replace-regexp-in-string py-separator-char "-" temp) ".py"))
          (tempbuf (get-buffer-create temp)))
     (with-current-buffer tempbuf
+      (and py-verbose-p (message "%s" "py--execute-buffer-finally"))
       (insert strg)
-      (write-file tempfile))
+      (write-file tempfile)
+      (and py-verbose-p (message "py--execute-buffer-finally: %s" "wrote tempfile"))
+      (and py-verbose-p (message "tempfile: %s" tempfile)))
     (unwind-protect
 	(setq erg (py--execute-file-base proc tempfile nil py-buffer-name py-orig-buffer-or-file execute-directory)))
     (sit-for 0.1 t)
