@@ -5456,7 +5456,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.16 $\"
+__version__ = \"$Revision: 1.17 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -6586,8 +6586,6 @@ d[\"a\""))
   (py-bug-tests-intern 'interpreter-mode-alist-lp-1355458-base-1 arg teststring)))
 
 (defun interpreter-mode-alist-lp-1355458-base-1 ()
-  (write-file (concat py-temp-directory "/ein.py"))
-  (find-file (concat py-temp-directory "/ein.py"))
   (assert (eq 'python-mode major-mode) nil "interpreter-mode-alist-lp-1355458-test-1 failed")
   (py-kill-buffer-unconditional (current-buffer)))
 
@@ -6599,9 +6597,6 @@ d[\"a\""))
   (py-bug-tests-intern 'interpreter-mode-alist-lp-1355458-base-2 arg teststring)))
 
 (defun interpreter-mode-alist-lp-1355458-base-2 ()
-  (write-file (concat py-temp-directory "/ein.py"))
-  (py-kill-buffer-unconditional (current-buffer))
-  (find-file (concat py-temp-directory "/ein.py"))
   (assert (eq 'python-mode major-mode) nil "interpreter-mode-alist-lp-1355458-test-2 failed")
   (py-kill-buffer-unconditional (current-buffer)))
 
@@ -6613,9 +6608,6 @@ d[\"a\""))
   (py-bug-tests-intern 'interpreter-mode-alist-lp-1355458-base-3 arg teststring)))
 
 (defun interpreter-mode-alist-lp-1355458-base-3 ()
-  (write-file (concat py-temp-directory "/ein.py"))
-  (py-kill-buffer-unconditional (current-buffer))
-  (find-file (concat py-temp-directory "/ein.py"))
   (assert (eq 'python-mode major-mode) nil "interpreter-mode-alist-lp-1355458-test-3 failed")
   (py-kill-buffer-unconditional (current-buffer)))
 
@@ -6627,9 +6619,6 @@ d[\"a\""))
   (py-bug-tests-intern 'interpreter-mode-alist-lp-1355458-base-4 arg teststring)))
 
 (defun interpreter-mode-alist-lp-1355458-base-4 ()
-  (write-file (concat py-temp-directory "/ein.py"))
-  (py-kill-buffer-unconditional (current-buffer))
-  (find-file (concat py-temp-directory "/ein.py"))
   (assert (eq 'python-mode major-mode) nil "interpreter-mode-alist-lp-1355458-test-4 failed")
   (py-kill-buffer-unconditional (current-buffer)))
 
@@ -6641,9 +6630,6 @@ d[\"a\""))
   (py-bug-tests-intern 'interpreter-mode-alist-lp-1355458-base-5 arg teststring)))
 
 (defun interpreter-mode-alist-lp-1355458-base-5 ()
-  (write-file (concat py-temp-directory "/ein.py"))
-  (py-kill-buffer-unconditional (current-buffer))
-  (find-file (concat py-temp-directory "/ein.py"))
   (assert (eq 'python-mode major-mode) nil "interpreter-mode-alist-lp-1355458-test-5 failed")
   (py-kill-buffer-unconditional (current-buffer)))
 
@@ -6656,9 +6642,6 @@ d[\"a\""))
   (py-bug-tests-intern 'interpreter-mode-alist-lp-1355458-base-6 arg teststring)))
 
 (defun interpreter-mode-alist-lp-1355458-base-6 ()
-  (write-file (concat py-temp-directory "/ein.py"))
-  (py-kill-buffer-unconditional (current-buffer))
-  (find-file (concat py-temp-directory "/ein.py"))
   (assert (eq 'jython-mode major-mode) nil "interpreter-mode-alist-lp-1355458-test-6 failed")
   (py-kill-buffer-unconditional (current-buffer)))
 
