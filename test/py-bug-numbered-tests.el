@@ -5456,7 +5456,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.123 $\"
+__version__ = \"$Revision: 1.16 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -6600,7 +6600,7 @@ d[\"a\""))
 
 (defun interpreter-mode-alist-lp-1355458-base-2 ()
   (write-file (concat py-temp-directory "/ein.py"))
-  (py-kill-buffer-unconditional (current-buffer)) 
+  (py-kill-buffer-unconditional (current-buffer))
   (find-file (concat py-temp-directory "/ein.py"))
   (assert (eq 'python-mode major-mode) nil "interpreter-mode-alist-lp-1355458-test-2 failed")
   (py-kill-buffer-unconditional (current-buffer)))
@@ -6614,7 +6614,7 @@ d[\"a\""))
 
 (defun interpreter-mode-alist-lp-1355458-base-3 ()
   (write-file (concat py-temp-directory "/ein.py"))
-  (py-kill-buffer-unconditional (current-buffer)) 
+  (py-kill-buffer-unconditional (current-buffer))
   (find-file (concat py-temp-directory "/ein.py"))
   (assert (eq 'python-mode major-mode) nil "interpreter-mode-alist-lp-1355458-test-3 failed")
   (py-kill-buffer-unconditional (current-buffer)))
@@ -6628,7 +6628,7 @@ d[\"a\""))
 
 (defun interpreter-mode-alist-lp-1355458-base-4 ()
   (write-file (concat py-temp-directory "/ein.py"))
-  (py-kill-buffer-unconditional (current-buffer)) 
+  (py-kill-buffer-unconditional (current-buffer))
   (find-file (concat py-temp-directory "/ein.py"))
   (assert (eq 'python-mode major-mode) nil "interpreter-mode-alist-lp-1355458-test-4 failed")
   (py-kill-buffer-unconditional (current-buffer)))
@@ -6642,7 +6642,7 @@ d[\"a\""))
 
 (defun interpreter-mode-alist-lp-1355458-base-5 ()
   (write-file (concat py-temp-directory "/ein.py"))
-  (py-kill-buffer-unconditional (current-buffer)) 
+  (py-kill-buffer-unconditional (current-buffer))
   (find-file (concat py-temp-directory "/ein.py"))
   (assert (eq 'python-mode major-mode) nil "interpreter-mode-alist-lp-1355458-test-5 failed")
   (py-kill-buffer-unconditional (current-buffer)))
@@ -6657,10 +6657,130 @@ d[\"a\""))
 
 (defun interpreter-mode-alist-lp-1355458-base-6 ()
   (write-file (concat py-temp-directory "/ein.py"))
-  (py-kill-buffer-unconditional (current-buffer)) 
+  (py-kill-buffer-unconditional (current-buffer))
   (find-file (concat py-temp-directory "/ein.py"))
   (assert (eq 'jython-mode major-mode) nil "interpreter-mode-alist-lp-1355458-test-6 failed")
   (py-kill-buffer-unconditional (current-buffer)))
+
+(defun py-split-multi-and-switch-on-execute-lp-1361531-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+print(1) "))
+    (py-bug-tests-intern 'py-split-multi-and-switch-on-execute-lp-1361531-base arg teststring)))
+
+(defun py-split-multi-and-switch-on-execute-lp-1361531-base ()
+  (let ((oldbuf (current-buffer))
+	(py-split-windows-on-execute-p 'always)
+	(py-switch-buffers-on-execute-p t)
+	py-keep-windows-configuration)
+    (delete-other-windows)
+    (py-execute-statement-python)
+    (assert (string= "*Python*" (buffer-name (window-buffer))) nil "py-split-multi-and-switch-on-execute-lp-1361531-test-1 failed")
+    (message "%s" "py-split-multi-and-switch-on-execute-lp-1361531-test-1 passed")
+    (set-buffer oldbuf)
+    ;; (switch-to-buffer (current-buffer))
+    (py-execute-statement-python3)
+    (assert (string= "*Python3*" (buffer-name (window-buffer))) nil "py-split-multi-and-switch-on-execute-lp-1361531-test-2 failed")
+    (message "%s" "py-split-multi-and-switch-on-execute-lp-1361531-test-2 passed")
+    (set-buffer oldbuf)
+    ;; (switch-to-buffer (current-buffer))
+    (py-execute-statement-ipython)
+    (assert (string= "*IPython*" (buffer-name (window-buffer))) nil "py-split-multi-and-switch-on-execute-lp-1361531-test-3 failed")
+    (message "%s" "py-split-multi-and-switch-on-execute-lp-1361531-test-3 passed")
+    (while (not (and (setq erg (window-buffer)) (string= "*Python*" (buffer-name (window-buffer)))))(select-window (next-window) t))
+
+    (goto-char (point-max))
+    (setq py-keep-windows-configuration t)
+    (set-buffer oldbuf)
+    (py-execute-statement-python)
+    (assert (string= "*Python*" (buffer-name (window-buffer))) nil "py-split-multi-and-switch-on-execute-lp-1361531-test-4 failed")
+    (message "%s" "py-split-multi-and-switch-on-execute-lp-1361531-test-4 passed")))
+
+(defun py-split-multi-no-switch-on-execute-lp-1361531-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+print(1) "))
+    (py-bug-tests-intern 'py-split-multi-no-switch-on-execute-lp-1361531-base arg teststring)))
+
+(defun py-split-multi-no-switch-on-execute-lp-1361531-base ()
+  (let ((oldbuf (current-buffer))
+	(py-split-windows-on-execute-p 'always)
+	py-switch-buffers-on-execute-p
+	py-keep-windows-configuration)
+    (py-execute-statement-python)
+    (assert (and (member (get-buffer-window "*Python*")(window-list))(string= (buffer-name oldbuf) (buffer-name (window-buffer)))) nil "py-split-multi-no-switch-on-execute-lp-1361531-test-1 failed")
+    (py-execute-statement-python3)
+    (assert (and (member (get-buffer-window "*Python3*")(window-list))(string= (buffer-name oldbuf) (buffer-name (window-buffer)))) nil "py-split-multi-no-switch-on-execute-lp-1361531-test-2 failed")
+    (py-execute-statement-ipython)
+    (assert (and (member (get-buffer-window "*IPython*")(window-list))(string= (buffer-name oldbuf) (buffer-name (window-buffer)))) nil "py-split-multi-no-switch-on-execute-lp-1361531-test-3 failed")
+    (py-execute-statement-python)
+    (assert (and (member (get-buffer-window "*Python*")(window-list))(string= (buffer-name oldbuf) (buffer-name (window-buffer)))) nil "py-split-multi-no-switch-on-execute-lp-1361531-test-4 failed")))
+
+(defun py-single-split-no-switch-on-execute-lp-1361531-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+print(1) "))
+    (py-bug-tests-intern 'py-single-split-no-switch-on-execute-lp-1361531-base arg teststring)))
+
+(defun py-single-split-no-switch-on-execute-lp-1361531-base ()
+  (let ((oldbuf (current-buffer))
+	(py-split-windows-on-execute-p t)
+	py-switch-buffers-on-execute-p
+	py-keep-windows-configuration)
+    (py-execute-statement-python)
+    (assert (and (member (get-buffer-window "*Python*")(window-list))(string= (buffer-name oldbuf) (buffer-name (window-buffer)))) nil "py-single-split-no-switch-on-execute-lp-1361531-test-1 failed")
+    (py-execute-statement-python3)
+    (assert (string= (buffer-name oldbuf) (buffer-name (window-buffer))) nil "py-single-split-no-switch-on-execute-lp-1361531-test-2 failed")
+    (py-execute-statement-ipython)
+    (assert (string= (buffer-name oldbuf) (buffer-name (window-buffer))) nil "py-single-split-no-switch-on-execute-lp-1361531-test-3 failed")
+    (py-execute-statement-python)
+    (assert (string= (buffer-name oldbuf) (buffer-name (window-buffer))) nil "py-single-split-no-switch-on-execute-lp-1361531-test-4 failed")))
+
+(defun py-no-split-switch-on-execute-lp-1361531-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+print(1) "))
+    (py-bug-tests-intern 'py-no-split-switch-on-execute-lp-1361531-base arg teststring)))
+
+(defun py-no-split-switch-on-execute-lp-1361531-base ()
+  (let ((oldbuf (current-buffer))
+	py-split-windows-on-execute-p
+	(py-switch-buffers-on-execute-p t)
+	py-keep-windows-configuration)
+    (py-execute-statement-python)
+    (assert (string= (buffer-name (current-buffer)) "*Python*") nil "py-no-split-switch-on-execute-lp-1361531-test-1 failed")
+    (py-execute-statement-python3)
+    (assert (string= (buffer-name (current-buffer)) "*Python3*") nil "py-no-split-switch-on-execute-lp-1361531-test-2 failed")
+    (py-execute-statement-ipython)
+    (assert (string= (buffer-name (current-buffer)) "*IPython*") nil "py-no-split-switch-on-execute-lp-1361531-test-3 failed")
+    (py-execute-statement-python)
+    (assert (string= (buffer-name (current-buffer)) "*Python*") nil "py-no-split-switch-on-execute-lp-1361531-test-4 failed")))
+
+(defun py-no-split-no-switch-execute-lp-1361531-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+print(1) "))
+    (py-bug-tests-intern 'py-no-split-no-switch-execute-lp-1361531-base arg teststring)))
+
+(defun py-no-split-no-switch-execute-lp-1361531-base ()
+  (let ((oldbuf (current-buffer))
+	py-split-windows-on-execute-p
+	py-switch-buffers-on-execute-p
+	py-keep-windows-configuration)
+    (py-execute-statement-python)
+    (assert (and (one-window-p) (eq oldbuf (current-buffer))) nil "py-no-split-no-switch-execute-lp-1361531-test-1 failed")
+    (py-execute-statement-python3)
+    (assert (and (one-window-p) (eq oldbuf (current-buffer))) nil "py-no-split-no-switch-execute-lp-1361531-test-2 failed")
+    (py-execute-statement-ipython)
+    (assert (and (one-window-p) (eq oldbuf (current-buffer))) nil "py-no-split-no-switch-execute-lp-1361531-test-3 failed")
+    (py-execute-statement-python)
+    (assert (and (one-window-p) (eq oldbuf (current-buffer))) nil "py-no-split-no-switch-execute-lp-1361531-test-4 failed")))
+
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
