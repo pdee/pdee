@@ -443,7 +443,16 @@ Internal use"
       'split-window-horizontally
     'split-window-vertically))
 
-(defun py--manage-windows-split ()
+(defun py--get-splittable-window (output-buffer)
+  "If selected window doesn't permit a further split, search window-list for a suitable one. "
+  (let ((this-window (selected-window))
+	erg)
+    (or (and (window-left-child)(split-window (window-left-child)))
+	(and (window-top-child)(split-window (window-top-child)))
+	(and (window-parent)(ignore-errors (split-window (window-parent))))
+	(and (window-atom-root)(split-window (window-atom-root))))))
+
+(defun py--manage-windows-split (output-buffer)
   "If one window, split according to `py-split-windows-on-execute-function. "
   (interactive)
   (or
@@ -452,14 +461,10 @@ Internal use"
    ;; `split-height-threshold', `split-width-threshold'
    ;; resp. `window-min-height', `window-min-width'
    ;; try alternative split
-   ;; (py--manage-windows-set-and-switch py-output-buffer)
-
    (unless (ignore-errors (funcall (py--alternative-split-windows-on-execute-function)))
      ;; if alternative split fails, look for larger window
-     (other-window 1)
+     (py--get-splittable-window output-buffer)
      (ignore-errors (funcall (py--alternative-split-windows-on-execute-function))))))
-;; )
-
 
 (defun py--shell-manage-windows (output-buffer &optional windows-displayed windows-config)
   "Adapt or restore window configuration. Return nil "
@@ -472,7 +477,7 @@ Internal use"
     (if (member (get-buffer-window output-buffer)(window-list))
 	;; (delete-window (get-buffer-window output-buffer))
 	(select-window (get-buffer-window output-buffer))
-      (py--manage-windows-split)
+      (py--manage-windows-split output-buffer)
       ;; otherwise new window appears above
       (save-excursion
 	(other-window 1)
@@ -484,7 +489,7 @@ Internal use"
     (if (member (get-buffer-window output-buffer)(window-list))
 	;; (delete-window (get-buffer-window output-buffer))
 	(select-window (get-buffer-window output-buffer))
-      (py--manage-windows-split)
+      (py--manage-windows-split output-buffer)
       ;; otherwise new window appears above
       (save-excursion
 	(other-window 1)
@@ -495,7 +500,7 @@ Internal use"
      py-split-windows-on-execute-p
      (not py-switch-buffers-on-execute-p))
     (delete-other-windows)
-    (py--manage-windows-split)
+    (py--manage-windows-split output-buffer)
     (save-excursion
       (other-window 1)
       (switch-to-buffer output-buffer))
@@ -744,6 +749,7 @@ Default is interactive, i.e. py-fast-process-p nil, and `py-session'"
 
 (defun py--execute-base (&optional start end shell filename proc file wholebuf)
   "Update variables. "
+  (when py-verbose-p (message "run: %s" "py--execute-base"))
   (let* ((oldbuf (current-buffer))
 	 (start (or start (and (use-region-p) (region-beginning)) (point-min)))
 	 (end (or end (and (use-region-p) (region-end)) (point-max)))
@@ -809,6 +815,7 @@ Default is interactive, i.e. py-fast-process-p nil, and `py-session'"
   "Select the handler.
 
 When optional FILE is `t', no temporary file is needed. "
+  (when py-verbose-p (message "run: %s" "py--execute-base-intern"))
   (let (output-buffer erg)
     (setq py-error nil)
     ;; (when py-debug-p
@@ -942,6 +949,7 @@ shell which will be forced upon execute as argument.
 
 Optional DEDICATED "
   (interactive "r\nP")
+  (when py-verbose-p (message "run: %s" "py-execute-region"))
   (save-excursion
     (let ((orig (point))
 	  (py-shell-name (cond ((or py-force-py-shell-name-p (eq 4 (prefix-numeric-value shell))) (default-value 'py-shell-name))
@@ -1169,8 +1177,8 @@ Avoid empty lines at the beginning. "
     (insert string)
     (py--fix-start-intern (point-min) (point-max))
     ;; FixMe: Maybe conditial from from some use-tempfile var?
-    (and (ignore-errors tempfile)
-	 (write-region (point-min) (point-max) tempfile nil t nil 'ask))
+    ;; (and (ignore-errors tempfile)
+    ;; (write-region (point-min) (point-max) tempfile nil t nil 'ask))
     (buffer-substring-no-properties (point-min) (point-max))))
 
 (defun py-fetch-py-master-file ()
@@ -1256,6 +1264,7 @@ Basically, this goes down the directory tree as long as there are __init__.py fi
 (defun py-execute-buffer ()
   "Send the contents of the buffer to a Python interpreter. "
   (interactive)
+  (when py-verbose-p (message "run: %s" "py-execute-buffer"))
   (let ((origline 1))
     (and py-prompt-on-changed-p (buffer-file-name) (interactive-p) (buffer-modified-p)
          (y-or-n-p "Buffer changed, save first? ")

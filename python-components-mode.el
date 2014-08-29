@@ -2545,9 +2545,9 @@ This function takes the list of setup code to send from the
 	  (progn
 	    (py--send-string-no-output
 	     (py--fix-start (symbol-value code)) process)
-	    (sit-for py-new-shell-delay))
-	(py--fast-send-string (py--fix-start (symbol-value code)) process))
-      (py--delete-all-but-first-prompt))))
+	    (sit-for py-new-shell-delay)
+	    (py--delete-all-but-first-prompt))
+	(py--fast-send-string-intern (py--fix-start (symbol-value code)) process (buffer-name (process-buffer process)) nil nil)))))
 
 (defun py--docstring-p (&optional beginning-of-string-position)
   "Check to see if there is a docstring at POS."

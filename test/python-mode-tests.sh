@@ -1059,13 +1059,10 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall interpreter-mode-alist-lp-1355458-test-5 \
 --funcall auto-indent-lp-134258-test \
 --funcall dont-complete-empty-line-lp-1340824-test \
---funcall execute-buffer-lp-1338134-test \
---funcall stop-before-prompt-lp-1331953-test \
 --funcall vertical-alignment-lp-1332245-test \
 --funcall specify-default-interpreter-lp-1332652-test \
 --funcall py-beginning-of-statement-test-1 \
 --funcall docstring-style-switches-test \
---funcall impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test \
 --funcall complaint-about-non-ASCII-character-lp-1042949-test \
 --funcall UnicodeEncodeError-lp:550661-test \
 --funcall filename-completion-fails-in-ipython-lp-1027265-n1-test \
@@ -1355,3 +1352,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-object-reference-face-should-inherit-from-lp-1340455-test \
 --funcall python-shell-complete-test \
 --funcall py-shell-name-no-op-lp-1349549-test \
+--funcall execute-buffer-lp-1338134-test \
+--funcall stop-before-prompt-lp-1331953-test \
+--funcall impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test \

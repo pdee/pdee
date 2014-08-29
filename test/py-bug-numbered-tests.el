@@ -215,6 +215,7 @@
   "`use-find-file' is used to make sure that the new buffer is
 created local to the project that autocomplete is being tested
 on."
+  (declare ((debug t)))
   `(let ((debug-on-error t)
          (enable-local-variables :all)
          py-load-pymacs-p
@@ -222,28 +223,27 @@ on."
          py-switch-buffers-on-execute-p
          py-start-run-py-shell
          proc
-         py-fontify-shell-buffer-p
-         )
+         py-fontify-shell-buffer-p)
      (if ,use-find-file
          (find-file (concat (py--normalize-directory py-temp-directory)
                             (replace-regexp-in-string "\\\\" "" (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname)))))
-         (set-buffer (get-buffer-create (replace-regexp-in-string "\\\\" "" (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname))))))
-     ;; (with-temp-buffer
-     (switch-to-buffer (current-buffer))
-     (delete-other-windows)
-     (erase-buffer)
-     (fundamental-mode)
-     (insert ,teststring)
-     (local-unset-key (kbd "RET"))
-     (python-mode)
-     (when (and (boundp 'company-mode) company-mode) (company-abort))
-     (funcall ,testname)
-     (message "%s" (replace-regexp-in-string "\\\\" "" (concat (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname)) " passed")))
-     (unless (< 1 arg)
+       (set-buffer (get-buffer-create (replace-regexp-in-string "\\\\" "" (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname))))))
+     (with-temp-buffer
+       (switch-to-buffer (current-buffer))
+       (delete-other-windows)
+       (erase-buffer)
+       (fundamental-mode)
+       (insert ,teststring)
+       (local-unset-key (kbd "RET"))
+       (python-mode)
+       (when (and (boundp 'company-mode) company-mode) (company-abort))
+       (funcall ,testname)
+       (message "%s" (replace-regexp-in-string "\\\\" "" (concat (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname)) " passed")))
+       ;; (unless (< 1 arg)
        (set-buffer-modified-p 'nil)
        (and (get-buffer-process (current-buffer))
-            (set-process-query-on-exit-flag (get-buffer-process (current-buffer)) nil)
-            (kill-process (get-buffer-process (current-buffer))))
+	    (set-process-query-on-exit-flag (get-buffer-process (current-buffer)) nil)
+	    (kill-process (get-buffer-process (current-buffer))))
        (kill-buffer (current-buffer)))))
 
 ;; py-if-name-main-permission-p
@@ -6495,7 +6495,8 @@ foo = long_function_name(var_one, var_two,
 
 
 (defun execute-buffer-lp-1338134-test (&optional arg)
-  (interactive "p")
+  (interactive)
+  (when py-verbose-p (message "run: %s" "execute-buffer-lp-1338134-test"))
    (let ((teststring "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 print(123)
@@ -6503,6 +6504,7 @@ print(123)
   (py-bug-tests-intern 'execute-buffer-lp-1338134-base arg teststring)))
 
 (defun execute-buffer-lp-1338134-base ()
+  (when py-verbose-p (message "run: %s" "execute-buffer-lp-1338134-base"))
   (assert (py-execute-buffer) nil "execute-buffer-lp-1338134-test failed"))
 
 
@@ -6652,33 +6654,86 @@ d[\"a\""))
 print(1) "))
     (py-bug-tests-intern 'py-split-multi-and-switch-on-execute-lp-1361531-base arg teststring)))
 
+(defun py--lp-1361531-python (count &optional dedicated)
+  (py-execute-statement-python)
+  (assert (string= "*Python*" (buffer-name (window-buffer))) nil (concat "py-split-multi-and-switch-on-execute-lp-1361531-test-" count "failed"))
+  (message "%s" (concat "py-split-multi-and-switch-on-execute-lp-1361531-test-" count " passed"))
+  (set-buffer oldbuf))
+
+(defun py--lp-1361531-python3 (count &optional dedicated)
+  (py-execute-statement-python3)
+  (assert (string= "*Python3*" (buffer-name (window-buffer))) nil (concat "py-split-multi-and-switch-on-execute-lp-1361531-test-" count "failed"))
+  (message "%s" (concat "py-split-multi-and-switch-on-execute-lp-1361531-test-" count " passed"))
+  (set-buffer oldbuf))
+
+(defun py--lp-1361531-ipython (count &optional dedicated)
+  (py-execute-statement-ipython)
+  (assert (string= "*IPython*" (buffer-name (window-buffer))) nil (concat "py-split-multi-and-switch-on-execute-lp-1361531-test-" count "failed"))
+  (message "%s" (concat "py-split-multi-and-switch-on-execute-lp-1361531-test-" count " passed")))
+
 (defun py-split-multi-and-switch-on-execute-lp-1361531-base ()
   (let ((oldbuf (current-buffer))
 	(py-split-windows-on-execute-p 'always)
 	(py-switch-buffers-on-execute-p t)
 	py-keep-windows-configuration)
     (delete-other-windows)
-    (py-execute-statement-python)
-    (assert (string= "*Python*" (buffer-name (window-buffer))) nil "py-split-multi-and-switch-on-execute-lp-1361531-test-1 failed")
-    (message "%s" "py-split-multi-and-switch-on-execute-lp-1361531-test-1 passed")
-    (set-buffer oldbuf)
-    ;; (switch-to-buffer (current-buffer))
-    (py-execute-statement-python3)
-    (assert (string= "*Python3*" (buffer-name (window-buffer))) nil "py-split-multi-and-switch-on-execute-lp-1361531-test-2 failed")
-    (message "%s" "py-split-multi-and-switch-on-execute-lp-1361531-test-2 passed")
-    (set-buffer oldbuf)
-    ;; (switch-to-buffer (current-buffer))
-    (py-execute-statement-ipython)
-    (assert (string= "*IPython*" (buffer-name (window-buffer))) nil "py-split-multi-and-switch-on-execute-lp-1361531-test-3 failed")
-    (message "%s" "py-split-multi-and-switch-on-execute-lp-1361531-test-3 passed")
-    (while (not (and (setq erg (window-buffer)) (string= "*Python*" (buffer-name (window-buffer)))))(select-window (next-window) t))
+    (py--lp-1361531-python "1")
+    (py--lp-1361531-python3 "2")
+    (py--lp-1361531-ipython "3")
+    (py--lp-1361531-python "4")
+    (py--lp-1361531-python3 "5" t)
+    (py--lp-1361531-ipython "6" t)
+    (py--lp-1361531-python "7" t)
+    ))
 
-    (goto-char (point-max))
-    (setq py-keep-windows-configuration t)
-    (set-buffer oldbuf)
-    (py-execute-statement-python)
-    (assert (string= "*Python*" (buffer-name (window-buffer))) nil "py-split-multi-and-switch-on-execute-lp-1361531-test-4 failed")
-    (message "%s" "py-split-multi-and-switch-on-execute-lp-1361531-test-4 passed")))
+(defun py-split-multi-and-switch-dedicated-lp-1361531-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+print(1) "))
+    (py-bug-tests-intern 'py-split-multi-and-switch-dedicated-lp-1361531-base arg teststring)))
+
+(defun py--lp-1361531-python-dedicated (count)
+  (let (erg)
+    (setq erg (py-execute-statement-python-dedicated))
+    (message "%s" erg)
+    (assert (string-match "*Python-[[:alnum:]]+" (buffer-name (window-buffer))) nil (concat "py-split-multi-and-switch-dedicated-lp-1361531-test-" count "failed"))
+    (message "%s" (concat "py-split-multi-and-switch-dedicated-lp-1361531-test-" count " passed"))
+    (set-buffer oldbuf)))
+
+(defun py--lp-1361531-python3-dedicated (count)
+  (py-execute-statement-python3-dedicated)
+  (assert (string-match "*Python3-[[:alnum:]]+" (buffer-name (window-buffer))) nil (concat "py-split-multi-and-switch-dedicated-lp-1361531-test-" count "failed"))
+  (message "%s" (concat "py-split-multi-and-switch-dedicated-lp-1361531-test-" count " passed"))
+  (set-buffer oldbuf))
+
+(defun py--lp-1361531-ipython-dedicated (count)
+  (py-execute-statement-ipython-dedicated)
+  (assert (string-match "*IPython-[[:alnum:]]+" (buffer-name (window-buffer))) nil (concat "py-split-multi-and-switch-dedicated-lp-1361531-test-" count "failed"))
+  (message "%s" (concat "py-split-multi-and-switch-dedicated-lp-1361531-test-" count " passed")))
+
+(defun py-split-multi-and-switch-dedicated-lp-1361531-base ()
+  (let ((oldbuf (current-buffer))
+	(py-split-windows-on-execute-p 'always)
+	(py-switch-buffers-on-execute-p t)
+	py-keep-windows-configuration)
+    (delete-other-windows)
+    (py--lp-1361531-python-dedicated "1")
+    (py--lp-1361531-python3-dedicated "2")
+    (py--lp-1361531-ipython-dedicated "3")
+    (py--lp-1361531-python-dedicated "4")
+    (py--lp-1361531-python3-dedicated "5")
+    (py--lp-1361531-ipython-dedicated "6")
+    (py--lp-1361531-python-dedicated "7")
+    ))
+
+    ;; (while (not (and (setq erg (window-buffer)) (string= "*Python*" (buffer-name (window-buffer)))))(select-window (next-window) t))
+    ;; (goto-char (point-max))
+    ;; (setq py-keep-windows-configuration t)
+    ;; (set-buffer oldbuf)
+    ;; (py-execute-statement-python)
+    ;; (assert (string= "*Python*" (buffer-name (window-buffer))) nil "py-split-multi-and-switch-on-execute-lp-1361531-test-4 failed")
+    ;; (message "%s" "py-split-multi-and-switch-on-execute-lp-1361531-test-4 passed")))
 
 (defun py-split-multi-no-switch-on-execute-lp-1361531-test (&optional arg)
   (interactive "p")

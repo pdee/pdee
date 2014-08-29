@@ -1,3 +1,8 @@
+* Python 3.3.0 (default, Oct 01 2012, 09:13:30) [GCC] on linux
+  Type "help", "copyright", "credits" or "license" for more information.
+  >>> ... >>> >>> ... ... ... ... ... ... ... ... ... >>> >>> ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... >>> Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  FileNotFoundError: [Errno 2] No such file or directory: '/tmp/python3-19061qd.py'
 * make-temp-name zu md5, ein.py
 * `py-always-split-windows-p' renamed py-split-if-not-visible-p
 * py-buffer-name.txt

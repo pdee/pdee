@@ -49,20 +49,23 @@ Remove trailing newline"
 
 (defun py--fast-send-string-intern (string proc output-buffer store return)
   (with-current-buffer output-buffer
-    (widen)
-    (erase-buffer)
     (process-send-string proc "\n")
     (let ((orig (point)))
       (process-send-string proc string)
       (process-send-string proc "\n")
-      (accept-process-output proc 5)
       ;; `py--fast-send-string-no-output' sets `py-store-result-p' to
       ;; nil
-      (when (or store return)
-	(sit-for py-fast-completion-delay t)
-	(py--filter-result orig (point-max) store))
-      (when return
-	py-result))))
+      (accept-process-output proc 5)
+      ;; (switch-to-buffer (current-buffer)) 
+      (if (or store return)
+ 	  (progn
+	    (sit-for py-fast-completion-delay t)
+	    (py--filter-result orig (point-max) store)
+	    (when return
+	      py-result))
+	;; (switch-to-buffer (current-buffer))
+	(sit-for 0.1 t) 
+	(erase-buffer)))))
 
 (defun py--fast-send-string (string &optional proc windows-config)
   "Process Python strings, being prepared for large output.
