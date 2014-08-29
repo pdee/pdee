@@ -215,7 +215,7 @@
   "`use-find-file' is used to make sure that the new buffer is
 created local to the project that autocomplete is being tested
 on."
-  (declare ((debug t)))
+  (declare (debug (edebug-form-spec t)))
   `(let ((debug-on-error t)
          (enable-local-variables :all)
          py-load-pymacs-p
@@ -5456,7 +5456,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.17 $\"
+__version__ = \"$Revision: 1.18 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -6234,7 +6234,6 @@ print(1234)
     ;; (sit-for 1)
     (assert (progn (set-buffer "*Ipython*")(goto-char (point-max)) (search-backward "1234")) nil "py-execute-buffer-ipython-lp-1252643-test failed")))
 
-
 (defun Execute-region_statement-runs-full-file-lp-1269855-test (&optional arg)
   (interactive "p")
    (let ((teststring "#! /usr/bin/env python
@@ -6258,7 +6257,6 @@ print s(500)
   (py-execute-statement)
   (assert nil "Execute-region_statement-runs-full-file-lp-1269855-test failed"))
 
-
 (defun abbrevs-changed-t-when-starting-lp-1270631-test (&optional arg)
   (interactive "p")
    (let ((teststring "#! /usr/bin/env python
@@ -6277,7 +6275,6 @@ print s(500)
 
 (defun wrong-type-argument-inserted-chars-lp-1293172-base ()
       (assert (insert-file-contents (concat py-install-directory "/test/tn_clippy.txt")) nil "wrong-type-argument-inserted-chars-lp-1293172-test failed"))
-
 
 (defun py-mark-def-hangs-lp-1294478.py-test (&optional arg)
   (interactive "p")
@@ -6346,7 +6343,6 @@ def expand(self, leading=0, subs={}):
     (goto-char 40)
     (assert nil "py-mark-def-hangs-lp-1294478.py-test failed"))
 
-
 (defun execute-region-lp-1294796-test (&optional arg)
   (interactive "p")
    (let ((teststring "print(1)
@@ -6405,7 +6401,6 @@ function searchFunction() {
     (search-forward "getURLParameter")
     (assert (eq (face-at-point) 'font-lock-string-face) nil "wrong-coloring-lp:1315186-test failed"))
 
-
 (defun shell-not-advanced-lp-1294809-test (&optional arg)
   (interactive "p")
    (let ((py-split-windows-on-execute-p t)
@@ -6423,7 +6418,6 @@ print(123)
 (defun shell-not-advanced-lp-1294809-base ()
   (py-execute-buffer)
   (assert nil "shell-not-advanced-lp-1294809-test failed"))
-
 
 (defun show-source-code-lp-1318991-test (&optional arg)
   (interactive "p")
@@ -6479,7 +6473,6 @@ foo = long_function_name(var_one, var_two,
 	(assert (eq (current-indentation) need) nil "Vertical-alignment-with-opening-lp-1332245-test failed")
       (message "%s" "Vertical-alignment-with-opening-lp-1332245-test passed"))))
 
-
 (defun stop-before-prompt-lp-1331953-test ()
   (interactive)
   (let ((erg (py-shell nil t)))
@@ -6492,7 +6485,6 @@ foo = long_function_name(var_one, var_two,
 	  (assert (eq 4 (current-column)) nil "stop-before-prompt-lp-1331953-test failed")
 	(message "%s" "stop-before-prompt-lp-1331953-test passed")))
     (py-kill-buffer-unconditional erg)))
-
 
 (defun execute-buffer-lp-1338134-test (&optional arg)
   (interactive)
@@ -6507,7 +6499,6 @@ print(123)
   (when py-verbose-p (message "run: %s" "execute-buffer-lp-1338134-base"))
   (assert (py-execute-buffer) nil "execute-buffer-lp-1338134-test failed"))
 
-
 (defun dont-complete-empty-line-lp-1340824-test (&optional arg)
   (interactive "p")
    (let ((teststring "#! /usr/bin/env python
@@ -6520,7 +6511,6 @@ class Foo:a
   (py-indent-or-complete)
   (sit-for 0.1 t)
   (assert (eq 4 (current-indentation)) nil "dont-complete-empty-line-lp-1340824-test failed"))
-
 
 (defun auto-indent-lp-134258-test (&optional arg)
   (interactive "p")
@@ -6551,7 +6541,6 @@ def foo(self):
   (assert (eq (get-char-property (point) 'face) py-object-reference-face) nil " py-object-reference-face-should-inherit-from-lp-1340455-test failed")
   )
 
-
 (defun tab-complete-dict-keys-lp-1251690-test (&optional arg)
   (interactive "p")
    (let ((teststring "#! /usr/bin/env python
@@ -6563,7 +6552,6 @@ d[\"a\""))
 (defun tab-complete-dict-keys-lp-1251690-base ()
     (goto-char 40)
     (assert nil "tab-complete-dict-keys-lp-1251690-test failed"))
-
 
 (defun py-shell-name-no-op-lp-1349549-test (&optional arg)
   (interactive "p")
@@ -6578,7 +6566,6 @@ d[\"a\""))
 	(py-shell-name "ipython"))
     (py-shell)
     (assert (string-match "\*IP" (buffer-name (current-buffer))) nil "py-shell-name-no-op-lp-1349549-test failed")))
-
 
 (defun interpreter-mode-alist-lp-1355458-test-1 (&optional arg)
   (interactive "p")
@@ -6635,7 +6622,6 @@ d[\"a\""))
   (assert (eq 'python-mode major-mode) nil "interpreter-mode-alist-lp-1355458-test-5 failed")
   (py-kill-buffer-unconditional (current-buffer)))
 
-
 (defun interpreter-mode-alist-lp-1355458-test-6 (&optional arg)
   (interactive "p")
    (let ((teststring "#! /usr/bin/env jython
@@ -6647,6 +6633,23 @@ d[\"a\""))
   (assert (eq 'jython-mode major-mode) nil "interpreter-mode-alist-lp-1355458-test-6 failed")
   (py-kill-buffer-unconditional (current-buffer)))
 
+(defun py--lp-1361531-python (count)
+  (py-execute-statement-python)
+  (assert (string= "*Python*" (buffer-name (window-buffer))) nil (concat "py-split-multi-and-switch-on-execute-lp-1361531-test-" count "failed"))
+  (message "%s" (concat "py-split-multi-and-switch-on-execute-lp-1361531-test-" count " passed"))
+  (set-buffer oldbuf))
+
+(defun py--lp-1361531-python3 (count)
+  (py-execute-statement-python3)
+  (assert (string= "*Python3*" (buffer-name (window-buffer))) nil (concat "py-split-multi-and-switch-on-execute-lp-1361531-test-" count "failed"))
+  (message "%s" (concat "py-split-multi-and-switch-on-execute-lp-1361531-test-" count " passed"))
+  (set-buffer oldbuf))
+
+(defun py--lp-1361531-ipython (count)
+  (py-execute-statement-ipython)
+  (assert (string= "*IPython*" (buffer-name (window-buffer))) nil (concat "py-split-multi-and-switch-on-execute-lp-1361531-test-" count "failed"))
+  (message "%s" (concat "py-split-multi-and-switch-on-execute-lp-1361531-test-" count " passed")))
+
 (defun py-split-multi-and-switch-on-execute-lp-1361531-test (&optional arg)
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
@@ -6654,36 +6657,19 @@ d[\"a\""))
 print(1) "))
     (py-bug-tests-intern 'py-split-multi-and-switch-on-execute-lp-1361531-base arg teststring)))
 
-(defun py--lp-1361531-python (count &optional dedicated)
-  (py-execute-statement-python)
-  (assert (string= "*Python*" (buffer-name (window-buffer))) nil (concat "py-split-multi-and-switch-on-execute-lp-1361531-test-" count "failed"))
-  (message "%s" (concat "py-split-multi-and-switch-on-execute-lp-1361531-test-" count " passed"))
-  (set-buffer oldbuf))
-
-(defun py--lp-1361531-python3 (count &optional dedicated)
-  (py-execute-statement-python3)
-  (assert (string= "*Python3*" (buffer-name (window-buffer))) nil (concat "py-split-multi-and-switch-on-execute-lp-1361531-test-" count "failed"))
-  (message "%s" (concat "py-split-multi-and-switch-on-execute-lp-1361531-test-" count " passed"))
-  (set-buffer oldbuf))
-
-(defun py--lp-1361531-ipython (count &optional dedicated)
-  (py-execute-statement-ipython)
-  (assert (string= "*IPython*" (buffer-name (window-buffer))) nil (concat "py-split-multi-and-switch-on-execute-lp-1361531-test-" count "failed"))
-  (message "%s" (concat "py-split-multi-and-switch-on-execute-lp-1361531-test-" count " passed")))
-
 (defun py-split-multi-and-switch-on-execute-lp-1361531-base ()
   (let ((oldbuf (current-buffer))
 	(py-split-windows-on-execute-p 'always)
 	(py-switch-buffers-on-execute-p t)
 	py-keep-windows-configuration)
     (delete-other-windows)
-    (py--lp-1361531-python "1")
     (py--lp-1361531-python3 "2")
+    (py--lp-1361531-python "1")
     (py--lp-1361531-ipython "3")
     (py--lp-1361531-python "4")
-    (py--lp-1361531-python3 "5" t)
-    (py--lp-1361531-ipython "6" t)
-    (py--lp-1361531-python "7" t)
+    (py--lp-1361531-python3 "5")
+    (py--lp-1361531-ipython "6")
+    (py--lp-1361531-python "7")
     ))
 
 (defun py-split-multi-and-switch-dedicated-lp-1361531-test (&optional arg)
@@ -6818,7 +6804,6 @@ print(1) "))
     (assert (and (one-window-p) (eq oldbuf (current-buffer))) nil "py-no-split-no-switch-execute-lp-1361531-test-3 failed")
     (py-execute-statement-python)
     (assert (and (one-window-p) (eq oldbuf (current-buffer))) nil "py-no-split-no-switch-execute-lp-1361531-test-4 failed")))
-
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
