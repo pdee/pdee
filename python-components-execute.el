@@ -481,8 +481,8 @@ Internal use"
       ;; otherwise new window appears above
       (save-excursion
 	(other-window 1)
-	(switch-to-buffer output-buffer)))
-    (display-buffer oldbuf))
+	(switch-to-buffer output-buffer))
+      (display-buffer oldbuf)))
    ((and
      (eq py-split-windows-on-execute-p 'always)
      (not py-switch-buffers-on-execute-p))
@@ -493,17 +493,19 @@ Internal use"
       ;; otherwise new window appears above
       (save-excursion
 	(other-window 1)
-	(switch-to-buffer output-buffer)))
-    (pop-to-buffer oldbuf))
+	(display-buffer output-buffer))
+      (pop-to-buffer oldbuf)))
    ((and
      ;; just two windows, `py-split-windows-on-execute-p' is `t'
      py-split-windows-on-execute-p
      (not py-switch-buffers-on-execute-p))
     (delete-other-windows)
+    ;; (sit-for py-new-shell-delay)
     (py--manage-windows-split output-buffer)
+    ;; otherwise new window appears above
     (save-excursion
       (other-window 1)
-      (switch-to-buffer output-buffer))
+      (display-buffer output-buffer))
     (pop-to-buffer oldbuf))
    ((and
      py-switch-buffers-on-execute-p
@@ -686,9 +688,10 @@ Expects being called by `py--run-unfontify-timer' "
 	      (py--shell-setup py-buffer-name (get-buffer-process py-buffer-name)))
 	  (error (concat "py-shell: No process in " py-buffer-name))))
       ;; (goto-char (point-max))
-      (when (and (or (interactive-p)
-		     ;; M-x python RET sends from interactive "p"
-		     (eq 1 argprompt))(or py-switch-buffers-on-execute-p py-split-windows-on-execute-p) (py--shell-manage-windows py-buffer-name)))
+      (when (or (interactive-p)
+		;; M-x python RET sends from interactive "p"
+		(eq 1 argprompt)(or py-switch-buffers-on-execute-p py-split-windows-on-execute-p))
+	(py--shell-manage-windows py-buffer-name))
       ;; (when py-shell-mode-hook (run-hooks 'py-shell-mode-hook))
       (when (string-match "[BbIi][Pp]ython" py-buffer-name)
 	(sit-for 0.3 t))
@@ -753,52 +756,55 @@ Default is interactive, i.e. py-fast-process-p nil, and `py-session'"
   (let* ((oldbuf (current-buffer))
 	 (start (or start (and (use-region-p) (region-beginning)) (point-min)))
 	 (end (or end (and (use-region-p) (region-end)) (point-max)))
-	 (strg (if py-if-name-main-permission-p
-		   (buffer-substring-no-properties start end)
-		 (py--fix-if-name-main-permission (buffer-substring-no-properties start end))))
-	 (strg (py--fix-start strg))
-	 (wholebuf (unless file (or wholebuf (and (eq (buffer-size) (- end start))))))
-	 (windows-config (window-configuration-to-register 313465889))
-	 (origline
-	  (save-restriction
-	    (widen)
-	    (count-lines
-	     (point-min)
-	     ;; count-lines doesn't honor current line when at BOL
-	     end)))
-	 ;; argument SHELL might be a string like "python", "IPython" "python3", a symbol holding PATH/TO/EXECUTABLE or just a symbol like 'python3
-	 (which-shell
-	  (if shell
-	      ;; shell might be specified in different ways
-	      (or (and (stringp shell) shell)
-		  (ignore-errors (eval shell))
-		  (and (symbolp shell) (prin1-to-string shell)))
-	    (py-choose-shell)))
-	 (py-exception-buffer (current-buffer))
-	 (execute-directory
-	  (cond ((ignore-errors (file-name-directory (file-remote-p (buffer-file-name) 'localname))))
-		((and py-use-current-dir-when-execute-p (buffer-file-name))
-		 (file-name-directory (buffer-file-name)))
-		((and py-use-current-dir-when-execute-p
-		      py-fileless-buffer-use-default-directory-p)
-		 (expand-file-name default-directory))
-		((stringp py-execute-directory)
-		 py-execute-directory)
-		((getenv "VIRTUAL_ENV"))
-		(t (getenv "HOME"))))
-	 (py-buffer-name
-	  (or py-buffer-name
-	      (py--choose-buffer-name which-shell)))
-	 (filename (or (and filename (expand-file-name filename)) (and (not (buffer-modified-p)) (buffer-file-name))))
-	 (py-orig-buffer-or-file (or filename (current-buffer)))
-	 (proc (cond (proc)
-		     ;; will deal with py-dedicated-process-p also
-		     (py-fast-process-p (get-buffer-process (py-fast-process py-buffer-name)))
-		     (py-dedicated-process-p
-		      (get-buffer-process (py-shell nil py-dedicated-process-p which-shell py-buffer-name)))
-		     (t (or (get-buffer-process py-buffer-name)
-			    (get-buffer-process (py-shell nil py-dedicated-process-p which-shell py-buffer-name)))))))
-    (py--execute-base-intern strg shell filename proc file wholebuf)))
+	 (strg-raw (if py-if-name-main-permission-p
+                       (buffer-substring-no-properties start end)
+                     (py--fix-if-name-main-permission (buffer-substring-no-properties start end))))
+         (strg (py--fix-start strg-raw))
+         (wholebuf (unless file (or wholebuf (and (eq (buffer-size) (- end start)))))))
+    (when py-verbose-p (message "strg: %s" strg))
+    (let* (
+
+	   (windows-config (window-configuration-to-register 313465889))
+	   (origline
+	    (save-restriction
+	      (widen)
+	      (count-lines
+	       (point-min)
+	       ;; count-lines doesn't honor current line when at BOL
+	       end)))
+	   ;; argument SHELL might be a string like "python", "IPython" "python3", a symbol holding PATH/TO/EXECUTABLE or just a symbol like 'python3
+	   (which-shell
+	    (if shell
+		;; shell might be specified in different ways
+		(or (and (stringp shell) shell)
+		    (ignore-errors (eval shell))
+		    (and (symbolp shell) (prin1-to-string shell)))
+	      (py-choose-shell)))
+	   (py-exception-buffer (current-buffer))
+	   (execute-directory
+	    (cond ((ignore-errors (file-name-directory (file-remote-p (buffer-file-name) 'localname))))
+		  ((and py-use-current-dir-when-execute-p (buffer-file-name))
+		   (file-name-directory (buffer-file-name)))
+		  ((and py-use-current-dir-when-execute-p
+			py-fileless-buffer-use-default-directory-p)
+		   (expand-file-name default-directory))
+		  ((stringp py-execute-directory)
+		   py-execute-directory)
+		  ((getenv "VIRTUAL_ENV"))
+		  (t (getenv "HOME"))))
+	   (py-buffer-name
+	    (or py-buffer-name
+		(py--choose-buffer-name which-shell)))
+	   (filename (or (and filename (expand-file-name filename)) (and (not (buffer-modified-p)) (buffer-file-name))))
+	   (py-orig-buffer-or-file (or filename (current-buffer)))
+	   (proc (cond (proc)
+		       ;; will deal with py-dedicated-process-p also
+		       (py-fast-process-p (get-buffer-process (py-fast-process py-buffer-name)))
+		       (py-dedicated-process-p
+			(get-buffer-process (py-shell nil py-dedicated-process-p which-shell py-buffer-name)))
+		       (t (or (get-buffer-process py-buffer-name)
+			      (get-buffer-process (py-shell nil py-dedicated-process-p which-shell py-buffer-name)))))))
+      (py--execute-base-intern strg shell filename proc file wholebuf))))
 
 (defun py--send-to-fast-process (strg proc output-buffer)
   "Called inside of `py--execute-base-intern' "
@@ -1157,6 +1163,9 @@ See `py-if-name-main-permission-p'"
     strg))
 
 (defun py--fix-start-intern (start end)
+  (setq buffer-read-only nil)
+  (when py-verbose-p (message "py--fix-start-intern start end: %s %s" start end)
+        (message "buffer-read-only: %s" buffer-read-only))
   (goto-char start)
   (while
       (member (char-after) (list 9 32))
@@ -1173,13 +1182,29 @@ See `py-if-name-main-permission-p'"
   "Internal use by py-execute... functions.
 
 Avoid empty lines at the beginning. "
+  (when py-debug-p (message "py--fix-start:"))
   (with-temp-buffer
     (insert string)
-    (py--fix-start-intern (point-min) (point-max))
+    (goto-char 1)
+    ;; (when py-debug-p (message "start: %s" (point))
+    ;; (setq buffer-read-only nil)
+    ;; (message "buffer-read-only: %s" buffer-read-only))
+    (while
+	(member (char-after) (list 9 32))
+      (delete-char 1))
+    (unless (py--beginning-of-statement-p)
+      (py-down-statement))
+    (while (not (eq (current-indentation) 0))
+      (py-shift-left py-indent-offset start end))
+    (goto-char (point-max))
+    (unless (empty-line-p)
+      (newline))
+    ;; (when py-debug-p (message "end: %s" (point)))
+    ;; (py--fix-start-intern (point-min) (point-max))
     ;; FixMe: Maybe conditial from from some use-tempfile var?
     ;; (and (ignore-errors tempfile)
     ;; (write-region (point-min) (point-max) tempfile nil t nil 'ask))
-    (buffer-substring-no-properties (point-min) (point-max))))
+    (buffer-substring-no-properties 1 (point-max))))
 
 (defun py-fetch-py-master-file ()
   "Lookup if a `py-master-file' is specified.

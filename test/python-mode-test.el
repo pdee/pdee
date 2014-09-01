@@ -651,20 +651,21 @@
 
 (defun UnicodeEncodeError-python3-test (&optional arg load-branch-function)
   (interactive "p")
-  (let ((py-shell-name "python3")
-	(teststring (concat "#! /usr/bin/env python3
+  (let ((teststring (concat "#! /usr/bin/env python3
 # -\*- coding: utf-8 -\*-\n
 print(\'\\xA9\')
 ")))
     (py-bug-tests-intern 'UnicodeEncodeError-python3-base arg teststring)))
 
 (defun UnicodeEncodeError-python3-base (&optional arg)
-  (delete-other-windows)
   (py-execute-region 50 63)
   (set-buffer "*Python3*")
+  (sit-for 1 t)
   ;; (switch-to-buffer (current-buffer))
-  (goto-char comint-last-output-start)
-  (assert (eq (char-after) ?\©) nil "UnicodeEncodeError-python3-test failed"))
+  (if comint-last-output-start
+      (goto-char comint-last-output-start)
+    (message "UnicodeEncodeError-python3-test: %s" "Dont see comint-last-output-start"))
+  (assert (or (eq (char-after) ?\©)(eq (char-before) ?\©)) nil "UnicodeEncodeError-python3-test failed"))
 
 (defun dict-error-test (&optional arg load-branch-function)
   (interactive "p")

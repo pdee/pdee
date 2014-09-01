@@ -1110,16 +1110,20 @@ Eval resulting buffer to install it, see customizable `py-extensions'. "
         (find-file (concat py-install-directory "/" py-extensions)))))
 
 (defun py-end-of-string (&optional beginning-of-string-position)
-  "Go to end of string at point, return position.
-
-Takes the result of (syntax-ppss)"
+  "Go to end of string at point, return position. "
   (interactive)
-  (let ((beginning-of-string-position (or beginning-of-string-position (and (nth 3 (syntax-ppss))(nth 8 (syntax-ppss)))
+  (when py-debug-p (message "(current-buffer): %s" (current-buffer)))
+  (when py-debug-p (message "major-mode): %s" major-mode))
+  (let ((beginning-of-string-position (or beginning-of-string-position (and (nth 3 (parse-partial-sexp 1 (point)))(nth 8 (parse-partial-sexp 1 (point))))
                                           (and (looking-at "\"\"\"\\|'''\\|\"\\|\'")(match-beginning 0))))
         erg)
     (if beginning-of-string-position
         (progn
           (goto-char beginning-of-string-position)
+	  (when
+	      ;; work around parse-partial-sexp error
+	      (and (nth 3 (parse-partial-sexp 1 (point)))(nth 8 (parse-partial-sexp 1 (point))))
+	    (goto-char (nth 3 (parse-partial-sexp 1 (point)))))
           (goto-char (scan-sexps (point) 1))
           (setq erg (point)))
       (error (concat "py-end-of-string: don't see end-of-string at " (buffer-name (current-buffer)) "at pos " (point))))

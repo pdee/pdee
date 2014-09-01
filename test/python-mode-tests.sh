@@ -1,4 +1,4 @@
-#!/bin/bash
+s#!/bin/bash
 
 # Author: Andreas Roehler <andreas.roehler@online.de>
 
@@ -203,7 +203,7 @@ echo "\$PDIR/\$TESTFILE: $PDIR/$TESTFILE"
 
 # $EMACS -Q -batch -l $HOME/emacs_20130227/lisp/emacs-lisp/cl-lib.el -l $HOME/emacs_20130227/lisp/emacs-lisp/ert.el -l ${PCOT}/python-mode-ert-tests.el -f ert-run-tests-batch-and-exit
 # $EMACS -Q -batch -load ${EMACS_DIR}lisp/emacs-lisp/ert.el -load ${PCOT}/python-mode-ert-tests.el -f ert-run-tests-batch-and-exit
-$EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'python)(unload-feature 'python t))" --eval "(when (featurep 'python-mode)(unload-feature 'python-mode t))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$TESTDIR/\")" --eval "(setq py-install-directory \"$PDIR\"))" --eval "(message \"py-install-directory: %s\" py-install-directory)" --eval "(setq py-load-pymacs-p nil)" -load $BYTECOMP -load $CC_CMDS -load $COMINT -load $ANSICOLOR -load $CLMACS -load $CUSTOM -load $SKELETON -load $SO -load $COLMK -load $HIGHL -load $PYTHONMODE  --eval "(message \"py-temp-directory: %s\" py-temp-directory)" -load $PCOT/$TESTFILE -load $PCOT/$TESTFILE2 -load $PCOT/$TESTFILE3 -load $PCOT/$TESTFILE5 -load $PDIR/$UTILS \
+$EMACS -Q --batch --eval "(message (emacs-version))" --eval "(setq py-verbose-p t)" --eval "(when (featurep 'python)(unload-feature 'python t))" --eval "(when (featurep 'python-mode)(unload-feature 'python-mode t))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$TESTDIR/\")" --eval "(setq py-install-directory \"$PDIR\"))" --eval "(message \"py-install-directory: %s\" py-install-directory)" --eval "(setq py-load-pymacs-p nil)" -load $BYTECOMP -load $CC_CMDS -load $COMINT -load $ANSICOLOR -load $CLMACS -load $CUSTOM -load $SKELETON -load $SO -load $COLMK -load $HIGHL -load $PYTHONMODE  --eval "(message \"py-temp-directory: %s\" py-temp-directory)" -load $PCOT/$TESTFILE -load $PCOT/$TESTFILE2 -load $PCOT/$TESTFILE3 -load $PCOT/$TESTFILE5 -load $PDIR/$UTILS \
 --eval "(when (file-exists-p \"~/.abbrev_defs\") (quietly-read-abbrev-file (expand-file-name \"~/.abbrev_defs\")))" \
 \
 -eval "(assert (functionp 'word-at-point) nil \"new completion bug, lp:1034656, word-at-point not known\")" \
@@ -1052,6 +1052,53 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 -eval "(assert (boundp 'py-compilation-regexp-alist) nil \"py-compilation-regexp-alist not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall py-execute-buffer-python3-switch-test \
+--funcall fails-to-indent-abs-wrong-type-argument-lp-1075673-test \
+--funcall py-shell-invoking-python-lp:835151-test \
+--funcall python2.7-shell-complete-test \
+--funcall python3-shell-complete-test \
+--funcall py-execute-buffer-python-switch-test \
+--funcall py-execute-buffer-python2-switch-test \
+--funcall python-shell-complete-test \
+--funcall py-execute-block-python-test \
+--funcall py-execute-block-or-clause-python-test \
+--funcall inconvenient-window-splitting-behavior-ipython-lp-1018996-test \
+--funcall does-not-dedent-regions-lp-1072869-test \
+--funcall no-completion-at-all-lp:1001328-test \
+--funcall indent-triplequoted-to-itself-lp:752252-test \
+--funcall py-execute-buffer-ipython-lp-1252643-test \
+--funcall py-ipython-complete-lp:927136-test \
+--funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n1-test \
+--funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n2-test \
+--funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n3-test \
+--funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n4-test \
+--funcall py-electric-comment-add-space-lp:828398-test \
+--funcall py-electric-comment-add-space-t-lp:828398-test \
+--funcall missing-py-variable-name-face-lp-1215791-test \
+--funcall switch-windows-on-execute-p-test \
+--funcall C-c-C-c-lp:1221310-and-store-result-test \
+--funcall inconvenient-window-splitting-behavior-python-lp-1018996-test \
+--funcall IndentationError-expected-an-indented-block-when-execute-lp-1055569-test \
+--funcall execute-region-lp-1294796-test \
+--funcall more-docstring-filling-woes-lp-1102296-pep-257-test \
+--funcall more-docstring-filling-woes-lp-1102296-pep-257-nn-test \
+--funcall py-electric-delete-test \
+--funcall not-that-useful-completion-lp:1003580-test \
+--funcall py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test \
+--funcall from-within-py-shell-call-another-instance-lp-1169687-test \
+--funcall py-docstring-style-pep-257-nn-closing-quotes-lp-1241147-test \
+--funcall goto-beginning-of-tqs-lp:735328-test \
+--funcall completion-at-gentoo-lp-1008842-test \
+--funcall wrong-type-argument-inserted-chars-lp-1293172-test \
+--funcall previous-statement-lp:637955-test \
+--funcall py-shell-name-no-op-lp-1349549-test \
+--funcall py-execute-block-or-clause-python3-test \
+--funcall py-object-reference-face-should-inherit-from-lp-1340455-test \
+--funcall python-shell-complete-test \
+--funcall execute-buffer-lp-1338134-test \
+--funcall stop-before-prompt-lp-1331953-test \
+--funcall impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test \
+--funcall complaint-about-non-ASCII-character-lp-1042949-test \
 --funcall interpreter-mode-alist-lp-1355458-test-1 \
 --funcall interpreter-mode-alist-lp-1355458-test-2 \
 --funcall interpreter-mode-alist-lp-1355458-test-3 \
@@ -1242,7 +1289,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall dict-error-test \
 --funcall py-install-directory-path-test \
 --funcall py-end-of-print-statement-test \
---funcall py-describe-symbol-fails-on-modules-lp:919719-test \
 --funcall py-find-imports-lp-1023236-test \
 --funcall py-beginning-of-expression-test \
 --funcall py-end-of-expression-test \
@@ -1269,26 +1315,22 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall enter-key-does-not-indent-properly-after-return-statement-lp-1098793-test \
 --funcall comments-start-a-new-line-lp-1092847-n2-test \
 --funcall py-bol-moves-test \
+--funcall py-describe-symbol-fails-on-modules-lp:919719-test \
 --funcall py-execute-buffer-python3-looks-broken-lp-1085386-test \
---funcall fails-to-indent-abs-wrong-type-argument-lp-1075673-test \
---funcall py-if-name-main-permission-lp-326620-test \
 --funcall UnicodeEncodeError-python3-test \
 --funcall Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test \
 --funcall another-broken-font-locking-lp:961231-test \
 --funcall cls-pseudo-keyword-lp:328849-test \
 --funcall py-execute-region-error-test \
---funcall py-execute-statement-error-test \
 --funcall split-windows-on-execute-p-test \
 --funcall py-shell-complete-test \
+--funcall py-execute-statement-error-test \
 --funcall more-docstring-filling-woes-lp-1102296-nil-test \
 --funcall more-docstring-filling-woes-lp-1102296-onetwo-test \
 --funcall more-docstring-filling-woes-lp-1102296-django-test \
 --funcall more-docstring-filling-woes-lp-1102296-symmetric-test \
 --funcall ipython-complete-lp-1102226-test \
-\
---funcall py-shell-invoking-python-lp:835151-test \
---funcall usr-bin-python-shell-complete-test \
---funcall py-run-shell-complete-tests \
+--funcall py-if-name-main-permission-lp-326620-test \
 --funcall py-execute-statement-ipython-test \
 --funcall py-execute-buffer-ipython-switch-test \
 --funcall py-execute-region-ipython-test \
@@ -1300,8 +1342,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-execute-block-ipython-test \
 --funcall py-execute-block-or-clause-ipython-test \
 --funcall py-execute-line-ipython-test \
---funcall py-execute-buffer-python3-switch-test \
---funcall py-execute-buffer-python2-switch-test \
 --funcall py-execute-region-python3-no-switch-test \
 --funcall script-buffer-appears-instead-of-python-shell-buffer-lp:957561-test \
 --funcall completion-fails-in-python-script-r989-lp:1004613-test \
@@ -1312,46 +1352,5 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(when (featurep 'py
 --funcall py-fill-string-pep-257-nn-test \
 --funcall py-fill-string-symmetric-test \
 --funcall forward-sexp-test \
---funcall py-execute-file-test \
---funcall py-execute-block-python-test \
---funcall py-execute-block-or-clause-python-test \
 --funcall fill-paragraph-in-docstring-lp-1161232-test \
 --funcall ipython-shell-complete-test \
---funcall usr-bin-ipython-shell-complete-test \
---funcall inconvenient-window-splitting-behavior-ipython-lp-1018996-test \
---funcall does-not-dedent-regions-lp-1072869-test \
---funcall no-completion-at-all-lp:1001328-test \
---funcall indent-triplequoted-to-itself-lp:752252-test \
---funcall py-execute-buffer-ipython-lp-1252643-test \
---funcall py-ipython-complete-lp:927136-test \
---funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n1-test \
---funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n2-test \
---funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n3-test \
---funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n4-test \
---funcall py-electric-comment-add-space-lp:828398-test \
---funcall py-electric-comment-add-space-t-lp:828398-test \
---funcall missing-py-variable-name-face-lp-1215791-test \
---funcall switch-windows-on-execute-p-test \
---funcall C-c-C-c-lp:1221310-and-store-result-test \
---funcall inconvenient-window-splitting-behavior-python-lp-1018996-test \
---funcall IndentationError-expected-an-indented-block-when-execute-lp-1055569-test \
---funcall execute-region-lp-1294796-test \
---funcall more-docstring-filling-woes-lp-1102296-pep-257-test \
---funcall more-docstring-filling-woes-lp-1102296-pep-257-nn-test \
---funcall py-electric-delete-test \
---funcall not-that-useful-completion-lp:1003580-test \
---funcall py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test \
---funcall from-within-py-shell-call-another-instance-lp-1169687-test \
---funcall py-docstring-style-pep-257-nn-closing-quotes-lp-1241147-test \
---funcall goto-beginning-of-tqs-lp:735328-test \
---funcall completion-at-gentoo-lp-1008842-test \
---funcall py-execute-buffer-python-switch-test \
---funcall wrong-type-argument-inserted-chars-lp-1293172-test \
---funcall previous-statement-lp:637955-test \
---funcall py-execute-block-or-clause-python3-test \
---funcall py-object-reference-face-should-inherit-from-lp-1340455-test \
---funcall python-shell-complete-test \
---funcall py-shell-name-no-op-lp-1349549-test \
---funcall execute-buffer-lp-1338134-test \
---funcall stop-before-prompt-lp-1331953-test \
---funcall impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test \

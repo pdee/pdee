@@ -1498,7 +1498,7 @@ without the user's realization (e.g. to perform completion)."
   :type '(repeat symbol)
   :group 'python-mode)
 
-(defcustom py-shell-completion-setup-code
+(defvar py-shell-completion-setup-code
   "try:
     import readline
 except ImportError:
@@ -1519,9 +1519,8 @@ else:
         except NameError:
             pass
         return completions"
-  "Code used to setup completion in Python processes."
-  :type 'string
-  :group 'python-mode)
+  "Code used to setup completion in Python processes.")
+
 
 (defcustom python-shell-module-completion-string-code "';'.join(__COMPLETER_all_completions('''%s'''))"
   "Python code used to get completions separated by semicolons for imports.
@@ -2547,7 +2546,7 @@ This function takes the list of setup code to send from the
 	     (py--fix-start (symbol-value code)) process)
 	    (sit-for py-new-shell-delay)
 	    (py--delete-all-but-first-prompt))
-	(py--fast-send-string-intern (py--fix-start (symbol-value code)) process (buffer-name (process-buffer process)) nil nil)))))
+	(py--fast-send-string-no-output (py--fix-start (symbol-value code)) process (buffer-name (process-buffer process)))))))
 
 (defun py--docstring-p (&optional beginning-of-string-position)
   "Check to see if there is a docstring at POS."

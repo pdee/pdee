@@ -47,6 +47,22 @@ Remove trailing newline"
        (kill-new py-result))
   (setq py-result (split-string py-result "\n")))
 
+(defun py--fast-send-string-no-output (string proc output-buffer)
+  (with-current-buffer output-buffer
+    ;; in comint-mode, prompt might be read-only
+    ;; delete-region would fail
+    (let ((comint-prompt-read-only-old comint-prompt-read-only)
+	  comint-prompt-read-only)
+      (process-send-string proc "\n")
+      (let ((orig (point)))
+	(process-send-string proc string)
+	(process-send-string proc "\n")
+	(accept-process-output proc 5)
+	(sit-for 0.1 t)
+	(when py-verbose-p (message "py--fast-send-string-intern comint-prompt-read-only: %s" comint-prompt-read-only))
+	(delete-region orig (point-max))
+	(setq comint-prompt-read-only comint-prompt-read-only-old)))))
+
 (defun py--fast-send-string-intern (string proc output-buffer store return)
   (with-current-buffer output-buffer
     (process-send-string proc "\n")
@@ -56,16 +72,11 @@ Remove trailing newline"
       ;; `py--fast-send-string-no-output' sets `py-store-result-p' to
       ;; nil
       (accept-process-output proc 5)
-      ;; (switch-to-buffer (current-buffer)) 
-      (if (or store return)
- 	  (progn
-	    (sit-for py-fast-completion-delay t)
-	    (py--filter-result orig (point-max) store)
-	    (when return
-	      py-result))
-	;; (switch-to-buffer (current-buffer))
-	(sit-for 0.1 t) 
-	(erase-buffer)))))
+      (sit-for py-fast-completion-delay t)
+      ;; sets py-result
+      (py--filter-result orig (point-max) store)
+      (when return
+	py-result))))
 
 (defun py--fast-send-string (string &optional proc windows-config)
   "Process Python strings, being prepared for large output.
@@ -76,7 +87,9 @@ See also `py-fast-shell'
 "
   (let* ((proc (or proc (get-buffer-process (py-fast-process))))
 	 (buffer (process-buffer proc)))
-    (py--fast-send-string-intern string proc buffer py-store-result-p py-return-result-p)))
+    (if (or py-store-result-p py-return-result-p)
+	(py--fast-send-string-intern string proc buffer py-store-result-p py-return-result-p)
+      (py--fast-send-string-no-output string proc buffer))))
 
 (defun py-fast-send-string (string)
   "Evaluate STRING in Python process which is not in comint-mode.
@@ -85,19 +98,19 @@ From a programm use `py--fast-send-string'"
   (interactive "sPython command: ")
   (py--fast-send-string string))
 
-(defun py--fast-send-string-no-output (string &optional proc)
-  "Process Python string, ignore output.
+;; (defun py--fast-send-string-no-output (string &optional proc)
+;;   "Process Python string, ignore output.
 
-Used to update Python process
-See also `py-fast-shell'
+;; Used to update Python process
+;; See also `py-fast-shell'
 
-"
-  (let* ((proc (or proc
-		   (ignore-errors (get-buffer-process (get-buffer py-buffer-name)))
-		   (py-fast-process)))
-	 (buffer (process-buffer proc))
-	 py-store-result-p)
-    (py--fast-send-string-intern string proc buffer nil nil)))
+;; "
+;;   (let* ((proc (or proc
+;; 		   (ignore-errors (get-buffer-process (get-buffer py-buffer-name)))
+;; 		   (py-fast-process)))
+;; 	 (buffer (process-buffer proc))
+;; 	 py-store-result-p)
+;;     (py--fast-send-string-intern string proc buffer nil nil)))
 
 (defun py-process-region-fast (beg end)
   (interactive "r")

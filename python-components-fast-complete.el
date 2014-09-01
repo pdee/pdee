@@ -27,14 +27,14 @@ completions on the current context."
     (when (> (length completions) 2)
       (split-string completions "^'\\|^\"\\|;\\|'$\\|\"$" t))))
 
-(defun py--fast--do-completion-at-point (process imports input orig oldbuf code)
+(defun py--fast--do-completion-at-point (process imports input orig oldbuf code output-buffer)
   "Do completion at point for PROCESS."
   ;; send setup-code
   (let (py-return-result-p)
-    (py--fast-send-string-no-output py-shell-completion-setup-code process)
+    (py--fast-send-string-no-output py-shell-completion-setup-code process output-buffer)
     (when imports
       ;; (message "%s" imports)
-      (py--fast-send-string-no-output imports process)))
+      (py--fast-send-string-no-output imports process output-buffer)))
   (let* ((completion
 	  (py--fast-completion-get-completions input process code))
 	 ;; (completion (when completions
@@ -74,7 +74,7 @@ completions on the current context."
 		 python-shell-module-completion-string-code)))
     (with-current-buffer py-buffer-name
       (erase-buffer))
-    (py--fast--do-completion-at-point proc imports word pos oldbuf code)))
+    (py--fast--do-completion-at-point proc imports word pos oldbuf code py-buffer-name)))
 
 (defun py-fast-complete (&optional shell debug beg end word)
   "Complete word before point, if any.

@@ -410,14 +410,21 @@ http://docs.python.org/reference/compound_stmts.html"
         erg))))
 
 (defun py--skip-to-comment-or-semicolon ()
-  "Returns position reached if point was moved. "
-  (let ((orig (point)))
-    (and (< 0 (abs (skip-chars-forward "^#;" (line-end-position))))
-	 (if (eq ?\; (char-after))
-	     (skip-chars-forward ";" (line-end-position))
-	   (skip-chars-backward " \t" (line-beginning-position)))
-	 (setq done t)
-	 (and (< orig (point)) (point)))))
+  "Returns position if comment or semicolon found. "
+  (let ((orig (point))
+	erg)
+    (if
+	(and (< 0 (abs (skip-chars-forward "^#;" (line-end-position))))
+	     (member (char-after) (list ?# ?\;)))
+	(progn
+	  (if (eq ?\; (char-after))
+	      (skip-chars-forward ";" (line-end-position))
+	    (skip-chars-backward " \t" (line-beginning-position)))
+	  (setq done t)
+	  (point))
+      (goto-char orig)
+      nil)))
+
 
 (defun py--skip-to-semicolon-backward (&optional limit)
   "Fetch the beginning of statement after a semicolon.
@@ -499,7 +506,9 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
           forward-sexp-function
           stringchar stm pps err)
       (unless done
-        (py--skip-to-comment-or-semicolon))
+        (or
+	 (py--skip-to-comment-or-semicolon)
+	 (end-of-line)))
       (setq pps (parse-partial-sexp (point-min) (point)))
       ;; (origline (or origline (py-count-lines)))
       (cond
@@ -554,7 +563,7 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
        ((eq (current-indentation) (current-column))
 	(or (py--skip-to-comment-or-semicolon)
 	    (forward-char 1))
-	(setq pps (syntax-ppss))
+	(setq pps (parse-partial-sexp (point-min) (point)))
 	(unless done (py--end-of-statement-intern)
 		(py-end-of-statement orig done repeat)))
 

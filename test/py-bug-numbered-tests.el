@@ -2419,7 +2419,9 @@ I am using version 6.0.4
 
 (defun py-shell-invoking-python-lp:835151-base ()
   (setq py-shell-name "python")
-  (assert (stringp (py-execute-buffer)) nil "py-shell-invoking-python-lp:835151-test failed"))
+  (py-execute-buffer)
+  (set-buffer "*Python*")
+  (assert (search-backward "py-shell-name: python") nil t 1) nil "py-shell-invoking-python-lp:835151-test failed")
 
 (defun py-shell-invoking-ipython-lp:835151-test (&optional arg)
   (interactive "p")
@@ -2680,6 +2682,7 @@ print(myobj.range(10))
     (py-bug-tests-intern 'another-broken-font-locking-lp:961231-base arg teststring)))
 
 (defun another-broken-font-locking-lp:961231-base ()
+  (switch-to-buffer (current-buffer))
   (font-lock-fontify-buffer)
   (goto-char 124)
   (sit-for 0.1)
@@ -2828,7 +2831,8 @@ os.chmod
   (sit-for 0.1)
   (set-buffer "*Python-Help*")
   (goto-char (point-min))
-  (assert (looking-at "Help on built-in function chmod in os:")  nil "py-describe-symbol-fails-on-modules-lp:919719-test failed"))
+  (switch-to-buffer (current-buffer))
+  (assert (looking-at "Help on built-in function chmod in os:") nil "py-describe-symbol-fails-on-modules-lp:919719-test failed"))
 
 (defun indent-region-lp:997958-test (&optional arg)
   (interactive "p")
@@ -2975,11 +2979,11 @@ ex
   (when (buffer-live-p (get-buffer py-python-completions))
     (kill-buffer py-python-completions))
   (goto-char 51)
-  (ipython-complete nil nil nil nil nil nil t)
-  (set-buffer "*IPython Completions*")
-  (when
-      (assert (search-forward "except") nil "completion-fails-in-python-script-r989-lp:1004613-test failed")
-    (message "%s" "completion-fails-in-python-script-r989-lp:1004613-test passed")))
+  (ipython-complete)
+  (set-buffer "*Python Completions*")
+  (sit-for 0.1 t) 
+  (assert (search-forward "except") nil "completion-fails-in-python-script-r989-lp:1004613-test failed"))
+
 
 (defun spurious-trailing-whitespace-lp-1008679-test (&optional arg)
   (interactive "p")
@@ -4457,10 +4461,14 @@ os.
 (defun inconvenient-window-splitting-behavior-ipython-lp-1018996-base ()
   (goto-char 83)
   (py-shell-complete nil t)
-  (assert (string-match  "^re." (car py-shell-complete-debug)) nil "inconvenient-window-splitting-behavior-ipython-lp-1018996-test #1 failed")
+  (sit-for 0.1 t) 
+  (set-buffer "*Python Completions*")
+  (goto-char (point-min)) 
+  (assert (search-forward  "re." nil t 1) nil "inconvenient-window-splitting-behavior-ipython-lp-1018996-test #1 failed")
   (goto-char 87)
   (py-shell-complete nil t)
-  (assert (string-match  "^os." (car py-shell-complete-debug)) nil "inconvenient-window-splitting-behavior-ipython-lp-1018996-test #2 failed"))
+  (assert (search-forward  "re." nil t 1) nil "inconvenient-window-splitting-behavior-ipython-lp-1018996-test #2 failed"))
+
 
 (defun impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test (&optional arg)
   (interactive "p")
@@ -5456,7 +5464,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.18 $\"
+__version__ = \"$Revision: 1.21 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -5623,7 +5631,7 @@ Assuming that ``cr`` is a :class:`ContextRewriter` instance, that the rewriter m
     (sit-for 0.1)
     (assert (eq (point) 51) nil "fill-paragraph-in-docstring-lp-1161232-test #1 failed")
     (goto-char 249)
-    (sit-for 1)
+    (sit-for 1)     
     (message "%s" (buffer-substring-no-properties (line-beginning-position) (line-end-position) ))
     (assert (looking-at "    pass") nil "fill-paragraph-in-docstring-lp-1161232-test #2 failed")
     )
@@ -5786,6 +5794,7 @@ def foo():
   (py-bug-tests-intern 'Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-base arg teststring)))
 
 (defun Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-base ()
+  (switch-to-buffer (current-buffer))
   (goto-char 97)
   ;; (message "paragraph-start: %s" paragraph-start)
   ;; (message "Fehler? %s" (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
@@ -6473,7 +6482,7 @@ foo = long_function_name(var_one, var_two,
 	(assert (eq (current-indentation) need) nil "Vertical-alignment-with-opening-lp-1332245-test failed")
       (message "%s" "Vertical-alignment-with-opening-lp-1332245-test passed"))))
 
-(defun stop-before-prompt-lp-1331953-test ()
+(defun stop-before-prompt-lp-1331953-test  ()
   (interactive)
   (let ((erg (py-shell nil t)))
     (unwind-protect
@@ -6535,11 +6544,11 @@ def foo(self):
   (py-bug-tests-intern 'py-object-reference-face-should-inherit-from-lp-1340455-base arg teststring)))
 
 (defun py-object-reference-face-should-inherit-from-lp-1340455-base ()
+  (font-lock-fontify-buffer)
   (goto-char 57)
   (sit-for 0.1)
-  (message "py-object-reference-face-should-inherit-from-lp-1340455-test: %s" (prin1-to-string  (get-char-property (point) 'face)))
-  (assert (eq (get-char-property (point) 'face) py-object-reference-face) nil " py-object-reference-face-should-inherit-from-lp-1340455-test failed")
-  )
+  (message "py-object-reference-face-should-inherit-from-lp-1340455-test: %s" (prin1-to-string (get-char-property (point) 'face)))
+  (assert (eq (get-char-property (point) 'face) py-object-reference-face) nil " py-object-reference-face-should-inherit-from-lp-1340455-test failed"))
 
 (defun tab-complete-dict-keys-lp-1251690-test (&optional arg)
   (interactive "p")
@@ -6565,6 +6574,7 @@ d[\"a\""))
 	(py-force-py-shell-name-p t)
 	(py-shell-name "ipython"))
     (py-shell)
+    (sit-for 1 t)
     (assert (string-match "\*IP" (buffer-name (current-buffer))) nil "py-shell-name-no-op-lp-1349549-test failed")))
 
 (defun interpreter-mode-alist-lp-1355458-test-1 (&optional arg)

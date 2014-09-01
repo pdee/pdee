@@ -1,3 +1,16 @@
+* print_function IPython completion von prin
+* py-fill-string-django-test
+* fill-paragraph-in-docstring-lp-1161232-test
+* py-execute-buffer-python2-switch-test
+* ipython-complete-lp-1102226-test
+* Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test
+* another-broken-font-locking-lp:961231-test
+* cls-pseudo-keyword-lp:328849-test 
+* py-execute-region-error-test
+* more-docstring-filling-woes-lp-1102296-nil-test
+* py-help-at-point mit fast
+* py--fast-send-string store return
+* augmented-assigment-test
 * Python 3.3.0 (default, Oct 01 2012, 09:13:30) [GCC] on linux
   Type "help", "copyright", "credits" or "license" for more information.
   >>> ... >>> >>> ... ... ... ... ... ... ... ... ... >>> >>> ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... >>> Traceback (most recent call last):
@@ -12,11 +25,7 @@
   (args
 	  (cond (py-fast-process-p nil)
 * py-auto-completion-mode-p
-* Complete from end-of-word only
-* Warning: defvar ignored because hs-minor-mode is let-bound
-  Warning: defvar ignored because hs-minor-mode is let-bound
-  Making hs-minor-mode buffer-local while let-bound!
-
+* forward-sexp-test
 *  with-output-to-temp-buffer, 
 * py-orig-buffer-or-file
 * py-remove-cwd-from-path
