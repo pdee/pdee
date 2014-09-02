@@ -1052,22 +1052,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(setq py-verbose-p 
 -eval "(assert (boundp 'py-compilation-regexp-alist) nil \"py-compilation-regexp-alist not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
---funcall py-execute-buffer-python3-switch-test \
---funcall fails-to-indent-abs-wrong-type-argument-lp-1075673-test \
---funcall py-shell-invoking-python-lp:835151-test \
---funcall python2.7-shell-complete-test \
---funcall python3-shell-complete-test \
---funcall py-execute-buffer-python-switch-test \
---funcall py-execute-buffer-python2-switch-test \
---funcall python-shell-complete-test \
---funcall py-execute-block-python-test \
---funcall py-execute-block-or-clause-python-test \
---funcall inconvenient-window-splitting-behavior-ipython-lp-1018996-test \
---funcall does-not-dedent-regions-lp-1072869-test \
---funcall no-completion-at-all-lp:1001328-test \
---funcall indent-triplequoted-to-itself-lp:752252-test \
---funcall py-execute-buffer-ipython-lp-1252643-test \
---funcall py-ipython-complete-lp:927136-test \
 --funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n1-test \
 --funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n2-test \
 --funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n3-test \
@@ -1083,6 +1067,17 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(setq py-verbose-p 
 --funcall more-docstring-filling-woes-lp-1102296-pep-257-test \
 --funcall more-docstring-filling-woes-lp-1102296-pep-257-nn-test \
 --funcall py-electric-delete-test \
+--funcall py-execute-buffer-python3-switch-test \
+--funcall fails-to-indent-abs-wrong-type-argument-lp-1075673-test \
+--funcall py-shell-invoking-python-lp:835151-test \
+--funcall python2.7-shell-complete-test \
+--funcall python3-shell-complete-test \
+--funcall py-execute-buffer-python-switch-test \
+--funcall py-execute-buffer-python2-switch-test \
+--funcall python-shell-complete-test \
+--funcall py-execute-block-python-test \
+--funcall py-execute-block-or-clause-python-test \
+--funcall indent-triplequoted-to-itself-lp:752252-test \
 --funcall not-that-useful-completion-lp:1003580-test \
 --funcall py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test \
 --funcall from-within-py-shell-call-another-instance-lp-1169687-test \
@@ -1354,3 +1349,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(setq py-verbose-p 
 --funcall forward-sexp-test \
 --funcall fill-paragraph-in-docstring-lp-1161232-test \
 --funcall ipython-shell-complete-test \
+--funcall inconvenient-window-splitting-behavior-ipython-lp-1018996-test \
+--funcall does-not-dedent-regions-lp-1072869-test \
+--funcall py-execute-buffer-ipython-lp-1252643-test \
+--funcall py-ipython-complete-lp:927136-test \

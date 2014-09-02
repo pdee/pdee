@@ -1110,10 +1110,10 @@ Eval resulting buffer to install it, see customizable `py-extensions'. "
         (find-file (concat py-install-directory "/" py-extensions)))))
 
 (defun py-end-of-string (&optional beginning-of-string-position)
-  "Go to end of string at point, return position. "
+  "Go to end of string at point if any, if successful return position. "
   (interactive)
-  (when py-debug-p (message "(current-buffer): %s" (current-buffer)))
-  (when py-debug-p (message "major-mode): %s" major-mode))
+  ;; (when py-debug-p (message "(current-buffer): %s" (current-buffer)))
+  ;; (when py-debug-p (message "major-mode): %s" major-mode))
   (let ((beginning-of-string-position (or beginning-of-string-position (and (nth 3 (parse-partial-sexp 1 (point)))(nth 8 (parse-partial-sexp 1 (point))))
                                           (and (looking-at "\"\"\"\\|'''\\|\"\\|\'")(match-beginning 0))))
         erg)
@@ -1124,8 +1124,9 @@ Eval resulting buffer to install it, see customizable `py-extensions'. "
 	      ;; work around parse-partial-sexp error
 	      (and (nth 3 (parse-partial-sexp 1 (point)))(nth 8 (parse-partial-sexp 1 (point))))
 	    (goto-char (nth 3 (parse-partial-sexp 1 (point)))))
-          (goto-char (scan-sexps (point) 1))
-          (setq erg (point)))
+          (and (ignore-errors (setq erg (scan-sexps (point) 1))
+			      (goto-char erg))))
+
       (error (concat "py-end-of-string: don't see end-of-string at " (buffer-name (current-buffer)) "at pos " (point))))
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))

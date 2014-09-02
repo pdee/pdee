@@ -8,6 +8,7 @@
 * cls-pseudo-keyword-lp:328849-test 
 * py-execute-region-error-test
 * more-docstring-filling-woes-lp-1102296-nil-test
+* inconvenient-window-splitting-behavior-ipython-lp-1018996-test
 * py-help-at-point mit fast
 * py--fast-send-string store return
 * augmented-assigment-test

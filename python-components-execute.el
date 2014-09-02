@@ -752,7 +752,7 @@ Default is interactive, i.e. py-fast-process-p nil, and `py-session'"
 
 (defun py--execute-base (&optional start end shell filename proc file wholebuf)
   "Update variables. "
-  (when py-verbose-p (message "run: %s" "py--execute-base"))
+  ;; (when py-debug-p (message "run: %s" "py--execute-base"))
   (let* ((oldbuf (current-buffer))
 	 (start (or start (and (use-region-p) (region-beginning)) (point-min)))
 	 (end (or end (and (use-region-p) (region-end)) (point-max)))
@@ -821,7 +821,7 @@ Default is interactive, i.e. py-fast-process-p nil, and `py-session'"
   "Select the handler.
 
 When optional FILE is `t', no temporary file is needed. "
-  (when py-verbose-p (message "run: %s" "py--execute-base-intern"))
+  ;; (when py-debug-p (message "run: %s" "py--execute-base-intern"))
   (let (output-buffer erg)
     (setq py-error nil)
     ;; (when py-debug-p
@@ -955,7 +955,7 @@ shell which will be forced upon execute as argument.
 
 Optional DEDICATED "
   (interactive "r\nP")
-  (when py-verbose-p (message "run: %s" "py-execute-region"))
+  ;; (when py-debug-p (message "run: %s" "py-execute-region"))
   (save-excursion
     (let ((orig (point))
 	  (py-shell-name (cond ((or py-force-py-shell-name-p (eq 4 (prefix-numeric-value shell))) (default-value 'py-shell-name))
@@ -1182,7 +1182,7 @@ See `py-if-name-main-permission-p'"
   "Internal use by py-execute... functions.
 
 Avoid empty lines at the beginning. "
-  (when py-debug-p (message "py--fix-start:"))
+  ;; (when py-debug-p (message "py--fix-start:"))
   (with-temp-buffer
     (insert string)
     (goto-char 1)
@@ -1289,7 +1289,7 @@ Basically, this goes down the directory tree as long as there are __init__.py fi
 (defun py-execute-buffer ()
   "Send the contents of the buffer to a Python interpreter. "
   (interactive)
-  (when py-verbose-p (message "run: %s" "py-execute-buffer"))
+  ;; (when py-debug-p (message "run: %s" "py-execute-buffer"))
   (let ((origline 1))
     (and py-prompt-on-changed-p (buffer-file-name) (interactive-p) (buffer-modified-p)
          (y-or-n-p "Buffer changed, save first? ")

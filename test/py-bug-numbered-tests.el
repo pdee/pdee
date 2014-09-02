@@ -4556,7 +4556,7 @@ def foo():
     (py-kill-buffer-unconditional "*Python*")
     (set-buffer oldbuf)
     (or
-	(assert (progn (py-execute-buffer-ipython)(set-buffer "*Ipython*")(goto-char (point-max))(search-backward "HELLO")) nil "does-not-dedent-regions-lp-1072869-test #1 failed")
+	(assert (progn (py-execute-buffer-ipython)(set-buffer "*IPython*")(goto-char (point-max))(search-backward "HELLO")) nil "does-not-dedent-regions-lp-1072869-test #1 failed")
       (message "%s" "does-not-dedent-regions-lp-1072869-test #1 passed"))))
 
 (defun inconvenient-py-switch-buffers-on-execute-lp-1073-test (&optional arg)
@@ -6236,12 +6236,12 @@ print(1234)
   (py-bug-tests-intern 'py-execute-buffer-ipython-lp-1252643-base arg teststring)))
 
 (defun py-execute-buffer-ipython-lp-1252643-base ()
-  (ignore-errors (py-kill-buffer-unconditional "*Ipython*"))
+  (ignore-errors (py-kill-buffer-unconditional "*IPython*"))
   (let ((py-switch-buffers-on-execute-p t))
     (py-execute-buffer-ipython)
-    (buffer-live-p (get-buffer  "*Ipython*"))
-    ;; (sit-for 1)
-    (assert (progn (set-buffer "*Ipython*")(goto-char (point-max)) (search-backward "1234")) nil "py-execute-buffer-ipython-lp-1252643-test failed")))
+    (buffer-live-p (get-buffer  "*IPython*"))
+    (sit-for 0.2 t)
+    (assert (progn (set-buffer "*IPython*")(goto-char (point-max)) (search-backward "1234")) nil "py-execute-buffer-ipython-lp-1252643-test failed")))
 
 (defun Execute-region_statement-runs-full-file-lp-1269855-test (&optional arg)
   (interactive "p")
@@ -6362,7 +6362,7 @@ def expand(self, leading=0, subs={}):
   (let ((py-shell-name "ipython"))
     (py-execute-buffer)
     (sit-for 1)
-    (set-buffer "*Ipython*")
+    (set-buffer "*IPython*")
     (switch-to-buffer (current-buffer))
     (assert (eq 49 (char-after)) nil "execute-region-lp-1294796-test failed")))
 

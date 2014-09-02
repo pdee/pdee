@@ -59,7 +59,7 @@ Remove trailing newline"
 	(process-send-string proc "\n")
 	(accept-process-output proc 5)
 	(sit-for 0.1 t)
-	(when py-verbose-p (message "py--fast-send-string-intern comint-prompt-read-only: %s" comint-prompt-read-only))
+	;; (when py-verbose-p (message "py--fast-send-string-intern comint-prompt-read-only: %s" comint-prompt-read-only))
 	(delete-region orig (point-max))
 	(setq comint-prompt-read-only comint-prompt-read-only-old)))))
 
