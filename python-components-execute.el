@@ -746,51 +746,48 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
                        (buffer-substring-no-properties start end)
                      (py--fix-if-name-main-permission (buffer-substring-no-properties start end))))
          (strg (py--fix-start strg-raw))
-         (wholebuf (unless file (or wholebuf (and (eq (buffer-size) (- end start)))))))
-    (when py-verbose-p (message "strg: %s" strg))
-    (let* (
-
-	   (windows-config (window-configuration-to-register 313465889))
-	   (origline
-	    (save-restriction
-	      (widen)
-	      (count-lines
-	       (point-min)
-	       ;; count-lines doesn't honor current line when at BOL
-	       end)))
-	   ;; argument SHELL might be a string like "python", "IPython" "python3", a symbol holding PATH/TO/EXECUTABLE or just a symbol like 'python3
-	   (which-shell
-	    (if shell
-		;; shell might be specified in different ways
-		(or (and (stringp shell) shell)
-		    (ignore-errors (eval shell))
-		    (and (symbolp shell) (prin1-to-string shell)))
-	      (py-choose-shell)))
-	   (py-exception-buffer (current-buffer))
-	   (execute-directory
-	    (cond ((ignore-errors (file-name-directory (file-remote-p (buffer-file-name) 'localname))))
-		  ((and py-use-current-dir-when-execute-p (buffer-file-name))
-		   (file-name-directory (buffer-file-name)))
-		  ((and py-use-current-dir-when-execute-p
-			py-fileless-buffer-use-default-directory-p)
-		   (expand-file-name default-directory))
-		  ((stringp py-execute-directory)
-		   py-execute-directory)
-		  ((getenv "VIRTUAL_ENV"))
-		  (t (getenv "HOME"))))
-	   (py-buffer-name
-	    (or py-buffer-name
-		(py--choose-buffer-name which-shell)))
-	   (filename (or (and filename (expand-file-name filename)) (and (not (buffer-modified-p)) (buffer-file-name))))
-	   (py-orig-buffer-or-file (or filename (current-buffer)))
-	   (proc (cond (proc)
-		       ;; will deal with py-dedicated-process-p also
-		       (py-fast-process-p (get-buffer-process (py-fast-process py-buffer-name)))
-		       (py-dedicated-process-p
-			(get-buffer-process (py-shell nil py-dedicated-process-p which-shell py-buffer-name)))
-		       (t (or (get-buffer-process py-buffer-name)
-			      (get-buffer-process (py-shell nil py-dedicated-process-p which-shell py-buffer-name)))))))
-      (py--execute-base-intern strg shell filename proc file wholebuf))))
+         (wholebuf (unless file (or wholebuf (and (eq (buffer-size) (- end start))))))
+	 (windows-config (window-configuration-to-register 313465889))
+	 (origline
+	  (save-restriction
+	    (widen)
+	    (count-lines
+	     (point-min)
+	     ;; count-lines doesn't honor current line when at BOL
+	     end)))
+	 ;; argument SHELL might be a string like "python", "IPython" "python3", a symbol holding PATH/TO/EXECUTABLE or just a symbol like 'python3
+	 (which-shell
+	  (if shell
+	      ;; shell might be specified in different ways
+	      (or (and (stringp shell) shell)
+		  (ignore-errors (eval shell))
+		  (and (symbolp shell) (prin1-to-string shell)))
+	    (py-choose-shell)))
+	 (py-exception-buffer (current-buffer))
+	 (execute-directory
+	  (cond ((ignore-errors (file-name-directory (file-remote-p (buffer-file-name) 'localname))))
+		((and py-use-current-dir-when-execute-p (buffer-file-name))
+		 (file-name-directory (buffer-file-name)))
+		((and py-use-current-dir-when-execute-p
+		      py-fileless-buffer-use-default-directory-p)
+		 (expand-file-name default-directory))
+		((stringp py-execute-directory)
+		 py-execute-directory)
+		((getenv "VIRTUAL_ENV"))
+		(t (getenv "HOME"))))
+	 (py-buffer-name
+	  (or py-buffer-name
+	      (py--choose-buffer-name which-shell)))
+	 (filename (or (and filename (expand-file-name filename)) (and (not (buffer-modified-p)) (buffer-file-name))))
+	 (py-orig-buffer-or-file (or filename (current-buffer)))
+	 (proc (cond (proc)
+		     ;; will deal with py-dedicated-process-p also
+		     (py-fast-process-p (get-buffer-process (py-fast-process py-buffer-name)))
+		     (py-dedicated-process-p
+		      (get-buffer-process (py-shell nil py-dedicated-process-p which-shell py-buffer-name)))
+		     (t (or (get-buffer-process py-buffer-name)
+			    (get-buffer-process (py-shell nil py-dedicated-process-p which-shell py-buffer-name)))))))
+    (py--execute-base-intern strg shell filename proc file wholebuf)))
 
 (defun py--send-to-fast-process (strg proc output-buffer)
   "Called inside of `py--execute-base-intern' "
@@ -837,9 +834,9 @@ When optional FILE is `t', no temporary file is needed. "
     (with-current-buffer tempbuf
       (and py-verbose-p (message "%s" "py--execute-buffer-finally"))
       (insert strg)
-      (write-file tempfile)
-      (and py-verbose-p (message "py--execute-buffer-finally: %s" "wrote tempfile"))
-      (and py-verbose-p (message "tempfile: %s" tempfile)))
+      (write-file tempfile))
+      ;; (and py-debug-p (message "py--execute-buffer-finally: %s" "wrote tempfile"))
+      ;; (and py-debug-p (message "tempfile: %s" tempfile)))
     (unwind-protect
 	(setq erg (py--execute-file-base proc tempfile nil py-buffer-name py-orig-buffer-or-file execute-directory)))
     (sit-for 0.1 t)
@@ -866,7 +863,7 @@ When optional FILE is `t', no temporary file is needed. "
   "Provide return values, check result for error, manage windows. "
   ;; py--fast-send-string doesn't set origline
   (with-current-buffer buffer
-    ;; (switch-to-buffer (current-buffer))
+    (switch-to-buffer (current-buffer))
     (setq py-error (py--postprocess-intern buffer))
     (when py-store-result-p
       (setq erg
