@@ -12268,17 +12268,17 @@ Should you need more shells to select, extend this command by adding inside the 
                  mode-name "IPython"))
           ((string-match "python3" name)
            (setq py-shell-name name
-                 py-which-bufname (py--buffer-name-prepare)
+                 py-which-bufname (py--choose-buffer-name)
                  msg "CPython"
-                 mode-name (py--buffer-name-prepare)))
+                 mode-name (py--choose-buffer-name)))
           ((string-match "jython" name)
            (setq py-shell-name name
-                 py-which-bufname (py--buffer-name-prepare)
+                 py-which-bufname (py--choose-buffer-name)
                  msg "Jython"
-                 mode-name (py--buffer-name-prepare)))
+                 mode-name (py--choose-buffer-name)))
           ((string-match "python" name)
            (setq py-shell-name name
-                 py-which-bufname (py--buffer-name-prepare)
+                 py-which-bufname (py--choose-buffer-name)
                  msg "CPython"
                  mode-name py-which-bufname))
           (t

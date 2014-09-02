@@ -588,7 +588,7 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
 	  oldbuf)
       (py-execute-buffer-dedicated)
       (set-buffer py-output-buffer)
-      (switch-to-buffer (current-buffer)) 
+      (switch-to-buffer (current-buffer))
       (insert "socket.")
       (sit-for 0.1)
       ;; (switch-to-buffer (current-buffer))
@@ -819,11 +819,11 @@ def foo():
     \"\"\"Foo\"\"\"
 "
     (font-lock-fontify-buffer)
-    (sit-for 0.1 t) 
+    (sit-for 0.1 t)
 ;;    (switch-to-buffer (current-buffer))
     (search-forward "\"\"\"")
     (fill-paragraph)
-    (sit-for 0.1 t) 
+    (sit-for 0.1 t)
     (should (eq 7 (current-column)))))
 
 ;;; execute tests
@@ -895,13 +895,10 @@ def foo():
 (ert-deftest py-ert-execute-statement-python3-dedicated-test ()
   (py-test-with-temp-buffer-point-min
       "print(\"I'm the py-execute-statement-python3-dedicated-test\")"
-    (let ((py-debug-p t))
-      (py-execute-statement-python3-dedicated)
-      (set-buffer (progn (find-file "/tmp/py-buffer-name.txt")(buffer-substring-no-properties (point-min) (point-max))))
-      (prog1 (should (search-backward "py-execute-statement-python3-dedicated-test" nil t 1))
-	(py-kill-buffer-unconditional (current-buffer))
-	(py-kill-buffer-unconditional (get-buffer "py-buffer-name.txt"))
-	))))
+    (let ((py-debug-p t)
+	  erg)
+      (setq erg (py-execute-statement-python3-dedicated))
+      (switch-to-buffer erg))))
 
 (ert-deftest py-ert-execute-statement-split ()
   (py-test-with-temp-buffer-point-min
@@ -924,7 +921,7 @@ def foo():
       (sit-for 0.1)
       (insert "print(os.get")
       (call-interactively 'py-shell-complete)
-      (sit-for 0.1 t) 
+      (sit-for 0.1 t)
       (should (< (window-height) full-height)))))
 
 (provide 'py-ert-tests)

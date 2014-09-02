@@ -323,10 +323,10 @@ interpreter.
       (setq erg (cdr erg)))
     (butlast liste)))
 
-(defun py--buffer-name-prepare (&optional arg dedicated fast-process)
+(defun py--choose-buffer-name (&optional name dedicated fast-process)
   "Return an appropriate name to display in modeline.
 SEPCHAR is the file-path separator of your system. "
-  (let* ((name-first (or arg py-shell-name))
+  (let* ((name-first (or name py-shell-name))
 	 (erg (when name-first (if (stringp name-first) name-first (prin1-to-string name-first))))
 	 (fast-process (or fast-process py-fast-process-p))
 	 prefix suffix liste)
@@ -353,7 +353,7 @@ SEPCHAR is the file-path separator of your system. "
 	    ;; home-directory may still inside
 	    (setq prefix (py--remove-home-directory-from-list prefix))
 	    (setq prefix (py--compose-buffer-name-initials prefix))))
-      (setq erg (or arg py-shell-name))
+      (setq erg (or name py-shell-name))
       (setq prefix nil))
     (when fast-process (setq erg (concat erg " Fast")))
 
@@ -661,7 +661,7 @@ Expects being called by `py--run-unfontify-timer' "
 	    (when py-use-local-default
 	      (error "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'"))))
 	 (py-buffer-name (or buffer-name (py--guess-buffer-name argprompt)))
-	 (py-buffer-name (or py-buffer-name (py--buffer-name-prepare newpath dedicated fast-process)))
+	 (py-buffer-name (or py-buffer-name (py--choose-buffer-name newpath dedicated fast-process)))
 	 (executable (cond (py-shell-name)
 			   (py-buffer-name
 			    (py--report-executable py-buffer-name))))
@@ -723,20 +723,6 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
                 (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" filename filename))))
     (when (interactive-p) (message "%s" (prin1-to-string cmd)))
     cmd))
-
-(defun py--choose-buffer-name (&optional name)
-  "Python code might be processed by an
-- interactive Python shell (DEFAULT)
-- non-interactive Python py-fast-process-p, select for large
-  output
-
-Both processes might run in
-
-- session, i.e. start from previous state (DEFAULT)
-- dedicated, open or follow a separate line of execution
-
-Default is interactive, i.e. py-fast-process-p nil, and `py-session'"
-  (py--buffer-name-prepare name))
 
 (defun py--store-result-maybe (erg)
   "If no error occurred and `py-store-result-p' store result for yank. "

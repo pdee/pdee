@@ -23,7 +23,9 @@
 
 ;; created by `write-unified-extended-execute-forms'
 (defun py--execute-prepare (form &optional shell dedicated switch beg end file)
-  "Used by python-extended-executes ."
+  "Used by python-extended-executes. 
+
+Returns selected shell if any"
   (save-excursion
     (let* ((beg (unless file
 		  (prog1
@@ -45,9 +47,11 @@
           (progn
             (setq filename (expand-file-name form))
             (if (file-readable-p filename)
-                (setq erg (py--execute-file-base nil filename nil nil (or (and (boundp 'py-orig-buffer-or-file) py-orig-buffer-or-file) filename)))
+                (py--execute-file-base nil filename nil nil (or (and (boundp 'py-orig-buffer-or-file) py-orig-buffer-or-file) filename))
+		
               (message "%s not readable. %s" file "Do you have write permissions?")))
-        (py--execute-base beg end shell)))))
+        (py--execute-base beg end shell)
+	shell))))
 
 (defun py-execute-statement-python ()
   "Send statement at point to default interpreter. 
@@ -195,7 +199,9 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
   (py--execute-prepare "statement" 'python3 nil 'no-switch))
 
 (defun py-execute-statement-python3-dedicated ()
-  "Send statement at point to Python3 unique interpreter. "
+  "Send statement at point to Python3 unique interpreter.
+
+Returns name of dedicated shell"
   (interactive)
   (py--execute-prepare "statement" 'python3 t nil))
 
