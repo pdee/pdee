@@ -640,14 +640,15 @@
     (py-bug-tests-intern 'py-electric-delete-base arg teststring)))
 
 (defun py-electric-delete-base ()
+  (when py-debug-p (switch-to-buffer (current-buffer))
+	(font-lock-fontify-buffer))
   (goto-char 202)
   (py-electric-delete)
   (assert (eq 4 (length (progn (looking-at "[ \t]+")(match-string-no-properties 0)))) nil "py-electric-delete-test #1 failed")
   (py-electric-delete)
   (assert (not (looking-at "[ \t]+")) nil "py-electric-delete-test #2 failed")
   (py-electric-delete)
-  (assert (looking-at "ict") nil "py-electric-delete-test #2 failed")
-  )
+  (assert (looking-at "ict") nil "py-electric-delete-test #2 failed"))
 
 (defun UnicodeEncodeError-python3-test (&optional arg load-branch-function)
   (interactive "p")
@@ -1067,6 +1068,8 @@ foo = {
     (py-bug-tests-intern 'leave-dict-base arg teststring)))
 
 (defun leave-dict-base ()
+  (when py-debug-p (switch-to-buffer (current-buffer))
+	(font-lock-fontify-buffer))  
   (goto-char (point-min))
   (py-end-of-statement)
   (assert (eq 431 (point)) nil "leave-dict-test failed"))
@@ -1240,6 +1243,8 @@ somme errors
     (py-bug-tests-intern 'py-end-of-print-statement-base arg teststring)))
 
 (defun py-end-of-print-statement-base ()
+  (when py-debug-p (switch-to-buffer (current-buffer))
+	(font-lock-fontify-buffer))  
   (goto-char 66)
   (sit-for 0.1)
   (assert (eq 146 (py-end-of-statement)) nil "py-end-of-print-statement-test #1 failed")
@@ -1403,8 +1408,10 @@ print(\"I'm the switch-windows-on-execute-p-test\")
         (erg (buffer-name)))
     (py-execute-buffer)
     (sit-for 0.1)
-    (message "current-buffer: %s" (current-buffer) )
-    (assert (string-match "*Python*" (buffer-name (current-buffer))) nil "switch-windows-on-execute-p-test failed")))
+    (when py-debug-p (message "current-buffer: %s" (current-buffer)))
+    (assert
+     (string-match "*Python*" (buffer-name (current-buffer)))
+     nil "switch-windows-on-execute-p-test failed")))
 
 (defun split-windows-on-execute-p-test (&optional arg load-branch-function)
   (interactive "p")
@@ -1548,6 +1555,8 @@ import sys, os; os.remove('do/something/nasty') # lp:1025000
     (py-bug-tests-intern 'py-end-of-statement-1-base arg teststring)))
 
 (defun py-end-of-statement-1-base ()
+  (when py-debug-p (switch-to-buffer (current-buffer))
+	(font-lock-fontify-buffer)) 
   (goto-char (point-min))
   (assert (eq 55 (py-end-of-statement)) nil "py-end-of-statement-test-1 #1 failed")
   (assert (eq 65 (py-end-of-statement)) nil "py-end-of-statement-test-1 #2 failed")

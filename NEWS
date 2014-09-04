@@ -42,9 +42,6 @@ New in version 6.1.4
   py-python3-command-args
   py-ipython-command-args
 
-- C-u py-shell RET prompts for a Path/To/Executable
-  Py-shell-buffer will display its acronym: "*PTE Python*"
-
 - info-lookup-symbol made working with Python
   patched python-info.el available at
   https://bitbucket.org/andreas_roehler/pydoc-info

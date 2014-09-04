@@ -1,4 +1,4 @@
-s#!/bin/bash
+#!/bin/bash
 
 # Author: Andreas Roehler <andreas.roehler@online.de>
 
@@ -1052,46 +1052,28 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(setq py-verbose-p 
 -eval "(assert (boundp 'py-compilation-regexp-alist) nil \"py-compilation-regexp-alist not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
---funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n1-test \
---funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n2-test \
---funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n3-test \
---funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n4-test \
---funcall py-electric-comment-add-space-lp:828398-test \
---funcall py-electric-comment-add-space-t-lp:828398-test \
+--funcall py-shell-invoking-python-lp:835151-test \
 --funcall missing-py-variable-name-face-lp-1215791-test \
---funcall switch-windows-on-execute-p-test \
---funcall C-c-C-c-lp:1221310-and-store-result-test \
 --funcall inconvenient-window-splitting-behavior-python-lp-1018996-test \
 --funcall IndentationError-expected-an-indented-block-when-execute-lp-1055569-test \
---funcall execute-region-lp-1294796-test \
---funcall more-docstring-filling-woes-lp-1102296-pep-257-test \
---funcall more-docstring-filling-woes-lp-1102296-pep-257-nn-test \
 --funcall py-electric-delete-test \
 --funcall py-execute-buffer-python3-switch-test \
 --funcall fails-to-indent-abs-wrong-type-argument-lp-1075673-test \
---funcall py-shell-invoking-python-lp:835151-test \
 --funcall python2.7-shell-complete-test \
 --funcall python3-shell-complete-test \
 --funcall py-execute-buffer-python-switch-test \
 --funcall py-execute-buffer-python2-switch-test \
 --funcall python-shell-complete-test \
 --funcall py-execute-block-python-test \
---funcall py-execute-block-or-clause-python-test \
 --funcall indent-triplequoted-to-itself-lp:752252-test \
 --funcall not-that-useful-completion-lp:1003580-test \
 --funcall py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test \
---funcall from-within-py-shell-call-another-instance-lp-1169687-test \
---funcall py-docstring-style-pep-257-nn-closing-quotes-lp-1241147-test \
---funcall goto-beginning-of-tqs-lp:735328-test \
 --funcall completion-at-gentoo-lp-1008842-test \
 --funcall wrong-type-argument-inserted-chars-lp-1293172-test \
---funcall previous-statement-lp:637955-test \
---funcall py-shell-name-no-op-lp-1349549-test \
 --funcall py-execute-block-or-clause-python3-test \
 --funcall py-object-reference-face-should-inherit-from-lp-1340455-test \
 --funcall python-shell-complete-test \
 --funcall execute-buffer-lp-1338134-test \
---funcall stop-before-prompt-lp-1331953-test \
 --funcall impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test \
 --funcall complaint-about-non-ASCII-character-lp-1042949-test \
 --funcall interpreter-mode-alist-lp-1355458-test-1 \
@@ -1310,10 +1292,8 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(setq py-verbose-p 
 --funcall enter-key-does-not-indent-properly-after-return-statement-lp-1098793-test \
 --funcall comments-start-a-new-line-lp-1092847-n2-test \
 --funcall py-bol-moves-test \
---funcall py-describe-symbol-fails-on-modules-lp:919719-test \
---funcall py-execute-buffer-python3-looks-broken-lp-1085386-test \
---funcall UnicodeEncodeError-python3-test \
 --funcall Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test \
+--funcall from-within-py-shell-call-another-instance-lp-1169687-test \
 --funcall another-broken-font-locking-lp:961231-test \
 --funcall cls-pseudo-keyword-lp:328849-test \
 --funcall py-execute-region-error-test \
@@ -1353,3 +1333,23 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(setq py-verbose-p 
 --funcall does-not-dedent-regions-lp-1072869-test \
 --funcall py-execute-buffer-ipython-lp-1252643-test \
 --funcall py-ipython-complete-lp:927136-test \
+--funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n1-test \
+--funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n2-test \
+--funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n3-test \
+--funcall temporary-files-remain-when-python-raises-exception-lp-1083973-n4-test \
+--funcall py-electric-comment-add-space-lp:828398-test \
+--funcall py-electric-comment-add-space-t-lp:828398-test \
+--funcall switch-windows-on-execute-p-test \
+--funcall C-c-C-c-lp:1221310-and-store-result-test \
+--funcall execute-region-lp-1294796-test \
+--funcall more-docstring-filling-woes-lp-1102296-pep-257-test \
+--funcall more-docstring-filling-woes-lp-1102296-pep-257-nn-test \
+--funcall py-docstring-style-pep-257-nn-closing-quotes-lp-1241147-test \
+--funcall py-execute-block-or-clause-python-test \
+--funcall goto-beginning-of-tqs-lp:735328-test \
+--funcall previous-statement-lp:637955-test \
+--funcall py-shell-name-no-op-lp-1349549-test \
+--funcall stop-before-prompt-lp-1331953-test \
+--funcall py-describe-symbol-fails-on-modules-lp:919719-test \
+--funcall py-execute-buffer-python3-looks-broken-lp-1085386-test \
+--funcall UnicodeEncodeError-python3-test \

@@ -73,7 +73,7 @@ BODY is code to be executed within the temp buffer.  Point is
       ;; (switch-to-buffer (current-buffer))
       (insert "pri")
       (call-interactively 'py-shell-complete)
-      ;; (sit-for 0.1 t) 
+      (sit-for 0.1 t) 
       (should (eq 40 (char-before)))
       (py-kill-buffer-unconditional erg))))
 
@@ -464,9 +464,10 @@ class kugel(object):
 x = {'abc':'def',
          'ghi':'jkl'}
 "
+    (when py-debug-p (switch-to-buffer (current-buffer)))  
     (goto-char 24)
     (py-electric-delete)
-    (should (eq 4 (current-indentation)))))
+    (should (eq 5 (current-indentation)))))
 
 (ert-deftest py-ert-wrong-python-test ()
   "Python3 incompatible code should return error."

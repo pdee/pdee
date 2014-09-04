@@ -508,6 +508,17 @@ Internal use"
       (display-buffer output-buffer))
     (pop-to-buffer oldbuf))
    ((and
+     ;; just two windows, `py-split-windows-on-execute-p' is `t'
+     py-split-windows-on-execute-p
+     py-switch-buffers-on-execute-p)
+    (delete-other-windows)
+    ;; (sit-for py-new-shell-delay)
+    (py--manage-windows-split output-buffer)
+    ;; otherwise new window appears above
+      (other-window 1)
+      (set-buffer output-buffer)
+      (switch-to-buffer (current-buffer)))
+   ((and
      py-switch-buffers-on-execute-p
      (not py-split-windows-on-execute-p))
     (set-buffer output-buffer)
@@ -560,14 +571,17 @@ Receives a buffer-name as argument"
 
 (defun py--guess-buffer-name (argprompt)
   "Guess the buffer-name core string. "
-   (and (not dedicated) argprompt
-           (cond
-            ((and (eq 2 (prefix-numeric-value argprompt))
-                  (fboundp 'split-string))
-             (setq args (split-string
-                         (read-string "Py-Shell arguments: "
-                                      (concat
-                                       (mapconcat 'identity py-python-command-args " ") " "))))))))
+  (and (not dedicated) argprompt
+       (cond ((eq 4 (prefix-numeric-value argprompt))
+	(prog1
+	    (read-buffer "Py-Shell buffer: "
+			 (generate-new-buffer-name (py--choose-buffer-name)))))
+	     ((and (eq 2 (prefix-numeric-value argprompt))
+		   (fboundp 'split-string))
+	      (setq args (split-string
+			  (read-string "Py-Shell arguments: "
+				       (concat
+					(mapconcat 'identity py-python-command-args " ") " "))))))))
 
 (defun py--configured-shell (name)
   "Return the configured PATH/TO/STRING if any. "
@@ -616,7 +630,7 @@ Expects being called by `py--run-unfontify-timer' "
 
 (defun py-shell (&optional argprompt dedicated shell buffer-name fast-process)
   "Start an interactive Python interpreter in another window.
-  Interactively, \\[universal-argument] prompts for a PATH/TO/EXECUTABLE to use.
+  Interactively, \\[universal-argument] prompts for a new buffer-name.
   \\[universal-argument] 2 prompts for `py-python-command-args'.
   If `default-directory' is a remote file name, it is also prompted
   to change if called with a prefix arg.
@@ -630,13 +644,13 @@ Expects being called by `py--run-unfontify-timer' "
   (let* ((iact (interactive-p)) ;; interactively?
 	 (windows-config (and iact (window-configuration-to-register 313465889)))
 	 (fast-process (or fast-process py-fast-process-p))
-	 (newpath (when (eq 4 (prefix-numeric-value argprompt))
-		    (read-shell-command "PATH/TO/EXECUTABLE/[I]python[version]: ")))
+	 ;; (newpath (when (eq 4 (prefix-numeric-value argprompt))
+	 ;; (read-shell-command "PATH/TO/EXECUTABLE/[I]python[version]: ")))
 	 (oldbuf (current-buffer))
 	 (dedicated (or dedicated py-dedicated-process-p))
 	 (py-exception-buffer (or py-exception-buffer (and (or (eq 'major-mode 'python-mode)(eq 'major-mode 'py-shell-mode)) (current-buffer))))
 	 (path (getenv "PYTHONPATH"))
-	 (py-shell-name (or newpath shell
+	 (py-shell-name (or shell
 			    ;; (py--configured-shell (py-choose-shell))
 			    (py-choose-shell)))
 	 (args
@@ -661,7 +675,7 @@ Expects being called by `py--run-unfontify-timer' "
 	    (when py-use-local-default
 	      (error "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'"))))
 	 (py-buffer-name (or buffer-name (py--guess-buffer-name argprompt)))
-	 (py-buffer-name (or py-buffer-name (py--choose-buffer-name newpath dedicated fast-process)))
+	 (py-buffer-name (or py-buffer-name (py--choose-buffer-name nil dedicated fast-process)))
 	 (executable (cond (py-shell-name)
 			   (py-buffer-name
 			    (py--report-executable py-buffer-name))))
@@ -775,19 +789,18 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 		 py-execute-directory)
 		((getenv "VIRTUAL_ENV"))
 		(t (getenv "HOME"))))
-	 (py-buffer-name
-	  (or py-buffer-name
-	      (py--choose-buffer-name which-shell)))
+	 (buffer (py--choose-buffer-name which-shell))
 	 (filename (or (and filename (expand-file-name filename)) (and (not (buffer-modified-p)) (buffer-file-name))))
 	 (py-orig-buffer-or-file (or filename (current-buffer)))
 	 (proc (cond (proc)
 		     ;; will deal with py-dedicated-process-p also
-		     (py-fast-process-p (get-buffer-process (py-fast-process py-buffer-name)))
+		     (py-fast-process-p (get-buffer-process (py-fast-process buffer)))
 		     (py-dedicated-process-p
-		      (get-buffer-process (py-shell nil py-dedicated-process-p which-shell py-buffer-name)))
-		     (t (or (get-buffer-process py-buffer-name)
-			    (get-buffer-process (py-shell nil py-dedicated-process-p which-shell py-buffer-name)))))))
-    (py--execute-base-intern strg shell filename proc file wholebuf)))
+		      (get-buffer-process (py-shell nil py-dedicated-process-p which-shell buffer)))
+		     (t (or (get-buffer-process buffer)
+			    (get-buffer-process (py-shell nil py-dedicated-process-p which-shell buffer)))))))
+    (setq py-buffer-name buffer)
+    (py--execute-base-intern strg shell filename proc file wholebuf buffer)))
 
 (defun py--send-to-fast-process (strg proc output-buffer)
   "Called inside of `py--execute-base-intern' "
@@ -800,7 +813,7 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
     (sit-for 0.1)
     (py--shell-manage-windows output-buffer)))
 
-(defun py--execute-base-intern (strg shell filename proc file wholebuf)
+(defun py--execute-base-intern (strg shell filename proc file wholebuf buffer)
   "Select the handler.
 
 When optional FILE is `t', no temporary file is needed. "
@@ -810,7 +823,7 @@ When optional FILE is `t', no temporary file is needed. "
     ;; (when py-debug-p
     ;;   (with-temp-file "/tmp/py-buffer-name.txt" (insert py-buffer-name)))
     (set-buffer py-exception-buffer)
-    (py--update-execute-directory proc py-buffer-name execute-directory)
+    (py--update-execute-directory proc buffer execute-directory)
     (cond (py-fast-process-p (py--send-to-fast-process strg proc output-buffer))
 	  ;; enforce proceeding as python-mode.el v5
 	  (python-mode-v5-behavior-p
@@ -820,28 +833,28 @@ When optional FILE is `t', no temporary file is needed. "
 	  ((and filename wholebuf)
 	   ;; No temporary file needed than
 	   (let (py-cleanup-temporary)
-	     (py--execute-file-base proc filename nil py-buffer-name filename execute-directory)
+	     (py--execute-file-base proc filename nil buffer filename execute-directory)
 	     (py--store-result-maybe erg)
-	     (py--shell-manage-windows py-buffer-name)))
-	  (t (py--execute-buffer-finally strg execute-directory wholebuf which-shell proc)))))
+	     (py--shell-manage-windows buffer)))
+	  (t (py--execute-buffer-finally strg execute-directory wholebuf which-shell proc buffer)))))
 
-(defun py--execute-buffer-finally (strg execute-directory wholebuf which-shell proc)
+(defun py--execute-buffer-finally (strg execute-directory wholebuf which-shell proc buffer)
   (let* ((temp (make-temp-name
 		;; FixMe: that should be simpler
                 (concat (replace-regexp-in-string py-separator-char "-" (replace-regexp-in-string (concat "^" py-separator-char) "" (replace-regexp-in-string ":" "-" (if (stringp which-shell) which-shell (prin1-to-string which-shell))))) "-")))
          (tempfile (concat (expand-file-name py-temp-directory) py-separator-char (replace-regexp-in-string py-separator-char "-" temp) ".py"))
          (tempbuf (get-buffer-create temp)))
     (with-current-buffer tempbuf
-      (and py-verbose-p (message "%s" "py--execute-buffer-finally"))
+      ;; (and py-verbose-p (message "%s" "py--execute-buffer-finally"))
       (insert strg)
       (write-file tempfile))
       ;; (and py-debug-p (message "py--execute-buffer-finally: %s" "wrote tempfile"))
       ;; (and py-debug-p (message "tempfile: %s" tempfile)))
     (unwind-protect
-	(setq erg (py--execute-file-base proc tempfile nil py-buffer-name py-orig-buffer-or-file execute-directory)))
+	(setq erg (py--execute-file-base proc tempfile nil buffer py-orig-buffer-or-file execute-directory)))
     (sit-for 0.1 t)
     (py--close-execution tempbuf erg)
-    (py--shell-manage-windows py-buffer-name)))
+    (py--shell-manage-windows buffer)))
 
 (defun py--fetch-comint-result ()
   (save-excursion
@@ -863,7 +876,7 @@ When optional FILE is `t', no temporary file is needed. "
   "Provide return values, check result for error, manage windows. "
   ;; py--fast-send-string doesn't set origline
   (with-current-buffer buffer
-    (switch-to-buffer (current-buffer))
+    ;; (when py-debug-p (switch-to-buffer (current-buffer)))
     (setq py-error (py--postprocess-intern buffer))
     (when py-store-result-p
       (setq erg

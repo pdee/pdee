@@ -409,23 +409,6 @@ http://docs.python.org/reference/compound_stmts.html"
         (when (and py-verbose-p (interactive-p)) (message "%s" erg))
         erg))))
 
-(defun py--skip-to-comment-or-semicolon ()
-  "Returns position if comment or semicolon found. "
-  (let ((orig (point))
-	erg)
-    (if
-	(and (< 0 (abs (skip-chars-forward "^#;" (line-end-position))))
-	     (member (char-after) (list ?# ?\;)))
-	(progn
-	  (if (eq ?\; (char-after))
-	      (skip-chars-forward ";" (line-end-position))
-	    (skip-chars-backward " \t" (line-beginning-position)))
-	  (setq done t)
-	  (point))
-      (goto-char orig)
-      nil)))
-
-
 (defun py--skip-to-semicolon-backward (&optional limit)
   "Fetch the beginning of statement after a semicolon.
 
@@ -466,29 +449,22 @@ Returns position reached if point was moved. "
   (and (eq pos (point)) (prog1 (forward-line 1) (back-to-indentation))
        (while (member (char-after) (list ?# 10))(forward-line 1)(back-to-indentation))))
 
-(defun py--end-of-statement-intern ()
-  (py--skip-to-comment-or-semicolon)
-  (let ((pos (point))
-        (pps (parse-partial-sexp (point-min) (point)))
-        stm)
-    (cond ((nth 3 pps)
-           (and (py--eos-in-string pps) (not (eobp)) (py--end-of-statement-intern)))
-          ((nth 4 pps)
-           (py--end-of-comment-intern pos))
-          ((nth 1 pps)
-           (when (< orig (point))
-             (setq orig (point)))
-           (goto-char (nth 1 pps))
-           (let ((parse-sexp-ignore-comments t))
-             (if (ignore-errors (forward-list))
-                 (progn
-                   (when (looking-at ":[ \t]*$")
-                     (forward-char 1))
-                   (setq done t)
-                   (skip-chars-forward "^#" (line-end-position))
-                   (skip-chars-backward " \t\r\n\f" (line-beginning-position))
-                   (py-end-of-statement orig done repeat))
-               (goto-char orig)))))))
+(defun py--skip-to-comment-or-semicolon ()
+  "Returns position if comment or semicolon found. "
+  (let ((orig (point)))
+    (cond ((and done (< 0 (abs (skip-chars-forward "^#;" (line-end-position))))
+		(member (char-after) (list ?# ?\;)))
+	   (when (eq ?\; (char-after))
+	     (skip-chars-forward ";" (line-end-position))))
+	  ((and (< 0 (abs (skip-chars-forward "^#;" (line-end-position))))
+		(member (char-after) (list ?# ?\;)))
+	   (when (eq ?\; (char-after))
+	     (skip-chars-forward ";" (line-end-position))))
+	  ((not done)
+	   (end-of-line)))
+    (skip-chars-backward " \t" (line-beginning-position))
+    (and (< orig (point))(setq done t)
+	 done)))
 
 (defun py-end-of-statement (&optional orig done repeat)
   "Go to the last char of current statement.
@@ -505,10 +481,7 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
           parse-sexp-ignore-comments
           forward-sexp-function
           stringchar stm pps err)
-      (unless done
-        (or
-	 (py--skip-to-comment-or-semicolon)
-	 (end-of-line)))
+      (unless done (py--skip-to-comment-or-semicolon))
       (setq pps (parse-partial-sexp (point-min) (point)))
       ;; (origline (or origline (py-count-lines)))
       (cond
@@ -536,9 +509,13 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
 		  (goto-char orig))))))
        ;; string
        ((nth 3 pps)
-	(py-end-of-string)
-	(setq pps (parse-partial-sexp (point-min) (point)))
-	(unless (and done (not (or (nth 1 pps) (nth 8 pps))) (eolp)) (py-end-of-statement orig t repeat)))
+	(when (py-end-of-string)
+	  (end-of-line)
+	  (skip-chars-backward " \t\r\n\f") 
+	  (setq pps (parse-partial-sexp (point-min) (point)))
+	  (unless (and done (not (or (nth 1 pps) (nth 8 pps))) (eolp)) (py-end-of-statement orig done repeat))))
+       ;; in non-terminated string
+
        ;; in comment
        ((nth 4 pps)
 	(py--end-of-comment-intern (point))
@@ -549,7 +526,7 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
 	(and last (goto-char last)
 	     (forward-line 1)
 	     (back-to-indentation))
-	(py-end-of-statement orig t repeat))
+	(py-end-of-statement orig done repeat))
        ((py-current-line-backslashed-p)
 	(end-of-line)
 	(skip-chars-backward " \t\r\n\f" (line-beginning-position))
@@ -560,19 +537,17 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
 	  (skip-chars-backward " \t\r\n\f" (line-beginning-position)))
 	(unless (eobp)
 	  (py-end-of-statement orig done repeat)))
-       ((eq (current-indentation) (current-column))
-	(or (py--skip-to-comment-or-semicolon)
-	    (forward-char 1))
-	(setq pps (parse-partial-sexp (point-min) (point)))
-	(unless done (py--end-of-statement-intern)
-		(py-end-of-statement orig done repeat)))
-
        ((eq orig (point))
 	(skip-chars-forward " \t\r\n\f#'\"")
 	(py--skip-to-comment-or-semicolon)
-	(py--end-of-statement-intern)
 	(py-end-of-statement orig done repeat))
-       ((and (looking-at "[[:print:]]+$") (py--skip-to-comment-or-semicolon))
+       ((eq (current-indentation) (current-column))
+	(py--skip-to-comment-or-semicolon)
+	;; (setq pps (parse-partial-sexp (point-min) (point)))
+	(unless done
+	  (py-end-of-statement orig done repeat)))
+
+       ((and (looking-at "[[:print:]]+$") (not done) (py--skip-to-comment-or-semicolon))
 	(py-end-of-statement orig done repeat)))
       (unless
 	  (or
@@ -889,7 +864,6 @@ From a programm use macro `py-beginning-of-comment' instead "
           (setq first nil))))
     (when erg (setq erg (cons (current-indentation) erg)))
     erg))
-
 
 (defun py--clause-lookup-keyword (regexp arg &optional indent orig origline)
   "Returns a list, whose car is indentation, cdr position. "

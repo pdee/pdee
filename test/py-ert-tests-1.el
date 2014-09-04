@@ -897,8 +897,10 @@ def foo():
       "print(\"I'm the py-execute-statement-python3-dedicated-test\")"
     (let ((py-debug-p t)
 	  erg)
-      (setq erg (py-execute-statement-python3-dedicated))
-      (switch-to-buffer erg))))
+      (py-execute-statement-python3-dedicated)
+      (set-buffer py-buffer-name)
+      (goto-char (point-min)) 
+      (should (search-forward "py-execute-statement-python3-dedicated-test" nil t 1)))))
 
 (ert-deftest py-ert-execute-statement-split ()
   (py-test-with-temp-buffer-point-min

@@ -35,7 +35,6 @@ Returns selected shell if any"
 			  (push-mark)))))
 	   (end (unless file
 		  (or end (funcall (intern-soft (concat "py-end-of-" form))))))
-	   (shell (or shell (py-choose-shell)))
 	   (py-dedicated-process-p dedicated)
 	   (py-switch-buffers-on-execute-p (cond ((eq 'switch switch)
 						  t)
@@ -43,6 +42,7 @@ Returns selected shell if any"
 						  nil)
 						 (t py-switch-buffers-on-execute-p)))
 	   filename)
+      (setq py-buffer-name nil)
       (if file
           (progn
             (setq filename (expand-file-name form))
@@ -50,8 +50,8 @@ Returns selected shell if any"
                 (py--execute-file-base nil filename nil nil (or (and (boundp 'py-orig-buffer-or-file) py-orig-buffer-or-file) filename))
 		
               (message "%s not readable. %s" file "Do you have write permissions?")))
-        (py--execute-base beg end shell)
-	shell))))
+        (py--execute-base beg end shell)))))
+
 
 (defun py-execute-statement-python ()
   "Send statement at point to default interpreter. 

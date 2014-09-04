@@ -2538,7 +2538,7 @@ This function takes the list of setup code to send from the
   (let ((erg (string-match "^i" (process-name process))))
     (dolist (code py-setup-codes)
       ;; (message "%s" code)
-      ;; `py--fast-send-string' doesn't word with IPython for now
+      ;; `py--fast-send-string' doesn't work with IPython for now
       ;; wants magic %paste %cpaste
       (if erg
 	  (progn

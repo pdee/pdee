@@ -229,13 +229,14 @@ on."
                             (replace-regexp-in-string "\\\\" "" (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname)))))
        (set-buffer (get-buffer-create (replace-regexp-in-string "\\\\" "" (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname))))))
      (with-temp-buffer
-       (switch-to-buffer (current-buffer))
+       ;; (switch-to-buffer (current-buffer))
        (delete-other-windows)
        (erase-buffer)
-       (fundamental-mode)
+       ;; (fundamental-mode)
        (insert ,teststring)
        (local-unset-key (kbd "RET"))
        (python-mode)
+       (sit-for 0.1)
        (when (and (boundp 'company-mode) company-mode) (company-abort))
        (funcall ,testname)
        (message "%s" (replace-regexp-in-string "\\\\" "" (concat (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname)) " passed")))
@@ -851,7 +852,7 @@ This docstring isn't indented, test should pass anyway.
 
 (defun goto-beginning-of-tqs-lp:735328 ()
   (goto-char 84)
-  (sit-for 0.1)
+  (sit-for 0.2)
   (assert (eq 4 (py-compute-indentation)) nil "goto-beginning-of-tqs-lp:735328-test failed")
   )
 
@@ -1054,6 +1055,8 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
 
 (defun indent-triplequoted-to-itself-lp:752252-base ()
   (sit-for 0.1)
+  (when py-debug-p (switch-to-buffer (current-buffer))
+	(font-lock-fontify-buffer)) 
   ;; (message "(py-compute-indentation): %s" (py-compute-indentation))
   (assert (eq 4 (py-compute-indentation)) nil "indent-triplequoted-to-itself-lp:752252-test failed"))
 
@@ -1689,6 +1692,7 @@ if foo:
 
 (defun py-electric-comment-add-space-lp:828398-base ()
   (let ((py-electric-comment-add-space-p nil))
+    (when py-debug-p (switch-to-buffer (current-buffer)))
     (py-electric-comment 1)
     (assert (looking-back "#") nil "py-electric-comment-add-space-lp:828398-test failed")))
 
@@ -2826,6 +2830,7 @@ os.chmod
     (py-bug-tests-intern 'py-describe-symbol-fails-on-modules-lp:919719-base arg teststring)))
 
 (defun py-describe-symbol-fails-on-modules-lp:919719-base ()
+  (when py-debug-p (switch-to-buffer (current-buffer)) (font-lock-fontify-buffer))  
   (goto-char 61)
   (py-help-at-point)
   (sit-for 0.1)
@@ -2981,7 +2986,7 @@ ex
   (goto-char 51)
   (ipython-complete)
   (set-buffer "*Python Completions*")
-  (sit-for 0.1 t) 
+  (sit-for 0.1 t)
   (assert (search-forward "except") nil "completion-fails-in-python-script-r989-lp:1004613-test failed"))
 
 
@@ -3201,16 +3206,22 @@ def foo(a):
 
 (defun IndentationError-expected-an-indented-block-when-execute-lp-1055569-test (&optional arg)
   (interactive "p")
-  (let ((teststring "if __name__ == '__main__':
+  (let ((teststring "#! /usr/bin/env python3
+
+if __name__ == '__main__':
     print('IndentationError-expected-an-indented-block-when-execute-lp-1055569-test')
 "))
   (py-bug-tests-intern 'IndentationError-expected-an-indented-block-when-execute-lp-1055569-base 1 teststring)))
 
 (defun IndentationError-expected-an-indented-block-when-execute-lp-1055569-base ()
-    (assert (progn (py-execute-buffer)(set-buffer (py--fetch-first-python-buffer))(goto-char (point-min))(search-forward "IndentationError-expected-an-indented-block-when-execute-lp-1055569-test" nil nil 1))
-     ;; (progn (py-execute-buffer) t)
-
-     nil "IndentationError-expected-an-indented-block-when-execute-lp-1055569-test failed"))
+  (when py-debug-p (switch-to-buffer (current-buffer))
+	(font-lock-fontify-buffer))  
+  (py-execute-buffer)
+  (with-current-buffer py-buffer-name
+    ;; (message "%s" py-buffer-name)
+    (goto-char (point-min))
+    ;; (sit-for 1 t)
+    (assert (search-forward "IndentationError-expected-an-indented-block-when-execute-lp-1055569-test" nil t 1) nil "IndentationError-expected-an-indented-block-when-execute-lp-1055569-test failed")))
 
 (defun stalls-emacs-probably-due-to-syntax-highlighting-lp-1058261-test (&optional arg)
   (interactive "p")
@@ -4461,9 +4472,9 @@ os.
 (defun inconvenient-window-splitting-behavior-ipython-lp-1018996-base ()
   (goto-char 83)
   (py-shell-complete nil t)
-  (sit-for 0.1 t) 
+  (sit-for 0.1 t)
   (set-buffer "*Python Completions*")
-  (goto-char (point-min)) 
+  (goto-char (point-min))
   (assert (search-forward  "re." nil t 1) nil "inconvenient-window-splitting-behavior-ipython-lp-1018996-test #1 failed")
   (goto-char 87)
   (py-shell-complete nil t)
@@ -4797,11 +4808,13 @@ for lines in f:
   (py-bug-tests-intern 'temporary-files-remain-when-python-raises-exception-lp-1083973-n1-base arg teststring)))
 
 (defun temporary-files-remain-when-python-raises-exception-lp-1083973-n1-base ()
+  "Doesn't test for remaining files yet. "
+  (when py-debug-p (switch-to-buffer (current-buffer)))
   (let ((python-mode-v5-behavior-p t))
-    (py-execute-buffer)
-    (assert t  nil "temporary-files-remain-when-python-raises-exception-lp-1083973-n1-test failed")))
+    (assert (py-execute-buffer) nil "temporary-files-remain-when-python-raises-exception-lp-1083973-n1-test failed")))
 
 (defun temporary-files-remain-when-python-raises-exception-lp-1083973-n2-test (&optional arg)
+  "Doesn't test for remaining files yet. "
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
@@ -4814,12 +4827,13 @@ for lines in f:
   (py-bug-tests-intern 'temporary-files-remain-when-python-raises-exception-lp-1083973-n2-base arg teststring)))
 
 (defun temporary-files-remain-when-python-raises-exception-lp-1083973-n2-base ()
+  "Doesn't test for remaining files yet. "
   (let ((python-mode-v5-behavior-p t))
-    (py-execute-buffer)
-    (assert t nil "temporary-files-remain-when-python-raises-exception-lp-1083973-n2-test failed")))
+    (assert (py-execute-buffer) nil "temporary-files-remain-when-python-raises-exception-lp-1083973-n2-test failed")))
 
 ;; TBD
 (defun temporary-files-remain-when-python-raises-exception-lp-1083973-n3-test (&optional arg)
+  "Doesn't test for remaining files yet. "
   (interactive "p")
   (let ((teststring "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
@@ -4832,8 +4846,7 @@ for lines in f:
     (py-bug-tests-intern 'temporary-files-remain-when-python-raises-exception-lp-1083973-n3-base arg teststring)))
 
 (defun temporary-files-remain-when-python-raises-exception-lp-1083973-n3-base ()
-  (py-execute-buffer)
-  (assert t nil "temporary-files-remain-when-python-raises-exception-lp-1083973-n3-test failed"))
+  (assert (py-execute-buffer) nil "temporary-files-remain-when-python-raises-exception-lp-1083973-n3-test failed"))
 
 (defun temporary-files-remain-when-python-raises-exception-lp-1083973-n4-test (&optional arg)
   (interactive "p")
@@ -4849,10 +4862,7 @@ for lines in f:
 
 (defun temporary-files-remain-when-python-raises-exception-lp-1083973-n4-base ()
   (py-execute-buffer)
-  (switch-to-buffer (current-buffer))
-  (sit-for 0.1)
-  (message "Bin hier %s" (buffer-name (current-buffer)))
-  (assert (eq 163 (point)) nil "temporary-files-remain-when-python-raises-exception-lp-1083973-n4-test failed"))
+  (assert (py-execute-buffer) nil "temporary-files-remain-when-python-raises-exception-lp-1083973-n4-test failed"))
 
 (defun comments-start-a-new-line-lp-1092847-n1-test (&optional arg)
   (interactive "p")
@@ -5205,11 +5215,13 @@ class Test(object):
 
 (defun more-docstring-filling-woes-lp-1102296-pep-257-base ()
   (let ((py-docstring-style 'pep-257))
+    ;; (when py-debug-p (switch-to-buffer (current-buffer))
+    ;; (font-lock-fontify-buffer))
     (goto-char (point-min))
     (search-forward "Builds")
-    (sit-for 0.1)
+    (sit-for 0.1 t)
     (fill-paragraph)
-    (sit-for 1)
+    (sit-for 0.1 t)
     (end-of-line)
     (assert (looking-back "\"\"\"") nil "more-docstring-filling-woes-lp-1102296-pep-257-test #1 failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-pep-257-test #1 done")
@@ -5221,7 +5233,7 @@ class Test(object):
     (search-forward "Load")
     (fill-paragraph)
     (forward-line 1)
-    ;; (sit-for 0.1)
+    ;; (sit-for 0.1 t)
     (assert (empty-line-p) nil "more-docstring-filling-woes-lp-1102296-pep-257-test #3a failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-pep-257-test #3a done")
     (forward-line 4)
@@ -5272,7 +5284,7 @@ class Test(object):
     (goto-char 357)
     (fill-paragraph)
     (beginning-of-line)
-    (sit-for 0.1)
+    (sit-for 0.1 t)
     ;; (message "%d" (skip-chars-forward " "))
     (assert (eq (skip-chars-forward " ") 8) nil "more-docstring-filling-woes-lp-1102296-onetwo-test #3a failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-onetwo-test #3a done")
@@ -5327,7 +5339,7 @@ class Test(object):
     (goto-char 380)
     (fill-paragraph)
     (beginning-of-line)
-    (sit-for 0.1)
+    (sit-for 0.1 t)
     (assert (looking-at "        \"\"\"") nil "more-docstring-filling-woes-lp-1102296-django-test #3a failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-django-test #3a done")
     (save-excursion
@@ -5381,7 +5393,7 @@ class Test(object):
     (goto-char 380)
     (fill-paragraph)
     (beginning-of-line)
-    (sit-for 0.1)
+    (sit-for 0.1 t)
     (assert (looking-at "        \"\"\"") nil "more-docstring-filling-woes-lp-1102296-symmetric-test #3a failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-symmetric-test #3a done")
     (forward-line 1)
@@ -5464,7 +5476,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.22 $\"
+__version__ = \"$Revision: 1.26 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -5538,7 +5550,7 @@ class Test(object):
     (goto-char 380)
     (fill-paragraph)
     (back-to-indentation)
-    (sit-for 0.1)
+    (sit-for 0.1 t)
     (assert (eq (char-after) 34) nil "more-docstring-filling-woes-lp-1102296-nil-test #3a failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-nil-test #3a done")
     (search-forward "pass" nil t 1)
@@ -5577,6 +5589,9 @@ class Test(object):
 
 (defun more-docstring-filling-woes-lp-1102296-pep-257-nn-base ()
   (let ((py-docstring-style 'pep-257-nn))
+    (when py-debug-p (switch-to-buffer (current-buffer))
+	  (font-lock-fontify-buffer))
+    (sit-for 0.1 t)
     (goto-char 178)
     (assert (fill-paragraph) nil "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #1 failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #1 done")
@@ -5588,12 +5603,12 @@ class Test(object):
     (goto-char 357)
     (fill-paragraph)
     (beginning-of-line)
-    (sit-for 0.1)
+    (sit-for 0.1 t)
     (assert (eq (current-indentation) 8) nil "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #3a failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #3a done")
     (search-forward "pass")
     (beginning-of-line)
-    (sit-for 0.1)
+    (sit-for 0.1 t)
     (assert (looking-at "        pass") nil "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #3b failed")
     (message "%s" "more-docstring-filling-woes-lp-1102296-pep-257-nn-test #3b done")))
 
@@ -5628,10 +5643,10 @@ Assuming that ``cr`` is a :class:`ContextRewriter` instance, that the rewriter m
 (defun fill-paragraph-in-docstring-lp-1161232-base ()
     (goto-char 94)
     (fill-paragraph t)
-    (sit-for 0.1)
+    (sit-for 0.1 t)
     (assert (eq (point) 51) nil "fill-paragraph-in-docstring-lp-1161232-test #1 failed")
     (goto-char 249)
-    (sit-for 1)     
+    (sit-for 1)
     (message "%s" (buffer-substring-no-properties (line-beginning-position) (line-end-position) ))
     (assert (looking-at "    pass") nil "fill-paragraph-in-docstring-lp-1161232-test #2 failed")
     )
@@ -5685,7 +5700,7 @@ a = \"asdf\"
     (push-mark)
     (goto-char 122)
     (call-interactively 'py-indent-line)
-    (sit-for 0.1)
+    (sit-for 0.1 t)
     ;; (message "point: %s" (point))
     (assert (bolp)  nil "tab-results-in-never-ending-process-lp-1163423-test failed")))
 
@@ -5799,7 +5814,7 @@ def foo():
   ;; (message "paragraph-start: %s" paragraph-start)
   ;; (message "Fehler? %s" (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
   (fill-paragraph t)
-  ;; (sit-for 0.1)
+  ;; (sit-for 0.1 t)
   ;; (message "Fehler? %s" (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
   (forward-line 1)
 ;;  (sit-for 1)
@@ -5811,7 +5826,7 @@ def foo():
   (forward-line 3)
   (assert (and (bolp) (eolp)) nil "Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test #3 failed")
   (goto-char 273)
-  (sit-for 0.1)
+  (sit-for 0.1 t)
   (fill-paragraph t)
   (end-of-line)
   (assert (eq 25 (current-column)) nil "Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test #4 failed"))
@@ -5875,7 +5890,7 @@ inode, start_no, end_no)
     (assert (string= "*shell*" (buffer-name)) nil "py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test #1 failed")
     (let ((py-switch-buffers-on-execute-p t))
       (py-shell))
-    (sit-for 0.1)
+    (sit-for 0.1 t)
     (assert (string-match "*Python" (buffer-name)) nil "py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test #2 failed")))
 
 (defun from-within-py-shell-call-another-instance-lp-1169687-test (&optional arg)
@@ -5887,8 +5902,8 @@ inode, start_no, end_no)
     (let ((py-split-windows-on-execute-p t)
           (py-switch-buffers-on-execute-p t))
     (py-shell)
-    (sit-for 0.1)
-    (py-shell nil t nil nil t)
+    (sit-for 0.1 t)
+    (py-shell '(4))
     (assert (string-match "\\*Python" (buffer-name)) nil "from-within-py-shell-call-another-instance-lp-1169687-test failed")))
 
 (defun multibuffer-mayhem-lp-1162q272-test (&optional arg)
@@ -6002,7 +6017,7 @@ def foo():
   (py-newline-and-indent)
   (py-newline-and-indent)
   (message "%s" (point) )
-  ;; (sit-for 0.1)
+  ;; (sit-for 0.1 t)
   (assert (and (eq 14 (count-lines  (point-min) (point))) (eq 8 (current-column)))  nil "return-key-is-broken-lp-1191158-test failed"))
 
 (defun indent-refused-lp-1191133-test (&optional arg)
@@ -6156,9 +6171,11 @@ a, b, c = (1, 2, 3)
   (py-bug-tests-intern 'missing-py-variable-name-face-lp-1215791-base arg teststring)))
 
 (defun missing-py-variable-name-face-lp-1215791-base ()
+  (font-lock-fontify-buffer)
+  ;; (when py-debug-p (switch-to-buffer (current-buffer)))
   ;; (goto-char 6)
   (goto-char 27)
-  (sit-for 0.1)
+  (sit-for 0.1 t)
   (assert (eq (get-char-property (point) 'face) 'py-variable-name-face) nil "missing-py-variable-name-face-lp-1215791-test #1 failed")
   (goto-char 44)
   (assert (eq (get-char-property (point) 'face) 'py-variable-name-face) nil "missing-py-variable-name-face-lp-1215791-test #2 failed")
@@ -6174,10 +6191,12 @@ a, b, c = (1, 2, 3)
   (py-bug-tests-intern 'C-c-C-c-lp:1221310-and-store-result-base arg teststring)))
 
 (defun C-c-C-c-lp:1221310-and-store-result-base ()
+  (when py-debug-p (switch-to-buffer (current-buffer)))
   (write-file (concat py-temp-directory "/lp-1221310.py"))
   (assert (let ((py-store-result-p t))
-            (sit-for 0.1)
-            (string= "C-c-C-c-lp:1221310-and-store-result-test" (py--execute-base))) nil "C-c-C-c-lp:1221310-and-store-result-test failed"))
+	    (py-execute-buffer)
+            (sit-for 0.1 t)
+            (string= "C-c-C-c-lp:1221310-and-store-result-test" (car kill-ring))) nil "C-c-C-c-lp:1221310-and-store-result-test failed"))
 
 (defun py-empty-line-closes-p-lp-1235324-test (&optional arg)
   (interactive "p")
@@ -6213,8 +6232,8 @@ long long long long long long long line.\"\"\"
   (let ((py-docstring-style 'pep-257-nn))
     (forward-line -1)
     (fill-paragraph)
-    (sit-for 0.1)
-    (assert (search-forward "    \"\"\"") nil "py-docstring-style-pep-257-nn-closing-quotes-lp-1241147-test failed")))
+    (sit-for 0.1 t)
+    (assert (search-forward "    \"\"\"" nil t 1) nil "py-docstring-style-pep-257-nn-closing-quotes-lp-1241147-test failed")))
 
 (defun indentation-after-parentized-assignment-lp-1243012-test (&optional arg)
   (interactive "p")
@@ -6361,10 +6380,12 @@ def expand(self, leading=0, subs={}):
 (defun execute-region-lp-1294796-base ()
   (let ((py-shell-name "ipython"))
     (py-execute-buffer)
-    (sit-for 1)
     (set-buffer "*IPython*")
-    (switch-to-buffer (current-buffer))
-    (assert (eq 49 (char-after)) nil "execute-region-lp-1294796-test failed")))
+    (when py-debug-p (switch-to-buffer (current-buffer)))
+    (goto-char comint-last-output-start)
+    (sit-for 0.1 t)
+    (and (eq (char-before) ?\n) (forward-char -1))
+    (assert (or (eq 49 (char-after))(eq 49 (char-before))) nil "execute-region-lp-1294796-test failed")))
 
 (defun wrong-coloring-lp:1315186-test (&optional arg)
   (interactive "p")

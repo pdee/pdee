@@ -159,7 +159,9 @@ With ARG do that ARG times. "
       (if (and (member (char-after) (list ?\  ?\t))
 	       (setq orig (point))
 	       (< 0 (skip-chars-forward " \t")))
-	  (delete-region orig (point))
+	  (progn
+	    (goto-char orig)
+	    (delete-region orig (progn (forward-char py-indent-offset) (point))))
 	;;          (let* ((remains (% (+ (current-column) (- (match-end 0)(match-beginning 0))) py-indent-offset)))
 	;;            (if (< 0 remains)
 	;;                (delete-char remains)
