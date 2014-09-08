@@ -188,9 +188,10 @@ in py-shell-mode `py-shell-complete'"
 	  (and (not (eobp)) (not (member (char-after)(list 9 10 12 13 32)))))
       (py-indent-line)
     (if (eq major-mode 'python-mode)
-	(funcall py-complete-function)
+	(if (string-match "ipython" (py-choose-shell))
+	    (py-shell-complete)
+	  (funcall py-complete-function))
       (py-shell-complete))))
-
 
 (provide 'python-components-shell-complete)
 ;; pyshell-complete.el ends here

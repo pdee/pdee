@@ -1056,7 +1056,7 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
 (defun indent-triplequoted-to-itself-lp:752252-base ()
   (sit-for 0.1)
   (when py-debug-p (switch-to-buffer (current-buffer))
-	(font-lock-fontify-buffer)) 
+	(font-lock-fontify-buffer))
   ;; (message "(py-compute-indentation): %s" (py-compute-indentation))
   (assert (eq 4 (py-compute-indentation)) nil "indent-triplequoted-to-itself-lp:752252-test failed"))
 
@@ -2686,8 +2686,8 @@ print(myobj.range(10))
     (py-bug-tests-intern 'another-broken-font-locking-lp:961231-base arg teststring)))
 
 (defun another-broken-font-locking-lp:961231-base ()
-  (switch-to-buffer (current-buffer))
-  (font-lock-fontify-buffer)
+  (when py-verbose-p (switch-to-buffer (current-buffer))
+	(font-lock-fontify-buffer)) 
   (goto-char 124)
   (sit-for 0.1)
   (assert (eq (get-char-property (point) 'face) 'py-builtins-face) nil "another-broken-font-locking-lp:961231-test failed")
@@ -2830,7 +2830,7 @@ os.chmod
     (py-bug-tests-intern 'py-describe-symbol-fails-on-modules-lp:919719-base arg teststring)))
 
 (defun py-describe-symbol-fails-on-modules-lp:919719-base ()
-  (when py-debug-p (switch-to-buffer (current-buffer)) (font-lock-fontify-buffer))  
+  (when py-debug-p (switch-to-buffer (current-buffer)) (font-lock-fontify-buffer))
   (goto-char 61)
   (py-help-at-point)
   (sit-for 0.1)
@@ -3215,7 +3215,7 @@ if __name__ == '__main__':
 
 (defun IndentationError-expected-an-indented-block-when-execute-lp-1055569-base ()
   (when py-debug-p (switch-to-buffer (current-buffer))
-	(font-lock-fontify-buffer))  
+	(font-lock-fontify-buffer))
   (py-execute-buffer)
   (with-current-buffer py-buffer-name
     ;; (message "%s" py-buffer-name)
@@ -5476,7 +5476,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.26 $\"
+__version__ = \"$Revision: 1.27 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -5809,7 +5809,8 @@ def foo():
   (py-bug-tests-intern 'Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-base arg teststring)))
 
 (defun Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-base ()
-  (switch-to-buffer (current-buffer))
+  (when py-verbose-p (switch-to-buffer (current-buffer))
+	(font-lock-fontify-buffer))
   (goto-char 97)
   ;; (message "paragraph-start: %s" paragraph-start)
   ;; (message "Fehler? %s" (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
@@ -5817,7 +5818,7 @@ def foo():
   ;; (sit-for 0.1 t)
   ;; (message "Fehler? %s" (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
   (forward-line 1)
-;;  (sit-for 1)
+  ;;  (sit-for 1)
   (assert (and (bolp) (eolp)) nil "Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test #1 failed")
   (goto-char 140)
   (fill-paragraph t)
@@ -6764,12 +6765,17 @@ print(1) "))
 	(py-split-windows-on-execute-p 'always)
 	py-switch-buffers-on-execute-p
 	py-keep-windows-configuration)
+    (when py-debug-p (switch-to-buffer (current-buffer))
+	  (font-lock-fontify-buffer))
     (py-execute-statement-python)
-    (assert (and (member (get-buffer-window "*Python*")(window-list))(string= (buffer-name oldbuf) (buffer-name (window-buffer)))) nil "py-split-multi-no-switch-on-execute-lp-1361531-test-1 failed")
+    (assert (and (member (get-buffer-window "*Python*")(window-list))
+		 (string= (buffer-name oldbuf) (buffer-name (window-buffer)))) nil "py-split-multi-no-switch-on-execute-lp-1361531-test-1 failed")
     (py-execute-statement-python3)
-    (assert (and (member (get-buffer-window "*Python3*")(window-list))(string= (buffer-name oldbuf) (buffer-name (window-buffer)))) nil "py-split-multi-no-switch-on-execute-lp-1361531-test-2 failed")
+    (assert (and (member (get-buffer-window "*Python3*")(window-list))
+		 (string= (buffer-name oldbuf) (buffer-name (window-buffer)))) nil "py-split-multi-no-switch-on-execute-lp-1361531-test-2 failed")
     (py-execute-statement-ipython)
-    (assert (and (member (get-buffer-window "*IPython*")(window-list))(string= (buffer-name oldbuf) (buffer-name (window-buffer)))) nil "py-split-multi-no-switch-on-execute-lp-1361531-test-3 failed")
+    (assert (and (member (get-buffer-window "*IPython*")(window-list))
+		 (string= (buffer-name oldbuf) (buffer-name (window-buffer)))) nil "py-split-multi-no-switch-on-execute-lp-1361531-test-3 failed")
     (py-execute-statement-python)
     (assert (and (member (get-buffer-window "*Python*")(window-list))(string= (buffer-name oldbuf) (buffer-name (window-buffer)))) nil "py-split-multi-no-switch-on-execute-lp-1361531-test-4 failed")))
 

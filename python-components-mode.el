@@ -743,9 +743,10 @@ mark-defun marks top-level form at point etc."
   :group 'python-mode)
 
 (defcustom py-complete-function 'py-fast-complete
-  "When set, enforces function todo completion, default is nil.
+  "When set, enforces function todo completion, default is `py-fast-complete'.
 
-Normally python-mode know best which function to use. "
+Might not affect IPython, as `py-shell-complete' is the only known working here.
+Normally python-mode knows best which function to use. "
   :type '(choice
           (const :tag "default" nil)
           (const :tag "Pymacs and company based py-complete" py-complete)

@@ -1052,6 +1052,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(setq py-verbose-p 
 -eval "(assert (boundp 'py-compilation-regexp-alist) nil \"py-compilation-regexp-alist not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test \
 --funcall py-shell-invoking-python-lp:835151-test \
 --funcall missing-py-variable-name-face-lp-1215791-test \
 --funcall inconvenient-window-splitting-behavior-python-lp-1018996-test \
@@ -1292,7 +1293,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(setq py-verbose-p 
 --funcall enter-key-does-not-indent-properly-after-return-statement-lp-1098793-test \
 --funcall comments-start-a-new-line-lp-1092847-n2-test \
 --funcall py-bol-moves-test \
---funcall Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test \
 --funcall from-within-py-shell-call-another-instance-lp-1169687-test \
 --funcall another-broken-font-locking-lp:961231-test \
 --funcall cls-pseudo-keyword-lp:328849-test \
