@@ -471,7 +471,9 @@ Internal use"
   ;; (message "oldbuf: %s" oldbuf)
   (cond
    (py-keep-windows-configuration
-    (py-restore-window-configuration))
+    (py-restore-window-configuration)
+    (with-current-buffer output-buffer
+      (goto-char (point-max))))
    ((and (eq py-split-windows-on-execute-p 'always)
 	 py-switch-buffers-on-execute-p)
     (if (member (get-buffer-window output-buffer)(window-list))
@@ -515,9 +517,9 @@ Internal use"
     ;; (sit-for py-new-shell-delay)
     (py--manage-windows-split output-buffer)
     ;; otherwise new window appears above
-      (other-window 1)
-      (set-buffer output-buffer)
-      (switch-to-buffer (current-buffer)))
+    (other-window 1)
+    (set-buffer output-buffer)
+    (switch-to-buffer (current-buffer)))
    ((and
      py-switch-buffers-on-execute-p
      (not py-split-windows-on-execute-p))
@@ -615,7 +617,7 @@ Expects being called by `py--run-unfontify-timer' "
 		      (re-search-forward py-fast-filter-re nil t 1)
 		      (point)
 		    (and (boundp 'comint-last-prompt)(ignore-errors (car comint-last-prompt))))))
-	(sit-for 0.1 t) 
+	(sit-for 0.1 t)
 	(if erg
 	    (progn
 	    (font-lock-unfontify-region (point-min) erg)
