@@ -1,4 +1,5 @@
-* Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test
+* another-broken-font-locking-lp:961231-test
+
 * py-describe-symbol-fails-on-modules-lp:919719-test
 * print_function IPython completion von prin
 * py-fill-string-django-test
@@ -6,7 +7,6 @@
 * py-execute-buffer-python2-switch-test
 * ipython-complete-lp-1102226-test
 * Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test
-* another-broken-font-locking-lp:961231-test
 * cls-pseudo-keyword-lp:328849-test 
 * py-execute-region-error-test
 * more-docstring-filling-woes-lp-1102296-nil-test

@@ -615,6 +615,7 @@ Expects being called by `py--run-unfontify-timer' "
 		      (re-search-forward py-fast-filter-re nil t 1)
 		      (point)
 		    (and (boundp 'comint-last-prompt)(ignore-errors (car comint-last-prompt))))))
+	(sit-for 0.1 t) 
 	(if erg
 	    (progn
 	    (font-lock-unfontify-region (point-min) erg)
