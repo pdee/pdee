@@ -1052,6 +1052,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(setq py-verbose-p 
 -eval "(assert (boundp 'py-compilation-regexp-alist) nil \"py-compilation-regexp-alist not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall py-execute-block-or-clause-python2-test \
 --funcall Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test \
 --funcall py-shell-invoking-python-lp:835151-test \
 --funcall missing-py-variable-name-face-lp-1215791-test \
@@ -1100,7 +1101,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(setq py-verbose-p 
 --funcall execute-indented-code-lp:828314-test \
 --funcall py-shell-invoking-python3-lp:835151-test \
 --funcall py-shell-invoking-python2-lp:835151-test \
---funcall py-execute-block-or-clause-python2-test \
 --funcall py-execute-line-python-test \
 --funcall py-execute-line-python3-test \
 --funcall py-execute-line-python2-test \

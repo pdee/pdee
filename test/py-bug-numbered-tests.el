@@ -6695,21 +6695,14 @@ print(1) "))
 	(py-switch-buffers-on-execute-p t)
 	py-keep-windows-configuration)
     (delete-other-windows)
-    (py--lp-1361531-python3 "2")
     (py--lp-1361531-python "1")
+    (py--lp-1361531-python3 "2")
     (py--lp-1361531-ipython "3")
     (py--lp-1361531-python "4")
     (py--lp-1361531-python3 "5")
     (py--lp-1361531-ipython "6")
     (py--lp-1361531-python "7")
     ))
-
-(defun py-split-multi-and-switch-dedicated-lp-1361531-test (&optional arg)
-  (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-print(1) "))
-    (py-bug-tests-intern 'py-split-multi-and-switch-dedicated-lp-1361531-base arg teststring)))
 
 (defun py--lp-1361531-python-dedicated (count)
   (let (erg)
@@ -6744,6 +6737,14 @@ print(1) "))
     (py--lp-1361531-ipython-dedicated "6")
     (py--lp-1361531-python-dedicated "7")
     ))
+
+
+(defun py-split-multi-and-switch-dedicated-lp-1361531-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+print(1) "))
+    (py-bug-tests-intern 'py-split-multi-and-switch-dedicated-lp-1361531-base arg teststring)))
 
     ;; (while (not (and (setq erg (window-buffer)) (string= "*Python*" (buffer-name (window-buffer)))))(select-window (next-window) t))
     ;; (goto-char (point-max))

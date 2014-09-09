@@ -561,8 +561,8 @@ Receives a buffer-name as argument"
 (defun py--shell-make-comint (executable py-buffer-name args)
   (let ((buffer (apply 'make-comint-in-buffer executable py-buffer-name executable nil args)))
     (with-current-buffer buffer
-      (py-shell-mode))
-    (sit-for 0.1 t)
+      (py-shell-mode)
+      (sit-for 0.1 t))
     buffer))
 
 (defun py--shell-setup (buffer proc)
@@ -764,7 +764,7 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
                      (py--fix-if-name-main-permission (buffer-substring-no-properties start end))))
          (strg (py--fix-start strg-raw))
          (wholebuf (unless file (or wholebuf (and (eq (buffer-size) (- end start))))))
-	 (windows-config (window-configuration-to-register 313465889))
+	 (windows-config (window-configuration-to-register py-windows-config-register))
 	 (origline
 	  (save-restriction
 	    (widen)
