@@ -12367,11 +12367,14 @@ Don't save anything for STR matching `py-input-filter-re' "
 
 (add-to-list 'auto-mode-alist (cons (purecopy "\\.py\\'")  'python-mode))
 
-(add-to-list 'interpreter-mode-alist
-	     (cons (purecopy "[bi]*python[0-9.]*") 'python-mode))
+;; (add-to-list 'interpreter-mode-alist
+;; (cons (purecopy "[bi]*python[0-9.]*") 'python-mode))
+;; 
+;; (add-to-list 'interpreter-mode-alist
+;; (cons (purecopy "jython[0-9.]*") 'jython-mode))
 
-(add-to-list 'interpreter-mode-alist
-	     (cons (purecopy "jython[0-9.]*") 'jython-mode))
+(add-to-list 'magic-mode-alist
+	     '("!#[ \t]*/.*[jp]ython[0-9.]*" . python-mode))
 
 ;; lp:1355458, what about using `magic-mode-alist'?
 
