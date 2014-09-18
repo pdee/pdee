@@ -1993,7 +1993,7 @@ some logging etc. "
   "Internal use: restore py-restore-window-configuration when completion is done resp. abandoned. ")
 
 (defvar py-exception-buffer nil
-  "Set internally, remember source buffer where error might occur. ")
+  "Will be set internally, let-bound, remember source buffer where error might occur. ")
 
 (defvar py-string-delim-re "\\(\"\"\"\\|'''\\|\"\\|'\\)"
   "When looking at beginning of string. ")

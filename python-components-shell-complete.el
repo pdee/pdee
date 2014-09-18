@@ -80,7 +80,7 @@ completions on the current context."
       ;; (move-marker orig (point))
       nil)))
 
-(defun py--shell--do-completion-at-point (process imports input orig oldbuf code)
+(defun py--shell--do-completion-at-point (process imports input orig py-exception-buffer code)
   "Do completion at point for PROCESS."
   (when imports
     (py--send-string-no-output imports process))
@@ -90,7 +90,7 @@ completions on the current context."
 	 ;; (completion (when completions
 	 ;; (try-completion input completions)))
 	 newlist erg)
-    (set-buffer oldbuf)
+    (set-buffer py-exception-buffer)
     (sit-for 0.1 t)
     (cond ((eq completion t)
 	   (and py-verbose-p (message "py--shell--do-completion-at-point %s" "`t' is returned, not completion. Might be a bug."))
@@ -114,7 +114,7 @@ completions on the current context."
 
     nil))
 
-(defun py--complete-base (shell pos beg end word imports debug oldbuf)
+(defun py--complete-base (shell pos beg end word imports debug py-exception-buffer)
   (let* ((shell (or shell (py-choose-shell)))
          (proc (or (get-process shell)
 		   (prog1
@@ -123,10 +123,10 @@ completions on the current context."
 	 (code (if (string-match "[Ii][Pp]ython*" shell)
 		   (py-set-ipython-completion-command-string shell)
 		 python-shell-module-completion-string-code)))
-    (py--shell--do-completion-at-point proc imports word pos oldbuf code)))
+    (py--shell--do-completion-at-point proc imports word pos py-exception-buffer code)))
 
 (defun py--complete-prepare (shell debug beg end word fast-complete)
-  (let* ((oldbuf (current-buffer))
+  (let* ((py-exception-buffer (current-buffer))
          (pos (copy-marker (point)))
 	 (pps (syntax-ppss))
 	 (in-string (when (nth 3 pps) (nth 8 pps)))
@@ -153,12 +153,12 @@ completions on the current context."
 			 (list (replace-regexp-in-string "\n" "" (shell-command-to-string (concat "find / -maxdepth 1 -name " ausdruck))))))
          (imports (py-find-imports))
          py-fontify-shell-buffer-p completion-buffer erg)
-    (cond (fast-complete (py--fast-complete-base shell pos beg end word imports debug oldbuf))
+    (cond (fast-complete (py--fast-complete-base shell pos beg end word imports debug py-exception-buffer))
 	  ((and in-string filenames)
 	   (when (setq erg (try-completion (concat "/" word) filenames))
 	     (delete-region beg end)
 	     (insert erg)))
-	  (t (py--complete-base shell pos beg end word imports debug oldbuf)))
+	  (t (py--complete-base shell pos beg end word imports debug py-exception-buffer)))
     nil))
 
 (defun py-shell-complete (&optional shell debug beg end word)

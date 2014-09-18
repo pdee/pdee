@@ -182,7 +182,9 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
 (defun py-execute-statement-python3 ()
   "Send statement at point to Python3 interpreter. "
   (interactive)
-  (py--execute-prepare "statement" 'python3 nil nil))
+  (py--execute-prepare "statement" 'python3 nil nil)
+  ;; (py--shell-manage-windows py-output-buffer)
+  )
 
 (defun py-execute-statement-python3-switch ()
   "Send statement at point to Python3 interpreter. 

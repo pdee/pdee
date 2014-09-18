@@ -569,7 +569,7 @@ Interactively, prompt for SYMBOL."
   ;; (set-register 98888888 (list (current-window-configuration) (point-marker)))
   (let* ((last-window-configuration
           (current-window-configuration))
-         (oldbuf (current-buffer))
+         (py-exception-buffer (current-buffer))
          (imports (py-find-imports))
          (symbol (or symbol (with-syntax-table py-dotted-expression-syntax-table
                               (current-word))))
@@ -617,7 +617,7 @@ Interactively, prompt for SYMBOL."
              (push-mark)
              (goto-char (match-beginning 0))
              (exchange-point-and-mark)
-             (display-buffer oldbuf)))
+             (display-buffer py-exception-buffer)))
       sourcefile)))
 
 (defun py-find-imports ()
@@ -1149,7 +1149,7 @@ Maybe call M-x describe-variable RET to query its value. "
   (interactive)
   (variables-prepare "state"))
 
-(defun variables-base-state (oldbuf orgname reSTname directory-in directory-out)
+(defun variables-base-state (py-exception-buffer orgname reSTname directory-in directory-out)
   (save-restriction
     (let ((suffix (file-name-nondirectory (buffer-file-name)))
           variableslist)

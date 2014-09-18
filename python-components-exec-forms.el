@@ -25,7 +25,9 @@
 (defun py-execute-statement ()
   "Send statement at point to a Python interpreter. "
   (interactive)
-  (py--execute-prepare "statement"))
+  (py--execute-prepare "statement")
+  ;; (py--shell-manage-windows)
+  py-result)
 
 (defun py-execute-block ()
   "Send block at point to a Python interpreter. "

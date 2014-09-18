@@ -42,10 +42,8 @@ Remove trailing newline"
   ;; remove trailing newline
   (and (string-match "\n$" py-result)
        (setq py-result (substring py-result 0 (match-beginning 0))))
-  (and store
-       (not (string= "" py-result))
-       (kill-new py-result))
-  (setq py-result (split-string py-result "\n")))
+  (setq py-result (split-string py-result "\n"))
+  py-result)
 
 (defun py--fast-send-string-no-output (string proc output-buffer)
   (with-current-buffer output-buffer

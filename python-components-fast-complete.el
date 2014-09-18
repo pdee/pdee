@@ -27,7 +27,7 @@ completions on the current context."
     (when (> (length completions) 2)
       (split-string completions "^'\\|^\"\\|;\\|'$\\|\"$" t))))
 
-(defun py--fast--do-completion-at-point (process imports input orig oldbuf code output-buffer)
+(defun py--fast--do-completion-at-point (process imports input orig py-exception-buffer code output-buffer)
   "Do completion at point for PROCESS."
   ;; send setup-code
   (let (py-return-result-p)
@@ -41,7 +41,7 @@ completions on the current context."
 	 ;; (try-completion input completions)))
 	 newlist erg)
     ;; (message "%s" (current-buffer))
-    (set-buffer oldbuf)
+    (set-buffer py-exception-buffer)
     ;; (sit-for 1 t)
     (cond ((eq completion t)
 	   (and py-verbose-p (message "py--fast--do-completion-at-point %s" "`t' is returned, not completion. Might be a bug."))
@@ -65,7 +65,7 @@ completions on the current context."
 
     nil))
 
-(defun py--fast-complete-base (shell pos beg end word imports debug oldbuf)
+(defun py--fast-complete-base (shell pos beg end word imports debug py-exception-buffer)
   (let* ((shell (or shell (py-choose-shell)))
 	 (py-buffer-name (py-shell nil nil shell nil t))
 	 (proc (get-buffer-process py-buffer-name))
@@ -74,7 +74,7 @@ completions on the current context."
 		 python-shell-module-completion-string-code)))
     (with-current-buffer py-buffer-name
       (erase-buffer))
-    (py--fast--do-completion-at-point proc imports word pos oldbuf code py-buffer-name)))
+    (py--fast--do-completion-at-point proc imports word pos py-exception-buffer code py-buffer-name)))
 
 (defun py-fast-complete (&optional shell debug beg end word)
   "Complete word before point, if any.

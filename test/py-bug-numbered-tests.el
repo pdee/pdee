@@ -2687,7 +2687,7 @@ print(myobj.range(10))
 
 (defun another-broken-font-locking-lp:961231-base ()
   (when py-verbose-p (switch-to-buffer (current-buffer))
-	(font-lock-fontify-buffer)) 
+	(font-lock-fontify-buffer))
   (goto-char 124)
   (sit-for 0.1)
   (assert (eq (get-char-property (point) 'face) 'py-builtins-face) nil "another-broken-font-locking-lp:961231-test failed")
@@ -2965,6 +2965,7 @@ def test_bu():
     (py-bug-tests-intern 'not-that-useful-completion-lp:1003580-base arg teststring)))
 
 (defun not-that-useful-completion-lp:1003580-base ()
+  (switch-to-buffer (current-buffer))
   (goto-char 88)
   (py-shell-complete nil t)
   (sit-for 0.3)
@@ -5476,7 +5477,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.27 $\"
+__version__ = \"$Revision: 1.31 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -5885,12 +5886,10 @@ inode, start_no, end_no)
         py-split-windows-on-execute-p)
     (shell)
     (delete-other-windows)
-    ;; (set-buffer (py-shell))
-    (py-shell)
-    ;; (assert (string= "*shell*" (buffer-name)) nil "py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test #1 failed")
+    (py-shell 1)
     (assert (string= "*shell*" (buffer-name)) nil "py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test #1 failed")
     (let ((py-switch-buffers-on-execute-p t))
-      (py-shell))
+      (py-shell 1))
     (sit-for 0.1 t)
     (assert (string-match "*Python" (buffer-name)) nil "py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-test #2 failed")))
 
