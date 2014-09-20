@@ -26,7 +26,6 @@
   "Send statement at point to a Python interpreter. "
   (interactive)
   (py--execute-prepare "statement")
-  ;; (py--shell-manage-windows)
   py-result)
 
 (defun py-execute-block ()
@@ -76,4 +75,3 @@
 
 (provide 'python-components-exec-forms)
 ;;; python-components-exec-forms.el ends here
- 

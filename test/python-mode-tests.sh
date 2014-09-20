@@ -1052,7 +1052,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(setq py-verbose-p 
 -eval "(assert (boundp 'py-compilation-regexp-alist) nil \"py-compilation-regexp-alist not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
---funcall py-execute-block-or-clause-python2-test \
 --funcall Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-test \
 --funcall py-shell-invoking-python-lp:835151-test \
 --funcall missing-py-variable-name-face-lp-1215791-test \
@@ -1075,7 +1074,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(setq py-verbose-p 
 --funcall py-execute-block-or-clause-python3-test \
 --funcall py-object-reference-face-should-inherit-from-lp-1340455-test \
 --funcall python-shell-complete-test \
---funcall execute-buffer-lp-1338134-test \
 --funcall impossible-to-execute-a-buffer-with-from-future-imports-lp-1063884-test \
 --funcall complaint-about-non-ASCII-character-lp-1042949-test \
 --funcall interpreter-mode-alist-lp-1355458-test-1 \
@@ -1353,3 +1351,5 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(setq py-verbose-p 
 --funcall py-describe-symbol-fails-on-modules-lp:919719-test \
 --funcall py-execute-buffer-python3-looks-broken-lp-1085386-test \
 --funcall UnicodeEncodeError-python3-test \
+--funcall execute-buffer-lp-1338134-test \
+--funcall py-execute-block-or-clause-python2-test \

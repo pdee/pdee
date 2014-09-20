@@ -588,7 +588,7 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
 	  oldbuf)
       (py-execute-buffer-dedicated)
       (set-buffer py-output-buffer)
-      (switch-to-buffer (current-buffer))
+      ;; (switch-to-buffer (current-buffer))
       (insert "socket.")
       (sit-for 0.1)
       ;; (switch-to-buffer (current-buffer))
@@ -833,7 +833,8 @@ def foo():
     (let ((py-shell-name "python"))
       (py-execute-expression)
       (set-buffer ert-test-default-buffer)
-      (switch-to-buffer (current-buffer))
+      ;; (switch-to-buffer (current-buffer))
+      (sit-for 0.1 t) 
       (and (should
 	    (or
 	     (search-backward "py-execute-expression-test" nil t 1)
@@ -896,10 +897,12 @@ def foo():
   (py-test-with-temp-buffer-point-min
       "print(\"I'm the py-execute-statement-python3-dedicated-test\")"
     (let ((py-debug-p t)
+	  py-store-result-p
 	  erg)
       (py-execute-statement-python3-dedicated)
       (set-buffer py-buffer-name)
-      (goto-char (point-min)) 
+      (goto-char (point-min))
+      (sit-for 0.1 t) 
       (should (search-forward "py-execute-statement-python3-dedicated-test" nil t 1)))))
 
 (ert-deftest py-ert-execute-statement-split ()

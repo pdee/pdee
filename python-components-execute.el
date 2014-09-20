@@ -760,8 +760,8 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 (defun py--execute-base (&optional start end shell filename proc file wholebuf)
   "Update variables. "
   ;; (when py-debug-p (message "run: %s" "py--execute-base"))
-  (let* (py-error
-	 (py-exception-buffer (current-buffer))
+  (setq py-error nil)
+  (let* ((py-exception-buffer (current-buffer))
 	 (start (or start (and (use-region-p) (region-beginning)) (point-min)))
 	 (end (or end (and (use-region-p) (region-end)) (point-max)))
 	 (strg-raw (if py-if-name-main-permission-p
@@ -808,7 +808,8 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 		     (t (or (get-buffer-process buffer)
 			    (get-buffer-process (py-shell nil py-dedicated-process-p which-shell buffer)))))))
     (setq py-buffer-name buffer)
-    (py--execute-base-intern strg shell filename proc file wholebuf buffer origline)))
+    (py--execute-base-intern strg shell filename proc file wholebuf buffer origline)
+    (py--shell-manage-windows buffer windows-config py-exception-buffer)))
 
 (defun py--send-to-fast-process (strg proc output-buffer)
   "Called inside of `py--execute-base-intern' "
@@ -873,14 +874,13 @@ When optional FILE is `t', no temporary file is needed. "
 	   (re-search-backward py-fast-filter-re nil t 1)
 	   (goto-char (match-end 0))
 	   (setq erg (buffer-substring-no-properties (point) end)))
-      (py--shell-manage-windows output-buffer windows-config py-exception-buffer)
       erg)))
 
-(defun py--postprocess-comint (buffer origline windows-config py-exception-buffer)
+(defun py--postprocess-comint (output-buffer origline windows-config py-exception-buffer)
   "Provide return values, check result for error, manage windows. "
   ;; py--fast-send-string doesn't set origline
   (setq py-result nil)
-  (with-current-buffer buffer
+  (with-current-buffer output-buffer
     ;; (when py-debug-p (switch-to-buffer (current-buffer)))
     (setq py-result (py--fetch-comint-result windows-config py-exception-buffer))
     (unless py-result
@@ -888,19 +888,22 @@ When optional FILE is `t', no temporary file is needed. "
       (setq py-result (py--fetch-comint-result windows-config py-exception-buffer))))
   ;; (and (string-match "\n$" py-result)
   ;; (setq py-result (substring py-result 0 (match-beginning 0)))))
-  (with-temp-buffer
-    (insert py-result)
-    (sit-for 0.1 t)
-    ;; (switch-to-buffer (current-buffer))
-    (setq py-error (py--fetch-error (current-buffer) origline))
-    (unless py-error
-      (when py-store-result-p
-	(setq py-result
-	      (if (eq major-mode 'py-shell-mode)
-		  (py-output-filter (py--fetch-comint-result windows-config py-exception-buffer))
-		(py-output-filter (buffer-substring-no-properties (point) (point-max)))))
-	(and py-result (not (string= "" py-result))(not (string= (car kill-ring) py-result)) (kill-new py-result))))
-    py-result))
+  (if py-result
+      (with-temp-buffer
+	(insert py-result)
+	(sit-for 0.1 t)
+	;; (switch-to-buffer (current-buffer))
+	(setq py-error (py--fetch-error (current-buffer) origline))
+	(unless py-error
+	  (when py-store-result-p
+	    (setq py-result
+		  (if (eq major-mode 'py-shell-mode)
+		      (py-output-filter (py--fetch-comint-result windows-config py-exception-buffer))
+		    (py-output-filter (buffer-substring-no-properties (point) (point-max)))))
+	    (and py-result (not (string= "" py-result))(not (string= (car kill-ring) py-result)) (kill-new py-result)))))
+    (message "py--postprocess-comint: %s" "Don't see any result"))
+  py-result)
+
 
 (defun py--execute-ge24.3 (start end filename execute-directory which-shell &optional py-exception-buffer proc)
   "An alternative way to do it.
@@ -945,7 +948,6 @@ May we get rid of the temporary file? "
              (car py-error)
              (not (markerp py-error)))
         (py--jump-to-exception py-error origline)
-      (py--shell-manage-windows procbuf windows-config py-exception-buffer)
       (unless (string= (buffer-name (current-buffer)) (buffer-name procbuf))
         (when py-verbose-p (message "Output buffer: %s" procbuf))))))
 
