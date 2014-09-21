@@ -861,11 +861,16 @@ When optional FILE is `t', no temporary file is needed. "
 
 (defun py--fetch-comint-result (windows-config py-exception-buffer)
   (save-excursion
+    ;; (switch-to-buffer (current-buffer))
     (let (end erg)
       (or (and
 	   (boundp 'comint-last-prompt)
+	   (sit-for 0.1 t) 
+	   ;; (message "comint-last-prompt-1: %s" comint-last-prompt)
+	   ;; (message "major-mode: %s" major-mode)
 	   (number-or-marker-p (cdr comint-last-prompt))
 	   (goto-char (cdr comint-last-prompt))
+	   ;; (message "comint-last-prompt-2: %s" comint-last-prompt)
 	   (sit-for 0.1 t)
 	   (goto-char (setq erg (point-max)))
 	   (sit-for 0.1 t)))
@@ -874,6 +879,10 @@ When optional FILE is `t', no temporary file is needed. "
 	   (re-search-backward py-fast-filter-re nil t 1)
 	   (goto-char (match-end 0))
 	   (setq erg (buffer-substring-no-properties (point) end)))
+      (sit-for 0.1 t)
+      ;; (message "py-exception-buffer: %s" (buffer-substring-no-properties (point-min) (point-max)))
+      ;; (message "py--fetch-comint-result erg: %s" erg)
+      (and erg (string-match "\n$" erg) (setq erg (substring erg 0 (1- (length erg)))))
       erg)))
 
 (defun py--postprocess-comint (output-buffer origline windows-config py-exception-buffer)
@@ -883,6 +892,7 @@ When optional FILE is `t', no temporary file is needed. "
   (with-current-buffer output-buffer
     ;; (when py-debug-p (switch-to-buffer (current-buffer)))
     (setq py-result (py--fetch-comint-result windows-config py-exception-buffer))
+    (sit-for 0.1 t)
     (unless py-result
       (sit-for 0.1 t)
       (setq py-result (py--fetch-comint-result windows-config py-exception-buffer))))
@@ -896,11 +906,7 @@ When optional FILE is `t', no temporary file is needed. "
 	(setq py-error (py--fetch-error (current-buffer) origline))
 	(unless py-error
 	  (when py-store-result-p
-	    (setq py-result
-		  (if (eq major-mode 'py-shell-mode)
-		      (py-output-filter (py--fetch-comint-result windows-config py-exception-buffer))
-		    (py-output-filter (buffer-substring-no-properties (point) (point-max)))))
-	    (and py-result (not (string= "" py-result))(not (string= (car kill-ring) py-result)) (kill-new py-result)))))
+	    (and (not (string= "" py-result))(not (string= (car kill-ring) py-result)) (kill-new py-result)))))
     (message "py--postprocess-comint: %s" "Don't see any result"))
   py-result)
 
@@ -1083,8 +1089,6 @@ Returns position where output starts. "
          (proc (or proc (get-buffer-process buffer)))
          erg orig)
     (with-current-buffer buffer
-      ;; (switch-to-buffer (current-buffer))
-      ;; (comint-send-string proc "\n")
       (goto-char (point-max))
       (setq orig (point))
       (comint-send-string proc cmd)

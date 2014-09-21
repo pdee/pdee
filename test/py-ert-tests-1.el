@@ -890,6 +890,7 @@ def foo():
     (py-execute-statement-python2)
     ;; (switch-to-buffer (current-buffer))
     (set-buffer "*Python2*")
+    (sit-for 0.2 t) 
     (and (should (search-backward "py-execute-statement-python2-test" nil t 1))
 	 (py-kill-buffer-unconditional (current-buffer)))))
 

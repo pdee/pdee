@@ -818,7 +818,9 @@ print(u'\\xA9')
   (end-of-line)
   (py-execute-region-switch (line-beginning-position) (point))
   (set-buffer "*Python*")
-  (assert (or (eq (char-after) ?\@)(search-backward "©")) nil "UnicodeEncodeError-lp:550661-test failed"))
+  (sit-for 0.1 t) 
+  ;; (switch-to-buffer (current-buffer)) 
+  (assert (or (eq (char-after) 169)(search-backward "©" nil t)(search-forward "©" nil t)) nil "UnicodeEncodeError-lp:550661-test failed"))
 
 (defun indentation-of-continuation-lines-lp:691185-test (&optional arg)
   "With ARG greater 1 keep test buffer open.
@@ -2425,7 +2427,8 @@ I am using version 6.0.4
   (setq py-shell-name "python")
   (py-execute-buffer)
   (set-buffer "*Python*")
-  (assert (search-backward "py-shell-name: python") nil t 1) nil "py-shell-invoking-python-lp:835151-test failed")
+  ;; (switch-to-buffer (current-buffer)) 
+  (assert (or (search-forward "py-shell-name: python" nil t 1)(search-backward "py-shell-name: python")) nil t 1) nil "py-shell-invoking-python-lp:835151-test failed")
 
 (defun py-shell-invoking-ipython-lp:835151-test (&optional arg)
   (interactive "p")
@@ -5477,7 +5480,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.31 $\"
+__version__ = \"$Revision: 1.32 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -6841,6 +6844,7 @@ print(1) "))
     (assert (and (one-window-p) (eq oldbuf (current-buffer))) nil "py-no-split-no-switch-execute-lp-1361531-test-3 failed")
     (py-execute-statement-python)
     (assert (and (one-window-p) (eq oldbuf (current-buffer))) nil "py-no-split-no-switch-execute-lp-1361531-test-4 failed")))
+
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

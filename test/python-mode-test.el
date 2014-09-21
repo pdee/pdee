@@ -2443,4 +2443,21 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
     (goto-char 102)
     (assert (eq 48 (py-beginning-of-block)) nil "beginning-of-block-fails-from-wrong-indent-test failed"))
 
+
+(defun py-store-result-test (&optional arg)
+  (interactive "p")
+   (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+print(12)"))
+  (py-bug-tests-intern 'py-store-result-base arg teststring)))
+
+(defun py-store-result-base ()
+  ;; (switch-to-buffer (current-buffer)) 
+  (let ((py-store-result-p t))
+    (py-execute-statement)
+    (sit-for 0.1 t)
+    (message "py-result: %s" py-result)
+    (assert (string= (car kill-ring) "12")) nil "py-store-result-test failed"))
+
+
 (provide 'python-mode-test)
