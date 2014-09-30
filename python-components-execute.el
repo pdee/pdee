@@ -503,7 +503,7 @@ Internal use"
        ;; just two windows, `py-split-windows-on-execute-p' is `t'
        py-split-windows-on-execute-p
        (not py-switch-buffers-on-execute-p))
-      (delete-other-windows)
+      ;; (delete-other-windows)
       ;; (sit-for py-new-shell-delay)
       (py--manage-windows-split output-buffer)
       ;; otherwise new window appears above
@@ -863,26 +863,21 @@ When optional FILE is `t', no temporary file is needed. "
   (save-excursion
     ;; (switch-to-buffer (current-buffer))
     (let (end erg)
-      (or (and
-	   (boundp 'comint-last-prompt)
-	   (sit-for 0.1 t) 
-	   ;; (message "comint-last-prompt-1: %s" comint-last-prompt)
-	   ;; (message "major-mode: %s" major-mode)
-	   (number-or-marker-p (cdr comint-last-prompt))
-	   (goto-char (cdr comint-last-prompt))
-	   ;; (message "comint-last-prompt-2: %s" comint-last-prompt)
-	   (sit-for 0.1 t)
-	   (goto-char (setq erg (point-max)))
-	   (sit-for 0.1 t)))
-      (and (re-search-backward py-fast-filter-re nil t 1)
-	   (setq end (point))
-	   (re-search-backward py-fast-filter-re nil t 1)
-	   (goto-char (match-end 0))
-	   (setq erg (buffer-substring-no-properties (point) end)))
-      (sit-for 0.1 t)
-      ;; (message "py-exception-buffer: %s" (buffer-substring-no-properties (point-min) (point-max)))
-      ;; (message "py--fetch-comint-result erg: %s" erg)
-      (and erg (string-match "\n$" erg) (setq erg (substring erg 0 (1- (length erg)))))
+      (cond ((and
+	      (boundp 'comint-last-prompt)
+	      (sit-for 0.1 t)
+	      (number-or-marker-p (cdr comint-last-prompt))
+	      (number-or-marker-p (car comint-last-prompt))
+	      (< (point) (car comint-last-prompt)))
+	     (setq erg (buffer-substring-no-properties (point) (car comint-last-prompt))))
+	    ((and (re-search-backward py-fast-filter-re nil t 1)
+		  (setq end (point))
+		  (re-search-backward py-fast-filter-re nil t 1)
+		  (goto-char (match-end 0)))
+	     (setq erg (buffer-substring-no-properties (point) end))))
+      (when (and erg
+		 (string-match "\n$" erg))
+	(setq erg (substring erg 0 (1- (length erg)))))
       erg)))
 
 (defun py--postprocess-comint (output-buffer origline windows-config py-exception-buffer)
