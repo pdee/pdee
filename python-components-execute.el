@@ -761,6 +761,8 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
   "Update variables. "
   ;; (when py-debug-p (message "run: %s" "py--execute-base"))
   (setq py-error nil)
+  (when py-debug-p (message "py--execute-base: py-split-windows-on-execute-p: %s" py-split-windows-on-execute-p))
+
   (let* ((py-exception-buffer (current-buffer))
 	 (start (or start (and (use-region-p) (region-beginning)) (point-min)))
 	 (end (or end (and (use-region-p) (region-end)) (point-max)))
@@ -809,6 +811,7 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 			    (get-buffer-process (py-shell nil py-dedicated-process-p which-shell buffer)))))))
     (setq py-buffer-name buffer)
     (py--execute-base-intern strg shell filename proc file wholebuf buffer origline)
+    (when py-debug-p (message "py--execute-base: py-split-windows-on-execute-p: %s" py-split-windows-on-execute-p))
     (py--shell-manage-windows buffer windows-config py-exception-buffer)))
 
 (defun py--send-to-fast-process (strg proc output-buffer)
@@ -826,6 +829,8 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 
 When optional FILE is `t', no temporary file is needed. "
   ;; (when py-debug-p (message "run: %s" "py--execute-base-intern"))
+  (when py-debug-p (message "py--execute-base-intern: py-split-windows-on-execute-p: %s" py-split-windows-on-execute-p))
+
   (let (output-buffer erg)
     (setq py-error nil)
     ;; (when py-debug-p
@@ -851,6 +856,7 @@ When optional FILE is `t', no temporary file is needed. "
          (tempfile (concat (expand-file-name py-temp-directory) py-separator-char (replace-regexp-in-string py-separator-char "-" temp) ".py"))
          (tempbuf (get-buffer-create temp)))
     (with-current-buffer tempbuf
+      (when py-debug-p (message "py--execute-buffer-finally: py-split-windows-on-execute-p: %s" py-split-windows-on-execute-p))
       ;; (and py-verbose-p (message "%s" "py--execute-buffer-finally"))
       (insert strg)
       (write-file tempfile))
@@ -884,6 +890,7 @@ When optional FILE is `t', no temporary file is needed. "
   "Provide return values, check result for error, manage windows. "
   ;; py--fast-send-string doesn't set origline
   (setq py-result nil)
+  (when py-debug-p (message "py--postprocess-comint: py-split-windows-on-execute-p: %s" py-split-windows-on-execute-p))
   (with-current-buffer output-buffer
     ;; (when py-debug-p (switch-to-buffer (current-buffer)))
     (setq py-result (py--fetch-comint-result windows-config py-exception-buffer))
@@ -1078,6 +1085,7 @@ Make that process's buffer visible and force display.  Also make
 comint believe the user typed this string so that
 `kill-output-from-shell' does The Right Thing.
 Returns position where output starts. "
+  (when py-debug-p (message "py--execute-file-base: py-split-windows-on-execute-p: %s" py-split-windows-on-execute-p))
   (let* ((cmd (or cmd (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" filename filename)))
          (msg (and py-verbose-p (format "## executing %s...\n" (or origfile filename))))
          (buffer (or procbuf (py-shell nil nil nil procbuf)))

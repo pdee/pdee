@@ -3292,4 +3292,36 @@ Return code of `py-" ele "' at point, a string. \"
   (switch-to-buffer (current-buffer))
   (emacs-lisp-mode))
 
+(defun write-py-split-window-on-execute-lp-1361531-tests (&optional pyshellname-list)
+  (interactive)
+  (let ((pyshellname-list (or pyshellname-list py-shells)))
+    (set-buffer (get-buffer-create  "py-split-window-on-execute-lp-1361531-test.el"))
+    (erase-buffer)
+    (insert ";;; py-split-window-on-execute-lp-1361531-test.el --- Test splitting\n")
+    (insert arkopf)
+    (dolist (ele pyshellname-list)
+      (setq ele (prin1-to-string ele))
+      (switch-to-buffer (current-buffer)) 
+   (insert (concat " 
+\(defun py-split-window-on-execute-lp-1361531-" ele "-test (&optional arg)
+  (interactive \"p\")
+  (let ((py-split-windows-on-execute-p t)
+        (teststring \"#! /usr/bin/env " ele "
+# -\*- coding: utf-8 -\*-
+print(\\\"I'm the py-split-window-on-execute-lp-1361531-" ele "-test\\\")\"))
+    (py-bug-tests-intern 'py-split-window-on-execute-lp-1361531-" ele "-base arg teststring)))
+
+\(defun py-split-window-on-execute-lp-1361531-" ele "-base ()
+  (when py-debug-p (message \"py-split-windows-on-execute-p: %s\" py-split-windows-on-execute-p))
+  (delete-other-windows)
+  (py-execute-statement)
+  (assert (eq 2 (count-windows)) nil \"py-split-window-on-execute-lp-1361531-" ele "-test failed\")
+  (py-kill-buffer-unconditional (current-buffer)))
+"
+))))
+
+    (insert "\n(provide 'py-split-window-on-execute-lp-1361531-test)
+\;;; py-split-window-on-execute-lp-1361531-test.el here\n ")
+    (emacs-lisp-mode))
+
 ;;; Copying

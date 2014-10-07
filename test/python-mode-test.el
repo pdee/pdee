@@ -1608,6 +1608,7 @@ import sys, os; os.remove('do/something/nasty') # lp:1025000
     (py-bug-tests-intern 'key-binding-base arg teststring)))
 
 (defun key-binding-base ()
+  (when py-debug-p (switch-to-buffer (current-buffer))) 
   (assert (eq (key-binding [(:)]) 'py-electric-colon) nil "py-electric-colon key-binding test failed")
 
   (assert (eq (key-binding [(\#)]) 'py-electric-comment) nil "py-electric-comment key-binding test failed")
