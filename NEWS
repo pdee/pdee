@@ -134,6 +134,20 @@ Setting docstring style simplified; a style is all needed.
 - `py-split-windows-on-execute-p' more powerful
   If `always' split according to settings of `split-height-threshold', `split-width-threshold'; with `t' keep just two windows
 
+- For completeness some commands user might expect
+  py-execute-statement-dedicated
+  py-execute-block-dedicated
+  py-execute-clause-dedicated
+  py-execute-block-or-clause-dedicated
+  py-execute-def-dedicated
+  py-execute-class-dedicated
+  py-execute-region-dedicated
+  py-execute-buffer-dedicated
+  py-execute-expression-dedicated
+  py-execute-partial-expression-dedicated
+  py-execute-line-dedicated
+  py-execute-top-level-dedicated
+
 Removed commands:
 
  -toggle-py-nil-docstring-style

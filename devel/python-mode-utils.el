@@ -566,7 +566,6 @@ Include default forms "
 			  (push-mark)))))
 	   (end (unless file
 		  (or end (funcall (intern-soft (concat \"py-end-of-\" form))))))
-	   (shell (or shell py-shell-name))
 	   (py-dedicated-process-p dedicated)
 	   (py-switch-buffers-on-execute-p (cond ((eq 'switch switch)
 						  t)
@@ -574,16 +573,21 @@ Include default forms "
 						  nil)
 						 (t py-switch-buffers-on-execute-p)))
 	   filename)
+      (setq py-buffer-name nil)
       (if file
           (progn
             (setq filename (expand-file-name form))
             (if (file-readable-p filename)
-                (setq erg (py--execute-file-base nil filename nil nil (or (and (boundp 'py-orig-buffer-or-file) py-orig-buffer-or-file) filename)))
+                (py--execute-file-base nil filename nil nil (or (and (boundp 'py-orig-buffer-or-file) py-orig-buffer-or-file) filename))
               (message \"%s not readable. %s\" file \"Do you have write permissions?\")))
         (py--execute-base beg end shell)))))\n\n")
 
     ;; see also `py-checker-command-names'
     (dolist (ele py-bounds-command-names)
+      (insert (concat "(defun py-execute-" ele "-dedicated (&optional shell switch)
+  \"Send " ele " to unique interpreter. \"
+  (interactive)
+  (py--execute-prepare \"" ele "\" shell t switch))\n\n")) 
       (dolist (elt py-shells)
 	(setq elt (prin1-to-string elt)) 
 	(setq kurz elt)
@@ -3322,6 +3326,39 @@ print(\\\"I'm the py-split-window-on-execute-lp-1361531-" ele "-test\\\")\"))
 
     (insert "\n(provide 'py-split-window-on-execute-lp-1361531-test)
 \;;; py-split-window-on-execute-lp-1361531-test.el here\n ")
+    (emacs-lisp-mode))
+
+(defun write-py-multi-split-window-on-execute-lp-1361531-tests (&optional pyshellname-list)
+  (interactive)
+  (let ((pyshellname-list (or pyshellname-list py-shells)))
+    (set-buffer (get-buffer-create  "py-multi-split-window-on-execute-lp-1361531-test.el"))
+    (erase-buffer)
+    (insert ";;; py-multi-split-window-on-execute-lp-1361531-test.el --- Test splitting\n")
+    (insert arkopf)
+    (dolist (ele pyshellname-list)
+      (setq ele (prin1-to-string ele))
+      (switch-to-buffer (current-buffer)) 
+   (insert (concat " 
+\(defun py-multi-split-window-on-execute-lp-1361531-" ele "-test (&optional arg)
+  (interactive \"p\")
+  (let ((py-split-windows-on-execute-p 'always)
+        (teststring \"#! /usr/bin/env " ele "
+# -\*- coding: utf-8 -\*-
+print(\\\"I'm the py-multi-split-window-on-execute-lp-1361531-" ele "-test\\\")\"))
+    (py-bug-tests-intern 'py-multi-split-window-on-execute-lp-1361531-" ele "-base arg teststring)))
+
+\(defun py-multi-split-window-on-execute-lp-1361531-" ele "-base ()
+  (when py-debug-p (message \"py-split-windows-on-execute-p: %s\" py-split-windows-on-execute-p))
+  (delete-other-windows)
+  (py-execute-statement-dedicated)
+  (py-execute-statement-dedicated)
+  (assert (eq 3 (count-windows)) nil \"py-multi-split-window-on-execute-lp-1361531-" ele "-test failed\")
+  (py-kill-buffer-unconditional (current-buffer)))
+"
+))))
+
+    (insert "\n(provide 'py-multi-split-window-on-execute-lp-1361531-test)
+\;;; py-multi-split-window-on-execute-lp-1361531-test.el here\n ")
     (emacs-lisp-mode))
 
 ;;; Copying
