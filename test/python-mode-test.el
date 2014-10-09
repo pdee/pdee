@@ -2456,7 +2456,7 @@ print(12)"))
   ;; (switch-to-buffer (current-buffer)) 
   (let ((py-store-result-p t))
     (py-execute-statement)
-    (sit-for 1 t)
+    (sit-for 0.4 t)
     (message "py-result: %s" py-result)
     (assert (string= (car kill-ring) "12")) nil "py-store-result-test failed"))
 

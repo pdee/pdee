@@ -3353,7 +3353,7 @@ print(\\\"I'm the py-multi-split-window-on-execute-lp-1361531-" ele "-test\\\")\
 
   (let ((erg1 (progn (py-execute-statement-" ele "-dedicated) py-buffer-name))
         (erg2 (progn (py-execute-statement-" ele "-dedicated) py-buffer-name)))
-  (sit-for 1 t)
+  (sit-for 0.1 t)
   (when py-debug-p (message \"(count-windows) %s\" (count-windows))) 
   (assert (eq 3 (count-windows)) nil \"py-multi-split-window-on-execute-lp-1361531-" ele "-test failed\")
   (py-kill-buffer-unconditional erg1)
@@ -3364,6 +3364,44 @@ print(\\\"I'm the py-multi-split-window-on-execute-lp-1361531-" ele "-test\\\")\
 
     (insert "\n(provide 'py-multi-split-window-on-execute-lp-1361531-test)
 \;;; py-multi-split-window-on-execute-lp-1361531-test.el here\n ")
+    (emacs-lisp-mode))
+
+(defun write-py-always-split-window-on-execute-lp-1361531-tests (&optional pyshellname-list)
+  (interactive)
+  (let ((pyshellname-list (or pyshellname-list py-shells)))
+    (set-buffer (get-buffer-create  "py-always-split-window-on-execute-lp-1361531-test.el"))
+    (erase-buffer)
+    (insert ";;; py-always-split-window-on-execute-lp-1361531-test.el --- Test splitting\n")
+    (insert arkopf)
+    (dolist (ele pyshellname-list)
+      (setq ele (prin1-to-string ele))
+      (switch-to-buffer (current-buffer)) 
+   (insert (concat " 
+\(defun py-always-split-window-on-execute-lp-1361531-" ele "-test (&optional arg)
+  (interactive \"p\")
+  (let ((py-split-windows-on-execute-p 'always)
+        (teststring \"#! /usr/bin/env " ele "
+# -\*- coding: utf-8 -\*-
+print(\\\"I'm the py-always-split-window-on-execute-lp-1361531-" ele "-test\\\")\"))
+    (py-bug-tests-intern 'py-always-split-window-on-execute-lp-1361531-" ele "-base arg teststring)))
+
+\(defun py-always-split-window-on-execute-lp-1361531-" ele "-base ()
+  (when py-debug-p (message \"py-split-windows-on-execute-p: %s\" py-split-windows-on-execute-p))
+  (delete-other-windows)
+  (let ((py-split-windows-on-execute-p 'always)
+        (erg1 (progn (py-execute-statement-" ele ") py-buffer-name))
+        (erg2 (progn (py-execute-statement-" ele ") py-buffer-name)))
+    (sit-for 0.1 t)
+    (when py-debug-p (message \"(count-windows) %s\" (count-windows))) 
+    (assert (eq 3 (count-windows)) nil \"py-always-split-window-on-execute-lp-1361531-" ele "-test failed\")
+    (py-kill-buffer-unconditional erg1)
+    (py-kill-buffer-unconditional erg2)
+    (py-restore-window-configuration)))
+"
+))))
+
+    (insert "\n(provide 'py-always-split-window-on-execute-lp-1361531-test)
+\;;; py-always-split-window-on-execute-lp-1361531-test.el here\n ")
     (emacs-lisp-mode))
 
 ;;; Copying
