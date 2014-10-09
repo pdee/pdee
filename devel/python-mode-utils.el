@@ -3350,10 +3350,15 @@ print(\\\"I'm the py-multi-split-window-on-execute-lp-1361531-" ele "-test\\\")\
 \(defun py-multi-split-window-on-execute-lp-1361531-" ele "-base ()
   (when py-debug-p (message \"py-split-windows-on-execute-p: %s\" py-split-windows-on-execute-p))
   (delete-other-windows)
-  (py-execute-statement-dedicated)
-  (py-execute-statement-dedicated)
+
+  (let ((erg1 (progn (py-execute-statement-" ele "-dedicated) py-buffer-name))
+        (erg2 (progn (py-execute-statement-" ele "-dedicated) py-buffer-name)))
+  (sit-for 1 t)
+  (when py-debug-p (message \"(count-windows) %s\" (count-windows))) 
   (assert (eq 3 (count-windows)) nil \"py-multi-split-window-on-execute-lp-1361531-" ele "-test failed\")
-  (py-kill-buffer-unconditional (current-buffer)))
+  (py-kill-buffer-unconditional erg1)
+  (py-kill-buffer-unconditional erg2)
+  (py-restore-window-configuration)))
 "
 ))))
 

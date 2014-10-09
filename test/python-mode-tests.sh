@@ -193,6 +193,7 @@ TESTFILE3="python-extended-executes-test.el"
 # TESTFILE4="python-executes-test.el"
 TESTFILE5="py-shell-completion-tests.el"
 TESTFILE6="py-split-window-on-execute-lp-1361531-test.el"
+TESTFILE7="py-multi-split-window-on-execute-lp-1361531-test.el"
 CEXEC="python-extended-executes.el"
 
 UTILS="devel/python-mode-utils.el"
@@ -204,7 +205,7 @@ echo "\$PDIR/\$TESTFILE: $PDIR/$TESTFILE"
 
 # $EMACS -Q -batch -l $HOME/emacs_20130227/lisp/emacs-lisp/cl-lib.el -l $HOME/emacs_20130227/lisp/emacs-lisp/ert.el -l ${PCOT}/python-mode-ert-tests.el -f ert-run-tests-batch-and-exit
 # $EMACS -Q -batch -load ${EMACS_DIR}lisp/emacs-lisp/ert.el -load ${PCOT}/python-mode-ert-tests.el -f ert-run-tests-batch-and-exit
-$EMACS -Q --batch --eval "(message (emacs-version))" --eval "(setq py-verbose-p t)" --eval "(when (featurep 'python)(unload-feature 'python t))" --eval "(when (featurep 'python-mode)(unload-feature 'python-mode t))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$TESTDIR/\")" --eval "(setq py-install-directory \"$PDIR\"))" --eval "(message \"py-install-directory: %s\" py-install-directory)" --eval "(setq py-load-pymacs-p nil)" -load $BYTECOMP -load $CC_CMDS -load $COMINT -load $ANSICOLOR -load $CLMACS -load $CUSTOM -load $SKELETON -load $SO -load $COLMK -load $HIGHL -load $PYTHONMODE  --eval "(message \"py-temp-directory: %s\" py-temp-directory)" -load $PCOT/$TESTFILE -load $PCOT/$TESTFILE2 -load $PCOT/$TESTFILE3 -load $PCOT/$TESTFILE5 -load $PCOT/$TESTFILE6 -load $PDIR/$UTILS \
+$EMACS -Q --batch --eval "(message (emacs-version))" --eval "(setq py-verbose-p t)" --eval "(when (featurep 'python)(unload-feature 'python t))" --eval "(when (featurep 'python-mode)(unload-feature 'python-mode t))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$TESTDIR/\")" --eval "(setq py-install-directory \"$PDIR\"))" --eval "(message \"py-install-directory: %s\" py-install-directory)" --eval "(setq py-load-pymacs-p nil)" -load $BYTECOMP -load $CC_CMDS -load $COMINT -load $ANSICOLOR -load $CLMACS -load $CUSTOM -load $SKELETON -load $SO -load $COLMK -load $HIGHL -load $PYTHONMODE  --eval "(message \"py-temp-directory: %s\" py-temp-directory)" -load $PCOT/$TESTFILE -load $PCOT/$TESTFILE2 -load $PCOT/$TESTFILE3 -load $PCOT/$TESTFILE5 -load $PCOT/$TESTFILE6 -load $PCOT/$TESTFILE7 -load $PDIR/$UTILS \
 --eval "(when (file-exists-p \"~/.abbrev_defs\") (quietly-read-abbrev-file (expand-file-name \"~/.abbrev_defs\")))" \
 \
 -eval "(assert (functionp 'word-at-point) nil \"new completion bug, lp:1034656, word-at-point not known\")" \
@@ -1361,3 +1362,9 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(setq py-verbose-p 
 --funcall py-split-window-on-execute-lp-1361531-bpython-test \
 --funcall key-binding-tests \
 --funcall automatic-indentation-is-broken-lp:889643-test \
+--funcall py-multi-split-window-on-execute-lp-1361531-python-test \
+--funcall py-multi-split-window-on-execute-lp-1361531-ipython-test \
+--funcall py-multi-split-window-on-execute-lp-1361531-python2-test \
+--funcall py-multi-split-window-on-execute-lp-1361531-jython-test \
+--funcall py-multi-split-window-on-execute-lp-1361531-python3-test \
+--funcall py-multi-split-window-on-execute-lp-1361531-bpython-test \
