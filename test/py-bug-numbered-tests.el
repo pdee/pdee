@@ -501,6 +501,7 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
     (py-bug-tests-intern 'cls-pseudo-keyword-lp:328849-base arg teststring)))
 
 (defun cls-pseudo-keyword-lp:328849-base ()
+  (when py-debug-p (switch-to-buffer (current-buffer)) )
   (let ((font-lock-verbose nil))
     (font-lock-mode 1)
     (font-lock-fontify-buffer)
@@ -2689,7 +2690,7 @@ print(myobj.range(10))
     (py-bug-tests-intern 'another-broken-font-locking-lp:961231-base arg teststring)))
 
 (defun another-broken-font-locking-lp:961231-base ()
-  (when py-verbose-p (switch-to-buffer (current-buffer))
+  (when py-debug-p (switch-to-buffer (current-buffer))
 	(font-lock-fontify-buffer))
   (goto-char 124)
   (sit-for 0.1)
@@ -5813,7 +5814,7 @@ def foo():
   (py-bug-tests-intern 'Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-base arg teststring)))
 
 (defun Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-base ()
-  (when py-verbose-p (switch-to-buffer (current-buffer))
+  (when py-debug-p (switch-to-buffer (current-buffer))
 	(font-lock-fontify-buffer))
   (goto-char 97)
   ;; (message "paragraph-start: %s" paragraph-start)

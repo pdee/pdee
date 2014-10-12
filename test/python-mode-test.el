@@ -542,37 +542,6 @@
 
        ))
 
-(setq python-mode-interactive-tests
-      (list
-       'py-fill-string-django-test
-       'py-fill-string-onetwo-test
-       'py-fill-string-pep-257-test
-       'py-fill-string-pep-257-nn-test
-       'py-down-statement-test
-       'py-multi-split-window-on-execute-lp-1361531-python-test
-       'py-multi-split-window-on-execute-lp-1361531-ipython-test
-       'py-multi-split-window-on-execute-lp-1361531-python2-test
-       'py-multi-split-window-on-execute-lp-1361531-jython-test
-       'py-multi-split-window-on-execute-lp-1361531-python3-test
-       'py-always-split-window-on-execute-lp-1361531-python-test
-       'py-always-split-window-on-execute-lp-1361531-ipython-test
-       'py-always-split-window-on-execute-lp-1361531-python2-test
-       'py-always-split-window-on-execute-lp-1361531-jython-test
-       'py-always-split-window-on-execute-lp-1361531-python3-test
-       'docstring-style-switches-test
-       'py-nested-block-or-clause-test
-       'py-highlight-indentation-test
-       'py-smart-indentation-test
-       'autopair-mode-test
-
-       ))
-
-(defun py-run-interactive-tests (&optional arg)
-  "Run tests which would work from batch-mode maybe. "
-  (interactive "p")
-  (dolist (ele python-mode-interactive-tests)
-    (funcall ele arg)))
-
 (defun py-run-tests (&optional arg)
   (interactive "p")
   (dolist (ele python-mode-tests)
@@ -2617,5 +2586,40 @@ print(12)"))
     (sit-for 0.4 t)
     (message "py-result: %s" py-result)
     (assert (string= (car kill-ring) "12")) nil "py-store-result-test failed"))
+
+
+(setq python-mode-interactive-tests
+      (list
+       'another-broken-font-locking-lp:961231-test
+       'py-execute-block-python-test
+       'py-fill-string-django-test
+       'py-fill-string-onetwo-test
+       'py-fill-string-pep-257-test
+       'py-fill-string-pep-257-nn-test
+       'py-down-statement-test
+       'py-multi-split-window-on-execute-lp-1361531-python-test
+       'py-multi-split-window-on-execute-lp-1361531-ipython-test
+       'py-multi-split-window-on-execute-lp-1361531-python2-test
+       'py-multi-split-window-on-execute-lp-1361531-jython-test
+       'py-multi-split-window-on-execute-lp-1361531-python3-test
+       'py-always-split-window-on-execute-lp-1361531-python-test
+       'py-always-split-window-on-execute-lp-1361531-ipython-test
+       'py-always-split-window-on-execute-lp-1361531-python2-test
+       'py-always-split-window-on-execute-lp-1361531-jython-test
+       'py-always-split-window-on-execute-lp-1361531-python3-test
+       'docstring-style-switches-test
+       'py-nested-block-or-clause-test
+       'py-highlight-indentation-test
+       'py-smart-indentation-test
+       'autopair-mode-test
+       'python-shell-complete-test
+
+       ))
+
+(defun py-run-interactive-tests (&optional arg)
+  "Run tests which would work from batch-mode maybe. "
+  (interactive "p")
+  (dolist (ele python-mode-interactive-tests)
+    (funcall ele arg)))
 
 (provide 'python-mode-test)
