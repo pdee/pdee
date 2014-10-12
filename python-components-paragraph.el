@@ -310,12 +310,13 @@ See lp:1066489 "
     (skip-chars-forward "\'")
     (and
      (car delimiters-style)
-     (unless (or (empty-line-p) (save-excursion (forward-line -1)(empty-line-p)))
+     (unless (or (empty-line-p)(eolp)(save-excursion (forward-line -1)(empty-line-p)))
        (or (newline (car delimiters-style)) t))
      (indent-region beg end py-current-indent))
-    (and multi-line-p first-line-p
-	 (forward-line 1)
-	 (unless (empty-line-p) (insert "\n"))))
+    ;; (and multi-line-p first-line-p
+    ;; (forward-line 1)
+    ;; (unless (empty-line-p) (insert "\n")))
+    )
   (py--fill-fix-end thisend orig docstring delimiters-style))
 
 (defun py--fill-docstring-last-line (thisbeg thisend beg end style)
@@ -350,7 +351,8 @@ See lp:1066489 "
       ;; if TQS is at a single line, re-fill remaining line
       (setq beg (point))
       (fill-region beg end))
-    (py--fill-docstring-base thisbeg thisend style multi-line-p first-line-p beg end)))
+    ;; (py--fill-docstring-base thisbeg thisend style multi-line-p first-line-p beg end)
+    ))
 
 (defun py--fill-docstring (justify style docstring orig)
   ;; Delete spaces after/before string fence
@@ -379,10 +381,9 @@ See lp:1066489 "
            (py-fill-labelled-string beg end))
           (first-line-p
            (py--fill-docstring-first-line))
-          ((setq last-line-p
-                 (save-excursion (goto-char end)
-                                 (or (member (char-after) (list ?\" ?\'))
-                                     (member (char-before) (list ?\" ?\')))))
+          ((save-excursion (goto-char end)
+			   (or (member (char-after) (list ?\" ?\'))
+			       (member (char-before) (list ?\" ?\'))))
            (py--fill-docstring-last-line thisbeg thisend beg end style))
           (t (narrow-to-region beg end)
 	     (fill-region beg end justify)))

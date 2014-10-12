@@ -44,11 +44,391 @@
   ;; (switch-to-buffer (current-buffer))
   )
 
+;; (setq python-mode-tests
+;;       (list
+;;        'docstring-style-switches-test
+;;        'py-nested-block-or-clause-test
+;;        'py-down-statement-test
+;;        'py-fill-string-django-test
+;;        'py-fill-string-onetwo-test
+;;        'py-fill-string-pep-257-test
+;;        'py-fill-string-pep-257-nn-test
+;;        ;;  fails for unknown reasons, interactive call works
+;;        ;; 'py-fill-string-symmetric-test
+;;        'py-highlight-indentation-test
+;;        'py-smart-indentation-test
+;;        'autopair-mode-test
+;;        'py-smart-operator-test
+;;        'py-guess-indent-offset-test
+;;        'py-bol-moves-test
+;;        ;; broken
+;;        ;; 'augmented-assigment-test
+;;        'key-binding-tests
+;;        'py-end-of-statement-test
+;;        'py-compute-indentation-test
+;;        'py-end-of-def-inline-comment-test
+;;        'before-inline-comment-test
+;;        'toggle-force-py-shell-name-p-test
+;;        'py-execute-statement-python-test
+;;        'py-execute-statement-python-switch-test
+;;        'py-execute-statement-python-noswitch-test
+;;        'py-execute-statement-python-dedicated-test
+;;        'py-execute-statement-python-dedicated-switch-test
+;;        'py-execute-statement-ipython-test
+;;        'py-execute-statement-ipython-switch-test
+;;        'py-execute-statement-ipython-noswitch-test
+;;        'py-execute-statement-ipython-dedicated-test
+;;        'py-execute-statement-ipython-dedicated-switch-test
+;;        'py-execute-statement-python3-test
+;;        'py-execute-statement-python3-switch-test
+;;        'py-execute-statement-python3-noswitch-test
+;;        'py-execute-statement-python3-dedicated-test
+;;        'py-execute-statement-python3-dedicated-switch-test
+;;        'py-execute-statement-python2-test
+;;        'py-execute-statement-python2-switch-test
+;;        'py-execute-statement-python2-noswitch-test
+;;        'py-execute-statement-python2-dedicated-test
+;;        'py-execute-statement-python2-dedicated-switch-test
+;;        'py-execute-statement-python2.7-test
+;;        'py-execute-statement-python2.7-switch-test
+;;        'py-execute-statement-python2.7-noswitch-test
+;;        'py-execute-statement-python2.7-dedicated-test
+;;        'py-execute-statement-python2.7-dedicated-switch-test
+;;        'py-execute-statement-jython-test
+;;        'py-execute-statement-jython-switch-test
+;;        'py-execute-statement-jython-noswitch-test
+;;        'py-execute-statement-jython-dedicated-test
+;;        'py-execute-statement-jython-dedicated-switch-test
+;;        'py-separator-char-test
+;;        'py-execute-block-python-switch-test
+;;        'py-execute-block-python-noswitch-test
+;;        'py-execute-block-python-dedicated-test
+;;        'py-execute-block-python-dedicated-switch-test
+;;        'py-execute-block-ipython-test
+;;        'py-execute-block-ipython-switch-test
+;;        'py-execute-block-ipython-noswitch-test
+;;        'py-execute-block-ipython-dedicated-test
+;;        'py-execute-block-ipython-dedicated-switch-test
+;;        'py-execute-block-python3-test
+;;        'py-execute-block-python3-switch-test
+;;        'py-execute-block-python3-noswitch-test
+;;        'py-execute-block-python3-dedicated-test
+;;        'py-execute-block-python3-dedicated-switch-test
+;;        'py-execute-block-python2-test
+;;        'py-execute-block-python2-switch-test
+;;        'py-execute-block-python2-noswitch-test
+;;        'py-execute-block-python2-dedicated-test
+;;        'py-execute-block-python2-dedicated-switch-test
+;;        'py-execute-block-python2.7-test
+;;        'py-execute-block-python2.7-switch-test
+;;        'py-execute-block-python2.7-noswitch-test
+;;        'py-execute-block-python2.7-dedicated-test
+;;        'py-execute-block-python2.7-dedicated-switch-test
+;;        'py-execute-block-jython-test
+;;        'py-execute-block-jython-switch-test
+;;        'py-execute-block-jython-noswitch-test
+;;        'py-execute-block-jython-dedicated-test
+;;        'py-execute-block-jython-dedicated-switch-test
+;;        'py-execute-block-or-clause-python-test
+;;        'py-execute-block-or-clause-python-switch-test
+;;        'py-execute-block-or-clause-python-noswitch-test
+;;        'py-execute-block-or-clause-python-dedicated-test
+;;        'py-execute-block-or-clause-python-dedicated-switch-test
+;;        'py-execute-block-or-clause-ipython-test
+;;        'py-execute-block-or-clause-ipython-switch-test
+;;        'py-execute-block-or-clause-ipython-noswitch-test
+;;        'py-execute-block-or-clause-ipython-dedicated-test
+;;        'py-execute-block-or-clause-ipython-dedicated-switch-test
+;;        'py-execute-block-or-clause-python3-test
+;;        'py-execute-block-or-clause-python3-switch-test
+;;        'py-execute-block-or-clause-python3-noswitch-test
+;;        'py-execute-block-or-clause-python3-dedicated-test
+;;        'py-execute-block-or-clause-python3-dedicated-switch-test
+;;        'py-execute-block-or-clause-python2-test
+;;        'py-execute-block-or-clause-python2-switch-test
+;;        'py-execute-block-or-clause-python2-noswitch-test
+;;        'py-execute-block-or-clause-python2-dedicated-test
+;;        'py-execute-block-or-clause-python2-dedicated-switch-test
+;;        'py-execute-block-or-clause-python2.7-test
+;;        'py-execute-block-or-clause-python2.7-switch-test
+;;        'py-execute-block-or-clause-python2.7-noswitch-test
+;;        'py-execute-block-or-clause-python2.7-dedicated-test
+;;        'py-execute-block-or-clause-python2.7-dedicated-switch-test
+;;        'py-execute-block-or-clause-jython-test
+;;        'py-execute-block-or-clause-jython-switch-test
+;;        'py-execute-block-or-clause-jython-noswitch-test
+;;        'py-execute-block-or-clause-jython-dedicated-test
+;;        'py-execute-block-or-clause-jython-dedicated-switch-test
+;;        'py-execute-def-python-test
+;;        'py-execute-def-python-switch-test
+;;        'py-execute-def-python-noswitch-test
+;;        'py-execute-def-python-dedicated-test
+;;        'py-execute-def-python-dedicated-switch-test
+;;        'py-execute-def-ipython-test
+;;        'py-execute-def-ipython-switch-test
+;;        'py-execute-def-ipython-noswitch-test
+;;        'py-execute-def-ipython-dedicated-test
+;;        'py-execute-def-ipython-dedicated-switch-test
+;;        'py-execute-def-python3-test
+;;        'py-execute-def-python3-switch-test
+;;        'py-execute-def-python3-noswitch-test
+;;        'py-execute-def-python3-dedicated-test
+;;        'py-execute-def-python3-dedicated-switch-test
+;;        'py-execute-def-python2-test
+;;        'py-execute-def-python2-switch-test
+;;        'py-execute-def-python2-noswitch-test
+;;        'py-execute-def-python2-dedicated-test
+;;        'py-execute-def-python2-dedicated-switch-test
+;;        'py-execute-def-python2.7-test
+;;        'py-execute-def-python2.7-switch-test
+;;        'py-execute-def-python2.7-noswitch-test
+;;        'py-execute-def-python2.7-dedicated-test
+;;        'py-execute-def-python2.7-dedicated-switch-test
+;;        'py-execute-def-jython-test
+;;        'py-execute-def-jython-switch-test
+;;        'py-execute-def-jython-noswitch-test
+;;        'py-execute-def-jython-dedicated-test
+;;        'py-execute-def-jython-dedicated-switch-test
+;;        'py-execute-class-python-test
+;;        'py-execute-class-python-switch-test
+;;        'py-execute-class-python-noswitch-test
+;;        'py-execute-class-python-dedicated-test
+;;        'py-execute-class-python-dedicated-switch-test
+;;        'py-execute-class-ipython-test
+;;        'py-execute-class-ipython-switch-test
+;;        'py-execute-class-ipython-noswitch-test
+;;        'py-execute-class-ipython-dedicated-test
+;;        'py-execute-class-ipython-dedicated-switch-test
+;;        'py-execute-class-python3-test
+;;        'py-execute-class-python3-switch-test
+;;        'py-execute-class-python3-noswitch-test
+;;        'py-execute-class-python3-dedicated-test
+;;        'py-execute-class-python3-dedicated-switch-test
+;;        'py-execute-class-python2-test
+;;        'py-execute-class-python2-switch-test
+;;        'py-execute-class-python2-noswitch-test
+;;        'py-execute-class-python2-dedicated-test
+;;        'py-execute-class-python2-dedicated-switch-test
+;;        'py-execute-class-python2.7-test
+;;        'py-execute-class-python2.7-switch-test
+;;        'py-execute-class-python2.7-noswitch-test
+;;        'py-execute-class-python2.7-dedicated-test
+;;        'py-execute-class-python2.7-dedicated-switch-test
+;;        'py-execute-class-jython-test
+;;        'py-execute-class-jython-switch-test
+;;        'py-execute-class-jython-noswitch-test
+;;        'py-execute-class-jython-dedicated-test
+;;        'py-execute-class-jython-dedicated-switch-test
+;;        'py-execute-region-python-test
+;;        'py-execute-region-python-switch-test
+;;        'py-execute-region-python-noswitch-test
+;;        'py-execute-region-python-dedicated-test
+;;        'py-execute-region-python-dedicated-switch-test
+;;        'py-execute-region-ipython-test
+;;        'py-execute-region-ipython-switch-test
+;;        'py-execute-region-ipython-noswitch-test
+;;        'py-execute-region-ipython-dedicated-test
+;;        'py-execute-region-ipython-dedicated-switch-test
+;;        'py-execute-region-python3-test
+;;        'py-execute-region-python3-switch-test
+;;        'py-execute-region-python3-noswitch-test
+;;        'py-execute-region-python3-dedicated-test
+;;        'py-execute-region-python3-dedicated-switch-test
+;;        'py-execute-region-python2-test
+;;        'py-execute-region-python2-switch-test
+;;        'py-execute-region-python2-noswitch-test
+;;        'py-execute-region-python2-dedicated-test
+;;        'py-execute-region-python2-dedicated-switch-test
+;;        'py-execute-region-python2.7-test
+;;        'py-execute-region-python2.7-switch-test
+;;        'py-execute-region-python2.7-noswitch-test
+;;        'py-execute-region-python2.7-dedicated-test
+;;        'py-execute-region-python2.7-dedicated-switch-test
+;;        'py-execute-region-jython-test
+;;        'py-execute-region-jython-switch-test
+;;        'py-execute-region-jython-noswitch-test
+;;        'py-execute-region-jython-dedicated-test
+;;        'py-execute-region-jython-dedicated-switch-test
+;;        'py-execute-buffer-python-test
+;;        'py-execute-buffer-python-switch-test
+;;        'py-execute-buffer-python-noswitch-test
+;;        'py-execute-buffer-python-dedicated-test
+;;        'py-execute-buffer-python-dedicated-switch-test
+;;        'py-execute-buffer-ipython-test
+;;        'py-execute-buffer-ipython-switch-test
+;;        'py-execute-buffer-ipython-noswitch-test
+;;        'py-execute-buffer-ipython-dedicated-test
+;;        'py-execute-buffer-ipython-dedicated-switch-test
+;;        'py-execute-buffer-python3-test
+;;        'py-execute-buffer-python3-switch-test
+;;        'py-execute-buffer-python3-noswitch-test
+;;        'py-execute-buffer-python3-dedicated-test
+;;        'py-execute-buffer-python3-dedicated-switch-test
+;;        'py-execute-buffer-python2-test
+;;        'py-execute-buffer-python2-switch-test
+;;        'py-execute-buffer-python2-noswitch-test
+;;        'py-execute-buffer-python2-dedicated-test
+;;        'py-execute-buffer-python2-dedicated-switch-test
+;;        'py-execute-buffer-python2.7-test
+;;        'py-execute-buffer-python2.7-switch-test
+;;        'py-execute-buffer-python2.7-noswitch-test
+;;        'py-execute-buffer-python2.7-dedicated-test
+;;        'py-execute-buffer-python2.7-dedicated-switch-test
+;;        'py-execute-buffer-jython-test
+;;        'py-execute-buffer-jython-switch-test
+;;        'py-execute-buffer-jython-noswitch-test
+;;        'py-execute-buffer-jython-dedicated-test
+;;        'py-execute-buffer-jython-dedicated-switch-test
+;;        'py-execute-expression-python-test
+;;        'py-execute-expression-python-switch-test
+;;        'py-execute-expression-python-noswitch-test
+;;        'py-execute-expression-python-dedicated-test
+;;        'py-execute-expression-python-dedicated-switch-test
+;;        'py-execute-expression-ipython-test
+;;        'py-execute-expression-ipython-switch-test
+;;        'py-execute-expression-ipython-noswitch-test
+;;        'py-execute-expression-ipython-dedicated-test
+;;        'py-execute-expression-ipython-dedicated-switch-test
+;;        'py-execute-expression-python3-test
+;;        'py-execute-expression-python3-switch-test
+;;        'py-execute-expression-python3-noswitch-test
+;;        'py-execute-expression-python3-dedicated-test
+;;        'py-execute-expression-python3-dedicated-switch-test
+;;        'py-execute-expression-python2-test
+;;        'py-execute-expression-python2-switch-test
+;;        'py-execute-expression-python2-noswitch-test
+;;        'py-execute-expression-python2-dedicated-test
+;;        'py-execute-expression-python2-dedicated-switch-test
+;;        'py-execute-expression-python2.7-test
+;;        'py-execute-expression-python2.7-switch-test
+;;        'py-execute-expression-python2.7-noswitch-test
+;;        'py-execute-expression-python2.7-dedicated-test
+;;        'py-execute-expression-python2.7-dedicated-switch-test
+;;        'py-execute-expression-jython-test
+;;        'py-execute-expression-jython-switch-test
+;;        'py-execute-expression-jython-noswitch-test
+;;        'py-execute-expression-jython-dedicated-test
+;;        'py-execute-expression-jython-dedicated-switch-test
+;;        'py-execute-partial-expression-python-test
+;;        'py-execute-partial-expression-python-switch-test
+;;        'py-execute-partial-expression-python-noswitch-test
+;;        'py-execute-partial-expression-python-dedicated-test
+;;        'py-execute-partial-expression-python-dedicated-switch-test
+;;        'py-execute-partial-expression-ipython-test
+;;        'py-execute-partial-expression-ipython-switch-test
+;;        'py-execute-partial-expression-ipython-noswitch-test
+;;        'py-execute-partial-expression-ipython-dedicated-test
+;;        'py-execute-partial-expression-ipython-dedicated-switch-test
+;;        'py-execute-partial-expression-python3-test
+;;        'py-execute-partial-expression-python3-switch-test
+;;        'py-execute-partial-expression-python3-noswitch-test
+;;        'py-execute-partial-expression-python3-dedicated-test
+;;        'py-execute-partial-expression-python3-dedicated-switch-test
+;;        'py-execute-partial-expression-python2-test
+;;        'py-execute-partial-expression-python2-switch-test
+;;        'py-execute-partial-expression-python2-noswitch-test
+;;        'py-execute-partial-expression-python2-dedicated-test
+;;        'py-execute-partial-expression-python2-dedicated-switch-test
+;;        'py-execute-partial-expression-python2.7-test
+;;        'py-execute-partial-expression-python2.7-switch-test
+;;        'py-execute-partial-expression-python2.7-noswitch-test
+;;        'py-execute-partial-expression-python2.7-dedicated-test
+;;        'py-execute-partial-expression-python2.7-dedicated-switch-test
+;;        'py-execute-partial-expression-jython-test
+;;        'py-execute-partial-expression-jython-switch-test
+;;        'py-execute-partial-expression-jython-noswitch-test
+;;        'py-execute-partial-expression-jython-dedicated-test
+;;        'py-execute-partial-expression-jython-dedicated-switch-test
+;;        'py-execute-line-python-test
+;;        'py-execute-line-python-switch-test
+;;        'py-execute-line-python-noswitch-test
+;;        'py-execute-line-python-dedicated-test
+;;        'py-execute-line-python-dedicated-switch-test
+;;        'py-execute-line-ipython-test
+;;        'py-execute-line-ipython-switch-test
+;;        'py-execute-line-ipython-noswitch-test
+;;        'py-execute-line-ipython-dedicated-test
+;;        'py-execute-line-ipython-dedicated-switch-test
+;;        'py-execute-line-python3-test
+;;        'py-execute-line-python3-switch-test
+;;        'py-execute-line-python3-noswitch-test
+;;        'py-execute-line-python3-dedicated-test
+;;        'py-execute-line-python3-dedicated-switch-test
+;;        'py-execute-line-python2-test
+;;        'py-execute-line-python2-switch-test
+;;        'py-execute-line-python2-noswitch-test
+;;        'py-execute-line-python2-dedicated-test
+;;        'py-execute-line-python2-dedicated-switch-test
+;;        'py-execute-line-python2.7-test
+;;        'py-execute-line-python2.7-switch-test
+;;        'py-execute-line-python2.7-noswitch-test
+;;        'py-execute-line-python2.7-dedicated-test
+;;        'py-execute-line-python2.7-dedicated-switch-test
+;;        'py-execute-line-jython-test
+;;        'py-execute-line-jython-switch-test
+;;        'py-execute-line-jython-noswitch-test
+;;        'py-execute-line-jython-dedicated-test
+;;        'py-execute-line-jython-dedicated-switch-test
+
+;;        'py-beginning-of-block-test
+;;        'py-end-of-block-test
+;;        'py-beginning-of-block-or-clause-test
+;;        'py-end-of-block-or-clause-test
+;;        'py-beginning-of-def-test
+;;        'py-end-of-def-test
+;;        'py-beginning-of-def-or-class-test
+;;        'py-end-of-def-or-class-test
+;;        'py-electric-backspace-test
+;;        'py-electric-delete-test
+;;        'dict-error-test
+;;        ;;         'py-expand-abbrev-pst-pdb.set_trace-test
+;;        'near-bob-beginning-of-statement-test
+;;        'bob-beginning-of-statement-test
+;;        'honor-comments-indent-test
+;;        'assignment-indent-test
+;;        'if-elif-test
+;;        'if-elif-bob-test
+;;        'try-else-clause-test
+;;        'try-except-test
+;;        'assignment-after-block-test
+;;        'py-beginning-of-clause-test
+;;        'py-end-of-clause-test
+;;        'py-beginning-of-expression-test
+;;        'py-end-of-expression-test
+;;        'py-expression-index-test
+;;        'py-indent-after-assigment-test
+;;        'leave-dict-test
+;;        'eofs-attribut-test
+;;        'py-insert-super-python2-test
+;;        'py-insert-super-python3-test
+;;        'args-list-first-line-indent-test
+;;        'py-partial-expression-test
+;;        'py-execute-block-test
+;;        'multiline-list-indent-test
+;;        'close-block-test
+;;        'py-shift-block-test
+;;        'nesting-if-test
+;;        'py-end-of-print-statement-test
+;;        'nested-try-test
+;;        'nested-if-test
+;;        'nested-try-finally-test
+;;        'py-shell-complete-test
+;;        'python-dedicated-test
+;;        'tqs-list-error-test
+;;        'py-mark-def-commandp-test
+;;        'split-windows-on-execute-p-test
+;;        'switch-windows-on-execute-p-test
+;;        'py-install-directory-path-test
+;;        'UnicodeEncodeError-python3-test
+;;        'py-execute-block-python-test
+
+;;        ))
+
 (setq python-mode-tests
       (list
+       'py-down-statement-test
        'docstring-style-switches-test
        'py-nested-block-or-clause-test
-       'py-down-statement-test
        'py-fill-string-django-test
        'py-fill-string-onetwo-test
        'py-fill-string-pep-257-test
@@ -423,6 +803,400 @@
        'py-execute-block-python-test
 
        ))
+
+(setq python-mode-interactive-tests
+      (list
+       'py-fill-string-django-test
+       'py-fill-string-onetwo-test
+       'py-fill-string-pep-257-test
+       'py-fill-string-pep-257-nn-test
+       'py-down-statement-test
+       'py-multi-split-window-on-execute-lp-1361531-python-test
+       'py-multi-split-window-on-execute-lp-1361531-ipython-test
+       'py-multi-split-window-on-execute-lp-1361531-python2-test
+       'py-multi-split-window-on-execute-lp-1361531-jython-test
+       'py-multi-split-window-on-execute-lp-1361531-python3-test
+       'py-always-split-window-on-execute-lp-1361531-python-test
+       'py-always-split-window-on-execute-lp-1361531-ipython-test
+       'py-always-split-window-on-execute-lp-1361531-python2-test
+       'py-always-split-window-on-execute-lp-1361531-jython-test
+       'py-always-split-window-on-execute-lp-1361531-python3-test
+       'docstring-style-switches-test
+       'py-nested-block-or-clause-test
+       'py-highlight-indentation-test
+       'py-smart-indentation-test
+       'autopair-mode-test
+       'py-smart-operator-test
+       'py-guess-indent-offset-test
+       'py-bol-moves-test
+       'key-binding-tests
+       'py-end-of-statement-test
+       'py-compute-indentation-test
+       'py-end-of-def-inline-comment-test
+       'before-inline-comment-test
+       'toggle-force-py-shell-name-p-test
+       'py-execute-statement-python-test
+       'py-execute-statement-python-switch-test
+       'py-execute-statement-python-noswitch-test
+       'py-execute-statement-python-dedicated-test
+       'py-execute-statement-python-dedicated-switch-test
+       'py-execute-statement-ipython-test
+       'py-execute-statement-ipython-switch-test
+       'py-execute-statement-ipython-noswitch-test
+       'py-execute-statement-ipython-dedicated-test
+       'py-execute-statement-ipython-dedicated-switch-test
+       'py-execute-statement-python3-test
+       'py-execute-statement-python3-switch-test
+       'py-execute-statement-python3-noswitch-test
+       'py-execute-statement-python3-dedicated-test
+       'py-execute-statement-python3-dedicated-switch-test
+       'py-execute-statement-python2-test
+       'py-execute-statement-python2-switch-test
+       'py-execute-statement-python2-noswitch-test
+       'py-execute-statement-python2-dedicated-test
+       'py-execute-statement-python2-dedicated-switch-test
+       'py-execute-statement-python2.7-test
+       'py-execute-statement-python2.7-switch-test
+       'py-execute-statement-python2.7-noswitch-test
+       'py-execute-statement-python2.7-dedicated-test
+       'py-execute-statement-python2.7-dedicated-switch-test
+       'py-execute-statement-jython-test
+       'py-execute-statement-jython-switch-test
+       'py-execute-statement-jython-noswitch-test
+       'py-execute-statement-jython-dedicated-test
+       'py-execute-statement-jython-dedicated-switch-test
+       'py-separator-char-test
+       'py-execute-block-python-switch-test
+       'py-execute-block-python-noswitch-test
+       'py-execute-block-python-dedicated-test
+       'py-execute-block-python-dedicated-switch-test
+       'py-execute-block-ipython-test
+       'py-execute-block-ipython-switch-test
+       'py-execute-block-ipython-noswitch-test
+       'py-execute-block-ipython-dedicated-test
+       'py-execute-block-ipython-dedicated-switch-test
+       'py-execute-block-python3-test
+       'py-execute-block-python3-switch-test
+       'py-execute-block-python3-noswitch-test
+       'py-execute-block-python3-dedicated-test
+       'py-execute-block-python3-dedicated-switch-test
+       'py-execute-block-python2-test
+       'py-execute-block-python2-switch-test
+       'py-execute-block-python2-noswitch-test
+       'py-execute-block-python2-dedicated-test
+       'py-execute-block-python2-dedicated-switch-test
+       'py-execute-block-python2.7-test
+       'py-execute-block-python2.7-switch-test
+       'py-execute-block-python2.7-noswitch-test
+       'py-execute-block-python2.7-dedicated-test
+       'py-execute-block-python2.7-dedicated-switch-test
+       'py-execute-block-jython-test
+       'py-execute-block-jython-switch-test
+       'py-execute-block-jython-noswitch-test
+       'py-execute-block-jython-dedicated-test
+       'py-execute-block-jython-dedicated-switch-test
+       'py-execute-block-or-clause-python-test
+       'py-execute-block-or-clause-python-switch-test
+       'py-execute-block-or-clause-python-noswitch-test
+       'py-execute-block-or-clause-python-dedicated-test
+       'py-execute-block-or-clause-python-dedicated-switch-test
+       'py-execute-block-or-clause-ipython-test
+       'py-execute-block-or-clause-ipython-switch-test
+       'py-execute-block-or-clause-ipython-noswitch-test
+       'py-execute-block-or-clause-ipython-dedicated-test
+       'py-execute-block-or-clause-ipython-dedicated-switch-test
+       'py-execute-block-or-clause-python3-test
+       'py-execute-block-or-clause-python3-switch-test
+       'py-execute-block-or-clause-python3-noswitch-test
+       'py-execute-block-or-clause-python3-dedicated-test
+       'py-execute-block-or-clause-python3-dedicated-switch-test
+       'py-execute-block-or-clause-python2-test
+       'py-execute-block-or-clause-python2-switch-test
+       'py-execute-block-or-clause-python2-noswitch-test
+       'py-execute-block-or-clause-python2-dedicated-test
+       'py-execute-block-or-clause-python2-dedicated-switch-test
+       'py-execute-block-or-clause-python2.7-test
+       'py-execute-block-or-clause-python2.7-switch-test
+       'py-execute-block-or-clause-python2.7-noswitch-test
+       'py-execute-block-or-clause-python2.7-dedicated-test
+       'py-execute-block-or-clause-python2.7-dedicated-switch-test
+       'py-execute-block-or-clause-jython-test
+       'py-execute-block-or-clause-jython-switch-test
+       'py-execute-block-or-clause-jython-noswitch-test
+       'py-execute-block-or-clause-jython-dedicated-test
+       'py-execute-block-or-clause-jython-dedicated-switch-test
+       'py-execute-def-python-test
+       'py-execute-def-python-switch-test
+       'py-execute-def-python-noswitch-test
+       'py-execute-def-python-dedicated-test
+       'py-execute-def-python-dedicated-switch-test
+       'py-execute-def-ipython-test
+       'py-execute-def-ipython-switch-test
+       'py-execute-def-ipython-noswitch-test
+       'py-execute-def-ipython-dedicated-test
+       'py-execute-def-ipython-dedicated-switch-test
+       'py-execute-def-python3-test
+       'py-execute-def-python3-switch-test
+       'py-execute-def-python3-noswitch-test
+       'py-execute-def-python3-dedicated-test
+       'py-execute-def-python3-dedicated-switch-test
+       'py-execute-def-python2-test
+       'py-execute-def-python2-switch-test
+       'py-execute-def-python2-noswitch-test
+       'py-execute-def-python2-dedicated-test
+       'py-execute-def-python2-dedicated-switch-test
+       'py-execute-def-python2.7-test
+       'py-execute-def-python2.7-switch-test
+       'py-execute-def-python2.7-noswitch-test
+       'py-execute-def-python2.7-dedicated-test
+       'py-execute-def-python2.7-dedicated-switch-test
+       'py-execute-def-jython-test
+       'py-execute-def-jython-switch-test
+       'py-execute-def-jython-noswitch-test
+       'py-execute-def-jython-dedicated-test
+       'py-execute-def-jython-dedicated-switch-test
+       'py-execute-class-python-test
+       'py-execute-class-python-switch-test
+       'py-execute-class-python-noswitch-test
+       'py-execute-class-python-dedicated-test
+       'py-execute-class-python-dedicated-switch-test
+       'py-execute-class-ipython-test
+       'py-execute-class-ipython-switch-test
+       'py-execute-class-ipython-noswitch-test
+       'py-execute-class-ipython-dedicated-test
+       'py-execute-class-ipython-dedicated-switch-test
+       'py-execute-class-python3-test
+       'py-execute-class-python3-switch-test
+       'py-execute-class-python3-noswitch-test
+       'py-execute-class-python3-dedicated-test
+       'py-execute-class-python3-dedicated-switch-test
+       'py-execute-class-python2-test
+       'py-execute-class-python2-switch-test
+       'py-execute-class-python2-noswitch-test
+       'py-execute-class-python2-dedicated-test
+       'py-execute-class-python2-dedicated-switch-test
+       'py-execute-class-python2.7-test
+       'py-execute-class-python2.7-switch-test
+       'py-execute-class-python2.7-noswitch-test
+       'py-execute-class-python2.7-dedicated-test
+       'py-execute-class-python2.7-dedicated-switch-test
+       'py-execute-class-jython-test
+       'py-execute-class-jython-switch-test
+       'py-execute-class-jython-noswitch-test
+       'py-execute-class-jython-dedicated-test
+       'py-execute-class-jython-dedicated-switch-test
+       'py-execute-region-python-test
+       'py-execute-region-python-switch-test
+       'py-execute-region-python-noswitch-test
+       'py-execute-region-python-dedicated-test
+       'py-execute-region-python-dedicated-switch-test
+       'py-execute-region-ipython-test
+       'py-execute-region-ipython-switch-test
+       'py-execute-region-ipython-noswitch-test
+       'py-execute-region-ipython-dedicated-test
+       'py-execute-region-ipython-dedicated-switch-test
+       'py-execute-region-python3-test
+       'py-execute-region-python3-switch-test
+       'py-execute-region-python3-noswitch-test
+       'py-execute-region-python3-dedicated-test
+       'py-execute-region-python3-dedicated-switch-test
+       'py-execute-region-python2-test
+       'py-execute-region-python2-switch-test
+       'py-execute-region-python2-noswitch-test
+       'py-execute-region-python2-dedicated-test
+       'py-execute-region-python2-dedicated-switch-test
+       'py-execute-region-python2.7-test
+       'py-execute-region-python2.7-switch-test
+       'py-execute-region-python2.7-noswitch-test
+       'py-execute-region-python2.7-dedicated-test
+       'py-execute-region-python2.7-dedicated-switch-test
+       'py-execute-region-jython-test
+       'py-execute-region-jython-switch-test
+       'py-execute-region-jython-noswitch-test
+       'py-execute-region-jython-dedicated-test
+       'py-execute-region-jython-dedicated-switch-test
+       'py-execute-buffer-python-test
+       'py-execute-buffer-python-switch-test
+       'py-execute-buffer-python-noswitch-test
+       'py-execute-buffer-python-dedicated-test
+       'py-execute-buffer-python-dedicated-switch-test
+       'py-execute-buffer-ipython-test
+       'py-execute-buffer-ipython-switch-test
+       'py-execute-buffer-ipython-noswitch-test
+       'py-execute-buffer-ipython-dedicated-test
+       'py-execute-buffer-ipython-dedicated-switch-test
+       'py-execute-buffer-python3-test
+       'py-execute-buffer-python3-switch-test
+       'py-execute-buffer-python3-noswitch-test
+       'py-execute-buffer-python3-dedicated-test
+       'py-execute-buffer-python3-dedicated-switch-test
+       'py-execute-buffer-python2-test
+       'py-execute-buffer-python2-switch-test
+       'py-execute-buffer-python2-noswitch-test
+       'py-execute-buffer-python2-dedicated-test
+       'py-execute-buffer-python2-dedicated-switch-test
+       'py-execute-buffer-python2.7-test
+       'py-execute-buffer-python2.7-switch-test
+       'py-execute-buffer-python2.7-noswitch-test
+       'py-execute-buffer-python2.7-dedicated-test
+       'py-execute-buffer-python2.7-dedicated-switch-test
+       'py-execute-buffer-jython-test
+       'py-execute-buffer-jython-switch-test
+       'py-execute-buffer-jython-noswitch-test
+       'py-execute-buffer-jython-dedicated-test
+       'py-execute-buffer-jython-dedicated-switch-test
+       'py-execute-expression-python-test
+       'py-execute-expression-python-switch-test
+       'py-execute-expression-python-noswitch-test
+       'py-execute-expression-python-dedicated-test
+       'py-execute-expression-python-dedicated-switch-test
+       'py-execute-expression-ipython-test
+       'py-execute-expression-ipython-switch-test
+       'py-execute-expression-ipython-noswitch-test
+       'py-execute-expression-ipython-dedicated-test
+       'py-execute-expression-ipython-dedicated-switch-test
+       'py-execute-expression-python3-test
+       'py-execute-expression-python3-switch-test
+       'py-execute-expression-python3-noswitch-test
+       'py-execute-expression-python3-dedicated-test
+       'py-execute-expression-python3-dedicated-switch-test
+       'py-execute-expression-python2-test
+       'py-execute-expression-python2-switch-test
+       'py-execute-expression-python2-noswitch-test
+       'py-execute-expression-python2-dedicated-test
+       'py-execute-expression-python2-dedicated-switch-test
+       'py-execute-expression-python2.7-test
+       'py-execute-expression-python2.7-switch-test
+       'py-execute-expression-python2.7-noswitch-test
+       'py-execute-expression-python2.7-dedicated-test
+       'py-execute-expression-python2.7-dedicated-switch-test
+       'py-execute-expression-jython-test
+       'py-execute-expression-jython-switch-test
+       'py-execute-expression-jython-noswitch-test
+       'py-execute-expression-jython-dedicated-test
+       'py-execute-expression-jython-dedicated-switch-test
+       'py-execute-partial-expression-python-test
+       'py-execute-partial-expression-python-switch-test
+       'py-execute-partial-expression-python-noswitch-test
+       'py-execute-partial-expression-python-dedicated-test
+       'py-execute-partial-expression-python-dedicated-switch-test
+       'py-execute-partial-expression-ipython-test
+       'py-execute-partial-expression-ipython-switch-test
+       'py-execute-partial-expression-ipython-noswitch-test
+       'py-execute-partial-expression-ipython-dedicated-test
+       'py-execute-partial-expression-ipython-dedicated-switch-test
+       'py-execute-partial-expression-python3-test
+       'py-execute-partial-expression-python3-switch-test
+       'py-execute-partial-expression-python3-noswitch-test
+       'py-execute-partial-expression-python3-dedicated-test
+       'py-execute-partial-expression-python3-dedicated-switch-test
+       'py-execute-partial-expression-python2-test
+       'py-execute-partial-expression-python2-switch-test
+       'py-execute-partial-expression-python2-noswitch-test
+       'py-execute-partial-expression-python2-dedicated-test
+       'py-execute-partial-expression-python2-dedicated-switch-test
+       'py-execute-partial-expression-python2.7-test
+       'py-execute-partial-expression-python2.7-switch-test
+       'py-execute-partial-expression-python2.7-noswitch-test
+       'py-execute-partial-expression-python2.7-dedicated-test
+       'py-execute-partial-expression-python2.7-dedicated-switch-test
+       'py-execute-partial-expression-jython-test
+       'py-execute-partial-expression-jython-switch-test
+       'py-execute-partial-expression-jython-noswitch-test
+       'py-execute-partial-expression-jython-dedicated-test
+       'py-execute-partial-expression-jython-dedicated-switch-test
+       'py-execute-line-python-test
+       'py-execute-line-python-switch-test
+       'py-execute-line-python-noswitch-test
+       'py-execute-line-python-dedicated-test
+       'py-execute-line-python-dedicated-switch-test
+       'py-execute-line-ipython-test
+       'py-execute-line-ipython-switch-test
+       'py-execute-line-ipython-noswitch-test
+       'py-execute-line-ipython-dedicated-test
+       'py-execute-line-ipython-dedicated-switch-test
+       'py-execute-line-python3-test
+       'py-execute-line-python3-switch-test
+       'py-execute-line-python3-noswitch-test
+       'py-execute-line-python3-dedicated-test
+       'py-execute-line-python3-dedicated-switch-test
+       'py-execute-line-python2-test
+       'py-execute-line-python2-switch-test
+       'py-execute-line-python2-noswitch-test
+       'py-execute-line-python2-dedicated-test
+       'py-execute-line-python2-dedicated-switch-test
+       'py-execute-line-python2.7-test
+       'py-execute-line-python2.7-switch-test
+       'py-execute-line-python2.7-noswitch-test
+       'py-execute-line-python2.7-dedicated-test
+       'py-execute-line-python2.7-dedicated-switch-test
+       'py-execute-line-jython-test
+       'py-execute-line-jython-switch-test
+       'py-execute-line-jython-noswitch-test
+       'py-execute-line-jython-dedicated-test
+       'py-execute-line-jython-dedicated-switch-test
+
+       'py-beginning-of-block-test
+       'py-end-of-block-test
+       'py-beginning-of-block-or-clause-test
+       'py-end-of-block-or-clause-test
+       'py-beginning-of-def-test
+       'py-end-of-def-test
+       'py-beginning-of-def-or-class-test
+       'py-end-of-def-or-class-test
+       'py-electric-backspace-test
+       'py-electric-delete-test
+       'dict-error-test
+       ;;         'py-expand-abbrev-pst-pdb.set_trace-test
+       'near-bob-beginning-of-statement-test
+       'bob-beginning-of-statement-test
+       'honor-comments-indent-test
+       'assignment-indent-test
+       'if-elif-test
+       'if-elif-bob-test
+       'try-else-clause-test
+       'try-except-test
+       'assignment-after-block-test
+       'py-beginning-of-clause-test
+       'py-end-of-clause-test
+       'py-beginning-of-expression-test
+       'py-end-of-expression-test
+       'py-expression-index-test
+       'py-indent-after-assigment-test
+       'leave-dict-test
+       'eofs-attribut-test
+       'py-insert-super-python2-test
+       'py-insert-super-python3-test
+       'args-list-first-line-indent-test
+       'py-partial-expression-test
+       'py-execute-block-test
+       'multiline-list-indent-test
+       'close-block-test
+       'py-shift-block-test
+       'nesting-if-test
+       'py-end-of-print-statement-test
+       'nested-try-test
+       'nested-if-test
+       'nested-try-finally-test
+       'py-shell-complete-test
+       'python-dedicated-test
+       'tqs-list-error-test
+       'py-mark-def-commandp-test
+       'split-windows-on-execute-p-test
+       'switch-windows-on-execute-p-test
+       'py-install-directory-path-test
+       'UnicodeEncodeError-python3-test
+       'py-execute-block-python-test
+       'py-multi-split-window-on-execute-lp-1361531-bpython-test
+       'py-always-split-window-on-execute-lp-1361531-bpython-test
+
+       ))
+
+(defun py-run-interactive-tests (&optional arg)
+  "Run tests which would work from batch-mode maybe. "
+  (interactive "p")
+  (dolist (ele python-mode-interactive-tests)
+    (funcall ele arg)))
 
 (defun py-run-tests (&optional arg)
   (interactive "p")
@@ -1069,7 +1843,7 @@ foo = {
 
 (defun leave-dict-base ()
   (when py-debug-p (switch-to-buffer (current-buffer))
-	(font-lock-fontify-buffer))  
+	(font-lock-fontify-buffer))
   (goto-char (point-min))
   (py-end-of-statement)
   (assert (eq 431 (point)) nil "leave-dict-test failed"))
@@ -1244,7 +2018,7 @@ somme errors
 
 (defun py-end-of-print-statement-base ()
   (when py-debug-p (switch-to-buffer (current-buffer))
-	(font-lock-fontify-buffer))  
+	(font-lock-fontify-buffer))
   (goto-char 66)
   (sit-for 0.1)
   (assert (eq 146 (py-end-of-statement)) nil "py-end-of-print-statement-test #1 failed")
@@ -1556,7 +2330,7 @@ import sys, os; os.remove('do/something/nasty') # lp:1025000
 
 (defun py-end-of-statement-1-base ()
   (when py-debug-p (switch-to-buffer (current-buffer))
-	(font-lock-fontify-buffer)) 
+	(font-lock-fontify-buffer))
   (goto-char (point-min))
   (assert (eq 55 (py-end-of-statement)) nil "py-end-of-statement-test-1 #1 failed")
   (assert (eq 65 (py-end-of-statement)) nil "py-end-of-statement-test-1 #2 failed")
@@ -1608,7 +2382,7 @@ import sys, os; os.remove('do/something/nasty') # lp:1025000
     (py-bug-tests-intern 'key-binding-base arg teststring)))
 
 (defun key-binding-base ()
-  (when py-debug-p (switch-to-buffer (current-buffer))) 
+  (when py-debug-p (switch-to-buffer (current-buffer)))
   (assert (eq (key-binding [(:)]) 'py-electric-colon) nil "py-electric-colon key-binding test failed")
 
   (assert (eq (key-binding [(\#)]) 'py-electric-comment) nil "py-electric-comment key-binding test failed")
@@ -2099,17 +2873,17 @@ def foo()
     (py-bug-tests-intern 'py-fill-string-django-base arg teststring)))
 
 (defun py-fill-string-django-base ()
+  ;; (switch-to-buffer (current-buffer))
+  (font-lock-fontify-buffer) 
   (sit-for 0.1)
   (goto-char 99)
   (py-fill-string-django)
   (beginning-of-line)
   (sit-for 0.1)
   (assert (nth 8 (syntax-ppss)) t nil "py-fill-string-django-test #1 failed")
-  (message "%s" "py-fill-string-django-test #1  done")
   (goto-char (nth 8 (syntax-ppss)))
   (sit-for 1)
   (assert (looking-at (concat py-string-delim-re "$")) t nil "py-fill-string-django-test #2 failed")
-  (message "%s" "$")
 )
 
 (defun py-fill-string-onetwo-test (&optional arg)
@@ -2208,16 +2982,17 @@ asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf
     (py-electric-yank)
     (assert (eq 12 (current-indentation))  nil "py-electric-yank-test #2 failed")))
 
-
 (defun py-down-statement-test (&optional arg)
   (interactive "p")
   (let ((teststring python-mode-teststring))
   (py-bug-tests-intern 'py-down-statement-base arg teststring)))
 
 (defun py-down-statement-base ()
-    (goto-char (point-min))
-    (py-down-statement)
-    (assert (eq 31 (point)) nil "py-down-statement-test failed"))
+  ;; (switch-to-buffer (current-buffer))
+  (goto-char (point-min))
+  (font-lock-fontify-buffer)
+  (py-down-statement)
+  (assert (eq 31 (point)) nil "py-down-statement-test failed"))
 
 (defun py-nested-block-or-clause-test (&optional arg)
   (interactive "p")
@@ -2444,7 +3219,6 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
     (goto-char 102)
     (assert (eq 48 (py-beginning-of-block)) nil "beginning-of-block-fails-from-wrong-indent-test failed"))
 
-
 (defun py-store-result-test (&optional arg)
   (interactive "p")
    (let ((teststring "#! /usr/bin/env python
@@ -2453,12 +3227,11 @@ print(12)"))
   (py-bug-tests-intern 'py-store-result-base arg teststring)))
 
 (defun py-store-result-base ()
-  ;; (switch-to-buffer (current-buffer)) 
+  ;; (switch-to-buffer (current-buffer))
   (let ((py-store-result-p t))
     (py-execute-statement)
     (sit-for 0.4 t)
     (message "py-result: %s" py-result)
     (assert (string= (car kill-ring) "12")) nil "py-store-result-test failed"))
-
 
 (provide 'python-mode-test)

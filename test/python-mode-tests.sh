@@ -1055,6 +1055,8 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(setq py-verbose-p 
 -eval "(assert (boundp 'py-compilation-regexp-alist) nil \"py-compilation-regexp-alist not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall execute-indented-code-lp:828314-test \
+--funcall py-nested-block-or-clause-test \
 --funcall py-split-window-on-execute-lp-1361531-python-test \
 --funcall py-split-window-on-execute-lp-1361531-python2-test \
 --funcall py-split-window-on-execute-lp-1361531-jython-test \
@@ -1104,7 +1106,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(setq py-verbose-p 
 --funcall incorrect-use-of-region-in-py-shift-left-lp:875951-test \
 --funcall py-end-of-block-test \
 --funcall several-new-bugs-with-paragraph-filling-lp-1066489-test \
---funcall execute-indented-code-lp:828314-test \
 --funcall py-shell-invoking-python3-lp:835151-test \
 --funcall py-shell-invoking-python2-lp:835151-test \
 --funcall py-execute-line-python-test \
@@ -1283,7 +1284,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(setq py-verbose-p 
 --funcall py-end-of-def-or-class-test \
 --funcall python-mode-slow-lp:803275-test \
 --funcall beg-end-of-defun-lp:303622-test \
---funcall py-nested-block-or-clause-test \
 --funcall indent-region-lp:997958-test \
 --funcall wrong-type-argument-lp:901541-test \
 --funcall indentation-bug-inside-docstrings-lp:899455-test \
@@ -1363,15 +1363,3 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(setq py-verbose-p 
 --funcall py-split-window-on-execute-lp-1361531-bpython-test \
 --funcall key-binding-tests \
 --funcall automatic-indentation-is-broken-lp:889643-test \
---funcall py-multi-split-window-on-execute-lp-1361531-python-test \
---funcall py-multi-split-window-on-execute-lp-1361531-ipython-test \
---funcall py-multi-split-window-on-execute-lp-1361531-python2-test \
---funcall py-multi-split-window-on-execute-lp-1361531-jython-test \
---funcall py-multi-split-window-on-execute-lp-1361531-python3-test \
---funcall py-multi-split-window-on-execute-lp-1361531-bpython-test \
---funcall py-always-split-window-on-execute-lp-1361531-python-test \
---funcall py-always-split-window-on-execute-lp-1361531-ipython-test \
---funcall py-always-split-window-on-execute-lp-1361531-python2-test \
---funcall py-always-split-window-on-execute-lp-1361531-jython-test \
---funcall py-always-split-window-on-execute-lp-1361531-python3-test \
---funcall py-always-split-window-on-execute-lp-1361531-bpython-test \
