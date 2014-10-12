@@ -2590,6 +2590,7 @@ print(12)"))
 
 (setq python-mode-interactive-tests
       (list
+       'cls-pseudo-keyword-lp:328849-test
        'another-broken-font-locking-lp:961231-test
        'py-execute-block-python-test
        'py-fill-string-django-test

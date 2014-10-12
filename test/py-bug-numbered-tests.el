@@ -492,6 +492,7 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
   (assert (string= "f" (py-current-defun)) nil "py-current-defun-lp:328846-test failed"))
 
 (defun cls-pseudo-keyword-lp:328849-test (&optional arg)
+  "consider also lp:1340455"
   (interactive "p")
   (let ((teststring "class Foo(object):
     def summat(cls, x):
@@ -501,13 +502,17 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
     (py-bug-tests-intern 'cls-pseudo-keyword-lp:328849-base arg teststring)))
 
 (defun cls-pseudo-keyword-lp:328849-base ()
-  (when py-debug-p (switch-to-buffer (current-buffer)) )
-  (let ((font-lock-verbose nil))
+  (when py-debug-p (switch-to-buffer (current-buffer)))
+  (let (font-lock-verbose)
     (font-lock-mode 1)
     (font-lock-fontify-buffer)
     (goto-char 36)
     (sit-for 0.1)
-    (assert (eq (get-char-property (point) 'face) 'py-pseudo-keyword-face) nil "cls-pseudo-keyword-lp:328849-test failed ")))
+    (assert (eq (get-char-property (point) 'face) 'py-object-reference-face) nil "cls-pseudo-keyword-lp:328849-test #1 failed ")
+
+    (assert (or
+	     (eq 'unspecified (face-attribute 'py-object-reference-face ':inherit))
+  	     (eq 'py-pseudo-keyword-face (face-attribute 'py-object-reference-face ':inherit))) nil "cls-pseudo-keyword-lp:328849-test #1 failed ")))
 
 (defun mark-decorators-lp:328851-test (&optional arg)
   "With ARG greater 1 keep test buffer open.
