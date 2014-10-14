@@ -347,7 +347,7 @@ See lp:1066489 "
     (goto-char beg)
     (skip-chars-forward "\"'")
     (unless (or (eq style 'pep-257-nn)(eq style 'pep-257)(eq (char-after) ?\n))
-      (newline)
+      (newline-and-indent)
       ;; if TQS is at a single line, re-fill remaining line
       (setq beg (point))
       (fill-region beg end))
