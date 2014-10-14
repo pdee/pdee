@@ -865,52 +865,116 @@ When optional FILE is `t', no temporary file is needed. "
     (sit-for 0.1 t)
     (py--close-execution tempbuf erg)))
 
+
+(defun py--fetch-error (buf &optional origline)
+  "Highlight exceptions found in BUF.
+If an exception occurred return error-string, otherwise return nil.  BUF must exist.
+
+Indicate LINE if code wasn't run from a file, thus remember line of source buffer "
+  (let* ((pmx (copy-marker (point-max)))
+	 file bol estring ecode limit erg)
+    ;; (switch-to-buffer (current-buffer))
+    (goto-char (point-min))
+    (when (re-search-forward "File \"\\(.+\\)\", line \\([0-9]+\\)\\(.*\\)$" nil t)
+      (setq erg (copy-marker (point)))
+      (delete-region (progn (beginning-of-line)
+			    (save-match-data
+			      (when (looking-at
+				     ;; all prompt-regexp known
+				     py-fast-filter-re)
+				(goto-char (match-end 0))))
+
+			    (skip-chars-forward " \t\r\n\f")(point)) (line-end-position))
+      (insert (concat "    File " (buffer-name py-exception-buffer) ", line "
+		      (prin1-to-string origline))))
+    (when erg
+      (goto-char erg)
+      ;; (forward-char -1)
+      ;; (skip-chars-backward "^\t\r\n\f")
+      ;; (skip-chars-forward " \t")
+      (save-match-data
+	(and (not (buffer-file-name
+		   (or
+		    (get-buffer py-exception-buffer)
+		    (get-buffer (file-name-nondirectory py-exception-buffer)))))
+	     (string-match "^[ \t]*File" (buffer-substring-no-properties (point) (line-end-position)))
+	     (looking-at "[ \t]*File")
+	     (replace-match " Buffer")))
+      ;; (add-to-list 'py-error origline)
+      ;; (add-to-list 'py-error (concat "Buffer " (buffer-name py-exception-buffer) ", line " (prin1-to-string origline)))
+      (setq py-error (buffer-substring-no-properties (point-min) (point-max)))
+      py-error)))
+
 (defun py--fetch-comint-result (windows-config py-exception-buffer)
+  "Returns a list: result, beg-position end-position of result.
+
+In case of error make messages indicate the source buffer"
   (save-excursion
     ;; (switch-to-buffer (current-buffer))
-    (let (end erg)
-      (cond ((and
-	      (boundp 'comint-last-prompt)
-	      (sit-for 0.2 t)
-	      (number-or-marker-p (cdr comint-last-prompt))
-	      (number-or-marker-p (car comint-last-prompt))
-	      (< (point) (car comint-last-prompt)))
-	     (setq erg (buffer-substring-no-properties (point) (car comint-last-prompt))))
-	    ((and (re-search-backward py-fast-filter-re nil t 1)
-		  (setq end (point))
-		  (re-search-backward py-fast-filter-re nil t 1)
-		  (goto-char (match-end 0)))
-	     (setq erg (buffer-substring-no-properties (point) end))))
+    (let (beg end erg)
+      (cond
+       ((and
+	 (boundp 'comint-last-prompt)
+	 (sit-for 0.2 t)
+	 (number-or-marker-p (cdr comint-last-prompt))
+	 (number-or-marker-p (car comint-last-prompt))
+	 (goto-char (car comint-last-prompt))
+	 (re-search-backward py-fast-filter-re nil t 1)
+	 (setq beg (goto-char (match-end 0))))
+	(setq end (car comint-last-prompt))
+	(setq erg (buffer-substring-no-properties (point) (car comint-last-prompt))))
+       ((and (re-search-backward py-fast-filter-re nil t 1)
+	     (setq end (point))
+	     (re-search-backward py-fast-filter-re nil t 1)
+	     (goto-char (match-end 0)))
+	(setq beg (point))
+	(setq erg (buffer-substring-no-properties (point) end))))
       (when (and erg
 		 (string-match "\n$" erg))
 	(setq erg (substring erg 0 (1- (length erg)))))
-      erg)))
+      ;; report the region, usefull in case of error
+      (list erg beg end))))
 
 (defun py--postprocess-comint (output-buffer origline windows-config py-exception-buffer)
   "Provide return values, check result for error, manage windows. "
-  ;; py--fast-send-string doesn't set origline
-  (setq py-result nil)
-  (when py-debug-p (message "py--postprocess-comint: py-split-windows-on-execute-p: %s" py-split-windows-on-execute-p))
-  (with-current-buffer output-buffer
-    ;; (when py-debug-p (switch-to-buffer (current-buffer)))
-    (setq py-result (py--fetch-comint-result windows-config py-exception-buffer))
-    (sit-for 0.1 t)
-    (unless py-result
+  (let (beg end)
+    ;; py--fast-send-string doesn't set origline
+    (setq py-result nil
+	  py-result-raw nil
+	  py-error nil)
+    (when py-debug-p (message "py--postprocess-comint: py-split-windows-on-execute-p: %s" py-split-windows-on-execute-p))
+    (with-current-buffer output-buffer
+      ;; (when py-debug-p (switch-to-buffer (current-buffer)))
+      (setq py-result-raw (py--fetch-comint-result windows-config py-exception-buffer))
       (sit-for 0.1 t)
-      (setq py-result (py--fetch-comint-result windows-config py-exception-buffer))))
-  ;; (and (string-match "\n$" py-result)
-  ;; (setq py-result (substring py-result 0 (match-beginning 0)))))
-  (if py-result
-      (with-temp-buffer
-	(insert py-result)
+      (unless (ignore-errors (car py-result-raw))
 	(sit-for 0.1 t)
-	;; (switch-to-buffer (current-buffer))
-	(setq py-error (py--fetch-error (current-buffer) origline))
-	(unless py-error
-	  (when py-store-result-p
-	    (and (not (string= "" py-result))(not (string= (car kill-ring) py-result)) (kill-new py-result)))))
-    (message "py--postprocess-comint: %s" "Don't see any result"))
-  py-result)
+	(setq py-result (py--fetch-comint-result windows-config py-exception-buffer))))
+    ;; (and (string-match "\n$" py-result)
+    ;; (setq py-result (substring py-result 0 (match-beginning 0)))))
+    (if (ignore-errors (car py-result-raw))
+	(with-temp-buffer
+	  (when py-debug-p (message "py-result-raw: %s" py-result-raw))
+	  (sit-for 0.1 t)
+	  ;; values needed when updating output-buffer
+	  (setq beg (nth 1 py-result-raw))
+	  (setq end (nth 2 py-result-raw))
+	  (insert (car py-result-raw))
+	  (setq py-error (py--fetch-error (current-buffer) origline))
+	  (if py-error
+	      (with-current-buffer output-buffer
+		;; (switch-to-buffer (current-buffer))
+		(goto-char beg)
+		(delete-region beg end)
+		(insert py-error)
+		(newline)
+		(goto-char (point-max)))
+	    ;; position no longer needed, no need to correct
+	    (setq py-result (car py-result-raw))
+	    (when py-store-result-p
+	      (and py-result (not (string= "" py-result))(not (string= (car kill-ring) py-result)) (kill-new py-result)))))
+      (message "py--postprocess-comint: %s" "Don't see any result"))
+    (or py-error py-result)))
 
 
 (defun py--execute-ge24.3 (start end filename execute-directory which-shell &optional py-exception-buffer proc)
@@ -1096,8 +1160,13 @@ Returns position where output starts. "
       (setq orig (point))
       (comint-send-string proc cmd)
       (setq erg (py--postprocess-comint buffer origline windows-config py-exception-buffer))
-      (message "%s" py-error)
-      erg)))
+      (if py-error
+	  (progn
+	    ;; py-error is a list
+	    ;; (setq py-error (car py-error))
+	    (setq py-error (prin1-to-string py-error))
+	    (when py-debug-p(message "%s" py-error)))
+	erg))))
 
 (defun py-execute-file (filename)
   "When called interactively, user is prompted for filename. "
@@ -1711,51 +1780,6 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
               (add-to-list 'py-error ecode t))))))
     ;;))
     py-error))
-
-(defun py--fetch-error (buf &optional origline)
-  "Highlight exceptions found in BUF.
-If an exception occurred return error-string, otherwise return nil.  BUF must exist.
-
-Indicate LINE if code wasn't run from a file, thus remember line of source buffer "
-  (let* ((pmx (copy-marker (point-max)))
-	 file bol estring ecode limit erg)
-    ;; (switch-to-buffer (current-buffer))
-    (goto-char (point-min))
-    (when (re-search-forward "File \"\\(.+\\)\", line \\([0-9]+\\)\\(.*\\)$" nil t)
-      (setq erg (copy-marker (point)))
-      (delete-region (progn (beginning-of-line)
-			    (save-match-data
-			      (when (looking-at
-				     ;; all prompt-regexp known
-				     py-fast-filter-re)
-				(goto-char (match-end 0))))
-
-			    (skip-chars-forward " \t\r\n\f")(point)) (line-end-position))
-      (insert (concat "    File " (buffer-name py-exception-buffer) ", line "
-		      (prin1-to-string origline))))
-    (when erg
-      (goto-char erg)
-      ;; (forward-char -1)
-      ;; (skip-chars-backward "^\t\r\n\f")
-      ;; (skip-chars-forward " \t")
-      (save-match-data
-	(and (not (buffer-file-name
-		   (or
-		    (get-buffer py-exception-buffer)
-		    (get-buffer (file-name-nondirectory py-exception-buffer)))))
-	     (string-match "^[ \t]*File" (buffer-substring-no-properties (point) (line-end-position)))
-	     (looking-at "[ \t]*File")
-	     (replace-match " Buffer")))
-      (add-to-list 'py-error origline)
-      (add-to-list 'py-error (concat "Buffer " (buffer-name py-exception-buffer) ", line " (prin1-to-string origline)))
-      ;; If not file exists, just a buffer, correct message
-      ;; (forward-line 1)
-      ;; (when (looking-at "[ \t]*\\([^\t\n\r\f]+\\)[ \t]*$")
-      ;; 	(setq estring (match-string-no-properties 1))
-      ;; 	(setq ecode (replace-regexp-in-string "[ \n\t\f\r^]+" " " estring))
-      ;; 	(add-to-list 'py-error ecode t)
-      ;;))
-      py-error)))
 
 (defun py--find-next-exception-prepare (direction start)
   "Setup exception regexps depending from kind of Python shell. "

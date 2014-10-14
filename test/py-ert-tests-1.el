@@ -768,18 +768,18 @@ def baz():
 "
       (font-lock-fontify-buffer)
       (goto-char 49)
-;;      (switch-to-buffer (current-buffer))
+      (switch-to-buffer (current-buffer))
       (fill-paragraph)
       (search-backward "\"\"\"")
       (goto-char (match-end 0))
       (eolp)
       (forward-line 1)
       (end-of-line)
+      (when py-debug-p (message "fill-column: %s" fill-column))
       (should (<= (current-column) 72))
       (search-forward "\"\"\"")
       (forward-line -1)
-      (should (not (empty-line-p)))
-      )))
+      (should (not (empty-line-p))))))
 
 (ert-deftest py-ert-fill-paragraph-symmetric ()
   (let ((py-docstring-style 'symmetric))
@@ -834,7 +834,7 @@ def foo():
       (py-execute-expression)
       (set-buffer ert-test-default-buffer)
       ;; (switch-to-buffer (current-buffer))
-      (sit-for 0.1 t) 
+      (sit-for 0.1 t)
       (and (should
 	    (or
 	     (search-backward "py-execute-expression-test" nil t 1)
@@ -890,7 +890,7 @@ def foo():
     (py-execute-statement-python2)
     ;; (switch-to-buffer (current-buffer))
     (set-buffer "*Python2*")
-    (sit-for 0.2 t) 
+    (sit-for 0.2 t)
     (and (should (search-backward "py-execute-statement-python2-test" nil t 1))
 	 (py-kill-buffer-unconditional (current-buffer)))))
 
@@ -903,7 +903,7 @@ def foo():
       (py-execute-statement-python3-dedicated)
       (set-buffer py-buffer-name)
       (goto-char (point-min))
-      (sit-for 0.1 t) 
+      (sit-for 0.1 t)
       (should (search-forward "py-execute-statement-python3-dedicated-test" nil t 1)))))
 
 (ert-deftest py-ert-execute-statement-split ()

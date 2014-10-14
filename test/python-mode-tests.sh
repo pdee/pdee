@@ -1055,7 +1055,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(setq py-verbose-p 
 -eval "(assert (boundp 'py-compilation-regexp-alist) nil \"py-compilation-regexp-alist not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
---funcall py-execute-region-error-test \
 --funcall split-windows-on-execute-p-test \
 --funcall py-shell-complete-test \
 --funcall py-execute-statement-error-test \
