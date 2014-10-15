@@ -73,7 +73,7 @@ BODY is code to be executed within the temp buffer.  Point is
       ;; (switch-to-buffer (current-buffer))
       (insert "pri")
       (call-interactively 'py-shell-complete)
-      (sit-for 0.1 t) 
+      (sit-for 0.1 t)
       (should (eq 40 (char-before)))
       (py-kill-buffer-unconditional erg))))
 
@@ -284,6 +284,7 @@ by the
 # paragraphs using M-q.
 "
     (font-lock-fontify-buffer)
+    (when py-debug-p (switch-to-buffer (current-buffer)))
     (search-forward "Some other")
     (fill-paragraph)
     (forward-line -1)
@@ -464,7 +465,7 @@ class kugel(object):
 x = {'abc':'def',
          'ghi':'jkl'}
 "
-    (when py-debug-p (switch-to-buffer (current-buffer)))  
+    (when py-debug-p (switch-to-buffer (current-buffer)))
     (goto-char 24)
     (py-electric-delete)
     (should (eq 5 (current-indentation)))))
@@ -476,7 +477,7 @@ x = {'abc':'def',
     (let ((py-shell-name "python3"))
       (py-execute-statement)
       (message "%s" (prin1-to-string py-error))
-      (should (and py-error (listp py-error))))))
+      (should py-error))))
 
 (ert-deftest py-ert-mark-expression-test ()
     "Avoid infinite loop"
