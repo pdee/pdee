@@ -175,20 +175,6 @@ finally:
       (should (eq 'py-object-reference-face (get-char-property (point) 'face)))
       (skip-chars-forward "^ \n"))))
 
-(ert-deftest py-ert-execute-region-lp-1294796 ()
-  (py-test-with-temp-buffer-point-min
-      "print(1)
-"
-    (let ((py-shell-name "ipython")
-	  py-split-windows-on-execute-p
-	  py-switch-buffers-on-execute-p)
-      (py-execute-buffer)
-      (set-buffer "*IPython*")
-      (goto-char (point-max))
-      (when py-debug-p (switch-to-buffer (current-buffer)))
-      (sit-for 0.1 t)
-      (should (search-backward "1")))))
-
 (ert-deftest py-ert-borks-all-lp-1294820 ()
   (py-test-with-temp-buffer-point-min
       "# M-q within some code (not in= a docstring) completely borks all previous
@@ -287,18 +273,21 @@ by the
 # manually while still being able to flow other
 # paragraphs using M-q.
 "
+    (when py-debug-p (switch-to-buffer (current-buffer)))
     (font-lock-fontify-buffer)
-    ;; (when py-debug-p (switch-to-buffer (current-buffer)))
-    (search-forward "Some other")
+    (search-forward "Some other" nil t 1)
+    (sit-for 0.1 t) 
     (fill-paragraph)
     (forward-line -1)
     (should (eq (char-after) ?\n))
-    (search-forward "One-line summary.")
+    (search-forward "One-line summary." nil t 1)
+    (when py-debug-p (message "fill-column: %s" fill-column))
     (fill-paragraph)
     (forward-line 2)
     (end-of-line)
-    (should (eq 13 (current-column)))
-    (search-forward "Foo bar")
+    (sit-for 0.1 t) 
+    (should (empty-line-p))
+    (search-forward "Foo bar" nil t 1)
     (fill-paragraph)
     (forward-line 2)
     (should (eq (char-after) ?\n)) ))
@@ -474,15 +463,6 @@ x = {'abc':'def',
     (py-electric-delete)
     (should (eq 5 (current-indentation)))))
 
-(ert-deftest py-ert-wrong-python-test ()
-  "Python3 incompatible code should return error."
-  (py-test-with-temp-buffer
-      "print 123"
-    (let ((py-shell-name "python3"))
-      (py-execute-statement)
-      (message "%s" (prin1-to-string py-error))
-      (should py-error))))
-
 (ert-deftest py-ert-mark-expression-test ()
     "Avoid infinite loop"
   (py-test-with-temp-buffer
@@ -516,13 +496,6 @@ x = {'abc':'def',
 (ert-deftest py-python3-shell-test ()
   ""
   (let ((erg (python3)))
-    (should (bufferp (get-buffer erg)))
-    (should (get-buffer-process erg))))
-
-(ert-deftest py-ipython-shell-test ()
-  ""
-  (let ((erg (ipython)))
-    (sit-for 1)
     (should (bufferp (get-buffer erg)))
     (should (get-buffer-process erg))))
 
