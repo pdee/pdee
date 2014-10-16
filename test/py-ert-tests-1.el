@@ -770,9 +770,10 @@ def baz():
     \"\"\"
     return 7
 "
+      (when py-debug-p (switch-to-buffer (current-buffer)))
+      (python-mode)
       (font-lock-fontify-buffer)
       (goto-char 49)
-      (when py-debug-p (switch-to-buffer (current-buffer)))
       (fill-paragraph)
       (search-backward "\"\"\"")
       (goto-char (match-end 0))
@@ -812,19 +813,6 @@ def baz():
 
 
 ;;; execute tests
-(ert-deftest py-ert-execute-expression-test ()
-  (py-test-with-temp-buffer-point-min
-      "print(\"I'm the py-execute-expression-test\")"
-    (let ((py-shell-name "python"))
-      (py-execute-expression)
-      (set-buffer ert-test-default-buffer)
-      ;; (switch-to-buffer (current-buffer))
-      (sit-for 0.1 t)
-      (and (should
-	    (or
-	     (search-backward "py-execute-expression-test" nil t 1)
-	     (search-forward "py-execute-expression-test" nil t 1)))
-	   (py-kill-buffer-unconditional (current-buffer))))))
 
 (ert-deftest py-ert-execute-line-test ()
   (py-test-with-temp-buffer-point-min

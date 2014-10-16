@@ -61,3 +61,19 @@ def foo():
     (sit-for 1)
     (should (bufferp (get-buffer erg)))
     (should (get-buffer-process erg))))
+
+(ert-deftest py-ert-execute-expression-test ()
+  (py-test-with-temp-buffer-point-min
+      "print(\"I'm the py-execute-expression-test\")"
+    (let ((py-shell-name "python"))
+      (when py-debug-p (switch-to-buffer (current-buffer))) 
+      (py-execute-expression)
+      (sit-for 0.1 t) 
+      (set-buffer ert-test-default-buffer)
+      ;; (switch-to-buffer (current-buffer))
+      (sit-for 0.1 t)
+      (and (should
+	    (or
+	     (search-backward "py-execute-expression-test" nil t 1)
+	     (search-forward "py-execute-expression-test" nil t 1)))
+	   (py-kill-buffer-unconditional (current-buffer))))))

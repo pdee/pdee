@@ -475,7 +475,8 @@ Internal use"
 (defun py--shell-manage-windows (output-buffer windows-config py-exception-buffer)
   "Adapt or restore window configuration. Return nil "
   ;; (message "py-exception-buffer: %s" py-exception-buffer)
-  (let ((output-buffer (or output-buffer py-buffer-name)))
+  (let ((output-buffer (or output-buffer py-buffer-name))
+	(py-exception-buffer (or py-exception-buffer (current-buffer))))
     (cond
      (py-keep-windows-configuration
       (py-restore-window-configuration)
@@ -504,6 +505,21 @@ Internal use"
 	;; (display-buffer output-buffer)
 	;;)
 	(pop-to-buffer py-exception-buffer)))
+     ((and
+       (eq py-split-windows-on-execute-p 'just-two)
+       (not py-switch-buffers-on-execute-p))
+      (select-window (get-buffer-window py-exception-buffer))
+      (unless
+	  (and (member (get-buffer-window output-buffer)(window-list))
+	       (eq 2 (length (window-list))))
+	(delete-other-windows)
+	(py--manage-windows-split output-buffer)
+	;; Fixme: otherwise new window appears above
+	(save-excursion
+	  (other-window 1)
+	  (pop-to-buffer output-buffer)
+	  (goto-char (point-max))
+	  (other-window 1))))
      ((and
        py-split-windows-on-execute-p
        (not py-switch-buffers-on-execute-p))

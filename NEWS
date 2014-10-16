@@ -131,7 +131,14 @@ Setting docstring style simplified; a style is all needed.
  t
   "When non-nil split windows.
 
-- `py-split-windows-on-execute-p' more powerful
+- `py-split-windows-on-execute-p' new default 'just-two 
+  When code is send to interpreter, split screen into source-code
+  buffer and current --maybe reused-- py-shell.  When set to `t',
+  python-mode will keep existing windows and split only if
+  needed. Alternatively if a multitude of python-shells/buffers should
+  be visible, open them manually and set
+  `py-keep-windows-configuration' to `t'.
+
   If `always' split according to settings of `split-height-threshold', `split-width-threshold'; with `t' keep just two windows
 
 - For completeness some commands user might expect

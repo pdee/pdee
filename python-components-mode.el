@@ -1138,19 +1138,24 @@ If `py-keep-windows-configuration' is t, this will take precedence over setting 
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-split-windows-on-execute-p t
+(defcustom py-split-windows-on-execute-p 'just-two
   "When non-nil split windows.
 
-If `always' split according to settings of `split-height-threshold', `split-width-threshold';
-as far as `window-min-height', `window-min-width' permit.
+Default is just-two - when code is send to interpreter, split screen into source-code buffer and current py-shell result.
 
-If screen is already splitted, reuse other window.
-If `py-keep-windows-configuration' is t, this will take precedence over setting here.
+Other buffer will be hidden that way.
+
+When set to `t', python-mode tries to reuse existing windows and will split only if needed. However, this feature is experimental still. Same with 'always.
+
+For the moment: If a multitude of python-shells/buffers should be
+visible, open them manually and set `py-keep-windows-configuration' to `t'.
+
 "
       :type '(choice
-          (const :tag "single" t)
+          (const :tag "smart" t)
           (const :tag "no split" nil)
-          (const :tag "multiple" always))
+	  (const :tag "just-two" just-two)
+          (const :tag "always" always))
 
   :group 'python-mode)
 
