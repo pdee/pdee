@@ -560,15 +560,15 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
 "
    (should (and (not (py-copy-statement))(string-match "from foo.bar.baz import something" (car kill-ring))))))
 
-(ert-deftest py-ert-abbrevs-changed-lp-1270631 ()
-  (interactive)
-  (with-temp-buffer
-    (insert "foo")
-    (emacs-lisp-mode)
-    (define-abbrev lisp-mode-abbrev-table "foo" "foo")
-    (should abbrevs-changed)
-    (python-mode)
-    (should abbrevs-changed)))
+;; (ert-deftest py-ert-abbrevs-changed-lp-1270631 ()
+;;   (interactive)
+;;   (with-temp-buffer
+;;     (insert "foo")
+;;     (emacs-lisp-mode)
+;;     (define-abbrev lisp-mode-abbrev-table "fooa" "fooa")
+;;     (should abbrevs-changed)
+;;     (python-mode)
+;;     (should abbrevs-changed)))
 
 (ert-deftest py-ert-honor-dedent-lp-1280982 ()
   (py-test-with-temp-buffer
@@ -804,27 +804,8 @@ def baz():
       (should (<= (current-column) 72))
       (search-forward "\"\"\"")
       (forward-line -1)
-      (should (not (empty-line-p)))
-      )))
+      (should (not (empty-line-p))))))
 
-(ert-deftest py-ert-fill-paragraph-lp-1291493 ()
-  (py-test-with-temp-buffer-point-min
-      "if True:
-    if True:
-        if True:
-            if True:
-                pass
-
-def foo():
-    \"\"\"Foo\"\"\"
-"
-    (font-lock-fontify-buffer)
-    (sit-for 0.1 t)
-;;    (switch-to-buffer (current-buffer))
-    (search-forward "\"\"\"")
-    (fill-paragraph)
-    (sit-for 0.1 t)
-    (should (eq 7 (current-column)))))
 
 ;;; execute tests
 (ert-deftest py-ert-execute-expression-test ()
@@ -888,10 +869,12 @@ def foo():
 (ert-deftest py-ert-execute-statement-python2-test ()
   (py-test-with-temp-buffer-point-min
       "print(\"I'm the py-execute-statement-python2-test\")"
-    (switch-to-buffer (current-buffer))
+    (when py-debug-p (switch-to-buffer (current-buffer)))
     (py-execute-statement-python2)
     (set-buffer "*Python2*")
+    (goto-char (point-max))
     (sit-for 0.2 t)
+    (when py-debug-p (switch-to-buffer (current-buffer)))
     (and (should (search-backward "py-execute-statement-python2-test" nil t 1))
 	 (py-kill-buffer-unconditional (current-buffer)))))
 
@@ -916,19 +899,5 @@ def foo():
 
 ;;;
 
-(ert-deftest py-ert-imports-in-interactive-shell-lp-1290709 ()
-  ""
-  (ignore-errors (kill-buffer-unconditional (get-buffer "*Python*")))
-  (ignore-errors (kill-buffer-unconditional (get-buffer "*Python3*")))
-  (let ((buffer (py-shell nil nil "python")))
-    (set-buffer buffer)
-    (delete-other-windows)
-    (let ((full-height (window-height)))
-      (py-send-string "import os" (get-buffer-process (current-buffer)))
-      (sit-for 0.1)
-      (insert "print(os.get")
-      (call-interactively 'py-shell-complete)
-      (sit-for 0.1 t)
-      (should (< (window-height) full-height)))))
 
 (provide 'py-ert-tests)

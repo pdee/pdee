@@ -153,9 +153,9 @@ finally:
     (py-test-with-temp-buffer-point-min
 	" _ __doc__ __import__ __name__ __package__ abs all any apply basestring bin bool buffer bytearray bytes callable chr classmethod cmp coerce compile complex delattr dict dir divmod enumerate eval execfile file filter float format frozenset getattr globals hasattr hash help hex id input int intern isinstance issubclass iter len list locals long map max min next object oct open ord pow print property range raw_input reduce reload repr reversed round set setattr slice sorted staticmethod str sum super tuple type unichr unicode vars xrange zip"
       (font-lock-fontify-buffer)
-      (while (and (not (eobp))(< 0 (skip-chars-forward " ")))
-	(should (eq 'py-builtins-face (get-char-property (point) 'face)))
-	(skip-chars-forward "^ \n")))))
+      ;; (when py-debug-p (switch-to-buffer (current-buffer))) 
+      (should (eq 'py-builtins-face (get-char-property (point) 'face))))))
+
 
 (ert-deftest py-ert-py-pseudo-keyword-face-lp-1294742 ()
   (py-test-with-temp-buffer-point-min
@@ -182,6 +182,8 @@ finally:
 	  py-switch-buffers-on-execute-p)
       (py-execute-buffer)
       (set-buffer "*IPython*")
+      (goto-char (point-max)) 
+      (when py-debug-p (switch-to-buffer (current-buffer))) 
       (sit-for 0.1 t)
       (should (search-backward "1")))))
 
@@ -284,7 +286,7 @@ by the
 # paragraphs using M-q.
 "
     (font-lock-fontify-buffer)
-    (when py-debug-p (switch-to-buffer (current-buffer)))
+    ;; (when py-debug-p (switch-to-buffer (current-buffer)))
     (search-forward "Some other")
     (fill-paragraph)
     (forward-line -1)
@@ -465,7 +467,7 @@ class kugel(object):
 x = {'abc':'def',
          'ghi':'jkl'}
 "
-    (when py-debug-p (switch-to-buffer (current-buffer)))
+    ;; (when py-debug-p (switch-to-buffer (current-buffer)))
     (goto-char 24)
     (py-electric-delete)
     (should (eq 5 (current-indentation)))))
