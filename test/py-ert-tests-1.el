@@ -643,8 +643,10 @@ def baz():
     \"\"\"
     return 7
 "
+    (when py-debug-p (switch-to-buffer (current-buffer))) 
     (font-lock-fontify-buffer)
     (goto-char 49)
+    (sit-for 0.1 t) 
     (fill-paragraph)
     (end-of-line)
     (should (<= (current-column) 72))
@@ -658,6 +660,7 @@ def baz():
     (should (<= (current-column) 72))
     (search-forward "\"\"\"")
     (forward-line -1)
+    (sit-for 0.1 t) 
     (should (not (empty-line-p)))
 
     ))
@@ -674,11 +677,12 @@ def baz():
     \"\"\"
     return 7
 "
+      (when py-debug-p (switch-to-buffer (current-buffer))) 
       (font-lock-fontify-buffer)
-;;      (switch-to-buffer (current-buffer))
       (goto-char 49)
       (py-fill-string)
       (end-of-line)
+      (sit-for 0.1 t) 
       (should (<= (current-column) 72))
       (forward-line 2)
       (end-of-line)
@@ -693,6 +697,7 @@ def baz():
       (forward-line -1)
       (fill-paragraph)
       (end-of-line)
+      (sit-for 0.1 t) 
       (should (<= (current-column) 72))
       )))
 
@@ -751,8 +756,7 @@ def baz():
       (should (<= (current-column) 72))
       (search-forward "\"\"\"")
       (forward-line -1)
-      (should (empty-line-p))
-      )))
+      (should (empty-line-p)))))
 
 (ert-deftest py-ert-fill-paragraph-django ()
   (let ((py-docstring-style 'django))
@@ -768,7 +772,7 @@ def baz():
 "
       (font-lock-fontify-buffer)
       (goto-char 49)
-      (switch-to-buffer (current-buffer))
+      (when py-debug-p (switch-to-buffer (current-buffer)))
       (fill-paragraph)
       (search-backward "\"\"\"")
       (goto-char (match-end 0))
@@ -778,8 +782,8 @@ def baz():
       (when py-debug-p (message "fill-column: %s" fill-column))
       (should (<= (current-column) 72))
       (search-forward "\"\"\"")
-      (forward-line -1)
-      (should (not (empty-line-p))))))
+      (forward-line -2)
+      (should (empty-line-p)))))
 
 (ert-deftest py-ert-fill-paragraph-symmetric ()
   (let ((py-docstring-style 'symmetric))

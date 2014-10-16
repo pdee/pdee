@@ -69,11 +69,13 @@ BODY is code to be executed within the temp buffer.  Point is
 	;; py-split-windows-on-execute-p
 	py-switch-buffers-on-execute-p)
     (with-temp-buffer
+      (python-mode)
+      (when py-debug-p (switch-to-buffer (current-buffer)))
       (setq erg (python-dedicated))
       ;; (switch-to-buffer (current-buffer))
       (insert "pri")
-      (call-interactively 'py-shell-complete)
-      (sit-for 0.1 t)
+      (call-interactively 'py-indent-or-complete)
+      (sit-for 0.3 t)
       (should (eq 40 (char-before)))
       (py-kill-buffer-unconditional erg))))
 
@@ -153,7 +155,7 @@ finally:
     (py-test-with-temp-buffer-point-min
 	" _ __doc__ __import__ __name__ __package__ abs all any apply basestring bin bool buffer bytearray bytes callable chr classmethod cmp coerce compile complex delattr dict dir divmod enumerate eval execfile file filter float format frozenset getattr globals hasattr hash help hex id input int intern isinstance issubclass iter len list locals long map max min next object oct open ord pow print property range raw_input reduce reload repr reversed round set setattr slice sorted staticmethod str sum super tuple type unichr unicode vars xrange zip"
       (font-lock-fontify-buffer)
-      ;; (when py-debug-p (switch-to-buffer (current-buffer))) 
+      ;; (when py-debug-p (switch-to-buffer (current-buffer)))
       (should (eq 'py-builtins-face (get-char-property (point) 'face))))))
 
 
@@ -182,8 +184,8 @@ finally:
 	  py-switch-buffers-on-execute-p)
       (py-execute-buffer)
       (set-buffer "*IPython*")
-      (goto-char (point-max)) 
-      (when py-debug-p (switch-to-buffer (current-buffer))) 
+      (goto-char (point-max))
+      (when py-debug-p (switch-to-buffer (current-buffer)))
       (sit-for 0.1 t)
       (should (search-backward "1")))))
 
