@@ -644,6 +644,7 @@ See lp:1235375. In case code is not to navigate due to errors, `which-function-m
   :type 'boolean
   :group 'python-mode)
 
+(defvar py-electric-kill-backward-p nil)
 (defcustom py-electric-kill-backward-p nil
   "Affects `py-electric-backspace'. Default is nil.
 

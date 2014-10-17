@@ -249,6 +249,7 @@ of the first definition found."
 (defun py--imenu-create-index-new (&optional beg end)
   "`imenu-create-index-function' for Python. "
   (set (make-local-variable 'imenu-max-items) 99)
+  (font-lock-fontify-buffer) 
   (let ((orig (point))
         (beg (or beg (point-min)))
         (end (or end (point-max)))

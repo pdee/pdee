@@ -892,4 +892,4 @@ def baz():
 ;;;
 
 
-(provide 'py-ert-tests)
+(provide 'py-ert-tests-1)

@@ -77,3 +77,29 @@ def foo():
 	     (search-backward "py-execute-expression-test" nil t 1)
 	     (search-forward "py-execute-expression-test" nil t 1)))
 	   (py-kill-buffer-unconditional (current-buffer))))))
+
+(ert-deftest py-ert-execute-line-test ()
+  (py-test-with-temp-buffer-point-min
+      "print(\"I'm the py-execute-line-test\")"
+    (let ((py-shell-name "python"))
+      (when py-debug-p (switch-to-buffer (current-buffer)) )
+      (py-execute-line)
+      (set-buffer ert-test-default-buffer)
+      (when py-debug-p (switch-to-buffer (current-buffer)) )
+      (and (should
+	    (or
+	     (search-backward "py-execute-line-test" nil t 1)
+	     (search-forward "py-execute-line-test" nil t 1)))
+	   (py-kill-buffer-unconditional (current-buffer))))))
+
+(ert-deftest py-ert-execute-statement-python2-test ()
+  (py-test-with-temp-buffer-point-min
+      "print(\"I'm the py-execute-statement-python2-test\")"
+    (when py-debug-p (switch-to-buffer (current-buffer)))
+    (py-execute-statement-python2)
+    (set-buffer "*Python2*")
+    (goto-char (point-max))
+    (sit-for 0.2 t)
+    (when py-debug-p (switch-to-buffer (current-buffer)))
+    (and (should (search-backward "py-execute-statement-python2-test" nil t 1))
+	 (py-kill-buffer-unconditional (current-buffer)))))
