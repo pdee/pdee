@@ -6673,5 +6673,35 @@ d[\"a\""))
   (assert (eq 'jython-mode major-mode) nil "interpreter-mode-alist-lp-1355458-test-6 failed")
   (py-kill-buffer-unconditional (current-buffer)))
 
+(defun py-indent-line-lp-1382799-test (&optional arg)
+  (interactive "p")
+   (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+import pdb; pdb.set_trace()
+    Lattice.__setstate__(self, picdict)
+"))
+  (py-bug-tests-intern 'py-indent-line-lp-1382799-base arg teststring)))
+
+(defun py-indent-line-lp-1382799-base ()
+  (when py-debug-p (switch-to-buffer (current-buffer)))
+  (font-lock-fontify-buffer)
+  (goto-char 40)
+  (py-forward-statement)
+  (assert (eq (point) 59) nil "py-indent-line-lp-1382799-test #1 failed")
+  (py-forward-statement)
+  (assert (eq (point) 75) nil "py-indent-line-lp-1382799-test #2 failed")
+  (py-forward-statement)
+  (assert (eq (point) 115) nil "py-indent-line-lp-1382799-test #3 failed")
+  (py-backward-statement)
+  (assert (eq (point) 80) nil "py-indent-line-lp-1382799-test #4 failed")
+  (py-backward-statement)
+  (assert (eq (point) 60) nil "py-indent-line-lp-1382799-test #5 failed")
+  (py-backward-statement)
+  (assert (eq (point) 48) nil "py-indent-line-lp-1382799-test #6 failed")
+  (goto-char 76)
+  (assert (eq 0 (py-compute-indentation)) nil "py-indent-line-lp-1382799-test #7 failed")
+
+  )
+
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

@@ -349,6 +349,8 @@ http://docs.python.org/reference/compound_stmts.html"
                          (parse-partial-sexp (or limit (point-min))(point))))
              (done done)
              erg)
+	;; lp:1382788
+	(unless done (skip-chars-backward " \t\r\n\f"))
         (cond
          ((and (bolp)(eolp))
           (skip-chars-backward " \t\r\n\f")
@@ -385,29 +387,33 @@ http://docs.python.org/reference/compound_stmts.html"
             (setq done t))
           (back-to-indentation)
           (py-beginning-of-statement orig done limit))
-         ((and (not (eq (point) orig))(looking-back "^[ \t]*"))
-          (setq erg (point)))
-         ((and (not done) (not (eq 0 (skip-chars-backward " \t\r\n\f"))))
+	 ((and (not done) (eq (char-before) ?\;))
+	  (skip-chars-backward ";")
+	  (py-beginning-of-statement orig done limit))
+	 ((and (not done) (py--skip-to-semicolon-backward (save-excursion (back-to-indentation)(point))))
+	  ;; (back-to-indentation)
+	  (py-beginning-of-statement orig done limit))
+	 ((and (not done) (not (eq 0 (skip-chars-backward " \t\r\n\f"))))
           ;; (setq done t)
           (py-beginning-of-statement orig done limit))
-	 ((unless done)
-	  (and (py--skip-to-semicolon-backward (save-excursion (back-to-indentation)(point)))
-	       (back-to-indentation)
-	       (not (bobp))
-	       (py-beginning-of-statement orig done limit)))
-         ((and (not done)(not (eq (current-column) (current-indentation))))
-          (if (< 0 (abs (skip-chars-backward "^\t\r\n\f" (line-beginning-position))))
-              (progn
-                (setq done t)
-                (back-to-indentation)
-                (py-beginning-of-statement orig done limit))
-            (back-to-indentation)
-            (setq done t)
-            (py-beginning-of-statement orig done limit))))
-        (unless (and (looking-at "[ \t]*#") (looking-back "^[ \t]*"))
-          (when (< (point) orig)(setq erg (point))))
-        (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-        erg))))
+	 ((and (not done)(not (eq (current-column) (current-indentation))))
+	  (if (ignore-errors
+		(< 0
+		   (abs
+		    (py--skip-to-semicolon-backward (save-excursion (back-to-indentation)(point))))
+		   ;; (skip-chars-backward "^\t\r\n\f" (line-beginning-position))
+))
+	      (progn
+		(setq done t)
+		;; (back-to-indentation)
+		(py-beginning-of-statement orig done limit))
+	    (back-to-indentation)
+	    (setq done t)
+	    (py-beginning-of-statement orig done limit))))
+	(unless (and (looking-at "[ \t]*#") (looking-back "^[ \t]*"))
+	  (when (< (point) orig)(setq erg (point))))
+	(when (and py-verbose-p (interactive-p)) (message "%s" erg))
+	erg))))
 
 (defun py--skip-to-semicolon-backward (&optional limit)
   "Fetch the beginning of statement after a semicolon.
@@ -415,10 +421,7 @@ http://docs.python.org/reference/compound_stmts.html"
 Returns position reached if point was moved. "
   (let ((orig (point)))
     (and (< 0 (abs (skip-chars-backward "^;" (or limit (line-beginning-position)))))
-	 ;; (if (eq ?\; (char-after))
-	 ;; (skip-chars-forward ";" (line-end-position))
-	   (skip-chars-forward " \t" (line-beginning-position))
-	   ;; )
+	 (skip-chars-forward " \t" (line-end-position))
 	 (setq done t)
 	 (and (< (point) orig) (point)))))
 
@@ -511,7 +514,7 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
        ((nth 3 pps)
 	(when (py-end-of-string)
 	  (end-of-line)
-	  (skip-chars-backward " \t\r\n\f") 
+	  (skip-chars-backward " \t\r\n\f")
 	  (setq pps (parse-partial-sexp (point-min) (point)))
 	  (unless (and done (not (or (nth 1 pps) (nth 8 pps))) (eolp)) (py-end-of-statement orig done repeat))))
        ;; in non-terminated string
@@ -846,9 +849,14 @@ From a programm use macro `py-beginning-of-comment' instead "
 (defun py--go-to-keyword (regexp &optional maxindent)
   "Returns a list, whose car is indentation, cdr position. "
   (let ((orig (point))
-        (maxindent (or maxindent (and (< 0 (current-indentation))(current-indentation))
-                       ;; make maxindent large enough if not set
-                       (* 99 py-indent-offset)))
+        (maxindent (if (empty-line-p)
+		       (progn
+			 (py-beginning-of-statement)
+			 (current-indentation))
+
+		     (or maxindent (and (< 0 (current-indentation))(current-indentation))
+			 ;; make maxindent large enough if not set
+			 (* 99 py-indent-offset))))
         (first t)
         done erg cui)
     (while (and (not done) (not (bobp)))
