@@ -799,21 +799,21 @@ Unclosed-string errors are not handled here, as made visible by fontification al
              (regexp (or regexp 'py-extended-block-or-clause-re))
              (thisregexp
               (cond ((eq regexp 'py-def-or-class-re)
-                     (concat "@\\|" py-def-or-class-re))
+                     (concat "\\|" py-def-or-class-re))
                     ((eq regexp 'py-def-re)
-                     (concat "@\\|" py-def-re))
+                     (concat "\\|" py-def-re))
                     ((eq regexp 'py-class-re)
-                     (concat "@\\|" py-class-re))
+                     (concat "\\|" py-class-re))
                     ((eq regexp 'py-minor-block-re)
                      py-minor-block-re)
-                    (t (concat "@\\|" py-extended-block-or-clause-re))))
+                    (t (concat "\\|" py-extended-block-or-clause-re))))
 
              bofst
              (this (progn (back-to-indentation)
                           (setq bofst (py--beginning-of-statement-p))
                           (cond ((and bofst (eq regexp 'py-clause-re)(looking-at py-extended-block-or-clause-re))
                                  (point))
-                                ((and bofst (looking-at (symbol-value regexp)))
+                                ((and bofst (looking-at thisregexp))
                                  (point))
                                 (t
                                  (when
@@ -826,7 +826,7 @@ Unclosed-string errors are not handled here, as made visible by fontification al
         (cond (this
                (setq thisindent (current-indentation))
                (cond ((and py-close-provides-newline
-                           (or (eq regexp 'py-def-re)(eq regexp 'py-class-re)(eq regexp 'py-def-or-class-re)))
+                           (or (eq thisregexp 'py-def-re)(eq thisregexp 'py-class-re)(eq thisregexp 'py-def-or-class-re)))
                       (while
                           (and
                            ;; lp:1294478 py-mark-def hangs
@@ -850,16 +850,16 @@ Unclosed-string errors are not handled here, as made visible by fontification al
                             (and (py-down-statement)
                                  (or (< thisindent (current-indentation))
                                      (and (eq thisindent (current-indentation))
-                                          (or (eq regexp 'py-minor-block-re)
-                                              (eq regexp 'py-block-re))
+                                          (or (eq thisregexp 'py-minor-block-re)
+                                              (eq thisregexp 'py-block-re))
                                           (looking-at py-clause-re)))
                                  (py-end-of-statement)(setq last (point))))
                         (and last (goto-char last)))))
               (t (goto-char orig)))
-        (when (and (<= (point) orig)(not (looking-at (symbol-value regexp))))
+        (when (and (<= (point) orig)(not (looking-at thisregexp)))
           ;; found the end above
           ;; py--travel-current-indent will stop of clause at equal indent
-          (when (py--look-downward-for-beginning (symbol-value regexp))
+          (when (py--look-downward-for-beginning thisregexp)
             (py--end-base regexp orig)))
         (setq pps (syntax-ppss))
         ;; (catch 'exit)

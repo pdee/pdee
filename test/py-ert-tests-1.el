@@ -851,10 +851,12 @@ def baz():
 (ert-deftest py-ert-execute-statement-test ()
   (py-test-with-temp-buffer-point-min
       "print(\"I'm the py-execute-statement-test\")"
+    (when py-debug-p (switch-to-buffer (current-buffer))) 
     ;; (switch-to-buffer (current-buffer))
     (let ((py-shell-name "python"))
       (py-execute-statement)
       (set-buffer ert-test-default-buffer)
+      (sit-for 0.1 t) 
       (and (should (search-backward "py-execute-statement-test" nil t 1))
 	   (py-kill-buffer-unconditional (current-buffer))))))
 
