@@ -191,7 +191,7 @@ result = some_function_that_takes_arguments(
 '''
 "
     (when py-debug-p (switch-to-buffer (current-buffer)))
-    (font-lock-fontify-buffer) 
+    (font-lock-fontify-buffer)
     (message "comment-start: %s" comment-start)
     (goto-char 592)
     ;; (sit-for 1)
@@ -426,8 +426,7 @@ my_list = [
 
 result = some_function_that_takes_arguments(
     'a', 'b', 'c',
-    'd', 'e', 'f',
-    )
+    'd', 'e', 'f',)
 
 # When non-nil, it will be lined up under the first character of the line that starts the multi-line construct, as in:
 
@@ -438,8 +437,7 @@ my_list = [
 
 result = some_function_that_takes_arguments(
     'a', 'b', 'c',
-    'd', 'e', 'f',
-)
+    'd', 'e', 'f',)
 
 # Examples see PEP8
 
@@ -467,6 +465,8 @@ data = {
 }
 
 "
+    (when py-debug-p (switch-to-buffer (current-buffer))
+	  (font-lock-fontify-buffer))
     (let (py-closing-list-dedents-bos)
       (search-forward "]")
       (should (eq 4 (py-compute-indentation)))
@@ -489,8 +489,7 @@ data = {
       (search-forward "}")
       (should (eq 4 (py-compute-indentation)))
       (search-forward "}")
-      (should (eq 0 (py-compute-indentation)))
-      )))
+      (should (eq 0 (py-compute-indentation))))))
 
 (ert-deftest py-ert-top-level ()
   (py-test-with-temp-buffer-point-min
@@ -527,7 +526,7 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
             ausgabe[7] = treffer
 "
     (when py-debug-p (switch-to-buffer (current-buffer)))
-    (font-lock-fontify-buffer) 
+    (font-lock-fontify-buffer)
     (search-forward "else:")
     (forward-char -1)
     (should (eq 1 (py-beginning-of-top-level-position)))

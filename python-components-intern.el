@@ -127,7 +127,9 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
                        ;; char doesn't matter for now, maybe drop
                        (string-to-char (match-string-no-properties 1)))))
              ;; in a recursive call already
-             (repeat (or repeat 0))
+             (repeat (if repeat
+			 (setq repeat (1+ repeat))
+		       0))
              ;; nesting: started nesting a list
              (nesting nesting)
              (indent-offset (or indent-offset py-indent-offset))
@@ -143,10 +145,7 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
               (setq indent (py-compute-indentation)))
 	  (if (< py-max-specpdl-size repeat)
 	      (error "`py-compute-indentation' reached loops max.")
-	    (if repeat
-		(setq repeat (1+ repeat))
-	      (setq nesting (nth 0 pps))
-	      (setq repeat 1))
+	    (setq nesting (nth 0 pps))
 	    (setq indent
 		  (cond
 		   ((and (bobp) (eq liep (line-end-position)))
