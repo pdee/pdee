@@ -508,7 +508,8 @@ Internal use"
      ((and
        (eq py-split-windows-on-execute-p 'just-two)
        (not py-switch-buffers-on-execute-p))
-      (select-window (get-buffer-window py-exception-buffer))
+      (set-buffer py-exception-buffer)
+      (switch-to-buffer (current-buffer)) 
       (unless
 	  (and (member (get-buffer-window output-buffer)(window-list))
 	       (eq 2 (length (window-list))))
@@ -932,7 +933,7 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
 
 In case of error make messages indicate the source buffer"
   (save-excursion
-    ;; (switch-to-buffer (current-buffer))
+    (when py-debug-p (switch-to-buffer (current-buffer))) 
     (let (beg end erg)
       (cond
        ((and
@@ -1179,6 +1180,7 @@ Returns position where output starts. "
          (proc (or proc (get-buffer-process buffer)))
          erg orig)
     (with-current-buffer buffer
+      ;; (when py-debug-p (switch-to-buffer (current-buffer))) 
       (goto-char (point-max))
       (setq orig (point))
       (comint-send-string proc cmd)

@@ -475,5 +475,15 @@ x = {'abc':'def',
     (py-execute-statement)
     (should (eq (window-height) full-height))))
 
-
+(ert-deftest py-compute-indentation-bob-test ()
+    (py-test-with-temp-buffer-point-min
+    " def foo():
+    if True:
+        pass
+    else:
+        pass 
+"
+    (when py-debug-p (switch-to-buffer (current-buffer)))
+    (should (eq 0 (py-compute-indentation)))))
+ 
 (provide 'py-ert-tests-2)
