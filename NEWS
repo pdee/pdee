@@ -155,6 +155,11 @@ Setting docstring style simplified; a style is all needed.
   py-execute-line-dedicated
   py-execute-top-level-dedicated
 
+- `py-unload-python-el'
+  Normally commands delivered by python.el are usable alongside with
+  python-mode.el. Unfortunatly are skeletons hard-coded into
+  python-mode-abbrev-table, which might be removed calling this.
+
 Removed commands:
 
  -toggle-py-nil-docstring-style

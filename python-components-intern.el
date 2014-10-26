@@ -1337,7 +1337,7 @@ http://docs.python.org/reference/compound_stmts.html"
 Removes python-skeleton forms from abbrevs.
 These would interfere when inserting forms heading a block"
   (interactive)
-  (when (featurep 'python-mode) (unload-feature 'python-mode t))
+  (when (featurep 'python) (unload-feature 'python t))
   (when (file-readable-p abbrev-file-name)
     (find-file abbrev-file-name)
     (goto-char (point-min))
