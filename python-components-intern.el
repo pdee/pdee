@@ -1331,5 +1331,19 @@ http://docs.python.org/reference/compound_stmts.html"
         (setq buli (cdr buli))))
     erg))
 
+(defun py-unload-python-el ()
+  "Unloads python-mode delivered by shipped python.el
+
+Removes python-skeleton forms from abbrevs.
+These would interfere when inserting forms heading a block"
+  (interactive)
+  (when (featurep 'python-mode) (unload-feature 'python-mode t))
+  (when (file-readable-p abbrev-file-name)
+    (find-file abbrev-file-name)
+    (goto-char (point-min))
+    (while (re-search-forward "^.+python-skeleton.+$" nil t 1)
+      (delete-region (match-beginning 0) (1+ (match-end 0))))
+    (write-file abbrev-file-name)))
+
 (provide 'python-components-intern)
 ;;; python-components-intern.el ends here

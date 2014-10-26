@@ -219,7 +219,7 @@ on."
   `(let ((debug-on-error t)
          (enable-local-variables :all)
          py-load-pymacs-p
-         ;; py-split-windows-on-execute-p
+         ;; py-split-window-on-execute-p
          ;; py-switch-buffers-on-execute-p
          py-start-run-py-shell
          proc
@@ -2372,7 +2372,7 @@ print(u'\\xA9')
     (py-bug-tests-intern 'execute-buffer-ipython-fails-lp:928087-base arg teststring)))
 
 (defun execute-buffer-ipython-fails-lp:928087-base ()
-  (let (py-split-windows-on-execute-p
+  (let (py-split-window-on-execute-p
         py-switch-buffers-on-execute-p)
     (assert (not (py-execute-buffer)) nil "execute-buffer-ipython-fails-lp:928087-test failed")))
 
@@ -2651,7 +2651,7 @@ print(\"I'm the script-buffer-appears-instead-of-python-shell-buffer-lp:957561-t
 
 (defun script-buffer-appears-instead-of-python-shell-buffer-lp:957561-base ()
   (let (py-switch-buffers-on-execute-p
-        (py-split-windows-on-execute-p t))
+        (py-split-window-on-execute-p t))
     (delete-other-windows)
     (ipython)
     (sit-for 0.1)
@@ -5892,7 +5892,7 @@ inode, start_no, end_no)
 
 (defun py-shell-in-a-shell-buffer-doesnt-work-lp:1182696-base ()
   (let (py-switch-buffers-on-execute-p
-        py-split-windows-on-execute-p)
+        py-split-window-on-execute-p)
     (shell)
     (delete-other-windows)
     (py-shell 1)
@@ -5908,7 +5908,7 @@ inode, start_no, end_no)
   (py-bug-tests-intern 'from-within-py-shell-call-another-instance-lp-1169687-base arg teststring)))
 
 (defun from-within-py-shell-call-another-instance-lp-1169687-base ()
-    (let ((py-split-windows-on-execute-p t)
+    (let ((py-split-window-on-execute-p t)
           (py-switch-buffers-on-execute-p t))
     (py-shell)
     (sit-for 0.1 t)
@@ -6442,7 +6442,7 @@ function searchFunction() {
 
 (defun shell-not-advanced-lp-1294809-test (&optional arg)
   (interactive "p")
-   (let ((py-split-windows-on-execute-p t)
+   (let ((py-split-window-on-execute-p t)
 	 (teststring "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 print(123)

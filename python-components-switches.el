@@ -181,37 +181,37 @@ Returns value of `py-switch-buffers-on-execute-p'. "
   (when (or py-verbose-p (interactive-p)) (message "py-switch-buffers-on-execute-p: %s" py-switch-buffers-on-execute-p))
   py-switch-buffers-on-execute-p)
 
-;;; py-split-windows-on-execute-p forms
-(defun toggle-py-split-windows-on-execute-p (&optional arg)
-  "If `py-split-windows-on-execute-p' should be on or off.
+;;; py-split-window-on-execute-p forms
+(defun toggle-py-split-window-on-execute-p (&optional arg)
+  "If `py-split-window-on-execute-p' should be on or off.
 
-  Returns value of `py-split-windows-on-execute-p' switched to. "
+  Returns value of `py-split-window-on-execute-p' switched to. "
   (interactive)
-  (let ((arg (or arg (if py-split-windows-on-execute-p -1 1))))
+  (let ((arg (or arg (if py-split-window-on-execute-p -1 1))))
     (if (< 0 arg)
-        (setq py-split-windows-on-execute-p t)
-      (setq py-split-windows-on-execute-p nil))
-    (when (or py-verbose-p (interactive-p)) (message "py-split-windows-on-execute-p: %s" py-split-windows-on-execute-p))
-    py-split-windows-on-execute-p))
+        (setq py-split-window-on-execute-p t)
+      (setq py-split-window-on-execute-p nil))
+    (when (or py-verbose-p (interactive-p)) (message "py-split-window-on-execute-p: %s" py-split-window-on-execute-p))
+    py-split-window-on-execute-p))
 
-(defun py-split-windows-on-execute-p-on (&optional arg)
-  "Make sure, `py-py-split-windows-on-execute-p' is on.
+(defun py-split-window-on-execute-p-on (&optional arg)
+  "Make sure, `py-py-split-window-on-execute-p' is on.
 
-Returns value of `py-split-windows-on-execute-p'. "
+Returns value of `py-split-window-on-execute-p'. "
   (interactive)
   (let ((arg (or arg 1)))
-    (toggle-py-split-windows-on-execute-p arg))
-  (when (or py-verbose-p (interactive-p)) (message "py-split-windows-on-execute-p: %s" py-split-windows-on-execute-p))
-  py-split-windows-on-execute-p)
+    (toggle-py-split-window-on-execute-p arg))
+  (when (or py-verbose-p (interactive-p)) (message "py-split-window-on-execute-p: %s" py-split-window-on-execute-p))
+  py-split-window-on-execute-p)
 
-(defun py-split-windows-on-execute-p-off ()
-  "Make sure, `py-split-windows-on-execute-p' is off.
+(defun py-split-window-on-execute-p-off ()
+  "Make sure, `py-split-window-on-execute-p' is off.
 
-Returns value of `py-split-windows-on-execute-p'. "
+Returns value of `py-split-window-on-execute-p'. "
   (interactive)
-  (toggle-py-split-windows-on-execute-p -1)
-  (when (or py-verbose-p (interactive-p)) (message "py-split-windows-on-execute-p: %s" py-split-windows-on-execute-p))
-  py-split-windows-on-execute-p)
+  (toggle-py-split-window-on-execute-p -1)
+  (when (or py-verbose-p (interactive-p)) (message "py-split-window-on-execute-p: %s" py-split-window-on-execute-p))
+  py-split-window-on-execute-p)
 
 ;;; py-fontify-shell-buffer-p forms
 (defun toggle-py-fontify-shell-buffer-p (&optional arg)

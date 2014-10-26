@@ -200,7 +200,7 @@ If symbol is defined in current buffer, jump to it's definition
 Optional \\[universal-argument] used for debugging, will prevent deletion of temp file. "
   (interactive "P")
   (let* ((py-switch-buffers-on-execute-p t)
-         (py-split-windows-on-execute-p t)
+         (py-split-window-on-execute-p t)
          (orig (point))
          (beg (progn (when (and (looking-back "(")(not (looking-at "\\sw"))) (forward-char -1)) (skip-chars-backward "a-zA-Z0-9_." (line-beginning-position))(point)))
          (end (progn (skip-chars-forward "a-zA-Z0-9_." (line-end-position))(point)))

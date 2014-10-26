@@ -33,7 +33,7 @@
 ;;; fast-process
 (ert-deftest py-shell-complete-in-dedicated-shell ()
   (let (erg
-	;; py-split-windows-on-execute-p
+	;; py-split-window-on-execute-p
 	py-switch-buffers-on-execute-p)
     (with-temp-buffer
       (python-mode)
@@ -470,7 +470,7 @@ x = {'abc':'def',
   "print('py-keep-windows-configuration-test-string')"
   (delete-other-windows)
   (let ((py-keep-windows-configuration t)
-	(py-split-windows-on-execute-p t)
+	(py-split-window-on-execute-p t)
 	(full-height (window-height)))
     (py-execute-statement)
     (should (eq (window-height) full-height))))

@@ -37,7 +37,7 @@ def foo():
       "print(1)
 "
     (let ((py-shell-name "ipython")
-	  py-split-windows-on-execute-p
+	  py-split-window-on-execute-p
 	  py-switch-buffers-on-execute-p)
       (py-execute-buffer)
       (set-buffer "*IPython*")

@@ -880,16 +880,17 @@ def baz():
     (let ((py-debug-p t)
 	  py-store-result-p
 	  erg)
-      (py-execute-statement-python3-dedicated)
+      (call-interactively 'py-execute-statement-python3-dedicated)
+      (sit-for 0.1 t)
+      ;; (when py-debug-p (message "py-ert-execute-statement-python3-dedicated-test: %s" py-buffer-name))
       (set-buffer py-buffer-name)
       (goto-char (point-min))
-      (sit-for 0.1 t)
       (should (search-forward "py-execute-statement-python3-dedicated-test" nil t 1)))))
 
 (ert-deftest py-ert-execute-statement-split ()
   (py-test-with-temp-buffer-point-min
       "print(123)"
-    (let ((py-split-windows-on-execute-p t))
+    (let ((py-split-window-on-execute-p t))
       (py-execute-statement)
       (should (not (one-window-p))))))
 
