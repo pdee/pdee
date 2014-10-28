@@ -190,7 +190,7 @@ result = some_function_that_takes_arguments(
 ''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
 '''
 "
-    (when py-debug-p (switch-to-buffer (current-buffer)))
+    (when (and (interactive-p) py-debug-p) (switch-to-buffer (current-buffer)))
     (font-lock-fontify-buffer)
     (message "comment-start: %s" comment-start)
     (goto-char 592)
@@ -465,7 +465,7 @@ data = {
 }
 
 "
-    (when py-debug-p (switch-to-buffer (current-buffer))
+    (when (and (interactive-p) py-debug-p) (switch-to-buffer (current-buffer))
 	  (font-lock-fontify-buffer))
     (let (py-closing-list-dedents-bos)
       (search-forward "]")
@@ -525,8 +525,8 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
             # print \"%i, manque\" % (treffer)
             ausgabe[7] = treffer
 "
-    (when py-debug-p (switch-to-buffer (current-buffer)))
-    (font-lock-fontify-buffer)
+    (when (and (interactive-p) py-debug-p) (switch-to-buffer (current-buffer))
+	  (font-lock-fontify-buffer))
     (search-forward "else:")
     (forward-char -1)
     (should (eq 1 (py-beginning-of-top-level-position)))
@@ -590,7 +590,7 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
 	  oldbuf)
       (py-execute-buffer-dedicated)
       (set-buffer py-output-buffer)
-      (when py-debug-p (switch-to-buffer (current-buffer)))
+      (when (and (interactive-p) py-debug-p) (switch-to-buffer (current-buffer)))
       (insert "socket.")
       (sit-for 0.1)
       ;; (switch-to-buffer (current-buffer))
@@ -645,7 +645,7 @@ def baz():
     \"\"\"
     return 7
 "
-    (when py-debug-p (switch-to-buffer (current-buffer)))
+    (when (and (interactive-p) py-debug-p) (switch-to-buffer (current-buffer)))
     (font-lock-fontify-buffer)
     (goto-char 49)
     (sit-for 0.1 t)
@@ -679,8 +679,8 @@ def baz():
     \"\"\"
     return 7
 "
-      (when py-debug-p (switch-to-buffer (current-buffer)))
-      (font-lock-fontify-buffer)
+      (when (and (interactive-p) py-debug-p) (switch-to-buffer (current-buffer))
+	    (font-lock-fontify-buffer))
       (goto-char 49)
       (py-fill-string)
       (end-of-line)
@@ -700,8 +700,7 @@ def baz():
       (fill-paragraph)
       (end-of-line)
       (sit-for 0.1 t)
-      (should (<= (current-column) 72))
-      )))
+      (should (<= (current-column) 72)))))
 
 (ert-deftest py-ert-fill-paragraph-pep-257 ()
   (let ((py-docstring-style 'pep-257))
@@ -772,9 +771,9 @@ def baz():
     \"\"\"
     return 7
 "
-      (when py-debug-p (switch-to-buffer (current-buffer)))
+      (when (and (interactive-p) py-debug-p) (switch-to-buffer (current-buffer))
+	    (font-lock-fontify-buffer))
       (python-mode)
-      (font-lock-fontify-buffer)
       (goto-char 49)
       (fill-paragraph)
       (search-backward "\"\"\"")
@@ -782,7 +781,7 @@ def baz():
       (eolp)
       (forward-line 1)
       (end-of-line)
-      (when py-debug-p (message "fill-column: %s" fill-column))
+      (when (and (interactive-p) py-debug-p) (message "fill-column: %s" fill-column))
       (should (<= (current-column) 72))
       (search-forward "\"\"\"")
       (forward-line -2)
@@ -822,7 +821,7 @@ def baz():
     (let ((py-shell-name "python"))
       (py-execute-line)
       (set-buffer ert-test-default-buffer)
-      (when py-debug-p (switch-to-buffer (current-buffer)) )
+      (when (and (interactive-p) py-debug-p) (switch-to-buffer (current-buffer)))
       (and (should
 	    (or
 	     (search-backward "py-execute-line-test" nil t 1)
@@ -853,7 +852,7 @@ def baz():
 (ert-deftest py-ert-execute-statement-test ()
   (py-test-with-temp-buffer-point-min
       "print(\"I'm the py-execute-statement-test\")"
-    (when py-debug-p (switch-to-buffer (current-buffer)))
+    (when (and (interactive-p) py-debug-p) (switch-to-buffer (current-buffer)))
     ;; (switch-to-buffer (current-buffer))
     (let ((py-shell-name "python"))
       (py-execute-statement)
@@ -865,12 +864,12 @@ def baz():
 (ert-deftest py-ert-execute-statement-python2-test ()
   (py-test-with-temp-buffer-point-min
       "print(\"I'm the py-execute-statement-python2-test\")"
-    (when py-debug-p (switch-to-buffer (current-buffer)))
+    (when (and (interactive-p) py-debug-p) (switch-to-buffer (current-buffer)))
     (py-execute-statement-python2)
     (set-buffer "*Python2*")
     (goto-char (point-max))
     (sit-for 0.2 t)
-    (when py-debug-p (switch-to-buffer (current-buffer)))
+    (when (and (interactive-p) py-debug-p) (switch-to-buffer (current-buffer)))
     (and (should (search-backward "py-execute-statement-python2-test" nil t 1))
 	 (py-kill-buffer-unconditional (current-buffer)))))
 
@@ -882,7 +881,7 @@ def baz():
 	  erg)
       (call-interactively 'py-execute-statement-python3-dedicated)
       (sit-for 0.1 t)
-      ;; (when py-debug-p (message "py-ert-execute-statement-python3-dedicated-test: %s" py-buffer-name))
+      ;; (when (and (interactive-p) py-debug-p) (message "py-ert-execute-statement-python3-dedicated-test: %s" py-buffer-name))
       (set-buffer py-buffer-name)
       (goto-char (point-min))
       (should (search-forward "py-execute-statement-python3-dedicated-test" nil t 1)))))

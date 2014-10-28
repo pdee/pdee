@@ -502,7 +502,7 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
     (py-bug-tests-intern 'cls-pseudo-keyword-lp:328849-base arg teststring)))
 
 (defun cls-pseudo-keyword-lp:328849-base ()
-  (when py-debug-p (switch-to-buffer (current-buffer)))
+  (when (and (interactive-p) py-debug-p) (switch-to-buffer (current-buffer)))
   (let (font-lock-verbose)
     (font-lock-mode 1)
     (font-lock-fontify-buffer)
@@ -1063,8 +1063,8 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
 
 (defun indent-triplequoted-to-itself-lp:752252-base ()
   (sit-for 0.1)
-  (when py-debug-p (switch-to-buffer (current-buffer))
-	(font-lock-fontify-buffer))
+  (when (and (interactive-p) py-debug-p) (switch-to-buffer (current-buffer)
+							   (font-lock-fontify-buffer)))
   ;; (message "(py-compute-indentation): %s" (py-compute-indentation))
   (assert (eq 4 (py-compute-indentation)) nil "indent-triplequoted-to-itself-lp:752252-test failed"))
 
@@ -1700,7 +1700,7 @@ if foo:
 
 (defun py-electric-comment-add-space-lp:828398-base ()
   (let ((py-electric-comment-add-space-p nil))
-    (when py-debug-p (switch-to-buffer (current-buffer)))
+    (when (and (interactive-p) py-debug-p) (switch-to-buffer (current-buffer)))
     (py-electric-comment 1)
     (assert (looking-back "#") nil "py-electric-comment-add-space-lp:828398-test failed")))
 
@@ -2695,7 +2695,7 @@ print(myobj.range(10))
     (py-bug-tests-intern 'another-broken-font-locking-lp:961231-base arg teststring)))
 
 (defun another-broken-font-locking-lp:961231-base ()
-  (when py-debug-p (switch-to-buffer (current-buffer))
+  (when (and (interactive-p) py-debug-p) (switch-to-buffer (current-buffer))
 	(font-lock-fontify-buffer))
   (goto-char 124)
   (sit-for 0.1)
@@ -2839,7 +2839,7 @@ os.chmod
     (py-bug-tests-intern 'py-describe-symbol-fails-on-modules-lp:919719-base arg teststring)))
 
 (defun py-describe-symbol-fails-on-modules-lp:919719-base ()
-  (when py-debug-p (switch-to-buffer (current-buffer)) (font-lock-fontify-buffer))
+  (when (and (interactive-p) py-debug-p) (switch-to-buffer (current-buffer)) (font-lock-fontify-buffer))
   (goto-char 61)
   (py-help-at-point)
   (sit-for 0.1)
@@ -3224,7 +3224,7 @@ if __name__ == '__main__':
   (py-bug-tests-intern 'IndentationError-expected-an-indented-block-when-execute-lp-1055569-base 1 teststring)))
 
 (defun IndentationError-expected-an-indented-block-when-execute-lp-1055569-base ()
-  (when py-debug-p (switch-to-buffer (current-buffer))
+  (when (and (interactive-p) py-debug-p) (switch-to-buffer (current-buffer))
 	(font-lock-fontify-buffer))
   (py-execute-buffer)
   (with-current-buffer py-buffer-name
@@ -4819,7 +4819,7 @@ for lines in f:
 
 (defun temporary-files-remain-when-python-raises-exception-lp-1083973-n1-base ()
   "Doesn't test for remaining files yet. "
-  (when py-debug-p (switch-to-buffer (current-buffer)))
+  (when (and (interactive-p) py-debug-p) (switch-to-buffer (current-buffer)))
   (let ((python-mode-v5-behavior-p t))
     (assert (py-execute-buffer) nil "temporary-files-remain-when-python-raises-exception-lp-1083973-n1-test failed")))
 
@@ -5225,7 +5225,7 @@ class Test(object):
 
 (defun more-docstring-filling-woes-lp-1102296-pep-257-base ()
   (let ((py-docstring-style 'pep-257))
-    ;; (when py-debug-p (switch-to-buffer (current-buffer))
+    ;; (when (and (interactive-p) py-debug-p) (switch-to-buffer (current-buffer))
     ;; (font-lock-fontify-buffer))
     (goto-char (point-min))
     (search-forward "Builds")
@@ -5599,7 +5599,7 @@ class Test(object):
 
 (defun more-docstring-filling-woes-lp-1102296-pep-257-nn-base ()
   (let ((py-docstring-style 'pep-257-nn))
-    (when py-debug-p (switch-to-buffer (current-buffer))
+    (when (and (interactive-p) py-debug-p) (switch-to-buffer (current-buffer))
 	  (font-lock-fontify-buffer))
     (sit-for 0.1 t)
     (goto-char 178)
@@ -5819,7 +5819,7 @@ def foo():
   (py-bug-tests-intern 'Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-base arg teststring)))
 
 (defun Bogus-whitespace-left-in-docstring-after-wrapping-lp-1178455-base ()
-  (when py-debug-p (switch-to-buffer (current-buffer))
+  (when (and (interactive-p) py-debug-p) (switch-to-buffer (current-buffer))
 	(font-lock-fontify-buffer))
   (goto-char 97)
   ;; (message "paragraph-start: %s" paragraph-start)
@@ -6181,7 +6181,7 @@ a, b, c = (1, 2, 3)
 
 (defun missing-py-variable-name-face-lp-1215791-base ()
   (font-lock-fontify-buffer)
-  ;; (when py-debug-p (switch-to-buffer (current-buffer)))
+  ;; (when (and (interactive-p) py-debug-p) (switch-to-buffer (current-buffer)))
   ;; (goto-char 6)
   (goto-char 27)
   (sit-for 0.1 t)
@@ -6200,7 +6200,7 @@ a, b, c = (1, 2, 3)
   (py-bug-tests-intern 'C-c-C-c-lp:1221310-and-store-result-base arg teststring)))
 
 (defun C-c-C-c-lp:1221310-and-store-result-base ()
-  (when py-debug-p (switch-to-buffer (current-buffer)))
+  (when (and (interactive-p) py-debug-p) (switch-to-buffer (current-buffer)))
   (write-file (concat py-temp-directory "/lp-1221310.py"))
   (assert (let ((py-store-result-p t))
 	    (py-execute-buffer)
@@ -6390,7 +6390,7 @@ def expand(self, leading=0, subs={}):
   (let ((py-shell-name "ipython"))
     (py-execute-buffer)
     (set-buffer "*IPython*")
-    (when py-debug-p (switch-to-buffer (current-buffer)))
+    (when (and (interactive-p) py-debug-p) (switch-to-buffer (current-buffer)))
     (goto-char comint-last-output-start)
     (sit-for 0.1 t)
     (and (eq (char-before) ?\n) (forward-char -1))
@@ -6683,8 +6683,8 @@ import pdb; pdb.set_trace()
   (py-bug-tests-intern 'py-indent-line-lp-1382799-base arg teststring)))
 
 (defun py-indent-line-lp-1382799-base ()
-  (when py-debug-p (switch-to-buffer (current-buffer)))
-  (font-lock-fontify-buffer)
+  (when (and (interactive-p) py-debug-p) (switch-to-buffer (current-buffer))
+	(font-lock-fontify-buffer))
   (goto-char 40)
   (py-forward-statement)
   (assert (eq (point) 59) nil "py-indent-line-lp-1382799-test #1 failed")
@@ -6699,9 +6699,7 @@ import pdb; pdb.set_trace()
   (py-backward-statement)
   (assert (eq (point) 48) nil "py-indent-line-lp-1382799-test #6 failed")
   (goto-char 76)
-  (assert (eq 0 (py-compute-indentation)) nil "py-indent-line-lp-1382799-test #7 failed")
-
-  )
+  (assert (eq 0 (py-compute-indentation)) nil "py-indent-line-lp-1382799-test #7 failed"))
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here

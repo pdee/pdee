@@ -26,7 +26,7 @@
 
 (add-to-list 'load-path default-directory)
 (load "py-ert-tests-1.el" nil t)
-      
+
 ;; (require 'python-mode-test)
 
 
@@ -37,7 +37,7 @@
 	py-switch-buffers-on-execute-p)
     (with-temp-buffer
       (python-mode)
-      (when py-debug-p (switch-to-buffer (current-buffer)))
+      (when (and (interactive-p) py-debug-p) (switch-to-buffer (current-buffer)))
       (setq erg (python-dedicated))
       ;; (switch-to-buffer (current-buffer))
       (insert "pri")
@@ -122,7 +122,7 @@ finally:
     (py-test-with-temp-buffer-point-min
 	" _ __doc__ __import__ __name__ __package__ abs all any apply basestring bin bool buffer bytearray bytes callable chr classmethod cmp coerce compile complex delattr dict dir divmod enumerate eval execfile file filter float format frozenset getattr globals hasattr hash help hex id input int intern isinstance issubclass iter len list locals long map max min next object oct open ord pow print property range raw_input reduce reload repr reversed round set setattr slice sorted staticmethod str sum super tuple type unichr unicode vars xrange zip"
       (font-lock-fontify-buffer)
-      ;; (when py-debug-p (switch-to-buffer (current-buffer)))
+      ;; (when (and (interactive-p) py-debug-p) (switch-to-buffer (current-buffer)))
       (should (eq 'py-builtins-face (get-char-property (point) 'face))))))
 
 
@@ -240,24 +240,24 @@ by the
 # manually while still being able to flow other
 # paragraphs using M-q.
 "
-    (when py-debug-p (switch-to-buffer (current-buffer)))
-    (font-lock-fontify-buffer)
+    (when (and (interactive-p) py-debug-p) (switch-to-buffer (current-buffer))
+	  (font-lock-fontify-buffer))
     (search-forward "Some other" nil t 1)
-    (sit-for 0.1 t) 
+    (sit-for 0.1 t)
     (fill-paragraph)
     (forward-line -1)
     (should (eq (char-after) ?\n))
     (search-forward "One-line summary." nil t 1)
-    (when py-debug-p (message "fill-column: %s" fill-column))
+    (when (and (interactive-p) py-debug-p) (message "fill-column: %s" fill-column))
     (fill-paragraph)
     (forward-line 2)
     (end-of-line)
-    (sit-for 0.1 t) 
+    (sit-for 0.1 t)
     (should (empty-line-p))
     (search-forward "Foo bar" nil t 1)
     (fill-paragraph)
     (forward-line 2)
-    (should (eq (char-after) ?\n)) ))
+    (should (eq (char-after) ?\n))))
 
 (ert-deftest py-ert-backward-same-level-test ()
   (py-test-with-temp-buffer-point-min
@@ -425,7 +425,7 @@ class kugel(object):
 x = {'abc':'def',
          'ghi':'jkl'}
 "
-    ;; (when py-debug-p (switch-to-buffer (current-buffer)))
+    ;; (when (and (interactive-p) py-debug-p) (switch-to-buffer (current-buffer)))
     (goto-char 24)
     (py-electric-delete)
     (should (eq 5 (current-indentation)))))
@@ -481,9 +481,9 @@ x = {'abc':'def',
     if True:
         pass
     else:
-        pass 
+        pass
 "
-    (when py-debug-p (switch-to-buffer (current-buffer)))
+    (when (and (interactive-p) py-debug-p) (switch-to-buffer (current-buffer)))
     (should (eq 0 (py-compute-indentation)))))
- 
+
 (provide 'py-ert-tests-2)
