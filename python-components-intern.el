@@ -1337,13 +1337,18 @@ http://docs.python.org/reference/compound_stmts.html"
 Removes python-skeleton forms from abbrevs.
 These would interfere when inserting forms heading a block"
   (interactive)
-  (when (featurep 'python) (unload-feature 'python t))
-  (when (file-readable-p abbrev-file-name)
-    (find-file abbrev-file-name)
-    (goto-char (point-min))
-    (while (re-search-forward "^.+python-skeleton.+$" nil t 1)
-      (delete-region (match-beginning 0) (1+ (match-end 0))))
-    (write-file abbrev-file-name)))
+  (let (done)
+    (when (featurep 'python) (unload-feature 'python t))
+    (when (file-readable-p abbrev-file-name)
+      (find-file abbrev-file-name)
+      (goto-char (point-min))
+      (while (re-search-forward "^.+python-skeleton.+$" nil t 1)
+	(setq done t)
+	(delete-region (match-beginning 0) (1+ (match-end 0))))
+      (when done (write-file abbrev-file-name)
+	    ;; now reload
+	    (read-abbrev-file abbrev-file-name))
+      (kill-buffer (file-name-nondirectory abbrev-file-name)))))
 
 (provide 'python-components-intern)
 ;;; python-components-intern.el ends here

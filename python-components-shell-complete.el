@@ -116,16 +116,20 @@ completions on the current context."
 
 (defun py--complete-base (shell pos beg end word imports debug py-exception-buffer)
   (let* ((shell (or shell (py-choose-shell)))
-         (proc (or (get-process shell)
-		   (prog1
-		       (get-buffer-process (py-shell nil nil shell))
-		     (sit-for py-new-shell-delay))))
-	 (code (if (string-match "[Ii][Pp]ython*" shell)
-		   (py-set-ipython-completion-command-string shell)
-		 python-shell-module-completion-string-code)))
-    (py--shell--do-completion-at-point proc imports word pos py-exception-buffer code)))
+         (proc (or
+		;; completing inside a shell
+		(get-buffer-process py-exception-buffer)
+		   (and (comint-check-proc shell)
+			(get-process shell))
+	       (prog1
+		   (get-buffer-process (py-shell nil nil shell))
+		 (sit-for py-new-shell-delay))))
+    (code (if (string-match "[Ii][Pp]ython*" shell)
+	      (py-set-ipython-completion-command-string shell)
+	    python-shell-module-completion-string-code)))
+  (py--shell--do-completion-at-point proc imports word pos py-exception-buffer code)))
 
-(defun py--complete-prepare (shell debug beg end word fast-complete)
+(defun py--complete-prepare (&optional shell debug beg end word fast-complete)
   (let* ((py-exception-buffer (current-buffer))
          (pos (copy-marker (point)))
 	 (pps (syntax-ppss))
@@ -187,7 +191,7 @@ in py-shell-mode `py-shell-complete'"
   (cond ((region-active-p)
 	 (py-indent-region (region-beginning) (region-end)))
 	((or (member (char-before)(list 9 10 12 13 32))
-	     (bobp)) 
+	     (bobp))
 	 (py-indent-line))
 	((eq major-mode 'python-mode)
 	 (if (string-match "ipython" (py-choose-shell))

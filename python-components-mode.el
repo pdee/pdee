@@ -211,7 +211,7 @@ Default is t")
   :group 'python-mode)
 
 (defcustom py-load-skeletons-p nil
-  "If skeleton definitions should be loaded, default is nil. 
+  "If skeleton definitions should be loaded, default is nil.
 
 If non-nil and abbrev-mode on, block-skeletons will inserted.
 Pressing \"if<SPACE>\" for example will prompt for the if-condition.
@@ -2672,6 +2672,14 @@ Returns versioned string, nil if nothing appropriate found "
 ;; requested by org-mode still
 (defalias 'py-toggle-shells 'py-choose-shell)
 
+(defun py--cleanup-process-name (res)
+  "Make res ready for use by `executable-find'
+
+Returns RES or substring of RES"
+  (if (string-match "<" res)
+      (substring res 0 (match-beginning 0))
+    res))
+
 (defalias 'py-which-shell 'py-choose-shell)
 (defun py-choose-shell (&optional arg pyshell py-dedicated-process-p py-edit-only-p)
   "Return an appropriate executable as a string.
@@ -2690,34 +2698,36 @@ With \\[universal-argument] 4 is called `py-switch-shell' see docu there."
   (interactive "P")
   (if (eq 4 (prefix-numeric-value arg))
       (py-switch-shell '(4))
-    (let* (res
-	   (erg (cond (py-force-py-shell-name-p
-                       (default-value 'py-shell-name))
-                      (py-use-local-default
-                       (if (not (string= "" py-shell-local-path))
-                           (expand-file-name py-shell-local-path)
-                         (message "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'")))
-                      ((and py-fast-process-p
-			    (comint-check-proc (current-buffer))
-                            (string-match "ython" (process-name (get-buffer-process (current-buffer)))))
-		       (progn
-			 (setq res (process-name (get-buffer-process (current-buffer))))
-			 (if (string-match "<" res)
-			     ;; executable-find can't see a python<1>
-			     (substring res 0 (match-beginning 0))
-			   res)))
-		      ((and (not py-fast-process-p)
-			    (comint-check-proc (current-buffer))
-                            (string-match "ython" (process-name (get-buffer-process (current-buffer)))))
-                       (process-name (get-buffer-process (current-buffer))))
-                      ((py-choose-shell-by-shebang))
-                      ((py--choose-shell-by-import))
-                      ((py-choose-shell-by-path))
-                      (t (or
-                          (default-value 'py-shell-name)
-                          "python"))))
-           (cmd (if py-edit-only-p erg
-                  (executable-find erg))))
+    (let* (res done
+	       (erg (cond (py-force-py-shell-name-p
+			   (default-value 'py-shell-name))
+			  (py-use-local-default
+			   (if (not (string= "" py-shell-local-path))
+			       (expand-file-name py-shell-local-path)
+			     (message "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'")))
+			  ((and py-fast-process-p
+				(comint-check-proc (current-buffer))
+				(string-match "ython" (process-name (get-buffer-process (current-buffer)))))
+			   (progn
+			     (setq res (process-name (get-buffer-process (current-buffer))))
+			     (py--cleanup-process-name res)))
+			  ((and (not py-fast-process-p)
+				(comint-check-proc (current-buffer))
+				(setq done t)
+				(string-match "ython" (process-name (get-buffer-process (current-buffer)))))
+			   (setq res (process-name (get-buffer-process (current-buffer))))
+			   (py--cleanup-process-name res))
+			  ((py-choose-shell-by-shebang))
+			  ((py--choose-shell-by-import))
+			  ((py-choose-shell-by-path))
+			  (t (or
+			      (default-value 'py-shell-name)
+			      "python"))))
+	       (cmd (if (or
+			 ;; comint-check-proc was succesful
+			 done
+			 py-edit-only-p) erg
+		      (executable-find erg))))
       (if cmd
           (when (interactive-p)
             (message "%s" cmd))
@@ -5074,7 +5084,7 @@ Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil
                      :help " `py-execute-file-python-no-switch'
 Send file to a Python interpreter.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "nil". "]
-		    
+
                     ["Execute file python dedicated" py-execute-file-python-dedicated
                      :help " `py-execute-file-python-dedicated'
 Send file to a Python interpreter.
@@ -6317,7 +6327,7 @@ Customize `py-match-paren-key' which key to use. Use `M-x customize-variable' to
                      :style toggle :selected py-match-paren-mode])
 
                    ("Debug"
-		    
+
 		    ["py-debug-p"
 		     (setq py-debug-p
 			   (not py-debug-p))
@@ -12438,7 +12448,7 @@ Don't save anything for STR matching `py-input-filter-re' "
 
 ;; (add-to-list 'interpreter-mode-alist
 ;; (cons (purecopy "[bi]*python[0-9.]*") 'python-mode))
-;; 
+;;
 ;; (add-to-list 'interpreter-mode-alist
 ;; (cons (purecopy "jython[0-9.]*") 'jython-mode))
 

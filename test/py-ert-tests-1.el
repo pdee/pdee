@@ -590,7 +590,7 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
 	  oldbuf)
       (py-execute-buffer-dedicated)
       (set-buffer py-output-buffer)
-      ;; (switch-to-buffer (current-buffer))
+      (when py-debug-p (switch-to-buffer (current-buffer)))
       (insert "socket.")
       (sit-for 0.1)
       ;; (switch-to-buffer (current-buffer))
