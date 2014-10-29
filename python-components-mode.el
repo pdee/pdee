@@ -12502,7 +12502,7 @@ Don't save anything for STR matching `py-input-filter-re' "
 ;; (orgstruct-mode 1)
 (add-hook 'python-mode-hook
 	  (lambda ()
-	    (setq imenu-create-index-function 'py--imenu-create-index-function)
+	    (setq imenu-create-index-function py--imenu-create-index-function)
 	    (setq indent-tabs-mode py-indent-tabs-mode)))
 
 (remove-hook 'python-mode-hook 'python-setup-brm)
