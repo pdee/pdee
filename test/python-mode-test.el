@@ -27,6 +27,7 @@
 
 (setq python-mode-interactive-tests
       (list
+       'py-describe-symbol-fails-on-modules-lp:919719-test
        'another-broken-font-locking-lp:961231-test
        'py-shell-complete-test
        'cls-pseudo-keyword-lp:328849-test
