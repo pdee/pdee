@@ -1,4 +1,3 @@
-* py-split-window-on-execute-lp-1361531-bpython-test
 * yanking back funkt nicht
 * another-broken-font-locking-lp:961231-test
 
@@ -70,3 +69,4 @@
 * TODO KEYWORDS = frozenset(keyword.kwlist + ['print']) - SINGLETONS
   grasp keyword.kwlist as py-minor-expression
 * Text is read-only - Usache war prompt in comint, Konflikt mit setup
+* py-split-window-on-execute-lp-1361531-bpython-test

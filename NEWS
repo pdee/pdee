@@ -157,7 +157,7 @@ Setting docstring style simplified; a style is all needed.
 
 - `py-unload-python-el'
   Normally commands delivered by python.el are usable alongside with
-  python-mode.el. Some version of python.el might write skeletons into
+  python-mode.el. Some old version of python.el might write skeletons into
   python-mode-abbrev-table, which is removed that way.
 
 Removed commands:

@@ -1581,21 +1581,6 @@ print(\"I'm the `py-menu-pyshell-test'\")
 (defun py-separator-char-base ()
   (assert (stringp (py-separator-char)) nil "py-separator-char-test failed"))
 
-(defun py-shell-complete-test (&optional arg load-branch-function)
-  (interactive "p")
-  (let ((teststring (concat py-test-shebang "
-# -*- coding: utf-8 -*-
-impo")))
-    (py-bug-tests-intern 'py-shell-complete-base arg teststring)))
-
-(defun py-shell-complete-base ()
-  (when py-debug-p (switch-to-buffer (current-buffer))
-	(font-lock-fontify-buffer))
-  (sit-for 0.1 t) 
-  (py-shell-complete)  
-  (sit-for 0.1)
-  (assert (looking-back "import") nil "py-shell-complete-test failed"))
-
 (defun toggle-force-py-shell-name-p-test (&optional arg)
   (interactive "p")
   (let ((teststring ""))
@@ -2591,9 +2576,24 @@ print(12)"))
     (message "py-result: %s" py-result)
     (assert (string= (car kill-ring) "12")) nil "py-store-result-test failed"))
 
+(defun py-shell-complete-test (&optional arg load-branch-function)
+  (interactive "p")
+  (let ((teststring (concat py-test-shebang "
+# -*- coding: utf-8 -*-
+impo")))
+    (py-bug-tests-intern 'py-shell-complete-base arg teststring)))
+
+(defun py-shell-complete-base ()
+  (when (and (interactive-p) py-debug-p) (switch-to-buffer (current-buffer))
+	(font-lock-fontify-buffer))
+  (sit-for 0.1 t) 
+  (py-shell-complete)  
+  (sit-for 0.1)
+  (assert (looking-back "import") nil "py-shell-complete-test failed"))
 
 (setq python-mode-interactive-tests
       (list
+       'py-shell-complete-test
        'cls-pseudo-keyword-lp:328849-test
        'py-execute-region-error-test
        'another-broken-font-locking-lp:961231-test
@@ -2627,5 +2627,6 @@ print(12)"))
   (interactive "p")
   (dolist (ele python-mode-interactive-tests)
     (funcall ele arg)))
+
 
 (provide 'python-mode-test)
