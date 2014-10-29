@@ -199,15 +199,13 @@ not inside a defun."
 If symbol is defined in current buffer, jump to it's definition
 Optional \\[universal-argument] used for debugging, will prevent deletion of temp file. "
   (interactive "P")
-  (let* ((py-switch-buffers-on-execute-p t)
-         (py-split-window-on-execute-p t)
-         (orig (point))
+  (let* ((orig (point))
          (beg (progn (when (and (looking-back "(")(not (looking-at "\\sw"))) (forward-char -1)) (skip-chars-backward "a-zA-Z0-9_." (line-beginning-position))(point)))
          (end (progn (skip-chars-forward "a-zA-Z0-9_." (line-end-position))(point)))
          (sym (buffer-substring-no-properties beg end))
          (origfile (buffer-file-name))
-         (temp (make-temp-name (buffer-name)))
-         (file (concat (expand-file-name temp py-temp-directory) ".py"))
+         (temp (md5 (buffer-name)))
+         (file (concat (py--normalize-directory py-temp-directory) temp "-py-help-at-point.py"))
          (cmd (py-find-imports))
          ;; if symbol is defined in current buffer, go to
          (erg (progn (goto-char (point-min))
@@ -242,9 +240,8 @@ Optional \\[universal-argument] used for debugging, will prevent deletion of tem
             (help-mode)
             (delete-other-windows))
         (message "%s" erg))
-
       (when (file-readable-p file)
-        (unless (eq 4 (prefix-numeric-value debug)) (delete-file file))))))
+        (unless py-debug-p (delete-file file))))))
 
 ;; Documentation functions
 

@@ -1173,7 +1173,8 @@ When `py-verbose-p' and MSG is non-nil messages the first line of STRING."
       (comint-send-string process string)
       (when (or (not (string-match "\n$" string))
                 (string-match "\n[ \t].*\n?$" string))
-        (comint-send-string process "\n")))))
+        (comint-send-string process "\n")))
+    (unless py-debug-p (when (file-readable-p with-temp-file)(delete-file temp-file-name)))))
 
 (defun py--send-string-no-output (string &optional process msg)
   "Send STRING to PROCESS and inhibit output display.

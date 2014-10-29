@@ -1,6 +1,3 @@
-* yanking back funkt nicht
-* another-broken-font-locking-lp:961231-test
-
 * py-describe-symbol-fails-on-modules-lp:919719-test
 * print_function IPython completion von prin
 * py-fill-string-django-test
@@ -70,3 +67,4 @@
   grasp keyword.kwlist as py-minor-expression
 * Text is read-only - Usache war prompt in comint, Konflikt mit setup
 * py-split-window-on-execute-lp-1361531-bpython-test
+* yanking back funkt nicht
