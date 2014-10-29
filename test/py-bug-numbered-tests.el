@@ -2695,14 +2695,14 @@ print(myobj.range(10))
     (py-bug-tests-intern 'another-broken-font-locking-lp:961231-base arg teststring)))
 
 (defun another-broken-font-locking-lp:961231-base ()
-  (when py-debug-p (switch-to-buffer (current-buffer))
-	(font-lock-fontify-buffer))
+  (when py-debug-p (switch-to-buffer (current-buffer)))
+  (font-lock-fontify-buffer)
   (goto-char 124)
   (sit-for 0.1)
-  (assert (eq (get-char-property (point) 'face) 'py-builtins-face) nil "another-broken-font-locking-lp:961231-test failed")
+  (assert (eq (get-char-property (point) 'face) 'py-builtins-face) nil "another-broken-font-locking-lp:961231-test #1 failed")
   (goto-char 197)
-  (sit-for 0.1)
-  (assert (eq (get-char-property (point) 'face) nil) nil "another-broken-font-locking-lp:961231-test failed"))
+  (sit-for 0.2)
+  (assert (eq (get-char-property (point) 'face) nil) nil "another-broken-font-locking-lp:961231-test #2 failed"))
 
 (defun temp-file-stored-in-python-script-directory-lp:958987-test (&optional arg)
   (interactive "p")
@@ -5486,7 +5486,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.38 $\"
+__version__ = \"$Revision: 1.41 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
