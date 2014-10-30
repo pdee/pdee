@@ -50,8 +50,10 @@ def foo():
   "Python3 incompatible code should return error."
   (py-test-with-temp-buffer
       "print 123"
+    (when py-debug-p (switch-to-buffer (current-buffer))) 
     (let ((py-shell-name "python3"))
       (py-execute-statement)
+      (when py-debug-p (switch-to-buffer (current-buffer))) 
       (message "%s" (prin1-to-string py-error))
       (should py-error))))
 
@@ -84,7 +86,9 @@ def foo():
     (let ((py-shell-name "python"))
       (when py-debug-p (switch-to-buffer (current-buffer)) )
       (py-execute-line)
+      (sit-for 0.1 t) 
       (set-buffer ert-test-default-buffer)
+      (sit-for 0.1 t) 
       (when py-debug-p (switch-to-buffer (current-buffer)) )
       (and (should
 	    (or

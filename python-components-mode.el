@@ -2187,7 +2187,7 @@ for options to pass to the DOCNAME interpreter. \"
   (concat
    "[ \t]*\\_<\\("
    (regexp-opt py-no-outdent-1-re-raw)
-   "\\)\\_>[( \t]+.*:[( \t]\\_<\\("
+   "\\)\\_>.*:[( \t]\\_<\\("
    (regexp-opt py-no-outdent-2-re-raw)
    "\\)\\_>[)\t]*$")
   "Regular expression matching lines not to augment indent after.

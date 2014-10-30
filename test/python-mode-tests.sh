@@ -1055,6 +1055,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(setq py-verbose-p 
 -eval "(assert (boundp 'py-compilation-regexp-alist) nil \"py-compilation-regexp-alist not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall indent-after-expect-lp-1387329-test \
 --funcall py-indent-line-lp-1382799-test \
 --funcall split-windows-on-execute-p-test \
 --funcall py-shell-complete-test \

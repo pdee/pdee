@@ -5486,7 +5486,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.42 $\"
+__version__ = \"$Revision: 1.43 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -6702,6 +6702,22 @@ import pdb; pdb.set_trace()
   (assert (eq 0 (py-compute-indentation)) nil "py-indent-line-lp-1382799-test #7 failed")
 
   )
+
+(defun indent-after-expect-lp-1387329-test (&optional arg)
+  (interactive "p")
+   (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+try:
+    something
+except: pass
+
+"))
+  (py-bug-tests-intern 'indent-after-expect-lp-1387329-base arg teststring)))
+
+(defun indent-after-expect-lp-1387329-base ()
+  (when py-debug-p (switch-to-buffer (current-buffer))) 
+  (assert (eq 0 (py-compute-indentation)) nil "indent-after-expect-lp-1387329-test failed"))
+
 
 (provide 'py-bug-numbered-tests)
 ;;; py-bug-numbered-tests.el ends here
