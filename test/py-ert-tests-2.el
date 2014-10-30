@@ -26,7 +26,7 @@
 
 (add-to-list 'load-path default-directory)
 (load "py-ert-tests-1.el" nil t)
-      
+
 ;; (require 'python-mode-test)
 
 
@@ -168,13 +168,14 @@ def baz(self):
     (forward-line -1)
     (should (eq (char-after) ?\n))))
 
-(ert-deftest py-ert-respect-paragraph-1294829.py ()
+(ert-deftest py-ert-respect-paragraph-1294829 ()
+
   (py-test-with-temp-buffer-point-min
       "# py-fill-paragraph doesn';t respect existing paragraph breaks when
 # reflowing the docstring, e.g.
 
 def foo(self)
-    \"\"\"One-line summary.
+    \"\"\"First one-line summary.
 
     Some other stuff which I don't want a paragraph break inserted into
     the middle of.
@@ -184,7 +185,7 @@ def foo(self)
     \"\"\"
 
 def foo(self)
-    \"\"\"One-line summary. Some other stuff which I don't want a
+    \"\"\"Second one-line summary. Some other stuff which I don't want a
 paragraph
 
     break inserted into the middle of. And another para hjkdfgh
@@ -243,21 +244,22 @@ by the
     (when py-debug-p (switch-to-buffer (current-buffer)))
     (font-lock-fontify-buffer)
     (search-forward "Some other" nil t 1)
-    (sit-for 0.1 t) 
+    (sit-for 0.1 t)
     (fill-paragraph)
-    (forward-line -1)
+    (forward-line -2)
+    (should (not (empty-line-p)))
+    (forward-line 1)
     (should (eq (char-after) ?\n))
-    (search-forward "One-line summary." nil t 1)
+    (search-forward "one-line summary." nil t 1)
     (when py-debug-p (message "fill-column: %s" fill-column))
     (fill-paragraph)
-    (forward-line 2)
-    (end-of-line)
-    (sit-for 0.1 t) 
+    (forward-line 1)
+    (sit-for 0.1 t)
     (should (empty-line-p))
     (search-forward "Foo bar" nil t 1)
     (fill-paragraph)
     (forward-line 2)
-    (should (eq (char-after) ?\n)) ))
+    (should (eq (char-after) ?\n))))
 
 (ert-deftest py-ert-backward-same-level-test ()
   (py-test-with-temp-buffer-point-min
@@ -481,9 +483,9 @@ x = {'abc':'def',
     if True:
         pass
     else:
-        pass 
+        pass
 "
     (when py-debug-p (switch-to-buffer (current-buffer)))
     (should (eq 0 (py-compute-indentation)))))
- 
+
 (provide 'py-ert-tests-2)

@@ -84,9 +84,11 @@ def foo():
   (py-test-with-temp-buffer-point-min
       "print(\"I'm the py-execute-line-test\")"
     (let ((py-shell-name "python"))
-      (when py-debug-p (switch-to-buffer (current-buffer)) )
-      (py-execute-line)
+      (when py-debug-p (switch-to-buffer (current-buffer))
+	    (font-lock-fontify-buffer))
       (sit-for 0.1 t) 
+      (py-execute-line)
+      (sit-for 0.4 t) 
       (set-buffer ert-test-default-buffer)
       (sit-for 0.1 t) 
       (when py-debug-p (switch-to-buffer (current-buffer)) )
