@@ -307,16 +307,21 @@ See lp:1066489 "
     ;; Add the number of newlines indicated by the selected style
     ;; at the start.
     (goto-char thisbeg)
-    (skip-chars-forward "\'")
-    (and
-     (car delimiters-style)
-     (unless (or (empty-line-p)(eolp)(save-excursion (forward-line -1)(empty-line-p)))
-       (or (newline (car delimiters-style)) t))
-     (indent-region beg end py-current-indent))
+    (skip-chars-forward "\'\"")
+    (when
+	(car delimiters-style)
+      (unless (or (empty-line-p)(eolp)(save-excursion (forward-line -1)(empty-line-p)))
+	(newline (car delimiters-style)))
+      (indent-region beg end py-current-indent))
     ;; (and multi-line-p first-line-p
     ;; (forward-line 1)
     ;; (unless (empty-line-p) (insert "\n")))
     )
+  (when multi-line-p
+    (forward-line 2)
+    (beginning-of-line)
+    (unless (empty-line-p) (newline))) 
+  
   (py--fill-fix-end thisend orig docstring delimiters-style))
 
 (defun py--fill-docstring-last-line (thisbeg thisend beg end style)
@@ -346,13 +351,13 @@ See lp:1066489 "
     ;; adjust the region to fill according to style
     (goto-char beg)
     (skip-chars-forward "\"'")
-    (unless (or (eq style 'pep-257-nn)(eq style 'pep-257)(eq (char-after) ?\n))
-      (newline-and-indent)
-      ;; if TQS is at a single line, re-fill remaining line
-      (setq beg (point))
-      (fill-region beg end))
-    ;; (py--fill-docstring-base thisbeg thisend style multi-line-p first-line-p beg end)
-    ))
+    ;; style might be nil
+    (when style
+      (unless (or (eq style 'pep-257-nn)(eq style 'pep-257)(eq (char-after) ?\n))
+	(newline-and-indent)
+	;; if TQS is at a single line, re-fill remaining line
+	(setq beg (point))
+	(fill-region beg end)))))
 
 (defun py--fill-docstring (justify style docstring orig)
   ;; Delete spaces after/before string fence
@@ -407,7 +412,7 @@ Fill according to `py-docstring-style' "
 	(docstring (if (and docstring (not (number-or-marker-p docstring)))
 		       (py--in-or-behind-or-before-a-docstring)
 		     docstring)))
-    (if (and docstring (or style py-docstring-style))
+    (if docstring
 	(py--fill-docstring justify style docstring orig)
       (fill-paragraph justify))))
 

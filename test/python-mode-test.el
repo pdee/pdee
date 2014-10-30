@@ -27,17 +27,21 @@
 
 (setq python-mode-interactive-tests
       (list
-       'py-describe-symbol-fails-on-modules-lp:919719-test
-       'another-broken-font-locking-lp:961231-test
-       'py-shell-complete-test
-       'cls-pseudo-keyword-lp:328849-test
-       'py-execute-region-error-test
+       'more-docstring-filling-woes-lp-1102296-nil-test
+       'more-docstring-filling-woes-lp-1102296-onetwo-test
+       'more-docstring-filling-woes-lp-1102296-django-test
+       'more-docstring-filling-woes-lp-1102296-symmetric-test
        'another-broken-font-locking-lp:961231-test
        'py-execute-block-python-test
        'py-fill-string-django-test
        'py-fill-string-onetwo-test
        'py-fill-string-pep-257-test
        'py-fill-string-pep-257-nn-test
+       'py-execute-statement-error-test
+       'py-describe-symbol-fails-on-modules-lp:919719-test
+       'py-shell-complete-test
+       'cls-pseudo-keyword-lp:328849-test
+       'py-execute-region-error-test
        'py-down-statement-test
        'py-multi-split-window-on-execute-lp-1361531-python-test
        'py-multi-split-window-on-execute-lp-1361531-ipython-test
@@ -58,9 +62,8 @@
 (defun py-run-interactive-tests (&optional arg)
   "Run tests which would work from batch-mode maybe. "
   (interactive "p")
-  (let (py-debug-p)
-    (dolist (ele python-mode-interactive-tests)
-      (funcall ele arg))))
+  (dolist (ele python-mode-interactive-tests)
+    (funcall ele arg)))
 
 (setq python-mode-tests
       (list
@@ -1866,16 +1869,20 @@ def foo()
   (py-bug-tests-intern 'py-fill-string-onetwo-base arg teststring)))
 
 (defun py-fill-string-onetwo-base ()
-  ;; (switch-to-buffer (current-buffer))
-  (font-lock-fontify-buffer)
+  (when py-debug-p (switch-to-buffer (current-buffer))
+	(font-lock-fontify-buffer))
   (sit-for 0.1)
   (goto-char 99)
   (py-fill-string-onetwo)
-  (forward-line 2)
+  (forward-line 1)
   (assert (empty-line-p) nil "py-fill-string-onetwo-test #1 failed")
   (message "%s" "py-fill-string-onetwo-test #1  done")
+  (forward-line 2)
+  (assert (empty-line-p) nil "py-fill-string-onetwo-test #2 failed")
+  (message "%s" "py-fill-string-onetwo-test #2  done")
   (goto-char (nth 8 (syntax-ppss)))
-  (assert (looking-at (concat py-string-delim-re "$")) nil "py-fill-string-onetwo-test #2 failed"))
+  (assert (looking-at (concat py-string-delim-re "$")) nil "py-fill-string-onetwo-test #3 failed")
+  (message "%s" "py-fill-string-onetwo-test #3  done"))
   (message "%s" "$")
 
 (defun py-fill-string-pep-257-test (&optional arg)
@@ -1888,16 +1895,19 @@ def foo()
   (py-bug-tests-intern 'py-fill-string-pep-257-base arg teststring)))
 
 (defun py-fill-string-pep-257-base ()
-  (switch-to-buffer (current-buffer))
-  (font-lock-fontify-buffer)
+  (when py-debug-p (switch-to-buffer (current-buffer))
+	(font-lock-fontify-buffer))
   (sit-for 0.1)
   (goto-char 99)
   (py-fill-string-pep-257)
   (forward-line 1)
-  (assert (nth 3 (syntax-ppss))  nil "py-fill-string-pep-257-test #1 failed")
-  (message "%s" "py-fill-string-pep-257-test #1  done")
-  (forward-line 1)
-  (assert (empty-line-p)  nil "py-fill-string-pep-257-test #2 failed"))
+  (assert (nth 3 (syntax-ppss)) nil "py-fill-string-pep-257-test #1 failed")
+  (message "%s" "py-fill-string-pep-257-test #1 done")
+  (assert (empty-line-p) nil "py-fill-string-pep-257-test #2 failed")
+  (message "%s" "py-fill-string-pep-257-test #2 done")
+  (forward-line 2)
+  (assert (empty-line-p) nil "py-fill-string-pep-257-test #3 failed")
+  (message "%s" "py-fill-string-pep-257-test #3 done"))
 
 (defun py-fill-string-pep-257-nn-test (&optional arg)
   (interactive "p")
