@@ -85,7 +85,7 @@ completions on the current context."
   (when imports
     (py--send-string-no-output imports process))
   ;; (py--delay-process-dependent process)
-  (sit-for 0.1 t) 
+  (sit-for 0.1 t)
   (let* ((completion
 	  (py--shell-completion-get-completions
 	   input process code))
@@ -199,8 +199,12 @@ in py-shell-mode `py-shell-complete'"
 	((eq major-mode 'python-mode)
 	 (if (string-match "ipython" (py-choose-shell))
 	     (py-shell-complete)
-	   (funcall py-complete-function))
-	 (py-shell-complete))))
+	   (funcall py-complete-function)))
+	((eq major-mode 'py-shell-mode)
+	 (if (string-match "[iI][Pp]ython" (buffer-name (current-buffer)))
+	     (py-shell-complete)
+	   (funcall py-complete-function)))
+	(t (py-shell-complete))))
 
 (provide 'python-components-shell-complete)
 ;; pyshell-complete.el ends here
