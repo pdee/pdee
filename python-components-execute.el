@@ -968,7 +968,7 @@ In case of error make messages indicate the source buffer"
 	  py-error nil)
     (when py-debug-p (message "py--postprocess-comint: py-split-window-on-execute-p: %s" py-split-window-on-execute-p))
     (with-current-buffer output-buffer
-      ;; (when py-debug-p (switch-to-buffer (current-buffer)))
+      (when py-debug-p (switch-to-buffer (current-buffer)))
       (setq py-result-raw (py--fetch-comint-result windows-config py-exception-buffer))
       (sit-for 0.1 t)
       (unless (ignore-errors (car py-result-raw))
@@ -986,6 +986,7 @@ In case of error make messages indicate the source buffer"
 	  (setq end (nth 2 py-result-raw))
 	  (insert (car py-result-raw))
 	  (setq py-error (py--fetch-error (current-buffer) origline))
+	  (sit-for 0.1 t) 
 	  (if py-error
 	      (with-current-buffer output-buffer
 		;; (switch-to-buffer (current-buffer))
@@ -1184,7 +1185,7 @@ Returns position where output starts. "
       ;; (when py-debug-p (switch-to-buffer (current-buffer)))
       (goto-char (point-max))
       (setq orig (point))
-      (comint-send-string proc cmd)
+      (process-send-string proc cmd)
       (setq erg (py--postprocess-comint buffer origline windows-config py-exception-buffer))
       (if py-error
 	  (progn
