@@ -54,16 +54,15 @@
 (defun py-send-string (string &optional process)
   "Evaluate STRING in Python process."
   (interactive "sPython command: ")
-  (let ((proc (or process (get-buffer-process (py-shell)))))
-    (comint-send-string proc "\n")
-    (comint-send-string proc string)
+  (let* ((proc (or process (get-buffer-process (py-shell))))
+	 (buffer (process-buffer proc)))
+    (process-send-string proc "\n")
+    (process-send-string proc string)
     (unless (string-match "\n\\'" string)
       ;; Make sure the text is properly LF-terminated.
-      (comint-send-string proc "\n"))
-    (when (string-match "\n[ \t].*\n?\\'" string)
-      ;; If the string contains a final indented line, add a second newline so
-      ;; as to make sure we terminate the multiline instruction.
-      (comint-send-string proc "\n"))))
+      (process-send-string proc "\n"))
+    (with-current-buffer buffer
+      (goto-char (point-max)))))
 
 (provide 'python-components-send)
 ;;; python-components-send.el ends here
