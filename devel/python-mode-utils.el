@@ -2262,9 +2262,6 @@ http://repo.or.cz/w/elbb.git/blob/HEAD:/code/Go-to-Emacs-Lisp-Definition.el
       (setq ele (replace-regexp-in-string  "/+" "-" (replace-regexp-in-string  "^[/~]+" "" ele)))
       (insert (concat "\(defun " ele "-shell-complete-test ()
   (interactive)
-  (let ((py-completion-delay 0)
-        py-switch-buffers-on-execute-p
-        py-split-window-on-execute-p)
     (set-buffer (py-shell nil t \"" elt "\" nil \"" sepchar "\"))
     (sit-for 0.2 t)
     (goto-char (point-max))
@@ -2272,7 +2269,7 @@ http://repo.or.cz/w/elbb.git/blob/HEAD:/code/Go-to-Emacs-Lisp-Definition.el
     (py-shell-complete)
     (beginning-of-line)
     (assert (looking-at \"print\") nil \"" ele "-shell-complete-test failed\")
-    (when py-verbose-p (message \"%s\" \"" ele "-shell-complete-test passed\"))))
+    (when py-verbose-p (message \"%s\" \"" ele "-shell-complete-test passed\")))
 \n\n")))
     (insert "\n(provide 'py-shell-completion-tests)
 ;;; py-shell-completion-tests ends here\n ")

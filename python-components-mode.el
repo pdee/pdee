@@ -282,20 +282,6 @@ Default is  nil"
   :type 'float
   :group 'python-mode)
 
-(defcustom py-ac-length-min 2
-  "Auto-complete takes action only with minimum length of word before point, set here.
-
-Default is 2"
-
-  :type 'integer
-  :group 'python-mode)
-
-(defcustom py-completion-delay 4
-  "Seconds completion-buffer is shown, if any. "
-
-  :type 'integer
-  :group 'python-mode)
-
 (defcustom py-autofill-timer-delay 1
   "Delay when idle before functions ajusting  `py-docstring-fill-column' resp. `py-comment-fill-column' are called. "
   :type 'integer
@@ -998,8 +984,18 @@ Default is `t'."
   :type 'number
   :group 'python-mode)
 
-(defcustom py--send-receive-delay 5
-  "Seconds to wait for output, used by `py--send-receive'. "
+(defcustom py-python-send-delay 5
+  "Seconds to wait for output, used by `py--send-...' functions.
+
+See also py-ipython-send-delay"
+
+  :type 'number
+  :group 'python-mode)
+
+(defcustom py-ipython-send-delay 9
+  "Seconds to wait for output, used by `py--send-...' functions.
+
+See also py-python-send-delay"
 
   :type 'number
   :group 'python-mode)

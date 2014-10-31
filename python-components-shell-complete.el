@@ -84,6 +84,8 @@ completions on the current context."
   "Do completion at point for PROCESS."
   (when imports
     (py--send-string-no-output imports process))
+  ;; (py--delay-process-dependent process)
+  (sit-for 0.1 t) 
   (let* ((completion
 	  (py--shell-completion-get-completions
 	   input process code))
@@ -91,7 +93,8 @@ completions on the current context."
 	 ;; (try-completion input completions)))
 	 newlist erg)
     (set-buffer py-exception-buffer)
-    (sit-for 0.1 t)
+    ;; (py--delay-process-dependent process)
+    ;; (sit-for 1 t)
     (cond ((eq completion t)
 	   (and py-verbose-p (message "py--shell--do-completion-at-point %s" "`t' is returned, not completion. Might be a bug."))
 	   nil)

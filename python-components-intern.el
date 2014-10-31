@@ -1176,6 +1176,12 @@ When `py-verbose-p' and MSG is non-nil messages the first line of STRING."
         (comint-send-string process "\n")))
     (unless py-debug-p (when (file-readable-p temp-file-name)(delete-file temp-file-name)))))
 
+(defun py--delay-process-dependent (process)
+  "Call a `py-ipython-send-delay' or `py-python-send-delay' according to process"
+  (if (string-match "ipython" (prin1-to-string process))
+      (accept-process-output process py-ipython-send-delay)
+    (accept-process-output process py-python-send-delay)))
+
 (defun py--send-string-no-output (string &optional process msg)
   "Send STRING to PROCESS and inhibit output display.
 When MSG is non-nil messages the first line of STRING.  Return
@@ -1189,7 +1195,8 @@ the output."
                       (setq output string)
                       "")))))
     (py-shell-send-string string process msg)
-    (accept-process-output process 5)
+    (sit-for 0.1 t) 
+    ;; (py--delay-process-dependent process)
     (when (and output (not (string= "" output)))
       (setq output
 	    (replace-regexp-in-string

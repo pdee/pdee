@@ -589,9 +589,9 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
     (let ((py-debug-p t)
 	  oldbuf)
       (py-execute-buffer-dedicated)
-      (sit-for 0.1 t) 
+      (sit-for 0.1 t)
       (set-buffer py-output-buffer)
-      (when py-debug-p (switch-to-buffer (current-buffer))) 
+      (when py-debug-p (switch-to-buffer (current-buffer)))
       (insert "socket.")
       (sit-for 0.1)
       ;; (switch-to-buffer (current-buffer))
@@ -814,23 +814,6 @@ def baz():
       (forward-line -1)
       (should (not (empty-line-p))))))
 
-
-;;; execute tests
-;; (ert-deftest py-ert-execute-line-test-2 ()
-;;   (py-test-with-temp-buffer-point-min
-;;       "foo=1"
-;;     (let ((py-shell-name "python"))
-;;       (py-execute-line)
-;;       (beginning-of-line)
-;;       (py-execute-partial-expression)
-;;       (set-buffer ert-test-default-buffer)
-;;       (switch-to-buffer (current-buffer))
-;;       (and (should
-;; 	    (or
-;; 	     (search-backward "1" nil t 1)
-;; 	     (search-forward "1" nil t 1)))
-;; 	   (py-kill-buffer-unconditional (current-buffer))))))
-
 (ert-deftest py-partial-expression-test ()
   (py-test-with-temp-buffer-point-min
       "foo=1"
@@ -882,6 +865,5 @@ def baz():
       (should (not (one-window-p))))))
 
 ;;;
-
 
 (provide 'py-ert-tests-1)

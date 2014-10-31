@@ -722,7 +722,8 @@ Expects being called by `py--run-unfontify-timer' "
 	    (erase-buffer)))
 	(py--shell-make-comint executable py-buffer-name args)
 	;; if called from a program, banner needs some delay
-	(sit-for 0.5 t)
+	(py--delay-process-dependent (get-buffer-process py-buffer-name))
+	;; (sit-for 0.5 t)
 	(setq py-output-buffer py-buffer-name)
 	(if (comint-check-proc py-buffer-name)
 	    (with-current-buffer py-buffer-name

@@ -5187,8 +5187,9 @@ re.
 
 (defun ipython-complete-lp-1102226-base ()
   (and (featurep 'company)(company-mode -1))
+  (when py-debug-p (switch-to-buffer (current-buffer))
+	(font-lock-fontify-buffer)) 
   (goto-char 62)
-  ;; (switch-to-buffer (current-buffer))
   (py-shell-complete)
   ;; (set-buffer "*IPython Completions*")
   ;; (switch-to-buffer (current-buffer))
@@ -5494,7 +5495,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.45 $\"
+__version__ = \"$Revision: 1.46 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))

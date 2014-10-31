@@ -88,7 +88,7 @@ def foo():
 	    (font-lock-fontify-buffer))
       (sit-for 0.1 t) 
       (py-execute-line)
-      (sit-for 0.4 t) 
+      (sit-for 0.1 t) 
       (set-buffer ert-test-default-buffer)
       (sit-for 0.1 t) 
       (when py-debug-p (switch-to-buffer (current-buffer)) )

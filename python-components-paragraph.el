@@ -310,8 +310,8 @@ See lp:1066489 "
     (skip-chars-forward "\'\"")
     (when
 	(car delimiters-style)
-      (unless (or (empty-line-p)(eolp)(save-excursion (forward-line -1)pty-line-p)))
-      (newline (car delimiters-style)))
+      (unless (or (empty-line-p)(eolp))
+	(newline (car delimiters-style))))
     (indent-region beg end py-current-indent))
   (when multi-line-p
     (goto-char thisbeg)
