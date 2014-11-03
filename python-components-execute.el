@@ -843,7 +843,7 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 (defun py--send-to-fast-process (strg proc output-buffer)
   "Called inside of `py--execute-base-intern' "
   (with-current-buffer (setq output-buffer (process-buffer proc))
-    (sit-for 0.1 t)
+    (sit-for 0.2 t)
     (erase-buffer)
     (py--fast-send-string-intern strg
 				 proc
@@ -970,17 +970,21 @@ In case of error make messages indicate the source buffer"
 	py-result-raw nil
 	py-error nil)
   (when py-debug-p (message "py--postprocess-comint: py-split-window-on-execute-p: %s" py-split-window-on-execute-p))
+  ;; py-ert-wrong-python-test fails otherwise
+  (sit-for 0.1 t) 
   (with-current-buffer output-buffer
     ;; (when py-debug-p (switch-to-buffer (current-buffer)))
     (setq py-result (py--fetch-comint-result orig)))
-  ;; (sit-for 0.1 t)
+  ;; (sit-for 1 t)
   (when py-debug-p (message "py-result: %s" py-result))
   (and (string-match "\n$" py-result)
        (setq py-result (substring py-result 0 (match-beginning 0))))
+  (sit-for 0.1 t)
   (if py-result
       (progn
 	(if (string-match "^Traceback" py-result)
 	    (progn
+	      (sit-for 1 t) 
 	      (with-temp-buffer
 		(when py-debug-p (message "py-result: %s" py-result))
 		(insert py-result)

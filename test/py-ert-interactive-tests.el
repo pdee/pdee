@@ -28,7 +28,7 @@ def foo():
       (when py-debug-p (switch-to-buffer (current-buffer)))
       (py-send-string "import os" (get-buffer-process (current-buffer)))
       (sit-for 0.1)
-      ;; (goto-char (point-max))
+      (goto-char (point-max))
       ;; (sit-for 0.1 t)
       (insert "print(os.get")
       (call-interactively 'py-shell-complete)

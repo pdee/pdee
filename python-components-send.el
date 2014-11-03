@@ -56,13 +56,15 @@
   (interactive "sPython command: ")
   (let* ((proc (or process (get-buffer-process (py-shell))))
 	 (buffer (process-buffer proc)))
-    (process-send-string proc "\n")
-    (process-send-string proc string)
+    (comint-send-string proc "\n")
+    (goto-char (point-max))
+    (comint-send-string proc string)
+    (goto-char (point-max))
     (unless (string-match "\n\\'" string)
       ;; Make sure the text is properly LF-terminated.
-      (process-send-string proc "\n"))
-    (with-current-buffer buffer
-      (goto-char (point-max)))))
+      (comint-send-string proc "\n"))
+    (when py-debug-p (message "%s" (current-buffer)))
+    (goto-char (point-max))))
 
 (provide 'python-components-send)
 ;;; python-components-send.el ends here
