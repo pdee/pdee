@@ -990,10 +990,11 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
       (save-match-data
 	(if (or (eq major-mode 'comint-mode)
 		(eq major-mode 'py-shell-mode))
-	    (cond
-	     ((re-search-backward py-fast-filter-re nil t 1)
-	      (goto-char (match-end 0)))
-	     (t (error "py-count-lines: Don't see py-fast-filter-re here")))
+	    (if
+		(re-search-backward py-fast-filter-re nil t 1)
+		(goto-char (match-end 0))
+	      (when py-debug-p (message "%s"  "py-count-lines: Don't see a prompt here"))
+	      (goto-char (point-min)))
 	  (goto-char (point-min))))
       (while (and (< (point) orig)(not (eobp)) (skip-chars-forward "^\n" orig))
         (setq count (1+ count))
@@ -1195,7 +1196,7 @@ the output."
                       (setq output string)
                       "")))))
     (py-shell-send-string string process msg)
-    (sit-for 0.1 t) 
+    (sit-for 0.1 t)
     ;; (py--delay-process-dependent process)
     (when (and output (not (string= "" output)))
       (setq output

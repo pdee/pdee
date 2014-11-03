@@ -266,30 +266,30 @@ py_if_name_main_permission_test()
   (py-bug-tests-intern 'py-if-name-main-permission-lp-326620-base arg teststring)))
 
 (defun py-if-name-main-permission-lp-326620-base ()
-  (save-excursion
-    (let ((py-if-name-main-permission-p t)
-          (py-shell-name (py-choose-shell)))
-      (py-execute-buffer)
-      (set-buffer "*Python*")
-      ;; (switch-to-buffer (current-buffer))
-      (goto-char (point-max))
-      (forward-line -1)
-      (end-of-line)
-      (sit-for 0.2)
-      (or
-	  (assert (looking-back "run") nil "py-if-name-main-permission-lp-326620-test #1 failed")
-	(message "%s" "py-if-name-main-permission-lp-326620-test #1 passed"))))
-  (let (py-if-name-main-permission-p)
+  (when py-debug-p (switch-to-buffer (current-buffer))
+	(font-lock-fontify-buffer))
+  (goto-char (point-min))
+  (let ((py-if-name-main-permission-p t))
     (py-execute-buffer)
     (set-buffer "*Python*")
-    ;; (switch-to-buffer (current-buffer))
+    (when py-debug-p (switch-to-buffer (current-buffer)))
     (goto-char (point-max))
     (forward-line -1)
     (end-of-line)
     (sit-for 0.2)
-    (or
-	(assert (looking-back "supressed") nil "py-if-name-main-permission-lp-326620-test #2 failed")
-      (message "%s" "py-if-name-main-permission-lp-326620-test #2 passed"))))
+    (assert (looking-back "run") nil "py-if-name-main-permission-lp-326620-test #1 failed")))
+
+;; (let (py-if-name-main-permission-p)
+;;   (py-execute-buffer)
+;;   (set-buffer "*Python*")
+;;   ;; (switch-to-buffer (current-buffer))
+;;   (goto-char (point-max))
+;;   (forward-line -1)
+;;   (end-of-line)
+;;   (sit-for 0.2)
+;;   (or
+;;    (assert (looking-back "supressed") nil "py-if-name-main-permission-lp-326620-test #2 failed")
+;;    (message "%s" "py-if-name-main-permission-lp-326620-test #2 passed"))))
 
 (defun sexp-commands-lp:328778-test (&optional arg)
   "With ARG greater 1 keep test buffer open.
@@ -5188,7 +5188,7 @@ re.
 (defun ipython-complete-lp-1102226-base ()
   (and (featurep 'company)(company-mode -1))
   (when py-debug-p (switch-to-buffer (current-buffer))
-	(font-lock-fontify-buffer)) 
+	(font-lock-fontify-buffer))
   (goto-char 62)
   (py-shell-complete)
   ;; (set-buffer "*IPython Completions*")
@@ -5282,7 +5282,7 @@ class Test(object):
 
 (defun more-docstring-filling-woes-lp-1102296-onetwo-base ()
   (when py-debug-p (switch-to-buffer (current-buffer))
-	(font-lock-fontify-buffer)) 
+	(font-lock-fontify-buffer))
   (let ((py-docstring-style 'onetwo))
     (goto-char 178)
     (fill-paragraph)
@@ -5343,7 +5343,7 @@ class Test(object):
 
 (defun more-docstring-filling-woes-lp-1102296-django-base ()
   (when py-debug-p (switch-to-buffer (current-buffer))
-	(font-lock-fontify-buffer))  
+	(font-lock-fontify-buffer))
   (let ((py-docstring-style 'django))
     (goto-char 178)
     (assert (fill-paragraph) nil "more-docstring-filling-woes-lp-1102296-django-test #1 failed")
@@ -5398,7 +5398,7 @@ class Test(object):
 
 (defun more-docstring-filling-woes-lp-1102296-symmetric-base ()
   (when py-debug-p (switch-to-buffer (current-buffer))
-	(font-lock-fontify-buffer)) 
+	(font-lock-fontify-buffer))
   (let ((py-docstring-style 'symmetric))
     (goto-char 178)
     (assert (fill-paragraph) nil "more-docstring-filling-woes-lp-1102296-symmetric-test #1 failed")
@@ -5410,7 +5410,7 @@ class Test(object):
     (message "%s" "more-docstring-filling-woes-lp-1102296-symmetric-test #2 done")
     (goto-char 380)
     (fill-paragraph)
-    (forward-line -1) 
+    (forward-line -1)
     (beginning-of-line)
     (sit-for 0.1 t)
     (assert (looking-at "        \"\"\"") nil "more-docstring-filling-woes-lp-1102296-symmetric-test #3 failed")
@@ -5495,7 +5495,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.46 $\"
+__version__ = \"$Revision: 1.47 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))

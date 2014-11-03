@@ -38,7 +38,7 @@ Return the process"
 
 Remove trailing newline"
   (setq py-result (replace-regexp-in-string py-fast-filter-re "" (buffer-substring-no-properties orig pos)))
-  (sit-for 1 t)
+  (sit-for 0.1 t)
   ;; remove trailing newline
   (and (string-match "\n$" py-result)
        (setq py-result (substring py-result 0 (match-beginning 0))))

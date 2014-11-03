@@ -13,6 +13,7 @@
 * py-electric-comment-add-space-lp:828398-test
 * py-help-at-point mit fast
 * py--fast-send-string store return
+* normalize py-execute-buffer-python-switch etc.
 * augmented-assigment-test
 * switch-windows-on-execute-p-test  - warum Fehler?
 * mention py-buffer-name holds current exec-buffer value

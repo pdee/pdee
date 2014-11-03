@@ -41,6 +41,14 @@
        'cls-pseudo-keyword-lp:328849-test
        'py-execute-region-error-test
        'py-down-statement-test
+       'docstring-style-switches-test
+       'py-nested-block-or-clause-test
+       'py-highlight-indentation-test
+       'py-smart-indentation-test
+       'autopair-mode-test
+       'py-execute-block-python-test
+       'py-execute-statement-error-test
+       'py-shell-complete-test
        'py-multi-split-window-on-execute-lp-1361531-python-test
        'py-multi-split-window-on-execute-lp-1361531-ipython-test
        'py-multi-split-window-on-execute-lp-1361531-python2-test
@@ -50,16 +58,7 @@
        'py-always-split-window-on-execute-lp-1361531-ipython-test
        'py-always-split-window-on-execute-lp-1361531-python2-test
        'py-always-split-window-on-execute-lp-1361531-jython-test
-       'py-always-split-window-on-execute-lp-1361531-python3-test
-       'docstring-style-switches-test
-       'py-nested-block-or-clause-test
-       'py-highlight-indentation-test
-       'py-smart-indentation-test
-       'autopair-mode-test
-       'py-execute-block-python-test
-       'py-execute-statement-error-test
-       'py-shell-complete-test
-       ))
+       'py-always-split-window-on-execute-lp-1361531-python3-test))
 
 (defun py-run-interactive-tests (&optional arg)
   "Run tests which would work from batch-mode maybe. "
@@ -2183,17 +2182,19 @@ else:
     (py-bug-tests-intern 'py-execute-statement-error-base arg teststring)))
 
 (defun py-execute-statement-error-base ()
-  (when py-debug-p (switch-to-buffer (current-buffer))
-	(font-lock-fontify-buffer))
-  (goto-char 152)
-  (push-mark)
-  (end-of-line)
-  (py-execute-statement-python)
-  (set-buffer "*Python*")
-  (sit-for 0.1 t)
-  (when py-debug-p (switch-to-buffer (current-buffer)))
-  (assert (search-backward "line 5") nil "py-execute-statement-error-test failed")
-  (message "%s" "py-execute-statement-error-test passed"))
+  (let (erg)
+    (when py-debug-p (switch-to-buffer (current-buffer))
+	  (font-lock-fontify-buffer))
+    (goto-char 152)
+    (push-mark)
+    (end-of-line)
+    (setq erg (py-execute-statement-python))
+    (sit-for 1 t)
+    (set-buffer "*Python*")
+    (sit-for 0.3 t)
+    (when py-debug-p (switch-to-buffer (current-buffer)))
+    (assert (search-backward "line 5") nil "py-execute-statement-error-test failed")
+    (message "%s" "py-execute-statement-error-test passed")))
 
 (defun beginning-of-block-fails-from-wrong-indent-test (&optional arg)
   (interactive "p")

@@ -12513,7 +12513,7 @@ Don't save anything for STR matching `py-input-filter-re' "
     (unless (eq modified py-complete-last-modified)
       (if py-auto-completion-mode-p
 	  (if (string= "*PythonCompletions*" (buffer-name (current-buffer)))
-	      (sit-for 1 t)
+	      (sit-for 0.1 t)
 	    (if
 		(eq py-auto-completion-buffer (current-buffer))
 		;; not after whitespace, TAB or newline
