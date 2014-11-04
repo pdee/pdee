@@ -27,6 +27,17 @@
 
 (setq python-mode-interactive-tests
       (list
+       'py-execute-def-ipython-test
+       'py-execute-class-ipython-test
+       'py-execute-expression-ipython-test
+       'execute-buffer-ipython-fails-lp:928087-test
+       'py-shell-invoking-ipython-lp:835151-test
+       'py-execute-block-ipython-test
+       'py-execute-block-or-clause-ipython-test
+       'py-execute-line-ipython-test
+       'py-execute-buffer-ipython-switch-test
+       'py-execute-region-ipython-test
+       'py-execute-statement-ipython-test
        'ipython-complete-lp-1102226-test
        'more-docstring-filling-woes-lp-1102296-nil-test
        'more-docstring-filling-woes-lp-1102296-onetwo-test
@@ -48,7 +59,6 @@
        'autopair-mode-test
        'py-execute-block-python-test
        'py-execute-statement-error-test
-       'py-shell-complete-test
        'py-multi-split-window-on-execute-lp-1361531-python-test
        'py-multi-split-window-on-execute-lp-1361531-ipython-test
        'py-multi-split-window-on-execute-lp-1361531-python2-test
@@ -58,7 +68,9 @@
        'py-always-split-window-on-execute-lp-1361531-ipython-test
        'py-always-split-window-on-execute-lp-1361531-python2-test
        'py-always-split-window-on-execute-lp-1361531-jython-test
-       'py-always-split-window-on-execute-lp-1361531-python3-test))
+       'py-always-split-window-on-execute-lp-1361531-python3-test
+       'py-shell-complete-test
+       ))
 
 (defun py-run-interactive-tests (&optional arg)
   "Run tests which would work from batch-mode maybe. "
