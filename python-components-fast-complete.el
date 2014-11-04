@@ -71,7 +71,7 @@ completions on the current context."
 	 (proc (get-buffer-process py-buffer-name))
 	 (code (if (string-match "[Ii][Pp]ython*" shell)
 		   (py-set-ipython-completion-command-string shell)
-		 py-shell-completion-string-code)))
+		 python-shell-module-completion-string-code)))
     (with-current-buffer py-buffer-name
       (erase-buffer))
     (py--fast--do-completion-at-point proc imports word pos py-exception-buffer code py-buffer-name)))

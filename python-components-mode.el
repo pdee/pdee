@@ -1497,53 +1497,6 @@ without the user's realization (e.g. to perform completion)."
   :type 'float
   :group 'python-mode)
 
-;; From Emacs 24.4.1 python.el 
-(defcustom py-shell-completion-setup-code
-  "try:
-    import readline, rlcompleter
-except ImportError:
-    def __PYTHON_EL_get_completions(text):
-        return []
-else:
-    def __PYTHON_EL_get_completions(text):
-        completions = []
-        try:
-            splits = text.split()
-            is_module = splits and splits[0] in ('from', 'import')
-            is_ipython = getattr(
-                __builtins__, '__IPYTHON__',
-                getattr(__builtins__, '__IPYTHON__active', False))
-            if is_module:
-                from IPython.core.completerlib import module_completion
-                completions = module_completion(text.strip())
-            elif is_ipython and getattr(__builtins__, '__IP', None):
-                completions = __IP.complete(text)
-            elif is_ipython and getattr(__builtins__, 'get_ipython', None):
-                completions = get_ipython().Completer.all_completions(text)
-            else:
-                i = 0
-                while True:
-                    res = readline.get_completer()(text, i)
-                    if not res:
-                        break
-                    i += 1
-                    completions.append(res)
-        except:
-            pass
-        return completions"
-  "Code used to setup completion in inferior Python processes."
-  :type 'string
-  :group 'python)
-
-;; from Emacs 24.4.1 python.el 
-(defcustom py-shell-completion-string-code
-  "';'.join(__PYTHON_EL_get_completions('''%s'''))\n"
-  "Python code used to get a string of completions separated by semicolons.
-The string passed to the function is the current python name or
-the full statement in the case of imports."
-  :type 'string
-  :group 'python)
-
 (defcustom py-setup-codes '(py-shell-completion-setup-code
                                       py-ffap-setup-code
                                       py-eldoc-setup-code
@@ -1552,44 +1505,43 @@ the full statement in the case of imports."
   :type '(repeat symbol)
   :group 'python-mode)
 
-;; (defvar py-shell-completion-setup-code
-;;   "try:
-;;     import readline
-;; except ImportError:
-;;     def __COMPLETER_all_completions(text): []
-;; else:
-;;     import rlcompleter
-;;     readline.set_completer(rlcompleter.Completer().complete)
-;;     def __COMPLETER_all_completions(text):
-;;         import sys
-;;         completions = []
-;;         try:
-;;             i = 0
-;;             while True:
-;;                 res = readline.get_completer()(text, i)
-;;                 if not res: break
-;;                 i += 1
-;;                 completions.append(res)
-;;         except NameError:
-;;             pass
-;;         return completions"
-;;   "Code used to setup completion in Python processes.")
+(defvar py-shell-completion-setup-code
+  "try:
+    import readline
+except ImportError:
+    def __COMPLETER_all_completions(text): []
+else:
+    import rlcompleter
+    readline.set_completer(rlcompleter.Completer().complete)
+    def __COMPLETER_all_completions(text):
+        import sys
+        completions = []
+        try:
+            i = 0
+            while True:
+                res = readline.get_completer()(text, i)
+                if not res: break
+                i += 1
+                completions.append(res)
+        except NameError:
+            pass
+        return completions"
+  "Code used to setup completion in Python processes.")
 
 
-;; (defcustom python-shell-module-completion-string-code "';'.join(__COMPLETER_all_completions('''%s'''))"
-;;   "Python code used to get completions separated by semicolons for imports.
+(defcustom python-shell-module-completion-string-code "';'.join(__COMPLETER_all_completions('''%s'''))"
+  "Python code used to get completions separated by semicolons for imports.
 
-;; For IPython v0.11, add the following line to
-;; `py-shell-completion-setup-code':
+For IPython v0.11, add the following line to
+`py-shell-completion-setup-code':
 
-;; from IPython.core.completerlib import module_completion
+from IPython.core.completerlib import module_completion
 
-;; and use the following as the value of this variable:
+and use the following as the value of this variable:
 
-;; ';'.join(module_completion('''%s'''))"
-;;   :type 'string
-;;   :group 'python-mode)
-
+';'.join(module_completion('''%s'''))"
+  :type 'string
+  :group 'python-mode)
 
 (defcustom py--imenu-create-index-function 'py--imenu-create-index-new
   "Switch between `py--imenu-create-index-new', which also lists modules variables,  and series 5. index-machine"
