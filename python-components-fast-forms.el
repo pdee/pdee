@@ -37,12 +37,17 @@ Return the process"
   "Set `py-result' according to `py-fast-filter-re'.
 
 Remove trailing newline"
-  (setq py-result (replace-regexp-in-string py-fast-filter-re "" (buffer-substring-no-properties orig pos)))
+  (when (string-match "[Ii]" (buffer-name (current-buffer)))
+    (setq py-result (ansi-color-filter-apply (buffer-substring-no-properties orig pos))))
+  (sit-for 0.1 t)
+  (if py-result
+      (setq py-result (replace-regexp-in-string py-fast-filter-re "" py-result))
+    (setq py-result (replace-regexp-in-string py-fast-filter-re "" (buffer-substring-no-properties orig pos))))
   (sit-for 0.1 t)
   ;; remove trailing newline
   (and (string-match "\n$" py-result)
        (setq py-result (substring py-result 0 (match-beginning 0))))
-  (setq py-result (split-string py-result "\n"))
+  ;; (setq py-result (split-string py-result "\n"))
   py-result)
 
 (defun py--fast-send-string-no-output (string proc output-buffer)

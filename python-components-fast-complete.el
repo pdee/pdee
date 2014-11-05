@@ -22,8 +22,8 @@
 Argument COMPLETION-CODE is the python code used to get
 completions on the current context."
   (let ((completions
-	 (car (py--fast-send-string-intern
-	  (format completion-code input) process py-buffer-name nil t))))
+	 (py--fast-send-string-intern
+	  (format completion-code input) process py-buffer-name nil t)))
     (when (> (length completions) 2)
       (split-string completions "^'\\|^\"\\|;\\|'$\\|\"$" t))))
 

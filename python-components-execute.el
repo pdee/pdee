@@ -736,12 +736,8 @@ Expects being called by `py--run-unfontify-timer' "
 		     ;; M-x python RET sends from interactive "p"
 		     argprompt)
 		 (or py-switch-buffers-on-execute-p py-split-window-on-execute-p))
-	(py--shell-manage-windows py-buffer-name windows-config py-exception-buffer))
-      (sit-for py-new-shell-delay t)
-      ;; (when py-shell-mode-hook (run-hooks 'py-shell-mode-hook))
-      (when (string-match "[BbIi][Pp]ython" py-buffer-name)
-	(sit-for 0.3 t))
-      (sit-for 0.1 t))
+	(py--shell-manage-windows py-buffer-name windows-config py-exception-buffer)))
+    (sit-for py-new-shell-delay t)
     py-buffer-name))
 
 (defun py-shell-get-process (&optional argprompt py-dedicated-process-p shell switch py-buffer-name)
@@ -971,7 +967,7 @@ In case of error make messages indicate the source buffer"
 	py-error nil)
   (when py-debug-p (message "py--postprocess-comint: py-split-window-on-execute-p: %s" py-split-window-on-execute-p))
   ;; py-ert-wrong-python-test fails otherwise
-  (sit-for 0.1 t) 
+  (sit-for 0.1 t)
   (with-current-buffer output-buffer
     ;; (when py-debug-p (switch-to-buffer (current-buffer)))
     (setq py-result (py--fetch-comint-result orig)))
@@ -984,7 +980,7 @@ In case of error make messages indicate the source buffer"
       (progn
 	(if (string-match "^Traceback" py-result)
 	    (progn
-	      (sit-for 1 t) 
+	      (sit-for 1 t)
 	      (with-temp-buffer
 		(when py-debug-p (message "py-result: %s" py-result))
 		(insert py-result)

@@ -595,7 +595,7 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
       (insert "socket.")
       (sit-for 0.1)
       ;; (switch-to-buffer (current-buffer))
-      (funcall 'py-complete-function)
+      (py-indent-or-complete)
       (sit-for 0.1)
       (set-buffer "*Python Completions*")
       ;; (switch-to-buffer (current-buffer))

@@ -275,7 +275,7 @@ Default is  nil"
 (defcustom py-new-shell-delay
     (if (eq system-type 'windows-nt)
       2.0
-    0.2)
+    1.0)
 
   "If a new comint buffer is connected to Python, commands like completion might need some delay. "
 
@@ -2130,10 +2130,16 @@ for options to pass to the DOCNAME interpreter. \"
 
 (defvar py-fast-filter-re (concat "\\("
 			       (mapconcat 'identity
-					  (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
+					  (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt "....:"))
 					  "\\|")
 			       "\\)")
   "Internally used by `py-fast-filter'. ")
+
+;; (setq py-fast-filter-re (concat "\\("
+;; 			       (mapconcat 'identity
+;; 					  (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt "....:"))
+;; 					  "\\|")
+;; 			       "\\)"))
 
 ;;; Constants
 (defconst py-block-closing-keywords-re

@@ -2374,7 +2374,7 @@ print(u'\\xA9')
 (defun execute-buffer-ipython-fails-lp:928087-base ()
   (let (py-split-window-on-execute-p
         py-switch-buffers-on-execute-p)
-    (assert (not (py-execute-buffer)) nil "execute-buffer-ipython-fails-lp:928087-test failed")))
+    (assert (py-execute-buffer) nil "execute-buffer-ipython-fails-lp:928087-test failed")))
 
 (defun fourth-level-blocks-indent-incorrectly-lp:939577-test (&optional arg)
   (interactive "p")
@@ -2443,7 +2443,10 @@ I am using version 6.0.4
 
 (defun py-shell-invoking-ipython-lp:835151-base ()
   (setq py-shell-name "ipython")
-  (assert (stringp (py-execute-buffer "ipython")) nil "py-shell-invoking-ipython-lp:835151-test failed"))
+  (py-execute-buffer)
+  (set-buffer py-buffer-name)
+  (goto-char (point-max)) 
+  (assert (search-backward "py-shell-name: ipython")  nil "py-shell-invoking-ipython-lp:835151-test failed"))
 
 (defun py-shell-invoking-python3-lp:835151-test (&optional arg)
   (interactive "p")
@@ -5495,7 +5498,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.47 $\"
+__version__ = \"$Revision: 1.48 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))

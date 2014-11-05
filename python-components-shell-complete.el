@@ -202,10 +202,11 @@ in py-shell-mode `py-shell-complete'"
 	     (py-shell-complete)
 	   (funcall py-complete-function)))
 	((eq major-mode 'py-shell-mode)
-	 (if (string-match "[iI][Pp]ython" (buffer-name (current-buffer)))
+	 (if (string-match "[iI]?[Pp]ython" (buffer-name (current-buffer)))
 	     (py-shell-complete)
 	   (funcall py-complete-function)))
-	(t (py-shell-complete))))
+	(t
+	 (funcall py-complete-function))))
 
 (provide 'python-components-shell-complete)
 ;; pyshell-complete.el ends here

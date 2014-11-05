@@ -61,7 +61,7 @@
 	  (py-return-result-p t)
 	  py-result py-store-result-p)
       (py-execute-statement)
-      (should (string= "1"(car py-result))))))
+      (should (string= "1" py-result)))))
 
 (ert-deftest py-ert-execute-statement-fast-2 ()
   (py-test-with-temp-buffer-point-min
@@ -70,7 +70,7 @@
 	  (py-return-result-p t)
 	  py-result py-store-result-p)
       (py-execute-statement-fast)
-      (should (string= "2" (car py-result))))))
+      (should (string= "2" py-result)))))
 
 (ert-deftest py-ert-execute-block-fast ()
   (py-test-with-temp-buffer-point-min
@@ -82,7 +82,8 @@
 	  (py-debug-p t)
 	  py-result)
       (py-execute-block)
-      (should (string= "1" (car py-result))))))
+      (when py-debug-p (message "py-ert-execute-block-fast, py-result: %s" py-result))
+      (should (string= "1" py-result)))))
 
 (ert-deftest py-ert-execute-block-fast-2 ()
   (py-test-with-temp-buffer-point-min
@@ -98,7 +99,8 @@ finally:
 	  (py-debug-p t)
 	  py-result)
       (py-execute-block)
-      (should (string< (car py-result) (cadr py-result))))))
+      (when py-debug-p (message "py-ert-execute-block-fast, py-result: %s" py-result))
+      (should (numberp (string-to-number (car (split-string py-result))))))))
 
 ;;;
 (ert-deftest py-ert-keyword-face-lp-1294742 ()
