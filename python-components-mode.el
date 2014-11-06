@@ -1948,9 +1948,18 @@ can write into: the value (if any) of the environment variable TMPDIR,
 
                           `py-custom-temp-directory' will take precedence when setq ")
 
-(defvar py-pdbtrack-input-prompt nil)
+;; ipython.el
+(defvar py-pdbtrack-input-prompt "^[(<]*[Ii]?[Pp]y?db[>)]+ "
+  "Recognize the prompt. ")
 
-(defvar py-pydbtrack-input-prompt nil)
+(defvar py-pydbtrack-input-prompt "^[(]*ipydb[>)]+ "
+  "Recognize the pydb-prompt. ")
+
+;; pydb-328837.diff
+
+;; prevent ipython.el's setting
+(setq ipython-de-input-prompt-regexp "In \\[[0-9]+\\]:\\|^[ ]\\{3\\}[.]\\{3,\\}:" )
+
 
 (defvar py-exec-command nil
   "Internally used. ")
@@ -2437,17 +2446,6 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
 (setq symbol-definition-start-re "^[ \t]*(\\(defun\\|defvar\\|defcustom\\)")
 
 (put 'py-indent-offset 'safe-local-variable 'integerp)
-
-;; ipython.el
-;; Recognize the ipython pdb, whose prompt is 'ipdb>' or  'ipydb>'
-;;instead of '(Pdb)'
-(setq py-pdbtrack-input-prompt "^[(<]*[Ii]?[Pp]y?db[>)]+ ")
-(setq py-pydbtrack-input-prompt "^[(]*ipydb[>)]+ ")
-
-;; pydb-328837.diff
-
-;; prevent ipython.el's setting
-(setq ipython-de-input-prompt-regexp "In \\[[0-9]+\\]:\\|^[ ]\\{3\\}[.]\\{3,\\}:" )
 
 (defsubst py-keep-region-active ()
   "Keep the region active in XEmacs."
