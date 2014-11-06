@@ -33,22 +33,13 @@ Return the process"
   (interactive "P")
   (py-shell argprompt dedicated shell buffer-name t))
 
-(defun py--filter-result (orig pos &optional store)
+(defun py--filter-result (string)
   "Set `py-result' according to `py-fast-filter-re'.
 
 Remove trailing newline"
-  (when (string-match "[Ii]" (buffer-name (current-buffer)))
-    (setq py-result (ansi-color-filter-apply (buffer-substring-no-properties orig pos))))
-  (sit-for 0.1 t)
-  (if py-result
-      (setq py-result (replace-regexp-in-string py-fast-filter-re "" py-result))
-    (setq py-result (replace-regexp-in-string py-fast-filter-re "" (buffer-substring-no-properties orig pos))))
-  (sit-for 0.1 t)
-  ;; remove trailing newline
-  (and (string-match "\n$" py-result)
-       (setq py-result (substring py-result 0 (match-beginning 0))))
-  ;; (setq py-result (split-string py-result "\n"))
-  py-result)
+  (let* ((erg (ansi-color-filter-apply string)))
+    (setq py-result (replace-regexp-in-string (format "[ \n]*%s[ \n]*" py-fast-filter-re) "" erg))
+    py-result))
 
 (defun py--fast-send-string-no-output (string proc output-buffer)
   (with-current-buffer output-buffer
@@ -77,7 +68,7 @@ Remove trailing newline"
       (accept-process-output proc 5)
       (sit-for py-fast-completion-delay t)
       ;; sets py-result
-      (py--filter-result orig (point-max) store)
+      (setq py-result (py--filter-result (py--fetch-result orig)))
       (when return
 	py-result))))
 
@@ -100,20 +91,6 @@ See also `py-fast-shell'
 From a programm use `py--fast-send-string'"
   (interactive "sPython command: ")
   (py--fast-send-string string))
-
-;; (defun py--fast-send-string-no-output (string &optional proc)
-;;   "Process Python string, ignore output.
-
-;; Used to update Python process
-;; See also `py-fast-shell'
-
-;; "
-;;   (let* ((proc (or proc
-;; 		   (ignore-errors (get-buffer-process (get-buffer py-buffer-name)))
-;; 		   (py-fast-process)))
-;; 	 (buffer (process-buffer proc))
-;; 	 py-store-result-p)
-;;     (py--fast-send-string-intern string proc buffer nil nil)))
 
 (defun py-process-region-fast (beg end)
   (interactive "r")

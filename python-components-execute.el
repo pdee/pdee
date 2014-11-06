@@ -631,26 +631,29 @@ Receives a buffer-name as argument"
 				  proc)
   (py--fast-send-string-intern "sys.ps1" proc buffer nil t))
 
-(defun py--unfontify-banner (buffer)
+(defun py--unfontify-banner (&optional buffer)
   "Unfontify the shell banner-text.
 
 Cancels `py--timer'
 Expects being called by `py--run-unfontify-timer' "
   (interactive)
-  (when (ignore-errors (buffer-live-p buffer))
-    (with-current-buffer buffer
-      (goto-char (point-min))
-      (let ((erg  (if
-		      (re-search-forward py-fast-filter-re nil t 1)
-		      (point)
-		    (and (boundp 'comint-last-prompt)(ignore-errors (car comint-last-prompt))))))
-	(sit-for 0.1 t)
-	(if erg
-	    (progn
-	    (font-lock-unfontify-region (point-min) erg)
-	    (goto-char (point-max)))
-	  (progn (and py-debug-p (message "%s" (concat "py--unfontify-banner: Don't see a prompt in buffer " (buffer-name buffer)))))))
-      (and (timerp py--timer)(cancel-timer py--timer)))))
+  (save-excursion
+    (let ((buffer (or buffer (current-buffer))))
+      (if (ignore-errors (buffer-live-p (get-buffer buffer)))
+	  (with-current-buffer buffer
+	    (goto-char (point-min))
+	    (let ((erg (or (ignore-errors (car comint-last-prompt))
+			   (and
+			    (re-search-forward py-fast-filter-re nil t 1)
+			    (match-beginning 0)))))
+	      (sit-for 0.1 t)
+	      (if erg
+		  (progn
+		    (font-lock-unfontify-region (point-min) erg)
+		    (goto-char (point-max)))
+		(progn (and py-debug-p (message "%s" (concat "py--unfontify-banner: Don't see a prompt in buffer " (buffer-name buffer)))))))
+	    (and (timerp py--timer)(cancel-timer py--timer)))
+	(and (timerp py--timer)(cancel-timer py--timer))))))
 
 (defun py--start-fast-process (shell buffer)
   (let ((proc (start-process shell buffer shell)))
@@ -724,12 +727,16 @@ Expects being called by `py--run-unfontify-timer' "
 	    (erase-buffer)))
 	(py--shell-make-comint executable py-buffer-name args)
 	;; if called from a program, banner needs some delay
-	(py--delay-process-dependent (get-buffer-process py-buffer-name))
-	;; (sit-for 0.5 t)
+	(sit-for 0.5 t)
 	(setq py-output-buffer py-buffer-name)
 	(if (comint-check-proc py-buffer-name)
 	    (with-current-buffer py-buffer-name
-	      (py--shell-setup py-buffer-name (get-buffer-process py-buffer-name)))
+	      ;; (when py-debug-p (switch-to-buffer (current-buffer)))
+	      ;; (py--unfontify-banner py-buffer-name)
+	      (setq proc (get-buffer-process py-buffer-name))
+	      ;; (comint-send-string proc "\n")
+	      (py--delay-process-dependent proc)
+	      (py--shell-setup py-buffer-name proc))
 	  (error (concat "py-shell: No process in " py-buffer-name))))
       ;; (goto-char (point-max))
       (when (and (or (interactive-p)
@@ -927,37 +934,9 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
       (setq py-error (buffer-substring-no-properties (point-min) (point-max)))
       py-error)))
 
-(defun py--fetch-comint-result (orig)
-  "Returns a list: result, beg-position end-position of result.
-
-In case of error make messages indicate the source buffer"
-  (replace-regexp-in-string py-fast-filter-re "" (buffer-substring-no-properties orig (point-max))))
-
-  ;; (save-excursion
-  ;;   ;; (when py-debug-p (switch-to-buffer (current-buffer)))
-  ;;   (let (beg end erg)
-  ;;     (cond
-  ;;      ((and
-  ;; 	 (boundp 'comint-last-prompt)
-  ;; 	 (sit-for 0.2 t)
-  ;; 	 (number-or-marker-p (cdr comint-last-prompt))
-  ;; 	 (number-or-marker-p (car comint-last-prompt))
-  ;; 	 (goto-char (car comint-last-prompt))
-  ;; 	 (re-search-backward py-fast-filter-re nil t 1)
-  ;; 	 (setq beg (goto-char (match-end 0))))
-  ;; 	(setq end (car comint-last-prompt))
-  ;; 	(setq erg (buffer-substring-no-properties (point) (car comint-last-prompt))))
-  ;;      ((and (re-search-backward py-fast-filter-re nil t 1)
-  ;; 	     (setq end (point))
-  ;; 	     (re-search-backward py-fast-filter-re nil t 1)
-  ;; 	     (goto-char (match-end 0)))
-  ;; 	(setq beg (point))
-  ;; 	(setq erg (buffer-substring-no-properties (point) end))))
-  ;;     (when (and erg
-  ;; 		 (string-match "\n$" erg))
-  ;; 	(setq erg (substring erg 0 (1- (length erg)))))
-  ;;     ;; report the region, usefull in case of error
-  ;;     (list erg beg end))))
+(defun py--fetch-result (orig)
+  "Return buffer-substring from orig to point-max. "
+  (buffer-substring-no-properties orig (point-max)))
 
 (defun py--postprocess-comint (output-buffer origline windows-config py-exception-buffer orig)
   "Provide return values, check result for error, manage windows. "
@@ -970,7 +949,7 @@ In case of error make messages indicate the source buffer"
   (sit-for 0.1 t)
   (with-current-buffer output-buffer
     ;; (when py-debug-p (switch-to-buffer (current-buffer)))
-    (setq py-result (py--fetch-comint-result orig)))
+    (setq py-result (py--fetch-result orig)))
   ;; (sit-for 1 t)
   (when py-debug-p (message "py-result: %s" py-result))
   (and (string-match "\n$" py-result)
@@ -1733,7 +1712,7 @@ jump to the top (outermost) exception in the exception stack."
         (py--find-next-exception 'bob buffer 're-search-forward "Top")
       (py--find-next-exception 'bol buffer 're-search-backward "Top"))))
 ;;;
-;; obsolete by py--fetch-comint-result
+;; obsolete by py--fetch-result
 ;; followed by py--fetch-error
 ;; still used by py--execute-ge24.3
 (defun py--postprocess-intern (buf &optional origline)
