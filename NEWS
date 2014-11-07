@@ -122,14 +122,11 @@ Setting docstring style simplified; a style is all needed.
   If an empty line was dedented deliberatly, this is
   honored by next lines indent
 
-- py-object-reference-face'
+- py-object-reference-face
   commonly "self" or "cls", inherits default face
 
 - py-error
   In case of error, list messages from Python process
-
- t
-  "When non-nil split windows.
 
 - `py-split-windows-on-execute-p' renamed `py-split-window-on-execute'
   Not a boolean any more, new option 'just-two: When code is send to
@@ -203,6 +200,10 @@ New booleans
   If `t', stuff is executed through `py-fast-...'-
   commands, suitable for large output. Result arrives
   in py-fast-output-buffer, which is not in comint-mode
+
+- py-shell-manage-windows-p
+  If `t', open output buffers, split windows according to settings of
+  `py-split-window-on-execute-p' and `py-switch-buffers-on-execute-p'.
 
 Dropped booleans:
 `py-start-run-py-shell',

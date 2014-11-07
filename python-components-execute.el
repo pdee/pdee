@@ -739,7 +739,8 @@ Expects being called by `py--run-unfontify-timer' "
 	      (py--shell-setup py-buffer-name proc))
 	  (error (concat "py-shell: No process in " py-buffer-name))))
       ;; (goto-char (point-max))
-      (when (and (or (interactive-p)
+      (when (and py-shell-manage-windows-p
+		 (or (interactive-p)
 		     ;; M-x python RET sends from interactive "p"
 		     argprompt)
 		 (or py-switch-buffers-on-execute-p py-split-window-on-execute-p))
@@ -841,7 +842,8 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
     (setq py-buffer-name buffer)
     (py--execute-base-intern strg shell filename proc file wholebuf buffer origline)
     (when py-debug-p (message "py--execute-base: py-split-window-on-execute-p: %s" py-split-window-on-execute-p))
-    (py--shell-manage-windows buffer windows-config py-exception-buffer)))
+    (when py-shell-manage-windows-p
+      (py--shell-manage-windows buffer windows-config py-exception-buffer))))
 
 (defun py--send-to-fast-process (strg proc output-buffer)
   "Called inside of `py--execute-base-intern' "
