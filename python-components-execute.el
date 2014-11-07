@@ -452,9 +452,10 @@ Internal use"
 	(and (window-parent)(ignore-errors (split-window (window-parent))))
 	(and (window-atom-root)(split-window (window-atom-root))))))
 
-(defun py--manage-windows-split (output-buffer)
+(defun py--manage-windows-split (exception-buffer output-buffer)
   "If one window, split according to `py-split-windows-on-execute-function. "
   (interactive)
+  (set-buffer exception-buffer)
   (when py-debug-p (message "Calling %s" "py--manage-windows-split"))
   (or
    (ignore-errors (funcall py-split-windows-on-execute-function))
@@ -487,7 +488,7 @@ Internal use"
       (if (member (get-buffer-window output-buffer)(window-list))
 	  ;; (delete-window (get-buffer-window output-buffer))
 	  (select-window (get-buffer-window output-buffer))
-	(py--manage-windows-split output-buffer)
+	(py--manage-windows-split py-exception-buffer output-buffer)
 	;; otherwise new window appears above
 	(save-excursion
 	  (other-window 1)
@@ -498,7 +499,7 @@ Internal use"
        (not py-switch-buffers-on-execute-p))
       (if (member (get-buffer-window output-buffer)(window-list))
 	  (select-window (get-buffer-window output-buffer))
-	(py--manage-windows-split output-buffer)
+	(py--manage-windows-split py-exception-buffer output-buffer)
 	;; otherwise new window appears above
 	;; (save-excursion
 	;; (other-window 1)
@@ -512,7 +513,7 @@ Internal use"
       (switch-to-buffer (current-buffer))
       (delete-other-windows)
       ;; (sit-for py-new-shell-delay)
-      (py--manage-windows-split output-buffer)
+      (py--manage-windows-split py-exception-buffer output-buffer)
       ;; otherwise new window appears above
       (other-window 1)
       (set-buffer output-buffer)
@@ -522,17 +523,16 @@ Internal use"
        (not py-switch-buffers-on-execute-p))
       (set-buffer py-exception-buffer)
       (switch-to-buffer (current-buffer))
+      (delete-other-windows) 
       (unless
-	  (and (member (get-buffer-window output-buffer)(window-list))
-	       (eq 2 (length (window-list))))
-	(delete-other-windows)
-	(py--manage-windows-split output-buffer)
-	;; Fixme: otherwise new window appears above
-	(save-excursion
-	  (other-window 1)
-	  (pop-to-buffer output-buffer)
-	  (goto-char (point-max))
-	  (other-window 1))))
+	  (member (get-buffer-window output-buffer)(window-list))
+	(py--manage-windows-split py-exception-buffer output-buffer))
+      ;; Fixme: otherwise new window appears above
+      (save-excursion
+	(other-window 1)
+	(pop-to-buffer output-buffer)
+	(goto-char (point-max))
+	(other-window 1)))
      ((and
        py-split-window-on-execute-p
        (not py-switch-buffers-on-execute-p))
@@ -540,7 +540,7 @@ Internal use"
       (switch-to-buffer (current-buffer))
       (unless
 	  (member (get-buffer-window output-buffer)(window-list))
-	(py--manage-windows-split output-buffer))
+	(py--manage-windows-split py-exception-buffer output-buffer))
       ;; Fixme: otherwise new window appears above
       (save-excursion
 	(other-window 1)
@@ -858,8 +858,7 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 
 When optional FILE is `t', no temporary file is needed. "
   ;; (when py-debug-p (message "run: %s" "py--execute-base-intern"))
-  (when py-debug-p (message "py--execute-base-intern: py-split-window-on-execute-p: %s" py-split-window-on-execute-p))
-
+  ;; (when py-debug-p (message "py--execute-base-intern: py-split-window-on-execute-p: %s" py-split-window-on-execute-p))
   (let (output-buffer erg)
     (setq py-error nil)
     ;; (when py-debug-p

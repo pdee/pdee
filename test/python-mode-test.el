@@ -27,11 +27,15 @@
 
 (setq python-mode-interactive-tests
       (list
+       'py-split-just-two-window-on-execute-lp-1361531-python-test
+       'py-split-just-two-window-on-execute-lp-1361531-ipython-test
+       'py-split-just-two-window-on-execute-lp-1361531-python2-test
+       'py-split-just-two-window-on-execute-lp-1361531-jython-test
+       'py-split-just-two-window-on-execute-lp-1361531-python3-test
        'py-execute-def-ipython-test
        'py-execute-class-ipython-test
        'py-execute-expression-ipython-test
        'execute-buffer-ipython-fails-lp:928087-test
-       'py-shell-invoking-ipython-lp:835151-test
        'py-execute-block-ipython-test
        'py-execute-block-or-clause-ipython-test
        'py-execute-line-ipython-test
@@ -70,6 +74,7 @@
        'py-always-split-window-on-execute-lp-1361531-jython-test
        'py-always-split-window-on-execute-lp-1361531-python3-test
        'py-shell-complete-test
+       'py-shell-invoking-ipython-lp:835151-test
        ))
 
 (defun py-run-interactive-tests (&optional arg)
@@ -141,7 +146,6 @@
        'py-execute-line-jython-noswitch-test
        'py-execute-line-jython-dedicated-test
        'py-execute-line-jython-dedicated-switch-test
-
        'py-beginning-of-block-test
        'py-end-of-block-test
        'py-beginning-of-block-or-clause-test

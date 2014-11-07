@@ -2433,8 +2433,12 @@ I am using version 6.0.4
   (setq py-shell-name "python")
   (py-execute-buffer)
   (set-buffer "*Python*")
-  ;; (switch-to-buffer (current-buffer))
-  (assert (or (search-forward "py-shell-name: python" nil t 1)(search-backward "py-shell-name: python")) nil t 1) nil "py-shell-invoking-python-lp:835151-test failed")
+  (sit-for 0.1)
+  (and
+   (assert (or (search-forward "py-shell-name: python" nil t 1)
+	       (search-backward "py-shell-name: python" nil t 1))
+	   nil "py-shell-invoking-python-lp:835151-test failed")
+   (message "%s" "py-shell-invoking-python-lp:835151-test passed")))
 
 (defun py-shell-invoking-ipython-lp:835151-test (&optional arg)
   (interactive "p")
@@ -2445,7 +2449,7 @@ I am using version 6.0.4
   (setq py-shell-name "ipython")
   (py-execute-buffer)
   (set-buffer py-buffer-name)
-  (goto-char (point-max)) 
+  (goto-char (point-max))
   (assert (search-backward "py-shell-name: ipython")  nil "py-shell-invoking-ipython-lp:835151-test failed"))
 
 (defun py-shell-invoking-python3-lp:835151-test (&optional arg)

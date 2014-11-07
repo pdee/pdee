@@ -177,7 +177,7 @@
   "Python-mode will generate commands opening shells mentioned here. Edit this list \w resp. to your machine. ")
 
 (setq py-shells
-  (list 'python 'ipython 'python2  'jython 'python3 'bpython))
+  (list 'python 'ipython 'python2  'jython 'python3))
 
 (defvar py-commands
   (list "py-python-command" "py-ipython-command" "py-python3-command" "py-python2-command" "py-jython-command" "py-bpython-command")
@@ -3264,11 +3264,57 @@ print(\\\"I'm the py-always-split-window-on-execute-lp-1361531-" ele "-test\\\")
     (py-kill-buffer-unconditional erg1)
     (py-kill-buffer-unconditional erg2)
     (py-restore-window-configuration)))
-"
-))))
+"))))
 
     (insert "\n(provide 'py-always-split-window-on-execute-lp-1361531-test)
 \;;; py-always-split-window-on-execute-lp-1361531-test.el here\n ")
     (emacs-lisp-mode))
+
+(defun write-py-split-just-two-window-on-execute-lp-1361531-tests (&optional pyshellname-list)
+  (interactive)
+  (let* ((pyshellname-list (or pyshellname-list py-shells))
+	 (laenge (length pyshellname-list))
+	 (count laenge))
+    (set-buffer (get-buffer-create "py-split-just-two-window-on-execute-lp-1361531-test.el"))
+    (erase-buffer)
+    (insert ";;; py-split-just-two-window-on-execute-lp-1361531-test.el --- Test splitting\n")
+    (insert arkopf)
+    (switch-to-buffer (current-buffer))
+    (dotimes (i laenge)
+      (setq first (prin1-to-string (nth i pyshellname-list)))
+      ;; (message "(nth i pyshellname-list): %s" (nth i pyshellname-list))
+      (setq second (prin1-to-string (nth (1- count) pyshellname-list)))
+      ;; (message "(nth counter pyshellname-list): %s" (nth (1- count) pyshellname-list))
+      (setq count (1- count))
+      (insert (concat "
+\(defun py-split-just-two-window-on-execute-lp-1361531-" first "-test (&optional arg)
+  (interactive \"p\")
+  (let ((py-split-window-on-execute-p 'just-two)
+        (teststring \"#! /usr/bin/env " first "
+# -\*- coding: utf-8 -\*-
+print(\\\"I'm the py-split-just-two-window-on-execute-lp-1361531-" first "-test\\\")\"))
+    (py-bug-tests-intern 'py-split-just-two-window-on-execute-lp-1361531-" first "-base arg teststring)))
+
+\(defun py-split-just-two-window-on-execute-lp-1361531-" first "-base ()
+  (when py-debug-p (message \"py-split-window-on-execute-p: %s\" py-split-window-on-execute-p))
+  (delete-other-windows)
+  (when py-debug-p (switch-to-buffer (current-buffer))(font-lock-fontify-buffer))  
+  (let ((py-split-window-on-execute-p 'just-two)
+        (erg1 (progn (py-execute-statement-" first ") py-buffer-name))
+        (erg2 (progn (py-execute-statement-" second ") py-buffer-name)))
+    (sit-for 0.1 t)
+    (when py-debug-p (message \"just-two-window-on-execute-lp-1361531-" first " (count-windows); %s\" (count-windows)))
+    (when py-debug-p (message \"just-two-window-on-execute-lp-1361531-" first " (window-list): %s\" (window-list)))
+    (and
+     (assert (eq 2 (count-windows)) nil \"py-split-just-two-window-on-execute-lp-1361531-" first "-test failed\")
+     (message \"%s\" \"py-split-just-two-window-on-execute-lp-1361531-" first "-test passed\"))
+    (py-kill-buffer-unconditional erg1)
+    (py-kill-buffer-unconditional erg2)
+    (py-restore-window-configuration)))
+"))))
+
+  (insert "\n(provide 'py-split-just-two-window-on-execute-lp-1361531-test)
+\;;; py-split-just-two-window-on-execute-lp-1361531-test.el here\n ")
+  (emacs-lisp-mode))
 
 ;;; Copying

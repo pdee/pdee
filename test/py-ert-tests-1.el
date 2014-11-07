@@ -862,6 +862,7 @@ def baz():
       "print(123)"
     (let ((py-split-window-on-execute-p t))
       (py-execute-statement)
+      (sit-for 0.1 t) 
       (should (not (one-window-p))))))
 
 ;;;

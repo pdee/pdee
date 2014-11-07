@@ -1139,21 +1139,25 @@ If `py-keep-windows-configuration' is t, this will take precedence over setting 
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-split-window-on-execute-p t
+(defcustom py-split-window-on-execute-p 'just-two
   "When non-nil split windows.
 
 Default is just-two - when code is send to interpreter, split screen into source-code buffer and current py-shell result.
 
 Other buffer will be hidden that way.
 
-When set to `t', python-mode tries to reuse existing windows and will split only if needed. However, this feature is experimental still. Same with 'always.
+When set to `t', python-mode tries to reuse existing windows and will split only if needed. 
+
+With 'alays, results will displayed in a new window.
+
+Both `t' and `always' is experimental still. 
 
 For the moment: If a multitude of python-shells/buffers should be
 visible, open them manually and set `py-keep-windows-configuration' to `t'.
 
 "
       :type '(choice
-          (const :tag "default" t)
+          (const :tag "default" just-two)
           (const :tag "no split" nil)
 	  (const :tag "just-two" just-two)
           (const :tag "always" always))
@@ -2555,7 +2559,8 @@ This function takes the list of setup code to send from the
 	  (progn
 	    (py--send-string-no-output
 	     (py--fix-start (symbol-value code)) process)
-	    (sit-for py-new-shell-delay)
+	    ;; (sit-for py-new-shell-delay)
+	    (sit-for 0.1 t) 
 	    (py--delete-all-but-first-prompt))
 	(py--fast-send-string-no-output (py--fix-start (symbol-value code)) process (buffer-name (process-buffer process)))))))
 
