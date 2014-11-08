@@ -1148,7 +1148,7 @@ Other buffer will be hidden that way.
 
 When set to `t', python-mode tries to reuse existing windows and will split only if needed.
 
-With 'alays, results will displayed in a new window.
+With 'always, results will displayed in a new window.
 
 Both `t' and `always' is experimental still.
 
@@ -1158,20 +1158,12 @@ visible, open them manually and set `py-keep-windows-configuration' to `t'.
 "
       :type '(choice
           (const :tag "default" just-two)
-          (const :tag "no split" nil)
+	  (const :tag "Reuse" t)
+          (const :tag "No split" nil)
 	  (const :tag "just-two" just-two)
           (const :tag "always" always))
 
   :group 'python-mode)
-
-(defcustom py-shell-manage-windows-p t
- "If `t', open output buffers, split windows according to
-settings of `py-split-window-on-execute-p' and `py-switch-buffers-on-execute-p'.
-
-Default is `t' "
-
-:type 'boolean
-:group 'python-mode)
 
 (defcustom py-split-windows-on-execute-function 'split-window-vertically
   "How window should get splitted to display results of py-execute-... functions. "

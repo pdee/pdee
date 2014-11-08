@@ -523,7 +523,7 @@ Internal use"
        (not py-switch-buffers-on-execute-p))
       (set-buffer py-exception-buffer)
       (switch-to-buffer (current-buffer))
-      (delete-other-windows) 
+      (delete-other-windows)
       (unless
 	  (member (get-buffer-window output-buffer)(window-list))
 	(py--manage-windows-split py-exception-buffer output-buffer))
@@ -715,6 +715,7 @@ Expects being called by `py--run-unfontify-timer' "
     ;; lp:1169687, if called from within an existing py-shell, open a new one
     (and (bufferp py-exception-buffer)(string= py-buffer-name (buffer-name py-exception-buffer))
 	 (setq py-buffer-name (generate-new-buffer-name py-buffer-name)))
+    (sit-for 0.1 t)
     (if fast-process
 	;; user rather wants an interactive shell
 	(unless (get-buffer-process (get-buffer py-buffer-name))
@@ -739,11 +740,10 @@ Expects being called by `py--run-unfontify-timer' "
 	      (py--shell-setup py-buffer-name proc))
 	  (error (concat "py-shell: No process in " py-buffer-name))))
       ;; (goto-char (point-max))
-      (when (and py-shell-manage-windows-p
-		 (or (interactive-p)
-		     ;; M-x python RET sends from interactive "p"
-		     argprompt)
-		 (or py-switch-buffers-on-execute-p py-split-window-on-execute-p))
+      (when (or (interactive-p)
+		;; M-x python RET sends from interactive "p"
+		argprompt
+		py-switch-buffers-on-execute-p py-split-window-on-execute-p)
 	(py--shell-manage-windows py-buffer-name windows-config py-exception-buffer)))
     (sit-for py-new-shell-delay t)
     py-buffer-name))
@@ -842,7 +842,7 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
     (setq py-buffer-name buffer)
     (py--execute-base-intern strg shell filename proc file wholebuf buffer origline)
     (when py-debug-p (message "py--execute-base: py-split-window-on-execute-p: %s" py-split-window-on-execute-p))
-    (when py-shell-manage-windows-p
+    (when (or py-split-window-on-execute-p py-switch-buffers-on-execute-p)
       (py--shell-manage-windows buffer windows-config py-exception-buffer))))
 
 (defun py--send-to-fast-process (strg proc output-buffer)
@@ -950,8 +950,8 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
   (sit-for 0.1 t)
   (with-current-buffer output-buffer
     ;; (when py-debug-p (switch-to-buffer (current-buffer)))
-    (setq py-result (py--fetch-result orig)))
-  ;; (sit-for 1 t)
+    (setq py-result (py--fetch-result orig))
+    (sit-for 1 t))
   (when py-debug-p (message "py-result: %s" py-result))
   (and (string-match "\n$" py-result)
        (setq py-result (substring py-result 0 (match-beginning 0))))
