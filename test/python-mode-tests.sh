@@ -914,7 +914,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(setq py-verbose-p 
 -eval "(assert (boundp 'py-shell-input-prompt-2-regexp) nil \"py-shell-input-prompt-2-regexp not a variable\")" \
 -eval "(assert (boundp 'py-shell-prompt-read-only) nil \"py-shell-prompt-read-only not a variable\")" \
 -eval "(assert (boundp 'py-switch-buffers-on-execute-p) nil \"py-switch-buffers-on-execute-p not a variable\")" \
--eval "(assert (boundp 'py-split-window-on-execute-p) nil \"py-split-window-on-execute-p not a variable\")" \
+-eval "(assert (boundp 'py-split-window-on-execute) nil \"py-split-window-on-execute not a variable\")" \
 -eval "(assert (boundp 'py-split-windows-on-execute-function) nil \"py-split-windows-on-execute-function not a variable\")" \
 -eval "(assert (boundp 'py-hide-show-keywords) nil \"py-hide-show-keywords not a variable\")" \
 -eval "(assert (boundp 'py-hide-show-hide-docstrings) nil \"py-hide-show-hide-docstrings not a variable\")" \

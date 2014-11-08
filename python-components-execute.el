@@ -183,35 +183,35 @@ Returns value of `py-force-py-shell-name-p'. "
 ;;; Split-Windows-On-Execute forms
 (defalias 'toggle-py-split-windows-on-execute 'py-toggle-split-windows-on-execute)
 (defun py-toggle-split-windows-on-execute (&optional arg)
-  "If `py-split-window-on-execute-p' should be on or off.
+  "If `py-split-window-on-execute' should be on or off.
 
-  Returns value of `py-split-window-on-execute-p' switched to. "
+  Returns value of `py-split-window-on-execute' switched to. "
   (interactive)
-  (let ((arg (or arg (if py-split-window-on-execute-p -1 1))))
+  (let ((arg (or arg (if py-split-window-on-execute -1 1))))
     (if (< 0 arg)
-        (setq py-split-window-on-execute-p t)
-      (setq py-split-window-on-execute-p nil))
-    (when (interactive-p) (message "py-split-window-on-execute-p: %s" py-split-window-on-execute-p))
-    py-split-window-on-execute-p))
+        (setq py-split-window-on-execute t)
+      (setq py-split-window-on-execute nil))
+    (when (interactive-p) (message "py-split-window-on-execute: %s" py-split-window-on-execute))
+    py-split-window-on-execute))
 
 (defun py-split-windows-on-execute-on (&optional arg)
-  "Make sure, `py-split-window-on-execute-p' is on.
+  "Make sure, `py-split-window-on-execute' is on.
 
-Returns value of `py-split-window-on-execute-p'. "
+Returns value of `py-split-window-on-execute'. "
   (interactive "p")
   (let ((arg (or arg 1)))
     (toggle-py-split-windows-on-execute arg))
-  (when (interactive-p) (message "py-split-window-on-execute-p: %s" py-split-window-on-execute-p))
-  py-split-window-on-execute-p)
+  (when (interactive-p) (message "py-split-window-on-execute: %s" py-split-window-on-execute))
+  py-split-window-on-execute)
 
 (defun py-split-windows-on-execute-off ()
-  "Make sure, `py-split-window-on-execute-p' is off.
+  "Make sure, `py-split-window-on-execute' is off.
 
-Returns value of `py-split-window-on-execute-p'. "
+Returns value of `py-split-window-on-execute'. "
   (interactive)
   (toggle-py-split-windows-on-execute -1)
-  (when (interactive-p) (message "py-split-window-on-execute-p: %s" py-split-window-on-execute-p))
-  py-split-window-on-execute-p)
+  (when (interactive-p) (message "py-split-window-on-execute: %s" py-split-window-on-execute))
+  py-split-window-on-execute)
 
 ;;; Shell-Switch-Buffers-On-Execute forms
 (defalias 'py-toggle-switch-buffers-on-execute 'py-toggle-shell-switch-buffers-on-execute)
@@ -420,7 +420,7 @@ SEPCHAR is the file-path separator of your system. "
 (defun py-toggle-split-window-function ()
   "If window is splitted vertically or horizontally.
 
-When code is executed and `py-split-window-on-execute-p' is `t', the result is displays in an output-buffer, \"\*Python\*\" by default.
+When code is executed and `py-split-window-on-execute' is `t', the result is displays in an output-buffer, \"\*Python\*\" by default.
 
 Customizable variable `py-split-windows-on-execute-function' tells how to split the screen."
   (interactive)
@@ -483,7 +483,7 @@ Internal use"
       (py-restore-window-configuration)
       (set-buffer output-buffer)
       (goto-char (point-max)))
-     ((and (eq py-split-window-on-execute-p 'always)
+     ((and (eq py-split-window-on-execute 'always)
 	   py-switch-buffers-on-execute-p)
       (if (member (get-buffer-window output-buffer)(window-list))
 	  ;; (delete-window (get-buffer-window output-buffer))
@@ -495,7 +495,7 @@ Internal use"
 	  (switch-to-buffer output-buffer))
 	(display-buffer py-exception-buffer)))
      ((and
-       (eq py-split-window-on-execute-p 'always)
+       (eq py-split-window-on-execute 'always)
        (not py-switch-buffers-on-execute-p))
       (if (member (get-buffer-window output-buffer)(window-list))
 	  (select-window (get-buffer-window output-buffer))
@@ -507,7 +507,7 @@ Internal use"
 	;;)
 	(pop-to-buffer py-exception-buffer)))
      ((and
-       (eq py-split-window-on-execute-p 'just-two)
+       (eq py-split-window-on-execute 'just-two)
        py-switch-buffers-on-execute-p)
       (set-buffer py-exception-buffer)
       (switch-to-buffer (current-buffer))
@@ -519,7 +519,7 @@ Internal use"
       (set-buffer output-buffer)
       (switch-to-buffer (current-buffer)))
      ((and
-       (eq py-split-window-on-execute-p 'just-two)
+       (eq py-split-window-on-execute 'just-two)
        (not py-switch-buffers-on-execute-p))
       (set-buffer py-exception-buffer)
       (switch-to-buffer (current-buffer))
@@ -534,7 +534,7 @@ Internal use"
 	(goto-char (point-max))
 	(other-window 1)))
      ((and
-       py-split-window-on-execute-p
+       py-split-window-on-execute
        (not py-switch-buffers-on-execute-p))
       (set-buffer py-exception-buffer)
       (switch-to-buffer (current-buffer))
@@ -549,7 +549,7 @@ Internal use"
 	(other-window 1)))
      ;; ((and
      ;;   py-switch-buffers-on-execute-p
-     ;;   (not py-split-window-on-execute-p))
+     ;;   (not py-split-window-on-execute))
      ;;  (set-buffer output-buffer)
      ;;  (switch-to-buffer (current-buffer)))
      ;; no split, no switch
@@ -743,7 +743,7 @@ Expects being called by `py--run-unfontify-timer' "
       (when (or (interactive-p)
 		;; M-x python RET sends from interactive "p"
 		argprompt
-		py-switch-buffers-on-execute-p py-split-window-on-execute-p)
+		py-switch-buffers-on-execute-p py-split-window-on-execute)
 	(py--shell-manage-windows py-buffer-name windows-config py-exception-buffer)))
     (sit-for py-new-shell-delay t)
     py-buffer-name))
@@ -790,7 +790,7 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
   "Update variables. "
   ;; (when py-debug-p (message "run: %s" "py--execute-base"))
   (setq py-error nil)
-  (when py-debug-p (message "py--execute-base: py-split-window-on-execute-p: %s" py-split-window-on-execute-p))
+  (when py-debug-p (message "py--execute-base: py-split-window-on-execute: %s" py-split-window-on-execute))
 
   (let* ((py-exception-buffer (current-buffer))
 	 (py-exception-window (selected-window))
@@ -841,8 +841,8 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 			    (get-buffer-process (py-shell nil py-dedicated-process-p which-shell buffer)))))))
     (setq py-buffer-name buffer)
     (py--execute-base-intern strg shell filename proc file wholebuf buffer origline)
-    (when py-debug-p (message "py--execute-base: py-split-window-on-execute-p: %s" py-split-window-on-execute-p))
-    (when (or py-split-window-on-execute-p py-switch-buffers-on-execute-p)
+    (when py-debug-p (message "py--execute-base: py-split-window-on-execute: %s" py-split-window-on-execute))
+    (when (or py-split-window-on-execute py-switch-buffers-on-execute-p)
       (py--shell-manage-windows buffer windows-config py-exception-buffer))))
 
 (defun py--send-to-fast-process (strg proc output-buffer)
@@ -860,7 +860,7 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 
 When optional FILE is `t', no temporary file is needed. "
   ;; (when py-debug-p (message "run: %s" "py--execute-base-intern"))
-  ;; (when py-debug-p (message "py--execute-base-intern: py-split-window-on-execute-p: %s" py-split-window-on-execute-p))
+  ;; (when py-debug-p (message "py--execute-base-intern: py-split-window-on-execute: %s" py-split-window-on-execute))
   (let (output-buffer erg)
     (setq py-error nil)
     ;; (when py-debug-p
@@ -886,7 +886,7 @@ When optional FILE is `t', no temporary file is needed. "
          (tempfile (concat (expand-file-name py-temp-directory) py-separator-char (replace-regexp-in-string py-separator-char "-" temp) ".py"))
          (tempbuf (get-buffer-create temp)))
     (with-current-buffer tempbuf
-      (when py-debug-p (message "py--execute-buffer-finally: py-split-window-on-execute-p: %s" py-split-window-on-execute-p))
+      (when py-debug-p (message "py--execute-buffer-finally: py-split-window-on-execute: %s" py-split-window-on-execute))
       ;; (and py-verbose-p (message "%s" "py--execute-buffer-finally"))
       (insert strg)
       (write-file tempfile))
@@ -945,7 +945,7 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
   (setq py-result nil
 	py-result-raw nil
 	py-error nil)
-  (when py-debug-p (message "py--postprocess-comint: py-split-window-on-execute-p: %s" py-split-window-on-execute-p))
+  (when py-debug-p (message "py--postprocess-comint: py-split-window-on-execute: %s" py-split-window-on-execute))
   ;; py-ert-wrong-python-test fails otherwise
   (sit-for 0.1 t)
   (with-current-buffer output-buffer
@@ -1152,7 +1152,7 @@ Make that process's buffer visible and force display.  Also make
 comint believe the user typed this string so that
 `kill-output-from-shell' does The Right Thing.
 Returns position where output starts. "
-  (when py-debug-p (message "py--execute-file-base: py-split-window-on-execute-p: %s" py-split-window-on-execute-p))
+  (when py-debug-p (message "py--execute-file-base: py-split-window-on-execute: %s" py-split-window-on-execute))
   (let* ((cmd (or cmd (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" filename filename)))
          (msg (and py-verbose-p (format "## executing %s...\n" (or origfile filename))))
          (buffer (or procbuf (py-shell nil nil nil procbuf)))

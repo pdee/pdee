@@ -203,7 +203,7 @@ New booleans
 
 - py-shell-manage-windows-p
   If `t', open output buffers, split windows according to settings of
-  `py-split-window-on-execute-p' and `py-switch-buffers-on-execute-p'.
+  `py-split-window-on-execute' and `py-switch-buffers-on-execute-p'.
 
 Dropped booleans:
 `py-start-run-py-shell',

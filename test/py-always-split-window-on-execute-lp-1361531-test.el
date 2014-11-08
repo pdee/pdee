@@ -27,16 +27,16 @@
  
 (defun py-always-split-window-on-execute-lp-1361531-python-test (&optional arg)
   (interactive "p")
-  (let ((py-split-window-on-execute-p 'always)
+  (let ((py-split-window-on-execute 'always)
         (teststring "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 print(\"I'm the py-always-split-window-on-execute-lp-1361531-python-test\")"))
     (py-bug-tests-intern 'py-always-split-window-on-execute-lp-1361531-python-base arg teststring)))
 
 (defun py-always-split-window-on-execute-lp-1361531-python-base ()
-  (when py-debug-p (message "py-split-window-on-execute-p: %s" py-split-window-on-execute-p))
+  (when py-debug-p (message "py-split-window-on-execute: %s" py-split-window-on-execute))
   (delete-other-windows)
-  (let ((py-split-window-on-execute-p 'always)
+  (let ((py-split-window-on-execute 'always)
         (erg1 (progn (py-execute-statement-python) py-buffer-name))
         (erg2 (progn (py-execute-statement-python) py-buffer-name)))
     (sit-for 0.1 t)
@@ -48,16 +48,16 @@ print(\"I'm the py-always-split-window-on-execute-lp-1361531-python-test\")"))
  
 (defun py-always-split-window-on-execute-lp-1361531-ipython-test (&optional arg)
   (interactive "p")
-  (let ((py-split-window-on-execute-p 'always)
+  (let ((py-split-window-on-execute 'always)
         (teststring "#! /usr/bin/env ipython
 # -*- coding: utf-8 -*-
 print(\"I'm the py-always-split-window-on-execute-lp-1361531-ipython-test\")"))
     (py-bug-tests-intern 'py-always-split-window-on-execute-lp-1361531-ipython-base arg teststring)))
 
 (defun py-always-split-window-on-execute-lp-1361531-ipython-base ()
-  (when py-debug-p (message "py-split-window-on-execute-p: %s" py-split-window-on-execute-p))
+  (when py-debug-p (message "py-split-window-on-execute: %s" py-split-window-on-execute))
   (delete-other-windows)
-  (let ((py-split-window-on-execute-p 'always)
+  (let ((py-split-window-on-execute 'always)
         (erg1 (progn (py-execute-statement-ipython) py-buffer-name))
         (erg2 (progn (py-execute-statement-ipython) py-buffer-name)))
     (sit-for 0.1 t)
@@ -69,16 +69,16 @@ print(\"I'm the py-always-split-window-on-execute-lp-1361531-ipython-test\")"))
  
 (defun py-always-split-window-on-execute-lp-1361531-python2-test (&optional arg)
   (interactive "p")
-  (let ((py-split-window-on-execute-p 'always)
+  (let ((py-split-window-on-execute 'always)
         (teststring "#! /usr/bin/env python2
 # -*- coding: utf-8 -*-
 print(\"I'm the py-always-split-window-on-execute-lp-1361531-python2-test\")"))
     (py-bug-tests-intern 'py-always-split-window-on-execute-lp-1361531-python2-base arg teststring)))
 
 (defun py-always-split-window-on-execute-lp-1361531-python2-base ()
-  (when py-debug-p (message "py-split-window-on-execute-p: %s" py-split-window-on-execute-p))
+  (when py-debug-p (message "py-split-window-on-execute: %s" py-split-window-on-execute))
   (delete-other-windows)
-  (let ((py-split-window-on-execute-p 'always)
+  (let ((py-split-window-on-execute 'always)
         (erg1 (progn (py-execute-statement-python2) py-buffer-name))
         (erg2 (progn (py-execute-statement-python2) py-buffer-name)))
     (sit-for 0.1 t)
@@ -90,16 +90,16 @@ print(\"I'm the py-always-split-window-on-execute-lp-1361531-python2-test\")"))
  
 (defun py-always-split-window-on-execute-lp-1361531-jython-test (&optional arg)
   (interactive "p")
-  (let ((py-split-window-on-execute-p 'always)
+  (let ((py-split-window-on-execute 'always)
         (teststring "#! /usr/bin/env jython
 # -*- coding: utf-8 -*-
 print(\"I'm the py-always-split-window-on-execute-lp-1361531-jython-test\")"))
     (py-bug-tests-intern 'py-always-split-window-on-execute-lp-1361531-jython-base arg teststring)))
 
 (defun py-always-split-window-on-execute-lp-1361531-jython-base ()
-  (when py-debug-p (message "py-split-window-on-execute-p: %s" py-split-window-on-execute-p))
+  (when py-debug-p (message "py-split-window-on-execute: %s" py-split-window-on-execute))
   (delete-other-windows)
-  (let ((py-split-window-on-execute-p 'always)
+  (let ((py-split-window-on-execute 'always)
         (erg1 (progn (py-execute-statement-jython) py-buffer-name))
         (erg2 (progn (py-execute-statement-jython) py-buffer-name)))
     (sit-for 0.1 t)
@@ -111,16 +111,16 @@ print(\"I'm the py-always-split-window-on-execute-lp-1361531-jython-test\")"))
  
 (defun py-always-split-window-on-execute-lp-1361531-python3-test (&optional arg)
   (interactive "p")
-  (let ((py-split-window-on-execute-p 'always)
+  (let ((py-split-window-on-execute 'always)
         (teststring "#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 print(\"I'm the py-always-split-window-on-execute-lp-1361531-python3-test\")"))
     (py-bug-tests-intern 'py-always-split-window-on-execute-lp-1361531-python3-base arg teststring)))
 
 (defun py-always-split-window-on-execute-lp-1361531-python3-base ()
-  (when py-debug-p (message "py-split-window-on-execute-p: %s" py-split-window-on-execute-p))
+  (when py-debug-p (message "py-split-window-on-execute: %s" py-split-window-on-execute))
   (delete-other-windows)
-  (let ((py-split-window-on-execute-p 'always)
+  (let ((py-split-window-on-execute 'always)
         (erg1 (progn (py-execute-statement-python3) py-buffer-name))
         (erg2 (progn (py-execute-statement-python3) py-buffer-name)))
     (sit-for 0.1 t)
@@ -132,16 +132,16 @@ print(\"I'm the py-always-split-window-on-execute-lp-1361531-python3-test\")"))
  
 (defun py-always-split-window-on-execute-lp-1361531-bpython-test (&optional arg)
   (interactive "p")
-  (let ((py-split-window-on-execute-p 'always)
+  (let ((py-split-window-on-execute 'always)
         (teststring "#! /usr/bin/env bpython
 # -*- coding: utf-8 -*-
 print(\"I'm the py-always-split-window-on-execute-lp-1361531-bpython-test\")"))
     (py-bug-tests-intern 'py-always-split-window-on-execute-lp-1361531-bpython-base arg teststring)))
 
 (defun py-always-split-window-on-execute-lp-1361531-bpython-base ()
-  (when py-debug-p (message "py-split-window-on-execute-p: %s" py-split-window-on-execute-p))
+  (when py-debug-p (message "py-split-window-on-execute: %s" py-split-window-on-execute))
   (delete-other-windows)
-  (let ((py-split-window-on-execute-p 'always)
+  (let ((py-split-window-on-execute 'always)
         (erg1 (progn (py-execute-statement-bpython) py-buffer-name))
         (erg2 (progn (py-execute-statement-bpython) py-buffer-name)))
     (sit-for 0.1 t)

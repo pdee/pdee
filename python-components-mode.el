@@ -1139,7 +1139,7 @@ If `py-keep-windows-configuration' is t, this will take precedence over setting 
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-split-window-on-execute-p 'just-two
+(defcustom py-split-window-on-execute 'just-two
   "When non-nil split windows.
 
 Default is just-two - when code is send to interpreter, split screen into source-code buffer and current py-shell result.
@@ -1719,7 +1719,7 @@ Default is nil "
          (py--set-ffap-form)))
 
 (defcustom py-keep-windows-configuration nil
-  "Takes precedence over `py-split-window-on-execute-p' and `py-switch-buffers-on-execute-p'.
+  "Takes precedence over `py-split-window-on-execute' and `py-switch-buffers-on-execute-p'.
 
 See lp:1239498
 
@@ -3265,7 +3265,7 @@ Optional C-u prompts for options to pass to the Jython interpreter. See `py-pyth
                    "-"
                    ("Ignoring defaults "
                     :help "Commands will ignore default setting of
-`py-switch-buffers-on-execute-p' and `py-split-window-on-execute-p'"
+`py-switch-buffers-on-execute-p' and `py-split-window-on-execute'"
 
                     ["Execute file python switch" py-execute-file-python-switch
                      :help " `py-execute-file-python-switch'
@@ -4380,7 +4380,7 @@ Optional \\[universal-argument] forces switch to output buffer, ignores `py-swit
 
 		   ("Ignoring defaults "
 		    :help "Commands will ignore default setting of
-`py-switch-buffers-on-execute-p' and `py-split-window-on-execute-p'"            ;; switch
+`py-switch-buffers-on-execute-p' and `py-split-window-on-execute'"            ;; switch
 
                     ["py-execute-statement-python-switch" py-execute-statement-python-switch
                      :help "Execute statement through a Python interpreter.
@@ -4526,7 +4526,7 @@ Optional \\[universal-argument] forces switch to output buffer, ignores `py-swit
 
                    ("Ignoring defaults "
                     :help "Commands will ignore default setting of
-`py-switch-buffers-on-execute-p' and `py-split-window-on-execute-p'"            ;; switch
+`py-switch-buffers-on-execute-p' and `py-split-window-on-execute'"            ;; switch
 
                     ["py-execute-block-python-switch" py-execute-block-python-switch
                      :help "Execute block through a Python interpreter.
@@ -4671,7 +4671,7 @@ Optional \\[universal-argument] forces switch to output buffer, ignores `py-swit
 
                    ("Ignoring defaults "
                     :help "Commands will ignore default setting of
-`py-switch-buffers-on-execute-p' and `py-split-window-on-execute-p'"            ;; switch
+`py-switch-buffers-on-execute-p' and `py-split-window-on-execute'"            ;; switch
 
                     ["py-execute-def-python-switch" py-execute-def-python-switch
                      :help "Execute def through a Python interpreter.
@@ -4816,7 +4816,7 @@ Optional \\[universal-argument] forces switch to output buffer, ignores `py-swit
 
 		   ("Ignoring defaults "
                     :help "Commands will ignore default setting of
-`py-switch-buffers-on-execute-p' and `py-split-window-on-execute-p'"            ;; switch
+`py-switch-buffers-on-execute-p' and `py-split-window-on-execute'"            ;; switch
 
                     ["py-execute-class-python-switch" py-execute-class-python-switch
                      :help "Execute class through a Python interpreter.
@@ -4961,7 +4961,7 @@ Optional \\[universal-argument] forces switch to output buffer, ignores `py-swit
 
 		   ("Ignoring defaults "
 		    :help "Commands will ignore default setting of
-`py-switch-buffers-on-execute-p' and `py-split-window-on-execute-p'"            ;; switch
+`py-switch-buffers-on-execute-p' and `py-split-window-on-execute'"            ;; switch
 
                     ["py-execute-region-python-switch" py-execute-region-python-switch
                      :help "Execute region through a Python interpreter.
@@ -5077,7 +5077,7 @@ Send file to a Bpython interpreter. "]
 
                    ("Ignoring defaults "
                     :help "Commands will ignore default setting of
-`py-switch-buffers-on-execute-p' and `py-split-window-on-execute-p'"
+`py-switch-buffers-on-execute-p' and `py-split-window-on-execute'"
 
                     ["Execute file python switch" py-execute-file-python-switch
                      :help " `py-execute-file-python-switch'
@@ -6241,7 +6241,7 @@ Call M-x `customize-face' in order to have a visible effect. Use `M-x customize-
 		     (setq py-shell-manage-windows-p
 			   (not py-shell-manage-windows-p))
 		     :help "If `t', open output buffers, split windows according to
-settings of `py-split-window-on-execute-p' and `py-switch-buffers-on-execute-p'\.
+settings of `py-split-window-on-execute' and `py-switch-buffers-on-execute-p'\.
 
 Default is `t' Use `M-x customize-variable' to set it permanently"
 		     :style toggle :selected py-shell-manage-windows-p]
@@ -6255,17 +6255,17 @@ Use `M-x customize-variable' to set it permanently"
                      :style toggle :selected py-switch-buffers-on-execute-p]
 
                     ["Split windows on execute"
-                     (setq py-split-window-on-execute-p
-                           (not py-split-window-on-execute-p))
+                     (setq py-split-window-on-execute
+                           (not py-split-window-on-execute))
                      :help "When non-nil split windows.
 
 Use `M-x customize-variable' to set it permanently"
-                     :style toggle :selected py-split-window-on-execute-p]
+                     :style toggle :selected py-split-window-on-execute]
 
                     ["Keep windows configuration"
                      (setq py-keep-windows-configuration
                            (not py-keep-windows-configuration))
-                     :help "If a windows is splitted displaying results, this is directed by variable `py-split-window-on-execute-p'\. Also setting `py-switch-buffers-on-execute-p' affects window-configuration\. While commonly a screen splitted into source and Python-shell buffer is assumed, user may want to keep a different config\.
+                     :help "If a windows is splitted displaying results, this is directed by variable `py-split-window-on-execute'\. Also setting `py-switch-buffers-on-execute-p' affects window-configuration\. While commonly a screen splitted into source and Python-shell buffer is assumed, user may want to keep a different config\.
 
 Setting `py-keep-windows-configuration' to `t' will restore windows-config regardless of settings mentioned above\. However, if an error occurs, it's displayed\.
 
@@ -11650,7 +11650,7 @@ VARIABLES
 
 `py-indent-offset'	indentation increment
 `py-shell-name'		shell command to invoke Python interpreter
-`py-split-window-on-execute-p'		When non-nil split windows
+`py-split-window-on-execute'		When non-nil split windows
 `py-switch-buffers-on-execute-p'	When non-nil switch to the Python output buffer
 
 See available customizations listed in files variables-python-mode at directory doc

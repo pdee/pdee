@@ -860,7 +860,7 @@ def baz():
 (ert-deftest py-ert-execute-statement-split ()
   (py-test-with-temp-buffer-point-min
       "print(123)"
-    (let ((py-split-window-on-execute-p t))
+    (let ((py-split-window-on-execute t))
       (py-execute-statement)
       (sit-for 0.1 t) 
       (should (not (one-window-p))))))

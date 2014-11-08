@@ -379,7 +379,7 @@ Output buffer not in comint-mode, displays \\\"Fast\\\"  by default\"\n"))
     (write-menu-entry name))
   (insert "(\"Ignoring defaults ... \"
  :help \"Commands will ignore default setting of
-`py-switch-buffers-on-execute-p' and `py-split-window-on-execute-p'\"\n\n")
+`py-switch-buffers-on-execute-p' and `py-split-window-on-execute'\"\n\n")
   (dolist (ele py-shells)
     (dolist (pyo py-options)
       (unless (string= "" pyo)
@@ -808,7 +808,7 @@ Optional \\\\[universal-argument] forces switch to output buffer, ignores `py-sw
       ;; (unless done
             (insert "            (\"Ignoring defaults ... \"
              :help \"Commands will ignore default setting of
-`py-switch-buffers-on-execute-p' and `py-split-window-on-execute-p'\"")
+`py-switch-buffers-on-execute-p' and `py-split-window-on-execute'\"")
             ;; (setq done t))
       (insert "            ;; switch\n")
       (dolist (ele py-shells)
@@ -3176,14 +3176,14 @@ Return code of `py-" ele "' at point, a string. \"
    (insert (concat "
 \(defun py-split-window-on-execute-lp-1361531-" ele "-test (&optional arg)
   (interactive \"p\")
-  (let ((py-split-window-on-execute-p t)
+  (let ((py-split-window-on-execute t)
         (teststring \"#! /usr/bin/env " ele "
 # -\*- coding: utf-8 -\*-
 print(\\\"I'm the py-split-window-on-execute-lp-1361531-" ele "-test\\\")\"))
     (py-bug-tests-intern 'py-split-window-on-execute-lp-1361531-" ele "-base arg teststring)))
 
 \(defun py-split-window-on-execute-lp-1361531-" ele "-base ()
-  (when py-debug-p (message \"py-split-window-on-execute-p: %s\" py-split-window-on-execute-p))
+  (when py-debug-p (message \"py-split-window-on-execute: %s\" py-split-window-on-execute))
   (delete-other-windows)
   (py-execute-statement)
   (assert (eq 2 (count-windows)) nil \"py-split-window-on-execute-lp-1361531-" ele "-test failed\")
@@ -3208,14 +3208,14 @@ print(\\\"I'm the py-split-window-on-execute-lp-1361531-" ele "-test\\\")\"))
    (insert (concat "
 \(defun py-multi-split-window-on-execute-lp-1361531-" ele "-test (&optional arg)
   (interactive \"p\")
-  (let ((py-split-window-on-execute-p 'always)
+  (let ((py-split-window-on-execute 'always)
         (teststring \"#! /usr/bin/env " ele "
 # -\*- coding: utf-8 -\*-
 print(\\\"I'm the py-multi-split-window-on-execute-lp-1361531-" ele "-test\\\")\"))
     (py-bug-tests-intern 'py-multi-split-window-on-execute-lp-1361531-" ele "-base arg teststring)))
 
 \(defun py-multi-split-window-on-execute-lp-1361531-" ele "-base ()
-  (when py-debug-p (message \"py-split-window-on-execute-p: %s\" py-split-window-on-execute-p))
+  (when py-debug-p (message \"py-split-window-on-execute: %s\" py-split-window-on-execute))
   (delete-other-windows)
 
   (let ((erg1 (progn (py-execute-statement-" ele "-dedicated) py-buffer-name))
@@ -3246,16 +3246,16 @@ print(\\\"I'm the py-multi-split-window-on-execute-lp-1361531-" ele "-test\\\")\
    (insert (concat "
 \(defun py-always-split-window-on-execute-lp-1361531-" ele "-test (&optional arg)
   (interactive \"p\")
-  (let ((py-split-window-on-execute-p 'always)
+  (let ((py-split-window-on-execute 'always)
         (teststring \"#! /usr/bin/env " ele "
 # -\*- coding: utf-8 -\*-
 print(\\\"I'm the py-always-split-window-on-execute-lp-1361531-" ele "-test\\\")\"))
     (py-bug-tests-intern 'py-always-split-window-on-execute-lp-1361531-" ele "-base arg teststring)))
 
 \(defun py-always-split-window-on-execute-lp-1361531-" ele "-base ()
-  (when py-debug-p (message \"py-split-window-on-execute-p: %s\" py-split-window-on-execute-p))
+  (when py-debug-p (message \"py-split-window-on-execute: %s\" py-split-window-on-execute))
   (delete-other-windows)
-  (let ((py-split-window-on-execute-p 'always)
+  (let ((py-split-window-on-execute 'always)
         (erg1 (progn (py-execute-statement-" ele ") py-buffer-name))
         (erg2 (progn (py-execute-statement-" ele ") py-buffer-name)))
     (sit-for 0.1 t)
@@ -3289,17 +3289,17 @@ print(\\\"I'm the py-always-split-window-on-execute-lp-1361531-" ele "-test\\\")
       (insert (concat "
 \(defun py-split-just-two-window-on-execute-lp-1361531-" first "-test (&optional arg)
   (interactive \"p\")
-  (let ((py-split-window-on-execute-p 'just-two)
+  (let ((py-split-window-on-execute 'just-two)
         (teststring \"#! /usr/bin/env " first "
 # -\*- coding: utf-8 -\*-
 print(\\\"I'm the py-split-just-two-window-on-execute-lp-1361531-" first "-test\\\")\"))
     (py-bug-tests-intern 'py-split-just-two-window-on-execute-lp-1361531-" first "-base arg teststring)))
 
 \(defun py-split-just-two-window-on-execute-lp-1361531-" first "-base ()
-  (when py-debug-p (message \"py-split-window-on-execute-p: %s\" py-split-window-on-execute-p))
+  (when py-debug-p (message \"py-split-window-on-execute: %s\" py-split-window-on-execute))
   (delete-other-windows)
   (when py-debug-p (switch-to-buffer (current-buffer))(font-lock-fontify-buffer))  
-  (let ((py-split-window-on-execute-p 'just-two)
+  (let ((py-split-window-on-execute 'just-two)
         (erg1 (progn (py-execute-statement-" first ") py-buffer-name))
         (erg2 (progn (py-execute-statement-" second ") py-buffer-name)))
     (sit-for 0.1 t)
