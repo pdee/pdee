@@ -21,10 +21,36 @@ New in version 6.1.4
   Use `C-q TAB' to insert a literally TAB-character.
 
 - py-fast-complete
-  Complete word before point, if any, use `py-fast-process
+  Complete word before point, if any, use `py-fast-process'
 
-- built-in auto-completion 
-  `py-auto-completion-mode-p' might be switched from menu
+- `py-shell-complete-or-indent'
+  In shell: complete or indent depending on the context.
+  If cursor is at current-indentation and further indent
+  seems reasonable, indent. Otherwise try to complete.
+
+- Python specific hide-show
+  py-hide-region
+  py-show-region
+  py-hide-statement
+  py-show-statement
+  py-hide-block
+  py-show-block
+  py-hide-clause
+  py-show-clause
+  py-hide-block-or-clause
+  py-show-block-or-clause
+  py-hide-def
+  py-show-def
+  py-hide-class
+  py-show-class
+  py-hide-expression
+  py-show-expression
+  py-hide-partial-expression
+  py-show-partial-expression
+  py-hide-line
+  py-show-line
+  py-hide-top-level
+  py-show-top-level
 
 - `py-shell' uses new `py-shell-mode', `py-shell-mode-map'
   M-x describe-mode RET mentions edit available commands
@@ -56,37 +82,6 @@ New in version 6.1.4
   With optional argument SHELL, otherwise kill default
   (I)Python shell.
 
-- `py-shell-complete-or-indent'
-  In shell: complete or indent depending on the context.
-  If cursor is at current-indentation and further indent
-  seems reasonable, indent. Otherwise try to complete.
-  
-- `ipython-complete' alias of `py-shell-complete'
-   Now unused sympols removed: `ipython-complete', `py--shell-complete-finally', `ipython-complete-use-separate-shell-p'
-- Python specific hide-show
-  py-hide-region
-  py-show-region
-  py-hide-statement
-  py-show-statement
-  py-hide-block
-  py-show-block
-  py-hide-clause
-  py-show-clause
-  py-hide-block-or-clause
-  py-show-block-or-clause
-  py-hide-def
-  py-show-def
-  py-hide-class
-  py-show-class
-  py-hide-expression
-  py-show-expression
-  py-hide-partial-expression
-  py-show-partial-expression
-  py-hide-line
-  py-show-line
-  py-hide-top-level
-  py-show-top-level
-
 - py-info-lookup-symbol ()
   Calls `info-lookup-symbol'. Sends help if stuff is missing.
 
@@ -109,8 +104,7 @@ New in version 6.1.4
   Kill buffer unconditional; kill also any buffer-process.
 
 Setting docstring style simplified; a style is all needed.
-  New commands:
-
+  New commands
  -py-set-nil-docstring-style
  -py-set-pep-257-nn-docstring-style
  -py-set-pep-257-docstring-style
@@ -157,31 +151,6 @@ Setting docstring style simplified; a style is all needed.
   python-mode.el. Some old version of python.el might write skeletons into
   python-mode-abbrev-table, which is removed that way.
 
-Removed commands:
-
- -toggle-py-nil-docstring-style
- -py-nil-docstring-style-on
- -py-nil-docstring-style-off
- -toggle-py-onetwo-docstring-style
- -py-onetwo-docstring-style-on
- -py-onetwo-docstring-style-off
- -toggle-py-pep-257-docstring-style
- -py-pep-257-docstring-style-on
- -py-pep-257-docstring-style-off
- -toggle-py-pep-257-nn-docstring-style
- -py-pep-257-nn-docstring-style-on
- -py-pep-257-nn-docstring-style-off
- -toggle-py-symmetric-docstring-style
- -py-symmetric-docstring-style-on
- -py-symmetric-docstring-style-off
- -toggle-py-django-docstring-style
- -py-django-docstring-style-on
- -py-django-docstring-style-off
-
-Some commands not so useful made common functions, like
-  py-statement-opens-block-p
-  py-statement-opens-clause-p ...
-
 Internally used functions preferably are prefixed `py--':
   py--statement-opens-block-p
   py--statement-opens-clause-p ...
@@ -204,6 +173,29 @@ New booleans
 - py-shell-manage-windows-p
   If `t', open output buffers, split windows according to settings of
   `py-split-window-on-execute' and `py-switch-buffers-on-execute-p'.
+
+Removed commands
+ -toggle-py-nil-docstring-style
+ -py-nil-docstring-style-on
+ -py-nil-docstring-style-off
+ -toggle-py-onetwo-docstring-style
+ -py-onetwo-docstring-style-on
+ -py-onetwo-docstring-style-off
+ -toggle-py-pep-257-docstring-style
+ -py-pep-257-docstring-style-on
+ -py-pep-257-docstring-style-off
+ -toggle-py-pep-257-nn-docstring-style
+ -py-pep-257-nn-docstring-style-on
+ -py-pep-257-nn-docstring-style-off
+ -toggle-py-symmetric-docstring-style
+ -py-symmetric-docstring-style-on
+ -py-symmetric-docstring-style-off
+ -toggle-py-django-docstring-style
+ -py-django-docstring-style-on
+ -py-django-docstring-style-off
+  Some commands not so useful made common functions, like
+ -py-statement-opens-block-p
+ -py-statement-opens-clause-p ...
 
 Dropped booleans:
 `py-start-run-py-shell',

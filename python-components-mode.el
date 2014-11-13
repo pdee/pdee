@@ -6237,15 +6237,6 @@ Might not be TRT when a lot of output arrives Use `M-x customize-variable' to se
 Call M-x `customize-face' in order to have a visible effect. Use `M-x customize-variable' to set it permanently"
                       :style toggle :selected py-use-font-lock-doc-face-p])
 
-		    ["Manage windows"
-		     (setq py-shell-manage-windows-p
-			   (not py-shell-manage-windows-p))
-		     :help "If `t', open output buffers, split windows according to
-settings of `py-split-window-on-execute' and `py-switch-buffers-on-execute-p'\.
-
-Default is `t' Use `M-x customize-variable' to set it permanently"
-		     :style toggle :selected py-shell-manage-windows-p]
-
                     ["Switch buffers on execute"
                      (setq py-switch-buffers-on-execute-p
                            (not py-switch-buffers-on-execute-p))
