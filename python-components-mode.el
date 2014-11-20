@@ -204,6 +204,11 @@ Default is nil"
 
 Default is t")
 
+(defvar py-new-session-p t
+ "Internally used. See lp:1393882.
+
+Restart py-shell once with new Emacs/python-mode. ")
+
 (defcustom py-hide-show-minor-mode-p nil
   "If hide-show minor-mode should be on, default is nil. "
 
@@ -802,11 +807,6 @@ Messaging increments the prompt counter of IPython shell. "
   :type 'integer
   :group 'python-mode)
 ;; (make-variable-buffer-local 'py-lhs-inbound-indent)
-
-(defcustom py-cleanup-temporary t
-  "If temporary buffers and files used by functions executing region should be deleted afterwards. "
-  :type 'boolean
-  :group 'python-mode)
 
 (defcustom py-continuation-offset 2
   "Additional amount of offset to give for some continuation lines.
@@ -5675,12 +5675,6 @@ Use `M-x customize-variable' to set it permanently"
                            (not py-force-py-shell-name-p))
                      :help "When `t', execution with kind of Python specified in `py-shell-name' is enforced, possibly shebang doesn't take precedence. Use `M-x customize-variable' to set it permanently"
                      :style toggle :selected py-force-py-shell-name-p]
-
-                    ["Cleanup temporary"
-                     (setq py-cleanup-temporary
-                           (not py-cleanup-temporary))
-                     :help "If temporary buffers and files used by functions executing region should be deleted afterwards. Use `M-x customize-variable' to set it permanently"
-                     :style toggle :selected py-cleanup-temporary]
 
                     ["Execute \"if name == main\" blocks p"
                      (setq py-if-name-main-permission-p

@@ -587,6 +587,7 @@ Receives a buffer-name as argument"
 
 (defun py--shell-make-comint (executable py-buffer-name args)
   (let ((buffer (apply 'make-comint-in-buffer executable py-buffer-name executable nil args)))
+    ;; (let ((buffer (make-comint-in-buffer executable py-buffer-name executable nil args)))
     (with-current-buffer buffer
       (py-shell-mode)
       (sit-for 0.1 t))
@@ -728,7 +729,7 @@ Expects being called by `py--run-unfontify-timer' "
 	    (erase-buffer)))
 	(py--shell-make-comint executable py-buffer-name args)
 	;; if called from a program, banner needs some delay
-	(sit-for 0.5 t)
+	;; (sit-for 0.5 t)
 	(setq py-output-buffer py-buffer-name)
 	(if (comint-check-proc py-buffer-name)
 	    (with-current-buffer py-buffer-name
@@ -737,7 +738,12 @@ Expects being called by `py--run-unfontify-timer' "
 	      (setq proc (get-buffer-process py-buffer-name))
 	      ;; (comint-send-string proc "\n")
 	      (py--delay-process-dependent proc)
-	      (py--shell-setup py-buffer-name proc))
+	      (py--shell-setup py-buffer-name proc)
+	      ;; lp:1393882, occasionally input first time not processed
+	      (when py-new-session-p (py-kill-buffer-unconditional py-buffer-name)
+		    (setq py-new-session-p nil)
+		    (py-shell argprompt dedicated shell buffer-name fast-process py-exception-buffer)))
+
 	  (error (concat "py-shell: No process in " py-buffer-name))))
       ;; (goto-char (point-max))
       (when (or (interactive-p)
@@ -745,7 +751,7 @@ Expects being called by `py--run-unfontify-timer' "
 		argprompt
 		py-switch-buffers-on-execute-p py-split-window-on-execute)
 	(py--shell-manage-windows py-buffer-name windows-config py-exception-buffer)))
-    (sit-for py-new-shell-delay t)
+    ;; (sit-for py-new-shell-delay t)
     py-buffer-name))
 
 (defun py-shell-get-process (&optional argprompt py-dedicated-process-p shell switch py-buffer-name)
@@ -778,13 +784,11 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
   "If no error occurred and `py-store-result-p' store result for yank. "
   (and (not py-error) erg (or py-debug-p py-store-result-p) (kill-new erg)))
 
-(defun py--close-execution (tempbuf erg)
+(defun py--close-execution (tempbuf)
   "Delete temporary buffer and and run `py--store-result-maybe'"
-  (when py-cleanup-temporary
+  (unless py-debug-p
     (py-kill-buffer-unconditional tempbuf)
-    (py-delete-temporary tempfile tempbuf))
-  ;; (py--store-result-maybe erg)
-  erg)
+    (py-delete-temporary tempfile tempbuf)))
 
 (defun py--execute-base (&optional start end shell filename proc file wholebuf)
   "Update variables. "
@@ -874,9 +878,7 @@ When optional FILE is `t', no temporary file is needed. "
 	  (py-execute-no-temp-p
 	   (py--execute-ge24.3 start end filename execute-directory which-shell py-exception-buffer proc))
 	  ((and filename wholebuf)
-	   ;; No temporary file needed than
-	   (let (py-cleanup-temporary)
-	     (py--execute-file-base proc filename nil buffer filename execute-directory py-exception-buffer)))
+	   (py--execute-file-base proc filename nil buffer filename execute-directory py-exception-buffer))
 	  (t (py--execute-buffer-finally strg execute-directory wholebuf which-shell proc buffer)))))
 
 (defun py--execute-buffer-finally (strg execute-directory wholebuf which-shell proc procbuf)
@@ -893,8 +895,8 @@ When optional FILE is `t', no temporary file is needed. "
     (unwind-protect
 	(setq erg (py--execute-file-base proc tempfile nil procbuf py-orig-buffer-or-file execute-directory py-exception-buffer)))
     (sit-for 0.1 t)
-    (py--close-execution tempbuf erg)))
-
+    (py--close-execution tempbuf)
+    erg))
 
 (defun py--fetch-error (buf &optional origline)
   "Highlight exceptions found in BUF.
@@ -1166,10 +1168,10 @@ Returns position where output starts. "
       (setq erg (py--postprocess-comint buffer origline windows-config py-exception-buffer orig))
       (if py-error
 	  (progn
-	    ;; py-error is a list
-	    ;; (setq py-error (car py-error))
 	    (setq py-error (prin1-to-string py-error))
-	    (when py-debug-p(message "%s" py-error)))
+	    ;; keep the temporary file in case of error
+	    (when py-debug-p
+	      (message "py--execute-file-base, py-error:%s" py-error)))
 	erg))))
 
 (defun py-execute-file (filename)

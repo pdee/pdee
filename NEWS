@@ -203,6 +203,7 @@ Dropped booleans:
 `py-pylint-offer-current-p'
 `py-paragraph-fill-docstring-p'
 `py-enforce-output-buffer-p'
+`py-cleanup-temporary', as redundant WRT `py-debug-p'
 
 New in version 6.1.3
 ---------------------
