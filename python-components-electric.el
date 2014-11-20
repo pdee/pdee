@@ -154,19 +154,14 @@ Returns column reached. "
 With ARG do that ARG times. "
   (interactive "*p")
   (let ((arg (or arg 1))
-	orig)
+	(orig (point))
+	delchars)
     (dotimes (i arg)
-      (if (and (member (char-after) (list ?\  ?\t))
-	       (setq orig (point))
-	       (< 0 (skip-chars-forward " \t")))
-	  (progn
-	    (goto-char orig)
-	    (delete-region orig (progn (forward-char py-indent-offset) (point))))
-	;;          (let* ((remains (% (+ (current-column) (- (match-end 0)(match-beginning 0))) py-indent-offset)))
-	;;            (if (< 0 remains)
-	;;                (delete-char remains)
-	;;              (delete-char py-indent-offset)))
-	(delete-char 1)))))
+      (setq delchars 1)
+      (when (<= py-indent-offset (skip-chars-forward " \t"))
+	(setq delchars py-indent-offset))
+      (goto-char orig)
+      (delete-char delchars))))
 
 (defun py-electric-yank (&optional arg)
   "Perform command `yank' followed by an `indent-according-to-mode' "
