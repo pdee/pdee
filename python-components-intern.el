@@ -213,9 +213,10 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
 		    (current-column))
 		   ;; lists
 		   ((nth 1 pps)
-		    (cond
-		     ((and nesting (not line))
-		      ;; still at original line
+		    (if
+		     ;; ((and nesting (not line))
+		      nesting
+		       ;; still at original line
 		      (save-excursion
 			(goto-char (nth 1 pps))
 			(setq this-line (py-count-lines))
@@ -260,18 +261,20 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
 			 ((not (py--beginning-of-statement-p))
 			  (py-beginning-of-statement)
 			  (py-compute-indentation orig origline closing line nesting repeat indent-offset liep))
-			 (t (1+ (current-column))))))
-		     ((and (not nesting) line)
+			 (t (1+ (current-column)))))
+		     (if line
+			 (progn 
 		      (py-beginning-of-statement)
 		      (py-compute-indentation orig origline closing line nesting repeat indent-offset liep))
-		     ((not nesting)
-		      (progn (goto-char (+ py-lhs-inbound-indent (nth 1 pps)))
+			(goto-char (+ py-lhs-inbound-indent (nth 1 pps)))
 			     (when (looking-at "[ \t]+")
 			       (goto-char (match-end 0)))
-			     (current-column)))
-		     (t
-		      (goto-char (nth 1 pps))
-		      (py-compute-indentation orig origline closing line nesting repeat indent-offset liep))))
+			     (current-column))
+		     ;; nesting or not nesting
+		     ;; (t
+		     ;; (goto-char (nth 1 pps))
+		     ;; (py-compute-indentation orig origline closing line nesting repeat indent-offset liep))
+		     ))
 		   ((and (eq (char-after) (or ?\( ?\{ ?\[)) line)
 		    (1+ (current-column)))
 		   ((py-preceding-line-backslashed-p)

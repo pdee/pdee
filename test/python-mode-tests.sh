@@ -875,7 +875,6 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(setq py-verbose-p 
 -eval "(assert (boundp 'py-shebang-startstring) nil \"py-shebang-startstring not a variable\")" \
 -eval "(assert (boundp 'py-python-command-args) nil \"py-python-command-args not a variable\")" \
 -eval "(assert (boundp 'py-jython-command-args) nil \"py-jython-command-args not a variable\")" \
--eval "(assert (boundp 'py-cleanup-temporary) nil \"py-cleanup-temporary not a variable\")" \
 -eval "(assert (boundp 'py-lhs-inbound-indent) nil \"py-lhs-inbound-indent not a variable\")" \
 -eval "(assert (boundp 'py-continuation-offset) nil \"py-continuation-offset not a variable\")" \
 -eval "(assert (boundp 'py-indent-tabs-mode) nil \"py-indent-tabs-mode not a variable\")" \
@@ -1055,6 +1054,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(setq py-verbose-p 
 -eval "(assert (boundp 'py-compilation-regexp-alist) nil \"py-compilation-regexp-alist not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall comment-inside-curly-braces-lp-1395076-test \
 --funcall py-execute-region-python3-no-switch-test \
 --funcall script-buffer-appears-instead-of-python-shell-buffer-lp:957561-test \
 --funcall completion-fails-in-python-script-r989-lp:1004613-test \
