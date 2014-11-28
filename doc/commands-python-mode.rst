@@ -199,21 +199,21 @@ Returns value of `py-switch-buffers-on-execute-p'.
 
 py-toggle-split-windows-on-execute
 ----------------------------------
-If `py-split-windows-on-execute-p' should be on or off.
+If `py-split-window-on-execute' should be on or off.
 
-  Returns value of `py-split-windows-on-execute-p' switched to. 
+  Returns value of `py-split-window-on-execute' switched to. 
 
 py-split-windows-on-execute-on
 ------------------------------
-Make sure, `py-split-windows-on-execute-p' is on.
+Make sure, `py-split-window-on-execute' is on.
 
-Returns value of `py-split-windows-on-execute-p'. 
+Returns value of `py-split-window-on-execute'. 
 
 py-split-windows-on-execute-off
 -------------------------------
-Make sure, `py-split-windows-on-execute-p' is off.
+Make sure, `py-split-window-on-execute' is off.
 
-Returns value of `py-split-windows-on-execute-p'. 
+Returns value of `py-split-window-on-execute'. 
 
 py-toggle-highlight-indentation
 -------------------------------
@@ -317,23 +317,23 @@ Make sure, `py-switch-buffers-on-execute-p' is off.
 
 Returns value of `py-switch-buffers-on-execute-p'. 
 
-toggle-py-split-windows-on-execute-p
-------------------------------------
-If `py-split-windows-on-execute-p' should be on or off.
-
-  Returns value of `py-split-windows-on-execute-p' switched to. 
-
-py-split-windows-on-execute-p-on
---------------------------------
-Make sure, `py-py-split-windows-on-execute-p' is on.
-
-Returns value of `py-split-windows-on-execute-p'. 
-
-py-split-windows-on-execute-p-off
+toggle-py-split-window-on-execute
 ---------------------------------
-Make sure, `py-split-windows-on-execute-p' is off.
+If `py-split-window-on-execute' should be on or off.
 
-Returns value of `py-split-windows-on-execute-p'. 
+  Returns value of `py-split-window-on-execute' switched to. 
+
+py-split-window-on-execute-on
+-----------------------------
+Make sure, `py-py-split-window-on-execute' is on.
+
+Returns value of `py-split-window-on-execute'. 
+
+py-split-window-on-execute-off
+------------------------------
+Make sure, `py-split-window-on-execute' is off.
+
+Returns value of `py-split-window-on-execute'. 
 
 py-toggle-sexp-function
 -----------------------
@@ -345,7 +345,7 @@ Get appropriate Python process for current buffer and return it.
 
 py-shell-send-string
 --------------------
-Send STRING to inferior Python PROCESS.
+Send STRING to Python PROCESS.
 When `py-verbose-p' and MSG is non-nil messages the first line of STRING.
 
 py-shell-send-file
@@ -471,7 +471,6 @@ Similar to `toggle-py-smart-indentation' resp. `py-smart-indentation-off' follow
 
 This function is normally used by `indent-line-function' resp.
 TAB.
-Returns current indentation
 
 When bound to TAB, C-q TAB inserts a TAB.
 
@@ -1054,9 +1053,7 @@ Fill the comment paragraph at point
 
 py-end-of-string
 ----------------
-Go to end of string at point, return position.
-
-Takes the result of (syntax-ppss)
+Go to end of string at point if any, if successful return position. 
 
 py--string-fence-delete-spaces
 ------------------------------
@@ -2782,18 +2779,7 @@ Send the region to the systems default Python interpreter.
 
 py-execute-region-dedicated
 ---------------------------
-Get the region processed by an unique Python interpreter.
-
-When called with C-u, execution through
-`default-value' of `py-shell-name' is forced.
-
-When called with C-u followed by a number
-different from 4 and 1, user is prompted to specify a shell. This
-might be the name of a system-wide shell or include the path to a
-virtual environment.
-
-When called from a programm, it accepts a string specifying a
-shell which will be forced upon execute as argument. 
+Send region to unique interpreter. 
 
 py-execute-region-default-dedicated
 -----------------------------------
@@ -2845,7 +2831,7 @@ This may be preferable to `M-x py-execute-buffer' because:
 
 py-execute-buffer-dedicated
 ---------------------------
-Send the contents of the buffer to a unique Python interpreter. 
+Send buffer to unique interpreter. 
 
 py-execute-buffer-switch
 ------------------------
@@ -2983,6 +2969,7 @@ When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
 
 Optional arguments are flags resp. values set and used by `py-compute-indentation' internally
 
+
 py-indentation-of-statement
 ---------------------------
 Returns the indenation of the statement at point. 
@@ -3007,13 +2994,17 @@ With optional C-u user is prompted by
 `py-choose-shell' for command and options to pass to the Python
 interpreter.
 
-py-toggle-split-windows-function
---------------------------------
+py-toggle-split-window-function
+-------------------------------
 If window is splitted vertically or horizontally.
 
-When code is executed and `py-split-windows-on-execute-p' is `t', the result is displays in an output-buffer, "*Python*" by default.
+When code is executed and `py-split-window-on-execute' is `t', the result is displays in an output-buffer, "*Python*" by default.
 
 Customizable variable `py-split-windows-on-execute-function' tells how to split the screen.
+
+py--manage-windows-split
+------------------------
+If one window, split according to `py-split-windows-on-execute-function. 
 
 py-kill-buffer-unconditional
 ----------------------------
@@ -3035,12 +3026,15 @@ py--unfontify-banner
 --------------------
 Unfontify the shell banner-text.
 
-Takes a buffer as argument. 
+Cancels `py--timer'
+Expects being called by `py--run-unfontify-timer' 
 
 py-shell
 --------
+:around advice: `ad-Advice-py-shell'
+
 Start an interactive Python interpreter in another window.
-  Interactively, C-u prompts for a PATH/TO/EXECUTABLE to use.
+  Interactively, C-u prompts for a new buffer-name.
   C-u 2 prompts for `py-python-command-args'.
   If `default-directory' is a remote file name, it is also prompted
   to change if called with a prefix arg.
@@ -3049,6 +3043,8 @@ Start an interactive Python interpreter in another window.
   Optional string PYSHELLNAME overrides default `py-shell-name'.
   BUFFER allows specifying a name, the Python process is connected to
   
+
+(fn &optional ARGPROMPT DEDICATED SHELL BUFFER-NAME FAST-PROCESS PY-EXCEPTION-BUFFER)
 
 py-indent-forward-line
 ----------------------
@@ -3263,16 +3259,20 @@ Eval resulting buffer to install it, see customizable `py-extensions'.
 
 py-shell-complete
 -----------------
-Complete word before point, if any. Otherwise insert TAB. 
+Complete word before point, if any. 
 
 py-indent-or-complete
 ---------------------
 Complete or indent depending on the context.
 
 If cursor is at end of line, try to complete
-Otherwise call `py-indent-line' 
+Otherwise call `py-indent-line'
 
-Use `C-q TAB' to insert a literally TAB-character 
+If `(region-active-p)' returns `t', indent region.
+Use `C-q TAB' to insert a literally TAB-character
+
+In python-mode `py-complete-function' is called,
+in py-shell-mode `py-shell-complete'
 
 pylint-flymake-mode
 -------------------
@@ -3432,90 +3432,92 @@ py-fast-process
 ---------------
 Connect am (I)Python process suitable for large output.
 
-Output arrives in py-output-buffer, "*Python Output*" by default
+Output buffer displays "Fast" in name by default
 It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to the freeze reported by lp:1253907
 
 Return the process
+
+py-fast-send-string
+-------------------
+Evaluate STRING in Python process which is not in comint-mode.
+
+From a programm use `py--fast-send-string'
 
 py-execute-statement-fast
 -------------------------
 Process statement at point by a Python interpreter.
 
 Suitable for large output, doesn't mess up interactive shell.
-Result arrives in `py-output-buffer', which is not in
-comint-mode
+Output-buffer is not in comint-mode 
 
 py-execute-block-fast
 ---------------------
 Process block at point by a Python interpreter.
 
 Suitable for large output, doesn't mess up interactive shell.
-Result arrives in `py-output-buffer', which is not in
-comint-mode
+Output-buffer is not in comint-mode 
 
 py-execute-block-or-clause-fast
 -------------------------------
 Process block-or-clause at point by a Python interpreter.
 
 Suitable for large output, doesn't mess up interactive shell.
-Result arrives in `py-output-buffer', which is not in
-comint-mode
+Output-buffer is not in comint-mode 
 
 py-execute-def-fast
 -------------------
 Process def at point by a Python interpreter.
 
 Suitable for large output, doesn't mess up interactive shell.
-Result arrives in `py-output-buffer', which is not in
-comint-mode
+Output-buffer is not in comint-mode 
 
 py-execute-class-fast
 ---------------------
 Process class at point by a Python interpreter.
 
 Suitable for large output, doesn't mess up interactive shell.
-Result arrives in `py-output-buffer', which is not in
-comint-mode
+Output-buffer is not in comint-mode 
 
 py-execute-def-or-class-fast
 ----------------------------
 Process def-or-class at point by a Python interpreter.
 
 Suitable for large output, doesn't mess up interactive shell.
-Result arrives in `py-output-buffer', which is not in
-comint-mode
+Output-buffer is not in comint-mode 
 
 py-execute-expression-fast
 --------------------------
 Process expression at point by a Python interpreter.
 
 Suitable for large output, doesn't mess up interactive shell.
-Result arrives in `py-output-buffer', which is not in
-comint-mode
+Output-buffer is not in comint-mode 
 
 py-execute-partial-expression-fast
 ----------------------------------
 Process partial-expression at point by a Python interpreter.
 
 Suitable for large output, doesn't mess up interactive shell.
-Result arrives in `py-output-buffer', which is not in
-comint-mode
+Output-buffer is not in comint-mode 
 
 py-execute-top-level-fast
 -------------------------
 Process top-level at point by a Python interpreter.
 
 Suitable for large output, doesn't mess up interactive shell.
-Result arrives in `py-output-buffer', which is not in
-comint-mode
+Output-buffer is not in comint-mode 
 
 py-execute-clause-fast
 ----------------------
 Process clause at point by a Python interpreter.
 
 Suitable for large output, doesn't mess up interactive shell.
-Result arrives in `py-output-buffer', which is not in
-comint-mode
+Output-buffer is not in comint-mode 
+
+py-fast-complete
+----------------
+Complete word before point, if any.
+
+Use `py-fast-process' 
 
 py-execute-file-python
 ----------------------
@@ -3760,6 +3762,10 @@ Send file to a Bpython interpreter.
 Uses a dedicated shell.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value "non-nil"
 
+py-execute-statement-dedicated
+------------------------------
+Send statement to unique interpreter. 
+
 py-execute-statement-python
 ---------------------------
 Send statement at point to default interpreter.
@@ -3913,6 +3919,10 @@ Send statement at point to Bpython unique interpreter.
 py-execute-statement-bpython-dedicated-switch
 ---------------------------------------------
 Send statement at point to Bpython unique interpreter and switch to result. 
+
+py-execute-block-dedicated
+--------------------------
+Send block to unique interpreter. 
 
 py-execute-block-python
 -----------------------
@@ -4068,6 +4078,10 @@ py-execute-block-bpython-dedicated-switch
 -----------------------------------------
 Send block at point to Bpython unique interpreter and switch to result. 
 
+py-execute-clause-dedicated
+---------------------------
+Send clause to unique interpreter. 
+
 py-execute-clause-python
 ------------------------
 Send clause at point to default interpreter.
@@ -4221,6 +4235,10 @@ Send clause at point to Bpython unique interpreter.
 py-execute-clause-bpython-dedicated-switch
 ------------------------------------------
 Send clause at point to Bpython unique interpreter and switch to result. 
+
+py-execute-block-or-clause-dedicated
+------------------------------------
+Send block-or-clause to unique interpreter. 
 
 py-execute-block-or-clause-python
 ---------------------------------
@@ -4376,6 +4394,10 @@ py-execute-block-or-clause-bpython-dedicated-switch
 ---------------------------------------------------
 Send block-or-clause at point to Bpython unique interpreter and switch to result. 
 
+py-execute-def-dedicated
+------------------------
+Send def to unique interpreter. 
+
 py-execute-def-python
 ---------------------
 Send def at point to default interpreter.
@@ -4529,6 +4551,10 @@ Send def at point to Bpython unique interpreter.
 py-execute-def-bpython-dedicated-switch
 ---------------------------------------
 Send def at point to Bpython unique interpreter and switch to result. 
+
+py-execute-class-dedicated
+--------------------------
+Send class to unique interpreter. 
 
 py-execute-class-python
 -----------------------
@@ -4992,6 +5018,10 @@ py-execute-buffer-bpython-dedicated-switch
 ------------------------------------------
 Send buffer at point to Bpython unique interpreter and switch to result. 
 
+py-execute-expression-dedicated
+-------------------------------
+Send expression to unique interpreter. 
+
 py-execute-expression-python
 ----------------------------
 Send expression at point to default interpreter.
@@ -5145,6 +5175,10 @@ Send expression at point to Bpython unique interpreter.
 py-execute-expression-bpython-dedicated-switch
 ----------------------------------------------
 Send expression at point to Bpython unique interpreter and switch to result. 
+
+py-execute-partial-expression-dedicated
+---------------------------------------
+Send partial-expression to unique interpreter. 
 
 py-execute-partial-expression-python
 ------------------------------------
@@ -5300,6 +5334,10 @@ py-execute-partial-expression-bpython-dedicated-switch
 ------------------------------------------------------
 Send partial-expression at point to Bpython unique interpreter and switch to result. 
 
+py-execute-line-dedicated
+-------------------------
+Send line to unique interpreter. 
+
 py-execute-line-python
 ----------------------
 Send line at point to default interpreter.
@@ -5453,6 +5491,10 @@ Send line at point to Bpython unique interpreter.
 py-execute-line-bpython-dedicated-switch
 ----------------------------------------
 Send line at point to Bpython unique interpreter and switch to result. 
+
+py-execute-top-level-dedicated
+------------------------------
+Send top-level to unique interpreter. 
 
 py-execute-top-level-python
 ---------------------------
@@ -5650,4 +5692,11 @@ Send FILE-NAME to Python PROCESS.
 If TEMP-FILE-NAME is passed then that file is used for processing
 instead, while internally the shell will continue to use
 FILE-NAME.
+
+py-unload-python-el
+-------------------
+Unloads python-mode delivered by shipped python.el
+
+Removes python-skeleton forms from abbrevs.
+These would interfere when inserting forms heading a block
 
