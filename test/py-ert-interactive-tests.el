@@ -31,7 +31,7 @@ def foo():
       (goto-char (point-max))
       ;; (sit-for 0.1 t)
       (insert "print(os.get")
-      (py-shell-complete)
+      (py-indent-or-complete)
       (sit-for 0.1 t)
       (should (< (window-height) full-height)))))
 

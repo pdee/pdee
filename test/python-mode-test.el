@@ -32,28 +32,17 @@
        'py-split-just-two-window-on-execute-lp-1361531-python2-test
        'py-split-just-two-window-on-execute-lp-1361531-jython-test
        'py-split-just-two-window-on-execute-lp-1361531-python3-test
-       'py-execute-def-ipython-test
-       'py-execute-class-ipython-test
-       'py-execute-expression-ipython-test
-       'execute-buffer-ipython-fails-lp:928087-test
-       'py-execute-block-ipython-test
-       'py-execute-block-or-clause-ipython-test
-       'py-execute-line-ipython-test
-       'py-execute-buffer-ipython-switch-test
-       'py-execute-region-ipython-test
-       'py-execute-statement-ipython-test
-       'ipython-complete-lp-1102226-test
        'more-docstring-filling-woes-lp-1102296-nil-test
        'more-docstring-filling-woes-lp-1102296-onetwo-test
        'more-docstring-filling-woes-lp-1102296-django-test
        'more-docstring-filling-woes-lp-1102296-symmetric-test
-       'another-broken-font-locking-lp:961231-test
+       'another-broken-font-locking-lp-961231-test
        'py-fill-string-django-test
        'py-fill-string-onetwo-test
        'py-fill-string-pep-257-test
        'py-fill-string-pep-257-nn-test
-       'py-describe-symbol-fails-on-modules-lp:919719-test
-       'cls-pseudo-keyword-lp:328849-test
+       'py-describe-symbol-fails-on-modules-lp-919719-test
+       'cls-pseudo-keyword-lp-328849-test
        'py-execute-region-error-test
        'py-down-statement-test
        'docstring-style-switches-test
@@ -74,7 +63,18 @@
        'py-always-split-window-on-execute-lp-1361531-jython-test
        'py-always-split-window-on-execute-lp-1361531-python3-test
        'py-shell-complete-test
-       'py-shell-invoking-ipython-lp:835151-test
+       'py-shell-invoking-ipython-lp-835151-test
+       'py-execute-def-ipython-test
+       'py-execute-class-ipython-test
+       'py-execute-expression-ipython-test
+       'py-execute-block-ipython-test
+       'py-execute-block-or-clause-ipython-test
+       'py-execute-line-ipython-test
+       'py-execute-buffer-ipython-switch-test
+       'py-execute-region-ipython-test
+       'py-execute-statement-ipython-test
+       'ipython-complete-lp-1102226-test
+
        ))
 
 (defun py-run-interactive-tests (&optional arg)
@@ -277,7 +277,7 @@
   (let ((teststring python-mode-teststring))
     (py-bug-tests-intern 'py-beginning-of-block-test-base arg teststring)))
 
-(defun py-beginning-of-block-test-base ()
+(defun py-beginning-of-block-test-base (arg)
   (goto-char 627)
   (py-beginning-of-block)
   (assert (eq (point) 325) nil "py-beginning-of-block-test failed"))
@@ -315,7 +315,7 @@
  "))
     (py-bug-tests-intern 'py-end-of-block-base arg teststring)))
 
-(defun py-end-of-block-base ()
+(defun py-end-of-block-base (arg)
   (goto-char 326)
   (assert (eq 562 (py-end-of-clause)) nil "py-end-of-block-test #1 failed")
   (assert (eq 598 (py-end-of-clause)) nil "py-end-of-block-test #2 failed")
@@ -326,7 +326,7 @@
   (let ((teststring python-mode-teststring))
     (py-bug-tests-intern 'py-beginning-of-block-or-clause-base arg teststring)))
 
-(defun py-beginning-of-block-or-clause-base ()
+(defun py-beginning-of-block-or-clause-base (arg)
   (goto-char 627)
   (py-beginning-of-block-or-clause)
   (assert (looking-at "else") nil "py-beginning-of-block-or-clause-test failed")
@@ -342,7 +342,7 @@
   (let ((teststring python-mode-teststring))
     (py-bug-tests-intern 'py-end-of-block-or-clause-base arg teststring)))
 
-(defun py-end-of-block-or-clause-base ()
+(defun py-end-of-block-or-clause-base (arg)
   (goto-char 602)
   (py-end-of-block-or-clause)
   (assert (eq (point) 626) nil "py-end-of-block-or-clause-test failed"))
@@ -352,7 +352,7 @@
   (let ((teststring python-mode-teststring))
     (py-bug-tests-intern 'py-beginning-of-def-base arg teststring)))
 
-(defun py-beginning-of-def-base ()
+(defun py-beginning-of-def-base (arg)
   (goto-char 627)
   (py-beginning-of-def)
   (assert (eq (point) 238) nil "py-beginning-of-def-test failed")
@@ -363,7 +363,7 @@
   (let ((teststring python-mode-teststring))
     (py-bug-tests-intern 'py-end-of-def-base arg teststring)))
 
-(defun py-end-of-def-base ()
+(defun py-end-of-def-base (arg)
   (goto-char 627)
   (py-beginning-of-def)
   (py-end-of-def)
@@ -375,7 +375,7 @@
   (let ((teststring python-mode-teststring))
     (py-bug-tests-intern 'py-beginning-of-def-or-class-base arg teststring)))
 
-(defun py-beginning-of-def-or-class-base ()
+(defun py-beginning-of-def-or-class-base (arg)
   (goto-char 627)
   (py-beginning-of-def-or-class 4)
   (assert (eq (point) 238) nil "py-beginning-of-def-or-class-test failed"))
@@ -385,7 +385,7 @@
   (let ((teststring python-mode-teststring))
     (py-bug-tests-intern 'py-end-of-def-or-class-base arg teststring)))
 
-(defun py-end-of-def-or-class-base ()
+(defun py-end-of-def-or-class-base (arg)
   (goto-char 627)
   (assert (eq 238 (py-beginning-of-def-or-class)) nil "py-end-of-def-or-class-test #1 failed")
   (assert (eq 146 (py-beginning-of-def-or-class)) nil "py-end-of-def-or-class-test #2 failed")
@@ -398,7 +398,7 @@
   (let ((teststring python-mode-teststring))
     (py-bug-tests-intern 'py-electric-backspace-base arg teststring)))
 
-(defun py-electric-backspace-base ()
+(defun py-electric-backspace-base (arg)
   (goto-char 232)
   (py-newline-and-indent)
   (sit-for 0.1)
@@ -415,7 +415,7 @@
   (let ((teststring python-mode-teststring))
     (py-bug-tests-intern 'py-electric-delete-base arg teststring)))
 
-(defun py-electric-delete-base ()
+(defun py-electric-delete-base (arg)
   (when py-debug-p (switch-to-buffer (current-buffer))
 	(font-lock-fontify-buffer))
   (goto-char 202)
@@ -460,7 +460,7 @@ class foo(bar):
 ")))
     (py-bug-tests-intern 'dict-error-base arg teststring)))
 
-(defun dict-error-base ()
+(defun dict-error-base (arg)
   (goto-char 78)
   (assert (eq 166 (py-end-of-statement)) nil "dict-error-test failed"))
 
@@ -473,7 +473,7 @@ pst
 ")))
     (py-bug-tests-intern 'py-expand-abbrev-pst-pdb.set_trace-base arg teststring)))
 
-(defun py-expand-abbrev-pst-pdb.set_trace-base ()
+(defun py-expand-abbrev-pst-pdb.set_trace-base (arg)
   (forward-char -1)
   (expand-abbrev)
   (sit-for 1)
@@ -495,7 +495,7 @@ print u'\xA9'
 ")))
     (py-bug-tests-intern 'near-bob-beginning-of-statement-base arg teststring)))
 
-(defun near-bob-beginning-of-statement-base ()
+(defun near-bob-beginning-of-statement-base (arg)
   (goto-char 50)
   (assert (eq 0 (py-compute-indentation)) nil "near-bob-beginning-of-statement-test failed"))
 
@@ -505,7 +505,7 @@ print u'\xA9'
 "))
     (py-bug-tests-intern 'bob-beginning-of-statement-base arg teststring)))
 
-(defun bob-beginning-of-statement-base ()
+(defun bob-beginning-of-statement-base (arg)
   (py-beginning-of-statement)
   (assert (eq 1 (point))  "bob-beginning-of-statement-test failed"))
 
@@ -516,7 +516,7 @@ print u'\xA9'
 "))
     (py-bug-tests-intern 'honor-comments-indent-base arg teststring)))
 
-(defun honor-comments-indent-base ()
+(defun honor-comments-indent-base (arg)
   (goto-char 19)
   (assert (eq 4 (py-compute-indentation)) nil "honor-comments-indent-test failed"))
 
@@ -527,7 +527,7 @@ print u'\xA9'
 "))
     (py-bug-tests-intern 'first-line-offset-base arg teststring)))
 
-(defun first-line-offset-base ()
+(defun first-line-offset-base (arg)
   (goto-char 18)
   (assert (eq 4 (py-compute-indentation)) nil "first-line-offset-test failed"))
 
@@ -538,7 +538,7 @@ sammlung = []
 "))
     (py-bug-tests-intern 'assignment-indent-base arg teststring)))
 
-(defun assignment-indent-base ()
+(defun assignment-indent-base (arg)
   (goto-char 12)
   (assert (eq 4 (py-compute-indentation)) nil "assignment-indent-test failed"))
 
@@ -553,7 +553,7 @@ elif barr in bazz:
 "))
     (py-bug-tests-intern 'if-elif-base arg teststring)))
 
-(defun if-elif-base ()
+(defun if-elif-base (arg)
   (goto-char 76)
   (assert (eq 4 (py-compute-indentation)) nil "if-elif.py-test failed"))
 
@@ -564,7 +564,7 @@ elif barr in bazz:
 "))
     (py-bug-tests-intern 'if-elif-bob-base arg teststring)))
 
-(defun if-elif-bob-base ()
+(defun if-elif-bob-base (arg)
   (goto-char (point-min))
   (assert (eq 0 (py-compute-indentation)) nil "if-elif-bob.py-test failed"))
 
@@ -587,7 +587,7 @@ def _commit_on_success(*args, **kw):
 "))
     (py-bug-tests-intern 'try-else-clause-base arg teststring)))
 
-(defun try-else-clause-base ()
+(defun try-else-clause-base (arg)
   (goto-char 541)
   (assert (eq 4 (py-compute-indentation)) nil "try-else-clause-test failed"))
 
@@ -610,7 +610,7 @@ def _commit_on_success(*args, **kw):
 "))
     (py-bug-tests-intern 'try-except-base arg teststring)))
 
-(defun try-except-base ()
+(defun try-except-base (arg)
   (goto-char 434)
   (assert (eq 4 (py-compute-indentation)) nil "try-except-test failed"))
 
@@ -628,7 +628,7 @@ b = \"asdf\"
 "))
     (py-bug-tests-intern 'assignment-after-block-base arg teststring)))
 
-(defun assignment-after-block-base ()
+(defun assignment-after-block-base (arg)
   (forward-line -1)
   (assert (eq 0 (py-compute-indentation)) nil "assignment-after-block-test failed"))
 
@@ -655,7 +655,7 @@ def main(argv):
 "))
     (py-bug-tests-intern 'py-beginning-of-clause-base arg teststring)))
 
-(defun py-beginning-of-clause-base ()
+(defun py-beginning-of-clause-base (arg)
   (goto-char 364)
   (assert (eq 346 (py-beginning-of-clause)) "py-beginning-of-clause-test failed"))
 
@@ -682,7 +682,7 @@ def main(argv):
 "))
     (py-bug-tests-intern 'py-end-of-clause-base arg teststring)))
 
-(defun py-end-of-clause-base ()
+(defun py-end-of-clause-base (arg)
   (goto-char 364)
   (assert (eq 412 (py-end-of-clause)) "py-end-of-clause-test failed"))
 
@@ -700,7 +700,7 @@ def main(argv):
 "))
     (py-bug-tests-intern 'py-beginning-of-expression-base arg teststring)))
 
-(defun py-beginning-of-expression-base ()
+(defun py-beginning-of-expression-base (arg)
   (goto-char 227)
   (assert (eq 221 (py-beginning-of-expression)) nil "py-beginning-of-expression-test #1 failed")
   (assert (eq 205 (py-beginning-of-expression)) nil "py-beginning-of-expression-test #2 failed")
@@ -728,7 +728,7 @@ def main(argv):
 "))
     (py-bug-tests-intern 'py-end-of-expression-base arg teststring)))
 
-(defun py-end-of-expression-base ()
+(defun py-end-of-expression-base (arg)
   (goto-char 49)
   (assert (eq 60 (py-end-of-expression)) nil "py-end-of-expression-test #1 failed")
   (assert (eq 72 (py-end-of-expression)) nil "py-end-of-expression-test #2 failed)")
@@ -749,7 +749,7 @@ b = a[0].split(':')[1]
 ")))
     (py-bug-tests-intern 'py-expression-index-base arg teststring)))
 
-(defun py-expression-index-base ()
+(defun py-expression-index-base (arg)
   (goto-char 58)
   (assert (eq 71 (py-end-of-expression)) nil "py-expression-index-test failed")
 )
@@ -777,7 +777,7 @@ class OrderedDict1(dict):
         ")))
     (py-bug-tests-intern 'py-insert-super-python2-base arg teststring)))
 
-(defun py-insert-super-python2-base ()
+(defun py-insert-super-python2-base (arg)
   (ignore-errors (py-insert-super))
   (sit-for 0.1)
   (assert (looking-back "super(OrderedDict1, self).__init__(d={})") nil "py-insert-super-python2-test failed"))
@@ -806,7 +806,7 @@ class OrderedDict1(dict):
         ")))
     (py-bug-tests-intern 'py-insert-super-python3-base arg teststring)))
 
-(defun py-insert-super-python3-base ()
+(defun py-insert-super-python3-base (arg)
   (save-excursion
     (py-insert-super))
   (sit-for 0.2)
@@ -824,7 +824,7 @@ def foo( self, bar=False ):  # version 12345
 ")))
     (py-bug-tests-intern 'indent-after-assigment-base arg teststring)))
 
-(defun indent-after-assigment-base ()
+(defun indent-after-assigment-base (arg)
   (goto-char 185)
   (assert (eq 4 (py-compute-indentation)) nil "py-indent-after-assigment-test failed"))
 
@@ -843,7 +843,7 @@ foo = {
 "))
     (py-bug-tests-intern 'leave-dict-base arg teststring)))
 
-(defun leave-dict-base ()
+(defun leave-dict-base (arg)
   (when py-debug-p (switch-to-buffer (current-buffer))
 	(font-lock-fontify-buffer))
   (goto-char (point-min))
@@ -858,7 +858,7 @@ foo = {
 "))
     (py-bug-tests-intern 'eofs-attribut-base arg teststring)))
 
-(defun eofs-attribut-base ()
+(defun eofs-attribut-base (arg)
   (forward-line -2)
   (assert (eq 142 (py-end-of-statement))  nil "eofs-attribut-test failed"))
 
@@ -879,7 +879,7 @@ if foo:
 ")))
     (py-bug-tests-intern 'args-list-first-line-indent-base arg teststring)))
 
-(defun args-list-first-line-indent-base ()
+(defun args-list-first-line-indent-base (arg)
   (goto-char 72)
   (assert (eq 4 (py-compute-indentation)) nil "args-list-first-line-indent-test failed"))
 
@@ -900,7 +900,7 @@ if foo:
 ")))
     (py-bug-tests-intern 'py-partial-expression-base arg teststring)))
 
-(defun py-partial-expression-base ()
+(defun py-partial-expression-base (arg)
   (goto-char 104)
   (assert (eq 102 (py-beginning-of-partial-expression)) nil "py-partial-expression-test #1 failed")
   (assert (eq 108 (py-end-of-partial-expression)) nil "py-partial-expression-test #2 failed")
@@ -915,7 +915,7 @@ if foo:
     3, 4]"))
     (py-bug-tests-intern 'multiline-list-indent-base arg teststring)))
 
-(defun multiline-list-indent-base ()
+(defun multiline-list-indent-base (arg)
   (assert (eq 7 (py-compute-indentation)) nil "multiline-list-indent-test failed"))
 
 (defun no-switch-no-split-test (&optional arg load-branch-function)
@@ -927,7 +927,7 @@ print u'\\xA9'
 ")))
     (py-bug-tests-intern 'no-switch-no-split-base arg teststring)))
 
-(defun no-switch-no-split-base ()
+(defun no-switch-no-split-base (arg)
   (let ((oldbuf (current-buffer))
         py-split-windows-on-execute py-switch-buffers-on-execute-p)
     (goto-char 49)
@@ -951,7 +951,7 @@ if __name__==\"__main__\":
 ")))
     (py-bug-tests-intern 'close-block-base arg teststring)))
 
-(defun close-block-base ()
+(defun close-block-base (arg)
   (goto-char 102)
   (assert (eq 4 (py-close-block)) nil "close-block-test failed"))
 
@@ -972,7 +972,7 @@ class OrderedDict1(dict):
          ")))
     (py-bug-tests-intern 'py-shift-block-base arg teststring)))
 
-(defun py-shift-block-base ()
+(defun py-shift-block-base (arg)
   (let (py-smart-indentation)
     (goto-char 237)
     (assert (eq 12 (py-shift-block-right)) nil "py-shift-block-test #1 failed")
@@ -994,7 +994,7 @@ else:
 ")))
     (py-bug-tests-intern 'nesting-if-test-base arg teststring)))
 
-(defun nesting-if-test-base ()
+(defun nesting-if-test-base (arg)
   (goto-char 105)
   (assert (eq 0 (py-compute-indentation)) nil "nesting-if-test failed"))
 
@@ -1018,7 +1018,7 @@ somme errors
 ")))
     (py-bug-tests-intern 'py-end-of-print-statement-base arg teststring)))
 
-(defun py-end-of-print-statement-base ()
+(defun py-end-of-print-statement-base (arg)
   (when py-debug-p (switch-to-buffer (current-buffer))
 	(font-lock-fontify-buffer))
   (goto-char 66)
@@ -1054,7 +1054,7 @@ def main(argv):
 ")))
     (py-bug-tests-intern 'nested-try-base arg teststring)))
 
-(defun nested-try-base ()
+(defun nested-try-base (arg)
   (goto-char 306)
   (assert (eq 8 (py-compute-indentation)) nil "nested-try-test failed"))
 
@@ -1119,7 +1119,7 @@ def my_fun():
 ")))
     (py-bug-tests-intern 'nested-try-finally-base arg teststring)))
 
-(defun nested-try-finally-base ()
+(defun nested-try-finally-base (arg)
   (goto-char 431)
   (assert (eq 12 (py-compute-indentation)) nil "nested-try-finally-test failed"))
 
@@ -1136,7 +1136,7 @@ class foo(bar, baz):
 ")))
     (py-bug-tests-intern 'tqs-list-error-base 2 teststring)))
 
-(defun tqs-list-error-base ()
+(defun tqs-list-error-base (arg)
   (goto-char 90)
   (assert (eq 175   (py-end-of-statement)) nil "tqs-list-error-test failed"))
 
@@ -1153,7 +1153,7 @@ for x in y:
 ")))
     (py-bug-tests-intern 'py-smart-indent-eight-base arg teststring)))
 
-(defun py-smart-indent-eight-base ()
+(defun py-smart-indent-eight-base (arg)
   (goto-char 104)
   (assert (eq 4 (py-guess-indent-offset)) nil "py-smart-indent-eight-test #1 failed")
   (assert (eq 12 (py-compute-indentation)) nil "py-smart-indent-eight-test #2 failed")
@@ -1166,7 +1166,7 @@ for x in y:
 ")))
     (py-bug-tests-intern 'py-install-directory-path-base arg teststring)))
 
-(defun py-install-directory-path-base ()
+(defun py-install-directory-path-base (arg)
   "See if `py-install-directory' is set when required. "
   (assert (py-install-directory-check) nil "`py-install-directory' not valid. See INSTALL. "))
 
@@ -1179,7 +1179,7 @@ print(\"I'm the switch-windows-on-execute-p-test\")
 ")))
     (py-bug-tests-intern 'switch-windows-on-execute-p-base arg teststring)))
 
-(defun switch-windows-on-execute-p-base ()
+(defun switch-windows-on-execute-p-base (arg)
   (let ((py-switch-buffers-on-execute-p t)
         (erg (buffer-name)))
     (py-execute-buffer)
@@ -1197,7 +1197,7 @@ print(\"I'm the `split-windows-on-execute-p-test'\")
 ")))
     (py-bug-tests-intern 'split-windows-on-execute-p-base arg teststring)))
 
-(defun split-windows-on-execute-p-base ()
+(defun split-windows-on-execute-p-base (arg)
   (delete-other-windows)
   (let ((py-split-window-on-execute t)
         (py-split-windows-on-execute-function 'split-window-vertically)
@@ -1215,7 +1215,7 @@ print(\"I'm the `py-menu-pyshell-test'\")
 ")))
     (py-bug-tests-intern 'py-menu-pyshell-base arg teststring)))
 
-(defun py-menu-pyshell-base ()
+(defun py-menu-pyshell-base (arg)
   (assert (string= "PyShell" (prin1-to-string
                               (car (nth 1 (cdr (nth 17 python-mode-map))))
                               ;; (car (nth 2 (nth 1 (cdr python-mode-map))))
@@ -1226,7 +1226,7 @@ print(\"I'm the `py-menu-pyshell-test'\")
   (let ((teststring ""))
     (py-bug-tests-intern 'python-dedicated-base arg teststring)))
 
-(defun python-dedicated-base ()
+(defun python-dedicated-base (arg)
   (set-buffer (python-dedicated))
   (sit-for 0.1)
   (assert (string-match "^\*Python[0-9.]*-[:alnum:]+*" (buffer-name)) nil "python-dedicated-test failed"))
@@ -1236,7 +1236,7 @@ print(\"I'm the `py-menu-pyshell-test'\")
   (let ((teststring ""))
     (py-bug-tests-intern 'py-separator-char-base arg teststring)))
 
-(defun py-separator-char-base ()
+(defun py-separator-char-base (arg)
   (assert (stringp (py-separator-char)) nil "py-separator-char-test failed"))
 
 (defun toggle-force-py-shell-name-p-test (&optional arg)
@@ -1244,7 +1244,7 @@ print(\"I'm the `py-menu-pyshell-test'\")
   (let ((teststring ""))
     (py-bug-tests-intern 'toggle-force-py-shell-name-p-base arg teststring)))
 
-(defun toggle-force-py-shell-name-p-base ()
+(defun toggle-force-py-shell-name-p-base (arg)
   (let ((old py-force-py-shell-name-p))
     (assert (not (eq old (toggle-force-py-shell-name-p))) nil "toggle-force-py-shell-name-p-test failed")
     (setq py-force-py-shell-name-p old)))
@@ -1259,7 +1259,7 @@ self.nult['_foobar'] = []
 "))
     (py-bug-tests-intern 'before-inline-comment-base arg teststring)))
 
-(defun before-inline-comment-base ()
+(defun before-inline-comment-base (arg)
   (goto-char 72)
   (py-end-of-statement)
   (sit-for 0.1)
@@ -1282,7 +1282,7 @@ def fooBaz( bar ):  # version 2003/9/7
 "))
     (py-bug-tests-intern 'py-end-of-def-inline-comment-base arg teststring)))
 
-(defun py-end-of-def-inline-comment-base ()
+(defun py-end-of-def-inline-comment-base (arg)
   (let ((py-smart-indentation t))
     (goto-char 49)
     (py-end-of-def-or-class)
@@ -1301,7 +1301,7 @@ def foo()
 "))
     (py-bug-tests-intern 'py-compute-indentation-base arg teststring)))
 
-(defun py-compute-indentation-base ()
+(defun py-compute-indentation-base (arg)
   (goto-char 99)
   (assert (eq 4 (py-compute-indentation)) nil "py-compute-indentation-test #1 failed")
   (goto-char 127)
@@ -1318,7 +1318,7 @@ import sys, os; os.remove('do/something/nasty') # lp:1025000
 "))
     (py-bug-tests-intern 'py-end-of-statement-1-base arg teststring)))
 
-(defun py-end-of-statement-1-base ()
+(defun py-end-of-statement-1-base (arg)
   (when py-debug-p (switch-to-buffer (current-buffer))
 	(font-lock-fontify-buffer))
   (goto-char (point-min))
@@ -1340,7 +1340,7 @@ aus.write(result + \"\\n\")
 "))
     (py-bug-tests-intern 'py-end-of-statement-2-base arg teststring)))
 
-(defun py-end-of-statement-2-base ()
+(defun py-end-of-statement-2-base (arg)
   (goto-char 59)
   (py-end-of-statement)
   (assert (eq 225 (point)) nil "py-end-of-statement-test-2 #1 failed"))
@@ -1356,7 +1356,7 @@ import sys, os; os.remove('do/something/nasty') # lp:1025000
 "))
     (py-bug-tests-intern 'py-beginning-of-statement-1-base arg teststring)))
 
-(defun py-beginning-of-statement-1-base ()
+(defun py-beginning-of-statement-1-base (arg)
   (py-beginning-of-statement)
   (assert (eq 132 (point)) nil "py-beginning-of-statement-test-1 #1 failed")
   (assert (eq 116 (py-beginning-of-statement)) nil "py-beginning-of-statement-test-1 #2 failed")
@@ -1371,7 +1371,7 @@ import sys, os; os.remove('do/something/nasty') # lp:1025000
 "))
     (py-bug-tests-intern 'key-binding-base arg teststring)))
 
-(defun key-binding-base ()
+(defun key-binding-base (arg)
   (when py-debug-p (switch-to-buffer (current-buffer)))
   (assert (eq (key-binding [(:)]) 'py-electric-colon) nil "py-electric-colon key-binding test failed")
 
@@ -1426,7 +1426,7 @@ import sys, os; os.remove('do/something/nasty') # lp:1025000
 foo "))
     (py-bug-tests-intern 'py-smart-operator-base arg teststring)))
 
-(defun py-smart-operator-base ()
+(defun py-smart-operator-base (arg)
   (python-mode)
   (let ((py-smart-operator-mode-p t))
     (py-smart-operator-mode-p-on)
@@ -1475,7 +1475,7 @@ foo "))
 foo"))
     (py-bug-tests-intern 'augmented-assigment-base arg teststring)))
 
-(defun augmented-assigment-base ()
+(defun augmented-assigment-base (arg)
   (let ((py-smart-operator-mode-p t))
     (smart-operator-mode-on)
     (goto-char 52)
@@ -1525,7 +1525,7 @@ foo"))
 foo "))
     (py-bug-tests-intern 'py-smart-operator-repeat-base arg teststring)))
 
-(defun py-smart-operator-repeat-base ()
+(defun py-smart-operator-repeat-base (arg)
   (let ((py-smart-operator-mode-p t))
     (py-smart-operator-mode-on)
     (goto-char 52)
@@ -1588,7 +1588,7 @@ foo "))
   (let ((teststring python-mode-teststring))
   (py-bug-tests-intern 'py-switch-imenu-index-function-base arg teststring)))
 
-(defun py-switch-imenu-index-function-base ()
+(defun py-switch-imenu-index-function-base (arg)
   (assert (listp imenu--index-alist) nil "py-switch-imenu-index-function-test failed")
   (assert (py-switch-imenu-index-function) nil "py-switch-imenu-index-function-test failed")
   (assert (listp imenu--index-alist) nil "py-switch-imenu-index-function-test failed"))
@@ -1598,7 +1598,7 @@ foo "))
   (let ((teststring python-mode-teststring))
     (py-bug-tests-intern 'py-bol-moves-base arg teststring)))
 
-(defun py-bol-moves-base ()
+(defun py-bol-moves-base (arg)
   (message "comment-start: %s" comment-start)
   (goto-char 592)
   ;; (sit-for 0.1)
@@ -1786,7 +1786,7 @@ def fooBaz( bar ):  # version 2003/9/7
 "))
     (py-bug-tests-intern 'py-guess-indent-offset-base arg teststring)))
 
-(defun py-guess-indent-offset-base ()
+(defun py-guess-indent-offset-base (arg)
   (goto-char 49)
   (assert (eq 4 (py-guess-indent-offset)) nil "py-guess-indent-offset-test #1 failed")
   (message "%s" "py-guess-indent-offset-test #1 done")
@@ -1812,7 +1812,7 @@ def fooBaz( bar ):  # version 2003/9/7
 "))
   (py-bug-tests-intern 'autopair-on-base arg teststring)))
 
-(defun autopair-on-base ()
+(defun autopair-on-base (arg)
   (assert (py-autopair-mode-on) nil "autopair-mode-test #1 failed")
   (message "%s" "autopair-mode-test #1  done")
   (assert (not (py-toggle-autopair-mode)) nil "autopair-mode-test #2 failed"))
@@ -1826,7 +1826,7 @@ def fooBaz( bar ):  # version 2003/9/7
 "))
   (py-bug-tests-intern 'py-smart-indentation-base arg teststring)))
 
-(defun py-smart-indentation-base ()
+(defun py-smart-indentation-base (arg)
   (assert (py-smart-indentation-on) nil "smart-indentation-test #1 failed")
   (message "%s" "smart-indentation-test #1  done")
   (assert (not (py-smart-indentation-off)) nil "smart-indentation-test #2 failed")
@@ -1842,7 +1842,7 @@ def fooBaz( bar ):  # version 2003/9/7
 "))
   (py-bug-tests-intern 'py-highlight-indentation-base arg teststring)))
 
-(defun py-highlight-indentation-base ()
+(defun py-highlight-indentation-base (arg)
   (py-highlight-indentation-on)
   (assert highlight-indent-active nil "highlight-indentation-test #1 failed")
   (message "%s" "highlight-indentation-test #1  passed")
@@ -1862,18 +1862,18 @@ def foo()
 "))
     (py-bug-tests-intern 'py-fill-string-django-base arg teststring)))
 
-(defun py-fill-string-django-base ()
-  ;; (switch-to-buffer (current-buffer))
+(defun py-fill-string-django-base (arg)
+  (when py-debug-p (switch-to-buffer (current-buffer))) 
   (font-lock-fontify-buffer)
   (sit-for 0.1)
   (goto-char 99)
   (py-fill-string-django)
   (beginning-of-line)
   (sit-for 0.1)
-  (assert (nth 8 (syntax-ppss)) t nil "py-fill-string-django-test #1 failed")
+  (assert (nth 8 (syntax-ppss)) nil "py-fill-string-django-test #1 failed")
   (goto-char (nth 8 (syntax-ppss)))
   (sit-for 1)
-  (assert (looking-at (concat py-string-delim-re "$")) t nil "py-fill-string-django-test #2 failed")
+  (assert (looking-at (concat py-string-delim-re "$")) nil "py-fill-string-django-test #2 failed")
 )
 
 (defun py-fill-string-onetwo-test (&optional arg)
@@ -1885,7 +1885,7 @@ def foo()
 "))
   (py-bug-tests-intern 'py-fill-string-onetwo-base arg teststring)))
 
-(defun py-fill-string-onetwo-base ()
+(defun py-fill-string-onetwo-base (arg)
   (when py-debug-p (switch-to-buffer (current-buffer))
 	(font-lock-fontify-buffer))
   (sit-for 0.1)
@@ -1911,7 +1911,7 @@ def foo()
 "))
   (py-bug-tests-intern 'py-fill-string-pep-257-base arg teststring)))
 
-(defun py-fill-string-pep-257-base ()
+(defun py-fill-string-pep-257-base (arg)
   (when py-debug-p (switch-to-buffer (current-buffer))
 	(font-lock-fontify-buffer))
   (sit-for 0.1)
@@ -1935,7 +1935,7 @@ def foo()
 "))
   (py-bug-tests-intern  'py-fill-string-pep-257-nn-base arg teststring)))
 
-(defun py-fill-string-pep-257-nn-base ()
+(defun py-fill-string-pep-257-nn-base (arg)
   ;; (switch-to-buffer (current-buffer))
   (font-lock-fontify-buffer)
   (sit-for 0.1)
@@ -1961,7 +1961,7 @@ asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf
 "))
   (py-bug-tests-intern 'py-fill-string-symmetric-base arg teststring)))
 
-(defun py-fill-string-symmetric-base ()
+(defun py-fill-string-symmetric-base (arg)
   (goto-char 84)
   (py-fill-string-symmetric)
   (sit-for 0.1)
@@ -1977,7 +1977,7 @@ asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf
   (let ((teststring python-mode-teststring))
     (py-bug-tests-intern 'py-electric-yank-base arg teststring)))
 
-(defun py-electric-yank-base ()
+(defun py-electric-yank-base (arg)
   (let ((py-electric-yank-active-p t)
         (kill-new "asdf"))
     (goto-char 610)
@@ -1993,7 +1993,7 @@ asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf
   (let ((teststring python-mode-teststring))
   (py-bug-tests-intern 'py-down-statement-base arg teststring)))
 
-(defun py-down-statement-base ()
+(defun py-down-statement-base (arg)
   ;; (switch-to-buffer (current-buffer))
   (goto-char (point-min))
   (font-lock-fontify-buffer)
@@ -2027,7 +2027,7 @@ else:
 "))
   (py-bug-tests-intern 'py-nested-block-or-clause-base arg teststring)))
 
-(defun py-nested-block-or-clause-base ()
+(defun py-nested-block-or-clause-base (arg)
   (goto-char 48)
   (assert (eq 299 (py-end-of-block)) nil "py-nested-block-or-clause-test #1 failed")
   (message "%s" "py-nested-block-or-clause-test #1  passed")
@@ -2095,7 +2095,7 @@ else:
 "))
   (py-bug-tests-intern 'docstring-style-switches-base arg teststring)))
 
-(defun docstring-style-switches-base ()
+(defun docstring-style-switches-base (arg)
 
   (py-set-django-docstring-style)
   (when
@@ -2131,7 +2131,7 @@ Es muß die aufzurufende Ziehungszahl als Argument angegeben werden:
 "))
   (py-bug-tests-intern 'forward-sexp-base arg teststring)))
 
-(defun forward-sexp-base ()
+(defun forward-sexp-base (arg)
   ;; (message "forward-sexp-function: %s" forward-sexp-function)
   (goto-char 71)
   (sit-for 0.1)
@@ -2155,7 +2155,7 @@ else:
 "))
   (py-bug-tests-intern 'nested-if-base arg teststring)))
 
-(defun nested-if-base ()
+(defun nested-if-base (arg)
   (goto-char 118)
   (py-beginning-of-block)
   (when
@@ -2179,7 +2179,7 @@ else:
 "))
     (py-bug-tests-intern 'py-execute-region-error-base arg teststring)))
 
-(defun py-execute-region-error-base ()
+(defun py-execute-region-error-base (arg)
   (when py-debug-p (switch-to-buffer (current-buffer)))
   (goto-char 152)
   (push-mark)
@@ -2197,7 +2197,7 @@ else:
 "))
     (py-bug-tests-intern 'py-execute-statement-error-base arg teststring)))
 
-(defun py-execute-statement-error-base ()
+(defun py-execute-statement-error-base (arg)
   (let (erg)
     (when py-debug-p (switch-to-buffer (current-buffer))
 	  (font-lock-fontify-buffer))
@@ -2223,7 +2223,7 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
 "))
   (py-bug-tests-intern 'beginning-of-block-fails-from-wrong-indent-base arg teststring)))
 
-(defun beginning-of-block-fails-from-wrong-indent-base ()
+(defun beginning-of-block-fails-from-wrong-indent-base (arg)
     (goto-char 102)
     (assert (eq 48 (py-beginning-of-block)) nil "beginning-of-block-fails-from-wrong-indent-test failed"))
 
@@ -2234,7 +2234,7 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
 print(12)"))
   (py-bug-tests-intern 'py-store-result-base arg teststring)))
 
-(defun py-store-result-base ()
+(defun py-store-result-base (arg)
   ;; (switch-to-buffer (current-buffer))
   (let ((py-store-result-p t))
     (py-execute-statement)
@@ -2249,7 +2249,7 @@ print(12)"))
 impo")))
     (py-bug-tests-intern 'py-shell-complete-base arg teststring)))
 
-(defun py-shell-complete-base ()
+(defun py-shell-complete-base (arg)
   (when  py-debug-p (switch-to-buffer (current-buffer))
 	(font-lock-fontify-buffer))
   (py-shell-complete)

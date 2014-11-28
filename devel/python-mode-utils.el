@@ -1951,7 +1951,7 @@ Returns value of `" ele "'. \"
   (let ((teststring \"\"))
   (py-bug-tests-intern '" ele "-commandp-base arg teststring)))
 
-\(defun " ele "-commandp-base ()
+\(defun " ele "-commandp-base (arg)
     (assert (commandp '" ele ") nil \"" ele "-commandp-test failed\"))"))
       (newline)))
   (switch-to-buffer (current-buffer))
@@ -1982,7 +1982,7 @@ Returns value of `" ele "'. \"
     (when load-branch-function (funcall load-branch-function))
     (py-bug-tests-intern 'py-shell-invoking-" ele "-lp:835151-base arg teststring)))
 
-\(defun py-shell-invoking-" ele "-lp:835151-base ()
+\(defun py-shell-invoking-" ele "-lp:835151-base (arg)
   (setq py-shell-name \"" ele "\")
   (assert (markerp (py-execute-buffer)) nil \"py-shell-invoking-" ele "-lp:835151-test failed\"))\n")))
   (newline)
@@ -2083,7 +2083,7 @@ http://repo.or.cz/w/elbb.git/blob/HEAD:/code/Go-to-Emacs-Lisp-Definition.el
       (insert (concat "pri\"))
     (py-bug-tests-intern '" ele "-complete-base arg teststring)))
 
-\(defun " ele "-complete-base ()
+\(defun " ele "-complete-base (arg)
   (save-excursion (py-shell-complete))
   ;; (sit-for 0.1)
   (assert (looking-at \"print\") nil \"" ele "complete-test failed\"))\n\n"))))
@@ -3182,7 +3182,7 @@ Return code of `py-" ele "' at point, a string. \"
 print(\\\"I'm the py-split-window-on-execute-lp-1361531-" ele "-test\\\")\"))
     (py-bug-tests-intern 'py-split-window-on-execute-lp-1361531-" ele "-base arg teststring)))
 
-\(defun py-split-window-on-execute-lp-1361531-" ele "-base ()
+\(defun py-split-window-on-execute-lp-1361531-" ele "-base (arg)
   (when py-debug-p (message \"py-split-window-on-execute: %s\" py-split-window-on-execute))
   (delete-other-windows)
   (py-execute-statement)
@@ -3214,7 +3214,7 @@ print(\\\"I'm the py-split-window-on-execute-lp-1361531-" ele "-test\\\")\"))
 print(\\\"I'm the py-multi-split-window-on-execute-lp-1361531-" ele "-test\\\")\"))
     (py-bug-tests-intern 'py-multi-split-window-on-execute-lp-1361531-" ele "-base arg teststring)))
 
-\(defun py-multi-split-window-on-execute-lp-1361531-" ele "-base ()
+\(defun py-multi-split-window-on-execute-lp-1361531-" ele "-base (arg)
   (when py-debug-p (message \"py-split-window-on-execute: %s\" py-split-window-on-execute))
   (delete-other-windows)
 
@@ -3252,7 +3252,7 @@ print(\\\"I'm the py-multi-split-window-on-execute-lp-1361531-" ele "-test\\\")\
 print(\\\"I'm the py-always-split-window-on-execute-lp-1361531-" ele "-test\\\")\"))
     (py-bug-tests-intern 'py-always-split-window-on-execute-lp-1361531-" ele "-base arg teststring)))
 
-\(defun py-always-split-window-on-execute-lp-1361531-" ele "-base ()
+\(defun py-always-split-window-on-execute-lp-1361531-" ele "-base (arg)
   (when py-debug-p (message \"py-split-window-on-execute: %s\" py-split-window-on-execute))
   (delete-other-windows)
   (let ((py-split-window-on-execute 'always)

@@ -33,10 +33,9 @@
 print(\"I'm the py-multi-split-window-on-execute-lp-1361531-python-test\")"))
     (py-bug-tests-intern 'py-multi-split-window-on-execute-lp-1361531-python-base arg teststring)))
 
-(defun py-multi-split-window-on-execute-lp-1361531-python-base ()
+(defun py-multi-split-window-on-execute-lp-1361531-python-base (arg)
   (when py-debug-p (message "py-split-window-on-execute: %s" py-split-window-on-execute))
   (delete-other-windows)
-
   (let ((erg1 (progn (py-execute-statement-python-dedicated) py-buffer-name))
         (erg2 (progn (py-execute-statement-python-dedicated) py-buffer-name)))
   (sit-for 1 t)
@@ -54,7 +53,7 @@ print(\"I'm the py-multi-split-window-on-execute-lp-1361531-python-test\")"))
 print(\"I'm the py-multi-split-window-on-execute-lp-1361531-ipython-test\")"))
     (py-bug-tests-intern 'py-multi-split-window-on-execute-lp-1361531-ipython-base arg teststring)))
 
-(defun py-multi-split-window-on-execute-lp-1361531-ipython-base ()
+(defun py-multi-split-window-on-execute-lp-1361531-ipython-base (arg)
   (when py-debug-p (message "py-split-window-on-execute: %s" py-split-window-on-execute))
   (delete-other-windows)
 
@@ -75,7 +74,7 @@ print(\"I'm the py-multi-split-window-on-execute-lp-1361531-ipython-test\")"))
 print(\"I'm the py-multi-split-window-on-execute-lp-1361531-python2-test\")"))
     (py-bug-tests-intern 'py-multi-split-window-on-execute-lp-1361531-python2-base arg teststring)))
 
-(defun py-multi-split-window-on-execute-lp-1361531-python2-base ()
+(defun py-multi-split-window-on-execute-lp-1361531-python2-base (arg)
   (when py-debug-p (message "py-split-window-on-execute: %s" py-split-window-on-execute))
   (delete-other-windows)
 
@@ -96,7 +95,7 @@ print(\"I'm the py-multi-split-window-on-execute-lp-1361531-python2-test\")"))
 print(\"I'm the py-multi-split-window-on-execute-lp-1361531-jython-test\")"))
     (py-bug-tests-intern 'py-multi-split-window-on-execute-lp-1361531-jython-base arg teststring)))
 
-(defun py-multi-split-window-on-execute-lp-1361531-jython-base ()
+(defun py-multi-split-window-on-execute-lp-1361531-jython-base (arg)
   (when py-debug-p (message "py-split-window-on-execute: %s" py-split-window-on-execute))
   (delete-other-windows)
 
@@ -117,7 +116,7 @@ print(\"I'm the py-multi-split-window-on-execute-lp-1361531-jython-test\")"))
 print(\"I'm the py-multi-split-window-on-execute-lp-1361531-python3-test\")"))
     (py-bug-tests-intern 'py-multi-split-window-on-execute-lp-1361531-python3-base arg teststring)))
 
-(defun py-multi-split-window-on-execute-lp-1361531-python3-base ()
+(defun py-multi-split-window-on-execute-lp-1361531-python3-base (arg)
   (when py-debug-p (message "py-split-window-on-execute: %s" py-split-window-on-execute))
   (delete-other-windows)
 
@@ -138,7 +137,7 @@ print(\"I'm the py-multi-split-window-on-execute-lp-1361531-python3-test\")"))
 print(\"I'm the py-multi-split-window-on-execute-lp-1361531-bpython-test\")"))
     (py-bug-tests-intern 'py-multi-split-window-on-execute-lp-1361531-bpython-base arg teststring)))
 
-(defun py-multi-split-window-on-execute-lp-1361531-bpython-base ()
+(defun py-multi-split-window-on-execute-lp-1361531-bpython-base (arg)
   (when py-debug-p (message "py-split-window-on-execute: %s" py-split-window-on-execute))
   (delete-other-windows)
 

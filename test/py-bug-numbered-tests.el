@@ -16,6 +16,38 @@
 ;;
 ;;; Code:
 
+(defmacro py-bug-tests-intern (testname arg teststring)
+  "Just interally. "
+  (declare (debug (edebug-form-spec t)))
+  `(let ((debug-on-error t)
+         (enable-local-variables :all)
+         py-load-pymacs-p
+         ;; py-split-window-on-execute
+         ;; py-switch-buffers-on-execute-p
+         py-start-run-py-shell
+         proc
+         py-fontify-shell-buffer-p
+  	 (test-buffer (get-buffer-create (replace-regexp-in-string "\\\\" "" (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname))))))
+     (with-current-buffer test-buffer
+       (delete-other-windows)
+       (erase-buffer)
+       (fundamental-mode)
+       (python-mode)
+       (insert ,teststring)
+       (when py-debug-p (switch-to-buffer test-buffer))
+       (local-unset-key (kbd "RET"))
+       (sit-for 0.1)
+       (when (and (boundp 'company-mode) company-mode) (company-abort))
+       (funcall ,testname ,arg)
+       (message "%s" (replace-regexp-in-string "\\\\" "" (concat (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname)) " passed")))
+       ;; (unless (< 1 arg)
+       (unless (eq 2 arg)
+  	 (set-buffer-modified-p 'nil)
+  	 (and (get-buffer-process test-buffer)
+  	      (set-process-query-on-exit-flag (get-buffer-process test-buffer) nil)
+  	      (kill-process (get-buffer-process test-buffer)))
+  	 (kill-buffer test-buffer)))))
+
 (defvar py-test-shebang-list (list "#! /usr/bin/env python" "#! /usr/bin/env ipython" "#! /usr/bin/python" "#! /usr/bin/ipython")
   "Values to test as `py-test-shebang', resp. `py-shell-name'. ")
 
@@ -211,37 +243,7 @@
        'UnicodeEncodeError-lp-550661-test
        'py-shell-complete-lp-328836-test))
 
-(defmacro py-bug-tests-intern (testname arg teststring)
-  ""
-  (declare (debug (edebug-form-spec t)))
-  `(let ((debug-on-error t)
-         (enable-local-variables :all)
-         py-load-pymacs-p
-         ;; py-split-window-on-execute
-         ;; py-switch-buffers-on-execute-p
-         py-start-run-py-shell
-         proc
-         py-fontify-shell-buffer-p
-	 (test-buffer (get-buffer-create (replace-regexp-in-string "\\\\" "" (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname))))))
-     (with-current-buffer test-buffer
-       (delete-other-windows)
-       (erase-buffer)
-       (fundamental-mode)
-       (python-mode)
-       (insert ,teststring)
-       (when py-debug-p (switch-to-buffer (current-buffer)))
-       (local-unset-key (kbd "RET"))
-       (sit-for 0.1)
-       (when (and (boundp 'company-mode) company-mode) (company-abort))
-       (funcall ,testname ,arg)
-       (message "%s" (replace-regexp-in-string "\\\\" "" (concat (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname)) " passed")))
-       ;; (unless (< 1 arg)
-       (unless (eq 2 arg)
-	 (set-buffer-modified-p 'nil)
-	 (and (get-buffer-process (current-buffer))
-	      (set-process-query-on-exit-flag (get-buffer-process (current-buffer)) nil)
-	      (kill-process (get-buffer-process (current-buffer))))
-	 (kill-buffer (current-buffer))))))
+
 
 ;; py-if-name-main-permission-p
 (defun py-if-name-main-permission-lp-326620-test (&optional arg)
@@ -2890,7 +2892,7 @@ def someDef():
 from somedef import *
 someDe
 "))
-    (py-bug-tests-intern 'pycomplete-same-folder-def-lp-889052-base arg teststring t)))
+    (py-bug-tests-intern 'pycomplete-same-folder-def-lp-889052-base arg teststring)))
 
 (defun pycomplete-same-folder-def-lp-889052-base (arg)
   (write-file (concat (py--normalize-directory py-temp-directory) "samefolder.py"))
@@ -2925,8 +2927,7 @@ CLASS_INS.someDe
     (py-bug-tests-intern 'pycomplete-same-folder-class-lp-889052-base arg teststring)))
 
 (defun pycomplete-same-folder-class-lp-889052-base (arg)
-  (let (
-(testfile1 (concat (expand-file-name (py--normalize-directory py-install-directory)) "completion" "/" "classblah.py"))
+  (let ((testfile1 (concat (expand-file-name (py--normalize-directory py-install-directory)) "completion" "/" "classblah.py"))
         (testfile2 (concat (expand-file-name (py--normalize-directory py-install-directory)) "completion" "/" "somedef.py"))
         py-no-completion-calls-dabbrev-expand-p
         py-indent-no-completion-p)
@@ -5498,7 +5499,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.51 $\"
+__version__ = \"$Revision: 1.53 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -6735,7 +6736,7 @@ except: pass
 
 (defun comment-inside-curly-braces-lp-1395076-test (&optional arg)
   (interactive "p")
-   (let ((teststring "#! /usr/bin/env python
+  (let ((teststring "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
 def foo():
@@ -6745,7 +6746,7 @@ def foo():
     }
 
 "))
-  (py-bug-tests-intern 'comment-inside-curly-braces-lp-1395076-base arg teststring)))
+    (py-bug-tests-intern 'comment-inside-curly-braces-lp-1395076-base arg teststring)))
 
 (defun comment-inside-curly-braces-lp-1395076-base (arg)
   (goto-char 102)
