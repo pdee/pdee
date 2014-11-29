@@ -1,0 +1,14 @@
+* In case `Pymacs' was installed via `make' on your system, don't
+  activate inlined one.  Keep `py-load-pymacs-p' nil.
+
+  Otherwise setting `py-load-pymacs-p' to `t' should enable a
+  company-based auto-completion - alongside with
+  `py-company-pycomplete-p'.
+
+* Troubeshooting
+  On systems which run Python3 as default
+  setting
+  export PYMACS_PYTHON=python2
+  was reported being useful.
+  Newer Pymacs should not need this.
+
