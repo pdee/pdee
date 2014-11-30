@@ -728,7 +728,7 @@ mark-defun marks top-level form at point etc."
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-return-key 'py-newline-and-indent
+(defcustom py-return-key 'newline
   "Which command <return> should call. "
   :type '(choice
           (const :tag "default" py-newline-and-indent)
