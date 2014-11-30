@@ -103,7 +103,15 @@ Use `defcustom' to keep value across sessions "
 When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
 `raise', `break', `continue', and `pass' force one level of dedenting.
 
-Optional arguments are flags resp. values set and used by `py-compute-indentation' internally
+Optional arguments are flags resp. values set and used by `py-compute-indentation' internally:
+ORIG keeps original position
+ORIGLINE keeps line where compute started
+CLOSING is t when started at a char delimiting a list as \"]})\"
+LINE indicates being not at origline now
+NESTING tells repeated executing was started from inside a list
+REPEAT counter enables checks against `py-max-specpdl-size'
+INDENT-OFFSET allows calculation of block-local values
+LIEP stores line-end-position at point-of-interest 
 "
   (interactive)
   (save-excursion
@@ -133,15 +141,15 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
              ;; nesting: started nesting a list
              (nesting nesting)
              (indent-offset (or indent-offset py-indent-offset))
-             (name (current-buffer))
+             (cubuf (current-buffer))
              erg indent this-line)
         (if (and (< repeat 1)
                  (and (comint-check-proc (current-buffer))
                       (re-search-backward (concat py-shell-prompt-regexp "\\|" ipython-de-output-prompt-regexp "\\|" ipython-de-input-prompt-regexp) nil t 1)))
             ;; common recursion not suitable because of prompt
             (with-temp-buffer
-              (insert-buffer-substring name (match-end 0) orig)
-              (goto-char orig)
+	      ;; (when py-debug-p (switch-to-buffer (current-buffer))) 
+              (insert-buffer-substring cubuf (match-end 0) orig)
               (setq indent (py-compute-indentation)))
 	  (if (< py-max-specpdl-size repeat)
 	      (error "`py-compute-indentation' reached loops max.")
@@ -214,67 +222,62 @@ Optional arguments are flags resp. values set and used by `py-compute-indentatio
 		   ;; lists
 		   ((nth 1 pps)
 		    (if
-		     ;; ((and nesting (not line))
-		      nesting
-		       ;; still at original line
-		      (save-excursion
-			(goto-char (nth 1 pps))
-			(setq this-line (py-count-lines))
-			(cond
-			 ((< 0 (- origline this-line))
-			  (if (< 1 (- origline this-line))
-			      (cond
-			       (closing
+			;; ((and nesting (not line))
+			nesting
+			;; still at original line
+			(save-excursion
+			  (goto-char (nth 1 pps))
+			  (setq this-line (py-count-lines))
+			  (cond
+			   ((< 0 (- origline this-line))
+			    (if (< 1 (- origline this-line))
 				(cond
-				 (py-closing-list-dedents-bos
-				  (goto-char (nth 1 pps))
-				  (current-indentation))
-				 ((looking-back "^[ \t]*")
-				  (current-column))
-				 ((and (looking-at "\\s([ \t]*$") py-closing-list-keeps-space)
-				  (+ (current-column) py-closing-list-space))
-				 ((looking-at "\\s([ \t]*$")
-				  (py--empty-arglist-indent nesting py-indent-offset indent-offset))
-				 (t (py--fetch-previous-indent orig))))
-			       ;; already behind a dedented element in list
-			       ((<= 2 (- origline this-line))
-				(py--fetch-previous-indent orig))
-			       ((< (current-indentation) (current-column))
-				(+ (current-indentation) py-indent-offset))
-			       (t (py--fetch-previous-indent orig)))
-			    (cond ((looking-at "\\s([ \t]*$")
-				   (py--empty-arglist-indent nesting py-indent-offset indent-offset))
-				  ((looking-at "\\s([ \t]*\\([^ \t]+.*\\)$")
-				   (goto-char (match-beginning 1))
-				   (if py-indent-paren-spanned-multilines-p
-				       (+ (current-column) py-indent-offset)
-				     (current-column)))
-				  (t (+ (current-column) (* (nth 0 pps)))))))
-			 ((nth 1 (syntax-ppss))
-			  (goto-char (nth 1 (syntax-ppss)))
-			  (setq line
-				;; should be faster
-				(< (line-end-position) liep)
-				;; (< (py-count-lines) origline)
-				)
-			  (py-compute-indentation orig origline closing line nesting repeat indent-offset liep))
-			 ((not (py--beginning-of-statement-p))
-			  (py-beginning-of-statement)
-			  (py-compute-indentation orig origline closing line nesting repeat indent-offset liep))
-			 (t (1+ (current-column)))))
-		     (if line
-			 (progn 
-		      (py-beginning-of-statement)
-		      (py-compute-indentation orig origline closing line nesting repeat indent-offset liep))
+				 (closing
+				  (cond
+				   (py-closing-list-dedents-bos
+				    (goto-char (nth 1 pps))
+				    (current-indentation))
+				   ((looking-back "^[ \t]*")
+				    (current-column))
+				   ((and (looking-at "\\s([ \t]*$") py-closing-list-keeps-space)
+				    (+ (current-column) py-closing-list-space))
+				   ((looking-at "\\s([ \t]*$")
+				    (py--empty-arglist-indent nesting py-indent-offset indent-offset))
+				   (t (py--fetch-previous-indent orig))))
+				 ;; already behind a dedented element in list
+				 ((<= 2 (- origline this-line))
+				  (py--fetch-previous-indent orig))
+				 ((< (current-indentation) (current-column))
+				  (+ (current-indentation) py-indent-offset))
+				 (t (py--fetch-previous-indent orig)))
+			      (cond ((looking-at "\\s([ \t]*$")
+				     (py--empty-arglist-indent nesting py-indent-offset indent-offset))
+				    ((looking-at "\\s([ \t]*\\([^ \t]+.*\\)$")
+				     (goto-char (match-beginning 1))
+				     (if py-indent-paren-spanned-multilines-p
+					 (+ (current-column) py-indent-offset)
+				       (current-column)))
+				    (t (+ (current-column) (* (nth 0 pps)))))))
+			   ((nth 1 (syntax-ppss))
+			    (goto-char (nth 1 (syntax-ppss)))
+			    (setq line
+				  ;; should be faster
+				  (< (line-end-position) liep)
+				  ;; (< (py-count-lines) origline)
+				  )
+			    (py-compute-indentation orig origline closing line nesting repeat indent-offset liep))
+			   ((not (py--beginning-of-statement-p))
+			    (py-beginning-of-statement)
+			    (py-compute-indentation orig origline closing line nesting repeat indent-offset liep))
+			   (t (1+ (current-column)))))
+		      (if line
+			  (progn
+			    (py-beginning-of-statement)
+			    (py-compute-indentation orig origline closing line nesting repeat indent-offset liep))
 			(goto-char (+ py-lhs-inbound-indent (nth 1 pps)))
-			     (when (looking-at "[ \t]+")
-			       (goto-char (match-end 0)))
-			     (current-column))
-		     ;; nesting or not nesting
-		     ;; (t
-		     ;; (goto-char (nth 1 pps))
-		     ;; (py-compute-indentation orig origline closing line nesting repeat indent-offset liep))
-		     ))
+			(when (looking-at "[ \t]+")
+			  (goto-char (match-end 0)))
+			(current-column))))
 		   ((and (eq (char-after) (or ?\( ?\{ ?\[)) line)
 		    (1+ (current-column)))
 		   ((py-preceding-line-backslashed-p)
