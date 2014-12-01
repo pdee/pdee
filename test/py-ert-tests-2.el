@@ -490,4 +490,33 @@ x = {'abc':'def',
     (when py-debug-p (switch-to-buffer (current-buffer)))
     (should (eq 0 (py-compute-indentation)))))
 
+
+(ert-deftest py-indentation-lp-1375122-test ()
+  (py-test-with-temp-buffer
+      " def foo():
+    if True:
+pass
+"
+    (when py-debug-p (switch-to-buffer (current-buffer))
+	  (font-lock-fontify-buffer))
+    (forward-line -1)
+    (call-interactively 'py-indent-or-complete)
+    (sit-for 0.1 t)
+    (should (eq 8 (current-column)))
+    ;; FixMe, last-command seems not set
+    ;; (call-interactively 'py-indent-or-complete)
+    ;; (py-indent-or-complete)
+    ;; (sit-for 0.1 t)
+    ;; (should (eq 4 (current-column)))
+    (beginning-of-line)
+    (delete-horizontal-space)
+    (indent-to 4)
+    (py-indent-or-complete)
+    (sit-for 0.1 t)
+    (should (eq 0 (current-column)))
+    ;; (py-indent-or-complete)
+    ;; (sit-for 0.1 t)
+    ;; (should (eq 8 (current-column)))
+    ))
+
 (provide 'py-ert-tests-2)

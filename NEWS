@@ -1,6 +1,12 @@
 Python Mode News
 ================
 
+New in version 6.2.1
+---------------------
+
+- TAB-indent from column zero: go to outmost first, lp:1375122
+
+
 New in version 6.2.0
 ---------------------
 
