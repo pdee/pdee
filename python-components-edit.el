@@ -100,12 +100,7 @@ With optional \\[universal-argument] an indent with length `py-indent-offset' is
 		    (py-shift-region-right 1)))
 	      (beginning-of-line)
 	      (delete-horizontal-space)
-	      (indent-to need)
-	      ;; (back-to-indentation)
-	      ;; (if (<= (line-beginning-position) (+ (point) (- col cui)))
-	      ;; (forward-char (- col cui))
-	      ;; (beginning-of-line))
-))
+	      (indent-to need)))
 	   ((< need cui)
 	    (if (and py-tab-shifts-region-p region)
 		(progn
@@ -174,7 +169,7 @@ With optional \\[universal-argument] an indent with length `py-indent-offset' is
       (/ cui indent-offset)
     (- cui indent-offset)))
 
-(defun py-indent-line (&optional arg)
+(defun py-indent-line (&optional arg outmost-only)
   "Indent the current line according to Python rules.
 
 When called interactivly with \\[universal-argument], ignore dedenting rules for block closing statements
@@ -187,6 +182,8 @@ This function is normally used by `indent-line-function' resp.
 \\[indent-for-tab-command].
 
 When bound to TAB, C-q TAB inserts a TAB.
+
+OUTMOST-ONLY stops circling possible indent.
 
 When `py-tab-shifts-region-p' is `t', not just the current line,
 but the region is shiftet that way.
@@ -226,7 +223,7 @@ C-q TAB inserts a literal TAB-character."
 	  (cond ((bolp)
 		 outmost)
 		((eq cui outmost)
-		 (when (eq this-command last-command)
+		 (when (and (eq this-command last-command) (not outmost-only))
 		   (py--calculate-indent-backwards cui this-indent-offset)))
 		(t (py--calculate-indent-backwards cui this-indent-offset))))
     (when (and (interactive-p) py-verbose-p) (message "py-indent-line, need: %s" need))
@@ -234,12 +231,10 @@ C-q TAB inserts a literal TAB-character."
     ;; and not (eq this-command last-command), need remains nil
     (when need
       (py--indent-line-base beg end region cui need arg this-indent-offset col)
-      ;; (if
       (and region (or py-tab-shifts-region-p
 		      py-tab-indents-region-p)
 	   (not (eq (point) orig))
 	   (exchange-point-and-mark))
-      ;; (and (< (current-column) (current-indentation))(back-to-indentation)))
       (when (and (interactive-p) py-verbose-p)(message "%s" (current-indentation)))
       (current-indentation))))
 
@@ -484,7 +479,7 @@ Returns and keeps relative position "
       (if (empty-line-p)
           (forward-line 1)
         (py-indent-and-forward)))
-    (unless (empty-line-p) (py-indent-line))
+    (unless (empty-line-p) (py-indent-line nil t))
     (goto-char orig)))
 
 ;;; Positions

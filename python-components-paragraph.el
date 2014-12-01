@@ -230,7 +230,7 @@ See lp:1066489 "
         this-beg this-end)
     (save-excursion
       (save-restriction
-        (narrow-to-region beg end)
+        ;; (narrow-to-region beg end)
         (goto-char beg)
         (skip-chars-forward " \t\r\n\f")
         (if (looking-at py-labelled-re)
@@ -276,7 +276,7 @@ See lp:1066489 "
 (defun py--fill-fix-end (thisend orig docstring delimiters-style)
   ;; Add the number of newlines indicated by the selected style
   ;; at the end.
-  (widen)
+  ;; (widen)
   (goto-char thisend)
   (skip-chars-backward "\"'\n ")
   (delete-region (point) (progn (skip-chars-forward " \t\r\n\f") (point)))
@@ -284,12 +284,13 @@ See lp:1066489 "
     (and
      (cdr delimiters-style)
      (or (newline (cdr delimiters-style)) t)))
-  (indent-region docstring thisend)
+  (py-indent-region docstring thisend)
   (goto-char orig))
 
 (defun py--fill-docstring-base (thisbeg thisend style multi-line-p first-line-p beg end)
-  (widen)
-  (narrow-to-region thisbeg thisend)
+  ;; (widen)
+  ;; fill-paragraph causes wrong indent, lp:1397936
+  ;; (narrow-to-region thisbeg thisend)
   (setq delimiters-style
         (case style
           ;; delimiters-style is a cons cell with the form
@@ -324,11 +325,11 @@ See lp:1066489 "
 
 (defun py--fill-docstring-last-line (thisbeg thisend beg end style)
   (widen)
-  (narrow-to-region thisbeg thisend)
+  ;; (narrow-to-region thisbeg thisend)
   (goto-char thisend)
   (skip-chars-backward "\"'")
   (delete-region (point) (progn (skip-chars-backward " \t\r\n\f")(point)))
-  (narrow-to-region beg end)
+  ;; (narrow-to-region beg end)
   (fill-region beg end)
   (setq multi-line-p (string-match "\n" (buffer-substring-no-properties beg end)))
   (when multi-line-p
@@ -388,7 +389,7 @@ See lp:1066489 "
 			   (or (member (char-after) (list ?\" ?\'))
 			       (member (char-before) (list ?\" ?\'))))
            (py--fill-docstring-last-line thisbeg thisend beg end style))
-          (t (narrow-to-region beg end)
+          (t ;; (narrow-to-region beg end)
 	     (fill-region beg end justify)))
     (py--fill-docstring-base thisbeg thisend style multi-line-p first-line-p beg end)))
 
@@ -403,7 +404,7 @@ Fill according to `py-docstring-style' "
       (barf-if-buffer-read-only)
       (list (if current-prefix-arg 'full) t))
     py-docstring-style
-    (py--in-or-behind-or-before-a-docstring)))
+    (or docstring (py--in-or-behind-or-before-a-docstring))))
   (let ((py-current-indent (save-excursion (or (py--beginning-of-statement-p) (py-beginning-of-statement)) (current-indentation)))
 	;; fill-paragraph sets orig
 	(orig (if (boundp 'orig) (copy-marker orig) (copy-marker (point))))

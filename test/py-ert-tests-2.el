@@ -493,7 +493,7 @@ x = {'abc':'def',
 
 (ert-deftest py-indentation-lp-1375122-test ()
   (py-test-with-temp-buffer
-      " def foo():
+      "def foo():
     if True:
 pass
 "
@@ -519,4 +519,17 @@ pass
     ;; (should (eq 8 (current-column)))
     ))
 
+
+(ert-deftest fill-paragraph-causes-wrong-indent-lp-1397936-test ()
+  (py-test-with-temp-buffer
+      "def foo():
+    \"\"\"abc\"\"\"
+"
+    (when py-debug-p (switch-to-buffer (current-buffer))
+	  (font-lock-fontify-buffer))
+    (goto-char 20)
+    (call-interactively 'fill-paragraph)
+    (should (eq 4 (current-indentation))) 
+    ))
+    
 (provide 'py-ert-tests-2)

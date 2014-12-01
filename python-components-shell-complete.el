@@ -183,7 +183,7 @@ completions on the current context."
 (defun py-indent-or-complete ()
   "Complete or indent depending on the context.
 
-If cursor is at end of line, try to complete
+If cursor is at end of a symbol, try to complete
 Otherwise call `py-indent-line'
 
 If `(region-active-p)' returns `t', indent region.
@@ -194,8 +194,9 @@ in py-shell-mode `py-shell-complete'"
   (interactive "*")
   (cond ((region-active-p)
 	 (py-indent-region (region-beginning) (region-end)))
-	((or (member (char-before)(list 9 10 12 13 32))
-	     (bobp))
+	((or (bolp)
+	     (member (char-before)(list 9 10 12 13 32))
+	     (and (not (eobp)) (not (member (char-after)(list 9 10 12 13 32)))))
 	 (py-indent-line))
 	((eq major-mode 'python-mode)
 	 (if (string-match "ipython" (py-choose-shell))
