@@ -1317,7 +1317,7 @@ Else /usr/bin/ipython"
 (defcustom py-ipython-command-args
   (if (eq system-type 'windows-nt)
       '("-i" "C:\\Python27\\Scripts\\ipython-script.py")
-    '("--pylab"))
+    '("--pylab" "--automagic"))
   "List of string arguments to be used when starting a Python shell.
 At Windows make sure ipython-script.py is PATH. Also setting PATH/TO/SCRIPT here should work, for example;
 C:\\Python27\\Scripts\\ipython-script.py
@@ -2142,14 +2142,17 @@ for options to pass to the DOCNAME interpreter. \"
 
 (defvar py-fast-filter-re (concat "\\("
 			       (mapconcat 'identity
-					  (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt "\\.\\.\\." "\\.\\.\\.\\.:"))
+					  (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt "[.]\\{1,\\}:? *"))
 					  "\\|")
 			       "\\)")
-  "Internally used by `py-fast-filter'. ")
+  "Internally used by `py-fast-filter'. 
+ansi-color-filter-apply might return
+Result: \"\\nIn [10]:    ....:    ....:    ....: 1\\n\\nIn [11]: \"
+")
 
 ;; (setq py-fast-filter-re (concat "\\("
 ;; 			       (mapconcat 'identity
-;; 					  (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt "\\.\\.\\." "\\.\\.\\.\\.:"))
+;; 					  (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt "[.]\\{1,\\}:? *"))
 ;; 					  "\\|")
 ;; 			       "\\)"))
 
