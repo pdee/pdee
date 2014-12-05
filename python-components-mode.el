@@ -2142,7 +2142,7 @@ for options to pass to the DOCNAME interpreter. \"
 
 (defvar py-fast-filter-re (concat "\\("
 			       (mapconcat 'identity
-					  (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt "[.]\\{1,\\}:? *"))
+					  (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt "[.]\\{3,\\}:? *"))
 					  "\\|")
 			       "\\)")
   "Internally used by `py-fast-filter'. 
@@ -2152,7 +2152,7 @@ Result: \"\\nIn [10]:    ....:    ....:    ....: 1\\n\\nIn [11]: \"
 
 ;; (setq py-fast-filter-re (concat "\\("
 ;; 			       (mapconcat 'identity
-;; 					  (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt "[.]\\{1,\\}:? *"))
+;; 					  (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt "[.]\\{3,\\}:? *"))
 ;; 					  "\\|")
 ;; 			       "\\)"))
 
@@ -2563,7 +2563,8 @@ This function takes the list of setup code to send from the
 	     (py--fix-start (symbol-value code)) process)
 	    ;; (sit-for py-new-shell-delay)
 	    (sit-for 0.1 t)
-	    (py--delete-all-but-first-prompt))
+	    ;; (py--delete-all-but-first-prompt)
+	    )
 	(py--fast-send-string-no-output (py--fix-start (symbol-value code)) process (buffer-name (process-buffer process)))))))
 
 (defun py--docstring-p (&optional beginning-of-string-position)

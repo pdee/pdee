@@ -587,6 +587,7 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
   (py-test-with-temp-buffer-point-min
       "import socket"
     (let ((py-debug-p t)
+	  (py-shell-name "python") 
 	  oldbuf)
       (py-execute-buffer-dedicated)
       (sit-for 0.1 t)
