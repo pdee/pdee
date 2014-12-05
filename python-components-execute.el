@@ -70,6 +70,7 @@ With prefix arg, position cursor at end of buffer."
     (push-mark)
     (goto-char (point-max))))
 
+(defalias 'py-shell-send-file 'py-send-file)
 (defun py-send-file (file-name &optional process temp-file-name)
   "Send FILE-NAME to Python PROCESS.
 If TEMP-FILE-NAME is passed then that file is used for processing
