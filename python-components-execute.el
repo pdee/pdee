@@ -647,7 +647,10 @@ Expects being called by `py--run-unfontify-timer' "
 	    (let ((erg (or (ignore-errors (car comint-last-prompt))
 			   (and
 			    (re-search-forward py-fast-filter-re nil t 1)
-			    (match-beginning 0)))))
+			    (match-beginning 0))
+			   (progn
+			     (forward-paragraph)
+			     (point)))))
 	      (sit-for 0.1 t)
 	      (if erg
 		  (progn

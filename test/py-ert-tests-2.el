@@ -531,5 +531,6 @@ pass
     (call-interactively 'fill-paragraph)
     (should (eq 4 (current-indentation))) 
     ))
-    
+
+
 (provide 'py-ert-tests-2)

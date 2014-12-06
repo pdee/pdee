@@ -1366,15 +1366,13 @@ import sys, os; os.remove('do/something/nasty') # lp:1025000
 
 (defun key-binding-tests (&optional arg)
   (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-"))
+  (let ((teststring ""))
     (py-bug-tests-intern 'key-binding-base arg teststring)))
 
 (defun key-binding-base (arg)
+  (python-mode)
   (when py-debug-p (switch-to-buffer (current-buffer)))
   (assert (eq (key-binding [(:)]) 'py-electric-colon) nil "py-electric-colon key-binding test failed")
-
   (assert (eq (key-binding [(\#)]) 'py-electric-comment) nil "py-electric-comment key-binding test failed")
   (assert (eq (key-binding [(delete)]) 'py-electric-delete) nil "py-electric-delete key-binding test failed")
   (assert (eq (key-binding [(backspace)]) 'py-electric-backspace) nil "py-electric-backspace key-binding test failed")
@@ -1417,7 +1415,8 @@ import sys, os; os.remove('do/something/nasty') # lp:1025000
   (assert (eq (key-binding [(control c)(control p)]) 'py-beginning-of-statement) nil "py-beginning-of-statement key-binding test failed")
   (assert (eq (key-binding [(control c)(control n)]) 'py-end-of-statement) nil "py-end-of-statement key-binding test failed")
   (assert (eq (key-binding [(control j)]) 'py-newline-and-indent) nil "py-newline-and-indent key-binding test failed")
-  (assert (eq (key-binding (kbd "RET")) 'py-newline-and-indent) nil "py-newline-and-indent key-binding test failed"))
+  ;; (assert (eq (key-binding (kbd "RET")) 'py-newline-and-indent) nil "py-newline-and-indent key-binding test failed")
+  )
 
 (defun py-smart-operator-test (&optional arg)
   (interactive "p")

@@ -70,6 +70,11 @@
 
 (setq bug-numbered-tests
       (list
+       'py-shell-invoking-python-lp-835151-test
+       'py-shell-invoking-ipython-lp-835151-test
+       'py-shell-invoking-python3-lp-835151-test
+       'py-shell-invoking-python2-lp-835151-test
+       'py-shell-invoking-jython-lp-835151-test
        'auto-indent-lp-134258-test
        'py-execute-buffer-ipython-lp-1252643-test
        'py-empty-line-closes-p-lp-1235324-test
@@ -227,14 +232,6 @@
        'py-indent-comments-nil-ignored-lp-958721-test
        'broken-font-locking-lp-961231-test
        'regression-in-py-execute-region-lp-962227-test
-
-       'py-shell-invoking-python-lp-835151-test
-       'py-shell-invoking-ipython-lp-835151-test
-       'py-shell-invoking-python3-lp-835151-test
-       'py-shell-invoking-python2-lp-835151-test
-       'py-shell-invoking-python2.7-lp-835151-test
-       'py-shell-invoking-jython-lp-835151-test
-
        'py-mark-block-clause-misbehave-lp-949310-test
        'py-mark-clause-misbehave-lp-949310-test
        'py-mark-block-misbehave-lp-949310-test
@@ -2230,8 +2227,6 @@ from __future__ import absolute_import
     (py-bug-tests-intern 'automatic-indentation-is-broken-lp-889643-base arg teststring)))
 
 (defun automatic-indentation-is-broken-lp-889643-base (arg)
-  ;; (if (string-match "components" (find-lisp-object-file-name 'python-mode 'python-mode))
-  ;; (assert (eq (key-binding (kbd "RET")) 'py-newline-and-indent) nil "automatic-indentation-is-broken-lp-889643-test failed")
   (assert (eq (key-binding (kbd "RET")) 'py-newline-and-indent) nil "automatic-indentation-is-broken-lp-889643-test failed")
   )
 
@@ -2449,6 +2444,18 @@ I am using version 6.0.4
   (set-buffer py-buffer-name)
   (goto-char (point-max))
   (assert (search-backward "py-shell-name: ipython")  nil "py-shell-invoking-ipython-lp-835151-test failed"))
+
+(defun py-shell-invoking-jython-lp-835151-test (&optional arg)
+  (interactive "p")
+  (let ((teststring "print(\"py-shell-name: jython\")"))
+    (py-bug-tests-intern 'py-shell-invoking-jython-lp-835151-base arg teststring)))
+
+(defun py-shell-invoking-jython-lp-835151-base (arg)
+  (setq py-shell-name "jython")
+  (py-execute-buffer)
+  (set-buffer py-buffer-name)
+  (goto-char (point-max))
+  (assert (search-backward "py-shell-name: jython")  nil "py-shell-invoking-jython-lp-835151-test failed"))
 
 (defun py-shell-invoking-python3-lp-835151-test (&optional arg)
   (interactive "p")
@@ -5499,7 +5506,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.54 $\"
+__version__ = \"$Revision: 1.55 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
