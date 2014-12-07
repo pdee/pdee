@@ -20,15 +20,12 @@
 
 ;;; Code:
 
-
-
 ;; tests are expected to run from directory test
 
 (add-to-list 'load-path default-directory)
 (load "py-ert-tests-1.el" nil t)
 
 ;; (require 'python-mode-test)
-
 
 ;;; fast-process
 (ert-deftest py-shell-complete-in-dedicated-shell ()
@@ -51,6 +48,7 @@
       "pri"
     (let ((py-return-result-p t)
 	  py-result py-store-result-p)
+      (when py-debug-p (switch-to-buffer (current-buffer)))
       (py-fast-complete)
       (should (eq (char-before) 40)))))
 
@@ -126,7 +124,6 @@ finally:
       (font-lock-fontify-buffer)
       ;; (when py-debug-p (switch-to-buffer (current-buffer)))
       (should (eq 'py-builtins-face (get-char-property (point) 'face))))))
-
 
 (ert-deftest py-ert-py-pseudo-keyword-face-lp-1294742 ()
   (py-test-with-temp-buffer-point-min
@@ -490,7 +487,6 @@ x = {'abc':'def',
     (when py-debug-p (switch-to-buffer (current-buffer)))
     (should (eq 0 (py-compute-indentation)))))
 
-
 (ert-deftest py-indentation-lp-1375122-test ()
   (py-test-with-temp-buffer
       "def foo():
@@ -519,7 +515,6 @@ pass
     ;; (should (eq 8 (current-column)))
     ))
 
-
 (ert-deftest fill-paragraph-causes-wrong-indent-lp-1397936-test ()
   (py-test-with-temp-buffer
       "def foo():
@@ -529,8 +524,46 @@ pass
 	  (font-lock-fontify-buffer))
     (goto-char 20)
     (call-interactively 'fill-paragraph)
-    (should (eq 4 (current-indentation))) 
-    ))
+    (should (eq 4 (current-indentation)))))
 
+(ert-deftest py-shell-python-lp-1398530-test ()
+  (when (buffer-live-p (get-buffer "*Python*"))(py-kill-buffer-unconditional "Python"))
+  (py-test-with-temp-buffer
+      ""
+    (when py-debug-p (switch-to-buffer (current-buffer)))
+    (let ((py-shell-name "python"))
+      (py-shell)
+      (sit-for 0.1 t)
+      (should (buffer-live-p (get-buffer "*Python*"))))))
+
+(ert-deftest py-shell-python3-lp-1398530-test ()
+  (when (buffer-live-p (get-buffer "*Python3*"))(py-kill-buffer-unconditional "Python3"))
+  (py-test-with-temp-buffer
+      ""
+    (when py-debug-p (switch-to-buffer (current-buffer)))
+    (let ((py-shell-name "python3"))
+      (py-shell)
+      (sit-for 0.1 t)
+      (should (buffer-live-p (get-buffer "*Python3*"))))))
+
+(ert-deftest py-shell-python2-lp-1398530-test ()
+  (when (buffer-live-p (get-buffer "*Python2*"))(py-kill-buffer-unconditional "Python2"))
+  (py-test-with-temp-buffer
+      ""
+    (when py-debug-p (switch-to-buffer (current-buffer)))
+    (let ((py-shell-name "python2"))
+      (py-shell)
+      (sit-for 0.1 t)
+      (should (buffer-live-p (get-buffer "*Python2*"))))))
+
+(ert-deftest py-shell-ipython-lp-1398530-test ()
+  (when (buffer-live-p (get-buffer "*IPython*"))(py-kill-buffer-unconditional "IPython"))
+  (py-test-with-temp-buffer
+      ""
+    (when py-debug-p (switch-to-buffer (current-buffer)))
+    (let ((py-shell-name "ipython"))
+      (py-shell)
+      (sit-for 0.1 t)
+      (should (buffer-live-p (get-buffer "*IPython*"))))))
 
 (provide 'py-ert-tests-2)
