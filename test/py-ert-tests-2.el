@@ -527,7 +527,7 @@ pass
     (should (eq 4 (current-indentation)))))
 
 (ert-deftest py-shell-python-lp-1398530-test ()
-  (when (buffer-live-p (get-buffer "*Python*"))(py-kill-buffer-unconditional "Python"))
+  (when (buffer-live-p (get-buffer "*Python*"))(py-kill-buffer-unconditional "*Python*"))
   (py-test-with-temp-buffer
       ""
     (when py-debug-p (switch-to-buffer (current-buffer)))
@@ -537,7 +537,7 @@ pass
       (should (buffer-live-p (get-buffer "*Python*"))))))
 
 (ert-deftest py-shell-python3-lp-1398530-test ()
-  (when (buffer-live-p (get-buffer "*Python3*"))(py-kill-buffer-unconditional "Python3"))
+  (when (buffer-live-p (get-buffer "*Python3*"))(py-kill-buffer-unconditional "*Python3*"))
   (py-test-with-temp-buffer
       ""
     (when py-debug-p (switch-to-buffer (current-buffer)))
@@ -547,7 +547,7 @@ pass
       (should (buffer-live-p (get-buffer "*Python3*"))))))
 
 (ert-deftest py-shell-python2-lp-1398530-test ()
-  (when (buffer-live-p (get-buffer "*Python2*"))(py-kill-buffer-unconditional "Python2"))
+  (when (buffer-live-p (get-buffer "*Python2*"))(py-kill-buffer-unconditional "*Python2*"))
   (py-test-with-temp-buffer
       ""
     (when py-debug-p (switch-to-buffer (current-buffer)))
@@ -557,10 +557,10 @@ pass
       (should (buffer-live-p (get-buffer "*Python2*"))))))
 
 (ert-deftest py-shell-ipython-lp-1398530-test ()
-  (when (buffer-live-p (get-buffer "*IPython*"))(py-kill-buffer-unconditional "IPython"))
+  (when (buffer-live-p (get-buffer "*IPython*"))(py-kill-buffer-unconditional "*IPython*"))
   (py-test-with-temp-buffer
       ""
-    (when py-debug-p (switch-to-buffer (current-buffer)))
+    ;; (when py-debug-p (switch-to-buffer (current-buffer)))
     (let ((py-shell-name "ipython"))
       (py-shell)
       (sit-for 0.1 t)
