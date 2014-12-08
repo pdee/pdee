@@ -590,7 +590,9 @@ Receives a buffer-name as argument"
   (let ((buffer (apply 'make-comint-in-buffer executable py-buffer-name executable nil args)))
     ;; (let ((buffer (make-comint-in-buffer executable py-buffer-name executable nil args)))
     (with-current-buffer buffer
-      (py-shell-mode)
+      (if (string-match "^i" executable)
+	  (py-ipython-shell-mode)
+	(py-python-shell-mode))
       (sit-for 0.1 t))
     buffer))
 
