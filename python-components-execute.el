@@ -705,21 +705,16 @@ Receives a buffer-name as argument"
 	      (py-python-shell-mode)))
 	  (setq py-output-buffer (current-buffer))
 	  (setq py-exception-buffer (or exception-buffer (and py-exception-buffer (buffer-live-p py-exception-buffer) py-exception-buffer) (current-buffer)))
-	  (if (comint-check-proc (current-buffer))
-	      (progn
-		;; (when py-debug-p (switch-to-buffer (current-buffer)))
-		;; (py--unfontify-banner py-buffer-name)
-		;; (setq proc (get-buffer-process py-buffer-name))
-		;; (comint-send-string proc "\n")
-		;; (py--delay-process-dependent proc)
-		(sit-for 0.1 t)
-		;; (py--shell-setup py-buffer-name proc)
-		;; lp:1393882, occasionally input first time not processed
-		(when py-new-session-p (py-kill-buffer-unconditional py-buffer-name)
-		      (setq py-new-session-p nil)
-		      (py-shell argprompt dedicated shell buffer-name fast-process py-exception-buffer)))
+	  ;; (if (comint-check-proc (current-buffer))
+	  ;;     (progn
+	  ;; 	(sit-for 0.1 t)
+	  ;; 	;; lp:1393882, occasionally input first time not processed
+	  ;; 	(when py-new-session-p (py-kill-buffer-unconditional py-buffer-name)
+	  ;; 	      (setq py-new-session-p nil)
+	  ;; 	      (py-shell argprompt dedicated shell buffer-name fast-process)))
 
-	    (error (concat "py-shell: No process in " py-buffer-name)))))
+	  ;;   (error (concat "py-shell: No process in " py-buffer-name)))
+	  ))
       ;; (goto-char (point-max))
       (when (or (interactive-p)
 		;; M-x python RET sends from interactive "p"
