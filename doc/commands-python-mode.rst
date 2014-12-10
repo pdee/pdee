@@ -343,17 +343,17 @@ py-shell-get-process
 --------------------
 Get appropriate Python process for current buffer and return it.
 
+py-send-file
+------------
+Send FILE-NAME to Python PROCESS.
+If TEMP-FILE-NAME is passed then that file is used for processing
+instead, while internally the shell will continue to use
+FILE-NAME.
+
 py-shell-send-string
 --------------------
 Send STRING to Python PROCESS.
 When `py-verbose-p' and MSG is non-nil messages the first line of STRING.
-
-py-shell-send-file
-------------------
-Send FILE-NAME to inferior Python PROCESS.
-If TEMP-FILE-NAME is passed then that file is used for processing
-instead, while internally the shell will continue to use
-FILE-NAME.
 
 py-switch-to-shell
 ------------------
@@ -473,6 +473,8 @@ This function is normally used by `indent-line-function' resp.
 TAB.
 
 When bound to TAB, C-q TAB inserts a TAB.
+
+OUTMOST-ONLY stops circling possible indent.
 
 When `py-tab-shifts-region-p' is `t', not just the current line,
 but the region is shiftet that way.
@@ -2967,7 +2969,15 @@ Compute Python indentation.
 When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
 `raise', `break', `continue', and `pass' force one level of dedenting.
 
-Optional arguments are flags resp. values set and used by `py-compute-indentation' internally
+Optional arguments are flags resp. values set and used by `py-compute-indentation' internally:
+ORIG keeps original position
+ORIGLINE keeps line where compute started
+CLOSING is t when started at a char delimiting a list as "]})"
+LINE indicates being not at origline now
+NESTING tells repeated executing was started from inside a list
+REPEAT counter enables checks against `py-max-specpdl-size'
+INDENT-OFFSET allows calculation of block-local values
+LIEP stores line-end-position at point-of-interest
 
 
 py-indentation-of-statement
@@ -3044,7 +3054,7 @@ Start an interactive Python interpreter in another window.
   BUFFER allows specifying a name, the Python process is connected to
   
 
-(fn &optional ARGPROMPT DEDICATED SHELL BUFFER-NAME FAST-PROCESS PY-EXCEPTION-BUFFER)
+(fn &optional ARGPROMPT DEDICATED SHELL BUFFER-NAME FAST-PROCESS EXCEPTION-BUFFER)
 
 py-indent-forward-line
 ----------------------
@@ -3265,7 +3275,7 @@ py-indent-or-complete
 ---------------------
 Complete or indent depending on the context.
 
-If cursor is at end of line, try to complete
+If cursor is at end of a symbol, try to complete
 Otherwise call `py-indent-line'
 
 If `(region-active-p)' returns `t', indent region.
@@ -5685,13 +5695,6 @@ Clear output buffer from py-shell-input prompt etc.
 py-send-string
 --------------
 Evaluate STRING in Python process.
-
-py-send-file
-------------
-Send FILE-NAME to Python PROCESS.
-If TEMP-FILE-NAME is passed then that file is used for processing
-instead, while internally the shell will continue to use
-FILE-NAME.
 
 py-unload-python-el
 -------------------
