@@ -5,6 +5,7 @@ New in version 6.2.1
 ---------------------
 
 - TAB-indent from column zero: go to outmost first, lp:1375122
+- (I)Python-shell setup made more reliable
 
 
 New in version 6.2.0

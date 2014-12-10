@@ -31,7 +31,6 @@ completions on the current context."
   "Do completion at point for PROCESS."
   ;; send setup-code
   (let (py-return-result-p)
-    (py--fast-send-string-no-output py-shell-completion-setup-code process output-buffer)
     (when imports
       ;; (message "%s" imports)
       (py--fast-send-string-no-output imports process output-buffer)))
@@ -41,7 +40,6 @@ completions on the current context."
 	 ;; (try-completion input completions)))
 	 newlist erg)
     ;; (message "%s" (current-buffer))
-    (set-buffer py-exception-buffer)
     ;; (sit-for 1 t)
     (cond ((eq completion t)
 	   (and py-verbose-p (message "py--fast--do-completion-at-point %s" "`t' is returned, not completion. Might be a bug."))
@@ -71,7 +69,7 @@ completions on the current context."
 	 (proc (get-buffer-process py-buffer-name))
 	 (code (if (string-match "[Ii][Pp]ython*" shell)
 		   (py-set-ipython-completion-command-string shell)
-		 python-shell-module-completion-string-code)))
+		 py-shell-module-completion-code)))
     (with-current-buffer py-buffer-name
       (erase-buffer))
     (py--fast--do-completion-at-point proc imports word pos py-exception-buffer code py-buffer-name)))

@@ -672,7 +672,6 @@ Imports done are displayed in message buffer. "
 
       ;; (mapc 'py-execute-string (split-string (car (read-from-string (py-find-imports))) "\n" t)))
       ;; (setq erg (car (read-from-string python-imports)))
-      (set-buffer py-exception-buffer)
       (goto-char orig)
       (when (interactive-p)
         (switch-to-buffer (current-buffer))

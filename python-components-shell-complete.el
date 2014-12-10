@@ -82,7 +82,7 @@ completions on the current context."
 
 (defun py--shell--do-completion-at-point (process imports input orig py-exception-buffer code)
   "Do completion at point for PROCESS."
-  (py--send-string-no-output py-shell-completion-setup-code process)
+  ;; (py--send-string-no-output py-shell-completion-setup-code process)
   (when imports
     (py--send-string-no-output imports process))
   ;; (py--delay-process-dependent process)
@@ -130,7 +130,7 @@ completions on the current context."
 		 (sit-for py-new-shell-delay))))
     (code (if (string-match "[Ii][Pp]ython*" shell)
 	      (py-set-ipython-completion-command-string shell)
-	    python-shell-module-completion-string-code)))
+	    py-shell-module-completion-code)))
   (py--shell--do-completion-at-point proc imports word pos py-exception-buffer code)))
 
 (defun py--complete-prepare (&optional shell debug beg end word fast-complete)
