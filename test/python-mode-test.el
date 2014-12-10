@@ -27,6 +27,7 @@
 
 (setq python-mode-interactive-tests
       (list
+       'opening-brace-on-builtins-lp-1400951-test
        'py-split-just-two-window-on-execute-lp-1361531-python-test
        'py-split-just-two-window-on-execute-lp-1361531-ipython-test
        'py-split-just-two-window-on-execute-lp-1361531-python2-test

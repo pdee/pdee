@@ -2707,14 +2707,15 @@ print(myobj.range(10))
     (py-bug-tests-intern 'another-broken-font-locking-lp-961231-base arg teststring)))
 
 (defun another-broken-font-locking-lp-961231-base (arg)
-  (when py-debug-p (switch-to-buffer (current-buffer)))
-  (font-lock-fontify-buffer)
+  (goto-char 120)
+  (sit-for 0.1)
+  (assert (not (get-char-property (point) 'face)) nil "another-broken-font-locking-lp-961231-test #2 failed")
   (goto-char 124)
   (sit-for 0.1)
-  (assert (eq (get-char-property (point) 'face) 'py-builtins-face) nil "another-broken-font-locking-lp-961231-test #1 failed")
+  (assert (eq (get-char-property (point) 'face) 'py-builtins-face) nil "another-broken-font-locking-lp-961231-test #2 failed")
   (goto-char 197)
   (sit-for 0.2)
-  (assert (eq (get-char-property (point) 'face) nil) nil "another-broken-font-locking-lp-961231-test #2 failed"))
+  (assert (eq (get-char-property (point) 'face) nil) nil "another-broken-font-locking-lp-961231-test #3 failed"))
 
 (defun temp-file-stored-in-python-script-directory-lp-958987-test (&optional arg)
   (interactive "p")
@@ -6759,6 +6760,21 @@ def foo():
 (defun comment-inside-curly-braces-lp-1395076-base (arg)
   (goto-char 102)
   (assert (eq 8 (py-compute-indentation)) nil "comment-inside-curly-braces-lp-1395076-test failed"))
+
+
+(defun opening-brace-on-builtins-lp-1400951-test (&optional arg)
+  (interactive "p")
+   (let ((teststring "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+print(sorted(range()))
+"))
+  (py-bug-tests-intern 'opening-brace-on-builtins-lp-1400951-base arg teststring)))
+
+(defun opening-brace-on-builtins-lp-1400951-base (arg)
+  (goto-char 53)
+  (assert (not (get-char-property (point) 'face)) nil "opening-brace-on-builtins-lp-1400951-test #1 failed")
+  (goto-char 60)
+  (assert (not (get-char-property (point) 'face)) nil "opening-brace-on-builtins-lp-1400951-test #2 failed"))
 
 
 (provide 'py-bug-numbered-tests)

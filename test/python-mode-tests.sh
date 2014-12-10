@@ -31,7 +31,6 @@
 
 # Code:
 
-
 # if [ -n "$BASH" -o -n "$ZSH_VERSION" ] ; then
 #     hash -r 2>/dev/null
 # fi
@@ -59,29 +58,28 @@ fi
 #     else
 # cat    <<EOF
 # usage: ${0##*/} EMACS_DIR
-# 
+#
 # This script tests python-mode with non-installed Emacsen in a Bash.
-# 
+#
 # It assumes being in directory "test" below python-mode.el and relies on source-code directories as delivered by bzr branch.
-# 
+#
 # Edit \$EMACS_DIR to specify an Emacs or put "PATH-TO-EMACS-SOURCES" as shell argument.
-# 
+#
 # To run tests with installed Emacs, load available test-files like "py-bug-numbered-tests.el" and do "M-x py-run-bug-numbered-tests". Alternatively you may edit variables making it point according to you installation.
-# 
+#
 # EOF
-# 
+#
 # fi
 
 echo "\$EMACS_DIR: $EMACS_DIR"
 
 if [ $1 ]; then
     EMACS="$EMACS_DIR/src/emacs"
- 
+
 else
     EMACS=emacs
 
 fi
-
 
 echo "\$EMACS: $EMACS"
 # EMACS="/usr/bin/emacs"
@@ -119,7 +117,7 @@ if [ -s ${HOME}/.emacs.d/elpa/smart-operator-4.0/smart-operator.elc ];then
     SO="${HOME}/.emacs.d/elpa/smart-operator-4.0/smart-operator.elc"
 elif [ -s ${HOME}/.emacs.d/elpa/smart-operator-4.0/smart-operator.el ];then
     SO="${HOME}/.emacs.d/elpa/smart-operator-4.0/smart-operator.el"
-else 
+else
     SO="${MYEXTENSIONS}/smart-operator.el"
 fi
 
@@ -132,9 +130,9 @@ if [ -s "${EMACS_DIR}/lisp/emacs-lisp/cl-macs.elc" ];then
 
 elif [ -s "${EMACS_DIR}/lisp/emacs-lisp/cl-macs.el" ];then
     CLMACS="${EMACS_DIR}/lisp/emacs-lisp/cl-macs.el"
-    
+
 else echo "${EMACS_DIR}/lisp/emacs-lisp/cl-macs.el not found"
-    
+
 fi
 
 if [ -s "${EMACS_DIR}/lisp/custom.elc" ];then
@@ -142,7 +140,7 @@ if [ -s "${EMACS_DIR}/lisp/custom.elc" ];then
 else
     CUSTOM="${EMACS_DIR}/lisp/comint.el"
 fi
- 
+
 if [ -s "${EMACS_DIR}/lisp/ansi-color.elc" ];then
     ANSICOLOR="${EMACS_DIR}/lisp/ansi-color.elc"
 else
@@ -166,9 +164,6 @@ else
     echo "${EMACS_DIR}/lisp/progmodes/cc-cmds.el not found"
 fi
 
-
-
-
 # SKEL="${EMACS_DIR}/lisp/skeleton.el"
 if [ -s "${EMACS_DIR}/lisp/skeleton.elc" ];then
     SKELETON="${EMACS_DIR}/lisp/skeleton.elc"
@@ -177,7 +172,6 @@ else
 fi
 
 PYCO="$PDIR/completion/pycomplete.el"
-
 
 # file holding the tests
 TESTFILE="py-bug-numbered-tests.el"
@@ -195,7 +189,6 @@ UTILS="devel/python-mode-utils.el"
 echo "\$PYMACS: $PYMACS"
 echo "\$PYTHONMODE: $PYTHONMODE"
 echo "\$PDIR/\$TESTFILE: $PDIR/$TESTFILE"
-
 
 # $EMACS -Q -batch -l $HOME/emacs_20130227/lisp/emacs-lisp/cl-lib.el -l $HOME/emacs_20130227/lisp/emacs-lisp/ert.el -l ${PCOT}/python-mode-ert-tests.el -f ert-run-tests-batch-and-exit
 # $EMACS -Q -batch -load ${EMACS_DIR}lisp/emacs-lisp/ert.el -load ${PCOT}/python-mode-ert-tests.el -f ert-run-tests-batch-and-exit
@@ -1047,6 +1040,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(setq py-verbose-p 
 -eval "(assert (boundp 'py-compilation-regexp-alist) nil \"py-compilation-regexp-alist not a variable\")" \
 -eval "(assert (boundp 'py-font-lock-syntactic-keywords) nil \"py-font-lock-syntactic-keywords not a variable\")" \
 -eval "(assert (boundp 'virtualenv-name) nil \"virtualenv-name not a variable\")" \
+--funcall opening-brace-on-builtins-lp-1400951-test \
 --funcall key-binding-tests \
 --funcall comment-inside-curly-braces-lp-1395076-test \
 --funcall py-execute-region-python3-no-switch-test \
