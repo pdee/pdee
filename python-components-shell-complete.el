@@ -190,7 +190,7 @@ If `(region-active-p)' returns `t', indent region.
 Use `C-q TAB' to insert a literally TAB-character
 
 In python-mode `py-complete-function' is called,
-in py-shell-mode `py-shell-complete'"
+in (I)Python shell-modes `py-shell-complete'"
   (interactive "*")
   (cond ((region-active-p)
 	 (py-indent-region (region-beginning) (region-end)))
@@ -202,10 +202,8 @@ in py-shell-mode `py-shell-complete'"
 	 (if (string-match "ipython" (py-choose-shell))
 	     (py-shell-complete)
 	   (funcall py-complete-function)))
-	((eq major-mode 'py-shell-mode)
-	 (if (string-match "[iI]?[Pp]ython" (buffer-name (current-buffer)))
-	     (py-shell-complete)
-	   (funcall py-complete-function)))
+	((comint-check-proc (current-buffer))
+	 (py-shell-complete))
 	(t
 	 (funcall py-complete-function))))
 
