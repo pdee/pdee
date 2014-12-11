@@ -456,7 +456,7 @@ Internal use"
   "If one window, split according to `py-split-windows-on-execute-function. "
   (interactive)
   (set-buffer exception-buffer)
-  (when py-debug-p (message "Calling %s" "py--manage-windows-split"))
+  ;; (when py-debug-p (message "py--manage-windows-split: %s" "py--manage-windows-split"))
   (or
    (ignore-errors (funcall py-split-windows-on-execute-function))
    ;; If call didn't succeed according to settings of
