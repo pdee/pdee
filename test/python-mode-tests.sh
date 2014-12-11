@@ -45,7 +45,7 @@ PDIR=$(cd ..; pwd)
 # PDIR="$TESTDIR/.."
 
 # write PATH-TO-EMACS source code default directory here
-EMACS_DEFAULT_DIR="/usr/share/emacs/24.2"
+EMACS_DEFAULT_DIR="/usr/share/emacs/24.3"
 
 EMACS_DIR=
 if [ $1 ]; then
@@ -197,8 +197,11 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(setq py-verbose-p 
 \
 -eval "(assert (functionp 'word-at-point) nil \"new completion bug, lp-1034656, word-at-point not known\")" \
 -eval "(assert (functionp 'py--shell-simple-send) nil \"py-shell-simple-send not detected as function\")" \
--eval "(assert (functionp 'py--shell-setup) nil \"py--shell-setup not detected as function\")" \
--eval "(assert (functionp 'py--shell-send-setup-code) nil \"py-shell-send-setup-code not detected as function\")" \
+-eval "(assert (functionp 'py--all-shell-mode-setting) nil \"py--shell-setup not detected as function\")" \
+-eval "(assert (functionp 'py--python-send-completion-setup-code) nil \"py--shell-setup not detected as function\")" \
+-eval "(assert (functionp 'py--python-send-ffap-setup-code) nil \"py--shell-setup not detected as function\")" \
+-eval "(assert (functionp 'py--python-send-eldoc-setup-code) nil \"py--shell-setup not detected as function\")" \
+-eval "(assert (functionp 'py--ipython-import-module-completion) nil \"py--shell-setup not detected as function\")" \
 -eval "(assert (functionp 'py-beginning-of-top-level-p) nil \"py-beginning-of-top-level-p not detected as function\")" \
 -eval "(assert (functionp 'py--beginning-of-line-p) nil \"py-beginning-of-line-p not detected as function\")" \
 -eval "(assert (functionp 'py--beginning-of-buffer-p) nil \"py-beginning-of-buffer-p not detected as function\")" \
@@ -985,8 +988,8 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(setq py-verbose-p 
 -eval "(assert (boundp 'py-pdbtrack-input-prompt) nil \"py-pdbtrack-input-prompt not a variable\")" \
 -eval "(assert (boundp 'py-pydbtrack-input-prompt) nil \"py-pydbtrack-input-prompt not a variable\")" \
 -eval "(assert (boundp 'py-pdbtrack-is-tracking-p) nil \"py-pdbtrack-is-tracking-p not a variable\")" \
--eval "(assert (boundp 'py-shell-mode-map) nil \"py-shell-mode-map not a variable\")" \
--eval "(assert (boundp 'py-shell-map) nil \"py-shell-map not a variable\")" \
+-eval "(assert (boundp 'py-python-shell-mode-map) nil \"py-python-shell-mode-map not a variable\")" \
+-eval "(assert (boundp 'py-ipython-shell-mode-map) nil \"py-ipython-shell-mode-map\")" \
 -eval "(assert (boundp 'py-mode-map) nil \"py-mode-map not a variable\")" \
 -eval "(assert (boundp 'python-font-lock-keywords) nil \"python-font-lock-keywords not a variable\")" \
 -eval "(assert (boundp 'py-dotted-expression-syntax-table) nil \"py-dotted-expression-syntax-table not a variable\")" \
