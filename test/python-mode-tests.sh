@@ -195,6 +195,11 @@ echo "\$PDIR/\$TESTFILE: $PDIR/$TESTFILE"
 $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(setq py-verbose-p t)" --eval "(when (featurep 'python)(unload-feature 'python t))" --eval "(when (featurep 'python-mode)(unload-feature 'python-mode t))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$TESTDIR/\")" --eval "(setq py-install-directory \"$PDIR\"))" --eval "(message \"py-install-directory: %s\" py-install-directory)" --eval "(setq py-load-pymacs-p nil)" -load $CC_CMDS -load $COMINT -load $ANSICOLOR -load $CLMACS -load $CUSTOM -load $SKELETON -load $SO -load $COLMK -load $HIGHL -load $PYTHONMODE  --eval "(message \"py-temp-directory: %s\" py-temp-directory)" -load $PCOT/$TESTFILE -load $PCOT/$TESTFILE2 -load $PCOT/$TESTFILE3 -load $PCOT/$TESTFILE5 -load $PCOT/$TESTFILE6 -load $PCOT/$TESTFILE7 -load $PCOT/$TESTFILE8 -load $PDIR/$UTILS \
 --eval "(when (file-exists-p \"~/.abbrev_defs\") (quietly-read-abbrev-file (expand-file-name \"~/.abbrev_defs\")))" \
 \
+-eval "(assert (functionp 'py--python-send-setup-code-intern) nil \"function, py--python-send-setup-code-intern not known\")" \
+-eval "(assert (functionp 'py--python-send-completion-setup-code) nil \"function, py--python-send-completion-setup-code not known\")" \
+-eval "(assert (functionp 'py--python-send-ffap-setup-code) nil \"function, py--python-send-ffap-setup-code not known\")" \
+-eval "(assert (functionp 'py--python-send-eldoc-setup-code) nil \"function, py--python-send-eldoc-setup-code not known\")" \
+-eval "(assert (functionp 'py--ipython-import-module-completion) nil \"function, py--ipython-import-module-completion not known\")" \
 -eval "(assert (functionp 'word-at-point) nil \"new completion bug, lp-1034656, word-at-point not known\")" \
 -eval "(assert (functionp 'py--shell-simple-send) nil \"py-shell-simple-send not detected as function\")" \
 -eval "(assert (functionp 'py--all-shell-mode-setting) nil \"py--shell-setup not detected as function\")" \
@@ -990,6 +995,7 @@ $EMACS -Q --batch --eval "(message (emacs-version))" --eval "(setq py-verbose-p 
 -eval "(assert (boundp 'py-pdbtrack-is-tracking-p) nil \"py-pdbtrack-is-tracking-p not a variable\")" \
 -eval "(assert (boundp 'py-python-shell-mode-map) nil \"py-python-shell-mode-map not a variable\")" \
 -eval "(assert (boundp 'py-ipython-shell-mode-map) nil \"py-ipython-shell-mode-map\")" \
+-eval "(assert (boundp 'py-shell-map) nil \"py-shell-map not a variable\")" \
 -eval "(assert (boundp 'py-mode-map) nil \"py-mode-map not a variable\")" \
 -eval "(assert (boundp 'python-font-lock-keywords) nil \"python-font-lock-keywords not a variable\")" \
 -eval "(assert (boundp 'py-dotted-expression-syntax-table) nil \"py-dotted-expression-syntax-table not a variable\")" \

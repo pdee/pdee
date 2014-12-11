@@ -11245,7 +11245,7 @@ Try to find source definition of function at point"]))))
 (defvar py-ipython-shell-mode-map py-python-shell-mode-map
   "Unless setting of ipython-shell-mode needs to be different, let's save some lines of code and copy py-python-shell-mode-map here.")
 
-(defvaralias 'py-shell-map 'py-shell-mode-map)
+(defvar py-shell-map py-python-shell-mode-map)
 
 (when py-org-cycle-p
   (define-key python-mode-map (kbd "<backtab>") 'org-cycle))
