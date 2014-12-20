@@ -1,3 +1,8 @@
+* py-help-at-point fails at `readlines'
+  with open('GivenFixtures.txt', 'r') as gv:
+    # datei = gv.read()
+    text = gv.readlines()
+
 * let's dedicated shells buffer-name start with process-serial-no
 * py-minor-expression/token, py-expression/value
 * py-no-completion-calls-dabbrev-expand-p entfernen

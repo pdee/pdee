@@ -620,7 +620,7 @@ Receives a buffer-name as argument"
 	  (t (or py-python-command name)))))
 
 (defun py--grab-prompt-ps1 ()
-  (py--fast-send-string-no-output "import sys"
+  (py--send-string-no-output "import sys"
 				  proc)
   (py--fast-send-string-intern "sys.ps1" proc buffer nil t))
 

@@ -45,19 +45,21 @@ Remove trailing newline"
   (with-current-buffer output-buffer
     ;; in comint-mode, prompt might be read-only
     ;; delete-region would fail
-    (let ((comint-prompt-read-only-old comint-prompt-read-only)
-	  comint-prompt-read-only)
-      ;; (switch-to-buffer (current-buffer))
+    ;; (let ((comint-prompt-read-only-old comint-prompt-read-only)
+    ;; comint-prompt-read-only)
+    ;; (switch-to-buffer (current-buffer))
+    (process-send-string proc "\n")
+    (let ((orig (point-max)))
+      (sit-for 1 t)
+      (process-send-string proc string)
       (process-send-string proc "\n")
-      (let ((orig (point-max)))
-	(sit-for 1 t)
-	(process-send-string proc string)
-	(process-send-string proc "\n")
-	(accept-process-output proc 5)
-	(sit-for 1 t)
-	;; (when py-verbose-p (message "py--fast-send-string-intern comint-prompt-read-only: %s" comint-prompt-read-only))
-	(delete-region orig (point-max))
-	(setq comint-prompt-read-only comint-prompt-read-only-old)))))
+      (accept-process-output proc 5)
+      (sit-for 1 t)
+      ;; (when py-verbose-p (message "py--fast-send-string-intern comint-prompt-read-only: %s" comint-prompt-read-only))
+      (delete-region orig (point-max))
+      ;; (setq comint-prompt-read-only comint-prompt-read-only-old)
+      ;;)
+      )))
 
 (defun py--fast-send-string-intern (string proc output-buffer store return)
   (with-current-buffer output-buffer
@@ -65,8 +67,6 @@ Remove trailing newline"
     (let ((orig (point)))
       (process-send-string proc string)
       (process-send-string proc "\n")
-      ;; `py--fast-send-string-no-output' sets `py-store-result-p' to
-      ;; nil
       (accept-process-output proc 5)
       (sit-for py-fast-completion-delay t)
       ;; sets py-result
