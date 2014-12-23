@@ -1346,24 +1346,6 @@ aus.write(result + \"\\n\")
   (py-end-of-statement)
   (assert (eq 225 (point)) nil "py-end-of-statement-test-2 #1 failed"))
 
-(defun py-beginning-of-statement-test-1 (&optional arg)
-  (interactive "p")
-  (let ((teststring "#! /usr/bin/python
-# -*- coding: utf-8 -*-
-print dir()
-c = Cat()
-c.hello() #causes error, but emacs tracking fails
-import sys, os; os.remove('do/something/nasty') # lp:1025000
-"))
-    (py-bug-tests-intern 'py-beginning-of-statement-1-base arg teststring)))
-
-(defun py-beginning-of-statement-1-base (arg)
-  (py-beginning-of-statement)
-  (assert (eq 132 (point)) nil "py-beginning-of-statement-test-1 #1 failed")
-  (assert (eq 116 (py-beginning-of-statement)) nil "py-beginning-of-statement-test-1 #2 failed")
-  (assert (eq 66 (py-beginning-of-statement)) nil "py-beginning-of-statement-test-1 #3 failed")
-  (assert (eq 56 (py-beginning-of-statement)) nil "py-beginning-of-statement-test-1 #4 failed")
-  (assert (eq 44 (py-beginning-of-statement)) nil "py-beginning-of-statement-test-1 #5 failed"))
 
 (defun key-binding-tests (&optional arg)
   (interactive "p")

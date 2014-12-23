@@ -568,4 +568,43 @@ pass
       (sit-for 0.1 t)
       (should (buffer-live-p (get-buffer "*IPython*"))))))
 
+(ert-deftest py-beginning-of-statement-test-1 ()
+  (py-test-with-temp-buffer
+      (let ((py-return-result-p t)
+	    py-result py-store-result-p)
+	"# -*- coding: utf-8 -*-
+print dir()
+c = Cat()
+c.hello() #causes error, but emacs tracking fails
+import sys, os; os.remove('do/something/nasty') # lp:1025000
+
+def foo(*args):2
+    \"\"\"
+    ASDF
+    \"\"\"
+    # ABD
+    args = \"asdf\"
+")
+    (when py-debug-p (switch-to-buffer (current-buffer))
+	  (font-lock-fontify-buffer))
+    (py-beginning-of-statement)
+    (should (eq (char-after) ?a))
+    (py-beginning-of-statement)
+    (should (eq (char-after) ?\"))
+    (py-beginning-of-statement)
+    (should (eq (char-after) ?d))
+    (py-beginning-of-statement)
+    (should (eq (char-after) ?o))
+    (py-beginning-of-statement)
+    (should (eq (char-after) ?i))
+    (py-beginning-of-statement)
+    (should (eq (char-after) ?c))
+    (py-beginning-of-statement)
+    (should (eq (char-after) ?c))
+    (py-beginning-of-statement)
+    (should (eq (char-after) ?p))
+    (py-beginning-of-statement)
+    (should (bobp))))
+
+
 (provide 'py-ert-tests-2)

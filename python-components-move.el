@@ -350,7 +350,9 @@ http://docs.python.org/reference/compound_stmts.html"
              (done done)
              erg)
 	;; lp:1382788
-	(unless done (skip-chars-backward " \t\r\n\f"))
+	(unless done
+	  (and (< 0 (abs (skip-chars-backward " \t\r\n\f")))
+ 	       (setq pps (parse-partial-sexp (or limit (point-min))(point)))))
         (cond
          ((and (bolp)(eolp))
           (skip-chars-backward " \t\r\n\f")
@@ -400,12 +402,9 @@ http://docs.python.org/reference/compound_stmts.html"
 	  (if (ignore-errors
 		(< 0
 		   (abs
-		    (py--skip-to-semicolon-backward (save-excursion (back-to-indentation)(point))))
-		   ;; (skip-chars-backward "^\t\r\n\f" (line-beginning-position))
-))
+		    (py--skip-to-semicolon-backward (save-excursion (back-to-indentation)(point))))))
 	      (progn
 		(setq done t)
-		;; (back-to-indentation)
 		(py-beginning-of-statement orig done limit))
 	    (back-to-indentation)
 	    (setq done t)
