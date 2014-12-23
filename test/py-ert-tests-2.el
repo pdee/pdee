@@ -34,9 +34,10 @@
 	py-switch-buffers-on-execute-p)
     (with-temp-buffer
       (python-mode)
-      (when py-debug-p (switch-to-buffer (current-buffer)))
-      (setq erg (python-dedicated))
-      ;; (switch-to-buffer (current-buffer))
+      ;; (when py-debug-p (switch-to-buffer (current-buffer)))
+      (set-buffer (python-dedicated))
+      ;; (message "%s" erg)
+      (switch-to-buffer (current-buffer))
       (insert "pri")
       (call-interactively 'py-indent-or-complete)
       (sit-for 0.3 t)
@@ -516,17 +517,6 @@ pass
     ;; (sit-for 0.1 t)
     ;; (should (eq 8 (current-column)))
     ))
-
-(ert-deftest fill-paragraph-causes-wrong-indent-lp-1397936-test ()
-  (py-test-with-temp-buffer
-      "def foo():
-    \"\"\"abc\"\"\"
-"
-    (when py-debug-p (switch-to-buffer (current-buffer))
-	  (font-lock-fontify-buffer))
-    (goto-char 20)
-    (call-interactively 'fill-paragraph)
-    (should (eq 4 (current-indentation)))))
 
 (ert-deftest py-shell-python-lp-1398530-test ()
   (when (buffer-live-p (get-buffer "*Python*"))(py-kill-buffer-unconditional "*Python*"))

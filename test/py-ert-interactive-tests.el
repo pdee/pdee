@@ -17,6 +17,17 @@ def foo():
     (sit-for 0.1 t)
     (should (eq 7 (current-column)))))
 
+(ert-deftest fill-paragraph-causes-wrong-indent-lp-1397936-test ()
+  (py-test-with-temp-buffer
+      "def foo():
+    \"\"\"abc\"\"\"
+"
+    (when py-debug-p (switch-to-buffer (current-buffer))
+	  (font-lock-fontify-buffer))
+    (goto-char 20)
+    (call-interactively 'fill-paragraph)
+    (should (eq 4 (current-indentation)))))
+
 (ert-deftest py-ert-imports-in-interactive-shell-lp-1290709 ()
   ""
   (when (buffer-live-p (get-buffer "*Python*")) (kill-buffer-unconditional (get-buffer "*Python*")))
