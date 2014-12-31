@@ -45,12 +45,12 @@
 
 ;;; Code
 
-;; (add-to-list 'load-path py-install-directory)
-;; (add-to-list 'load-path (concat py-install-directory "extensions"))
 ;; make it easier to run from different branches
 
-(provide 'python-components-mode)
-(provide 'python-mode)
+
+(if py-install-directory 
+    (add-to-list 'load-path (concat py-install-directory "extensions"))
+  (message "Don't see where py-install-directory is set, see README.org"))
 
 (require 'ansi-color)
 (require 'cc-cmds)
@@ -60,8 +60,6 @@
 (require 'custom)
 (require 'flymake)
 (require 'hippie-exp)
-(require 'python-components-macros)
-(require 'python-components-nomacros)
 (require 'shell)
 (require 'thingatpt)
 ;; (require 'python)
@@ -2795,9 +2793,10 @@ Used only, if `py-install-directory' is empty. "
                     (file-name-directory (buffer-file-name)))
                    ((string-match "python-mode" (buffer-name))
                     default-directory))))
-    (if erg
-        (setq py-install-directory erg)
-      (setq py-install-directory (expand-file-name "~/")))
+    (cond ((and py-install-directory (not string= "" py-install-directory) py-install-directory)
+	   (erg
+	    (setq py-install-directory erg))
+	   (t (setq py-install-directory (expand-file-name "~/")))))
     (when (and py-verbose-p (interactive-p)) (message "Setting py-install-directory to: %s" py-install-directory))
     py-install-directory))
 
@@ -2879,6 +2878,8 @@ See original source: http://pymacs.progiciels-bpi.ca"
   (add-to-list 'load-path default-directory)
   (add-to-list 'load-path (concat default-directory "extensions")))
 
+(require 'python-components-macros)
+(require 'python-components-nomacros)
 (require 'python-components-edit)
 (require 'python-components-intern)
 (require 'python-components-beginning-forms)
@@ -11981,5 +11982,8 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
     (easy-menu-add py-menu))
   ;; Running py-ipython-shell-mode-hook seems to need some delay
   (sit-for 0.5 t))
+
+(provide 'python-components-mode)
+(provide 'python-mode)
 
 ;;; python-components-mode.el ends here
