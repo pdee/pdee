@@ -40,7 +40,7 @@ print(\"I'm the py-multi-split-dedicated-lp-1361531-python-test\")"))
         (erg2 (progn (py-execute-statement-python-dedicated) py-buffer-name)))
   (sit-for 1 t)
   (when py-debug-p (message "(count-windows) %s" (count-windows))) 
-  (assert (eq 3 (count-windows)) nil "py-multi-split-dedicated-lp-1361531-python-test failed")
+  (assert (< 2 (count-windows)) nil "py-multi-split-dedicated-lp-1361531-python-test failed")
   (py-kill-buffer-unconditional erg1)
   (py-kill-buffer-unconditional erg2)
   (py-restore-window-configuration)))
@@ -150,6 +150,7 @@ print(\"I'm the py-multi-split-dedicated-lp-1361531-bpython-test\")"))
   (py-kill-buffer-unconditional erg2)
   (py-restore-window-configuration)))
 
-(provide 'py-multi-split-dedicated-lp-1361531-test)
-;;; py-multi-split-dedicated-lp-1361531-test.el here
+(provide 'py-multi-split-window-on-execute-lp-1361531-test)
+;;; py-multi-split-window-on-execute-lp-1361531-test.el here
+
  
