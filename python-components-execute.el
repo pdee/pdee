@@ -519,7 +519,7 @@ Internal use"
      ((and
        (eq py-split-window-on-execute 'just-two)
        (not py-switch-buffers-on-execute-p))
-      (switch-to-buffer (current-buffer))
+      (switch-to-buffer py-exception-buffer)
       (delete-other-windows)
       (unless
 	  (member (get-buffer-window output-buffer)(window-list))
