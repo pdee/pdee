@@ -193,7 +193,6 @@
        'python-dedicated-test
        'tqs-list-error-test
        'py-mark-def-commandp-test
-       'split-windows-on-execute-p-test
        'switch-windows-on-execute-p-test
        'py-install-directory-path-test
        'UnicodeEncodeError-python3-test
@@ -1189,23 +1188,6 @@ print(\"I'm the switch-windows-on-execute-p-test\")
     (assert
      (string-match "*Python*" (buffer-name (current-buffer)))
      nil "switch-windows-on-execute-p-test failed")))
-
-(defun split-windows-on-execute-p-test (&optional arg load-branch-function)
-  (interactive "p")
-  (let ((teststring (concat py-test-shebang "
-# -*- coding: utf-8 -*-
-print(\"I'm the `split-windows-on-execute-p-test'\")
-")))
-    (py-bug-tests-intern 'split-windows-on-execute-p-base arg teststring)))
-
-(defun split-windows-on-execute-p-base (arg)
-  (delete-other-windows)
-  (let ((py-split-window-on-execute t)
-        (py-split-windows-on-execute-function 'split-window-vertically)
-        (py-switch-buffers-on-execute-p t)
-        (erg (current-window-configuration)))
-    (py-execute-buffer)
-    (assert (not (window-full-height-p)) nil "split-windows-on-execute-p-test failed")))
 
 ;; this test is not valable, as python-mode-map often changes
 (defun py-menu-pyshell-test (&optional arg load-branch-function)

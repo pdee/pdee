@@ -587,7 +587,7 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
   (py-test-with-temp-buffer-point-min
       "import socket"
     (let ((py-debug-p t)
-	  (py-shell-name "python") 
+	  (py-shell-name "python")
 	  oldbuf)
       (py-execute-buffer-dedicated)
       (sit-for 0.1 t)
@@ -828,8 +828,8 @@ def baz():
     (let ((py-shell-name "python"))
       (py-execute-statement)
       (set-buffer ert-test-default-buffer)
-      (when py-debug-p (switch-to-buffer (current-buffer))) 
-      (goto-char (point-max)) 
+      (when py-debug-p (switch-to-buffer (current-buffer)))
+      (goto-char (point-max))
       (sit-for 0.3 t)
       (and (should (search-backward "py-execute-statement-test" nil t 1))
 	   (py-kill-buffer-unconditional (current-buffer))))))
@@ -863,8 +863,9 @@ def baz():
   (py-test-with-temp-buffer-point-min
       "print(123)"
     (let ((py-split-window-on-execute t))
+      (delete-other-windows)
       (py-execute-statement)
-      (sit-for 0.1 t) 
+      (sit-for 0.1 t)
       (should (not (one-window-p))))))
 
 ;;;
