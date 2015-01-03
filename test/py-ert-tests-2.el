@@ -34,14 +34,15 @@
 	py-switch-buffers-on-execute-p)
     (with-temp-buffer
       (python-mode)
-      ;; (when py-debug-p (switch-to-buffer (current-buffer)))
-      (set-buffer (python-dedicated))
-      ;; (message "%s" erg)
-      (switch-to-buffer (current-buffer))
-      (insert "pri")
-      (call-interactively 'py-indent-or-complete)
-      (sit-for 0.3 t)
-      (should (eq 40 (char-before)))
+      (setq erg (python-dedicated))
+      (with-current-buffer erg
+	(goto-char (point-max))
+	(when py-debug-p (switch-to-buffer (current-buffer)))
+	(insert "pri")
+	(sit-for 1 t) 
+	(call-interactively 'py-indent-or-complete)
+	(sit-for 0.1 t)
+	(should (eq 40 (char-before))))
       (py-kill-buffer-unconditional erg))))
 
 (ert-deftest py-ert-fast-complete-1 ()

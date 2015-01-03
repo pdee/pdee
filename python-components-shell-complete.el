@@ -26,7 +26,7 @@
 Argument COMPLETION-CODE is the python code used to get
 completions on the current context."
   (let ((completions
-	 (py--send-string-no-output
+	 (py--send-string-return-output
 	  (format completion-code input) process)))
     (sit-for 0.2 t)
     (when (> (length completions) 2)
