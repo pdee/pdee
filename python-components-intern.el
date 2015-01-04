@@ -32,7 +32,6 @@ Use `defcustom' to keep value across sessions "
     (read-from-minibuffer "Command args: " py-python-command-args)))
     (setq py-python-command-args arguments))
 
-
 (defun py---emacs-version-greater-23 ()
   "Return `t' if emacs major version is above 23"
   (< 23 (string-to-number (car (split-string emacs-version "\\.")))))
@@ -111,7 +110,7 @@ LINE indicates being not at origline now
 NESTING tells repeated executing was started from inside a list
 REPEAT counter enables checks against `py-max-specpdl-size'
 INDENT-OFFSET allows calculation of block-local values
-LIEP stores line-end-position at point-of-interest 
+LIEP stores line-end-position at point-of-interest
 "
   (interactive)
   (save-excursion
@@ -148,7 +147,7 @@ LIEP stores line-end-position at point-of-interest
                       (re-search-backward (concat py-shell-prompt-regexp "\\|" ipython-de-output-prompt-regexp "\\|" ipython-de-input-prompt-regexp) nil t 1)))
             ;; common recursion not suitable because of prompt
             (with-temp-buffer
-	      ;; (when py-debug-p (switch-to-buffer (current-buffer))) 
+	      ;; (when py-debug-p (switch-to-buffer (current-buffer)))
               (insert-buffer-substring cubuf (match-end 0) orig)
               (setq indent (py-compute-indentation)))
 	  (if (< py-max-specpdl-size repeat)
@@ -1363,6 +1362,16 @@ These would interfere when inserting forms heading a block"
 	    ;; now reload
 	    (read-abbrev-file abbrev-file-name))
       (kill-buffer (file-name-nondirectory abbrev-file-name)))))
+
+(defmacro py--kill-buffer-unconditional (buffer)
+  "Kill buffer unconditional, kill buffer-process if existing. "
+  `(let ((proc (get-buffer-process ,buffer))
+	 kill-buffer-query-functions)
+     (ignore-errors
+       (and proc (kill-process proc))
+       (set-buffer ,buffer)
+       (set-buffer-modified-p 'nil)
+       (kill-buffer (current-buffer)))))
 
 (provide 'python-components-intern)
 ;;; python-components-intern.el ends here

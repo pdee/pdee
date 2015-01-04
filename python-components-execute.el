@@ -681,7 +681,7 @@ Receives a buffer-name as argument"
 			    (py--report-executable py-buffer-name))))
 	 proc)
     ;; lp:1169687, if called from within an existing py-shell, open a new one
-    (and (bufferp py-exception-buffer)(buffer-live-p py-exception-buffer)(string= py-buffer-name (buffer-name py-exception-buffer))
+    (and (bufferp (get-buffer py-buffer-name))(buffer-live-p (get-buffer py-buffer-name))(string= (buffer-name (current-buffer)) (buffer-name (get-buffer py-buffer-name)))
 	 (setq py-buffer-name (generate-new-buffer-name py-buffer-name)))
     (sit-for 0.1 t)
     (if fast-process

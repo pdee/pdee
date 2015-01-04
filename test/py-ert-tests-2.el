@@ -38,12 +38,15 @@
       (with-current-buffer erg
 	(goto-char (point-max))
 	(when py-debug-p (switch-to-buffer (current-buffer)))
+	(switch-to-buffer (current-buffer)) 
 	(insert "pri")
-	(sit-for 1 t) 
+	(sit-for 1 t)
 	(call-interactively 'py-indent-or-complete)
 	(sit-for 0.1 t)
-	(should (eq 40 (char-before))))
-      (py-kill-buffer-unconditional erg))))
+	(should (or (eq 40 (char-before))
+		    ;; python may just offer print(
+		    (buffer-live-p (get-buffer  "*Python Completions*"))))
+      (py-kill-buffer-unconditional erg)))))
 
 (ert-deftest py-ert-fast-complete-1 ()
   (py-test-with-temp-buffer
@@ -596,6 +599,29 @@ def foo(*args):2
     (should (eq (char-after) ?p))
     (py-beginning-of-statement)
     (should (bobp))))
+
+(ert-deftest reuse-existing-shell-test ()
+  "Reuse existing shell unless py-shell is called from within. "
+  ;; kill existing shells
+  (py--kill-buffer-unconditional "*Python*")
+  (py--kill-buffer-unconditional "*IPython*")
+  (py--kill-buffer-unconditional "*Python*<2>")
+  (py--kill-buffer-unconditional "*IPython*<2>")
+  (python)
+  (ipython)
+  (with-temp-buffer
+    ;; this should not open a "*Python*<2>"
+    (python)
+    (ipython)
+    (should (not (buffer-live-p (get-buffer "*Python*<2>"))))
+    (should (not (buffer-live-p (get-buffer "*IPython*<2>"))))
+    (should (buffer-live-p (get-buffer "*Python*")))
+    (should (buffer-live-p (get-buffer "*IPython*")))))
+
+
+  (and (bufferp (get-buffer "*Python*"))(buffer-live-p (get-buffer "*Python*"))(py-kill-buffer-unconditional "*Python*"))
+  (and (bufferp (get-buffer "*IPython*"))(buffer-live-p (get-buffer "*IPython*"))(py-kill-buffer-unconditional "*IPython*"))
+
 
 
 (provide 'py-ert-tests-2)
