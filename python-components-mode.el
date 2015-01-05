@@ -55,9 +55,14 @@
 ;; make it easier to run from different branches
 
 
-(if py-install-directory 
-    (add-to-list 'load-path (concat py-install-directory "extensions"))
-  (message "Don't see where py-install-directory is set, see README.org"))
+(unless (boundp 'py-install-directory)
+    (message (concat "Don't see where py-install-directory is set, see README.org, taking default-directory: " default-directory))
+    (defvar py-install-directory default-directory))
+
+(if py-install-directory
+    (add-to-list 'load-path
+		 (concat py-install-directory "extensions"))
+  (error "Don't see where py-install-directory is set, see README.org"))
 
 (require 'ansi-color)
 (require 'cc-cmds)
