@@ -623,5 +623,13 @@ def foo(*args):2
   (and (bufferp (get-buffer "*IPython*"))(buffer-live-p (get-buffer "*IPython*"))(py-kill-buffer-unconditional "*IPython*"))
 
 
+(ert-deftest py-ert-execute-region-python2-test ()
+  (py-test-with-temp-buffer
+      "print(\"I'm the py-ert-execute-region-python2-test\")"
+    (let (py-result) 
+    (push-mark)
+    (goto-char (point-min))
+    (py-execute-region-python2 (region-beginning) (region-end))
+    (should (string-match "py-ert-execute-region-python2-test" py-result)))))
 
 (provide 'py-ert-tests-2)

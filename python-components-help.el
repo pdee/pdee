@@ -752,9 +752,13 @@ Home-page: http://www.logilab.org/project/pylint "
 		     (or default last)
                      'py-pylint-history)))))
   (save-some-buffers (not py-ask-about-save))
-  (unless (file-readable-p buffer-file-name)
-    (message "Warning: %s" "pylint needs a file"))
-  (shell-command (concat command " " buffer-file-name)))
+  (if (or (not buffer-file-name)
+	  (not (file-readable-p buffer-file-name)))
+      (message "Warning: %s" "pylint needs a file"))
+  (set-buffer (get-buffer-create "*Pylint*"))
+  (erase-buffer)
+  (shell-command command "*Pylint*"))
+
 
 (defalias 'pylint-help 'py-pylint-help)
 (defun py-pylint-help ()

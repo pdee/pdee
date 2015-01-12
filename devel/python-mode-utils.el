@@ -173,20 +173,17 @@
 (setq py-options (list "" "switch" "no-switch" "dedicated" "dedicated-switch"))
 
 (defvar py-shells
-  (list 'python 'ipython 'python3 'python2 'jython 'bpython)
+  (list 'python 'ipython 'python3 'python2 'jython)
   "Python-mode will generate commands opening shells mentioned here. Edit this list \w resp. to your machine. ")
 
 (setq py-shells
   (list 'python 'ipython 'python2  'jython 'python3))
 
 (defvar py-commands
-  (list "py-python-command" "py-ipython-command" "py-python3-command" "py-python2-command" "py-jython-command" "py-bpython-command")
+  (list "py-python-command" "py-ipython-command" "py-python3-command" "py-python2-command" "py-jython-command")
   "Python-mode will generate commands opening shells mentioned here. Edit this list \w resp. to your machine. ")
 
-;; (setq  py-shells (list "python" "ipython" "python3" "python2" "python2.7" "jython" "python3.2" "python3.3" "bpython"))
-
-(setq py-test-shells
-      (list "python" "ipython" "python3" "python2" "python2.7"))
+;; (setq  py-shells (list "python" "ipython" "python3" "python2" "python2.7" "jython" "python3.2" "python3.3" "ipython" "python3" "python2" "python2.7"))
 
 (setq py-shift-forms (list "paragraph" "block" "minor-block" "clause" "block-or-clause" "def" "class" "def-or-class" "line" "statement" "comment" "top-level"))
 
@@ -250,7 +247,7 @@
 	(end (save-excursion
 	       (py-end-of-" ele"))))
     (py-execute-region beg end)))\n\n"))))
-  (insert "(provide 'python-components-exec-forms)
+  (insert ")provide 'python-components-exec-forms)
 ;;; python-components-exec-forms.el ends here\n ")
   (emacs-lisp-mode))
 
@@ -476,7 +473,7 @@ Output buffer not in comint-mode, displays \\\"Fast\\\"  by default\"\n"))
          (insert " 'no-switch"))
         (t (insert " nil")))
   (cond ((string= "region" ele)
-         (insert " beg end"))
+         (insert " (or beg (region-beginning)) (or end (region-end))"))
         ((string= "buffer" ele)
          (insert " (point-min) (point-max)))")))
   (insert "))\n\n"))
@@ -500,7 +497,7 @@ Include default forms "
         (insert (concat path-to-shell ".el"))
       ;; (insert "python-extended-executes.el")
       )
-    (insert " --- more execute forms")
+    (insert " --- more execute forms\n")
     (insert arkopf)
 
     (insert "
@@ -600,6 +597,109 @@ Include default forms "
 ;;; " path-to-shell ".el ends here\n")
     (insert "(provide 'python-extended-executes)
 ;;; python-extended-executes.el ends here\n "))
+  (emacs-lisp-mode))
+
+
+;; (ert-deftest py-ert-execute-region-python2-test ()
+;;   (py-test-with-temp-buffer
+;;       "print(\"I'm the py-ert-execute-region-python2-test\")"
+;;     (let (py-result) 
+;;     (push-mark)
+;;     (goto-char (point-min))
+;;     (py-execute-region-python2 (region-beginning) (region-end))
+;;     (should (string-match "py-ert-execute-region-python2-test" py-result)))))
+
+(defun write-unified-extended-execute-ert-tests (&optional path-to-shell command option)
+  "Write `py-ert-execute-region-python2-test'"
+  (interactive)
+  (let ((py-bounds-command-names (if command (list command) py-bounds-command-names))
+	;; (py-shells py-commands)
+        (py-options (if option (list option) py-options)))
+    (if path-to-shell
+        (set-buffer (get-buffer-create (concat path-to-shell ".el")))
+      (set-buffer (get-buffer-create "extended-execute-ert-tests.el")))
+    (erase-buffer)
+    (switch-to-buffer (current-buffer))
+    (insert ";;; Extended executes ert tests")
+    (insert " --- more execute tests\n")
+    (insert arkopf)
+
+    (insert "
+;; created by `write-unified-extended-execute-ert-tests'\n")
+
+;; (ert-deftest py-ert-execute-region-python2-test ()
+;;   (py-test-with-temp-buffer
+;;       "print(\"I'm the py-ert-execute-region-python2-test\")"
+;;     (let (py-result) 
+;;     (push-mark)
+;;     (goto-char (point-min))
+;;     (py-execute-region-python2 (region-beginning) (region-end))
+;;     (should (string-match "py-ert-execute-region-python2-test" py-result)))))
+
+    (switch-to-buffer (current-buffer)) 
+    ;; see also `py-checker-command-names'
+    (dolist (ele py-bounds-command-names)
+      (dolist (elt py-shells)
+	(setq elt (prin1-to-string elt))
+	(setq kurz elt)
+        (dolist (pyo py-options)
+	  (insert (concat "(ert-deftest py-execute-"))
+          (if (string= "default" elt)
+              (insert ele)
+            (insert (concat ele  "-" kurz)))
+          (unless (string= pyo "")(insert (concat "-" pyo)))
+	  (if (string-match "region" elt)
+	      (insert "(beg end)")
+	    (insert " ()"))
+          (insert (concat "
+  \"Run " ele " at point to "))
+          (cond ((string-match "ipython" kurz)
+		 (insert "IPython"))
+		((string= "python" kurz)
+		 (insert "default"))
+		(t (insert (capitalize kurz))))
+          (cond ((string= pyo "dedicated")
+                 (insert " unique interpreter. "))
+                ((string= pyo "dedicated-switch")
+                 (insert " unique interpreter test. "))
+                (t (insert " interpreter test. ")))
+          (insert "\"\n")
+	  ;;   (py-test-with-temp-buffer
+;;       "print(\"I'm the py-ert-execute-region-python2-test\")"
+;;     (let (py-result) 
+;;     (push-mark)
+;;     (goto-char (point-min))
+;;     (py-execute-region-python2 (region-beginning) (region-end))
+;;     (should (string-match "py-ert-execute-region-python2-test" py-result)))))
+ 
+
+	    (if (string= "default" elt)
+		(insert (concat "  (py-test-with-temp-buffer\n 
+\"print(\\\"I'm the py-ert-execute-" ele "-test\\\")\"
+" ele "\""))
+	      (insert (concat "  (py-test-with-temp-buffer\n 
+\"print(\\\"I'm the py-ert-execute-" ele "-" elt "-test\\\")\"
+")))
+	              (cond ((string= pyo "dedicated")
+                 (insert " dedicated. "))
+                ((string= pyo "dedicated-switch")
+                 (insert " unique interpreter test. "))
+                (t (insert " interpreter test. ")))
+
+
+	    (insert " 
+    (let (py-result) 
+    (push-mark)
+    (goto-char (point-min)))")
+	    (if (string-match "region" ele)
+		(insert (concat " 
+    (py-execute-" ele "-" "elt "-" "pyo" (region-beginning) (region-end))
+\(py-execute-" ele "-" "elt "-" "pyo)))
+	    (insert (concat "  
+    (should (string-match \"py-ert-execute-" ele "-" " elt "-" pyo "-test\" py-result))))))
+
+    (insert "(provide 'extended-execute-ert-tests)
+;;; extended-execute-ert-tests.el ends here\n ")
   (emacs-lisp-mode))
 
 (defun py--fetch-first-python-buffer-from-list ()
@@ -2685,7 +2785,6 @@ Return position if " ele " found, nil otherwise \"
   (erase-buffer)
   (dolist (elt py-variables)
     (setq elt (prin1-to-string elt))
-    ;; -eval "(assert (commandp 'py-execute-file-bpython-dedicated-switch) nil \"py-execute-file-bpython-dedicated-switch not detected as command\")" \
     (insert (concat "-eval \"(assert (boundp '" elt ") nil \\\"" elt " not a variable\\\")\" \\\n")))
   (switch-to-buffer (current-buffer))
   (emacs-lisp-mode))
@@ -3315,6 +3414,39 @@ print(\\\"I'm the py-split-just-two-window-on-execute-lp-1361531-" first "-test\
 
   (insert "\n(provide 'py-split-just-two-window-on-execute-lp-1361531-test)
 \;;; py-split-just-two-window-on-execute-lp-1361531-test.el here\n ")
+  (emacs-lisp-mode))
+
+
+(defun write-py-ert-always-split-lp-1361531-tests (&optional pyshellname-list)
+  (interactive)
+  (let* ((liste py-shells))
+    (set-buffer (get-buffer-create "py-ert-always-split-lp-1361531-tests.el"))
+    (erase-buffer)
+    (insert ";;; py-ert-always-split-lp-1361531-tests.el --- Test splitting\n")
+    (insert arkopf)
+    (when py-debug-p (switch-to-buffer (current-buffer)))
+    (dolist (ele liste)
+      (setq elt (prin1-to-string ele))
+    (insert (concat " 
+\(ert-deftest py-ert-always-split-dedicated-lp-1361531-" elt "-test ()
+  (py-test-with-temp-buffer
+      \"#! /usr/bin/env " elt "
+# -*- coding: utf-8 -*-
+print(\\\"I'm the py-always-split-dedicated-lp-1361531-" elt "-test\\\")\\\""))
+    (when py-debug-p (message "py-split-window-on-execute: %s" py-split-window-on-execute))
+    (insert (concat "
+    (delete-other-windows)
+    (let* ((py-split-window-on-execute 'always)
+	   (erg1 (progn (py-execute-statement-" elt "-dedicated) py-buffer-name))
+	   (erg2 (progn (py-execute-statement-" elt "-dedicated) py-buffer-name)))
+      (sit-for 1 t)
+      (when py-debug-p (message \"(count-windows) %s\" (count-windows)))
+      (assert (< 2 (count-windows)) nil \\\"py-always-split-dedicated-lp-1361531-" elt "-test failed\\\")
+      (py-kill-buffer-unconditional erg1)
+      (py-kill-buffer-unconditional erg2)
+      (py-restore-window-configuration))))
+"))))
+  (switch-to-buffer (current-buffer))
   (emacs-lisp-mode))
 
 ;;; Copying
