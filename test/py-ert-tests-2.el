@@ -630,6 +630,7 @@ def foo(*args):2
     (push-mark)
     (goto-char (point-min))
     (py-execute-region-python2 (region-beginning) (region-end))
+    (sit-for 0.1 t) 
     (should (string-match "py-ert-execute-region-python2-test" py-result)))))
 
 (provide 'py-ert-tests-2)
