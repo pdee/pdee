@@ -502,7 +502,10 @@ Internal use"
 	;; otherwise new window appears above
 	;; (save-excursion
 	;; (other-window 1)
-	;; (display-buffer output-buffer)
+
+	;; py-ert-always-reuse-lp-1361531-test would fail with
+	;; save-excursion form
+	(display-buffer output-buffer)
 	;;)
 	(pop-to-buffer py-exception-buffer)))
      ((and

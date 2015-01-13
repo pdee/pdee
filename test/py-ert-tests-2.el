@@ -38,7 +38,7 @@
       (with-current-buffer erg
 	(goto-char (point-max))
 	(when py-debug-p (switch-to-buffer (current-buffer)))
-	(switch-to-buffer (current-buffer)) 
+	(switch-to-buffer (current-buffer))
 	(insert "pri")
 	(sit-for 1 t)
 	(call-interactively 'py-indent-or-complete)
@@ -626,11 +626,10 @@ def foo(*args):2
 (ert-deftest py-ert-execute-region-python2-test ()
   (py-test-with-temp-buffer
       "print(\"I'm the py-ert-execute-region-python2-test\")"
-    (let (py-result) 
+    (let (py-result)
     (push-mark)
     (goto-char (point-min))
     (py-execute-region-python2 (region-beginning) (region-end))
-    (sit-for 0.1 t) 
+    (sit-for 0.1 t)
     (should (string-match "py-ert-execute-region-python2-test" py-result)))))
 
-(provide 'py-ert-tests-2)

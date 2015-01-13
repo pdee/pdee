@@ -57,22 +57,6 @@ print(\"I'm the py-always-split-dedicated-lp-1361531-ipython-test\")"
       (py-kill-buffer-unconditional erg2)
       (py-restore-window-configuration))))
  
-(ert-deftest py-ert-always-split-dedicated-lp-1361531-python2-test ()
-  (py-test-with-temp-buffer
-      "#! /usr/bin/env python2
-# -*- coding: utf-8 -*-
-print(\"I'm the py-always-split-dedicated-lp-1361531-python2-test\")"
-    (delete-other-windows)
-    (let* ((py-split-window-on-execute 'always)
-	   (erg1 (progn (py-execute-statement-python2-dedicated) py-buffer-name))
-	   (erg2 (progn (py-execute-statement-python2-dedicated) py-buffer-name)))
-      (sit-for 1 t)
-      (when py-debug-p (message "(count-windows) %s" (count-windows)))
-      (should (< 2 (count-windows)))
-      (py-kill-buffer-unconditional erg1)
-      (py-kill-buffer-unconditional erg2)
-      (py-restore-window-configuration))))
- 
 (ert-deftest py-ert-always-split-dedicated-lp-1361531-jython-test ()
   (py-test-with-temp-buffer
       "#! /usr/bin/env jython

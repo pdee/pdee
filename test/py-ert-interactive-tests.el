@@ -1,3 +1,48 @@
+;;; py-ert-interactive-tests.el --- test interactively
+
+;; Copyright (C) 2015  Andreas Roehler
+
+;; Author: speck <andreas.roehler@online.de>
+;; Keywords: languages
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary: These tests fail in batch-mode
+
+;;
+
+;;; Code:
+
+(provide 'py-ert-interactive-tests)
+;;; py-ert-interactive-tests.el ends here
+
+(ert-deftest py-ert-always-split-dedicated-lp-1361531-python2-test ()
+  (py-test-with-temp-buffer
+      "#! /usr/bin/env python2
+# -*- coding: utf-8 -*-
+print(\"I'm the py-always-split-dedicated-lp-1361531-python2-test\")"
+    (delete-other-windows)
+    (let* ((py-split-window-on-execute 'always)
+	   (erg1 (progn (py-execute-statement-python2-dedicated) py-buffer-name))
+	   (erg2 (progn (py-execute-statement-python2-dedicated) py-buffer-name)))
+      (sit-for 1 t)
+      (when py-debug-p (message "(count-windows) %s" (count-windows)))
+      (should (< 2 (count-windows)))
+      (py-kill-buffer-unconditional erg1)
+      (py-kill-buffer-unconditional erg2)
+      (py-restore-window-configuration))))
+
 (ert-deftest py-ert-fill-paragraph-lp-1291493 ()
   (py-test-with-temp-buffer-point-min
       "if True:
@@ -112,3 +157,22 @@ def foo():
     (when py-debug-p (switch-to-buffer (current-buffer)))
     (and (should (search-backward "py-execute-statement-python2-test" nil t 1))
 	 (py-kill-buffer-unconditional (current-buffer)))))
+
+(ert-deftest py-ert-always-reuse-lp-1361531-test ()
+  (with-temp-buffer
+    "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+print(\"I'm the py-always-reuse-lp-1361531-test\")"
+    (delete-other-windows)
+    (python-mode)
+    (let* ((py-split-window-on-execute 'always)
+	   py-switch-buffers-on-execute-p
+	   py-dedicated-process-p)
+      (py-execute-statement-python)
+      (py-execute-statement-python3)
+      (py-execute-statement-python)
+      (message "(window-list): %s" (window-list))
+      (sit-for 0.1 t)
+      ;; (when py-debug-p (message "py-split-window-on-execute: %s" py-split-window-on-execute))
+      (should (eq 3 (count-windows)))
+      (py-restore-window-configuration))))
