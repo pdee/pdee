@@ -3432,7 +3432,7 @@ print(\\\"I'm the py-split-just-two-window-on-execute-lp-1361531-" first "-test\
   (py-test-with-temp-buffer
       \"#! /usr/bin/env " elt "
 # -*- coding: utf-8 -*-
-print(\\\"I'm the py-always-split-dedicated-lp-1361531-" elt "-test\\\")\\\""))
+print(\\\"I'm the py-always-split-dedicated-lp-1361531-" elt "-test\\\")\""))
     (when py-debug-p (message "py-split-window-on-execute: %s" py-split-window-on-execute))
     (insert (concat "
     (delete-other-windows)
@@ -3441,7 +3441,41 @@ print(\\\"I'm the py-always-split-dedicated-lp-1361531-" elt "-test\\\")\\\""))
 	   (erg2 (progn (py-execute-statement-" elt "-dedicated) py-buffer-name)))
       (sit-for 1 t)
       (when py-debug-p (message \"(count-windows) %s\" (count-windows)))
-      (assert (< 2 (count-windows)) nil \\\"py-always-split-dedicated-lp-1361531-" elt "-test failed\\\")
+      (should (< 2 (count-windows)))
+      (py-kill-buffer-unconditional erg1)
+      (py-kill-buffer-unconditional erg2)
+      (py-restore-window-configuration))))
+"))))
+    (insert "\n;; py-ert-always-split-lp-1361531-tests.el ends here
+\(provide 'py-ert-always-split-lp-1361531-tests)")
+  (switch-to-buffer (current-buffer))
+  (emacs-lisp-mode))
+
+(defun write-py-ert-just-two-split-lp-1361531-tests (&optional pyshellname-list)
+  (interactive)
+  (let* ((liste py-shells))
+    (set-buffer (get-buffer-create "py-ert-just-two-split-lp-1361531-tests.el"))
+    (erase-buffer)
+    (insert ";;; py-ert-just-two-split-lp-1361531-tests.el --- Test splitting\n")
+    (insert arkopf)
+    (when py-debug-p (switch-to-buffer (current-buffer)))
+    (dolist (ele liste)
+      (setq elt (prin1-to-string ele))
+    (insert (concat " 
+\(ert-deftest py-ert-just-two-split-dedicated-lp-1361531-" elt "-test ()
+  (py-test-with-temp-buffer
+      \"#! /usr/bin/env " elt "
+# -*- coding: utf-8 -*-
+print(\\\"I'm the py-just-two-split-dedicated-lp-1361531-" elt "-test\\\")\""))
+    (when py-debug-p (message "py-split-window-on-execute: %s" py-split-window-on-execute))
+    (insert (concat "
+    (delete-other-windows)
+    (let* ((py-split-window-on-execute 'just-two)
+	   (erg1 (progn (py-execute-statement-" elt "-dedicated) py-buffer-name))
+	   (erg2 (progn (py-execute-statement-" elt "-dedicated) py-buffer-name)))
+      (sit-for 1 t)
+      (when py-debug-p (message \"(count-windows) %s\" (count-windows)))
+      (should (eq 2 (count-windows)))
       (py-kill-buffer-unconditional erg1)
       (py-kill-buffer-unconditional erg2)
       (py-restore-window-configuration))))
