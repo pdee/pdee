@@ -30,6 +30,7 @@ SETUP=$TESTDIR/setup-ert-tests.el
 TEST1=$TESTDIR/py-ert-tests-1.el
 TEST2=$TESTDIR/py-ert-tests-2.el
 TEST3=$TESTDIR/py-ert-always-split-lp-1361531-tests.el
+TEST4=$TESTDIR/py-ert-just-two-split-lp-1361531-tests.el
 
 if [ -s emacs24 ]; then
     EMACS=emacs24
