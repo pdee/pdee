@@ -41,22 +41,6 @@ print(\"I'm the py-just-two-split-dedicated-lp-1361531-python-test\")"
       (py-kill-buffer-unconditional erg2)
       (py-restore-window-configuration))))
  
-(ert-deftest py-ert-just-two-split-dedicated-lp-1361531-ipython-test ()
-  (py-test-with-temp-buffer
-      "#! /usr/bin/env ipython
-# -*- coding: utf-8 -*-
-print(\"I'm the py-just-two-split-dedicated-lp-1361531-ipython-test\")"
-    (delete-other-windows)
-    (let* ((py-split-window-on-execute 'just-two)
-	   (erg1 (progn (py-execute-statement-ipython-dedicated) py-buffer-name))
-	   (erg2 (progn (py-execute-statement-ipython-dedicated) py-buffer-name)))
-      (sit-for 1 t)
-      (when py-debug-p (message "(count-windows) %s" (count-windows)))
-      (should (eq 2 (count-windows)))
-      (py-kill-buffer-unconditional erg1)
-      (py-kill-buffer-unconditional erg2)
-      (py-restore-window-configuration))))
- 
 (ert-deftest py-ert-just-two-split-dedicated-lp-1361531-python2-test ()
   (py-test-with-temp-buffer
       "#! /usr/bin/env python2
@@ -66,22 +50,6 @@ print(\"I'm the py-just-two-split-dedicated-lp-1361531-python2-test\")"
     (let* ((py-split-window-on-execute 'just-two)
 	   (erg1 (progn (py-execute-statement-python2-dedicated) py-buffer-name))
 	   (erg2 (progn (py-execute-statement-python2-dedicated) py-buffer-name)))
-      (sit-for 1 t)
-      (when py-debug-p (message "(count-windows) %s" (count-windows)))
-      (should (eq 2 (count-windows)))
-      (py-kill-buffer-unconditional erg1)
-      (py-kill-buffer-unconditional erg2)
-      (py-restore-window-configuration))))
- 
-(ert-deftest py-ert-just-two-split-dedicated-lp-1361531-jython-test ()
-  (py-test-with-temp-buffer
-      "#! /usr/bin/env jython
-# -*- coding: utf-8 -*-
-print(\"I'm the py-just-two-split-dedicated-lp-1361531-jython-test\")"
-    (delete-other-windows)
-    (let* ((py-split-window-on-execute 'just-two)
-	   (erg1 (progn (py-execute-statement-jython-dedicated) py-buffer-name))
-	   (erg2 (progn (py-execute-statement-jython-dedicated) py-buffer-name)))
       (sit-for 1 t)
       (when py-debug-p (message "(count-windows) %s" (count-windows)))
       (should (eq 2 (count-windows)))

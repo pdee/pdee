@@ -552,16 +552,6 @@ pass
       (sit-for 0.1 t)
       (should (buffer-live-p (get-buffer "*Python2*"))))))
 
-(ert-deftest py-shell-ipython-lp-1398530-test ()
-  (when (buffer-live-p (get-buffer "*IPython*"))(py-kill-buffer-unconditional "*IPython*"))
-  (py-test-with-temp-buffer
-      ""
-    ;; (when py-debug-p (switch-to-buffer (current-buffer)))
-    (let ((py-shell-name "ipython"))
-      (py-shell)
-      (sit-for 0.1 t)
-      (should (buffer-live-p (get-buffer "*IPython*"))))))
-
 (ert-deftest py-beginning-of-statement-test-1 ()
   (py-test-with-temp-buffer
       (let ((py-return-result-p t)
@@ -600,6 +590,7 @@ def foo(*args):2
     (py-beginning-of-statement)
     (should (bobp))))
 
+
 (ert-deftest reuse-existing-shell-test ()
   "Reuse existing shell unless py-shell is called from within. "
   ;; kill existing shells
@@ -618,18 +609,5 @@ def foo(*args):2
     (should (buffer-live-p (get-buffer "*Python*")))
     (should (buffer-live-p (get-buffer "*IPython*")))))
 
-
-  (and (bufferp (get-buffer "*Python*"))(buffer-live-p (get-buffer "*Python*"))(py-kill-buffer-unconditional "*Python*"))
-  (and (bufferp (get-buffer "*IPython*"))(buffer-live-p (get-buffer "*IPython*"))(py-kill-buffer-unconditional "*IPython*"))
-
-
-(ert-deftest py-ert-execute-region-python2-test ()
-  (py-test-with-temp-buffer
-      "print(\"I'm the py-ert-execute-region-python2-test\")"
-    (let (py-result)
-    (push-mark)
-    (goto-char (point-min))
-    (py-execute-region-python2 (region-beginning) (region-end))
-    (sit-for 0.1 t)
-    (should (string-match "py-ert-execute-region-python2-test" py-result)))))
-
+  ;; (and (bufferp (get-buffer "*Python*"))(buffer-live-p (get-buffer "*Python*"))(py-kill-buffer-unconditional "*Python*"))
+  ;; (and (bufferp (get-buffer "*IPython*"))(buffer-live-p (get-buffer "*IPython*"))(py-kill-buffer-unconditional "*IPython*")))
