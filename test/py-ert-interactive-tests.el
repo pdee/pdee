@@ -176,3 +176,13 @@ print(\"I'm the py-always-reuse-lp-1361531-test\")"
       ;; (when py-debug-p (message "py-split-window-on-execute: %s" py-split-window-on-execute))
       (should (eq 3 (count-windows)))
       (py-restore-window-configuration))))
+
+(ert-deftest py-ert-execute-region-python2-test ()
+  (py-test-with-temp-buffer
+      "print(\"I'm the py-ert-execute-region-python2-test\")"
+    (let (py-result)
+    (push-mark)
+    (goto-char (point-min))
+    (py-execute-region-python2 (region-beginning) (region-end))
+    (sit-for 0.1 t)
+    (should (string-match "py-ert-execute-region-python2-test" py-result)))))
