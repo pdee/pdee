@@ -591,7 +591,7 @@ def foo(*args):2
     (should (bobp))))
 
 
-(ert-deftest reuse-existing-shell-test ()
+(ert-deftest py-reuse-existing-shell-test ()
   "Reuse existing shell unless py-shell is called from within. "
   ;; kill existing shells
   (py--kill-buffer-unconditional "*Python*")
@@ -600,10 +600,12 @@ def foo(*args):2
   (py--kill-buffer-unconditional "*IPython*<2>")
   (python)
   (ipython)
+  (sit-for 0.1 t) 
   (with-temp-buffer
     ;; this should not open a "*Python*<2>"
     (python)
     (ipython)
+    (sit-for 0.1 t) 
     (should (not (buffer-live-p (get-buffer "*Python*<2>"))))
     (should (not (buffer-live-p (get-buffer "*IPython*<2>"))))
     (should (buffer-live-p (get-buffer "*Python*")))

@@ -1,6 +1,6 @@
 ;;; thingatpt-highlight.el --- more th-at-point edit functions
 
-;; Copyright (C) 2010 Andreas Roehler, unless
+;; Copyright (C) 2010-2014 Andreas Roehler, unless
 ;; indicated otherwise
 
 ;; Author: Andreas Roehler <andreas.roehler@easy-emacs.de>, unless
@@ -22,6 +22,8 @@
 ;; Boston, MA 02110-1301, USA.
 
 ;;; Commentary:
+
+;;; Code:
 
 ;;; highlight-thing stuff
 ;; Basicely inspired by `highlight-current-line.el'. Please

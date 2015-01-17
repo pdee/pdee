@@ -49,12 +49,11 @@ BODY is code to be executed within the temp buffer.  Point is
  at the end of buffer."
   (declare (indent 1) (debug t))
   `(with-temp-buffer
-;;     (and (featurep 'python) (unload-feature 'python))
+     ;; (and (featurep 'python) (unload-feature 'python))
      (let (hs-minor-mode)
        (python-mode)
        (insert ,contents)
-       (message "ERT %s" (point))
-
+       ;; (message "ERT %s" (point))
        ,@body)))
 
 (defun py-tests-go-to (string)

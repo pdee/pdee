@@ -4,6 +4,10 @@ Python Mode News
 New in version 6.2.1
 ---------------------
 
+- Commands
+  - py-beginning-of-for-block
+  - py-beginning-of-for-block-bol
+
 - TAB-indent from column zero: go to outmost first, lp:1375122
 - (I)Python-shell setup made more reliable
 

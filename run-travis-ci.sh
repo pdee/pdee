@@ -23,7 +23,13 @@ PDIR=$PWD
 TESTDIR=$PDIR/test
 export TESTDIR
 
-PYTHONMODE=python-components-mode.el
+if [ -s $PDIR/python-components-mode.el ]; then
+    PYTHONMODE=$PDIR/python-components-mode.el
+else
+    PYTHONMODE=$PDIR/python-mode.el
+fi
+
+echo "\$PYTHONMODE: $PYTHONMODE"
 
 SETUP=$TESTDIR/setup-ert-tests.el
 
@@ -31,6 +37,7 @@ TEST1=$TESTDIR/py-ert-tests-1.el
 TEST2=$TESTDIR/py-ert-tests-2.el
 TEST3=$TESTDIR/py-ert-always-split-lp-1361531-tests.el
 TEST4=$TESTDIR/py-ert-just-two-split-lp-1361531-tests.el
+TEST5=$TESTDIR/py-ert-beginning-tests.el
 
 if [ -s emacs24 ]; then
     EMACS=emacs24
@@ -38,10 +45,8 @@ else
     EMACS=emacs
 fi
 
-PYTHONMODE="python-components-mode.el"
-
 echo "\$EMACS: $EMACS"
 
 PYCO="$PDIR/completion/pycomplete.el"
 
-$EMACS -Q --batch --eval "(message (emacs-version))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$TESTDIR/\")" -load $SETUP -load $PYTHONMODE -l $TEST2 -l $TEST4 -f ert-run-tests-batch-and-exit
+$EMACS -Q --batch --eval "(message (emacs-version))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$TESTDIR/\")" -load $SETUP -load $PYTHONMODE -l $TEST2 -l $TEST4 -l $TEST5 -f ert-run-tests-batch-and-exit

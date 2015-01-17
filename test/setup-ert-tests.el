@@ -25,7 +25,8 @@
 (setq py-install-directory default-directory)
 (sit-for 0.1 t) 
 
-(require 'python-components-mode)
+
+;; (require 'python-mode)
 
 (defvar py-debug-p nil
   "Avoid error")

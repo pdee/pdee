@@ -1294,15 +1294,8 @@ http://docs.python.org/reference/compound_stmts.html"
                            (py-beginning-of-statement)
                            (unless (looking-at (symbol-value regexp))
                              (cdr (py--go-to-keyword (symbol-value regexp) (current-indentation))))))
-                        ;; indent from first beginning of clause matters
-                        ;; ((not (looking-at py-extended-block-or-clause-re))
-                        ;;  (py--go-to-keyword py-extended-block-or-clause-re indent)
-                        ;;  (if (looking-at (symbol-value regexp))
-                        ;;      (setq erg (point))
-                        ;;    (py--beginning-of-form-intern regexp iact (current-indentation) orig)))
                         ((numberp indent)
-                         (ignore-errors
-                           (cdr (py--go-to-keyword (symbol-value regexp) indent))))
+			 (cdr (py--go-to-keyword (symbol-value regexp) indent)))
                         (t (ignore-errors
                              (cdr (py--go-to-keyword (symbol-value regexp)
                                                     (- (progn (if (py--beginning-of-statement-p) (current-indentation) (save-excursion (py-beginning-of-statement) (current-indentation)))) py-indent-offset)))))))
