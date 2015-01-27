@@ -129,8 +129,8 @@ the default"
     (let ((comment-start (if py-block-comment-prefix-p
                              py-block-comment-prefix
                            comment-start))
-          (beg (or beg (py-beginning-of-minor-block-position)))
-          (end (or end (py-end-of-minor-block-position))))
+          (beg (or beg (py--beginning-of-minor-block-position)))
+          (end (or end (py--end-of-minor-block-position))))
       (goto-char beg)
       (push-mark)
       (goto-char end)
@@ -146,8 +146,8 @@ the default"
     (let ((comment-start (if py-block-comment-prefix-p
                              py-block-comment-prefix
                            comment-start))
-          (beg (or beg (py-beginning-of-top-level-position)))
-          (end (or end (py-end-of-top-level-position))))
+          (beg (or beg (py--beginning-of-top-level-position)))
+          (end (or end (py--end-of-top-level-position))))
       (goto-char beg)
       (push-mark)
       (goto-char end)
@@ -255,5 +255,5 @@ the default"
       (goto-char end)
       (comment-region beg end arg))))
 
-;; python-components-comment ends here
 (provide 'python-components-comment)
+;;; python-components-comment ends here

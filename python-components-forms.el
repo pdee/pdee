@@ -21,37 +21,6 @@
 ;;; Code:
 
 ;; Mark
-(defun py--base (form &optional py-mark-decorators)
-  "Returns boundaries of FORM, a cons. "
-  (let* ((begform (intern-soft (concat "py-beginning-of-" form)))
-         (endform (intern-soft (concat "py-end-of-" form)))
-         (begcheckform (intern-soft (concat "py--beginning-of-" form "-p")))
-         (orig (point))
-         beg end erg)
-    (setq beg (if
-                  (setq beg (funcall begcheckform))
-                  beg
-                (funcall begform)))
-    (and py-mark-decorators
-         (and (setq erg (py-beginning-of-decorator))
-              (setq beg erg)))
-    (setq end (funcall endform))
-    (unless end (when (< beg (point))
-                  (setq end (point))))
-    (if (and beg end (<= beg orig) (<= orig end))
-	(progn
-	  (when (interactive-p) (message "%s %s" beg end))
-	  (cons beg end))
-      (when (interactive-p) (message "%s" "nil"))
-      (goto-char orig) 
-      nil)))
-
-(defun py-mark-base (form &optional py-mark-decorators)
-  "Calls py--base, returns bounds of form, a cons. "
-  (let* ((bounds (py--base form py-mark-decorators))
-         (beg (car bounds)))
-    (push-mark beg t t)
-    bounds))
 
 (defun py-mark-paragraph ()
   "Mark paragraph at point.

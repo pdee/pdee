@@ -328,5 +328,5 @@ Return position if def-or-class found, nil otherwise "
   (interactive)
   (py-down-base-bol py-def-or-class-re))
 
-;; python-components-up-down ends here
 (provide 'python-components-up-down)
+;;; python-components-up-down ends here

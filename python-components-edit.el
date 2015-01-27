@@ -1,4 +1,4 @@
-;;; python-components-edit.el --- Python edit utilities
+;;; python-components-edit.el --- Some more Python edit utilities
 
 ;; Maintainer: Andreas Roehler <andreas.roehler@online.de>
 ;; Keywords: languages, processes
@@ -26,7 +26,7 @@
 (defvar py-keywords "\\<\\(ArithmeticError\\|AssertionError\\|AttributeError\\|BaseException\\|BufferError\\|BytesWarning\\|DeprecationWarning\\|EOFError\\|Ellipsis\\|EnvironmentError\\|Exception\\|False\\|FloatingPointError\\|FutureWarning\\|GeneratorExit\\|IOError\\|ImportError\\|ImportWarning\\|IndentationError\\|IndexError\\|KeyError\\|KeyboardInterrupt\\|LookupError\\|MemoryError\\|NameError\\|NoneNotImplementedError\\|NotImplemented\\|OSError\\|OverflowError\\|PendingDeprecationWarning\\|ReferenceError\\|RuntimeError\\|RuntimeWarning\\|StandardError\\|StopIteration\\|SyntaxError\\|SyntaxWarning\\|SystemError\\|SystemExit\\|TabError\\|True\\|TypeError\\|UnboundLocalError\\|UnicodeDecodeError\\|UnicodeEncodeError\\|UnicodeError\\|UnicodeTranslateError\\|UnicodeWarning\\|UserWarning\\|ValueError\\|Warning\\|ZeroDivisionError\\|__debug__\\|__import__\\|__name__\\|abs\\|all\\|and\\|any\\|apply\\|as\\|assert\\|basestring\\|bin\\|bool\\|break\\|buffer\\|bytearray\\|callable\\|chr\\|class\\|classmethod\\|cmp\\|coerce\\|compile\\|complex\\|continue\\|copyright\\|credits\\|def\\|del\\|delattr\\|dict\\|dir\\|divmod\\|elif\\|else\\|enumerate\\|eval\\|except\\|exec\\|execfile\\|exit\\|file\\|filter\\|float\\|for\\|format\\|from\\|getattr\\|global\\|globals\\|hasattr\\|hash\\|help\\|hex\\|id\\|if\\|import\\|in\\|input\\|int\\|intern\\|is\\|isinstance\\|issubclass\\|iter\\|lambda\\|len\\|license\\|list\\|locals\\|long\\|map\\|max\\|memoryview\\|min\\|next\\|not\\|object\\|oct\\|open\\|or\\|ord\\|pass\\|pow\\|print\\|property\\|quit\\|raise\\|range\\|raw_input\\|reduce\\|reload\\|repr\\|return\\|round\\|set\\|setattr\\|slice\\|sorted\\|staticmethod\\|str\\|sum\\|super\\|tuple\\|type\\|unichr\\|unicode\\|vars\\|while\\|with\\|xrange\\|yield\\|zip\\|\\)\\>"
   "Contents like py-fond-lock-keyword")
 
-;;;
+;; ;
 (defun py-insert-default-shebang ()
   "Insert in buffer shebang of installed default Python. "
   (interactive "*")
@@ -330,7 +330,7 @@ Returns value of `indent-tabs-mode' switched to. "
   (interactive "p")
   (py-indent-tabs-mode (- (abs arg))(interactive-p)))
 
-;;; Guess indent offset
+;;  Guess indent offset
 (defun py-guessed-sanity-check (guessed)
   (and (>= guessed 2)(<= guessed 8)(eq 0 (% guessed 2))))
 
@@ -434,22 +434,22 @@ The defun visible is the one that contains point or follows point. "
       (py-end-of-def-or-class)
       (narrow-to-region (point) start))))
 
-;; make general form below work also in these cases
-;; (defalias 'py-beginning-of-paragraph 'backward-paragraph)
+;;  make general form below work also in these cases
+;;  (defalias 'py-beginning-of-paragraph 'backward-paragraph)
 (defun py-beginning-of-paragraph ()
   (interactive)
   (let ((erg (and (backward-paragraph)(point))))
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
-;; (defalias 'py-end-of-paragraph 'forward-paragraph)
+;;  (defalias 'py-end-of-paragraph 'forward-paragraph)
 (defun py-end-of-paragraph ()
   (interactive)
   (let ((erg (and (forward-paragraph)(point))))
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
-;;;
+;; ;
 (defun py-indent-and-forward ()
   "Indent current line according to mode, move one line forward. "
   (interactive "*")
@@ -482,464 +482,20 @@ Returns and keeps relative position "
     (unless (empty-line-p) (py-indent-line nil t))
     (goto-char orig)))
 
-;;; Positions
-(defun py--beginning-of-paragraph-position ()
-  "Returns beginning of paragraph position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (progn
-		 (py-beginning-of-paragraph)
-		 (point))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-      erg)))
-
-(defun py--end-of-paragraph-position ()
-  "Returns end of paragraph position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (progn
-                 (when (looking-at "[ \\t\\r\\n\\f]*$")
-                   (skip-chars-backward " \t\r\n\f")
-                   (forward-char -1))
-                 (py-end-of-paragraph)
-		 (point))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-      erg)))
-
-(defun py--beginning-of-block-position ()
-  "Returns beginning of block position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (py-beginning-of-block)))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-      erg)))
-
-(defun py--end-of-block-position ()
-  "Returns end of block position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (progn
-                 (when (looking-at "[ \\t\\r\\n\\f]*$")
-                   (skip-chars-backward " \t\r\n\f")
-                   (forward-char -1))
-                 (py-end-of-block))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-      erg)))
-
-(defun py-beginning-of-minor-block-position ()
-  "Returns beginning of minor-block position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (py-beginning-of-minor-block)))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-      erg)))
-
-(defun py-end-of-minor-block-position ()
-  "Returns end of minor-block position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (progn
-                 (when (looking-at "[ \\t\\r\\n\\f]*$")
-                   (skip-chars-backward " \t\r\n\f")
-                   (forward-char -1))
-                 (py-end-of-minor-block))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-      erg)))
-
-(defun py--beginning-of-clause-position ()
-  "Returns beginning of clause position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (py-beginning-of-clause)))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-      erg)))
-
-(defun py--end-of-clause-position ()
-  "Returns end of clause position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (progn
-                 (when (looking-at "[ \\t\\r\\n\\f]*$")
-                   (skip-chars-backward " \t\r\n\f")
-                   (forward-char -1))
-                 (py-end-of-clause))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-      erg)))
-
-(defun py--beginning-of-block-or-clause-position ()
-  "Returns beginning of block-or-clause position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (py-beginning-of-block-or-clause)))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-      erg)))
-
-(defun py--end-of-block-or-clause-position ()
-  "Returns end of block-or-clause position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (progn
-                 (when (looking-at "[ \\t\\r\\n\\f]*$")
-                   (skip-chars-backward " \t\r\n\f")
-                   (forward-char -1))
-                 (py-end-of-block-or-clause))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-      erg)))
-
-(defun py--beginning-of-def-position ()
-  "Returns beginning of def position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (py-beginning-of-def)))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-      erg)))
-
-(defun py--end-of-def-position ()
-  "Returns end of def position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (progn
-                 (when (looking-at "[ \\t\\r\\n\\f]*$")
-                   (skip-chars-backward " \t\r\n\f")
-                   (forward-char -1))
-                 (py-end-of-def))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-      erg)))
-
-(defun py--beginning-of-class-position ()
-  "Returns beginning of class position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (py-beginning-of-class)))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-      erg)))
-
-(defun py--end-of-class-position ()
-  "Returns end of class position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (progn
-                 (when (looking-at "[ \\t\\r\\n\\f]*$")
-                   (skip-chars-backward " \t\r\n\f")
-                   (forward-char -1))
-                 (py-end-of-class))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-      erg)))
-
-(defun py--beginning-of-def-or-class-position ()
-  "Returns beginning of def-or-class position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (py-beginning-of-def-or-class)))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-      erg)))
-
-(defun py--end-of-def-or-class-position ()
-  "Returns end of def-or-class position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (progn
-                 (when (looking-at "[ \\t\\r\\n\\f]*$")
-                   (skip-chars-backward " \t\r\n\f")
-                   (forward-char -1))
-                 (py-end-of-def-or-class))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-      erg)))
-
-(defun py--beginning-of-line-position ()
-  "Returns beginning of line position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (py-beginning-of-line)))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-      erg)))
-
-(defun py--end-of-line-position ()
-  "Returns end of line position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (progn
-                 (when (looking-at "[ \\t\\r\\n\\f]*$")
-                   (skip-chars-backward " \t\r\n\f")
-                   (forward-char -1))
-                 (py-end-of-line))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-      erg)))
-
-(defun py--beginning-of-statement-position ()
-  "Returns beginning of statement position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (py-beginning-of-statement)))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-      erg)))
-
-(defun py--end-of-statement-position ()
-  "Returns end of statement position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (progn
-                 (when (looking-at "[ \\t\\r\\n\\f]*$")
-                   (skip-chars-backward " \t\r\n\f")
-                   (forward-char -1))
-                 (py-end-of-statement))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-      erg)))
-
-(defun py-beginning-of-comment-position ()
-  "Returns beginning of comment position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (py-beginning-of-comment)))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-      erg)))
-
-(defun py-end-of-comment-position ()
-  "Returns end of comment position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (progn
-                 (when (looking-at "[ \\t\\r\\n\\f]*$")
-                   (skip-chars-backward " \t\r\n\f")
-                   (forward-char -1))
-                 (py-end-of-comment))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-      erg)))
-
-(defun py-beginning-of-top-level-position ()
-  "Returns beginning of top-level position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (py-beginning-of-top-level)))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-      erg)))
-
-(defun py-end-of-top-level-position ()
-  "Returns end of top-level position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (progn
-                 (when (looking-at "[ \\t\\r\\n\\f]*$")
-                   (skip-chars-backward " \t\r\n\f")
-                   (forward-char -1))
-                 (py-end-of-top-level))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-      erg)))
-
-(defun py--beginning-of-partial-expression-position ()
-  "Returns beginning of partial-expression position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (py-beginning-of-partial-expression)))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-      erg)))
-
-(defun py--end-of-partial-expression-position ()
-  "Returns end of partial-expression position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (progn
-                 (when (looking-at "[ \\t\\r\\n\\f]*$")
-                   (skip-chars-backward " \t\r\n\f")
-                   (forward-char -1))
-                 (py-end-of-partial-expression))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-      erg)))
-
-(defun py--beginning-of-expression-position ()
-  "Returns beginning of expression position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (py-beginning-of-expression)))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-      erg)))
-
-(defun py--end-of-expression-position ()
-  "Returns end of expression position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (progn
-                 (when (looking-at "[ \\t\\r\\n\\f]*$")
-                   (skip-chars-backward " \t\r\n\f")
-                   (forward-char -1))
-                 (py-end-of-expression))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-      erg)))
-
-;;; Bounds
-(defun py-bounds-of-statement (&optional position)
-  "Returns bounds of statement at point.
-
-With optional POSITION, a number, report bounds of statement at POSITION.
-Returns a list, whose car is beg, cdr - end."
-  (interactive)
-  (save-excursion
-    (save-restriction
-      (widen)
-      (when position (goto-char position))
-      (let ((beg (py--beginning-of-statement-position))
-            (end (py--end-of-statement-position)))
-        (if (and beg end)
-            (when (interactive-p) (message "%s" (list beg end)))
-          (list beg end))))))
-
-(defun py-bounds-of-block (&optional position)
-  "Returns bounds of block at point.
-
-With optional POSITION, a number, report bounds of block at POSITION.
-Returns a list, whose car is beg, cdr - end."
-  (interactive)
-  (save-excursion
-    (save-restriction
-      (widen)
-      (when position (goto-char position))
-      (let ((beg (py--beginning-of-block-position))
-            (end (py--end-of-block-position)))
-        (if (and beg end)
-            (when (interactive-p) (message "%s" (list beg end)))
-          (list beg end))))))
-
-(defun py-bounds-of-clause (&optional position)
-  "Returns bounds of clause at point.
-
-With optional POSITION, a number, report bounds of clause at POSITION.
-Returns a list, whose car is beg, cdr - end."
-  (interactive)
-  (save-excursion
-    (save-restriction
-      (widen)
-      (when position (goto-char position))
-      (let ((beg (py--beginning-of-clause-position))
-            (end (py--end-of-clause-position)))
-        (if (and beg end)
-            (when (interactive-p) (message "%s" (list beg end)))
-          (list beg end))))))
-
-(defun py-bounds-of-block-or-clause (&optional position)
-  "Returns bounds of block-or-clause at point.
-
-With optional POSITION, a number, report bounds of block-or-clause at POSITION.
-Returns a list, whose car is beg, cdr - end."
-  (interactive)
-  (save-excursion
-    (save-restriction
-      (widen)
-      (when position (goto-char position))
-      (let ((beg (py--beginning-of-block-or-clause-position))
-            (end (py--end-of-block-or-clause-position)))
-        (if (and beg end)
-            (when (interactive-p) (message "%s" (list beg end)))
-          (list beg end))))))
-
-(defun py-bounds-of-def (&optional position)
-  "Returns bounds of def at point.
-
-With optional POSITION, a number, report bounds of def at POSITION.
-Returns a list, whose car is beg, cdr - end."
-  (interactive)
-  (save-excursion
-    (save-restriction
-      (widen)
-      (when position (goto-char position))
-      (let ((beg (py--beginning-of-def-position))
-            (end (py--end-of-def-position)))
-        (if (and beg end)
-            (when (interactive-p) (message "%s" (list beg end)))
-          (list beg end))))))
-
-(defun py-bounds-of-class (&optional position)
-  "Returns bounds of class at point.
-
-With optional POSITION, a number, report bounds of class at POSITION.
-Returns a list, whose car is beg, cdr - end."
-  (interactive)
-  (save-excursion
-    (save-restriction
-      (widen)
-      (when position (goto-char position))
-      (let ((beg (py--beginning-of-class-position))
-            (end (py--end-of-class-position)))
-        (if (and beg end)
-            (when (interactive-p) (message "%s" (list beg end)))
-          (list beg end))))))
-
-(defun py-bounds-of-region ()
-  "Returns bounds of region at point.
-
-Returns a list, whose car is beg, cdr - end."
-  (interactive)
-  (save-excursion
-    (save-restriction
-      (widen)
-      (let ((beg (region-beginning))
-            (end (region-end)))
-        (if (and beg end)
-            (when (interactive-p) (message "%s" (list beg end)))
-          (list beg end))))))
-
-(defun py-bounds-of-buffer (&optional position)
-  "Returns bounds of buffer at point.
-
-With optional POSITION, a number, report bounds of buffer at POSITION.
-Returns a list, whose car is beg, cdr - end."
-  (interactive)
-  (save-excursion
-    (save-restriction
-      (widen)
-      (when position (goto-char position))
-      (let ((beg (py--beginning-of-buffer-position))
-            (end (py--end-of-buffer-position)))
-        (if (and beg end)
-            (when (interactive-p) (message "%s" (list beg end)))
-          (list beg end))))))
-
-(defun py-bounds-of-expression (&optional position)
-  "Returns bounds of expression at point.
-
-With optional POSITION, a number, report bounds of expression at POSITION.
-Returns a list, whose car is beg, cdr - end."
-  (interactive)
-  (save-excursion
-    (save-restriction
-      (widen)
-      (when position (goto-char position))
-      (let ((beg (py--beginning-of-expression-position))
-            (end (py--end-of-expression-position)))
-        (if (and beg end)
-            (when (interactive-p) (message "%s" (list beg end)))
-          (list beg end))))))
-
-(defun py-bounds-of-partial-expression (&optional position)
-  "Returns bounds of partial-expression at point.
-
-With optional POSITION, a number, report bounds of partial-expression at POSITION.
-Returns a list, whose car is beg, cdr - end."
-  (interactive)
-  (save-excursion
-    (save-restriction
-      (widen)
-      (when position (goto-char position))
-      (let ((beg (py--beginning-of-partial-expression-position))
-            (end (py--end-of-partial-expression-position)))
-        (if (and beg end)
-            (when (interactive-p) (message "%s" (list beg end)))
-          (list beg end))))))
-
 (defun py--beginning-of-buffer-position ()
   (point-min))
 
 (defun py--end-of-buffer-position ()
   (point-max))
 
-;;; Declarations start
-(defun py-bounds-of-declarations ()
+;;  Declarations start
+(defun py--bounds-of-declarations ()
   "Bounds of consecutive multitude of assigments resp. statements around point.
 
 Indented same level, which don't open blocks.
 Typically declarations resp. initialisations of variables following
 a class or function definition.
-See also py-bounds-of-statements "
-  (interactive)
+See also py--bounds-of-statements "
   (let* ((orig-indent (progn
                         (back-to-indentation)
                         (unless (py--beginning-of-statement-p)
@@ -979,7 +535,7 @@ See also py-bounds-of-statements "
   "Got to the beginning of assigments resp. statements in current level which don't open blocks.
 "
   (interactive)
-  (let* ((bounds (py-bounds-of-declarations))
+  (let* ((bounds (py--bounds-of-declarations))
          (erg (car bounds)))
     (when erg (goto-char erg))
     (when (interactive-p) (message "%s" erg))
@@ -989,7 +545,7 @@ See also py-bounds-of-statements "
 (defun py-end-of-declarations ()
   "Got to the end of assigments resp. statements in current level which don't open blocks. "
   (interactive)
-  (let* ((bounds (py-bounds-of-declarations))
+  (let* ((bounds (py--bounds-of-declarations))
          (erg (cdr bounds)))
     (when erg (goto-char erg))
     (when (interactive-p) (message "%s" erg))
@@ -1001,7 +557,7 @@ See also py-bounds-of-statements "
 
 See also `py-statements', which is more general, taking also simple statements starting with a keyword. "
   (interactive)
-  (let* ((bounds (py-bounds-of-declarations))
+  (let* ((bounds (py--bounds-of-declarations))
          (beg (car bounds))
          (end (cdr bounds)))
     (when (and beg end)
@@ -1016,7 +572,7 @@ See also `py-statements', which is more general, taking also simple statements s
 
 Store deleted variables in kill-ring "
   (interactive "*")
-  (let* ((bounds (py-bounds-of-declarations))
+  (let* ((bounds (py--bounds-of-declarations))
          (beg (car bounds))
          (end (cdr bounds)))
     (when (and beg end)
@@ -1025,10 +581,10 @@ Store deleted variables in kill-ring "
       (goto-char end)
       (kill-new (buffer-substring-no-properties beg end))
       (delete-region beg end))))
-;; Declarations end
+;;  Declarations end
 
-;; Statements start
-(defun py-bounds-of-statements ()
+;;  Statements start
+(defun py--bounds-of-statements ()
   "Bounds of consecutive multitude of statements around point.
 
 Indented same level, which don't open blocks. "
@@ -1073,7 +629,7 @@ Indented same level, which don't open blocks. "
 (defun py-beginning-of-statements ()
   "Got to the beginning of statements in current level which don't open blocks. "
   (interactive)
-  (let* ((bounds (py-bounds-of-statements))
+  (let* ((bounds (py--bounds-of-statements))
          (erg (car bounds)))
     (when erg (goto-char erg))
     (when (interactive-p) (message "%s" erg))
@@ -1083,7 +639,7 @@ Indented same level, which don't open blocks. "
 (defun py-end-of-statements ()
   "Got to the end of statements in current level which don't open blocks. "
   (interactive)
-  (let* ((bounds (py-bounds-of-statements))
+  (let* ((bounds (py--bounds-of-statements))
          (erg (cdr bounds)))
     (when erg (goto-char erg))
     (when (interactive-p) (message "%s" erg))
@@ -1095,7 +651,7 @@ Indented same level, which don't open blocks. "
 
 More general than py-declarations, which would stop at keywords like a print-statement. "
   (interactive)
-  (let* ((bounds (py-bounds-of-statements))
+  (let* ((bounds (py--bounds-of-statements))
          (beg (car bounds))
          (end (cdr bounds)))
     (when (and beg end)
@@ -1110,7 +666,7 @@ More general than py-declarations, which would stop at keywords like a print-sta
 
 Store deleted statements in kill-ring "
   (interactive "*")
-  (let* ((bounds (py-bounds-of-statements))
+  (let* ((bounds (py--bounds-of-statements))
          (beg (car bounds))
          (end (cdr bounds)))
     (when (and beg end)
@@ -1119,7 +675,7 @@ Store deleted statements in kill-ring "
       (goto-char end)
       (kill-new (buffer-substring-no-properties beg end))
       (delete-region beg end))))
-;;;
+
 
 (defun py--join-words-wrapping (words separator line-prefix line-length)
   (let ((lines ())
@@ -1217,3 +773,4 @@ Returns the string inserted. "
         (forward-line 1)))))
 
 (provide 'python-components-edit)
+;;; python-components-edit.el ends here

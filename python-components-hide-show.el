@@ -186,5 +186,5 @@
   (interactive)
   (py-show-base 'top-level))
 
-;; python-components-hide-show.el ends here
 (provide 'python-components-hide-show)
+;;; python-components-hide-show.el ends here

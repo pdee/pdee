@@ -20,7 +20,7 @@
 
 ;;; Code:
 
-;;; Execute file commands
+;;  Execute file commands
 
 (defun py-execute-file-python (&optional filename)
   "Send file to a Python interpreter."
@@ -311,5 +311,5 @@ Ignores default of `py-switch-buffers-on-execute-p', uses it with value \"non-ni
   (py--execute-prepare filename "bpython" 'dedicated 'switch nil nil t))
 
 (provide 'python-components-execute-file)
-;;; 'python-components-execute-file.el ends here
+;;;  'python-components-execute-file.el ends here
  

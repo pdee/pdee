@@ -181,7 +181,7 @@ Returns value of `py-force-py-shell-name-p'. "
   (when (or py-verbose-p (interactive-p)) (message "py-force-py-shell-name-p: %s" py-force-py-shell-name-p))
   py-force-py-shell-name-p)
 
-;;; Split-Windows-On-Execute forms
+;;  Split-Windows-On-Execute forms
 (defalias 'toggle-py-split-windows-on-execute 'py-toggle-split-windows-on-execute)
 (defun py-toggle-split-windows-on-execute (&optional arg)
   "If `py-split-window-on-execute' should be on or off.
@@ -214,7 +214,7 @@ Returns value of `py-split-window-on-execute'. "
   (when (interactive-p) (message "py-split-window-on-execute: %s" py-split-window-on-execute))
   py-split-window-on-execute)
 
-;;; Shell-Switch-Buffers-On-Execute forms
+;;  Shell-Switch-Buffers-On-Execute forms
 (defalias 'py-toggle-switch-buffers-on-execute 'py-toggle-shell-switch-buffers-on-execute)
 (defalias 'toggle-py-shell-switch-buffers-on-execute 'py-toggle-shell-switch-buffers-on-execute)
 (defun py-toggle-shell-switch-buffers-on-execute (&optional arg)
@@ -258,7 +258,7 @@ Returns value of `py-switch-buffers-on-execute-p'. "
           (message "%s" ptn)
         (message "%s" "Could not detect Python on your system")))))
 
-;; from ipython.el
+;;  from ipython.el
 (defun py-dirstack-hook ()
   ;; the following is to synchronize dir-changes
   (make-local-variable 'shell-dirstack)
@@ -392,7 +392,7 @@ SEPCHAR is the file-path separator of your system. "
               (overlay-put erg
                            'face 'highlight)))))
 
-;; Result: (nil 5 "print(34ed)" " SyntaxError: invalid token ")
+;;  Result: (nil 5 "print(34ed)" " SyntaxError: invalid token ")
 (defun py--jump-to-exception (py-error origline &optional file)
   "Jump to the Python code in FILE at LINE."
   (let (
@@ -740,7 +740,7 @@ Receives a buffer-name as argument"
   (interactive)
   (pop-to-buffer (py-shell) t))
 
-;;; Code execution commands
+;;  Code execution commands
 (defun py-which-execute-file-command (filename)
   "Return the command appropriate to Python version.
 
@@ -992,7 +992,7 @@ May we get rid of the temporary file? "
         (when py-verbose-p (message "Output buffer: %s" procbuf))))))
 
 (defalias 'py-send-region 'py-execute-region)
-;;; execute region
+;;  execute region
 (defun py-execute-region (start end &optional shell dedicated)
   "Send the region to a Python interpreter.
 
@@ -1350,7 +1350,7 @@ Basically, this goes down the directory tree as long as there are __init__.py fi
     (funcall rec (file-name-directory file)
              (file-name-sans-extension (file-name-nondirectory file)))))
 
-;;; execute buffer
+;;  execute buffer
 (defun py-execute-buffer ()
   "Send the contents of the buffer to a Python interpreter. "
   (interactive)
@@ -1400,7 +1400,7 @@ Ignores setting of `py-switch-buffers-on-execute-p'. "
         (py-switch-buffers-on-execute-p t))
     (py--execute-buffer-base)))
 
-;;; Specifying shells start
+;;  Specifying shells start
 (defun py-execute-region-python (start end)
   "Send the region to a common shell calling the python interpreter. "
   (interactive "r")
@@ -1566,10 +1566,10 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will not bein
         (py-switch-buffers-on-execute-p))
     (py--execute-base start end)))
 
-;; Specifying shells end
+;;  Specifying shells end
 
-;; Fixme: Try to define the function or class within the relevant
-;; module, not just at top level.
+;;  Fixme: Try to define the function or class within the relevant
+;;  module, not just at top level.
 (defun py-execute-defun ()
   "Send the current defun (class or method) to the Python process."
   (interactive)
@@ -1590,7 +1590,7 @@ Optional OUTPUT-BUFFER and ERROR-BUFFER might be given. "
     (shell-command (concat pcmd " " filename) output-buffer error-buffer)
     (when (interactive-p) (switch-to-buffer output-buffer))))
 
-;;;
+;; ;
 (defun py-execute-line ()
   "Send current line from beginning of indent to Python interpreter. "
   (interactive)
@@ -1599,7 +1599,7 @@ Optional OUTPUT-BUFFER and ERROR-BUFFER might be given. "
                       (point))))
       (py-execute-region beg (line-end-position)))))
 
-;;; Subprocess utilities and filters
+;;  Subprocess utilities and filters
 (defvar py-last-exeption-buffer nil
   "Internal use only - when `py-up-exception' is called in
   source-buffer, this will deliver the exception-buffer again. ")
@@ -1681,10 +1681,10 @@ jump to the top (outermost) exception in the exception stack."
     (if top
         (py--find-next-exception 'bob buffer 're-search-forward "Top")
       (py--find-next-exception 'bol buffer 're-search-backward "Top"))))
-;;;
-;; obsolete by py--fetch-result
-;; followed by py--fetch-error
-;; still used by py--execute-ge24.3
+;; ;
+;;  obsolete by py--fetch-result
+;;  followed by py--fetch-error
+;;  still used by py--execute-ge24.3
 (defun py--postprocess-intern (buf &optional origline)
   "Highlight exceptions found in BUF.
 If an exception occurred return error-string, otherwise return nil.  BUF must exist.
@@ -1778,4 +1778,4 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
 (defalias 'py-send-region-ipython 'py-execute-region-ipython)
 
 (provide 'python-components-execute);
-;; python-components-execute.el ends here
+;;;  python-components-execute.el ends here

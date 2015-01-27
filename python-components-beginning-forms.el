@@ -1,4 +1,4 @@
-;;; python-components-beginning-forms.el --- Forms start described by a regular-expression 
+;;; python-components-beginning-forms.el --- Go to beginning of form 
 
 ;; Copyright (C) 2011-2014  Andreas Roehler
 ;; Author: Andreas Roehler <andreas.roehler@online.de>
@@ -131,6 +131,16 @@ http://docs.python.org/reference/compound_stmts.html"
   (interactive)
   (py--beginning-of-prepare indent 'py-for-block-re 'py-clause-re (interactive-p)))
 
+(defun py-beginning-of-except-block (&optional indent)
+ "Go to beginning except-block, skip whitespace at BOL.
+
+Returns beginning of except-block if successful, nil otherwise
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html"
+  (interactive)
+  (py--beginning-of-prepare indent 'py-except-block-re 'py-clause-re (interactive-p)))
+
 (defalias 'py-beginning-of-block-lc 'py-beginning-of-block-bol)
 (defun py-beginning-of-block-bol (&optional indent)
  "Go to beginning block, go to BOL.
@@ -247,5 +257,16 @@ http://docs.python.org/reference/compound_stmts.html"
   (interactive)
   (py--beginning-of-prepare indent 'py-for-block-re 'py-clause-re (interactive-p) t))
 
+(defalias 'py-beginning-of-except-block-lc 'py-beginning-of-except-block-bol)
+(defun py-beginning-of-except-block-bol (&optional indent)
+ "Go to beginning except-block, go to BOL.
+
+Returns beginning of except-block if successful, nil otherwise
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html"
+  (interactive)
+  (py--beginning-of-prepare indent 'py-except-block-re 'py-clause-re (interactive-p) t))
+
 (provide 'python-components-beginning-forms)
-;; python-components-beginning-forms.el ends here
+;;; python-components-beginning-forms.el ends here

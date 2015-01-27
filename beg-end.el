@@ -21,7 +21,7 @@
 ;; Foundation, Inc., 51 Franklin Street, Fifth Floor,
 ;; Boston, MA 02110-1301, USA.
 
-;;; Major changes to previous version:
+;; Major changes to previous version:
 ;;  Checks for inside comment deactivated, circle-call-bugs
 
 ;;; Commentary:
@@ -38,17 +38,6 @@
 (require 'misc-utils)
 
 ;;; Code:
-
-;; (setq begstr "\\bcase\\b\\|\\bfor\\b\\|\\bfunction\\b\\|\\bif\\b\\|\\bselect\\b\\|\\buntil\\b\\|\\bwhile\\b")
-;; (setq endstr "\\bdone\\b\\|\\besac\\b\\|\\bfi\\b")
-
-;; (defun set-beginning-of-form ()
-;;   "Set `beginning-of-form' as `beginning-of-defun-function'."
-
-;; (defun set-end-of-form ()
-;;   "Set `end-of-form' as `end-of-defun-function'."
-;;   (interactive)
-;;   (set (make-local-variable 'end-of-defun-function) 'end-of-form))
 
 (defun mark-form (begstr endstr &optional bound noerror count comment)
   (beginning-of-form-base begstr endstr bound noerror count comment)
@@ -392,5 +381,4 @@ Optional second arg --a number, nil or `t'-- if interactively called. "
       beglist)))
 
 (provide 'beg-end)
-
 ;;; beg-end.el ends here

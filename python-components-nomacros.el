@@ -24,19 +24,6 @@
 
 ;;; Code:
 
-;; (defun py-beginning-of-comment ()
-;;   "Go to the beginning of current line's comment, if any.
-;;
-;; Returns position if succesful. "
-;;   (interactive)
-;;   (save-restriction
-;;     (widen)
-;;     (if (looking-at comment-start)
-;;         (point)
-;;       (let ((pps (parse-partial-sexp (line-beginning-position) (point))))
-;;         (and (nth 4 pps)
-;;              (goto-char (nth 8 pps)))))))
-
 (defun py-separator-char ()
   "Return the file-path separator char from current machine.
 
@@ -60,35 +47,6 @@ Returns char found. "
   (if (featurep 'xemacs)
       '(parse-partial-sexp (point-min) (point))
     '(syntax-ppss)))
-
-(defun empty-line-p ()
-  "Returns t if cursor is at an line with nothing but whitespace-characters, nil otherwise."
-  (interactive "p")
-  (save-excursion
-    (progn
-      (beginning-of-line)
-      (looking-at "\\s-*$"))))
-
-(defun py-escaped ()
-  "Return t if char is preceded by an odd number of backslashes. "
-  (save-excursion
-    (< 0 (% (abs (skip-chars-backward "\\\\")) 2))))
-
-(defun py-current-line-backslashed-p ()
-  "Return t if current line is a backslashed continuation line. "
-  (save-excursion
-    (end-of-line)
-    (skip-chars-backward " \t\r\n\f")
-    (and (eq (char-before (point)) ?\\ )
-         (py-escaped))))
-
-(defun py-preceding-line-backslashed-p ()
-  "Return t if preceding line is a backslashed continuation line. "
-  (save-excursion
-    (beginning-of-line)
-    (skip-chars-backward " \t\r\n\f")
-    (and (eq (char-before (point)) ?\\ )
-         (py-escaped))))
 
 (defun py-count-lines ()
   "Count lines in buffer, optional without given boundaries.

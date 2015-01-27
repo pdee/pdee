@@ -1,4 +1,4 @@
-;;; py-ert-beginning-tests.el --- Just some more tests 
+;;; py-ert-end-tests.el --- Just some more tests 
 
 ;; Copyright (C) 2011-2014  Andreas Roehler
 ;; Author: Andreas Roehler <andreas.roehler@online.de>
@@ -25,7 +25,7 @@
 ;;; Code:
 
 
-(ert-deftest py-ert-beginning-of-block-test ()
+(ert-deftest py-ert-end-of-block-test ()
   (py-test-with-temp-buffer
       "
 # -*- coding: utf-8 -*-
@@ -33,18 +33,18 @@ class bar:
     def foo ():
         try:
             if True:
-                for a in range(anzahl):
+                for a in b:
                     pass
         except:
             block2
 "
-    (forward-line -3)
+    (goto-char 103)
     (when py-debug-p (switch-to-buffer (current-buffer))
           (font-lock-fontify-buffer))
-    (py-beginning-of-block)
-    (should (eq (char-after) ?f))))
+    (py-end-of-block)
+    (should (eq (char-before) ?s))))
 
-(ert-deftest py-ert-beginning-of-clause-test ()
+(ert-deftest py-ert-end-of-clause-test ()
   (py-test-with-temp-buffer
       "
 # -*- coding: utf-8 -*-
@@ -52,18 +52,18 @@ class bar:
     def foo ():
         try:
             if True:
-                for a in range(anzahl):
+                for a in b:
                     pass
         except:
             block2
 "
-    (forward-line -3)
+    (goto-char 103)
     (when py-debug-p (switch-to-buffer (current-buffer))
           (font-lock-fontify-buffer))
-    (py-beginning-of-clause)
-    (should (eq (char-after) ?f))))
+    (py-end-of-clause)
+    (should (eq (char-before) ?s))))
 
-(ert-deftest py-ert-beginning-of-block-or-clause-test ()
+(ert-deftest py-ert-end-of-block-or-clause-test ()
   (py-test-with-temp-buffer
       "
 # -*- coding: utf-8 -*-
@@ -71,18 +71,18 @@ class bar:
     def foo ():
         try:
             if True:
-                for a in range(anzahl):
+                for a in b:
                     pass
         except:
             block2
 "
-    (forward-line -3)
+    (goto-char 103)
     (when py-debug-p (switch-to-buffer (current-buffer))
           (font-lock-fontify-buffer))
-    (py-beginning-of-block-or-clause)
-    (should (eq (char-after) ?f))))
+    (py-end-of-block-or-clause)
+    (should (eq (char-before) ?s))))
 
-(ert-deftest py-ert-beginning-of-def-test ()
+(ert-deftest py-ert-end-of-def-test ()
   (py-test-with-temp-buffer
       "
 # -*- coding: utf-8 -*-
@@ -90,18 +90,18 @@ class bar:
     def foo ():
         try:
             if True:
-                for a in range(anzahl):
+                for a in b:
                     pass
         except:
             block2
 "
-    (forward-line -3)
+    (goto-char 103)
     (when py-debug-p (switch-to-buffer (current-buffer))
           (font-lock-fontify-buffer))
-    (py-beginning-of-def)
-    (should (eq (char-after) ?d))))
+    (py-end-of-def)
+    (should (eq (char-before) ?2))))
 
-(ert-deftest py-ert-beginning-of-class-test ()
+(ert-deftest py-ert-end-of-class-test ()
   (py-test-with-temp-buffer
       "
 # -*- coding: utf-8 -*-
@@ -109,18 +109,18 @@ class bar:
     def foo ():
         try:
             if True:
-                for a in range(anzahl):
+                for a in b:
                     pass
         except:
             block2
 "
-    (forward-line -3)
+    (goto-char 103)
     (when py-debug-p (switch-to-buffer (current-buffer))
           (font-lock-fontify-buffer))
-    (py-beginning-of-class)
-    (should (eq (char-after) ?c))))
+    (py-end-of-class)
+    (should (eq (char-before) ?2))))
 
-(ert-deftest py-ert-beginning-of-def-or-class-test ()
+(ert-deftest py-ert-end-of-def-or-class-test ()
   (py-test-with-temp-buffer
       "
 # -*- coding: utf-8 -*-
@@ -128,18 +128,18 @@ class bar:
     def foo ():
         try:
             if True:
-                for a in range(anzahl):
+                for a in b:
                     pass
         except:
             block2
 "
-    (forward-line -3)
+    (goto-char 103)
     (when py-debug-p (switch-to-buffer (current-buffer))
           (font-lock-fontify-buffer))
-    (py-beginning-of-def-or-class)
-    (should (eq (char-after) ?d))))
+    (py-end-of-def-or-class)
+    (should (eq (char-before) ?2))))
 
-(ert-deftest py-ert-beginning-of-if-block-test ()
+(ert-deftest py-ert-end-of-if-block-test ()
   (py-test-with-temp-buffer
       "
 # -*- coding: utf-8 -*-
@@ -147,18 +147,18 @@ class bar:
     def foo ():
         try:
             if True:
-                for a in range(anzahl):
+                for a in b:
                     pass
         except:
             block2
 "
-    (forward-line -3)
+    (goto-char 103)
     (when py-debug-p (switch-to-buffer (current-buffer))
           (font-lock-fontify-buffer))
-    (py-beginning-of-if-block)
-    (should (eq (char-after) ?i))))
+    (py-end-of-if-block)
+    (should (eq (char-before) ?s))))
 
-(ert-deftest py-ert-beginning-of-try-block-test ()
+(ert-deftest py-ert-end-of-try-block-test ()
   (py-test-with-temp-buffer
       "
 # -*- coding: utf-8 -*-
@@ -166,18 +166,18 @@ class bar:
     def foo ():
         try:
             if True:
-                for a in range(anzahl):
+                for a in b:
                     pass
         except:
             block2
 "
-    (forward-line -3)
+    (goto-char 103)
     (when py-debug-p (switch-to-buffer (current-buffer))
           (font-lock-fontify-buffer))
-    (py-beginning-of-try-block)
-    (should (eq (char-after) ?t))))
+    (py-end-of-try-block)
+    (should (eq (char-before) ?s))))
 
-(ert-deftest py-ert-beginning-of-minor-block-test ()
+(ert-deftest py-ert-end-of-minor-block-test ()
   (py-test-with-temp-buffer
       "
 # -*- coding: utf-8 -*-
@@ -185,18 +185,18 @@ class bar:
     def foo ():
         try:
             if True:
-                for a in range(anzahl):
+                for a in b:
                     pass
         except:
             block2
 "
-    (forward-line -3)
+    (goto-char 103)
     (when py-debug-p (switch-to-buffer (current-buffer))
           (font-lock-fontify-buffer))
-    (py-beginning-of-minor-block)
-    (should (eq (char-after) ?f))))
+    (py-end-of-minor-block)
+    (should (eq (char-before) ?s))))
 
-(ert-deftest py-ert-beginning-of-for-block-test ()
+(ert-deftest py-ert-end-of-for-block-test ()
   (py-test-with-temp-buffer
       "
 # -*- coding: utf-8 -*-
@@ -204,18 +204,18 @@ class bar:
     def foo ():
         try:
             if True:
-                for a in range(anzahl):
+                for a in b:
                     pass
         except:
             block2
 "
-    (forward-line -3)
+    (goto-char 103)
     (when py-debug-p (switch-to-buffer (current-buffer))
           (font-lock-fontify-buffer))
-    (py-beginning-of-for-block)
-    (should (eq (char-after) ?f))))
+    (py-end-of-for-block)
+    (should (eq (char-before) ?s))))
 
-(ert-deftest py-ert-beginning-of-top-level-test ()
+(ert-deftest py-ert-end-of-top-level-test ()
   (py-test-with-temp-buffer
       "
 # -*- coding: utf-8 -*-
@@ -223,18 +223,18 @@ class bar:
     def foo ():
         try:
             if True:
-                for a in range(anzahl):
+                for a in b:
                     pass
         except:
             block2
 "
-    (forward-line -3)
+    (goto-char 103)
     (when py-debug-p (switch-to-buffer (current-buffer))
           (font-lock-fontify-buffer))
-    (py-beginning-of-top-level)
-    (should (eq (char-after) ?c))))
+    (py-end-of-top-level)
+    (should (eq (char-before) ?2))))
 
-(ert-deftest py-ert-beginning-of-statement-test ()
+(ert-deftest py-ert-end-of-statement-test ()
   (py-test-with-temp-buffer
       "
 # -*- coding: utf-8 -*-
@@ -242,18 +242,18 @@ class bar:
     def foo ():
         try:
             if True:
-                for a in range(anzahl):
+                for a in b:
                     pass
         except:
             block2
 "
-    (forward-line -3)
+    (goto-char 103)
     (when py-debug-p (switch-to-buffer (current-buffer))
           (font-lock-fontify-buffer))
-    (py-beginning-of-statement)
-    (should (eq (char-after) ?f))))
+    (py-end-of-statement)
+    (should (eq (char-before) ?:))))
 
-(ert-deftest py-ert-beginning-of-expression-test ()
+(ert-deftest py-ert-end-of-expression-test ()
   (py-test-with-temp-buffer
       "
 # -*- coding: utf-8 -*-
@@ -261,18 +261,18 @@ class bar:
     def foo ():
         try:
             if True:
-                for a in range(anzahl):
+                for a in b:
                     pass
         except:
             block2
 "
-    (forward-line -3)
+    (goto-char 103)
     (when py-debug-p (switch-to-buffer (current-buffer))
           (font-lock-fontify-buffer))
-    (py-beginning-of-expression)
-    (should (eq (char-after) ?r))))
+    (py-end-of-expression)
+    (should (eq (char-before) ?r))))
 
-(ert-deftest py-ert-beginning-of-partial-expression-test ()
+(ert-deftest py-ert-end-of-partial-expression-test ()
   (py-test-with-temp-buffer
       "
 # -*- coding: utf-8 -*-
@@ -280,18 +280,18 @@ class bar:
     def foo ():
         try:
             if True:
-                for a in range(anzahl):
+                for a in b:
                     pass
         except:
             block2
 "
-    (forward-line -3)
+    (goto-char 103)
     (when py-debug-p (switch-to-buffer (current-buffer))
           (font-lock-fontify-buffer))
-    (py-beginning-of-partial-expression)
-    (should (eq (char-after) ?r))))
+    (py-end-of-partial-expression)
+    (should (eq (char-before) ?r))))
 
-(ert-deftest py-ert-beginning-of-block-bol-test ()
+(ert-deftest py-ert-end-of-block-bol-test ()
   (py-test-with-temp-buffer
       "
 # -*- coding: utf-8 -*-
@@ -299,19 +299,18 @@ class bar:
     def foo ():
         try:
             if True:
-                for a in range(anzahl):
+                for a in b:
                     pass
         except:
             block2
 "
     (when py-debug-p (switch-to-buffer (current-buffer))
           (font-lock-fontify-buffer))
-    (forward-line -3)
-    (py-beginning-of-block-bol)
-    (should (eq (char-after) ?\ ))))
+    (goto-char 103)
+    (py-end-of-block-bol)
+    (should (eq (point) 140))))
 
-
-(ert-deftest py-ert-beginning-of-clause-bol-test ()
+(ert-deftest py-ert-end-of-clause-bol-test ()
   (py-test-with-temp-buffer
       "
 # -*- coding: utf-8 -*-
@@ -319,19 +318,18 @@ class bar:
     def foo ():
         try:
             if True:
-                for a in range(anzahl):
+                for a in b:
                     pass
         except:
             block2
 "
     (when py-debug-p (switch-to-buffer (current-buffer))
           (font-lock-fontify-buffer))
-    (forward-line -3)
-    (py-beginning-of-clause-bol)
-    (should (eq (char-after) ?\ ))))
+    (goto-char 103)
+    (py-end-of-clause-bol)
+    (should (eq (point) 140))))
 
-
-(ert-deftest py-ert-beginning-of-block-or-clause-bol-test ()
+(ert-deftest py-ert-end-of-block-or-clause-bol-test ()
   (py-test-with-temp-buffer
       "
 # -*- coding: utf-8 -*-
@@ -339,19 +337,18 @@ class bar:
     def foo ():
         try:
             if True:
-                for a in range(anzahl):
+                for a in b:
                     pass
         except:
             block2
 "
     (when py-debug-p (switch-to-buffer (current-buffer))
           (font-lock-fontify-buffer))
-    (forward-line -3)
-    (py-beginning-of-block-or-clause-bol)
-    (should (eq (char-after) ?\ ))))
+    (goto-char 103)
+    (py-end-of-block-or-clause-bol)
+    (should (eq (point) 140))))
 
-
-(ert-deftest py-ert-beginning-of-def-bol-test ()
+(ert-deftest py-ert-end-of-def-bol-test ()
   (py-test-with-temp-buffer
       "
 # -*- coding: utf-8 -*-
@@ -359,19 +356,18 @@ class bar:
     def foo ():
         try:
             if True:
-                for a in range(anzahl):
+                for a in b:
                     pass
         except:
             block2
 "
     (when py-debug-p (switch-to-buffer (current-buffer))
           (font-lock-fontify-buffer))
-    (forward-line -3)
-    (py-beginning-of-def-bol)
-    (should (eq (char-after) ?\ ))))
+    (goto-char 103)
+    (py-end-of-def-bol)
+    (should (eq (point) 175))))
 
-
-(ert-deftest py-ert-beginning-of-class-bol-test ()
+(ert-deftest py-ert-end-of-class-bol-test ()
   (py-test-with-temp-buffer
       "
 # -*- coding: utf-8 -*-
@@ -379,19 +375,18 @@ class bar:
     def foo ():
         try:
             if True:
-                for a in range(anzahl):
+                for a in b:
                     pass
         except:
             block2
 "
     (when py-debug-p (switch-to-buffer (current-buffer))
           (font-lock-fontify-buffer))
-    (forward-line -3)
-    (py-beginning-of-class-bol)
-    (should (eq (char-after) ?c))))
+    (goto-char 103)
+    (py-end-of-class-bol)
+    (should (eq (point) 175))))
 
-
-(ert-deftest py-ert-beginning-of-def-or-class-bol-test ()
+(ert-deftest py-ert-end-of-def-or-class-bol-test ()
   (py-test-with-temp-buffer
       "
 # -*- coding: utf-8 -*-
@@ -399,19 +394,18 @@ class bar:
     def foo ():
         try:
             if True:
-                for a in range(anzahl):
+                for a in b:
                     pass
         except:
             block2
 "
     (when py-debug-p (switch-to-buffer (current-buffer))
           (font-lock-fontify-buffer))
-    (forward-line -3)
-    (py-beginning-of-def-or-class-bol)
-    (should (eq (char-after) ?\ ))))
+    (goto-char 103)
+    (py-end-of-def-or-class-bol)
+    (should (eq (point) 175))))
 
-
-(ert-deftest py-ert-beginning-of-if-block-bol-test ()
+(ert-deftest py-ert-end-of-if-block-bol-test ()
   (py-test-with-temp-buffer
       "
 # -*- coding: utf-8 -*-
@@ -419,19 +413,18 @@ class bar:
     def foo ():
         try:
             if True:
-                for a in range(anzahl):
+                for a in b:
                     pass
         except:
             block2
 "
     (when py-debug-p (switch-to-buffer (current-buffer))
           (font-lock-fontify-buffer))
-    (forward-line -3)
-    (py-beginning-of-if-block-bol)
-    (should (eq (char-after) ?\ ))))
+    (goto-char 103)
+    (py-end-of-if-block-bol)
+    (should (eq (point) 140))))
 
-
-(ert-deftest py-ert-beginning-of-try-block-bol-test ()
+(ert-deftest py-ert-end-of-try-block-bol-test ()
   (py-test-with-temp-buffer
       "
 # -*- coding: utf-8 -*-
@@ -439,19 +432,18 @@ class bar:
     def foo ():
         try:
             if True:
-                for a in range(anzahl):
+                for a in b:
                     pass
         except:
             block2
 "
     (when py-debug-p (switch-to-buffer (current-buffer))
           (font-lock-fontify-buffer))
-    (forward-line -3)
-    (py-beginning-of-try-block-bol)
-    (should (eq (char-after) ?\ ))))
+    (goto-char 103)
+    (py-end-of-try-block-bol)
+    (should (eq (point) 140))))
 
-
-(ert-deftest py-ert-beginning-of-minor-block-bol-test ()
+(ert-deftest py-ert-end-of-minor-block-bol-test ()
   (py-test-with-temp-buffer
       "
 # -*- coding: utf-8 -*-
@@ -459,19 +451,18 @@ class bar:
     def foo ():
         try:
             if True:
-                for a in range(anzahl):
+                for a in b:
                     pass
         except:
             block2
 "
     (when py-debug-p (switch-to-buffer (current-buffer))
           (font-lock-fontify-buffer))
-    (forward-line -3)
-    (py-beginning-of-minor-block-bol)
-    (should (eq (char-after) ?\ ))))
+    (goto-char 103)
+    (py-end-of-minor-block-bol)
+    (should (eq (point) 140))))
 
-
-(ert-deftest py-ert-beginning-of-for-block-bol-test ()
+(ert-deftest py-ert-end-of-for-block-bol-test ()
   (py-test-with-temp-buffer
       "
 # -*- coding: utf-8 -*-
@@ -479,19 +470,18 @@ class bar:
     def foo ():
         try:
             if True:
-                for a in range(anzahl):
+                for a in b:
                     pass
         except:
             block2
 "
     (when py-debug-p (switch-to-buffer (current-buffer))
           (font-lock-fontify-buffer))
-    (forward-line -3)
-    (py-beginning-of-for-block-bol)
-    (should (eq (char-after) ?\ ))))
+    (goto-char 103)
+    (py-end-of-for-block-bol)
+    (should (eq (point) 140))))
 
-
-(ert-deftest py-ert-beginning-of-statement-bol-test ()
+(ert-deftest py-ert-end-of-top-level-bol-test ()
   (py-test-with-temp-buffer
       "
 # -*- coding: utf-8 -*-
@@ -499,16 +489,35 @@ class bar:
     def foo ():
         try:
             if True:
-                for a in range(anzahl):
+                for a in b:
                     pass
         except:
             block2
 "
     (when py-debug-p (switch-to-buffer (current-buffer))
           (font-lock-fontify-buffer))
-    (forward-line -3)
-    (py-beginning-of-statement-bol)
-    (should (eq (char-after) ?\ ))))
+    (goto-char 103)
+    (py-end-of-top-level-bol)
+    (should (eq (point) 175))))
 
-(provide 'py-ert-beginning-tests)
-;;; py-ert-beginning-tests.el ends here
+(ert-deftest py-ert-end-of-statement-bol-test ()
+  (py-test-with-temp-buffer
+      "
+# -*- coding: utf-8 -*-
+class bar:
+    def foo ():
+        try:
+            if True:
+                for a in b:
+                    pass
+        except:
+            block2
+"
+    (when py-debug-p (switch-to-buffer (current-buffer))
+          (font-lock-fontify-buffer))
+    (goto-char 103)
+    (py-end-of-statement-bol)
+    (should (eq (point) 115))))
+
+(provide 'py-ert-end-tests)
+;;; py-ert-end-tests.el ends here

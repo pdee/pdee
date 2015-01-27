@@ -1,6 +1,6 @@
-;;; python-components-move.el --- functions moving point
+;;; python-components-move.el --- Functions moving point which need special treatment
 
-;; Copyright (C) 2011 Andreas Roehler
+;; Copyright (C) 2011-2014 Andreas Roehler
 
 ;; Author: Andreas Roehler <andreas.roehler@online.de>
 ;; Keywords: languages
@@ -27,8 +27,6 @@
 
 ;; backward compatibility
 ;; some third party relying on v5 serie might use this
-(defalias 'py-goto-beyond-block 'py-end-of-block-bol)
-(defalias 'py-goto-beyond-final-line 'py-end-of-statement-bol)
 
 ;; Expression
 (defalias 'py-backward-expression 'py-beginning-of-expression)
@@ -274,9 +272,22 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
 
 (defun py-beginning-of-partial-expression (&optional orig)
   (interactive)
-  (let (erg)
+  (let ((orig (point))
+	erg)
+    (and (< 0 (abs (skip-chars-backward " \t\r\n\f")))(not (bobp))(forward-char -1))
+    (when (py--in-comment-p)
+      (py-beginning-of-comment)
+      (skip-chars-backward " \t\r\n\f"))
+    ;; part of py-partial-expression-forward-chars
+    (when (member (char-after) (list ?\ ?\" ?' ?\) ?} ?\] ?: ?#))
+      (forward-char -1))
     (skip-chars-backward py-partial-expression-forward-chars)
-    (setq erg (point))
+    (when (< 0 (abs (skip-chars-backward py-partial-expression-backward-chars)))
+      (while (and (not (bobp)) (py--in-comment-p)(< 0 (abs (skip-chars-backward py-partial-expression-backward-chars))))))
+    (when (< (point) orig)
+      (unless
+	  (and (bobp) (member (char-after) (list ?\ ?\t ?\r ?\n ?\f)))
+	(setq erg (point))))
     (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -295,7 +306,7 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
 ;; Partial- or Minor Expression
 (defalias 'py-backward-partial-expression 'py-beginning-of-partial-expression)
 
-;;; Line
+;;  Line
 (defun py-beginning-of-line ()
   "Go to beginning-of-line, return position.
 
@@ -326,7 +337,7 @@ If already at end-of-line and not at EOB, go to end of next line. "
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
-;;; Statement
+;;  Statement
 (defalias 'py-backward-statement 'py-beginning-of-statement)
 (defalias 'py-previous-statement 'py-beginning-of-statement)
 (defalias 'py-statement-backward 'py-beginning-of-statement)
@@ -414,64 +425,29 @@ http://docs.python.org/reference/compound_stmts.html"
 	(when (and py-verbose-p (interactive-p)) (message "%s" erg))
 	erg))))
 
-(defun py--skip-to-semicolon-backward (&optional limit)
-  "Fetch the beginning of statement after a semicolon.
+(defalias 'py-beginning-of-statement-lc 'py-beginning-of-statement-bol)
+(defun py-beginning-of-statement-bol (&optional indent)
+  "Goto beginning of line where statement starts.
+  Returns position reached, if successful, nil otherwise.
 
-Returns position reached if point was moved. "
-  (let ((orig (point)))
-    (and (< 0 (abs (skip-chars-backward "^;" (or limit (line-beginning-position)))))
-	 (skip-chars-forward " \t" (line-end-position))
-	 (setq done t)
-	 (and (< (point) orig) (point)))))
-
-(defun py--eos-in-string (pps)
-  "Return stm, i.e. if string is part of a (print)-statement. "
-  (let ((orig (point))
-        pos stm)
-    (goto-char (nth 8 pps))
-    (unless (looking-back "^[ \t]*")
-      (setq stm t))
-    ;; go to end of string
-    (and (member (char-after) (list ?' ?\"))
-         (ignore-errors (setq pos (scan-sexps (point) 1)))
-         (goto-char pos))
-    ;; if no closing string delimiter, pos doesn't exist
-    (unless (or stm (not pos))
-      (setq done t)
-      (unless (eq 10 (char-after))
-        (and (< 0 (abs (skip-chars-forward "^;#" (line-end-position))))
-             (eq ?\; (char-after))
-             (skip-chars-forward ";"))))
-    stm))
-
-(defun py--end-of-comment-intern (pos)
-  (while (and (not (eobp))
-              (forward-comment 99999)))
-  ;; forward-comment fails sometimes
-  (and (eq pos (point)) (prog1 (forward-line 1) (back-to-indentation))
-       (while (member (char-after) (list ?# 10))(forward-line 1)(back-to-indentation))))
-
-(defun py--skip-to-comment-or-semicolon ()
-  "Returns position if comment or semicolon found. "
-  (let ((orig (point)))
-    (cond ((and done (< 0 (abs (skip-chars-forward "^#;" (line-end-position))))
-		(member (char-after) (list ?# ?\;)))
-	   (when (eq ?\; (char-after))
-	     (skip-chars-forward ";" (line-end-position))))
-	  ((and (< 0 (abs (skip-chars-forward "^#;" (line-end-position))))
-		(member (char-after) (list ?# ?\;)))
-	   (when (eq ?\; (char-after))
-	     (skip-chars-forward ";" (line-end-position))))
-	  ((not done)
-	   (end-of-line)))
-    (skip-chars-backward " \t" (line-beginning-position))
-    (and (< orig (point))(setq done t)
-	 done)))
+See also `py-up-statement': up from current definition to next beginning of statement above. "
+  (interactive)
+  (let* ((indent (or indent (when (eq 'py-end-of-statement-bol (car
+  py-bol-forms-last-indent))(cdr py-bol-forms-last-indent))))
+	 (orig (point)) 
+         erg)
+    (if indent
+        (while (and (setq erg (py-beginning-of-statement)) (< indent (current-indentation))(not (bobp))))
+      (setq erg (py-beginning-of-statement)))
+    ;; reset
+    (setq py-bol-forms-last-indent nil)
+    (beginning-of-line) 
+    (and (< (point) orig) (setq erg (point))) 
+    (when (interactive-p) (message "%s" erg))
+    erg))
 
 (defun py-end-of-statement (&optional orig done repeat)
   "Go to the last char of current statement.
-
-To go just beyond the final line of the current statement, use `py-down-statement-bol'.
 
 Optional argument REPEAT, the number of loops done already, is checked for py-max-specpdl-size error. Avoid eternal loops due to missing string delimters etc. "
   (interactive)
@@ -561,6 +537,13 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
         (and py-verbose-p (interactive-p) (message "%s" erg)))
       erg)))
 
+(defun py-end-of-statement-bol ()
+  "Go to the beginning-of-line following current statement."
+  (let ((erg (py-end-of-statement)))
+    (setq erg (py--beginning-of-line-form))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
 (defun py-goto-statement-below ()
   "Goto beginning of next statement. "
   (interactive)
@@ -572,7 +555,7 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
       (py-end-of-statement)
       (py-beginning-of-statement))))
 
-;;; Decorator
+;;  Decorator
 (defun py-beginning-of-decorator ()
   "Go to the beginning of a decorator.
 
@@ -616,97 +599,9 @@ Returns position if succesful "
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
-;;; Kill
-(defun py-kill-expression ()
-  "Delete expression at point.
-  Stores data in kill ring. Might be yanked back using `C-y'. "
-  (interactive)
-  (let ((erg (py-mark-base "expression")))
-    (kill-region (car erg) (cdr erg))))
 
-(defun py-kill-partial-expression ()
-  "Delete partial-expression at point.
-  Stores data in kill ring. Might be yanked back using `C-y'.
 
-\".\" operators delimit a partial-expression expression on it's level, that's the difference to compound expressions."
-  (interactive)
-  (let ((erg (py-mark-base "partial-expression")))
-    (kill-region (car erg) (cdr erg))))
-
-(defun py-kill-statement ()
-  "Delete statement at point.
-
-Stores data in kill ring. Might be yanked back using `C-y'. "
-  (interactive "*")
-  (let ((erg (py-mark-base "statement")))
-    (kill-region (car erg) (cdr erg))))
-
-(defun py-kill-top-level ()
-  "Delete top-level form at point.
-
-Stores data in kill ring. Might be yanked back using `C-y'. "
-  (interactive "*")
-  (let ((erg (py-mark-base "top-level")))
-    (kill-region (car erg) (cdr erg))))
-
-(defun py-kill-block ()
-  "Delete block at point.
-
-Stores data in kill ring. Might be yanked back using `C-y'. "
-  (interactive "*")
-  (let ((erg (py-mark-base "block")))
-    (kill-region (car erg) (cdr erg))))
-
-(defun py-kill-minor-block ()
-  "Delete minor-block at point.
-
-Stores data in kill ring. Might be yanked back using `C-y'. "
-  (interactive "*")
-  (let ((erg (py-mark-base "minor-block")))
-    (kill-region (car erg) (cdr erg))))
-
-(defun py-kill-block-or-clause ()
-  "Delete block-or-clause at point.
-
-Stores data in kill ring. Might be yanked back using `C-y'. "
-  (interactive "*")
-  (let ((erg (py-mark-base "block-or-clause")))
-    (kill-region (region-beginning) (region-end))))
-
-(defun py-kill-def-or-class ()
-  "Delete def-or-class at point.
-
-Stores data in kill ring. Might be yanked back using `C-y'. "
-  (interactive "*")
-  (let ((erg (py-mark-base "def-or-class")))
-    (kill-region (car erg) (cdr erg))))
-
-(defun py-kill-class ()
-  "Delete class at point.
-
-Stores data in kill ring. Might be yanked back using `C-y'. "
-  (interactive "*")
-  (let ((erg (py-mark-base "class")))
-    (kill-region (car erg) (cdr erg))))
-
-(defun py-kill-def ()
-  "Delete def at point.
-
-Stores data in kill ring. Might be yanked back using `C-y'. "
-  (interactive "*")
-  (let ((erg (py-mark-base "def")))
-    (kill-region (car erg) (cdr erg))))
-
-(defun py-kill-clause ()
-  "Delete clause at point.
-
-Stores data in kill ring. Might be yanked back using `C-y'. "
-  (interactive "*")
-  (let ((erg (py-mark-base "clause")))
-    (kill-region (car erg) (cdr erg))))
-
-(defalias 'py-kill-minor-expression 'py-kill-partial-expression)
-;; Helper functions
+;;  Helper functions
 
 (defun py-forward-line (&optional arg)
   "Goes to end of line after forward move.
@@ -1004,4 +899,4 @@ Return position"
 (defalias 'py-forward-statement 'py-end-of-statement)
 
 (provide 'python-components-move)
-;;; python-components-move.el ends here
+;;;  python-components-move.el ends here

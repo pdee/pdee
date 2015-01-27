@@ -22,7 +22,7 @@
 
 ;;; Code:
 
-;;; Toggle highlight-indentation
+;; Toggle highlight-indentation
 
 (defalias 'py-highlight-indentation-on 'highlight-indentation-on)
 (defalias 'py-highlight-indentation-off 'highlight-indentation-off)
@@ -55,8 +55,7 @@
   (when py-verbose-p (message "highlight-indent-active: %s" highlight-indent-active))
   highlight-indent-active)
 
-;;; Smart indentation
-
+;;  Smart indentation
 (defalias 'toggle-py-smart-indentation 'py-toggle-smart-indentation)
 (defun py-toggle-smart-indentation (&optional arg)
   "If `py-smart-indentation' should be on or off.
@@ -149,7 +148,7 @@ Returns value of `py-smart-operator-mode-p'. "
   (interactive)
   (setq py-smart-operator-mode-p (smart-operator-mode 0)))
 
-;;; py-switch-buffers-on-execute-p forms
+;;  py-switch-buffers-on-execute-p forms
 (defun toggle-py-switch-buffers-on-execute-p (&optional arg)
   "If `py-switch-buffers-on-execute-p' should be on or off.
 
@@ -181,7 +180,7 @@ Returns value of `py-switch-buffers-on-execute-p'. "
   (when (or py-verbose-p (interactive-p)) (message "py-switch-buffers-on-execute-p: %s" py-switch-buffers-on-execute-p))
   py-switch-buffers-on-execute-p)
 
-;;; py-split-window-on-execute forms
+;;  py-split-window-on-execute forms
 (defun toggle-py-split-window-on-execute (&optional arg)
   "If `py-split-window-on-execute' should be on or off.
 
@@ -213,7 +212,7 @@ Returns value of `py-split-window-on-execute'. "
   (when (or py-verbose-p (interactive-p)) (message "py-split-window-on-execute: %s" py-split-window-on-execute))
   py-split-window-on-execute)
 
-;;; py-fontify-shell-buffer-p forms
+;;  py-fontify-shell-buffer-p forms
 (defun toggle-py-fontify-shell-buffer-p (&optional arg)
   "If `py-fontify-shell-buffer-p' should be on or off.
 
@@ -253,7 +252,7 @@ Returns value of `py-fontify-shell-buffer-p'. "
   (when (or py-verbose-p (interactive-p)) (message "py-fontify-shell-buffer-p: %s" py-fontify-shell-buffer-p))
   py-fontify-shell-buffer-p)
 
-;;; python-mode-v5-behavior-p forms
+;;  python-mode-v5-behavior-p forms
 (defun toggle-python-mode-v5-behavior-p (&optional arg)
   "If `python-mode-v5-behavior-p' should be on or off.
 
@@ -285,7 +284,7 @@ Returns value of `python-mode-v5-behavior-p'. "
   (when (or py-verbose-p (interactive-p)) (message "python-mode-v5-behavior-p: %s" python-mode-v5-behavior-p))
   python-mode-v5-behavior-p)
 
-;;; py-jump-on-exception forms
+;;  py-jump-on-exception forms
 (defun toggle-py-jump-on-exception (&optional arg)
   "If `py-jump-on-exception' should be on or off.
 
@@ -317,7 +316,7 @@ Returns value of `py-jump-on-exception'. "
   (when (or py-verbose-p (interactive-p)) (message "py-jump-on-exception: %s" py-jump-on-exception))
   py-jump-on-exception)
 
-;; py-use-current-dir-when-execute-p forms
+;;  py-use-current-dir-when-execute-p forms
 (defun toggle-py-use-current-dir-when-execute-p (&optional arg)
   "If `py-use-current-dir-when-execute-p' should be on or off.
 
@@ -349,7 +348,7 @@ Returns value of `py-use-current-dir-when-execute-p'. "
   (when (or py-verbose-p (interactive-p)) (message "py-use-current-dir-when-execute-p: %s" py-use-current-dir-when-execute-p))
   py-use-current-dir-when-execute-p)
 
-;; py-electric-comment-p forms
+;;  py-electric-comment-p forms
 (defun toggle-py-electric-comment-p (&optional arg)
   "If `py-electric-comment-p' should be on or off.
 
@@ -381,7 +380,7 @@ Returns value of `py-electric-comment-p'. "
   (when (or py-verbose-p (interactive-p)) (message "py-electric-comment-p: %s" py-electric-comment-p))
   py-electric-comment-p)
 
-;; py-underscore-word-syntax-p forms
+;;  py-underscore-word-syntax-p forms
 (defun toggle-py-underscore-word-syntax-p (&optional arg)
   "If `py-underscore-word-syntax-p' should be on or off.
 
@@ -417,4 +416,4 @@ Returns value of `py-underscore-word-syntax-p'. "
   py-underscore-word-syntax-p)
 
 (provide 'python-components-switches)
-;;; python-components-switches.el ends here
+;;;  python-components-switches.el ends here

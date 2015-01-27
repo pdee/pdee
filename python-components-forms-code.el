@@ -17,10 +17,10 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary: This fiel is generated `py-write-forms-code' from
-;;; python-mode-utils.el in directory devel. I.e. edits here might not
-;;; be persistent.
+;;  python-mode-utils.el in directory devel. I.e. edits here might not
+;;  be persistent.
 
-;;; Code:
+;;;  Code:
 
 
 (defun py-statement ()
@@ -28,7 +28,7 @@
 
 Return code of `py-statement' at point, a string. "
   (interactive)
-  (let ((erg (py--base "statement")))
+  (let ((erg (py--mark-base "statement")))
     (buffer-substring-no-properties (car erg) (cdr erg))))
 
 (defun py-top-level ()
@@ -36,7 +36,7 @@ Return code of `py-statement' at point, a string. "
 
 Return code of `py-top-level' at point, a string. "
   (interactive)
-  (let ((erg (py--base "top-level")))
+  (let ((erg (py--mark-base "top-level")))
     (buffer-substring-no-properties (car erg) (cdr erg))))
 
 (defun py-block ()
@@ -44,7 +44,7 @@ Return code of `py-top-level' at point, a string. "
 
 Return code of `py-block' at point, a string. "
   (interactive)
-  (let ((erg (py--base "block")))
+  (let ((erg (py--mark-base "block")))
     (buffer-substring-no-properties (car erg) (cdr erg))))
 
 (defun py-clause ()
@@ -52,7 +52,7 @@ Return code of `py-block' at point, a string. "
 
 Return code of `py-clause' at point, a string. "
   (interactive)
-  (let ((erg (py--base "clause")))
+  (let ((erg (py--mark-base "clause")))
     (buffer-substring-no-properties (car erg) (cdr erg))))
 
 (defun py-block-or-clause ()
@@ -60,7 +60,7 @@ Return code of `py-clause' at point, a string. "
 
 Return code of `py-block-or-clause' at point, a string. "
   (interactive)
-  (let ((erg (py--base "block-or-clause")))
+  (let ((erg (py--mark-base "block-or-clause")))
     (buffer-substring-no-properties (car erg) (cdr erg))))
 
 (defun py-def ()
@@ -68,7 +68,7 @@ Return code of `py-block-or-clause' at point, a string. "
 
 Return code of `py-def' at point, a string. "
   (interactive)
-  (let ((erg (py--base "def")))
+  (let ((erg (py--mark-base "def")))
     (buffer-substring-no-properties (car erg) (cdr erg))))
 
 (defun py-class ()
@@ -76,7 +76,7 @@ Return code of `py-def' at point, a string. "
 
 Return code of `py-class' at point, a string. "
   (interactive)
-  (let ((erg (py--base "class")))
+  (let ((erg (py--mark-base "class")))
     (buffer-substring-no-properties (car erg) (cdr erg))))
 
 (defun py-def-or-class ()
@@ -84,7 +84,7 @@ Return code of `py-class' at point, a string. "
 
 Return code of `py-def-or-class' at point, a string. "
   (interactive)
-  (let ((erg (py--base "def-or-class")))
+  (let ((erg (py--mark-base "def-or-class")))
     (buffer-substring-no-properties (car erg) (cdr erg))))
 
 (defun py-expression ()
@@ -92,7 +92,7 @@ Return code of `py-def-or-class' at point, a string. "
 
 Return code of `py-expression' at point, a string. "
   (interactive)
-  (let ((erg (py--base "expression")))
+  (let ((erg (py--mark-base "expression")))
     (buffer-substring-no-properties (car erg) (cdr erg))))
 
 (defun py-partial-expression ()
@@ -100,7 +100,7 @@ Return code of `py-expression' at point, a string. "
 
 Return code of `py-partial-expression' at point, a string. "
   (interactive)
-  (let ((erg (py--base "partial-expression")))
+  (let ((erg (py--mark-base "partial-expression")))
     (buffer-substring-no-properties (car erg) (cdr erg))))
 
 (defun py-minor-block ()
@@ -108,8 +108,8 @@ Return code of `py-partial-expression' at point, a string. "
 
 Return code of `py-minor-block' at point, a string. "
   (interactive)
-  (let ((erg (py--base "minor-block")))
+  (let ((erg (py--mark-base "minor-block")))
     (buffer-substring-no-properties (car erg) (cdr erg))))
 
-;; python-components-forms-code.el ends here
+;;;  python-components-forms-code.el ends here
 (provide 'python-components-forms-code)

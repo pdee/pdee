@@ -364,7 +364,8 @@ by the
         finally:
             pass
 "
-    (font-lock-fontify-buffer)
+    (when py-debug-p (switch-to-buffer (current-buffer)) 
+	  (font-lock-fontify-buffer))
     (goto-char 632)
     (py-up)
     (should (eq (char-after) ?p))
@@ -442,10 +443,12 @@ x = {'abc':'def',
     "Avoid infinite loop"
   (py-test-with-temp-buffer
       "assert pycompletions('TestClass.test' , name) == \
-          ['testclassmeth', 'testmeth', 'testprop', 'teststaticmeth']
-"
+          ['testclassmeth', 'testmeth', 'testprop', 'teststaticmeth']"
+    (when py-debug-p (switch-to-buffer (current-buffer))
+	  (font-lock-fontify-buffer))
+    (forward-char -1) 
     (py-mark-expression)
-    (should (eq 120 (mark)))
+    (should (eq 119 (mark)))
     (goto-char 44)
     (py-mark-expression)
     (should (eq 46 (mark)))))
@@ -591,25 +594,41 @@ def foo(*args):2
     (should (bobp))))
 
 
-(ert-deftest py-reuse-existing-shell-test ()
-  "Reuse existing shell unless py-shell is called from within. "
-  ;; kill existing shells
-  (py--kill-buffer-unconditional "*Python*")
-  (py--kill-buffer-unconditional "*IPython*")
-  (py--kill-buffer-unconditional "*Python*<2>")
-  (py--kill-buffer-unconditional "*IPython*<2>")
-  (python)
-  (ipython)
-  (sit-for 0.1 t) 
-  (with-temp-buffer
-    ;; this should not open a "*Python*<2>"
-    (python)
-    (ipython)
-    (sit-for 0.1 t) 
-    (should (not (buffer-live-p (get-buffer "*Python*<2>"))))
-    (should (not (buffer-live-p (get-buffer "*IPython*<2>"))))
-    (should (buffer-live-p (get-buffer "*Python*")))
-    (should (buffer-live-p (get-buffer "*IPython*")))))
+(ert-deftest py-ert-beginning-of-except-block-test ()
+  (py-test-with-temp-buffer
+      "
+# -*- coding: utf-8 -*-
+class bar:
+    def foo ():
+        try:
+            if True:
+                for a in range(anzahl):
+                    pass
+        except:
+            block2
+"
+    (when py-debug-p (switch-to-buffer (current-buffer))
+          (font-lock-fontify-buffer))
+    (py-beginning-of-except-block)
+    (should (eq (char-after) ?e))))
+
+(ert-deftest py-ert-beginning-of-except-block-bol-test ()
+  (py-test-with-temp-buffer
+      "
+# -*- coding: utf-8 -*-
+class bar:
+    def foo ():
+        try:
+            if True:
+                for a in range(anzahl):
+                    pass
+        except:
+            block2
+"
+    (when py-debug-p (switch-to-buffer (current-buffer))
+          (font-lock-fontify-buffer))
+    (py-beginning-of-except-block-bol)
+    (should (eq (char-after) ?\ ))))
 
   ;; (and (bufferp (get-buffer "*Python*"))(buffer-live-p (get-buffer "*Python*"))(py-kill-buffer-unconditional "*Python*"))
   ;; (and (bufferp (get-buffer "*IPython*"))(buffer-live-p (get-buffer "*IPython*"))(py-kill-buffer-unconditional "*IPython*")))

@@ -21,7 +21,7 @@
 
 ;;; Code:
 
-;;; Execute forms at point
+;;  Execute forms at point
 (defun py-execute-statement ()
   "Send statement at point to a Python interpreter. "
   (interactive)

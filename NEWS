@@ -7,6 +7,18 @@ New in version 6.2.1
 - Commands
   - py-beginning-of-for-block
   - py-beginning-of-for-block-bol
+  - py-end-of-statement-bol
+  - py-end-of-top-level-bol
+
+- New helper functions, like
+  - py--end-of-block-bol-p
+  - py--end-of-clause-bol-p
+  etc.
+
+  Functions in a boolean sense just stating if being at an end or
+  start no longer a command. Renamed as interanal
+  functions with prefix `py--' now.
+
 
 - TAB-indent from column zero: go to outmost first, lp:1375122
 - (I)Python-shell setup made more reliable

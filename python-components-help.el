@@ -32,7 +32,7 @@
 
 (defalias 'py-eldoc 'py-eldoc-function)
 
-;;; Info-look functionality.
+;;  Info-look functionality.
 (require 'info-look)
 (eval-when-compile (require 'info))
 
@@ -125,12 +125,12 @@ Used with `eval-after-load'."
 	 ("(python-lib)Function-Method-Variable Index")
 	 ("(python-lib)Miscellaneous Index"))))))
 
-;; (if (featurep 'info-look)
-;;     (python-after-info-look))
+;;  (if (featurep 'info-look)
+;;      (python-after-info-look))
 
-;; (eval-after-load "info-look" '(python-after-info-look))
+;;  (eval-after-load "info-look" '(python-after-info-look))
 
-;;;
+;; ;
 (defun py--warn-tmp-files-left ()
   "Detect and warn about file of form \"py11046IoE\" in py-temp-directory. "
   (let ((erg1 (file-readable-p (concat py-temp-directory (char-to-string py-separator-char)  (car (directory-files  py-temp-directory nil "py[[:alnum:]]+$"))))))
@@ -243,12 +243,12 @@ Optional \\[universal-argument] used for debugging, will prevent deletion of tem
       (when (file-readable-p file)
         (unless py-debug-p (delete-file file))))))
 
-;; Documentation functions
+;;  Documentation functions
 
-;; dump the long form of the mode blurb; does the usual doc escapes,
-;; plus lines of the form ^[vc]:name\$ to suck variable & command docs
-;; out of the right places, along with the keys they're on & current
-;; values
+;;  dump the long form of the mode blurb; does the usual doc escapes,
+;;  plus lines of the form ^[vc]:name\$ to suck variable & command docs
+;;  out of the right places, along with the keys they're on & current
+;;  values
 
 (defun py--dump-help-string (str)
   (with-output-to-temp-buffer "*Help*"
@@ -544,9 +544,9 @@ Obscure:  When python-mode is first loaded, it looks for all bindings
 to newline-and-indent in the global keymap, and shadows them with
 local bindings to py-newline-and-indent."))
 
-;; (require 'info-look)
-;; The info-look package does not always provide this function (it
-;; appears this is the case with XEmacs 21.1)
+;;  (require 'info-look)
+;;  The info-look package does not always provide this function (it
+;;  appears this is the case with XEmacs 21.1)
 (when (fboundp 'info-lookup-maybe-add-help)
   (info-lookup-maybe-add-help
    :mode 'python-mode
@@ -556,7 +556,7 @@ local bindings to py-newline-and-indent."))
                ("(python-lib)Function-Method-Variable Index")
                ("(python-lib)Miscellaneous Index"))))
 
-;; Find function stuff, lifted from python.el
+;;  Find function stuff, lifted from python.el
 (defalias 'py-find-function 'py-find-definition)
 (defun py-find-definition (&optional symbol)
   "Find source of definition of SYMBOL.
@@ -678,8 +678,8 @@ Imports done are displayed in message buffer. "
         (message "%s" erg))
       erg)))
 
-;;; Code-Checker
-;; pep8
+;;  Code-Checker
+;;  pep8
 (defalias 'pep8 'py-pep8-run)
 (defun py-pep8-run (command)
   "*Run pep8, check formatting - default on the file currently visited."
@@ -724,7 +724,7 @@ Imports done are displayed in message buffer. "
   (erase-buffer)
   (shell-command "pep8 --help" "*pep8-Help*"))
 
-;; Pylint
+;;  Pylint
 (defalias 'pylint 'py-pylint-run)
 (defun py-pylint-run (command)
   "*Run pylint (default on the file currently visited).
@@ -780,7 +780,7 @@ Calls `pylint --full-documentation'"
   (erase-buffer)
   (shell-command "pylint --full-documentation" "*Pylint-Documentation*"))
 
-;; Pyflakes
+;;  Pyflakes
 (defalias 'pyflakes 'py-pyflakes-run)
 (defun py-pyflakes-run (command)
   "*Run pyflakes (default on the file currently visited).
@@ -857,7 +857,7 @@ Let's have this until more Emacs-like help is prepared "
 
 Extracted from http://manpages.ubuntu.com/manpages/natty/man1/pyflakes.1.html"))))
 
-;; Pyflakes-pep8
+;;  Pyflakes-pep8
 (defalias 'pyflakespep8 'py-pyflakespep8-run)
 (defun py-pyflakespep8-run (command)
   "*Run pyflakespep8, check formatting (default on the file currently visited).
@@ -903,10 +903,10 @@ Extracted from http://manpages.ubuntu.com/manpages/natty/man1/pyflakes.1.html"))
   (erase-buffer)
   (shell-command "pyflakespep8 --help" "*pyflakespep8-Help*"))
 
-;; Pychecker
-;; hack for GNU Emacs
-;; (unless (fboundp 'read-shell-command)
-;; (defalias 'read-shell-command 'read-string))
+;;  Pychecker
+;;  hack for GNU Emacs
+;;  (unless (fboundp 'read-shell-command)
+;;  (defalias 'read-shell-command 'read-string))
 
 (defun py-pychecker-run (command)
   "*Run pychecker (default on the file currently visited)."
@@ -944,7 +944,7 @@ Extracted from http://manpages.ubuntu.com/manpages/natty/man1/pyflakes.1.html"))
     (when (featurep 'xemacs)
       (compile-internal command "No more errors"))))
 
-;; After `sgml-validate-command'.
+;;  After `sgml-validate-command'.
 (defun py-check-command (command)
   "Check a Python file (default current buffer's file).
 Runs COMMAND, a shell command, as if by `compile'.
@@ -962,7 +962,7 @@ See `python-check-command' for the default."
 	       compilation-error-regexp-alist)))
     (compilation-start command)))
 
-;; flake8
+;;  flake8
 (defalias 'flake8 'py-flake8-run)
 (defun py-flake8-run (command)
   "Flake8 is a wrapper around these tools:
@@ -1024,9 +1024,9 @@ Consider \"pip install flake8\" resp. visit \"pypi.python.org\""))
   (erase-buffer)
   (shell-command "flake8 --help" "*flake8-Help*"))
 
-;;; from string-strip.el --- Strip CHARS from STRING
+;;  from string-strip.el --- Strip CHARS from STRING
 
-;; (setq strip-chars-before  "[ \t\r\n]*")
+;;  (setq strip-chars-before  "[ \t\r\n]*")
 (defun string-strip (str &optional chars-before chars-after)
   "Return a copy of STR, CHARS removed.
 `CHARS-BEFORE' and `CHARS-AFTER' default is \"[ \t\r\n]*\",
@@ -1051,7 +1051,7 @@ i.e. spaces, tabs, carriage returns, newlines and newpages. "
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
-;;; ffap
+;;  ffap
 (defun py-ffap-module-path (module)
   "Function for `ffap-alist' to return path for MODULE."
   (let ((process (or
@@ -1071,7 +1071,7 @@ i.e. spaces, tabs, carriage returns, newlines and newpages. "
      (push '(python-mode . py-ffap-module-path) ffap-alist)
      (push '(py-shell-mode . py-ffap-module-path) ffap-alist)))
 
-;;; Flymake
+;;  Flymake
 (defun py-toggle-flymake-intern (name command)
   ;; (clear-flymake-allowed-file-name-masks)
   (unless (string-match "pyflakespep8" name)
@@ -1135,7 +1135,7 @@ Keegan Carruthers-Smith"
     (py-toggle-flymake-intern "pyflakespep8" "pyflakespep8")
     (flymake-mode)))
 
-;;;
+;; ;
 (defun variables-state (&optional buffer directory-in directory-out)
   "Diplays state of python-mode variables in an org-mode buffer.
 
@@ -1189,4 +1189,4 @@ Maybe call M-x describe-variable RET to query its value. "
       (org-mode))))
 
 (provide 'python-components-help)
-;;; python-components-help.el ends here
+;;;  python-components-help.el ends here

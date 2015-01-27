@@ -25,7 +25,6 @@
 
 ;;; Code:
 
-;;; highlight-thing stuff
 ;; Basicely inspired by `highlight-current-line.el'. Please
 ;; visit
 ;; http://www.emacswiki.org/emacs-en/HighlightCurrentLine
@@ -55,10 +54,10 @@
 (defvar highlight-thing-beg-function nil)
 
 (defvar highlight-thing-end-function nil)
-;; (setq highlight-thing-beg-function 'ar-word-beginning-position-atpt)
-;; (setq highlight-thing-end-function 'ar-word-end-position-atpt)
+;;  (setq highlight-thing-beg-function 'ar-word-beginning-position-atpt)
+;;  (setq highlight-thing-end-function 'ar-word-end-position-atpt)
 
-(defun ar-th-highlight (thing &optional arg iact) 
+(defun ar-th-highlight (thing &optional arg iact)
   (setq highlight-thing-beg-function (intern-soft (concat "ar-" (format "%s" thing) "-beginning-position-atpt")))
   (setq highlight-thing-end-function (intern-soft (concat "ar-" (format "%s" thing) "-end-position-atpt")))
   (highlight-thing-minor-mode))
@@ -82,7 +81,7 @@
 				     nil)
   "'color' value that represents \"no color\".")
 
-;; Compatibility code - Set highlight-foregroundcolor.
+;;  Compatibility code - Set highlight-foregroundcolor.
 
 (defun highlight-thing-set-fg-color (color)
   "Set foregroundcolor for highlighting cursor-word to COLOR.
@@ -92,7 +91,7 @@ Key: \\[highlight-thing-set-fg-color]"
       (setq color highlight-thing-no-color))
   (set-face-foreground 'highlight-thing-face color))
 
-;; Compatibility code - Set highlight-backgroundcolor.
+;;  Compatibility code - Set highlight-backgroundcolor.
 
 (defun highlight-thing-set-bg-color (color)
   "Set backgroundcolor for highlighting cursor-word to COLOR.
@@ -102,7 +101,7 @@ Key: \\[highlight-thing-set-bg-color]"
       (setq color highlight-thing-no-color))
   (set-face-background 'highlight-thing-face color))
 
-;; Enable/Disable Highlighting
+;;  Enable/Disable Highlighting
 
 (defun highlight-thing (&optional on-off local)
   "Switch highlighting of cursor-word ON-OFF
@@ -130,7 +129,5 @@ line is hightlighted by customizing the group highlight-thing."
       (highlight-thing t t)
     (highlight-thing nil t)))
 
-
-
 (provide 'thingatpt-highlight)
-;;; thingatpt-highlight.el ends here
+;;;  thingatpt-highlight.el ends here

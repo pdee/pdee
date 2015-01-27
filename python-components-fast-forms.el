@@ -21,7 +21,7 @@
 
 ;;; Code:
 
-;;; Process forms fast
+;;  Process forms fast
 
 (defun py-fast-process (&optional argprompt dedicated shell buffer-name)
   "Connect am (I)Python process suitable for large output.
