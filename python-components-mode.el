@@ -2771,11 +2771,9 @@ See original source: http://pymacs.progiciels-bpi.ca"
           (t (error "Please set `py-install-directory', see INSTALL"))
           (when (interactive-p) (message "%s" load-path)))))
 
-
 (unless py-install-directory
   (add-to-list 'load-path default-directory)
   (add-to-list 'load-path (concat default-directory "extensions")))
-
 
 (require 'python-components-switches)
 (require 'python-components-edit)
@@ -2819,3 +2817,6 @@ See original source: http://pymacs.progiciels-bpi.ca"
 
 (and py-load-skeletons-p (require 'python-components-skeletons))
 (and py-company-pycomplete-p (require 'company-pycomplete))
+
+(provide 'python-mode)
+;;; python-components-mode.el ends here

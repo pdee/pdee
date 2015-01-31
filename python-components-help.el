@@ -21,9 +21,6 @@
 ;;
 
 ;;; Code:
-(require 'python-components-macros)
-
-
 (defcustom py-eldoc-string-code
   "__PYDOC_get_help('''%s''')\n"
   "Python code used to get a string with the documentation of an object."

@@ -18,8 +18,6 @@
 ;;; Commentary: Imenu definitions
 
 ;;; Code:
-(require 'python-components-macros)
-
 ;; Imenu definitions
 
 (defvar py-imenu-class-regexp

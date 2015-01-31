@@ -22,8 +22,6 @@
 ;;
 
 ;;; Code:
-(require 'python-components-macros)
-
 (defun py-output-buffer-filter (&optional beg end)
   "Clear output buffer from py-shell-input prompt etc. "
   (interactive "*")

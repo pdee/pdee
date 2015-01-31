@@ -23,8 +23,6 @@
 ;;
 
 ;;; Code:
-(require 'python-components-macros)
-
 ;; backward compatibility
 ;; some third party relying on v5 serie might use this
 

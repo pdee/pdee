@@ -22,8 +22,6 @@
 ;;
 
 ;;; Code:
-(require 'python-components-macros)
-
 (defun py-restore-window-configuration ()
   "Restore py-restore-window-configuration when completion is done resp. abandoned. "
   (let (val)
