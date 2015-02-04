@@ -415,5 +415,19 @@ Returns value of `py-underscore-word-syntax-p'. "
   (when (or py-verbose-p (interactive-p)) (message "py-underscore-word-syntax-p: %s" py-underscore-word-syntax-p))
   py-underscore-word-syntax-p)
 
+;; toggle-py-underscore-word-syntax-p must be known already
+;; circular: toggle-py-underscore-word-syntax-p sets and calls it
+(defcustom py-underscore-word-syntax-p t
+  "If underscore chars should be of syntax-class `word', not of `symbol'.
+
+Underscores in word-class makes `forward-word' etc. travel the indentifiers. Default is `t'.
+
+See bug report at launchpad, lp:940812 "
+  :type 'boolean
+  :group 'python-mode
+  :set (lambda (symbol value)
+         (set-default symbol value)
+         (toggle-py-underscore-word-syntax-p (if value 1 0))))
+
 (provide 'python-components-switches)
 ;;;  python-components-switches.el ends here
