@@ -13,9 +13,7 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;;; Code
-
-;;;
+;;; Code:
 
 (defalias 'py-script-complete 'py-shell-complete)
 (defalias 'py-python2-shell-complete 'py-shell-complete)
@@ -208,4 +206,4 @@ in (I)Python shell-modes `py-shell-complete'"
 	 (funcall py-complete-function))))
 
 (provide 'python-components-shell-complete)
-;; pyshell-complete.el ends here
+;;; python-components-shell-complete.el ends here

@@ -2889,8 +2889,7 @@ Returns char found. "
       (when (or (looking-at "\"")(looking-at "[ \t]*#[ \t]*"))
         (match-beginning 0))))
 
-(eval-when-compile
-  (defconst python-rx-constituents
+(defconst python-rx-constituents
     `((block-start          . ,(rx symbol-start
                                    (or "def" "class" "if" "elif" "else" "try"
                                        "except" "finally" "for" "while" "with")
@@ -2927,17 +2926,6 @@ Returns char found. "
                                 ;; Match single or triple quotes of any kind.
                                 (group (or  "\"" "\"\"\"" "'" "'''"))))))
     "Additional Python specific sexps for `python-rx'")
-
-  (defmacro python-rx (&rest regexps)
-    "Python mode specialized rx macro.
-This variant of `rx' supports common python named REGEXPS."
-    (let ((rx-constituents (append python-rx-constituents rx-constituents)))
-      (cond ((null regexps)
-             (error "No regexp"))
-            ((cdr regexps)
-             (rx-to-string `(and ,@regexps) t))
-            (t
-             (rx-to-string (car regexps) t))))))
 
 (defmacro python-rx (&rest regexps)
   "Python mode specialized rx macro which supports common python named REGEXPS."

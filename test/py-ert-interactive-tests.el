@@ -149,7 +149,8 @@ def foo():
 (ert-deftest py-ert-execute-statement-python2-test ()
   (py-test-with-temp-buffer-point-min
       "print(\"I'm the py-execute-statement-python2-test\")"
-    (when py-debug-p (switch-to-buffer (current-buffer)))
+    (when py-debug-p (switch-to-buffer (current-buffer))
+	  (font-lock-fontify-buffer))
     (py-execute-statement-python2)
     (set-buffer "*Python2*")
     (goto-char (point-max))
@@ -229,7 +230,6 @@ print(\"I'm the py-just-two-split-dedicated-lp-1361531-jython-test\")"
       (py-kill-buffer-unconditional erg2)
       (py-restore-window-configuration))))
 
-
 (ert-deftest py-reuse-existing-shell-test ()
   "Reuse existing shell unless py-shell is called from within. "
   ;; kill existing shells
@@ -239,12 +239,12 @@ print(\"I'm the py-just-two-split-dedicated-lp-1361531-jython-test\")"
   (py--kill-buffer-unconditional "*IPython*<2>")
   (python)
   (ipython)
-  (sit-for 0.1 t) 
+  (sit-for 0.1 t)
   (with-temp-buffer
     ;; this should not open a "*Python*<2>"
     (python)
     (ipython)
-    (sit-for 0.1 t) 
+    (sit-for 0.1 t)
     (should (not (buffer-live-p (get-buffer "*Python*<2>"))))
     (should (not (buffer-live-p (get-buffer "*IPython*<2>"))))
     (should (buffer-live-p (get-buffer "*Python*")))

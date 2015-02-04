@@ -826,18 +826,6 @@ def baz():
       (and (should (search-backward "py-execute-statement-test" nil t 1))
 	   (py-kill-buffer-unconditional (current-buffer))))))
 
-(ert-deftest py-ert-execute-statement-python2-test ()
-  (py-test-with-temp-buffer-point-min
-      "print(\"I'm the py-execute-statement-python2-test\")"
-    (when py-debug-p (switch-to-buffer (current-buffer)))
-    (py-execute-statement-python2)
-    (set-buffer "*Python2*")
-    (goto-char (point-max))
-    (sit-for 0.2 t)
-    (when py-debug-p (switch-to-buffer (current-buffer)))
-    (and (should (search-backward "py-execute-statement-python2-test" nil t 1))
-	 (py-kill-buffer-unconditional (current-buffer)))))
-
 (ert-deftest py-ert-execute-statement-python3-dedicated-test ()
   (py-test-with-temp-buffer-point-min
       "print(\"I'm the py-execute-statement-python3-dedicated-test\")"
