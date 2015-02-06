@@ -20,7 +20,7 @@
 ;;  python-mode-utils.el in directory devel. I.e. edits here might not
 ;;  be persistent.
 
-;;;  Code:
+;;; Code:
 
 
 (defun py-statement ()
@@ -111,5 +111,5 @@ Return code of `py-minor-block' at point, a string. "
   (let ((erg (py--mark-base "minor-block")))
     (buffer-substring-no-properties (car erg) (cdr erg))))
 
-;;;  python-components-forms-code.el ends here
 (provide 'python-components-forms-code)
+;;;  python-components-forms-code.el ends here
