@@ -809,7 +809,9 @@ def baz():
 (ert-deftest py-partial-expression-test ()
   (py-test-with-temp-buffer-point-min
       "foo=1"
-    (when py-debug-p (switch-to-buffer (current-buffer))) 
+    (when py-debug-p (switch-to-buffer (current-buffer))
+	  (font-lock-fontify-buffer))
+    (message "%s" (py-partial-expression))
     (and (should (string= "foo" (py-partial-expression)))
 	 (py-kill-buffer-unconditional (current-buffer)))))
 

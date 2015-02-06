@@ -13,9 +13,7 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;;; Code
-
-;;;
+;;; Code:
 
 (defun py--fast-completion-get-completions (input process completion-code)
   "Retrieve available completions for INPUT using PROCESS.
@@ -88,4 +86,4 @@ Use `py-fast-process' "
     (py--complete-prepare shell debug beg end word t)))
 
 (provide 'python-components-fast-complete)
-;; python-components-fast-complete.el here
+;;; python-components-fast-complete.el here
