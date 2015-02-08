@@ -19,6 +19,7 @@
 
 ;; M-x virtualenv-deactivate
 
+;;; Code:
 
 (defvar virtualenv-workon-home nil)
 
