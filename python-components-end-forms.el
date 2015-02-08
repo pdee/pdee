@@ -207,6 +207,58 @@ See also `py-down-if-block': down from current definition to next beginning of i
     (when (interactive-p) (message "%s" erg))
     erg))
 
+(defalias 'py-down-elif-block 'py-end-of-elif-block)
+(defun py-end-of-elif-block (&optional indent)
+  "Go to end of elif-block.
+
+Returns end of elif-block if successful, nil otherwise
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html"
+  (interactive "P")
+  (let* ((orig (point))
+         (erg (py--end-base 'py-elif-block-re orig)))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defalias 'py-down-elif-block-lc 'py-end-of-elif-block-bol)
+(defun py-end-of-elif-block-bol ()
+  "Goto beginning of line following end of elif-block.
+  Returns position reached, if successful, nil otherwise.
+
+See also `py-down-elif-block': down from current definition to next beginning of elif-block below. "
+  (interactive)
+  (let ((erg (py-end-of-elif-block)))
+    (setq erg (py--beginning-of-line-form))
+    (when (interactive-p) (message "%s" erg))
+    erg))
+
+(defalias 'py-down-else-block 'py-end-of-else-block)
+(defun py-end-of-else-block (&optional indent)
+  "Go to end of else-block.
+
+Returns end of else-block if successful, nil otherwise
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html"
+  (interactive "P")
+  (let* ((orig (point))
+         (erg (py--end-base 'py-else-block-re orig)))
+    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    erg))
+
+(defalias 'py-down-else-block-lc 'py-end-of-else-block-bol)
+(defun py-end-of-else-block-bol ()
+  "Goto beginning of line following end of else-block.
+  Returns position reached, if successful, nil otherwise.
+
+See also `py-down-else-block': down from current definition to next beginning of else-block below. "
+  (interactive)
+  (let ((erg (py-end-of-else-block)))
+    (setq erg (py--beginning-of-line-form))
+    (when (interactive-p) (message "%s" erg))
+    erg))
+
 (defalias 'py-down-try-block 'py-end-of-try-block)
 (defun py-end-of-try-block (&optional indent)
   "Go to end of try-block.

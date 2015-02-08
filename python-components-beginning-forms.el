@@ -101,6 +101,26 @@ http://docs.python.org/reference/compound_stmts.html"
   (interactive)
   (py--beginning-of-prepare indent 'py-if-block-re 'py-clause-re (interactive-p)))
 
+(defun py-beginning-of-elif-block (&optional indent)
+ "Go to beginning elif-block, skip whitespace at BOL.
+
+Returns beginning of elif-block if successful, nil otherwise
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html"
+  (interactive)
+  (py--beginning-of-prepare indent 'py-elif-block-re 'py-clause-re (interactive-p)))
+
+(defun py-beginning-of-else-block (&optional indent)
+ "Go to beginning else-block, skip whitespace at BOL.
+
+Returns beginning of else-block if successful, nil otherwise
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html"
+  (interactive)
+  (py--beginning-of-prepare indent 'py-else-block-re 'py-clause-re (interactive-p)))
+
 (defun py-beginning-of-try-block (&optional indent)
  "Go to beginning try-block, skip whitespace at BOL.
 
@@ -223,6 +243,28 @@ Referring python program structures see for example:
 http://docs.python.org/reference/compound_stmts.html"
   (interactive)
   (py--beginning-of-prepare indent 'py-if-block-re 'py-clause-re (interactive-p) t))
+
+(defalias 'py-beginning-of-elif-block-lc 'py-beginning-of-elif-block-bol)
+(defun py-beginning-of-elif-block-bol (&optional indent)
+ "Go to beginning elif-block, go to BOL.
+
+Returns beginning of elif-block if successful, nil otherwise
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html"
+  (interactive)
+  (py--beginning-of-prepare indent 'py-elif-block-re 'py-clause-re (interactive-p) t))
+
+(defalias 'py-beginning-of-else-block-lc 'py-beginning-of-else-block-bol)
+(defun py-beginning-of-else-block-bol (&optional indent)
+ "Go to beginning else-block, go to BOL.
+
+Returns beginning of else-block if successful, nil otherwise
+
+Referring python program structures see for example:
+http://docs.python.org/reference/compound_stmts.html"
+  (interactive)
+  (py--beginning-of-prepare indent 'py-else-block-re 'py-clause-re (interactive-p) t))
 
 (defalias 'py-beginning-of-try-block-lc 'py-beginning-of-try-block-bol)
 (defun py-beginning-of-try-block-bol (&optional indent)

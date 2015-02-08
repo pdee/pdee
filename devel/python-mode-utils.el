@@ -226,7 +226,7 @@
 ;; expression and partial-expression might not start at bol+whitespace
 (setq py-move-bol-forms '("block" "clause" "block-or-clause" "def" "class" "def-or-class" "if-block" "try-block" "minor-block" "for-block" "top-level" "statement"))
 
-(defconst py-re-forms '("block" "clause" "block-or-clause" "def" "class" "def-or-class" "if-block" "try-block" "minor-block" "for-block" "except-block")
+(defconst py-re-forms '("block" "clause" "block-or-clause" "def" "class" "def-or-class" "if-block" "elif-block" "else-block" "try-block" "minor-block" "for-block" "except-block")
   "Forms used to move in source code.")
 
 (defvar py-down-forms (list "block" "minor-block" "clause" "block-or-clause" "def" "class" "def-or-class" "statement" "top-level"))

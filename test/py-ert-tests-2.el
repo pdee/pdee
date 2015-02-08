@@ -86,6 +86,7 @@
 	  py-result)
       (py-execute-block)
       (when py-debug-p (message "py-ert-execute-block-fast, py-result: %s" py-result))
+      (sit-for 0.1 t) 
       (should (string= "1" py-result)))))
 
 (ert-deftest py-ert-execute-block-fast-2 ()
