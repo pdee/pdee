@@ -24,7 +24,7 @@
 ;;; Code:
 
 ;;  Keymap
-(defvar python-mode-map)
+(defvar python-mode-map nil)
 (setq python-mode-map
       (let ((map (make-sparse-keymap)))
         ;; electric keys

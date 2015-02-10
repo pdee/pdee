@@ -25,9 +25,9 @@
 
 (defvar virtualenv-name nil)
 
-(defvar virtualenv-old-path)
+(defvar virtualenv-old-path nil)
 
-(defvar virtualenv-old-exec-path)
+(defvar virtualenv-old-exec-path nil)
 
 (if (getenv "WORKON_HOME")
     (setq virtualenv-workon-home (getenv "WORKON_HOME"))

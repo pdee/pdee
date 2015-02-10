@@ -394,19 +394,27 @@ Give some hints, if not."
 :type 'boolean
 :group 'python-mode)
 
+;; (defcustom py-smart-operator-mode-p nil
+;; "If python-mode calls `smart-operator-mode-on'
+;; 
+;; Default is nil. "
+;; 
+;; :type 'boolean
+;; :group 'python-mode
+;; :set (lambda (symbol value)
+;; (and (py-smart-operator-check)
+;; (set-default symbol value)
+;; (smart-operator-mode (if value 1 0)))))
+;; 
+
 (defcustom py-smart-operator-mode-p nil
   "If python-mode calls `smart-operator-mode-on'
 
 Default is nil. "
 
   :type 'boolean
-  :group 'python-mode
-  :set (lambda (symbol value)
-         (and (py-smart-operator-check)
-              (set-default symbol value)
-              (smart-operator-mode (if value 1 0)))))
+  :group 'python-mode)
 
-(defvar py-autopair-mode nil)
 (defcustom py-autopair-mode nil
   "If python-mode calls (autopair-mode-on)
 
@@ -414,12 +422,13 @@ Default is nil
 Load `autopair-mode' written by Joao Tavora <joaotavora [at] gmail.com>
 URL: http://autopair.googlecode.com "
   :type 'boolean
-  :group 'python-mode
-  :set (lambda (symbol value)
-         (and
-          ;; (py-autopair-check)
-              (set-default symbol value)
-              (autopair-mode (if value 1 0)))))
+  :group 'python-mode)
+
+  ;; :set (lambda (symbol value)
+  ;;        (and
+  ;;         ;; (py-autopair-check)
+  ;;             (set-default symbol value)
+  ;;             (autopair-mode (if value 1 0)))))
 
 (defcustom py-no-completion-calls-dabbrev-expand-p t
   "If completion function should call dabbrev-expand when no completion found. Default is `t'
@@ -572,11 +581,6 @@ When non-nil, `py-end-of-def' and related will work faster"
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-indent-honors-multiline-listing nil
-  "If `t', indents to 1+ column of opening delimiter. If `nil', indent adds one level to the beginning of statement. Default is `nil'. "
-  :type 'boolean
-  :group 'python-mode)
-
 (defcustom py-indent-paren-spanned-multilines-p nil
   "If non-nil, indents elements of list a value of `py-indent-offset' to first element:
 
@@ -647,7 +651,6 @@ See lp:1235375. In case code is not to navigate due to errors, `which-function-m
   :type 'boolean
   :group 'python-mode)
 
-(defvar py-electric-kill-backward-p nil)
 (defcustom py-electric-kill-backward-p nil
   "Affects `py-electric-backspace'. Default is nil.
 
@@ -1376,8 +1379,6 @@ Default /usr/bin/bpython"
   :type 'boolean
   :group 'python-mode)
 
-(defvar py-history-filter-regexp "\\`\\s-*\\S-?\\S-?\\s-*\\'\\|'''/tmp/\\|^__pyfile = open('''\\|^execfile(r'[.+]/tmp/")
-
 (defcustom py-history-filter-regexp "\\`\\s-*\\S-?\\S-?\\s-*\\'\\|'''/tmp/"
   "Input matching this regexp is not saved on the history list.
 Default ignores all inputs of 0, 1, or 2 non-blank characters."
@@ -1733,7 +1734,6 @@ Output buffer is created dynamically according to Python version and kind of pro
 It should not contain a caret (^) at the beginning."
   :type 'string
   :group 'python-mode)
-(defvar py-shell-prompt-regexp ">>> ")
 
 (defvar py-ffap-setup-code
   "def __FFAP_get_module_path(module):
@@ -1858,7 +1858,7 @@ ipython0.11-completion-command-string also covers version 0.12")
 
 (defvar py-shebang-regexp "#![ \t]?\\([^ \t\n]+\\)[ \t]*\\([biptj]+ython[^ \t\n]*\\)"
   "Detecting the shell in head of file. ")
-(setq py-shebang-regexp   "#![ \t]?\\([^ \t\n]+\\)[ \t]*\\([biptj]+ython[^ \t\n]*\\)")
+;; (setq py-shebang-regexp   "#![ \t]?\\([^ \t\n]+\\)[ \t]*\\([biptj]+ython[^ \t\n]*\\)")
 
 (defvar py-separator-char "/"
   "Values set by defcustom only will not be seen in batch-mode. ")
@@ -1964,9 +1964,9 @@ some logging etc. "
 (defvar py-string-delim-re "\\(\"\"\"\\|'''\\|\"\\|'\\)"
   "When looking at beginning of string. ")
 
-(defvar py-labelled-re "[ \\t]*:[[:print:]]+"
+(defvar py-labelled-re "[ \\t]*:[[:graph:]]+"
   "When looking at label. ")
-(setq py-labelled-re "[ \\t]*:[[:graph:]]+")
+;; (setq py-labelled-re "[ \\t]*:[[:graph:]]+")
 
 (defvar py-expression-skip-regexp "[^ (=:#\t\r\n\f]"
   "py-expression assumes chars indicated possible composing a py-expression, skip it. ")
