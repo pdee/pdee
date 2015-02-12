@@ -249,3 +249,13 @@ print(\"I'm the py-just-two-split-dedicated-lp-1361531-jython-test\")"
     (should (not (buffer-live-p (get-buffer "*IPython*<2>"))))
     (should (buffer-live-p (get-buffer "*Python*")))
     (should (buffer-live-p (get-buffer "*IPython*")))))
+
+(ert-deftest py-flycheck-mode ()
+  (py-test-with-temp-buffer
+   ""
+   (py-flycheck-mode -1)
+   (should-not flycheck-mode)
+   (py-flycheck-mode 1)
+   (should flycheck-mode)
+   (py-flycheck-mode -1)
+   (should-not flycheck-mode)))

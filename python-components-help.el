@@ -1084,16 +1084,20 @@ i.e. spaces, tabs, carriage returns, newlines and newpages. "
         (list command (list local-file)))
     (message "%s" "flymake needs a `buffer-file-name'. Please save before calling.")))
 
-(defun py-flycheck-mode ()
+(defun py-flycheck-mode (&optional arg) 
   "Toggle `flycheck-mode'.
 
+With negative argument switch off flycheck-mode
 See menu \"Tools/Syntax Checking\""
-  (interactive)
+  (interactive "p")
+  (setq arg (or arg (if flycheck-mode 0 1))) 
   (if (featurep 'flycheck)
-      (if flycheck-mode
+      (if (< arg 0)
 	  ;; switch off
 	  (flycheck-mode 0)
-	(flycheck-mode 1))
+	(when (and py-verbose-p (interactive-p)) (message "flycheck-mode: %s" flycheck-mode))
+	(flycheck-mode 1)
+	(when (and py-verbose-p (interactive-p)) (message "flycheck-mode: %s" flycheck-mode)))
     (error "Can't find flycheck - see README.org")))
 
 (defun pylint-flymake-mode ()

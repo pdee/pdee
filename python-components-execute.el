@@ -930,9 +930,8 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
 	      (sit-for 0.1 t)
 	      (setq py-error (py--fetch-error (current-buffer) origline)))
 	    (with-current-buffer output-buffer
-	      ;; (when py-debug-p (switch-to-buffer (current-buffer))
-	      ;; (message "py-error: %s" py-error))
-	      (delete-region (point) (car comint-last-prompt))
+	      ;; `comint-last-prompt' must not exist
+	      (delete-region (point) (or (ignore-errors (car comint-last-prompt)) (point-max)))
 	      (sit-for 0.1 t)
 	      (insert py-error)
 	      (newline)
