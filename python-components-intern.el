@@ -2402,6 +2402,13 @@ Use pydoc on symbol at point"]
 
 Execute statement running pdb\. . "])
                  ("Checks"
+		  
+		  ["Flycheck mode" py-flycheck-mode
+		   :help " `py-flycheck-mode'
+
+Toggle `flycheck-mode'\.
+
+See menu \"Tools/Syntax Checking\""]
 
                   ["pychecker-run" py-pychecker-run
                    :help "`py-pychecker-run'

@@ -92,6 +92,11 @@ Both processes might run in
 There is also
 - python-mode-v5-behavior
 
+* Checks
+  Access is provided to a couple of known checkers like Flake8, pep8, pylint
+  Need to be installed for example calling "pip install pep8" from a shell command-line
+  Get flycheck from https://www.flycheck.org
+
 * Displaying Output
 
   `py-execute-...'-commands arrive in buffer created by
