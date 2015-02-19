@@ -2814,7 +2814,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
 (require 'python-components-fast-complete)
 (require 'python-components-intern)
 (require 'python-components-foot)
-(require 'python-components-skeletons)
+
 
 (and py-company-pycomplete-p (require 'company-pycomplete))
 

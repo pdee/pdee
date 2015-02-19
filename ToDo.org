@@ -1,3 +1,4 @@
+* am Ende von else: no completion
 * py-help-at-point fails at `readlines'
   with open('GivenFixtures.txt', 'r') as gv:
     # datei = gv.read()

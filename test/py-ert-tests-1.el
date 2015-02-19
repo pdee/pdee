@@ -822,10 +822,12 @@ def baz():
     (let ((py-shell-name "python"))
       (py-execute-statement)
       (set-buffer ert-test-default-buffer)
-      (when py-debug-p (switch-to-buffer (current-buffer)))
+      (when py-debug-p (switch-to-buffer (current-buffer))
+	    (font-lock-fontify-buffer))
       (goto-char (point-max))
       (sit-for 0.3 t)
       (and (should (search-backward "py-execute-statement-test" nil t 1))
+	   (sit-for 0.1 t) 
 	   (py-kill-buffer-unconditional (current-buffer))))))
 
 (ert-deftest py-ert-execute-statement-python3-dedicated-test ()

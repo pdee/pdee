@@ -2402,7 +2402,7 @@ Use pydoc on symbol at point"]
 
 Execute statement running pdb\. . "])
                  ("Checks"
-		  
+
 		  ["Flycheck mode" py-flycheck-mode
 		   :help " `py-flycheck-mode'
 
@@ -8170,6 +8170,11 @@ Try to find source definition of function at point"]))))
 
 (when py-org-cycle-p
   (define-key python-mode-map (kbd "<backtab>") 'org-cycle))
+
+(defun py-load-skeletons ()
+  "Load skeletons from extensions. "
+  (interactive) 
+  (load (concat py-install-directory "/extensions/python-components-skeletons.el")))
 
 (defun py--kill-emacs-hook ()
   "Delete files in `py-file-queue'.
