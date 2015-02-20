@@ -86,7 +86,7 @@
 	  py-result)
       (py-execute-block)
       (when py-debug-p (message "py-ert-execute-block-fast, py-result: %s" py-result))
-      (sit-for 0.1 t) 
+      (sit-for 0.1 t)
       (should (string= "1" py-result)))))
 
 (ert-deftest py-ert-execute-block-fast-2 ()
@@ -365,7 +365,7 @@ by the
         finally:
             pass
 "
-    (when py-debug-p (switch-to-buffer (current-buffer)) 
+    (when py-debug-p (switch-to-buffer (current-buffer))
 	  (font-lock-fontify-buffer))
     (goto-char 632)
     (py-up)
@@ -447,7 +447,7 @@ x = {'abc':'def',
           ['testclassmeth', 'testmeth', 'testprop', 'teststaticmeth']"
     (when py-debug-p (switch-to-buffer (current-buffer))
 	  (font-lock-fontify-buffer))
-    (forward-char -1) 
+    (forward-char -1)
     (py-mark-expression)
     (should (eq 119 (mark)))
     (goto-char 44)
@@ -633,3 +633,109 @@ class bar:
 
   ;; (and (bufferp (get-buffer "*Python*"))(buffer-live-p (get-buffer "*Python*"))(py-kill-buffer-unconditional "*Python*"))
   ;; (and (bufferp (get-buffer "*IPython*"))(buffer-live-p (get-buffer "*IPython*"))(py-kill-buffer-unconditional "*IPython*")))
+
+(defun nested-dictionaries-indent-lp:328791-test (&optional arg)
+  "With ARG greater 1 keep test buffer open.
+
+If no `load-branch-function' is specified, make sure the appropriate branch is loaded. Otherwise default python-mode will be checked. "
+  (interactive "p")
+  (let ((teststring "
+
+# hanging
+asdf = {
+    'a':{
+         'b':3,
+         'c':4
+        }
+    }
+
+# closing
+asdf = {
+    'a':{
+        'b':3,
+        'c':4
+    }
+}
+
+data = {
+    'key':
+    {
+        'objlist': [
+            {
+                'pk': 1,
+                'name': 'first',
+            },
+            {
+                'pk': 2,
+                'name': 'second',
+            }
+        ]
+    }
+}
+
+"))
+    (py-bug-tests-intern 'nested-dictionaries-indent-lp:328791-base arg teststring)))
+
+(ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test ()
+  (py-test-with-temp-buffer-point-min
+      "
+
+# hanging
+asdf = {
+    'a':{
+         'b':3,
+         'c':4
+        }
+    }
+
+# closing
+asdf = {
+    'a':{
+        'b':3,
+        'c':4
+    }
+}
+
+data = {
+    'key':
+    {
+        'objlist': [
+            {
+                'pk': 1,
+                'name': 'first',
+            },
+            {
+                'pk': 2,
+                'name': 'second',
+            }
+        ]
+    }
+}
+
+"
+    (when py-debug-p (switch-to-buffer (current-buffer))
+	  (font-lock-fontify-buffer))
+    (let ((py-indent-honors-multiline-listing t)
+	  py-closing-list-dedents-bos)
+      (search-forward "'a':{")
+      (should (eq 4 (py-compute-indentation)))
+      (search-forward "}")
+      (should (eq 8 (py-compute-indentation)))
+      (search-forward "}")
+      (should (eq 4 (py-compute-indentation)))
+      ;; py-closing-list-dedents-bos
+      (setq py-closing-list-dedents-bos t)
+      (search-forward "'a':{")
+      (should (eq 4 (py-compute-indentation)))
+      (search-forward "}")
+      (should (eq 4 (py-compute-indentation)))
+      (search-forward "}")
+      (should (eq 0 (py-compute-indentation)))
+      (search-forward "}" nil nil 2)
+      (should (eq 12 (py-compute-indentation)))
+      (search-forward "]")
+      (should (eq 8 (py-compute-indentation)))
+      (search-forward "}")
+      (should (eq 4 (py-compute-indentation)))
+      (search-forward "}")
+      (should (eq 0 (py-compute-indentation))))))
