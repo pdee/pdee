@@ -537,6 +537,7 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
 
 (defun py-end-of-statement-bol ()
   "Go to the beginning-of-line following current statement."
+  (interactive) 
   (let ((erg (py-end-of-statement)))
     (setq erg (py--beginning-of-line-form))
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
