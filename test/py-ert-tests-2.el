@@ -739,3 +739,29 @@ data = {
       (should (eq 4 (py-compute-indentation)))
       (search-forward "}")
       (should (eq 0 (py-compute-indentation))))))
+
+(ert-deftest py-ert-flexible-indentation-lp-328842-test ()
+  (py-test-with-temp-buffer-point-min
+      "\(long, sequence, of_items,
+ that, needs, to_be, wrapped) = input_list
+
+packed_entry = (long, sequence, of_items,
+that, needs, to_be, wrapped)
+
+\( whitespaced, long, sequence, of_items,
+    that, needs, to_be, wrapped) = input_list
+"
+    (let ((py-indent-honors-multiline-listing t))
+      (when py-debug-p (switch-to-buffer (current-buffer))
+	  (font-lock-fontify-buffer))
+      (search-forward "(long")
+      (forward-char -1) 
+      ;; (goto-char 6)
+      (should (eq nil (get-char-property (point) 'face)))
+      (goto-char 33)
+      (assert (eq 1 (py-compute-indentation)) nil "flexible-indentation-lp-328842-test failed")
+      (goto-char 115)
+      (assert (eq 16 (py-compute-indentation)) nil "flexible-indentation-lp-328842-test failed")
+      (goto-char 202)
+      (assert (eq 2 (py-compute-indentation)) nil "flexible-indentation-lp-328842-test failed"))))
+

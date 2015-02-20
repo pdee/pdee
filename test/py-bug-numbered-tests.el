@@ -336,95 +336,6 @@ def main(argv):
 	(assert (eq (buffer-size) 233) nil "sexp-commands-lp-328778-test #3 failed")
       (message "%s" "sexp-commands-lp-328778-test #3 passed"))))
 
-(defun nested-dictionaries-indent-lp-328791-test (&optional arg)
-  "With ARG greater 1 keep test buffer open.
-
-If no `load-branch-function' is specified, make sure the appropriate branch is loaded. Otherwise default python-mode will be checked. "
-  (interactive "p")
-  (let ((teststring "
-
-# hanging
-asdf = {
-    'a':{
-         'b':3,
-         'c':4
-        }
-    }
-
-# closing
-asdf = {
-    'a':{
-        'b':3,
-        'c':4
-    }
-}
-
-data = {
-    'key':
-    {
-        'objlist': [
-            {
-                'pk': 1,
-                'name': 'first',
-            },
-            {
-                'pk': 2,
-                'name': 'second',
-            }
-        ]
-    }
-}
-
-"))
-    (py-bug-tests-intern 'nested-dictionaries-indent-lp-328791-base arg teststring)))
-
-(defun nested-dictionaries-indent-lp-328791-base (arg)
-  (let ((py-indent-honors-multiline-listing t)
-        py-closing-list-dedents-bos)
-    (goto-char (point-min))
-    (search-forward "'a':{")
-    (or
-	(assert (eq 4 (py-compute-indentation)) nil "nested-dictionaries-indent-lp-328791-test #1 failed")
-      (message "%s" "nested-dictionaries-indent-lp-328791-test #1 passed"))
-    (search-forward "}")
-    (or
-	(assert (eq 8 (py-compute-indentation)) nil "nested-dictionaries-indent-lp-328791-test #2 failed")
-      (message "%s" "nested-dictionaries-indent-lp-328791-test #2 passed"))
-    (search-forward "}")
-    (or
-	(assert (eq 4 (py-compute-indentation)) nil "nested-dictionaries-indent-lp-328791-test #3 failed")
-      (message "%s" "nested-dictionaries-indent-lp-328791-test #3 passed"))
-
-    ;; py-closing-list-dedents-bos
-    (setq py-closing-list-dedents-bos t)
-    (search-forward "'a':{")
-    (or
-	(assert (eq 4 (py-compute-indentation)) nil "nested-dictionaries-indent-lp-328791-test #4 failed")
-      (message "%s" "nested-dictionaries-indent-lp-328791-test #4 passed"))
-    (search-forward "}")
-    (or
-	(assert (eq 4 (py-compute-indentation)) nil "nested-dictionaries-indent-lp-328791-test #5 failed")
-      (message "%s" "nested-dictionaries-indent-lp-328791-test #5 passed"))
-    (search-forward "}")
-    (or
-	(assert (eq 0 (py-compute-indentation)) nil "nested-dictionaries-indent-lp-328791-test #6 failed")
-      (message "%s" "nested-dictionaries-indent-lp-328791-test #6 passed"))
-    (search-forward "}" nil nil 2)
-    (or
-	(assert (eq 12 (py-compute-indentation)) nil "nested-dictionaries-indent-lp-328791-test #7 failed")
-      (message "%s" "nested-dictionaries-indent-lp-328791-test #7 passed"))
-    (search-forward "]")
-    (or
-	(assert (eq 8 (py-compute-indentation)) nil "nested-dictionaries-indent-lp-328791-test #8 failed")
-      (message "%s" "nested-dictionaries-indent-lp-328791-test #8 passed"))
-    (search-forward "}")
-    (or
-	(assert (eq 4 (py-compute-indentation)) nil "nested-dictionaries-indent-lp-328791-test #9 failed")
-      (message "%s" "nested-dictionaries-indent-lp-328791-test #9 passed"))
-    (search-forward "}")
-    (or
-	(assert (eq 0 (py-compute-indentation)) nil "nested-dictionaries-indent-lp-328791-test #10 failed")
-      (message "%s" "nested-dictionaries-indent-lp-328791-test #10 passed"))))
 
 (defun mark-block-region-lp-328806-test (&optional arg)
   "With ARG greater 1 keep test buffer open.
@@ -449,31 +360,6 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
   (forward-line -2)
   (py-mark-block)
   (assert (< (region-beginning) (region-end)) nil "mark-block-region-lp-328806-test failed!"))
-
-(defun flexible-indentation-lp-328842-test (&optional arg)
-  "With ARG greater 1 keep test buffer open.
-If no `load-branch-function' is specified, make sure the appropriate branch is loaded. Otherwise default python-mode will be checked."
-  (interactive "p")
-  (let ((teststring "
-\(long, sequence, of_items,
- that, needs, to_be, wrapped) = input_list
-
-packed_entry = (long, sequence, of_items,
-that, needs, to_be, wrapped)
-
-\( whitespaced, long, sequence, of_items,
-    that, needs, to_be, wrapped) = input_list
-"))
-    (py-bug-tests-intern 'flexible-indentation-lp-328842-base arg teststring)))
-
-(defun flexible-indentation-lp-328842-base (arg)
-  (let ((py-indent-honors-multiline-listing t))
-    (goto-char 33)
-    (assert (eq 1 (py-compute-indentation)) nil "flexible-indentation-lp-328842-test failed")
-    (goto-char 115)
-    (assert (eq 16 (py-compute-indentation)) nil "flexible-indentation-lp-328842-test failed")
-    (goto-char 202)
-    (assert (eq 2 (py-compute-indentation)) nil "flexible-indentation-lp-328842-test failed")))
 
 (defun py-current-defun-lp-328846-test (&optional arg)
   "With ARG greater 1 keep test buffer open.
@@ -692,6 +578,8 @@ If no `load-branch-function' is specified, make sure the appropriate branch is l
     (py-bug-tests-intern 'inbound-indentation-multiline-assignment-lp-629916 arg teststring)))
 
 (defun inbound-indentation-multiline-assignment-lp-629916 ()
+  (when py-debug-p (switch-to-buffer (current-buffer))
+	  (font-lock-fontify-buffer)) 
   (let ((py-indent-honors-multiline-listing t))
     (goto-char 33)
     (assert (eq 4 (py-compute-indentation)) nil "inbound-indentation-multiline-assignment-lp-629916-test #1 failed")

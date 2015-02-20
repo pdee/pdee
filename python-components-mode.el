@@ -1,3 +1,5 @@
+
+
 ;; python-mode.el --- Edit, debug, develop, run Python programs.
 
 ;; Includes a minor mode for handling a Python/IPython shell,
@@ -2984,7 +2986,7 @@ Returns char found. "
               word-end) . py-exception-name-face)
         ;; Builtins
         (,(rx
-	   (or space line-start (not (any ".")))
+	   (or space line-start (not (any ".(")))
 	   symbol-start
 	   (group (or "_" "__doc__" "__import__" "__name__" "__package__" "abs" "all"
 		      "any" "apply" "basestring" "bin" "bool" "buffer" "bytearray"
