@@ -8775,6 +8775,11 @@ LIEP stores line-end-position at point-of-interest
 				    (+ (current-column) py-closing-list-space))
 				   ((looking-at "\\s([ \t]*$")
 				    (py--empty-arglist-indent nesting py-indent-offset indent-offset))
+				   ((looking-at "\\s([ \t]*\\([^ \t]+.*\\)$")
+				     (goto-char (match-beginning 1))
+				     (if py-indent-paren-spanned-multilines-p
+					 (+ (current-column) py-indent-offset)
+				       (current-column)))
 				   (t (py--fetch-previous-indent orig))))
 				 ;; already behind a dedented element in list
 				 ((<= 2 (- origline this-line))
