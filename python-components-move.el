@@ -367,6 +367,7 @@ http://docs.python.org/reference/compound_stmts.html"
           (skip-chars-backward " \t\r\n\f")
           (py-beginning-of-statement orig done limit))
          ((nth 8 pps)
+	  ;; inside string
           (and (nth 3 pps) (setq done t))
           (goto-char (nth 8 pps))
           (py-beginning-of-statement orig done limit))
@@ -380,44 +381,36 @@ http://docs.python.org/reference/compound_stmts.html"
           (back-to-indentation)
           (setq done t)
           (py-beginning-of-statement orig done limit))
+	 ;; BOL or at space before comment
          ((and (looking-at "[ \t]*#")(looking-back "^[ \t]*"))
           (forward-comment -1)
           (while (and (not (bobp)) (looking-at "[ \t]*#")(looking-back "^[ \t]*"))
             (forward-comment -1))
           (unless (bobp)
             (py-beginning-of-statement orig done limit)))
+	 ;; at inline comment
          ((looking-at "[ \t]*#")
 	  (when (py--skip-to-semicolon-backward (save-excursion (back-to-indentation)(point)))
-	    ;; (skip-chars-backward (concat "^" comment-start) (line-beginning-position))
-	    ;; (back-to-indentation)
 	    (skip-chars-forward " \t")
 	    (unless (bobp)
 	      (py-beginning-of-statement orig done limit))))
+	 ;; at beginning of string
          ((and (not done) (looking-at py-string-delim-re))
           (when (< 0 (abs (skip-chars-backward " \t\r\n\f")))
             (setq done t))
           (back-to-indentation)
           (py-beginning-of-statement orig done limit))
+	 ;; after end of statement
 	 ((and (not done) (eq (char-before) ?\;))
 	  (skip-chars-backward ";")
 	  (py-beginning-of-statement orig done limit))
+	 ;; travel until indentation or semicolon
 	 ((and (not done) (py--skip-to-semicolon-backward (save-excursion (back-to-indentation)(point))))
-	  ;; (back-to-indentation)
 	  (py-beginning-of-statement orig done limit))
+	 ;; at current indent
 	 ((and (not done) (not (eq 0 (skip-chars-backward " \t\r\n\f"))))
-          ;; (setq done t)
-          (py-beginning-of-statement orig done limit))
-	 ((and (not done)(not (eq (current-column) (current-indentation))))
-	  (if (ignore-errors
-		(< 0
-		   (abs
-		    (py--skip-to-semicolon-backward (save-excursion (back-to-indentation)(point))))))
-	      (progn
-		(setq done t)
-		(py-beginning-of-statement orig done limit))
-	    (back-to-indentation)
-	    (setq done t)
-	    (py-beginning-of-statement orig done limit))))
+          (py-beginning-of-statement orig done limit)))
+	;; return nil when before comment
 	(unless (and (looking-at "[ \t]*#") (looking-back "^[ \t]*"))
 	  (when (< (point) orig)(setq erg (point))))
 	(when (and py-verbose-p (interactive-p)) (message "%s" erg))
@@ -432,15 +425,15 @@ See also `py-up-statement': up from current definition to next beginning of stat
   (interactive)
   (let* ((indent (or indent (when (eq 'py-end-of-statement-bol (car
   py-bol-forms-last-indent))(cdr py-bol-forms-last-indent))))
-	 (orig (point)) 
+	 (orig (point))
          erg)
     (if indent
         (while (and (setq erg (py-beginning-of-statement)) (< indent (current-indentation))(not (bobp))))
       (setq erg (py-beginning-of-statement)))
     ;; reset
     (setq py-bol-forms-last-indent nil)
-    (beginning-of-line) 
-    (and (< (point) orig) (setq erg (point))) 
+    (beginning-of-line)
+    (and (< (point) orig) (setq erg (point)))
     (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -537,7 +530,7 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
 
 (defun py-end-of-statement-bol ()
   "Go to the beginning-of-line following current statement."
-  (interactive) 
+  (interactive)
   (let ((erg (py-end-of-statement)))
     (setq erg (py--beginning-of-line-form))
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
