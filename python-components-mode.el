@@ -1466,7 +1466,17 @@ Default is `t'. See lp:1100892 "
   :group 'python-mode)
 
 (defcustom py-complete-ac-sources '(ac-source-pycomplete)
-  "List of auto-complete sources assigned to `ac-sources' in `py-complete-initialize'."
+  "List of auto-complete sources assigned to `ac-sources' in `py-complete-initialize'.
+
+Default is known to work an Ubuntu 14.10 - having python-
+mode, pymacs and auto-complete-el, with the following minimal
+emacs initialization:
+
+\(require 'pymacs)
+\(require 'auto-complete-config)
+\(ac-config-default)
+
+"
   :type 'hook
   :options '(ac-source-pycomplete ac-source-abbrev ac-source-dictionary ac-source-words-in-same-mode-buffers)
   :group 'python-mode)
