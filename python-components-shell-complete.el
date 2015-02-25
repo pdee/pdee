@@ -23,12 +23,13 @@
   "Retrieve available completions for INPUT using PROCESS.
 Argument COMPLETION-CODE is the python code used to get
 completions on the current context."
-  (let ((completions
+  (let ((erg
 	 (py--send-string-return-output
 	  (format completion-code input) process)))
     (sit-for 0.2 t)
-    (when (> (length completions) 2)
-      (split-string completions "^'\\|^\"\\|;\\|'$\\|\"$" t))))
+    (when (> (length erg) 2)
+      (setq erg (split-string erg "^'\\|^\"\\|;\\|'$\\|\"$" t)))
+    erg))
 
 ;; post-command-hook
 ;; caused insert-file-contents error lp:1293172
@@ -134,7 +135,7 @@ completions on the current context."
 (defun py--complete-prepare (&optional shell debug beg end word fast-complete)
   (let* ((py-exception-buffer (current-buffer))
          (pos (copy-marker (point)))
-	 (pps (syntax-ppss))
+	 (pps (parse-partial-sexp (or (ignore-errors (overlay-end comint-last-prompt-overlay))(line-beginning-position)) (point)))
 	 (in-string (when (nth 3 pps) (nth 8 pps)))
          (beg
 	  (save-excursion

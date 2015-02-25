@@ -2541,22 +2541,6 @@ foo, bar = toothpick
   (goto-char 50)
   (assert (eq (get-char-property (point) 'face) 'py-variable-name-face) nil "tuple-unpacking-highlighted-incorrectly-lp-961496-test failed"))
 
-(defun script-buffer-appears-instead-of-python-shell-buffer-lp-957561-test (&optional arg)
-  (interactive "p")
-  (let ((teststring (concat py-test-shebang "
-# -*- coding: utf-8 -*-
-print(\"I'm the script-buffer-appears-instead-of-python-shell-buffer-lp-957561-test\")
-")))
-    (py-bug-tests-intern 'script-buffer-appears-instead-of-python-shell-buffer-lp-957561-base arg teststring)))
-
-(defun script-buffer-appears-instead-of-python-shell-buffer-lp-957561-base (arg)
-  (let (py-switch-buffers-on-execute-p
-        (py-split-window-on-execute t))
-    (delete-other-windows)
-    (ipython)
-    (sit-for 0.1)
-    (assert (and (py-execute-buffer-ipython) (set-buffer "script-buffer-appears-instead-of-python-shell-buffer-lp-957561-test") (not (window-full-height-p))) nil "script-buffer-appears-instead-of-python-shell-buffer-lp-957561-test failed")))
-
 (defun new-problem-with-py-temp-directory-lp-965762-test (&optional arg)
   (interactive "p")
   (let ((teststring (concat py-test-shebang "
@@ -2894,7 +2878,8 @@ ex
   (when (buffer-live-p (get-buffer py-python-completions))
     (kill-buffer py-python-completions))
   (goto-char 51)
-  (ipython-complete)
+  ;; (ipython-complete)
+  (py-indent-or-complete)
   (set-buffer "*Python Completions*")
   (sit-for 0.1 t)
   (assert (search-forward "except") nil "completion-fails-in-python-script-r989-lp-1004613-test failed"))
@@ -5395,7 +5380,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.58 $\"
+__version__ = \"$Revision: 1.59 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))

@@ -1023,15 +1023,21 @@ Consider \"pip install flake8\" resp. visit \"pypi.python.org\""))
 
 ;;  from string-strip.el --- Strip CHARS from STRING
 
+(defvar py-chars-before " \t\n\r\f"
+  "Used by `py--string-strip'")
+
+(defvar py-chars-after " \t\n\r\f"
+    "Used by `py--string-strip'")
+
 ;;  (setq strip-chars-before  "[ \t\r\n]*")
-(defun string-strip (str &optional chars-before chars-after)
+(defun py--string-strip (str &optional chars-before chars-after)
   "Return a copy of STR, CHARS removed.
 `CHARS-BEFORE' and `CHARS-AFTER' default is \"[ \t\r\n]*\",
 i.e. spaces, tabs, carriage returns, newlines and newpages. "
   (let ((s-c-b (or chars-before
-                   strip-chars-before))
+                   py-chars-before))
         (s-c-a (or chars-after
-                   strip-chars-after))
+                   py-chars-after))
         (erg str))
     (setq erg (replace-regexp-in-string  s-c-b "" erg))
     (setq erg (replace-regexp-in-string  s-c-a "" erg))

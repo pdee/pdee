@@ -562,7 +562,6 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
    (py-copy-statement)
    (should (string-match "from foo.bar.baz import something" (car kill-ring)))))
 
-
 (ert-deftest py-ert-honor-dedent-lp-1280982 ()
   (py-test-with-temp-buffer
       "def foo():
@@ -575,27 +574,21 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
     (should (eq 42 (point)))))
 
 (ert-deftest py-ert-socket-modul-completion-lp-1284141 ()
-  (py-test-with-temp-buffer-point-min
-      "import socket"
+  (py-test-with-temp-buffer
+      "import socket\nsocket."
     (let ((py-debug-p t)
 	  (py-shell-name "python")
 	  oldbuf)
-      (py-execute-buffer-dedicated)
-      (sit-for 0.1 t)
-      (set-buffer py-buffer-name)
-      (when py-debug-p (switch-to-buffer (current-buffer)))
-      (insert "socket.")
-      (sit-for 0.1)
-      ;; (switch-to-buffer (current-buffer))
+      (when py-debug-p (switch-to-buffer (current-buffer))
+	  (font-lock-fontify-buffer))
       (py-indent-or-complete)
       (sit-for 0.1)
       (set-buffer "*Python Completions*")
-      ;; (switch-to-buffer (current-buffer))
+      (switch-to-buffer (current-buffer))
       (goto-char (point-min))
       (sit-for 0.2)
       (prog1 (should (search-forward "socket."))
-	(py-kill-buffer-unconditional oldbuf)
-	(py-kill-buffer-unconditional "py-buffer-name.txt")))))
+	(py-kill-buffer-unconditional (current-buffer))))))
 
 (ert-deftest py-ert-fill-paragraph-lp-1286318 ()
   (py-test-with-temp-buffer-point-min
@@ -827,7 +820,7 @@ def baz():
       (goto-char (point-max))
       (sit-for 0.3 t)
       (and (should (search-backward "py-execute-statement-test" nil t 1))
-	   (sit-for 0.1 t) 
+	   (sit-for 0.1 t)
 	   (py-kill-buffer-unconditional (current-buffer))))))
 
 (ert-deftest py-ert-execute-statement-python3-dedicated-test ()
@@ -852,6 +845,22 @@ def baz():
       (sit-for 0.1 t)
       (should (not (one-window-p))))))
 
-;;;
+(ert-deftest py-ert-script-buffer-appears-instead-of-python-shell-buffer-lp-957561-test ()
+  (py-test-with-temp-buffer
+      "#! /usr/bin/env python
+ # -*- coding: utf-8 -*-
+print(\"I'm the script-buffer-appears-instead-of-python-shell-buffer-lp-957561-test\")
+"
+    (when py-debug-p (switch-to-buffer (current-buffer))
+	  (font-lock-fontify-buffer))
+    (let (py-switch-buffers-on-execute-p
+	  (py-split-window-on-execute t))
+      (delete-other-windows)
+      (ipython)
+      (sit-for 0.1)
+      (py-execute-buffer-ipython)
+      ;; (should (window-live-p (other-buffer)))
+      (should (not (window-full-height-p))))))
 
 (provide 'py-ert-tests-1)
+;;; py-ert-tests-1.el ends here

@@ -65,7 +65,6 @@ With prefix arg, position cursor at end of buffer."
   (interactive "P")
   (pop-to-buffer (process-buffer (py-proc)) t) ;Runs python if needed.
   (when eob-p
-    (push-mark)
     (goto-char (point-max))))
 
 (defalias 'py-shell-send-file 'py-send-file)

@@ -323,7 +323,7 @@ With arg, do it that many times.
 
 With optional \\[universal-argument] print as string"
   (interactive "*P")
-  (let* ((name (string-strip (or arg (car kill-ring))))
+  (let* ((name (py--string-strip (or arg (car kill-ring))))
          ;; guess if doublequotes or parentheses are needed
          (numbered (not (eq 4 (prefix-numeric-value arg))))
          (form (cond ((or (eq major-mode 'python-mode)(eq major-mode 'py-shell-mode))

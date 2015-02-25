@@ -1,6 +1,5 @@
 ;; py-ert-tests.el --- Tests, some adapted from python.el
 
-;; Copyright (C) 2013 Free Software Foundation, Inc.
 ;; Copyright (C) 2014 Andreas Roehler, <andreas.roehler@online.de>
 
 ;; GNU Emacs is free software: you can redistribute it and/or modify
@@ -1086,5 +1085,41 @@ that, needs, to_be, wrapped)
     (should (boundp 'py-imenu-method-arg-parens))
     (should (boundp 'py-imenu-generic-expression))
     (should (boundp 'py-imenu-generic-regexp))
-    (should (boundp 'py-imenu-generic-parens))
-    ))
+    (should (boundp 'py-imenu-generic-parens))))
+
+(ert-deftest py-complete-in-ipython-shell-test ()
+  (let ((py-shell-name "ipython")
+	(py-switch-buffers-on-execute-p t))
+    (py-kill-buffer-unconditional "*IPython*")
+    (ipython)
+    (goto-char (point-max))
+    (insert "pri")
+    (py-indent-or-complete)
+    (forward-word -1)
+    (should (eq ?p (char-after)))))
+
+(ert-deftest py-complete-in-python-shell-tests ()
+  (let ((py-shell-name "python")
+	(py-switch-buffers-on-execute-p t))
+    (py-kill-buffer-unconditional "*Python*")
+    (python)
+    (goto-char (point-max))
+    (insert "pri")
+    (py-indent-or-complete)
+    (forward-word -1)
+    (should (eq ?p (char-after)))))
+
+(ert-deftest py-complete-in-python3-shell-tests ()
+  (let ((py-shell-name "python3")
+	(py-switch-buffers-on-execute-p t))
+    (py-kill-buffer-unconditional "*Python3*")
+    (python3)
+    (goto-char (point-max))
+    (insert "pri")
+    (py-indent-or-complete)
+    (forward-word -1)
+    (should (eq ?p (char-after)))))
+
+
+(provide 'py-ert-tests-2)
+;;; py-ert-tests-2.el ends here
