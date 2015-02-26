@@ -3339,7 +3339,6 @@ class bar:
   \"Returns beginning of " ele " position at beginning-of-line. \"
   (save-excursion
     (let ((erg (py-beginning-of-" ele ")))
-      (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
       erg)))\n")))
 
   (dolist (ele py-beginning-bol-command-names)
@@ -3348,7 +3347,6 @@ class bar:
   \"Returns beginning of " ele " position. \"
   (save-excursion
     (let ((erg (py-beginning-of-" ele "-bol)))
-      (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
       erg)))
 ")))
  (insert "\n(provide 'python-components-beginning-position-forms)
@@ -3375,7 +3373,6 @@ class bar:
                    (skip-chars-backward \" \\t\\r\\n\\f\")
                    (forward-char -1))
                  (py-end-of-" ele "))))
-      (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
       erg)))\n")))
 
   (dolist (ele py-bounds-bol-names)
@@ -3388,7 +3385,6 @@ class bar:
                    (skip-chars-backward \" \\t\\r\\n\\f\")
                    (forward-char -1))
                  (py-end-of-" ele "-bol))))
-      (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
       erg)))
 ")))
  (insert "\n(provide 'python-components-end-position-forms)

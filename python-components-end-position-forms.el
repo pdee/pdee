@@ -33,7 +33,6 @@
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
                  (py-end-of-statement))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py--end-of-block-position ()
@@ -44,7 +43,6 @@
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
                  (py-end-of-block))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py--end-of-clause-position ()
@@ -55,7 +53,6 @@
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
                  (py-end-of-clause))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py--end-of-block-or-clause-position ()
@@ -66,7 +63,6 @@
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
                  (py-end-of-block-or-clause))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py--end-of-def-position ()
@@ -77,7 +73,6 @@
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
                  (py-end-of-def))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py--end-of-class-position ()
@@ -88,7 +83,6 @@
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
                  (py-end-of-class))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py--end-of-def-or-class-position ()
@@ -99,7 +93,6 @@
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
                  (py-end-of-def-or-class))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py--end-of-buffer-position ()
@@ -110,7 +103,6 @@
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
                  (py-end-of-buffer))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py--end-of-expression-position ()
@@ -121,7 +113,6 @@
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
                  (py-end-of-expression))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py--end-of-partial-expression-position ()
@@ -132,7 +123,6 @@
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
                  (py-end-of-partial-expression))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py--end-of-minor-block-position ()
@@ -143,7 +133,6 @@
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
                  (py-end-of-minor-block))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py--end-of-if-block-position ()
@@ -154,7 +143,6 @@
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
                  (py-end-of-if-block))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py--end-of-try-block-position ()
@@ -165,7 +153,6 @@
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
                  (py-end-of-try-block))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py--end-of-except-block-position ()
@@ -176,7 +163,6 @@
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
                  (py-end-of-except-block))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py--end-of-top-level-position ()
@@ -187,7 +173,6 @@
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
                  (py-end-of-top-level))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py--end-of-statement-position-bol ()
@@ -198,7 +183,6 @@
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
                  (py-end-of-statement-bol))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py--end-of-block-position-bol ()
@@ -209,7 +193,6 @@
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
                  (py-end-of-block-bol))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py--end-of-clause-position-bol ()
@@ -220,7 +203,6 @@
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
                  (py-end-of-clause-bol))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py--end-of-block-or-clause-position-bol ()
@@ -231,7 +213,6 @@
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
                  (py-end-of-block-or-clause-bol))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py--end-of-def-position-bol ()
@@ -242,7 +223,6 @@
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
                  (py-end-of-def-bol))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py--end-of-class-position-bol ()
@@ -253,7 +233,6 @@
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
                  (py-end-of-class-bol))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py--end-of-minor-block-position-bol ()
@@ -264,7 +243,6 @@
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
                  (py-end-of-minor-block-bol))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py--end-of-if-block-position-bol ()
@@ -275,7 +253,6 @@
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
                  (py-end-of-if-block-bol))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py--end-of-try-block-position-bol ()
@@ -286,7 +263,6 @@
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
                  (py-end-of-try-block-bol))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (provide 'python-components-end-position-forms)
