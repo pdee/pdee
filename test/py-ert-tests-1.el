@@ -866,5 +866,25 @@ print(\"I'm the script-buffer-appears-instead-of-python-shell-buffer-lp-957561-t
       ;; (should (window-live-p (other-buffer)))
       (should (not (window-full-height-p))))))
 
+(ert-deftest py-ert-kill-statements-test ()
+  (py-test-with-temp-buffer
+      "with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
+    for i in range(anzahl):
+        klauf.pylauf()
+        datei.write(str(spiel[i]) + \"\\n\")
+    datei.write(\"treffer; schwarz; gruen; rot; pair; impair; passe; manque; spiel\\n\")
+    print(''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
+''')"
+    (when py-debug-p (switch-to-buffer (current-buffer))
+	  (font-lock-fontify-buffer))
+    (forward-line -2)
+    (back-to-indentation)
+    (py-kill-statements)
+    (sit-for 0.1)
+    (should-not (char-after))
+    ;; (should (eobp))
+    ;; (should (looking-at "\\'"))
+    )) 
+
 (provide 'py-ert-tests-1)
 ;;; py-ert-tests-1.el ends here

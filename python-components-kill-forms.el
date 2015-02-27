@@ -29,7 +29,7 @@
   "Delete `block' at point.
 
 Stores data in kill ring"
-  (interactive)
+  (interactive "*")
   (let ((erg (py--mark-base "block")))
     (kill-region (car erg) (cdr erg))))
 
@@ -37,7 +37,7 @@ Stores data in kill ring"
   "Delete `clause' at point.
 
 Stores data in kill ring"
-  (interactive)
+  (interactive "*")
   (let ((erg (py--mark-base "clause")))
     (kill-region (car erg) (cdr erg))))
 
@@ -45,7 +45,7 @@ Stores data in kill ring"
   "Delete `block-or-clause' at point.
 
 Stores data in kill ring"
-  (interactive)
+  (interactive "*")
   (let ((erg (py--mark-base "block-or-clause")))
     (kill-region (car erg) (cdr erg))))
 
@@ -53,7 +53,7 @@ Stores data in kill ring"
   "Delete `def' at point.
 
 Stores data in kill ring"
-  (interactive)
+  (interactive "*")
   (let ((erg (py--mark-base "def")))
     (kill-region (car erg) (cdr erg))))
 
@@ -61,7 +61,7 @@ Stores data in kill ring"
   "Delete `class' at point.
 
 Stores data in kill ring"
-  (interactive)
+  (interactive "*")
   (let ((erg (py--mark-base "class")))
     (kill-region (car erg) (cdr erg))))
 
@@ -69,7 +69,7 @@ Stores data in kill ring"
   "Delete `def-or-class' at point.
 
 Stores data in kill ring"
-  (interactive)
+  (interactive "*")
   (let ((erg (py--mark-base "def-or-class")))
     (kill-region (car erg) (cdr erg))))
 
@@ -77,7 +77,7 @@ Stores data in kill ring"
   "Delete `if-block' at point.
 
 Stores data in kill ring"
-  (interactive)
+  (interactive "*")
   (let ((erg (py--mark-base "if-block")))
     (kill-region (car erg) (cdr erg))))
 
@@ -85,7 +85,7 @@ Stores data in kill ring"
   "Delete `try-block' at point.
 
 Stores data in kill ring"
-  (interactive)
+  (interactive "*")
   (let ((erg (py--mark-base "try-block")))
     (kill-region (car erg) (cdr erg))))
 
@@ -93,7 +93,7 @@ Stores data in kill ring"
   "Delete `minor-block' at point.
 
 Stores data in kill ring"
-  (interactive)
+  (interactive "*")
   (let ((erg (py--mark-base "minor-block")))
     (kill-region (car erg) (cdr erg))))
 
@@ -101,7 +101,7 @@ Stores data in kill ring"
   "Delete `for-block' at point.
 
 Stores data in kill ring"
-  (interactive)
+  (interactive "*")
   (let ((erg (py--mark-base "for-block")))
     (kill-region (car erg) (cdr erg))))
 
@@ -109,7 +109,7 @@ Stores data in kill ring"
   "Delete `top-level' at point.
 
 Stores data in kill ring"
-  (interactive)
+  (interactive "*")
   (let ((erg (py--mark-base "top-level")))
     (kill-region (car erg) (cdr erg))))
 
@@ -117,7 +117,7 @@ Stores data in kill ring"
   "Delete `statement' at point.
 
 Stores data in kill ring"
-  (interactive)
+  (interactive "*")
   (let ((erg (py--mark-base "statement")))
     (kill-region (car erg) (cdr erg))))
 
@@ -125,7 +125,7 @@ Stores data in kill ring"
   "Delete `expression' at point.
 
 Stores data in kill ring"
-  (interactive)
+  (interactive "*")
   (let ((erg (py--mark-base "expression")))
     (kill-region (car erg) (cdr erg))))
 
@@ -133,7 +133,7 @@ Stores data in kill ring"
   "Delete `partial-expression' at point.
 
 Stores data in kill ring"
-  (interactive)
+  (interactive "*")
   (let ((erg (py--mark-base "partial-expression")))
     (kill-region (car erg) (cdr erg))))
 

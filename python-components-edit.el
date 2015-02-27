@@ -607,7 +607,7 @@ Indented same level, which don't open blocks. "
       (setq beg last)
       (goto-char orig)
       (setq end (line-end-position))
-      (while (and (setq last (line-end-position))
+      (while (and (setq last (py--end-of-statement-position))
                   (setq end (py-down-statement))
                   (not (py--beginning-of-block-p))
                   ;; (not (looking-at py-keywords))
@@ -668,12 +668,8 @@ Store deleted statements in kill-ring "
          (beg (car bounds))
          (end (cdr bounds)))
     (when (and beg end)
-      (goto-char beg)
-      (push-mark)
-      (goto-char end)
       (kill-new (buffer-substring-no-properties beg end))
       (delete-region beg end))))
-
 
 (defun py--join-words-wrapping (words separator line-prefix line-length)
   (let ((lines ())

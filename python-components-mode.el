@@ -2890,16 +2890,6 @@ Returns char found. "
       '(parse-partial-sexp (point-min) (point))
     '(syntax-ppss)))
 
-;; (defun py-count-lines ()
-;;   "Count lines in buffer, optional without given boundaries.
-
-;; See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
-;;   (save-restriction
-;;     (widen)
-;;     (if (featurep 'xemacs)
-;;         (count-lines (point-min) (point-max))
-;;       (count-matches "[\n\C-m]" (point-min) (point-max)))))
-
 (defun py-in-string-or-comment-p ()
   "Returns beginning position if inside a string or comment, nil otherwise. "
   (or (nth 8 (syntax-ppss))

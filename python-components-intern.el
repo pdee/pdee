@@ -8656,7 +8656,7 @@ LIEP stores line-end-position at point-of-interest
       ;; needed by closing
       (unless orig (unless (bobp) (back-to-indentation)))
       (let* ((orig (or orig (point)))
-             (origline (or origline (py-count-lines)))
+             (origline (or origline (py-count-lines (point-min) (point))))
              ;; closing indicates: when started, looked
              ;; at a single closing parenthesis
              ;; line: moved already a line backward
@@ -8779,10 +8779,10 @@ LIEP stores line-end-position at point-of-interest
 				   ((looking-at "\\s([ \t]*$")
 				    (py--empty-arglist-indent nesting py-indent-offset indent-offset))
 				   ((looking-at "\\s([ \t]*\\([^ \t]+.*\\)$")
-				     (goto-char (match-beginning 1))
-				     (if py-indent-paren-spanned-multilines-p
-					 (+ (current-column) py-indent-offset)
-				       (current-column)))
+				    (goto-char (match-beginning 1))
+				    (if py-indent-paren-spanned-multilines-p
+					(+ (current-column) py-indent-offset)
+				      (current-column)))
 				   (t (py--fetch-previous-indent orig))))
 				 ;; already behind a dedented element in list
 				 ((<= 2 (- origline this-line))
@@ -8802,9 +8802,7 @@ LIEP stores line-end-position at point-of-interest
 			    (goto-char (nth 1 (syntax-ppss)))
 			    (setq line
 				  ;; should be faster
-				  (< (line-end-position) liep)
-				  ;; (< (py-count-lines) origline)
-				  )
+				  (< (line-end-position) liep))
 			    (py-compute-indentation orig origline closing line nesting repeat indent-offset liep))
 			   ((not (py--beginning-of-statement-p))
 			    (py-beginning-of-statement)
@@ -9352,14 +9350,16 @@ i.e. the limit on how far back to scan."
      ((nth 3 state) 'string)
      ((nth 4 state) 'comment))))
 
-(defun py-count-lines ()
+(defun py-count-lines (&optional beg end)
   "Count lines in accessible part until current line.
 
 See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
   (interactive)
   (save-excursion
     (let ((count 0)
-          (orig (point)))
+          (orig (point))
+	  (beg (or beg (point-min)))
+	  (end (or end (point))))
       (save-match-data
 	(if (or (eq major-mode 'comint-mode)
 		(eq major-mode 'py-shell-mode))
@@ -9367,14 +9367,14 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
 		(re-search-backward py-fast-filter-re nil t 1)
 		(goto-char (match-end 0))
 	      (when py-debug-p (message "%s"  "py-count-lines: Don't see a prompt here"))
-	      (goto-char (point-min)))
-	  (goto-char (point-min))))
-      (while (and (< (point) orig)(not (eobp)) (skip-chars-forward "^\n" orig))
+	      (goto-char beg))
+	  (goto-char beg)))
+      (while (and (< (point) end)(not (eobp)) (skip-chars-forward "^\n" end))
         (setq count (1+ count))
-        (unless (or (not (< (point) orig)) (eobp)) (forward-char 1)
-                (setq count (+ count (abs (skip-chars-forward "\n" orig))))))
+        (unless (or (not (< (point) end)) (eobp)) (forward-char 1)
+                (setq count (+ count (abs (skip-chars-forward "\n" end))))))
       (when (bolp) (setq count (1+ count)))
-      (when (interactive-p) (message "%s" count))
+      (when (and py-debug-p (interactive-p)) (message "%s" count))
       count)))
 
 (defun py-which-function ()

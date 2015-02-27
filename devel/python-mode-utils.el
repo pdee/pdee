@@ -3514,7 +3514,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
   (write-file (concat py-install-directory "/python-components-booleans-end-forms.el")))
 
 (defun py-write-kill-forms (&optional forms)
-  "Uses `py-kill-forms'. "
+  "Useseb `py-kill-forms'. "
   (interactive)
   (set-buffer (get-buffer-create "python-components-kill-forms.el"))
   (erase-buffer)
@@ -3527,7 +3527,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
   \"Delete `" ele "' at point.
 
 Stores data in kill ring\"
-  (interactive)
+  (interactive \"*\")
   (let ((erg (py--mark-base \"" ele "\")))
     (kill-region (car erg) (cdr erg))))\n")))
     ;; expression-forms don't make sense WRT bol

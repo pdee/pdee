@@ -381,7 +381,6 @@ SEPCHAR is the file-path separator of your system. "
     (set-buffer exception-buffer)
     (goto-char (point-min))
     (forward-line (1- origline))
-    ;; (push-mark)
     (and (search-forward action (line-end-position) t)
          (and py-verbose-p (message "exception-buffer: %s on line %d" py-exception-buffer origline))
          (and py-highlight-error-source-p
@@ -389,7 +388,6 @@ SEPCHAR is the file-path separator of your system. "
               (overlay-put erg
                            'face 'highlight)))))
 
-;;  Result: (nil 5 "print(34ed)" " SyntaxError: invalid token ")
 (defun py--jump-to-exception (py-error origline &optional file)
   "Jump to the Python code in FILE at LINE."
   (let (
@@ -779,10 +777,7 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 	 (origline
 	  (save-restriction
 	    (widen)
-	    (count-lines
-	     (point-min)
-	     ;; count-lines doesn't honor current line when at BOL
-	     end)))
+	    (py-count-lines (point-min) end)))
 	 ;; argument SHELL might be a string like "python", "IPython" "python3", a symbol holding PATH/TO/EXECUTABLE or just a symbol like 'python3
 	 (which-shell
 	  (if shell
@@ -950,7 +945,7 @@ May we get rid of the temporary file? "
   (let* ((start (copy-marker start))
          (end (copy-marker end))
          (py-exception-buffer (or py-exception-buffer (current-buffer)))
-         (line (count-lines (point-min) (if (eq start (line-beginning-position)) (1+ start) start)))
+         (line (py-count-lines (point-min) (if (eq start (line-beginning-position)) (1+ start) start)))
          (strg (buffer-substring-no-properties start end))
          (tempfile (or (buffer-file-name) (concat (expand-file-name py-temp-directory) py-separator-char (replace-regexp-in-string py-separator-char "-" "temp") ".py")))
 
@@ -1105,7 +1100,7 @@ Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being sw
 
 (defun py--insert-offset-lines (line)
   "Fix offline amount, make error point at the corect line. "
-  (insert (make-string (- line (count-lines (point-min) (point))) 10)))
+  (insert (make-string (- line (py-count-lines (point-min) (point))) 10)))
 
 (defun py--execute-file-base (&optional proc filename cmd procbuf orig file execute-directory py-exception-buffer)
   "Send to Python interpreter process PROC, in Python version 2.. \"execfile('FILENAME')\".
