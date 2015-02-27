@@ -938,7 +938,7 @@
   (should (functionp 'py-check-command))
   (should (functionp 'py-flake8-run))
   (should (functionp 'py-flake8-help))
-  (should (functionp 'string-strip))
+  (should (functionp 'py--string-strip))
   (should (functionp 'py-nesting-level))
   (should (functionp 'py-ffap-module-path))
   (should (functionp 'py-toggle-flymake-intern))

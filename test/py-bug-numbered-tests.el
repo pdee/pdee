@@ -4756,6 +4756,8 @@ for lines in f:
   (py-bug-tests-intern 'temporary-files-remain-when-python-raises-exception-lp-1083973-n4-base arg teststring)))
 
 (defun temporary-files-remain-when-python-raises-exception-lp-1083973-n4-base (arg)
+  (when py-debug-p (switch-to-buffer (current-buffer))
+	  (font-lock-fontify-buffer)) 
   (py-execute-buffer)
   (assert (py-execute-buffer) nil "temporary-files-remain-when-python-raises-exception-lp-1083973-n4-test failed"))
 
@@ -5380,7 +5382,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.59 $\"
+__version__ = \"$Revision: 1.60 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))

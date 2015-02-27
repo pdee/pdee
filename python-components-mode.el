@@ -2378,6 +2378,11 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
 
 (put 'py-indent-offset 'safe-local-variable 'integerp)
 
+;; testing
+(defvar py-ert-test-default-executables
+  (list "python" "python3" "ipython")
+  "Serialize tests employing dolist")
+
 (defsubst py-keep-region-active ()
   "Keep the region active in XEmacs."
   (and (boundp 'zmacs-region-stays)

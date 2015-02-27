@@ -574,21 +574,25 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
     (should (eq 42 (point)))))
 
 (ert-deftest py-ert-socket-modul-completion-lp-1284141 ()
-  (py-test-with-temp-buffer
-      "import socket\nsocket."
-    (let ((py-debug-p t)
-	  (py-shell-name "python")
-	  oldbuf)
-      (when py-debug-p (switch-to-buffer (current-buffer))
-	  (font-lock-fontify-buffer))
-      (py-indent-or-complete)
-      (sit-for 0.1)
-      (set-buffer "*Python Completions*")
-      (switch-to-buffer (current-buffer))
-      (goto-char (point-min))
-      (sit-for 0.2)
-      (prog1 (should (search-forward "socket."))
-	(py-kill-buffer-unconditional (current-buffer))))))
+  (dolist (ele py-ert-test-default-executables)
+    (when (buffer-live-p (get-buffer "*Python Completions*"))
+      (py-kill-buffer-unconditional (get-buffer "*Python Completions*")))
+    (py-test-with-temp-buffer
+	"import socket\nsocket."
+      (let ((py-debug-p t)
+	    (py-shell-name ele)
+	    oldbuf)
+	(when py-debug-p (switch-to-buffer (current-buffer))
+	      (font-lock-fontify-buffer))
+	(py-indent-or-complete)
+	(sit-for 0.1)
+	(should (buffer-live-p (get-buffer "*Python Completions*")))
+	(set-buffer "*Python Completions*")
+	(switch-to-buffer (current-buffer))
+	(goto-char (point-min))
+	(sit-for 0.1)
+	(prog1 (should (search-forward "socket."))
+	  (py-kill-buffer-unconditional (current-buffer)))))))
 
 (ert-deftest py-ert-fill-paragraph-lp-1286318 ()
   (py-test-with-temp-buffer-point-min

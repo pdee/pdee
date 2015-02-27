@@ -117,7 +117,8 @@ finally:
 (ert-deftest py-ert-exception-name-face-lp-1294742 ()
   (py-test-with-temp-buffer-point-min
       " ArithmeticError AssertionError AttributeError BaseException BufferError BytesWarning DeprecationWarning EOFError EnvironmentError Exception FloatingPointError FutureWarning GeneratorExit IOError ImportError ImportWarning IndentationError IndexError KeyError KeyboardInterrupt LookupError MemoryError NameError NoResultFound NotImplementedError OSError OverflowError PendingDeprecationWarning ReferenceError RuntimeError RuntimeWarning StandardError StopIteration SyntaxError SyntaxWarning SystemError SystemExit TabError TypeError UnboundLocalError UnicodeDecodeError UnicodeEncodeError UnicodeError UnicodeTranslateError UnicodeWarning UserWarning ValueError Warning ZeroDivisionError"
-    (font-lock-fontify-buffer)
+    (when py-debug-p (switch-to-buffer (current-buffer))
+	  (font-lock-fontify-buffer)) 
     (while (and (not (eobp))(< 0 (skip-chars-forward " ")))
       (should (eq 'py-exception-name-face (get-char-property (point) 'face)))
       (skip-chars-forward "^ \n"))))

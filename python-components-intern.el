@@ -8606,7 +8606,7 @@ Use `defcustom' to keep value across sessions "
   "Kill buffer unconditional, kill buffer-process if existing. "
   (interactive
    (list (current-buffer)))
-  (let ((buffer (or (bufferp buffer)
+  (let ((buffer (or (and (bufferp buffer) buffer)
 		    (get-buffer buffer)))
 	proc kill-buffer-query-functions)
 

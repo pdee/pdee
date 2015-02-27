@@ -381,7 +381,7 @@ SEPCHAR is the file-path separator of your system. "
     (set-buffer exception-buffer)
     (goto-char (point-min))
     (forward-line (1- origline))
-    (push-mark)
+    ;; (push-mark)
     (and (search-forward action (line-end-position) t)
          (and py-verbose-p (message "exception-buffer: %s on line %d" py-exception-buffer origline))
          (and py-highlight-error-source-p
