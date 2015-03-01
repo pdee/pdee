@@ -459,26 +459,41 @@ The defun visible is the one that contains point or follows point. "
     (forward-line 1))
   (back-to-indentation))
 
-(defun py-indent-region (start end &optional indent-offset recursive)
+(defun py--indent-line-by-line (end)
+  "Indent every line until end to max reasonable extend. "
+  (while (< (line-end-position) end)
+    (if (empty-line-p)
+	(forward-line 1)
+      (py-indent-and-forward))))
+
+(defun py-indent-region (start end &optional line-by-line)
   "Reindent a region of Python code.
 
-With optional INDENT-OFFSET specify a different value than `py-indent-offset' at place.
+In case first line accepts an indent, keep the remaining
+lines relative. 
+Otherwise lines in region get outmost indent,
+same with optional argument
 
-Guesses the outmost reasonable indent
-Returns and keeps relative position "
+In order to shift a chunk of code, where the first line is okay, start with second line.
+"
   (interactive "*r\nP")
   (let ((orig (copy-marker (point)))
         (beg start)
         (end (copy-marker end))
-        (py-indent-offset (prefix-numeric-value
-                           (or indent-offset py-indent-offset))))
+	indent need)
     (goto-char beg)
-    (while (< (line-end-position) end)
-      (if (empty-line-p)
-          (forward-line 1)
-        (py-indent-and-forward)))
-    (unless (empty-line-p) (py-indent-line nil t))
-    (goto-char orig)))
+    (beginning-of-line)
+    (setq beg (point))
+    (skip-chars-forward " \t\r\n\f")
+    (if (eq 4 (prefix-numeric-value line-by-line))
+	(py--indent-line-by-line end)
+      ;; (unless (empty-line-p) (py-indent-line nil t))
+      (setq indent (py-compute-indentation))
+      (setq need (- indent (current-indentation)))
+      (if (< 0 (abs need))
+	  (indent-rigidly beg end need)
+	(py--indent-line-by-line end))
+      (goto-char orig))))
 
 (defun py--beginning-of-buffer-position ()
   (point-min))

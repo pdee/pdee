@@ -47,7 +47,6 @@
 
 (defun kill-form (begstr endstr &optional bound noerror count comment)
   (beginning-of-form-base begstr endstr bound noerror count comment)
-  (push-mark (point) t t)
   (end-of-form-base begstr endstr bound noerror count comment)
   (kill-region (mark) (point)))
 

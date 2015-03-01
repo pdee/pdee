@@ -2733,26 +2733,6 @@ os.chmod
   (switch-to-buffer (current-buffer))
   (assert (looking-at "Help on built-in function chmod in os:") nil "py-describe-symbol-fails-on-modules-lp-919719-test failed"))
 
-(defun indent-region-lp-997958-test (&optional arg)
-  (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-with file(\"foo\" + zeit + \".ending\", 'w') as datei:
-for i in range(anzahl):
-bar.dosomething()
-datei.write(str(baz[i]) + \"\\n\")
-"))
-    (py-bug-tests-intern 'indent-region-lp-997958-base arg teststring)))
-
-(defun indent-region-lp-997958-base (arg)
-  (py-indent-region 48 172)
-  (goto-char 99)
-  (back-to-indentation)
-  (assert (eq 4 (current-column))  nil "indent-region-lp-997958-test #1 failed")
-  (goto-char 127)
-  (back-to-indentation)
-  (assert (eq 8 (current-column))  nil "indent-region-lp-997958-test #2 failed"))
-
 (defun pycomplete-same-folder-def-lp-889052-test (&optional arg)
   (interactive "p")
   (save-excursion
