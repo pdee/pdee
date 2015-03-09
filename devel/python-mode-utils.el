@@ -1067,7 +1067,6 @@ With \\\\[universal-argument] use an unique "))
 
 Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. \"]\n"))))
 
-
 (defun py-provide-executes-with-resp-to-installed-python ()
   "Reads py-shells. "
   (interactive)
@@ -1152,7 +1151,7 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. \"
     (insert arkopf)
     (newline)
     (when (interactive-p) (switch-to-buffer (current-buffer))
-	  (emacs-lisp-mode))  
+	  (emacs-lisp-mode))
     (dolist (ele py-shells)
       (setq ele (replace-regexp-in-string "\\\\" "" (prin1-to-string ele)))
       (insert (concat "(defun " ele " (&optional argprompt)
@@ -1230,12 +1229,50 @@ Optional \\\\[universal-argument] prompts for path to the"))
     (insert "(provide 'python-components-named-shells)
 ;;; python-components-named-shells.el ends here
 ")
-    (switch-to-buffer (current-buffer))
-    (emacs-lisp-mode)
     (when (interactive-p) (switch-to-buffer (current-buffer))
 	  (emacs-lisp-mode))
     (write-file (concat py-install-directory "/python-components-named-shells.el"))))
 
+(defun py-write-installed-shells-menu ()
+  (interactive)
+  (with-current-buffer
+      (set-buffer (get-buffer-create "python-components-installed-shells-menu.el"))
+    (erase-buffer)
+    (when (interactive-p) (switch-to-buffer (current-buffer))
+	  (emacs-lisp-mode))
+    (insert " 		  (\"Other\"
+		   :help \"Alternative Python Shells\"")
+    (newline)
+    (dolist (ele py-shells)
+      (setq ele (replace-regexp-in-string "\\\\" "" (prin1-to-string ele)))
+      (unless (string= "python" ele)
+	(emen ele)
+	(skip-chars-forward "^]")
+	(forward-char 1)
+	(newline)))
+    ;; dedicated
+    (insert "\n(\"Dedicated\"
+		   :help \"Dedicated Shells\"")
+    (dolist (ele py-shells)
+      (emen (replace-regexp-in-string "\\\\" "" (concat (prin1-to-string ele) "-dedicated")))
+      (skip-chars-forward "^]")
+      (forward-char 1)
+      (newline))
+    (insert ")")
+    (newline)
+    ;; switch
+    (insert "\n(\"Switch\"
+		   :help \"Switch to shell\"")
+    (dolist (ele py-shells)
+      (emen (replace-regexp-in-string "\\\\" "" (concat (prin1-to-string ele) "-switch")))
+      (skip-chars-forward "^]")
+      (forward-char 1)
+      (newline))
+    (insert ")")
+    (insert ")")
+    (when (interactive-p) (switch-to-buffer (current-buffer))
+	  (emacs-lisp-mode))
+    (write-file (concat py-install-directory "/devel/python-components-installed-shells-menu.el"))))
 
 (defun py-write-re-beg-end-forms ()
   (interactive)
@@ -2603,7 +2640,7 @@ Return position if " ele " found, nil otherwise \"
       (insert (concat "\n\[\"" (replace-regexp-in-string "-" " " (replace-regexp-in-string "py-" "" erg)) "\" " erg "
  :help \" `" erg "'
 \n"))
-      (when doku (insert (regexp-quote doku)))
+      (when doku (insert doku))
 
       (insert (concat
                "\"]\n")))
@@ -3671,7 +3708,6 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
   (when (interactive-p) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
   (write-file (concat py-install-directory "/python-components-delete-forms.el")))
-
 
 (defun write-bounds-forms (&optional commands)
   "Write `py-bounds-of-block' etc. "
