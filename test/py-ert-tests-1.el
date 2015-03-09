@@ -1033,5 +1033,41 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     (let ((py-shell-name "python"))
       (should (string= "pdb" (py--pdb-versioned))))))
 
+;; shell-tests
+(ert-deftest python-shell-test ()
+  (py-kill-buffer-unconditional "*Python*")
+  (python)
+  (should (buffer-live-p (get-buffer "*Python*"))))
+
+(ert-deftest python2-shell-test ()
+  (py-kill-buffer-unconditional "*Python2*")
+  (python2)
+  (should (buffer-live-p (get-buffer "*Python2*"))))
+
+(ert-deftest python3-shell-test ()
+  (py-kill-buffer-unconditional "*Python3*")
+  (python3)
+  (should (buffer-live-p (get-buffer "*Python3*"))))
+
+(ert-deftest ipython-shell-test ()
+  (py-kill-buffer-unconditional "*IPython*")
+  (ipython)
+  (should (buffer-live-p (get-buffer "*IPython*"))))
+
+(ert-deftest ipython2.7-shell-test ()
+  (py-kill-buffer-unconditional "*IPython2.7*")
+  (ipython2.7)
+  (should (buffer-live-p (get-buffer "*IPython2.7*"))))
+
+(ert-deftest ipython3-shell-test ()
+  (py-kill-buffer-unconditional "*IPython3*")
+  (ipython3)
+  (should (buffer-live-p (get-buffer "*IPython3*"))))
+
+(ert-deftest jython-shell-test ()
+  (py-kill-buffer-unconditional "*Jython*")
+  (jython)
+  (should (buffer-live-p (get-buffer "*Jython*"))))
+
 (provide 'py-ert-tests-1)
 ;;; py-ert-tests-1.el ends here
