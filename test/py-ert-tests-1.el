@@ -585,7 +585,9 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
 	(when py-debug-p (switch-to-buffer (current-buffer))
 	      (font-lock-fontify-buffer))
 	(py-indent-or-complete)
-	(sit-for 0.1)
+	(if (string-match "ipython" ele)
+	    (sit-for 0.5)
+	  (sit-for 0.1))
 	(should (buffer-live-p (get-buffer "*Python Completions*")))
 	(set-buffer "*Python Completions*")
 	(switch-to-buffer (current-buffer))
@@ -884,7 +886,7 @@ print(\"I'm the script-buffer-appears-instead-of-python-shell-buffer-lp-957561-t
     (should-not (char-after))
     ;; (should (eobp))
     ;; (should (looking-at "\\'"))
-    )) 
+    ))
 
 (ert-deftest indent-region-lp-997958-lp-1426903-no-arg-1-test ()
   "Indent line-by-line as first line is okay "
@@ -902,7 +904,7 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
 "
    (when py-debug-p (switch-to-buffer (current-buffer))
 	  (font-lock-fontify-buffer))
-   (search-forward "True") 
+   (search-forward "True")
    (py-indent-region (line-beginning-position) (point-max))
    (should (eq 4 (current-indentation)))
    (search-forward "with file")
@@ -930,7 +932,7 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
 "
    (when py-debug-p (switch-to-buffer (current-buffer))
 	  (font-lock-fontify-buffer))
-   (search-forward "def foo") 
+   (search-forward "def foo")
    (py-indent-region (line-beginning-position) (point-max))
    (search-forward "True")
    (should (eq 4 (current-indentation)))
@@ -960,7 +962,7 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
 "
    (when py-debug-p (switch-to-buffer (current-buffer))
 	  (font-lock-fontify-buffer))
-   (search-forward "True") 
+   (search-forward "True")
    (py-indent-region (line-beginning-position) (point-max))
    (should (eq 4 (current-indentation)))
    (search-forward "with file")
@@ -985,7 +987,7 @@ bar.dosomething()
 datei.write(str(baz[i]) + \"\\n\")
 "
    (when py-debug-p (switch-to-buffer (current-buffer))
-	  (font-lock-fontify-buffer)) 
+	  (font-lock-fontify-buffer))
    (py-indent-region 48 (point-max) '(4))
    (goto-char (point-min))
    (search-forward "print(123)")
@@ -1022,6 +1024,14 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
    (should (eq 8 (current-indentation)))
    (search-forward "datei.write")
    (should (eq 8 (current-indentation)))))
+
+(ert-deftest py--pdb-versioned-test ()
+  (py-test-with-temp-buffer
+      ""
+    (let ((py-shell-name "python3"))
+      (should (string= "pdb3" (py--pdb-versioned))))
+    (let ((py-shell-name "python"))
+      (should (string= "pdb" (py--pdb-versioned))))))
 
 (provide 'py-ert-tests-1)
 ;;; py-ert-tests-1.el ends here

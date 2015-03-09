@@ -169,11 +169,11 @@
 (setq py-options (list "" "switch" "no-switch" "dedicated" "dedicated-switch"))
 
 (defvar py-shells
-  (list 'python 'ipython 'python3 'python2 'jython)
+  (list 'python 'python3 'python2 'ipython 'ipython2.7 'ipython3 'jython)
   "Python-mode will generate commands opening shells mentioned here. Edit this list \w resp. to your machine. ")
 
 (setq py-shells
-  (list 'python 'ipython 'python2  'jython 'python3))
+  (list 'python 'python2 'python3 'ipython 'ipython2.7 'ipython3 'jython ))
 
 (defvar py-commands
   (list "py-python-command" "py-ipython-command" "py-python3-command" "py-python2-command" "py-jython-command")
@@ -1010,39 +1010,13 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. \"]\n")))
         (setq liste (cdr liste))))
     (insert "))")))
 
-(defun py-provide-executes-with-resp-to-installed-python ()
-  "Reads py-shells. "
+(defun py-provide-executes-menu-with-resp-to-installed-python ()
   (interactive)
-  (let ((temp-buffer "*Python Executes Install Buffer*")
-        (menu-buffer "*Python Executes Menu Buffer*"))
-    (set-buffer (get-buffer-create menu-buffer))
+  (with-current-buffer "*Python Executes Menu Buffer*"
     (erase-buffer)
-    (set-buffer (get-buffer-create temp-buffer))
-    (erase-buffer)
-    (insert ";; Python execute with")
-    (newline)
-    (dolist (ele py-shells)
-      (set-buffer temp-buffer)
-      (goto-char (point-max))
-      (insert (concat "(defun py-execute-buffer-" ele " (&optional dedicated switch)
-  \"Execute buffer through a"))
-      (if (string= "ipython" ele)
-          (insert " IPython")
-        (insert (concat " " (capitalize ele))))
-      (insert (concat " interpreter.
-
-With \\\\[universal-argument] use an unique "))
-      (if (string= "ipython" ele)
-          (insert "IPython")
-        (insert (capitalize ele)))
-      (insert (concat " interpreter. \"
-  (interactive \"P\")
-  (let ((wholebuf t))
-  (py--execute-buffer-base \"" ele "\" dedicated switch)))\n\n"))
-      (set-buffer menu-buffer)
-      (goto-char (point-max))
       ;; ["if" py-if
       ;; :help "Inserts if-statement"]
+    (dolist (ele py-shells)
       (insert (concat "\[\"py-execute-buffer-" ele "\" py-execute-buffer-" ele "
 :help \"  Execute buffer through a"))
       (if (string= "ipython" ele)
@@ -1054,29 +1028,8 @@ With \\\\[universal-argument] use an unique "))
       (if (string= "ipython" ele)
           (insert "IPython")
         (insert (capitalize ele)))
-      (insert (concat " interpreter. \"]\n")))
+      (insert (concat " interpreter. \"]\n")
 
-    (set-buffer temp-buffer)
-    (goto-char (point-max))
-    (insert ";; dedicated\n")
-    (switch-to-buffer (current-buffer))
-    (dolist (ele py-shells)
-      (set-buffer temp-buffer)
-      (goto-char (point-max))
-      (insert (concat "(defun py-execute-buffer-" ele "-dedicated (&optional switch)
-  \"Execute buffer through an unique "))
-      (if (string= "ipython" ele)
-          (insert "IPython")
-        (insert (capitalize ele)))
-      (insert (concat " interpreter.
-
-Optional \\\\[universal-argument] forces switch to output buffer, ignores `py-switch-buffers-on-execute-p'. \"
-  (interactive \"P\")
-  (let ((wholebuf t))
-  (py--execute-buffer-base \"" ele "\" t switch)))\n\n"))
-
-      (set-buffer menu-buffer)
-      (goto-char (point-max))
       ;; ["if" py-if
       ;; :help "Inserts if-statement"]
       (insert (concat "\[\"py-execute-buffer-" ele "-dedicated\" py-execute-buffer-" ele "-dedicated
@@ -1087,32 +1040,7 @@ Optional \\\\[universal-argument] forces switch to output buffer, ignores `py-sw
       (insert (concat " interpreter.
 
 Optional \\\\[universal-argument] forces switch to output buffer, ignores `py-switch-buffers-on-execute-p'. \"]\n")))
-    (set-buffer temp-buffer)
-    (goto-char (point-max))
 
-    (insert ";; switch\n")
-    (dolist (ele py-shells)
-      (set-buffer temp-buffer)
-      (goto-char (point-max))
-      (insert (concat "(defun py-execute-buffer-" ele "-switch (&optional dedicated)
-  \"Execute buffer through a"))
-      (if (string= "ipython" ele)
-          (insert "n IPython")
-        (insert (concat " " (capitalize ele))))
-      (insert (concat " interpreter and switch to output buffer.
-
-Ignores `py-switch-buffers-on-execute-p'.
-Optional \\\\[universal-argument] makes"))
-      (if (string= "ipython" ele)
-          (insert " IPython")
-        (insert (concat " " (capitalize ele))))
-      (insert " run as an unique process. \"
-  (interactive \"P\")
-  (let ((wholebuf t))
-  (py--execute-buffer-base \"" ele "\" dedicated 'switch)))\n\n")
-
-      (set-buffer menu-buffer)
-      (goto-char (point-max))
       ;; ["if" py-if
       ;; :help "Inserts if-statement"]
       (insert (concat "\[\"py-execute-buffer-" ele "-switch\" py-execute-buffer-" ele "-switch
@@ -1128,26 +1056,6 @@ With \\\\[universal-argument] use an unique "))
         (insert (capitalize ele)))
       (insert (concat " interpreter. \"]\n")))
 
-    (set-buffer temp-buffer)
-    (goto-char (point-max))
-    (insert ";; dedicated-switch\n")
-    (dolist (ele py-shells)
-      (set-buffer temp-buffer)
-      (goto-char (point-max))
-      (insert (concat "(defun py-execute-buffer-" ele "-dedicated-switch (&optional dedicated)
-  \"Execute buffer through an unique"))
-      (if (string= "ipython" ele)
-          (insert " IPython")
-        (insert (concat " " (capitalize ele))))
-      (insert (concat " interpreter.
-
-Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. \"
-  (interactive)
-  (let ((wholebuf t))
-  (py--execute-buffer-base \"" ele "\" t 'switch)))\n\n"))
-
-      (set-buffer menu-buffer)
-      (goto-char (point-max))
       ;; ["if" py-if
       ;; :help "Inserts if-statement"]
       (insert (concat "\[\"py-execute-buffer-" ele "-dedicated-switch\" py-execute-buffer-" ele "-dedicated-switch
@@ -1157,29 +1065,100 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. \"
         (insert (concat " " (capitalize ele))))
       (insert (concat " interpreter.
 
-Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. \"]\n")))
-    (set-buffer temp-buffer)
-    (goto-char (point-max))
+Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. \"]\n"))))
 
-    (emacs-lisp-mode)
-    (switch-to-buffer (current-buffer))))
+
+(defun py-provide-executes-with-resp-to-installed-python ()
+  "Reads py-shells. "
+  (interactive)
+  (with-current-buffer (set-buffer (get-buffer-create "*Python Executes Install Buffer*"))
+    (erase-buffer)
+    (insert ";;; Python execute with")
+    (newline)
+    (dolist (ele py-shells)
+      (insert (concat "(defun py-execute-buffer-" ele " (&optional dedicated switch)
+  \"Execute buffer through a"))
+      (if (string= "ipython" ele)
+          (insert " IPython")
+        (insert (concat " " (capitalize ele))))
+      (insert (concat " interpreter.
+
+With \\\\[universal-argument] use an unique "))
+      (if (string= "ipython" ele)
+          (insert "IPython")
+        (insert (capitalize ele)))
+      (insert (concat " interpreter. \"
+  (interactive \"P\")
+  (let ((wholebuf t))
+  (py--execute-buffer-base \"" ele "\" dedicated switch)))\n\n")))
+    (insert ";; switch\n")
+    (dolist (ele py-shells)
+      (insert (concat "(defun py-execute-buffer-" ele "-switch (&optional dedicated)
+  \"Execute buffer through a"))
+      (if (string= "ipython" ele)
+	  (insert "n IPython")
+	(insert (concat " " (capitalize ele))))
+      (insert (concat " interpreter and switch to output buffer.
+
+Ignores `py-switch-buffers-on-execute-p'.
+Optional \\\\[universal-argument] makes"))
+      (when (string-match "^ipython.*" ele)
+	(forward-word -1)
+	(forward-char 1)
+	(delete-char 1)
+	(insert "P"))
+      (insert " run as an unique process. \"
+  (interactive \"P\")
+  (let ((wholebuf t))
+  (py--execute-buffer-base \"" ele "\" dedicated 'switch)))\n\n"))
+    (insert ";; dedicated-switch\n")
+    (dolist (ele py-shells)
+      (insert (concat "(defun py-execute-buffer-" ele "-dedicated-switch (&optional dedicated)
+  \"Execute buffer through an unique"))
+      (when (string-match "^ipython.*" ele)
+	(forward-word -1)
+	(forward-char 1)
+	(delete-char 1)
+	(insert "P"))
+      (insert (concat " interpreter.
+
+Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. \"
+  (interactive)
+  (let ((wholebuf t))
+  (py--execute-buffer-base \"" ele "\" t 'switch)))\n\n")))
+
+    \(insert "\(provide 'python-components-named-shells)
+;;; python-components-named-shells.el ends here
+"
+    (when (interactive-p) (switch-to-buffer (current-buffer))
+	  (emacs-lisp-mode))
+    (write-file (concat py-install-directory "/python-components-named-shells.el"))))
+
+(defun pmu-fix-ipython ()
+  (when (string-match "^ipython.*" ele)
+	(skip-chars-backward "[a-z][0-9]\\.")
+	;; (forward-char 1)
+	(delete-char 1)
+	(insert "P")
+	(end-of-line)))
 
 (defun py-provide-installed-shells-commands ()
   "Reads py-shells, provides commands opening these shell. "
   (interactive)
-  (let ((temp-buffer "python-components-named-shells.el"))
-    (set-buffer (get-buffer-create temp-buffer))
+  (with-current-buffer
+      (set-buffer (get-buffer-create "python-components-named-shells.el"))
     (erase-buffer)
-    (insert ";; Python named shells")
+    (insert ";;; Python named shells")
     (insert arkopf)
     (newline)
+    (when (interactive-p) (switch-to-buffer (current-buffer))
+	  (emacs-lisp-mode))  
     (dolist (ele py-shells)
-      (setq ele (prin1-to-string ele))
+      (setq ele (replace-regexp-in-string "\\\\" "" (prin1-to-string ele)))
       (insert (concat "(defun " ele " (&optional argprompt)
   \"Start an "))
-      (if (string= "ipython" ele)
-          (insert "IPython")
-        (insert (capitalize ele)))
+      (insert (capitalize ele))
+      (pmu-fix-ipython)
       (insert (concat " interpreter.
 
 Optional \\\\[universal-argument] prompts for path to the"))
@@ -1188,45 +1167,39 @@ Optional \\\\[universal-argument] prompts for path to the"))
   (py-shell argprompt nil \"" ele "\"))\n\n")))
     (insert ";; dedicated\n")
     (dolist (ele py-shells)
-      (setq ele (prin1-to-string ele))
+      (setq ele (replace-regexp-in-string "\\\\" "" (prin1-to-string ele)))
       (insert (concat "(defun " ele "-dedicated (&optional argprompt switch)
   \"Start an unique "))
-      (if (string= "ipython" ele)
-          (insert "IPython")
-        (insert (capitalize ele)))
+      (insert (capitalize ele))
+      (pmu-fix-ipython)
       (insert (concat " interpreter in another window.
 
 Optional \\\\[universal-argument] prompts for path to the"))
-            (insert (concat " interpreter. \"
+      (insert (concat " interpreter. \"
   (interactive \"p\")"))
-      (insert "\n  (let ((py-dedicated-process-p t))\n")
+      (insert "\n (let ((py-dedicated-process-p t))\n")
       (insert (concat "    (py-shell argprompt t \"" ele "\")))\n\n")))
     (insert ";; switch\n")
     (dolist (ele py-shells)
-      (setq ele (prin1-to-string ele))
+      (setq ele (replace-regexp-in-string "\\\\" "" (prin1-to-string ele)))
       (insert (concat "(defun " ele "-switch (&optional argprompt)
   \"Switch to "))
-      (if (string= "ipython" ele)
-          (insert "IPython")
-        (insert (capitalize ele)))
+      (insert (capitalize ele))
+      (pmu-fix-ipython)
       (insert (concat " interpreter in another window.
 
 Optional \\\\[universal-argument] prompts for path to the"))
-      ;; (if (string= "ipython" ele)
-      ;;     (insert "IPython")
-      ;;   (insert (capitalize ele)))
       (insert (concat " interpreter. \"
   (interactive \"p\")"))
-      (insert "\n  (let ((py-switch-buffers-on-execute-p t))\n")
+      (insert "\n (let ((py-switch-buffers-on-execute-p t))\n")
       (insert (concat "    (py-shell argprompt nil \"" ele "\")))\n\n")))
     (insert ";; no-switch\n")
     (dolist (ele py-shells)
-      (setq ele (prin1-to-string ele))
+      (setq ele (replace-regexp-in-string "\\\\" "" (prin1-to-string ele)))
       (insert (concat "(defun " ele "-no-switch (&optional argprompt)
   \"Open an "))
-      (if (string= "ipython" ele)
-          (insert "IPython")
-        (insert (capitalize ele)))
+      (insert (capitalize ele))
+      (pmu-fix-ipython)
       (insert (concat " interpreter in another window, but do not switch to it.
 
 Optional \\\\[universal-argument] prompts for path to the"))
@@ -1235,48 +1208,34 @@ Optional \\\\[universal-argument] prompts for path to the"))
       ;;   (insert (capitalize ele)))
       (insert (concat " interpreter. \"
   (interactive \"p\")"))
-      (insert "\n  (let (py-switch-buffers-on-execute-p)\n")
+      (insert "\n (let (py-switch-buffers-on-execute-p)\n")
       (insert (concat "    (py-shell argprompt nil \"" ele "\")))\n\n")))
     (insert ";; dedicated switch\n")
     (dolist (ele py-shells)
-      (setq ele (prin1-to-string ele))
+      (setq ele (replace-regexp-in-string "\\\\" "" (prin1-to-string ele)))
       (insert (concat "(defalias '" ele "-dedicated-switch '" ele "-switch-dedicated)\n"))
       (insert (concat "(defun " ele "-switch-dedicated (&optional argprompt)
   \"Switch to an unique "))
-      (if (string= "ipython" ele)
-          (insert "IPython")
-        (insert (capitalize ele)))
+      (insert (capitalize ele))
+      (pmu-fix-ipython)
       (insert (concat " interpreter in another window.
 
 Optional \\\\[universal-argument] prompts for path to the"))
-      ;; (if (string= "ipython" ele)
-      ;;     (insert "IPython")
-      ;;   (insert (capitalize ele)))
       (insert " interpreter. \"
   \(interactive \"p\")")
-  (insert "\n  (let ((py-dedicated-process-p t)
+      (insert "\n (let ((py-dedicated-process-p t)
         (py-switch-buffers-on-execute-p t))\n")
-  (insert (concat "    (py-shell argprompt t \"" ele "\")))\n\n")))
-    (insert "
-\(defalias 'Python 'python)
-\(defalias 'pyhotn 'python)
-\(defalias 'pyhton 'python)
-\(defalias 'pyt 'python)
-\
-\(defalias 'Python2 'python2)
-\(defalias 'Python3 'python3)
-\
-\(defalias 'IPython 'ipython)
-\(defalias 'Ipython 'ipython)
-\(defalias 'iyp 'ipython)
-\(defalias 'ipy 'ipython)
+      (insert (concat "    (py-shell argprompt t \"" ele "\")))\n\n")))
 
-\(provide 'python-components-named-shells)
+    (insert "(provide 'python-components-named-shells)
 ;;; python-components-named-shells.el ends here
 ")
-  (switch-to-buffer (current-buffer))
-  (emacs-lisp-mode)
-  ))
+    (switch-to-buffer (current-buffer))
+    (emacs-lisp-mode)
+    (when (interactive-p) (switch-to-buffer (current-buffer))
+	  (emacs-lisp-mode))
+    (write-file (concat py-install-directory "/python-components-named-shells.el"))))
+
 
 (defun py-write-re-beg-end-forms ()
   (interactive)
@@ -3819,4 +3778,5 @@ Returns a list, whose car is beg, cdr - end.\"
   (py-write-end-position-forms)
   (py-write-kill-forms)
   (py-write-mark-forms)
+  (py-provide-installed-shells-commands)
   )

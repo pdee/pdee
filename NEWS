@@ -11,12 +11,16 @@ New in version 6.2.1
   same with optional argument
 
 - Commands
+  - ipython2.7
+  - ipython3
+
   - py-beginning-of-for-block
   - py-beginning-of-for-block-bol
   - py-end-of-statement-bol
   - py-end-of-top-level-bol
 
   - py-flycheck-mode - toggle `flycheck-mode' from menu "Checks"
+
 
 - New helper functions, like
   - py--end-of-block-bol-p
