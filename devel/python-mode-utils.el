@@ -33,7 +33,7 @@
 (defvar arkopf)
 
 (setq arkopf
-      "\n;; Copyright (C) 2011-2014  Andreas Roehler
+      "\n;; Copyright (C) 2015  Andreas Roehler
 ;; Author: Andreas Roehler <andreas.roehler@online.de>
 ;; Keywords: languages, convenience
 

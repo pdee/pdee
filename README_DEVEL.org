@@ -47,3 +47,6 @@
   A `py-python-' form may have a `py-ipython' sibling
   Likewise `py--python'
 
+* Bugs, feature requests
+  Please use bug-tracker at
+  http://launchpad.net/python-mode
