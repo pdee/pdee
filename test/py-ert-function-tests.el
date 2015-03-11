@@ -1035,6 +1035,12 @@
 (ert-deftest py-ert-ipython-test ()
   (should (functionp 'ipython)))
 
+(ert-deftest py-ert-ipython-test ()
+  (should (functionp 'ipython3)))
+
+(ert-deftest py-ert-ipython-test ()
+  (should (functionp 'ipython2.7)))
+
 (ert-deftest py-ert-python2-test ()
   (should (functionp 'python2)))
 
@@ -1049,6 +1055,12 @@
 
 (ert-deftest py-ert-ipython-dedicated-test ()
   (should (functionp 'ipython-dedicated)))
+
+(ert-deftest py-ert-ipython-dedicated-test ()
+  (should (functionp 'ipython3-dedicated)))
+
+(ert-deftest py-ert-ipython-dedicated-test ()
+  (should (functionp 'ipython2.7-dedicated)))
 
 (ert-deftest py-ert-python2-dedicated-test ()
   (should (functionp 'python2-dedicated)))

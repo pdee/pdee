@@ -37,9 +37,15 @@ Return the process"
   "Set `py-result' according to `py-fast-filter-re'.
 
 Remove trailing newline"
-  (let* ((erg (ansi-color-filter-apply string)))
-    (setq py-result (replace-regexp-in-string (format "[ \n]*%s[ \n]*" py-fast-filter-re) "" erg))
-    py-result))
+    (replace-regexp-in-string (format "[ \n]*%s[ \n]*" py-fast-filter-re) "" (ansi-color-filter-apply string)))
+
+;; (defun py--filter-result (string)
+;;   "Set `py-result' according to `py-fast-filter-re'.
+
+;; Remove trailing newline"
+;;   (let* ((erg (ansi-color-filter-apply string)))
+;;     (setq py-result (replace-regexp-in-string (format "[ \n]*%s[ \n]*" py-fast-filter-re) "" erg))
+;;     py-result))
 
 (defun py--fast-send-string-no-output (string proc output-buffer)
   (with-current-buffer output-buffer
@@ -72,6 +78,7 @@ Remove trailing newline"
       ;; sets py-result
       (unless py-ignore-result-p
 	(setq py-result (py--filter-result (py--fetch-result orig))))
+
       (when return
 	py-result))))
 

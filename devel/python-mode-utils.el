@@ -3823,7 +3823,7 @@ Returns a list, whose car is beg, cdr - end.\"
   ;; (switch-to-buffer (current-buffer))
   (write--bounds-forms)
   (insert "\n(provide 'python-components-bounds-forms)
-;; python-components-bounds-forms.el ends here\n")
+;;; python-components-bounds-forms.el ends here\n")
   (when (interactive-p) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
   (write-file (concat py-install-directory "/python-components-bounds-forms.el")))
