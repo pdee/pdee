@@ -1,3 +1,4 @@
+* py-load-pymacs-p in python-mode.el
 * idlw-shell.el
   ;; Python-mode, bundled with many Emacs installs, quite cavalierly
   ;; adds this function to the global default hook.  It interferes

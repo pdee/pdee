@@ -484,8 +484,6 @@ See also `py-no-completion-calls-dabbrev-expand-p'"
 (defvar py-auto-completion-buffer nil
   "Internally used by `py-auto-completion-mode'")
 
-(defvar py--auto-complete-timer nil)
-
 (defcustom py--auto-complete-timer-delay 1
   "Seconds Emacs must be idle to trigger auto-completion.
 
