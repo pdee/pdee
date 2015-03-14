@@ -34,7 +34,7 @@
 
 ;;; Code:
 
-(defvar auto-fill-mode-orig (auto-fill-mode)
+(defvar py-auto-fill-mode-orig (auto-fill-mode)
   "Store the original state of auto-fill-mode. ")
 
 (defvar fill-column-orig fill-column
