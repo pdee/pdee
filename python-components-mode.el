@@ -782,13 +782,6 @@ Normally python-mode knows best which function to use. "
           )
   :group 'python-mode)
 
-(defcustom ipython-complete-function 'ipython-complete
-  "Function used for completion in IPython shell buffers. "
-  :type '(choice (const :tag "py-shell-complete" py-shell-complete)
-                 (const :tag "Pymacs based py-complete" py-complete)
-                 (const :tag "IPython's ipython-complete" ipython-complete))
-  :group 'python-mode)
-
 (defcustom py-encoding-string " # -*- coding: utf-8 -*-"
   "Default string specifying encoding of a Python file. "
   :type 'string
