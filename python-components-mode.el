@@ -1570,14 +1570,6 @@ if \'0.10\' < version:
                  (const :tag "py--imenu-create-index, series 5. index-machine" py-imenu-create-index))
   :group 'python-mode)
 
-(defcustom python-source-modes '(python-mode jython-mode)
-  "Used to determine if a buffer contains Python source code.
-If a file is loaded into a buffer that is in one of these major modes,
-it is considered Python source by `py-load-file', which uses the
-value to determine defaults."
-  :type '(repeat function)
-  :group 'python-mode)
-
 (defcustom py-input-filter-re "\\`\\s-*\\S-?\\S-?\\s-*\\'"
   "Input matching this regexp is not saved on the history list.
 Default ignores all inputs of 0, 1, or 2 non-blank characters."
