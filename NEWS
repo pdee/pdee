@@ -31,9 +31,16 @@ New in version 6.2.1
   start no longer a command. Renamed as interanal
   functions with prefix `py--' now.
 
-
 - TAB-indent from column zero: go to outmost first, lp:1375122
 - (I)Python-shell setup made more reliable
+
+New customizables:
+
+- py-pdb-executable, default is nil
+  Indicate PATH/TO/pdb.
+
+- py-update-gud-pdb-history-p, default is t
+  If pdb should provide suggestions WRT file and pdb-path.
 
 
 New in version 6.2.0

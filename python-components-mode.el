@@ -1,5 +1,4 @@
 
-
 ;; python-mode.el --- Edit, debug, develop, run Python programs.
 
 ;; Includes a minor mode for handling a Python/IPython shell,
@@ -225,6 +224,27 @@ Default is t")
 
 Restart py-shell once with new Emacs/python-mode. ")
 
+(defcustom py-update-gud-pdb-history-p t
+  "If pdb should provide suggestions WRT file to check and pdb-path.
+
+Default is t
+See lp:963253
+"
+  :type 'boolean
+  :group 'python-mode
+  :tag "py-update-gud-pdb-history-p")
+
+
+(defcustom py-pdb-executable nil
+  "Indicate PATH/TO/pdb.
+
+Default is nil
+See lp:963253
+"
+  :type 'string
+  :group 'python-mode
+  :tag "py-pdb-executable")
+
 (defcustom py-hide-show-minor-mode-p nil
   "If hide-show minor-mode should be on, default is nil. "
 
@@ -398,16 +418,16 @@ Give some hints, if not."
 
 ;; (defcustom py-smart-operator-mode-p nil
 ;; "If python-mode calls `smart-operator-mode-on'
-;; 
+;;
 ;; Default is nil. "
-;; 
+;;
 ;; :type 'boolean
 ;; :group 'python-mode
 ;; :set (lambda (symbol value)
 ;; (and (py-smart-operator-check)
 ;; (set-default symbol value)
 ;; (smart-operator-mode (if value 1 0)))))
-;; 
+;;
 
 (defcustom py-smart-operator-mode-p nil
   "If python-mode calls `smart-operator-mode-on'
@@ -896,6 +916,7 @@ If you ignore the location `M-x py-guess-pdb-path' might display it."
 Precedes guessing when not empty, returned by function `py-separator-char'. "
   :type 'character
   :group 'python-mode)
+
 (and
  ;; used as a string finally
  ;; kept a character not to break existing customizations
@@ -2832,9 +2853,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
 (require 'python-components-intern)
 (require 'python-components-foot)
 
-
 (and py-company-pycomplete-p (require 'company-pycomplete))
-
 
 ;; Macros
 (defmacro empty-line-p ()

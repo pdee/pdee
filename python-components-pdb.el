@@ -41,15 +41,6 @@
 
 (defvar py-pdbtrack-is-tracking-p nil)
 
-(defun py-update-gud-pdb-history ()
-  "If pdb is called at a Python buffer, put it's file name at the head of `gud-pdb-history'. "
-  (interactive)
-  (let* ((first (replace-regexp-in-string "^\\([^ ]+\\) +.+$" "\\1" (car gud-pdb-history)))
-         (second (if (string-match ".+.py$" (buffer-file-name))
-                     (buffer-file-name) (replace-regexp-in-string "^\\([^ ]+\\) +\\(.+\\)$" "\\2" (car gud-pdb-history))))
-         (erg (concat first " " second)))
-    (push erg gud-pdb-history)))
-
 (defun py--pdbtrack-overlay-arrow (activation)
   "Activate or de arrow at beginning-of-line in current buffer."
   ;; This was derived/simplified from edebug-overlay-arrow
@@ -116,7 +107,6 @@ script, and set to python-mode, and pdbtrack will find it.)"
             (message "pdbtrack: line %s, file %s" target_lineno target_fname)
             (py--pdbtrack-overlay-arrow t)
             (pop-to-buffer origbuf t)))))))
-
 
 (defun py--pdbtrack-map-filename (filename)
 
@@ -249,12 +239,10 @@ named for funcname or define a function funcname."
   (let ((py-python-command-args (list "-i" "-m" "pdb")))
     (py-execute-region beg end)))
 
-
 (defun py-pdb-execute-statement ()
   (interactive)
   (let ((stm (progn (py-statement) (car kill-ring))))
     (py-execute-string (concat "import pdb;pdb.run('" stm "')"))))
-
 
 (defun py-pdb-help ()
   "Print generic pdb.help() message "
@@ -264,6 +252,76 @@ named for funcname or define a function funcname."
 (defun py-pdb-break (&optional line file condition)
   (interactive)
   (py-execute-string (concat "import pdb;pdb.break('" stm "')")))
+
+(defun py--pdb-versioned ()
+  "Guess existing pdb version from py-shell-name
+
+Return \"pdb[VERSION]\" if executable found, just \"pdb\" otherwise"
+  (interactive)
+  (let ((erg (when (string-match "[23]" py-shell-name)
+	       ;; versions-part
+	       (substring py-shell-name (string-match "[23]" py-shell-name)))))
+    (if erg
+      (2cond ((executable-find (concat "pdb" erg))
+	     (concat "pdb" erg))
+	    ((and (string-match "\\." erg)
+		  (executable-find (concat "pdb" (substring erg 0 (string-match "\\." erg)))))
+	     (concat "pdb" (substring erg 0 (string-match "\\." erg)))))
+      "pdb")))
+
+(defun py--pdb-current-executable ()
+  "When py-pdb-executable is set, return it.
+
+Otherwise return resuslt from `executable-find' "
+  (or py-pdb-executable
+      (executable-find "pdb")))
+
+(defun py-update-gud-pdb-history ()
+  "If pdb is called at a Python buffer, put it's file name at the head of `gud-pdb-history'. "
+  (interactive)
+  (let* (;; PATH/TO/pdb
+	 (first (or (and gud-pdb-history (replace-regexp-in-string "^\\([^ ]+\\) +.+$" "\\1" (car gud-pdb-history)))
+		    (py--pdb-current-executable)))
+	 ;; file to debug
+         (second (cond ((not (ignore-errors (buffer-file-name)))
+			(error "%s" "Buffer must be saved first."))
+		       ((not (string-match ".+.py$" (buffer-file-name)))
+			(error "command expects a file with suffix \".py\""))
+		     ((string-match ".+.py$" (buffer-file-name))
+                      (replace-regexp-in-string "^\\([^ ]+\\) +\\(.+\\)$" "\\2" (car gud-pdb-history)))))
+         (erg (concat first " " second)))
+    (push erg gud-pdb-history)))
+
+;; (defadvice pdb (before init-pdb-history activate)
+;;   (py-update-gud-pdb-history))
+;;
+;; (ad-activate 'pdb)
+;; (ad-update 'pdb)
+
+;; (defun py-pdb (command-line &optional file)
+;;   "Run pdb on program FILE in buffer `*gud-FILE*'.
+;; The directory containing FILE becomes the initial working directory
+;; and source-file directory for your debugger.
+
+;; `py-pdb-executable', when set, is used
+
+;; lp:963253"
+;;   (interactive
+;;    (list
+;;     ;;
+;;     ;; (eq system-type 'ms-dos)(eq system-type 'windows-nt))
+;;     ;; sys.version_info[0]
+;;     ;; setq gud-pdb-command-name ?
+;;     ;; (py--pdb-current-executable)
+;;     'pdb))
+;;   (let ((file (or file (buffer-file-name))))
+;;     (gud-query-cmdline 'pdb file)))
+
+
+;; (defun py-pdb ()
+;;   (interactive)
+;;   (py-update-gud-pdb-history)
+;;   (pdb))
 
 (provide 'python-components-pdb)
 ;;; python-components-pdb.el ends here

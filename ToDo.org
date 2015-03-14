@@ -1,3 +1,9 @@
+* idlw-shell.el
+  ;; Python-mode, bundled with many Emacs installs, quite cavalierly
+  ;; adds this function to the global default hook.  It interferes
+  ;; with overlay-arrows.
+  (remove-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file)
+
 * def (a,
 
   ): no indent
