@@ -224,7 +224,7 @@ Default is t")
 Restart py-shell once with new Emacs/python-mode. ")
 
 (defcustom py-update-gud-pdb-history-p t
-  "If pdb should provide suggestions WRT file to check and pdb-path.
+  "If pdb should provide suggestions WRT file to check and py-pdb-path.
 
 Default is t
 See lp:963253
@@ -890,7 +890,7 @@ No semantic indent,  which diff to `py-indent-offset' indicates "
   :type 'integer
   :group 'python-mode)
 
-(defcustom pdb-path '/usr/lib/python2.7/pdb.py
+(defcustom py-pdb-path '/usr/lib/python2.7/pdb.py
   "Where to find pdb.py. Edit this according to your system.
 
 If you ignore the location `M-x py-guess-pdb-path' might display it."
