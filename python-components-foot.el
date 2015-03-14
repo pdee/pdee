@@ -226,7 +226,7 @@ See available customizations listed in files variables-python-mode at directory 
        (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
 	      (concat "\\("
 		      (mapconcat 'identity
-				 (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
+				 (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp py-ipython-input-prompt-re py-ipython-output-prompt-re py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
 				 "\\|")
 		      "\\)"))
 	     (t (concat "\\("

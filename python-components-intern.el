@@ -8568,7 +8568,7 @@ LIEP stores line-end-position at point-of-interest
              erg indent this-line)
         (if (and (< repeat 1)
                  (and (comint-check-proc (current-buffer))
-                      (re-search-backward (concat py-shell-prompt-regexp "\\|" ipython-de-output-prompt-regexp "\\|" ipython-de-input-prompt-regexp) nil t 1)))
+                      (re-search-backward (concat py-shell-prompt-regexp "\\|" py-ipython-output-prompt-re "\\|" py-ipython-input-prompt-re) nil t 1)))
             ;; common recursion not suitable because of prompt
             (with-temp-buffer
 	      ;; (when py-debug-p (switch-to-buffer (current-buffer)))

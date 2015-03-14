@@ -834,10 +834,10 @@ With universal arg \C-u insert a `%'. "
     (if arg
         (self-insert-command (if (numberp arg) arg 1))
       (cond
-       ((and (not match-paren-no-use-syntax-pps) (looking-at "\\s("))
+       ((and (not py-match-paren-no-use-syntax-pps) (looking-at "\\s("))
         (forward-list 1)
         (backward-char 1))
-       ((and (not match-paren-no-use-syntax-pps)(looking-at "\\s)"))
+       ((and (not py-match-paren-no-use-syntax-pps)(looking-at "\\s)"))
         (forward-char 1) (backward-list 1))
        ;; if match-paren-no-syntax-pps
        ((looking-at "(")

@@ -278,17 +278,17 @@ interpreter.
   (py-shell argprompt t))
 
 (defun py-set-ipython-completion-command-string (shell)
-  "Set and return `ipython-completion-command-string'. "
+  "Set and return `py-ipython-completion-command-string'. "
   (interactive)
   (let* ((ipython-version (shell-command-to-string (concat shell " -V"))))
     (if (string-match "[0-9]" ipython-version)
-        (setq ipython-completion-command-string
+        (setq py-ipython-completion-command-string
               (cond ((string-match "^[^0].+" ipython-version)
-		     ipython0.11-completion-command-string)
+		     py-ipython0.11-completion-command-string)
                     ((string-match "^0.1[1-3]" ipython-version)
-                     ipython0.11-completion-command-string)
+                     py-ipython0.11-completion-command-string)
                     ((string= "^0.10" ipython-version)
-                     ipython0.10-completion-command-string)))
+                     py-ipython0.10-completion-command-string)))
       (error ipython-version))))
 
 (defun py-ipython--module-completion-import (proc)
@@ -1691,7 +1691,7 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
         (forward-line -1)
         (end-of-line)
         (when (or (re-search-backward py-shell-prompt-regexp nil t 1)
-                  (re-search-backward (concat ipython-de-input-prompt-regexp "\\|" ipython-de-output-prompt-regexp) nil t 1))
+                  (re-search-backward (concat py-ipython-input-prompt-re "\\|" py-ipython-output-prompt-re) nil t 1))
           (save-excursion
             (when (re-search-forward "File \"\\(.+\\)\", line \\([0-9]+\\)\\(.*\\)$" nil t)
               (setq erg (copy-marker (point)))

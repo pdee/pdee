@@ -1855,16 +1855,16 @@ syntax or has word syntax and isn't a letter.")
   "Returns locally used executable-name including its version. ")
 (make-variable-buffer-local 'py-local-versioned-command)
 
-(defvar ipython-completion-command-string nil
-  "Either ipython0.10-completion-command-string or ipython0.11-completion-command-string.
+(defvar py-ipython-completion-command-string nil
+  "Either py-ipython0.10-completion-command-string or py-ipython0.11-completion-command-string.
 
-ipython0.11-completion-command-string also covers version 0.12")
+py-ipython0.11-completion-command-string also covers version 0.12")
 
-(defvar ipython0.10-completion-command-string
+(defvar py-ipython0.10-completion-command-string
   "print(';'.join(__IP.Completer.all_completions('%s'))) #PYTHON-MODE SILENT\n"
   "The string send to ipython to query for all possible completions")
 
-(defvar ipython0.11-completion-command-string
+(defvar py-ipython0.11-completion-command-string
   "print(';'.join(get_ipython().Completer.all_completions('%s'))) #PYTHON-MODE SILENT\n"
   "The string send to ipython to query for all possible completions")
 
@@ -1927,7 +1927,7 @@ can write into: the value (if any) of the environment variable TMPDIR,
   "Recognize the pydb-prompt. ")
 
  ;; prevent ipython.el's setting
-(setq ipython-de-input-prompt-regexp "In \\[[0-9]+\\]:\\|^[ ]\\{3\\}[.]\\{3,\\}:" )
+(setq py-ipython-input-prompt-re "In \\[[0-9]+\\]:\\|^[ ]\\{3\\}[.]\\{3,\\}:" )
 
 (defvar py-exec-command nil
   "Internally used. ")
@@ -1944,10 +1944,10 @@ can write into: the value (if any) of the environment variable TMPDIR,
 
 (defvar py-pylint-history nil)
 
-(defvar ipython-de-input-prompt-regexp "In \\[[0-9]+\\]:\\|^[ ]\\{3\\}[.]\\{3,\\}:"
+(defvar py-ipython-input-prompt-re "In \\[[0-9]+\\]:\\|^[ ]\\{3\\}[.]\\{3,\\}:"
   "A regular expression to match the IPython input prompt. ")
 
-(defvar ipython-de-output-prompt-regexp "^Out\\[[0-9]+\\]: "
+(defvar py-ipython-output-prompt-re "^Out\\[[0-9]+\\]: "
   "A regular expression to match the output prompt of IPython.")
 
 (defvar py-mode-output-map nil
@@ -2022,7 +2022,7 @@ subsequent py-up-exception needs the line number where the region
 started, in order to jump to the correct file line.  This variable is
 set in py-execute-region and used in py--jump-to-exception.")
 
-(defvar match-paren-no-use-syntax-pps nil)
+(defvar py-match-paren-no-use-syntax-pps nil)
 
 (defvar py-traceback-line-re
   "[ \t]+File \"\\([^\"]+\\)\", line \\([0-9]+\\)"
@@ -2101,7 +2101,7 @@ for options to pass to the DOCNAME interpreter. \"
 
 (defvar py-fast-filter-re (concat "\\("
 			       (mapconcat 'identity
-					  (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp ipython-de-input-prompt-regexp ipython-de-output-prompt-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt "[.]\\{3,\\}:? *"))
+					  (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp py-ipython-input-prompt-re py-ipython-output-prompt-re py-pdbtrack-input-prompt py-pydbtrack-input-prompt "[.]\\{3,\\}:? *"))
 					  "\\|")
 			       "\\)")
   "Internally used by `py-fast-filter'.
@@ -2377,8 +2377,6 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
 (defvar py-windows-config nil
   "Completion stores py-windows-config-register here")
 
-(setq symbol-definition-start-re "^[ \t]*(\\(defun\\|defvar\\|defcustom\\)")
-
 (put 'py-indent-offset 'safe-local-variable 'integerp)
 
 ;; testing
@@ -2462,8 +2460,6 @@ See also `py-object-reference-face'"
   '((t (:inherit font-lock-builtin-face)))
   "."
   :group 'python-mode)
-
-(make-obsolete-variable 'jpython-mode-hook 'jython-mode-hook nil)
 
 (defun py--delete-all-but-first-prompt ()
   "Don't let prompts from setup-codes sent clutter buffer. "
