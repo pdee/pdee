@@ -117,7 +117,7 @@ See available customizations listed in files variables-python-mode at directory 
   (set (make-local-variable 'parse-sexp-ignore-comments) t)
   (set (make-local-variable 'comment-use-syntax) t)
   (set (make-local-variable 'comment-start) "#")
-  (if empty-comment-line-separates-paragraph-p
+  (if py-empty-comment-line-separates-paragraph-p
       (progn
         (set (make-local-variable 'paragraph-separate) "\f\\|^[ \t]*$\\|^[ \t]*#[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$")
         (set (make-local-variable 'paragraph-start) "\f\\|^[ \t]*$\\|^[ \t]*#[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$"))

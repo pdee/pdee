@@ -1,4 +1,3 @@
-
 ;; python-mode.el --- Edit, debug, develop, run Python programs.
 
 ;; Includes a minor mode for handling a Python/IPython shell,
@@ -279,7 +278,7 @@ Call M-x `customize-face' in order to have a visible effect. "
   :type 'boolean
   :group 'python-mode)
 
-(defcustom empty-comment-line-separates-paragraph-p t
+(defcustom py-empty-comment-line-separates-paragraph-p t
   "Consider paragraph start/end lines with nothing inside but comment sign.
 
 Default is  non-nil"

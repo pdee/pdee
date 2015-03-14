@@ -3275,12 +3275,12 @@ Default is nil. Use `M-x customize-variable' to set it permanently"
                      :style toggle :selected py-verbose-p]
 
                     ["Empty comment line separates paragraph "
-                     (setq empty-comment-line-separates-paragraph-p
-                           (not empty-comment-line-separates-paragraph-p))
+                     (setq py-empty-comment-line-separates-paragraph-p
+                           (not py-empty-comment-line-separates-paragraph-p))
                      :help "Consider paragraph start/end lines with nothing inside but comment sign.
 
 Default is non-nilUse `M-x customize-variable' to set it permanently"
-                     :style toggle :selected empty-comment-line-separates-paragraph-p]
+                     :style toggle :selected py-empty-comment-line-separates-paragraph-p]
 
                     ["Org cycle "
                      (setq py-org-cycle-p
@@ -6628,12 +6628,12 @@ Default is nil. Use `M-x customize-variable' to set it permanently"
 		 :style toggle :selected py-verbose-p]
 
 		["Empty comment line separates paragraph "
-		 (setq empty-comment-line-separates-paragraph-p
-		       (not empty-comment-line-separates-paragraph-p))
+		 (setq py-empty-comment-line-separates-paragraph-p
+		       (not py-empty-comment-line-separates-paragraph-p))
 		 :help "Consider paragraph start/end lines with nothing inside but comment sign.
 
 Default is non-nilUse `M-x customize-variable' to set it permanently"
-		 :style toggle :selected empty-comment-line-separates-paragraph-p]
+		 :style toggle :selected py-empty-comment-line-separates-paragraph-p]
 
 		["Org cycle "
 		 (setq py-org-cycle-p
