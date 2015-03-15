@@ -2558,14 +2558,6 @@ In experimental state yet "
 
                     ("Completion"
 
-                     ["No completion calls dabbrev expand "
-                      (setq py-no-completion-calls-dabbrev-expand-p
-                            (not py-no-completion-calls-dabbrev-expand-p))
-                      :help "If completion function should call dabbrev-expand when no completion found\. Default is `t'
-
-See also `py-indent-no-completion-p'Use `M-x customize-variable' to set it permanently"
-                      :style toggle :selected py-no-completion-calls-dabbrev-expand-p]
-
                      ["Set Pymacs-based complete keymap "
                       (setq py-set-complete-keymap-p
                             (not py-set-complete-keymap-p))
@@ -2575,20 +2567,12 @@ Default is nil.
 See also resp. edit `py-complete-set-keymap' Use `M-x customize-variable' to set it permanently"
                       :style toggle :selected py-set-complete-keymap-p]
 
-                     ["No completion calls dabbrev expand "
-                      (setq py-no-completion-calls-dabbrev-expand-p
-                            (not py-no-completion-calls-dabbrev-expand-p))
-                      :help "If completion function should call dabbrev-expand when no completion found. Default is `t'
-
-See also `py-indent-no-completion-p'Use `M-x customize-variable' to set it permanently"
-                      :style toggle :selected py-no-completion-calls-dabbrev-expand-p]
-
                      ["Indent no completion "
                       (setq py-indent-no-completion-p
                             (not py-indent-no-completion-p))
                       :help "If completion function should indent when no completion found. Default is `t'
 
-See also `py-no-completion-calls-dabbrev-expand-p'Use `M-x customize-variable' to set it permanently"
+Use `M-x customize-variable' to set it permanently"
                       :style toggle :selected py-indent-no-completion-p]
 
                      ["Company pycomplete "
@@ -5949,14 +5933,6 @@ Otherwise value of py-python-history is used. Use `M-x customize-variable' to se
 
 		("Completion"
 
-		 ["No completion calls dabbrev expand "
-		  (setq py-no-completion-calls-dabbrev-expand-p
-			(not py-no-completion-calls-dabbrev-expand-p))
-		  :help "If completion function should call dabbrev-expand when no completion found\. Default is `t'
-
-See also `py-indent-no-completion-p'Use `M-x customize-variable' to set it permanently"
-		  :style toggle :selected py-no-completion-calls-dabbrev-expand-p]
-
 		 ["Set Pymacs-based complete keymap "
 		  (setq py-set-complete-keymap-p
 			(not py-set-complete-keymap-p))
@@ -5966,20 +5942,12 @@ Default is nil.
 See also resp. edit `py-complete-set-keymap' Use `M-x customize-variable' to set it permanently"
 		  :style toggle :selected py-set-complete-keymap-p]
 
-		 ["No completion calls dabbrev expand "
-		  (setq py-no-completion-calls-dabbrev-expand-p
-			(not py-no-completion-calls-dabbrev-expand-p))
-		  :help "If completion function should call dabbrev-expand when no completion found. Default is `t'
-
-See also `py-indent-no-completion-p'Use `M-x customize-variable' to set it permanently"
-		  :style toggle :selected py-no-completion-calls-dabbrev-expand-p]
-
 		 ["Indent no completion "
 		  (setq py-indent-no-completion-p
 			(not py-indent-no-completion-p))
 		  :help "If completion function should indent when no completion found. Default is `t'
 
-See also `py-no-completion-calls-dabbrev-expand-p'Use `M-x customize-variable' to set it permanently"
+Use `M-x customize-variable' to set it permanently"
 		  :style toggle :selected py-indent-no-completion-p]
 
 		 ["Company pycomplete "

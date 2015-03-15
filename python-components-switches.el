@@ -424,6 +424,7 @@ Underscores in word-class makes `forward-word' etc. travel the indentifiers. Def
 
 See bug report at launchpad, lp:940812 "
   :type 'boolean
+  :tag "py-underscore-word-syntax-p"
   :group 'python-mode
   :set (lambda (symbol value)
          (set-default symbol value)

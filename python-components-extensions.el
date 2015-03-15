@@ -20,28 +20,6 @@
 
 ;;; Code:
 
-(defcustom py-match-paren-mode nil
-  "*Non-nil means, cursor will jump to beginning or end of a block.
-This vice versa, to beginning first.
-Sets `py-match-paren-key' in python-mode-map.
-Customize `py-match-paren-key' which key to use. "
-  :type 'boolean
-  :group 'python)
-
-(defcustom py-match-paren-key "%"
-  "*String used by \\[comment-region] to comment out a block of code.
-This should follow the convention for non-indenting comment lines so
-that the indentation commands won't get confused (i.e., the string
-should be of the form `#x...' where `x' is not a blank or a tab, and
-`...' is arbitrary).  However, this string should not end in whitespace."
-  :type 'string
-  :group 'python)
-
-(defcustom py-kill-empty-line t
-  "*If t, py-indent-forward-line kills empty lines. "
-  :type 'boolean
-  :group 'python)
-
 (defun py-indent-forward-line (&optional arg)
   "Indent and move one line forward to next indentation.
 Returns column of line reached.
@@ -246,10 +224,8 @@ With arg, do it that many times.
 
 ;; from sh-werkstatt.el. Introduced here for convenience.
 (unless (boundp 'empty-line-p-chars)
-  (defcustom empty-line-p-chars "^[ \t\f\r]*$"
-    "Empty-line-p-chars."
-    :type 'regexp
-    :group 'convenience))
+  (defvar empty-line-p-chars "^[ \t\f\r]*$"))
+
 
 (unless (functionp 'in-string-p)
   (defun in-string-p (&optional pos)

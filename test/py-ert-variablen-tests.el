@@ -364,9 +364,6 @@
 (ert-deftest py-ert-new-shell-delay-test ()
   (should (boundp 'py-new-shell-delay)))
 
-(ert-deftest py-ert-no-completion-calls-dabbrev-expand-p-test ()
-  (should (boundp 'py-no-completion-calls-dabbrev-expand-p)))
-
 (ert-deftest py-ert-org-cycle-p-test ()
   (should (boundp 'py-org-cycle-p)))
 

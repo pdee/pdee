@@ -16,7 +16,6 @@
 
 * let's dedicated shells buffer-name start with process-serial-no
 * py-minor-expression/token, py-expression/value
-* py-no-completion-calls-dabbrev-expand-p entfernen
 * py-describe-symbol-fails-on-modules-lp:919719-test
 * print_function IPython completion von prin
 * py-fill-string-django-test

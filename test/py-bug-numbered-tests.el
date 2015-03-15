@@ -2789,7 +2789,6 @@ CLASS_INS.someDe
 (defun pycomplete-same-folder-class-lp-889052-base (arg)
   (let ((testfile1 (concat (expand-file-name (py--normalize-directory py-install-directory)) "completion" "/" "classblah.py"))
         (testfile2 (concat (expand-file-name (py--normalize-directory py-install-directory)) "completion" "/" "somedef.py"))
-        py-no-completion-calls-dabbrev-expand-p
         py-indent-no-completion-p)
     (write-file testfile2)
     (goto-char 107)
@@ -2811,8 +2810,7 @@ CLASS_INS.someDe
 
 (defun no-completion-at-all-lp-1001328-test (&optional arg)
   (interactive "p")
-  (let ((py-no-completion-calls-dabbrev-expand-p t)
-        (teststring "#!/usr/bin/python
+  (let ((teststring "#!/usr/bin/python
 basdklfjasdf = 3
 basd
 "))
@@ -5362,7 +5360,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.61 $\"
+__version__ = \"$Revision: 1.62 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))

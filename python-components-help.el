@@ -21,11 +21,9 @@
 ;;
 
 ;;; Code:
-(defcustom py-eldoc-string-code
+(defvar py-eldoc-string-code
   "__PYDOC_get_help('''%s''')\n"
-  "Python code used to get a string with the documentation of an object."
-  :type 'string
-  :group 'python-mode)
+  "Python code used to get a string with the documentation of an object.")
 
 (defalias 'py-eldoc 'py-eldoc-function)
 
@@ -1090,13 +1088,13 @@ i.e. spaces, tabs, carriage returns, newlines and newpages. "
         (list command (list local-file)))
     (message "%s" "flymake needs a `buffer-file-name'. Please save before calling.")))
 
-(defun py-flycheck-mode (&optional arg) 
+(defun py-flycheck-mode (&optional arg)
   "Toggle `flycheck-mode'.
 
 With negative argument switch off flycheck-mode
 See menu \"Tools/Syntax Checking\""
   (interactive "p")
-  (setq arg (or arg (if flycheck-mode 0 1))) 
+  (setq arg (or arg (if flycheck-mode 0 1)))
   (if (featurep 'flycheck)
       (if (< arg 0)
 	  ;; switch off
