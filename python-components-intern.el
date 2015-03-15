@@ -8135,7 +8135,7 @@ Start a new process if necessary. "
       (setq ele (cdr ele)))
     (if erg
         (message "%s" erg)
-      (message "%s" "pdb.py not found, please customize `pdb-path'"))
+      (message "%s" "pdb.py not found, please customize `py-pdb-path'"))
     erg))
 
 ;;  credits to python.el
@@ -8242,12 +8242,6 @@ as it leaves your system default unchanged."
   (setq py-use-local-default (not py-use-local-default))
   (when (interactive-p) (message "py-use-local-default set to %s" py-use-local-default))
   py-use-local-default)
-
-(defadvice pdb (before gud-query-cmdline activate)
-  "Provide a better default command line when called interactively."
-  (interactive
-   (list (gud-query-cmdline pdb-path
-                            (file-name-nondirectory buffer-file-name)))))
 
 (defalias 'py-hungry-delete-forward 'c-hungry-delete-forward)
 (defalias 'py-hungry-delete-backwards 'c-hungry-delete-backwards)

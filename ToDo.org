@@ -1,4 +1,7 @@
 * py-load-pymacs-p in python-mode.el
+* pdb
+  in gud.el
+    (run-hooks 'pdb-mode-hook))
 * idlw-shell.el
   ;; Python-mode, bundled with many Emacs installs, quite cavalierly
   ;; adds this function to the global default hook.  It interferes

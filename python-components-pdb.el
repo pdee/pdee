@@ -285,23 +285,19 @@ Otherwise return resuslt from `executable-find' "
 	 ;; file to debug
          (second (cond ((not (ignore-errors (buffer-file-name)))
 			(error "%s" "Buffer must be saved first."))
-		       ((not (string-match ".+.py$" (buffer-file-name)))
-			(error "command expects a file with suffix \".py\""))
-		     ((string-match ".+.py$" (buffer-file-name))
-                      (replace-regexp-in-string "^\\([^ ]+\\) +\\(.+\\)$" "\\2" (car gud-pdb-history)))))
-         (erg (concat first " " second)))
-    (push erg gud-pdb-history)))
+		       ((buffer-file-name)
+			(buffer-file-name))
+		       (t (and gud-pdb-history (stringp (car gud-pdb-history)) (replace-regexp-in-string "^\\([^ ]+\\) +\\(.+\\)$" "\\2" (car gud-pdb-history))))))
+         (erg (and first second (concat first " " second))))
+    (when erg
+      (push erg gud-pdb-history))))
 
-;; (defadvice pdb (before init-pdb-history activate)
-;;   (py-update-gud-pdb-history))
-;;
-;; (ad-activate 'pdb)
-;; (ad-update 'pdb)
+(defadvice pdb (before gud-query-cmdline activate)
+  "Provide a better default command line when called interactively."
+  (interactive
+   (list (gud-query-cmdline py-pdb-path
+                            (file-name-nondirectory buffer-file-name)))))
 
-;; (defun py-pdb (command-line &optional file)
-;;   "Run pdb on program FILE in buffer `*gud-FILE*'.
-;; The directory containing FILE becomes the initial working directory
-;; and source-file directory for your debugger.
 
 ;; `py-pdb-executable', when set, is used
 
