@@ -227,3 +227,28 @@ There is also
   M-x IPython RET
 
   an IPython-shell should be opened
+
+  ** pdb doesn't work at Windows
+  Richard Stanton commented:
+
+  Running M-x pdb doesn't work on my Windows machine, primarily because
+  Windows (at least using the default shell) doesn't automatically know
+  what to do when you give it a .py command at the command line.
+
+  For example, here's the suggested command when I run pdb on a file
+  c:\projects/run.py:
+
+  c:/python27/Lib/pdb.py run.py
+
+  If I accept this, I get an error "Spawning child process: Invalid
+  argument"
+
+  A work-around to get it to work is to replace the suggested command
+  with
+
+  c:\python27\python -i c:/python27/Lib/pdb.py c:/projects/run.py
+
+  (note that I not only have to add the python command, but also fully
+  qualify the script file, since otherwise it complains it can't find
+  the file).
+
