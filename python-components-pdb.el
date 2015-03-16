@@ -280,8 +280,15 @@ Otherwise return resuslt from `executable-find' "
   "If pdb is called at a Python buffer, put it's file name at the head of `gud-pdb-history'. "
   (interactive)
   (let* (;; PATH/TO/pdb
-	 (first (or (and gud-pdb-history (replace-regexp-in-string "^\\([^ ]+\\) +.+$" "\\1" (car gud-pdb-history)))
-		    (py--pdb-current-executable)))
+	 (first (cond ((and gud-pdb-history (ignore-errors (car gud-pdb-history)))
+		       (replace-regexp-in-string "^\\([^ ]+\\) +.+$" "\\1" (car gud-pdb-history)))
+		      (py-pdb-executable
+		       py-pdb-executable)
+		      ((or (eq system-type 'ms-dos)(eq system-type 'windows-nt))
+		       ;; lp:963253
+		       "c:/python27/python\ -i\ c:/python27/Lib/pdb.py")
+		      (t
+		       (py--pdb-current-executable))))
 	 ;; file to debug
          (second (cond ((not (ignore-errors (buffer-file-name)))
 			(error "%s" "Buffer must be saved first."))
@@ -297,27 +304,6 @@ Otherwise return resuslt from `executable-find' "
   (interactive
    (list (gud-query-cmdline py-pdb-path
                             (file-name-nondirectory buffer-file-name)))))
-
-
-;; `py-pdb-executable', when set, is used
-
-;; lp:963253"
-;;   (interactive
-;;    (list
-;;     ;;
-;;     ;; (eq system-type 'ms-dos)(eq system-type 'windows-nt))
-;;     ;; sys.version_info[0]
-;;     ;; setq gud-pdb-command-name ?
-;;     ;; (py--pdb-current-executable)
-;;     'pdb))
-;;   (let ((file (or file (buffer-file-name))))
-;;     (gud-query-cmdline 'pdb file)))
-
-
-;; (defun py-pdb ()
-;;   (interactive)
-;;   (py-update-gud-pdb-history)
-;;   (pdb))
 
 (provide 'python-components-pdb)
 ;;; python-components-pdb.el ends here

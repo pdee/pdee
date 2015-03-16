@@ -939,7 +939,10 @@ No semantic indent,  which diff to `py-indent-offset' indicates "
   :tag "py-backslashed-lines-indent-offset"
   :group 'python-mode)
 
-(defcustom py-pdb-path '/usr/lib/python2.7/pdb.py
+(defcustom py-pdb-path
+  (if (or (eq system-type 'ms-dos)(eq system-type 'windows-nt))
+      (quote c:/python27/python\ -i\ c:/python27/Lib/pdb.py)
+    '/usr/lib/python2.7/pdb.py)
   "Where to find pdb.py. Edit this according to your system.
 
 If you ignore the location `M-x py-guess-pdb-path' might display it."
