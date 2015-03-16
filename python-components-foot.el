@@ -43,7 +43,8 @@
 	   py--auto-complete-timer-delay
 	   ;; 1
 	   t
-	   #'py-complete-auto))))
+	   #'py-complete-auto)))
+  (force-mode-line-update))
 
 ;; (add-hook 'after-change-major-mode-hook #'py-protect-other-buffers-ac)
 
@@ -205,7 +206,8 @@ See available customizations listed in files variables-python-mode at directory 
     (easy-menu-add py-menu))
   (when py-hide-show-minor-mode-p (hs-minor-mode 1))
   (when py-outline-minor-mode-p (outline-minor-mode 1))
-  (when (interactive-p) (message "python-mode loaded from: %s" python-mode-message-string)))
+  (when (interactive-p) (message "python-mode loaded from: %s" python-mode-message-string))
+  (force-mode-line-update))
 
 (defun py--all-shell-mode-setting ()
   (when py-fontify-shell-buffer-p
@@ -310,7 +312,8 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
     (easy-menu-add py-menu))
   (if py-shell-unfontify-p
       (add-hook 'py-python-shell-mode-hook #'py--run-unfontify-timer (current-buffer))
-    (remove-hook 'py-python-shell-mode-hook 'py--run-unfontify-timer)))
+    (remove-hook 'py-python-shell-mode-hook 'py--run-unfontify-timer))
+  (force-mode-line-update))
 
 (define-derived-mode py-ipython-shell-mode comint-mode "IPy"
   "Major mode for interacting with a Python process.
@@ -367,7 +370,8 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
   (when py-shell-menu
     (easy-menu-add py-menu))
   ;; Running py-ipython-shell-mode-hook seems to need some delay
-  (sit-for 0.5 t))
+  (sit-for 0.5 t)
+  (force-mode-line-update))
 
 
 (provide 'python-components-foot)
