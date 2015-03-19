@@ -76,12 +76,6 @@
 (ert-deftest py-ert-block-comment-prefix-p-test ()
   (should (boundp 'py-block-comment-prefix-p)))
 
-(ert-deftest py-ert-bpython-command-test ()
-  (should (boundp 'py-bpython-command)))
-
-(ert-deftest py-ert-bpython-command-args-test ()
-  (should (boundp 'py-bpython-command-args)))
-
 (ert-deftest py-ert-check-command-test ()
   (should (boundp 'py-check-command)))
 
