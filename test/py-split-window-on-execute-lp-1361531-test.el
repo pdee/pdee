@@ -100,21 +100,6 @@ print(\"I'm the py-split-window-on-execute-lp-1361531-python3-test\")"))
   (assert (eq 2 (count-windows)) nil "py-split-window-on-execute-lp-1361531-python3-test failed")
   (py-kill-buffer-unconditional (current-buffer)))
  
-(defun py-split-window-on-execute-lp-1361531-bpython-test (&optional arg)
-  (interactive "p")
-  (let ((py-split-window-on-execute t)
-        (teststring "#! /usr/bin/env bpython
-# -*- coding: utf-8 -*-
-print(\"I'm the py-split-window-on-execute-lp-1361531-bpython-test\")"))
-    (py-bug-tests-intern 'py-split-window-on-execute-lp-1361531-bpython-base arg teststring)))
-
-(defun py-split-window-on-execute-lp-1361531-bpython-base ()
-  (when py-debug-p (message "py-split-window-on-execute: %s" py-split-window-on-execute))
-  (delete-other-windows)
-  (py-execute-statement)
-  (assert (eq 2 (count-windows)) nil "py-split-window-on-execute-lp-1361531-bpython-test failed")
-  (py-kill-buffer-unconditional (current-buffer)))
-
 (provide 'py-split-window-on-execute-lp-1361531-test)
 ;;; py-split-window-on-execute-lp-1361531-test.el here
  

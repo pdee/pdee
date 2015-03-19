@@ -129,27 +129,6 @@ print(\"I'm the py-multi-split-dedicated-lp-1361531-python3-test\")"))
   (py-kill-buffer-unconditional erg2)
   (py-restore-window-configuration)))
  
-(defun py-multi-split-dedicated-lp-1361531-bpython-test (&optional arg)
-  (interactive "p")
-  (let ((py-split-window-on-execute 'always)
-        (teststring "#! /usr/bin/env bpython
-# -*- coding: utf-8 -*-
-print(\"I'm the py-multi-split-dedicated-lp-1361531-bpython-test\")"))
-    (py-bug-tests-intern 'py-multi-split-dedicated-lp-1361531-bpython-base arg teststring)))
-
-(defun py-multi-split-dedicated-lp-1361531-bpython-base (arg)
-  (when py-debug-p (message "py-split-window-on-execute: %s" py-split-window-on-execute))
-  (delete-other-windows)
-
-  (let ((erg1 (progn (py-execute-statement-bpython-dedicated) py-buffer-name))
-        (erg2 (progn (py-execute-statement-bpython-dedicated) py-buffer-name)))
-  (sit-for 1 t)
-  (when py-debug-p (message "(count-windows) %s" (count-windows))) 
-  (assert (eq 3 (count-windows)) nil "py-multi-split-dedicated-lp-1361531-bpython-test failed")
-  (py-kill-buffer-unconditional erg1)
-  (py-kill-buffer-unconditional erg2)
-  (py-restore-window-configuration)))
-
 (provide 'py-multi-split-window-on-execute-lp-1361531-test)
 ;;; py-multi-split-window-on-execute-lp-1361531-test.el here
 

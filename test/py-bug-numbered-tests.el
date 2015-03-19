@@ -5360,7 +5360,7 @@ def foo():
 
 \"\"\"Some docstring.\"\"\"
 
-__version__ = \"$Revision: 1.62 $\"
+__version__ = \"$Revision: 1.63 $\"
 
 "))
   (py-bug-tests-intern 'python-mode-very-slow-lp-1107037-base arg teststring)))
@@ -6527,13 +6527,6 @@ d[\"a\""))
 (defun interpreter-mode-alist-lp-1355458-base-4 ()
   (assert (eq 'python-mode major-mode) nil "interpreter-mode-alist-lp-1355458-test-4 failed")
   (py-kill-buffer-unconditional (current-buffer)))
-
-(defun interpreter-mode-alist-lp-1355458-test-5 (&optional arg)
-  (interactive "p")
-   (let ((teststring "#! /usr/bin/env bpython
-# -*- coding: utf-8 -*-
-"))
-  (py-bug-tests-intern 'interpreter-mode-alist-lp-1355458-base-5 arg teststring)))
 
 (defun interpreter-mode-alist-lp-1355458-base-5 ()
   (assert (eq 'python-mode major-mode) nil "interpreter-mode-alist-lp-1355458-test-5 failed")
