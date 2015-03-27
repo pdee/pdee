@@ -2667,10 +2667,10 @@ Return position if " ele " found, nil otherwise \"
     (switch-to-buffer (current-buffer))
     (save-excursion
       (insert (concat "\n\[\"" (replace-regexp-in-string "-" " " (replace-regexp-in-string "py-" "" erg)) "\" " erg "
- :help \" `" erg "'
-\n"))
-      (when doku (insert doku))
-
+ :help \" `" erg "'"))
+      (when doku
+	(newline)
+	(insert doku))
       (insert (concat
                "\"]\n")))
     (skip-chars-forward "[[:punct:]]")

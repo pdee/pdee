@@ -771,7 +771,7 @@ def baz():
       (fill-paragraph)
       (search-backward "\"\"\"")
       (goto-char (match-end 0))
-      (eolp)
+      (should (eolp))
       (forward-line 1)
       (end-of-line)
       (when py-debug-p (message "fill-column: %s" fill-column))
