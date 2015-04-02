@@ -2339,6 +2339,23 @@ See py-no-outdent-1-re-raw, py-no-outdent-2-re-raw for better readable content "
    "\\)\\_>[( \t]*.*:?")
   "See py-block-or-clause-re-raw, which it reads. ")
 
+(defconst py-block-re-raw
+  (list
+   "except"
+   "for"
+   "if"
+   "try"
+   "while"
+   "with")
+  "Matches the beginning of a compound statement but not it's clause. ")
+
+(defvar py-block-re
+  (concat
+   "[ \t]*\\_<\\("
+   (regexp-opt  py-block-re-raw)
+   "\\)\\_>[( \t]*.*:?")
+  "See py-block-or-clause-re-raw, which it reads. ")
+
 (defconst py-clause-re
   (concat
    "[ \t]*\\_<\\("

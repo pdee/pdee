@@ -937,23 +937,6 @@ print u'\\xA9'
     (assert (window-full-height-p) "no-switch-no-split-test failed")
     (assert (eq (current-buffer) oldbuf))))
 
-(defun close-block-test (&optional arg load-branch-function)
-  (interactive "p")
-  (let ((teststring (concat py-test-shebang "
-# -*- coding: utf-8 -*-
-
-def main():
-    if len(sys.argv)==1:
-        usage()
-        sys.exit()
-if __name__==\"__main__\":
-    main()
-")))
-    (py-bug-tests-intern 'close-block-base arg teststring)))
-
-(defun close-block-base (arg)
-  (goto-char 102)
-  (assert (eq 4 (py-close-block)) nil "close-block-test failed"))
 
 (defun py-shift-block-test (&optional arg load-branch-function)
   (interactive "p")

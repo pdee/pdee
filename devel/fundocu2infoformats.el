@@ -159,7 +159,7 @@
         (find-file (concat directory-out "commands-" orgname)))
       (with-temp-buffer
         ;; reST
-        (insert "Python-mode commands\n\n")
+        (insert "Commands\n\n")
         ;; (insert (concat (make-string (length (concat (substring oldbuf 0 (string-match "\." oldbuf)) " commands")) ?\=) "\n\n"))
         (insert "====================\n\n")
         (dolist (ele commandslist)
@@ -217,7 +217,7 @@
         (find-file (concat directory-out "variables-" orgname)))
       (with-temp-buffer
         ;; reST
-        (insert "python-mode.el variables\n\n")
+        (insert "Variables\n\n")
         ;; (insert (concat (make-string (length (concat (substring oldbuf 0 (string-match "\." oldbuf)) " commands")) ?\=) "\n\n"))
         (insert "====================\n\n")
         (dolist (ele varslist)

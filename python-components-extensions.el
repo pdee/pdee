@@ -84,7 +84,8 @@ Affected by `py-dedent-keep-relative-column'. "
 
 (defun py--close-intern (regexp)
   "Core function, internal used only. "
-  (let ((cui (ignore-errors (car (py--go-to-keyword (symbol-value regexp))))))
+  (let ((cui (car (py--go-to-keyword (symbol-value regexp)))))
+    (message "%s" cui)
     (py--end-base regexp (point))
     (forward-line 1)
     (if py-close-provides-newline
@@ -98,7 +99,7 @@ Affected by `py-dedent-keep-relative-column'. "
 
 If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline. "
   (interactive "*")
-  (let ((erg (py--close-intern py-def-re)))
+  (let ((erg (py--close-intern 'py-def-re)))
     (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -107,7 +108,16 @@ If final line isn't empty and `py-close-block-provides-newline' non-nil, insert 
 
 If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline. "
   (interactive "*")
-  (let ((erg (py--close-intern py-class-re)))
+  (let ((erg (py--close-intern 'py-class-re)))
+    (when (interactive-p) (message "%s" erg))
+    erg))
+
+(defun py-close-def-or-class ()
+  "Set indent level to that of beginning of def-or-class definition.
+
+If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline. "
+  (interactive "*")
+  (let ((erg (py--close-intern 'py-def-or-class-re)))
     (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -116,7 +126,7 @@ If final line isn't empty and `py-close-block-provides-newline' non-nil, insert 
 
 If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline. "
   (interactive "*")
-  (let ((erg (py--close-intern py-clause-re)))
+  (let ((erg (py--close-intern 'py-block-or-clause-re)))
     (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -126,6 +136,15 @@ If final line isn't empty and `py-close-block-provides-newline' non-nil, insert 
 If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline. "
   (interactive "*")
   (let ((erg (py--close-intern 'py-block-re)))
+    (when (interactive-p) (message "%s" erg))
+    erg))
+
+(defun py-close-block-or-clause ()
+  "Set indent level to that of beginning of block-or-clause definition.
+
+If final line isn't empty and `py-close-block-or-clause-provides-newline' non-nil, insert a newline. "
+  (interactive "*")
+  (let ((erg (py--close-intern 'py-block-or-clause-re)))
     (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -295,7 +314,7 @@ With arg, do it that many times.
 (defalias 'druck 'py-printform-insert)
 
 (defun py-printform-insert (&optional arg string)
-  "Inserts a print statement out of current `(car kill-ring)' by default, inserts STRING if delivered. 
+  "Inserts a print statement out of current `(car kill-ring)' by default, inserts STRING if delivered.
 
 With optional \\[universal-argument] print as string"
   (interactive "*P")
@@ -320,7 +339,7 @@ With optional \\[universal-argument] print as string"
   (back-to-indentation))
 
 (defun py-boolswitch ()
-  "Edit the assignment of a boolean variable, revert them. 
+  "Edit the assignment of a boolean variable, revert them.
 
 I.e. switch it from \"True\" to \"False\" and vice versa"
   (interactive "*")

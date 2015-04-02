@@ -29,32 +29,6 @@
 (add-to-list 'load-path default-directory)
 (require 'python-mode-test)
 
-(defmacro py-test-with-temp-buffer-point-min (contents &rest body)
-  "Create temp buffer in `python-mode' inserting CONTENTS.
-BODY is code to be executed within the temp buffer.  Point is
- at the beginning of buffer."
-  (declare (indent 1) (debug t))
-  `(with-temp-buffer
-;;     (and (featurep 'python) (unload-feature 'python))
-     (let (hs-minor-mode)
-       (python-mode)
-       (insert ,contents)
-       (message "ERT %s" (point))
-       (goto-char (point-min))
-       ,@body)))
-
-(defmacro py-test-with-temp-buffer (contents &rest body)
-  "Create temp buffer in `python-mode' inserting CONTENTS.
-BODY is code to be executed within the temp buffer.  Point is
- at the end of buffer."
-  (declare (indent 1) (debug t))
-  `(with-temp-buffer
-     ;; (and (featurep 'python) (unload-feature 'python))
-     (let (hs-minor-mode)
-       (python-mode)
-       (insert ,contents)
-       ;; (message "ERT %s" (point))
-       ,@body)))
 
 (defun py-tests-go-to (string)
   "Move point at beginning of STRING in the current test. "

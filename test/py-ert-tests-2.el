@@ -809,5 +809,101 @@ that, needs, to_be, wrapped)
     (should (eq ?p (char-after)))))
 
 
+(ert-deftest py-ert-close-block-test ()
+  (py-test-with-temp-buffer-point-min
+      "# -*- coding: utf-8 -*-
+
+def main():
+    if len(sys.argv)==1:
+        usage()
+        sys.exit()
+if __name__==\"__main__\":
+    main()
+"
+    (when py-debug-p (switch-to-buffer (current-buffer))
+          (font-lock-fontify-buffer)) 
+    (search-forward "exit()")
+    (should (eq 4 (py-close-block)))))
+
+(ert-deftest py-ert-close-clause-test ()
+  (py-test-with-temp-buffer-point-min
+      "# -*- coding: utf-8 -*-
+
+def main():
+    if len(sys.argv)==1:
+        usage()
+        sys.exit()
+if __name__==\"__main__\":
+    main()
+"
+    (when py-debug-p (switch-to-buffer (current-buffer))
+          (font-lock-fontify-buffer)) 
+    (search-forward "exit()")
+    (should (eq 4 (py-close-clause)))))
+
+(ert-deftest py-ert-close-block-or-clause-test ()
+  (py-test-with-temp-buffer-point-min
+      "# -*- coding: utf-8 -*-
+
+def main():
+    if len(sys.argv)==1:
+        usage()
+        sys.exit()
+if __name__==\"__main__\":
+    main()
+"
+    (when py-debug-p (switch-to-buffer (current-buffer))
+          (font-lock-fontify-buffer)) 
+    (search-forward "exit()")
+    (should (eq 4 (py-close-block-or-clause)))))
+
+(ert-deftest py-ert-close-def-or-class-test ()
+  (py-test-with-temp-buffer-point-min
+      "# -*- coding: utf-8 -*-
+
+def main():
+    if len(sys.argv)==1:
+        usage()
+        sys.exit()
+if __name__==\"__main__\":
+    main()
+"
+    (when py-debug-p (switch-to-buffer (current-buffer))
+          (font-lock-fontify-buffer)) 
+    (search-forward "exit()")
+    (should (eq 0 (py-close-def-or-class)))))
+
+(ert-deftest py-ert-close-def-test ()
+  (py-test-with-temp-buffer-point-min
+      "# -*- coding: utf-8 -*-
+
+def main():
+    if len(sys.argv)==1:
+        usage()
+        sys.exit()
+if __name__==\"__main__\":
+    main()
+"
+    (when py-debug-p (switch-to-buffer (current-buffer))
+          (font-lock-fontify-buffer)) 
+    (search-forward "exit()")
+    (should (eq 0 (py-close-def)))))
+
+(ert-deftest py-ert-close-class-test ()
+  (py-test-with-temp-buffer-point-min
+      "# -*- coding: utf-8 -*-
+class asdf:
+    def main():
+        if len(sys.argv)==1:
+            usage()
+            sys.exit()
+    if __name__==\"__main__\":
+        main()
+"
+    (when py-debug-p (switch-to-buffer (current-buffer))
+          (font-lock-fontify-buffer)) 
+    (search-forward "exit()")
+    (should (eq 0 (py-close-class)))))
+
 (provide 'py-ert-tests-2)
 ;;; py-ert-tests-2.el ends here
