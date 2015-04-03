@@ -8758,20 +8758,32 @@ Optional ARG indicates a start-position for `parse-partial-sexp'."
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
+(defun py-in-string-p-intern (pps)
+  (goto-char (nth 8 pps))
+  (list (point) (char-after)(skip-chars-forward (char-to-string (char-after)))))
+
 (defun py-in-string-p ()
-  "Returns character address of start of string, nil if not inside. "
+  "if inside a double- triple- or singlequoted string,
+
+If non-nil, return a list composed of
+- beginning position
+- the character used as string-delimiter (in decimal)
+- and length of delimiter, commonly 1 or 3 "
   (interactive)
-  (let* ((pps (syntax-ppss))
-         (erg (when (nth 3 pps) (nth 8 pps))))
-    (save-excursion
-      (unless erg (setq erg
-                        (progn
-                          (when (looking-at "\"\\|'")
-                            (forward-char 1)
-                            (setq pps (syntax-ppss))
-                            (when (nth 3 pps) (nth 8 pps)))))))
+  (save-excursion
+    (let* ((pps (parse-partial-sexp (point-min) (point)))
+	   (erg (when (nth 3 pps)
+		  (py-in-string-p-intern pps))))
+      (unless erg
+	(when (looking-at "\"\\|'")
+	  (forward-char 1)
+	  (setq pps (parse-partial-sexp (line-beginning-position) (point)))
+	  (when (nth 3 pps)
+	    (setq erg (py-in-string-p-intern pps)))))
+
+    ;; (list (nth 8 pps) (char-before) (1+ (skip-chars-forward (char-to-string (char-before)))))
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-    erg))
+    erg)))
 
 (defun py-in-statement-p ()
   "Returns list of beginning and end-position if inside.

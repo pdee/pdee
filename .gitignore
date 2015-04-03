@@ -98,3 +98,5 @@ auto-complete-rest.el
 py--buffer-name-prepare.el
 warning.txt
 eis.sh
+loeschen.sh
+pdee_pdee*
