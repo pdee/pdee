@@ -77,10 +77,7 @@ Affected by `py-dedent-keep-relative-column'. "
           (indent-to-column (- cui py-indent-offset)))))
     (when (< (point) orig)
       (setq erg (current-column)))
-    (if py-dedent-keep-relative-column
-        (goto-char orig)
-      (end-of-line)
-      (skip-chars-backward " \t\r\n\f"))
+    (when py-dedent-keep-relative-column (goto-char orig))
     (when (interactive-p) (message "%s" erg))
     erg))
 
