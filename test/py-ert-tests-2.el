@@ -900,10 +900,20 @@ class asdf:
     if __name__==\"__main__\":
         main()
 "
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer)) 
     (search-forward "exit()")
     (should (eq 0 (py-close-class)))))
+
+(ert-deftest py-ert-dedent-forward-test ()
+  (py-test-with-temp-buffer
+   "with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
+    for i in range(anzahl):
+        klauf.pylauf()
+        datei.write(str(spiel[i]) + \"\\n\")"
+   (skip-chars-backward " \t\r\n\f") 
+   (py-dedent-forward-line)
+   (should (empty-line-p))
+   (forward-line -1)
+   (should (eq 4 (current-indentation))))) 
 
 (provide 'py-ert-tests-2)
 ;;; py-ert-tests-2.el ends here

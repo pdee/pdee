@@ -23,7 +23,7 @@
 ;;; Code:
 
 (setq py-install-directory default-directory)
-(sit-for 0.1 t) 
+(sit-for 0.1 t)
 
 
 ;; (require 'python-mode)
@@ -48,12 +48,14 @@ BODY is code to be executed within the temp buffer.  Point is
  at the beginning of buffer."
   (declare (indent 1) (debug t))
   `(with-temp-buffer
-;;     (and (featurep 'python) (unload-feature 'python))
+     ;;     (and (featurep 'python) (unload-feature 'python))
      (let (hs-minor-mode)
        (python-mode)
        (insert ,contents)
        (message "ERT %s" (point))
        (goto-char (point-min))
+       (when py-debug-p (switch-to-buffer (current-buffer))
+	     (font-lock-fontify-buffer))
        ,@body)))
 
 (defmacro py-test-with-temp-buffer (contents &rest body)
@@ -66,6 +68,8 @@ BODY is code to be executed within the temp buffer.  Point is
      (let (hs-minor-mode)
        (python-mode)
        (insert ,contents)
+       (when py-debug-p (switch-to-buffer (current-buffer))
+	     (font-lock-fontify-buffer))
        ;; (message "ERT %s" (point))
        ,@body)))
 
