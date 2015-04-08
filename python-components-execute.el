@@ -985,7 +985,7 @@ May we get rid of the temporary file? "
 (defalias 'py-send-region 'py-execute-region)
 ;;  execute region
 (defun py-execute-region (start end &optional shell dedicated)
-  "Send the region to a Python interpreter.
+  "Send the region to Python default interpreter.
 
 When called with \\[universal-argument], execution through
 `default-value' of `py-shell-name' is forced.
@@ -1020,7 +1020,7 @@ Optional DEDICATED "
       (py--execute-base start end))))
 
 (defun py-execute-region-no-switch (start end)
-  "Send the region to a Python interpreter.
+  "Send the region to Python default interpreter.
 
 Ignores setting of `py-switch-buffers-on-execute-p', buffer with region stays current.
  "
@@ -1052,7 +1052,7 @@ shell which will be forced upon execute as argument. "
       (py--execute-base start end))))
 
 (defun py-execute-region-switch (start end)
-  "Send the region to a Python interpreter.
+  "Send the region to Python default interpreter.
 
 Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being switched to.
 "
@@ -1166,7 +1166,7 @@ Returns position where output starts. "
     (set-buffer py-exception-buffer)))
 
 (defun py-execute-string (&optional string shell)
-  "Send the argument STRING to a Python interpreter.
+  "Send the argument STRING to Python default interpreter.
 
 See also `py-execute-region'. "
   (interactive)
@@ -1343,7 +1343,7 @@ Basically, this goes down the directory tree as long as there are __init__.py fi
 
 ;;  execute buffer
 (defun py-execute-buffer ()
-  "Send the contents of the buffer to a Python interpreter. "
+  "Send the contents of the buffer to Python default interpreter. "
   (interactive)
   ;; (when py-debug-p (message "run: %s" "py-execute-buffer"))
   (let ((origline (or (ignore-errors origline) 1)))
@@ -1370,13 +1370,13 @@ Basically, this goes down the directory tree as long as there are __init__.py fi
     (py--execute-buffer-base)))
 
 (defun py-execute-buffer-switch ()
-  "Send the contents of the buffer to a Python interpreter and switches to output. "
+  "Send the contents of the buffer to Python default interpreter and switches to output. "
   (interactive)
   (let ((py-switch-buffers-on-execute-p t))
     (py--execute-buffer-base)))
 
 (defun py-execute-buffer-no-switch ()
-  "Send the contents of the buffer to a Python interpreter but don't switch to output. "
+  "Send the contents of the buffer to Python default interpreter but don't switch to output. "
   (interactive)
   (let (py-switch-buffers-on-execute-p)
     (py--execute-buffer-base)))

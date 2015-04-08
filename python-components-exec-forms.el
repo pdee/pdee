@@ -23,52 +23,52 @@
 
 ;;  Execute forms at point
 (defun py-execute-statement ()
-  "Send statement at point to a Python interpreter. "
+  "Send statement at point to Python default interpreter. "
   (interactive)
   (py--execute-prepare "statement"))
 
 (defun py-execute-block ()
-  "Send block at point to a Python interpreter. "
+  "Send block at point to Python default interpreter. "
   (interactive)
   (py--execute-prepare "block"))
 
 (defun py-execute-block-or-clause ()
-  "Send block-or-clause at point to a Python interpreter. "
+  "Send block-or-clause at point to Python default interpreter. "
   (interactive)
   (py--execute-prepare "block-or-clause"))
 
 (defun py-execute-def ()
-  "Send def at point to a Python interpreter. "
+  "Send def at point to Python default interpreter. "
   (interactive)
   (py--execute-prepare "def"))
 
 (defun py-execute-class ()
-  "Send class at point to a Python interpreter. "
+  "Send class at point to Python default interpreter. "
   (interactive)
   (py--execute-prepare "class"))
 
 (defun py-execute-def-or-class ()
-  "Send def-or-class at point to a Python interpreter. "
+  "Send def-or-class at point to Python default interpreter. "
   (interactive)
   (py--execute-prepare "def-or-class"))
 
 (defun py-execute-expression ()
-  "Send expression at point to a Python interpreter. "
+  "Send expression at point to Python default interpreter. "
   (interactive)
   (py--execute-prepare "expression"))
 
 (defun py-execute-partial-expression ()
-  "Send partial-expression at point to a Python interpreter. "
+  "Send partial-expression at point to Python default interpreter. "
   (interactive)
   (py--execute-prepare "partial-expression"))
 
 (defun py-execute-top-level ()
-  "Send top-level at point to a Python interpreter. "
+  "Send top-level at point to Python default interpreter. "
   (interactive)
   (py--execute-prepare "top-level"))
 
 (defun py-execute-clause ()
-  "Send clause at point to a Python interpreter. "
+  "Send clause at point to Python default interpreter. "
   (interactive)
   (py--execute-prepare "clause"))
 

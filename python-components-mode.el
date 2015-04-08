@@ -1,4 +1,4 @@
-;; python-mode.el --- Edit, debug, develop, run Python programs.
+;; python-components-mode.el --- Edit, debug, develop, run Python programs.
 
 ;; Includes a minor mode for handling a Python/IPython shell,
 ;; and can take advantage of Pymacs when installed.
@@ -2941,6 +2941,85 @@ See original source: http://pymacs.progiciels-bpi.ca"
   (add-to-list 'load-path default-directory)
   (add-to-list 'load-path (concat default-directory "extensions")))
 
+
+(defun py-count-lines (&optional beg end)
+  "Count lines in accessible part until current line.
+
+See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
+  (interactive)
+  (save-excursion
+    (let ((count 0)
+          (orig (point))
+	  (beg (or beg (point-min)))
+	  (end (or end (point))))
+      (save-match-data
+	(if (or (eq major-mode 'comint-mode)
+		(eq major-mode 'py-shell-mode))
+	    (if
+		(re-search-backward py-fast-filter-re nil t 1)
+		(goto-char (match-end 0))
+	      (when py-debug-p (message "%s"  "py-count-lines: Don't see a prompt here"))
+	      (goto-char beg))
+	  (goto-char beg)))
+      (while (and (< (point) end)(not (eobp)) (skip-chars-forward "^\n" end))
+        (setq count (1+ count))
+        (unless (or (not (< (point) end)) (eobp)) (forward-char 1)
+                (setq count (+ count (abs (skip-chars-forward "\n" end))))))
+      (when (bolp) (setq count (1+ count)))
+      (when (and py-debug-p (interactive-p)) (message "%s" count))
+      count)))
+
+
+(defun py--escape-doublequotes (start end)
+  (let ((end (copy-marker end)))
+    (save-excursion
+      (goto-char start)
+      (while (and (not (eobp)) (< 0 (abs (skip-chars-forward "^\"" end))))
+	(when (eq (char-after) ?\")
+	  (unless (py-escaped)
+	    (insert "\\")
+	    (forward-char 1)))))))
+
+(defun py--escape-open-paren-col1 (start end)
+  (goto-char start)
+  (switch-to-buffer (current-buffer)) 
+  (while (re-search-forward "^(" end t 1)
+    (insert "\\")
+    (end-of-line)))
+
+(and py-company-pycomplete-p (require 'company-pycomplete))
+
+;; Macros
+(defmacro empty-line-p ()
+  "Returns t if cursor is at an line with nothing but whitespace-characters, nil otherwise."
+  `(save-excursion
+     (progn
+       (beginning-of-line)
+       (looking-at "\\s-*$"))))
+
+(defmacro py-escaped ()
+  "Return t if char is preceded by an odd number of backslashes. "
+  `(save-excursion
+     (< 0 (% (abs (skip-chars-backward "\\\\")) 2))))
+
+(defmacro py-current-line-backslashed-p ()
+  "Return t if current line is a backslashed continuation line. "
+  `(save-excursion
+     (end-of-line)
+     (skip-chars-backward " \t\r\n\f")
+     (and (eq (char-before (point)) ?\\ )
+          (py-escaped))))
+
+(defmacro py-preceding-line-backslashed-p ()
+  "Return t if preceding line is a backslashed continuation line. "
+  `(save-excursion
+     (beginning-of-line)
+     (skip-chars-backward " \t\r\n\f")
+     (and (eq (char-before (point)) ?\\ )
+          (py-escaped))))
+;;
+
+
 (require 'python-components-switches)
 (require 'python-components-edit)
 (require 'python-components-beginning-forms)
@@ -2979,39 +3058,12 @@ See original source: http://pymacs.progiciels-bpi.ca"
 (require 'python-components-hide-show)
 (require 'python-components-fast-complete)
 (require 'python-components-intern)
+(require 'python-components-menu)
+(require 'python-components-shell-menu)
 (require 'python-components-foot)
 
-(and py-company-pycomplete-p (require 'company-pycomplete))
-
-;; Macros
-(defmacro empty-line-p ()
-  "Returns t if cursor is at an line with nothing but whitespace-characters, nil otherwise."
-  `(save-excursion
-     (progn
-       (beginning-of-line)
-       (looking-at "\\s-*$"))))
-
-(defmacro py-escaped ()
-  "Return t if char is preceded by an odd number of backslashes. "
-  `(save-excursion
-     (< 0 (% (abs (skip-chars-backward "\\\\")) 2))))
-
-(defmacro py-current-line-backslashed-p ()
-  "Return t if current line is a backslashed continuation line. "
-  `(save-excursion
-     (end-of-line)
-     (skip-chars-backward " \t\r\n\f")
-     (and (eq (char-before (point)) ?\\ )
-          (py-escaped))))
-
-(defmacro py-preceding-line-backslashed-p ()
-  "Return t if preceding line is a backslashed continuation line. "
-  `(save-excursion
-     (beginning-of-line)
-     (skip-chars-backward " \t\r\n\f")
-     (and (eq (char-before (point)) ?\\ )
-          (py-escaped))))
-;;
+(unless (functionp 'python-mode)
+  (message "%s" "python-components-foot required but python-mode not delivered"))
 
 (defun py-separator-char ()
   "Return the file-path separator char from current machine.
@@ -3173,5 +3225,5 @@ Returns char found. "
 	;;        (,(rx symbol-start (or (1+ digit) (1+ hex-digit)) symbol-end) . py-number-face)
 	(,(rx symbol-start (1+ digit) symbol-end) . py-number-face)))
 
-(provide 'python-mode)
+(provide 'python-components-mode)
 ;;; python-components-mode.el ends here

@@ -25,8 +25,6 @@
 
 ;;; Code:
 
-
-
 (define-derived-mode py-auto-completion-mode python-mode "Pac"
   "Run auto-completion"
   ;; disable company
@@ -50,6 +48,7 @@
 
 ;; after-change-major-mode-hook
 
+
 ;;;
 (define-derived-mode python-mode fundamental-mode python-mode-modeline-display
   "Major mode for editing Python files.
@@ -65,7 +64,7 @@ continuation lines.  Paragraphs are separated by blank lines only.
 COMMANDS
 
 `py-shell'\tStart an interactive Python interpreter in another window
-`py-execute-statement'\tSend statement at point to a Python interpreter
+`py-execute-statement'\tSend statement at point to Python default interpreter
 `py-beginning-of-statement'\tGo to the initial line of a simple statement
 
 etc.
@@ -374,5 +373,6 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
   (force-mode-line-update))
 
 
+;;;
 (provide 'python-components-foot)
 ;;; python-components-foot.el ends here

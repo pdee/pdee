@@ -23,31 +23,31 @@
 ;;  Execute file commands
 
 (defun py-execute-file-python (&optional filename)
-  "Send file to a Python interpreter."
+  "Send file to Python default interpreter."
   (interactive "fFile: ")
   (py--execute-prepare filename "python" nil nil nil nil t))
 
 (defun py-execute-file-python-switch (&optional filename)
-  "Send file to a Python interpreter.
+  "Send file to Python default interpreter.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value \"non-nil\""
   (interactive "fFile: ")
   (py--execute-prepare filename "python" nil 'switch nil nil t))
 
 (defun py-execute-file-python-no-switch (&optional filename)
-  "Send file to a Python interpreter.
+  "Send file to Python default interpreter.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value \"nil\""
   (interactive "fFile: ")
   (py--execute-prepare filename "python" nil 'no-switch nil nil t))
 
 (defun py-execute-file-python-dedicated (&optional filename)
-  "Send file to a Python interpreter.
+  "Send file to Python default interpreter.
 
 Uses a dedicated shell."
   (interactive "fFile: ")
   (py--execute-prepare filename "python" 'dedicated nil nil nil t))
 
 (defun py-execute-file-python-dedicated-switch (&optional filename)
-  "Send file to a Python interpreter.
+  "Send file to Python default interpreter.
 
 Uses a dedicated shell.
 Ignores default of `py-switch-buffers-on-execute-p', uses it with value \"non-nil\""

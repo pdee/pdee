@@ -95,7 +95,8 @@ See also `py-fast-shell'
 	(py--fast-send-string-intern string proc buffer py-store-result-p py-return-result-p)
       (py--fast-send-string-no-output string proc buffer))))
 
-(defun py-fast-send-string (string)
+
+(defun py-execute-string-fast (string)
   "Evaluate STRING in Python process which is not in comint-mode.
 
 From a programm use `py--fast-send-string'"
