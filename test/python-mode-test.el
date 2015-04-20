@@ -28,11 +28,6 @@
 (setq python-mode-interactive-tests
       (list
        'opening-brace-on-builtins-lp-1400951-test
-       'py-split-just-two-window-on-execute-lp-1361531-python-test
-       'py-split-just-two-window-on-execute-lp-1361531-ipython-test
-       'py-split-just-two-window-on-execute-lp-1361531-python2-test
-       'py-split-just-two-window-on-execute-lp-1361531-jython-test
-       'py-split-just-two-window-on-execute-lp-1361531-python3-test
        'more-docstring-filling-woes-lp-1102296-nil-test
        'more-docstring-filling-woes-lp-1102296-onetwo-test
        'more-docstring-filling-woes-lp-1102296-django-test
@@ -53,16 +48,6 @@
        'autopair-mode-test
        'py-execute-block-python-test
        'py-execute-statement-error-test
-       'py-multi-split-window-on-execute-lp-1361531-python-test
-       'py-multi-split-window-on-execute-lp-1361531-ipython-test
-       'py-multi-split-window-on-execute-lp-1361531-python2-test
-       'py-multi-split-window-on-execute-lp-1361531-jython-test
-       'py-multi-split-window-on-execute-lp-1361531-python3-test
-       'py-always-split-window-on-execute-lp-1361531-python-test
-       'py-always-split-window-on-execute-lp-1361531-ipython-test
-       'py-always-split-window-on-execute-lp-1361531-python2-test
-       'py-always-split-window-on-execute-lp-1361531-jython-test
-       'py-always-split-window-on-execute-lp-1361531-python3-test
        'py-shell-complete-test
        'py-shell-invoking-ipython-lp-835151-test
        'py-execute-def-ipython-test
