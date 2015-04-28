@@ -327,9 +327,10 @@ SEPCHAR is the file-path separator of your system. "
 	 (erg (when name-first (if (stringp name-first) name-first (prin1-to-string name-first))))
 	 (fast-process (or fast-process py-fast-process-p))
 	 prefix suffix liste)
+    ;; commented WRT ipython2.7
     ;; remove suffix
-    (when (string-match "[.]" erg)
-      (setq erg (substring erg 0 (string-match "[.]" erg))))
+    ;; (when (string-match "[.]" erg)
+    ;; (setq erg (substring erg 0 (string-match "[.]" erg))))
     ;; remove prefix
     (when (string-match "^py-" erg)
       (setq erg (nth 1 (split-string erg "-"))))
@@ -581,7 +582,7 @@ Receives a buffer-name as argument"
 
 (defun py--shell-make-comint (executable py-buffer-name args)
   "Returns the buffer of the comint-proces created. "
-  (let* ((buffer (apply 'make-comint-in-buffer executable py-buffer-name executable nil args))
+  (let* ((buffer (apply #'make-comint-in-buffer executable py-buffer-name executable nil (split-string-and-unquote (car args))))
 	 (proc (get-buffer-process buffer)))
     (with-current-buffer buffer
       (if (string-match "^i" (process-name proc))
@@ -695,25 +696,18 @@ Receives a buffer-name as argument"
 	  (with-current-buffer py-buffer-name
 	    (erase-buffer)))
 	(with-current-buffer
-	    (apply 'make-comint-in-buffer executable py-buffer-name executable nil args)
+	    (apply #'make-comint-in-buffer executable py-buffer-name executable nil (split-string-and-unquote (car args)))
 	  ;; (py--shell-make-comint executable py-buffer-name args)
 	  (let ((proc (get-buffer-process (current-buffer))))
 	    (if (string-match "^i" (process-name proc))
 		(py-ipython-shell-mode)
 	      (py-python-shell-mode)))
 	  (setq py-output-buffer (current-buffer))
-	  (setq py-exception-buffer (or exception-buffer (and py-exception-buffer (buffer-live-p py-exception-buffer) py-exception-buffer) (current-buffer)))
-	  ;; (if (comint-check-proc (current-buffer))
-	  ;;     (progn
-	  ;; 	(sit-for 0.1 t)
-	  ;; 	;; lp:1393882, occasionally input first time not processed
-	  ;; 	(when py-new-session-p (py-kill-buffer-unconditional py-buffer-name)
-	  ;; 	      (setq py-new-session-p nil)
-	  ;; 	      (py-shell argprompt dedicated shell buffer-name fast-process)))
-
-	  ;;   (error (concat "py-shell: No process in " py-buffer-name)))
-	  ))
-      ;; (goto-char (point-max))
+	  (sit-for 0.1 t)
+	  (goto-char (point-max))
+	  ;; otherwise comint might initialize it with point-min
+	  (set-marker comint-last-input-end (point))
+	  (setq py-exception-buffer (or exception-buffer (and py-exception-buffer (buffer-live-p py-exception-buffer) py-exception-buffer) (current-buffer)))))
       (when (or (interactive-p)
 		;; M-x python RET sends from interactive "p"
 		argprompt

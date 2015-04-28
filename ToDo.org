@@ -1,3 +1,4 @@
+* py--choose-shell IPython2.7
 * py-load-pymacs-p in python-mode.el
 * pdb
   in gud.el
