@@ -897,7 +897,10 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
 
 (defun py--fetch-result (orig)
   "Return buffer-substring from orig to point-max. "
-  (buffer-substring-no-properties orig (point-max)))
+  (replace-regexp-in-string
+   (format "[ \n]*%s[ \n]*" py-fast-filter-re)
+   ""
+   (buffer-substring-no-properties orig (point-max))))
 
 (defun py--postprocess-comint (output-buffer origline windows-config py-exception-buffer orig)
   "Provide return values, check result for error, manage windows. "
