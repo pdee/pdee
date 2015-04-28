@@ -629,6 +629,44 @@ Receives a buffer-name as argument"
       (erase-buffer))
     proc))
 
+(defun py--shell-fast-proceeding (proc py-buffer-name py-shell-name  py-shell-completion-setup-code)
+  (unless (get-buffer-process (get-buffer py-buffer-name))
+    (setq proc (py--start-fast-process py-shell-name py-buffer-name))
+    (setq py-output-buffer py-buffer-name)
+    (py--fast-send-string-no-output py-shell-completion-setup-code proc py-buffer-name)))
+
+(defun py--reuse-existing-shell ()
+  (setq py-exception-buffer (or exception-buffer (and py-exception-buffer (buffer-live-p py-exception-buffer) py-exception-buffer) py-buffer-name)))
+
+(defun py--create-new-shell ()
+  (with-current-buffer
+      (apply #'make-comint-in-buffer executable py-buffer-name executable nil (split-string-and-unquote (car args)))
+    ;; (py--shell-make-comint executable py-buffer-name args)
+    (let ((proc (get-buffer-process (current-buffer))))
+      (if (string-match "^i" (process-name proc))
+	  (py-ipython-shell-mode)
+	(py-python-shell-mode)))
+    (setq py-output-buffer (current-buffer))
+    (sit-for 0.1 t)
+    (goto-char (point-max))
+    ;; otherwise comint might initialize it with point-min
+    (set-marker comint-last-input-end (point))
+    (setq py-exception-buffer (or exception-buffer (and py-exception-buffer (buffer-live-p py-exception-buffer) py-exception-buffer) (current-buffer)))))
+
+(defun py--determine-local-default ()
+  (if (not (string= "" py-shell-local-path))
+      (expand-file-name py-shell-local-path)
+    (when py-use-local-default
+      (error "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'"))))
+
+(defun py--provide-command-args ()
+  (cond (fast-process nil)
+	((string-match "^[Ii]" py-shell-name)
+	 py-ipython-command-args)
+	((string-match "^[^-]+3" py-shell-name)
+	 py-python3-command-args)
+	(t py-python-command-args)))
+
 (defun py-shell (&optional argprompt dedicated shell buffer-name fast-process exception-buffer)
   "Start an interactive Python interpreter in another window.
   Interactively, \\[universal-argument] prompts for a new buffer-name.
@@ -652,27 +690,9 @@ Receives a buffer-name as argument"
 	 (py-shell-name (or shell
 			    ;; (py--configured-shell (py-choose-shell))
 			    (py-choose-shell)))
-	 (args
-	  (cond (fast-process nil)
-		((string-match "^[Ii]" py-shell-name)
-		 py-ipython-command-args)
-		((string-match "^[^-]+3" py-shell-name)
-		 py-python3-command-args)
-		(t py-python-command-args)))
-	 ;; unless Path is given with `py-shell-name'
-	 ;; call configured command
-	 ;; (py-shell-name (py--configured-shell py-shell-name-raw))
+	 (args (py--provide-command-args))
 
-	 ;; If we use a pipe, Unicode characters are not printed
-	 ;; correctly (Bug#5794) and IPython does not work at
-	 ;; all (Bug#5390). python.el
-	 ;; (process-connection-type t)
-	 ;; already in py-choose-shell
-	 (py-use-local-default
-	  (if (not (string= "" py-shell-local-path))
-	      (expand-file-name py-shell-local-path)
-	    (when py-use-local-default
-	      (error "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'"))))
+	 (py-use-local-default (py--determine-local-default))
 	 (py-buffer-name (or buffer-name (py--guess-buffer-name argprompt)))
 	 (py-buffer-name (or py-buffer-name (py--choose-buffer-name nil dedicated fast-process)))
 	 (executable (cond (py-shell-name)
@@ -685,29 +705,14 @@ Receives a buffer-name as argument"
     (sit-for 0.1 t)
     (if fast-process
 	;; user rather wants an interactive shell
-	(unless (get-buffer-process (get-buffer py-buffer-name))
-	  (setq proc (py--start-fast-process py-shell-name py-buffer-name))
-	  (setq py-output-buffer py-buffer-name)
-	  (py--fast-send-string-no-output py-shell-completion-setup-code proc py-buffer-name))
+	(py--shell-fast-proceeding proc py-buffer-name py-shell-name  py-shell-completion-setup-code)
       (if (comint-check-proc py-buffer-name)
-	  (setq py-exception-buffer (or exception-buffer (and py-exception-buffer (buffer-live-p py-exception-buffer) py-exception-buffer) py-buffer-name))
+	  (py--reuse-existing-shell)
 	;; buffer might exist but not being empty
 	(when (buffer-live-p py-buffer-name)
 	  (with-current-buffer py-buffer-name
 	    (erase-buffer)))
-	(with-current-buffer
-	    (apply #'make-comint-in-buffer executable py-buffer-name executable nil (split-string-and-unquote (car args)))
-	  ;; (py--shell-make-comint executable py-buffer-name args)
-	  (let ((proc (get-buffer-process (current-buffer))))
-	    (if (string-match "^i" (process-name proc))
-		(py-ipython-shell-mode)
-	      (py-python-shell-mode)))
-	  (setq py-output-buffer (current-buffer))
-	  (sit-for 0.1 t)
-	  (goto-char (point-max))
-	  ;; otherwise comint might initialize it with point-min
-	  (set-marker comint-last-input-end (point))
-	  (setq py-exception-buffer (or exception-buffer (and py-exception-buffer (buffer-live-p py-exception-buffer) py-exception-buffer) (current-buffer)))))
+	(py--create-new-shell))
       (when (or (interactive-p)
 		;; M-x python RET sends from interactive "p"
 		argprompt
