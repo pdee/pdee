@@ -31,17 +31,6 @@
 (defvar py-debug-p nil
   "Avoid error")
 
-(defmacro ar-test-with-temp-buffer (contents &rest body)
-  "Create temp buffer inserting CONTENTS.
-BODY is code to be executed within the temp buffer.  Point is
- at the end of buffer."
-  (declare (indent 2) (debug t))
-  `(with-temp-buffer
-     (let (hs-minor-mode)
-       (insert ,contents)
-       ;; (message "ERT %s" (point))
-       ,@body)))
-
 (defmacro py-test-with-temp-buffer-point-min (contents &rest body)
   "Create temp buffer in `python-mode' inserting CONTENTS.
 BODY is code to be executed within the temp buffer.  Point is

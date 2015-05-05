@@ -3062,9 +3062,6 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
 (require 'python-components-shell-menu)
 (require 'python-components-foot)
 
-(unless (functionp 'python-mode)
-  (message "%s" "python-components-foot required but python-mode not delivered"))
-
 (defun py-separator-char ()
   "Return the file-path separator char from current machine.
 
