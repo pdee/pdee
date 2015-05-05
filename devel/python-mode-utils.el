@@ -790,35 +790,7 @@ Include default forms "
     (insert " --- more execute forms\n")
     (insert arkopf)
 
-    (insert "
-;; created by `write-unified-extended-execute-forms'
-\(defun py--execute-prepare (form &optional shell dedicated switch beg end file)
-  \"Used by python-extended-executes .\"
-  (save-excursion
-    (let* ((beg (unless file
-                  (prog1
-                      (or beg (funcall (intern-soft (concat \"py--beginning-of-\" form \"-p\")))
-
-                          (funcall (intern-soft (concat \"py-beginning-of-\" form)))
-                          (push-mark)))))
-           (end (unless file
-                  (or end (funcall (intern-soft (concat \"py-end-of-\" form))))))
-           (py-dedicated-process-p dedicated)
-           (py-switch-buffers-on-execute-p (cond ((eq 'switch switch)
-                                                  t)
-                                                 ((eq 'no-switch switch)
-                                                  nil)
-                                                 (t py-switch-buffers-on-execute-p)))
-           filename)
-      (setq py-buffer-name nil)
-      (if file
-          (progn
-            (setq filename (expand-file-name form))
-            (if (file-readable-p filename)
-                (py--execute-file-base nil filename nil nil (or (and (boundp 'py-orig-buffer-or-file) py-orig-buffer-or-file) filename))
-              (message \"%s not readable. %s\" file \"Do you have write permissions?\")))
-        (py--execute-base beg end shell)))))\n\n")
-
+    (insert ";; created by `write-unified-extended-execute-forms\n")
     ;; see also `py-checker-command-names'
     (dolist (ele py-bounds-command-names)
       (insert (concat "(defun py-execute-" ele "-dedicated (&optional shell switch)
@@ -826,7 +798,7 @@ Include default forms "
   (interactive)
   (py--execute-prepare \"" ele "\" shell t switch))\n\n"))
       (dolist (elt py-shells)
-        (setq elt (prin1-to-string elt))
+        (setq elt (format "%s" elt))
         (setq kurz elt)
         (dolist (pyo py-options)
           (if (string= "default" elt)
@@ -887,7 +859,8 @@ Include default forms "
 ;;; " path-to-shell ".el ends here\n")
     (insert "(provide 'python-extended-executes)
 ;;; python-extended-executes.el ends here\n "))
-  (emacs-lisp-mode))
+  (emacs-lisp-mode)
+  (write-file (concat py-install-directory "/python-extended-executes.el")))
 
 (defun write-unified-extended-execute-ert-tests (&optional path-to-shell command option)
   "Write `py-ert-execute-region-python2-test'"

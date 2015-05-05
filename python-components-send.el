@@ -56,6 +56,8 @@
 	 (buffer (process-buffer proc)))
     (with-current-buffer buffer
       (goto-char (point-max))
+      (unless (string-match "\\`" string)
+	(comint-send-string proc "\n"))
       (comint-send-string proc string)
       (goto-char (point-max))
       (unless (string-match "\n\\'" string)

@@ -170,6 +170,34 @@
 (when py-org-cycle-p
   (define-key python-mode-map (kbd "<backtab>") 'org-cycle))
 
+(defun py--execute-prepare (form &optional shell dedicated switch beg end file)
+  "Used by python-extended-executes ."
+  (save-excursion
+    (let* ((beg (unless file
+                  (prog1
+                      (or beg (funcall (intern-soft (concat "py--beginning-of-" form "-p")))
+
+                          (funcall (intern-soft (concat "py-beginning-of-" form)))
+                          (push-mark)))))
+           (end (unless file
+                  (or end (funcall (intern-soft (concat "py-end-of-" form))))))
+           (py-dedicated-process-p dedicated)
+           (py-switch-buffers-on-execute-p (cond ((eq 'switch switch)
+                                                  t)
+                                                 ((eq 'no-switch switch)
+                                                  nil)
+                                                 (t py-switch-buffers-on-execute-p)))
+           filename)
+      (setq py-buffer-name nil)
+      (if file
+          (progn
+            (setq filename (expand-file-name form))
+            (if (file-readable-p filename)
+                (py--execute-file-base nil filename nil nil (or (and (boundp 'py-orig-buffer-or-file) py-orig-buffer-or-file) filename))
+              (message "%s not readable. %s" file "Do you have write permissions?")))
+        (py--execute-base beg end shell)))))
+
+
 (defun py-load-skeletons ()
   "Load skeletons from extensions. "
   (interactive)
