@@ -900,9 +900,6 @@
 (ert-deftest py-ert-py--fix-if-name-main-permission-test ()
   (should (functionp 'py--fix-if-name-main-permission)))
 
-(ert-deftest py-ert-py--fix-start-intern-test ()
-  (should (functionp 'py--fix-start-intern)))
-
 (ert-deftest py-ert-py--fix-start-test ()
   (should (functionp 'py--fix-start)))
 

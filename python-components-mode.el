@@ -3045,6 +3045,7 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
 (require 'python-components-end-position-forms)
 (require 'python-components-end-forms)
 (require 'python-components-up-down)
+(require 'py-execute-region)
 (require 'python-components-exec-forms)
 (require 'python-extended-executes)
 (require 'python-abbrev-propose)
@@ -3221,6 +3222,9 @@ Returns char found. "
         ;; Numbers
 	;;        (,(rx symbol-start (or (1+ digit) (1+ hex-digit)) symbol-end) . py-number-face)
 	(,(rx symbol-start (1+ digit) symbol-end) . py-number-face)))
+
+(defalias 'py-execute-region-default 'py-execute-region)
+(defalias 'py-execute-region-default-dedicated 'py-execute-region-dedicated)
 
 (provide 'python-components-mode)
 ;;; python-components-mode.el ends here

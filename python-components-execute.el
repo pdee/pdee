@@ -984,92 +984,6 @@ May we get rid of the temporary file? "
       (unless (string= (buffer-name (current-buffer)) (buffer-name procbuf))
         (when py-verbose-p (message "Output buffer: %s" procbuf))))))
 
-(defalias 'py-send-region 'py-execute-region)
-;;  execute region
-(defun py-execute-region (start end &optional shell dedicated)
-  "Send the region to Python default interpreter.
-
-When called with \\[universal-argument], execution through
-`default-value' of `py-shell-name' is forced.
-
-When called with \\[universal-argument] followed by a number
-different from 4 and 1, user is prompted to specify a shell. This
-might be the name of a system-wide shell or include the path to a
-virtual environment.
-
-When called from a programm, it accepts a string specifying a
-shell which will be forced upon execute as argument.
-
-Optional DEDICATED "
-  (interactive "r\nP")
-  ;; (when py-debug-p (message "run: %s" "py-execute-region"))
-  (save-excursion
-    (let ((orig (point))
-	  (py-exception-buffer (current-buffer))
-	  (py-shell-name (cond ((or py-force-py-shell-name-p (eq 4 (prefix-numeric-value shell))) (default-value 'py-shell-name))
-			       ((and (numberp shell) (not (eq 1 (prefix-numeric-value shell))))
-				(read-from-minibuffer "(path-to-)shell-name: " (default-value 'py-shell-name)))
-			       (t (or shell py-shell-name))))
-	  (py-dedicated-process-p (or dedicated py-dedicated-process-p)))
-      (py--execute-base start end))))
-
-(defun py-execute-region-default (start end)
-  "Send the region to the systems default Python interpreter. "
-  (interactive "r")
-  (save-excursion
-    (let ((py-dedicated-process-p (default-value 'py-dedicated-process-p))
-	  (py-shell-name (default-value 'py-shell-name)))
-      (py--execute-base start end))))
-
-(defun py-execute-region-no-switch (start end)
-  "Send the region to Python default interpreter.
-
-Ignores setting of `py-switch-buffers-on-execute-p', buffer with region stays current.
- "
-  (interactive "r")
-  (let (py-switch-buffers-on-execute-p)
-    (py--execute-base start end)))
-
-(defun py-execute-region-dedicated (start end &optional shell)
-  "Get the region processed by an unique Python interpreter.
-
-When called with \\[universal-argument], execution through
-`default-value' of `py-shell-name' is forced.
-
-When called with \\[universal-argument] followed by a number
-different from 4 and 1, user is prompted to specify a shell. This
-might be the name of a system-wide shell or include the path to a
-virtual environment.
-
-When called from a programm, it accepts a string specifying a
-shell which will be forced upon execute as argument. "
-
-  (interactive "r\nP")
-  (save-excursion
-    (let ((py-shell-name (cond ((eq 4 (prefix-numeric-value shell)) (default-value 'py-shell-name))
-			       ((and (numberp shell) (not (eq 1 (prefix-numeric-value shell))))
-				(read-from-minibuffer "(path-to-)shell-name: " (default-value 'py-shell-name)))
-			       (t shell)))
-	  (py-dedicated-process-p t))
-      (py--execute-base start end))))
-
-(defun py-execute-region-switch (start end)
-  "Send the region to Python default interpreter.
-
-Ignores setting of `py-switch-buffers-on-execute-p', output-buffer will being switched to.
-"
-  (interactive "r")
-  (let ((py-switch-buffers-on-execute-p t))
-    (py--execute-base start end)))
-
-(defalias 'py-execute-region-dedicated-default 'py-execute-region-default-dedicated)
-(defun py-execute-region-default-dedicated (start end)
-  "Send the region to an unique shell of systems default Python. "
-  (interactive "r")
-  (save-excursion
-    (let ((py-dedicated-process-p t))
-      (py--execute-base start end (default-value 'py-shell-name)))))
-
 (defun py-delete-temporary (&optional file filebuf)
   (when (file-readable-p file)
     (delete-file file))
@@ -1220,49 +1134,32 @@ See `py-if-name-main-permission-p'"
 		 "if __name__ == '__main__ ':" string))))
     strg))
 
-(defun py--fix-start-intern (start end)
-  (setq buffer-read-only nil)
-  (when py-verbose-p (message "py--fix-start-intern start end: %s %s" start end)
-        (message "buffer-read-only: %s" buffer-read-only))
-  (goto-char start)
-  (while
-      (member (char-after) (list 9 32))
-    (delete-char 1))
-  (unless (py--beginning-of-statement-p)
-    (py-down-statement))
-  (while (not (eq (current-indentation) 0))
-    (py-shift-left py-indent-offset start end))
-  (goto-char (point-max))
-  (unless (empty-line-p)
-    (newline)))
-
 (defun py--fix-start (string)
   "Internal use by py-execute... functions.
 
 Avoid empty lines at the beginning. "
   ;; (when py-debug-p (message "py--fix-start:"))
   (with-temp-buffer
-    (insert string)
-    (goto-char 1)
-    ;; (when py-debug-p (message "start: %s" (point))
-    ;; (setq buffer-read-only nil)
-    ;; (message "buffer-read-only: %s" buffer-read-only))
-    (while
-	(member (char-after) (list 9 32))
-      (delete-char 1))
-    (unless (py--beginning-of-statement-p)
-      (py-down-statement))
-    (while (not (eq (current-indentation) 0))
-      (py-shift-left py-indent-offset start end))
-    (goto-char (point-max))
-    (unless (empty-line-p)
-      (newline))
-    ;; (when py-debug-p (message "end: %s" (point)))
-    ;; (py--fix-start-intern (point-min) (point-max))
-    ;; FixMe: Maybe conditial from from some use-tempfile var?
-    ;; (and (ignore-errors tempfile)
-    ;; (write-region (point-min) (point-max) tempfile nil t nil 'ask))
-    (buffer-substring-no-properties 1 (point-max))))
+    (let (erg)
+      (insert string)
+      ;; (switch-to-buffer (current-buffer))
+      (goto-char 1)
+      ;; (when py-debug-p (message "start: %s" (point))
+      ;; (setq buffer-read-only nil)
+      ;; (message "buffer-read-only: %s" buffer-read-only))
+      (when (< 0 (setq erg (skip-chars-forward " \t\r\n\f")))
+	(dotimes (i erg)
+	  (indent-rigidly-left (point-min) (point-max))))
+      ;; (member (char-after) (list 9 32))
+      ;; (delete-char 1))
+      (unless (py--beginning-of-statement-p)
+	(py-down-statement))
+      (while (not (eq (current-indentation) 0))
+	(py-shift-left py-indent-offset start end))
+      (goto-char (point-max))
+      (unless (empty-line-p)
+	(newline))
+      (buffer-substring-no-properties 1 (point-max)))))
 
 (defun py-fetch-py-master-file ()
   "Lookup if a `py-master-file' is specified.

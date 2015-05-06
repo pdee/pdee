@@ -72,7 +72,8 @@
     print(\"two\")"
       (py-execute-region-ipython2.7 (point-min) (point-max))
       (set-buffer buffer)
-      (should (search-backward "two")))))
+      (sit-for 1) 
+      (should (search-backward "two" nil t)))))
 
 (ert-deftest py-ert-execute-region-ipython3-test ()
   (let ((buffer (py--choose-buffer-name "ipython3")))
