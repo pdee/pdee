@@ -195,7 +195,7 @@ in (I)Python shell-modes `py-shell-complete'"
 	 (py-indent-region (region-beginning) (region-end)))
 	((or (bolp)
 	     (member (char-before)(list 9 10 12 13 32))
-	     (and (not (eobp)) (not (member (char-after)(list 9 10 12 13 32)))))
+	     (not (eolp)))
 	 (py-indent-line))
 	((eq major-mode 'python-mode)
 	 (if (string-match "ipython" (py-choose-shell))
