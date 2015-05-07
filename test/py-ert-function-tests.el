@@ -846,24 +846,6 @@
 (ert-deftest py-ert-py--execute-ge24.3-test ()
   (should (functionp 'py--execute-ge24.3)))
 
-(ert-deftest py-ert-py-execute-region-test ()
-  (should (functionp 'py-execute-region)))
-
-(ert-deftest py-ert-py-execute-region-default-test ()
-  (should (functionp 'py-execute-region-default)))
-
-(ert-deftest py-ert-py-execute-region-no-switch-test ()
-  (should (functionp 'py-execute-region-no-switch)))
-
-(ert-deftest py-ert-py-execute-region-dedicated-test ()
-  (should (functionp 'py-execute-region-dedicated)))
-
-(ert-deftest py-ert-py-execute-region-switch-test ()
-  (should (functionp 'py-execute-region-switch)))
-
-(ert-deftest py-ert-py-execute-region-default-dedicated-test ()
-  (should (functionp 'py-execute-region-default-dedicated)))
-
 (ert-deftest py-ert-py-delete-temporary-test ()
   (should (functionp 'py-delete-temporary)))
 

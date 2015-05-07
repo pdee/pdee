@@ -783,7 +783,7 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 	      ;; shell might be specified in different ways
 	      (or (and (stringp shell) shell)
 		  (ignore-errors (eval shell))
-		  (and (symbolp shell) (prin1-to-string shell)))
+		  (and (symbolp shell) (format "%s" shell)))
 	    (py-choose-shell)))
 	 (execute-directory
 	  (cond ((ignore-errors (file-name-directory (file-remote-p (buffer-file-name) 'localname))))

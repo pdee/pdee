@@ -47,64 +47,6 @@
 		    (buffer-live-p (get-buffer  "*Python Completions*"))))
       (py-kill-buffer-unconditional erg)))))
 
-(ert-deftest py-ert-fast-complete-1 ()
-  (py-test-with-temp-buffer
-      "pri"
-    (let ((py-return-result-p t)
-	  py-result py-store-result-p)
-      (when py-debug-p (switch-to-buffer (current-buffer)))
-      (py-fast-complete)
-      (should (eq (char-before) 40)))))
-
-(ert-deftest py-ert-execute-statement-fast-1 ()
-  (py-test-with-temp-buffer-point-min
-      "print(1)"
-    (let ((py-fast-process-p t)
-	  (py-return-result-p t)
-	  py-result py-store-result-p)
-      (py-execute-statement)
-      (should (string= "1" py-result)))))
-
-(ert-deftest py-ert-execute-statement-fast-2 ()
-  (py-test-with-temp-buffer-point-min
-      "print(2)"
-    (let ((py-fast-process-p t)
-	  (py-return-result-p t)
-	  py-result py-store-result-p)
-      (py-execute-statement-fast)
-      (should (string= "2" py-result)))))
-
-(ert-deftest py-ert-execute-block-fast ()
-  (py-test-with-temp-buffer-point-min
-      "if True:
-    a = 1
-    print(a)"
-    (let ((py-fast-process-p t)
-	  (py-return-result-p t)
-	  (py-debug-p t)
-	  py-result)
-      (py-execute-block)
-      (when py-debug-p (message "py-ert-execute-block-fast, py-result: %s" py-result))
-      (sit-for 0.1 t)
-      (should (string= "1" py-result)))))
-
-(ert-deftest py-ert-execute-block-fast-2 ()
-  (py-test-with-temp-buffer-point-min
-      "try:
-    a
-except NameError:
-    a=1
-finally:
-    a+=1
-    print(a)"
-    (let ((py-fast-process-p t)
-	  (py-return-result-p t)
-	  (py-debug-p t)
-	  py-result)
-      (py-execute-block)
-      (when py-debug-p (message "py-ert-execute-block-fast, py-result: %s" py-result))
-      (should (numberp (string-to-number (car (split-string py-result))))))))
-
 ;;;
 (ert-deftest py-ert-keyword-face-lp-1294742 ()
   (py-test-with-temp-buffer-point-min
@@ -114,14 +56,6 @@ finally:
       (should (eq 'font-lock-keyword-face (get-char-property (point) 'face)))
       (skip-chars-forward "^ \n"))))
 
-(ert-deftest py-ert-exception-name-face-lp-1294742 ()
-  (py-test-with-temp-buffer-point-min
-      " ArithmeticError AssertionError AttributeError BaseException BufferError BytesWarning DeprecationWarning EOFError EnvironmentError Exception FloatingPointError FutureWarning GeneratorExit IOError ImportError ImportWarning IndentationError IndexError KeyError KeyboardInterrupt LookupError MemoryError NameError NoResultFound NotImplementedError OSError OverflowError PendingDeprecationWarning ReferenceError RuntimeError RuntimeWarning StandardError StopIteration SyntaxError SyntaxWarning SystemError SystemExit TabError TypeError UnboundLocalError UnicodeDecodeError UnicodeEncodeError UnicodeError UnicodeTranslateError UnicodeWarning UserWarning ValueError Warning ZeroDivisionError"
-    (when py-debug-p (switch-to-buffer (current-buffer))
-	  (font-lock-fontify-buffer)) 
-    (while (and (not (eobp))(< 0 (skip-chars-forward " ")))
-      (should (eq 'py-exception-name-face (get-char-property (point) 'face)))
-      (skip-chars-forward "^ \n"))))
 
 (ert-deftest py-ert-builtins-face-lp-1294742 ()
   (let ((py-shell-name "python3"))

@@ -64,16 +64,6 @@
       (set-buffer buffer)
       (should (search-backward "two")))))
 
-(ert-deftest py-ert-execute-block-ipython2.7-test ()
-  (let ((buffer (py--choose-buffer-name "ipython2.7")))
-    (py-test-with-temp-buffer
-        "if True:
-    print(\"one\")
-    print(\"two\")"
-      (py-execute-block-ipython2.7)
-      (set-buffer buffer)
-      (should (search-backward "two")))))
-
 (ert-deftest py-ert-execute-block-ipython3-test ()
   (let ((buffer (py--choose-buffer-name "ipython3")))
     (py-test-with-temp-buffer
@@ -84,18 +74,5 @@
       (set-buffer buffer)
       (should (search-backward "two")))))
 
-(ert-deftest py-ert-execute-block-jython-test ()
-  (let ((buffer (py--choose-buffer-name "jython")))
-    (py-test-with-temp-buffer
-        "if True:
-    print(\"one\")
-    print(\"two\")"
-      (py-execute-block-jython)
-      (set-buffer buffer)
-      (should (search-backward "two")))))
-
-
-
 (provide 'py-ert-execute-block-test)
 ;;; py-ert-execute-block-test.el here
- 
