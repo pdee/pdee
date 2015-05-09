@@ -54,6 +54,29 @@
       (py-electric-backspace 1)
       (should (eq ?\] (char-before))))))
 
+(ert-deftest py-ert-electric-delete-eob-test ()
+  (let ((py-electric-kill-backward-p t)
+	(delete-active-region t)
+	(transient-mark-mode t))
+    (py-test-with-temp-buffer
+	"mystring[0:1]     "
+      (skip-chars-backward " \t")
+      (set-mark (point))
+      (skip-chars-forward " \t") 
+      (py-electric-delete)
+      (should (eobp)))))
+
+(ert-deftest py-ert-electric-delete-test ()
+  (let ((py-electric-kill-backward-p t)
+	(delete-active-region t)
+	(transient-mark-mode t))
+    (py-test-with-temp-buffer
+	"mystring[0:1]     "
+      (set-mark (point))
+      (skip-chars-backward " \t\r\n\f")
+      (py-electric-delete)
+      (should (eobp)))))
+
 (ert-deftest py-ert-electric-kill-backward-paren-test ()
   (let ((py-electric-kill-backward-p t))
     (py-test-with-temp-buffer
