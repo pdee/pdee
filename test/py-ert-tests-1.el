@@ -35,31 +35,46 @@
   (and (eq (point) (point-max))(goto-char (point-min)))
   (search-forward string nil t 1))
 
-(ert-deftest py-ert-electric-kill-backward-test1 ()
+(ert-deftest py-ert-electric-kill-backward-bracket-test ()
   (let ((py-electric-kill-backward-p t))
-    (with-temp-buffer
-      (insert "mystring[0:1]")
+    (py-test-with-temp-buffer
+      "mystring[0:1]"
       (py-electric-backspace 1)
       (should (eq ?\] (char-after))))))
 
-(ert-deftest py-ert-electric-kill-backward-test2 ()
+(ert-deftest py-ert-electric-kill-backward-region-test ()
+  (let ((py-electric-kill-backward-p t)
+	(delete-active-region t)
+	(transient-mark-mode t))
+    (py-test-with-temp-buffer
+	"mystring[0:1]     "
+      (skip-chars-backward " \t\r\n\f")
+      (set-mark (point))
+      (goto-char (point-max))
+      (py-electric-backspace 1)
+      (should (eq ?\] (char-before))))))
+
+(ert-deftest py-ert-electric-kill-backward-paren-test ()
   (let ((py-electric-kill-backward-p t))
-    (with-temp-buffer
-      (insert "mystring(\"asdf\")")
+    (py-test-with-temp-buffer
+      "mystring(\"asdf\")"
       (py-electric-backspace 1)
       (should (eq ?\) (char-after)))
       )))
 
-(ert-deftest py-ert-electric-kill-backward-test3 ()
+(ert-deftest py-ert-electric-kill-backward-brace-test ()
   (let ((py-electric-kill-backward-p t))
-    (with-temp-buffer
-      (insert "mystring{0 . 1}")
+    (py-test-with-temp-buffer
+      "mystring{0 . 1}"
       (py-electric-backspace 1)
       (should (eq ?\} (char-after))))))
 
 (ert-deftest py-ert-indent-dedenters-1 ()
   "Check all dedenters."
-  (py-test-with-temp-buffer-point-min
+
+
+
+(py-test-with-temp-buffer-point-min
    "
 def foo(a, b, c):
     if a:

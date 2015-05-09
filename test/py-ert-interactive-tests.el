@@ -160,7 +160,7 @@ def foo():
 	 (py-kill-buffer-unconditional (current-buffer)))))
 
 (ert-deftest py-ert-always-reuse-lp-1361531-test ()
-  (with-temp-buffer
+  (py-test-with-temp-buffer
     "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 print(\"I'm the py-always-reuse-lp-1361531-test\")"
@@ -240,7 +240,7 @@ print(\"I'm the py-just-two-split-dedicated-lp-1361531-jython-test\")"
   (python)
   (ipython)
   (sit-for 0.1 t)
-  (with-temp-buffer
+  (py-test-with-temp-buffer
     ;; this should not open a "*Python*<2>"
     (python)
     (ipython)

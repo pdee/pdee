@@ -128,20 +128,31 @@ With \\[universal-argument] \"#\" electric behavior is inhibited inside a string
 (defun py-electric-backspace (&optional arg)
   "Delete preceding character or level of indentation.
 
-With ARG do that ARG times.
+When `delete-active-region' and (region-active-p), delete region.
+
+Unless at indentation:
+  With `py-electric-kill-backward-p' delete whitespace before point.
+  With `py-electric-kill-backward-p' at end of a list, empty that list.
+
 Returns column reached. "
-  (interactive "*p")
-  (let ((arg (or arg 1))
-        erg)
-    (dotimes (i arg)
-      (cond ((looking-back "^[ \t]+")
-             (let* ((remains (% (current-column) py-indent-offset)))
-               (if (< 0 remains)
-                   (delete-char (- remains))
-                 (indent-line-to (- (current-indentation) py-indent-offset)))))
-            ((and py-electric-kill-backward-p (member (char-before) (list ?\) ?\] ?\})))
-                  (py-empty-out-list-backward))
-            (t (delete-char (- 1)))))
+  (interactive "p*")
+  (or arg (setq arg 1))
+  (let (erg)
+    (cond ((and (region-active-p)
+		;; Emacs23 doesn't know that var
+		(boundp 'delete-active-region) delete-active-region)
+	   (backward-delete-char-untabify arg))
+	  ;; (delete-region (region-beginning) (region-end)))
+	  ((looking-back "^[ \t]+")
+	   (let* ((remains (% (current-column) py-indent-offset)))
+	     (if (< 0 remains)
+		 (delete-char (- remains))
+	       (indent-line-to (- (current-indentation) py-indent-offset)))))
+	  ((and py-electric-kill-backward-p (member (char-before) (list ?\) ?\] ?\})))
+	   (py-empty-out-list-backward))
+	  ((and py-electric-kill-backward-p  (< 0 (setq erg (abs (skip-chars-backward " \t\r\n\f")))))
+	   (delete-region (point) (+ erg (point))))
+	  (t (delete-char (- 1))))
     (setq erg (current-column))
     (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
