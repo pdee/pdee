@@ -132,8 +132,8 @@
     (define-key map [(super backspace)] 'py-dedent)
     ;; (define-key map [(control return)] 'py-newline-and-dedent)
     ;; indentation level modifiers
-    (define-key map [(control c)(control l)] 'py-shift-left)
-    (define-key map [(control c)(control r)] 'py-shift-right)
+    (define-key map [(control c)(control l)] 'comint-dynamic-list-input-ring)
+    (define-key map [(control c)(control r)] 'comint-previous-prompt)
     (define-key map [(control c)(<)] 'py-shift-left)
     (define-key map [(control c)(>)] 'py-shift-right)
     (define-key map [(control c)(tab)] 'py-indent-region)
