@@ -849,5 +849,21 @@ class asdf:
    (forward-line -1)
    (should (eq 4 (current-indentation))))) 
 
+;; (ert-deftest py-builtins-face-lp-1454858-1-test ()
+;;   (py-test-with-temp-buffer
+;;       "#! /usr/bin/env python2
+;; file.close()"
+;;     (beginning-of-line) 
+;;     (should (eq (face-at-point) 'py-builtins-face))))
+
+;; (ert-deftest py-builtins-face-lp-1454858-2-test ()
+;;   (py-test-with-temp-buffer
+;;       "#! /usr/bin/env python3
+;; file.close()"
+;;     (beginning-of-line) 
+;;     (should-not (eq (face-at-point) 'py-builtins-face))))
+
+
+
 (provide 'py-ert-tests-2)
 ;;; py-ert-tests-2.el ends here

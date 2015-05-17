@@ -640,7 +640,7 @@ Receives a buffer-name as argument"
 
 (defun py--create-new-shell ()
   (with-current-buffer
-      (apply #'make-comint-in-buffer executable py-buffer-name executable nil (split-string-and-unquote (car args)))
+      (apply #'make-comint-in-buffer executable py-buffer-name executable nil (split-string-and-unquote args))
     ;; (py--shell-make-comint executable py-buffer-name args)
     (let ((proc (get-buffer-process (current-buffer))))
       (if (string-match "^i" (process-name proc))

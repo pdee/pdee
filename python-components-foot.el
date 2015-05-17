@@ -1,4 +1,4 @@
-;;; python-components-foot.el --- foot            
+;;; python-components-foot.el --- foot
 
 ;; Copyright (C) 2015  Andreas Roehler
 
@@ -21,7 +21,7 @@
 
 ;;; Commentary:
 
-;; 
+;;
 
 ;;; Code:
 
@@ -105,7 +105,10 @@ See available customizations listed in files variables-python-mode at directory 
 	 (if (string-match "python3" py-buffer-name)
 	     (font-lock-add-keywords 'python-mode
 				     '(("\\<print\\>" . 'py-builtins-face)))
-	   '(("\\<print\\>" . 'font-lock-keyword-face))))
+	   (font-lock-add-keywords 'python-mode
+				   '(("\\<print\\>" . 'font-lock-keyword-face)))
+	   (font-lock-add-keywords 'python-mode
+				   '(("\\<file\\>" . 'py-builtins-face)))))
 	((string-match "python3" (py-choose-shell))
 	 (font-lock-add-keywords 'python-mode
 				 '(("\\<print\\>" . 'py-builtins-face))))

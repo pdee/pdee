@@ -1,13 +1,34 @@
+*   New keys setting in `py-python-shell-mode-map'
+  
+  [(control c)(control l)] 'comint-dynamic-list-input-ring)
+  [(control c)(control r)] 'comint-previous-prompt)
+  
+  Behaviour similar to Emacs comint/Python environment.
+  Taken from shift-keys, which are still there:
+  
+  [(control c)(<)] 'py-shift-left)
+  [(control c)(>)] 'py-shift-right)
+
+* py--escape-open-paren-col1 unbenutzt
 * -V terminates the process
 * py-load-pymacs-p in python-mode.el
 * pdb
   in gud.el
     (run-hooks 'pdb-mode-hook))
+* pdb breakpoints
+  http://stackoverflow.com/questions/6980749/simpler-way-to-put-pdb-breakpoints-in-python-code  
+    python -m pdb your_script.py
+
+It will break on the 1st line, then you'll be able to add a breakpoint wherever you want in your code using the break command, its syntax is:
+
+    b(reak) [[filename:]lineno | function[, condition]]
+
 * idlw-shell.el
   ;; Python-mode, bundled with many Emacs installs, quite cavalierly
   ;; adds this function to the global default hook.  It interferes
   ;; with overlay-arrows.
   (remove-hook 'comint-output-filter-functions 'py-pdbtrack-track-stack-file)
+
 
 * def (a,
 

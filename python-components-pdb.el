@@ -236,8 +236,8 @@ named for funcname or define a function funcname."
 
 (defun py-execute-region-pdb (beg end)
   (interactive "r")
-  (let ((py-python-command-args (list "-i" "-m" "pdb")))
-    (py-execute-region beg end)))
+  (let ((py-python-command-args "-i -m pdb")))
+    (py-execute-region beg end))
 
 (defun py-pdb-execute-statement ()
   (interactive)
