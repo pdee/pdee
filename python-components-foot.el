@@ -101,20 +101,13 @@ See available customizations listed in files variables-python-mode at directory 
 				     (font-lock-syntactic-keywords
 				      . py-font-lock-syntactic-keywords))))
   ;; avoid to run py-choose-shell again from `py--fix-start'
-  (cond ((and (boundp 'py-buffer-name) py-buffer-name)
-	 (if (string-match "python3" py-buffer-name)
-	     (font-lock-add-keywords 'python-mode
-				     '(("\\<print\\>" . 'py-builtins-face)))
-	   (font-lock-add-keywords 'python-mode
-				   '(("\\<print\\>" . 'font-lock-keyword-face)))
-	   (font-lock-add-keywords 'python-mode
-				   '(("\\<file\\>" . 'py-builtins-face)))))
-	((string-match "python3" (py-choose-shell))
+  (cond ((string-match "ython3" py-python-edit-version)
 	 (font-lock-add-keywords 'python-mode
-				 '(("\\<print\\>" . 'py-builtins-face))))
+				 '(("\\<print\\>" . 'py-builtins-face)
+				   ("\\<file\\>" . nil))))
 	(t (font-lock-add-keywords 'python-mode
-				   '(("\\<print\\>" . 'font-lock-keyword-face)))))
-
+				   '(("\\<print\\>" . 'font-lock-keyword-face)
+				     ("\\<file\\>" . 'py-builtins-face)))))
   (set (make-local-variable 'which-func-functions) 'py-which-def-or-class)
   (set (make-local-variable 'parse-sexp-lookup-properties) t)
   (set (make-local-variable 'parse-sexp-ignore-comments) t)

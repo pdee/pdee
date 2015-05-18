@@ -1623,8 +1623,12 @@ without the user's realization (e.g. to perform completion)."
   :tag "py-shell-local-path"
   :group 'python-mode)
 
-(defcustom py-python-edit-version "python3"
-  "Fontify code in buffer according to Python version. "
+(defcustom py-python-edit-version ""
+  "When not empty, fontify according to Python version specified.
+
+Default is the empty string
+
+When empty, version is guessed via `py-choose-shell'. "
 
   :type 'string
   :tag "py-python-edit-version"

@@ -259,3 +259,42 @@ print(\"I'm the py-just-two-split-dedicated-lp-1361531-jython-test\")"
    (should flycheck-mode)
    (py-flycheck-mode -1)
    (should-not flycheck-mode)))
+
+(ert-deftest py-face-lp-1454858-python3-1-test ()
+  (let ((py-python-edit-version ""))
+    (py-test-with-temp-buffer
+	"#! /usr/bin/env python3
+file.close()"
+      (beginning-of-line)
+      (font-lock-fontify-buffer)
+      (sit-for 0.1)
+      (should-not (eq (face-at-point) 'py-builtins-face)))))
+
+(ert-deftest py-face-lp-1454858-python3-2-test ()
+  (let ((py-python-edit-version "python3"))
+    (py-test-with-temp-buffer
+	"#! /usr/bin/env python3
+file.close()"
+      (beginning-of-line)
+      (font-lock-fontify-buffer)
+      (sit-for 0.1)
+      (should-not (eq (face-at-point) 'py-builtins-face)))))
+
+(ert-deftest py-face-lp-1454858-python3-3-test ()
+  (let ((py-python-edit-version "python3"))
+  (py-test-with-temp-buffer
+      "#! /usr/bin/env python2
+print()"
+    (beginning-of-line)
+    (font-lock-fontify-buffer)
+    (sit-for 0.1)
+    (should (eq (face-at-point) 'py-builtins-face)))))
+
+(ert-deftest py-face-lp-1454858-python3-4-test ()
+  (let ((py-python-edit-version ""))
+  (py-test-with-temp-buffer
+      "#! /usr/bin/env python3
+print()"
+    (beginning-of-line)
+    (sit-for 0.1)
+    (should (eq (face-at-point) 'py-builtins-face)))))

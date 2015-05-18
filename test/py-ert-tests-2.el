@@ -755,7 +755,7 @@ if __name__==\"__main__\":
     main()
 "
     (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer)) 
+          (font-lock-fontify-buffer))
     (search-forward "exit()")
     (should (eq 4 (py-close-block)))))
 
@@ -771,7 +771,7 @@ if __name__==\"__main__\":
     main()
 "
     (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer)) 
+          (font-lock-fontify-buffer))
     (search-forward "exit()")
     (should (eq 4 (py-close-clause)))))
 
@@ -787,7 +787,7 @@ if __name__==\"__main__\":
     main()
 "
     (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer)) 
+          (font-lock-fontify-buffer))
     (search-forward "exit()")
     (should (eq 4 (py-close-block-or-clause)))))
 
@@ -803,7 +803,7 @@ if __name__==\"__main__\":
     main()
 "
     (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer)) 
+          (font-lock-fontify-buffer))
     (search-forward "exit()")
     (should (eq 0 (py-close-def-or-class)))))
 
@@ -819,7 +819,7 @@ if __name__==\"__main__\":
     main()
 "
     (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer)) 
+          (font-lock-fontify-buffer))
     (search-forward "exit()")
     (should (eq 0 (py-close-def)))))
 
@@ -843,27 +843,58 @@ class asdf:
     for i in range(anzahl):
         klauf.pylauf()
         datei.write(str(spiel[i]) + \"\\n\")"
-   (skip-chars-backward " \t\r\n\f") 
+   (skip-chars-backward " \t\r\n\f")
    (py-dedent-forward-line)
    (should (empty-line-p))
    (forward-line -1)
-   (should (eq 4 (current-indentation))))) 
+   (should (eq 4 (current-indentation)))))
 
 ;; (ert-deftest py-builtins-face-lp-1454858-1-test ()
 ;;   (py-test-with-temp-buffer
 ;;       "#! /usr/bin/env python2
 ;; file.close()"
-;;     (beginning-of-line) 
+;;     (beginning-of-line)
 ;;     (should (eq (face-at-point) 'py-builtins-face))))
 
 ;; (ert-deftest py-builtins-face-lp-1454858-2-test ()
 ;;   (py-test-with-temp-buffer
 ;;       "#! /usr/bin/env python3
 ;; file.close()"
-;;     (beginning-of-line) 
+;;     (beginning-of-line)
 ;;     (should-not (eq (face-at-point) 'py-builtins-face))))
 
+(ert-deftest py-face-lp-1454858-python2-1-test ()
+  (let ((py-python-edit-version ""))
+    (py-test-with-temp-buffer
+	"#! /usr/bin/env python2
+file.close()"
+      (beginning-of-line)
+      (font-lock-fontify-buffer)
+      (sit-for 0.1)
+      (should (eq (face-at-point) 'py-builtins-face)))))
 
+;; Setting of py-python-edit-version should precede
+(ert-deftest py-face-lp-1454858-python2-2-test ()
+  (let ((py-python-edit-version "python2"))
+    (py-test-with-temp-buffer
+	"#! /usr/bin/env python3
+file.close()"
+      (beginning-of-line)
+      (font-lock-fontify-buffer)
+      (sit-for 0.1)
+      (should (eq (face-at-point) 'py-builtins-face)))))
+
+(ert-deftest py-face-lp-1454858-python2-3-test ()
+  (let ((py-python-edit-version ""))
+    (with-temp-buffer
+      (insert "#! /usr/bin/env python2
+print()")
+      (switch-to-buffer (current-buffer))
+      (beginning-of-line)
+      (python-mode)
+      (font-lock-fontify-buffer)
+      (sit-for 0.1)
+      (should (eq (face-at-point) 'font-lock-keyword-face)))))
 
 (provide 'py-ert-tests-2)
 ;;; py-ert-tests-2.el ends here

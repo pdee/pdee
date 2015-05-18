@@ -36,6 +36,9 @@ New in version 6.2.1
 
 New customizables:
 
+- py-python-edit-version, default is ""
+  When not empty, fontify according to Python version specified.
+  
 - py-pdb-executable, default is nil
   Indicate PATH/TO/pdb.
 
