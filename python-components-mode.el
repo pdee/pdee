@@ -86,7 +86,7 @@
   :group 'languages
   :prefix "py-")
 
-(defconst py-version "This is experimental `python-components-mode' not released yet, see https://code.launchpad.net/~a-roehler/python-mode/python-mode-components")
+(defconst py-version "6.2.0+")
 
 (defcustom py-install-directory ""
   "Directory where python-mode.el and it's subdirectories should be installed. Needed for completion and other environment stuff only. "
