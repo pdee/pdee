@@ -3072,6 +3072,7 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
 (require 'python-components-intern)
 (require 'python-components-menu)
 (require 'python-components-shell-menu)
+(require 'python-components-versioned)
 (require 'python-components-foot)
 
 (defun py-separator-char ()
