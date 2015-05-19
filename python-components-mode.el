@@ -1626,7 +1626,7 @@ without the user's realization (e.g. to perform completion)."
 (defcustom py-python-edit-version ""
   "When not empty, fontify according to Python version specified.
 
-Default is the empty string
+Default is the empty string, a useful value \"python3\" maybe.
 
 When empty, version is guessed via `py-choose-shell'. "
 
