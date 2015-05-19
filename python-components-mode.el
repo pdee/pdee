@@ -3209,7 +3209,7 @@ Returns char found. "
 		      "getattr" "globals" "hasattr" "hash" "help" "hex" "id" "input"
 		      "int" "intern" "isinstance" "issubclass" "iter" "len" "list"
 		      "locals" "long" "map" "max" "min" "next" "object" "oct" "open"
-		      "ord" "pow" "print" "property" "range" "raw_input" "reduce"
+		      "ord" "pow" "property" "range" "raw_input" "reduce"
 		      "reload" "repr" "reversed" "round" "set" "setattr" "slice"
 		      "sorted" "staticmethod" "str" "sum" "super" "tuple" "type"
 		      "unichr" "unicode" "vars" "xrange" "zip"))
