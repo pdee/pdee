@@ -99,10 +99,10 @@ def foo():
 	  py-split-window-on-execute
 	  py-switch-buffers-on-execute-p)
       (py-execute-buffer)
+      (sit-for 0.5 t)
       (set-buffer "*IPython*")
-      (goto-char (point-max))
       (when py-debug-p (switch-to-buffer (current-buffer)))
-      (sit-for 0.1 t)
+      (goto-char (point-max))
       (should (search-backward "1")))))
 
 (ert-deftest py-ipython-shell-test ()

@@ -31,6 +31,7 @@
     print(\"one\")
     print(\"two\")"
       (py-execute-region-python (point-min) (point-max))
+      (sit-for 0.5 t)
       (set-buffer buffer)
       (should (search-backward "two")))))
 
@@ -41,6 +42,7 @@
     print(\"one\")
     print(\"two\")"
       (py-execute-region-python2 (point-min) (point-max))
+      (sit-for 0.5 t)
       (set-buffer buffer)
       (should (search-backward "two")))))
 
@@ -51,6 +53,7 @@
     print(\"one\")
     print(\"two\")"
       (py-execute-region-python3 (point-min) (point-max))
+      (sit-for 0.5 t)
       (set-buffer buffer)
       (should (search-backward "two")))))
 
@@ -61,19 +64,9 @@
     print(\"one\")
     print(\"two\")"
       (py-execute-region-ipython (point-min) (point-max))
+      (sit-for 0.5 t)
       (set-buffer buffer)
       (should (search-backward "two")))))
-
-(ert-deftest py-ert-execute-region-ipython2.7-test ()
-  (let ((buffer (py--choose-buffer-name "ipython2.7")))
-    (py-test-with-temp-buffer
-        "
-    print(\"one\")
-    print(\"two\")"
-      (py-execute-region-ipython2.7 (point-min) (point-max))
-      (set-buffer buffer)
-      (sit-for 1) 
-      (should (search-backward "two" nil t)))))
 
 (ert-deftest py-ert-execute-region-ipython3-test ()
   (let ((buffer (py--choose-buffer-name "ipython3")))
@@ -82,6 +75,7 @@
     print(\"one\")
     print(\"two\")"
       (py-execute-region-ipython3 (point-min) (point-max))
+      (sit-for 0.5 t)
       (set-buffer buffer)
       (should (search-backward "two")))))
 
@@ -92,6 +86,7 @@
     print(\"one\")
     print(\"two\")"
       (py-execute-region-jython (point-min) (point-max))
+      (sit-for 0.5 t)
       (set-buffer buffer)
       (should (search-backward "two")))))
 

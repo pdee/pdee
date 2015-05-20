@@ -1,4 +1,4 @@
-;;; py-execute-region.el --- Execute region forms
+;;; python-components-execute-region.el --- Execute region forms
 
 ;; Copyright (C) 2015  Andreas Roehler
 ;; Author: Andreas Roehler <andreas.roehler@online.de>
@@ -208,6 +208,6 @@
   (let ((py-dedicated-process-p t))
     (py--execute-base beg end "jython")))
 
-(provide 'py-execute-region)
-;;; py-execute-region.el ends here
+(provide 'python-components-execute-region)
+;;; python-components-execute-region.el ends here
  

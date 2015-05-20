@@ -3056,7 +3056,7 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
 (require 'python-components-end-position-forms)
 (require 'python-components-end-forms)
 (require 'python-components-up-down)
-(require 'py-execute-region)
+(require 'python-components-execute-region)
 (require 'python-components-exec-forms)
 (require 'python-extended-executes)
 (require 'python-abbrev-propose)
