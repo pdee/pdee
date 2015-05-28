@@ -1806,7 +1806,6 @@ Returns position if successful, nil otherwise "
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
-(defalias 'py-end-of-top-level-bol 'py-end-of-top-level)
 (defun py-end-of-top-level ()
   "Go to end of top-level form at point.
 

@@ -417,9 +417,6 @@
 (ert-deftest py-ert-py-end-of-statement-bol-functionp-test ()
   (should (functionp 'py-end-of-statement-bol)))
 
-(ert-deftest py-ert-py-goto-statement-below-functionp-test ()
-  (should (functionp 'py-goto-statement-below)))
-
 (ert-deftest py-ert-py-beginning-of-decorator-functionp-test ()
   (should (functionp 'py-beginning-of-decorator)))
 
