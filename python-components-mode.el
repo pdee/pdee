@@ -675,6 +675,13 @@ Examples from PEP8"
   :tag "py-closing-list-dedents-bos"
   :group 'python-mode)
 
+(defvar py-imenu-max-items 99)
+(defcustom py-imenu-max-items 99 
+ "Python-mode specific `imenu-max-items'" 
+
+:type 'number
+:group 'python-mode)
+
 (defcustom py-closing-list-space 1
   "Number of chars, closing parenthesis outdent from opening, default is 1 "
   :type 'number

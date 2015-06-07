@@ -139,9 +139,6 @@ See available customizations listed in files variables-python-mode at directory 
             '((< '(backward-delete-char-untabify (min py-indent-offset
                                                       (current-column))))
               (^ '(- (1+ (current-indentation)))))))
-  ;; (set (make-local-variable 'imenu-create-index-function) 'py--imenu-create-index-function)
-  (setq imenu-create-index-function 'py--imenu-create-index-function)
-
   (and py-guess-py-install-directory-p (py-set-load-path))
   ;;  (unless gud-pdb-history (when (buffer-file-name) (add-to-list 'gud-pdb-history (buffer-file-name))))
   (and py-autopair-mode
@@ -192,8 +189,11 @@ See available customizations listed in files variables-python-mode at directory 
   (when (and py--imenu-create-index-p
              (fboundp 'imenu-add-to-menubar)
              (ignore-errors (require 'imenu)))
-    (setq imenu--index-alist (funcall py--imenu-create-index-function))
-    ;; (setq imenu--index-alist (py--imenu-create-index-new))
+  (setq imenu-create-index-function 'py--imenu-create-index-function)
+  (setq imenu--index-alist (funcall py--imenu-create-index-function))
+  ;; fallback
+  (unless imenu--index-alist
+    (setq imenu--index-alist (py--imenu-create-index-new)))
     ;; (message "imenu--index-alist: %s" imenu--index-alist)
     (imenu-add-to-menubar "PyIndex"))
   ;; add the menu

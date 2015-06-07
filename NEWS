@@ -36,6 +36,9 @@ New in version 6.2.1
 
 New customizables:
 
+- py-imenu-max-items, default is 99
+  Sets `imenu-max-items'
+
 - py-python-edit-version, default is ""
   When not empty, fontify according to Python version specified.
   
