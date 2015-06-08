@@ -2791,7 +2791,7 @@ Returns RES or substring of RES"
     res))
 
 (defalias 'py-which-shell 'py-choose-shell)
-(defun py-choose-shell (&optional arg pyshell py-dedicated-process-p py-edit-only-p)
+(defun py-choose-shell (&optional arg pyshell)
   "Return an appropriate executable as a string.
 
 Returns nil, if no executable found.

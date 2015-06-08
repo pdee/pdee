@@ -56,7 +56,6 @@
       (should (eq 'font-lock-keyword-face (get-char-property (point) 'face)))
       (skip-chars-forward "^ \n"))))
 
-
 (ert-deftest py-ert-builtins-face-lp-1294742 ()
   (let ((py-shell-name "python3"))
     (py-test-with-temp-buffer-point-min
@@ -528,7 +527,6 @@ def foo(*args):2
     (py-beginning-of-statement)
     (should (bobp))))
 
-
 (ert-deftest py-ert-beginning-of-except-block-test ()
   (py-test-with-temp-buffer
       "
@@ -720,7 +718,7 @@ that, needs, to_be, wrapped)
     (forward-word -1)
     (should (eq ?p (char-after)))))
 
-(ert-deftest py-complete-in-python-shell-tests ()
+(ert-deftest py-complete-in-python-shell-test ()
   (let ((py-shell-name "python")
 	(py-switch-buffers-on-execute-p t))
     (py-kill-buffer-unconditional "*Python*")
@@ -731,7 +729,7 @@ that, needs, to_be, wrapped)
     (forward-word -1)
     (should (eq ?p (char-after)))))
 
-(ert-deftest py-complete-in-python3-shell-tests ()
+(ert-deftest py-complete-in-python3-shell-test ()
   (let ((py-shell-name "python3")
 	(py-switch-buffers-on-execute-p t))
     (py-kill-buffer-unconditional "*Python3*")
@@ -742,6 +740,15 @@ that, needs, to_be, wrapped)
     (forward-word -1)
     (should (eq ?p (char-after)))))
 
+(ert-deftest py-complete-empty-string-result-test ()
+  (let ((py-shell-name "python3")
+	(py-switch-buffers-on-execute-p t))
+    (py-kill-buffer-unconditional "*Python3*")
+    (python3)
+    (goto-char (point-max))
+    (insert "foo")
+    (py-indent-or-complete)
+    (should (looking-back "foo"))))
 
 (ert-deftest py-ert-close-block-test ()
   (py-test-with-temp-buffer-point-min
