@@ -73,7 +73,7 @@
         (define-key map [(control c)(control k)] 'py-mark-block-or-clause)
         (define-key map [(control c)(.)] 'py-expression)
         ;; Miscellaneous
-        (define-key map [(super q)] 'py-copy-statement)
+        ;; (define-key map [(super q)] 'py-copy-statement)
         (define-key map [(control c)(control d)] 'py-pdbtrack-toggle-stack-tracking)
         (define-key map [(control c)(control f)] 'py-sort-imports)
         (define-key map [(control c)(\#)] 'py-comment-region)
@@ -143,7 +143,7 @@
     (define-key map [(control c)(control k)] 'py-mark-block-or-clause)
     (define-key map [(control c)(.)] 'py-expression)
     ;; Miscellaneous
-    (define-key map [(super q)] 'py-copy-statement)
+    ;; (define-key map [(super q)] 'py-copy-statement)
     (define-key map [(control c)(control d)] 'py-pdbtrack-toggle-stack-tracking)
     (define-key map [(control c)(\#)] 'py-comment-region)
     (define-key map [(control c)(\?)] 'py-describe-mode)

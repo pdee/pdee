@@ -3517,8 +3517,11 @@
 (ert-deftest py-ert-py--try-completion-functionp-test ()
   (should (functionp 'py--try-completion)))
 
-(ert-deftest py-ert-py--shell--do-completion-at-point-functionp-test ()
-  (should (functionp 'py--shell--do-completion-at-point)))
+(ert-deftest py--shell-do-completion-at-point-functionp-test ()
+  (should (functionp 'py--shell-do-completion-at-point)))
+
+(ert-deftest py--shell-insert-completion-maybe-functionp-test ()
+  (should (functionp 'py--shell-insert-completion-maybe)))
 
 (ert-deftest py-ert-py--complete-base-functionp-test ()
   (should (functionp 'py--complete-base)))
