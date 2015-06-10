@@ -903,5 +903,30 @@ print()")
       (sit-for 0.1)
       (should (eq (face-at-point) 'font-lock-keyword-face)))))
 
+(ert-deftest py-ert-in-comment-p-test ()
+  (py-test-with-temp-buffer
+      "# "
+    (should (py--in-comment-p))))
+
+(ert-deftest py-ert-in-sq-string-p-test ()
+  (py-test-with-temp-buffer
+      "' "
+    (should (py-in-string-p))))
+
+(ert-deftest py-ert-in-dq-string-p-test ()
+  (py-test-with-temp-buffer
+      "\" "
+    (should (py-in-string-p))))
+
+(ert-deftest py-ert-in-sq-tqs-string-p-test ()
+  (py-test-with-temp-buffer
+      "''' "
+    (should (py-in-string-p))))
+
+(ert-deftest py-ert-in-dq-tqs-string-p-test ()
+  (py-test-with-temp-buffer
+      "\"\"\" "
+    (should (py-in-string-p))))
+
 (provide 'py-ert-tests-2)
 ;;; py-ert-tests-2.el ends here
