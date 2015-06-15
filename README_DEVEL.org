@@ -34,14 +34,20 @@
 
 * Organizing source code to edit Python
   Commands are grouped by action WRT Python forms
-** beginning of FORM / end of FORM
-*** end of FORM left corner
+  
+** backward FORM / forward of FORM
+*** forward FORM left corner
 ** mark FORM
 **  copy FORM
 **  kill FORM
 **  delete FORM
 ** up Form
 ** down form
+
+   Basically use `backward' and `forward' instead of beginning/end of
+   `py-beginning-of-statement' aliased `py-backward-statement' etc.
+   beginning/end of forms are reserved for booleans.
+   A separating convention, intended to make sripting easier.
 
 * Organizing source code to run Python
   A `py-python-' form may have a `py-ipython' sibling

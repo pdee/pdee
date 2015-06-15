@@ -27,7 +27,6 @@
 ;; some third party relying on v5 serie might use this
 
 ;; Expression
-(defalias 'py-backward-expression 'py-beginning-of-expression)
 (defun py-beginning-of-expression (&optional arg)
   "Go to the beginning of a compound python expression.
 
@@ -161,7 +160,6 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
         (setq erg (point)))
       erg)))
 
-(defalias 'py-forward-expression 'py-end-of-expression)
 (defun py-end-of-expression (&optional arg)
   "Go to the end of a compound python expression.
 
@@ -302,8 +300,6 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
     erg))
 
 ;; Partial- or Minor Expression
-(defalias 'py-backward-partial-expression 'py-beginning-of-partial-expression)
-
 ;;  Line
 (defun py-beginning-of-line ()
   "Go to beginning-of-line, return position.
@@ -336,10 +332,7 @@ If already at end-of-line and not at EOB, go to end of next line. "
       erg)))
 
 ;;  Statement
-(defalias 'py-backward-statement 'py-beginning-of-statement)
-(defalias 'py-previous-statement 'py-beginning-of-statement)
-(defalias 'py-statement-backward 'py-beginning-of-statement)
-(defun py-beginning-of-statement (&optional orig done limit)
+(defun py-backward-statement (&optional orig done limit)
   "Go to the initial line of a simple statement.
 
 For beginning of compound statement use py-beginning-of-block.
@@ -416,14 +409,13 @@ http://docs.python.org/reference/compound_stmts.html"
 	(when (and py-verbose-p (interactive-p)) (message "%s" erg))
 	erg))))
 
-(defalias 'py-beginning-of-statement-lc 'py-beginning-of-statement-bol)
-(defun py-beginning-of-statement-bol (&optional indent)
+(defun py-backward-statement-bol (&optional indent)
   "Goto beginning of line where statement starts.
   Returns position reached, if successful, nil otherwise.
 
 See also `py-up-statement': up from current definition to next beginning of statement above. "
   (interactive)
-  (let* ((indent (or indent (when (eq 'py-end-of-statement-bol (car
+  (let* ((indent (or indent (when (eq 'py-forward-statement-bol (car
   py-bol-forms-last-indent))(cdr py-bol-forms-last-indent))))
 	 (orig (point))
          erg)
@@ -437,7 +429,7 @@ See also `py-up-statement': up from current definition to next beginning of stat
     (when (interactive-p) (message "%s" erg))
     erg))
 
-(defun py-end-of-statement (&optional orig done repeat)
+(defun py-forward-statement (&optional orig done repeat)
   "Go to the last char of current statement.
 
 Optional argument REPEAT, the number of loops done already, is checked for py-max-specpdl-size error. Avoid eternal loops due to missing string delimters etc. "
@@ -456,7 +448,7 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
       (cond
        ;; wich-function-mode, lp:1235375
        ((< py-max-specpdl-size repeat)
-        (error "py-end-of-statement reached loops max. If no error, customize `py-max-specpdl-size'"))
+        (error "py-forward-statement reached loops max. If no error, customize `py-max-specpdl-size'"))
        ;; list
        ((nth 1 pps)
         (if (<= orig (point))
@@ -473,7 +465,7 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
 		      (setq done t)
 		      (skip-chars-forward "^#" (line-end-position))
 		      (skip-chars-backward " \t\r\n\f" (line-beginning-position))
-		      (py-end-of-statement orig done repeat))
+		      (py-forward-statement orig done repeat))
 		  (setq err (py--record-list-error pps))
 		  (goto-char orig))))))
        ;; string
@@ -482,7 +474,7 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
 	  (end-of-line)
 	  (skip-chars-backward " \t\r\n\f")
 	  (setq pps (parse-partial-sexp (point-min) (point)))
-	  (unless (and done (not (or (nth 1 pps) (nth 8 pps))) (eolp)) (py-end-of-statement orig done repeat))))
+	  (unless (and done (not (or (nth 1 pps) (nth 8 pps))) (eolp)) (py-forward-statement orig done repeat))))
        ;; in non-terminated string
 
        ;; in comment
@@ -495,7 +487,7 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
 	(and last (goto-char last)
 	     (forward-line 1)
 	     (back-to-indentation))
-	(py-end-of-statement orig done repeat))
+	(py-forward-statement orig done repeat))
        ((py-current-line-backslashed-p)
 	(end-of-line)
 	(skip-chars-backward " \t\r\n\f" (line-beginning-position))
@@ -505,19 +497,19 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
 	  (end-of-line)
 	  (skip-chars-backward " \t\r\n\f" (line-beginning-position)))
 	(unless (eobp)
-	  (py-end-of-statement orig done repeat)))
+	  (py-forward-statement orig done repeat)))
        ((eq orig (point))
 	(skip-chars-forward " \t\r\n\f#'\"")
 	(py--skip-to-comment-or-semicolon)
-	(py-end-of-statement orig done repeat))
+	(py-forward-statement orig done repeat))
        ((eq (current-indentation) (current-column))
 	(py--skip-to-comment-or-semicolon)
 	;; (setq pps (parse-partial-sexp (point-min) (point)))
 	(unless done
-	  (py-end-of-statement orig done repeat)))
+	  (py-forward-statement orig done repeat)))
 
        ((and (looking-at "[[:print:]]+$") (not done) (py--skip-to-comment-or-semicolon))
-	(py-end-of-statement orig done repeat)))
+	(py-forward-statement orig done repeat)))
       (unless
 	  (or
 	   (eq (point) orig)
@@ -528,16 +520,16 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
         (and py-verbose-p (interactive-p) (message "%s" erg)))
       erg)))
 
-(defun py-end-of-statement-bol ()
+(defun py-forward-statement-bol ()
   "Go to the beginning-of-line following current statement."
   (interactive)
-  (let ((erg (py-end-of-statement)))
+  (let ((erg (py-forward-statement)))
     (setq erg (py--beginning-of-line-form))
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
 ;;  Decorator
-(defun py-beginning-of-decorator ()
+(defun py-backward-decorator ()
   "Go to the beginning of a decorator.
 
 Returns position if succesful "
@@ -560,7 +552,7 @@ Returns position if succesful "
   (interactive)
   (let ((orig (point)) erg)
     (unless (looking-at "@\\w+")
-      (setq erg (py-beginning-of-decorator)))
+      (setq erg (py-backward-decorator)))
     (when erg
       (if
           (re-search-forward py-def-or-class-re nil t)
@@ -635,7 +627,7 @@ From a programm use macro `py-beginning-of-comment' instead "
   (let* ((orig (or orig (point)))
          (origline (or origline (py-count-lines)))
          (stop (if (< 0 arg)'(eobp)'(bobp)))
-         (function (if (< 0 arg) 'py-end-of-statement 'py-beginning-of-statement))
+         (function (if (< 0 arg) 'py-forward-statement 'py-beginning-of-statement))
          (count 1)
          (maxindent (cond (indent indent)
                           ((< (py-count-lines) origline)
@@ -809,8 +801,6 @@ A `nomenclature' is a fancy way of saying AWordWithMixedCaseNotUnderscores."
   (setq arg (or arg 1))
   (py-forward-into-nomenclature (- arg) arg))
 
-(defalias 'py-match-paren 'match-paren)
-
 (defun match-paren (&optional arg)
   "Go to the matching brace, bracket or parenthesis if on its counterpart.
 
@@ -848,7 +838,7 @@ Takes a list, INDENT and START position. "
   (unless (eobp)
     (let ((orig (or orig (point)))
           last)
-      (while (and (setq last (point))(not (eobp))(py-end-of-statement)
+      (while (and (setq last (point))(not (eobp))(py-forward-statement)
                   (save-excursion (or (<= indent (progn  (py-beginning-of-statement)(current-indentation)))(eq last (line-beginning-position))))x
                   ;; (py--end-of-statement-p)
 ))
@@ -871,11 +861,18 @@ Return position"
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
-(defalias 'py-beginning-of-decorator-bol 'py-beginning-of-decorator)
-
-(defalias 'py-statement-forward 'py-end-of-statement)
-(defalias 'py-next-statement 'py-end-of-statement)
-(defalias 'py-forward-statement 'py-end-of-statement)
+(defalias 'py-backward-expression 'py-beginning-of-expression)
+(defalias 'py-backward-partial-expression 'py-beginning-of-partial-expression)
+(defalias 'py-beginning-of-decorator-bol 'py-backward-decorator-bol)
+(defalias 'py-beginning-of-decorator 'py-backward-decorator)
+(defalias 'py-beginning-of-statement 'py-backward-statement)
+(defalias 'py-beginning-of-statement-lc 'py-backward-statement-bol)
+(defalias 'py-end-of-statement 'py-forward-statement)
+(defalias 'py-end-of-statement-bol 'py-forward-statement-bol)
+(defalias 'py-forward-expression 'py-end-of-expression)
+(defalias 'py-match-paren 'match-paren)
+(defalias 'py-next-statement 'py-forward-statement)
+(defalias 'py-previous-statement 'py-beginning-of-statement)
 
 (provide 'python-components-move)
 ;;;  python-components-move.el ends here

@@ -298,3 +298,13 @@ print()"
     (beginning-of-line)
     (sit-for 0.1)
     (should (eq (face-at-point) 'py-builtins-face)))))
+
+(ert-deftest py-ert-execute-statement-split ()
+  (py-test-with-temp-buffer-point-min
+      "print(123)"
+    (let ((py-split-window-on-execute t))
+      (delete-other-windows)
+      (py-execute-statement)
+      (sit-for 0.1 t)
+      (should (not (one-window-p))))))
+

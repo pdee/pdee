@@ -854,15 +854,6 @@ def baz():
       (goto-char (point-min))
       (should (search-forward "py-execute-statement-python3-dedicated-test" nil t 1)))))
 
-(ert-deftest py-ert-execute-statement-split ()
-  (py-test-with-temp-buffer-point-min
-      "print(123)"
-    (let ((py-split-window-on-execute t))
-      (delete-other-windows)
-      (py-execute-statement)
-      (sit-for 0.1 t)
-      (should (not (one-window-p))))))
-
 (ert-deftest py-ert-script-buffer-appears-instead-of-python-shell-buffer-lp-957561-test ()
   (py-test-with-temp-buffer
       "#! /usr/bin/env python
