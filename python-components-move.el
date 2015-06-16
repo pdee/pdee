@@ -23,9 +23,6 @@
 ;;
 
 ;;; Code:
-;; backward compatibility
-;; some third party relying on v5 serie might use this
-
 ;; Expression
 (defun py-beginning-of-expression (&optional arg)
   "Go to the beginning of a compound python expression.
@@ -545,7 +542,7 @@ Returns position if succesful "
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
-(defun py-end-of-decorator ()
+(defun py-forward-decorator ()
   "Go to the end of a decorator.
 
 Returns position if succesful "
@@ -865,10 +862,13 @@ Return position"
 (defalias 'py-backward-partial-expression 'py-beginning-of-partial-expression)
 (defalias 'py-beginning-of-decorator-bol 'py-backward-decorator-bol)
 (defalias 'py-beginning-of-decorator 'py-backward-decorator)
+
 (defalias 'py-beginning-of-statement 'py-backward-statement)
+(defalias 'py-beginning-of-statement-bol 'py-backward-statement-bol)
 (defalias 'py-beginning-of-statement-lc 'py-backward-statement-bol)
 (defalias 'py-end-of-statement 'py-forward-statement)
 (defalias 'py-end-of-statement-bol 'py-forward-statement-bol)
+(defalias 'py-end-of-decorator 'py-forward-decorator)
 (defalias 'py-forward-expression 'py-end-of-expression)
 (defalias 'py-match-paren 'match-paren)
 (defalias 'py-next-statement 'py-forward-statement)

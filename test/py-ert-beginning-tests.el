@@ -504,8 +504,6 @@ class bar:
         except:
             block2
 "
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (forward-line -3)
     (py-beginning-of-statement-bol)
     (should (eq (char-after) ?\ ))))

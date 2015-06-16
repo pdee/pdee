@@ -157,11 +157,11 @@ Returns column reached. "
     (when (and (interactive-p) py-verbose-p) (message "%s" erg))
     erg))
 
-(defun py-electric-delete ()
+(defun py-electric-delete (&optional arg)
   "Delete following character or levels of whitespace.
 
 When `delete-active-region' and (region-active-p), delete region "
-  (interactive "*")
+  (interactive "*p")
   (let ((orig (point)))
     (cond ((and (region-active-p)
 		;; Emacs23 doesn't know that var
@@ -170,8 +170,9 @@ When `delete-active-region' and (region-active-p), delete region "
 	  ((and (< (current-column)(current-indentation)) (<= py-indent-offset (skip-chars-forward " \t")))
 	   (goto-char orig)
 	   (delete-char py-indent-offset))
-	  (t (skip-chars-forward " \t")
-	     (delete-region orig (point))))))
+	  ((< 0 (skip-chars-forward " \t"))
+	   (delete-region orig (point)))
+	  (t (delete-char (or arg 1))))))
 
 (defun py-electric-yank (&optional arg)
   "Perform command `yank' followed by an `indent-according-to-mode' "
