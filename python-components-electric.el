@@ -167,7 +167,7 @@ When `delete-active-region' and (region-active-p), delete region "
 		;; Emacs23 doesn't know that var
 		(boundp 'delete-active-region) delete-active-region)
 	   (delete-region (region-beginning) (region-end)))
-	  ((and (< (current-column)(current-indentation)) (<= py-indent-offset (skip-chars-forward " \t")))
+	  ((save-excursion (and (< (current-column)(current-indentation)) (<= py-indent-offset (skip-chars-forward " \t"))))
 	   (goto-char orig)
 	   (delete-char py-indent-offset))
 	  ((< 0 (skip-chars-forward " \t"))

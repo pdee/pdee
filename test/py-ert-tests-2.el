@@ -928,5 +928,12 @@ print()")
       "\"\"\" "
     (should (py-in-string-p))))
 
+(ert-deftest py-ert-electric-delete-test ()
+  (py-test-with-temp-buffer-point-min
+      "  {}"
+    (py-electric-delete)
+    (should (eq (char-after) ?{))))
+
+
 (provide 'py-ert-tests-2)
 ;;; py-ert-tests-2.el ends here
