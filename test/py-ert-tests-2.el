@@ -934,6 +934,14 @@ print()")
     (py-electric-delete)
     (should (eq (char-after) ?{))))
 
+(ert-deftest py-end-of-def-or-class-test ()
+  (py-test-with-temp-buffer-point-min
+      "class MyTest(unittest.TestCase):
+    def test(self):
+        self.assertEqual(fun(3), 4)"
+    (skip-chars-forward "^(")
+    (py-end-of-def-or-class))
+  (should (eobp)))
 
 (provide 'py-ert-tests-2)
 ;;; py-ert-tests-2.el ends here

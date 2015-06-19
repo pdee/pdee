@@ -447,9 +447,6 @@
 (ert-deftest py-ert-py-backward-into-nomenclature-functionp-test ()
   (should (functionp 'py-backward-into-nomenclature)))
 
-(ert-deftest py-ert-match-paren-functionp-test ()
-  (should (functionp 'match-paren)))
-
 (ert-deftest py-ert-py--travel-current-indent-functionp-test ()
   (should (functionp 'py--travel-current-indent)))
 

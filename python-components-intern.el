@@ -1231,36 +1231,15 @@ Unclosed-string errors are not handled here, as made visible by fontification al
              ind erg last pps thisindent done err)
         (cond (this
                (setq thisindent (current-indentation))
-               (cond ((and py-close-provides-newline
-                           (or (eq regexp 'py-def-re)(eq regexp 'py-class-re)(eq regexp 'py-def-or-class-re)))
-                      (while
-                          (and
-                           ;; lp:1294478 py-mark-def hangs
-                           (if last
-                               (if (< last (point))
-                                   t
-                                 (when (nth 1 pps)
-                                   (if py-verbose-p
-                                       (throw 'exit (py--message-error (py--record-list-error pps)))
-                                     (throw 'exit nil))))
-
-                             t)
-                           (setq last (point))(re-search-forward "^$" nil t)(skip-chars-forward " \t\r\n\f")(or (nth 8 (setq pps (syntax-ppss))) (nth 1 pps) (< thisindent (current-column)))))
-                      ;; (goto-char last)
-                      (skip-chars-backward " \t\r\n\f")
-                      (setq done t)
-                      (and (nth 8 (setq pps (syntax-ppss)))
-                           (py-beginning-of-statement)
-                           (py-end-of-statement)))
-                     (t (while
-                            (and (py-down-statement)
-                                 (or (< thisindent (current-indentation))
-                                     (and (eq thisindent (current-indentation))
-                                          (or (eq regexp 'py-minor-block-re)
-                                              (eq regexp 'py-block-re))
-                                          (looking-at py-clause-re)))
-                                 (py-end-of-statement)(setq last (point))))
-                        (and last (goto-char last)))))
+	       (while
+		   (and (py-down-statement)
+			(or (< thisindent (current-indentation))
+			    (and (eq thisindent (current-indentation))
+				 (or (eq regexp 'py-minor-block-re)
+				     (eq regexp 'py-block-re))
+				 (looking-at py-clause-re)))
+			(py-end-of-statement)(setq last (point))))
+	       (and last (goto-char last)))
               (t (goto-char orig)))
         (when (and (<= (point) orig)(not (looking-at thisregexp)))
           ;; found the end above

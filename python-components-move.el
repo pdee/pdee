@@ -798,36 +798,6 @@ A `nomenclature' is a fancy way of saying AWordWithMixedCaseNotUnderscores."
   (setq arg (or arg 1))
   (py-forward-into-nomenclature (- arg) arg))
 
-(defun match-paren (&optional arg)
-  "Go to the matching brace, bracket or parenthesis if on its counterpart.
-
-Otherwise insert the character, the key is assigned to, here `%'.
-With universal arg \C-u insert a `%'. "
-  (interactive "P")
-  (let ((parse-sexp-ignore-comments t))
-    (if arg
-        (self-insert-command (if (numberp arg) arg 1))
-      (cond
-       ((and (not py-match-paren-no-use-syntax-pps) (looking-at "\\s("))
-        (forward-list 1)
-        (backward-char 1))
-       ((and (not py-match-paren-no-use-syntax-pps)(looking-at "\\s)"))
-        (forward-char 1) (backward-list 1))
-       ;; if match-paren-no-syntax-pps
-       ((looking-at "(")
-        (ar-parentized-end-atpt))
-       ((looking-at ")")
-        (ar-parentized-beginning-atpt))
-       ((looking-at "\\\[")
-        (ar-bracketed-end-atpt))
-       ((looking-at "]")
-        (ar-bracketed-beginning-atpt))
-       ((looking-at "{")
-        (ar-braced-end-atpt))
-       ((looking-at "}")
-        (ar-braced-beginning-atpt))
-       (t (self-insert-command 1))))))
-
 (defun py--travel-current-indent (indent &optional orig)
   "Moves down until clause is closed, i.e. current indentation is reached.
 
@@ -870,7 +840,7 @@ Return position"
 (defalias 'py-end-of-statement-bol 'py-forward-statement-bol)
 (defalias 'py-end-of-decorator 'py-forward-decorator)
 (defalias 'py-forward-expression 'py-end-of-expression)
-(defalias 'py-match-paren 'match-paren)
+(defalias 'py-match-paren 'ar-py-match-paren)
 (defalias 'py-next-statement 'py-forward-statement)
 (defalias 'py-previous-statement 'py-beginning-of-statement)
 
