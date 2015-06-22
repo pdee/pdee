@@ -30,6 +30,10 @@ New in version 6.2.1
   - py-execute-section-ipython3
   - py-execute-section-jython
 
+  - py-sectionize-region
+  - py-backward-section
+  - py-forward-section
+
   - py-narrow-to-block
   - py-narrow-to-block-or-clause
   - py-narrow-to-class

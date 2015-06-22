@@ -1008,5 +1008,49 @@ elif treffer in schwarz:
     (py-narrow-to-statement)
     (should (eq 32 (length (buffer-substring-no-properties (point-min)(point-max)))))))
 
+(ert-deftest py-ert-section-backward-test ()
+  (py-test-with-temp-buffer
+      "# {{
+print('%(language)s has %(number)03d quote types.' %
+       {'language': \"Python\", \"number\": 2})
+# }}
+# {{
+print(\"%(language)s has %(number)03d quote types.\" %
+       {'language': \"Python\", \"number\": 2})
+# }}
+"
+    (py-backward-section)
+    (should (eq (char-after) ?#))
+    (py-backward-section)
+    (should (eq (char-after) ?#))))
+
+(ert-deftest py-ert-section-forward-test ()
+  (py-test-with-temp-buffer-point-min
+      "# {{
+print('%(language)s has %(number)03d quote types.' %
+       {'language': \"Python\", \"number\": 2})
+# }}
+# {{
+print(\"%(language)s has %(number)03d quote types.\" %
+       {'language': \"Python\", \"number\": 2})
+# }}
+"
+    (py-forward-section)
+    (should (eq (char-before) ?}))
+    (py-forward-section)
+    (should (eq (char-before) ?}))))
+
+(ert-deftest py-ert-sectionize-test ()
+  (py-test-with-temp-buffer-point-min
+      "print('%(language)s has %(number)03d quote types.' %
+       {'language': \"Python\", \"number\": 2})
+"
+    (end-of-line)
+    (py-sectionize-region (point-min) (point-max))
+    (goto-char (point-min))
+    (should (eq (char-after) ?#))
+    (py-forward-section)
+    (should (eq (char-before) ?}))))
+
 (provide 'py-ert-tests-2)
 ;;; py-ert-tests-2.el ends here

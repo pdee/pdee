@@ -2111,15 +2111,63 @@ lp:963253"
   (pdb command-line (buffer-file-name)))
 
 ;; Section
+(defun py-sectionize-region (&optional beg end)
+  "Markup code in region as section.
+
+Use current region unless optional args BEG END are delivered."
+  (interactive "*")
+  (let ((beg (or beg (region-beginning)))
+	(end (or (and end (copy-marker end)) (copy-marker (region-end)))))
+    (save-excursion
+      (goto-char beg)
+      (unless (empty-line-p) (split-line))
+      (insert py-section-start)
+      (goto-char end)
+      (unless (empty-line-p) (newline))
+      (insert py-section-end))))
+
+(defun py--beginning-of-section-p (&optional pps)
+  "Return `t' if at a section start. "
+  (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
+    (and (looking-at py-section-start)(not (nth 8 pps)))))
+
+(defun py-backward-section ()
+  "Go to next section start upward in buffer.
+
+Return position if successful"
+  (interactive)
+  (let ((orig (point)))
+    (while (and (re-search-backward py-section-start nil t 1)
+		(nth 8 (parse-partial-sexp (point-min) (point)))))
+    (when (and (looking-at py-section-start)(< (point) orig))
+      (point))))
+
+(defun py-forward-section ()
+  "Go to next section end downward in buffer.
+
+Return position if successful"
+  (interactive)
+  (let ((orig (point))
+	last)
+    (while (and (re-search-forward py-section-end nil t 1)
+		(setq last (point)) 
+		(goto-char (match-beginning 0))
+		(nth 8 (parse-partial-sexp (point-min) (point)))
+		(goto-char (match-end 0))))
+    (and last (goto-char last)) 
+    (when (and (looking-back py-section-end)(< orig (point)))
+      (point))))
+
 (defun py-execute-section-prepare (&optional shell)
   "Execute section at point. "
   (save-excursion
-    (let ((start (when (or (looking-at py-section-start)
-			   (search-backward py-section-start))
+    (let ((pps (parse-partial-sexp (point-min) (point)))
+	  (start (when (or (py--beginning-of-section-p)
+			   (py-backward-section))
 		   (forward-line 1)
 		   (beginning-of-line)
 		   (point))))
-      (if (and start (search-forward py-section-end))
+      (if (and start (py-forward-section))
 	  (progn
 	    (beginning-of-line)
 	    (skip-chars-backward " \t\r\n\f")
