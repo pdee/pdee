@@ -66,7 +66,7 @@
       ;; (when py-debug-p (switch-to-buffer (current-buffer)))
       (should (eq 'py-builtins-face (get-char-property (point) 'face))))))
 
-(ert-deftest py-ert-py-pseudo-keyword-face-lp-1294742 ()
+(ert-deftest py-ert-pseudo-keyword-face-lp-1294742 ()
   (py-test-with-temp-buffer-point-min
       "  Ellipsis True False None  __debug__ NotImplemented"
     (font-lock-fontify-buffer)
@@ -74,7 +74,7 @@
       (should (eq 'py-pseudo-keyword-face (get-char-property (point) 'face)))
       (skip-chars-forward "^ \n"))))
 
-(ert-deftest py-ert-py-object-reference-face-lp-1294742 ()
+(ert-deftest py-ert-object-reference-face-lp-1294742 ()
   (py-test-with-temp-buffer-point-min
       " self cls"
     (font-lock-fontify-buffer)
@@ -264,7 +264,7 @@ by the
     (py-backward-same-level)
     (should (eq (char-after) ?e))))
 
-(ert-deftest py-ert-py-up-level-test ()
+(ert-deftest py-ert-up-level-test ()
   (py-test-with-temp-buffer-point-min
       "def foo():
     if True:
@@ -942,6 +942,71 @@ print()")
     (skip-chars-forward "^(")
     (py-end-of-def-or-class))
   (should (eobp)))
+
+(ert-deftest py-ert-narrow-to-block-test ()
+  (py-test-with-temp-buffer
+      "with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
+    for i in range(anzahl):
+        klauf.pylauf()
+"
+      (py-narrow-to-block)
+      (should (eq 50 (length (buffer-substring-no-properties (point-min)(point-max)))))))
+
+(ert-deftest py-ert-narrow-to-block-or-clause-test ()
+  (py-test-with-temp-buffer
+      "if treffer in gruen:
+    # print \"0, Gruen\"
+    ausgabe[1] = treffer
+    ausgabe[2] = treffer
+
+elif treffer in schwarz:
+    # print \"%i, Schwarz\" % (treffer)
+    ausgabe[1] = treffer
+"
+    (py-narrow-to-block-or-clause)
+    (should (eq 87 (length (buffer-substring-no-properties (point-min)(point-max)))))))
+
+(ert-deftest py-ert-narrow-to-clause-test ()
+  (py-test-with-temp-buffer
+      "if treffer in gruen:
+    # print \"0, Gruen\"
+    ausgabe[1] = treffer
+    ausgabe[2] = treffer
+
+elif treffer in schwarz:
+    # print \"%i, Schwarz\" % (treffer)
+    ausgabe[1] = treffer
+"
+    (py-narrow-to-clause)
+    (should (eq 87 (length (buffer-substring-no-properties (point-min)(point-max)))))))
+
+(ert-deftest py-ert-narrow-to-class-test ()
+  (py-test-with-temp-buffer
+      py-def-and-class-test-string
+    (search-backward "treffer")
+    (py-narrow-to-class)
+    (should (eq 710 (length (buffer-substring-no-properties (point-min)(point-max)))))))
+
+(ert-deftest py-ert-narrow-to-def-test ()
+  (py-test-with-temp-buffer
+      py-def-and-class-test-string
+    (search-backward "treffer")
+    (py-narrow-to-def)
+    (should (eq 485 (length (buffer-substring-no-properties (point-min)(point-max)))))))
+
+(ert-deftest py-ert-narrow-to-def-or-class-test ()
+  (py-test-with-temp-buffer
+      py-def-and-class-test-string
+    (search-backward "treffer")
+    (py-narrow-to-def-or-class)
+    (should (eq 485 (length (buffer-substring-no-properties (point-min)(point-max)))))))
+
+(ert-deftest py-ert-narrow-to-statement-test ()
+  (py-test-with-temp-buffer
+      py-def-and-class-test-string
+    (search-backward "treffer")
+    (py-narrow-to-statement)
+    (should (eq 32 (length (buffer-substring-no-properties (point-min)(point-max)))))))
 
 (provide 'py-ert-tests-2)
 ;;; py-ert-tests-2.el ends here

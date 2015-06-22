@@ -30,6 +30,13 @@ New in version 6.2.1
   - py-execute-section-ipython3
   - py-execute-section-jython
 
+  - py-narrow-to-block
+  - py-narrow-to-block-or-clause
+  - py-narrow-to-class
+  - py-narrow-to-clause
+  - py-narrow-to-def
+  - py-narrow-to-def-or-class
+  - py-narrow-to-statement
 
 - New helper functions, like
   - py--end-of-block-bol-p
@@ -59,6 +66,7 @@ New customizables:
 
 Renamed:
 - py-beginning-of-commented-section --> py-beginning-of-comments
+- py-narrow-to-defun --> py-narrow-to-def
 
 New in version 6.2.0
 ---------------------

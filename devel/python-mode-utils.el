@@ -4347,6 +4347,36 @@ Returns a list, whose car is beg, cdr - end.\"
 ;;; python-components-section-forms.el ends here\n")
   (write-file (concat py-install-directory "/python-components-section-forms.el")))
 
+;; py-comment-forms
+(defun write--narrow-forms ()
+  (dolist (ele py-comment-forms)
+    ;; (setq ele (format "%s" ele))
+    (insert "(defun py-narrow-to")
+    (unless (string= "" ele) (insert (concat "-" ele)))
+    (insert (concat " ()
+  \"Narrow to " ele " at point"))
+	    ;; (unless (string= "" ele) (insert (concat " using " ele " interpreter")))
+    (insert ".\"
+  (interactive)
+  (py--narrow-prepare")
+    (unless (string= "" ele) (insert (concat " \"" ele "\"")))
+    (insert "))\n\n")))
+
+
+(defun py-write-narrow-forms ()
+  "Uses `py-narrow-forms'. "
+  (interactive)
+  (set-buffer (get-buffer-create "python-components-narrow.el"))
+  (erase-buffer)
+  (insert ";;; python-components-narrow.el --- narrow forms\n")
+  (insert arkopf)
+  (when (interactive-p) (switch-to-buffer (current-buffer))
+	(emacs-lisp-mode))
+  (write--narrow-forms)
+  (insert "(provide 'python-components-narrow)
+;;; python-components-narrow.el ends here\n")
+  (write-file (concat py-install-directory "/python-components-narrow.el")))
+
 (defun write-ert-execute-statement-test ()
   "Write `py-execute-statement...' etc. "
   (interactive)

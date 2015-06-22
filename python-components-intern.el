@@ -2128,6 +2128,18 @@ lp:963253"
 	      (py-execute-region start (point))))
 	(error "Can't see `py-section-start' resp. `py-section-end'")))))
 
+(defun py--narrow-prepare (name)
+  "Used internally. "
+  (save-excursion
+    (let ((start (cond ((string= name "statement")
+			(if (py--beginning-of-statement-p)
+			    (point)
+			  (py-beginning-of-statement-bol)))
+		       ((funcall (car (read-from-string (concat "py--statement-opens-" name "-p")))))
+		       (t (funcall (car (read-from-string (concat "py-beginning-of-" name "-bol"))))))))
+      (funcall (car (read-from-string (concat "py-end-of-" name))))
+      (narrow-to-region (point) start))))
+
 ;; /usr/lib/python2.7/pdb.py eyp.py
 
 (defalias 'py-forward-block 'py-end-of-block)

@@ -3086,6 +3086,7 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
 (require 'python-components-fast-complete)
 (require 'python-components-intern)
 (require 'python-components-section-forms)
+(require 'python-components-narrow)
 (require 'python-components-menu)
 (require 'python-components-shell-menu)
 (require 'python-components-versioned)

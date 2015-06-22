@@ -24,6 +24,32 @@
 
 ;; tests are expected to run from directory test
 
+(defvar py-def-and-class-test-string "class kugel(object):
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    # zeit = time.strftime('%Y-%m-%d--%H-%M-%S')
+    spiel = []
+    gruen = [0]
+    rot = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
+
+    def pylauf(self):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
+
+        ausgabe[0] = treffer
+        fertig = ''
+#        print \"treffer, schwarz, gruen, rot, pair, impair, passe, manque, spiel\"
+        if treffer in gruen:
+            # print \"0, Gruen\"
+            ausgabe[1] = treffer
+            ausgabe[2] = treffer
+
+        elif treffer in schwarz:
+            # print \"%i, Schwarz\" % (treffer)
+            ausgabe[1] = treffer
+if True:
+    pass
+")
+
 (setq ert-test-default-buffer "*Python*")
 
 (add-to-list 'load-path default-directory)

@@ -420,28 +420,6 @@ downwards from beginning of block followed by a statement. Otherwise default-val
       (skip-chars-backward " \t")
       (max comment-column (+ (current-column) (if (bolp) 0 1))))))
 
-(defun py-narrow-to-defun ()
-  "Make text outside current def or class invisible.
-
-The defun visible is the one that contains point or follows point. "
-  (interactive)
-  (save-excursion
-    (let ((start (if (py--statement-opens-def-or-class-p)
-                     (point)
-                   (py-beginning-of-def-or-class))))
-      (py-end-of-def-or-class)
-      (narrow-to-region (point) start))))
-
-(defun py-narrow-to-class ()
-  "Make text outside current class invisible. "
-  (interactive)
-  (save-excursion
-    (let ((start (if (py--statement-opens-class-p)
-                     (point)
-                   (py-beginning-of-class))))
-      (py-end-of-class)
-      (narrow-to-region (point) start))))
-
 ;;  make general form below work also in these cases
 ;;  (defalias 'py-beginning-of-paragraph 'backward-paragraph)
 (defun py-beginning-of-paragraph ()
