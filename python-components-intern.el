@@ -1626,10 +1626,7 @@ Used by variable `which-func-functions' "
 With INDENT, go to beginning one level above.
 Whit IACT, print result in message buffer.
 
-Returns beginning of FORM if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns beginning of FORM if successful, nil otherwise"
   (interactive "P")
   (let (erg)
     (unless (bobp)
@@ -1788,10 +1785,7 @@ Returns position if successful, nil otherwise "
 (defun py-end-of-top-level ()
   "Go to end of top-level form at point.
 
-Returns position if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns position if successful, nil otherwise"
   (interactive)
   (let ((orig (point))
         erg)
@@ -1819,10 +1813,7 @@ http://docs.python.org/reference/compound_stmts.html"
 (defun py-end-of-top-level-bol ()
   "Go to end of top-level form at point, stop at next beginning-of-line.
 
-Returns position successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns position successful, nil otherwise"
   (interactive)
   (let (erg)
     (py-end-of-top-level)
@@ -1838,10 +1829,7 @@ http://docs.python.org/reference/compound_stmts.html"
 
 If inside a delimited form --string or list-- go to its beginning.
 If not at beginning of a statement or block, go to its beginning.
-If at beginning of a statement or block, go to beginning one level above of compound statement or definition at point.
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+If at beginning of a statement or block, go to beginning one level above of compound statement or definition at point."
   (interactive "P")
   (let ((pps (syntax-ppss)))
     (cond ((nth 8 pps) (goto-char (nth 8 pps)))
@@ -1855,10 +1843,7 @@ http://docs.python.org/reference/compound_stmts.html"
 
 If no statement or block below, but a delimited form --string or list-- go to its beginning. Repeated call from there will behave like down-list.
 
-Returns position if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns position if successful, nil otherwise"
   (interactive "P")
   (let* ((orig (point))
          erg
@@ -1954,20 +1939,14 @@ If BOL is t, mark from beginning-of-line"
  "Go to beginning of compound statement or definition at point.
 
 With \\[universal-argument], go to beginning one level above.
-Returns position if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns position if successful, nil otherwise"
   (interactive "P")
   (py--beginning-of-form-intern py-extended-block-or-clause-re (interactive-p) indent))
 
 (defun py-end (&optional indent)
  "Go to end of of compound statement or definition at point.
 
-Returns position block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns position block if successful, nil otherwise"
   (interactive "P")
     (let* ((orig (point))
            (erg (py--end-base 'py-extended-block-or-clause-re orig)))
@@ -1995,10 +1974,7 @@ http://docs.python.org/reference/compound_stmts.html"
 If inside a delimited form --string or list-- go to its beginning.
 If not at beginning of a statement or block, go to its beginning.
 If at beginning of a statement or block, go to previous beginning of compound statement or definition at point.
-If no further element at same level, go one level up.
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+If no further element at same level, go one level up."
   (interactive)
   (let ((pps (syntax-ppss)))
     (cond ((nth 8 pps) (goto-char (nth 8 pps)))

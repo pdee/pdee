@@ -29,10 +29,7 @@
 (defun py-end-of-block (&optional indent)
   "Go to end of block.
 
-Returns end of block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns end of block if successful, nil otherwise"
   (interactive "P")
   (let* ((orig (point))
          (erg (py--end-base 'py-block-re orig)))
@@ -55,10 +52,7 @@ See also `py-down-block': down from current definition to next beginning of bloc
 (defun py-end-of-clause (&optional indent)
   "Go to end of clause.
 
-Returns end of clause if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns end of clause if successful, nil otherwise"
   (interactive "P")
   (let* ((orig (point))
          (erg (py--end-base 'py-clause-re orig)))
@@ -81,10 +75,7 @@ See also `py-down-clause': down from current definition to next beginning of cla
 (defun py-end-of-block-or-clause (&optional indent)
   "Go to end of block-or-clause.
 
-Returns end of block-or-clause if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns end of block-or-clause if successful, nil otherwise"
   (interactive "P")
   (let* ((orig (point))
          (erg (py--end-base 'py-block-or-clause-re orig)))
@@ -107,10 +98,7 @@ See also `py-down-block-or-clause': down from current definition to next beginni
 (defun py-end-of-def (&optional indent)
   "Go to end of def.
 
-Returns end of def if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns end of def if successful, nil otherwise"
   (interactive "P")
   (let* ((orig (point))
          (erg (py--end-base 'py-def-re orig)))
@@ -133,10 +121,7 @@ See also `py-down-def': down from current definition to next beginning of def be
 (defun py-end-of-class (&optional indent)
   "Go to end of class.
 
-Returns end of class if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns end of class if successful, nil otherwise"
   (interactive "P")
   (let* ((orig (point))
          (erg (py--end-base 'py-class-re orig)))
@@ -159,10 +144,7 @@ See also `py-down-class': down from current definition to next beginning of clas
 (defun py-end-of-def-or-class (&optional indent)
   "Go to end of def-or-class.
 
-Returns end of def-or-class if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns end of def-or-class if successful, nil otherwise"
   (interactive "P")
   (let* ((orig (point))
          (erg (py--end-base 'py-def-or-class-re orig)))
@@ -185,10 +167,7 @@ See also `py-down-def-or-class': down from current definition to next beginning 
 (defun py-end-of-if-block (&optional indent)
   "Go to end of if-block.
 
-Returns end of if-block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns end of if-block if successful, nil otherwise"
   (interactive "P")
   (let* ((orig (point))
          (erg (py--end-base 'py-if-block-re orig)))
@@ -211,10 +190,7 @@ See also `py-down-if-block': down from current definition to next beginning of i
 (defun py-end-of-elif-block (&optional indent)
   "Go to end of elif-block.
 
-Returns end of elif-block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns end of elif-block if successful, nil otherwise"
   (interactive "P")
   (let* ((orig (point))
          (erg (py--end-base 'py-elif-block-re orig)))
@@ -237,10 +213,7 @@ See also `py-down-elif-block': down from current definition to next beginning of
 (defun py-end-of-else-block (&optional indent)
   "Go to end of else-block.
 
-Returns end of else-block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns end of else-block if successful, nil otherwise"
   (interactive "P")
   (let* ((orig (point))
          (erg (py--end-base 'py-else-block-re orig)))
@@ -263,10 +236,7 @@ See also `py-down-else-block': down from current definition to next beginning of
 (defun py-end-of-try-block (&optional indent)
   "Go to end of try-block.
 
-Returns end of try-block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns end of try-block if successful, nil otherwise"
   (interactive "P")
   (let* ((orig (point))
          (erg (py--end-base 'py-try-block-re orig)))
@@ -289,10 +259,7 @@ See also `py-down-try-block': down from current definition to next beginning of 
 (defun py-end-of-minor-block (&optional indent)
   "Go to end of minor-block.
 
-Returns end of minor-block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns end of minor-block if successful, nil otherwise"
   (interactive "P")
   (let* ((orig (point))
          (erg (py--end-base 'py-minor-block-re orig)))
@@ -315,10 +282,7 @@ See also `py-down-minor-block': down from current definition to next beginning o
 (defun py-end-of-for-block (&optional indent)
   "Go to end of for-block.
 
-Returns end of for-block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns end of for-block if successful, nil otherwise"
   (interactive "P")
   (let* ((orig (point))
          (erg (py--end-base 'py-for-block-re orig)))
@@ -341,10 +305,7 @@ See also `py-down-for-block': down from current definition to next beginning of 
 (defun py-end-of-except-block (&optional indent)
   "Go to end of except-block.
 
-Returns end of except-block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns end of except-block if successful, nil otherwise"
   (interactive "P")
   (let* ((orig (point))
          (erg (py--end-base 'py-except-block-re orig)))

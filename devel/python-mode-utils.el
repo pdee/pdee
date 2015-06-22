@@ -1815,10 +1815,7 @@ Optional \\\\[universal-argument] prompts for path to the"))
 \(defun py-beginning-of-top-level ()
   \"Go to beginning of block until level of indentation is null.
 
-Returns beginning of block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html\"
+Returns beginning of block if successful, nil otherwise\"
   (interactive)
   (let ((erg (ignore-errors (cdr (py--go-to-keyword py-block-re 0)))))
     erg))\n")
@@ -1830,10 +1827,7 @@ http://docs.python.org/reference/compound_stmts.html\"
 With INDENT, go to beginning one level above.
 Whit IACT, print result in message buffer.
 
-Returns beginning of FORM if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html\"
+Returns beginning of FORM if successful, nil otherwise\"
   (interactive \"P\")
   (let ((erg (if indent
                  (ignore-errors
@@ -1848,20 +1842,14 @@ http://docs.python.org/reference/compound_stmts.html\"
  \"Go to beginning of compound statement or definition at point.
 
 With \\\\[universal-argument], go to beginning one level above.
-Returns position if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html\"
+Returns position if successful, nil otherwise\"
   (interactive \"P\")
   (py--beginning-of-form-intern py-extended-block-or-clause-re (interactive-p) indent))
 
 \(defun py-end (&optional indent)
  \"Go to end of of compound statement or definition at point.
 
-Returns position block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html\"
+Returns position block if successful, nil otherwise\"
   (interactive \"P\")
     (let\* ((orig (point))
            (erg (py--end-base 'py-extended-block-or-clause-re orig)))
@@ -1872,10 +1860,7 @@ http://docs.python.org/reference/compound_stmts.html\"
 
  \"Go to beginning one level below of compound statement or definition at point.
 
-Returns position if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html\"
+Returns position if successful, nil otherwise\"
   (interactive \"P\")
     (let\* ((orig (point))
            (erg (py--end-base 'py-extended-block-or-clause-re orig)))
@@ -2911,10 +2896,7 @@ Delete " ele " at point. \"]\n)\n")))
 \(defun py-end-of-" ele " (&optional indent)
   \"Go to end of " ele ".
 
-Returns end of " ele " if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html\"
+Returns end of " ele " if successful, nil otherwise\"
   (interactive \"P\")
   (let\* ((orig (point))
          (erg (py--end-base 'py-" ele "-re orig)))
@@ -3912,10 +3894,7 @@ class bar:
 \(defun py-end-of-" ele " (&optional indent)
   \"Go to end of " ele ".
 
-Returns end of " ele " if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html\"
+Returns end of " ele " if successful, nil otherwise\"
   (interactive \"P\")
   (let\* ((orig (point))
          (erg (py--end-base 'py-" ele "-re orig)))

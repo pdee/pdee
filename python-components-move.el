@@ -333,10 +333,7 @@ If already at end-of-line and not at EOB, go to end of next line. "
   "Go to the initial line of a simple statement.
 
 For beginning of compound statement use py-beginning-of-block.
-For beginning of clause py-beginning-of-clause.
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+For beginning of clause py-beginning-of-clause."
   (interactive)
   (save-restriction
     (unless (bobp)

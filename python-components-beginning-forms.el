@@ -28,30 +28,21 @@
 (defun py-beginning-of-block (&optional indent)
  "Go to beginning block, skip whitespace at BOL.
 
-Returns beginning of block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns beginning of block if successful, nil otherwise"
   (interactive)
   (py--beginning-of-prepare indent 'py-block-re 'py-clause-re (interactive-p)))
 
 (defun py-beginning-of-clause (&optional indent)
  "Go to beginning clause, skip whitespace at BOL.
 
-Returns beginning of clause if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns beginning of clause if successful, nil otherwise"
   (interactive)
   (py--beginning-of-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (interactive-p)))
 
 (defun py-beginning-of-block-or-clause (&optional indent)
  "Go to beginning block-or-clause, skip whitespace at BOL.
 
-Returns beginning of block-or-clause if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns beginning of block-or-clause if successful, nil otherwise"
   (interactive)
   (py--beginning-of-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (interactive-p)))
 
@@ -60,10 +51,7 @@ http://docs.python.org/reference/compound_stmts.html"
 
 Returns beginning of def if successful, nil otherwise
 
-When `py-mark-decorators' is non-nil, decorators are considered too.
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+When `py-mark-decorators' is non-nil, decorators are considered too."
   (interactive)
   (py--beginning-of-prepare indent 'py-def-re 'py-extended-block-or-clause-re (interactive-p)))
 
@@ -72,10 +60,7 @@ http://docs.python.org/reference/compound_stmts.html"
 
 Returns beginning of class if successful, nil otherwise
 
-When `py-mark-decorators' is non-nil, decorators are considered too.
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+When `py-mark-decorators' is non-nil, decorators are considered too."
   (interactive)
   (py--beginning-of-prepare indent 'py-class-re 'py-extended-block-or-clause-re (interactive-p)))
 
@@ -84,80 +69,56 @@ http://docs.python.org/reference/compound_stmts.html"
 
 Returns beginning of def-or-class if successful, nil otherwise
 
-When `py-mark-decorators' is non-nil, decorators are considered too.
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+When `py-mark-decorators' is non-nil, decorators are considered too."
   (interactive)
   (py--beginning-of-prepare indent 'py-def-or-class-re 'py-extended-block-or-clause-re (interactive-p)))
 
 (defun py-beginning-of-if-block (&optional indent)
  "Go to beginning if-block, skip whitespace at BOL.
 
-Returns beginning of if-block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns beginning of if-block if successful, nil otherwise"
   (interactive)
   (py--beginning-of-prepare indent 'py-if-block-re 'py-clause-re (interactive-p)))
 
 (defun py-beginning-of-elif-block (&optional indent)
  "Go to beginning elif-block, skip whitespace at BOL.
 
-Returns beginning of elif-block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns beginning of elif-block if successful, nil otherwise"
   (interactive)
   (py--beginning-of-prepare indent 'py-elif-block-re 'py-clause-re (interactive-p)))
 
 (defun py-beginning-of-else-block (&optional indent)
  "Go to beginning else-block, skip whitespace at BOL.
 
-Returns beginning of else-block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns beginning of else-block if successful, nil otherwise"
   (interactive)
   (py--beginning-of-prepare indent 'py-else-block-re 'py-clause-re (interactive-p)))
 
 (defun py-beginning-of-try-block (&optional indent)
  "Go to beginning try-block, skip whitespace at BOL.
 
-Returns beginning of try-block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns beginning of try-block if successful, nil otherwise"
   (interactive)
   (py--beginning-of-prepare indent 'py-try-block-re 'py-clause-re (interactive-p)))
 
 (defun py-beginning-of-minor-block (&optional indent)
  "Go to beginning minor-block, skip whitespace at BOL.
 
-Returns beginning of minor-block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns beginning of minor-block if successful, nil otherwise"
   (interactive)
   (py--beginning-of-prepare indent 'py-minor-block-re 'py-clause-re (interactive-p)))
 
 (defun py-beginning-of-for-block (&optional indent)
  "Go to beginning for-block, skip whitespace at BOL.
 
-Returns beginning of for-block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns beginning of for-block if successful, nil otherwise"
   (interactive)
   (py--beginning-of-prepare indent 'py-for-block-re 'py-clause-re (interactive-p)))
 
 (defun py-beginning-of-except-block (&optional indent)
  "Go to beginning except-block, skip whitespace at BOL.
 
-Returns beginning of except-block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns beginning of except-block if successful, nil otherwise"
   (interactive)
   (py--beginning-of-prepare indent 'py-except-block-re 'py-clause-re (interactive-p)))
 
@@ -165,10 +126,7 @@ http://docs.python.org/reference/compound_stmts.html"
 (defun py-beginning-of-block-bol (&optional indent)
  "Go to beginning block, go to BOL.
 
-Returns beginning of block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns beginning of block if successful, nil otherwise"
   (interactive)
   (py--beginning-of-prepare indent 'py-block-re 'py-clause-re (interactive-p) t))
 
@@ -176,10 +134,7 @@ http://docs.python.org/reference/compound_stmts.html"
 (defun py-beginning-of-clause-bol (&optional indent)
  "Go to beginning clause, go to BOL.
 
-Returns beginning of clause if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns beginning of clause if successful, nil otherwise"
   (interactive)
   (py--beginning-of-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (interactive-p) t))
 
@@ -187,10 +142,7 @@ http://docs.python.org/reference/compound_stmts.html"
 (defun py-beginning-of-block-or-clause-bol (&optional indent)
  "Go to beginning block-or-clause, go to BOL.
 
-Returns beginning of block-or-clause if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns beginning of block-or-clause if successful, nil otherwise"
   (interactive)
   (py--beginning-of-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (interactive-p) t))
 
@@ -200,10 +152,7 @@ http://docs.python.org/reference/compound_stmts.html"
 
 Returns beginning of def if successful, nil otherwise
 
-When `py-mark-decorators' is non-nil, decorators are considered too.
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+When `py-mark-decorators' is non-nil, decorators are considered too."
   (interactive)
   (py--beginning-of-prepare indent 'py-def-re 'py-extended-block-or-clause-re (interactive-p) t))
 
@@ -213,10 +162,7 @@ http://docs.python.org/reference/compound_stmts.html"
 
 Returns beginning of class if successful, nil otherwise
 
-When `py-mark-decorators' is non-nil, decorators are considered too.
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+When `py-mark-decorators' is non-nil, decorators are considered too."
   (interactive)
   (py--beginning-of-prepare indent 'py-class-re 'py-extended-block-or-clause-re (interactive-p) t))
 
@@ -226,10 +172,7 @@ http://docs.python.org/reference/compound_stmts.html"
 
 Returns beginning of def-or-class if successful, nil otherwise
 
-When `py-mark-decorators' is non-nil, decorators are considered too.
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+When `py-mark-decorators' is non-nil, decorators are considered too."
   (interactive)
   (py--beginning-of-prepare indent 'py-def-or-class-re 'py-extended-block-or-clause-re (interactive-p) t))
 
@@ -237,10 +180,7 @@ http://docs.python.org/reference/compound_stmts.html"
 (defun py-beginning-of-if-block-bol (&optional indent)
  "Go to beginning if-block, go to BOL.
 
-Returns beginning of if-block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns beginning of if-block if successful, nil otherwise"
   (interactive)
   (py--beginning-of-prepare indent 'py-if-block-re 'py-clause-re (interactive-p) t))
 
@@ -248,10 +188,7 @@ http://docs.python.org/reference/compound_stmts.html"
 (defun py-beginning-of-elif-block-bol (&optional indent)
  "Go to beginning elif-block, go to BOL.
 
-Returns beginning of elif-block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns beginning of elif-block if successful, nil otherwise"
   (interactive)
   (py--beginning-of-prepare indent 'py-elif-block-re 'py-clause-re (interactive-p) t))
 
@@ -259,10 +196,7 @@ http://docs.python.org/reference/compound_stmts.html"
 (defun py-beginning-of-else-block-bol (&optional indent)
  "Go to beginning else-block, go to BOL.
 
-Returns beginning of else-block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns beginning of else-block if successful, nil otherwise"
   (interactive)
   (py--beginning-of-prepare indent 'py-else-block-re 'py-clause-re (interactive-p) t))
 
@@ -270,10 +204,7 @@ http://docs.python.org/reference/compound_stmts.html"
 (defun py-beginning-of-try-block-bol (&optional indent)
  "Go to beginning try-block, go to BOL.
 
-Returns beginning of try-block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns beginning of try-block if successful, nil otherwise"
   (interactive)
   (py--beginning-of-prepare indent 'py-try-block-re 'py-clause-re (interactive-p) t))
 
@@ -281,10 +212,7 @@ http://docs.python.org/reference/compound_stmts.html"
 (defun py-beginning-of-minor-block-bol (&optional indent)
  "Go to beginning minor-block, go to BOL.
 
-Returns beginning of minor-block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns beginning of minor-block if successful, nil otherwise"
   (interactive)
   (py--beginning-of-prepare indent 'py-minor-block-re 'py-clause-re (interactive-p) t))
 
@@ -292,10 +220,7 @@ http://docs.python.org/reference/compound_stmts.html"
 (defun py-beginning-of-for-block-bol (&optional indent)
  "Go to beginning for-block, go to BOL.
 
-Returns beginning of for-block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns beginning of for-block if successful, nil otherwise"
   (interactive)
   (py--beginning-of-prepare indent 'py-for-block-re 'py-clause-re (interactive-p) t))
 
@@ -303,10 +228,7 @@ http://docs.python.org/reference/compound_stmts.html"
 (defun py-beginning-of-except-block-bol (&optional indent)
  "Go to beginning except-block, go to BOL.
 
-Returns beginning of except-block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns beginning of except-block if successful, nil otherwise"
   (interactive)
   (py--beginning-of-prepare indent 'py-except-block-re 'py-clause-re (interactive-p) t))
 

@@ -182,10 +182,7 @@ Returns beginning and end positions of marked area, a cons. "
 (defun py-end-of-block (&optional indent)
   "Go to end of block.
 
-Returns end of block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns end of block if successful, nil otherwise"
   (interactive "P")
   (let* ((orig (point))
          (erg (py--end-base 'py-block-re orig)))
@@ -221,10 +218,7 @@ A minor block is started by a `for', `if', `try' or `with'.
 (defun py-end-of-minor-block (&optional indent)
   "Go to end of minor-block.
 
-Returns end of minor-block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns end of minor-block if successful, nil otherwise"
   (interactive "P")
   (let* ((orig (point))
          (erg (py--end-base 'py-minor-block-re orig)))
@@ -257,10 +251,7 @@ See also `py-down-minor-block': down from current definition to next beginning o
 (defun py-end-of-clause (&optional indent)
   "Go to end of clause.
 
-Returns end of clause if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns end of clause if successful, nil otherwise"
   (interactive "P")
   (let* ((orig (point))
          (erg (py--end-base 'py-clause-re orig)))
@@ -293,10 +284,7 @@ See also `py-down-clause': down from current definition to next beginning of cla
 (defun py-end-of-block-or-clause (&optional indent)
   "Go to end of block-or-clause.
 
-Returns end of block-or-clause if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns end of block-or-clause if successful, nil otherwise"
   (interactive "P")
   (let* ((orig (point))
          (erg (py--end-base 'py-block-or-clause-re orig)))
@@ -329,10 +317,7 @@ See also `py-down-block-or-clause': down from current definition to next beginni
 (defun py-end-of-def (&optional indent)
   "Go to end of def.
 
-Returns end of def if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns end of def if successful, nil otherwise"
   (interactive "P")
   (let* ((orig (point))
          (erg (py--end-base 'py-def-re orig)))
@@ -373,10 +358,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
 (defun py-end-of-class (&optional indent)
   "Go to end of class.
 
-Returns end of class if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns end of class if successful, nil otherwise"
   (interactive "P")
   (let* ((orig (point))
          (erg (py--end-base 'py-class-re orig)))

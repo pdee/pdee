@@ -39,10 +39,7 @@ Returns position if successful, nil otherwise "
 (defun py-end-of-top-level ()
   "Go to end of top-level form at point.
 
-Returns position if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns position if successful, nil otherwise"
   (interactive)
   (let ((orig (point))
         erg)
@@ -67,20 +64,14 @@ http://docs.python.org/reference/compound_stmts.html"
       erg)))
 
 (defun py-beginning ()
-  "Go to beginning of compound statement or definition at point.
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+  "Go to beginning of compound statement or definition at point."
   (interactive)
   (py--beginning-of-form-intern 'py-extended-block-or-clause-re (interactive-p)))
 
 (defun py-end (&optional indent)
  "Go to end of of compound statement or definition at point.
 
-Returns position block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns position block if successful, nil otherwise"
   (interactive "P")
     (let* ((orig (point))
            (erg (py--end-base 'py-extended-block-or-clause-re orig)))
@@ -92,10 +83,7 @@ http://docs.python.org/reference/compound_stmts.html"
 
 If inside a delimited form --string or list-- go to its beginning.
 If not at beginning of a statement or block, go to its beginning.
-If at beginning of a statement or block, go to beginning one level above of compound statement or definition at point.
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+If at beginning of a statement or block, go to beginning one level above of compound statement or definition at point."
   (interactive "P")
   (let ((pps (syntax-ppss)))
     (cond ((nth 8 pps) (goto-char (nth 8 pps)))
@@ -109,10 +97,7 @@ http://docs.python.org/reference/compound_stmts.html"
 
 If no statement or block below, but a delimited form --string or list-- go to its beginning. Repeated call from there will behave like down-list.
 
-Returns position if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns position if successful, nil otherwise"
   (interactive "P")
   (let* ((orig (point))
          erg
@@ -145,10 +130,7 @@ http://docs.python.org/reference/compound_stmts.html"
 If inside a delimited form --string or list-- go to its beginning.
 If not at beginning of a statement or block, go to its beginning.
 If at beginning of a statement or block, go to previous beginning of compound statement or definition at point.
-If no further element at same level, go one level up.
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+If no further element at same level, go one level up."
   (interactive)
   (let ((pps (syntax-ppss)))
     (cond ((nth 8 pps) (goto-char (nth 8 pps)))
@@ -159,10 +141,7 @@ http://docs.python.org/reference/compound_stmts.html"
 (defun py-end-of-block (&optional indent)
  "Go to end of block.
 
-Returns end of block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns end of block if successful, nil otherwise"
   (interactive "P")
     (let* ((orig (point))
            (erg (py--end-base 'py-block-re orig)))
@@ -172,10 +151,7 @@ http://docs.python.org/reference/compound_stmts.html"
 (defun py-end-of-clause (&optional indent)
  "Go to end of clause.
 
-Returns end of clause if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns end of clause if successful, nil otherwise"
   (interactive "P")
     (let* ((orig (point))
            (erg (py--end-base 'py-clause-re orig)))
@@ -185,10 +161,7 @@ http://docs.python.org/reference/compound_stmts.html"
 (defun py-end-of-block-or-clause (&optional indent)
  "Go to end of block-or-clause.
 
-Returns end of block-or-clause if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns end of block-or-clause if successful, nil otherwise"
   (interactive "P")
     (let* ((orig (point))
            (erg (py--end-base 'py-block-or-clause-re orig)))
@@ -201,10 +174,7 @@ http://docs.python.org/reference/compound_stmts.html"
 
 Returns end of def if successful, nil otherwise
 
-With \\[universal argument] or `py-mark-decorators' set to `t', decorators are marked too.
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+With \\[universal argument] or `py-mark-decorators' set to `t', decorators are marked too."
   (interactive "P")
     (let* ((orig (point))
            (erg (py--end-base 'py-def-re orig)))
@@ -216,10 +186,7 @@ http://docs.python.org/reference/compound_stmts.html"
 
 Returns end of class if successful, nil otherwise
 
-With \\[universal argument] or `py-mark-decorators' set to `t', decorators are marked too.
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+With \\[universal argument] or `py-mark-decorators' set to `t', decorators are marked too."
   (interactive "P")
     (let* ((orig (point))
            (erg (py--end-base 'py-class-re orig)))
@@ -242,10 +209,7 @@ With \\[universal argument] or `py-mark-decorators' set to `t', decorators are m
 (defun py-end-of-if-block (&optional indent)
  "Go to end of if-block.
 
-Returns end of if-block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns end of if-block if successful, nil otherwise"
   (interactive "P")
     (let* ((orig (point))
            (erg (py--end-base 'py-if-block-re orig)))
@@ -255,10 +219,7 @@ http://docs.python.org/reference/compound_stmts.html"
 (defun py-end-of-elif-block (&optional indent)
  "Go to end of if-block.
 
-Returns end of if-block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns end of if-block if successful, nil otherwise"
   (interactive "P")
     (let* ((orig (point))
            (erg (py--end-base 'py-elif-block-re orig)))
@@ -268,10 +229,7 @@ http://docs.python.org/reference/compound_stmts.html"
 (defun py-end-of-try-block (&optional indent)
  "Go to end of try-block.
 
-Returns end of try-block if successful, nil otherwise
-
-Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html"
+Returns end of try-block if successful, nil otherwise"
   (interactive "P")
     (let* ((orig (point))
            (erg (py--end-base 'py-try-block-re orig)))
