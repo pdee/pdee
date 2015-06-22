@@ -934,7 +934,7 @@ print()")
     (py-electric-delete)
     (should (eq (char-after) ?{))))
 
-(ert-deftest py-end-of-def-or-class-test ()
+(ert-deftest py-ert-end-of-def-or-class-test ()
   (py-test-with-temp-buffer-point-min
       "class MyTest(unittest.TestCase):
     def test(self):

@@ -2110,6 +2110,24 @@ lp:963253"
 	    (car (read-from-string (py--pdb-version)))) "asdf")))
   (pdb command-line (buffer-file-name)))
 
+;; Section
+(defun py-execute-section-prepare (&optional shell)
+  "Execute section at point. "
+  (save-excursion
+    (let ((start (when (or (looking-at py-section-start)
+			   (search-backward py-section-start))
+		   (forward-line 1)
+		   (beginning-of-line)
+		   (point))))
+      (if (and start (search-forward py-section-end))
+	  (progn
+	    (beginning-of-line)
+	    (skip-chars-backward " \t\r\n\f")
+	    (if shell
+		(funcall (car (read-from-string (concat "py-execute-region-" shell))) start (point))
+	      (py-execute-region start (point))))
+	(error "Can't see `py-section-start' resp. `py-section-end'")))))
+
 ;; /usr/lib/python2.7/pdb.py eyp.py
 
 (defalias 'py-forward-block 'py-end-of-block)

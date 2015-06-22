@@ -308,3 +308,12 @@ print()"
       (sit-for 0.1 t)
       (should (not (one-window-p))))))
 
+(ert-deftest py-ert-py-execute-section-test ()
+  (py-test-with-temp-buffer
+      "# {{
+print(3+3)
+# }}"
+    (search-backward "print")
+    (py-execute-section)
+    (sleep-for 1)
+    (should (string= py-result "6"))))

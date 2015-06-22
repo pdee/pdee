@@ -21,6 +21,15 @@ New in version 6.2.1
 
   - py-flycheck-mode - toggle `flycheck-mode' from menu "Checks"
 
+  - py-execute-section - execute arbitrary chunks of code
+  - py-execute-section-python
+  - py-execute-section-python2
+  - py-execute-section-python3
+  - py-execute-section-ipython
+  - py-execute-section-ipython2.7
+  - py-execute-section-ipython3
+  - py-execute-section-jython
+
 
 - New helper functions, like
   - py--end-of-block-bol-p

@@ -4308,6 +4308,45 @@ Returns a list, whose car is beg, cdr - end.\"
 	(emacs-lisp-mode))
   (write-file (concat py-install-directory "/python-components-bounds-forms.el")))
 
+;; (defun py-execute-section ()
+;;   (interactive)
+;;   (save-excursion
+;;     (let ((start (progn (unless (looking-at py-section-start)
+;; 			 (search-backward py-section-start)
+;; 			 (point)))))
+;;       (if (and (looking-at py-section-start)(search-forward py-section-end))
+;; 	  (py-execute-region start (point))
+;; 	(error "Can't see boundaries of py-section")))))
+
+(defun write--section-forms ()
+  (dolist (ele py-shells)
+    (setq ele (format "%s" ele))
+    (insert "(defun py-execute-section")
+    (unless (string= "" ele) (insert (concat "-" ele)))
+    (insert " ()
+  \"Execute section at point")
+    (unless (string= "" ele) (insert (concat " using " ele " interpreter")))
+    (insert ".\"
+  (interactive)
+  (py-execute-section-prepare")
+    (unless (string= "" ele) (insert (concat " \"" ele "\"")))
+    (insert "))\n\n")))
+
+
+(defun py-write-section-forms ()
+  "Uses `py-section-forms'. "
+  (interactive)
+  (set-buffer (get-buffer-create "python-components-section-forms.el"))
+  (erase-buffer)
+  (insert ";;; python-components-section-forms.el --- section forms\n")
+  (insert arkopf)
+  (when (interactive-p) (switch-to-buffer (current-buffer))
+	(emacs-lisp-mode))
+  (write--section-forms)
+  (insert "\n(provide 'python-components-section-forms)
+;;; python-components-section-forms.el ends here\n")
+  (write-file (concat py-install-directory "/python-components-section-forms.el")))
+
 (defun write-ert-execute-statement-test ()
   "Write `py-execute-statement...' etc. "
   (interactive)

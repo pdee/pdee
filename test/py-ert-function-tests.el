@@ -3733,5 +3733,29 @@
 (ert-deftest py-ert-py-end-of-buffer-functionp-test ()
   (should (functionp 'py-end-of-buffer)))
 
+(ert-deftest py-ert-py-execute-section-functionp-test ()
+  (should (functionp 'py-execute-section)))
+
+(ert-deftest py-ert-py-execute-section-python-functionp-test ()
+  (should (functionp 'py-execute-section-python)))
+
+(ert-deftest py-ert-py-execute-section-python2-functionp-test ()
+  (should (functionp 'py-execute-section-python2)))
+
+(ert-deftest py-ert-py-execute-section-python3-functionp-test ()
+  (should (functionp 'py-execute-section-python3)))
+
+(ert-deftest py-ert-py-execute-section-ipython-functionp-test ()
+  (should (functionp 'py-execute-section-ipython)))
+
+(ert-deftest py-ert-py-execute-section-ipython2.7-functionp-test ()
+  (should (functionp 'py-execute-section-ipython2.7)))
+
+(ert-deftest py-ert-py-execute-section-ipython3-functionp-test ()
+  (should (functionp 'py-execute-section-ipython3)))
+
+(ert-deftest py-ert-py-execute-section-jython-functionp-test ()
+  (should (functionp 'py-execute-section-jython)))
+
 (provide 'py-ert-function-tests)
 ;;; py-ert-function-tests.el ends here

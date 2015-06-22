@@ -676,8 +676,8 @@ Examples from PEP8"
   :group 'python-mode)
 
 (defvar py-imenu-max-items 99)
-(defcustom py-imenu-max-items 99 
- "Python-mode specific `imenu-max-items'" 
+(defcustom py-imenu-max-items 99
+ "Python-mode specific `imenu-max-items'"
 
 :type 'number
 :group 'python-mode)
@@ -1327,7 +1327,6 @@ visible, open them manually and set `py-keep-windows-configuration' to `t'.
   :tag "python-mode-hook"
   :group 'python-mode
   )
-
 
 (defcustom py-shell-name
   (if (eq system-type 'windows-nt)
@@ -2108,6 +2107,18 @@ Temporary files are not deleted. Other functions might implement
 some logging etc. "
   :type 'boolean
   :tag "py-debug-p"
+  :group 'python-mode)
+
+(defcustom py-section-start "# {{"
+  "Delimit arbitrary chunks of code. "
+  :type 'string
+  :tag "py-section-start"
+  :group 'python-mode)
+
+(defcustom py-section-end "# }}"
+  "Delimit arbitrary chunks of code. "
+  :type 'string
+  :tag "py-section-end"
   :group 'python-mode)
 
 (defvar py-completion-last-window-configuration nil
@@ -2959,7 +2970,6 @@ See original source: http://pymacs.progiciels-bpi.ca"
   (add-to-list 'load-path default-directory)
   (add-to-list 'load-path (concat default-directory "extensions")))
 
-
 (defun py-count-lines (&optional beg end)
   "Count lines in accessible part until current line.
 
@@ -2986,7 +2996,6 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
       (when (bolp) (setq count (1+ count)))
       (when (and py-debug-p (interactive-p)) (message "%s" count))
       count)))
-
 
 (defun py--escape-doublequotes (start end)
   (let ((end (copy-marker end)))
@@ -3037,7 +3046,6 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
           (py-escaped))))
 ;;
 
-
 (require 'python-components-switches)
 (require 'python-components-edit)
 (require 'python-components-beginning-forms)
@@ -3077,6 +3085,7 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
 (require 'python-components-hide-show)
 (require 'python-components-fast-complete)
 (require 'python-components-intern)
+(require 'python-components-section-forms)
 (require 'python-components-menu)
 (require 'python-components-shell-menu)
 (require 'python-components-versioned)
