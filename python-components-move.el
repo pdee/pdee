@@ -738,7 +738,7 @@ Return beginning position, nil if not inside."
       last)))
 
 (defun py-forward-into-nomenclature (&optional arg iact)
-  "Move forward to end of a nomenclature section or word.
+  "Move forward to end of a nomenclature symbol.
 
 With \\[universal-argument] (programmatically, optional argument ARG), do it that many times.
 
@@ -788,7 +788,7 @@ A `nomenclature' is a fancy way of saying AWordWithMixedCaseNotUnderscores."
     erg))
 
 (defun py-backward-into-nomenclature (&optional arg)
-  "Move backward to beginning of a nomenclature section or word.
+  "Move backward to beginning of a nomenclature symbol.
 
 With optional ARG, move that many times.  If ARG is negative, move
 forward.

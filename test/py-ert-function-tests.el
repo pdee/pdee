@@ -2484,8 +2484,8 @@
 (ert-deftest py-ert-py---emacs-version-greater-23-functionp-test ()
   (should (functionp 'py---emacs-version-greater-23)))
 
-(ert-deftest py-ert-py-beginning-of-commented-section-functionp-test ()
-  (should (functionp 'py-beginning-of-commented-section)))
+(ert-deftest py-ert-py-beginning-of-comments-functionp-test ()
+  (should (functionp 'py-beginning-of-comments)))
 
 (ert-deftest py-ert-py--empty-arglist-indent-functionp-test ()
   (should (functionp 'py--empty-arglist-indent)))

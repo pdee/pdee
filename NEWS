@@ -57,6 +57,8 @@ New customizables:
 - py-update-gud-pdb-history-p, default is t
   If pdb should provide suggestions WRT file and pdb-path.
 
+Renamed:
+- py-beginning-of-commented-section --> py-beginning-of-comments
 
 New in version 6.2.0
 ---------------------
