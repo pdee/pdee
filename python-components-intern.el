@@ -2107,33 +2107,6 @@ Use current region unless optional args BEG END are delivered."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (looking-at py-section-start)(not (nth 8 pps)))))
 
-(defun py-backward-section ()
-  "Go to next section start upward in buffer.
-
-Return position if successful"
-  (interactive)
-  (let ((orig (point)))
-    (while (and (re-search-backward py-section-start nil t 1)
-		(nth 8 (parse-partial-sexp (point-min) (point)))))
-    (when (and (looking-at py-section-start)(< (point) orig))
-      (point))))
-
-(defun py-forward-section ()
-  "Go to next section end downward in buffer.
-
-Return position if successful"
-  (interactive)
-  (let ((orig (point))
-	last)
-    (while (and (re-search-forward py-section-end nil t 1)
-		(setq last (point)) 
-		(goto-char (match-beginning 0))
-		(nth 8 (parse-partial-sexp (point-min) (point)))
-		(goto-char (match-end 0))))
-    (and last (goto-char last)) 
-    (when (and (looking-back py-section-end)(< orig (point)))
-      (point))))
-
 (defun py-execute-section-prepare (&optional shell)
   "Execute section at point. "
   (save-excursion

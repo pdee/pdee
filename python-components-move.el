@@ -825,6 +825,36 @@ Return position"
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
+
+(defun py-backward-section ()
+  "Go to next section start upward in buffer.
+
+Return position if successful"
+  (interactive)
+  (let ((orig (point)))
+    (while (and (re-search-backward py-section-start nil t 1)
+		(nth 8 (parse-partial-sexp (point-min) (point)))))
+    (when (and (looking-at py-section-start)(< (point) orig))
+      (point))))
+
+(defun py-forward-section ()
+  "Go to next section end downward in buffer.
+
+Return position if successful"
+  (interactive)
+  (let ((orig (point))
+	last)
+    (while (and (re-search-forward py-section-end nil t 1)
+		(setq last (point)) 
+		(goto-char (match-beginning 0))
+		(nth 8 (parse-partial-sexp (point-min) (point)))
+		(goto-char (match-end 0))))
+    (and last (goto-char last)) 
+    (when (and (looking-back py-section-end)(< orig (point)))
+      (point))))
+
+(defalias 'py-beginning-of-section 'py-backward-section)
+(defalias 'py-end-of-section 'py-forward-section)
 (defalias 'py-backward-expression 'py-beginning-of-expression)
 (defalias 'py-backward-partial-expression 'py-beginning-of-partial-expression)
 (defalias 'py-beginning-of-decorator-bol 'py-backward-decorator-bol)
