@@ -363,7 +363,7 @@ Returns value of `indent-tabs-mode' switched to. "
                    ;; when not starting from block, look above
                    (while (and (re-search-backward py-extended-block-or-clause-re nil 'movet 1)
                                (or (>= (current-indentation) first)
-                                   (nth 8 (syntax-ppss)))))
+                                   (nth 8 (parse-partial-sexp (point-min) (point))))))
                    (current-indentation))))
     (list first second)))
 
@@ -373,7 +373,7 @@ Returns value of `indent-tabs-mode' switched to. "
          (indent (if (< 0 cui) cui 999))
          (pos (progn (while (and (re-search-backward py-extended-block-or-clause-re nil 'move 1)
                                  (or (>= (current-indentation) indent)
-                                     (nth 8 (syntax-ppss)))))
+                                     (nth 8 (parse-partial-sexp (point-min) (point))))))
                      (unless (bobp) (point))))
          (first (and pos (current-indentation)))
          (second (and pos (py-end-of-statement) (py-end-of-statement) (py-beginning-of-statement)(current-indentation))))

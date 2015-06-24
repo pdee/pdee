@@ -39,8 +39,6 @@ class bar:
             block2
 "
     (forward-line -3)
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (py-beginning-of-block)
     (should (eq (char-after) ?f))))
 
@@ -58,8 +56,6 @@ class bar:
             block2
 "
     (forward-line -3)
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (py-beginning-of-clause)
     (should (eq (char-after) ?f))))
 
@@ -77,8 +73,6 @@ class bar:
             block2
 "
     (forward-line -3)
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (py-beginning-of-block-or-clause)
     (should (eq (char-after) ?f))))
 
@@ -96,8 +90,6 @@ class bar:
             block2
 "
     (forward-line -3)
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (py-beginning-of-def)
     (should (eq (char-after) ?d))))
 
@@ -115,8 +107,6 @@ class bar:
             block2
 "
     (forward-line -3)
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (py-beginning-of-class)
     (should (eq (char-after) ?c))))
 
@@ -134,8 +124,6 @@ class bar:
             block2
 "
     (forward-line -3)
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (py-beginning-of-def-or-class)
     (should (eq (char-after) ?d))))
 
@@ -153,8 +141,6 @@ class bar:
             block2
 "
     (forward-line -3)
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (py-beginning-of-if-block)
     (should (eq (char-after) ?i))))
 
@@ -172,8 +158,6 @@ class bar:
             block2
 "
     (forward-line -3)
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (py-beginning-of-try-block)
     (should (eq (char-after) ?t))))
 
@@ -191,8 +175,6 @@ class bar:
             block2
 "
     (forward-line -3)
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (py-beginning-of-minor-block)
     (should (eq (char-after) ?f))))
 
@@ -210,8 +192,6 @@ class bar:
             block2
 "
     (forward-line -3)
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (py-beginning-of-for-block)
     (should (eq (char-after) ?f))))
 
@@ -229,8 +209,6 @@ class bar:
             block2
 "
     (forward-line -3)
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (py-beginning-of-top-level)
     (should (eq (char-after) ?c))))
 
@@ -248,8 +226,6 @@ class bar:
             block2
 "
     (forward-line -3)
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (py-beginning-of-statement)
     (should (eq (char-after) ?f))))
 
@@ -267,8 +243,6 @@ class bar:
             block2
 "
     (forward-line -3)
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (py-beginning-of-expression)
     (should (eq (char-after) ?r))))
 
@@ -286,8 +260,6 @@ class bar:
             block2
 "
     (forward-line -3)
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (py-beginning-of-partial-expression)
     (should (eq (char-after) ?r))))
 
@@ -304,8 +276,6 @@ class bar:
         except:
             block2
 "
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (forward-line -3)
     (py-beginning-of-block-bol)
     (should (eq (char-after) ?\ ))))
@@ -324,8 +294,6 @@ class bar:
         except:
             block2
 "
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (forward-line -3)
     (py-beginning-of-clause-bol)
     (should (eq (char-after) ?\ ))))
@@ -344,8 +312,6 @@ class bar:
         except:
             block2
 "
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (forward-line -3)
     (py-beginning-of-block-or-clause-bol)
     (should (eq (char-after) ?\ ))))
@@ -364,8 +330,6 @@ class bar:
         except:
             block2
 "
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (forward-line -3)
     (py-beginning-of-def-bol)
     (should (eq (char-after) ?\ ))))
@@ -384,8 +348,6 @@ class bar:
         except:
             block2
 "
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (forward-line -3)
     (py-beginning-of-class-bol)
     (should (eq (char-after) ?c))))
@@ -404,8 +366,6 @@ class bar:
         except:
             block2
 "
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (forward-line -3)
     (py-beginning-of-def-or-class-bol)
     (should (eq (char-after) ?\ ))))
@@ -424,8 +384,6 @@ class bar:
         except:
             block2
 "
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (forward-line -3)
     (py-beginning-of-if-block-bol)
     (should (eq (char-after) ?\ ))))
@@ -444,8 +402,6 @@ class bar:
         except:
             block2
 "
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (forward-line -3)
     (py-beginning-of-try-block-bol)
     (should (eq (char-after) ?\ ))))
@@ -464,8 +420,6 @@ class bar:
         except:
             block2
 "
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (forward-line -3)
     (py-beginning-of-minor-block-bol)
     (should (eq (char-after) ?\ ))))
@@ -484,8 +438,6 @@ class bar:
         except:
             block2
 "
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (forward-line -3)
     (py-beginning-of-for-block-bol)
     (should (eq (char-after) ?\ ))))

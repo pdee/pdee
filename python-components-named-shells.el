@@ -1,5 +1,5 @@
 ;;; Python named shells
-;; Copyright (C) 2011-2014  Andreas Roehler
+;; Copyright (C) 2015  Andreas Roehler
 ;; Author: Andreas Roehler <andreas.roehler@online.de>
 ;; Keywords: languages, convenience
 
@@ -23,27 +23,6 @@
 
 ;;; Code:
 
-
-(defun python (&optional argprompt)
-  "Start an Python interpreter.
-
-Optional \\[universal-argument] prompts for path to the interpreter. "
-  (interactive "P")
-  (py-shell argprompt nil "python"))
-
-(defun python2 (&optional argprompt)
-  "Start an Python2 interpreter.
-
-Optional \\[universal-argument] prompts for path to the interpreter. "
-  (interactive "P")
-  (py-shell argprompt nil "python2"))
-
-(defun python3 (&optional argprompt)
-  "Start an Python3 interpreter.
-
-Optional \\[universal-argument] prompts for path to the interpreter. "
-  (interactive "P")
-  (py-shell argprompt nil "python3"))
 
 (defun ipython (&optional argprompt)
   "Start an IPython interpreter.
@@ -73,31 +52,28 @@ Optional \\[universal-argument] prompts for path to the interpreter. "
   (interactive "P")
   (py-shell argprompt nil "jython"))
 
+(defun python (&optional argprompt)
+  "Start an Python interpreter.
+
+Optional \\[universal-argument] prompts for path to the interpreter. "
+  (interactive "P")
+  (py-shell argprompt nil "python"))
+
+(defun python2 (&optional argprompt)
+  "Start an Python2 interpreter.
+
+Optional \\[universal-argument] prompts for path to the interpreter. "
+  (interactive "P")
+  (py-shell argprompt nil "python2"))
+
+(defun python3 (&optional argprompt)
+  "Start an Python3 interpreter.
+
+Optional \\[universal-argument] prompts for path to the interpreter. "
+  (interactive "P")
+  (py-shell argprompt nil "python3"))
+
 ;; dedicated
-(defun python-dedicated (&optional argprompt switch)
-  "Start an unique Python interpreter in another window.
-
-Optional \\[universal-argument] prompts for path to the interpreter. "
-  (interactive "p")
- (let ((py-dedicated-process-p t))
-    (py-shell argprompt t "python")))
-
-(defun python2-dedicated (&optional argprompt switch)
-  "Start an unique Python2 interpreter in another window.
-
-Optional \\[universal-argument] prompts for path to the interpreter. "
-  (interactive "p")
- (let ((py-dedicated-process-p t))
-    (py-shell argprompt t "python2")))
-
-(defun python3-dedicated (&optional argprompt switch)
-  "Start an unique Python3 interpreter in another window.
-
-Optional \\[universal-argument] prompts for path to the interpreter. "
-  (interactive "p")
- (let ((py-dedicated-process-p t))
-    (py-shell argprompt t "python3")))
-
 (defun ipython-dedicated (&optional argprompt switch)
   "Start an unique IPython interpreter in another window.
 
@@ -130,31 +106,31 @@ Optional \\[universal-argument] prompts for path to the interpreter. "
  (let ((py-dedicated-process-p t))
     (py-shell argprompt t "jython")))
 
+(defun python-dedicated (&optional argprompt switch)
+  "Start an unique Python interpreter in another window.
+
+Optional \\[universal-argument] prompts for path to the interpreter. "
+  (interactive "p")
+ (let ((py-dedicated-process-p t))
+    (py-shell argprompt t "python")))
+
+(defun python2-dedicated (&optional argprompt switch)
+  "Start an unique Python2 interpreter in another window.
+
+Optional \\[universal-argument] prompts for path to the interpreter. "
+  (interactive "p")
+ (let ((py-dedicated-process-p t))
+    (py-shell argprompt t "python2")))
+
+(defun python3-dedicated (&optional argprompt switch)
+  "Start an unique Python3 interpreter in another window.
+
+Optional \\[universal-argument] prompts for path to the interpreter. "
+  (interactive "p")
+ (let ((py-dedicated-process-p t))
+    (py-shell argprompt t "python3")))
+
 ;; switch
-(defun python-switch (&optional argprompt)
-  "Switch to Python interpreter in another window.
-
-Optional \\[universal-argument] prompts for path to the interpreter. "
-  (interactive "p")
- (let ((py-switch-buffers-on-execute-p t))
-    (py-shell argprompt nil "python")))
-
-(defun python2-switch (&optional argprompt)
-  "Switch to Python2 interpreter in another window.
-
-Optional \\[universal-argument] prompts for path to the interpreter. "
-  (interactive "p")
- (let ((py-switch-buffers-on-execute-p t))
-    (py-shell argprompt nil "python2")))
-
-(defun python3-switch (&optional argprompt)
-  "Switch to Python3 interpreter in another window.
-
-Optional \\[universal-argument] prompts for path to the interpreter. "
-  (interactive "p")
- (let ((py-switch-buffers-on-execute-p t))
-    (py-shell argprompt nil "python3")))
-
 (defun ipython-switch (&optional argprompt)
   "Switch to IPython interpreter in another window.
 
@@ -187,31 +163,31 @@ Optional \\[universal-argument] prompts for path to the interpreter. "
  (let ((py-switch-buffers-on-execute-p t))
     (py-shell argprompt nil "jython")))
 
-;; no-switch
-(defun python-no-switch (&optional argprompt)
-  "Open an Python interpreter in another window, but do not switch to it.
+(defun python-switch (&optional argprompt)
+  "Switch to Python interpreter in another window.
 
 Optional \\[universal-argument] prompts for path to the interpreter. "
   (interactive "p")
- (let (py-switch-buffers-on-execute-p)
+ (let ((py-switch-buffers-on-execute-p t))
     (py-shell argprompt nil "python")))
 
-(defun python2-no-switch (&optional argprompt)
-  "Open an Python2 interpreter in another window, but do not switch to it.
+(defun python2-switch (&optional argprompt)
+  "Switch to Python2 interpreter in another window.
 
 Optional \\[universal-argument] prompts for path to the interpreter. "
   (interactive "p")
- (let (py-switch-buffers-on-execute-p)
+ (let ((py-switch-buffers-on-execute-p t))
     (py-shell argprompt nil "python2")))
 
-(defun python3-no-switch (&optional argprompt)
-  "Open an Python3 interpreter in another window, but do not switch to it.
+(defun python3-switch (&optional argprompt)
+  "Switch to Python3 interpreter in another window.
 
 Optional \\[universal-argument] prompts for path to the interpreter. "
   (interactive "p")
- (let (py-switch-buffers-on-execute-p)
+ (let ((py-switch-buffers-on-execute-p t))
     (py-shell argprompt nil "python3")))
 
+;; no-switch
 (defun ipython-no-switch (&optional argprompt)
   "Open an IPython interpreter in another window, but do not switch to it.
 
@@ -244,37 +220,31 @@ Optional \\[universal-argument] prompts for path to the interpreter. "
  (let (py-switch-buffers-on-execute-p)
     (py-shell argprompt nil "jython")))
 
+(defun python-no-switch (&optional argprompt)
+  "Open an Python interpreter in another window, but do not switch to it.
+
+Optional \\[universal-argument] prompts for path to the interpreter. "
+  (interactive "p")
+ (let (py-switch-buffers-on-execute-p)
+    (py-shell argprompt nil "python")))
+
+(defun python2-no-switch (&optional argprompt)
+  "Open an Python2 interpreter in another window, but do not switch to it.
+
+Optional \\[universal-argument] prompts for path to the interpreter. "
+  (interactive "p")
+ (let (py-switch-buffers-on-execute-p)
+    (py-shell argprompt nil "python2")))
+
+(defun python3-no-switch (&optional argprompt)
+  "Open an Python3 interpreter in another window, but do not switch to it.
+
+Optional \\[universal-argument] prompts for path to the interpreter. "
+  (interactive "p")
+ (let (py-switch-buffers-on-execute-p)
+    (py-shell argprompt nil "python3")))
+
 ;; dedicated switch
-(defalias 'python-dedicated-switch 'python-switch-dedicated)
-(defun python-switch-dedicated (&optional argprompt)
-  "Switch to an unique Python interpreter in another window.
-
-Optional \\[universal-argument] prompts for path to the interpreter. "
-  (interactive "p")
- (let ((py-dedicated-process-p t)
-        (py-switch-buffers-on-execute-p t))
-    (py-shell argprompt t "python")))
-
-(defalias 'python2-dedicated-switch 'python2-switch-dedicated)
-(defun python2-switch-dedicated (&optional argprompt)
-  "Switch to an unique Python2 interpreter in another window.
-
-Optional \\[universal-argument] prompts for path to the interpreter. "
-  (interactive "p")
- (let ((py-dedicated-process-p t)
-        (py-switch-buffers-on-execute-p t))
-    (py-shell argprompt t "python2")))
-
-(defalias 'python3-dedicated-switch 'python3-switch-dedicated)
-(defun python3-switch-dedicated (&optional argprompt)
-  "Switch to an unique Python3 interpreter in another window.
-
-Optional \\[universal-argument] prompts for path to the interpreter. "
-  (interactive "p")
- (let ((py-dedicated-process-p t)
-        (py-switch-buffers-on-execute-p t))
-    (py-shell argprompt t "python3")))
-
 (defalias 'ipython-dedicated-switch 'ipython-switch-dedicated)
 (defun ipython-switch-dedicated (&optional argprompt)
   "Switch to an unique IPython interpreter in another window.
@@ -314,6 +284,36 @@ Optional \\[universal-argument] prompts for path to the interpreter. "
  (let ((py-dedicated-process-p t)
         (py-switch-buffers-on-execute-p t))
     (py-shell argprompt t "jython")))
+
+(defalias 'python-dedicated-switch 'python-switch-dedicated)
+(defun python-switch-dedicated (&optional argprompt)
+  "Switch to an unique Python interpreter in another window.
+
+Optional \\[universal-argument] prompts for path to the interpreter. "
+  (interactive "p")
+ (let ((py-dedicated-process-p t)
+        (py-switch-buffers-on-execute-p t))
+    (py-shell argprompt t "python")))
+
+(defalias 'python2-dedicated-switch 'python2-switch-dedicated)
+(defun python2-switch-dedicated (&optional argprompt)
+  "Switch to an unique Python2 interpreter in another window.
+
+Optional \\[universal-argument] prompts for path to the interpreter. "
+  (interactive "p")
+ (let ((py-dedicated-process-p t)
+        (py-switch-buffers-on-execute-p t))
+    (py-shell argprompt t "python2")))
+
+(defalias 'python3-dedicated-switch 'python3-switch-dedicated)
+(defun python3-switch-dedicated (&optional argprompt)
+  "Switch to an unique Python3 interpreter in another window.
+
+Optional \\[universal-argument] prompts for path to the interpreter. "
+  (interactive "p")
+ (let ((py-dedicated-process-p t)
+        (py-switch-buffers-on-execute-p t))
+    (py-shell argprompt t "python3")))
 
 (provide 'python-components-named-shells)
 ;;; python-components-named-shells.el ends here

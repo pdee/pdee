@@ -29,7 +29,7 @@ Returns position if successful, nil otherwise "
   (let ((orig (point))
         erg last)
     (unless (bobp)
-      (while (and (setq last (re-search-backward py-top-level-form-re nil 'move 1))(nth 8 (syntax-ppss))))
+      (while (and (setq last (re-search-backward py-top-level-form-re nil 'move 1))(nth 8 (parse-partial-sexp (point-min) (point)))))
       ;; (while (and (not (bobp)) (setq erg (py-beginning-of-statement))
       ;;             (< 0 (current-indentation))))
       (and last (< last orig)(setq erg (point))))
@@ -85,7 +85,7 @@ If inside a delimited form --string or list-- go to its beginning.
 If not at beginning of a statement or block, go to its beginning.
 If at beginning of a statement or block, go to beginning one level above of compound statement or definition at point."
   (interactive "P")
-  (let ((pps (syntax-ppss)))
+  (let ((pps (parse-partial-sexp (point-min) (point))))
     (cond ((nth 8 pps) (goto-char (nth 8 pps)))
           ((nth 1 pps) (goto-char (nth 1 pps)))
           ((py--beginning-of-statement-p) (py--beginning-of-form-intern 'py-extended-block-or-clause-re (interactive-p) t))
@@ -132,7 +132,7 @@ If not at beginning of a statement or block, go to its beginning.
 If at beginning of a statement or block, go to previous beginning of compound statement or definition at point.
 If no further element at same level, go one level up."
   (interactive)
-  (let ((pps (syntax-ppss)))
+  (let ((pps (parse-partial-sexp (point-min) (point))))
     (cond ((nth 8 pps) (goto-char (nth 8 pps)))
           ((nth 1 pps) (goto-char (nth 1 pps)))
           ((py--beginning-of-statement-p) (py--beginning-of-form-intern 'py-extended-block-or-clause-re (interactive-p)))

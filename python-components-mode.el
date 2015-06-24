@@ -2143,6 +2143,9 @@ some logging etc. "
 (defvar py-expression-re "[^ =#\t\r\n\f]+"
   "py-expression assumes chars indicated possible composing a py-expression, when looking-at or -back. ")
 
+(defcustom py-paragraph-re "\\`[ \t\f]*\\'\n[^ \n\r\t\f]"
+  "An empty line followed by a non-whitespace at column 1")
+
 (defvar py-not-expression-regexp "[ .=#\t\r\n\f)]+"
   "py-expression assumes chars indicated probably will not compose a py-expression. ")
 
@@ -2408,9 +2411,11 @@ See py-no-outdent-1-re-raw, py-no-outdent-2-re-raw for better readable content "
    "finally"
    "for"
    "if"
+   "import"
    "try"
    "while"
-   "with")
+   "with"
+   )
   "Matches the beginning of a compound statement or it's clause. ")
 
 (defconst py-extended-block-or-clause-re
@@ -2510,7 +2515,7 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
      ;; Consider property for the last char if in a fenced string.
      ((= n 3)
       (let* ((font-lock-syntactic-keywords nil)
-	     (syntax (syntax-ppss)))
+	     (syntax (parse-partial-sexp (point-min) (point))))
 	(when (eq t (nth 3 syntax))	; after unclosed fence
 	  (goto-char (nth 8 syntax))	; fence position
 	  ;; (skip-chars-forward "uUrR")	; skip any prefix
@@ -2523,7 +2528,7 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
 	  (and (= n 1)			; prefix
 	       (match-end 1)))          ; non-empty
       (let ((font-lock-syntactic-keywords nil))
-	(unless (eq 'string (syntax-ppss-context (syntax-ppss)))
+	(unless (eq 'string (syntax-ppss-context (parse-partial-sexp (point-min) (point))))
 	  (eval-when-compile (string-to-syntax "|")))))
      ;; Otherwise (we're in a non-matching string) the property is
      ;; nil, which is OK.
@@ -2688,7 +2693,7 @@ Used by `py-ipython-module-completion-string'"
   "Check to see if there is a docstring at POS."
   (let* (pps
 	 (pos (or beginning-of-string-position
-		  (and (nth 3 (setq pps (syntax-ppss))) (nth 8 pps)))))
+		  (and (nth 3 (setq pps (parse-partial-sexp (point-min) (point)))) (nth 8 pps)))))
     (save-restriction
       (widen)
       (save-excursion
@@ -3082,7 +3087,6 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
 (require 'python-components-forms-code)
 (require 'python-components-fast-forms)
 (require 'python-components-auto-fill)
-(require 'python-components-hide-show)
 (require 'python-components-fast-complete)
 (require 'python-components-intern)
 (require 'python-components-section-forms)
@@ -3090,6 +3094,7 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
 (require 'python-components-menu)
 (require 'python-components-shell-menu)
 (require 'python-components-versioned)
+(require 'python-components-hide-show)
 (require 'python-components-foot)
 
 (defun py-separator-char ()
@@ -3114,13 +3119,13 @@ Returns char found. "
   "Include the appropriate `parse-partial-sexp' "
   (if (featurep 'xemacs)
       '(parse-partial-sexp (point-min) (point))
-    '(syntax-ppss)))
+    '(parse-partial-sexp (point-min) (point))))
 
 (defun py-in-string-or-comment-p ()
   "Returns beginning position if inside a string or comment, nil otherwise. "
-  (or (nth 8 (syntax-ppss))
+  (or (nth 8 (parse-partial-sexp (point-min) (point)))
       (when (or (looking-at "\"")(looking-at "[ \t]*#[ \t]*"))
-        (match-beginning 0))))
+        (point))))
 
 (defconst python-rx-constituents
     `((block-start          . ,(rx symbol-start
@@ -3243,7 +3248,7 @@ Returns char found. "
                   (res nil))
               (while (and (setq res (re-search-forward re limit t))
                           (goto-char (match-end 1))
-                          (nth 1 (syntax-ppss))
+                          (nth 1 (parse-partial-sexp (point-min) (point)))
                           ;; (python-syntax-context 'paren)
 			  ))
               res))

@@ -244,25 +244,25 @@ See lp:1066489 "
 
 (defun py--in-or-behind-or-before-a-docstring ()
   (save-excursion
-    (let* ((raw-pps (nth 8 (syntax-ppss)))
+    (let* ((raw-pps (nth 8 (parse-partial-sexp (point-min) (point))))
 	   ;; ;; maybe just behind a string
 	   (n8 (or raw-pps
 		   ;; maybe in front of a string
 		   (back-to-indentation)
-		   (nth 8 (syntax-ppss))))
+		   (nth 8 (parse-partial-sexp (point-min) (point)))))
 	   (n8pps (or n8
 		      (when
 			  (equal (string-to-syntax "|")
 				 (syntax-after (point)))
 			(progn
 			  (< 0 (skip-chars-forward "\"'"))
-			  (nth 8 (syntax-ppss)))))))
+			  (nth 8 (parse-partial-sexp (point-min) (point))))))))
       (and n8pps (py--docstring-p n8pps)))))
 
 (defun py--string-fence-delete-spaces (&optional start)
   "Delete spaces following or preceding delimiters of string at point. "
   (interactive "*")
-  (let ((beg (or start (nth 8 (syntax-ppss)))))
+  (let ((beg (or start (nth 8 (parse-partial-sexp (point-min) (point))))))
     (save-excursion
       (goto-char beg)
       (skip-chars-forward "\"'")

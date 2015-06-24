@@ -32,15 +32,75 @@
 
 (defvar arkopf)
 
-
-(defvar py-shells
-  (list 'python 'python3 'python2 'ipython 'ipython2.7 'ipython3 'jython)
-  "Python-mode will generate commands opening shells mentioned here. Edit this list \w resp. to your machine. ")
-
 (setq py-shells
-  (list "" 'python 'python2 'python3 'ipython 'ipython2.7 'ipython3 'jython ))
+      (list
+       ""
+       'ipython
+       'ipython2.7
+       'ipython3
+       'jython
+       'python
+       'python2
+       'python3
+       ))
 
-(setq py-positions-forms (list "block" "block-or-clause" "class" "clause" "comment" "def" "def-or-class" "expression" "line" "minor-block" "paragraph" "partial-expression" "statement" "top-level"))
+(setq py-positions-forms
+      (list
+       "block"
+       "block-or-clause"
+       "class"
+       "clause"
+       "comment"
+       "def"
+       "def-or-class"
+       "expression"
+       "line"
+       "minor-block"
+       "partial-expression"
+       "section"
+       "statement"
+       "top-level"
+       ))
+
+;; like positions, but without statement and expression, avoid py--end-base
+(setq py-beg-end-forms
+      (list
+       "block"
+       "block-or-clause"
+       "class"
+       "clause"
+       "comment"
+       "def"
+       "def-or-class"
+       "if-block"
+       "elif-block"
+       "else-block"
+       "for-block"
+       "except-block"
+       "try-block"
+       "line"
+       "minor-block"
+       "section"
+       "top-level"
+       ))
+
+;; like positions, but without statement and expression, avoid py--end-base
+(setq py-end-forms
+      (list
+       "block"
+       "block-or-clause"
+       "class"
+       "clause"
+       "comment"
+       "def"
+       "def-or-class"
+       "line"
+       "minor-block"
+       "paragraph"
+       "section"
+       "statement"
+       "top-level"
+       ))
 
 (setq py-execute-forms
       (list
@@ -55,47 +115,362 @@
        "minor-block"
        "paragraph"
        "partial-expression"
+       "section"
+       "statement"
+       "top-level"
+       ))
+
+;; execute + comment
+(setq py-hide-forms
+      (list
+       "block"
+       "block-or-clause"
+       "class"
+       "clause"
+       "comment"
+       "def"
+       "def-or-class"
+       "expression"
+       "line"
+       "minor-block"
+       "for-block"
+       "except-block"
+       "if-block"
+       "elif-block"
+       "else-block"
+       "minor-block"
+       "paragraph"
+       "partial-expression"
+       "section"
+       "statement"
+       "top-level"
+       ))
+
+(setq py-navigate-forms
+      (list
+       "block"
+       "block-or-clause"
+       "class"
+       "clause"
+       "comment"
+       "def"
+       "def-or-class"
+       "elif-block"
+       "else-block"
+       "except-block"
+       "expression"
+       "for-block"
+       "if-block"
+       "minor-block"
+       "partial-expression"
+       "section"
+       "statement"
+       "top-level"
+       "try-block"
+       ))
+
+(setq py-comment-forms
+      (list
+       "block"
+       "block-or-clause"
+       "class"
+       "clause"
+       "def"
+       "def-or-class"
+       "section"
+       "statement"
+       ))
+
+(setq py-down-forms
+      (list
+       "block"
+       "block-or-clause"
+       "class"
+       "clause"
+       "def"
+       "def-or-class"
+       "minor-block"
+       "section"
+       "statement"
+       "top-level"
+       ))
+
+(setq py-shift-forms
+      (list
+       "block"
+       "block-or-clause"
+       "class"
+       "clause"
+       "comment"
+       "def"
+       "def-or-class"
+       "minor-block"
+       "paragraph"
+       "region"
        "statement"
        "top-level"))
 
-(setq py-completion-symbols
+;; top-level not part of `py-shift-bol-forms'
+(setq py-shift-bol-forms
       (list
-       'py-indent-or-complete
-       'py-shell-complete
-       'py-complete))
+       "block"
+       "block-or-clause"
+       "class"
+       "clause"
+       "def"
+       "def-or-class"
+       "elif-block"
+       "else-block"
+       "except-block"
+       "for-block"
+       "if-block"
+       "minor-block"
+       "paragraph"
+       "statement"
+       "try-block"
+       ))
 
-(setq py-skeletons
-      (list
-       'else-statement
-       'for-statement
-       'if-statement
-       'py-try/except-statement
-       'py-try/finally-statement
-       'while-statement))
 
-(setq py-filling-symbols
-      (list
-       'py-docstring-style
-       'py-fill-comment
-       'py-fill-paragraph
-       'py-fill-string
-       'py-fill-string-django
-       'py-fill-string-onetwo
-       'py-fill-string-pep-257
-       'py-fill-string-pep-257-nn
-       'py-fill-string-symmetric))
+(setq py-toggle-form-vars (list "py-nil-docstring-style" "py-onetwo-docstring-style" "py-pep-257-docstring-style" "py-pep-257-nn-docstring-style" "py-symmetric-docstring-style" "py-django-docstring-style" ))
 
-(setq py-electric-symbols
+
+;; (setq py-options (list "" "switch" "no-switch" "dedicated" "dedicated-switch"))
+
+(setq py-options (list "" "switch" "no-switch" "dedicated"))
+
+(setq py-full-options (list "switch" "no-switch" "dedicated" "dedicated-switch"))
+
+(defvar py-commands
+  (list "py-python-command" "py-ipython-command" "py-python3-command" "py-python2-command" "py-jython-command")
+  "Python-mode will generate commands opening shells mentioned here. Edit this list \w resp. to your machine. ")
+
+(setq py-positions-forms
       (list
-       'complete-electric-comma
-       'complete-electric-lparen
-       'electric-backspace
-       'electric-colon
-       'electric-comment
-       'electric-delete
-       'electric-yank
-       'hungry-delete-backwards
-       'hungry-delete-forward))
+       "block"
+       "block-or-clause"
+       "class"
+       "clause"
+       "comment"
+       "def"
+       "def-or-class"
+       "except-block"
+       "expression"
+       "if-block"
+       "line"
+       "minor-block"
+       "paragraph"
+       "partial-expression"
+       "section"
+       "statement"
+       "top-level"
+       "try-block"
+       ))
+
+(setq py-execute-forms (list
+			"block"
+			"block-or-clause"
+			"class"
+			"clause"
+			"def"
+			"def-or-class"
+			"expression"
+			"line"
+			"minor-block"
+			"paragraph"
+			"partial-expression"
+			"statement"
+			"top-level"
+			))
+
+(setq py-core-command-name '("statement" "block" "def" "class" "region" "file"))
+
+(setq py-bounds-command-names
+      (list
+       "block"
+       "block-or-clause"
+       "buffer"
+       "class"
+       "clause"
+       "def"
+       "def-or-class"
+       "else-block"
+       "except-block"
+       "expression"
+       "if-block"
+       "minor-block"
+       "partial-expression"
+       "section"
+       "statement"
+       "top-level"
+       "try-block"
+       ))
+
+(setq py-beginning-bol-command-names
+      (list
+       "block"
+       "block-or-clause"
+       "class"
+       "clause"
+       "def"
+       "def-or-class"
+       "elif-block"
+       "else-block"
+       "except-block"
+       "except-block"
+       "for-block"
+       "if-block"
+       "minor-block"
+       "statement"
+       "try-block"
+       ))
+
+(setq py-checker-command-names '("clear-flymake-allowed-file-name-masks" "pylint-flymake-mode" "pyflakes-flymake-mode" "pychecker-flymake-mode" "pep8-flymake-mode" "pyflakespep8-flymake-mode" "py-pylint-doku" "py-pyflakes-run" "py-pyflakespep8-run" "py-pyflakespep8-help"))
+
+(setq py-fast-execute-forms-names
+      (list
+       "block"
+       "block-or-clause"
+       "class"
+       "clause"
+       "def"
+       "def-or-class"
+       "expression"
+       "partial-expression"
+       "section"
+       "statement"
+       "top-level"))
+
+(setq py-bol-forms '("block" "clause" "block-or-clause" "def" "class" "def-or-class" "if-block" "try-block" "minor-block" "for-block" "top-level" "statement"))
+
+(defvar docstring-styles (list "django" "onetwo" "pep-257" "pep-257-nn" "symmetric")
+  "Customizable variable `py-fill-docstring-style' provides default value
+  used by `py-fill-string', `py-fill-paragraph'
+
+  DJANGO:
+
+      \"\"\"
+      Process foo, return bar.
+      \"\"\"
+
+      \"\"\"
+      Process foo, return bar.
+
+      If processing fails throw ProcessingError.
+      \"\"\"
+
+  ONETWO:
+
+      \"\"\"Process foo, return bar.\"\"\"
+
+      \"\"\"
+      Process foo, return bar.
+
+      If processing fails throw ProcessingError.
+
+      \"\"\"
+
+  PEP-257:
+
+      \"\"\"Process foo, return bar.\"\"\"
+
+      \"\"\"Process foo, return bar.
+
+      If processing fails throw ProcessingError.
+
+      \"\"\"
+
+  PEP-257-NN:
+
+      \"\"\"Process foo, return bar.\"\"\"
+
+      \"\"\"Process foo, return bar.
+
+      If processing fails throw ProcessingError.
+      \"\"\"
+
+  SYMMETRIC:
+
+      \"\"\"Process foo, return bar.\"\"\"
+
+      \"\"\"
+      Process foo, return bar.
+
+      If processing fails throw ProcessingError.
+      \"\"\"
+
+  Built upon code seen at python.el, thanks Fabian")
+
+(setq py-fast-core
+      (list
+       'block
+       'block-or-clause
+       'class
+       'clause
+       'def
+       'def-or-class
+       'expression
+       'partial-expression
+       'region
+       'statement
+       'string
+       'top-level))
+
+(setq py-virtualenv-symbols
+      (list
+       'activate
+       'deactivate
+       'p
+       'workon))
+
+(setq py-fast-forms
+      (list
+       'py--fast-send-string
+       'py-process-region-fast
+       'py-execute-statement-fast
+       'py-execute-block-fast
+       'py-execute-block-or-clause-fast
+       'py-execute-def-fast
+       'py-execute-class-fast
+       'py-execute-def-or-class-fast
+       'py-execute-expression-fast
+       'py-execute-partial-expression-fast
+       'py-execute-top-level-fast
+       'py-execute-clause-fast))
+
+(setq py-bol-menu-forms
+      (list
+       'py-beginning-of-block-bol
+       'py-beginning-of-clause-bol
+       'py-beginning-of-block-or-clause-bol
+       'py-beginning-of-def-bol
+       'py-beginning-of-class-bol
+       'py-beginning-of-def-or-class-bol
+       'py-beginning-of-if-block-bol
+       'py-beginning-of-try-block-bol
+       'py-beginning-of-minor-block-bol
+       'py-beginning-of-statement-bol))
+
+(defvar py-bol-end-forms
+  (list 'py-end-of-block-bol
+	'py-end-of-clause-bol
+	'py-end-of-block-or-clause-bol
+	'py-end-of-def-bol
+	'py-end-of-class-bol
+	'py-end-of-def-or-class-bol
+	'py-end-of-if-block-bol
+	'py-end-of-try-block-bol
+	'py-end-of-minor-block-bol
+	'py-end-of-statement-bol))
+
+(setq py-bol-copy-forms
+      (list
+       'py-copy-block-bol
+       'py-copy-clause-bol
+       'py-copy-block-or-clause-bol
+       'py-copy-def-bol
+       'py-copy-class-bol
+       'py-copy-def-or-class-bol
+       'py-copy-statement-bol))
 
 (setq py-other-symbols
       (list
@@ -151,338 +526,48 @@
        'py-symbol-at-point))
 
 
-(defvar py-down-forms (list "block" "minor-block" "clause" "block-or-clause" "def" "class" "def-or-class" "statement" "top-level"))
-
-(setq py-down-forms (list "block" "minor-block" "clause" "block-or-clause" "def" "class" "def-or-class" "statement" "top-level"))
-
-(setq py-comment-forms
+(setq py-completion-symbols
       (list
-       "block"
-       "block-or-clause"
-       "class"
-       "clause"
-       "def"
-       "def-or-class"
-       "statement"))
+       'py-complete
+       'py-indent-or-complete
+       'py-shell-complete
+       ))
 
-(setq py-down-forms (list "block" "minor-block" "clause" "block-or-clause" "def" "class" "def-or-class"))
-
-(setq py-shift-forms (list "block" "block-or-clause" "class" "clause" "comment" "def" "def-or-class" "minor-block" "paragraph" "region" "statement" "top-level"))
-
-;; top-level not part of `py-shift-bol-forms'
-(setq py-shift-bol-forms (list "paragraph" "block" "minor-block" "clause" "block-or-clause" "def" "class" "def-or-class" "statement"))
-
-(setq py-move-forms
-      '(
-	"block"
-	"block-or-clause"
-	"class"
-	"clause"
-	"def"
-	"def-or-class"
-	"elif-block"
-	"else-block"
-	"except-block"
-	"expression"
-	"if-block"
-	"partial-expression"
-	"statement"
-	"top-level"
-	"try-block"))
-
-(defvar py-hide-names (list "region" "statement" "block" "clause" "block-or-clause" "def" "class" "expression" "partial-expression" "line" "top-level"))
-
-(setq py-hide-names (list "region" "statement" "block" "clause" "block-or-clause" "def" "class" "expression" "partial-expression" "line" "top-level"))
-
-(setq py-fast-core
+(setq py-skeletons
       (list
-       'block
-       'block-or-clause
-       'class
-       'clause
-       'def
-       'def-or-class
-       'expression
-       'partial-expression
-       'region
-       'statement
-       'string
-       'top-level))
+       'else-statement
+       'for-statement
+       'if-statement
+       'py-try/except-statement
+       'py-try/finally-statement
+       'while-statement
+       ))
 
-
-(setq py-virtualenv-symbols
+(setq py-filling-symbols
       (list
-       'activate
-       'deactivate
-       'p
-       'workon))
+       'py-docstring-style
+       'py-fill-comment
+       'py-fill-paragraph
+       'py-fill-string
+       'py-fill-string-django
+       'py-fill-string-onetwo
+       'py-fill-string-pep-257
+       'py-fill-string-pep-257-nn
+       'py-fill-string-symmetric
+       ))
 
-(setq py-fast-forms
+(setq py-electric-symbols
       (list
-       'py--fast-send-string
-       'py-process-region-fast
-       'py-execute-statement-fast
-       'py-execute-block-fast
-       'py-execute-block-or-clause-fast
-       'py-execute-def-fast
-       'py-execute-class-fast
-       'py-execute-def-or-class-fast
-       'py-execute-expression-fast
-       'py-execute-partial-expression-fast
-       'py-execute-top-level-fast
-       'py-execute-clause-fast))
-
-(setq py-bol-forms
-      (list
-       'py-beginning-of-block-bol
-       'py-beginning-of-clause-bol
-       'py-beginning-of-block-or-clause-bol
-       'py-beginning-of-def-bol
-       'py-beginning-of-class-bol
-       'py-beginning-of-def-or-class-bol
-       'py-beginning-of-if-block-bol
-       'py-beginning-of-try-block-bol
-       'py-beginning-of-minor-block-bol
-       'py-beginning-of-statement-bol))
-
-(defvar py-bol-end-forms
-  (list 'py-end-of-block-bol
-	'py-end-of-clause-bol
-	'py-end-of-block-or-clause-bol
-	'py-end-of-def-bol
-	'py-end-of-class-bol
-	'py-end-of-def-or-class-bol
-	'py-end-of-if-block-bol
-	'py-end-of-try-block-bol
-	'py-end-of-minor-block-bol
-	'py-end-of-statement-bol))
-
-(setq py-bol-copy-forms
-      (list
-       'py-copy-block-bol
-       'py-copy-clause-bol
-       'py-copy-block-or-clause-bol
-       'py-copy-def-bol
-       'py-copy-class-bol
-       'py-copy-def-or-class-bol
-       'py-copy-statement-bol))
-
-(defun py--exexutable-name (ele)
-  "Return \"IPython\" for \"ipython\" etc. "
-  (let (erg)
-    (if (string-match "ipython" ele)
-	(concat "IP" (substring ele 2))
-      (capitalize ele))))
-
-
-
-(defun py--kurzmenu-insert-intern (ele)
-  (save-excursion (py--emen ele))
-  (let ((orig (point)))
-    (forward-list 1)
-    (indent-region orig (point))
-    (newline)))
-
-(defun py--kurzmenu-insert (liste &optional prefix suffix exclude)
-  (dolist (ele liste)
-    (unless (stringp ele) (setq ele (prin1-to-string ele)))
-    ;; Can't shift left top-level
-    (unless (string= exclude ele)
-      (when (string= "top-level" ele)
-	(message "%s" exclude))
-      (when prefix (setq ele (concat prefix ele)))
-      (when suffix (setq ele (concat ele suffix)))
-      (insert (concat "\n" (make-string 10 ? )))
-      (py--kurzmenu-insert-intern ele))))
-
-(defun kurzmenu ()
-  (interactive)
-  (with-current-buffer (get-buffer-create "py-menu-init.el")
-    (erase-buffer)
-    (insert "(and (ignore-errors (require 'easymenu) t)
-     ;; (easy-menu-define py-menu map \"Python Tools\"
-     ;;           `(\"PyTools\"
-     (easy-menu-define
-       py-menu python-mode-map \"Python Mode menu\"
-       `(\"Python\"
-	 (\"Interpreter\"")
-    (emacs-lisp-mode)
-    (switch-to-buffer (current-buffer))
-    ;; (py--kurzmenu-insert py-checks-symbols)
-
-    ;; (py--kurzmenu-insert (list 'import-or-reload) "py-execute-")
-    (py--kurzmenu-insert py-shells)
-    (insert (concat (make-string 10 ? )")\n"))
-    (insert (concat (make-string 9 ? )"(\"Edit\"\n"))
-
-    (insert (concat (make-string 10 ? )"(\"Mark\""))
-    (py--kurzmenu-insert py-positions-forms "py-mark-")
-    (insert (concat (make-string 11 ? )")\n"))
-
-    (insert (concat (make-string 10 ? )"(\"Copy\""))
-    (py--kurzmenu-insert py-positions-forms "py-copy-")
-    (insert (concat (make-string 11 ? )")\n"))
-
-    (insert (concat (make-string 10 ? )"(\"Kill\""))
-    (py--kurzmenu-insert py-positions-forms "py-kill-")
-    (insert (concat (make-string 11 ? )")\n"))
-
-    (insert (concat (make-string 10 ? )"(\"Delete\""))
-    (py--kurzmenu-insert py-positions-forms "py-delete-")
-    (insert (concat (make-string 11 ? )")\n"))
-
-    (insert (concat (make-string 10 ? )"(\"Comment\""))
-    (py--kurzmenu-insert py-comment-forms "py-comment-")
-
-    ;; Edit end
-    (insert (concat (make-string 11 ? ) "))\n"))
-
-    (insert (concat (make-string 9 ? )"(\"Move\"\n"))
-
-    (insert (concat (make-string 10 ? )"(\"Shift\"\n"))
-
-    (insert (concat (make-string 11 ? )"(\"Shift right\""))
-    (py--kurzmenu-insert py-shift-forms "py-shift-" "-right")
-    (insert (concat (make-string 12 ? )")\n"))
-
-    (insert (concat (make-string 11 ? )"(\"Shift left\""))
-    (py--kurzmenu-insert py-shift-forms "py-shift-" "-left" "top-level")
-    (insert (concat (make-string 12 ? )"))\n"))
-
-    (insert (concat (make-string 11 ? )"(\"Backward\""))
-    (py--kurzmenu-insert py-move-forms "py-beginning-of-")
-    (insert (concat (make-string 12 ? )")\n"))
-
-    (insert (concat (make-string 11 ? )"(\"Forward\""))
-    (py--kurzmenu-insert py-move-forms "py-end-of-")
-    (insert (concat (make-string 12 ? )")\n"))
-
-    (insert (concat (make-string 10 ? )"(\"BOL-forms\"\n"))
-
-    (insert (concat (make-string 11 ? )"(\"Backward\""))
-    (py--kurzmenu-insert py-move-forms "py-beginning-of-" "-bol" "top-level")
-    (insert (concat (make-string 12 ? )")\n"))
-
-    (insert (concat (make-string 11 ? )"(\"Forward\""))
-    (py--kurzmenu-insert py-move-forms "py-end-of-" "-bol")
-    ;; BOL forms end
-    (insert (concat (make-string 12 ? )"))\n"))
-
-    (insert (concat (make-string 10 ? )"(\"Up/Down\""))
-    (py--kurzmenu-insert (list 'up) "py-")
-    (py--kurzmenu-insert (list 'down) "py-")
-
-    ;; Move ends
-    (insert (concat (make-string 11 ? )"))\n"))
-
-    (insert (concat (make-string 9 ? )"(\"Send\""))
-    (py--kurzmenu-insert py-execute-forms "py-execute-")
-
-    (insert (concat (make-string 11 ? )"(\"Other\"\n"))
-    (dolist (ele py-shells)
-      (setq ele (prin1-to-string ele))
-      ;; Shell forms
-      (insert (concat (make-string 12 ? ))"(\"")
-      (cond ((string-match "ipython" ele)
-	     (insert (concat "IP" (substring ele 2))))
-	    (t (insert (capitalize ele))))
-      (insert "\"")
-      (setq ele (concat "-" ele))
-      (py--kurzmenu-insert py-execute-forms "py-execute-" ele)
-      (insert (concat (make-string 13 ? )")\n")))
-    (insert (make-string 12 ? ))
-    (insert "(\"Ignoring defaults \"\n")
-    (insert (concat (make-string 13 ? )":help \"`M-x py-execute-statement- TAB' for example list commands ignoring defaults\n\n of `py-switch-buffers-on-execute-p' and `py-split-window-on-execute'\"\n"))
-    (insert (concat (make-string 13 ? ) ")))\n"))
-
-    (insert (concat (make-string 9 ? )"(\"Hide-Show\"\n"))
-
-    (insert (concat (make-string 10 ? )"(\"Hide\""))
-    (py--kurzmenu-insert py-hide-names "py-hide-")
-    (insert (concat (make-string 11 ? )")\n"))
-
-    (insert (concat (make-string 10 ? )"(\"Show\""))
-    (py--kurzmenu-insert py-hide-names "py-show-")
-
-    ;; Hide-show ends
-    (insert (concat (make-string 11 ? )"))\n"))
-
-    (insert (concat (make-string 9 ? )"(\"Fast process\""))
-    (py--kurzmenu-insert py-fast-core "py-execute-")
-    (insert (concat (make-string 10 ? )")\n"))
-
-    (insert (concat (make-string 9 ? )"(\"Virtualenv\""))
-    (py--kurzmenu-insert py-virtualenv-symbols "virtualenv-")
-    (insert (concat (make-string 10 ? )")\n"))
-
-    (py--kurzmenu-insert (list 'import-or-reload) "py-execute-")
-    (insert (concat (make-string 9 ? )"(\"Help\""))
-    (py--kurzmenu-insert py-help-symbols)
-    (insert (concat (make-string 10 ? )")\n"))
-
-    (insert (concat (make-string 10 ? )"(\"Debugger\""))
-    (py--kurzmenu-insert py-debugger-symbols)
-    (insert (concat (make-string 12 ? )")\n"))
-
-    (insert (concat (make-string 10 ? )"(\"Checks\""))
-    (py--kurzmenu-insert py-checks-symbols)
-
-    (insert (concat (make-string 10 ? )"(\"Pylint\""))
-    (py--kurzmenu-insert py-pylint-symbols)
-    (insert (concat (make-string 12 ? )")\n"))
-
-    (insert (concat (make-string 10 ? )"(\"Pep8\""))
-    (py--kurzmenu-insert py-pep8-symbols)
-    (insert (concat (make-string 12 ? )")\n"))
-
-    (insert (concat (make-string 10 ? )"(\"Pyflakes\""))
-    (py--kurzmenu-insert py-pyflakes-symbols)
-    (insert (concat (make-string 12 ? )")\n"))
-
-    (insert (concat (make-string 10 ? )"(\"Flake8\""))
-    (py--kurzmenu-insert py-flake8-symbols)
-
-    (insert (concat (make-string 10 ? )"(\"Pyflakes-pep8\""))
-    (py--kurzmenu-insert py-pyflakes-pep8-symbols)
-
-    ;; close Pyflakes
-    ;; close Checks
-    (insert (concat (make-string 12 ? ) ")))\n"))
-    (insert py-menu-custom-forms)
-    (newline)
-    (insert (concat (make-string 9 ? )"(\"Other\""))
-    (py--kurzmenu-insert py-other-symbols "py-")
-
-    (insert (concat (make-string 10 ? )"(\"Electric\""))
-    (py--kurzmenu-insert py-electric-symbols "py-")
-    (insert (concat (make-string 12 ? )")\n"))
-
-    (insert (concat (make-string 10 ? )"(\"Filling\""))
-    (py--kurzmenu-insert py-filling-symbols "py-")
-    (insert (concat (make-string 12 ? )")\n"))
-
-    (insert (concat (make-string 10 ? )"(\"Abbrevs\""))
-    (insert py-menu-abbrev-form)
-    (insert (concat (make-string 12 ? )")\n"))
-    (py--kurzmenu-insert (list 'py-add-abbrev))
-
-    (insert (concat (make-string 10 ? )"(\"Completion\""))
-    (py--kurzmenu-insert py-completion-symbols "py-")
-    (insert (concat (make-string 12 ? )")\n"))
-
-    (py--kurzmenu-insert (list 'py-find-function))
-
-    ;; nicht vorhanden
-    ;; (insert (concat (make-string 10 ? )"(\"Skeletons\""))
-    ;; (py--kurzmenu-insert py-skeletons)
-    ;; (insert (concat (make-string 12 ? )")\n"))
-
-    ;; Close Other
-    (insert (concat (make-string 12 ? )")\n"))
-
-    ;; final
-    (insert (concat (make-string 12 ? ) ")))"))
-    (write-file (expand-file-name "~/arbeit/emacs/python-modes/components-python-mode/devel/eame.el"))))
+       'complete-electric-comma
+       'complete-electric-lparen
+       'electric-backspace
+       'electric-colon
+       'electric-comment
+       'electric-delete
+       'electric-yank
+       'hungry-delete-backwards
+       'hungry-delete-forward
+       ))
 
 (setq py-completion-symbols (list
 			     'py-indent-or-complete
@@ -602,133 +687,221 @@
 
 ")
 
-(setq py-toggle-form-vars (list "py-nil-docstring-style" "py-onetwo-docstring-style" "py-pep-257-docstring-style" "py-pep-257-nn-docstring-style" "py-symmetric-docstring-style" "py-django-docstring-style" ))
 
-(defvar docstring-styles (list "django" "onetwo" "pep-257" "pep-257-nn" "symmetric")
-  "Customizable variable `py-fill-docstring-style' provides default value
-  used by `py-fill-string', `py-fill-paragraph'
+(defun py--exexutable-name (ele)
+  "Return \"IPython\" for \"ipython\" etc. "
+  (let (erg)
+    (if (string-match "ipython" ele)
+	(concat "IP" (substring ele 2))
+      (capitalize ele))))
 
-  DJANGO:
+(defun py--kurzmenu-insert-intern (ele)
+  (save-excursion (py--emen ele))
+  (let ((orig (point)))
+    (forward-list 1)
+    (indent-region orig (point))
+    (newline)))
 
-      \"\"\"
-      Process foo, return bar.
-      \"\"\"
+(defun py--kurzmenu-insert (liste &optional prefix suffix exclude)
+  (dolist (ele liste)
+    (unless (stringp ele) (setq ele (prin1-to-string ele)))
+    ;; Can't shift left top-level
+    (unless (string= exclude ele)
+      (when (string= "top-level" ele)
+	(message "%s" exclude))
+      (when prefix (setq ele (concat prefix ele)))
+      (when suffix (setq ele (concat ele suffix)))
+      (insert (concat "\n" (make-string 10 ? )))
+      (py--kurzmenu-insert-intern ele))))
 
-      \"\"\"
-      Process foo, return bar.
+(defun kurzmenu ()
+  (interactive)
+  (with-current-buffer (get-buffer-create "py-menu-init.el")
+    (erase-buffer)
+    (insert "(and (ignore-errors (require 'easymenu) t)
+     ;; (easy-menu-define py-menu map \"Python Tools\"
+     ;;           `(\"PyTools\"
+     (easy-menu-define
+       py-menu python-mode-map \"Python Mode menu\"
+       `(\"Python\"
+	 (\"Interpreter\"")
+    (emacs-lisp-mode)
+    (switch-to-buffer (current-buffer))
+    ;; (py--kurzmenu-insert py-checks-symbols)
 
-      If processing fails throw ProcessingError.
-      \"\"\"
+    ;; (py--kurzmenu-insert (list 'import-or-reload) "py-execute-")
+    (py--kurzmenu-insert py-shells)
+    (insert (concat (make-string 10 ? )")\n"))
+    (insert (concat (make-string 9 ? )"(\"Edit\"\n"))
 
-  ONETWO:
+    (insert (concat (make-string 10 ? )"(\"Mark\""))
+    (py--kurzmenu-insert py-positions-forms "py-mark-")
+    (insert (concat (make-string 11 ? )")\n"))
 
-      \"\"\"Process foo, return bar.\"\"\"
+    (insert (concat (make-string 10 ? )"(\"Copy\""))
+    (py--kurzmenu-insert py-positions-forms "py-copy-")
+    (insert (concat (make-string 11 ? )")\n"))
 
-      \"\"\"
-      Process foo, return bar.
+    (insert (concat (make-string 10 ? )"(\"Kill\""))
+    (py--kurzmenu-insert py-positions-forms "py-kill-")
+    (insert (concat (make-string 11 ? )")\n"))
 
-      If processing fails throw ProcessingError.
+    (insert (concat (make-string 10 ? )"(\"Delete\""))
+    (py--kurzmenu-insert py-positions-forms "py-delete-")
+    (insert (concat (make-string 11 ? )")\n"))
 
-      \"\"\"
+    (insert (concat (make-string 10 ? )"(\"Comment\""))
+    (py--kurzmenu-insert py-comment-forms "py-comment-")
 
-  PEP-257:
+    ;; Edit end
+    (insert (concat (make-string 11 ? ) "))\n"))
 
-      \"\"\"Process foo, return bar.\"\"\"
+    (insert (concat (make-string 9 ? )"(\"Move\"\n"))
 
-      \"\"\"Process foo, return bar.
+    (insert (concat (make-string 10 ? )"(\"Shift\"\n"))
 
-      If processing fails throw ProcessingError.
+    (insert (concat (make-string 11 ? )"(\"Shift right\""))
+    (py--kurzmenu-insert py-shift-forms "py-shift-" "-right")
+    (insert (concat (make-string 12 ? )")\n"))
 
-      \"\"\"
+    (insert (concat (make-string 11 ? )"(\"Shift left\""))
+    (py--kurzmenu-insert py-shift-forms "py-shift-" "-left" "top-level")
+    (insert (concat (make-string 12 ? )"))\n"))
 
-  PEP-257-NN:
+    (insert (concat (make-string 11 ? )"(\"Backward\""))
+    (py--kurzmenu-insert py-move-forms "py-beginning-of-")
+    (insert (concat (make-string 12 ? )")\n"))
 
-      \"\"\"Process foo, return bar.\"\"\"
+    (insert (concat (make-string 11 ? )"(\"Forward\""))
+    (py--kurzmenu-insert py-navigate-forms "py-end-of-")
+    (insert (concat (make-string 12 ? )")\n"))
 
-      \"\"\"Process foo, return bar.
+    (insert (concat (make-string 10 ? )"(\"BOL-forms\"\n"))
 
-      If processing fails throw ProcessingError.
-      \"\"\"
+    (insert (concat (make-string 11 ? )"(\"Backward\""))
+    (py--kurzmenu-insert py-navigate-forms "py-beginning-of-" "-bol" "top-level")
+    (insert (concat (make-string 12 ? )")\n"))
 
-  SYMMETRIC:
+    (insert (concat (make-string 11 ? )"(\"Forward\""))
+    (py--kurzmenu-insert py-navigate-forms "py-end-of-" "-bol")
+    ;; BOL forms end
+    (insert (concat (make-string 12 ? )"))\n"))
 
-      \"\"\"Process foo, return bar.\"\"\"
+    (insert (concat (make-string 10 ? )"(\"Up/Down\""))
+    (py--kurzmenu-insert (list 'up) "py-")
+    (py--kurzmenu-insert (list 'down) "py-")
 
-      \"\"\"
-      Process foo, return bar.
+    ;; Move ends
+    (insert (concat (make-string 11 ? )"))\n"))
 
-      If processing fails throw ProcessingError.
-      \"\"\"
+    (insert (concat (make-string 9 ? )"(\"Send\""))
+    (py--kurzmenu-insert py-execute-forms "py-execute-")
 
-  Built upon code seen at python.el, thanks Fabian")
+    (insert (concat (make-string 11 ? )"(\"Other\"\n"))
+    (dolist (ele py-shells)
+      (setq ele (prin1-to-string ele))
+      ;; Shell forms
+      (insert (concat (make-string 12 ? ))"(\"")
+      (cond ((string-match "ipython" ele)
+	     (insert (concat "IP" (substring ele 2))))
+	    (t (insert (capitalize ele))))
+      (insert "\"")
+      (setq ele (concat "-" ele))
+      (py--kurzmenu-insert py-execute-forms "py-execute-" ele)
+      (insert (concat (make-string 13 ? )")\n")))
+    (insert (make-string 12 ? ))
+    (insert "(\"Ignoring defaults \"\n")
+    (insert (concat (make-string 13 ? )":help \"`M-x py-execute-statement- TAB' for example list commands ignoring defaults\n\n of `py-switch-buffers-on-execute-p' and `py-split-window-on-execute'\"\n"))
+    (insert (concat (make-string 13 ? ) ")))\n"))
 
-;; (setq py-options (list "" "switch" "no-switch" "dedicated" "dedicated-switch"))
+    (insert (concat (make-string 9 ? )"(\"Hide-Show\"\n"))
 
-(setq py-options (list "" "switch" "no-switch" "dedicated"))
+    (insert (concat (make-string 10 ? )"(\"Hide\""))
+    (py--kurzmenu-insert py-hide-names "py-hide-")
+    (insert (concat (make-string 11 ? )")\n"))
 
-(setq py-full-options (list "switch" "no-switch" "dedicated" "dedicated-switch"))
+    (insert (concat (make-string 10 ? )"(\"Show\""))
+    (py--kurzmenu-insert py-hide-names "py-show-")
 
+    ;; Hide-show ends
+    (insert (concat (make-string 11 ? )"))\n"))
 
-(defvar py-commands
-  (list "py-python-command" "py-ipython-command" "py-python3-command" "py-python2-command" "py-jython-command")
-  "Python-mode will generate commands opening shells mentioned here. Edit this list \w resp. to your machine. ")
+    (insert (concat (make-string 9 ? )"(\"Fast process\""))
+    (py--kurzmenu-insert py-fast-core "py-execute-")
+    (insert (concat (make-string 10 ? )")\n"))
 
+    (insert (concat (make-string 9 ? )"(\"Virtualenv\""))
+    (py--kurzmenu-insert py-virtualenv-symbols "virtualenv-")
+    (insert (concat (make-string 10 ? )")\n"))
 
-(setq py-positions-forms (list "block" "block-or-clause" "class" "clause" "comment" "def" "def-or-class" "expression" "line" "minor-block" "paragraph" "partial-expression" "statement" "top-level"))
+    (py--kurzmenu-insert (list 'import-or-reload) "py-execute-")
+    (insert (concat (make-string 9 ? )"(\"Help\""))
+    (py--kurzmenu-insert py-help-symbols)
+    (insert (concat (make-string 10 ? )")\n"))
 
-(setq py-execute-forms (list
-			"block"
-			"block-or-clause"
-			"class"
-			"clause"
-			"def"
-			"def-or-class"
-			"expression"
-			"line"
-			"minor-block"
-			"paragraph"
-			"partial-expression"
-			"statement"
-			"top-level"
-			))
+    (insert (concat (make-string 10 ? )"(\"Debugger\""))
+    (py--kurzmenu-insert py-debugger-symbols)
+    (insert (concat (make-string 12 ? )")\n"))
 
-(setq py-core-command-name '("statement" "block" "def" "class" "region" "file"))
+    (insert (concat (make-string 10 ? )"(\"Checks\""))
+    (py--kurzmenu-insert py-checks-symbols)
 
-(setq py-bounds-command-names (list "statement" "block" "clause" "block-or-clause" "def" "class" "def-or-class" "buffer" "expression" "partial-expression" "minor-block" "if-block" "try-block" "except-block" "top-level"))
+    (insert (concat (make-string 10 ? )"(\"Pylint\""))
+    (py--kurzmenu-insert py-pylint-symbols)
+    (insert (concat (make-string 12 ? )")\n"))
 
-(setq py-beginning-command-names (list "statement" "block" "clause" "block-or-clause" "def" "class" "def-or-class" "expression" "partial-expression" "minor-block" "if-block" "try-block" "except-block" "top-level"))
+    (insert (concat (make-string 10 ? )"(\"Pep8\""))
+    (py--kurzmenu-insert py-pep8-symbols)
+    (insert (concat (make-string 12 ? )")\n"))
 
-(setq py-beginning-bol-command-names (list "statement" "block" "clause" "block-or-clause" "def" "class" "def-or-class" "minor-block" "if-block" "try-block" "except-block" "top-level"))
+    (insert (concat (make-string 10 ? )"(\"Pyflakes\""))
+    (py--kurzmenu-insert py-pyflakes-symbols)
+    (insert (concat (make-string 12 ? )")\n"))
 
-(setq py-bounds-command-names (list "statement" "block" "clause" "block-or-clause" "def" "class" "def-or-class" "buffer" "expression" "partial-expression" "minor-block" "if-block" "try-block" "except-block" "top-level"))
+    (insert (concat (make-string 10 ? )"(\"Flake8\""))
+    (py--kurzmenu-insert py-flake8-symbols)
 
-(setq py-bounds-bol-names (list "statement" "block" "clause" "block-or-clause" "def" "class" "minor-block" "if-block" "try-block"))
+    (insert (concat (make-string 10 ? )"(\"Pyflakes-pep8\""))
+    (py--kurzmenu-insert py-pyflakes-pep8-symbols)
 
-(setq py-checker-command-names '("clear-flymake-allowed-file-name-masks" "pylint-flymake-mode" "pyflakes-flymake-mode" "pychecker-flymake-mode" "pep8-flymake-mode" "pyflakespep8-flymake-mode" "py-pylint-doku" "py-pyflakes-run" "py-pyflakespep8-run" "py-pyflakespep8-help"))
+    ;; close Pyflakes
+    ;; close Checks
+    (insert (concat (make-string 12 ? ) ")))\n"))
+    (insert py-menu-custom-forms)
+    (newline)
+    (insert (concat (make-string 9 ? )"(\"Other\""))
+    (py--kurzmenu-insert py-other-symbols "py-")
 
-(setq py-execute-forms-names (list "statement" "block" "block-or-clause" "def" "class" "def-or-class" "expression" "partial-expression" "top-level" "clause"))
+    (insert (concat (make-string 10 ? )"(\"Electric\""))
+    (py--kurzmenu-insert py-electric-symbols "py-")
+    (insert (concat (make-string 12 ? )")\n"))
 
-(setq py-delete-forms (list "statement" "top-level" "block" "block-or-clause" "def" "class" "def-or-class" "expression" "partial-expression" "minor-block" "clause"))
+    (insert (concat (make-string 10 ? )"(\"Filling\""))
+    (py--kurzmenu-insert py-filling-symbols "py-")
+    (insert (concat (make-string 12 ? )")\n"))
 
-(setq py-copy-forms (list "statement" "top-level" "block" "clause" "block-or-clause" "def" "class" "def-or-class" "expression" "partial-expression" "minor-block"))
+    (insert (concat (make-string 10 ? )"(\"Abbrevs\""))
+    (insert py-menu-abbrev-form)
+    (insert (concat (make-string 12 ? )")\n"))
+    (py--kurzmenu-insert (list 'py-add-abbrev))
 
-(setq py-edit-forms (list "statement" "top-level" "block" "clause" "block-or-clause" "def" "class" "def-or-class" "expression" "partial-expression" "minor-block" "line" "paragraph"))
+    (insert (concat (make-string 10 ? )"(\"Completion\""))
+    (py--kurzmenu-insert py-completion-symbols "py-")
+    (insert (concat (make-string 12 ? )")\n"))
 
+    (py--kurzmenu-insert (list 'py-find-function))
 
-(setq py-bol-forms '("block" "clause" "block-or-clause" "def" "class" "def-or-class" "if-block" "try-block" "minor-block" "for-block" "top-level" "statement"))
+    ;; nicht vorhanden
+    ;; (insert (concat (make-string 10 ? )"(\"Skeletons\""))
+    ;; (py--kurzmenu-insert py-skeletons)
+    ;; (insert (concat (make-string 12 ? )")\n"))
 
-(defvar py-bol-beginning-forms '("block" "clause" "block-or-clause" "def" "class" "def-or-class" "if-block" "try-block" "minor-block" "for-block" "statement")
-  "no top-level, as not useful")
+    ;; Close Other
+    (insert (concat (make-string 12 ? )")\n"))
 
-(setq py-bol-beginning-forms '("block" "clause" "block-or-clause" "def" "class" "def-or-class" "if-block" "try-block" "minor-block" "for-block" "statement"))
-
-(setq py-beginning-forms '("block" "clause" "block-or-clause" "def" "class" "def-or-class" "if-block" "try-block" "minor-block" "for-block" "statement" "expression" "partial-expression"))
-
-;; expression and partial-expression might not start at bol+whitespace
-(setq py-move-bol-forms '("block" "clause" "block-or-clause" "def" "class" "def-or-class" "if-block" "try-block" "minor-block" "for-block" "top-level" "statement"))
-
-(defconst py-re-forms '("block" "clause" "block-or-clause" "def" "class" "def-or-class" "if-block" "elif-block" "else-block" "try-block" "minor-block" "for-block" "except-block")
-  "Forms used to move in source code.")
+    ;; final
+    (insert (concat (make-string 12 ? ) ")))"))
+    (write-file (expand-file-name "~/arbeit/emacs/python-modes/components-python-mode/devel/eame.el"))))
 
 (defun write-execute-forms (&optional command)
   "Write `py-execute-block...' etc. "
@@ -758,7 +931,7 @@
 (defun write-fast-execute-forms (&optional command)
   "Write `py-process-block...' etc. "
   (interactive)
-  (let ((py-bounds-command-names (if command (list command) py-execute-forms-names)))
+  (let ((py-bounds-command-names (if command (list command) py-fast-execute-forms-names)))
     (set-buffer (get-buffer-create "python-components-fast-forms.el"))
     (erase-buffer)
     (switch-to-buffer (current-buffer))
@@ -1654,6 +1827,7 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. \"
     (when (interactive-p) (switch-to-buffer (current-buffer))
 	  (emacs-lisp-mode))
     (dolist (ele py-shells)
+      (unless (string= ele "")
       (setq ele (replace-regexp-in-string "\\\\" "" (prin1-to-string ele)))
       (insert (concat "(defun " ele " (&optional argprompt)
   \"Start an "))
@@ -1664,9 +1838,10 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. \"
 Optional \\\\[universal-argument] prompts for path to the"))
       (insert (concat " interpreter. \"
   (interactive \"P\")
-  (py-shell argprompt nil \"" ele "\"))\n\n")))
+  (py-shell argprompt nil \"" ele "\"))\n\n"))))
     (insert ";; dedicated\n")
     (dolist (ele py-shells)
+      (unless (string= ele "")
       (setq ele (replace-regexp-in-string "\\\\" "" (prin1-to-string ele)))
       (insert (concat "(defun " ele "-dedicated (&optional argprompt switch)
   \"Start an unique "))
@@ -1678,9 +1853,10 @@ Optional \\\\[universal-argument] prompts for path to the"))
       (insert (concat " interpreter. \"
   (interactive \"p\")"))
       (insert "\n (let ((py-dedicated-process-p t))\n")
-      (insert (concat "    (py-shell argprompt t \"" ele "\")))\n\n")))
+      (insert (concat "    (py-shell argprompt t \"" ele "\")))\n\n"))))
     (insert ";; switch\n")
     (dolist (ele py-shells)
+      (unless (string= ele "")
       (setq ele (replace-regexp-in-string "\\\\" "" (prin1-to-string ele)))
       (insert (concat "(defun " ele "-switch (&optional argprompt)
   \"Switch to "))
@@ -1692,9 +1868,10 @@ Optional \\\\[universal-argument] prompts for path to the"))
       (insert (concat " interpreter. \"
   (interactive \"p\")"))
       (insert "\n (let ((py-switch-buffers-on-execute-p t))\n")
-      (insert (concat "    (py-shell argprompt nil \"" ele "\")))\n\n")))
+      (insert (concat "    (py-shell argprompt nil \"" ele "\")))\n\n"))))
     (insert ";; no-switch\n")
     (dolist (ele py-shells)
+      (unless (string= ele "")
       (setq ele (replace-regexp-in-string "\\\\" "" (prin1-to-string ele)))
       (insert (concat "(defun " ele "-no-switch (&optional argprompt)
   \"Open an "))
@@ -1709,9 +1886,10 @@ Optional \\\\[universal-argument] prompts for path to the"))
       (insert (concat " interpreter. \"
   (interactive \"p\")"))
       (insert "\n (let (py-switch-buffers-on-execute-p)\n")
-      (insert (concat "    (py-shell argprompt nil \"" ele "\")))\n\n")))
+      (insert (concat "    (py-shell argprompt nil \"" ele "\")))\n\n"))))
     (insert ";; dedicated switch\n")
     (dolist (ele py-shells)
+      (unless (string= ele "")
       (setq ele (replace-regexp-in-string "\\\\" "" (prin1-to-string ele)))
       (insert (concat "(defalias '" ele "-dedicated-switch '" ele "-switch-dedicated)\n"))
       (insert (concat "(defun " ele "-switch-dedicated (&optional argprompt)
@@ -1725,7 +1903,7 @@ Optional \\\\[universal-argument] prompts for path to the"))
   \(interactive \"p\")")
       (insert "\n (let ((py-dedicated-process-p t)
         (py-switch-buffers-on-execute-p t))\n")
-      (insert (concat "    (py-shell argprompt t \"" ele "\")))\n\n")))
+      (insert (concat "    (py-shell argprompt t \"" ele "\")))\n\n"))))
 
     (insert "(provide 'python-components-named-shells)
 ;;; python-components-named-shells.el ends here
@@ -1810,7 +1988,7 @@ Optional \\\\[universal-argument] prompts for path to the"))
   (erase-buffer)
   (switch-to-buffer (current-buffer))
   (insert ";;; python-components-re-forms.el --- Forms start described by a regular-expression \n")
-  (insert "\nThis file is generated by function from python-mode-utils.el - see in
+  (insert "\n;;This file is generated by function from python-mode-utils.el - see in
 ;; directory devel. Edits here might not be persistent.\n")
   (insert arkopf)
   (insert ";; Beg-end forms\n
@@ -1869,7 +2047,7 @@ Returns position if successful, nil otherwise\"
       (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
       erg))
 ")
-  (dolist (ele py-move-forms)
+  (dolist (ele py-navigate-forms)
       (insert (concat "
 \(defun py-beginning-of-" ele " (&optional indent)"
     "\n \"Go to beginning of " ele ".
@@ -1877,9 +2055,8 @@ Returns position if successful, nil otherwise\"
 With \\\\[universal-argument], go to beginning one level above.
 Returns beginning of " ele " if successful, nil otherwise\n\n"))
     (when (string-match "def\\|class" ele)
-      (insert "When `py-mark-decorators' is non-nil, decorators are considered too.\n\n"))
-    (insert "Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html\"\n")
+      (insert "When `py-mark-decorators' is non-nil, decorators are considered too. "))
+    (insert "\"\n")
     (insert (concat "  (interactive \"P\")
   (py--beginning-of-form-intern py-" ele "-re (interactive-p) indent))\n"))
     (insert (concat "
@@ -1888,8 +2065,7 @@ http://docs.python.org/reference/compound_stmts.html\"\n")
 Returns end of " ele " if successful, nil otherwise\n\n"))
     (when (string-match "def\\|class" ele)
       (insert "With \\\\[universal-argument] or `py-mark-decorators' set to `t', decorators are marked too.\n\n"))
-    (insert "Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html\"\n")
+    (insert "\"\n")
 
     ;; (if (string-match "def\\|class" ele)
     (insert "  (interactive \"P\")")
@@ -3010,7 +3186,7 @@ Return position if form found, nil otherwise. \"
     (if (bobp)
         (setq erg nil)
       (while (and (re-search-backward regexp nil t 1)
-                  (nth 8 (syntax-ppss))))
+                  (nth 8 (parse-partial-sexp (point-min) (point)))))
       (back-to-indentation)
       (when (looking-at regexp) (setq erg (point)))
       (when py-verbose-p (message \"%s\" erg))
@@ -3028,7 +3204,7 @@ Return position if form found, nil otherwise. \"
       (if (eobp)
           (setq erg nil)
         (while (and (re-search-forward regexp nil t 1)
-                    (nth 8 (syntax-ppss))))
+                    (nth 8 (parse-partial-sexp (point-min) (point)))))
         (back-to-indentation)
         (when (looking-at regexp) (setq erg (point)))
         (when py-verbose-p (message \"%s\" erg))
@@ -3043,7 +3219,7 @@ Return position if form found, nil otherwise. \"
     (if (bobp)
         (setq erg nil)
       (while (and (re-search-backward regexp nil t 1)
-                  (nth 8 (syntax-ppss))))
+                  (nth 8 (parse-partial-sexp (point-min) (point)))))
       (beginning-of-line)
       (when (looking-at regexp) (setq erg (point)))
       (when py-verbose-p (message \"%s\" erg))
@@ -3061,7 +3237,7 @@ Return position if form found, nil otherwise. \"
       (if (eobp)
           (setq erg nil)
         (while (and (re-search-forward regexp nil t 1)
-                    (nth 8 (syntax-ppss))))
+                    (nth 8 (parse-partial-sexp (point-min) (point)))))
         (beginning-of-line)
         (when (looking-at regexp) (setq erg (point)))
         (when py-verbose-p (message \"%s\" erg))
@@ -3245,7 +3421,7 @@ the default\"
   (interactive)
     (set-buffer (get-buffer-create "mark-bol.el"))
     (erase-buffer)
-    (dolist (ele py-move-forms)
+    (dolist (ele py-navigate-forms)
       (insert (concat "
 \(defun py-mark-" ele "-bol ()
   \"Mark " ele ", take beginning of line positions.
@@ -3265,7 +3441,7 @@ Returns beginning and end positions of region, a cons. \"
   (interactive)
     (set-buffer (get-buffer-create "mark-bol-menu.el"))
     (erase-buffer)
-    (dolist (ele py-move-forms)
+    (dolist (ele py-navigate-forms)
       (insert (concat "
              [\"Mark " ele " bol\" py-mark-" ele "-bol
               :help \"`py-mark-" ele "-bol'
@@ -3275,7 +3451,7 @@ Mark " ele " at point reaching beginning-of-line. \"]
   (emacs-lisp-mode))
 
 (defun py-write-beginning-forms ()
-  "Uses py-beginning-forms, not `py-move-forms'.
+  "Uses py-beginning-forms, not `py-navigate-forms'.
 
 Use beginning-of-statement for `top-level', also bol-forms don't make sense here"
   (interactive)
@@ -3285,7 +3461,7 @@ Use beginning-of-statement for `top-level', also bol-forms don't make sense here
   (insert ";;; python-components-beginning-forms.el --- Go to beginning of form \n")
   (insert arkopf)
   ;; don't handle (partial)-expression forms here
-  (dolist (ele py-re-forms)
+  (dolist (ele py-beg-end-forms)
     (insert (concat "
 \(defun py-beginning-of-" ele " (&optional indent)"
 "\n \"Go to beginning " ele ", skip whitespace at BOL.
@@ -3293,9 +3469,8 @@ Use beginning-of-statement for `top-level', also bol-forms don't make sense here
 Returns beginning of " ele " if successful, nil otherwise\n
 "))
     (when (string-match "def\\|class" ele)
-      (insert "When `py-mark-decorators' is non-nil, decorators are considered too.\n\n"))
-    (insert "Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html\"\n")
+      (insert "When `py-mark-decorators' is non-nil, decorators are considered too. "))
+    (insert "\"\n")
     (insert "  (interactive)")
     (cond ((string-match "def\\|class" ele)
 	   (insert (concat "
@@ -3306,7 +3481,7 @@ http://docs.python.org/reference/compound_stmts.html\"\n")
 	  (t (insert (concat "
   (py--beginning-of-prepare indent 'py-" ele "-re 'py-clause-re (interactive-p)))\n")))))
   ;; bol forms
-  (dolist (ele py-re-forms)
+  (dolist (ele py-beginning-bol-command-names)
     (insert (concat "
 \(defalias 'py-beginning-of-" ele "-lc 'py-beginning-of-" ele"-bol)
 \(defun py-beginning-of-" ele "-bol (&optional indent)"
@@ -3315,9 +3490,8 @@ http://docs.python.org/reference/compound_stmts.html\"\n")
 Returns beginning of " ele " if successful, nil otherwise\n
 "))
     (when (string-match "def\\|class" ele)
-      (insert "When `py-mark-decorators' is non-nil, decorators are considered too.\n\n"))
-    (insert "Referring python program structures see for example:
-http://docs.python.org/reference/compound_stmts.html\"\n")
+      (insert "When `py-mark-decorators' is non-nil, decorators are considered too. "))
+    (insert "\"\n")
     (insert "  (interactive)")
     (cond ((string-match "def\\|class" ele)
 	   (insert (concat "
@@ -3338,7 +3512,7 @@ http://docs.python.org/reference/compound_stmts.html\"\n")
     (set-buffer (get-buffer-create "Delete-menu.el"))
     (erase-buffer)
     (insert "         (\"Delete\"")
-    (dolist (ele py-delete-forms)
+    (dolist (ele py-execute-forms)
       (insert (concat "
              [\"Delete " ele " \" py-delete-" ele "
               :help \"`py-delete-" ele "'
@@ -3354,18 +3528,18 @@ Delete " (upcase ele) " at point, don't store in kill-ring. \"]
   (erase-buffer)
   (switch-to-buffer (current-buffer))
   (insert ";;; python-components-forms-code.el --- Return Python forms' code \n")
-  (insert "\nThis file is generated by function from python-mode-utils.el - see in
+  (insert "\n;;This file is generated by function from python-mode-utils.el - see in
 ;; directory devel. Edits here might not be persistent.\n")
   (insert arkopf)
-  (dolist (ele py-copy-forms)
+  (dolist (ele py-execute-forms)
     (insert (concat "
 \(defun py-" ele " ()
   \"" (capitalize ele) " at point.
 
 Return code of `py-" ele "' at point, a string. \"
   (interactive)
-  (let ((erg (py--base \"" ele "\")))
-    (buffer-substring-no-properties (car erg) (cdr erg))))
+  (let ((erg (py--mark-base \"" ele "\")))
+    (py--forms-report-result erg)))
 ")))
   (insert "\n;; python-components-forms-code.el ends here
 \(provide 'python-components-forms-code)")
@@ -3383,7 +3557,7 @@ Return code of `py-" ele "' at point, a string. \"
 
 (defun py-write-bol-menu ()
   (interactive "*")
-  (dolist (ele py-bol-forms)
+  (dolist (ele py-bol-menu-forms)
     (emen (prin1-to-string ele))
     (skip-chars-forward "^]")
     (forward-char 1)
@@ -3599,7 +3773,7 @@ print(\\\"I'm the py-just-two-split-dedicated-lp-1361531-" elt "-test\\\")\""))
   (switch-to-buffer (current-buffer))
   (insert ";;; py-ert-beginning-tests.el --- Just some more tests \n")
   (insert arkopf)
-  (dolist (ele py-move-forms)
+  (dolist (ele py-navigate-forms)
     (insert (concat "
 \(ert-deftest py-ert-beginning-of-" ele "-test ()
   (py-test-with-temp-buffer
@@ -3651,7 +3825,7 @@ class bar:
 	  )
     (insert "))))\n"))
 
-  (dolist (ele py-bol-beginning-forms)
+  (dolist (ele py-bol-forms)
     (insert (concat "
 \(ert-deftest py-ert-beginning-of-" ele "-bol-test ()
   (py-test-with-temp-buffer
@@ -3713,9 +3887,9 @@ class bar:
   (switch-to-buffer (current-buffer))
   (insert ";;; py-ert-end-tests.el --- Just some more tests \n")
   (insert arkopf)
-  (insert "\nThis file is generated by function from python-mode-utils.el - see in
+  (insert "\n;;This file is generated by function from python-mode-utils.el - see in
 ;; directory devel. Edits here might not be persistent.\n")
-  (dolist (ele py-move-forms)
+  (dolist (ele py-navigate-forms)
     (insert (concat "
 \(ert-deftest py-ert-end-of-" ele "-test ()
   (py-test-with-temp-buffer
@@ -3825,10 +3999,10 @@ class bar:
   (erase-buffer)
   (switch-to-buffer (current-buffer))
   (insert ";;; python-components-beginning-position-forms.el --- Just some more tests \n")
-  (insert "\nThis file is generated by function from python-mode-utils.el - see in
+  (insert "\n;;This file is generated by function from python-mode-utils.el - see in
 ;; directory devel. Edits here might not be persistent.\n")
   (insert arkopf)
-  (dolist (ele py-beginning-command-names)
+  (dolist (ele py-positions-forms)
     (insert (concat "
 \(defun py--beginning-of-" ele "-position ()
   \"Returns beginning of " ele " position at beginning-of-line. \"
@@ -3857,7 +4031,7 @@ class bar:
   (erase-buffer)
   (switch-to-buffer (current-buffer))
   (insert ";;; python-components-end-position-forms.el --- Just some more tests \n")
-  (insert "\nThis file is generated by function from python-mode-utils.el - see in
+  (insert "\n;;This file is generated by function from python-mode-utils.el - see in
 ;; directory devel. Edits here might not be persistent.\n")
   (insert arkopf)
   (dolist (ele py-bounds-command-names)
@@ -3872,7 +4046,7 @@ class bar:
                  (py-end-of-" ele "))))
       erg)))\n")))
 
-  (dolist (ele py-bounds-bol-names)
+  (dolist (ele py-shift-bol-forms)
     (insert (concat "
 \(defun py--end-of-" ele "-position-bol ()
   \"Returns end of " ele " position at beginning-of-line. \"
@@ -3896,10 +4070,10 @@ class bar:
   (set-buffer (get-buffer-create "python-components-end-forms.el"))
   (erase-buffer)
   (insert ";;; python-components-end-forms.el -- Go to the end of forms\n")
-  (insert "\nThis file is generated by function from python-mode-utils.el - see in
+  (insert "\n;;This file is generated by function from python-mode-utils.el - see in
 ;; directory devel. Edits here might not be persistent.\n")
   (insert arkopf)
-  (dolist (ele py-re-forms)
+  (dolist (ele py-beg-end-forms)
     ;; beg-end check forms
     (insert (concat "
 \(defalias 'py-down-" ele " 'py-end-of-" ele ")
@@ -3938,23 +4112,28 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
   (set-buffer (get-buffer-create "python-components-booleans-beginning-forms.el"))
   (erase-buffer)
   (insert ";;; python-components-booleans-beginning-forms.el --- booleans-beginning forms\n")
-  (insert "\nThis file is generated by function from python-mode-utils.el - see in
+  (insert "\n;;This file is generated by function from python-mode-utils.el - see in
 ;; directory devel. Edits here might not be persistent.\n")
   (insert arkopf)
-  (dolist (ele py-move-forms)
+  (dolist (ele py-navigate-forms)
     (insert (concat "
 \(defun py--beginning-of-" ele "-p ()
   \"Returns position, if cursor is at the beginning of a `" ele "', nil otherwise. \"
   (let ((orig (point))
         erg)
-    (save-excursion
-      (unless (and (eolp) (not (empty-line-p)))
-        (py-end-of-" ele "))
-      (py-beginning-of-" ele ")
-      (when (eq orig (point))
-        (setq erg orig))
+    (save-excursion"))
+    (if (string-match "expression" ele)
+	(insert "
+      (unless (and (eolp) (not (empty-line-p)))\n")
+      (insert "
+      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p))))\n"))
+      (insert (concat " 
+        (py-end-of-" ele ")
+        (py-beginning-of-" ele ")
+        (when (eq orig (point))
+          (setq erg orig)))
       erg)))\n")))
-  (dolist (ele py-bol-beginning-forms)
+  (dolist (ele py-bol-forms)
     (insert (concat "
 \(defun py--beginning-of-" ele "-bol-p ()
   \"Returns position, if cursor is at beginning-of-line and the beginning of a `" ele "', nil otherwise. \"
@@ -3977,12 +4156,12 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
   "Uses `py-booleans-end-forms'. "
   (interactive)
   (set-buffer (get-buffer-create "python-components-booleans-end-forms.el"))
-  (insert "\nThis file is generated by function from python-mode-utils.el - see in
+  (insert "\n;;This file is generated by function from python-mode-utils.el - see in
 ;; directory devel. Edits here might not be persistent.\n")
   (erase-buffer)
   (insert ";;; python-components-booleans-end-forms.el --- booleans-end forms\n")
   (insert arkopf)
-  (dolist (ele py-move-forms)
+  (dolist (ele py-navigate-forms)
     (insert (concat "
 \(defun py--end-of-" ele "-p ()
   \"Returns position, if cursor is at the end of a " ele ", nil otherwise. \"
@@ -4019,10 +4198,10 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
   (set-buffer (get-buffer-create "python-components-kill-forms.el"))
   (erase-buffer)
   (insert ";;; python-components-kill-forms.el --- kill forms\n")
-  (insert "\nThis file is generated by function from python-mode-utils.el - see in
+  (insert "\n;;This file is generated by function from python-mode-utils.el - see in
 ;; directory devel. Edits here might not be persistent.\n")
   (insert arkopf)
-  (let ((forms (or forms py-move-forms)))
+  (let ((forms (or forms py-navigate-forms)))
     (dolist (ele forms)
       (insert (concat "
 \(defun py-kill-"ele" ()
@@ -4055,7 +4234,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
   (set-buffer (get-buffer-create "python-components-mark-forms.el"))
   (erase-buffer)
   (insert ";;; python-components-mark-forms.el --- mark forms\n")
-  (insert "\nThis file is generated by function from python-mode-utils.el - see in
+  (insert "\n;;This file is generated by function from python-mode-utils.el - see in
 ;; directory devel. Edits here might not be persistent.\n")
   (insert arkopf)
   (let ((forms py-positions-forms))
@@ -4087,6 +4266,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
     erg))")
       (newline))
     (dolist (ele forms)
+      (unless (string= ele "section")
     ;; Mark bol-forms
       (if (string-match "def\\|class" ele)
 	  (insert (concat "
@@ -4112,7 +4292,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
       (insert "
     (exchange-point-and-mark)
     (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
-    erg))\n"))
+    erg))\n")))
     )
   (insert "\n(provide 'python-components-mark-forms)
 ;;; python-components-mark-forms.el ends here\n")
@@ -4121,13 +4301,13 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
   (write-file (concat py-install-directory "/python-components-mark-forms.el")))
 
 (defun py-write-copy-forms (&optional forms)
-  "Uses `py-copy-forms'. "
+  "Uses `py-execute-forms'. "
   (interactive)
   (set-buffer (get-buffer-create "python-components-copy-forms.el"))
   (erase-buffer)
   (insert ";;; python-components-copy-forms.el --- copy forms\n")
   (insert arkopf)
-  (let ((forms (or forms py-copy-forms)))
+  (let ((forms (or forms py-execute-forms)))
     (dolist (ele forms)
       (insert (concat "
 \(defun py-copy-" ele " ()
@@ -4136,8 +4316,11 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
 Store data in kill ring, so it might yanked back. \"
   (interactive \"\*\")
   (let ((erg (py--mark-base \"" ele "\")))
-    (copy-region-as-kill (car erg) (cdr erg))))
+    (copy-region-as-kill (car erg) (cdr erg))))\n")))
 
+    (dolist (ele forms)
+      (unless (string= "section" ele)
+	(insert (concat "
 \(defun py-copy-" ele "-bol ()
   \"Delete " ele " bol at point.
 
@@ -4145,7 +4328,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
   (interactive \"\*\")
   (let ((erg (py--mark-base-bol \"" ele "\")))
     (copy-region-as-kill (car erg) (cdr erg))))
-"))))
+")))))
   (insert "\n(provide 'python-components-copy-forms)
 ;; python-components-copy-forms.el ends here\n")
   (when (interactive-p) (switch-to-buffer (current-buffer))
@@ -4203,13 +4386,13 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
     (delete-region (car erg) (cdr erg))))\n")))
 
 (defun py-write-delete-forms ()
-  "Uses `py-copy-forms'. "
+  "Uses `py-execute-forms'. "
   (interactive)
   (set-buffer (get-buffer-create "python-components-delete-forms.el"))
   (erase-buffer)
   (insert ";;; python-components-delete-forms.el --- delete forms\n")
   (insert arkopf)
-  (py--write-delete-forms py-copy-forms)
+  (py--write-delete-forms py-execute-forms)
   (py--write-delete-forms-bol py-shift-bol-forms)
   (insert "\n(provide 'python-components-delete-forms)
 ;; python-components-delete-forms.el ends here\n")
@@ -4268,14 +4451,14 @@ Returns a list, whose car is beg, cdr - end.\"
     (save-restriction
       (widen)
       (when position (goto-char position))
-      (let ((beg (py--beginning-of-" ele "-position))
+      (let ((beg (py--beginning-of-" ele "-position))4
             (end (py--end-of-" ele "-position)))
         (if (and beg end)
             (when (interactive-p) (message \"%s\" (list beg end)))
           (list beg end))))))\n\n")))
 
   ;; py--beginning-of-statement-position-bol
-  (dolist (ele py-bounds-bol-names)
+  (dolist (ele py-shift-bol-forms)
     (insert (concat "(defun py--bounds-of-" ele "-bol (&optional position)
   \"Returns bounds of " ele " at beginning-of-line.
 
@@ -4331,7 +4514,6 @@ Returns a list, whose car is beg, cdr - end.\"
     (unless (string= "" ele) (insert (concat " \"" ele "\"")))
     (insert "))\n\n")))
 
-
 (defun py-write-section-forms ()
   "Uses `py-section-forms'. "
   (interactive)
@@ -4360,7 +4542,6 @@ Returns a list, whose car is beg, cdr - end.\"
   (py--narrow-prepare")
     (unless (string= "" ele) (insert (concat " \"" ele "\"")))
     (insert "))\n\n")))
-
 
 (defun py-write-narrow-forms ()
   "Uses `py-narrow-forms'. "
@@ -4619,7 +4800,6 @@ print(\\\"two\\\")\"\n")
 ;;   (emacs-lisp-mode)
 ;;   (write-file (concat py-install-directory "/py-execute-region.el")))
 
-
 ;; broken
 ;; (defun write-execute-region-commandp-tests ()
 ;;   "Write `py-execute-region-commandp-test...' etc. "
@@ -4665,6 +4845,7 @@ print(\\\"two\\\")\"\n")
   (py-write-bounds-forms)
   (py-write-copy-forms)
   (py-write-delete-forms)
+  (py-write-forms-code)
   ;; (py-write-edit-forms)
   (py-write-end-forms)
   (py-write-end-position-forms)

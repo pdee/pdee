@@ -1052,5 +1052,14 @@ print(\"%(language)s has %(number)03d quote types.\" %
     (py-forward-section)
     (should (eq (char-before) ?}))))
 
+(ert-deftest py-ert-jump-matching-indent-test ()
+  (py-test-with-temp-buffer
+      py-def-and-class-test-string
+    (search-backward "if True:")
+    (forward-line -1)
+    (indent-to 12)
+    (py-beginning-of-block)
+    (should (eq (current-column) 8))))
+
 (provide 'py-ert-tests-2)
 ;;; py-ert-tests-2.el ends here

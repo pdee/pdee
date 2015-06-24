@@ -46,6 +46,7 @@
         elif treffer in schwarz:
             # print \"%i, Schwarz\" % (treffer)
             ausgabe[1] = treffer
+
 if True:
     pass
 ")
@@ -227,8 +228,6 @@ result = some_function_that_takes_arguments(
 ''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
 '''
 "
-    (when py-debug-p (switch-to-buffer (current-buffer)))
-    (font-lock-fontify-buffer)
     (message "comment-start: %s" comment-start)
     (goto-char 592)
     ;; (sit-for 1)
@@ -562,8 +561,6 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
             # print \"%i, manque\" % (treffer)
             ausgabe[7] = treffer
 "
-    (when py-debug-p (switch-to-buffer (current-buffer)))
-    (font-lock-fontify-buffer)
     (search-forward "else:")
     (forward-char -1)
     (should (eq 1 (py--beginning-of-top-level-position)))
@@ -675,8 +672,6 @@ def baz():
     \"\"\"
     return 7
 "
-    (when py-debug-p (switch-to-buffer (current-buffer)))
-    (font-lock-fontify-buffer)
     (goto-char 49)
     (sit-for 0.1 t)
     (fill-paragraph)

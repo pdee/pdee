@@ -1,6 +1,6 @@
 ;;; python-components-beginning-forms.el --- Go to beginning of form 
 
-;; Copyright (C) 2011-2014  Andreas Roehler
+;; Copyright (C) 2015  Andreas Roehler
 ;; Author: Andreas Roehler <andreas.roehler@online.de>
 ;; Keywords: languages, convenience
 
@@ -28,121 +28,193 @@
 (defun py-beginning-of-block (&optional indent)
  "Go to beginning block, skip whitespace at BOL.
 
-Returns beginning of block if successful, nil otherwise"
+Returns beginning of block if successful, nil otherwise
+
+"
   (interactive)
   (py--beginning-of-prepare indent 'py-block-re 'py-clause-re (interactive-p)))
-
-(defun py-beginning-of-clause (&optional indent)
- "Go to beginning clause, skip whitespace at BOL.
-
-Returns beginning of clause if successful, nil otherwise"
-  (interactive)
-  (py--beginning-of-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (interactive-p)))
 
 (defun py-beginning-of-block-or-clause (&optional indent)
  "Go to beginning block-or-clause, skip whitespace at BOL.
 
-Returns beginning of block-or-clause if successful, nil otherwise"
+Returns beginning of block-or-clause if successful, nil otherwise
+
+"
   (interactive)
   (py--beginning-of-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (interactive-p)))
-
-(defun py-beginning-of-def (&optional indent)
- "Go to beginning def, skip whitespace at BOL.
-
-Returns beginning of def if successful, nil otherwise
-
-When `py-mark-decorators' is non-nil, decorators are considered too."
-  (interactive)
-  (py--beginning-of-prepare indent 'py-def-re 'py-extended-block-or-clause-re (interactive-p)))
 
 (defun py-beginning-of-class (&optional indent)
  "Go to beginning class, skip whitespace at BOL.
 
 Returns beginning of class if successful, nil otherwise
 
-When `py-mark-decorators' is non-nil, decorators are considered too."
+When `py-mark-decorators' is non-nil, decorators are considered too. "
   (interactive)
   (py--beginning-of-prepare indent 'py-class-re 'py-extended-block-or-clause-re (interactive-p)))
+
+(defun py-beginning-of-clause (&optional indent)
+ "Go to beginning clause, skip whitespace at BOL.
+
+Returns beginning of clause if successful, nil otherwise
+
+"
+  (interactive)
+  (py--beginning-of-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (interactive-p)))
+
+(defun py-beginning-of-comment (&optional indent)
+ "Go to beginning comment, skip whitespace at BOL.
+
+Returns beginning of comment if successful, nil otherwise
+
+"
+  (interactive)
+  (py--beginning-of-prepare indent 'py-comment-re 'py-clause-re (interactive-p)))
+
+(defun py-beginning-of-def (&optional indent)
+ "Go to beginning def, skip whitespace at BOL.
+
+Returns beginning of def if successful, nil otherwise
+
+When `py-mark-decorators' is non-nil, decorators are considered too. "
+  (interactive)
+  (py--beginning-of-prepare indent 'py-def-re 'py-extended-block-or-clause-re (interactive-p)))
 
 (defun py-beginning-of-def-or-class (&optional indent)
  "Go to beginning def-or-class, skip whitespace at BOL.
 
 Returns beginning of def-or-class if successful, nil otherwise
 
-When `py-mark-decorators' is non-nil, decorators are considered too."
+When `py-mark-decorators' is non-nil, decorators are considered too. "
   (interactive)
   (py--beginning-of-prepare indent 'py-def-or-class-re 'py-extended-block-or-clause-re (interactive-p)))
 
 (defun py-beginning-of-if-block (&optional indent)
  "Go to beginning if-block, skip whitespace at BOL.
 
-Returns beginning of if-block if successful, nil otherwise"
+Returns beginning of if-block if successful, nil otherwise
+
+"
   (interactive)
   (py--beginning-of-prepare indent 'py-if-block-re 'py-clause-re (interactive-p)))
 
 (defun py-beginning-of-elif-block (&optional indent)
  "Go to beginning elif-block, skip whitespace at BOL.
 
-Returns beginning of elif-block if successful, nil otherwise"
+Returns beginning of elif-block if successful, nil otherwise
+
+"
   (interactive)
   (py--beginning-of-prepare indent 'py-elif-block-re 'py-clause-re (interactive-p)))
 
 (defun py-beginning-of-else-block (&optional indent)
  "Go to beginning else-block, skip whitespace at BOL.
 
-Returns beginning of else-block if successful, nil otherwise"
+Returns beginning of else-block if successful, nil otherwise
+
+"
   (interactive)
   (py--beginning-of-prepare indent 'py-else-block-re 'py-clause-re (interactive-p)))
-
-(defun py-beginning-of-try-block (&optional indent)
- "Go to beginning try-block, skip whitespace at BOL.
-
-Returns beginning of try-block if successful, nil otherwise"
-  (interactive)
-  (py--beginning-of-prepare indent 'py-try-block-re 'py-clause-re (interactive-p)))
-
-(defun py-beginning-of-minor-block (&optional indent)
- "Go to beginning minor-block, skip whitespace at BOL.
-
-Returns beginning of minor-block if successful, nil otherwise"
-  (interactive)
-  (py--beginning-of-prepare indent 'py-minor-block-re 'py-clause-re (interactive-p)))
 
 (defun py-beginning-of-for-block (&optional indent)
  "Go to beginning for-block, skip whitespace at BOL.
 
-Returns beginning of for-block if successful, nil otherwise"
+Returns beginning of for-block if successful, nil otherwise
+
+"
   (interactive)
   (py--beginning-of-prepare indent 'py-for-block-re 'py-clause-re (interactive-p)))
 
 (defun py-beginning-of-except-block (&optional indent)
  "Go to beginning except-block, skip whitespace at BOL.
 
-Returns beginning of except-block if successful, nil otherwise"
+Returns beginning of except-block if successful, nil otherwise
+
+"
   (interactive)
   (py--beginning-of-prepare indent 'py-except-block-re 'py-clause-re (interactive-p)))
+
+(defun py-beginning-of-try-block (&optional indent)
+ "Go to beginning try-block, skip whitespace at BOL.
+
+Returns beginning of try-block if successful, nil otherwise
+
+"
+  (interactive)
+  (py--beginning-of-prepare indent 'py-try-block-re 'py-clause-re (interactive-p)))
+
+(defun py-beginning-of-line (&optional indent)
+ "Go to beginning line, skip whitespace at BOL.
+
+Returns beginning of line if successful, nil otherwise
+
+"
+  (interactive)
+  (py--beginning-of-prepare indent 'py-line-re 'py-clause-re (interactive-p)))
+
+(defun py-beginning-of-minor-block (&optional indent)
+ "Go to beginning minor-block, skip whitespace at BOL.
+
+Returns beginning of minor-block if successful, nil otherwise
+
+"
+  (interactive)
+  (py--beginning-of-prepare indent 'py-minor-block-re 'py-clause-re (interactive-p)))
+
+(defun py-beginning-of-section (&optional indent)
+ "Go to beginning section, skip whitespace at BOL.
+
+Returns beginning of section if successful, nil otherwise
+
+"
+  (interactive)
+  (py--beginning-of-prepare indent 'py-section-re 'py-clause-re (interactive-p)))
+
+(defun py-beginning-of-top-level (&optional indent)
+ "Go to beginning top-level, skip whitespace at BOL.
+
+Returns beginning of top-level if successful, nil otherwise
+
+"
+  (interactive)
+  (py--beginning-of-prepare indent 'py-top-level-re 'py-clause-re (interactive-p)))
 
 (defalias 'py-beginning-of-block-lc 'py-beginning-of-block-bol)
 (defun py-beginning-of-block-bol (&optional indent)
  "Go to beginning block, go to BOL.
 
-Returns beginning of block if successful, nil otherwise"
+Returns beginning of block if successful, nil otherwise
+
+"
   (interactive)
   (py--beginning-of-prepare indent 'py-block-re 'py-clause-re (interactive-p) t))
-
-(defalias 'py-beginning-of-clause-lc 'py-beginning-of-clause-bol)
-(defun py-beginning-of-clause-bol (&optional indent)
- "Go to beginning clause, go to BOL.
-
-Returns beginning of clause if successful, nil otherwise"
-  (interactive)
-  (py--beginning-of-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (interactive-p) t))
 
 (defalias 'py-beginning-of-block-or-clause-lc 'py-beginning-of-block-or-clause-bol)
 (defun py-beginning-of-block-or-clause-bol (&optional indent)
  "Go to beginning block-or-clause, go to BOL.
 
-Returns beginning of block-or-clause if successful, nil otherwise"
+Returns beginning of block-or-clause if successful, nil otherwise
+
+"
+  (interactive)
+  (py--beginning-of-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (interactive-p) t))
+
+(defalias 'py-beginning-of-class-lc 'py-beginning-of-class-bol)
+(defun py-beginning-of-class-bol (&optional indent)
+ "Go to beginning class, go to BOL.
+
+Returns beginning of class if successful, nil otherwise
+
+When `py-mark-decorators' is non-nil, decorators are considered too. "
+  (interactive)
+  (py--beginning-of-prepare indent 'py-class-re 'py-extended-block-or-clause-re (interactive-p) t))
+
+(defalias 'py-beginning-of-clause-lc 'py-beginning-of-clause-bol)
+(defun py-beginning-of-clause-bol (&optional indent)
+ "Go to beginning clause, go to BOL.
+
+Returns beginning of clause if successful, nil otherwise
+
+"
   (interactive)
   (py--beginning-of-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (interactive-p) t))
 
@@ -152,19 +224,9 @@ Returns beginning of block-or-clause if successful, nil otherwise"
 
 Returns beginning of def if successful, nil otherwise
 
-When `py-mark-decorators' is non-nil, decorators are considered too."
+When `py-mark-decorators' is non-nil, decorators are considered too. "
   (interactive)
   (py--beginning-of-prepare indent 'py-def-re 'py-extended-block-or-clause-re (interactive-p) t))
-
-(defalias 'py-beginning-of-class-lc 'py-beginning-of-class-bol)
-(defun py-beginning-of-class-bol (&optional indent)
- "Go to beginning class, go to BOL.
-
-Returns beginning of class if successful, nil otherwise
-
-When `py-mark-decorators' is non-nil, decorators are considered too."
-  (interactive)
-  (py--beginning-of-prepare indent 'py-class-re 'py-extended-block-or-clause-re (interactive-p) t))
 
 (defalias 'py-beginning-of-def-or-class-lc 'py-beginning-of-def-or-class-bol)
 (defun py-beginning-of-def-or-class-bol (&optional indent)
@@ -172,23 +234,17 @@ When `py-mark-decorators' is non-nil, decorators are considered too."
 
 Returns beginning of def-or-class if successful, nil otherwise
 
-When `py-mark-decorators' is non-nil, decorators are considered too."
+When `py-mark-decorators' is non-nil, decorators are considered too. "
   (interactive)
   (py--beginning-of-prepare indent 'py-def-or-class-re 'py-extended-block-or-clause-re (interactive-p) t))
-
-(defalias 'py-beginning-of-if-block-lc 'py-beginning-of-if-block-bol)
-(defun py-beginning-of-if-block-bol (&optional indent)
- "Go to beginning if-block, go to BOL.
-
-Returns beginning of if-block if successful, nil otherwise"
-  (interactive)
-  (py--beginning-of-prepare indent 'py-if-block-re 'py-clause-re (interactive-p) t))
 
 (defalias 'py-beginning-of-elif-block-lc 'py-beginning-of-elif-block-bol)
 (defun py-beginning-of-elif-block-bol (&optional indent)
  "Go to beginning elif-block, go to BOL.
 
-Returns beginning of elif-block if successful, nil otherwise"
+Returns beginning of elif-block if successful, nil otherwise
+
+"
   (interactive)
   (py--beginning-of-prepare indent 'py-elif-block-re 'py-clause-re (interactive-p) t))
 
@@ -196,41 +252,81 @@ Returns beginning of elif-block if successful, nil otherwise"
 (defun py-beginning-of-else-block-bol (&optional indent)
  "Go to beginning else-block, go to BOL.
 
-Returns beginning of else-block if successful, nil otherwise"
+Returns beginning of else-block if successful, nil otherwise
+
+"
   (interactive)
   (py--beginning-of-prepare indent 'py-else-block-re 'py-clause-re (interactive-p) t))
-
-(defalias 'py-beginning-of-try-block-lc 'py-beginning-of-try-block-bol)
-(defun py-beginning-of-try-block-bol (&optional indent)
- "Go to beginning try-block, go to BOL.
-
-Returns beginning of try-block if successful, nil otherwise"
-  (interactive)
-  (py--beginning-of-prepare indent 'py-try-block-re 'py-clause-re (interactive-p) t))
-
-(defalias 'py-beginning-of-minor-block-lc 'py-beginning-of-minor-block-bol)
-(defun py-beginning-of-minor-block-bol (&optional indent)
- "Go to beginning minor-block, go to BOL.
-
-Returns beginning of minor-block if successful, nil otherwise"
-  (interactive)
-  (py--beginning-of-prepare indent 'py-minor-block-re 'py-clause-re (interactive-p) t))
-
-(defalias 'py-beginning-of-for-block-lc 'py-beginning-of-for-block-bol)
-(defun py-beginning-of-for-block-bol (&optional indent)
- "Go to beginning for-block, go to BOL.
-
-Returns beginning of for-block if successful, nil otherwise"
-  (interactive)
-  (py--beginning-of-prepare indent 'py-for-block-re 'py-clause-re (interactive-p) t))
 
 (defalias 'py-beginning-of-except-block-lc 'py-beginning-of-except-block-bol)
 (defun py-beginning-of-except-block-bol (&optional indent)
  "Go to beginning except-block, go to BOL.
 
-Returns beginning of except-block if successful, nil otherwise"
+Returns beginning of except-block if successful, nil otherwise
+
+"
   (interactive)
   (py--beginning-of-prepare indent 'py-except-block-re 'py-clause-re (interactive-p) t))
+
+(defalias 'py-beginning-of-except-block-lc 'py-beginning-of-except-block-bol)
+(defun py-beginning-of-except-block-bol (&optional indent)
+ "Go to beginning except-block, go to BOL.
+
+Returns beginning of except-block if successful, nil otherwise
+
+"
+  (interactive)
+  (py--beginning-of-prepare indent 'py-except-block-re 'py-clause-re (interactive-p) t))
+
+(defalias 'py-beginning-of-for-block-lc 'py-beginning-of-for-block-bol)
+(defun py-beginning-of-for-block-bol (&optional indent)
+ "Go to beginning for-block, go to BOL.
+
+Returns beginning of for-block if successful, nil otherwise
+
+"
+  (interactive)
+  (py--beginning-of-prepare indent 'py-for-block-re 'py-clause-re (interactive-p) t))
+
+(defalias 'py-beginning-of-if-block-lc 'py-beginning-of-if-block-bol)
+(defun py-beginning-of-if-block-bol (&optional indent)
+ "Go to beginning if-block, go to BOL.
+
+Returns beginning of if-block if successful, nil otherwise
+
+"
+  (interactive)
+  (py--beginning-of-prepare indent 'py-if-block-re 'py-clause-re (interactive-p) t))
+
+(defalias 'py-beginning-of-minor-block-lc 'py-beginning-of-minor-block-bol)
+(defun py-beginning-of-minor-block-bol (&optional indent)
+ "Go to beginning minor-block, go to BOL.
+
+Returns beginning of minor-block if successful, nil otherwise
+
+"
+  (interactive)
+  (py--beginning-of-prepare indent 'py-minor-block-re 'py-clause-re (interactive-p) t))
+
+(defalias 'py-beginning-of-statement-lc 'py-beginning-of-statement-bol)
+(defun py-beginning-of-statement-bol (&optional indent)
+ "Go to beginning statement, go to BOL.
+
+Returns beginning of statement if successful, nil otherwise
+
+"
+  (interactive)
+  (py--beginning-of-prepare indent 'py-statement-re 'py-clause-re (interactive-p) t))
+
+(defalias 'py-beginning-of-try-block-lc 'py-beginning-of-try-block-bol)
+(defun py-beginning-of-try-block-bol (&optional indent)
+ "Go to beginning try-block, go to BOL.
+
+Returns beginning of try-block if successful, nil otherwise
+
+"
+  (interactive)
+  (py--beginning-of-prepare indent 'py-try-block-re 'py-clause-re (interactive-p) t))
 
 (provide 'python-components-beginning-forms)
 ;;; python-components-beginning-forms.el ends here

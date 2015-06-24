@@ -1,6 +1,6 @@
 ;;; python-components-bounds-forms.el --- bounds forms
 
-;; Copyright (C) 2011-2014  Andreas Roehler
+;; Copyright (C) 2015  Andreas Roehler
 ;; Author: Andreas Roehler <andreas.roehler@online.de>
 ;; Keywords: languages, convenience
 
@@ -24,21 +24,6 @@
 
 ;;; Code:
 
-(defun py--bounds-of-statement (&optional position)
-  "Returns bounds of statement at point.
-
-With optional POSITION, a number, report bounds of statement at POSITION.
-Returns a list, whose car is beg, cdr - end."
-  (save-excursion
-    (save-restriction
-      (widen)
-      (when position (goto-char position))
-      (let ((beg (py--beginning-of-statement-position))
-            (end (py--end-of-statement-position)))
-        (if (and beg end)
-            (when (interactive-p) (message "%s" (list beg end)))
-          (list beg end))))))
-
 (defun py--bounds-of-block (&optional position)
   "Returns bounds of block at point.
 
@@ -48,23 +33,8 @@ Returns a list, whose car is beg, cdr - end."
     (save-restriction
       (widen)
       (when position (goto-char position))
-      (let ((beg (py--beginning-of-block-position))
+      (let ((beg (py--beginning-of-block-position))4
             (end (py--end-of-block-position)))
-        (if (and beg end)
-            (when (interactive-p) (message "%s" (list beg end)))
-          (list beg end))))))
-
-(defun py--bounds-of-clause (&optional position)
-  "Returns bounds of clause at point.
-
-With optional POSITION, a number, report bounds of clause at POSITION.
-Returns a list, whose car is beg, cdr - end."
-  (save-excursion
-    (save-restriction
-      (widen)
-      (when position (goto-char position))
-      (let ((beg (py--beginning-of-clause-position))
-            (end (py--end-of-clause-position)))
         (if (and beg end)
             (when (interactive-p) (message "%s" (list beg end)))
           (list beg end))))))
@@ -78,53 +48,8 @@ Returns a list, whose car is beg, cdr - end."
     (save-restriction
       (widen)
       (when position (goto-char position))
-      (let ((beg (py--beginning-of-block-or-clause-position))
+      (let ((beg (py--beginning-of-block-or-clause-position))4
             (end (py--end-of-block-or-clause-position)))
-        (if (and beg end)
-            (when (interactive-p) (message "%s" (list beg end)))
-          (list beg end))))))
-
-(defun py--bounds-of-def (&optional position)
-  "Returns bounds of def at point.
-
-With optional POSITION, a number, report bounds of def at POSITION.
-Returns a list, whose car is beg, cdr - end."
-  (save-excursion
-    (save-restriction
-      (widen)
-      (when position (goto-char position))
-      (let ((beg (py--beginning-of-def-position))
-            (end (py--end-of-def-position)))
-        (if (and beg end)
-            (when (interactive-p) (message "%s" (list beg end)))
-          (list beg end))))))
-
-(defun py--bounds-of-class (&optional position)
-  "Returns bounds of class at point.
-
-With optional POSITION, a number, report bounds of class at POSITION.
-Returns a list, whose car is beg, cdr - end."
-  (save-excursion
-    (save-restriction
-      (widen)
-      (when position (goto-char position))
-      (let ((beg (py--beginning-of-class-position))
-            (end (py--end-of-class-position)))
-        (if (and beg end)
-            (when (interactive-p) (message "%s" (list beg end)))
-          (list beg end))))))
-
-(defun py--bounds-of-def-or-class (&optional position)
-  "Returns bounds of def-or-class at point.
-
-With optional POSITION, a number, report bounds of def-or-class at POSITION.
-Returns a list, whose car is beg, cdr - end."
-  (save-excursion
-    (save-restriction
-      (widen)
-      (when position (goto-char position))
-      (let ((beg (py--beginning-of-def-or-class-position))
-            (end (py--end-of-def-or-class-position)))
         (if (and beg end)
             (when (interactive-p) (message "%s" (list beg end)))
           (list beg end))))))
@@ -138,83 +63,83 @@ Returns a list, whose car is beg, cdr - end."
     (save-restriction
       (widen)
       (when position (goto-char position))
-      (let ((beg (py--beginning-of-buffer-position))
+      (let ((beg (py--beginning-of-buffer-position))4
             (end (py--end-of-buffer-position)))
         (if (and beg end)
             (when (interactive-p) (message "%s" (list beg end)))
           (list beg end))))))
 
-(defun py--bounds-of-expression (&optional position)
-  "Returns bounds of expression at point.
+(defun py--bounds-of-class (&optional position)
+  "Returns bounds of class at point.
 
-With optional POSITION, a number, report bounds of expression at POSITION.
+With optional POSITION, a number, report bounds of class at POSITION.
 Returns a list, whose car is beg, cdr - end."
   (save-excursion
     (save-restriction
       (widen)
       (when position (goto-char position))
-      (let ((beg (py--beginning-of-expression-position))
-            (end (py--end-of-expression-position)))
+      (let ((beg (py--beginning-of-class-position))4
+            (end (py--end-of-class-position)))
         (if (and beg end)
             (when (interactive-p) (message "%s" (list beg end)))
           (list beg end))))))
 
-(defun py--bounds-of-partial-expression (&optional position)
-  "Returns bounds of partial-expression at point.
+(defun py--bounds-of-clause (&optional position)
+  "Returns bounds of clause at point.
 
-With optional POSITION, a number, report bounds of partial-expression at POSITION.
+With optional POSITION, a number, report bounds of clause at POSITION.
 Returns a list, whose car is beg, cdr - end."
   (save-excursion
     (save-restriction
       (widen)
       (when position (goto-char position))
-      (let ((beg (py--beginning-of-partial-expression-position))
-            (end (py--end-of-partial-expression-position)))
+      (let ((beg (py--beginning-of-clause-position))4
+            (end (py--end-of-clause-position)))
         (if (and beg end)
             (when (interactive-p) (message "%s" (list beg end)))
           (list beg end))))))
 
-(defun py--bounds-of-minor-block (&optional position)
-  "Returns bounds of minor-block at point.
+(defun py--bounds-of-def (&optional position)
+  "Returns bounds of def at point.
 
-With optional POSITION, a number, report bounds of minor-block at POSITION.
+With optional POSITION, a number, report bounds of def at POSITION.
 Returns a list, whose car is beg, cdr - end."
   (save-excursion
     (save-restriction
       (widen)
       (when position (goto-char position))
-      (let ((beg (py--beginning-of-minor-block-position))
-            (end (py--end-of-minor-block-position)))
+      (let ((beg (py--beginning-of-def-position))4
+            (end (py--end-of-def-position)))
         (if (and beg end)
             (when (interactive-p) (message "%s" (list beg end)))
           (list beg end))))))
 
-(defun py--bounds-of-if-block (&optional position)
-  "Returns bounds of if-block at point.
+(defun py--bounds-of-def-or-class (&optional position)
+  "Returns bounds of def-or-class at point.
 
-With optional POSITION, a number, report bounds of if-block at POSITION.
+With optional POSITION, a number, report bounds of def-or-class at POSITION.
 Returns a list, whose car is beg, cdr - end."
   (save-excursion
     (save-restriction
       (widen)
       (when position (goto-char position))
-      (let ((beg (py--beginning-of-if-block-position))
-            (end (py--end-of-if-block-position)))
+      (let ((beg (py--beginning-of-def-or-class-position))4
+            (end (py--end-of-def-or-class-position)))
         (if (and beg end)
             (when (interactive-p) (message "%s" (list beg end)))
           (list beg end))))))
 
-(defun py--bounds-of-try-block (&optional position)
-  "Returns bounds of try-block at point.
+(defun py--bounds-of-else-block (&optional position)
+  "Returns bounds of else-block at point.
 
-With optional POSITION, a number, report bounds of try-block at POSITION.
+With optional POSITION, a number, report bounds of else-block at POSITION.
 Returns a list, whose car is beg, cdr - end."
   (save-excursion
     (save-restriction
       (widen)
       (when position (goto-char position))
-      (let ((beg (py--beginning-of-try-block-position))
-            (end (py--end-of-try-block-position)))
+      (let ((beg (py--beginning-of-else-block-position))4
+            (end (py--end-of-else-block-position)))
         (if (and beg end)
             (when (interactive-p) (message "%s" (list beg end)))
           (list beg end))))))
@@ -228,8 +153,98 @@ Returns a list, whose car is beg, cdr - end."
     (save-restriction
       (widen)
       (when position (goto-char position))
-      (let ((beg (py--beginning-of-except-block-position))
+      (let ((beg (py--beginning-of-except-block-position))4
             (end (py--end-of-except-block-position)))
+        (if (and beg end)
+            (when (interactive-p) (message "%s" (list beg end)))
+          (list beg end))))))
+
+(defun py--bounds-of-expression (&optional position)
+  "Returns bounds of expression at point.
+
+With optional POSITION, a number, report bounds of expression at POSITION.
+Returns a list, whose car is beg, cdr - end."
+  (save-excursion
+    (save-restriction
+      (widen)
+      (when position (goto-char position))
+      (let ((beg (py--beginning-of-expression-position))4
+            (end (py--end-of-expression-position)))
+        (if (and beg end)
+            (when (interactive-p) (message "%s" (list beg end)))
+          (list beg end))))))
+
+(defun py--bounds-of-if-block (&optional position)
+  "Returns bounds of if-block at point.
+
+With optional POSITION, a number, report bounds of if-block at POSITION.
+Returns a list, whose car is beg, cdr - end."
+  (save-excursion
+    (save-restriction
+      (widen)
+      (when position (goto-char position))
+      (let ((beg (py--beginning-of-if-block-position))4
+            (end (py--end-of-if-block-position)))
+        (if (and beg end)
+            (when (interactive-p) (message "%s" (list beg end)))
+          (list beg end))))))
+
+(defun py--bounds-of-minor-block (&optional position)
+  "Returns bounds of minor-block at point.
+
+With optional POSITION, a number, report bounds of minor-block at POSITION.
+Returns a list, whose car is beg, cdr - end."
+  (save-excursion
+    (save-restriction
+      (widen)
+      (when position (goto-char position))
+      (let ((beg (py--beginning-of-minor-block-position))4
+            (end (py--end-of-minor-block-position)))
+        (if (and beg end)
+            (when (interactive-p) (message "%s" (list beg end)))
+          (list beg end))))))
+
+(defun py--bounds-of-partial-expression (&optional position)
+  "Returns bounds of partial-expression at point.
+
+With optional POSITION, a number, report bounds of partial-expression at POSITION.
+Returns a list, whose car is beg, cdr - end."
+  (save-excursion
+    (save-restriction
+      (widen)
+      (when position (goto-char position))
+      (let ((beg (py--beginning-of-partial-expression-position))4
+            (end (py--end-of-partial-expression-position)))
+        (if (and beg end)
+            (when (interactive-p) (message "%s" (list beg end)))
+          (list beg end))))))
+
+(defun py--bounds-of-section (&optional position)
+  "Returns bounds of section at point.
+
+With optional POSITION, a number, report bounds of section at POSITION.
+Returns a list, whose car is beg, cdr - end."
+  (save-excursion
+    (save-restriction
+      (widen)
+      (when position (goto-char position))
+      (let ((beg (py--beginning-of-section-position))4
+            (end (py--end-of-section-position)))
+        (if (and beg end)
+            (when (interactive-p) (message "%s" (list beg end)))
+          (list beg end))))))
+
+(defun py--bounds-of-statement (&optional position)
+  "Returns bounds of statement at point.
+
+With optional POSITION, a number, report bounds of statement at POSITION.
+Returns a list, whose car is beg, cdr - end."
+  (save-excursion
+    (save-restriction
+      (widen)
+      (when position (goto-char position))
+      (let ((beg (py--beginning-of-statement-position))4
+            (end (py--end-of-statement-position)))
         (if (and beg end)
             (when (interactive-p) (message "%s" (list beg end)))
           (list beg end))))))
@@ -243,23 +258,23 @@ Returns a list, whose car is beg, cdr - end."
     (save-restriction
       (widen)
       (when position (goto-char position))
-      (let ((beg (py--beginning-of-top-level-position))
+      (let ((beg (py--beginning-of-top-level-position))4
             (end (py--end-of-top-level-position)))
         (if (and beg end)
             (when (interactive-p) (message "%s" (list beg end)))
           (list beg end))))))
 
-(defun py--bounds-of-statement-bol (&optional position)
-  "Returns bounds of statement at beginning-of-line.
+(defun py--bounds-of-try-block (&optional position)
+  "Returns bounds of try-block at point.
 
-With optional POSITION, a number, report bounds of statement at POSITION.
+With optional POSITION, a number, report bounds of try-block at POSITION.
 Returns a list, whose car is beg, cdr - end."
   (save-excursion
     (save-restriction
       (widen)
       (when position (goto-char position))
-      (let ((beg (py--beginning-of-statement-position-bol))
-            (end (py--end-of-statement-position-bol)))
+      (let ((beg (py--beginning-of-try-block-position))4
+            (end (py--end-of-try-block-position)))
         (if (and beg end)
             (when (interactive-p) (message "%s" (list beg end)))
           (list beg end))))))
@@ -279,21 +294,6 @@ Returns a list, whose car is beg, cdr - end."
             (when (interactive-p) (message "%s" (list beg end)))
           (list beg end))))))
 
-(defun py--bounds-of-clause-bol (&optional position)
-  "Returns bounds of clause at beginning-of-line.
-
-With optional POSITION, a number, report bounds of clause at POSITION.
-Returns a list, whose car is beg, cdr - end."
-  (save-excursion
-    (save-restriction
-      (widen)
-      (when position (goto-char position))
-      (let ((beg (py--beginning-of-clause-position-bol))
-            (end (py--end-of-clause-position-bol)))
-        (if (and beg end)
-            (when (interactive-p) (message "%s" (list beg end)))
-          (list beg end))))))
-
 (defun py--bounds-of-block-or-clause-bol (&optional position)
   "Returns bounds of block-or-clause at beginning-of-line.
 
@@ -305,21 +305,6 @@ Returns a list, whose car is beg, cdr - end."
       (when position (goto-char position))
       (let ((beg (py--beginning-of-block-or-clause-position-bol))
             (end (py--end-of-block-or-clause-position-bol)))
-        (if (and beg end)
-            (when (interactive-p) (message "%s" (list beg end)))
-          (list beg end))))))
-
-(defun py--bounds-of-def-bol (&optional position)
-  "Returns bounds of def at beginning-of-line.
-
-With optional POSITION, a number, report bounds of def at POSITION.
-Returns a list, whose car is beg, cdr - end."
-  (save-excursion
-    (save-restriction
-      (widen)
-      (when position (goto-char position))
-      (let ((beg (py--beginning-of-def-position-bol))
-            (end (py--end-of-def-position-bol)))
         (if (and beg end)
             (when (interactive-p) (message "%s" (list beg end)))
           (list beg end))))))
@@ -339,17 +324,107 @@ Returns a list, whose car is beg, cdr - end."
             (when (interactive-p) (message "%s" (list beg end)))
           (list beg end))))))
 
-(defun py--bounds-of-minor-block-bol (&optional position)
-  "Returns bounds of minor-block at beginning-of-line.
+(defun py--bounds-of-clause-bol (&optional position)
+  "Returns bounds of clause at beginning-of-line.
 
-With optional POSITION, a number, report bounds of minor-block at POSITION.
+With optional POSITION, a number, report bounds of clause at POSITION.
 Returns a list, whose car is beg, cdr - end."
   (save-excursion
     (save-restriction
       (widen)
       (when position (goto-char position))
-      (let ((beg (py--beginning-of-minor-block-position-bol))
-            (end (py--end-of-minor-block-position-bol)))
+      (let ((beg (py--beginning-of-clause-position-bol))
+            (end (py--end-of-clause-position-bol)))
+        (if (and beg end)
+            (when (interactive-p) (message "%s" (list beg end)))
+          (list beg end))))))
+
+(defun py--bounds-of-def-bol (&optional position)
+  "Returns bounds of def at beginning-of-line.
+
+With optional POSITION, a number, report bounds of def at POSITION.
+Returns a list, whose car is beg, cdr - end."
+  (save-excursion
+    (save-restriction
+      (widen)
+      (when position (goto-char position))
+      (let ((beg (py--beginning-of-def-position-bol))
+            (end (py--end-of-def-position-bol)))
+        (if (and beg end)
+            (when (interactive-p) (message "%s" (list beg end)))
+          (list beg end))))))
+
+(defun py--bounds-of-def-or-class-bol (&optional position)
+  "Returns bounds of def-or-class at beginning-of-line.
+
+With optional POSITION, a number, report bounds of def-or-class at POSITION.
+Returns a list, whose car is beg, cdr - end."
+  (save-excursion
+    (save-restriction
+      (widen)
+      (when position (goto-char position))
+      (let ((beg (py--beginning-of-def-or-class-position-bol))
+            (end (py--end-of-def-or-class-position-bol)))
+        (if (and beg end)
+            (when (interactive-p) (message "%s" (list beg end)))
+          (list beg end))))))
+
+(defun py--bounds-of-elif-block-bol (&optional position)
+  "Returns bounds of elif-block at beginning-of-line.
+
+With optional POSITION, a number, report bounds of elif-block at POSITION.
+Returns a list, whose car is beg, cdr - end."
+  (save-excursion
+    (save-restriction
+      (widen)
+      (when position (goto-char position))
+      (let ((beg (py--beginning-of-elif-block-position-bol))
+            (end (py--end-of-elif-block-position-bol)))
+        (if (and beg end)
+            (when (interactive-p) (message "%s" (list beg end)))
+          (list beg end))))))
+
+(defun py--bounds-of-else-block-bol (&optional position)
+  "Returns bounds of else-block at beginning-of-line.
+
+With optional POSITION, a number, report bounds of else-block at POSITION.
+Returns a list, whose car is beg, cdr - end."
+  (save-excursion
+    (save-restriction
+      (widen)
+      (when position (goto-char position))
+      (let ((beg (py--beginning-of-else-block-position-bol))
+            (end (py--end-of-else-block-position-bol)))
+        (if (and beg end)
+            (when (interactive-p) (message "%s" (list beg end)))
+          (list beg end))))))
+
+(defun py--bounds-of-except-block-bol (&optional position)
+  "Returns bounds of except-block at beginning-of-line.
+
+With optional POSITION, a number, report bounds of except-block at POSITION.
+Returns a list, whose car is beg, cdr - end."
+  (save-excursion
+    (save-restriction
+      (widen)
+      (when position (goto-char position))
+      (let ((beg (py--beginning-of-except-block-position-bol))
+            (end (py--end-of-except-block-position-bol)))
+        (if (and beg end)
+            (when (interactive-p) (message "%s" (list beg end)))
+          (list beg end))))))
+
+(defun py--bounds-of-for-block-bol (&optional position)
+  "Returns bounds of for-block at beginning-of-line.
+
+With optional POSITION, a number, report bounds of for-block at POSITION.
+Returns a list, whose car is beg, cdr - end."
+  (save-excursion
+    (save-restriction
+      (widen)
+      (when position (goto-char position))
+      (let ((beg (py--beginning-of-for-block-position-bol))
+            (end (py--end-of-for-block-position-bol)))
         (if (and beg end)
             (when (interactive-p) (message "%s" (list beg end)))
           (list beg end))))))
@@ -365,6 +440,51 @@ Returns a list, whose car is beg, cdr - end."
       (when position (goto-char position))
       (let ((beg (py--beginning-of-if-block-position-bol))
             (end (py--end-of-if-block-position-bol)))
+        (if (and beg end)
+            (when (interactive-p) (message "%s" (list beg end)))
+          (list beg end))))))
+
+(defun py--bounds-of-minor-block-bol (&optional position)
+  "Returns bounds of minor-block at beginning-of-line.
+
+With optional POSITION, a number, report bounds of minor-block at POSITION.
+Returns a list, whose car is beg, cdr - end."
+  (save-excursion
+    (save-restriction
+      (widen)
+      (when position (goto-char position))
+      (let ((beg (py--beginning-of-minor-block-position-bol))
+            (end (py--end-of-minor-block-position-bol)))
+        (if (and beg end)
+            (when (interactive-p) (message "%s" (list beg end)))
+          (list beg end))))))
+
+(defun py--bounds-of-paragraph-bol (&optional position)
+  "Returns bounds of paragraph at beginning-of-line.
+
+With optional POSITION, a number, report bounds of paragraph at POSITION.
+Returns a list, whose car is beg, cdr - end."
+  (save-excursion
+    (save-restriction
+      (widen)
+      (when position (goto-char position))
+      (let ((beg (py--beginning-of-paragraph-position-bol))
+            (end (py--end-of-paragraph-position-bol)))
+        (if (and beg end)
+            (when (interactive-p) (message "%s" (list beg end)))
+          (list beg end))))))
+
+(defun py--bounds-of-statement-bol (&optional position)
+  "Returns bounds of statement at beginning-of-line.
+
+With optional POSITION, a number, report bounds of statement at POSITION.
+Returns a list, whose car is beg, cdr - end."
+  (save-excursion
+    (save-restriction
+      (widen)
+      (when position (goto-char position))
+      (let ((beg (py--beginning-of-statement-position-bol))
+            (end (py--end-of-statement-position-bol)))
         (if (and beg end)
             (when (interactive-p) (message "%s" (list beg end)))
           (list beg end))))))
@@ -386,4 +506,4 @@ Returns a list, whose car is beg, cdr - end."
 
 
 (provide 'python-components-bounds-forms)
-;; python-components-bounds-forms.el ends here
+;;; python-components-bounds-forms.el ends here

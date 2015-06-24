@@ -474,7 +474,7 @@ Don't save anything for STR matching `py-input-filter-re' "
 
 (defun py--set-auto-fill-values ()
   "Internal use by `py--run-auto-fill-timer'"
-  (let ((pps (syntax-ppss)))
+  (let ((pps (parse-partial-sexp (point-min) (point))))
     (cond ((and (nth 4 pps)(numberp py-comment-fill-column))
            (setq fill-column py-comment-fill-column))
           ((and (nth 3 pps)(numberp py-docstring-fill-column))
@@ -593,7 +593,7 @@ Use `defcustom' to keep value across sessions "
 (defun py-beginning-of-comments (&optional last)
   "Leave upwards comments and/or empty lines. "
   (interactive)
-  (let ((pps (syntax-ppss))
+  (let ((pps (parse-partial-sexp (point-min) (point)))
         (last (or last (point))))
     (if (and (or (and (nth 4 pps)(goto-char (nth 8 pps)))(looking-at comment-start))
              (looking-back "^[ \t]*")(not (bobp)))
@@ -683,7 +683,7 @@ LIEP stores line-end-position at point-of-interest
              ;; line: moved already a line backward
              (liep (or liep (line-end-position)))
              (line line)
-             (pps (syntax-ppss))
+             (pps (parse-partial-sexp (point-min) (point)))
              (closing
               (or closing
                   (and (nth 1 pps)
@@ -727,7 +727,7 @@ LIEP stores line-end-position at point-of-interest
 			  (forward-line -1)
 			  (end-of-line)
 			  (skip-chars-backward " \t\r\n\f")
-			  (if (ignore-errors (< (nth 8 (syntax-ppss)) (line-beginning-position)))
+			  (if (ignore-errors (< (nth 8 (parse-partial-sexp (point-min) (point))) (line-beginning-position)))
 			      (current-indentation)
 			    (ignore-errors (goto-char (nth 8 pps)))
 			    (py--line-backward-maybe)
@@ -819,8 +819,8 @@ LIEP stores line-end-position at point-of-interest
 					 (+ (current-column) py-indent-offset)
 				       (current-column)))
 				    (t (+ (current-column) (* (nth 0 pps)))))))
-			   ((nth 1 (syntax-ppss))
-			    (goto-char (nth 1 (syntax-ppss)))
+			   ((nth 1 (parse-partial-sexp (point-min) (point)))
+			    (goto-char (nth 1 (parse-partial-sexp (point-min) (point))))
 			    (setq line
 				  ;; should be faster
 				  (< (line-end-position) liep))
@@ -915,7 +915,7 @@ LIEP stores line-end-position at point-of-interest
 		   ((and (< (current-indentation) (current-column))(not line))
 		    (back-to-indentation)
 		    (unless line
-		      (setq nesting (nth 0 (syntax-ppss))))
+		      (setq nesting (nth 0 (parse-partial-sexp (point-min) (point)))))
 		    (py-compute-indentation orig origline closing line nesting repeat indent-offset liep))
 		   ((and (not (py--beginning-of-statement-p)) (not (and line (eq ?\# (char-after)))))
 		    (if (bobp)
@@ -995,7 +995,7 @@ LIEP stores line-end-position at point-of-interest
 Optional ARG indicates a start-position for `parse-partial-sexp'."
   (interactive)
   (let* ((ppstart (or start (point-min)))
-         (erg (nth 1 (syntax-ppss))))
+         (erg (nth 1 (parse-partial-sexp (point-min) (point)))))
     (when (interactive-p) (message "%s" erg))
     erg))
 
@@ -1005,7 +1005,7 @@ Optional ARG indicates a start-position for `parse-partial-sexp'."
 Optional ARG indicates a start-position for `parse-partial-sexp'."
   (interactive)
   (let* ((ppstart (or arg (point-min)))
-         (erg (syntax-ppss))
+         (erg (parse-partial-sexp (point-min) (point)))
          (beg (nth 1 erg))
          end)
     (when beg
@@ -1020,7 +1020,7 @@ Optional ARG indicates a start-position for `parse-partial-sexp'."
   "Return the beginning of current line's comment, if inside. "
   (save-restriction
     (widen)
-    (let* ((pps (syntax-ppss))
+    (let* ((pps (parse-partial-sexp (point-min) (point)))
            (erg (when (nth 4 pps) (nth 8 pps))))
       (unless erg
         (when (looking-at (concat "^[ \t]*" comment-start-skip))
@@ -1030,14 +1030,14 @@ Optional ARG indicates a start-position for `parse-partial-sexp'."
 (defun py-in-triplequoted-string-p ()
   "Returns character address of start tqs-string, nil if not inside. "
   (interactive)
-  (let* ((pps (syntax-ppss))
+  (let* ((pps (parse-partial-sexp (point-min) (point)))
          (erg (when (and (nth 3 pps) (nth 8 pps))(nth 2 pps))))
     (save-excursion
       (unless erg (setq erg
                         (progn
                           (when (looking-at "\"\"\"\\|''''")
                             (goto-char (match-end 0))
-                            (setq pps (syntax-ppss))
+                            (setq pps (parse-partial-sexp (point-min) (point)))
                             (when (and (nth 3 pps) (nth 8 pps)) (nth 2 pps)))))))
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
@@ -1197,6 +1197,33 @@ Unclosed-string errors are not handled here, as made visible by fontification al
   "Receives a list (position line) "
   (message "Closing paren missed: line %s pos %s" (cadr err) (car err)))
 
+(defun py--end-base-look-upward ()
+  (progn (back-to-indentation)
+	 (setq bofst (py--beginning-of-statement-p))
+	 (cond ((and bofst (eq regexp 'py-clause-re)(looking-at py-extended-block-or-clause-re))
+		(point))
+	       ((and bofst (looking-at thisregexp))
+		(point))
+	       (t
+		(when
+		    (cdr-safe
+		     (py--go-to-keyword
+		      thisregexp))
+		  (when (py--statement-opens-block-p py-extended-block-or-clause-re)
+		    (point)))))))
+
+(defun py--py--end-base-go-down-when-found-upward ()
+  (setq thisindent (current-indentation))
+  (while
+      (and (py-down-statement)
+	   (or (< thisindent (current-indentation))
+	       (and (eq thisindent (current-indentation))
+		    (or (eq regexp 'py-minor-block-re)
+			(eq regexp 'py-block-re))
+		    (looking-at py-clause-re)))
+	   (py-end-of-statement)(setq last (point))))
+  (and last (goto-char last)))
+
 ;;  py-look-downward-for-clause
 (defun py--end-base (regexp &optional orig decorator)
   "Used internal by functions going to the end forms. "
@@ -1209,44 +1236,26 @@ Unclosed-string errors are not handled here, as made visible by fontification al
                      py-def-or-class-re)
                     ((eq regexp 'py-def-re)
                      py-def-re)
+		    ((eq regexp 'py-expression-re)
+		     py-expression-re)
 		    ((eq regexp 'py-class-re)
 		     py-class-re)
 		    ((eq regexp 'py-minor-block-re)
 		     py-minor-block-re)
 		    (t py-extended-block-or-clause-re)))
              bofst
-             (this (progn (back-to-indentation)
-                          (setq bofst (py--beginning-of-statement-p))
-                          (cond ((and bofst (eq regexp 'py-clause-re)(looking-at py-extended-block-or-clause-re))
-                                 (point))
-                                ((and bofst (looking-at thisregexp))
-                                 (point))
-                                (t
-                                 (when
-                                     (cdr-safe
-                                      (py--go-to-keyword
-                                       thisregexp))
-                                   (when (py--statement-opens-block-p py-extended-block-or-clause-re)
-                                     (point)))))))
+             (this (unless (eq regexp 'py-paragraph-re)(py--end-base-look-upward)))
              ind erg last pps thisindent done err)
-        (cond (this
-               (setq thisindent (current-indentation))
-	       (while
-		   (and (py-down-statement)
-			(or (< thisindent (current-indentation))
-			    (and (eq thisindent (current-indentation))
-				 (or (eq regexp 'py-minor-block-re)
-				     (eq regexp 'py-block-re))
-				 (looking-at py-clause-re)))
-			(py-end-of-statement)(setq last (point))))
-	       (and last (goto-char last)))
+        (cond ((eq regexp 'py-paragraph-re)
+	       (while (and (not (eobp)) (re-search-forward py-paragraph-re nil 'move 1)(nth 8 (parse-partial-sexp (point-min) (point))))))
+	      (this (py--py--end-base-go-down-when-found-upward))
               (t (goto-char orig)))
         (when (and (<= (point) orig)(not (looking-at thisregexp)))
           ;; found the end above
           ;; py--travel-current-indent will stop of clause at equal indent
           (when (py--look-downward-for-beginning thisregexp)
-            (py--end-base regexp orig)))
-        (setq pps (syntax-ppss))
+	    (py--end-base regexp orig)))
+        (setq pps (parse-partial-sexp (point-min) (point)))
         ;; (catch 'exit)
         (and err py-verbose-p (py--message-error err))
         (if (and (< orig (point)) (not (or (looking-at comment-start) (nth 8 pps) (nth 1 pps))))
@@ -1260,7 +1269,7 @@ Unclosed-string errors are not handled here, as made visible by fontification al
          (erg orig)
          (last orig)
          pps)
-    (while (and (setq last (point)) (not (eobp)) (re-search-forward regexp nil t 1)(setq erg (match-beginning 0)) (setq pps (syntax-ppss))
+    (while (and (setq last (point)) (not (eobp)) (re-search-forward regexp nil t 1)(setq erg (match-beginning 0)) (setq pps (parse-partial-sexp (point-min) (point)))
                 (or (nth 8 pps) (nth 1 pps))))
     (cond ((not (or (nth 8 pps) (nth 1 pps) (or (looking-at comment-start))))
            (when (ignore-errors (< orig erg))
@@ -1283,17 +1292,17 @@ If succesful return position. "
           erg last)
       (end-of-line)
       (when (re-search-forward regexp nil t 1)
-        (when (nth 8 (syntax-ppss))
+        (when (nth 8 (parse-partial-sexp (point-min) (point)))
           (while (and (re-search-forward regexp nil t 1)
-                      (nth 8 (syntax-ppss)))))
+                      (nth 8 (parse-partial-sexp (point-min) (point))))))
         (setq last (point))
         (back-to-indentation)
         (unless (and (looking-at py-clause-re)
-                     (not (nth 8 (syntax-ppss))) (eq (current-indentation) ind))
+                     (not (nth 8 (parse-partial-sexp (point-min) (point)))) (eq (current-indentation) ind))
           (progn (setq ind (current-indentation))
                  (while (and (py-end-of-statement-bol)(not (looking-at py-clause-re))(<= ind (current-indentation)))))
           (if (and (looking-at py-clause-re)
-                   (not (nth 8 (syntax-ppss)))
+                   (not (nth 8 (parse-partial-sexp (point-min) (point))))
                    (< orig (point)))
               (setq erg (point))
             (goto-char orig))))
@@ -1357,7 +1366,7 @@ Put point inside the parentheses of a multiline import and hit
 Optional argument LIM indicates the beginning of the containing form,
 i.e. the limit on how far back to scan."
   (let* ((lim (or lim (point-min)))
-         (state (syntax-ppss)))
+         (state (parse-partial-sexp (point-min) (point))))
     (cond
      ((nth 3 state) 'string)
      ((nth 4 state) 'comment))))
@@ -1595,7 +1604,7 @@ Used by variable `which-func-functions' "
          (first t)
          def-or-class
          done last erg name)
-    (and first (looking-at "[ \t]*\\_<\\(def\\|class\\)\\_>[ \n\t]\\([[:alnum:]_]+\\)")(not (nth 8 (syntax-ppss)))
+    (and first (looking-at "[ \t]*\\_<\\(def\\|class\\)\\_>[ \n\t]\\([[:alnum:]_]+\\)")(not (nth 8 (parse-partial-sexp (point-min) (point))))
          (add-to-list 'def-or-class (match-string-no-properties 2)))
     (while
         (and (not (bobp)) (not done) (or (< 0 (current-indentation)) first))
@@ -1831,7 +1840,7 @@ If inside a delimited form --string or list-- go to its beginning.
 If not at beginning of a statement or block, go to its beginning.
 If at beginning of a statement or block, go to beginning one level above of compound statement or definition at point."
   (interactive "P")
-  (let ((pps (syntax-ppss)))
+  (let ((pps (parse-partial-sexp (point-min) (point))))
     (cond ((nth 8 pps) (goto-char (nth 8 pps)))
           ((nth 1 pps) (goto-char (nth 1 pps)))
           ((py--beginning-of-statement-p) (py--beginning-of-form-intern 'py-extended-block-or-clause-re (interactive-p) t))
@@ -1900,11 +1909,7 @@ If BOL is t, mark from beginning-of-line"
     (unless end (when (< beg (point))
                   (setq end (point))))
     (if (and beg end (<= beg orig) (<= orig end))
-	(progn
-	  (when (interactive-p) (message "%s %s" beg end))
-	  (cons beg end))
-      (when (interactive-p) (message "%s" "nil"))
-      ;; (goto-char orig)
+	(cons beg end)
       nil)))
 
 (defun py--mark-base-bol (form &optional py-mark-decorators)
@@ -1925,7 +1930,6 @@ If BOL is t, mark from beginning-of-line"
     (push-mark beg t t)
     (unless end (when (< beg (point))
                   (setq end (point))))
-    (when (interactive-p) (message "%s %s" beg end))
     (cons beg end)))
 
 (defun py-mark-base (form &optional py-mark-decorators)
@@ -1976,7 +1980,7 @@ If not at beginning of a statement or block, go to its beginning.
 If at beginning of a statement or block, go to previous beginning of compound statement or definition at point.
 If no further element at same level, go one level up."
   (interactive)
-  (let ((pps (syntax-ppss)))
+  (let ((pps (parse-partial-sexp (point-min) (point))))
     (cond ((nth 8 pps) (goto-char (nth 8 pps)))
           ((nth 1 pps) (goto-char (nth 1 pps)))
           ((py--beginning-of-statement-p) (py--beginning-of-form-intern 'py-extended-block-or-clause-re (interactive-p)))
@@ -2137,8 +2141,15 @@ Use current region unless optional args BEG END are delivered."
       (funcall (car (read-from-string (concat "py-end-of-" name))))
       (narrow-to-region (point) start))))
 
-;; /usr/lib/python2.7/pdb.py eyp.py
+(defun py--forms-report-result (erg)
+  (let ((res (ignore-errors (buffer-substring-no-properties (car-safe erg) (cdr-safe erg)))))
+    (when (and res (interactive-p))
+      (goto-char (car-safe erg))
+      (set-mark (point))
+      (goto-char (cdr-safe erg)))
+    res))
 
+;; /usr/lib/python2.7/pdb.py eyp.py
 (defalias 'py-forward-block 'py-end-of-block)
 (defalias 'py-forward-block-or-clause 'py-end-of-block-or-clause)
 (defalias 'py-forward-class 'py-end-of-class)

@@ -39,8 +39,6 @@ class bar:
             block2
 "
     (goto-char 103)
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (py-end-of-block)
     (should (eq (char-before) ?s))))
 
@@ -58,8 +56,6 @@ class bar:
             block2
 "
     (goto-char 103)
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (py-end-of-clause)
     (should (eq (char-before) ?s))))
 
@@ -77,8 +73,6 @@ class bar:
             block2
 "
     (goto-char 103)
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (py-end-of-block-or-clause)
     (should (eq (char-before) ?s))))
 
@@ -96,8 +90,6 @@ class bar:
             block2
 "
     (goto-char 103)
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (py-end-of-def)
     (should (eq (char-before) ?2))))
 
@@ -115,8 +107,6 @@ class bar:
             block2
 "
     (goto-char 103)
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (py-end-of-class)
     (should (eq (char-before) ?2))))
 
@@ -134,8 +124,6 @@ class bar:
             block2
 "
     (goto-char 103)
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (py-end-of-def-or-class)
     (should (eq (char-before) ?2))))
 
@@ -153,8 +141,6 @@ class bar:
             block2
 "
     (goto-char 103)
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (py-end-of-if-block)
     (should (eq (char-before) ?s))))
 
@@ -172,8 +158,6 @@ class bar:
             block2
 "
     (goto-char 103)
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (py-end-of-try-block)
     (should (eq (char-before) ?s))))
 
@@ -191,8 +175,6 @@ class bar:
             block2
 "
     (goto-char 103)
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (py-end-of-minor-block)
     (should (eq (char-before) ?s))))
 
@@ -210,8 +192,6 @@ class bar:
             block2
 "
     (goto-char 103)
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (py-end-of-for-block)
     (should (eq (char-before) ?s))))
 
@@ -229,8 +209,6 @@ class bar:
             block2
 "
     (goto-char 103)
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (py-end-of-top-level)
     (should (eq (char-before) ?2))))
 
@@ -248,8 +226,6 @@ class bar:
             block2
 "
     (goto-char 103)
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (py-end-of-statement)
     (should (eq (char-before) ?:))))
 
@@ -267,8 +243,6 @@ class bar:
             block2
 "
     (goto-char 103)
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (py-end-of-expression)
     (should (eq (char-before) ?r))))
 
@@ -286,8 +260,6 @@ class bar:
             block2
 "
     (goto-char 103)
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (py-end-of-partial-expression)
     (should (eq (char-before) ?r))))
 
@@ -304,8 +276,6 @@ class bar:
         except:
             block2
 "
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (goto-char 103)
     (py-end-of-block-bol)
     (should (eq (point) 140))))
@@ -323,8 +293,6 @@ class bar:
         except:
             block2
 "
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (goto-char 103)
     (py-end-of-clause-bol)
     (should (eq (point) 140))))
@@ -342,8 +310,6 @@ class bar:
         except:
             block2
 "
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (goto-char 103)
     (py-end-of-block-or-clause-bol)
     (should (eq (point) 140))))
@@ -361,8 +327,6 @@ class bar:
         except:
             block2
 "
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (goto-char 103)
     (py-end-of-def-bol)
     (should (eq (point) 175))))
@@ -380,8 +344,6 @@ class bar:
         except:
             block2
 "
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (goto-char 103)
     (py-end-of-class-bol)
     (should (eq (point) 175))))
@@ -399,8 +361,6 @@ class bar:
         except:
             block2
 "
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (goto-char 103)
     (py-end-of-def-or-class-bol)
     (should (eq (point) 175))))
@@ -418,8 +378,6 @@ class bar:
         except:
             block2
 "
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (goto-char 103)
     (py-end-of-if-block-bol)
     (should (eq (point) 140))))
@@ -437,8 +395,6 @@ class bar:
         except:
             block2
 "
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (goto-char 103)
     (py-end-of-try-block-bol)
     (should (eq (point) 140))))
@@ -456,8 +412,6 @@ class bar:
         except:
             block2
 "
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (goto-char 103)
     (py-end-of-minor-block-bol)
     (should (eq (point) 140))))
@@ -475,8 +429,6 @@ class bar:
         except:
             block2
 "
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (goto-char 103)
     (py-end-of-for-block-bol)
     (should (eq (point) 140))))
@@ -494,8 +446,6 @@ class bar:
         except:
             block2
 "
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (goto-char 103)
     (py-end-of-top-level-bol)
     (should (eq (point) 175))))
@@ -513,8 +463,6 @@ class bar:
         except:
             block2
 "
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (goto-char 103)
     (py-end-of-statement-bol)
     (should (eq (point) 115))))

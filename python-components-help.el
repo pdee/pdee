@@ -1046,7 +1046,7 @@ i.e. spaces, tabs, carriage returns, newlines and newpages. "
   (let* ((pps (or (ignore-errors (nth 0 pps))
                   (if (featurep 'xemacs)
                       (parse-partial-sexp (point-min) (point))
-                    (syntax-ppss))))
+                    (parse-partial-sexp (point-min) (point)))))
          (erg (nth 0 pps)))
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))

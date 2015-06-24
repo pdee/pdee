@@ -50,7 +50,7 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
 (defun py--beginning-of-expression-intern (&optional orig)
   (unless (bobp)
     (let ((orig (or orig (point)))
-          (pps (syntax-ppss))
+          (pps (parse-partial-sexp (point-min) (point)))
           erg)
       (cond
        ( ;; (empty-line-p)
@@ -184,7 +184,7 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
 (defun py--end-of-expression-intern (&optional orig)
   (unless (eobp)
     (let* ((orig (or orig (point)))
-           (pps (syntax-ppss))
+           (pps (parse-partial-sexp (point-min) (point)))
            erg
            ;; use by scan-lists
            parse-sexp-ignore-comments)
@@ -215,7 +215,7 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
         (when (looking-at "\"\"\"\\|'''\\|\"\\|'")
           (goto-char (match-end 0)))
         (while
-            (nth 3 (syntax-ppss))
+            (nth 3 (parse-partial-sexp (point-min) (point)))
           (forward-char 1))
         (unless (looking-at "[ \t]*$")
           (py--end-of-expression-intern orig)))
@@ -603,7 +603,7 @@ From a programm use macro `py-beginning-of-comment' instead "
         (first t)
         done erg cui)
     (while (and (not done) (not (bobp)))
-      (while (and (re-search-backward regexp nil 'move 1)(nth 8 (syntax-ppss))))
+      (while (and (re-search-backward regexp nil 'move 1)(nth 8 (parse-partial-sexp (point-min) (point)))))
       ;; (or (< (point) orig) (py-beginning-of-statement))
       (if (and (looking-at regexp)(if maxindent
                                       (<= (current-indentation) maxindent) t))
@@ -709,7 +709,7 @@ From a programm use macro `py-beginning-of-comment' instead "
   (let ((pps
          (if (featurep 'xemacs)
              (parse-partial-sexp (point-min) (point))
-           (syntax-ppss))))
+           (parse-partial-sexp (point-min) (point)))))
     (when (nth 8 pps)
       (goto-char (1- (nth 8 pps))))))
 
@@ -726,7 +726,7 @@ Return beginning position, nil if not inside."
     (if
         (setq erg (nth 1 (if (featurep 'xemacs)
                              (parse-partial-sexp ppstart (point))
-                           (syntax-ppss))))
+                           (parse-partial-sexp (point-min) (point)))))
         (progn
           (setq last erg)
           (goto-char erg)
@@ -819,7 +819,7 @@ Return position"
          (cuco (current-column))
          (str (make-string cuco ?\s))
          pps erg)
-    (while (and (not (bobp))(re-search-backward (concat "^" str py-block-keywords) nil t)(or (nth 8 (setq pps (syntax-ppss))) (nth 1 pps))))
+    (while (and (not (bobp))(re-search-backward (concat "^" str py-block-keywords) nil t)(or (nth 8 (setq pps (parse-partial-sexp (point-min) (point)))) (nth 1 pps))))
     (back-to-indentation)
     (and (< (point) orig)(setq erg (point)))
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))

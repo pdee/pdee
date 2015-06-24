@@ -258,7 +258,7 @@ With arg, do it that many times.
                  (progn
                    (if (featurep 'xemacs)
                        (nth 3 (parse-partial-sexp (point) orig)
-                            (nth 3 (syntax-ppss))))))))))
+                            (nth 3 (parse-partial-sexp (point-min) (point)))))))))))
       (when (interactive-p) (message "%s" erg))
       erg)))
 

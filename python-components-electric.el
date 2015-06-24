@@ -109,7 +109,7 @@ With \\[universal-argument] \"#\" electric behavior is inhibited inside a string
              (thischar (char-before))
              pps cn)
          (forward-char -1)
-         (setq pps (syntax-ppss))
+         (setq pps (parse-partial-sexp (point-min) (point)))
          (if (and (not (nth 8 pps)) (nth 1 pps))
              (progn
                (goto-char (nth 1 pps))
