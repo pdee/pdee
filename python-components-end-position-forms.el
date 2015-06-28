@@ -125,7 +125,7 @@
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
-                 (py-end-of-expression))))
+                 (py-forward-expression))))
       erg)))
 
 (defun py--end-of-if-block-position ()

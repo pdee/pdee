@@ -42,8 +42,6 @@
 (ert-deftest py-ert-virtualenv-activate-functionp-test ()
   (should (functionp 'virtualenv-activate)))
 
-
-
 (ert-deftest py-ert-virtualenv-p-functionp-test ()
   (should (functionp 'virtualenv-p)))
 
@@ -389,8 +387,8 @@
 (ert-deftest py-ert-end-of-expression-functionp-test ()
   (should (functionp 'py-end-of-expression)))
 
-(ert-deftest py-ert--end-of-expression-intern-functionp-test ()
-  (should (functionp 'py--end-of-expression-intern)))
+(ert-deftest py-forward-expression-functionp-test ()
+  (should (functionp 'py-forward-expression)))
 
 (ert-deftest py-ert-beginning-of-partial-expression-functionp-test ()
   (should (functionp 'py-beginning-of-partial-expression)))
@@ -541,58 +539,6 @@
 
 (ert-deftest py-ert-fast-complete-functionp-test ()
   (should (functionp 'py-fast-complete)))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 (ert-deftest py-ert--all-shell-mode-setting-functionp-test ()
   (should (functionp 'py--all-shell-mode-setting)))
@@ -963,8 +909,6 @@
 (ert-deftest py-ert-ipython-functionp-test ()
   (should (functionp 'ipython)))
 
-
-
 (ert-deftest py-ert-python2-functionp-test ()
   (should (functionp 'python2)))
 
@@ -979,8 +923,6 @@
 
 (ert-deftest py-ert-ipython-dedicated-functionp-test ()
   (should (functionp 'ipython-dedicated)))
-
-
 
 (ert-deftest py-ert-python2-dedicated-functionp-test ()
   (should (functionp 'python2-dedicated)))
@@ -1177,28 +1119,6 @@
 (ert-deftest py-ert-copy-minor-block-bol-functionp-test ()
   (should (functionp 'py-copy-minor-block-bol)))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 (ert-deftest py-ert-statement-functionp-test ()
   (should (functionp 'py-statement)))
 
@@ -1244,57 +1164,35 @@
 (ert-deftest py-ert-copy-statement-functionp-test ()
   (should (functionp 'py-copy-statement)))
 
-
-
 (ert-deftest py-ert-copy-top-level-functionp-test ()
   (should (functionp 'py-copy-top-level)))
-
-
 
 (ert-deftest py-ert-copy-block-functionp-test ()
   (should (functionp 'py-copy-block)))
 
-
-
 (ert-deftest py-ert-copy-clause-functionp-test ()
   (should (functionp 'py-copy-clause)))
-
-
 
 (ert-deftest py-ert-copy-block-or-clause-functionp-test ()
   (should (functionp 'py-copy-block-or-clause)))
 
-
-
 (ert-deftest py-ert-copy-def-functionp-test ()
   (should (functionp 'py-copy-def)))
-
-
 
 (ert-deftest py-ert-copy-class-functionp-test ()
   (should (functionp 'py-copy-class)))
 
-
-
 (ert-deftest py-ert-copy-def-or-class-functionp-test ()
   (should (functionp 'py-copy-def-or-class)))
-
-
 
 (ert-deftest py-ert-copy-expression-functionp-test ()
   (should (functionp 'py-copy-expression)))
 
-
-
 (ert-deftest py-ert-copy-partial-expression-functionp-test ()
   (should (functionp 'py-copy-partial-expression)))
 
-
-
 (ert-deftest py-ert-copy-minor-block-functionp-test ()
   (should (functionp 'py-copy-minor-block)))
-
-
 
 (ert-deftest py-ert-delete-statement-functionp-test ()
   (should (functionp 'py-delete-statement)))
@@ -1355,26 +1253,6 @@
 
 (ert-deftest py-ert-delete-statement-bol-functionp-test ()
   (should (functionp 'py-delete-statement-bol)))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 (ert-deftest py-ert--beginning-of-statement-position-functionp-test ()
   (should (functionp 'py--beginning-of-statement-position)))
@@ -1595,11 +1473,6 @@
 (ert-deftest py-ert--beginning-of-buffer-position-functionp-test ()
   (should (functionp 'py--beginning-of-buffer-position)))
 
-
-
-(ert-deftest py-ert--bounds-of-declarations-functionp-test ()
-  (should (functionp 'py--bounds-of-declarations)))
-
 (ert-deftest py-ert-beginning-of-declarations-functionp-test ()
   (should (functionp 'py-beginning-of-declarations)))
 
@@ -1611,9 +1484,6 @@
 
 (ert-deftest py-ert-kill-declarations-functionp-test ()
   (should (functionp 'py-kill-declarations)))
-
-(ert-deftest py-ert--bounds-of-statements-functionp-test ()
-  (should (functionp 'py--bounds-of-statements)))
 
 (ert-deftest py-ert-beginning-of-statements-functionp-test ()
   (should (functionp 'py-beginning-of-statements)))
@@ -1789,54 +1659,8 @@
 (ert-deftest py-ert-execute-clause-functionp-test ()
   (should (functionp 'py-execute-clause)))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 (ert-deftest py-ert--end-of-buffer-position-functionp-test ()
   (should (functionp 'py--end-of-buffer-position)))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 (ert-deftest py-ert-toggle-highlight-indentation-functionp-test ()
   (should (functionp 'py-toggle-highlight-indentation)))
@@ -2024,61 +1848,17 @@
 (ert-deftest py-ert-comment-auto-fill-off-functionp-test ()
   (should (functionp 'py-comment-auto-fill-off)))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 (ert-deftest py-ert-beginning-of-elif-block-functionp-test ()
   (should (functionp 'py-beginning-of-elif-block)))
 
 (ert-deftest py-ert-beginning-of-else-block-functionp-test ()
   (should (functionp 'py-beginning-of-else-block)))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 (ert-deftest py-ert-beginning-of-elif-block-bol-functionp-test ()
   (should (functionp 'py-beginning-of-elif-block-bol)))
 
 (ert-deftest py-ert-beginning-of-else-block-bol-functionp-test ()
   (should (functionp 'py-beginning-of-else-block-bol)))
-
-
-
-
-
-
-
-
 
 (ert-deftest py-ert-indent-forward-line-functionp-test ()
   (should (functionp 'py-indent-forward-line)))
@@ -2149,34 +1929,6 @@
 (ert-deftest py-ert-boolswitch-functionp-test ()
   (should (functionp 'py-boolswitch)))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 (ert-deftest py-ert-end-of-elif-block-functionp-test ()
   (should (functionp 'py-end-of-elif-block)))
 
@@ -2188,22 +1940,6 @@
 
 (ert-deftest py-ert-end-of-else-block-bol-functionp-test ()
   (should (functionp 'py-end-of-else-block-bol)))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 (ert-deftest py-ert-mark-paragraph-functionp-test ()
   (should (functionp 'py-mark-paragraph)))
@@ -2556,13 +2292,8 @@
 (ert-deftest py-ert-backward-same-level-functionp-test ()
   (should (functionp 'py-backward-same-level)))
 
-
-
 (ert-deftest py-ert--end-of-buffer-p-functionp-test ()
   (should (functionp 'py--end-of-buffer-p)))
-
-(ert-deftest py-ert--bounds-of-region-functionp-test ()
-  (should (functionp 'py--bounds-of-region)))
 
 (ert-deftest py-ert--beginning-of-paragraph-position-functionp-test ()
   (should (functionp 'py--beginning-of-paragraph-position)))
@@ -2681,130 +2412,6 @@
 (ert-deftest py-ert-variables-base-state-functionp-test ()
   (should (functionp 'variables-base-state)))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-(ert-deftest py-ert--bounds-of-statement-functionp-test ()
-  (should (functionp 'py--bounds-of-statement)))
-
-(ert-deftest py-ert--bounds-of-block-functionp-test ()
-  (should (functionp 'py--bounds-of-block)))
-
-(ert-deftest py-ert--bounds-of-clause-functionp-test ()
-  (should (functionp 'py--bounds-of-clause)))
-
-(ert-deftest py-ert--bounds-of-block-or-clause-functionp-test ()
-  (should (functionp 'py--bounds-of-block-or-clause)))
-
-(ert-deftest py-ert--bounds-of-def-functionp-test ()
-  (should (functionp 'py--bounds-of-def)))
-
-(ert-deftest py-ert--bounds-of-class-functionp-test ()
-  (should (functionp 'py--bounds-of-class)))
-
-(ert-deftest py-ert--bounds-of-def-or-class-functionp-test ()
-  (should (functionp 'py--bounds-of-def-or-class)))
-
-(ert-deftest py-ert--bounds-of-buffer-functionp-test ()
-  (should (functionp 'py--bounds-of-buffer)))
-
-(ert-deftest py-ert--bounds-of-expression-functionp-test ()
-  (should (functionp 'py--bounds-of-expression)))
-
-(ert-deftest py-ert--bounds-of-partial-expression-functionp-test ()
-  (should (functionp 'py--bounds-of-partial-expression)))
-
-(ert-deftest py-ert--bounds-of-minor-block-functionp-test ()
-  (should (functionp 'py--bounds-of-minor-block)))
-
-(ert-deftest py-ert--bounds-of-if-block-functionp-test ()
-  (should (functionp 'py--bounds-of-if-block)))
-
-(ert-deftest py-ert--bounds-of-try-block-functionp-test ()
-  (should (functionp 'py--bounds-of-try-block)))
-
-(ert-deftest py-ert--bounds-of-except-block-functionp-test ()
-  (should (functionp 'py--bounds-of-except-block)))
-
-(ert-deftest py-ert--bounds-of-top-level-functionp-test ()
-  (should (functionp 'py--bounds-of-top-level)))
-
-(ert-deftest py-ert--bounds-of-statement-bol-functionp-test ()
-  (should (functionp 'py--bounds-of-statement-bol)))
-
-(ert-deftest py-ert--bounds-of-block-bol-functionp-test ()
-  (should (functionp 'py--bounds-of-block-bol)))
-
-(ert-deftest py-ert--bounds-of-clause-bol-functionp-test ()
-  (should (functionp 'py--bounds-of-clause-bol)))
-
-(ert-deftest py-ert--bounds-of-block-or-clause-bol-functionp-test ()
-  (should (functionp 'py--bounds-of-block-or-clause-bol)))
-
-(ert-deftest py-ert--bounds-of-def-bol-functionp-test ()
-  (should (functionp 'py--bounds-of-def-bol)))
-
-(ert-deftest py-ert--bounds-of-class-bol-functionp-test ()
-  (should (functionp 'py--bounds-of-class-bol)))
-
-(ert-deftest py-ert--bounds-of-minor-block-bol-functionp-test ()
-  (should (functionp 'py--bounds-of-minor-block-bol)))
-
-(ert-deftest py-ert--bounds-of-if-block-bol-functionp-test ()
-  (should (functionp 'py--bounds-of-if-block-bol)))
-
-(ert-deftest py-ert--bounds-of-try-block-bol-functionp-test ()
-  (should (functionp 'py--bounds-of-try-block-bol)))
-
 (ert-deftest py-ert-smart-operator-check-functionp-test ()
   (should (functionp 'py-smart-operator-check)))
 
@@ -2907,58 +2514,6 @@
 (ert-deftest py-ert-electric-yank-functionp-test ()
   (should (functionp 'py-electric-yank)))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 (ert-deftest py-ert-beginning-of-comment-functionp-test ()
   (should (functionp 'py-beginning-of-comment)))
 
@@ -2970,8 +2525,6 @@
 
 (ert-deftest py-ert-uncomment-functionp-test ()
   (should (functionp 'py-uncomment)))
-
-
 
 (ert-deftest py-ert-comment-block-functionp-test ()
   (should (functionp 'py-comment-block)))
@@ -3009,8 +2562,6 @@
 (ert-deftest py-ert-delete-block-functionp-test ()
   (should (functionp 'py-delete-block)))
 
-
-
 (ert-deftest py-ert-delete-block-or-clause-functionp-test ()
   (should (functionp 'py-delete-block-or-clause)))
 
@@ -3031,24 +2582,6 @@
 
 (ert-deftest py-ert-delete-minor-block-functionp-test ()
   (should (functionp 'py-delete-minor-block)))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 (ert-deftest py-ert-switch-imenu-index-function-functionp-test ()
   (should (functionp 'py-switch-imenu-index-function)))
@@ -3139,112 +2672,6 @@
 
 (ert-deftest py-ert-execute-file-jython-dedicated-switch-functionp-test ()
   (should (functionp 'py-execute-file-jython-dedicated-switch)))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 (ert-deftest py-ert--shell-completion-get-completions-functionp-test ()
   (should (functionp 'py--shell-completion-get-completions)))
@@ -3348,68 +2775,6 @@
 (ert-deftest py-ert-shift-statement-left-functionp-test ()
   (should (functionp 'py-shift-statement-left)))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 (ert-deftest py-ert-end-of-block-functionp-test ()
   (should (functionp 'py-end-of-block)))
 
@@ -3431,17 +2796,11 @@
 (ert-deftest py-ert-end-of-if-block-functionp-test ()
   (should (functionp 'py-end-of-if-block)))
 
-
-
 (ert-deftest py-ert-end-of-try-block-functionp-test ()
   (should (functionp 'py-end-of-try-block)))
 
 (ert-deftest py-ert-end-of-minor-block-functionp-test ()
   (should (functionp 'py-end-of-minor-block)))
-
-
-
-
 
 (ert-deftest py-ert-execute-section-functionp-test ()
   (should (functionp 'py-execute-section)))

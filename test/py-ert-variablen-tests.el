@@ -550,8 +550,8 @@
 (ert-deftest py-ert-already-guessed-indent-offset-test ()
   (should (boundp 'py-already-guessed-indent-offset)))
 
-(ert-deftest py-ert-assignment-regexp-test ()
-  (should (boundp 'py-assignment-regexp)))
+(ert-deftest py-ert-assignment-re-test ()
+  (should (boundp 'py-assignment-re)))
 
 (ert-deftest py-ert--auto-complete-timer-test ()
   (should (boundp 'py--auto-complete-timer)))
@@ -595,8 +595,8 @@
 (ert-deftest py-ert-def-class-face-test ()
   (should (boundp 'py-def-class-face)))
 
-(ert-deftest py-ert-delimiter-regexp-test ()
-  (should (boundp 'py-delimiter-regexp)))
+(ert-deftest py-ert-delimiter-re-test ()
+  (should (boundp 'py-delimiter-re)))
 
 (ert-deftest py-ert-dotted-expression-syntax-table-test ()
   (should (boundp 'py-dotted-expression-syntax-table)))
@@ -721,8 +721,8 @@
 (ert-deftest py-ert-object-reference-face-test ()
   (should (boundp 'py-object-reference-face)))
 
-(ert-deftest py-ert-operator-regexp-test ()
-  (should (boundp 'py-operator-regexp)))
+(ert-deftest py-ert-operator-re-test ()
+  (should (boundp 'py-operator-re)))
 
 (ert-deftest py-ert-orig-buffer-or-file-test ()
   (should (boundp 'py-orig-buffer-or-file)))

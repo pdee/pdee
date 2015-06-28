@@ -451,16 +451,16 @@
        'py-beginning-of-statement-bol))
 
 (defvar py-bol-end-forms
-  (list 'py-end-of-block-bol
-	'py-end-of-clause-bol
-	'py-end-of-block-or-clause-bol
-	'py-end-of-def-bol
-	'py-end-of-class-bol
-	'py-end-of-def-or-class-bol
-	'py-end-of-if-block-bol
-	'py-end-of-try-block-bol
-	'py-end-of-minor-block-bol
-	'py-end-of-statement-bol))
+  (list 'py-forward-block-bol
+	'py-forward-clause-bol
+	'py-forward-block-or-clause-bol
+	'py-forward-def-bol
+	'py-forward-class-bol
+	'py-forward-def-or-class-bol
+	'py-forward-if-block-bol
+	'py-forward-try-block-bol
+	'py-forward-minor-block-bol
+	'py-forward-statement-bol))
 
 (setq py-bol-copy-forms
       (list
@@ -773,7 +773,7 @@
     (insert (concat (make-string 12 ? )")\n"))
 
     (insert (concat (make-string 11 ? )"(\"Forward\""))
-    (py--kurzmenu-insert py-navigate-forms "py-end-of-")
+    (py--kurzmenu-insert py-navigate-forms "py-forward-")
     (insert (concat (make-string 12 ? )")\n"))
 
     (insert (concat (make-string 10 ? )"(\"BOL-forms\"\n"))
@@ -783,7 +783,7 @@
     (insert (concat (make-string 12 ? )")\n"))
 
     (insert (concat (make-string 11 ? )"(\"Forward\""))
-    (py--kurzmenu-insert py-navigate-forms "py-end-of-" "-bol")
+    (py--kurzmenu-insert py-navigate-forms "py-forward-" "-bol")
     ;; BOL forms end
     (insert (concat (make-string 12 ? )"))\n"))
 
@@ -922,7 +922,7 @@
                      (save-excursion
                        (py-beginning-of-" ele ")))))
         (end (save-excursion
-               (py-end-of-" ele"))))
+               (py-forward-" ele"))))
     (py-execute-region beg end)))\n\n")))
   (insert ")provide 'python-components-exec-forms)
 ;;; python-components-exec-forms.el ends here\n ")
@@ -1364,98 +1364,6 @@ Include default forms "
           (setq erg (car buli))
         (setq buli (cdr buli))))
     erg))
-
-(defun write-extended-executes-test ()
-  "Write `py-execute-block...' etc. "
-  (interactive)
-  ;; (load-shells)
-  (let ((py-bounds-command-names py-bounds-command-names)
-        (py-test-shells py-shells)
-        (py-options py-options))
-    (set-buffer (get-buffer-create "python-extended-executes-test.el"))
-    (erase-buffer)
-    (switch-to-buffer (current-buffer))
-    (insert ";;; ")
-    (insert " --- extended-executes test")
-    (insert arkopf)
-    (dolist (ele py-bounds-command-names)
-      (dolist (elt py-shells)
-        (setq elt (prin1-to-string elt))
-        (dolist (pyo py-options)
-          (if (string= "" elt)
-              (insert (concat "\n\n(defun py-execute-" ele))
-            (insert (concat "\n\n(defun py-execute-" ele "-" elt)))
-          (unless (string= pyo "")(insert (concat "-" pyo)))
-          (insert "-test")
-          (insert " (&optional arg load-branch-function)")
-          (insert (concat "
-  (interactive \"p\")
-  (let ((py-store-result-p t)
-        py-result
-        (teststring \""))
-          (cond ((or (string-match "block" ele)(string-match "clause" ele))
-                 (insert (concat "if True: print(\\\"I'm the py-execute-" ele)))
-                ((string-match "def" ele)
-                 (insert (concat "def foo (): print(\\\"I'm the py-execute-" ele)))
-                ((string= "class" ele)
-                 (insert (concat "class foo (): print(\\\"I'm the py-execute-" ele)))
-                (t (insert (concat "print(\\\"I'm the py-execute-" ele))))
-          (unless (string= "" elt) (insert (concat "-" elt)))
-          (unless (string= pyo "")(insert (concat "-" pyo)))
-          (if (string-match "def" ele)
-              (progn
-                (switch-to-buffer (current-buffer))
-                (insert "-test\\\")\nfoo()\"))"))
-            (insert "-test\\\")\"))"))
-          (if (string= "" elt)
-              (insert (concat "
-  (py-bug-tests-intern 'py-execute-" ele))
-            (insert (concat "
-  (py-bug-tests-intern 'py-execute-" ele "-" elt)))
-          (unless (string= pyo "")(insert (concat "-" pyo)))
-          (insert (concat "-base arg teststring)))\n"))
-          (if (string= "" elt)
-              (insert (concat "\n(defun py-execute-" ele))
-            (insert (concat "\n\(defun py-execute-" ele "-" elt)))
-          (unless (string= pyo "")(insert (concat "-" pyo)))
-          (insert "-base (arg)\n")
-          (if (string= "" elt)
-              (insert (concat "  (py-execute-" ele))
-            (insert (concat "  (py-execute-" ele "-" elt)))
-          (unless (string= pyo "")(insert (concat "-" pyo)))
-
-          (cond ((string= "region" ele)
-                 (insert " (line-beginning-position) (line-end-position)")))
-          (insert ")")
-
-          (if (string= "" elt)
-              (progn
-                (insert (concat "(set-buffer (py--fetch-first-python-buffer))(goto-char (point-min))(search-forward \"the py-execute-"))
-                (unless (string= pyo "")(insert (concat "-" pyo)))
-                (insert "-test\" nil nil 1))"))
-            (insert (concat "
-  (if (string-match \"\*I\" py-buffer-name) (sit-for 1 t) (sit-for 0.1 t))
-  (set-buffer py-buffer-name)
-  (when py-debug-p (switch-to-buffer (current-buffer)))
-  (goto-char (point-max))
-  (sit-for 0.1 t)
-  (when py-verbose-p (message \"py-result %s\" (or py-error py-result)))
-  (when
-      (assert (search-backward \"the py-execute-" ele "-" elt))
-            (unless (string= pyo "")(insert (concat "-" pyo)))
-
-            (insert "-test\" nil nil 1)"))
-
-          (if (string= "" elt)
-              (insert (concat "
-           nil \"py-execute-" ele))
-            (insert (concat " nil \"py-execute-" ele "-" elt)))
-          (unless (string= pyo "")(insert (concat "-" pyo)))
-          (insert "-test failed\")
-    (kill-buffer-unconditional py-buffer-name)))"))))
-    (insert "\n\n(provide 'python-extended-executes-test)
-;;; python-extended-executes-test.el ends here\n "))
-  (emacs-lisp-mode))
 
 (defun write-all-bounds-forms ()
   (interactive)
@@ -2060,7 +1968,7 @@ Returns beginning of " ele " if successful, nil otherwise\n\n"))
     (insert (concat "  (interactive \"P\")
   (py--beginning-of-form-intern py-" ele "-re (interactive-p) indent))\n"))
     (insert (concat "
-\(defun py-end-of-" ele " (&optional indent)"))
+\(defun py-forward-" ele " (&optional indent)"))
     (insert (concat "\n \"Go to end of " ele ".\n
 Returns end of " ele " if successful, nil otherwise\n\n"))
     (when (string-match "def\\|class" ele)
@@ -2179,7 +2087,7 @@ Returns indentation reached. \"
 
 \(defun py--shift-forms-base (form arg &optional beg end)
   (let\* ((begform (intern-soft (concat \"py-beginning-of-\" form)))
-         (endform (intern-soft (concat \"py-end-of-\" form)))
+         (endform (intern-soft (concat \"py-forward-\" form)))
          (orig (copy-marker (point)))
          (beg (cond (beg)
                     ((region-active-p)
@@ -2242,14 +2150,14 @@ Returns outmost indentation reached. \"
   (dolist (ele py-down-forms)
     (insert (concat "
 \(defalias 'py-down-" ele "-bol 'py-end-of-" ele "-bol)
-\(defun py-end-of-" ele "-bol ()
+\(defun py-forward-" ele "-bol ()
   \"Goto beginning of line following end of " ele ".
   Returns position reached, if successful, nil otherwise.
 
-A complementary command travelling at beginning of line, whilst `py-end-of-" ele "' stops at right corner.
+A complementary command travelling at beginning of line, whilst `py-forward-" ele "' stops at right corner.
 See also `py-down-" ele "': down from current definition to next beginning of " ele " below. \"
   (interactive)
-  (let ((erg (py-end-of-" ele ")))
+  (let ((erg (py-forward-" ele ")))
     (when erg
       (unless (eobp)
         (forward-line 1)
@@ -2418,7 +2326,7 @@ A complementary command travelling right, whilst `py-beginning-of-" ele "' stops
          (setq erg (point))"))
       (insert (concat "
      (save-excursion
-       (py-end-of-" ele ")
+       (py-forward-" ele ")
        (py-beginning-of-" ele ")
        (when (eq orig (point))
          (setq erg orig))"))
@@ -2454,7 +2362,7 @@ A complementary command travelling right, whilst `py-beginning-of-" ele "' stops
   (dolist (ele py-noregexp-forms)
     (unless (string= "line" ele)
       (insert (concat "
-\(defun py-end-of-" ele "-p ()
+\(defun py-forward-" ele "-p ()
   \"Returns position, if cursor is at the end of a " ele ", nil otherwise. \"
   (let ((orig (point))
          erg)"))
@@ -2465,7 +2373,7 @@ A complementary command travelling right, whilst `py-beginning-of-" ele "' stops
       (insert (concat "
      (save-excursion
        (py-beginning-of-" ele ")
-       (py-end-of-" ele ")
+       (py-forward-" ele ")
        (when (eq orig (point))
          (setq erg orig))"))
       (when (string= "paragraph" ele)
@@ -2475,7 +2383,7 @@ A complementary command travelling right, whilst `py-beginning-of-" ele "' stops
 "))))
   (dolist (ele py-regexp-forms)
     (insert (concat "
-\(defun py-end-of-" ele "-p ()
+\(defun py-forward-" ele "-p ()
   \"Returns position, if cursor is at the end of a " ele ", nil otherwise. \"
     (when (and (looking-at py-" ele "-re)
                (not (py-in-string-or-comment-p)))
@@ -2809,8 +2717,8 @@ Go to beginning of line at beginning of " ele ".
 Returns position reached, if successful, nil otherwise. \"]\n"))
 
   (insert (concat "
-             [\"End of " ele " bol\" py-end-of-" ele "-bol
-              :help \"`py-end-of-" ele "-bol'
+             [\"End of " ele " bol\" py-forward-" ele "-bol
+              :help \"`py-forward-" ele "-bol'
 Go to beginning of line following end of " ele ".
 
 Returns position reached, if successful, nil otherwise. \"]
@@ -2850,7 +2758,7 @@ Delete " ele " at point. \"]\n)\n")))
   (insert ";; Beginning of line forms
 \(defun py--mark-base-bol (form &optional py-mark-decorators)
   (let\* ((begform (intern-soft (concat \"py-beginning-of-\" form \"-bol\")))
-         (endform (intern-soft (concat \"py-end-of-\" form \"-bol\")))
+         (endform (intern-soft (concat \"py-forward-\" form \"-bol\")))
          (begcheckform (intern-soft (concat \"py-beginning-of-\" form \"-bol-p\")))
          (orig (point))
          beg end erg)
@@ -2878,7 +2786,7 @@ Delete " ele " at point. \"]\n)\n")))
         (indent (current-indentation))
         erg)
     (save-excursion
-      (py-end-of-" ele "-bol)
+      (py-forward-" ele "-bol)
       (py-beginning-of-" ele "-bol indent)
       (when (eq orig (point))
         (setq erg orig))
@@ -2891,7 +2799,7 @@ Delete " ele " at point. \"]\n)\n")))
 
 See also `py-up-" ele "': up from current definition to next beginning of " ele " above. \"
   (interactive)
-  (let* ((indent (or indent (when (eq 'py-end-of-" ele "-bol (car py-bol-forms-last-indent))(cdr py-bol-forms-last-indent))))
+  (let* ((indent (or indent (when (eq 'py-forward-" ele "-bol (car py-bol-forms-last-indent))(cdr py-bol-forms-last-indent))))
           erg)
          (if indent
                  (while (and (setq erg (py-beginning-of-" ele ")) (< indent (current-indentation))(not (bobp))))
@@ -2905,14 +2813,14 @@ See also `py-up-" ele "': up from current definition to next beginning of " ele 
   (when (interactive-p) (message \"%s\" erg))
   erg))
 
-\(defalias 'py-down-" ele "-lc 'py-end-of-" ele "-bol)
-\(defun py-end-of-" ele "-bol ()
+\(defalias 'py-down-" ele "-lc 'py-forward-" ele "-bol)
+\(defun py-forward-" ele "-bol ()
   \"Goto beginning of line following end of " ele ".
   Returns position reached, if successful, nil otherwise.
 
 See also `py-down-" ele "': down from current definition to next beginning of " ele " below. \"
   (interactive)
-  (let ((erg (py-end-of-" ele ")))
+  (let ((erg (py-forward-" ele ")))
     (when erg
       (unless (eobp)
         (forward-line 1)
@@ -2993,8 +2901,8 @@ Go to beginning of line at beginning of " ele ".
 Returns position reached, if successful, nil otherwise. \"]\n"))
 
   (insert (concat "
-             [\"End of " ele " \" py-end-of-" ele "
-              :help \"`py-end-of-" ele "'
+             [\"End of " ele " \" py-forward-" ele "
+              :help \"`py-forward-" ele "'
 Go to beginning of line following end of " ele ".
 
 Returns position reached, if successful, nil otherwise. \"]
@@ -3034,7 +2942,7 @@ Delete " ele " at point. \"]\n)\n")))
   (insert ";; Beginning of line forms
 \(defun py--mark-base (form &optional py-mark-decorators)
   (let\* ((begform (intern-soft (concat \"py-beginning-of-\" form)))
-         (endform (intern-soft (concat \"py-end-of-\" form)))
+         (endform (intern-soft (concat \"py-forward-\" form)))
          (begcheckform (intern-soft (concat \"py-beginning-of-\" form \"-p\")))
          (orig (point))
          beg end erg)
@@ -3070,8 +2978,8 @@ Delete " ele " at point. \"]\n)\n")))
                      (current-indentation))))
     (py--beginning-of-form-intern py-" ele "-re (interactive-p) indent)))
 
-\(defalias 'py-down-" ele "-lc 'py-end-of-" ele ")
-\(defun py-end-of-" ele " (&optional indent)
+\(defalias 'py-down-" ele "-lc 'py-forward-" ele ")
+\(defun py-forward-" ele " (&optional indent)
   \"Go to end of " ele ".
 
 Returns end of " ele " if successful, nil otherwise\"
@@ -3081,14 +2989,14 @@ Returns end of " ele " if successful, nil otherwise\"
     (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
     erg))
 
-\(defalias 'py-down-" ele "-lc 'py-end-of-" ele "-lc)
-\(defun py-end-of-" ele "-lc ()
+\(defalias 'py-down-" ele "-lc 'py-forward-" ele "-lc)
+\(defun py-forward-" ele "-lc ()
   \"Goto beginning of line following end of " ele ".
   Returns position reached, if successful, nil otherwise.
 
 See also `py-down-" ele "': down from current definition to next beginning of " ele " below. \"
   (interactive)
-  (let ((erg (py-end-of-" ele ")))
+  (let ((erg (py-forward-" ele ")))
     (when erg
       (unless (eobp)
         (forward-line 1)
@@ -3169,10 +3077,10 @@ Return position if statement found, nil otherwise. \"
   (let\* ((orig (point))
            (erg
             (cond ((py--end-of-statement-p)
-                   (setq erg (and (py-end-of-statement) (py-beginning-of-statement))))
-                  ((< orig (progn (py-end-of-statement) (py-beginning-of-statement)))
+                   (setq erg (and (py-forward-statement) (py-beginning-of-statement))))
+                  ((< orig (progn (py-forward-statement) (py-beginning-of-statement)))
                    (point))
-                  (t (and (py-end-of-statement) (py-end-of-statement)(py-beginning-of-statement))))))
+                  (t (and (py-forward-statement) (py-forward-statement)(py-beginning-of-statement))))))
             (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
             erg)
     erg))
@@ -3256,7 +3164,7 @@ Return position if " ele " found, nil otherwise. \"
   ;; down
   (dolist (ele py-down-forms)
     (if (string= "statement" ele)
-        (insert "\n(defalias 'py-down-statement 'py-end-of-statement)\n")
+        (insert "\n(defalias 'py-down-statement 'py-forward-statement)\n")
       (insert (concat "
 \(defun py-down-" ele " ()
   \"Go to the beginning of next " ele " below in buffer.
@@ -3279,7 +3187,7 @@ Return position if " ele " found, nil otherwise. \"
   ;; down bol
   (dolist (ele py-down-forms)
     (if (string= "statement" ele)
-        (insert "\n(defalias 'py-down-statement-bol 'py-end-of-statement-bol)\n")
+        (insert "\n(defalias 'py-down-statement-bol 'py-forward-statement-bol)\n")
       (insert (concat "
 \(defun py-down-" ele "-bol ()
   \"Go to the beginning of next " ele " below in buffer.
@@ -3392,7 +3300,7 @@ the default\"
                              py-block-comment-prefix
                            comment-start))
           (beg (or beg (py-beginning-of-" ele "-position)))
-          (end (or end (py-end-of-" ele "-position))))
+          (end (or end (py-forward-" ele "-position))))
       (goto-char beg)
       (push-mark)
       (goto-char end)
@@ -3589,7 +3497,7 @@ Return code of `py-" ele "' at point, a string. \"
   (insert arkopf)
   (insert"
 \;; (setq hs-block-start-regexp 'py-extended-block-or-clause-re)
-\;; (setq hs-forward-sexp-func 'py-end-of-block)
+\;; (setq hs-forward-sexp-func 'py-forward-block)
 
 \(defun py-hide-base (form &optional beg end)
   \"Hide visibility of existing form at point. \"
@@ -3598,7 +3506,7 @@ Return code of `py-" ele "' at point, a string. \"
     (let\* ((form (prin1-to-string form))
            (beg (or beg (or (funcall (intern-soft (concat \"py-beginning-of-\" form \"-p\")))
                             (funcall (intern-soft (concat \"py-beginning-of-\" form))))))
-           (end (or end (funcall (intern-soft (concat \"py-end-of-\" form)))))
+           (end (or end (funcall (intern-soft (concat \"py-forward-\" form)))))
            (modified (buffer-modified-p))
            (inhibit-read-only t))
       (if (and beg end)
@@ -3613,7 +3521,7 @@ Return code of `py-" ele "' at point, a string. \"
     (let\* ((form (prin1-to-string form))
            (beg (or beg (or (funcall (intern-soft (concat \"py-beginning-of-\" form \"-p\")))
                             (funcall (intern-soft (concat \"py-beginning-of-\" form))))))
-           (end (or end (funcall (intern-soft (concat \"py-end-of-\" form)))))
+           (end (or end (funcall (intern-soft (concat \"py-forward-\" form)))))
            (modified (buffer-modified-p))
            (inhibit-read-only t))
       (if (and beg end)
@@ -3629,7 +3537,7 @@ Return code of `py-" ele "' at point, a string. \"
     (let\* ((form (prin1-to-string form))
            (beg (or beg (or (funcall (intern-soft (concat \"py-beginning-of-\" form \"-p\")))
                             (funcall (intern-soft (concat \"py-beginning-of-\" form))))))
-           (end (or end (funcall (intern-soft (concat \"py-end-of-\" form)))))
+           (end (or end (funcall (intern-soft (concat \"py-forward-\" form)))))
            (modified (buffer-modified-p))
            (inhibit-read-only t))
       (if (and beg end)
@@ -3907,7 +3815,7 @@ class bar:
     (goto-char 103)
     (when py-debug-p (switch-to-buffer (current-buffer))
           (font-lock-fontify-buffer))
-    (py-end-of-" ele ")
+    (py-forward-" ele ")
     (should (eq (char-before) "))
     (cond ((string= "block" ele)
            (insert "?s"))
@@ -3957,7 +3865,7 @@ class bar:
     (when py-debug-p (switch-to-buffer (current-buffer))
           (font-lock-fontify-buffer))
     (goto-char 103)
-    (py-end-of-" ele "-bol)
+    (py-forward-" ele "-bol)
     (should (eq (point) "))
     (cond ((string= "block" ele)
            (insert "140"))
@@ -4043,7 +3951,7 @@ class bar:
                  (when (looking-at \"[ \\\\t\\\\r\\\\n\\\\f]\*\$\")
                    (skip-chars-backward \" \\t\\r\\n\\f\")
                    (forward-char -1))
-                 (py-end-of-" ele "))))
+                 (py-forward-" ele "))))
       erg)))\n")))
 
   (dolist (ele py-shift-bol-forms)
@@ -4055,7 +3963,7 @@ class bar:
                  (when (looking-at \"[ \\\\t\\\\r\\\\n\\\\f]\*\$\")
                    (skip-chars-backward \" \\t\\r\\n\\f\")
                    (forward-char -1))
-                 (py-end-of-" ele "-bol))))
+                 (py-forward-" ele "-bol))))
       erg)))
 ")))
  (insert "\n(provide 'python-components-end-position-forms)
@@ -4076,8 +3984,8 @@ class bar:
   (dolist (ele py-beg-end-forms)
     ;; beg-end check forms
     (insert (concat "
-\(defalias 'py-down-" ele " 'py-end-of-" ele ")
-\(defun py-end-of-" ele " (&optional indent)
+\(defalias 'py-down-" ele " 'py-forward-" ele ")
+\(defun py-forward-" ele " (&optional indent)
   \"Go to end of " ele ".
 
 Returns end of " ele " if successful, nil otherwise\"
@@ -4087,14 +3995,14 @@ Returns end of " ele " if successful, nil otherwise\"
     (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
     erg))
 
-\(defalias 'py-down-" ele "-lc 'py-end-of-" ele "-bol)
-\(defun py-end-of-" ele "-bol ()
+\(defalias 'py-down-" ele "-lc 'py-forward-" ele "-bol)
+\(defun py-forward-" ele "-bol ()
   \"Goto beginning of line following end of " ele ".
   Returns position reached, if successful, nil otherwise.
 
 See also `py-down-" ele "': down from current definition to next beginning of " ele " below. \"
   (interactive)
-  (let ((erg (py-end-of-" ele ")))
+  (let ((erg (py-forward-" ele ")))
     (setq erg (py--beginning-of-line-form))
     (when (interactive-p) (message \"%s\" erg))
     erg))
@@ -4128,7 +4036,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
       (insert "
       (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p))))\n"))
       (insert (concat " 
-        (py-end-of-" ele ")
+        (py-forward-" ele ")
         (py-beginning-of-" ele ")
         (when (eq orig (point))
           (setq erg orig)))
@@ -4141,7 +4049,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
         erg)
     (save-excursion
       (unless (and (eolp) (not (empty-line-p)))
-        (py-end-of-" ele "-bol))
+        (py-forward-" ele "-bol))
       (py-beginning-of-" ele "-bol)
       (when (eq orig (point))
         (setq erg orig))
@@ -4169,7 +4077,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
 	erg)
     (save-excursion
       (py-beginning-of-" ele ")
-      (py-end-of-" ele ")
+      (py-forward-" ele ")
       (when (eq orig (point))
 	(setq erg orig))
       erg)))\n")))
@@ -4182,7 +4090,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
 	erg)
     (save-excursion
       (py-beginning-of-" ele ")
-      (py-end-of-" ele "-bol)
+      (py-forward-" ele "-bol)
       (when (eq orig (point))
 	(setq erg orig))
       erg)))\n")))
@@ -4433,7 +4341,7 @@ Returns a list, whose car is beg, cdr - end.\"
       (widen)
       (when position (goto-char position))
       (let ((beg (py-beginning-of-" ele "-position))
-            (end (py-end-of-" ele "-position)))
+            (end (py-forward-" ele "-position)))
         (if (and beg end)
             (when (interactive-p) (message \"%s\" (list beg end)))
           (list beg end))))))\n\n

@@ -24,7 +24,7 @@
 
 ;;; Code:
 ;; Expression
-(defun py-beginning-of-expression (&optional arg)
+(defun py-backward-expression (&optional arg)
   "Go to the beginning of a compound python expression.
 
 With numeric ARG do it that many times.
@@ -43,7 +43,7 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
           (widen)
           (setq erg (py--beginning-of-expression-intern)))
       (setq arg (abs arg))
-      (setq erg (py-end-of-expression arg)))
+      (setq erg (py-forward-expression arg)))
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
@@ -65,8 +65,8 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
        ((nth 1 pps)
         (goto-char (nth 1 pps))
         (skip-chars-backward py-expression-skip-chars))
-       ;; (while (or (looking-back (concat py-string-delim-re py-expression-re py-string-delim-re py-operator-regexp) (line-beginning-position) t)
-       ;;             (looking-back (concat "[[:alnum:]_]*" py-operator-regexp "[ \t]*") (line-beginning-position) t))
+       ;; (while (or (looking-back (concat py-string-delim-re py-expression-re py-string-delim-re py-operator-re) (line-beginning-position) t)
+       ;;             (looking-back (concat "[[:alnum:]_]*" py-operator-re "[ \t]*") (line-beginning-position) t))
        ;;    (goto-char (match-beginning 0)))
        ;;)
        ;; listed elements
@@ -75,8 +75,8 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
              (goto-char (nth 8 pps)))
         (cond (;; consider expression a string starting at BOL
                (bolp))
-              ((looking-back py-assignment-regexp))
-              ((looking-back py-operator-regexp)
+              ((looking-back py-assignment-re))
+              ((looking-back py-operator-re)
                (when (nth 2 pps)
                  (goto-char (nth 2 pps))))
               (t (py--beginning-of-expression-intern orig))))
@@ -86,9 +86,9 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
         (unless (bobp)
           (py--beginning-of-expression-intern orig)))
        ;; concatenated strings
-       ((looking-back (concat py-string-delim-re py-expression-re py-string-delim-re py-operator-regexp py-string-delim-re py-expression-re py-string-delim-re))
+       ((looking-back (concat py-string-delim-re py-expression-re py-string-delim-re py-operator-re py-string-delim-re py-expression-re py-string-delim-re))
         (goto-char (match-beginning 0))
-        (while (looking-back (concat py-string-delim-re py-expression-re py-string-delim-re py-operator-regexp) (line-beginning-position) t)
+        (while (looking-back (concat py-string-delim-re py-expression-re py-string-delim-re py-operator-re) (line-beginning-position) t)
           (goto-char (match-beginning 0)))
         (skip-chars-backward py-expression-skip-chars))
        ;; before comment
@@ -99,18 +99,18 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
         (unless (bobp)
           (forward-char -1)
           (py--beginning-of-expression-intern orig)))
-       ((and (< (point) orig)(looking-at (concat py-expression-re py-delimiter-regexp))))
-       ((looking-back (concat "[^ \t\n\r\f]+" py-delimiter-regexp))
+       ((and (< (point) orig)(looking-at (concat py-expression-re py-delimiter-re))))
+       ((looking-back (concat "[^ \t\n\r\f]+" py-delimiter-re))
         (goto-char (match-beginning 0))
 	(skip-chars-backward py-expression-skip-chars)
-        (unless (or (looking-back py-assignment-regexp) (looking-back "^[ \t]*"))
+        (unless (or (looking-back py-assignment-re) (looking-back "^[ \t]*"))
           (py--beginning-of-expression-intern orig)))
        ;; before assignment
-       ((looking-back py-assignment-regexp)
+       ((looking-back py-assignment-re)
         (goto-char (1- (match-beginning 0)))
         (forward-char -1)
         (py--beginning-of-expression-intern orig))
-       ((looking-back py-operator-regexp)
+       ((looking-back py-operator-re)
         (goto-char (1- (match-beginning 0)))
         (forward-char -1)
         (unless (< 0 (abs (skip-chars-backward py-expression-skip-chars)))
@@ -118,22 +118,22 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
        ((looking-back "\"\\|'")
         (forward-char -1)
         (skip-chars-backward "\"'")
-        (unless (looking-back py-assignment-regexp)
+        (unless (looking-back py-assignment-re)
           (py--beginning-of-expression-intern orig)))
        ((looking-back "(\\|\\[")
         (forward-char -1)
-        (unless (looking-back py-assignment-regexp)
+        (unless (looking-back py-assignment-re)
           (py--beginning-of-expression-intern orig)))
        ((looking-back "[\])}]")
         (forward-char -1)
-        (unless (looking-back py-assignment-regexp)
+        (unless (looking-back py-assignment-re)
           (py--beginning-of-expression-intern orig)))
        ;; inside expression
        ((looking-back py-expression-re)
         (skip-chars-backward py-expression-skip-chars)
-        (unless (or (looking-back "^[ \t]*") (looking-back py-assignment-regexp))
+        (unless (or (looking-back "^[ \t]*") (looking-back py-assignment-re))
           (py--beginning-of-expression-intern orig)))
-       ((looking-back (concat "[ \t]*" "[[:alnum:]_]*" py-operator-regexp "[[:alnum:]_]*") (line-beginning-position) t)
+       ((looking-back (concat "[ \t]*" "[[:alnum:]_]*" py-operator-re "[[:alnum:]_]*") (line-beginning-position) t)
         (goto-char (match-beginning 0))
         (unless (looking-back "^[ \t]*")
           (py--beginning-of-expression-intern orig)))
@@ -157,110 +157,63 @@ Operators however are left aside resp. limit py-expression designed for edit-pur
         (setq erg (point)))
       erg)))
 
-(defun py-end-of-expression (&optional arg)
+(defun py-forward-expression (&optional orig done repeat)
   "Go to the end of a compound python expression.
 
-With numeric ARG do it that many times.
-
-A a compound python expression might be concatenated by \".\" operator, thus composed by minor python expressions.
-
-Expression here is conceived as the syntactical component of a statement in Python. See http://docs.python.org/reference
-
-Operators however are left aside resp. limit py-expression designed for edit-purposes. "
-  (interactive "p")
-  (or arg (setq arg 1))
-  (let (erg)
-    (if (< 0 arg)
-        (save-restriction
-          (widen)
-          (while (< 0 arg)
-            (setq erg (py--end-of-expression-intern))
-            (setq arg (1- arg))))
-      (setq arg (abs arg))
-      (setq erg (py-beginning-of-expression arg)))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
-    erg))
-
-(defun py--end-of-expression-intern (&optional orig)
+Operators are ignored. "
+  (interactive)
+  (unless done (skip-chars-forward " \t\r\n\f"))
   (unless (eobp)
-    (let* ((orig (or orig (point)))
-           (pps (parse-partial-sexp (point-min) (point)))
-           erg
-           ;; use by scan-lists
-           parse-sexp-ignore-comments)
+    (let ((repeat (or (and repeat (1+ repeat)) 0))
+	  (pps (parse-partial-sexp (point-min) (point)))
+          (orig (or orig (point)))
+          erg pos last
+          ;; use by scan-lists
+          ;; parse-sexp-ignore-comments
+          forward-sexp-function)
       (cond
-       ((nth 1 pps)
-        (goto-char (nth 1 pps))
-        (let ((parse-sexp-ignore-comments t))
-          (forward-list))
-        (unless (or (looking-at "[ \t]*$")(looking-at py-assignment-regexp))
-          (py--end-of-expression-intern orig)))
        ;; in comment
        ((nth 4 pps)
         (or (< (point) (progn (forward-comment 1)(point)))(forward-line 1))
-        (py--end-of-expression-intern orig))
-       ( ;; (empty-line-p)
-	(eq 9 (char-after))
-        (while
-            (and  ;; (empty-line-p)
-	     (eq 9 (char-after))(not (eobp)))
-          (forward-line 1))
-        (py--end-of-expression-intern orig))
-       ((looking-at (concat py-string-delim-re py-expression-re py-string-delim-re py-operator-regexp py-string-delim-re py-expression-re py-string-delim-re))
-        (goto-char (match-end 0))
-        (while (looking-at (concat py-operator-regexp py-string-delim-re py-expression-re py-string-delim-re))
-          (goto-char (match-end 0))))
-       ;; inside string
-       ((py-in-string-p)
-        (when (looking-at "\"\"\"\\|'''\\|\"\\|'")
-          (goto-char (match-end 0)))
-        (while
-            (nth 3 (parse-partial-sexp (point-min) (point)))
-          (forward-char 1))
-        (unless (looking-at "[ \t]*$")
-          (py--end-of-expression-intern orig)))
-       ((looking-at "[(\[]")
-        (forward-list)
-        (unless (looking-at "[ \t]*$")
-          (py--end-of-expression-intern orig)))
+        (py-forward-expression orig done repeat))
+       ;; empty before comment
        ((and (looking-at "[ \t]*#")(looking-back "^[ \t]*"))
         (while (and (looking-at "[ \t]*#") (not (eobp)))
           (forward-line 1))
-        (py--end-of-expression-intern orig))
-       ((and (eq orig (point)) (looking-at py-assignment-regexp))
-        (goto-char (match-end 0))
-        (if (looking-at "[(\[]")
-            (forward-list 1)
-          (py--end-of-expression-intern orig)))
-       ((looking-at (concat "[^ \t\n\r\f]*" py-delimiter-regexp))
-        (goto-char (match-end 0))
-        (while (looking-at (concat "[^ \t\n\r\f]*" py-delimiter-regexp))
-          (goto-char (match-end 0)))
-        (forward-char -1)
-        (unless (looking-at (concat py-assignment-regexp "\\|[ \t]*$\\|" py-delimiter-regexp))
-          (py--end-of-expression-intern orig)))
-       ((looking-at (concat "\\([[:alnum:] ]+ \\)" py-assignment-regexp))
-	(goto-char (match-end 1))
-	(skip-chars-backward " \t\r\n\f"))
-       ((and (eq orig (point)) (looking-at (concat "[ \t]*" "[^(\t\n\r\f]+" py-operator-regexp)))
-	(skip-chars-forward " \t\r\n\f")
-	(when (< 0 (skip-chars-forward py-expression-skip-chars))
-	  (py--end-of-expression-intern orig)))
-       ((and (eq orig (point)) (looking-at py-not-expression-regexp))
-        (skip-chars-forward py-not-expression-chars)
-        (unless (or (looking-at "[ \t]*$")(looking-at py-assignment-regexp))
-          (py--end-of-expression-intern orig)))
-       ((looking-at py-expression-skip-regexp)
-        (skip-chars-forward py-expression-skip-chars)
-        (unless (or (looking-at "[ \n\t\r\f]*$")(looking-at py-assignment-regexp))
-          (py--end-of-expression-intern orig)))
-       ((and (eq (point) orig)
-	     (skip-chars-forward " \t\r\n\f")
+        (py-forward-expression orig done repeat))
+       ;; inside string
+       ((nth 3 pps)
+	(goto-char (nth 8 pps))
+	(goto-char (scan-sexps (point) 1))
+	(setq done t)
+	(py-forward-expression orig done repeat))
+       ((looking-at "\"\"\"\\|'''\\|\"\\|'")
+	(goto-char (scan-sexps (point) 1))
+	(setq done t)
+	(py-forward-expression orig done repeat))
+       ((nth 1 pps)
+        (goto-char (nth 1 pps))
+	(goto-char (scan-sexps (point) 1))
+	(setq done t)
+	(py-forward-expression orig done repeat))
+       ;; looking at opening delimiter
+       ((eq 4 (car-safe (syntax-after (point))))
+	(goto-char (scan-sexps (point) 1))
+	(setq done t)
+	(py-forward-expression orig done repeat))
+       ((and (eq orig (point)) (looking-at py-operator-re))
+	(goto-char (match-end 0))
+	(py-forward-expression orig done repeat))
+       ((and (not done)
 	     (< 0 (skip-chars-forward py-expression-skip-chars)))
-	(py--end-of-expression-intern orig)))
-
+	(setq done t)
+	(py-forward-expression orig done repeat))
+       ;; at colon following arglist
+       ((looking-at ":[ \t]*$")
+	(forward-char 1)))
       (unless (or (eq (point) orig)(and (eobp)(bolp)))
-        (setq erg (point)))
+	(setq erg (point)))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
 (defun py-beginning-of-partial-expression (&optional orig)
@@ -433,7 +386,7 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
           (orig (or orig (point)))
           erg pos last
           ;; use by scan-lists
-          parse-sexp-ignore-comments
+          ;; parse-sexp-ignore-comments
           forward-sexp-function
           stringchar stm pps err)
       (unless done (py--skip-to-comment-or-semicolon))
@@ -845,17 +798,17 @@ Return position if successful"
   (let ((orig (point))
 	last)
     (while (and (re-search-forward py-section-end nil t 1)
-		(setq last (point)) 
+		(setq last (point))
 		(goto-char (match-beginning 0))
 		(nth 8 (parse-partial-sexp (point-min) (point)))
 		(goto-char (match-end 0))))
-    (and last (goto-char last)) 
+    (and last (goto-char last))
     (when (and (looking-back py-section-end)(< orig (point)))
       (point))))
 
 (defalias 'py-beginning-of-section 'py-backward-section)
 (defalias 'py-end-of-section 'py-forward-section)
-(defalias 'py-backward-expression 'py-beginning-of-expression)
+(defalias 'py-beginning-of-expression 'py-backward-expression)
 (defalias 'py-backward-partial-expression 'py-beginning-of-partial-expression)
 (defalias 'py-beginning-of-decorator-bol 'py-backward-decorator-bol)
 (defalias 'py-beginning-of-decorator 'py-backward-decorator)
@@ -866,7 +819,7 @@ Return position if successful"
 (defalias 'py-end-of-statement 'py-forward-statement)
 (defalias 'py-end-of-statement-bol 'py-forward-statement-bol)
 (defalias 'py-end-of-decorator 'py-forward-decorator)
-(defalias 'py-forward-expression 'py-end-of-expression)
+(defalias 'py-end-of-expression 'py-forward-expression)
 (defalias 'py-match-paren 'ar-py-match-paren)
 (defalias 'py-next-statement 'py-forward-statement)
 (defalias 'py-previous-statement 'py-beginning-of-statement)

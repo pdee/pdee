@@ -2145,8 +2145,10 @@ some logging etc. "
 (defvar py-expression-skip-regexp "[^ (=:#\t\r\n\f]"
   "py-expression assumes chars indicated possible composing a py-expression, skip it. ")
 
-(defvar py-expression-skip-chars "^ (:=#\t\r\n\f"
+(defvar py-expression-skip-chars "^ (=#\t\r\n\f"
   "py-expression assumes chars indicated possible composing a py-expression, skip it. ")
+
+(setq py-expression-skip-chars "^ [{(=#\t\r\n\f")
 
 (defvar py-expression-re "[^ =#\t\r\n\f]+"
   "py-expression assumes chars indicated possible composing a py-expression, when looking-at or -back. ")
@@ -2165,17 +2167,20 @@ some logging etc. "
 
 (defvar py-partial-expression-forward-chars "^ \"')}]:#\t\r\n\f")
 
-(defvar py-operator-regexp "[ \t]*\\(\\.\\|+\\|-\\|*\\|//\\|//\\|&\\|%\\||\\|\\^\\|>>\\|<<\\|<\\|<=\\|>\\|>=\\|==\\|!=\\)[ \t]*"
-  "Matches most of Python operators inclusive whitespaces around.
+(defvar py-operator-re "[ \t]*\\(\\.\\|+\\|-\\|*\\|//\\|//\\|&\\|%\\||\\|\\^\\|>>\\|<<\\|<\\|<=\\|>\\|>=\\|==\\|!=\\|=\\)[ \t]*"
+  "Matches most of Python syntactical meaningful characters, inclusive whitespaces around.
 
-See also `py-assignment-regexp' ")
+See also `py-assignment-re' ")
 
-(defvar py-assignment-regexp "[ \t]*=[^=]"
+;; (setq py-operator-re "[ \t]*\\(\\.\\|+\\|-\\|*\\|//\\|//\\|&\\|%\\||\\|\\^\\|>>\\|<<\\|<\\|<=\\|>\\|>=\\|==\\|!=\\|=\\)[ \t]*")
+
+
+(defvar py-assignment-re "[ \t]*=[^=]"
   "Matches assignment operator inclusive whitespaces around.
 
-See also `py-operator-regexp' ")
+See also `py-operator-re' ")
 
-(defvar py-delimiter-regexp "\\(\\.[[:alnum:]]\\|,\\|;\\|:\\)[ \t\n]"
+(defvar py-delimiter-re "\\(\\.[[:alnum:]]\\|,\\|;\\|:\\)[ \t\n]"
   "Delimiting elements of lists or other programming constructs. ")
 
 (defvar py-line-number-offset 0
@@ -3067,7 +3072,7 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
 (require 'python-components-mark-forms)
 (require 'python-components-copy-forms)
 (require 'python-components-delete-forms)
-(require 'python-components-bounds-forms)
+;; (require 'python-components-bounds-forms)
 (require 'python-components-execute)
 (require 'python-components-send)
 (require 'python-components-shell-complete)
