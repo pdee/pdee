@@ -186,6 +186,9 @@ See available customizations listed in files variables-python-mode at directory 
     (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class)
     (define-key python-mode-map [(control meta a)] 'py-beginning-of-def-or-class)
     (define-key python-mode-map [(control meta e)] 'py-end-of-def-or-class))
+  (when py-sexp-use-expression-p
+    	(define-key python-mode-map [(control meta f)] 'py-forward-expression)
+	(define-key python-mode-map [(control meta b)] 'py-backward-expression))
   (when (and py--imenu-create-index-p
              (fboundp 'imenu-add-to-menubar)
              (ignore-errors (require 'imenu)))
@@ -303,6 +306,9 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
               'py-shell-complete nil 'local)
     (add-to-list (make-local-variable 'comint-dynamic-complete-functions)
   		 'py-shell-complete))
+  (when py-sexp-use-expression-p
+    (define-key py-python-shell-mode-map [(control meta f)] 'py-forward-expression)
+    (define-key py-python-shell-mode-map [(control meta b)] 'py-backward-expression))
   (when py-shell-menu
     (easy-menu-add py-menu))
   (if py-shell-unfontify-p

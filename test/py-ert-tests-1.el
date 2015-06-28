@@ -47,8 +47,8 @@
             # print \"%i, Schwarz\" % (treffer)
             ausgabe[1] = treffer
 
-if True:
-    pass
+if __name__ == \"__main__\":
+    main()
 ")
 
 (setq ert-test-default-buffer "*Python*")
@@ -1036,6 +1036,53 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
       (should (string= "pdb3" (py--pdb-versioned))))
     (let ((py-shell-name "python"))
       (should (string= "pdb" (py--pdb-versioned))))))
+
+;; (ert-deftest py-ert-forward-expression-test ()
+;;     (py-test-with-temp-buffer-point-min
+;; 	py-def-and-class-test-string
+;;       (py-forward-expression)
+;;       (should (eq (char-before) ?s))
+;;       (py-forward-expression)
+;;       (should (eq (char-before) ?\)))
+;;       (py-forward-expression)
+;;       (should (eq (char-before) ?s))
+;;       (py-forward-expression)
+;;       (should (eq (char-before) ?s))
+;;       (py-forward-expression)
+;;       (should (eq (char-before) ?s))
+;;       (py-forward-expression)
+;;       (should (eq (char-before) ?s))
+
+;;       ))  
+
+;; class kugel(object):
+;;     zeit = time.strftime('%Y%m%d--%H-%M-%S')
+;;     # zeit = time.strftime('%Y-%m-%d--%H-%M-%S')
+;;     spiel = []
+;;     gruen = [0]
+;;     rot = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
+
+;;     def pylauf(self):
+;;         \"\"\"Eine Doku fuer pylauf\"\"\"
+;;         ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
+
+;;         ausgabe[0] = treffer
+;;         fertig = ''
+;; #        print \"treffer, schwarz, gruen, rot, pair, impair, passe, manque, spiel\"
+;;         if treffer in gruen:
+;;             # print \"0, Gruen\"
+;;             ausgabe[1] = treffer
+;;             ausgabe[2] = treffer
+
+;;         elif treffer in schwarz:
+;;             # print \"%i, Schwarz\" % (treffer)
+;;             ausgabe[1] = treffer
+
+;; if True:
+;;     pass
+
+;; if __name__ == "__main__":
+;;     main()
 
 (provide 'py-ert-tests-1)
 ;;; py-ert-tests-1.el ends here

@@ -1055,7 +1055,7 @@ print(\"%(language)s has %(number)03d quote types.\" %
 (ert-deftest py-ert-jump-matching-indent-test ()
   (py-test-with-temp-buffer
       py-def-and-class-test-string
-    (search-backward "if True:")
+    (search-backward "if ")
     (forward-line -1)
     (indent-to 12)
     (py-beginning-of-block)

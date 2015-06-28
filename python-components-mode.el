@@ -132,6 +132,14 @@ Results arrive in output buffer, which is not in comint-mode"
   :tag "py-fast-process-p"
   :group 'python-mode)
 
+(defcustom py-sexp-use-expression-p nil
+ "If non-nil, C-M-s call py-forward-expression. 
+
+Respective C-M-b will call py-backward-expression
+Default is t"
+:type 'boolean
+:group 'python-mode)
+
 (defcustom py-shell-unfontify-p t
  "Run `py--run-unfontify-timer' unfontifying the shell banner-text.
 
