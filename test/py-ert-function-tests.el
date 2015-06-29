@@ -378,23 +378,17 @@
 (ert-deftest py-ert-kill-statement-bol-functionp-test ()
   (should (functionp 'py-kill-statement-bol)))
 
-(ert-deftest py-ert-beginning-of-expression-functionp-test ()
-  (should (functionp 'py-beginning-of-expression)))
+(ert-deftest py-ert-backward-expression-functionp-test ()
+  (should (functionp 'py-backward-expression)))
 
-(ert-deftest py-ert--beginning-of-expression-intern-functionp-test ()
-  (should (functionp 'py--beginning-of-expression-intern)))
-
-(ert-deftest py-ert-end-of-expression-functionp-test ()
-  (should (functionp 'py-end-of-expression)))
-
-(ert-deftest py-forward-expression-functionp-test ()
+(ert-deftest py-ert-forward-expression-functionp-test ()
   (should (functionp 'py-forward-expression)))
 
 (ert-deftest py-ert-beginning-of-partial-expression-functionp-test ()
   (should (functionp 'py-beginning-of-partial-expression)))
 
-(ert-deftest py-ert-end-of-partial-expression-functionp-test ()
-  (should (functionp 'py-end-of-partial-expression)))
+(ert-deftest py-ert-forward-partial-expression-functionp-test ()
+  (should (functionp 'py-forward-partial-expression)))
 
 (ert-deftest py-ert-beginning-of-line-functionp-test ()
   (should (functionp 'py-beginning-of-line)))

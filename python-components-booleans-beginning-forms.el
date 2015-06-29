@@ -33,10 +33,9 @@
   (let ((orig (point))
         erg)
     (save-excursion
-      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p))))
- 
-        (py-end-of-block)
-        (py-beginning-of-block)
+      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p)))) 
+        (py-forward-block)
+        (py-backward-block)
         (when (eq orig (point))
           (setq erg orig)))
       erg)))
@@ -46,10 +45,9 @@
   (let ((orig (point))
         erg)
     (save-excursion
-      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p))))
- 
-        (py-end-of-block-or-clause)
-        (py-beginning-of-block-or-clause)
+      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p)))) 
+        (py-forward-block-or-clause)
+        (py-backward-block-or-clause)
         (when (eq orig (point))
           (setq erg orig)))
       erg)))
@@ -59,10 +57,9 @@
   (let ((orig (point))
         erg)
     (save-excursion
-      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p))))
- 
-        (py-end-of-class)
-        (py-beginning-of-class)
+      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p)))) 
+        (py-forward-class)
+        (py-backward-class)
         (when (eq orig (point))
           (setq erg orig)))
       erg)))
@@ -72,10 +69,9 @@
   (let ((orig (point))
         erg)
     (save-excursion
-      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p))))
- 
-        (py-end-of-clause)
-        (py-beginning-of-clause)
+      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p)))) 
+        (py-forward-clause)
+        (py-backward-clause)
         (when (eq orig (point))
           (setq erg orig)))
       erg)))
@@ -85,10 +81,9 @@
   (let ((orig (point))
         erg)
     (save-excursion
-      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p))))
- 
-        (py-end-of-comment)
-        (py-beginning-of-comment)
+      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p)))) 
+        (py-forward-comment)
+        (py-backward-comment)
         (when (eq orig (point))
           (setq erg orig)))
       erg)))
@@ -98,10 +93,9 @@
   (let ((orig (point))
         erg)
     (save-excursion
-      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p))))
- 
-        (py-end-of-def)
-        (py-beginning-of-def)
+      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p)))) 
+        (py-forward-def)
+        (py-backward-def)
         (when (eq orig (point))
           (setq erg orig)))
       erg)))
@@ -111,10 +105,9 @@
   (let ((orig (point))
         erg)
     (save-excursion
-      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p))))
- 
-        (py-end-of-def-or-class)
-        (py-beginning-of-def-or-class)
+      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p)))) 
+        (py-forward-def-or-class)
+        (py-backward-def-or-class)
         (when (eq orig (point))
           (setq erg orig)))
       erg)))
@@ -124,10 +117,9 @@
   (let ((orig (point))
         erg)
     (save-excursion
-      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p))))
- 
-        (py-end-of-elif-block)
-        (py-beginning-of-elif-block)
+      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p)))) 
+        (py-forward-elif-block)
+        (py-backward-elif-block)
         (when (eq orig (point))
           (setq erg orig)))
       erg)))
@@ -137,10 +129,9 @@
   (let ((orig (point))
         erg)
     (save-excursion
-      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p))))
- 
-        (py-end-of-else-block)
-        (py-beginning-of-else-block)
+      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p)))) 
+        (py-forward-else-block)
+        (py-backward-else-block)
         (when (eq orig (point))
           (setq erg orig)))
       erg)))
@@ -150,10 +141,9 @@
   (let ((orig (point))
         erg)
     (save-excursion
-      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p))))
- 
-        (py-end-of-except-block)
-        (py-beginning-of-except-block)
+      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p)))) 
+        (py-forward-except-block)
+        (py-backward-except-block)
         (when (eq orig (point))
           (setq erg orig)))
       erg)))
@@ -165,8 +155,8 @@
     (save-excursion
       (unless (and (eolp) (not (empty-line-p)))
  
-        (py-end-of-expression)
-        (py-beginning-of-expression)
+        (py-forward-expression)
+        (py-backward-expression)
         (when (eq orig (point))
           (setq erg orig)))
       erg)))
@@ -176,10 +166,9 @@
   (let ((orig (point))
         erg)
     (save-excursion
-      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p))))
- 
-        (py-end-of-for-block)
-        (py-beginning-of-for-block)
+      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p)))) 
+        (py-forward-for-block)
+        (py-backward-for-block)
         (when (eq orig (point))
           (setq erg orig)))
       erg)))
@@ -189,10 +178,9 @@
   (let ((orig (point))
         erg)
     (save-excursion
-      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p))))
- 
-        (py-end-of-if-block)
-        (py-beginning-of-if-block)
+      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p)))) 
+        (py-forward-if-block)
+        (py-backward-if-block)
         (when (eq orig (point))
           (setq erg orig)))
       erg)))
@@ -202,10 +190,9 @@
   (let ((orig (point))
         erg)
     (save-excursion
-      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p))))
- 
-        (py-end-of-minor-block)
-        (py-beginning-of-minor-block)
+      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p)))) 
+        (py-forward-minor-block)
+        (py-backward-minor-block)
         (when (eq orig (point))
           (setq erg orig)))
       erg)))
@@ -217,8 +204,8 @@
     (save-excursion
       (unless (and (eolp) (not (empty-line-p)))
  
-        (py-end-of-partial-expression)
-        (py-beginning-of-partial-expression)
+        (py-forward-partial-expression)
+        (py-backward-partial-expression)
         (when (eq orig (point))
           (setq erg orig)))
       erg)))
@@ -228,10 +215,9 @@
   (let ((orig (point))
         erg)
     (save-excursion
-      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p))))
- 
-        (py-end-of-section)
-        (py-beginning-of-section)
+      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p)))) 
+        (py-forward-section)
+        (py-backward-section)
         (when (eq orig (point))
           (setq erg orig)))
       erg)))
@@ -241,10 +227,9 @@
   (let ((orig (point))
         erg)
     (save-excursion
-      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p))))
- 
-        (py-end-of-statement)
-        (py-beginning-of-statement)
+      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p)))) 
+        (py-forward-statement)
+        (py-backward-statement)
         (when (eq orig (point))
           (setq erg orig)))
       erg)))
@@ -254,10 +239,9 @@
   (let ((orig (point))
         erg)
     (save-excursion
-      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p))))
- 
-        (py-end-of-top-level)
-        (py-beginning-of-top-level)
+      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p)))) 
+        (py-forward-top-level)
+        (py-backward-top-level)
         (when (eq orig (point))
           (setq erg orig)))
       erg)))
@@ -267,10 +251,9 @@
   (let ((orig (point))
         erg)
     (save-excursion
-      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p))))
- 
-        (py-end-of-try-block)
-        (py-beginning-of-try-block)
+      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p)))) 
+        (py-forward-try-block)
+        (py-backward-try-block)
         (when (eq orig (point))
           (setq erg orig)))
       erg)))
@@ -281,8 +264,8 @@
         erg)
     (save-excursion
       (unless (and (eolp) (not (empty-line-p)))
-        (py-end-of-block-bol))
-      (py-beginning-of-block-bol)
+        (py-forward-block-bol))
+      (py-backward-block-bol)
       (when (eq orig (point))
         (setq erg orig))
       erg)))
@@ -293,8 +276,8 @@
         erg)
     (save-excursion
       (unless (and (eolp) (not (empty-line-p)))
-        (py-end-of-clause-bol))
-      (py-beginning-of-clause-bol)
+        (py-forward-clause-bol))
+      (py-backward-clause-bol)
       (when (eq orig (point))
         (setq erg orig))
       erg)))
@@ -305,8 +288,8 @@
         erg)
     (save-excursion
       (unless (and (eolp) (not (empty-line-p)))
-        (py-end-of-block-or-clause-bol))
-      (py-beginning-of-block-or-clause-bol)
+        (py-forward-block-or-clause-bol))
+      (py-backward-block-or-clause-bol)
       (when (eq orig (point))
         (setq erg orig))
       erg)))
@@ -317,8 +300,8 @@
         erg)
     (save-excursion
       (unless (and (eolp) (not (empty-line-p)))
-        (py-end-of-def-bol))
-      (py-beginning-of-def-bol)
+        (py-forward-def-bol))
+      (py-backward-def-bol)
       (when (eq orig (point))
         (setq erg orig))
       erg)))
@@ -329,8 +312,8 @@
         erg)
     (save-excursion
       (unless (and (eolp) (not (empty-line-p)))
-        (py-end-of-class-bol))
-      (py-beginning-of-class-bol)
+        (py-forward-class-bol))
+      (py-backward-class-bol)
       (when (eq orig (point))
         (setq erg orig))
       erg)))
@@ -341,8 +324,8 @@
         erg)
     (save-excursion
       (unless (and (eolp) (not (empty-line-p)))
-        (py-end-of-def-or-class-bol))
-      (py-beginning-of-def-or-class-bol)
+        (py-forward-def-or-class-bol))
+      (py-backward-def-or-class-bol)
       (when (eq orig (point))
         (setq erg orig))
       erg)))
@@ -353,8 +336,8 @@
         erg)
     (save-excursion
       (unless (and (eolp) (not (empty-line-p)))
-        (py-end-of-if-block-bol))
-      (py-beginning-of-if-block-bol)
+        (py-forward-if-block-bol))
+      (py-backward-if-block-bol)
       (when (eq orig (point))
         (setq erg orig))
       erg)))
@@ -365,8 +348,8 @@
         erg)
     (save-excursion
       (unless (and (eolp) (not (empty-line-p)))
-        (py-end-of-try-block-bol))
-      (py-beginning-of-try-block-bol)
+        (py-forward-try-block-bol))
+      (py-backward-try-block-bol)
       (when (eq orig (point))
         (setq erg orig))
       erg)))
@@ -377,8 +360,8 @@
         erg)
     (save-excursion
       (unless (and (eolp) (not (empty-line-p)))
-        (py-end-of-minor-block-bol))
-      (py-beginning-of-minor-block-bol)
+        (py-forward-minor-block-bol))
+      (py-backward-minor-block-bol)
       (when (eq orig (point))
         (setq erg orig))
       erg)))
@@ -389,8 +372,8 @@
         erg)
     (save-excursion
       (unless (and (eolp) (not (empty-line-p)))
-        (py-end-of-for-block-bol))
-      (py-beginning-of-for-block-bol)
+        (py-forward-for-block-bol))
+      (py-backward-for-block-bol)
       (when (eq orig (point))
         (setq erg orig))
       erg)))
@@ -401,8 +384,8 @@
         erg)
     (save-excursion
       (unless (and (eolp) (not (empty-line-p)))
-        (py-end-of-top-level-bol))
-      (py-beginning-of-top-level-bol)
+        (py-forward-top-level-bol))
+      (py-backward-top-level-bol)
       (when (eq orig (point))
         (setq erg orig))
       erg)))
@@ -413,8 +396,8 @@
         erg)
     (save-excursion
       (unless (and (eolp) (not (empty-line-p)))
-        (py-end-of-statement-bol))
-      (py-beginning-of-statement-bol)
+        (py-forward-statement-bol))
+      (py-backward-statement-bol)
       (when (eq orig (point))
         (setq erg orig))
       erg)))

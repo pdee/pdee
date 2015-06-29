@@ -1078,34 +1078,34 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
       (should (eq (char-before) ?\)))
       ))
 
-;; class kugel(object):
-;;     zeit = time.strftime('%Y%m%d--%H-%M-%S')
-;;     # zeit = time.strftime('%Y-%m-%d--%H-%M-%S')
-;;     spiel = []
-;;     gruen = [0]
-;;     rot = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
-
-;;     def pylauf(self):
-;;         \"\"\"Eine Doku fuer pylauf\"\"\"
-;;         ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
-
-;;         ausgabe[0] = treffer
-;;         fertig = ''
-;; #        print \"treffer, schwarz, gruen, rot, pair, impair, passe, manque, spiel\"
-;;         if treffer in gruen:
-;;             # print \"0, Gruen\"
-;;             ausgabe[1] = treffer
-;;             ausgabe[2] = treffer
-
-;;         elif treffer in schwarz:
-;;             # print \"%i, Schwarz\" % (treffer)
-;;             ausgabe[1] = treffer
-
-;; if True:
-;;     pass
-
-;; if __name__ == "__main__":
-;;     main()
+(ert-deftest py-ert-backward-expression-test ()
+    (py-test-with-temp-buffer
+	py-def-and-class-test-string
+      (py-backward-expression)
+      (should (eq (char-after) ?m))
+      (py-backward-expression)
+      (should (eq (char-after) ?\"))
+      (py-backward-expression)
+      (should (eq (char-after) ?_))
+      (py-backward-expression)
+      (should (eq (char-after) ?i))
+      (py-backward-expression)
+      (should (eq (char-after) ?t))
+      (py-backward-expression)
+      (should (eq (char-after) ?a))
+      (py-backward-expression)
+      (should (eq (char-after) ?s))
+      (py-backward-expression)
+      (should (eq (char-after) ?i))
+      (beginning-of-line) 
+      (search-backward "if") 
+      (py-backward-expression)
+      (should (eq (char-after) ?'))
+      (search-backward "ausgabe")
+      (py-backward-expression)
+      (should (eq (char-after) ?\[))
+      
+      ))
 
 (provide 'py-ert-tests-1)
 ;;; py-ert-tests-1.el ends here

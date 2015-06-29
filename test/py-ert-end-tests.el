@@ -246,7 +246,7 @@ class bar:
     (py-end-of-expression)
     (should (eq (char-before) ?r))))
 
-(ert-deftest py-ert-end-of-partial-expression-test ()
+(ert-deftest py-ert-forward-partial-expression-test ()
   (py-test-with-temp-buffer
       "
 # -*- coding: utf-8 -*-
@@ -260,7 +260,7 @@ class bar:
             block2
 "
     (goto-char 103)
-    (py-end-of-partial-expression)
+    (py-forward-partial-expression)
     (should (eq (char-before) ?r))))
 
 (ert-deftest py-ert-end-of-block-bol-test ()

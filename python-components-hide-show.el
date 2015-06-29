@@ -30,8 +30,8 @@
   (save-excursion
     (let* ((form (prin1-to-string form))
 	   (beg (or beg (or (funcall (intern-soft (concat "py--beginning-of-" form "-p")))
-			    (funcall (intern-soft (concat "py-beginning-of-" form))))))
-	   (end (or end (funcall (intern-soft (concat "py-end-of-" form)))))
+			    (funcall (intern-soft (concat "py-backward-" form))))))
+	   (end (or end (funcall (intern-soft (concat "py-forward-" form)))))
 	   (modified (buffer-modified-p))
 	   (inhibit-read-only t))
       (if (and beg end)

@@ -4034,10 +4034,10 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
 	(insert "
       (unless (and (eolp) (not (empty-line-p)))\n")
       (insert "
-      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p))))\n"))
+      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p))))"))
       (insert (concat " 
         (py-forward-" ele ")
-        (py-beginning-of-" ele ")
+        (py-backward-" ele ")
         (when (eq orig (point))
           (setq erg orig)))
       erg)))\n")))
@@ -4050,7 +4050,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
     (save-excursion
       (unless (and (eolp) (not (empty-line-p)))
         (py-forward-" ele "-bol))
-      (py-beginning-of-" ele "-bol)
+      (py-backward-" ele "-bol)
       (when (eq orig (point))
         (setq erg orig))
       erg)))\n")))
@@ -4076,7 +4076,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
   (let ((orig (point))
 	erg)
     (save-excursion
-      (py-beginning-of-" ele ")
+      (py-backward-" ele ")
       (py-forward-" ele ")
       (when (eq orig (point))
 	(setq erg orig))
@@ -4089,7 +4089,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
   (let ((orig (point))
 	erg)
     (save-excursion
-      (py-beginning-of-" ele ")
+      (py-backward-" ele ")
       (py-forward-" ele "-bol)
       (when (eq orig (point))
 	(setq erg orig))
