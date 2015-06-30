@@ -76,18 +76,6 @@
           (setq erg orig)))
       erg)))
 
-(defun py--beginning-of-comment-p ()
-  "Returns position, if cursor is at the beginning of a `comment', nil otherwise. "
-  (let ((orig (point))
-        erg)
-    (save-excursion
-      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p)))) 
-        (py-forward-comment)
-        (py-backward-comment)
-        (when (eq orig (point))
-          (setq erg orig)))
-      erg)))
-
 (defun py--beginning-of-def-p ()
   "Returns position, if cursor is at the beginning of a `def', nil otherwise. "
   (let ((orig (point))

@@ -60,14 +60,6 @@ Stores data in kill ring"
   (let ((erg (py--mark-base "clause")))
     (kill-region (car erg) (cdr erg))))
 
-(defun py-kill-comment ()
-  "Delete `comment' at point.
-
-Stores data in kill ring"
-  (interactive "*")
-  (let ((erg (py--mark-base "comment")))
-    (kill-region (car erg) (cdr erg))))
-
 (defun py-kill-def ()
   "Delete `def' at point.
 

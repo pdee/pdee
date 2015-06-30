@@ -4452,7 +4452,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
   (py-write-beginning-position-forms)
   (py-write-booleans-beginning-forms)
   (py-write-booleans-end-forms)
-  (py-write-bounds-forms)
+  ;; (py-write-bounds-forms)
   (py-write-copy-forms)
   (py-write-delete-forms)
   (py-write-end-position-forms)

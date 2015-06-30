@@ -69,17 +69,6 @@
 	(setq erg orig))
       erg)))
 
-(defun py--end-of-comment-p ()
-  "Returns position, if cursor is at the end of a comment, nil otherwise. "
-  (let ((orig (point))
-	erg)
-    (save-excursion
-      (py-backward-comment)
-      (py-forward-comment)
-      (when (eq orig (point))
-	(setq erg orig))
-      erg)))
-
 (defun py--end-of-def-p ()
   "Returns position, if cursor is at the end of a def, nil otherwise. "
   (let ((orig (point))
