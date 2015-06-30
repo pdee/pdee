@@ -35,7 +35,7 @@
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
-                 (py-end-of-block))))
+                 (py-forward-block))))
       erg)))
 
 (defun py--end-of-block-or-clause-position ()
@@ -45,7 +45,7 @@
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
-                 (py-end-of-block-or-clause))))
+                 (py-forward-block-or-clause))))
       erg)))
 
 (defun py--end-of-buffer-position ()
@@ -55,7 +55,7 @@
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
-                 (py-end-of-buffer))))
+                 (py-forward-buffer))))
       erg)))
 
 (defun py--end-of-class-position ()
@@ -65,7 +65,7 @@
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
-                 (py-end-of-class))))
+                 (py-forward-class))))
       erg)))
 
 (defun py--end-of-clause-position ()
@@ -75,7 +75,7 @@
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
-                 (py-end-of-clause))))
+                 (py-forward-clause))))
       erg)))
 
 (defun py--end-of-def-position ()
@@ -85,7 +85,7 @@
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
-                 (py-end-of-def))))
+                 (py-forward-def))))
       erg)))
 
 (defun py--end-of-def-or-class-position ()
@@ -95,7 +95,7 @@
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
-                 (py-end-of-def-or-class))))
+                 (py-forward-def-or-class))))
       erg)))
 
 (defun py--end-of-else-block-position ()
@@ -105,7 +105,7 @@
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
-                 (py-end-of-else-block))))
+                 (py-forward-else-block))))
       erg)))
 
 (defun py--end-of-except-block-position ()
@@ -115,7 +115,7 @@
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
-                 (py-end-of-except-block))))
+                 (py-forward-except-block))))
       erg)))
 
 (defun py--end-of-expression-position ()
@@ -135,7 +135,7 @@
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
-                 (py-end-of-if-block))))
+                 (py-forward-if-block))))
       erg)))
 
 (defun py--end-of-minor-block-position ()
@@ -145,7 +145,7 @@
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
-                 (py-end-of-minor-block))))
+                 (py-forward-minor-block))))
       erg)))
 
 (defun py--end-of-partial-expression-position ()
@@ -155,7 +155,7 @@
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
-                 (py-end-of-partial-expression))))
+                 (py-forward-partial-expression))))
       erg)))
 
 (defun py--end-of-section-position ()
@@ -165,7 +165,7 @@
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
-                 (py-end-of-section))))
+                 (py-forward-section))))
       erg)))
 
 (defun py--end-of-statement-position ()
@@ -175,7 +175,7 @@
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
-                 (py-end-of-statement))))
+                 (py-forward-statement))))
       erg)))
 
 (defun py--end-of-top-level-position ()
@@ -185,7 +185,7 @@
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
-                 (py-end-of-top-level))))
+                 (py-forward-top-level))))
       erg)))
 
 (defun py--end-of-try-block-position ()
@@ -195,7 +195,7 @@
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
-                 (py-end-of-try-block))))
+                 (py-forward-try-block))))
       erg)))
 
 (defun py--end-of-block-position-bol ()
@@ -205,7 +205,7 @@
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
-                 (py-end-of-block-bol))))
+                 (py-forward-block-bol))))
       erg)))
 
 (defun py--end-of-block-or-clause-position-bol ()
@@ -215,7 +215,7 @@
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
-                 (py-end-of-block-or-clause-bol))))
+                 (py-forward-block-or-clause-bol))))
       erg)))
 
 (defun py--end-of-class-position-bol ()
@@ -225,7 +225,7 @@
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
-                 (py-end-of-class-bol))))
+                 (py-forward-class-bol))))
       erg)))
 
 (defun py--end-of-clause-position-bol ()
@@ -235,7 +235,7 @@
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
-                 (py-end-of-clause-bol))))
+                 (py-forward-clause-bol))))
       erg)))
 
 (defun py--end-of-def-position-bol ()
@@ -245,7 +245,7 @@
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
-                 (py-end-of-def-bol))))
+                 (py-forward-def-bol))))
       erg)))
 
 (defun py--end-of-def-or-class-position-bol ()
@@ -255,7 +255,7 @@
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
-                 (py-end-of-def-or-class-bol))))
+                 (py-forward-def-or-class-bol))))
       erg)))
 
 (defun py--end-of-elif-block-position-bol ()
@@ -265,7 +265,7 @@
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
-                 (py-end-of-elif-block-bol))))
+                 (py-forward-elif-block-bol))))
       erg)))
 
 (defun py--end-of-else-block-position-bol ()
@@ -275,7 +275,7 @@
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
-                 (py-end-of-else-block-bol))))
+                 (py-forward-else-block-bol))))
       erg)))
 
 (defun py--end-of-except-block-position-bol ()
@@ -285,7 +285,7 @@
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
-                 (py-end-of-except-block-bol))))
+                 (py-forward-except-block-bol))))
       erg)))
 
 (defun py--end-of-for-block-position-bol ()
@@ -295,7 +295,7 @@
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
-                 (py-end-of-for-block-bol))))
+                 (py-forward-for-block-bol))))
       erg)))
 
 (defun py--end-of-if-block-position-bol ()
@@ -305,7 +305,7 @@
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
-                 (py-end-of-if-block-bol))))
+                 (py-forward-if-block-bol))))
       erg)))
 
 (defun py--end-of-minor-block-position-bol ()
@@ -315,7 +315,7 @@
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
-                 (py-end-of-minor-block-bol))))
+                 (py-forward-minor-block-bol))))
       erg)))
 
 (defun py--end-of-paragraph-position-bol ()
@@ -325,7 +325,7 @@
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
-                 (py-end-of-paragraph-bol))))
+                 (py-forward-paragraph-bol))))
       erg)))
 
 (defun py--end-of-statement-position-bol ()
@@ -335,7 +335,7 @@
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
-                 (py-end-of-statement-bol))))
+                 (py-forward-statement-bol))))
       erg)))
 
 (defun py--end-of-try-block-position-bol ()
@@ -345,7 +345,7 @@
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
-                 (py-end-of-try-block-bol))))
+                 (py-forward-try-block-bol))))
       erg)))
 
 (provide 'python-components-end-position-forms)

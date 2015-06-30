@@ -344,7 +344,7 @@ I.e. switch it from \"True\" to \"False\" and vice versa"
   (interactive "*")
   (save-excursion
     (unless (py--end-of-statement-p)
-      (py-end-of-statement))
+      (py-forward-statement))
     (backward-word)
     (cond ((looking-at "True")
            (replace-match "False"))

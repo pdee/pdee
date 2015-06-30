@@ -272,7 +272,7 @@ When indent is set back manually, this is honoured in following lines. "
 	  (cond (this-dedent
 		 (indent-to-column this-dedent))
 		((and py-empty-line-closes-p (or (eq this-command last-command)(py--after-empty-line)))
-		 (indent-to-column (save-excursion (py-beginning-of-statement)(- (current-indentation) py-indent-offset))))
+		 (indent-to-column (save-excursion (py-backward-statement)(- (current-indentation) py-indent-offset))))
 		(t
 		 (fixup-whitespace)
 		 (indent-to-column (py-compute-indentation)))))
@@ -351,14 +351,14 @@ Returns value of `indent-tabs-mode' switched to. "
                     (py--beginning-of-statement-p)
                     (current-indentation)
                   (progn
-                    (py-end-of-statement)
-                    (py-beginning-of-statement)
+                    (py-forward-statement)
+                    (py-backward-statement)
                     (current-indentation))))
          (second (if (or (looking-at py-extended-block-or-clause-re)(eq 0 first))
                      (progn
-                       (py-end-of-statement)
-                       (py-end-of-statement)
-                       (py-beginning-of-statement)
+                       (py-forward-statement)
+                       (py-forward-statement)
+                       (py-backward-statement)
                        (current-indentation))
                    ;; when not starting from block, look above
                    (while (and (re-search-backward py-extended-block-or-clause-re nil 'movet 1)
@@ -376,7 +376,7 @@ Returns value of `indent-tabs-mode' switched to. "
                                      (nth 8 (parse-partial-sexp (point-min) (point))))))
                      (unless (bobp) (point))))
          (first (and pos (current-indentation)))
-         (second (and pos (py-end-of-statement) (py-end-of-statement) (py-beginning-of-statement)(current-indentation))))
+         (second (and pos (py-forward-statement) (py-forward-statement) (py-backward-statement)(current-indentation))))
     (list first second)))
 
 (defun py-guess-indent-offset (&optional direction)
@@ -421,15 +421,15 @@ downwards from beginning of block followed by a statement. Otherwise default-val
       (max comment-column (+ (current-column) (if (bolp) 0 1))))))
 
 ;;  make general form below work also in these cases
-;;  (defalias 'py-beginning-of-paragraph 'backward-paragraph)
-(defun py-beginning-of-paragraph ()
+;;  (defalias 'py-backward-paragraph 'backward-paragraph)
+(defun py-backward-paragraph ()
   (interactive)
   (let ((erg (and (backward-paragraph)(point))))
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
 ;;  (defalias 'py-end-of-paragraph 'forward-paragraph)
-(defun py-end-of-paragraph ()
+(defun py-forward-paragraph ()
   (interactive)
   (let ((erg (and (forward-paragraph)(point))))
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
@@ -500,7 +500,7 @@ See also py--bounds-of-statements "
   (let* ((orig-indent (progn
                         (back-to-indentation)
                         (unless (py--beginning-of-statement-p)
-                          (py-beginning-of-statement))
+                          (py-backward-statement))
                         (unless (py--beginning-of-block-p)
                           (current-indentation))))
          (orig (point))
@@ -511,9 +511,9 @@ See also py--bounds-of-statements "
       (while (and
               (progn
                 (unless (py--beginning-of-statement-p)
-                  (py-beginning-of-statement))
+                  (py-backward-statement))
                 (line-beginning-position))
-              (py-beginning-of-statement)
+              (py-backward-statement)
               (not (py--beginning-of-block-p))
               (eq (current-indentation) orig-indent))
         (setq beg (line-beginning-position)))
@@ -531,8 +531,8 @@ See also py--bounds-of-statements "
         (when (interactive-p) (message "%s" nil))
         nil))))
 
-(defalias 'py-backward-declarations 'py-beginning-of-declarations)
-(defun py-beginning-of-declarations ()
+(defalias 'py-backward-declarations 'py-backward-declarations)
+(defun py-backward-declarations ()
   "Got to the beginning of assigments resp. statements in current level which don't open blocks.
 "
   (interactive)
@@ -542,8 +542,7 @@ See also py--bounds-of-statements "
     (when (interactive-p) (message "%s" erg))
     erg))
 
-(defalias 'py-forward-of-declarations 'py-end-of-declarations)
-(defun py-end-of-declarations ()
+(defun py-forward-declarations ()
   "Got to the end of assigments resp. statements in current level which don't open blocks. "
   (interactive)
   (let* ((bounds (py--bounds-of-declarations))
@@ -593,7 +592,7 @@ Indented same level, which don't open blocks. "
   (let* ((orig-indent (progn
                         (back-to-indentation)
                         (unless (py--beginning-of-statement-p)
-                          (py-beginning-of-statement))
+                          (py-backward-statement))
                         (unless (py--beginning-of-block-p)
                           (current-indentation))))
          (orig (point))
@@ -602,7 +601,7 @@ Indented same level, which don't open blocks. "
       (setq beg (point))
       (while (and (setq last beg)
                   (setq beg
-                        (when (py-beginning-of-statement)
+                        (when (py-backward-statement)
                           (line-beginning-position)))
                   (not (py-in-string-p))
                   (not (py--beginning-of-block-p))
@@ -626,8 +625,7 @@ Indented same level, which don't open blocks. "
         (when (interactive-p) (message "%s" nil))
         nil))))
 
-(defalias 'py-backward-statements 'py-beginning-of-statements)
-(defun py-beginning-of-statements ()
+(defun py-backward-statements ()
   "Got to the beginning of statements in current level which don't open blocks. "
   (interactive)
   (let* ((bounds (py--bounds-of-statements))
@@ -636,8 +634,7 @@ Indented same level, which don't open blocks. "
     (when (interactive-p) (message "%s" erg))
     erg))
 
-(defalias 'py-forward-of-statements 'py-end-of-statements)
-(defun py-end-of-statements ()
+(defun py-forward-statements ()
   "Got to the end of statements in current level which don't open blocks. "
   (interactive)
   (let* ((bounds (py--bounds-of-statements))
@@ -703,7 +700,7 @@ Returns the string inserted. "
   (interactive "*")
   (let* ((orig (point))
          (funcname (progn
-                     (py-beginning-of-def)
+                     (py-backward-def)
                      (when (looking-at (concat py-def-re " *\\([^(]+\\) *(\\(?:[^),]*\\),? *\\([^)]*\\))"))
                        (match-string-no-properties 2))))
          (args (match-string-no-properties 3))
@@ -711,7 +708,7 @@ Returns the string inserted. "
          classname erg)
     (if (< ver 3)
         (progn
-          (py-beginning-of-class)
+          (py-backward-class)
           (when (looking-at (concat py-class-re " *\\([^( ]+\\)"))
             (setq classname (match-string-no-properties 2)))
           (goto-char orig)

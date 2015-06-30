@@ -385,7 +385,7 @@
   (should (functionp 'py-forward-expression)))
 
 (ert-deftest py-ert-beginning-of-partial-expression-functionp-test ()
-  (should (functionp 'py-beginning-of-partial-expression)))
+  (should (functionp 'py-backward-partial-expression)))
 
 (ert-deftest py-ert-forward-partial-expression-functionp-test ()
   (should (functionp 'py-forward-partial-expression)))
@@ -396,28 +396,28 @@
 (ert-deftest py-ert-end-of-line-functionp-test ()
   (should (functionp 'py-end-of-line)))
 
-(ert-deftest py-ert-beginning-of-statement-functionp-test ()
-  (should (functionp 'py-beginning-of-statement)))
+(ert-deftest py-ert-backward-statement-functionp-test ()
+  (should (functionp 'py-backward-statement)))
 
 (ert-deftest py-ert-beginning-of-statement-bol-functionp-test ()
-  (should (functionp 'py-beginning-of-statement-bol)))
+  (should (functionp 'py-backward-statement-bol)))
 
 (ert-deftest py-ert-end-of-statement-functionp-test ()
-  (should (functionp 'py-end-of-statement)))
+  (should (functionp 'py-forward-statement)))
 
 (ert-deftest py-ert-end-of-statement-bol-functionp-test ()
-  (should (functionp 'py-end-of-statement-bol)))
+  (should (functionp 'py-forward-statement-bol)))
 
-(ert-deftest py-ert-beginning-of-decorator-functionp-test ()
-  (should (functionp 'py-beginning-of-decorator)))
+(ert-deftest py-ert-backward-decorator-functionp-test ()
+  (should (functionp 'py-backward-decorator)))
 
 (ert-deftest py-ert-end-of-decorator-functionp-test ()
-  (should (functionp 'py-end-of-decorator)))
+  (should (functionp 'py-forward-decorator)))
 
 (ert-deftest py-ert-forward-line-functionp-test ()
   (should (functionp 'py-forward-line)))
 
-(ert-deftest py-ert-go-to-beginning-of-comment-functionp-test ()
+(ert-deftest py-ert-go-to-backward-comment-functionp-test ()
   (should (functionp 'py-go-to-beginning-of-comment)))
 
 (ert-deftest py-ert--go-to-keyword-functionp-test ()
@@ -1452,11 +1452,11 @@
 (ert-deftest py-ert--comment-indent-function-functionp-test ()
   (should (functionp 'py--comment-indent-function)))
 
-(ert-deftest py-ert-beginning-of-paragraph-functionp-test ()
-  (should (functionp 'py-beginning-of-paragraph)))
+(ert-deftest py-ert-backward-paragraph-functionp-test ()
+  (should (functionp 'py-backward-paragraph)))
 
 (ert-deftest py-ert-end-of-paragraph-functionp-test ()
-  (should (functionp 'py-end-of-paragraph)))
+  (should (functionp 'py-forward-paragraph)))
 
 (ert-deftest py-ert-indent-and-forward-functionp-test ()
   (should (functionp 'py-indent-and-forward)))
@@ -1467,11 +1467,11 @@
 (ert-deftest py-ert--beginning-of-buffer-position-functionp-test ()
   (should (functionp 'py--beginning-of-buffer-position)))
 
-(ert-deftest py-ert-beginning-of-declarations-functionp-test ()
-  (should (functionp 'py-beginning-of-declarations)))
+(ert-deftest py-ert-backward-declarations-functionp-test ()
+  (should (functionp 'py-backward-declarations)))
 
 (ert-deftest py-ert-end-of-declarations-functionp-test ()
-  (should (functionp 'py-end-of-declarations)))
+  (should (functionp 'py-forward-declarations)))
 
 (ert-deftest py-ert-declarations-functionp-test ()
   (should (functionp 'py-declarations)))
@@ -1479,11 +1479,11 @@
 (ert-deftest py-ert-kill-declarations-functionp-test ()
   (should (functionp 'py-kill-declarations)))
 
-(ert-deftest py-ert-beginning-of-statements-functionp-test ()
-  (should (functionp 'py-beginning-of-statements)))
+(ert-deftest py-ert-backward-statements-functionp-test ()
+  (should (functionp 'py-backward-statements)))
 
 (ert-deftest py-ert-end-of-statements-functionp-test ()
-  (should (functionp 'py-end-of-statements)))
+  (should (functionp 'py-forward-statements)))
 
 (ert-deftest py-ert-statements-functionp-test ()
   (should (functionp 'py-statements)))
@@ -1558,70 +1558,70 @@
   (should (functionp 'py-pdb-break)))
 
 (ert-deftest py-ert-end-of-block-functionp-test ()
-  (should (functionp 'py-end-of-block)))
+  (should (functionp 'py-forward-block)))
 
 (ert-deftest py-ert-end-of-block-bol-functionp-test ()
-  (should (functionp 'py-end-of-block-bol)))
+  (should (functionp 'py-forward-block-bol)))
 
 (ert-deftest py-ert-end-of-clause-functionp-test ()
-  (should (functionp 'py-end-of-clause)))
+  (should (functionp 'py-forward-clause)))
 
 (ert-deftest py-ert-end-of-clause-bol-functionp-test ()
-  (should (functionp 'py-end-of-clause-bol)))
+  (should (functionp 'py-forward-clause-bol)))
 
 (ert-deftest py-ert-end-of-block-or-clause-functionp-test ()
-  (should (functionp 'py-end-of-block-or-clause)))
+  (should (functionp 'py-forward-block-or-clause)))
 
 (ert-deftest py-ert-end-of-block-or-clause-bol-functionp-test ()
-  (should (functionp 'py-end-of-block-or-clause-bol)))
+  (should (functionp 'py-forward-block-or-clause-bol)))
 
 (ert-deftest py-ert-end-of-def-functionp-test ()
-  (should (functionp 'py-end-of-def)))
+  (should (functionp 'py-forward-def)))
 
 (ert-deftest py-ert-end-of-def-bol-functionp-test ()
-  (should (functionp 'py-end-of-def-bol)))
+  (should (functionp 'py-forward-def-bol)))
 
 (ert-deftest py-ert-end-of-class-functionp-test ()
-  (should (functionp 'py-end-of-class)))
+  (should (functionp 'py-forward-class)))
 
 (ert-deftest py-ert-end-of-class-bol-functionp-test ()
-  (should (functionp 'py-end-of-class-bol)))
+  (should (functionp 'py-forward-class-bol)))
 
 (ert-deftest py-ert-end-of-def-or-class-functionp-test ()
-  (should (functionp 'py-end-of-def-or-class)))
+  (should (functionp 'py-forward-def-or-class)))
 
 (ert-deftest py-ert-end-of-def-or-class-bol-functionp-test ()
-  (should (functionp 'py-end-of-def-or-class-bol)))
+  (should (functionp 'py-forward-def-or-class-bol)))
 
 (ert-deftest py-ert-end-of-if-block-functionp-test ()
-  (should (functionp 'py-end-of-if-block)))
+  (should (functionp 'py-forward-if-block)))
 
 (ert-deftest py-ert-end-of-if-block-bol-functionp-test ()
-  (should (functionp 'py-end-of-if-block-bol)))
+  (should (functionp 'py-forward-if-block-bol)))
 
 (ert-deftest py-ert-end-of-try-block-functionp-test ()
-  (should (functionp 'py-end-of-try-block)))
+  (should (functionp 'py-forward-try-block)))
 
 (ert-deftest py-ert-end-of-try-block-bol-functionp-test ()
-  (should (functionp 'py-end-of-try-block-bol)))
+  (should (functionp 'py-forward-try-block-bol)))
 
 (ert-deftest py-ert-end-of-minor-block-functionp-test ()
-  (should (functionp 'py-end-of-minor-block)))
+  (should (functionp 'py-forward-minor-block)))
 
 (ert-deftest py-ert-end-of-minor-block-bol-functionp-test ()
-  (should (functionp 'py-end-of-minor-block-bol)))
+  (should (functionp 'py-forward-minor-block-bol)))
 
 (ert-deftest py-ert-end-of-for-block-functionp-test ()
-  (should (functionp 'py-end-of-for-block)))
+  (should (functionp 'py-forward-for-block)))
 
 (ert-deftest py-ert-end-of-for-block-bol-functionp-test ()
-  (should (functionp 'py-end-of-for-block-bol)))
+  (should (functionp 'py-forward-for-block-bol)))
 
 (ert-deftest py-ert-end-of-except-block-functionp-test ()
-  (should (functionp 'py-end-of-except-block)))
+  (should (functionp 'py-forward-except-block)))
 
 (ert-deftest py-ert-end-of-except-block-bol-functionp-test ()
-  (should (functionp 'py-end-of-except-block-bol)))
+  (should (functionp 'py-forward-except-block-bol)))
 
 (ert-deftest py-ert-execute-statement-functionp-test ()
   (should (functionp 'py-execute-statement)))
@@ -1767,71 +1767,71 @@
 (ert-deftest py-ert-underscore-word-syntax-p-off-functionp-test ()
   (should (functionp 'py-underscore-word-syntax-p-off)))
 
-(ert-deftest py-ert-beginning-of-block-functionp-test ()
-  (should (functionp 'py-beginning-of-block)))
+(ert-deftest py-ert-backward-block-functionp-test ()
+  (should (functionp 'py-backward-block)))
 
-(ert-deftest py-ert-beginning-of-clause-functionp-test ()
-  (should (functionp 'py-beginning-of-clause)))
+(ert-deftest py-ert-backward-clause-functionp-test ()
+  (should (functionp 'py-backward-clause)))
 
 (ert-deftest py-ert-beginning-of-block-or-clause-functionp-test ()
-  (should (functionp 'py-beginning-of-block-or-clause)))
+  (should (functionp 'py-backward-block-or-clause)))
 
-(ert-deftest py-ert-beginning-of-def-functionp-test ()
-  (should (functionp 'py-beginning-of-def)))
+(ert-deftest py-ert-backward-def-functionp-test ()
+  (should (functionp 'py-backward-def)))
 
-(ert-deftest py-ert-beginning-of-class-functionp-test ()
-  (should (functionp 'py-beginning-of-class)))
+(ert-deftest py-ert-backward-class-functionp-test ()
+  (should (functionp 'py-backward-class)))
 
 (ert-deftest py-ert-beginning-of-def-or-class-functionp-test ()
-  (should (functionp 'py-beginning-of-def-or-class)))
+  (should (functionp 'py-backward-def-or-class)))
 
 (ert-deftest py-ert-beginning-of-if-block-functionp-test ()
-  (should (functionp 'py-beginning-of-if-block)))
+  (should (functionp 'py-backward-if-block)))
 
 (ert-deftest py-ert-beginning-of-try-block-functionp-test ()
-  (should (functionp 'py-beginning-of-try-block)))
+  (should (functionp 'py-backward-try-block)))
 
 (ert-deftest py-ert-beginning-of-minor-block-functionp-test ()
-  (should (functionp 'py-beginning-of-minor-block)))
+  (should (functionp 'py-backward-minor-block)))
 
 (ert-deftest py-ert-beginning-of-for-block-functionp-test ()
-  (should (functionp 'py-beginning-of-for-block)))
+  (should (functionp 'py-backward-for-block)))
 
 (ert-deftest py-ert-beginning-of-except-block-functionp-test ()
-  (should (functionp 'py-beginning-of-except-block)))
+  (should (functionp 'py-backward-except-block)))
 
-(ert-deftest py-ert-beginning-of-block-bol-functionp-test ()
-  (should (functionp 'py-beginning-of-block-bol)))
+(ert-deftest py-ert-backward-block-bol-functionp-test ()
+  (should (functionp 'py-backward-block-bol)))
 
-(ert-deftest py-ert-beginning-of-clause-bol-functionp-test ()
-  (should (functionp 'py-beginning-of-clause-bol)))
+(ert-deftest py-ert-backward-clause-bol-functionp-test ()
+  (should (functionp 'py-backward-clause-bol)))
 
-(ert-deftest py-ert-beginning-of-block-or-clause-bol-functionp-test ()
-  (should (functionp 'py-beginning-of-block-or-clause-bol)))
+(ert-deftest py-ert-backward-block-or-clause-bol-functionp-test ()
+  (should (functionp 'py-backward-block-or-clause-bol)))
 
-(ert-deftest py-ert-beginning-of-def-bol-functionp-test ()
-  (should (functionp 'py-beginning-of-def-bol)))
+(ert-deftest py-ert-backward-def-bol-functionp-test ()
+  (should (functionp 'py-backward-def-bol)))
 
-(ert-deftest py-ert-beginning-of-class-bol-functionp-test ()
-  (should (functionp 'py-beginning-of-class-bol)))
+(ert-deftest py-ert-backward-class-bol-functionp-test ()
+  (should (functionp 'py-backward-class-bol)))
 
-(ert-deftest py-ert-beginning-of-def-or-class-bol-functionp-test ()
-  (should (functionp 'py-beginning-of-def-or-class-bol)))
+(ert-deftest py-ert-backward-def-or-class-bol-functionp-test ()
+  (should (functionp 'py-backward-def-or-class-bol)))
 
-(ert-deftest py-ert-beginning-of-if-block-bol-functionp-test ()
-  (should (functionp 'py-beginning-of-if-block-bol)))
+(ert-deftest py-ert-backward-if-block-bol-functionp-test ()
+  (should (functionp 'py-backward-if-block-bol)))
 
-(ert-deftest py-ert-beginning-of-try-block-bol-functionp-test ()
-  (should (functionp 'py-beginning-of-try-block-bol)))
+(ert-deftest py-ert-backward-try-block-bol-functionp-test ()
+  (should (functionp 'py-backward-try-block-bol)))
 
-(ert-deftest py-ert-beginning-of-minor-block-bol-functionp-test ()
-  (should (functionp 'py-beginning-of-minor-block-bol)))
+(ert-deftest py-ert-backward-minor-block-bol-functionp-test ()
+  (should (functionp 'py-backward-minor-block-bol)))
 
-(ert-deftest py-ert-beginning-of-for-block-bol-functionp-test ()
-  (should (functionp 'py-beginning-of-for-block-bol)))
+(ert-deftest py-ert-backward-for-block-bol-functionp-test ()
+  (should (functionp 'py-backward-for-block-bol)))
 
-(ert-deftest py-ert-beginning-of-except-block-bol-functionp-test ()
-  (should (functionp 'py-beginning-of-except-block-bol)))
+(ert-deftest py-ert-backward-except-block-bol-functionp-test ()
+  (should (functionp 'py-backward-except-block-bol)))
 
 (ert-deftest py-ert-comment-auto-fill-functionp-test ()
   (should (functionp 'py-comment-auto-fill)))
@@ -1842,17 +1842,17 @@
 (ert-deftest py-ert-comment-auto-fill-off-functionp-test ()
   (should (functionp 'py-comment-auto-fill-off)))
 
-(ert-deftest py-ert-beginning-of-elif-block-functionp-test ()
-  (should (functionp 'py-beginning-of-elif-block)))
+(ert-deftest py-ert-backward-elif-block-functionp-test ()
+  (should (functionp 'py-backward-elif-block)))
 
-(ert-deftest py-ert-beginning-of-else-block-functionp-test ()
-  (should (functionp 'py-beginning-of-else-block)))
+(ert-deftest py-ert-backward-else-block-functionp-test ()
+  (should (functionp 'py-backward-else-block)))
 
-(ert-deftest py-ert-beginning-of-elif-block-bol-functionp-test ()
-  (should (functionp 'py-beginning-of-elif-block-bol)))
+(ert-deftest py-ert-backward-elif-block-bol-functionp-test ()
+  (should (functionp 'py-backward-elif-block-bol)))
 
-(ert-deftest py-ert-beginning-of-else-block-bol-functionp-test ()
-  (should (functionp 'py-beginning-of-else-block-bol)))
+(ert-deftest py-ert-backward-else-block-bol-functionp-test ()
+  (should (functionp 'py-backward-else-block-bol)))
 
 (ert-deftest py-ert-indent-forward-line-functionp-test ()
   (should (functionp 'py-indent-forward-line)))
@@ -1884,10 +1884,10 @@
 (ert-deftest py-ert-ar-py-function-at-point-functionp-test ()
   (should (functionp 'ar-py-function-at-point)))
 
-(ert-deftest py-ert-ar-py-beginning-of-function-functionp-test ()
+(ert-deftest py-ert-ar-py-backward-function-functionp-test ()
   (should (functionp 'ar-py-beginning-of-function)))
 
-(ert-deftest py-ert-ar-py-beginning-of-class-functionp-test ()
+(ert-deftest py-ert-ar-py-backward-class-functionp-test ()
   (should (functionp 'ar-py-beginning-of-class)))
 
 (ert-deftest py-ert-ar-py-end-of-function-functionp-test ()
@@ -1924,16 +1924,16 @@
   (should (functionp 'py-boolswitch)))
 
 (ert-deftest py-ert-end-of-elif-block-functionp-test ()
-  (should (functionp 'py-end-of-elif-block)))
+  (should (functionp 'py-forward-elif-block)))
 
 (ert-deftest py-ert-end-of-elif-block-bol-functionp-test ()
-  (should (functionp 'py-end-of-elif-block-bol)))
+  (should (functionp 'py-forward-elif-block-bol)))
 
 (ert-deftest py-ert-end-of-else-block-functionp-test ()
-  (should (functionp 'py-end-of-else-block)))
+  (should (functionp 'py-forward-else-block)))
 
 (ert-deftest py-ert-end-of-else-block-bol-functionp-test ()
-  (should (functionp 'py-end-of-else-block-bol)))
+  (should (functionp 'py-forward-else-block-bol)))
 
 (ert-deftest py-ert-mark-paragraph-functionp-test ()
   (should (functionp 'py-mark-paragraph)))
@@ -2076,9 +2076,6 @@
 (ert-deftest py-ert---emacs-version-greater-23-functionp-test ()
   (should (functionp 'py---emacs-version-greater-23)))
 
-(ert-deftest py-ert-beginning-of-comments-functionp-test ()
-  (should (functionp 'py-beginning-of-comments)))
-
 (ert-deftest py-ert--empty-arglist-indent-functionp-test ()
   (should (functionp 'py--empty-arglist-indent)))
 
@@ -2125,7 +2122,7 @@
   (should (functionp 'py-in-statement-p)))
 
 (ert-deftest py-ert-beginning-of-top-level-p-functionp-test ()
-  (should (functionp 'py-beginning-of-top-level-p)))
+  (should (functionp 'py-backward-top-level-p)))
 
 (ert-deftest py-ert--beginning-of-line-p-functionp-test ()
   (should (functionp 'py--beginning-of-line-p)))
@@ -2202,9 +2199,6 @@
 (ert-deftest py-ert-install-local-shells-functionp-test ()
   (should (functionp 'py-install-local-shells)))
 
-(ert-deftest py-ert-end-of-string-functionp-test ()
-  (should (functionp 'py-end-of-string)))
-
 (ert-deftest py-ert--until-found-functionp-test ()
   (should (functionp 'py--until-found)))
 
@@ -2223,8 +2217,8 @@
 (ert-deftest py-ert--beginning-of-form-intern-functionp-test ()
   (should (functionp 'py--beginning-of-form-intern)))
 
-(ert-deftest py-ert--beginning-of-prepare-functionp-test ()
-  (should (functionp 'py--beginning-of-prepare)))
+(ert-deftest py-ert--backward-prepare-functionp-test ()
+  (should (functionp 'py--backward-prepare)))
 
 (ert-deftest py-ert--fetch-first-python-buffer-functionp-test ()
   (should (functionp 'py--fetch-first-python-buffer)))
@@ -2244,14 +2238,14 @@
 (ert-deftest py-ert--skip-to-comment-or-semicolon-functionp-test ()
   (should (functionp 'py--skip-to-comment-or-semicolon)))
 
-(ert-deftest py-ert-beginning-of-top-level-functionp-test ()
-  (should (functionp 'py-beginning-of-top-level)))
+(ert-deftest py-ert-backward-top-level-functionp-test ()
+  (should (functionp 'py-backward-top-level)))
 
 (ert-deftest py-ert-end-of-top-level-functionp-test ()
-  (should (functionp 'py-end-of-top-level)))
+  (should (functionp 'py-forward-top-level)))
 
 (ert-deftest py-ert-end-of-top-level-bol-functionp-test ()
-  (should (functionp 'py-end-of-top-level-bol)))
+  (should (functionp 'py-forward-top-level-bol)))
 
 (ert-deftest py-ert-up-functionp-test ()
   (should (functionp 'py-up)))
@@ -2508,11 +2502,14 @@
 (ert-deftest py-ert-electric-yank-functionp-test ()
   (should (functionp 'py-electric-yank)))
 
+(ert-deftest py-ert-backward-comment-functionp-test ()
+  (should (functionp 'py-backward-comment)))
+
+(ert-deftest py-ert-forward-comment-functionp-test ()
+  (should (functionp 'py-forward-comment)))
+
 (ert-deftest py-ert-beginning-of-comment-functionp-test ()
   (should (functionp 'py-beginning-of-comment)))
-
-(ert-deftest py-ert-end-of-comment-functionp-test ()
-  (should (functionp 'py-end-of-comment)))
 
 (ert-deftest py-ert--uncomment-intern-functionp-test ()
   (should (functionp 'py--uncomment-intern)))
@@ -2770,31 +2767,31 @@
   (should (functionp 'py-shift-statement-left)))
 
 (ert-deftest py-ert-end-of-block-functionp-test ()
-  (should (functionp 'py-end-of-block)))
+  (should (functionp 'py-forward-block)))
 
 (ert-deftest py-ert-end-of-clause-functionp-test ()
-  (should (functionp 'py-end-of-clause)))
+  (should (functionp 'py-forward-clause)))
 
 (ert-deftest py-ert-end-of-block-or-clause-functionp-test ()
-  (should (functionp 'py-end-of-block-or-clause)))
+  (should (functionp 'py-forward-block-or-clause)))
 
 (ert-deftest py-ert-end-of-def-functionp-test ()
-  (should (functionp 'py-end-of-def)))
+  (should (functionp 'py-forward-def)))
 
 (ert-deftest py-ert-end-of-class-functionp-test ()
-  (should (functionp 'py-end-of-class)))
+  (should (functionp 'py-forward-class)))
 
 (ert-deftest py-ert-end-of-def-or-class-functionp-test ()
-  (should (functionp 'py-end-of-def-or-class)))
+  (should (functionp 'py-forward-def-or-class)))
 
 (ert-deftest py-ert-end-of-if-block-functionp-test ()
-  (should (functionp 'py-end-of-if-block)))
+  (should (functionp 'py-forward-if-block)))
 
 (ert-deftest py-ert-end-of-try-block-functionp-test ()
-  (should (functionp 'py-end-of-try-block)))
+  (should (functionp 'py-forward-try-block)))
 
 (ert-deftest py-ert-end-of-minor-block-functionp-test ()
-  (should (functionp 'py-end-of-minor-block)))
+  (should (functionp 'py-forward-minor-block)))
 
 (ert-deftest py-ert-execute-section-functionp-test ()
   (should (functionp 'py-execute-section)))

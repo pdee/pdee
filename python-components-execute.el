@@ -1110,7 +1110,7 @@ See also `py-execute-region'. "
         (done done))
     (if done (goto-char done) (goto-char (point-min)))
     (cond ((re-search-forward "^from __future__ import " nil t 1)
-           (py-end-of-statement)
+           (py-forward-statement)
            (setq done (point))
            (py--insert-execute-directory directory orig done))
           ((re-search-forward py-encoding-string-re nil t 1)

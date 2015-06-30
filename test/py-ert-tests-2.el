@@ -489,7 +489,7 @@ pass
       (sit-for 0.1 t)
       (should (buffer-live-p (get-buffer "*Python2*"))))))
 
-(ert-deftest py-beginning-of-statement-test-1 ()
+(ert-deftest py-backward-statement-test-1 ()
   (py-test-with-temp-buffer
       (let ((py-return-result-p t)
 	    py-result py-store-result-p)
@@ -508,26 +508,26 @@ def foo(*args):2
 ")
     (when py-debug-p (switch-to-buffer (current-buffer))
 	  (font-lock-fontify-buffer))
-    (py-beginning-of-statement)
+    (py-backward-statement)
     (should (eq (char-after) ?a))
-    (py-beginning-of-statement)
+    (py-backward-statement)
     (should (eq (char-after) ?\"))
-    (py-beginning-of-statement)
+    (py-backward-statement)
     (should (eq (char-after) ?d))
-    (py-beginning-of-statement)
+    (py-backward-statement)
     (should (eq (char-after) ?o))
-    (py-beginning-of-statement)
+    (py-backward-statement)
     (should (eq (char-after) ?i))
-    (py-beginning-of-statement)
+    (py-backward-statement)
     (should (eq (char-after) ?c))
-    (py-beginning-of-statement)
+    (py-backward-statement)
     (should (eq (char-after) ?c))
-    (py-beginning-of-statement)
+    (py-backward-statement)
     (should (eq (char-after) ?p))
-    (py-beginning-of-statement)
+    (py-backward-statement)
     (should (bobp))))
 
-(ert-deftest py-ert-beginning-of-except-block-test ()
+(ert-deftest py-ert-backward-except-block-test ()
   (py-test-with-temp-buffer
       "
 # -*- coding: utf-8 -*-
@@ -542,10 +542,10 @@ class bar:
 "
     (when py-debug-p (switch-to-buffer (current-buffer))
           (font-lock-fontify-buffer))
-    (py-beginning-of-except-block)
+    (py-backward-except-block)
     (should (eq (char-after) ?e))))
 
-(ert-deftest py-ert-beginning-of-except-block-bol-test ()
+(ert-deftest py-ert-backward-except-block-bol-test ()
   (py-test-with-temp-buffer
       "
 # -*- coding: utf-8 -*-
@@ -560,7 +560,7 @@ class bar:
 "
     (when py-debug-p (switch-to-buffer (current-buffer))
           (font-lock-fontify-buffer))
-    (py-beginning-of-except-block-bol)
+    (py-backward-except-block-bol)
     (should (eq (char-after) ?\ ))))
 
   ;; (and (bufferp (get-buffer "*Python*"))(buffer-live-p (get-buffer "*Python*"))(py-kill-buffer-unconditional "*Python*"))
@@ -856,19 +856,6 @@ class asdf:
    (forward-line -1)
    (should (eq 4 (current-indentation)))))
 
-;; (ert-deftest py-builtins-face-lp-1454858-1-test ()
-;;   (py-test-with-temp-buffer
-;;       "#! /usr/bin/env python2
-;; file.close()"
-;;     (beginning-of-line)
-;;     (should (eq (face-at-point) 'py-builtins-face))))
-
-;; (ert-deftest py-builtins-face-lp-1454858-2-test ()
-;;   (py-test-with-temp-buffer
-;;       "#! /usr/bin/env python3
-;; file.close()"
-;;     (beginning-of-line)
-;;     (should-not (eq (face-at-point) 'py-builtins-face))))
 
 (ert-deftest py-face-lp-1454858-python2-1-test ()
   (let ((py-python-edit-version ""))
@@ -1058,7 +1045,7 @@ print(\"%(language)s has %(number)03d quote types.\" %
     (search-backward "if ")
     (forward-line -1)
     (indent-to 12)
-    (py-beginning-of-block)
+    (py-backward-block)
     (should (eq (current-column) 8))))
 
 (provide 'py-ert-tests-2)

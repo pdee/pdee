@@ -121,13 +121,13 @@ Operators are ignored. "
 	(when (and py-verbose-p (interactive-p)) (message "%s" erg))
 	erg))))
 
-(defun py-beginning-of-partial-expression (&optional orig)
+(defun py-backward-partial-expression (&optional orig)
   (interactive)
   (let ((orig (point))
 	erg)
     (and (< 0 (abs (skip-chars-backward " \t\r\n\f")))(not (bobp))(forward-char -1))
     (when (py--in-comment-p)
-      (py-beginning-of-comment)
+      (py-backward-comment)
       (skip-chars-backward " \t\r\n\f"))
     ;; part of py-partial-expression-forward-chars
     (when (member (char-after) (list ?\ ?\" ?' ?\) ?} ?\] ?: ?#))
@@ -190,8 +190,8 @@ If already at end-of-line and not at EOB, go to end of next line. "
 (defun py-backward-statement (&optional orig done limit)
   "Go to the initial line of a simple statement.
 
-For beginning of compound statement use py-beginning-of-block.
-For beginning of clause py-beginning-of-clause."
+For beginning of compound statement use py-backward-block.
+For beginning of clause py-backward-clause."
   (interactive)
   (save-restriction
     (unless (bobp)
@@ -210,51 +210,51 @@ For beginning of clause py-beginning-of-clause."
         (cond
          ((and (bolp)(eolp))
           (skip-chars-backward " \t\r\n\f")
-          (py-beginning-of-statement orig done limit))
+          (py-backward-statement orig done limit))
          ((nth 8 pps)
 	  ;; inside string
           (and (nth 3 pps) (setq done t))
           (goto-char (nth 8 pps))
-          (py-beginning-of-statement orig done limit))
+          (py-backward-statement orig done limit))
          ((nth 1 pps)
           (goto-char (1- (nth 1 pps)))
 	  (py--skip-to-semicolon-backward (save-excursion (back-to-indentation)(point)))
           (setq done t)
-          (py-beginning-of-statement orig done limit))
+          (py-backward-statement orig done limit))
          ((py-preceding-line-backslashed-p)
           (forward-line -1)
           (back-to-indentation)
           (setq done t)
-          (py-beginning-of-statement orig done limit))
+          (py-backward-statement orig done limit))
 	 ;; BOL or at space before comment
          ((and (looking-at "[ \t]*#")(looking-back "^[ \t]*"))
           (forward-comment -1)
           (while (and (not (bobp)) (looking-at "[ \t]*#")(looking-back "^[ \t]*"))
             (forward-comment -1))
           (unless (bobp)
-            (py-beginning-of-statement orig done limit)))
+            (py-backward-statement orig done limit)))
 	 ;; at inline comment
          ((looking-at "[ \t]*#")
 	  (when (py--skip-to-semicolon-backward (save-excursion (back-to-indentation)(point)))
 	    (skip-chars-forward " \t")
 	    (unless (bobp)
-	      (py-beginning-of-statement orig done limit))))
+	      (py-backward-statement orig done limit))))
 	 ;; at beginning of string
          ((and (not done) (looking-at py-string-delim-re))
           (when (< 0 (abs (skip-chars-backward " \t\r\n\f")))
             (setq done t))
           (back-to-indentation)
-          (py-beginning-of-statement orig done limit))
+          (py-backward-statement orig done limit))
 	 ;; after end of statement
 	 ((and (not done) (eq (char-before) ?\;))
 	  (skip-chars-backward ";")
-	  (py-beginning-of-statement orig done limit))
+	  (py-backward-statement orig done limit))
 	 ;; travel until indentation or semicolon
 	 ((and (not done) (py--skip-to-semicolon-backward (save-excursion (back-to-indentation)(point))))
-	  (py-beginning-of-statement orig done limit))
+	  (py-backward-statement orig done limit))
 	 ;; at current indent
 	 ((and (not done) (not (eq 0 (skip-chars-backward " \t\r\n\f"))))
-          (py-beginning-of-statement orig done limit)))
+          (py-backward-statement orig done limit)))
 	;; return nil when before comment
 	(unless (and (looking-at "[ \t]*#") (looking-back "^[ \t]*"))
 	  (when (< (point) orig)(setq erg (point))))
@@ -272,8 +272,8 @@ See also `py-up-statement': up from current definition to next beginning of stat
 	 (orig (point))
          erg)
     (if indent
-        (while (and (setq erg (py-beginning-of-statement)) (< indent (current-indentation))(not (bobp))))
-      (setq erg (py-beginning-of-statement)))
+        (while (and (setq erg (py-backward-statement)) (< indent (current-indentation))(not (bobp))))
+      (setq erg (py-backward-statement)))
     ;; reset
     (setq py-bol-forms-last-indent nil)
     (beginning-of-line)
@@ -435,15 +435,15 @@ Travels right-margin comments. "
     (forward-line arg)
     (end-of-line)
     (skip-chars-backward " \t")
-    (py-beginning-of-comment)
+    (py-backward-comment)
     (skip-chars-backward " \t")))
 
 (defun py-go-to-beginning-of-comment ()
   "Go to the beginning of current line's comment, if any.
 
-From a programm use macro `py-beginning-of-comment' instead "
+From a programm use macro `py-backward-comment' instead "
   (interactive)
-  (let ((erg (py-beginning-of-comment)))
+  (let ((erg (py-backward-comment)))
     (when (and py-verbose-p (interactive-p))
       (message "%s" erg))))
 
@@ -453,7 +453,7 @@ From a programm use macro `py-beginning-of-comment' instead "
         (maxindent
          (if (empty-line-p)
              (progn
-               (py-beginning-of-statement)
+               (py-backward-statement)
                (current-indentation))
            (or maxindent (and (< 0 (current-indentation))(current-indentation))
                ;; make maxindent large enough if not set
@@ -462,7 +462,7 @@ From a programm use macro `py-beginning-of-comment' instead "
         done erg cui)
     (while (and (not done) (not (bobp)))
       (while (and (re-search-backward regexp nil 'move 1)(nth 8 (parse-partial-sexp (point-min) (point)))))
-      ;; (or (< (point) orig) (py-beginning-of-statement))
+      ;; (or (< (point) orig) (py-backward-statement))
       (if (and (looking-at regexp)(if maxindent
                                       (<= (current-indentation) maxindent) t))
           (progn
@@ -479,7 +479,7 @@ From a programm use macro `py-beginning-of-comment' instead "
   (let* ((orig (or orig (point)))
          (origline (or origline (py-count-lines)))
          (stop (if (< 0 arg)'(eobp)'(bobp)))
-         (function (if (< 0 arg) 'py-forward-statement 'py-beginning-of-statement))
+         (function (if (< 0 arg) 'py-forward-statement 'py-backward-statement))
          (count 1)
          (maxindent (cond (indent indent)
                           ((< (py-count-lines) origline)
@@ -661,7 +661,7 @@ Takes a list, INDENT and START position. "
     (let ((orig (or orig (point)))
           last)
       (while (and (setq last (point))(not (eobp))(py-forward-statement)
-                  (save-excursion (or (<= indent (progn  (py-beginning-of-statement)(current-indentation)))(eq last (line-beginning-position))))x
+                  (save-excursion (or (<= indent (progn  (py-backward-statement)(current-indentation)))(eq last (line-beginning-position))))x
                   ;; (py--end-of-statement-p)
 ))
       (goto-char last)
@@ -711,24 +711,46 @@ Return position if successful"
     (when (and (looking-back py-section-end)(< orig (point)))
       (point))))
 
-(defalias 'py-beginning-of-section 'py-backward-section)
-(defalias 'py-end-of-section 'py-forward-section)
-(defalias 'py-beginning-of-expression 'py-backward-expression)
-(defalias 'py-backward-partial-expression 'py-beginning-of-partial-expression)
-(defalias 'py-beginning-of-decorator-bol 'py-backward-decorator-bol)
+(defalias 'beginning-of-class 'py-beginning-of-class)
+(defalias 'end-of-def-or-class 'py-end-of-def-or-class)
+(defalias 'py-beginning-of-block 'py-backward-block)
+(defalias 'py-beginning-of-minor-block 'py-backward-minor-block)
+(defalias 'py-beginning-of-block-or-clause 'py-backward-block-or-clause)
+(defalias 'py-beginning-of-class 'py-backward-class)
+(defalias 'py-beginning-of-class-bol 'py-backward-class-bol)
+(defalias 'py-beginning-of-clause 'py-backward-clause)
+(defalias 'py-beginning-of-clause-bol 'py-backward-clause-bol)
+(defalias 'py-beginning-of-comment 'py-backward-comment)
 (defalias 'py-beginning-of-decorator 'py-backward-decorator)
-(defalias 'py-backward-def 'py-beginning-of-def)
+(defalias 'py-beginning-of-decorator-bol 'py-backward-decorator-bol)
+(defalias 'py-beginning-of-def-or-class 'py-backward-def-or-class)
+(defalias 'py-beginning-of-expression 'py-backward-expression)
+(defalias 'py-beginning-of-partial-expression 'py-backward-partial-expression)
+(defalias 'py-beginning-of-section 'py-backward-section)
 (defalias 'py-beginning-of-statement 'py-backward-statement)
 (defalias 'py-beginning-of-statement-bol 'py-backward-statement-bol)
-(defalias 'py-beginning-of-statement-lc 'py-backward-statement-bol)
-(defalias 'py-end-of-statement 'py-forward-statement)
-(defalias 'py-end-of-statement-bol 'py-forward-statement-bol)
+(defalias 'py-beginning-of-top-level 'py-backward-top-level)
 (defalias 'py-end-of-decorator 'py-forward-decorator)
+(defalias 'py-end-of-def-or-class 'py-forward-def-or-class)
 (defalias 'py-end-of-expression 'py-forward-expression)
 (defalias 'py-end-of-partial-expression 'py-forward-partial-expression)
+(defalias 'py-end-of-section 'py-forward-section)
+(defalias 'py-end-of-statement 'py-forward-statement)
+(defalias 'py-end-of-statement-bol 'py-forward-statement-bol)
+(defalias 'py-end-of-top-level 'py-forward-top-level)
+(defalias 'py-end-of-top-level 'py-forward-top-level)
+(defalias 'py-goto-block-or-clause-up 'py-backward-block-or-clause)
+(defalias 'py-goto-block-up 'py-backward-block)
+(defalias 'py-goto-clause-up 'py-backward-clause)
 (defalias 'py-match-paren 'ar-py-match-paren)
 (defalias 'py-next-statement 'py-forward-statement)
-(defalias 'py-previous-statement 'py-beginning-of-statement)
+(defalias 'py-previous-block 'py-backward-block)
+(defalias 'py-previous-block-or-clause 'py-backward-block-or-clause)
+(defalias 'py-previous-class 'py-backward-class)
+(defalias 'py-previous-clause 'py-backward-clause)
+(defalias 'py-previous-def-or-class 'py-backward-def-or-class)
+(defalias 'py-previous-statement 'py-backward-statement)
+(defalias 'py-beginning-of-block-bol 'py-backward-block-bol)
 
 (provide 'python-components-move)
 ;;;  python-components-move.el ends here

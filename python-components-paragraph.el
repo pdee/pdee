@@ -405,7 +405,7 @@ Fill according to `py-docstring-style' "
       (list (if current-prefix-arg 'full) t))
     py-docstring-style
     (or docstring (py--in-or-behind-or-before-a-docstring))))
-  (let ((py-current-indent (save-excursion (or (py--beginning-of-statement-p) (py-beginning-of-statement)) (current-indentation)))
+  (let ((py-current-indent (save-excursion (or (py--beginning-of-statement-p) (py-backward-statement)) (current-indentation)))
 	;; fill-paragraph sets orig
 	(orig (if (boundp 'orig) (copy-marker orig) (copy-marker (point))))
 	(docstring (if (and docstring (not (number-or-marker-p docstring)))
@@ -428,7 +428,7 @@ Fill according to `py-docstring-style' "
 	      ((let ((fill-column py-comment-fill-column))
 		 (fill-comment-paragraph justify)))
 	      ((save-excursion
-		 (and (py-beginning-of-statement)
+		 (and (py-backward-statement)
 		      (equal (char-after) ?\@)))
 	       (py-fill-decorator justify))
 	      (t (fill-paragraph justify)))

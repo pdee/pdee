@@ -39,12 +39,12 @@
         (define-key map [(control c) (delete)] 'py-hungry-delete-forward)
         ;; (define-key map [(control y)] 'py-electric-yank)
         ;; moving point
-        (define-key map [(control c)(control p)] 'py-beginning-of-statement)
-        (define-key map [(control c)(control n)] 'py-end-of-statement)
-        (define-key map [(control c)(control u)] 'py-beginning-of-block)
-        (define-key map [(control c)(control q)] 'py-end-of-block)
-        (define-key map [(control meta a)] 'py-beginning-of-def-or-class)
-        (define-key map [(control meta e)] 'py-end-of-def-or-class)
+        (define-key map [(control c)(control p)] 'py-backward-statement)
+        (define-key map [(control c)(control n)] 'py-forward-statement)
+        (define-key map [(control c)(control u)] 'py-backward-block)
+        (define-key map [(control c)(control q)] 'py-forward-block)
+        (define-key map [(control meta a)] 'py-backward-def-or-class)
+        (define-key map [(control meta e)] 'py-forward-def-or-class)
 
         ;; (define-key map [(meta i)] 'py-indent-forward-line)
         (define-key map [(control j)] 'py-newline-and-indent)
@@ -122,12 +122,12 @@
     (define-key map [(control c) (delete)] 'py-hungry-delete-forward)
     ;; (define-key map [(control y)] 'py-electric-yank)
     ;; moving point
-    (define-key map [(control c)(control p)] 'py-beginning-of-statement)
-    (define-key map [(control c)(control n)] 'py-end-of-statement)
-    (define-key map [(control c)(control u)] 'py-beginning-of-block)
-    (define-key map [(control c)(control q)] 'py-end-of-block)
-    (define-key map [(control meta a)] 'py-beginning-of-def-or-class)
-    (define-key map [(control meta e)] 'py-end-of-def-or-class)
+    (define-key map [(control c)(control p)] 'py-backward-statement)
+    (define-key map [(control c)(control n)] 'py-forward-statement)
+    (define-key map [(control c)(control u)] 'py-backward-block)
+    (define-key map [(control c)(control q)] 'py-forward-block)
+    (define-key map [(control meta a)] 'py-backward-def-or-class)
+    (define-key map [(control meta e)] 'py-forward-def-or-class)
     (define-key map [(control j)] 'py-newline-and-indent)
     (define-key map [(super backspace)] 'py-dedent)
     ;; (define-key map [(control return)] 'py-newline-and-dedent)
@@ -177,10 +177,10 @@
                   (prog1
                       (or beg (funcall (intern-soft (concat "py--beginning-of-" form "-p")))
 
-                          (funcall (intern-soft (concat "py-beginning-of-" form)))
+                          (funcall (intern-soft (concat "py-backward-" form)))
                           (push-mark)))))
            (end (unless file
-                  (or end (funcall (intern-soft (concat "py-end-of-" form))))))
+                  (or end (funcall (intern-soft (concat "py-forward-" form))))))
            (py-dedicated-process-p dedicated)
            (py-switch-buffers-on-execute-p (cond ((eq 'switch switch)
                                                   t)
@@ -309,14 +309,6 @@ Start a new process if necessary. "
       (message "%s" "pdb.py not found, please customize `py-pdb-path'"))
     erg))
 
-;;  credits to python.el
-;;  (defun py-beg-of-defun-function ()
-;;    (set (make-local-variable 'beginning-of-defun-function)
-;;         'py-beginning-of-def-or-class))
-;;
-;;  (defun py-end-of-defun-function ()
-;;    (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class))
-
 (if py-mode-output-map
     nil
   (setq py-mode-output-map (make-sparse-keymap))
@@ -443,7 +435,7 @@ as it leaves your system default unchanged."
               "#"
               ;; forward-sexp function
               (lambda (arg)
-                (py-end-of-block-or-clause))
+                (py-forward-block-or-clause))
               nil))
 
 ;; ;
@@ -590,17 +582,17 @@ Use `defcustom' to keep value across sessions "
   "Return `t' if emacs major version is above 23"
   (< 23 (string-to-number (car (split-string emacs-version "\\.")))))
 
-(defun py-beginning-of-comments (&optional last)
-  "Leave upwards comments and/or empty lines. "
-  (interactive)
-  (let ((pps (parse-partial-sexp (point-min) (point)))
-        (last (or last (point))))
-    (if (and (or (and (nth 4 pps)(goto-char (nth 8 pps)))(looking-at comment-start))
-             (looking-back "^[ \t]*")(not (bobp)))
-        (progn
-          (skip-chars-backward " \t\r\n\f")
-          (py-beginning-of-comments last))
-      (goto-char last))))
+;; (defun py-backward-comment (&optional last)
+;;   "Leave upwards comment,  include empty lines. "
+;;   (interactive)
+;;   (let ((pps (parse-partial-sexp (point-min) (point)))
+;;         (last (or last (point))))
+;;     (if (and (or (and (nth 4 pps)(goto-char (nth 8 pps)))(looking-at comment-start))
+;;              (looking-back "^[ \t]*")(not (bobp)))
+;;         (progn
+;;           (skip-chars-backward " \t\r\n\f")
+;;           (py-beginning-of-comments last))
+;;       (goto-char last))))
 
 (defun py--empty-arglist-indent (nesting py-indent-offset indent-offset)
   "Internally used by `py-compute-indentation'"
@@ -736,7 +728,7 @@ LIEP stores line-end-position at point-of-interest
 		      (goto-char (nth 8 pps))
 		      (current-indentation)))
 		   ((and (looking-at "\"\"\"\\|'''")(not (bobp)))
-		    (py-beginning-of-statement)
+		    (py-backward-statement)
 		    (py-compute-indentation orig origline closing line nesting repeat indent-offset liep))
 		   ;; comments
 		   ((nth 8 pps)
@@ -753,7 +745,7 @@ LIEP stores line-end-position at point-of-interest
 			      (current-column)
 			    (if py-indent-comments
 				(progn
-				  (py-beginning-of-comments)
+				  (py-backward-comment)
 				  (py-compute-indentation orig origline closing line nesting repeat indent-offset liep))
 			      0))
 			(forward-char -1)
@@ -767,7 +759,7 @@ LIEP stores line-end-position at point-of-interest
 			  ;; as previous comment-line might
 			  ;; be wrongly unindented, travel
 			  ;; whole commented section
-			  (py-beginning-of-comments)
+			  (py-backward-comment)
 			  (py-compute-indentation orig origline closing line nesting repeat indent-offset liep))
 		      0))
 		   ((and (looking-at "[ \t]*#") (looking-back "^[ \t]*")(not
@@ -826,12 +818,12 @@ LIEP stores line-end-position at point-of-interest
 				  (< (line-end-position) liep))
 			    (py-compute-indentation orig origline closing line nesting repeat indent-offset liep))
 			   ((not (py--beginning-of-statement-p))
-			    (py-beginning-of-statement)
+			    (py-backward-statement)
 			    (py-compute-indentation orig origline closing line nesting repeat indent-offset liep))
 			   (t (1+ (current-column)))))
 		      (if line
 			  (progn
-			    (py-beginning-of-statement)
+			    (py-backward-statement)
 			    (py-compute-indentation orig origline closing line nesting repeat indent-offset liep))
 			(goto-char (+ py-lhs-inbound-indent (nth 1 pps)))
 			(when (looking-at "[ \t]+")
@@ -841,7 +833,7 @@ LIEP stores line-end-position at point-of-interest
 		    (1+ (current-column)))
 		   ((py-preceding-line-backslashed-p)
 		    (progn
-		      (py-beginning-of-statement)
+		      (py-backward-statement)
 		      (setq this-line (py-count-lines))
 		      (if (< 1 (- origline this-line))
 			  (py--fetch-previous-indent orig)
@@ -851,7 +843,7 @@ LIEP stores line-end-position at point-of-interest
 		   ((and (looking-at py-block-closing-keywords-re)
 			 (eq liep (line-end-position)))
 		    (skip-chars-backward "[ \t\r\n\f]")
-		    (py-beginning-of-statement)
+		    (py-backward-statement)
 		    (cond ((looking-at py-extended-block-or-clause-re)
 			   (+
 			    (if py-smart-indentation (py-guess-indent-offset) indent-offset)
@@ -862,7 +854,7 @@ LIEP stores line-end-position at point-of-interest
 		   ((looking-at py-block-closing-keywords-re)
 		    (if (< (line-end-position) orig)
 			(- (current-indentation) py-indent-offset)
-		      (py-beginning-of-block-or-clause (current-indentation))
+		      (py-backward-block-or-clause (current-indentation))
 		      (current-indentation)))
 		   ((looking-at py-no-outdent-re)
 		    (if
@@ -910,7 +902,7 @@ LIEP stores line-end-position at point-of-interest
 			(+ (current-indentation) py-indent-offset)
 		      (current-indentation)))
 		   ((looking-at py-assignment-re)
-		    (py-beginning-of-statement)
+		    (py-backward-statement)
 		    (py-compute-indentation orig origline closing line nesting repeat indent-offset liep))
 		   ((and (< (current-indentation) (current-column))(not line))
 		    (back-to-indentation)
@@ -924,7 +916,7 @@ LIEP stores line-end-position at point-of-interest
 			  (progn
 			    (py--line-backward-maybe)
 			    (py-compute-indentation orig origline closing line nesting repeat indent-offset liep))
-			(py-beginning-of-statement)
+			(py-backward-statement)
 			(py-compute-indentation orig origline closing line nesting repeat indent-offset liep))))
 		   ((or (py--statement-opens-block-p py-extended-block-or-clause-re)(looking-at "@"))
 		    (if (< (py-count-lines) origline)
@@ -934,21 +926,21 @@ LIEP stores line-end-position at point-of-interest
 		      (back-to-indentation)
 		      (py-compute-indentation orig origline closing line nesting repeat indent-offset liep)))
 		   ((and py-empty-line-closes-p (py--after-empty-line))
-		    (progn (py-beginning-of-statement)
+		    (progn (py-backward-statement)
 			   (- (current-indentation) py-indent-offset)))
 		   ;; still at orignial line
 		   ((and (eq liep (line-end-position))
 			 (save-excursion
 			   (and (setq erg (py--go-to-keyword py-extended-block-or-clause-re))
 				(if py-smart-indentation (setq indent-offset (py-guess-indent-offset)) t)
-				(ignore-errors (< orig (or (py-end-of-block-or-clause)(point)))))))
+				(ignore-errors (< orig (or (py-forward-block-or-clause)(point)))))))
 		    (+ (car erg) (if py-smart-indentation
 				     (or indent (py-guess-indent-offset))
 				   indent-offset)))
 		   ((and (not line)
 			 (eq liep (line-end-position))
 			 (py--beginning-of-statement-p))
-		    (py-beginning-of-statement)
+		    (py-backward-statement)
 		    (py-compute-indentation orig origline closing line nesting repeat indent-offset liep))
 		   (t (current-indentation))))
 	    (when (and py-verbose-p (interactive-p)) (message "%s" indent))
@@ -983,7 +975,7 @@ LIEP stores line-end-position at point-of-interest
   (let ((erg (save-excursion
                (back-to-indentation)
                (or (py--beginning-of-statement-p)
-                   (py-beginning-of-statement))
+                   (py-backward-statement))
                (current-indentation))))
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
@@ -1079,15 +1071,15 @@ will work.
   (let ((orig (point))
         beg end erg)
     (save-excursion
-      (setq end (py-end-of-statement))
-      (setq beg (py-beginning-of-statement))
+      (setq end (py-forward-statement))
+      (setq beg (py-backward-statement))
       (when (and (<= beg orig)(<= orig end))
         (setq erg (cons beg end))
         (when (interactive-p) (message "%s" erg))
         erg))))
 
 ;;  Beginning-of- p
-(defun py-beginning-of-top-level-p ()
+(defun py-backward-top-level-p ()
   "Returns position, if cursor is at the beginning of a top-level, nil otherwise. "
   (interactive)
   (let (erg)
@@ -1111,8 +1103,8 @@ will work.
     (if (and (bolp) (looking-at paragraph-separate))
         (setq erg (point))
       (save-excursion
-        (py-end-of-paragraph)
-        (py-beginning-of-paragraph)
+        (py-forward-paragraph)
+        (py-backward-paragraph)
         (when (eq orig (point))
           (setq erg orig)))
       erg)))
@@ -1129,8 +1121,8 @@ will work.
      (if (and (eolp) (looking-at paragraph-separate))
          (setq erg (point))
      (save-excursion
-       (py-beginning-of-paragraph)
-       (py-end-of-paragraph)
+       (py-backward-paragraph)
+       (py-forward-paragraph)
        (when (eq orig (point))
          (setq erg orig)))
        erg)))
@@ -1151,8 +1143,8 @@ For stricter sense specify regexp. "
         erg)
     (save-excursion
       (back-to-indentation)
-      (py-end-of-statement)
-      (py-beginning-of-statement)
+      (py-forward-statement)
+      (py-backward-statement)
       (when (and
              (<= (line-beginning-position) orig)(looking-back "^[ \t]*")(looking-at regexp))
         (setq erg (point))))
@@ -1212,16 +1204,18 @@ Unclosed-string errors are not handled here, as made visible by fontification al
 		  (when (py--statement-opens-block-p py-extended-block-or-clause-re)
 		    (point)))))))
 
-(defun py--py--end-base-go-down-when-found-upward ()
+(defun py--go-down-when-found-upward ()
   (setq thisindent (current-indentation))
   (while
       (and (py-down-statement)
 	   (or (< thisindent (current-indentation))
 	       (and (eq thisindent (current-indentation))
 		    (or (eq regexp 'py-minor-block-re)
-			(eq regexp 'py-block-re))
+			(eq regexp 'py-block-re)
+			(eq regexp 'py-if-block-re)
+			)
 		    (looking-at py-clause-re)))
-	   (py-end-of-statement)(setq last (point))))
+	   (py-forward-statement)(setq last (point))))
   (and last (goto-char last)))
 
 ;;  py-look-downward-for-clause
@@ -1248,7 +1242,7 @@ Unclosed-string errors are not handled here, as made visible by fontification al
              ind erg last pps thisindent done err)
         (cond ((eq regexp 'py-paragraph-re)
 	       (while (and (not (eobp)) (re-search-forward py-paragraph-re nil 'move 1)(nth 8 (parse-partial-sexp (point-min) (point))))))
-	      (this (py--py--end-base-go-down-when-found-upward))
+	      (this (py--go-down-when-found-upward))
               (t (goto-char orig)))
         (when (and (<= (point) orig)(not (looking-at thisregexp)))
           ;; found the end above
@@ -1283,7 +1277,7 @@ If succesful return position. "
   (unless (eobp)
     (let ((ind (or ind
                    (save-excursion
-                     (py-beginning-of-statement)
+                     (py-backward-statement)
                      (if (py--statement-opens-block-p)
                          (current-indentation)
                        (- (current-indentation) py-indent-offset)))))
@@ -1300,7 +1294,7 @@ If succesful return position. "
         (unless (and (looking-at py-clause-re)
                      (not (nth 8 (parse-partial-sexp (point-min) (point)))) (eq (current-indentation) ind))
           (progn (setq ind (current-indentation))
-                 (while (and (py-end-of-statement-bol)(not (looking-at py-clause-re))(<= ind (current-indentation)))))
+                 (while (and (py-forward-statement-bol)(not (looking-at py-clause-re))(<= ind (current-indentation)))))
           (if (and (looking-at py-clause-re)
                    (not (nth 8 (parse-partial-sexp (point-min) (point))))
                    (< orig (point)))
@@ -1321,7 +1315,7 @@ See customizable variables `py-current-defun-show' and `py-current-defun-delay'.
   (save-restriction
     (widen)
     (save-excursion
-      (let ((erg (when (py-beginning-of-def-or-class)
+      (let ((erg (when (py-backward-def-or-class)
                    (forward-word 1)
                    (skip-chars-forward " \t")
                    (prin1-to-string (symbol-at-point)))))
@@ -1381,10 +1375,10 @@ i.e. the limit on how far back to scan."
             (erg (if (and (looking-at (concat py-def-or-class-re " +\\([^(]+\\)(.+")) (not (py-in-string-or-comment-p)))
                      (match-string-no-properties 2)
                    (progn
-                     (py-beginning-of-def-or-class)
+                     (py-backward-def-or-class)
                      (when (looking-at (concat py-def-or-class-re " +\\([^(]+\\)(.+"))
                        (match-string-no-properties 2))))))
-        (if (and erg (< orig (py-end-of-def-or-class)))
+        (if (and erg (< orig (py-forward-def-or-class)))
             (when (interactive-p) (message "%s" erg))
           (setq erg nil)
           (when (interactive-p) (message "%s" "Not inside a function or class"))
@@ -1419,13 +1413,13 @@ This function does not modify point or mark."
               (cond
                ((eq position 'bol) (beginning-of-line))
                ((eq position 'eol) (end-of-line))
-               ((eq position 'bod) (py-beginning-of-def-or-class))
-               ((eq position 'eod) (py-end-of-def-or-class))
+               ((eq position 'bod) (py-backward-def-or-class))
+               ((eq position 'eod) (py-forward-def-or-class))
                ;; Kind of funny, I know, but useful for py-up-exception.
                ((eq position 'bob) (goto-char (point-min)))
                ((eq position 'eob) (goto-char (point-max)))
                ((eq position 'boi) (back-to-indentation))
-               ((eq position 'bos) (py-beginning-of-statement))
+               ((eq position 'bos) (py-backward-statement))
                (t (error "Unknown buffer position requested: %s" position))) (point))))
     erg))
 
@@ -1608,14 +1602,14 @@ Used by variable `which-func-functions' "
          (add-to-list 'def-or-class (match-string-no-properties 2)))
     (while
         (and (not (bobp)) (not done) (or (< 0 (current-indentation)) first))
-      (py-beginning-of-def-or-class)
+      (py-backward-def-or-class)
       (looking-at "[ \t]*\\_<\\(def\\|class\\)\\_>[ \n\t]\\([[:alnum:]_]+\\)")
       (setq last (point))
       (setq name (match-string-no-properties 2))
       (if first
           (progn
             (setq first nil)
-            (py-end-of-def-or-class)
+            (py-forward-def-or-class)
             (if
                 (<= orig (point))
                 (goto-char last)
@@ -1643,31 +1637,31 @@ Returns beginning of FORM if successful, nil otherwise"
              (indent (or indent (progn
                                   (back-to-indentation)
                                   (or (py--beginning-of-statement-p)
-                                      (py-beginning-of-statement))
+                                      (py-backward-statement))
                                   (current-indentation)))))
         (setq erg (cond ((and (< (point) orig) (looking-at (symbol-value regexp)))
                          (point))
                         ((and (eq 0 (current-column)) (numberp indent) (< 0 indent))
                          (when (< 0 (abs (skip-chars-backward " \t\r\n\f")))
-                           (py-beginning-of-statement)
+                           (py-backward-statement)
                            (unless (looking-at (symbol-value regexp))
                              (cdr (py--go-to-keyword (symbol-value regexp) (current-indentation))))))
                         ((numberp indent)
 			 (cdr (py--go-to-keyword (symbol-value regexp) indent)))
                         (t (ignore-errors
                              (cdr (py--go-to-keyword (symbol-value regexp)
-                                                    (- (progn (if (py--beginning-of-statement-p) (current-indentation) (save-excursion (py-beginning-of-statement) (current-indentation)))) py-indent-offset)))))))
+                                                    (- (progn (if (py--beginning-of-statement-p) (current-indentation) (save-excursion (py-backward-statement) (current-indentation)))) py-indent-offset)))))))
         (when lc (beginning-of-line) (setq erg (point)))))
     (when (and py-verbose-p iact) (message "%s" erg))
     erg))
 
-(defun py--beginning-of-prepare (indent final-re &optional inter-re iact lc)
+(defun py--backward-prepare (indent final-re &optional inter-re iact lc)
   (let ((orig (point))
         (indent
          (or indent
              (progn (back-to-indentation)
                     (or (py--beginning-of-statement-p)
-                        (py-beginning-of-statement))
+                        (py-backward-statement))
                     (cond ((eq 0 (current-indentation))
                            (current-indentation))
                           ((looking-at (symbol-value inter-re))
@@ -1778,20 +1772,19 @@ Returns position reached if point was moved. "
     (and (< orig (point))(setq done t)
 	 done)))
 
-(defalias 'py-beginning-of-top-level-bol 'py-beginning-of-top-level)
-(defun py-beginning-of-top-level ()
+(defun py-backward-top-level ()
   "Go up to beginning of statments until level of indentation is null.
 
 Returns position if successful, nil otherwise "
   (interactive)
   (let (erg)
     (unless (bobp)
-      (while (and (not (bobp)) (setq erg (py-beginning-of-statement))
+      (while (and (not (bobp)) (setq erg (py-backward-statement))
                   (< 0 (current-indentation))))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
-(defun py-end-of-top-level ()
+(defun py-forward-top-level ()
   "Go to end of top-level form at point.
 
 Returns position if successful, nil otherwise"
@@ -1800,32 +1793,31 @@ Returns position if successful, nil otherwise"
         erg)
     (unless (eobp)
       (unless (py--beginning-of-statement-p)
-        (py-beginning-of-statement))
+        (py-backward-statement))
       (unless (eq 0 (current-column))
-        (py-beginning-of-top-level))
+        (py-backward-top-level))
       (cond ((looking-at py-def-re)
-             (setq erg (py-end-of-def)))
+             (setq erg (py-forward-def)))
             ((looking-at py-class-re)
-             (setq erg (py-end-of-class)))
+             (setq erg (py-forward-class)))
             ((looking-at py-block-re)
-             (setq erg (py-end-of-block)))
-             (t (setq erg (py-end-of-statement))))
+             (setq erg (py-forward-block)))
+             (t (setq erg (py-forward-statement))))
       (unless (< orig (point))
         (while (and (not (eobp)) (py-down-statement)(< 0 (current-indentation))))
         (if (looking-at py-block-re)
-            (setq erg (py-end-of-block))
-          (setq erg (py-end-of-statement))))
+            (setq erg (py-forward-block))
+          (setq erg (py-forward-statement))))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
-(defalias 'py-end-of-top-level-lc 'py-end-of-top-level-bol)
-(defun py-end-of-top-level-bol ()
+(defun py-forward-top-level-bol ()
   "Go to end of top-level form at point, stop at next beginning-of-line.
 
 Returns position successful, nil otherwise"
   (interactive)
   (let (erg)
-    (py-end-of-top-level)
+    (py-forward-top-level)
     (unless (or (eobp) (bolp))
       (forward-line 1)
       (beginning-of-line)
@@ -1844,7 +1836,7 @@ If at beginning of a statement or block, go to beginning one level above of comp
     (cond ((nth 8 pps) (goto-char (nth 8 pps)))
           ((nth 1 pps) (goto-char (nth 1 pps)))
           ((py--beginning-of-statement-p) (py--beginning-of-form-intern 'py-extended-block-or-clause-re (interactive-p) t))
-          (t (py-beginning-of-statement)))))
+          (t (py-backward-statement)))))
 
 (defun py-down (&optional indent)
 
@@ -1860,10 +1852,10 @@ Returns position if successful, nil otherwise"
                      (py--beginning-of-statement-p)
                      (current-indentation)
                    (progn
-                     (py-beginning-of-statement)
+                     (py-backward-statement)
                      (current-indentation))))
          last)
-    (while (and (setq last (point)) (py-end-of-statement) (py-end-of-statement) (py-beginning-of-statement) (eq (current-indentation) indent)))
+    (while (and (setq last (point)) (py-forward-statement) (py-forward-statement) (py-backward-statement) (eq (current-indentation) indent)))
     (if (< indent (current-indentation))
         (setq erg (point))
       (goto-char last))
@@ -1892,8 +1884,8 @@ Returns position if successful, nil otherwise"
 
 If PY-MARK-DECORATORS, `def'- and `class'-forms include decorators
 If BOL is t, mark from beginning-of-line"
-  (let* ((begform (intern-soft (concat "py-beginning-of-" form)))
-         (endform (intern-soft (concat "py-end-of-" form)))
+  (let* ((begform (intern-soft (concat "py-backward-" form)))
+         (endform (intern-soft (concat "py-forward-" form)))
          (begcheckform (intern-soft (concat "py--beginning-of-" form "-p")))
          (orig (point))
          beg end erg)
@@ -1902,7 +1894,7 @@ If BOL is t, mark from beginning-of-line"
                   beg
                 (funcall begform)))
     (and py-mark-decorators
-         (and (setq erg (py-beginning-of-decorator))
+         (and (setq erg (py-backward-decorator))
               (setq beg erg)))
     (push-mark)
     (setq end (funcall endform))
@@ -1913,8 +1905,8 @@ If BOL is t, mark from beginning-of-line"
       nil)))
 
 (defun py--mark-base-bol (form &optional py-mark-decorators)
-  (let* ((begform (intern-soft (concat "py-beginning-of-" form "-bol")))
-         (endform (intern-soft (concat "py-end-of-" form "-bol")))
+  (let* ((begform (intern-soft (concat "py-backward-" form "-bol")))
+         (endform (intern-soft (concat "py-forward-" form "-bol")))
          (begcheckform (intern-soft (concat "py--beginning-of-" form "-bol-p")))
          (orig (point))
          beg end erg)
@@ -1924,7 +1916,7 @@ If BOL is t, mark from beginning-of-line"
                 (funcall begform)))
     (when py-mark-decorators
       (save-excursion
-        (when (setq erg (py-beginning-of-decorator-bol))
+        (when (setq erg (py-backward-decorator-bol))
           (setq beg erg))))
     (setq end (funcall endform))
     (push-mark beg t t)
@@ -1984,7 +1976,7 @@ If no further element at same level, go one level up."
     (cond ((nth 8 pps) (goto-char (nth 8 pps)))
           ((nth 1 pps) (goto-char (nth 1 pps)))
           ((py--beginning-of-statement-p) (py--beginning-of-form-intern 'py-extended-block-or-clause-re (interactive-p)))
-          (t (py-beginning-of-statement)))))
+          (t (py-backward-statement)))))
 
 (defun py--end-of-line-p ()
   "Returns position, if cursor is at the end of a line, nil otherwise. "
@@ -2012,7 +2004,7 @@ Returns a list, whose car is beg, cdr - end."
   (interactive)
   (save-excursion
     (let ((erg (progn
-		 (py-beginning-of-paragraph)
+		 (py-backward-paragraph)
 		 (point))))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
@@ -2025,7 +2017,7 @@ Returns a list, whose car is beg, cdr - end."
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
-                 (py-end-of-paragraph)
+                 (py-forward-paragraph)
 		 (point))))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
@@ -2034,7 +2026,7 @@ Returns a list, whose car is beg, cdr - end."
   "Returns beginning of comment position. "
   (interactive)
   (save-excursion
-    (let ((erg (py-beginning-of-comment)))
+    (let ((erg (py-backward-comment)))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
@@ -2046,7 +2038,7 @@ Returns a list, whose car is beg, cdr - end."
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
-                 (py-end-of-comment))))
+                 (py-forward-comment))))
       (when (and py-verbose-p (interactive-p)) (message "%s" erg))
       erg)))
 
@@ -2135,10 +2127,10 @@ Use current region unless optional args BEG END are delivered."
     (let ((start (cond ((string= name "statement")
 			(if (py--beginning-of-statement-p)
 			    (point)
-			  (py-beginning-of-statement-bol)))
+			  (py-backward-statement-bol)))
 		       ((funcall (car (read-from-string (concat "py--statement-opens-" name "-p")))))
-		       (t (funcall (car (read-from-string (concat "py-beginning-of-" name "-bol"))))))))
-      (funcall (car (read-from-string (concat "py-end-of-" name))))
+		       (t (funcall (car (read-from-string (concat "py-backward-" name "-bol"))))))))
+      (funcall (car (read-from-string (concat "py-forward-" name))))
       (narrow-to-region (point) start))))
 
 (defun py--forms-report-result (erg)
@@ -2150,28 +2142,6 @@ Use current region unless optional args BEG END are delivered."
     res))
 
 ;; /usr/lib/python2.7/pdb.py eyp.py
-(defalias 'py-forward-block 'py-end-of-block)
-(defalias 'py-forward-block-or-clause 'py-end-of-block-or-clause)
-(defalias 'py-forward-class 'py-end-of-class)
-(defalias 'py-forward-clause 'py-end-of-clause)
-(defalias 'end-of-def-or-class 'py-end-of-def-or-class)
-(defalias 'py-forward-def-or-class 'py-end-of-def-or-class)
-(defalias 'py-previous-block 'py-beginning-of-block)
-(defalias 'py-goto-block-up 'py-beginning-of-block)
-(defalias 'py-backward-block 'py-beginning-of-block)
-(defalias 'py-previous-block-or-clause 'py-beginning-of-block-or-clause)
-(defalias 'py-goto-block-or-clause-up 'py-beginning-of-block-or-clause)
-(defalias 'py-backward-block-or-clause 'py-beginning-of-block-or-clause)
-(defalias 'beginning-of-class 'py-beginning-of-class)
-(defalias 'py-backward-class 'py-beginning-of-class)
-(defalias 'py-previous-class 'py-beginning-of-class)
-(defalias 'py-previous-clause 'py-beginning-of-clause)
-(defalias 'py-goto-clause-up 'py-beginning-of-clause)
-(defalias 'py-backward-clause 'py-beginning-of-clause)
-(defalias 'py-backward-def-or-class 'py-beginning-of-def-or-class)
-(defalias 'py-previous-def-or-class 'py-beginning-of-def-or-class)
-(defalias 'py-goto-beyond-block 'py-end-of-block-bol)
-(defalias 'py-goto-beyond-final-line 'py-end-of-statement-bol)
 (defalias 'py-kill-minor-expression 'py-kill-partial-expression)
 (defalias 'py-fast-send-string 'py-execute-string-fast)
 

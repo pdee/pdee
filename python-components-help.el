@@ -643,7 +643,7 @@ Returns imports "
 	(while (re-search-forward
 		"^import *[A-Za-z_][A-Za-z_0-9].*\\|^from +[A-Za-z_][A-Za-z_0-9.]+ +import .*" nil t)
 	  (unless (py--end-of-statement-p)
-	    (py-end-of-statement))
+	    (py-forward-statement))
 	  (setq imports
 		(concat
 		 imports

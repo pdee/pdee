@@ -20,6 +20,24 @@
 
 ;;; Code:
 
+(defun py-backward-comment (&optional last orig)
+  "Leave commented section upwards,  include empty lines.
+
+Return position reached, if successful"
+  (interactive)
+  (unless (bobp)
+    (let ((pps (parse-partial-sexp (point-min) (point)))
+	  (last (or last (point)))
+	  (orig (or orig (point))))
+      (if (nth 4 pps)
+	  (progn
+	    (goto-char (nth 8 pps))
+	    (setq last (point))
+	    (skip-chars-backward " \t\r\n\f")
+	    (py-backward-comment last orig))
+	(when last (goto-char last)))
+      (when (< (point) orig) (point)))))
+
 (defun py-beginning-of-comment ()
   "Go to the beginning of current line's comment, if any.
 
@@ -53,7 +71,7 @@ Returns position if succesful. "
 ;;         (setq done t)))
 ;;     last))
 
-(defun py-end-of-comment ()
+(defun py-forward-comment ()
     "Go to the end of comment at point.
 
 Returns position, nil if not in comment."

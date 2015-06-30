@@ -697,7 +697,7 @@ Examples from PEP8"
   :group 'python-mode)
 
 (defcustom py-max-specpdl-size max-specpdl-size
-  "Heuristic exit. Limiting number of recursive calls by py-end-of-statement and related functions. Default is max-specpdl-size.
+  "Heuristic exit. Limiting number of recursive calls by py-forward-statement and related functions. Default is max-specpdl-size.
 
 This threshold is just an approximation. It might set far higher maybe.
 
@@ -2710,7 +2710,7 @@ Used by `py-ipython-module-completion-string'"
     (save-restriction
       (widen)
       (save-excursion
-	(py-beginning-of-statement)
+	(py-backward-statement)
         (and (looking-at "'''\\|\"\"\"")
 	     (point))))))
 
@@ -3066,7 +3066,7 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
 
 (require 'python-components-switches)
 (require 'python-components-edit)
-(require 'python-components-beginning-forms)
+(require 'python-components-backward-forms)
 (require 'python-components-move)
 (require 'python-components-kill-forms)
 (require 'python-components-mark-forms)
@@ -3087,7 +3087,7 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
 (require 'python-components-booleans-end-forms)
 (require 'python-components-beginning-position-forms)
 (require 'python-components-end-position-forms)
-(require 'python-components-end-forms)
+(require 'python-components-forward-forms)
 (require 'python-components-up-down)
 (require 'python-components-execute-region)
 (require 'python-components-exec-forms)
