@@ -3,7 +3,6 @@
 ;; This file not shipped as part of GNU Emacs.
 
 ;; Copyright (C) 2015  Andreas Röhler
-
 ;; Author: Andreas Röhler <andreas.roehler@easy-emacs.de>
 
 ;; Keywords: languages, processes, python, oop
@@ -27,142 +26,81 @@
      ;; (easy-menu-define py-menu map "Python Tools"
      ;;           `("PyTools"
      (easy-menu-define
-       py-menu python-mode-map "Py menu"
+       py-menu python-mode-map "Python Mode menu"
        `("Python"
 	 ("Interpreter"
-          ["Python" python
-	   :help " `python'
-Start an Python interpreter.
-
-Optional C-u prompts for path to the interpreter."]
-
-          ["Python2" python2
-	   :help " `python2'
-Start an Python2 interpreter.
-
-Optional C-u prompts for path to the interpreter."]
-
-          ["Python3" python3
-	   :help " `python3'
-Start an Python3 interpreter.
-
-Optional C-u prompts for path to the interpreter."]
-
           ["Ipython" ipython
 	   :help " `ipython'
-Start an IPython interpreter.
-
-Optional C-u prompts for path to the interpreter."]
+Start an IPython interpreter."]
 
           ["Ipython2\.7" ipython2\.7
 	   :help " `ipython2\.7'"]
 
           ["Ipython3" ipython3
 	   :help " `ipython3'
-Start an IPython3 interpreter.
-
-Optional C-u prompts for path to the interpreter."]
+Start an IPython3 interpreter."]
 
           ["Jython" jython
 	   :help " `jython'
-Start an Jython interpreter.
+Start an Jython interpreter."]
 
-Optional C-u prompts for path to the interpreter."]
+          ["Python" python
+	   :help " `python'
+Start an Python interpreter."]
+
+          ["Python2" python2
+	   :help " `python2'
+Start an Python2 interpreter."]
+
+          ["Python3" python3
+	   :help " `python3'
+Start an Python3 interpreter."]
           )
          ("Edit"
           ("Shift"
            ("Shift right"
 	    ["Shift block right" py-shift-block-right
 	     :help " `py-shift-block-right'
-Indent block by COUNT spaces.
-
-COUNT defaults to `py-indent-offset',
-use [universal-argument] to specify a different value.
-
-Returns outmost indentation reached."]
+Indent block by COUNT spaces."]
 
 	    ["Shift block or clause right" py-shift-block-or-clause-right
 	     :help " `py-shift-block-or-clause-right'
-Indent block-or-clause by COUNT spaces.
-
-COUNT defaults to `py-indent-offset',
-use [universal-argument] to specify a different value.
-
-Returns outmost indentation reached."]
+Indent block-or-clause by COUNT spaces."]
 
 	    ["Shift class right" py-shift-class-right
 	     :help " `py-shift-class-right'
-Indent class by COUNT spaces.
-
-COUNT defaults to `py-indent-offset',
-use [universal-argument] to specify a different value.
-
-Returns outmost indentation reached."]
+Indent class by COUNT spaces."]
 
 	    ["Shift clause right" py-shift-clause-right
 	     :help " `py-shift-clause-right'
-Indent clause by COUNT spaces.
-
-COUNT defaults to `py-indent-offset',
-use [universal-argument] to specify a different value.
-
-Returns outmost indentation reached."]
+Indent clause by COUNT spaces."]
 
 	    ["Shift comment right" py-shift-comment-right
 	     :help " `py-shift-comment-right'"]
 
 	    ["Shift def right" py-shift-def-right
 	     :help " `py-shift-def-right'
-Indent def by COUNT spaces.
-
-COUNT defaults to `py-indent-offset',
-use [universal-argument] to specify a different value.
-
-Returns outmost indentation reached."]
+Indent def by COUNT spaces."]
 
 	    ["Shift def or class right" py-shift-def-or-class-right
 	     :help " `py-shift-def-or-class-right'
-Indent def-or-class by COUNT spaces.
-
-COUNT defaults to `py-indent-offset',
-use [universal-argument] to specify a different value.
-
-Returns outmost indentation reached."]
+Indent def-or-class by COUNT spaces."]
 
 	    ["Shift minor block right" py-shift-minor-block-right
 	     :help " `py-shift-minor-block-right'
-Indent minor-block by COUNT spaces.
-
-COUNT defaults to `py-indent-offset',
-use [universal-argument] to specify a different value.
-
-Returns outmost indentation reached.
-A minor block is started by a `for', `if', `try' or `with'."]
+Indent minor-block by COUNT spaces."]
 
 	    ["Shift paragraph right" py-shift-paragraph-right
 	     :help " `py-shift-paragraph-right'
-Indent paragraph by COUNT spaces.
-
-COUNT defaults to `py-indent-offset',
-use [universal-argument] to specify a different value.
-
-Returns outmost indentation reached."]
+Indent paragraph by COUNT spaces."]
 
 	    ["Shift region right" py-shift-region-right
 	     :help " `py-shift-region-right'
-Indent region according to `py-indent-offset' by COUNT times.
-
-If no region is active, current line is indented.
-Returns indentation reached."]
+Indent region according to `py-indent-offset' by COUNT times."]
 
 	    ["Shift statement right" py-shift-statement-right
 	     :help " `py-shift-statement-right'
-Indent statement by COUNT spaces.
-
-COUNT defaults to `py-indent-offset',
-use [universal-argument] to specify a different value.
-
-Returns outmost indentation reached."]
+Indent statement by COUNT spaces."]
 
 	    ["Shift top level right" py-shift-top-level-right
 	     :help " `py-shift-top-level-right'"]
@@ -170,859 +108,602 @@ Returns outmost indentation reached."]
            ("Shift left"
 	    ["Shift block left" py-shift-block-left
 	     :help " `py-shift-block-left'
-Dedent block by COUNT spaces.
-
-COUNT defaults to `py-indent-offset',
-use [universal-argument] to specify a different value.
-
-Returns outmost indentation reached."]
+Dedent block by COUNT spaces."]
 
 	    ["Shift block or clause left" py-shift-block-or-clause-left
 	     :help " `py-shift-block-or-clause-left'
-Dedent block-or-clause by COUNT spaces.
-
-COUNT defaults to `py-indent-offset',
-use [universal-argument] to specify a different value.
-
-Returns outmost indentation reached."]
+Dedent block-or-clause by COUNT spaces."]
 
 	    ["Shift class left" py-shift-class-left
 	     :help " `py-shift-class-left'
-Dedent class by COUNT spaces.
-
-COUNT defaults to `py-indent-offset',
-use [universal-argument] to specify a different value.
-
-Returns outmost indentation reached."]
+Dedent class by COUNT spaces."]
 
 	    ["Shift clause left" py-shift-clause-left
 	     :help " `py-shift-clause-left'
-Dedent clause by COUNT spaces.
-
-COUNT defaults to `py-indent-offset',
-use [universal-argument] to specify a different value.
-
-Returns outmost indentation reached."]
+Dedent clause by COUNT spaces."]
 
 	    ["Shift comment left" py-shift-comment-left
 	     :help " `py-shift-comment-left'"]
 
 	    ["Shift def left" py-shift-def-left
 	     :help " `py-shift-def-left'
-Dedent def by COUNT spaces.
-
-COUNT defaults to `py-indent-offset',
-use [universal-argument] to specify a different value.
-
-Returns outmost indentation reached."]
+Dedent def by COUNT spaces."]
 
 	    ["Shift def or class left" py-shift-def-or-class-left
 	     :help " `py-shift-def-or-class-left'
-Dedent def-or-class by COUNT spaces.
-
-COUNT defaults to `py-indent-offset',
-use [universal-argument] to specify a different value.
-
-Returns outmost indentation reached."]
+Dedent def-or-class by COUNT spaces."]
 
 	    ["Shift minor block left" py-shift-minor-block-left
 	     :help " `py-shift-minor-block-left'
-Dedent minor-block by COUNT spaces.
-
-COUNT defaults to `py-indent-offset',
-use [universal-argument] to specify a different value.
-
-Returns outmost indentation reached.
-A minor block is started by a `for', `if', `try' or `with'."]
+Dedent minor-block by COUNT spaces."]
 
 	    ["Shift paragraph left" py-shift-paragraph-left
 	     :help " `py-shift-paragraph-left'
-Dedent paragraph by COUNT spaces.
-
-COUNT defaults to `py-indent-offset',
-use [universal-argument] to specify a different value.
-
-Returns outmost indentation reached."]
+Dedent paragraph by COUNT spaces."]
 
 	    ["Shift region left" py-shift-region-left
 	     :help " `py-shift-region-left'
-Dedent region according to `py-indent-offset' by COUNT times.
-
-If no region is active, current line is dedented.
-Returns indentation reached."]
+Dedent region according to `py-indent-offset' by COUNT times."]
 
 	    ["Shift statement left" py-shift-statement-left
 	     :help " `py-shift-statement-left'
-Dedent statement by COUNT spaces.
-
-COUNT defaults to `py-indent-offset',
-use [universal-argument] to specify a different value.
-
-Returns outmost indentation reached."]
+Dedent statement by COUNT spaces."]
             ))
           ("Mark"
 	   ["Mark block" py-mark-block
 	    :help " `py-mark-block'
-Mark block at point.
-
-Returns beginning and end positions of marked area, a cons."]
+Mark block at point."]
 
 	   ["Mark block or clause" py-mark-block-or-clause
 	    :help " `py-mark-block-or-clause'
-Mark block-or-clause at point.
-
-Returns beginning and end positions of marked area, a cons."]
+Mark block-or-clause at point."]
 
 	   ["Mark class" py-mark-class
 	    :help " `py-mark-class'
-Mark class at point.
-
-With C-u or `py-mark-decorators' set to `t', decorators are marked too.
-Returns beginning and end positions of marked area, a cons."]
+Mark class at point."]
 
 	   ["Mark clause" py-mark-clause
 	    :help " `py-mark-clause'
-Mark clause at point.
-
-Returns beginning and end positions of marked area, a cons."]
+Mark clause at point."]
 
 	   ["Mark comment" py-mark-comment
 	    :help " `py-mark-comment'
-Mark comment at point.
-
-Returns beginning and end positions of marked area, a cons."]
+Mark comment at point."]
 
 	   ["Mark def" py-mark-def
 	    :help " `py-mark-def'
-Mark def at point.
-
-With C-u or `py-mark-decorators' set to `t', decorators are marked too.
-Returns beginning and end positions of marked area, a cons."]
+Mark def at point."]
 
 	   ["Mark def or class" py-mark-def-or-class
 	    :help " `py-mark-def-or-class'
-Mark def-or-class at point.
+Mark def-or-class at point."]
 
-With C-u or `py-mark-decorators' set to `t', decorators are marked too.
-Returns beginning and end positions of marked area, a cons."]
+	   ["Mark except block" py-mark-except-block
+	    :help " `py-mark-except-block'
+Mark except-block at point."]
 
 	   ["Mark expression" py-mark-expression
 	    :help " `py-mark-expression'
-Mark expression at point.
+Mark expression at point."]
 
-Returns beginning and end positions of marked area, a cons."]
+	   ["Mark if block" py-mark-if-block
+	    :help " `py-mark-if-block'
+Mark if-block at point."]
 
 	   ["Mark line" py-mark-line
 	    :help " `py-mark-line'
-Mark line at point.
-
-Returns beginning and end positions of marked area, a cons."]
+Mark line at point."]
 
 	   ["Mark minor block" py-mark-minor-block
 	    :help " `py-mark-minor-block'
-Mark minor-block at point.
-
-Returns beginning and end positions of marked area, a cons."]
+Mark minor-block at point."]
 
 	   ["Mark paragraph" py-mark-paragraph
 	    :help " `py-mark-paragraph'
-Mark paragraph at point.
-
-Returns beginning and end positions of marked area, a cons."]
+Mark paragraph at point."]
 
 	   ["Mark partial expression" py-mark-partial-expression
 	    :help " `py-mark-partial-expression'
-Mark partial-expression at point.
+Mark partial-expression at point."]
 
-Returns beginning and end positions of marked area, a cons."]
+	   ["Mark section" py-mark-section
+	    :help " `py-mark-section'
+Mark section at point."]
 
 	   ["Mark statement" py-mark-statement
 	    :help " `py-mark-statement'
-Mark statement at point.
-
-Returns beginning and end positions of marked area, a cons."]
+Mark statement at point."]
 
 	   ["Mark top level" py-mark-top-level
 	    :help " `py-mark-top-level'
-Mark top-level at point.
+Mark top-level at point."]
 
-Returns beginning and end positions of marked area, a cons."]
+	   ["Mark try block" py-mark-try-block
+	    :help " `py-mark-try-block'
+Mark try-block at point."]
            )
           ("Copy"
 	   ["Copy block" py-copy-block
 	    :help " `py-copy-block'
-Copy block at point.
-
-Store data in kill ring, so it might yanked back."]
+Copy block at point."]
 
 	   ["Copy block or clause" py-copy-block-or-clause
 	    :help " `py-copy-block-or-clause'
-Copy block-or-clause at point.
-
-Store data in kill ring, so it might yanked back."]
+Copy block-or-clause at point."]
 
 	   ["Copy class" py-copy-class
 	    :help " `py-copy-class'
-Copy class at point.
-
-Store data in kill ring, so it might yanked back."]
+Copy class at point."]
 
 	   ["Copy clause" py-copy-clause
 	    :help " `py-copy-clause'
-Copy clause at point.
-
-Store data in kill ring, so it might yanked back."]
+Copy clause at point."]
 
 	   ["Copy comment" py-copy-comment
 	    :help " `py-copy-comment'"]
 
 	   ["Copy def" py-copy-def
 	    :help " `py-copy-def'
-Copy def at point.
-
-Store data in kill ring, so it might yanked back."]
+Copy def at point."]
 
 	   ["Copy def or class" py-copy-def-or-class
 	    :help " `py-copy-def-or-class'
-Copy def-or-class at point.
+Copy def-or-class at point."]
 
-Store data in kill ring, so it might yanked back."]
+	   ["Copy except block" py-copy-except-block
+	    :help " `py-copy-except-block'"]
 
 	   ["Copy expression" py-copy-expression
 	    :help " `py-copy-expression'
-Copy expression at point.
+Copy expression at point."]
 
-Store data in kill ring, so it might yanked back."]
+	   ["Copy if block" py-copy-if-block
+	    :help " `py-copy-if-block'"]
 
 	   ["Copy line" py-copy-line
-	    :help " `py-copy-line'"]
+	    :help " `py-copy-line'
+Copy line at point."]
 
 	   ["Copy minor block" py-copy-minor-block
 	    :help " `py-copy-minor-block'
-Copy minor-block at point.
-
-Store data in kill ring, so it might yanked back."]
+Copy minor-block at point."]
 
 	   ["Copy paragraph" py-copy-paragraph
-	    :help " `py-copy-paragraph'"]
+	    :help " `py-copy-paragraph'
+Copy paragraph at point."]
 
 	   ["Copy partial expression" py-copy-partial-expression
 	    :help " `py-copy-partial-expression'
-Copy partial-expression at point.
+Copy partial-expression at point."]
 
-Store data in kill ring, so it might yanked back."]
+	   ["Copy section" py-copy-section
+	    :help " `py-copy-section'"]
 
 	   ["Copy statement" py-copy-statement
 	    :help " `py-copy-statement'
-Copy statement at point.
-
-Store data in kill ring, so it might yanked back."]
+Copy statement at point."]
 
 	   ["Copy top level" py-copy-top-level
 	    :help " `py-copy-top-level'
-Copy top-level at point.
+Copy top-level at point."]
 
-Store data in kill ring, so it might yanked back."]
+	   ["Copy try block" py-copy-try-block
+	    :help " `py-copy-try-block'"]
            )
           ("Kill"
 	   ["Kill block" py-kill-block
 	    :help " `py-kill-block'
-Delete `block' at point.
-
-Stores data in kill ring"]
+Delete `block' at point."]
 
 	   ["Kill block or clause" py-kill-block-or-clause
 	    :help " `py-kill-block-or-clause'
-Delete `block-or-clause' at point.
-
-Stores data in kill ring"]
+Delete `block-or-clause' at point."]
 
 	   ["Kill class" py-kill-class
 	    :help " `py-kill-class'
-Delete `class' at point.
-
-Stores data in kill ring"]
+Delete `class' at point."]
 
 	   ["Kill clause" py-kill-clause
 	    :help " `py-kill-clause'
-Delete `clause' at point.
-
-Stores data in kill ring"]
+Delete `clause' at point."]
 
 	   ["Kill comment" py-kill-comment
 	    :help " `py-kill-comment'"]
 
 	   ["Kill def" py-kill-def
 	    :help " `py-kill-def'
-Delete `def' at point.
-
-Stores data in kill ring"]
+Delete `def' at point."]
 
 	   ["Kill def or class" py-kill-def-or-class
 	    :help " `py-kill-def-or-class'
-Delete `def-or-class' at point.
+Delete `def-or-class' at point."]
 
-Stores data in kill ring"]
+	   ["Kill except block" py-kill-except-block
+	    :help " `py-kill-except-block'
+Delete `except-block' at point."]
 
 	   ["Kill expression" py-kill-expression
 	    :help " `py-kill-expression'
-Delete `expression' at point.
+Delete `expression' at point."]
 
-Stores data in kill ring"]
+	   ["Kill if block" py-kill-if-block
+	    :help " `py-kill-if-block'
+Delete `if-block' at point."]
 
 	   ["Kill line" py-kill-line
 	    :help " `py-kill-line'"]
 
 	   ["Kill minor block" py-kill-minor-block
 	    :help " `py-kill-minor-block'
-Delete `minor-block' at point.
-
-Stores data in kill ring"]
+Delete `minor-block' at point."]
 
 	   ["Kill paragraph" py-kill-paragraph
 	    :help " `py-kill-paragraph'"]
 
 	   ["Kill partial expression" py-kill-partial-expression
 	    :help " `py-kill-partial-expression'
-Delete `partial-expression' at point.
+Delete `partial-expression' at point."]
 
-Stores data in kill ring"]
+	   ["Kill section" py-kill-section
+	    :help " `py-kill-section'
+Delete `section' at point."]
 
 	   ["Kill statement" py-kill-statement
 	    :help " `py-kill-statement'
-Delete `statement' at point.
-
-Stores data in kill ring"]
+Delete `statement' at point."]
 
 	   ["Kill top level" py-kill-top-level
 	    :help " `py-kill-top-level'
-Delete `top-level' at point.
+Delete `top-level' at point."]
 
-Stores data in kill ring"]
+	   ["Kill try block" py-kill-try-block
+	    :help " `py-kill-try-block'
+Delete `try-block' at point."]
            )
           ("Delete"
 	   ["Delete block" py-delete-block
 	    :help " `py-delete-block'
-Delete BLOCK at point.
-
-Don't store data in kill ring."]
+Delete BLOCK at point."]
 
 	   ["Delete block or clause" py-delete-block-or-clause
 	    :help " `py-delete-block-or-clause'
-Delete BLOCK-OR-CLAUSE at point.
-
-Don't store data in kill ring."]
+Delete BLOCK-OR-CLAUSE at point."]
 
 	   ["Delete class" py-delete-class
 	    :help " `py-delete-class'
-Delete CLASS at point.
-
-Don't store data in kill ring.
-With C-u or `py-mark-decorators' set to `t', `decorators' are included."]
+Delete CLASS at point."]
 
 	   ["Delete clause" py-delete-clause
 	    :help " `py-delete-clause'
-Delete CLAUSE at point.
-
-Don't store data in kill ring."]
+Delete CLAUSE at point."]
 
 	   ["Delete comment" py-delete-comment
 	    :help " `py-delete-comment'"]
 
 	   ["Delete def" py-delete-def
 	    :help " `py-delete-def'
-Delete DEF at point.
-
-Don't store data in kill ring.
-With C-u or `py-mark-decorators' set to `t', `decorators' are included."]
+Delete DEF at point."]
 
 	   ["Delete def or class" py-delete-def-or-class
 	    :help " `py-delete-def-or-class'
-Delete DEF-OR-CLASS at point.
+Delete DEF-OR-CLASS at point."]
 
-Don't store data in kill ring.
-With C-u or `py-mark-decorators' set to `t', `decorators' are included."]
+	   ["Delete except block" py-delete-except-block
+	    :help " `py-delete-except-block'"]
 
 	   ["Delete expression" py-delete-expression
 	    :help " `py-delete-expression'
-Delete EXPRESSION at point.
+Delete EXPRESSION at point."]
 
-Don't store data in kill ring."]
+	   ["Delete if block" py-delete-if-block
+	    :help " `py-delete-if-block'"]
 
 	   ["Delete line" py-delete-line
-	    :help " `py-delete-line'"]
+	    :help " `py-delete-line'
+Delete LINE at point."]
 
 	   ["Delete minor block" py-delete-minor-block
 	    :help " `py-delete-minor-block'
-Delete MINOR-BLOCK at point.
-
-Don't store data in kill ring."]
+Delete MINOR-BLOCK at point."]
 
 	   ["Delete paragraph" py-delete-paragraph
-	    :help " `py-delete-paragraph'"]
+	    :help " `py-delete-paragraph'
+Delete PARAGRAPH at point."]
 
 	   ["Delete partial expression" py-delete-partial-expression
 	    :help " `py-delete-partial-expression'
-Delete PARTIAL-EXPRESSION at point.
+Delete PARTIAL-EXPRESSION at point."]
 
-Don't store data in kill ring."]
+	   ["Delete section" py-delete-section
+	    :help " `py-delete-section'"]
 
 	   ["Delete statement" py-delete-statement
 	    :help " `py-delete-statement'
-Delete STATEMENT at point.
-
-Don't store data in kill ring."]
+Delete STATEMENT at point."]
 
 	   ["Delete top level" py-delete-top-level
 	    :help " `py-delete-top-level'
-Delete TOP-LEVEL at point.
+Delete TOP-LEVEL at point."]
 
-Don't store data in kill ring."]
+	   ["Delete try block" py-delete-try-block
+	    :help " `py-delete-try-block'"]
            )
           ("Comment"
 	   ["Comment block" py-comment-block
 	    :help " `py-comment-block'
-Comments block at point.
-
-Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
-the default"]
+Comments block at point."]
 
 	   ["Comment block or clause" py-comment-block-or-clause
 	    :help " `py-comment-block-or-clause'
-Comments block-or-clause at point.
-
-Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
-the default"]
+Comments block-or-clause at point."]
 
 	   ["Comment class" py-comment-class
 	    :help " `py-comment-class'
-Comments class at point.
-
-Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
-the default"]
+Comments class at point."]
 
 	   ["Comment clause" py-comment-clause
 	    :help " `py-comment-clause'
-Comments clause at point.
-
-Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
-the default"]
+Comments clause at point."]
 
 	   ["Comment def" py-comment-def
 	    :help " `py-comment-def'
-Comments def at point.
-
-Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
-the default"]
+Comments def at point."]
 
 	   ["Comment def or class" py-comment-def-or-class
 	    :help " `py-comment-def-or-class'
-Comments def-or-class at point.
+Comments def-or-class at point."]
 
-Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
-the default"]
+	   ["Comment section" py-comment-section
+	    :help " `py-comment-section'"]
 
 	   ["Comment statement" py-comment-statement
 	    :help " `py-comment-statement'
-Comments statement at point.
-
-Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
-the default"]
+Comments statement at point."]
            ))
          ("Move"
           ("Backward"
-	   ["Beginning of block" py-beginning-of-block
-	    :help " `py-beginning-of-block'
-Go to beginning block, skip whitespace at BOL.
+	   ["Backward block" py-backward-block
+	    :help " `py-backward-block'
+Go to beginning of block."]
 
-Returns beginning of block if successful, nil otherwise"]
+	   ["Backward block or clause" py-backward-block-or-clause
+	    :help " `py-backward-block-or-clause'
+Go to beginning of block-or-clause."]
 
-	   ["Beginning of block or clause" py-beginning-of-block-or-clause
-	    :help " `py-beginning-of-block-or-clause'
-Go to beginning block-or-clause, skip whitespace at BOL.
+	   ["Backward class" py-backward-class
+	    :help " `py-backward-class'
+Go to beginning of class."]
 
-Returns beginning of block-or-clause if successful, nil otherwise"]
+	   ["Backward clause" py-backward-clause
+	    :help " `py-backward-clause'
+Go to beginning of clause."]
 
-	   ["Beginning of class" py-beginning-of-class
-	    :help " `py-beginning-of-class'
-Go to beginning class, skip whitespace at BOL.
+	   ["Backward def" py-backward-def
+	    :help " `py-backward-def'
+Go to beginning of def."]
 
-Returns beginning of class if successful, nil otherwise
+	   ["Backward def or class" py-backward-def-or-class
+	    :help " `py-backward-def-or-class'
+Go to beginning of def-or-class."]
 
-When `py-mark-decorators' is non-nil, decorators are considered too."]
+	   ["Backward elif block" py-backward-elif-block
+	    :help " `py-backward-elif-block'
+Go to beginning of elif-block."]
 
-	   ["Beginning of clause" py-beginning-of-clause
-	    :help " `py-beginning-of-clause'
-Go to beginning clause, skip whitespace at BOL.
+	   ["Backward else block" py-backward-else-block
+	    :help " `py-backward-else-block'
+Go to beginning of else-block."]
 
-Returns beginning of clause if successful, nil otherwise"]
+	   ["Backward except block" py-backward-except-block
+	    :help " `py-backward-except-block'
+Go to beginning of except-block."]
 
-	   ["Beginning of def" py-beginning-of-def
-	    :help " `py-beginning-of-def'
-Go to beginning def, skip whitespace at BOL.
+	   ["Backward expression" py-backward-expression
+	    :help " `py-backward-expression'
+Go to the beginning of a python expression."]
 
-Returns beginning of def if successful, nil otherwise
+	   ["Backward if block" py-backward-if-block
+	    :help " `py-backward-if-block'
+Go to beginning of if-block."]
 
-When `py-mark-decorators' is non-nil, decorators are considered too."]
+	   ["Backward partial expression" py-backward-partial-expression
+	    :help " `py-backward-partial-expression'"]
 
-	   ["Beginning of def or class" py-beginning-of-def-or-class
-	    :help " `py-beginning-of-def-or-class'
-Go to beginning def-or-class, skip whitespace at BOL.
+	   ["Backward statement" py-backward-statement
+	    :help " `py-backward-statement'
+Go to the initial line of a simple statement."]
 
-Returns beginning of def-or-class if successful, nil otherwise
+	   ["Backward top level" py-backward-top-level
+	    :help " `py-backward-top-level'
+Go up to beginning of statments until level of indentation is null."]
 
-When `py-mark-decorators' is non-nil, decorators are considered too."]
-
-	   ["Beginning of elif block" py-beginning-of-elif-block
-	    :help " `py-beginning-of-elif-block'
-Go to beginning elif-block, skip whitespace at BOL.
-
-Returns beginning of elif-block if successful, nil otherwise"]
-
-	   ["Beginning of else block" py-beginning-of-else-block
-	    :help " `py-beginning-of-else-block'
-Go to beginning else-block, skip whitespace at BOL.
-
-Returns beginning of else-block if successful, nil otherwise"]
-
-	   ["Beginning of except block" py-beginning-of-except-block
-	    :help " `py-beginning-of-except-block'
-Go to beginning except-block, skip whitespace at BOL.
-
-Returns beginning of except-block if successful, nil otherwise"]
-
-	   ["Beginning of expression" py-beginning-of-expression
-	    :help " `py-beginning-of-expression'
-Go to the beginning of a compound python expression.
-
-With numeric ARG do it that many times.
-
-A a compound python expression might be concatenated by \".\" operator, thus composed by minor python expressions.
-
-If already at the beginning or before a expression, go to next expression in buffer upwards
-
-Expression here is conceived as the syntactical component of a statement in Python. See http://docs.python.org/reference
-Operators however are left aside resp. limit py-expression designed for edit-purposes."]
-
-	   ["Beginning of if block" py-beginning-of-if-block
-	    :help " `py-beginning-of-if-block'
-Go to beginning if-block, skip whitespace at BOL.
-
-Returns beginning of if-block if successful, nil otherwise"]
-
-	   ["Beginning of partial expression" py-beginning-of-partial-expression
-	    :help " `py-beginning-of-partial-expression'"]
-
-	   ["Beginning of statement" py-beginning-of-statement
-	    :help " `py-beginning-of-statement'
-Go to the initial line of a simple statement.
-
-For beginning of compound statement use py-beginning-of-block.
-For beginning of clause py-beginning-of-clause."]
-
-	   ["Beginning of top level" py-beginning-of-top-level
-	    :help " `py-beginning-of-top-level'
-Go up to beginning of statments until level of indentation is null.
-
-Returns position if successful, nil otherwise"]
-
-	   ["Beginning of try block" py-beginning-of-try-block
-	    :help " `py-beginning-of-try-block'
-Go to beginning try-block, skip whitespace at BOL.
-
-Returns beginning of try-block if successful, nil otherwise"]
+	   ["Backward try block" py-backward-try-block
+	    :help " `py-backward-try-block'
+Go to beginning of try-block."]
            )
           ("Forward"
-	   ["End of block" py-end-of-block
-	    :help " `py-end-of-block'
-Go to end of block.
+	   ["Forward block" py-forward-block
+	    :help " `py-forward-block'
+Go to end of block."]
 
-Returns end of block if successful, nil otherwise"]
+	   ["Forward block or clause" py-forward-block-or-clause
+	    :help " `py-forward-block-or-clause'
+Go to end of block-or-clause."]
 
-	   ["End of block or clause" py-end-of-block-or-clause
-	    :help " `py-end-of-block-or-clause'
-Go to end of block-or-clause.
+	   ["Forward class" py-forward-class
+	    :help " `py-forward-class'
+Go to end of class."]
 
-Returns end of block-or-clause if successful, nil otherwise"]
+	   ["Forward clause" py-forward-clause
+	    :help " `py-forward-clause'
+Go to end of clause."]
 
-	   ["End of class" py-end-of-class
-	    :help " `py-end-of-class'
-Go to end of class.
+	   ["Forward def" py-forward-def
+	    :help " `py-forward-def'
+Go to end of def."]
 
-Returns end of class if successful, nil otherwise"]
+	   ["Forward def or class" py-forward-def-or-class
+	    :help " `py-forward-def-or-class'
+Go to end of def-or-class."]
 
-	   ["End of clause" py-end-of-clause
-	    :help " `py-end-of-clause'
-Go to end of clause.
+	   ["Forward elif block" py-forward-elif-block
+	    :help " `py-forward-elif-block'
+Go to end of elif-block."]
 
-Returns end of clause if successful, nil otherwise"]
+	   ["Forward else block" py-forward-else-block
+	    :help " `py-forward-else-block'
+Go to end of else-block."]
 
-	   ["End of def" py-end-of-def
-	    :help " `py-end-of-def'
-Go to end of def.
+	   ["Forward except block" py-forward-except-block
+	    :help " `py-forward-except-block'
+Go to end of except-block."]
 
-Returns end of def if successful, nil otherwise"]
+	   ["Forward expression" py-forward-expression
+	    :help " `py-forward-expression'
+Go to the end of a compound python expression."]
 
-	   ["End of def or class" py-end-of-def-or-class
-	    :help " `py-end-of-def-or-class'
-Go to end of def-or-class.
+	   ["Forward if block" py-forward-if-block
+	    :help " `py-forward-if-block'
+Go to end of if-block."]
 
-Returns end of def-or-class if successful, nil otherwise"]
+	   ["Forward partial expression" py-forward-partial-expression
+	    :help " `py-forward-partial-expression'"]
 
-	   ["End of elif block" py-end-of-elif-block
-	    :help " `py-end-of-elif-block'
-Go to end of elif-block.
+	   ["Forward statement" py-forward-statement
+	    :help " `py-forward-statement'
+Go to the last char of current statement."]
 
-Returns end of elif-block if successful, nil otherwise"]
+	   ["Forward top level" py-forward-top-level
+	    :help " `py-forward-top-level'
+Go to end of top-level form at point."]
 
-	   ["End of else block" py-end-of-else-block
-	    :help " `py-end-of-else-block'
-Go to end of else-block.
-
-Returns end of else-block if successful, nil otherwise"]
-
-	   ["End of except block" py-end-of-except-block
-	    :help " `py-end-of-except-block'
-Go to end of except-block.
-
-Returns end of except-block if successful, nil otherwise"]
-
-	   ["End of expression" py-end-of-expression
-	    :help " `py-end-of-expression'
-Go to the end of a compound python expression.
-
-With numeric ARG do it that many times.
-
-A a compound python expression might be concatenated by \".\" operator, thus composed by minor python expressions.
-
-Expression here is conceived as the syntactical component of a statement in Python. See http://docs.python.org/reference
-
-Operators however are left aside resp. limit py-expression designed for edit-purposes."]
-
-	   ["End of if block" py-end-of-if-block
-	    :help " `py-end-of-if-block'
-Go to end of if-block.
-
-Returns end of if-block if successful, nil otherwise"]
-
-	   ["End of partial expression" py-end-of-partial-expression
-	    :help " `py-end-of-partial-expression'"]
-
-	   ["End of statement" py-end-of-statement
-	    :help " `py-end-of-statement'
-Go to the last char of current statement.
-
-Optional argument REPEAT, the number of loops done already, is checked for py-max-specpdl-size error. Avoid eternal loops due to missing string delimters etc."]
-
-	   ["End of top level" py-end-of-top-level
-	    :help " `py-end-of-top-level'
-Go to end of top-level form at point.
-
-Returns position if successful, nil otherwise"]
-
-	   ["End of try block" py-end-of-try-block
-	    :help " `py-end-of-try-block'
-Go to end of try-block.
-
-Returns end of try-block if successful, nil otherwise"]
+	   ["Forward try block" py-forward-try-block
+	    :help " `py-forward-try-block'
+Go to end of try-block."]
            )
           ("BOL-forms"
            ("Backward"
-	    ["Beginning of block bol" py-beginning-of-block-bol
-	     :help " `py-beginning-of-block-bol'
-Go to beginning block, go to BOL.
+	    ["Backward block bol" py-backward-block-bol
+	     :help " `py-backward-block-bol'
+Go to beginning of block, go to BOL."]
 
-Returns beginning of block if successful, nil otherwise"]
+	    ["Backward block or clause bol" py-backward-block-or-clause-bol
+	     :help " `py-backward-block-or-clause-bol'
+Go to beginning of block-or-clause, go to BOL."]
 
-	    ["Beginning of block or clause bol" py-beginning-of-block-or-clause-bol
-	     :help " `py-beginning-of-block-or-clause-bol'
-Go to beginning block-or-clause, go to BOL.
+	    ["Backward class bol" py-backward-class-bol
+	     :help " `py-backward-class-bol'
+Go to beginning of class, go to BOL."]
 
-Returns beginning of block-or-clause if successful, nil otherwise"]
+	    ["Backward clause bol" py-backward-clause-bol
+	     :help " `py-backward-clause-bol'
+Go to beginning of clause, go to BOL."]
 
-	    ["Beginning of class bol" py-beginning-of-class-bol
-	     :help " `py-beginning-of-class-bol'
-Go to beginning class, go to BOL.
+	    ["Backward def bol" py-backward-def-bol
+	     :help " `py-backward-def-bol'
+Go to beginning of def, go to BOL."]
 
-Returns beginning of class if successful, nil otherwise
+	    ["Backward def or class bol" py-backward-def-or-class-bol
+	     :help " `py-backward-def-or-class-bol'
+Go to beginning of def-or-class, go to BOL."]
 
-When `py-mark-decorators' is non-nil, decorators are considered too."]
+	    ["Backward elif block bol" py-backward-elif-block-bol
+	     :help " `py-backward-elif-block-bol'
+Go to beginning of elif-block, go to BOL."]
 
-	    ["Beginning of clause bol" py-beginning-of-clause-bol
-	     :help " `py-beginning-of-clause-bol'
-Go to beginning clause, go to BOL.
+	    ["Backward else block bol" py-backward-else-block-bol
+	     :help " `py-backward-else-block-bol'
+Go to beginning of else-block, go to BOL."]
 
-Returns beginning of clause if successful, nil otherwise"]
+	    ["Backward except block bol" py-backward-except-block-bol
+	     :help " `py-backward-except-block-bol'
+Go to beginning of except-block, go to BOL."]
 
-	    ["Beginning of def bol" py-beginning-of-def-bol
-	     :help " `py-beginning-of-def-bol'
-Go to beginning def, go to BOL.
+	    ["Backward expression bol" py-backward-expression-bol
+	     :help " `py-backward-expression-bol'"]
 
-Returns beginning of def if successful, nil otherwise
+	    ["Backward if block bol" py-backward-if-block-bol
+	     :help " `py-backward-if-block-bol'
+Go to beginning of if-block, go to BOL."]
 
-When `py-mark-decorators' is non-nil, decorators are considered too."]
+	    ["Backward partial expression bol" py-backward-partial-expression-bol
+	     :help " `py-backward-partial-expression-bol'"]
 
-	    ["Beginning of def or class bol" py-beginning-of-def-or-class-bol
-	     :help " `py-beginning-of-def-or-class-bol'
-Go to beginning def-or-class, go to BOL.
+	    ["Backward statement bol" py-backward-statement-bol
+	     :help " `py-backward-statement-bol'
+Goto beginning of line where statement starts."]
 
-Returns beginning of def-or-class if successful, nil otherwise
-
-When `py-mark-decorators' is non-nil, decorators are considered too."]
-
-	    ["Beginning of elif block bol" py-beginning-of-elif-block-bol
-	     :help " `py-beginning-of-elif-block-bol'
-Go to beginning elif-block, go to BOL.
-
-Returns beginning of elif-block if successful, nil otherwise"]
-
-	    ["Beginning of else block bol" py-beginning-of-else-block-bol
-	     :help " `py-beginning-of-else-block-bol'
-Go to beginning else-block, go to BOL.
-
-Returns beginning of else-block if successful, nil otherwise"]
-
-	    ["Beginning of except block bol" py-beginning-of-except-block-bol
-	     :help " `py-beginning-of-except-block-bol'
-Go to beginning except-block, go to BOL.
-
-Returns beginning of except-block if successful, nil otherwise"]
-
-	    ["Beginning of expression bol" py-beginning-of-expression-bol
-	     :help " `py-beginning-of-expression-bol'"]
-
-	    ["Beginning of if block bol" py-beginning-of-if-block-bol
-	     :help " `py-beginning-of-if-block-bol'
-Go to beginning if-block, go to BOL.
-
-Returns beginning of if-block if successful, nil otherwise"]
-
-	    ["Beginning of partial expression bol" py-beginning-of-partial-expression-bol
-	     :help " `py-beginning-of-partial-expression-bol'"]
-
-	    ["Beginning of statement bol" py-beginning-of-statement-bol
-	     :help " `py-beginning-of-statement-bol'
-Goto beginning of line where statement starts.
-  Returns position reached, if successful, nil otherwise.
-
-See also `py-up-statement': up from current definition to next beginning of statement above."]
-
-	    ["Beginning of try block bol" py-beginning-of-try-block-bol
-	     :help " `py-beginning-of-try-block-bol'
-Go to beginning try-block, go to BOL.
-
-Returns beginning of try-block if successful, nil otherwise"]
+	    ["Backward try block bol" py-backward-try-block-bol
+	     :help " `py-backward-try-block-bol'
+Go to beginning of try-block, go to BOL."]
             )
            ("Forward"
-	    ["End of block bol" py-end-of-block-bol
-	     :help " `py-end-of-block-bol'
-Goto beginning of line following end of block.
-  Returns position reached, if successful, nil otherwise.
+	    ["Forward block bol" py-forward-block-bol
+	     :help " `py-forward-block-bol'
+Goto beginning of line following end of block."]
 
-See also `py-down-block': down from current definition to next beginning of block below."]
+	    ["Forward block or clause bol" py-forward-block-or-clause-bol
+	     :help " `py-forward-block-or-clause-bol'
+Goto beginning of line following end of block-or-clause."]
 
-	    ["End of block or clause bol" py-end-of-block-or-clause-bol
-	     :help " `py-end-of-block-or-clause-bol'
-Goto beginning of line following end of block-or-clause.
-  Returns position reached, if successful, nil otherwise.
+	    ["Forward class bol" py-forward-class-bol
+	     :help " `py-forward-class-bol'
+Goto beginning of line following end of class."]
 
-See also `py-down-block-or-clause': down from current definition to next beginning of block-or-clause below."]
+	    ["Forward clause bol" py-forward-clause-bol
+	     :help " `py-forward-clause-bol'
+Goto beginning of line following end of clause."]
 
-	    ["End of class bol" py-end-of-class-bol
-	     :help " `py-end-of-class-bol'
-Goto beginning of line following end of class.
-  Returns position reached, if successful, nil otherwise.
+	    ["Forward def bol" py-forward-def-bol
+	     :help " `py-forward-def-bol'
+Goto beginning of line following end of def."]
 
-See also `py-down-class': down from current definition to next beginning of class below."]
+	    ["Forward def or class bol" py-forward-def-or-class-bol
+	     :help " `py-forward-def-or-class-bol'
+Goto beginning of line following end of def-or-class."]
 
-	    ["End of clause bol" py-end-of-clause-bol
-	     :help " `py-end-of-clause-bol'
-Goto beginning of line following end of clause.
-  Returns position reached, if successful, nil otherwise.
+	    ["Forward elif block bol" py-forward-elif-block-bol
+	     :help " `py-forward-elif-block-bol'
+Goto beginning of line following end of elif-block."]
 
-See also `py-down-clause': down from current definition to next beginning of clause below."]
+	    ["Forward else block bol" py-forward-else-block-bol
+	     :help " `py-forward-else-block-bol'
+Goto beginning of line following end of else-block."]
 
-	    ["End of def bol" py-end-of-def-bol
-	     :help " `py-end-of-def-bol'
-Goto beginning of line following end of def.
-  Returns position reached, if successful, nil otherwise.
+	    ["Forward except block bol" py-forward-except-block-bol
+	     :help " `py-forward-except-block-bol'
+Goto beginning of line following end of except-block."]
 
-See also `py-down-def': down from current definition to next beginning of def below."]
+	    ["Forward expression bol" py-forward-expression-bol
+	     :help " `py-forward-expression-bol'"]
 
-	    ["End of def or class bol" py-end-of-def-or-class-bol
-	     :help " `py-end-of-def-or-class-bol'
-Goto beginning of line following end of def-or-class.
-  Returns position reached, if successful, nil otherwise.
+	    ["Forward if block bol" py-forward-if-block-bol
+	     :help " `py-forward-if-block-bol'
+Goto beginning of line following end of if-block."]
 
-See also `py-down-def-or-class': down from current definition to next beginning of def-or-class below."]
+	    ["Forward partial expression bol" py-forward-partial-expression-bol
+	     :help " `py-forward-partial-expression-bol'"]
 
-	    ["End of elif block bol" py-end-of-elif-block-bol
-	     :help " `py-end-of-elif-block-bol'
-Goto beginning of line following end of elif-block.
-  Returns position reached, if successful, nil otherwise.
-
-See also `py-down-elif-block': down from current definition to next beginning of elif-block below."]
-
-	    ["End of else block bol" py-end-of-else-block-bol
-	     :help " `py-end-of-else-block-bol'
-Goto beginning of line following end of else-block.
-  Returns position reached, if successful, nil otherwise.
-
-See also `py-down-else-block': down from current definition to next beginning of else-block below."]
-
-	    ["End of except block bol" py-end-of-except-block-bol
-	     :help " `py-end-of-except-block-bol'
-Goto beginning of line following end of except-block.
-  Returns position reached, if successful, nil otherwise.
-
-See also `py-down-except-block': down from current definition to next beginning of except-block below."]
-
-	    ["End of expression bol" py-end-of-expression-bol
-	     :help " `py-end-of-expression-bol'"]
-
-	    ["End of if block bol" py-end-of-if-block-bol
-	     :help " `py-end-of-if-block-bol'
-Goto beginning of line following end of if-block.
-  Returns position reached, if successful, nil otherwise.
-
-See also `py-down-if-block': down from current definition to next beginning of if-block below."]
-
-	    ["End of partial expression bol" py-end-of-partial-expression-bol
-	     :help " `py-end-of-partial-expression-bol'"]
-
-	    ["End of statement bol" py-end-of-statement-bol
-	     :help " `py-end-of-statement-bol'
+	    ["Forward statement bol" py-forward-statement-bol
+	     :help " `py-forward-statement-bol'
 Go to the beginning-of-line following current statement."]
 
-	    ["End of top level bol" py-end-of-top-level-bol
-	     :help " `py-end-of-top-level-bol'
-Go to end of top-level form at point, stop at next beginning-of-line.
+	    ["Forward top level bol" py-forward-top-level-bol
+	     :help " `py-forward-top-level-bol'
+Go to end of top-level form at point, stop at next beginning-of-line."]
 
-Returns position successful, nil otherwise"]
-
-	    ["End of try block bol" py-end-of-try-block-bol
-	     :help " `py-end-of-try-block-bol'
-Goto beginning of line following end of try-block.
-  Returns position reached, if successful, nil otherwise.
-
-See also `py-down-try-block': down from current definition to next beginning of try-block below."]
+	    ["Forward try block bol" py-forward-try-block-bol
+	     :help " `py-forward-try-block-bol'
+Goto beginning of line following end of try-block."]
             ))
           ("Up/Down"
 	   ["Up" py-up
 	    :help " `py-up'
-Go up or to beginning of form if inside.
-
-If inside a delimited form --string or list-- go to its beginning.
-If not at beginning of a statement or block, go to its beginning.
-If at beginning of a statement or block, go to beginning one level above of compound statement or definition at point."]
+Go up or to beginning of form if inside."]
 
 	   ["Down" py-down
 	    :help " `py-down'
-Go to beginning one level below of compound statement or definition at point.
-
-If no statement or block below, but a delimited form --string or list-- go to its beginning. Repeated call from there will behave like down-list.
-
-Returns position if successful, nil otherwise"]
+Go to beginning one level below of compound statement or definition at point."]
            ))
          ("Send"
           ["Execute block" py-execute-block
@@ -1075,176 +756,6 @@ Send statement at point to Python default interpreter."]
 	   :help " `py-execute-top-level'
 Send top-level at point to Python default interpreter."]
            ("Other"
-            ("Python"
-	     ["Execute block python" py-execute-block-python
-	      :help " `py-execute-block-python'
-Send block at point to default interpreter.
-
-For `default' see value of `py-shell-name'"]
-
-	     ["Execute block or clause python" py-execute-block-or-clause-python
-	      :help " `py-execute-block-or-clause-python'
-Send block-or-clause at point to default interpreter.
-
-For `default' see value of `py-shell-name'"]
-
-	     ["Execute class python" py-execute-class-python
-	      :help " `py-execute-class-python'
-Send class at point to default interpreter.
-
-For `default' see value of `py-shell-name'"]
-
-	     ["Execute clause python" py-execute-clause-python
-	      :help " `py-execute-clause-python'
-Send clause at point to default interpreter.
-
-For `default' see value of `py-shell-name'"]
-
-	     ["Execute def python" py-execute-def-python
-	      :help " `py-execute-def-python'
-Send def at point to default interpreter.
-
-For `default' see value of `py-shell-name'"]
-
-	     ["Execute def or class python" py-execute-def-or-class-python
-	      :help " `py-execute-def-or-class-python'"]
-
-	     ["Execute expression python" py-execute-expression-python
-	      :help " `py-execute-expression-python'
-Send expression at point to default interpreter.
-
-For `default' see value of `py-shell-name'"]
-
-	     ["Execute line python" py-execute-line-python
-	      :help " `py-execute-line-python'
-Send line at point to default interpreter.
-
-For `default' see value of `py-shell-name'"]
-
-	     ["Execute minor block python" py-execute-minor-block-python
-	      :help " `py-execute-minor-block-python'"]
-
-	     ["Execute paragraph python" py-execute-paragraph-python
-	      :help " `py-execute-paragraph-python'"]
-
-	     ["Execute partial expression python" py-execute-partial-expression-python
-	      :help " `py-execute-partial-expression-python'
-Send partial-expression at point to default interpreter.
-
-For `default' see value of `py-shell-name'"]
-
-	     ["Execute statement python" py-execute-statement-python
-	      :help " `py-execute-statement-python'
-Send statement at point to default interpreter.
-
-For `default' see value of `py-shell-name'"]
-
-	     ["Execute top level python" py-execute-top-level-python
-	      :help " `py-execute-top-level-python'
-Send top-level at point to default interpreter.
-
-For `default' see value of `py-shell-name'"]
-             )
-            ("Python2"
-	     ["Execute block python2" py-execute-block-python2
-	      :help " `py-execute-block-python2'
-Send block at point to Python2 interpreter."]
-
-	     ["Execute block or clause python2" py-execute-block-or-clause-python2
-	      :help " `py-execute-block-or-clause-python2'
-Send block-or-clause at point to Python2 interpreter."]
-
-	     ["Execute class python2" py-execute-class-python2
-	      :help " `py-execute-class-python2'
-Send class at point to Python2 interpreter."]
-
-	     ["Execute clause python2" py-execute-clause-python2
-	      :help " `py-execute-clause-python2'
-Send clause at point to Python2 interpreter."]
-
-	     ["Execute def python2" py-execute-def-python2
-	      :help " `py-execute-def-python2'
-Send def at point to Python2 interpreter."]
-
-	     ["Execute def or class python2" py-execute-def-or-class-python2
-	      :help " `py-execute-def-or-class-python2'"]
-
-	     ["Execute expression python2" py-execute-expression-python2
-	      :help " `py-execute-expression-python2'
-Send expression at point to Python2 interpreter."]
-
-	     ["Execute line python2" py-execute-line-python2
-	      :help " `py-execute-line-python2'
-Send line at point to Python2 interpreter."]
-
-	     ["Execute minor block python2" py-execute-minor-block-python2
-	      :help " `py-execute-minor-block-python2'"]
-
-	     ["Execute paragraph python2" py-execute-paragraph-python2
-	      :help " `py-execute-paragraph-python2'"]
-
-	     ["Execute partial expression python2" py-execute-partial-expression-python2
-	      :help " `py-execute-partial-expression-python2'
-Send partial-expression at point to Python2 interpreter."]
-
-	     ["Execute statement python2" py-execute-statement-python2
-	      :help " `py-execute-statement-python2'
-Send statement at point to Python2 interpreter."]
-
-	     ["Execute top level python2" py-execute-top-level-python2
-	      :help " `py-execute-top-level-python2'
-Send top-level at point to Python2 interpreter."]
-             )
-            ("Python3"
-	     ["Execute block python3" py-execute-block-python3
-	      :help " `py-execute-block-python3'
-Send block at point to Python3 interpreter."]
-
-	     ["Execute block or clause python3" py-execute-block-or-clause-python3
-	      :help " `py-execute-block-or-clause-python3'
-Send block-or-clause at point to Python3 interpreter."]
-
-	     ["Execute class python3" py-execute-class-python3
-	      :help " `py-execute-class-python3'
-Send class at point to Python3 interpreter."]
-
-	     ["Execute clause python3" py-execute-clause-python3
-	      :help " `py-execute-clause-python3'
-Send clause at point to Python3 interpreter."]
-
-	     ["Execute def python3" py-execute-def-python3
-	      :help " `py-execute-def-python3'
-Send def at point to Python3 interpreter."]
-
-	     ["Execute def or class python3" py-execute-def-or-class-python3
-	      :help " `py-execute-def-or-class-python3'"]
-
-	     ["Execute expression python3" py-execute-expression-python3
-	      :help " `py-execute-expression-python3'
-Send expression at point to Python3 interpreter."]
-
-	     ["Execute line python3" py-execute-line-python3
-	      :help " `py-execute-line-python3'
-Send line at point to Python3 interpreter."]
-
-	     ["Execute minor block python3" py-execute-minor-block-python3
-	      :help " `py-execute-minor-block-python3'"]
-
-	     ["Execute paragraph python3" py-execute-paragraph-python3
-	      :help " `py-execute-paragraph-python3'"]
-
-	     ["Execute partial expression python3" py-execute-partial-expression-python3
-	      :help " `py-execute-partial-expression-python3'
-Send partial-expression at point to Python3 interpreter."]
-
-	     ["Execute statement python3" py-execute-statement-python3
-	      :help " `py-execute-statement-python3'
-Send statement at point to Python3 interpreter."]
-
-	     ["Execute top level python3" py-execute-top-level-python3
-	      :help " `py-execute-top-level-python3'
-Send top-level at point to Python3 interpreter."]
-             )
             ("IPython"
 	     ["Execute block ipython" py-execute-block-ipython
 	      :help " `py-execute-block-ipython'
@@ -1267,18 +778,19 @@ Send clause at point to IPython interpreter."]
 Send def at point to IPython interpreter."]
 
 	     ["Execute def or class ipython" py-execute-def-or-class-ipython
-	      :help " `py-execute-def-or-class-ipython'"]
+	      :help " `py-execute-def-or-class-ipython'
+Send def-or-class at point to IPython interpreter."]
 
 	     ["Execute expression ipython" py-execute-expression-ipython
 	      :help " `py-execute-expression-ipython'
 Send expression at point to IPython interpreter."]
 
 	     ["Execute line ipython" py-execute-line-ipython
-	      :help " `py-execute-line-ipython'
-Send line at point to IPython interpreter."]
+	      :help " `py-execute-line-ipython'"]
 
 	     ["Execute minor block ipython" py-execute-minor-block-ipython
-	      :help " `py-execute-minor-block-ipython'"]
+	      :help " `py-execute-minor-block-ipython'
+Send minor-block at point to IPython interpreter."]
 
 	     ["Execute paragraph ipython" py-execute-paragraph-ipython
 	      :help " `py-execute-paragraph-ipython'"]
@@ -1337,43 +849,54 @@ Send top-level at point to IPython interpreter."]
              )
             ("IPython3"
 	     ["Execute block ipython3" py-execute-block-ipython3
-	      :help " `py-execute-block-ipython3'"]
+	      :help " `py-execute-block-ipython3'
+Send block at point to IPython interpreter."]
 
 	     ["Execute block or clause ipython3" py-execute-block-or-clause-ipython3
-	      :help " `py-execute-block-or-clause-ipython3'"]
+	      :help " `py-execute-block-or-clause-ipython3'
+Send block-or-clause at point to IPython interpreter."]
 
 	     ["Execute class ipython3" py-execute-class-ipython3
-	      :help " `py-execute-class-ipython3'"]
+	      :help " `py-execute-class-ipython3'
+Send class at point to IPython interpreter."]
 
 	     ["Execute clause ipython3" py-execute-clause-ipython3
-	      :help " `py-execute-clause-ipython3'"]
+	      :help " `py-execute-clause-ipython3'
+Send clause at point to IPython interpreter."]
 
 	     ["Execute def ipython3" py-execute-def-ipython3
-	      :help " `py-execute-def-ipython3'"]
+	      :help " `py-execute-def-ipython3'
+Send def at point to IPython interpreter."]
 
 	     ["Execute def or class ipython3" py-execute-def-or-class-ipython3
-	      :help " `py-execute-def-or-class-ipython3'"]
+	      :help " `py-execute-def-or-class-ipython3'
+Send def-or-class at point to IPython interpreter."]
 
 	     ["Execute expression ipython3" py-execute-expression-ipython3
-	      :help " `py-execute-expression-ipython3'"]
+	      :help " `py-execute-expression-ipython3'
+Send expression at point to IPython interpreter."]
 
 	     ["Execute line ipython3" py-execute-line-ipython3
 	      :help " `py-execute-line-ipython3'"]
 
 	     ["Execute minor block ipython3" py-execute-minor-block-ipython3
-	      :help " `py-execute-minor-block-ipython3'"]
+	      :help " `py-execute-minor-block-ipython3'
+Send minor-block at point to IPython interpreter."]
 
 	     ["Execute paragraph ipython3" py-execute-paragraph-ipython3
 	      :help " `py-execute-paragraph-ipython3'"]
 
 	     ["Execute partial expression ipython3" py-execute-partial-expression-ipython3
-	      :help " `py-execute-partial-expression-ipython3'"]
+	      :help " `py-execute-partial-expression-ipython3'
+Send partial-expression at point to IPython interpreter."]
 
 	     ["Execute statement ipython3" py-execute-statement-ipython3
-	      :help " `py-execute-statement-ipython3'"]
+	      :help " `py-execute-statement-ipython3'
+Send statement at point to IPython interpreter."]
 
 	     ["Execute top level ipython3" py-execute-top-level-ipython3
-	      :help " `py-execute-top-level-ipython3'"]
+	      :help " `py-execute-top-level-ipython3'
+Send top-level at point to IPython interpreter."]
              )
             ("Jython"
 	     ["Execute block jython" py-execute-block-jython
@@ -1397,18 +920,19 @@ Send clause at point to Jython interpreter."]
 Send def at point to Jython interpreter."]
 
 	     ["Execute def or class jython" py-execute-def-or-class-jython
-	      :help " `py-execute-def-or-class-jython'"]
+	      :help " `py-execute-def-or-class-jython'
+Send def-or-class at point to Jython interpreter."]
 
 	     ["Execute expression jython" py-execute-expression-jython
 	      :help " `py-execute-expression-jython'
 Send expression at point to Jython interpreter."]
 
 	     ["Execute line jython" py-execute-line-jython
-	      :help " `py-execute-line-jython'
-Send line at point to Jython interpreter."]
+	      :help " `py-execute-line-jython'"]
 
 	     ["Execute minor block jython" py-execute-minor-block-jython
-	      :help " `py-execute-minor-block-jython'"]
+	      :help " `py-execute-minor-block-jython'
+Send minor-block at point to Jython interpreter."]
 
 	     ["Execute paragraph jython" py-execute-paragraph-jython
 	      :help " `py-execute-paragraph-jython'"]
@@ -1424,6 +948,159 @@ Send statement at point to Jython interpreter."]
 	     ["Execute top level jython" py-execute-top-level-jython
 	      :help " `py-execute-top-level-jython'
 Send top-level at point to Jython interpreter."]
+             )
+            ("Python"
+	     ["Execute block python" py-execute-block-python
+	      :help " `py-execute-block-python'
+Send block at point to default interpreter."]
+
+	     ["Execute block or clause python" py-execute-block-or-clause-python
+	      :help " `py-execute-block-or-clause-python'
+Send block-or-clause at point to default interpreter."]
+
+	     ["Execute class python" py-execute-class-python
+	      :help " `py-execute-class-python'
+Send class at point to default interpreter."]
+
+	     ["Execute clause python" py-execute-clause-python
+	      :help " `py-execute-clause-python'
+Send clause at point to default interpreter."]
+
+	     ["Execute def python" py-execute-def-python
+	      :help " `py-execute-def-python'
+Send def at point to default interpreter."]
+
+	     ["Execute def or class python" py-execute-def-or-class-python
+	      :help " `py-execute-def-or-class-python'
+Send def-or-class at point to default interpreter."]
+
+	     ["Execute expression python" py-execute-expression-python
+	      :help " `py-execute-expression-python'
+Send expression at point to default interpreter."]
+
+	     ["Execute line python" py-execute-line-python
+	      :help " `py-execute-line-python'"]
+
+	     ["Execute minor block python" py-execute-minor-block-python
+	      :help " `py-execute-minor-block-python'
+Send minor-block at point to default interpreter."]
+
+	     ["Execute paragraph python" py-execute-paragraph-python
+	      :help " `py-execute-paragraph-python'"]
+
+	     ["Execute partial expression python" py-execute-partial-expression-python
+	      :help " `py-execute-partial-expression-python'
+Send partial-expression at point to default interpreter."]
+
+	     ["Execute statement python" py-execute-statement-python
+	      :help " `py-execute-statement-python'
+Send statement at point to default interpreter."]
+
+	     ["Execute top level python" py-execute-top-level-python
+	      :help " `py-execute-top-level-python'
+Send top-level at point to default interpreter."]
+             )
+            ("Python2"
+	     ["Execute block python2" py-execute-block-python2
+	      :help " `py-execute-block-python2'
+Send block at point to Python2 interpreter."]
+
+	     ["Execute block or clause python2" py-execute-block-or-clause-python2
+	      :help " `py-execute-block-or-clause-python2'
+Send block-or-clause at point to Python2 interpreter."]
+
+	     ["Execute class python2" py-execute-class-python2
+	      :help " `py-execute-class-python2'
+Send class at point to Python2 interpreter."]
+
+	     ["Execute clause python2" py-execute-clause-python2
+	      :help " `py-execute-clause-python2'
+Send clause at point to Python2 interpreter."]
+
+	     ["Execute def python2" py-execute-def-python2
+	      :help " `py-execute-def-python2'
+Send def at point to Python2 interpreter."]
+
+	     ["Execute def or class python2" py-execute-def-or-class-python2
+	      :help " `py-execute-def-or-class-python2'
+Send def-or-class at point to Python2 interpreter."]
+
+	     ["Execute expression python2" py-execute-expression-python2
+	      :help " `py-execute-expression-python2'
+Send expression at point to Python2 interpreter."]
+
+	     ["Execute line python2" py-execute-line-python2
+	      :help " `py-execute-line-python2'"]
+
+	     ["Execute minor block python2" py-execute-minor-block-python2
+	      :help " `py-execute-minor-block-python2'
+Send minor-block at point to Python2 interpreter."]
+
+	     ["Execute paragraph python2" py-execute-paragraph-python2
+	      :help " `py-execute-paragraph-python2'"]
+
+	     ["Execute partial expression python2" py-execute-partial-expression-python2
+	      :help " `py-execute-partial-expression-python2'
+Send partial-expression at point to Python2 interpreter."]
+
+	     ["Execute statement python2" py-execute-statement-python2
+	      :help " `py-execute-statement-python2'
+Send statement at point to Python2 interpreter."]
+
+	     ["Execute top level python2" py-execute-top-level-python2
+	      :help " `py-execute-top-level-python2'
+Send top-level at point to Python2 interpreter."]
+             )
+            ("Python3"
+	     ["Execute block python3" py-execute-block-python3
+	      :help " `py-execute-block-python3'
+Send block at point to Python3 interpreter."]
+
+	     ["Execute block or clause python3" py-execute-block-or-clause-python3
+	      :help " `py-execute-block-or-clause-python3'
+Send block-or-clause at point to Python3 interpreter."]
+
+	     ["Execute class python3" py-execute-class-python3
+	      :help " `py-execute-class-python3'
+Send class at point to Python3 interpreter."]
+
+	     ["Execute clause python3" py-execute-clause-python3
+	      :help " `py-execute-clause-python3'
+Send clause at point to Python3 interpreter."]
+
+	     ["Execute def python3" py-execute-def-python3
+	      :help " `py-execute-def-python3'
+Send def at point to Python3 interpreter."]
+
+	     ["Execute def or class python3" py-execute-def-or-class-python3
+	      :help " `py-execute-def-or-class-python3'
+Send def-or-class at point to Python3 interpreter."]
+
+	     ["Execute expression python3" py-execute-expression-python3
+	      :help " `py-execute-expression-python3'
+Send expression at point to Python3 interpreter."]
+
+	     ["Execute line python3" py-execute-line-python3
+	      :help " `py-execute-line-python3'"]
+
+	     ["Execute minor block python3" py-execute-minor-block-python3
+	      :help " `py-execute-minor-block-python3'
+Send minor-block at point to Python3 interpreter."]
+
+	     ["Execute paragraph python3" py-execute-paragraph-python3
+	      :help " `py-execute-paragraph-python3'"]
+
+	     ["Execute partial expression python3" py-execute-partial-expression-python3
+	      :help " `py-execute-partial-expression-python3'
+Send partial-expression at point to Python3 interpreter."]
+
+	     ["Execute statement python3" py-execute-statement-python3
+	      :help " `py-execute-statement-python3'
+Send statement at point to Python3 interpreter."]
+
+	     ["Execute top level python3" py-execute-top-level-python3
+	      :help " `py-execute-top-level-python3'
+Send top-level at point to Python3 interpreter."]
              )
             ("Ignoring defaults "
              :help "`M-x py-execute-statement- TAB' for example list commands ignoring defaults
@@ -1524,82 +1201,50 @@ Show top-level at point."]
          ("Fast process"
           ["Execute block fast" py-execute-block-fast
 	   :help " `py-execute-block-fast'
-Process block at point by a Python interpreter.
-
-Suitable for large output, doesn't mess up interactive shell.
-Output-buffer is not in comint-mode"]
+Process block at point by a Python interpreter."]
 
           ["Execute block or clause fast" py-execute-block-or-clause-fast
 	   :help " `py-execute-block-or-clause-fast'
-Process block-or-clause at point by a Python interpreter.
-
-Suitable for large output, doesn't mess up interactive shell.
-Output-buffer is not in comint-mode"]
+Process block-or-clause at point by a Python interpreter."]
 
           ["Execute class fast" py-execute-class-fast
 	   :help " `py-execute-class-fast'
-Process class at point by a Python interpreter.
-
-Suitable for large output, doesn't mess up interactive shell.
-Output-buffer is not in comint-mode"]
+Process class at point by a Python interpreter."]
 
           ["Execute clause fast" py-execute-clause-fast
 	   :help " `py-execute-clause-fast'
-Process clause at point by a Python interpreter.
-
-Suitable for large output, doesn't mess up interactive shell.
-Output-buffer is not in comint-mode"]
+Process clause at point by a Python interpreter."]
 
           ["Execute def fast" py-execute-def-fast
 	   :help " `py-execute-def-fast'
-Process def at point by a Python interpreter.
-
-Suitable for large output, doesn't mess up interactive shell.
-Output-buffer is not in comint-mode"]
+Process def at point by a Python interpreter."]
 
           ["Execute def or class fast" py-execute-def-or-class-fast
 	   :help " `py-execute-def-or-class-fast'
-Process def-or-class at point by a Python interpreter.
-
-Suitable for large output, doesn't mess up interactive shell.
-Output-buffer is not in comint-mode"]
+Process def-or-class at point by a Python interpreter."]
 
           ["Execute expression fast" py-execute-expression-fast
 	   :help " `py-execute-expression-fast'
-Process expression at point by a Python interpreter.
-
-Suitable for large output, doesn't mess up interactive shell.
-Output-buffer is not in comint-mode"]
+Process expression at point by a Python interpreter."]
 
           ["Execute partial expression fast" py-execute-partial-expression-fast
 	   :help " `py-execute-partial-expression-fast'
-Process partial-expression at point by a Python interpreter.
-
-Suitable for large output, doesn't mess up interactive shell.
-Output-buffer is not in comint-mode"]
+Process partial-expression at point by a Python interpreter."]
 
           ["Execute region fast" py-execute-region-fast
 	   :help " `py-execute-region-fast'"]
 
           ["Execute statement fast" py-execute-statement-fast
 	   :help " `py-execute-statement-fast'
-Process statement at point by a Python interpreter.
-
-Suitable for large output, doesn't mess up interactive shell.
-Output-buffer is not in comint-mode"]
+Process statement at point by a Python interpreter."]
 
           ["Execute string fast" py-execute-string-fast
 	   :help " `py-execute-string-fast'
-Evaluate STRING in Python process which is not in comint-mode.
-
-From a programm use `py--fast-send-string'"]
+Evaluate STRING in Python process which is not in comint-mode."]
 
           ["Execute top level fast" py-execute-top-level-fast
 	   :help " `py-execute-top-level-fast'
-Process top-level at point by a Python interpreter.
-
-Suitable for large output, doesn't mess up interactive shell.
-Output-buffer is not in comint-mode"]
+Process top-level at point by a Python interpreter."]
           )
          ("Virtualenv"
           ["Virtualenv activate" virtualenv-activate
@@ -1621,42 +1266,15 @@ Issue a virtualenvwrapper-like virtualenv-workon command"]
 
 	 ["Execute import or reload" py-execute-import-or-reload
 	  :help " `py-execute-import-or-reload'
-Import the current buffer's file in a Python interpreter.
-
-If the file has already been imported, then do reload instead to get
-the latest version.
-
-If the file's name does not end in \".py\", then do execfile instead.
-
-If the current buffer is not visiting a file, do `py-execute-buffer'
-instead.
-
-If the file local variable `py-master-file' is non-nil, import or
-reload the named file instead of the buffer's file.  The file may be
-saved based on the value of `py-execute-import-or-reload-save-p'.
-
-See also `M-x py-execute-region'.
-
-This may be preferable to `M-x py-execute-buffer' because:
-
- - Definitions stay in their module rather than appearing at top
-   level, where they would clutter the global namespace and not affect
-   uses of qualified names (MODULE.NAME).
-
- - The Python debugger gets line number information about the functions."]
+Import the current buffer's file in a Python interpreter."]
          ("Help"
           ["Find definition" py-find-definition
 	   :help " `py-find-definition'
-Find source of definition of SYMBOL.
-
-Interactively, prompt for SYMBOL."]
+Find source of definition of SYMBOL."]
 
           ["Help at point" py-help-at-point
 	   :help " `py-help-at-point'
-Print help on symbol at point.
-
-If symbol is defined in current buffer, jump to it's definition
-Optional C-u used for debugging, will prevent deletion of temp file."]
+Print help on symbol at point."]
 
           ["Info lookup symbol" py-info-lookup-symbol
 	   :help " `py-info-lookup-symbol'"]
@@ -1672,102 +1290,72 @@ Execute statement running pdb."]
 
 	   ["Pdb" pdb
 	    :help " `pdb'
-:around advice: `ad-Advice-pdb'
-
-Run pdb on program FILE in buffer `*gud-FILE*'.
-The directory containing FILE becomes the initial working directory
-and source-file directory for your debugger.
-
-(fn COMMAND-LINE)"]
+:around advice: `ad-Advice-pdb'"]
             )
           ("Checks"
-          ["Flycheck mode" py-flycheck-mode
- :help " `py-flycheck-mode'
-Toggle `flycheck-mode'.
+	   ["Flycheck mode" py-flycheck-mode
+	    :help " `py-flycheck-mode'
+Toggle `flycheck-mode'."]
 
-With negative argument switch off flycheck-mode
-See menu \"Tools/Syntax Checking\""]
-
-          ["Pychecker run" py-pychecker-run
- :help " `py-pychecker-run'
+	   ["Pychecker run" py-pychecker-run
+	    :help " `py-pychecker-run'
 *Run pychecker (default on the file currently visited)."]
           ("Pylint"
-          ["Pylint run" py-pylint-run
- :help " `py-pylint-run'
-*Run pylint (default on the file currently visited).
+	   ["Pylint run" py-pylint-run
+	    :help " `py-pylint-run'
+*Run pylint (default on the file currently visited)."]
 
-For help see M-x pylint-help resp. M-x pylint-long-help.
-Home-page: http://www.logilab.org/project/pylint"]
+	   ["Pylint help" py-pylint-help
+	    :help " `py-pylint-help'
+Display Pylint command line help messages."]
 
-          ["Pylint help" py-pylint-help
- :help " `py-pylint-help'
-Display Pylint command line help messages.
-
-Let's have this until more Emacs-like help is prepared"]
-
-          ["Pylint flymake mode" pylint-flymake-mode
- :help " `pylint-flymake-mode'
+	   ["Pylint flymake mode" pylint-flymake-mode
+	    :help " `pylint-flymake-mode'
 Toggle `pylint' `flymake-mode'."]
             )
           ("Pep8"
-          ["Pep8 run" py-pep8-run
- :help " `py-pep8-run'
+	   ["Pep8 run" py-pep8-run
+	    :help " `py-pep8-run'
 *Run pep8, check formatting - default on the file currently visited."]
 
-          ["Pep8 help" py-pep8-help
- :help " `py-pep8-help'
+	   ["Pep8 help" py-pep8-help
+	    :help " `py-pep8-help'
 Display pep8 command line help messages."]
 
-          ["Pep8 flymake mode" pep8-flymake-mode
- :help " `pep8-flymake-mode'
+	   ["Pep8 flymake mode" pep8-flymake-mode
+	    :help " `pep8-flymake-mode'
 Toggle `pep8' `flymake-mode'."]
             )
           ("Pyflakes"
-          ["Pyflakes run" py-pyflakes-run
- :help " `py-pyflakes-run'
-*Run pyflakes (default on the file currently visited).
+	   ["Pyflakes run" py-pyflakes-run
+	    :help " `py-pyflakes-run'
+*Run pyflakes (default on the file currently visited)."]
 
-For help see M-x pyflakes-help resp. M-x pyflakes-long-help.
-Home-page: http://www.logilab.org/project/pyflakes"]
+	   ["Pyflakes help" py-pyflakes-help
+	    :help " `py-pyflakes-help'
+Display Pyflakes command line help messages."]
 
-          ["Pyflakes help" py-pyflakes-help
- :help " `py-pyflakes-help'
-Display Pyflakes command line help messages.
-
-Let's have this until more Emacs-like help is prepared"]
-
-          ["Pyflakes flymake mode" pyflakes-flymake-mode
- :help " `pyflakes-flymake-mode'
+	   ["Pyflakes flymake mode" pyflakes-flymake-mode
+	    :help " `pyflakes-flymake-mode'
 Toggle `pyflakes' `flymake-mode'."]
             )
           ("Flake8"
-          ["Flake8 run" py-flake8-run
- :help " `py-flake8-run'
-Flake8 is a wrapper around these tools:
-        - PyFlakes
-        - pep8
-        - Ned Batchelder's McCabe script
+	   ["Flake8 run" py-flake8-run
+	    :help " `py-flake8-run'
+Flake8 is a wrapper around these tools:"]
 
-        It also adds features:
-        - files that contain this line are skipped::
-            # flake8: noqa
-        - lines that contain a ``# noqa`` comment at the end will not issue warnings.
-        - a Git and a Mercurial hook.
-        - a McCabe complexity checker.
-        - extendable through ``flake8.extension`` entry points."]
-
-          ["Flake8 help" py-flake8-help
- :help " `py-flake8-help'
+	   ["Flake8 help" py-flake8-help
+	    :help " `py-flake8-help'
 Display flake8 command line help messages."]
           ("Pyflakes-pep8"
-          ["Pyflakes pep8 run" py-pyflakes-pep8-run
- :help " `py-pyflakes-pep8-run'"]
+	   ["Pyflakes pep8 run" py-pyflakes-pep8-run
+	    :help " `py-pyflakes-pep8-run'"]
 
-          ["Pyflakes pep8 help" py-pyflakes-pep8-help
- :help " `py-pyflakes-pep8-help'"]
+	   ["Pyflakes pep8 help" py-pyflakes-pep8-help
+	    :help " `py-pyflakes-pep8-help'"]
 
-          ["Pyflakes pep8 flymake mode" pyflakes-pep8-flymake-mode
- :help " `pyflakes-pep8-flymake-mode'"]
+	   ["Pyflakes pep8 flymake mode" pyflakes-pep8-flymake-mode
+	    :help " `pyflakes-pep8-flymake-mode'"]
             )))
          ("Customize"
 
@@ -2273,7 +1861,7 @@ Use `M-x customize-variable' to set it permanently"
 	     :help "When non-nil, keys C-M-a, C-M-e address top-level form.
 
 Beginning- end-of-defun forms use
-commands `py-beginning-of-top-level', `py-end-of-top-level'
+commands `py-backward-top-level', `py-forward-top-level'
 
 mark-defun marks top-level form at point etc. "
 	     :style toggle :selected py-defun-use-top-level-p]
@@ -2600,22 +2188,20 @@ set it permanently"
 See bug report at launchpad, lp:944093. Use `M-x customize-variable' to set it permanently"
 	     :style toggle :selected py-edit-only-p])))
          ("Other"
-["Boolswitch" py-boolswitch
- :help " `py-boolswitch'
-Edit the assignment of a boolean variable, revert them.
+          ["Boolswitch" py-boolswitch
+	   :help " `py-boolswitch'
+Edit the assignment of a boolean variable, revert them."]
 
-I.e. switch it from \"True\" to \"False\" and vice versa"]
-
-["Empty out list backward" py-empty-out-list-backward
- :help " `py-empty-out-list-backward'
+          ["Empty out list backward" py-empty-out-list-backward
+	   :help " `py-empty-out-list-backward'
 Deletes all elements from list before point."]
 
-["Kill buffer unconditional" py-kill-buffer-unconditional
- :help " `py-kill-buffer-unconditional'
+          ["Kill buffer unconditional" py-kill-buffer-unconditional
+	   :help " `py-kill-buffer-unconditional'
 Kill buffer unconditional, kill buffer-process if existing."]
 
-["Remove overlays at point" py-remove-overlays-at-point
- :help " `py-remove-overlays-at-point'
+          ["Remove overlays at point" py-remove-overlays-at-point
+	   :help " `py-remove-overlays-at-point'
 Remove overlays as set when `py-highlight-error-source-p' is non-nil."]
           ("Electric"
 	   ["Complete electric comma" py-complete-electric-comma
@@ -2626,37 +2212,19 @@ Remove overlays as set when `py-highlight-error-source-p' is non-nil."]
 
 	   ["Electric backspace" py-electric-backspace
 	    :help " `py-electric-backspace'
-Delete preceding character or level of indentation.
-
-With ARG do that ARG times.
-Returns column reached."]
+Delete preceding character or level of indentation."]
 
 	   ["Electric colon" py-electric-colon
 	    :help " `py-electric-colon'
-Insert a colon and indent accordingly.
-
-If a numeric argument ARG is provided, that many colons are inserted
-non-electrically.
-
-Electric behavior is inhibited inside a string or
-comment or by universal prefix C-u.
-
-Switched by `py-electric-colon-active-p', default is nil
-See also `py-electric-colon-greedy-p'"]
+Insert a colon and indent accordingly."]
 
 	   ["Electric comment" py-electric-comment
 	    :help " `py-electric-comment'
-Insert a comment. If starting a comment, indent accordingly.
-
-If a numeric argument ARG is provided, that many \"#\" are inserted
-non-electrically.
-With C-u \"#\" electric behavior is inhibited inside a string or comment."]
+Insert a comment. If starting a comment, indent accordingly."]
 
 	   ["Electric delete" py-electric-delete
 	    :help " `py-electric-delete'
-Delete following character or levels of whitespace.
-
-With ARG do that ARG times."]
+Delete following character or levels of whitespace."]
 
 	   ["Electric yank" py-electric-yank
 	    :help " `py-electric-yank'
@@ -2664,15 +2232,11 @@ Perform command `yank' followed by an `indent-according-to-mode'"]
 
 	   ["Hungry delete backwards" py-hungry-delete-backwards
 	    :help " `py-hungry-delete-backwards'
-Delete the preceding character or all preceding whitespace
-back to the previous non-whitespace character.
-See also C-c <delete>."]
+Delete the preceding character or all preceding whitespace"]
 
 	   ["Hungry delete forward" py-hungry-delete-forward
 	    :help " `py-hungry-delete-forward'
-Delete the following character or all following whitespace
-up to the next non-whitespace character.
-See also C-c <C-backspace>."]
+Delete the following character or all following whitespace"]
             )
           ("Filling"
 	   ["Py docstring style" py-py-docstring-style
@@ -2706,16 +2270,9 @@ See also C-c <C-backspace>."]
 	   :filter (lambda (&rest junk)
 		     (abbrev-table-menu python-mode-abbrev-table))            )
 
-["Add abbrev" py-add-abbrev
- :help " `py-add-abbrev'
-Defines python-mode specific abbrev for last expressions before point.
-Argument is how many `py-partial-expression's form the expansion; or zero means the region is the expansion.
-
-Reads the abbreviation in the minibuffer; with numeric arg it displays a proposal for an abbrev.
-Proposal is composed from the initial character(s) of the
-expansion.
-
-Don't use this function in a Lisp program; use `define-abbrev' instead."]
+          ["Add abbrev" py-add-abbrev
+	   :help " `py-add-abbrev'
+Defines python-mode specific abbrev for last expressions before point."]
           ("Completion"
 	   ["Py indent or complete" py-py-indent-or-complete
 	    :help " `py-py-indent-or-complete'"]
@@ -2727,12 +2284,13 @@ Don't use this function in a Lisp program; use `define-abbrev' instead."]
 	    :help " `py-py-complete'"]
             )
 
-["Find function" py-find-function
- :help " `py-find-function'
-Find source of definition of SYMBOL.
-
-Interactively, prompt for SYMBOL."]
+          ["Find function" py-find-function
+	   :help " `py-find-function'
+Find source of definition of SYMBOL."]
             )
             )))
+
 (provide 'python-components-menu)
 ;;; python-components-menu.el ends here
+
+

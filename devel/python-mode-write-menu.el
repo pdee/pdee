@@ -301,5 +301,68 @@ Kill " ele " at point. \"]
               :help \"`py-delete-" ele "-bol'
 Delete " ele " at point. \"]\n)\n"))))
 
+
+(defun py-write-copy-bol-menu ()
+  (interactive "*")
+  (dolist (ele py-bol-copy-forms)
+    (emen (prin1-to-string ele))
+    (skip-chars-forward "^]")
+    (forward-char 1)
+    (newline)))
+
+(defun py-write-bol-menu ()
+  (interactive "*")
+  (dolist (ele py-bol-menu-forms)
+    (emen (prin1-to-string ele))
+    (skip-chars-forward "^]")
+    (forward-char 1)
+    (newline)))
+
+(defun py-write-bol-end-menu ()
+  (interactive "*")
+  (dolist (ele py-bol-end-forms)
+    (emen (prin1-to-string ele))
+    (skip-chars-forward "^]")
+    (forward-char 1)
+    (newline)))
+
+(defun py-write-fast-menu ()
+  (interactive "*")
+  (dolist (ele py-fast-forms)
+    (push-mark)
+    (emen (prin1-to-string ele))
+    (skip-chars-forward "^]")
+    (forward-char 1)
+    (newline)
+    (indent-region (mark) (point))))
+
+
+(defun py-write-hide-menu ()
+  (interactive)
+  (set-buffer (get-buffer-create "python-components-hide-Menu.el"))
+  (erase-buffer)
+  (switch-to-buffer (current-buffer))
+  (emacs-lisp-mode)
+  (insert "(\"Hide-Show\"")
+
+  (dolist (ele py-hide-names)
+    (emen (concat "py-hide-" ele))
+    (goto-char (point-max))
+    )
+  (insert "(\"Show\"\n")
+
+  (dolist (ele py-hide-names)
+    (emen (concat "py-show-" ele))
+    (goto-char (point-max))
+
+    )
+
+  (insert "))\n")
+
+  (richten nil (point-min) (point-max))
+
+  (switch-to-buffer (current-buffer))
+  (emacs-lisp-mode))
+
 (provide 'python-mode-write-menu)
 ;;; python-mode-write-menu.el ends here

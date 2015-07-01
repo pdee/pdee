@@ -118,7 +118,7 @@ See also commands
     py-shell-name))
 
 (defun py-force-local-shell-on ()
-  "Make sure, `py-py-force-local-shell-p' is on.
+  "Make sure, `py-force-local-shell-p' is on.
 
 Returns value of `py-force-local-shell-p'.
 

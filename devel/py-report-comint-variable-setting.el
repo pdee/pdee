@@ -1,6 +1,9 @@
 ;;; py-report-comint-variable-setting.el ---
 
-;; Author: Andreas Roehler <andreas.roehler@online.de>
+;; Copyright (C) 2015  Andreas Röhler
+
+;; Author: Andreas Röhler <andreas.roehler@easy-emacs.de>
+
 ;; Keywords: languages, processes, python
 
 ;; Keywords: lisp
@@ -20,13 +23,9 @@
 
 ;;; Commentary:
 
-;; 
+;;
 
 ;;; Code:
-
-
-
-
 
 (defun py-report-comint-variable-setting ()
   "Print values of comint-variables.
@@ -167,7 +166,6 @@ Used for debugging in \"*Python*\" shell buffer for example"
 	 (insert (concat "comint-use-prompt-regexp" " --> " (prin1-to-string comint-use-prompt-regexp) "\n")))
     (and (boundp 'comint-use-prompt-regexp-instead-of-fields)
 	 (insert (concat "comint-use-prompt-regexp-instead-of-fields" " --> " (prin1-to-string comint-use-prompt-regexp-instead-of-fields) "\n")))))
-
 
 (provide 'py-report-comint-variable-setting)
 ;;; py-report-comint-variable-setting.el ends here

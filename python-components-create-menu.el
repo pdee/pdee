@@ -37,7 +37,7 @@
 	   :filter (lambda (&rest junk)
 		     (abbrev-table-menu python-mode-abbrev-table))")
 
-(defvar py-menu-head ";; python-components-menu.el --- Provide the python-mode menu
+(setq py-menu-head ";; python-components-menu.el --- Provide the python-mode menu
 
 ;; This file not shipped as part of GNU Emacs.
 
@@ -60,8 +60,8 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Code:
-"
-  "Used internally, header when building the menu-file")
+")
+
 
 (setq py-menu-custom-forms "         (\"Customize\"
 
@@ -567,7 +567,7 @@ Use `M-x customize-variable' to set it permanently\"
 	     :help \"When non-nil, keys C-M-a, C-M-e address top-level form.
 
 Beginning- end-of-defun forms use
-commands `py-beginning-of-top-level', `py-end-of-top-level'
+commands `py-backward-top-level', `py-forward-top-level'
 
 mark-defun marks top-level form at point etc. \"
 	     :style toggle :selected py-defun-use-top-level-p]
@@ -926,7 +926,8 @@ See bug report at launchpad, lp:944093. Use `M-x customize-variable' to set it p
       (capitalize-word 1))
     (end-of-line)
     (when doku
-      (setq origline (py-count-lines))
+      (setq doku (substring doku 0 (string-match "\n" doku)))
+      ;; (setq origline (py-count-lines))
       (newline)
       ;; (insert (regexp-quote doku))
       (insert doku)
@@ -935,10 +936,9 @@ See bug report at launchpad, lp:944093. Use `M-x customize-variable' to set it p
       (when (search-forward ":help" end t)
 	(end-of-line)
 	(py--escape-doublequotes (point) end))
-      ;; (switch-to-buffer (current-buffer))
-      ;; (py--escape-open-paren-col1 (point) end)
-      (when (< 5 (- (setq line (py-count-lines)) origline))
-	(py--emen-curb-docu line)))
+      ;; (when (< 5 (- (setq line (py-count-lines)) origline))
+      ;; (py--emen-curb-docu line))
+      )
     (goto-char (point-max))
     (skip-chars-backward " \t\r\n\f")
     (insert "\"]\n")))
@@ -955,7 +955,7 @@ See bug report at launchpad, lp:944093. Use `M-x customize-variable' to set it p
   (dolist (ele liste)
     (unless (stringp ele) (setq ele (prin1-to-string ele)))
     ;; Can't shift left top-level
-    (unless (string= exclude ele)
+    (unless (or (string= "" ele) (string= exclude ele))
       (when (string= "top-level" ele)
 	(message "%s" exclude))
       (when prefix (setq ele (concat prefix ele)))
@@ -981,6 +981,7 @@ See bug report at launchpad, lp:944093. Use `M-x customize-variable' to set it p
   (when py-verbose-p (message "%s" "Initiating the menu"))
   (with-current-buffer (get-buffer-create "python-components-menu.el")
     (erase-buffer)
+    (when (interactive-p) (switch-to-buffer (current-buffer)))
     (insert py-menu-head)
     (newline)
     (insert "(and (ignore-errors (require 'easymenu) t)
@@ -1034,21 +1035,21 @@ See bug report at launchpad, lp:944093. Use `M-x customize-variable' to set it p
     (insert (concat (make-string 9 ? )"(\"Move\"\n"))
 
     (insert (concat (make-string 10 ? )"(\"Backward\""))
-    (py--create-menu-insert py-move-forms "py-beginning-of-")
+    (py--create-menu-insert py-move-forms "py-backward-")
     (insert (concat (make-string 11 ? )")\n"))
 
     (insert (concat (make-string 10 ? )"(\"Forward\""))
-    (py--create-menu-insert py-move-forms "py-end-of-")
+    (py--create-menu-insert py-move-forms "py-forward-")
     (insert (concat (make-string 11 ? )")\n"))
 
     (insert (concat (make-string 10 ? )"(\"BOL-forms\"\n"))
 
     (insert (concat (make-string 11 ? )"(\"Backward\""))
-    (py--create-menu-insert py-move-forms "py-beginning-of-" "-bol" "top-level")
+    (py--create-menu-insert py-move-forms "py-backward-" "-bol" "top-level")
     (insert (concat (make-string 12 ? )")\n"))
 
     (insert (concat (make-string 11 ? )"(\"Forward\""))
-    (py--create-menu-insert py-move-forms "py-end-of-" "-bol")
+    (py--create-menu-insert py-move-forms "py-forward-" "-bol")
     ;; BOL forms end
     (insert (concat (make-string 12 ? )"))\n"))
 
@@ -1064,6 +1065,7 @@ See bug report at launchpad, lp:944093. Use `M-x customize-variable' to set it p
 
     (insert (concat (make-string 11 ? )"(\"Other\"\n"))
     (dolist (ele py-shells)
+      (unless (string= "" ele)
       (setq ele (prin1-to-string ele))
       ;; Shell forms
       (insert (concat (make-string 12 ? ))"(\"")
@@ -1073,7 +1075,7 @@ See bug report at launchpad, lp:944093. Use `M-x customize-variable' to set it p
       (insert "\"")
       (setq ele (concat "-" ele))
       (py--create-menu-insert py-execute-forms "py-execute-" ele)
-      (insert (concat (make-string 13 ? )")\n")))
+      (insert (concat (make-string 13 ? )")\n"))))
     (insert (make-string 12 ? ))
     (insert "(\"Ignoring defaults \"\n")
     (insert (concat (make-string 13 ? )":help \"`M-x py-execute-statement- TAB' for example list commands ignoring defaults\n\n of `py-switch-buffers-on-execute-p' and `py-split-window-on-execute'\"\n"))
@@ -1165,13 +1167,12 @@ See bug report at launchpad, lp:944093. Use `M-x customize-variable' to set it p
     (insert (concat (make-string 12 ? )")\n"))
 
     ;; final
-    (insert (concat (make-string 12 ? ) ")))\n"))
-    (insert "(provide 'python-components-menu)\n;;; python-components-menu.el ends here")
+    (insert (concat (make-string 12 ? ) ")))\n\n"))
+    (insert "(provide 'python-components-menu)\n;;; python-components-menu.el ends here\n\n")
     (py--create-menu-minor-fixes)
     (eval-buffer)
     (when py-debug-p (write-file (concat py-install-directory "/python-components-menu.el")))
     ;; (set-buffer "python-components-menu.el")
-    (switch-to-buffer (current-buffer))
     ))
 
 (provide 'python-components-create-menu)

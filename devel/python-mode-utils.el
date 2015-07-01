@@ -2581,7 +2581,7 @@ Use backward-statement for `top-level', also bol-forms don't make sense here"
   (dolist (ele py-beg-end-forms)
     (insert (concat "
 \(defun py-backward-" ele " (&optional indent)"
-"\n \"Go to beginning " ele ".
+"\n \"Go to beginning of " ele ".
 
 If already at beginning, go one " ele " backward.
 Returns beginning of " ele " if successful, nil otherwise\n
@@ -2603,7 +2603,7 @@ Returns beginning of " ele " if successful, nil otherwise\n
     (insert (concat "
 \(defalias 'py-backward-" ele "-lc 'py-backward-" ele"-bol)
 \(defun py-backward-" ele "-bol (&optional indent)"
-"\n \"Go to beginning " ele ", go to BOL.
+"\n \"Go to beginning of " ele ", go to BOL.
 
 If already at beginning, go one " ele " backward.
 Returns beginning of " ele " if successful, nil otherwise\n
@@ -2665,40 +2665,6 @@ Return code of `py-" ele "' at point, a string. \"
 
   (switch-to-buffer (current-buffer))
   (emacs-lisp-mode))
-
-(defun py-write-copy-bol-menu ()
-  (interactive "*")
-  (dolist (ele py-bol-copy-forms)
-    (emen (prin1-to-string ele))
-    (skip-chars-forward "^]")
-    (forward-char 1)
-    (newline)))
-
-(defun py-write-bol-menu ()
-  (interactive "*")
-  (dolist (ele py-bol-menu-forms)
-    (emen (prin1-to-string ele))
-    (skip-chars-forward "^]")
-    (forward-char 1)
-    (newline)))
-
-(defun py-write-bol-end-menu ()
-  (interactive "*")
-  (dolist (ele py-bol-end-forms)
-    (emen (prin1-to-string ele))
-    (skip-chars-forward "^]")
-    (forward-char 1)
-    (newline)))
-
-(defun py-write-fast-menu ()
-  (interactive "*")
-  (dolist (ele py-fast-forms)
-    (push-mark)
-    (emen (prin1-to-string ele))
-    (skip-chars-forward "^]")
-    (forward-char 1)
-    (newline)
-    (indent-region (mark) (point))))
 
 (defun py-write-hide-forms ()
   (interactive "*")
@@ -2787,33 +2753,6 @@ Return code of `py-" ele "' at point, a string. \"
 
   (insert "\n;; python-components-hide-show.el ends here
 \(provide 'python-components-hide-show)")
-  (switch-to-buffer (current-buffer))
-  (emacs-lisp-mode))
-
-(defun py-write-hide-menu ()
-  (interactive)
-  (set-buffer (get-buffer-create "python-components-hide-Menu.el"))
-  (erase-buffer)
-  (switch-to-buffer (current-buffer))
-  (emacs-lisp-mode)
-  (insert "(\"Hide-Show\"")
-
-  (dolist (ele py-hide-names)
-    (emen (concat "py-hide-" ele))
-    (goto-char (point-max))
-    )
-  (insert "(\"Show\"\n")
-
-  (dolist (ele py-hide-names)
-    (emen (concat "py-show-" ele))
-    (goto-char (point-max))
-
-    )
-
-  (insert "))\n")
-
-  (richten nil (point-min) (point-max))
-
   (switch-to-buffer (current-buffer))
   (emacs-lisp-mode))
 
