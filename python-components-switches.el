@@ -1,6 +1,9 @@
 ;;; python-components-switches.el --- Toggle minor modes
 
-;; Author: Andreas Roehler <andreas.roehler@online.de>
+;; Copyright (C) 2015  Andreas Röhler
+
+;; Author: Andreas Röhler <andreas.roehler@easy-emacs.de>
+
 ;; Keywords: languages
 
 ;; This program is free software; you can redistribute it and/or modify

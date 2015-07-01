@@ -1,8 +1,8 @@
 ;;; python-components-foot.el --- foot
 
-;; Copyright (C) 2015  Andreas Roehler
+;; Copyright (C) 2015  Andreas Röhler
 
-;; Author: Andreas Roehler <andreas.roehler@online.de>
+;; Author: Andreas Röhler <andreas.roehler@easy-emacs.de>
 
 ;; Keywords: languages
 
@@ -47,7 +47,6 @@
 ;; (add-hook 'after-change-major-mode-hook #'py-protect-other-buffers-ac)
 
 ;; after-change-major-mode-hook
-
 
 ;;;
 (define-derived-mode python-mode fundamental-mode python-mode-modeline-display
@@ -373,7 +372,6 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
   ;; Running py-ipython-shell-mode-hook seems to need some delay
   (sit-for 0.5 t)
   (force-mode-line-update))
-
 
 ;;;
 (provide 'python-components-foot)

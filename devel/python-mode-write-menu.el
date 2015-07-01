@@ -1,3 +1,29 @@
+;;; python-mode-write-menu.el --- write menu
+
+;; Copyright (C) 2015  Andreas Röhler
+
+;; Author: Andreas Röhler <andreas.roehler@easy-emacs.de>
+
+;; Keywords: lisp
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;;
+
+;;; Code:
 
 (defun py--kurzmenu-insert-intern (ele)
   (save-excursion (py--emen ele))
@@ -207,7 +233,6 @@
     (insert (concat (make-string 12 ? ) ")))"))
     (write-file (expand-file-name "~/arbeit/emacs/python-modes/components-python-mode/devel/eame.el"))))
 
-
 (defun write-menu-entry (&optional erg)
   "Menu Eintrag einfuegen. "
   (interactive "*")
@@ -228,3 +253,53 @@
     (skip-chars-forward "[[:punct:]]")
     (capitalize-word 1)
     (goto-char last)))
+
+(defun py-write-bol-menu ()
+  (interactive)
+  (set-buffer (get-buffer-create "bol-menu.el"))
+  (erase-buffer)
+  (dolist (ele py-down-forms)
+    (insert (concat "(\" " (capitalize ele) " bol ... \"
+             [\"Beginning of " ele " bol\" py-backward-" ele "-bol
+              :help \"`py-backward-" ele "-bol'
+Go to beginning of line at beginning of " ele ".
+
+Returns position reached, if successful, nil otherwise. \"]\n"))
+
+    (insert (concat "
+             [\"End of " ele " bol\" py-forward-" ele "-bol
+              :help \"`py-forward-" ele "-bol'
+Go to beginning of line following end of " ele ".
+
+Returns position reached, if successful, nil otherwise. \"]
+
+             [\"Up " ele " bol\" py-up-" ele "-bol
+              :help \"`py-up-" ele "-bol'
+Go to next " ele " upwards in buffer if any. Go to beginning of line.
+
+Returns position reached, if successful, nil otherwise. \"]
+
+             [\"Down " ele " bol\" py-down-" ele "-bol
+              :help \"`py-down-" ele "-bol'
+Go to next " ele " downwards in buffer if any. Go to beginning of line.
+
+Returns position reached, if successful, nil otherwise. \"]
+
+             [\"Mark " ele " bol\" py-mark-" ele "-bol
+              :help \"`py-mark-" ele "-bol'
+Mark " ele " at point. \"]
+
+             [\"Copy " ele " bol\" py-copy-" ele "-bol
+              :help \"`py-copy-" ele "-bol'
+Copy " ele " at point. \"]
+
+             [\"Kill " ele " bol\" py-kill-" ele "-bol
+              :help \"`py-kill-" ele "-bol'
+Kill " ele " at point. \"]
+
+             [\"Delete " ele " bol\" py-delete-" ele "-bol
+              :help \"`py-delete-" ele "-bol'
+Delete " ele " at point. \"]\n)\n"))))
+
+(provide 'python-mode-write-menu)
+;;; python-mode-write-menu.el ends here

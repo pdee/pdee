@@ -1,6 +1,8 @@
 ;;; python-components-execute.el --- Part of python-components-mode
 
-;; Maintainer: Andreas Roehler <andreas.roehler@online.de>
+;; Copyright (C) 2015  Andreas Röhler
+
+;; Author: Andreas Röhler <andreas.roehler@easy-emacs.de>
 
 ;; Keywords: languages, processes
 

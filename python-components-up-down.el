@@ -1,7 +1,8 @@
 ;;; python-components-up-down.el -- Searching up/downwards in buffer
 
-;; Copyright (C) 2015  Andreas Roehler
-;; Author: Andreas Roehler <andreas.roehler@online.de>
+;; Copyright (C) 2015  Andreas Röhler
+
+;; Author: Andreas Röhler <andreas.roehler@easy-emacs.de>
 ;; Keywords: languages, convenience
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -389,5 +390,5 @@ Return position if top-level found, nil otherwise "
   (interactive)
   (py-down-base-bol py-top-level-re))
 
-;; python-components-up-down ends here
+;; python-components-up-down.el ends here
 (provide 'python-components-up-down)

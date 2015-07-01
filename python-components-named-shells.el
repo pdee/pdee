@@ -1,6 +1,7 @@
 ;;; Python named shells
-;; Copyright (C) 2015  Andreas Roehler
-;; Author: Andreas Roehler <andreas.roehler@online.de>
+;; Copyright (C) 2015  Andreas Röhler
+
+;; Author: Andreas Röhler <andreas.roehler@easy-emacs.de>
 ;; Keywords: languages, convenience
 
 ;; This program is free software; you can redistribute it and/or modify

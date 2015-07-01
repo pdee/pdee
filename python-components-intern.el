@@ -2,7 +2,10 @@
 
 ;; Helper functions
 
-;; Maintainer: Andreas Roehler <andreas.roehler@online.de>
+;; Copyright (C) 2015  Andreas Röhler
+
+;; Author: Andreas Röhler <andreas.roehler@easy-emacs.de>
+
 ;; Keywords: languages, processes
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -24,8 +27,6 @@
 ;;; Code:
 
 ;;  Keymap
-
-
 
 (defvar python-mode-map nil)
 (setq python-mode-map
@@ -196,7 +197,6 @@
                 (py--execute-file-base nil filename nil nil (or (and (boundp 'py-orig-buffer-or-file) py-orig-buffer-or-file) filename))
               (message "%s not readable. %s" file "Do you have write permissions?")))
         (py--execute-base beg end shell)))))
-
 
 (defun py-load-skeletons ()
   "Load skeletons from extensions. "

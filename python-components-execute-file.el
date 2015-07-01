@@ -1,6 +1,9 @@
 ;;; python-components-execute-file.el --- Execute files from python-mode
 
-;; Author: Andreas Roehler <andreas.roehler@online.de>
+;; Copyright (C) 2015  Andreas Röhler
+
+;; Author: Andreas Röhler <andreas.roehler@easy-emacs.de>
+
 ;; Keywords: languages, convenience
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -280,4 +283,3 @@ Ignores default of `py-switch-buffers-on-execute-p', uses it with value \"non-ni
 
 (provide 'python-components-execute-file)
 ;;;  'python-components-execute-file.el ends here
- 

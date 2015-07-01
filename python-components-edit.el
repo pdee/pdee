@@ -1,6 +1,9 @@
 ;;; python-components-edit.el --- Some more Python edit utilities
 
-;; Maintainer: Andreas Roehler <andreas.roehler@online.de>
+;; Copyright (C) 2015  Andreas Röhler
+
+;; Author: Andreas Röhler <andreas.roehler@easy-emacs.de>
+
 ;; Keywords: languages, processes
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -458,7 +461,7 @@ downwards from beginning of block followed by a statement. Otherwise default-val
   "Reindent a region of Python code.
 
 In case first line accepts an indent, keep the remaining
-lines relative. 
+lines relative.
 Otherwise lines in region get outmost indent,
 same with optional argument
 

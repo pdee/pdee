@@ -1,6 +1,9 @@
 ;;; python-components-electric.el --- Python-mode electric inserts
 
-;; Maintainer: Andreas Roehler <andreas.roehler@online.de>
+;; Copyright (C) 2015  Andreas Röhler
+
+;; Author: Andreas Röhler <andreas.roehler@easy-emacs.de>
+
 ;; Keywords: languages
 
 ;; This program is free software; you can redistribute it and/or modify

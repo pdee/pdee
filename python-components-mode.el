@@ -5,8 +5,11 @@
 
 ;; This file not shipped as part of GNU Emacs.
 
-;; Maintainer: Andreas Röhler <andreas.roehler@online.de>
 ;; Keywords: languages, processes, python, oop
+
+;; Copyright (C) 2015  Andreas Röhler
+
+;; Author: Andreas Röhler <andreas.roehler@easy-emacs.de>
 
 ;; Copyright (C) 1992,1993,1994  Tim Peters
 

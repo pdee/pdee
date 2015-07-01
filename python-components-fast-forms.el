@@ -1,7 +1,9 @@
 ;;; python-components-fast-forms.el --- Execute forms at point
 
-;; Copyright (C) 2011-2014  Andreas Roehler
-;; Author: Andreas Roehler <andreas.roehler@online.de>
+;; Copyright (C) 2015  Andreas Röhler
+
+;; Author: Andreas Röhler <andreas.roehler@easy-emacs.de>
+
 ;; Keywords: languages, convenience
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -94,7 +96,6 @@ See also `py-fast-shell'
     (if (or py-store-result-p py-return-result-p)
 	(py--fast-send-string-intern string proc buffer py-store-result-p py-return-result-p)
       (py--fast-send-string-no-output string proc buffer))))
-
 
 (defun py-execute-string-fast (string)
   "Evaluate STRING in Python process which is not in comint-mode.

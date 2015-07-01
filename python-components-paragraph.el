@@ -1,7 +1,8 @@
 ;;; python-components-paragraph.el --- filling
 
 ;; Original Author: Fabián E. Gallina <fabian@anue.biz>
-;; Maintainer: Andreas Roehler <andreas.roehler@online.de>
+;; Maintainer: Andreas Röhler <andreas.roehler@easy-emacs.de>
+
 ;; Keywords: languages
 
 ;; This program is free software; you can redistribute it and/or modify

@@ -1,6 +1,9 @@
 ;;; python-abbrev-propose.el --- initial content for mode-abbrevs
 
-;; Author: Andreas Roehler;;  <andreas.roehler@online.de>
+;; Copyright (C) 2015  Andreas Röhler
+
+;; Author: Andreas Röhler <andreas.roehler@easy-emacs.de>
+
 ;; Keywords: abbrev
 
 ;; This file is free software; you can redistribute it and/or modify
@@ -90,5 +93,3 @@ Don't use this function in a Lisp program; use `define-abbrev' instead."
 
 (provide 'python-abbrev-propose)
 ;;; mode-abbrev-propose.el ends here
-
-

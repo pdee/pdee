@@ -1,6 +1,9 @@
 ;;; python-components-extensions.el --- more editing utilities
 
-;; Maintainer: Andreas Roehler <andreas.roehler@online.de>
+;; Copyright (C) 2015  Andreas Röhler
+
+;; Author: Andreas Röhler <andreas.roehler@easy-emacs.de>
+
 ;; Keywords: lisp
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -244,7 +247,6 @@ With arg, do it that many times.
 (unless (boundp 'empty-line-p-chars)
   (defvar empty-line-p-chars "^[ \t\f\r]*$"))
 
-
 (unless (functionp 'in-string-p)
   (defun in-string-p (&optional pos)
     (interactive)
@@ -351,7 +353,6 @@ I.e. switch it from \"True\" to \"False\" and vice versa"
           ((looking-at "False")
            (replace-match "True"))
           (t (message "%s" "Can't see \"True or False\" here")))))
-
 
 (when (featurep 'thing-at-point-utils)
   (defun py-beginning-of-list (&optional iact orig limit done last)

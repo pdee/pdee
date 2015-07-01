@@ -1,6 +1,9 @@
-;;; python-components-delete.el --- Delete 
+;;; python-components-delete.el --- Delete
 
-;; Author: Andreas Roehler <andreas.roehler@online.de>
+;; Copyright (C) 2015  Andreas Röhler
+
+;; Author: Andreas Röhler <andreas.roehler@easy-emacs.de>
+
 ;; Keywords: languages, convenience
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -19,7 +22,6 @@
 ;;; Commentary:
 
 ;;; Code:
-
 
 (defun py-delete-statement ()
   "Delete STATEMENT at point.
@@ -96,7 +98,7 @@ Don't store data in kill ring. "
 (defun py-delete-minor-block ()
   "Delete MINOR-BLOCK at point.
 
-Don't store data in kill ring. 
+Don't store data in kill ring.
 A minor block is started by a `for', `if', `try' or `with'."
   (interactive "*")
   (let ((erg (py-mark-base "minor-block")))

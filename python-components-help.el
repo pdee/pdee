@@ -1,6 +1,9 @@
 ;;; python-components-help.el --- help functions
 
-;; Maintainer: Andreas Roehler <andreas.roehler@online.de>
+;; Copyright (C) 2015  Andreas Röhler
+
+;; Author: Andreas Röhler <andreas.roehler@easy-emacs.de>
+
 ;; Keywords: languages, processes
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -753,7 +756,6 @@ Home-page: http://www.logilab.org/project/pylint "
   (set-buffer (get-buffer-create "*Pylint*"))
   (erase-buffer)
   (shell-command command "*Pylint*"))
-
 
 (defalias 'pylint-help 'py-pylint-help)
 (defun py-pylint-help ()

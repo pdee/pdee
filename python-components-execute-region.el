@@ -1,7 +1,9 @@
 ;;; python-components-execute-region.el --- Execute region forms
 
-;; Copyright (C) 2015  Andreas Roehler
-;; Author: Andreas Roehler <andreas.roehler@online.de>
+;; Copyright (C) 2015  Andreas Röhler
+
+;; Author: Andreas Röhler <andreas.roehler@easy-emacs.de>
+
 ;; Keywords: languages, convenience
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -25,189 +27,188 @@
 ;;; Code:
 
 (defun py-execute-region (beg end)
-  "Execute region. " 
+  "Execute region. "
   (interactive "r")
   (py--execute-base beg end))
 
 (defun py-execute-region-switch (beg end)
-  "Execute region switch. " 
+  "Execute region switch. "
   (interactive "r")
   (let ((py-switch-buffers-on-execute-p t))
     (py--execute-base beg end)))
 
 (defun py-execute-region-no-switch (beg end)
-  "Execute region no-switch. " 
+  "Execute region no-switch. "
   (interactive "r")
   (let ((py-switch-buffers-on-execute-p nil))
     (py--execute-base beg end)))
 
 (defun py-execute-region-dedicated (beg end)
-  "Execute region dedicated. " 
+  "Execute region dedicated. "
   (interactive "r")
   (let ((py-dedicated-process-p t))
     (py--execute-base beg end)))
 
 (defun py-execute-region-python (beg end)
-  "Execute region Python. " 
+  "Execute region Python. "
   (interactive "r")
   (py--execute-base beg end "python"))
 
 (defun py-execute-region-python-switch (beg end)
-  "Execute region Python switch. " 
+  "Execute region Python switch. "
   (interactive "r")
   (let ((py-switch-buffers-on-execute-p t))
     (py--execute-base beg end "python")))
 
 (defun py-execute-region-python-no-switch (beg end)
-  "Execute region Python no-switch. " 
+  "Execute region Python no-switch. "
   (interactive "r")
   (let ((py-switch-buffers-on-execute-p nil))
     (py--execute-base beg end "python")))
 
 (defun py-execute-region-python-dedicated (beg end)
-  "Execute region Python dedicated. " 
+  "Execute region Python dedicated. "
   (interactive "r")
   (let ((py-dedicated-process-p t))
     (py--execute-base beg end "python")))
 
 (defun py-execute-region-python2 (beg end)
-  "Execute region Python2. " 
+  "Execute region Python2. "
   (interactive "r")
   (py--execute-base beg end "python2"))
 
 (defun py-execute-region-python2-switch (beg end)
-  "Execute region Python2 switch. " 
+  "Execute region Python2 switch. "
   (interactive "r")
   (let ((py-switch-buffers-on-execute-p t))
     (py--execute-base beg end "python2")))
 
 (defun py-execute-region-python2-no-switch (beg end)
-  "Execute region Python2 no-switch. " 
+  "Execute region Python2 no-switch. "
   (interactive "r")
   (let ((py-switch-buffers-on-execute-p nil))
     (py--execute-base beg end "python2")))
 
 (defun py-execute-region-python2-dedicated (beg end)
-  "Execute region Python2 dedicated. " 
+  "Execute region Python2 dedicated. "
   (interactive "r")
   (let ((py-dedicated-process-p t))
     (py--execute-base beg end "python2")))
 
 (defun py-execute-region-python3 (beg end)
-  "Execute region Python3. " 
+  "Execute region Python3. "
   (interactive "r")
   (py--execute-base beg end "python3"))
 
 (defun py-execute-region-python3-switch (beg end)
-  "Execute region Python3 switch. " 
+  "Execute region Python3 switch. "
   (interactive "r")
   (let ((py-switch-buffers-on-execute-p t))
     (py--execute-base beg end "python3")))
 
 (defun py-execute-region-python3-no-switch (beg end)
-  "Execute region Python3 no-switch. " 
+  "Execute region Python3 no-switch. "
   (interactive "r")
   (let ((py-switch-buffers-on-execute-p nil))
     (py--execute-base beg end "python3")))
 
 (defun py-execute-region-python3-dedicated (beg end)
-  "Execute region Python3 dedicated. " 
+  "Execute region Python3 dedicated. "
   (interactive "r")
   (let ((py-dedicated-process-p t))
     (py--execute-base beg end "python3")))
 
 (defun py-execute-region-ipython (beg end)
-  "Execute region IPython. " 
+  "Execute region IPython. "
   (interactive "r")
   (py--execute-base beg end "ipython"))
 
 (defun py-execute-region-ipython-switch (beg end)
-  "Execute region IPython switch. " 
+  "Execute region IPython switch. "
   (interactive "r")
   (let ((py-switch-buffers-on-execute-p t))
     (py--execute-base beg end "ipython")))
 
 (defun py-execute-region-ipython-no-switch (beg end)
-  "Execute region IPython no-switch. " 
+  "Execute region IPython no-switch. "
   (interactive "r")
   (let ((py-switch-buffers-on-execute-p nil))
     (py--execute-base beg end "ipython")))
 
 (defun py-execute-region-ipython-dedicated (beg end)
-  "Execute region IPython dedicated. " 
+  "Execute region IPython dedicated. "
   (interactive "r")
   (let ((py-dedicated-process-p t))
     (py--execute-base beg end "ipython")))
 
 (defun py-execute-region-ipython2.7 (beg end)
-  "Execute region IPython2.7. " 
+  "Execute region IPython2.7. "
   (interactive "r")
   (py--execute-base beg end "ipython2.7"))
 
 (defun py-execute-region-ipython2.7-switch (beg end)
-  "Execute region IPython2.7 switch. " 
+  "Execute region IPython2.7 switch. "
   (interactive "r")
   (let ((py-switch-buffers-on-execute-p t))
     (py--execute-base beg end "ipython2.7")))
 
 (defun py-execute-region-ipython2.7-no-switch (beg end)
-  "Execute region IPython2.7 no-switch. " 
+  "Execute region IPython2.7 no-switch. "
   (interactive "r")
   (let ((py-switch-buffers-on-execute-p nil))
     (py--execute-base beg end "ipython2.7")))
 
 (defun py-execute-region-ipython2.7-dedicated (beg end)
-  "Execute region IPython2.7 dedicated. " 
+  "Execute region IPython2.7 dedicated. "
   (interactive "r")
   (let ((py-dedicated-process-p t))
     (py--execute-base beg end "ipython2.7")))
 
 (defun py-execute-region-ipython3 (beg end)
-  "Execute region IPython3. " 
+  "Execute region IPython3. "
   (interactive "r")
   (py--execute-base beg end "ipython3"))
 
 (defun py-execute-region-ipython3-switch (beg end)
-  "Execute region IPython3 switch. " 
+  "Execute region IPython3 switch. "
   (interactive "r")
   (let ((py-switch-buffers-on-execute-p t))
     (py--execute-base beg end "ipython3")))
 
 (defun py-execute-region-ipython3-no-switch (beg end)
-  "Execute region IPython3 no-switch. " 
+  "Execute region IPython3 no-switch. "
   (interactive "r")
   (let ((py-switch-buffers-on-execute-p nil))
     (py--execute-base beg end "ipython3")))
 
 (defun py-execute-region-ipython3-dedicated (beg end)
-  "Execute region IPython3 dedicated. " 
+  "Execute region IPython3 dedicated. "
   (interactive "r")
   (let ((py-dedicated-process-p t))
     (py--execute-base beg end "ipython3")))
 
 (defun py-execute-region-jython (beg end)
-  "Execute region Jython. " 
+  "Execute region Jython. "
   (interactive "r")
   (py--execute-base beg end "jython"))
 
 (defun py-execute-region-jython-switch (beg end)
-  "Execute region Jython switch. " 
+  "Execute region Jython switch. "
   (interactive "r")
   (let ((py-switch-buffers-on-execute-p t))
     (py--execute-base beg end "jython")))
 
 (defun py-execute-region-jython-no-switch (beg end)
-  "Execute region Jython no-switch. " 
+  "Execute region Jython no-switch. "
   (interactive "r")
   (let ((py-switch-buffers-on-execute-p nil))
     (py--execute-base beg end "jython")))
 
 (defun py-execute-region-jython-dedicated (beg end)
-  "Execute region Jython dedicated. " 
+  "Execute region Jython dedicated. "
   (interactive "r")
   (let ((py-dedicated-process-p t))
     (py--execute-base beg end "jython")))
 
 (provide 'python-components-execute-region)
 ;;; python-components-execute-region.el ends here
- 

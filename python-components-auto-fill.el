@@ -1,8 +1,9 @@
 ;;; python-components-auto-fill.el --- toggle comment-auto-fill
 
-;; Copyright (C) 2012  Andreas Roehler
+;; Copyright (C) 2015  Andreas Röhler
 
-;; Author: Andreas Roehler <andreas.roehler@online.de>
+;; Author: Andreas Röhler <andreas.roehler@easy-emacs.de>
+
 ;; Keywords: languages
 
 ;; This program is free software; you can redistribute it and/or modify

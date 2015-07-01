@@ -1,6 +1,8 @@
 ;;; ppython-components-send.el --- functions sending strings to Python
 
-;; Maintainer: Andreas Roehler <andreas.roehler@online.de>
+;; Copyright (C) 2015  Andreas Röhler
+
+;; Author: Andreas Röhler <andreas.roehler@easy-emacs.de>
 
 ;; Keywords: languages, processes
 

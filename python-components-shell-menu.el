@@ -2,7 +2,10 @@
 
 ;; This file not shipped as part of GNU Emacs.
 
-;; Maintainer: Andreas Röhler <andreas.roehler@online.de>
+;; Copyright (C) 2015  Andreas Röhler
+
+;; Author: Andreas Röhler <andreas.roehler@easy-emacs.de>
+
 ;; Keywords: languages, processes, python, oop
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -474,7 +477,7 @@ Don't store data in kill ring."]
 	    :help " `py-delete-class'
 Delete CLASS at point.
 
-Don't store data in kill ring. 
+Don't store data in kill ring.
 With C-u or `py-mark-decorators' set to `t', `decorators' are included."]
 
 	   ["Delete clause" py-delete-clause
@@ -490,14 +493,14 @@ Don't store data in kill ring."]
 	    :help " `py-delete-def'
 Delete DEF at point.
 
-Don't store data in kill ring. 
+Don't store data in kill ring.
 With C-u or `py-mark-decorators' set to `t', `decorators' are included."]
 
 	   ["Delete def or class" py-delete-def-or-class
 	    :help " `py-delete-def-or-class'
 Delete DEF-OR-CLASS at point.
 
-Don't store data in kill ring. 
+Don't store data in kill ring.
 With C-u or `py-mark-decorators' set to `t', `decorators' are included."]
 
 	   ["Delete expression" py-delete-expression

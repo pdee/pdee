@@ -1,6 +1,9 @@
 ;;; python-components-create-menu.el - Generate the menu
 
-;; Author: Andreas Roehler <andreas.roehler@online.de>
+;; Copyright (C) 2015  Andreas Röhler
+
+;; Author: Andreas Röhler <andreas.roehler@easy-emacs.de>
+
 ;; Keywords: languages, processes, python, oop
 
 ;; Python-components-mode started from python-mode.el
@@ -28,7 +31,6 @@
 
 ;;; Code:
 
-
 ;; Forms used building the menu
 
 (setq py-menu-abbrev-form "	   :help \"see also `py-add-abbrev'\"
@@ -39,7 +41,9 @@
 
 ;; This file not shipped as part of GNU Emacs.
 
-;; Maintainer: Andreas Röhler <andreas.roehler@online.de>
+;; Copyright (C) 2015  Andreas Röhler
+;; Author: Andreas Röhler <andreas.roehler@easy-emacs.de>
+
 ;; Keywords: languages, processes, python, oop
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -931,7 +935,7 @@ See bug report at launchpad, lp:944093. Use `M-x customize-variable' to set it p
       (when (search-forward ":help" end t)
 	(end-of-line)
 	(py--escape-doublequotes (point) end))
-      ;; (switch-to-buffer (current-buffer)) 
+      ;; (switch-to-buffer (current-buffer))
       ;; (py--escape-open-paren-col1 (point) end)
       (when (< 5 (- (setq line (py-count-lines)) origline))
 	(py--emen-curb-docu line)))
@@ -939,7 +943,6 @@ See bug report at launchpad, lp:944093. Use `M-x customize-variable' to set it p
     (skip-chars-backward " \t\r\n\f")
     (insert "\"]\n")))
   ;; (goto-char orig)
-
 
 (defun py--create-menu-insert-intern (ele)
   (save-excursion (py--emen ele))
@@ -1029,7 +1032,6 @@ See bug report at launchpad, lp:944093. Use `M-x customize-variable' to set it p
     (insert (concat (make-string 11 ? ) "))\n"))
 
     (insert (concat (make-string 9 ? )"(\"Move\"\n"))
-
 
     (insert (concat (make-string 10 ? )"(\"Backward\""))
     (py--create-menu-insert py-move-forms "py-beginning-of-")

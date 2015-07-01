@@ -1,8 +1,9 @@
 ;;; python-components-move.el --- Functions moving point which need special treatment
 
-;; Copyright (C) 2011-2014 Andreas Roehler
+;; Copyright (C) 2015  Andreas Röhler
 
-;; Author: Andreas Roehler <andreas.roehler@online.de>
+;; Author: Andreas Röhler <andreas.roehler@easy-emacs.de>
+
 ;; Keywords: languages
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -682,7 +683,6 @@ Return position"
     (and (< (point) orig)(setq erg (point)))
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
-
 
 (defun py-backward-section ()
   "Go to next section start upward in buffer.
