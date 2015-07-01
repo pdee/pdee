@@ -2072,8 +2072,12 @@ can write into: the value (if any) of the environment variable TMPDIR,
 (defvar py-pydbtrack-input-prompt "^[(]*ipydb[>)]+ "
   "Recognize the pydb-prompt. ")
 
+
+(defvar py-ipython-input-prompt-re "In \\[[0-9]+\\]:\\|^[ ]\\{3\\}[.]\\{3,\\}:"
+  "A regular expression to match the IPython input prompt. ")
+
  ;; prevent ipython.el's setting
-(setq py-ipython-input-prompt-re "In \\[[0-9]+\\]:\\|^[ ]\\{3\\}[.]\\{3,\\}:" )
+(setq py-ipython-input-prompt-re   "In \\[[0-9]+\\]:\\|^[ ]\\{3\\}[.]\\{3,\\}:" )
 
 (defvar py-exec-command nil
   "Internally used. ")
@@ -2089,9 +2093,6 @@ can write into: the value (if any) of the environment variable TMPDIR,
 (defvar py-pyflakespep8-history nil)
 
 (defvar py-pylint-history nil)
-
-(defvar py-ipython-input-prompt-re "In \\[[0-9]+\\]:\\|^[ ]\\{3\\}[.]\\{3,\\}:"
-  "A regular expression to match the IPython input prompt. ")
 
 (defvar py-ipython-output-prompt-re "^Out\\[[0-9]+\\]: "
   "A regular expression to match the output prompt of IPython.")

@@ -25,6 +25,30 @@
 
 ;;; Code:
 
+
+(defun py-write-variables-test ()
+  (interactive)
+  (set-buffer (get-buffer-create "Py-Variables-Test"))
+  (erase-buffer)
+  (dolist (elt py-variables)
+    (setq elt (prin1-to-string elt))
+    (insert (concat "-eval \"(assert (boundp '" elt ") nil \\\"" elt " not a variable\\\")\" \\\n")))
+  (switch-to-buffer (current-buffer))
+  (emacs-lisp-mode))
+
+(defun py-write-docstring-style-test ()
+  (interactive)
+  (set-buffer (get-buffer-create "Py-Docstring-Style-Test"))
+  (erase-buffer)
+  (dolist (elt docstring-styles)
+    ;; (setq elt (prin1-to-string elt))
+    ;; py-nil-docstring-style-on
+    (insert (concat "
+  \(py-" elt "-docstring-style-on)
+  \(assert (eq '" elt " py-docstring-style) nil \"" elt " not py-docstring-style\")\n")))
+  (switch-to-buffer (current-buffer))
+  (emacs-lisp-mode))
+
 (defun py-write-ert-forward-tests ()
   (interactive)
   (set-buffer (get-buffer-create "py-ert-forward-tests.el"))
