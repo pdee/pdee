@@ -561,29 +561,6 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
     (py-newline-and-indent)
     (should (eq 42 (point)))))
 
-(ert-deftest py-ert-socket-modul-completion-lp-1284141 ()
-  (dolist (ele py-ert-test-default-executables)
-    (when (buffer-live-p (get-buffer "*Python Completions*"))
-      (py-kill-buffer-unconditional (get-buffer "*Python Completions*")))
-    (py-test-with-temp-buffer
-	"import socket\nsocket."
-      (let ((py-debug-p t)
-	    (py-shell-name ele)
-	    oldbuf)
-	(when py-debug-p (switch-to-buffer (current-buffer))
-	      (font-lock-fontify-buffer))
-	(py-indent-or-complete)
-	(if (string-match "ipython" ele)
-	    (sit-for 0.5)
-	  (sit-for 0.1))
-	(should (buffer-live-p (get-buffer "*Python Completions*")))
-	(set-buffer "*Python Completions*")
-	(switch-to-buffer (current-buffer))
-	(goto-char (point-min))
-	(sit-for 0.1)
-	(prog1 (should (search-forward "socket."))
-	  (py-kill-buffer-unconditional (current-buffer)))))))
-
 (ert-deftest py-ert-fill-paragraph-lp-1286318 ()
   (py-test-with-temp-buffer-point-min
       "# r1416
@@ -825,21 +802,6 @@ def baz():
       (set-buffer py-buffer-name)
       (goto-char (point-min))
       (should (search-forward "py-execute-statement-python3-dedicated-test" nil t 1)))))
-
-(ert-deftest py-ert-script-buffer-appears-instead-of-python-shell-buffer-lp-957561-test ()
-  (py-test-with-temp-buffer
-      "#! /usr/bin/env python
- # -*- coding: utf-8 -*-
-print(\"I'm the script-buffer-appears-instead-of-python-shell-buffer-lp-957561-test\")
-"
-     (let (py-switch-buffers-on-execute-p
-	  (py-split-window-on-execute t))
-      (delete-other-windows)
-      (ipython)
-      (sit-for 0.1)
-      (py-execute-buffer-ipython)
-      ;; (should (window-live-p (other-buffer)))
-      (should (not (window-full-height-p))))))
 
 (ert-deftest indent-region-lp-997958-lp-1426903-no-arg-1-test ()
   "Indent line-by-line as first line is okay "
