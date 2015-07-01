@@ -31,6 +31,13 @@ See: large output makes Emacs freeze, lp:1253907
 
 Results arrive in output buffer, which is not in comint-mode
 
+py-sexp-use-expression-p
+------------------------
+If non-nil, C-M-s call py-forward-expression. 
+
+Respective C-M-b will call py-backward-expression
+Default is t
+
 py-shell-unfontify-p
 --------------------
 Run `py--run-unfontify-timer' unfontifying the shell banner-text.
@@ -378,7 +385,7 @@ Number of chars, closing parenthesis outdent from opening, default is 1
 
 py-max-specpdl-size
 -------------------
-Heuristic exit. Limiting number of recursive calls by py-end-of-statement and related functions. Default is max-specpdl-size.
+Heuristic exit. Limiting number of recursive calls by py-forward-statement and related functions. Default is max-specpdl-size.
 
 This threshold is just an approximation. It might set far higher maybe.
 
@@ -1136,6 +1143,10 @@ Delimit arbitrary chunks of code.
 py-section-end
 --------------
 Delimit arbitrary chunks of code. 
+
+py-paragraph-re
+---------------
+An empty line followed by a non-whitespace at column 1
 
 py-compilation-regexp-alist
 ---------------------------
