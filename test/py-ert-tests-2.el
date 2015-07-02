@@ -540,8 +540,6 @@ class bar:
         except:
             block2
 "
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (py-backward-except-block)
     (should (eq (char-after) ?e))))
 
@@ -558,8 +556,6 @@ class bar:
         except:
             block2
 "
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (py-backward-except-block-bol)
     (should (eq (char-after) ?\ ))))
 
@@ -750,8 +746,6 @@ def main():
 if __name__==\"__main__\":
     main()
 "
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (search-forward "exit()")
     (should (eq 4 (py-close-block)))))
 
@@ -766,8 +760,6 @@ def main():
 if __name__==\"__main__\":
     main()
 "
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (search-forward "exit()")
     (should (eq 4 (py-close-clause)))))
 
@@ -782,8 +774,6 @@ def main():
 if __name__==\"__main__\":
     main()
 "
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (search-forward "exit()")
     (should (eq 4 (py-close-block-or-clause)))))
 
@@ -798,8 +788,6 @@ def main():
 if __name__==\"__main__\":
     main()
 "
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (search-forward "exit()")
     (should (eq 0 (py-close-def-or-class)))))
 
@@ -814,8 +802,6 @@ def main():
 if __name__==\"__main__\":
     main()
 "
-    (when py-debug-p (switch-to-buffer (current-buffer))
-          (font-lock-fontify-buffer))
     (search-forward "exit()")
     (should (eq 0 (py-close-def)))))
 

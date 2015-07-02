@@ -204,7 +204,7 @@ class bar:
         (py-options py-options))
     (set-buffer (get-buffer-create "py-ert-execute-statement-test.el"))
     (erase-buffer)
-    (switch-to-buffer (current-buffer))
+    (when (interactive-p) (switch-to-buffer (current-buffer)))
     (insert ";;; ")
     (insert " --- py-execute-statement tests")
     (insert arkopf)
@@ -233,7 +233,7 @@ class bar:
 	(unless (string= pyo "")(insert (concat "-" pyo)))
 	(if (string-match "def" ele)
 	    (progn
-	      (switch-to-buffer (current-buffer))
+	      ;; (switch-to-buffer (current-buffer))
 	      (insert "-test\\\")\nfoo()\"))"))
 	  (insert "-test\\\")\"))"))
 	(if (string= "" elt)
@@ -265,8 +265,6 @@ class bar:
 	  (insert (concat "
   (if (string-match \"\*I\" py-buffer-name) (sit-for 1 t) (sit-for 0.1 t))
   (set-buffer py-buffer-name)
-  (when py-debug-p (switch-to-buffer (current-buffer)))
-  (goto-char (point-max))
   (sit-for 0.1 t)
   (when py-verbose-p (message \"py-result %s\" (or py-error py-result)))
   (when
@@ -293,7 +291,7 @@ class bar:
   ;; (load-shells)
   (set-buffer (get-buffer-create "py-ert-execute-block-test.el"))
   (erase-buffer)
-  (switch-to-buffer (current-buffer))
+  (when (interactive-p) (switch-to-buffer (current-buffer)))
   (insert ";;; py-ert-execute-block-test.el")
   (insert " --- py-execute-block tests\n")
   (insert arkopf)

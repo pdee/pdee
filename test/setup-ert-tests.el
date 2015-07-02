@@ -39,9 +39,8 @@ BODY is code to be executed within the temp buffer.  Point is
   `(with-temp-buffer
      ;;     (and (featurep 'python) (unload-feature 'python))
      (let (hs-minor-mode)
-       (python-mode)
        (insert ,contents)
-       (message "ERT %s" (point))
+       (python-mode)
        (goto-char (point-min))
        (when py-debug-p (switch-to-buffer (current-buffer))
 	     (font-lock-fontify-buffer))
@@ -55,8 +54,8 @@ BODY is code to be executed within the temp buffer.  Point is
   `(with-temp-buffer
      ;; (and (featurep 'python) (unload-feature 'python))
      (let (hs-minor-mode)
-       (python-mode)
        (insert ,contents)
+       (python-mode)
        (when py-debug-p (switch-to-buffer (current-buffer))
 	     (font-lock-fontify-buffer))
        ;; (message "ERT %s" (point))

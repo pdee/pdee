@@ -1899,11 +1899,11 @@
 (ert-deftest py-ert-ar-py-looking-at-keywords-p-functionp-test ()
   (should (functionp 'ar-py-looking-at-keywords-p)))
 
-(ert-deftest py-ert-ar-py-match-paren-mode-functionp-test ()
-  (should (functionp 'ar-py-match-paren-mode)))
+(ert-deftest py-ert-py-match-paren-mode-functionp-test ()
+  (should (functionp 'py-match-paren-mode)))
 
-(ert-deftest py-ert-ar-py-match-paren-functionp-test ()
-  (should (functionp 'ar-py-match-paren)))
+(ert-deftest py-ert-py-match-paren-functionp-test ()
+  (should (functionp 'py-match-paren)))
 
 (ert-deftest py-ert-ar-py-documentation-functionp-test ()
   (should (functionp 'ar-py-documentation)))

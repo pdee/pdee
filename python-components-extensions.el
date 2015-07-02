@@ -84,9 +84,9 @@ Affected by `py-dedent-keep-relative-column'. "
     (when (interactive-p) (message "%s" erg))
     erg))
 
-(defun py--close-intern (regexp)
+(defun py--close-intern (regexp &optional keep-level) 
   "Core function, internal used only. "
-  (let ((cui (car (py--go-to-keyword (symbol-value regexp)))))
+  (let ((cui (car (py--go-to-keyword (symbol-value regexp) keep-level))))
     (message "%s" cui)
     (py--end-base regexp (point))
     (forward-line 1)
@@ -219,7 +219,7 @@ With interactive call, send it to the message buffer too. "
     (when (interactive-p) (message "looking-at keywords: %s" res))
     res))
 
-(defun ar-py-match-paren-mode (&optional arg)
+(defun py-match-paren-mode (&optional arg)
   "py-match-paren-mode nil oder t"
   (interactive "P")
   (if (or arg (not py-match-paren-mode))
@@ -228,22 +228,67 @@ With interactive call, send it to the message buffer too. "
         ;; 	(define-key python-mode-map (kbd (concat "<" py-match-paren-key ">")) 'py-match-paren))
         (setq py-match-paren-mode nil))))
 
-(defun ar-py-match-paren ()
-  "Goto to the opening or closing of block before or after point.
+(defun py-match-paren ()
+  "If at a beginning, jump to end and vice versa.
 
-With arg, do it that many times.
- Closes unclosed block if jumping from beginning. "
+When called from within, go to the start.
+Matches lists, but also block, statement, string and comment. "
   (interactive)
-  (let ((cuc (current-column))
-	(cid (current-indentation)))
-    (ar-py-beginning-of-block-or-clause)
-    (if (< cuc (current-indentation))
-	(goto-char cuc)
-      (back-to-indentation)
-      (when (eq (point) cuc)
-	(ar-py-end-of-block)))))
+  (let ((pps (parse-partial-sexp (point-min) (point))))
+    (cond
+     ;; if inside string, go to beginning
+     ((nth 3 pps)
+      (goto-char (nth 8 pps)))
+     ;; if inside comment, go to beginning
+     ((nth 4 pps)
+      (py-backward-comment))
+     ;; at comment start, go to end of commented section
+     ((eq 11 (car-safe (syntax-after (point))))
+      (py-forward-comment))
 
-;; from sh-werkstatt.el. Introduced here for convenience.
+     ;; at string start, go to end
+     ((or (eq 15 (car-safe (syntax-after (point))))
+	  (eq 7 (car (syntax-after (point)))))
+      (goto-char (scan-sexps (point) 1))
+      (forward-char -1))
+     ;; open paren
+     ((eq 4 (car (syntax-after (point))))
+      (goto-char (scan-sexps (point) 1))
+      (forward-char -1))
+     ((eq 5 (car (syntax-after (point))))
+      (goto-char (scan-sexps (1+ (point)) -1)))
+     (t
+      (cond
+       ((empty-line-p)
+	(if (< 0 (current-column))
+	    (py-backward-block-or-clause (current-indentation))
+	  (skip-chars-backward " \t\r\n\f")
+	  (unless (bobp)
+	    (py-match-paren))))
+       ((looking-back "^[ \t]*")
+	;; at beginning of top-level, block, clause, statement
+	(cond
+	 ((py--beginning-of-top-level-p)
+	  (py-forward-top-level))
+	 ((py--beginning-of-block-p)
+	  (py-forward-block))
+	 ((py--beginning-of-clause-p)
+	  (py-forward-clause))
+	 ((py--beginning-of-statement-p)
+	  (py-forward-statement))
+	 (t (py-forward-statement))))
+       (t
+	(cond
+	 ((py--end-of-top-level-p)
+	  (py-backward-top-level))
+	 ((py--end-of-block-p)
+	  (py-backward-block))
+	 ((py--end-of-clause-p)
+	  (py-backward-clause))
+	 ((py--end-of-statement-p)
+	  (py-backward-statement))
+	 (t (py-backward-statement)))))))))
+
 (unless (boundp 'empty-line-p-chars)
   (defvar empty-line-p-chars "^[ \t\f\r]*$"))
 

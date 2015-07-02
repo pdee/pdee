@@ -11,6 +11,10 @@ New in version 6.2.1
   same with optional argument
 
 - Commands
+  - py-match-paren
+    If at a beginning, jump to end and vice versa.
+    Matches lists, block, statement, string and comment
+
   - ipython2.7
   - ipython3
 
