@@ -452,26 +452,30 @@ From a programm use macro `py-backward-comment' instead "
   "Returns a list, whose car is indentation, cdr position. "
   (let ((orig (point))
         (maxindent
-         (if (empty-line-p)
-             (progn
-               (py-backward-statement)
-               (current-indentation))
-           (or maxindent (and (< 0 (current-indentation))(current-indentation))
-               ;; make maxindent large enough if not set
-               (* 99 py-indent-offset))))
-        (first t)
+	 (or maxindent
+	     (if (empty-line-p)
+		 (progn
+		   (py-backward-statement)
+		   (current-indentation))
+	       (or maxindent (and (< 0 (current-indentation))(current-indentation))
+		   ;; make maxindent large enough if not set
+		   (* 99 py-indent-offset)))))
         done erg cui)
     (while (and (not done) (not (bobp)))
-      (while (and (re-search-backward regexp nil 'move 1)(nth 8 (parse-partial-sexp (point-min) (point)))))
+      ;; (while (and (re-search-backward regexp nil 'move 1)(nth 8 (parse-partial-sexp (point-min) (point)))))
       ;; (or (< (point) orig) (py-backward-statement))
-      (if (and (looking-at regexp)(if maxindent
-                                      (<= (current-indentation) maxindent) t))
-          (progn
-            (setq erg (point))
-            (setq done t))
-        (when (and first (not maxindent))
-          (setq maxindent (current-indentation))
-          (setq first nil))))
+      (py-backward-statement)
+
+      (when
+	  (and (<= (current-indentation) maxindent)
+	       (setq maxindent (current-indentation))
+	       (looking-at regexp))
+	(setq erg (point))
+	(setq done t)
+        ;; (when (and first (not maxindent))
+	;; (setq maxindent (current-indentation))
+	;; (setq first nil))
+	))
     (when erg (setq erg (cons (current-indentation) erg)))
     erg))
 

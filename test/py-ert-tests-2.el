@@ -539,7 +539,7 @@ class bar:
                     pass
         except:
             block2
-"
+        "
     (py-backward-except-block)
     (should (eq (char-after) ?e))))
 
@@ -555,7 +555,7 @@ class bar:
                     pass
         except:
             block2
-"
+        "
     (py-backward-except-block-bol)
     (should (eq (char-after) ?\ ))))
 
@@ -910,7 +910,7 @@ print()")
       "with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
     for i in range(anzahl):
         klauf.pylauf()
-"
+        "
       (py-narrow-to-block)
       (should (eq 50 (length (buffer-substring-no-properties (point-min)(point-max)))))))
 

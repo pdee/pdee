@@ -56,7 +56,6 @@ if __name__ == \"__main__\":
 (add-to-list 'load-path default-directory)
 (require 'python-mode-test)
 
-
 (defun py-tests-go-to (string)
   "Move point at beginning of STRING in the current test. "
   (and (eq (point) (point-max))(goto-char (point-min)))
@@ -121,8 +120,6 @@ if __name__ == \"__main__\":
 
 (ert-deftest py-ert-indent-dedenters-1 ()
   "Check all dedenters."
-
-
 
 (py-test-with-temp-buffer-point-min
    "
@@ -195,9 +192,7 @@ result = some_function_that_takes_arguments(
    (goto-char 129)
    (should (eq 4 (py-compute-indentation)))))
 
-(ert-deftest py-ert-moves ()
-  (py-test-with-temp-buffer-point-min
-      "class OrderedDict1(dict):
+(setq py-ert-moves-text "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
     in which keys were inserted.
@@ -227,131 +222,298 @@ result = some_function_that_takes_arguments(
 
 ''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
 '''
-"
+")
+
+(ert-deftest py-ert-moves-up-clause-bol-1 ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
+    (goto-char 592)
+    (should (eq 561 (py-up-clause-bol)))))
+
+(ert-deftest py-ert-moves-up-block-or-clause-bol-1 ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
+    (goto-char 410)
+    (should (eq 317 (py-up-block-or-clause-bol)))))
+
+(ert-deftest py-ert-moves-up-def-bol-1 ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
+    (goto-char 410)
+    (should (eq 234 (py-up-def-bol)))))
+
+(ert-deftest py-ert-moves-up-class-bol-1 ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
+    (goto-char 410)
+    ;; (sit-for 1)
+    (should (eq 1 (py-up-class-bol)))))
+
+(ert-deftest py-ert-moves-up-def-or-class-bol-1 ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
+    (goto-char 410)
+    ;; (sit-for 1)
+    (should (eq 234 (py-up-def-or-class-bol)))))
+
+(ert-deftest py-ert-moves-up-block-bol-1 ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
+    (goto-char 410)
+    ;; (sit-for 1)
+    (should (eq 317 (py-up-block-bol)))))
+
+(ert-deftest py-ert-moves-up-minor-block-bol-1 ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
+    (goto-char 410)
+    ;; (sit-for 1)
+    (should (eq 317 (py-up-minor-block-bol)))))
+
+(ert-deftest py-ert-moves-up-block-bol-2 ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
     (goto-char 592)
     ;; (sit-for 1)
-    (should (eq 561 (py-up-clause-bol)))
+    (should (eq 325 (py-up-block)))))
+
+(ert-deftest py-ert-moves-up-minor-block-bol-2 ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
     (goto-char 410)
     ;; (sit-for 1)
-    (should (eq 317 (py-up-block-or-clause-bol)))
-    (goto-char 410)
-    ;; (sit-for 1)
-    (should (eq 234 (py-up-def-bol)))
-    (goto-char 410)
-    ;; (sit-for 1)
-    (should (eq 1 (py-up-class-bol)))
-    (goto-char 410)
-    ;; (sit-for 1)
-    (should (eq 234 (py-up-def-or-class-bol)))
-    (goto-char 410)
-    ;; (sit-for 1)
-    (should (eq 317 (py-up-block-bol)))
-    (goto-char 410)
-    ;; (sit-for 1)
-    (should (eq 317 (py-up-minor-block-bol)))
+    (should (eq 325 (py-up-minor-block)))))
+
+(ert-deftest py-ert-moves-up-claus-bol-1 ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
     (goto-char 592)
     ;; (sit-for 1)
-    (should (eq 325 (py-up-block)))
-    (goto-char 410)
-    ;; (sit-for 1)
-    (should (eq 325 (py-up-minor-block)))
+    (should (eq 569 (py-up-clause)))))
+
+(ert-deftest py-ert-moves-up-block-or-clause-bol-2 ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
     (goto-char 592)
     ;; (sit-for 1)
-    (should (eq 569 (py-up-clause)))
-    (goto-char 592)
-    ;; (sit-for 1)
-    (should (eq 569 (py-up-block-or-clause)))
+    (should (eq 569 (py-up-block-or-clause)))))
+
+(ert-deftest py-ert-moves-up-def-bol-2 ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
     (goto-char 410)
     ;; (sit-for 1)
-    (should (eq 238 (py-up-def)))
+    (should (eq 238 (py-up-def)))))
+
+(ert-deftest py-ert-moves-up-class-bol-2 ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
     (goto-char 410)
     ;; (sit-for 1)
-    (should (eq 1 (py-up-class)))
+    (should (eq 1 (py-up-class)))))
+
+(ert-deftest py-ert-moves-up-def-or-class-bol-2 ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
     (goto-char 410)
     ;; (sit-for 1)
-    (should (eq 238 (py-up-def-or-class)))
+    (should (eq 238 (py-up-def-or-class)))))
+
+(ert-deftest py-ert-moves-down-block-bol-1 ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
     (goto-char 264)
     ;; (sit-for 1)
-    (should (eq 317 (py-down-block-bol)))
+    (should (eq 317 (py-down-block-bol)))))
+
+(ert-deftest py-ert-moves-down-clause-bol-1 ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
     (goto-char 561)
     ;; (sit-for 1)
-    (should (eq 594 (py-down-clause-bol)))
-    (goto-char 264)
-    ;; (sit-for 1)
-    (should (eq 317 (py-down-block-or-clause-bol)))
-    (goto-char (point-min))
-    (should (eq 142 (py-down-def-bol)))
-    (goto-char 410)
-    ;; (sit-for 1)
-    (should (not (py-down-class-bol)))
-    (goto-char (point-min))
-    (should (eq 142 (py-down-def-or-class-bol)))
-    (goto-char 264)
-    ;; (sit-for 1)
-    (should (eq 325 (py-down-block)))
-    (goto-char 264)
-    ;; (sit-for 1)
-    (should (eq 317 (py-down-block-bol)))
-    (goto-char 264)
-    ;; (sit-for 1)
-    (should (eq 325 (py-down-minor-block)))
-    (goto-char 264)
-    ;; (sit-for 1)
-    (should (eq 317 (py-down-minor-block-bol)))
-    (goto-char 569)
-    ;; (sit-for 1)
-    (should (eq 602 (py-down-clause)))
-    (goto-char 410)
-    ;; (sit-for 1)
-    (should (eq 569 (py-down-block-or-clause)))
-    (goto-char (point-min))
-    (should (eq 146 (py-down-def)))
-    (goto-char 410)
-    ;; (sit-for 1)
-    (should (not (py-down-class)))
-    (goto-char (point-min))
-    (should (eq 146 (py-down-def-or-class)))
-    (goto-char 410)
-    ;; (sit-for 1)
-    (should (eq 332 (py-backward-statement-bol)))
-    (goto-char 410)
-    ;; (sit-for 1)
-    (should (eq 317 (py-backward-block-bol)))
-    (goto-char 410)
-    ;; (sit-for 1)
-    (should (eq 317 (py-backward-clause-bol)))
-    (goto-char 410)
-    ;; (sit-for 1)
-    (should (eq 317 (py-backward-block-or-clause-bol)))
-    (should (eq 1 (py-backward-class-bol)))
-    (goto-char 410)
-    ;; (sit-for 1)
-    (should (eq 234 (py-backward-def-or-class-bol)))
-    (goto-char 576)
-    ;; (sit-for 1)
-    (should (eq 594 (py-forward-clause-bol)))
-    (goto-char 576)
-    ;; (sit-for 1)
-    (should (eq 594 (py-forward-block-or-clause-bol)))
-    (goto-char 410)
-    ;; (sit-for 1)
-    (should (eq 627 (py-forward-def-bol)))
-    (goto-char 410)
-    ;; (sit-for 1)
-    (should (eq 627 (py-forward-class-bol)))
-    (goto-char 410)
-    ;; (sit-for 1)
-    (should (eq 627 (py-forward-def-or-class-bol)))
-    (goto-char 410)
-    ;; (sit-for 1)
-    (should (eq 561 (py-forward-statement-bol)))
-    (goto-char 410)
-    ;; (sit-for 1)
-    (should (eq 234 (py-backward-def-bol)))
-    ;; (message "%s" "py-backward-def-bol-test of `py-moves-test'  done")
-    ))
+    (should (eq 594 (py-down-clause-bol)))))
 
-(ert-deftest py-ert-indent-tabs-mode-test ()
+(ert-deftest py-ert-moves-down-block-or-clause-bol-1 ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
+    (goto-char 264)
+    ;; (sit-for 1)
+    (should (eq 317 (py-down-block-or-clause-bol)))))
+
+(ert-deftest py-ert-moves-down-def-bol-1 ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
+    (goto-char (point-min))
+    (should (eq 142 (py-down-def-bol)))))
+
+(ert-deftest py-ert-down-class-bol-1 ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
+    (goto-char 410)
+    ;; (sit-for 1)
+    (should (not (py-down-class-bol)))))
+
+(ert-deftest py-ert-moves-down-def-or-class-bol-1 ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
+    (goto-char (point-min))
+    (should (eq 142 (py-down-def-or-class-bol)))))
+
+(ert-deftest py-ert-moves-down-block-1 ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
+    (goto-char 264)
+    ;; (sit-for 1)
+    (should (eq 325 (py-down-block)))))
+
+(ert-deftest py-ert-moves-down-block-bol-2 ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
+    (goto-char 264)
+    ;; (sit-for 1)
+    (should (eq 317 (py-down-block-bol)))))
+
+(ert-deftest py-ert-moves-down-minor-block-1 ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
+    (goto-char 264)
+    ;; (sit-for 1)
+    (should (eq 325 (py-down-minor-block)))))
+
+(ert-deftest py-ert-moves-down-minor-block-bol-1 ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
+    (goto-char 264)
+    ;; (sit-for 1)
+    (should (eq 317 (py-down-minor-block-bol)))))
+
+(ert-deftest py-ert-moves-down-clause-1 ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
+    (goto-char 569)
+    (should (eq 602 (py-down-clause)))))
+
+(ert-deftest py-ert-moves-down-block-or-clause-1 ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
+    (goto-char 410)
+    ;; (sit-for 1)
+    (should (eq 569 (py-down-block-or-clause)))))
+
+(ert-deftest py-ert-moves-down-def-1 ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
+    (goto-char (point-min))
+    (should (eq 146 (py-down-def)))))
+
+(ert-deftest py-ert-moves-down-class-1 ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
+    (goto-char 410)
+    ;; (sit-for 1)
+    (should (not (py-down-class)))))
+
+(ert-deftest py-ert-moves-down-def-or-class-1 ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
+    (goto-char (point-min))
+    (should (eq 146 (py-down-def-or-class)))))
+
+(ert-deftest py-ert-moves-backward-statement-bol-1 ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
+    (goto-char 410)
+    ;; (sit-for 1)
+    (should (eq 332 (py-backward-statement-bol)))))
+
+(ert-deftest py-ert-moves-backward-block-bol-1 ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
+    (goto-char 410)
+    (indent-to 8)
+    ;; (sit-for 1)
+    (should (eq 317 (py-backward-block-bol)))))
+
+(ert-deftest py-ert-moves-backward-clause-bol-1 ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
+    (goto-char 410)
+    (indent-to 8)
+    ;; (sit-for 1)
+    (should (eq 317 (py-backward-clause-bol)))))
+
+(ert-deftest py-ert-moves-backward-block-or-clause-bol-1 ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
+    (goto-char 410)
+    (indent-to 8)
+    ;; (sit-for 1)
+    (should (eq 317 (py-backward-block-or-clause-bol)))))
+
+(ert-deftest py-ert-moves-backward-class-bol ()
+  (py-test-with-temp-buffer
+      py-ert-moves-text
+    (should (eq 1 (py-backward-class-bol)))))
+
+(ert-deftest py-ert-moves-backward-def-or-class-bol ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
+    (goto-char 410)
+    (indent-to 4)
+    ;; (sit-for 1)
+    (should (eq 234 (py-backward-def-or-class-bol)))))
+
+(ert-deftest py-ert-moves-forward-clause-bol ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
+    (goto-char 576)
+    ;; (sit-for 1)
+    (should (eq 594 (py-forward-clause-bol)))))
+
+(ert-deftest py-ert-moves-forward-block-or-clause-bol ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
+    (goto-char 576)
+    ;; (sit-for 1)
+    (should (eq 594 (py-forward-block-or-clause-bol)))))
+
+(ert-deftest py-ert-moves-forward-def-bol ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
+    (goto-char 410)
+    ;; (sit-for 1)
+    (should (eq 627 (py-forward-def-bol)))))
+
+(ert-deftest py-ert-moves-forward-class-bol ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
+    (goto-char 410)
+    ;; (sit-for 1)
+    (should (eq 627 (py-forward-class-bol)))))
+
+(ert-deftest py-ert-moves-forward-def-or-class-bol ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
+    (goto-char 410)
+    ;; (sit-for 1)
+    (should (eq 627 (py-forward-def-or-class-bol)))))
+
+(ert-deftest py-ert-moves-forward-statement-bol ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
+    (goto-char 410)
+    ;; (sit-for 1)
+    (should (eq 561 (py-forward-statement-bol)))))
+
+(ert-deftest py-ert-moves-backward-def-bol ()
+  (py-test-with-temp-buffer-point-min
+      py-ert-moves-text
+    (goto-char 410)
+    (indent-to 4)
+    ;; (sit-for 1)
+    (should (eq 234 (py-backward-def-bol)))))
+
+(ert-deftest py-ert-moves-up-indent-tabs-mode-test ()
   (py-test-with-temp-buffer-point-min
       "class OrderedDict1(dict):"
     (end-of-line)
@@ -359,7 +521,7 @@ result = some_function_that_takes_arguments(
       (py-newline-and-indent)
       (should (looking-back "^\t")))))
 
-(ert-deftest py-ert-no-indent-tabs-mode-test ()
+(ert-deftest py-ert-moves-up-no-indent-tabs-mode-test ()
   (py-test-with-temp-buffer-point-min
       "class OrderedDict1(dict):"
     (end-of-line)
@@ -367,12 +529,12 @@ result = some_function_that_takes_arguments(
       (py-newline-and-indent)
       (should (looking-back "^    ")))))
 
-(ert-deftest py-ert-pyflakespep-command-test ()
+(ert-deftest py-ert-moves-up-pyflakespep-command-test ()
   (py-test-with-temp-buffer-point-min
       ""
       (file-readable-p py-pyflakespep8-command)))
 
-(ert-deftest py-ert-bogus-dedent-when-typing-colon-in-dictionary-literal-lp-1197171 ()
+(ert-deftest py-ert-moves-up-bogus-dedent-when-typing-colon-in-dictionary-literal-lp-1197171 ()
   (py-test-with-temp-buffer
       "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
@@ -385,7 +547,7 @@ def foo():
         {'another'"
     (should (eq 8 (py-compute-indentation)))))
 
-(ert-deftest py-ert-pep-arglist-indent ()
+(ert-deftest py-ert-moves-up-pep-arglist-indent ()
   (py-test-with-temp-buffer-point-min
       "# Aligned with opening delimiter
 foo = long_function_name(var_one, var_two,
@@ -404,7 +566,7 @@ def long_function_name(
 
     ))
 
-(ert-deftest py-ert-close-at-start-column ()
+(ert-deftest py-ert-moves-up-close-at-start-column ()
   (py-test-with-temp-buffer-point-min
       "# boolean `py-closing-list-dedents-bos',
 
@@ -480,7 +642,7 @@ data = {
       (search-forward "}")
       (should (eq 0 (py-compute-indentation))))))
 
-(ert-deftest py-ert-top-level ()
+(ert-deftest py-ert-moves-up-top-level ()
   (py-test-with-temp-buffer-point-min
       "klauf = kugel()
 
@@ -497,7 +659,7 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
     (should (eq 1 (py-backward-top-level)))
     (should (eq 1 (py--beginning-of-top-level-p)))))
 
-(ert-deftest py-ert-position-tests ()
+(ert-deftest py-ert-moves-up-position-tests ()
   (interactive)
   (py-test-with-temp-buffer-point-min
       "class kugel(object):
@@ -540,7 +702,7 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
     (should (eq 380 (py--beginning-of-comment-position)))
     (should (eq 412 (py--end-of-comment-position)))))
 
-(ert-deftest py-ert-copy-statement-test ()
+(ert-deftest py-ert-moves-up-copy-statement-test ()
   (interactive)
   (py-test-with-temp-buffer-point-min
    "from foo.bar.baz import something
@@ -550,7 +712,7 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
    (py-copy-statement)
    (should (string-match "from foo.bar.baz import something" (car kill-ring)))))
 
-(ert-deftest py-ert-honor-dedent-lp-1280982 ()
+(ert-deftest py-ert-moves-up-honor-dedent-lp-1280982 ()
   (py-test-with-temp-buffer
       "def foo():
     def bar():
@@ -561,7 +723,7 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
     (py-newline-and-indent)
     (should (eq 42 (point)))))
 
-(ert-deftest py-ert-fill-paragraph-lp-1286318 ()
+(ert-deftest py-ert-moves-up-fill-paragraph-lp-1286318 ()
   (py-test-with-temp-buffer-point-min
       "# r1416
 
@@ -622,7 +784,7 @@ def baz():
 
     ))
 
-(ert-deftest py-ert-fill-paragraph-pep-257-nn ()
+(ert-deftest py-ert-moves-up-fill-paragraph-pep-257-nn ()
   (let ((py-docstring-style 'pep-257-nn))
     (py-test-with-temp-buffer-point-min
 	"# r1416
@@ -658,7 +820,7 @@ def baz():
       (should (<= (current-column) 72))
       )))
 
-(ert-deftest py-ert-fill-paragraph-pep-257 ()
+(ert-deftest py-ert-moves-up-fill-paragraph-pep-257 ()
   (let ((py-docstring-style 'pep-257))
     (py-test-with-temp-buffer-point-min
 	"# r1416
@@ -690,7 +852,7 @@ def baz():
       (should (empty-line-p))
       )))
 
-(ert-deftest py-ert-fill-paragraph-onetwo ()
+(ert-deftest py-ert-moves-up-fill-paragraph-onetwo ()
   (let ((py-docstring-style 'onetwo))
     (py-test-with-temp-buffer-point-min
 	"# r1416
@@ -715,7 +877,7 @@ def baz():
       (forward-line -1)
       (should (empty-line-p)))))
 
-(ert-deftest py-ert-fill-paragraph-django ()
+(ert-deftest py-ert-moves-up-fill-paragraph-django ()
   (let ((py-docstring-style 'django))
     (py-test-with-temp-buffer-point-min
 	"# r1416
@@ -743,7 +905,7 @@ def baz():
       (forward-line -2)
       (should (empty-line-p)))))
 
-(ert-deftest py-ert-fill-paragraph-symmetric ()
+(ert-deftest py-ert-moves-up-fill-paragraph-symmetric ()
   (let ((py-docstring-style 'symmetric))
     (py-test-with-temp-buffer-point-min
 	"# r1416
@@ -775,7 +937,7 @@ def baz():
     (and (should (string= "foo" (py-partial-expression)))
 	 (py-kill-buffer-unconditional (current-buffer)))))
 
-(ert-deftest py-ert-execute-statement-test ()
+(ert-deftest py-ert-moves-up-execute-statement-test ()
   (py-test-with-temp-buffer-point-min
       "print(\"I'm the py-execute-statement-test\")"
     (when py-debug-p (switch-to-buffer (current-buffer)))
@@ -790,7 +952,7 @@ def baz():
 	   (sit-for 0.1 t)
 	   (py-kill-buffer-unconditional (current-buffer))))))
 
-(ert-deftest py-ert-execute-statement-python3-dedicated-test ()
+(ert-deftest py-ert-moves-up-execute-statement-python3-dedicated-test ()
   (py-test-with-temp-buffer-point-min
       "print(\"I'm the py-execute-statement-python3-dedicated-test\")"
     (let ((py-debug-p t)
@@ -938,7 +1100,7 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     (let ((py-shell-name "python"))
       (should (string= "pdb" (py--pdb-versioned))))))
 
-(ert-deftest py-ert-forward-expression-test ()
+(ert-deftest py-ert-moves-up-forward-expression-test ()
     (py-test-with-temp-buffer-point-min
 	py-def-and-class-test-string
       (py-forward-expression)
@@ -979,7 +1141,7 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
       (should (eq (char-before) ?\)))
       ))
 
-(ert-deftest py-ert-backward-expression-test ()
+(ert-deftest py-ert-moves-up-backward-expression-test ()
     (py-test-with-temp-buffer
 	py-def-and-class-test-string
       (py-backward-expression)
@@ -998,21 +1160,21 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
       (should (eq (char-after) ?s))
       (py-backward-expression)
       (should (eq (char-after) ?i))
-      (beginning-of-line) 
-      (search-backward "if") 
+      (beginning-of-line)
+      (search-backward "if")
       (py-backward-expression)
       (should (eq (char-after) ?'))
       (search-backward "ausgabe")
       (py-backward-expression)
       (should (eq (char-after) ?\[))
-      
+
       ))
 
-(ert-deftest py-ert-match-paren-test-1 ()
+(ert-deftest py-ert-moves-up-match-paren-test-1 ()
     (py-test-with-temp-buffer
 	py-def-and-class-test-string
       (skip-chars-backward "^)")
-      (forward-char -1) 
+      (forward-char -1)
       (py-match-paren)
       (should (eq (char-after) ?\())
       (py-match-paren)
@@ -1025,7 +1187,7 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
       (py-match-paren)
       (should (eq (char-before) ?\)))
       (search-backward "(treffer)")
-      (skip-chars-backward "^\"") 
+      (skip-chars-backward "^\"")
       (forward-char -1)
       (py-match-paren)
       (should (eq (char-after) ?#))
@@ -1035,7 +1197,7 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
       (skip-chars-forward "^\]")
       (py-match-paren)
       (should (eq (char-after) ?\[))
-      (py-match-paren) 
+      (py-match-paren)
       (should (eq (char-after) ?\]))
       (skip-chars-backward "^:")
       (py-match-paren)
@@ -1049,14 +1211,14 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
       (should (eq (char-after) ?\"))
       ))
 
-;; (ert-deftest py-ert-match-paren-test-2 ()
+;; (ert-deftest py-ert-moves-up-match-paren-test-2 ()
 ;;     (py-test-with-temp-buffer
 ;; 	py-def-and-class-test-string
 ;;       (forward-line -3)
 ;;       (indent-to 12)
 ;;       (py-match-paren)
 ;;       (should (eq (char-after) ?e))
-;;       (forward-line 3) 
+;;       (forward-line 3)
 ;;       (fixup-whitespace)
 ;;       (indent-to 8)
 ;;       (py-match-paren)

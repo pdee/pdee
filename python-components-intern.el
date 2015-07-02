@@ -1659,17 +1659,19 @@ Returns beginning of FORM if successful, nil otherwise"
   (let ((orig (point))
         (indent
          (or indent
-             (progn (back-to-indentation)
-                    (or (py--beginning-of-statement-p)
-                        (py-backward-statement))
-                    (cond ((eq 0 (current-indentation))
-                           (current-indentation))
-                          ((looking-at (symbol-value inter-re))
-                           (current-indentation))
-                          (t
-                           (if (<= py-indent-offset (current-indentation))
-                               (- (current-indentation) (if py-smart-indentation (py-guess-indent-offset) py-indent-offset))
-                             py-indent-offset))))))
+	     (cond ((looking-back "^[ \t]*")
+		    (current-indentation))
+		   (t (progn (back-to-indentation)
+			     (or (py--beginning-of-statement-p)
+				 (py-backward-statement))
+			     (cond ((eq 0 (current-indentation))
+				    (current-indentation))
+				   ((looking-at (symbol-value inter-re))
+				    (current-indentation))
+				   (t
+				    (if (<= py-indent-offset (current-indentation))
+					(- (current-indentation) (if py-smart-indentation (py-guess-indent-offset) py-indent-offset))
+				      py-indent-offset))))))))
         erg)
     (if (and (< (point) orig) (looking-at (symbol-value final-re)))
         (progn
