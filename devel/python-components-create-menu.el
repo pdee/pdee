@@ -37,14 +37,11 @@
 	   :filter (lambda (&rest junk)
 		     (abbrev-table-menu python-mode-abbrev-table))")
 
-(defvar py-menu-head ";; python-components-menu.el --- Provide the python-mode menu\n\n")
+(setq py-menu-head ";; python-components-menu.el --- Provide the python-mode menu
 
-(defvar py-shell-menu-head ";; python-components-shell-menu.el --- Provide the Py-Shell mode menu\n\n")
-
-(defvar py-menu-head-core ";; This file not shipped as part of GNU Emacs.
+;; This file not shipped as part of GNU Emacs.
 
 ;; Copyright (C) 2015  Andreas Röhler
-
 ;; Author: Andreas Röhler <andreas.roehler@easy-emacs.de>
 
 ;; Keywords: languages, processes, python, oop
@@ -63,8 +60,8 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Code:
-"
-  "Used internally, header when building the menu-file")
+")
+
 
 (setq py-menu-custom-forms "         (\"Customize\"
 
@@ -570,7 +567,7 @@ Use `M-x customize-variable' to set it permanently\"
 	     :help \"When non-nil, keys C-M-a, C-M-e address top-level form.
 
 Beginning- end-of-defun forms use
-commands `py-beginning-of-top-level', `py-end-of-top-level'
+commands `py-backward-top-level', `py-forward-top-level'
 
 mark-defun marks top-level form at point etc. \"
 	     :style toggle :selected py-defun-use-top-level-p]
@@ -897,238 +894,6 @@ set it permanently\"
 See bug report at launchpad, lp:944093. Use `M-x customize-variable' to set it permanently\"
 	     :style toggle :selected py-edit-only-p])))")
 
-(defvar py-shells
-  (list 'python 'python3 'python2 'ipython 'ipython2.7 'ipython3 'jython)
-  "Python-mode will generate commands opening shells mentioned here. Edit this list \w resp. to your machine. ")
-
-(setq py-shells
-  (list 'python 'python2 'python3 'ipython 'ipython2.7 'ipython3 'jython ))
-
-(setq py-positions-forms (list "block" "block-or-clause" "class" "clause" "comment" "def" "def-or-class" "expression" "line" "minor-block" "paragraph" "partial-expression" "statement" "top-level"))
-
-(setq py-execute-forms
-      (list
-       "block"
-       "block-or-clause"
-       "class"
-       "clause"
-       "def"
-       "def-or-class"
-       "expression"
-       "line"
-       "minor-block"
-       "paragraph"
-       "partial-expression"
-       "statement"
-       "top-level"))
-
-(setq py-completion-symbols
-      (list
-       'py-indent-or-complete
-       'py-shell-complete
-       'py-complete))
-
-(setq py-skeletons
-      (list
-       'else-statement
-       'for-statement
-       'if-statement
-       'py-try/except-statement
-       'py-try/finally-statement
-       'while-statement))
-
-(setq py-filling-symbols
-      (list
-       'py-docstring-style
-       'py-fill-comment
-       'py-fill-paragraph
-       'py-fill-string
-       'py-fill-string-django
-       'py-fill-string-onetwo
-       'py-fill-string-pep-257
-       'py-fill-string-pep-257-nn
-       'py-fill-string-symmetric))
-
-(setq py-electric-symbols
-      (list
-       'complete-electric-comma
-       'complete-electric-lparen
-       'electric-backspace
-       'electric-colon
-       'electric-comment
-       'electric-delete
-       'electric-yank
-       'hungry-delete-backwards
-       'hungry-delete-forward))
-
-(setq py-other-symbols
-      (list
-       'boolswitch
-       'empty-out-list-backward
-       'kill-buffer-unconditional
-       'remove-overlays-at-point))
-
-(setq py-pyflakes-pep8-symbols
-      (list
-       'py-pyflakes-pep8-run
-       'py-pyflakes-pep8-help
-       'pyflakes-pep8-flymake-mode))
-
-(setq py-flake8-symbols
-      (list
-       'py-flake8-run
-       'py-flake8-help))
-
-(setq py-pyflakes-symbols
-      (list
-       'py-pyflakes-run
-       'py-pyflakes-help
-       'pyflakes-flymake-mode))
-
-(setq py-pep8-symbols
-      (list
-       'py-pep8-run
-       'py-pep8-help
-       'pep8-flymake-mode))
-
-(setq py-pylint-symbols
-      (list
-       'py-pylint-run
-       'py-pylint-help
-       'pylint-flymake-mode))
-
-(setq py-checks-symbols
-      (list
-       'py-flycheck-mode
-       'py-pychecker-run))
-
-(setq py-debugger-symbols
-      (list
-       'py-execute-statement-pdb
-       'pdb))
-
-(setq py-help-symbols
-      (list
-       'py-find-definition
-       'py-help-at-point
-       'py-info-lookup-symbol
-       'py-symbol-at-point))
-
-(defvar py-down-forms (list "block" "minor-block" "clause" "block-or-clause" "def" "class" "def-or-class" "statement" "top-level"))
-
-(setq py-down-forms (list "block" "minor-block" "clause" "block-or-clause" "def" "class" "def-or-class" "statement" "top-level"))
-
-(setq py-comment-forms
-      (list
-       "block"
-       "block-or-clause"
-       "class"
-       "clause"
-       "def"
-       "def-or-class"
-       "statement"))
-
-(setq py-down-forms (list "block" "minor-block" "clause" "block-or-clause" "def" "class" "def-or-class"))
-
-(setq py-shift-forms (list "block" "block-or-clause" "class" "clause" "comment" "def" "def-or-class" "minor-block" "paragraph" "region" "statement" "top-level"))
-
-;; top-level not part of `py-shift-bol-forms'
-(setq py-shift-bol-forms (list "paragraph" "block" "minor-block" "clause" "block-or-clause" "def" "class" "def-or-class" "statement"))
-
-(setq py-move-forms
-      '(
-	"block"
-	"block-or-clause"
-	"class"
-	"clause"
-	"def"
-	"def-or-class"
-	"elif-block"
-	"else-block"
-	"except-block"
-	"expression"
-	"if-block"
-	"partial-expression"
-	"statement"
-	"top-level"
-	"try-block"))
-
-(defvar py-hide-names (list "region" "statement" "block" "clause" "block-or-clause" "def" "class" "expression" "partial-expression" "line" "top-level"))
-
-(setq py-hide-names (list "region" "statement" "block" "clause" "block-or-clause" "def" "class" "expression" "partial-expression" "line" "top-level"))
-
-(setq py-fast-core
-      (list
-       'block
-       'block-or-clause
-       'class
-       'clause
-       'def
-       'def-or-class
-       'expression
-       'partial-expression
-       'region
-       'statement
-       'string
-       'top-level))
-
-(setq py-virtualenv-symbols
-      (list
-       'activate
-       'deactivate
-       'p
-       'workon))
-
-(setq py-fast-forms
-      (list
-       'py--fast-send-string
-       'py-process-region-fast
-       'py-execute-statement-fast
-       'py-execute-block-fast
-       'py-execute-block-or-clause-fast
-       'py-execute-def-fast
-       'py-execute-class-fast
-       'py-execute-def-or-class-fast
-       'py-execute-expression-fast
-       'py-execute-partial-expression-fast
-       'py-execute-top-level-fast
-       'py-execute-clause-fast))
-
-(setq py-bol-forms
-      (list
-       'py-beginning-of-block-bol
-       'py-beginning-of-clause-bol
-       'py-beginning-of-block-or-clause-bol
-       'py-beginning-of-def-bol
-       'py-beginning-of-class-bol
-       'py-beginning-of-def-or-class-bol
-       'py-beginning-of-if-block-bol
-       'py-beginning-of-try-block-bol
-       'py-beginning-of-minor-block-bol
-       'py-beginning-of-statement-bol))
-
-(defvar py-bol-end-forms
-  (list 'py-end-of-block-bol
-	'py-end-of-clause-bol
-	'py-end-of-block-or-clause-bol
-	'py-end-of-def-bol
-	'py-end-of-class-bol
-	'py-end-of-def-or-class-bol
-	'py-end-of-if-block-bol
-	'py-end-of-try-block-bol
-	'py-end-of-minor-block-bol
-	'py-end-of-statement-bol))
-
-(setq py-bol-copy-forms
-      (list
-       'py-copy-block-bol
-       'py-copy-clause-bol
-       'py-copy-block-or-clause-bol
-       'py-copy-def-bol
-       'py-copy-class-bol
-       'py-copy-def-or-class-bol
-       'py-copy-statement-bol))
-
 (defun py--emen-curb-docu (line)
   "Make docu fit for displaying in tooltip. "
   (setq end (copy-marker (line-end-position)))
@@ -1161,7 +926,8 @@ See bug report at launchpad, lp:944093. Use `M-x customize-variable' to set it p
       (capitalize-word 1))
     (end-of-line)
     (when doku
-      (setq origline (py-count-lines))
+      (setq doku (substring doku 0 (string-match "\n" doku)))
+      ;; (setq origline (py-count-lines))
       (newline)
       ;; (insert (regexp-quote doku))
       (insert doku)
@@ -1170,10 +936,9 @@ See bug report at launchpad, lp:944093. Use `M-x customize-variable' to set it p
       (when (search-forward ":help" end t)
 	(end-of-line)
 	(py--escape-doublequotes (point) end))
-      ;; (switch-to-buffer (current-buffer))
-      ;; (py--escape-open-paren-col1 (point) end)
-      (when (< 5 (- (setq line (py-count-lines)) origline))
-	(py--emen-curb-docu line)))
+      ;; (when (< 5 (- (setq line (py-count-lines)) origline))
+      ;; (py--emen-curb-docu line))
+      )
     (goto-char (point-max))
     (skip-chars-backward " \t\r\n\f")
     (insert "\"]\n")))
@@ -1190,7 +955,7 @@ See bug report at launchpad, lp:944093. Use `M-x customize-variable' to set it p
   (dolist (ele liste)
     (unless (stringp ele) (setq ele (prin1-to-string ele)))
     ;; Can't shift left top-level
-    (unless (string= exclude ele)
+    (unless (or (string= "" ele) (string= exclude ele))
       (when (string= "top-level" ele)
 	(message "%s" exclude))
       (when prefix (setq ele (concat prefix ele)))
@@ -1216,8 +981,8 @@ See bug report at launchpad, lp:944093. Use `M-x customize-variable' to set it p
   (when py-verbose-p (message "%s" "Initiating the menu"))
   (with-current-buffer (get-buffer-create "python-components-menu.el")
     (erase-buffer)
+    (when (interactive-p) (switch-to-buffer (current-buffer)))
     (insert py-menu-head)
-    (insert py-menu-head-core)
     (newline)
     (insert "(and (ignore-errors (require 'easymenu) t)
      ;; (easy-menu-define py-menu map \"Python Tools\"
@@ -1270,21 +1035,21 @@ See bug report at launchpad, lp:944093. Use `M-x customize-variable' to set it p
     (insert (concat (make-string 9 ? )"(\"Move\"\n"))
 
     (insert (concat (make-string 10 ? )"(\"Backward\""))
-    (py--create-menu-insert py-move-forms "py-beginning-of-")
+    (py--create-menu-insert py-move-forms "py-backward-")
     (insert (concat (make-string 11 ? )")\n"))
 
     (insert (concat (make-string 10 ? )"(\"Forward\""))
-    (py--create-menu-insert py-move-forms "py-end-of-")
+    (py--create-menu-insert py-move-forms "py-forward-")
     (insert (concat (make-string 11 ? )")\n"))
 
     (insert (concat (make-string 10 ? )"(\"BOL-forms\"\n"))
 
     (insert (concat (make-string 11 ? )"(\"Backward\""))
-    (py--create-menu-insert py-move-forms "py-beginning-of-" "-bol" "top-level")
+    (py--create-menu-insert py-move-forms "py-backward-" "-bol" "top-level")
     (insert (concat (make-string 12 ? )")\n"))
 
     (insert (concat (make-string 11 ? )"(\"Forward\""))
-    (py--create-menu-insert py-move-forms "py-end-of-" "-bol")
+    (py--create-menu-insert py-move-forms "py-forward-" "-bol")
     ;; BOL forms end
     (insert (concat (make-string 12 ? )"))\n"))
 
@@ -1300,6 +1065,7 @@ See bug report at launchpad, lp:944093. Use `M-x customize-variable' to set it p
 
     (insert (concat (make-string 11 ? )"(\"Other\"\n"))
     (dolist (ele py-shells)
+      (unless (string= "" ele)
       (setq ele (prin1-to-string ele))
       ;; Shell forms
       (insert (concat (make-string 12 ? ))"(\"")
@@ -1309,7 +1075,7 @@ See bug report at launchpad, lp:944093. Use `M-x customize-variable' to set it p
       (insert "\"")
       (setq ele (concat "-" ele))
       (py--create-menu-insert py-execute-forms "py-execute-" ele)
-      (insert (concat (make-string 13 ? )")\n")))
+      (insert (concat (make-string 13 ? )")\n"))))
     (insert (make-string 12 ? ))
     (insert "(\"Ignoring defaults \"\n")
     (insert (concat (make-string 13 ? )":help \"`M-x py-execute-statement- TAB' for example list commands ignoring defaults\n\n of `py-switch-buffers-on-execute-p' and `py-split-window-on-execute'\"\n"))
@@ -1401,175 +1167,12 @@ See bug report at launchpad, lp:944093. Use `M-x customize-variable' to set it p
     (insert (concat (make-string 12 ? )")\n"))
 
     ;; final
-    (insert (concat (make-string 12 ? ) ")))\n"))
-    (insert "(provide 'python-components-menu)\n;;; python-components-menu.el ends here")
+    (insert (concat (make-string 12 ? ) ")))\n\n"))
+    (insert "(provide 'python-components-menu)\n;;; python-components-menu.el ends here\n\n")
     (py--create-menu-minor-fixes)
     (eval-buffer)
     (when py-debug-p (write-file (concat py-install-directory "/python-components-menu.el")))
     ;; (set-buffer "python-components-menu.el")
-    (switch-to-buffer (current-buffer))
-    ))
-
-(defun py-create-shell-menu ()
-  "Re-create the menu. "
-  (interactive)
-  (when py-verbose-p (message "%s" "Initiating the menu"))
-  (with-current-buffer (get-buffer-create "python-components-shell-menu.el")
-    (erase-buffer)
-    (insert py-shell-menu-head)
-    (insert py-menu-head-core)
-    (newline)
-    (insert "(and (ignore-errors (require 'easymenu) t)
-     ;; (easy-menu-define py-menu map \"Python Tools\"
-     ;;           `(\"PyTools\"
-     (easy-menu-define
-       py-shell-menu py-python-shell-mode-map \"Py-Shell Mode menu\"
-       `(\"Py-Shell\"\n")
-    (emacs-lisp-mode)
-    ;; (switch-to-buffer (current-buffer))
-    ;; (py--create-menu-insert py-checks-symbols)
-
-    ;; (py--create-menu-insert (list 'import-or-reload) "py-execute-")
-    ;; (py--create-menu-insert py-shells)
-    ;; (insert (concat (make-string 10 ? )")\n"))
-    (insert (concat (make-string 9 ? )"(\"Edit\"\n"))
-
-    (insert (concat (make-string 10 ? )"(\"Shift\"\n"))
-
-    (insert (concat (make-string 11 ? )"(\"Shift right\""))
-    (py--create-menu-insert py-shift-forms "py-shift-" "-right")
-    (insert (concat (make-string 12 ? )")\n"))
-
-    (insert (concat (make-string 11 ? )"(\"Shift left\""))
-    (py--create-menu-insert py-shift-forms "py-shift-" "-left" "top-level")
-    (insert (concat (make-string 12 ? )"))\n"))
-
-    (insert (concat (make-string 10 ? )"(\"Mark\""))
-    (py--create-menu-insert py-positions-forms "py-mark-")
-    (insert (concat (make-string 11 ? )")\n"))
-
-    (insert (concat (make-string 10 ? )"(\"Copy\""))
-    (py--create-menu-insert py-positions-forms "py-copy-")
-    (insert (concat (make-string 11 ? )")\n"))
-
-    (insert (concat (make-string 10 ? )"(\"Kill\""))
-    (py--create-menu-insert py-positions-forms "py-kill-")
-    (insert (concat (make-string 11 ? )")\n"))
-
-    (insert (concat (make-string 10 ? )"(\"Delete\""))
-    (py--create-menu-insert py-positions-forms "py-delete-")
-    (insert (concat (make-string 11 ? )")\n"))
-
-    (insert (concat (make-string 10 ? )"(\"Comment\""))
-    (py--create-menu-insert py-comment-forms "py-comment-")
-
-    ;; Edit end
-    (insert (concat (make-string 11 ? ) "))\n"))
-
-    (insert (concat (make-string 9 ? )"(\"Move\"\n"))
-
-    (insert (concat (make-string 10 ? )"(\"Backward\""))
-    (py--create-menu-insert py-move-forms "py-beginning-of-")
-    (insert (concat (make-string 11 ? )")\n"))
-
-    (insert (concat (make-string 10 ? )"(\"Forward\""))
-    (py--create-menu-insert py-move-forms "py-end-of-")
-    (insert (concat (make-string 11 ? )")\n"))
-
-    (insert (concat (make-string 10 ? )"(\"BOL-forms\"\n"))
-
-    (insert (concat (make-string 11 ? )"(\"Backward\""))
-    (py--create-menu-insert py-move-forms "py-beginning-of-" "-bol" "top-level")
-    (insert (concat (make-string 12 ? )")\n"))
-
-    (insert (concat (make-string 11 ? )"(\"Forward\""))
-    (py--create-menu-insert py-move-forms "py-end-of-" "-bol")
-    ;; BOL forms end
-    (insert (concat (make-string 12 ? )"))\n"))
-
-    (insert (concat (make-string 10 ? )"(\"Up/Down\""))
-    (py--create-menu-insert (list 'up) "py-")
-    (py--create-menu-insert (list 'down) "py-")
-
-    ;; Move ends
-    (insert (concat (make-string 11 ? )"))\n"))
-
-    ;; (insert (concat (make-string 9 ? )"(\"Send\""))
-    ;; (py--create-menu-insert py-execute-forms "py-execute-")
-
-    ;; (insert (concat (make-string 11 ? )"(\"Other\"\n"))
-    ;; (dolist (ele py-shells)
-    ;;   (setq ele (prin1-to-string ele))
-    ;;   ;; Shell forms
-    ;;   (insert (concat (make-string 12 ? ))"(\"")
-    ;;   (cond ((string-match "ipython" ele)
-    ;; 	     (insert (concat "IP" (substring ele 2))))
-    ;; 	    (t (insert (capitalize ele))))
-    ;;   (insert "\"")
-    ;;   (setq ele (concat "-" ele))
-    ;;   (py--create-menu-insert py-execute-forms "py-execute-" ele)
-    ;;   (insert (concat (make-string 13 ? )")\n")))
-    ;; (insert (make-string 12 ? ))
-    ;; (insert "(\"Ignoring defaults \"\n")
-    ;; (insert (concat (make-string 13 ? )":help \"`M-x py-execute-statement- TAB' for example list commands ignoring defaults\n\n of `py-switch-buffers-on-execute-p' and `py-split-window-on-execute'\"\n"))
-    ;; (insert (concat (make-string 13 ? ) ")))\n"))
-
-    (insert (concat (make-string 9 ? )"(\"Hide-Show\"\n"))
-
-    (insert (concat (make-string 10 ? )"(\"Hide\""))
-    (py--create-menu-insert py-hide-names "py-hide-")
-    (insert (concat (make-string 11 ? )")\n"))
-
-    (insert (concat (make-string 10 ? )"(\"Show\""))
-    (py--create-menu-insert py-hide-names "py-show-")
-
-    ;; Hide-show ends
-    (insert (concat (make-string 11 ? )"))\n"))
-
-    ;; (insert (concat (make-string 9 ? )"(\"Fast process\""))
-    ;; (py--create-menu-insert py-fast-core "py-execute-" "-fast")
-    ;; (insert (concat (make-string 10 ? )")\n"))
-
-    (insert (concat (make-string 9 ? )"(\"Virtualenv\""))
-    (py--create-menu-insert py-virtualenv-symbols "virtualenv-")
-    (insert (concat (make-string 10 ? )")\n"))
-
-    ;; (py--create-menu-insert (list 'import-or-reload) "py-execute-")
-
-    (insert (concat (make-string 9 ? )"(\"Help\""))
-    (py--create-menu-insert py-help-symbols)
-    (insert (concat (make-string 10 ? )")\n"))
-
-    ;; (insert (concat (make-string 12 ? ) ")\n"))
-    (insert py-menu-custom-forms)
-    (newline)
-    (insert (concat (make-string 9 ? )"(\"Other\""))
-    (py--create-menu-insert py-other-symbols "py-")
-
-    (insert (concat (make-string 10 ? )"(\"Electric\""))
-    (py--create-menu-insert py-electric-symbols "py-")
-    (insert (concat (make-string 12 ? )")\n"))
-
-    ;; (insert (concat (make-string 10 ? )"(\"Filling\""))
-    ;; (py--create-menu-insert py-filling-symbols "py-")
-    ;; (insert (concat (make-string 12 ? )")\n"))
-
-    (insert (concat (make-string 10 ? )"(\"Abbrevs\""))
-    (insert py-menu-abbrev-form)
-    (insert (concat (make-string 12 ? )")\n"))
-    (py--create-menu-insert (list 'py-add-abbrev))
-
-    (insert (concat (make-string 10 ? )"(\"Completion\""))
-    (py--create-menu-insert py-completion-symbols "py-")
-
-    ;; final
-    (insert (concat (make-string 12 ? ) ")))))\n\n"))
-    (insert "(provide 'python-components-shell-menu)\n;;; python-components-shell-menu.el ends here")
-    (py--create-menu-minor-fixes)
-    ;; (eval-buffer)
-    (when py-debug-p (write-file (concat py-install-directory "/python-components-shell-menu.el")))
-    (set-buffer "python-components-shell-menu.el")
-    (switch-to-buffer (current-buffer))
     ))
 
 (provide 'python-components-create-menu)
