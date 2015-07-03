@@ -84,9 +84,9 @@ Affected by `py-dedent-keep-relative-column'. "
     (when (interactive-p) (message "%s" erg))
     erg))
 
-(defun py--close-intern (regexp &optional keep-level)
+(defun py--close-intern (regexp)
   "Core function, internal used only. "
-  (let ((cui (car (py--go-to-keyword (symbol-value regexp) keep-level))))
+  (let ((cui (car (py--go-to-keyword (symbol-value regexp)))))
     (message "%s" cui)
     (py--end-base regexp (point))
     (forward-line 1)
