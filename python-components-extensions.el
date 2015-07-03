@@ -84,7 +84,7 @@ Affected by `py-dedent-keep-relative-column'. "
     (when (interactive-p) (message "%s" erg))
     erg))
 
-(defun py--close-intern (regexp &optional keep-level) 
+(defun py--close-intern (regexp &optional keep-level)
   "Core function, internal used only. "
   (let ((cui (car (py--go-to-keyword (symbol-value regexp) keep-level))))
     (message "%s" cui)
@@ -228,13 +228,68 @@ With interactive call, send it to the message buffer too. "
         ;; 	(define-key python-mode-map (kbd (concat "<" py-match-paren-key ">")) 'py-match-paren))
         (setq py-match-paren-mode nil))))
 
+(defun py--match-paren-beginning ()
+  (let ((cui (current-indentation)))
+    (cond
+     ((py--beginning-of-top-level-p)
+      (py-forward-top-level-bol)
+      (indent-to cui))
+     ((py--beginning-of-block-p)
+      (py-forward-block-bol)
+      (indent-to cui))
+     ((py--beginning-of-clause-p)
+      (py-forward-clause-bol)
+      (indent-to cui))
+     ((py--beginning-of-statement-p)
+      (py-forward-statement-bol)
+      (indent-to cui))
+     (t (py-forward-statement)
+	(indent-to cui)))))
+
+(defun py--match-paren-end ()
+  (cond
+   ((py--end-of-clause-p)
+    (py-backward-clause))
+   ((py--end-of-block-p)
+    (py-backward-block))
+   ((py--end-of-top-level-p)
+    (py-backward-top-level))
+   ((py--end-of-statement-p)
+    (py-backward-statement))
+   (t (py-backward-statement))))
+
+(defun py--match-paren-indented-empty ()
+  "Jump from intend of an empty line below block. "
+  (py-backward-block-or-clause (current-column))
+  (save-excursion
+    (goto-char orig)
+    (when (empty-line-p)
+      (delete-region (line-beginning-position) (line-end-position)))))
+
+(defun py--match-paren-blocks ()
+  (cond
+   ((empty-line-p)
+    ;; (if (< 0 (current-column))
+	;; from intend of an empty line below block
+	(py--match-paren-indented-empty)
+	;; (skip-chars-backward " \t\r\n\f")
+	;; (unless (bobp)
+	;; (py-match-paren)))
+    )
+   ((looking-back "^[ \t]*")
+    ;; from beginning of top-level, block, clause, statement
+    (py--match-paren-beginning))
+   (t
+    (py--match-paren-end))))
+
 (defun py-match-paren ()
   "If at a beginning, jump to end and vice versa.
 
 When called from within, go to the start.
 Matches lists, but also block, statement, string and comment. "
   (interactive)
-  (let ((pps (parse-partial-sexp (point-min) (point))))
+  (let ((pps (parse-partial-sexp (point-min) (point)))
+	(orig (point)))
     (cond
      ;; if inside string, go to beginning
      ((nth 3 pps)
@@ -245,7 +300,6 @@ Matches lists, but also block, statement, string and comment. "
      ;; at comment start, go to end of commented section
      ((eq 11 (car-safe (syntax-after (point))))
       (py-forward-comment))
-
      ;; at string start, go to end
      ((or (eq 15 (car-safe (syntax-after (point))))
 	  (eq 7 (car (syntax-after (point)))))
@@ -258,36 +312,8 @@ Matches lists, but also block, statement, string and comment. "
      ((eq 5 (car (syntax-after (point))))
       (goto-char (scan-sexps (1+ (point)) -1)))
      (t
-      (cond
-       ((empty-line-p)
-	(if (< 0 (current-column))
-	    (py-backward-block-or-clause (current-indentation))
-	  (skip-chars-backward " \t\r\n\f")
-	  (unless (bobp)
-	    (py-match-paren))))
-       ((looking-back "^[ \t]*")
-	;; at beginning of top-level, block, clause, statement
-	(cond
-	 ((py--beginning-of-top-level-p)
-	  (py-forward-top-level))
-	 ((py--beginning-of-block-p)
-	  (py-forward-block))
-	 ((py--beginning-of-clause-p)
-	  (py-forward-clause))
-	 ((py--beginning-of-statement-p)
-	  (py-forward-statement))
-	 (t (py-forward-statement))))
-       (t
-	(cond
-	 ((py--end-of-top-level-p)
-	  (py-backward-top-level))
-	 ((py--end-of-block-p)
-	  (py-backward-block))
-	 ((py--end-of-clause-p)
-	  (py-backward-clause))
-	 ((py--end-of-statement-p)
-	  (py-backward-statement))
-	 (t (py-backward-statement)))))))))
+      ;; Python specific blocks
+      (py--match-paren-blocks)))))
 
 (unless (boundp 'empty-line-p-chars)
   (defvar empty-line-p-chars "^[ \t\f\r]*$"))
