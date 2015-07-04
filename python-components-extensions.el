@@ -234,7 +234,7 @@ With interactive call, send it to the message buffer too. "
       ;; (unless (empty-line-p)
       ;; (split-line))
       (when (< (current-column) cui)
-	(setq skipped (skip-chars-forward " \t\r\n\f"))
+	(setq skipped (skip-chars-forward " \t" (line-end-position)))
 	(setq cui (- cui skipped))
 	;; may current-column greater as needed indent?
 	(if (< 0 cui)
@@ -242,7 +242,8 @@ With interactive call, send it to the message buffer too. "
 	  (forward-char (- (abs cui))))
 	(unless (eq (char-after) 32)(insert 32)(forward-char -1))))))
 
-(defun py--match-paren-beginning ()
+(defun py--match-paren-forward ()
+  (setq py--match-paren-forward-p t)
   (let ((cui (current-indentation)))
     (cond
      ((py--beginning-of-top-level-p)
@@ -260,20 +261,21 @@ With interactive call, send it to the message buffer too. "
      (t (py-forward-statement)
 	(py--match-end-finish)))))
 
-(defun py--match-paren-end ()
+(defun py--match-paren-backward ()
+  (setq py--match-paren-forward-p nil)
   (let* ((cui (current-indentation))
 	 (cuc (current-column))
 	 (cui (min cuc cui)))
     (if (eq 0 cui)
 	(py-backward-top-level)
-      (py-backward-statement) 
+      (py-backward-statement)
       (unless (< (current-column) cuc)
       (while (and (not (bobp))
 		  (< cui (current-column))
 		  (py-backward-statement)))))))
 
 (defun py--match-paren-indented-empty ()
-  "Jump from intend of an empty line below block. "
+  "Jump from intend of an empty line upwards. "
   (py-backward-block-or-clause (current-column))
   (save-excursion
     (goto-char orig)
@@ -284,20 +286,19 @@ With interactive call, send it to the message buffer too. "
   (cond
    ((empty-line-p)
     ;; (if (< 0 (current-column))
-	;; from intend of an empty line below block
-	(py--match-paren-indented-empty)
-	;; (skip-chars-backward " \t\r\n\f")
-	;; (unless (bobp)
-	;; (py-match-paren)))
+    ;; from intend of an empty line below block
+    (py--match-paren-indented-empty)
+    ;; (skip-chars-backward " \t\r\n\f")
+    ;; (unless (bobp)
+    ;; (py-match-paren)))
     )
-   ((and (looking-back "^[ \t]*")
+   ((and (looking-back "^[ \t]*")(if (eq last-command 'py-match-paren)(not py--match-paren-forward-p)t)
 	 ;; (looking-at py-extended-block-or-clause-re)
-	 (looking-at "[[:alpha:]_]")
-	 )
+	 (looking-at "[[:alpha:]_]"))
     ;; from beginning of top-level, block, clause, statement
-    (py--match-paren-beginning))
+    (py--match-paren-forward))
    (t
-    (py--match-paren-end))))
+    (py--match-paren-backward))))
 
 (defun py-match-paren ()
   "If at a beginning, jump to end and vice versa.

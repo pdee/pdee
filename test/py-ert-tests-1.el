@@ -1208,7 +1208,7 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     main()
     "
       (py-match-paren)
-      (should (empty-line-p))))
+      (should (bolp))))
 
 (ert-deftest py-ert-match-paren-test-6 ()
   (py-test-with-temp-buffer
@@ -1310,5 +1310,32 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
 	     (eq (char-after) 32)
 	     (eq (current-column) 0)))))
 
+(ert-deftest py-ert-match-paren-nonempty-test-4 ()
+  (py-test-with-temp-buffer
+      "def main():
+    if len(sys.argv) == 1:
+        usage()
+        sys.exit()
+     
+    class asdf(object):
+        zeit = time.strftime('%Y%m%d--%H-%M-%S')
+"
+    (search-backward "if")
+    (py-match-paren)
+    (should (eq (current-column) 4))
+    (should (eq (char-after) 32))))
+
+(ert-deftest py-ert-match-paren-nonempty-test-5 ()
+  (py-test-with-temp-buffer-point-min
+      "import re
+import sys
+import os
+"
+    (py-match-paren)
+    (should (looking-at "import sys"))
+    (setq last-command 'py-match-paren)
+    (py-match-paren) 
+    (should (looking-at "import re"))))
+    
 (provide 'py-ert-tests-1)
 ;;; py-ert-tests-1.el ends here
