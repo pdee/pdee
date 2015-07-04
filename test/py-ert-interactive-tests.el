@@ -317,3 +317,25 @@ print(3+3)
     (py-execute-section)
     (sleep-for 1)
     (should (string= py-result "6"))))
+
+(ert-deftest py-ert-match-paren-test-3 ()
+    (py-test-with-temp-buffer
+	"if __name__ == \"__main__\":
+    main()
+"
+      (skip-chars-backward " \t\r\n\f")
+      (back-to-indentation)
+      (py-match-paren)
+      (should (eq 4 (current-column)))))
+
+(ert-deftest py-ert-match-paren-test-6 ()
+  (py-test-with-temp-buffer
+      py-def-and-class-test-string
+    (search-backward "(treffer)")
+    (skip-chars-backward "^\"")
+    (forward-char -1)
+    (py-match-paren)
+    (should (eq (char-after) ?#))
+    (py-match-paren)
+    (should (eq (char-before) ?\)))
+    (should (eolp))))

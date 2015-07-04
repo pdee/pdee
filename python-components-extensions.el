@@ -238,9 +238,14 @@ With interactive call, send it to the message buffer too. "
 	(setq cui (- cui skipped))
 	;; may current-column greater as needed indent?
 	(if (< 0 cui)
-	    (indent-to cui)
-	  (forward-char (- (abs cui))))
-	(unless (eq (char-after) 32)(insert 32)(forward-char -1))))))
+	    (progn
+	      (unless (empty-line-p) (split-line))
+	      (indent-to cui))
+	  (forward-char cui)
+
+	  ;; (forward-char (- (abs cui)))
+	  )
+	(unless (eq (char-before) 32)(insert 32)(forward-char -1))))))
 
 (defun py--match-paren-forward ()
   (setq py--match-paren-forward-p t)
@@ -248,6 +253,21 @@ With interactive call, send it to the message buffer too. "
     (cond
      ((py--beginning-of-top-level-p)
       (py-forward-top-level-bol)
+      (py--match-end-finish))
+     ((py--beginning-of-class-p)
+      (py-forward-class-bol cui)
+      (py--match-end-finish))
+     ((py--beginning-of-def-p)
+      (py-forward-def-bol cui)
+      (py--match-end-finish))
+     ((py--beginning-of-if-block-p)
+      (py-forward-if-block-bol cui)
+      (py--match-end-finish))
+     ((py--beginning-of-try-block-p)
+      (py-forward-try-block-bol cui)
+      (py--match-end-finish))
+     ((py--beginning-of-for-block-p)
+      (py-forward-for-block-bol cui)
       (py--match-end-finish))
      ((py--beginning-of-block-p)
       (py-forward-block-bol)
@@ -268,6 +288,7 @@ With interactive call, send it to the message buffer too. "
 	 (cui (min cuc cui)))
     (if (eq 0 cui)
 	(py-backward-top-level)
+      (when (empty-line-p) (delete-region (line-beginning-position) (point)))
       (py-backward-statement)
       (unless (< (current-column) cuc)
       (while (and (not (bobp))
@@ -277,6 +298,7 @@ With interactive call, send it to the message buffer too. "
 (defun py--match-paren-indented-empty ()
   "Jump from intend of an empty line upwards. "
   (py-backward-block-or-clause (current-column))
+  (setq py--match-paren-forward-p nil)
   (save-excursion
     (goto-char orig)
     (when (empty-line-p)
@@ -284,14 +306,9 @@ With interactive call, send it to the message buffer too. "
 
 (defun py--match-paren-blocks ()
   (cond
-   ((empty-line-p)
-    ;; (if (< 0 (current-column))
-    ;; from intend of an empty line below block
-    (py--match-paren-indented-empty)
-    ;; (skip-chars-backward " \t\r\n\f")
-    ;; (unless (bobp)
-    ;; (py-match-paren)))
-    )
+   ;; ((empty-line-p)
+   ;;  (py--match-paren-indented-empty))
+
    ((and (looking-back "^[ \t]*")(if (eq last-command 'py-match-paren)(not py--match-paren-forward-p)t)
 	 ;; (looking-at py-extended-block-or-clause-re)
 	 (looking-at "[[:alpha:]_]"))
@@ -316,7 +333,10 @@ Matches lists, but also block, statement, string and comment. "
      ((nth 4 pps)
       (py-backward-comment))
      ;; at comment start, go to end of commented section
-     ((eq 11 (car-safe (syntax-after (point))))
+     ((and
+       ;; unless comment starts where jumped to some end
+       (not py--match-paren-forward-p)
+       (eq 11 (car-safe (syntax-after (point)))))
       (py-forward-comment))
      ;; at string start, go to end
      ((or (eq 15 (car-safe (syntax-after (point))))
@@ -329,6 +349,8 @@ Matches lists, but also block, statement, string and comment. "
       (forward-char -1))
      ((eq 5 (car (syntax-after (point))))
       (goto-char (scan-sexps (1+ (point)) -1)))
+     ((nth 1 pps)
+      (goto-char (nth 1 pps)))
      (t
       ;; Python specific blocks
       (py--match-paren-blocks)))))

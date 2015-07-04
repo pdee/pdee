@@ -245,6 +245,9 @@ Default is nil"
 
 Default is t")
 
+(defvar py--match-paren-forward-p nil
+  "Internally used by `py-match-paren'. ")
+
 (defvar py-new-session-p t
  "Internally used. See lp:1393882.
 

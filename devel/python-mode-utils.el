@@ -3054,13 +3054,13 @@ Returns end of " ele " if successful, nil otherwise\"
     (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
     erg))
 
-\(defun py-forward-" ele "-bol ()
+\(defun py-forward-" ele "-bol (&optional indent)
   \"Goto beginning of line following end of " ele ".
   Returns position reached, if successful, nil otherwise.
 
 See also `py-down-" ele "': down from current definition to next beginning of " ele " below. \"
   (interactive)
-  (let ((erg (py-forward-" ele ")))
+  (let ((erg (py-forward-" ele " indent)))
     (setq erg (py--beginning-of-line-form))
     (when (interactive-p) (message \"%s\" erg))
     erg))

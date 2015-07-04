@@ -1186,21 +1186,13 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
       (py-match-paren)
       (should (eq (char-after) ?\)))))
 
-(ert-deftest py-ert-match-paren-test-3 ()
-    (py-test-with-temp-buffer
-	"if __name__ == \"__main__\":
-    main()"
-      (back-to-indentation)
-      (py-match-paren)
-      (should (eolp))))
-
 (ert-deftest py-ert-match-paren-test-4 ()
     (py-test-with-temp-buffer
 	"if __name__ == \"__main__\":
     main()
     "
       (py-match-paren)
-      (should (eq (char-after) ?i))))
+      (should (eq (char-after) ?m))))
 
 (ert-deftest py-ert-match-paren-test-5 ()
     (py-test-with-temp-buffer-point-min
@@ -1209,18 +1201,6 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     "
       (py-match-paren)
       (should (bolp))))
-
-(ert-deftest py-ert-match-paren-test-6 ()
-  (py-test-with-temp-buffer
-      py-def-and-class-test-string
-    (search-backward "(treffer)")
-    (skip-chars-backward "^\"")
-    (forward-char -1)
-    (py-match-paren)
-    (should (eq (char-after) ?#))
-    (py-match-paren)
-    (should (eq (char-before) ?\)))
-    (should (eolp))))
 
 (ert-deftest py-ert-match-paren-test-7 ()
   (py-test-with-temp-buffer
@@ -1239,7 +1219,6 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
       (py-match-paren)
       (should (eq (char-after) ?i))))
 
-
 (ert-deftest py-ert-match-paren-test-9 ()
   (py-test-with-temp-buffer
       py-def-and-class-test-string
@@ -1250,30 +1229,6 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
       (should (eq (char-after) ?\"))
       ))
 
-
-(ert-deftest py-ert-moves-up-match-paren-test-2 ()
-  (py-test-with-temp-buffer
-      py-def-and-class-test-string
-    (forward-line -3)
-    (indent-to 12)
-    (py-match-paren)
-    (should (eq (char-after) ?e))
-    (forward-line 3)
-    (should (eolp))
-    (indent-to 8)
-    (py-match-paren)
-    (should (eq (char-after) ?e))
-    (forward-line 3)
-    (should (eolp))
-    (indent-to 4)
-    (py-match-paren)
-    (should (eq (char-after) ?d))
-    (forward-line 3)
-    (should (eolp))
-    (py-match-paren)
-    (should (eq (char-after) ?c))
-    ))
-
 (ert-deftest py-ert-match-paren-nonempty-test-1 ()
   (py-test-with-temp-buffer
       "def main():
@@ -1283,7 +1238,9 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     #"
     (search-backward "if")
     (py-match-paren)
-    (should (eq (char-after) 32))))
+    (should (eq 4 (current-column)))
+    (py-match-paren)
+    (should (eq (char-after) ?i))))
 
 (ert-deftest py-ert-match-paren-nonempty-test-2 ()
   (py-test-with-temp-buffer
@@ -1316,14 +1273,14 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     if len(sys.argv) == 1:
         usage()
         sys.exit()
-     
+
     class asdf(object):
         zeit = time.strftime('%Y%m%d--%H-%M-%S')
 "
     (search-backward "if")
     (py-match-paren)
     (should (eq (current-column) 4))
-    (should (eq (char-after) 32))))
+    (should (eq (char-before) 32))))
 
 (ert-deftest py-ert-match-paren-nonempty-test-5 ()
   (py-test-with-temp-buffer-point-min
@@ -1334,8 +1291,90 @@ import os
     (py-match-paren)
     (should (looking-at "import sys"))
     (setq last-command 'py-match-paren)
-    (py-match-paren) 
+    (py-match-paren)
     (should (looking-at "import re"))))
-    
+
+(ert-deftest py-ert-match-paren-nonempty-test-6 ()
+  (py-test-with-temp-buffer
+      "def main():
+    if len(sys.argv) == 1:
+        usage()
+        sys.exit()
+
+    class asdf(object):
+        zeit = time.strftime('%Y%m%d--%H-%M-%S')
+
+        def Utf8_Exists(filename):
+            return os.path.exists(filename.encode('utf-8'))
+"
+    (search-backward "class")
+    (py-match-paren)
+    (should (empty-line-p))
+    (should (eq 4 (current-column)))
+    ))
+
+(ert-deftest py-ert-match-paren-nonempty-test-7 ()
+  (py-test-with-temp-buffer
+      "try:
+    anzahl = int(args[1])
+except:
+    print \"Setze anzahl auf 1\"
+"
+    (search-backward "arg")
+    (py-match-paren)
+    (should (eq (char-after) ?\())))
+
+(ert-deftest py-ert-match-paren-nonempty-test-8 ()
+  (py-test-with-temp-buffer
+      "try:
+    anzahl = int(args[1])
+except:
+    print \"Setze anzahl auf 1\"
+"
+    (search-backward " int")
+    (py-match-paren)
+    (should (eq (char-after) ?a))
+    (py-match-paren)
+    (should (eq (char-before) 32))
+    (should (empty-line-p))
+    (should (eq 4 (current-column)))))
+
+(ert-deftest py-ert-match-paren-test-9 ()
+  (py-test-with-temp-buffer
+      "if __name__ == \"__main__\":
+    main()
+"
+    (py-match-paren)
+    (should (eq (char-after) ?i))))
+
+(ert-deftest py-ert-moves-up-match-paren-test-2 ()
+  (py-test-with-temp-buffer
+      py-def-and-class-test-string
+    (forward-line -3)
+    (indent-to 12)
+    (py-match-paren)
+    (should (eq (char-after) ?a))))
+
+(ert-deftest py-ert-moves-up-match-paren-test-10 ()
+  (py-test-with-temp-buffer
+      py-def-and-class-test-string
+    (forward-line -3)
+    (indent-to 8)
+    (py-match-paren)
+    (should (eq (char-after) ?e))
+    (forward-line 3)
+    ;; check if the indent was removed again
+    (should (eolp))))
+
+    ;; (indent-to 4)
+    ;; (py-match-paren)
+    ;; (should (eq (char-after) ?d))
+    ;; (forward-line 3)
+    ;; (should (eolp))
+    ;; (py-match-paren)
+    ;; (should (eq (char-after) ?c))
+    ;; ))
+
+
 (provide 'py-ert-tests-1)
 ;;; py-ert-tests-1.el ends here
