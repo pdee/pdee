@@ -176,13 +176,6 @@ Return position if section found, nil otherwise. "
   (interactive)
   (py-up-base py-section-re))
 
-(defun py-up-top-level ()
-  "Go to the beginning of next top-level upwards in buffer.
-
-Return position if top-level found, nil otherwise. "
-  (interactive)
-  (py-up-base py-top-level-re))
-
 (defun py-down-block ()
   "Go to the beginning of next block below in buffer.
 
@@ -238,13 +231,6 @@ Return position if minor-block found, nil otherwise. "
 Return position if section found, nil otherwise. "
   (interactive)
   (py-down-base py-section-re))
-
-(defun py-down-top-level ()
-  "Go to the beginning of next top-level below in buffer.
-
-Return position if top-level found, nil otherwise. "
-  (interactive)
-  (py-down-base py-top-level-re))
 
 (defun py-up-block-bol ()
   "Go to the beginning of next block upwards in buffer.
@@ -310,14 +296,6 @@ Return position if section found, nil otherwise. "
   (interactive)
   (py-up-base-bol py-section-re))
 
-(defun py-up-top-level-bol ()
-  "Go to the beginning of next top-level upwards in buffer.
-
-Go to beginning of line.
-Return position if top-level found, nil otherwise. "
-  (interactive)
-  (py-up-base-bol py-top-level-re))
-
 (defun py-down-block-bol ()
   "Go to the beginning of next block below in buffer.
 
@@ -381,14 +359,6 @@ Go to beginning of line
 Return position if section found, nil otherwise "
   (interactive)
   (py-down-base-bol py-section-re))
-
-(defun py-down-top-level-bol ()
-  "Go to the beginning of next top-level below in buffer.
-
-Go to beginning of line
-Return position if top-level found, nil otherwise "
-  (interactive)
-  (py-down-base-bol py-top-level-re))
 
 ;; python-components-up-down.el ends here
 (provide 'python-components-up-down)

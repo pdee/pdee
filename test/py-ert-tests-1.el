@@ -1170,46 +1170,86 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
 
       ))
 
-(ert-deftest py-ert-moves-up-match-paren-test-1 ()
+(ert-deftest py-ert-match-paren-test-1 ()
     (py-test-with-temp-buffer
-	py-def-and-class-test-string
-      (skip-chars-backward "^)")
+	"if __name__ == \"__main__\":
+    main()"
       (forward-char -1)
       (py-match-paren)
-      (should (eq (char-after) ?\())
+      (should (eq (char-after) ?\())))
+
+(ert-deftest py-ert-match-paren-test-2 ()
+    (py-test-with-temp-buffer
+	"if __name__ == \"__main__\":
+    main()"
+      (forward-char -2)
       (py-match-paren)
-      (should (eq (char-after) ?\)))
+      (should (eq (char-after) ?\)))))
+
+(ert-deftest py-ert-match-paren-test-3 ()
+    (py-test-with-temp-buffer
+	"if __name__ == \"__main__\":
+    main()"
       (back-to-indentation)
       (py-match-paren)
-      (should (empty-line-p)) 
+      (should (eolp))))
+
+(ert-deftest py-ert-match-paren-test-4 ()
+    (py-test-with-temp-buffer
+	"if __name__ == \"__main__\":
+    main()
+    "
       (py-match-paren)
-      (should (eq (char-after) ?i))
+      (should (eq (char-after) ?i))))
+
+(ert-deftest py-ert-match-paren-test-5 ()
+    (py-test-with-temp-buffer-point-min
+	"if __name__ == \"__main__\":
+    main()
+    "
       (py-match-paren)
-      (should (empty-line-p))
-      (search-backward "(treffer)")
-      (skip-chars-backward "^\"")
-      (forward-char -1)
-      (py-match-paren)
-      (should (eq (char-after) ?#))
-      (py-match-paren)
-      (should (eq (char-before) ?\)))
-      (should (eolp) )
-      (skip-chars-forward "^\]")
-      (py-match-paren)
-      (should (eq (char-after) ?\[))
-      (py-match-paren)
-      (should (eq (char-after) ?\]))
+      (should (empty-line-p))))
+
+(ert-deftest py-ert-match-paren-test-6 ()
+  (py-test-with-temp-buffer
+      py-def-and-class-test-string
+    (search-backward "(treffer)")
+    (skip-chars-backward "^\"")
+    (forward-char -1)
+    (py-match-paren)
+    (should (eq (char-after) ?#))
+    (py-match-paren)
+    (should (eq (char-before) ?\)))
+    (should (eolp))))
+
+(ert-deftest py-ert-match-paren-test-7 ()
+  (py-test-with-temp-buffer
+      py-def-and-class-test-string
+    (skip-chars-backward "^\]")
+    (forward-char -1)
+    (py-match-paren)
+    (should (eq (char-after) ?\[))
+    (py-match-paren)
+    (should (eq (char-after) ?\]))))
+
+(ert-deftest py-ert-match-paren-test-8 ()
+  (py-test-with-temp-buffer
+      py-def-and-class-test-string
       (skip-chars-backward "^:")
       (py-match-paren)
-      (should (eq (char-after) ?e))
-      (py-match-paren)
-      (should (empty-line-p))
+      (should (eq (char-after) ?i))))
+
+
+(ert-deftest py-ert-match-paren-test-9 ()
+  (py-test-with-temp-buffer
+      py-def-and-class-test-string
       (search-backward "pylauf")
       (py-match-paren)
       (should (eq (char-after) ?\"))
       (py-match-paren)
       (should (eq (char-after) ?\"))
       ))
+
 
 (ert-deftest py-ert-moves-up-match-paren-test-2 ()
   (py-test-with-temp-buffer
@@ -1233,6 +1273,42 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     (py-match-paren)
     (should (eq (char-after) ?c))
     ))
+
+(ert-deftest py-ert-match-paren-nonempty-test-1 ()
+  (py-test-with-temp-buffer
+      "def main():
+    if len(sys.argv) == 1:
+        usage()
+        sys.exit()
+    #"
+    (search-backward "if")
+    (py-match-paren)
+    (should (eq (char-after) 32))))
+
+(ert-deftest py-ert-match-paren-nonempty-test-2 ()
+  (py-test-with-temp-buffer
+      "def main():
+    if len(sys.argv) == 1:
+        usage()
+        sys.exit()
+     #"
+    (search-backward "if")
+    (py-match-paren)
+    (should (and
+	     (eq (char-after) 32)
+	     (eq (current-column) 4)))))
+
+(ert-deftest py-ert-match-paren-nonempty-test-3 ()
+  (py-test-with-temp-buffer-point-min
+      "def main():
+    if len(sys.argv) == 1:
+        usage()
+        sys.exit()
+    #"
+    (py-match-paren)
+    (should (and
+	     (eq (char-after) 32)
+	     (eq (current-column) 0)))))
 
 (provide 'py-ert-tests-1)
 ;;; py-ert-tests-1.el ends here

@@ -366,7 +366,7 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
       (unless
 	  (or
 	   (eq (point) orig)
-	   (member (char-before) (list 10 32 9)))
+	   (member (char-before) (list 10 32 9 ?#)))
 	(setq erg (point)))
       (if (and py-verbose-p err)
 	  (py--message-error err)

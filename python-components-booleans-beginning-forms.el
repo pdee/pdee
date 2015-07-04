@@ -223,18 +223,6 @@
           (setq erg orig)))
       erg)))
 
-(defun py--beginning-of-top-level-p ()
-  "Returns position, if cursor is at the beginning of a `top-level', nil otherwise. "
-  (let ((orig (point))
-        erg)
-    (save-excursion
-      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p))))
-        (py-forward-top-level)
-        (py-backward-top-level)
-        (when (eq orig (point))
-          (setq erg orig)))
-      erg)))
-
 (defun py--beginning-of-try-block-p ()
   "Returns position, if cursor is at the beginning of a `try-block', nil otherwise. "
   (let ((orig (point))
