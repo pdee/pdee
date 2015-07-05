@@ -159,7 +159,7 @@ Don't store data in kill ring.
 With \\[universal-argument] or `py-mark-decorators' set to `t', `decorators' are included."
   (interactive "P")
  (let* ((py-mark-decorators (or arg py-mark-decorators))
-        (erg (py--mark-base "class" py-mark-decorators t)))
+        (erg (py--mark-base "class" py-mark-decorators)))
     (delete-region (car erg) (cdr erg))))
 
 (defun py-delete-clause-bol ()
@@ -177,7 +177,7 @@ Don't store data in kill ring.
 With \\[universal-argument] or `py-mark-decorators' set to `t', `decorators' are included."
   (interactive "P")
  (let* ((py-mark-decorators (or arg py-mark-decorators))
-        (erg (py--mark-base "def" py-mark-decorators t)))
+        (erg (py--mark-base "def" py-mark-decorators)))
     (delete-region (car erg) (cdr erg))))
 
 (defun py-delete-def-or-class-bol (&optional arg)
@@ -187,7 +187,7 @@ Don't store data in kill ring.
 With \\[universal-argument] or `py-mark-decorators' set to `t', `decorators' are included."
   (interactive "P")
  (let* ((py-mark-decorators (or arg py-mark-decorators))
-        (erg (py--mark-base "def-or-class" py-mark-decorators t)))
+        (erg (py--mark-base "def-or-class" py-mark-decorators)))
     (delete-region (car erg) (cdr erg))))
 
 (defun py-delete-elif-block-bol ()

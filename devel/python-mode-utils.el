@@ -3342,7 +3342,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
       (insert "\n  (interactive)"))
     (if (string-match "def\\|class" ele)
 	(insert (concat "\n (let* ((py-mark-decorators (or arg py-mark-decorators))
-        (erg (py--mark-base \"" ele "\" py-mark-decorators t)))"))
+        (erg (py--mark-base \"" ele "\" py-mark-decorators)))"))
       (insert (concat
 	       "\n  (let ((erg (py--mark-base \"" ele "\")))")))
     (insert "
