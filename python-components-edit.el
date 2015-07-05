@@ -239,7 +239,7 @@ C-q TAB inserts a literal TAB-character."
       (when (and (interactive-p) py-verbose-p)(message "%s" (current-indentation)))
       (current-indentation))))
 
-(defun py--delete-trailing-whitespace ()
+(defun py--delete-trailing-whitespace (orig)
   "Delete trailing whitespace if either `py-newline-delete-trailing-whitespace-p' or `py-trailing-whitespace-smart-delete-p' are `t' "
   (when (or py-newline-delete-trailing-whitespace-p py-trailing-whitespace-smart-delete-p)
     (setq pos (copy-marker (point)))
@@ -270,7 +270,7 @@ When indent is set back manually, this is honoured in following lines. "
 	    (current-column)))
 	 erg pos)
     (newline)
-    (py--delete-trailing-whitespace)
+    (py--delete-trailing-whitespace orig)
     (setq erg
 	  (cond (this-dedent
 		 (indent-to-column this-dedent))
