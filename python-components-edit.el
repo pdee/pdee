@@ -534,7 +534,6 @@ See also py--bounds-of-statements "
         (when (interactive-p) (message "%s" nil))
         nil))))
 
-(defalias 'py-backward-declarations 'py-backward-declarations)
 (defun py-backward-declarations ()
   "Got to the beginning of assigments resp. statements in current level which don't open blocks.
 "

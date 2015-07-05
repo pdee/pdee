@@ -166,7 +166,6 @@ Returns beginning of minor-block if successful, nil otherwise
   (interactive)
   (py--backward-prepare indent 'py-minor-block-re 'py-clause-re (interactive-p)))
 
-(defalias 'py-backward-block-lc 'py-backward-block-bol)
 (defun py-backward-block-bol (&optional indent)
  "Go to beginning of block, go to BOL.
 
@@ -177,7 +176,6 @@ Returns beginning of block if successful, nil otherwise
   (interactive)
   (py--backward-prepare indent 'py-block-re 'py-clause-re (interactive-p) t))
 
-(defalias 'py-backward-block-or-clause-lc 'py-backward-block-or-clause-bol)
 (defun py-backward-block-or-clause-bol (&optional indent)
  "Go to beginning of block-or-clause, go to BOL.
 
@@ -188,7 +186,6 @@ Returns beginning of block-or-clause if successful, nil otherwise
   (interactive)
   (py--backward-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (interactive-p) t))
 
-(defalias 'py-backward-class-lc 'py-backward-class-bol)
 (defun py-backward-class-bol (&optional indent)
  "Go to beginning of class, go to BOL.
 
@@ -199,7 +196,6 @@ When `py-mark-decorators' is non-nil, decorators are considered too. "
   (interactive)
   (py--backward-prepare indent 'py-class-re 'py-extended-block-or-clause-re (interactive-p) t))
 
-(defalias 'py-backward-clause-lc 'py-backward-clause-bol)
 (defun py-backward-clause-bol (&optional indent)
  "Go to beginning of clause, go to BOL.
 
@@ -210,7 +206,6 @@ Returns beginning of clause if successful, nil otherwise
   (interactive)
   (py--backward-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (interactive-p) t))
 
-(defalias 'py-backward-def-lc 'py-backward-def-bol)
 (defun py-backward-def-bol (&optional indent)
  "Go to beginning of def, go to BOL.
 
@@ -221,7 +216,6 @@ When `py-mark-decorators' is non-nil, decorators are considered too. "
   (interactive)
   (py--backward-prepare indent 'py-def-re 'py-extended-block-or-clause-re (interactive-p) t))
 
-(defalias 'py-backward-def-or-class-lc 'py-backward-def-or-class-bol)
 (defun py-backward-def-or-class-bol (&optional indent)
  "Go to beginning of def-or-class, go to BOL.
 
@@ -232,7 +226,6 @@ When `py-mark-decorators' is non-nil, decorators are considered too. "
   (interactive)
   (py--backward-prepare indent 'py-def-or-class-re 'py-extended-block-or-clause-re (interactive-p) t))
 
-(defalias 'py-backward-elif-block-lc 'py-backward-elif-block-bol)
 (defun py-backward-elif-block-bol (&optional indent)
  "Go to beginning of elif-block, go to BOL.
 
@@ -243,7 +236,6 @@ Returns beginning of elif-block if successful, nil otherwise
   (interactive)
   (py--backward-prepare indent 'py-elif-block-re 'py-clause-re (interactive-p) t))
 
-(defalias 'py-backward-else-block-lc 'py-backward-else-block-bol)
 (defun py-backward-else-block-bol (&optional indent)
  "Go to beginning of else-block, go to BOL.
 
@@ -254,7 +246,6 @@ Returns beginning of else-block if successful, nil otherwise
   (interactive)
   (py--backward-prepare indent 'py-else-block-re 'py-clause-re (interactive-p) t))
 
-(defalias 'py-backward-except-block-lc 'py-backward-except-block-bol)
 (defun py-backward-except-block-bol (&optional indent)
  "Go to beginning of except-block, go to BOL.
 
@@ -265,7 +256,6 @@ Returns beginning of except-block if successful, nil otherwise
   (interactive)
   (py--backward-prepare indent 'py-except-block-re 'py-clause-re (interactive-p) t))
 
-(defalias 'py-backward-except-block-lc 'py-backward-except-block-bol)
 (defun py-backward-except-block-bol (&optional indent)
  "Go to beginning of except-block, go to BOL.
 
@@ -276,7 +266,6 @@ Returns beginning of except-block if successful, nil otherwise
   (interactive)
   (py--backward-prepare indent 'py-except-block-re 'py-clause-re (interactive-p) t))
 
-(defalias 'py-backward-for-block-lc 'py-backward-for-block-bol)
 (defun py-backward-for-block-bol (&optional indent)
  "Go to beginning of for-block, go to BOL.
 
@@ -287,7 +276,6 @@ Returns beginning of for-block if successful, nil otherwise
   (interactive)
   (py--backward-prepare indent 'py-for-block-re 'py-clause-re (interactive-p) t))
 
-(defalias 'py-backward-if-block-lc 'py-backward-if-block-bol)
 (defun py-backward-if-block-bol (&optional indent)
  "Go to beginning of if-block, go to BOL.
 
@@ -298,7 +286,6 @@ Returns beginning of if-block if successful, nil otherwise
   (interactive)
   (py--backward-prepare indent 'py-if-block-re 'py-clause-re (interactive-p) t))
 
-(defalias 'py-backward-minor-block-lc 'py-backward-minor-block-bol)
 (defun py-backward-minor-block-bol (&optional indent)
  "Go to beginning of minor-block, go to BOL.
 
@@ -309,7 +296,6 @@ Returns beginning of minor-block if successful, nil otherwise
   (interactive)
   (py--backward-prepare indent 'py-minor-block-re 'py-clause-re (interactive-p) t))
 
-(defalias 'py-backward-statement-lc 'py-backward-statement-bol)
 (defun py-backward-statement-bol (&optional indent)
  "Go to beginning of statement, go to BOL.
 
@@ -320,7 +306,6 @@ Returns beginning of statement if successful, nil otherwise
   (interactive)
   (py--backward-prepare indent 'py-statement-re 'py-clause-re (interactive-p) t))
 
-(defalias 'py-backward-try-block-lc 'py-backward-try-block-bol)
 (defun py-backward-try-block-bol (&optional indent)
  "Go to beginning of try-block, go to BOL.
 

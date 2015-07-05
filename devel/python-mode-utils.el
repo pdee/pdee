@@ -2623,7 +2623,6 @@ Returns beginning of " ele " if successful, nil otherwise\n
   ;; bol forms
   (dolist (ele py-beginning-bol-command-names)
     (insert (concat "
-\(defalias 'py-backward-" ele "-lc 'py-backward-" ele"-bol)
 \(defun py-backward-" ele "-bol (&optional indent)"
 "\n \"Go to beginning of " ele ", go to BOL.
 
