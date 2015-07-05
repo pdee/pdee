@@ -204,6 +204,7 @@ C-q TAB inserts a literal TAB-character."
 	col
 	beg
 	end
+	need
 	done
 	this-indent-offset)
     (and region
