@@ -405,7 +405,7 @@ SEPCHAR is the file-path separator of your system. "
            (py--jump-to-exception-intern action py-exception-buffer origline))
           ((ignore-errors (file-readable-p file))
            (find-file file)
-           (py--jump-to-exception-intern action (get-buffer (file-name-nondirectory file origline))))
+           (py--jump-to-exception-intern action (get-buffer (file-name-nondirectory) file origline)))
           ((buffer-live-p (get-buffer file))
            (set-buffer file)
            (py--jump-to-exception-intern action file origline))
@@ -731,7 +731,6 @@ Receives a buffer-name as argument"
     (when (called-interactively-p 'any) (message "%S" erg))
     erg))
 
-(defalias 'py-switch-to-python 'py-switch-to-shell)
 (defun py-switch-to-shell ()
   "Switch to Python process buffer."
   (interactive)
