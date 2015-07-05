@@ -466,10 +466,10 @@ Internal use"
      (py--get-splittable-window output-buffer)
      (ignore-errors (funcall (py--alternative-split-windows-on-execute-function))))))
 
-(defun py--display-windows (output-buffer)
-    "Otherwise new window appears above"
-      (display-buffer output-buffer)
-      (select-window py-exception-window))
+;; (defun py--display-windows (output-buffer)
+;;     "Otherwise new window appears above"
+;;       (display-buffer output-buffer)
+;;       (select-window py-exception-window))
 
 (defun py--shell-manage-windows (output-buffer windows-config &optional exception-buffer)
   "Adapt or restore window configuration. Return nil "

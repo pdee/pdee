@@ -681,9 +681,6 @@
 (ert-deftest py-ert--manage-windows-split-functionp-test ()
   (should (functionp 'py--manage-windows-split)))
 
-(ert-deftest py-ert--display-windows-functionp-test ()
-  (should (functionp 'py--display-windows)))
-
 (ert-deftest py-ert--shell-manage-windows-functionp-test ()
   (should (functionp 'py--shell-manage-windows)))
 
