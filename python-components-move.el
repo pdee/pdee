@@ -61,7 +61,7 @@ If already at the beginning or before a expression, go to next expression in buf
 	  (py-backward-expression orig done repeat))))
       (unless (or (eq (point) orig)(and (bobp)(eolp)))
 	(setq erg (point)))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+      (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
       erg)))
 
 (defun py-forward-expression (&optional orig done repeat)
@@ -119,7 +119,7 @@ Operators are ignored. "
 	  (forward-char 1)))
 	(unless (or (eq (point) orig)(and (eobp)(bolp)))
 	  (setq erg (point)))
-	(when (and py-verbose-p (interactive-p)) (message "%s" erg))
+	(when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
 	erg))))
 
 (defun py-backward-partial-expression (&optional orig)
@@ -140,7 +140,7 @@ Operators are ignored. "
       (unless
 	  (and (bobp) (member (char-after) (list ?\ ?\t ?\r ?\n ?\f)))
 	(setq erg (point))))
-    (when (interactive-p) (message "%s" erg))
+    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defun py-forward-partial-expression (&optional orig)
@@ -152,7 +152,7 @@ Operators are ignored. "
      (looking-at "[\[{(]")
      (goto-char (scan-sexps (point) 1)))
     (setq erg (point))
-    (when (interactive-p) (message "%s" erg))
+    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 ;; Partial- or Minor Expression
@@ -169,7 +169,7 @@ If already at beginning-of-line and not at BOB, go to beginning of previous line
                  (forward-line -1)
                  (progn (beginning-of-line)(point)))
              (progn (beginning-of-line)(point)))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+      (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
       erg)))
 
 (defun py-end-of-line ()
@@ -184,7 +184,7 @@ If already at end-of-line and not at EOB, go to end of next line. "
                  (forward-line 1)
                  (progn (end-of-line)(point)))
              (progn (end-of-line)(point)))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+      (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
       erg)))
 
 ;;  Statement
@@ -259,7 +259,7 @@ For beginning of clause py-backward-clause."
 	;; return nil when before comment
 	(unless (and (looking-at "[ \t]*#") (looking-back "^[ \t]*"))
 	  (when (< (point) orig)(setq erg (point))))
-	(when (and py-verbose-p (interactive-p)) (message "%s" erg))
+	(when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
 	erg))))
 
 (defun py-backward-statement-bol (&optional indent)
@@ -279,7 +279,7 @@ See also `py-up-statement': up from current definition to next beginning of stat
     (setq py-bol-forms-last-indent nil)
     (beginning-of-line)
     (and (< (point) orig) (setq erg (point)))
-    (when (interactive-p) (message "%s" erg))
+    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defun py-forward-statement (&optional orig done repeat)
@@ -370,7 +370,7 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
 	(setq erg (point)))
       (if (and py-verbose-p err)
 	  (py--message-error err)
-        (and py-verbose-p (interactive-p) (message "%s" erg)))
+        (and py-verbose-p (called-interactively-p 'any) (message "%s" erg)))
       erg)))
 
 (defun py-forward-statement-bol ()
@@ -378,7 +378,7 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
   (interactive)
   (let ((erg (py-forward-statement)))
     (setq erg (py--beginning-of-line-form))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 ;;  Decorator
@@ -395,7 +395,7 @@ Returns position if succesful "
               (not (bobp))(forward-line -1))
     (back-to-indentation))
   (let ((erg (when (looking-at "@\\w+")(match-beginning 0))))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-forward-decorator ()
@@ -422,7 +422,7 @@ Returns position if succesful "
           (forward-list))
         (when (< orig (point))
           (setq erg (point))))
-      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+      (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
       erg)))
 
 ;;  Helper functions
@@ -445,7 +445,7 @@ Travels right-margin comments. "
 From a programm use macro `py-backward-comment' instead "
   (interactive)
   (let ((erg (py-backward-comment)))
-    (when (and py-verbose-p (interactive-p))
+    (when (and py-verbose-p (called-interactively-p 'any))
       (message "%s" erg))))
 
 (defun py--go-to-keyword (regexp &optional maxindent)
@@ -644,7 +644,7 @@ A `nomenclature' is a fancy way of saying AWordWithMixedCaseNotUnderscores."
       (if (and (< orig (point)) (not (eobp)))
           (setq erg (point))
         (setq erg nil)))
-    (when (and py-verbose-p (or iact (interactive-p))) (message "%s" erg))
+    (when (and py-verbose-p (or iact (called-interactively-p 'any))) (message "%s" erg))
     erg))
 
 (defun py-backward-into-nomenclature (&optional arg)
@@ -666,7 +666,7 @@ Takes a list, INDENT and START position. "
     (let ((orig (or orig (point)))
           last)
       (while (and (setq last (point))(not (eobp))(py-forward-statement)
-                  (save-excursion (or (<= indent (progn  (py-backward-statement)(current-indentation)))(eq last (line-beginning-position))))x
+                  (save-excursion (or (<= indent (progn  (py-backward-statement)(current-indentation)))(eq last (line-beginning-position))))
                   ;; (py--end-of-statement-p)
 ))
       (goto-char last)
@@ -685,7 +685,7 @@ Return position"
     (while (and (not (bobp))(re-search-backward (concat "^" str py-block-keywords) nil t)(or (nth 8 (setq pps (parse-partial-sexp (point-min) (point)))) (nth 1 pps))))
     (back-to-indentation)
     (and (< (point) orig)(setq erg (point)))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-backward-section ()

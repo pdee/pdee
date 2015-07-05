@@ -67,7 +67,7 @@ Works around a bug in `choose-completion'. "
          (self-insert-command (prefix-numeric-value arg)))
         ((eq 4 (prefix-numeric-value arg))
          (self-insert-command 1))
-        (t (if (interactive-p) (self-insert-command (prefix-numeric-value arg))
+        (t (if (called-interactively-p 'any) (self-insert-command (prefix-numeric-value arg))
              ;; used from dont-indent-code-unnecessarily-lp-1048778-test
              (insert " ")))))
 
@@ -83,7 +83,7 @@ With \\[universal-argument] \"#\" electric behavior is inhibited inside a string
           (insert "#")
         (when (and (eq last-command 'py-electric-comment) (looking-back " "))
           (forward-char -1))
-        (if (interactive-p) (self-insert-command (prefix-numeric-value arg))
+        (if (called-interactively-p 'any) (self-insert-command (prefix-numeric-value arg))
           (insert "#"))
         (let ((orig (copy-marker (point)))
               (indent (py-compute-indentation)))
@@ -157,7 +157,7 @@ Returns column reached. "
 	   (delete-region (point) (+ erg (point))))
 	  (t (delete-char (- 1))))
     (setq erg (current-column))
-    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
+    (when (and (called-interactively-p 'any) py-verbose-p) (message "%s" erg))
     erg))
 
 (defun py-electric-delete (&optional arg)

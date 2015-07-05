@@ -69,7 +69,7 @@ Returns value of `py-smart-indentation' switched to. "
           (py-guess-indent-offset))
       (setq py-smart-indentation nil)
       (setq py-indent-offset (default-value 'py-indent-offset)))
-    (when (interactive-p) (message "py-smart-indentation: %s" py-smart-indentation))
+    (when (called-interactively-p 'any) (message "py-smart-indentation: %s" py-smart-indentation))
     py-smart-indentation))
 
 (defun py-smart-indentation-on (&optional arg)
@@ -79,7 +79,7 @@ Returns value of `py-smart-indentation'. "
   (interactive "p")
   (let ((arg (or arg 1)))
     (toggle-py-smart-indentation arg))
-  (when (interactive-p) (message "py-smart-indentation: %s" py-smart-indentation))
+  (when (called-interactively-p 'any) (message "py-smart-indentation: %s" py-smart-indentation))
   py-smart-indentation)
 
 (defun py-smart-indentation-off (&optional arg)
@@ -89,7 +89,7 @@ Returns value of `py-smart-indentation'. "
   (interactive "p")
   (let ((arg (if arg (- arg) -1)))
     (toggle-py-smart-indentation arg))
-  (when (interactive-p) (message "py-smart-indentation: %s" py-smart-indentation))
+  (when (called-interactively-p 'any) (message "py-smart-indentation: %s" py-smart-indentation))
   py-smart-indentation)
 
 (defun py-toggle-sexp-function ()
@@ -158,7 +158,7 @@ Returns value of `py-smart-operator-mode-p'. "
     (if (< 0 arg)
         (setq py-switch-buffers-on-execute-p t)
       (setq py-switch-buffers-on-execute-p nil))
-    (when (or py-verbose-p (interactive-p)) (message "py-switch-buffers-on-execute-p: %s" py-switch-buffers-on-execute-p))
+    (when (or py-verbose-p (called-interactively-p 'any)) (message "py-switch-buffers-on-execute-p: %s" py-switch-buffers-on-execute-p))
     py-switch-buffers-on-execute-p))
 
 (defun py-switch-buffers-on-execute-p-on (&optional arg)
@@ -168,7 +168,7 @@ Returns value of `py-switch-buffers-on-execute-p'. "
   (interactive)
   (let ((arg (or arg 1)))
     (toggle-py-switch-buffers-on-execute-p arg))
-  (when (or py-verbose-p (interactive-p)) (message "py-switch-buffers-on-execute-p: %s" py-switch-buffers-on-execute-p))
+  (when (or py-verbose-p (called-interactively-p 'any)) (message "py-switch-buffers-on-execute-p: %s" py-switch-buffers-on-execute-p))
   py-switch-buffers-on-execute-p)
 
 (defun py-switch-buffers-on-execute-p-off ()
@@ -177,7 +177,7 @@ Returns value of `py-switch-buffers-on-execute-p'. "
 Returns value of `py-switch-buffers-on-execute-p'. "
   (interactive)
   (toggle-py-switch-buffers-on-execute-p -1)
-  (when (or py-verbose-p (interactive-p)) (message "py-switch-buffers-on-execute-p: %s" py-switch-buffers-on-execute-p))
+  (when (or py-verbose-p (called-interactively-p 'any)) (message "py-switch-buffers-on-execute-p: %s" py-switch-buffers-on-execute-p))
   py-switch-buffers-on-execute-p)
 
 ;;  py-split-window-on-execute forms
@@ -190,7 +190,7 @@ Returns value of `py-switch-buffers-on-execute-p'. "
     (if (< 0 arg)
         (setq py-split-window-on-execute t)
       (setq py-split-window-on-execute nil))
-    (when (or py-verbose-p (interactive-p)) (message "py-split-window-on-execute: %s" py-split-window-on-execute))
+    (when (or py-verbose-p (called-interactively-p 'any)) (message "py-split-window-on-execute: %s" py-split-window-on-execute))
     py-split-window-on-execute))
 
 (defun py-split-window-on-execute-on (&optional arg)
@@ -200,7 +200,7 @@ Returns value of `py-split-window-on-execute'. "
   (interactive)
   (let ((arg (or arg 1)))
     (toggle-py-split-window-on-execute arg))
-  (when (or py-verbose-p (interactive-p)) (message "py-split-window-on-execute: %s" py-split-window-on-execute))
+  (when (or py-verbose-p (called-interactively-p 'any)) (message "py-split-window-on-execute: %s" py-split-window-on-execute))
   py-split-window-on-execute)
 
 (defun py-split-window-on-execute-off ()
@@ -209,7 +209,7 @@ Returns value of `py-split-window-on-execute'. "
 Returns value of `py-split-window-on-execute'. "
   (interactive)
   (toggle-py-split-window-on-execute -1)
-  (when (or py-verbose-p (interactive-p)) (message "py-split-window-on-execute: %s" py-split-window-on-execute))
+  (when (or py-verbose-p (called-interactively-p 'any)) (message "py-split-window-on-execute: %s" py-split-window-on-execute))
   py-split-window-on-execute)
 
 ;;  py-fontify-shell-buffer-p forms
@@ -230,7 +230,7 @@ Returns value of `py-split-window-on-execute'. "
             (when (re-search-backward comint-prompt-regexp nil t 1)
               (font-lock-fontify-region (line-beginning-position) (point-max)))))
       (setq py-fontify-shell-buffer-p nil))
-    (when (or py-verbose-p (interactive-p)) (message "py-fontify-shell-buffer-p: %s" py-fontify-shell-buffer-p))
+    (when (or py-verbose-p (called-interactively-p 'any)) (message "py-fontify-shell-buffer-p: %s" py-fontify-shell-buffer-p))
     py-fontify-shell-buffer-p))
 
 (defun py-fontify-shell-buffer-p-on (&optional arg)
@@ -240,7 +240,7 @@ Returns value of `py-fontify-shell-buffer-p'. "
   (interactive)
   (let ((arg (or arg 1)))
     (toggle-py-fontify-shell-buffer-p arg))
-  (when (or py-verbose-p (interactive-p)) (message "py-fontify-shell-buffer-p: %s" py-fontify-shell-buffer-p))
+  (when (or py-verbose-p (called-interactively-p 'any)) (message "py-fontify-shell-buffer-p: %s" py-fontify-shell-buffer-p))
   py-fontify-shell-buffer-p)
 
 (defun py-fontify-shell-buffer-p-off ()
@@ -249,7 +249,7 @@ Returns value of `py-fontify-shell-buffer-p'. "
 Returns value of `py-fontify-shell-buffer-p'. "
   (interactive)
   (toggle-py-fontify-shell-buffer-p -1)
-  (when (or py-verbose-p (interactive-p)) (message "py-fontify-shell-buffer-p: %s" py-fontify-shell-buffer-p))
+  (when (or py-verbose-p (called-interactively-p 'any)) (message "py-fontify-shell-buffer-p: %s" py-fontify-shell-buffer-p))
   py-fontify-shell-buffer-p)
 
 ;;  python-mode-v5-behavior-p forms
@@ -262,7 +262,7 @@ Returns value of `py-fontify-shell-buffer-p'. "
     (if (< 0 arg)
         (setq python-mode-v5-behavior-p t)
       (setq python-mode-v5-behavior-p nil))
-    (when (or py-verbose-p (interactive-p)) (message "python-mode-v5-behavior-p: %s" python-mode-v5-behavior-p))
+    (when (or py-verbose-p (called-interactively-p 'any)) (message "python-mode-v5-behavior-p: %s" python-mode-v5-behavior-p))
     python-mode-v5-behavior-p))
 
 (defun python-mode-v5-behavior-p-on (&optional arg)
@@ -272,7 +272,7 @@ Returns value of `python-mode-v5-behavior-p'. "
   (interactive)
   (let ((arg (or arg 1)))
     (toggle-python-mode-v5-behavior-p arg))
-  (when (or py-verbose-p (interactive-p)) (message "python-mode-v5-behavior-p: %s" python-mode-v5-behavior-p))
+  (when (or py-verbose-p (called-interactively-p 'any)) (message "python-mode-v5-behavior-p: %s" python-mode-v5-behavior-p))
   python-mode-v5-behavior-p)
 
 (defun python-mode-v5-behavior-p-off ()
@@ -281,7 +281,7 @@ Returns value of `python-mode-v5-behavior-p'. "
 Returns value of `python-mode-v5-behavior-p'. "
   (interactive)
   (toggle-python-mode-v5-behavior-p -1)
-  (when (or py-verbose-p (interactive-p)) (message "python-mode-v5-behavior-p: %s" python-mode-v5-behavior-p))
+  (when (or py-verbose-p (called-interactively-p 'any)) (message "python-mode-v5-behavior-p: %s" python-mode-v5-behavior-p))
   python-mode-v5-behavior-p)
 
 ;;  py-jump-on-exception forms
@@ -294,7 +294,7 @@ Returns value of `python-mode-v5-behavior-p'. "
     (if (< 0 arg)
         (setq py-jump-on-exception t)
       (setq py-jump-on-exception nil))
-    (when (or py-verbose-p (interactive-p)) (message "py-jump-on-exception: %s" py-jump-on-exception))
+    (when (or py-verbose-p (called-interactively-p 'any)) (message "py-jump-on-exception: %s" py-jump-on-exception))
     py-jump-on-exception))
 
 (defun py-jump-on-exception-on (&optional arg)
@@ -304,7 +304,7 @@ Returns value of `py-jump-on-exception'. "
   (interactive)
   (let ((arg (or arg 1)))
     (toggle-py-jump-on-exception arg))
-  (when (or py-verbose-p (interactive-p)) (message "py-jump-on-exception: %s" py-jump-on-exception))
+  (when (or py-verbose-p (called-interactively-p 'any)) (message "py-jump-on-exception: %s" py-jump-on-exception))
   py-jump-on-exception)
 
 (defun py-jump-on-exception-off ()
@@ -313,7 +313,7 @@ Returns value of `py-jump-on-exception'. "
 Returns value of `py-jump-on-exception'. "
   (interactive)
   (toggle-py-jump-on-exception -1)
-  (when (or py-verbose-p (interactive-p)) (message "py-jump-on-exception: %s" py-jump-on-exception))
+  (when (or py-verbose-p (called-interactively-p 'any)) (message "py-jump-on-exception: %s" py-jump-on-exception))
   py-jump-on-exception)
 
 ;;  py-use-current-dir-when-execute-p forms
@@ -326,7 +326,7 @@ Returns value of `py-jump-on-exception'. "
     (if (< 0 arg)
         (setq py-use-current-dir-when-execute-p t)
       (setq py-use-current-dir-when-execute-p nil))
-    (when (or py-verbose-p (interactive-p)) (message "py-use-current-dir-when-execute-p: %s" py-use-current-dir-when-execute-p))
+    (when (or py-verbose-p (called-interactively-p 'any)) (message "py-use-current-dir-when-execute-p: %s" py-use-current-dir-when-execute-p))
     py-use-current-dir-when-execute-p))
 
 (defun py-use-current-dir-when-execute-p-on (&optional arg)
@@ -336,7 +336,7 @@ Returns value of `py-use-current-dir-when-execute-p'. "
   (interactive)
   (let ((arg (or arg 1)))
     (toggle-py-use-current-dir-when-execute-p arg))
-  (when (or py-verbose-p (interactive-p)) (message "py-use-current-dir-when-execute-p: %s" py-use-current-dir-when-execute-p))
+  (when (or py-verbose-p (called-interactively-p 'any)) (message "py-use-current-dir-when-execute-p: %s" py-use-current-dir-when-execute-p))
   py-use-current-dir-when-execute-p)
 
 (defun py-use-current-dir-when-execute-p-off ()
@@ -345,7 +345,7 @@ Returns value of `py-use-current-dir-when-execute-p'. "
 Returns value of `py-use-current-dir-when-execute-p'. "
   (interactive)
   (toggle-py-use-current-dir-when-execute-p -1)
-  (when (or py-verbose-p (interactive-p)) (message "py-use-current-dir-when-execute-p: %s" py-use-current-dir-when-execute-p))
+  (when (or py-verbose-p (called-interactively-p 'any)) (message "py-use-current-dir-when-execute-p: %s" py-use-current-dir-when-execute-p))
   py-use-current-dir-when-execute-p)
 
 ;;  py-electric-comment-p forms
@@ -358,7 +358,7 @@ Returns value of `py-use-current-dir-when-execute-p'. "
     (if (< 0 arg)
         (setq py-electric-comment-p t)
       (setq py-electric-comment-p nil))
-    (when (or py-verbose-p (interactive-p)) (message "py-electric-comment-p: %s" py-electric-comment-p))
+    (when (or py-verbose-p (called-interactively-p 'any)) (message "py-electric-comment-p: %s" py-electric-comment-p))
     py-electric-comment-p))
 
 (defun py-electric-comment-p-on (&optional arg)
@@ -368,7 +368,7 @@ Returns value of `py-electric-comment-p'. "
   (interactive)
   (let ((arg (or arg 1)))
     (toggle-py-electric-comment-p arg))
-  (when (or py-verbose-p (interactive-p)) (message "py-electric-comment-p: %s" py-electric-comment-p))
+  (when (or py-verbose-p (called-interactively-p 'any)) (message "py-electric-comment-p: %s" py-electric-comment-p))
   py-electric-comment-p)
 
 (defun py-electric-comment-p-off ()
@@ -377,7 +377,7 @@ Returns value of `py-electric-comment-p'. "
 Returns value of `py-electric-comment-p'. "
   (interactive)
   (toggle-py-electric-comment-p -1)
-  (when (or py-verbose-p (interactive-p)) (message "py-electric-comment-p: %s" py-electric-comment-p))
+  (when (or py-verbose-p (called-interactively-p 'any)) (message "py-electric-comment-p: %s" py-electric-comment-p))
   py-electric-comment-p)
 
 ;;  py-underscore-word-syntax-p forms
@@ -393,7 +393,7 @@ Returns value of `py-electric-comment-p'. "
           (modify-syntax-entry ?\_ "w" python-mode-syntax-table))
       (setq py-underscore-word-syntax-p nil)
       (modify-syntax-entry ?\_ "_" python-mode-syntax-table))
-    (when (or py-verbose-p (interactive-p)) (message "py-underscore-word-syntax-p: %s" py-underscore-word-syntax-p))
+    (when (or py-verbose-p (called-interactively-p 'any)) (message "py-underscore-word-syntax-p: %s" py-underscore-word-syntax-p))
     py-underscore-word-syntax-p))
 
 (defun py-underscore-word-syntax-p-on (&optional arg)
@@ -403,7 +403,7 @@ Returns value of `py-underscore-word-syntax-p'. "
   (interactive)
   (let ((arg (or arg 1)))
     (toggle-py-underscore-word-syntax-p arg))
-  (when (or py-verbose-p (interactive-p)) (message "py-underscore-word-syntax-p: %s" py-underscore-word-syntax-p))
+  (when (or py-verbose-p (called-interactively-p 'any)) (message "py-underscore-word-syntax-p: %s" py-underscore-word-syntax-p))
   py-underscore-word-syntax-p)
 
 (defun py-underscore-word-syntax-p-off ()
@@ -412,7 +412,7 @@ Returns value of `py-underscore-word-syntax-p'. "
 Returns value of `py-underscore-word-syntax-p'. "
   (interactive)
   (toggle-py-underscore-word-syntax-p -1)
-  (when (or py-verbose-p (interactive-p)) (message "py-underscore-word-syntax-p: %s" py-underscore-word-syntax-p))
+  (when (or py-verbose-p (called-interactively-p 'any)) (message "py-underscore-word-syntax-p: %s" py-underscore-word-syntax-p))
   py-underscore-word-syntax-p)
 
 ;; toggle-py-underscore-word-syntax-p must be known already

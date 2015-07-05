@@ -37,7 +37,7 @@ Returns beginning and end positions of marked area, a cons. "
   (let (erg)
     (setq erg (py--mark-base "block"))
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-mark-block-or-clause ()
@@ -48,7 +48,7 @@ Returns beginning and end positions of marked area, a cons. "
   (let (erg)
     (setq erg (py--mark-base "block-or-clause"))
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-mark-class (&optional arg)
@@ -61,7 +61,7 @@ Returns beginning and end positions of marked area, a cons. "
         erg)
     (py--mark-base "class" py-mark-decorators)
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-mark-clause ()
@@ -72,7 +72,7 @@ Returns beginning and end positions of marked area, a cons. "
   (let (erg)
     (setq erg (py--mark-base "clause"))
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-mark-comment ()
@@ -83,7 +83,7 @@ Returns beginning and end positions of marked area, a cons. "
   (let (erg)
     (setq erg (py--mark-base "comment"))
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-mark-def (&optional arg)
@@ -96,7 +96,7 @@ Returns beginning and end positions of marked area, a cons. "
         erg)
     (py--mark-base "def" py-mark-decorators)
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-mark-def-or-class (&optional arg)
@@ -109,7 +109,7 @@ Returns beginning and end positions of marked area, a cons. "
         erg)
     (py--mark-base "def-or-class" py-mark-decorators)
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-mark-except-block ()
@@ -120,7 +120,7 @@ Returns beginning and end positions of marked area, a cons. "
   (let (erg)
     (setq erg (py--mark-base "except-block"))
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-mark-expression ()
@@ -131,7 +131,7 @@ Returns beginning and end positions of marked area, a cons. "
   (let (erg)
     (setq erg (py--mark-base "expression"))
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-mark-if-block ()
@@ -142,7 +142,7 @@ Returns beginning and end positions of marked area, a cons. "
   (let (erg)
     (setq erg (py--mark-base "if-block"))
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-mark-line ()
@@ -153,7 +153,7 @@ Returns beginning and end positions of marked area, a cons. "
   (let (erg)
     (setq erg (py--mark-base "line"))
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-mark-minor-block ()
@@ -164,7 +164,7 @@ Returns beginning and end positions of marked area, a cons. "
   (let (erg)
     (setq erg (py--mark-base "minor-block"))
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-mark-paragraph ()
@@ -175,7 +175,7 @@ Returns beginning and end positions of marked area, a cons. "
   (let (erg)
     (setq erg (py--mark-base "paragraph"))
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-mark-partial-expression ()
@@ -186,7 +186,7 @@ Returns beginning and end positions of marked area, a cons. "
   (let (erg)
     (setq erg (py--mark-base "partial-expression"))
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-mark-section ()
@@ -197,7 +197,7 @@ Returns beginning and end positions of marked area, a cons. "
   (let (erg)
     (setq erg (py--mark-base "section"))
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-mark-statement ()
@@ -208,7 +208,7 @@ Returns beginning and end positions of marked area, a cons. "
   (let (erg)
     (setq erg (py--mark-base "statement"))
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-mark-top-level ()
@@ -219,7 +219,7 @@ Returns beginning and end positions of marked area, a cons. "
   (let (erg)
     (setq erg (py--mark-base "top-level"))
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-mark-try-block ()
@@ -230,7 +230,7 @@ Returns beginning and end positions of marked area, a cons. "
   (let (erg)
     (setq erg (py--mark-base "try-block"))
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-mark-block-bol ()
@@ -241,7 +241,7 @@ Returns beginning and end positions of region, a cons. "
   (let (erg)
     (setq erg (py--mark-base-bol "block"))
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-mark-block-or-clause-bol ()
@@ -252,7 +252,7 @@ Returns beginning and end positions of region, a cons. "
   (let (erg)
     (setq erg (py--mark-base-bol "block-or-clause"))
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-mark-class-bol (&optional arg)
@@ -265,7 +265,7 @@ Returns beginning and end positions of region, a cons. "
         erg)
     (py--mark-base-bol "class" py-mark-decorators)
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-mark-clause-bol ()
@@ -276,7 +276,7 @@ Returns beginning and end positions of region, a cons. "
   (let (erg)
     (setq erg (py--mark-base-bol "clause"))
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-mark-comment-bol ()
@@ -287,7 +287,7 @@ Returns beginning and end positions of region, a cons. "
   (let (erg)
     (setq erg (py--mark-base-bol "comment"))
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-mark-def-bol (&optional arg)
@@ -300,7 +300,7 @@ Returns beginning and end positions of region, a cons. "
         erg)
     (py--mark-base-bol "def" py-mark-decorators)
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-mark-def-or-class-bol (&optional arg)
@@ -313,7 +313,7 @@ Returns beginning and end positions of region, a cons. "
         erg)
     (py--mark-base-bol "def-or-class" py-mark-decorators)
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-mark-except-block-bol ()
@@ -324,7 +324,7 @@ Returns beginning and end positions of region, a cons. "
   (let (erg)
     (setq erg (py--mark-base-bol "except-block"))
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-mark-expression-bol ()
@@ -335,7 +335,7 @@ Returns beginning and end positions of region, a cons. "
   (let (erg)
     (setq erg (py--mark-base-bol "expression"))
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-mark-if-block-bol ()
@@ -346,7 +346,7 @@ Returns beginning and end positions of region, a cons. "
   (let (erg)
     (setq erg (py--mark-base-bol "if-block"))
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-mark-line-bol ()
@@ -357,7 +357,7 @@ Returns beginning and end positions of region, a cons. "
   (let (erg)
     (setq erg (py--mark-base-bol "line"))
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-mark-minor-block-bol ()
@@ -368,7 +368,7 @@ Returns beginning and end positions of region, a cons. "
   (let (erg)
     (setq erg (py--mark-base-bol "minor-block"))
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-mark-paragraph-bol ()
@@ -379,7 +379,7 @@ Returns beginning and end positions of region, a cons. "
   (let (erg)
     (setq erg (py--mark-base-bol "paragraph"))
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-mark-partial-expression-bol ()
@@ -390,7 +390,7 @@ Returns beginning and end positions of region, a cons. "
   (let (erg)
     (setq erg (py--mark-base-bol "partial-expression"))
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-mark-statement-bol ()
@@ -401,7 +401,7 @@ Returns beginning and end positions of region, a cons. "
   (let (erg)
     (setq erg (py--mark-base-bol "statement"))
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-mark-top-level-bol ()
@@ -412,7 +412,7 @@ Returns beginning and end positions of region, a cons. "
   (let (erg)
     (setq erg (py--mark-base-bol "top-level"))
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-mark-try-block-bol ()
@@ -423,7 +423,7 @@ Returns beginning and end positions of region, a cons. "
   (let (erg)
     (setq erg (py--mark-base-bol "try-block"))
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (provide 'python-components-mark-forms)

@@ -112,42 +112,42 @@ See available styles at `py-fill-paragraph' or var `py-docstring-style'
   "Set py-docstring-style to 'nil"
   (interactive)
   (setq py-docstring-style 'nil)
-  (when (and (interactive-p) py-verbose-p)
+  (when (and (called-interactively-p 'any) py-verbose-p)
     (message "docstring-style set to:  %s" py-docstring-style)))
 
 (defun py-set-pep-257-nn-docstring-style ()
   "Set py-docstring-style to 'pep-257-nn"
   (interactive)
   (setq py-docstring-style 'pep-257-nn)
-  (when (and (interactive-p) py-verbose-p)
+  (when (and (called-interactively-p 'any) py-verbose-p)
     (message "docstring-style set to:  %s" py-docstring-style)))
 
 (defun py-set-pep-257-docstring-style ()
   "Set py-docstring-style to 'pep-257"
   (interactive)
   (setq py-docstring-style 'pep-257)
-  (when (and (interactive-p) py-verbose-p)
+  (when (and (called-interactively-p 'any) py-verbose-p)
     (message "docstring-style set to:  %s" py-docstring-style)))
 
 (defun py-set-django-docstring-style ()
   "Set py-docstring-style to 'django"
   (interactive)
   (setq py-docstring-style 'django)
-  (when (and (interactive-p) py-verbose-p)
+  (when (and (called-interactively-p 'any) py-verbose-p)
     (message "docstring-style set to:  %s" py-docstring-style)))
 
 (defun py-set-symmetric-docstring-style ()
   "Set py-docstring-style to 'symmetric"
   (interactive)
   (setq py-docstring-style 'symmetric)
-  (when (and (interactive-p) py-verbose-p)
+  (when (and (called-interactively-p 'any) py-verbose-p)
     (message "docstring-style set to:  %s" py-docstring-style)))
 
 (defun py-set-onetwo-docstring-style ()
   "Set py-docstring-style to 'onetwo"
   (interactive)
   (setq py-docstring-style 'onetwo)
-  (when (and (interactive-p) py-verbose-p)
+  (when (and (called-interactively-p 'any) py-verbose-p)
     (message "docstring-style set to:  %s" py-docstring-style)))
 
 (defun py-fill-decorator (&optional justify)

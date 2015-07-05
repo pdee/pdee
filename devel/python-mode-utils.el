@@ -1526,7 +1526,7 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. \"
     \(insert "\(provide 'python-components-named-shells)
 ;;; python-components-named-shells.el ends here
 "
-    (when (interactive-p) (switch-to-buffer (current-buffer))
+    (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	  (emacs-lisp-mode))
     (write-file (concat py-install-directory "/python-components-named-shells.el"))))
 
@@ -1547,7 +1547,7 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. \"
     (insert ";;; Python named shells")
     (insert arkopf)
     (newline)
-    (when (interactive-p) (switch-to-buffer (current-buffer))
+    (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	  (emacs-lisp-mode))
     (dolist (ele py-shells)
       (unless (string= ele "")
@@ -1631,7 +1631,7 @@ Optional \\\\[universal-argument] prompts for path to the"))
     (insert "(provide 'python-components-named-shells)
 ;;; python-components-named-shells.el ends here
 ")
-    (when (interactive-p) (switch-to-buffer (current-buffer))
+    (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	  (emacs-lisp-mode))
     (write-file (concat py-install-directory "/python-components-named-shells.el"))))
 
@@ -1640,7 +1640,7 @@ Optional \\\\[universal-argument] prompts for path to the"))
   (with-current-buffer
       (get-buffer-create "python-components-installed-shells-menu.el")
     (erase-buffer)
-    (when (interactive-p) (switch-to-buffer (current-buffer))
+    (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	  (emacs-lisp-mode))
     (insert " 		  (\"Other\"
 		   :help \"Alternative Python Shells\"")
@@ -1672,7 +1672,7 @@ Optional \\\\[universal-argument] prompts for path to the"))
       (newline))
     (insert ")")
     (insert ")")
-    (when (interactive-p) (switch-to-buffer (current-buffer))
+    (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	  (emacs-lisp-mode))
     (write-file (concat py-install-directory "/devel/python-components-installed-shells-menu.el"))))
 
@@ -1698,10 +1698,10 @@ Optional \\\\[universal-argument] prompts for path to the"))
   (with-current-buffer
       (get-buffer-create "python-components-installed-shells-test.el")
     (erase-buffer)
-    (when (interactive-p) (switch-to-buffer (current-buffer))
+    (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	  (emacs-lisp-mode))
     (py-write-installed-shells-test-intern)
-    (when (interactive-p) (switch-to-buffer (current-buffer))
+    (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	  (emacs-lisp-mode))
     (write-file (concat py-install-directory "/test/python-components-installed-shells-test.el"))))
 
@@ -1722,7 +1722,7 @@ If no region is active, current line is dedented.
 Returns indentation reached. \"
   (interactive \"p\")
   (let ((erg (py--shift-intern (- count) start end)))
-    (when (and (interactive-p) py-verbose-p) (message \"%s\" erg))
+    (when (and (called-interactively-p 'any) py-verbose-p) (message \"%s\" erg))
     erg))
 
 \(defalias 'py-shift-region-right 'py-shift-right)
@@ -1733,7 +1733,7 @@ If no region is active, current line is indented.
 Returns indentation reached. \"
   (interactive \"p\")
   (let ((erg (py--shift-intern count beg end)))
-    (when (and (interactive-p) py-verbose-p) (message \"%s\" erg))
+    (when (and (called-interactively-p 'any) py-verbose-p) (message \"%s\" erg))
     erg))
 
 \(defun py--shift-intern (count &optional start end)
@@ -1794,7 +1794,7 @@ use \\[universal-argument] to specify a different value.
 Returns outmost indentation reached. \"
   (interactive \"\*P\")
   (let ((erg (py--shift-forms-base \"" ele "\" (or arg py-indent-offset))))
-        (when (interactive-p) (message \"%s\" erg))
+        (when (called-interactively-p 'any) (message \"%s\" erg))
     erg))
 
 \(defun py-shift-" ele "-left (&optional arg)
@@ -1806,7 +1806,7 @@ use \\[universal-argument] to specify a different value.
 Returns outmost indentation reached. \"
   (interactive \"\*P\")
   (let ((erg (py--shift-forms-base \"" ele "\" (- (or arg py-indent-offset)))))
-    (when (interactive-p) (message \"%s\" erg))
+    (when (called-interactively-p 'any) (message \"%s\" erg))
     erg))
 ")))
       (insert "\n(provide 'python-components-shift-forms)
@@ -1841,7 +1841,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
         (forward-line 1)
         (beginning-of-line)
         (setq erg (point))))
-  (when (interactive-p) (message \"%s\" erg))
+  (when (called-interactively-p 'any) (message \"%s\" erg))
   erg))
 "))
     (emacs-lisp-mode)
@@ -1871,7 +1871,7 @@ See also `py-up-" ele "': up from current definition to next beginning of " ele 
       (unless (eobp)
         (beginning-of-line)
         (setq erg (point))))
-  (when (interactive-p) (message \"%s\" erg))
+  (when (called-interactively-p 'any) (message \"%s\" erg))
   erg))
 "))
     (emacs-lisp-mode)
@@ -1894,7 +1894,7 @@ Returns indentation if " ele " found, nil otherwise. \"
     (if (eobp)
         (setq erg nil)
       (while (and (setq erg (py-down-statement))(or (py-in-string-or-comment-p)(not (looking-at py-" ele "-re))))))
-    (when (interactive-p) (message \"%s\" erg))
+    (when (called-interactively-p 'any) (message \"%s\" erg))
     erg))
 "))
     (emacs-lisp-mode)
@@ -1920,7 +1920,7 @@ A complementary command travelling right, whilst `py-backward-" ele "' stops at 
         (end-of-line)
         (skip-chars-backward \" \\t\\r\\n\\f\")
         (setq erg (point))))
-  (when (interactive-p) (message \"%s\" erg))
+  (when (called-interactively-p 'any) (message \"%s\" erg))
   erg))
 "))
     (emacs-lisp-mode)
@@ -2009,7 +2009,7 @@ A complementary command travelling right, whilst `py-backward-" ele "' stops at 
     (if (< 0 arg)
         (setq " ele " t)
       (setq " ele " nil))
-    (when (or py-verbose-p (interactive-p)) (message \"" ele ": %s\" " ele "))
+    (when (or py-verbose-p (called-interactively-p 'any)) (message \"" ele ": %s\" " ele "))
     " ele "))
 
 \(defun " ele "-on (&optional arg)
@@ -2019,7 +2019,7 @@ Returns value of `" ele "'. \"
   (interactive)
   (let ((arg (or arg 1)))
     (toggle-" ele " arg))
-  (when (or py-verbose-p (interactive-p)) (message \"" ele ": %s\" " ele "))
+  (when (or py-verbose-p (called-interactively-p 'any)) (message \"" ele ": %s\" " ele "))
   " ele ")
 
 \(defun " ele "-off ()
@@ -2028,7 +2028,7 @@ Returns value of `" ele "'. \"
 Returns value of `" ele "'. \"
   (interactive)
   (toggle-" ele " -1)
-  (when (or py-verbose-p (interactive-p)) (message \"" ele ": %s\" " ele "))
+  (when (or py-verbose-p (called-interactively-p 'any)) (message \"" ele ": %s\" " ele "))
   " ele ")"))
       (newline)
       (emacs-lisp-mode)
@@ -2119,7 +2119,7 @@ http://repo.or.cz/w/elbb.git/blob/HEAD:/code/Go-to-Emacs-Lisp-Definition.el
       (search-forward "--funcall ")
       (setq erg (prin1-to-string (symbol-at-point)))
       (elisp-find-definition erg))
-    (when (interactive-p) (message "%s" erg))
+    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defun py-write-bol-forms ()
@@ -2192,7 +2192,7 @@ Delete " ele " at point. \"]\n)\n")))
     (push-mark beg t t)2
     (unless end (when (< beg (point))
                   (setq end (point))))
-    (when (interactive-p) (message \"%s %s\" beg end))
+    (when (called-interactively-p 'any) (message \"%s %s\" beg end))
     (cons beg end)))\n")
   (dolist (ele py-down-forms)
     ;; beg-end check forms
@@ -2227,7 +2227,7 @@ See also `py-up-" ele "': up from current definition to next beginning of " ele 
       (unless (eobp)
         (beginning-of-line)
         (setq erg (point))))
-  (when (interactive-p) (message \"%s\" erg))
+  (when (called-interactively-p 'any) (message \"%s\" erg))
   erg))
 
 \(defalias 'py-down-" ele "-lc 'py-forward-" ele "-bol)
@@ -2243,7 +2243,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
         (forward-line 1)
         (beginning-of-line)
         (setq erg (point))))
-  (when (interactive-p) (message \"%s\" erg))
+  (when (called-interactively-p 'any) (message \"%s\" erg))
   erg))
 "))
 
@@ -2271,7 +2271,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
     (setq erg (py--mark-base-bol \"" ele "\"))"))
     (insert "
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message \"%s\" erg))
     erg))\n")
 
     ;; Copy
@@ -2322,7 +2322,7 @@ Return position if statement found, nil otherwise. \"
     (if (py--beginning-of-statement-p)
 	(setq erg (py-backward-statement))
       (setq erg (and (py-backward-statement) (py-backward-statement))))
-    (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message \"%s\" erg))
     erg))
 
 \(defun py-down-statement ()
@@ -2337,7 +2337,7 @@ Return position if statement found, nil otherwise. \"
 		 ((< orig (progn (py-forward-statement) (py-backward-statement)))
 		  (point))
 		 (t (and (py-forward-statement) (py-forward-statement)(py-backward-statement))))))
-	   (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
+	   (when (and py-verbose-p (called-interactively-p 'any)) (message \"%s\" erg))
 	   erg))
 
 \(defun py-up-base (regexp)
@@ -2451,7 +2451,7 @@ Return position if " ele " found, nil otherwise \"
   (py-down-base-bol py-" ele "-re))\n"))))
   (insert "\n;; python-components-up-down.el ends here
 \(provide 'python-components-up-down)")
-  (when (interactive-p) (switch-to-buffer (current-buffer))
+  (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
   (write-file (concat py-install-directory "/python-components-up-down.el")))
 
@@ -2570,7 +2570,7 @@ Returns beginning and end positions of region, a cons. \"
   (let (erg)
     (setq erg (py--mark-base-bol \"" ele "\"))
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message \"%s\" erg))
     erg))
 ")))
     (switch-to-buffer (current-buffer))
@@ -2614,12 +2614,12 @@ Returns beginning of " ele " if successful, nil otherwise\n
     (insert "  (interactive)")
     (cond ((string-match "def\\|class" ele)
 	   (insert (concat "
-  (py--backward-prepare indent 'py-" ele "-re 'py-extended-block-or-clause-re (interactive-p)))\n")))
+  (py--backward-prepare indent 'py-" ele "-re 'py-extended-block-or-clause-re (called-interactively-p 'any)))\n")))
 	  ((string-match "clause" ele)
 	   (insert (concat "
-  (py--backward-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (interactive-p)))\n")))
+  (py--backward-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (called-interactively-p 'any)))\n")))
 	  (t (insert (concat "
-  (py--backward-prepare indent 'py-" ele "-re 'py-clause-re (interactive-p)))\n")))))
+  (py--backward-prepare indent 'py-" ele "-re 'py-clause-re (called-interactively-p 'any)))\n")))))
   ;; bol forms
   (dolist (ele py-beginning-bol-command-names)
     (insert (concat "
@@ -2635,15 +2635,15 @@ Returns beginning of " ele " if successful, nil otherwise\n
     (insert "  (interactive)")
     (cond ((string-match "def\\|class" ele)
 	   (insert (concat "
-  (py--backward-prepare indent 'py-" ele "-re 'py-extended-block-or-clause-re (interactive-p) t))\n")))
+  (py--backward-prepare indent 'py-" ele "-re 'py-extended-block-or-clause-re (called-interactively-p 'any) t))\n")))
 	  ((string-match "clause" ele)
 	   (insert (concat "
-  (py--backward-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (interactive-p) t))\n")))
+  (py--backward-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (called-interactively-p 'any) t))\n")))
 	  (t (insert (concat "
-  (py--backward-prepare indent 'py-" ele "-re 'py-clause-re (interactive-p) t))\n")))))
+  (py--backward-prepare indent 'py-" ele "-re 'py-clause-re (called-interactively-p 'any) t))\n")))))
   (insert "\n(provide 'python-components-backward-forms)
 ;;; python-components-backward-forms.el ends here\n")
-  (when (interactive-p) (switch-to-buffer (current-buffer))
+  (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
   (write-file (concat py-install-directory "/python-components-backward-forms.el")))
 
@@ -2988,7 +2988,7 @@ class bar:
  (insert "\n(provide 'python-components-beginning-position-forms)
 ;;; python-components-beginning-position-forms.el ends here")
 
-  (when (interactive-p) (switch-to-buffer (current-buffer)))
+  (when (called-interactively-p 'any) (switch-to-buffer (current-buffer)))
   (emacs-lisp-mode)
   (write-file (concat py-install-directory "/python-components-beginning-position-forms.el")))
 
@@ -3028,7 +3028,7 @@ class bar:
  (insert "\n(provide 'python-components-end-position-forms)
 ;;; python-components-end-position-forms.el ends here")
 
-  (when (interactive-p) (switch-to-buffer (current-buffer)))
+  (when (called-interactively-p 'any) (switch-to-buffer (current-buffer)))
   (emacs-lisp-mode)
   (write-file (concat py-install-directory "/python-components-end-position-forms.el")))
 
@@ -3050,7 +3050,7 @@ Returns end of " ele " if successful, nil otherwise\"
   (interactive \"P\")
   (let\* ((orig (point))
          (erg (py--end-base 'py-" ele "-re orig)))
-    (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message \"%s\" erg))
     erg))
 
 \(defun py-forward-" ele "-bol (&optional indent)
@@ -3061,14 +3061,14 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
   (interactive)
   (let ((erg (py-forward-" ele " indent)))
     (setq erg (py--beginning-of-line-form))
-    (when (interactive-p) (message \"%s\" erg))
+    (when (called-interactively-p 'any) (message \"%s\" erg))
     erg))
 ")))
 
   (insert "\n;; python-components-forward-forms.el ends here
 \(provide 'python-components-forward-forms)")
   (write-file (concat py-install-directory "/python-components-forward-forms.el"))
-  (when (interactive-p) (switch-to-buffer (current-buffer))
+  (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode)))
 
 (defun py-write-booleans-beginning-forms ()
@@ -3113,7 +3113,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
       erg)))\n")))
   (insert "\n(provide 'python-components-booleans-beginning-forms)
 ;; python-components-booleans-beginning-forms.el ends here\n")
-  (when (interactive-p) (switch-to-buffer (current-buffer))
+  (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
   (write-file (concat py-install-directory "/python-components-booleans-beginning-forms.el")))
 
@@ -3153,7 +3153,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
       erg)))\n")))
   (insert "\n(provide 'python-components-booleans-end-forms)
 ;; python-components-booleans-end-forms.el ends here\n")
-  (when (interactive-p) (switch-to-buffer (current-buffer))
+  (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
   (write-file (concat py-install-directory "/python-components-booleans-end-forms.el")))
 
@@ -3189,7 +3189,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
 "))))
   (insert "\n(provide 'python-components-kill-forms)
 ;;; python-components-kill-forms.el ends here\n")
-  (when (interactive-p) (switch-to-buffer (current-buffer))
+  (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
   (write-file (concat py-install-directory "/python-components-kill-forms.el")))
 
@@ -3227,7 +3227,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
     (setq erg (py--mark-base \"" ele "\"))"))
       (insert "
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message \"%s\" erg))
     erg))")
       (newline))
     (dolist (ele forms)
@@ -3256,12 +3256,12 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
     (setq erg (py--mark-base-bol \"" ele "\"))"))
       (insert "
     (exchange-point-and-mark)
-    (when (and py-verbose-p (interactive-p)) (message \"%s\" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message \"%s\" erg))
     erg))\n")))
     )
   (insert "\n(provide 'python-components-mark-forms)
 ;;; python-components-mark-forms.el ends here\n")
-  (when (interactive-p) (switch-to-buffer (current-buffer))
+  (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
   (write-file (concat py-install-directory "/python-components-mark-forms.el")))
 
@@ -3296,7 +3296,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
 ")))))
   (insert "\n(provide 'python-components-copy-forms)
 ;; python-components-copy-forms.el ends here\n")
-  (when (interactive-p) (switch-to-buffer (current-buffer))
+  (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
   (write-file (concat py-install-directory "/python-components-copy-forms.el")))
 
@@ -3361,7 +3361,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
   (py--write-delete-forms-bol py-shift-bol-forms)
   (insert "\n(provide 'python-components-delete-forms)
 ;; python-components-delete-forms.el ends here\n")
-  (when (interactive-p) (switch-to-buffer (current-buffer))
+  (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
   (write-file (concat py-install-directory "/python-components-delete-forms.el")))
 
@@ -3385,7 +3385,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
 ;;       (let ((beg (region-beginning))
 ;;             (end (region-end)))
 ;;         (if (and beg end)
-;;             (when (interactive-p) (message \"%s\" (list beg end)))
+;;             (when (called-interactively-p 'any) (message \"%s\" (list beg end)))
 ;;           (list beg end))))))\n\n"))
 ;;       (insert (concat "(defun py-bounds-of-" ele " (&optional position)
 ;;   \"Returns bounds of " ele " at point.
@@ -3400,7 +3400,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
 ;;       (let ((beg (py-beginning-of-" ele "-position))
 ;;             (end (py-forward-" ele "-position)))
 ;;         (if (and beg end)
-;;             (when (interactive-p) (message \"%s\" (list beg end)))
+;;             (when (called-interactively-p 'any) (message \"%s\" (list beg end)))
 ;;           (list beg end))))))\n\n
 ;; \n"))))
 ;;   (emacs-lisp-mode))
@@ -3419,7 +3419,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
 ;;       (let ((beg (py--beginning-of-" ele "-position))4
 ;;             (end (py--end-of-" ele "-position)))
 ;;         (if (and beg end)
-;;             (when (interactive-p) (message \"%s\" (list beg end)))
+;;             (when (called-interactively-p 'any) (message \"%s\" (list beg end)))
 ;;           (list beg end))))))\n\n")))
 
 ;;   ;; py--beginning-of-statement-position-bol
@@ -3437,7 +3437,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
 ;;             (end (py--end-of-" ele "-position-bol)))
 ;;         (if (and beg end)"))
 ;;     (insert (concat "
-;;             (when (interactive-p) (message \"%s\" (list beg end)))
+;;             (when (called-interactively-p 'any) (message \"%s\" (list beg end)))
 ;;           (list beg end))))))\n\n"))))
 
 ;; (defun py-write-bounds-forms ()
@@ -3451,7 +3451,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
 ;;   (write--bounds-forms)
 ;;   (insert "\n(provide 'python-components-bounds-forms)
 ;; ;;; python-components-bounds-forms.el ends here\n")
-;;   (when (interactive-p) (switch-to-buffer (current-buffer))
+;;   (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 ;; 	(emacs-lisp-mode))
 ;;   (write-file (concat py-install-directory "/python-components-bounds-forms.el")))
 
@@ -3486,7 +3486,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
   (erase-buffer)
   (insert ";;; python-components-section-forms.el --- section forms\n")
   (insert arkopf)
-  (when (interactive-p) (switch-to-buffer (current-buffer))
+  (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
   (write--section-forms)
   (insert "\n(provide 'python-components-section-forms)
@@ -3515,7 +3515,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
   (erase-buffer)
   (insert ";;; python-components-narrow.el --- narrow forms\n")
   (insert arkopf)
-  (when (interactive-p) (switch-to-buffer (current-buffer))
+  (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
   (write--narrow-forms)
   (insert "(provide 'python-components-narrow)

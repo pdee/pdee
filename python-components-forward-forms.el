@@ -36,7 +36,7 @@ Returns end of block if successful, nil otherwise"
   (interactive "P")
   (let* ((orig (point))
          (erg (py--end-base 'py-block-re orig)))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-forward-block-bol (&optional indent)
@@ -47,7 +47,7 @@ See also `py-down-block': down from current definition to next beginning of bloc
   (interactive)
   (let ((erg (py-forward-block indent)))
     (setq erg (py--beginning-of-line-form))
-    (when (interactive-p) (message "%s" erg))
+    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defun py-forward-block-or-clause (&optional indent)
@@ -57,7 +57,7 @@ Returns end of block-or-clause if successful, nil otherwise"
   (interactive "P")
   (let* ((orig (point))
          (erg (py--end-base 'py-block-or-clause-re orig)))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-forward-block-or-clause-bol (&optional indent)
@@ -68,7 +68,7 @@ See also `py-down-block-or-clause': down from current definition to next beginni
   (interactive)
   (let ((erg (py-forward-block-or-clause indent)))
     (setq erg (py--beginning-of-line-form))
-    (when (interactive-p) (message "%s" erg))
+    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defun py-forward-class (&optional indent)
@@ -78,7 +78,7 @@ Returns end of class if successful, nil otherwise"
   (interactive "P")
   (let* ((orig (point))
          (erg (py--end-base 'py-class-re orig)))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-forward-class-bol (&optional indent)
@@ -89,7 +89,7 @@ See also `py-down-class': down from current definition to next beginning of clas
   (interactive)
   (let ((erg (py-forward-class indent)))
     (setq erg (py--beginning-of-line-form))
-    (when (interactive-p) (message "%s" erg))
+    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defun py-forward-clause (&optional indent)
@@ -99,7 +99,7 @@ Returns end of clause if successful, nil otherwise"
   (interactive "P")
   (let* ((orig (point))
          (erg (py--end-base 'py-clause-re orig)))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-forward-clause-bol (&optional indent)
@@ -110,7 +110,7 @@ See also `py-down-clause': down from current definition to next beginning of cla
   (interactive)
   (let ((erg (py-forward-clause indent)))
     (setq erg (py--beginning-of-line-form))
-    (when (interactive-p) (message "%s" erg))
+    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defun py-forward-def (&optional indent)
@@ -120,7 +120,7 @@ Returns end of def if successful, nil otherwise"
   (interactive "P")
   (let* ((orig (point))
          (erg (py--end-base 'py-def-re orig)))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-forward-def-bol (&optional indent)
@@ -131,7 +131,7 @@ See also `py-down-def': down from current definition to next beginning of def be
   (interactive)
   (let ((erg (py-forward-def indent)))
     (setq erg (py--beginning-of-line-form))
-    (when (interactive-p) (message "%s" erg))
+    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defun py-forward-def-or-class (&optional indent)
@@ -141,7 +141,7 @@ Returns end of def-or-class if successful, nil otherwise"
   (interactive "P")
   (let* ((orig (point))
          (erg (py--end-base 'py-def-or-class-re orig)))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-forward-def-or-class-bol (&optional indent)
@@ -152,7 +152,7 @@ See also `py-down-def-or-class': down from current definition to next beginning 
   (interactive)
   (let ((erg (py-forward-def-or-class indent)))
     (setq erg (py--beginning-of-line-form))
-    (when (interactive-p) (message "%s" erg))
+    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defun py-forward-if-block (&optional indent)
@@ -162,7 +162,7 @@ Returns end of if-block if successful, nil otherwise"
   (interactive "P")
   (let* ((orig (point))
          (erg (py--end-base 'py-if-block-re orig)))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-forward-if-block-bol (&optional indent)
@@ -173,7 +173,7 @@ See also `py-down-if-block': down from current definition to next beginning of i
   (interactive)
   (let ((erg (py-forward-if-block indent)))
     (setq erg (py--beginning-of-line-form))
-    (when (interactive-p) (message "%s" erg))
+    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defun py-forward-elif-block (&optional indent)
@@ -183,7 +183,7 @@ Returns end of elif-block if successful, nil otherwise"
   (interactive "P")
   (let* ((orig (point))
          (erg (py--end-base 'py-elif-block-re orig)))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-forward-elif-block-bol (&optional indent)
@@ -194,7 +194,7 @@ See also `py-down-elif-block': down from current definition to next beginning of
   (interactive)
   (let ((erg (py-forward-elif-block indent)))
     (setq erg (py--beginning-of-line-form))
-    (when (interactive-p) (message "%s" erg))
+    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defun py-forward-else-block (&optional indent)
@@ -204,7 +204,7 @@ Returns end of else-block if successful, nil otherwise"
   (interactive "P")
   (let* ((orig (point))
          (erg (py--end-base 'py-else-block-re orig)))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-forward-else-block-bol (&optional indent)
@@ -215,7 +215,7 @@ See also `py-down-else-block': down from current definition to next beginning of
   (interactive)
   (let ((erg (py-forward-else-block indent)))
     (setq erg (py--beginning-of-line-form))
-    (when (interactive-p) (message "%s" erg))
+    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defun py-forward-for-block (&optional indent)
@@ -225,7 +225,7 @@ Returns end of for-block if successful, nil otherwise"
   (interactive "P")
   (let* ((orig (point))
          (erg (py--end-base 'py-for-block-re orig)))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-forward-for-block-bol (&optional indent)
@@ -236,7 +236,7 @@ See also `py-down-for-block': down from current definition to next beginning of 
   (interactive)
   (let ((erg (py-forward-for-block indent)))
     (setq erg (py--beginning-of-line-form))
-    (when (interactive-p) (message "%s" erg))
+    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defun py-forward-except-block (&optional indent)
@@ -246,7 +246,7 @@ Returns end of except-block if successful, nil otherwise"
   (interactive "P")
   (let* ((orig (point))
          (erg (py--end-base 'py-except-block-re orig)))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-forward-except-block-bol (&optional indent)
@@ -257,7 +257,7 @@ See also `py-down-except-block': down from current definition to next beginning 
   (interactive)
   (let ((erg (py-forward-except-block indent)))
     (setq erg (py--beginning-of-line-form))
-    (when (interactive-p) (message "%s" erg))
+    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defun py-forward-try-block (&optional indent)
@@ -267,7 +267,7 @@ Returns end of try-block if successful, nil otherwise"
   (interactive "P")
   (let* ((orig (point))
          (erg (py--end-base 'py-try-block-re orig)))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-forward-try-block-bol (&optional indent)
@@ -278,7 +278,7 @@ See also `py-down-try-block': down from current definition to next beginning of 
   (interactive)
   (let ((erg (py-forward-try-block indent)))
     (setq erg (py--beginning-of-line-form))
-    (when (interactive-p) (message "%s" erg))
+    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defun py-forward-line (&optional indent)
@@ -288,7 +288,7 @@ Returns end of line if successful, nil otherwise"
   (interactive "P")
   (let* ((orig (point))
          (erg (py--end-base 'py-line-re orig)))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-forward-line-bol (&optional indent)
@@ -299,7 +299,7 @@ See also `py-down-line': down from current definition to next beginning of line 
   (interactive)
   (let ((erg (py-forward-line indent)))
     (setq erg (py--beginning-of-line-form))
-    (when (interactive-p) (message "%s" erg))
+    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defun py-forward-minor-block (&optional indent)
@@ -309,7 +309,7 @@ Returns end of minor-block if successful, nil otherwise"
   (interactive "P")
   (let* ((orig (point))
          (erg (py--end-base 'py-minor-block-re orig)))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-forward-minor-block-bol (&optional indent)
@@ -320,7 +320,7 @@ See also `py-down-minor-block': down from current definition to next beginning o
   (interactive)
   (let ((erg (py-forward-minor-block indent)))
     (setq erg (py--beginning-of-line-form))
-    (when (interactive-p) (message "%s" erg))
+    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 ;; python-components-forward-forms.el ends here

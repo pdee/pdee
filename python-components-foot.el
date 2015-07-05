@@ -203,7 +203,7 @@ See available customizations listed in files variables-python-mode at directory 
     (easy-menu-add py-menu))
   (when py-hide-show-minor-mode-p (hs-minor-mode 1))
   (when py-outline-minor-mode-p (outline-minor-mode 1))
-  (when (interactive-p) (message "python-mode loaded from: %s" python-mode-message-string))
+  (when (called-interactively-p 'any) (message "python-mode loaded from: %s" python-mode-message-string))
   (force-mode-line-update))
 
 (defun py--all-shell-mode-setting ()

@@ -36,7 +36,7 @@ Return position if statement found, nil otherwise. "
     (if (py--beginning-of-statement-p)
 	(setq erg (py-backward-statement))
       (setq erg (and (py-backward-statement) (py-backward-statement))))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-down-statement ()
@@ -51,7 +51,7 @@ Return position if statement found, nil otherwise. "
 		 ((< orig (progn (py-forward-statement) (py-backward-statement)))
 		  (point))
 		 (t (and (py-forward-statement) (py-forward-statement)(py-backward-statement))))))
-	   (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+	   (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
 	   erg))
 
 (defun py-up-base (regexp)

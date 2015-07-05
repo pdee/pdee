@@ -111,7 +111,7 @@ See also commands
           (setq py-force-local-shell-p t))
       (setq py-shell-name (default-value 'py-shell-name))
       (setq py-force-local-shell-p nil))
-    (when (interactive-p)
+    (when (called-interactively-p 'any)
       (if py-force-local-shell-p
           (when py-verbose-p (message "Enforce %s"  py-shell-name))
         (when py-verbose-p (message "py-shell-name default restored to: %s" py-shell-name))))
@@ -125,14 +125,14 @@ Returns value of `py-force-local-shell-p'.
 Kind of an option 'follow', local shell sets `py-shell-name', enforces its use afterwards "
   (interactive "p")
   (let* ((erg (toggle-force-local-shell 1)))
-    (when (or py-verbose-p (interactive-p))
+    (when (or py-verbose-p (called-interactively-p 'any))
       (message "Enforce %s" py-shell-name))))
 
 (defun py-force-local-shell-off ()
   "Restore `py-shell-name' default value and `behaviour'. "
   (interactive "p")
   (let* ((erg (toggle-force-local-shell 1)))
-    (when (or py-verbose-p (interactive-p))
+    (when (or py-verbose-p (called-interactively-p 'any))
       (message "py-shell-name default restored to: %s" py-shell-name)
       (message "Enforce %s" py-shell-name))))
 
@@ -153,7 +153,7 @@ Caveat: Completion might not work that way.
     (if (< 0 arg)
         (setq py-force-py-shell-name-p t)
       (setq py-force-py-shell-name-p nil))
-    (when (or py-verbose-p (interactive-p)) (message "py-force-py-shell-name-p: %s" py-force-py-shell-name-p))
+    (when (or py-verbose-p (called-interactively-p 'any)) (message "py-force-py-shell-name-p: %s" py-force-py-shell-name-p))
     py-force-py-shell-name-p))
 
 (defun force-py-shell-name-p-on (&optional arg)
@@ -167,7 +167,7 @@ Caveat: Completion might not work that way.
   (interactive "p")
   (let ((arg (or arg 1)))
     (toggle-force-py-shell-name-p arg))
-  (when (or py-verbose-p (interactive-p)) (message "py-force-py-shell-name-p: %s" py-force-py-shell-name-p))
+  (when (or py-verbose-p (called-interactively-p 'any)) (message "py-force-py-shell-name-p: %s" py-force-py-shell-name-p))
   py-force-py-shell-name-p)
 
 (defun force-py-shell-name-p-off ()
@@ -177,7 +177,7 @@ Function to use by executes will be guessed from environment.
 Returns value of `py-force-py-shell-name-p'. "
   (interactive)
   (toggle-force-py-shell-name-p -1)
-  (when (or py-verbose-p (interactive-p)) (message "py-force-py-shell-name-p: %s" py-force-py-shell-name-p))
+  (when (or py-verbose-p (called-interactively-p 'any)) (message "py-force-py-shell-name-p: %s" py-force-py-shell-name-p))
   py-force-py-shell-name-p)
 
 ;;  Split-Windows-On-Execute forms
@@ -191,7 +191,7 @@ Returns value of `py-force-py-shell-name-p'. "
     (if (< 0 arg)
         (setq py-split-window-on-execute t)
       (setq py-split-window-on-execute nil))
-    (when (interactive-p) (message "py-split-window-on-execute: %s" py-split-window-on-execute))
+    (when (called-interactively-p 'any) (message "py-split-window-on-execute: %s" py-split-window-on-execute))
     py-split-window-on-execute))
 
 (defun py-split-windows-on-execute-on (&optional arg)
@@ -201,7 +201,7 @@ Returns value of `py-split-window-on-execute'. "
   (interactive "p")
   (let ((arg (or arg 1)))
     (toggle-py-split-windows-on-execute arg))
-  (when (interactive-p) (message "py-split-window-on-execute: %s" py-split-window-on-execute))
+  (when (called-interactively-p 'any) (message "py-split-window-on-execute: %s" py-split-window-on-execute))
   py-split-window-on-execute)
 
 (defun py-split-windows-on-execute-off ()
@@ -210,7 +210,7 @@ Returns value of `py-split-window-on-execute'. "
 Returns value of `py-split-window-on-execute'. "
   (interactive)
   (toggle-py-split-windows-on-execute -1)
-  (when (interactive-p) (message "py-split-window-on-execute: %s" py-split-window-on-execute))
+  (when (called-interactively-p 'any) (message "py-split-window-on-execute: %s" py-split-window-on-execute))
   py-split-window-on-execute)
 
 ;;  Shell-Switch-Buffers-On-Execute forms
@@ -225,7 +225,7 @@ Returns value of `py-split-window-on-execute'. "
     (if (< 0 arg)
         (setq py-switch-buffers-on-execute-p t)
       (setq py-switch-buffers-on-execute-p nil))
-    (when (interactive-p) (message "py-shell-switch-buffers-on-execute: %s" py-switch-buffers-on-execute-p))
+    (when (called-interactively-p 'any) (message "py-shell-switch-buffers-on-execute: %s" py-switch-buffers-on-execute-p))
     py-switch-buffers-on-execute-p))
 
 (defun py-shell-switch-buffers-on-execute-on (&optional arg)
@@ -235,7 +235,7 @@ Returns value of `py-switch-buffers-on-execute-p'. "
   (interactive "p")
   (let ((arg (or arg 1)))
     (toggle-py-shell-switch-buffers-on-execute arg))
-  (when (interactive-p) (message "py-shell-switch-buffers-on-execute: %s" py-switch-buffers-on-execute-p))
+  (when (called-interactively-p 'any) (message "py-shell-switch-buffers-on-execute: %s" py-switch-buffers-on-execute-p))
   py-switch-buffers-on-execute-p)
 
 (defun py-shell-switch-buffers-on-execute-off ()
@@ -244,7 +244,7 @@ Returns value of `py-switch-buffers-on-execute-p'. "
 Returns value of `py-switch-buffers-on-execute-p'. "
   (interactive)
   (toggle-py-shell-switch-buffers-on-execute -1)
-  (when (interactive-p) (message "py-shell-switch-buffers-on-execute: %s" py-switch-buffers-on-execute-p))
+  (when (called-interactively-p 'any) (message "py-shell-switch-buffers-on-execute: %s" py-switch-buffers-on-execute-p))
   py-switch-buffers-on-execute-p)
 
 (defun py-guess-default-python ()
@@ -252,7 +252,7 @@ Returns value of `py-switch-buffers-on-execute-p'. "
   (interactive)
   (let* ((ptn (or py-shell-name (py-choose-shell) "python"))
          (erg (if py-edit-only-p ptn (executable-find ptn))))
-    (when (interactive-p)
+    (when (called-interactively-p 'any)
       (if erg
           (message "%s" ptn)
         (message "%s" "Could not detect Python on your system")))))
@@ -425,7 +425,7 @@ Customizable variable `py-split-windows-on-execute-function' tells how to split 
   (if (eq 'split-window-vertically py-split-windows-on-execute-function)
       (setq py-split-windows-on-execute-function'split-window-horizontally)
     (setq py-split-windows-on-execute-function 'split-window-vertically))
-  (when (and py-verbose-p (interactive-p))
+  (when (and py-verbose-p (called-interactively-p 'any))
     (message "py-split-windows-on-execute-function set to: %s" py-split-windows-on-execute-function)))
 
 (defun py--manage-windows-set-and-switch (buffer)
@@ -683,7 +683,7 @@ Receives a buffer-name as argument"
   "
   (interactive "P")
   ;; done by py-shell-mode
-  (let* ((iact (or (interactive-p) (eq 1 argprompt))) ;; interactively?
+  (let* ((iact (or (called-interactively-p 'any) (eq 1 argprompt))) ;; interactively?
 	 (windows-config (window-configuration-to-register 313465889))
 	 (fast-process (or fast-process py-fast-process-p))
 	 ;; (newpath (when (eq 4 (prefix-numeric-value argprompt))
@@ -716,7 +716,7 @@ Receives a buffer-name as argument"
 	  (with-current-buffer py-buffer-name
 	    (erase-buffer)))
 	(py--create-new-shell))
-      (when (or (interactive-p)
+      (when (or (called-interactively-p 'any)
 		;; M-x python RET sends from interactive "p"
 		argprompt
 		py-switch-buffers-on-execute-p py-split-window-on-execute)
@@ -728,7 +728,7 @@ Receives a buffer-name as argument"
   "Get appropriate Python process for current buffer and return it."
   (interactive)
   (let ((erg (get-buffer-process (py-shell argprompt py-dedicated-process-p shell py-buffer-name))))
-    (when (interactive-p) (message "%S" erg))
+    (when (called-interactively-p 'any) (message "%S" erg))
     erg))
 
 (defalias 'py-switch-to-python 'py-switch-to-shell)
@@ -747,7 +747,7 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
          (cmd (if (< erg 3)
                   (format "execfile(r'%s') # PYTHON-MODE\n" filename)
                 (format "exec(compile(open('%s').read(), '%s', 'exec')) # PYTHON-MODE\n" filename filename))))
-    (when (interactive-p) (message "%s" (prin1-to-string cmd)))
+    (when (called-interactively-p 'any) (message "%s" (prin1-to-string cmd)))
     cmd))
 
 (defun py--store-result-maybe (erg)
@@ -1177,7 +1177,7 @@ See also doku of variable `py-master-file' "
         (when
             (re-search-forward (concat "^\\( *# py-master-file: *\\)\"\\([^ \t]+\\)\" *$") nil t 1)
           (setq py-master-file (match-string-no-properties 2))))))
-  (when (interactive-p) (message "%s" py-master-file)))
+  (when (called-interactively-p 'any) (message "%s" py-master-file)))
 
 (defun py-execute-import-or-reload (&optional argprompt shell)
   "Import the current buffer's file in a Python interpreter.
@@ -1249,7 +1249,7 @@ Basically, this goes down the directory tree as long as there are __init__.py fi
   (interactive)
   ;; (when py-debug-p (message "run: %s" "py-execute-buffer"))
   (let ((origline (or (ignore-errors origline) 1)))
-    (and py-prompt-on-changed-p (buffer-file-name) (interactive-p) (buffer-modified-p)
+    (and py-prompt-on-changed-p (buffer-file-name) (called-interactively-p 'any) (buffer-modified-p)
          (y-or-n-p "Buffer changed, save first? ")
          (write-file (buffer-file-name)))
     (py-execute-region (point-min) (point-max))))
@@ -1313,7 +1313,7 @@ Optional OUTPUT-BUFFER and ERROR-BUFFER might be given. "
     (unless (buffer-live-p output-buffer)
       (set-buffer (get-buffer-create output-buffer)))
     (shell-command (concat pcmd " " filename) output-buffer error-buffer)
-    (when (interactive-p) (switch-to-buffer output-buffer))))
+    (when (called-interactively-p 'any) (switch-to-buffer output-buffer))))
 
 ;; ;
 (defun py-execute-line ()

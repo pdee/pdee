@@ -154,7 +154,7 @@ Useful for newly defined symbol, not known to python yet. "
           (when erg
             (set-buffer (get-buffer-create "*Python-Help*"))
             (erase-buffer)
-            (when (interactive-p) (switch-to-buffer (current-buffer)))
+            (when (called-interactively-p 'any) (switch-to-buffer (current-buffer)))
             (insert erg)))))))
 
 (defun py-info-current-defun (&optional include-type)
@@ -213,7 +213,7 @@ Optional \\[universal-argument] used for debugging, will prevent deletion of tem
                        (point)))))
     (if erg
         (progn (push-mark orig)(push-mark (point))
-               (when (and (interactive-p) py-verbose-p) (message "Jump to previous position with %s" "C-u C-<SPC> C-u C-<SPC>")))
+               (when (and (called-interactively-p 'any) py-verbose-p) (message "Jump to previous position with %s" "C-u C-<SPC> C-u C-<SPC>")))
       (goto-char orig)
       (when cmd
         (setq cmd (mapconcat
@@ -570,7 +570,7 @@ Interactively, prompt for SYMBOL."
                               (current-word))))
          (enable-recursive-minibuffers t)
          (symbol
-          (if (interactive-p)
+          (if (called-interactively-p 'any)
               (read-string (if symbol
                                (format "Find location of (default %s): " symbol)
                              "Find location of: ")
@@ -605,7 +605,7 @@ Interactively, prompt for SYMBOL."
                     (message "%s" source)))
             ((and source (setq path (replace-regexp-in-string "'" "" (py--send-string-return-output "import os;os.getcwd()")))
                   (setq sourcefile (replace-regexp-in-string "'" "" (py--send-string-return-output (concat "inspect.getsourcefile(" symbol ")"))))
-                  (interactive-p) (message "sourcefile: %s" sourcefile)
+                  (called-interactively-p 'any) (message "sourcefile: %s" sourcefile)
                   (find-file (concat path (char-to-string py-separator-char) sourcefile))
                   (goto-char (point-min))
                   (re-search-forward (concat py-def-or-class-re symbol) nil nil 1))
@@ -655,7 +655,7 @@ Returns imports "
 		  (buffer-substring-no-properties (match-beginning 0) (point))) ";")))))
     ;; (and imports
     ;; (setq imports (replace-regexp-in-string ";$" "" imports)))
-    (when (and py-verbose-p (interactive-p)) (message "%s" imports))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" imports))
     imports))
 
 (defun py-update-imports ()
@@ -671,7 +671,7 @@ Imports done are displayed in message buffer. "
       ;; (mapc 'py-execute-string (split-string (car (read-from-string (py-find-imports))) "\n" t)))
       ;; (setq erg (car (read-from-string python-imports)))
       (goto-char orig)
-      (when (interactive-p)
+      (when (called-interactively-p 'any)
         (switch-to-buffer (current-buffer))
         (message "%s" erg))
       erg)))
@@ -1050,7 +1050,7 @@ i.e. spaces, tabs, carriage returns, newlines and newpages. "
                       (parse-partial-sexp (point-min) (point))
                     (parse-partial-sexp (point-min) (point)))))
          (erg (nth 0 pps)))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 ;;  ffap
@@ -1100,9 +1100,9 @@ See menu \"Tools/Syntax Checking\""
       (if (< arg 0)
 	  ;; switch off
 	  (flycheck-mode 0)
-	(when (and py-verbose-p (interactive-p)) (message "flycheck-mode: %s" flycheck-mode))
+	(when (and py-verbose-p (called-interactively-p 'any)) (message "flycheck-mode: %s" flycheck-mode))
 	(flycheck-mode 1)
-	(when (and py-verbose-p (interactive-p)) (message "flycheck-mode: %s" flycheck-mode)))
+	(when (and py-verbose-p (called-interactively-p 'any)) (message "flycheck-mode: %s" flycheck-mode)))
     (error "Can't find flycheck - see README.org")))
 
 (defun pylint-flymake-mode ()

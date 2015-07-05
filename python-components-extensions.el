@@ -45,7 +45,7 @@ With \\[universal argument] just indent.
               (delete-region (line-beginning-position) (line-end-position)))))))
     (back-to-indentation)
     (when (or (eq 4 (prefix-numeric-value arg)) (< orig (point))) (setq erg (current-column)))
-    (when (interactive-p) (message "%s" erg))
+    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defun py-dedent-forward-line (&optional arg)
@@ -81,7 +81,7 @@ Affected by `py-dedent-keep-relative-column'. "
     (when (< (point) orig)
       (setq erg (current-column)))
     (when py-dedent-keep-relative-column (goto-char orig))
-    (when (interactive-p) (message "%s" erg))
+    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defun py--close-intern (regexp)
@@ -102,7 +102,7 @@ Affected by `py-dedent-keep-relative-column'. "
 If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline. "
   (interactive "*")
   (let ((erg (py--close-intern 'py-def-re)))
-    (when (interactive-p) (message "%s" erg))
+    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defun py-close-class ()
@@ -111,7 +111,7 @@ If final line isn't empty and `py-close-block-provides-newline' non-nil, insert 
 If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline. "
   (interactive "*")
   (let ((erg (py--close-intern 'py-class-re)))
-    (when (interactive-p) (message "%s" erg))
+    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defun py-close-def-or-class ()
@@ -120,7 +120,7 @@ If final line isn't empty and `py-close-block-provides-newline' non-nil, insert 
 If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline. "
   (interactive "*")
   (let ((erg (py--close-intern 'py-def-or-class-re)))
-    (when (interactive-p) (message "%s" erg))
+    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defun py-close-clause ()
@@ -129,7 +129,7 @@ If final line isn't empty and `py-close-block-provides-newline' non-nil, insert 
 If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline. "
   (interactive "*")
   (let ((erg (py--close-intern 'py-block-or-clause-re)))
-    (when (interactive-p) (message "%s" erg))
+    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defun py-close-block ()
@@ -138,7 +138,7 @@ If final line isn't empty and `py-close-block-provides-newline' non-nil, insert 
 If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline. "
   (interactive "*")
   (let ((erg (py--close-intern 'py-block-re)))
-    (when (interactive-p) (message "%s" erg))
+    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defun py-close-block-or-clause ()
@@ -147,7 +147,7 @@ If final line isn't empty and `py-close-block-provides-newline' non-nil, insert 
 If final line isn't empty and `py-close-block-or-clause-provides-newline' non-nil, insert a newline. "
   (interactive "*")
   (let ((erg (py--close-intern 'py-block-or-clause-re)))
-    (when (interactive-p) (message "%s" erg))
+    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defun py-class-at-point ()
@@ -159,7 +159,7 @@ With interactive call, send it to the message buffer too. "
     (let* ((beg (ar-py-beginning-of-class))
 	   (end (ar-py-end-of-class))
 	   (res (when (and (numberp beg)(numberp end)(< beg end)) (buffer-substring-no-properties beg end))))
-      (when (interactive-p) (message "%s" res))
+      (when (called-interactively-p 'any) (message "%s" res))
       res)))
 
 (defun ar-py-function-at-point ()
@@ -171,28 +171,28 @@ With interactive call, send it to the message buffer too. "
     (let* ((beg (ar-py-beginning-of-function))
 	   (end (ar-py-end-of-function))
 	   (res (when (and (numberp beg)(numberp end)(< beg end)) (buffer-substring-no-properties beg end))))
-      (when (interactive-p) (message "%s" res))
+      (when (called-interactively-p 'any) (message "%s" res))
       res)))
 
 (defun ar-py-beginning-of-function (&optional count)
   "Jump to the beginning of defun. Returns point. "
   (interactive "p")
   (let ((pos (ar-py-beginning-of-def-or-class nil count)))
-    (when (interactive-p) (message "%s" pos))
+    (when (called-interactively-p 'any) (message "%s" pos))
     pos))
 
 (defun ar-py-beginning-of-class (&optional count)
   "Jump to the beginning of class definition. Returns column. "
   (interactive "p")
   (let ((pos (ar-py-beginning-of-def-or-class t count)))
-    (when (interactive-p) (message "%s" pos))
+    (when (called-interactively-p 'any) (message "%s" pos))
     pos))
 
 (defun ar-py-end-of-function (&optional class count)
   "Jump to the end of function. "
   (interactive "p")
   (let ((pos (ar-py-end-of-def-or-class nil count)))
-    (when (interactive-p) (message "%s" pos))
+    (when (called-interactively-p 'any) (message "%s" pos))
     pos))
 
 ;; Functions for marking regions
@@ -204,7 +204,7 @@ With interactive call, send it to the message buffer too. "
   (let* ((beg (line-beginning-position))
 	 (end (line-end-position))
 	 (res (when (and (numberp beg)(numberp end)(< beg end)) (buffer-substring-no-properties beg end))))
-    (when (interactive-p) (message "%s" res))
+    (when (called-interactively-p 'any) (message "%s" res))
     res))
 
 (defun ar-py-looking-at-keywords-p ()
@@ -216,7 +216,7 @@ With interactive call, send it to the message buffer too. "
 	  (or
            (looking-at kwds1)
            (looking-at kwds3))))
-    (when (interactive-p) (message "looking-at keywords: %s" res))
+    (when (called-interactively-p 'any) (message "looking-at keywords: %s" res))
     res))
 
 (defun py-match-paren-mode (&optional arg)
@@ -372,18 +372,8 @@ Matches lists, but also block, statement, string and comment. "
                    (if (featurep 'xemacs)
                        (nth 3 (parse-partial-sexp (point) orig)
                             (nth 3 (parse-partial-sexp (point-min) (point)))))))))))
-      (when (interactive-p) (message "%s" erg))
+      (when (called-interactively-p 'any) (message "%s" erg))
       erg)))
-
-;; (unless (functionp 'empty-line-p)
-;;   (defun empty-line-p (&optional bound noerror count)
-;;     "Returns t if cursor is at an empty line, nil otherwise."
-;;     (interactive)
-;;     (save-excursion
-;;       (beginning-of-line)
-;;       (when (interactive-p)
-;;         (message "%s" (looking-at empty-line-p-chars)))
-;;       (looking-at empty-line-p-chars))))
 
 (defun ar-py-documentation (w)
   "Launch PyDOC on the Word at Point"

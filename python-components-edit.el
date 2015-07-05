@@ -227,7 +227,7 @@ C-q TAB inserts a literal TAB-character."
 		 (when (and (eq this-command last-command) (not outmost-only))
 		   (py--calculate-indent-backwards cui this-indent-offset)))
 		(t (py--calculate-indent-backwards cui this-indent-offset))))
-    (when (and (interactive-p) py-verbose-p) (message "py-indent-line, need: %s" need))
+    (when (and (called-interactively-p 'any) py-verbose-p) (message "py-indent-line, need: %s" need))
     ;; if at outmost
     ;; and not (eq this-command last-command), need remains nil
     (when need
@@ -236,27 +236,27 @@ C-q TAB inserts a literal TAB-character."
 		      py-tab-indents-region-p)
 	   (not (eq (point) orig))
 	   (exchange-point-and-mark))
-      (when (and (interactive-p) py-verbose-p)(message "%s" (current-indentation)))
+      (when (and (called-interactively-p 'any) py-verbose-p)(message "%s" (current-indentation)))
       (current-indentation))))
 
 (defun py--delete-trailing-whitespace (orig)
   "Delete trailing whitespace if either `py-newline-delete-trailing-whitespace-p' or `py-trailing-whitespace-smart-delete-p' are `t' "
   (when (or py-newline-delete-trailing-whitespace-p py-trailing-whitespace-smart-delete-p)
-    (setq pos (copy-marker (point)))
-    (save-excursion
-      (goto-char orig)
-      (if (empty-line-p)
+    (let ((pos (copy-marker (point))))
+      (save-excursion
+	(goto-char orig)
+	(if (empty-line-p)
+	    (if (py---emacs-version-greater-23)
+		(delete-trailing-whitespace (line-beginning-position) pos)
+	      (save-restriction
+		(narrow-to-region (line-beginning-position) pos)
+		(delete-trailing-whitespace)))
+	  (skip-chars-backward " \t")
 	  (if (py---emacs-version-greater-23)
 	      (delete-trailing-whitespace (line-beginning-position) pos)
 	    (save-restriction
-	      (narrow-to-region (line-beginning-position) pos)
-	      (delete-trailing-whitespace)))
-	(skip-chars-backward " \t")
-	(if (py---emacs-version-greater-23)
-	    (delete-trailing-whitespace (line-beginning-position) pos)
-	  (save-restriction
-	    (narrow-to-region (point) pos)
-	    (delete-trailing-whitespace)))))))
+	      (narrow-to-region (point) pos)
+	      (delete-trailing-whitespace))))))))
 
 (defun py-newline-and-indent ()
   "Add a newline and indent to outmost reasonable indent.
@@ -279,7 +279,7 @@ When indent is set back manually, this is honoured in following lines. "
 		(t
 		 (fixup-whitespace)
 		 (indent-to-column (py-compute-indentation)))))
-    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
+    (when (and (called-interactively-p 'any) py-verbose-p) (message "%s" erg))
     erg))
 
 (defalias 'py-newline-and-close-block 'py-newline-and-dedent)
@@ -293,7 +293,7 @@ Returns column. "
     (when (< 0 cui)
       (setq erg (- (py-compute-indentation) py-indent-offset))
       (indent-to-column erg))
-    (when (and (interactive-p) py-verbose-p) (message "%s" erg))
+    (when (and (called-interactively-p 'any) py-verbose-p) (message "%s" erg))
     erg))
 
 (defun py-toggle-indent-tabs-mode ()
@@ -304,7 +304,7 @@ Returns value of `indent-tabs-mode' switched to. "
   (when
       (setq indent-tabs-mode (not indent-tabs-mode))
     (setq tab-width py-indent-offset))
-  (when (and py-verbose-p (interactive-p)) (message "indent-tabs-mode %s  py-indent-offset %s" indent-tabs-mode py-indent-offset))
+  (when (and py-verbose-p (called-interactively-p 'any)) (message "indent-tabs-mode %s  py-indent-offset %s" indent-tabs-mode py-indent-offset))
   indent-tabs-mode)
 
 (defun py-indent-tabs-mode (arg &optional iact)
@@ -318,18 +318,18 @@ Returns value of `indent-tabs-mode' switched to. "
         (setq indent-tabs-mode t)
         (setq tab-width py-indent-offset))
     (setq indent-tabs-mode nil))
-  (when (and py-verbose-p (or iact (interactive-p))) (message "indent-tabs-mode %s   py-indent-offset %s" indent-tabs-mode py-indent-offset))
+  (when (and py-verbose-p (or iact (called-interactively-p 'any))) (message "indent-tabs-mode %s   py-indent-offset %s" indent-tabs-mode py-indent-offset))
   indent-tabs-mode)
 
 (defun py-indent-tabs-mode-on (arg)
   "Switch `indent-tabs-mode' on. "
   (interactive "p")
-  (py-indent-tabs-mode (abs arg)(interactive-p)))
+  (py-indent-tabs-mode (abs arg)(called-interactively-p 'any)))
 
 (defun py-indent-tabs-mode-off (arg)
   "Switch `indent-tabs-mode' off. "
   (interactive "p")
-  (py-indent-tabs-mode (- (abs arg))(interactive-p)))
+  (py-indent-tabs-mode (- (abs arg))(called-interactively-p 'any)))
 
 ;;  Guess indent offset
 (defun py-guessed-sanity-check (guessed)
@@ -405,7 +405,7 @@ downwards from beginning of block followed by a statement. Otherwise default-val
       (if erg (setq py-indent-offset erg)
         (setq py-indent-offset
               (default-value 'py-indent-offset)))
-      (when (interactive-p) (message "%s" py-indent-offset))
+      (when (called-interactively-p 'any) (message "%s" py-indent-offset))
       py-indent-offset)))
 
 (defun py--comment-indent-function ()
@@ -428,14 +428,14 @@ downwards from beginning of block followed by a statement. Otherwise default-val
 (defun py-backward-paragraph ()
   (interactive)
   (let ((erg (and (backward-paragraph)(point))))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 ;;  (defalias 'py-end-of-paragraph 'forward-paragraph)
 (defun py-forward-paragraph ()
   (interactive)
   (let ((erg (and (forward-paragraph)(point))))
-    (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 ;; ;
@@ -529,9 +529,9 @@ See also py--bounds-of-statements "
       (goto-char beg)
       (if (and beg end)
           (progn
-            (when (interactive-p) (message "%s %s" beg end))
+            (when (called-interactively-p 'any) (message "%s %s" beg end))
             (cons beg end))
-        (when (interactive-p) (message "%s" nil))
+        (when (called-interactively-p 'any) (message "%s" nil))
         nil))))
 
 (defun py-backward-declarations ()
@@ -541,7 +541,7 @@ See also py--bounds-of-statements "
   (let* ((bounds (py--bounds-of-declarations))
          (erg (car bounds)))
     (when erg (goto-char erg))
-    (when (interactive-p) (message "%s" erg))
+    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defun py-forward-declarations ()
@@ -550,7 +550,7 @@ See also py--bounds-of-statements "
   (let* ((bounds (py--bounds-of-declarations))
          (erg (cdr bounds)))
     (when erg (goto-char erg))
-    (when (interactive-p) (message "%s" erg))
+    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defalias 'py-copy-declarations 'py-declarations)
@@ -622,9 +622,9 @@ Indented same level, which don't open blocks. "
       (goto-char orig)
       (if (and beg end)
           (progn
-            (when (interactive-p) (message "%s %s" beg end))
+            (when (called-interactively-p 'any) (message "%s %s" beg end))
             (cons beg end))
-        (when (interactive-p) (message "%s" nil))
+        (when (called-interactively-p 'any) (message "%s" nil))
         nil))))
 
 (defun py-backward-statements ()
@@ -633,7 +633,7 @@ Indented same level, which don't open blocks. "
   (let* ((bounds (py--bounds-of-statements))
          (erg (car bounds)))
     (when erg (goto-char erg))
-    (when (interactive-p) (message "%s" erg))
+    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defun py-forward-statements ()
@@ -642,7 +642,7 @@ Indented same level, which don't open blocks. "
   (let* ((bounds (py--bounds-of-statements))
          (erg (cdr bounds)))
     (when erg (goto-char erg))
-    (when (interactive-p) (message "%s" erg))
+    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defalias 'py-copy-statements 'py-statements)

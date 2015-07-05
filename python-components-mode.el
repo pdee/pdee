@@ -2269,7 +2269,7 @@ for options to pass to the DOCNAME interpreter. \"
   (interactive \"P\")
   (let\* ((py-shell-name \"FULLNAME\"))
     (py-shell argprompt)
-    (when (interactive-p) (switch-to-buffer (current-buffer))
+    (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
           (goto-char (point-max)))))
 ")
 
@@ -2748,7 +2748,7 @@ otherwise the Python resp. Jython shell command name. "
           (dolist (ele erg)
             (when (string-match "[bijp]+ython" ele)
               (setq res ele))))))
-    (when (and py-verbose-p (interactive-p)) (message "%s" res))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" res))
     res))
 
 (defun py--choose-shell-by-import ()
@@ -2780,7 +2780,7 @@ Returns versioned string, nil if nothing appropriate found "
                (string-match (concat py-separator-char "[iI]?[pP]ython[0-9.]+" py-separator-char) path))
       (setq erg (substring path
                            (1+ (string-match (concat py-separator-char "[iI]?[pP]ython[0-9.]+" py-separator-char) path)) (1- (match-end 0)))))
-    (when (interactive-p) (message "%s" erg))
+    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defun py-which-python ()
@@ -2797,7 +2797,7 @@ Returns versioned string, nil if nothing appropriate found "
                            (match-string-no-properties 2 erg))
                           ((string-match "\\([0-9]\\.[0-9]+\\)" erg)
                            (substring erg 7 (1- (length erg)))))))
-    (when (interactive-p)
+    (when (called-interactively-p 'any)
       (if version
           (when py-verbose-p (message "%s" version))
         (message "%s" "Could not detect Python on your system")))
@@ -2809,7 +2809,7 @@ Returns versioned string, nil if nothing appropriate found "
   (let* ((cmd (py-choose-shell))
          (denv (shell-command-to-string (concat "type " cmd)))
          (erg (substring denv (string-match "/" denv))))
-    (when (interactive-p)
+    (when (called-interactively-p 'any)
       (if erg
           (message "%s" erg)
         (message "%s" "Could not detect Python on your system")))
@@ -2875,9 +2875,9 @@ With \\[universal-argument] 4 is called `py-switch-shell' see docu there."
 			 py-edit-only-p) erg
 		      (executable-find erg))))
       (if cmd
-          (when (interactive-p)
+          (when (called-interactively-p 'any)
             (message "%s" cmd))
-        (when (interactive-p) (message "%s" "Could not detect Python on your system. Maybe set `py-edit-only-p'?")))
+        (when (called-interactively-p 'any) (message "%s" "Could not detect Python on your system. Maybe set `py-edit-only-p'?")))
       erg)))
 
 
@@ -2898,7 +2898,7 @@ Returns DIRECTORY"
 Returns `t' if successful. "
   (interactive)
   (let ((erg (and (boundp 'py-install-directory) (stringp py-install-directory) (< 1 (length py-install-directory)))))
-    (when (interactive-p) (message "py-install-directory-check: %s" erg))
+    (when (called-interactively-p 'any) (message "py-install-directory-check: %s" erg))
     erg))
 
 (defun py-guess-py-install-directory ()
@@ -2917,7 +2917,7 @@ Used only, if `py-install-directory' is empty. "
 	   (erg
 	    (setq py-install-directory erg))
 	   (t (setq py-install-directory (expand-file-name "~/")))))
-    (when (and py-verbose-p (interactive-p)) (message "Setting py-install-directory to: %s" py-install-directory))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "Setting py-install-directory to: %s" py-install-directory))
     py-install-directory))
 
 (defun py-load-pymacs ()
@@ -2989,7 +2989,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
 	     (when guessed-py-install-directory
 	       (add-to-list 'load-path guessed-py-install-directory))))
           (t (error "Please set `py-install-directory', see INSTALL"))
-          (when (interactive-p) (message "%s" load-path)))))
+          (when (called-interactively-p 'any) (message "%s" load-path)))))
 
 (unless py-install-directory
   (add-to-list 'load-path default-directory)
@@ -3019,7 +3019,7 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
         (unless (or (not (< (point) end)) (eobp)) (forward-char 1)
                 (setq count (+ count (abs (skip-chars-forward "\n" end))))))
       (when (bolp) (setq count (1+ count)))
-      (when (and py-debug-p (interactive-p)) (message "%s" count))
+      (when (and py-debug-p (called-interactively-p 'any)) (message "%s" count))
       count)))
 
 (defun py--escape-doublequotes (start end)

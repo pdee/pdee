@@ -141,7 +141,7 @@ If NOERROR is not nil, do not raise error when the module is not found."
   "Compile TEXT as a Python expression, and return its value."
   (interactive "sPython expression? ")
   (let ((value (pymacs-serve-until-reply "eval" `(princ ,text))))
-    (when (interactive-p)
+    (when (called-interactively-p 'any)
       (message "%S" value))
     value))
 
@@ -150,7 +150,7 @@ If NOERROR is not nil, do not raise error when the module is not found."
 This functionality is experimental, and does not appear to be useful."
   (interactive "sPython statements? ")
   (let ((value (pymacs-serve-until-reply "exec" `(princ ,text))))
-    (when (interactive-p)
+    (when (called-interactively-p 'any)
       (message "%S" value))
     value))
 
