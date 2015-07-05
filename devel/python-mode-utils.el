@@ -359,7 +359,6 @@
        "elif-block"
        "else-block"
        "except-block"
-       "except-block"
        "for-block"
        "if-block"
        "minor-block"

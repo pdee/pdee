@@ -256,16 +256,6 @@ Returns beginning of except-block if successful, nil otherwise
   (interactive)
   (py--backward-prepare indent 'py-except-block-re 'py-clause-re (called-interactively-p 'any) t))
 
-(defun py-backward-except-block-bol (&optional indent)
- "Go to beginning of except-block, go to BOL.
-
-If already at beginning, go one except-block backward.
-Returns beginning of except-block if successful, nil otherwise
-
-"
-  (interactive)
-  (py--backward-prepare indent 'py-except-block-re 'py-clause-re (called-interactively-p 'any) t))
-
 (defun py-backward-for-block-bol (&optional indent)
  "Go to beginning of for-block, go to BOL.
 

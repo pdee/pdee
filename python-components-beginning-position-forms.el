@@ -191,12 +191,6 @@
     (let ((erg (py-backward-except-block-bol)))
       erg)))
 
-(defun py--beginning-of-except-block-position-bol ()
-  "Returns beginning of except-block position. "
-  (save-excursion
-    (let ((erg (py-backward-except-block-bol)))
-      erg)))
-
 (defun py--beginning-of-for-block-position-bol ()
   "Returns beginning of for-block position. "
   (save-excursion
