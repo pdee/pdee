@@ -3344,7 +3344,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
 	(insert (concat "\n (let* ((py-mark-decorators (or arg py-mark-decorators))
         (erg (py--mark-base \"" ele "\" py-mark-decorators t)))"))
       (insert (concat
-	       "\n  (let ((erg (py--mark-base \"" ele "\") nil t))")))
+	       "\n  (let ((erg (py--mark-base \"" ele "\")))")))
     (insert "
     (delete-region (car erg) (cdr erg))))\n")))
 
@@ -3362,106 +3362,6 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
   (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
   (write-file (concat py-install-directory "/python-components-delete-forms.el")))
-
-;; (defun write-bounds-forms (&optional commands)
-;;   "Write `py-bounds-of-block' etc. "
-;;   (interactive)
-;;   (set-buffer (get-buffer-create "Bounds-forms"))
-;;   (erase-buffer)
-;;   (switch-to-buffer (current-buffer))
-;;   (insert ";; Bounds\n")
-;;   (dolist (ele (or commands py-bounds-command-names))
-;;     (if (string= ele "region")
-;;         (insert (concat "(defun py-bounds-of-" ele " ()
-;;   \"Returns bounds of " ele " at point.
-
-;; Returns a list, whose car is beg, cdr - end.\"
-;;   (interactive)
-;;   (save-excursion
-;;     (save-restriction
-;;       (widen)
-;;       (let ((beg (region-beginning))
-;;             (end (region-end)))
-;;         (if (and beg end)
-;;             (when (called-interactively-p 'any) (message \"%s\" (list beg end)))
-;;           (list beg end))))))\n\n"))
-;;       (insert (concat "(defun py-bounds-of-" ele " (&optional position)
-;;   \"Returns bounds of " ele " at point.
-
-;; \With optional POSITION, a number, report bounds of " ele " at POSITION.
-;; \Returns a list, whose car is beg, cdr - end.\"
-;;   (interactive)
-;;   (save-excursion
-;;     (save-restriction
-;;       (widen)
-;;       (when position (goto-char position))
-;;       (let ((beg (py-beginning-of-" ele "-position))
-;;             (end (py-forward-" ele "-position)))
-;;         (if (and beg end)
-;;             (when (called-interactively-p 'any) (message \"%s\" (list beg end)))
-;;           (list beg end))))))\n\n
-;; \n"))))
-;;   (emacs-lisp-mode))
-
-;; (defun write--bounds-forms ()
-;;   (dolist (ele py-bounds-command-names)
-;;     (insert (concat "(defun py--bounds-of-" ele " (&optional position)
-;;   \"Returns bounds of " ele " at point.
-
-;; With optional POSITION, a number, report bounds of " ele " at POSITION.
-;; Returns a list, whose car is beg, cdr - end.\"
-;;   (save-excursion
-;;     (save-restriction
-;;       (widen)
-;;       (when position (goto-char position))
-;;       (let ((beg (py--beginning-of-" ele "-position))4
-;;             (end (py--end-of-" ele "-position)))
-;;         (if (and beg end)
-;;             (when (called-interactively-p 'any) (message \"%s\" (list beg end)))
-;;           (list beg end))))))\n\n")))
-
-;;   ;; py--beginning-of-statement-position-bol
-;;   (dolist (ele py-shift-bol-forms)
-;;     (insert (concat "(defun py--bounds-of-" ele "-bol (&optional position)
-;;   \"Returns bounds of " ele " at beginning-of-line.
-
-;; With optional POSITION, a number, report bounds of " ele " at POSITION.
-;; Returns a list, whose car is beg, cdr - end.\"
-;;   (save-excursion
-;;     (save-restriction
-;;       (widen)
-;;       (when position (goto-char position))
-;;       (let ((beg (py--beginning-of-" ele "-position-bol))
-;;             (end (py--end-of-" ele "-position-bol)))
-;;         (if (and beg end)"))
-;;     (insert (concat "
-;;             (when (called-interactively-p 'any) (message \"%s\" (list beg end)))
-;;           (list beg end))))))\n\n"))))
-
-;; (defun py-write-bounds-forms ()
-;;   "Uses `py-bounds-forms'. "
-;;   (interactive)
-;;   (set-buffer (get-buffer-create "python-components-bounds-forms.el"))
-;;   (erase-buffer)
-;;   (insert ";;; python-components-bounds-forms.el --- bounds forms\n")
-;;   (insert arkopf)
-;;   ;; (switch-to-buffer (current-buffer))
-;;   (write--bounds-forms)
-;;   (insert "\n(provide 'python-components-bounds-forms)
-;; ;;; python-components-bounds-forms.el ends here\n")
-;;   (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
-;; 	(emacs-lisp-mode))
-;;   (write-file (concat py-install-directory "/python-components-bounds-forms.el")))
-
-;; (defun py-execute-section ()
-;;   (interactive)
-;;   (save-excursion
-;;     (let ((start (progn (unless (looking-at py-section-start)
-;; 			 (search-backward py-section-start)
-;; 			 (point)))))
-;;       (if (and (looking-at py-section-start)(search-forward py-section-end))
-;; 	  (py-execute-region start (point))
-;; 	(error "Can't see boundaries of py-section")))))
 
 (defun write--section-forms ()
   (dolist (ele py-shells)
