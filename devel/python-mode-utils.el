@@ -79,7 +79,6 @@
        "for-block"
        "except-block"
        "try-block"
-       "line"
        "minor-block"
        ))
 

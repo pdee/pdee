@@ -281,27 +281,6 @@ See also `py-down-try-block': down from current definition to next beginning of 
     (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
-(defun py-forward-line (&optional indent)
-  "Go to end of line.
-
-Returns end of line if successful, nil otherwise"
-  (interactive "P")
-  (let* ((orig (point))
-         (erg (py--end-base 'py-line-re orig)))
-    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
-    erg))
-
-(defun py-forward-line-bol (&optional indent)
-  "Goto beginning of line following end of line.
-  Returns position reached, if successful, nil otherwise.
-
-See also `py-down-line': down from current definition to next beginning of line below. "
-  (interactive)
-  (let ((erg (py-forward-line indent)))
-    (setq erg (py--beginning-of-line-form))
-    (when (called-interactively-p 'any) (message "%s" erg))
-    erg))
-
 (defun py-forward-minor-block (&optional indent)
   "Go to end of minor-block.
 
