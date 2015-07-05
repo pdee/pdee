@@ -348,6 +348,7 @@
        "try-block"
        ))
 
+;; no statement here
 (setq py-beginning-bol-command-names
       (list
        "block"
@@ -362,7 +363,6 @@
        "for-block"
        "if-block"
        "minor-block"
-       "statement"
        "try-block"
        ))
 

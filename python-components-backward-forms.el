@@ -286,16 +286,6 @@ Returns beginning of minor-block if successful, nil otherwise
   (interactive)
   (py--backward-prepare indent 'py-minor-block-re 'py-clause-re (called-interactively-p 'any) t))
 
-(defun py-backward-statement-bol (&optional indent)
- "Go to beginning of statement, go to BOL.
-
-If already at beginning, go one statement backward.
-Returns beginning of statement if successful, nil otherwise
-
-"
-  (interactive)
-  (py--backward-prepare indent 'py-statement-re 'py-clause-re (called-interactively-p 'any) t))
-
 (defun py-backward-try-block-bol (&optional indent)
  "Go to beginning of try-block, go to BOL.
 
