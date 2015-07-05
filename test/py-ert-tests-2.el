@@ -298,8 +298,6 @@ by the
         finally:
             pass
 "
-    (when py-debug-p (switch-to-buffer (current-buffer))
-	  (font-lock-fontify-buffer))
     (goto-char 632)
     (py-up)
     (should (eq (char-after) ?p))
@@ -378,8 +376,6 @@ x = {'abc':'def',
   (py-test-with-temp-buffer
       "assert pycompletions('TestClass.test' , name) == \
           ['testclassmeth', 'testmeth', 'testprop', 'teststaticmeth']"
-    (when py-debug-p (switch-to-buffer (current-buffer))
-	  (font-lock-fontify-buffer))
     (forward-char -1)
     (py-mark-expression)
     (should (eq 119 (mark)))
@@ -437,8 +433,6 @@ x = {'abc':'def',
     if True:
 pass
 "
-    (when py-debug-p (switch-to-buffer (current-buffer))
-	  (font-lock-fontify-buffer))
     (forward-line -1)
     (call-interactively 'py-indent-or-complete)
     (sit-for 0.1 t)
@@ -506,8 +500,6 @@ def foo(*args):2
     # ABD
     args = \"asdf\"
 ")
-    (when py-debug-p (switch-to-buffer (current-buffer))
-	  (font-lock-fontify-buffer))
     (py-backward-statement)
     (should (eq (char-after) ?a))
     (py-backward-statement)
@@ -641,8 +633,6 @@ data = {
 }
 
 "
-    (when py-debug-p (switch-to-buffer (current-buffer))
-	  (font-lock-fontify-buffer))
     (let ((py-indent-honors-multiline-listing t)
 	  py-closing-list-dedents-bos)
       (search-forward "'a':{")
@@ -680,9 +670,7 @@ that, needs, to_be, wrapped)
     that, needs, to_be, wrapped) = input_list
 "
     (let ((py-indent-honors-multiline-listing t))
-      (when py-debug-p (switch-to-buffer (current-buffer))
-	  (font-lock-fontify-buffer))
-      (search-forward "(long")
+        (search-forward "(long")
       (forward-char -1)
       ;; (goto-char 6)
       (should (eq nil (get-char-property (point) 'face)))
@@ -698,8 +686,6 @@ that, needs, to_be, wrapped)
       "def foo (a,
 
 ):"
-    (when py-debug-p (switch-to-buffer (current-buffer))
-	  (font-lock-fontify-buffer))
     (beginning-of-line)
     (should (eq 9 (py-compute-indentation)))))
 

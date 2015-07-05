@@ -27,9 +27,6 @@
 
 ;; Toggle highlight-indentation
 
-(defalias 'py-highlight-indentation-on 'highlight-indentation-on)
-(defalias 'py-highlight-indentation-off 'highlight-indentation-off)
-(defalias 'toggle-highlight-indentation 'py-toggle-highlight-indentation)
 (defun py-toggle-highlight-indentation (&optional indent)
   "If `highlight-indentation-p' should be on or off. "
   (interactive "P")
