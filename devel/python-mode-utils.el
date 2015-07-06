@@ -362,7 +362,6 @@
        "for-block"
        "if-block"
        "minor-block"
-       "statement"
        "try-block"
        ))
 
@@ -2687,7 +2686,7 @@ Return code of `py-" ele "' at point, a string. \"
 
   (switch-to-buffer (current-buffer))
   (emacs-lisp-mode)
-  (write-file (concat py-install-directory "/python-components-narrow.el")))
+  (write-file (concat py-install-directory "/python-components-forms-code.el")))
 
 (defun py-write-hide-forms ()
   (interactive "*")
