@@ -849,7 +849,8 @@ When optional FILE is `t', no temporary file is needed. "
 		;; FixMe: that should be simpler
                 (concat (replace-regexp-in-string py-separator-char "-" (replace-regexp-in-string (concat "^" py-separator-char) "" (replace-regexp-in-string ":" "-" (if (stringp which-shell) which-shell (prin1-to-string which-shell))))) "-")))
          (tempfile (concat (expand-file-name py-temp-directory) py-separator-char (replace-regexp-in-string py-separator-char "-" temp) ".py"))
-         (tempbuf (get-buffer-create temp)))
+         (tempbuf (get-buffer-create temp))
+	 erg)
     (with-current-buffer tempbuf
       (when py-debug-p (message "py--execute-buffer-finally: py-split-window-on-execute: %s" py-split-window-on-execute))
       ;; (and py-verbose-p (message "%s" "py--execute-buffer-finally"))
