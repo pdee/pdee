@@ -752,7 +752,7 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
   "If no error occurred and `py-store-result-p' store result for yank. "
   (and (not py-error) erg (or py-debug-p py-store-result-p) (kill-new erg)))
 
-(defun py--close-execution (tempbuf)
+(defun py--close-execution (tempbuf tempfile)
   "Delete temporary buffer and and run `py--store-result-maybe'"
   (unless py-debug-p
     (py-kill-buffer-unconditional tempbuf)
@@ -858,7 +858,7 @@ When optional FILE is `t', no temporary file is needed. "
     (unwind-protect
 	(setq erg (py--execute-file-base proc tempfile nil procbuf py-orig-buffer-or-file nil execute-directory py-exception-buffer)))
     (sit-for 0.1 t)
-    (py--close-execution tempbuf)
+    (py--close-execution tempbuf tempfile)
     erg))
 
 (defun py--fetch-error (buf &optional origline)
