@@ -835,7 +835,7 @@ When optional FILE is `t', no temporary file is needed. "
 	  (python-mode-v5-behavior-p
 	   (py-execute-python-mode-v5 start end py-exception-buffer))
 	  (py-execute-no-temp-p
-	   (py--execute-ge24.3 start end filename execute-directory which-shell py-exception-buffer proc))
+	   (py--execute-ge24.3 start end filename execute-directory which-shell py-exception-buffer proc file))
 	  ((and filename wholebuf)
 	   (py--execute-file-base proc filename nil buffer nil filename execute-directory py-exception-buffer))
 	  (t (py--execute-buffer-finally strg execute-directory wholebuf which-shell proc buffer)))))
@@ -903,40 +903,38 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
 (defun py--postprocess-comint (output-buffer origline windows-config py-exception-buffer orig)
   "Provide return values, check result for error, manage windows. "
   ;; py--fast-send-string doesn't set origline
-  (setq py-result nil
-	py-result-raw nil
-	py-error nil)
-  ;; (when py-debug-p (message "py--postprocess-comint: py-split-window-on-execute: %s" py-split-window-on-execute))
-  ;; py-ert-wrong-python-test fails otherwise
-  (with-current-buffer output-buffer
-    (sit-for 0.1 t)
-    ;; (when py-debug-p (switch-to-buffer (current-buffer)))
-    (setq py-result (py--fetch-result orig)))
-  (when py-debug-p (message "py-result: %s" py-result))
-  (and (string-match "\n$" py-result)
-       (setq py-result (replace-regexp-in-string py-fast-filter-re "" (substring py-result 0 (match-beginning 0)))))
-  (if py-result
-      (if (string-match "^Traceback" py-result)
-	  (progn
-	    (with-temp-buffer
-	      (when py-debug-p (message "py-result: %s" py-result))
-	      (insert py-result)
-	      (sit-for 0.1 t)
-	      (setq py-error (py--fetch-error (current-buffer) origline)))
-	    (with-current-buffer output-buffer
-	      ;; `comint-last-prompt' must not exist
-	      (delete-region (point) (or (ignore-errors (car comint-last-prompt)) (point-max)))
-	      (sit-for 0.1 t)
-	      (insert py-error)
-	      (newline)
-	      (goto-char (point-max))))
-	;; position no longer needed, no need to correct
-	(when py-store-result-p
-	  (when (and py-result (not (string= "" py-result))(not (string= (car kill-ring) py-result))) (kill-new py-result)))
-	(or py-error py-result))
-    (message "py--postprocess-comint: %s" "Don't see any result")))
+  (let (py-result py-result-raw py-error)
+    ;; (when py-debug-p (message "py--postprocess-comint: py-split-window-on-execute: %s" py-split-window-on-execute))
+    ;; py-ert-wrong-python-test fails otherwise
+    (with-current-buffer output-buffer
+      (sit-for 0.1 t)
+      ;; (when py-debug-p (switch-to-buffer (current-buffer)))
+      (setq py-result (py--fetch-result orig)))
+    (when py-debug-p (message "py-result: %s" py-result))
+    (and (string-match "\n$" py-result)
+	 (setq py-result (replace-regexp-in-string py-fast-filter-re "" (substring py-result 0 (match-beginning 0)))))
+    (if py-result
+	(if (string-match "^Traceback" py-result)
+	    (progn
+	      (with-temp-buffer
+		(when py-debug-p (message "py-result: %s" py-result))
+		(insert py-result)
+		(sit-for 0.1 t)
+		(setq py-error (py--fetch-error (current-buffer) origline)))
+	      (with-current-buffer output-buffer
+		;; `comint-last-prompt' must not exist
+		(delete-region (point) (or (ignore-errors (car comint-last-prompt)) (point-max)))
+		(sit-for 0.1 t)
+		(insert py-error)
+		(newline)
+		(goto-char (point-max))))
+	  ;; position no longer needed, no need to correct
+	  (when py-store-result-p
+	    (when (and py-result (not (string= "" py-result))(not (string= (car kill-ring) py-result))) (kill-new py-result)))
+	  (or py-error py-result))
+      (message "py--postprocess-comint: %s" "Don't see any result"))))
 
-(defun py--execute-ge24.3 (start end filename execute-directory which-shell &optional py-exception-buffer proc)
+(defun py--execute-ge24.3 (start end filename execute-directory which-shell &optional py-exception-buffer proc file)
   "An alternative way to do it.
 
 May we get rid of the temporary file? "
@@ -1405,7 +1403,7 @@ jump to the top (outermost) exception in the exception stack."
 ;;  obsolete by py--fetch-result
 ;;  followed by py--fetch-error
 ;;  still used by py--execute-ge24.3
-(defun py--postprocess-intern (buf &optional origline)
+(defun py--postprocess-intern (buf &optional origline py-exception-buffer)
   "Highlight exceptions found in BUF.
 If an exception occurred return error-string, otherwise return nil.  BUF must exist.
 
