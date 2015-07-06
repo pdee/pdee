@@ -2913,7 +2913,7 @@ Used only, if `py-install-directory' is empty. "
                     (file-name-directory (buffer-file-name)))
                    ((string-match "python-mode" (buffer-name))
                     default-directory))))
-    (cond ((and (or (not py-install-directory (string= "" py-install-directory))) erg)
+    (cond ((and (or (not py-install-directory) (string= "" py-install-directory)) erg)
 	   (setq py-install-directory erg))
 	   (t (setq py-install-directory (expand-file-name "~/")))))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "Setting py-install-directory to: %s" py-install-directory))
