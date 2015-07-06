@@ -940,7 +940,6 @@ def baz():
 (ert-deftest py-ert-moves-up-execute-statement-test ()
   (py-test-with-temp-buffer-point-min
       "print(\"I'm the py-execute-statement-test\")"
-    (when py-debug-p (switch-to-buffer (current-buffer)))
     (let ((py-shell-name "python"))
       (py-execute-statement)
       (set-buffer ert-test-default-buffer)
