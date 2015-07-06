@@ -808,7 +808,7 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 		     (t (or (get-buffer-process buffer)
 			    (get-buffer-process (py-shell nil py-dedicated-process-p which-shell buffer)))))))
     (setq py-buffer-name buffer)
-    (py--execute-base-intern strg shell filename proc file wholebuf buffer origline execute-directory start end)
+    (py--execute-base-intern strg shell filename proc file wholebuf buffer origline execute-directory start end which-shell)
     (when py-debug-p (message "py--execute-base: py-split-window-on-execute: %s" py-split-window-on-execute))
     (when (or py-split-window-on-execute py-switch-buffers-on-execute-p)
       (py--shell-manage-windows buffer windows-config py-exception-buffer))))
@@ -823,7 +823,7 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 				 output-buffer py-store-result-p py-return-result-p)
     (sit-for 0.1)))
 
-(defun py--execute-base-intern (strg shell filename proc file wholebuf buffer origline execute-directory start end)
+(defun py--execute-base-intern (strg shell filename proc file wholebuf buffer origline execute-directory start end which-shell)
   "Select the handler.
 
 When optional FILE is `t', no temporary file is needed. "
