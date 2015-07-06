@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2015  Andreas Röhler
 
-;; Author: Andreas Röhler <andreas.roehler@easy-emacs.de>
+;; Author: Andreas Röhler <andreas.roehler@online.de>
 ;; Keywords: languages, convenience
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -146,16 +146,6 @@ Returns beginning of try-block if successful, nil otherwise
   (interactive)
   (py--backward-prepare indent 'py-try-block-re 'py-clause-re (called-interactively-p 'any)))
 
-(defun py-backward-line (&optional indent)
- "Go to beginning of line.
-
-If already at beginning, go one line backward.
-Returns beginning of line if successful, nil otherwise
-
-"
-  (interactive)
-  (py--backward-prepare indent 'py-line-re 'py-clause-re (called-interactively-p 'any)))
-
 (defun py-backward-minor-block (&optional indent)
  "Go to beginning of minor-block.
 
@@ -285,6 +275,16 @@ Returns beginning of minor-block if successful, nil otherwise
 "
   (interactive)
   (py--backward-prepare indent 'py-minor-block-re 'py-clause-re (called-interactively-p 'any) t))
+
+(defun py-backward-statement-bol (&optional indent)
+ "Go to beginning of statement, go to BOL.
+
+If already at beginning, go one statement backward.
+Returns beginning of statement if successful, nil otherwise
+
+"
+  (interactive)
+  (py--backward-prepare indent 'py-statement-re 'py-clause-re (called-interactively-p 'any) t))
 
 (defun py-backward-try-block-bol (&optional indent)
  "Go to beginning of try-block, go to BOL.

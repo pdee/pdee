@@ -9,7 +9,7 @@
 
 ;; Copyright (C) 2015  Andreas Röhler
 
-;; Author: Andreas Röhler <andreas.roehler@easy-emacs.de>
+;; Author: Andreas Röhler <andreas.roehler@online.de>
 
 ;; Copyright (C) 1992,1993,1994  Tim Peters
 
@@ -2913,12 +2913,11 @@ Used only, if `py-install-directory' is empty. "
                     (file-name-directory (buffer-file-name)))
                    ((string-match "python-mode" (buffer-name))
                     default-directory))))
-    (cond ((and py-install-directory (not (string= "" py-install-directory)) py-install-directory)
-	   (erg
-	    (setq py-install-directory erg))
+    (cond ((and (or (not py-install-directory (string= "" py-install-directory))) erg)
+	   (setq py-install-directory erg))
 	   (t (setq py-install-directory (expand-file-name "~/")))))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "Setting py-install-directory to: %s" py-install-directory))
-    py-install-directory))
+    py-install-directory)
 
 (defun py-load-pymacs ()
   "Load Pymacs as delivered with python-mode.el.
