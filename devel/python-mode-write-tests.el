@@ -371,5 +371,79 @@ print(\\\"two\\\")\"\n")
   (emacs-lisp-mode)
   (write-file (concat py-install-directory "/test/py-ert-execute-region-test.el")))
 
+
+(defun write-unified-extended-execute-ert-tests (&optional path-to-shell command option)
+  "Write `py-ert-execute-region-python2-test'"
+  (interactive)
+  (let ((py-bounds-command-names (if command (list command) py-bounds-command-names))
+        ;; (py-shells py-commands)
+        (py-options (if option (list option) py-options)))
+    (if path-to-shell
+        (set-buffer (get-buffer-create (concat path-to-shell ".el")))
+      (set-buffer (get-buffer-create "extended-execute-ert-tests.el")))
+    (erase-buffer)
+    (switch-to-buffer (current-buffer))
+    (insert ";;; Extended executes ert tests")
+    (insert " --- more execute tests\n")
+    (insert arkopf)
+
+    (insert "
+;; created by `write-unified-extended-execute-ert-tests'\n")
+    (switch-to-buffer (current-buffer))
+    ;; see also `py-checker-command-names'
+    (dolist (ele py-bounds-command-names)
+      (dolist (elt py-shells)
+        (setq elt (prin1-to-string elt))
+        (setq kurz elt)
+        (dolist (pyo py-options)
+          (insert (concat "(ert-deftest py-execute-"))
+          (if (string= "default" elt)
+              (insert ele)
+            (insert (concat ele  "-" kurz)))
+          (unless (string= pyo "")(insert (concat "-" pyo)))
+          (if (string-match "region" elt)
+              (insert "(beg end)")
+            (insert " ()"))
+          (insert (concat "
+  \"Run " ele " at point to "))
+          (cond ((string-match "ipython" kurz)
+                 (insert "IPython"))
+                ((string= "python" kurz)
+                 (insert "default"))
+                (t (insert (capitalize kurz))))
+          (cond ((string= pyo "dedicated")
+                 (insert " unique interpreter. "))
+                ((string= pyo "dedicated-switch")
+                 (insert " unique interpreter test. "))
+                (t (insert " interpreter test. ")))
+          (insert "\"\n")
+            (if (string= "default" elt)
+                (insert (concat "  (py-test-with-temp-buffer\n
+\"print(\\\"I'm the py-ert-execute-" ele "-test\\\")\"
+" ele "\""))
+              (insert (concat "  (py-test-with-temp-buffer\n
+\"print(\\\"I'm the py-ert-execute-" ele "-" elt "-test\\\")\"
+")))
+                      (cond ((string= pyo "dedicated")
+                 (insert " dedicated. "))
+                ((string= pyo "dedicated-switch")
+                 (insert " unique interpreter test. "))
+                (t (insert " interpreter test. ")))
+
+            (insert "
+    (let (py-result)
+    (push-mark)
+    (goto-char (point-min)))")
+            (if (string-match "region" ele)
+                (insert (concat "
+    (py-execute-" ele "-" "elt "-" "pyo" (region-beginning) (region-end))
+\(py-execute-" ele "-" "elt "-" "pyo)))
+            (insert (concat "
+    (should (string-match \"py-ert-execute-" ele "-" " elt "-" pyo "-test\" py-result))))))
+
+    (insert "(provide 'extended-execute-ert-tests)
+;;; extended-execute-ert-tests.el ends here\n ")
+  (emacs-lisp-mode))
+
 (provide 'python-mode-write-tests)
 ;;; python-mode-write-tests.el ends here
