@@ -1,9 +1,8 @@
-;;; python-components-execute-region.el --- Execute region forms
+;;; python-components-execute-region.el --- execute-region forms
 
 ;; Copyright (C) 2015  Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
-
 ;; Keywords: languages, convenience
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -26,189 +25,245 @@
 
 ;;; Code:
 
-(defun py-execute-region (beg end)
-  "Execute region. "
+(defun py-execute-region (beg end &optional shell filename proc file)
+  "Execute region ."
   (interactive "r")
-  (py--execute-base beg end))
+  (py--execute-base beg end shell filename proc file))
 
-(defun py-execute-region-switch (beg end)
-  "Execute region switch. "
+(defun py-execute-region-switch (beg end &optional shell filename proc file)
+  "Execute region ."
   (interactive "r")
   (let ((py-switch-buffers-on-execute-p t))
-    (py--execute-base beg end)))
+    (py--execute-base beg end shell filename proc file)))
 
-(defun py-execute-region-no-switch (beg end)
-  "Execute region no-switch. "
+(defun py-execute-region-no-switch (beg end &optional shell filename proc file)
+  "Execute region ."
   (interactive "r")
   (let ((py-switch-buffers-on-execute-p nil))
-    (py--execute-base beg end)))
+    (py--execute-base beg end shell filename proc file)))
 
-(defun py-execute-region-dedicated (beg end)
-  "Execute region dedicated. "
+(defun py-execute-region-dedicated (beg end &optional shell filename proc file)
+  "Execute region ."
   (interactive "r")
   (let ((py-dedicated-process-p t))
-    (py--execute-base beg end)))
+    (py--execute-base beg end shell filename proc file)))
 
-(defun py-execute-region-python (beg end)
-  "Execute region Python. "
+(defun py-execute-region-dedicated-switch (beg end &optional shell filename proc file)
+  "Execute region ."
   (interactive "r")
-  (py--execute-base beg end "python"))
+  (let ((py-switch-buffers-on-execute-p t)
+        (py-split-window-on-execute t))
+    (py--execute-base beg end shell filename proc file)))
 
-(defun py-execute-region-python-switch (beg end)
-  "Execute region Python switch. "
+(defun py-execute-region-ipython (beg end &optional shell filename proc file)
+  "Execute region ipython."
+  (interactive "r")
+  (py--execute-base beg end 'ipython filename proc file))
+
+(defun py-execute-region-ipython-switch (beg end &optional shell filename proc file)
+  "Execute region ipython."
   (interactive "r")
   (let ((py-switch-buffers-on-execute-p t))
-    (py--execute-base beg end "python")))
+    (py--execute-base beg end 'ipython filename proc file)))
 
-(defun py-execute-region-python-no-switch (beg end)
-  "Execute region Python no-switch. "
+(defun py-execute-region-ipython-no-switch (beg end &optional shell filename proc file)
+  "Execute region ipython."
   (interactive "r")
   (let ((py-switch-buffers-on-execute-p nil))
-    (py--execute-base beg end "python")))
+    (py--execute-base beg end 'ipython filename proc file)))
 
-(defun py-execute-region-python-dedicated (beg end)
-  "Execute region Python dedicated. "
+(defun py-execute-region-ipython-dedicated (beg end &optional shell filename proc file)
+  "Execute region ipython."
   (interactive "r")
   (let ((py-dedicated-process-p t))
-    (py--execute-base beg end "python")))
+    (py--execute-base beg end 'ipython filename proc file)))
 
-(defun py-execute-region-python2 (beg end)
-  "Execute region Python2. "
+(defun py-execute-region-ipython-dedicated-switch (beg end &optional shell filename proc file)
+  "Execute region ipython."
   (interactive "r")
-  (py--execute-base beg end "python2"))
+  (let ((py-switch-buffers-on-execute-p t)
+        (py-split-window-on-execute t))
+    (py--execute-base beg end 'ipython filename proc file)))
 
-(defun py-execute-region-python2-switch (beg end)
-  "Execute region Python2 switch. "
+(defun py-execute-region-ipython2.7 (beg end &optional shell filename proc file)
+  "Execute region ipython2.7."
+  (interactive "r")
+  (py--execute-base beg end 'ipython2.7 filename proc file))
+
+(defun py-execute-region-ipython2.7-switch (beg end &optional shell filename proc file)
+  "Execute region ipython2.7."
   (interactive "r")
   (let ((py-switch-buffers-on-execute-p t))
-    (py--execute-base beg end "python2")))
+    (py--execute-base beg end 'ipython2.7 filename proc file)))
 
-(defun py-execute-region-python2-no-switch (beg end)
-  "Execute region Python2 no-switch. "
+(defun py-execute-region-ipython2.7-no-switch (beg end &optional shell filename proc file)
+  "Execute region ipython2.7."
   (interactive "r")
   (let ((py-switch-buffers-on-execute-p nil))
-    (py--execute-base beg end "python2")))
+    (py--execute-base beg end 'ipython2.7 filename proc file)))
 
-(defun py-execute-region-python2-dedicated (beg end)
-  "Execute region Python2 dedicated. "
+(defun py-execute-region-ipython2.7-dedicated (beg end &optional shell filename proc file)
+  "Execute region ipython2.7."
   (interactive "r")
   (let ((py-dedicated-process-p t))
-    (py--execute-base beg end "python2")))
+    (py--execute-base beg end 'ipython2.7 filename proc file)))
 
-(defun py-execute-region-python3 (beg end)
-  "Execute region Python3. "
+(defun py-execute-region-ipython2.7-dedicated-switch (beg end &optional shell filename proc file)
+  "Execute region ipython2.7."
   (interactive "r")
-  (py--execute-base beg end "python3"))
+  (let ((py-switch-buffers-on-execute-p t)
+        (py-split-window-on-execute t))
+    (py--execute-base beg end 'ipython2.7 filename proc file)))
 
-(defun py-execute-region-python3-switch (beg end)
-  "Execute region Python3 switch. "
+(defun py-execute-region-ipython3 (beg end &optional shell filename proc file)
+  "Execute region ipython3."
+  (interactive "r")
+  (py--execute-base beg end 'ipython3 filename proc file))
+
+(defun py-execute-region-ipython3-switch (beg end &optional shell filename proc file)
+  "Execute region ipython3."
   (interactive "r")
   (let ((py-switch-buffers-on-execute-p t))
-    (py--execute-base beg end "python3")))
+    (py--execute-base beg end 'ipython3 filename proc file)))
 
-(defun py-execute-region-python3-no-switch (beg end)
-  "Execute region Python3 no-switch. "
+(defun py-execute-region-ipython3-no-switch (beg end &optional shell filename proc file)
+  "Execute region ipython3."
   (interactive "r")
   (let ((py-switch-buffers-on-execute-p nil))
-    (py--execute-base beg end "python3")))
+    (py--execute-base beg end 'ipython3 filename proc file)))
 
-(defun py-execute-region-python3-dedicated (beg end)
-  "Execute region Python3 dedicated. "
+(defun py-execute-region-ipython3-dedicated (beg end &optional shell filename proc file)
+  "Execute region ipython3."
   (interactive "r")
   (let ((py-dedicated-process-p t))
-    (py--execute-base beg end "python3")))
+    (py--execute-base beg end 'ipython3 filename proc file)))
 
-(defun py-execute-region-ipython (beg end)
-  "Execute region IPython. "
+(defun py-execute-region-ipython3-dedicated-switch (beg end &optional shell filename proc file)
+  "Execute region ipython3."
   (interactive "r")
-  (py--execute-base beg end "ipython"))
+  (let ((py-switch-buffers-on-execute-p t)
+        (py-split-window-on-execute t))
+    (py--execute-base beg end 'ipython3 filename proc file)))
 
-(defun py-execute-region-ipython-switch (beg end)
-  "Execute region IPython switch. "
+(defun py-execute-region-jython (beg end &optional shell filename proc file)
+  "Execute region jython."
+  (interactive "r")
+  (py--execute-base beg end 'jython filename proc file))
+
+(defun py-execute-region-jython-switch (beg end &optional shell filename proc file)
+  "Execute region jython."
   (interactive "r")
   (let ((py-switch-buffers-on-execute-p t))
-    (py--execute-base beg end "ipython")))
+    (py--execute-base beg end 'jython filename proc file)))
 
-(defun py-execute-region-ipython-no-switch (beg end)
-  "Execute region IPython no-switch. "
+(defun py-execute-region-jython-no-switch (beg end &optional shell filename proc file)
+  "Execute region jython."
   (interactive "r")
   (let ((py-switch-buffers-on-execute-p nil))
-    (py--execute-base beg end "ipython")))
+    (py--execute-base beg end 'jython filename proc file)))
 
-(defun py-execute-region-ipython-dedicated (beg end)
-  "Execute region IPython dedicated. "
+(defun py-execute-region-jython-dedicated (beg end &optional shell filename proc file)
+  "Execute region jython."
   (interactive "r")
   (let ((py-dedicated-process-p t))
-    (py--execute-base beg end "ipython")))
+    (py--execute-base beg end 'jython filename proc file)))
 
-(defun py-execute-region-ipython2.7 (beg end)
-  "Execute region IPython2.7. "
+(defun py-execute-region-jython-dedicated-switch (beg end &optional shell filename proc file)
+  "Execute region jython."
   (interactive "r")
-  (py--execute-base beg end "ipython2.7"))
+  (let ((py-switch-buffers-on-execute-p t)
+        (py-split-window-on-execute t))
+    (py--execute-base beg end 'jython filename proc file)))
 
-(defun py-execute-region-ipython2.7-switch (beg end)
-  "Execute region IPython2.7 switch. "
+(defun py-execute-region-python (beg end &optional shell filename proc file)
+  "Execute region python."
+  (interactive "r")
+  (py--execute-base beg end 'python filename proc file))
+
+(defun py-execute-region-python-switch (beg end &optional shell filename proc file)
+  "Execute region python."
   (interactive "r")
   (let ((py-switch-buffers-on-execute-p t))
-    (py--execute-base beg end "ipython2.7")))
+    (py--execute-base beg end 'python filename proc file)))
 
-(defun py-execute-region-ipython2.7-no-switch (beg end)
-  "Execute region IPython2.7 no-switch. "
+(defun py-execute-region-python-no-switch (beg end &optional shell filename proc file)
+  "Execute region python."
   (interactive "r")
   (let ((py-switch-buffers-on-execute-p nil))
-    (py--execute-base beg end "ipython2.7")))
+    (py--execute-base beg end 'python filename proc file)))
 
-(defun py-execute-region-ipython2.7-dedicated (beg end)
-  "Execute region IPython2.7 dedicated. "
+(defun py-execute-region-python-dedicated (beg end &optional shell filename proc file)
+  "Execute region python."
   (interactive "r")
   (let ((py-dedicated-process-p t))
-    (py--execute-base beg end "ipython2.7")))
+    (py--execute-base beg end 'python filename proc file)))
 
-(defun py-execute-region-ipython3 (beg end)
-  "Execute region IPython3. "
+(defun py-execute-region-python-dedicated-switch (beg end &optional shell filename proc file)
+  "Execute region python."
   (interactive "r")
-  (py--execute-base beg end "ipython3"))
+  (let ((py-switch-buffers-on-execute-p t)
+        (py-split-window-on-execute t))
+    (py--execute-base beg end 'python filename proc file)))
 
-(defun py-execute-region-ipython3-switch (beg end)
-  "Execute region IPython3 switch. "
+(defun py-execute-region-python2 (beg end &optional shell filename proc file)
+  "Execute region python2."
+  (interactive "r")
+  (py--execute-base beg end 'python2 filename proc file))
+
+(defun py-execute-region-python2-switch (beg end &optional shell filename proc file)
+  "Execute region python2."
   (interactive "r")
   (let ((py-switch-buffers-on-execute-p t))
-    (py--execute-base beg end "ipython3")))
+    (py--execute-base beg end 'python2 filename proc file)))
 
-(defun py-execute-region-ipython3-no-switch (beg end)
-  "Execute region IPython3 no-switch. "
+(defun py-execute-region-python2-no-switch (beg end &optional shell filename proc file)
+  "Execute region python2."
   (interactive "r")
   (let ((py-switch-buffers-on-execute-p nil))
-    (py--execute-base beg end "ipython3")))
+    (py--execute-base beg end 'python2 filename proc file)))
 
-(defun py-execute-region-ipython3-dedicated (beg end)
-  "Execute region IPython3 dedicated. "
+(defun py-execute-region-python2-dedicated (beg end &optional shell filename proc file)
+  "Execute region python2."
   (interactive "r")
   (let ((py-dedicated-process-p t))
-    (py--execute-base beg end "ipython3")))
+    (py--execute-base beg end 'python2 filename proc file)))
 
-(defun py-execute-region-jython (beg end)
-  "Execute region Jython. "
+(defun py-execute-region-python2-dedicated-switch (beg end &optional shell filename proc file)
+  "Execute region python2."
   (interactive "r")
-  (py--execute-base beg end "jython"))
+  (let ((py-switch-buffers-on-execute-p t)
+        (py-split-window-on-execute t))
+    (py--execute-base beg end 'python2 filename proc file)))
 
-(defun py-execute-region-jython-switch (beg end)
-  "Execute region Jython switch. "
+(defun py-execute-region-python3 (beg end &optional shell filename proc file)
+  "Execute region python3."
+  (interactive "r")
+  (py--execute-base beg end 'python3 filename proc file))
+
+(defun py-execute-region-python3-switch (beg end &optional shell filename proc file)
+  "Execute region python3."
   (interactive "r")
   (let ((py-switch-buffers-on-execute-p t))
-    (py--execute-base beg end "jython")))
+    (py--execute-base beg end 'python3 filename proc file)))
 
-(defun py-execute-region-jython-no-switch (beg end)
-  "Execute region Jython no-switch. "
+(defun py-execute-region-python3-no-switch (beg end &optional shell filename proc file)
+  "Execute region python3."
   (interactive "r")
   (let ((py-switch-buffers-on-execute-p nil))
-    (py--execute-base beg end "jython")))
+    (py--execute-base beg end 'python3 filename proc file)))
 
-(defun py-execute-region-jython-dedicated (beg end)
-  "Execute region Jython dedicated. "
+(defun py-execute-region-python3-dedicated (beg end &optional shell filename proc file)
+  "Execute region python3."
   (interactive "r")
   (let ((py-dedicated-process-p t))
-    (py--execute-base beg end "jython")))
+    (py--execute-base beg end 'python3 filename proc file)))
+
+(defun py-execute-region-python3-dedicated-switch (beg end &optional shell filename proc file)
+  "Execute region python3."
+  (interactive "r")
+  (let ((py-switch-buffers-on-execute-p t)
+        (py-split-window-on-execute t))
+    (py--execute-base beg end 'python3 filename proc file)))
 
 (provide 'python-components-execute-region)
 ;;; python-components-execute-region.el ends here

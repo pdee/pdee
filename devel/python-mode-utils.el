@@ -280,7 +280,7 @@
 
 (setq py-options (list "" "switch" "no-switch" "dedicated"))
 
-(setq py-full-options (list "switch" "no-switch" "dedicated" "dedicated-switch"))
+(setq py-full-options (list "" "switch" "no-switch" "dedicated" "dedicated-switch"))
 
 (defvar py-commands
   (list "py-python-command" "py-ipython-command" "py-python3-command" "py-python2-command" "py-jython-command")
@@ -3419,6 +3419,48 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
   (write-file (concat py-install-directory "/python-components-narrow.el")))
 
 
+;;  python-components-execute-region
+(defun write--execute-region ()
+  (dolist (ele py-shells)
+    (setq ele (format "%s" ele))
+    (dolist (pyo py-full-options)
+      (insert "(defun py-execute-region")
+      (unless (string= "" ele) (insert (concat "-" ele)))
+      (unless (string= "" pyo) (insert (concat "-" pyo)))
+      (insert (concat " (beg end &optional shell filename proc file)
+  \"Execute region " ele))
+      (insert ".\"
+  (interactive \"r\")\n")
+      (unless (string= "" pyo)
+	(insert "  (let (")
+	(py--insert-split-switch-forms pyo)
+	(insert ")\n  "))
+      (insert "  (py--execute-base beg end ")
+      (if (string= "" ele)
+	  (insert "shell")
+	(insert (concat "'" ele)))
+      (insert " filename proc file))")
+      (unless (string= "" pyo)(insert ")"))
+      (insert "\n\n")
+      )))
+
+(defun py-write-execute-region ()
+  "Uses `py-execute-region-forms'. "
+  (interactive)
+  (set-buffer (get-buffer-create "python-components-execute-region.el"))
+  (erase-buffer)
+  (insert ";;; python-components-execute-region.el --- execute-region forms\n")
+  (insert arkopf)
+  (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
+	(emacs-lisp-mode))
+  (write--execute-region)
+  (insert "(provide 'python-components-execute-region)
+;;; python-components-execute-region.el ends here\n")
+  (write-file (concat py-install-directory "/python-components-execute-region.el")))
+
+
+
+
 (defun py--insert-split-switch-doku (pyo)
     (cond ((string= pyo "switch")
                  (insert "Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "))
@@ -3429,12 +3471,17 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
   (cond ((string= pyo "switch")
 	 ;; (insert (make-string 2 ?\ ))
 	 (insert "(py-switch-buffers-on-execute-p t)"))
+	((string= pyo "dedicated-switch")
+	 ;; (insert (make-string 2 ?\ ))
+	 (insert "(py-switch-buffers-on-execute-p t)\n")
+	 (insert (make-string 8 ?\ ))
+	 (insert "(py-split-window-on-execute t)"))
 	((string= pyo "no-switch")
 	 ;; (insert (make-string 2 ?\ ))
 	 (insert "(py-switch-buffers-on-execute-p nil)"))
 	((string= pyo "dedicated")
 	 ;; (insert (make-string 2 ?\ ))
-	(insert "(py-dedicated-process-p t)"))))
+	 (insert "(py-dedicated-process-p t)"))))
 
 (defun write-most-of-forms ()
   "Let's see if we can write/update forms at once. "
@@ -3454,6 +3501,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
   (py-write-mark-forms)
   (py-write-up-down-forms)
   (py-write-execute-forms)
+  (py-write-execute-region)
   ;; (py-write-edit-forms)
   ;; (write-execute-region-forms)
   )
