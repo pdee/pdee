@@ -239,6 +239,10 @@ Default is nil"
 
 Default is t")
 
+(defvar py--shell-unfontify nil
+  "Internally set. ")
+(make-variable-buffer-local 'py--shell-unfontify)
+
 (defvar py--match-paren-forward-p nil
   "Internally used by `py-match-paren'. ")
 
