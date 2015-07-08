@@ -64,11 +64,6 @@
   (interactive)
   (message virtualenv-name))
 
-(defun virtualenv-deactivate (dir)
-  "Activate the virtualenv located in DIR"
-  (interactive "DVirtualenv Directory: ")
-  (shell-command "deactivate"))
-
 (defun virtualenv-activate (dir)
   "Activate the virtualenv located in DIR"
   (interactive "DVirtualenv Directory: ")
@@ -77,29 +72,23 @@
     (virtualenv-deactivate))
   (let ((cmd (concat "source " dir "/bin/activate\n")))
     (comint-send-string (get-process (get-buffer-process "*shell*")) cmd)
-  ;; Storing old variables
-  (setq virtualenv-old-path (getenv "PATH"))
-  (setq virtualenv-old-exec-path exec-path)
+    ;; Storing old variables
+    (setq virtualenv-old-path (getenv "PATH"))
+    (setq virtualenv-old-exec-path exec-path)
 
-  (setenv "VIRTUAL_ENV" dir)
-  (virtualenv-add-to-path (concat (py--normalize-directory dir) "bin"))
-  (add-to-list 'exec-path (concat (py--normalize-directory dir) "bin"))
+    (setenv "VIRTUAL_ENV" dir)
+    (virtualenv-add-to-path (concat (py--normalize-directory dir) "bin"))
+    (add-to-list 'exec-path (concat (py--normalize-directory dir) "bin"))
 
-  (setq virtualenv-name dir)
-)
-  )
-  ;; (message (concat "Virtualenv '" virtualenv-name "' activated.")))
+    (setq virtualenv-name dir)))
 
 (defun virtualenv-deactivate ()
   "Deactivate the current virtual enviroment"
   (interactive)
-
   ;; Restoring old variables
   (setenv "PATH" virtualenv-old-path)
   (setq exec-path virtualenv-old-exec-path)
-
   (message (concat "Virtualenv '" virtualenv-name "' deactivated."))
-
   (setq virtualenv-name nil))
 
 (defun virtualenv-p (dir)

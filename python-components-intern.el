@@ -2083,11 +2083,6 @@ Use current region unless optional args BEG END are delivered."
       (unless (empty-line-p) (newline))
       (insert py-section-end))))
 
-(defun py--beginning-of-section-p (&optional pps)
-  "Return `t' if at a section start. "
-  (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
-    (and (looking-at py-section-start)(not (nth 8 pps)))))
-
 (defun py-execute-section-prepare (&optional shell)
   "Execute section at point. "
   (save-excursion
