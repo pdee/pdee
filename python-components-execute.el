@@ -1098,7 +1098,7 @@ See also `py-execute-region'. "
         (py-dedicated-process-p t))
     (with-temp-buffer
       (insert string)
-      (py-execute-region (point-min) (point-max) shell))))
+      (py-execute-region (point-min) (point-max)))))
 
 (defun py--insert-execute-directory (directory &optional orig done)
   (let ((orig (or orig (point)))
