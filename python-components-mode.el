@@ -64,15 +64,6 @@
 
 ;;; Code:
 
-(unless (boundp 'py-install-directory)
-    (message (concat "Don't see where py-install-directory is set, see README.org, taking default-directory: " default-directory))
-    (defvar py-install-directory default-directory))
-
-(if py-install-directory
-    (add-to-list 'load-path
-		 (concat py-install-directory "extensions"))
-  (error "Don't see where py-install-directory is set, see README.org"))
-
 (require 'ansi-color)
 (require 'cc-cmds)
 (require 'cl)
@@ -97,6 +88,9 @@
   :type 'string
   :tag "py-install-directory"
   :group 'python-mode)
+
+(when (string= "" py-install-directory)
+  (setq py-install-directory default-directory))
 
 (defcustom python-mode-modeline-display "Py"
   "String to display in Emacs modeline "
@@ -2138,6 +2132,8 @@ some logging etc. "
   :type 'string
   :tag "py-section-end"
   :group 'python-mode)
+
+(defvar py-section-re py-section-start)
 
 (defvar py-completion-last-window-configuration nil
   "Internal use: restore py-restore-window-configuration when completion is done resp. abandoned. ")

@@ -178,12 +178,11 @@ If already at beginning-of-line and not at BOB, go to beginning of previous line
 If already at end-of-line and not at EOB, go to end of next line. "
   (interactive)
   (unless (eobp)
-    (let ((erg
-           (if (eolp)
-               (progn
-                 (forward-line 1)
-                 (progn (end-of-line)(point)))
-             (progn (end-of-line)(point)))))
+    (let ((orig (point))
+	  erg)
+      (when (eolp) (forward-line 1))
+      (end-of-line)
+      (when (< orig (point))(setq erg (point)))
       (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
       erg)))
 
@@ -426,19 +425,6 @@ Returns position if succesful "
       erg)))
 
 ;;  Helper functions
-
-(defun py-forward-line (&optional arg)
-  "Goes to end of line after forward move.
-
-Travels right-margin comments. "
-  (interactive "p")
-  (let ((arg (or arg 1)))
-    (forward-line arg)
-    (end-of-line)
-    (skip-chars-backward " \t")
-    (py-backward-comment)
-    (skip-chars-backward " \t")))
-
 (defun py-go-to-beginning-of-comment ()
   "Go to the beginning of current line's comment, if any.
 

@@ -1231,6 +1231,8 @@ Unclosed-string errors are not handled here, as made visible by fontification al
                      py-def-or-class-re)
                     ((eq regexp 'py-def-re)
                      py-def-re)
+		    ((eq regexp 'py-section-re)
+                     py-section-re)
 		    ((eq regexp 'py-expression-re)
 		     py-expression-re)
 		    ((eq regexp 'py-class-re)

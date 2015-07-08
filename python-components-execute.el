@@ -1259,13 +1259,13 @@ Optional OUTPUT-BUFFER and ERROR-BUFFER might be given. "
     (when (called-interactively-p 'any) (switch-to-buffer output-buffer))))
 
 ;; ;
-(defun py-execute-line ()
-  "Send current line from beginning of indent to Python interpreter. "
-  (interactive)
-  (save-excursion
-    (let ((beg (progn (back-to-indentation)
-                      (point))))
-      (py-execute-region beg (line-end-position)))))
+;; (defun py-execute-line ()
+;;   "Send current line from beginning of indent to Python interpreter. "
+;;   (interactive)
+;;   (save-excursion
+;;     (let ((beg (progn (back-to-indentation)
+;;                       (point))))
+;;       (py-execute-region beg (line-end-position)))))
 
 ;;  Subprocess utilities and filters
 (defvar py-last-exeption-buffer nil
