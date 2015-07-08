@@ -801,9 +801,6 @@
 (ert-deftest py-ert-execute-buffer-functionp-test ()
   (should (functionp 'py-execute-buffer)))
 
-(ert-deftest py-ert--execute-buffer-base-functionp-test ()
-  (should (functionp 'py--execute-buffer-base)))
-
 (ert-deftest py-ert-execute-buffer-dedicated-functionp-test ()
   (should (functionp 'py-execute-buffer-dedicated)))
 

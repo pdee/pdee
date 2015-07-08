@@ -1236,56 +1236,6 @@ Basically, this goes down the directory tree as long as there are __init__.py fi
     (funcall rec (file-name-directory file)
              (file-name-sans-extension (file-name-nondirectory file)))))
 
-;;  execute buffer
-(defun py-execute-buffer ()
-  "Send the contents of the buffer to Python default interpreter. "
-  (interactive)
-  ;; (when py-debug-p (message "run: %s" "py-execute-buffer"))
-  (let ((origline (or (ignore-errors origline) 1)))
-    (and py-prompt-on-changed-p (buffer-file-name) (called-interactively-p 'any) (buffer-modified-p)
-         (y-or-n-p "Buffer changed, save first? ")
-         (write-file (buffer-file-name)))
-    (py-execute-region (point-min) (point-max))))
-
-(defun py--execute-buffer-base ()
-  "Honor `py-master-file'. "
-  (let* ((py-master-file (or py-master-file (py-fetch-py-master-file)))
-         (file
-          (if py-master-file
-              (expand-file-name py-master-file)
-            (buffer-file-name))))
-    (if file
-	(py-execute-file file)
-      (py-execute-region (point-min) (point-max)))))
-
-(defun py-execute-buffer-dedicated ()
-  "Send the contents of the buffer to a unique Python interpreter. "
-  (interactive)
-  (let ((py-dedicated-process-p t))
-    (py--execute-buffer-base)))
-
-(defun py-execute-buffer-switch ()
-  "Send the contents of the buffer to Python default interpreter and switches to output. "
-  (interactive)
-  (let ((py-switch-buffers-on-execute-p t))
-    (py--execute-buffer-base)))
-
-(defun py-execute-buffer-no-switch ()
-  "Send the contents of the buffer to Python default interpreter but don't switch to output. "
-  (interactive)
-  (let (py-switch-buffers-on-execute-p)
-    (py--execute-buffer-base)))
-
-(defalias 'py-execute-buffer-switch-dedicated 'py-execute-buffer-dedicated-switch)
-(defun py-execute-buffer-dedicated-switch ()
-  "Send the contents of the buffer to an unique Python interpreter.
-
-Ignores setting of `py-switch-buffers-on-execute-p'. "
-  (interactive)
-  (let ((py-dedicated-process-p t)
-        (py-switch-buffers-on-execute-p t))
-    (py--execute-buffer-base)))
-
 ;;  Fixme: Try to define the function or class within the relevant
 ;;  module, not just at top level.
 (defun py-execute-defun ()

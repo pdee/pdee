@@ -157,7 +157,7 @@ Operators are ignored. "
 
 ;; Partial- or Minor Expression
 ;;  Line
-(defun py-beginning-of-line ()
+(defun py-backward-line ()
   "Go to beginning-of-line, return position.
 
 If already at beginning-of-line and not at BOB, go to beginning of previous line. "
@@ -172,7 +172,7 @@ If already at beginning-of-line and not at BOB, go to beginning of previous line
       (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
       erg)))
 
-(defun py-end-of-line ()
+(defun py-forward-line ()
   "Go to end-of-line, return position.
 
 If already at end-of-line and not at EOB, go to end of next line. "
@@ -755,6 +755,8 @@ Return position if successful"
 (defalias 'py-previous-clause 'py-backward-clause)
 (defalias 'py-previous-def-or-class 'py-backward-def-or-class)
 (defalias 'py-previous-statement 'py-backward-statement)
+(defalias 'py-beginning-of-line 'py-backward-line)
+(defalias 'py-end-of-line 'py-forward-line)
 
 (provide 'python-components-move)
 ;;;  python-components-move.el ends here

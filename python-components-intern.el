@@ -2008,52 +2008,6 @@ If no further element at same level, go one level up."
   "Returns position, if cursor is at the end of buffer, nil otherwise. "
   (when (eobp)(point)))
 
-(defun py--bounds-of-region ()
-  "Returns bounds of region at point.
-
-Returns a list, whose car is beg, cdr - end."
-  (save-excursion
-    (save-restriction
-      (widen)
-      (let ((beg (region-beginning))
-            (end (region-end)))
-        (if (and beg end)
-            (when (called-interactively-p 'any) (message "%s" (list beg end)))
-          (list beg end))))))
-
-(defun py--end-of-paragraph-position ()
-  "Returns end of paragraph position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (progn
-                 (when (looking-at "[ \\t\\r\\n\\f]*$")
-                   (skip-chars-backward " \t\r\n\f")
-                   (forward-char -1))
-                 (py-forward-paragraph)
-		 (point))))
-      (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
-      erg)))
-
-(defun py--beginning-of-comment-position ()
-  "Returns beginning of comment position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (py-backward-comment)))
-      (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
-      erg)))
-
-(defun py--end-of-comment-position ()
-  "Returns end of comment position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (progn
-                 (when (looking-at "[ \\t\\r\\n\\f]*$")
-                   (skip-chars-backward " \t\r\n\f")
-                   (forward-char -1))
-                 (py-forward-comment))))
-      (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
-      erg)))
-
 (defun py-sectionize-region (&optional beg end)
   "Markup code in region as section.
 
