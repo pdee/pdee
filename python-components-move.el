@@ -748,7 +748,6 @@ Return position if successful"
 (defalias 'py-goto-block-or-clause-up 'py-backward-block-or-clause)
 (defalias 'py-goto-block-up 'py-backward-block)
 (defalias 'py-goto-clause-up 'py-backward-clause)
-(defalias 'py-match-paren 'ar-py-match-paren)
 (defalias 'py-next-statement 'py-forward-statement)
 (defalias 'py-previous-block 'py-backward-block)
 (defalias 'py-previous-block-or-clause 'py-backward-block-or-clause)
