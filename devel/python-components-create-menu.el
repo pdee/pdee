@@ -62,7 +62,6 @@
 ;;; Code:
 ")
 
-
 (setq py-menu-custom-forms "         (\"Customize\"
 
 	  [\"Python-mode customize group\" (customize-group 'python-mode)
@@ -894,12 +893,307 @@ set it permanently\"
 See bug report at launchpad, lp:944093. Use `M-x customize-variable' to set it permanently\"
 	     :style toggle :selected py-edit-only-p])))")
 
+(defun write-all-py-menu ()
+  (interactive)
+  (write-py-menu py-bounds-command-names))
+
+(defun write-py-executes-menu (&optional commands)
+  "Reads py-shells. "
+  (interactive)
+  (let ((menu-buffer "Python Executes Menu Buffer")
+        done)
+    (set-buffer (get-buffer-create menu-buffer))
+    (erase-buffer)
+    (switch-to-buffer (current-buffer))
+    (insert ";; Menu py-execute forms
+    \(easy-menu-define py-menu map \"Execute Python\"
+          `(\"PyExec\"
+            :help \"Python-specific features\"\n")
+    (dolist (ccc (or commands py-core-command-name))
+      ;; ["Execute statement" py-execute-statement
+      ;;              :help "`py-execute-statement'
+      ;; Send statement at point to Python interpreter. "]
+      (insert (concat "
+            [\"Execute " ccc "\" py-execute-" ccc "
+             :help \"`py-execute-" ccc "'
+       Send " ccc " at point to Python interpreter. \"]\n")))
+    (dolist (ccc (or commands py-core-command-name))
+      (insert (concat "            ;; " ccc "\n
+            (\"Execute " ccc " ... \"
+            :help \"Execute " ccc " functions\"\n"))
+      (dolist (ele py-shells)
+        ;; ["if" py-if
+        ;; :help "Inserts if-statement"]
+        (insert (concat "
+            \[\"py-execute-" ccc "-" ele "\" py-execute-" ccc "-" ele "
+            :help \"Execute " ccc " through a"))
+        (if (string= "ipython" ele)
+            (insert "n IPython")
+          (insert (concat " " (capitalize ele))))
+        (insert (concat " interpreter.
+        With \\\\[universal-argument] use an unique "))
+        (if (string= "ipython" ele)
+            (insert "IPython")
+          (insert (capitalize ele)))
+        (insert (concat " interpreter. \"]\n")))
+      (insert "            ;; dedicated\n")
+      (switch-to-buffer (current-buffer))
+      (dolist (ele py-shells)
+        ;; ["if" py-if
+        ;; :help "Inserts if-statement"]
+        (insert (concat "
+            \[\"py-execute-" ccc "-" ele "-dedicated\" py-execute-" ccc "-" ele "-dedicated
+:help \"Execute " ccc " through a unique"))
+        (if (string= "ipython" ele)
+            (insert " IPython")
+          (insert (concat " " (capitalize ele))))
+        (insert (concat " interpreter.
+Optional \\\\[universal-argument] forces switch to output buffer, ignores `py-switch-buffers-on-execute-p'. \"]\n")))
+      ;; (unless done
+            (insert "            (\"Ignoring defaults ... \"
+             :help \"Commands will ignore default setting of
+`py-switch-buffers-on-execute-p' and `py-split-window-on-execute'\"")
+            ;; (setq done t))
+      (insert "            ;; switch\n")
+      (dolist (ele py-shells)
+        ;; ["if" py-if
+        ;; :help "Inserts if-statement"]
+        (insert (concat "
+            \[\"py-execute-" ccc "-" ele "-switch\" py-execute-" ccc "-" ele "-switch
+:help \"Execute " ccc " through a"))
+        (if (string= "ipython" ele)
+            (insert "n IPython")
+          (insert (concat " " (capitalize ele))))
+        (insert (concat " interpreter.
+With \\\\[universal-argument] use an unique "))
+        (if (string= "ipython" ele)
+            (insert "IPython")
+          (insert (capitalize ele)))
+        (insert (concat " interpreter. \"]\n")))
+      (insert "            ;; dedicated-switch\n")
+      (dolist (ele py-shells)
+        ;; ["if" py-if
+        ;; :help "Inserts if-statement"]
+        (insert (concat "
+            \[\"py-execute-" ccc "-" ele "-dedicated-switch\" py-execute-" ccc "-" ele "-dedicated-switch
+:help \"Execute " ccc " through a unique"))
+        (if (string= "ipython" ele)
+            (insert "n IPython")
+          (insert (concat " " (capitalize ele))))
+        (insert (concat " interpreter.
+Switch to output buffer; ignores `py-switch-buffers-on-execute-p' \"]\n")))
+      (insert "))"))
+    (insert "))")
+
+    (emacs-lisp-mode)
+    (switch-to-buffer (current-buffer))))
+
+(defun write-py-menu-doppel ()
+  "Reads py-shells. "
+  (interactive)
+  (let ((menu-buffer "*Python Executes Menu Buffer*"))
+    (set-buffer (get-buffer-create menu-buffer))
+    (erase-buffer)
+    (switch-to-buffer (current-buffer))
+    (insert "(easy-menu-define py-menu map \"Execute Python\"
+          `(\"PyExec\"
+            :help \"Python-specific features\"\n")
+    (dolist (ccc py-core-command-name)
+      (insert (concat ";; " ccc "\n"))
+      ;; ["Execute statement" py-execute-statement
+      ;;              :help "`py-execute-statement'
+      ;; Send statement at point to Python interpreter. "]
+      (insert (concat "[\"Execute " ccc "\" py-execute-" ccc "
+             :help \"`py-execute-" ccc "'
+Send statement at point to Python interpreter. \"]\n
+             (\"Execute " ccc " ... \"
+             :help \"Execute " ccc " functions\"\n"))
+      (dolist (ele py-shells)
+        ;; ["if" py-if
+        ;; :help "Inserts if-statement"]
+        (insert (concat "\[\"py-execute-" ccc "-" ele "\" py-execute-" ccc "-" ele "\n
+:help \"  Execute " ccc " through a"))
+        (if (string= "ipython" ele)
+            (insert "n IPython")
+          (insert (concat " " (capitalize ele))))
+        (insert (concat " interpreter.
+
+With \\\\[universal-argument] use an unique "))
+        (if (string= "ipython" ele)
+            (insert "IPython")
+          (insert (capitalize ele)))
+        (insert (concat " interpreter. \"]\n")))
+
+      (insert ";; dedicated\n")
+      (switch-to-buffer (current-buffer))
+      (dolist (ele py-shells)
+        ;; ["if" py-if
+        ;; :help "Inserts if-statement"]
+        (insert (concat "\[\"py-execute-" ccc "-" ele "-dedicated\" py-execute-" ccc "-" ele "-dedicated
+:help \"  Execute " ccc " through a unique"))
+        (if (string= "ipython" ele)
+            (insert " IPython")
+          (insert (concat " " (capitalize ele))))
+        (insert (concat " interpreter.
+
+Optional \\\\[universal-argument] forces switch to output buffer, ignores `py-switch-buffers-on-execute-p'. \"]\n")))
+
+      (insert ";; switch\n")
+      (dolist (ele py-shells)
+        ;; ["if" py-if
+        ;; :help "Inserts if-statement"]
+        (insert (concat "\[\"py-execute-" ccc "-" ele "-switch\" py-execute-" ccc "-" ele "-switch
+:help \"  Execute " ccc " through a"))
+        (if (string= "ipython" ele)
+            (insert "n IPython")
+          (insert (concat " " (capitalize ele))))
+        (insert (concat " interpreter.
+
+With \\\\[universal-argument] use an unique "))
+        (if (string= "ipython" ele)
+            (insert "IPython")
+          (insert (capitalize ele)))
+        (insert (concat " interpreter. \"]\n")))
+      (insert ";; dedicated-switch\n")
+      (dolist (ele py-shells)
+        ;; ["if" py-if
+        ;; :help "Inserts if-statement"]
+        (insert (concat "\[\"py-execute-" ccc "-" ele "-dedicated-switch\" py-execute-" ccc "-" ele "-dedicated-switch
+:help \"  Execute " ccc " through a unique"))
+        (if (string= "ipython" ele)
+            (insert "n IPython")
+          (insert (concat " " (capitalize ele))))
+        (insert (concat " interpreter.
+
+Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. \"]\n")))
+      (insert ")"))
+    (insert "))")
+
+    (emacs-lisp-mode)
+    (switch-to-buffer (current-buffer))))
+
+(defun py-make-shell-menu ()
+  "Reads py-shells, menu entries for these shells. "
+  (interactive)
+  (let ((temp-buffer "*Python Shell Menu Buffer*"))
+    (set-buffer (get-buffer-create temp-buffer))
+    (erase-buffer)
+    (insert ";; Python shell menu")
+    (newline)
+    (switch-to-buffer (current-buffer))
+    (insert "(easy-menu-define py-menu map \"Python Shells\"
+'(\"Py-Shell\"
+  :help \"Python Shells\"\n
+  \[\"Switch to interpreter\" py-shell
+   :help \"Switch to Python process in separate buffer\"]\n")
+    (let ((liste py-shells)
+          erg)
+      (while liste
+        (setq ele (car liste))
+        (setq erg (documentation (intern-soft (car liste))))
+        (when (string-match "Optional DEDICATED SWITCH are provided for use from programs. " erg)
+          (setq erg (replace-regexp-in-string "\n *Optional DEDICATED SWITCH are provided for use from programs. " "" erg)))
+        ;; '("Python"
+        ;;       :help "Python-specific features"
+        ;;       ["Execute statement" py-execute-statement
+        ;;        :help "Send statement at point to Python interpreter. "]
+        (insert (concat " \[\"" ele "\" " ele "
+  :help \"" erg "\"]\n"))
+        (setq liste (cdr liste))))
+    (insert "\"-\"")
+    ;; dedicated
+    (let ((liste py-shells)
+          erg)
+      (while liste
+        (setq ele (concat (car liste) "-dedicated"))
+        (setq erg (documentation (intern-soft ele)))
+        ;; '("Python"
+        ;;       :help "Python-specific features"
+        ;;       ["Execute statement" py-execute-statement
+        ;;        :help "Send statement at point to Python interpreter. "]
+        (insert (concat " \[\"" ele "\" " ele "
+  :help \"" erg "\"]\n"))
+        (setq liste (cdr liste))))
+    (insert "))")))
+
+(defun py-provide-executes-menu-with-resp-to-installed-python ()
+  (interactive)
+  (with-current-buffer "*Python Executes Menu Buffer*"
+    (erase-buffer)
+      ;; ["if" py-if
+      ;; :help "Inserts if-statement"]
+    (dolist (ele py-shells)
+      (insert (concat "\[\"py-execute-buffer-" ele "\" py-execute-buffer-" ele "
+:help \"  Execute buffer through a"))
+      (if (string= "ipython" ele)
+          (insert "n IPython")
+        (insert (concat " " (capitalize ele))))
+      (insert (concat " interpreter.
+
+With \\\\[universal-argument] use an unique "))
+      (if (string= "ipython" ele)
+          (insert "IPython")
+        (insert (capitalize ele)))
+      (insert (concat " interpreter. \"]\n")
+
+      ;; ["if" py-if
+      ;; :help "Inserts if-statement"]
+      (insert (concat "\[\"py-execute-buffer-" ele "-dedicated\" py-execute-buffer-" ele "-dedicated
+:help \"  Execute buffer through a unique"))
+      (if (string= "ipython" ele)
+          (insert " IPython")
+        (insert (concat " " (capitalize ele))))
+      (insert (concat " interpreter.
+
+Optional \\\\[universal-argument] forces switch to output buffer, ignores `py-switch-buffers-on-execute-p'. \"]\n")))
+
+      ;; ["if" py-if
+      ;; :help "Inserts if-statement"]
+      (insert (concat "\[\"py-execute-buffer-" ele "-switch\" py-execute-buffer-" ele "-switch
+:help \"  Execute buffer through a"))
+      (if (string= "ipython" ele)
+          (insert "n IPython")
+        (insert (concat " " (capitalize ele))))
+      (insert (concat " interpreter.
+
+With \\\\[universal-argument] use an unique "))
+      (if (string= "ipython" ele)
+          (insert "IPython")
+        (insert (capitalize ele)))
+      (insert (concat " interpreter. \"]\n")))
+
+      ;; ["if" py-if
+      ;; :help "Inserts if-statement"]
+      (insert (concat "\[\"py-execute-buffer-" ele "-dedicated-switch\" py-execute-buffer-" ele "-dedicated-switch
+:help \"  Execute buffer through a unique"))
+      (if (string= "ipython" ele)
+          (insert "n IPython")
+        (insert (concat " " (capitalize ele))))
+      (insert (concat " interpreter.
+
+Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. \"]\n"))))
+
 (defun py--emen-curb-docu (line)
   "Make docu fit for displaying in tooltip. "
   (setq end (copy-marker (line-end-position)))
   (while (< 5 (- line origline))
     (while (and (not (bobp)) (< orig (point)) (forward-line -1) (not (empty-line-p))))
     (delete-region (line-beginning-position) end)))
+
+(defun py-write-delete-menu ()
+  (interactive)
+    (set-buffer (get-buffer-create "Delete-menu.el"))
+    (erase-buffer)
+    (insert "         (\"Delete\"")
+    (dolist (ele py-execute-forms)
+      (insert (concat "
+             [\"Delete " ele " \" py-delete-" ele "
+              :help \"`py-delete-" ele "'
+Delete " (upcase ele) " at point, don't store in kill-ring. \"]
+")))
+    (insert "          )\n        \"-\"\n")
+  (switch-to-buffer (current-buffer))
+  (emacs-lisp-mode))
 
 (defun py--emen (&optional symbol)
   "Provide menu draft. "

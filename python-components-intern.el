@@ -174,7 +174,8 @@
 (defun py--execute-prepare (form &optional shell dedicated switch beg end file)
   "Used by python-extended-executes ."
   (save-excursion
-    (let* ((beg (unless file
+    (let* ((form (prin1-to-string form))
+	   (beg (unless file
                   (prog1
                       (or beg (funcall (intern-soft (concat "py--beginning-of-" form "-p")))
 

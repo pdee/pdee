@@ -2835,5 +2835,14 @@
 (ert-deftest py-ert-narrow-to-statement-functionp-test ()
   (should (functionp 'py-narrow-to-statement)))
 
+(ert-deftest py-ert-execute-if-block-functionp-test ()
+  (should (functionp 'py-execute-if-block)))
+
+(ert-deftest py-ert-execute-try-block-functionp-test ()
+  (should (functionp 'py-execute-try-block)))
+
+(ert-deftest py-ert-execute-for-block-functionp-test ()
+  (should (functionp 'py-execute-for-block)))
+
 (provide 'py-ert-function-tests)
 ;;; py-ert-function-tests.el ends here
