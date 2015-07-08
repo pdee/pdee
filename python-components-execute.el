@@ -1086,7 +1086,7 @@ See also `py-execute-region'. "
         (shell (or shell (default-value 'py-shell-name))))
     (with-temp-buffer
       (insert string)
-      (py-execute-region (point-min) (point-max) shell))))
+      (py-execute-region (point-min) (point-max)))))
 
 (defun py-execute-string-dedicated (&optional string shell)
   "Send the argument STRING to an unique Python interpreter.
