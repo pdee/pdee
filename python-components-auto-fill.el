@@ -40,17 +40,17 @@
 
 ;; py-fill-column-orig  already defined
 
-(defun py-comment-auto-fill ()
+(defun py-comment-auto-fill (&optional arg) 
   "Toggles comment-auto-fill mode"
-  (interactive)
-  (if (or (and arg (< 0 arg)) (not py-comment-auto-fill))
+  (interactive "P")
+  (if (or (and arg (< 0 (prefix-numeric-value arg))) (and (boundp 'py-comment-auto-fill)(not py-comment-auto-fill)))
       (progn
         (set (make-local-variable 'py-comment-auto-fill) t)
         (setq fill-column comment-fill-column)
         (auto-fill-mode 1))
     (set (make-local-variable 'py-comment-auto-fill) nil)
 ;;    (set (make-local-variable 'py-comment-auto-fill-only-comments) nil)
-    (setq fill-column fill-column-orig)
+    ;; (setq fill-column fill-column-orig)
     (auto-fill-mode -1)))
 
 (defun py-comment-auto-fill-on ()
