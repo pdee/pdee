@@ -100,6 +100,7 @@
        "top-level"
        ))
 
+;; section has a different end as others
 (setq py-execute-forms
       (list
        "block"
@@ -115,7 +116,6 @@
        "paragraph"
        "partial-expression"
        "region"
-       "section"
        "statement"
        "top-level"
        ))
