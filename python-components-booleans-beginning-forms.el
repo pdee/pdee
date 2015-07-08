@@ -247,18 +247,6 @@
         (setq erg orig))
       erg)))
 
-(defun py--beginning-of-clause-bol-p ()
-  "Returns position, if cursor is at beginning-of-line and the beginning of a `clause', nil otherwise. "
-  (let ((orig (point))
-        erg)
-    (save-excursion
-      (unless (and (eolp) (not (empty-line-p)))
-        (py-forward-clause-bol))
-      (py-backward-clause-bol)
-      (when (eq orig (point))
-        (setq erg orig))
-      erg)))
-
 (defun py--beginning-of-block-or-clause-bol-p ()
   "Returns position, if cursor is at beginning-of-line and the beginning of a `block-or-clause', nil otherwise. "
   (let ((orig (point))
@@ -267,18 +255,6 @@
       (unless (and (eolp) (not (empty-line-p)))
         (py-forward-block-or-clause-bol))
       (py-backward-block-or-clause-bol)
-      (when (eq orig (point))
-        (setq erg orig))
-      erg)))
-
-(defun py--beginning-of-def-bol-p ()
-  "Returns position, if cursor is at beginning-of-line and the beginning of a `def', nil otherwise. "
-  (let ((orig (point))
-        erg)
-    (save-excursion
-      (unless (and (eolp) (not (empty-line-p)))
-        (py-forward-def-bol))
-      (py-backward-def-bol)
       (when (eq orig (point))
         (setq erg orig))
       erg)))
@@ -295,6 +271,30 @@
         (setq erg orig))
       erg)))
 
+(defun py--beginning-of-clause-bol-p ()
+  "Returns position, if cursor is at beginning-of-line and the beginning of a `clause', nil otherwise. "
+  (let ((orig (point))
+        erg)
+    (save-excursion
+      (unless (and (eolp) (not (empty-line-p)))
+        (py-forward-clause-bol))
+      (py-backward-clause-bol)
+      (when (eq orig (point))
+        (setq erg orig))
+      erg)))
+
+(defun py--beginning-of-def-bol-p ()
+  "Returns position, if cursor is at beginning-of-line and the beginning of a `def', nil otherwise. "
+  (let ((orig (point))
+        erg)
+    (save-excursion
+      (unless (and (eolp) (not (empty-line-p)))
+        (py-forward-def-bol))
+      (py-backward-def-bol)
+      (when (eq orig (point))
+        (setq erg orig))
+      erg)))
+
 (defun py--beginning-of-def-or-class-bol-p ()
   "Returns position, if cursor is at beginning-of-line and the beginning of a `def-or-class', nil otherwise. "
   (let ((orig (point))
@@ -303,42 +303,6 @@
       (unless (and (eolp) (not (empty-line-p)))
         (py-forward-def-or-class-bol))
       (py-backward-def-or-class-bol)
-      (when (eq orig (point))
-        (setq erg orig))
-      erg)))
-
-(defun py--beginning-of-if-block-bol-p ()
-  "Returns position, if cursor is at beginning-of-line and the beginning of a `if-block', nil otherwise. "
-  (let ((orig (point))
-        erg)
-    (save-excursion
-      (unless (and (eolp) (not (empty-line-p)))
-        (py-forward-if-block-bol))
-      (py-backward-if-block-bol)
-      (when (eq orig (point))
-        (setq erg orig))
-      erg)))
-
-(defun py--beginning-of-try-block-bol-p ()
-  "Returns position, if cursor is at beginning-of-line and the beginning of a `try-block', nil otherwise. "
-  (let ((orig (point))
-        erg)
-    (save-excursion
-      (unless (and (eolp) (not (empty-line-p)))
-        (py-forward-try-block-bol))
-      (py-backward-try-block-bol)
-      (when (eq orig (point))
-        (setq erg orig))
-      erg)))
-
-(defun py--beginning-of-minor-block-bol-p ()
-  "Returns position, if cursor is at beginning-of-line and the beginning of a `minor-block', nil otherwise. "
-  (let ((orig (point))
-        erg)
-    (save-excursion
-      (unless (and (eolp) (not (empty-line-p)))
-        (py-forward-minor-block-bol))
-      (py-backward-minor-block-bol)
       (when (eq orig (point))
         (setq erg orig))
       erg)))
@@ -355,14 +319,26 @@
         (setq erg orig))
       erg)))
 
-(defun py--beginning-of-top-level-bol-p ()
-  "Returns position, if cursor is at beginning-of-line and the beginning of a `top-level', nil otherwise. "
+(defun py--beginning-of-if-block-bol-p ()
+  "Returns position, if cursor is at beginning-of-line and the beginning of a `if-block', nil otherwise. "
   (let ((orig (point))
         erg)
     (save-excursion
       (unless (and (eolp) (not (empty-line-p)))
-        (py-forward-top-level-bol))
-      (py-backward-top-level-bol)
+        (py-forward-if-block-bol))
+      (py-backward-if-block-bol)
+      (when (eq orig (point))
+        (setq erg orig))
+      erg)))
+
+(defun py--beginning-of-minor-block-bol-p ()
+  "Returns position, if cursor is at beginning-of-line and the beginning of a `minor-block', nil otherwise. "
+  (let ((orig (point))
+        erg)
+    (save-excursion
+      (unless (and (eolp) (not (empty-line-p)))
+        (py-forward-minor-block-bol))
+      (py-backward-minor-block-bol)
       (when (eq orig (point))
         (setq erg orig))
       erg)))
@@ -375,6 +351,18 @@
       (unless (and (eolp) (not (empty-line-p)))
         (py-forward-statement-bol))
       (py-backward-statement-bol)
+      (when (eq orig (point))
+        (setq erg orig))
+      erg)))
+
+(defun py--beginning-of-try-block-bol-p ()
+  "Returns position, if cursor is at beginning-of-line and the beginning of a `try-block', nil otherwise. "
+  (let ((orig (point))
+        erg)
+    (save-excursion
+      (unless (and (eolp) (not (empty-line-p)))
+        (py-forward-try-block-bol))
+      (py-backward-try-block-bol)
       (when (eq orig (point))
         (setq erg orig))
       erg)))

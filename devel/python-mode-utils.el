@@ -376,7 +376,21 @@
        "statement"
        "top-level"))
 
-(setq py-bol-forms '("block" "clause" "block-or-clause" "def" "class" "def-or-class" "if-block" "try-block" "minor-block" "for-block" "top-level" "statement"))
+;; "top-level" doesn't make sence WRT bol
+(setq py-bol-forms
+      (list
+       "block"
+       "block-or-clause"
+       "class"
+       "clause"
+       "def"
+       "def-or-class"
+       "for-block"
+       "if-block"
+       "minor-block"
+       "statement"
+       "try-block"
+       ))
 
 (defvar docstring-styles (list "django" "onetwo" "pep-257" "pep-257-nn" "symmetric")
   "Customizable variable `py-fill-docstring-style' provides default value
