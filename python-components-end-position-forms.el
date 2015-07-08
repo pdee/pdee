@@ -49,16 +49,6 @@
                  (py-forward-block-or-clause))))
       erg)))
 
-(defun py--end-of-buffer-position ()
-  "Returns end of buffer position. "
-  (save-excursion
-    (let ((erg (progn
-                 (when (looking-at "[ \\t\\r\\n\\f]*$")
-                   (skip-chars-backward " \t\r\n\f")
-                   (forward-char -1))
-                 (py-forward-buffer))))
-      erg)))
-
 (defun py--end-of-class-position ()
   "Returns end of class position. "
   (save-excursion
@@ -79,6 +69,16 @@
                  (py-forward-clause))))
       erg)))
 
+(defun py--end-of-comment-position ()
+  "Returns end of comment position. "
+  (save-excursion
+    (let ((erg (progn
+                 (when (looking-at "[ \\t\\r\\n\\f]*$")
+                   (skip-chars-backward " \t\r\n\f")
+                   (forward-char -1))
+                 (py-forward-comment))))
+      erg)))
+
 (defun py--end-of-def-position ()
   "Returns end of def position. "
   (save-excursion
@@ -97,16 +97,6 @@
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
                  (py-forward-def-or-class))))
-      erg)))
-
-(defun py--end-of-else-block-position ()
-  "Returns end of else-block position. "
-  (save-excursion
-    (let ((erg (progn
-                 (when (looking-at "[ \\t\\r\\n\\f]*$")
-                   (skip-chars-backward " \t\r\n\f")
-                   (forward-char -1))
-                 (py-forward-else-block))))
       erg)))
 
 (defun py--end-of-except-block-position ()
@@ -139,6 +129,16 @@
                  (py-forward-if-block))))
       erg)))
 
+(defun py--end-of-line-position ()
+  "Returns end of line position. "
+  (save-excursion
+    (let ((erg (progn
+                 (when (looking-at "[ \\t\\r\\n\\f]*$")
+                   (skip-chars-backward " \t\r\n\f")
+                   (forward-char -1))
+                 (py-forward-line))))
+      erg)))
+
 (defun py--end-of-minor-block-position ()
   "Returns end of minor-block position. "
   (save-excursion
@@ -147,6 +147,16 @@
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
                  (py-forward-minor-block))))
+      erg)))
+
+(defun py--end-of-paragraph-position ()
+  "Returns end of paragraph position. "
+  (save-excursion
+    (let ((erg (progn
+                 (when (looking-at "[ \\t\\r\\n\\f]*$")
+                   (skip-chars-backward " \t\r\n\f")
+                   (forward-char -1))
+                 (py-forward-paragraph))))
       erg)))
 
 (defun py--end-of-partial-expression-position ()

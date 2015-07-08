@@ -2004,10 +2004,6 @@ If no further element at same level, go one level up."
           ((py--beginning-of-statement-p) (py--beginning-of-form-intern 'py-extended-block-or-clause-re (called-interactively-p 'any)))
           (t (py-backward-statement)))))
 
-(defun py--end-of-line-p ()
-  "Returns position, if cursor is at the end of a line, nil otherwise. "
-  (when (eolp)(point)))
-
 (defun py--end-of-buffer-p ()
   "Returns position, if cursor is at the end of buffer, nil otherwise. "
   (when (eobp)(point)))
@@ -2024,16 +2020,6 @@ Returns a list, whose car is beg, cdr - end."
         (if (and beg end)
             (when (called-interactively-p 'any) (message "%s" (list beg end)))
           (list beg end))))))
-
-(defun py--beginning-of-paragraph-position ()
-  "Returns beginning of paragraph position. "
-  (interactive)
-  (save-excursion
-    (let ((erg (progn
-		 (py-backward-paragraph)
-		 (point))))
-      (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
-      erg)))
 
 (defun py--end-of-paragraph-position ()
   "Returns end of paragraph position. "
