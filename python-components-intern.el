@@ -2068,47 +2068,6 @@ Returns a list, whose car is beg, cdr - end."
       (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
       erg)))
 
-;; from gud.el
-;; (defun pdb (command-line)
-;;   "Run pdb on program FILE in buffer `*gud-FILE*'.
-;; The directory containing FILE becomes the initial working directory
-;; and source-file directory for your debugger."
-;;   (interactive
-;;    (list (gud-query-cmdline 'pdb)))
-
-(defun py--pdb-versioned ()
-  "Guess existing pdb version from py-shell-name
-
-Return \"pdb[VERSION]\" if executable found, just \"pdb\" otherwise"
-  (interactive)
-  (let ((erg (when (string-match "[23]" py-shell-name)
-	       ;; versions-part
-	       (substring py-shell-name (string-match "[23]" py-shell-name)))))
-    (if erg
-      (cond ((executable-find (concat "pdb" erg))
-	     (concat "pdb" erg))
-	    ((and (string-match "\\." erg)
-		  (executable-find (concat "pdb" (substring erg 0 (string-match "\\." erg)))))
-	     (concat "pdb" (substring erg 0 (string-match "\\." erg)))))
-      "pdb")))
-
-(defun py-pdb (command-line)
-  "Run pdb on program FILE in buffer `*gud-FILE*'.
-The directory containing FILE becomes the initial working directory
-and source-file directory for your debugger.
-
-At GNU Linux systems required pdb version should be detected by `py--pdb-version', at Windows configure `py-python-ms-pdb-command'
-
-lp:963253"
-  (interactive
-   (list (gud-query-cmdline
-	  (if (or (eq system-type 'ms-dos)(eq system-type 'windows-nt))
-	      (car (read-from-string py-python-ms-pdb-command))
-	    ;; sys.version_info[0]
-	    (car (read-from-string (py--pdb-version)))) "asdf")))
-  (pdb command-line (buffer-file-name)))
-
-;; Section
 (defun py-sectionize-region (&optional beg end)
   "Markup code in region as section.
 

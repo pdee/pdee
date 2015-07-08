@@ -971,6 +971,9 @@ If you ignore the location `M-x py-guess-pdb-path' might display it."
   :tag "py-pdb-path"
   :group 'python-mode)
 
+(defvar py-python-ms-pdb-command ""
+  "MS-systems might use that")
+
 (defcustom py-indent-comments t
   "When t, comment lines are indented. "
   :type 'boolean
