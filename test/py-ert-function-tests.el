@@ -1875,32 +1875,11 @@
 (ert-deftest py-ert-class-at-point-functionp-test ()
   (should (functionp 'py-class-at-point)))
 
-(ert-deftest py-ert-ar-py-function-at-point-functionp-test ()
-  (should (functionp 'ar-py-function-at-point)))
-
-(ert-deftest py-ert-ar-py-backward-function-functionp-test ()
-  (should (functionp 'ar-py-beginning-of-function)))
-
-(ert-deftest py-ert-ar-py-backward-class-functionp-test ()
-  (should (functionp 'ar-py-beginning-of-class)))
-
-(ert-deftest py-ert-ar-py-end-of-function-functionp-test ()
-  (should (functionp 'ar-py-end-of-function)))
-
-(ert-deftest py-ert-ar-py-line-at-point-functionp-test ()
-  (should (functionp 'ar-py-line-at-point)))
-
-(ert-deftest py-ert-ar-py-looking-at-keywords-p-functionp-test ()
-  (should (functionp 'ar-py-looking-at-keywords-p)))
-
 (ert-deftest py-ert-py-match-paren-mode-functionp-test ()
   (should (functionp 'py-match-paren-mode)))
 
 (ert-deftest py-ert-py-match-paren-functionp-test ()
   (should (functionp 'py-match-paren)))
-
-(ert-deftest py-ert-ar-py-documentation-functionp-test ()
-  (should (functionp 'ar-py-documentation)))
 
 (ert-deftest py-ert-eva-functionp-test ()
   (should (functionp 'eva)))

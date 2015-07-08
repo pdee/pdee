@@ -156,48 +156,41 @@ If final line isn't empty and `py-close-block-or-clause-provides-newline' non-ni
 With interactive call, send it to the message buffer too. "
   (interactive)
   (save-excursion
-    (let* ((beg (ar-py-beginning-of-class))
-	   (end (ar-py-end-of-class))
+    (let* ((beg (py-backward-class))
+	   (end (py-forward-class))
 	   (res (when (and (numberp beg)(numberp end)(< beg end)) (buffer-substring-no-properties beg end))))
       (when (called-interactively-p 'any) (message "%s" res))
       res)))
 
-(defun ar-py-function-at-point ()
+(defun py-function-at-point ()
   "Return functions definition as string.
 
 With interactive call, send it to the message buffer too. "
   (interactive)
   (save-excursion
-    (let* ((beg (ar-py-beginning-of-function))
-	   (end (ar-py-end-of-function))
+    (let* ((beg (py-backward-function))
+	   (end (py-forward-function))
 	   (res (when (and (numberp beg)(numberp end)(< beg end)) (buffer-substring-no-properties beg end))))
       (when (called-interactively-p 'any) (message "%s" res))
       res)))
 
-(defun ar-py-beginning-of-function (&optional count)
+(defun py-backward-function (&optional count)
   "Jump to the beginning of defun. Returns point. "
   (interactive "p")
-  (let ((pos (ar-py-beginning-of-def-or-class nil count)))
+  (let ((pos (py-backward-def-or-class nil count)))
     (when (called-interactively-p 'any) (message "%s" pos))
     pos))
 
-(defun ar-py-beginning-of-class (&optional count)
-  "Jump to the beginning of class definition. Returns column. "
-  (interactive "p")
-  (let ((pos (ar-py-beginning-of-def-or-class t count)))
-    (when (called-interactively-p 'any) (message "%s" pos))
-    pos))
-
-(defun ar-py-end-of-function (&optional class count)
+(defun py-forward-function (&optional class count)
   "Jump to the end of function. "
   (interactive "p")
-  (let ((pos (ar-py-end-of-def-or-class nil count)))
+  (let ((pos (py-forward-def-or-class nil count)))
     (when (called-interactively-p 'any) (message "%s" pos))
     pos))
 
 ;; Functions for marking regions
 
-(defun ar-py-line-at-point ()
+(defun py-line-at-point ()
   "Return line as string.
   With interactive call, send it to the message buffer too. "
   (interactive)
@@ -207,7 +200,7 @@ With interactive call, send it to the message buffer too. "
     (when (called-interactively-p 'any) (message "%s" res))
     res))
 
-(defun ar-py-looking-at-keywords-p ()
+(defun py-looking-at-keywords-p ()
   "If looking at a python keyword. Returns t or nil. "
   (interactive)
   (let* ((kwds1 (car (nth 1 (eval (eval (quote (car font-lock-defaults)))))))
@@ -375,7 +368,7 @@ Matches lists, but also block, statement, string and comment. "
       (when (called-interactively-p 'any) (message "%s" erg))
       erg)))
 
-(defun ar-py-documentation (w)
+(defun py-documentation (w)
   "Launch PyDOC on the Word at Point"
   (interactive
    (list (let* ((word (thing-at-point 'word))
