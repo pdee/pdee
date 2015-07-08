@@ -723,12 +723,6 @@ Returns the string inserted. "
       (insert erg))
     erg))
 
-(defun py-comment-region (beg end &optional arg)
-  "Like `comment-region' but uses double hash (`#') comment starter."
-  (interactive "r\nP")
-  (let ((comment-start py-block-comment-prefix))
-    (comment-region beg end arg)))
-
 (defun py-delete-comments-in-def-or-class ()
   "Delete all commented lines in def-or-class at point"
   (interactive "*")

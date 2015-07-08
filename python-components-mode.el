@@ -130,7 +130,7 @@ Results arrive in output buffer, which is not in comint-mode"
   :group 'python-mode)
 
 (defcustom py-sexp-use-expression-p nil
- "If non-nil, C-M-s call py-forward-expression. 
+ "If non-nil, C-M-s call py-forward-expression.
 
 Respective C-M-b will call py-backward-expression
 Default is t"
@@ -3145,33 +3145,34 @@ Returns char found. "
       (when (or (looking-at "\"")(looking-at "[ \t]*#[ \t]*"))
         (point))))
 
-(defconst python-rx-constituents
-    `((block-start          . ,(rx symbol-start
-                                   (or "def" "class" "if" "elif" "else" "try"
-                                       "except" "finally" "for" "while" "with")
-                                   symbol-end))
-      (decorator            . ,(rx line-start (* space) ?@ (any letter ?_)
-                                   (* (any word ?_))))
-      (defun                . ,(rx symbol-start (or "def" "class") symbol-end))
-      (if-name-main         . ,(rx line-start "if" (+ space) "__name__"
-                                   (+ space) "==" (+ space)
-                                   (any ?' ?\") "__main__" (any ?' ?\")
-                                   (* space) ?:))
-      (symbol-name          . ,(rx (any letter ?_) (* (any word ?_))))
-      (open-paren           . ,(rx (or "{" "[" "(")))
-      (close-paren          . ,(rx (or "}" "]" ")")))
-      (simple-operator      . ,(rx (any ?+ ?- ?/ ?& ?^ ?~ ?| ?* ?< ?> ?= ?%)))
+(eval-and-compile
+  (defconst python-rx-constituents
+    `((block-start . ,(rx symbol-start
+			  (or "def" "class" "if" "elif" "else" "try"
+			      "except" "finally" "for" "while" "with")
+			  symbol-end))
+      (decorator . ,(rx line-start (* space) ?@ (any letter ?_)
+			(* (any word ?_))))
+      (defun . ,(rx symbol-start (or "def" "class") symbol-end))
+      (if-name-main . ,(rx line-start "if" (+ space) "__name__"
+			   (+ space) "==" (+ space)
+			   (any ?' ?\") "__main__" (any ?' ?\")
+			   (* space) ?:))
+      (symbol-name . ,(rx (any letter ?_) (* (any word ?_))))
+      (open-paren . ,(rx (or "{" "[" "(")))
+      (close-paren . ,(rx (or "}" "]" ")")))
+      (simple-operator . ,(rx (any ?+ ?- ?/ ?& ?^ ?~ ?| ?* ?< ?> ?= ?%)))
       ;; FIXME: rx should support (not simple-operator).
-      (not-simple-operator  . ,(rx
-                                (not
-                                 (any ?+ ?- ?/ ?& ?^ ?~ ?| ?* ?< ?> ?= ?%))))
+      (not-simple-operator . ,(rx
+			       (not
+				(any ?+ ?- ?/ ?& ?^ ?~ ?| ?* ?< ?> ?= ?%))))
       ;; FIXME: Use regexp-opt.
-      (operator             . ,(rx (or "+" "-" "/" "&" "^" "~" "|" "*" "<" ">"
-                                       "=" "%" "**" "//" "<<" ">>" "<=" "!="
-                                       "==" ">=" "is" "not")))
+      (operator . ,(rx (or "+" "-" "/" "&" "^" "~" "|" "*" "<" ">"
+			   "=" "%" "**" "//" "<<" ">>" "<=" "!="
+			   "==" ">=" "is" "not")))
       ;; FIXME: Use regexp-opt.
-      (assignment-operator  . ,(rx (or "=" "+=" "-=" "*=" "/=" "//=" "%=" "**="
-                                       ">>=" "<<=" "&=" "^=" "|=")))
+      (assignment-operator . ,(rx (or "=" "+=" "-=" "*=" "/=" "//=" "%=" "**="
+				      ">>=" "<<=" "&=" "^=" "|=")))
       (string-delimiter . ,(rx (and
                                 ;; Match even number of backslashes.
                                 (or (not (any ?\\ ?\' ?\")) point
@@ -3180,18 +3181,19 @@ Returns char found. "
                                          (* ?\\ ?\\) (any ?\' ?\")))
                                 (* ?\\ ?\\)
                                 ;; Match single or triple quotes of any kind.
-                                (group (or  "\"" "\"\"\"" "'" "'''"))))))
-    "Additional Python specific sexps for `python-rx'")
+                                (group (or "\"" "\"\"\"" "'" "'''"))))))
+    "Additional Python specific sexps for `python-rx'"))
 
-(defmacro python-rx (&rest regexps)
-  "Python mode specialized rx macro which supports common python named REGEXPS."
-  (let ((rx-constituents (append python-rx-constituents rx-constituents)))
-    (cond ((null regexps)
-           (error "No regexp"))
-          ((cdr regexps)
-           (rx-to-string `(and ,@regexps) t))
-          (t
-           (rx-to-string (car regexps) t)))))
+(eval-and-compile
+  (defmacro python-rx (&rest regexps)
+    "Python mode specialized rx macro which supports common python named REGEXPS."
+    (let ((rx-constituents (append python-rx-constituents rx-constituents)))
+      (cond ((null regexps)
+	     (error "No regexp"))
+	    ((cdr regexps)
+	     (rx-to-string `(and ,@regexps) t))
+	    (t
+	     (rx-to-string (car regexps) t))))))
 
 ;;  Font-lock and syntax
 (setq python-font-lock-keywords
