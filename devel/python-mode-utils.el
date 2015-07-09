@@ -1,4 +1,4 @@
-s;;; python-mode-utils.el - generating parts of python-mode.el
+;;; python-mode-utils.el - generating parts of python-mode.el
 
 
 ;; Copyright (C) 2015  Andreas Röhler

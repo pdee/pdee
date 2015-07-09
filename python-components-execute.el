@@ -592,7 +592,7 @@ Receives a buffer-name as argument"
 	(py-python-shell-mode)))
     buffer))
 
-(defun py--guess-buffer-name (argprompt)
+(defun py--guess-buffer-name (argprompt dedicated)
   "Guess the buffer-name core string. "
   (and (not dedicated) argprompt
        (cond ((eq 4 (prefix-numeric-value argprompt))
@@ -603,8 +603,7 @@ Receives a buffer-name as argument"
 		   (fboundp 'split-string))
 	      (setq args (split-string
 			  (read-string "Py-Shell arguments: "
-				       (concat
-					(mapconcat 'identity py-python-command-args " ") " "))))))))
+					py-python-command-args)))))))
 
 (defun py--configured-shell (name)
   "Return the configured PATH/TO/STRING if any. "
@@ -695,7 +694,7 @@ Receives a buffer-name as argument"
 	 (args (py--provide-command-args))
 
 	 (py-use-local-default (py--determine-local-default))
-	 (py-buffer-name (or buffer-name (py--guess-buffer-name argprompt)))
+	 (py-buffer-name (or buffer-name (py--guess-buffer-name argprompt dedicated)))
 	 (py-buffer-name (or py-buffer-name (py--choose-buffer-name nil dedicated fast-process)))
 	 (executable (cond (py-shell-name)
 			   (py-buffer-name
