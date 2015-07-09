@@ -289,7 +289,8 @@ Optional \\[universal-argument] used for debugging, will prevent deletion of tem
         (terpri)
         (setq start end))
       (princ (substitute-command-keys (substring str start)))
-      (and comint-vars-p (py-report-comint-variable-setting)))
+      ;; (and comint-vars-p (py-report-comint-variable-setting))
+      )
     (if (featurep 'xemacs) (print-help-return-message)
       (help-print-return-message))))
 

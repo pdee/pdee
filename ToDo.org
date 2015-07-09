@@ -1,3 +1,4 @@
+* py-report-comint-variable-setting
 *   New keys setting in `py-python-shell-mode-map'
   
   [(control c)(control l)] 'comint-dynamic-list-input-ring)
