@@ -660,7 +660,7 @@ Receives a buffer-name as argument"
     (when py-use-local-default
       (error "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'"))))
 
-(defun py--provide-command-args ()
+(defun py--provide-command-args (fast-process)
   (cond (fast-process nil)
 	((string-match "^[Ii]" py-shell-name)
 	 py-ipython-command-args)
@@ -691,7 +691,7 @@ Receives a buffer-name as argument"
 	 (py-shell-name (or shell
 			    ;; (py--configured-shell (py-choose-shell))
 			    (py-choose-shell)))
-	 (args (py--provide-command-args))
+	 (args (py--provide-command-args fast-process))
 
 	 (py-use-local-default (py--determine-local-default))
 	 (py-buffer-name (or buffer-name (py--guess-buffer-name argprompt dedicated)))
