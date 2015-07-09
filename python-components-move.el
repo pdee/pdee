@@ -724,6 +724,7 @@ Return position if successful"
 (defalias 'py-beginning-of-statement 'py-backward-statement)
 (defalias 'py-beginning-of-statement-bol 'py-backward-statement-bol)
 (defalias 'py-beginning-of-top-level 'py-backward-top-level)
+(defalias 'py-end-of-comment 'py-forward-comment)
 (defalias 'py-end-of-decorator 'py-forward-decorator)
 (defalias 'py-end-of-def-or-class 'py-forward-def-or-class)
 (defalias 'py-end-of-expression 'py-forward-expression)

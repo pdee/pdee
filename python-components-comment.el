@@ -112,7 +112,7 @@ If region is active, restrict uncommenting at region "
              (beg (or beg (save-excursion
                             (while (and (py-beginning-of-comment) (setq last (point))(prog1 (forward-line -1)(end-of-line))))
                             last))))
-        (and (py-end-of-comment))
+        (and (py-forward-comment))
         (py--uncomment-intern beg (point))))))
 
 (defun py-comment-region (beg end &optional arg)
