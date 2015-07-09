@@ -1027,6 +1027,7 @@ Returns position where output starts. "
 	 (msg (and py-verbose-p (format "## executing %s...\n" filename)))
 	 (buffer (or procbuf (py-shell nil nil nil procbuf)))
 	 (proc (or proc (get-buffer-process buffer)))
+	 (windows-config (window-configuration-to-register py-windows-config-register))
 	 erg orig)
     (with-current-buffer buffer
       ;; (when py-debug-p (switch-to-buffer (current-buffer)))
