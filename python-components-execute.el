@@ -1048,7 +1048,7 @@ Returns position where output starts. "
   "When called interactively, user is prompted for filename. "
   (interactive "fFilename: ")
   (let (;; postprocess-output-buffer might want origline
-        (origline (or (ignore-errors origline) 1))
+        (origline 1)
         (windows-config (window-configuration-to-register 313465889))
         (py-exception-buffer filename)
         erg)
@@ -1151,7 +1151,7 @@ Avoid empty lines at the beginning. "
       (unless (py--beginning-of-statement-p)
 	(py-down-statement))
       (while (not (eq (current-indentation) 0))
-	(py-shift-left py-indent-offset start end))
+	(py-shift-left py-indent-offset))
       (goto-char (point-max))
       (unless (empty-line-p)
 	(newline))
