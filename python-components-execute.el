@@ -1196,7 +1196,7 @@ This may be preferable to `\\[py-execute-buffer]' because:
    uses of qualified names (MODULE.NAME).
 
  - The Python debugger gets line number information about the functions."
-  (interactive "p") c
+  (interactive "p")
   ;; Check file local variable py-master-file
   (when py-master-file
     (let* ((filename (expand-file-name py-master-file))
