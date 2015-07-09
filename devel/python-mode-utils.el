@@ -2678,7 +2678,7 @@ Returns end of " ele " if successful, nil otherwise\"
 See also `py-down-" ele "': down from current definition to next beginning of " ele " below. \"
   (interactive)
   (let ((erg (py-forward-" ele " indent)))
-    (setq erg (py--beginning-of-line-form))
+    (setq erg (py--beginning-of-line-form erg))
     (when (called-interactively-p 'any) (message \"%s\" erg))
     erg))
 ")))

@@ -1899,7 +1899,7 @@ Returns position if successful, nil otherwise"
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
-(defun py--beginning-of-line-form ()
+(defun py--beginning-of-line-form (erg)
   "Internal use: Go to beginning of line following end of form. "
   (when erg
     (unless (eobp)

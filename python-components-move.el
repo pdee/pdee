@@ -376,7 +376,7 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
   "Go to the beginning-of-line following current statement."
   (interactive)
   (let ((erg (py-forward-statement)))
-    (setq erg (py--beginning-of-line-form))
+    (setq erg (py--beginning-of-line-form erg))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
