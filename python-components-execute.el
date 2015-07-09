@@ -832,7 +832,7 @@ When optional FILE is `t', no temporary file is needed. "
     (cond (py-fast-process-p (py--send-to-fast-process strg proc output-buffer))
 	  ;; enforce proceeding as python-mode.el v5
 	  (python-mode-v5-behavior-p
-	   (py-execute-python-mode-v5 start end py-exception-buffer))
+	   (py-execute-python-mode-v5 start end py-exception-buffer origline))
 	  (py-execute-no-temp-p
 	   (py--execute-ge24.3 start end filename execute-directory which-shell py-exception-buffer proc file origline))
 	  ((and filename wholebuf)
@@ -987,7 +987,7 @@ May we get rid of the temporary file? "
     (set-buffer-modified-p 'nil)
     (kill-buffer filebuf)))
 
-(defun py-execute-python-mode-v5 (start end &optional py-exception-buffer)
+(defun py-execute-python-mode-v5 (start end &optional py-exception-buffer origline)
   (interactive "r")
   (let ((py-exception-buffer (or py-exception-buffer (current-buffer)))
         (pcmd (concat py-shell-name (if (string-equal py-which-bufname
