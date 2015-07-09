@@ -837,9 +837,9 @@ When optional FILE is `t', no temporary file is needed. "
 	   (py--execute-ge24.3 start end filename execute-directory which-shell py-exception-buffer proc file origline))
 	  ((and filename wholebuf)
 	   (py--execute-file-base proc filename nil buffer nil filename execute-directory py-exception-buffer origline))
-	  (t (py--execute-buffer-finally strg execute-directory wholebuf which-shell proc buffer)))))
+	  (t (py--execute-buffer-finally strg execute-directory wholebuf which-shell proc buffer origline)))))
 
-(defun py--execute-buffer-finally (strg execute-directory wholebuf which-shell proc procbuf)
+(defun py--execute-buffer-finally (strg execute-directory wholebuf which-shell proc procbuf origline)
   (let* ((temp (make-temp-name
 		;; FixMe: that should be simpler
                 (concat (replace-regexp-in-string py-separator-char "-" (replace-regexp-in-string (concat "^" py-separator-char) "" (replace-regexp-in-string ":" "-" (if (stringp which-shell) which-shell (prin1-to-string which-shell))))) "-")))
@@ -848,7 +848,6 @@ When optional FILE is `t', no temporary file is needed. "
 	 erg)
     (with-current-buffer tempbuf
       (when py-debug-p (message "py--execute-buffer-finally: py-split-window-on-execute: %s" py-split-window-on-execute))
-      ;; (and py-verbose-p (message "%s" "py--execute-buffer-finally"))
       (insert strg)
       (write-file tempfile))
     (unwind-protect
