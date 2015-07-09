@@ -619,7 +619,7 @@ Receives a buffer-name as argument"
 	   (or py-jython-command name))
 	  (t (or py-python-command name)))))
 
-(defun py--grab-prompt-ps1 ()
+(defun py--grab-prompt-ps1 (proc buffer)
   (py--send-string-no-output "import sys")
   (py--fast-send-string-intern "sys.ps1" proc buffer nil t))
 
@@ -635,7 +635,7 @@ Receives a buffer-name as argument"
     (setq py-output-buffer py-buffer-name)
     (py--fast-send-string-no-output py-shell-completion-setup-code proc py-buffer-name)))
 
-(defun py--reuse-existing-shell ()
+(defun py--reuse-existing-shell (exception-buffer)
   (setq py-exception-buffer (or exception-buffer (and py-exception-buffer (buffer-live-p py-exception-buffer) py-exception-buffer) py-buffer-name)))
 
 (defun py--create-new-shell (executable)
@@ -708,7 +708,7 @@ Receives a buffer-name as argument"
 	;; user rather wants an interactive shell
 	(py--shell-fast-proceeding proc py-buffer-name py-shell-name  py-shell-completion-setup-code)
       (if (comint-check-proc py-buffer-name)
-	  (py--reuse-existing-shell)
+	  (py--reuse-existing-shell exception-buffer)
 	;; buffer might exist but not being empty
 	(when (buffer-live-p py-buffer-name)
 	  (with-current-buffer py-buffer-name
