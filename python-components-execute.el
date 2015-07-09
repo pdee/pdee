@@ -834,7 +834,7 @@ When optional FILE is `t', no temporary file is needed. "
 	  (python-mode-v5-behavior-p
 	   (py-execute-python-mode-v5 start end py-exception-buffer))
 	  (py-execute-no-temp-p
-	   (py--execute-ge24.3 start end filename execute-directory which-shell py-exception-buffer proc file))
+	   (py--execute-ge24.3 start end filename execute-directory which-shell py-exception-buffer proc file origline))
 	  ((and filename wholebuf)
 	   (py--execute-file-base proc filename nil buffer nil filename execute-directory py-exception-buffer))
 	  (t (py--execute-buffer-finally strg execute-directory wholebuf which-shell proc buffer)))))
@@ -933,7 +933,7 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
 	  (or py-error py-result))
       (message "py--postprocess-comint: %s" "Don't see any result"))))
 
-(defun py--execute-ge24.3 (start end filename execute-directory which-shell &optional py-exception-buffer proc file)
+(defun py--execute-ge24.3 (start end filename execute-directory which-shell &optional py-exception-buffer proc file origline)
   "An alternative way to do it.
 
 May we get rid of the temporary file? "
