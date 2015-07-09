@@ -1944,7 +1944,7 @@ If BOL is t, mark from beginning-of-line"
                 (funcall begform)))
     (when py-mark-decorators
       (save-excursion
-        (when (setq erg (py-backward-decorator-bol))
+        (when (setq erg (py-backward-decorator))
           (setq beg erg))))
     (setq end (funcall endform))
     (push-mark beg t t)
