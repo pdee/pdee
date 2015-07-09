@@ -1,4 +1,4 @@
-;;; python-mode-utils.el - generating parts of python-mode.el
+s;;; python-mode-utils.el - generating parts of python-mode.el
 
 
 ;; Copyright (C) 2015  Andreas Röhler
@@ -262,7 +262,7 @@
        "statement"
        "top-level"))
 
-;; top-level not part of `py-shift-bol-forms'
+;; top-level, paragraph not part of `py-shift-bol-forms'
 (setq py-shift-bol-forms
       (list
        "block"
@@ -277,7 +277,6 @@
        "for-block"
        "if-block"
        "minor-block"
-       "paragraph"
        "statement"
        "try-block"
        ))

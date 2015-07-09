@@ -329,16 +329,6 @@
                  (py-forward-minor-block-bol))))
       erg)))
 
-(defun py--end-of-paragraph-position-bol ()
-  "Returns end of paragraph position at beginning-of-line. "
-  (save-excursion
-    (let ((erg (progn
-                 (when (looking-at "[ \\t\\r\\n\\f]*$")
-                   (skip-chars-backward " \t\r\n\f")
-                   (forward-char -1))
-                 (py-forward-paragraph-bol))))
-      erg)))
-
 (defun py--end-of-statement-position-bol ()
   "Returns end of statement position at beginning-of-line. "
   (save-excursion
