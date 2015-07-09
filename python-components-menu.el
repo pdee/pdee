@@ -2239,32 +2239,32 @@ Delete the preceding character or all preceding whitespace"]
 Delete the following character or all following whitespace"]
             )
           ("Filling"
-	   ["Py docstring style" py-py-docstring-style
-	    :help " `py-py-docstring-style'"]
+	   ["Py docstring style" py-docstring-style
+	    :help " `py-docstring-style'"]
 
-	   ["Py fill comment" py-py-fill-comment
-	    :help " `py-py-fill-comment'"]
+	   ["Py fill comment" py-fill-comment
+	    :help " `py-fill-comment'"]
 
-	   ["Py fill paragraph" py-py-fill-paragraph
-	    :help " `py-py-fill-paragraph'"]
+	   ["Py fill paragraph" py-fill-paragraph
+	    :help " `py-fill-paragraph'"]
 
-	   ["Py fill string" py-py-fill-string
-	    :help " `py-py-fill-string'"]
+	   ["Py fill string" py-fill-string
+	    :help " `py-fill-string'"]
 
-	   ["Py fill string django" py-py-fill-string-django
-	    :help " `py-py-fill-string-django'"]
+	   ["Py fill string django" py-fill-string-django
+	    :help " `py-fill-string-django'"]
 
-	   ["Py fill string onetwo" py-py-fill-string-onetwo
-	    :help " `py-py-fill-string-onetwo'"]
+	   ["Py fill string onetwo" py-fill-string-onetwo
+	    :help " `py-fill-string-onetwo'"]
 
-	   ["Py fill string pep 257" py-py-fill-string-pep-257
-	    :help " `py-py-fill-string-pep-257'"]
+	   ["Py fill string pep 257" py-fill-string-pep-257
+	    :help " `py-fill-string-pep-257'"]
 
-	   ["Py fill string pep 257 nn" py-py-fill-string-pep-257-nn
-	    :help " `py-py-fill-string-pep-257-nn'"]
+	   ["Py fill string pep 257 nn" py-fill-string-pep-257-nn
+	    :help " `py-fill-string-pep-257-nn'"]
 
-	   ["Py fill string symmetric" py-py-fill-string-symmetric
-	    :help " `py-py-fill-string-symmetric'"]
+	   ["Py fill string symmetric" py-fill-string-symmetric
+	    :help " `py-fill-string-symmetric'"]
             )
           ("Abbrevs"	   :help "see also `py-add-abbrev'"
 	   :filter (lambda (&rest junk)
@@ -2274,14 +2274,14 @@ Delete the following character or all following whitespace"]
 	   :help " `py-add-abbrev'
 Defines python-mode specific abbrev for last expressions before point."]
           ("Completion"
-	   ["Py indent or complete" py-py-indent-or-complete
-	    :help " `py-py-indent-or-complete'"]
+	   ["Py indent or complete" py-indent-or-complete
+	    :help " `py-indent-or-complete'"]
 
-	   ["Py shell complete" py-py-shell-complete
-	    :help " `py-py-shell-complete'"]
+	   ["Py shell complete" py-shell-complete
+	    :help " `py-shell-complete'"]
 
-	   ["Py complete" py-py-complete
-	    :help " `py-py-complete'"]
+	   ["Py complete" py-complete
+	    :help " `py-complete'"]
             )
 
           ["Find function" py-find-function
