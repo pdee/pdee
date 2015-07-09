@@ -594,16 +594,10 @@ Receives a buffer-name as argument"
 
 (defun py--guess-buffer-name (argprompt dedicated)
   "Guess the buffer-name core string. "
-  (and (not dedicated) argprompt
-       (cond ((eq 4 (prefix-numeric-value argprompt))
-	(prog1
-	    (read-buffer "Py-Shell buffer: "
-			 (generate-new-buffer-name (py--choose-buffer-name)))))
-	     ((and (eq 2 (prefix-numeric-value argprompt))
-		   (fboundp 'split-string))
-	      (setq args (split-string
-			  (read-string "Py-Shell arguments: "
-					py-python-command-args)))))))
+  (when (and (not dedicated) argprompt
+	     (eq 4 (prefix-numeric-value argprompt)))
+    (read-buffer "Py-Shell buffer: "
+		 (generate-new-buffer-name (py--choose-buffer-name)))))
 
 (defun py--configured-shell (name)
   "Return the configured PATH/TO/STRING if any. "
@@ -662,6 +656,9 @@ Receives a buffer-name as argument"
 
 (defun py--provide-command-args (fast-process)
   (cond (fast-process nil)
+	((eq 2 (prefix-numeric-value argprompt))
+	 (read-string "Py-Shell arguments: "
+		      py-python-command-args))
 	((string-match "^[Ii]" py-shell-name)
 	 py-ipython-command-args)
 	((string-match "^[^-]+3" py-shell-name)
