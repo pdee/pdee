@@ -174,17 +174,17 @@ With interactive call, send it to the message buffer too. "
       (when (called-interactively-p 'any) (message "%s" res))
       res)))
 
-(defun py-backward-function (&optional count)
+(defun py-backward-function ()
   "Jump to the beginning of defun. Returns point. "
   (interactive "p")
-  (let ((pos (py-backward-def-or-class nil count)))
+  (let ((pos (py-backward-def-or-class)))
     (when (called-interactively-p 'any) (message "%s" pos))
     pos))
 
-(defun py-forward-function (&optional class count)
+(defun py-forward-function ()
   "Jump to the end of function. "
   (interactive "p")
-  (let ((pos (py-forward-def-or-class nil count)))
+  (let ((pos (py-forward-def-or-class)))
     (when (called-interactively-p 'any) (message "%s" pos))
     pos))
 
