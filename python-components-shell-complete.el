@@ -79,7 +79,7 @@ completions on the current context."
       ;; (move-marker orig (point))
       nil)))
 
-(defun py--shell-insert-completion-maybe (completion)
+(defun py--shell-insert-completion-maybe (completion input)
   (cond ((eq completion t)
 	 (and py-verbose-p (message "py--shell-do-completion-at-point %s" "`t' is returned, not completion. Might be a bug."))
 	 nil)
@@ -122,7 +122,7 @@ completions on the current context."
     (set-buffer py-exception-buffer)
     ;; (py--delay-process-dependent process)
     ;; (sit-for 1 t)
-    (py--shell-insert-completion-maybe completion)))
+    (py--shell-insert-completion-maybe completion input)))
 
 (defun py--complete-base (shell pos beg end word imports debug py-exception-buffer)
   (let* ((shell (or shell (py-choose-shell)))
