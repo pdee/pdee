@@ -2457,8 +2457,8 @@
 (ert-deftest py-ert-electric-colon-functionp-test ()
   (should (functionp 'py-electric-colon)))
 
-(ert-deftest py-ert-electric-space-functionp-test ()
-  (should (functionp 'py-electric-space)))
+(ert-deftest py-ert-electric-close-functionp-test ()
+  (should (functionp 'py-electric-close)))
 
 (ert-deftest py-ert-electric-comment-functionp-test ()
   (should (functionp 'py-electric-comment)))

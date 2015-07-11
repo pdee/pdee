@@ -251,6 +251,14 @@ Default is t")
 
 Restart py-shell once with new Emacs/python-mode. ")
 
+(defcustom py-electric-close-active-p nil
+  "Close completion buffer when it's sure, it's no longer needed, i.e. when inserting a space.
+
+Works around a bug in `choose-completion'.
+Default is `nil'"
+:type 'boolean
+:group 'python-mode)
+
 (defcustom py-update-gud-pdb-history-p t
   "If pdb should provide suggestions WRT file to check and py-pdb-path.
 
