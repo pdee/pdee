@@ -288,20 +288,8 @@ With interactive call, send it to the message buffer too. "
 		  (< cui (current-column))
 		  (py-backward-statement)))))))
 
-(defun py--match-paren-indented-empty ()
-  "Jump from intend of an empty line upwards. "
-  (py-backward-block-or-clause (current-column))
-  (setq py--match-paren-forward-p nil)
-  (save-excursion
-    (goto-char orig)
-    (when (empty-line-p)
-      (delete-region (line-beginning-position) (line-end-position)))))
-
 (defun py--match-paren-blocks ()
   (cond
-   ;; ((empty-line-p)
-   ;;  (py--match-paren-indented-empty))
-
    ((and (looking-back "^[ \t]*")(if (eq last-command 'py-match-paren)(not py--match-paren-forward-p)t)
 	 ;; (looking-at py-extended-block-or-clause-re)
 	 (looking-at "[[:alpha:]_]"))
