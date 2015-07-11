@@ -1192,18 +1192,18 @@ Unclosed-string errors are not handled here, as made visible by fontification al
 
 (defun py--end-base-look-upward (thisregexp)
   (progn (back-to-indentation)
-	 (setq bofst (py--beginning-of-statement-p))
-	 (cond ((and bofst (eq regexp 'py-clause-re)(looking-at py-extended-block-or-clause-re))
-		(point))
-	       ((and bofst (looking-at thisregexp))
-		(point))
-	       (t
-		(when
-		    (cdr-safe
-		     (py--go-to-keyword
-		      thisregexp))
-		  (when (py--statement-opens-block-p py-extended-block-or-clause-re)
-		    (point)))))))
+	 (let ((bofst (py--beginning-of-statement-p)))
+	   (cond ((and bofst (eq regexp 'py-clause-re)(looking-at py-extended-block-or-clause-re))
+		  (point))
+		 ((and bofst (looking-at thisregexp))
+		  (point))
+		 (t
+		  (when
+		      (cdr-safe
+		       (py--go-to-keyword
+			thisregexp))
+		    (when (py--statement-opens-block-p py-extended-block-or-clause-re)
+		      (point))))))))
 
 (defun py--go-down-when-found-upward (regexp)
   (let ((thisindent (current-indentation))
