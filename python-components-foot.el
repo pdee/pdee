@@ -276,7 +276,7 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
   ;; (if py-shell-unfontify-p
   ;; (add-hook 'py-python-shell-mode-hook #'py--run-unfontify-timer (current-buffer))
   ;; (remove-hook 'py-python-shell-mode-hook 'py--run-unfontify-timer))
-  (set-process-sentinel proc #'shell-write-history-on-exit)
+  (set-process-sentinel (get-buffer-process (current-buffer))  #'shell-write-history-on-exit)
 
   ;; (setq comint-input-ring-file-name
   ;;       (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
