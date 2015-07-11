@@ -945,10 +945,10 @@ Extracted from http://manpages.ubuntu.com/manpages/natty/man1/pyflakes.1.html"))
 (defun py-check-command (command)
   "Check a Python file (default current buffer's file).
 Runs COMMAND, a shell command, as if by `compile'.
-See `python-check-command' for the default."
+See `py-check-command' for the default."
   (interactive
    (list (read-string "Checker command: "
-                      (concat python-check-command " "
+                      (concat py-check-command " "
                               (let ((name (buffer-file-name)))
                                 (if name
                                     (file-name-nondirectory name)))))))
