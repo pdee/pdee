@@ -1760,7 +1760,7 @@ Returns position reached if point was moved. "
   (and (eq pos (point)) (prog1 (forward-line 1) (back-to-indentation))
        (while (member (char-after) (list ?# 10))(forward-line 1)(back-to-indentation))))
 
-(defun py--skip-to-comment-or-semicolon ()
+(defun py--skip-to-comment-or-semicolon (done)
   "Returns position if comment or semicolon found. "
   (let ((orig (point)))
     (cond ((and done (< 0 (abs (skip-chars-forward "^#;" (line-end-position))))

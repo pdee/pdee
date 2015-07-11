@@ -294,7 +294,7 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
           ;; parse-sexp-ignore-comments
           forward-sexp-function
           stringchar stm pps err)
-      (unless done (py--skip-to-comment-or-semicolon))
+      (unless done (py--skip-to-comment-or-semicolon done))
       (setq pps (parse-partial-sexp (point-min) (point)))
       ;; (origline (or origline (py-count-lines)))
       (cond
@@ -332,7 +332,7 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
        ;; in comment
        ((nth 4 pps)
 	(py--end-of-comment-intern (point))
-	(py--skip-to-comment-or-semicolon)
+	(py--skip-to-comment-or-semicolon done)
 	(while (and (eq (char-before (point)) ?\\ )
 		    (py-escaped)(setq last (point)))
 	  (forward-line 1)(end-of-line))
@@ -352,15 +352,15 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
 	  (py-forward-statement orig done repeat)))
        ((eq orig (point))
 	(skip-chars-forward " \t\r\n\f#'\"")
-	(py--skip-to-comment-or-semicolon)
+	(py--skip-to-comment-or-semicolon done)
 	(py-forward-statement orig done repeat))
        ((eq (current-indentation) (current-column))
-	(py--skip-to-comment-or-semicolon)
+	(py--skip-to-comment-or-semicolon done)
 	;; (setq pps (parse-partial-sexp (point-min) (point)))
 	(unless done
 	  (py-forward-statement orig done repeat)))
 
-       ((and (looking-at "[[:print:]]+$") (not done) (py--skip-to-comment-or-semicolon))
+       ((and (looking-at "[[:print:]]+$") (not done) (py--skip-to-comment-or-semicolon done))
 	(py-forward-statement orig done repeat)))
       (unless
 	  (or
