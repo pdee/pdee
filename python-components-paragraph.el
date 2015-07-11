@@ -255,7 +255,7 @@ See lp:1066489 "
 		      (when
 			  (equal (string-to-syntax "|")
 				 (syntax-after (point)))
-			(progn
+			(and
 			  (< 0 (skip-chars-forward "\"'"))
 			  (nth 8 (parse-partial-sexp (point-min) (point))))))))
       (and n8pps (py--docstring-p n8pps)))))
