@@ -492,7 +492,7 @@ Don't save anything for STR matching `py-input-filter-re' "
   "Used by `py--run-unfontify-timer'")
 (make-variable-buffer-local 'py--timer-delay)
 
-(defun py--unfontify-banner-intern ()
+(defun py--unfontify-banner-intern (buffer)
   (save-excursion
     (goto-char (point-min))
     (let ((erg (or (ignore-errors (car comint-last-prompt))
@@ -518,7 +518,7 @@ Expects being called by `py--run-unfontify-timer' "
     (let ((buffer (or buffer (current-buffer))))
       (if (ignore-errors (buffer-live-p (get-buffer buffer)))
 	  (with-current-buffer buffer
-	    (py--unfontify-banner-intern)
+	    (py--unfontify-banner-intern buffer) 
 	    (and (timerp py--timer)(cancel-timer py--timer)))
 	(and (timerp py--timer)(cancel-timer py--timer)))))
 
