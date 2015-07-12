@@ -175,6 +175,7 @@
   "Used by python-extended-executes ."
   (save-excursion
     (let* ((form (prin1-to-string form))
+	   (origline (py-count-lines)) 
 	   (beg (unless file
                   (prog1
                       (or beg (funcall (intern-soft (concat "py--beginning-of-" form "-p")))
