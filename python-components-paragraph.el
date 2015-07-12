@@ -339,7 +339,7 @@ See lp:1066489 "
     (py--fill-docstring-base thisbeg thisend style multi-line-p first-line-p beg end py-current-indent orig))
   (goto-char orig))
 
-(defun py--fill-docstring-first-line ()
+(defun py--fill-docstring-first-line (beg end thisbeg thisend style)
   "Refill first line after newline maybe. "
   (fill-region beg (line-end-position))
   (forward-line 1)
@@ -356,8 +356,7 @@ See lp:1066489 "
       (unless (or (eq style 'pep-257-nn)(eq style 'pep-257)(eq (char-after) ?\n))
 	(newline-and-indent)
 	;; if TQS is at a single line, re-fill remaining line
-	(setq beg (point))
-	(fill-region beg end)))))
+	(fill-region (point) end)))))
 
 (defun py--fill-docstring (justify style docstring orig py-current-indent)
   ;; Delete spaces after/before string fence
@@ -385,7 +384,7 @@ See lp:1066489 "
     (cond ((string-match (concat "^" py-labelled-re) (buffer-substring-no-properties beg end))
            (py-fill-labelled-string beg end))
           (first-line-p
-           (py--fill-docstring-first-line))
+           (py--fill-docstring-first-line beg end thisbeg thisend style))
           ((save-excursion (goto-char end)
 			   (or (member (char-after) (list ?\" ?\'))
 			       (member (char-before) (list ?\" ?\'))))
