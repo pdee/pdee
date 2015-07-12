@@ -292,37 +292,37 @@ See lp:1066489 "
   ;; (widen)
   ;; fill-paragraph causes wrong indent, lp:1397936
   ;; (narrow-to-region thisbeg thisend)
-  (setq delimiters-style
-        (case style
-          ;; delimiters-style is a cons cell with the form
-          ;; (START-NEWLINES .  END-NEWLINES). When any of the sexps
-          ;; is NIL means to not add any newlines for start or end
-          ;; of docstring.  See `py-docstring-style' for a
-          ;; graphic idea of each style.
-          (django (cons 1 1))
-          (onetwo (and multi-line-p (cons 1 2)))
-          (pep-257 (and multi-line-p (cons nil 2)))
-          (pep-257-nn (and multi-line-p (cons nil 1)))
-          (symmetric (and multi-line-p (cons 1 1)))))
-  ;;  (save-excursion
-  (when style
-    ;; Add the number of newlines indicated by the selected style
-    ;; at the start.
-    (goto-char thisbeg)
-    (skip-chars-forward "\'\"")
-    (when
-	(car delimiters-style)
-      (unless (or (empty-line-p)(eolp))
-	(newline (car delimiters-style))))
-    (indent-region beg end py-current-indent))
-  (when multi-line-p
-    (goto-char thisbeg)
-    (skip-chars-forward "\'\"")
-    (skip-chars-forward " \t\r\n\f")
-    (forward-line 1)
-    (beginning-of-line)
-    (unless (empty-line-p) (newline)))
-  (py--fill-fix-end thisend orig docstring delimiters-style))
+  (let ((delimiters-style
+	 (case style
+	   ;; delimiters-style is a cons cell with the form
+	   ;; (START-NEWLINES .  END-NEWLINES). When any of the sexps
+	   ;; is NIL means to not add any newlines for start or end
+	   ;; of docstring.  See `py-docstring-style' for a
+	   ;; graphic idea of each style.
+	   (django (cons 1 1))
+	   (onetwo (and multi-line-p (cons 1 2)))
+	   (pep-257 (and multi-line-p (cons nil 2)))
+	   (pep-257-nn (and multi-line-p (cons nil 1)))
+	   (symmetric (and multi-line-p (cons 1 1))))))
+    ;;  (save-excursion
+    (when style
+      ;; Add the number of newlines indicated by the selected style
+      ;; at the start.
+      (goto-char thisbeg)
+      (skip-chars-forward "\'\"")
+      (when
+	  (car delimiters-style)
+	(unless (or (empty-line-p)(eolp))
+	  (newline (car delimiters-style))))
+      (indent-region beg end py-current-indent))
+    (when multi-line-p
+      (goto-char thisbeg)
+      (skip-chars-forward "\'\"")
+      (skip-chars-forward " \t\r\n\f")
+      (forward-line 1)
+      (beginning-of-line)
+      (unless (empty-line-p) (newline)))
+    (py--fill-fix-end thisend orig docstring delimiters-style)))
 
 (defun py--fill-docstring-last-line (thisbeg thisend beg end style)
   (widen)
