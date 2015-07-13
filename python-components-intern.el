@@ -1191,7 +1191,7 @@ Unclosed-string errors are not handled here, as made visible by fontification al
   "Receives a list (position line) "
   (message "Closing paren missed: line %s pos %s" (cadr err) (car err)))
 
-(defun py--end-base-look-upward (thisregexp)
+(defun py--end-base-look-upward (thisregexp regexp)
   (progn (back-to-indentation)
 	 (let ((bofst (py--beginning-of-statement-p)))
 	   (cond ((and bofst (eq regexp 'py-clause-re)(looking-at py-extended-block-or-clause-re))
@@ -1242,7 +1242,7 @@ Unclosed-string errors are not handled here, as made visible by fontification al
 		     py-minor-block-re)
 		    (t py-extended-block-or-clause-re)))
              bofst
-             (this (unless (eq regexp 'py-paragraph-re)(py--end-base-look-upward thisregexp)))
+             (this (unless (eq regexp 'py-paragraph-re)(py--end-base-look-upward thisregexp regexp)))
              ind erg last pps thisindent done err)
         (cond ((eq regexp 'py-paragraph-re)
 	       (while (and (not (eobp)) (re-search-forward py-paragraph-re nil 'move 1)(nth 8 (parse-partial-sexp (point-min) (point))))))
