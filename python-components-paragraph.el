@@ -324,7 +324,7 @@ See lp:1066489 "
       (unless (empty-line-p) (newline)))
     (py--fill-fix-end thisend orig docstring delimiters-style)))
 
-(defun py--fill-docstring-last-line (thisbeg thisend beg end style orig)
+(defun py--fill-docstring-last-line (thisbeg thisend beg end style orig first-line-p)
   (widen)
   ;; (narrow-to-region thisbeg thisend)
   (goto-char thisend)
@@ -388,7 +388,7 @@ See lp:1066489 "
           ((save-excursion (goto-char end)
 			   (or (member (char-after) (list ?\" ?\'))
 			       (member (char-before) (list ?\" ?\'))))
-           (py--fill-docstring-last-line thisbeg thisend beg end style orig))
+           (py--fill-docstring-last-line thisbeg thisend beg end style orig first-line-p))
           (t ;; (narrow-to-region beg end)
 	     (fill-region beg end justify)))
     (py--fill-docstring-base thisbeg thisend style multi-line-p first-line-p beg end py-current-indent orig)))
