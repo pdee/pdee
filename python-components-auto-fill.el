@@ -55,11 +55,11 @@
 
 (defun py-comment-auto-fill-on ()
   (interactive)
-  (py-comment-auto-fill-p 1))
+  (py-comment-auto-fill 1))
 
 (defun py-comment-auto-fill-off ()
   (interactive)
-  (py-comment-auto-fill-p -1))
+  (py-comment-auto-fill -1))
 
 (provide 'python-components-auto-fill)
 ;;; python-components-auto-fill.el ends here
