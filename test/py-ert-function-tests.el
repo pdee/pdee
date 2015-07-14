@@ -2202,9 +2202,6 @@
 (ert-deftest py-ert--skip-to-semicolon-backward-functionp-test ()
   (should (functionp 'py--skip-to-semicolon-backward)))
 
-(ert-deftest py-ert--eos-in-string-functionp-test ()
-  (should (functionp 'py--eos-in-string)))
-
 (ert-deftest py-ert--end-of-comment-intern-functionp-test ()
   (should (functionp 'py--end-of-comment-intern)))
 

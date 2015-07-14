@@ -1734,26 +1734,6 @@ Returns position reached if point was moved. "
 	 (setq done t)
 	 (and (< (point) orig) (point)))))
 
-(defun py--eos-in-string (pps)
-  "Return stm, i.e. if string is part of a (print)-statement. "
-  (let ((orig (point))
-        pos stm)
-    (goto-char (nth 8 pps))
-    (unless (looking-back "^[ \t]*")
-      (setq stm t))
-    ;; go to end of string
-    (and (member (char-after) (list ?' ?\"))
-         (ignore-errors (setq pos (scan-sexps (point) 1)))
-         (goto-char pos))
-    ;; if no closing string delimiter, pos doesn't exist
-    (unless (or stm (not pos))
-      (setq done t)
-      (unless (eq 10 (char-after))
-        (and (< 0 (abs (skip-chars-forward "^;#" (line-end-position))))
-             (eq ?\; (char-after))
-             (skip-chars-forward ";"))))
-    stm))
-
 (defun py--end-of-comment-intern (pos)
   (while (and (not (eobp))
               (forward-comment 99999)))
