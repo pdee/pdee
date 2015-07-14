@@ -298,7 +298,7 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
       (setq pps (parse-partial-sexp (point-min) (point)))
       ;; (origline (or origline (py-count-lines)))
       (cond
-       ;; wich-function-mode, lp:1235375
+       ;; which-function-mode, lp:1235375
        ((< py-max-specpdl-size repeat)
         (error "py-forward-statement reached loops max. If no error, customize `py-max-specpdl-size'"))
        ;; list

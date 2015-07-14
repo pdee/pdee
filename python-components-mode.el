@@ -74,6 +74,7 @@
 (require 'hippie-exp)
 (require 'shell)
 (require 'thingatpt)
+(require 'which-func)
 
 (defgroup python-mode nil
   "Support for the Python programming language, <http://www.python.org/>"
