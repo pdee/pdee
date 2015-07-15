@@ -218,8 +218,8 @@ For beginning of clause py-backward-clause."
           (py-backward-statement orig done limit))
          ((nth 1 pps)
           (goto-char (1- (nth 1 pps)))
-	  (py--skip-to-semicolon-backward (save-excursion (back-to-indentation)(point)))
-          (setq done t)
+	  (when (py--skip-to-semicolon-backward (save-excursion (back-to-indentation)(point)))
+	    (setq done t))
           (py-backward-statement orig done limit))
          ((py-preceding-line-backslashed-p)
           (forward-line -1)
@@ -236,30 +236,30 @@ For beginning of clause py-backward-clause."
 	 ;; at inline comment
          ((looking-at "[ \t]*#")
 	  (when (py--skip-to-semicolon-backward (save-excursion (back-to-indentation)(point)))
-	    (skip-chars-forward " \t")
-	    (unless (bobp)
-	      (py-backward-statement orig done limit))))
-	 ;; at beginning of string
-         ((and (not done) (looking-at py-string-delim-re))
-          (when (< 0 (abs (skip-chars-backward " \t\r\n\f")))
-            (setq done t))
-          (back-to-indentation)
-          (py-backward-statement orig done limit))
-	 ;; after end of statement
-	 ((and (not done) (eq (char-before) ?\;))
-	  (skip-chars-backward ";")
+	    (setq done t))
 	  (py-backward-statement orig done limit))
-	 ;; travel until indentation or semicolon
-	 ((and (not done) (py--skip-to-semicolon-backward (save-excursion (back-to-indentation)(point))))
-	  (py-backward-statement orig done limit))
-	 ;; at current indent
-	 ((and (not done) (not (eq 0 (skip-chars-backward " \t\r\n\f"))))
-          (py-backward-statement orig done limit)))
-	;; return nil when before comment
-	(unless (and (looking-at "[ \t]*#") (looking-back "^[ \t]*"))
-	  (when (< (point) orig)(setq erg (point))))
-	(when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
-	erg))))
+	;; at beginning of string
+	((and (not done) (looking-at py-string-delim-re))
+	 (when (< 0 (abs (skip-chars-backward " \t\r\n\f")))
+	   (setq done t))
+	 (back-to-indentation)
+	 (py-backward-statement orig done limit))
+	;; after end of statement
+	((and (not done) (eq (char-before) ?\;))
+	 (skip-chars-backward ";")
+	 (py-backward-statement orig done limit))
+	;; travel until indentation or semicolon
+	((and (not done) (py--skip-to-semicolon-backward (save-excursion (back-to-indentation)(point))))
+	 (setq done t) 
+	 (py-backward-statement orig done limit))
+	;; at current indent
+	((and (not done) (not (eq 0 (skip-chars-backward " \t\r\n\f"))))
+	 (py-backward-statement orig done limit)))
+      ;; return nil when before comment
+      (unless (and (looking-at "[ \t]*#") (looking-back "^[ \t]*"))
+	(when (< (point) orig)(setq erg (point))))
+      (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
+      erg))))
 
 (defun py-backward-statement-bol (&optional indent)
   "Goto beginning of line where statement starts.

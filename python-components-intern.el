@@ -1728,11 +1728,9 @@ These would interfere when inserting forms heading a block"
   "Fetch the beginning of statement after a semicolon.
 
 Returns position reached if point was moved. "
-  (let ((orig (point)))
-    (and (< 0 (abs (skip-chars-backward "^;" (or limit (line-beginning-position)))))
-	 (skip-chars-forward " \t" (line-end-position))
-	 (setq done t)
-	 (and (< (point) orig) (point)))))
+  (prog1
+      (< 0 (abs (skip-chars-backward "^;" (or limit (line-beginning-position)))))
+    (skip-chars-forward " \t" (line-end-position))))
 
 (defun py--end-of-comment-intern (pos)
   (while (and (not (eobp))
