@@ -175,7 +175,7 @@
   "Used by python-extended-executes ."
   (save-excursion
     (let* ((form (prin1-to-string form))
-	   (origline (py-count-lines)) 
+	   (origline (py-count-lines))
 	   (beg (unless file
                   (prog1
                       (or beg (funcall (intern-soft (concat "py--beginning-of-" form "-p")))
@@ -518,7 +518,7 @@ Expects being called by `py--run-unfontify-timer' "
     (let ((buffer (or buffer (current-buffer))))
       (if (ignore-errors (buffer-live-p (get-buffer buffer)))
 	  (with-current-buffer buffer
-	    (py--unfontify-banner-intern buffer) 
+	    (py--unfontify-banner-intern buffer)
 	    (and (timerp py--timer)(cancel-timer py--timer)))
 	(and (timerp py--timer)(cancel-timer py--timer)))))
 
@@ -633,10 +633,10 @@ Use `defcustom' to keep value across sessions "
       (kill-buffer (current-buffer)))))
 
 (defun py--line-backward-maybe ()
+  "Return result of (< 0 (abs (skip-chars-backward \" \\t\\r\\n\\f\"))) "
   (let ((orig (point)))
     (skip-chars-backward " \t\f" (line-beginning-position))
-    (when (< 0 (abs (skip-chars-backward " \t\r\n\f")))
-      (setq line t))))
+    (< 0 (abs (skip-chars-backward " \t\r\n\f")))))
 
 (defun py--after-empty-line ()
   "Return `t' if line before contains only whitespace characters. "
@@ -724,7 +724,7 @@ LIEP stores line-end-position at point-of-interest
 			  (if (ignore-errors (< (nth 8 (parse-partial-sexp (point-min) (point))) (line-beginning-position)))
 			      (current-indentation)
 			    (ignore-errors (goto-char (nth 8 pps)))
-			    (py--line-backward-maybe)
+			    (when (py--line-backward-maybe) (setq line t))
 			    (back-to-indentation)
 			    (py-compute-indentation orig origline closing line nesting repeat indent-offset liep)))
 		      (goto-char (nth 8 pps))
@@ -737,7 +737,7 @@ LIEP stores line-end-position at point-of-interest
 		    (if (eq liep (line-end-position))
 			(progn
 			  (goto-char (nth 8 pps))
-			  (py--line-backward-maybe)
+			  (when (py--line-backward-maybe) (setq line t))
 			  (skip-chars-backward " \t")
 			  (py-compute-indentation orig origline closing line nesting repeat indent-offset liep))
 		      (goto-char (nth 8 pps))
@@ -863,11 +863,11 @@ LIEP stores line-end-position at point-of-interest
 			(eq liep (line-end-position))
 			(progn
 			  (back-to-indentation)
-			  (py--line-backward-maybe)
+			  (when (py--line-backward-maybe) (setq line t))
 			  (py-compute-indentation orig origline closing line nesting repeat indent-offset liep))
 		      (current-indentation)))
 		   ((and (looking-at py-elif-re) (eq (py-count-lines) origline))
-		    (py--line-backward-maybe)
+		    (when (py--line-backward-maybe) (setq line t))
 		    (car (py--clause-lookup-keyword py-elif-re -1 nil orig origline)))
 		   ((and (looking-at py-clause-re)(not line)
 			 (eq liep (line-end-position)))
@@ -884,7 +884,7 @@ LIEP stores line-end-position at point-of-interest
 		   ((looking-at py-extended-block-or-clause-re)
 		    (cond ((and (not line)
 				(eq liep (line-end-position)))
-			   (py--line-backward-maybe)
+			   (when (py--line-backward-maybe) (setq line t))
 			   (setq line t)
 			   (py-compute-indentation orig origline closing line nesting repeat indent-offset liep))
 			  (t (+
@@ -916,7 +916,7 @@ LIEP stores line-end-position at point-of-interest
 			(current-column)
 		      (if (eq (point) orig)
 			  (progn
-			    (py--line-backward-maybe)
+			    (when (py--line-backward-maybe) (setq line t))
 			    (py-compute-indentation orig origline closing line nesting repeat indent-offset liep))
 			(py-backward-statement)
 			(py-compute-indentation orig origline closing line nesting repeat indent-offset liep))))
