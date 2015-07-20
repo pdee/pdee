@@ -198,9 +198,7 @@ For beginning of clause py-backward-clause."
       (let* ((orig (or orig (point)))
              (this (point))
              (cui (current-indentation))
-
-             (pps (progn (goto-char this)
-                         (parse-partial-sexp (or limit (point-min))(point))))
+             (pps (parse-partial-sexp (or limit (point-min))(point)))
              (done done)
              erg)
 	;; lp:1382788

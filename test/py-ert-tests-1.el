@@ -707,8 +707,6 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
   (py-test-with-temp-buffer-point-min
    "from foo.bar.baz import something
 "
-   (when py-debug-p (switch-to-buffer (current-buffer))
-	 (font-lock-fontify-buffer))
    (py-copy-statement)
    (should (string-match "from foo.bar.baz import something" (car kill-ring)))))
 
@@ -796,8 +794,6 @@ def baz():
     \"\"\"
     return 7
 "
-      (when py-debug-p (switch-to-buffer (current-buffer)))
-      (font-lock-fontify-buffer)
       (goto-char 49)
       (py-fill-string)
       (end-of-line)
@@ -877,7 +873,7 @@ def baz():
       (forward-line -1)
       (should (empty-line-p)))))
 
-(ert-deftest py-ert-moves-up-fill-paragraph-django ()
+(ert-deftest py-ert-moves-up-fill-paragraph-django-1 ()
   (let ((py-docstring-style 'django))
     (py-test-with-temp-buffer-point-min
 	"# r1416
@@ -889,10 +885,9 @@ def baz():
     \"\"\"
     return 7
 "
-      (when py-debug-p (switch-to-buffer (current-buffer)))
-      (python-mode)
-      (font-lock-fontify-buffer)
       (goto-char 49)
+      ;; (when (called-interactively-p 'any) (message "fill-paragraph-function: %s" fill-paragraph-function))
+      (message "fill-paragraph-function: %s" fill-paragraph-function)
       (fill-paragraph)
       (search-backward "\"\"\"")
       (goto-char (match-end 0))
@@ -900,7 +895,24 @@ def baz():
       (forward-line 1)
       (end-of-line)
       (when py-debug-p (message "fill-column: %s" fill-column))
-      (should (<= (current-column) 72))
+      (should (<= (current-column) 72)))))
+
+(ert-deftest py-ert-moves-up-fill-paragraph-django-2 ()
+  (let ((py-docstring-style 'django))
+    (py-test-with-temp-buffer-point-min
+	"# r1416
+
+def baz():
+    \"\"\"Hello there. This is a multiline function definition. Don't wor ry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy.
+
+    This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy.
+    \"\"\"
+    return 7
+"
+      (goto-char 49)
+      ;; (when (called-interactively-p 'any) (message "fill-paragraph-function: %s" fill-paragraph-function))
+      (message "fill-paragraph-function: %s" fill-paragraph-function)
+      (fill-paragraph)
       (search-forward "\"\"\"")
       (forward-line -2)
       (should (empty-line-p)))))
@@ -930,6 +942,7 @@ def baz():
       (forward-line -1)
       (should (not (empty-line-p))))))
 
+
 (ert-deftest py-partial-expression-test ()
   (py-test-with-temp-buffer-point-min
       "foo=1"
@@ -943,8 +956,6 @@ def baz():
     (let ((py-shell-name "python"))
       (py-execute-statement)
       (set-buffer ert-test-default-buffer)
-      (when py-debug-p (switch-to-buffer (current-buffer))
-	    (font-lock-fontify-buffer))
       (goto-char (point-max))
       (sit-for 0.3 t)
       (and (should (search-backward "py-execute-statement-test" nil t 1))
@@ -959,7 +970,6 @@ def baz():
 	  erg)
       (call-interactively 'py-execute-statement-python3-dedicated)
       (sit-for 0.1 t)
-      ;; (when py-debug-p (message "py-ert-execute-statement-python3-dedicated-test: %s" py-buffer-name))
       (set-buffer py-buffer-name)
       (goto-char (point-min))
       (should (search-forward "py-execute-statement-python3-dedicated-test" nil t 1)))))
