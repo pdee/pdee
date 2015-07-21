@@ -133,7 +133,7 @@ Results arrive in output buffer, which is not in comint-mode"
 (defcustom py-comment-auto-fill-p nil
   "When non-nil, fill comments.
 
-Defaut is nil" 
+Defaut is nil"
 
   :type 'boolean
   :group 'python-mode)
@@ -2737,9 +2737,10 @@ Used by `py-ipython-module-completion-string'"
     (save-restriction
       (widen)
       (save-excursion
-	(py-backward-statement)
-        (and (looking-at "'''\\|\"\"\"")
-	     (point))))))
+	(goto-char pos)
+	(when (py-backward-statement)
+	  (when (looking-at py-def-or-class-re)
+	    pos))))))
 
 (defun py--font-lock-syntactic-face-function (state)
   (if (nth 3 state)
