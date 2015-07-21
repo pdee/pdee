@@ -24,9 +24,6 @@
 
 ;;; Code:
 
-(provide 'py-ert-interactive-tests)
-;;; py-ert-interactive-tests.el ends here
-
 (ert-deftest py-ert-always-split-dedicated-lp-1361531-python2-test ()
   (py-test-with-temp-buffer
       "#! /usr/bin/env python2
@@ -337,3 +334,43 @@ print(3+3)
     (py-match-paren)
     (should (eq (char-before) ?\)))
     (should (eolp))))
+
+(ert-deftest py-ert-moves-up-fill-paragraph-pep-257-nn-2 ()
+  (let ((py-docstring-style 'pep-257-nn))
+    (py-test-with-temp-buffer-point-min
+
+	"class MyClass(object):
+    def my_method(self):
+        \"\"\"Some long line with more than 70 characters in the docstring. Some more text.\"\"\"
+"
+      (search-forward "\"\"\"")
+      (fill-paragraph)
+      (search-forward "\"\"\"")
+      (should (eq 8 (current-indentation))))))
+
+(ert-deftest py-ert-moves-up-fill-paragraph-django-1 ()
+  (let ((py-docstring-style 'django))
+    (py-test-with-temp-buffer-point-min
+	"# r1416
+
+def baz():
+    \"\"\"Hello there. This is a multiline function definition. Don't wor ry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy.
+
+    This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy.
+    \"\"\"
+    return 7
+"
+      (goto-char 49)
+      ;; (when (called-interactively-p 'any) (message "fill-paragraph-function: %s" fill-paragraph-function))
+      (message "fill-paragraph-function: %s" fill-paragraph-function)
+      (fill-paragraph)
+      (search-backward "\"\"\"")
+      (goto-char (match-end 0))
+      (should (eolp))
+      (forward-line 1)
+      (end-of-line)
+      (when py-debug-p (message "fill-column: %s" fill-column))
+      (should (<= (current-column) 72)))))
+
+(provide 'py-ert-interactive-tests)
+;;; py-ert-interactive-tests.el ends here

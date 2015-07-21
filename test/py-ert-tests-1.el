@@ -782,7 +782,7 @@ def baz():
 
     ))
 
-(ert-deftest py-ert-moves-up-fill-paragraph-pep-257-nn ()
+(ert-deftest py-ert-moves-up-fill-paragraph-pep-257-nn-1 ()
   (let ((py-docstring-style 'pep-257-nn))
     (py-test-with-temp-buffer-point-min
 	"# r1416
@@ -815,6 +815,7 @@ def baz():
       (sit-for 0.1 t)
       (should (<= (current-column) 72))
       )))
+
 
 (ert-deftest py-ert-moves-up-fill-paragraph-pep-257 ()
   (let ((py-docstring-style 'pep-257))
@@ -872,30 +873,6 @@ def baz():
       (search-forward "\"\"\"")
       (forward-line -1)
       (should (empty-line-p)))))
-
-(ert-deftest py-ert-moves-up-fill-paragraph-django-1 ()
-  (let ((py-docstring-style 'django))
-    (py-test-with-temp-buffer-point-min
-	"# r1416
-
-def baz():
-    \"\"\"Hello there. This is a multiline function definition. Don't wor ry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy.
-
-    This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy.
-    \"\"\"
-    return 7
-"
-      (goto-char 49)
-      ;; (when (called-interactively-p 'any) (message "fill-paragraph-function: %s" fill-paragraph-function))
-      (message "fill-paragraph-function: %s" fill-paragraph-function)
-      (fill-paragraph)
-      (search-backward "\"\"\"")
-      (goto-char (match-end 0))
-      (should (eolp))
-      (forward-line 1)
-      (end-of-line)
-      (when py-debug-p (message "fill-column: %s" fill-column))
-      (should (<= (current-column) 72)))))
 
 (ert-deftest py-ert-moves-up-fill-paragraph-django-2 ()
   (let ((py-docstring-style 'django))

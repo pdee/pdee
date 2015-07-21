@@ -451,9 +451,13 @@ downwards from beginning of block followed by a statement. Otherwise default-val
     (forward-line 1))
   (back-to-indentation))
 
-(defun py--indent-line-by-line (end)
-  "Indent every line until end to max reasonable extend. "
-  (while (< (line-end-position) end)
+(defun py--indent-line-by-line (beg end)
+  "Indent every line until end to max reasonable extend.
+
+Starts from second line of region specified"
+  (goto-char beg)
+  (forward-line 1) 
+  (while (< (point) end)
     (if (empty-line-p)
 	(forward-line 1)
       (py-indent-and-forward))))
@@ -478,13 +482,13 @@ In order to shift a chunk of code, where the first line is okay, start with seco
     (setq beg (point))
     (skip-chars-forward " \t\r\n\f")
     (if (eq 4 (prefix-numeric-value line-by-line))
-	(py--indent-line-by-line end)
+	(py--indent-line-by-line beg end)
       ;; (unless (empty-line-p) (py-indent-line nil t))
       (setq indent (py-compute-indentation))
       (setq need (- indent (current-indentation)))
       (if (< 0 (abs need))
 	  (indent-rigidly beg end need)
-	(py--indent-line-by-line end))
+	(py--indent-line-by-line beg end))
       (goto-char orig))))
 
 (defun py--beginning-of-buffer-position ()
