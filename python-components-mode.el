@@ -2794,7 +2794,7 @@ return `jython', otherwise return nil."
 
 Returns versioned string, nil if nothing appropriate found "
   (interactive)
-  (lexical-let ((path (buffer-file-name))
+  (let ((path (buffer-file-name))
                 (py-separator-char (or py-separator-char py-separator-char))
                 erg)
     (when (and path py-separator-char
