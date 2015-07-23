@@ -421,7 +421,7 @@ Fill according to `py-docstring-style' "
     (save-restriction
       (window-configuration-to-register py-windows-config-register)
       (let* ((orig (copy-marker (point)))
-	     (docstring (py--in-or-behind-or-before-a-docstring)))
+	     (docstring (unless (not py-docstring-style)(py--in-or-behind-or-before-a-docstring))))
 	(cond (docstring
 	       (setq fill-column py-docstring-fill-column)
 	       (py-fill-string justify py-docstring-style docstring))

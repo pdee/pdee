@@ -1018,5 +1018,16 @@ print(\"%(language)s has %(number)03d quote types.\" %
       (forward-line 1)
       (should (not (empty-line-p)))))
 
+(ert-deftest py-ert-nil-docstring-style-lp-1477422-test ()
+  (py-test-with-temp-buffer-point-min
+      "def foo():
+    '''asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdfasdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf'''"
+    (let (py-docstring-style)
+      (search-forward "'''") 
+      (save-excursion
+	(fill-paragraph))
+      (forward-line 1)
+      (should (not (empty-line-p))))))
+
 (provide 'py-ert-tests-2)
 ;;; py-ert-tests-2.el ends here
