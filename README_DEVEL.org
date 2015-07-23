@@ -72,3 +72,6 @@
   and the file, which contains the test.
   Run the test M-x ert TESTNAME RET
 
+  Instruments it for the debugger with M-x edebug-defun RET after or
+  inside the test . Use <space> to step.
+
