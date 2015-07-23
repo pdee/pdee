@@ -56,3 +56,19 @@
 * Bugs, feature requests
   Please use bug-tracker at
   http://launchpad.net/python-mode
+
+* Testing
+
+  Tests in batch-mode are run via run-travis-ci.sh 
+
+  However, there is no need to use batch-mode for a single
+  test. Batch-mode has some quirks and bugs. Tests in
+  test/py-ert-interactive-tests.el are expected to succeed when called
+  interactively, not in batch-mode.
+
+  Start tests from emacs -Q
+  All needed beside python-mode.el is
+  test/setup-ert-tests.el
+  and the file, which contains the test.
+  Run the test M-x ert TESTNAME RET
+
