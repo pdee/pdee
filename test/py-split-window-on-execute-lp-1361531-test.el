@@ -55,13 +55,13 @@ print(\"I'm the py-split-window-on-execute-lp-1361531-ipython-test\")"))
   (assert (eq 2 (count-windows)) nil "py-split-window-on-execute-lp-1361531-ipython-test failed")
   (py-kill-buffer-unconditional (current-buffer)))
  
-(defun py-split-window-on-execute-lp-1361531-python2-test (&optional arg)
-  (interactive "p")
+(defun py-split-window-on-execute-lp-1361531-python2-test ()
+  (interactive)
   (let ((py-split-window-on-execute t)
         (teststring "#! /usr/bin/env python2
 # -*- coding: utf-8 -*-
 print(\"I'm the py-split-window-on-execute-lp-1361531-python2-test\")"))
-    (py-bug-tests-intern 'py-split-window-on-execute-lp-1361531-python2-base arg teststring)))
+    (py-bug-tests-intern 'py-split-window-on-execute-lp-1361531-python2-base)))
 
 (defun py-split-window-on-execute-lp-1361531-python2-base ()
   (when py-debug-p (message "py-split-window-on-execute: %s" py-split-window-on-execute))

@@ -372,5 +372,23 @@ def baz():
       (when py-debug-p (message "fill-column: %s" fill-column))
       (should (<= (current-column) 72)))))
 
+(ert-deftest py-ert-split-window-on-execute-1361535-test ()
+  (py-test-with-temp-buffer-point-min
+      "print(\"%(language)s has %(number)03d quote types.\" %
+       {'language': \"Python\", \"number\": 2})"
+    (let ((oldbuf (current-buffer))
+	  (py-split-window-on-execute t))
+      (py-shell)
+      (set-buffer oldbuf)
+      (switch-to-buffer (current-buffer))
+      (delete-other-windows)
+      (split-window-vertically)
+      (dired "~")
+      (set-buffer oldbuf)
+      (switch-to-buffer (current-buffer))
+      (split-window-horizontally)
+      (py-execute-statement)
+      (should (eq 4 (length (window-list)))))))
+
 (provide 'py-ert-interactive-tests)
 ;;; py-ert-interactive-tests.el ends here

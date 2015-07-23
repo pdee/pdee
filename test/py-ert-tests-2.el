@@ -1010,13 +1010,13 @@ print(\"%(language)s has %(number)03d quote types.\" %
     (should (eq (current-column) 8))))
 
 (ert-deftest py-ert-fill-plain-string-test ()
-  (py-test-with-temp-buffer-point-min 
+  (py-test-with-temp-buffer-point-min
       "'''asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdfasdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
 '''"
       (forward-char 4)
       (fill-paragraph)
       (forward-line 1)
-      (should (not (empty-line-p))))) 
+      (should (not (empty-line-p)))))
 
 (provide 'py-ert-tests-2)
 ;;; py-ert-tests-2.el ends here
