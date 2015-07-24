@@ -1305,11 +1305,20 @@ visible, open them manually and set `py-keep-windows-configuration' to `t'.
   :type '(choice
 
           (const :tag "default" just-two)
-	  (const :tag "Reuse" t)
-          (const :tag "No split" nil)
+	  (const :tag "reuse" t)
+          (const :tag "no split" nil)
 	  (const :tag "just-two" just-two)
           (const :tag "always" always))
   :tag "py-split-window-on-execute"
+  :group 'python-mode)
+
+(defcustom py-split-window-on-execute-threshold 3
+  "Maximal number of displayed windows.
+
+Honored, when `py-split-window-on-execute' is `t', i.e. \"reuse\".
+Don't split when max number of displayed windows is reached. "
+  :type 'number
+  :tag "py-split-window-on-execute-threshold"
   :group 'python-mode)
 
 (defcustom py-split-windows-on-execute-function 'split-window-vertically

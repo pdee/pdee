@@ -72,6 +72,9 @@ New customizables:
 - py-update-gud-pdb-history-p, default is t
   If pdb should provide suggestions WRT file and pdb-path.
 
+- py-split-window-on-execute-threshold, default is 3
+  Don't split when max number of displayed windows is reached. 
+
 Renamed:
 - py-beginning-of-commented-section --> py-beginning-of-comments
 - py-narrow-to-defun --> py-narrow-to-def
