@@ -1301,6 +1301,7 @@ Both `t' and `always' is experimental still.
 For the moment: If a multitude of python-shells/buffers should be
 visible, open them manually and set `py-keep-windows-configuration' to `t'.
 
+See also `py-keep-windows-configuration'
 "
   :type '(choice
 

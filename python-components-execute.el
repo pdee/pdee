@@ -473,9 +473,13 @@ Internal use"
 
 (defun py--shell-manage-windows (output-buffer windows-config &optional exception-buffer)
   "Adapt or restore window configuration. Return nil "
-  (let ((py-exception-buffer (or exception-buffer (and py-exception-buffer (buffer-live-p py-exception-buffer) py-exception-buffer)))
-	(output-buffer (or output-buffer py-buffer-name))
-	(number-of-windows (length (window-list))))
+  (let* ((oldbuf (current-buffer))
+	 (py-exception-buffer (or exception-buffer (and py-exception-buffer (buffer-live-p py-exception-buffer) py-exception-buffer)))
+	 (output-buffer (or output-buffer py-buffer-name))
+	 (old-window-list (window-list))
+	 (number-of-windows (length old-window-list))
+	 )
+    ;; (output-buffer-displayed-p)
     (cond
      (py-keep-windows-configuration
       (py-restore-window-configuration)
@@ -535,7 +539,6 @@ Internal use"
      ((and
        py-split-window-on-execute
        (not py-switch-buffers-on-execute-p))
-      (switch-to-buffer (current-buffer))
       (when (< number-of-windows py-split-window-on-execute-threshold)
 	(unless
 	    (member (get-buffer-window output-buffer)(window-list))
@@ -545,7 +548,15 @@ Internal use"
 	(other-window 1)
 	(pop-to-buffer output-buffer)
 	(goto-char (point-max))
-	(other-window 1)))
+	(other-window 1))
+      ;; (display-buffer-reuse-window oldbuf nil)
+      ;; (set-buffer oldbuf)
+      (if
+	  ;; window lists with same members
+	  (not (cl-set-exclusive-or old-window-list (window-list)))
+	  ;; (if (eq number-of-windows (length (window-list)))
+	  (py-restore-window-configuration)
+	(switch-to-buffer oldbuf)))
      ((not py-switch-buffers-on-execute-p)
       (let (pop-up-windows)
 	(py-restore-window-configuration))))))
