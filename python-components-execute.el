@@ -477,8 +477,7 @@ Internal use"
 	 (py-exception-buffer (or exception-buffer (and py-exception-buffer (buffer-live-p py-exception-buffer) py-exception-buffer)))
 	 (output-buffer (or output-buffer py-buffer-name))
 	 (old-window-list (window-list))
-	 (number-of-windows (length old-window-list))
-	 )
+	 (number-of-windows (length old-window-list)))
     ;; (output-buffer-displayed-p)
     (cond
      (py-keep-windows-configuration
@@ -1206,18 +1205,18 @@ This may be preferable to `\\[py-execute-buffer]' because:
            (buffer (or (get-file-buffer filename)
                        (find-file-noselect filename))))
       (set-buffer buffer)))
-  (let ((py-shell-name (or shell (py-choose-shell argprompt shell)))
+  (let ((py-shell-name (or shell (py-choose-shell nil shell)))
         (file (buffer-file-name (current-buffer))))
     (if file
         (let ((proc (or
                      (ignore-errors (get-process (file-name-directory shell)))
-                     (get-buffer-process (py-shell argprompt py-dedicated-process-p shell (or shell (default-value 'py-shell-name)))))))
+                     (get-buffer-process (py-shell nil py-dedicated-process-p shell (or shell (default-value 'py-shell-name)))))))
           ;; Maybe save some buffers
           (save-some-buffers (not py-ask-about-save) nil)
           (py--execute-file-base proc file
                                 (if (string-match "\\.py$" file)
                                     (let ((m (py--qualified-module-name (expand-file-name file))))
-                                      (if (string-match "python2" (file-name-nondirectory shell))
+                                      (if (string-match "python2" py-shell-name)
                                           (format "import sys\nif sys.modules.has_key('%s'):\n reload(%s)\nelse:\n import %s\n" m m m)
                                         (format "import sys,imp\nif'%s' in sys.modules:\n imp.reload(%s)\nelse:\n import %s\n" m m m)))
                                   ;; (format "execfile(r'%s')\n" file)
