@@ -96,6 +96,23 @@
 (when py-org-cycle-p
   (define-key python-mode-map (kbd "<backtab>") 'org-cycle))
 
+
+(defun py-forward-buffer ()
+  "A complementary form used by auto-generated commands.
+
+Returns position reached if successful"
+  (interactive)
+  (unless (eobp)
+    (goto-char (point-max))))
+
+(defun py-backward-buffer ()
+  "A complementary form used by auto-generated commands.
+
+Returns position reached if successful"
+  (interactive)
+  (unless (bobp)
+    (goto-char (point-min))))
+
 (defun py--execute-prepare (form &optional shell dedicated switch beg end file)
   "Used by python-extended-executes ."
   (save-excursion
