@@ -2348,7 +2348,7 @@ Result: \"\\nIn [10]:    ....:    ....:    ....: 1\\n\\nIn [11]: \"
    "while"
    ))
 
-(defconst py-no-outdent-2-re-raw
+(defconst py-no-outdent-re-raw
   (list
    "break"
    "continue"
@@ -2360,9 +2360,7 @@ Result: \"\\nIn [10]:    ....:    ....:    ....: 1\\n\\nIn [11]: \"
 (defconst py-no-outdent-re
   (concat
    "[ \t]*\\_<\\("
-   (regexp-opt py-no-outdent-1-re-raw)
-   "\\)\\_>.*:[( \t]\\_<\\("
-   (regexp-opt py-no-outdent-2-re-raw)
+   (regexp-opt py-no-outdent-re-raw)
    "\\)\\_>[)\t]*$")
   "Regular expression matching lines not to augment indent after.
 

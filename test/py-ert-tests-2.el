@@ -416,6 +416,12 @@ x = {'abc':'def',
     (py-execute-statement)
     (should (eq (window-height) full-height))))
 
+;; (ert-deftest py-compute-indentation-after-import-test ()
+;;     (py-test-with-temp-buffer
+;;     "import pdb
+;; "
+;;     (should (eq 0 (py-compute-indentation)))))
+
 (ert-deftest py-compute-indentation-bob-test ()
     (py-test-with-temp-buffer-point-min
     " def foo():
@@ -424,7 +430,7 @@ x = {'abc':'def',
     else:
         pass
 "
-    (when py-debug-p (switch-to-buffer (current-buffer)))
+
     (should (eq 0 (py-compute-indentation)))))
 
 (ert-deftest py-indentation-lp-1375122-test ()
@@ -467,7 +473,7 @@ pass
   (when (buffer-live-p (get-buffer "*Python3*"))(py-kill-buffer-unconditional "*Python3*"))
   (py-test-with-temp-buffer
       ""
-    (when py-debug-p (switch-to-buffer (current-buffer)))
+
     (let ((py-shell-name "python3"))
       (py-shell)
       (sit-for 0.1 t)

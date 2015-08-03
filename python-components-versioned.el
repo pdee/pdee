@@ -316,11 +316,11 @@ See available customizations listed in files variables-python-mode at directory 
       (progn
         (set (make-local-variable 'beginning-of-defun-function) 'py-beginning-of-top-level)
         (set (make-local-variable 'end-of-defun-function) 'py-end-of-top-level)
-        (define-key python-mode-map [(control meta a)] 'py-beginning-of-top-level)
-        (define-key python-mode-map [(control meta e)] 'py-end-of-top-level))
-    (set (make-local-variable 'beginning-of-defun-function) 'py-beginning-of-def-or-class)
+        (define-key python-mode-map [(control meta a)] 'py-backward-top-level)
+        (define-key python-mode-map [(control meta e)] 'py-forward-top-level))
+    (set (make-local-variable 'beginning-of-defun-function) 'py-backward-def-or-class)
     (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class)
-    (define-key python-mode-map [(control meta a)] 'py-beginning-of-def-or-class)
+    (define-key python-mode-map [(control meta a)] 'py-backward-def-or-class)
     (define-key python-mode-map [(control meta e)] 'py-end-of-def-or-class))
   (when (and py--imenu-create-index-p
              (fboundp 'imenu-add-to-menubar)
@@ -352,7 +352,7 @@ COMMANDS
 
 `py-shell'\tStart an interactive Python interpreter in another window
 `py-execute-statement'\tSend statement at point to Python default interpreter
-`py-beginning-of-statement'\tGo to the initial line of a simple statement
+`py-backward-statement'\tGo to the initial line of a simple statement
 
 etc.
 
@@ -466,14 +466,14 @@ See available customizations listed in files variables-python-mode at directory 
   ;;  (add-hook 'after-change-functions 'py--after-change-function nil t)
   (if py-defun-use-top-level-p
       (progn
-        (set (make-local-variable 'beginning-of-defun-function) 'py-beginning-of-top-level)
-        (set (make-local-variable 'end-of-defun-function) 'py-end-of-top-level)
-        (define-key python-mode-map [(control meta a)] 'py-beginning-of-top-level)
-        (define-key python-mode-map [(control meta e)] 'py-end-of-top-level))
-    (set (make-local-variable 'beginning-of-defun-function) 'py-beginning-of-def-or-class)
-    (set (make-local-variable 'end-of-defun-function) 'py-end-of-def-or-class)
-    (define-key python-mode-map [(control meta a)] 'py-beginning-of-def-or-class)
-    (define-key python-mode-map [(control meta e)] 'py-end-of-def-or-class))
+        (set (make-local-variable 'beginning-of-defun-function) 'py-backward-top-level)
+        (set (make-local-variable 'end-of-defun-function) 'py-forward-top-level)
+        (define-key python-mode-map [(control meta a)] 'py-backward-top-level)
+        (define-key python-mode-map [(control meta e)] 'py-forward-top-level))
+    (set (make-local-variable 'beginning-of-defun-function) 'py-backward-def-or-class)
+    (set (make-local-variable 'end-of-defun-function) 'py-forward-def-or-class)
+    (define-key python-mode-map [(control meta a)] 'py-backward-def-or-class)
+    (define-key python-mode-map [(control meta e)] 'py-forward-def-or-class))
   (when (and py--imenu-create-index-p
              (fboundp 'imenu-add-to-menubar)
              (ignore-errors (require 'imenu)))

@@ -180,7 +180,7 @@ TESTFILE3="python-extended-executes-test.el"
 TESTFILE5="py-shell-completion-tests.el"
 TESTFILE6="py-split-window-on-execute-lp-1361531-test.el"
 TESTFILE7="py-multi-split-window-on-execute-lp-1361531-test.el"
-TESTFILE8="py-always-split-window-on-execute-lp-1361531-test.el"
+# TESTFILE8="py-always-split-window-on-execute-lp-1361531-test.el"
 CEXEC="python-extended-executes.el"
 
 UTILS="devel/python-mode-utils.el"
@@ -189,8 +189,32 @@ echo "\$PYMACS: $PYMACS"
 echo "\$PYTHONMODE: $PYTHONMODE"
 echo "\$PDIR/\$TESTFILE: $PDIR/$TESTFILE"
 
-$EMACS -Q --batch --eval "(message (emacs-version))" --eval "(setq py-verbose-p t)" --eval "(when (featurep 'python)(unload-feature 'python t))" --eval "(when (featurep 'python-mode)(unload-feature 'python-mode t))" --eval "(add-to-list 'load-path \"$PDIR/\")" --eval "(add-to-list 'load-path \"$TESTDIR/\")" --eval "(setq py-install-directory \"$PDIR\"))" --eval "(message \"py-install-directory: %s\" py-install-directory)" --eval "(setq py-load-pymacs-p nil)" \
--load $COMINT -load $ANSICOLOR -load $CLMACS -load $CUSTOM -load $SO -load $COLMK -load $HIGHL -load $PYTHONMODE  --eval "(message \"py-temp-directory: %s\" py-temp-directory)" -load $PCOT/$TESTFILE -load $PCOT/$TESTFILE2 -load $PCOT/$TESTFILE3 -load $PCOT/$TESTFILE5 -load $PCOT/$TESTFILE6 -load $PCOT/$TESTFILE7 -load $PCOT/$TESTFILE8 -load $PDIR/$UTILS \
+$EMACS -Q --batch \
+--eval "(message (emacs-version))" \
+--eval "(setq py-verbose-p t)" \
+--eval "(when (featurep 'python)(unload-feature 'python t))" \
+--eval "(when (featurep 'python-mode)(unload-feature 'python-mode t))" \
+--eval "(add-to-list 'load-path \"$PDIR/\")" \
+--eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+--eval "(setq py-install-directory \"$PDIR\"))" \
+--eval "(message \"py-install-directory: %s\" py-install-directory)" \
+--eval "(setq py-load-pymacs-p nil)" \
+-load $COMINT \
+-load $ANSICOLOR \
+-load $CLMACS \
+-load $CUSTOM \
+-load $SO \
+-load $COLMK \
+-load $HIGHL \
+-load $PYTHONMODE \
+ --eval "(message \"py-temp-directory: %s\" py-temp-directory)" \
+-load $PCOT/$TESTFILE \
+-load $PCOT/$TESTFILE2 \
+-load $PCOT/$TESTFILE3 \
+-load $PCOT/$TESTFILE5 \
+-load $PCOT/$TESTFILE6 \
+-load $PCOT/$TESTFILE7 \
+-load $PDIR/$UTILS \
 -eval "(when (file-exists-p \"~/.abbrev_defs\") (quietly-read-abbrev-file (expand-file-name \"~/.abbrev_defs\")))" \
 -eval "(setq enable-local-variables :all)" \
 --funcall opening-brace-on-builtins-lp-1400951-test \
