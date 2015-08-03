@@ -416,11 +416,11 @@ x = {'abc':'def',
     (py-execute-statement)
     (should (eq (window-height) full-height))))
 
-;; (ert-deftest py-compute-indentation-after-import-test ()
-;;     (py-test-with-temp-buffer
-;;     "import pdb
-;; "
-;;     (should (eq 0 (py-compute-indentation)))))
+(ert-deftest py-compute-indentation-after-import-test ()
+    (py-test-with-temp-buffer
+    "import pdb
+"
+    (should (eq 0 (py-compute-indentation)))))
 
 (ert-deftest py-compute-indentation-bob-test ()
     (py-test-with-temp-buffer-point-min

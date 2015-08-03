@@ -650,7 +650,7 @@ LIEP stores line-end-position at point-of-interest
 		  (cond ((bobp)
 			 (cond ((eq liep (line-end-position))
 				0)
-			       ((and (looking-at py-extended-block-or-clause-re)(py--statement-opens-block-p (match-string-no-properties 0))) 
+			       ((looking-at py-outdent-re)
 				(+ (if py-smart-indentation (py-guess-indent-offset) indent-offset) (current-indentation)))
 			       (t
 				(current-indentation))))
