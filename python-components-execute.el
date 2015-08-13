@@ -471,6 +471,15 @@ Internal use"
 ;;       (display-buffer output-buffer)
 ;;       (select-window py-exception-window))
 
+(defun py--split-t-not-switch-wm ()
+  (unless (window-live-p output-buffer)
+    (with-current-buffer (get-buffer output-buffer)
+      (when (< number-of-windows py-split-window-on-execute-threshold)
+	(unless
+	    (member (get-buffer-window output-buffer)(window-list))
+	  (py--manage-windows-split py-exception-buffer output-buffer)))
+      (display-buffer output-buffer t))))
+
 (defun py--shell-manage-windows (output-buffer windows-config &optional exception-buffer)
   "Adapt or restore window configuration. Return nil "
   (let* ((oldbuf (current-buffer))
@@ -538,24 +547,10 @@ Internal use"
      ((and
        py-split-window-on-execute
        (not py-switch-buffers-on-execute-p))
-      (when (< number-of-windows py-split-window-on-execute-threshold)
-	(unless
-	    (member (get-buffer-window output-buffer)(window-list))
-	  (py--manage-windows-split py-exception-buffer output-buffer)))
-      ;; Fixme: otherwise new window appears above
-      (save-excursion
-	(other-window 1)
-	(pop-to-buffer output-buffer)
-	(goto-char (point-max))
-	(other-window 1))
-      ;; (display-buffer-reuse-window oldbuf nil)
-      ;; (set-buffer oldbuf)
-      (if
-	  ;; window lists with same members
-	  (not (cl-set-exclusive-or old-window-list (window-list)))
-	  ;; (if (eq number-of-windows (length (window-list)))
-	  (py-restore-window-configuration)
-	(switch-to-buffer oldbuf)))
+      ;; https://bugs.launchpad.net/python-mode/+bug/1478122
+      ;; > If the shell is visible in any of the windows it  should re-use that window
+      ;; > I did double check and py-keep-window-configuration is nil and py-split-window-on-execute is t.
+      (py--split-t-not-switch-wm))
      ((not py-switch-buffers-on-execute-p)
       (let (pop-up-windows)
 	(py-restore-window-configuration))))))
@@ -717,10 +712,7 @@ Receives a buffer-name as argument"
 	  (with-current-buffer py-buffer-name
 	    (erase-buffer)))
 	(py--create-new-shell executable args exception-buffer))
-      (when (or (called-interactively-p 'any)
-		;; M-x python RET sends from interactive "p"
-		argprompt
-		py-switch-buffers-on-execute-p py-split-window-on-execute)
+      (when (called-interactively-p 'any)
 	(py--shell-manage-windows py-buffer-name windows-config py-exception-buffer)))
     ;; (sit-for py-new-shell-delay t)
     py-buffer-name))
