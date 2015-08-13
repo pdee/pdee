@@ -421,6 +421,7 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
 (defalias 'py-previous-clause 'py-backward-clause)
 (defalias 'py-previous-def-or-class 'py-backward-def-or-class)
 (defalias 'py-previous-statement 'py-backward-statement)
+(defalias 'py-markup-region-as-section 'py-sectionize-region)
 
 ;;;
 (provide 'python-components-foot)

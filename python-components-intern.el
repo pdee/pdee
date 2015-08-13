@@ -1941,6 +1941,7 @@ Use current region unless optional args BEG END are delivered."
     (save-excursion
       (goto-char beg)
       (unless (empty-line-p) (split-line))
+      (beginning-of-line) 
       (insert py-section-start)
       (goto-char end)
       (unless (empty-line-p) (newline))

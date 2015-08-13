@@ -727,6 +727,7 @@ Returns the string inserted. "
       (insert erg))
     erg))
 
+;; Comments
 (defun py-delete-comments-in-def-or-class ()
   "Delete all commented lines in def-or-class at point"
   (interactive "*")

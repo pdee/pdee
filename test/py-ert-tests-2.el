@@ -1035,5 +1035,15 @@ print(\"%(language)s has %(number)03d quote types.\" %
       (forward-line 1)
       (should (not (empty-line-p))))))
 
+(ert-deftest py-markup-region-as-section-test ()
+  (py-test-with-temp-buffer-point-min
+      py-def-and-class-test-string
+      (search-forward "fertig")
+      (py-sectionize-region (match-beginning 0) (line-end-position))
+      (py-mark-section)
+      (should (eq 371 (region-beginning)))
+      (should (eq 408 (region-end))))) 
+
+
 (provide 'py-ert-tests-2)
 ;;; py-ert-tests-2.el ends here
