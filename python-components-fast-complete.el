@@ -77,7 +77,7 @@ completions on the current context."
 
 Use `py-fast-process' "
   (interactive)
-  (setq py-completion-last-window-configuration
+  (setq py-last-window-configuration
         (current-window-configuration))
   (let (py-switch-buffers-on-execute-p
 	(py-fast-process-p t)

@@ -244,7 +244,7 @@ or if the dot-expression starts with a variable for which the type is known."
 (defun py-complete ()
   "Complete symbol before point using Pymacs. "
   (interactive)
-  (setq py-completion-last-window-configuration
+  (setq py-last-window-configuration
         (current-window-configuration))
   (let ((symbol (py-complete-enhanced-symbol-before-point)))
     (if (string= "" symbol)
@@ -293,7 +293,7 @@ or if the dot-expression starts with a variable for which the type is known."
 (defun py-complete-completion-at-point ()
   "Return a (start end collection) list, so that this function
 can be used as a hook for completion-at-point-functions."
-  (setq py-completion-last-window-configuration
+  (setq py-last-window-configuration
         (current-window-configuration))
   (let ((symbol (py-complete-enhanced-symbol-before-point)))
     (when (not (string= "" symbol))

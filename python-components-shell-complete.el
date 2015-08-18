@@ -48,7 +48,7 @@ completions on the current context."
                   (eq last-command 'py-shell-complete))
                  (eq this-command 'self-insert-command))))
     (set-window-configuration
-     py-completion-last-window-configuration))
+     py-last-window-configuration))
   (goto-char end))
 
 (defalias 'ipython-complete 'py-shell-complete)
@@ -181,7 +181,7 @@ completions on the current context."
   (save-excursion
     (and (buffer-live-p (get-buffer "*Python Completions*"))
 	 (py-kill-buffer-unconditional "*Python Completions*")))
-  (setq py-completion-last-window-configuration
+  (setq py-last-window-configuration
         (current-window-configuration))
   (when debug (setq py-shell-complete-debug nil))
   (py--complete-prepare shell debug beg end word nil))

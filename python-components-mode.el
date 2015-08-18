@@ -1942,6 +1942,9 @@ It should not contain a caret (^) at the beginning."
 "
   "Python code to get a module path.")
 
+(defvar py-eldoc-window-configuration nil
+  "Keeps window-configuration when eldoc-mode is called. ")
+
 (defvar py-eldoc-setup-code
   "def __PYDOC_get_help(obj):
     try:
@@ -2166,7 +2169,7 @@ some logging etc. "
 
 (defvar py-section-re py-section-start)
 
-(defvar py-completion-last-window-configuration nil
+(defvar py-last-window-configuration nil
   "Internal use: restore py-restore-window-configuration when completion is done resp. abandoned. ")
 
 (defvar py-exception-buffer nil

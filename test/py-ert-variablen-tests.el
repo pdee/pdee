@@ -584,7 +584,7 @@
   (should (boundp 'py-complete-last-modified)))
 
 (ert-deftest py-ert-completion-last-window-configuration-test ()
-  (should (boundp 'py-completion-last-window-configuration)))
+  (should (boundp 'py-last-window-configuration)))
 
 (ert-deftest py-ert-decorators-face-test ()
   (should (boundp 'py-decorators-face)))
