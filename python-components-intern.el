@@ -588,6 +588,26 @@ Use `defcustom' to keep value across sessions "
     (beginning-of-line)
     (looking-at "\\s-*$")))
 
+(defun py--compute-indentation-in-string (pps)
+  (cond
+   ((py--docstring-p)
+    (save-excursion
+      (py-backward-statement (point) nil (nth 8 pps) t)
+      (current-indentation)))
+   ;; still at original line
+   ((eq origline (line-end-position))
+    (forward-line -1)
+    (end-of-line)
+    (skip-chars-backward " \t\r\n\f")
+    (if (ignore-errors (< (nth 8 (parse-partial-sexp (point-min) (point))) (line-beginning-position)))
+	(current-indentation)
+      (ignore-errors (goto-char (nth 8 pps)))
+      (when (py--line-backward-maybe) (setq line t))
+      (back-to-indentation)
+      (py-compute-indentation orig origline closing line nesting repeat indent-offset liep)))
+   (t (goto-char (nth 8 pps))
+      (current-indentation))))
+
 (defalias 'py-count-indentation 'py-compute-indentation)
 (defun py-compute-indentation (&optional orig origline closing line nesting repeat indent-offset liep)
   "Compute Python indentation.
@@ -656,21 +676,7 @@ LIEP stores line-end-position at point-of-interest
 				(current-indentation))))
 			;; in string
 			((and (nth 3 pps)(nth 8 pps))
-			 (if
-			     ;; still at original line
-			     (eq origline (line-end-position))
-			     (progn
-			       (forward-line -1)
-			       (end-of-line)
-			       (skip-chars-backward " \t\r\n\f")
-			       (if (ignore-errors (< (nth 8 (parse-partial-sexp (point-min) (point))) (line-beginning-position)))
-				   (current-indentation)
-				 (ignore-errors (goto-char (nth 8 pps)))
-				 (when (py--line-backward-maybe) (setq line t))
-				 (back-to-indentation)
-				 (py-compute-indentation orig origline closing line nesting repeat indent-offset liep)))
-			   (goto-char (nth 8 pps))
-			   (current-indentation)))
+			 (py--compute-indentation-in-string pps))
 			((and (looking-at "\"\"\"\\|'''")(not (bobp)))
 			 (py-backward-statement)
 			 (py-compute-indentation orig origline closing line nesting repeat indent-offset liep))
@@ -1941,7 +1947,7 @@ Use current region unless optional args BEG END are delivered."
     (save-excursion
       (goto-char beg)
       (unless (empty-line-p) (split-line))
-      (beginning-of-line) 
+      (beginning-of-line)
       (insert py-section-start)
       (goto-char end)
       (unless (empty-line-p) (newline))

@@ -187,11 +187,14 @@ If already at end-of-line and not at EOB, go to end of next line. "
       erg)))
 
 ;;  Statement
-(defun py-backward-statement (&optional orig done limit)
+(defun py-backward-statement (&optional orig done limit ignore-in-string-p)
   "Go to the initial line of a simple statement.
 
 For beginning of compound statement use py-backward-block.
-For beginning of clause py-backward-clause."
+For beginning of clause py-backward-clause.
+
+`ignore-in-string-p' allows moves inside a docstring, used when
+computing indents"
   (interactive)
   (save-restriction
     (unless (bobp)
@@ -208,56 +211,60 @@ For beginning of clause py-backward-clause."
         (cond
          ((and (bolp)(eolp))
           (skip-chars-backward " \t\r\n\f")
-          (py-backward-statement orig done limit))
-         ((nth 8 pps)
+          (py-backward-statement orig done limit ignore-in-string-p))
 	  ;; inside string
-          (and (nth 3 pps) (setq done t))
-          (goto-char (nth 8 pps))
-          (py-backward-statement orig done limit))
+         ((and (nth 3 pps)(not ignore-in-string-p))
+	  (setq done t)
+	  (goto-char (nth 8 pps))
+	  (py-backward-statement orig done limit ignore-in-string-p))
+	 ((nth 4 pps)
+	  (goto-char (nth 8 pps))
+	  (skip-chars-backward " \t\r\n\f") 
+	  (py-backward-statement orig done limit ignore-in-string-p))
          ((nth 1 pps)
           (goto-char (1- (nth 1 pps)))
 	  (when (py--skip-to-semicolon-backward (save-excursion (back-to-indentation)(point)))
 	    (setq done t))
-          (py-backward-statement orig done limit))
+          (py-backward-statement orig done limit ignore-in-string-p))
          ((py-preceding-line-backslashed-p)
           (forward-line -1)
           (back-to-indentation)
           (setq done t)
-          (py-backward-statement orig done limit))
+          (py-backward-statement orig done limit ignore-in-string-p))
 	 ;; BOL or at space before comment
          ((and (looking-at "[ \t]*#")(looking-back "^[ \t]*"))
           (forward-comment -1)
           (while (and (not (bobp)) (looking-at "[ \t]*#")(looking-back "^[ \t]*"))
             (forward-comment -1))
           (unless (bobp)
-            (py-backward-statement orig done limit)))
+            (py-backward-statement orig done limit ignore-in-string-p)))
 	 ;; at inline comment
          ((looking-at "[ \t]*#")
 	  (when (py--skip-to-semicolon-backward (save-excursion (back-to-indentation)(point)))
 	    (setq done t))
-	  (py-backward-statement orig done limit))
-	;; at beginning of string
-	((and (not done) (looking-at py-string-delim-re))
-	 (when (< 0 (abs (skip-chars-backward " \t\r\n\f")))
-	   (setq done t))
-	 (back-to-indentation)
-	 (py-backward-statement orig done limit))
-	;; after end of statement
-	((and (not done) (eq (char-before) ?\;))
-	 (skip-chars-backward ";")
-	 (py-backward-statement orig done limit))
-	;; travel until indentation or semicolon
-	((and (not done) (py--skip-to-semicolon-backward (save-excursion (back-to-indentation)(point))))
-	 (setq done t) 
-	 (py-backward-statement orig done limit))
-	;; at current indent
-	((and (not done) (not (eq 0 (skip-chars-backward " \t\r\n\f"))))
-	 (py-backward-statement orig done limit)))
-      ;; return nil when before comment
-      (unless (and (looking-at "[ \t]*#") (looking-back "^[ \t]*"))
-	(when (< (point) orig)(setq erg (point))))
-      (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
-      erg))))
+	  (py-backward-statement orig done limit ignore-in-string-p))
+	 ;; at beginning of string
+	 ((and (not done) (looking-at py-string-delim-re))
+	  (when (< 0 (abs (skip-chars-backward " \t\r\n\f")))
+	    (setq done t))
+	  (back-to-indentation)
+	  (py-backward-statement orig done limit ignore-in-string-p))
+	 ;; after end of statement
+	 ((and (not done) (eq (char-before) ?\;))
+	  (skip-chars-backward ";")
+	  (py-backward-statement orig done limit ignore-in-string-p))
+	 ;; travel until indentation or semicolon
+	 ((and (not done) (py--skip-to-semicolon-backward (save-excursion (back-to-indentation)(point))))
+	  (setq done t)
+	  (py-backward-statement orig done limit ignore-in-string-p))
+	 ;; at current indent
+	 ((and (not done) (not (eq 0 (skip-chars-backward " \t\r\n\f"))))
+	  (py-backward-statement orig done limit ignore-in-string-p)))
+	;; return nil when before comment
+	(unless (and (looking-at "[ \t]*#") (looking-back "^[ \t]*"))
+	  (when (< (point) orig)(setq erg (point))))
+	(when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
+	erg))))
 
 (defun py-backward-statement-bol (&optional indent)
   "Goto beginning of line where statement starts.

@@ -1045,5 +1045,20 @@ print(\"%(language)s has %(number)03d quote types.\" %
       (should (eq 408 (region-end))))) 
 
 
+(ert-deftest py-indent-in-docstring-gh6 ()
+  (py-test-with-temp-buffer-point-min
+      "def f():
+    \"\"\"
+    Return nothing.
+
+    .. NOTE::
+
+        First note line
+    second note line\"\"\"
+    pass"
+    (search-forward "second")
+    (back-to-indentation)
+    (should (eq 8 (py-compute-indentation)))))
+
 (provide 'py-ert-tests-2)
 ;;; py-ert-tests-2.el ends here

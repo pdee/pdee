@@ -456,7 +456,7 @@ downwards from beginning of block followed by a statement. Otherwise default-val
 
 Starts from second line of region specified"
   (goto-char beg)
-  (forward-line 1) 
+  (forward-line 1)
   (while (< (point) end)
     (if (empty-line-p)
 	(forward-line 1)
@@ -767,6 +767,33 @@ Returns the string inserted. "
       (if (looking-at (concat "[ \t]*" comment-start))
           (delete-region (point) (1+ (line-end-position)))
         (forward-line 1)))))
+
+;; Edit docstring
+(defun py-edit-docstring ()
+  "Edit docstring or active region in python-mode. "
+  (interactive "*")
+  (let ((orig (point))
+	(beg (when (use-region-p) (region-beginning)))
+	(end (when (use-region-p) (region-end)))
+	(pps (parse-partial-sexp (point-min) (point))))
+    (when (nth 3 pps)
+      (let* (;; relative position in string
+	     (beg (or beg (progn (goto-char (nth 8 pps))
+				 (skip-chars-forward (char-to-string (char-after)))(push-mark)(point))))
+	     (end (or end
+		      (progn (goto-char (nth 8 pps))
+			     (forward-sexp)
+			     (skip-chars-backward (char-to-string (char-before)))
+			     (point))))
+	     (relpos (1+ (- orig beg)))
+	     (docstring (buffer-substring beg end)))
+	(kill-region beg end)
+	(set-buffer (get-buffer-create "Edit docstring"))
+	(erase-buffer)
+	(switch-to-buffer (current-buffer))
+	(insert docstring)
+	(python-mode)
+	(goto-char relpos)))))
 
 (provide 'python-components-edit)
 ;;; python-components-edit.el ends here
