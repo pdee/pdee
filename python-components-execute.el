@@ -712,10 +712,7 @@ Receives a buffer-name as argument"
 	  (with-current-buffer py-buffer-name
 	    (erase-buffer)))
 	(py--create-new-shell executable args exception-buffer))
-      (when (or (called-interactively-p 'any) 
-		(eq 1 argprompt)
-		;; (member this-command py-named-shells)
-		)
+      (when (called-interactively-p 'any)
 	(py--shell-manage-windows py-buffer-name windows-config py-exception-buffer)))
     ;; (sit-for py-new-shell-delay t)
     py-buffer-name))

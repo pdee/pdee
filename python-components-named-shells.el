@@ -29,49 +29,49 @@
   "Start an IPython interpreter.
 
 Optional \\[universal-argument] prompts for path to the interpreter. "
-  (interactive "p")
+  (interactive "P")
   (py-shell argprompt nil "ipython"))
 
 (defun ipython2.7 (&optional argprompt)
   "Start an IPython2.7 interpreter.
 
 Optional \\[universal-argument] prompts for path to the interpreter. "
-  (interactive "p")
+  (interactive "P")
   (py-shell argprompt nil "ipython2.7"))
 
 (defun ipython3 (&optional argprompt)
   "Start an IPython3 interpreter.
 
 Optional \\[universal-argument] prompts for path to the interpreter. "
-  (interactive "p")
+  (interactive "P")
   (py-shell argprompt nil "ipython3"))
 
 (defun jython (&optional argprompt)
   "Start an Jython interpreter.
 
 Optional \\[universal-argument] prompts for path to the interpreter. "
-  (interactive "p")
+  (interactive "P")
   (py-shell argprompt nil "jython"))
 
 (defun python (&optional argprompt)
   "Start an Python interpreter.
 
 Optional \\[universal-argument] prompts for path to the interpreter. "
-  (interactive "p")
+  (interactive "P")
   (py-shell argprompt nil "python"))
 
 (defun python2 (&optional argprompt)
   "Start an Python2 interpreter.
 
 Optional \\[universal-argument] prompts for path to the interpreter. "
-  (interactive "p")
+  (interactive "P")
   (py-shell argprompt nil "python2"))
 
 (defun python3 (&optional argprompt)
   "Start an Python3 interpreter.
 
 Optional \\[universal-argument] prompts for path to the interpreter. "
-  (interactive "p")
+  (interactive "P")
   (py-shell argprompt nil "python3"))
 
 ;; dedicated
