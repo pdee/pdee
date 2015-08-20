@@ -1389,6 +1389,8 @@ Else python"
 
 (defvar py-default-interpreter py-shell-name)
 
+(defvar py-named-shells (list 'ipython 'ipython-dedicated 'ipython-no-switch 'ipython-switch 'ipython-switch-dedicated 'ipython2.7 'ipython2.7-dedicated 'ipython2.7-no-switch 'ipython2.7-switch 'ipython2.7-switch-dedicated 'ipython3 'ipython3-dedicated 'ipython3-no-switch 'ipython3-switch 'ipython3-switch-dedicated 'jython 'jython-dedicated 'jython-no-switch 'jython-switch 'jython-switch-dedicated 'python 'python-dedicated 'python-no-switch 'python-switch 'python-switch-dedicated 'python2 'python2-dedicated 'python2-no-switch 'python2-switch 'python2-switch-dedicated 'python3 'python3-dedicated 'python3-no-switch 'python3-switch 'python3-switch-dedicated))
+
 (defcustom py-python-command
   (if (eq system-type 'windows-nt)
       ;; "C:\\Python27\\python.exe"

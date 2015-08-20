@@ -1198,7 +1198,7 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. \"
 
 Optional \\\\[universal-argument] prompts for path to the"))
       (insert (concat " interpreter. \"
-  (interactive \"P\")
+  (interactive \"p\")
   (py-shell argprompt nil \"" ele "\"))\n\n"))))
     (insert ";; dedicated\n")
     (dolist (ele py-shells)
