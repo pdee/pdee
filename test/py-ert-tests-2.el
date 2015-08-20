@@ -823,7 +823,6 @@ class asdf:
    (forward-line -1)
    (should (eq 4 (current-indentation)))))
 
-
 (ert-deftest py-face-lp-1454858-python2-1-test ()
   (let ((py-python-edit-version ""))
     (py-test-with-temp-buffer
@@ -1029,7 +1028,7 @@ print(\"%(language)s has %(number)03d quote types.\" %
       "def foo():
     '''asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdfasdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf'''"
     (let (py-docstring-style)
-      (search-forward "'''") 
+      (search-forward "'''")
       (save-excursion
 	(fill-paragraph))
       (forward-line 1)
@@ -1042,8 +1041,7 @@ print(\"%(language)s has %(number)03d quote types.\" %
       (py-sectionize-region (match-beginning 0) (line-end-position))
       (py-mark-section)
       (should (eq 371 (region-beginning)))
-      (should (eq 408 (region-end))))) 
-
+      (should (eq 408 (region-end)))))
 
 (ert-deftest py-indent-in-docstring-gh6 ()
   (py-test-with-temp-buffer-point-min
@@ -1059,6 +1057,58 @@ print(\"%(language)s has %(number)03d quote types.\" %
     (search-forward "second")
     (back-to-indentation)
     (should (eq 8 (py-compute-indentation)))))
+
+(ert-deftest py-ert-auto-mode-test ()
+  (find-file "py-ert-auto-mode-py-test.py")
+  (and (should (eq major-mode 'python-mode))
+       (py-kill-buffer-unconditional "py-ert-auto-mode-py-test.py")))
+
+;; Python Macro File
+(ert-deftest py-ert-auto-mode-macro-test ()
+  (find-file "py-ert-auto-mode-py-test.pym")
+  (and (should (eq major-mode 'python-mode))
+  (py-kill-buffer-unconditional "py-ert-auto-mode-py-test.pym")))
+
+(ert-deftest py-ert-auto-mode-pyc-test ()
+  (find-file "py-ert-auto-mode-py-test.pyc")
+  (and (should (eq major-mode 'python-mode))
+  (py-kill-buffer-unconditional "py-ert-auto-mode-py-test.pyc")))
+
+;; Pyrex Source
+(ert-deftest py-ert-auto-mode-pyrex-test ()
+  (find-file "py-ert-auto-mode-py-test.pyx")
+  (and (should (eq major-mode 'python-mode))
+  (py-kill-buffer-unconditional "py-ert-auto-mode-py-test.pyx")))
+
+;; Python Optimized Code
+(ert-deftest py-ert-auto-mode-optimized-test ()
+  (find-file "py-ert-auto-mode-py-test.pyo")
+  (and (should (eq major-mode 'python-mode))
+  (py-kill-buffer-unconditional "py-ert-auto-mode-py-test.pyo")))
+
+;; Pyrex Definition File
+(ert-deftest py-ert-auto-mode-def-test ()
+  (find-file "py-ert-auto-mode-py-test.pxd")
+  (and (should (eq major-mode 'python-mode))
+  (py-kill-buffer-unconditional "py-ert-auto-mode-py-test.pxd")))
+
+;; Python Repository
+(ert-deftest py-ert-auto-mode-repo-test ()
+  (find-file "py-ert-auto-mode-py-test.pyr")
+  (and (should (eq major-mode 'python-mode))
+  (py-kill-buffer-unconditional "py-ert-auto-mode-py-test.pyr")))
+
+;; Python Path Configuration
+(ert-deftest py-ert-auto-mode-path-test ()
+  (find-file "py-ert-auto-mode-py-test.pth")
+  (and (should (eq major-mode 'python-mode))
+  (py-kill-buffer-unconditional "py-ert-auto-mode-py-test.pth")))
+
+;; Python Wheels
+(ert-deftest py-ert-auto-mode-wheelstest ()
+  (find-file "py-ert-auto-mode-py-test.whl")
+  (and (should (eq major-mode 'python-mode))
+  (py-kill-buffer-unconditional "py-ert-auto-mode-py-test.whl")))
 
 (provide 'py-ert-tests-2)
 ;;; py-ert-tests-2.el ends here
