@@ -397,33 +397,6 @@ Don't save anything for STR matching `py-input-filter-re' "
 
 (add-to-list 'auto-mode-alist (cons (purecopy "\\.py\\'")  'python-mode))
 
-;; Python Macro File
-(add-to-list 'auto-mode-alist (cons (purecopy "\.pym\'")  'python-mode))
-
-(add-to-list 'auto-mode-alist (cons (purecopy "\.pyc\'")  'python-mode))
-
-
-;; Pyrex Source
-(add-to-list 'auto-mode-alist (cons (purecopy "\.pyx\'")  'python-mode))
-
-;; Python Optimized Code
-(add-to-list 'auto-mode-alist (cons (purecopy "\.pyo\'")  'python-mode))
-
-;; TCL Script
-(add-to-list 'auto-mode-alist (cons (purecopy "\.tcl\'")  'python-mode))
-
-;; Pyrex Definition File
-(add-to-list 'auto-mode-alist (cons (purecopy "\.pxd\'")  'python-mode))
-
-;; Python Repository
-(add-to-list 'auto-mode-alist (cons (purecopy "\.pyr\'")  'python-mode))
-
-;; Python Path Configuration
-(add-to-list 'auto-mode-alist (cons (purecopy "\.pth\'")  'python-mode))
-
-;; Python Wheels
-(add-to-list 'auto-mode-alist (cons (purecopy "\.whl\'")  'python-mode))
-
 ;;  (add-to-list 'interpreter-mode-alist
 ;;  (cons (purecopy "[bi]*python[0-9.]*") 'python-mode))
 ;;
