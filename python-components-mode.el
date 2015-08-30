@@ -3117,6 +3117,16 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
 ;;
 
 
+(defvar py-edit-docstring-mode-map nil
+  "Keymap for edit-docstring minor mode.")
+
+(setq py-edit-docstring-mode-map
+      (let ((map (make-sparse-keymap)))
+        ;; electric keys
+        (define-key map [(:)] 'py-electric-colon)
+        (define-key map [(\#)] 'py-electric-comment)
+	map))
+
 (defvar python-mode-map nil)
 (setq python-mode-map
       (let ((map (make-sparse-keymap)))
