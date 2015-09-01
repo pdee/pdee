@@ -1,4 +1,4 @@
-;; py-ert-tests.el --- Tests, some adapted from python.el
+;; py-ert-tests-2.el --- Some more Tests
 
 ;; Copyright (C) 2014 Andreas Roehler, <andreas.roehler@online.de>
 
@@ -418,7 +418,9 @@ x = {'abc':'def',
 
 (ert-deftest py-compute-indentation-after-import-test ()
     (py-test-with-temp-buffer
-    "import pdb
+    "#! /usr/bin/env python3
+
+import pdb
 "
     (should (eq 0 (py-compute-indentation)))))
 

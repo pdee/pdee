@@ -2378,7 +2378,7 @@ See py-no-outdent-re-raw for better readable content ")
   (concat
    "[ \t]*\\_<"
    (regexp-opt py-no-outdent-re-raw)
-   "\\_>[)\t]*$")
+   "\\_>[)\t]*")
   "Regular expression matching lines not to augment indent after.
 
 See py-no-outdent-re-raw for better readable content ")
