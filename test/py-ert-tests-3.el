@@ -50,5 +50,17 @@ py_if_name_main_permission_test()
       (sit-for 0.2)
       (assert (looking-back "run") nil "py-if-name-main-permission-lp-326620-test #1 failed"))))
 
+
+(ert-deftest py-ert-intend-try-test ()
+  (py-test-with-temp-buffer-point-min
+      "#! /usr/bin/env python
+
+import sys
+import os
+
+        try:"
+    (search-forward "try")
+    (should (eq 0 (py-compute-indentation)))))
+
 (provide 'py-ert-tests-3)
 ;;; py-ert-tests-3.el ends here

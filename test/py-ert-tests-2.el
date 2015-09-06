@@ -1,4 +1,4 @@
-;; py-ert-tests-2.el --- Some more Tests
+;; py-ert-tests.el --- Tests, some adapted from python.el
 
 ;; Copyright (C) 2014 Andreas Roehler, <andreas.roehler@online.de>
 
@@ -418,9 +418,7 @@ x = {'abc':'def',
 
 (ert-deftest py-compute-indentation-after-import-test ()
     (py-test-with-temp-buffer
-    "#! /usr/bin/env python3
-
-import pdb
+    "import pdb
 "
     (should (eq 0 (py-compute-indentation)))))
 
@@ -445,17 +443,17 @@ pass
     (call-interactively 'py-indent-or-complete)
     (sit-for 0.1 t)
     (should (eq 8 (current-column)))
-    ;; FixMe, last-command seems not set
-    ;; (call-interactively 'py-indent-or-complete)
-    ;; (py-indent-or-complete)
-    ;; (sit-for 0.1 t)
-    ;; (should (eq 4 (current-column)))
     (beginning-of-line)
     (delete-horizontal-space)
     (indent-to 4)
-    (py-indent-or-complete)
+    (call-interactively 'py-indent-or-complete)
     (sit-for 0.1 t)
-    (should (eq 0 (current-column)))
+    (should (eq 8 (current-column)))
+    ;; 
+    ;; (call-interactively 'py-indent-or-complete)
+    ;; (call-interactively 'py-indent-or-complete)
+    ;; (sit-for 0.1 t)
+    ;; (should (eq 4 (current-column)))
     ;; (py-indent-or-complete)
     ;; (sit-for 0.1 t)
     ;; (should (eq 8 (current-column)))
@@ -825,6 +823,7 @@ class asdf:
    (forward-line -1)
    (should (eq 4 (current-indentation)))))
 
+
 (ert-deftest py-face-lp-1454858-python2-1-test ()
   (let ((py-python-edit-version ""))
     (py-test-with-temp-buffer
@@ -1045,6 +1044,7 @@ print(\"%(language)s has %(number)03d quote types.\" %
       (should (eq 371 (region-beginning)))
       (should (eq 408 (region-end)))))
 
+
 (ert-deftest py-indent-in-docstring-gh6 ()
   (py-test-with-temp-buffer-point-min
       "def f():
@@ -1059,58 +1059,6 @@ print(\"%(language)s has %(number)03d quote types.\" %
     (search-forward "second")
     (back-to-indentation)
     (should (eq 8 (py-compute-indentation)))))
-
-(ert-deftest py-ert-auto-mode-test ()
-  (find-file "py-ert-auto-mode-py-test.py")
-  (and (should (eq major-mode 'python-mode))
-       (py-kill-buffer-unconditional "py-ert-auto-mode-py-test.py")))
-
-;; Python Macro File
-(ert-deftest py-ert-auto-mode-macro-test ()
-  (find-file "py-ert-auto-mode-py-test.pym")
-  (and (should (eq major-mode 'python-mode))
-  (py-kill-buffer-unconditional "py-ert-auto-mode-py-test.pym")))
-
-(ert-deftest py-ert-auto-mode-pyc-test ()
-  (find-file "py-ert-auto-mode-py-test.pyc")
-  (and (should (eq major-mode 'python-mode))
-  (py-kill-buffer-unconditional "py-ert-auto-mode-py-test.pyc")))
-
-;; Pyrex Source
-(ert-deftest py-ert-auto-mode-pyrex-test ()
-  (find-file "py-ert-auto-mode-py-test.pyx")
-  (and (should (eq major-mode 'python-mode))
-  (py-kill-buffer-unconditional "py-ert-auto-mode-py-test.pyx")))
-
-;; Python Optimized Code
-(ert-deftest py-ert-auto-mode-optimized-test ()
-  (find-file "py-ert-auto-mode-py-test.pyo")
-  (and (should (eq major-mode 'python-mode))
-  (py-kill-buffer-unconditional "py-ert-auto-mode-py-test.pyo")))
-
-;; Pyrex Definition File
-(ert-deftest py-ert-auto-mode-def-test ()
-  (find-file "py-ert-auto-mode-py-test.pxd")
-  (and (should (eq major-mode 'python-mode))
-  (py-kill-buffer-unconditional "py-ert-auto-mode-py-test.pxd")))
-
-;; Python Repository
-(ert-deftest py-ert-auto-mode-repo-test ()
-  (find-file "py-ert-auto-mode-py-test.pyr")
-  (and (should (eq major-mode 'python-mode))
-  (py-kill-buffer-unconditional "py-ert-auto-mode-py-test.pyr")))
-
-;; Python Path Configuration
-(ert-deftest py-ert-auto-mode-path-test ()
-  (find-file "py-ert-auto-mode-py-test.pth")
-  (and (should (eq major-mode 'python-mode))
-  (py-kill-buffer-unconditional "py-ert-auto-mode-py-test.pth")))
-
-;; Python Wheels
-(ert-deftest py-ert-auto-mode-wheelstest ()
-  (find-file "py-ert-auto-mode-py-test.whl")
-  (and (should (eq major-mode 'python-mode))
-  (py-kill-buffer-unconditional "py-ert-auto-mode-py-test.whl")))
 
 (provide 'py-ert-tests-2)
 ;;; py-ert-tests-2.el ends here

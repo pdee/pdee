@@ -222,12 +222,14 @@ C-q TAB inserts a literal TAB-character."
     (setq outmost (py-compute-indentation nil nil nil nil nil nil this-indent-offset))
     ;; now choose the indent
     (setq need
-	  (cond ((bolp)
-		 outmost)
-		((eq cui outmost)
-		 (when (and (eq this-command last-command) (not outmost-only))
-		   (py--calculate-indent-backwards cui this-indent-offset)))
-		(t (py--calculate-indent-backwards cui this-indent-offset))))
+	  (cond ((eq this-command last-command)
+		 (if (eq cui outmost)
+		     (when (not outmost-only)
+		       (py--calculate-indent-backwards cui this-indent-offset)))
+		 (if (bolp)
+		     (py-compute-indentation orig)
+		 (py--calculate-indent-backwards cui this-indent-offset)))
+		(t (py-compute-indentation orig))))
     (when (and (called-interactively-p 'any) py-verbose-p) (message "py-indent-line, need: %s" need))
     ;; if at outmost
     ;; and not (eq this-command last-command), need remains nil

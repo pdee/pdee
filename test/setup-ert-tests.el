@@ -31,6 +31,8 @@
 (defvar py-debug-p nil
   "Avoid error")
 
+;; (setq py-debug-p t)
+
 (defmacro py-test-with-temp-buffer-point-min (contents &rest body)
   "Create temp buffer in `python-mode' inserting CONTENTS.
 BODY is code to be executed within the temp buffer.  Point is
