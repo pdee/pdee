@@ -62,5 +62,31 @@ import os
     (search-forward "try")
     (should (eq 0 (py-compute-indentation)))))
 
+(ert-deftest py-ert-find-definition-test-1 ()
+  (py-test-with-temp-buffer-point-min
+      "#! /usr/bin/env python
+
+import sys
+import os
+
+a = sys.argv"
+    (search-forward "a = sy")
+    (py-find-definition)))
+
+;; (ert-deftest py-ert-find-definition-test-2 ()
+;;   (py-test-with-temp-buffer
+;;       "#! /usr/bin/env python
+
+;; import sys
+;; import os
+
+;; def foo ()
+;;     pass
+
+;; foo()"
+;;     (beginning-of-line)
+;;     (sit-for 0.1) 
+;;     (should (string= "def foo" (py-find-definition)))))
+
 (provide 'py-ert-tests-3)
 ;;; py-ert-tests-3.el ends here

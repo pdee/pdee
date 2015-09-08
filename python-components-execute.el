@@ -1255,16 +1255,6 @@ Optional OUTPUT-BUFFER and ERROR-BUFFER might be given. "
     (shell-command (concat pcmd " " filename) output-buffer error-buffer)
     (when (called-interactively-p 'any) (switch-to-buffer output-buffer))))
 
-;; ;
-;; (defun py-execute-line ()
-;;   "Send current line from beginning of indent to Python interpreter. "
-;;   (interactive)
-;;   (save-excursion
-;;     (let ((beg (progn (back-to-indentation)
-;;                       (point))))
-;;       (py-execute-region beg (line-end-position)))))
-
-;;  Subprocess utilities and filters
 (defvar py-last-exeption-buffer nil
   "Internal use only - when `py-up-exception' is called in
   source-buffer, this will deliver the exception-buffer again. ")

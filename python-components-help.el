@@ -559,8 +559,30 @@ local bindings to py-newline-and-indent."))
                ("(python-lib)Function-Method-Variable Index")
                ("(python-lib)Miscellaneous Index"))))
 
+(defun py--find-definition-in-source (sourcefile)
+  (called-interactively-p 'any) (message "sourcefile: %s" sourcefile)
+  (when (find-file sourcefile)
+    ;; (if (stringp py-separator-char)
+    ;; py-separator-char
+    ;; (char-to-string py-separator-char))
+
+    (goto-char (point-min))
+    (when
+	(or (re-search-forward (concat py-def-or-class-re symbol) nil t 1)
+	    (progn
+	      ;; maybe a variable definition?
+	      (goto-char (point-min))
+	      (re-search-forward (concat "^.+ " symbol) nil t 1)))
+      (push-mark)
+      (goto-char (match-beginning 0))
+      (exchange-point-and-mark))))
+
 ;;  Find function stuff, lifted from python.el
 (defalias 'py-find-function 'py-find-definition)
+(defun py--find-definition-question-type ()
+  (cond ((setq erg (py--send-string-return-output (concat "import inspect;inspect.isbuiltin(\"" symbol "\")"))))
+	(t (setq erg (py--send-string-return-output (concat imports "import inspect;inspect.getmodule(\"" symbol "\")"))))))
+
 (defun py-find-definition (&optional symbol)
   "Find source of definition of SYMBOL.
 
@@ -585,7 +607,7 @@ Interactively, prompt for SYMBOL."
          (local (or
                  (py--until-found (concat "class " symbol) imenu--index-alist)
                  (py--until-found symbol imenu--index-alist)))
-         source sourcefile path)
+         erg sourcefile path)
     ;; ismethod(), isclass(), isfunction() or isbuiltin()
     ;; ismethod isclass isfunction isbuiltin)
     (if local
@@ -594,31 +616,26 @@ Interactively, prompt for SYMBOL."
               (goto-char local)
               (search-forward symbol (line-end-position) nil 1)
               (push-mark)
+	      (setq erg (buffer-substring-no-properties (line-beginning-position) (match-end 0)))
               (goto-char (match-beginning 0))
               (exchange-point-and-mark))
           (error "%s" "local not a number"))
-      (setq source (py--send-string-return-output (concat imports "import inspect;inspect.getmodule(" symbol ")")))
-      (cond ((string-match "SyntaxError" source)
-             (setq source (substring-no-properties source (match-beginning 0)))
+      (py--find-definition-question-type)
+      (cond ((string-match "SyntaxError" erg)
+             (setq erg (substring-no-properties erg (match-beginning 0)))
              (set-window-configuration last-window-configuration)
              ;; (jump-to-register 98888888)
-             (message "Can't get source: %s" source))
-            ((and source (string-match "builtin" source))
+             (message "Can't get source: %s" erg))
+            ((and erg (string-match "builtin" erg))
              (progn
                (set-window-configuration last-window-configuration)
                ;; (jump-to-register 98888888)
-                    (message "%s" source)))
-            ((and source (setq path (replace-regexp-in-string "'" "" (py--send-string-return-output "import os;os.getcwd()")))
-                  (setq sourcefile (replace-regexp-in-string "'" "" (py--send-string-return-output (concat "inspect.getsourcefile(" symbol ")"))))
-                  (called-interactively-p 'any) (message "sourcefile: %s" sourcefile)
-                  (find-file (concat path (char-to-string py-separator-char) sourcefile))
-                  (goto-char (point-min))
-                  (re-search-forward (concat py-def-or-class-re symbol) nil nil 1))
-             (push-mark)
-             (goto-char (match-beginning 0))
-             (exchange-point-and-mark)
-             (display-buffer py-exception-buffer)))
-      sourcefile)))
+	       (message "%s" erg)))
+            ((and erg (setq path (replace-regexp-in-string "'" "" (py--send-string-return-output "import os;os.getcwd()")))
+                  (setq sourcefile (replace-regexp-in-string "'" "" (py--send-string-return-output (concat "inspect.getsourcefile(" symbol ")")))))
+	     (py--find-definition-in-source sourcefile)
+             (display-buffer py-exception-buffer))))
+    erg))
 
 (defun py-find-imports ()
   "Find top-level imports.
