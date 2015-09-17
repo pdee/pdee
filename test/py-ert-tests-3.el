@@ -73,6 +73,28 @@ a = sys.argv"
     (search-forward "a = sy")
     (py-find-definition)))
 
+(ert-deftest py-ert-multiple-decorators-test-1 ()
+  (py-test-with-temp-buffer
+      "@blah
+@blub
+def foo():
+    pass
+"
+    (let ((py-mark-decorators t))
+      (py-beginning-of-def-or-class)
+      (should (bobp)))))
+
+(ert-deftest py-ert-multiple-decorators-test-2 ()
+  (py-test-with-temp-buffer
+      "@blah
+@blub
+def foo():
+    pass
+"
+    (let* (py-mark-decorators
+	   (erg (py-beginning-of-def-or-class)))
+      (should (eq 13 erg)))))
+
 ;; (ert-deftest py-ert-find-definition-test-2 ()
 ;;   (py-test-with-temp-buffer
 ;;       "#! /usr/bin/env python
@@ -85,7 +107,7 @@ a = sys.argv"
 
 ;; foo()"
 ;;     (beginning-of-line)
-;;     (sit-for 0.1) 
+;;     (sit-for 0.1)
 ;;     (should (string= "def foo" (py-find-definition)))))
 
 (provide 'py-ert-tests-3)

@@ -219,7 +219,7 @@ computing indents"
 	  (py-backward-statement orig done limit ignore-in-string-p))
 	 ((nth 4 pps)
 	  (goto-char (nth 8 pps))
-	  (skip-chars-backward " \t\r\n\f") 
+	  (skip-chars-backward " \t\r\n\f")
 	  (py-backward-statement orig done limit ignore-in-string-p))
          ((nth 1 pps)
           (goto-char (1- (nth 1 pps)))
@@ -705,6 +705,107 @@ Return position if successful"
     (and last (goto-char last))
     (when (and (looking-back py-section-end)(< orig (point)))
       (point))))
+
+(defun py--backward-def-or-class-decorator-maybe (&optional bol)
+  "Return position of the decorator.
+
+With BOL, return line-beginning-position"
+  (let ((orig (point))
+	erg)
+    (while (and (not (bobp)) (progn (forward-line -1)(beginning-of-line) (eq (char-after) ?@)))
+      (setq erg (point)))
+    ;; for bol-forms, set erg to bol
+    (when (and erg bol
+	       (setq erg (line-beginning-position))))
+    (or erg (goto-char orig))))
+
+(defun py--backward-def-or-class-intern (regexp &optional indent bol)
+  (while (and (re-search-backward regexp nil 'move 1)
+	      (nth 8 (parse-partial-sexp (point-min) (point)))))
+  (let ((erg (when (looking-at regexp)
+	       (if bol (line-beginning-position) (point)))))
+    ;; bol-forms at not at bol yet
+    (and erg (goto-char erg))
+    (and erg py-mark-decorators (setq erg (py--backward-def-or-class-decorator-maybe bol)))
+    erg))
+
+(defun py-backward-class (&optional indent)
+  "Go to beginning of class.
+
+If already at beginning, go one class backward.
+Returns beginning of class if successful, nil otherwise
+
+When `py-mark-decorators' is non-nil, decorators are considered too. "
+  (interactive)
+  (let ((erg (py--backward-def-or-class-intern py-class-re indent)))
+    (when (and py-verbose-p (called-interactively-p 'any))
+      (message "%s" erg))
+    erg))
+
+(defun py-backward-def (&optional indent)
+  "Go to beginning of def.
+
+If already at beginning, go one def backward.
+Returns beginning of def if successful, nil otherwise
+
+When `py-mark-decorators' is non-nil, decorators are considered too. "
+  (interactive)
+  (let ((erg (py--backward-def-or-class-intern py-def-re indent)))
+    (when (and py-verbose-p (called-interactively-p 'any))
+      (message "%s" erg))
+    erg))
+
+(defun py-backward-def-or-class (&optional indent)
+  "Go to beginning of def-or-class.
+
+If already at beginning, go one def-or-class backward.
+Returns beginning of def-or-class if successful, nil otherwise
+
+When `py-mark-decorators' is non-nil, decorators are considered too. "
+  (interactive)
+  (let ((erg (py--backward-def-or-class-intern py-def-or-class-re indent)))
+    (when (and py-verbose-p (called-interactively-p 'any))
+      (message "%s" erg))
+    erg))
+
+(defun py-backward-class-bol (&optional indent)
+  "Go to beginning of class, go to BOL.
+
+If already at beginning, go one class backward.
+Returns beginning of class if successful, nil otherwise
+
+When `py-mark-decorators' is non-nil, decorators are considered too. "
+  (interactive)
+  (let ((erg (py--backward-def-or-class-intern py-class-re indent t)))
+    (when (and py-verbose-p (called-interactively-p 'any))
+      (message "%s" erg))
+    erg))
+
+(defun py-backward-def-bol (&optional indent)
+  "Go to beginning of def, go to BOL.
+
+If already at beginning, go one def backward.
+Returns beginning of def if successful, nil otherwise
+
+When `py-mark-decorators' is non-nil, decorators are considered too. "
+  (interactive)
+  (let ((erg (py--backward-def-or-class-intern py-def-re indent t)))
+    (when (and py-verbose-p (called-interactively-p 'any))
+      (message "%s" erg))
+    erg))
+
+(defun py-backward-def-or-class-bol (&optional indent)
+  "Go to beginning of def-or-class, go to BOL.
+
+If already at beginning, go one def-or-class backward.
+Returns beginning of def-or-class if successful, nil otherwise
+
+When `py-mark-decorators' is non-nil, decorators are considered too. "
+  (interactive)
+  (let ((erg (py--backward-def-or-class-intern py-def-or-class-re indent t)))
+    (when (and py-verbose-p (called-interactively-p 'any))
+      (message "%s" erg))
+    erg))
 
 (provide 'python-components-move)
 ;;;  python-components-move.el ends here

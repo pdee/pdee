@@ -69,10 +69,7 @@
       (list
        "block"
        "block-or-clause"
-       "class"
        "clause"
-       "def"
-       "def-or-class"
        "if-block"
        "elif-block"
        "else-block"
@@ -350,6 +347,21 @@
        "clause"
        "def"
        "def-or-class"
+       "elif-block"
+       "else-block"
+       "except-block"
+       "for-block"
+       "if-block"
+       "minor-block"
+       "try-block"
+       ))
+
+;; backward class/def treated with shorter forms internally
+(setq py-backward-command-names
+      (list
+       "block"
+       "block-or-clause"
+       "clause"
        "elif-block"
        "else-block"
        "except-block"
@@ -2259,7 +2271,7 @@ Returns beginning of " ele " if successful, nil otherwise\n
 	  (t (insert (concat "
   (py--backward-prepare indent 'py-" ele "-re 'py-clause-re (called-interactively-p 'any)))\n")))))
   ;; bol forms
-  (dolist (ele py-beginning-bol-command-names)
+  (dolist (ele py-backward-command-names)
     (insert (concat "
 \(defun py-backward-" ele "-bol (&optional indent)"
 "\n \"Go to beginning of " ele ", go to BOL.

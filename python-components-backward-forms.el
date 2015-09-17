@@ -46,16 +46,6 @@ Returns beginning of block-or-clause if successful, nil otherwise
   (interactive)
   (py--backward-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (called-interactively-p 'any)))
 
-(defun py-backward-class (&optional indent)
- "Go to beginning of class.
-
-If already at beginning, go one class backward.
-Returns beginning of class if successful, nil otherwise
-
-When `py-mark-decorators' is non-nil, decorators are considered too. "
-  (interactive)
-  (py--backward-prepare indent 'py-class-re 'py-extended-block-or-clause-re (called-interactively-p 'any)))
-
 (defun py-backward-clause (&optional indent)
  "Go to beginning of clause.
 
@@ -65,26 +55,6 @@ Returns beginning of clause if successful, nil otherwise
 "
   (interactive)
   (py--backward-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (called-interactively-p 'any)))
-
-(defun py-backward-def (&optional indent)
- "Go to beginning of def.
-
-If already at beginning, go one def backward.
-Returns beginning of def if successful, nil otherwise
-
-When `py-mark-decorators' is non-nil, decorators are considered too. "
-  (interactive)
-  (py--backward-prepare indent 'py-def-re 'py-extended-block-or-clause-re (called-interactively-p 'any)))
-
-(defun py-backward-def-or-class (&optional indent)
- "Go to beginning of def-or-class.
-
-If already at beginning, go one def-or-class backward.
-Returns beginning of def-or-class if successful, nil otherwise
-
-When `py-mark-decorators' is non-nil, decorators are considered too. "
-  (interactive)
-  (py--backward-prepare indent 'py-def-or-class-re 'py-extended-block-or-clause-re (called-interactively-p 'any)))
 
 (defun py-backward-if-block (&optional indent)
  "Go to beginning of if-block.
@@ -176,16 +146,6 @@ Returns beginning of block-or-clause if successful, nil otherwise
   (interactive)
   (py--backward-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (called-interactively-p 'any) t))
 
-(defun py-backward-class-bol (&optional indent)
- "Go to beginning of class, go to BOL.
-
-If already at beginning, go one class backward.
-Returns beginning of class if successful, nil otherwise
-
-When `py-mark-decorators' is non-nil, decorators are considered too. "
-  (interactive)
-  (py--backward-prepare indent 'py-class-re 'py-extended-block-or-clause-re (called-interactively-p 'any) t))
-
 (defun py-backward-clause-bol (&optional indent)
  "Go to beginning of clause, go to BOL.
 
@@ -195,26 +155,6 @@ Returns beginning of clause if successful, nil otherwise
 "
   (interactive)
   (py--backward-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (called-interactively-p 'any) t))
-
-(defun py-backward-def-bol (&optional indent)
- "Go to beginning of def, go to BOL.
-
-If already at beginning, go one def backward.
-Returns beginning of def if successful, nil otherwise
-
-When `py-mark-decorators' is non-nil, decorators are considered too. "
-  (interactive)
-  (py--backward-prepare indent 'py-def-re 'py-extended-block-or-clause-re (called-interactively-p 'any) t))
-
-(defun py-backward-def-or-class-bol (&optional indent)
- "Go to beginning of def-or-class, go to BOL.
-
-If already at beginning, go one def-or-class backward.
-Returns beginning of def-or-class if successful, nil otherwise
-
-When `py-mark-decorators' is non-nil, decorators are considered too. "
-  (interactive)
-  (py--backward-prepare indent 'py-def-or-class-re 'py-extended-block-or-clause-re (called-interactively-p 'any) t))
 
 (defun py-backward-elif-block-bol (&optional indent)
  "Go to beginning of elif-block, go to BOL.
