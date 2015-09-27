@@ -722,10 +722,12 @@ With BOL, return line-beginning-position"
 (defun py--backward-def-or-class-intern (regexp &optional indent bol)
   (while (and (re-search-backward regexp nil 'move 1)
 	      (nth 8 (parse-partial-sexp (point-min) (point)))))
+  (when (looking-back "async ")
+		       (goto-char (match-beginning 0))) 
   (let ((erg (when (looking-at regexp)
 	       (if bol (line-beginning-position) (point)))))
     ;; bol-forms at not at bol yet
-    (and erg (goto-char erg))
+    (and bol erg (goto-char erg))
     (and erg py-mark-decorators (setq erg (py--backward-def-or-class-decorator-maybe bol)))
     erg))
 

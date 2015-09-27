@@ -2386,10 +2386,10 @@ See py-no-outdent-re-raw for better readable content ")
 (defconst py-assignment-re "\\_<\\w+\\_>[ \t]*\\(=\\|+=\\|*=\\|%=\\|&=\\|^=\\|<<=\\|-=\\|/=\\|**=\\||=\\|>>=\\|//=\\)"
   "If looking at the beginning of an assignment. ")
 
-(defconst py-block-re "[ \t]*\\_<\\(class\\|def\\|for\\|if\\|try\\|while\\|with\\)\\_>[:( \n\t]*"
+(defconst py-block-re "[ \t]*\\_<\\(class\\|def\\|async def\\|async for\\|for\\|if\\|try\\|while\\|with\\|async with\\)\\_>[:( \n\t]*"
   "Matches the beginning of a compound statement. ")
 
-(defconst py-minor-block-re "[ \t]*\\_<\\(for\\|if\\|try\\|with\\|except\\)\\_>[:( \n\t]*"
+(defconst py-minor-block-re "[ \t]*\\_<\\(for\\|async for\\|if\\|try\\|with\\|async with\\|except\\)\\_>[:( \n\t]*"
   "Matches the beginning of an `for', `if', `try', `except' or `with' block. ")
 
 (defconst py-try-block-re "[ \t]*\\_<try\\_>[: \n\t]"
@@ -2398,7 +2398,7 @@ See py-no-outdent-re-raw for better readable content ")
 (defconst py-except-block-re "[ \t]*\\_<except\\_> *a?s? *[[:print:]]*[: \n\t]"
   "Matches the beginning of a `except' block. ")
 
-(defconst py-for-block-re "[ \t]*\\_<for\\_> +[[:alpha:]_][[:alnum:]_]* +in +[[:alpha:]_][[:alnum:]_()]* *[: \n\t]"
+(defconst py-for-block-re "[ \t]*\\_<\\(for\\|async for\\)\\_> +[[:alpha:]_][[:alnum:]_]* +in +[[:alpha:]_][[:alnum:]_()]* *[: \n\t]"
   "Matches the beginning of a `try' block. ")
 
 (defconst py-if-block-re "[ \t]*\\_<if\\_> +[[:alpha:]_][[:alnum:]_]* *[: \n\t]"
@@ -2410,14 +2410,17 @@ See py-no-outdent-re-raw for better readable content ")
 (defconst py-class-re "[ \t]*\\_<\\(class\\)\\_>[ \n\t]"
   "Matches the beginning of a class definition. ")
 
-(defconst py-def-or-class-re "[ \t]*\\_<\\(def\\|class\\)\\_>[ \n\t]"
+(defconst py-def-or-class-re "[ \t]*\\_<\\(def\\|class\\|async def\\)\\_>[ \n\t]"
   "Matches the beginning of a class- or functions definition. ")
 
-(defconst py-def-re "[ \t]*\\_<\\(def\\)\\_>[ \n\t]"
+;; (defconst py-def-re "[ \t]*\\_<\\(async def\\|def\\)\\_>[ \n\t]"
+(defconst py-def-re "[ \t]*\\_<\\(def\\|async def\\)\\_>[ \n\t]"
   "Matches the beginning of a functions definition. ")
 
 (defconst py-block-or-clause-re-raw
   (list
+   "async for"
+   "async with"
    "elif"
    "else"
    "except"
@@ -2426,7 +2429,8 @@ See py-no-outdent-re-raw for better readable content ")
    "if"
    "try"
    "while"
-   "with")
+   "with"
+   )
   "Matches the beginning of a compound statement or it's clause. ")
 
 (defvar py-block-or-clause-re

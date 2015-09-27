@@ -110,5 +110,27 @@ def foo():
 ;;     (sit-for 0.1)
 ;;     (should (string= "def foo" (py-find-definition)))))
 
+(ert-deftest py-ert-async-backward-block-test ()
+  (py-test-with-temp-buffer
+      "async def coro(name, lock):
+    print('coro {}: waiting for lock'.format(name))
+    async with lock:
+        print('coro {}: holding the lock'.format(name))
+        await asyncio.sleep(1)
+        print('coro {}: releasing the lock'.format(name))"
+    (py-backward-block)
+    (should (looking-at "async with"))))
+
+(ert-deftest py-ert-async-backward-def-test ()
+  (py-test-with-temp-buffer
+      "async def coro(name, lock):
+    print('coro {}: waiting for lock'.format(name))
+    async with lock:
+        print('coro {}: holding the lock'.format(name))
+        await asyncio.sleep(1)
+        print('coro {}: releasing the lock'.format(name))"
+    (py-backward-def)
+    (should (looking-at "async def"))))
+
 (provide 'py-ert-tests-3)
 ;;; py-ert-tests-3.el ends here
