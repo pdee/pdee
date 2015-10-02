@@ -4,7 +4,9 @@ Python Mode News
 New in version 6.2.1
 ---------------------
 
-- New logic of py-indent-region WRT lp:1426903
+- Handle PEP 492 async coroutines
+
+- Logic of py-indent-region WRT lp:1426903
   In case first line accepts an indent,
   keep the remaining lines' relative.
   Otherwise lines in region get outmost indent,
