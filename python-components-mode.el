@@ -81,7 +81,7 @@
   :group 'languages
   :prefix "py-")
 
-(defconst py-version "6.2.1+")
+(defconst py-version "6.2.1")
 
 (defcustom py-install-directory ""
   "Directory where python-mode.el and it's subdirectories should be installed. Needed for completion and other environment stuff only. "
@@ -1447,11 +1447,10 @@ Else /usr/bin/python"
   :tag "py-python2-command-args"
   :group 'python-mode)
 
+;; "/usr/bin/python3"
 (defcustom py-python3-command
   (if (eq system-type 'windows-nt)
-      ;; "python3"
     "C:/Python33/python"
-    ;; "/usr/bin/python3"
     "python3")
 
   "A PATH/TO/EXECUTABLE or default value `py-shell' may look for, if
