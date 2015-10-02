@@ -81,7 +81,7 @@
   :group 'languages
   :prefix "py-")
 
-(defconst py-version "6.2.0+")
+(defconst py-version "6.2.1+")
 
 (defcustom py-install-directory ""
   "Directory where python-mode.el and it's subdirectories should be installed. Needed for completion and other environment stuff only. "
@@ -510,6 +510,11 @@ Default is `nil'"
   :type 'boolean
   :tag "py-company-pycomplete-p"
   :group 'python-mode)
+
+(defvar py-last-position nil
+    "Used by py-help-at-point.
+
+Avoid repeated call at identic pos. ")
 
 (defvar py-auto-completion-mode-p nil
   "Internally used by `py-auto-completion-mode'")

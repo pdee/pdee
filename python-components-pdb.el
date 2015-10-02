@@ -139,7 +139,7 @@ problem as best as we can determine."
   (if (and (not (string-match py-pdbtrack-stack-entry-regexp block))
            ;; pydb integration still to be done
            ;; (not (string-match py-pydbtrack-stack-entry-regexp block))
-           )
+	   )
       "Traceback cue not found"
     (let* ((filename (match-string
                       py-pdbtrack-marker-regexp-file-group block))
@@ -162,13 +162,13 @@ problem as best as we can determine."
                  (setq lineno
                        (+ lineno
                           (save-excursion
-                            (set-buffer funcbuffer)
-                            (count-lines
-                             (point-min)
-                             (max (point-min)
-                                  (string-match "^\\([^#]\\|#[^#]\\|#$\\)"
-                                                (buffer-substring (point-min)
-                                                                  (point-max)))))))))
+                            (with-current-buffer funcbuffer
+			      (count-lines
+			       (point-min)
+			       (max (point-min)
+				    (string-match "^\\([^#]\\|#[^#]\\|#$\\)"
+						  (buffer-substring (point-min)
+								    (point-max))))))))))
              (list lineno funcbuffer))
 
             ((= (elt filename 0) ?\<)
@@ -187,15 +187,16 @@ named for funcname or define a function funcname."
     (while (and buffers (not got))
       (setq buf (car buffers)
             buffers (cdr buffers))
-      (if (and (save-excursion (set-buffer buf)
-                               (string= major-mode "python-mode"))
+      (if (and (save-excursion
+		 (with-current-buffer buf
+		   (string= major-mode "python-mode")))
                (or (string-match funcname (buffer-name buf))
                    (string-match (concat "^\\s-*\\(def\\|class\\)\\s-+"
                                          funcname "\\s-*(")
                                  (save-excursion
-                                   (set-buffer buf)
+                                   (with-current-buffer  buf
                                    (buffer-substring (point-min)
-                                                     (point-max))))))
+                                                     (point-max)))))))
           (setq got buf)))
     got))
 

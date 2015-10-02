@@ -234,13 +234,16 @@ not inside a defun."
 If symbol is defined in current buffer, jump to it's definition"
   (interactive)
   (let ((orig (point)))
+    ;; avoid repeated call at identic pos
     (unless (eq orig (ignore-errors py-last-position))
       (setq py-last-position orig)
       (unless (member (get-buffer-window "*Python-Help*")(window-list))
 	(window-configuration-to-register py-windows-config-register))
       (and (looking-back "(")(not (looking-at "\\sw")) (forward-char -1))
       (if (or (not (face-at-point)) (eq (face-at-point) 'font-lock-string-face)(eq (face-at-point) 'font-lock-comment-face)(eq (face-at-point) 'default))
-	  (py-restore-window-configuration)
+	  (progn
+	    (py-restore-window-configuration)
+	    (goto-char orig))
 	(if (or (< 0 (abs (skip-chars-backward "a-zA-Z0-9_." (line-beginning-position))))(looking-at "\\sw"))
 	    (py--help-at-point-intern)
 	  (py-restore-window-configuration))))))

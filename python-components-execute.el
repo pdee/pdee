@@ -712,7 +712,7 @@ Receives a buffer-name as argument"
 	  (with-current-buffer py-buffer-name
 	    (erase-buffer)))
 	(py--create-new-shell executable args exception-buffer))
-      (when (or (called-interactively-p 'any) 
+      (when (or (called-interactively-p 'any)
 		(eq 1 argprompt)
 		;; (member this-command py-named-shells)
 		)
@@ -1315,11 +1315,11 @@ to search.  ERRWHERE is used in an error message if the limit (top or
 bottom) of the trackback stack is encountered."
   (let (file line)
     (save-excursion
-      (set-buffer buffer)
-      (goto-char (py--point start))
-      (if (funcall searchdir py-traceback-line-re nil t)
-          (setq file (match-string 1)
-                line (string-to-number (match-string 2)))))
+      (with-current-buffer buffer
+	(goto-char (py--point start))
+	(if (funcall searchdir py-traceback-line-re nil t)
+	    (setq file (match-string 1)
+		  line (string-to-number (match-string 2))))))
     (if (and file line)
         (py-goto-exception file line)
       (error "%s of traceback" errwhere))))
