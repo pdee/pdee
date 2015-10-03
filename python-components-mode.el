@@ -81,7 +81,7 @@
   :group 'languages
   :prefix "py-")
 
-(defconst py-version "6.2.1")
+(defconst py-version "6.2.1+")
 
 (defcustom py-install-directory ""
   "Directory where python-mode.el and it's subdirectories should be installed. Needed for completion and other environment stuff only. "
