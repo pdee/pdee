@@ -509,14 +509,7 @@ Internal use"
       (if (member (get-buffer-window output-buffer)(window-list))
 	  (select-window (get-buffer-window output-buffer))
 	(py--manage-windows-split py-exception-buffer output-buffer)
-	;; otherwise new window appears above
-	;; (save-excursion
-	;; (other-window 1)
-
-	;; py-ert-always-reuse-lp-1361531-test would fail with
-	;; save-excursion form
 	(display-buffer output-buffer)
-	;;)
 	(pop-to-buffer py-exception-buffer)))
      ((and
        (eq py-split-window-on-execute 'just-two)
@@ -550,6 +543,18 @@ Internal use"
       ;; > If the shell is visible in any of the windows it  should re-use that window
       ;; > I did double check and py-keep-window-configuration is nil and py-split-window-on-execute is t.
       (py--split-t-not-switch-wm))
+     ((and
+       py-split-window-on-execute
+       py-switch-buffers-on-execute-p)
+      (unless
+	  (member (get-buffer-window output-buffer)(window-list))
+	(py--manage-windows-split py-exception-buffer output-buffer))
+      ;; Fixme: otherwise new window appears above
+      (save-excursion
+	(other-window 1)
+	(pop-to-buffer output-buffer)
+	(goto-char (point-max))
+	(other-window 1)))
      ((not py-switch-buffers-on-execute-p)
       (let (pop-up-windows)
 	(py-restore-window-configuration))))))
