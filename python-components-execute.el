@@ -482,8 +482,7 @@ Internal use"
 
 (defun py--shell-manage-windows (output-buffer windows-config &optional exception-buffer)
   "Adapt or restore window configuration. Return nil "
-  (let* ((oldbuf (current-buffer))
-	 (py-exception-buffer (or exception-buffer (and py-exception-buffer (buffer-live-p py-exception-buffer) py-exception-buffer)))
+  (let* ((py-exception-buffer (or exception-buffer (and py-exception-buffer (buffer-live-p py-exception-buffer) py-exception-buffer)))
 	 (output-buffer (or output-buffer py-buffer-name))
 	 (old-window-list (window-list))
 	 (number-of-windows (length old-window-list)))
@@ -714,6 +713,7 @@ Receives a buffer-name as argument"
 	(py--create-new-shell executable args exception-buffer))
       (when (or (called-interactively-p 'any)
 		(eq 1 argprompt)
+		py-switch-buffers-on-execute-p
 		;; (member this-command py-named-shells)
 		)
 	(py--shell-manage-windows py-buffer-name windows-config py-exception-buffer)))

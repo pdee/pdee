@@ -22,8 +22,8 @@
 
 ;;; Code:
 
-(setq py-install-directory default-directory)
-(sit-for 0.1 t)
+;; (setq py-install-directory default-directory)
+;; (sit-for 0.1 t)
 
 
 ;; (require 'python-mode)
