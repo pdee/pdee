@@ -37,6 +37,11 @@
 
 ;; See documentation in README.org, README.DEVEL.org
 
+;; Please report bugs at
+;; https://gitlab.com/python-mode-devs/python-mode/issues
+;; or at
+;; https://bugs.launchpad.net/python-mode
+
 ;; commands-python-mode.org in directory "doc" reports
 ;; available commands, also a menu is provided
 
