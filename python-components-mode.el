@@ -2351,7 +2351,7 @@ Result: \"\\nIn [10]:    ....:    ....:    ....: 1\\n\\nIn [11]: \"
   ".*:?[ \t]*\\_<\\(return\\)\\_>[ \n\t]*"
   "Regular expression matching keyword which typically closes a function. ")
 
-(defconst py-outdent-re-raw
+(defcustom py-outdent-re-raw
   (list
    "class"
    "def"
@@ -2362,7 +2362,22 @@ Result: \"\\nIn [10]:    ....:    ....:    ....: 1\\n\\nIn [11]: \"
    "if"
    "try"
    "while"
-   ))
+   )
+  "")
+
+(defcustom py-outdent-re-raw
+  (list
+   "class"
+   "def"
+   "elif"
+   "else"
+   "except"
+   "for"
+   "if"
+   "try"
+   "while"
+   )
+  "")
 
 (defconst py-outdent-re
   (concat
@@ -2373,7 +2388,7 @@ Result: \"\\nIn [10]:    ....:    ....:    ....: 1\\n\\nIn [11]: \"
 
 See py-no-outdent-re-raw for better readable content ")
 
-(defconst py-no-outdent-re-raw
+(defcustom py-no-outdent-re-raw
   (list
    "break"
    "continue"
@@ -2381,7 +2396,8 @@ See py-no-outdent-re-raw for better readable content ")
    "pass"
    "raise"
    "return"
-   ))
+   )
+  "")
 
 (defconst py-no-outdent-re
   (concat
@@ -2426,7 +2442,7 @@ See py-no-outdent-re-raw for better readable content ")
 (defconst py-def-re "[ \t]*\\_<\\(def\\|async def\\)\\_>[ \n\t]"
   "Matches the beginning of a functions definition. ")
 
-(defconst py-block-or-clause-re-raw
+(defcustom py-block-or-clause-re-raw
   (list
    "async for"
    "async with"
@@ -2449,7 +2465,7 @@ See py-no-outdent-re-raw for better readable content ")
    "\\)\\_>[( \t]*.*:?")
   "See py-block-or-clause-re-raw, which it reads. ")
 
-(defconst py-block-re-raw
+(defcustom py-block-re-raw
   (list
    "except"
    "for"
@@ -2479,7 +2495,7 @@ See py-no-outdent-re-raw for better readable content ")
    "\\)\\_>[( \t]*.*:?")
   "Regular expression matching lines not to augment indent after.")
 
-(defconst py-extended-block-or-clause-re-raw
+(defcustom py-extended-block-or-clause-re-raw
   (list
    "class"
    "def"
@@ -2502,7 +2518,7 @@ See py-no-outdent-re-raw for better readable content ")
    "\\)\\_>[( \t]*.*:?")
   "See py-block-or-clause-re-raw, which it reads. ")
 
-(defconst py-top-level-re
+(defcustom py-top-level-re
   (concat
    "^\\_<[a-zA-Z_]\\|^\\_<\\("
    (regexp-opt  py-extended-block-or-clause-re-raw)
@@ -2514,9 +2530,11 @@ See py-no-outdent-re-raw for better readable content ")
    "\\_<\\("
    (regexp-opt py-block-or-clause-re-raw)
    "\\)\\_>")
-  "Matches known keywords opening a block. ")
+  "Matches known keywords opening a block. 
 
-(defconst py-clause-re-raw
+Customizing `py-block-or-clause-re-raw'  will change values here")
+
+(defcustom py-clause-re-raw
   (list
    "elif"
    "else"
