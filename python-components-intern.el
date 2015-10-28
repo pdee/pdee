@@ -1294,9 +1294,10 @@ See customizable variables `py-current-defun-show' and `py-current-defun-delay'.
                    (forward-word 1)
                    (skip-chars-forward " \t")
                    (prin1-to-string (symbol-at-point)))))
-        (when (and erg py-current-defun-show (push-mark (point) t t) (skip-chars-forward "^ (")
-                   (exchange-point-and-mark)
-                   (sit-for py-current-defun-delay)))
+        (when (and erg py-current-defun-show)
+	  (push-mark (point) t t) (skip-chars-forward "^ (")
+	  (exchange-point-and-mark)
+	  (sit-for py-current-defun-delay))
         (when iact (message (prin1-to-string erg)))
         erg))))
 
