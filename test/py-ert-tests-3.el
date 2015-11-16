@@ -132,5 +132,10 @@ def foo():
     (py-backward-def)
     (should (looking-at "async def"))))
 
+(ert-deftest py-ert-execute-statement-fast-test ()
+  (py-test-with-temp-buffer-point-min
+      "print(123234)"
+    (py-execute-statement-fast)))
+
 (provide 'py-ert-tests-3)
 ;;; py-ert-tests-3.el ends here

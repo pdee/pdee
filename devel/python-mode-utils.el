@@ -786,10 +786,10 @@
     (write-file (concat py-install-directory "/python-components-exec-forms.el")))
 
 
-(defun write-fast-execute-forms (&optional command)
+(defun write-fast-execute-forms ()
   "Write `py-process-block...' etc. "
   (interactive)
-  (let ((py-bounds-command-names (if command (list command) py-fast-execute-forms-names)))
+  (let ((py-bounds-command-names py-fast-execute-forms-names))
     (set-buffer (get-buffer-create "python-components-fast-forms.el"))
     (erase-buffer)
     (switch-to-buffer (current-buffer))
@@ -845,7 +845,7 @@ Suitable for large output, doesn't mess up interactive shell.
 Output buffer not in comint-mode, displays \\\"Fast\\\"  by default\"\n"))
       (insert (concat "  (interactive)
   (let ((py-fast-process-p t))
-    (py--execute-prepare \"" ele "\")))\n\n")))
+    (py--execute-prepare '" ele ")))\n\n")))
   (insert "(provide 'python-components-fast-forms)
 ;;; python-components-fast-forms.el ends here\n ")
   (emacs-lisp-mode)))

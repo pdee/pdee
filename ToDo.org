@@ -1,3 +1,5 @@
+* use comint-bol
+* which-func-mode in shell-buffer
 * py-ert-find-definition-test-1
 * py-indent-region-left
 * delimiters

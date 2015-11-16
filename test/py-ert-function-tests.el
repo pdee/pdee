@@ -553,7 +553,7 @@
   (should (functionp 'py--fast-send-string)))
 
 (ert-deftest py-ert-fast-send-string-functionp-test ()
-  (should (functionp 'py-fast-send-string)))
+  (should (functionp 'py--fast-send-string)))
 
 (ert-deftest py-ert-process-region-fast-functionp-test ()
   (should (functionp 'py-process-region-fast)))

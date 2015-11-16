@@ -804,7 +804,9 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 	 (py-orig-buffer-or-file (or filename (current-buffer)))
 	 (proc (cond (proc)
 		     ;; will deal with py-dedicated-process-p also
-		     (py-fast-process-p (get-buffer-process (py-fast-process buffer)))
+		     (py-fast-process-p
+		      (or (get-buffer-process buffer)
+			  (py-fast-process buffer)))
 		     (py-dedicated-process-p
 		      (get-buffer-process (py-shell nil py-dedicated-process-p which-shell buffer)))
 		     (t (or (get-buffer-process buffer)
@@ -817,13 +819,15 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 
 (defun py--send-to-fast-process (strg proc output-buffer)
   "Called inside of `py--execute-base-intern' "
-  (with-current-buffer (setq output-buffer (process-buffer proc))
+  (let ((output-buffer (or output-buffer (process-buffer proc))))
+  (with-current-buffer output-buffer
     (sit-for 0.2 t)
     (erase-buffer)
+    (switch-to-buffer (current-buffer))
     (py--fast-send-string-intern strg
 				 proc
 				 output-buffer py-store-result-p py-return-result-p)
-    (sit-for 0.1)))
+    (sit-for 0.1))))
 
 (defun py--execute-base-intern (strg shell filename proc file wholebuf buffer origline execute-directory start end which-shell)
   "Select the handler.
