@@ -2367,6 +2367,7 @@ Result: \"\\nIn [10]:    ....:    ....:    ....: 1\\n\\nIn [11]: \"
 
 (defcustom py-outdent-re-raw
   (list
+   "async"
    "class"
    "def"
    "elif"
@@ -2497,6 +2498,9 @@ See py-no-outdent-re-raw for better readable content ")
 
 (defcustom py-extended-block-or-clause-re-raw
   (list
+   "async def"
+   "async for"
+   "async with"
    "class"
    "def"
    "elif"
@@ -3255,7 +3259,7 @@ Returns char found. "
 (eval-and-compile
   (defconst python-rx-constituents
     `((block-start . ,(rx symbol-start
-			  (or "def" "class" "if" "elif" "else" "try"
+			  (or "async def" "async for" "async with" "def" "class" "if" "elif" "else" "try"
 			      "except" "finally" "for" "while" "with")
 			  symbol-end))
       (decorator . ,(rx line-start (* space) ?@ (any letter ?_)
@@ -3308,15 +3312,17 @@ Returns char found. "
       `(,(rx symbol-start
              (or
 	      "if" "and" "del"  "not" "while" "as" "elif" "global"
-	      "or" "with" "assert" "else"  "pass" "yield" "break"
+	      "or" "async with" "with" "assert" "else"  "pass" "yield" "break"
 	      "exec" "in" "continue" "finally" "is" "except" "raise"
-	      "return"  "for" "lambda")
+	      "return"  "async for" "for" "lambda")
              symbol-end)
-        (,(rx symbol-start (or "def" "class") symbol-end) . py-def-class-face)
+        (,(rx symbol-start (or "async def" "def" "class") symbol-end) . py-def-class-face)
         (,(rx symbol-start (or "import" "from") symbol-end) . py-import-from-face)
         (,(rx symbol-start (or "try" "if") symbol-end) . py-try-if-face)
         ;; functions
         (,(rx symbol-start "def" (1+ space) (group (1+ (or word ?_))))
+         (1 font-lock-function-name-face))
+        (,(rx symbol-start "async def" (1+ space) (group (1+ (or word ?_))))
          (1 font-lock-function-name-face))
         ;; classes
         (,(rx symbol-start (group "class") (1+ space) (group (1+ (or word ?_))))

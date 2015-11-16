@@ -132,6 +132,19 @@ def foo():
     (py-backward-def)
     (should (looking-at "async def"))))
 
+(ert-deftest py-ert-async-indent-test ()
+  (py-test-with-temp-buffer-point-min
+      "async def coro(name, lock):
+    print('coro {}: waiting for lock'.format(name))
+    async with lock:
+        print('coro {}: holding the lock'.format(name))
+        await asyncio.sleep(1)
+        print('coro {}: releasing the lock'.format(name))"
+    (forward-line 1)
+    (should (eq 4 (py-compute-indentation)))
+    (forward-line 2)
+    (should (eq 8 (py-compute-indentation)))))
+
 (ert-deftest py-ert-execute-statement-fast-test ()
   (py-test-with-temp-buffer-point-min
       "print(123234)"
