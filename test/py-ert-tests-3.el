@@ -150,5 +150,20 @@ def foo():
       "print(123234)"
     (py-execute-statement-fast)))
 
+(ert-deftest py-ert-fill-comment-test ()
+  (py-test-with-temp-buffer-point-min
+ 
+"class Foo(Bar):
+    def baz(self):
+        # Given a winning upgrade path, we can ceiling the maximum image number from that path to be applied.  This is useful for image testing purposes.  XXX
+        self.assertEqual([str(image.version) for image in state.winner],
+                             [])"
+      (search-forward "XXX")
+    (fill-paragraph)
+    (search-forward "self")
+    (back-to-indentation)
+    (should (eq 8 (current-column)))
+    (should (eq 6 (count-lines (point-min) (point))))))
+
 (provide 'py-ert-tests-3)
 ;;; py-ert-tests-3.el ends here

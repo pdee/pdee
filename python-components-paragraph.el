@@ -420,20 +420,23 @@ Fill according to `py-docstring-style' "
   (save-excursion
     (save-restriction
       (window-configuration-to-register py-windows-config-register)
-      (let* ((orig (copy-marker (point)))
-	     (docstring (unless (not py-docstring-style)(py--in-or-behind-or-before-a-docstring))))
-	(cond (docstring
-	       (setq fill-column py-docstring-fill-column)
-	       (py-fill-string justify py-docstring-style docstring))
-	      ((let ((fill-column py-comment-fill-column))
-		 (fill-comment-paragraph justify)))
-	      ((save-excursion
-		 (and (py-backward-statement)
-		      (equal (char-after) ?\@)))
-	       (py-fill-decorator justify))
-	      (t (fill-paragraph justify)))
-	(widen))
-      (jump-to-register py-windows-config-register))))
+      (if (or (py-in-comment-p)
+	      (and (bolp) (looking-at "[ \t]*#[# \t]*")))
+	  (py-fill-comment)
+	(let* ((orig (copy-marker (point)))
+	       (docstring (unless (not py-docstring-style)(py--in-or-behind-or-before-a-docstring))))
+	  (cond (docstring
+		 (setq fill-column py-docstring-fill-column)
+		 (py-fill-string justify py-docstring-style docstring))
+		((let ((fill-column py-comment-fill-column))
+		   (fill-comment-paragraph justify)))
+		((save-excursion
+		   (and (py-backward-statement)
+			(equal (char-after) ?\@)))
+		 (py-fill-decorator justify))
+		(t (fill-paragraph justify)))
+	  (widen))
+	(jump-to-register py-windows-config-register)))))
 
 (provide 'python-components-paragraph)
 ;;; python-components-paragraph.el ends here
