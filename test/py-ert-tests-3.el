@@ -135,6 +135,7 @@ def foo():
 (ert-deftest py-ert-async-indent-test ()
   (py-test-with-temp-buffer-point-min
       "async def coro(name, lock):
+
     print('coro {}: waiting for lock'.format(name))
     async with lock:
         print('coro {}: holding the lock'.format(name))
@@ -142,7 +143,7 @@ def foo():
         print('coro {}: releasing the lock'.format(name))"
     (forward-line 1)
     (should (eq 4 (py-compute-indentation)))
-    (forward-line 2)
+    (forward-line 3)
     (should (eq 8 (py-compute-indentation)))))
 
 (ert-deftest py-ert-execute-statement-fast-test ()

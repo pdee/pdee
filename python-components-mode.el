@@ -2353,6 +2353,9 @@ Result: \"\\nIn [10]:    ....:    ....:    ....: 1\\n\\nIn [11]: \"
 
 (defcustom py-outdent-re-raw
   (list
+   "async def"
+   "async for"
+   "async with"
    "class"
    "def"
    "elif"
@@ -2362,21 +2365,7 @@ Result: \"\\nIn [10]:    ....:    ....:    ....: 1\\n\\nIn [11]: \"
    "if"
    "try"
    "while"
-   )
-  "")
-
-(defcustom py-outdent-re-raw
-  (list
-   "async"
-   "class"
-   "def"
-   "elif"
-   "else"
-   "except"
-   "for"
-   "if"
-   "try"
-   "while"
+   "with"
    )
   "")
 
