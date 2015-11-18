@@ -1574,30 +1574,34 @@ Used by variable `which-func-functions' "
          (first t)
          def-or-class
          done last erg name)
-    (and first (looking-at "[ \t]*\\_<\\(def\\|class\\)\\_>[ \n\t]\\([[:alnum:]_]+\\)")(not (nth 8 (parse-partial-sexp (point-min) (point))))
-         (add-to-list 'def-or-class (match-string-no-properties 2)))
-    (while
-        (and (not (bobp)) (not done) (or (< 0 (current-indentation)) first))
-      (py-backward-def-or-class)
-      (looking-at "[ \t]*\\_<\\(def\\|class\\)\\_>[ \n\t]\\([[:alnum:]_]+\\)")
-      (setq last (point))
-      (setq name (match-string-no-properties 2))
-      (if first
-          (progn
-            (setq first nil)
-            (py-forward-def-or-class)
-            (if
-                (<= orig (point))
-                (goto-char last)
-              (setq done t)
-              (goto-char orig)))
-        t)
-      (unless done (add-to-list 'def-or-class name)))
-    (unless done (setq def-or-class (mapconcat 'identity def-or-class ".")))
-    (goto-char orig)
-    (or def-or-class (setq def-or-class "???"))
-    (when (called-interactively-p 'any) (message "%s" def-or-class))
-    def-or-class))
+    (if
+	(and first (bolp)
+	     	     (not (nth 8 (parse-partial-sexp (point-min) (point))))
+	     (looking-at "[ \t]*\\_<\\(async def\\|def\\|class\\)\\_>[ \n\t]\\([[:alnum:]_]+\\)"))
+	(add-to-list 'def-or-class (match-string-no-properties 2))
+      (while
+	  (and (not (bobp)) (not done) (or first (< 0 (current-indentation)))
+	       (forward-word 1) 
+	       (setq last (py-backward-def-or-class))
+	       ;; (looking-at "[ \t]*\\_<\\(async def\\|def\\|class\\)\\_>[ \n\t]\\([[:alnum:]_]+\\)")
+	       ;; (setq last (point))
+	       (setq name (match-string-no-properties 2))
+	       (if first
+		   (progn
+		     (setq first nil)
+		     (py-forward-def-or-class)
+		     (if
+			 (<= orig (point))
+			 (goto-char last)
+		       (setq done t)
+		       (goto-char orig)))
+		 t)
+	       (unless done (add-to-list 'def-or-class name)))
+	(unless done (setq def-or-class (mapconcat 'identity def-or-class ".")))
+	(goto-char orig)
+	(or def-or-class (setq def-or-class "???"))
+	(when (called-interactively-p 'any) (message "%s" def-or-class))
+	def-or-class))))
 
 (defun py--beginning-of-form-intern (regexp &optional iact indent orig lc)
   "Go to beginning of FORM.

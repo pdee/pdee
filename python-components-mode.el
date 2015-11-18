@@ -135,6 +135,19 @@ Results arrive in output buffer, which is not in comint-mode"
   :tag "py-fast-process-p"
   :group 'python-mode)
 
+(defcustom py-which-def-or-class-function 'py-which-def-or-class
+  "If which-function-mode should use `py-which-def-or-class'.
+
+Alternatively use built-in `which-function', which queries the index
+or `python-info-current-defun' from python.el"
+  :type '(choice
+
+          (const :tag "default" py-which-def-or-class)
+	  (const :tag "built-in which-function" nil)
+          (const :tag "py-end-of-partial-expression" py-end-of-partial-expression)
+          (const :tag "python-info-current-defun" python-info-current-defun))
+  :group 'python-mode)
+
 (defcustom py-comment-auto-fill-p nil
   "When non-nil, fill comments.
 
@@ -2425,8 +2438,10 @@ See py-no-outdent-re-raw for better readable content ")
 (defconst py-class-re "[ \t]*\\_<\\(class\\)\\_>[ \n\t]"
   "Matches the beginning of a class definition. ")
 
-(defconst py-def-or-class-re "[ \t]*\\_<\\(def\\|class\\|async def\\)\\_>[ \n\t]"
+(defconst py-def-or-class-re "[ \t]*\\_<\\(async def\\|class\\|def\\)\\_>[ \n\t]"
   "Matches the beginning of a class- or functions definition. ")
+
+;; (setq py-def-or-class-re "[ \t]*\\_<\\(async def\\|class\\|def\\)\\_>[ \n\t]")
 
 ;; (defconst py-def-re "[ \t]*\\_<\\(async def\\|def\\)\\_>[ \n\t]"
 (defconst py-def-re "[ \t]*\\_<\\(def\\|async def\\)\\_>[ \n\t]"
@@ -2523,7 +2538,7 @@ See py-no-outdent-re-raw for better readable content ")
    "\\_<\\("
    (regexp-opt py-block-or-clause-re-raw)
    "\\)\\_>")
-  "Matches known keywords opening a block. 
+  "Matches known keywords opening a block.
 
 Customizing `py-block-or-clause-re-raw'  will change values here")
 

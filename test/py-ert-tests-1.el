@@ -461,7 +461,10 @@ result = some_function_that_takes_arguments(
     (goto-char 410)
     (indent-to 4)
     ;; (sit-for 1)
-    (should (eq 234 (py-backward-def-or-class-bol)))))
+    (py-backward-def-or-class-bol)
+    (should (bolp))
+    (should (eq 10 (count-lines (point-min) (point))))))
+
 
 (ert-deftest py-ert-moves-forward-clause-bol ()
   (py-test-with-temp-buffer-point-min
@@ -511,7 +514,9 @@ result = some_function_that_takes_arguments(
     (goto-char 410)
     (indent-to 4)
     ;; (sit-for 1)
-    (should (eq 234 (py-backward-def-bol)))))
+    (py-backward-def-bol)
+    (should (bolp))
+    (should (eq 10 (count-lines (point-min) (point))))))
 
 (ert-deftest py-ert-moves-up-indent-tabs-mode-test ()
   (py-test-with-temp-buffer-point-min

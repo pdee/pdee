@@ -449,7 +449,7 @@ pass
     (call-interactively 'py-indent-or-complete)
     (sit-for 0.1 t)
     (should (eq 8 (current-column)))
-    ;; 
+    ;;
     ;; (call-interactively 'py-indent-or-complete)
     ;; (call-interactively 'py-indent-or-complete)
     ;; (sit-for 0.1 t)
@@ -947,14 +947,15 @@ elif treffer in schwarz:
       py-def-and-class-test-string
     (search-backward "treffer")
     (py-narrow-to-def)
-    (should (eq 485 (length (buffer-substring-no-properties (point-min)(point-max)))))))
+    (should (< 480 (length (buffer-substring-no-properties (point-min)(point-max)))))))
 
 (ert-deftest py-ert-narrow-to-def-or-class-test ()
   (py-test-with-temp-buffer
       py-def-and-class-test-string
     (search-backward "treffer")
     (py-narrow-to-def-or-class)
-    (should (eq 485 (length (buffer-substring-no-properties (point-min)(point-max)))))))
+    (should (< 480 (length (buffer-substring-no-properties (point-min)(point-max)))))
+    (should (> 490 (length (buffer-substring-no-properties (point-min)(point-max)))))))
 
 (ert-deftest py-ert-narrow-to-statement-test ()
   (py-test-with-temp-buffer
