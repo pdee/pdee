@@ -54,7 +54,7 @@ if __name__ == \"__main__\":
 (setq ert-test-default-buffer "*Python*")
 
 (add-to-list 'load-path default-directory)
-(require 'python-mode-test)
+
 
 (defun py-tests-go-to (string)
   "Move point at beginning of STRING in the current test. "
@@ -1157,17 +1157,58 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
       (should (eq (char-after) ?'))
       (search-backward "ausgabe")
       (py-backward-expression)
-      (should (eq (char-after) ?\[))
+      (should (eq (char-after) ?\[))))
 
-      ))
+(ert-deftest py-ert-which-def-or-class-test-1 ()
+  (py-test-with-temp-buffer-point-min
+      py-def-and-class-test-string
+    (search-forward "kugel")
+    (should (string-match "kugel" (py-which-def-or-class)))
+    (search-forward "pylauf")
+    (should (string-match "kugel.pylauf" (py-which-def-or-class)))))
+
+
+(ert-deftest py-ert-which-def-or-class-test-2 ()
+  (py-test-with-temp-buffer
+      "except AttributeError:
+
+    # To fix reloading, force it to create a new foo
+    if hasattr(threading.currentThread(), '__decimal_foo__'):
+        del threading.currentThread().__decimal_foo__
+
+    def setfoo(foo):
+        \"\"\"Set this thread's foo to foo.\"\"\"
+        if foo in (DefaultContext, BasicContext, ExtendedContext):
+            foo = foo.copy()
+            foo.clear_flags()
+        threading.currentThread().__decimal_foo__ = foo
+
+    def getfoo():
+        \"\"\"Returns this thread's foo.
+
+        If this thread does not yet have a foo, returns
+        \"\"\"
+        try:
+            return threading.currentThread().__decimal_foo__
+        except AttributeError:
+            foo = Context()
+            threading.currentThread().__decimal_foo__ = foo
+            return foo
+
+else:
+"
+    (should (string= "???" (py-which-def-or-class)))
+    (forward-line -3)
+    (should (string= "getfoo" (py-which-def-or-class)))))
+
 
 (ert-deftest py-ert-match-paren-test-1 ()
-    (py-test-with-temp-buffer
-	"if __name__ == \"__main__\":
+  (py-test-with-temp-buffer
+      "if __name__ == \"__main__\":
     main()"
-      (forward-char -1)
-      (py-match-paren)
-      (should (eq (char-after) ?\())))
+    (forward-char -1)
+    (py-match-paren)
+    (should (eq (char-after) ?\())))
 
 (ert-deftest py-ert-match-paren-test-2 ()
     (py-test-with-temp-buffer

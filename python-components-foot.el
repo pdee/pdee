@@ -109,7 +109,7 @@ See available customizations listed in files variables-python-mode at directory 
 	(t (font-lock-add-keywords 'python-mode
 				   '(("\\<print\\>" . 'font-lock-keyword-face)
 				     ("\\<file\\>" . 'py-builtins-face)))))
-  (set (make-local-variable 'which-func-functions) py-which-def-or-class-function)
+  (set (make-local-variable 'which-func-functions) 'py-which-def-or-class)
   (set (make-local-variable 'parse-sexp-lookup-properties) t)
   (set (make-local-variable 'parse-sexp-ignore-comments) t)
   (set (make-local-variable 'comment-use-syntax) t)

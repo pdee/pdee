@@ -1341,25 +1341,6 @@ i.e. the limit on how far back to scan."
      ((nth 3 state) 'string)
      ((nth 4 state) 'comment))))
 
-(defun py-which-function ()
-  "Return the name of the function or class, if curser is in, return nil otherwise. "
-  (interactive)
-  (save-excursion
-    (save-restriction
-      (widen)
-      (let ((orig (point))
-            (erg (if (and (looking-at (concat py-def-or-class-re " +\\([^(]+\\)(.+")) (not (py-in-string-or-comment-p)))
-                     (match-string-no-properties 2)
-                   (progn
-                     (py-backward-def-or-class)
-                     (when (looking-at (concat py-def-or-class-re " +\\([^(]+\\)(.+"))
-                       (match-string-no-properties 2))))))
-        (if (and erg (< orig (py-forward-def-or-class)))
-            (when (called-interactively-p 'any) (message "%s" erg))
-          (setq erg nil)
-          (when (called-interactively-p 'any) (message "%s" "Not inside a function or class"))
-          erg)))))
-
 (defconst py-help-address "python-mode@python.org"
   "List dealing with usage and developing python-mode.
 
@@ -1564,44 +1545,72 @@ the output."
 	;; (sit-for 0.1 t)
 	erg))))
 
-(defun py-which-def-or-class ()
+(defun py-which-def-or-class (&optional orig)
   "Returns concatenated `def' and `class' names in hierarchical order, if cursor is inside.
 
 Returns \"???\" otherwise
 Used by variable `which-func-functions' "
   (interactive)
   (let* ((orig (point))
-         (first t)
-         def-or-class
-         done last erg name)
+	 (backindent 99999)
+         erg forward indent backward limit)
     (if
-	(and first (bolp)
-	     	     (not (nth 8 (parse-partial-sexp (point-min) (point))))
+	(and (looking-at "[ \t]*\\_<\\(async def\\|def\\|class\\)\\_>[ \n\t]\\([[:alnum:]_]+\\)")
+	     (not (nth 8 (parse-partial-sexp (point-min) (point)))))
+	(progn
+	  (setq erg (list (match-string-no-properties 2)))
+	  (setq backindent (current-indentation)))
+      ;; maybe inside a definition's symbol
+      (or (eolp) (and (looking-at "[[:alnum:]]")(forward-word 1))))
+    (if
+	(and (not (and erg (eq 0 (current-indentation))))
+	     (setq limit (py-backward-top-level))
 	     (looking-at "[ \t]*\\_<\\(async def\\|def\\|class\\)\\_>[ \n\t]\\([[:alnum:]_]+\\)"))
-	(add-to-list 'def-or-class (match-string-no-properties 2))
-      (while
-	  (and (not (bobp)) (not done) (or first (< 0 (current-indentation)))
-	       (forward-word 1) 
-	       (setq last (py-backward-def-or-class))
-	       ;; (looking-at "[ \t]*\\_<\\(async def\\|def\\|class\\)\\_>[ \n\t]\\([[:alnum:]_]+\\)")
-	       ;; (setq last (point))
-	       (setq name (match-string-no-properties 2))
-	       (if first
-		   (progn
-		     (setq first nil)
-		     (py-forward-def-or-class)
-		     (if
-			 (<= orig (point))
-			 (goto-char last)
-		       (setq done t)
-		       (goto-char orig)))
-		 t)
-	       (unless done (add-to-list 'def-or-class name)))
-	(unless done (setq def-or-class (mapconcat 'identity def-or-class ".")))
-	(goto-char orig)
-	(or def-or-class (setq def-or-class "???"))
-	(when (called-interactively-p 'any) (message "%s" def-or-class))
-	def-or-class))))
+	(progn
+	  (add-to-list 'erg (match-string-no-properties 2))
+	  (setq indent (current-indentation)))
+      (goto-char orig)
+      (while (and
+	      (re-search-backward py-def-or-class-re limit t 1)
+	      (< (current-indentation) backindent)
+	      (setq backindent (current-indentation))
+	      (setq backward (point))
+	      (or (< 0 (current-indentation))
+		  (nth 8 (parse-partial-sexp (point-min) (point))))))
+      (when (and backward
+		 (goto-char backward)
+		 (looking-at "[ \t]*\\_<\\(async def\\|def\\|class\\)\\_>[ \n\t]\\([[:alnum:]_]+\\)"))
+	(add-to-list 'erg (match-string-no-properties 2))
+	(setq indent (current-indentation))))
+    ;; (goto-char orig))
+    (if erg
+	(progn
+	  (end-of-line)
+	  (while (and (re-search-forward py-def-or-class-re nil t 1)
+		      (<= (point) orig)
+		      (< indent (current-indentation))
+		      (or
+		       (nth 8 (parse-partial-sexp (point-min) (point)))
+		       (setq forward (point)))))
+	  (if forward
+	      (progn
+		(goto-char forward)
+		(save-excursion
+		  (back-to-indentation)
+		  (and (looking-at "[ \t]*\\_<\\(async def\\|def\\|class\\)\\_>[ \n\t]\\([[:alnum:]_]+\\)")
+		       (setq erg (list (car erg) (match-string-no-properties 2)))
+		       (< (py-forward-def-or-class) orig)
+		       ;; if match was beyond definition, nil
+		       (setq erg nil))))
+	    (goto-char orig))))
+    (if erg
+	(if (< 1 (length erg))
+	    (setq erg (mapconcat 'identity erg "."))
+	  (setq erg (car erg)))
+      (setq erg "???"))
+    (goto-char orig)
+    (when (called-interactively-p 'any) (message "%s" erg))
+    erg))
 
 (defun py--beginning-of-form-intern (regexp &optional iact indent orig lc)
   "Go to beginning of FORM.
@@ -1745,8 +1754,10 @@ Returns position if successful, nil otherwise "
   (interactive)
   (let (erg)
     (unless (bobp)
-      (while (and (not (bobp)) (setq erg (py-backward-statement))
-                  (< 0 (current-indentation))))
+      (while (and (not (bobp))
+		  (setq erg (re-search-backward "^[[:alpha:]_'\"]" nil t 1))
+		  (nth 8 (parse-partial-sexp (point-min) (point)))
+		  (setq erg nil)))
       (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
       erg)))
 
@@ -1786,7 +1797,7 @@ Returns position if successful, nil otherwise"
         erg)
     (while (and (not (eobp))
 		(progn (end-of-line)
-		       (re-search-forward "^[[:alpha:]_]" nil 'move 1))
+		       (re-search-forward "^[[:alpha:]_'\"]" nil 'move 1))
 		(nth 8 (parse-partial-sexp (point-min) (point)))))
     (when (and (not (eobp)) (< orig (point)))
       (goto-char (match-beginning 0))

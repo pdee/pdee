@@ -2160,9 +2160,6 @@
 (ert-deftest py-ert-count-lines-functionp-test ()
   (should (functionp 'py-count-lines)))
 
-(ert-deftest py-ert-which-function-functionp-test ()
-  (should (functionp 'py-which-function)))
-
 (ert-deftest py-ert--point-functionp-test ()
   (should (functionp 'py--point)))
 

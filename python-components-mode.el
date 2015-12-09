@@ -135,18 +135,29 @@ Results arrive in output buffer, which is not in comint-mode"
   :tag "py-fast-process-p"
   :group 'python-mode)
 
-(defcustom py-which-def-or-class-function 'py-which-def-or-class
-  "If which-function-mode should use `py-which-def-or-class'.
+;; (defcustom py-which-def-or-class-function py-which-def-or-class
+;;   "If which-function-mode should use `py-which-def-or-class'.
 
-Alternatively use built-in `which-function', which queries the index
-or `python-info-current-defun' from python.el"
-  :type '(choice
+;; Alternatively use built-in `which-function', which queries the index
+;; or `python-info-current-defun' from python.el"
+;;   :type '(choice
 
-          (const :tag "default" py-which-def-or-class)
-	  (const :tag "built-in which-function" nil)
-          (const :tag "py-end-of-partial-expression" py-end-of-partial-expression)
-          (const :tag "python-info-current-defun" python-info-current-defun))
-  :group 'python-mode)
+;;           (const :tag "default" py-which-def-or-class)
+;; 	  (const :tag "built-in which-function" nil)
+;;           (const :tag "python-info-current-defun" python-info-current-defun))
+;;   :group 'python-mode)
+
+;; (defcustom py-which-def-or-class-function py-which-def-or-class
+;;   "If which-function-mode should use `py-which-def-or-class'.
+
+;; Alternatively use built-in `which-function', which queries the index
+;; or `python-info-current-defun' from python.el"
+;;   :type '(choice
+
+;;           (const :tag "default" py-which-def-or-class)
+;; 	  (const :tag "built-in which-function" nil)
+;;           (const :tag "python-info-current-defun" python-info-current-defun))
+;;   :group 'python-mode)
 
 (defcustom py-comment-auto-fill-p nil
   "When non-nil, fill comments.
@@ -3446,7 +3457,7 @@ Returns char found. "
 (require 'python-components-narrow)
 (require 'python-components-menu)
 (require 'python-components-shell-menu)
-(require 'python-components-versioned)
+;; (require 'python-components-versioned)
 (require 'python-components-hide-show)
 (require 'python-components-foot)
 
