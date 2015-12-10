@@ -1553,9 +1553,10 @@ Used by variable `which-func-functions' "
   (interactive)
   (let* ((orig (point))
 	 (backindent 99999)
+	 (re (concat py-def-or-class-re "\\([[:alnum:]_]+\\)"))
          erg forward indent backward limit)
     (if
-	(and (looking-at "[ \t]*\\_<\\(async def\\|def\\|class\\)\\_>[ \n\t]\\([[:alnum:]_]+\\)")
+	(and (looking-at re)
 	     (not (nth 8 (parse-partial-sexp (point-min) (point)))))
 	(progn
 	  (setq erg (list (match-string-no-properties 2)))
@@ -1565,7 +1566,7 @@ Used by variable `which-func-functions' "
     (if
 	(and (not (and erg (eq 0 (current-indentation))))
 	     (setq limit (py-backward-top-level))
-	     (looking-at "[ \t]*\\_<\\(async def\\|def\\|class\\)\\_>[ \n\t]\\([[:alnum:]_]+\\)"))
+	     (looking-at re))
 	(progn
 	  (add-to-list 'erg (match-string-no-properties 2))
 	  (setq indent (current-indentation)))
@@ -1579,7 +1580,7 @@ Used by variable `which-func-functions' "
 		  (nth 8 (parse-partial-sexp (point-min) (point))))))
       (when (and backward
 		 (goto-char backward)
-		 (looking-at "[ \t]*\\_<\\(async def\\|def\\|class\\)\\_>[ \n\t]\\([[:alnum:]_]+\\)"))
+		 (looking-at re))
 	(add-to-list 'erg (match-string-no-properties 2))
 	(setq indent (current-indentation))))
     ;; (goto-char orig))
@@ -1597,11 +1598,12 @@ Used by variable `which-func-functions' "
 		(goto-char forward)
 		(save-excursion
 		  (back-to-indentation)
-		  (and (looking-at "[ \t]*\\_<\\(async def\\|def\\|class\\)\\_>[ \n\t]\\([[:alnum:]_]+\\)")
+		  (and (looking-at re)
 		       (setq erg (list (car erg) (match-string-no-properties 2)))
-		       (< (py-forward-def-or-class) orig)
+		       ;; (< (py-forward-def-or-class) orig)
 		       ;; if match was beyond definition, nil
-		       (setq erg nil))))
+		       ;; (setq erg nil)
+		       )))
 	    (goto-char orig))))
     (if erg
 	(if (< 1 (length erg))

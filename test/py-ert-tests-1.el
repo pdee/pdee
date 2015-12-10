@@ -1083,13 +1083,13 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
    (search-forward "datei.write")
    (should (eq 8 (current-indentation)))))
 
-;; (ert-deftest py--pdb-versioned-test ()
-;;   (py-test-with-temp-buffer
-;;       ""
-;;     (let ((py-shell-name "python3"))
-;;       (should (string= "pdb3" (py--pdb-versioned))))
-;;     (let ((py-shell-name "python"))
-;;       (should (string= "pdb" (py--pdb-versioned))))))
+(ert-deftest py--pdb-versioned-test ()
+  (py-test-with-temp-buffer
+      ""
+    (let ((py-shell-name "python3"))
+      (should (string= "pdb3" (py--pdb-versioned))))
+    (let ((py-shell-name "python"))
+      (should (string= "pdb" (py--pdb-versioned))))))
 
 (ert-deftest py-ert-moves-up-forward-expression-test ()
     (py-test-with-temp-buffer-point-min
@@ -1201,6 +1201,28 @@ else:
     (forward-line -3)
     (should (string= "getfoo" (py-which-def-or-class)))))
 
+(ert-deftest py-ert-which-def-or-class-test-3 ()
+  (py-test-with-temp-buffer
+
+      "class kugel(object):
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    # zeit = time.strftime('%Y-%m-%d--%H-%M-%S')
+    spiel = []
+    gruen = [0]
+    rot = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
+    schwarz = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35]
+    ausgabe = []
+    treffer = None
+    fertig = ''
+    treffer = random.randint(0, 36)
+
+    def foo():
+        bar
+
+    def pylauf(self):
+"
+    (forward-line -2) 
+    (should (string= "kugel.foo" (py-which-def-or-class)))))
 
 (ert-deftest py-ert-match-paren-test-1 ()
   (py-test-with-temp-buffer
