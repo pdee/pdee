@@ -1083,13 +1083,13 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
    (search-forward "datei.write")
    (should (eq 8 (current-indentation)))))
 
-(ert-deftest py--pdb-versioned-test ()
-  (py-test-with-temp-buffer
-      ""
-    (let ((py-shell-name "python3"))
-      (should (string= "pdb3" (py--pdb-versioned))))
-    (let ((py-shell-name "python"))
-      (should (string= "pdb" (py--pdb-versioned))))))
+;; (ert-deftest py--pdb-versioned-test ()
+;;   (py-test-with-temp-buffer
+;;       ""
+;;     (let ((py-shell-name "python3"))
+;;       (should (string= "pdb3" (py--pdb-versioned))))
+;;     (let ((py-shell-name "python"))
+;;       (should (string= "pdb" (py--pdb-versioned))))))
 
 (ert-deftest py-ert-moves-up-forward-expression-test ()
     (py-test-with-temp-buffer-point-min

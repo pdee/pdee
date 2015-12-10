@@ -231,9 +231,14 @@ class _PyCompleteDocument(object):
                     # is wrapped in try-except, so use only the import statement.
                     body.append(imp_node)
                 else:
-                    body.append(ast.TryExcept(body=[imp_node], handlers=[
-                        ast.ExceptHandler(type=None, name=None, body=[ast.Pass()])],
-                        orelse=[]))
+                    if sys.version_info[0] >= 3: # Python 3
+                        body.append(ast.Try(body=[imp_node], handlers=[
+                            ast.ExceptHandler(type=None, name=None, body=[ast.Pass()])],
+                            orelse=[], finalbody=[]))
+                    else:
+                        body.append(ast.TryExcept(body=[imp_node], handlers=[
+                            ast.ExceptHandler(type=None, name=None, body=[ast.Pass()])],
+                            orelse=[]))
             node = ast.Module(body=body)
             ast.fix_missing_locations(node)
             code = compile(node, fname, 'exec')
@@ -341,9 +346,14 @@ class _PyCompleteDocument(object):
                 if type_node:
                     # Wrap class lookup in try-except because it is not fail-safe.
                     node.value = ast.copy_location(type_node, node.value)
-                    node = ast.copy_location(ast.TryExcept(body=[node], handlers=[
-                        ast.ExceptHandler(type=None, name=None, body=[ast.Pass()])],
-                        orelse=[]), node)
+                    if sys.version_info[0] >= 3: # Python 3
+                        node = ast.copy_location(ast.Try(body=[node], handlers=[
+                            ast.ExceptHandler(type=None, name=None, body=[ast.Pass()])],
+                            orelse=[], finalbody=[]), node)
+                    else:
+                        node = ast.copy_location(ast.TryExcept(body=[node], handlers=[
+                            ast.ExceptHandler(type=None, name=None, body=[ast.Pass()])],
+                            orelse=[]), node)
                     ast.fix_missing_locations(node)
                 else:
                     node.value = ast.copy_location(
