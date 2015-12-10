@@ -17,12 +17,8 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-<<<<<<< HEAD
 ;;; Commentary: Currently unused. Would it pay to set keywords
 ;;  according to version?
-=======
-;;; Commentary: Highlight keywords according to Python version 2 or 3
->>>>>>> cb64b95fe7eb4f0f0dc6c2d518e6fd20bb83d53a
 
 ;;
 
