@@ -49,7 +49,7 @@
 ;; after-change-major-mode-hook
 
 ;;;
-(define-derived-mode python-mode fundamental-mode python-mode-modeline-display
+(define-derived-mode python-mode prog-mode python-mode-modeline-display
   "Major mode for editing Python files.
 
 To submit a problem report, enter `\\[py-submit-bug-report]' from a
@@ -111,7 +111,6 @@ See available customizations listed in files variables-python-mode at directory 
 				     ("\\<file\\>" . 'py-builtins-face)))))
   (set (make-local-variable 'which-func-functions) 'py-which-def-or-class)
   (set (make-local-variable 'parse-sexp-lookup-properties) t)
-  (set (make-local-variable 'parse-sexp-ignore-comments) t)
   (set (make-local-variable 'comment-use-syntax) t)
   (set (make-local-variable 'comment-start) "#")
   (if py-empty-comment-line-separates-paragraph-p

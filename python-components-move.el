@@ -296,7 +296,6 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
           (orig (or orig (point)))
           erg pos last
           ;; use by scan-lists
-          ;; parse-sexp-ignore-comments
           forward-sexp-function
           stringchar stm pps err)
       (unless done (py--skip-to-comment-or-semicolon done))
@@ -313,18 +312,17 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
 	      (setq orig (point))
 	      ;; do not go back at a possible unclosed list
 	      (goto-char (nth 1 pps))
-	      (let ((parse-sexp-ignore-comments t))
-		(if
-		    (ignore-errors (forward-list))
-		    (progn
-		      (when (looking-at ":[ \t]*$")
-			(forward-char 1))
-		      (setq done t)
-		      (skip-chars-forward "^#" (line-end-position))
-		      (skip-chars-backward " \t\r\n\f" (line-beginning-position))
-		      (py-forward-statement orig done repeat))
-		  (setq err (py--record-list-error pps))
-		  (goto-char orig))))))
+	      (if
+		  (ignore-errors (forward-list))
+		  (progn
+		    (when (looking-at ":[ \t]*$")
+		      (forward-char 1))
+		    (setq done t)
+		    (skip-chars-forward "^#" (line-end-position))
+		    (skip-chars-backward " \t\r\n\f" (line-beginning-position))
+		    (py-forward-statement orig done repeat))
+		(setq err (py--record-list-error pps))
+		(goto-char orig)))))
        ;; string
        ((nth 3 pps)
 	(when (py-end-of-string)
