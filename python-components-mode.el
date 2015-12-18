@@ -96,6 +96,15 @@
   :tag "py-install-directory"
   :group 'python-mode)
 
+(defcustom py-pythonpath ""
+  "Define $PYTHONPATH here, if needed.
+
+Emacs doesn't read .bashrc"
+
+  :type 'string
+  :tag "py-pythonpath"
+  :group 'python-mode)
+
 (when (string= "" py-install-directory)
   (setq py-install-directory default-directory))
 
