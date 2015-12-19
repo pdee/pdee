@@ -2997,6 +2997,17 @@ Returns DIRECTORY"
     (unless erg (when py-verbose-p (message "Warning: directory is empty")))
     erg))
 
+(defun py--normalize-pythonpath (pythonpath)
+  "Make sure PYTHONPATH ends with a colon.
+
+Returns PYTHONPATH"
+  (let ((erg (cond ((string-match (concat path-separator "$") pythonpath)
+                    pythonpath)
+                   ((not (string= "" pythonpath))
+                    (concat pythonpath path-separator))
+		   (t pythonpath))))
+    erg))
+
 (defun py-install-directory-check ()
   "Do some sanity check for `py-install-directory'.
 
@@ -3024,6 +3035,12 @@ Used only, if `py-install-directory' is empty. "
     (when (and py-verbose-p (called-interactively-p 'any)) (message "Setting py-install-directory to: %s" py-install-directory))
     py-install-directory)
 
+(defun py--fetch-pythonpath ()
+  "Consider settings of py-pythonpath. "
+  (if (string= "" py-pythonpath)
+      (getenv "PYTHONPATH")
+    (concat (py--normalize-pythonpath (getenv "PYTHONPATH")) py-pythonpath)))
+
 (defun py-load-pymacs ()
   "Load Pymacs as delivered with python-mode.el.
 
@@ -3031,7 +3048,7 @@ Pymacs has been written by François Pinard and many others.
 See original source: http://pymacs.progiciels-bpi.ca"
   (interactive)
   (let ((pyshell (py-choose-shell))
-        (path (getenv "PYTHONPATH"))
+        (path (py--fetch-pythonpath))
         (py-install-directory (cond ((string= "" py-install-directory)
                                      (py-guess-py-install-directory))
                                     (t (py--normalize-directory py-install-directory)))))
@@ -3055,7 +3072,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
   (defun py-load-pycomplete ()
     "Load Pymacs based pycomplete."
     (interactive)
-    (let* ((path (getenv "PYTHONPATH"))
+    (let* ((path (py--fetch-pythonpath))
            (py-install-directory (cond ((string= "" py-install-directory)
                                         (py-guess-py-install-directory))
                                        (t (py--normalize-directory py-install-directory))))
