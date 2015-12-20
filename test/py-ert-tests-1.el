@@ -539,7 +539,7 @@ result = some_function_that_takes_arguments(
       ""
       (file-readable-p py-pyflakespep8-command)))
 
-(ert-deftest py-ert-moves-up-bogus-dedent-when-typing-colon-in-dictionary-literal-lp-1197171 ()
+(ert-deftest py-ert-moves-up-bogus-dedent-when-typing-colon-in-dictionary-literal-lp-1197171-1 ()
   (py-test-with-temp-buffer
       "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
@@ -550,9 +550,24 @@ result = some_function_that_takes_arguments(
 def foo():
     bar('thing',
         {'another'"
-    (should (eq 8 (py-compute-indentation)))))
+    (let (py-indent-paren-spanned-multilines-p)
+      (should (eq 8 (py-compute-indentation))))))
 
-(ert-deftest py-ert-moves-up-pep-arglist-indent ()
+(ert-deftest py-ert-moves-up-bogus-dedent-when-typing-colon-in-dictionary-literal-lp-1197171-2 ()
+  (py-test-with-temp-buffer
+      "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+# Put point at the end of the last line and hit colon, as you would to
+# separate the key from the value. The last line will incorrectly dedent
+# to column 4. Indentation should not change.
+
+def foo():
+    bar('thing',
+        {'another'"
+    (let ((py-indent-paren-spanned-multilines-p t))
+      (should (eq 12 (py-compute-indentation))))))
+
+(ert-deftest py-ert-moves-up-pep-arglist-indent-1 ()
   (py-test-with-temp-buffer-point-min
       "# Aligned with opening delimiter
 foo = long_function_name(var_one, var_two,
@@ -564,12 +579,29 @@ def long_function_name(
         var_four):
     print(var_one)
 "
-    (search-forward "var_three")
-    (should (eq 25 (py-compute-indentation)))
-    (search-forward "var_three")
-    (should (eq 8 (py-compute-indentation)))
+    (let (py-indent-paren-spanned-multilines-p)
+      (search-forward "var_three")
+      (should (eq 25 (py-compute-indentation)))
+      (search-forward "var_three")
+      (should (eq 8 (py-compute-indentation))))))
 
-    ))
+(ert-deftest py-ert-moves-up-pep-arglist-indent-2 ()
+  (py-test-with-temp-buffer-point-min
+      "# Aligned with opening delimiter
+foo = long_function_name(var_one, var_two,
+                         var_three, var_four)
+
+# More indentation included to distinguish this from the rest.
+def long_function_name(
+        var_one, var_two, var_three,
+        var_four):
+    print(var_one)
+"
+    (let ((py-indent-paren-spanned-multilines-p t))
+      (search-forward "var_three")
+      (should (eq 29 (py-compute-indentation)))
+      (search-forward "var_three")
+      (should (eq 8 (py-compute-indentation))))))
 
 (ert-deftest py-ert-moves-up-close-at-start-column ()
   (py-test-with-temp-buffer-point-min
@@ -1221,7 +1253,7 @@ else:
 
     def pylauf(self):
 "
-    (forward-line -2) 
+    (forward-line -2)
     (should (string= "kugel.foo" (py-which-def-or-class)))))
 
 (ert-deftest py-ert-match-paren-test-1 ()

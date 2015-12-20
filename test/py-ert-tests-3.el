@@ -166,5 +166,31 @@ def foo():
     (should (eq 8 (current-column)))
     (should (eq 6 (count-lines (point-min) (point))))))
 
+(ert-deftest py-ert-parens-span-multiple-lines-lp-1191225-test ()
+  (py-test-with-temp-buffer-point-min
+      "# -*- coding: utf-8 -*-
+def foo():
+    if (foo &&
+        baz):
+        bar()
+# >> This example raises a pep8 warning[0],
+# >> I've been dealing with it and manually
+# >> adding another indentation level to not leave 'baz' aligned with 'baz
+# ()'
+# >>
+def foo():
+    if (foo &&
+            baz):
+        bar()
+"
+  (let (py-indent-paren-spanned-multilines-p)
+    (search-forward "b")
+    (should (eq 8 (py-compute-indentation)))
+    (search-forward "def foo():")
+    (search-forward "b")
+    (setq py-indent-paren-spanned-multilines-p t)
+    (should (eq 12 (py-compute-indentation))))))
+
+
 (provide 'py-ert-tests-3)
 ;;; py-ert-tests-3.el ends here

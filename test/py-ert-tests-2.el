@@ -664,7 +664,7 @@ data = {
       (search-forward "}")
       (should (eq 0 (py-compute-indentation))))))
 
-(ert-deftest py-ert-flexible-indentation-lp-328842-test ()
+(ert-deftest py-ert-flexible-indentation-lp-328842-test-1 ()
   (py-test-with-temp-buffer-point-min
       "\(long, sequence, of_items,
  that, needs, to_be, wrapped) = input_list
@@ -679,7 +679,21 @@ that, needs, to_be, wrapped)
         (search-forward "(long")
       (forward-char -1)
       ;; (goto-char 6)
-      (should (eq nil (get-char-property (point) 'face)))
+      (should (eq nil (get-char-property (point) 'face))))))
+
+(ert-deftest py-ert-flexible-indentation-lp-328842-test-2 ()
+  (py-test-with-temp-buffer-point-min
+      "\(long, sequence, of_items,
+ that, needs, to_be, wrapped) = input_list
+
+packed_entry = (long, sequence, of_items,
+that, needs, to_be, wrapped)
+
+\( whitespaced, long, sequence, of_items,
+    that, needs, to_be, wrapped) = input_list
+"
+    (let ((py-indent-honors-multiline-listing t)
+	  py-indent-paren-spanned-multilines-p)
       (goto-char 33)
       (assert (eq 1 (py-compute-indentation)) nil "flexible-indentation-lp-328842-test failed")
       (goto-char 115)
@@ -687,13 +701,35 @@ that, needs, to_be, wrapped)
       (goto-char 202)
       (assert (eq 2 (py-compute-indentation)) nil "flexible-indentation-lp-328842-test failed"))))
 
+(ert-deftest py-ert-flexible-indentation-lp-328842-test-3 ()
+  (py-test-with-temp-buffer-point-min
+      "\(long, sequence, of_items,
+ that, needs, to_be, wrapped) = input_list
+
+packed_entry = (long, sequence, of_items,
+that, needs, to_be, wrapped)
+
+\( whitespaced, long, sequence, of_items,
+    that, needs, to_be, wrapped) = input_list
+"
+    (let ((py-indent-honors-multiline-listing t)
+	  (py-indent-paren-spanned-multilines-p t))
+      (goto-char 33)
+      (assert (eq 5 (py-compute-indentation)) nil "flexible-indentation-lp-328842-test failed")
+      (goto-char 115)
+      (assert (eq 20 (py-compute-indentation)) nil "flexible-indentation-lp-328842-test failed")
+      (goto-char 202)
+      (assert (eq 6 (py-compute-indentation)) nil "flexible-indentation-lp-328842-test failed"))))
+
 (ert-deftest py-ert-indent-in-arglist-test ()
   (py-test-with-temp-buffer
       "def foo (a,
 
 ):"
-    (beginning-of-line)
-    (should (eq 9 (py-compute-indentation)))))
+    (let (py-indent-paren-spanned-multilines-p)
+      (should (eq 9 (py-compute-indentation))))
+    (let ((py-indent-paren-spanned-multilines-p t))
+      (should (eq 13 (py-compute-indentation))))))
 
 (ert-deftest py-complete-in-python-shell-test ()
   (let ((py-shell-name "python")

@@ -696,7 +696,7 @@ When non-nil, `py-end-of-def' and related will work faster"
   :tag "py-indent-honors-multiline-listing"
   :group 'python-mode)
 
-(defcustom py-indent-paren-spanned-multilines-p nil
+(defcustom py-indent-paren-spanned-multilines-p t
   "If non-nil, indents elements of list a value of `py-indent-offset' to first element:
 
 def foo():
@@ -710,7 +710,8 @@ def foo():
     if (foo &&
         baz):
         bar()
-"
+
+Default is `t'"
   :type 'boolean
   :tag "py-indent-paren-spanned-multilines-p"
   :group 'python-mode)
