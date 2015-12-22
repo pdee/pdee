@@ -4,6 +4,13 @@ Python Mode News
 New in version 6.2.2
 ---------------------
 
+- Commands
+  - py-backward-indent
+    Go to the beginning of a section of equal indent
+  - py-forward-indent
+    Go to the end of a section of equal indentation
+
+
 - Make $PYTHONPATH configurable from Emacs
   Emacs doesn't read settings from .bashrc
 

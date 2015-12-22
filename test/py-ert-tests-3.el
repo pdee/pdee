@@ -217,8 +217,51 @@ More docstring here.
       (search-forward "docstring")
       (fill-paragraph)
       (forward-line 1)
-      (skip-chars-forward " \t\r\n\f") 
+      (skip-chars-forward " \t\r\n\f")
       (should (eq 4 (current-indentation))))))
+
+(ert-deftest py-backward-indent-test ()
+  (py-test-with-temp-buffer
+      "class A(object):
+    def a(self):
+        sdfasde
+        pass
+    def b(self):
+        asdef
+        asdf
+        pass"
+    (py-backward-indent)
+    (should (eq (char-after) ?a))
+    (py-backward-indent)
+    (should (eq (char-after) ?d))
+    (py-backward-indent)
+    (should (eq (char-after) ?s))))
+
+
+(ert-deftest py-forward-indent-test ()
+  (py-test-with-temp-buffer-point-min
+      "class A(object):
+    def a(self):
+        sdfasde
+        pass
+    def b(self):
+        asdef
+        asdf
+        pass"
+    (py-forward-indent)
+    (should (eq (char-before) ?:))
+    (py-forward-indent)
+    (should (eq (char-before) ?:))
+    (py-forward-indent)
+    (should (eq (char-before) ?s))
+    (py-forward-indent)
+    (should (eq (char-before) ?:))
+    ;; (py-forward-indent)
+    ;; (should (eq (char-before) ?s))
+    ))
+    
+    
+
 
 (provide 'py-ert-tests-3)
 ;;; py-ert-tests-3.el ends here
