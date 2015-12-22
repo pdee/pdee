@@ -244,6 +244,7 @@ See lp:1066489 "
                 (goto-char (match-end 0)))))))))
 
 (defun py--in-or-behind-or-before-a-docstring ()
+  (interactive "*")
   (save-excursion
     (let* ((raw-pps (nth 8 (parse-partial-sexp (point-min) (point))))
 	   ;; ;; maybe just behind a string
@@ -266,13 +267,20 @@ See lp:1066489 "
   (let ((beg (or start (nth 8 (parse-partial-sexp (point-min) (point))))))
     (save-excursion
       (goto-char beg)
-      (skip-chars-forward "\"'")
+      (skip-chars-forward "\"'rRuU")
       (delete-region (point) (progn (skip-chars-forward " \t\r\n\f")(point)))
       (goto-char beg)
       (forward-char 1)
       (skip-syntax-forward "^\|")
-      (skip-chars-backward "\"'")
-      (delete-region (point) (progn (skip-chars-backward " \t\r\n\f")(point))))))
+      (skip-chars-backward "\"'rRuU")
+      ;; (delete-region (point) (progn (skip-chars-backward " \t\r\n\f")(point)))
+)))
+
+(defun py--skip-raw-string-front-fence ()
+  "Skip forward chars u, U, r, R followed by string-delimiters. "
+  (when (member (char-after) (list ?u ?U ?r ?R))
+    (forward-char 1))
+  (skip-chars-forward "\'\""))
 
 (defun py--fill-fix-end (thisend orig docstring delimiters-style)
   ;; Add the number of newlines indicated by the selected style
@@ -309,6 +317,7 @@ See lp:1066489 "
       ;; Add the number of newlines indicated by the selected style
       ;; at the start.
       (goto-char thisbeg)
+      (py--skip-raw-string-front-fence)
       (skip-chars-forward "\'\"")
       (when
 	  (car delimiters-style)
@@ -317,7 +326,7 @@ See lp:1066489 "
       (indent-region beg end py-current-indent))
     (when multi-line-p
       (goto-char thisbeg)
-      (skip-chars-forward "\'\"")
+      (py--skip-raw-string-front-fence) 
       (skip-chars-forward " \t\r\n\f")
       (forward-line 1)
       (beginning-of-line)
@@ -365,10 +374,8 @@ See lp:1066489 "
          (thisend (copy-marker
                    (progn
                      (goto-char thisbeg)
-		     ;; (py-end-of-string)
-		     (forward-char 1)
+		     (py--skip-raw-string-front-fence)
 		     (skip-syntax-forward "^\|")
-		     (skip-chars-forward "\"'")
                      (point))))
          (parabeg (progn (goto-char orig) (py--beginning-of-paragraph-position)))
          (paraend (progn (goto-char orig) (py--end-of-paragraph-position)))
@@ -380,7 +387,7 @@ See lp:1066489 "
          first-line-p)
     ;;    (narrow-to-region beg end)
     (goto-char beg)
-    (setq first-line-p (member (char-after) (list ?\" ?\')))
+    (setq first-line-p (member (char-after) (list ?\" ?\' ?u ?U ?r ?R)))
     (cond ((string-match (concat "^" py-labelled-re) (buffer-substring-no-properties beg end))
            (py-fill-labelled-string beg end))
           (first-line-p

@@ -153,7 +153,7 @@ def foo():
 
 (ert-deftest py-ert-fill-comment-test ()
   (py-test-with-temp-buffer-point-min
- 
+
 "class Foo(Bar):
     def baz(self):
         # Given a winning upgrade path, we can ceiling the maximum image number from that path to be applied.  This is useful for image testing purposes.  XXX
@@ -191,6 +191,34 @@ def foo():
     (setq py-indent-paren-spanned-multilines-p t)
     (should (eq 12 (py-compute-indentation))))))
 
+
+;; (ert-deftest py-raw-docstring-test-1 ()
+;;   (py-test-with-temp-buffer-point-min
+;;       "def f():
+;;     r\"\"\" This is the docstring for my function.It's a raw docstring because I want to type \\t here, and maybe \\n,for example in LaTeX code like \\tau or \\nu.
+
+;; More docstring here.
+;; \"\"\"
+;;  pass"
+;;     (search-forward "docstring")
+;;     (py-backward-statement)
+;;     (sit-for 0.1)
+;;     (should (eq (char-after) ?r))))
+
+(ert-deftest py-raw-docstring-test-2 ()
+  (py-test-with-temp-buffer-point-min
+      "def f():
+    r\"\"\" This is the docstring for my function.It's a raw docstring because I want to type \\t here, and maybe \\n,for example in LaTeX code like \\tau or \\nu.
+
+More docstring here.
+\"\"\"
+ pass"
+    (let ((py-docstring-style 'pep-257-nn))
+      (search-forward "docstring")
+      (fill-paragraph)
+      (forward-line 1)
+      (skip-chars-forward " \t\r\n\f") 
+      (should (eq 4 (current-indentation))))))
 
 (provide 'py-ert-tests-3)
 ;;; py-ert-tests-3.el ends here

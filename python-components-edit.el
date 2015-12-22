@@ -445,12 +445,14 @@ downwards from beginning of block followed by a statement. Otherwise default-val
     erg))
 
 ;; ;
-(defun py-indent-and-forward ()
-  "Indent current line according to mode, move one line forward. "
+(defun py-indent-and-forward (&optional indent)
+  "Indent current line according to mode, move one line forward.
+
+If optional INDENT is given, use it"
   (interactive "*")
   (beginning-of-line)
   (fixup-whitespace)
-  (indent-to (py-compute-indentation))
+  (indent-to (or indent (py-compute-indentation)))
   (if (eobp)
       (newline-and-indent)
     (forward-line 1))
@@ -461,7 +463,7 @@ downwards from beginning of block followed by a statement. Otherwise default-val
 
 Starts from second line of region specified"
   (goto-char beg)
-  (forward-line 1)
+  ;; (forward-line 1)
   (while (< (point) end)
     (if (empty-line-p)
 	(forward-line 1)
@@ -481,20 +483,21 @@ In order to shift a chunk of code, where the first line is okay, start with seco
   (let ((orig (copy-marker (point)))
         (beg start)
         (end (copy-marker end))
-	indent need)
+	need)
     (goto-char beg)
     (beginning-of-line)
     (setq beg (point))
     (skip-chars-forward " \t\r\n\f")
-    (if (eq 4 (prefix-numeric-value line-by-line))
-	(py--indent-line-by-line beg end)
-      ;; (unless (empty-line-p) (py-indent-line nil t))
-      (setq indent (py-compute-indentation))
-      (setq need (- indent (current-indentation)))
-      (if (< 0 (abs need))
-	  (indent-rigidly beg end need)
-	(py--indent-line-by-line beg end))
-      (goto-char orig))))
+    (py--indent-line-by-line beg end)
+    ;; (if (eq 4 (prefix-numeric-value line-by-line))
+    ;; 	(py--indent-line-by-line beg end)
+    ;;   (setq need (py-compute-indentation))
+    ;;   (if (< 0 (abs need))
+    ;; 	  (indent-region beg end need)
+    ;; 	(py--indent-line-by-line beg end))
+    ;;   (goto-char orig))
+    )
+  )
 
 (defun py--beginning-of-buffer-position ()
   (point-min))

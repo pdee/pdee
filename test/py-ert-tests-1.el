@@ -1003,70 +1003,40 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
         datei.write(str(baz[i]) + \"\\n\")
 "
    (search-forward "True")
-   (py-indent-region (line-beginning-position) (point-max))
+   (save-excursion
+     (py-indent-region (line-beginning-position) (point-max)))
    (should (eq 4 (current-indentation)))
    (search-forward "with file")
-   (should (eq 4 (current-indentation)))
-   (search-forward "for i ")
    (should (eq 8 (current-indentation)))
-   (search-forward "bar.")
+   (search-forward "for i ")
    (should (eq 12 (current-indentation)))
+   (search-forward "bar.")
+   (should (eq 16 (current-indentation)))
    (search-forward "datei.write")
-   (should (eq 12 (current-indentation)))))
+   (should (eq 16 (current-indentation)))))
 
 (ert-deftest indent-region-lp-997958-lp-1426903-no-arg-2-test ()
   "Keep indent of remaining block as first line was fixed. "
   (py-test-with-temp-buffer-point-min
    "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
-    def foo ():
-        if True:
-            print(123)
+def foo ():
+    if True:
+	print(123)
 
-    with file(\"foo\" + zeit + \".ending\", 'w') as datei:
-        for i in range(anzahl):
-            bar.dosomething()
-            datei.write(str(baz[i]) + \"\\n\")
+with file(\"foo\" + zeit + \".ending\", 'w') as datei:
+    for i in range(anzahl):
+	bar.dosomething()
+	datei.write(str(baz[i]) + \"\\n\")
 "
-   (search-forward "def foo")
-   (py-indent-region (line-beginning-position) (point-max))
-   (search-forward "True")
-   (should (eq 4 (current-indentation)))
-   (search-forward "with file")
-   (should (eq 0 (current-indentation)))
    (search-forward "for i ")
+   (save-excursion
+     (py-indent-region (line-beginning-position) (point-max)))
    (should (eq 4 (current-indentation)))
    (search-forward "bar.")
    (should (eq 8 (current-indentation)))
    (search-forward "datei.write")
    (should (eq 8 (current-indentation)))))
-
-(ert-deftest indent-region-lp-997958-lp-1426903-no-arg-3-test ()
-  "Indent line-by-line as first line is okay "
-  (py-test-with-temp-buffer-point-min
-   "#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-def foo ():
-if True:
-    print(123)
-
-with file(\"foo\" + zeit + \".ending\", 'w') as datei:
-    for i in range(anzahl):
-        bar.dosomething()
-        # also wrong indent needs to be preserved here
-            datei.write(str(baz[i]) + \"\\n\")
-"
-   (search-forward "True")
-   (py-indent-region (line-beginning-position) (point-max))
-   (should (eq 4 (current-indentation)))
-   (search-forward "with file")
-   (should (eq 4 (current-indentation)))
-   (search-forward "for i ")
-   (should (eq 8 (current-indentation)))
-   (search-forward "bar.")
-   (should (eq 12 (current-indentation)))
-   (search-forward "datei.write")
-   (should (eq 16 (current-indentation)))))
 
 (ert-deftest indent-region-lp-997958-lp-1426903-arg-1-test ()
   (py-test-with-temp-buffer
@@ -1096,7 +1066,7 @@ datei.write(str(baz[i]) + \"\\n\")
 (ert-deftest indent-region-lp-997958-lp-1426903-arg-2-test ()
   "Indent line-by-line as first line is okay "
   (py-test-with-temp-buffer-point-min
-   "#! /usr/bin/env python
+      "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     for i in range(anzahl):
@@ -1105,15 +1075,16 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
         # wrong indent should to be fixed
             datei.write(str(baz[i]) + \"\\n\")
 "
-   (search-forward "with file")
-   (py-indent-region (line-beginning-position) (point-max))
-   (should (eq 0 (current-indentation)))
-   (search-forward "for i ")
-   (should (eq 4 (current-indentation)))
-   (search-forward "bar.")
-   (should (eq 8 (current-indentation)))
-   (search-forward "datei.write")
-   (should (eq 8 (current-indentation)))))
+    (search-forward "with file")
+    (save-excursion
+      (py-indent-region (line-beginning-position) (point-max)))
+    (should (eq 0 (current-indentation)))
+    (search-forward "for i ")
+    (should (eq 4 (current-indentation)))
+    (search-forward "bar.")
+    (should (eq 8 (current-indentation)))
+    (search-forward "datei.write")
+    (should (eq 8 (current-indentation)))))
 
 (ert-deftest py--pdb-versioned-test ()
   (py-test-with-temp-buffer

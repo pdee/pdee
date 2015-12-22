@@ -212,7 +212,7 @@ computing indents"
          ((and (bolp)(eolp))
           (skip-chars-backward " \t\r\n\f")
           (py-backward-statement orig done limit ignore-in-string-p))
-	  ;; inside string
+	 ;; inside string
          ((and (nth 3 pps)(not ignore-in-string-p))
 	  (setq done t)
 	  (goto-char (nth 8 pps))
@@ -231,6 +231,11 @@ computing indents"
           (back-to-indentation)
           (setq done t)
           (py-backward-statement orig done limit ignore-in-string-p))
+	 ;; at raw-string
+	 ;; (and (looking-at "\"\"\"\\|'''") (member (char-before) (list ?u ?U ?r ?R)))
+	 ((py--at-raw-string)
+	  (forward-char -1)
+	  (py-backward-statement orig done limit ignore-in-string-p))
 	 ;; BOL or at space before comment
          ((and (looking-at "[ \t]*#")(looking-back "^[ \t]*"))
           (forward-comment -1)

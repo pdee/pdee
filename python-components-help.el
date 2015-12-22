@@ -208,25 +208,25 @@ not inside a defun."
     (if erg
 	(progn (push-mark orig)(push-mark (point))
 	       (when (and (called-interactively-p 'any) py-verbose-p) (message "Jump to previous position with %s" "C-u C-<SPC> C-u C-<SPC>")))
-      (goto-char orig)
-      (when cmd
-	(setq cmd (mapconcat
-		   (lambda (arg) (concat "try: " arg "\nexcept: pass\n"))
-		   (split-string cmd ";" t)
-		   "")))
-      (setq cmd (concat "import pydoc\n"
-			cmd))
-      (when (not py-remove-cwd-from-path)
-	(setq cmd (concat cmd "import sys\n"
-			  "sys.path.insert(0, '"
-			  (file-name-directory origfile) "')\n")))
-      (setq cmd (concat cmd "pydoc.help('" sym "')\n"))
-      (with-temp-buffer
-	(insert cmd)
-	(write-file file))
-      (py-process-file file "*Python-Help*")
-      (when (file-readable-p file)
-	(unless py-debug-p (delete-file file))))))
+      (goto-char orig))
+    ;; (when cmd
+    ;;   (setq cmd (mapconcat
+    ;; 		 (lambda (arg) (concat "try: " arg "\nexcept: pass\n"))
+    ;; 		 (split-string cmd ";" t)
+    ;; 		 "")))
+    (setq cmd (concat cmd "\nimport pydoc\n"
+		      ))
+    (when (not py-remove-cwd-from-path)
+      (setq cmd (concat cmd "import sys\n"
+			"sys.path.insert(0, '"
+			(file-name-directory origfile) "')\n")))
+    (setq cmd (concat cmd "pydoc.help('" sym "')\n"))
+    (with-temp-buffer
+      (insert cmd)
+      (write-file file))
+    (py-process-file file "*Python-Help*")
+    (when (file-readable-p file)
+      (unless py-debug-p (delete-file file)))))
 
 (defun py-help-at-point ()
   "Print help on symbol at point.
@@ -236,17 +236,17 @@ If symbol is defined in current buffer, jump to it's definition"
   (let ((orig (point)))
     ;; avoid repeated call at identic pos
     (unless (eq orig (ignore-errors py-last-position))
-      (setq py-last-position orig)
-      (unless (member (get-buffer-window "*Python-Help*")(window-list))
-	(window-configuration-to-register py-windows-config-register))
-      (and (looking-back "(")(not (looking-at "\\sw")) (forward-char -1))
-      (if (or (not (face-at-point)) (eq (face-at-point) 'font-lock-string-face)(eq (face-at-point) 'font-lock-comment-face)(eq (face-at-point) 'default))
-	  (progn
-	    (py-restore-window-configuration)
-	    (goto-char orig))
-	(if (or (< 0 (abs (skip-chars-backward "a-zA-Z0-9_." (line-beginning-position))))(looking-at "\\sw"))
-	    (py--help-at-point-intern)
-	  (py-restore-window-configuration))))))
+      (setq py-last-position orig))
+    (unless (member (get-buffer-window "*Python-Help*")(window-list))
+      (window-configuration-to-register py-windows-config-register))
+    (and (looking-back "(")(not (looking-at "\\sw")) (forward-char -1))
+    (if (or (not (face-at-point)) (eq (face-at-point) 'font-lock-string-face)(eq (face-at-point) 'font-lock-comment-face)(eq (face-at-point) 'default))
+	(progn
+	  (py-restore-window-configuration)
+	  (goto-char orig))
+      (if (or (< 0 (abs (skip-chars-backward "a-zA-Z0-9_." (line-beginning-position))))(looking-at "\\sw"))
+	  (py--help-at-point-intern)
+	(py-restore-window-configuration)))))
 
 ;;  Documentation functions
 

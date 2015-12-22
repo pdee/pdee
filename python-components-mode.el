@@ -2814,6 +2814,10 @@ Used by `py-ipython-module-completion-string'"
 	(write-file setup-file)))
     (py--execute-file-base nil setup-file nil (current-buffer))))
 
+(defun py--at-raw-string ()
+  "If at beginning of a raw-string. "
+  (looking-at "\"\"\"\\|'''") (member (char-before) (list ?u ?U ?r ?R)))
+
 (defun py--docstring-p (&optional beginning-of-string-position)
   "Check to see if there is a docstring at POS."
   (let* (pps
@@ -2823,6 +2827,9 @@ Used by `py-ipython-module-completion-string'"
       (widen)
       (save-excursion
 	(goto-char pos)
+	(when (py--at-raw-string)
+	  (forward-char -1)
+	  (setq pos (point)))
 	(when (py-backward-statement)
 	  (when (looking-at py-def-or-class-re)
 	    pos))))))

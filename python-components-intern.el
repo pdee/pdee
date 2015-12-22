@@ -613,24 +613,28 @@ Use `defcustom' to keep value across sessions "
     (looking-at "\\s-*$")))
 
 (defun py--compute-indentation-in-string (pps)
-  (cond
-   ((py--docstring-p)
-    (save-excursion
-      (py-backward-statement (point) nil (nth 8 pps) t)
-      (current-indentation)))
-   ;; still at original line
-   ((eq origline (line-end-position))
-    (forward-line -1)
-    (end-of-line)
-    (skip-chars-backward " \t\r\n\f")
-    (if (ignore-errors (< (nth 8 (parse-partial-sexp (point-min) (point))) (line-beginning-position)))
-	(current-indentation)
-      (ignore-errors (goto-char (nth 8 pps)))
-      (when (py--line-backward-maybe) (setq line t))
-      (back-to-indentation)
-      (py-compute-indentation orig origline closing line nesting repeat indent-offset liep)))
-   (t (goto-char (nth 8 pps))
-      (current-indentation))))
+  (save-restriction
+    ;; (narrow-to-region (nth 8 pps) (point))
+    (cond
+     ((py--docstring-p)
+      (save-excursion
+	(back-to-indentation)
+	(skip-chars-backward " \t\r\n\f")
+	(back-to-indentation) 
+	(current-indentation)))
+     ;; still at original line
+     ((eq origline (line-end-position))
+      (forward-line -1)
+      (end-of-line)
+      (skip-chars-backward " \t\r\n\f")
+      (if (ignore-errors (< (nth 8 (parse-partial-sexp (point-min) (point))) (line-beginning-position)))
+	  (current-indentation)
+	(ignore-errors (goto-char (nth 8 pps)))
+	(when (py--line-backward-maybe) (setq line t))
+	(back-to-indentation)
+	(py-compute-indentation orig origline closing line nesting repeat indent-offset liep)))
+     (t (goto-char (nth 8 pps))
+	(current-indentation)))))
 
 (defalias 'py-count-indentation 'py-compute-indentation)
 (defun py-compute-indentation (&optional orig origline closing line nesting repeat indent-offset liep)
