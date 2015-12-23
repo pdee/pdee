@@ -255,12 +255,19 @@ More docstring here.
     (py-forward-indent)
     (should (eq (char-before) ?s))
     (py-forward-indent)
-    (should (eq (char-before) ?:))
-    ;; (py-forward-indent)
-    ;; (should (eq (char-before) ?s))
-    ))
-    
-    
+    (should (eq (char-before) ?:))))
+
+
+(ert-deftest py-beginning-of-indent-test ()
+  (py-test-with-temp-buffer-point-min
+      "class A(object):
+    def a(self):
+        sdfasde
+        pass"
+    (search-forward "sdfasde")
+    (should (not (py--beginning-of-indent-p)))
+    (back-to-indentation) 
+    (should (py--beginning-of-indent-p))))
 
 
 (provide 'py-ert-tests-3)

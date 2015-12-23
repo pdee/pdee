@@ -174,6 +174,18 @@
           (setq erg orig)))
       erg)))
 
+(defun py--beginning-of-indent-p ()
+  "Returns position, if cursor is at the beginning of a `indent', nil otherwise. "
+  (let ((orig (point))
+        erg)
+    (save-excursion
+      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p))))
+        (py-forward-indent)
+        (py-backward-indent)
+        (when (eq orig (point))
+          (setq erg orig)))
+      erg)))
+
 (defun py--beginning-of-minor-block-p ()
   "Returns position, if cursor is at the beginning of a `minor-block', nil otherwise. "
   (let ((orig (point))

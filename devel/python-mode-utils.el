@@ -189,6 +189,7 @@
        "expression"
        "for-block"
        "if-block"
+       "indent"
        "minor-block"
        "partial-expression"
        "section"
