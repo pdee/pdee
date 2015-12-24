@@ -2914,8 +2914,9 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
 
 Store data in kill ring, so it might yanked back. \"
   (interactive \"\*\")
-  (let ((erg (py--mark-base-bol \"" ele "\")))
-    (copy-region-as-kill (car erg) (cdr erg))))\n")))
+  (save-excursion 
+    (let ((erg (py--mark-base-bol \"" ele "\")))
+      (copy-region-as-kill (car erg) (cdr erg)))))\n")))
 
     (dolist (ele forms)
       (unless (string= "section" ele)
@@ -2925,8 +2926,9 @@ Store data in kill ring, so it might yanked back. \"
 
 Stores data in kill ring. Might be yanked back using `C-y'. \"
   (interactive \"\*\")
-  (let ((erg (py--mark-base-bol \"" ele "\")))
-    (copy-region-as-kill (car erg) (cdr erg))))
+  (save-excursion 
+    (let ((erg (py--mark-base-bol \"" ele "\")))
+      (copy-region-as-kill (car erg) (cdr erg))))
 ")))))
   (insert "\n(provide 'python-components-copy-forms)
 ;; python-components-copy-forms.el ends here\n")

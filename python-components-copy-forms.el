@@ -31,256 +31,288 @@
 
 Store data in kill ring, so it might yanked back. "
   (interactive "*")
-  (let ((erg (py--mark-base-bol "block")))
-    (copy-region-as-kill (car erg) (cdr erg))))
+  (save-excursion
+    (let ((erg (py--mark-base-bol "block")))
+      (copy-region-as-kill (car erg) (cdr erg)))))
 
 (defun py-copy-block-or-clause ()
   "Copy block-or-clause at point.
 
 Store data in kill ring, so it might yanked back. "
   (interactive "*")
-  (let ((erg (py--mark-base-bol "block-or-clause")))
-    (copy-region-as-kill (car erg) (cdr erg))))
+  (save-excursion
+    (let ((erg (py--mark-base-bol "block-or-clause")))
+      (copy-region-as-kill (car erg) (cdr erg)))))
 
 (defun py-copy-buffer ()
   "Copy buffer at point.
 
 Store data in kill ring, so it might yanked back. "
   (interactive "*")
-  (let ((erg (py--mark-base-bol "buffer")))
-    (copy-region-as-kill (car erg) (cdr erg))))
+  (save-excursion
+    (let ((erg (py--mark-base-bol "buffer")))
+      (copy-region-as-kill (car erg) (cdr erg)))))
 
 (defun py-copy-class ()
   "Copy class at point.
 
 Store data in kill ring, so it might yanked back. "
   (interactive "*")
-  (let ((erg (py--mark-base-bol "class")))
-    (copy-region-as-kill (car erg) (cdr erg))))
+  (save-excursion
+    (let ((erg (py--mark-base-bol "class")))
+      (copy-region-as-kill (car erg) (cdr erg)))))
 
 (defun py-copy-clause ()
   "Copy clause at point.
 
 Store data in kill ring, so it might yanked back. "
   (interactive "*")
-  (let ((erg (py--mark-base-bol "clause")))
-    (copy-region-as-kill (car erg) (cdr erg))))
+  (save-excursion
+    (let ((erg (py--mark-base-bol "clause")))
+      (copy-region-as-kill (car erg) (cdr erg)))))
 
 (defun py-copy-def ()
   "Copy def at point.
 
 Store data in kill ring, so it might yanked back. "
   (interactive "*")
-  (let ((erg (py--mark-base-bol "def")))
-    (copy-region-as-kill (car erg) (cdr erg))))
+  (save-excursion
+    (let ((erg (py--mark-base-bol "def")))
+      (copy-region-as-kill (car erg) (cdr erg)))))
 
 (defun py-copy-def-or-class ()
   "Copy def-or-class at point.
 
 Store data in kill ring, so it might yanked back. "
   (interactive "*")
-  (let ((erg (py--mark-base-bol "def-or-class")))
-    (copy-region-as-kill (car erg) (cdr erg))))
+  (save-excursion
+    (let ((erg (py--mark-base-bol "def-or-class")))
+      (copy-region-as-kill (car erg) (cdr erg)))))
 
 (defun py-copy-expression ()
   "Copy expression at point.
 
 Store data in kill ring, so it might yanked back. "
   (interactive "*")
-  (let ((erg (py--mark-base-bol "expression")))
-    (copy-region-as-kill (car erg) (cdr erg))))
+  (save-excursion
+    (let ((erg (py--mark-base-bol "expression")))
+      (copy-region-as-kill (car erg) (cdr erg)))))
 
 (defun py-copy-indent ()
   "Copy indent at point.
 
 Store data in kill ring, so it might yanked back. "
   (interactive "*")
-  (let ((erg (py--mark-base-bol "indent")))
-    (copy-region-as-kill (car erg) (cdr erg))))
+  (save-excursion
+    (let ((erg (py--mark-base-bol "indent")))
+      (copy-region-as-kill (car erg) (cdr erg)))))
 
 (defun py-copy-line ()
   "Copy line at point.
 
 Store data in kill ring, so it might yanked back. "
   (interactive "*")
-  (let ((erg (py--mark-base-bol "line")))
-    (copy-region-as-kill (car erg) (cdr erg))))
+  (save-excursion
+    (let ((erg (py--mark-base-bol "line")))
+      (copy-region-as-kill (car erg) (cdr erg)))))
 
 (defun py-copy-minor-block ()
   "Copy minor-block at point.
 
 Store data in kill ring, so it might yanked back. "
   (interactive "*")
-  (let ((erg (py--mark-base-bol "minor-block")))
-    (copy-region-as-kill (car erg) (cdr erg))))
+  (save-excursion
+    (let ((erg (py--mark-base-bol "minor-block")))
+      (copy-region-as-kill (car erg) (cdr erg)))))
 
 (defun py-copy-paragraph ()
   "Copy paragraph at point.
 
 Store data in kill ring, so it might yanked back. "
   (interactive "*")
-  (let ((erg (py--mark-base-bol "paragraph")))
-    (copy-region-as-kill (car erg) (cdr erg))))
+  (save-excursion
+    (let ((erg (py--mark-base-bol "paragraph")))
+      (copy-region-as-kill (car erg) (cdr erg)))))
 
 (defun py-copy-partial-expression ()
   "Copy partial-expression at point.
 
 Store data in kill ring, so it might yanked back. "
   (interactive "*")
-  (let ((erg (py--mark-base-bol "partial-expression")))
-    (copy-region-as-kill (car erg) (cdr erg))))
+  (save-excursion
+    (let ((erg (py--mark-base-bol "partial-expression")))
+      (copy-region-as-kill (car erg) (cdr erg)))))
 
 (defun py-copy-region ()
   "Copy region at point.
 
 Store data in kill ring, so it might yanked back. "
   (interactive "*")
-  (let ((erg (py--mark-base-bol "region")))
-    (copy-region-as-kill (car erg) (cdr erg))))
+  (save-excursion
+    (let ((erg (py--mark-base-bol "region")))
+      (copy-region-as-kill (car erg) (cdr erg)))))
 
 (defun py-copy-statement ()
   "Copy statement at point.
 
 Store data in kill ring, so it might yanked back. "
   (interactive "*")
-  (let ((erg (py--mark-base-bol "statement")))
-    (copy-region-as-kill (car erg) (cdr erg))))
+  (save-excursion
+    (let ((erg (py--mark-base-bol "statement")))
+      (copy-region-as-kill (car erg) (cdr erg)))))
 
 (defun py-copy-top-level ()
   "Copy top-level at point.
 
 Store data in kill ring, so it might yanked back. "
   (interactive "*")
-  (let ((erg (py--mark-base-bol "top-level")))
-    (copy-region-as-kill (car erg) (cdr erg))))
+  (save-excursion
+    (let ((erg (py--mark-base-bol "top-level")))
+      (copy-region-as-kill (car erg) (cdr erg)))))
 
 (defun py-copy-block-bol ()
   "Delete block bol at point.
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (let ((erg (py--mark-base-bol "block")))
-    (copy-region-as-kill (car erg) (cdr erg))))
+  (save-excursion
+    (let ((erg (py--mark-base-bol "block")))
+      (copy-region-as-kill (car erg) (cdr erg)))))
 
 (defun py-copy-block-or-clause-bol ()
   "Delete block-or-clause bol at point.
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (let ((erg (py--mark-base-bol "block-or-clause")))
-    (copy-region-as-kill (car erg) (cdr erg))))
+  (save-excursion
+    (let ((erg (py--mark-base-bol "block-or-clause")))
+      (copy-region-as-kill (car erg) (cdr erg)))))
 
 (defun py-copy-buffer-bol ()
   "Delete buffer bol at point.
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (let ((erg (py--mark-base-bol "buffer")))
-    (copy-region-as-kill (car erg) (cdr erg))))
+  (save-excursion
+    (let ((erg (py--mark-base-bol "buffer")))
+      (copy-region-as-kill (car erg) (cdr erg)))))
 
 (defun py-copy-class-bol ()
   "Delete class bol at point.
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (let ((erg (py--mark-base-bol "class")))
-    (copy-region-as-kill (car erg) (cdr erg))))
+  (save-excursion
+    (let ((erg (py--mark-base-bol "class")))
+      (copy-region-as-kill (car erg) (cdr erg)))))
 
 (defun py-copy-clause-bol ()
   "Delete clause bol at point.
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (let ((erg (py--mark-base-bol "clause")))
-    (copy-region-as-kill (car erg) (cdr erg))))
+  (save-excursion
+    (let ((erg (py--mark-base-bol "clause")))
+      (copy-region-as-kill (car erg) (cdr erg)))))
 
 (defun py-copy-def-bol ()
   "Delete def bol at point.
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (let ((erg (py--mark-base-bol "def")))
-    (copy-region-as-kill (car erg) (cdr erg))))
+  (save-excursion
+    (let ((erg (py--mark-base-bol "def")))
+      (copy-region-as-kill (car erg) (cdr erg)))))
 
 (defun py-copy-def-or-class-bol ()
   "Delete def-or-class bol at point.
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (let ((erg (py--mark-base-bol "def-or-class")))
-    (copy-region-as-kill (car erg) (cdr erg))))
+  (save-excursion
+    (let ((erg (py--mark-base-bol "def-or-class")))
+      (copy-region-as-kill (car erg) (cdr erg)))))
 
 (defun py-copy-expression-bol ()
   "Delete expression bol at point.
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (let ((erg (py--mark-base-bol "expression")))
-    (copy-region-as-kill (car erg) (cdr erg))))
+  (save-excursion
+    (let ((erg (py--mark-base-bol "expression")))
+      (copy-region-as-kill (car erg) (cdr erg)))))
 
 (defun py-copy-indent-bol ()
   "Delete indent bol at point.
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (let ((erg (py--mark-base-bol "indent")))
-    (copy-region-as-kill (car erg) (cdr erg))))
+  (save-excursion
+    (let ((erg (py--mark-base-bol "indent")))
+      (copy-region-as-kill (car erg) (cdr erg)))))
 
 (defun py-copy-line-bol ()
   "Delete line bol at point.
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (let ((erg (py--mark-base-bol "line")))
-    (copy-region-as-kill (car erg) (cdr erg))))
+  (save-excursion
+    (let ((erg (py--mark-base-bol "line")))
+      (copy-region-as-kill (car erg) (cdr erg)))))
 
 (defun py-copy-minor-block-bol ()
   "Delete minor-block bol at point.
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (let ((erg (py--mark-base-bol "minor-block")))
-    (copy-region-as-kill (car erg) (cdr erg))))
+  (save-excursion
+    (let ((erg (py--mark-base-bol "minor-block")))
+      (copy-region-as-kill (car erg) (cdr erg)))))
 
 (defun py-copy-paragraph-bol ()
   "Delete paragraph bol at point.
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (let ((erg (py--mark-base-bol "paragraph")))
-    (copy-region-as-kill (car erg) (cdr erg))))
+  (save-excursion
+    (let ((erg (py--mark-base-bol "paragraph")))
+      (copy-region-as-kill (car erg) (cdr erg)))))
 
 (defun py-copy-partial-expression-bol ()
   "Delete partial-expression bol at point.
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (let ((erg (py--mark-base-bol "partial-expression")))
-    (copy-region-as-kill (car erg) (cdr erg))))
+  (save-excursion
+    (let ((erg (py--mark-base-bol "partial-expression")))
+      (copy-region-as-kill (car erg) (cdr erg)))))
 
 (defun py-copy-region-bol ()
   "Delete region bol at point.
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (let ((erg (py--mark-base-bol "region")))
-    (copy-region-as-kill (car erg) (cdr erg))))
+  (save-excursion
+    (let ((erg (py--mark-base-bol "region")))
+      (copy-region-as-kill (car erg) (cdr erg)))))
 
 (defun py-copy-statement-bol ()
   "Delete statement bol at point.
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (let ((erg (py--mark-base-bol "statement")))
-    (copy-region-as-kill (car erg) (cdr erg))))
+  (save-excursion
+    (let ((erg (py--mark-base-bol "statement")))
+      (copy-region-as-kill (car erg) (cdr erg)))))
 
 (defun py-copy-top-level-bol ()
   "Delete top-level bol at point.
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (let ((erg (py--mark-base-bol "top-level")))
-    (copy-region-as-kill (car erg) (cdr erg))))
+  (save-excursion
+    (let ((erg (py--mark-base-bol "top-level")))
+      (copy-region-as-kill (car erg) (cdr erg)))))
 
 (provide 'python-components-copy-forms)
 ;; python-components-copy-forms.el ends here
