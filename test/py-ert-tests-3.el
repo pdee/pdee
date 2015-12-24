@@ -258,7 +258,7 @@ More docstring here.
     (should (eq (char-before) ?:))))
 
 
-(ert-deftest py-beginning-of-indent-test ()
+(ert-deftest py-beginning-of-indent-p-test ()
   (py-test-with-temp-buffer-point-min
       "class A(object):
     def a(self):

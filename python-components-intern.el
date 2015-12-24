@@ -620,7 +620,7 @@ Use `defcustom' to keep value across sessions "
       (save-excursion
 	(back-to-indentation)
 	(skip-chars-backward " \t\r\n\f")
-	(back-to-indentation) 
+	(back-to-indentation)
 	(current-indentation)))
      ;; still at original line
      ((eq origline (line-end-position))

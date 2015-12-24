@@ -108,6 +108,7 @@
        "def"
        "def-or-class"
        "expression"
+       "indent"
        "line"
        "minor-block"
        "paragraph"
@@ -399,6 +400,7 @@
        "def-or-class"
        "for-block"
        "if-block"
+       "indent"
        "minor-block"
        "statement"
        "try-block"
@@ -2748,6 +2750,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
 	(emacs-lisp-mode))
   (write-file (concat py-install-directory "/python-components-booleans-beginning-forms.el")))
 
+
 (defun py-write-booleans-end-forms ()
   "Uses `py-booleans-end-forms'. "
   (interactive)
@@ -2911,7 +2914,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
 
 Store data in kill ring, so it might yanked back. \"
   (interactive \"\*\")
-  (let ((erg (py--mark-base \"" ele "\")))
+  (let ((erg (py--mark-base-bol \"" ele "\")))
     (copy-region-as-kill (car erg) (cdr erg))))\n")))
 
     (dolist (ele forms)

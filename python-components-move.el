@@ -46,6 +46,30 @@ Returns final position when called from inside section, nil otherwise"
       (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
       erg)))
 
+(defun py--travel-this-indent-backward-bol ()
+  (while (and (py-backward-statement-bol)
+	      (or indent (setq indent (current-indentation)))
+	      (eq indent (current-indentation))(setq erg (point)) (not (bobp))))
+  (when erg (goto-char erg)))
+
+(defun py-backward-indent-bol ()
+  "Go to the beginning of line of a section of equal indent.
+
+If already at the beginning or before an indent, go to next indent in buffer upwards
+Returns final position when called from inside section, nil otherwise"
+  (interactive)
+  (unless (bobp)
+    (let ((orig (point))
+	  (indent (when (eq (current-indentation) (current-column)) (current-column)))
+
+	  erg)
+      (py--travel-this-indent-backward-bol)
+      (when erg (goto-char erg)
+	    (beginning-of-line)
+	    (setq erg (point)))
+      (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
+      erg)))
+
 (defun py--travel-this-indent-forward ()
   (while (and (py-down-statement)
 	      (or indent (eq indent (current-indentation)))
@@ -66,7 +90,30 @@ Returns final position when called from inside section, nil otherwise"
 	  (setq indent (and (py-backward-statement)(current-indentation)))))
       (py--travel-this-indent-forward)
       (when erg (goto-char erg))
+      (unless (eolp) (setq erg (py-forward-statement)))
       (when (eq (current-column) (current-indentation)) (py-end-of-statement))
+      (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
+      erg)))
+
+(defun py-forward-indent-bol ()
+  "Go to beginning of line following of a section of equal indentation.
+
+If already at the end, go down to next indent in buffer
+Returns final position when called from inside section, nil otherwise"
+  (interactive)
+  (unless (eobp)
+    (let ((orig (point))
+	  erg indent)
+      (when (py-forward-statement)
+	(save-excursion
+	  (setq erg (point))
+	  (setq indent (and (py-backward-statement)(current-indentation)))))
+      (py--travel-this-indent-forward)
+      (when erg (goto-char erg)
+	    (unless (eolp) (setq erg (py-forward-statement))))
+      (when erg
+	(when (eq (current-column) (current-indentation)) (py-end-of-statement))
+	(unless (eobp) (forward-line 1) (beginning-of-line)))
       (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
       erg)))
 
@@ -322,17 +369,20 @@ computing indents"
 
 See also `py-up-statement': up from current definition to next beginning of statement above. "
   (interactive)
-  (let* ((indent (or indent (when (eq 'py-forward-statement-bol (car
-  py-bol-forms-last-indent))(cdr py-bol-forms-last-indent))))
-	 (orig (point))
+  (let* ((orig (point))
          erg)
-    (if indent
-        (while (and (setq erg (py-backward-statement)) (< indent (current-indentation))(not (bobp))))
-      (setq erg (py-backward-statement)))
-    ;; reset
-    (setq py-bol-forms-last-indent nil)
-    (beginning-of-line)
-    (and (< (point) orig) (setq erg (point)))
+    (unless (bobp)
+      (cond ((bolp)
+	     (and (py-backward-statement orig)
+		  (progn (beginning-of-line)
+			 (setq erg (point)))))
+	    ((py--beginning-of-statement-p)
+	     (beginning-of-line)
+	     (setq erg (point)))
+	    (t (setq erg
+		     (and
+		      (py-backward-statement)
+		      (progn (beginning-of-line) (point)))))))
     (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
