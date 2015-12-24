@@ -9,6 +9,8 @@ New in version 6.2.2
     Go to the beginning of a section of equal indent
   - py-forward-indent
     Go to the end of a section of equal indentation
+  - py-copy-indent
+  - py-delete-indent
 
 
 - Make $PYTHONPATH configurable from Emacs

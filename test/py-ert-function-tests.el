@@ -1215,33 +1215,6 @@
 (ert-deftest py-ert-delete-minor-block-functionp-test ()
   (should (functionp 'py-delete-minor-block)))
 
-(ert-deftest py-ert-delete-paragraph-bol-functionp-test ()
-  (should (functionp 'py-delete-paragraph-bol)))
-
-(ert-deftest py-ert-delete-block-bol-functionp-test ()
-  (should (functionp 'py-delete-block-bol)))
-
-(ert-deftest py-ert-delete-minor-block-bol-functionp-test ()
-  (should (functionp 'py-delete-minor-block-bol)))
-
-(ert-deftest py-ert-delete-clause-bol-functionp-test ()
-  (should (functionp 'py-delete-clause-bol)))
-
-(ert-deftest py-ert-delete-block-or-clause-bol-functionp-test ()
-  (should (functionp 'py-delete-block-or-clause-bol)))
-
-(ert-deftest py-ert-delete-def-bol-functionp-test ()
-  (should (functionp 'py-delete-def-bol)))
-
-(ert-deftest py-ert-delete-class-bol-functionp-test ()
-  (should (functionp 'py-delete-class-bol)))
-
-(ert-deftest py-ert-delete-def-or-class-bol-functionp-test ()
-  (should (functionp 'py-delete-def-or-class-bol)))
-
-(ert-deftest py-ert-delete-statement-bol-functionp-test ()
-  (should (functionp 'py-delete-statement-bol)))
-
 (ert-deftest py-ert--beginning-of-statement-position-functionp-test ()
   (should (functionp 'py--beginning-of-statement-position)))
 

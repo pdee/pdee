@@ -118,6 +118,28 @@
        "top-level"
        ))
 
+(setq py-bol-forms
+      (list
+       "block"
+       "block-or-clause"
+       "class"
+       "clause"
+       "def"
+       "def-or-class"
+       "indent"
+       "minor-block"
+       "statement"
+       ))
+
+(setq py-non-bol-forms
+      (list
+       "line"
+       "paragraph"
+       "expression"
+       "partial-expression"
+       "top-level"
+       ))
+
 (setq py-extra-execute-forms
       (list
        "try-block"
@@ -2928,7 +2950,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
   (interactive \"\*\")
   (save-excursion 
     (let ((erg (py--mark-base-bol \"" ele "\")))
-      (copy-region-as-kill (car erg) (cdr erg))))
+      (copy-region-as-kill (car erg) (cdr erg)))))
 ")))))
   (insert "\n(provide 'python-components-copy-forms)
 ;; python-components-copy-forms.el ends here\n")
@@ -2938,18 +2960,14 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
 
 (defun py--write-delete-forms (forms)
   (dolist (ele forms)
-    (if (string-match "def\\|class" ele)
-	(insert (concat "
-\(defun py-delete-" ele " (&optional arg)"))
-      (insert (concat "
-\(defun py-delete-" ele " ()")))
+    (insert (concat "
+\(defun py-delete-" ele " ()"))
     (insert (concat "
   \"Delete " (upcase ele) " at point.
 
 \Don't store data in kill ring. "))
-    (if (string-match "def\\|class" ele)
-	(insert "\nWith \\\\[universal-argument] or `py-mark-decorators' set to `t', `decorators' are included.\"")
-      (insert "\""))
+    (insert "\"")
+
     (if (string-match "def\\|class" ele)
 	(insert "\n  (interactive \"P\")")
       (insert "\n  (interactive)"))
@@ -2965,9 +2983,9 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
   (dolist (ele forms)
     (if (string-match "def\\|class" ele)
 	(insert (concat "
-\(defun py-delete-" ele "-bol (&optional arg)"))
+\(defun py-delete-" ele " (&optional arg)"))
       (insert (concat "
-\(defun py-delete-" ele "-bol ()")))
+\(defun py-delete-" ele " ()")))
     (insert (concat "
   \"Delete " (upcase ele) " at point until beginning-of-line.
 
@@ -2982,7 +3000,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
 	(insert (concat "\n (let* ((py-mark-decorators (or arg py-mark-decorators))
         (erg (py--mark-base \"" ele "\" py-mark-decorators)))"))
       (insert (concat
-	       "\n  (let ((erg (py--mark-base \"" ele "\")))")))
+	       "\n  (let ((erg (py--mark-base-bol \"" ele "\")))")))
     (insert "
     (delete-region (car erg) (cdr erg))))\n")))
 
@@ -2993,8 +3011,8 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
   (erase-buffer)
   (insert ";;; python-components-delete-forms.el --- delete forms\n")
   (insert arkopf)
-  (py--write-delete-forms py-execute-forms)
-  (py--write-delete-forms-bol py-shift-bol-forms)
+  (py--write-delete-forms-bol py-bol-forms)
+  (py--write-delete-forms py-non-bol-forms)
   (insert "\n(provide 'python-components-delete-forms)
 ;; python-components-delete-forms.el ends here\n")
   (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))

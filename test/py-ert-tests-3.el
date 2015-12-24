@@ -266,8 +266,32 @@ More docstring here.
         pass"
     (search-forward "sdfasde")
     (should (not (py--beginning-of-indent-p)))
-    (back-to-indentation) 
+    (back-to-indentation)
     (should (py--beginning-of-indent-p))))
+
+(ert-deftest py-copy-indent-test ()
+  (py-test-with-temp-buffer-point-min
+      "class A(object):
+    def a(self):
+        sdfasde
+        pass"
+    (search-forward "sdfasde")
+    (py-copy-indent)
+    (should (not (py--beginning-of-indent-p)))
+    (back-to-indentation)
+    (should (py--beginning-of-indent-p))))
+
+(ert-deftest py-delete-indent-test ()
+  (py-test-with-temp-buffer-point-min
+      "class A(object):
+    def a(self):
+        sdfasde
+        pass"
+    (search-forward "sdfasde")
+    (py-delete-indent)
+    (should (eobp))
+    (should (bolp))))
+
 
 
 (provide 'py-ert-tests-3)
