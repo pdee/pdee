@@ -24,7 +24,6 @@
 (add-to-list 'load-path default-directory)
 (load "py-ert-tests-1.el" nil t)
 
-
 ;; py-if-name-main-permission-p
 (ert-deftest py-ert-if-name-main-permission-lp-326620-test ()
   (py-test-with-temp-buffer-point-min
@@ -49,7 +48,6 @@ py_if_name_main_permission_test()
       (end-of-line)
       (sit-for 0.2)
       (assert (looking-back "run") nil "py-if-name-main-permission-lp-326620-test #1 failed"))))
-
 
 (ert-deftest py-ert-intend-try-test ()
   (py-test-with-temp-buffer-point-min
@@ -191,7 +189,6 @@ def foo():
     (setq py-indent-paren-spanned-multilines-p t)
     (should (eq 12 (py-compute-indentation))))))
 
-
 ;; (ert-deftest py-raw-docstring-test-1 ()
 ;;   (py-test-with-temp-buffer-point-min
 ;;       "def f():
@@ -237,7 +234,6 @@ More docstring here.
     (py-backward-indent)
     (should (eq (char-after) ?s))))
 
-
 (ert-deftest py-forward-indent-test ()
   (py-test-with-temp-buffer-point-min
       "class A(object):
@@ -257,7 +253,6 @@ More docstring here.
     (py-forward-indent)
     (should (eq (char-before) ?:))))
 
-
 (ert-deftest py-beginning-of-indent-p-test ()
   (py-test-with-temp-buffer-point-min
       "class A(object):
@@ -266,8 +261,19 @@ More docstring here.
         pass"
     (search-forward "sdfasde")
     (should (not (py--beginning-of-indent-p)))
-    (back-to-indentation)
+    (py-backward-indent) 
     (should (py--beginning-of-indent-p))))
+
+(ert-deftest py-beginning-of-indent-bol-p-test ()
+  (py-test-with-temp-buffer-point-min
+      "class A(object):
+    def a(self):
+        sdfasde
+        pass"
+    (search-forward "sdfasde")
+    (should (not (py--beginning-of-indent-bol-p)))
+    (beginning-of-line)
+    (should (py--beginning-of-indent-bol-p))))
 
 (ert-deftest py-copy-indent-test ()
   (py-test-with-temp-buffer-point-min
@@ -277,8 +283,9 @@ More docstring here.
         pass"
     (search-forward "sdfasde")
     (py-copy-indent)
+    (should (string= (concat (make-string 8 ?\ ) "sdfasde\n" (make-string 8 ?\ ) "pass") (car kill-ring)))
     (should (not (py--beginning-of-indent-p)))
-    (back-to-indentation)
+    (py-backward-statement) 
     (should (py--beginning-of-indent-p))))
 
 (ert-deftest py-delete-indent-test ()
@@ -292,7 +299,17 @@ More docstring here.
     (should (eobp))
     (should (bolp))))
 
-
+(ert-deftest py-kill-indent-test ()
+  (py-test-with-temp-buffer-point-min
+      "class A(object):
+    def a(self):
+        sdfasde
+        pass"
+    (search-forward "sdfasde")
+    (py-kill-indent)
+    (should (string= (concat (make-string 8 ?\ ) "sdfasde\n" (make-string 8 ?\ ) "pass") (car kill-ring)))
+    (should (eobp))
+    (should (bolp))))
 
 (provide 'py-ert-tests-3)
 ;;; py-ert-tests-3.el ends here

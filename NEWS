@@ -4,6 +4,9 @@ Python Mode News
 New in version 6.2.2
 ---------------------
 
+Edit-commands will reach beginning-of-line if reasonable
+Edit-commands suffixed "-bol" dropped 
+
 - Commands
   - py-backward-indent
     Go to the beginning of a section of equal indent
@@ -11,6 +14,7 @@ New in version 6.2.2
     Go to the end of a section of equal indentation
   - py-copy-indent
   - py-delete-indent
+  - py-kill-indent
 
 
 - Make $PYTHONPATH configurable from Emacs

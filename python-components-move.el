@@ -61,12 +61,11 @@ Returns final position when called from inside section, nil otherwise"
   (unless (bobp)
     (let ((orig (point))
 	  (indent (when (eq (current-indentation) (current-column)) (current-column)))
-
 	  erg)
       (py--travel-this-indent-backward-bol)
-      (when erg (goto-char erg)
-	    (beginning-of-line)
-	    (setq erg (point)))
+      ;; (when erg (goto-char erg)
+      ;; (beginning-of-line)
+      ;; (setq erg (point)))
       (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
       erg)))
 
@@ -90,6 +89,7 @@ Returns final position when called from inside section, nil otherwise"
 	  (setq indent (and (py-backward-statement)(current-indentation)))))
       (py--travel-this-indent-forward)
       (when erg (goto-char erg))
+      ;; navigation doesn't reach BOL
       (unless (eolp) (setq erg (py-forward-statement)))
       (when (eq (current-column) (current-indentation)) (py-end-of-statement))
       (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
@@ -112,7 +112,7 @@ Returns final position when called from inside section, nil otherwise"
       (when erg (goto-char erg)
 	    (unless (eolp) (setq erg (py-forward-statement))))
       (when erg
-	(when (eq (current-column) (current-indentation)) (py-end-of-statement))
+	(when (eq (current-column) (current-indentation)) (py-forward-statement))
 	(unless (eobp) (forward-line 1) (beginning-of-line)))
       (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
       erg)))
@@ -376,9 +376,6 @@ See also `py-up-statement': up from current definition to next beginning of stat
 	     (and (py-backward-statement orig)
 		  (progn (beginning-of-line)
 			 (setq erg (point)))))
-	    ((py--beginning-of-statement-p)
-	     (beginning-of-line)
-	     (setq erg (point)))
 	    (t (setq erg
 		     (and
 		      (py-backward-statement)

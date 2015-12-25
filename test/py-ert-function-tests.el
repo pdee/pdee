@@ -342,42 +342,6 @@
 (ert-deftest py-ert-kill-partial-expression-functionp-test ()
   (should (functionp 'py-kill-partial-expression)))
 
-(ert-deftest py-ert-kill-block-bol-functionp-test ()
-  (should (functionp 'py-kill-block-bol)))
-
-(ert-deftest py-ert-kill-clause-bol-functionp-test ()
-  (should (functionp 'py-kill-clause-bol)))
-
-(ert-deftest py-ert-kill-block-or-clause-bol-functionp-test ()
-  (should (functionp 'py-kill-block-or-clause-bol)))
-
-(ert-deftest py-ert-kill-def-bol-functionp-test ()
-  (should (functionp 'py-kill-def-bol)))
-
-(ert-deftest py-ert-kill-class-bol-functionp-test ()
-  (should (functionp 'py-kill-class-bol)))
-
-(ert-deftest py-ert-kill-def-or-class-bol-functionp-test ()
-  (should (functionp 'py-kill-def-or-class-bol)))
-
-(ert-deftest py-ert-kill-if-block-bol-functionp-test ()
-  (should (functionp 'py-kill-if-block-bol)))
-
-(ert-deftest py-ert-kill-try-block-bol-functionp-test ()
-  (should (functionp 'py-kill-try-block-bol)))
-
-(ert-deftest py-ert-kill-minor-block-bol-functionp-test ()
-  (should (functionp 'py-kill-minor-block-bol)))
-
-(ert-deftest py-ert-kill-for-block-bol-functionp-test ()
-  (should (functionp 'py-kill-for-block-bol)))
-
-(ert-deftest py-ert-kill-top-level-bol-functionp-test ()
-  (should (functionp 'py-kill-top-level-bol)))
-
-(ert-deftest py-ert-kill-statement-bol-functionp-test ()
-  (should (functionp 'py-kill-statement-bol)))
-
 (ert-deftest py-ert-backward-expression-functionp-test ()
   (should (functionp 'py-backward-expression)))
 
@@ -482,9 +446,6 @@
 
 (ert-deftest py-ert--end-of-expression-p-functionp-test ()
   (should (functionp 'py--end-of-expression-p)))
-
-(ert-deftest py-ert--end-of-partial-expression-p-functionp-test ()
-  (should (functionp 'py--end-of-partial-expression-p)))
 
 (ert-deftest py-ert--end-of-block-bol-p-functionp-test ()
   (should (functionp 'py--end-of-block-bol-p)))
