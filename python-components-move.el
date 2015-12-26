@@ -72,7 +72,7 @@ Returns final position when called from inside section, nil otherwise"
 (defun py--travel-this-indent-forward ()
   (while (and (py-down-statement)
 	      (or indent (eq indent (current-indentation)))
-	      (eq indent (current-indentation))(setq erg (point)) (not (bobp)))))
+	      (eq indent (current-indentation))(setq done (point)) (not (bobp)))))
 
 (defun py-forward-indent ()
   "Go to the end of a section of equal indentation.
@@ -82,18 +82,18 @@ Returns final position when called from inside section, nil otherwise"
   (interactive)
   (unless (eobp)
     (let ((orig (point))
-	  erg indent)
+	  done indent)
       (when (py-forward-statement)
 	(save-excursion
-	  (setq erg (point))
+	  (setq done (point))
 	  (setq indent (and (py-backward-statement)(current-indentation)))))
       (py--travel-this-indent-forward)
-      (when erg (goto-char erg))
+      (when done (goto-char done))
       ;; navigation doesn't reach BOL
-      (unless (eolp) (setq erg (py-forward-statement)))
+      (unless (eolp) (setq done (py-forward-statement)))
       (when (eq (current-column) (current-indentation)) (py-end-of-statement))
-      (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
-      erg)))
+      (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" done))
+      done)))
 
 (defun py-forward-indent-bol ()
   "Go to beginning of line following of a section of equal indentation.

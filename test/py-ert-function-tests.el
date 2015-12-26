@@ -1884,48 +1884,6 @@
 (ert-deftest py-ert-mark-expression-functionp-test ()
   (should (functionp 'py-mark-expression)))
 
-(ert-deftest py-ert-mark-paragraph-bol-functionp-test ()
-  (should (functionp 'py-mark-paragraph-bol)))
-
-(ert-deftest py-ert-mark-block-bol-functionp-test ()
-  (should (functionp 'py-mark-block-bol)))
-
-(ert-deftest py-ert-mark-minor-block-bol-functionp-test ()
-  (should (functionp 'py-mark-minor-block-bol)))
-
-(ert-deftest py-ert-mark-clause-bol-functionp-test ()
-  (should (functionp 'py-mark-clause-bol)))
-
-(ert-deftest py-ert-mark-block-or-clause-bol-functionp-test ()
-  (should (functionp 'py-mark-block-or-clause-bol)))
-
-(ert-deftest py-ert-mark-def-bol-functionp-test ()
-  (should (functionp 'py-mark-def-bol)))
-
-(ert-deftest py-ert-mark-class-bol-functionp-test ()
-  (should (functionp 'py-mark-class-bol)))
-
-(ert-deftest py-ert-mark-def-or-class-bol-functionp-test ()
-  (should (functionp 'py-mark-def-or-class-bol)))
-
-(ert-deftest py-ert-mark-line-bol-functionp-test ()
-  (should (functionp 'py-mark-line-bol)))
-
-(ert-deftest py-ert-mark-statement-bol-functionp-test ()
-  (should (functionp 'py-mark-statement-bol)))
-
-(ert-deftest py-ert-mark-comment-bol-functionp-test ()
-  (should (functionp 'py-mark-comment-bol)))
-
-(ert-deftest py-ert-mark-top-level-bol-functionp-test ()
-  (should (functionp 'py-mark-top-level-bol)))
-
-(ert-deftest py-ert-mark-partial-expression-bol-functionp-test ()
-  (should (functionp 'py-mark-partial-expression-bol)))
-
-(ert-deftest py-ert-mark-expression-bol-functionp-test ()
-  (should (functionp 'py-mark-expression-bol)))
-
 (ert-deftest py-ert--kill-emacs-hook-functionp-test ()
   (should (functionp 'py--kill-emacs-hook)))
 

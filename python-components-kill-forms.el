@@ -29,6 +29,14 @@
 ;;; Code:
 
 
+(defun py-kill-comment ()
+  "Delete `comment' at point.
+
+Stores data in kill ring"
+  (interactive "*")
+  (let ((erg (py--mark-base "comment")))
+    (kill-region (car erg) (cdr erg))))
+
 (defun py-kill-line ()
   "Delete `line' at point.
 
@@ -59,6 +67,14 @@ Stores data in kill ring"
 Stores data in kill ring"
   (interactive "*")
   (let ((erg (py--mark-base "partial-expression")))
+    (kill-region (car erg) (cdr erg))))
+
+(defun py-kill-section ()
+  "Delete `section' at point.
+
+Stores data in kill ring"
+  (interactive "*")
+  (let ((erg (py--mark-base "section")))
     (kill-region (car erg) (cdr erg))))
 
 (defun py-kill-top-level ()
@@ -139,14 +155,6 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
   (let ((erg (py--mark-base-bol "except-block")))
-    (kill-region (car erg) (cdr erg))))
-
-(defun py-kill-expression ()
-  "Delete expression at point.
-
-Stores data in kill ring. Might be yanked back using `C-y'. "
-  (interactive "*")
-  (let ((erg (py--mark-base-bol "expression")))
     (kill-region (car erg) (cdr erg))))
 
 (defun py-kill-for-block ()

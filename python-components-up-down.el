@@ -45,14 +45,14 @@ Return position if statement found, nil otherwise. "
 Return position if statement found, nil otherwise. "
   (interactive)
   (let* ((orig (point))
-	 (erg
-	  (cond ((py--end-of-statement-p)
-		 (and (py-forward-statement) (py-backward-statement)))
-		((ignore-errors (< orig (progn (py-forward-statement) (py-backward-statement))))
-		 (point))
-		(t (and (py-forward-statement) (py-forward-statement)(py-backward-statement))))))
-    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
-    erg))
+	  (erg
+	   (cond ((py--end-of-statement-p)
+		  (setq erg (and (py-forward-statement) (py-backward-statement))))
+		 ((< orig (progn (py-forward-statement) (py-backward-statement)))
+		  (point))
+		 (t (and (py-forward-statement) (py-forward-statement)(py-backward-statement))))))
+	   (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
+	   erg))
 
 (defun py-up-base (regexp)
   "Go to the beginning of next form upwards in buffer.

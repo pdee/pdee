@@ -29,6 +29,18 @@
 ;;; Code:
 
 
+(defun py--beginning-of-comment-p ()
+  "Returns position, if cursor is at the beginning of a `comment', nil otherwise. "
+  (let ((orig (point))
+        erg)
+    (save-excursion
+      (unless (or (py-in-string-or-comment-p) (and (eolp) (not (empty-line-p))))
+        (py-forward-comment)
+        (py-backward-comment)
+        (when (eq orig (point))
+          (setq erg orig)))
+      erg)))
+
 (defun py--beginning-of-line-p ()
   "Returns position, if cursor is at the beginning of a `line', nil otherwise. "
   (let ((orig (point))
@@ -207,18 +219,6 @@
       (unless (and (eolp) (not (empty-line-p)))
 	(py-forward-except-block-bol))
       (py-backward-except-block-bol)
-      (when (eq orig (point))
-	(setq erg orig))
-      erg)))
-
-(defun py--beginning-of-expression-bol-p ()
-  "Returns position, if cursor is at beginning-of-line and the beginning of a `expression', nil otherwise. "
-  (save-excursion
-    (let ((orig (point))
-	  erg)
-      (unless (and (eolp) (not (empty-line-p)))
-	(py-forward-expression-bol))
-      (py-backward-expression-bol)
       (when (eq orig (point))
 	(setq erg orig))
       erg)))
@@ -411,18 +411,6 @@
       (unless (and (eolp) (not (empty-line-p)))
 	(py-forward-except-block))
       (py-backward-except-block)
-      (when (eq orig (point))
-	(setq erg orig))
-      erg)))
-
-(defun py--beginning-of-expression-p ()
-  "Returns position, if cursor is at the beginning of a `expression', nil otherwise. "
-  (save-excursion 
-    (let ((orig (point))
-	  erg)
-      (unless (and (eolp) (not (empty-line-p)))
-	(py-forward-expression))
-      (py-backward-expression)
       (when (eq orig (point))
 	(setq erg orig))
       erg)))

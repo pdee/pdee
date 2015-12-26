@@ -104,14 +104,6 @@ Don't store data in kill ring. "
   (let ((erg (py--mark-base-bol "except-block")))
     (delete-region (car erg) (cdr erg))))
 
-(defun py-delete-expression ()
-  "Delete EXPRESSION at point until beginning-of-line.
-
-Don't store data in kill ring. "
-  (interactive)
-  (let ((erg (py--mark-base-bol "expression")))
-    (delete-region (car erg) (cdr erg))))
-
 (defun py-delete-for-block ()
   "Delete FOR-BLOCK at point until beginning-of-line.
 
@@ -168,6 +160,14 @@ Don't store data in kill ring. "
   (let ((erg (py--mark-base-bol "try-block")))
     (delete-region (car erg) (cdr erg))))
 
+(defun py-delete-comment ()
+  "Delete COMMENT at point.
+
+Don't store data in kill ring. "
+  (interactive)
+  (let ((erg (py--mark-base "comment")))
+    (delete-region (car erg) (cdr erg))))
+
 (defun py-delete-line ()
   "Delete LINE at point.
 
@@ -198,6 +198,14 @@ Don't store data in kill ring. "
 Don't store data in kill ring. "
   (interactive)
   (let ((erg (py--mark-base "partial-expression")))
+    (delete-region (car erg) (cdr erg))))
+
+(defun py-delete-section ()
+  "Delete SECTION at point.
+
+Don't store data in kill ring. "
+  (interactive)
+  (let ((erg (py--mark-base "section")))
     (delete-region (car erg) (cdr erg))))
 
 (defun py-delete-top-level ()

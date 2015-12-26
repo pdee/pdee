@@ -2282,6 +2282,248 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
   (interactive)
   (py--execute-prepare 'expression 'python3 t 'switch))
 
+(defun py-execute-indent ()
+  "Send indent at point to  interpreter. "
+  (interactive)
+  (py--execute-prepare 'indent nil  nil nil))
+
+(defun py-execute-indent-switch ()
+  "Send indent at point to  interpreter. 
+
+Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
+  (interactive)
+  (py--execute-prepare 'indent nil  nil 'switch))
+
+(defun py-execute-indent-no-switch ()
+  "Send indent at point to  interpreter. 
+
+Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
+  (interactive)
+  (py--execute-prepare 'indent nil  nil 'no-switch))
+
+(defun py-execute-indent-dedicated ()
+  "Send indent at point to  unique interpreter. "
+  (interactive)
+  (py--execute-prepare 'indent nil  t nil))
+
+(defun py-execute-indent-dedicated-switch ()
+  "Send indent at point to  unique interpreter and switch to result. "
+  (interactive)
+  (py--execute-prepare 'indent nil  t 'switch))
+
+(defun py-execute-indent-ipython ()
+  "Send indent at point to IPython interpreter. "
+  (interactive)
+  (py--execute-prepare 'indent 'ipython nil nil))
+
+(defun py-execute-indent-ipython-switch ()
+  "Send indent at point to IPython interpreter. 
+
+Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
+  (interactive)
+  (py--execute-prepare 'indent 'ipython nil 'switch))
+
+(defun py-execute-indent-ipython-no-switch ()
+  "Send indent at point to IPython interpreter. 
+
+Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
+  (interactive)
+  (py--execute-prepare 'indent 'ipython nil 'no-switch))
+
+(defun py-execute-indent-ipython-dedicated ()
+  "Send indent at point to IPython unique interpreter. "
+  (interactive)
+  (py--execute-prepare 'indent 'ipython t nil))
+
+(defun py-execute-indent-ipython-dedicated-switch ()
+  "Send indent at point to IPython unique interpreter and switch to result. "
+  (interactive)
+  (py--execute-prepare 'indent 'ipython t 'switch))
+
+(defun py-execute-indent-ipython2.7 ()
+  "Send indent at point to IPython interpreter. "
+  (interactive)
+  (py--execute-prepare 'indent 'ipython2.7 nil nil))
+
+(defun py-execute-indent-ipython2.7-switch ()
+  "Send indent at point to IPython interpreter. 
+
+Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
+  (interactive)
+  (py--execute-prepare 'indent 'ipython2.7 nil 'switch))
+
+(defun py-execute-indent-ipython2.7-no-switch ()
+  "Send indent at point to IPython interpreter. 
+
+Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
+  (interactive)
+  (py--execute-prepare 'indent 'ipython2.7 nil 'no-switch))
+
+(defun py-execute-indent-ipython2.7-dedicated ()
+  "Send indent at point to IPython unique interpreter. "
+  (interactive)
+  (py--execute-prepare 'indent 'ipython2.7 t nil))
+
+(defun py-execute-indent-ipython2.7-dedicated-switch ()
+  "Send indent at point to IPython unique interpreter and switch to result. "
+  (interactive)
+  (py--execute-prepare 'indent 'ipython2.7 t 'switch))
+
+(defun py-execute-indent-ipython3 ()
+  "Send indent at point to IPython interpreter. "
+  (interactive)
+  (py--execute-prepare 'indent 'ipython3 nil nil))
+
+(defun py-execute-indent-ipython3-switch ()
+  "Send indent at point to IPython interpreter. 
+
+Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
+  (interactive)
+  (py--execute-prepare 'indent 'ipython3 nil 'switch))
+
+(defun py-execute-indent-ipython3-no-switch ()
+  "Send indent at point to IPython interpreter. 
+
+Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
+  (interactive)
+  (py--execute-prepare 'indent 'ipython3 nil 'no-switch))
+
+(defun py-execute-indent-ipython3-dedicated ()
+  "Send indent at point to IPython unique interpreter. "
+  (interactive)
+  (py--execute-prepare 'indent 'ipython3 t nil))
+
+(defun py-execute-indent-ipython3-dedicated-switch ()
+  "Send indent at point to IPython unique interpreter and switch to result. "
+  (interactive)
+  (py--execute-prepare 'indent 'ipython3 t 'switch))
+
+(defun py-execute-indent-jython ()
+  "Send indent at point to Jython interpreter. "
+  (interactive)
+  (py--execute-prepare 'indent 'jython nil nil))
+
+(defun py-execute-indent-jython-switch ()
+  "Send indent at point to Jython interpreter. 
+
+Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
+  (interactive)
+  (py--execute-prepare 'indent 'jython nil 'switch))
+
+(defun py-execute-indent-jython-no-switch ()
+  "Send indent at point to Jython interpreter. 
+
+Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
+  (interactive)
+  (py--execute-prepare 'indent 'jython nil 'no-switch))
+
+(defun py-execute-indent-jython-dedicated ()
+  "Send indent at point to Jython unique interpreter. "
+  (interactive)
+  (py--execute-prepare 'indent 'jython t nil))
+
+(defun py-execute-indent-jython-dedicated-switch ()
+  "Send indent at point to Jython unique interpreter and switch to result. "
+  (interactive)
+  (py--execute-prepare 'indent 'jython t 'switch))
+
+(defun py-execute-indent-python ()
+  "Send indent at point to default interpreter. 
+
+For `default' see value of `py-shell-name'"
+  (interactive)
+  (py--execute-prepare 'indent 'python nil nil))
+
+(defun py-execute-indent-python-switch ()
+  "Send indent at point to default interpreter. 
+
+Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. 
+
+For `default' see value of `py-shell-name'"
+  (interactive)
+  (py--execute-prepare 'indent 'python nil 'switch))
+
+(defun py-execute-indent-python-no-switch ()
+  "Send indent at point to default interpreter. 
+
+Keep current buffer. Ignores `py-switch-buffers-on-execute-p' 
+
+For `default' see value of `py-shell-name'"
+  (interactive)
+  (py--execute-prepare 'indent 'python nil 'no-switch))
+
+(defun py-execute-indent-python-dedicated ()
+  "Send indent at point to default unique interpreter. 
+
+For `default' see value of `py-shell-name'"
+  (interactive)
+  (py--execute-prepare 'indent 'python t nil))
+
+(defun py-execute-indent-python-dedicated-switch ()
+  "Send indent at point to default unique interpreter and switch to result. 
+
+For `default' see value of `py-shell-name'"
+  (interactive)
+  (py--execute-prepare 'indent 'python t 'switch))
+
+(defun py-execute-indent-python2 ()
+  "Send indent at point to Python2 interpreter. "
+  (interactive)
+  (py--execute-prepare 'indent 'python2 nil nil))
+
+(defun py-execute-indent-python2-switch ()
+  "Send indent at point to Python2 interpreter. 
+
+Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
+  (interactive)
+  (py--execute-prepare 'indent 'python2 nil 'switch))
+
+(defun py-execute-indent-python2-no-switch ()
+  "Send indent at point to Python2 interpreter. 
+
+Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
+  (interactive)
+  (py--execute-prepare 'indent 'python2 nil 'no-switch))
+
+(defun py-execute-indent-python2-dedicated ()
+  "Send indent at point to Python2 unique interpreter. "
+  (interactive)
+  (py--execute-prepare 'indent 'python2 t nil))
+
+(defun py-execute-indent-python2-dedicated-switch ()
+  "Send indent at point to Python2 unique interpreter and switch to result. "
+  (interactive)
+  (py--execute-prepare 'indent 'python2 t 'switch))
+
+(defun py-execute-indent-python3 ()
+  "Send indent at point to Python3 interpreter. "
+  (interactive)
+  (py--execute-prepare 'indent 'python3 nil nil))
+
+(defun py-execute-indent-python3-switch ()
+  "Send indent at point to Python3 interpreter. 
+
+Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
+  (interactive)
+  (py--execute-prepare 'indent 'python3 nil 'switch))
+
+(defun py-execute-indent-python3-no-switch ()
+  "Send indent at point to Python3 interpreter. 
+
+Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
+  (interactive)
+  (py--execute-prepare 'indent 'python3 nil 'no-switch))
+
+(defun py-execute-indent-python3-dedicated ()
+  "Send indent at point to Python3 unique interpreter. "
+  (interactive)
+  (py--execute-prepare 'indent 'python3 t nil))
+
+(defun py-execute-indent-python3-dedicated-switch ()
+  "Send indent at point to Python3 unique interpreter and switch to result. "
+  (interactive)
+  (py--execute-prepare 'indent 'python3 t 'switch))
+
 (defun py-execute-line ()
   "Send line at point to  interpreter. "
   (interactive)

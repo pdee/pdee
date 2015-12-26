@@ -26,6 +26,17 @@
 ;;; Code:
 
 
+(defun py--end-of-comment-p ()
+  "Returns position, if cursor is at the end of a comment, nil otherwise. "
+  (let ((orig (point))
+	erg)
+    (save-excursion
+      (py-backward-comment)
+      (py-forward-comment)
+      (when (eq orig (point))
+	(setq erg orig))
+      erg)))
+
 (defun py--end-of-line-p ()
   "Returns position, if cursor is at the end of a line, nil otherwise. "
   (let ((orig (point))
@@ -187,17 +198,6 @@
     (save-excursion
       (py-backward-except-block-bol)
       (py-forward-except-block-bol)
-      (when (eq orig (point))
-	(setq erg orig))
-      erg)))
-
-(defun py--end-of-expression-bol-p ()
-  "Returns position, if cursor is at beginning-of-line at the end of a expression, nil otherwise. "
-  (let ((orig (point))
-	erg)
-    (save-excursion
-      (py-backward-expression-bol)
-      (py-forward-expression-bol)
       (when (eq orig (point))
 	(setq erg orig))
       erg)))
@@ -374,17 +374,6 @@
     (save-excursion
       (py-backward-except-block)
       (py-forward-except-block)
-      (when (eq orig (point))
-	(setq erg orig))
-      erg)))
-
-(defun py--end-of-expression-p ()
-  "Returns position, if cursor is at the end of a expression, nil otherwise. "
-  (let ((orig (point))
-	erg)
-    (save-excursion
-      (py-backward-expression)
-      (py-forward-expression)
       (when (eq orig (point))
 	(setq erg orig))
       erg)))

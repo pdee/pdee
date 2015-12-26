@@ -45,6 +45,14 @@ Return code of `py-block-or-clause' at point, a string. "
   (let ((erg (py--mark-base "block-or-clause")))
     (py--forms-report-result erg)))
 
+(defun py-buffer ()
+  "Buffer at point.
+
+Return code of `py-buffer' at point, a string. "
+  (interactive)
+  (let ((erg (py--mark-base "buffer")))
+    (py--forms-report-result erg)))
+
 (defun py-class ()
   "Class at point.
 
@@ -85,6 +93,14 @@ Return code of `py-expression' at point, a string. "
   (let ((erg (py--mark-base "expression")))
     (py--forms-report-result erg)))
 
+(defun py-indent ()
+  "Indent at point.
+
+Return code of `py-indent' at point, a string. "
+  (interactive)
+  (let ((erg (py--mark-base "indent")))
+    (py--forms-report-result erg)))
+
 (defun py-line ()
   "Line at point.
 
@@ -115,6 +131,14 @@ Return code of `py-paragraph' at point, a string. "
 Return code of `py-partial-expression' at point, a string. "
   (interactive)
   (let ((erg (py--mark-base "partial-expression")))
+    (py--forms-report-result erg)))
+
+(defun py-region ()
+  "Region at point.
+
+Return code of `py-region' at point, a string. "
+  (interactive)
+  (let ((erg (py--mark-base "region")))
     (py--forms-report-result erg)))
 
 (defun py-statement ()

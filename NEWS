@@ -15,7 +15,7 @@ Edit-commands suffixed "-bol" dropped
   - py-copy-indent
   - py-delete-indent
   - py-kill-indent
-
+  - py-mark-indent
 
 - Make $PYTHONPATH configurable from Emacs
   Emacs doesn't read settings from .bashrc

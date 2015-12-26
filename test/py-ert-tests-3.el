@@ -311,5 +311,16 @@ More docstring here.
     (should (eobp))
     (should (bolp))))
 
+(ert-deftest py-mark-indent-test ()
+  (py-test-with-temp-buffer-point-min
+      "class A(object):
+    def a(self):
+        sdfasde
+        pass"
+    (search-forward "sdfasde")
+    (py-mark-indent)
+    ;; (message "%s" (buffer-substring-no-properties (region-beginning) (region-end)))
+    (should (eq 28 (length (buffer-substring-no-properties (region-beginning) (region-end)))))))  
+
 (provide 'py-ert-tests-3)
 ;;; py-ert-tests-3.el ends here
