@@ -1,6 +1,5 @@
 ;;; python-mode-utils.el - generating parts of python-mode.el
 
-
 ;; Copyright (C) 2015  Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
@@ -56,12 +55,17 @@
        "def"
        "def-or-class"
        "expression"
+       "except-block"
+       "if-block"
+       "indent"
        "line"
        "minor-block"
        "partial-expression"
+       "paragraph"
        "section"
        "statement"
        "top-level"
+       "try-block"
        ))
 
 ;; like positions, but without comment, statement, expression, section, toplevel, : avoid py--end-base
@@ -232,6 +236,26 @@
        "try-block"
        ))
 
+;; "statement", "def", "def-or-class", "class" defined for speed in
+;; python-components-move.el 
+
+;; Also "expression", "partial-expression",
+;; "indent","section" special forms
+
+(setq py-backward-forms
+      (list
+       "block"
+       "block-or-clause"
+       "clause"
+       "elif-block"
+       "else-block"
+       "except-block"
+       "for-block"
+       "if-block"
+       "minor-block"
+       "try-block"
+       ))
+
 ;; comment, section not suitable here
 (setq py-navigate-test-forms
       (list
@@ -262,8 +286,11 @@
        "clause"
        "def"
        "def-or-class"
+       "indent"
+       "minor-block"
        "section"
        "statement"
+       "top-level"
        ))
 
 ;; top-level is special
@@ -309,14 +336,13 @@
        "except-block"
        "for-block"
        "if-block"
+       "indent"
        "minor-block"
        "statement"
        "try-block"
        ))
 
-
 (setq py-toggle-form-vars (list "py-nil-docstring-style" "py-onetwo-docstring-style" "py-pep-257-docstring-style" "py-pep-257-nn-docstring-style" "py-symmetric-docstring-style" "py-django-docstring-style" ))
-
 
 ;; (setq py-options (list "" "switch" "no-switch" "dedicated" "dedicated-switch"))
 
@@ -327,28 +353,6 @@
 (defvar py-commands
   (list "py-python-command" "py-ipython-command" "py-python3-command" "py-python2-command" "py-jython-command")
   "Python-mode will generate commands opening shells mentioned here. Edit this list \w resp. to your machine. ")
-
-(setq py-position-forms
-      (list
-       "block"
-       "block-or-clause"
-       "class"
-       "clause"
-       "comment"
-       "def"
-       "def-or-class"
-       "except-block"
-       "expression"
-       "if-block"
-       "line"
-       "minor-block"
-       "paragraph"
-       "partial-expression"
-       "section"
-       "statement"
-       "top-level"
-       "try-block"
-       ))
 
 
 (setq py-core-command-name '("statement" "block" "def" "class" "region" "file"))
@@ -388,13 +392,14 @@
        "except-block"
        "for-block"
        "if-block"
+       "indent"
        "minor-block"
        "statement"
        "try-block"
        ))
 
 ;; backward class/def treated with shorter forms internally
-(setq py-backward-command-names
+(setq py-backward-bol-command-names
       (list
        "block"
        "block-or-clause"
@@ -608,7 +613,6 @@
        'py-info-lookup-symbol
        'py-symbol-at-point))
 
-
 (setq py-completion-symbols
       (list
        'py-complete
@@ -771,7 +775,6 @@
 
 ")
 
-
 (defun py--exexutable-name (ele)
   "Return \"IPython\" for \"ipython\" etc. "
   (let (erg)
@@ -806,7 +809,6 @@
     (switch-to-buffer (current-buffer))
     (emacs-lisp-mode))
     (write-file (concat py-install-directory "/python-components-exec-forms.el")))
-
 
 (defun write-fast-execute-forms ()
   "Write `py-process-block...' etc. "
@@ -1111,7 +1113,6 @@ Output buffer not in comint-mode, displays \\\"Fast\\\"  by default\"\n"))
 	(write--unified-extended-execute-shells)
 	(write--extended-execute-switches))
       )))
-
 
 ;; (py--execute-prepare FORM &optional SHELL DEDICATED SWITCH BEG END FILE)
 
@@ -1519,6 +1520,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
     (emacs-lisp-mode)
     (switch-to-buffer (current-buffer))))
 
+;; not working
 (defun py-write-up-forms-bol ()
   " "
   (interactive)
@@ -1526,7 +1528,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
   (erase-buffer)
   (dolist (ele py-down-forms)
     (insert (concat "py-backward-" ele "-bol\n")))
-  (set-buffer (get-buffer-create "py-backward-forms-bol.el"))
+  (set-buffer (get-buffer-create "py-down-forms-bol.el"))
   (erase-buffer)
   (insert ";; Complementary left corner beginning of form commands")
   (dolist (ele py-down-forms)
@@ -1549,6 +1551,7 @@ See also `py-up-" ele "': up from current definition to next beginning of " ele 
     (emacs-lisp-mode)
     (switch-to-buffer (current-buffer))))
 
+;; not working
 (defun py-write-down-forms ()
   " "
   (interactive)
@@ -2210,23 +2213,22 @@ the default\"
       (comment-region beg end arg))))\n\n")))
   (insert "\n;; python-components-comment ends here
 \(provide 'python-components-comment)")
+  (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
+	(emacs-lisp-mode))
+  (write-file (concat py-install-directory "/python-components-comment.el")))
+
+  ;; (set-buffer (get-buffer-create "Menu-Python-Components-Comments"))
+  ;; (erase-buffer)
+  ;; (insert "(\"Comment ... \"
+  ;;           :help \"Comment forms\"\n\n")
 
   ;; (switch-to-buffer (current-buffer))
-    (eval-buffer)
-  (emacs-lisp-mode)
-
-  (set-buffer (get-buffer-create "Menu-Python-Components-Comments"))
-  (erase-buffer)
-  (insert "(\"Comment ... \"
-            :help \"Comment forms\"\n\n")
-
-  (switch-to-buffer (current-buffer))
-  (dolist (ele py-comment-forms)
-    (setq name (concat "py-comment-" ele))
-    (write-menu-entry name))
-  (insert "      ))")
-  (emacs-lisp-mode)
-  (switch-to-buffer (current-buffer)))
+  ;; (dolist (ele py-comment-forms)
+  ;;   (setq name (concat "py-comment-" ele))
+  ;;   (write-menu-entry name))
+  ;; (insert "      ))")
+  ;; (emacs-lisp-mode)
+  ;; (switch-to-buffer (current-buffer)))
 
 (defun py-write-mark-bol ()
   (interactive)
@@ -2261,6 +2263,41 @@ Mark " ele " at point reaching beginning-of-line. \"]
   (switch-to-buffer (current-buffer))
   (emacs-lisp-mode))
 
+(defun py--insert-backward-forms ()
+  (dolist (ele py-backward-forms)
+    (insert (concat "
+\(defun py-backward-" ele " (&optional indent)"
+"\n  \"Go to beginning of `" ele "'.
+
+If already at beginning, go one `" ele "' backward.
+Returns beginning of `" ele "' if successful, nil otherwise\"\n"))
+    (insert "  (interactive)")
+    (cond ((string-match "clause" ele)
+	   (insert (concat "
+  (py--backward-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (called-interactively-p 'any)))\n")))
+	  (t (insert (concat "
+  (py--backward-prepare indent 'py-" ele "-re 'py-clause-re (called-interactively-p 'any)))\n"))))))
+
+(defun py--insert-backward-bol-forms ()
+  ;; bol forms
+  (dolist (ele py-backward-bol-command-names)
+    (insert (concat "
+\(defun py-backward-" ele "-bol (&optional indent)
+  \"Go to beginning of `" ele "', go to BOL.
+
+If already at beginning, go one `" ele "' backward.
+Returns beginning of `" ele "' if successful, nil otherwise"))
+    (insert "\"\n")
+    (insert "  (interactive)")
+    (cond ((string-match "def\\|class" ele)
+	   (insert (concat "
+  (py--backward-prepare indent 'py-" ele "-re 'py-extended-block-or-clause-re (called-interactively-p 'any) t))\n")))
+	  ((string-match "clause" ele)
+	   (insert (concat "
+  (py--backward-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (called-interactively-p 'any) t))\n")))
+	  (t (insert (concat "
+  (py--backward-prepare indent 'py-" ele "-re 'py-clause-re (called-interactively-p 'any) t))\n"))))))
+
 (defun py-write-backward-forms ()
   "Uses py-backward-forms, not `py-navigate-forms'.
 
@@ -2272,47 +2309,8 @@ Use backward-statement for `top-level', also bol-forms don't make sense here"
   (insert ";;; python-components-backward-forms.el --- Go to beginning of form or further backward \n")
   (insert arkopf)
   ;; don't handle (partial)-expression forms here
-  (dolist (ele py-beg-end-forms)
-    (insert (concat "
-\(defun py-backward-" ele " (&optional indent)"
-"\n \"Go to beginning of " ele ".
-
-If already at beginning, go one " ele " backward.
-Returns beginning of " ele " if successful, nil otherwise\n
-"))
-    (when (string-match "def\\|class" ele)
-      (insert "When `py-mark-decorators' is non-nil, decorators are considered too. "))
-    (insert "\"\n")
-    (insert "  (interactive)")
-    (cond ((string-match "def\\|class" ele)
-	   (insert (concat "
-  (py--backward-prepare indent 'py-" ele "-re 'py-extended-block-or-clause-re (called-interactively-p 'any)))\n")))
-	  ((string-match "clause" ele)
-	   (insert (concat "
-  (py--backward-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (called-interactively-p 'any)))\n")))
-	  (t (insert (concat "
-  (py--backward-prepare indent 'py-" ele "-re 'py-clause-re (called-interactively-p 'any)))\n")))))
-  ;; bol forms
-  (dolist (ele py-backward-command-names)
-    (insert (concat "
-\(defun py-backward-" ele "-bol (&optional indent)"
-"\n \"Go to beginning of " ele ", go to BOL.
-
-If already at beginning, go one " ele " backward.
-Returns beginning of " ele " if successful, nil otherwise\n
-"))
-    (when (string-match "def\\|class" ele)
-      (insert "When `py-mark-decorators' is non-nil, decorators are considered too. "))
-    (insert "\"\n")
-    (insert "  (interactive)")
-    (cond ((string-match "def\\|class" ele)
-	   (insert (concat "
-  (py--backward-prepare indent 'py-" ele "-re 'py-extended-block-or-clause-re (called-interactively-p 'any) t))\n")))
-	  ((string-match "clause" ele)
-	   (insert (concat "
-  (py--backward-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (called-interactively-p 'any) t))\n")))
-	  (t (insert (concat "
-  (py--backward-prepare indent 'py-" ele "-re 'py-clause-re (called-interactively-p 'any) t))\n")))))
+  (py--insert-backward-forms)
+  (py--insert-backward-bol-forms)
   (insert "\n(provide 'python-components-backward-forms)
 ;;; python-components-backward-forms.el ends here\n")
   (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
@@ -2612,7 +2610,6 @@ class bar:
   (emacs-lisp-mode)
   (write-file (concat py-install-directory "/test/py-ert-beginning-tests.el")))
 
-
 (defun py-write-beginning-position-forms ()
   (interactive)
   (set-buffer (get-buffer-create "python-components-beginning-position-forms.el"))
@@ -2768,7 +2765,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
     (insert (concat "
 \(defun py--beginning-of-" ele "-p ()
   \"Returns position, if cursor is at the beginning of a `" ele "', nil otherwise. \"
-  (save-excursion 
+  (save-excursion
     (let ((orig (point))
 	  erg)
       (unless (and (eolp) (not (empty-line-p)))
@@ -2783,7 +2780,6 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
   (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
   (write-file (concat py-install-directory "/python-components-booleans-beginning-forms.el")))
-
 
 (defun py-write-booleans-end-forms ()
   "Uses `py-booleans-end-forms'. "
@@ -2937,7 +2933,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
     (exchange-point-and-mark)
     (when (and py-verbose-p (called-interactively-p 'any)) (message \"%s\" erg))
     erg))\n")))
-    
+
   (insert "\n(provide 'python-components-mark-forms)
 ;;; python-components-mark-forms.el ends here\n")
   (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
@@ -2959,7 +2955,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
 
 Store data in kill ring, so it might yanked back. \"
   (interactive \"\*\")
-  (save-excursion 
+  (save-excursion
     (let ((erg (py--mark-base-bol \"" ele "\")))
       (copy-region-as-kill (car erg) (cdr erg)))))\n")))
 
@@ -2971,7 +2967,7 @@ Store data in kill ring, so it might yanked back. \"
 
 Stores data in kill ring. Might be yanked back using `C-y'. \"
   (interactive \"\*\")
-  (save-excursion 
+  (save-excursion
     (let ((erg (py--mark-base-bol \"" ele "\")))
       (copy-region-as-kill (car erg) (cdr erg)))))
 ")))))
@@ -3099,7 +3095,6 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
 ;;; python-components-narrow.el ends here\n")
   (write-file (concat py-install-directory "/python-components-narrow.el")))
 
-
 ;;  python-components-execute-region
 (defun write--execute-region ()
   (dolist (ele py-shells)
@@ -3139,9 +3134,6 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
 ;;; python-components-execute-region.el ends here\n")
   (write-file (concat py-install-directory "/python-components-execute-region.el")))
 
-
-
-
 (defun py--insert-split-switch-doku (pyo)
     (cond ((string= pyo "switch")
                  (insert "Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "))
@@ -3170,16 +3162,17 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
   (py-provide-installed-shells-commands)
   (py-write-backward-forms)
   (py-write-beginning-position-forms)
+  (py-write-end-position-forms)
   (py-write-booleans-beginning-forms)
   (py-write-booleans-end-forms)
   ;; (py-write-bounds-forms)
   (py-write-copy-forms)
   (py-write-delete-forms)
-  (py-write-end-position-forms)
   (py-write-forms-code)
   (py-write-forward-forms)
   (py-write-kill-forms)
   (py-write-mark-forms)
+  (write-py-comment-forms)
   (py-write-up-down-forms)
   (py-write-execute-forms)
   (write-unified-extended-execute-forms)

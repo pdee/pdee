@@ -203,6 +203,12 @@
     (let ((erg (py-backward-if-block-bol)))
       erg)))
 
+(defun py--beginning-of-indent-position-bol ()
+  "Returns beginning of indent position. "
+  (save-excursion
+    (let ((erg (py-backward-indent-bol)))
+      erg)))
+
 (defun py--beginning-of-minor-block-position-bol ()
   "Returns beginning of minor-block position. "
   (save-excursion

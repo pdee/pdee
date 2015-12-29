@@ -261,7 +261,7 @@ More docstring here.
         pass"
     (search-forward "sdfasde")
     (should (not (py--beginning-of-indent-p)))
-    (py-backward-indent) 
+    (py-backward-indent)
     (should (py--beginning-of-indent-p))))
 
 (ert-deftest py-beginning-of-indent-bol-p-test ()
@@ -285,7 +285,7 @@ More docstring here.
     (py-copy-indent)
     (should (string= (concat (make-string 8 ?\ ) "sdfasde\n" (make-string 8 ?\ ) "pass") (car kill-ring)))
     (should (not (py--beginning-of-indent-p)))
-    (py-backward-statement) 
+    (py-backward-statement)
     (should (py--beginning-of-indent-p))))
 
 (ert-deftest py-delete-indent-test ()
@@ -320,7 +320,31 @@ More docstring here.
     (search-forward "sdfasde")
     (py-mark-indent)
     ;; (message "%s" (buffer-substring-no-properties (region-beginning) (region-end)))
-    (should (eq 28 (length (buffer-substring-no-properties (region-beginning) (region-end)))))))  
+    (should (eq 28 (length (buffer-substring-no-properties (region-beginning) (region-end)))))))
+
+(ert-deftest py-backward-comment-test ()
+  (py-test-with-temp-buffer-point-min
+      "class A(object):
+    def a(self):
+        # sdfasde
+        # sdfasde
+        # sdfasde
+        print(123)"
+    (search-forward "sdfasde" nil t 3)
+    (py-backward-comment)
+    (should (eq (char-after) ?#))))
+
+(ert-deftest py-forward-comment-test ()
+  (py-test-with-temp-buffer-point-min
+      "class A(object):
+    def a(self):
+        # sdfasde
+        # sdfasde
+        # sdfasde
+        print(123)"
+    (search-forward "sdfasde")
+    (py-forward-comment)
+    (should (eq (char-before) ?\)))))
 
 (provide 'py-ert-tests-3)
 ;;; py-ert-tests-3.el ends here

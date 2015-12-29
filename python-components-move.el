@@ -524,6 +524,47 @@ Returns position if succesful "
       (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
       erg)))
 
+(defun py-backward-comment (&optional pos)
+  "Got to beginning of a commented section. "
+  (interactive)
+  (let ((erg pos)
+	last)
+    (when erg (goto-char erg))
+    (while (and (not (bobp)) (setq erg (py-in-comment-p)))
+      (when (< erg (point))
+	(goto-char erg)
+	(setq last (point)))
+      (skip-chars-backward " \t\r\n\f"))
+    (when last (goto-char last))
+    last))
+
+(defun py-forward-comment (&optional pos char)
+  "Go to end of commented section.
+
+Optional args position and comment-start character
+Travel empty lines "
+  (interactive)
+  (let ((orig (or pos (point)))
+	(char (or char (string-to-char comment-start)))
+	py-forward-comment-last)
+    (while (and (not (eobp))
+		(or
+		 (forward-comment 99999)
+		 (when (py--in-comment-p)
+		   (progn
+		     (end-of-line)
+		     (skip-chars-backward " \t\r\n\f")
+		     (setq py-forward-comment-last (point))))
+		 (prog1 (forward-line 1)
+		   (end-of-line)))))
+    (when py-forward-comment-last (goto-char py-forward-comment-last))
+    ;; forward-comment fails sometimes
+    (and (eq orig (point)) (prog1 (forward-line 1) (back-to-indentation))
+	 (while (member (char-after) (list char 10))(forward-line 1)(back-to-indentation)))
+    (when (< orig (point)) (setq erg (point)))
+    (when (called-interactively-p 'any) (message "%s" erg))
+    erg))
+
 ;;  Helper functions
 (defun py-go-to-beginning-of-comment ()
   "Go to the beginning of current line's comment, if any.

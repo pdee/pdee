@@ -679,7 +679,7 @@ data = {
       (search-forward "}")
       (should (eq 0 (py-compute-indentation))))))
 
-(ert-deftest py-ert-moves-up-top-level ()
+(ert-deftest py-ert-moves-up-top-level-1 ()
   (py-test-with-temp-buffer-point-min
       "klauf = kugel()
 
@@ -696,7 +696,7 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
     (should (eq 1 (py-backward-top-level)))
     (should (eq 1 (py--beginning-of-top-level-p)))))
 
-(ert-deftest py-ert-moves-up-position-tests ()
+(ert-deftest py-ert-moves-up-position-tests-2 ()
   (interactive)
   (py-test-with-temp-buffer-point-min
       "class kugel(object):
@@ -715,12 +715,6 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
 "
     (search-forward "else:")
     (forward-char -1)
-    (should (eq 1 (py--beginning-of-top-level-position)))
-    (should (eq 445 (py--end-of-top-level-position)))
-    (should (eq 362 (py--beginning-of-statement-position)))
-    (should (eq 367 (py--end-of-statement-position)))
-    (should (eq 1 (py--beginning-of-paragraph-position)))
-    (should (eq 446 (py--end-of-paragraph-position)))
     (should (eq 190 (py--beginning-of-block-position)))
     (should (eq 445 (py--end-of-block-position)))
     (should (eq 190 (py--beginning-of-minor-block-position)))

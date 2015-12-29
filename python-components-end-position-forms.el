@@ -99,16 +99,6 @@
                  (py-forward-def-or-class))))
       erg)))
 
-(defun py--end-of-except-block-position ()
-  "Returns end of except-block position. "
-  (save-excursion
-    (let ((erg (progn
-                 (when (looking-at "[ \\t\\r\\n\\f]*$")
-                   (skip-chars-backward " \t\r\n\f")
-                   (forward-char -1))
-                 (py-forward-except-block))))
-      erg)))
-
 (defun py--end-of-expression-position ()
   "Returns end of expression position. "
   (save-excursion
@@ -119,6 +109,16 @@
                  (py-forward-expression))))
       erg)))
 
+(defun py--end-of-except-block-position ()
+  "Returns end of except-block position. "
+  (save-excursion
+    (let ((erg (progn
+                 (when (looking-at "[ \\t\\r\\n\\f]*$")
+                   (skip-chars-backward " \t\r\n\f")
+                   (forward-char -1))
+                 (py-forward-except-block))))
+      erg)))
+
 (defun py--end-of-if-block-position ()
   "Returns end of if-block position. "
   (save-excursion
@@ -127,6 +127,16 @@
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
                  (py-forward-if-block))))
+      erg)))
+
+(defun py--end-of-indent-position ()
+  "Returns end of indent position. "
+  (save-excursion
+    (let ((erg (progn
+                 (when (looking-at "[ \\t\\r\\n\\f]*$")
+                   (skip-chars-backward " \t\r\n\f")
+                   (forward-char -1))
+                 (py-forward-indent))))
       erg)))
 
 (defun py--end-of-line-position ()
@@ -149,16 +159,6 @@
                  (py-forward-minor-block))))
       erg)))
 
-(defun py--end-of-paragraph-position ()
-  "Returns end of paragraph position. "
-  (save-excursion
-    (let ((erg (progn
-                 (when (looking-at "[ \\t\\r\\n\\f]*$")
-                   (skip-chars-backward " \t\r\n\f")
-                   (forward-char -1))
-                 (py-forward-paragraph))))
-      erg)))
-
 (defun py--end-of-partial-expression-position ()
   "Returns end of partial-expression position. "
   (save-excursion
@@ -167,6 +167,16 @@
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
                  (py-forward-partial-expression))))
+      erg)))
+
+(defun py--end-of-paragraph-position ()
+  "Returns end of paragraph position. "
+  (save-excursion
+    (let ((erg (progn
+                 (when (looking-at "[ \\t\\r\\n\\f]*$")
+                   (skip-chars-backward " \t\r\n\f")
+                   (forward-char -1))
+                 (py-forward-paragraph))))
       erg)))
 
 (defun py--end-of-section-position ()
@@ -317,6 +327,16 @@
                    (skip-chars-backward " \t\r\n\f")
                    (forward-char -1))
                  (py-forward-if-block-bol))))
+      erg)))
+
+(defun py--end-of-indent-position-bol ()
+  "Returns end of indent position at beginning-of-line. "
+  (save-excursion
+    (let ((erg (progn
+                 (when (looking-at "[ \\t\\r\\n\\f]*$")
+                   (skip-chars-backward " \t\r\n\f")
+                   (forward-char -1))
+                 (py-forward-indent-bol))))
       erg)))
 
 (defun py--end-of-minor-block-position-bol ()
