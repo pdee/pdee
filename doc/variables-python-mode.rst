@@ -6,6 +6,12 @@ py-install-directory
 --------------------
 Directory where python-mode.el and it's subdirectories should be installed. Needed for completion and other environment stuff only. 
 
+py-pythonpath
+-------------
+Define $PYTHONPATH here, if needed.
+
+Emacs doesn't read .bashrc
+
 python-mode-modeline-display
 ----------------------------
 String to display in Emacs modeline 
@@ -31,9 +37,15 @@ See: large output makes Emacs freeze, lp:1253907
 
 Results arrive in output buffer, which is not in comint-mode
 
+py-comment-auto-fill-p
+----------------------
+When non-nil, fill comments.
+
+Defaut is nil
+
 py-sexp-use-expression-p
 ------------------------
-If non-nil, C-M-s call py-forward-expression. 
+If non-nil, C-M-s call py-forward-expression.
 
 Respective C-M-b will call py-backward-expression
 Default is t
@@ -109,6 +121,13 @@ py-store-result-p
 When non-nil, put resulting string of `py-execute-...' into kill-ring, so it might be yanked.
 
 Default is nil
+
+py-electric-close-active-p
+--------------------------
+Close completion buffer when it's sure, it's no longer needed, i.e. when inserting a space.
+
+Works around a bug in `choose-completion'.
+Default is `nil'
 
 py-update-gud-pdb-history-p
 ---------------------------
@@ -344,6 +363,7 @@ def foo():
         baz):
         bar()
 
+Default is `t'
 
 py-closing-list-dedents-bos
 ---------------------------
@@ -788,7 +808,15 @@ Both `t' and `always' is experimental still.
 For the moment: If a multitude of python-shells/buffers should be
 visible, open them manually and set `py-keep-windows-configuration' to `t'.
 
+See also `py-keep-windows-configuration'
 
+
+py-split-window-on-execute-threshold
+------------------------------------
+Maximal number of displayed windows.
+
+Honored, when `py-split-window-on-execute' is `t', i.e. "reuse".
+Don't split when max number of displayed windows is reached. 
 
 py-split-windows-on-execute-function
 ------------------------------------
@@ -1147,6 +1175,34 @@ Delimit arbitrary chunks of code.
 py-paragraph-re
 ---------------
 An empty line followed by a non-whitespace at column 1
+
+py-outdent-re-raw
+-----------------
+
+
+py-no-outdent-re-raw
+--------------------
+
+
+py-block-or-clause-re-raw
+-------------------------
+Matches the beginning of a compound statement or it's clause. 
+
+py-block-re-raw
+---------------
+Matches the beginning of a compound statement but not it's clause. 
+
+py-extended-block-or-clause-re-raw
+----------------------------------
+Matches the beginning of a compound statement or it's clause. 
+
+py-top-level-re
+---------------
+A form which starts at zero indent level, but is not a comment. 
+
+py-clause-re-raw
+----------------
+Matches the beginning of a clause. 
 
 py-compilation-regexp-alist
 ---------------------------
