@@ -33,6 +33,29 @@
 
 ;; Forms used building the menu
 
+(setq py-menu-forms
+      (list
+       "block"
+       "block-or-clause"
+       "class"
+       "clause"
+       "comment"
+       "def"
+       "def-or-class"
+       "expression"
+       "except-block"
+       "if-block"
+       "indent"
+       "line"
+       "minor-block"
+       "partial-expression"
+       "paragraph"
+       "section"
+       "statement"
+       "top-level"
+       "try-block"
+       ))
+
 (setq py-menu-abbrev-form "	   :help \"see also `py-add-abbrev'\"
 	   :filter (lambda (&rest junk)
 		     (abbrev-table-menu python-mode-abbrev-table))")
@@ -1305,19 +1328,19 @@ Delete " (upcase ele) " at point, don't store in kill-ring. \"]
     (insert (concat (make-string 12 ? )"))\n"))
 
     (insert (concat (make-string 10 ? )"(\"Mark\""))
-    (py--create-menu-insert py-positions-forms "py-mark-")
+    (py--create-menu-insert py-menu-forms "py-mark-")
     (insert (concat (make-string 11 ? )")\n"))
 
     (insert (concat (make-string 10 ? )"(\"Copy\""))
-    (py--create-menu-insert py-positions-forms "py-copy-")
+    (py--create-menu-insert py-menu-forms "py-copy-")
     (insert (concat (make-string 11 ? )")\n"))
 
     (insert (concat (make-string 10 ? )"(\"Kill\""))
-    (py--create-menu-insert py-positions-forms "py-kill-")
+    (py--create-menu-insert py-menu-forms "py-kill-")
     (insert (concat (make-string 11 ? )")\n"))
 
     (insert (concat (make-string 10 ? )"(\"Delete\""))
-    (py--create-menu-insert py-positions-forms "py-delete-")
+    (py--create-menu-insert py-menu-forms "py-delete-")
     (insert (concat (make-string 11 ? )")\n"))
 
     (insert (concat (make-string 10 ? )"(\"Comment\""))

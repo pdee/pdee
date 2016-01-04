@@ -346,5 +346,19 @@ More docstring here.
     (py-forward-comment)
     (should (eq (char-before) ?\)))))
 
+(ert-deftest py-shift-indent-right-test ()
+  (py-test-with-temp-buffer-point-min
+      "class A(object):
+    def a(self):
+        sdfasde
+        sdfasde
+        sdfasde
+        print(123)"
+    (search-forward "sdfasde")
+    (py-shift-indent-right)
+    (should (eq 12 (current-indentation)))
+    (py-shift-indent-left)
+    (should (eq 8 (current-indentation)))))
+
 (provide 'py-ert-tests-3)
 ;;; py-ert-tests-3.el ends here

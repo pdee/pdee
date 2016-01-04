@@ -316,6 +316,7 @@
        "comment"
        "def"
        "def-or-class"
+       "indent"
        "minor-block"
        "paragraph"
        "region"
@@ -1484,7 +1485,9 @@ Returns outmost indentation reached. \"
 ;;; python-components-shift-forms.el ends here\n ")
 
     (emacs-lisp-mode)
-    (switch-to-buffer (current-buffer)))
+    (switch-to-buffer (current-buffer))
+(write-file (concat py-install-directory "/python-components-shift-forms.el"))
+    )
 
 (defun py-write-down-forms-bol ()
   " "
@@ -2065,18 +2068,18 @@ Returns beginning and end positions of region, a cons. \"
     (switch-to-buffer (current-buffer))
     (emacs-lisp-mode))
 
-(defun py-write-mark-bol-menu ()
-  (interactive)
-    (set-buffer (get-buffer-create "mark-bol-menu.el"))
-    (erase-buffer)
-    (dolist (ele py-navigate-forms)
-      (insert (concat "
-             [\"Mark " ele " bol\" py-mark-" ele "-bol
-              :help \"`py-mark-" ele "-bol'
-Mark " ele " at point reaching beginning-of-line. \"]
-")))
-  (switch-to-buffer (current-buffer))
-  (emacs-lisp-mode))
+;; (defun py-write-mark-bol-menu ()
+;;   (interactive)
+;;     (set-buffer (get-buffer-create "mark-bol-menu.el"))
+;;     (erase-buffer)
+;;     (dolist (ele py-navigate-forms)
+;;       (insert (concat "
+;;              [\"Mark " ele " bol\" py-mark-" ele "-bol
+;;               :help \"`py-mark-" ele "-bol'
+;; Mark " ele " at point reaching beginning-of-line. \"]
+;; ")))
+;;   (switch-to-buffer (current-buffer))
+;;   (emacs-lisp-mode))
 
 (defun py--insert-backward-forms ()
   (dolist (ele py-backward-forms)

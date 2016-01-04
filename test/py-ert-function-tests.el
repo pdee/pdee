@@ -2613,12 +2613,6 @@
 (ert-deftest py-ert-shift-def-or-class-left-functionp-test ()
   (should (functionp 'py-shift-def-or-class-left)))
 
-(ert-deftest py-ert-shift-line-right-functionp-test ()
-  (should (functionp 'py-shift-line-right)))
-
-(ert-deftest py-ert-shift-line-left-functionp-test ()
-  (should (functionp 'py-shift-line-left)))
-
 (ert-deftest py-ert-shift-statement-right-functionp-test ()
   (should (functionp 'py-shift-statement-right)))
 
