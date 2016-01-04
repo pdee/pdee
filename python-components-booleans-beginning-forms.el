@@ -309,7 +309,7 @@
 
 (defun py--beginning-of-block-p ()
   "Returns position, if cursor is at the beginning of a `block', nil otherwise. "
-  (save-excursion 
+  (save-excursion
     (let ((orig (point))
 	  erg)
       (unless (and (eolp) (not (empty-line-p)))
@@ -321,7 +321,7 @@
 
 (defun py--beginning-of-block-or-clause-p ()
   "Returns position, if cursor is at the beginning of a `block-or-clause', nil otherwise. "
-  (save-excursion 
+  (save-excursion
     (let ((orig (point))
 	  erg)
       (unless (and (eolp) (not (empty-line-p)))
@@ -333,7 +333,7 @@
 
 (defun py--beginning-of-class-p ()
   "Returns position, if cursor is at the beginning of a `class', nil otherwise. "
-  (save-excursion 
+  (save-excursion
     (let ((orig (point))
 	  erg)
       (unless (and (eolp) (not (empty-line-p)))
@@ -345,7 +345,7 @@
 
 (defun py--beginning-of-clause-p ()
   "Returns position, if cursor is at the beginning of a `clause', nil otherwise. "
-  (save-excursion 
+  (save-excursion
     (let ((orig (point))
 	  erg)
       (unless (and (eolp) (not (empty-line-p)))
@@ -357,7 +357,7 @@
 
 (defun py--beginning-of-def-p ()
   "Returns position, if cursor is at the beginning of a `def', nil otherwise. "
-  (save-excursion 
+  (save-excursion
     (let ((orig (point))
 	  erg)
       (unless (and (eolp) (not (empty-line-p)))
@@ -369,7 +369,7 @@
 
 (defun py--beginning-of-def-or-class-p ()
   "Returns position, if cursor is at the beginning of a `def-or-class', nil otherwise. "
-  (save-excursion 
+  (save-excursion
     (let ((orig (point))
 	  erg)
       (unless (and (eolp) (not (empty-line-p)))
@@ -381,7 +381,7 @@
 
 (defun py--beginning-of-elif-block-p ()
   "Returns position, if cursor is at the beginning of a `elif-block', nil otherwise. "
-  (save-excursion 
+  (save-excursion
     (let ((orig (point))
 	  erg)
       (unless (and (eolp) (not (empty-line-p)))
@@ -393,7 +393,7 @@
 
 (defun py--beginning-of-else-block-p ()
   "Returns position, if cursor is at the beginning of a `else-block', nil otherwise. "
-  (save-excursion 
+  (save-excursion
     (let ((orig (point))
 	  erg)
       (unless (and (eolp) (not (empty-line-p)))
@@ -405,7 +405,7 @@
 
 (defun py--beginning-of-except-block-p ()
   "Returns position, if cursor is at the beginning of a `except-block', nil otherwise. "
-  (save-excursion 
+  (save-excursion
     (let ((orig (point))
 	  erg)
       (unless (and (eolp) (not (empty-line-p)))
@@ -417,7 +417,7 @@
 
 (defun py--beginning-of-for-block-p ()
   "Returns position, if cursor is at the beginning of a `for-block', nil otherwise. "
-  (save-excursion 
+  (save-excursion
     (let ((orig (point))
 	  erg)
       (unless (and (eolp) (not (empty-line-p)))
@@ -429,7 +429,7 @@
 
 (defun py--beginning-of-if-block-p ()
   "Returns position, if cursor is at the beginning of a `if-block', nil otherwise. "
-  (save-excursion 
+  (save-excursion
     (let ((orig (point))
 	  erg)
       (unless (and (eolp) (not (empty-line-p)))
@@ -441,7 +441,7 @@
 
 (defun py--beginning-of-indent-p ()
   "Returns position, if cursor is at the beginning of a `indent', nil otherwise. "
-  (save-excursion 
+  (save-excursion
     (let ((orig (point))
 	  erg)
       (unless (and (eolp) (not (empty-line-p)))
@@ -453,7 +453,7 @@
 
 (defun py--beginning-of-minor-block-p ()
   "Returns position, if cursor is at the beginning of a `minor-block', nil otherwise. "
-  (save-excursion 
+  (save-excursion
     (let ((orig (point))
 	  erg)
       (unless (and (eolp) (not (empty-line-p)))
@@ -465,7 +465,7 @@
 
 (defun py--beginning-of-statement-p ()
   "Returns position, if cursor is at the beginning of a `statement', nil otherwise. "
-  (save-excursion 
+  (save-excursion
     (let ((orig (point))
 	  erg)
       (unless (and (eolp) (not (empty-line-p)))
@@ -477,7 +477,7 @@
 
 (defun py--beginning-of-top-level-p ()
   "Returns position, if cursor is at the beginning of a `top-level', nil otherwise. "
-  (save-excursion 
+  (save-excursion
     (let ((orig (point))
 	  erg)
       (unless (and (eolp) (not (empty-line-p)))
@@ -489,7 +489,7 @@
 
 (defun py--beginning-of-try-block-p ()
   "Returns position, if cursor is at the beginning of a `try-block', nil otherwise. "
-  (save-excursion 
+  (save-excursion
     (let ((orig (point))
 	  erg)
       (unless (and (eolp) (not (empty-line-p)))

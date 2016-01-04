@@ -174,14 +174,15 @@
        "comment"
        "def"
        "def-or-class"
-       "expression"
-       "line"
-       "minor-block"
-       "for-block"
-       "except-block"
-       "if-block"
        "elif-block"
        "else-block"
+       "except-block"
+       "expression"
+       "for-block"
+       "if-block"
+       "indent"
+       "line"
+       "minor-block"
        "minor-block"
        "paragraph"
        "partial-expression"
@@ -205,6 +206,7 @@
        "expression"
        "for-block"
        "if-block"
+       "indent"
        "minor-block"
        "partial-expression"
        "section"
@@ -1486,7 +1488,7 @@ Returns outmost indentation reached. \"
 
     (emacs-lisp-mode)
     (switch-to-buffer (current-buffer))
-(write-file (concat py-install-directory "/python-components-shift-forms.el"))
+    (write-file (concat py-install-directory "/python-components-shift-forms.el"))
     )
 
 (defun py-write-down-forms-bol ()
@@ -2068,19 +2070,6 @@ Returns beginning and end positions of region, a cons. \"
     (switch-to-buffer (current-buffer))
     (emacs-lisp-mode))
 
-;; (defun py-write-mark-bol-menu ()
-;;   (interactive)
-;;     (set-buffer (get-buffer-create "mark-bol-menu.el"))
-;;     (erase-buffer)
-;;     (dolist (ele py-navigate-forms)
-;;       (insert (concat "
-;;              [\"Mark " ele " bol\" py-mark-" ele "-bol
-;;               :help \"`py-mark-" ele "-bol'
-;; Mark " ele " at point reaching beginning-of-line. \"]
-;; ")))
-;;   (switch-to-buffer (current-buffer))
-;;   (emacs-lisp-mode))
-
 (defun py--insert-backward-forms ()
   (dolist (ele py-backward-forms)
     (insert (concat "
@@ -2176,7 +2165,7 @@ Return code of `py-" ele "' at point, a string. \"
   (save-excursion
     (let\* ((form (prin1-to-string form))
            (beg (or beg (or (funcall (intern-soft (concat \"py--beginning-of-\" form \"-p\")))
-                            (funcall (intern-soft (concat \"py-beginning-of-\" form))))))
+                            (funcall (intern-soft (concat \"py-backward-\" form))))))
            (end (or end (funcall (intern-soft (concat \"py-forward-\" form)))))
            (modified (buffer-modified-p))
            (inhibit-read-only t))
@@ -2191,7 +2180,7 @@ Return code of `py-" ele "' at point, a string. \"
   (save-excursion
     (let\* ((form (prin1-to-string form))
            (beg (or beg (or (funcall (intern-soft (concat \"py--beginning-of-\" form \"-p\")))
-                            (funcall (intern-soft (concat \"py-beginning-of-\" form))))))
+                            (funcall (intern-soft (concat \"py-backward-\" form))))))
            (end (or end (funcall (intern-soft (concat \"py-forward-\" form)))))
            (modified (buffer-modified-p))
            (inhibit-read-only t))
@@ -2207,7 +2196,7 @@ Return code of `py-" ele "' at point, a string. \"
   (save-excursion
     (let\* ((form (prin1-to-string form))
            (beg (or beg (or (funcall (intern-soft (concat \"py--beginning-of-\" form \"-p\")))
-                            (funcall (intern-soft (concat \"py-beginning-of-\" form))))))
+                            (funcall (intern-soft (concat \"py-backward-\" form))))))
            (end (or end (funcall (intern-soft (concat \"py-forward-\" form)))))
            (modified (buffer-modified-p))
            (inhibit-read-only t))
@@ -2232,7 +2221,7 @@ Return code of `py-" ele "' at point, a string. \"
     (and (use-region-p) (region-beginning))(and (use-region-p) (region-end))))
   (py-show-base 'region beg end))
 ")
-  (dolist (ele py-hide-names)
+  (dolist (ele py-hide-forms)
     (insert (concat "
 \(defun py-hide-" ele " ()
   \"Hide " ele " at point. \"
@@ -2248,7 +2237,8 @@ Return code of `py-" ele "' at point, a string. \"
   (insert "\n;; python-components-hide-show.el ends here
 \(provide 'python-components-hide-show)")
   (switch-to-buffer (current-buffer))
-  (emacs-lisp-mode))
+  (emacs-lisp-mode)
+    (write-file (concat py-install-directory "/python-components-hide-show.el")))
 
 (defun write-py-ert-always-split-lp-1361531-tests (&optional pyshellname-list)
   (interactive)
@@ -2994,6 +2984,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
   (py-write-up-down-forms)
   (py-write-execute-forms)
   (write-unified-extended-execute-forms)
+  (py-write-hide-forms)
   ;; (py-write-execute-region)
   ;; (py-write-edit-forms)
   ;; (write-execute-region-forms)

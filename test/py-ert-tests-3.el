@@ -346,7 +346,7 @@ More docstring here.
     (py-forward-comment)
     (should (eq (char-before) ?\)))))
 
-(ert-deftest py-shift-indent-right-test ()
+(ert-deftest py-shift-indent-test ()
   (py-test-with-temp-buffer-point-min
       "class A(object):
     def a(self):

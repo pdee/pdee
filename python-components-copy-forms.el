@@ -31,7 +31,7 @@
 
 Store data in kill ring, so it might yanked back. "
   (interactive "*")
-  (save-excursion 
+  (save-excursion
     (let ((erg (py--mark-base-bol "block")))
       (copy-region-as-kill (car erg) (cdr erg)))))
 
@@ -40,7 +40,7 @@ Store data in kill ring, so it might yanked back. "
 
 Store data in kill ring, so it might yanked back. "
   (interactive "*")
-  (save-excursion 
+  (save-excursion
     (let ((erg (py--mark-base-bol "block-or-clause")))
       (copy-region-as-kill (car erg) (cdr erg)))))
 
@@ -49,7 +49,7 @@ Store data in kill ring, so it might yanked back. "
 
 Store data in kill ring, so it might yanked back. "
   (interactive "*")
-  (save-excursion 
+  (save-excursion
     (let ((erg (py--mark-base-bol "buffer")))
       (copy-region-as-kill (car erg) (cdr erg)))))
 
@@ -58,7 +58,7 @@ Store data in kill ring, so it might yanked back. "
 
 Store data in kill ring, so it might yanked back. "
   (interactive "*")
-  (save-excursion 
+  (save-excursion
     (let ((erg (py--mark-base-bol "class")))
       (copy-region-as-kill (car erg) (cdr erg)))))
 
@@ -67,7 +67,7 @@ Store data in kill ring, so it might yanked back. "
 
 Store data in kill ring, so it might yanked back. "
   (interactive "*")
-  (save-excursion 
+  (save-excursion
     (let ((erg (py--mark-base-bol "clause")))
       (copy-region-as-kill (car erg) (cdr erg)))))
 
@@ -76,7 +76,7 @@ Store data in kill ring, so it might yanked back. "
 
 Store data in kill ring, so it might yanked back. "
   (interactive "*")
-  (save-excursion 
+  (save-excursion
     (let ((erg (py--mark-base-bol "def")))
       (copy-region-as-kill (car erg) (cdr erg)))))
 
@@ -85,7 +85,7 @@ Store data in kill ring, so it might yanked back. "
 
 Store data in kill ring, so it might yanked back. "
   (interactive "*")
-  (save-excursion 
+  (save-excursion
     (let ((erg (py--mark-base-bol "def-or-class")))
       (copy-region-as-kill (car erg) (cdr erg)))))
 
@@ -94,7 +94,7 @@ Store data in kill ring, so it might yanked back. "
 
 Store data in kill ring, so it might yanked back. "
   (interactive "*")
-  (save-excursion 
+  (save-excursion
     (let ((erg (py--mark-base-bol "expression")))
       (copy-region-as-kill (car erg) (cdr erg)))))
 
@@ -103,7 +103,7 @@ Store data in kill ring, so it might yanked back. "
 
 Store data in kill ring, so it might yanked back. "
   (interactive "*")
-  (save-excursion 
+  (save-excursion
     (let ((erg (py--mark-base-bol "indent")))
       (copy-region-as-kill (car erg) (cdr erg)))))
 
@@ -112,7 +112,7 @@ Store data in kill ring, so it might yanked back. "
 
 Store data in kill ring, so it might yanked back. "
   (interactive "*")
-  (save-excursion 
+  (save-excursion
     (let ((erg (py--mark-base-bol "line")))
       (copy-region-as-kill (car erg) (cdr erg)))))
 
@@ -121,7 +121,7 @@ Store data in kill ring, so it might yanked back. "
 
 Store data in kill ring, so it might yanked back. "
   (interactive "*")
-  (save-excursion 
+  (save-excursion
     (let ((erg (py--mark-base-bol "minor-block")))
       (copy-region-as-kill (car erg) (cdr erg)))))
 
@@ -130,7 +130,7 @@ Store data in kill ring, so it might yanked back. "
 
 Store data in kill ring, so it might yanked back. "
   (interactive "*")
-  (save-excursion 
+  (save-excursion
     (let ((erg (py--mark-base-bol "paragraph")))
       (copy-region-as-kill (car erg) (cdr erg)))))
 
@@ -139,7 +139,7 @@ Store data in kill ring, so it might yanked back. "
 
 Store data in kill ring, so it might yanked back. "
   (interactive "*")
-  (save-excursion 
+  (save-excursion
     (let ((erg (py--mark-base-bol "partial-expression")))
       (copy-region-as-kill (car erg) (cdr erg)))))
 
@@ -148,7 +148,7 @@ Store data in kill ring, so it might yanked back. "
 
 Store data in kill ring, so it might yanked back. "
   (interactive "*")
-  (save-excursion 
+  (save-excursion
     (let ((erg (py--mark-base-bol "region")))
       (copy-region-as-kill (car erg) (cdr erg)))))
 
@@ -157,7 +157,7 @@ Store data in kill ring, so it might yanked back. "
 
 Store data in kill ring, so it might yanked back. "
   (interactive "*")
-  (save-excursion 
+  (save-excursion
     (let ((erg (py--mark-base-bol "statement")))
       (copy-region-as-kill (car erg) (cdr erg)))))
 
@@ -166,7 +166,7 @@ Store data in kill ring, so it might yanked back. "
 
 Store data in kill ring, so it might yanked back. "
   (interactive "*")
-  (save-excursion 
+  (save-excursion
     (let ((erg (py--mark-base-bol "top-level")))
       (copy-region-as-kill (car erg) (cdr erg)))))
 
@@ -175,7 +175,7 @@ Store data in kill ring, so it might yanked back. "
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (save-excursion 
+  (save-excursion
     (let ((erg (py--mark-base-bol "block")))
       (copy-region-as-kill (car erg) (cdr erg)))))
 
@@ -184,7 +184,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (save-excursion 
+  (save-excursion
     (let ((erg (py--mark-base-bol "block-or-clause")))
       (copy-region-as-kill (car erg) (cdr erg)))))
 
@@ -193,7 +193,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (save-excursion 
+  (save-excursion
     (let ((erg (py--mark-base-bol "buffer")))
       (copy-region-as-kill (car erg) (cdr erg)))))
 
@@ -202,7 +202,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (save-excursion 
+  (save-excursion
     (let ((erg (py--mark-base-bol "class")))
       (copy-region-as-kill (car erg) (cdr erg)))))
 
@@ -211,7 +211,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (save-excursion 
+  (save-excursion
     (let ((erg (py--mark-base-bol "clause")))
       (copy-region-as-kill (car erg) (cdr erg)))))
 
@@ -220,7 +220,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (save-excursion 
+  (save-excursion
     (let ((erg (py--mark-base-bol "def")))
       (copy-region-as-kill (car erg) (cdr erg)))))
 
@@ -229,7 +229,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (save-excursion 
+  (save-excursion
     (let ((erg (py--mark-base-bol "def-or-class")))
       (copy-region-as-kill (car erg) (cdr erg)))))
 
@@ -238,7 +238,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (save-excursion 
+  (save-excursion
     (let ((erg (py--mark-base-bol "expression")))
       (copy-region-as-kill (car erg) (cdr erg)))))
 
@@ -247,7 +247,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (save-excursion 
+  (save-excursion
     (let ((erg (py--mark-base-bol "indent")))
       (copy-region-as-kill (car erg) (cdr erg)))))
 
@@ -256,7 +256,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (save-excursion 
+  (save-excursion
     (let ((erg (py--mark-base-bol "line")))
       (copy-region-as-kill (car erg) (cdr erg)))))
 
@@ -265,7 +265,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (save-excursion 
+  (save-excursion
     (let ((erg (py--mark-base-bol "minor-block")))
       (copy-region-as-kill (car erg) (cdr erg)))))
 
@@ -274,7 +274,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (save-excursion 
+  (save-excursion
     (let ((erg (py--mark-base-bol "paragraph")))
       (copy-region-as-kill (car erg) (cdr erg)))))
 
@@ -283,7 +283,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (save-excursion 
+  (save-excursion
     (let ((erg (py--mark-base-bol "partial-expression")))
       (copy-region-as-kill (car erg) (cdr erg)))))
 
@@ -292,7 +292,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (save-excursion 
+  (save-excursion
     (let ((erg (py--mark-base-bol "region")))
       (copy-region-as-kill (car erg) (cdr erg)))))
 
@@ -301,7 +301,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (save-excursion 
+  (save-excursion
     (let ((erg (py--mark-base-bol "statement")))
       (copy-region-as-kill (car erg) (cdr erg)))))
 
@@ -310,7 +310,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
 
 Stores data in kill ring. Might be yanked back using `C-y'. "
   (interactive "*")
-  (save-excursion 
+  (save-excursion
     (let ((erg (py--mark-base-bol "top-level")))
       (copy-region-as-kill (car erg) (cdr erg)))))
 

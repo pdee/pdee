@@ -71,22 +71,28 @@
     (let ((erg (py-backward-def-or-class)))
       erg)))
 
-(defun py--beginning-of-except-block-position ()
-  "Returns beginning of except-block position at beginning-of-line. "
-  (save-excursion
-    (let ((erg (py-backward-except-block)))
-      erg)))
-
 (defun py--beginning-of-expression-position ()
   "Returns beginning of expression position at beginning-of-line. "
   (save-excursion
     (let ((erg (py-backward-expression)))
       erg)))
 
+(defun py--beginning-of-except-block-position ()
+  "Returns beginning of except-block position at beginning-of-line. "
+  (save-excursion
+    (let ((erg (py-backward-except-block)))
+      erg)))
+
 (defun py--beginning-of-if-block-position ()
   "Returns beginning of if-block position at beginning-of-line. "
   (save-excursion
     (let ((erg (py-backward-if-block)))
+      erg)))
+
+(defun py--beginning-of-indent-position ()
+  "Returns beginning of indent position at beginning-of-line. "
+  (save-excursion
+    (let ((erg (py-backward-indent)))
       erg)))
 
 (defun py--beginning-of-line-position ()
@@ -101,16 +107,16 @@
     (let ((erg (py-backward-minor-block)))
       erg)))
 
-(defun py--beginning-of-paragraph-position ()
-  "Returns beginning of paragraph position at beginning-of-line. "
-  (save-excursion
-    (let ((erg (py-backward-paragraph)))
-      erg)))
-
 (defun py--beginning-of-partial-expression-position ()
   "Returns beginning of partial-expression position at beginning-of-line. "
   (save-excursion
     (let ((erg (py-backward-partial-expression)))
+      erg)))
+
+(defun py--beginning-of-paragraph-position ()
+  "Returns beginning of paragraph position at beginning-of-line. "
+  (save-excursion
+    (let ((erg (py-backward-paragraph)))
       erg)))
 
 (defun py--beginning-of-section-position ()

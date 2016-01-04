@@ -1352,21 +1352,21 @@ Delete " (upcase ele) " at point, don't store in kill-ring. \"]
     (insert (concat (make-string 9 ? )"(\"Move\"\n"))
 
     (insert (concat (make-string 10 ? )"(\"Backward\""))
-    (py--create-menu-insert py-move-forms "py-backward-")
+    (py--create-menu-insert py-navigate-forms "py-backward-")
     (insert (concat (make-string 11 ? )")\n"))
 
     (insert (concat (make-string 10 ? )"(\"Forward\""))
-    (py--create-menu-insert py-move-forms "py-forward-")
+    (py--create-menu-insert py-navigate-forms "py-forward-")
     (insert (concat (make-string 11 ? )")\n"))
 
     (insert (concat (make-string 10 ? )"(\"BOL-forms\"\n"))
 
     (insert (concat (make-string 11 ? )"(\"Backward\""))
-    (py--create-menu-insert py-move-forms "py-backward-" "-bol" "top-level")
+    (py--create-menu-insert py-navigate-forms "py-backward-" "-bol" "top-level")
     (insert (concat (make-string 12 ? )")\n"))
 
     (insert (concat (make-string 11 ? )"(\"Forward\""))
-    (py--create-menu-insert py-move-forms "py-forward-" "-bol")
+    (py--create-menu-insert py-navigate-forms "py-forward-" "-bol")
     ;; BOL forms end
     (insert (concat (make-string 12 ? )"))\n"))
 
