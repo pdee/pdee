@@ -1298,7 +1298,7 @@ Delete " (upcase ele) " at point, don't store in kill-ring. \"]
   (when py-verbose-p (message "%s" "Initiating the menu"))
   (with-current-buffer (get-buffer-create "python-components-menu.el")
     (erase-buffer)
-    (when (interactive-p) (switch-to-buffer (current-buffer)))
+    (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))) 
     (insert py-menu-head)
     (newline)
     (insert "(and (ignore-errors (require 'easymenu) t)
@@ -1401,11 +1401,11 @@ Delete " (upcase ele) " at point, don't store in kill-ring. \"]
     (insert (concat (make-string 9 ? )"(\"Hide-Show\"\n"))
 
     (insert (concat (make-string 10 ? )"(\"Hide\""))
-    (py--create-menu-insert py-hide-names "py-hide-")
+    (py--create-menu-insert py-hide-forms "py-hide-")
     (insert (concat (make-string 11 ? )")\n"))
 
     (insert (concat (make-string 10 ? )"(\"Show\""))
-    (py--create-menu-insert py-hide-names "py-show-")
+    (py--create-menu-insert py-hide-forms "py-show-")
 
     ;; Hide-show ends
     (insert (concat (make-string 11 ? )"))\n"))
@@ -1486,10 +1486,7 @@ Delete " (upcase ele) " at point, don't store in kill-ring. \"]
     ;; final
     (insert (concat (make-string 12 ? ) ")))\n\n"))
     (insert "(provide 'python-components-menu)\n;;; python-components-menu.el ends here\n\n")
-    (py--create-menu-minor-fixes)
-    (eval-buffer)
-    (when py-debug-p (write-file (concat py-install-directory "/python-components-menu.el")))
-    ;; (set-buffer "python-components-menu.el")
+    (write-file (concat py-install-directory "/python-components-menu.el"))
     ))
 
 (provide 'python-components-create-menu)
