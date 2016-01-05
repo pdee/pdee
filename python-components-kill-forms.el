@@ -30,7 +30,7 @@
 
 
 (defun py-kill-comment ()
-  "Delete `comment' at point.
+  "Delete comment at point.
 
 Stores data in kill ring"
   (interactive "*")
@@ -38,7 +38,7 @@ Stores data in kill ring"
     (kill-region (car erg) (cdr erg))))
 
 (defun py-kill-line ()
-  "Delete `line' at point.
+  "Delete line at point.
 
 Stores data in kill ring"
   (interactive "*")
@@ -46,7 +46,7 @@ Stores data in kill ring"
     (kill-region (car erg) (cdr erg))))
 
 (defun py-kill-paragraph ()
-  "Delete `paragraph' at point.
+  "Delete paragraph at point.
 
 Stores data in kill ring"
   (interactive "*")
@@ -54,7 +54,7 @@ Stores data in kill ring"
     (kill-region (car erg) (cdr erg))))
 
 (defun py-kill-expression ()
-  "Delete `expression' at point.
+  "Delete expression at point.
 
 Stores data in kill ring"
   (interactive "*")
@@ -62,7 +62,7 @@ Stores data in kill ring"
     (kill-region (car erg) (cdr erg))))
 
 (defun py-kill-partial-expression ()
-  "Delete `partial-expression' at point.
+  "Delete partial-expression at point.
 
 Stores data in kill ring"
   (interactive "*")
@@ -70,7 +70,7 @@ Stores data in kill ring"
     (kill-region (car erg) (cdr erg))))
 
 (defun py-kill-section ()
-  "Delete `section' at point.
+  "Delete section at point.
 
 Stores data in kill ring"
   (interactive "*")
@@ -78,7 +78,7 @@ Stores data in kill ring"
     (kill-region (car erg) (cdr erg))))
 
 (defun py-kill-top-level ()
-  "Delete `top-level' at point.
+  "Delete top-level at point.
 
 Stores data in kill ring"
   (interactive "*")

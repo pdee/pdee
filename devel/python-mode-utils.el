@@ -2654,7 +2654,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
     (dolist (ele forms)
       (insert (concat "
 \(defun py-kill-"ele" ()
-  \"Delete `" ele "' at point.
+  \"Delete " ele " at point.
 
 Stores data in kill ring\"
   (interactive \"*\")

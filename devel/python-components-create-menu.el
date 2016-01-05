@@ -1203,20 +1203,20 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. \"]\n"))))
     (while (and (not (bobp)) (< orig (point)) (forward-line -1) (not (empty-line-p))))
     (delete-region (line-beginning-position) end)))
 
-(defun py-write-delete-menu ()
-  (interactive)
-    (set-buffer (get-buffer-create "Delete-menu.el"))
-    (erase-buffer)
-    (insert "         (\"Delete\"")
-    (dolist (ele py-execute-forms)
-      (insert (concat "
-             [\"Delete " ele " \" py-delete-" ele "
-              :help \"`py-delete-" ele "'
-Delete " (upcase ele) " at point, don't store in kill-ring. \"]
-")))
-    (insert "          )\n        \"-\"\n")
-  (switch-to-buffer (current-buffer))
-  (emacs-lisp-mode))
+;; (defun py-write-delete-menu ()
+;;   (interactive)
+;;     (set-buffer (get-buffer-create "Delete-menu.el"))
+;;     (erase-buffer)
+;;     (insert "         (\"Delete\"")
+;;     (dolist (ele py-execute-forms)
+;;       (insert (concat "
+;;              [\"Delete " ele " \" py-delete-" ele "
+;;               :help \"`py-delete-" ele "'
+;; Delete " (upcase ele) " at point, don't store in kill-ring. \"]
+;; ")))
+;;     (insert "          )\n        \"-\"\n")
+;;   (switch-to-buffer (current-buffer))
+;;   (emacs-lisp-mode))
 
 (defun py--emen (&optional symbol)
   "Provide menu draft. "
@@ -1278,8 +1278,6 @@ Delete " (upcase ele) " at point, don't store in kill-ring. \"]
       (when prefix (setq ele (concat prefix ele)))
       (when suffix (setq ele (concat ele suffix)))
       (insert (concat "\n" (make-string 10 ? )))
-      ;; (py--create-menu-insert-intern ele)
-      ;; (switch-to-buffer (current-buffer))
       (save-excursion (py--emen ele))
       (forward-list)
       (newline))))
