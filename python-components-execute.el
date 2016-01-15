@@ -1136,8 +1136,16 @@ See `py-if-name-main-permission-p'"
 		 "if __name__ == '__main__ ':" string))))
     strg))
 
-;; `py-execute-line' calls void function, lp:1492054
+;; `py-execute-line' calls void function, lp:1492054,  lp:1519859
 (or (functionp 'indent-rigidly-left)
+    (defun indent-rigidly--pop-undo ()
+      (and (memq last-command '(indent-rigidly-left indent-rigidly-right
+						    indent-rigidly-left-to-tab-stop
+						    indent-rigidly-right-to-tab-stop))
+	   (consp buffer-undo-list)
+	   (eq (car buffer-undo-list) nil)
+	   (pop buffer-undo-list)))
+
     (defun indent-rigidly-left (beg end)
       "Indent all lines between BEG and END leftward by one space."
       (interactive "r")
