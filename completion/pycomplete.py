@@ -654,10 +654,22 @@ class _PyCompleteDocument(object):
             obj = self.get_method_function(obj)
 
         if type(obj) in [types.FunctionType, types.LambdaType]:
-            (args, varargs, varkw, defaults) = inspect.getargspec(obj)
-            sig = ('%s: %s' % (obj.__name__,
-                               inspect.formatargspec(args, varargs, varkw,
-                                                     defaults)))
+            try:
+                (args, varargs, varkw, defaults) = inspect.getargspec(obj)
+                sig = ('%s: %s' % (obj.__name__,
+                                   inspect.formatargspec(args, varargs, varkw,
+                                                         defaults)))
+            except ValueError:
+                try:
+                    (args, varargs, varkw, defaults, kwonlyargs,
+                     kwonlydefaults, annotations) = inspect.getfullargspec(obj)
+                    sig = ('%s: %s' % (
+                        obj.__name__, inspect.formatargspec(
+                            args, varargs, varkw, defaults, kwonlyargs,
+                            kwonlydefaults, annotations)))
+                except AttributeError:
+                    pass
+
         doc = getattr(obj, '__doc__', '')
         if doc and not sig:
             doc = doc.lstrip()
