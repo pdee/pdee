@@ -51,6 +51,7 @@ TEST11=$TESTDIR/py-ert-execute-region-test.el
 TEST12=$TESTDIR/py-execute-region-commandp-test.el
 TEST13=$TESTDIR/py-ert-tests-2.el
 TEST14=$TESTDIR/py-ert-tests-3.el
+TEST15=$TESTDIR/py-ert-forward-tests.el
 
 if [ -s emacs24 ]; then
     EMACS=emacs24
@@ -68,6 +69,7 @@ $EMACS -Q --batch \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
 -load $PYTHONMODE \
+-l $TEST1 \
 -l $TEST2 \
 -l $TEST4 \
 -l $TEST5 \
@@ -77,4 +79,5 @@ $EMACS -Q --batch \
 -l $TEST12 \
 -l $TEST13 \
 -l $TEST14 \
+-l $TEST15 \
 -f ert-run-tests-batch-and-exit
