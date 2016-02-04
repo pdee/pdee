@@ -1,3 +1,4 @@
+.gitignore
 # gitignore liftet from Org master git repository.
 
 # ...by ignoring everything created by 'make', 'make doc', `make info'
@@ -69,17 +70,6 @@ MANIFEST*
 befehle.txt
 LICENSE
 build
-.gitignore
-python-modes/python-mode-el/devel/fundocu2infoformats.el
-
-python-modes/pdee/py-process-name.el
-python-modes/pdee/py-set-shell-completion-environment.el
-python-modes/pdee/py-shell.el
-python-modes/pdee/devel/*
-python-modes/python-mode-el/devel/*
-python-modes/xemacs-lp-python-mode/devel/*
-python-modes/pdee/devel/*
-
 # Bytecodes
 *.pyc
 setup.py
