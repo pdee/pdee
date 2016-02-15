@@ -2039,13 +2039,12 @@ See also command `toggle-py-underscore-word-syntax-p' ")
 (defvar py-autofill-timer nil)
 (defvar py-fill-column-orig fill-column)
 
-;; Internally used. Reports the python-mode branch
-(setq python-mode-message-string
+(defvar python-mode-message-string
   (if (or (string= "python-mode.el" (buffer-name))
-	  (and (ignore-errors (buffer-file-name)
-			      (string-match "python-mode.el" (buffer-file-name)))))
+	  (ignore-errors (string-match "python-mode.el" (buffer-file-name))))
       "python-mode.el"
-    "python-components-mode.el"))
+    "python-components-mode.el")
+  "Internally used. Reports the python-mode branch")
 
 (unless (fboundp 'string-to-syntax)
   ;; Skip's XE workaround
