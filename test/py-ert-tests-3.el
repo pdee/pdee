@@ -360,5 +360,19 @@ More docstring here.
     (py-shift-indent-left)
     (should (eq 8 (current-indentation)))))
 
+(ert-deftest py-dont-stop-embedded-test ()
+  (py-test-with-temp-buffer
+      "# lp:1545649, C-M-a and C-M-e stop at embedded defs.
+class Foo:
+    def bar(self):
+        print(\"\"\"
+This is
+a nested
+string.
+\"\"\")
+"
+    (py-backward-def-or-class)
+    (should (eq (char-after) ?c))))
+
 (provide 'py-ert-tests-3)
 ;;; py-ert-tests-3.el ends here
