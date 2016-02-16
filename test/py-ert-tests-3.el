@@ -217,7 +217,7 @@ More docstring here.
       (skip-chars-forward " \t\r\n\f")
       (should (eq 4 (current-indentation))))))
 
-(ert-deftest py-backward-indent-test ()
+(ert-deftest py-ert-backward-indent-test ()
   (py-test-with-temp-buffer
       "class A(object):
     def a(self):
@@ -234,7 +234,7 @@ More docstring here.
     (py-backward-indent)
     (should (eq (char-after) ?s))))
 
-(ert-deftest py-forward-indent-test ()
+(ert-deftest py-ert-forward-indent-test ()
   (py-test-with-temp-buffer-point-min
       "class A(object):
     def a(self):
@@ -253,7 +253,7 @@ More docstring here.
     (py-forward-indent)
     (should (eq (char-before) ?:))))
 
-(ert-deftest py-beginning-of-indent-p-test ()
+(ert-deftest py-ert-beginning-of-indent-p-test ()
   (py-test-with-temp-buffer-point-min
       "class A(object):
     def a(self):
@@ -264,7 +264,7 @@ More docstring here.
     (py-backward-indent)
     (should (py--beginning-of-indent-p))))
 
-(ert-deftest py-beginning-of-indent-bol-p-test ()
+(ert-deftest py-ert-beginning-of-indent-bol-p-test ()
   (py-test-with-temp-buffer-point-min
       "class A(object):
     def a(self):
@@ -275,7 +275,7 @@ More docstring here.
     (beginning-of-line)
     (should (py--beginning-of-indent-bol-p))))
 
-(ert-deftest py-copy-indent-test ()
+(ert-deftest py-ert-copy-indent-test ()
   (py-test-with-temp-buffer-point-min
       "class A(object):
     def a(self):
@@ -288,7 +288,7 @@ More docstring here.
     (py-backward-statement)
     (should (py--beginning-of-indent-p))))
 
-(ert-deftest py-delete-indent-test ()
+(ert-deftest py-ert-delete-indent-test ()
   (py-test-with-temp-buffer-point-min
       "class A(object):
     def a(self):
@@ -299,7 +299,7 @@ More docstring here.
     (should (eobp))
     (should (bolp))))
 
-(ert-deftest py-kill-indent-test ()
+(ert-deftest py-ert-kill-indent-test ()
   (py-test-with-temp-buffer-point-min
       "class A(object):
     def a(self):
@@ -311,7 +311,7 @@ More docstring here.
     (should (eobp))
     (should (bolp))))
 
-(ert-deftest py-mark-indent-test ()
+(ert-deftest py-ert-mark-indent-test ()
   (py-test-with-temp-buffer-point-min
       "class A(object):
     def a(self):
@@ -322,7 +322,7 @@ More docstring here.
     ;; (message "%s" (buffer-substring-no-properties (region-beginning) (region-end)))
     (should (eq 28 (length (buffer-substring-no-properties (region-beginning) (region-end)))))))
 
-(ert-deftest py-backward-comment-test ()
+(ert-deftest py-ert-backward-comment-test ()
   (py-test-with-temp-buffer-point-min
       "class A(object):
     def a(self):
@@ -334,7 +334,7 @@ More docstring here.
     (py-backward-comment)
     (should (eq (char-after) ?#))))
 
-(ert-deftest py-forward-comment-test ()
+(ert-deftest py-ert-forward-comment-test ()
   (py-test-with-temp-buffer-point-min
       "class A(object):
     def a(self):
@@ -346,7 +346,7 @@ More docstring here.
     (py-forward-comment)
     (should (eq (char-before) ?\)))))
 
-(ert-deftest py-shift-indent-test ()
+(ert-deftest py-ert-shift-indent-test ()
   (py-test-with-temp-buffer-point-min
       "class A(object):
     def a(self):
@@ -360,7 +360,7 @@ More docstring here.
     (py-shift-indent-left)
     (should (eq 8 (current-indentation)))))
 
-(ert-deftest py-dont-stop-embedded-test ()
+(ert-deftest py-ert-dont-stop-embedded-def-or-class-test ()
   (py-test-with-temp-buffer
       "# lp:1545649, C-M-a and C-M-e stop at embedded defs.
 class Foo:
@@ -373,6 +373,53 @@ string.
 "
     (py-backward-def-or-class)
     (should (eq (char-after) ?c))))
+
+(ert-deftest py-ert-dont-stop-embedded-class-test ()
+  (py-test-with-temp-buffer
+      "# lp:1545649, C-M-a and C-M-e stop at embedded defs.
+class Foo:
+    def bar(self):
+        class baz
+            print(\"\"\"
+This is
+a nested
+string.
+\"\"\")
+"
+    (py-backward-class)
+    (should (eq 0 (current-column)))))
+
+(ert-deftest py-ert-dont-stop-embedded-def-test ()
+  (py-test-with-temp-buffer
+      "# lp:1545649, C-M-a and C-M-e stop at embedded defs.
+def Foo:
+    class bar(self):
+        def baz
+            print(\"\"\"
+This is
+a nested
+string.
+\"\"\")
+"
+    (py-backward-def)
+    (should (eq 0 (current-column)))))
+
+(ert-deftest py-ert-dont-stop-embedded-def-from-string-test ()
+  (py-test-with-temp-buffer
+      "# lp:1545649, C-M-a and C-M-e stop at embedded defs.
+def Foo:
+    class bar(self):
+        def baz
+            print(\"\"\"
+This is
+a nested
+string.
+\"\"\")
+"
+    (search-backward "string")
+    (skip-chars-backward " \t\r\n\f") 
+    (py-backward-def)
+    (should (eq (char-after) ?d))))
 
 (provide 'py-ert-tests-3)
 ;;; py-ert-tests-3.el ends here

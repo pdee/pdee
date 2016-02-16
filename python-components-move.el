@@ -855,12 +855,20 @@ With BOL, return line-beginning-position"
 	       (setq erg (line-beginning-position))))
     (or erg (goto-char orig))))
 
+(defun py--backward-def-or-class-matcher (regexp indent)
+  (while (and (re-search-backward regexp nil 'move 1)
+	      (setq erg (match-beginning 0))
+	      (or
+	       (< indent (current-indentation))
+	       (nth 8 (parse-partial-sexp (point-min) (point)))))
+    (setq erg nil)))
+
 (defun py--backward-def-or-class-intern (regexp &optional bol)
-  (let (erg)
-    (while (and (re-search-backward regexp nil 'move 1)
-		(setq erg (match-beginning 0))
-		(nth 8 (parse-partial-sexp (point-min) (point))))
-      (setq erg nil))
+  (let ((indent (progn (when (py-in-string-or-comment-p)
+			    (py-backward-statement))
+		       (current-indentation)))
+	erg)
+    (py--backward-def-or-class-matcher regexp indent)
     (and erg (looking-back "async ")
 	 (goto-char (match-beginning 0))
 	 (setq erg (point)))
@@ -869,41 +877,54 @@ With BOL, return line-beginning-position"
     (and erg py-mark-decorators (setq erg (py--backward-def-or-class-decorator-maybe bol)))
     erg))
 
-(defun py-backward-class ()
+(defun py-backward-class (&optional nested)
   "Go to beginning of class.
 
 If already at beginning, go one class backward.
 Returns beginning of class if successful, nil otherwise
 
+With optional NESTED, match next upwards, ignore indentation.
+
 When `py-mark-decorators' is non-nil, decorators are considered too. "
-  (interactive)
-  (let ((erg (py--backward-def-or-class-intern py-class-re)))
+  (interactive "P")
+  (let ((erg
+	 (if (eq 4 (prefix-numeric-value nested))
+	     (py-up-class)
+	   (py--backward-def-or-class-intern py-class-re))))
     (when (and py-verbose-p (called-interactively-p 'any))
       (message "%s" erg))
     erg))
 
-(defun py-backward-def ()
+(defun py-backward-def (&optional nested)
   "Go to beginning of def.
 
 If already at beginning, go one def backward.
 Returns beginning of def if successful, nil otherwise
 
+With optional NESTED, match next upwards, ignore indentation.
+
 When `py-mark-decorators' is non-nil, decorators are considered too. "
-  (interactive)
-  (let ((erg (py--backward-def-or-class-intern py-def-re)))
+  (interactive "P")
+  (let ((erg (if (eq 4 (prefix-numeric-value nested))
+		 (py-up-def)
+	       (py--backward-def-or-class-intern py-def-re))))
     (when (and py-verbose-p (called-interactively-p 'any))
       (message "%s" erg))
     erg))
 
-(defun py-backward-def-or-class ()
+(defun py-backward-def-or-class (&optional nested)
   "Go to beginning of def-or-class.
 
 If already at beginning, go one def-or-class backward.
 Returns beginning of def-or-class if successful, nil otherwise
 
+With optional NESTED, match next upwards, ignore indentation.
+
 When `py-mark-decorators' is non-nil, decorators are considered too. "
-  (interactive)
-  (let ((erg (py--backward-def-or-class-intern py-def-or-class-re)))
+  (interactive "P")
+  (let ((erg (if (eq 4 (prefix-numeric-value nested))
+		 (py-up-def-or-class)
+	       (py--backward-def-or-class-intern py-def-or-class-re))))
     (when (and py-verbose-p (called-interactively-p 'any))
       (message "%s" erg))
     erg))
