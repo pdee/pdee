@@ -1321,28 +1321,29 @@ Put point inside the parentheses of a multiline import and hit
 \\[py-sort-imports] to sort the imports lexicographically"
   (interactive)
   (save-excursion
-    (let ((open-paren (save-excursion (progn (up-list -1) (point))))
-          (close-paren (save-excursion (progn (up-list 1) (point))))
+    (let ((open-paren (ignore-errors (save-excursion (progn (up-list -1) (point)))))
+          (close-paren (ignore-errors (save-excursion (progn (up-list 1) (point)))))
           sorted-imports)
-      (goto-char (1+ open-paren))
-      (skip-chars-forward " \n\t")
-      (setq sorted-imports
-            (sort
-             (delete-dups
-              (split-string (buffer-substring
-                             (point)
-                             (save-excursion (goto-char (1- close-paren))
-                                             (skip-chars-backward " \n\t")
-                                             (point)))
-                            ", *\\(\n *\\)?"))
-             ;; XXX Should this sort case insensitively?
-             'string-lessp))
-      ;; Remove empty strings.
-      (delete-region open-paren close-paren)
-      (goto-char open-paren)
-      (insert "(\n")
-      (insert (py--join-words-wrapping (remove "" sorted-imports) "," "    " 78))
-      (insert ")"))))
+      (when (and open-paren close-paren)
+	(goto-char (1+ open-paren))
+	(skip-chars-forward " \n\t")
+	(setq sorted-imports
+	      (sort
+	       (delete-dups
+		(split-string (buffer-substring
+			       (point)
+			       (save-excursion (goto-char (1- close-paren))
+					       (skip-chars-backward " \n\t")
+					       (point)))
+			      ", *\\(\n *\\)?"))
+	       ;; XXX Should this sort case insensitively?
+	       'string-lessp))
+	;; Remove empty strings.
+	(delete-region open-paren close-paren)
+	(goto-char open-paren)
+	(insert "(\n")
+	(insert (py--join-words-wrapping (remove "" sorted-imports) "," "    " 78))
+	(insert ")")))))
 
 (defun py--in-literal (&optional lim)
   "Return non-nil if point is in a Python literal (a comment or string).
