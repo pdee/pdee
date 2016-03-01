@@ -185,14 +185,14 @@ Default is t"
   :type 'boolean
   :group 'python-mode)
 
-(defcustom py-shell-unfontify-p t
-  "Run `py--run-unfontify-timer' unfontifying the shell banner-text.
+;; (defcustom py-shell-unfontify-p t
+;;   "Run `py--run-unfontify-timer' unfontifying the shell banner-text.
 
-Default is nil "
+;; Default is nil "
 
-  :type 'boolean
-  :tag "py-shell-unfontify-p"
-  :group 'python-mode)
+;;   :type 'boolean
+;;   :tag "py-shell-unfontify-p"
+;;   :group 'python-mode)
 
 (defcustom py-session-p t
   "If commands would use an existing process.
@@ -282,14 +282,13 @@ Default is nil"
   :tag "py-dedicated-process-p"
   :group 'python-mode)
 
+(defvar py-shell--font-lock-buffer " *PSFLB*"
+  "May contain the `py-buffer-name' currently fontified. " )
+
 (defvar py-return-result-p t
   "Internally used. When non-nil, return resulting string of `py-execute-...' functions. Imports will use it with nil.
 
 Default is t")
-
-(defvar py--shell-unfontify nil
-  "Internally set. ")
-(make-variable-buffer-local 'py--shell-unfontify)
 
 (defvar py--match-paren-forward-p nil
   "Internally used by `py-match-paren'. ")

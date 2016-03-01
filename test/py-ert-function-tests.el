@@ -1923,15 +1923,6 @@
 (ert-deftest py-ert--run-auto-fill-timer-functionp-test ()
   (should (functionp 'py--run-auto-fill-timer)))
 
-(ert-deftest py-ert--unfontify-banner-intern-functionp-test ()
-  (should (functionp 'py--unfontify-banner-intern)))
-
-(ert-deftest py-ert--unfontify-banner-functionp-test ()
-  (should (functionp 'py--unfontify-banner)))
-
-(ert-deftest py-ert--run-unfontify-timer-functionp-test ()
-  (should (functionp 'py--run-unfontify-timer)))
-
 (ert-deftest py-ert-complete-auto-functionp-test ()
   (should (functionp 'py-complete-auto)))
 

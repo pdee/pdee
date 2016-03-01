@@ -471,63 +471,6 @@ If region is active, restrict uncommenting at region "
              py-autofill-timer-delay t
              'py--set-auto-fill-values)))))
 
-(defvar py--timer nil
-  "Used by `py--run-unfontify-timer'")
-(make-variable-buffer-local 'py--timer)
-
-(defvar py--timer-delay nil
-  "Used by `py--run-unfontify-timer'")
-(make-variable-buffer-local 'py--timer-delay)
-
-(defun py--unfontify-banner-intern (buffer)
-  (save-excursion
-    (goto-char (point-min))
-    (let ((erg (or (ignore-errors (car comint-last-prompt))
-		   (and
-		    (re-search-forward py-fast-filter-re nil t 1)
-		    (match-beginning 0))
-		   (progn
-		     (forward-paragraph)
-		     (point)))))
-      ;; (sit-for 1 t)
-      (if erg
-	  (progn
-	    (font-lock-unfontify-region (point-min) erg)
-	    (goto-char (point-max)))
-	(progn (and py-debug-p (message "%s" (concat "py--unfontify-banner: Don't see a prompt in buffer " (buffer-name buffer)))))))))
-
-(defun py--unfontify-banner (&optional buffer)
-  "Unfontify the shell banner-text.
-
-Cancels `py--timer'
-Expects being called by `py--run-unfontify-timer' "
-  (interactive)
-    (let ((buffer (or buffer (current-buffer))))
-      (if (ignore-errors (buffer-live-p (get-buffer buffer)))
-	  (with-current-buffer buffer
-	    (py--unfontify-banner-intern buffer)
-	    (and (timerp py--timer)(cancel-timer py--timer)))
-	(and (timerp py--timer)(cancel-timer py--timer)))))
-
-(defun py--run-unfontify-timer (&optional buffer)
-  "Unfontify the shell banner-text "
-  (when py--shell-unfontify
-    (let ((buffer (or buffer (current-buffer)))
-	  done)
-      (if (and
-	   (buffer-live-p buffer)
-	   (or
-	    (eq major-mode 'py-python-shell-mode)
-	    (eq major-mode 'py-ipython-shell-mode)))
-	  (unless py--timer
-	    (setq py--timer
-		  (run-with-idle-timer
-		   (if py--timer-delay (setq py--timer-delay 3)
-		     (setq py--timer-delay 0.1))
-		   nil
-		   #'py--unfontify-banner buffer)))
-	(cancel-timer py--timer)))))
-
 ;;  unconditional Hooks
 ;;  (orgstruct-mode 1)
 (add-hook 'python-mode-hook
@@ -536,7 +479,6 @@ Expects being called by `py--run-unfontify-timer' "
 	    (setq indent-tabs-mode py-indent-tabs-mode)))
 
 (remove-hook 'python-mode-hook 'python-setup-brm)
-;; ;
 
 (defun py-complete-auto ()
   "Auto-complete function using py-complete. "

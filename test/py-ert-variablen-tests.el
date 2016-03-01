@@ -31,12 +31,6 @@
 (ert-deftest py-ert-shell-map-test ()
   (should (boundp 'py-shell-map)))
 
-(ert-deftest py-ert--timer-test ()
-  (should (boundp 'py--timer)))
-
-(ert-deftest py-ert--timer-delay-test ()
-  (should (boundp 'py--timer-delay)))
-
 (ert-deftest py-ert-eldoc-string-code-test ()
   (should (boundp 'py-eldoc-string-code)))
 
@@ -489,9 +483,6 @@
 
 (ert-deftest py-ert-shell-toggle-2-test ()
   (should (boundp 'py-shell-toggle-2)))
-
-(ert-deftest py-ert-shell-unfontify-p-test ()
-  (should (boundp 'py-shell-unfontify-p)))
 
 (ert-deftest py-ert-smart-indentation-test ()
   (should (boundp 'py-smart-indentation)))
