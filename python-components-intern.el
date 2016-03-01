@@ -40,12 +40,12 @@
     (define-key map [(control c)(!)] 'py-shell)
     (define-key map [(control c)(control t)] 'py-toggle-shell)
     ;; electric keys
-    (define-key map [(:)] 'py-electric-colon)
-    (define-key map [(\#)] 'py-electric-comment)
-    (define-key map [(delete)] 'py-electric-delete)
-    (define-key map [(backspace)] 'py-electric-backspace)
-    (define-key map [(control backspace)] 'py-hungry-delete-backwards)
-    (define-key map [(control c) (delete)] 'py-hungry-delete-forward)
+    ;; (define-key map [(:)] 'py-electric-colon)
+    ;; (define-key map [(\#)] 'py-electric-comment)
+    ;; (define-key map [(delete)] 'py-electric-delete)
+    ;; (define-key map [(backspace)] 'py-electric-backspace)
+    ;; (define-key map [(control backspace)] 'py-hungry-delete-backwards)
+    ;; (define-key map [(control c) (delete)] 'py-hungry-delete-forward)
     ;; (define-key map [(control y)] 'py-electric-yank)
     ;; moving point
     (define-key map [(control c)(control p)] 'py-backward-statement)
