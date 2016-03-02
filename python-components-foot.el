@@ -25,41 +25,49 @@
 
 ;;; Code:
 
-(defun py-shell-font-lock-post-command-hook ()
-  "Fontifies current line in shell buffer."
-  (let (start)
-    (when (setq start (ignore-errors (cdr comint-last-prompt)))
-      (let* ((input (buffer-substring-no-properties
-		     start (point-max)))
-	     (buffer-undo-list t)
-	     (replacement
-	      (save-current-buffer
-		(set-buffer py-shell--font-lock-buffer)
-		(erase-buffer) 
-		(insert input)
-		;; Ensure buffer is fontified, keeping it
-		;; compatible with Emacs < 24.4.
-		(if (fboundp 'font-lock-ensure)
-		    (funcall 'font-lock-ensure)
-		  (font-lock-default-fontify-buffer))
-		(buffer-substring (point-min) (point-max))))
-	     (replacement-length (length replacement))
-	     (i 0))
-	;; Inject text properties to get input fontified.
-	(while (not (= i replacement-length))
-	  (let* ((plist (text-properties-at i replacement))
-		 (next-change (or (next-property-change i replacement)
-				  replacement-length))
-		 (plist (let ((face (plist-get plist 'face)))
-			  (if (not face)
-			      plist
-			    ;; Replace FACE text properties with
-			    ;; FONT-LOCK-FACE so input is fontified.
-			    (plist-put plist 'face nil)
-			    (plist-put plist 'font-lock-face face)))))
-	    (set-text-properties
-	     (+ start i) (+ start next-change) plist)
-	    (setq i next-change)))))))
+(defun py-shell-fontify ()
+  "Fontifies input in shell buffer. "
+  ;; causes delay in fontification until next trigger
+  ;; (unless (or (member (char-before) (list 32 ?: ?\)))
+  (unless (eq (char-before) 32)
+    ;; (< (abs (save-excursion (skip-chars-backward "^ \t\r\n\f"))) 2))
+    (let* ((pps (parse-partial-sexp (line-beginning-position) (point)))
+	   (start (if (and (nth 8 pps) (nth 1 pps))
+		      (max (nth 1 pps) (nth 8 pps))
+		    (or (nth 1 pps) (nth 8 pps)))))
+      (when (or start
+		(setq start (ignore-errors (cdr comint-last-prompt))))
+	(let* ((input (buffer-substring-no-properties
+		       start (point-max)))
+	       (buffer-undo-list t)
+	       (replacement
+		(save-current-buffer
+		  (set-buffer py-shell--font-lock-buffer)
+		  (erase-buffer)
+		  (insert input)
+		  ;; Ensure buffer is fontified, keeping it
+		  ;; compatible with Emacs < 24.4.
+		  (if (fboundp 'font-lock-ensure)
+		      (funcall 'font-lock-ensure)
+		    (font-lock-default-fontify-buffer))
+		  (buffer-substring (point-min) (point-max))))
+	       (replacement-length (length replacement))
+	       (i 0))
+	  ;; Inject text properties to get input fontified.
+	  (while (not (= i replacement-length))
+	    (let* ((plist (text-properties-at i replacement))
+		   (next-change (or (next-property-change i replacement)
+				    replacement-length))
+		   (plist (let ((face (plist-get plist 'face)))
+			    (if (not face)
+				plist
+			      ;; Replace FACE text properties with
+			      ;; FONT-LOCK-FACE so input is fontified.
+			      (plist-put plist 'face nil)
+			      (plist-put plist 'font-lock-face face)))))
+	      (set-text-properties
+	       (+ start i) (+ start next-change) plist)
+	      (setq i next-change))))))))
 
 (define-derived-mode py-auto-completion-mode python-mode "Pac"
   "Run auto-completion"
@@ -245,11 +253,10 @@ See available customizations listed in files variables-python-mode at directory 
       ;; Prepare the buffer where the input is fontified
       (set-buffer (get-buffer-create py-shell--font-lock-buffer))
       (font-lock-mode 1)
-      (set (make-local-variable 'delay-mode-hooks) t)
       (python-mode))
-    (add-hook 'post-command-hook
-	      #'py-shell-font-lock-post-command-hook nil 'local)
-)
+    (set (make-local-variable 'delay-mode-hooks) t)
+    (add-hook 'post-self-insert-hook
+	      #'py-shell-fontify nil 'local))
   (setenv "PAGER" "cat")
   (setenv "TERM" "dumb")
   (set-syntax-table python-mode-syntax-table)
