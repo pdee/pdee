@@ -513,18 +513,6 @@ Use `defcustom' to keep value across sessions "
   "Return `t' if emacs major version is above 23"
   (< 23 (string-to-number (car (split-string emacs-version "\\.")))))
 
-;; (defun py-backward-comment (&optional last)
-;;   "Leave upwards comment,  include empty lines. "
-;;   (interactive)
-;;   (let ((pps (parse-partial-sexp (point-min) (point)))
-;;         (last (or last (point))))
-;;     (if (and (or (and (nth 4 pps)(goto-char (nth 8 pps)))(looking-at comment-start))
-;;              (looking-back "^[ \t]*")(not (bobp)))
-;;         (progn
-;;           (skip-chars-backward " \t\r\n\f")
-;;           (py-beginning-of-comments last))
-;;       (goto-char last))))
-
 (defun py--empty-arglist-indent (nesting py-indent-offset indent-offset)
   "Internally used by `py-compute-indentation'"
   (if
