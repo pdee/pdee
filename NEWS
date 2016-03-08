@@ -1,6 +1,17 @@
 Python Mode News
 ================
 
+New in version 6.2.3
+---------------------
+
+New customizable `py-shell-fontify-style' offers some choice
+how to fontify py-shell buffer:
+
+"input" will leave previous IN/OUT unfontified.
+"all" keeps output fontified too.
+
+Default is nil, no fontification.
+
 New in version 6.2.2
 ---------------------
 

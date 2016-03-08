@@ -1976,20 +1976,33 @@ Use current region unless optional args BEG END are delivered."
       (goto-char (cdr-safe erg)))
     res))
 
-;; /usr/lib/python2.7/pdb.py eyp.py
-(defalias 'py-kill-minor-expression 'py-kill-partial-expression)
-(defalias 'py-fast-send-string 'py-execute-string-fast)
+(defun py-rotate-shell-fontify-style (msg)
+  "Rotates between possible values 'all, 'input and nil. "
+  (interactive "p")
+  (cond ((eq py-shell-fontify-style 'all)
+	 (setq py-shell-fontify-style nil))
+	((eq py-shell-fontify-style 'input)
+	 (setq py-shell-fontify-style 'all))
+	(t (setq py-shell-fontify-style 'input)))
+  (py--shell-setup-fontification py-shell-fontify-style)
+  (when msg (message "py-shell-fontify-style set to: %s" py-shell-fontify-style)))
 
+;; /usr/lib/python2.7/pdb.py eyp.py
+(defalias 'IPython 'ipython)
+(defalias 'Ipython 'ipython)
 (defalias 'Python 'python)
+(defalias 'Python2 'python2)
+(defalias 'Python3 'python3)
+(defalias 'ipy 'ipython)
+(defalias 'iyp 'ipython)
+(defalias 'py-execute-region-default 'py-execute-region)
+(defalias 'py-execute-region-default-dedicated 'py-execute-region-dedicated)
+(defalias 'py-fast-send-string 'py-execute-string-fast)
+(defalias 'py-kill-minor-expression 'py-kill-partial-expression)
 (defalias 'pyhotn 'python)
 (defalias 'pyhton 'python)
 (defalias 'pyt 'python)
-(defalias 'Python2 'python2)
-(defalias 'Python3 'python3)
-(defalias 'IPython 'ipython)
-(defalias 'Ipython 'ipython)
-(defalias 'iyp 'ipython)
-(defalias 'ipy 'ipython)
+
 
 (provide 'python-components-intern)
 ;;;  python-components-intern.el ends here

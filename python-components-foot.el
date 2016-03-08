@@ -152,8 +152,8 @@ See available customizations listed in files variables-python-mode at directory 
   (set (make-local-variable 'which-func-functions) 'py-which-def-or-class)
   (set (make-local-variable 'parse-sexp-lookup-properties) t)
   (set (make-local-variable 'comment-use-syntax) t)
-  (set (make-local-variable 'comment-start) "#[^*]")
-  (set (make-local-variable 'comment-start-skip) "^[ \t]*#+[^*] *")
+  (set (make-local-variable 'comment-start) "#")
+  (set (make-local-variable 'comment-start-skip) "^[ \t]*#+ *")
 
   (if py-empty-comment-line-separates-paragraph-p
       (progn
@@ -248,17 +248,41 @@ See available customizations listed in files variables-python-mode at directory 
   (when (called-interactively-p 'any) (message "python-mode loaded from: %s" python-mode-message-string))
   (force-mode-line-update))
 
+(defun py--shell-setup-fontification (&optional style)
+  "Expected values are either nil, 'all or 'input. "
+  (setq style (or style py-shell-fontify-style))
+  (if style
+      (progn
+	(cond ((eq 'all style)
+	       (remove-hook 'change-major-mode-hook 'font-lock-defontify)
+	       (set (make-local-variable 'py--shell-unfontify) 'py-shell-unfontify-p)
+	       (when py--shell-unfontify
+	       	 (add-hook 'py-python-shell-mode-hook #'py--run-unfontify-timer (current-buffer)))
+	       (remove-hook 'post-command-hook 'py-shell-fontify t)
+	       (set (make-local-variable 'font-lock-defaults)
+		    '(python-font-lock-keywords nil nil nil nil
+						(font-lock-syntactic-keywords
+						 . py-font-lock-syntactic-keywords)))
+	       (if (fboundp 'font-lock-ensure)
+		   (funcall 'font-lock-ensure)
+		 (font-lock-default-fontify-buffer)))
+	      ;; style is 'input, prepare `py-shell-fontify'
+	      (t (set (make-local-variable 'delay-mode-hooks) t)
+		 (save-current-buffer
+		   ;; Prepare the buffer where the input is fontified
+		   (set-buffer (get-buffer-create py-shell--font-lock-buffer))
+		   (font-lock-mode 1)
+		   (python-mode))
+		 ;; post-self-insert-hook
+		 (add-hook 'post-command-hook
+			   #'py-shell-fontify nil 'local)))
+	(force-mode-line-update))
+    ;; no fontification in py-shell
+    (remove-hook 'py-python-shell-mode-hook 'py--run-unfontify-timer t)
+    (remove-hook 'post-command-hook 'py-shell-fontify t)))
+
 (defun py--all-shell-mode-setting ()
-  (when py-fontify-shell-buffer-p
-    (save-current-buffer
-      ;; Prepare the buffer where the input is fontified
-      (set-buffer (get-buffer-create py-shell--font-lock-buffer))
-      (font-lock-mode 1)
-      (python-mode))
-    (set (make-local-variable 'delay-mode-hooks) t)
-    ;; post-self-insert-hook
-    (add-hook 'post-command-hook
-	      #'py-shell-fontify nil 'local))
+  (py--shell-setup-fontification)
   (setenv "PAGER" "cat")
   (setenv "TERM" "dumb")
   (set-syntax-table python-mode-syntax-table)

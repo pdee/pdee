@@ -87,7 +87,7 @@
   :group 'languages
   :prefix "py-")
 
-(defconst py-version "6.2.2")
+(defconst py-version "6.2.2+")
 
 (defcustom py-install-directory ""
   "Directory where python-mode.el and it's subdirectories should be installed. Needed for completion and other environment stuff only. "
@@ -184,15 +184,6 @@ Respective C-M-b will call py-backward-expression
 Default is t"
   :type 'boolean
   :group 'python-mode)
-
-;; (defcustom py-shell-unfontify-p t
-;;   "Run `py--run-unfontify-timer' unfontifying the shell banner-text.
-
-;; Default is nil "
-
-;;   :type 'boolean
-;;   :tag "py-shell-unfontify-p"
-;;   :group 'python-mode)
 
 (defcustom py-session-p t
   "If commands would use an existing process.
@@ -1372,6 +1363,18 @@ Don't split when max number of displayed windows is reached. "
                  (const :tag "split-window-horizontally" split-window-horizontally)
                  )
   :tag "py-split-windows-on-execute-function"
+  :group 'python-mode)
+
+(defcustom py-shell-fontify-style nil
+  "Fontify code in Python shell. Default is nil.
+
+INPUT will leave previous IN/OUT unfontified.
+ALL keeps output fontified "
+  :type '(choice (const :tag "All" all)
+                 (const :tag "Input" input)
+		 (const :tag "Default" nil)
+                 )
+  :tag "py-shell-fontify-style"
   :group 'python-mode)
 
 (defcustom py-hide-show-keywords
@@ -2686,6 +2689,76 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
   (list "python" "python3" "ipython")
   "Serialize tests employing dolist")
 
+(defvar py--shell-unfontify nil
+  "Internally used by `py--run-unfontify-timer'. ")
+(make-variable-buffer-local 'py--shell-unfontify)
+
+(defvar py--timer nil
+  "Used by `py--run-unfontify-timer'")
+(make-variable-buffer-local 'py--timer)
+
+(defvar py--timer-delay nil
+  "Used by `py--run-unfontify-timer'")
+(make-variable-buffer-local 'py--timer-delay)
+
+(defcustom py-shell-unfontify-p t
+  "Run `py--run-unfontify-timer' unfontifying the shell banner-text.
+
+Default is nil "
+
+  :type 'boolean
+  :tag "py-shell-unfontify-p"
+  :group 'python-mode)
+
+(defun py--unfontify-banner-intern (buffer)
+  (save-excursion
+    (goto-char (point-min))
+    (let ((erg (or (ignore-errors (car comint-last-prompt))
+		   (and
+		    (re-search-forward py-fast-filter-re nil t 1)
+		    (match-beginning 0))
+		   (progn
+		     (forward-paragraph)
+		     (point)))))
+      ;; (sit-for 1 t)
+      (if erg
+	  (progn
+	    (font-lock-unfontify-region (point-min) erg)
+	    (goto-char (point-max)))
+	(progn (and py-debug-p (message "%s" (concat "py--unfontify-banner: Don't see a prompt in buffer " (buffer-name buffer)))))))))
+
+(defun py--unfontify-banner (&optional buffer)
+  "Unfontify the shell banner-text.
+
+Cancels `py--timer'
+Expects being called by `py--run-unfontify-timer' "
+  (interactive)
+    (let ((buffer (or buffer (current-buffer))))
+      (if (ignore-errors (buffer-live-p (get-buffer buffer)))
+	  (with-current-buffer buffer
+	    (py--unfontify-banner-intern buffer)
+	    (and (timerp py--timer)(cancel-timer py--timer)))
+	(and (timerp py--timer)(cancel-timer py--timer)))))
+
+(defun py--run-unfontify-timer (&optional buffer)
+  "Unfontify the shell banner-text "
+  (when py--shell-unfontify
+    (let ((buffer (or buffer (current-buffer)))
+	  done)
+      (if (and
+	   (buffer-live-p buffer)
+	   (or
+	    (eq major-mode 'py-python-shell-mode)
+	    (eq major-mode 'py-ipython-shell-mode)))
+	  (unless py--timer
+	    (setq py--timer
+		  (run-with-idle-timer
+		   (if py--timer-delay (setq py--timer-delay 3)
+		     (setq py--timer-delay 0.1))
+		   nil
+		   #'py--unfontify-banner buffer)))
+	(cancel-timer py--timer)))))
+
 (defsubst py-keep-region-active ()
   "Keep the region active in XEmacs."
   (and (boundp 'zmacs-region-stays)
@@ -3449,9 +3522,6 @@ Returns char found. "
         ;; Numbers
 	;;        (,(rx symbol-start (or (1+ digit) (1+ hex-digit)) symbol-end) . py-number-face)
 	(,(rx symbol-start (1+ digit) symbol-end) . py-number-face)))
-
-(defalias 'py-execute-region-default 'py-execute-region)
-(defalias 'py-execute-region-default-dedicated 'py-execute-region-dedicated)
 
 (require 'python-components-switches)
 (require 'python-components-edit)
