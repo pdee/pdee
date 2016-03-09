@@ -1366,10 +1366,13 @@ Don't split when max number of displayed windows is reached. "
   :group 'python-mode)
 
 (defcustom py-shell-fontify-style nil
-  "Fontify code in Python shell. Default is nil.
+  "Fontify current input resp. output in Python shell. Default is nil.
 
-INPUT will leave previous IN/OUT unfontified.
-ALL keeps output fontified "
+INPUT will leave output unfontified.
+ALL keeps output fontified. 
+
+At any case only current input gets fontified.
+"
   :type '(choice (const :tag "All" all)
                  (const :tag "Input" input)
 		 (const :tag "Default" nil)
