@@ -764,7 +764,7 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
   "Update variables. "
   ;; (when py-debug-p (message "run: %s" "py--execute-base"))
   (setq py-error nil)
-  (when py-debug-p (message "py--execute-base: py-split-window-on-execute: %s" py-split-window-on-execute))
+  ;; (when py-debug-p (message "py--execute-base: py-split-window-on-execute: %s" py-split-window-on-execute))
 
   (let* ((py-exception-buffer (or py-exception-buffer (current-buffer)))
 	 (py-exception-window (selected-window))
@@ -813,7 +813,7 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 			    (get-buffer-process (py-shell nil py-dedicated-process-p which-shell buffer)))))))
     (setq py-buffer-name buffer)
     (py--execute-base-intern strg shell filename proc file wholebuf buffer origline execute-directory start end which-shell)
-    (when py-debug-p (message "py--execute-base: py-split-window-on-execute: %s" py-split-window-on-execute))
+    ;; (when py-debug-p (message "py--execute-base: py-split-window-on-execute: %s" py-split-window-on-execute))
     (when (or py-split-window-on-execute py-switch-buffers-on-execute-p)
       (py--shell-manage-windows buffer windows-config py-exception-buffer))))
 
@@ -854,7 +854,7 @@ When optional FILE is `t', no temporary file is needed. "
          (tempbuf (get-buffer-create temp))
 	 erg)
     (with-current-buffer tempbuf
-      (when py-debug-p (message "py--execute-buffer-finally: py-split-window-on-execute: %s" py-split-window-on-execute))
+      ;; (when py-debug-p (message "py--execute-buffer-finally: py-split-window-on-execute: %s" py-split-window-on-execute))
       (insert strg)
       (write-file tempfile))
     (unwind-protect
@@ -870,7 +870,7 @@ If an exception occurred return error-string, otherwise return nil.  BUF must ex
 Indicate LINE if code wasn't run from a file, thus remember line of source buffer "
   (let* ((pmx (copy-marker (point-max)))
 	 file bol estring ecode limit erg)
-    (when py-debug-p (switch-to-buffer (current-buffer)))
+    ;; (when py-debug-p (switch-to-buffer (current-buffer)))
     (goto-char (point-min))
     (when (re-search-forward "File \"\\(.+\\)\", line \\([0-9]+\\)\\(.*\\)$" nil t)
       (setq erg (copy-marker (point)))
@@ -915,14 +915,14 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
       (sit-for 0.1 t)
       ;; (when py-debug-p (switch-to-buffer (current-buffer)))
       (setq py-result (py--fetch-result orig)))
-    (when py-debug-p (message "py-result: %s" py-result))
+    ;; (when py-debug-p (message "py-result: %s" py-result))
     (and (string-match "\n$" py-result)
 	 (setq py-result (replace-regexp-in-string py-fast-filter-re "" (substring py-result 0 (match-beginning 0)))))
     (if py-result
 	(if (string-match "^Traceback" py-result)
 	    (progn
 	      (with-temp-buffer
-		(when py-debug-p (message "py-result: %s" py-result))
+		;; (when py-debug-p (message "py-result: %s" py-result))
 		(insert py-result)
 		(sit-for 0.1 t)
 		(setq py-error (py--fetch-error (current-buffer) origline)))
@@ -1043,11 +1043,12 @@ Returns position where output starts. "
       (unless py-ignore-result-p
 	(setq erg (py--postprocess-comint buffer origline windows-config py-exception-buffer orig))
 	(if py-error
-	    (progn
-	      (setq py-error (prin1-to-string py-error))
-	      ;; keep the temporary file in case of error
-	      (when py-debug-p
-		(message "py--execute-file-base, py-error:%s" py-error)))
+	    ;; (progn
+	    (setq py-error (prin1-to-string py-error))
+	  ;; keep the temporary file in case of error
+	  ;; (when py-debug-p
+	  ;; (message "py--execute-file-base, py-error:%s" py-error))
+	  ;;)
 	  erg)))))
 
 (defun py-execute-file (filename)

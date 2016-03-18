@@ -1365,7 +1365,7 @@ Don't split when max number of displayed windows is reached. "
   :tag "py-split-windows-on-execute-function"
   :group 'python-mode)
 
-(defcustom py-shell-fontify-style nil
+(defcustom py-shell-fontify-style 'all
   "Fontify current input resp. output in Python shell. Default is nil.
 
 INPUT will leave output unfontified.
@@ -1373,9 +1373,9 @@ ALL keeps output fontified.
 
 At any case only current input gets fontified.
 "
-  :type '(choice (const :tag "All" all)
+  :type '(choice (const :tag "Default" all)
                  (const :tag "Input" input)
-		 (const :tag "Default" nil)
+		 (const :tag "Nil" nil)
                  )
   :tag "py-shell-fontify-style"
   :group 'python-mode)
@@ -3219,7 +3219,7 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
 	    (if
 		(re-search-backward py-fast-filter-re nil t 1)
 		(goto-char (match-end 0))
-	      (when py-debug-p (message "%s"  "py-count-lines: Don't see a prompt here"))
+	      ;; (when py-debug-p (message "%s"  "py-count-lines: Don't see a prompt here"))
 	      (goto-char beg))
 	  (goto-char beg)))
       (while (and (< (point) end)(not (eobp)) (skip-chars-forward "^\n" end))
