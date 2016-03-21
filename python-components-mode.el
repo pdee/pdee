@@ -1369,7 +1369,7 @@ Don't split when max number of displayed windows is reached. "
   "Fontify current input resp. output in Python shell. Default is nil.
 
 INPUT will leave output unfontified.
-ALL keeps output fontified. 
+ALL keeps output fontified.
 
 At any case only current input gets fontified.
 "
@@ -2860,26 +2860,28 @@ See also `py-object-reference-face'"
       (delete-region erg (point-max))))
   (goto-char (point-max)))
 
-(defun py--python-send-setup-code-intern (name)
+(defun py--python-send-setup-code-intern (name &optional msg)
   (let ((setup-file (concat (py--normalize-directory py-temp-directory) "py-" name "-setup-code.py"))
-	(py-ignore-result-p t))
+	(py-ignore-result-p t)
+	(buf (current-buffer)))
     (unless (file-readable-p setup-file)
       (with-temp-buffer
 	(insert (eval (car (read-from-string (concat "py-" name "-setup-code")))))
 	(write-file setup-file)))
-    (py--execute-file-base nil setup-file nil (current-buffer))))
+    (py--execute-file-base nil setup-file nil buf)
+    (when msg (message "%s" (concat name " setup-code sent to " (process-name (get-buffer-process buf)))))))
 
 (defun py--python-send-completion-setup-code ()
   "For Python see py--python-send-setup-code "
-  (py--python-send-setup-code-intern "shell-completion"))
+  (py--python-send-setup-code-intern "shell-completion" py-verbose-p))
 
 (defun py--python-send-ffap-setup-code ()
   "For Python see py--python-send-setup-code "
-  (py--python-send-setup-code-intern "ffap"))
+  (py--python-send-setup-code-intern "ffap" py-verbose-p))
 
 (defun py--python-send-eldoc-setup-code ()
   "For Python see py--python-send-setup-code "
-  (py--python-send-setup-code-intern "eldoc"))
+  (py--python-send-setup-code-intern "eldoc" py-verbose-p))
 
 (defun py--ipython-import-module-completion ()
   "Setup IPython v0.11 or greater.
