@@ -145,6 +145,9 @@ Results arrive in output buffer, which is not in comint-mode"
   :tag "py-fast-process-p"
   :group 'python-mode)
 
+(defvar py-this-result nil
+  "Internally used, store return-value")
+
 ;; (defcustom py-which-def-or-class-function py-which-def-or-class
 ;;   "If which-function-mode should use `py-which-def-or-class'.
 
@@ -280,6 +283,14 @@ Default is nil"
   "Internally used. When non-nil, return resulting string of `py-execute-...' functions. Imports will use it with nil.
 
 Default is t")
+
+(defcustom py--execute-use-temp-file-p nil
+ "Assume execution at a remote machine.
+
+ where write-access is not given. "
+
+:type 'boolean
+:group 'python-mode)
 
 (defvar py--match-paren-forward-p nil
   "Internally used by `py-match-paren'. ")
@@ -486,6 +497,9 @@ Give some hints, if not."
 (defvar smart-operator-mode nil)
 (defvar highlight-indent-active nil)
 (defvar autopair-mode nil)
+
+(defvar py-edit-docstring-orig-pos nil
+  "Internally used by `py-edit-docstring'. ")
 
 (defvar py-result nil
   "Internally used. May store result from Python process. ")
@@ -3452,7 +3466,7 @@ Returns char found. "
 	      "if" "and" "del"  "not" "while" "as" "elif" "global"
 	      "or" "async with" "with" "assert" "else"  "pass" "yield" "break"
 	      "exec" "in" "continue" "finally" "is" "except" "raise"
-	      "return"  "async for" "for" "lambda")
+	      "return"  "async for" "for" "lambda" "await")
              symbol-end)
         (,(rx symbol-start (or "async def" "def" "class") symbol-end) . py-def-class-face)
         (,(rx symbol-start (or "import" "from") symbol-end) . py-import-from-face)

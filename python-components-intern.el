@@ -1987,6 +1987,10 @@ Use current region unless optional args BEG END are delivered."
   (py--shell-setup-fontification py-shell-fontify-style)
   (when msg (message "py-shell-fontify-style set to: %s" py-shell-fontify-style)))
 
+(defun py-toggle-execute-use-temp-file ()
+  (interactive)
+  (setq py--execute-use-temp-file-p (not py--execute-use-temp-file-p)))
+
 ;; /usr/lib/python2.7/pdb.py eyp.py
 (defalias 'IPython 'ipython)
 (defalias 'Ipython 'ipython)
@@ -2005,4 +2009,4 @@ Use current region unless optional args BEG END are delivered."
 
 
 (provide 'python-components-intern)
-;;;  python-components-intern.el ends here
+ ;;;  python-components-intern.el ends here
