@@ -655,7 +655,9 @@ LIEP stores line-end-position at point-of-interest
 				(current-indentation))))
 			;; in string
 			((and (nth 3 pps)(nth 8 pps))
-			 (py--compute-indentation-in-string pps))
+			 (if (py--docstring-p)
+			     (py--compute-indentation-in-string pps)
+			   0))
 			((and (looking-at "\"\"\"\\|'''")(not (bobp)))
 			 (py-backward-statement)
 			 (py-compute-indentation orig origline closing line nesting repeat indent-offset liep))

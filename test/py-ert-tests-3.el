@@ -421,5 +421,16 @@ string.
     (py-backward-def)
     (should (eq (char-after) ?d))))
 
+(ert-deftest py-ert-wrong-indent-inside-string-lp-1574731-test ()
+  (py-test-with-temp-buffer
+      "def foo():
+    print(\"\"\"
+    
+Bar
+\"\"\")
+"
+    (forward-line -3)
+    (should (eq 0 (py-compute-indentation))))) 
+
 (provide 'py-ert-tests-3)
 ;;; py-ert-tests-3.el ends here
