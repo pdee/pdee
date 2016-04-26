@@ -417,7 +417,7 @@ string.
 \"\"\")
 "
     (search-backward "string")
-    (skip-chars-backward " \t\r\n\f") 
+    (skip-chars-backward " \t\r\n\f")
     (py-backward-def)
     (should (eq (char-after) ?d))))
 
@@ -425,12 +425,38 @@ string.
   (py-test-with-temp-buffer
       "def foo():
     print(\"\"\"
-    
+
 Bar
 \"\"\")
 "
     (forward-line -3)
-    (should (eq 0 (py-compute-indentation))))) 
+    (should (eq 0 (py-compute-indentation)))))
+
+(ert-deftest py-ert-edit-docstring-write-content-back-test ()
+  (py-test-with-temp-buffer-point-min
+      "def foo():
+    \"\"\"def bar():
+    pass\"\"\"
+    pass
+"
+    (let ((py-edit-docstring-buffer "Py-Ert-Edit-Docstring-Test"))
+    (search-forward "pass" nil t 1)
+    (py-edit-docstring)
+    (set-buffer "Py-Ert-Edit-Docstring-Test")
+    (switch-to-buffer (current-buffer))
+    (goto-char (point-min))
+    (end-of-line)
+    (newline)
+    (insert "'''My edit-docstring ert-test'''")
+    (beginning-of-line)
+    (indent-according-to-mode)
+    (py--write-back-docstring)
+    ;; back in orginial test buffer
+    (forward-line 1)
+    (end-of-line)
+    (should (and (nth 3 (parse-partial-sexp (point-min) (point)))
+	    (nth 8 (parse-partial-sexp (point-min) (point)))))
+    )))
 
 (provide 'py-ert-tests-3)
 ;;; py-ert-tests-3.el ends here
