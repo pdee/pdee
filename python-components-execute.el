@@ -552,7 +552,9 @@ Internal use"
       ;; Fixme: otherwise new window appears above
       (save-excursion
 	(other-window 1)
-	(pop-to-buffer output-buffer)
+	;; (pop-to-buffer output-buffer)
+	;; [Bug 1579309] python buffer window on top when using python3
+	(switch-to-buffer output-buffer)
 	(goto-char (point-max))
 	(other-window 1)))
      ((not py-switch-buffers-on-execute-p)
