@@ -1970,9 +1970,9 @@ Use current region unless optional args BEG END are delivered."
       (funcall (car (read-from-string (concat "py-forward-" name))))
       (narrow-to-region (point) start))))
 
-(defun py--forms-report-result (erg)
+(defun py--forms-report-result (erg &optional iact)
   (let ((res (ignore-errors (buffer-substring-no-properties (car-safe erg) (cdr-safe erg)))))
-    (when (and res (called-interactively-p 'any))
+    (when (and res iact)
       (goto-char (car-safe erg))
       (set-mark (point))
       (goto-char (cdr-safe erg)))

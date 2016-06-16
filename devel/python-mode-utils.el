@@ -238,12 +238,6 @@
        "try-block"
        ))
 
-;; "statement", "def", "def-or-class", "class" defined for speed in
-;; python-components-move.el 
-
-;; Also "expression", "partial-expression",
-;; "indent","section" special forms
-
 (setq py-backward-forms
       (list
        "block"
@@ -2140,7 +2134,7 @@ Use backward-statement for `top-level', also bol-forms don't make sense here"
 Return code of `py-" ele "' at point, a string. \"
   (interactive)
   (let ((erg (py--mark-base \"" ele "\")))
-    (py--forms-report-result erg)))
+    (py--forms-report-result erg (called-interactively-p 'any))))
 ")))
   (insert "\n;; python-components-forms-code.el ends here
 \(provide 'python-components-forms-code)")
