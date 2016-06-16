@@ -951,11 +951,18 @@ def baz():
       (should (not (empty-line-p))))))
 
 
-(ert-deftest py-partial-expression-test ()
+(ert-deftest py-partial-expression-test-1 ()
   (py-test-with-temp-buffer-point-min
       "foo=1"
-     (message "%s" (py-partial-expression))
+     ;; (message "%s" (py-partial-expression))
     (and (should (string= "foo" (py-partial-expression)))
+	 (py-kill-buffer-unconditional (current-buffer)))))
+
+(ert-deftest py-partial-expression-test-2 ()
+  (py-test-with-temp-buffer-point-min
+      "print(root.getchildren()[0])"
+    (search-forward "getchildren")
+    (and (should (string= "getchildren()[0]" (py-partial-expression)))
 	 (py-kill-buffer-unconditional (current-buffer)))))
 
 (ert-deftest py-ert-moves-up-execute-statement-test ()

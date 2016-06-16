@@ -240,7 +240,7 @@ Operators are ignored. "
   (let (erg)
     (skip-chars-forward py-partial-expression-backward-chars)
     ;; group arg
-    (and
+    (while
      (looking-at "[\[{(]")
      (goto-char (scan-sexps (point) 1)))
     (setq erg (point))
