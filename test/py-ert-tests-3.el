@@ -360,7 +360,7 @@ More docstring here.
     (py-shift-indent-left)
     (should (eq 8 (current-indentation)))))
 
-(ert-deftest py-ert-dont-stop-embedded-def-or-class-test ()
+(ert-deftest py-ert-dont-stop-embedded-def-or-class-test-1 ()
   (py-test-with-temp-buffer
       "# lp:1545649, C-M-a and C-M-e stop at embedded defs.
 class Foo:
@@ -373,6 +373,20 @@ string.
 "
     (py-backward-def-or-class)
     (should (eq (char-after) ?c))))
+
+(ert-deftest py-ert-dont-stop-embedded-def-or-class-test-2 ()
+  (py-test-with-temp-buffer
+      "# lp:1545649, C-M-a and C-M-e stop at embedded defs.
+class Foo:
+    def bar(self):
+        print(\"\"\"
+This is
+a nested
+string.
+\"\"\")
+        return True"
+    (py-backward-def-or-class)
+    (should (eq (char-after) ?d))))
 
 (ert-deftest py-ert-dont-stop-embedded-class-test ()
   (py-test-with-temp-buffer
@@ -457,6 +471,32 @@ Bar
     (should (and (nth 3 (parse-partial-sexp (point-min) (point)))
 	    (nth 8 (parse-partial-sexp (point-min) (point)))))
     )))
+
+(ert-deftest py-ert-nested-def-lp-1594263-test ()
+  (py-test-with-temp-buffer
+      "def decoratorFunctionWithArguments(arg1, arg2, arg3):
+    '''print decorated function call data to stdout.
+
+    Usage:
+
+    @decoratorFunctionWithArguments('arg1', 'arg2')
+    def func(a, b, c=True):
+   pass
+    '''
+
+    def wwrap(f):
+        print 'Inside wwrap()'
+        def wrapped_f(\*args):
+            print 'Inside wrapped_f()'
+            print 'Decorator arguments:', arg1, arg2, arg3
+            f(\*args)
+            print 'After f(\*args)'
+        return wrapped_f
+    return wwrap"
+    (forward-line -1)
+    (back-to-indentation) 
+    (py-backward-def-or-class)
+    (should (looking-at "def wwrap"))))
 
 (provide 'py-ert-tests-3)
 ;;; py-ert-tests-3.el ends here

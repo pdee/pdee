@@ -856,19 +856,45 @@ With BOL, return line-beginning-position"
     (or erg (goto-char orig))))
 
 (defun py--backward-def-or-class-matcher (regexp indent)
-  (while (and (re-search-backward regexp nil 'move 1)
-	      (setq erg (match-beginning 0))
-	      (or
-	       (< indent (current-indentation))
-	       (nth 8 (parse-partial-sexp (point-min) (point)))))
-    (setq erg nil)))
+  (let (done)
+    (while (and
+	    (not done)
+	    (re-search-backward regexp nil 'move 1)
+	    (or
+	     (nth 8 (parse-partial-sexp (point-min) (point)))
+	     (if
+		 ;; looking one level below
+		 (< 0 indent)
+		 (if
+		     (<= indent (current-indentation))
+		     t
+		   (setq done (match-beginning 0)))
+	       (if
+		   (< indent (current-indentation))
+		   t
+		 (setq done (match-beginning 0)))))))
+    done))
 
 (defun py--backward-def-or-class-intern (regexp &optional bol)
-  (let ((indent (progn (when (py-in-string-or-comment-p)
-			    (py-backward-statement))
-		       (current-indentation)))
+  ;; get the right start-indent
+  ;; (when (empty-line-p)
+  ;;   (skip-chars-backward " \t\r\n\f"))
+  ;; ;; just behind a closing delimiter
+  ;; (when (and (eolp) (member (char-before) (list ?\) ?} ?\] ?\" ?')))
+  ;;   (forward-char -1))
+  (let ((indent (if (empty-line-p)
+		    (current-indentation)
+		  (save-excursion
+		    (if (py--beginning-of-statement-p)
+			(current-indentation)
+		      (py-backward-statement)
+		      (current-indentation)))))
+
+	;; (progn (when (py-in-string-or-comment-p)
+	;; (py-backward-statement))
+	;; (current-indentation)))
 	erg)
-    (py--backward-def-or-class-matcher regexp indent)
+    (setq erg (py--backward-def-or-class-matcher regexp indent))
     (and erg (looking-back "async ")
 	 (goto-char (match-beginning 0))
 	 (setq erg (point)))

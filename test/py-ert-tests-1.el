@@ -55,7 +55,6 @@ if __name__ == \"__main__\":
 
 (add-to-list 'load-path default-directory)
 
-
 (defun py-tests-go-to (string)
   "Move point at beginning of STRING in the current test. "
   (and (eq (point) (point-max))(goto-char (point-min)))
@@ -463,8 +462,7 @@ result = some_function_that_takes_arguments(
     ;; (sit-for 1)
     (py-backward-def-or-class-bol)
     (should (bolp))
-    (should (eq 10 (count-lines (point-min) (point))))))
-
+    (should (char-equal ?c (char-after)))))
 
 (ert-deftest py-ert-moves-forward-clause-bol ()
   (py-test-with-temp-buffer-point-min
@@ -512,11 +510,11 @@ result = some_function_that_takes_arguments(
   (py-test-with-temp-buffer-point-min
       py-ert-moves-text
     (goto-char 410)
-    (indent-to 4)
+    (indent-to 8)
     ;; (sit-for 1)
     (py-backward-def-bol)
     (should (bolp))
-    (should (eq 10 (count-lines (point-min) (point))))))
+    (should (char-equal ?\ (char-after)))))
 
 (ert-deftest py-ert-moves-up-indent-tabs-mode-test ()
   (py-test-with-temp-buffer-point-min
@@ -847,7 +845,6 @@ def baz():
       (should (<= (current-column) 72))
       )))
 
-
 (ert-deftest py-ert-moves-up-fill-paragraph-pep-257 ()
   (let ((py-docstring-style 'pep-257))
     (py-test-with-temp-buffer-point-min
@@ -949,7 +946,6 @@ def baz():
       (search-forward "\"\"\"")
       (forward-line -1)
       (should (not (empty-line-p))))))
-
 
 (ert-deftest py-partial-expression-test-1 ()
   (py-test-with-temp-buffer-point-min
@@ -1170,7 +1166,6 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     (should (string-match "kugel" (py-which-def-or-class)))
     (search-forward "pylauf")
     (should (string-match "kugel.pylauf" (py-which-def-or-class)))))
-
 
 (ert-deftest py-ert-which-def-or-class-test-2 ()
   (py-test-with-temp-buffer
@@ -1432,7 +1427,6 @@ except:
     ;; (py-match-paren)
     ;; (should (eq (char-after) ?c))
     ;; ))
-
 
 (provide 'py-ert-tests-1)
 ;;; py-ert-tests-1.el ends here
