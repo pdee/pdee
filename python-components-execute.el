@@ -759,8 +759,7 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 (defun py--close-execution (tempbuf tempfile)
   "Delete temporary buffer and and run `py--store-result-maybe'"
   (unless py-debug-p
-    (py-kill-buffer-unconditional tempbuf)
-    (py-delete-temporary tempfile tempbuf)))
+    (when tempfile (py-delete-temporary tempfile tempbuf))))
 
 (defun py--execute-base (&optional start end shell filename proc file wholebuf)
   "Update variables. "
@@ -831,6 +830,26 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 				 output-buffer py-store-result-p py-return-result-p)
     (sit-for 0.1))))
 
+(defun py--delete-temp-file (tempfile &optional tempbuf)
+  "The called, after `py--execute-buffer-finally' returned. "
+  (sit-for py--delete-temp-file-delay t)
+  (py--close-execution tempbuf tempfile))
+
+(defun py--execute-buffer-finally (strg execute-directory wholebuf which-shell proc procbuf origline)
+  (let* ((temp (make-temp-name
+		;; FixMe: that should be simpler
+                (concat (replace-regexp-in-string py-separator-char "-" (replace-regexp-in-string (concat "^" py-separator-char) "" (replace-regexp-in-string ":" "-" (if (stringp which-shell) which-shell (prin1-to-string which-shell))))) "-")))
+         (tempbuf (get-buffer-create temp))
+	 erg)
+    (setq py-tempfile (concat (expand-file-name py-temp-directory) py-separator-char (replace-regexp-in-string py-separator-char "-" temp) ".py"))
+    (with-current-buffer tempbuf
+      ;; (when py-debug-p (message "py--execute-buffer-finally: py-split-window-on-execute: %s" py-split-window-on-execute))
+      (insert strg)
+      (write-file py-tempfile))
+    (unwind-protect
+	(setq erg (py--execute-file-base proc py-tempfile nil procbuf py-orig-buffer-or-file nil execute-directory py-exception-buffer origline)))
+    erg))
+
 (defun py--execute-base-intern (strg shell filename proc file wholebuf buffer origline execute-directory start end which-shell)
   "Select the handler.
 
@@ -846,24 +865,12 @@ When optional FILE is `t', no temporary file is needed. "
 	   (py--execute-ge24.3 start end filename execute-directory which-shell py-exception-buffer proc file origline))
 	  ((and filename wholebuf)
 	   (py--execute-file-base proc filename nil buffer nil filename execute-directory py-exception-buffer origline))
-	  (t (py--execute-buffer-finally strg execute-directory wholebuf which-shell proc buffer origline)))))
+	  (t
+	   (py--execute-buffer-finally strg execute-directory wholebuf which-shell proc buffer origline)
+	   (py--delete-temp-file py-tempfile)
+	   ;;
 
-(defun py--execute-buffer-finally (strg execute-directory wholebuf which-shell proc procbuf origline)
-  (let* ((temp (make-temp-name
-		;; FixMe: that should be simpler
-                (concat (replace-regexp-in-string py-separator-char "-" (replace-regexp-in-string (concat "^" py-separator-char) "" (replace-regexp-in-string ":" "-" (if (stringp which-shell) which-shell (prin1-to-string which-shell))))) "-")))
-         (tempfile (concat (expand-file-name py-temp-directory) py-separator-char (replace-regexp-in-string py-separator-char "-" temp) ".py"))
-         (tempbuf (get-buffer-create temp))
-	 erg)
-    (with-current-buffer tempbuf
-      ;; (when py-debug-p (message "py--execute-buffer-finally: py-split-window-on-execute: %s" py-split-window-on-execute))
-      (insert strg)
-      (write-file tempfile))
-    (unwind-protect
-	(setq erg (py--execute-file-base proc tempfile nil procbuf py-orig-buffer-or-file nil execute-directory py-exception-buffer origline)))
-    (sit-for 0.1 t)
-    (py--close-execution tempbuf tempfile)
-    erg))
+	   ))))
 
 (defun py--fetch-error (buf &optional origline)
   "Highlight exceptions found in BUF.

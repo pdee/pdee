@@ -1168,6 +1168,13 @@ Default is `t'."
   :tag "py-current-defun-delay"
   :group 'python-mode)
 
+(defcustom py--delete-temp-file-delay 1
+  "Used by `py--delete-temp-file'"
+
+  :type 'number
+  :tag "py--delete-temp-file-delay"
+  :group 'python-mode)
+
 (defcustom py-python-send-delay 5
   "Seconds to wait for output, used by `py--send-...' functions.
 
@@ -1452,6 +1459,9 @@ Else python"
   :group 'python-mode)
 
 (defvar py-default-interpreter py-shell-name)
+
+(defvar py-tempfile nil
+  "Internally used")
 
 (defvar py-named-shells (list 'ipython 'ipython-dedicated 'ipython-no-switch 'ipython-switch 'ipython-switch-dedicated 'ipython2.7 'ipython2.7-dedicated 'ipython2.7-no-switch 'ipython2.7-switch 'ipython2.7-switch-dedicated 'ipython3 'ipython3-dedicated 'ipython3-no-switch 'ipython3-switch 'ipython3-switch-dedicated 'jython 'jython-dedicated 'jython-no-switch 'jython-switch 'jython-switch-dedicated 'python 'python-dedicated 'python-no-switch 'python-switch 'python-switch-dedicated 'python2 'python2-dedicated 'python2-no-switch 'python2-switch 'python2-switch-dedicated 'python3 'python3-dedicated 'python3-no-switch 'python3-switch 'python3-switch-dedicated))
 
@@ -2178,7 +2188,6 @@ can write into: the value (if any) of the environment variable TMPDIR,
 (defvar py-pydbtrack-input-prompt "^[(]*ipydb[>)]+ "
   "Recognize the pydb-prompt. ")
 
-
 (defvar py-ipython-input-prompt-re "In \\[[0-9]+\\]:\\|^[ ]\\{3\\}[.]\\{3,\\}:"
   "A regular expression to match the IPython input prompt. ")
 
@@ -2284,7 +2293,6 @@ some logging etc. "
 See also `py-assignment-re' ")
 
 ;; (setq py-operator-re "[ \t]*\\(\\.\\|+\\|-\\|*\\|//\\|//\\|&\\|%\\||\\|\\^\\|>>\\|<<\\|<\\|<=\\|>\\|>=\\|==\\|!=\\|=\\)[ \t]*")
-
 
 (defvar py-assignment-re "[ \t]*=[^=]"
   "Matches assignment operator inclusive whitespaces around.
@@ -3296,7 +3304,6 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
      (and (eq (char-before (point)) ?\\ )
           (py-escaped))))
 ;;
-
 
 (defvar python-mode-map nil)
 (setq python-mode-map
