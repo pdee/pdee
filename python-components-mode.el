@@ -1272,7 +1272,7 @@ Default is \"\" "
   :tag "py-pylint-command"
   :group 'python-mode)
 
-(defcustom py-pylint-command-args "--errors-only"
+(defcustom py-pylint-command-args '("--errors-only")
   "String arguments to be passed to pylint.
 
 Default is \"--errors-only\" "
@@ -1485,7 +1485,7 @@ Else /usr/bin/python"
 "
   :group 'python-mode)
 
-(defcustom py-python-command-args "-i"
+(defcustom py-python-command-args '("-i")
   "String arguments to be used when starting a Python shell."
   :type 'string
   :tag "py-python-command-args"
@@ -1510,7 +1510,7 @@ Else /usr/bin/python"
 "
   :group 'python-mode)
 
-(defcustom py-python2-command-args "-i"
+(defcustom py-python2-command-args '("-i")
   "String arguments to be used when starting a Python shell."
   :type '(repeat string)
   :tag "py-python2-command-args"
@@ -1535,7 +1535,7 @@ At GNU systems see /usr/bin/python3"
 "
   :group 'python-mode)
 
-(defcustom py-python3-command-args "-i"
+(defcustom py-python3-command-args '("-i")
   "String arguments to be used when starting a Python3 shell."
   :type '(repeat string)
   :tag "py-python3-command-args"

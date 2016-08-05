@@ -664,13 +664,12 @@ Receives a buffer-name as argument"
 (defun py--provide-command-args (fast-process argprompt)
   (cond (fast-process nil)
 	((eq 2 (prefix-numeric-value argprompt))
-	 (read-string "Py-Shell arguments: "
-		      py-python-command-args))
+	 (mapconcat 'identity py-python2-command-args " "))
 	((string-match "^[Ii]" py-shell-name)
 	 py-ipython-command-args)
 	((string-match "^[^-]+3" py-shell-name)
-	 py-python3-command-args)
-	(t py-python-command-args)))
+	 (mapconcat 'identity py-python3-command-args " "))
+	(t (mapconcat 'identity py-python-command-args " "))))
 
 (defun py-shell (&optional argprompt dedicated shell buffer-name fast-process exception-buffer)
   "Start an interactive Python interpreter in another window.

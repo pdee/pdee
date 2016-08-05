@@ -749,37 +749,68 @@ Imports done are displayed in message buffer. "
 
 ;;  Pylint
 (defalias 'pylint 'py-pylint-run)
+;; (defun py-pylint-run (command)
+;;   "*Run pylint (default on the file currently visited).
+
+;; For help see M-x pylint-help resp. M-x pylint-long-help.
+;; Home-page: http://www.logilab.org/project/pylint "
+;;   (interactive
+;;    (let ((default
+;;            (if (buffer-file-name)
+;;                (format "%s %s %s" py-pylint-command
+;;                        (mapconcat 'identity (list py-pylint-command-args) " ")
+;;                        (buffer-file-name))
+;;              (format "%s %s %s" py-pylint-command
+;;                      (mapconcat 'identity py-pylint-command-args " ")
+;;                      (buffer-name (current-buffer)))))
+;;          (last (and py-pylint-history (car py-pylint-history)))
+;;          erg)
+
+;;      (list
+;;       (if (fboundp 'read-shell-command)
+;;           (read-shell-command "Run pylint like this: "
+;; 			      (or last default)
+;;                               'py-pylint-history)
+;;         (read-string "Run pylint like this: "
+;; 		     (or default last)
+;;                      'py-pylint-history)))))
+;;   (save-some-buffers (not py-ask-about-save))
+;;   (if (or (not buffer-file-name)
+;; 	  (not (file-readable-p buffer-file-name)))
+;;       (message "Warning: %s" "pylint needs a file"))
+;;   (set-buffer (get-buffer-create "*Pylint*"))
+;;   (erase-buffer)
+;;   (shell-command command "*Pylint*"))
+
 (defun py-pylint-run (command)
-  "*Run pylint (default on the file currently visited).
+  "Run pylint (default on the file currently visited).
 
 For help see M-x pylint-help resp. M-x pylint-long-help.
 Home-page: http://www.logilab.org/project/pylint "
   (interactive
-   (let ((default
-           (if (buffer-file-name)
-               (format "%s %s %s" py-pylint-command
-                       (mapconcat 'identity py-pylint-command-args " ")
-                       (buffer-file-name))
-             (format "%s %s %s" py-pylint-command
-                     (mapconcat 'identity py-pylint-command-args " ")
-                     (buffer-name (current-buffer)))))
+   (let ((default (format "%s %s %s" py-pylint-command
+			  (mapconcat 'identity py-pylint-command-args " ")
+			  ((lambda (file-name)
+			     (if (and (featurep 'tramp) (tramp-tramp-file-p file-name))
+				 (tramp-file-name-localname
+				  (tramp-dissect-file-name file-name))
+			       file-name))
+			   (or (buffer-file-name) (buffer-name (current-buffer))))))
          (last (and py-pylint-history (car py-pylint-history)))
          erg)
 
-     (list
-      (if (fboundp 'read-shell-command)
-          (read-shell-command "Run pylint like this: "
-			      (or last default)
-                              'py-pylint-history)
-        (read-string "Run pylint like this: "
-		     (or default last)
-                     'py-pylint-history)))))
+     (list (funcall (if (fboundp 'read-shell-command)
+			'read-shell-command 'read-string)
+		    "Run pylint like this: "
+		    (or default last)
+		    'py-pylint-history))))
+  ;; (if py-pylint-offer-current-p (or default last) (or last default))
+  ;; 'py-pylint-history))))
   (save-some-buffers (not py-ask-about-save))
-  (if (or (not buffer-file-name)
-	  (not (file-readable-p buffer-file-name)))
-      (message "Warning: %s" "pylint needs a file"))
   (set-buffer (get-buffer-create "*Pylint*"))
   (erase-buffer)
+  (unless (file-readable-p (car (cddr (split-string command))))
+    (message "Warning: %s" "pylint needs a file"))
   (shell-command command "*Pylint*"))
 
 (defalias 'pylint-help 'py-pylint-help)
