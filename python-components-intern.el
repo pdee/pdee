@@ -1424,30 +1424,6 @@ Eval resulting buffer to install it, see customizable `py-extensions'. "
           (setq element (cdr element))))
       element)))
 
-;;  (defun py-shell-send-string (string &optional process msg filename)
-;;    "Send STRING to Python PROCESS.
-;;  When `py-verbose-p' and MSG is non-nil messages the first line of STRING."
-;;    (interactive "sPython command: ")
-;;    (let* ((process (or process (get-buffer-process (py-shell))))
-;;           (lines (split-string string "\n"))
-;;           (temp-file-name (concat (with-current-buffer (process-buffer process)
-;;                                     (file-remote-p default-directory))
-;;                                   (py--normalize-directory py-temp-directory)
-;;  				 ;; (md5 (user-login-name))
-;;                                   (md5 (concat (user-login-name)(prin1-to-string (current-time))))
-;;  				 "-psss-temp.py"))
-;;           (file-name (or filename (buffer-file-name) temp-file-name)))
-;;      (if (> (length lines) 1)
-;;  	(with-temp-file temp-file-name
-;;  	  (insert string)
-;;  	  (delete-trailing-whitespace)
-;;  	  (py-send-file temp-file-name process temp-file-name))
-;;        (comint-send-string process string)
-;;        (when (or (not (string-match "\n$" string))
-;;                  (string-match "\n[ \t].*\n?$" string))
-;;          (comint-send-string process "\n")))
-;;      (unless py-debug-p (when (file-readable-p temp-file-name)(delete-file temp-file-name)))))
-
 (defun py--delay-process-dependent (process)
   "Call a `py-ipython-send-delay' or `py-python-send-delay' according to process"
   (if (string-match "ipython" (prin1-to-string process))

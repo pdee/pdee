@@ -181,7 +181,7 @@ See available customizations listed in files variables-python-mode at directory 
                                                       (current-column))))
               (^ '(- (1+ (current-indentation)))))))
   (and py-guess-py-install-directory-p (py-set-load-path))
-  ;;  (unless gud-pdb-history (when (buffer-file-name) (add-to-list 'gud-pdb-history (buffer-file-name))))
+  ;;  (unless gud-pdb-history (when (buffer-file-name) (add-to-list 'gud-pdb-history (py--buffer-filename-remote-maybe)))) 
   (and py-autopair-mode
        (load-library "autopair")
        (add-hook 'python-mode-hook

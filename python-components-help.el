@@ -195,7 +195,7 @@ not inside a defun."
   (let* ((beg (point))
 	 (end (progn (skip-chars-forward "a-zA-Z0-9_." (line-end-position))(point)))
 	 (sym (buffer-substring-no-properties beg end))
-	 (origfile (buffer-file-name))
+	 (origfile (py--buffer-filename-remote-maybe))
 	 (temp (md5 (buffer-name)))
 	 (file (concat (py--normalize-directory py-temp-directory) temp "-py-help-at-point.py"))
 	 (cmd (py-find-imports))
@@ -708,16 +708,16 @@ Imports done are displayed in message buffer. "
   "*Run pep8, check formatting - default on the file currently visited."
   (interactive
    (let ((default
-           (if (buffer-file-name)
+           (if (py--buffer-filename-remote-maybe)
                (format "%s %s %s" py-pep8-command
                        (mapconcat 'identity py-pep8-command-args " ")
-                       (buffer-file-name))
+                       (py--buffer-filename-remote-maybe))
              (format "%s %s" py-pep8-command
                      (mapconcat 'identity py-pep8-command-args " "))))
          (last (when py-pep8-history
                  (let* ((lastcmd (car py-pep8-history))
                         (cmd (cdr (reverse (split-string lastcmd))))
-                        (newcmd (reverse (cons (buffer-file-name) cmd))))
+                        (newcmd (reverse (cons (py--buffer-filename-remote-maybe) cmd))))
                    (mapconcat 'identity newcmd " ")))))
 
      (list
@@ -804,16 +804,16 @@ For help see M-x pyflakes-help resp. M-x pyflakes-long-help.
 Home-page: http://www.logilab.org/project/pyflakes "
   (interactive
    (let ((default
-           (if (buffer-file-name)
+           (if (py--buffer-filename-remote-maybe)
                (format "%s %s %s" py-pyflakes-command
                        (mapconcat 'identity py-pyflakes-command-args " ")
-                       (buffer-file-name))
+                       (py--buffer-filename-remote-maybe))
              (format "%s %s" py-pyflakes-command
                      (mapconcat 'identity py-pyflakes-command-args " "))))
          (last (when py-pyflakes-history
                  (let* ((lastcmd (car py-pyflakes-history))
                         (cmd (cdr (reverse (split-string lastcmd))))
-                        (newcmd (reverse (cons (buffer-file-name) cmd))))
+                        (newcmd (reverse (cons (py--buffer-filename-remote-maybe) cmd))))
                    (mapconcat 'identity newcmd " ")))))
 
      (list
@@ -879,16 +879,16 @@ Extracted from http://manpages.ubuntu.com/manpages/natty/man1/pyflakes.1.html"))
 "
   (interactive
    (let ((default
-           (if (buffer-file-name)
+           (if (py--buffer-filename-remote-maybe)
                (format "%s %s %s" py-pyflakespep8-command
                        (mapconcat 'identity py-pyflakespep8-command-args " ")
-                       (buffer-file-name))
+                       (py--buffer-filename-remote-maybe))
              (format "%s %s" py-pyflakespep8-command
                      (mapconcat 'identity py-pyflakespep8-command-args " "))))
          (last (when py-pyflakespep8-history
                  (let* ((lastcmd (car py-pyflakespep8-history))
                         (cmd (cdr (reverse (split-string lastcmd))))
-                        (newcmd (reverse (cons (buffer-file-name) cmd))))
+                        (newcmd (reverse (cons (py--buffer-filename-remote-maybe) cmd))))
                    (mapconcat 'identity newcmd " ")))))
 
      (list
@@ -927,15 +927,15 @@ Extracted from http://manpages.ubuntu.com/manpages/natty/man1/pyflakes.1.html"))
   "*Run pychecker (default on the file currently visited)."
   (interactive
    (let ((default
-           (if (buffer-file-name)
+           (if (py--buffer-filename-remote-maybe)
                (format "%s %s %s" py-pychecker-command
 		       py-pychecker-command-args
-		       (buffer-file-name))
+		       (py--buffer-filename-remote-maybe))
              (format "%s %s" py-pychecker-command py-pychecker-command-args)))
          (last (when py-pychecker-history
                  (let* ((lastcmd (car py-pychecker-history))
                         (cmd (cdr (reverse (split-string lastcmd))))
-                        (newcmd (reverse (cons (buffer-file-name) cmd))))
+                        (newcmd (reverse (cons (py--buffer-filename-remote-maybe) cmd))))
                    (mapconcat 'identity newcmd " ")))))
 
      (list
@@ -966,7 +966,7 @@ See `py-check-command' for the default."
   (interactive
    (list (read-string "Checker command: "
                       (concat py-check-command " "
-                              (let ((name (buffer-file-name)))
+                              (let ((name (py--buffer-filename-remote-maybe)))
                                 (if name
                                     (file-name-nondirectory name)))))))
   (require 'compile)                    ;To define compilation-* variables.
@@ -999,17 +999,17 @@ See `py-check-command' for the default."
 Consider \"pip install flake8\" resp. visit \"pypi.python.org\""))
              py-flake8-command))
           (default
-            (if (buffer-file-name)
+            (if (py--buffer-filename-remote-maybe)
                 (format "%s %s %s" py-flake8-command
                         py-flake8-command-args
-                        (buffer-file-name))
+                        (py--buffer-filename-remote-maybe))
               (format "%s %s" py-flake8-command
                       py-flake8-command-args)))
           (last
            (when py-flake8-history
              (let* ((lastcmd (car py-flake8-history))
                     (cmd (cdr (reverse (split-string lastcmd))))
-                    (newcmd (reverse (cons (buffer-file-name) cmd))))
+                    (newcmd (reverse (cons (py--buffer-filename-remote-maybe) cmd))))
                (mapconcat 'identity newcmd " ")))))
      (list
       (if (fboundp 'read-shell-command)
@@ -1097,15 +1097,15 @@ i.e. spaces, tabs, carriage returns, newlines and newpages. "
   (unless (string-match "pyflakespep8" name)
     (unless (executable-find name)
       (when py-verbose-p (message "Don't see %s. Use `easy_install' %s? " name name))))
-  (if (buffer-file-name)
+  (if (py--buffer-filename-remote-maybe)
       (let* ((temp-file (flymake-init-create-temp-buffer-copy
                          'flymake-create-temp-inplace))
              (local-file (file-relative-name
                           temp-file
-                          (file-name-directory buffer-file-name))))
+                          (file-name-directory (py--buffer-filename-remote-maybe)))))
         (add-to-list 'flymake-allowed-file-name-masks (car (read-from-string (concat "(\"\\.py\\'\" flymake-" name ")"))))
         (list command (list local-file)))
-    (message "%s" "flymake needs a `buffer-file-name'. Please save before calling.")))
+    (message "%s" "flymake needs a `file-name'. Please save before calling.")))
 
 (defun py-flycheck-mode (&optional arg)
   "Toggle `flycheck-mode'.
@@ -1187,7 +1187,7 @@ Maybe call M-x describe-variable RET to query its value. "
 
 (defun variables-base-state (py-exception-buffer orgname reSTname directory-in directory-out)
   (save-restriction
-    (let ((suffix (file-name-nondirectory (buffer-file-name)))
+    (let ((suffix (file-name-nondirectory (py--buffer-filename-remote-maybe)))
           variableslist)
       ;; (widen)
       (goto-char (point-min))

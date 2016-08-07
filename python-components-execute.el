@@ -800,7 +800,9 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 		((getenv "VIRTUAL_ENV"))
 		(t (getenv "HOME"))))
 	 (buffer (py--choose-buffer-name which-shell))
-	 (filename (or (and filename (expand-file-name filename)) (and (not (buffer-modified-p)) (buffer-file-name))))
+	 (filename (or (and filename (expand-file-name filename))
+		       ;; (and (not (buffer-modified-p)) (buffer-file-name))
+		       (py--buffer-filename-remote-maybe)))
 	 (py-orig-buffer-or-file (or filename (current-buffer)))
 	 (proc (cond (proc)
 		     ;; will deal with py-dedicated-process-p also
@@ -895,7 +897,7 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
     (when erg
       (goto-char erg)
       (save-match-data
-	(and (not (buffer-file-name
+	(and (not (py--buffer-filename-remote-maybe
 		   (or
 		    (get-buffer py-exception-buffer)
 		    (get-buffer (file-name-nondirectory py-exception-buffer)))))
@@ -951,14 +953,14 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
   "An alternative way to do it.
 
 May we get rid of the temporary file? "
-  (and (buffer-file-name) buffer-offer-save (buffer-modified-p) (y-or-n-p "Save buffer before executing? ")
-       (write-file (buffer-file-name)))
+  (and (py--buffer-filename-remote-maybe) buffer-offer-save (buffer-modified-p (py--buffer-filename-remote-maybe)) (y-or-n-p "Save buffer before executing? ")
+       (write-file (py--buffer-filename-remote-maybe)))
   (let* ((start (copy-marker start))
          (end (copy-marker end))
          (py-exception-buffer (or py-exception-buffer (current-buffer)))
          (line (py-count-lines (point-min) (if (eq start (line-beginning-position)) (1+ start) start)))
          (strg (buffer-substring-no-properties start end))
-         (tempfile (or (buffer-file-name) (concat (expand-file-name py-temp-directory) py-separator-char (replace-regexp-in-string py-separator-char "-" "temp") ".py")))
+         (tempfile (or (py--buffer-filename-remote-maybe) (concat (expand-file-name py-temp-directory) py-separator-char (replace-regexp-in-string py-separator-char "-" "temp") ".py")))
 
          (proc (or proc (if py-dedicated-process-p
                             (get-buffer-process (py-shell nil py-dedicated-process-p which-shell py-buffer-name))
@@ -1237,7 +1239,7 @@ This may be preferable to `\\[py-execute-buffer]' because:
                        (find-file-noselect filename))))
       (set-buffer buffer)))
   (let ((py-shell-name (or shell (py-choose-shell nil shell)))
-        (file (buffer-file-name (current-buffer))))
+        (file (py--buffer-filename-remote-maybe (current-buffer))))
     (if file
         (let ((proc (or
                      (ignore-errors (get-process (file-name-directory shell)))
@@ -1418,7 +1420,7 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
             ;; (skip-chars-backward "^\t\r\n\f")
             ;; (skip-chars-forward " \t")
             (save-match-data
-              (and (not (buffer-file-name
+              (and (not (py--buffer-filename-remote-maybe
                          (or
                           (get-buffer py-exception-buffer)
                           (get-buffer (file-name-nondirectory py-exception-buffer)))))

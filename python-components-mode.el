@@ -2070,7 +2070,7 @@ See also command `toggle-py-underscore-word-syntax-p' ")
 
 (defvar python-mode-message-string
   (if (or (string= "python-mode.el" (buffer-name))
-	  (ignore-errors (string-match "python-mode.el" (buffer-file-name))))
+	  (ignore-errors (string-match "python-mode.el" (py--buffer-filename-remote-maybe))))
       "python-mode.el"
     "python-components-mode.el")
   "Internally used. Reports the python-mode branch")
@@ -2991,7 +2991,7 @@ return `jython', otherwise return nil."
 
 Returns versioned string, nil if nothing appropriate found "
   (interactive)
-  (let ((path (buffer-file-name))
+  (let ((path (py--buffer-filename-remote-maybe))
                 (py-separator-char (or py-separator-char py-separator-char))
                 erg)
     (when (and path py-separator-char
@@ -3136,10 +3136,11 @@ if `(locate-library \"python-mode\")' is not succesful.
 
 Used only, if `py-install-directory' is empty. "
   (interactive)
-  (let ((erg (cond ((locate-library "python-mode")
+  (let (name
+	(erg (cond ((locate-library "python-mode")
                     (file-name-directory (locate-library "python-mode")))
-                   ((and (buffer-file-name)(string-match "python-mode" (buffer-file-name)))
-                    (file-name-directory (buffer-file-name)))
+                   ((and (setq name (py--buffer-filename-remote-maybe)) (string-match "python-mode" name))
+                    (file-name-directory name))
                    ((string-match "python-mode" (buffer-name))
                     default-directory))))
     (cond ((and (or (not py-install-directory) (string= "" py-install-directory)) erg)
