@@ -757,12 +757,7 @@ Home-page: http://www.logilab.org/project/pylint "
   (interactive
    (let ((default (format "%s %s %s" py-pylint-command
 			  (mapconcat 'identity py-pylint-command-args " ")
-			  ((lambda (file-name)
-			     (if (and (featurep 'tramp) (tramp-tramp-file-p file-name))
-				 (tramp-file-name-localname
-				  (tramp-dissect-file-name file-name))
-			       file-name))
-			   (or (buffer-file-name) (buffer-name (current-buffer))))))
+			  (py--buffer-filename-remote-maybe)))
          (last (and py-pylint-history (car py-pylint-history)))
          erg)
 
