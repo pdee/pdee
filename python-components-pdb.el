@@ -329,7 +329,9 @@ Otherwise return resuslt from `executable-find' "
   "Provide a better default command line when called interactively."
   (interactive
    (list (gud-query-cmdline py-pdb-path
-                            (file-name-nondirectory buffer-file-name)))))
+                            ;; (file-name-nondirectory buffer-file-name)
+			    (file-name-nondirectory (py--buffer-filename-remote-maybe)) 
+			    ))))
 
 (provide 'python-components-pdb)
 ;;; python-components-pdb.el ends here

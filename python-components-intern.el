@@ -102,7 +102,7 @@
 	 (tramp-file-name-localname
 	  (tramp-dissect-file-name file-name))
        file-name))
-   (or (buffer-file-name buffer) (buffer-name (current-buffer)))))
+   (buffer-file-name buffer)))
 
 (defun py-forward-buffer ()
   "A complementary form used by auto-generated commands.
