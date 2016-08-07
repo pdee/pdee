@@ -103,7 +103,8 @@ script, and set to python-mode, and pdbtrack will find it.)"
 
             (setq target_lineno (car target))
             (setq target_buffer (cadr target))
-            (setq target_fname (buffer-file-name target_buffer))
+            (setq target_fname
+		  (py--buffer-filename-remote-maybe target_buffer))
             (switch-to-buffer-other-window target_buffer)
             (goto-char (point-min))
             (forward-line (1- target_lineno))
@@ -283,12 +284,16 @@ At GNU Linux systems required pdb version should be detected by `py--pdb-version
 
 lp:963253"
   (interactive
-   (list (gud-query-cmdline
-	  (if (or (eq system-type 'ms-dos)(eq system-type 'windows-nt))
-	      (car (read-from-string py-python-ms-pdb-command))
-	    ;; sys.version_info[0]
-	    (car (read-from-string (py--pdb-version)))) "asdf")))
-  (pdb command-line (buffer-file-name)))
+   (progn
+     (require 'gud)
+     (list (gud-query-cmdline
+	    (if (or (eq system-type 'ms-dos)(eq system-type 'windows-nt))
+		(car (read-from-string py-python-ms-pdb-command))
+	      ;; sys.version_info[0]
+	      ;; (car (read-from-string (py--pdb-version)))
+	      'pdb)
+	    (py--buffer-filename-remote-maybe)))))
+  (pdb command-line))
 
 (defun py--pdb-current-executable ()
   "When py-pdb-executable is set, return it.
@@ -311,10 +316,10 @@ Otherwise return resuslt from `executable-find' "
 		      (t
 		       (py--pdb-current-executable))))
 	 ;; file to debug
-         (second (cond ((not (ignore-errors (buffer-file-name)))
+         (second (cond ((not (ignore-errors
+			       (py--buffer-filename-remote-maybe)))
 			(error "%s" "Buffer must be saved first."))
-		       ((buffer-file-name)
-			(buffer-file-name))
+		       ((py--buffer-filename-remote-maybe))
 		       (t (and gud-pdb-history (stringp (car gud-pdb-history)) (replace-regexp-in-string "^\\([^ ]+\\) +\\(.+\\)$" "\\2" (car gud-pdb-history))))))
          (erg (and first second (concat first " " second))))
     (when erg

@@ -749,39 +749,6 @@ Imports done are displayed in message buffer. "
 
 ;;  Pylint
 (defalias 'pylint 'py-pylint-run)
-;; (defun py-pylint-run (command)
-;;   "*Run pylint (default on the file currently visited).
-
-;; For help see M-x pylint-help resp. M-x pylint-long-help.
-;; Home-page: http://www.logilab.org/project/pylint "
-;;   (interactive
-;;    (let ((default
-;;            (if (buffer-file-name)
-;;                (format "%s %s %s" py-pylint-command
-;;                        (mapconcat 'identity (list py-pylint-command-args) " ")
-;;                        (buffer-file-name))
-;;              (format "%s %s %s" py-pylint-command
-;;                      (mapconcat 'identity py-pylint-command-args " ")
-;;                      (buffer-name (current-buffer)))))
-;;          (last (and py-pylint-history (car py-pylint-history)))
-;;          erg)
-
-;;      (list
-;;       (if (fboundp 'read-shell-command)
-;;           (read-shell-command "Run pylint like this: "
-;; 			      (or last default)
-;;                               'py-pylint-history)
-;;         (read-string "Run pylint like this: "
-;; 		     (or default last)
-;;                      'py-pylint-history)))))
-;;   (save-some-buffers (not py-ask-about-save))
-;;   (if (or (not buffer-file-name)
-;; 	  (not (file-readable-p buffer-file-name)))
-;;       (message "Warning: %s" "pylint needs a file"))
-;;   (set-buffer (get-buffer-create "*Pylint*"))
-;;   (erase-buffer)
-;;   (shell-command command "*Pylint*"))
-
 (defun py-pylint-run (command)
   "Run pylint (default on the file currently visited).
 

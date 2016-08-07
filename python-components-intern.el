@@ -96,6 +96,13 @@
 (when py-org-cycle-p
   (define-key python-mode-map (kbd "<backtab>") 'org-cycle))
 
+(defun py--buffer-filename-remote-maybe (&optional buffer)
+  ((lambda (file-name)
+     (if (and (featurep 'tramp) (tramp-tramp-file-p file-name))
+	 (tramp-file-name-localname
+	  (tramp-dissect-file-name file-name))
+       file-name))
+   (or (buffer-file-name buffer) (buffer-name (current-buffer)))))
 
 (defun py-forward-buffer ()
   "A complementary form used by auto-generated commands.
