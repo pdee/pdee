@@ -3200,7 +3200,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
                                 pycomplete-directory
                                 (if path (concat path-separator path))))
           (add-to-list 'load-path pycomplete-directory)
-          (require 'pycomplete)
+          (ignore-errors (require 'pycomplete))
           (add-hook 'python-mode-hook 'py-complete-initialize))
       (error "`py-install-directory' not set, see INSTALL"))))
 
