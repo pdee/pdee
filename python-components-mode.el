@@ -3182,29 +3182,6 @@ See original source: http://pymacs.progiciels-bpi.ca"
 
 (when py-load-pymacs-p (py-load-pymacs))
 
-(when (or py-load-pymacs-p (featurep 'pymacs))
-  (defun py-load-pycomplete ()
-    "Load Pymacs based pycomplete."
-    (interactive)
-    (let* ((path (py--fetch-pythonpath))
-           (py-install-directory (cond ((string= "" py-install-directory)
-                                        (py-guess-py-install-directory))
-                                       (t (py--normalize-directory py-install-directory))))
-           (pycomplete-directory (concat (expand-file-name py-install-directory) "completion")))
-      (if (py-install-directory-check)
-          (progn
-            ;; If the Pymacs process is already running, augment its path.
-            (when (and (get-process "pymacs") (fboundp 'pymacs-exec))
-              (pymacs-exec (concat "sys.path.insert(0, '" pycomplete-directory "')")))
-            (require 'pymacs)
-            (setenv "PYTHONPATH" (concat
-                                  pycomplete-directory
-                                  (if path (concat path-separator path))))
-            (add-to-list 'load-path pycomplete-directory)
-            (require 'pycomplete)
-            (add-hook 'python-mode-hook 'py-complete-initialize))
-        (error "`py-install-directory' not set, see INSTALL")))))
-
 (and (or (eq py-complete-function 'py-complete-completion-at-point) py-load-pymacs-p (featurep 'pymacs))
   (py-load-pycomplete))
 
