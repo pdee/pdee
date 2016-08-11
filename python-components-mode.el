@@ -3182,7 +3182,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
 
 (when py-load-pymacs-p (py-load-pymacs))
 
-(when (or py-load-pymacs-p (featurep 'pymacs))
+(when (and py-load-pymacs-p (featurep 'pymacs))
   (defun py-load-pycomplete ()
     "Load Pymacs based pycomplete."
     (interactive)
@@ -3205,7 +3205,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
             (add-hook 'python-mode-hook 'py-complete-initialize))
         (error "`py-install-directory' not set, see INSTALL")))))
 
-(and (or (eq py-complete-function 'py-complete-completion-at-point) py-load-pymacs-p (featurep 'pymacs))
+(when (functionp 'py-load-pycomplete)
   (py-load-pycomplete))
 
 (defun py-set-load-path ()
