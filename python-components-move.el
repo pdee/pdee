@@ -855,46 +855,41 @@ With BOL, return line-beginning-position"
 	       (setq erg (line-beginning-position))))
     (or erg (goto-char orig))))
 
-(defun py--backward-def-or-class-matcher (regexp indent)
+(defun py--backward-def-or-class-matcher (regexp indent origline)
   (let (done)
     (while (and
 	    (not done)
 	    (re-search-backward regexp nil 'move 1)
 	    (or
 	     (nth 8 (parse-partial-sexp (point-min) (point)))
+	     ;; (if
+	     ;; 	 ;; looking one level below
+	     ;; 	 (< 0 indent)
+	     ;; 	 (if
+	     ;; 	     (<= indent (current-indentation))
+	     ;; 	     t
+	     ;; 	   (setq done (match-beginning 0)))
 	     (if
-		 ;; looking one level below
-		 (< 0 indent)
-		 (if
-		     (<= indent (current-indentation))
-		     t
-		   (setq done (match-beginning 0)))
-	       (if
-		   (< indent (current-indentation))
-		   t
-		 (setq done (match-beginning 0)))))))
+		 (unless (eq (py-count-lines) origline)
+		   (and (not (bolp)) (<= indent (current-indentation))))
+
+		 t
+	       (setq done (match-beginning 0))))))
     done))
 
 (defun py--backward-def-or-class-intern (regexp &optional bol)
-  ;; get the right start-indent
-  ;; (when (empty-line-p)
-  ;;   (skip-chars-backward " \t\r\n\f"))
-  ;; ;; just behind a closing delimiter
-  ;; (when (and (eolp) (member (char-before) (list ?\) ?} ?\] ?\" ?')))
-  ;;   (forward-char -1))
-  (let ((indent (if (empty-line-p)
+  (let ((origline (py-count-lines))
+	(indent (if (empty-line-p)
 		    (current-indentation)
 		  (save-excursion
 		    (if (py--beginning-of-statement-p)
 			(current-indentation)
 		      (py-backward-statement)
 		      (current-indentation)))))
-
-	;; (progn (when (py-in-string-or-comment-p)
-	;; (py-backward-statement))
-	;; (current-indentation)))
 	erg)
-    (setq erg (py--backward-def-or-class-matcher regexp indent))
+    ;; (if (and (< (current-column) origindent) (looking-at regexp))
+    ;; (setq erg (point))
+    (setq erg (py--backward-def-or-class-matcher regexp indent origline))
     (and erg (looking-back "async ")
 	 (goto-char (match-beginning 0))
 	 (setq erg (point)))

@@ -1428,5 +1428,26 @@ except:
     ;; (should (eq (char-after) ?c))
     ;; ))
 
+(ert-deftest py-ert-backward-def-or-class ()
+  (py-test-with-temp-buffer
+      "class _Simple(object):
+    # emulate something
+    def foo(self, element, tag, namespaces=None):
+        pass
+    def bar(self, element, tag, namespaces=None):
+        return list(self.iterfind(element, tag, namespaces))"
+    (forward-line -1)
+    (end-of-line)
+    (py-backward-def-or-class)
+    (should (char-equal ?d (char-after)))
+    (py-backward-def-or-class)
+    (should (char-equal ?c (char-after)))
+    (should (bolp))
+    (search-forward "pass")
+    (py-backward-def-or-class)
+    (should (char-equal ?d (char-after)))))
+
+
+
 (provide 'py-ert-tests-1)
 ;;; py-ert-tests-1.el ends here
