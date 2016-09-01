@@ -466,4 +466,5 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
 
 ;;;
 (provide 'python-components-foot)
+(provide 'python-mode)
 ;;; python-components-foot.el ends here

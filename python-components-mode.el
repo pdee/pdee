@@ -2272,7 +2272,10 @@ some logging etc. "
   "py-expression assumes chars indicated possible composing a py-expression, when looking-at or -back. ")
 
 (defcustom py-paragraph-re "\\`[ \t\f]*\\'\n[^ \n\r\t\f]"
-  "An empty line followed by a non-whitespace at column 1")
+  "An empty line followed by a non-whitespace at column 1"
+  :type 'string
+  :tag "py-paragraph-re"
+  :group 'python-mode)
 
 (defvar py-not-expression-regexp "[ .=#\t\r\n\f)]+"
   "py-expression assumes chars indicated probably will not compose a py-expression. ")
