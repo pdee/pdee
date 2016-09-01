@@ -289,8 +289,8 @@ Default is t")
 
  where write-access is not given. "
 
-:type 'boolean
-:group 'python-mode)
+ :type 'boolean
+ :group 'python-mode)
 
 (defvar py--match-paren-forward-p nil
   "Internally used by `py-match-paren'. ")
@@ -2519,7 +2519,10 @@ See py-no-outdent-re-raw for better readable content ")
    "while"
    "with"
    )
-  "Matches the beginning of a compound statement or it's clause. ")
+  "Matches the beginning of a compound statement or it's clause. "
+  :type '(list string string string string string string string string string string string)
+  :tag "py-block-or-clause-re-raw"
+  :group 'python-mode)
 
 (defvar py-block-or-clause-re
   (concat
@@ -2536,7 +2539,10 @@ See py-no-outdent-re-raw for better readable content ")
    "try"
    "while"
    "with")
-  "Matches the beginning of a compound statement but not it's clause. ")
+  "Matches the beginning of a compound statement but not it's clause. "
+  :type '(list string string string string string string)
+  :tag "py-block-re-raw"
+  :group 'python-mode)
 
 (defvar py-block-re
   (concat
