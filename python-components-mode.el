@@ -2520,7 +2520,7 @@ See py-no-outdent-re-raw for better readable content ")
    "with"
    )
   "Matches the beginning of a compound statement or it's clause. "
-  :type '(list string string string string string string string string string string string)
+  :type '(repeat string)
   :tag "py-block-or-clause-re-raw"
   :group 'python-mode)
 
@@ -2540,7 +2540,7 @@ See py-no-outdent-re-raw for better readable content ")
    "while"
    "with")
   "Matches the beginning of a compound statement but not it's clause. "
-  :type '(list string string string string string string)
+  :type '(repeat string)
   :tag "py-block-re-raw"
   :group 'python-mode)
 
@@ -2579,9 +2579,11 @@ See py-no-outdent-re-raw for better readable content ")
    "if"
    "try"
    "while"
-   "with"
-   )
-  "Matches the beginning of a compound statement or it's clause. ")
+   "with")
+  "Matches the beginning of a compound statement or it's clause. "
+  :type '(repeat string)
+  :tag "py-extended-block-or-clause-re-raw"
+  :group 'python-mode)
 
 (defconst py-extended-block-or-clause-re
   (concat
@@ -2595,7 +2597,11 @@ See py-no-outdent-re-raw for better readable content ")
    "^\\_<[a-zA-Z_]\\|^\\_<\\("
    (regexp-opt  py-extended-block-or-clause-re-raw)
    "\\)\\_>[( \t]*.*:?")
-  "A form which starts at zero indent level, but is not a comment. ")
+  "A form which starts at zero indent level, but is not a comment. "
+  :type '(regexp)
+  :tag "py-top-level-re"
+  :group 'python-mode
+  )
 
 (defconst py-block-keywords
   (concat
@@ -2613,7 +2619,10 @@ Customizing `py-block-or-clause-re-raw'  will change values here")
    "except"
    "finally"
    )
-  "Matches the beginning of a clause. ")
+  "Matches the beginning of a clause. "
+    :type '(repeat string)
+    :tag "py-clause-re-raw"
+    :group 'python-mode)
 
 (defconst py-clause-re
   (concat

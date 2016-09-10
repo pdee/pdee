@@ -463,11 +463,13 @@ If optional INDENT is given, use it"
 
 Starts from second line of region specified"
   (goto-char beg)
+  (py-indent-and-forward) 
   ;; (forward-line 1)
-  (while (< (point) end)
+  (while (< (line-end-position) end)
     (if (empty-line-p)
 	(forward-line 1)
-      (py-indent-and-forward))))
+      (py-indent-and-forward)))
+  (unless (empty-line-p) (py-indent-and-forward)))
 
 (defun py-indent-region (start end &optional line-by-line)
   "Reindent a region of Python code.

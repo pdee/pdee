@@ -498,5 +498,18 @@ Bar
     (py-backward-def-or-class)
     (should (looking-at "def wwrap"))))
 
+(ert-deftest py--indent-line-by-line-lp-1621672 ()
+  (py-test-with-temp-buffer
+    "def asdf()
+     pass"
+    (py-indent-region (point-min) (point-max))
+    (should (eq 4 (current-indentation)))))
+
+(ert-deftest py--indent-line-by-line-lp-1621672-b ()
+  (py-test-with-temp-buffer
+    "    print(\"asdf\")"
+    (py-indent-region (point-min) (point-max))
+    (should (eq 0 (current-indentation))))) 
+    
 (provide 'py-ert-tests-3)
 ;;; py-ert-tests-3.el ends here
