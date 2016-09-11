@@ -146,5 +146,25 @@ impo")))
       (py-fast-complete)
       (should (eq (char-before) 40)))))
 
+(ert-deftest py-shell-complete-in-dedicated-shell ()
+  (let (erg
+	;; py-split-window-on-execute
+	py-switch-buffers-on-execute-p)
+    (with-temp-buffer
+      (python-mode)
+      (setq erg (python-dedicated))
+      (with-current-buffer erg
+	(goto-char (point-max))
+	;; (when py-debug-p (switch-to-buffer (current-buffer)))
+	(switch-to-buffer (current-buffer))
+	(insert "pri")
+	(sit-for 1 t)
+	(call-interactively 'py-indent-or-complete)
+	(sit-for 0.1 t)
+	(should (or (eq 40 (char-before))
+		    ;; python may just offer print(
+		    (buffer-live-p (get-buffer  "*Python Completions*"))))
+      (py-kill-buffer-unconditional erg)))))
+
 (provide 'py-interactive-tests)
 ;;; py-interactive-tests.el ends here

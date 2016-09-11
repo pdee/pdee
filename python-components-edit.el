@@ -451,7 +451,7 @@ downwards from beginning of block followed by a statement. Otherwise default-val
 If optional INDENT is given, use it"
   (interactive "*")
   (beginning-of-line)
-  (fixup-whitespace)
+  (when (member (char-after) (list 32 9 10 12 13)) (delete-region (point) (progn (skip-chars-forward " \t\r\n\f")(point)))) 
   (indent-to (or indent (py-compute-indentation)))
   (if (eobp)
       (newline-and-indent)
