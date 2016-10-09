@@ -1388,7 +1388,7 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
     (goto-char pmx)
     (sit-for 0.1 t)
     (save-excursion
-      (unless (looking-back py-pdbtrack-input-prompt)
+      (unless (looking-back py-pdbtrack-input-prompt (line-beginning-position))
         (forward-line -1)
         (end-of-line)
         (when (or (re-search-backward py-shell-prompt-regexp nil t 1)

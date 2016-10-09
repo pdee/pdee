@@ -239,7 +239,7 @@ If symbol is defined in current buffer, jump to it's definition"
       (setq py-last-position orig))
     (unless (member (get-buffer-window "*Python-Help*")(window-list))
       (window-configuration-to-register py-windows-config-register))
-    (and (looking-back "(")(not (looking-at "\\sw")) (forward-char -1))
+    (and (looking-back "(" (line-beginning-position))(not (looking-at "\\sw")) (forward-char -1))
     (if (or (not (face-at-point)) (eq (face-at-point) 'font-lock-string-face)(eq (face-at-point) 'font-lock-comment-face)(eq (face-at-point) 'default))
 	(progn
 	  (py-restore-window-configuration)

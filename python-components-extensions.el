@@ -290,7 +290,7 @@ With interactive call, send it to the message buffer too. "
 
 (defun py--match-paren-blocks ()
   (cond
-   ((and (looking-back "^[ \t]*")(if (eq last-command 'py-match-paren)(not py--match-paren-forward-p)t)
+   ((and (looking-back "^[ \t]*" (line-beginning-position))(if (eq last-command 'py-match-paren)(not py--match-paren-forward-p)t)
 	 ;; (looking-at py-extended-block-or-clause-re)
 	 (looking-at "[[:alpha:]_]"))
     ;; from beginning of top-level, block, clause, statement

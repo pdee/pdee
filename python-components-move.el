@@ -143,7 +143,7 @@ If already at the beginning or before a expression, go to next expression in buf
 	 ((nth 3 pps)
 	  (goto-char (nth 8 pps)))
 	 ;; after operator
-	 ((and (not done) (looking-back py-operator-re))
+	 ((and (not done) (looking-back py-operator-re) (line-beginning-position))
 	  (skip-chars-backward "^ \t\r\n\f")
 	  (skip-chars-backward " \t\r\n\f")
 	  (py-backward-expression orig done repeat))
@@ -175,7 +175,7 @@ Operators are ignored. "
 	  (or (< (point) (progn (forward-comment 1)(point)))(forward-line 1))
 	  (py-forward-expression orig done repeat))
 	 ;; empty before comment
-	 ((and (looking-at "[ \t]*#")(looking-back "^[ \t]*"))
+	 ((and (looking-at "[ \t]*#")(looking-back "^[ \t]*") (line-beginning-position))
 	  (while (and (looking-at "[ \t]*#") (not (eobp)))
 	    (forward-line 1))
 	  (py-forward-expression orig done repeat))
@@ -329,9 +329,9 @@ computing indents"
 	  (forward-char -1)
 	  (py-backward-statement orig done limit ignore-in-string-p))
 	 ;; BOL or at space before comment
-         ((and (looking-at "[ \t]*#")(looking-back "^[ \t]*"))
+         ((and (looking-at "[ \t]*#")(looking-back "^[ \t]*") (line-beginning-position))
           (forward-comment -1)
-          (while (and (not (bobp)) (looking-at "[ \t]*#")(looking-back "^[ \t]*"))
+          (while (and (not (bobp)) (looking-at "[ \t]*#")(looking-back "^[ \t]*") (line-beginning-position))
             (forward-comment -1))
           (unless (bobp)
             (py-backward-statement orig done limit ignore-in-string-p)))
@@ -358,7 +358,7 @@ computing indents"
 	 ((and (not done) (not (eq 0 (skip-chars-backward " \t\r\n\f"))))
 	  (py-backward-statement orig done limit ignore-in-string-p)))
 	;; return nil when before comment
-	(unless (and (looking-at "[ \t]*#") (looking-back "^[ \t]*"))
+	(unless (and (looking-at "[ \t]*#") (looking-back "^[ \t]*") (line-beginning-position))
 	  (when (< (point) orig)(setq erg (point))))
 	(when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
 	erg))))
@@ -762,7 +762,7 @@ A `nomenclature' is a fancy way of saying AWordWithMixedCaseNotUnderscores."
         (setq arg (1+ arg))))
     (if (< (point) orig)
         (progn
-          (when (looking-back "[[:upper:]]")
+          (when (looking-back "[[:upper:]]" (line-beginning-position))
             ;; (looking-back "[[:blank:]]"
             (forward-char -1))
           (if (looking-at "[[:alnum:]ß]")
@@ -839,7 +839,7 @@ Return position if successful"
 		(nth 8 (parse-partial-sexp (point-min) (point)))
 		(goto-char (match-end 0))))
     (and last (goto-char last))
-    (when (and (looking-back py-section-end)(< orig (point)))
+    (when (and (looking-back py-section-end (line-beginning-position))(< orig (point)))
       (point))))
 
 (defun py--backward-def-or-class-decorator-maybe (&optional bol)
@@ -890,7 +890,7 @@ With BOL, return line-beginning-position"
     ;; (if (and (< (current-column) origindent) (looking-at regexp))
     ;; (setq erg (point))
     (setq erg (py--backward-def-or-class-matcher regexp indent origline))
-    (and erg (looking-back "async ")
+    (and erg (looking-back "async " (line-beginning-position))
 	 (goto-char (match-beginning 0))
 	 (setq erg (point)))
     ;; bol-forms at not at bol yet

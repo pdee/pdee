@@ -272,7 +272,7 @@ When indent is set back manually, this is honoured in following lines. "
 	 (lkmd (prin1-to-string last-command))
 	 ;; lp:1280982, deliberatly dedented by user
 	 (this-dedent
-	  (when (and (or (eq 10 (char-after))(eobp))(looking-back "^[ \t]*"))
+	  (when (and (or (eq 10 (char-after))(eobp))(looking-back "^[ \t]*") (line-beginning-position))
 	    (current-column)))
 	 erg pos)
     (newline)

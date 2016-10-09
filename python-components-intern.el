@@ -688,7 +688,7 @@ LIEP stores line-end-position at point-of-interest
 				   0))
 			     (forward-char -1)
 			     (py-compute-indentation orig origline closing line nesting repeat indent-offset liep))))
-			((and (looking-at "[ \t]*#") (looking-back "^[ \t]*")(not line)
+			((and (looking-at "[ \t]*#") (looking-back "^[ \t]*" (line-beginning-position))(not line)
 			      (eq liep (line-end-position)))
 			 (if py-indent-comments
 			     (progn
@@ -700,7 +700,7 @@ LIEP stores line-end-position at point-of-interest
 			       (py-backward-comment)
 			       (py-compute-indentation orig origline closing line nesting repeat indent-offset liep))
 			   0))
-			((and (looking-at "[ \t]*#") (looking-back "^[ \t]*")(not
+			((and (looking-at "[ \t]*#") (looking-back "^[ \t]*" (line-beginning-position))(not
 									      (eq liep (line-end-position))))
 			 (current-indentation))
 			((and (eq ?\# (char-after)) line py-indent-honors-inline-comment)
@@ -719,7 +719,7 @@ LIEP stores line-end-position at point-of-interest
 				    (py-closing-list-dedents-bos
 				     (goto-char (nth 1 pps))
 				     (current-indentation))
-				    ((looking-back "^[ \t]*")
+				    ((looking-back "^[ \t]*" (line-beginning-position))
 				     (current-column))
 				    ((and (looking-at "\\s([ \t]*$") py-closing-list-keeps-space)
 				     (+ (current-column) py-closing-list-space))
@@ -1071,7 +1071,7 @@ For stricter sense specify regexp. "
       (py-forward-statement)
       (py-backward-statement)
       (when (and
-             (<= (line-beginning-position) orig)(looking-back "^[ \t]*")(looking-at regexp))
+             (<= (line-beginning-position) orig)(looking-back "^[ \t]*" (line-beginning-position))(looking-at regexp))
         (setq erg (point))))
     (when (called-interactively-p 'any) (message "%s" erg))
     erg))
@@ -1579,7 +1579,7 @@ Returns beginning of FORM if successful, nil otherwise"
   (let ((orig (point))
         (indent
          (or indent
-	     (cond ((looking-back "^[ \t]*")
+	     (cond ((looking-back "^[ \t]*" (line-beginning-position))
 		    (current-indentation))
 		   (t (progn (back-to-indentation)
 			     (or (py--beginning-of-statement-p)

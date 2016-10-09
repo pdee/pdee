@@ -56,7 +56,7 @@ completions on the current context."
 (defun py--try-completion-intern (input completion)
   (let (erg)
     (when (and (stringp (setq erg (try-completion input completion)))
-	       (looking-back input)
+	       (looking-back input (line-beginning-position))
 	       (not (string= input erg)))
       (delete-region (match-beginning 0) (match-end 0))
       (insert erg))
