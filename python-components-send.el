@@ -1,6 +1,6 @@
 ;;; ppython-components-send.el --- functions sending strings to Python
 
-;; Copyright (C) 2015  Andreas Röhler
+;; Copyright (C) 2015-2016 Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 

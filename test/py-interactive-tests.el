@@ -166,5 +166,17 @@ impo")))
 		    (buffer-live-p (get-buffer  "*Python Completions*"))))
       (py-kill-buffer-unconditional erg)))))
 
+(ert-deftest py-ert-moves-up-execute-statement-python3-dedicated-test ()
+  (py-test-with-temp-buffer-point-min
+      "print(\"I'm the py-execute-statement-python3-dedicated-test\")"
+    (let ((py-debug-p t)
+	  py-store-result-p
+	  erg)
+      (call-interactively 'py-execute-statement-python3-dedicated)
+      (sit-for 0.1 t)
+      (set-buffer py-buffer-name)
+      (goto-char (point-min))
+      (should (search-forward "py-execute-statement-python3-dedicated-test" nil t 1)))))
+
 (provide 'py-interactive-tests)
 ;;; py-interactive-tests.el ends here

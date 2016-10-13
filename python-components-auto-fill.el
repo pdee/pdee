@@ -1,6 +1,6 @@
 ;;; python-components-auto-fill.el --- toggle comment-auto-fill
 
-;; Copyright (C) 2015  Andreas Röhler
+;; Copyright (C) 2015-2016 Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@easy-emacs.de>
 

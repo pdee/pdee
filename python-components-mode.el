@@ -7,7 +7,7 @@
 
 ;; Keywords: languages, processes, python, oop
 
-;; Copyright (C) 2015  Andreas Röhler
+;; Copyright (C) 2015-2016 Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 
@@ -147,30 +147,6 @@ Results arrive in output buffer, which is not in comint-mode"
 
 (defvar py-this-result nil
   "Internally used, store return-value")
-
-;; (defcustom py-which-def-or-class-function py-which-def-or-class
-;;   "If which-function-mode should use `py-which-def-or-class'.
-
-;; Alternatively use built-in `which-function', which queries the index
-;; or `python-info-current-defun' from python.el"
-;;   :type '(choice
-
-;;           (const :tag "default" py-which-def-or-class)
-;; 	  (const :tag "built-in which-function" nil)
-;;           (const :tag "python-info-current-defun" python-info-current-defun))
-;;   :group 'python-mode)
-
-;; (defcustom py-which-def-or-class-function py-which-def-or-class
-;;   "If which-function-mode should use `py-which-def-or-class'.
-
-;; Alternatively use built-in `which-function', which queries the index
-;; or `python-info-current-defun' from python.el"
-;;   :type '(choice
-
-;;           (const :tag "default" py-which-def-or-class)
-;; 	  (const :tag "built-in which-function" nil)
-;;           (const :tag "python-info-current-defun" python-info-current-defun))
-;;   :group 'python-mode)
 
 (defcustom py-comment-auto-fill-p nil
   "When non-nil, fill comments.
@@ -2283,12 +2259,20 @@ some logging etc. "
 (defvar py-not-expression-chars " #\t\r\n\f"
   "py-expression assumes chars indicated probably will not compose a py-expression. ")
 
-(defvar py-partial-expression-backward-chars "^ .=,\"'()[]{}:#\t\r\n\f"
+(defvar py-partial-expression-backward-chars "^] .=,\"'()[{}:#\t\r\n\f"
   "py-partial-expression assumes chars indicated possible composing a py-partial-expression, skip it. ")
-;; (setq py-partial-expression-backward-chars "^ .=,\"'()[]{}:#\t\r\n\f")
+;; (setq py-partial-expression-backward-chars "^] .=,\"'()[{}:#\t\r\n\f")
 
 (defvar py-partial-expression-forward-chars "^ .\"')}]:#\t\r\n\f")
 ;; (setq py-partial-expression-forward-chars "^ .\"')}]:#\t\r\n\f")
+
+(defvar py-partial-expression-re (concat "[" py-partial-expression-backward-chars (substring py-partial-expression-forward-chars 1) "]+"))
+(setq py-partial-expression-re (concat "[" py-partial-expression-backward-chars "]+"))
+
+(defvar py-statement-re py-partial-expression-re)
+(defvar py-indent-re ".+"
+  "This var is introduced for regularity only")
+(setq py-indent-re ".+")
 
 (defvar py-operator-re "[ \t]*\\(\\.\\|+\\|-\\|*\\|//\\|//\\|&\\|%\\||\\|\\^\\|>>\\|<<\\|<\\|<=\\|>\\|>=\\|==\\|!=\\|=\\)[ \t]*"
   "Matches most of Python syntactical meaningful characters, inclusive whitespaces around.
@@ -3399,42 +3383,70 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
                                    map global-map)
         map))
 
-(defun py-separator-char ()
-  "Return the file-path separator char from current machine.
+(defvaralias 'py-mode-map 'python-mode-map)
 
-When `py-separator-char' is customized, its taken.
-Returns char found. "
-  (let ((erg (cond ((characterp py-separator-char)
-                    (char-to-string py-separator-char))
-                   ;; epd hack
-                   ((and
-                     (string-match "[Ii][Pp]ython" py-shell-name)
-                     (string-match "epd\\|EPD" py-shell-name))
-                    (replace-regexp-in-string "\n" ""
-                                              (shell-command-to-string (concat py-shell-name " -c \"import os; print(os.sep)\"")))))))
-    (if (and erg (string-match "^$" erg))
-        (setq erg (substring erg (string-match "^$" erg)))
-      (setq erg (replace-regexp-in-string "\n" "" (shell-command-to-string (concat py-shell-name " -W ignore" " -c \"import os; print(os.sep)\"")))))
-    erg))
+(defvar py-python-shell-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "RET") 'comint-send-input)
+    (define-key map [(control c)(-)] 'py-up-exception)
+    (define-key map [(control c)(=)] 'py-down-exception)
+    (define-key map (kbd "TAB") 'py-indent-or-complete)
+    (define-key map [(meta tab)] 'py-shell-complete)
+    (define-key map [(control c)(!)] 'py-shell)
+    (define-key map [(control c)(control t)] 'py-toggle-shell)
+    ;; electric keys
+    ;; (define-key map [(:)] 'py-electric-colon)
+    ;; (define-key map [(\#)] 'py-electric-comment)
+    ;; (define-key map [(delete)] 'py-electric-delete)
+    ;; (define-key map [(backspace)] 'py-electric-backspace)
+    ;; (define-key map [(control backspace)] 'py-hungry-delete-backwards)
+    ;; (define-key map [(control c) (delete)] 'py-hungry-delete-forward)
+    ;; (define-key map [(control y)] 'py-electric-yank)
+    ;; moving point
+    (define-key map [(control c)(control p)] 'py-backward-statement)
+    (define-key map [(control c)(control n)] 'py-forward-statement)
+    (define-key map [(control c)(control u)] 'py-backward-block)
+    (define-key map [(control c)(control q)] 'py-forward-block)
+    (define-key map [(control meta a)] 'py-backward-def-or-class)
+    (define-key map [(control meta e)] 'py-forward-def-or-class)
+    (define-key map [(control j)] 'py-newline-and-indent)
+    (define-key map [(super backspace)] 'py-dedent)
+    ;; (define-key map [(control return)] 'py-newline-and-dedent)
+    ;; indentation level modifiers
+    (define-key map [(control c)(control l)] 'comint-dynamic-list-input-ring)
+    (define-key map [(control c)(control r)] 'comint-previous-prompt)
+    (define-key map [(control c)(<)] 'py-shift-left)
+    (define-key map [(control c)(>)] 'py-shift-right)
+    (define-key map [(control c)(tab)] 'py-indent-region)
+    (define-key map [(control c)(:)] 'py-guess-indent-offset)
+    ;; subprocess commands
+    (define-key map [(control meta h)] 'py-mark-def-or-class)
+    (define-key map [(control c)(control k)] 'py-mark-block-or-clause)
+    (define-key map [(control c)(.)] 'py-expression)
+    ;; Miscellaneous
+    ;; (define-key map [(super q)] 'py-copy-statement)
+    (define-key map [(control c)(control d)] 'py-pdbtrack-toggle-stack-tracking)
+    (define-key map [(control c)(\#)] 'py-comment-region)
+    (define-key map [(control c)(\?)] 'py-describe-mode)
+    (define-key map [(control c)(control e)] 'py-help-at-point)
+    (define-key map [(control x) (n) (d)] 'py-narrow-to-defun)
+    ;; information
+    (define-key map [(control c)(control b)] 'py-submit-bug-report)
+    (define-key map [(control c)(control v)] 'py-version)
+    (define-key map [(control c)(control w)] 'py-pychecker-run)
+    (substitute-key-definition 'complete-symbol 'completion-at-point
+			       map global-map)
+    (substitute-key-definition 'backward-up-list 'py-up
+			       map global-map)
+    (substitute-key-definition 'down-list 'py-down
+			       map global-map)
+    map)
+  "Used inside a Python-shell")
 
-(defun pps-emacs-version ()
-  "Include the appropriate `parse-partial-sexp' "
-  (if (featurep 'xemacs)
-      '(parse-partial-sexp (point-min) (point))
-    '(parse-partial-sexp (point-min) (point))))
+(defvar py-ipython-shell-mode-map py-python-shell-mode-map
+  "Unless setting of ipython-shell-mode needs to be different, let's save some lines of code and copy py-python-shell-mode-map here.")
 
-(defun py-in-comment-p ()
-  "Return the beginning of current line's comment, if inside. "
-  (interactive)
-  (let* ((pps (parse-partial-sexp (point-min) (point)))
-	 (erg (and (nth 4 pps) (nth 8 pps))))
-    erg))
-
-(defun py-in-string-or-comment-p ()
-  "Returns beginning position if inside a string or comment, nil otherwise. "
-  (or (nth 8 (parse-partial-sexp (point-min) (point)))
-      (when (or (looking-at "\"")(looking-at "[ \t]*#[ \t]*"))
-        (point))))
+(defvar py-shell-map py-python-shell-mode-map)
 
 ;; (eval-and-compile
 ;;   (defconst python-rx-constituents

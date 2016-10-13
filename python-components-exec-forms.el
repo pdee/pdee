@@ -1,6 +1,6 @@
 ;;; python-components-exec-forms.el --- Forms with a reduced range of derived commands
 
-;; Copyright (C) 2015  Andreas Röhler
+;; Copyright (C) 2015-2016 Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 ;; Keywords: languages, convenience

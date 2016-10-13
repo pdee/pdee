@@ -19,11 +19,15 @@
 # Code:
 
 PDIR=$PWD
+echo "\$PWD: $PWD"
+# WERKSTATT set in .bashrc, thus unset remotly
+WERKSTATT=${WERKSTATT:=1}
+echo "\$WERKSTATT: $WERKSTATT"
 
 TESTDIR=$PDIR/test
 export TESTDIR
 
-echo "\$1: $1"
+# echo "\$1: $1"
 
 # if $1; then
 # PYTHONMODE=$PDIR/$1
@@ -63,6 +67,28 @@ echo "\$EMACS: $EMACS"
 
 PYCO="$PDIR/completion/pycomplete.el"
 
+hier() {
+    $EMACS -Q --batch \
+--eval "(message (emacs-version))" \
+--eval "(add-to-list 'load-path \"$PDIR/\")" \
+--eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $SETUP \
+-load $PYTHONMODE \
+-l $TEST1 \
+-l $TEST2 \
+-l $TEST4 \
+-l $TEST5 \
+-l $TEST6 \
+-l $TEST7 \
+-l $TEST8 \
+-l $TEST12 \
+-l $TEST13 \
+-l $TEST14 \
+-l $TEST15 \
+-f ert-run-tests-batch-and-exit
+}
+
+entfernt() {
 $EMACS -Q --batch \
 --eval "(message (emacs-version))" \
 --eval "(add-to-list 'load-path \"$PDIR/\")" \
@@ -81,3 +107,13 @@ $EMACS -Q --batch \
 -l $TEST14 \
 -l $TEST15 \
 -f ert-run-tests-batch-and-exit
+}
+
+if [ $WERKSTATT -eq 0 ]; then
+    hier
+    echo "Lade \$DIR6 und \$DIR7"
+else
+    echo "entfernt"
+    echo "Lade testumgebung \"ENTFERNT\""
+    entfernt
+fi

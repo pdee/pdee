@@ -1,6 +1,6 @@
 ;;; python-components-execute.el --- Part of python-components-mode
 
-;; Copyright (C) 2015  Andreas Röhler
+;; Copyright (C) 2015-2016 Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 

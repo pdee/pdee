@@ -1,6 +1,6 @@
 ;;; python-components-up-down.el -- Searching up/downwards in buffer
 
-;; Copyright (C) 2015  Andreas Röhler
+;; Copyright (C) 2015-2016 Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 ;; Keywords: languages, convenience
@@ -54,17 +54,34 @@ Return position if statement found, nil otherwise. "
 	   (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
 	   erg))
 
-(defun py-up-base (regexp)
-  "Go to the beginning of next form upwards in buffer.
+(defun py--up-base-intern (regexp indent)
+  (while (and (not (bobp))(re-search-backward regexp nil t 1)
+	      (or (nth 8 (parse-partial-sexp (point-min) (point))))
+	      (<= indent (current-indentation)))))
+
+(defun py-up-base (regexp &optional indent)
+  "Go to the beginning of lower indented form upwards.
 
 Return position if form found, nil otherwise. "
-  (let* ((orig (point))
-         erg)
-    (if (bobp)
-        (setq erg nil)
-      (while (and (re-search-backward regexp nil t 1)
-                  (nth 8 (parse-partial-sexp (point-min) (point)))))
-      (back-to-indentation)
+  (unless (bobp)
+    (let* ((orig (point))
+	   (pps (parse-partial-sexp (point-min) (point)))
+	   (indent indent))
+      (if indent
+	  (py--up-base-intern regexp indent)
+	(setq indent (cond ((and (looking-at regexp)
+				 (not (nth 8 pps))
+				 (eq (current-column) (current-indentation)))
+			    (current-indentation))
+			   (t (setq indent (current-indentation))
+			      (py--up-base-intern regexp indent)
+			      (when (and (looking-at regexp)
+					 (not (nth 8 pps))
+					 (eq (current-column) (current-indentation)))
+				(current-column)))))
+	(if indent
+	    (py-up-base regexp indent)
+	  (error "py-up-base: no indent found")))
       (when (looking-at regexp) (setq erg (point)))
       (when py-verbose-p (message "%s" erg))
       erg)))

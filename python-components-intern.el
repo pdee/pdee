@@ -2,7 +2,7 @@
 
 ;; Helper functions
 
-;; Copyright (C) 2015  Andreas Röhler
+;; Copyright (C) 2015-2016 Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@easy-emacs.de>
 
@@ -28,70 +28,131 @@
 
 ;;  Keymap
 
-(defvaralias 'py-mode-map 'python-mode-map)
 
-(defvar py-python-shell-mode-map
-  (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "RET") 'comint-send-input)
-    (define-key map [(control c)(-)] 'py-up-exception)
-    (define-key map [(control c)(=)] 'py-down-exception)
-    (define-key map (kbd "TAB") 'py-indent-or-complete)
-    (define-key map [(meta tab)] 'py-shell-complete)
-    (define-key map [(control c)(!)] 'py-shell)
-    (define-key map [(control c)(control t)] 'py-toggle-shell)
-    ;; electric keys
-    ;; (define-key map [(:)] 'py-electric-colon)
-    ;; (define-key map [(\#)] 'py-electric-comment)
-    ;; (define-key map [(delete)] 'py-electric-delete)
-    ;; (define-key map [(backspace)] 'py-electric-backspace)
-    ;; (define-key map [(control backspace)] 'py-hungry-delete-backwards)
-    ;; (define-key map [(control c) (delete)] 'py-hungry-delete-forward)
-    ;; (define-key map [(control y)] 'py-electric-yank)
-    ;; moving point
-    (define-key map [(control c)(control p)] 'py-backward-statement)
-    (define-key map [(control c)(control n)] 'py-forward-statement)
-    (define-key map [(control c)(control u)] 'py-backward-block)
-    (define-key map [(control c)(control q)] 'py-forward-block)
-    (define-key map [(control meta a)] 'py-backward-def-or-class)
-    (define-key map [(control meta e)] 'py-forward-def-or-class)
-    (define-key map [(control j)] 'py-newline-and-indent)
-    (define-key map [(super backspace)] 'py-dedent)
-    ;; (define-key map [(control return)] 'py-newline-and-dedent)
-    ;; indentation level modifiers
-    (define-key map [(control c)(control l)] 'comint-dynamic-list-input-ring)
-    (define-key map [(control c)(control r)] 'comint-previous-prompt)
-    (define-key map [(control c)(<)] 'py-shift-left)
-    (define-key map [(control c)(>)] 'py-shift-right)
-    (define-key map [(control c)(tab)] 'py-indent-region)
-    (define-key map [(control c)(:)] 'py-guess-indent-offset)
-    ;; subprocess commands
-    (define-key map [(control meta h)] 'py-mark-def-or-class)
-    (define-key map [(control c)(control k)] 'py-mark-block-or-clause)
-    (define-key map [(control c)(.)] 'py-expression)
-    ;; Miscellaneous
-    ;; (define-key map [(super q)] 'py-copy-statement)
-    (define-key map [(control c)(control d)] 'py-pdbtrack-toggle-stack-tracking)
-    (define-key map [(control c)(\#)] 'py-comment-region)
-    (define-key map [(control c)(\?)] 'py-describe-mode)
-    (define-key map [(control c)(control e)] 'py-help-at-point)
-    (define-key map [(control x) (n) (d)] 'py-narrow-to-defun)
-    ;; information
-    (define-key map [(control c)(control b)] 'py-submit-bug-report)
-    (define-key map [(control c)(control v)] 'py-version)
-    (define-key map [(control c)(control w)] 'py-pychecker-run)
-    (substitute-key-definition 'complete-symbol 'completion-at-point
-			       map global-map)
-    (substitute-key-definition 'backward-up-list 'py-up
-			       map global-map)
-    (substitute-key-definition 'down-list 'py-down
-			       map global-map)
-    map)
-  "Used inside a Python-shell")
+(defun py--unfontify-banner-intern (buffer)
+  (save-excursion
+    (goto-char (point-min))
+    (let ((erg (or (ignore-errors (car comint-last-prompt))
+		   (and
+		    (re-search-forward py-fast-filter-re nil t 1)
+		    (match-beginning 0))
+		   (progn
+		     (forward-paragraph)
+		     (point)))))
+      ;; (sit-for 1 t)
+      (if erg
+	  (progn
+	    (font-lock-unfontify-region (point-min) erg)
+	    (goto-char (point-max)))
+	(progn (and py-debug-p (message "%s" (concat "py--unfontify-banner: Don't see a prompt in buffer " (buffer-name buffer)))))))))
 
-(defvar py-ipython-shell-mode-map py-python-shell-mode-map
-  "Unless setting of ipython-shell-mode needs to be different, let's save some lines of code and copy py-python-shell-mode-map here.")
+(defun py--unfontify-banner (&optional buffer)
+  "Unfontify the shell banner-text.
 
-(defvar py-shell-map py-python-shell-mode-map)
+Cancels `py--timer'
+Expects being called by `py--run-unfontify-timer' "
+  (interactive)
+    (let ((buffer (or buffer (current-buffer))))
+      (if (ignore-errors (buffer-live-p (get-buffer buffer)))
+	  (with-current-buffer buffer
+	    (py--unfontify-banner-intern buffer)
+	    (and (timerp py--timer)(cancel-timer py--timer)))
+	(and (timerp py--timer)(cancel-timer py--timer)))))
+
+(defun py--run-unfontify-timer (&optional buffer)
+  "Unfontify the shell banner-text "
+  (when py--shell-unfontify
+    (let ((buffer (or buffer (current-buffer)))
+	  done)
+      (if (and
+	   (buffer-live-p buffer)
+	   (or
+	    (eq major-mode 'py-python-shell-mode)
+	    (eq major-mode 'py-ipython-shell-mode)))
+	  (unless py--timer
+	    (setq py--timer
+		  (run-with-idle-timer
+		   (if py--timer-delay (setq py--timer-delay 3)
+		     (setq py--timer-delay 0.1))
+		   nil
+		   #'py--unfontify-banner buffer)))
+	(cancel-timer py--timer)))))
+
+(defsubst py-keep-region-active ()
+  "Keep the region active in XEmacs."
+  (and (boundp 'zmacs-region-stays)
+       (setq zmacs-region-stays t)))
+
+(defun py-smart-operator-check ()
+  "Check, if smart-operator-mode is loaded resp. available.
+
+Give some hints, if not."
+  (interactive)
+  (if (featurep 'smart-operator)
+      't
+    (progn
+      (and (boundp 'py-smart-operator-mode-p) py-smart-operator-mode-p (message "%s" "Don't see smart-operator.el. Make sure, it's installed. See in menu Options, Manage Emacs Packages. Or get it from source: URL: http://xwl.appspot.com/ref/smart-operator.el")
+           nil))))
+
+(defun py-autopair-check ()
+  "Check, if autopair-mode is available.
+
+Give some hints, if not."
+  (interactive)
+  (if (featurep 'autopair)
+      't
+    (progn
+      (message "py-autopair-check: %s" "Don't see autopair.el. Make sure, it's installed. If not, maybe see source: URL: http://autopair.googlecode.com")
+      nil)))
+
+(defun py--set-ffap-form ()
+  (cond ((and py-ffap-p py-ffap)
+         (eval-after-load "ffap"
+           '(push '(python-mode . py-module-path) ffap-alist))
+         (setq ffap-alist (remove '(python-mode . py-ffap-module-path) ffap-alist))
+         (setq ffap-alist (remove '(py-shell-mode . py-ffap-module-path)
+                                  ffap-alist)))
+        (t (setq ffap-alist (remove '(python-mode . py-ffap-module-path) ffap-alist))
+           (setq ffap-alist (remove '(py-shell-mode . py-ffap-module-path)
+                                    ffap-alist))
+           (setq ffap-alist (remove '(python-mode . py-module-path) ffap-alist)))))
+
+(defun py-separator-char ()
+  "Return the file-path separator char from current machine.
+
+When `py-separator-char' is customized, its taken.
+Returns char found. "
+  (let ((erg (cond ((characterp py-separator-char)
+                    (char-to-string py-separator-char))
+                   ;; epd hack
+                   ((and
+                     (string-match "[Ii][Pp]ython" py-shell-name)
+                     (string-match "epd\\|EPD" py-shell-name))
+                    (replace-regexp-in-string "\n" ""
+                                              (shell-command-to-string (concat py-shell-name " -c \"import os; print(os.sep)\"")))))))
+    (if (and erg (string-match "^$" erg))
+        (setq erg (substring erg (string-match "^$" erg)))
+      (setq erg (replace-regexp-in-string "\n" "" (shell-command-to-string (concat py-shell-name " -W ignore" " -c \"import os; print(os.sep)\"")))))
+    erg))
+
+(defun pps-emacs-version ()
+  "Include the appropriate `parse-partial-sexp' "
+  (if (featurep 'xemacs)
+      '(parse-partial-sexp (point-min) (point))
+    '(parse-partial-sexp (point-min) (point))))
+
+(defun py-in-comment-p ()
+  "Return the beginning of current line's comment, if inside. "
+  (interactive)
+  (let* ((pps (parse-partial-sexp (point-min) (point)))
+	 (erg (and (nth 4 pps) (nth 8 pps))))
+    erg))
+
+(defun py-in-string-or-comment-p ()
+  "Returns beginning position if inside a string or comment, nil otherwise. "
+  (or (nth 8 (parse-partial-sexp (point-min) (point)))
+      (when (or (looking-at "\"")(looking-at "[ \t]*#[ \t]*"))
+        (point))))
 
 (when py-org-cycle-p
   (define-key python-mode-map (kbd "<backtab>") 'org-cycle))
@@ -408,7 +469,6 @@ Don't save anything for STR matching `py-input-filter-re' "
 (add-to-list 'auto-mode-alist (cons (purecopy "\.pym\'")  'python-mode))
 
 (add-to-list 'auto-mode-alist (cons (purecopy "\.pyc\'")  'python-mode))
-
 
 ;; Pyrex Source
 (add-to-list 'auto-mode-alist (cons (purecopy "\.pyx\'")  'python-mode))
@@ -1181,7 +1241,9 @@ Unclosed-string errors are not handled here, as made visible by fontification al
         (and err py-verbose-p (py--message-error err))
         (if (and (< orig (point)) (not (or (looking-at comment-start) (nth 8 pps) (nth 1 pps))))
             (point)
-          (goto-char (point-max))
+	  (py-up-block)
+	  (py--end-base regexp orig decorator)
+          ;; (goto-char (point-max))
           nil)))))
 
 (defun py--look-downward-for-beginning (regexp)
@@ -1991,7 +2053,6 @@ Use current region unless optional args BEG END are delivered."
 (defalias 'pyhotn 'python)
 (defalias 'pyhton 'python)
 (defalias 'pyt 'python)
-
 
 (provide 'python-components-intern)
  ;;;  python-components-intern.el ends here

@@ -1,6 +1,6 @@
 ;;; python-components-move.el --- Functions moving point which need special treatment
 
-;; Copyright (C) 2015  Andreas Röhler
+;; Copyright (C) 2015-2016 Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 
@@ -69,10 +69,14 @@ Returns final position when called from inside section, nil otherwise"
       (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
       erg)))
 
-(defun py--travel-this-indent-forward ()
-  (while (and (py-down-statement)
-	      (or indent (eq indent (current-indentation)))
-	      (eq indent (current-indentation))(setq done (point)) (not (bobp)))))
+(defun py--travel-this-indent-forward (indent)
+  (let (last erg)
+    (while (and (py-down-statement)
+		(eq indent (current-indentation))
+		(setq last (point))))
+    (when last (goto-char last))
+    (setq erg (py-forward-statement)) 
+    erg))
 
 (defun py-forward-indent ()
   "Go to the end of a section of equal indentation.
@@ -87,11 +91,11 @@ Returns final position when called from inside section, nil otherwise"
 	(save-excursion
 	  (setq done (point))
 	  (setq indent (and (py-backward-statement)(current-indentation)))))
-      (py--travel-this-indent-forward)
+      (setq done (py--travel-this-indent-forward indent))
       (when done (goto-char done))
       ;; navigation doesn't reach BOL
-      (unless (eolp) (setq done (py-forward-statement)))
-      (when (eq (current-column) (current-indentation)) (py-end-of-statement))
+      ;; (unless (eolp) (setq done (py-forward-statement)))
+      ;; (when (eq (current-column) (current-indentation)) (py-end-of-statement))
       (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" done))
       done)))
 
@@ -105,16 +109,11 @@ Returns final position when called from inside section, nil otherwise"
     (let ((orig (point))
 	  erg indent)
       (when (py-forward-statement)
-	(save-excursion
-	  (setq erg (point))
-	  (setq indent (and (py-backward-statement)(current-indentation)))))
-      (py--travel-this-indent-forward)
-      (when erg (goto-char erg)
-	    (unless (eolp) (setq erg (py-forward-statement))))
-      (when erg
-	(when (eq (current-column) (current-indentation)) (py-forward-statement))
-	(unless (eobp) (forward-line 1) (beginning-of-line)))
-      (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
+      	(save-excursion
+      	  (setq indent (and (py-backward-statement)(current-indentation))))
+	(setq erg (py--travel-this-indent-forward indent))
+	(unless (eobp) (forward-line 1) (beginning-of-line) (setq erg (point)))
+	(when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg)))
       erg)))
 
 (defun py-backward-expression (&optional orig done repeat)

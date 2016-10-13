@@ -973,18 +973,6 @@ def baz():
 	   (sit-for 0.1 t)
 	   (py-kill-buffer-unconditional (current-buffer))))))
 
-(ert-deftest py-ert-moves-up-execute-statement-python3-dedicated-test ()
-  (py-test-with-temp-buffer-point-min
-      "print(\"I'm the py-execute-statement-python3-dedicated-test\")"
-    (let ((py-debug-p t)
-	  py-store-result-p
-	  erg)
-      (call-interactively 'py-execute-statement-python3-dedicated)
-      (sit-for 0.1 t)
-      (set-buffer py-buffer-name)
-      (goto-char (point-min))
-      (should (search-forward "py-execute-statement-python3-dedicated-test" nil t 1)))))
-
 (ert-deftest indent-region-lp-997958-lp-1426903-no-arg-1-test ()
   "Indent line-by-line as first line is okay "
   (py-test-with-temp-buffer-point-min
