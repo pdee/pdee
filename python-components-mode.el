@@ -2301,10 +2301,6 @@ set in py-execute-region and used in py--jump-to-exception.")
   "[ \t]+File \"\\([^\"]+\\)\", line \\([0-9]+\\)"
   "Regular expression that describes tracebacks.")
 
-(defvar py-bol-forms-last-indent nil
-  "For internal use. Stores indent from last py-end-of-FORM-bol command.
-When this-command is py-beginning-of-FORM-bol, last-command's indent will be considered in order to jump onto right beginning position.")
-
 (defvar py-XXX-tag-face 'py-XXX-tag-face)
 
 (defvar py-pseudo-keyword-face 'py-pseudo-keyword-face)
