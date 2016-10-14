@@ -1897,6 +1897,7 @@ Return position if form found, nil otherwise. \"
   (dolist (ele py-down-forms)
     (unless (string= ele "statement")
       (insert (concat "
+\(defalias 'py-up-" ele " 'py-" ele "-up)
 \(defun py-up-" ele " ()
   \"Go to the beginning of next " ele " upwards in buffer.
 
@@ -1907,6 +1908,7 @@ Return position if " ele " found, nil otherwise. \"
   (dolist (ele py-down-forms)
     (unless (string= ele "statement")
       (insert (concat "
+\(defalias 'py-down-" ele " 'py- " ele "-down)
 \(defun py-down-" ele " ()
   \"Go to the beginning of next " ele " below in buffer.
 

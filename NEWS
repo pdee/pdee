@@ -4,6 +4,9 @@ Python Mode News
 New in version 6.2.3
 ---------------------
 
+Commands saying "up" reach one level less indented than start of
+current form
+
 New customizable `py-shell-fontify-style' offers some choice
 how to fontify py-shell buffer:
 

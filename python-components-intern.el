@@ -1813,11 +1813,7 @@ Returns position successful, nil otherwise"
     erg))
 
 (defun py-up (&optional indent)
-  "Go up or to beginning of form if inside.
-
-If inside a delimited form --string or list-- go to its beginning.
-If not at beginning of a statement or block, go to its beginning.
-If at beginning of a statement or block, go to beginning one level above of compound statement or definition at point."
+  "Go to beginning of form indented one level less. "
   (interactive "P")
   (let ((pps (parse-partial-sexp (point-min) (point))))
     (cond ((nth 8 pps) (goto-char (nth 8 pps)))
