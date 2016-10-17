@@ -270,6 +270,7 @@ result = some_function_that_takes_arguments(
       py-ert-moves-text
     (search-backward "pass")
     (py-up-block)
+    (py-up-block)
     (should (looking-at "def f():"))))
 
 (ert-deftest py-ert-moves-up-minor-block-bol-2 ()

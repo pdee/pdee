@@ -33,6 +33,41 @@
 
 ;; (setq py-debug-p t)
 
+(defvar py-up-text "
+def foo():
+    if True:
+        def bar():
+            pass
+    elif False:
+        def baz():
+            pass
+    else:
+        try:
+            1 == 1
+        except True:
+            def foo1():
+                if True:
+                    def bar1():
+                        pass
+                elif False:
+                    def baz1():
+                        pass
+                else:
+                    try:
+                        1 == 1
+                    except True:
+                        pass
+                    else True:
+                        pass
+                    finally:
+                        pass
+        else True:
+            pass
+        finally:
+            pass
+")
+
+
 (defmacro py-test-with-temp-buffer-point-min (contents &rest body)
   "Create temp buffer in `python-mode' inserting CONTENTS.
 BODY is code to be executed within the temp buffer.  Point is

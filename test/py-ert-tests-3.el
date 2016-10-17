@@ -244,7 +244,7 @@ More docstring here.
         asdef
         asdf
         pass"
-    (search-forward "sdf") 
+    (search-forward "sdf")
     (py-forward-indent)
     (should (eq (char-before) ?s))))
 
@@ -489,7 +489,7 @@ Bar
         return wrapped_f
     return wwrap"
     (forward-line -1)
-    (back-to-indentation) 
+    (back-to-indentation)
     (py-backward-def-or-class)
     (should (looking-at "def wwrap"))))
 
@@ -504,10 +504,7 @@ Bar
   (py-test-with-temp-buffer
     "    print(\"asdf\")"
     (py-indent-region (point-min) (point-max))
-    (should (eq 0 (current-indentation))))) 
-    
-
-
+    (should (eq 0 (current-indentation)))))
 
 (ert-deftest py-forward-def-or-class-1 ()
   (py-test-with-temp-buffer-point-min
@@ -578,7 +575,12 @@ return wwrap"
         return wrapped_f
 return wwrap"
     (search-forward "print")
-    (should (< 2 (length (ar-string-atpt))))))    
+    (should (< 2 (length (ar-string-atpt))))))
 
-(provide 'py-ert-tests-3)
-;;; py-ert-tests-3.el ends here
+(ert-deftest py-up-block-test-1 ()
+  (py-test-with-temp-buffer
+      py-up-text
+    (search-backward "except True:")
+    (py-up-block)
+    (should (looking-at "def foo1():"))))
+

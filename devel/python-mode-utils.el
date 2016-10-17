@@ -1571,31 +1571,31 @@ Returns indentation if " ele " found, nil otherwise. \"
     (emacs-lisp-mode)
     (switch-to-buffer (current-buffer))))
 
-(defun py-write-up-forms ()
-  " "
-  (interactive)
-  (set-buffer (get-buffer-create "py-up-forms"))
-  (erase-buffer)
-  (dolist (ele py-down-forms)
-    (insert (concat "
-\(defun py-up-" ele " ()
-  \"Goto end of line preceding beginning of " ele ".
-  Returns position reached, if successful, nil otherwise.
+;; (defun py-write-up-forms ()
+;;   " "
+;;   (interactive)
+;;   (set-buffer (get-buffer-create "py-up-forms"))
+;;   (erase-buffer)
+;;   (dolist (ele py-down-forms)
+;;     (insert (concat "
+;; \(defun py-up-" ele " ()
+;;   \"Goto end of line preceding beginning of " ele ".
+;;   Returns position reached, if successful, nil otherwise.
 
-A complementary command travelling right, whilst `py-backward-" ele "' stops at left corner. \"
-  (interactive)
-  (let ((erg (py-backward-" ele ")))
-    (when erg
-      (unless (bobp)
-        (forward-line -1)
-        (end-of-line)
-        (skip-chars-backward \" \\t\\r\\n\\f\")
-        (setq erg (point))))
-  (when (called-interactively-p 'any) (message \"%s\" erg))
-  erg))
-"))
-    (emacs-lisp-mode)
-    (switch-to-buffer (current-buffer))))
+;; A complementary command travelling right, whilst `py-backward-" ele "' stops at left corner. \"
+;;   (interactive)
+;;   (let ((erg (py-backward-" ele ")))
+;;     (when erg
+;;       (unless (bobp)
+;;         (forward-line -1)
+;;         (end-of-line)
+;;         (skip-chars-backward \" \\t\\r\\n\\f\")
+;;         (setq erg (point))))
+;;   (when (called-interactively-p 'any) (message \"%s\" erg))
+;;   erg))
+;; "))
+;;     (emacs-lisp-mode)
+;;     (switch-to-buffer (current-buffer))))
 
 (defun py-write-specifying-shell-forms ()
   " "
@@ -1797,6 +1797,7 @@ http://repo.or.cz/w/elbb.git/blob/HEAD:/code/Go-to-Emacs-Lisp-Definition.el
   (interactive)
   (set-buffer (get-buffer-create "python-components-up-down.el"))
   (erase-buffer)
+  (when (interactive-p) (switch-to-buffer (current-buffer)))
   (insert ";;; python-components-up-down.el -- Searching up/downwards in buffer\n")
   (insert arkopf)
   (insert "
@@ -1828,20 +1829,30 @@ Return position if statement found, nil otherwise. \"
 	   (when (and py-verbose-p (called-interactively-p 'any)) (message \"%s\" erg))
 	   erg))
 
-\(defun py-up-base (regexp)
+\(defun py-up-base (regexp &optional indent orig)
   \"Go to the beginning of next form upwards in buffer.
 
-Return position if form found, nil otherwise. \"
-  (let\* ((orig (point))
-         erg)
-    (if (bobp)
-        (setq erg nil)
-      (while (and (re-search-backward regexp nil t 1)
-                  (nth 8 (parse-partial-sexp (point-min) (point)))))
-      (back-to-indentation)
-      (when (looking-at regexp) (setq erg (point)))
-      (when py-verbose-p (message \"%s\" erg))
-      erg)))
+Return position if form found, nil otherwise.
+REGEXP is a quoted symbol \"
+  (let* ((orig (or orig (point)))
+         erg name command)
+    (unless (bobp)
+      (if indent
+	  (progn
+	    (while (and (re-search-backward (eval regexp) nil t 1)
+			(or (nth 8 (parse-partial-sexp (point-min) (point)))
+			    (<= indent (current-indentation))))))
+	(unless (py--beginning-of-statement-p)
+	  (py-backward-statement))
+	(if (looking-at (eval regexp))
+	    (py-up-base regexp (current-indentation) orig)
+	  (setq name (symbol-name regexp))
+	  (setq command (intern-soft (concat \"py-backward-\" (substring name (string-match \"block\\\\|def\\\\|class\" name) (string-match \"-re\" name)))))
+	  (funcall command)
+	  (py-up-base regexp (current-indentation)))))
+    (and (looking-at (eval regexp)) (< (point) orig) (setq erg (point)))
+    (when py-verbose-p (message \"%s\" erg))
+    erg))
 
 \(defun py-down-base (regexp)
   \"Go to the beginning of next form below in buffer.
@@ -1851,6 +1862,9 @@ Return position if form found, nil otherwise. \"
     (forward-line 1)
     (beginning-of-line)
     (let\* ((orig (point))
+           (regexp (if (symbolp regexp)
+                       (eval regexp)
+                     regexp))
            erg)
       (if (eobp)
           (setq erg nil)
@@ -1866,6 +1880,9 @@ Return position if form found, nil otherwise. \"
 
 Return position if form found, nil otherwise. \"
   (let\* ((orig (point))
+         (regexp (if (symbolp regexp)
+                     (eval regexp)
+                   regexp))
          erg)
     (if (bobp)
         (setq erg nil)
@@ -1884,6 +1901,9 @@ Return position if form found, nil otherwise. \"
     (forward-line 1)
     (beginning-of-line)
     (let\* ((orig (point))
+           (regexp (if (symbolp regexp)
+                       (eval regexp)
+                     regexp))
            erg)
       (if (eobp)
           (setq erg nil)
@@ -1903,12 +1923,15 @@ Return position if form found, nil otherwise. \"
 
 Return position if " ele " found, nil otherwise. \"
   (interactive)
-  (py-up-base py-" ele "-re))\n"))))
+  (py-up-base 'py-"))
+      (cond ((string-match "def\\|class\\|section" ele)
+	     (insert (concat ele "-re))\n")))
+	    (t (insert "extended-block-or-clause-re))\n")))))
   ;; down
   (dolist (ele py-down-forms)
     (unless (string= ele "statement")
       (insert (concat "
-\(defalias 'py-down-" ele " 'py- " ele "-down)
+\(defalias 'py-down-" ele " 'py-" ele "-down)
 \(defun py-down-" ele " ()
   \"Go to the beginning of next " ele " below in buffer.
 
@@ -1926,7 +1949,7 @@ Return position if " ele " found, nil otherwise. \"
 Go to beginning of line.
 Return position if " ele " found, nil otherwise. \"
   (interactive)
-  (py-up-base-bol py-" ele "-re))\n"))))
+  (py-up-base-bol 'py-" ele "-re))\n"))))
   ;; down bol
   (dolist (ele py-down-forms)
     (if (string= "statement" ele)
@@ -2532,8 +2555,8 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
   (insert "\n;;This file is generated by function from python-mode-utils.el - see in
 ;; directory devel. Edits here might not be persistent.\n")
   (insert arkopf)
-  (switch-to-buffer (current-buffer)) 
-  (dolist (ele 
+  (switch-to-buffer (current-buffer))
+  (dolist (ele
 	   ;; (seq-concatenate 'list py-bol-forms py-non-bol-forms)
 	   py-non-bol-forms)
     (insert (concat "\(defun py--beginning-of-" ele "-p ()
@@ -2554,7 +2577,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
     (insert (concat "\(defun py--beginning-of-" ele "-bol-p ()
   \"Returns position, if cursor is at the beginning of a `" ele "', nil otherwise. \""))
     (insert (concat "
-  (and (bolp) 
+  (and (bolp)
        (looking-at py-" ele "-re)
        (looking-back \"[^ \\t]*\" (line-beginning-position))
        (not (nth 8 (parse-partial-sexp (point-min) (point))))

@@ -28,6 +28,61 @@
 
 ;;  Keymap
 
+(defun ar--beginning-of-form-intern (regexp &optional iact indent orig lc)
+  "Go to beginning of FORM.
+
+With INDENT, go to beginning one level above.
+Whit IACT, print result in message buffer.
+
+Returns beginning of FORM if successful, nil otherwise"
+  (interactive "P")
+  (let (erg)
+    (unless (bobp)
+      (let* ((orig (or orig (point)))
+             (indent (or indent (progn
+                                  (back-to-indentation)
+                                  (or (ar--beginning-of-statement-p)
+                                      (ar-backward-statement))
+                                  (current-indentation)))))
+        (setq erg (cond ((and (< (point) orig) (looking-at (symbol-value regexp)))
+                         (point))
+                        ((and (eq 0 (current-column)) (numberp indent) (< 0 indent))
+                         (when (< 0 (abs (skip-chars-backward " \t\r\n\f")))
+                           (ar-backward-statement)
+                           (unless (looking-at (symbol-value regexp))
+                             (cdr (ar--go-to-keyword (symbol-value regexp) (current-indentation))))))
+                        ((numberp indent)
+			 (cdr (ar--go-to-keyword (symbol-value regexp) indent)))
+                        (t (ignore-errors
+                             (cdr (ar--go-to-keyword (symbol-value regexp)
+                                                    (- (progn (if (ar--beginning-of-statement-p) (current-indentation) (save-excursion (ar-backward-statement) (current-indentation)))) ar-indent-offset)))))))
+        (when lc (beginning-of-line) (setq erg (point)))))
+    (when (and ar-verbose-p iact) (message "%s" erg))
+    erg))
+
+(defun ar--beginning-of-prepare (indent final-re &optional inter-re iact lc)
+  (let ((orig (point))
+        (indent
+         (or indent
+             (progn (back-to-indentation)
+                    (or (ar--beginning-of-statement-p)
+                        (ar-backward-statement))
+                    (cond ((eq 0 (current-indentation))
+                           (current-indentation))
+                          ((looking-at (symbol-value inter-re))
+                           (current-indentation))
+                          (t
+                           (if (<= ar-indent-offset (current-indentation))
+                               (- (current-indentation) (if ar-smart-indentation (ar-guess-indent-offset) ar-indent-offset))
+                             ar-indent-offset))))))
+        erg)
+    (if (and (< (point) orig) (looking-at (symbol-value final-re)))
+        (progn
+          (and lc (beginning-of-line))
+          (setq erg (point))
+          (when (and ar-verbose-p iact) (message "%s" erg))
+          erg)
+      (ar--beginning-of-form-intern final-re iact indent orig lc))))
 
 (defun py--unfontify-banner-intern (buffer)
   (save-excursion
@@ -1812,17 +1867,16 @@ Returns position successful, nil otherwise"
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
-(defun py-up (&optional indent)
-  "Go to beginning of form indented one level less. "
-  (interactive "P")
-  (let ((pps (parse-partial-sexp (point-min) (point))))
-    (cond ((nth 8 pps) (goto-char (nth 8 pps)))
-          ((nth 1 pps) (goto-char (nth 1 pps)))
-          ((py--beginning-of-statement-p) (py--beginning-of-form-intern 'py-extended-block-or-clause-re (called-interactively-p 'any) t))
-          (t (py-backward-statement)))))
+;; (defun py-up (&optional indent)
+;;   "Go to beginning of form indented one level less. "
+;;   (interactive "P")
+;;   (let ((pps (parse-partial-sexp (point-min) (point))))
+;;     (cond ((nth 8 pps) (goto-char (nth 8 pps)))
+;;           ((nth 1 pps) (goto-char (nth 1 pps)))
+;;           ((py--beginning-of-statement-p) (py--beginning-of-form-intern 'py-extended-block-or-clause-re (called-interactively-p 'any) t))
+;;           (t (py-backward-statement)))))
 
 (defun py-down (&optional indent)
-
   "Go to beginning one level below of compound statement or definition at point.
 
 If no statement or block below, but a delimited form --string or list-- go to its beginning. Repeated call from there will behave like down-list.
