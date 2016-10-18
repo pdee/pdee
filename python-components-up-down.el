@@ -101,27 +101,6 @@ Return position if form found, nil otherwise. "
         (when py-verbose-p (message "%s" erg))
         erg))))
 
-(defun py-down-base-bol (regexp)
-  "Go to the beginning of next form below in buffer.
-
-Return position if form found, nil otherwise. "
-  (unless (eobp)
-    (forward-line 1)
-    (beginning-of-line)
-    (let* ((orig (point))
-           (regexp (if (symbolp regexp)
-                       (eval regexp)
-                     regexp))
-           erg)
-      (if (eobp)
-          (setq erg nil)
-        (while (and (re-search-forward regexp nil t 1)
-                    (nth 8 (parse-partial-sexp (point-min) (point)))))
-        (beginning-of-line)
-        (when (looking-at regexp) (setq erg (point)))
-        (when py-verbose-p (message "%s" erg))
-        erg))))
-
 (defalias 'py-up-block 'py-block-up)
 (defun py-up-block ()
   "Go to the beginning of next block upwards in buffer.

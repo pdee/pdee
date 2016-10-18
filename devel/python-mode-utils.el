@@ -1513,61 +1513,6 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
     (emacs-lisp-mode)
     (switch-to-buffer (current-buffer))))
 
-;; not working
-(defun py-write-up-forms-bol ()
-  " "
-  (interactive)
-  (set-buffer (get-buffer-create "py-backward-form-bol-commands.txt"))
-  (erase-buffer)
-  (dolist (ele py-down-forms)
-    (insert (concat "py-backward-" ele "-bol\n")))
-  (set-buffer (get-buffer-create "py-down-forms-bol.el"))
-  (erase-buffer)
-  (insert ";; Complementary left corner beginning of form commands")
-  (dolist (ele py-down-forms)
-    (insert (concat "
-\(defun py-backward-" ele "-bol ()
-  \"Goto beginning of line where " ele " starts.
-  Returns position reached, if successful, nil otherwise.
-
-A complementary command travelling at beginning of line, whilst `py-backward-" ele "' stops at indentation.
-See also `py-up-" ele "': up from current definition to next beginning of " ele " above. \"
-  (interactive)
-  (let ((erg (py-backward-" ele ")))
-    (when erg
-      (unless (eobp)
-        (beginning-of-line)
-        (setq erg (point))))
-  (when (called-interactively-p 'any) (message \"%s\" erg))
-  erg))
-"))
-    (emacs-lisp-mode)
-    (switch-to-buffer (current-buffer))))
-
-;; not working
-(defun py-write-down-forms ()
-  " "
-  (interactive)
-  (set-buffer (get-buffer-create "py-down-forms.el"))
-  (erase-buffer)
-  (dolist (ele py-down-forms)
-    (insert (concat "
-\(defun py-down-" ele " ()
-  \"Go to the beginning of next " ele " below in buffer.
-
-Returns indentation if " ele " found, nil otherwise. \"
-  (interactive)
-  (let\* ((orig (point))
-         erg)
-    (if (eobp)
-        (setq erg nil)
-      (while (and (setq erg (py-down-statement))(or (py-in-string-or-comment-p)(not (looking-at py-" ele "-re))))))
-    (when (called-interactively-p 'any) (message \"%s\" erg))
-    erg))
-"))
-    (emacs-lisp-mode)
-    (switch-to-buffer (current-buffer))))
-
 (defun py-write-specifying-shell-forms ()
   " "
   (interactive)
@@ -1843,27 +1788,6 @@ Return position if form found, nil otherwise. \"
         (while (and (re-search-forward regexp nil t 1)
                     (nth 8 (parse-partial-sexp (point-min) (point)))))
         (back-to-indentation)
-        (when (looking-at regexp) (setq erg (point)))
-        (when py-verbose-p (message \"%s\" erg))
-        erg))))
-
-\(defun py-down-base-bol (regexp)
-  \"Go to the beginning of next form below in buffer.
-
-Return position if form found, nil otherwise. \"
-  (unless (eobp)
-    (forward-line 1)
-    (beginning-of-line)
-    (let\* ((orig (point))
-           (regexp (if (symbolp regexp)
-                       (eval regexp)
-                     regexp))
-           erg)
-      (if (eobp)
-          (setq erg nil)
-        (while (and (re-search-forward regexp nil t 1)
-                    (nth 8 (parse-partial-sexp (point-min) (point)))))
-        (beginning-of-line)
         (when (looking-at regexp) (setq erg (point)))
         (when py-verbose-p (message \"%s\" erg))
         erg))))\n")
