@@ -264,44 +264,6 @@ by the
     (py-backward-same-level)
     (should (eq (char-after) ?e))))
 
-(ert-deftest py-ert-up-level-test-1 ()
-  (py-test-with-temp-buffer-point-min
-      "def foo():
-    if True:
-        def bar():
-            pass
-    elif False:
-        def baz():
-            pass
-    else:
-        try:
-            1 == 1
-        except True:
-            def foo1():
-                if True:
-                    def bar1():
-                        pass
-                elif False:
-                    def baz1():
-                        pass
-                else:
-                    try:
-                        1 == 1
-                    except True:
-                        pass
-                    else True:
-                        pass
-                    finally:
-                        pass
-        else True:
-            pass
-        finally:
-            pass
-"
-    (goto-char 632)
-    (py-up-block-or-clause)
-    (should (looking-at "else:"))))
-
 (ert-deftest py-ert-up-level-test-2 ()
   (py-test-with-temp-buffer-point-min
       "def foo():
@@ -338,7 +300,7 @@ by the
 "
     (goto-char 632)
     (py-up-block)
-    (should (looking-at "if:"))))
+    (should (looking-at "else:"))))
 
 (ert-deftest py-ert-hide-partial-expression-test ()
 

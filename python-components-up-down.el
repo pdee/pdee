@@ -54,30 +54,31 @@ Return position if statement found, nil otherwise. "
 	   (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
 	   erg))
 
-(defun py-up-base (regexp &optional indent orig)
+(defun py-up-base (regexp &optional indent orig bol)
   "Go to the beginning of next form upwards in buffer.
 
 Return position if form found, nil otherwise.
 REGEXP is a quoted symbol "
-  (let* ((orig (or orig (point)))
-         erg name command)
-    (unless (bobp)
+  (unless (bobp)
+    (let* ((orig (or orig (point)))
+	   erg name command)
       (if indent
 	  (progn
-	    (while (and (re-search-backward (eval regexp) nil t 1)
+	    (while (and (re-search-backward (eval regexp) nil 'move 1)
 			(or (nth 8 (parse-partial-sexp (point-min) (point)))
 			    (<= indent (current-indentation))))))
 	(unless (py--beginning-of-statement-p)
 	  (py-backward-statement))
 	(if (looking-at (eval regexp))
-	    (py-up-base regexp (current-indentation) orig)
+	    (py-up-base regexp (current-indentation) orig bol)
 	  (setq name (symbol-name regexp))
-	  (setq command (intern-soft (concat "py-backward-" (substring name (string-match "block\\|def\\|class" name) (string-match "-re" name)))))
+	  (setq command (intern-soft (concat "py-backward-" (substring name (string-match "minor\\|block\\|def\\|class" name) (string-match "-re" name)))))
 	  (funcall command)
-	  (py-up-base regexp (current-indentation)))))
+	  (py-up-base regexp (current-indentation) orig bol)))
+    (when bol (beginning-of-line))
     (and (looking-at (eval regexp)) (< (point) orig) (setq erg (point)))
     (when py-verbose-p (message "%s" erg))
-    erg))
+    erg)))
 
 (defun py-down-base (regexp)
   "Go to the beginning of next form below in buffer.
@@ -99,24 +100,6 @@ Return position if form found, nil otherwise. "
         (when (looking-at regexp) (setq erg (point)))
         (when py-verbose-p (message "%s" erg))
         erg))))
-
-(defun py-up-base-bol (regexp)
-  "Go to the beginning of next form upwards in buffer.
-
-Return position if form found, nil otherwise. "
-  (let* ((orig (point))
-         (regexp (if (symbolp regexp)
-                     (eval regexp)
-                   regexp))
-         erg)
-    (if (bobp)
-        (setq erg nil)
-      (while (and (re-search-backward regexp nil t 1)
-                  (nth 8 (parse-partial-sexp (point-min) (point)))))
-      (beginning-of-line)
-      (when (looking-at regexp) (setq erg (point)))
-      (when py-verbose-p (message "%s" erg))
-      erg)))
 
 (defun py-down-base-bol (regexp)
   "Go to the beginning of next form below in buffer.
@@ -147,14 +130,6 @@ Return position if block found, nil otherwise. "
   (interactive)
   (py-up-base 'py-extended-block-or-clause-re))
 
-(defalias 'py-up-block-or-clause 'py-block-or-clause-up)
-(defun py-up-block-or-clause ()
-  "Go to the beginning of next block-or-clause upwards in buffer.
-
-Return position if block-or-clause found, nil otherwise. "
-  (interactive)
-  (py-up-base 'py-extended-block-or-clause-re))
-
 (defalias 'py-up-class 'py-class-up)
 (defun py-up-class ()
   "Go to the beginning of next class upwards in buffer.
@@ -162,14 +137,6 @@ Return position if block-or-clause found, nil otherwise. "
 Return position if class found, nil otherwise. "
   (interactive)
   (py-up-base 'py-class-re))
-
-(defalias 'py-up-clause 'py-clause-up)
-(defun py-up-clause ()
-  "Go to the beginning of next clause upwards in buffer.
-
-Return position if clause found, nil otherwise. "
-  (interactive)
-  (py-up-base 'py-extended-block-or-clause-re))
 
 (defalias 'py-up-def 'py-def-up)
 (defun py-up-def ()
@@ -195,14 +162,6 @@ Return position if minor-block found, nil otherwise. "
   (interactive)
   (py-up-base 'py-extended-block-or-clause-re))
 
-(defalias 'py-up-section 'py-section-up)
-(defun py-up-section ()
-  "Go to the beginning of next section upwards in buffer.
-
-Return position if section found, nil otherwise. "
-  (interactive)
-  (py-up-base 'py-section-re))
-
 (defalias 'py-down-block 'py-block-down)
 (defun py-down-block ()
   "Go to the beginning of next block below in buffer.
@@ -211,14 +170,6 @@ Return position if block found, nil otherwise. "
   (interactive)
   (py-down-base py-block-re))
 
-(defalias 'py-down-block-or-clause 'py-block-or-clause-down)
-(defun py-down-block-or-clause ()
-  "Go to the beginning of next block-or-clause below in buffer.
-
-Return position if block-or-clause found, nil otherwise. "
-  (interactive)
-  (py-down-base py-block-or-clause-re))
-
 (defalias 'py-down-class 'py-class-down)
 (defun py-down-class ()
   "Go to the beginning of next class below in buffer.
@@ -226,14 +177,6 @@ Return position if block-or-clause found, nil otherwise. "
 Return position if class found, nil otherwise. "
   (interactive)
   (py-down-base py-class-re))
-
-(defalias 'py-down-clause 'py-clause-down)
-(defun py-down-clause ()
-  "Go to the beginning of next clause below in buffer.
-
-Return position if clause found, nil otherwise. "
-  (interactive)
-  (py-down-base py-clause-re))
 
 (defalias 'py-down-def 'py-def-down)
 (defun py-down-def ()
@@ -259,29 +202,13 @@ Return position if minor-block found, nil otherwise. "
   (interactive)
   (py-down-base py-minor-block-re))
 
-(defalias 'py-down-section 'py-section-down)
-(defun py-down-section ()
-  "Go to the beginning of next section below in buffer.
-
-Return position if section found, nil otherwise. "
-  (interactive)
-  (py-down-base py-section-re))
-
 (defun py-up-block-bol ()
   "Go to the beginning of next block upwards in buffer.
 
 Go to beginning of line.
 Return position if block found, nil otherwise. "
   (interactive)
-  (py-up-base-bol 'py-block-re))
-
-(defun py-up-block-or-clause-bol ()
-  "Go to the beginning of next block-or-clause upwards in buffer.
-
-Go to beginning of line.
-Return position if block-or-clause found, nil otherwise. "
-  (interactive)
-  (py-up-base-bol 'py-block-or-clause-re))
+  (py-up-base 'py-block-re nil (point) t))
 
 (defun py-up-class-bol ()
   "Go to the beginning of next class upwards in buffer.
@@ -289,15 +216,7 @@ Return position if block-or-clause found, nil otherwise. "
 Go to beginning of line.
 Return position if class found, nil otherwise. "
   (interactive)
-  (py-up-base-bol 'py-class-re))
-
-(defun py-up-clause-bol ()
-  "Go to the beginning of next clause upwards in buffer.
-
-Go to beginning of line.
-Return position if clause found, nil otherwise. "
-  (interactive)
-  (py-up-base-bol 'py-clause-re))
+  (py-up-base 'py-class-re nil (point) t))
 
 (defun py-up-def-bol ()
   "Go to the beginning of next def upwards in buffer.
@@ -305,7 +224,7 @@ Return position if clause found, nil otherwise. "
 Go to beginning of line.
 Return position if def found, nil otherwise. "
   (interactive)
-  (py-up-base-bol 'py-def-re))
+  (py-up-base 'py-def-re nil (point) t))
 
 (defun py-up-def-or-class-bol ()
   "Go to the beginning of next def-or-class upwards in buffer.
@@ -313,7 +232,7 @@ Return position if def found, nil otherwise. "
 Go to beginning of line.
 Return position if def-or-class found, nil otherwise. "
   (interactive)
-  (py-up-base-bol 'py-def-or-class-re))
+  (py-up-base 'py-def-or-class-re nil (point) t))
 
 (defun py-up-minor-block-bol ()
   "Go to the beginning of next minor-block upwards in buffer.
@@ -321,15 +240,7 @@ Return position if def-or-class found, nil otherwise. "
 Go to beginning of line.
 Return position if minor-block found, nil otherwise. "
   (interactive)
-  (py-up-base-bol 'py-minor-block-re))
-
-(defun py-up-section-bol ()
-  "Go to the beginning of next section upwards in buffer.
-
-Go to beginning of line.
-Return position if section found, nil otherwise. "
-  (interactive)
-  (py-up-base-bol 'py-section-re))
+  (py-up-base 'py-minor-block-re nil (point) t))
 
 (defun py-down-block-bol ()
   "Go to the beginning of next block below in buffer.
@@ -339,14 +250,6 @@ Return position if block found, nil otherwise "
   (interactive)
   (py-down-base-bol py-block-re))
 
-(defun py-down-block-or-clause-bol ()
-  "Go to the beginning of next block-or-clause below in buffer.
-
-Go to beginning of line
-Return position if block-or-clause found, nil otherwise "
-  (interactive)
-  (py-down-base-bol py-block-or-clause-re))
-
 (defun py-down-class-bol ()
   "Go to the beginning of next class below in buffer.
 
@@ -354,14 +257,6 @@ Go to beginning of line
 Return position if class found, nil otherwise "
   (interactive)
   (py-down-base-bol py-class-re))
-
-(defun py-down-clause-bol ()
-  "Go to the beginning of next clause below in buffer.
-
-Go to beginning of line
-Return position if clause found, nil otherwise "
-  (interactive)
-  (py-down-base-bol py-clause-re))
 
 (defun py-down-def-bol ()
   "Go to the beginning of next def below in buffer.
@@ -386,14 +281,6 @@ Go to beginning of line
 Return position if minor-block found, nil otherwise "
   (interactive)
   (py-down-base-bol py-minor-block-re))
-
-(defun py-down-section-bol ()
-  "Go to the beginning of next section below in buffer.
-
-Go to beginning of line
-Return position if section found, nil otherwise "
-  (interactive)
-  (py-down-base-bol py-section-re))
 
 ;; python-components-up-down.el ends here
 (provide 'python-components-up-down)

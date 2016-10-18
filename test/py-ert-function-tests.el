@@ -138,9 +138,6 @@
 (ert-deftest py-ert-down-base-functionp-test ()
   (should (functionp 'py-down-base)))
 
-(ert-deftest py-ert-up-base-bol-functionp-test ()
-  (should (functionp 'py-up-base-bol)))
-
 (ert-deftest py-ert-down-base-bol-functionp-test ()
   (should (functionp 'py-down-base-bol)))
 
@@ -149,12 +146,6 @@
 
 (ert-deftest py-ert-up-minor-block-functionp-test ()
   (should (functionp 'py-up-minor-block)))
-
-(ert-deftest py-ert-up-clause-functionp-test ()
-  (should (functionp 'py-up-clause)))
-
-(ert-deftest py-ert-up-block-or-clause-functionp-test ()
-  (should (functionp 'py-up-block-or-clause)))
 
 (ert-deftest py-ert-up-def-functionp-test ()
   (should (functionp 'py-up-def)))
@@ -191,12 +182,6 @@
 
 (ert-deftest py-ert-up-minor-block-bol-functionp-test ()
   (should (functionp 'py-up-minor-block-bol)))
-
-(ert-deftest py-ert-up-clause-bol-functionp-test ()
-  (should (functionp 'py-up-clause-bol)))
-
-(ert-deftest py-ert-up-block-or-clause-bol-functionp-test ()
-  (should (functionp 'py-up-block-or-clause-bol)))
 
 (ert-deftest py-ert-up-def-bol-functionp-test ()
   (should (functionp 'py-up-def-bol)))
@@ -2096,12 +2081,6 @@
 
 (ert-deftest py-ert-end-of-top-level-bol-functionp-test ()
   (should (functionp 'py-forward-top-level-bol)))
-
-(ert-deftest py-ert-up-functionp-test ()
-  (should (functionp 'py-up)))
-
-(ert-deftest py-ert-down-functionp-test ()
-  (should (functionp 'py-down)))
 
 (ert-deftest py-ert--beginning-of-line-form-functionp-test ()
   (should (functionp 'py--beginning-of-line-form)))

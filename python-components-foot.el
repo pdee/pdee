@@ -451,7 +451,7 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
 (defalias 'py-end-of-top-level 'py-forward-top-level)
 (defalias 'py-next-statement 'py-forward-statement)
 (defalias 'py-markup-region-as-section 'py-sectionize-region)
-(defalias 'py-up 'py-up-block-or-clause)
+(defalias 'py-up 'py-up-block)
 
 ;;;
 (provide 'python-components-foot)

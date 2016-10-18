@@ -292,13 +292,10 @@
 (setq py-down-forms
       (list
        "block"
-       "block-or-clause"
        "class"
-       "clause"
        "def"
        "def-or-class"
        "minor-block"
-       "section"
        "statement"
        ))
 
@@ -1571,32 +1568,6 @@ Returns indentation if " ele " found, nil otherwise. \"
     (emacs-lisp-mode)
     (switch-to-buffer (current-buffer))))
 
-;; (defun py-write-up-forms ()
-;;   " "
-;;   (interactive)
-;;   (set-buffer (get-buffer-create "py-up-forms"))
-;;   (erase-buffer)
-;;   (dolist (ele py-down-forms)
-;;     (insert (concat "
-;; \(defun py-up-" ele " ()
-;;   \"Goto end of line preceding beginning of " ele ".
-;;   Returns position reached, if successful, nil otherwise.
-
-;; A complementary command travelling right, whilst `py-backward-" ele "' stops at left corner. \"
-;;   (interactive)
-;;   (let ((erg (py-backward-" ele ")))
-;;     (when erg
-;;       (unless (bobp)
-;;         (forward-line -1)
-;;         (end-of-line)
-;;         (skip-chars-backward \" \\t\\r\\n\\f\")
-;;         (setq erg (point))))
-;;   (when (called-interactively-p 'any) (message \"%s\" erg))
-;;   erg))
-;; "))
-;;     (emacs-lisp-mode)
-;;     (switch-to-buffer (current-buffer))))
-
 (defun py-write-specifying-shell-forms ()
   " "
   (interactive)
@@ -1829,30 +1800,31 @@ Return position if statement found, nil otherwise. \"
 	   (when (and py-verbose-p (called-interactively-p 'any)) (message \"%s\" erg))
 	   erg))
 
-\(defun py-up-base (regexp &optional indent orig)
+\(defun py-up-base (regexp &optional indent orig bol)
   \"Go to the beginning of next form upwards in buffer.
 
 Return position if form found, nil otherwise.
 REGEXP is a quoted symbol \"
-  (let* ((orig (or orig (point)))
-         erg name command)
-    (unless (bobp)
+  (unless (bobp)
+    (let* ((orig (or orig (point)))
+	   erg name command)
       (if indent
 	  (progn
-	    (while (and (re-search-backward (eval regexp) nil t 1)
+	    (while (and (re-search-backward (eval regexp) nil 'move 1)
 			(or (nth 8 (parse-partial-sexp (point-min) (point)))
 			    (<= indent (current-indentation))))))
 	(unless (py--beginning-of-statement-p)
 	  (py-backward-statement))
 	(if (looking-at (eval regexp))
-	    (py-up-base regexp (current-indentation) orig)
+	    (py-up-base regexp (current-indentation) orig bol)
 	  (setq name (symbol-name regexp))
-	  (setq command (intern-soft (concat \"py-backward-\" (substring name (string-match \"block\\\\|def\\\\|class\" name) (string-match \"-re\" name)))))
+	  (setq command (intern-soft (concat \"py-backward-\" (substring name (string-match \"minor\\\\|block\\\\|def\\\\|class\" name) (string-match \"-re\" name)))))
 	  (funcall command)
-	  (py-up-base regexp (current-indentation)))))
+	  (py-up-base regexp (current-indentation) orig bol)))
+    (when bol (beginning-of-line))
     (and (looking-at (eval regexp)) (< (point) orig) (setq erg (point)))
     (when py-verbose-p (message \"%s\" erg))
-    erg))
+    erg)))
 
 \(defun py-down-base (regexp)
   \"Go to the beginning of next form below in buffer.
@@ -1874,24 +1846,6 @@ Return position if form found, nil otherwise. \"
         (when (looking-at regexp) (setq erg (point)))
         (when py-verbose-p (message \"%s\" erg))
         erg))))
-
-\(defun py-up-base-bol (regexp)
-  \"Go to the beginning of next form upwards in buffer.
-
-Return position if form found, nil otherwise. \"
-  (let\* ((orig (point))
-         (regexp (if (symbolp regexp)
-                     (eval regexp)
-                   regexp))
-         erg)
-    (if (bobp)
-        (setq erg nil)
-      (while (and (re-search-backward regexp nil t 1)
-                  (nth 8 (parse-partial-sexp (point-min) (point)))))
-      (beginning-of-line)
-      (when (looking-at regexp) (setq erg (point)))
-      (when py-verbose-p (message \"%s\" erg))
-      erg)))
 
 \(defun py-down-base-bol (regexp)
   \"Go to the beginning of next form below in buffer.
@@ -1949,7 +1903,7 @@ Return position if " ele " found, nil otherwise. \"
 Go to beginning of line.
 Return position if " ele " found, nil otherwise. \"
   (interactive)
-  (py-up-base-bol 'py-" ele "-re))\n"))))
+  (py-up-base 'py-" ele "-re nil (point) t))\n"))))
   ;; down bol
   (dolist (ele py-down-forms)
     (if (string= "statement" ele)

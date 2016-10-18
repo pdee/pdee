@@ -560,27 +560,10 @@ return wwrap"
     (py-forward-clause)
     (should (looking-back "wrapped_f"))))
 
-(ert-deftest py-string-test-1 ()
-  (py-test-with-temp-buffer-point-min
-      "def foo(arg1, arg2, arg3):
-    '''print decorated function call data to stdout.
-    '''
-    def bar(f):
-        print 'Inside wwrap()'
-        def wrapped_f(*args):
-            print 'Inside wrapped_f()'
-            print 'Decorator arguments:', arg1, arg2, arg3
-            f(*args)
-            print 'After f(*args)'
-        return wrapped_f
-return wwrap"
-    (search-forward "print")
-    (should (< 2 (length (ar-string-atpt))))))
-
 (ert-deftest py-up-block-test-1 ()
   (py-test-with-temp-buffer
       py-up-text
     (search-backward "except True:")
     (py-up-block)
-    (should (looking-at "def foo1():"))))
+    (should (looking-at "else"))))
 
