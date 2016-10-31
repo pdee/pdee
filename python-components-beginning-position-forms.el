@@ -30,6 +30,7 @@
 
 
 (defun py--beginning-of-block-position ()
+  (interactive) 
   "Returns beginning of block position at beginning-of-line. "
   (save-excursion
     (let ((erg (py-backward-block)))

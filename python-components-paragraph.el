@@ -25,6 +25,26 @@
 
 ;;; Code:
 
+(defun py-fill-paren (&optional justify)
+  "Paren fill function for `py-fill-paragraph'.
+JUSTIFY should be used (if applicable) as in `fill-paragraph'."
+  (interactive "*")
+  (save-restriction
+    (save-excursion
+      (let ((pps (parse-partial-sexp (point-min) (point))))
+	(if (nth 1 pps)
+	    (let* ((beg (copy-marker (nth 1 pps)))
+		   (end (and beg (save-excursion (goto-char (nth 1 pps))
+						 (forward-list))))
+		   (paragraph-start "\f\\|[ \t]*$")
+		   (paragraph-separate ","))
+	      (when end (narrow-to-region beg end)
+		    (fill-region beg end)
+		    (while (not (eobp))
+		      (forward-line 1)
+		      (py-indent-line)
+		      (goto-char (line-end-position))))))))))
+
 (defun py-fill-string-django (&optional justify)
   "Fill docstring according to Django's coding standards style.
 
@@ -149,12 +169,6 @@ See available styles at `py-fill-paragraph' or var `py-docstring-style'
   (setq py-docstring-style 'onetwo)
   (when (and (called-interactively-p 'any) py-verbose-p)
     (message "docstring-style set to:  %s" py-docstring-style)))
-
-(defun py-fill-decorator (&optional justify)
-  "Decorator fill function for `py-fill-paragraph'.
-"
-  ;; (interactive "*P")
-  t)
 
 (defun py-fill-comment (&optional justify)
   "Fill the comment paragraph at point"
@@ -326,7 +340,7 @@ See lp:1066489 "
       (indent-region beg end py-current-indent))
     (when multi-line-p
       (goto-char thisbeg)
-      (py--skip-raw-string-front-fence) 
+      (py--skip-raw-string-front-fence)
       (skip-chars-forward " \t\r\n\f")
       (forward-line 1)
       (beginning-of-line)
@@ -412,38 +426,47 @@ Fill according to `py-docstring-style' "
       (list (if current-prefix-arg 'full) t))
     py-docstring-style
     (or docstring (py--in-or-behind-or-before-a-docstring))))
-  (let ((py-current-indent (save-excursion (or (py--beginning-of-statement-p) (py-backward-statement)) (current-indentation)))
-	;; fill-paragraph sets orig
-	(orig (if (boundp 'orig) (copy-marker orig) (copy-marker (point))))
-	(docstring (if (and docstring (not (number-or-marker-p docstring)))
-		       (py--in-or-behind-or-before-a-docstring)
-		     docstring)))
+  (let* ((pps (parse-partial-sexp (point-min) (point)))
+	 (indent (save-excursion (and (nth 3 pps) (goto-char (nth 8 pps)) (current-indentation))))
+	 ;; fill-paragraph sets orig
+	 (orig (if (boundp 'orig) (copy-marker orig) (copy-marker (point))))
+	 (docstring (if (and docstring (not (number-or-marker-p docstring)))
+			(py--in-or-behind-or-before-a-docstring)
+		      docstring)))
     (if docstring
-	(py--fill-docstring justify style docstring orig py-current-indent)
-      (fill-paragraph justify))))
+	(py--fill-docstring justify style docstring orig indent)
+      (py-fill-paragraph justify))))
 
 (defun py-fill-paragraph (&optional justify)
   (interactive "*")
   (save-excursion
     (save-restriction
       (window-configuration-to-register py-windows-config-register)
-      (if (or (py-in-comment-p)
-	      (and (bolp) (looking-at "[ \t]*#[# \t]*")))
-	  (py-fill-comment)
-	(let* ((orig (copy-marker (point)))
-	       (docstring (unless (not py-docstring-style)(py--in-or-behind-or-before-a-docstring))))
-	  (cond (docstring
-		 (setq fill-column py-docstring-fill-column)
-		 (py-fill-string justify py-docstring-style docstring))
-		((let ((fill-column py-comment-fill-column))
-		   (fill-comment-paragraph justify)))
-		((save-excursion
-		   (and (py-backward-statement)
-			(equal (char-after) ?\@)))
-		 (py-fill-decorator justify))
-		(t (fill-paragraph justify)))
-	  (widen))
-	(jump-to-register py-windows-config-register)))))
+      (let* ((pps (parse-partial-sexp (point-min) (point)))
+	     (orig (copy-marker (point)))
+	     (docstring (unless (not py-docstring-style)(py--in-or-behind-or-before-a-docstring)))
+	     (fill-column py-comment-fill-column))
+	(cond ((or (nth 4 pps)
+		   (and (bolp) (looking-at "[ \t]*#[# \t]*")))
+	       (py-fill-comment))
+	      (docstring
+	       (setq fill-column py-docstring-fill-column)
+	       (py-fill-string justify py-docstring-style docstring))
+	      (t
+	       (let* ((beg (save-excursion
+			       (if (looking-at paragraph-start)
+				   (point)
+				 (backward-paragraph)
+				 (when (looking-at paragraph-start)
+				   (point)))))
+		      (end
+		       (when beg
+			 (save-excursion
+			   (forward-paragraph)
+			   (when (looking-at paragraph-separate)
+			     (point))))))
+		 (and beg end (fill-region beg end))))))
+      (jump-to-register py-windows-config-register))))
 
 (provide 'python-components-paragraph)
 ;;; python-components-paragraph.el ends here

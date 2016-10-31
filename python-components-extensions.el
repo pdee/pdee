@@ -200,18 +200,6 @@ With interactive call, send it to the message buffer too. "
     (when (called-interactively-p 'any) (message "%s" res))
     res))
 
-(defun py-looking-at-keywords-p ()
-  "If looking at a python keyword. Returns t or nil. "
-  (interactive)
-  (let* ((kwds1 (car (nth 1 (eval (eval (quote (car font-lock-defaults)))))))
-         (kwds3 (car (nth 3 (eval (eval (quote (car font-lock-defaults)))))))
-	 (res
-	  (or
-           (looking-at kwds1)
-           (looking-at kwds3))))
-    (when (called-interactively-p 'any) (message "looking-at keywords: %s" res))
-    res))
-
 (defun py-match-paren-mode (&optional arg)
   "py-match-paren-mode nil oder t"
   (interactive "P")

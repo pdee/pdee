@@ -241,7 +241,10 @@
       (list
        "block"
        "block-or-clause"
+       "class"
        "clause"
+       "def"
+       "def-or-class"
        "elif-block"
        "else-block"
        "except-block"
@@ -1735,7 +1738,7 @@ Return position if statement found, nil otherwise. \"
 
 Return position if statement found, nil otherwise. \"
   (interactive)
-  (let\* ((orig (point))
+  (let* ((orig (point))
 	  (erg
 	   (cond ((py--end-of-statement-p)
 		  (setq erg (and (py-forward-statement) (py-backward-statement))))
@@ -1745,101 +1748,138 @@ Return position if statement found, nil otherwise. \"
 	   (when (and py-verbose-p (called-interactively-p 'any)) (message \"%s\" erg))
 	   erg))
 
-\(defun py-up-base (regexp &optional indent orig bol)
+\(defun py-up-base (regexp &optional indent orig decorator bol repeat)
   \"Go to the beginning of next form upwards in buffer.
 
 Return position if form found, nil otherwise.
 REGEXP is a quoted symbol \"
   (unless (bobp)
     (let* ((orig (or orig (point)))
+	   (repeat (or (and repeat (1+ repeat)) 999))
 	   erg name command)
-      (if indent
-	  (progn
-	    (while (and (re-search-backward (eval regexp) nil 'move 1)
-			(or (nth 8 (parse-partial-sexp (point-min) (point)))
-			    (<= indent (current-indentation))))))
-	(unless (py--beginning-of-statement-p)
-	  (py-backward-statement))
-	(if (looking-at (eval regexp))
-	    (py-up-base regexp (current-indentation) orig bol)
-	  (setq name (symbol-name regexp))
-	  (setq command (intern-soft (concat \"py-backward-\" (substring name (string-match \"minor\\\\|block\\\\|def\\\\|class\" name) (string-match \"-re\" name)))))
-	  (funcall command)
-	  (py-up-base regexp (current-indentation) orig bol)))
-    (when bol (beginning-of-line))
-    (and (looking-at (eval regexp)) (< (point) orig) (setq erg (point)))
-    (when py-verbose-p (message \"%s\" erg))
-    erg)))
+      (if (< py-max-specpdl-size repeat)
+	  (error \"`py-up-base' reached loops max.\")
+	(if indent
+	    (progn
+	      (while (and (re-search-backward (symbol-value regexp) nil 'move 1)
+			  (or (nth 8 (parse-partial-sexp (point-min) (point)))
+			      (<= indent (current-indentation))))))
+	  (unless (py--beginning-of-statement-p)
+	    (py-backward-statement))
+	  (if (looking-at (symbol-value regexp))
+	      (py-up-base regexp (current-indentation) orig decorator bol repeat)
+	    (setq name (symbol-name regexp))
+	    (setq command (intern-soft (concat \"py-backward-\" (substring name (string-match \"minor\\\\|block\\\\|def\\\\|class\" name) (string-match \"-re\" name)))))
+	    (funcall command)
+	    (py-up-base regexp (current-indentation) orig decorator bol repeat)))
+	(when bol (beginning-of-line))
+	(and (looking-at (symbol-value regexp)) (< (point) orig) (setq erg (point)))
+	(when py-verbose-p (message \"%s\" erg))
+	erg))))
 
-\(defun py-down-base (regexp)
+\(defun py-down-base (regexp &optional orig indent decorator bol)
   \"Go to the beginning of next form below in buffer.
 
-Return position if form found, nil otherwise. \"
+Return position if form found, nil otherwise.
+Expects a quoted symbol 'REGEXP\"
   (unless (eobp)
-    (forward-line 1)
-    (beginning-of-line)
-    (let\* ((orig (point))
-           (regexp (if (symbolp regexp)
-                       (eval regexp)
-                     regexp))
-           erg)
-      (if (eobp)
-          (setq erg nil)
-        (while (and (re-search-forward regexp nil t 1)
-                    (nth 8 (parse-partial-sexp (point-min) (point)))))
-        (back-to-indentation)
-        (when (looking-at regexp) (setq erg (point)))
-        (when py-verbose-p (message \"%s\" erg))
-        erg))))\n")
-  ;; up
+    (let* ((orig (point))
+	   (name (substring (symbol-name regexp) 3 -3))
+	   (p-command (car (read-from-string (concat \"py--beginning-of-\" name \"-p\"))))
+	   (backward-command (car (read-from-string (concat \"py-backward-\" name))))
+	   (up-command (car (read-from-string (concat \"py-up-\" name))))
+	   (down-command (car (read-from-string (concat \"py-down-\" name))))
+           (forward-command (car (read-from-string (concat \"py-forward-\" name))))
+           erg last done start)
+      (if (funcall p-command)
+	  (setq indent (current-indentation))
+	(save-excursion
+	  (funcall backward-command indent decorator bol)
+	  (setq indent (current-indentation))
+	  (setq start (point))))
+      \;; (setq done (funcall forward-command indent decorator bol))
+      (while (and
+	      (py-down-statement)
+	      (<= indent (current-indentation))
+	      (when (looking-at (symbol-value regexp))
+		(setq last (point)))))
+    (if (looking-at (symbol-value regexp))
+	(setq erg (point))
+      (when last
+	(progn (goto-char last)
+	       (if (looking-at (symbol-value regexp))
+		   (progn
+		     (when bol (beginning-of-line))
+		     (setq erg (point)))
+		 (end-of-line)
+		 (unless (eobp)
+		   (forward-line 1)
+		   (beginning-of-line))))))
+    ;; Go to next end of next block upward instead
+    (unless (or erg last)
+      (goto-char orig)
+      (or
+       (if
+	   (and
+	    (funcall up-command)
+	    ;; up should not result to backward
+	    (not (eq (point) start))
+	    (funcall forward-command indent decorator bol)
+	    (< orig (point))
+	    (setq erg (point)))
+	   (when bol (setq erg (py--beginning-of-line-form erg)))
+	 (goto-char (point-max)))))
+    (when py-verbose-p (message \"%s\" erg))
+    erg)))
+")
   (dolist (ele py-down-forms)
     (unless (string= ele "statement")
       (insert (concat "
 \(defalias 'py-up-" ele " 'py-" ele "-up)
-\(defun py-up-" ele " ()
+\(defun py-up-" ele " (&optional indent decorator bol)
   \"Go to the beginning of next " ele " upwards in buffer.
 
 Return position if " ele " found, nil otherwise. \"
   (interactive)
   (py-up-base 'py-"))
       (cond ((string-match "def\\|class\\|section" ele)
-	     (insert (concat ele "-re))\n")))
-	    (t (insert "extended-block-or-clause-re))\n")))))
+	     (insert (concat ele "-re indent (point) decorator bol))\n")))
+	    (t (insert "extended-block-or-clause-re indent (point) decorator bol))\n")))))
   ;; down
   (dolist (ele py-down-forms)
     (unless (string= ele "statement")
       (insert (concat "
 \(defalias 'py-down-" ele " 'py-" ele "-down)
-\(defun py-down-" ele " ()
+\(defun py-down-" ele " (&optional orig indent decorator bol)
   \"Go to the beginning of next " ele " below in buffer.
 
 Return position if " ele " found, nil otherwise. \"
   (interactive)
-  (py-down-base py-" ele "-re))\n"))))
+  (py-down-base 'py-" ele "-re (or orig (point)) indent decorator))\n"))))
   ;; up bol
   (dolist (ele py-down-forms)
     (if (string= "statement" ele)
 	nil
       (insert (concat "
-\(defun py-up-" ele "-bol ()
+\(defun py-up-" ele "-bol (&optional indent decorator)
   \"Go to the beginning of next " ele " upwards in buffer.
 
 Go to beginning of line.
 Return position if " ele " found, nil otherwise. \"
   (interactive)
-  (py-up-base 'py-" ele "-re nil (point) t))\n"))))
+  (py-up-base 'py-" ele "-re indent (point) decorator t))\n"))))
   ;; down bol
   (dolist (ele py-down-forms)
     (if (string= "statement" ele)
         nil
       (insert (concat "
-\(defun py-down-" ele "-bol ()
+\(defun py-down-" ele "-bol (&optional orig indent decorator bol)
   \"Go to the beginning of next " ele " below in buffer.
 
 Go to beginning of line
 Return position if " ele " found, nil otherwise \"
   (interactive)
-  (py-down-base-bol py-" ele "-re))\n"))))
+  (py-down-base 'py-" ele "-re (point) indent decorator t))\n"))))
   (insert "\n;; python-components-up-down.el ends here
 \(provide 'python-components-up-down)")
   (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
@@ -1969,7 +2009,7 @@ Returns beginning and end positions of region, a cons. \"
 (defun py--insert-backward-forms ()
   (dolist (ele py-backward-forms)
     (insert (concat "
-\(defun py-backward-" ele " (&optional indent)"
+\(defun py-backward-" ele " (&optional indent decorator bol)"
 "\n  \"Go to beginning of `" ele "'.
 
 If already at beginning, go one `" ele "' backward.
@@ -1977,15 +2017,15 @@ Returns beginning of `" ele "' if successful, nil otherwise\"\n"))
     (insert "  (interactive)")
     (cond ((string-match "clause" ele)
 	   (insert (concat "
-  (py--backward-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (called-interactively-p 'any)))\n")))
+  (py--backward-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (called-interactively-p 'any) decorator bol))\n")))
 	  (t (insert (concat "
-  (py--backward-prepare indent 'py-" ele "-re 'py-clause-re (called-interactively-p 'any)))\n"))))))
+  (py--backward-prepare indent 'py-" ele "-re 'py-clause-re (called-interactively-p 'any) decorator bol))\n"))))))
 
 (defun py--insert-backward-bol-forms ()
   ;; bol forms
-  (dolist (ele py-backward-bol-command-names)
+  (dolist (ele py-backward-forms)
     (insert (concat "
-\(defun py-backward-" ele "-bol (&optional indent)
+\(defun py-backward-" ele "-bol (&optional indent decorator bol)
   \"Go to beginning of `" ele "', go to BOL.
 
 If already at beginning, go one `" ele "' backward.
@@ -1994,12 +2034,12 @@ Returns beginning of `" ele "' if successful, nil otherwise"))
     (insert "  (interactive)")
     (cond ((string-match "def\\|class" ele)
 	   (insert (concat "
-  (py--backward-prepare indent 'py-" ele "-re 'py-extended-block-or-clause-re (called-interactively-p 'any) t))\n")))
+  (py--backward-prepare indent 'py-" ele "-re 'py-extended-block-or-clause-re (called-interactively-p 'any) decorator t))\n")))
 	  ((string-match "clause" ele)
 	   (insert (concat "
-  (py--backward-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (called-interactively-p 'any) t))\n")))
+  (py--backward-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (called-interactively-p 'any) nil t))\n")))
 	  (t (insert (concat "
-  (py--backward-prepare indent 'py-" ele "-re 'py-clause-re (called-interactively-p 'any) t))\n"))))))
+  (py--backward-prepare indent 'py-" ele "-re 'py-clause-re (called-interactively-p 'any) decorator t))\n"))))))
 
 (defun py-write-backward-forms ()
   "Uses py-backward-forms, not `py-navigate-forms'.

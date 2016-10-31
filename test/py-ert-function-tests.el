@@ -138,9 +138,6 @@
 (ert-deftest py-ert-down-base-functionp-test ()
   (should (functionp 'py-down-base)))
 
-(ert-deftest py-ert-down-base-bol-functionp-test ()
-  (should (functionp 'py-down-base-bol)))
-
 (ert-deftest py-ert-up-block-functionp-test ()
   (should (functionp 'py-up-block)))
 
@@ -161,12 +158,6 @@
 
 (ert-deftest py-ert-down-minor-block-functionp-test ()
   (should (functionp 'py-down-minor-block)))
-
-(ert-deftest py-ert-down-clause-functionp-test ()
-  (should (functionp 'py-down-clause)))
-
-(ert-deftest py-ert-down-block-or-clause-functionp-test ()
-  (should (functionp 'py-down-block-or-clause)))
 
 (ert-deftest py-ert-down-def-functionp-test ()
   (should (functionp 'py-down-def)))
@@ -197,12 +188,6 @@
 
 (ert-deftest py-ert-down-minor-block-bol-functionp-test ()
   (should (functionp 'py-down-minor-block-bol)))
-
-(ert-deftest py-ert-down-clause-bol-functionp-test ()
-  (should (functionp 'py-down-clause-bol)))
-
-(ert-deftest py-ert-down-block-or-clause-bol-functionp-test ()
-  (should (functionp 'py-down-block-or-clause-bol)))
 
 (ert-deftest py-ert-down-def-bol-functionp-test ()
   (should (functionp 'py-down-def-bol)))
@@ -2603,72 +2588,6 @@
 
 (ert-deftest py-ert-end-of-class-functionp-test ()
   (should (functionp 'py-forward-class)))
-
-(ert-deftest py-ert-end-of-def-or-class-functionp-test ()
-  (should (functionp 'py-forward-def-or-class)))
-
-(ert-deftest py-ert-end-of-if-block-functionp-test ()
-  (should (functionp 'py-forward-if-block)))
-
-(ert-deftest py-ert-end-of-try-block-functionp-test ()
-  (should (functionp 'py-forward-try-block)))
-
-(ert-deftest py-ert-end-of-minor-block-functionp-test ()
-  (should (functionp 'py-forward-minor-block)))
-
-(ert-deftest py-ert-execute-section-functionp-test ()
-  (should (functionp 'py-execute-section)))
-
-(ert-deftest py-ert-execute-section-python-functionp-test ()
-  (should (functionp 'py-execute-section-python)))
-
-(ert-deftest py-ert-execute-section-python2-functionp-test ()
-  (should (functionp 'py-execute-section-python2)))
-
-(ert-deftest py-ert-execute-section-python3-functionp-test ()
-  (should (functionp 'py-execute-section-python3)))
-
-(ert-deftest py-ert-execute-section-ipython-functionp-test ()
-  (should (functionp 'py-execute-section-ipython)))
-
-(ert-deftest py-ert-execute-section-ipython2.7-functionp-test ()
-  (should (functionp 'py-execute-section-ipython2.7)))
-
-(ert-deftest py-ert-execute-section-ipython3-functionp-test ()
-  (should (functionp 'py-execute-section-ipython3)))
-
-(ert-deftest py-ert-execute-section-jython-functionp-test ()
-  (should (functionp 'py-execute-section-jython)))
-
-(ert-deftest py-ert-narrow-to-block-functionp-test ()
-  (should (functionp 'py-narrow-to-block)))
-
-(ert-deftest py-ert-narrow-to-block-or-clause-functionp-test ()
-  (should (functionp 'py-narrow-to-block-or-clause)))
-
-(ert-deftest py-ert-narrow-to-class-functionp-test ()
-  (should (functionp 'py-narrow-to-class)))
-
-(ert-deftest py-ert-narrow-to-clause-functionp-test ()
-  (should (functionp 'py-narrow-to-clause)))
-
-(ert-deftest py-ert-narrow-to-def-functionp-test ()
-  (should (functionp 'py-narrow-to-def)))
-
-(ert-deftest py-ert-narrow-to-def-or-class-functionp-test ()
-  (should (functionp 'py-narrow-to-def-or-class)))
-
-(ert-deftest py-ert-narrow-to-statement-functionp-test ()
-  (should (functionp 'py-narrow-to-statement)))
-
-(ert-deftest py-ert-execute-if-block-functionp-test ()
-  (should (functionp 'py-execute-if-block)))
-
-(ert-deftest py-ert-execute-try-block-functionp-test ()
-  (should (functionp 'py-execute-try-block)))
-
-(ert-deftest py-ert-execute-for-block-functionp-test ()
-  (should (functionp 'py-execute-for-block)))
 
 (provide 'py-ert-function-tests)
 ;;; py-ert-function-tests.el ends here

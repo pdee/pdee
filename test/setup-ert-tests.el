@@ -33,6 +33,77 @@
 
 ;; (setq py-debug-p t)
 
+(defvar py-kugel-text 
+"class kugel(object):
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    def pylauf(self):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
+        if treffer in gruen:
+            # print \"0, Gruen\"
+        elif treffer in schwarz:
+            # print \"%i, Schwarz\" % (treffer)
+            ausgabe[1] = treffer
+        else:
+            # print \"%i, manque\" % (treffer)
+            ausgabe[7] = treffer
+")
+
+(setq py-kugel-text "class kugel(object):
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    def pylauf(self):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
+        if treffer in gruen:
+            # print \"0, Gruen\"
+        elif treffer in schwarz:
+            # print \"%i, Schwarz\" % (treffer)
+            ausgabe[1] = treffer
+        else:
+            # print \"%i, manque\" % (treffer)
+            ausgabe[7] = treffer
+")
+ 
+(defvar py-forward-text "
+# {{
+class bar:
+    def foo ():
+        try:
+            if foo:
+                for a in b:
+                    print('%(language)s has %(number)03d quote types.' %
+       {'language': \"Python\", \"number\": 2})
+
+            elif bar:
+                for a in b:
+                    pass
+            else:
+                for a in b:
+                    pass
+# }}
+        except:
+            block2
+")
+
+;; (setq py-forward-text "
+;; class bar:
+;;     def foo ():
+;;         try:
+;;             if foo:
+;;                 for a in b:
+;;                     print('%(language)s has %(number)03d quote types.' %
+;;        {'language': \"Python\", \"number\": 2})
+
+;;             elif bar:
+;;                 for a in b:
+;;                     pass
+;;             else:
+;;                 for a in b:
+;;                     pass
+;;         except:
+;;             block2
+;; ")
+
 (defvar py-up-text "
 def foo():
     if True:
@@ -75,13 +146,13 @@ BODY is code to be executed within the temp buffer.  Point is
   (declare (indent 1) (debug t))
   `(with-temp-buffer
      ;; requires python.el
-     (and (featurep 'semantic) (unload-feature 'semantic))
-     (and (featurep 'python) (unload-feature 'python))
-     (let (hs-minor-mode)
+     ;; (and (featurep 'semantic) (unload-feature 'semantic))
+     ;; (and (featurep 'python) (unload-feature 'python))
+     (let (hs-minor-mode py--imenu-create-index-p)
        (insert ,contents)
        (python-mode)
-       ;; (message "fill-paragraph-function: %s" fill-paragraph-function)
        (goto-char (point-min))
+       (message "(current-buffer): %s" (current-buffer))
        (when py-debug-p (switch-to-buffer (current-buffer))
 	     (font-lock-fontify-buffer))
        ,@body)))
@@ -93,7 +164,7 @@ BODY is code to be executed within the temp buffer.  Point is
   (declare (indent 1) (debug t))
   `(with-temp-buffer
      ;; (and (featurep 'python) (unload-feature 'python))
-     (let (hs-minor-mode)
+     (let (hs-minor-mode py--imenu-create-index-p)
        (insert ,contents)
        (python-mode)
        (when py-debug-p (switch-to-buffer (current-buffer))

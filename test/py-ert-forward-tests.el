@@ -1,7 +1,7 @@
 ;;; py-ert-forward-tests.el --- Just some more tests 
 
-;; Copyright (C) 2015  Andreas Roehler
-;; Author: Andreas Roehler <andreas.roehler@online.de>
+;; Copyright (C) 2015-2016  Andreas Röhler
+;; Author: Andreas Röhler <andreas.roehler@online.de>
 ;; Keywords: languages, convenience
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -30,471 +30,130 @@
 
 (ert-deftest py-ert-forward-block-test ()
   (py-test-with-temp-buffer-point-min
-      "
-# {{
-class bar:
-    def foo ():
-        try:
-            if foo:
-                for a in b:
-                    print('%(language)s has %(number)03d quote types.' %
-       {'language': \"Python\", \"number\": 2})
-
-            elif bar:
-                for a in b:
-                    pass
-            else:
-                for a in b:
-                    pass
-# }}
-        except:
-            block2
-"
+    py-forward-text  
     (search-forward "if")
     (py-forward-block)
     (should (eq (char-before) ?s))))
 
 (ert-deftest py-ert-forward-block-or-clause-test ()
   (py-test-with-temp-buffer-point-min
-      "
-# {{
-class bar:
-    def foo ():
-        try:
-            if foo:
-                for a in b:
-                    print('%(language)s has %(number)03d quote types.' %
-       {'language': \"Python\", \"number\": 2})
-
-            elif bar:
-                for a in b:
-                    pass
-            else:
-                for a in b:
-                    pass
-# }}
-        except:
-            block2
-"
+      py-forward-text
     (search-forward "elif")
     (py-forward-block-or-clause)
     (should (eq (char-before) ?s))))
 
 (ert-deftest py-ert-forward-class-test ()
   (py-test-with-temp-buffer-point-min
-      "
-# {{
-class bar:
-    def foo ():
-        try:
-            if foo:
-                for a in b:
-                    print('%(language)s has %(number)03d quote types.' %
-       {'language': \"Python\", \"number\": 2})
-
-            elif bar:
-                for a in b:
-                    pass
-            else:
-                for a in b:
-                    pass
-# }}
-        except:
-            block2
-"
+      py-forward-text 
     (search-forward "if")
     (py-forward-class)
     (should (eq (char-before) ?2))))
 
 (ert-deftest py-ert-forward-clause-test ()
   (py-test-with-temp-buffer-point-min
-      "
-# {{
-class bar:
-    def foo ():
-        try:
-            if foo:
-                for a in b:
-                    print('%(language)s has %(number)03d quote types.' %
-       {'language': \"Python\", \"number\": 2})
-
-            elif bar:
-                for a in b:
-                    pass
-            else:
-                for a in b:
-                    pass
-# }}
-        except:
-            block2
-"
+      py-forward-text 
     (search-forward "elif")
     (py-forward-clause)
     (should (eq (char-before) ?s))))
 
 (ert-deftest py-ert-forward-def-test ()
   (py-test-with-temp-buffer-point-min
-      "
-# {{
-class bar:
-    def foo ():
-        try:
-            if foo:
-                for a in b:
-                    print('%(language)s has %(number)03d quote types.' %
-       {'language': \"Python\", \"number\": 2})
-
-            elif bar:
-                for a in b:
-                    pass
-            else:
-                for a in b:
-                    pass
-# }}
-        except:
-            block2
-"
+      py-forward-text 
     (search-forward "if")
     (py-forward-def)
     (should (eq (char-before) ?2))))
 
 (ert-deftest py-ert-forward-def-or-class-test ()
   (py-test-with-temp-buffer-point-min
-      "
-# {{
-class bar:
-    def foo ():
-        try:
-            if foo:
-                for a in b:
-                    print('%(language)s has %(number)03d quote types.' %
-       {'language': \"Python\", \"number\": 2})
-
-            elif bar:
-                for a in b:
-                    pass
-            else:
-                for a in b:
-                    pass
-# }}
-        except:
-            block2
-"
+      py-forward-text 
     (search-forward "if")
     (py-forward-def-or-class)
     (should (eq (char-before) ?2))))
 
 (ert-deftest py-ert-forward-elif-block-test ()
   (py-test-with-temp-buffer-point-min
-      "
-# {{
-class bar:
-    def foo ():
-        try:
-            if foo:
-                for a in b:
-                    print('%(language)s has %(number)03d quote types.' %
-       {'language': \"Python\", \"number\": 2})
-
-            elif bar:
-                for a in b:
-                    pass
-            else:
-                for a in b:
-                    pass
-# }}
-        except:
-            block2
-"
+      py-forward-text 
     (search-forward "elif")
     (py-forward-elif-block)
     (should (eq (char-before) ?s))))
 
 (ert-deftest py-ert-forward-else-block-test ()
   (py-test-with-temp-buffer-point-min
-      "
-# {{
-class bar:
-    def foo ():
-        try:
-            if foo:
-                for a in b:
-                    print('%(language)s has %(number)03d quote types.' %
-       {'language': \"Python\", \"number\": 2})
-
-            elif bar:
-                for a in b:
-                    pass
-            else:
-                for a in b:
-                    pass
-# }}
-        except:
-            block2
-"
+      py-forward-text 
     (search-forward "else")
     (py-forward-else-block)
     (should (eq (char-before) ?s))))
 
 (ert-deftest py-ert-forward-except-block-test ()
   (py-test-with-temp-buffer-point-min
-      "
-# {{
-class bar:
-    def foo ():
-        try:
-            if foo:
-                for a in b:
-                    print('%(language)s has %(number)03d quote types.' %
-       {'language': \"Python\", \"number\": 2})
-
-            elif bar:
-                for a in b:
-                    pass
-            else:
-                for a in b:
-                    pass
-# }}
-        except:
-            block2
-"
+      py-forward-text 
     (search-forward "except")
     (py-forward-except-block)
     (should (eq (char-before) ?2))))
 
 (ert-deftest py-ert-forward-expression-test ()
   (py-test-with-temp-buffer-point-min
-      "
-# {{
-class bar:
-    def foo ():
-        try:
-            if foo:
-                for a in b:
-                    print('%(language)s has %(number)03d quote types.' %
-       {'language': \"Python\", \"number\": 2})
-
-            elif bar:
-                for a in b:
-                    pass
-            else:
-                for a in b:
-                    pass
-# }}
-        except:
-            block2
-"
+      py-forward-text 
     (search-forward "if")
     (py-forward-expression)
     (should (eq (char-before) ?:))))
 
 (ert-deftest py-ert-forward-for-block-test ()
   (py-test-with-temp-buffer-point-min
-      "
-# {{
-class bar:
-    def foo ():
-        try:
-            if foo:
-                for a in b:
-                    print('%(language)s has %(number)03d quote types.' %
-       {'language': \"Python\", \"number\": 2})
-
-            elif bar:
-                for a in b:
-                    pass
-            else:
-                for a in b:
-                    pass
-# }}
-        except:
-            block2
-"
+      py-forward-text 
     (search-forward "for")
     (py-forward-for-block)
     (should (eq (char-before) ?)))))
 
 (ert-deftest py-ert-forward-if-block-test ()
   (py-test-with-temp-buffer-point-min
-      "
-# {{
-class bar:
-    def foo ():
-        try:
-            if foo:
-                for a in b:
-                    print('%(language)s has %(number)03d quote types.' %
-       {'language': \"Python\", \"number\": 2})
-
-            elif bar:
-                for a in b:
-                    pass
-            else:
-                for a in b:
-                    pass
-# }}
-        except:
-            block2
-"
+      py-forward-text 
     (search-forward "if")
     (py-forward-if-block)
     (should (eq (char-before) ?s))))
 
 (ert-deftest py-ert-forward-minor-block-test ()
   (py-test-with-temp-buffer-point-min
-      "
-# {{
-class bar:
-    def foo ():
-        try:
-            if foo:
-                for a in b:
-                    print('%(language)s has %(number)03d quote types.' %
-       {'language': \"Python\", \"number\": 2})
-
-            elif bar:
-                for a in b:
-                    pass
-            else:
-                for a in b:
-                    pass
-# }}
-        except:
-            block2
-"
+      py-forward-text 
     (search-forward "if")
     (py-forward-minor-block)
     (should (eq (char-before) ?s))))
 
 (ert-deftest py-ert-forward-partial-expression-test ()
   (py-test-with-temp-buffer-point-min
-      "
-# {{
-class bar:
-    def foo ():
-        try:
-            if foo:
-                for a in b:
-                    print('%(language)s has %(number)03d quote types.' %
-       {'language': \"Python\", \"number\": 2})
-
-            elif bar:
-                for a in b:
-                    pass
-            else:
-                for a in b:
-                    pass
-# }}
-        except:
-            block2
-"
+      py-forward-text 
     (search-forward "Python")
     (py-forward-partial-expression)
     (should (eq (char-before) ?n))))
 
 (ert-deftest py-ert-forward-section-test ()
   (py-test-with-temp-buffer-point-min
-      "
-# {{
-class bar:
-    def foo ():
-        try:
-            if foo:
-                for a in b:
-                    print('%(language)s has %(number)03d quote types.' %
-       {'language': \"Python\", \"number\": 2})
-
-            elif bar:
-                for a in b:
-                    pass
-            else:
-                for a in b:
-                    pass
-# }}
-        except:
-            block2
-"
+      py-forward-text 
     (search-forward "if")
     (py-forward-section)
     (should (eq (char-before) ?}))))
 
 (ert-deftest py-ert-forward-statement-test ()
   (py-test-with-temp-buffer-point-min
-      "
-# {{
-class bar:
-    def foo ():
-        try:
-            if foo:
-                for a in b:
-                    print('%(language)s has %(number)03d quote types.' %
-       {'language': \"Python\", \"number\": 2})
-
-            elif bar:
-                for a in b:
-                    pass
-            else:
-                for a in b:
-                    pass
-# }}
-        except:
-            block2
-"
+      py-forward-text 
     (search-forward "if")
     (py-forward-statement)
     (should (eq (char-before) ?:))))
 
 (ert-deftest py-ert-forward-top-level-test ()
   (py-test-with-temp-buffer-point-min
-      "
-# {{
-class bar:
-    def foo ():
-        try:
-            if foo:
-                for a in b:
-                    print('%(language)s has %(number)03d quote types.' %
-       {'language': \"Python\", \"number\": 2})
-
-            elif bar:
-                for a in b:
-                    pass
-            else:
-                for a in b:
-                    pass
-# }}
-        except:
-            block2
-"
+      py-forward-text 
     (search-forward "if")
     (py-forward-top-level)
     (should (eq (char-before) ?2))))
 
 (ert-deftest py-ert-forward-try-block-test ()
-  (py-test-with-temp-buffer-point-min
-      "
-# {{
-class bar:
-    def foo ():
-        try:
-            if foo:
-                for a in b:
-                    print('%(language)s has %(number)03d quote types.' %
-       {'language': \"Python\", \"number\": 2})
-
-            elif bar:
-                for a in b:
-                    pass
-            else:
-                for a in b:
-                    pass
-# }}
-        except:
-            block2
-"
+  (py-test-with-temp-buffer
+      py-up-text
+    (goto-char (point-min)) 
     (search-forward "try")
     (py-forward-try-block)
-    (should (eq (char-before) ?s))))
+    (should (eq (char-before) ?1))))
 
 (ert-deftest py-ert-forward-block-bol-test ()
   (py-test-with-temp-buffer
@@ -528,7 +187,7 @@ class bar:
 "
     (goto-char 103)
     (py-forward-clause-bol)
-    (should (eq (point) 140))))
+    (should (bolp))))
 
 (ert-deftest py-ert-forward-block-or-clause-bol-test ()
   (py-test-with-temp-buffer
@@ -632,7 +291,7 @@ class bar:
     (py-forward-try-block-bol)
     (should (eq (point) 140))))
 
-(ert-deftest py-ert-forward-minor-block-bol-test ()
+(ert-deftest  py-ert-forward-minor-block-bol-test ()
   (py-test-with-temp-buffer
       "
 # -*- coding: utf-8 -*-

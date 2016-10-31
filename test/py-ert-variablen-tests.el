@@ -559,9 +559,6 @@
 (ert-deftest py-ert-block-or-clause-re-test ()
   (should (boundp 'py-block-or-clause-re)))
 
-(ert-deftest py-ert-bol-forms-last-indent-test ()
-  (should (boundp 'py-bol-forms-last-indent)))
-
 (ert-deftest py-ert-buffer-name-test ()
   (should (boundp 'py-buffer-name)))
 

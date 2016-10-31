@@ -25,31 +25,31 @@
 (load "py-ert-tests-1.el" nil t)
 
 ;; py-if-name-main-permission-p
-(ert-deftest py-ert-if-name-main-permission-lp-326620-test ()
-  (py-test-with-temp-buffer-point-min
-      "#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-def py_if_name_main_permission_test():
-    if __name__ == \"__main__\" :
-        print(\"__name__ == '__main__' run\")
-        return True
+;; (ert-deftest py-ert-if-name-main-permission-lp-326620-test ()
+;;   (py-test-with-temp-buffer-point-min
+;;       "#! /usr/bin/env python
+;; # -*- coding: utf-8 -*-
+;; def py_if_name_main_permission_test():
+;;     if __name__ == \"__main__\" :
+;;         print(\"__name__ == '__main__' run\")
+;;         return True
 
-    else:
-        print(\"__name__ == '__main__' supressed\")
-        return False
+;;     else:
+;;         print(\"__name__ == '__main__' supressed\")
+;;         return False
 
-py_if_name_main_permission_test()
-"
-    (let ((py-if-name-main-permission-p t))
-      (py-execute-buffer)
-      (set-buffer "*Python*")
-      (goto-char (point-max))
-      (forward-line -1)
-      (end-of-line)
-      (sit-for 0.2)
-      (assert (looking-back "run") nil "py-if-name-main-permission-lp-326620-test #1 failed"))))
+;; py_if_name_main_permission_test()
+;; "
+;;     (let ((py-if-name-main-permission-p t))
+;;       (py-execute-buffer)
+;;       (set-buffer "*Python*")
+;;       (goto-char (point-max))
+;;       (forward-line -1)
+;;       (end-of-line)
+;;       (sit-for 0.2)
+;;       (assert (looking-back "run") nil "py-if-name-main-permission-lp-326620-test #1 failed"))))
 
-(ert-deftest py-ert-intend-try-test ()
+(ert-deftest py-ert-indent-try-test ()
   (py-test-with-temp-buffer-point-min
       "#! /usr/bin/env python
 
@@ -519,10 +519,10 @@ Bar
             f(*args)
             print 'After f(*args)'
         return wrapped_f
-return wwrap"
+    return wwrap"
     (search-forward "args)'")
-    (py-forward-def-or-class)
-    (should (looking-back "wrapped_f"))))
+    (should-not (py-forward-def-or-class))))
+
 
 (ert-deftest py-forward-block-1 ()
   (py-test-with-temp-buffer-point-min
@@ -537,12 +537,11 @@ return wwrap"
             f(*args)
             print 'After f(*args)'
         return wrapped_f
-return wwrap"
+    return wwrap"
     (search-forward "args)'")
-    (py-forward-block)
-    (should (looking-back "wrapped_f"))))
+    (should-not (py-forward-block))))
 
-(ert-deftest py-forward-clause-1 ()
+(ert-deftest py-forward-clause-lp-1630952-1 ()
   (py-test-with-temp-buffer-point-min
       "def foo(arg1, arg2, arg3):
     '''print decorated function call data to stdout.
@@ -555,10 +554,28 @@ return wwrap"
             f(*args)
             print 'After f(*args)'
         return wrapped_f
-return wwrap"
+    return wwrap"
     (search-forward "args)'")
-    (py-forward-clause)
-    (should (looking-back "wrapped_f"))))
+    (should-not (py-forward-clause))))
+
+(ert-deftest py-forward-clause-lp-1630952-2 ()
+  (py-test-with-temp-buffer
+      "def foo(arg1, arg2, arg3):
+    '''print decorated function call data to stdout.
+    '''
+    def bar(f):
+        print 'Inside wwrap()'
+        def wrapped_f(*args):
+            print 'Inside wrapped_f()'
+            print 'Decorator arguments:', arg1, arg2, arg3
+            f(*args)
+            print 'After f(*args)'
+        return wrapped_f
+    return wwrap"
+    (search-backward "wrapped_f")
+    (end-of-line)
+    (should-not (py-forward-clause))))
+
 
 (ert-deftest py-up-block-test-1 ()
   (py-test-with-temp-buffer
@@ -566,4 +583,3 @@ return wwrap"
     (search-backward "except True:")
     (py-up-block)
     (should (looking-at "else"))))
-

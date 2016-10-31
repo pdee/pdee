@@ -114,6 +114,7 @@ if [ $WERKSTATT -eq 0 ]; then
     echo "Lade \$DIR6 und \$DIR7"
 else
     echo "entfernt"
+    echo "\$WERKSTATT: $WERKSTATT"
     echo "Lade testumgebung \"ENTFERNT\""
     entfernt
 fi

@@ -2247,8 +2247,8 @@ some logging etc. "
 (defvar py-expression-re "[^ =#\t\r\n\f]+"
   "py-expression assumes chars indicated possible composing a py-expression, when looking-at or -back. ")
 
-(defcustom py-paragraph-re "\\`[ \t\f]*\\'\n[^ \n\r\t\f]"
-  "An empty line followed by a non-whitespace at column 1"
+(defcustom py-paragraph-re paragraph-start
+  "Allow Python specific paragraph-start var"
   :type 'string
   :tag "py-paragraph-re"
   :group 'python-mode)
@@ -2394,12 +2394,16 @@ Result: \"\\nIn [10]:    ....:    ....:    ....: 1\\n\\nIn [11]: \"
   "[ \t]*\\_<except\\_>[:( \n\t]*"
   "Regular expression matching keyword which composes a try-block. ")
 
-(defconst py-else-re
-  "[ \t]*\\_<else\\_>[: \n\t]*"
-  "Regular expression matching keyword which closes a for- if- or try-block. ")
+;; (defconst py-else-re
+;;   "[ \t]*\\_<else:\\_>[ \n\t]*"
+;;   "Regular expression matching keyword which closes a for- if- or try-block. ")
 
 (defconst py-return-re
   ".*:?[ \t]*\\_<\\(return\\)\\_>[ \n\t]*"
+  "Regular expression matching keyword which typically closes a function. ")
+
+(defconst py-decorator-re
+  "[ \t]*@[^ ]+\\_>[ \n\t]*"
   "Regular expression matching keyword which typically closes a function. ")
 
 (defcustom py-outdent-re-raw
@@ -2469,6 +2473,9 @@ See py-no-outdent-re-raw for better readable content ")
 
 (defconst py-if-block-re "[ \t]*\\_<if\\_> +[[:alpha:]_][[:alnum:]_]* *[: \n\t]"
   "Matches the beginning of an `if' block. ")
+
+(defconst py-else-block-re "[ \t]*\\_<else:[ \n\t]*"
+  "Matches the beginning of an `else' block. ")
 
 (defconst py-elif-block-re "[ \t]*\\_<elif\\_> +[[:alpha:]_][[:alnum:]_]* *[: \n\t]"
   "Matches the beginning of an `elif' block. ")
@@ -3444,57 +3451,6 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
 
 (defvar py-shell-map py-python-shell-mode-map)
 
-;; (eval-and-compile
-;;   (defconst python-rx-constituents
-;;     `((block-start . ,(rx symbol-start
-;; 			  (or "async def" "async for" "async with" "def" "class" "if" "elif" "else" "try"
-;; 			      "except" "finally" "for" "while" "with")
-;; 			  symbol-end))
-;;       (decorator . ,(rx line-start (* space) ?@ (any letter ?_)
-;; 			(* (any word ?_))))
-;;       (defun . ,(rx symbol-start (or "def" "class") symbol-end))
-;;       (if-name-main . ,(rx line-start "if" (+ space) "__name__"
-;; 			   (+ space) "==" (+ space)
-;; 			   (any ?' ?\") "__main__" (any ?' ?\")
-;; 			   (* space) ?:))
-;;       (symbol-name . ,(rx (any letter ?_) (* (any word ?_))))
-;;       (open-paren . ,(rx (or "{" "[" "(")))
-;;       (close-paren . ,(rx (or "}" "]" ")")))
-;;       (simple-operator . ,(rx (any ?+ ?- ?/ ?& ?^ ?~ ?| ?* ?< ?> ?= ?%)))
-;;       ;; FIXME: rx should support (not simple-operator).
-;;       (not-simple-operator . ,(rx
-;; 			       (not
-;; 				(any ?+ ?- ?/ ?& ?^ ?~ ?| ?* ?< ?> ?= ?%))))
-;;       ;; FIXME: Use regexp-opt.
-;;       (operator . ,(rx (or "+" "-" "/" "&" "^" "~" "|" "*" "<" ">"
-;; 			   "=" "%" "**" "//" "<<" ">>" "<=" "!="
-;; 			   "==" ">=" "is" "not")))
-;;       ;; FIXME: Use regexp-opt.
-;;       (assignment-operator . ,(rx (or "=" "+=" "-=" "*=" "/=" "//=" "%=" "**="
-;; 				      ">>=" "<<=" "&=" "^=" "|=")))
-;;       (string-delimiter . ,(rx (and
-;;                                 ;; Match even number of backslashes.
-;;                                 (or (not (any ?\\ ?\' ?\")) point
-;;                                     ;; Quotes might be preceded by a escaped quote.
-;;                                     (and (or (not (any ?\\)) point) ?\\
-;;                                          (* ?\\ ?\\) (any ?\' ?\")))
-;;                                 (* ?\\ ?\\)
-;;                                 ;; Match single or triple quotes of any kind.
-;;                                 (group (or "\"" "\"\"\"" "'" "'''"))))))
-;;     "Additional Python specific sexps for `python-rx'"))
-
-;; (eval-and-compile
-;;   (defmacro python-rx (&rest regexps)
-;;     "Python mode specialized rx macro which supports common python named REGEXPS."
-;;     (let ((rx-constituents (append python-rx-constituents rx-constituents)))
-;;       (cond ((null regexps)
-;; 	     (error "No regexp"))
-;; 	    ((cdr regexps)
-;; 	     (rx-to-string `(and ,@regexps) t))
-;; 	    (t
-;; 	     (rx-to-string (car regexps) t))))))
-
-;;  Font-lock and syntax
 (setq python-font-lock-keywords
       ;; Keywords
       `(,(rx symbol-start
@@ -3626,3 +3582,4 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
 
 (provide 'python-components-mode)
 ;;; python-components-mode.el ends here
+

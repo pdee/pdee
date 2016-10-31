@@ -75,7 +75,7 @@ Returns final position when called from inside section, nil otherwise"
 		(eq indent (current-indentation))
 		(setq last (point))))
     (when last (goto-char last))
-    (setq erg (py-forward-statement)) 
+    (setq erg (py-forward-statement))
     erg))
 
 (defun py-forward-indent ()
@@ -278,7 +278,7 @@ If already at end-of-line and not at EOB, go to end of next line. "
       erg)))
 
 ;;  Statement
-(defun py-backward-statement (&optional orig done limit ignore-in-string-p)
+(defun py-backward-statement (&optional orig done limit ignore-in-string-p repeat)
   "Go to the initial line of a simple statement.
 
 For beginning of compound statement use py-backward-block.
@@ -289,7 +289,8 @@ computing indents"
   (interactive)
   (save-restriction
     (unless (bobp)
-      (let* ((orig (or orig (point)))
+      (let* ((repeat (or (and repeat (1+ repeat)) 999))
+	     (orig (or orig (point)))
              (this (point))
              (cui (current-indentation))
              (pps (parse-partial-sexp (or limit (point-min))(point)))
@@ -300,62 +301,64 @@ computing indents"
 	  (and (< 0 (abs (skip-chars-backward " \t\r\n\f")))
  	       (setq pps (parse-partial-sexp (or limit (point-min))(point)))))
         (cond
+	 ((< py-max-specpdl-size repeat)
+	  (error "py-forward-statement reached loops max. If no error, customize `py-max-specpdl-size'"))
          ((and (bolp)(eolp))
           (skip-chars-backward " \t\r\n\f")
-          (py-backward-statement orig done limit ignore-in-string-p))
+          (py-backward-statement orig done limit ignore-in-string-p repeat))
 	 ;; inside string
          ((and (nth 3 pps)(not ignore-in-string-p))
 	  (setq done t)
 	  (goto-char (nth 8 pps))
-	  (py-backward-statement orig done limit ignore-in-string-p))
+	  (py-backward-statement orig done limit ignore-in-string-p repeat))
 	 ((nth 4 pps)
 	  (goto-char (nth 8 pps))
 	  (skip-chars-backward " \t\r\n\f")
-	  (py-backward-statement orig done limit ignore-in-string-p))
+	  (py-backward-statement orig done limit ignore-in-string-p repeat))
          ((nth 1 pps)
           (goto-char (1- (nth 1 pps)))
 	  (when (py--skip-to-semicolon-backward (save-excursion (back-to-indentation)(point)))
 	    (setq done t))
-          (py-backward-statement orig done limit ignore-in-string-p))
+          (py-backward-statement orig done limit ignore-in-string-p repeat))
          ((py-preceding-line-backslashed-p)
           (forward-line -1)
           (back-to-indentation)
           (setq done t)
-          (py-backward-statement orig done limit ignore-in-string-p))
+          (py-backward-statement orig done limit ignore-in-string-p repeat))
 	 ;; at raw-string
 	 ;; (and (looking-at "\"\"\"\\|'''") (member (char-before) (list ?u ?U ?r ?R)))
 	 ((py--at-raw-string)
 	  (forward-char -1)
-	  (py-backward-statement orig done limit ignore-in-string-p))
+	  (py-backward-statement orig done limit ignore-in-string-p repeat))
 	 ;; BOL or at space before comment
          ((and (looking-at "[ \t]*#")(looking-back "^[ \t]*" (line-beginning-position)))
           (forward-comment -1)
           (while (and (not (bobp)) (looking-at "[ \t]*#")(looking-back "^[ \t]*" (line-beginning-position)))
             (forward-comment -1))
           (unless (bobp)
-            (py-backward-statement orig done limit ignore-in-string-p)))
+            (py-backward-statement orig done limit ignore-in-string-p repeat)))
 	 ;; at inline comment
          ((looking-at "[ \t]*#")
 	  (when (py--skip-to-semicolon-backward (save-excursion (back-to-indentation)(point)))
 	    (setq done t))
-	  (py-backward-statement orig done limit ignore-in-string-p))
+	  (py-backward-statement orig done limit ignore-in-string-p repeat))
 	 ;; at beginning of string
-	 ((and (not done) (looking-at py-string-delim-re))
+	 ((looking-at py-string-delim-re)
 	  (when (< 0 (abs (skip-chars-backward " \t\r\n\f")))
 	    (setq done t))
 	  (back-to-indentation)
-	  (py-backward-statement orig done limit ignore-in-string-p))
+	  (py-backward-statement orig done limit ignore-in-string-p repeat))
 	 ;; after end of statement
 	 ((and (not done) (eq (char-before) ?\;))
 	  (skip-chars-backward ";")
-	  (py-backward-statement orig done limit ignore-in-string-p))
+	  (py-backward-statement orig done limit ignore-in-string-p repeat))
 	 ;; travel until indentation or semicolon
 	 ((and (not done) (py--skip-to-semicolon-backward (save-excursion (back-to-indentation)(point))))
 	  (setq done t)
-	  (py-backward-statement orig done limit ignore-in-string-p))
+	  (py-backward-statement orig done limit ignore-in-string-p repeat))
 	 ;; at current indent
 	 ((and (not done) (not (eq 0 (skip-chars-backward " \t\r\n\f"))))
-	  (py-backward-statement orig done limit ignore-in-string-p)))
+	  (py-backward-statement orig done limit ignore-in-string-p repeat)))
 	;; return nil when before comment
 	(unless (and (looking-at "[ \t]*#") (looking-back "^[ \t]*" (line-beginning-position)))
 	  (when (< (point) orig)(setq erg (point))))
@@ -387,89 +390,98 @@ See also `py-up-statement': up from current definition to next beginning of stat
 
 Optional argument REPEAT, the number of loops done already, is checked for py-max-specpdl-size error. Avoid eternal loops due to missing string delimters etc. "
   (interactive)
-  (unless (eobp)
-    (let ((repeat (or (and repeat (1+ repeat)) 0))
-          (orig (or orig (point)))
-          erg pos last
-          ;; use by scan-lists
-          forward-sexp-function
-          stringchar stm pps err)
-      (unless done (py--skip-to-comment-or-semicolon done))
-      (setq pps (parse-partial-sexp (point-min) (point)))
-      ;; (origline (or origline (py-count-lines)))
-      (cond
-       ;; which-function-mode, lp:1235375
-       ((< py-max-specpdl-size repeat)
-        (error "py-forward-statement reached loops max. If no error, customize `py-max-specpdl-size'"))
-       ;; list
-       ((nth 1 pps)
-        (if (<= orig (point))
-	    (progn
-	      (setq orig (point))
-	      ;; do not go back at a possible unclosed list
-	      (goto-char (nth 1 pps))
-	      (if
-		  (ignore-errors (forward-list))
-		  (progn
-		    (when (looking-at ":[ \t]*$")
-		      (forward-char 1))
-		    (setq done t)
-		    (skip-chars-forward "^#" (line-end-position))
-		    (skip-chars-backward " \t\r\n\f" (line-beginning-position))
-		    (py-forward-statement orig done repeat))
-		(setq err (py--record-list-error pps))
-		(goto-char orig)))))
-       ;; string
-       ((nth 3 pps)
-	(when (py-end-of-string)
+  (if (not (eq major-mode 'python-mode))
+      (error "py-forward-statement: buffer not in python-mode")
+    (unless (eobp)
+      (let ((repeat (or (and repeat (1+ repeat)) 0))
+	    (orig (or orig (point)))
+	    erg pos last
+	    ;; use by scan-lists
+	    forward-sexp-function
+	    stringchar stm pps err)
+	;; (unless done (py--skip-to-comment-or-semicolon done))
+	(setq pps (parse-partial-sexp (point-min) (point)))
+	;; (origline (or origline (py-count-lines)))
+	(cond
+	 ;; which-function-mode, lp:1235375
+	 ((< py-max-specpdl-size repeat)
+	  (error "py-forward-statement reached loops max. If no error, customize `py-max-specpdl-size'"))
+	 ;; list
+	 ((nth 1 pps)
+	  (if (<= orig (point))
+	      (progn
+		(setq orig (point))
+		;; do not go back at a possible unclosed list
+		(goto-char (nth 1 pps))
+		(if
+		    (ignore-errors (forward-list))
+		    (progn
+		      (when (looking-at ":[ \t]*$")
+			(forward-char 1))
+		      (setq done t)
+		      (skip-chars-forward "^#" (line-end-position))
+		      (skip-chars-backward " \t\r\n\f" (line-beginning-position))
+		      (py-forward-statement orig done repeat))
+		  (setq err (py--record-list-error pps))
+		  (goto-char orig)))))
+	 ;; in comment
+	 ((looking-at (concat " *" comment-start))
+	  (goto-char (match-end 0))
+	  (py-forward-statement orig done repeat))
+	 ((nth 4 pps)
+	  (py--end-of-comment-intern (point))
+	  (py--skip-to-comment-or-semicolon done)
+	  (while (and (eq (char-before (point)) ?\\ )
+		      (py-escaped)(setq last (point)))
+	    (forward-line 1)(end-of-line))
+	  (and last (goto-char last)
+	       (forward-line 1)
+	       (back-to-indentation))
+	  (py-forward-statement orig done repeat))
+	 ;; string
+	 ((looking-at py-string-delim-re)
+	  (goto-char (match-end 0))
+	  (py-forward-statement orig done repeat))
+	 ((nth 3 pps)
+	  (when (py-end-of-string)
+	    (end-of-line)
+	    (skip-chars-forward " \t\r\n\f")
+	    (setq pps (parse-partial-sexp (point-min) (point)))
+	    (unless (and done (not (or (nth 1 pps) (nth 8 pps))) (eolp)) (py-forward-statement orig done repeat))))
+	 ((py-current-line-backslashed-p)
 	  (end-of-line)
-	  (skip-chars-backward " \t\r\n\f")
-	  (setq pps (parse-partial-sexp (point-min) (point)))
-	  (unless (and done (not (or (nth 1 pps) (nth 8 pps))) (eolp)) (py-forward-statement orig done repeat))))
-       ;; in non-terminated string
+	  (skip-chars-backward " \t\r\n\f" (line-beginning-position))
+	  (while (and (eq (char-before (point)) ?\\ )
+		      (py-escaped))
+	    (forward-line 1)
+	    (end-of-line)
+	    (skip-chars-backward " \t\r\n\f" (line-beginning-position)))
+	  (unless (eobp)
+	    (py-forward-statement orig done repeat)))
+	 ((eq orig (point))
+	  (if (eolp)
+	      (skip-chars-forward " \t\r\n\f#'\"")
+	    (end-of-line)
+	    (skip-chars-backward " \t\r\n\f"))
+	  (setq done t)
+	  (py-forward-statement orig done repeat))
+	 ((eq (current-indentation) (current-column))
+	  (py--skip-to-comment-or-semicolon done)
+	  ;; (setq pps (parse-partial-sexp (point-min) (point)))
+	  (unless done
+	    (py-forward-statement orig done repeat)))
 
-       ;; in comment
-       ((nth 4 pps)
-	(py--end-of-comment-intern (point))
-	(py--skip-to-comment-or-semicolon done)
-	(while (and (eq (char-before (point)) ?\\ )
-		    (py-escaped)(setq last (point)))
-	  (forward-line 1)(end-of-line))
-	(and last (goto-char last)
-	     (forward-line 1)
-	     (back-to-indentation))
-	(py-forward-statement orig done repeat))
-       ((py-current-line-backslashed-p)
-	(end-of-line)
-	(skip-chars-backward " \t\r\n\f" (line-beginning-position))
-	(while (and (eq (char-before (point)) ?\\ )
-		    (py-escaped))
-	  (forward-line 1)
-	  (end-of-line)
-	  (skip-chars-backward " \t\r\n\f" (line-beginning-position)))
-	(unless (eobp)
+	 ((and (looking-at "[[:print:]]+$") (not done) (py--skip-to-comment-or-semicolon done))
 	  (py-forward-statement orig done repeat)))
-       ((eq orig (point))
-	(skip-chars-forward " \t\r\n\f#'\"")
-	(py--skip-to-comment-or-semicolon done)
-	(py-forward-statement orig done repeat))
-       ((eq (current-indentation) (current-column))
-	(py--skip-to-comment-or-semicolon done)
-	;; (setq pps (parse-partial-sexp (point-min) (point)))
-	(unless done
-	  (py-forward-statement orig done repeat)))
-
-       ((and (looking-at "[[:print:]]+$") (not done) (py--skip-to-comment-or-semicolon done))
-	(py-forward-statement orig done repeat)))
-      (unless
-	  (or
-	   (eq (point) orig)
-	   (member (char-before) (list 10 32 9 ?#)))
-	(setq erg (point)))
-      (if (and py-verbose-p err)
-	  (py--message-error err)
-        (and py-verbose-p (called-interactively-p 'any) (message "%s" erg)))
-      erg)))
+	(unless
+	    (or
+	     (eq (point) orig)
+	     (member (char-before) (list 10 32 9 ?#)))
+	  (setq erg (point)))
+	(if (and py-verbose-p err)
+	    (py--message-error err)
+	  (and py-verbose-p (called-interactively-p 'any) (message "%s" erg)))
+	erg))))
 
 (defun py-forward-statement-bol ()
   "Go to the beginning-of-line following current statement."
@@ -574,9 +586,20 @@ From a programm use macro `py-backward-comment' instead "
     (when (and py-verbose-p (called-interactively-p 'any))
       (message "%s" erg))))
 
-(defun py--go-to-keyword (regexp &optional maxindent)
+(defun py--up-decorators-maybe (indent)
+  (let (done erg)
+    (while (and (not done) (not (bobp)))
+      (py-backward-statement)
+      (if
+	  (and (current-indentation) indent
+	       (looking-at py-decorator-re))
+	  (setq erg (point))
+	(setq done t)))
+    erg))
+
+(defun py--go-to-keyword (regexp &optional maxindent orig)
   "Returns a list, whose car is indentation, cdr position. "
-  (let ((orig (point))
+  (let ((orig (or orig (point)))
         (maxindent
 	 (or maxindent
 	     (if (empty-line-p)
@@ -588,20 +611,16 @@ From a programm use macro `py-backward-comment' instead "
 		   (* 99 py-indent-offset)))))
         done erg cui)
     (while (and (not done) (not (bobp)))
-      ;; (while (and (re-search-backward regexp nil 'move 1)(nth 8 (parse-partial-sexp (point-min) (point)))))
-      ;; (or (< (point) orig) (py-backward-statement))
       (py-backward-statement)
-
       (when
 	  (and (<= (current-indentation) maxindent)
 	       (setq maxindent (current-indentation))
 	       (looking-at regexp))
 	(setq erg (point))
-	(setq done t)
-        ;; (when (and first (not maxindent))
-	;; (setq maxindent (current-indentation))
-	;; (setq first nil))
-	))
+	(setq done t)))
+    (when (and py-mark-decorators (looking-at py-def-or-class-re))
+      (setq done (py--up-decorators-maybe (current-indentation)))
+      (when done (setq erg done)))
     (when erg (setq erg (cons (current-indentation) erg)))
     erg))
 
@@ -840,153 +859,6 @@ Return position if successful"
     (and last (goto-char last))
     (when (and (looking-back py-section-end (line-beginning-position))(< orig (point)))
       (point))))
-
-(defun py--backward-def-or-class-decorator-maybe (&optional bol)
-  "Return position of the decorator.
-
-With BOL, return line-beginning-position"
-  (let ((orig (point))
-	erg)
-    (while (and (not (bobp)) (progn (forward-line -1)(beginning-of-line) (eq (char-after) ?@)))
-      (setq erg (point)))
-    ;; for bol-forms, set erg to bol
-    (when (and erg bol
-	       (setq erg (line-beginning-position))))
-    (or erg (goto-char orig))))
-
-(defun py--backward-def-or-class-matcher (regexp indent origline)
-  (let (done)
-    (while (and
-	    (not done)
-	    (re-search-backward regexp nil 'move 1)
-	    (or
-	     (nth 8 (parse-partial-sexp (point-min) (point)))
-	     ;; (if
-	     ;; 	 ;; looking one level below
-	     ;; 	 (< 0 indent)
-	     ;; 	 (if
-	     ;; 	     (<= indent (current-indentation))
-	     ;; 	     t
-	     ;; 	   (setq done (match-beginning 0)))
-	     (if
-		 (unless (eq (py-count-lines) origline)
-		   (and (not (bolp)) (<= indent (current-indentation))))
-
-		 t
-	       (setq done (match-beginning 0))))))
-    done))
-
-(defun py--backward-def-or-class-intern (regexp &optional bol)
-  (let ((origline (py-count-lines))
-	(indent (if (empty-line-p)
-		    (current-indentation)
-		  (save-excursion
-		    (if (py--beginning-of-statement-p)
-			(current-indentation)
-		      (py-backward-statement)
-		      (current-indentation)))))
-	erg)
-    ;; (if (and (< (current-column) origindent) (looking-at regexp))
-    ;; (setq erg (point))
-    (setq erg (py--backward-def-or-class-matcher regexp indent origline))
-    (and erg (looking-back "async " (line-beginning-position))
-	 (goto-char (match-beginning 0))
-	 (setq erg (point)))
-    ;; bol-forms at not at bol yet
-    (and bol erg (beginning-of-line) (setq erg (point)))
-    (and erg py-mark-decorators (setq erg (py--backward-def-or-class-decorator-maybe bol)))
-    erg))
-
-(defun py-backward-class (&optional nested)
-  "Go to beginning of class.
-
-If already at beginning, go one class backward.
-Returns beginning of class if successful, nil otherwise
-
-With optional NESTED, match next upwards, ignore indentation.
-
-When `py-mark-decorators' is non-nil, decorators are considered too. "
-  (interactive "P")
-  (let ((erg
-	 (if (eq 4 (prefix-numeric-value nested))
-	     (py-up-class)
-	   (py--backward-def-or-class-intern py-class-re))))
-    (when (and py-verbose-p (called-interactively-p 'any))
-      (message "%s" erg))
-    erg))
-
-(defun py-backward-def (&optional nested)
-  "Go to beginning of def.
-
-If already at beginning, go one def backward.
-Returns beginning of def if successful, nil otherwise
-
-With optional NESTED, match next upwards, ignore indentation.
-
-When `py-mark-decorators' is non-nil, decorators are considered too. "
-  (interactive "P")
-  (let ((erg (if (eq 4 (prefix-numeric-value nested))
-		 (py-up-def)
-	       (py--backward-def-or-class-intern py-def-re))))
-    (when (and py-verbose-p (called-interactively-p 'any))
-      (message "%s" erg))
-    erg))
-
-(defun py-backward-def-or-class (&optional nested)
-  "Go to beginning of def-or-class.
-
-If already at beginning, go one def-or-class backward.
-Returns beginning of def-or-class if successful, nil otherwise
-
-With optional NESTED, match next upwards, ignore indentation.
-
-When `py-mark-decorators' is non-nil, decorators are considered too. "
-  (interactive "P")
-  (let ((erg (if (eq 4 (prefix-numeric-value nested))
-		 (py-up-def-or-class)
-	       (py--backward-def-or-class-intern py-def-or-class-re))))
-    (when (and py-verbose-p (called-interactively-p 'any))
-      (message "%s" erg))
-    erg))
-
-(defun py-backward-class-bol ()
-  "Go to beginning of class, go to BOL.
-
-If already at beginning, go one class backward.
-Returns beginning of class if successful, nil otherwise
-
-When `py-mark-decorators' is non-nil, decorators are considered too. "
-  (interactive)
-  (let ((erg (py--backward-def-or-class-intern py-class-re t)))
-    (when (and py-verbose-p (called-interactively-p 'any))
-      (message "%s" erg))
-    erg))
-
-(defun py-backward-def-bol ()
-  "Go to beginning of def, go to BOL.
-
-If already at beginning, go one def backward.
-Returns beginning of def if successful, nil otherwise
-
-When `py-mark-decorators' is non-nil, decorators are considered too. "
-  (interactive)
-  (let ((erg (py--backward-def-or-class-intern py-def-re t)))
-    (when (and py-verbose-p (called-interactively-p 'any))
-      (message "%s" erg))
-    erg))
-
-(defun py-backward-def-or-class-bol ()
-  "Go to beginning of def-or-class, go to BOL.
-
-If already at beginning, go one def-or-class backward.
-Returns beginning of def-or-class if successful, nil otherwise
-
-When `py-mark-decorators' is non-nil, decorators are considered too. "
-  (interactive)
-  (let ((erg (py--backward-def-or-class-intern py-def-or-class-re t)))
-    (when (and py-verbose-p (called-interactively-p 'any))
-      (message "%s" erg))
-    erg))
 
 (provide 'python-components-move)
 ;;;  python-components-move.el ends here

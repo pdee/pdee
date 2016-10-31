@@ -312,7 +312,8 @@ result = some_function_that_takes_arguments(
   (py-test-with-temp-buffer-point-min
       py-ert-moves-text
     (goto-char 264)
-    (should (eq 317 (py-down-block-bol)))))
+    (py-down-block-bol)
+    (should (bolp))))
 
 (ert-deftest py-ert-moves-down-def-bol-1 ()
   (py-test-with-temp-buffer-point-min
@@ -336,13 +337,15 @@ result = some_function_that_takes_arguments(
   (py-test-with-temp-buffer-point-min
       py-ert-moves-text
     (goto-char 264)
-    (should (eq 325 (py-down-block)))))
+    (py-down-block)
+    (should (looking-at "if"))))
 
 (ert-deftest py-ert-moves-down-block-bol-2 ()
   (py-test-with-temp-buffer-point-min
       py-ert-moves-text
     (goto-char 264)
-    (should (eq 317 (py-down-block-bol)))))
+    (py-down-block-bol)
+    (should (looking-at "^ +if"))))
 
 (ert-deftest py-ert-moves-down-minor-block-1 ()
   (py-test-with-temp-buffer-point-min
@@ -412,8 +415,7 @@ result = some_function_that_takes_arguments(
     (goto-char 410)
     (indent-to 4)
     (py-backward-def-or-class-bol)
-    (should (bolp))
-    (should (char-equal ?c (char-after)))))
+    (should (looking-at "^ +def"))))
 
 (ert-deftest py-ert-moves-forward-clause-bol ()
   (py-test-with-temp-buffer-point-min
@@ -640,40 +642,133 @@ with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
 
 (ert-deftest py-ert-moves-up-position-tests-2 ()
   (interactive)
+  (py-test-with-temp-buffer
+      py-kugel-text
+    (search-backward "else:")
+    (should (eq 190 (py--beginning-of-block-position)))))
+
+(ert-deftest py-ert-moves-up-position-tests-3 ()
+  (interactive)
+  (py-test-with-temp-buffer
+      py-kugel-text
+    (search-backward "else:")
+    (should (eq 445 (py--end-of-block-position)))))
+
+(ert-deftest py-ert-moves-up-position-tests-4 ()
+  (interactive)
+  (py-test-with-temp-buffer
+      py-kugel-text
+    (search-backward "else:")
+    (should (eq 190 (py--beginning-of-minor-block-position)))))
+
+(ert-deftest py-ert-moves-up-position-tests-5 ()
+  (interactive)
+  (py-test-with-temp-buffer
+      py-kugel-text
+    (search-backward "else:")
+    (end-of-line) 
+    (should (eq 362 (py--beginning-of-clause-position)))))
+
+;; (ert-deftest py-ert-moves-up-position-tests-6 ()
+;;   (interactive)
+;;   (py-test-with-temp-buffer
+;;       py-kugel-text
+;;     (search-backward "else:")
+;;     (should (eq 362 (py--beginning-of-clause-position)))))
+
+(ert-deftest py-ert-moves-up-position-tests-7 ()
+  (interactive)
+  (py-test-with-temp-buffer
+      py-kugel-text
+    (search-backward "else:")
+    (should (eq 445 (py--end-of-clause-position)))))
+
+(ert-deftest py-ert-moves-up-position-tests-8 ()
+  (interactive)
+  (py-test-with-temp-buffer
+      py-kugel-text
+    (search-backward "else:")
+    (end-of-line) 
+    (should (eq 362 (py--beginning-of-block-or-clause-position)))))
+
+(ert-deftest py-ert-moves-up-position-tests-9 ()
+  (interactive)
+  (py-test-with-temp-buffer
+      py-kugel-text
+    (search-backward "else:")
+    (should (eq 445 (py--end-of-block-or-clause-position)))))
+
+(ert-deftest py-ert-moves-up-position-tests-10 ()
+  (interactive)
+  (py-test-with-temp-buffer
+      py-kugel-text
+    (search-backward "se:")
+    (should (eq 445 (py--end-of-block-or-clause-position)))))
+
+(ert-deftest py-ert-moves-up-position-tests-11 ()
+  (interactive)
+  (py-test-with-temp-buffer
+      py-kugel-text
+    (search-backward "se:")
+    (should (eq 71 (py--beginning-of-def-position)))))
+
+(ert-deftest py-ert-moves-up-position-tests-12 ()
+  (interactive)
+  (py-test-with-temp-buffer
+      py-kugel-text
+    (search-backward "self")
+    (end-of-line)
+    (py-forward-statement)
+    (should (eq (char-before) ?\]))))
+
+(ert-deftest py-ert-moves-up-position-tests-13 ()
+  (interactive)
+  (py-test-with-temp-buffer
+      py-kugel-text
+    (search-backward "se:")
+    (should (eq 445 (py--end-of-def-position)))))
+
+(ert-deftest py-ert-moves-up-position-tests-14 ()
+  (interactive)
+  (py-test-with-temp-buffer
+      py-kugel-text
+    (search-backward "se:")
+    (should (eq 1 (py--beginning-of-class-position)))))
+
+(ert-deftest py-ert-moves-up-position-tests-15 ()
+  (interactive)
+  (py-test-with-temp-buffer
+      py-kugel-text
+    (search-backward "se:")
+    (should (eq 445 (py--end-of-class-position)))))
+
+(ert-deftest py-ert-moves-up-position-tests-16 ()
+  (interactive)
+  (py-test-with-temp-buffer
+      py-kugel-text
+    (search-backward "se:")
+    (should (eq 71 (py--beginning-of-def-or-class-position)))))
+
+(ert-deftest py-ert-moves-up-position-tests-17 ()
+  (interactive)
+  (py-test-with-temp-buffer
+      py-kugel-text
+    (search-backward "se:")
+    (should (eq 445 (py--end-of-def-or-class-position)))))
+
+(ert-deftest py-ert-moves-up-position-tests-18 ()
+  (interactive)
   (py-test-with-temp-buffer-point-min
-      "class kugel(object):
-    zeit = time.strftime('%Y%m%d--%H-%M-%S')
-    def pylauf(self):
-        \"\"\"Eine Doku fuer pylauf\"\"\"
-        ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
-        if treffer in gruen:
-            # print \"0, Gruen\"
-        elif treffer in schwarz:
-            # print \"%i, Schwarz\" % (treffer)
-            ausgabe[1] = treffer
-        else:
-            # print \"%i, manque\" % (treffer)
-            ausgabe[7] = treffer
-"
-    (search-forward "else:")
-    (forward-char -1)
-    (should (eq 190 (py--beginning-of-block-position)))
-    (should (eq 445 (py--end-of-block-position)))
-    (should (eq 190 (py--beginning-of-minor-block-position)))
-    (should (eq 445 (py--end-of-minor-block-position)))
-    (should (eq 362 (py--beginning-of-clause-position)))
-    (should (eq 445 (py--end-of-clause-position)))
-    (should (eq 362 (py--beginning-of-block-or-clause-position)))
-    (should (eq 445 (py--end-of-block-or-clause-position)))
-    (should (eq 71 (py--beginning-of-def-position)))
-    (should (eq 445 (py--end-of-def-position)))
-    (should (eq 1 (py--beginning-of-class-position)))
-    (should (eq 445 (py--end-of-class-position)))
-    (should (eq 71 (py--beginning-of-def-or-class-position)))
-    (should (eq 445 (py--end-of-def-or-class-position)))
+      py-kugel-text
     (search-forward "#")
-    (should (eq 380 (py--beginning-of-comment-position)))
-    (should (eq 412 (py--end-of-comment-position)))))
+    (should (eq 223 (py--beginning-of-comment-position)))))
+
+(ert-deftest py-ert-moves-up-position-tests-19 ()
+  (interactive)
+  (py-test-with-temp-buffer-point-min
+      py-kugel-text
+    (search-forward "#")
+    (should (eq 241 (py--end-of-comment-position)))))
 
 (ert-deftest py-ert-moves-up-copy-statement-test ()
   (interactive)
@@ -1360,7 +1455,7 @@ except:
     ;; (should (eq (char-after) ?c))
     ;; ))
 
-(ert-deftest py-ert-backward-def-or-class ()
+(ert-deftest py-ert-backward-def-or-class-1 ()
   (py-test-with-temp-buffer
       "class _Simple(object):
     # emulate something
@@ -1371,13 +1466,31 @@ except:
     (forward-line -1)
     (end-of-line)
     (py-backward-def-or-class)
-    (should (char-equal ?d (char-after)))
-    (py-backward-def-or-class)
-    (should (char-equal ?c (char-after)))
-    (should (bolp))
-    (search-forward "pass")
+    (should (char-equal ?d (char-after)))))
+
+(ert-deftest py-ert-backward-def-or-class-2 ()
+  (py-test-with-temp-buffer
+      "class _Simple(object):
+    # emulate something
+    def foo(self, element, tag, namespaces=None):
+        pass
+    def bar(self, element, tag, namespaces=None):
+        return list(self.iterfind(element, tag, namespaces))"
+    (search-backward "pass")
     (py-backward-def-or-class)
     (should (char-equal ?d (char-after)))))
+
+(ert-deftest py-ert-backward-def-or-class-3 ()
+  (py-test-with-temp-buffer
+      "class _Simple(object):
+    # emulate something
+    def foo(self, element, tag, namespaces=None):
+        pass
+    def bar(self, element, tag, namespaces=None):
+        return list(self.iterfind(element, tag, namespaces))"
+    (search-backward "def" nil t 2)
+    (py-backward-def-or-class)
+    (should (char-equal ?c (char-after)))))
 
 (provide 'py-ert-tests-1)
 ;;; py-ert-tests-1.el ends here

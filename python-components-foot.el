@@ -233,11 +233,11 @@ See available customizations listed in files variables-python-mode at directory 
   (when (and py--imenu-create-index-p
              (fboundp 'imenu-add-to-menubar)
              (ignore-errors (require 'imenu)))
-  (setq imenu-create-index-function 'py--imenu-create-index-function)
-  (setq imenu--index-alist (funcall py--imenu-create-index-function))
-  ;; fallback
-  (unless imenu--index-alist
-    (setq imenu--index-alist (py--imenu-create-index-new)))
+    (setq imenu-create-index-function 'py--imenu-create-index-function)
+    (setq imenu--index-alist (funcall py--imenu-create-index-function))
+    ;; fallback
+    (unless imenu--index-alist
+      (setq imenu--index-alist (py--imenu-create-index-new)))
     ;; (message "imenu--index-alist: %s" imenu--index-alist)
     (imenu-add-to-menubar "PyIndex"))
   ;; add the menu

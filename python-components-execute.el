@@ -550,13 +550,15 @@ Internal use"
 	  (member (get-buffer-window output-buffer)(window-list))
 	(py--manage-windows-split py-exception-buffer output-buffer))
       ;; Fixme: otherwise new window appears above
-      (save-excursion
-	(other-window 1)
+      ;; (save-excursion
+      ;; (other-window 1)
 	;; (pop-to-buffer output-buffer)
 	;; [Bug 1579309] python buffer window on top when using python3
+	(set-buffer output-buffer)
 	(switch-to-buffer output-buffer)
 	(goto-char (point-max))
-	(other-window 1)))
+	;; (other-window 1)
+	)
      ((not py-switch-buffers-on-execute-p)
       (let (pop-up-windows)
 	(py-restore-window-configuration))))))
@@ -1170,20 +1172,15 @@ See `py-if-name-main-permission-p'"
 Avoid empty lines at the beginning. "
   ;; (when py-debug-p (message "py--fix-start:"))
   (with-temp-buffer
+    (python-mode)
     (let (erg)
       (insert string)
-      ;; (switch-to-buffer (current-buffer))
       (goto-char 1)
-      ;; (when py-debug-p (message "start: %s" (point))
-      ;; (setq buffer-read-only nil)
-      ;; (message "buffer-read-only: %s" buffer-read-only))
-      (when (< 0 (setq erg (skip-chars-forward " \t\r\n\f")))
+      (when (< 0 (setq erg (skip-chars-forward " \t\r\n\f" (line-end-position))))
 	(dotimes (i erg)
 	  (indent-rigidly-left (point-min) (point-max))))
-      ;; (member (char-after) (list 9 32))
-      ;; (delete-char 1))
       (unless (py--beginning-of-statement-p)
-	(py-down-statement))
+	(py-forward-statement))
       (while (not (eq (current-indentation) 0))
 	(py-shift-left py-indent-offset))
       (goto-char (point-max))
